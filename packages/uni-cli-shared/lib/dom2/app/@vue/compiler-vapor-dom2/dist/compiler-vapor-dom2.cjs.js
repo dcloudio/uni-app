@@ -1,78 +1,15707 @@
-"use strict";/**
+/**
 * @vue/compiler-vapor-dom2 v3.6.0-alpha.6
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
-**/Object.defineProperty(exports,"__esModule",{value:!0});var K=require("@vue/compiler-dom"),vf=require("hash-sum"),w=require("@vue/compiler-vapor"),L=require("@vue/shared"),Sn=require("@babel/parser"),Bn=require("estree-walker"),Cf=require("os"),Qo=require("tinycolor2"),rt=require("source-map-js"),mf=require("fs"),Dn=require("path"),ei=require("url"),qt=require("@dcloudio/uni-nvue-styler");function O3(e,x){}function W3(e,x){}function yf(e,x=[]){const r=e[t(642,644,634,633)]||e._fastPathAst;if(r)return Qt(r);if(e.isStatic)return!0;function t(o,n,i,a){return N0(o-641,a)}if(e.ast===null)try{return e[t(643,636,643,646)]=Sn.parseExpression(e.content,{plugins:x}),Qt(e[t(643,652,647,640)])}catch{}return!1}function Qt(e){function x(t,o,n,i){return N0(n- -673,i)}function r(t,o,n,i){return N0(n- -810,i)}switch(e=K.unwrapTSNode(e),e.type){case r(-809,-798,-807,-802):return e[r(-806,-806,-806,-817)]===r(-794,-801,-805,-800)?!1:Qt(e[r(-809,-811,-804,-814)]);case r(-797,-806,-803,-803):return Qt(e.expression);case x(-673,-654,-665,-665):case x(-666,-665,-664,-656):case"BooleanLiteral":case x(-672,-659,-663,-655):case"BigIntLiteral":return!0}return!1}function en(e){function x(r,t,o,n){return N0(n- -845,r)}try{return!!new Function(x(-828,-836,-836,-834)+e[x(-836,-833,-833,-833)])()}catch{}return null}function N0(e,x){const r=Ln();return N0=function(t,o){t=t-0;let n=r[t];if(N0.QAzrvp===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};N0.xoEGHI=i,e=arguments,N0.QAzrvp=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=N0.xoEGHI(n),e[f]=n),n},N0(e,x)}function ti(e){function x(t,o,n,i){return N0(t- -434,o)}try{const t=new Function(r(37,34,38,37)+e[x(-422,-416,-429,-429)])();return typeof t==r(31,48,44,39)?t:null}catch{}function r(t,o,n,i){return N0(i-26,n)}return null}function Ln(){const e=["zxzLCNK","yxn0","x2zHC3rqyxrOqxn0","vw5HCNLfEhbYzxnZAw9U","B3bLCMf0B3i","DM9Pza","yxjNDw1LBNq","ugfYzw50AgvZAxPLzev4ChjLC3nPB24","u3rYAw5NtgL0zxjHBa","tNvTzxjPy0XPDgvYywW","tNvSBeXPDgvYywW","CMv0DxjUia","y29UDgvUDa","C3rYAw5N","zM9YrwfJAa","A2v5","DMfSDwvZ","BgvUz3rO","y2XHC3m","Ag92zxiTy2XHC3m","C2HHCMvKrgf0yq","BMv4DeLKzw50"];return Ln=function(){return e},Ln()}function wf(e,x){function r(o,n,i,a){return N0(o-547,n)}function t(o,n,i,a){return N0(o- -565,a)}P0(e[r(562,573)],x),e[t(-549,-543,-553,-545)][t(-548,-553,-559,-556)]>1&&[t(-547,-557,-543,-539),"style",r(566,575)].includes(e[t(-550,-546,-545,-542)][t(-553,-563,-550,-554)])?e[r(567,573)]={ident:x[r(568,567)]()}:ni(e[r(563,562)],x)}function ni(e,x,r=!1,t=!1){function o(n,i,a,f){return N0(n- -483,f)}e[o(-469,-473,-469,-477)](n=>{P0(n,x,r,t)})}function P0(e,x,r=!1,t=!1){function o(i,a,f,u){return N0(f- -172,i)}function n(i,a,f,u){return N0(i- -725,a)}(r||!yf(e))&&(e[n(-705,-707)]={ident:x[o(-143,-151,-151)]()})}function An(){var e=["B3b0Aw9UCW","y2fSBa","DMfSDwu","yxn0","zgvSzwDHDgu","C2HHCMvKrgf0yq","BMv4DeLKzw50","zxzLBNq"];return An=function(){return e},An()}function Ye(e,x){var r=An();return Ye=function(t,o){t=t-0;var n=r[t];if(Ye.pYNvvy===void 0){var i=function(d){for(var h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=",s="",b="",c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(var p=0,v=s.length;p<v;p++)b+="%"+("00"+s.charCodeAt(p).toString(16)).slice(-2);return decodeURIComponent(b)};Ye.eOgOGA=i,e=arguments,Ye.pYNvvy=!0}var a=r[0],f=t+a,u=e[f];return u?n=u:(n=Ye.eOgOGA(n),e[f]=n),n},Ye(e,x)}function zf(e,x){var r,t;function o(i,a,f,u){return Ye(a- -583,i)}function n(i,a,f,u){return Ye(f-957,u)}e.value&&(t=(r=x[n(954,953,957,956)]).isCppExpr)!=null&&t[n(958,958,958,957)](r,e[n(962,960,959,962)][o(-583,-580)])||(e[n(960,962,961,957)]=!1,P0(e.key,x),e[o(-582,-578)]={ident:x[o(-574,-577)]()})}function Sf(e,x){function r(t,o,n,i){return Ye(i- -7,n)}P0(e[r(1,4,2,0)],x,!0)}function Bf(e,x,r=!1,t=[],o=Object[tn(-798,-844,-857,-844)](null)){function n(a,f,u,d){return J(f- -794,u)}const i=e[n(-807,-793,-837)]===n(-768,-792,-832)?e[n(-744,-791,-802)][0].type===n(-815,-790,-810)&&e[n(-744,-791,-782)][0][n(-825,-789,-757)]:e;Bn.walk(e,{enter(a,f){function u(h,s,b,c){return J(s-551,h)}if(f&&t[u(569,557)](f),f&&f[u(574,552)][d(-615,-572)]("TS")&&!Nf[u(547,559)](f[u(573,552)]))return this.skip();function d(h,s,b,c){return J(s- -579,h)}if(a[d(-558,-578)]===u(527,560)){const h=!!o[a[d(-585,-569)]],s=Df(a,f,t);(r||s&&!h)&&x(a,f,t,s,h)}else if(a.type===d(-583,-568)&&(f==null?void 0:f[d(-626,-578)])===d(-580,-567))a.inPattern=!0;else if(Af(a))a[d(-608,-566)]?a[d(-572,-566)][u(599,565)](h=>Ht(h,o)):Lf(a,h=>It(a,h,o));else if(a[d(-592,-578)]===u(521,566))a[d(-523,-566)]?a[u(583,564)][d(-517,-565)](h=>Ht(h,o)):oi(a,h=>It(a,h,o));else if(a[d(-604,-578)]===d(-552,-563))a.scopeIds?a[u(521,564)].forEach(h=>Ht(h,o)):fi(a,!1,h=>It(a,h,o));else if(a.type==="CatchClause"&&a[d(-555,-562)])if(a[d(-531,-566)])a[u(574,564)][u(601,565)](h=>Ht(h,o));else for(const h of Le(a[u(585,568)]))It(a,h,o);else ii(a)&&(a[u(567,564)]?a.scopeIds[d(-613,-565)](h=>Ht(h,o)):ai(a,!1,h=>It(a,h,o)))},leave(a,f){function u(h,s,b,c){return J(c- -684,s)}function d(h,s,b,c){return J(c- -958,b)}if(f&&t[d(-919,-893,-924,-940)](),a!==i&&a[u(-671,-643,-659,-671)])for(const h of a.scopeIds)o[h]--,o[h]===0&&delete o[h]}})}function J(e,x){const r=Mn();return J=function(t,o){t=t-0;let n=r[t];if(J.nfBHYE===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};J.SkFlTq=i,e=arguments,J.nfBHYE=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=J.SkFlTq(n),e[f]=n),n},J(e,x)}function Df(e,x,r){if(!x)return!0;function t(n,i,a,f){return J(a- -465,i)}function o(n,i,a,f){return J(f- -357,n)}if(e.name===o(-327,-314,-352,-338))return!1;if(Mf(e,x,r[r[o(-345,-383,-345,-337)]-2]))return!0;switch(x[t(-486,-445,-464)]){case o(-318,-328,-332,-336):case t(-427,-457,-443):return!0;case"ObjectProperty":return x[t(-441,-490,-442)]!==e&&xi(x,r);case o(-377,-369,-296,-333):return xi(x,r)}return!1}function xi(e,x){function r(o,n,i,a){return J(o-521,n)}function t(o,n,i,a){return J(n- -236,i)}if(e&&(e[t(-197,-235,-196)]===t(-191,-225,-200)||e.type===t(-228,-212,-257))){let o=x[r(541,585)];for(;o--;){const n=x[o];if(n[t(-206,-235,-259)]===t(-263,-215,-241))return!0;if(n.type!==t(-222,-225,-225)&&!n[r(522,529)].endsWith(t(-239,-211,-230)))break}}return!1}function ri(e,x,r,t){return J(r- -573,t)}function Lf(e,x){function r(t,o,n,i){return J(i-673,o)}for(const t of e[r(660,695,709,701)])for(const o of Le(t))x(o)}function oi(e,x){function r(n,i,a,f){return J(n- -485,i)}function t(n,i,a,f){return J(n- -58,i)}const o=e[r(-484,-482)]===r(-456,-410)?e[t(-28,-19)]:e.body;for(const n of o)if(n[r(-484,-490)]===t(-27,-58)){if(n[t(-26,-8)])continue;for(const i of n.declarations)for(const a of Le(i.id))x(a)}else if(n[r(-484,-521)]==="FunctionDeclaration"||n.type==="ClassDeclaration"){if(n[r(-453,-451)]||!n.id)continue;x(n.id)}else ii(n)?ai(n,!0,x):n[r(-484,-449)]===r(-469,-471)&&fi(n,!0,x)}function ii(e){function x(t,o,n,i){return J(t- -787,i)}function r(t,o,n,i){return J(i-836,t)}return e[r(800,796,799,837)]===x(-754,-764,-729,-741)||e.type===r(911,854,883,870)||e.type===r(919,896,875,871)}function ai(e,x,r){function t(i,a,f,u){return J(u-976,i)}function o(i,a,f,u){return J(i-298,a)}const n=e[o(299,272)]===t(973,991,1013,1011)?e[t(1039,972,977,1012)]:e.left;if(n&&n[t(929,972,960,977)]===o(329,288)&&(n[o(335,317)]===t(1002,973,1012,1014)?x:!x))for(const i of n.declarations)for(const a of Le(i.id))r(a)}function tn(e,x,r,t){return J(t- -844,r)}function fi(e,x,r){function t(n,i,a,f){return J(a-518,f)}function o(n,i,a,f){return J(a-166,i)}for(const n of e[t(558,543,557,587)]){for(const i of n[t(560,572,548,512)])if(i[t(494,562,519,562)]===t(594,533,549,579)&&(i.kind===o(222,208,204)?x:!x))for(const a of i[o(211,225,206)])for(const f of Le(a.id))r(f);oi(n,r)}}function Le(e,x=[]){switch(e[t(381,438,441,423)]){case t(418,473,403,431):x[t(439,417,414,428)](e);break;case"MemberExpression":let o=e;for(;o[r(592,594,619,635)]===r(644,620,579,593);)o=o[t(452,469,437,463)];x.push(o);break;case t(386,429,421,434):for(const n of e[r(625,635,597,683)])n[r(642,594,597,581)]==="RestElement"?Le(n.argument,x):Le(n[t(437,487,446,465)],x);break;case"ArrayPattern":e[r(629,637,592,679)][t(393,478,399,436)](n=>{n&&Le(n,x)});break;case t(437,507,505,467):Le(e[t(515,482,432,468)],x);break;case r(653,615,663,634):Le(e[t(497,433,457,469)],x);break}function r(o,n,i,a){return J(n-593,a)}function t(o,n,i,a){return J(a-422,n)}return x}function Ht(e,x){e in x?x[e]++:x[e]=1}function Mn(){const e=["y3jLyxrL","DhLWzq","uhjVz3jHBq","yM9KEq","rxHWCMvZC2LVBLn0yxrLBwvUDa","zxHWCMvZC2LVBG","ChvZAa","C3rHCNrZv2L0Aa","Aw5JBhvKzxm","swrLBNrPzMLLCG","BMfTzq","t2jQzwn0uhjVCgvYDhK","t2jQzwn0ugf0DgvYBG","C2nVCgvjzhm","zM9YrwfJAa","qMXVy2TtDgf0zw1LBNq","u3DPDgnOu3rHDgvTzw50","CgfYyw0","Cg9W","yxjNDw1LBNrZ","BgvUz3rO","qxnZAwDUBwvUDev4ChjLC3nPB24","qxnZAwDUBwvUDfbHDhrLCM4","A2v5","qxjYyxLqyxr0zxjU","ugf0DgvYBG","tMv3rxHWCMvZC2LVBG","twvTyMvYrxHWCMvZC2LVBG","CgfYyw1Z","u3DPDgnOq2fZzq","y29UC2vXDwvUDa","vMfYAwfIBgvezwnSyxjHDgLVBG","zgvJBgfYzq","rM9Yt2ztDgf0zw1LBNq","rM9Ysw5tDgf0zw1LBNq","rM9Yu3rHDgvTzw50","Aw5PDa","A2LUza","DMfY","y2fZzxm","zgvJBgfYyxrPB25Z","B2jQzwn0","ChjVCgvYDgLLCW","DMfSDwu","zwXLBwvUDhm","uMvZDevSzw1LBNq","yxjNDw1LBNq","BgvMDa","AgfZ","y29TChv0zwq","sLnytwvTyMvYrxHWCMvZC2LVBG","vMfYAwfIBgvezwnSyxjHDg9Y","qxjYB3DgDw5JDgLVBKv4ChjLC3nPB24","uhjPDMf0zu5HBwu","q2XHC3nnzxrOB2q","q2XHC3nqCML2yxrLtwv0Ag9K","t2jQzwn0twv0Ag9K","q2XHC3nqCM9Wzxj0Eq","q2XHC3nezwnSyxjHDgLVBG","CMLNAhq","tgfIzwXLzfn0yxrLBwvUDa","q2f0y2HdBgf1C2u","qNjLywTtDgf0zw1LBNq","q29UDgLUDwvtDgf0zw1LBNq","rNvUy3rPB25fEhbYzxnZAw9U","rxHWB3j0rgvMyxvSDfnWzwnPzMLLCG","rxHWB3j0u3bLy2LMAwvY","C291CMnL","Bg9JywW","sw1WB3j0rgvMyxvSDfnWzwnPzMLLCG","sw1WB3j0tMfTzxnWywnLu3bLy2LMAwvY","sw1WB3j0u3bLy2LMAwvY","twv0yvbYB3bLCNr5","t2jQzwn0vhLWzvbYB3bLCNr5","vfnfBNvTtwvTyMvY","vfnqCM9Wzxj0EvnPz25HDhvYzq","vfnbC0v4ChjLC3nPB24","vfnoB25oDwXSrxHWCMvZC2LVBG","vfnjBNn0yw50Awf0Aw9UrxHWCMvZC2LVBG","vfntyxrPC2zPzxnfEhbYzxnZAw9U","vw5HCNLfEhbYzxnZAw9U","tg9NAwnHBev4ChjLC3nPB24","DgvZDa","ywX0zxjUyxrL","u2vXDwvUy2vfEhbYzxnZAw9U","vgvTCgXHDgvmAxrLCMfS","zxHWCMvZC2LVBNm","zxzLCNK","ugfYzw50AgvZAxPLzev4ChjLC3nPB24","tNvTzxjPy0XPDgvYywW","qM9VBgvHBKXPDgvYywW","tNvSBeXPDgvYywW","BgL0zxjHBc1JB25ZDa","t2jQzwn0rxHWCMvZC2LVBG","u3bYzwfKrwXLBwvUDa","qxjYyxLfEhbYzxnZAw9U"];return Mn=function(){return e},Mn()}function It(e,x,r){function t(i,a,f,u){return J(u- -199,i)}const{name:o}=x;function n(i,a,f,u){return J(u-308,f)}e[n(318,324,359,321)]&&e[n(322,300,288,321)][t(-197,-181,-149,-151)](o)||(Ht(o,r),(e[n(304,290,280,321)]||(e[t(-199,-176,-217,-186)]=new Set)).add(o))}const Af=e=>/Function(?:Expression|Declaration)$|Method$/.test(e[tn(-830,-803,-825,-843)]);function Mf(e,x,r){function t(n,i,a,f){return J(f- -255,i)}function o(n,i,a,f){return J(f-55,a)}switch(x[o(90,11,26,56)]){case t(-259,-183,-221,-228):case"OptionalMemberExpression":return x.property===e?!!x[o(69,103,114,104)]:x.object===e;case o(84,137,94,105):return x[o(49,125,135,96)]===e;case o(146,88,115,106):return x.init===e;case t(-251,-164,-162,-203):return x.body===e;case t(-219,-209,-223,-202):return!1;case o(139,81,145,109):case t(-167,-165,-217,-200):case t(-245,-184,-188,-199):return x[t(-227,-214,-217,-232)]===e?!!x[o(93,89,108,104)]:!1;case o(109,76,95,66):return x[o(101,89,99,78)]===e?!!x[o(76,122,66,104)]:!r||r[t(-230,-235,-258,-254)]!==o(35,69,56,67);case t(-203,-228,-179,-198):return x.key===e?!!x[t(-183,-235,-253,-206)]:!0;case"ClassPrivateProperty":return x.key!==e;case o(127,156,153,113):case"ClassExpression":return x.superClass===e;case t(-280,-260,-243,-234):return x.right===e;case t(-215,-218,-213,-233):return x[o(124,77,78,114)]===e;case t(-184,-199,-185,-195):return!1;case o(94,119,71,116):return!1;case"RestElement":return!1;case o(120,111,130,117):case t(-183,-162,-195,-192):return!1;case"FunctionDeclaration":case o(163,82,151,119):return!1;case"ExportNamespaceSpecifier":case o(89,106,141,120):return!1;case o(129,112,105,121):return r!=null&&r[t(-198,-207,-199,-188)]?!1:x[t(-220,-152,-193,-187)]===e;case t(-140,-206,-222,-186):case o(99,161,119,125):case t(-146,-200,-209,-184):return!1;case"ImportAttribute":return!1;case"JSXAttribute":return!1;case o(36,91,92,67):case o(59,65,60,79):return!1;case o(154,127,83,127):return!1;case t(-182,-212,-207,-182):return x[t(-193,-263,-274,-232)]!==e;case o(94,143,125,129):return x.id!==e;case o(126,134,86,130):return x.key===e?!!x[t(-167,-240,-240,-206)]:!0}return!0}const Nf=[tn(-798,-732,-793,-768),"TSTypeAssertion",ri(-475,-544,-496,-509),tn(-721,-806,-759,-766),ri(-477,-479,-494,-466)];function Nn(){const e=["zw50zxjjzgvUDa","A2v5uhjVCa","DhLWzvbYB3a","CMvUzgvY","B25Jzq","C291CMnL","yxn0","DhLWzq","tNvTzxjPy0XPDgvYywW","ChvZAa","y29UDgvUDa","zM9YrwfJAa","zgvSzxrL","BgvUz3rO","AgfZ","B3bLCMf0Aw9U","zwzMzwn0","zhLUyw1PyW","y2HPBgrYzw4","vw5Oyw5KBgvKig9WzxjHDgLVBIb0ExbLigLUigDLBK9WzxjHDgLVBJOG","zNjVBq","zxzLCNK","qMLUyxj5rxHWCMvZC2LVBG"];return Nn=function(){return e},Nn()}function Pf(e,x){if(ci(e))return;function r(n,i,a,f){return C0(n-443,a)}P0(e.source,x,!0);const t=x[r(443,452,436)]();function o(n,i,a,f){return C0(n-910,i)}e[r(444,455,451)]&&P0(e.keyProp,x,!0),e[o(912,911)]&&P0(e[r(445,456,448)],x,!0),Rn(e[r(446,448,437)],x),t()}function C0(e,x){const r=Nn();return C0=function(t,o){t=t-0;let n=r[t];if(C0.FkrEIR===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};C0.vFPNAh=i,e=arguments,C0.FkrEIR=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=C0.vFPNAh(n),e[f]=n),n},C0(e,x)}function ci(e,x=new Set){if(!e[u(-349,-338,-350,-342)]||e.component||!e[u(-348,-354,-336,-337)].ast)return!1;const r=e[u(-348,-351,-346,-343)][u(-347,-356,-353,-345)][u(-346,-347,-339,-343)];if(r!==h(645,654)&&r!=="StringLiteral")return!1;const{value:t,key:o,keyProp:n,index:i,render:a}=e,f=[];t&&(f[u(-344,-348,-354,-342)](t.content),x.add(t[h(647,652)])),o&&(f[u(-344,-346,-353,-347)](o[u(-343,-339,-332,-344)]),x.add(o[h(647,639)])),i&&(f.push(i[h(647,640)]),x.add(i[h(647,658)]));function u(s,b,c,_){return C0(s- -353,_)}function d(){function s(c,_,l,g){return C0(l-146,_)}function b(c,_,l,g){return C0(l-458,_)}f[b(472,464,469)](c=>x[s(158,169,158)](c)),f[s(149,164,159)]=0}function h(s,b,c,_){return C0(s-637,b)}if(n){if(si(n))return d(),!1;const{seenIdentifier:s}=w.analyzeExpressions([n]);if(!Array.from(s).every(b=>x[u(-339,-332,-340,-337)](b)))return d(),!1}return Uf(a,x)?!0:(d(),!1)}function Uf(e,x){for(const o of e[r(-310,-304,-303,-313)])if(!Pn(o,x))return!1;function r(o,n,i,a){return C0(a- -328,i)}function t(o,n,i,a){return C0(n- -578,o)}for(const o of e[t(-554,-562)])for(const n of o.operations)if(!Pn(n,x))return!1;return!(e.dynamic&&!ui(e[r(-317,-316,-317,-311)],x))}function ui(e,x){if(e[r(-744,-730,-745,-736)]&&!Pn(e[t(372,381,379,364)],x))return!1;function r(o,n,i,a){return C0(a- -751,o)}for(const o of e[r(-736,-739,-725,-733)])if(!ui(o,x))return!1;function t(o,n,i,a){return C0(o-357,a)}return!0}function Pn(e,x){function r(t,o,n,i){return C0(i-586,t)}switch(e[r(594,589,601,593)]){case 2:case 3:case 5:case 6:case 7:case 8:case 9:case 10:case 11:case 12:case 13:case 14:case 15:case 18:case 19:return!1;case 17:return!0;case 4:return!!Ef(e.values,x);case 16:return ci(e,x);default:const t=e;throw new Error(r(616,614,611,605)+t)}}function Ef(e,x){function r(o,n,i,a){return C0(a- -628,n)}for(const o of e)if(si(o))return!1;const{seenIdentifier:t}=w.analyzeExpressions(e);return Array[r(-599,-613,-610,-608)](t)[r(-617,-600,-605,-607)](o=>x.has(o))}function si(e){function x(t,o,n,i){return C0(n- -63,i)}function r(t,o,n,i){return C0(n-18,o)}if(e[x(-64,-68,-57,-55)]){let t=!1;return Bf(e[r(18,15,24)],(o,n)=>{function i(f,u,d,h){return C0(h-489,f)}function a(f,u,d,h){return C0(h-366,f)}n&&n[i(488,487,499,496)]!==a(382,384,384,388)&&(t=!0)}),t}return!1}function Tf(e,x){P0(e.value,x)}function Dt(e,x){const r=Un();return Dt=function(t,o){t=t-0;let n=r[t];if(Dt.UTriNh===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Dt.ytUKTE=i,e=arguments,Dt.UTriNh=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Dt.ytUKTE(n),e[f]=n),n},Dt(e,x)}function li(e,x){function r(i,a,f,u){return Dt(i-489,a)}const{condition:t,positive:o,negative:n}=e;en(t)===null&&P0(t,x,!0),ct(o,x),n&&(n[r(489,488)]===1?ct(n,x):li(n,x))}function Un(){const e=["DhLWzq"];return Un=function(){return e},Un()}function Re(e,x){var r=En();return Re=function(t,o){t=t-0;var n=r[t];if(Re.gvugdG===void 0){var i=function(d){for(var h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=",s="",b="",c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(var p=0,v=s.length;p<v;p++)b+="%"+("00"+s.charCodeAt(p).toString(16)).slice(-2);return decodeURIComponent(b)};Re.pysoqR=i,e=arguments,Re.gvugdG=!0}var a=r[0],f=t+a,u=e[f];return u?n=u:(n=Re.pysoqR(n),e[f]=n),n},Re(e,x)}function qf(e,x){function r(t,o,n,i){return Re(o- -600,t)}wf(e[r(-600,-600)],x)}function En(){var e=["ChjVCa","C2HHCMvKrgf0yq","BMv4DeLKzw50"];return En=function(){return e},En()}function Hf(e,x){function r(o,n,i,a){return Re(i-871,o)}function t(o,n,i,a){return Re(i-680,n)}e[t(681,683,681)]={ident:x[r(873,875,873)]()}}function Tn(){var e=["DgfNvhLWzq","B3b0Aw9UCW","AxndChbfEhbY","AgfZvgvTCgXHDgvszwy"];return Tn=function(){return e},Tn()}function ot(e,x){var r=Tn();return ot=function(t,o){t=t-0;var n=r[t];if(ot.qIQfQX===void 0){var i=function(d){for(var h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=",s="",b="",c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(var p=0,v=s.length;p<v;p++)b+="%"+("00"+s.charCodeAt(p).toString(16)).slice(-2);return decodeURIComponent(b)};ot.cWfqQi=i,e=arguments,ot.qIQfQX=!0}var a=r[0],f=t+a,u=e[f];return u?n=u:(n=ot.cWfqQi(n),e[f]=n),n},ot(e,x)}function Of({node:e,value:x},r){function t(a,f,u,d){return ot(a- -135,f)}var o,n;function i(a,f,u,d){return ot(u- -341,a)}if(e[t(-135,-134)]===0){if((n=(o=r[i(-342,-339,-340)])[t(-133,-132)])!=null&&n.call(o,x.ast))return;r.ir[t(-132,-130)]=!0,P0(x,r,!0)}else r.ir.hasTemplateRef=!0}function I3(e,x){}function Wf(e,x){ni(e.values,x,!1,!0)}function j3(e,x){}function If(e,x){function r(o,n,i,a){return te(n- -304,a)}function t(o,n,i,a){return te(a-417,i)}e[t(419,418,414,417)]={ident:x[t(417,416,412,418)]()},e[r(-306,-302,-304,-297)].forEach(o=>{function n(a,f,u,d){return te(f-757,d)}function i(a,f,u,d){return te(a-116,d)}switch(o.slotType){case 0:Object.keys(o[i(118,114,120,114)])[i(119,123,117,114)](f=>{function u(d,h,s,b){return te(d-842,h)}ct(o[u(844,843)][f],x)});break;case 1:ti(o[i(120,122,118,118)])||(o.name[i(116,121,114,115)]={ident:x.nextIdent()}),ct(o.fn,x);break;case 2:P0(o[n(766,762,763,758)][i(122,126,125,123)],x,!0);const a=x[i(123,117,119,127)]();ti(o[n(767,761,757,758)])||(o[i(120,125,119,121)][n(757,757,762,755)]={ident:x.nextIdent()}),ct(o.fn,x),a();break;case 3:di(o,x);break}})}function qn(){const e=["C2HHCMvKrgf0yq","BMv4DeLKzw50","C2XVDhm","zM9YrwfJAa","BMfTzq","Bg9VCa","C291CMnL","zw50zxjjzgvUDa","y29UzgL0Aw9U","Cg9ZAxrPDMu","BMvNyxrPDMu","C2XVDfr5Cgu"];return qn=function(){return e},qn()}function te(e,x){const r=qn();return te=function(t,o){t=t-0;let n=r[t];if(te.OpFIgL===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};te.rAUwnv=i,e=arguments,te.OpFIgL=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=te.rAUwnv(n),e[f]=n),n},te(e,x)}function di(e,x){function r(o,n,i,a){return te(i- -807,o)}function t(o,n,i,a){return te(a-111,o)}en(e[r(-804,-799,-799)])===null&&P0(e.condition,x,!0),P0(e[r(-799,-797,-798)][t(110,113,110,115)],x),ct(e[t(123,114,117,120)].fn,x),e[t(118,121,118,121)]&&(e.negative[t(124,121,123,122)]===3?di(e[r(-799,-803,-797)],x):(P0(e.negative.name,x),ct(e[t(127,120,122,121)].fn,x)))}function jf(e,x){const{fallback:r,name:t}=e;P0(t,x),r&&ct(r,x)}function Yf({dir:{exp:e}},x){e&&P0(e,x)}function it(e,x){const r=Hn();return it=function(t,o){t=t-0;let n=r[t];if(it.ECUNAP===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};it.olgaYU=i,e=arguments,it.ECUNAP=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=it.olgaYU(n),e[f]=n),n},it(e,x)}function Hn(){const e=["C2HHCMvKrgf0yq","DK1VzgvS","BMv4DeLKzw50"];return Hn=function(){return e},Hn()}function Rf({dir:e},x){const r=e.exp;function t(n,i,a,f){return it(f- -760,a)}function o(n,i,a,f){return it(n-49,i)}P0(r,x,!0),r[o(49,50)][t(-759,-758,-758,-759)]={eventIdent:x[o(51,49)]()}}function On(){var e=["BMfTzq","C2HVDW","Bw9KzwW"];return On=function(){return e},On()}function at(e,x){var r=On();return at=function(t,o){t=t-0;var n=r[t];if(at.LsiKbR===void 0){var i=function(d){for(var h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=",s="",b="",c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(var p=0,v=s.length;p<v;p++)b+="%"+("00"+s.charCodeAt(p).toString(16)).slice(-2);return decodeURIComponent(b)};at.CZZEnB=i,e=arguments,at.LsiKbR=!0}var a=r[0],f=t+a,u=e[f];return u?n=u:(n=at.CZZEnB(n),e[f]=n),n},at(e,x)}function Vf(e,x){function r(o,n,i,a){return at(a- -853,n)}function t(o,n,i,a){return at(n-903,o)}switch(e[t(902,903)]){case r(-852,-851,-851,-852):return Yf(e,x);case t(905,905):return Rf(e,x)}}function pe(e,x){const r=Wn();return pe=function(t,o){t=t-0;let n=r[t];if(pe.fYaTWl===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};pe.KExElJ=i,e=arguments,pe.fYaTWl=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=pe.KExElJ(n),e[f]=n),n},pe(e,x)}function Wn(){const e=["DhLWzq","vw5Oyw5KBgvKig9WzxjHDgLVBIb0ExbLigLUigDLBK9WzxjHDgLVBJOG","ChjVCa","A2v5","y29UDgvUDa","C2XPy2u","DMfSDwvZ","C2HHCMvKrgf0yq","B3bLCMf0Aw9UCW"];return Wn=function(){return e},Wn()}function _i(e,x){for(const r of e)hi(r,x)}function hi(e,x){kf(e,x)}function kf(e,x){function r(t,o,n,i){return pe(o- -934,n)}switch(e[r(-937,-934,-936)]){case 2:return qf(e,x);case 3:return Hf(e,x);case 4:return Wf(e,x);case 5:return zf(e,x);case 6:return Sf(e,x);case 7:return Tf(e,x);case 8:return Of(e,x);case 9:return void 0;case 10:return void 0;case 15:return li(e,x);case 16:return Pf(e,x);case 11:return If(e,x);case 14:return void 0;case 12:return jf(e,x);case 13:return Vf(e,x);case 17:return void 0;case 18:return;case 19:return;default:const t=e;throw new Error(r(-932,-933,-937)+t)}}function Kf(e,x){function r(n,i,a,f){return pe(a- -277,f)}function t(n,i,a,f){return pe(a-726,f)}for(const n of e)Gf(n,x);for(const{operations:n}of e)for(const i of n)if(i.type===19){const a=o(i[r(-271,-273,-275,-277)][r(-273,-272,-274,-271)][t(728,734,730,729)][r(-270,-275,-272,-271)](7));a&&(i[r(-271,-274,-275,-279)][t(728,731,732,737)][0].sharedData=a[t(732,732,728,729)][r(-274,-270,-271,-274)][0][r(-272,-269,-270,-269)])}function o(n){function i(f,u,d,h){return pe(h- -414,f)}function a(f,u,d,h){return pe(h-92,d)}for(const f of e)for(const u of f[i(-402,-406,-405,-406)])if(u.type===2&&u[a(94,93,95,94)][a(93,98,94,95)].content===n)return u}}function Gf({operations:e},x){_i(e,x)}function In(e,x){const{operation:r}=e;r&&hi(r,x)}function jn(){const e=["zw50CMLLCW","zMXHz3m","yw5JAg9Y","AgfZrhLUyw1Py0nOAwXK","ChvZAa"];return jn=function(){return e},jn()}function ft(e,x){const r=jn();return ft=function(t,o){t=t-0;let n=r[t];if(ft.rKGUxA===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};ft.oFZxMW=i,e=arguments,ft.rKGUxA=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=ft.oFZxMW(n),e[f]=n),n},ft(e,x)}function bi(e,x){function r(a,f,u,d){return ft(f-722,a)}const{children:t}=e;let o=0;const n=[];for(const[,a]of t[r(721,722)]()){a[r(724,723)]&2&&o--;const f=a[r(724,723)]&1?a[i(-480,-480,-478,-481)]&4?a[r(721,724)]:a.id:void 0;if(f===void 0&&!a[r(724,725)]){In(a,x);continue}f===a[i(-479,-477,-477,-476)]&&In(a,x),n[r(726,726)](a)}function i(a,f,u,d){return ft(a- -481,d)}for(const a of n)bi(a,x)}function Lt(e,x){const r=Yn();return Lt=function(t,o){t=t-0;let n=r[t];if(Lt.stGsWQ===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Lt.uRFpJS=i,e=arguments,Lt.stGsWQ=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Lt.uRFpJS(n),e[f]=n),n},Lt(e,x)}function ct(e,x){Rn(e,x)}function Yn(){const e=["zw50zxjcBg9JAW","y2HPBgrYzw4"];return Yn=function(){return e},Yn()}function Rn(e,x){const{dynamic:r,effect:t,operation:o}=e,n=x[i(-512,-513,-513,-512)](e);for(const a of r[i(-512,-513,-512,-513)])In(a,x);for(const a of r.children)bi(a,x);function i(a,f,u,d){return Lt(u- -513,d)}_i(o,x),Kf(t,x),n()}function v0(e,x,r,t){return x0(r- -731,x)}function n0(e,x,r,t){return x0(t- -979,r)}function Vn(){const e=["x2nOyxjZ","x25LEhrjzhm","x2DLBMvYyxrLza","x2n1CNjLBNrjBMrLEa","x3bYzwDLBMvYyxrL","x2DLBMvYyxrLswq","Dw5ZAgLMDa","AM9PBG","AgfZ","BgvUz3rO","x2DLBMvYyxrLtMv4DfzHBgLKswq","ChvZAa","z2v0r3jVDxbjBMzV","zMXVB3i","x2DYB3vWu2L6zq","z2vUzxjHDgvKq291BNq","AgfZuhjLz2vUzxjHDgvK","x2LUy3jLBwvUDa","AxrLCMf0B3i","BMv4Da","ywjZDhjHy3q","yxjNDw1LBNrZ","yxDHAxq","yNjLywS","yNL0zq","y2fZzq","y2f0y2G","y2HHCG","y2XHC3m","y29UC3q","y29UDgLUDwu","zgvIDwDNzxi","zgvMyxvSDa","zgvSzxrL","zg91yMXL","zwXZzq","zw51Bq","zxHWB3j0","zxH0zw5KCW","zMfSC2u","zMLUywW","zMLUywXSEq","zMXVyxq","zNvUy3rPB24","Aw1WB3j0","Aw5ZDgfUy2vVzG","Aw50","Aw50zxjMywnL","Bgv0","Bg9UzW","BMf0AxzL","BMv3","BNvSBa","ChjPDMf0zq","C2HVCNq","C3rHDgLJ","DgHPCW","DgHYB3C","DgHYB3DZ","DhjHBNnPzw50","Dhj5","DhLWzw9M","DM9Pza","D2L0Aa","EwLLBgq"];return Vn=function(){return e},Vn()}class nn{constructor(x=1e3,r=30){this[t(757,753)]="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",this[t(735,754)]=[0];function t(n,i,a,f){return x0(i-753,n)}this[t(739,755)]=[],this[t(775,756)]=0;function o(n,i,a,f){return x0(i- -128,n)}if(x<0)throw new Error("\u9884\u751F\u6210\u6570\u91CF\u4E0D\u80FD\u4E3A\u8D1F\u6570");this._groupSize=r,x>0&&this[o(-101,-124)](x)}[n0(-958,-954,-943,-974)](){function x(o,n,i,a){return x0(a-305,o)}const r=[];function t(o,n,i,a){return x0(a- -506,n)}for(const o of this[t(-495,-537,-536,-505)])r[t(-499,-500,-476,-500)](this[x(320,302,289,305)][o]);return r[t(-474,-527,-477,-499)]("")}_generateNextValidId(){let x;do x=this[r(-594,-626,-600)](),this._increment();while(Xf[r(-589,-598,-597)](x));function r(t,o,n,i){return x0(n- -605,o)}return x}[v0(-751,-727,-727)](x){function r(o,n,i,a){return x0(n-394,a)}function t(o,n,i,a){return x0(a-483,o)}this[r(368,396,424,422)]=new Array(x);for(let o=0;o<x;o++)this[t(489,467,466,485)][o]=this._generateNextValidId()}next(){if(this[x(658,637,649,672)]<this[x(657,677,687,672)][x(664,692,663,675)])return this[t(-138,-128,-108,-124)][this._currentIndex++];function x(o,n,i,a){return x0(o-655,a)}const r=this[x(665,633,683,672)]();function t(o,n,i,a){return x0(a- -126,i)}return this[x(657,678,642,653)][t(-139,-128,-87,-115)](r),this[x(658,629,649,645)]++,r}getIndexOf(x){function r(t,o,n,i){return x0(n- -649,i)}return this[r(-622,-673,-647,-615)].indexOf(x)}[v0(-710,-692,-719)](x){function r(n,i,a,f){return x0(i- -298,a)}const t=this.getIndexOf(x);function o(n,i,a,f){return x0(f-107,n)}return t===-1?null:{index:Math[r(-260,-285,-267)](t/this[r(-261,-284,-263)]),bitValue:1<<t%this[o(90,98,109,121)]}}reset(){function x(t,o,n,i){return x0(i- -156,o)}function r(t,o,n,i){return x0(o-789,t)}this[r(767,790)]=[0],this[x(-145,-137,-155,-154)]=[],this[x(-134,-154,-180,-153)]=0}get[n0(-945,-964,-992,-964)](){function x(r,t,o,n){return x0(n-134,r)}return this._generated[x(111,147,164,143)]}get currentIndex(){function x(r,t,o,n){return x0(n-769,o)}return this[x(786,780,773,772)]}get[v0(-728,-732,-715)](){function x(t,o,n,i){return x0(i- -191,o)}function r(t,o,n,i){return x0(t- -210,o)}return this[r(-207,-196)]<this[x(-210,-220,-179,-189)][x(-199,-152,-193,-182)]}get generatedList(){return this._generated}[v0(-707,-723,-714)](){for(let t=0;t<this[x(-440,-477,-460,-453)][r(-277,-275)];t++)if(++this[x(-479,-489,-460,-488)][t]>=this._chars[x(-460,-473,-452,-452)])this[r(-284,-283)][t]=0;else return;function x(t,o,n,i){return x0(n- -461,i)}function r(t,o,n,i){return x0(o- -284,t)}this[r(-312,-283)][r(-244,-273)](0)}*[Symbol[v0(-739,-735,-713)]](){function x(r,t,o,n){return x0(t- -303,n)}for(;;)yield this[x(-294,-284,-306,-287)]()}}function x0(e,x){const r=Vn();return x0=function(t,o){t=t-0;let n=r[t];if(x0.rKeAUU===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};x0.jbbrGy=i,e=arguments,x0.rKeAUU=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=x0.jbbrGy(n),e[f]=n),n},x0(e,x)}const Xf=new Set([n0(-986,-972,-938,-959),n0(-953,-959,-927,-958),n0(-959,-989,-934,-957),"boolean",v0(-708,-726,-708),n0(-951,-930,-971,-955),v0(-726,-673,-706),n0(-973,-976,-945,-953),v0(-711,-720,-704),v0(-704,-718,-703),n0(-927,-974,-928,-950),v0(-706,-732,-701),v0(-669,-679,-700),v0(-712,-676,-699),n0(-939,-968,-925,-946),"do",v0(-682,-728,-697),n0(-923,-972,-948,-944),v0(-674,-711,-695),"eval",n0(-945,-952,-971,-942),v0(-671,-666,-693),n0(-935,-956,-945,-940),n0(-924,-948,-925,-939),n0(-935,-963,-958,-938),n0(-913,-906,-945,-937),"for",n0(-961,-952,-958,-936),"goto","if","implements",v0(-693,-707,-687),"in",n0(-951,-918,-919,-934),n0(-936,-924,-959,-933),n0(-900,-931,-918,-932),n0(-935,-956,-921,-931),n0(-925,-916,-920,-930),v0(-686,-659,-681),n0(-921,-907,-939,-928),n0(-928,-934,-948,-927),"package",v0(-705,-686,-678),"protected","public","return",n0(-924,-921,-940,-925),v0(-704,-704,-676),"super","switch","synchronized",n0(-910,-920,-892,-923),n0(-915,-921,-932,-922),n0(-906,-890,-899,-921),v0(-676,-672,-672),"true",v0(-645,-659,-671),n0(-947,-894,-910,-918),"var",n0(-928,-887,-912,-917),"volatile","while",v0(-698,-659,-668),v0(-666,-635,-667)]);function Zf(e,x,r,t){return V0(e-494,r)}function kn(){const e=["AxnjBLzgB3i","x2LKzw50","x2LKzw50q2fJAgu","B3b0Aw9UCW","yMXVy2S","C2v0","DhLWzq","ChjVChm","BMv4DeLKzw50","BMv4Da"];return kn=function(){return e},kn()}function V0(e,x){const r=kn();return V0=function(t,o){t=t-0;let n=r[t];if(V0.fjhzYH===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};V0.CDaZrt=i,e=arguments,V0.fjhzYH=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=V0.CDaZrt(n),e[f]=n),n},V0(e,x)}class Ff{constructor(x,r){function t(n,i,a,f){return V0(a-407,n)}this[o(595,591)]=!1;function o(n,i,a,f){return V0(i-591,n)}this[o(594,592)]=new nn,this[o(592,593)]=new Map,this.ir=x,this[t(413,411,410)]=r,this.block=x[o(599,595)],this[t(404,408,409)][t(417,411,412)](this._ident,new Map)}enterBlock(x){function r(a,f,u,d){return V0(d-508,u)}const t=this[r(517,511,514,512)];function o(a,f,u,d){return V0(a-830,u)}this.block=x;const n=x.node;let i=()=>{};return this[r(507,510,512,508)]||(this.isInVFor=n[o(836,838,837)]===1&&n.tagType===3&&n[r(516,517,520,515)].some(a=>a.type===7&&a.name==="for"),i=()=>this.isInVFor=!1),()=>(i(),this[o(834,829,837)]=t)}enterIdent(){function x(o,n,i,a){return V0(o- -107,a)}function r(o,n,i,a){return V0(i- -595,o)}const t=this._ident;return this[r(-590,-592,-594)]=new nn,this[x(-105,-107,-102,-101)].set(this[x(-106,-101,-101,-107)],new Map),()=>this[x(-106,-105,-104,-108)]=t}[Zf(502,506,500)](){function x(r,t,o,n){return V0(o-140,r)}return this[x(141,137,141)][x(154,146,149)]()}}function Jf(e,x){function r(o,n,i,a){return V0(i-875,n)}const t=new Ff(e,x);Rn(e[r(877,880,879)],t)}function ce(e,x,r,t){return s0(r-15,x)}function ve(e,x,r,t){return s0(e- -695,r)}function s0(e,x){const r=Kn();return s0=function(t,o){t=t-0;let n=r[t];if(s0.UAiyLa===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};s0.PimDMT=i,e=arguments,s0.UAiyLa=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=s0.PimDMT(n),e[f]=n),n},s0(e,x)}const $f={ELEMENT:ce(8,14,15),NATIVE_VIEW:ce(13,7,16)},gi={APP:ve(-693,-675,-706),APP_ANDROID:ve(-692,-693,-678),APP_HARMONY:ve(-691,-687,-703),APP_IOS:"app-ios"};function ut(e,x){function r(o,n,i,a){return s0(i- -352,a)}function t(o,n,i,a){return s0(o- -972,n)}switch(e){case r(-360,-350,-348,-333):return x===r(-353,-333,-352,-365)?r(-362,-356,-347,-357):"nv-c";case t(-969,-987):return x===r(-352,-361,-352,-344)?t(-966,-951):"nv-kt";case r(-364,-326,-345,-343):return x===r(-371,-354,-352,-366)?t(-967,-949):r(-331,-329,-344,-335);case r(-335,-369,-350,-335):return r(-346,-343,-343,-342)}}const Qf={ALL:ce(29,10,24),DOM_C:"dom-c",DOM_KT:"dom-kt",NV_KT:ve(-685,-700,-671),TXT_KT:ce(14,37,26),DOM_OC:ce(15,21,27),NV_C:ve(-687,-681,-689),TXT_C:ve(-682,-700,-677),DOM_TS:ve(-681,-690,-664)};function pi(e){function x(t,o,n,i){return s0(n-23,t)}function r(t,o,n,i){return s0(t- -690,i)}return e===r(-685,-679,-666,-699)||e===r(-682,-676,-663,-689)||e===x(38,48,36)}function ec(e){function x(t,o,n,i){return s0(i- -489,n)}function r(t,o,n,i){return s0(i- -213,n)}return e==="dom-c"||e===r(-218,-190,-224,-207)||e===x(-460,-462,-462,-477)||e===x(-482,-463,-464,-475)}const tc={TS:"ts",CPP:"cpp",KOTLIN:ce(19,36,30),SWIFT:ce(39,39,31)},nc={APP:ve(-693,-711,-695),PAGE:ce(29,17,32),COMPONENT:ve(-677,-666,-672)};class vi{constructor(){function x(r,t,o,n){return s0(r- -228,t)}this.r=r=>r,this[x(-209,-200)]=0,this[x(-208,-219)]=[],this[x(-207,-223)]=0}[ve(-673,-672,-686)](){function x(o,n,i,a){return s0(n- -491,a)}function r(o,n,i,a){return s0(n- -479,a)}const t=this[r(-474,-460,-471,-449)]++;return this[x(-459,-471,-476,-478)][x(-457,-468,-452,-466)](t),t}[ce(29,38,39)](){function x(t,o,n,i){return s0(o-268,n)}function r(t,o,n,i){return s0(i-141,n)}this[r(172,146,150,161)][x(288,293,281)]()}[ce(52,30,41)](x){const r=this[t(265,233,250,264)];function t(a,f,u,d){return s0(u-223,d)}this.block=x;function o(a,f,u,d){return s0(u- -424,d)}const n=this[t(234,244,250,237)].node,i=n.type===1&&n.tagType===3&&n[t(239,254,251,245)][t(255,237,252,268)](a=>a.type===7&&a[o(-389,-390,-394,-410)]===o(-382,-393,-393,-412));return i&&this[t(229,236,244,231)]++,()=>(i&&this[t(263,228,244,243)]--,this[t(250,253,250,268)]=r)}get[ce(42,61,47)](){function x(r,t,o,n){return s0(n- -573,o)}return this.vForDepth>0?this[x(-553,-522,-535,-540)]:this.r("__sharedData")}get[ve(-662,-677,-664)](){function x(o,n,i,a){return s0(a- -237,o)}function r(o,n,i,a){return s0(n-553,o)}const t=this[x(-215,-233,-198,-217)][this.vForStack[x(-216,-222,-187,-203)]-1];return""+this.r(r(572,588))+t}get[ce(63,41,51)](){function x(t,o,n,i){return s0(t- -607,n)}const r=this.vForStack[this[x(-587,-600,-575)].length-1];return""+this.r(x(-570,-576,-556))+r}}function Kn(){const e=["zwXLBwvUDa","BMf0AxzLvMLLDW","yxbW","yxbWlwfUzhjVAwq","yxbWlwHHCM1VBNK","zg9Tlwm","zg9TlwT0","yxbWlwLVCW","BNyTyW","ywXS","BNyTA3q","DhH0lwT0","zg9Tlw9J","DhH0lwm","zg9TlxrZ","A290BgLU","C3DPzNq","CgfNzq","y29TCg9Uzw50","DKzVCKnVDw50","DKzVCLn0ywnR","DKzVCKrLChrO","zw50zxjwrM9Y","ChvZAa","zxHPDfzgB3i","Cg9W","zw50zxjcBg9JAW","yMXVy2S","ChjVChm","C29Tzq","BMfTzq","zM9Y","C2HHCMvKrgf0yvzHCG","C2HHCMvKrgf0yvzgB3jwyxi","BgvUz3rO","x19ZAgfYzwreyxrHx1zgB3i","C2HHCMvKrgf0yvzgB3jjDgvTvMfY","x192rM9YsxrLBq"];return Kn=function(){return e},Kn()}function Gn(){const e=["BwfW","AM9PBG","BgvUz3rO","Aw5Zzxj0","ChjLCgvUza","zwXLBwvUDhm"];return Gn=function(){return e},Gn()}function Ve(e,x){const r=Gn();return Ve=function(t,o){t=t-0;let n=r[t];if(Ve.TpIXNi===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Ve.wtVfuR=i,e=arguments,Ve.TpIXNi=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Ve.wtVfuR(n),e[f]=n),n},Ve(e,x)}function xc({parent:e,elements:x,anchor:r},{helper:t}){function o(a,f,u,d){return Ve(u- -927,a)}function n(a,f,u,d){return Ve(a- -460,f)}let i=x[n(-460,-458)](a=>"n"+a)[o(-927,-926,-926)](", ");return x[o(-926,-922,-925)]>1&&(i="["+i+"]"),[w.NEWLINE,...w.genCall(t(n(-457,-459)),i,"n"+e,r===void 0?void 0:"n"+r)]}function rc(e,{helper:x}){function r(t,o,n,i){return Ve(n-939,o)}return[w.NEWLINE,...w.genCall(x(r(944,946,943)),"n"+e.parent,...e[r(945,946,944)][r(940,940,939)](t=>"n"+t))]}function I(e,x,r){const{content:t,ast:o,isStatic:n,loc:i}=e;if(n)return[[JSON[s(-875,-863,-864,-863)](t),-2,i]];if(!e[a(-531,-515,-509,-477)][s(-831,-885,-862,-842)]()||o===!1||w.isConstantExpression(e))return[[t,-2,i],r&&" = "+r];if(o===null)return Ci(t,x,i,r);function a(b,c,_,l){return W(_- -510,l)}const f=[],u=new Map,d=[];K.walkIdentifiers(o,b=>{function c(_,l,g,p){return W(_-487,p)}f[c(490,509,511,456)](b),u.set(b,d[c(491,495,477,515)]())},!1,d);let h=!1;function s(b,c,_,l){return W(_- -864,l)}if(f[s(-884,-884,-859,-871)]){const[b,c]=w.buildCodeFragment();return f.sort((_,l)=>_[a(-489,-522,-504,-510)]-l.start).forEach((_,l)=>{const g=_[C(-456,-484,-468)]-1,p=_[D(-231,-211,-239)]-1,v=f[l-1],m=t.slice(v?v[D(-264,-254,-239)]-1:0,g);m.length&&c([m,-3]);function C(S,N,T,u0){return W(T- -474,S)}const y=t[C(-464,-474,-470)](g,p),z=u.get(_),B=z[z[C(-480,-496,-469)]-1];function D(S,N,T,u0){return W(T- -246,S)}h||(h=B&&(B[C(-485,-432,-466)]==="MemberExpression"||B.type===C(-451,-491,-465))),c(...Ci(y,x,{start:K.advancePositionWithClone(e.loc.start,y,g),end:K.advancePositionWithClone(e[D(-262,-266,-236)][D(-261,-207,-240)],y,p),source:y},h?void 0:r,_,B,z)),l===f[D(-219,-274,-241)]-1&&p<t[D(-240,-220,-241)]&&c([t.slice(p),-3])}),r&&h&&c(a(-486,-526,-499,-520)+r),b}else return[[t,-3,i]]}function Ci(e,x,r,t,o,n,i){const{options:a,helper:f,identifiers:u}=x,{inline:d,bindingMetadata:h}=a;function s(m,C,y,z){return W(z-333,y)}let b=e;const c=u[e];if(c&&c[s(335,320,308,338)]){const m=c[0];return L.isString(m)?n&&n.type===s(374,372,361,345)&&n.shorthand?[[b+": "+m,-2,r]]:[[m,-2,r]]:I(m,x,t)}function _(m,C,y,z){return W(C-468,y)}let l;K.isStaticProperty(n)&&n[_(475,481,494)]&&(l=e+": ");const g=h&&h[e];if(d)switch(g){case s(350,344,374,347):b=e=t?"_isRef("+e+_(473,483,474)+e+_(485,484,471)+t+_(490,485,501)+e+_(492,479,502)+t+")":v();break;case"setup-ref":b=e=p(e+_(481,486,506));break;case s(325,321,386,352):const m=n&&K.isInDestructureAssignment(n,i||[]),C=n&&n[s(330,319,372,341)]===s(341,378,323,353)&&n[_(497,489,488)]===o,y=n&&n[_(448,476,465)]===_(507,490,519)&&n[s(370,346,329,356)]===o;e=C||y||m?b=e+s(379,384,340,351):t?f(_(474,492,518))+"("+e+_(470,483,509)+e+s(349,373,363,349)+t+") : null":v();break;case"props":e=L.genPropsAccessExp(e);break;case s(369,335,374,358):e=L.genPropsAccessExp(h[_(504,494,474)][e]);break;default:e=p(e)}else oc(e)&&(g==="props-aliased"?e=_(521,495,496)+h[s(346,380,333,359)][e]+"']":e=(g===s(388,380,363,361)?s(362,388,351,362):"_ctx")+"."+e),e=p(e);return[l,[e,-2,r,b]];function p(m){function C(y,z,B,D){return W(B- -201,D)}return t?m+C(-209,-179,-190,-160)+t:m}function v(){function m(C,y,z,B){return W(z- -236,B)}return f(m(-200,-207,-206,-228))+"("+e+")"}}function oc(e){function x(t,o,n,i){return W(t- -392,i)}function r(t,o,n,i){return W(i-171,t)}return!(L.isGloballyAllowed(e)||e===x(-361,-394,-352,-374)||e===r(203,202,200,200)||e===x(-360,-336,-375,-378)||e===x(-359,-386,-335,-362)||e===r(185,193,222,205))}function ic(e,x,r){const{seenVariable:t,variableToExpMap:o,expToVariableMap:n,seenIdentifier:i,updatedVariable:a}=w.analyzeExpressions(x),f=ac(e,t,o,n,i,a),u=cc(e,x,f,a,n);return uc([...f,...u],e,r)}function ac(e,x,r,t,o,n){function i(d,h,s,b){return W(s-723,d)}const a=[],f=new Map;for(const[d,h]of r)if(!n[u(-420,-440,-440)](d)&&x[d]>1&&h[i(773,751,759)]>0){const s=o[i(781,761,758)](d),b=s?d:Zn(d);h[u(-418,-416,-424)](c=>{function _(g,p,v,m){return W(m-382,g)}function l(g,p,v,m){return W(g- -539,m)}if(c[l(-501,-474,-508,-507)]&&b!==d){const g=f.get(c)||[];g[l(-536,-529,-533,-551)]({name:b,locs:t[l(-500,-509,-484,-532)](c).reduce((p,v)=>(v[l(-499,-499,-519,-520)]===d&&v[_(369,416,385,392)]&&p[l(-536,-515,-564,-554)](v[l(-529,-544,-531,-536)]),p),[])}),f[_(435,436,423,423)](c,g)}}),!a[i(781,751,765)](c=>c[i(788,794,763)]===b)&&(!s||fc(d,t,h))&&a[i(738,694,726)]({name:b,isIdentifier:s,value:L.extend({ast:s?null:xn(e,d)},K.createSimpleExpression(d)),rawName:d,exps:h,seenCount:x[d]})}function u(d,h,s,b){return W(d- -455,s)}for(const[d,h]of f)h[i(789,798,766)](({name:s,locs:b})=>b[i(796,765,767)](({start:c,end:_})=>({start:c,end:_,name:s})))[u(-410,-434,-432)]((s,b)=>b[u(-448,-414,-452)]-s[i(709,736,730)]).forEach(({start:s,end:b,name:c})=>{function _(g,p,v,m){return W(v- -365,g)}function l(g,p,v,m){return W(v- -357,m)}d.content=d[_(-381,-387,-364)][l(-340,-371,-353,-366)](0,s-1)+c+d.content[_(-327,-392,-361)](b-1)}),d.ast=xn(e,d[u(-454,-470,-460)],d[i(733,700,733)]);return a}function fc(e,x,r){const t=Array[o(-2,29,8)](r,a=>x[n(-463,-442,-475)](a).map(f=>f.name));function o(a,f,u,d){return W(u- -38,a)}if(t[n(-455,-465,-455)](a=>a[o(-1,-25,-33)]===1)||t.some(a=>a[o(1,37,10)](f=>f===e)[n(-497,-502,-470)]>1))return!0;function n(a,f,u,d){return W(a- -502,u)}const i=t[0];return t[n(-460,-472,-463)](a=>a[n(-497,-520,-483)]!==i[n(-497,-475,-519)])?!(t[o(8,-16,4)](a=>a.length>i[o(-7,-35,-33)]&&a[o(41,39,9)](f=>i[n(-453,-420,-420)](f)))||t.some(a=>i.length>a.length&&i[n(-455,-481,-440)](f=>a[n(-453,-437,-431)](f)))):!t[n(-455,-441,-435)](a=>a[n(-455,-483,-451)]((f,u)=>f===i[u]))}function W(e,x){const r=Xn();return W=function(t,o){t=t-0;let n=r[t];if(W.PEhRUm===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};W.dBjTwn=i,e=arguments,W.PEhRUm=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=W.dBjTwn(n),e[f]=n),n},W(e,x)}function cc(e,x,r,t,o){function n(u,d,h,s){return W(u-235,h)}const i=[],a=x[f(897,875)]((u,d)=>{const h=o.get(d);if(!h)return u;const s=h[c(161,109,156,130)](_=>_.name);function b(_,l,g,p){return W(_-720,l)}function c(_,l,g,p){return W(p-86,g)}return d.ast&&d.ast[b(728,740)]!==b(771,773)&&!(s&&s.some(_=>t[b(755,765)](_)))&&(u[d[b(721,751)]]=(u[d[c(61,107,77,87)]]||0)+1),u},Object[n(287,255,266)](null));function f(u,d,h,s){return W(d-825,u)}return Object.entries(a)[n(272,273,251)](([u,d])=>{function h(b,c,_,l){return W(b- -686,_)}function s(b,c,_,l){return W(_- -746,b)}if(d>1){const b=Zn(u);if(!i.some(c=>c[s(-703,-706,-706)]===b)){const c={};for(let l=r.length-1;l>=0;l--){const g=r[l];!g[s(-709,-661,-693)]||!g[h(-632,-616,-643)]||[...g.exps][h(-639,-612,-659)](p=>p[h(-685,-715,-698)]===u&&g[s(-706,-691,-692)]===d)&&(c[g[h(-646,-647,-674)]]=g[s(-720,-696,-691)],r[h(-630,-664,-625)](l,1))}const _=L.extend({},x[s(-661,-660,-689)](l=>l.content===u));Object.keys(c)[s(-696,-699,-709)](l=>{function g(v,m,C,y){return W(C-294,y)}function p(v,m,C,y){return W(v- -653,y)}_[p(-652,-643,-631,-642)]=_[p(-652,-686,-680,-686)].replace(l,c[l]),_[p(-615,-608,-590,-608)]&&(_[g(362,348,332,357)]=xn(e,_.content,_[p(-643,-626,-656,-621)]))}),i.push({name:b,value:_})}x[h(-649,-659,-628)](c=>{function _(g,p,v,m){return W(g-18,p)}function l(g,p,v,m){return W(m-539,v)}c[_(19,14)]===u?(c[l(550,535,514,540)]=b,c.ast=null):c.content[_(67,42)](u)&&(c[_(19,49)]=c[_(19,34)][l(607,631,598,597)](new RegExp(sc(u),"g"),b),c.ast=xn(e,c[_(19,35)],c[l(562,554,551,549)]))})}}),i}function uc(e,x,r){function t(f,u,d,h){return W(u-752,f)}const[o,n]=w.buildCodeFragment(),i=Object[t(826,804)](null),a=new Set;return e[t(793,789)](({name:f,isIdentifier:u,value:d})=>{function h(b,c,_,l){return W(b-13,c)}function s(b,c,_,l){return W(b- -139,_)}if(u){const b=i[f]="_"+f;a[s(-80,-49,-75)](b),r&&n(h(73,43)),n(b+h(24,18),...I(d,x),w.NEWLINE)}}),e[t(759,789)](({name:f,isIdentifier:u,value:d})=>{function h(s,b,c,_){return W(s-953,c)}if(!u){const s=i[f]="_"+f;a.add(s),r&&n("const "),n(s+h(964,981,934),...x.withId(()=>I(d,x),i),w.NEWLINE)}}),{ids:i,frag:o,varNames:[...a]}}function sc(e){return e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function xn(e,x,r){function t(a,f,u,d){return W(f- -481,u)}const o=e.options.expressionPlugins,n={plugins:o?[...o,t(-387,-420,-403)]:[t(-448,-420,-424)]};function i(a,f,u,d){return W(f- -682,d)}try{return Sn.parseExpression("("+x+")",n)}catch(a){if(r){const f=new SyntaxError(a[i(-619,-620,-616,-652)]);throw f[i(-679,-672,-687,-693)]=r,e[t(-406,-418,-420)][t(-430,-417,-415)](f),f}throw a}}function Xn(){const e=["C3rYAw5NAwz5","y29UDgvUDa","DhjPBq","ChvZAa","C2XPy2u","BgvUz3rO","C3rHCNq","zw5K","DhLWzq","t3b0Aw9UywXnzw1IzxjfEhbYzxnZAw9U","Bg9J","id0G","t2jQzwn0uhjVCgvYDhK","C2HVCNrOyw5K","C2v0DxaTBgv0","ksa/icG","lNzHBhvLid0G","ksa6icG","lNzHBhvL","C2v0DxaTBwf5yMuTCMvM","qxnZAwDUBwvUDev4ChjLC3nPB24","BgvMDa","vxbKyxrLrxHWCMvZC2LVBG","yxjNDw1LBNq","Axnszwy","ChjVChmTywXPyxnLza","x19WCM9WC0fSAwfZzxm","jhbYB3bZwYC","ChjVChm","jhbYB3bZ","Dw5Yzwy","CMvXDwLYzq","jgvTAxq","jgf0DhjZ","jhnSB3rZ","AgfZ","C2L6zq","zM9YrwfJAa","yxn0","z2v0","BMfTzq","C2v0","C29Tzq","zMXHDe1HCa","BwfW","C29YDa","zNjVBq","zxzLCNK","zMLSDgvY","Aw5JBhvKzxm","CMvKDwnL","swrLBNrPzMLLCG","y3jLyxrL","zxHWCW","C2vLBKnVDw50","CMf3tMfTzq","C3bSAwnL","zMLUza","CMvWBgfJzq","ywrK","y29UC3qG","DhLWzxnJCMLWDa","BwvZC2fNzq","B3b0Aw9UCW","B25fCNjVCG","C2HHCMvKrgf0yvzgB3jwyxi","C2HHCMvKrgf0yvzHCG","C2HHCMvKrgf0yq"];return Xn=function(){return e},Xn()}function Zn(e){function x(r,t,o,n){return W(n- -882,r)}return""+e[x(-803,-796,-858,-824)](/[^a-zA-Z0-9]/g,"_").replace(/_+/g,"_")[x(-846,-799,-811,-824)](/_+$/,"")}function mi(e,x,r,t){function o(i,a,f,u){return W(i- -641,u)}function n(i,a,f,u){return W(a- -102,u)}return e.sharedData?w.genCall(x.helper("setSharedData"),x[n(-49,-36,-58,-33)],JSON[o(-641,-670,-658,-635)](e[n(-4,-35,-39,-60)].ident),r?w.genCall(r,I(e,x)):I(e,x)):I(e,x)}function B0(e,x){const r=Fn();return B0=function(t,o){t=t-0;let n=r[t];if(B0.cShSNs===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};B0.zvOrYn=i,e=arguments,B0.cShSNs=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=B0.zvOrYn(n),e[f]=n),n},B0(e,x)}function Fn(){const e=["B3b0Aw9UCW","AxndChbfEhbY","y2fSBa","yxn0","C2HHCMvKrgf0yq","AgvSCgvY","C2v0u2HHCMvKrgf0yq","C2HHCMvKrgf0yvzHCG","C3rYAw5NAwz5","AwrLBNq","y29Uy2f0","C2v0u2HHCMvKrgf0yuv2zw50","id09psa","id8G","idOG","C2v0u2HHCMvKrgf0yur5BMfTAwnfDMvUDhm","zxzLBNq","zM9YrwfJAa","y29UDgvUDa","Aw5JBhvKzxm","DhLWzq","kguP","jgv2zw50","D2L0AeLK","kcrLDMvUDdOGyw55ksa9pIa","kcKGpt4G","BgvUz3rO","kcKGpt4GE30","Dw5ZAgLMDa","yMLUzgLUz01LDgfKyxrH","C2v0DxaTy29UC3q"];return Fn=function(){return e},Fn()}function lc(e,x){function r(b,c,_,l){return B0(l-65,_)}var t,o;const{key:n,keyOverride:i,value:a,modifiers:f,sharedData:u}=e;if(a&&(o=(t=x[r(81,64,73,65)])[h(272,276,283,291)])!=null&&o[h(284,277,277,286)](t,a[r(83,69,57,68)]))return[];const d=Jn(x,[a],f);return[w.NEWLINE,...n[h(287,279,269,264)]?w.genCall(x[h(265,280,293,269)](h(284,281,297,289)),x[h(285,282,284,266)],JSON[h(273,283,293,275)](n[r(71,58,82,69)][r(68,70,70,74)]),s())[r(75,88,88,75)](w.NEWLINE):[],...w.genCall(x[h(282,280,271,282)](h(300,286,270,294)),x[h(267,282,271,283)],JSON[r(78,86,66,73)](u[r(76,79,78,74)]),d)];function h(b,c,_,l){return B0(c-275,l)}function s(){function b(l,g,p,v){return B0(p-561,v)}const c=I(n,x);function _(l,g,p,v){return B0(p-341,l)}if(i){const l=JSON[b(569,584,569,573)](i[0]),g=JSON[_(353,342,349)](i[1]),p=["(",...c,")"];return[...p,_(362,343,353)+l+b(577,572,574,579)+g+_(370,349,355),...p]}else return I(n,x)}}function dc(e,x){function r(o,n,i,a){return B0(i- -934,a)}function t(o,n,i,a){return B0(n-702,i)}return[w.NEWLINE,...w.genCall(x[r(-936,-932,-929,-939)](t(726,717,731)),x[r(-921,-915,-927,-941)],JSON[r(-925,-926,-926,-939)](e[t(708,718,730)][r(-920,-945,-930,-929)].ident),I(e[t(721,718,709)],x))]}function Jn(e,x,r={nonKeys:[],keys:[]},t=!1){function o(a,f,u,d){return B0(f-225,d)}let n=[];function i(a,f,u,d){return B0(u-609,a)}return x&&(x[o(227,242,243,246)]((a,f)=>{let u=[];function d(s,b,c,_){return B0(c- -375,_)}function h(s,b,c,_){return B0(c- -308,s)}if(a&&a[h(-275,-294,-290)].trim()){if(K.isMemberExpression(a,e[h(-313,-316,-308)])){if(u=I(a,e),!_c(a,e)&&!t){const s=a[h(-293,-316,-305)]&&K.TS_NODE_TYPES[d(-361,-362,-356,-362)](a[d(-375,-358,-372,-378)][d(-342,-367,-355,-365)]);u=["(e: any) => ",s?"(":"",...u,s?")":"",d(-347,-341,-354,-354)]}}else if(K.isFnExpression(a,e[d(-364,-373,-375,-366)]))u=I(a,e);else{const s=a[d(-353,-357,-357,-348)].includes(d(-369,-362,-353,-348)),b=a[h(-277,-302,-290)][h(-283,-299,-289)](";"),c=s?e[h(-283,-293,-285)](()=>I(a,e),{$event:null}):I(a,e);u=[s?h(-285,-284,-284):d(-351,-339,-350,-335),b?"{":"(",...c,b?"}":")"]}n=n[h(-289,-312,-298)]([f!==0?", ":"",...u])}}),x[i(631,635,635)]>1&&(n=["[",...n,"]"])),n[i(631,640,635)]===0&&(n=[i(632,621,636)]),t&&n[o(266,253,255,256)](i(649,637,634)),n}function _c(e,x){function r(o,n,i,a){return B0(n-985,o)}function t(o,n,i,a){return B0(o-926,a)}if(e[r(980,988)]===null&&x[t(926,922,922,938)][t(955,961,955,949)][e[t(944,938,930,958)]]===r(1011,1015))return!0}const hc=Cf[gc(174,172,170)]()===pc(628,623,629,627);function bc(e){function x(r,t,o,n){return Ce(t- -19,n)}return hc?e[x(-20,-17,-19,-21)](/\\/g,"/"):e}function gc(e,x,r,t){return Ce(r-170,x)}function pc(e,x,r,t){return Ce(t-626,r)}function Ce(e,x){const r=$n();return Ce=function(t,o){t=t-0;let n=r[t];if(Ce.tskiMh===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Ce.CaAGEX=i,e=arguments,Ce.tskiMh=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Ce.CaAGEX(n),e[f]=n),n},Ce(e,x)}function yi(e){function x(o,n,i,a){return Ce(a- -844,i)}function r(o,n,i,a){return Ce(a-88,o)}if(!(e[x(-842,-841,-843,-841)]===1&&e[r(91,96,94,92)]===x(-836,-836,-843,-839)))return!1;const t=e;return t.children.length===1&&t.children[0][r(94,90,91,91)]===1&&(t.children[0].tag===x(-838,-839,-841,-838)||t[x(-833,-837,-833,-837)][0][x(-836,-836,-837,-840)]==="ListItem")}function $n(){const e=["CgXHDgzVCM0","D2LUmZi","CMvWBgfJzq","DhLWzq","DgfN","DgvTCgXHDgu","BgLZDc1PDgvT","y2HPBgrYzw4"];return $n=function(){return e},$n()}function Qn(){const e=["C2HHCMvKrgf0yq","BM9Kzq","y29UDgvUDa","kcKGpt4Gka","zw50zxjwrM9Y","zw50zxjty29Wzq","x2zVCL9PDgvT","lNzHBhvL","B3b0Aw9UCW","C2HHCMvKrgf0yvzgB3jwyxi","x2zVCL9RzxK","x2zVCL9PBMrLEa","ChvZAa","C2v0u2HHCMvKrgf0yq","C3rYAw5NAwz5","AwrLBNq","BgvUz3rO","x3nLBgvJDg9Y","oIaOB3bLCJOGkcKGpt4GDM9PzcKGpt4GDM9Pza","khSGy3jLyxrLu2vSzwn0B3iGFsKGpt4GEW","id0G","kcKGpt4G","D2L0AeLK","ksa9pIb7","B3bLCMf0Aw9UCW","y3jLyxrLu2HHCMvKrgf0yuzVCG","Dw5KzwzPBMvK","y3jLyxrLu2HHCMvKrgf0yvjLy3LJBgvgB3i","ChjLq3jLyxrLu2HHCMvKrgf0yvjLy3LJBgvgB3i","CMv0DxjUia","AgvSCgvY","Dg9eAxnWBgf5u3rYAw5N","id0+icG","id0+iciWiG","zM9YrwfJAa","z2vUzxjHDgvK","zxHWCMvZC2LVBNm","B2jQzwn0","DhLWzq","B3bLCMf0B3i","pt09","BgvMDa","C3rHCNq","C2XPy2u","zw5K","Bg9J","BMfTzq","C2TPCa","C2HHCMvKrgf0yvnJB3bLvMfY","lcaOksa9pIb1C2vtAgfYzwreyxrHpga","C2HHCMvKrgf0yvzgB3jdBgfZC1r5Cgu"];return Qn=function(){return e},Qn()}function X(e,x){const r=Qn();return X=function(t,o){t=t-0;let n=r[t];if(X.Fywfae===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};X.dOKywJ=i,e=arguments,X.Fywfae=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=X.dOKywJ(n),e[f]=n),n},X(e,x)}function vc(e,x){const{helper:r}=x,{source:t,value:o,key:n,index:i,render:a,keyProp:f,typeProp:u,once:d,id:h,component:s,onlyChild:b}=e;if(!t[E(-835,-814)])return[];const c=yi(e[E(-834,-831)]),_=x.sharedDataVar,l=o&&o[E(-833,-809)],g=n&&n[E(-833,-853)],p=i&&i[E(-833,-810)],v=[E(-832,-850),...I(t,x),")"],m=w.parseValueDestructure(o,x),C=x[E(-831,-851)](),[y,z]=x[E(-830,-813)](),B=E(-829,-823)+C,D=w.buildDestructureIdMap(m,B+E(-828,-829),x[S(992,984)].expressionPlugins);D[B]=null;function S(O,G,k,V){return X(G-976,O)}const N=[x[S(964,985)],", ",B];if(g){const O=E(-825,-814)+C;N.push(", "+O),D[g]=O+".value",D[O]=null}if(p){const O=S(991,987)+C;N[E(-823,-830)](", "+O),D[p]=O+E(-828,-818),D[O]=null}const T=w.genCall(r(E(-822,-829)),_,JSON[E(-821,-845)](t[S(998,976)][E(-820,-822)]),zi(x,C)),u0=P(f,x,x.sharedDataVForVar),g0=i0(f,x),M=c&&u?P(u,x,x[S(999,985)]):fe(x.sharedDataVForVar),{selectorPatterns:w0,keyOnlyBindingPatterns:o0}=wi(a,f,D),T0=[],p0=[];for(let O=0;O<w0[S(1016,992)];O++){const{selector:G}=w0[O],k=E(-818,-812)+h+"_"+O;T0[S(1e3,988)]("let "+k+S(1002,994),w.NEWLINE),O===0&&p0[S(962,988)](S(994,995),w.INDENT_START),p0.push(w.NEWLINE,k+S(1019,996),...w.genCall("createSelector",[E(-814,-810),...I(G,x)])),O===w0.length-1&&p0[E(-823,-798)](w.INDENT_END,w.NEWLINE,"}")}const q0=x[S(978,998)](()=>{const O=[];function G(V,R,t0,Z){return X(t0-811,R)}function k(V,R,t0,Z){return X(R- -918,t0)}return O[k(-919,-906,-916)]("(",...N,G(845,860,834),w.INDENT_START),w0[G(810,844,827)]||o0.length?O[k(-929,-906,-924)](...an(a,x,!1,()=>{const V=[];function R(Z,e0,M0,ee){return X(e0- -670,Z)}for(let Z=0;Z<w0.length;Z++){const{effect:e0}=w0[Z];V.push(w.NEWLINE,t0(299,274,277,270)+h+"_"+Z+"(() => {",w.INDENT_START);for(const M0 of e0[t0(281,281,298,298)])V[R(-641,-658)](...gx(M0,x));V.push(w.INDENT_END,w.NEWLINE,"})")}for(const{effect:Z}of o0)for(const e0 of Z[R(-664,-646)])V[R(-678,-658)](...gx(e0,x));function t0(Z,e0,M0,ee){return X(e0-257,ee)}return V})):O[k(-926,-906,-894)](...an(a,x)),O[k(-894,-906,-903)](w.INDENT_END,w.NEWLINE,"}"),O},D);z(),x.exitVFor();let R0=0;if(b&&(R0|=1),s&&(R0|=2),d&&(R0|=4),!c)return[w.NEWLINE,...T0,...w.genCall([r(S(1015,1001)),E(-809,-797)],T,v,q0,u0,R0?String(R0):void 0,p0.length?p0:void 0)];return[w.NEWLINE,...T0,...w.genCall([r(E(-808,-821)),E(-809,-832)],T,w.genCall([r(E(-807,-823)),S(1005,1002)],v,g0),q0,u0,M,R0?String(R0):void 0,p0[E(-819,-845)]?p0:void 0)];function i0(O,G){function k(R,t0,Z,e0){return X(Z-548,e0)}if(!O)return!1;const V=G[k(568,545,570,581)](()=>I(O,G),je());return[...w.genMulti(["(",")",", "],l||(g||p?"_":void 0),g||(p?"__":void 0),p)," => {",k(561,556,577,595),...V,"}"]}function P(O,G,k){function V(Z,e0,M0,ee){return X(M0-943,ee)}if(!O)return!1;const R=G[V(971,954,965,979)](()=>w.genCall(G[V(951,994,973,955)](V(932,978,956,934)),k,JSON.stringify(O[t0(-309,-326)][V(948,954,958,977)]),w.genCall(G[V(997,996,973,967)](V(956,978,974,976)),I(O,G))),je());function t0(Z,e0,M0,ee){return X(Z- -309,e0)}return[...w.genMulti(["(",")",", "],k,l||(g||p?"_":void 0),g||(p?"__":void 0),p),V(967,949,975,999),...R,")"]}function E(O,G,k,V){return X(O- -835,G)}function fe(O){function G(k,V,R,t0){return X(R-68,k)}return[...w.genMulti(["(",")",", "],O,l||(g||p?"_":void 0),g||(p?"__":void 0),p),G(97,75,101)]}function je(){const O={};return g&&(O[g]=null),p&&(O[p]=null),m.forEach((G,k)=>O[k]=null),O}}function wi(e,x,r){const t=[],o=[];function n(i,a,f,u){return X(u- -394,i)}return e.effect[n(-378,-372,-353,-360)](i=>{function a(u,d,h,s){return X(h-926,d)}function f(u,d,h,s){return X(s- -801,u)}if(x!==void 0){const u=mc(i,x.content,r);u&&(t[a(941,944,938)](u),i[a(942,965,961)]=!0);const d=Cc(i,x[a(924,924,928)]);d&&(o[a(923,951,938)](d),i[f(-741,-753,-771,-766)]=!0)}}),{keyOnlyBindingPatterns:o,selectorPatterns:t}}function Cc(e,x){function r(o,n,i,a){return X(a- -443,n)}function t(o,n,i,a){return X(i- -885,n)}if(e[t(-873,-872,-849)][r(-423,-415,-453,-427)]===1){const{ast:o,content:n}=e[t(-825,-865,-849)][0];if(typeof o==r(-385,-404,-385,-406)&&o!==null&&ex(o,x,n))return{effect:e}}}function mc(e,x,r){function t(n,i,a,f){return X(f-838,n)}function o(n,i,a,f){return X(n- -489,i)}if(e[t(863,849,881,874)][o(-473,-460)]===1){const{ast:n,content:i}=e[t(898,898,867,874)][0];if(typeof n=="object"&&n){const a=[];if(Bn.walk(n,{enter(f){function u(h,s,b,c){return X(h- -191,c)}function d(h,s,b,c){return X(s-655,b)}if(typeof f=="object"&&f&&f[d(697,693,681)]==="BinaryExpression"&&f[d(686,694,717)]===u(-151,-142,-139,-160)&&f[d(691,696,681)][u(-153,-170,-174,-150)]!=="PrivateName"){const{left:h,right:s}=f;for(const[b,c]of[[h,s],[s,h]]){const _=ex(b,x,i),l=ex(c,x,i),g=yc(c,r);_&&!l&&!g[u(-175,-174,-198,-157)]&&a[u(-179,-167,-184,-168)]([b,c])}}}}),a[t(873,844,872,854)]===1){const[f,u]=a[0],d=e[o(-453,-430)][0][o(-487,-476)];let h=!1;if(K.walkIdentifiers(n,s=>{function b(_,l,g,p){return X(g- -704,_)}function c(_,l,g,p){return X(_-453,p)}s[b(-660,-673,-662)]!==f.start&&s[c(495,480,519,519)]!==u[b(-663,-639,-662)]&&(h=!0)},!1),!h){const s=d[t(892,872,890,881)](u[o(-447,-456)]-1,u[t(905,859,861,882)]-1);return{effect:e,selector:{content:s,ast:L.extend({},u,{start:1,end:s.length+1}),loc:u[t(905,858,906,883)],isStatic:!1}}}}}}}function yc(e,x){let r=[];function t(i,a,f,u){return X(u- -899,a)}function o(i,a,f,u){return X(u-426,i)}const n=[];K.walkIdentifiers(e,i=>{function a(f,u,d,h){return X(h-994,f)}n[a(1007,1025,1015,1006)](i)},!1);for(const i of n)L.isGloballyAllowed(i[t(-846,-840,-831,-853)])||x[i[o(468,452,470,472)]]&&r[t(-899,-906,-904,-887)](i[t(-868,-847,-861,-853)]);return r}function ex(e,x,r){let t=!0;return Bn.walk(e,{enter(o){function n(a,f,u,d){return X(a- -530,d)}function i(a,f,u,d){return X(d- -49,a)}if(r[i(4,9,-28,-6)](o[n(-488,-510,-477,-506)]-1,o[n(-486,-500,-501,-482)]-1)===x){this[i(0,-24,12,-2)]();return}o[n(-492,-505,-473,-480)]==="Identifier"&&(t=!1)}}),t}function zi(e,x){function r(o,n,i,a){return X(n- -579,i)}function t(o,n,i,a){return X(o- -77,n)}return e[t(-47,-25)]("createSharedDataVFor")+"("+e[r(-527,-531,-510)]+t(-28,-28)+e[t(-27,-23)](x)+"`>("+e[r(-546,-531,-536)]+"))"}function tx(){var e=["C2HHCMvKrgf0yq","C2v0u2HHCMvKrgf0yq","C2HHCMvKrgf0yvzHCG","C3rYAw5NAwz5","AwrLBNq"];return tx=function(){return e},tx()}function st(e,x){var r=tx();return st=function(t,o){t=t-0;var n=r[t];if(st.NyaFma===void 0){var i=function(d){for(var h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=",s="",b="",c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(var p=0,v=s.length;p<v;p++)b+="%"+("00"+s.charCodeAt(p).toString(16)).slice(-2);return decodeURIComponent(b)};st.MYiQzg=i,e=arguments,st.NyaFma=!0}var a=r[0],f=t+a,u=e[f];return u?n=u:(n=st.MYiQzg(n),e[f]=n),n},st(e,x)}function wc(e,x){function r(a,f,u,d){return st(d-228,a)}var t;const{helper:o}=x,{value:n}=e;function i(a,f,u,d){return st(u-333,d)}return[w.NEWLINE,...(t=n[r(228,228,231,228)])!=null&&t.ident?w.genCall(o(r(231,232,232,229)),x[i(332,335,335,334)],JSON[r(228,232,234,231)](n.sharedData[r(232,232,233,232)]),I(n,x)):[]]}function Ae(e,x){const r=nx();return Ae=function(t,o){t=t-0;let n=r[t];if(Ae.JGAMBj===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Ae.ZNLZxx=i,e=arguments,Ae.JGAMBj=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Ae.ZNLZxx(n),e[f]=n),n},Ae(e,x)}function Si(e,x,r=!1){const{helper:t}=x,{condition:o,positive:n,negative:i,once:a}=e,[f,u]=w.buildCodeFragment(),d=[s(177,176),...Bi(o,x),""];function h(_,l,g,p){return Ae(g-881,_)}function s(_,l,g,p){return Ae(_-177,l)}let b=on(n,x),c=!1;return i&&(i[h(882,879,882)]===1?c=on(i,x):c=[h(878,877,881),...Si(i,x,!0)]),r||u(w.NEWLINE),u(...w.genCall(t("createSharedDataIf"),d,b,c,a&&"true")),f}function Bi(e,x){function r(o,n,i,a){return Ae(a-758,i)}function t(o,n,i,a){return Ae(n-306,i)}return e[r(764,763,760,760)]?w.genCall(x.helper(t(308,309,305)),x[t(311,310,312)],JSON[t(311,311,308)](e[r(759,759,763,760)].ident),w.genCall(x[r(767,762,761,764)](t(310,313,309)),I(e,x))):[JSON[r(763,764,762,763)](en(e))]}function nx(){const e=["kcKGpt4G","DhLWzq","C2HHCMvKrgf0yq","C2v0u2HHCMvKrgf0yq","C2HHCMvKrgf0yvzHCG","C3rYAw5NAwz5","AgvSCgvY","Dg9tAgfYzwreyxrHqM9VBgvHBG"];return nx=function(){return e},nx()}const Me={setText:{name:"setText"},setHtml:{name:jt(-802,-807,-817,-819)},setClass:{name:"setClass"},setStyle:{name:jt(-795,-826,-816,-797)},setValue:{name:jt(-792,-815,-815,-806)},setAttr:{name:"setAttr",needKey:!0},setProp:{name:zc(83,91,69,83),needKey:!0},setDOMProp:{name:jt(-816,-836,-813,-791),needKey:!0},setDynamicProps:{name:jt(-813,-827,-812,-806)}};function zc(e,x,r,t){return a0(t-80,x)}function xx(){const e=["C2v0shrTBa","C2v0u3r5Bgu","C2v0vMfSDwu","C2v0uhjVCa","C2v0re9nuhjVCa","C2v0rhLUyw1Py1bYB3bZ","y29UDgvUDa","z2v0uhjVCgvYDhLuExbL","AgvSCgvY","BMfTzq","C2HHCMvKrgf0yvzHCG","C3rYAw5NAwz5","AwrLBNq","zMLSDgvY","C2HHCMvKrgf0yq","zM9YrwfJAa","C3rYAw5N","BNvTyMvY","y29SB3i","zw51Bq","BwfW","AxnbCNjHEq","DMfSDwu","DMfSDwvZ","B3b0Aw9UCW","AM9PBG","Bg9J","ihX8iciI","y2fTzwXPEMu","Dg9iyw5KBgvYs2v5","icSG","BgvUz3rO","Dg9vChbLCKnHC2u","DgvZDa","Aw5JBhvKzxm","C2v0qxr0CG","y2XHC3m","Ag92zxiTy2XHC3m","C2v0q2XHC3m","C3r5Bgu","Aw5Uzxjive1m","Dgv4DenVBNrLBNq","C2v0vgv4Da","C2v0u2HHCMvKrgf0yq","C2v0u2HHCMvKrgf0yvn0EwXL","C2v0u2HHCMvKrgf0yuf0Dhi","C2v0u2HHCMvKrgf0yur5BMfTAwnqCM9WCW"];return xx=function(){return e},xx()}function jt(e,x,r,t){return a0(r- -817,t)}function Sc(e,x){function r(c,_,l,g){return a0(_-30,g)}function t(c,_,l,g){return a0(c- -732,_)}const{prop:{key:o,values:n,modifier:i,sharedData:a},tag:f,isChangeProp:u}=e,d=Lc(f,o[t(-726,-722)],i),h=x[t(-725,-725)](f,o.content),[s,b]=w.buildCodeFragment();return a?(b(w.NEWLINE,...w.genCall(x[t(-724,-713)](rx(d[r(43,39,28,33)],u)),x[r(18,40,62,43)],JSON[t(-721,-708)](a[t(-720,-707)]),Di(h,f,o[r(46,36,45,49)],rn(n,x),x))),s):(n[r(62,43,61,55)](c=>{function _(g,p,v,m){return a0(m- -151,p)}var l;return(l=c[_(-122,-144,-161,-137)])==null?void 0:l[_(-116,-147,-127,-139)]})[r(30,45,34,68)](c=>{function _(g,p,v,m){return a0(v-9,m)}function l(g,p,v,m){return a0(m- -775,v)}b(w.NEWLINE,...w.genCall(x[l(-766,-783,-780,-767)](rx(d[_(24,16,18,20)],u)),x[l(-782,-776,-756,-765)],JSON[_(2,32,20,40)](c[l(-761,-770,-739,-761)].ident),Di(h,f,o.content,rn([c],x),x)))}),s)}function Di(e,x,r,t,o){function n(a,f,u,d){return a0(d-299,a)}if(e)switch(e){case i(348,353):case i(349,337):case"boolean":case i(350,334):return w.genCall(o[i(340,362)]("toSharedData"+L.capitalize(e)),t);case n(327,322,326,318):return Bc(x,r,t,o)}function i(a,f,u,d){return a0(a-332,f)}return t}function Bc(e,x,r,t){function o(n,i,a,f){return a0(a- -710,i)}return w.genCall(t[o(-710,-687,-702)]("toSharedData"+L.capitalize(L.camelize(e))+L.capitalize(L.camelize(x))),r)}function Dc(e,x){const{helper:r}=x,t=e.props[o(774,761,774,765)](i=>Array[o(751,762,765,757)](i)?Li(i,x):i.kind===1?Li([i],x):I(i[n(-240,-250,-266)],x));function o(i,a,f,u){return a0(a-741,u)}function n(i,a,f,u){return a0(a- -272,f)}return[w.NEWLINE,...w.genCall(r(rx(o(730,746,737,765))),x[o(759,751,742,757)],JSON[o(735,752,770,748)](e[n(-265,-258,-257)][o(750,753,743,770)]),w.genMulti(w.DELIMITERS_ARRAY,...t))]}function Li(e,x){function r(t,o,n,i){return a0(i-580,n)}return w.genMulti(w.DELIMITERS_OBJECT,...e[r(600,608,591,600)](t=>[...Ai(t,x),": ",...rn(t[r(596,587,605,603)],x)]))}function Ai({key:e,modifier:x,runtimeCamelize:r,handler:t,handlerModifiers:o},n){function i(h,s,b,c){return a0(b- -192,s)}const{helper:a}=n,f=o&&o[u(642,595,635,619)]?o.options[i(-196,-187,-172)](L.capitalize)[u(632,621,624,620)](""):"";function u(h,s,b,c){return a0(c-595,b)}if(e.isStatic){const h=(t?L.toHandlerKey(e[u(622,582,585,601)]):e[u(581,592,588,601)])+f;return[[K.isSimpleIdentifier(h)?h:JSON[i(-172,-179,-181)](h),-2,e[u(603,624,615,621)]]]}let d=I(e,n);return r&&(d.push(u(610,607,629,622)),d=w.genCall(a(u(643,639,612,623)),d)),t&&(d=w.genCall(a(u(620,602,622,624)),d)),["[",x&&JSON[u(607,609,607,606)](x)+i(-169,-146,-162),...d,f?u(606,628,623,625)+JSON[u(614,598,618,606)](f):void 0,"]"]}function rn(e,x){function r(t,o,n,i){return a0(t- -180,i)}return e[r(-149,-139,-138,-137)]===1?I(e[0],x):w.genMulti(w.DELIMITERS_ARRAY,...e.map(t=>I(t,x)))}function Lc(e,x,r){const t=e[i(-676,-678)]();if(r)return r==="."?Mi(x,t)||Me[o(-505,-487)]:Me.setAttr;function o(a,f,u,d){return a0(a- -509,f)}const n=Mi(x,t);function i(a,f,u,d){return a0(a- -708,f)}return n||(/aria[A-Z]/[o(-476,-487)](x)?Me[o(-505,-499)]:L.isSVGTag(e)||L.shouldSetAsAttr(t,x)||x[i(-674,-678)]("-")?Me[i(-673,-687)]:Me[i(-705,-682)])}function Mi(e,x){if(e==="value"&&L.canSetValueDirectly(x))return Me[r(-595,-619,-600,-604)];function r(o,n,i,a){return a0(i- -602,a)}if(e===r(-563,-566,-566,-585)||e===r(-549,-581,-565,-581)&&x==="VIEW")return Me[r(-557,-566,-564,-545)];if(e===r(-584,-563,-563,-568))return Me[r(-624,-614,-601,-601)];if(e===r(-570,-579,-562,-583))return Me[t(-102,-89,-107)];function t(o,n,i,a){return a0(o- -102,i)}if(e===t(-61,-82,-77))return Me[t(-60,-59,-79)]}function a0(e,x){const r=xx();return a0=function(t,o){t=t-0;let n=r[t];if(a0.lPdHfq===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};a0.RbOGTl=i,e=arguments,a0.lPdHfq=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=a0.RbOGTl(n),e[f]=n),n},a0(e,x)}function rx(e,x){function r(o,n,i,a){return a0(n-347,i)}function t(o,n,i,a){return a0(n- -852,o)}if(x)return t(-799,-809);switch(e){case"setClass":return"setSharedDataClass";case"setStyle":return t(-797,-808);case r(370,389,382):case t(-852,-852):case r(344,349,347):case r(360,382,361):case r(332,350,331):case t(-856,-848):return t(-805,-807);case t(-827,-847):return r(385,393,371);default:const o=e;throw new Error("Unhandled operation type in genOperation: "+o)}}function ox(){const e=["x3nLDfrLBxbSyxrLuMvM","yxn0","DMfSDwu","zwXLBwvUDa","zwzMzwn0","Dhj1zq","AgvSCgvY","C2v0u2HHCMvKrgf0yvrLBxbSyxrLuMvM","C2HHCMvKrgf0yvzHCG","C3rYAw5NAwz5","C2HHCMvKrgf0yq","oIbUDw1IzxiPid0+ihS","id0G","B3b0Aw9UCW","Bgv0ihi","oIbHBNKGFcbUDwXS","Aw5SAw5L","yMLUzgLUz01LDgfKyxrH","y29UDgvUDa","C2v0DxaTBgv0","C2v0DxaTCMvM"];return ox=function(){return e},ox()}function Ac(e,x,r,t){return ne(t-211,r)}function ne(e,x){const r=ox();return ne=function(t,o){t=t-0;let n=r[t];if(ne.RgRVHB===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};ne.lSfqYS=i,e=arguments,ne.RgRVHB=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=ne.lSfqYS(n),e[f]=n),n},ne(e,x)}const Ni=Ac(207,213,218,211);function Mc(e,x){function r(a,f,u,d){return ne(f-262,a)}if(x.options.isCppExpr(e.value[t(90,88,79)]))return[];function t(a,f,u,d){return ne(f-87,u)}const[o,n]=Pc(e[t(90,89,98)],x);let i=w.genCall(Ni,"n"+e[t(99,90,97)],o,e[r(258,266)]?"r"+e.element:e.refFor?"null":void 0,e.refFor&&t(94,92,101),n);return e.value.sharedData&&(i=w.genCall(x[t(103,93,100)](t(88,94,96)),x[t(89,95,94)],JSON[t(94,96,91)](e[r(270,264)][r(282,272)].ident),["(n"+e[r(258,265)]+t(94,98,95),...i,"}"])),[w.NEWLINE,e[r(275,266)]&&"r"+e.element+t(105,99,104),...i]}function Nc(e,x){function r(o,n,i,a){return ne(a-912,o)}function t(o,n,i,a){return ne(i-0,o)}return x[r(924,922,915,925)].isCppExpr(e[t(-3,-3,2)][t(6,-4,1)])?[]:[w.NEWLINE,r(936,923,925,926)+e.id+t(5,12,15)]}function Pc(e,x){function r(o,n,i,a){return ne(i-492,o)}if(e&&x[t(-514,-518)][r(505,513,508)]){const o=x.options[t(-518,-514)][e[t(-516,-513)]];if(o===t(-522,-512)||o===t(-518,-511)||o==="setup-maybe-ref")return[[e[t(-509,-513)]],JSON[t(-513,-522)](e[r(501,507,510)])]}function t(o,n,i,a){return ne(n- -531,o)}return[I(e,x)]}function Uc(e,x){function r(u,d,h,s){return ue(d-960,s)}const{helper:t}=x,{values:o}=e,[n,i]=w.buildCodeFragment(),a=new Set;function f(u,d,h,s){return ue(h- -191,d)}return o[r(964,960,958,963)](u=>{function d(b,c,_,l){return ue(_- -408,b)}function h(b,c,_,l){return ue(c-733,b)}var s;return(s=u[d(-406,-407,-407)])==null?void 0:s[h(738,735)]})[f(-183,-190,-188)](u=>{const d=u[s(-461,-464)][h(-326,-331,-332)];function h(b,c,_,l){return ue(c- -333,_)}function s(b,c,_,l){return ue(b- -462,c)}a.has(d)||(a[h(-329,-329,-328)](d),i(w.NEWLINE,...w.genCall(t(h(-324,-328,-329)),x[s(-456,-461)],JSON.stringify(u[h(-328,-332,-333)][h(-331,-331,-330)]),w.genCall(x[h(-330,-326,-324)](h(-324,-325,-323)),I(u,x)))))}),n}function ue(e,x){const r=ix();return ue=function(t,o){t=t-0;let n=r[t];if(ue.BIsHhW===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};ue.Nybavx=i,e=arguments,ue.BIsHhW=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=ue.Nybavx(n),e[f]=n),n},ue(e,x)}function Ec(e,x){return[]}function ix(){const e=["zMLSDgvY","C2HHCMvKrgf0yq","AwrLBNq","zM9YrwfJAa","ywrK","C2v0u2HHCMvKrgf0yq","C2HHCMvKrgf0yvzHCG","AgvSCgvY","Dg9eAxnWBgf5u3rYAw5N"];return ix=function(){return e},ix()}function ax(){var e=["AgvSCgvY","kcKGpt4GEYa","C2v0u2HHCMvKrgf0yq","C2HHCMvKrgf0yvzHCG","C2HHCMvKrgf0yq","AwrLBNq","Dg9tAgfYzwreyxrHqM9VBgvHBG"];return ax=function(){return e},ax()}function lt(e,x){var r=ax();return lt=function(t,o){t=t-0;var n=r[t];if(lt.aFPjFT===void 0){var i=function(d){for(var h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=",s="",b="",c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(var p=0,v=s.length;p<v;p++)b+="%"+("00"+s.charCodeAt(p).toString(16)).slice(-2);return decodeURIComponent(b)};lt.WdGxlH=i,e=arguments,lt.aFPjFT=!0}var a=r[0],f=t+a,u=e[f];return u?n=u:(n=lt.WdGxlH(n),e[f]=n),n},lt(e,x)}function Tc({dir:{exp:e}},x){function r(o,n,i,a){return lt(o- -708,a)}function t(o,n,i,a){return lt(n- -858,o)}return e?[w.NEWLINE,...w.genCall(x[r(-708,-706,-712,-711)]("renderSharedDataEffect"),[t(-861,-857),...w.genCall(x[t(-859,-858)](r(-706,-709,-702,-704)),x[t(-858,-855)],JSON.stringify(e[r(-704,-705,-702,-701)][t(-852,-853)]),w.genCall(x[t(-857,-858)](t(-848,-852)),I(e,x)))," }"])]:[]}function fx(){const e=["C2HHCMvKrgf0yvzHCG","C3rYAw5NAwz5","DK1VzgvS","AwrLBNq","kcKGpt4Gka","BgvUz3rO","BwfW","y29UDgvUDa","oIb0CNvL","AM9PBG","B3b0Aw9UCW","AxnuuW","kf92ywX1ztOGyw55kq","x3zHBhvL","id0+icG"];return fx=function(){return e},fx()}function qc(e,x){function r(a,f,u,d){return Ne(d-382,f)}function t(a,f,u,d){return Ne(a-50,d)}const{dir:{exp:o,modifiers:n}}=e,i=o.sharedData;return[w.NEWLINE,...w.genCall(x.helper("setSharedDataEvent"),x[r(380,385,374,382)],JSON[t(51,44,53,55)](i[r(391,392,382,384)].eventIdent),w.genCall(x.helper("setSharedDataModel"),x[t(50,42,45,51)],JSON[t(51,46,58,55)](i[t(53,55,49,53)]),[r(382,380,388,386),...I(o,x),")"],Pi(o,x),n[r(384,395,388,387)]?"{ "+n[r(392,389,391,388)](a=>a[t(57,52,62,59)]+r(397,388,388,390))[r(394,399,388,391)](",")+" }":void 0))]}function Ne(e,x){const r=fx();return Ne=function(t,o){t=t-0;let n=r[t];if(Ne.JtCYqH===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Ne.jziRCN=i,e=arguments,Ne.JtCYqH=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Ne.jziRCN(n),e[f]=n),n},Ne(e,x)}function Pi(e,x){function r(o,n,i,a){return Ne(a-142,i)}function t(o,n,i,a){return Ne(n- -659,o)}return[(x[t(-656,-649)][r(151,154,153,153)]?t(-653,-647):t(-646,-646))+r(159,163,164,156),...I(e,x,"_value"),")"]}function H0(e,x){const r=cx();return H0=function(t,o){t=t-0;let n=r[t];if(H0.EUadrD===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};H0.zYHVHw=i,e=arguments,H0.EUadrD=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=H0.zYHVHw(n),e[f]=n),n},H0(e,x)}function cx(){const e=["BMfTzq","C2HVDW","yMXVy2S","BgvUz3rO","zwXLBwvUDa","D2L0AfzHCg9YrgLYzwn0AxzLCW","zgLYzwn0AxzL","zxHW","kcKGpt4G","yxjN","Bw9KAwzPzxjZ","BwfW","y29UDgvUDa","y29Uy2f0","BNvSBa","AM9PBG","zMLSDgvY","DhLWzq","yNvPBhrPBG"];return cx=function(){return e},cx()}function Hc(e,x){function r(t,o,n,i){return H0(t- -513,n)}switch(e[r(-513,-504,-505)]){case r(-512,-521,-511):return Tc(e,x);case"model":return qc(e,x);default:return[]}}function Oc(e,x){function r(o,n,i,a){return H0(o- -636,a)}const t=Ic(e,x[r(-634,-629,-640,-639)].operation);return t[r(-633,-634,-635,-623)]?Wc(t,x):[]}function Wc(e,x){const{helper:r}=x,t="n"+e[0][i(-291,-285)],o=e.map(f),n=w.genMulti(w.DELIMITERS_ARRAY,...o);function i(u,d,h,s){return H0(d- -289,u)}return[w.NEWLINE,...w.genCall(r(a(978,985,976)),t,n)];function a(u,d,h,s){return H0(h-971,u)}function f({dir:u,name:d,asset:h}){function s(p,v,m,C){return H0(p-810,C)}function b(p,v,m,C){return H0(C-663,v)}const c=h?K.toValidAssetId(d,s(816,814,819,806)):I(L.extend(K.createSimpleExpression(d,!1),{ast:null}),x),_=u[b(663,670,665,670)]&&[s(818,813,810,825),...I(u[s(817,825,808,811)],x)],l=u[b(669,674,665,672)]&&I(u.arg,x),g=!!u[s(820,829,821,816)][b(660,662,670,666)]&&["{ ",Ui(u[b(672,683,673,673)][s(821,815,829,815)](p=>p[b(680,674,675,675)]))," }"];return w.genMulti(w.DELIMITERS_ARRAY[s(823,820,816,815)](b(687,667,669,677)),c,_,l,g)}}function Ui(e){function x(t,o,n,i){return H0(n-707,o)}function r(t,o,n,i){return H0(t-499,o)}return e[x(726,723,718)](t=>(K.isSimpleIdentifier(t)?t:JSON.stringify(t))+": true")[r(514,510)](", ")}function Ic(e,x){function r(o,n,i,a){return H0(n- -365,o)}function t(o,n,i,a){return H0(n- -882,i)}return x[r(-351,-349)](o=>o[t(-871,-865,-858)]===13&&o[t(-869,-878,-871)]===e&&!o[t(-863,-864,-867)])}function ux(){const e=["CMvKDwnL","id0G","zhLUyw1PyW","AxntDgf0Awm","y29UC3qGBG","y3jLyxrLu2HHCMvKrgf0yunVBxbVBMvUDfDPDgHgywXSyMfJAW","y3jLyxrLu2HHCMvKrgf0yunVBxbVBMvUDa","Dhj1zq","C2v0u2HHCMvKrgf0yq","C3rYAw5NAwz5","pY5ZAgfYzwreyxrH","CMvZB2X2zur5BMfTAwndB21WB25LBNq","kcKGpt4Gka","yxnZzxq","DgfN","y3jLyxrL","BgvUz3rO","AgfUzgXLCG","zM9YrwfJAa","x29UxW","y29UDgvUDa","ChvZAa","C2XPy2u","BwfW","A2LUza","DMfSDwu","DMfSDwvZ","Bw9KzwW","A2v5","B25vCgrHDgu6","oIaOksa9pIa","icSGiK1VzgLMAwvYCYjD","oIaOksa9pIaOEYa","ih0P","C2XVDfr5Cgu","A2v5CW","jYqNoIa","C2XVDhm","BMfTztOG","AgvSCgvY","zM46ia","zw50zxjwrM9Y","C2HHCMvKrgf0yq","zw50zxjcBg9JAW","Dg9eAxnWBgf5u3rYAw5N","D2L0AeLK","AwrLBNq","id0+icG","zxHPDfzgB3i","BNvSBa","yxn0","x3nSB3rqCM9WCW","B3b0Aw9UCW","zxHWCMvZC2LVBLbSDwDPBNm","kcKGpt4GEW","y3jLyxrLs2v5zwrgCMfNBwvUDa","kcKGpt4G","DhLWzq","D2L0AfnOyxjLzerHDgfwyxbVCKn0Ea","lcaNC3rYAw5NjW"];return ux=function(){return e},ux()}function jc(e,x){const{helper:r}=x,t=g(),{root:o,props:n,slots:i,sharedData:a}=e,f=Kc(i,x),[u,d]=Rc(n,x),h=x.withId(()=>Ei(n,x),u),s=d[_(-472,-497)]((p,{name:v,value:m})=>{const C=Jn(x,[m],void 0,!1);function y(z,B,D,S){return Y(B-116,D)}return[...p,"const "+v+y(129,117,99),...C,w.NEWLINE]},[]),b=e[_(-470,-472)]&&!e[l(976,965,969,948)][_(-469,-468)],c=e.asset;return[w.NEWLINE,...s,l(971,967,940,952)+e.id+l(967,964,937,948),...w.genCall(r(b?"createSharedDataDynamicComponent":c?l(954,968,976,938):_(-466,-440)),t,h,f,o?l(966,970,965,995):!1),w.NEWLINE,...w.genCall(r(l(969,971,962,991)),x.sharedDataVar,JSON[l(1001,972,962,971)](a.ident),["n"+e.id,c?_(-462,-454):".sharedData"])];function _(p,v,m,C){return Y(p- -472,v)}function l(p,v,m,C){return Y(v-963,C)}function g(){function p(m,C,y,z){return Y(z- -10,y)}if(e[v(-668,-657,-641)])return e[v(-673,-657,-682)].isStatic?w.genCall(r(p(-26,-27,-18,1)),I(e.dynamic,x)):[p(-16,-6,10,2),...I(e.dynamic,x),")"];function v(m,C,y,z){return Y(C- -659,y)}if(e[p(14,18,0,3)])return K.toValidAssetId(e[p(31,-24,24,4)],"component");{const{tag:m}=e,C=w.isBuiltInComponent(m);return C?(r(C),"_"+C):I(L.extend(K.createSimpleExpression(m,!1),{ast:null}),x)}}}function Yc(e,x){const{seenInlineHandlerNames:r}=e;x=Zn(x);const t=r[x]||0;return r[x]=t+1,t===0?x:""+x+t}function Rc(e,x){function r(a,f,u,d){return Y(u- -247,f)}function t(a,f,u,d){return Y(a- -808,d)}const o=Object[t(-793,-800,-784,-774)](null),n=[],i=e[0];if(L.isArray(i))for(let a=0;a<i[t(-792,-821,-816,-777)];a++){const f=i[a];f[t(-791,-801,-815,-793)]&&f.values[r(-239,-253,-229)]((u,d)=>{function h(s,b,c,_){return Y(b- -801,_)}if(!K.isMemberExpression(u,x.options)){const s=Yc(x,h(-812,-782,-754,-803)+f.key[h(-775,-781,-782,-757)].replace(/-/g,"_"));n[h(-801,-780,-750,-752)]({name:s,value:u}),o[s]=null,f.values[d]=L.extend({ast:null},K.createSimpleExpression(s))}})}return[o,n]}function Ei(e,x){const r=e[0];if(L.isArray(r))return!r.length&&e[t(760,765,746)]===1?void 0:sx(r,x,Ti(e[o(-628,-613,-643)](1),x));function t(n,i,a,f){return Y(i-749,a)}function o(n,i,a,f){return Y(a- -665,i)}if(e[o(-622,-675,-649)])return sx([],x,Ti(e,x))}function sx(e,x,r){function t(i,a,f,u){return Y(u-830,i)}function o(i,a,f,u){return Y(i- -328,u)}const n=e[t(832,862,827,853)](i=>qi(i,x,!0));return r&&n[o(-307,-334,-323,-279)](["'$': ",...r]),w.genMulti(n[o(-312,-310,-320,-300)]>1?w.DELIMITERS_OBJECT_NEWLINE:w.DELIMITERS_OBJECT,...n)}function Ti(e,x){function r(i,a,f,u){return Y(i- -406,f)}const{helper:t}=x,o=[];for(const i of e){let a;if(L.isArray(i)){i[n(799,782,803,833)]&&o[r(-385,-386,-401)](sx(i,x));continue}else i[r(-382,-376,-366)]===1?a=w.genMulti(w.DELIMITERS_OBJECT,qi(i,x)):(a=I(i[n(806,838,812,782)],x),i.handler&&(a=w.genCall(t("toHandlers"),a)));o[n(807,779,808,823)]([n(814,771,799,815),...a,")"])}function n(i,a,f,u){return Y(f-787,u)}if(o[n(833,798,803,810)])return w.genMulti(w.DELIMITERS_ARRAY_NEWLINE,...o)}function qi(e,x,r){function t(n,i,a,f){return Y(a- -603,f)}const o=rn(e[t(-591,-573,-577,-597)],x);return[...Ai(e,x),": ",...e.handler?Jn(x,e[t(-592,-603,-577,-548)],e.handlerModifiers,!0):r?[t(-600,-596,-591,-569),...o,")"]:o,...e[t(-588,-599,-576,-587)]?[...Vc(e,x),...kc(e,x)]:[]]}function Vc(e,x){function r(i,a,f,u){return Y(i-377,a)}function t(i,a,f,u){return Y(a- -477,i)}const o=e[r(405,417)].isStatic?[JSON[t(-440,-468)](t(-460,-448)+L.camelize(e.key[r(397,410)]))]:['["onUpdate:" + ',...I(e[r(405,435)],x),"]"],n=Pi(e.values[0],x);return[",",w.NEWLINE,...o,t(-440,-447),...n]}function kc(e,x){const{key:r,modelModifiers:t}=e;if(!t||!t[a(-571,-545,-601)])return[];const o=r[a(-584,-608,-614)]?[L.getModifierPropName(r[i(845,849,872,845)])]:["[",...I(r,x),a(-556,-536,-573)],n=Ui(t);function i(f,u,d,h){return Y(h-825,f)}function a(f,u,d,h){return Y(f- -587,d)}return[",",w.NEWLINE,...o,i(849,851,883,857)+n+a(-554,-574,-567)]}function Kc(e,x){function r(o,n,i,a){return Y(a-550,n)}if(!e[r(584,550,550,566)])return;const t=e[0];return t[r(600,582,565,584)]===0?lx(t,x,e.length>1?e.slice(1):void 0):lx({slots:{}},x,e)}function lx({slots:e},x,r){function t(i,a,f,u){return Y(a- -973,i)}function o(i,a,f,u){return Y(u-857,i)}const n=Object[o(878,913,868,892)](e).map(i=>[JSON[t(-934,-964)](i)+": ",..._x(e[i],x)]);return r&&n[t(-959,-952)]([o(870,912,874,893),...Gc(r,x)]),w.genMulti(w.DELIMITERS_OBJECT_NEWLINE,...n)}function Y(e,x){const r=ux();return Y=function(t,o){t=t-0;let n=r[t];if(Y.JzZOcb===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Y.WtrIqZ=i,e=arguments,Y.JzZOcb=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Y.WtrIqZ(n),e[f]=n),n},Y(e,x)}function Gc(e,x){function r(o,n,i,a){return Y(n- -516,o)}function t(o,n,i,a){return Y(o- -813,n)}return w.genMulti(w.DELIMITERS_ARRAY_NEWLINE,...e.map(o=>o.slotType===0?lx(o,x):o[r(-468,-482)]===4?o[r(-497,-479)][t(-793,-774)]:dx(o,x,!0)))}function dx(e,x,r=!1){let t;switch(e[o(-164,-154,-169)]){case 1:t=Xc(e,x);break;case 2:t=Zc(e,x);break;case 3:t=Fc(e,x);break}function o(n,i,a,f){return Y(a- -203,i)}return r?[o(-194,-165,-191),...t,")"]:t}function Xc(e,x){function r(i,a,f,u){return Y(f-677,a)}function t(i,a,f,u){return Y(u- -396,a)}const{name:o,fn:n}=e;return w.genMulti(w.DELIMITERS_OBJECT_NEWLINE,[t(-381,-385,-385,-358),...mi(o,x,x[r(709,689,716)]("toDisplayString"))],[t(-327,-369,-366,-356),..._x(n,x)])}function Zc(e,x){const r=x[g(604,588,614,567)](),{name:t,fn:o,loop:n}=e,{value:i,key:a,index:f,source:u}=n,d=i&&i[g(591,567,544,573)],h=a&&a[g(569,567,544,546)],s=f&&f[c(-67,-95,-64,-76)],b={};function c(p,v,m,C){return Y(C- -96,m)}d&&(b[d]=d),h&&(b[h]=h),s&&(b[s]=s);const _=w.genMulti(w.DELIMITERS_OBJECT_NEWLINE,[g(614,585,597,586),...x.withId(()=>{if(!t[m(269,273)])return I(t,x);const p=x[m(253,274)](o),v=mi(t,x,x.helper(m(277,275)));function m(C,y,z,B){return Y(y-231,C)}return p(),v},b)],[g(616,587,578,589),...x[c(-71,-45,-48,-51)](()=>_x(o,x),b)]),l=[...w.genCall(x.helper("createSharedDataForSlots"),w.genCall(x[c(-84,-72,-53,-57)]("setSharedData"),x.sharedDataVar,JSON[g(557,556,533,549)](u[c(-29,-44,-67,-54)][c(-53,-64,-73,-50)]),zi(x,r)),I(u,x),[...w.genMulti(["(",")",", "],x.sharedDataVForVar,d||(h||s?"_":void 0),h||(s?"__":void 0),s),c(-40,-56,-44,-49),..._,")"])];function g(p,v,m,C){return Y(v-547,C)}return x[c(-74,-56,-73,-48)](),l}function Fc(e,x){const{condition:r,positive:t,negative:o}=e;function n(i,a,f,u){return Y(i- -50,f)}return[...Bi(r,x),w.INDENT_START,w.NEWLINE,"? ",...dx(t,x),w.NEWLINE,": ",...o?[...dx(o,x)]:[n(-1,3,29)],w.INDENT_END]}function _x(e,x){let r,t,o;const{props:n,key:i,node:a}=e,f=n?w.parseValueDestructure(n,x):new Map;n&&(n[h(-926,-926,-881,-907)]?([o,t]=x.enterScope(),r=h(-927,-913,-913,-906)+o):r=n[u(695,693,688)]);function u(b,c,_,l){return Y(b-675,_)}const d=f.size?w.buildDestructureIdMap(f,r||"",x[h(-917,-931,-924,-905)][h(-882,-895,-904,-904)]):{};r&&(d[r]=null);function h(b,c,_,l){return Y(l- -957,b)}let s=x[u(720,730,736)](()=>on(e,x,r?[r]:[]),d);if(t&&t(),i&&(s=[h(-887,-904,-930,-903),w.INDENT_START,w.NEWLINE,"return ",...w.genCall(x[h(-948,-935,-940,-918)](h(-874,-899,-929,-902)),[u(731,717,757),...I(i,x)],s),w.INDENT_END,w.NEWLINE,"}"]),a[h(-907,-888,-873,-900)]===1){const b=Jc(a);(w.needsVaporCtx(e)||b)&&(s=[x.helper(h(-926,-927,-869,-899))+"(",...s,b?h(-887,-904,-913,-898):"",")"])}return s}function Jc(e){return e.children.every(x=>$c(x))}function $c(e){function x(t,o,n,i){return Y(o- -887,n)}function r(t,o,n,i){return Y(o- -496,n)}return e[r(-421,-439,-463)]===5||e[x(-811,-830,-815)]===2}function dt(e,x){const r=hx();return dt=function(t,o){t=t-0;let n=r[t];if(dt.YLkPOQ===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};dt.LQBQsN=i,e=arguments,dt.YLkPOQ=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=dt.LQBQsN(n),e[f]=n),n},dt(e,x)}function hx(){const e=["C2HHCMvKrgf0yq","kcKGpt4Gka","AgvSCgvY","C2v0u2HHCMvKrgf0yq","C2HHCMvKrgf0yvzHCG","AwrLBNq","y3jLyxrLu2HHCMvKrgf0yvnSB3q","ChjVChm","BNvSBa","Dhj1zq"];return hx=function(){return e},hx()}function Qc(e,x){const{helper:r}=x,{name:t,fallback:o,noSlotted:n,once:i}=e,[a,f]=w.buildCodeFragment(),u=t[h(-351,-349)]?[s(-942,-940),...w.genCall(x[s(-941,-937)](h(-343,-346)),x[h(-343,-345)],JSON.stringify(t[s(-943,-942)][h(-348,-344)]),I(t,x)),")"]:I(t,x);let d;function h(b,c,_,l){return dt(c- -349,b)}function s(b,c,_,l){return dt(b- -943,c)}return o&&(d=on(o,x)),f(w.NEWLINE,...w.genCall(r(h(-342,-343)),u,Ei(e[h(-340,-342)],x)||"null",d,n&&h(-336,-341),n&&"true",i&&h(-336,-340))),a}function me(e,x){const r=bx();return me=function(t,o){t=t-0;let n=r[t];if(me.jgNTHD===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};me.jXrzRo=i,e=arguments,me.jgNTHD=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=me.jXrzRo(n),e[f]=n),n},me(e,x)}function bx(){const e=["DhLWzq","vw5Oyw5KBgvKig9WzxjHDgLVBIb0ExbLigLUigDLBK9WzxjHDgLVBJOG","zMXHDe1HCa","BgvUz3rO","D2L0AeLK","zMLSDgvY","CMvUzgvYu2HHCMvKrgf0yuvMzMvJDa","kcGPid0+ia","Bgv0ia","AM9PBG"];return bx=function(){return e},bx()}function Hi(e,x){const[r,t]=w.buildCodeFragment();for(const o of e)t(...Oi(o,x));return r}function Oi(e,x){const[r,t]=w.buildCodeFragment();return t(...gx(e,x)),r}function gx(e,x){function r(t,o,n,i){return me(i- -820,t)}switch(e[r(-818,-818,-820,-820)]){case 2:return Sc(e,x);case 3:return Dc(e,x);case 4:return Uc(e,x);case 5:return lc(e,x);case 6:return dc(e,x);case 7:return wc(e,x);case 8:return Mc(e,x);case 9:return xc(e,x);case 10:return rc(e,x);case 15:return Si(e,x);case 16:return vc(e,x);case 11:return jc(e,x);case 14:return Nc(e,x);case 12:return Qc(e,x);case 13:return Hc(e,x);case 17:return Ec();case 18:return[];case 19:return[];default:const t=e;throw new Error(r(-818,-817,-821,-819)+t)}}function eu(e,x,r){const{helper:t}=x,o=e[b(-269,-268,-271)](_=>_.expressions),[n,i,a]=w.buildCodeFragment(),f=r===void 0;let u=0;const{ids:d,frag:h,varNames:s}=ic(x,o,f);function b(_,l,g,p){return me(g- -273,_)}i(...h);function c(_,l,g,p){return me(p-620,g)}for(let _=0;_<e[b(-275,-266,-270)];_++){const l=e[_];u+=l.operations[c(621,622,620,623)];const g=x[b(-272,-271,-269)](()=>tu(l,x),d);_>0&&i(w.NEWLINE),n[n.length-1]===")"&&g[0]==="("&&i(";"),i(...g)}return(n[b(-268,-271,-268)](_=>_===w.NEWLINE).length>1||u>1||h[c(626,627,626,623)]>0)&&(a("{",w.INDENT_START,w.NEWLINE),i(w.INDENT_END,w.NEWLINE,"}"),e[c(619,623,622,623)]||a(w.NEWLINE)),e[c(626,626,625,623)]&&n.length&&(a(w.NEWLINE,t(c(621,622,629,626))+c(624,629,627,627)),i(")")),!f&&s.length&&a(w.NEWLINE,b(-260,-264,-265),s[c(628,634,633,629)](", ")),r&&i(...x[b(-268,-272,-269)](r,d)),n}function tu({operations:e},x){function r(a,f,u,d){return me(a- -861,d)}const[t,o]=w.buildCodeFragment(),n=Hi(e,x);function i(a,f,u,d){return me(d- -129,f)}return n[i(-128,-128,-120,-124)](a=>a===w.NEWLINE)[r(-858,-858,-853,-862)]>1?o(...n):o(...n[i(-121,-124,-120,-124)](a=>a!==w.NEWLINE)),t}function px(){const e=["zw50CMLLCW","B3bLCMf0Aw9U","yw5JAg9Y","zMXHz3m","AwzcCMfUy2G","AgfZrhLUyw1Py0nOAwXK","yMXVy2S","DgvTCeLK"];return px=function(){return e},px()}function _t(e,x){const r=px();return _t=function(t,o){t=t-0;let n=r[t];if(_t.XtUocl===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};_t.EnmFkS=i,e=arguments,_t.XtUocl=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=_t.EnmFkS(n),e[f]=n),n},_t(e,x)}function vx(e,x){const[r,t]=w.buildCodeFragment(),{operation:o,hasDynamicChild:n}=e;return o&&t(...Oi(o,x)),n&&t(...Cx(e,x)),r}function Cx(e,x){function r(d,h,s,b){return _t(s-496,h)}const[t,o]=w.buildCodeFragment(),{children:n}=e;let i=0,a=0,f=0;function u(d,h,s,b){return _t(d-696,h)}for(const[d,h]of n[r(499,498,496)]()){h[u(697,701)]&&h[r(493,499,497)][r(500,502,498)]===-1&&f++,h[u(699,697)]&2?i--:h[r(500,497,500)]&&a++;const s=h.flags&1?h.flags&4?h[u(698,696)]:h.id:void 0;if(s===void 0&&!h[u(701,704)]){o(...vx(h,x));continue}s===void 0?""+x[r(499,501,502)][r(503,503,503)]++:""+s,s===h[u(698,697)]&&!h[r(498,504,501)]&&o(...vx(h,x)),s!==void 0&&o(...Oc(s,x)),o(...Cx(h,x))}return t}function mx(){const e=["ksa9pIb7","y29TCg9Uzw50","x19ZzwXM","y29UC3qG","id0G","AgvSCgvY","CMvZB2X2zunVBxbVBMvUDa","C3rYAw5NAwz5","Dhj1zq","zgLYzwn0AxzL","CMvZB2X2zurPCMvJDgL2zq","y2HPBgrYzw4","z2vUzxjHDgvK","zgvMzxjYzwrbChbSEvztAg93CY5MB3jfywnOkgzUid0+igzUkcKP","BMvLzhnlzxK","lIrRzxKGpsa"];return mx=function(){return e},mx()}function ye(e,x){const r=mx();return ye=function(t,o){t=t-0;let n=r[t];if(ye.XlDqEd===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};ye.IkdVYx=i,e=arguments,ye.XlDqEd=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=ye.IkdVYx(n),e[f]=n),n},ye(e,x)}function on(e,x,r=[],t){function o(n,i,a,f){return ye(i-692,a)}return["(",...r,o(698,692,688),w.INDENT_START,...an(e,x,t),w.INDENT_END,w.NEWLINE,"}"]}function an(e,x,r,t){const[o,n]=w.buildCodeFragment(),{dynamic:i,effect:a,operation:f,key:u}=e,d=x.enterBlock(e);function h(c,_,l,g){return ye(_- -925,l)}function s(c,_,l,g){return ye(g- -696,c)}if(r){for(let c of x.ir.component){const _=K.toValidAssetId(c,s(-695,-696,-690,-695)),l=c.endsWith(h(-931,-923,-915));l&&(c=c.slice(0,-6)),n(w.NEWLINE,s(-685,-697,-699,-693)+_+h(-928,-921,-919),...w.genCall(x[h(-915,-920,-916)](s(-696,-688,-695,-690)),JSON[h(-916,-918,-923)](c),l?h(-923,-917,-922):void 0))}b(s(-690,-679,-689,-687),h(-911,-915,-910))}for(const c of i.children)n(...vx(c,x));for(const c of i[s(-683,-681,-685,-685)])c.hasDynamicChild||n(...Cx(c,x));if(n(...Hi(f,x)),n(...eu(a.filter(c=>!c[s(-676,-692,-688,-684)]),x,t)),r&&x.ir.hasDeferredVShow&&n(w.NEWLINE,h(-904,-912,-915)),i[h(-916,-911,-910)])for(const c of i.children){const _=u?I(u,x):JSON.stringify(c.id);n(w.NEWLINE,"n"+c.id+h(-917,-910,-903),..._)}return d(),o;function b(c,_){function l(p,v,m,C){return ye(p-895,v)}function g(p,v,m,C){return ye(p- -529,v)}for(const p of x.ir[c])n(w.NEWLINE,l(898,890)+K.toValidAssetId(p,c)+g(-525,-518),...w.genCall(x.helper(_),JSON[l(902,907)](p)))}}function yx(){const e=["zw51Bq","BNvTyMvY","yM9VBgvHBG","y29SB3i","qxjYyxK8C3rYAw5NpG","vw5PtMf0AxzLq29SB3i","C3rHCNrZv2L0Aa","DhLWzq","B3b0Aw9UCW"];return yx=function(){return e},yx()}function se(e,x){const r=yx();return se=function(t,o){t=t-0;let n=r[t];if(se.pZpCuT===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};se.odCQfi=i,e=arguments,se.pZpCuT=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=se.odCQfi(n),e[f]=n),n},se(e,x)}wx(-432,-437,-429),wx(-431,-430,-434),wx(-430,-426,-432),Wi(343,350,345,345),Wi(351,346,344,346);function wx(e,x,r,t){return se(e- -432,r)}function nu(e){function x(t,o,n,i){return se(i- -566,t)}function r(t,o,n,i){return se(n- -524,o)}return!(!e||e==="string"||e===r(-524,-525,-523)||e===x(-567,-567,-568,-564)||e===r(-523,-521,-519)||e[r(-517,-522,-518)]("Array<"))}function Wi(e,x,r,t){return se(t-342,r)}function Pe(e,x){return{valueCode:e,setterCode:x}}function zx(e,x){return{error:e,valueCode:"",setterCode:""}}function Yt(e,x,r){function t(n,i,a,f){return se(i-724,f)}function o(n,i,a,f){return se(n-193,a)}return e[t(733,731,731,732)]=x,e[o(201,197,203)]=r,e}function Ue(e,x){const r=Sx();return Ue=function(t,o){t=t-0;let n=r[t];if(Ue.PnTjsL===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Ue.dcifoT=i,e=arguments,Ue.PnTjsL=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Ue.dcifoT(n),e[f]=n),n},Ue(e,x)}function Sx(){const e=["DMfSDwvZ","Aw5JBhvKzxm","lIbfEhbLy3rLzcbVBMuGB2y6ia","DhjPBq","id0G","BMfTzq","zw51Bq","vvrtq1bqlNbYB3bLCNr5qwnJzxnZka","lcaIoJOIlcaI"];return Sx=function(){return e},Sx()}function xu(e,x){function r(t,o,n,i){return Ue(t-185,n)}return Yt(t=>{const o=t+"";if(e[a(229,233,236,235)]&&!e[i(-29,-33,-31)][i(-32,-34,-30)](o))return zx("Invalid enum value: "+o+i(-33,-26,-29)+e.values.join(", "));const n=x(L.capitalize(L.camelize(o[i(-26,-31,-28)]().replace(" ","-"))));function i(f,u,d,h){return Ue(d- -31,u)}function a(f,u,d,h){return Ue(u-233,h)}return e.property?Pe(n,e.name+a(237,237,241,237)+n):Pe(n,e[a(240,238,243,239)]+"("+n+")")},r(191,196,194),e)}function ru(e,x){function r(t,o,n,i){return Ue(o- -691,i)}return pi(e)?t=>r(-686,-684,-683,-683)+x+r(-679,-683,-686,-684)+L.capitalize(L.camelize(t+""))+'")':t=>x+"."+L.capitalize(L.camelize(t+""))}function ou(e,x,r,t){return Ee(r- -742,e)}const iu=[ou(-741,-739,-742)];function au(e){function x(r,t,o,n){return Ee(o-428,r)}return!!(e&&iu[x(431,426,429)](e))}function Bx(){const e=["BNvTyMvY","Aw5JBhvKzxm","sw52ywXPzcbUDw1IzxiGDMfSDwu6ia","ChjVCgvYDhK","BMfTzq","id0G"];return Bx=function(){return e},Bx()}function Ee(e,x){const r=Bx();return Ee=function(t,o){t=t-0;let n=r[t];if(Ee.HuPcKl===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Ee.stHspX=i,e=arguments,Ee.HuPcKl=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Ee.stHspX(n),e[f]=n),n},Ee(e,x)}function fu(e){return Yt(x=>{function r(n,i,a,f){return Ee(f-862,i)}const t=parseFloat(String(x));function o(n,i,a,f){return Ee(a-224,f)}return isNaN(t)?zx(r(863,867,863,864)+x):e[o(229,224,227,227)]?Pe(""+t,e[r(868,865,867,866)]+o(228,227,229,231)+t):Pe(""+t,e[o(227,229,228,226)]+"("+t+")")},"number",e)}function Te(e,x){const r=Dx();return Te=function(t,o){t=t-0;let n=r[t];if(Te.rRJtry===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Te.fatMce=i,e=arguments,Te.rRJtry=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Te.fatMce(n),e[f]=n),n},Te(e,x)}function cu(e,x,r,t){return Te(x- -747,r)}function Dx(){const e=["C3rYAw5N","Aw5JBhvKzxm","ChjVCgvYDhK","BMfTzq","id0GiG"];return Dx=function(){return e},Dx()}const uu=[cu(-745,-747,-746)];function su(e){function x(r,t,o,n){return Te(r-515,o)}return!!(e&&uu[x(516,517,518)](e))}function lu(e){function x(t,o,n,i){return Te(o-705,t)}function r(t,o,n,i){return Te(i- -678,n)}return Yt(t=>e[r(-678,-678,-674,-676)]?Pe('"'+t+'"',e[x(708,708)]+x(709,709)+t+'"'):Pe('"'+t+'"',e[r(-672,-675,-676,-675)]+'("'+t+'")'),"string",e)}var Ii={global:{description:"\u5168\u5C40\u914D\u7F6E\uFF0C\u6240\u6709\u7EC4\u4EF6\u90FD\u652F\u6301\u7684\u5185\u5BB9",classes:{dom:"UniElement",nv:"UniNativeBaseView"},attributes:{id:{type:"string",description:"\u7EC4\u4EF6\u7684\u552F\u4E00\u6807\u8BC6",uniPlatform:{app:{"dom-c":{propertyName:"id"}},"app-android":{"dom-kt":{propertyName:"id"}}}},class:{type:"Array<string>",description:"class\u5C5E\u6027\u503C(class name)\u7684\u96C6\u5408\uFF0C\u652F\u6301vue\u6846\u67B6\u5B9E\u73B0class\u5C5E\u6027",uniPlatform:{app:{"dom-c":{propertyName:"classList"}},"app-android":{"dom-kt":{propertyName:"classList"}}}},"data-*":{description:"\u81EA\u5B9A\u4E49\u6570\u636E\u5C5E\u6027\uFF0C\u9700\u8981\u5BF9\u5C5E\u6027\u540D\u79F0\u505A\u8F6C\u6362\uFF0C\u8FD0\u884C\u671F\u5728runtime\u5C42\u7EDF\u4E00\u5B9E\u73B0\uFF1B\u7F16\u8BD1\u5668\u652F\u6301\u5C5E\u6027\u540D\u79F0\u8F6C\u6362\u7684\u8BDD\u76F4\u63A5\u64CD\u4F5C\u5C5E\u6027",uniPlatform:{app:{"dom-c":{propertyName:"dataset",setter:"setAttributeDataset"}},"app-android":{"dom-kt":{propertyName:"dataset",setter:"setAttributeDataset"}}}},slot:{type:"UniNativeSlotType",description:"\u63D2\u69FD\u7C7B\u578B",defaultValue:"none",values:["none","refresher"],uniPlatform:{app:{"nv-c":{setter:"slot"}}}}}},view:{classes:{dom:"UniViewElement",nv:"UniNativeView"},attributes:{flatten:{type:"boolean",description:"\u7EC4\u4EF6\u662F\u5426\u88AB\u62CD\u5E73",uniPlatform:{app:{"page-c":{setter:"createNativeView"}},"app-android":{"page-kt":{setter:"createNativeView"}}}},"hover-class":{type:"string",description:"\u6309\u4E0B\u53BB\u7684\u6837\u5F0F\u7C7B\uFF0C\u9700\u8981\u6846\u67B6\u8F6C\u6362\u4E3A\u6837\u5F0F\u5217\u8868hoverStyles",uniPlatform:{app:{"dom-c":{setter:"setHoverStyles"}},"app-android":{"dom-kt":{setter:"setHoverStyles"}}}},"hover-stop-propagation":{type:"boolean",description:"\u662F\u5426\u963B\u6B62\u672C\u8282\u70B9\u7684\u7956\u5148\u8282\u70B9\u51FA\u73B0\u70B9\u51FB\u6001",uniPlatform:{app:{"nv-c":{setter:"hoverStopPropagation"}},"app-android":{"nv-kt":{setter:"hoverStopPropagation"}}}},"hover-start-time":{type:"number",description:"\u6309\u4F4F\u540E\u591A\u4E45\u51FA\u73B0\u70B9\u51FB\u6001",uniPlatform:{app:{"nv-c":{setter:"hoverStartTime"}},"app-android":{"nv-kt":{setter:"hoverStartTime"}}}},"hover-stay-time":{type:"number",description:"\u6309\u4F4F\u540E\u591A\u4E45\u51FA\u73B0\u70B9\u51FB\u6001",uniPlatform:{app:{"nv-c":{setter:"hoverStayTime"}},"app-android":{"nv-kt":{setter:"hoverStayTime"}}}}}},text:{classes:{dom:"UniTextElement",nv:"UniNativeTextView"},attributes:{flatten:{type:"boolean",description:"\u7EC4\u4EF6\u662F\u5426\u88AB\u62CD\u5E73",uniPlatform:{app:{"page-c":{setter:"createNativeTextView"}},"app-android":{"page-kt":{setter:"createNativeTextView"}}}},"user-select":{type:"boolean",description:"\u6587\u672C\u662F\u5426\u53EF\u9009",uniPlatform:{app:{"nv-c":{setter:"userSelect"}},"app-android":{"nv-kt":{setter:"userSelect"}}}},"max-lines":{type:"number",description:"\u9650\u5236\u6587\u672C\u7684\u6700\u5927\u884C\u6570",uniPlatform:{app:{"dom-c":{setter:"setMaxLines"}},"app-android":{"dom-kt":{setter:"setMaxLines"}}}}}},image:{classes:{dom:"UniImageElement",nv:"UniNativeImageView"},attributes:{flatten:{type:"boolean",description:"\u7EC4\u4EF6\u662F\u5426\u88AB\u62CD\u5E73",uniPlatform:{app:{"page-c":{setter:"createNativeImageView"}},"app-android":{"page-kt":{setter:"createNativeImageView"}}}},src:{type:"string",description:"\u56FE\u7247\u8D44\u6E90\u5730\u5740",uniPlatform:{app:{"nv-c":{setter:"src"},"dom-c":{setter:"setSrc"}},"app-android":{"nv-kt":{setter:"src"},"dom-c":{setter:"setSrc"}}}},mode:{type:"UniImageModeType",defaultValue:"scaleToFill",values:["scaleToFill","aspectFit","aspectFill","widthFix","heightFix","top","bottom","center","left","right","top left","top right","bottom left","bottom right"],description:"\u56FE\u7247\u88C1\u526A\u3001\u7F29\u653E\u7684\u6A21\u5F0F",uniPlatform:{app:{"nv-c":{setter:"mode"},"dom-c":{setter:"setMode"}},"app-android":{"nv-kt":{setter:"mode"},"dom-c":{setter:"setMode"}}}},"lazy-load":{type:"boolean",description:"\u662F\u5426\u61D2\u52A0\u8F7D\u56FE\u7247",uniPlatform:{app:{"nv-c":{setter:"lazyLoad"}},"app-android":{"nv-kt":{setter:"lazyLoad"}}}},"fade-show":{type:"boolean",description:"\u662F\u5426\u663E\u793A\u52A8\u753B\u6548\u679C",uniPlatform:{app:{"nv-c":{setter:"fadeShow"}},"app-android":{"nv-kt":{setter:"fadeShow"}}}}}},"scroll-view":{classes:{dom:"UniScrollViewElement",nv:"UniNativeScrollView"},attributes:{direction:{type:"UniNativeScrollViewDirectionType",defaultValue:"vertical",values:["none","vertical","horizontal","all"],description:"\u6EDA\u52A8\u65B9\u5411\uFF0C\u53EF\u53D6\u503C none\u3001all\u3001horizontal\u3001vertical\uFF0C\u9ED8\u8BA4\u503Cvertical",uniPlatform:{app:{"nv-c":{setter:"direction"}},"app-android":{"nv-kt":{setter:"direction"}}}},"enable-back-to-top":{type:"boolean",description:"\u70B9\u51FB\u9876\u90E8\u72B6\u6001\u680F\u6EDA\u52A8\u6761\u8FD4\u56DE\u9876\u90E8\uFF0C\u53EA\u652F\u6301\u7AD6\u5411",uniPlatform:{app:{"nv-c":{setter:"enableBackToTop"}}}},bounces:{type:"boolean",description:"\u63A7\u5236\u662F\u5426\u56DE\u5F39\u6548\u679C",uniPlatform:{app:{"nv-c":{setter:"bounces"}},"app-android":{"nv-kt":{setter:"bounces"}}}},"show-scrollbar":{type:"boolean",description:"\u63A7\u5236\u662F\u5426\u51FA\u73B0\u6EDA\u52A8\u6761",uniPlatform:{app:{"nv-c":{setter:"showScrollbar"}}}},"upper-threshold":{type:"number",description:"\u8DDD\u9876\u90E8/\u5DE6\u8FB9\u591A\u8FDC\u65F6\uFF08\u5355\u4F4Dpx\uFF09\uFF0C\u89E6\u53D1 scrolltoupper \u4E8B\u4EF6",uniPlatform:{app:{"nv-c":{setter:"upperThreshold"}},"app-android":{"nv-kt":{setter:"upperThreshold"}}}},"lower-threshold":{type:"number",description:"\u8DDD\u5E95\u90E8/\u53F3\u8FB9\u591A\u8FDC\u65F6\uFF08\u5355\u4F4Dpx\uFF09\uFF0C\u89E6\u53D1 scrolltolower \u4E8B\u4EF6",uniPlatform:{app:{"nv-c":{setter:"lowerThreshold"}},"app-android":{"nv-kt":{setter:"lowerThreshold"}}}},"scroll-top":{type:"number",description:"\u8BBE\u7F6E\u7AD6\u5411\u6EDA\u52A8\u6761\u4F4D\u7F6E",uniPlatform:{app:{"nv-c":{setter:"scrollTop"}},"app-android":{"nv-kt":{setter:"scrollTop"}}}},"scroll-left":{type:"number",description:"\u8BBE\u7F6E\u6A2A\u5411\u6EDA\u52A8\u6761\u4F4D\u7F6E",uniPlatform:{app:{"nv-c":{setter:"scrollLeft"}},"app-android":{"nv-kt":{setter:"scrollLeft"}}}},"scroll-with-animation":{type:"boolean",description:"\u662F\u5426\u5728\u8BBE\u7F6E\u6EDA\u52A8\u6761\u4F4D\u7F6E\u65F6\u4F7F\u7528\u6EDA\u52A8\u52A8\u753B\uFF0C\u8BBE\u7F6Efalse\u6CA1\u6709\u6EDA\u52A8\u52A8\u753B",uniPlatform:{app:{"nv-c":{setter:"scrollWithAnimation"}},"app-android":{"nv-kt":{setter:"scrollWithAnimation"}}}},"refresher-enabled":{type:"boolean",description:"\u5F00\u542F\u4E0B\u62C9\u5237\u65B0\uFF0C\u6682\u65F6\u4E0D\u652F\u6301scroll-x = true\u6A2A\u5411\u5237\u65B0",uniPlatform:{app:{"nv-c":{setter:"refresherEnabled"}},"app-android":{"nv-kt":{setter:"refresherEnabled"}}}},"refresher-threshold":{type:"number",description:"\u8BBE\u7F6E\u4E0B\u62C9\u5237\u65B0\u9608\u503C",uniPlatform:{app:{"nv-c":{setter:"refresherThreshold"}},"app-android":{"nv-kt":{setter:"refresherThreshold"}}}},"refresher-max-drag-distance":{type:"number",description:"\u8BBE\u7F6E\u4E0B\u62C9\u6700\u5927\u62D6\u62FD\u8DDD\u79BB\uFF08\u5355\u4F4Dpx\uFF09\uFF0C\u9ED8\u8BA4\u662F\u4E0B\u62C9\u5237\u65B0\u63A7\u4EF6\u9AD8\u5EA6\u76842.5\u500D",uniPlatform:{app:{"nv-c":{setter:"refresherMaxDragDistance"}},"app-android":{"nv-kt":{setter:"refresherMaxDragDistance"}}}},"refresher-background":{type:"UniNativeColor",description:"\u8BBE\u7F6E\u4E0B\u62C9\u5237\u65B0\u533A\u57DF\u80CC\u666F\u989C\u8272\uFF0C\u9ED8\u8BA4\u900F\u660E",uniPlatform:{app:{"nv-c":{setter:"refresherBackground"}},"app-android":{"nv-kt":{setter:"refresherBackground"}}}},"refresher-triggered":{type:"boolean",description:"\u8BBE\u7F6E\u5F53\u524D\u4E0B\u62C9\u5237\u65B0\u72B6\u6001\uFF0Ctrue \u8868\u793A\u4E0B\u62C9\u5237\u65B0\u5DF2\u7ECF\u88AB\u89E6\u53D1\uFF0Cfalse \u8868\u793A\u4E0B\u62C9\u5237\u65B0\u672A\u88AB\u89E6\u53D1",uniPlatform:{app:{"nv-c":{setter:"refresherTriggered"}},"app-android":{"nv-kt":{setter:"refresherTriggered"}}}},type:{type:"string",description:"\u6E32\u67D3\u6A21\u5F0F\uFF0C\u53EF\u53D6\u503C nested",uniPlatform:{"app-android":{"nv-kt":{setter:"type"}}}},"associative-container":{type:"string",description:"\u5173\u8054\u7684\u6EDA\u52A8\u5BB9\u5668",uniPlatform:{"app-android":{"nv-kt":{setter:"associativeContainer"}}}}}}};function Lx(){const e=["z2XVyMfS","yxr0CMLIDxrLCW","A2v5CW","C2v0","Dw5PugXHDgzVCM0","yxbW","DhLWzq","BNvTyMvY","yM9VBgvHBG","vw5PtMf0AxzLq29SB3i","y29SB3i","qxjYyxK8C3rYAw5NpG","zw51Bq","zM9YrwfJAa","y2XHC3nLCW","C3bSAxq","DMfSDwvZ"];return Lx=function(){return e},Lx()}function D0(e,x){const r=Lx();return D0=function(t,o){t=t-0;let n=r[t];if(D0.IYSwfW===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};D0.ryPvQX=i,e=arguments,D0.IYSwfW=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=D0.ryPvQX(n),e[f]=n),n},D0(e,x)}const Ax=new Map;function ji(e){if(Ax.has(e))return Ax.get(e);function x(i,a,f,u){return D0(a- -832,f)}const r={},t=Ii,o=Yi(e,t[n(-599,-607,-601,-609)][x(-837,-831,-830)]);function n(i,a,f,u){return D0(a- -607,u)}return Object[n(-604,-605,-608,-599)](t).forEach(i=>{function a(f,u,d,h){return D0(h- -189,u)}if(i!=="global"){const f=Yi(e,t[i][a(-192,-186,-196,-188)]);r[i]=L.extend({},o,f)}}),Ax[n(-598,-604,-608,-604)](e,r),r}function Yi(e,x){const r={};return Object.keys(x).forEach(t=>{function o(a,f,u,d){return D0(a-945,u)}const n=x[t];function i(a,f,u,d){return D0(f-914,a)}if(n[o(949,950,941)][e]||n[o(949,949,942)][o(950,950,948)]){const a=n[i(914,920)];if(a)switch(a){case"string":r[t]="string";break;case o(952,956,944):r[t]=o(952,950,957);break;case o(953,961,949):r[t]=o(953,955,957);break;case o(954,962,954):r[t]=i(925,924);break;case o(956,960,947):r[t]=o(956,965,962);break;default:r[t]=o(957,949,965);break}}}),r}function du(e,x){function r(a,f,u,d){return D0(d- -913,a)}const t={},o=Ii,n=Ri(e,x,o[r(-912,-921,-921,-913)].attributes);function i(a,f,u,d){return D0(a-876,u)}return Object[i(878,871,878)](o)[r(-896,-891,-905,-900)](a=>{function f(d,h,s,b){return D0(b- -113,h)}function u(d,h,s,b){return D0(s-749,b)}if(a!==f(-111,-118,-112,-113)){const d=Ri(e,x,o[a][f(-117,-115,-110,-112)],o[a][u(766,760,763,765)][x[u(755,758,764,761)]("-")[0]]);t[a]={...n,...d}}}),t}function Ri(e,x,r,t){const o={};function n(i,a,f,u){return D0(u- -1,a)}return Object.keys(r)[n(10,16,5,12)](i=>{const a=r[i];let f;function u(s,b,c,_){return D0(s-483,c)}function d(s,b,c,_){return D0(b-490,_)}const h=a.uniPlatform[e]||a[d(492,494,500,492)][d(486,495,487,498)];if(h){const s=h[x];if(s){const{type:b,propertyName:c,setter:_}=s;f={type:b||a[d(495,496,495,498)],property:!!c,name:c||_,values:a[u(499,506,491)],className:t}}}o[i]=f}),o}function _u(e,x,r,t){return qe(x- -346,t)}const hu=[_u(-346,-346,-349,-348)];function qe(e,x){const r=Mx();return qe=function(t,o){t=t-0;let n=r[t];if(qe.fMnhqe===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};qe.PKuMiY=i,e=arguments,qe.fMnhqe=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=qe.PKuMiY(n),e[f]=n),n},qe(e,x)}function Mx(){const e=["yM9VBgvHBG","Aw5JBhvKzxm","ChjVCgvYDhK","Dhj1zq","id0GDhj1zq","BMfTzq","khrYDwuP"];return Mx=function(){return e},Mx()}function bu(e){function x(r,t,o,n){return qe(o-680,n)}return!!(e&&hu[x(678,677,681,679)](e))}function gu(e){function x(t,o,n,i){return qe(o- -760,t)}function r(t,o,n,i){return qe(n- -501,t)}return Yt(t=>e[r(-496,-500,-499)]?Pe(r(-497,-499,-498),e.name+x(-753,-756)):Pe(x(-757,-757),e[r(-493,-499,-496)]+r(-495,-497,-495)),"boolean",e)}const pu=[mu(617,614,617)];function Nx(){const e=["vw5PtMf0AxzLq29SB3i","Aw5JBhvKzxm","ChjVCgvYDhK","BMfTzq","id0G","AxnwywXPza","Dg9izxG4","C2XPy2u"];return Nx=function(){return e},Nx()}function vu(e){function x(r,t,o,n){return le(t-260,r)}return!!(e&&pu[x(264,261)](e))}function Cu(e){return Yt(x=>{function r(n,i,a,f){return le(i-884,n)}const t=yu(String(x));function o(n,i,a,f){return le(i- -230,f)}return t?e[o(-230,-228,-229,-232)]?Pe(t,e[o(-224,-227,-227,-225)]+r(889,888)+t):Pe(t,e[r(883,887)]+"("+t+")"):zx("Invalid color value: "+x)},"color",e)}function mu(e,x,r,t){return le(r-617,x)}function le(e,x){const r=Nx();return le=function(t,o){t=t-0;let n=r[t];if(le.ATQEKz===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};le.AJPPrL=i,e=arguments,le.ATQEKz=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=le.AJPPrL(n),e[f]=n),n},le(e,x)}function yu(e){function x(o,n,i,a){return le(a-397,o)}function r(o,n,i,a){return le(n- -447,a)}const t=Qo(e);if(t[x(404,400,403,402)]()){const o=t[r(-445,-441,-443,-445)]();return"0x"+(o[r(-443,-440,-441,-441)](6,8)+o.slice(0,6))}}function Px(){const e=["AgfZ","z2v0","A2v5CW","zM9YrwfJAa","C2v0","DhLWzq","C3rHCNrZv2L0Aa","zgf0ys0"];return Px=function(){return e},Px()}function we(e,x){const r=Px();return we=function(t,o){t=t-0;let n=r[t];if(we.aJDmWu===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};we.tPqeJx=i,e=arguments,we.aJDmWu=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=we.tPqeJx(n),e[f]=n),n},we(e,x)}const Ux=new Map;function wu(e,x){return e+":"+x}function Vi(e,x){const r=wu(e,x);if(Ux[n(-938,-939,-936,-936)](r))return Ux[n(-933,-934,-939,-935)](r);const t={},o=du(e,x);return Object.keys(o).forEach(a=>{function f(s,b,c,_){return we(c-637,_)}const u=o[a],d={};function h(s,b,c,_){return we(_- -685,b)}Object[h(-684,-684,-679,-683)](u)[f(640,644,640,636)](s=>{const b=u[s];let c;b&&(c=i(b)),d[s]=c}),t[a]=d}),Ux[n(-934,-929,-934,-932)](r,t),t;function n(a,f,u,d){return we(d- -936,a)}function i(a){const f=a[u(872,870,874,871)];if(au(f))return fu(a);function u(d,h,s,b){return we(d-867,b)}if(su(f))return lu(a);if(bu(f))return gu(a);if(vu(f))return Cu(a);if(f)return xu(a,ru(x,f))}}function zu(e){const x=ji(e);return(r,t)=>{if(t[n(-243,-244,-242,-241)](n(-242,-242,-241,-244)))return!0;const o=x[r];function n(i,a,f,u){return we(f- -248,u)}return o?!!o[t]:!1}}function ke(e,x){const r=Ex();return ke=function(t,o){t=t-0;let n=r[t];if(ke.EAkNcL===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};ke.ZuPMco=i,e=arguments,ke.EAkNcL=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=ke.ZuPMco(n),e[f]=n),n},ke(e,x)}function Su(e){return(x,r,t,o)=>{let n="";function i(d,h,s,b){return ke(s-563,b)}const a=[],f=Vi(e,x)[r];function u(d,h,s,b){return ke(h- -543,d)}if(f){if(t in f){const d=f[t];if(d){const h=d(o,t);n=h[u(-544,-543)],h.error&&a.push(h[i(562,564,564,566)])}}else a.push("Property '"+t+"' is not supported on '<"+r+">'");return{code:n,errors:a}}}}function Ex(){const e=["C2v0DgvYq29Kzq","zxjYB3i","B3b0Aw9UCW"];return Ex=function(){return e},Ex()}function Bu(e,x){const r=Vi(e,x);return(t,o)=>{var n;function i(f,u,d,h){return ke(u-726,f)}const a=r[t];if(a&&o in a)return(n=a[o])==null?void 0:n[i(730,728)]}}function Du(e){const x=ji(e);return(r,t)=>{const o=x[r];if(o)return o[t]}}function Tx(){const e=["AgvSCgvYCW","AgvSCgvY","ywrK","zgvSzwDHDgvZ","AwrLBNrPzMLLCNm","y3jLyxrL","C2vLBKLUBgLUzuHHBMrSzxjoyw1LCW","C2nVCgvmzxzLBa","Bw9KDwXL","yxbWlwHHCM1VBNK","DgvTCgXHDguUDNvLlMH0BwW","vNvL","DNvL","DNvLl3nLCNzLCI1Yzw5KzxjLCG","CgfNzq","B3b0Aw9UCW","yMXVy2S","CgXHDgzVCM0","A2v5CW","Dw5ZAgLMDa","zw50zxjty29Wzq","x19ZAgfYzwreyxrHu2nVCgu","C2HHCMvKrgf0yvzgB3jdBgfZC1r5Cgu","jhTFx1niqvjfrf9eqvrbx0nmqvntx05btuvFvfLqrx1FvKzVCG","CMv0DxjUicHMDw5JDgLVBIbYzw5KzxjtAgfYzwreyxrHkcK6ifvUAvnOyxjLzerHDgeGEYaNCMf3igPZjW","DxnLu2HHCMvKrgf0yvbHz2vjza","D2L0AfnOyxjLzerHDgfqywDL","DxnLu2HHCMvKrgf0yvnJB3bL","D2L0AfnOyxjLzerHDgfdB21WB25LBNq","y29UC3qG","id0G","AgfZrgvMzxjYzwrwu2HVDW","y29UC3qGzgvMzxjYzwrbChbSEvztAg93CYa9ifTD","CMv0DxjUif9FC2HHCMvKrgf0yq","BgvUz3rO","zMLSBa","Dg9ku09o","C2L6zq","Aw1WB3j0ihSG","BwfW","ih0GzNjVBsaN","CNvUDgLTzu1VzhvSzu5HBwu","BM9Kzq","Aw1WB3j0icC","jZSk","cMnVBNn0if9Fy2XHC3noyw1Lid0GjW","y2XHC3noyw1L","jYbHCYbJB25ZDaP0ExbLif9Fu0HbuKvex0rbvefFq0Xbu1nFtKfnrv9uwvbfid0Gycr7DhLWzw9Mif9Fy2XHC3noyw1LFq","u2HHCMvKrgf0yq"];return Tx=function(){return e},Tx()}function _0(e,x){const r=Tx();return _0=function(t,o){t=t-0;let n=r[t];if(_0.fveaUu===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};_0.ryxhGT=i,e=arguments,_0.fveaUu=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=_0.ryxhGT(n),e[f]=n),n},_0(e,x)}function Lu(e,x,r,t){return _0(r- -288,x)}class Au extends vi{constructor(x,r){super(),this.ir=x,this[t(310,318,287)]=new Set([]),this[t(311,298,331)]=i=>(this[o(769,797,790,785)][o(806,791,768,787)](i),"_"+i),this[o(810,771,767,788)]=new Set;function t(i,a,f,u){return _0(i-310,f)}this[t(314,292,295)]=Object[t(315,322,314)](null),this[t(316,316,316)]=Object[t(315,309,310)](null);function o(i,a,f,u){return _0(u-785,i)}this[o(806,808,777,792)]=0;const n={root:"",mode:t(318,297,329),platform:o(815,783,811,794),prefixIdentifiers:!0,sourceMap:!1,filename:t(320,324,342),relativeFilename:"",scopeId:null,runtimeGlobalName:o(801,803,821,796),runtimeModuleName:o(775,818,803,797),ssrRuntimeModuleName:o(797,798,790,798),ssr:!1,isTS:!1,inSSR:!1,inline:!1,bindingMetadata:{},expressionPlugins:[],componentType:t(324,330,299),className:"",onError:K.defaultOnError,onWarn:K.defaultOnWarn,onVueTemplateCompileLog:()=>{},isCppExpr:()=>!1,r:i=>i};this[t(325,323,314)]=L.extend(n,r),this.block=x[t(326,341,333)],this.getPropertyType=Du(r[o(801,818,797,802)]),this[t(325,307,322)].r&&(this.r=this[o(820,790,778,800)].r)}withId(x,r){function t(f,u,d,h){return _0(f- -586,u)}function o(f,u,d,h){return _0(f-54,u)}const{identifiers:n}=this,i=Object[t(-568,-567)](r);for(const f of i)n[f]||(n[f]=[]),n[f][o(73,77)](r[f]||f);const a=x();return i.forEach(f=>L.remove(n[f],r[f]||f)),a}[Uu(-82,-99,-70,-78)](){function x(t,o,n,i){return _0(t-833,i)}function r(t,o,n,i){return _0(t- -477,i)}return[this[r(-470,-445,-465,-460)]++,()=>this[x(840,860,816,825)]--]}get sharedDataScopeVar(){function x(r,t,o,n){return _0(o-72,n)}return x(98,71,93,70)}[Lu(-244,-264,-266)](x){function r(t,o,n,i){return _0(o-788,t)}return r(801,811)+x}}function Mu(e,x){function r(b,c,_,l){return _0(_-885,c)}function t(b,c,_,l){return _0(b-768,l)}const[o,n]=w.buildCodeFragment(),i=new Au(e,x),{helpers:a}=i,{inline:f}=x;n(w.NEWLINE,r(902,901,909)),n(w.INDENT_START),x.componentType===t(782,787,788,782)?(i[r(862,896,886)](t(793,789,812,781)),i[r(898,892,886)]("useSharedDataScope"),i[t(769,770,755,762)](r(890,900,911))):(i[t(769,775,760,789)](t(795,814,787,798)),i.helper(t(796,802,789,815))),e.hasTemplateRef&&n(w.NEWLINE,r(913,907,914)+Ni+t(798,795,782,780)+i[t(769,774,744,786)]("createSharedDataTemplateRefSetter")+"()"),e[r(924,914,916)]&&n(w.NEWLINE,t(800,793,810,818)),n(...an(e[t(784,781,761,767)],i,!0)),n(w.NEWLINE,r(905,897,918)),n(w.INDENT_END,w.NEWLINE),n("})");const u=Nu(i)+Pu(i)+Eu(i),d=[...u].filter(b=>b===`
-`)[t(802,826,819,820)];d&&!f&&o.unshift(...new Array(d)[r(936,898,920)](w.LF));const[h,s]=w.codeFragmentToString(o,i);return{code:h,ast:e,preamble:u,map:s&&s[r(898,907,921)](),helpers:a}}function Nu({helpers:e,options:x}){let r="";function t(n,i,a,f){return _0(i- -167,n)}function o(n,i,a,f){return _0(n- -905,i)}return e[o(-868,-871)]&&(r+=t(-108,-129)+[...e][t(-114,-128)](n=>n+" as _"+n).join(", ")+t(-151,-127)+x[o(-864,-886)]+`';
-`),r}function Pu({ir:e}){function x(n,i,a,f){return _0(f-265,a)}const r=e[o(-199,-188,-191,-183)].imports;let t="";function o(n,i,a,f){return _0(n- -241,f)}for(const n of r)t+=o(-198,-206,-182,-214)+n.path+x(326,308,306,309);return t}function Uu(e,x,r,t){return _0(e- -102,t)}function Eu(e){function x(t,o,n,i){return _0(i- -570,t)}function r(t,o,n,i){return _0(n-556,t)}return r(625,617,601)+e.options[r(578,622,602)]+r(585,605,603)+e.r(x(-513,-506,-538,-522))+"`\n"}function k0(e,x){const r=qx();return k0=function(t,o){t=t-0;let n=r[t];if(k0.ESjJMK===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};k0.gCjtYw=i,e=arguments,k0.ESjJMK=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=k0.gCjtYw(n),e[f]=n),n},k0(e,x)}const A=Symbol(Tu(360,350,353)),ki=Symbol("line feed"),de=Symbol("indent start"),_e=Symbol("indent end");function O0(...e){const x=e.push[t(-592,-582,-579,-582)](e),r=e[t(-575,-581,-576,-581)].bind(e);function t(o,n,i,a){return k0(a- -583,i)}return[e,x,r]}function Tu(e,x,r,t){return k0(e-360,r)}function ze([e,x,r,t],...o){if(t){for(;o[a(-286,-293,-280,-288)]>0&&!o[o[i(-20,-7,-7,-18)]-1];)o[i(-23,-10,-26,-17)]();o=o[a(-286,-289,-294,-286)](u=>u||t)}else o=o.filter(Boolean);const n=[];function i(u,d,h,s){return k0(s- -21,u)}f(e);for(let[u,d]of o[a(-294,-280,-285,-285)]())f(d),u<o[i(-28,-7,-10,-18)]-1&&f(r);function a(u,d,h,s){return k0(s- -291,d)}return f(x),n;function f(u){L.isArray(u)||(u=[u]),n.push(...u)}}const fn=["[","]",", "],qu=[["[",de,A],[_e,A,"]"],[",",A]],Ki=[["{",de,A],[_e,A,"}"],[",",A]];function qx(){const e=["BMv3BgLUzq","yMLUza","Dw5ZAgLMDa","BgvUz3rO","Cg9W","BwfW","zw50CMLLCW","BNvSBa","B3b0Aw9UCW","CMvSyxrPDMvgAwXLBMfTzq","zMLSzw5HBwu","C2v0u291CMnLq29UDgvUDa","C291CMnL","x3nVDxjJzxm","CMvWzwf0","BgLUzq","B2zMC2v0","y29SDw1U","zw5K","AgfZ","ywrK"];return qx=function(){return e},qx()}function $(e,...x){function r(i,a,f,u){return k0(f- -568,a)}const t=L.isArray(e),o=t?e[0]:e,n=t?e[1]:r(-553,-562,-561);return[o,...ze(["(",")",", ",n],...x)]}function Hu(e,x){function r(h,s,b,c){return k0(h-162,c)}const{options:{sourceMap:t}}=x,o=x[r(170,176,159,179)][r(171,178,164,162)]||x[f(942,951,952)][f(944,945,950)];let n;t&&(n=new rt.SourceMapGenerator,n[r(173,181,173,173)](o,x.ir[r(174,178,180,165)]),n[f(947,946,941)].add(o));let i="";const a={line:1,column:1,offset:0};function f(h,s,b,c){return k0(h-934,b)}let u=0;for(let h of e){if(!h)continue;if(h===A)h=[`
-`+"  "[f(948,954,954)](u),0];else if(h===de){u++;continue}else if(h===_e){u--;continue}else if(h===ki){a[r(177,183,183,174)]++,a.column=0,a[f(950,954,959)]++;continue}L.isString(h)&&(h=[h]);let[s,b=-2,c,_]=h;i+=s,n&&(c&&d(c.start,_),b===-3?K.advancePositionWithMutation(a,s):(a.offset+=s.length,b===-2?a[f(951,957,961)]+=s[r(165,168,175,169)]:(b===-1&&(b=s[r(165,167,159,168)]-1),a[f(949,954,943)]++,a[r(179,175,173,187)]=s[r(165,169,160,171)]-b)),c&&c!==K.locStub&&d(c[r(180,177,172,188)]))}return[i,n];function d(h,s=null){function b(g,p,v,m){return k0(m-265,g)}const{_names:c,_mappings:_}=n;function l(g,p,v,m){return k0(v- -99,g)}s!==null&&!c[l(-83,-72,-80)](s)&&c[b(287,291,290,285)](s),_.add({originalLine:h[b(286,290,280,280)],originalColumn:h[b(272,274,288,282)]-1,generatedLine:a[b(277,280,289,280)],generatedColumn:a.column-1,source:o,name:s})}}function Hx(){const e=["AM9PBG","BgvUz3rO","Aw5Zzxj0","CgfYzw50","BwfW"];return Hx=function(){return e},Hx()}function Ke(e,x){const r=Hx();return Ke=function(t,o){t=t-0;let n=r[t];if(Ke.SzPsRL===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Ke.SwNgSx=i,e=arguments,Ke.SzPsRL=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Ke.SwNgSx(n),e[f]=n),n},Ke(e,x)}function Ou({parent:e,elements:x,anchor:r},{helper:t}){function o(a,f,u,d){return Ke(u-217,d)}function n(a,f,u,d){return Ke(f- -138,a)}let i=x.map(a=>"n"+a)[n(-138,-138)](", ");return x[n(-137,-137)]>1&&(i="["+i+"]"),[A,...$(t(o(219,220,219,221)),i,"n"+e,r===void 0?void 0:"n"+r)]}function Wu(e,{helper:x}){function r(t,o,n,i){return Ke(t-547,o)}return[A,...$(x("prepend"),"n"+e[r(550,552)],...e.elements[r(551,550)](t=>"n"+t))]}function j(e,x){const r=Ox();return j=function(t,o){t=t-0;let n=r[t];if(j.UtxFne===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};j.qdRHTZ=i,e=arguments,j.UtxFne=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=j.qdRHTZ(n),e[f]=n),n},j(e,x)}function Ox(){const e=["C2HHCMvKrgf0yuLKzw50","AwrLBNq","y29UDgvUDa","DhjPBq","id0G","ChvZAa","C2v0","C2XPy2u","BgvUz3rO","C29YDa","C3rHCNq","zM9YrwfJAa","zw5K","z2v0","twvTyMvYrxHWCMvZC2LVBG","Bg9J","t2jQzwn0uhjVCgvYDhK","C2HVCNrOyw5K","C2v0DxaTBgv0","Axnszwy","ksa/icG","lNzHBhvLid0G","ksa6icG","lNzHBhvL","C2v0DxaTBwf5yMuTCMvM","DhLWzq","qxnZAwDUBwvUDev4ChjLC3nPB24","vxbKyxrLrxHWCMvZC2LVBG","yxjNDw1LBNq","ChjVChm","ChjVChmTywXPyxnLza","jhbYB3bZwYC","x19WCM9WC0fSAwfZzxm","jhbYB3bZ","x2n0Ea","Dw5Yzwy","CMvXDwLYzq","jgf0DhjZ","jhnSB3rZ","AgfZ","C2L6zq","yxn0","CMvKDwnL","BMfTzq","C29Tzq","zMXHDe1HCa","BwfW","zNjVBq","zxzLCNK","swrLBNrPzMLLCG","y3jLyxrL","zw50CMLLCW","zxHWCW","C2vLBKnVDw50","CMf3tMfTzq","zMLUza","A2v5CW","CMvWBgfJzq","ywrK","y29UC3qG","xcqM","zxHWCMvZC2LVBLbSDwDPBNm","BwvZC2fNzq","B3b0Aw9UCW","B25fCNjVCG"];return Ox=function(){return e},Ox()}function f0(e,x,r){const{content:t,ast:o,isStatic:n,loc:i,sharedData:a}=e;if(a)return[[x[f(-227,-225,-199,-253)](a[f(-226,-215,-206,-249)]),-2,i]];if(n)return[[JSON.stringify(t),-2,i]];if(!e[u(172,129,157)][u(130,165,158)]()||o===!1||w.isConstantExpression(e))return[[t,-2,i],r];if(o===null)return Gi(t,x,i,r);function f(c,_,l,g){return j(c- -227,g)}function u(c,_,l,g){return j(l-155,c)}const d=[],h=new Map,s=[];K.walkIdentifiers(o,c=>{function _(l,g,p,v){return j(l- -722,p)}d[_(-717,-695,-726)](c),h[_(-716,-708,-694)](c,s[_(-715,-717,-742)]())},!1,s);let b=!1;if(d[u(158,131,163)]){const[c,_]=O0();return d[u(183,140,164)]((l,g)=>l[u(138,169,165)]-g[u(187,152,165)])[f(-216,-209,-184,-233)]((l,g)=>{function p(N,T,u0,g0){return j(g0-700,N)}const v=l[z(414,398,374)]-1,m=l.end-1,C=d[g-1],y=t.slice(C?C[p(730,680,707,712)]-1:0,v);function z(N,T,u0,g0){return j(T-388,u0)}y[p(735,732,711,708)]&&_([y,-3]);const B=t[z(383,395,392)](v,m),D=h[p(728,732,686,713)](l),S=D[D[p(726,710,723,708)]-1];b||(b=S&&(S.type===p(741,695,686,714)||S.type==="OptionalMemberExpression")),_(...Gi(B,x,{start:K.advancePositionWithClone(e[p(735,730,720,715)].start,B,v),end:K.advancePositionWithClone(e[z(426,403,399)].start,B,m),source:B},b?void 0:r,l,S,D)),g===d[z(390,396,368)]-1&&m<t[z(410,396,389)]&&_([t[p(713,717,706,707)](m),-3])}),c}else return[[t,-3,i]]}function Gi(e,x,r,t,o,n,i){const{options:a,helper:f,identifiers:u}=x,{inline:d,bindingMetadata:h}=a;let s=e;const b=u[e];function c(m,C,y,z){return j(y-327,m)}if(b&&b.length){const m=b[0];return L.isString(m)?n&&n.type===c(373,341,343)&&n[g(469,494,495,510)]?[[s+": "+m,-2,r]]:[[m,-2,r]]:f0(m,x,t)}let _;K.isStaticProperty(n)&&n.shorthand&&(_=e+": ");const l=h&&h[e];if(d)switch(l){case g(516,488,496,510):s=e=v();break;case"setup-ref":s=e=e+g(489,478,501,476);break;case g(507,495,502,484):const m=n&&K.isInDestructureAssignment(n,i||[]),C=n&&n[c(328,337,352)]===g(523,527,504,511)&&n.left===o,y=n&&n.type===g(492,536,505,512)&&n[g(531,501,506,530)]===o;e=C||y||m?s=e+c(334,337,350):v();break;case g(505,490,507,500):e=L.genPropsAccessExp(e);break;case c(384,360,357):e=L.genPropsAccessExp(h.__propsAliases[e]);break;default:e=e}else Iu(e)&&(l===c(349,350,357)?e=g(515,513,509,477)+h[c(372,365,359)][e]+"']":e=(l==="props"?g(510,487,511,519):c(352,371,361))+"."+e),e=e;return[_,[e,-2,r,s]];function g(m,C,y,z){return j(y-478,z)}function p(m){return m}function v(){function m(C,y,z,B){return j(z- -187,C)}return f(m(-137,-131,-152))+"("+e+")"}}function Iu(e){function x(t,o,n,i){return j(n- -777,o)}function r(t,o,n,i){return j(i-152,o)}return!(L.isGloballyAllowed(e)||e===r(157,194,181,188)||e===x(-734,-722,-744)||e==="$emit"||e===r(221,205,157,189)||e===x(-720,-767,-739))}function ju(e,x,r){const{seenVariable:t,variableToExpMap:o,expToVariableMap:n,seenIdentifier:i,updatedVariable:a}=w.analyzeExpressions(x),f=Yu(e,t,o,n,i,a),u=Vu(e,x,f,a,n);return ku([...f,...u],e,r)}function Yu(e,x,r,t,o,n){const i=[],a=new Map;function f(d,h,s,b){return j(s-359,b)}for(const[d,h]of r)if(!n[u(-592,-582,-555,-580)](d)&&x[d]>1&&h[u(-565,-573,-563,-579)]>0){const s=o[u(-564,-582,-558,-580)](d),b=s?d:Xi(d);h[f(390,356,370,369)](c=>{function _(g,p,v,m){return j(p- -124,m)}function l(g,p,v,m){return j(g-396,v)}if(c[l(437,422,411)]&&b!==d){const g=a[l(409,420,405)](c)||[];g[_(-141,-119,-90,-139)]({name:b,locs:t[l(409,435,436)](c)[_(-91,-82,-67,-76)]((p,v)=>(v[l(439,417,436)]===d&&v.loc&&p[l(401,418,406)](v[_(-123,-109,-112,-98)]),p),[])}),a[l(402,396,419)](c,g)}}),!i[u(-598,-544,-586,-575)](c=>c[f(395,388,402,393)]===b)&&(!s||Ru(d,t,h))&&i.push({name:b,isIdentifier:s,value:L.extend({ast:s?null:cn(e,d)},K.createSimpleExpression(d)),rawName:d,exps:h,seenCount:x[d]})}function u(d,h,s,b){return j(b- -619,h)}for(const[d,h]of a)h[f(435,437,404,429)](({name:s,locs:b})=>b[f(432,375,405,393)](({start:c,end:_})=>({start:c,end:_,name:s}))).sort((s,b)=>b.end-s[f(356,383,371,400)]).forEach(({start:s,end:b,name:c})=>{function _(l,g,p,v){return j(p- -223,g)}d.content=d.content[_(-235,-196,-216)](0,s-1)+c+d.content[_(-219,-183,-216)](b-1)}),d.ast=cn(e,d.content,d[f(348,384,374,399)]);return i}function Ru(e,x,r){function t(a,f,u,d){return j(f- -46,d)}const o=Array[n(-632,-650,-625,-646)](r,a=>x[n(-680,-665,-654,-680)](a)[t(-14,0,27,16)](f=>f[t(15,-3,-22,17)]));function n(a,f,u,d){return j(d- -693,f)}if(o[n(-677,-668,-668,-645)](a=>a.length===1)||o[n(-673,-647,-620,-649)](a=>a.filter(f=>f===e)[n(-680,-653,-695,-685)]>1))return!0;const i=o[0];return o.some(a=>a[t(-26,-38,-7,-32)]!==i.length)?!(o.some(a=>a.length>i[n(-679,-672,-678,-685)]&&a.every(f=>i.includes(f)))||o[n(-629,-635,-641,-649)](a=>i.length>a[n(-714,-667,-661,-685)]&&i.every(f=>a.includes(f)))):!o[n(-634,-640,-635,-645)](a=>a[t(6,2,-12,-8)]((f,u)=>f===i[u]))}function Vu(e,x,r,t,o){const n=[],i=x.reduce((u,d)=>{const h=o.get(d);function s(_,l,g,p){return j(l-96,p)}if(!h)return u;function b(_,l,g,p){return j(_- -232,g)}const c=h[s(128,142,129,146)](_=>_[s(148,139,150,170)]);return d.ast&&d[s(168,137,131,139)].type!==b(-183,-156,-153)&&!(c&&c.some(_=>t[b(-193,-220,-167)](_)))&&(u[d.content]=(u[d[b(-230,-248,-259)]]||0)+1),u},Object[f(780,815,791)](null));function a(u,d,h,s){return j(s- -103,d)}function f(u,d,h,s){return j(h-741,u)}return Object[a(-39,-47,-50,-52)](i)[a(-100,-110,-78,-92)](([u,d])=>{function h(b,c,_,l){return j(_- -37,b)}function s(b,c,_,l){return j(l-355,b)}if(d>1){const b=Xi(u);if(!n.some(c=>c[s(395,408,380,398)]===b)){const c={};for(let l=r.length-1;l>=0;l--){const g=r[l];!g[h(21,-10,15)]||!g[h(21,-15,16)]||[...g[s(434,413,436,407)]].every(p=>p[s(343,353,350,357)]===u&&g[s(413,395,412,408)]===d)&&(c[g.name]=g[h(7,-1,17)],r.splice(l,1))}const _=L.extend({},x[s(439,412,424,410)](l=>l.content===u));Object[h(-1,-11,19)](c)[h(-44,-23,-26)](l=>{function g(v,m,C,y){return j(y- -578,v)}function p(v,m,C,y){return j(v-444,y)}_[p(446,439,428,441)]=_[p(446,433,461,466)][g(-535,-524,-510,-521)](l,c[l]),_[g(-548,-519,-536,-537)]&&(_.ast=cn(e,_.content,_.loc))}),n[h(-42,-41,-32)]({name:b,value:_})}x[h(-7,-46,-26)](c=>{function _(g,p,v,m){return j(g-907,v)}function l(g,p,v,m){return j(m-492,v)}c[l(512,507,491,494)]===u?(c.content=b,c[_(948,922,934)]=null):c[_(909,908,898)].includes(u)&&(c[_(909,880,914)]=c[l(517,474,507,494)][l(580,525,550,549)](new RegExp(Ku(u),"g"),b),c[_(948,951,951)]=cn(e,c[_(909,906,908)],c[_(922,938,952)]))})}}),n}function ku(e,x,r){function t(u,d,h,s){return j(u-286,d)}function o(u,d,h,s){return j(d- -320,h)}const[n,i]=O0(),a=Object[t(336,337)](null),f=new Set;return e[o(-307,-309,-280)](({name:u,isIdentifier:d,value:h})=>{function s(c,_,l,g){return j(_- -512,g)}function b(c,_,l,g){return j(_-192,g)}if(d){const c=a[u]="_"+u;f[s(-477,-454,-451,-435)](c),r&&i(b(231,251,251,266)),i(c+s(-511,-508,-515,-489),...f0(h,x),A)}}),e.forEach(({name:u,isIdentifier:d,value:h})=>{function s(b,c,_,l){return j(l- -594,_)}if(!d){const b=a[u]="_"+u;f.add(b),r&&i(s(-545,-529,-520,-535)),i(b+s(-622,-574,-593,-590),...x.withId(()=>f0(h,x),a),A)}}),{ids:a,frag:n,varNames:[...f]}}function Ku(e){function x(r,t,o,n){return j(r-824,o)}return e[x(881,910,854)](/[.*+?^${}()|[\]\\]/g,x(884,862,896))}function cn(e,x,r){function t(a,f,u,d){return j(u- -878,d)}const o=e.options[i(-464,-422,-443,-444)],n={plugins:o?[...o,"typescript"]:["typescript"]};function i(a,f,u,d){return j(d- -505,a)}try{return Sn.parseExpression("("+x+")",n)}catch(a){if(r){const f=new SyntaxError(a[t(-824,-842,-816,-810)]);throw f[i(-467,-477,-511,-490)]=r,e[t(-839,-808,-815,-791)][t(-815,-809,-814,-804)](f),f}throw a}}function Xi(e){function x(t,o,n,i){return j(t-558,o)}function r(t,o,n,i){return j(n-881,i)}return""+e.replace(/[^a-zA-Z0-9]/g,"_")[x(615,647)](/_+/g,"_")[r(948,959,938,918)](/_+$/,"")}function Wx(){const e=["yxn0","B25fBgvTzw50","zxzLBNq","vw5PrxzLBNq","ksa9pIb7","AwrLBNq","zwXLBwvUDa","zgvSzwDHDgu","id09psa","id8G","BgvUz3rO","iMvMzMvJDci6ihrYDwu","BwfW","iJOGDhj1zq","zMvHDhvYzq","C2v0rwXLBwvUDer5BMfTAwnfDMvUDhm","C2HHCMvKrgf0yq"];return Wx=function(){return e},Wx()}function Gu(e,x){var r;if(!(x.feature&2))return[];const{element:t,key:o,keyOverride:n,modifiers:i,delegate:a,effect:f,sharedData:u,value:d}=e,h=m(),{helper:s,options:b,r:c,sharedDataIdent:_}=x;function l(y,z,B,D){return xe(z-860,y)}if(d&&(r=b.isCppExpr)!=null&&r.call(b,d[l(853,860)]))return[A,...$(s(l(868,861)),"n"+t,h,["("+c(v(840,836,831,838))+": "+c(v(844,838,831,839))+l(859,864),...f0(d,x),"("+c(v(834,837,845,838))+")","}"])];const g=C(),p="e"+u[l(861,865)]+e[l(864,866)];return[A,"const "+p+" = "+_(u.ident),A,...$(s(a?l(865,867):l(860,861)),"n"+t,h,["("+c(l(858,862))+": "+c(l(858,863))+") => {",p+"("+c(l(856,862))+")","}"],g)];function v(y,z,B,D){return xe(D-836,y)}function m(){const y=f0(o,x);function z(B,D,S,N){return xe(S-801,B)}if(n){const B=JSON.stringify(n[0]),D=JSON.stringify(n[1]),S=["(",...y,")"];return[...S,z(812,809,809)+B+z(809,806,810)+D+" : ",...S]}else return f0(o,x)}function C(){function y(D,S,N,T){return xe(T-149,S)}let{options:z}=i;function B(D,S,N,T){return xe(S- -828,N)}if(!(!z[B(-810,-818,-812)]&&!f))return ze(Ki,f&&[y(169,165,162,160)],...z[B(-822,-816,-811)](D=>['"'+D+B(-813,-815,-812)]))}}function xe(e,x){const r=Wx();return xe=function(t,o){t=t-0;let n=r[t];if(xe.HPYNAq===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};xe.DUgNVA=i,e=arguments,xe.HPYNAq=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=xe.DUgNVA(n),e[f]=n),n},xe(e,x)}function Xu(e,x){function r(i,a,f,u){return xe(f- -802,a)}function t(i,a,f,u){return xe(a-450,u)}if(!(x[t(461,464,462,455)]&2))return[];const{helper:o,sharedDataIdent:n}=x;return[A,...$(o(t(470,465,472,459)),"n"+e.element,n(e[r(-798,-800,-800)][r(-780,-782,-786)][t(460,455,464,451)]))]}function U0(e,x){const r=Ix();return U0=function(t,o){t=t-0;let n=r[t];if(U0.cXCjEX===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};U0.ijQAdE=i,e=arguments,U0.cXCjEX=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=U0.ijQAdE(n),e[f]=n),n},U0(e,x)}function Zu(e,x){const{helper:r,pageVar:t,r:o}=x,{source:n,value:i,key:a,index:f,render:u,keyProp:d,typeProp:h,once:s,id:b,component:c,onlyChild:_}=e,l=yi(e[E(942,954)]),g=i&&i[E(943,935)],p=a&&a[i0(302,320,308,309)],v=f&&f[i0(303,307,306,309)],m=!!n.sharedData,C=[i0(300,321,324,310),...f0(n,x),")"],y=m?new Map:w.parseValueDestructure(i,x),z=x[E(945,949)](),[B,D]=x[i0(324,317,324,312)](),S=""+o(i0(327,322,326,313))+z,N=w.buildDestructureIdMap(y,m?S+i0(328,312,318,314):x[E(949,936)](i0(303,322,317,316))+"("+S+")",x.options[E(951,941)]);N[S]=null;const T=m?[x.sharedDataVForItemVar]:[S],u0=m?i0(315,326,318,318)+x[E(953,953)]+E(954,967)+x[E(955,959)](z)+">("+x[E(956,953)]+")":"",g0=""+o(i0(333,320,320,323))+z;T.push(", "+g0),p&&(N[p]=m?g0+i0(328,299,303,314):x[E(949,959)](i0(331,321,317,316))+"("+g0+")",N[g0]=null);const M=""+o("_for_index")+z;T[E(958,943)](", "+M),v&&(N[v]=m?M+E(948,942):x[E(949,954)](i0(305,328,314,316))+"("+M+")",N[M]=null);const w0=x.enterBlock(u),o0=fe(d,m?x[i0(331,316,324,322)]:void 0),T0=l&&h?fe(h,m?x.sharedDataVForItemVar:void 0):je(x[E(956,965)]);w0();const{selectorPatterns:p0,keyOnlyBindingPatterns:q0}=wi(u,d,N),R0=x[i0(309,341,315,325)](()=>{function G(R,t0,Z,e0){return U0(t0-578,e0)}const k=[];function V(R,t0,Z,e0){return U0(R- -775,Z)}return k[G(588,594,577,583)]("(",...T,G(580,596,596,596),de,A,u0,A),p0[V(-756,-750,-769)]||q0[V(-756,-762,-766)]?k[G(606,594,579,611)](...hn(u,x,!1,()=>{const R=[];function t0(e0,M0,ee,$o){return U0(M0-335,e0)}for(let e0=0;e0<p0[Z(851,876,871,863)];e0++){const{effect:M0}=p0[e0],ee=x.withEffect(()=>ta(M0,x));ee.length&&(R[Z(864,850,855,860)](A,r("render"+x[t0(366,355)]+t0(342,356)),Z(879,860,860,866),de),R.push(...ee),R[t0(365,351)](_e,A,"})"))}function Z(e0,M0,ee,$o){return U0($o-844,M0)}for(const{effect:e0}of q0)for(const M0 of e0[t0(343,358)])R.push(...ea(M0,x));return R})):k[V(-759,-744,-763)](...hn(u,x)),k.push(_e,A,"}"),k},N);D(),x[E(966,970)]();function i0(G,k,V,R){return U0(R-308,V)}let P=0;if(_&&(P|=1),c&&(P|=2),s&&(P|=4),!l)return[A,E(967,965)+b+i0(342,327,343,334),...$([r("create"+x[E(962,948)]+i0(347,336,339,335)),i0(324,346,326,336)],t,C,R0,o0,P?String(P):void 0,void 0)];return[A,i0(322,322,336,333)+b+E(968,975),...$([r(i0(352,330,324,337)+x[E(962,979)]+i0(355,324,343,338)),"null"],t,C,R0,o0,T0,P?String(P):void 0,void 0)];function E(G,k,V,R){return U0(G-942,k)}function fe(G,k){function V(Z,e0,M0,ee){return U0(Z- -6,M0)}if(!G)return!1;function R(Z,e0,M0,ee){return U0(ee- -369,e0)}const t0=x[R(-352,-351,-336,-352)](()=>f0(G,x),O());return[...ze(["(",")",", "],k||g||"_",p||"__",v||V(25,12,27)),V(26,19,27),A,u0,A,"return ",...t0,"}"]}function je(G){function k(V,R,t0,Z){return U0(V- -263,R)}return[...ze(["(",")",", "],G,"_","__"),k(-231,-214),A,'return "0"',"}"]}function O(){function G(R,t0,Z,e0){return U0(R-869,Z)}function k(R,t0,Z,e0){return U0(e0-147,R)}const V={};return p&&(V[p]=m?null:x[G(876,880,881)](k(172,142,160,155))+"("+p+")"),v&&(V[v]=m?null:x[k(141,166,140,154)]("toDisplayString")+"("+v+")"),y[k(180,192,175,180)]((R,t0)=>V[t0]=null),V}}function Ix(){const e=["BM9Kzq","y29UDgvUDa","kcKGpt4Gka","zw50zxjwrM9Y","zw50zxjty29Wzq","x2zVCL9PDgvT","lNzHBhvL","AgvSCgvY","Dg9eAxnWBgf5u3rYAw5N","zxHWCMvZC2LVBLbSDwDPBNm","y29UC3qG","C2HHCMvKrgf0yvzgB3jwyxi","id0GDxnLu2HHCMvKrgf0yvzgB3i8vw5Pu2HHCMvKrgf0ysWG","C2HHCMvKrgf0yvzgB3jdBgfZCW","C2HHCMvKrgf0yvzgB3jjDgvTvMfY","x2zVCL9RzxK","ChvZAa","D2L0AeLK","ksa9pIb7","BgvUz3rO","AgvSCgvYvhLWzq","rwzMzwn0","kcGPid0+ihS","B3bLCMf0Aw9UCW","zxHPDfzgB3i","y29UC3qGBG","id0G","rM9Y","BNvSBa","y3jLyxrL","uMvJEwnSzuzVCG","x19F","id0+ihS","zM9YrwfJAa"];return Ix=function(){return e},Ix()}function Fu(e,x){const{helper:r}=x,{value:t,element:o}=e;return[A,...$(r("setHtml"),"n"+o,f0(t,x))]}function Ge(e,x){const r=jx();return Ge=function(t,o){t=t-0;let n=r[t];if(Ge.wyFOjt===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Ge.keFJVY=i,e=arguments,Ge.wyFOjt=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Ge.keFJVY(n),e[f]=n),n},Ge(e,x)}function jx(){const e=["DhLWzq","kcKGpt4G","y29UC3qGBG","id0G","y3jLyxrL","AgvSCgvYvhLWzq","C2HHCMvKrgf0yq"];return jx=function(){return e},jx()}function Zi(e,x,r=!1){function t(l,g,p,v){return Ge(p-391,g)}function o(l,g,p,v){return Ge(v- -784,l)}const{helper:n,pageVar:i}=x,{condition:a,positive:f,negative:u,once:d}=e,[h,s]=O0(),b=["() => (",...Ju(a,x),")"];let c=_n(f,x),_=!1;return u&&(u[o(-782,-786,-784,-784)]===1?_=_n(u,x):_=[t(393,394,392),...Zi(u,x,!0)]),r||s(A,t(391,390,393)+e.id+o(-781,-780,-782,-781)),s(...$(n(t(391,393,395)+x[o(-779,-777,-781,-779)]+"If"),i,b,c,_,d&&"true")),h}function Ju(e,x){function r(t,o,n,i){return Ge(i- -368,n)}return e[r(-365,-362,-363,-362)]?f0(e,x):[JSON.stringify(en(e))]}function Yx(){const e=["y2XHC3m","C3r5Bgu","Ag92zxiTy2XHC3m","Aw5JBhvKzxm","z2v0uhjVCgvYDhLpChrPB25Z","z2vUq2fZDenVzgu","AM9PBG","zwXLBwvUDa","id0G","B3b0Aw9UCW","CMvUzgvYzxi","BMf0AxzLvMLLDW","Dw5ZAgLMDa","ChvZAa","C2HHCMvKrgf0yuLKzw50","AwrLBNq","BgvUz3rO","C3rYAw5NAwz5","C3bSAxq","BwfW","C2v0rwXLBwvUDenSyxnZ","C2v0rwXLBwvUDeHVDMvYq2XHC3m","C2v0rwXLBwvUDfn0EwXL","DhLWzq","C2v0","x19ZAgfYzwreyxrH","AxntDgf0Awm","y29UDgvUDa","ihX8iciI","y2fTzwXPEMu","Dg9iyw5KBgvYs2v5","DMfSDwvZ","C2HHCMvKrgf0yq","y29UC3qGCf8","CNvUt25nywLUuxvLDwu","khbF"];return Yx=function(){return e},Yx()}function K0(e,x){const r=Yx();return K0=function(t,o){t=t-0;let n=r[t];if(K0.sxihuQ===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};K0.SQMcie=i,e=arguments,K0.sxihuQ=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=K0.SQMcie(n),e[f]=n),n},K0(e,x)}function $u(e,x){const{helper:r}=x,{prop:{key:t,values:o,sharedData:n},tag:i}=e,a=t.content;if(![h(393,410,405),h(419,411,421),d(-636,-650,-636)][h(420,413,411)](a)){const s=x[d(-634,-639,-628)](i,a);if(!s)return[];const{name:b,property:c,className:_}=s,[l,g]=O0();g(A);const p=_?""+x[d(-633,-621,-639)](["n"+e.element],_,{dereference:!0})[h(414,416,406)](""):"n"+e[d(-631,-628,-629)];return g(c?p+"."+b+d(-630,-648,-626):p+"."+b+"("),g(...n?Fi(s,[x.sharedDataIdent(n.ident)],x):Fi(s,Ji(o,x),x)),c||g(")"),l}if(x[h(430,419,434)][h(405,420,438)]===h(439,421,413))return[];const f=a===h(405,410,411)||a===h(416,412,406),u=["n"+e[d(-631,-634,-633)],!1];function d(s,b,c,_){return K0(s- -638,c)}function h(s,b,c,_){return K0(b-410,c)}if(f&&u[h(424,422,423)](""+x.r("__sharedData")),n)u[h(425,423,424)](x[h(420,424,438)](n[d(-623,-640,-608)]));else if(f&&o[h(433,426,423)]===1&&o[0].isStatic){const s=o[0].content;u.push(JSON[d(-621,-610,-620)](s[h(412,428,413)](/\s+/)[d(-619,-615,-633)](b=>b)))}else u.push(Ji(o,x));return[A,...$([r(a===h(405,410,412)?h(427,430,446):a==="hover-class"?d(-617,-625,-631):h(445,432,428)),null],...u)]}function Fi(e,x,r){function t(o,n,i,a){return K0(i- -96,a)}return nu(e[t(-62,-77,-73,-63)])?r[t(-77,-104,-91,-106)](x,e.type):x}function Qu(e,x){function r(f,u,d,h){return K0(u- -436,d)}function t(f,u,d,h){return K0(f- -29,d)}const{helper:o,sharedDataIdent:n,r:i,helperType:a}=x;return[A,...$(o(t(-5,-16,-22)+a+"DynamicProps"),""+i(r(-398,-411,-406)),"n"+e[t(-22,-12,-31)],n(e.sharedData.ident))]}function Ji(e,x){function r(o,n,i,a){return K0(i-246,a)}function t(o,n,i,a){return K0(o-298,i)}return e[t(314,318,329)]===1?f0(e[0],x):ze(fn,...e[r(264,253,265,274)](o=>f0(o,x)))}function e2({prop:e},{helper:x,sharedDataIdent:r,feature:t}){if(!(t&32))return[];const[o,n]=O0();function i(d,h,s,b){return K0(d- -274,h)}n(A);const a=e[f(-11,-12,-11,-26)][0][i(-242,-254)][i(-259,-241)];function f(d,h,s,b){return K0(b- -57,h)}n(f(-18,-42,-13,-24)+a+i(-266,-253)+r(a)),n(A),n(x(i(-240,-244))+"(() => {");const u=e.values[0].content;return n(u+f(-6,-40,-26,-22)+a+")"),n("})"),o}t2(-873,-871);function t2(e,x,r,t){return Xe(x- -871,e)}function Xe(e,x){const r=Rx();return Xe=function(t,o){t=t-0;let n=r[t];if(Xe.qoAkKY===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Xe.puZDLy=i,e=arguments,Xe.qoAkKY=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Xe.puZDLy(n),e[f]=n),n},Xe(e,x)}function n2(e,x){if(!(x.feature&16))return[];function r(o,n,i,a){return Xe(o-524,a)}function t(o,n,i,a){return Xe(i-88,o)}if(x[r(525,526,527,528)][r(526,521,532,521)](e[r(527,523,532,527)].ast)){const{helper:o,r:n}=x;return[A,...$(o(t(88,91,92)),"n"+e[r(529,523,535,528)],["("+n("el")+": "+n(r(530,528,526,536))+t(90,94,95),...f0(e[t(93,95,91)],x),"("+n("el")+")","}"])]}return e[r(527,532,526,525)][r(532,532,528,527)]?[A,...$(x[r(533,530,537,534)](r(528,529,533,531)),"n"+e.element,x[t(98,98,98)](e.value[r(532,538,529,531)][t(102,105,99)]))]:[]}function x2(e){return[]}function Rx(){const e=["x3nLDfrLBxbSyxrLuMvM","B3b0Aw9UCW","AxndChbfEhbY","DMfSDwu","B25fBgvTzw50uMvM","zwXLBwvUDa","vw5PrwXLBwvUDa","ksa9pIb7","C2HHCMvKrgf0yq","AgvSCgvY","C2HHCMvKrgf0yuLKzw50","AwrLBNq"];return Rx=function(){return e},Rx()}function Vx(){const e=["zMvHDhvYzq","C2v0rwXLBwvUDfrLEhq","zMXHDe1HCa","Dw5ZAgLMDa","CgfYzw50","id0G","y2HPBgq"];return Vx=function(){return e},Vx()}function Se(e,x){const r=Vx();return Se=function(t,o){t=t-0;let n=r[t];if(Se.HvzRYV===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Se.eYPhjY=i,e=arguments,Se.HvzRYV=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Se.eYPhjY(n),e[f]=n),n},Se(e,x)}function r2(e,x){if(!(x[r(393,395,397,395)]&1))return[];function r(f,u,d,h){return Se(h-395,d)}const{helper:t}=x,{element:o,values:n,generated:i}=e,a=o2(n,x);return[A,...$(t(r(400,393,398,396)),(i?"x":"n")+o,a)]}function o2(e,x){function r(t,o,n,i){return Se(i- -969,t)}return e[r(-963,-970,-964,-967)]((t,o)=>{function n(a,f,u,d){return Se(f-171,u)}let i=f0(t,x);return o>0&&i[n(176,174,175)](" + "),i})}function i2(e,x){function r(o,n,i,a){return Se(i- -474,a)}function t(o,n,i,a){return Se(o-723,a)}return x[r(-470,-475,-474,-475)]&1?[A,"const x"+e[r(-470,-473,-470,-470)]+r(-467,-468,-469,-465)+x.helper(r(-470,-469,-468,-467)+x.helperType)+"(n"+e[t(727,728,728,729)]+")"]:[]}function ht(e,x){var r=kx();return ht=function(t,o){t=t-0;var n=r[t];if(ht.WPexdp===void 0){var i=function(d){for(var h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=",s="",b="",c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(var p=0,v=s.length;p<v;p++)b+="%"+("00"+s.charCodeAt(p).toString(16)).slice(-2);return decodeURIComponent(b)};ht.StCSon=i,e=arguments,ht.WPexdp=!0}var a=r[0],f=t+a,u=e[f];return u?n=u:(n=ht.StCSon(n),e[f]=n),n},ht(e,x)}function a2(e,x){function r(o,n,i,a){return ht(i-427,a)}function t(o,n,i,a){return ht(n- -533,o)}return x[t(-531,-533)]&8?[A,...$(x[t(-534,-532)](t(-529,-531)),"n"+e[r(428,429,430,431)],[t(-532,-529),...f0(e[t(-530,-528)].exp,x),")"])]:[]}function kx(){var e=["zMvHDhvYzq","AgvSCgvY","yxbWBhLfBgvTzw50vLnOB3C","zwXLBwvUDa","kcKGpt4Gka","zgLY"];return kx=function(){return e},kx()}function f2(e,x,r,t){return Ze(e-25,x)}function Kx(){const e=["yxbWBhLfBgvTzw50rhLUyw1Py01VzgvS","zMvHDhvYzq","AgvSCgvY","kcKGpt4Gka","C2HHCMvKrgf0yuLKzw50","C2HHCMvKrgf0yq","zxzLBNrjzgvUDa","BgvUz3rO","BwfW","y29UDgvUDa","oIb0CNvL","AM9PBG","AxnuuW","kf92ywX1ztOGyw55kq","id0+icG"];return Kx=function(){return e},Kx()}function Ze(e,x){const r=Kx();return Ze=function(t,o){t=t-0;let n=r[t];if(Ze.aaZyxL===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Ze.BBjwDx=i,e=arguments,Ze.aaZyxL=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Ze.BBjwDx(n),e[f]=n),n},Ze(e,x)}const c2={text:"applyElementTextModel",dynamic:f2(25,25)};function u2(e,x){function r(f,u,d,h){return Ze(h-501,f)}function t(f,u,d,h){return Ze(u- -706,h)}if(!(x[t(-713,-705,-699,-701)]&4))return[];const{modelType:o,element:n,dir:{exp:i,modifiers:a}}=e;return[A,...$(x[r(499,501,508,503)](c2[o]),"n"+n,[t(-708,-703,-706,-699),...f0(i,x),")"],x[r(498,505,499,505)](i[r(502,511,503,506)].vModel[t(-692,-700,-707,-694)]),a[t(-706,-699,-697,-697)]?"{ "+a[t(-692,-698,-697,-702)](f=>f[t(-704,-697,-693,-694)]+t(-701,-696,-701,-698))[r(512,513,508,512)](",")+" }":void 0)]}function s2(e,x){function r(t,o,n,i){return W0(t-356,n)}switch(e.name){case r(356,347,359):return a2(e,x);case"model":return u2(e,x);default:return[]}}function W0(e,x){const r=Gx();return W0=function(t,o){t=t-0;let n=r[t];if(W0.sqwSXC===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};W0.RZBqYY=i,e=arguments,W0.sqwSXC=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=W0.RZBqYY(n),e[f]=n),n},W0(e,x)}function Gx(){const e=["C2HVDW","yMXVy2S","BgvUz3rO","zwXLBwvUDa","BwfW","D2L0AfzHCg9YrgLYzwn0AxzLCW","zgLYzwn0AxzL","zxHW","yxjN","Bw9KAwzPzxjZ","y29UDgvUDa","y29Uy2f0","BNvSBa","C3rYAw5NAwz5","oIb0CNvL","AM9PBG","zMLSDgvY","DhLWzq"];return Gx=function(){return e},Gx()}function Xx(e,x){function r(o,n,i,a){return W0(n-90,o)}const t=_2(e,x[r(92,91)].operation);return t[r(85,92)]?l2(t,x):[]}function l2(e,x){function r(u,d,h,s){return W0(u-484,d)}function t(u,d,h,s){return W0(u- -193,h)}const{helper:o}=x,n="n"+e[0][r(487,483)],i=e[t(-189,-185,-194)](f),a=ze(fn,...i);return[A,...$(o(r(489,487)),n,a)];function f({dir:u,name:d,asset:h}){const s=h?K.toValidAssetId(d,g(-414,-406,-413)):f0(L.extend(K.createSimpleExpression(d,!1),{ast:null}),x),b=u.exp&&["() => ",...f0(u[l(633,640,627,635)],x)],c=u.arg&&f0(u[l(631,631,644,636)],x),_=!!u[g(-395,-403,-412)][g(-413,-410,-401)]&&["{ ",d2(u[l(639,645,643,637)][l(636,639,635,632)](p=>p[g(-400,-402,-410)]))," }"];function l(p,v,m,C){return W0(C-628,v)}function g(p,v,m,C){return W0(v- -412,m)}return ze(fn[l(647,635,634,639)](g(-391,-400,-408)),s,b,c,_)}}function d2(e){function x(t,o,n,i){return W0(n- -350,o)}function r(t,o,n,i){return W0(t- -512,i)}return e.map(t=>(K.isSimpleIdentifier(t)?t:JSON[x(-346,-340,-337)](t))+r(-498,-501,-499,-498))[r(-497,-490,-501,-502)](", ")}function _2(e,x){function r(o,n,i,a){return W0(i- -574,a)}function t(o,n,i,a){return W0(i- -188,a)}return x[t(-170,-163,-172,-174)](o=>o[r(-549,-562,-557,-552)]===13&&o[t(-182,-177,-185,-189)]===e&&!o.builtin)}function h2(e,x){function r(s,b,c,_){return m0(b-476,c)}const{helper:t,sharedDataIdent:o}=x,{root:n,slots:i,sharedData:a}=e,f=b2(i,x),u=[o(a[r(469,476,477)]),void 0,f,n?h(-116,-100,-115,-108):!1];let d=t(r(493,478,485)+x[h(-107,-98,-111,-109)]+h(-113,-97,-86,-105));function h(s,b,c,_){return m0(b- -101,_)}return e[r(473,481,468)]&&!e[r(494,481,467)][r(472,482,490)]?d=t("create"+x.helperType+"DynamicComponent"):e[r(468,483,492)]&&(d=t(h(-87,-99,-111,-82)+x[h(-117,-98,-97,-110)]+r(498,484,466)),u[h(-87,-92,-93,-94)](x[r(482,486,477)])),[A,r(500,487,488)+e.id+h(-109,-89,-75,-80),...$(d,...u),...Xx(e.id,x)]}function b2(e,x){function r(n,i,a,f){return m0(f- -286,i)}function t(n,i,a,f){return m0(i-944,n)}if(!e[t(969,957)])return;const o=e[0];return o[r(-260,-282,-264,-272)]===0?Zx(o,x,e.length>1?e[t(979,959)](1):void 0):Zx({slots:{}},x,e)}function Zx({slots:e},x,r){const t=Object.keys(e)[n(922,907,892,902)](i=>[JSON.stringify(i)+": ",...Jx(e[i],x)]);function o(i,a,f,u){return m0(a-651,i)}function n(i,a,f,u){return m0(u-886,a)}return r&&t[o(669,668)](["'$': ",...g2(r,x),o(677,669)+x[n(899,897,868,889)]+n(897,917,913,905)]),ze(Ki,...t)}function g2(e,x){function r(o,n,i,a){return m0(o-779,i)}function t(o,n,i,a){return m0(o-447,i)}return ze(qu,...e[t(463,482,481)](o=>o[r(793,801,799)]===0?Zx(o,x):o[t(461,446,457)]===4?o[t(467,452,484)][t(468,460,486)]:Fx(o,x,!0)))}function Fx(e,x,r=!1){function t(n,i,a,f){return m0(i- -342,f)}let o;switch(e[t(-307,-328,-331,-332)]){case 1:o=p2(e,x);break;case 2:o=v2(e,x);break;case 3:o=C2(e,x);break}return r?["() => (",...o,")"]:o}function p2(e,x){function r(i,a,f,u){return m0(u-981,f)}const{name:t,fn:o}=e;function n(i,a,f,u){return m0(u- -495,f)}return $(x[n(-487,-457,-470,-473)]("create"+x.helperType+r(1010,990,1005,1004)),f0(t,x),Jx(o,x))}function v2(e,x){const r=x[_(-90,-86,-74)](),{name:t,fn:o,loop:n}=e,{value:i,key:a,index:f,source:u}=n,d=i&&i[_(-93,-108,-88)],h=a&&a[_(-93,-93,-88)],s=f&&f[_(-93,-78,-107)],b={};d&&(b[d]=d),h&&(b[h]=h),s&&(b[s]=s);function c(p,v,m,C){return m0(C- -723,v)}function _(p,v,m,C){return m0(p- -114,m)}const l=$(x[_(-92,-87,-99)]("create"+x.helperType+"DynamicSlot"),x[_(-89,-108,-70)](()=>{function p(C,y,z,B){return m0(y-318,B)}const v=x[p(343,344,351,337)](o),m=f0(t,x);return v(),m},b),x.withId(()=>Jx(o,x),b)),g=[...$(x[_(-92,-97,-74)](_(-112,-120,-120)+x[_(-111,-108,-91)]+_(-87,-94,-74)),f0(u,x),[...ze(["(",")",", "],x[_(-86,-102,-105)],"_","__")," => {",de,A,_(-85,-87,-66)+x[c(-678,-678,-701,-693)]+" = useSharedDataVFor<UniSharedData, "+x[c(-695,-684,-710,-692)](r)+">("+x[_(-86,-106,-88)]+")",A,"return ",...l,A,_e,"}"])];return x[_(-82,-87,-97)](),g}function C2(e,x){const{condition:r,positive:t,negative:o}=e;return[...f0(r,x),de,A,"? ",...Fx(t,x),A,": ",...o?[...Fx(o,x)]:["null"],_e]}function Jx(e,x){let r=!1,t,o,n;const{props:i,key:a,node:f}=e,u=new Set;i&&(r=!!i[h(992,991,986,1004)])&&([n,o]=x.enterScope());const d={};function h(c,_,l,g){return m0(l-953,g)}u.forEach(c=>d[c]=r?t+"["+JSON[b(806,805)](c)+"]":null);let s=x[b(797,815)](()=>_n(e,x,[t]),d);function b(c,_,l,g){return m0(c-772,_)}return o&&o(),a&&(s=[b(807,816),de,A,h(995,975,989,979),...$(x[b(794,798)](b(809,810)),[b(810,794),...f0(a,x)],s),_e,A,"}"]),f[h(1008,1009,992,1005)]===1&&w.needsVaporCtx(e)&&(s=[x[h(955,969,975,976)]("with"+x[h(954,957,956,935)]+h(991,983,993,1002))+"(",...s,")"]),s}function m0(e,x){const r=$x();return m0=function(t,o){t=t-0;let n=r[t];if(m0.wVvbkj===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};m0.SIpBGj=i,e=arguments,m0.wVvbkj=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=m0.SIpBGj(n),e[f]=n),n},m0(e,x)}function $x(){const e=["AwrLBNq","Dhj1zq","y3jLyxrL","AgvSCgvYvhLWzq","q29TCg9Uzw50","zhLUyw1PyW","AxntDgf0Awm","yxnZzxq","q29TCg9Uzw50v2L0AezHBgXIywnR","Dw5ZAgLMDa","CgfNzvzHCG","y29UC3qGBG","id0G","BgvUz3rO","C2XVDfr5Cgu","C2XPy2u","BwfW","ChvZAa","yxmGvNvL","rhLUyw1Py1nSB3rtB3vYy2vbCNjHEq","C2XVDhm","y29UDgvUDa","AgvSCgvY","rhLUyw1Py1nSB3q","zw50zxjwrM9Y","D2L0AeLK","zw50zxjcBg9JAW","rM9Yu2XVDhm","C2HHCMvKrgf0yvzgB3jjDgvTvMfY","y29UC3qG","C2HHCMvKrgf0yvzgB3jwyxi","C2HHCMvKrgf0yvzgB3jdBgfZCW","zxHPDfzgB3i","yxn0","C3rYAw5NAwz5","kcKGpt4GEW","CMv0DxjUia","y3jLyxrLs2v5zwrgCMfNBwvUDa","kcKGpt4G","DhLWzq","vMfWB3jdDhG"];return $x=function(){return e},$x()}function bt(e,x){const r=Qx();return bt=function(t,o){t=t-0;let n=r[t];if(bt.ZjTvel===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};bt.GTElob=i,e=arguments,bt.ZjTvel=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=bt.GTElob(n),e[f]=n),n},bt(e,x)}function Qx(){const e=["kcKGpt4Gka","y29UC3qGBG","id0G","y3jLyxrL","AgvSCgvYvhLWzq","u2XVDa","BNvSBa","Dhj1zq"];return Qx=function(){return e},Qx()}function m2(e,x){const{helper:r,pageVar:t}=x,{id:o,name:n,fallback:i,noSlotted:a,once:f}=e,[u,d]=O0(),h=n.isStatic?f0(n,x):[s(-479,-480,-483,-479),...f0(n,x),")"];function s(_,l,g,p){return bt(p- -479,l)}function b(_,l,g,p){return bt(p-169,l)}let c;return i&&(c=_n(i,x)),d(A,b(170,173,170,170)+o+b(174,173,175,171),...$(r(b(169,172,173,172)+x[s(-473,-477,-473,-475)]+b(170,174,175,174)),t,h,b(177,174,175,175),c,a&&s(-469,-472,-475,-472),f&&s(-474,-471,-468,-472))),u}function I0(e,x){const r=er();return I0=function(t,o){t=t-0;let n=r[t];if(I0.NXPJDe===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};I0.BcZsnT=i,e=arguments,I0.NXPJDe=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=I0.BcZsnT(n),e[f]=n),n},I0(e,x)}function $i(e,x){const[r,t]=O0();for(const o of e)t(...Qi(o,x));return r}function Qi(e,x){function r(n,i,a,f){return I0(a-617,f)}const[t,o]=O0();return w.isBlockOperation(e)&&e[r(626,612,617,610)]&&o(...w2(e,x)),o(...ea(e,x)),t}function er(){const e=["CgfYzw50","DhLWzq","vw5Oyw5KBgvKig9WzxjHDgLVBIb0ExbLigLUigDLBK9WzxjHDgLVBJOG","zMXHDe1HCa","D2L0AevMzMvJDa","D2L0AeLK","BgvUz3rO","zMLSDgvY","CMvUzgvY","kcGPid0+ia","AM9PBG","AgvSCgvY","C2v0","AgvSCgvYvhLWzq","sw5Zzxj0Aw9Uu3rHDgu","BNvSBa","Dhj1zq","zMvHDhvYzq","y29UC3qGBG","id0G","z2v0","sw5Zzxj0Aw9UugfYzw50"];return er=function(){return e},er()}function ea(e,x){function r(o,n,i,a){return I0(i-967,n)}function t(o,n,i,a){return I0(i- -797,o)}switch(e[r(966,964,968)]){case 2:return $u(e,x);case 3:return Qu(e,x);case 4:return r2(e,x);case 5:return Gu(e,x);case 6:return Xu(e,x);case 7:return Fu(e,x);case 8:return n2(e,x);case 9:return Ou(e,x);case 10:return Wu(e,x);case 15:return Zi(e,x);case 16:return Zu(e,x);case 11:return h2(e,x);case 14:return x2();case 12:return m2(e,x);case 13:return s2(e,x);case 17:return i2(e,x);case 18:return z2(e,x);case 19:return e2(e,x);default:const o=e;throw new Error(t(-788,-797,-795)+o)}}function y2(e,x,r){const{helper:t}=x,o=e[u(-330,-322,-324,-334)](l=>l.expressions),[n,i,a]=O0(),f=r===void 0;function u(l,g,p,v){return I0(l- -333,v)}let d=0;const{ids:h,frag:s,varNames:b}=ju(x,o,f);for(let l=0;l<e.length;l++){const g=e[l];d+=g.operations.length;const p=x[c(-864,-860,-858)](()=>x[c(-855,-850,-857)](()=>ta(g,x),h));l>0&&p[u(-327,-322,-322,-333)]&&i(A),n[n[u(-327,-337,-337,-327)]-1]===")"&&p[0]==="("&&i(";"),i(...p)}function c(l,g,p,v){return I0(p- -862,g)}const _=n[c(-853,-859,-855)](l=>l===A)[u(-327,-329,-320,-323)];return n.length&&(_>1||d>1||s[c(-867,-854,-856)]>0)&&(a("{",de,A),i(_e,A,"}"),e.length||a(A)),e[c(-860,-847,-856)]&&n[u(-327,-335,-337,-337)]&&(a(A,t(u(-325,-322,-336,-327)+x.helperType+"Effect")+u(-324,-331,-320,-333)),i(")")),!f&&b.length&&a(A,"let ",b[u(-323,-333,-328,-332)](", ")),r&&i(...x[u(-328,-333,-320,-337)](r,h)),n}function ta({operations:e},x){const[r,t]=O0(),o=$i(e,x);function n(a,f,u,d){return I0(f- -605,a)}function i(a,f,u,d){return I0(d-172,f)}return o[n(-600,-598)](a=>a===A)[i(168,187,177,178)]>1?t(...o):t(...o[i(174,172,179,179)](a=>a!==A)),r}function w2(e,x){const{parent:r,anchor:t,append:o,last:n}=e;function i(a,f,u,d){return I0(f-605,d)}return[A,...$(x[i(624,616,614,605)](i(620,617,621,626)+x[i(625,618,627,616)]+i(608,619,619,619)),"n"+r,t==null?void 0:t===-1?"0":o?t===0?i(614,620,626,630):""+t:"n"+t,n&&i(630,621,613,616))]}function z2({id:e},x){function r(o,n,i,a){return I0(i-739,a)}function t(o,n,i,a){return I0(o-112,a)}return x[t(129,139,138,125)]&1?[A,t(130,124,123,119)+e+r(755,749,758,761)+x[r(752,756,750,748)](r(761,767,759,769)+x[r(752,754,752,754)]+r(767,752,760,753))+"()"]:[]}function tr(e,x,r,t){return gt(r- -391,x)}function Ot(e,x,r,t){return gt(x- -863,e)}function nr(){const e=["Dgv4Da","yNv0Dg9U","y29TBwvUDa","DMLLDW","Aw1Hz2u","DMfSDwu","Dw5RBM93BG","zxH0oNn0EwXL"];return nr=function(){return e},nr()}function gt(e,x){const r=nr();return gt=function(t,o){t=t-0;let n=r[t];if(gt.QHCUUw===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};gt.CxZQUh=i,e=arguments,gt.QHCUUw=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=gt.CxZQUh(n),e[f]=n),n},gt(e,x)}const G0={TEXT:Ot(-862,-863),BUTTON:tr(-394,-392,-390),COMMENT:Ot(-865,-861),ELEMENT:"element"},na=[Ot(-863,-860),Ot(-864,-863),Ot(-863,-859)],E0={VALUE_ATTR:Ot(-862,-858),EMPTY_STRING:"",TEXT_PLACEHOLDER:w.TEXT_PLACEHOLDER,UNKNOWN_COMMENT:tr(-387,-386,-385),EXT_STYLE_MARKER:tr(-383,-384,-384)},pt={ELEMENT:"e",STYLE:"s",TEMPLATE:"t",FACTORY:"f"};function un(e,x,r,t){return F(e- -720,t)}const xa=sn(-957,-951,-970);sn(-933,-950,-941);const xr=/\s/,S2=/[\s=]/,rr=/\s*\/$/;function or(){const e=["pceTlq","ls0+","BgvUz3rO","Aw5KzxG","CgfYC2u","AhrTBa","CgfYC2vuywC","ChvZAa","BM9Kzq","zw5Ksw5KzxG","CgfYC2vuzxH0","Aw5KzxHpzG","C3rHCNrZv2L0Aa","CgfYC2vdB21Tzw50","CgfYC2veB2n0ExbL","CgfYC2vfBgvTzw50","y29TBwvUDa","C3vIC3rYAw5N","CgfYC2vuywDdB250zw50","zwXLBwvUDa","zMLUze1HDgnOAw5Nrw5KvgfN","Dgv4Da","DhLWzq","y29UDgvUDa","Bwf4lwXPBMvZ","DgvZDa","CMvWBgfJzq","DhjPBq","C2vHCMnO","CgfYC2vbDhrYAwj1DgvZ","C2TPCfDOAxrLC3bHy2u","AxntCgvJAwfSqxr0CMLIDxrL","CgfYC2vbDhrYAwj1DgvwywX1zq","DMfSDwu","y2XHC3m","C3r5Bgu","Ag92zxiTy2XHC3m"];return or=function(){return e},or()}function sn(e,x,r,t){return F(x- -951,r)}function F(e,x){const r=or();return F=function(t,o){t=t-0;let n=r[t];if(F.QjnWII===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};F.DDZXoH=i,e=arguments,F.QjnWII=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=F.DDZXoH(n),e[f]=n),n},F(e,x)}class Jo{constructor(x){function r(o,n,i,a){return F(o- -496,a)}function t(o,n,i,a){return F(i-981,a)}this.html=x,this[t(986,970,983,967)]=x[t(987,997,983,999)],this[r(-493,-505,-511,-504)]=0}[un(-716,-712,-727,-709)](){const x=[];for(this[t(-966,-990,-957,-974)]=0;this[t(-956,-969,-992,-974)]<this.length;)if(this[t(-979,-987,-956,-972)][this.index]==="<"){const o=this[r(677,690,671,677)]();o?(x[t(-958,-964,-965,-970)](o[r(686,675,666,679)]),this[r(671,676,663,674)]=o[r(668,692,673,680)]):this[t(-990,-958,-957,-974)]++}else{const o=this[r(695,682,691,681)]();o&&x[r(660,660,688,678)](o)}function r(o,n,i,a){return F(a-671,i)}function t(o,n,i,a){return F(a- -977,i)}return x}parseText(){function x(a,f,u,d){return F(u-245,d)}const r=this.index,t=this[n(425,409,426,412)][n(416,415,417,432)]("<",r),o=t===-1?this[x(233,236,247,239)]:t;function n(a,f,u,d){return F(f-404,d)}if(r===o)return null;const i=this[n(392,409,394,397)].substring(r,o);return this.index=o,{type:"text",content:i}}[un(-714,-698,-710,-709)](){function x(t,o,n,i){return F(n- -839,i)}function r(t,o,n,i){return F(t- -777,o)}return this[r(-772,-757)][x(-814,-828,-827,-829)](xa,this[x(-852,-830,-836,-841)])?this[r(-764,-780)]():this[r(-772,-757)][x(-823,-842,-827,-810)]("<!",this[r(-774,-784)])?this[x(-820,-823,-825,-815)]():this[r(-762,-774)]()}parseComment(){const x=this.index+xa[t(-323,-341,-332)],r=this[t(-351,-338,-345)][o(-545,-524,-538,-527)](t(-341,-342,-347),x);function t(n,i,a,f){return F(i- -343,a)}function o(n,i,a,f){return F(f- -538,i)}return r===-1?null:{node:{type:t(-317,-327,-334),content:this[o(-530,-531,-517,-533)][o(-508,-522,-539,-521)](x,r)},endIndex:r+3}}[un(-706,-721,-722,-707)](){const x=this[t(-514,-527,-530,-518)][r(691,701,683,707)](">",this.index+2);function r(o,n,i,a){return F(n-690,a)}function t(o,n,i,a){return F(n- -532,a)}return x===-1?null:{node:{type:t(-520,-516,-501,-533),content:""},endIndex:x+1}}[sn(-939,-936,-922)](){function x(h,s,b,c){return F(b- -734,h)}function r(h,s,b,c){return F(b- -191,s)}const t=this[x(-737,-715,-729)][x(-737,-714,-723)](">",this[r(-201,-189,-188)]);if(t===-1)return null;const o=this[x(-713,-720,-729)][x(-701,-724,-717)](this[r(-182,-192,-188)]+1,t),{tag:n,attrs:i,selfClosing:a}=this[r(-172,-165,-173)](o);if(a)return{node:{type:x(-712,-731,-715),tag:n,attrs:i,children:[]},endIndex:t+1};const f=this[r(-152,-187,-171)](n,t+1);if(f===-1)return{node:{type:x(-706,-727,-715),tag:n,attrs:i,children:[]},endIndex:t+1};const u=this[r(-176,-174,-186)][x(-719,-720,-717)](t+1,f),d=u?new Jo(u)[r(-186,-196,-187)]():[];return n===r(-155,-160,-170)&&d.length===1&&d[0][x(-728,-700,-712)]==="text"&&d[0][x(-725,-724,-711)].length===1&&d[0][r(-155,-182,-168)][0]!==`
-`&&(i[x(-720,-706,-710)]="1"),{node:{type:"element",tag:n,attrs:i,children:d},endIndex:f+("</"+n+">")[x(-724,-744,-732)]}}[sn(-937,-933,-943)](x){function r(d,h,s,b){return F(d- -79,b)}const t=rr[r(-54,-43,-68,-54)](x),o=x[u(-308,-318,-297)](rr,"")[u(-307,-298,-299)]();if(!o)return{tag:"",attrs:{},selfClosing:t};const n=o[r(-51,-35,-44,-44)](xr),i=n===-1?o:o[r(-62,-68,-64,-81)](0,n);if(n===-1)return{tag:i,attrs:{},selfClosing:t};const a=o[r(-62,-72,-60,-67)](n+1),f=this[u(-305,-313,-306)](a);function u(d,h,s,b){return F(d- -334,s)}return{tag:i,attrs:f,selfClosing:t}}[un(-691,-677,-678,-684)](x){const r={};let t=0;const o=x[i(-64,-74,-62,-46)];for(;t<o&&(t=this[i(-36,-33,-34,-51)](x,t),!(t>=o));){const a=t;for(;t<o&&!S2[n(653,658,666)](x[t]);)t++;if(t===a)break;const f=x[i(-48,-32,-47,-58)](a,t);if(t=this[i(-19,-23,-34,-52)](x,t),t>=o||x[t]!=="="){this[i(-24,-32,-33,-30)](f)||(r[f]=f);continue}if(t++,t=this.skipWhitespace(x,t),t>=o){this[i(-37,-46,-33,-44)](f)||(r[f]="");continue}const u=this[n(658,670,673)](x,t);(!this[n(656,678,672)](f)||u[n(676,660,674)][n(663,664,668)]()!=="")&&(r[f]=u[n(668,687,674)]),t=u[i(-54,-50,-55,-37)]}function n(a,f,u,d){return F(u-641,f)}function i(a,f,u,d){return F(u- -64,d)}return r}parseAttributeValue(x,r){function t(i,a,f,u){return F(f-652,i)}const o=x[r];function n(i,a,f,u){return F(i- -393,f)}if(o==='"'||o==="'"){const i=r+1;let a=i;for(;a<x[t(646,645,654)]&&x[a]!==o;)a++;return{value:x[t(672,679,669)](i,a),endIndex:a<x[t(669,665,654)]?a+1:a}}else{const i=r;let a=i;for(;a<x[t(642,657,654)]&&!xr[t(667,668,677)](x[a]);)a++;return{value:x[n(-376,-383,-395)](i,a),endIndex:a}}}isSpecialAttribute(x){function r(o,n,i,a){return F(i- -773,o)}function t(o,n,i,a){return F(a- -148,i)}return x==="id"||x===t(-132,-114,-106,-114)||x===r(-748,-730,-738)||x===t(-128,-123,-106,-112)}skipWhitespace(x,r){for(;r<x[t(-763,-767,-773,-761)]&&xr.test(x[r]);)r++;function t(o,n,i,a){return F(a- -763,o)}return r}findMatchingEndTag(x,r){const t="<"+x,o="</"+x+">";function n(u,d,h,s){return F(s-999,h)}function i(u,d,h,s){return F(s- -464,u)}let a=1,f=r;for(;a>0&&f<this[i(-468,-443,-462,-462)];){const u=this[n(1008,989,988,1004)][i(-461,-456,-442,-453)](t,f),d=this[n(996,1018,1010,1004)][i(-443,-461,-470,-453)](o,f);if(d===-1)break;if(u!==-1&&u<d){const h=this[n(1020,1008,1023,1004)][n(1024,1016,1003,1010)](">",u);if(h!==-1&&h<d){const s=this[n(1004,1018,986,1004)][i(-458,-444,-439,-447)](u+1,h);rr[i(-440,-429,-430,-439)](s)||a++}f=h+1}else{if(a--,a===0)return d;f=d+o.length}}return-1}}function ra(e){function x(t,o,n,i){return he(o- -294,i)}function r(t,o,n,i){return he(n-271,o)}return!e||e.length!==1||e[0][x(-294,-294,-292,-294)]!==G0[r(269,275,272)]?E0.EMPTY_STRING:e[0][x(-298,-292,-292,-285)]===" "?E0[x(-297,-291,-289,-284)]:e[0][x(-288,-292,-297,-287)]||E0.EMPTY_STRING}function ir(e){function x(t,o,n,i){return he(n-749,i)}function r(t,o,n,i){return he(i-418,t)}return!e||Object[r(425,424,429,423)](e)[x(747,752,755,749)]===0||Object[r(416,422,425,423)](e)[r(428,424,416,424)]===1&&E0.EXT_STYLE_MARKER in e}function B2(e,x){const r=L.extend({},e);return x&&(r[E0.VALUE_ATTR]=x),r}function oa({r:e,options:x}){const r=e(o(765,772,772,773))+": "+e(o(780,772,768,774)),t=x[o(774,774,774,775)]===o(773,784,777,776)?": "+e("UniElement"):": "+e(o(782,775,781,777));function o(n,i,a,f){return he(f-766,a)}return{paramType:r,returnType:t}}function he(e,x){const r=ar();return he=function(t,o){t=t-0;let n=r[t];if(he.unnQfo===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};he.XuFIgU=i,e=arguments,he.unnQfo=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=he.XuFIgU(n),e[f]=n),n},he(e,x)}function ln(e){function x(r,t,o,n){return he(t- -289,o)}return""+pt.ELEMENT+e[x(-271,-277,-275)]++}function ar(){const e=["DhLWzq","vevyva","y29UDgvUDa","ru1qvfLFu1rssu5h","CMvWBgfJzq","A2v5CW","BgvUz3rO","CgfNzq","vw5PugfNzq","CMvUzgvYzxi","zwXLBwvUDa","vw5PtMf0AxzLqMfZzvzPzxC","DgvTCgXHDgvwyxjPywjSzunVDw50zxi","u1rzteu","DgvTCgXHDgvtDhLSzunVDw50zxi"];return ar=function(){return e},ar()}function D2(e,x,r=!0){function t(o,n,i,a){return c0(o-678,a)}return r&&x[t(678,691,655,692)](),aa(e,x)}function ia(){return{variableName:"",statements:[]}}function aa(e,x){const r=x[o(599,572,577)][n(-88,-114,-102)]==="nativeView",t=x[n(-102,-87,-101)];function o(i,a,f,u){return c0(f-576,i)}function n(i,a,f,u){return c0(f- -104,a)}switch(e[o(574,579,580)]){case G0[n(-88,-90,-99)]:return t.inTextElement?r?ia():A2(e[o(574,564,582)]||E0[n(-87,-101,-97)],x):L2(e[n(-121,-117,-98)]||E0.EMPTY_STRING,x);case G0[o(586,583,584)]:return fa(e[o(560,607,582)]||E0[o(604,607,583)],x);case G0[o(569,575,585)]:{if(t[n(-69,-113,-94)]&&r)return e[o(604,595,587)]===n(-80,-89,-92)&&(t.enterTextElement(),ur(e,x),t[o(583,581,589)]()),ia();if(e[n(-72,-104,-93)]===n(-102,-96,-92)){t[n(-106,-111,-90)]();const i=ur(e,x);return r&&t[n(-110,-74,-89)]===1&&t[n(-81,-65,-88)]()&&i[o(614,612,593)][o(586,607,594)](t[n(-111,-88,-88)]()),t.exitTextElement(),t.textElementNames[n(-64,-69,-85)](),i}return ur(e,x)}default:return fa(E0[o(591,595,596)],x)}}function c0(e,x){const r=fr();return c0=function(t,o){t=t-0;let n=r[t];if(c0.GEpOmE===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};c0.HbUMnS=i,e=arguments,c0.GEpOmE=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=c0.HbUMnS(n),e[f]=n),n},c0(e,x)}function Rt(e){function x(r,t,o,n){return c0(o-291,r)}return E0.EMPTY_STRING===e||e===E0[x(305,299,312)]}function fr(){const e=["CMvZzxruzw1WBgf0zunVDw50zxjZ","B3b0Aw9UCW","CMvUzgvYzxi","CMvUzgvYvgv4DenVBNrLEhq","DhLWzq","vevyva","y29UDgvUDa","ru1qvfLFu1rssu5h","q09ntuvova","ruXftuvova","Aw5uzxH0rwXLBwvUDa","DgfN","Dgv4Da","zxHPDfrLEhrfBgvTzw50","zw50zxjuzxH0rwXLBwvUDa","Dgv4DevSzw1LBNrdB3vUDa","z2vUsw5JCMvHC2voyxrPDMvwAwv3q291BNrLCG","C3rHDgvTzw50CW","ChvZAa","Cg9W","vu5ltK9xtL9dt01nru5u","vevyvf9qtefdruHpterfuG","CMvWBgfJzq","y29UC3qG","id0G","z2vUq3jLyxrLvgfN","C2v0vgv4Da","Dgv4DevSzw1LBNroyw1LCW","y29TBwvUDa","C3rYAw5NAwz5","C29Tzq","zw50CMLLCW","Axnjz25VCMvbDhrY","BMf0AxzLvMLLDW","rvHux1nuwuXfx01buKTfuG","DMfSDwu","C3r5Bgu","CgfYC2vtDgf0AwntDhLSzq","ywXS","zM9YrwfJAa","C2v0DgvYq29Kzq","CgXHDgzVCM0","y29Kzq","kc4QpYK","wYCIxq","BgvUz3rO","z2vUqxbWzw5Kq2HPBgq","DMfYAwfIBgvoyw1L","zMvHDhvYzq","yxr0CNm","y2HPBgrYzw4"];return fr=function(){return e},fr()}function cr(e){function x(t,o,n,i){return c0(o- -661,n)}function r(t,o,n,i){return c0(t- -219,o)}return e[r(-197,-174)](/&lt;/g,"<")[r(-197,-175)](/&gt;/g,">").replace(/&quot;/g,'"')[x(-646,-639,-615)](/&#39;/g,"'")[r(-197,-179)](/&amp;/g,"&")}function L2(e,x){const r=ln(x),t=[o(-473,-489)+r+n(648,646)+x[o(-494,-487)](o(-506,-500))];function o(i,a,f,u){return c0(a- -512,i)}function n(i,a,f,u){return c0(a-622,i)}return Rt(e)||t[o(-514,-494)](r+"."+x.r(o(-461,-486))+"("+JSON.stringify(cr(e))+")"),{variableName:r,statements:t}}function A2(e,x){const r=ln(x),t=[];if(!Rt(e)){const n=x[o(501,503,495,500)][o(507,524,519,537)].slice(-1)[0];t.push((n!=null?n:r)+"."+x.r(o(534,496,518,505))+"("+JSON.stringify(cr(e))+")")}function o(n,i,a,f){return c0(a-492,f)}return{variableName:"",statements:t}}function fa(e,x){function r(i,a,f,u){return c0(i- -409,u)}function t(i,a,f,u){return c0(u-310,a)}const o=ln(x),n=["const "+o+" = "+x[t(313,356,347,335)](t(352,350,322,338),JSON[r(-380,-394,-377,-370)](e))];return{variableName:o,statements:n}}const M2={[G0.TEXT]:N2};function ur(e,x){const{tag:r,attrs:t,children:o}=e,n={tag:r,attrs:t,children:o},i=M2[r];return i?i(n,x):P2(n,x)}function N2(e,x){const{tag:r,attrs:t,children:o}=e;function n(i,a,f,u){return c0(u- -34,i)}if(o&&o[n(15,19,-11,-4)](i=>i[n(-17,-33,-38,-30)]===G0[n(-9,-22,-29,-25)]))return sr(r,x,t,o);{const i=ra(o),a=B2(t,i);return sr(r,x,a,void 0)}}function P2(e,x){const{tag:r,attrs:t,children:o}=e;return sr(r,x,t,o)}function U2(e,x,r){if(!x)return;const t={};for(const[n,i]of Object[o(-937,-976,-954,-948)](x))r.options[o(-968,-943,-953,-933)](e,n)||(t[n]=i);function o(n,i,a,f){return c0(a- -985,f)}return t}function sr(e,x,r,t){const o=ln(x),n=e===f(87,92,94),i=x[f(84,81,83)][a(-889,-862,-872,-870)]===f(112,89,115);function a(h,s,b,c){return c0(b- -874,c)}n&&x.renderTextContext[a(-823,-833,-847,-824)][f(110,85,100)](o);function f(h,s,b,c){return c0(b-82,h)}const u=[];u[a(-879,-875,-856,-861)](a(-865,-873,-851,-857)+o+" = "+x[a(-872,-862,-849,-826)]({tag:e,attrs:r,children:t}));const d=U2(e,r,x);if(d&&!ir(d)){let h=!1;E0[f(124,124,116)]in d&&(h=!0,delete d[E0[f(140,110,116)]]);for(const[s,b]of Object[a(-827,-823,-843,-828)](d))if(s===f(121,115,117)&&e===a(-875,-868,-862,-885))Rt(b)||u[f(124,113,100)](o+"."+x.r(f(96,121,108))+"("+JSON[a(-828,-858,-845,-859)](cr(b))+")");else if(s===f(93,122,118)){const c=ut(x.options.platform,x[f(74,85,83)][a(-882,-852,-872,-895)]),{obj:_}=x.options[f(95,134,119)](c,e,b,!1);if(_){const l=Object.keys(_);if(h&&(ec(c)||c===a(-861,-838,-836,-820))){const{code:g}=x[a(-889,-868,-873,-851)].parseStaticStyle(f(137,101,120),e,b,!0);g&&g!=="{}"&&u[a(-879,-868,-856,-860)](x.helper("setElementExtStyle")+"("+o+", "+g+")")}l[f(130,142,121)](g=>{function p(v,m,C,y){return c0(C-134,y)}_[g][p(164,164,174,161)]&&u[p(176,149,152,162)](o+"."+_[g].setterCode)})}}else{const c=x[a(-865,-876,-873,-872)].parseStaticProp(ut(x[f(73,74,83)][a(-834,-809,-833,-833)],x[a(-860,-887,-873,-848)][f(63,69,84)]),e,s,b);c&&c[f(118,133,124)]&&u.push(o+"."+c[a(-838,-831,-832,-818)][a(-840,-849,-852,-868)](new RegExp(`['"]`+w.IMPORT_EXP_START+f(145,142,125)+w.IMPORT_EXP_END+a(-849,-817,-830,-853)),"$1"))}}if(t&&t[f(116,109,127)]>0)for(const h of t){const s=!(n&&i)&&E2(h,x);if(s)u[a(-836,-862,-856,-850)](x[f(121,149,128)](o,s));else{const b=aa(h,x);u[f(87,84,100)](...b[a(-874,-844,-857,-840)]),u.push(x[a(-840,-823,-828,-831)](o,b[a(-831,-832,-827,-827)]))}}return{variableName:o,statements:u}}function E2(e,x){function r(o,n,i,a){return c0(n-911,o)}function t(o,n,i,a){return c0(a-708,i)}switch(e[r(921,915)]){case G0.TEXT:return!(x[r(978,959)]&1)||Rt(e[r(896,917)])?x[t(737,719,737,733)]("text"):null;case G0.COMMENT:return x[t(745,735,717,733)](r(944,939),JSON[t(746,721,746,737)](e[r(928,917)]||E0.EMPTY_STRING));case G0[t(733,702,727,717)]:const o=e;return T2(o)?x.genCreateTag(o):null;default:return x[t(727,749,733,733)](t(744,723,761,736),JSON.stringify(E0[r(906,931)]))}}function T2(e){function x(t,o,n,i){return c0(t-3,n)}function r(t,o,n,i){return c0(t-442,n)}return ir(e[x(52,32,40)])?e[x(53,28,65)]&&e.children[r(487,506,510)]>0?!!(e[r(453,471,469)]===G0[x(8,-7,-4)]&&e.children[x(48,68,23)]===1&&e[x(53,41,64)][0].type===G0[x(8,-6,31)]&&Rt(e[x(53,64,55)][0][r(448,431,428)])):!0:!1}function j0(e,x){const r=lr();return j0=function(t,o){t=t-0;let n=r[t];if(j0.DVHzUh===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};j0.cWUWRq=i,e=arguments,j0.DVHzUh=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=j0.cWUWRq(n),e[f]=n),n},j0(e,x)}function lr(){const e=["C3rYAw5N","CgfYC2u","BgvUz3rO","y29UC3qG","rKfdve9swq","id0Gka","icbYzxr1CM4G","z2vUq3jLyxrLvgfN","Dgv4Da","id0+ihS","C3rHDgvTzw50CW","ChvZAa","DMfYAwfIBgvoyw1L","DhLWzq","vevyva","y29TBwvUDa","ru1qvfLFu1rssu5h","ruXftuvova","C3rYAw5NAwz5","vu5ltK9xtL9dt01nru5u","y2HPBgrYzw4"];return lr=function(){return e},lr()}function q2(e,x,r){function t(n,i,a,f){return j0(f-251,a)}function o(n,i,a,f){return j0(i- -849,n)}try{if(!e||typeof e!=o(-840,-849,-856,-856))return dn(x,r);const n=new Jo(e)[o(-848,-848,-848,-851)]();return n.length===0?dn(x,r):n[t(253,262,255,253)]===1?H2(n[0],x,r):dn(x,r)}catch{return dn(x,r)}}function dn(e,x){function r(i,a,f,u){return j0(f-679,i)}const{paramType:t,returnType:o}=oa(x);function n(i,a,f,u){return j0(a-482,i)}return[r(680,681,682)+pt[r(692,679,683)]+e+n(491,487)+t+")"+o+" => {",A,r(695,677,685)+x[r(680,685,686)](r(696,688,687)),A,"}"]}function H2(e,x,r){const{paramType:t,returnType:o}=oa(r),n=O2(e,r);function i(d,h,s,b){return j0(b- -899,s)}if(n)return[u(197,206,209)+pt[i(-895,-905,-902,-895)]+x+i(-888,-890,-902,-894)+t+")"+o+" => {",A,i(-896,-892,-884,-893)+n,A,"}"];const a=D2(e,r),f=["const "+pt[u(204,207,199)]+x+i(-892,-885,-898,-894)+t+")"+o+i(-889,-885,-886,-890),A];for(const d of a[u(223,213,213)])typeof d==i(-910,-903,-891,-899)?f[i(-885,-895,-898,-888)]("  "+d,A):f[u(210,214,221)](d,A);function u(d,h,s,b){return j0(h-203,s)}return f[u(221,214,220)](i(-885,-900,-883,-893)+a[u(210,215,221)],A,"}"),f}function O2(e,x){function r(o,n,i,a){return j0(a- -35,i)}function t(o,n,i,a){return j0(i- -599,o)}switch(e[t(-585,-576,-586)]){case G0[r(-18,-14,-17,-21)]:return x[t(-597,-602,-592)](t(-588,-596,-591));case G0.COMMENT:return x.genCreateTag(r(-15,-12,-9,-20),JSON.stringify(e.content||E0[r(-8,-14,-23,-19)]));case G0[t(-586,-585,-582)]:const o=e;return W2(o)?x[r(-27,-33,-25,-28)](o):null;default:return x[t(-590,-600,-592)](t(-588,-581,-584),JSON[r(-16,-26,-15,-17)](E0[t(-585,-571,-580)]))}}function W2(e){function x(t,o,n,i){return j0(i- -575,t)}function r(t,o,n,i){return j0(t- -441,i)}return ir(e.attrs)?e[r(-428,-427,-419,-435)]===G0[x(-555,-572,-558,-561)]?!ra(e[r(-421,-430,-427,-427)]):!e[r(-421,-418,-429,-415)]||e[r(-421,-423,-427,-421)][r(-439,-442,-432,-441)]===0:!1}function dr(){const e=["BgvUz3rO","ChvZAa","y29UC3qG","B3b0Aw9UCW","CMvUzgvYzxi","AgfZ","lcb0CNvL","vevnueXbveu","id0G","rMfJDg9YEq","CgfNzvzHCG","rKfdve9swq"];return dr=function(){return e},dr()}const ca=e=>e[0]!=="<"&&e!==w.TEXT_PLACEHOLDER;function vt(e,x){const r=dr();return vt=function(t,o){t=t-0;let n=r[t];if(vt.yBcOPc===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};vt.Ysrtys=i,e=arguments,vt.yBcOPc=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=vt.Ysrtys(n),e[f]=n),n},vt(e,x)}function I2(e,x){const r=[];for(let t=0;t<e.length;t++){const o=e[t];if(!ca(o)){const n=q2(o,t,x);r.push(A,...n)}}return r}function j2(e,x,r){function t(f,u,d,h){return vt(h-380,d)}const{helper:o,options:n}=r,i=[];function a(f,u,d,h){return vt(f-881,h)}for(let f=0;f<e[a(881,876,879,877)];f++){const u=e[f];if(ca(u))u===w.TEXT_NODE_PLACEHOLDER?i[a(882,877,881,885)](t(383,387,384,382)+pt.TEMPLATE+f+" = () => "+(r[a(884,882,885,882)][a(885,882,886,886)]==="element"?r.pageVar+"."+r.r("createTextNode")+"()":'""')):i[t(375,378,385,381)]("const "+pt.TEMPLATE+f+' = (): string => "'+(r[a(884,878,878,879)].renderer==="element"?u:"")+'"');else{const d=x[a(886,884,882,884)](f)?a(887,893,890,891):"";i[t(387,380,381,381)](a(883,878,886,877)+pt[a(888,892,885,887)]+f+t(390,386,386,388)+o(n[t(383,382,390,384)]+t(390,390,386,389))+"("+r[t(394,386,386,390)]+", "+pt[a(892,888,890,893)]+f+d+")")}f<e[t(382,386,375,380)]-1&&i[a(882,882,888,885)](A)}return i}function _r(){const e=["zNjVBq","A2v5CW","y29UC3qGBG","id0GDa","DgfN","Dgv4Da","CMvUzgvYzxi","BMf0AxzLvMLLDW","B3bLCMf0Aw9U","zMXHz3m","AwzcCMfUy2G","yw5JAg9Y","AgfZrhLUyw1Py0nOAwXK","DgvTCeLK","id0G","BMv4Da","BNrOq2HPBgq","y2HPBgq"];return _r=function(){return e},_r()}function He(e,x){const r=_r();return He=function(t,o){t=t-0;let n=r[t];if(He.WAAfqw===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};He.lVnNBq=i,e=arguments,He.WAAfqw=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=He.lVnNBq(n),e[f]=n),n},He(e,x)}function Y2(e,x,r){function t(o,n,i,a){return He(n-49,a)}return I2(Array[t(42,49,52,53)](e[t(58,50,48,45)]()),r)}function hr(e,x){const[r,t]=O0(),{id:o,template:n,operation:i,hasDynamicChild:a}=e;function f(u,d,h,s){return He(s-443,h)}return o!==void 0&&n!==void 0&&(t(A,f(436,445,437,445)+o+f(442,451,455,446)+n+"()"),t(...Xx(o,x))),i&&t(...Qi(i,x)),a&&t(...br(e,x,t,"n"+o)),r}function br(e,x,r,t="n"+e.id){function o(p,v,m,C){return He(v- -974,p)}const{helper:n,helperType:i,options:a}=x,[f,u]=O0(),{children:d}=e;let h=0,s,b=0,c=0,_=0;function l(p,v,m,C){return He(m- -756,C)}const g=e[l(-755,-751,-752,-758)]===o(-964,-969);for(let[p,v]of d.entries()){if(v.type===2){_++;continue}if(g&&a[o(-965,-968)]===l(-750,-747,-749,-749)&&v.tag===l(-760,-754,-751,-748)){_++;continue}p=p-_,v[o(-971,-966)]&&v.operation.anchor===-1&&c++,v[o(-956,-965)]&2?h--:v[l(-746,-737,-746,-742)]&&b++;const m=v[l(-749,-754,-747,-741)]&1?v[l(-748,-742,-747,-745)]&4?v[l(-747,-746,-745,-749)]:v.id:void 0;if(m===void 0&&!v[l(-736,-745,-744,-739)]){u(...hr(v,x));continue}const C=p+h,y=m===void 0?"p"+x.block[l(-740,-734,-743,-750)]++:"n"+m;if(r(A,"const "+y+o(-967,-960)),s)C-s[1]===1?r(...$(n(o(-950,-959)+i),s[0])):r(...$(n(o(-960,-958)+i),t,String(C)));else if(C===0)r(...$(n("child"+i),t));else{let z=$(n(l(-739,-748,-739,-734)+i),t);C===1?z=$(n(o(-952,-959)+i),z):C>1&&(z=$(n(o(-966,-958)+i),t,String(C))),r(...z)}m===v[o(-972,-963)]&&!v[o(-958,-962)]&&u(...hr(v,x)),m!==void 0&&u(...Xx(m,x)),s=[y,C],u(...br(v,x,r,y))}return f}function gr(){const e=["ksa9pIb7","y2HPBgrYzw4","z2vUzxjHDgvK","AgfZrgvMzxjYzwrwu2HVDW","BMvLzhnlzxK","C3rYAw5NAwz5","BwfW","BgvUz3rO","igfZifvUAq","AgvSCgvYvhLWzq","qMXVy2TBxq","BNvSBa"];return gr=function(){return e},gr()}function Fe(e,x){const r=gr();return Fe=function(t,o){t=t-0;let n=r[t];if(Fe.GZNnVc===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Fe.FuRPqx=i,e=arguments,Fe.GZNnVc=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Fe.FuRPqx(n),e[f]=n),n},Fe(e,x)}function _n(e,x,r=[],t){function o(n,i,a,f){return Fe(i- -204,f)}return["(",...r,o(-203,-204,-203,-205),de,...hn(e,x,t),_e,A,"}"]}function hn(e,x,r,t){const[o,n]=O0(),{dynamic:i,effect:a,operation:f,returns:u,key:d}=e,h=x.enterBlock(e);function s(l,g,p,v){return Fe(l- -130,p)}function b(l,g,p,v){return Fe(l- -125,p)}for(const l of i[s(-129,-127,-129)])n(...hr(l,x));for(const l of i[b(-124,-123,-125)])l.hasDynamicChild||n(...br(l,x,n,"n"+l.id));if(n(...$i(f,x)),n(...y2(a.filter(l=>!l[s(-128,-125,-123)]),x,t)),r&&x.ir[s(-127,-125,-121)]&&n(A,"deferredApplyVShows.forEach(fn => fn())"),i[b(-121,-122,-126)])for(const l of i.children){const g=d?f0(d,x):JSON[s(-125,-119,-119)](l.id);n(A,"n"+l.id+".$key = ",...g)}n(A,"return ");const c=u[b(-119,-123,-120)](l=>"n"+l),_=c[b(-118,-123,-119)]>1?[...ze(fn,...c),b(-117,-123,-117)+x[s(-121,-119,-121)]+s(-120,-117,-126)]:[c[0]||b(-114,-113,-115)];return n(..._),h(),o}function pr(){const e=["tK9orq","r0vox1nfvf9fvKvova","r0vox1zFu0HpvW","r0vox1nfvf9uru1qtefurv9sruy"];return pr=function(){return e},pr()}function Ct(e,x){const r=pr();return Ct=function(t,o){t=t-0;let n=r[t];if(Ct.TvFUhs===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Ct.bukRPp=i,e=arguments,Ct.TvFUhs=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Ct.bukRPp(n),e[f]=n),n},Ct(e,x)}vr(-542,-544,-540,-541),vr(-541,-543,-542,-542),k2(274,274,272,273),vr(-539,-538,-538,-539);const R2=63,V2=0;function vr(e,x,r,t){return Ct(e- -542,t)}function k2(e,x,r,t){return Ct(e-272,t)}function K2(e,x){return!1}function G2(e,x){return e==="text"&&x==="value"}function Cr(){const e=["x19PBLrLEhrfBgvTzw50","Aw5JCMvHC2voyxrPDMvwAwv3q291BNq","Dgv4DevSzw1LBNrdB3vUDa","Dgv4DevSzw1LBNroyw1LCW","B3b0Aw9UCW","Aw5uzxH0rwXLBwvUDa","zw50zxjuzxH0rwXLBwvUDa","zxHPDfrLEhrfBgvTzw50","z2vUsw5JCMvHC2voyxrPDMvwAwv3q291BNrLCG","CgfNzq","AgvSCgvYCW","AgvSCgvY","ywrK","zgvSzwDHDgvZ","AwrLBNrPzMLLCNm","y3jLyxrL","C2vLBKLUBgLUzuHHBMrSzxjoyw1LCW","C2nVCgvmzxzLBa","C2HHCMvKrgf0yvzHCG","lMDLDf8","x19YzwfJDgL2Axr5","DgvTCgXHDgvwyxjPywjSzunVDw50zxi","zwzMzwn0u2HHCMvKrgf0yuLKzw50AwzPzxjZ","yxbWlwHHCM1VBNK","zg9Tlwm","zwXLBwvUDa","DgvTCgXHDguUDNvLlMH0BwW","vNvL","DNvL","DNvLl3nLCNzLCI1Yzw5KzxjLCG","yMXVy2S","CMvUzgvYzxi","BMf0AxzLvMLLDW","z2vUq3jLyxrLvgfN","z2vUq3jLyxrLtMf0AxzLvMLLDW","z2vUqxbWzw5Kq2HPBgq","z2vUqxbWzw5Kq2HPBgroyxrPDMvwAwv3","z2v0uhjVCgvYDhLpChrPB25Z","CgXHDgzVCM0","DgfYz2v0","CMvUzgvYvgv4DenVBNrLEhq","D2L0AeLK","A2v5CW","zw50zxjty29Wzq","Aw5ZvMfY","x19PBNm","z2v0q3vYCMvUDa","AgvSCgvYvhLWzq","vMfWB3jdB21WB25LBNrjBNn0yw5Jzq","CgfNzvzHCG","x19WywDL","tMf0AxzLvMLLDW","C2HHCMvKrgf0yvzgB3jdBgfZCW","y2XHC3noyw1L","u2HHCMvKrgf0yv9wrM9Y","zMvHDhvYzq","CMvZzxruzw1WBgf0zunVDw50zxjZ","DgvTCgXHDgvtDhLSzunVDw50zxi","D2L0AevMzMvJDa","y2XLyxi","C2L6zq","AwyO","DgfN","Dgv4Da","ChvZAa","Aw5JBhvKzxm","yxr0CNm","zMXHDhrLBG","zMfSC2u","DMLLDW","y3jLyxrLtMf0AxzLvMLLDW","Aw1Hz2u","y3jLyxrLtMf0AxzLsw1Hz2vwAwv3","BNvSBa","C2nYB2XSlxzPzxC","y3jLyxrLtMf0AxzLu2nYB2XSvMLLDW","BMf0AxzLlxzPzxC","y3jLyxrLtMf0AxzLq3vZDg9TvMLLDW","kgzHBhnLkq","z2vUq3jLyxrLrwXLBwvUDa","C3rYAw5N","y29TBwvUDa","Dhj1zq","AM9PBG","y3jLyxrLvgv4DevSzw1LBNq","x3rLEhq","y3jLyxrLvgv4De5Vzgu","y3jLyxrLsw1Hz2vfBgvTzw50","y3jLyxrLu2nYB2XSvMLLD0vSzw1LBNq","y3jLyxrLtMf0AxzLvMLLD0vSzw1LBNq","y3jLyxrLvMLLD0vSzw1LBNq","yxbWzw5KtMf0AxzLvMLLD0nOAwXK","z2vUqxbWzw5Kq2HPBgrfBgvTzw50","yxbWzw5Kq2HPBgq","z2vUq2fZDenVzgu","vvrtq1bqlMfZpa","zgvYzwzLCMvUy2u","Axnjz25VCMvbDhrY","CMvUzgvY","u2HHCMvKrgf0yq","vw5PugfNzq","zxHWB3j0igz1BMn0Aw9Uia","ktOG","qMXVy2S","BgvUz3rO","C2nYAxb0q3bWqMXVy2TZ","CM9VDfrLBxbSyxrLsw5KzxHLCW","zNjVBq","DgvTCgXHDgu","AgfZ","Aw5Ztwv0Ag9KtMfTzq","C3bSAwnL","y29UC3qG","id0G","zMLSDgvY","Dw5ZAgLMDa","zMLSBa","Dg9ku09o","BwfW","z2v0uMvZDevSzw1LBNq","z2v0rgvMyxvSDfzHBhvL","zM9YrwfJAa","zgvSzxrL","Aw1WB3j0ihSG","igfZif8","ih0GzNjVBsaN","jZSk","BM9Kzq","Aw1WB3j0CW","y29UDgvUDa","Cgf0Aa","ihX8ia","z2v0r3jVDxbjBMzV","icyG","Bw9KDwXL","pIGP"];return Cr=function(){return e},Cr()}function U(e,x){const r=Cr();return U=function(t,o){t=t-0;let n=r[t];if(U.sUroON===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};U.PNDShX=i,e=arguments,U.sUroON=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=U.PNDShX(n),e[f]=n),n},U(e,x)}function Oe(e,x,r,t){return U(r-260,e)}class X2{constructor(x){this[t(-293,-308,-286)]=!1,this[t(-276,-307,-258)]=0;function r(o,n,i,a){return U(i- -71,o)}this[t(-254,-306,-363)]=0,this[r(0,-77,-68)]=[];function t(o,n,i,a){return U(n- -308,i)}this[r(-126,-101,-67)]=x}set[Oe(312,272,265)](x){function r(o,n,i,a){return U(i-188,a)}function t(o,n,i,a){return U(n- -493,a)}this[t(-448,-493,-557,-437)]!==x&&(this[r(252,184,188,194)]=x,x&&(this[t(-478,-492,-554,-445)]=0))}get[Oe(259,235,265)](){function x(r,t,o,n){return U(n- -358,r)}return this[x(-372,-320,-295,-358)]}[mt(660,761,713)](){function x(t,o,n,i){return U(o- -772,i)}function r(t,o,n,i){return U(i-593,t)}this[r(657,575,581,598)]&&this.increaseNativeViewCount++,this.inTextElement=!0,this[x(-709,-770,-807,-747)]++}[mt(767,658,714)](){this.textElementCount--,this.textElementCount===0&&(this.inTextElement=!1)}[Oe(270,303,268)](){function x(t,o,n,i){return U(o-378,n)}function r(t,o,n,i){return U(i- -583,o)}return this[r(-532,-640,-634,-582)]>0?this.options.r(r(-579,-619,-574,-574))+"."+this[r(-647,-553,-594,-579)].r("increaseNativeViewCounter")+"("+this[x(349,379,435)]+")":""}}class Z2 extends vi{constructor(x,r){super(),this.ir=x,this[t(-210,-250,-184)]=new Set([]),this[n(-52,-107)]=a=>(this[n(-58,-108)][n(-139,-106)](a),this.r("_"+a)),this[t(-139,-236,-181)]=new Set,this[t(-206,-178,-180)]=Object[t(-241,-226,-179)](null),this[t(-185,-137,-178)]=Object[n(-40,-103)](null),this[t(-197,-232,-177)]=0;function t(a,f,u,d){return U(u- -194,a)}this.sharedDataIdent=a=>(this.effectSharedDataIdentifiers[t(-115,-123,-182)](a),this[t(-244,-242,-176)]+n(-138,-99)+a+"("+this.r(t(-146,-126,-174))+")"),this[n(-153,-97)]=0,this.templateStyleCounter=0,this[n(-101,-96)]=new Set;const o={root:"",mode:"module",platform:n(-137,-95),target:t(-165,-209,-170),renderer:t(-218,-110,-169),prefixIdentifiers:!0,sourceMap:!1,filename:n(-129,-92),relativeFilename:"",scopeId:null,runtimeGlobalName:t(-160,-135,-167),runtimeModuleName:n(-52,-90),ssrRuntimeModuleName:t(-120,-230,-165),ssr:!1,isTS:!1,inSSR:!1,inline:!1,bindingMetadata:{},expressionPlugins:[],componentType:"page",className:"",scriptCppBlocks:[],parseStaticStyle:(a,f,u,d)=>({obj:{},messages:[]}),parseStaticProp:()=>{},isIgnoreAttr:()=>!1,onError:K.defaultOnError,onWarn:K.defaultOnWarn,onVueTemplateCompileLog:()=>{},isCppExpr:()=>!1,r:a=>a};function n(a,f,u,d){return U(f- -118,a)}this.options=L.extend(o,r),this[n(-96,-88)]=x.block;const i=this[n(-147,-114)][t(-200,-184,-163)]===t(-211,-184,-162);this[t(-200,-96,-161)]=i?this[t(-218,-163,-160)]:this.genCreateElement,this[t(-195,-175,-159)]=i?this[t(-170,-211,-158)]:this.genAppendChildElement,this[t(-158,-173,-157)]=Bu(this[n(-105,-114)][n(-79,-80)],this[n(-178,-114)][t(-192,-169,-155)]),this[n(-63,-78)]=new X2(this[t(-182,-146,-190)]),this.r=this[t(-152,-225,-190)].r}[Oe(289,278,301)](x,r){const{identifiers:t}=this,o=Object[i(317,253)](r);for(const a of o)t[a]||(t[a]=[]),t[a].unshift(r[a]||a);const n=x();function i(a,f,u,d){return U(f-211,a)}return o.forEach(a=>L.remove(t[a],r[a]||a)),n}[mt(767,812,750)](){function x(r,t,o,n){return U(r-539,t)}return[this[x(556,559)]++,()=>this.scopeLevel--]}get[mt(752,796,751)](){function x(r,t,o,n){return U(o- -24,n)}return this.r(x(-38,52,21,69))}get insMethodName(){function x(t,o,n,i){return U(n-917,o)}function r(t,o,n,i){return U(i-212,t)}return x(927,958,963)+this[x(987,953,964)]+r(313,289,302,260)}get[Oe(284,296,309)](){function x(r,t,o,n){return U(r-327,t)}return this.r(x(377,430))}get[Oe(313,303,307)](){function x(t,o,n,i){return U(t- -129,o)}function r(t,o,n,i){return U(o- -686,n)}return this[x(-125,-118)][r(-646,-655,-704)]==="nativeView"?r(-684,-635,-598):"Element"}[mt(825,734,759)](x){function r(o,n,i,a){return U(o-600,i)}function t(o,n,i,a){return U(o-36,n)}return""+this[r(604,538,571)][r(653,600,632)]+this.r(t(90,24))+x}get[Oe(338,295,315)](){function x(t,o,n,i){return U(i- -904,t)}function r(t,o,n,i){return U(o-859,i)}return this[x(-953,-922,-871,-900)][r(866,890,857,876)]==="nativeView"?V2:R2}[mt(791,827,763)](){function x(r,t,o,n){return U(r-715,t)}this[x(736,800)]=0,this[x(772,812)]=0}[Oe(349,354,318)](x){this[o(-49,52,10)][o(93,86,47)]();function r(n,i,a,f){return U(n- -503,i)}const t=x();if(this[r(-481,-430)][r(-443,-378)]){const[n,i]=O0();return i(A),i(r(-442,-376)+e1(this)+") {"),i(A),i(de),i(...t),i(_e),i(A),i("}"),this[o(17,23,10)].clear(),n}function o(n,i,a,f){return U(a- -12,i)}return t}genCreateNativeView(x,r,t){function o(b,c,_,l){return U(b- -351,_)}var n;let i,a=null;function f(b,c,_,l){return U(c-27,l)}typeof x=="string"?i=x:(i=x[f(80,89,56,82)],a=x);const u=[];r&&i!==o(-288,-250,-321)&&u[f(49,91,23,108)](r),t==null&&a&&(t=na[f(139,92,37,92)](i)&&!!((n=a[f(105,93,62,83)])!=null&&n[f(133,94,46,149)])),t?u[o(-287,-234,-285)]("true"):u.push(o(-283,-307,-246));const{r:d}=this,h=d("page"),s=u.join(", ");switch(i){case f(160,96,151,126):return h+"."+d(o(-281,-297,-261))+"("+s+")";case f(55,90,94,30):return h+"."+d("createNativeTextView")+"("+s+")";case f(103,98,48,134):return h+"."+d(o(-279,-317,-279))+"("+s+")";case"comment":return f(121,100,83,68);case o(-277,-256,-321):return h+"."+d(f(146,102,141,97))+"()";case f(116,103,56,52):return h+"."+d(o(-274,-281,-287))+"()";default:return h+"."+d(o(-281,-281,-271))+f(108,105,134,61)}}[mt(763,730,786)](x,r,t){var o;function n(b,c,_,l){return U(_- -653,c)}function i(b,c,_,l){return U(l-503,c)}let a,f=null;typeof x==n(-560,-633,-573)?a=x:(a=x[i(515,600,628,565)],f=x);const u=[];r&&a!==n(-556,-548,-572)&&u[i(599,566,546,567)](r),t==null&&f&&(t=na.includes(a)&&!!((o=f[i(625,519,550,569)])!=null&&o[i(524,633,616,570)])),t?u[n(-616,-545,-589)](n(-527,-628,-571)):a!==n(-528,-559,-572)&&u[n(-564,-642,-589)](i(510,575,581,571));const{r:d}=this,h=d(n(-640,-657,-644)),s=u[i(609,560,602,586)](", ");switch(a){case n(-529,-537,-584):return h+"."+d("createViewElement")+"("+s+")";case n(-574,-529,-590):return h+"."+d(n(-605,-534,-569))+"("+s+")";case n(-598,-528,-568):return h+"."+d(i(521,632,532,589))+"()";case n(-539,-531,-582):return h+"."+d(i(522,523,523,590))+"("+s+")";case i(563,625,572,584):return h+"."+d("createComment")+"("+(s||'""')+")";case n(-556,-638,-579):return h+"."+d(i(574,528,623,591))+"()";case n(-590,-617,-577):return h+"."+d(n(-558,-565,-564))+"()";default:return h+"."+d(i(529,570,651,593))+"(false)"}}[Oe(308,344,296)](x,r){function t(n,i,a,f){return U(a-920,i)}function o(n,i,a,f){return U(f-372,n)}return x===""||r===""?"":this[o(444,377,433,383)](t(1032,987,1011))+"("+x+", "+r+")"}[mt(753,800,799)](x,r){function t(o,n,i,a){return U(a- -625,n)}return x===""||r===""?"":x+"."+this.r(t(-501,-594,-590,-532))+"("+r+")"}[Oe(420,409,354)](x,r,t){function o(i,a,f,u){return U(u-395,i)}function n(i,a,f,u){return U(i-686,u)}return pi(this[o(343,370,348,399)].target)?$(n(781,757,744,778)+r+(t!=null&&t[n(782,733,728,749)]?", '*'":"")+">",x):[";(",...x,"as",r,")"]}}function ua(e,x){var r;x.renderer=(r=x[s(817,841,864,843)])!=null?r:t(-347,-384,-290,-319),x[t(-206,-248,-233,-247)]=x[t(-354,-312,-344,-313)]===t(-364,-385,-313,-319)?K2:G2;function t(v,m,C,y){return U(y- -344,m)}const[o,n]=O0(),i=new Z2(e,x),{helpers:a,r:f}=i,u=f(s(868,877,851,910)+L.capitalize(x[t(-341,-374,-288,-313)])),d=[f("__sharedData")+": "+x[s(869,881,819,865)]+f(t(-276,-312,-310,-245)),f(t(-289,-238,-282,-294))+": "+f(s(931,955,904,912)),f("__reactivity")+": "+f("VueReactivity")].join(", ");n(A,t(-198,-282,-292,-243)+u+"("+d+s(867,918,938,914)+f("Uni"+i.helperType+t(-230,-184,-173,-241))+" {"),n(de);const h=n(A);function s(v,m,C,y){return U(y-812,C)}i[t(-334,-277,-399,-340)].scriptCppBlocks[s(867,947,972,916)]>0&&i.feature&32&&n(...n1(i[t(-302,-340,-342,-340)][t(-306,-265,-241,-239)],i)),n(...$2(i));const b=Y2(e.template,e[t(-214,-304,-209,-238)],i);if(n(...b),e.template[s(914,903,940,872)]>0){const v=j2(Array[s(915,934,877,919)](e[s(872,887,887,920)][s(858,842,853,854)]()),e[s(952,858,934,918)],i);n(A,...v)}n(...hn(e[s(889,867,809,842)],i,!0)),n(_e,A),n("}"),i.helpers[s(926,862,917,921)](i[t(-242,-221,-251,-234)])?o[t(-264,-195,-271,-233)](h,0,s(944,936,884,924)+i[s(798,791,896,856)]+s(925,927,934,925)+i.helper(i[s(894,987,958,922)])+"()!"):o[t(-227,-193,-170,-233)](h,1);const c=F2(i),_=J2(i)+c,l=[..._][s(907,962,904,926)](v=>v===`
-`)[t(-296,-191,-195,-240)];l&&o[s(944,956,931,927)](...new Array(l)[t(-217,-235,-232,-228)](ki));let[g,p]=Hu(o,i);return g=_+g,{code:g,ast:e,preamble:_,map:p&&p[s(949,886,927,929)](),helpers:a}}function F2({delegates:e,helper:x}){function r(o,n,i,a){return U(n-729,o)}function t(o,n,i,a){return U(i- -472,o)}return e[t(-376,-398,-412)]?$(x("delegateEvents"),...Array[r(897,836)](e)[r(845,847)](o=>'"'+o+'"'))[t(-364,-349,-389)]("")+`
-`:""}function J2({helpers:e,helper:x,options:r}){function t(i,a,f,u){return U(f- -84,i)}let o="";function n(i,a,f,u){return U(f- -305,u)}return[n(-172,-253,-186,-251),t(102,12,36)][t(93,93,37)](i=>{function a(f,u,d,h){return U(f- -384,u)}e[a(-262,-255)](i)}),e.size&&(o+=t(33,56,39)+[...e].map(i=>i+n(-170,-179,-181,-149)+i)[t(8,-66,-1)](", ")+n(-238,-154,-180,-237)+r.runtimeModuleName+n(-131,-183,-179,-188)),o}function $2({ir:e}){const x=e[o(1118,1114)][o(1178,1115)],r=[];function t(n,i,a,f){return U(a-464,f)}for(const n of x){const i=n.exp[t(596,594,593,581)];r[o(1067,1051)](A,o(1156,1099)+i+" = '"+n[o(1110,1117)]+"';")}function o(n,i,a,f){return U(i-987,n)}return r}const Q2=new nn(2e3);function mt(e,x,r,t){return U(r-707,e)}function e1(e){function x(r,t,o,n){return U(t- -371,n)}return Array[x(-201,-264,-288,-196)](e[x(-393,-349,-321,-324)]).map(r=>t1(r,e)).join(x(-218,-240,-249,-246))}function t1(e,x){function r(i,a,f,u){return U(a- -736,i)}const{index:t,bitValue:o}=Q2[r(-631,-604)](e);function n(i,a,f,u){return U(f-892,u)}return x[r(-774,-718)]+"._flag"+t+n(1074,1085,1025,1042)+o}function n1(e,x){const[r,t]=O0();function o(i,a,f,u){return U(u-409,a)}function n(i,a,f,u){return U(i- -520,a)}t(A);for(const i of e)t("const "+i[o(540,475,516,543)]+o(482,477,509,522)+x[o(472,403,452,420)]("createUserClass")+"<"+i[n(-467,-427)]+o(573,606,561,544));return r}function mr(){const e=["Bg9J","C3rHCNq","zw5K","zxjYB3juExbL","y3nZ","ChjVCa","wf9urvHux05pvf9jtL9urvHux1rbrW"];return mr=function(){return e},mr()}function yr(e,x){function r(o,n,i,a){return Be(i- -870,o)}const t=new SyntaxError(e);return x&&(t[r(-868,-868,-870)]={start:{...x[r(-871,-872,-869)]},end:{...x[r(-867,-864,-868)]},source:x.source}),t}function sa(e,x){const r=yr(e,x);function t(n,i,a,f){return Be(n- -13,f)}function o(n,i,a,f){return Be(f- -941,a)}return r[o(-939,-939,-936,-938)]=t(-9,-8,-5,-10),r}function wr(e,x){const r=yr(e,x);function t(o,n,i,a){return Be(o- -729,i)}return r[t(-726,-728,-725)]=t(-724,-721,-727),r}function Be(e,x){const r=mr();return Be=function(t,o){t=t-0;let n=r[t];if(Be.XxEzHE===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Be.EEnwFD=i,e=arguments,Be.XxEzHE=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Be.EEnwFD(n),e[f]=n),n},Be(e,x)}r1(-918,-917,-917);const x1={1e4:"Text or interpolation can only be used inside <text> tag.",10001:"A <text> element can only contain one text node."};function r1(e,x,r,t){return Be(r- -923,x)}function bn(e,x,r){let t=x1[e];return yr(t,x)}function X0(e,x){const r=zr();return X0=function(t,o){t=t-0;let n=r[t];if(X0.wixspT===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};X0.DXDBrw=i,e=arguments,X0.wixspT=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=X0.DXDBrw(n),e[f]=n),n},X0(e,x)}function o1(e){function x(t,o,n,i){return X0(o- -374,i)}function r(t,o,n,i){return X0(t- -939,n)}return e[x(-370,-374,-370,-375)]===1&&e[x(-371,-373,-376,-375)]===0&&e[x(-377,-372,-367,-373)]===r(-936,-931,-941)}function i1(e){function x(t,o,n,i){return X0(t-609,o)}function r(t,o,n,i){return X0(t-488,i)}return e[r(488,493,486,490)]===1&&e.tagType===0&&e[r(490,485,493,489)]===x(613,618)}function a1(e){function x(r,t,o,n){return X0(r-10,t)}return e.tagType===0||e[x(11,14)]===1}function zr(){const e=["DhLWzq","DgfNvhLWzq","DgfN","Dgv4Da","DMLLDW","BgvUz3rO","B25fCNjVCG","Bg9J","y2fSBa","y2HPBgrYzw4"];return zr=function(){return e},zr()}function f1(e,x){function r(o,n,i){var a,f;function u(s,b,c,_){return X0(b- -451,c)}const d=a1(n)?n:i;function h(s,b,c,_){return X0(s-202,c)}for(let s=0;s<o[u(-450,-446,-443)];s++){const b=o[s];if(b[h(202,201,201)]===2||b[h(202,206,205)]===5){if(!d)(a=x[u(-441,-445,-445)])==null||a.call(x,bn(1e4,b[u(-443,-444,-446)]));else if(!o1(d)&&d[u(-448,-450,-453)]!==1)if(i1(d)){const c=b;o[s]=c}else(f=x[u(-440,-445,-448)])==null||f[u(-448,-443,-446)](x,bn(1e4,b[u(-443,-444,-444)]))}else b[u(-456,-451,-451)]===1&&t(b,d)}}function t(o,n=null){var i,a;function f(d,h,s,b){return X0(d-10,b)}function u(d,h,s,b){return X0(b-483,d)}if(o.type===1){const d=o;if(d[f(12,15,8,15)]===u(484,491,485,486)){let h=0,s=!1;for(let b=0;b<d[f(19,24,16,24)][f(15,15,12,17)];b++){const c=d.children[b];if(c[f(10,5,10,8)]===2){if(!s&&(s=!0,h++,h>1)){(i=x.onError)==null||i[u(487,486,496,491)](x,bn(10001,d[u(488,492,486,490)]));break}}else c[f(10,5,5,13)]===1&&(s=!1)}}r(d[u(490,496,487,492)],d,n)}else if(o[u(481,481,481,483)]===0){const d=o;for(let h=0;h<d.children[f(15,10,20,17)];h++){const s=d[u(496,494,497,492)][h];s[u(482,483,482,483)]===2||s[u(483,487,483,483)]===5?(a=x[u(485,489,489,489)])==null||a[f(18,18,20,15)](x,bn(1e4,s[u(495,494,487,490)])):s[u(482,478,479,483)]===1&&t(s,null)}}}t(e)}function Sr(){const e=["z2v0","y29Kzq","BwfW"];return Sr=function(){return e},Sr()}function Je(e,x){const r=Sr();return Je=function(t,o){t=t-0;let n=r[t];if(Je.HbKrMr===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Je.HNNoUB=i,e=arguments,Je.HbKrMr=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Je.HNNoUB(n),e[f]=n),n},Je(e,x)}const la=new Map;function c1(e){function x(r,t,o,n){return Je(n- -977,r)}return la[x(-975,-978,-979,-977)](e)||{className:"",scriptCppBlocks:[],renderElementCode:"",renderNativeViewCode:"",renderElementSourceMap:null,renderNativeViewSourceMap:null}}function u1(e,x,r,t,o){function n(a,f,u,d){return Je(d-21,u)}function i(a,f,u,d){return Je(u- -958,a)}la.set(e,{className:x,scriptCppBlocks:o,renderElementCode:r[i(-955,-956,-957)],renderElementSourceMap:r[n(22,24,22,23)],renderNativeViewCode:t[n(22,22,21,22)],renderNativeViewSourceMap:t[n(24,22,25,23)]})}function s1(e){return e&&e.__esModule&&Object.prototype.hasOwnProperty.call(e,"default")?e.default:e}var gn={exports:{}},da;function _a(){if(da)return gn.exports;da=1;let e=process||{},x=e.argv||[],r=e.env||{},t=!(r.NO_COLOR||x.includes("--no-color"))&&(!!r.FORCE_COLOR||x.includes("--color")||e.platform==="win32"||(e.stdout||{}).isTTY&&r.TERM!=="dumb"||!!r.CI),o=(a,f,u=a)=>d=>{let h=""+d,s=h.indexOf(f,a.length);return~s?a+n(h,f,u,s)+f:a+h+f},n=(a,f,u,d)=>{let h="",s=0;do h+=a.substring(s,d)+u,s=d+f.length,d=a.indexOf(f,s);while(~d);return h+a.substring(s)},i=(a=t)=>{let f=a?o:()=>String;return{isColorSupported:a,reset:f("\x1B[0m","\x1B[0m"),bold:f("\x1B[1m","\x1B[22m","\x1B[22m\x1B[1m"),dim:f("\x1B[2m","\x1B[22m","\x1B[22m\x1B[2m"),italic:f("\x1B[3m","\x1B[23m"),underline:f("\x1B[4m","\x1B[24m"),inverse:f("\x1B[7m","\x1B[27m"),hidden:f("\x1B[8m","\x1B[28m"),strikethrough:f("\x1B[9m","\x1B[29m"),black:f("\x1B[30m","\x1B[39m"),red:f("\x1B[31m","\x1B[39m"),green:f("\x1B[32m","\x1B[39m"),yellow:f("\x1B[33m","\x1B[39m"),blue:f("\x1B[34m","\x1B[39m"),magenta:f("\x1B[35m","\x1B[39m"),cyan:f("\x1B[36m","\x1B[39m"),white:f("\x1B[37m","\x1B[39m"),gray:f("\x1B[90m","\x1B[39m"),bgBlack:f("\x1B[40m","\x1B[49m"),bgRed:f("\x1B[41m","\x1B[49m"),bgGreen:f("\x1B[42m","\x1B[49m"),bgYellow:f("\x1B[43m","\x1B[49m"),bgBlue:f("\x1B[44m","\x1B[49m"),bgMagenta:f("\x1B[45m","\x1B[49m"),bgCyan:f("\x1B[46m","\x1B[49m"),bgWhite:f("\x1B[47m","\x1B[49m"),blackBright:f("\x1B[90m","\x1B[39m"),redBright:f("\x1B[91m","\x1B[39m"),greenBright:f("\x1B[92m","\x1B[39m"),yellowBright:f("\x1B[93m","\x1B[39m"),blueBright:f("\x1B[94m","\x1B[39m"),magentaBright:f("\x1B[95m","\x1B[39m"),cyanBright:f("\x1B[96m","\x1B[39m"),whiteBright:f("\x1B[97m","\x1B[39m"),bgBlackBright:f("\x1B[100m","\x1B[49m"),bgRedBright:f("\x1B[101m","\x1B[49m"),bgGreenBright:f("\x1B[102m","\x1B[49m"),bgYellowBright:f("\x1B[103m","\x1B[49m"),bgBlueBright:f("\x1B[104m","\x1B[49m"),bgMagentaBright:f("\x1B[105m","\x1B[49m"),bgCyanBright:f("\x1B[106m","\x1B[49m"),bgWhiteBright:f("\x1B[107m","\x1B[49m")}};return gn.exports=i(),gn.exports.createColors=i,gn.exports}var Br,ha;function ba(){if(ha)return Br;ha=1;const e=39,x=34,r=92,t=47,o=10,n=32,i=12,a=9,f=13,u=91,d=93,h=40,s=41,b=123,c=125,_=59,l=42,g=58,p=64,v=/[\t\n\f\r "#'()/;[\\\]{}]/g,m=/[\t\n\f\r !"#'():;@[\\\]{}]|\/(?=\*)/g,C=/.[\r\n"'(/\\]/,y=/[\da-f]/i;return Br=function(B,D={}){let S=B.css.valueOf(),N=D.ignoreErrors,T,u0,g0,M,w0,o0,T0,p0,q0,R0,i0=S.length,P=0,E=[],fe=[];function je(){return P}function O(R){throw B.error("Unclosed "+R,P)}function G(){return fe.length===0&&P>=i0}function k(R){if(fe.length)return fe.pop();if(P>=i0)return;let t0=R?R.ignoreUnclosed:!1;switch(T=S.charCodeAt(P),T){case o:case n:case a:case f:case i:{M=P;do M+=1,T=S.charCodeAt(M);while(T===n||T===o||T===a||T===f||T===i);o0=["space",S.slice(P,M)],P=M-1;break}case u:case d:case b:case c:case g:case _:case s:{let Z=String.fromCharCode(T);o0=[Z,Z,P];break}case h:{if(R0=E.length?E.pop()[1]:"",q0=S.charCodeAt(P+1),R0==="url"&&q0!==e&&q0!==x&&q0!==n&&q0!==o&&q0!==a&&q0!==i&&q0!==f){M=P;do{if(T0=!1,M=S.indexOf(")",M+1),M===-1)if(N||t0){M=P;break}else O("bracket");for(p0=M;S.charCodeAt(p0-1)===r;)p0-=1,T0=!T0}while(T0);o0=["brackets",S.slice(P,M+1),P,M],P=M}else M=S.indexOf(")",P+1),u0=S.slice(P,M+1),M===-1||C.test(u0)?o0=["(","(",P]:(o0=["brackets",u0,P,M],P=M);break}case e:case x:{w0=T===e?"'":'"',M=P;do{if(T0=!1,M=S.indexOf(w0,M+1),M===-1)if(N||t0){M=P+1;break}else O("string");for(p0=M;S.charCodeAt(p0-1)===r;)p0-=1,T0=!T0}while(T0);o0=["string",S.slice(P,M+1),P,M],P=M;break}case p:{v.lastIndex=P+1,v.test(S),v.lastIndex===0?M=S.length-1:M=v.lastIndex-2,o0=["at-word",S.slice(P,M+1),P,M],P=M;break}case r:{for(M=P,g0=!0;S.charCodeAt(M+1)===r;)M+=1,g0=!g0;if(T=S.charCodeAt(M+1),g0&&T!==t&&T!==n&&T!==o&&T!==a&&T!==f&&T!==i&&(M+=1,y.test(S.charAt(M)))){for(;y.test(S.charAt(M+1));)M+=1;S.charCodeAt(M+1)===n&&(M+=1)}o0=["word",S.slice(P,M+1),P,M],P=M;break}default:{T===t&&S.charCodeAt(P+1)===l?(M=S.indexOf("*/",P+2)+1,M===0&&(N||t0?M=S.length:O("comment")),o0=["comment",S.slice(P,M+1),P,M],P=M):(m.lastIndex=P+1,m.test(S),m.lastIndex===0?M=S.length-1:M=m.lastIndex-2,o0=["word",S.slice(P,M+1),P,M],E.push(o0),P=M);break}}return P++,o0}function V(R){fe.push(R)}return{back:V,endOfFile:G,nextToken:k,position:je}},Br}var Dr,ga;function pa(){if(ga)return Dr;ga=1;let e=_a(),x=ba(),r;function t(a){r=a}const o={";":e.yellow,":":e.yellow,"(":e.cyan,")":e.cyan,"[":e.yellow,"]":e.yellow,"{":e.yellow,"}":e.yellow,"at-word":e.cyan,brackets:e.cyan,call:e.cyan,class:e.yellow,comment:e.gray,hash:e.magenta,string:e.green};function n([a,f],u){if(a==="word"){if(f[0]===".")return"class";if(f[0]==="#")return"hash"}if(!u.endOfFile()){let d=u.nextToken();if(u.back(d),d[0]==="brackets"||d[0]==="(")return"call"}return a}function i(a){let f=x(new r(a),{ignoreErrors:!0}),u="";for(;!f.endOfFile();){let d=f.nextToken(),h=o[n(d,f)];h?u+=d[1].split(/\r?\n/).map(s=>h(s)).join(`
-`):u+=d[1]}return u}return i.registerInput=t,Dr=i,Dr}var Lr,va;function Ar(){if(va)return Lr;va=1;let e=_a(),x=pa();class r extends Error{constructor(o,n,i,a,f,u){super(o),this.name="CssSyntaxError",this.reason=o,f&&(this.file=f),a&&(this.source=a),u&&(this.plugin=u),typeof n!="undefined"&&typeof i!="undefined"&&(typeof n=="number"?(this.line=n,this.column=i):(this.line=n.line,this.column=n.column,this.endLine=i.line,this.endColumn=i.column)),this.setMessage(),Error.captureStackTrace&&Error.captureStackTrace(this,r)}setMessage(){this.message=this.plugin?this.plugin+": ":"",this.message+=this.file?this.file:"<css input>",typeof this.line!="undefined"&&(this.message+=":"+this.line+":"+this.column),this.message+=": "+this.reason}showSourceCode(o){if(!this.source)return"";let n=this.source;o==null&&(o=e.isColorSupported);let i=b=>b,a=b=>b,f=b=>b;if(o){let{bold:b,gray:c,red:_}=e.createColors(!0);a=l=>b(_(l)),i=l=>c(l),x&&(f=l=>x(l))}let u=n.split(/\r?\n/),d=Math.max(this.line-3,0),h=Math.min(this.line+2,u.length),s=String(h).length;return u.slice(d,h).map((b,c)=>{let _=d+1+c,l=" "+(" "+_).slice(-s)+" | ";if(_===this.line){if(b.length>160){let p=20,v=Math.max(0,this.column-p),m=Math.max(this.column+p,this.endColumn+p),C=b.slice(v,m),y=i(l.replace(/\d/g," "))+b.slice(0,Math.min(this.column-1,p-1)).replace(/[^\t]/g," ");return a(">")+i(l)+f(C)+`
- `+y+a("^")}let g=i(l.replace(/\d/g," "))+b.slice(0,this.column-1).replace(/[^\t]/g," ");return a(">")+i(l)+f(b)+`
- `+g+a("^")}return" "+i(l)+f(b)}).join(`
-`)}toString(){let o=this.showSourceCode();return o&&(o=`
+**/
+'use strict';
 
-`+o+`
-`),this.name+": "+this.message+o}}return Lr=r,r.default=r,Lr}var Mr,Ca;function ma(){if(Ca)return Mr;Ca=1;const e={after:`
-`,beforeClose:`
-`,beforeComment:`
-`,beforeDecl:`
-`,beforeOpen:" ",beforeRule:`
-`,colon:": ",commentLeft:" ",commentRight:" ",emptyBody:"",indent:"    ",semicolon:!1};function x(t){return t[0].toUpperCase()+t.slice(1)}class r{constructor(o){this.builder=o}atrule(o,n){let i="@"+o.name,a=o.params?this.rawValue(o,"params"):"";if(typeof o.raws.afterName!="undefined"?i+=o.raws.afterName:a&&(i+=" "),o.nodes)this.block(o,i+a);else{let f=(o.raws.between||"")+(n?";":"");this.builder(i+a+f,o)}}beforeAfter(o,n){let i;o.type==="decl"?i=this.raw(o,null,"beforeDecl"):o.type==="comment"?i=this.raw(o,null,"beforeComment"):n==="before"?i=this.raw(o,null,"beforeRule"):i=this.raw(o,null,"beforeClose");let a=o.parent,f=0;for(;a&&a.type!=="root";)f+=1,a=a.parent;if(i.includes(`
-`)){let u=this.raw(o,null,"indent");if(u.length)for(let d=0;d<f;d++)i+=u}return i}block(o,n){let i=this.raw(o,"between","beforeOpen");this.builder(n+i+"{",o,"start");let a;o.nodes&&o.nodes.length?(this.body(o),a=this.raw(o,"after")):a=this.raw(o,"after","emptyBody"),a&&this.builder(a),this.builder("}",o,"end")}body(o){let n=o.nodes.length-1;for(;n>0&&o.nodes[n].type==="comment";)n-=1;let i=this.raw(o,"semicolon");for(let a=0;a<o.nodes.length;a++){let f=o.nodes[a],u=this.raw(f,"before");u&&this.builder(u),this.stringify(f,n!==a||i)}}comment(o){let n=this.raw(o,"left","commentLeft"),i=this.raw(o,"right","commentRight");this.builder("/*"+n+o.text+i+"*/",o)}decl(o,n){let i=this.raw(o,"between","colon"),a=o.prop+i+this.rawValue(o,"value");o.important&&(a+=o.raws.important||" !important"),n&&(a+=";"),this.builder(a,o)}document(o){this.body(o)}raw(o,n,i){let a;if(i||(i=n),n&&(a=o.raws[n],typeof a!="undefined"))return a;let f=o.parent;if(i==="before"&&(!f||f.type==="root"&&f.first===o||f&&f.type==="document"))return"";if(!f)return e[i];let u=o.root();if(u.rawCache||(u.rawCache={}),typeof u.rawCache[i]!="undefined")return u.rawCache[i];if(i==="before"||i==="after")return this.beforeAfter(o,i);{let d="raw"+x(i);this[d]?a=this[d](u,o):u.walk(h=>{if(a=h.raws[n],typeof a!="undefined")return!1})}return typeof a=="undefined"&&(a=e[i]),u.rawCache[i]=a,a}rawBeforeClose(o){let n;return o.walk(i=>{if(i.nodes&&i.nodes.length>0&&typeof i.raws.after!="undefined")return n=i.raws.after,n.includes(`
-`)&&(n=n.replace(/[^\n]+$/,"")),!1}),n&&(n=n.replace(/\S/g,"")),n}rawBeforeComment(o,n){let i;return o.walkComments(a=>{if(typeof a.raws.before!="undefined")return i=a.raws.before,i.includes(`
-`)&&(i=i.replace(/[^\n]+$/,"")),!1}),typeof i=="undefined"?i=this.raw(n,null,"beforeDecl"):i&&(i=i.replace(/\S/g,"")),i}rawBeforeDecl(o,n){let i;return o.walkDecls(a=>{if(typeof a.raws.before!="undefined")return i=a.raws.before,i.includes(`
-`)&&(i=i.replace(/[^\n]+$/,"")),!1}),typeof i=="undefined"?i=this.raw(n,null,"beforeRule"):i&&(i=i.replace(/\S/g,"")),i}rawBeforeOpen(o){let n;return o.walk(i=>{if(i.type!=="decl"&&(n=i.raws.between,typeof n!="undefined"))return!1}),n}rawBeforeRule(o){let n;return o.walk(i=>{if(i.nodes&&(i.parent!==o||o.first!==i)&&typeof i.raws.before!="undefined")return n=i.raws.before,n.includes(`
-`)&&(n=n.replace(/[^\n]+$/,"")),!1}),n&&(n=n.replace(/\S/g,"")),n}rawColon(o){let n;return o.walkDecls(i=>{if(typeof i.raws.between!="undefined")return n=i.raws.between.replace(/[^\s:]/g,""),!1}),n}rawEmptyBody(o){let n;return o.walk(i=>{if(i.nodes&&i.nodes.length===0&&(n=i.raws.after,typeof n!="undefined"))return!1}),n}rawIndent(o){if(o.raws.indent)return o.raws.indent;let n;return o.walk(i=>{let a=i.parent;if(a&&a!==o&&a.parent&&a.parent===o&&typeof i.raws.before!="undefined"){let f=i.raws.before.split(`
-`);return n=f[f.length-1],n=n.replace(/\S/g,""),!1}}),n}rawSemicolon(o){let n;return o.walk(i=>{if(i.nodes&&i.nodes.length&&i.last.type==="decl"&&(n=i.raws.semicolon,typeof n!="undefined"))return!1}),n}rawValue(o,n){let i=o[n],a=o.raws[n];return a&&a.value===i?a.raw:i}root(o){this.body(o),o.raws.after&&this.builder(o.raws.after)}rule(o){this.block(o,this.rawValue(o,"selector")),o.raws.ownSemicolon&&this.builder(o.raws.ownSemicolon,o,"end")}stringify(o,n){if(!this[o.type])throw new Error("Unknown AST node type "+o.type+". Maybe you need to change PostCSS stringifier.");this[o.type](o,n)}}return Mr=r,r.default=r,Mr}var Nr,ya;function pn(){if(ya)return Nr;ya=1;let e=ma();function x(r,t){new e(t).stringify(r)}return Nr=x,x.default=x,Nr}var vn={},wa;function Pr(){return wa||(wa=1,vn.isClean=Symbol("isClean"),vn.my=Symbol("my")),vn}var Ur,za;function Cn(){if(za)return Ur;za=1;let e=Ar(),x=ma(),r=pn(),{isClean:t,my:o}=Pr();function n(f,u){let d=new f.constructor;for(let h in f){if(!Object.prototype.hasOwnProperty.call(f,h)||h==="proxyCache")continue;let s=f[h],b=typeof s;h==="parent"&&b==="object"?u&&(d[h]=u):h==="source"?d[h]=s:Array.isArray(s)?d[h]=s.map(c=>n(c,d)):(b==="object"&&s!==null&&(s=n(s)),d[h]=s)}return d}function i(f,u){if(u&&typeof u.offset!="undefined")return u.offset;let d=1,h=1,s=0;for(let b=0;b<f.length;b++){if(h===u.line&&d===u.column){s=b;break}f[b]===`
-`?(d=1,h+=1):d+=1}return s}class a{get proxyOf(){return this}constructor(u={}){this.raws={},this[t]=!1,this[o]=!0;for(let d in u)if(d==="nodes"){this.nodes=[];for(let h of u[d])typeof h.clone=="function"?this.append(h.clone()):this.append(h)}else this[d]=u[d]}addToError(u){if(u.postcssNode=this,u.stack&&this.source&&/\n\s{4}at /.test(u.stack)){let d=this.source;u.stack=u.stack.replace(/\n\s{4}at /,`$&${d.input.from}:${d.start.line}:${d.start.column}$&`)}return u}after(u){return this.parent.insertAfter(this,u),this}assign(u={}){for(let d in u)this[d]=u[d];return this}before(u){return this.parent.insertBefore(this,u),this}cleanRaws(u){delete this.raws.before,delete this.raws.after,u||delete this.raws.between}clone(u={}){let d=n(this);for(let h in u)d[h]=u[h];return d}cloneAfter(u={}){let d=this.clone(u);return this.parent.insertAfter(this,d),d}cloneBefore(u={}){let d=this.clone(u);return this.parent.insertBefore(this,d),d}error(u,d={}){if(this.source){let{end:h,start:s}=this.rangeBy(d);return this.source.input.error(u,{column:s.column,line:s.line},{column:h.column,line:h.line},d)}return new e(u)}getProxyProcessor(){return{get(u,d){return d==="proxyOf"?u:d==="root"?()=>u.root().toProxy():u[d]},set(u,d,h){return u[d]===h||(u[d]=h,(d==="prop"||d==="value"||d==="name"||d==="params"||d==="important"||d==="text")&&u.markDirty()),!0}}}markClean(){this[t]=!0}markDirty(){if(this[t]){this[t]=!1;let u=this;for(;u=u.parent;)u[t]=!1}}next(){if(!this.parent)return;let u=this.parent.index(this);return this.parent.nodes[u+1]}positionBy(u={}){let d=this.source.start;if(u.index)d=this.positionInside(u.index);else if(u.word){let h="document"in this.source.input?this.source.input.document:this.source.input.css,b=h.slice(i(h,this.source.start),i(h,this.source.end)).indexOf(u.word);b!==-1&&(d=this.positionInside(b))}return d}positionInside(u){let d=this.source.start.column,h=this.source.start.line,s="document"in this.source.input?this.source.input.document:this.source.input.css,b=i(s,this.source.start),c=b+u;for(let _=b;_<c;_++)s[_]===`
-`?(d=1,h+=1):d+=1;return{column:d,line:h,offset:c}}prev(){if(!this.parent)return;let u=this.parent.index(this);return this.parent.nodes[u-1]}rangeBy(u={}){let d="document"in this.source.input?this.source.input.document:this.source.input.css,h={column:this.source.start.column,line:this.source.start.line,offset:i(d,this.source.start)},s=this.source.end?{column:this.source.end.column+1,line:this.source.end.line,offset:typeof this.source.end.offset=="number"?this.source.end.offset:i(d,this.source.end)+1}:{column:h.column+1,line:h.line,offset:h.offset+1};if(u.word){let c=d.slice(i(d,this.source.start),i(d,this.source.end)).indexOf(u.word);c!==-1&&(h=this.positionInside(c),s=this.positionInside(c+u.word.length))}else u.start?h={column:u.start.column,line:u.start.line,offset:i(d,u.start)}:u.index&&(h=this.positionInside(u.index)),u.end?s={column:u.end.column,line:u.end.line,offset:i(d,u.end)}:typeof u.endIndex=="number"?s=this.positionInside(u.endIndex):u.index&&(s=this.positionInside(u.index+1));return(s.line<h.line||s.line===h.line&&s.column<=h.column)&&(s={column:h.column+1,line:h.line,offset:h.offset+1}),{end:s,start:h}}raw(u,d){return new x().raw(this,u,d)}remove(){return this.parent&&this.parent.removeChild(this),this.parent=void 0,this}replaceWith(...u){if(this.parent){let d=this,h=!1;for(let s of u)s===this?h=!0:h?(this.parent.insertAfter(d,s),d=s):this.parent.insertBefore(d,s);h||this.remove()}return this}root(){let u=this;for(;u.parent&&u.parent.type!=="document";)u=u.parent;return u}toJSON(u,d){let h={},s=d==null;d=d||new Map;let b=0;for(let c in this){if(!Object.prototype.hasOwnProperty.call(this,c)||c==="parent"||c==="proxyCache")continue;let _=this[c];if(Array.isArray(_))h[c]=_.map(l=>typeof l=="object"&&l.toJSON?l.toJSON(null,d):l);else if(typeof _=="object"&&_.toJSON)h[c]=_.toJSON(null,d);else if(c==="source"){if(_==null)continue;let l=d.get(_.input);l==null&&(l=b,d.set(_.input,b),b++),h[c]={end:_.end,inputId:l,start:_.start}}else h[c]=_}return s&&(h.inputs=[...d.keys()].map(c=>c.toJSON())),h}toProxy(){return this.proxyCache||(this.proxyCache=new Proxy(this,this.getProxyProcessor())),this.proxyCache}toString(u=r){u.stringify&&(u=u.stringify);let d="";return u(this,h=>{d+=h}),d}warn(u,d,h={}){let s={node:this};for(let b in h)s[b]=h[b];return u.warn(d,s)}}return Ur=a,a.default=a,Ur}var Er,Sa;function mn(){if(Sa)return Er;Sa=1;let e=Cn();class x extends e{constructor(t){super(t),this.type="comment"}}return Er=x,x.default=x,Er}var Tr,Ba;function yn(){if(Ba)return Tr;Ba=1;let e=Cn();class x extends e{get variable(){return this.prop.startsWith("--")||this.prop[0]==="$"}constructor(t){t&&typeof t.value!="undefined"&&typeof t.value!="string"&&(t={...t,value:String(t.value)}),super(t),this.type="decl"}}return Tr=x,x.default=x,Tr}var qr,Da;function At(){if(Da)return qr;Da=1;let e=mn(),x=yn(),r=Cn(),{isClean:t,my:o}=Pr(),n,i,a,f;function u(s){return s.map(b=>(b.nodes&&(b.nodes=u(b.nodes)),delete b.source,b))}function d(s){if(s[t]=!1,s.proxyOf.nodes)for(let b of s.proxyOf.nodes)d(b)}class h extends r{get first(){if(this.proxyOf.nodes)return this.proxyOf.nodes[0]}get last(){if(this.proxyOf.nodes)return this.proxyOf.nodes[this.proxyOf.nodes.length-1]}append(...b){for(let c of b){let _=this.normalize(c,this.last);for(let l of _)this.proxyOf.nodes.push(l)}return this.markDirty(),this}cleanRaws(b){if(super.cleanRaws(b),this.nodes)for(let c of this.nodes)c.cleanRaws(b)}each(b){if(!this.proxyOf.nodes)return;let c=this.getIterator(),_,l;for(;this.indexes[c]<this.proxyOf.nodes.length&&(_=this.indexes[c],l=b(this.proxyOf.nodes[_],_),l!==!1);)this.indexes[c]+=1;return delete this.indexes[c],l}every(b){return this.nodes.every(b)}getIterator(){this.lastEach||(this.lastEach=0),this.indexes||(this.indexes={}),this.lastEach+=1;let b=this.lastEach;return this.indexes[b]=0,b}getProxyProcessor(){return{get(b,c){return c==="proxyOf"?b:b[c]?c==="each"||typeof c=="string"&&c.startsWith("walk")?(..._)=>b[c](..._.map(l=>typeof l=="function"?(g,p)=>l(g.toProxy(),p):l)):c==="every"||c==="some"?_=>b[c]((l,...g)=>_(l.toProxy(),...g)):c==="root"?()=>b.root().toProxy():c==="nodes"?b.nodes.map(_=>_.toProxy()):c==="first"||c==="last"?b[c].toProxy():b[c]:b[c]},set(b,c,_){return b[c]===_||(b[c]=_,(c==="name"||c==="params"||c==="selector")&&b.markDirty()),!0}}}index(b){return typeof b=="number"?b:(b.proxyOf&&(b=b.proxyOf),this.proxyOf.nodes.indexOf(b))}insertAfter(b,c){let _=this.index(b),l=this.normalize(c,this.proxyOf.nodes[_]).reverse();_=this.index(b);for(let p of l)this.proxyOf.nodes.splice(_+1,0,p);let g;for(let p in this.indexes)g=this.indexes[p],_<g&&(this.indexes[p]=g+l.length);return this.markDirty(),this}insertBefore(b,c){let _=this.index(b),l=_===0?"prepend":!1,g=this.normalize(c,this.proxyOf.nodes[_],l).reverse();_=this.index(b);for(let v of g)this.proxyOf.nodes.splice(_,0,v);let p;for(let v in this.indexes)p=this.indexes[v],_<=p&&(this.indexes[v]=p+g.length);return this.markDirty(),this}normalize(b,c){if(typeof b=="string")b=u(i(b).nodes);else if(typeof b=="undefined")b=[];else if(Array.isArray(b)){b=b.slice(0);for(let l of b)l.parent&&l.parent.removeChild(l,"ignore")}else if(b.type==="root"&&this.type!=="document"){b=b.nodes.slice(0);for(let l of b)l.parent&&l.parent.removeChild(l,"ignore")}else if(b.type)b=[b];else if(b.prop){if(typeof b.value=="undefined")throw new Error("Value field is missed in node creation");typeof b.value!="string"&&(b.value=String(b.value)),b=[new x(b)]}else if(b.selector||b.selectors)b=[new f(b)];else if(b.name)b=[new n(b)];else if(b.text)b=[new e(b)];else throw new Error("Unknown node type in node creation");return b.map(l=>(l[o]||h.rebuild(l),l=l.proxyOf,l.parent&&l.parent.removeChild(l),l[t]&&d(l),l.raws||(l.raws={}),typeof l.raws.before=="undefined"&&c&&typeof c.raws.before!="undefined"&&(l.raws.before=c.raws.before.replace(/\S/g,"")),l.parent=this.proxyOf,l))}prepend(...b){b=b.reverse();for(let c of b){let _=this.normalize(c,this.first,"prepend").reverse();for(let l of _)this.proxyOf.nodes.unshift(l);for(let l in this.indexes)this.indexes[l]=this.indexes[l]+_.length}return this.markDirty(),this}push(b){return b.parent=this,this.proxyOf.nodes.push(b),this}removeAll(){for(let b of this.proxyOf.nodes)b.parent=void 0;return this.proxyOf.nodes=[],this.markDirty(),this}removeChild(b){b=this.index(b),this.proxyOf.nodes[b].parent=void 0,this.proxyOf.nodes.splice(b,1);let c;for(let _ in this.indexes)c=this.indexes[_],c>=b&&(this.indexes[_]=c-1);return this.markDirty(),this}replaceValues(b,c,_){return _||(_=c,c={}),this.walkDecls(l=>{c.props&&!c.props.includes(l.prop)||c.fast&&!l.value.includes(c.fast)||(l.value=l.value.replace(b,_))}),this.markDirty(),this}some(b){return this.nodes.some(b)}walk(b){return this.each((c,_)=>{let l;try{l=b(c,_)}catch(g){throw c.addToError(g)}return l!==!1&&c.walk&&(l=c.walk(b)),l})}walkAtRules(b,c){return c?b instanceof RegExp?this.walk((_,l)=>{if(_.type==="atrule"&&b.test(_.name))return c(_,l)}):this.walk((_,l)=>{if(_.type==="atrule"&&_.name===b)return c(_,l)}):(c=b,this.walk((_,l)=>{if(_.type==="atrule")return c(_,l)}))}walkComments(b){return this.walk((c,_)=>{if(c.type==="comment")return b(c,_)})}walkDecls(b,c){return c?b instanceof RegExp?this.walk((_,l)=>{if(_.type==="decl"&&b.test(_.prop))return c(_,l)}):this.walk((_,l)=>{if(_.type==="decl"&&_.prop===b)return c(_,l)}):(c=b,this.walk((_,l)=>{if(_.type==="decl")return c(_,l)}))}walkRules(b,c){return c?b instanceof RegExp?this.walk((_,l)=>{if(_.type==="rule"&&b.test(_.selector))return c(_,l)}):this.walk((_,l)=>{if(_.type==="rule"&&_.selector===b)return c(_,l)}):(c=b,this.walk((_,l)=>{if(_.type==="rule")return c(_,l)}))}}return h.registerParse=s=>{i=s},h.registerRule=s=>{f=s},h.registerAtRule=s=>{n=s},h.registerRoot=s=>{a=s},qr=h,h.default=h,h.rebuild=s=>{s.type==="atrule"?Object.setPrototypeOf(s,n.prototype):s.type==="rule"?Object.setPrototypeOf(s,f.prototype):s.type==="decl"?Object.setPrototypeOf(s,x.prototype):s.type==="comment"?Object.setPrototypeOf(s,e.prototype):s.type==="root"&&Object.setPrototypeOf(s,a.prototype),s[o]=!0,s.nodes&&s.nodes.forEach(b=>{h.rebuild(b)})},qr}var Hr,La;function Or(){if(La)return Hr;La=1;let e=At();class x extends e{constructor(t){super(t),this.type="atrule"}append(...t){return this.proxyOf.nodes||(this.nodes=[]),super.append(...t)}prepend(...t){return this.proxyOf.nodes||(this.nodes=[]),super.prepend(...t)}}return Hr=x,x.default=x,e.registerAtRule(x),Hr}var Wr,Aa;function Ir(){if(Aa)return Wr;Aa=1;let e=At(),x,r;class t extends e{constructor(n){super({type:"document",...n}),this.nodes||(this.nodes=[])}toResult(n={}){return new x(new r,this,n).stringify()}}return t.registerLazyResult=o=>{x=o},t.registerProcessor=o=>{r=o},Wr=t,t.default=t,Wr}var jr,Ma;function l1(){if(Ma)return jr;Ma=1;let e="useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";return jr={nanoid:(t=21)=>{let o="",n=t|0;for(;n--;)o+=e[Math.random()*64|0];return o},customAlphabet:(t,o=21)=>(n=o)=>{let i="",a=n|0;for(;a--;)i+=t[Math.random()*t.length|0];return i}},jr}var Yr,Na;function Pa(){if(Na)return Yr;Na=1;let{existsSync:e,readFileSync:x}=mf,{dirname:r,join:t}=Dn,{SourceMapConsumer:o,SourceMapGenerator:n}=rt;function i(f){return Buffer?Buffer.from(f,"base64").toString():window.atob(f)}class a{constructor(u,d){if(d.map===!1)return;this.loadAnnotation(u),this.inline=this.startWith(this.annotation,"data:");let h=d.map?d.map.prev:void 0,s=this.loadMap(d.from,h);!this.mapFile&&d.from&&(this.mapFile=d.from),this.mapFile&&(this.root=r(this.mapFile)),s&&(this.text=s)}consumer(){return this.consumerCache||(this.consumerCache=new o(this.text)),this.consumerCache}decodeInline(u){let d=/^data:application\/json;charset=utf-?8;base64,/,h=/^data:application\/json;base64,/,s=/^data:application\/json;charset=utf-?8,/,b=/^data:application\/json,/,c=u.match(s)||u.match(b);if(c)return decodeURIComponent(u.substr(c[0].length));let _=u.match(d)||u.match(h);if(_)return i(u.substr(_[0].length));let l=u.match(/data:application\/json;([^,]+),/)[1];throw new Error("Unsupported source map encoding "+l)}getAnnotationURL(u){return u.replace(/^\/\*\s*# sourceMappingURL=/,"").trim()}isMap(u){return typeof u!="object"?!1:typeof u.mappings=="string"||typeof u._mappings=="string"||Array.isArray(u.sections)}loadAnnotation(u){let d=u.match(/\/\*\s*# sourceMappingURL=/g);if(!d)return;let h=u.lastIndexOf(d.pop()),s=u.indexOf("*/",h);h>-1&&s>-1&&(this.annotation=this.getAnnotationURL(u.substring(h,s)))}loadFile(u){if(this.root=r(u),e(u))return this.mapFile=u,x(u,"utf-8").toString().trim()}loadMap(u,d){if(d===!1)return!1;if(d){if(typeof d=="string")return d;if(typeof d=="function"){let h=d(u);if(h){let s=this.loadFile(h);if(!s)throw new Error("Unable to load previous source map: "+h.toString());return s}}else{if(d instanceof o)return n.fromSourceMap(d).toString();if(d instanceof n)return d.toString();if(this.isMap(d))return JSON.stringify(d);throw new Error("Unsupported previous source map format: "+d.toString())}}else{if(this.inline)return this.decodeInline(this.annotation);if(this.annotation){let h=this.annotation;return u&&(h=t(r(u),h)),this.loadFile(h)}}}startWith(u,d){return u?u.substr(0,d.length)===d:!1}withContent(){return!!(this.consumer().sourcesContent&&this.consumer().sourcesContent.length>0)}}return Yr=a,a.default=a,Yr}var Rr,Ua;function wn(){if(Ua)return Rr;Ua=1;let{nanoid:e}=l1(),{isAbsolute:x,resolve:r}=Dn,{SourceMapConsumer:t,SourceMapGenerator:o}=rt,{fileURLToPath:n,pathToFileURL:i}=ei,a=Ar(),f=Pa(),u=pa(),d=Symbol("lineToIndexCache"),h=!!(t&&o),s=!!(r&&x);function b(_){if(_[d])return _[d];let l=_.css.split(`
-`),g=new Array(l.length),p=0;for(let v=0,m=l.length;v<m;v++)g[v]=p,p+=l[v].length+1;return _[d]=g,g}class c{get from(){return this.file||this.id}constructor(l,g={}){if(l===null||typeof l=="undefined"||typeof l=="object"&&!l.toString)throw new Error(`PostCSS received ${l} instead of CSS string`);if(this.css=l.toString(),this.css[0]==="\uFEFF"||this.css[0]==="\uFFFE"?(this.hasBOM=!0,this.css=this.css.slice(1)):this.hasBOM=!1,this.document=this.css,g.document&&(this.document=g.document.toString()),g.from&&(!s||/^\w+:\/\//.test(g.from)||x(g.from)?this.file=g.from:this.file=r(g.from)),s&&h){let p=new f(this.css,g);if(p.text){this.map=p;let v=p.consumer().file;!this.file&&v&&(this.file=this.mapResolve(v))}}this.file||(this.id="<input css "+e(6)+">"),this.map&&(this.map.file=this.from)}error(l,g,p,v={}){let m,C,y,z,B;if(g&&typeof g=="object"){let S=g,N=p;if(typeof S.offset=="number"){z=S.offset;let T=this.fromOffset(z);g=T.line,p=T.col}else g=S.line,p=S.column,z=this.fromLineAndColumn(g,p);if(typeof N.offset=="number"){y=N.offset;let T=this.fromOffset(y);C=T.line,m=T.col}else C=N.line,m=N.column,y=this.fromLineAndColumn(N.line,N.column)}else if(p)z=this.fromLineAndColumn(g,p);else{z=g;let S=this.fromOffset(z);g=S.line,p=S.col}let D=this.origin(g,p,C,m);return D?B=new a(l,D.endLine===void 0?D.line:{column:D.column,line:D.line},D.endLine===void 0?D.column:{column:D.endColumn,line:D.endLine},D.source,D.file,v.plugin):B=new a(l,C===void 0?g:{column:p,line:g},C===void 0?p:{column:m,line:C},this.css,this.file,v.plugin),B.input={column:p,endColumn:m,endLine:C,endOffset:y,line:g,offset:z,source:this.css},this.file&&(i&&(B.input.url=i(this.file).toString()),B.input.file=this.file),B}fromLineAndColumn(l,g){return b(this)[l-1]+g-1}fromOffset(l){let g=b(this),p=g[g.length-1],v=0;if(l>=p)v=g.length-1;else{let m=g.length-2,C;for(;v<m;)if(C=v+(m-v>>1),l<g[C])m=C-1;else if(l>=g[C+1])v=C+1;else{v=C;break}}return{col:l-g[v]+1,line:v+1}}mapResolve(l){return/^\w+:\/\//.test(l)?l:r(this.map.consumer().sourceRoot||this.map.root||".",l)}origin(l,g,p,v){if(!this.map)return!1;let m=this.map.consumer(),C=m.originalPositionFor({column:g,line:l});if(!C.source)return!1;let y;typeof p=="number"&&(y=m.originalPositionFor({column:v,line:p}));let z;x(C.source)?z=i(C.source):z=new URL(C.source,this.map.consumer().sourceRoot||i(this.map.mapFile));let B={column:C.column,endColumn:y&&y.column,endLine:y&&y.line,line:C.line,url:z.toString()};if(z.protocol==="file:")if(n)B.file=n(z);else throw new Error("file: protocol is not available in this PostCSS build");let D=m.sourceContentFor(C.source);return D&&(B.source=D),B}toJSON(){let l={};for(let g of["hasBOM","css","file","id"])this[g]!=null&&(l[g]=this[g]);return this.map&&(l.map={...this.map},l.map.consumerCache&&(l.map.consumerCache=void 0)),l}}return Rr=c,c.default=c,u&&u.registerInput&&u.registerInput(c),Rr}var Vr,Ea;function Vt(){if(Ea)return Vr;Ea=1;let e=At(),x,r;class t extends e{constructor(n){super(n),this.type="root",this.nodes||(this.nodes=[])}normalize(n,i,a){let f=super.normalize(n);if(i){if(a==="prepend")this.nodes.length>1?i.raws.before=this.nodes[1].raws.before:delete i.raws.before;else if(this.first!==i)for(let u of f)u.raws.before=i.raws.before}return f}removeChild(n,i){let a=this.index(n);return!i&&a===0&&this.nodes.length>1&&(this.nodes[1].raws.before=this.nodes[a].raws.before),super.removeChild(n)}toResult(n={}){return new x(new r,this,n).stringify()}}return t.registerLazyResult=o=>{x=o},t.registerProcessor=o=>{r=o},Vr=t,t.default=t,e.registerRoot(t),Vr}var kr,Ta;function qa(){if(Ta)return kr;Ta=1;let e={comma(x){return e.split(x,[","],!0)},space(x){let r=[" ",`
-`,"	"];return e.split(x,r)},split(x,r,t){let o=[],n="",i=!1,a=0,f=!1,u="",d=!1;for(let h of x)d?d=!1:h==="\\"?d=!0:f?h===u&&(f=!1):h==='"'||h==="'"?(f=!0,u=h):h==="("?a+=1:h===")"?a>0&&(a-=1):a===0&&r.includes(h)&&(i=!0),i?(n!==""&&o.push(n.trim()),n="",i=!1):n+=h;return(t||n!=="")&&o.push(n.trim()),o}};return kr=e,e.default=e,kr}var Kr,Ha;function Gr(){if(Ha)return Kr;Ha=1;let e=At(),x=qa();class r extends e{get selectors(){return x.comma(this.selector)}set selectors(o){let n=this.selector?this.selector.match(/,\s*/):null,i=n?n[0]:","+this.raw("between","beforeOpen");this.selector=o.join(i)}constructor(o){super(o),this.type="rule",this.nodes||(this.nodes=[])}}return Kr=r,r.default=r,e.registerRule(r),Kr}var Xr,Oa;function d1(){if(Oa)return Xr;Oa=1;let e=Or(),x=mn(),r=yn(),t=wn(),o=Pa(),n=Vt(),i=Gr();function a(f,u){if(Array.isArray(f))return f.map(s=>a(s));let{inputs:d,...h}=f;if(d){u=[];for(let s of d){let b={...s,__proto__:t.prototype};b.map&&(b.map={...b.map,__proto__:o.prototype}),u.push(b)}}if(h.nodes&&(h.nodes=f.nodes.map(s=>a(s,u))),h.source){let{inputId:s,...b}=h.source;h.source=b,s!=null&&(h.source.input=u[s])}if(h.type==="root")return new n(h);if(h.type==="decl")return new r(h);if(h.type==="rule")return new i(h);if(h.type==="comment")return new x(h);if(h.type==="atrule")return new e(h);throw new Error("Unknown node type: "+f.type)}return Xr=a,a.default=a,Xr}var Zr,Wa;function Ia(){if(Wa)return Zr;Wa=1;let{dirname:e,relative:x,resolve:r,sep:t}=Dn,{SourceMapConsumer:o,SourceMapGenerator:n}=rt,{pathToFileURL:i}=ei,a=wn(),f=!!(o&&n),u=!!(e&&r&&x&&t);class d{constructor(s,b,c,_){this.stringify=s,this.mapOpts=c.map||{},this.root=b,this.opts=c,this.css=_,this.originalCSS=_,this.usesFileUrls=!this.mapOpts.from&&this.mapOpts.absolute,this.memoizedFileURLs=new Map,this.memoizedPaths=new Map,this.memoizedURLs=new Map}addAnnotation(){let s;this.isInline()?s="data:application/json;base64,"+this.toBase64(this.map.toString()):typeof this.mapOpts.annotation=="string"?s=this.mapOpts.annotation:typeof this.mapOpts.annotation=="function"?s=this.mapOpts.annotation(this.opts.to,this.root):s=this.outputFile()+".map";let b=`
-`;this.css.includes(`\r
-`)&&(b=`\r
-`),this.css+=b+"/*# sourceMappingURL="+s+" */"}applyPrevMaps(){for(let s of this.previous()){let b=this.toUrl(this.path(s.file)),c=s.root||e(s.file),_;this.mapOpts.sourcesContent===!1?(_=new o(s.text),_.sourcesContent&&(_.sourcesContent=null)):_=s.consumer(),this.map.applySourceMap(_,b,this.toUrl(this.path(c)))}}clearAnnotation(){if(this.mapOpts.annotation!==!1)if(this.root){let s;for(let b=this.root.nodes.length-1;b>=0;b--)s=this.root.nodes[b],s.type==="comment"&&s.text.startsWith("# sourceMappingURL=")&&this.root.removeChild(b)}else this.css&&(this.css=this.css.replace(/\n*\/\*#[\S\s]*?\*\/$/gm,""))}generate(){if(this.clearAnnotation(),u&&f&&this.isMap())return this.generateMap();{let s="";return this.stringify(this.root,b=>{s+=b}),[s]}}generateMap(){if(this.root)this.generateString();else if(this.previous().length===1){let s=this.previous()[0].consumer();s.file=this.outputFile(),this.map=n.fromSourceMap(s,{ignoreInvalidMapping:!0})}else this.map=new n({file:this.outputFile(),ignoreInvalidMapping:!0}),this.map.addMapping({generated:{column:0,line:1},original:{column:0,line:1},source:this.opts.from?this.toUrl(this.path(this.opts.from)):"<no source>"});return this.isSourcesContent()&&this.setSourcesContent(),this.root&&this.previous().length>0&&this.applyPrevMaps(),this.isAnnotation()&&this.addAnnotation(),this.isInline()?[this.css]:[this.css,this.map]}generateString(){this.css="",this.map=new n({file:this.outputFile(),ignoreInvalidMapping:!0});let s=1,b=1,c="<no source>",_={generated:{column:0,line:0},original:{column:0,line:0},source:""},l,g;this.stringify(this.root,(p,v,m)=>{if(this.css+=p,v&&m!=="end"&&(_.generated.line=s,_.generated.column=b-1,v.source&&v.source.start?(_.source=this.sourcePath(v),_.original.line=v.source.start.line,_.original.column=v.source.start.column-1,this.map.addMapping(_)):(_.source=c,_.original.line=1,_.original.column=0,this.map.addMapping(_))),g=p.match(/\n/g),g?(s+=g.length,l=p.lastIndexOf(`
-`),b=p.length-l):b+=p.length,v&&m!=="start"){let C=v.parent||{raws:{}};(!(v.type==="decl"||v.type==="atrule"&&!v.nodes)||v!==C.last||C.raws.semicolon)&&(v.source&&v.source.end?(_.source=this.sourcePath(v),_.original.line=v.source.end.line,_.original.column=v.source.end.column-1,_.generated.line=s,_.generated.column=b-2,this.map.addMapping(_)):(_.source=c,_.original.line=1,_.original.column=0,_.generated.line=s,_.generated.column=b-1,this.map.addMapping(_)))}})}isAnnotation(){return this.isInline()?!0:typeof this.mapOpts.annotation!="undefined"?this.mapOpts.annotation:this.previous().length?this.previous().some(s=>s.annotation):!0}isInline(){if(typeof this.mapOpts.inline!="undefined")return this.mapOpts.inline;let s=this.mapOpts.annotation;return typeof s!="undefined"&&s!==!0?!1:this.previous().length?this.previous().some(b=>b.inline):!0}isMap(){return typeof this.opts.map!="undefined"?!!this.opts.map:this.previous().length>0}isSourcesContent(){return typeof this.mapOpts.sourcesContent!="undefined"?this.mapOpts.sourcesContent:this.previous().length?this.previous().some(s=>s.withContent()):!0}outputFile(){return this.opts.to?this.path(this.opts.to):this.opts.from?this.path(this.opts.from):"to.css"}path(s){if(this.mapOpts.absolute||s.charCodeAt(0)===60||/^\w+:\/\//.test(s))return s;let b=this.memoizedPaths.get(s);if(b)return b;let c=this.opts.to?e(this.opts.to):".";typeof this.mapOpts.annotation=="string"&&(c=e(r(c,this.mapOpts.annotation)));let _=x(c,s);return this.memoizedPaths.set(s,_),_}previous(){if(!this.previousMaps)if(this.previousMaps=[],this.root)this.root.walk(s=>{if(s.source&&s.source.input.map){let b=s.source.input.map;this.previousMaps.includes(b)||this.previousMaps.push(b)}});else{let s=new a(this.originalCSS,this.opts);s.map&&this.previousMaps.push(s.map)}return this.previousMaps}setSourcesContent(){let s={};if(this.root)this.root.walk(b=>{if(b.source){let c=b.source.input.from;if(c&&!s[c]){s[c]=!0;let _=this.usesFileUrls?this.toFileUrl(c):this.toUrl(this.path(c));this.map.setSourceContent(_,b.source.input.css)}}});else if(this.css){let b=this.opts.from?this.toUrl(this.path(this.opts.from)):"<no source>";this.map.setSourceContent(b,this.css)}}sourcePath(s){return this.mapOpts.from?this.toUrl(this.mapOpts.from):this.usesFileUrls?this.toFileUrl(s.source.input.from):this.toUrl(this.path(s.source.input.from))}toBase64(s){return Buffer?Buffer.from(s).toString("base64"):window.btoa(unescape(encodeURIComponent(s)))}toFileUrl(s){let b=this.memoizedFileURLs.get(s);if(b)return b;if(i){let c=i(s).toString();return this.memoizedFileURLs.set(s,c),c}else throw new Error("`map.absolute` option is not available in this PostCSS build")}toUrl(s){let b=this.memoizedURLs.get(s);if(b)return b;t==="\\"&&(s=s.replace(/\\/g,"/"));let c=encodeURI(s).replace(/[#?]/g,encodeURIComponent);return this.memoizedURLs.set(s,c),c}}return Zr=d,Zr}var Fr,ja;function _1(){if(ja)return Fr;ja=1;let e=Or(),x=mn(),r=yn(),t=Vt(),o=Gr(),n=ba();const i={empty:!0,space:!0};function a(u){for(let d=u.length-1;d>=0;d--){let h=u[d],s=h[3]||h[2];if(s)return s}}class f{constructor(d){this.input=d,this.root=new t,this.current=this.root,this.spaces="",this.semicolon=!1,this.createTokenizer(),this.root.source={input:d,start:{column:1,line:1,offset:0}}}atrule(d){let h=new e;h.name=d[1].slice(1),h.name===""&&this.unnamedAtrule(h,d),this.init(h,d[2]);let s,b,c,_=!1,l=!1,g=[],p=[];for(;!this.tokenizer.endOfFile();){if(d=this.tokenizer.nextToken(),s=d[0],s==="("||s==="["?p.push(s==="("?")":"]"):s==="{"&&p.length>0?p.push("}"):s===p[p.length-1]&&p.pop(),p.length===0)if(s===";"){h.source.end=this.getPosition(d[2]),h.source.end.offset++,this.semicolon=!0;break}else if(s==="{"){l=!0;break}else if(s==="}"){if(g.length>0){for(c=g.length-1,b=g[c];b&&b[0]==="space";)b=g[--c];b&&(h.source.end=this.getPosition(b[3]||b[2]),h.source.end.offset++)}this.end(d);break}else g.push(d);else g.push(d);if(this.tokenizer.endOfFile()){_=!0;break}}h.raws.between=this.spacesAndCommentsFromEnd(g),g.length?(h.raws.afterName=this.spacesAndCommentsFromStart(g),this.raw(h,"params",g),_&&(d=g[g.length-1],h.source.end=this.getPosition(d[3]||d[2]),h.source.end.offset++,this.spaces=h.raws.between,h.raws.between="")):(h.raws.afterName="",h.params=""),l&&(h.nodes=[],this.current=h)}checkMissedSemicolon(d){let h=this.colon(d);if(h===!1)return;let s=0,b;for(let c=h-1;c>=0&&(b=d[c],!(b[0]!=="space"&&(s+=1,s===2)));c--);throw this.input.error("Missed semicolon",b[0]==="word"?b[3]+1:b[2])}colon(d){let h=0,s,b,c;for(let[_,l]of d.entries()){if(b=l,c=b[0],c==="("&&(h+=1),c===")"&&(h-=1),h===0&&c===":")if(!s)this.doubleColon(b);else{if(s[0]==="word"&&s[1]==="progid")continue;return _}s=b}return!1}comment(d){let h=new x;this.init(h,d[2]),h.source.end=this.getPosition(d[3]||d[2]),h.source.end.offset++;let s=d[1].slice(2,-2);if(/^\s*$/.test(s))h.text="",h.raws.left=s,h.raws.right="";else{let b=s.match(/^(\s*)([^]*\S)(\s*)$/);h.text=b[2],h.raws.left=b[1],h.raws.right=b[3]}}createTokenizer(){this.tokenizer=n(this.input)}decl(d,h){let s=new r;this.init(s,d[0][2]);let b=d[d.length-1];for(b[0]===";"&&(this.semicolon=!0,d.pop()),s.source.end=this.getPosition(b[3]||b[2]||a(d)),s.source.end.offset++;d[0][0]!=="word";)d.length===1&&this.unknownWord(d),s.raws.before+=d.shift()[1];for(s.source.start=this.getPosition(d[0][2]),s.prop="";d.length;){let p=d[0][0];if(p===":"||p==="space"||p==="comment")break;s.prop+=d.shift()[1]}s.raws.between="";let c;for(;d.length;)if(c=d.shift(),c[0]===":"){s.raws.between+=c[1];break}else c[0]==="word"&&/\w/.test(c[1])&&this.unknownWord([c]),s.raws.between+=c[1];(s.prop[0]==="_"||s.prop[0]==="*")&&(s.raws.before+=s.prop[0],s.prop=s.prop.slice(1));let _=[],l;for(;d.length&&(l=d[0][0],!(l!=="space"&&l!=="comment"));)_.push(d.shift());this.precheckMissedSemicolon(d);for(let p=d.length-1;p>=0;p--){if(c=d[p],c[1].toLowerCase()==="!important"){s.important=!0;let v=this.stringFrom(d,p);v=this.spacesFromEnd(d)+v,v!==" !important"&&(s.raws.important=v);break}else if(c[1].toLowerCase()==="important"){let v=d.slice(0),m="";for(let C=p;C>0;C--){let y=v[C][0];if(m.trim().startsWith("!")&&y!=="space")break;m=v.pop()[1]+m}m.trim().startsWith("!")&&(s.important=!0,s.raws.important=m,d=v)}if(c[0]!=="space"&&c[0]!=="comment")break}d.some(p=>p[0]!=="space"&&p[0]!=="comment")&&(s.raws.between+=_.map(p=>p[1]).join(""),_=[]),this.raw(s,"value",_.concat(d),h),s.value.includes(":")&&!h&&this.checkMissedSemicolon(d)}doubleColon(d){throw this.input.error("Double colon",{offset:d[2]},{offset:d[2]+d[1].length})}emptyRule(d){let h=new o;this.init(h,d[2]),h.selector="",h.raws.between="",this.current=h}end(d){this.current.nodes&&this.current.nodes.length&&(this.current.raws.semicolon=this.semicolon),this.semicolon=!1,this.current.raws.after=(this.current.raws.after||"")+this.spaces,this.spaces="",this.current.parent?(this.current.source.end=this.getPosition(d[2]),this.current.source.end.offset++,this.current=this.current.parent):this.unexpectedClose(d)}endFile(){this.current.parent&&this.unclosedBlock(),this.current.nodes&&this.current.nodes.length&&(this.current.raws.semicolon=this.semicolon),this.current.raws.after=(this.current.raws.after||"")+this.spaces,this.root.source.end=this.getPosition(this.tokenizer.position())}freeSemicolon(d){if(this.spaces+=d[1],this.current.nodes){let h=this.current.nodes[this.current.nodes.length-1];h&&h.type==="rule"&&!h.raws.ownSemicolon&&(h.raws.ownSemicolon=this.spaces,this.spaces="",h.source.end=this.getPosition(d[2]),h.source.end.offset+=h.raws.ownSemicolon.length)}}getPosition(d){let h=this.input.fromOffset(d);return{column:h.col,line:h.line,offset:d}}init(d,h){this.current.push(d),d.source={input:this.input,start:this.getPosition(h)},d.raws.before=this.spaces,this.spaces="",d.type!=="comment"&&(this.semicolon=!1)}other(d){let h=!1,s=null,b=!1,c=null,_=[],l=d[1].startsWith("--"),g=[],p=d;for(;p;){if(s=p[0],g.push(p),s==="("||s==="[")c||(c=p),_.push(s==="("?")":"]");else if(l&&b&&s==="{")c||(c=p),_.push("}");else if(_.length===0)if(s===";")if(b){this.decl(g,l);return}else break;else if(s==="{"){this.rule(g);return}else if(s==="}"){this.tokenizer.back(g.pop()),h=!0;break}else s===":"&&(b=!0);else s===_[_.length-1]&&(_.pop(),_.length===0&&(c=null));p=this.tokenizer.nextToken()}if(this.tokenizer.endOfFile()&&(h=!0),_.length>0&&this.unclosedBracket(c),h&&b){if(!l)for(;g.length&&(p=g[g.length-1][0],!(p!=="space"&&p!=="comment"));)this.tokenizer.back(g.pop());this.decl(g,l)}else this.unknownWord(g)}parse(){let d;for(;!this.tokenizer.endOfFile();)switch(d=this.tokenizer.nextToken(),d[0]){case"space":this.spaces+=d[1];break;case";":this.freeSemicolon(d);break;case"}":this.end(d);break;case"comment":this.comment(d);break;case"at-word":this.atrule(d);break;case"{":this.emptyRule(d);break;default:this.other(d);break}this.endFile()}precheckMissedSemicolon(){}raw(d,h,s,b){let c,_,l=s.length,g="",p=!0,v,m;for(let C=0;C<l;C+=1)c=s[C],_=c[0],_==="space"&&C===l-1&&!b?p=!1:_==="comment"?(m=s[C-1]?s[C-1][0]:"empty",v=s[C+1]?s[C+1][0]:"empty",!i[m]&&!i[v]?g.slice(-1)===","?p=!1:g+=c[1]:p=!1):g+=c[1];if(!p){let C=s.reduce((y,z)=>y+z[1],"");d.raws[h]={raw:C,value:g}}d[h]=g}rule(d){d.pop();let h=new o;this.init(h,d[0][2]),h.raws.between=this.spacesAndCommentsFromEnd(d),this.raw(h,"selector",d),this.current=h}spacesAndCommentsFromEnd(d){let h,s="";for(;d.length&&(h=d[d.length-1][0],!(h!=="space"&&h!=="comment"));)s=d.pop()[1]+s;return s}spacesAndCommentsFromStart(d){let h,s="";for(;d.length&&(h=d[0][0],!(h!=="space"&&h!=="comment"));)s+=d.shift()[1];return s}spacesFromEnd(d){let h,s="";for(;d.length&&(h=d[d.length-1][0],h==="space");)s=d.pop()[1]+s;return s}stringFrom(d,h){let s="";for(let b=h;b<d.length;b++)s+=d[b][1];return d.splice(h,d.length-h),s}unclosedBlock(){let d=this.current.source.start;throw this.input.error("Unclosed block",d.line,d.column)}unclosedBracket(d){throw this.input.error("Unclosed bracket",{offset:d[2]},{offset:d[2]+1})}unexpectedClose(d){throw this.input.error("Unexpected }",{offset:d[2]},{offset:d[2]+1})}unknownWord(d){throw this.input.error("Unknown word "+d[0][1],{offset:d[0][2]},{offset:d[0][2]+d[0][1].length})}unnamedAtrule(d,h){throw this.input.error("At-rule without name",{offset:h[2]},{offset:h[2]+h[1].length})}}return Fr=f,Fr}var Jr,Ya;function $r(){if(Ya)return Jr;Ya=1;let e=At(),x=wn(),r=_1();function t(o,n){let i=new x(o,n),a=new r(i);try{a.parse()}catch(f){throw process.env.NODE_ENV!=="production"&&f.name==="CssSyntaxError"&&n&&n.from&&(/\.scss$/i.test(n.from)?f.message+=`
-You tried to parse SCSS with the standard CSS parser; try again with the postcss-scss parser`:/\.sass/i.test(n.from)?f.message+=`
-You tried to parse Sass with the standard CSS parser; try again with the postcss-sass parser`:/\.less$/i.test(n.from)&&(f.message+=`
-You tried to parse Less with the standard CSS parser; try again with the postcss-less parser`)),f}return a.root}return Jr=t,t.default=t,e.registerParse(t),Jr}var Qr,Ra;function Va(){if(Ra)return Qr;Ra=1;class e{constructor(r,t={}){if(this.type="warning",this.text=r,t.node&&t.node.source){let o=t.node.rangeBy(t);this.line=o.start.line,this.column=o.start.column,this.endLine=o.end.line,this.endColumn=o.end.column}for(let o in t)this[o]=t[o]}toString(){return this.node?this.node.error(this.text,{index:this.index,plugin:this.plugin,word:this.word}).message:this.plugin?this.plugin+": "+this.text:this.text}}return Qr=e,e.default=e,Qr}var eo,ka;function to(){if(ka)return eo;ka=1;let e=Va();class x{get content(){return this.css}constructor(t,o,n){this.processor=t,this.messages=[],this.root=o,this.opts=n,this.css="",this.map=void 0}toString(){return this.css}warn(t,o={}){o.plugin||this.lastPlugin&&this.lastPlugin.postcssPlugin&&(o.plugin=this.lastPlugin.postcssPlugin);let n=new e(t,o);return this.messages.push(n),n}warnings(){return this.messages.filter(t=>t.type==="warning")}}return eo=x,x.default=x,eo}var no,Ka;function Ga(){if(Ka)return no;Ka=1;let e={};return no=function(r){e[r]||(e[r]=!0,typeof console!="undefined"&&console.warn&&console.warn(r))},no}var xo,Xa;function Za(){if(Xa)return xo;Xa=1;let e=At(),x=Ir(),r=Ia(),t=$r(),o=to(),n=Vt(),i=pn(),{isClean:a,my:f}=Pr(),u=Ga();const d={atrule:"AtRule",comment:"Comment",decl:"Declaration",document:"Document",root:"Root",rule:"Rule"},h={AtRule:!0,AtRuleExit:!0,Comment:!0,CommentExit:!0,Declaration:!0,DeclarationExit:!0,Document:!0,DocumentExit:!0,Once:!0,OnceExit:!0,postcssPlugin:!0,prepare:!0,Root:!0,RootExit:!0,Rule:!0,RuleExit:!0},s={Once:!0,postcssPlugin:!0,prepare:!0},b=0;function c(m){return typeof m=="object"&&typeof m.then=="function"}function _(m){let C=!1,y=d[m.type];return m.type==="decl"?C=m.prop.toLowerCase():m.type==="atrule"&&(C=m.name.toLowerCase()),C&&m.append?[y,y+"-"+C,b,y+"Exit",y+"Exit-"+C]:C?[y,y+"-"+C,y+"Exit",y+"Exit-"+C]:m.append?[y,b,y+"Exit"]:[y,y+"Exit"]}function l(m){let C;return m.type==="document"?C=["Document",b,"DocumentExit"]:m.type==="root"?C=["Root",b,"RootExit"]:C=_(m),{eventIndex:0,events:C,iterator:0,node:m,visitorIndex:0,visitors:[]}}function g(m){return m[a]=!1,m.nodes&&m.nodes.forEach(C=>g(C)),m}let p={};class v{get content(){return this.stringify().content}get css(){return this.stringify().css}get map(){return this.stringify().map}get messages(){return this.sync().messages}get opts(){return this.result.opts}get processor(){return this.result.processor}get root(){return this.sync().root}get[Symbol.toStringTag](){return"LazyResult"}constructor(C,y,z){this.stringified=!1,this.processed=!1;let B;if(typeof y=="object"&&y!==null&&(y.type==="root"||y.type==="document"))B=g(y);else if(y instanceof v||y instanceof o)B=g(y.root),y.map&&(typeof z.map=="undefined"&&(z.map={}),z.map.inline||(z.map.inline=!1),z.map.prev=y.map);else{let D=t;z.syntax&&(D=z.syntax.parse),z.parser&&(D=z.parser),D.parse&&(D=D.parse);try{B=D(y,z)}catch(S){this.processed=!0,this.error=S}B&&!B[f]&&e.rebuild(B)}this.result=new o(C,B,z),this.helpers={...p,postcss:p,result:this.result},this.plugins=this.processor.plugins.map(D=>typeof D=="object"&&D.prepare?{...D,...D.prepare(this.result)}:D)}async(){return this.error?Promise.reject(this.error):this.processed?Promise.resolve(this.result):(this.processing||(this.processing=this.runAsync()),this.processing)}catch(C){return this.async().catch(C)}finally(C){return this.async().then(C,C)}getAsyncError(){throw new Error("Use process(css).then(cb) to work with async plugins")}handleError(C,y){let z=this.result.lastPlugin;try{if(y&&y.addToError(C),this.error=C,C.name==="CssSyntaxError"&&!C.plugin)C.plugin=z.postcssPlugin,C.setMessage();else if(z.postcssVersion&&process.env.NODE_ENV!=="production"){let B=z.postcssPlugin,D=z.postcssVersion,S=this.result.processor.version,N=D.split("."),T=S.split(".");(N[0]!==T[0]||parseInt(N[1])>parseInt(T[1]))&&console.error("Unknown error from PostCSS plugin. Your current PostCSS version is "+S+", but "+B+" uses "+D+". Perhaps this is the source of the error below.")}}catch(B){console&&console.error&&console.error(B)}return C}prepareVisitors(){this.listeners={};let C=(y,z,B)=>{this.listeners[z]||(this.listeners[z]=[]),this.listeners[z].push([y,B])};for(let y of this.plugins)if(typeof y=="object")for(let z in y){if(!h[z]&&/^[A-Z]/.test(z))throw new Error(`Unknown event ${z} in ${y.postcssPlugin}. Try to update PostCSS (${this.processor.version} now).`);if(!s[z])if(typeof y[z]=="object")for(let B in y[z])B==="*"?C(y,z,y[z][B]):C(y,z+"-"+B.toLowerCase(),y[z][B]);else typeof y[z]=="function"&&C(y,z,y[z])}this.hasListener=Object.keys(this.listeners).length>0}async runAsync(){this.plugin=0;for(let C=0;C<this.plugins.length;C++){let y=this.plugins[C],z=this.runOnRoot(y);if(c(z))try{await z}catch(B){throw this.handleError(B)}}if(this.prepareVisitors(),this.hasListener){let C=this.result.root;for(;!C[a];){C[a]=!0;let y=[l(C)];for(;y.length>0;){let z=this.visitTick(y);if(c(z))try{await z}catch(B){let D=y[y.length-1].node;throw this.handleError(B,D)}}}if(this.listeners.OnceExit)for(let[y,z]of this.listeners.OnceExit){this.result.lastPlugin=y;try{if(C.type==="document"){let B=C.nodes.map(D=>z(D,this.helpers));await Promise.all(B)}else await z(C,this.helpers)}catch(B){throw this.handleError(B)}}}return this.processed=!0,this.stringify()}runOnRoot(C){this.result.lastPlugin=C;try{if(typeof C=="object"&&C.Once){if(this.result.root.type==="document"){let y=this.result.root.nodes.map(z=>C.Once(z,this.helpers));return c(y[0])?Promise.all(y):y}return C.Once(this.result.root,this.helpers)}else if(typeof C=="function")return C(this.result.root,this.result)}catch(y){throw this.handleError(y)}}stringify(){if(this.error)throw this.error;if(this.stringified)return this.result;this.stringified=!0,this.sync();let C=this.result.opts,y=i;C.syntax&&(y=C.syntax.stringify),C.stringifier&&(y=C.stringifier),y.stringify&&(y=y.stringify);let B=new r(y,this.result.root,this.result.opts).generate();return this.result.css=B[0],this.result.map=B[1],this.result}sync(){if(this.error)throw this.error;if(this.processed)return this.result;if(this.processed=!0,this.processing)throw this.getAsyncError();for(let C of this.plugins){let y=this.runOnRoot(C);if(c(y))throw this.getAsyncError()}if(this.prepareVisitors(),this.hasListener){let C=this.result.root;for(;!C[a];)C[a]=!0,this.walkSync(C);if(this.listeners.OnceExit)if(C.type==="document")for(let y of C.nodes)this.visitSync(this.listeners.OnceExit,y);else this.visitSync(this.listeners.OnceExit,C)}return this.result}then(C,y){return process.env.NODE_ENV!=="production"&&("from"in this.opts||u("Without `from` option PostCSS could generate wrong source map and will not find Browserslist config. Set it to CSS file path or to `undefined` to prevent this warning.")),this.async().then(C,y)}toString(){return this.css}visitSync(C,y){for(let[z,B]of C){this.result.lastPlugin=z;let D;try{D=B(y,this.helpers)}catch(S){throw this.handleError(S,y.proxyOf)}if(y.type!=="root"&&y.type!=="document"&&!y.parent)return!0;if(c(D))throw this.getAsyncError()}}visitTick(C){let y=C[C.length-1],{node:z,visitors:B}=y;if(z.type!=="root"&&z.type!=="document"&&!z.parent){C.pop();return}if(B.length>0&&y.visitorIndex<B.length){let[S,N]=B[y.visitorIndex];y.visitorIndex+=1,y.visitorIndex===B.length&&(y.visitors=[],y.visitorIndex=0),this.result.lastPlugin=S;try{return N(z.toProxy(),this.helpers)}catch(T){throw this.handleError(T,z)}}if(y.iterator!==0){let S=y.iterator,N;for(;N=z.nodes[z.indexes[S]];)if(z.indexes[S]+=1,!N[a]){N[a]=!0,C.push(l(N));return}y.iterator=0,delete z.indexes[S]}let D=y.events;for(;y.eventIndex<D.length;){let S=D[y.eventIndex];if(y.eventIndex+=1,S===b){z.nodes&&z.nodes.length&&(z[a]=!0,y.iterator=z.getIterator());return}else if(this.listeners[S]){y.visitors=this.listeners[S];return}}C.pop()}walkSync(C){C[a]=!0;let y=_(C);for(let z of y)if(z===b)C.nodes&&C.each(B=>{B[a]||this.walkSync(B)});else{let B=this.listeners[z];if(B&&this.visitSync(B,C.toProxy()))return}}warnings(){return this.sync().warnings()}}return v.registerPostcss=m=>{p=m},xo=v,v.default=v,n.registerLazyResult(v),x.registerLazyResult(v),xo}var ro,Fa;function h1(){if(Fa)return ro;Fa=1;let e=Ia(),x=$r();const r=to();let t=pn(),o=Ga();class n{get content(){return this.result.css}get css(){return this.result.css}get map(){return this.result.map}get messages(){return[]}get opts(){return this.result.opts}get processor(){return this.result.processor}get root(){if(this._root)return this._root;let a,f=x;try{a=f(this._css,this._opts)}catch(u){this.error=u}if(this.error)throw this.error;return this._root=a,a}get[Symbol.toStringTag](){return"NoWorkResult"}constructor(a,f,u){f=f.toString(),this.stringified=!1,this._processor=a,this._css=f,this._opts=u,this._map=void 0;let d,h=t;this.result=new r(this._processor,d,this._opts),this.result.css=f;let s=this;Object.defineProperty(this.result,"root",{get(){return s.root}});let b=new e(h,d,this._opts,f);if(b.isMap()){let[c,_]=b.generate();c&&(this.result.css=c),_&&(this.result.map=_)}else b.clearAnnotation(),this.result.css=b.css}async(){return this.error?Promise.reject(this.error):Promise.resolve(this.result)}catch(a){return this.async().catch(a)}finally(a){return this.async().then(a,a)}sync(){if(this.error)throw this.error;return this.result}then(a,f){return process.env.NODE_ENV!=="production"&&("from"in this._opts||o("Without `from` option PostCSS could generate wrong source map and will not find Browserslist config. Set it to CSS file path or to `undefined` to prevent this warning.")),this.async().then(a,f)}toString(){return this._css}warnings(){return[]}}return ro=n,n.default=n,ro}var oo,Ja;function b1(){if(Ja)return oo;Ja=1;let e=Ir(),x=Za(),r=h1(),t=Vt();class o{constructor(i=[]){this.version="8.5.6",this.plugins=this.normalize(i)}normalize(i){let a=[];for(let f of i)if(f.postcss===!0?f=f():f.postcss&&(f=f.postcss),typeof f=="object"&&Array.isArray(f.plugins))a=a.concat(f.plugins);else if(typeof f=="object"&&f.postcssPlugin)a.push(f);else if(typeof f=="function")a.push(f);else if(typeof f=="object"&&(f.parse||f.stringify)){if(process.env.NODE_ENV!=="production")throw new Error("PostCSS syntaxes cannot be used as plugins. Instead, please use one of the syntax/parser/stringifier options as outlined in your PostCSS runner documentation.")}else throw new Error(f+" is not a PostCSS plugin");return a}process(i,a={}){return!this.plugins.length&&!a.parser&&!a.stringifier&&!a.syntax?new r(this,i,a):new x(this,i,a)}use(i){return this.plugins=this.plugins.concat(this.normalize([i])),this}}return oo=o,o.default=o,t.registerProcessor(o),e.registerProcessor(o),oo}var io,$a;function g1(){if($a)return io;$a=1;let e=Or(),x=mn(),r=At(),t=Ar(),o=yn(),n=Ir(),i=d1(),a=wn(),f=Za(),u=qa(),d=Cn(),h=$r(),s=b1(),b=to(),c=Vt(),_=Gr(),l=pn(),g=Va();function p(...v){return v.length===1&&Array.isArray(v[0])&&(v=v[0]),new s(v)}return p.plugin=function(m,C){let y=!1;function z(...D){console&&console.warn&&!y&&(y=!0,console.warn(m+`: postcss.plugin was deprecated. Migration guide:
-https://evilmartians.com/chronicles/postcss-8-plugin-migration`),process.env.LANG&&process.env.LANG.startsWith("cn")&&console.warn(m+`: \u91CC\u9762 postcss.plugin \u88AB\u5F03\u7528. \u8FC1\u79FB\u6307\u5357:
-https://www.w3ctech.com/topic/2226`));let S=C(...D);return S.postcssPlugin=m,S.postcssVersion=new s().version,S}let B;return Object.defineProperty(z,"postcss",{get(){return B||(B=z()),B}}),z.process=function(D,S,N){return p([z(N)]).process(D,S)},z},p.stringify=l,p.parse=h,p.fromJSON=i,p.list=u,p.comment=v=>new x(v),p.atRule=v=>new e(v),p.decl=v=>new o(v),p.rule=v=>new _(v),p.root=v=>new c(v),p.document=v=>new n(v),p.CssSyntaxError=t,p.Declaration=o,p.Container=r,p.Processor=s,p.Document=n,p.Comment=x,p.Warning=g,p.AtRule=e,p.Result=b,p.Input=a,p.Rule=_,p.Root=c,p.Node=d,f.registerPostcss(p),io=p,p.default=p,io}var p1=g1(),l0=s1(p1);l0.stringify,l0.fromJSON,l0.plugin,l0.parse,l0.list,l0.document,l0.comment,l0.atRule,l0.rule,l0.decl,l0.root,l0.CssSyntaxError,l0.Declaration,l0.Container,l0.Processor,l0.Document,l0.Comment;const ao=l0.Warning;l0.AtRule,l0.Result,l0.Input,l0.Rule,l0.Root,l0.Node;function re(e,x){const r=fo();return re=function(t,o){t=t-0;let n=r[t];if(re.PeRidA===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};re.IRJAzn=i,e=arguments,re.PeRidA=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=re.IRJAzn(n),e[f]=n),n},re(e,x)}function v1(e,x){function r(o,n,i,a){return re(o-58,n)}function t(o,n,i,a){return re(o-880,n)}return x===t(880,876)?C1(e):JSON[r(59,60)]}function C1(e){return function x(r,t=0){function o(u,d,h,s){return re(s-665,d)}if(t===0&&Object[n(421,441,424,431)](r)[o(661,660,664,668)]===0)return"{}";function n(u,d,h,s){return re(s-429,d)}const i=e(t===0?o(660,673,671,669):t===1?n(442,437,429,434):n(445,434,443,435)),a=[],f=[];return Object[n(438,435,438,436)](r)[n(431,444,446,437)](([u,d])=>{d==s(786,788,780,785)&&(d=s(797,787,779,786));function h(c,_,l,g){return re(_- -489,c)}function s(c,_,l,g){return re(g-776,c)}const b=u[h(-482,-478)]("::")?u:'"'+u+'"';t>=2?u[s(784,777,797,788)]("--")?f[s(794,780,790,789)]('{"'+u+s(799,785,795,790)+d+'"}'):b[0]==="!"?a[s(786,781,787,789)]("{"+b[s(786,784,786,791)](1)+s(796,793,797,792)+d+")}"):a[s(783,799,789,789)]("{"+b+", "+d+"}"):a[h(-476,-476)]("{"+b+", "+x(d,t+1)+"}")}),f[n(422,434,423,432)]&&a[n(452,450,449,446)]("{"+e("UniCSSPropertyID")+"::Variable, "+e(n(457,454,438,447))+"{"+f.join(", ")+"}}"),i+"({"+a.join(",")+"})"}}function fo(){const e=["yxbWlwHHCM1VBNK","C3rYAw5NAwz5","A2v5CW","BgvUz3rO","BwfRzv9ZDhLSzv9ZAgvLDa","BwfRzv9WCM9Wzxj0Ev9Tyxa","BwfRzv9ZDhLSzxm","zw50CMLLCW","zM9YrwfJAa","BNvSBa","BNvSBhb0CG","Aw5JBhvKzxm","C3rHCNrZv2L0Aa","ChvZAa","iIWGiG","C2XPy2u","lcbvBMLdu1nqCM9Wzxj0EvzHBhvLsw1WB3j0yw50ka","Dw5ZAgLMDa","vw5Pq1ntuhjVCgvYDhLwywX1zvzHCMLHyMXL","zgvJBa","Dg9tDhjPBMC","Aw1WB3j0yw50"];return fo=function(){return e},fo()}function m1(e,x,r,t,o){const n={type:i(-563,-569,-565),prop:e,value:x[i(-572,-566,-564)](),raws:t,source:o};function i(a,f,u,d){return re(u- -584,a)}return r&&(n[i(-569,-562,-563)]=!0),n}var y1={"align-content":{type:"UniCSSAlignContentType",uniPlatform:{app:{"dom-c":{setter:"setStyleAlignContent"}}},values:["auto","flex-start","center","flex-end","stretch","baseline","space-between","space-around","space-evenly"],defaultValue:"stretch"},"align-items":{type:"UniCSSAlignItemsType",uniPlatform:{app:{"dom-c":{setter:"setStyleAlignItems"}}},values:["auto","flex-start","center","flex-end","stretch","baseline","space-between","space-around","space-evenly"],defaultValue:"stretch"},"align-self":{type:"UniCSSAlignSelfType",uniPlatform:{app:{"dom-c":{setter:"setStyleAlignSelf"}}},values:["auto","flex-start","center","flex-end","stretch","baseline","space-between","space-around","space-evenly"],defaultValue:"auto"},"flex-basis":{type:["UniCSSUnitValue","UniCSSFlexBasisType"],uniPlatform:{app:{"dom-c":{setter:"setStyleFlexBasis"}}},values:["auto","content"],defaultValue:"auto"},"flex-direction":{type:"UniCSSFlexDirectionType",uniPlatform:{app:{"dom-c":{setter:"setStyleFlexDirection"}}},values:["row","row-reverse","column","column-reverse"],defaultValue:"column"},"flex-grow":{type:"number",uniPlatform:{app:{"dom-c":{setter:"setStyleFlexGrow"}}}},"flex-shrink":{type:"number",uniPlatform:{app:{"dom-c":{setter:"setStyleFlexShrink"}}}},"flex-wrap":{type:"UniCSSFlexWrapType",uniPlatform:{app:{"dom-c":{setter:"setStyleFlexWrap"}}},values:["nowrap","wrap","wrap-reverse"],defaultValue:"nowrap"},"justify-content":{type:"UniCSSJustifyContentType",uniPlatform:{app:{"dom-c":{setter:"setStyleJustifyContent"}}},values:["auto","flex-start","center","flex-end","stretch","baseline","space-between","space-around","space-evenly"],defaultValue:"flex-start"},bottom:{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleBottom"}}}},display:{type:"UniCSSDisplayType",uniPlatform:{app:{"dom-c":{setter:"setStyleDisplay"},"nv-c":{type:"UniNativeDisplayType",setter:"display"}},"app-android":{"dom-c":{setter:"setStyleDisplay"},"nv-kt":{setter:"display"}}},values:["flex","none"],defaultValue:"flex"},height:{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleHeight"}}}},left:{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleLeft"}}}},"max-height":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleMaxHeight"}}}},"max-width":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleMaxWidth"}}}},"min-height":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleMinHeight"}}}},"min-width":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleMinWidth"}}}},position:{type:"UniCSSPositionType",uniPlatform:{app:{"dom-c":{setter:"setStylePosition"},"nv-c":{type:"UniNativePositionType",setter:"position"}},"app-android":{"dom-c":{setter:"setStylePosition"},"nv-kt":{setter:"position"}}},values:["relative","absolute","fixed","sticky","static"],defaultValue:"relative"},right:{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleRight"}}}},top:{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleTop"}}}},width:{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleWidth"}}}},visibility:{type:"UniCSSVisibilityType",uniPlatform:{app:{"nv-c":{type:"UniNativeVisibilityType",setter:"visibility"}},"app-android":{"nv-kt":{type:"UniNativeVisibilityType",setter:"visibility"}}},values:["visible","hidden"],defaultValue:"visible"},"background-clip":{type:"UniNativeBackgroundClip",uniPlatform:{app:{"nv-c":{setter:"backgroundClip"}},"app-android":{"nv-kt":{setter:"backgroundClip"}}},values:["border-box","padding-box","content-box"],defaultValue:"border-box"},"background-color":{type:"UniNativeColor",uniPlatform:{app:{"nv-c":{setter:"backgroundColor"}},"app-android":{"nv-kt":{setter:"backgroundColor"}}}},"background-image":{type:"UniNativeBackgroundImage",uniPlatform:{app:{"nv-c":{setter:"backgroundImage"}},"app-android":{"nv-kt":{setter:"backgroundImage"}}}},"border-color":{type:"UniNativeBorderColors",uniPlatform:{app:{"nv-c":{setter:"borderColor"}}}},"border-bottom-color":{type:"UniNativeBorderColor",uniPlatform:{app:{"nv-c":{setter:"borderColorBottom"}},"app-android":{"nv-kt":{setter:"borderColorBottom"}}}},"border-left-color":{type:"UniNativeBorderColor",uniPlatform:{app:{"nv-c":{setter:"borderColorLeft"}},"app-android":{"nv-kt":{setter:"borderColorBottom"}}}},"border-right-color":{type:"UniNativeBorderColor",uniPlatform:{app:{"nv-c":{setter:"borderColorRight"}},"app-android":{"nv-kt":{setter:"borderColorBottom"}}}},"border-top-color":{type:"UniNativeBorderColor",uniPlatform:{app:{"nv-c":{setter:"borderColorTop"}},"app-android":{"nv-kt":{setter:"borderColorBottom"}}}},"border-style":{type:"UniCSSBorderStyleType",uniPlatform:{app:{"dom-c":{setter:"setStyleBorderStyle"},"nv-c":{type:"UniNativeBorderStyles",setter:"borderStyle"}}},values:["none","solid","dashed","dotted"],defaultValue:"none"},"border-bottom-style":{type:"UniCSSBorderStyleType",uniPlatform:{app:{"dom-c":{setter:"setStyleBorderBottomStyle"},"nv-c":{type:"UniNativeBorderStyle",setter:"borderStyleBottom"}},"app-android":{"dom-c":{setter:"setStyleBorderBottomStyle"},"nv-kt":{setter:"borderStyleBottom"}}},values:["none","solid","dashed","dotted"],defaultValue:"none"},"border-left-style":{type:"UniCSSBorderStyleType",uniPlatform:{app:{"dom-c":{setter:"setStyleBorderLeftStyle"},"nv-c":{type:"UniNativeBorderStyle",setter:"borderStyleLeft"}},"app-android":{"dom-c":{setter:"setStyleBorderBottomStyle"},"nv-kt":{setter:"borderStyleLeft"}}},values:["none","solid","dashed","dotted"],defaultValue:"none"},"border-right-style":{type:"UniCSSBorderStyleType",uniPlatform:{app:{"dom-c":{setter:"setStyleBorderRightStyle"},"nv-c":{type:"UniNativeBorderStyle",setter:"borderStyleRight"}},"app-android":{"dom-c":{setter:"setStyleBorderBottomStyle"},"nv-kt":{setter:"borderStyleRight"}}},values:["none","solid","dashed","dotted"],defaultValue:"none"},"border-top-style":{type:"UniCSSBorderStyleType",uniPlatform:{app:{"dom-c":{setter:"setStyleBorderTopStyle"},"nv-c":{type:"UniNativeBorderStyle",setter:"borderStyleTop"}},"app-android":{"dom-c":{setter:"setStyleBorderBottomStyle"},"nv-kt":{setter:"borderStyleTop"}}},values:["none","solid","dashed","dotted"],defaultValue:"none"},"border-bottom-width":{type:["UniCSSUnitValue","UniCSSBorderWidthType"],uniPlatform:{app:{"dom-c":{setter:"setStyleBorderBottomWidth"}}},values:["thin","medium","thick"],defaultValue:"medium"},"border-left-width":{type:["UniCSSUnitValue","UniCSSBorderWidthType"],uniPlatform:{app:{"dom-c":{setter:"setStyleBorderLeftWidth"}}},values:["thin","medium","thick"],defaultValue:"medium"},"border-right-width":{type:["UniCSSUnitValue","UniCSSBorderWidthType"],uniPlatform:{app:{"dom-c":{setter:"setStyleBorderRightWidth"}}},values:["thin","medium","thick"],defaultValue:"medium"},"border-top-width":{type:["UniCSSUnitValue","UniCSSBorderWidthType"],uniPlatform:{app:{"dom-c":{setter:"setStyleBorderTopWidth"}}},values:["thin","medium","thick"],defaultValue:"medium"},"border-bottom-left-radius":{type:"UniNativeBorderRadius",uniPlatform:{app:{"nv-c":{setter:"borderRadiusBottomLeft"}},"app-android":{"nv-kt":{setter:"borderRadiusBottomLeft"}}}},"border-bottom-right-radius":{type:"UniNativeBorderRadius",uniPlatform:{app:{"nv-c":{setter:"borderRadiusBottomRight"}},"app-android":{"nv-kt":{setter:"borderRadiusBottomRight"}}}},"border-top-left-radius":{type:"UniNativeBorderRadius",uniPlatform:{app:{"nv-c":{setter:"borderRadiusTopLeft"}},"app-android":{"nv-kt":{setter:"borderRadiusTopLeft"}}}},"border-top-right-radius":{type:"UniNativeBorderRadius",uniPlatform:{app:{"nv-c":{setter:"borderRadiusTopRight"}},"app-android":{"nv-kt":{setter:"borderRadiusTopRight"}}}},"box-shadow":{type:"UniNativeBoxShadow",uniPlatform:{app:{"nv-c":{setter:"boxShadow"}},"app-android":{"nv-kt":{setter:"boxShadow"}}}},"box-sizing":{type:"UniCSSBoxSizingType",uniPlatform:{app:{"dom-c":{setter:"setStyleBoxSizing"}}},values:["content-box","border-box"],defaultValue:"border-box"},"margin-bottom":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleMarginBottom"}}}},"margin-left":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleMarginLeft"}}}},"margin-right":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleMarginRight"}}}},"margin-top":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStyleMarginTop"}}}},"padding-bottom":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStylePaddingBottom"}}}},"padding-left":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStylePaddingLeft"}}}},"padding-right":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStylePaddingRight"}}}},"padding-top":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setStylePaddingTop"}}}},opacity:{type:"number",uniPlatform:{app:{"nv-c":{setter:"opacity"}},"app-android":{"nv-kt":{setter:"opacity"}}}},overflow:{type:"UniNativeOverflowType",uniPlatform:{app:{"nv-c":{setter:"overflow"}},"app-android":{"nv-kt":{setter:"overflow"}}},values:["visible","hidden"],defaultValue:"hidden"},"pointer-events":{type:"UniNativePointerEventType",uniPlatform:{app:{"nv-c":{setter:"pointerEvents"}},"app-android":{"nv-kt":{setter:"pointerEvents"}}},values:["auto","none"],defaultValue:"auto"},"z-index":{type:"number",uniPlatform:{app:{"nv-c":{setter:"zIndex"}},"app-android":{"nv-kt":{setter:"zIndex"}}}},transform:{type:"UniNativeTransform",uniPlatform:{app:{"nv-c":{setter:"transform"}},"app-android":{"nv-kt":{setter:"transform"}}}},"transform-origin":{type:"UniNativeTransformOrigin",uniPlatform:{app:{"nv-c":{setter:"transformOrigin"}},"app-android":{"nv-kt":{setter:"transformOrigin"}}}},"transition-delay":{type:"UniNativeTransitionDelay",uniPlatform:{app:{"nv-c":{setter:"transitionDelay"}},"app-android":{"nv-kt":{setter:"transitionDelay"}}}},"transition-duration":{type:"UniNativeTransitionDuration",uniPlatform:{app:{"nv-c":{setter:"transitionDuration"}},"app-android":{"nv-kt":{setter:"transitionDuration"}}}},"transition-property":{type:["UniNativeTransitionProperty","UniNativeTransitionPropertys"],uniPlatform:{app:{"nv-c":{setter:"transitionProperty"}},"app-android":{"nv-kt":{setter:"transitionProperty"}}}},"transition-timing-function":{type:"UniNativeTransitionTimingFunction",uniPlatform:{app:{"nv-c":{setter:"transitionTimingFunction"}},"app-android":{"nv-kt":{setter:"transitionTimingFunction"}}}},color:{type:"UniNativeColor",uniPlatform:{app:{"dom-c":{setter:"setColor"}},"app-android":{"txt-kt":{setter:"setColor"}}}},"font-family":{type:"string",uniPlatform:{app:{"dom-c":{setter:"setFontFamily"}},"app-android":{"txt-kt":{setter:"setFontFamily"}}}},"font-size":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setFontSize"}},"app-android":{"txt-kt":{setter:"setFontSize"}}}},"font-style":{type:"UniCSSFontStyleType",uniPlatform:{app:{"dom-c":{setter:"setFontStyle"}},"app-android":{"txt-kt":{setter:"setFontStyle"}}},values:["normal","italic"],defaultValue:"normal"},"font-weight":{type:["number","UniCSSFontWeightType"],uniPlatform:{app:{"dom-c":{setter:"setFontWeight"}},"app-android":{"txt-kt":{setter:"setFontWeight"}}},values:["normal","bold","lighter","bolder"],defaultValue:"normal"},"letter-spacing":{type:"UniCSSUnitValue",uniPlatform:{app:{"dom-c":{setter:"setLetterSpacing"}},"app-android":{"txt-kt":{setter:"setLetterSpacing"}}}},"line-height":{type:["UniCSSUnitValue","UniCSSLineHeightType"],uniPlatform:{app:{"dom-c":{setter:"setLineHeight"}},"app-android":{"txt-kt":{setter:"setLineHeight"}}},values:["normal"],defaultValue:"1.2"},"text-align":{type:"UniCSSTextAlign",uniPlatform:{app:{"dom-c":{setter:"setTextAlign"}},"app-android":{"txt-kt":{setter:"setTextAlign"}}},values:["left","right","center"],defaultValue:"left"},"text-decoration-line":{type:"UniCSSTextDecorationLineType",uniPlatform:{app:{"dom-c":{setter:"setTextDecorationLine"}},"app-android":{"txt-kt":{setter:"setTextDecorationLine"}}},values:["none","underline","overline","line-through"],defaultValue:"none"},"text-overflow":{type:"UniCSSTextOverflow",uniPlatform:{app:{"dom-c":{setter:"setTextOverflow"}},"app-android":{"txt-kt":{setter:"setTextOverflow"}}},values:["clip","ellipsis"],defaultValue:"clip"},"text-shadow":{type:"UniCSSTextShadow",uniPlatform:{app:{"dom-c":{setter:"setTextShadow"}},"app-android":{"txt-kt":{setter:"setTextShadow"}}}},"white-space":{type:"UniCSSWhiteSpace",uniPlatform:{app:{"dom-c":{setter:"setWhiteSpace"}},"app-android":{"txt-kt":{setter:"setWhiteSpace"}}},values:["normal","nowrap","pre","pre-wrap","pre-line","break-spaces"],defaultValue:"normal"},"--*":{description:"css\u53D8\u91CF",type:"string",uniPlatform:{app:{"dom-c":{setter:"setStyleVariable"}}}}};function Wt(e,x,r,t){return yt(e-258,x)}function $e(e,x,r,t){return yt(x- -622,r)}function yt(e,x){var r=co();return yt=function(t,o){t=t-0;var n=r[t];if(yt.xMOnhY===void 0){var i=function(d){for(var h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=",s="",b="",c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(var p=0,v=s.length;p<v;p++)b+="%"+("00"+s.charCodeAt(p).toString(16)).slice(-2);return decodeURIComponent(b)};yt.aMCUfS=i,e=arguments,yt.xMOnhY=!0}var a=r[0],f=t+a,u=e[f];return u?n=u:(n=yt.aMCUfS(n),e[f]=n),n},yt(e,x)}var r0=(e=>(e[$e(-623,-622,-627)]=$e(-624,-621,-626),e.Unit=$e(-627,-620,-615),e[Wt(261,261)]=Wt(262,267),e[$e(-620,-617,-613)]=Wt(264,259),e.Color="color",e[$e(-617,-615,-613)]=Wt(266,269),e[$e(-609,-613,-617)]=Wt(268,272),e[$e(-619,-611,-618)]=Wt(270,264),e.Other=$e(-606,-609,-607),e[$e(-610,-608,-613)]="combined",e))(r0||{});function co(){var e=["rw51Bq","zw51Bq","Dw5PDa","tNvTyMvY","BNvTyMvY","u3rYAw5N","C3rYAw5N","u3rYDwn0","C3rYDwn0","rgvMAw5LvMfYAwfIBgu","zgvMAw5LvMfYAwfIBgu","u2v0vMfYAwfIBgu","C2v0vMfYAwfIBgu","B3rOzxi","q29TyMLUzwq"];return co=function(){return e},co()}function uo(){const e=["zgvMAw5Lu3r5BgvwyxjPywjSzsGI","iIWGiG","DhLWzq","C2v0u3r5BgvwyxjPywjSzsG","vw5Pq1ntuhjVCgvYDhLjra","lcaI","u2v0vMfYAwfIBgu"];return uo=function(){return e},uo()}function w1(){const e=(r,t)=>y0('"'+r+'"',x(-779,-779,-776,-778)+t+x(-778,-776,-778,-774)+r+'")');function x(r,t,o,n){return Qe(r- -779,n)}return e[x(-777,-774,-780,-781)]=r0.DefineVariable,e}function Qe(e,x){const r=uo();return Qe=function(t,o){t=t-0;let n=r[t];if(Qe.sqHFfD===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Qe.RKTJCf=i,e=arguments,Qe.sqHFfD=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Qe.RKTJCf(n),e[f]=n),n},Qe(e,x)}const z1=w1();function S1(e){const x=(o,n)=>y0('"'+o+'"',r(-462,-461,-464,-463)+e(t(278,274))+"."+L.capitalize(L.camelize(n))+r(-461,-459,-458,-460)+o+'")');function r(o,n,i,a){return Qe(n- -464,a)}function t(o,n,i,a){return Qe(o-274,n)}return x[t(276,278)]=r0[t(280,278)],x}function so(){const e=["uhjVCgvYDhKGjW","jYbOyxmGAw52ywXPzcb2ywX1ztOGjW","C3rYAw5N","DMfYka","rgvMAw5LvMfYAwfIBgu","u2v0vMfYAwfIBgu","DhLWzq","Dw5PugXHDgzVCM0","yxbW","yMfJA2DYB3vUzc1JB2XVCG","zg9Tlwm","zxHLyW","DhjPBq","Axnoyu4","Dg9mB3DLCKnHC2u","AxngAw5PDgu","Dg9tDhjPBMC","Aw5JBhvKzxm"];return so=function(){return e},so()}function lo(){return y1}function y0(e,x){return{valueCode:e,setterCode:x}}function We(e,x){function r(t,o,n,i){return Z0(t- -581,o)}return{error:r(-581,-577)+x+r(-580,-575)+e+"'",valueCode:"",setterCode:""}}function Z0(e,x){const r=so();return Z0=function(t,o){t=t-0;let n=r[t];if(Z0.TQxzrz===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Z0.FBZCzB=i,e=arguments,Z0.TQxzrz=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Z0.FBZCzB(n),e[f]=n),n},Z0(e,x)}function B1(e,x){function r(o,n,i,a){return Z0(o- -486,i)}const t=S1(e);return(o,n,i)=>typeof o==r(-484,-478,-490)&&o.includes(r(-483,-488,-490))?t(o,n,i):x(o,n,i)}function F0(e,x,r){const t=r===r0[o(-109,-109,-111)]||r===r0[o(-115,-102,-110)]?x:B1(e,x);function o(n,i,a,f){return Z0(a- -115,n)}return t[o(-103,-113,-109)]=r,t}const Qa=/\s(?![^(]*\))/,D1=/^[0-9]+[a-zA-Z%]+?$/,ef=e=>e==="0"||D1.test(e);function L1(e,x,r){const t=lo()[e];function o(f,u,d,h){return Z0(f-298,u)}function n(f,u,d,h){return Z0(h- -95,u)}if(!t||!t.uniPlatform)return null;const i=x,a=t[n(-86,-83,-96,-88)][i]||t[n(-93,-79,-85,-88)][o(306,305)];return a?e===o(307,316)&&r===n(-83,-87,-76,-85)?{setter:"setBackgroundColor"}:a[r]||null:null}function A1(e){const x=/^(-?\d*\.?\d+)(ms|s)$/i[r(175,180,182)](e[o(420,432,435,427)]());if(!x)return null;function r(i,a,f,u){return Z0(f-171,i)}const t=parseFloat(x[1]);function o(i,a,f,u){return Z0(u-415,i)}if(Number[o(419,425,433,428)](t))return null;const n=x[2][o(428,422,437,429)]()==="s"?t*1e3:t;return Number[r(182,185,186)](n)?M1(n):null}function M1(e){function x(o,n,i,a){return Z0(i-588,a)}const r=e[t(705,699,703,704)]();function t(o,n,i,a){return Z0(i-687,a)}return r[x(613,613,605,600)](".")?r:r+".0"}function _o(){const e=["vw5Pq1ntvw5PDfzHBhvL","vw5PtMf0AxzLqM9YzgvYuMfKAxvZ","Aw5JBhvKzxm","vw5Pq1ntvw5PDfzHBhvLEW","DMfSDwu","lcbvBMLdu1nvBML0vhLWztO6","Dw5PDa","BMv3ifvUAuntu1vUAxrwywX1zsG","lcbvBMLdu1nvBML0vhLWzs4","BgLUzs1OzwLNAhq","tK9orq","vw5PDa","yxv0BW","Bwf0y2G","Dg9vChbLCKnHC2u","uenu","Aw5KzxHpzG"];return _o=function(){return e},_o()}function tf(e,x,r,t){return Y0(x-946,r)}const N1=[U1(-540,-546,-548),tf(951,947,947)];function Y0(e,x){const r=_o();return Y0=function(t,o){t=t-0;let n=r[t];if(Y0.qiRvBo===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Y0.TVdrPE=i,e=arguments,Y0.qiRvBo=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Y0.TVdrPE(n),e[f]=n),n},Y0(e,x)}function P1(e){function x(r,t,o,n){return Y0(t-814,o)}return e?N1[x(821,816,823)](e):!1}function ho(e,x){function r(o,n,i,a){return Y0(n-153,i)}function t(o,n,i,a){return Y0(o-555,n)}return x==="cpp"?r(163,156,164)+e[t(559,559)]+t(560,552)+e[t(561,565)]+"}":t(562,565)+e[t(559,557)]+r(161,161,161)+e[r(154,159,164)]+")"}function nf(e,x,r){function t(o,n,i,a){return Y0(n-866,o)}return y0(ho(r,x),e+"("+r[t(878,870)]+", UniCSSUnitType."+r.unit+")")}function U1(e,x,r,t){return Y0(r- -548,e)}function E1(e,x,r){function t(o,n,i,a){return Y0(n- -746,o)}return F0(e,(o,n)=>{function i(f,u,d,h){return Y0(d- -378,h)}const a=Mt(String(o),n===i(-366,-376,-369,-372)?"EM":i(-371,-373,-368,-376));return a?nf(x,r,a):We(o,n)},r0[t(-743,-735)])}const T1=/^(-?(?:\d*\.\d+|\d+\.?\d*))(%|[a-zA-Z]+)?$/;function Mt(e,x=tf(965,956,958)){if(e===r(367,367,365,375))return{value:0,unit:"AUTO"};function r(n,i,a,f){return Y0(i-355,f)}function t(n,i,a,f){return Y0(f-483,a)}const o=e[r(366,368,374,370)](T1);if(o){const n=parseFloat(o[1]),i=o[2]?o[2][t(500,495,495,497)]():null;return i===null?{value:n,unit:x}:{value:n,unit:i==="%"?r(371,370,372,363):i}}}function et(e,x){const r=bo();return et=function(t,o){t=t-0;let n=r[t];if(et.HCTBjB===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};et.SEoqlL=i,e=arguments,et.HCTBjB=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=et.SEoqlL(n),e[f]=n),n},et(e,x)}function bo(){const e=["y3bW","yxbWlwHHCM1VBNK","vvrtq1bqlNbYB3bLCNr5qwnJzxnZka"];return bo=function(){return e},bo()}function q1(e,x,r){return F0(e,t=>{const o=r(L.capitalize(L.camelize(t+"")));return y0(o,x?x+"("+o+")":o)},r0.Enum)}function H1(e,x,r,t){function o(i,a,f,u){return et(i-576,u)}function n(i,a,f,u){return et(u- -238,f)}return x===n(-237,-238,-237,-238)?i=>e+"::"+L.capitalize(L.camelize(i+"")):r===o(577,577,577,578)||r==="app-ios"?i=>kt(e,i):i=>e+"."+L.capitalize(L.camelize(i+""))}function kt(e,x){function r(t,o,n,i){return et(t-755,n)}return r(757,755,759)+e+', "::", "'+L.capitalize(L.camelize(x+""))+'")'}function go(){const e=["vw5PtMf0AxzLq29SB3i","vw5PtMf0AxzLqM9YzgvYq29SB3i","DgfYz2v0","zg9Tlwm","yMfJA2DYB3vUzc1JB2XVCG","DgfNtMfTzq","Dgv4Da","BNyTyW","q29SB3i","AxnwywXPza","Dg9izxG4","C2XPy2u"];return go=function(){return e},go()}const O1=[W1(647,646,645,650),I1(124,118,128)];function W1(e,x,r,t){return oe(r-645,t)}function I1(e,x,r,t){return oe(e-123,r)}function oe(e,x){const r=go();return oe=function(t,o){t=t-0;let n=r[t];if(oe.YNYdnk===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};oe.wYurYF=i,e=arguments,oe.YNYdnk=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=oe.wYurYF(n),e[f]=n),n},oe(e,x)}function j1(e){return e?O1.includes(e):!1}const Y1=y0("","");function R1(e,x){function r(t,o,n,i){return oe(i-270,o)}return F0(e,(t,o,n)=>{function i(u,d,h,s){return oe(d-192,h)}function a(u,d,h,s){return oe(s-223,h)}if((n==null?void 0:n[i(193,194,190)])===i(195,195,197)&&o===a(232,224,230,227)&&(n==null?void 0:n[a(224,230,227,228)])!==i(197,198,194)||(n==null?void 0:n.target)===i(204,199,203)&&o===a(226,227,224,227)&&(n==null?void 0:n.tagName)==="text")return Y1;const f=Kt(String(t));return f?y0(""+f,x+"("+f+")"):We(t,o)},r0[r(272,275,276,278)])}function Kt(e){function x(o,n,i,a){return oe(a- -525,n)}function r(o,n,i,a){return oe(o- -458,n)}const t=Qo(e);if(t[r(-449,-455)]()){const o=t[x(-513,-512,-509,-515)]();return"0x"+(o[r(-447,-452)](6,8)+o[x(-513,-511,-515,-514)](0,6))}}function po(){const e=["BNvTyMvY","Aw5JBhvKzxm"];return po=function(){return e},po()}function V1(e,x,r,t){return wt(t-92,x)}function wt(e,x){const r=po();return wt=function(t,o){t=t-0;let n=r[t];if(wt.EOSGoN===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};wt.NyKWdJ=i,e=arguments,wt.EOSGoN=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=wt.NyKWdJ(n),e[f]=n),n},wt(e,x)}const k1=[V1(92,91,92,92)];function K1(e){function x(r,t,o,n){return wt(r- -224,o)}return e?k1[x(-223,-223,-224)](e):!1}function G1(e,x){return F0(e,(r,t)=>{const o=parseFloat(String(r));return isNaN(o)?We(r,t):y0(""+o,x+"("+o+")")},r0.Number)}const X1=["string"];function Z1(e){return e?X1.includes(e):!1}function F1(e,x){return F0(e,r=>y0('"'+r+'"',x+'("'+r+'")'),r0.String)}function $0(e,x){const r=vo();return $0=function(t,o){t=t-0;let n=r[t];if($0.tJnnMW===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};$0.cmsAlu=i,e=arguments,$0.tJnnMW=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=$0.cmsAlu(n),e[f]=n),n},$0(e,x)}function J1(e,x,r,t){return $0(t-365,e)}const $1=[J1(368,367,371,365)];function Q1(e){return e?$1.includes(e):!1}function vo(){const e=["vw5PtMf0AxzLqM94u2HHzg93","BM9Uzq","BNvSBa","kg51BgWP","u3rYDwn0","vw5PtMf0AxzLqM94u2HHzg93ka","AxnjBNnLDa","B2zMC2v0wa","B2zMC2v0wq","yMX1CLjHzgL1CW","y29SB3i","C3bSAxq","Aw5JBhvKzxm","zMLSDgvY","Aw5Zzxq","BwfW","BgvUz3rO","zMLSBa","DMfSDwu"];return vo=function(){return e},vo()}function es(e,x){function r(t,o,n,i){return $0(t- -739,i)}return F0(e,t=>{function o(a,f,u,d){return $0(d-111,a)}if(t===o(111,118,116,112))return y0(o(120,108,105,113),x+i(266,269,270));const n=ts(ns(String(t)));function i(a,f,u,d){return $0(f-266,u)}return y0(""+n,x+"("+n+")")},r0[r(-735,-727,-737,-742)])}function ts(e){function x(t,o,n,i){return $0(o- -905,n)}function r(t,o,n,i){return $0(t- -194,i)}return r(-189,-185,-196,-181)+e[x(-902,-899,-894)]+", "+e[x(-897,-898,-908)]+", "+e[r(-186,-180,-188,-188)]+", "+e[x(-900,-896,-890)]+", "+e.spreadRadius+", "+e[x(-901,-895,-905)]+")"}function ns(e){function x(s,b,c,_){return $0(s-27,b)}const r=e[a(-624,-627,-625,-623)](Qa),t=r[a(-618,-624,-626,-622)]("inset"),o=r.slice(-1)[0],n=ef(o)?void 0:Kt(o),i=r[a(-613,-628,-611,-621)](s=>s!==x(41,51)).filter(s=>s!==n)[x(42,48)](s=>Mt(s));function a(s,b,c,_){return $0(_- -634,b)}i.length<4&&i.push(...Array(4-i[x(43,46)])[x(44,52)]({value:0,unit:"NONE"}));const[f,u,d,h]=i[x(42,50)](s=>(s==null?void 0:s[a(-624,-615,-622,-616)])||0);return{isInset:t,offsetX:f,offsetY:u,blurRadius:d,spreadRadius:h,color:n||0}}function xs(e,x,r,t){return De(x- -802,r)}const rs=[xs(-804,-802,-805)];function os(e){function x(r,t,o,n){return De(n-398,r)}return e?rs[x(399,396,398,399)](e):!1}function Co(){const e=["vw5PtMf0AxzLqM9YzgvYq29SB3jZ","Aw5JBhvKzxm","u3rYDwn0","vw5PtMf0AxzLqM9YzgvYq29SB3jZka","CMLNAhq","yM90Dg9T","C3bSAxq"];return Co=function(){return e},Co()}function is(e,x){function r(t,o,n,i){return De(t- -77,o)}return F0(e,t=>{const o=as(fs(String(t)));return y0(""+o,x+"("+o+")")},r0[r(-75,-76)])}function as(e){function x(r,t,o,n){return De(o- -272,n)}return x(-265,-266,-269,-272)+e.top+", "+e[x(-271,-271,-268,-267)]+", "+e[x(-269,-268,-267,-270)]+", "+e.left+")"}function De(e,x){const r=Co();return De=function(t,o){t=t-0;let n=r[t];if(De.fAcQaB===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};De.aFUTee=i,e=arguments,De.fAcQaB=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=De.aFUTee(n),e[f]=n),n},De(e,x)}function fs(e){const x=e[i(-578,-580)](" "),[r,t,o,n]=x.map(Kt);function i(a,f,u,d){return De(f- -586,a)}return{top:r,right:t,bottom:o,left:n}}function be(e,x){const r=mo();return be=function(t,o){t=t-0;let n=r[t];if(be.WTQRwb===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};be.MnjLVa=i,e=arguments,be.WTQRwb=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=be.MnjLVa(n),e[f]=n),n},be(e,x)}const cs=[ds(803,805,809,808)];function us(e){function x(r,t,o,n){return be(o-540,r)}return e?cs[x(536,545,541)](e):!1}function mo(){const e=["vw5PtMf0AxzLqM9YzgvYu3r5BgvZ","Aw5JBhvKzxm","u3rYDwn0","vw5PtMf0AxzLqM9YzgvYu3r5BgvZka","CMLNAhq","yM90Dg9T","BgvMDa","C3bSAxq","yM9YzgvYlxrVCc1ZDhLSzq","DMfSDwvdB2rL","yM9YzgvYlxjPz2H0lxn0EwXL","yM9YzgvYlwjVDhrVBs1ZDhLSzq","yM9YzgvYlwXLzNqTC3r5Bgu"];return mo=function(){return e},mo()}function ss(e,x,r){function t(o,n,i,a){return be(o- -256,i)}return F0(e,o=>{const n=ls(_s(String(o),r));return y0(""+n,x+"("+n+")")},r0[t(-254,-258,-248)])}function ls(e){function x(r,t,o,n){return be(r-831,o)}return x(834,834,837)+e.top+", "+e[x(835,829,834)]+", "+e[x(836,841,836)]+", "+e[x(837,842,843)]+")"}function ds(e,x,r,t){return be(t-808,r)}function _s(e,x){const r=e[a(-984,-979,-982)](" "),[t,o,n,i]=r;function a(u,d,h,s){return be(h- -989,d)}function f(u,d,h,s){return be(d-593,h)}return{top:x[f(599,601,601)](t,"border-top-style")[a(-984,-976,-980)],right:x["border-right-style"](o,a(-977,-985,-979)).valueCode,bottom:x[a(-974,-976,-978)](n,"border-bottom-style")[a(-985,-976,-980)],left:x[a(-978,-984,-977)](i,a(-974,-979,-977))[f(606,602,601)]}}function hs(e,x,r,t){return ie(r- -965,t)}function yo(){const e=["vw5Pq1ntvgv4DfnOywrVDW","Aw5JBhvKzxm","BM9Uzq","BNvSBa","kg51BgWP","vw5Pq1ntvgv4DfnOywrVDYG","B2zMC2v0wa","B2zMC2v0wq","yMX1CLjHzgL1CW","y29SB3i","C3bSAxq","DMfSDwu"];return yo=function(){return e},yo()}const bs=[hs(-960,-968,-965,-961)];function ie(e,x){const r=yo();return ie=function(t,o){t=t-0;let n=r[t];if(ie.NOskzQ===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};ie.CVkeRN=i,e=arguments,ie.NOskzQ=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=ie.CVkeRN(n),e[f]=n),n},ie(e,x)}function gs(e){function x(r,t,o,n){return ie(r- -954,t)}return e?bs[x(-953,-947)](e):!1}function ps(e,x){return F0(e,r=>{function t(n,i,a,f){return ie(n-37,f)}if(r===t(39,41,43,45))return y0(t(40,34,44,42),x+t(41,46,42,36));const o=vs(Cs(String(r)));return y0(""+o,x+"("+o+")")},r0.Struct)}function vs(e){function x(t,o,n,i){return ie(i- -274,n)}function r(t,o,n,i){return ie(o- -570,i)}return e.color?r(-560,-565,-564,-569)+e[r(-565,-564,-566,-566)]+", "+e[r(-568,-563,-563,-567)]+", "+e[r(-568,-562,-563,-567)]+", "+e[x(-264,-270,-268,-265)]+")":"UniCSSTextShadow("+e[x(-268,-262,-267,-268)]+", "+e[r(-563,-563,-558,-564)]+", "+e[x(-272,-265,-266,-266)]+")"}function Cs(e){var x,r,t;function o(u,d,h,s){return ie(s- -313,u)}const n=e[o(-298,-302,-303,-303)](Qa),i=[];function a(u,d,h,s){return ie(h-609,s)}let f;for(const u of n)if(ef(u)){const d=Mt(u);d&&i.push(d)}else f=Kt(u);return{color:f||"",offsetX:((x=i[0])==null?void 0:x[a(625,622,620,617)])||0,offsetY:((r=i[1])==null?void 0:r.value)||0,blurRadius:((t=i[2])==null?void 0:t.value)||0}}function d0(e,x){const r=wo();return d0=function(t,o){t=t-0;let n=r[t];if(d0.bjxLtc===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};d0.nwPZlf=i,e=arguments,d0.bjxLtc=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=d0.nwPZlf(n),e[f]=n),n},d0(e,x)}function wo(){const e=["vw5PtMf0AxzLvhjHBNnMB3jT","BM9Uzq","kg51BgWP","y3bW","AM9PBG","vw5Pq1ntvhjHBNnMB3jT","vhjHBNnSyxrL","u2nHBgu","uM90yxrL","u2TLDW","vw5PDa","twf0CML4","tNvTyMvY","twf0CML4m0q","ugvYC3bLy3rPDMu","BwfW","BMfTzq","DhLWzq","lcbvBMLdu1nvBML0vhLWzq","Dw5PDa","y2XHC3noyw1L","Dg9mB3DLCKnHC2u","DMfSDwu","zMLSDgvY","BgvUz3rO","xsbHCYa","C3bSAxq","DhjPBq","revh","ChvZAa","Bwf0CML4","Bwf0CML4m2q","CM90yxrLwa","CM90yxrLwq","C2TLD1G","C2TLD1K","Aw5JBhvKzxm","C2nHBgu","C2nHBgvz","C2nHBgvA","C2nHBguZza","Bwf0y2G","zgvN","CMfK","z3jHza","DhvYBG"];return wo=function(){return e},wo()}const ms=[Ft(-929,-941,-906,-923)];function Nt(e,x,r,t){return d0(r- -925,e)}function ys(e){return e?ms.includes(e):!1}function ws(e,x,r){return F0(e,(t,o)=>{if(t===i(-127,-117,-111,-123))return y0("null",x+a(-790,-773,-777));const n=Ls(As(String(t)),r);function i(f,u,d,h){return d0(d- -112,h)}function a(f,u,d,h){return d0(f- -792,d)}return n?y0(""+n,x+"("+n+")"):We(t,o)},r0.Struct)}function xf(e,x,r,t){function o(i,a,f,u){return d0(i-501,a)}function n(i,a,f,u){return d0(u- -620,f)}return e===o(504,498)?x+"::"+L.capitalize(L.camelize(r+""))+"("+t[n(-617,-632,-601,-616)](", ")+")":kt(x,r)+"("+t[o(505,489)](", ")+")"}const tt=Nt(-900,-903,-920),Gt={className:tt+Nt(-900,-904,-919),type:r0.Unit,spread:!0},Xt={className:tt+Nt(-904,-908,-918),type:r0.Unit,spread:!0},Zt={className:tt+Ft(-921,-932,-921,-944),type:r0.Unit,spread:!0},zo={className:tt+Ft(-920,-904,-931,-924),type:r0[Ft(-919,-908,-926,-922)],spread:!0},zs={className:tt+Ft(-918,-923,-917,-923),type:r0[Nt(-897,-924,-913)]},Ss={className:tt+Nt(-925,-926,-912),type:r0[Nt(-903,-901,-913)]},Bs={className:tt+Nt(-924,-924,-911),type:r0.Unit,spread:!0},Ds={translate:Gt,translateX:Gt,translateY:Gt,translateZ:Gt,translate3d:L.extend({},Gt,{spread:!1}),scale:Xt,scaleX:Xt,scaleY:Xt,scaleZ:Xt,scale3d:L.extend({},Xt,{spread:!1}),rotate:Zt,rotateX:Zt,rotateY:Zt,rotateZ:Zt,rotate3d:L.extend({},Zt,{spread:!1}),skew:zo,skewX:zo,skewY:zo,matrix:zs,matrix3d:Ss,perspective:Bs};function Ls(e,x){if(e.length===0)return"";const r=e[o(-272,-253)](n=>{const i=n.args,a=Ds[n[u(942,920)]];function f(d,h,s,b){return d0(s-513,h)}function u(d,h,s,b){return d0(d-926,h)}if(a){if(a[u(943,936)]===r0.Unit){const d=x===u(929,926)?"::":".";return xf(x,a.className,L.capitalize(n.name.toLowerCase()),i[u(941,940)](h=>a.spread?h.value+u(944,960)+d+h[f(538,531,532)]:ho(h,x)))}else if(a[f(539,513,530)]===r0.Number)return xf(x,a[f(541,531,533)],L.capitalize(n[u(942,958)][f(512,549,534)]()),i[u(941,929)](d=>""+d[u(948,938)]))}return""})[o(-264,-278)](n=>n!=="");function t(n,i,a,f){return d0(a- -779,f)}function o(n,i,a,f){return d0(n- -287,i)}return r[o(-263,-260)]===0?"":x==="cpp"?tt+"{"+r.join(", ")+"}":"["+r[o(-283,-293)](", ")+t(-750,-751,-754,-768)+tt+"[]"}function As(e){const x=[],r=/(\w+)\(([^)]+)\)/g;function t(n,i,a,f){return d0(n-381,f)}let o;for(;(o=r.exec(e))!==null;){const n=o[1],i=o[2],a=Ms(n,i);a[t(405,428,398,391)]>0&&x.push({name:n,args:a})}return x}function Ms(e,x){function r(i,a,f,u){return d0(u- -496,f)}function t(i,a,f,u){return d0(a-652,f)}const o=x[r(-476,-464,-454,-470)](/[,\s]+/)[t(656,675,670)](i=>i[r(-488,-479,-465,-469)]()!==""),n=[];for(const i of o){const a=i[t(699,679,682)]();if(Ns(e)){const f=Us(a);f!==null&&n.push({value:f,unit:t(701,680,702)})}else if(Ps(e)){const f=parseFloat(a);isNaN(f)||n[r(-457,-456,-479,-467)]({value:f,unit:"NONE"})}else if(e===t(679,682,673)||e===t(694,683,685)){const f=parseFloat(a);isNaN(f)||n[r(-476,-472,-489,-467)]({value:f,unit:"NONE"})}else{const f=Mt(a);f&&n[t(679,681,693)]({value:f[t(697,674,683)],unit:f[r(-468,-491,-456,-477)]})}}return n}function Ft(e,x,r,t){return d0(e- -929,t)}function Ns(e){function x(t,o,n,i){return d0(o- -438,t)}function r(t,o,n,i){return d0(o- -318,t)}return["rotate",r(-289,-286),x(-386,-405),"rotateZ","rotate3d","skew",r(-297,-284),x(-403,-403)][r(-287,-282)](e)}function Ps(e){function x(t,o,n,i){return d0(o-104,t)}function r(t,o,n,i){return d0(o-974,t)}return[r(1011,1011),"scaleX",r(1017,1012),x(124,143),r(1e3,1014)][r(1007,1010)](e)}function Us(e){const x=/^(-?[\d.]+)(deg|rad|grad|turn)?$/,r=e[o(436,445,425,434)](x);function t(n,i,a,f){return d0(i- -617,f)}function o(n,i,a,f){return d0(f-393,i)}if(r){const n=parseFloat(r[1]);switch(r[2]||"deg"){case t(-588,-575,-583,-587):return n;case o(442,413,423,436):return n*(180/Math.PI);case o(430,429,417,437):return n*(180/200);case o(456,460,438,438):return n*360;default:return n}}return null}function So(){const e=["vw5PtMf0AxzLvhjHBNnMB3jTt3jPz2LU","y29Kzq","DhjPBq","C3bSAxq","zMLSDgvY","BgvUz3rO","DMfSDwu","zxjYB3i","ChvZAa","vw5Pq1ntvhjHBNnMB3jTt3jPz2LUka","AM9PBG","Dg9mB3DLCKnHC2u","BwfW","Dw5PDa","sw52ywXPzcb0CMfUC2zVCM0TB3jPz2LUihzHBhvLoIa","uenu","tK9orq"];return So=function(){return e},So()}function z0(e,x){const r=So();return z0=function(t,o){t=t-0;let n=r[t];if(z0.AyhhDl===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};z0.xiepIH=i,e=arguments,z0.AyhhDl=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=z0.xiepIH(n),e[f]=n),n},z0(e,x)}const Es=[Ut(595,583,600,592)];function Pt(e,x,r,t){return z0(t- -914,x)}function Ts(e){return e?Es.includes(e):!1}function qs(e,x,r){return F0(e,(t,o)=>{const n=Hs(String(t),r);function i(a,f,u,d){return z0(u- -919,d)}return n[i(-916,-926,-918,-922)]?y0(n.code,x+"("+n[i(-921,-926,-918,-913)]+")"):We(t,o)},r0.Struct)}function Hs(e,x){const r=e[t(-854,-849,-850,-847)]()[t(-843,-839,-849,-846)](/\s+/)[t(-846,-853,-842,-845)](Boolean);if(r[t(-851,-850,-848,-844)]===0)return{code:""};function t(n,i,a,f){return z0(f- -849,a)}if(r[o(143,141,134)]===1){const n=Os(r[0]);if(n)return{code:Bo(n,x)};const i=Mt(r[0]);return i?{code:Bo([{value:i[t(-841,-840,-845,-843)],unit:i.unit}],x)}:{code:""}}function o(n,i,a,f){return z0(i-136,a)}if(r[t(-847,-836,-844,-844)]===2||r.length===3){const n=rf(r[0],"x");if("error"in n)return{code:"",error:n[o(145,143,136)]};const i=rf(r[1],"y");if(t(-843,-849,-840,-842)in i)return{code:"",error:i.error};const a=[n,i];if(r[o(145,141,141)]===3){const f=Ws(r[2]);if(t(-847,-844,-841,-842)in f)return{code:"",error:f[t(-840,-836,-843,-842)]};a[o(153,144,138)](f)}return{code:Bo(a,x)}}return{code:""}}function Bo(e,x){function r(o,n,i,a){return z0(n- -744,i)}function t(o,n,i,a){return z0(a-58,n)}return t(74,68,70,67)+e.map(o=>ho(o,x))[r(-733,-734,-731)](", ")+")"}function Os(e){function x(n,i,a,f){return z0(f- -452,i)}function r(n,i,a,f){return z0(f- -621,a)}const t=e[r(-604,-605,-604,-610)](),o=js[t];return o?o[x(-446,-443,-433,-440)](n=>({value:n[x(-439,-448,-446,-446)],unit:n.unit})):null}function rf(e,x){const r=e[n(121,113,115)]();let t=of(r,x);if(t)return{value:t[o(441,443,438,445)],unit:t[o(452,454,456,452)]};function o(a,f,u,d){return z0(d-439,a)}if(t=of(r,x==="x"?"y":"x"),t)return{value:t[o(439,443,448,445)],unit:t[n(123,128,125)]};function n(a,f,u,d){return z0(a-110,u)}const i=Mt(e);return i?{value:i[n(116,117,122)],unit:i[n(123,127,120)]}:{error:n(124,120,130)+e}}function Ws(e){const x=e[o(-5,-11,-14,-13)]();if(Is(x))return{error:"Invalid transform-origin value: "+e};const r=Mt(e);function t(n,i,a,f){return z0(n- -713,f)}function o(n,i,a,f){return z0(f- -24,i)}return!r||r[t(-700,-701,-692,-701)]===t(-698,-697,-695,-694)?{error:"Invalid transform-origin value: "+e}:{value:r[o(-23,-15,-25,-18)],unit:r[o(-5,-10,-16,-11)]}}function Ut(e,x,r,t){return z0(t-592,r)}function Is(e){return e in af||e in ff}function of(e,x){return x==="x"?af[e]||null:ff[e]||null}const af={left:{value:0,unit:"PCT"},center:{value:50,unit:Pt(-905,-891,-891,-899)},right:{value:100,unit:Pt(-891,-897,-896,-899)}},ff={top:{value:0,unit:"PCT"},center:{value:50,unit:Pt(-893,-892,-898,-899)},bottom:{value:100,unit:Ut(601,610,605,607)}},js={left:[{value:0,unit:Pt(-901,-907,-905,-899)},{value:50,unit:Ut(610,610,611,607)},{value:0,unit:Pt(-905,-892,-901,-898)}],center:[{value:50,unit:"PCT"},{value:50,unit:Pt(-898,-890,-891,-899)},{value:0,unit:"NONE"}],right:[{value:100,unit:"PCT"},{value:50,unit:Ut(605,611,611,607)},{value:0,unit:Ut(608,617,600,608)}],top:[{value:50,unit:"PCT"},{value:0,unit:Pt(-900,-893,-901,-899)},{value:0,unit:Ut(601,606,608,608)}],bottom:[{value:50,unit:"PCT"},{value:100,unit:"PCT"},{value:0,unit:Ut(614,599,615,608)}]};function zt(e,x){const r=Do();return zt=function(t,o){t=t-0;let n=r[t];if(zt.QpXPkr===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};zt.FvQZHK=i,e=arguments,zt.QpXPkr=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=zt.FvQZHK(n),e[f]=n),n},zt(e,x)}const Ys=[Vs(854,854,856,855)];function Rs(e){function x(r,t,o,n){return zt(n- -967,r)}return e?Ys[x(-966,-967,-967,-966)](e):!1}function Do(){const e=["vw5Pq1ntqM9YzgvYv2LKDgHuExbL","Aw5JBhvKzxm"];return Do=function(){return e},Do()}function Vs(e,x,r,t){return zt(t-855,x)}const ks={thin:1,medium:3,thick:5};function Ks(e,x,r){return F0(e,(t,o)=>{const n=ks[t];return n?nf(x,r,{value:n,unit:"PX"}):We(t,o)},r0.Enum)}const Gs=["UniNativeBackgroundImage"];function Xs(e){function x(r,t,o,n){return S0(r- -214,t)}return e?Gs[x(-214,-201)](e):!1}function Zs(e,x,r){return F0(e,(t,o)=>{const n=String(t)[a(-155,-167,-158)]();if(n===a(-137,-149,-157))return y0("null",x+i(109,129,114));function i(f,u,d,h){return S0(f-106,d)}function a(f,u,d,h){return S0(d- -159,f)}if(n[a(-165,-158,-155)](a(-176,-155,-154))){const f=Fs(n,r);return f?y0(f,x+"("+f+")"):We(t,o)}return We(t,o)},r0.Struct)}function Fs(e,x){const r=e.slice(16,-1)[n(679,697,696,677)](),t=Js(r);function o(d,h,s,b){return S0(b-873,d)}if(t.length<2)return"";function n(d,h,s,b){return S0(b-676,h)}const i=t[0][n(671,655,696,677)]();let a="",f=0;if($s(i))a=Qs(i,x),f=1;else if(i[o(867,853,869,873)](o(867,901,876,879))){const d=parseFloat(i);a=x==="cpp"?n(677,668,665,683)+d+")":o(861,894,861,881)+d+")",f=1}else a=x==="cpp"?n(702,692,680,685):n(664,680,670,686),f=0;const u=[];for(let d=f;d<t[o(884,898,903,884)];d++){const h=e3(t[d][n(683,693,672,677)]());h&&u[o(897,906,900,885)](h)}if(u[o(876,902,879,884)]<2)return"";if(x===o(907,870,906,886)){const d=u[n(677,673,706,690)](h=>"{"+(typeof h[o(883,887,889,888)]==n(683,685,677,692)?"0x"+h[o(881,900,871,888)][n(693,689,694,693)](16)[o(880,888,899,891)](8,"0"):h[n(712,679,681,691)])+o(890,910,873,892)).join(", ");return n(683,690,689,696)+a+o(912,890,910,894)+d+"})"}else{const d=u.map(h=>n(713,679,701,698)+(typeof h[o(892,876,893,888)]==o(889,878,892,889)?"0x"+h[n(694,699,702,691)][n(688,710,710,693)](16)[o(892,897,886,891)](8,"0"):h[o(886,880,890,888)])+", 0)")[o(911,875,917,896)](",");return"new UniNativeLinearGradient("+a+",["+d+"])"}}function Js(e){const x=[];let r="",t=0;function o(i,a,f,u){return S0(f-426,i)}function n(i,a,f,u){return S0(a- -297,i)}for(let i=0;i<e.length;i++){const a=e[i];a==="("?(t++,r+=a):a===")"?(t--,r+=a):a===","&&t===0?(x.push(r[n(-293,-296)]()),r=""):r+=a}return r.trim()&&x[o(420,444,438)](r[o(425,409,427)]()),x}function Lo(){const e=["Aw5JBhvKzxm","DhjPBq","BM9Uzq","kg51BgWP","C3rHCNrZv2L0Aa","BgLUzwfYlwDYywrPzw50ka","zgvN","vw5PtMf0AxzLtgLUzwfYr3jHzgLLBNreAxjLy3rPB25uExbLoJPbBMDSzsG","vvrtq1bqlNbYB3bLCNr5qwnJzxnZkfvUAu5HDgL2zuXPBMvHCKDYywrPzw50rgLYzwn0Aw9UvhLWzsWGiJO6iIWGiKfUz2XLiIKO","vw5PtMf0AxzLtgLUzwfYr3jHzgLLBNreAxjLy3rPB25uExbLoJPuB0jVDhrVBq","vvrtq1bqlNbYB3bLCNr5qwnJzxnZkfvUAu5HDgL2zuXPBMvHCKDYywrPzw50rgLYzwn0Aw9UvhLWzsWGiJO6iIWGiLrVqM90Dg9TiIK","BgvUz3rO","ChvZAa","y3bW","BwfW","y29SB3i","BNvTyMvY","Dg9tDhjPBMC","CgfKu3rHCNq","lcaWlJbMFq","vw5PtMf0AxzLtgLUzwfYr3jHzgLLBNqO","lcb7","BMv3ifvUAu5HDgL2zuXPBMvHCKDYywrPzw50q29SB3jtDg9Wka","AM9PBG","Dg8GDg9W","Dg8GyM90Dg9T","Dg8GDg9WihjPz2H0","Dg8GyM90Dg9TigXLzNq","Dg8GyM90Dg9TihjPz2H0","Dg8GBgvMDcb0B3a","Dg8GCMLNAhqGDg9W","Dg8GBgvMDcbIB3r0B20","Dg8GCMLNAhqGyM90Dg9T","Dg9mB3DLCKnHC2u","vg9uB3a","vg9cB3r0B20","vg9mzwz0","vg9sAwDODa","vg9uB3bmzwz0","vg9uB3bsAwDODa","vg9cB3r0B21mzwz0","vg9cB3r0B21sAwDODa","vw5PtMf0AxzLtgLUzwfYr3jHzgLLBNreAxjLy3rPB25uExbLoJO","vvrtq1bqlNbYB3bLCNr5qwnJzxnZkfvUAu5HDgL2zuXPBMvHCKDYywrPzw50rgLYzwn0Aw9UvhLWzsWGiJO6iIWGiG","C2XPy2u"];return Lo=function(){return e},Lo()}function $s(e){function x(t,o,n,i){return S0(o- -767,i)}function r(t,o,n,i){return S0(n- -911,i)}return[r(-869,-908,-887,-907),x(-740,-742,-725,-736),"to left","to right","to top left",r(-893,-874,-885,-875),r(-881,-873,-884,-884),r(-903,-894,-883,-895),x(-747,-738,-759,-748),r(-867,-897,-881,-880),r(-893,-881,-880,-880),x(-743,-735,-748,-714)][r(-921,-915,-911,-916)](e[x(-730,-734,-747,-746)]())}function Qs(e,x){function r(i,a,f,u){return S0(f-345,u)}const t=e[n(396,401,392,402)](),o={"to top":n(397,390,406,416),"to bottom":n(398,391,399,394),"to left":n(399,407,397,414),"to right":n(400,385,388,378),"to top left":n(401,396,423,398),"to left top":n(401,407,402,384),"to top right":r(385,367,384,400),"to right top":r(401,368,384,368),"to bottom left":r(384,397,385,388),"to left bottom":n(403,386,413,392),"to bottom right":r(407,367,386,387),"to right bottom":r(367,408,386,377)}[t]||n(398,419,387,391);function n(i,a,f,u){return S0(i-363,u)}return x===r(372,376,358,361)?r(375,407,387,384)+o:r(373,391,388,401)+o+'")'}function S0(e,x){const r=Lo();return S0=function(t,o){t=t-0;let n=r[t];if(S0.XIijyi===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};S0.XPNvEZ=i,e=arguments,S0.XIijyi=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=S0.XPNvEZ(n),e[f]=n),n},S0(e,x)}function e3(e){let x=e,r=0,t=-1;function o(a,f,u,d){return S0(d-467,a)}for(let a=e[i(340,324,333)]-1;a>=0;a--){const f=e[a];if(f===")")r++;else if(f==="(")r--;else if(f===" "&&r===0){t=a;break}}if(t>0){const a=e[i(373,353,394)](t+1)[i(330,325,332)]();(a[i(329,348,348)]("%")||a.match(/^\d+(\.\d+)?$/))&&(x=e[o(519,505,523,511)](0,t)[o(482,453,489,468)]())}const n=Kt(x);function i(a,f,u,d){return S0(a-329,u)}return n!==void 0&&n!==""?{color:n}:null}function Ao(){const e=["vw5PtMf0AxzLvhjHBNnPDgLVBG","rgvSyxK","rhvYyxrPB24","uhjVCgvYDhK","vgLTAw5NrNvUy3rPB24","Aw5JBhvKzxm","BM9Uzq","BNvSBa","kg51BgWP","C3bSAxq","BwfW","DhjPBq","BgvUz3rO","vw5PtMf0AxzLvhjHBNnPDgLVBLbYB3bLCNr5C3S","vvrtq1bqlNbYB3bLCNr5qwnJzxnZka","ChvZAa","Bwf0y2G","y3bW","kfvUAuntu1rYyw5ZAxrPB25uAw1PBMDgDw5JDgLVBJO6q3vIAwnczxPPzxiO","lcaIoJOIlcaIq3vIAwnczxPPzxiO","ksiP","lcaIoJOIlcaI","kcKIkq","vw5PtMf0AxzLvhjHBNnPDgLVBLrPBwLUz0z1BMn0Aw9UC3S","AM9PBG","mc4W"];return Ao=function(){return e},Ao()}function Mo(e,x,r,t){return L0(t-819,x)}function cf(e,x,r,t){return L0(e-951,t)}const zn=Mo(822,813,821,819),uf=zn+Mo(816,822,828,820),sf=zn+cf(953,944,963,942),No=zn+Mo(827,818,827,822),lf=zn+cf(955,955,966,947),t3=[uf,sf,No,No+"s",lf];function n3(e){function x(r,t,o,n){return L0(r-401,n)}return e?t3[x(406,414,414,406)](e):!1}function x3(e,x,r,t){return F0(e,(o,n)=>{if(o===f(-208,-208,-215,-215))return y0(i(-621,-615,-613),x+i(-625,-608,-612));function i(u,d,h,s){return L0(h- -620,u)}let a="";function f(u,d,h,s){return L0(u- -214,s)}return t===uf||t===sf?a=i3(String(o)):t===No?a=r3(String(o),t,r):t===lf&&(a=o3(String(o),t,r)),a?y0(a,x+"("+a+")"):We(o,n)},r0.Struct)}function L0(e,x){const r=Ao();return L0=function(t,o){t=t-0;let n=r[t];if(L0.VRPTHL===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};L0.GhFHNF=i,e=arguments,L0.VRPTHL=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=L0.GhFHNF(n),e[f]=n),n},L0(e,x)}function r3(e,x,r){const t=e.trim();if(!t)return"";function o(a,f,u,d){return L0(f-374,d)}const n=t[o(373,379,382,385)](",")?t[i(52,43,45)](",")[i(55,44,54)](a=>a[o(394,385,393,393)]()):[t];function i(a,f,u,d){return L0(f-34,u)}return r==="cpp"?n[o(373,386,397,381)]>1?i(42,47,43)+n[i(36,44,42)](a=>x+"::"+L.capitalize(L.camelize(a))).join(",")+"}":x+"::"+L.capitalize(L.camelize(n[0])):n[o(387,386,382,396)]>1?"["+n[o(389,384,387,390)](a=>i(49,48,57)+x+', "::" , "'+L.capitalize(L.camelize(a))+'")').join(",")+"]":kt(x,n[0])}function o3(e,x,r){const t=e.trim();if(!t)return"";const o=[];let n="",i=0;for(let d=0;d<t[a(-6,-3,-2)];d++){const h=t[d];h==="("?(i++,n+=h):h===")"?(i--,n+=h):h===","&&i===0?(n[a(2,-9,-3)]()&&o[a(0,9,1)](n.trim()),n=""):n+=h}function a(d,h,s,b){return L0(s- -14,h)}n[u(347,342,340,347)]()&&o[u(346,346,344,355)](n[u(355,342,334,330)]());const f=d=>{const h=d[s(916,914,911,898)](/cubic-bezier\s*\(\s*([\d.-]+)\s*,\s*([\d.-]+)\s*,\s*([\d.-]+)\s*,\s*([\d.-]+)\s*\)/);function s(c,_,l,g){return L0(l-895,g)}function b(c,_,l,g){return L0(g- -361,_)}if(h){const[,c,_,l,g]=h,p=c+", "+_+", "+l+", "+g;return r===s(910,915,912,910)?x+b(-335,-340,-353,-343)+p+"))":s(905,910,909,912)+x+s(923,904,914,925)+p+b(-347,-334,-351,-341)}return r===s(909,908,912,920)?x+"(UniCSSTransitionTimingFunction::"+L.capitalize(L.camelize(d))+"())":b(-359,-339,-339,-347)+x+b(-335,-336,-338,-340)+L.capitalize(L.camelize(d))+b(-331,-346,-344,-339)};function u(d,h,s,b){return L0(h-331,b)}return o.length>1?r==="cpp"?u(344,354,350,349)+o[u(340,341,347,333)](f)[u(348,355,366,355)](",")+"}":"["+o[u(353,341,329,333)](f).join(",")+"]":f(o[0])}function i3(e,x){const r=A1(e);function t(o,n,i,a){return L0(a- -498,i)}return r===null?t(-465,-484,-483,-473):r}function Po(){const e=["AgfZ","z2v0","A2v5CW","zM9YrwfJAa","C2v0u3r5Bgu","C2v0DgvY","DhLWzq","AxnbCNjHEq","C2v0","ywrK","zNjVBq","BgvUz3rO","zxjYB3i","y2XLyxi"];return Po=function(){return e},Po()}function ae(e,x){const r=Po();return ae=function(t,o){t=t-0;let n=r[t];if(ae.WCSzjg===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};ae.jEttUa=i,e=arguments,ae.WCSzjg=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=ae.jEttUa(n),e[f]=n),n},ae(e,x)}const Uo=new Map;function a3(e,x,r){return e+":"+x+":"+r}function df(e,x,r,t){const o=a3(x,r,t);if(Uo[i(794,791,797)](o))return Uo[f(205,211,209,206)](o);const n={};return Object[f(208,203,210,209)](lo())[f(210,207,211,211)](d=>{const h=r==="all"?{setter:s(-678,-681,-671,-677)}:L1(d,x,r);function s(c,_,l,g){return ae(g- -681,l)}function b(c,_,l,g){return ae(_- -212,g)}if(h){const c=h[s(-673,-669,-674,-676)],_=h[s(-673,-679,-682,-675)]||lo()[d][s(-677,-675,-682,-675)];if(typeof _=="string"){const l=u(e,_,c);l&&(n[d]=l)}else if(Array[b(-199,-205,-205,-199)](_)){const l=a(e,_,c);l&&(n[d]=l)}}}),Uo[f(213,220,216,218)](o,n),n;function i(d,h,s,b){return ae(s-797,d)}function a(d,h,s){const b=new Set;h[_(-885,-891)](l=>{const g=u(d,l,s);function p(v,m,C,y){return ae(C-830,v)}g&&b[p(835,836,839)](g)});const c=Array[_(-887,-884)](b);function _(l,g,p,v){return ae(g- -894,l)}if(c[_(-885,-883)]!==0)return c[_(-886,-883)]===1?c[0]:F0(d,(l,g)=>{function p(v,m,C,y){return ae(v-545,y)}for(const v of c){const m=v(l,g);if(!m[p(557,558,555,557)])return m}return We(l,g)},r0.Combined)}function f(d,h,s,b){return ae(s-208,b)}function u(d,h,s){if(P1(h))return E1(d,s,t);if(j1(h))return R1(d,s);if(K1(h))return G1(d,s);if(Z1(h))return F1(d,s);if(os(h))return is(d,s);if(us(h))return ss(d,s,n);if(Rs(h))return Ks(d,s,t);if(Q1(h))return es(d,s);if(gs(h))return ps(d,s);if(ys(h))return ws(d,s,t);if(Ts(h))return qs(d,s,t);if(Xs(h))return Zs(d,s,t);if(n3(h))return x3(d,s,t,h);if(h)return q1(d,s,H1(h,t,x))}}var f3={invalid:"Invalid",variable:"Variable",top:"Top",right:"Right",bottom:"Bottom",left:"Left",width:"Width",height:"Height","min-width":"MinWidth","min-height":"MinHeight","max-width":"MaxWidth","max-height":"MaxHeight","box-sizing":"BoxSizing",margin:"Margin","margin-top":"MarginTop","margin-right":"MarginRight","margin-bottom":"MarginBottom","margin-left":"MarginLeft",padding:"Padding","padding-top":"PaddingTop","padding-right":"PaddingRight","padding-bottom":"PaddingBottom","padding-left":"PaddingLeft",border:"Border","border-width":"BorderWidth","border-style":"BorderStyle","border-top":"BorderTop","border-top-width":"BorderTopWidth","border-top-style":"BorderTopStyle","border-right":"BorderRight","border-right-width":"BorderRightWidth","border-right-style":"BorderRightStyle","border-bottom":"BorderBottom","border-bottom-width":"BorderBottomWidth","border-bottom-style":"BorderBottomStyle","border-left":"BorderLeft","border-left-width":"BorderLeftWidth","border-left-style":"BorderLeftStyle",flex:"Flex","flex-direction":"FlexDirection","flex-wrap":"FlexWrap","flex-flow":"FlexFlow","flex-grow":"FlexGrow","flex-shrink":"FlexShrink","flex-basis":"FlexBasis","justify-content":"JustifyContent","align-items":"AlignItems","align-self":"AlignSelf","align-content":"AlignContent","z-index":"ZIndex",display:"Display",position:"Position",visibility:"Visibility",overflow:"Overflow","border-bottom-left-radius":"BorderBottomLeftRadius","border-bottom-right-radius":"BorderBottomRightRadius","border-top-color":"BorderTopColor","border-radius":"BorderRadius","border-color":"BorderColor","border-top-left-radius":"BorderTopLeftRadius","border-top-right-radius":"BorderTopRightRadius","border-left-color":"BorderLeftColor","border-bottom-color":"BorderBottomColor","border-right-color":"BorderRightColor",background:"Background","background-color":"BackgroundColor","background-image":"BackgroundImage","background-clip":"BackgroundClip","font-family":"FontFamily","font-size":"FontSize","font-style":"FontStyle","font-weight":"FontWeight","line-height":"LineHeight","letter-spacing":"LetterSpacing",lines:"Lines",color:"Color","text-align":"TextAlign","text-decoration":"TextDecoration","text-decoration-color":"TextDecorationColor","text-decoration-line":"TextDecorationLine","text-decoration-style":"TextDecorationStyle","text-decoration-thickness":"TextDecorationThickness","text-overflow":"TextOverflow","text-shadow":"TextShadow","white-space":"WhiteSpace",transform:"Transform","transform-origin":"TransformOrigin",transition:"Transition","transition-property":"TransitionProperty","transition-duration":"TransitionDuration","transition-delay":"TransitionDelay","transition-timing-function":"TransitionTimingFunction",opacity:"Opacity","box-shadow":"BoxShadow","pointer-events":"PointerEvents",all:"All"};function Ie(e,x){const r=Eo();return Ie=function(t,o){t=t-0;let n=r[t];if(Ie.xbGGSG===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Ie.apCESm=i,e=arguments,Ie.xbGGSG=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Ie.apCESm(n),e[f]=n),n},Ie(e,x)}async function c3(e,x){var r;function t(c,_,l,g){return Ie(l- -105,_)}const o=((r=x[t(-97,-112,-105)])==null?void 0:r.K)||(c=>c),n={...x,type:s(-607,-613,-603),keepUnitPx:!0},{root:i,messages:a}=await l0([qt.expand(n),qt.normalize(n)])[s(-606,-603,-609)](e)[t(-104,-109,-102)](c=>({root:null,messages:[{type:t(-105,-100,-101),text:c.message}]})),f=df(o,x[s(-603,-599,-606)],"all","cpp"),{obj:u,messages:d}=i?qt.objectifierWithMessages(i,{trim:!1,visitor:b,parseMessages:a}):{obj:{},messages:[]};a.push(...d);let h=[];return u["@FONT-FACE"]&&(h=u[t(-96,-100,-99)],delete u["@FONT-FACE"]),{code:v1(o,x[t(-102,-104,-100)])(u),messages:a,fontFaces:h};function s(c,_,l,g){return Ie(c- -608,l)}function b(c,_){function l(C,y,z,B){return Ie(y- -419,C)}var g;let p=c.__originalProp||c.prop,v=c[l(-420,-412)];function m(C,y,z,B){return Ie(y-107,B)}if(((g=c[l(-419,-411)])==null?void 0:g.type)===l(-413,-410)&&!p[m(124,117,112,116)]("--")){const C=f[p];if(C){const y=C(v,p);y.error?_[l(-405,-408)](c,m(124,119,127,116)+y[l(-417,-415)]):v=y[m(113,120,119,113)],p=o(m(118,121,120,124))+"::"+f3[p]}else return _[m(113,118,117,125)](c,qt.supportedPropertyReason(p)),!1}return{name:p,value:v}}}function Eo(){const e=["AgvSCgvY","Dxz1zq","ChjVy2vZCW","y2f0y2G","zxjYB3i","CgXHDgzVCM0","qezptLqTrKfdrq","DMfSDwu","CgfYzw50","CNvSzq","C3rHCNrZv2L0Aa","D2fYBG","v0fstKLorZOG","DMfSDwvdB2rL","vw5Pq1ntuhjVCgvYDhLjra"];return Eo=function(){return e},Eo()}function To(){const e=["yM9YzgvYlxrVCc0","yM9YzgvYlwXLzNqT","BgvUz3rO","x19VCMLNAw5HBfbYB3a","ChjVCa","ChvZAa","DMfSDwu","yM9YzgvYlwjVDhrVBs0","yM9YzgvYlxjPz2H0lq","yM9YzgvY","Aw1WB3j0yw50","CMf3CW","C291CMnL","yM9YzgvYlq","C3bSAwnL","y29SB3i","iZaWmdaWmdaW"];return To=function(){return e},To()}function _f(e,x,r){var t,o,n,i;const a=x,f={[g(345,335,340,343)+a]:null,["border-right-"+a]:null,["border-bottom-"+a]:null,[p(162,159,168,163)+a]:null},u=[];for(let v=0;v<e[p(165,173,168,164)];v++){const m=e[v],C=m[g(339,335,343,335)]||m[g(348,345,344,352)];C in f&&(f[C]=m,u[g(337,350,345,341)](v))}if(u[p(163,166,160,164)]===0)return!1;const d=((t=f[p(154,159,171,162)+a])==null?void 0:t[p(175,170,161,168)])||r,h=((o=f["border-right-"+a])==null?void 0:o[g(338,341,346,348)])||r,s=((n=f[g(347,338,347,340)+a])==null?void 0:n[g(350,342,346,347)])||r,b=((i=f[g(345,346,341,339)+a])==null?void 0:i[g(342,339,346,354)])||r,c=d+" "+h+" "+s+" "+b,_=f[g(343,334,340,340)+a]||f[p(163,172,178,170)+a]||f[g(347,354,347,352)+a]||f[p(158,159,161,163)+a],l=m1(p(173,163,163,171)+L.capitalize(a),c,_[p(173,170,174,172)]||!1,_[p(177,180,178,173)],_[g(344,360,352,350)]);function g(v,m,C,y){return nt(C-340,y)}l.__originalProp=p(175,180,179,175)+a;for(let v=u[g(345,343,342,349)]-1;v>=0;v--)e[p(179,184,185,176)](u[v],1);function p(v,m,C,y){return nt(y-162,v)}return e[g(354,360,354,359)](u[0],0,l),!0}function nt(e,x){const r=To();return nt=function(t,o){t=t-0;let n=r[t];if(nt.KWSbao===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};nt.GGFboE=i,e=arguments,nt.KWSbao=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=nt.GGFboE(n),e[f]=n),n},nt(e,x)}function u3(e){function x(r,t,o,n){return nt(n-874,o)}return _f(e,x(897,892,891,889),x(892,888,888,890))}function Et(e,x){var r=qo();return Et=function(t,o){t=t-0;var n=r[t];if(Et.PuMHzR===void 0){var i=function(d){for(var h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=",s="",b="",c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(var p=0,v=s.length;p<v;p++)b+="%"+("00"+s.charCodeAt(p).toString(16)).slice(-2);return decodeURIComponent(b)};Et.uXlOwI=i,e=arguments,Et.PuMHzR=!0}var a=r[0],f=t+a,u=e[f];return u?n=u:(n=Et.uXlOwI(n),e[f]=n),n},Et(e,x)}function qo(){var e=["BM9Uzq"];return qo=function(){return e},qo()}function s3(e){function x(r,t,o,n){return Et(o-840,n)}return _f(e,"style",x(839,840,840,840))}function St(e,x){var r=Ho();return St=function(t,o){t=t-0;var n=r[t];if(St.oxDvBe===void 0){var i=function(d){for(var h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=",s="",b="",c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(var p=0,v=s.length;p<v;p++)b+="%"+("00"+s.charCodeAt(p).toString(16)).slice(-2);return decodeURIComponent(b)};St.ITlBCM=i,e=arguments,St.oxDvBe=!0}var a=r[0],f=t+a,u=e[f];return u?n=u:(n=St.ITlBCM(n),e[f]=n),n},St(e,x)}function Ho(){var e=["CgXHDgzVCM0","BNyTyW"];return Ho=function(){return e},Ho()}function l3(e,x){function r(o,n,i,a){return St(n-905,a)}function t(o,n,i,a){return St(n- -708,i)}x[t(-709,-708,-709)]==="app-harmony"&&x.target===r(907,906,906,906)&&(u3(e),s3(e))}function Bt(e,x){const r=Oo();return Bt=function(t,o){t=t-0;let n=r[t];if(Bt.FNnAme===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Bt.ilJNAE=i,e=arguments,Bt.FNnAme=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Bt.ilJNAE(n),e[f]=n),n},Bt(e,x)}function Oo(){const e=["zMXLEc1KAxjLy3rPB24","DMLLDW","C2nYB2XSlxzPzxC","BgLZDc1PDgvT","C3DPCgvYlwL0zw0","zMXVDY1PDgvT","ANvZDgLMEs1JB250zw50","BgLZDc12Awv3","BMf2AwDHDg9Y","zMXLEc13CMfW","ywXPz24TAxrLBxm","ywXPz24Ty29UDgvUDa","zMXLEc1MBg93","y29SB3i","Dgv4Da","Aw5WDxq","Dgv4DgfYzwe","zM9UDc1ZAxPL","yNv0Dg9U","zM9UDc1ZDhLSzq","zM9UDc13zwLNAhq","Bg9HzgLUzW","Dgv4Dc1KzwnVCMf0Aw9U","Dgv4Dc1KzwnVCMf0Aw9UlwXPBMu","Dgv4Dc1KzwnVCMf0Aw9Ulxn0EwXL","Dgv4Dc1KzwnVCMf0Aw9UlxrOAwnRBMvZCW","Dgv4Dc1HBgLNBG","Bgv0DgvYlxnWywnPBMC","D2HPDguTC3bHy2u"];return Oo=function(){return e},Oo()}function q(e,x,r,t){return Bt(x- -942,t)}function H(e,x,r,t){return Bt(t- -768,x)}const d3=new Map([[q(-952,-942,-937,-941),[H(-771,-758,-762,-767),H(-752,-773,-762,-766),q(-946,-939,-944,-950),H(-767,-761,-778,-764),H(-774,-770,-758,-763),"navigator"]],[H(-768,-774,-753,-762),["view",q(-942,-940,-930,-955),q(-935,-935,-941,-933),H(-767,-771,-779,-765),q(-933,-937,-947,-929),q(-934,-938,-936,-945),H(-752,-772,-763,-760)]],[H(-758,-753,-768,-759),[H(-754,-769,-753,-767),H(-778,-761,-752,-766),H(-769,-776,-758,-765),"flow-item",q(-948,-938,-946,-951),H(-775,-749,-748,-760)]],[q(-937,-932,-947,-946),[H(-771,-773,-755,-767),H(-767,-781,-781,-766),q(-931,-935,-941,-938),q(-954,-939,-949,-947),H(-756,-748,-771,-763),H(-755,-773,-767,-764),H(-759,-771,-762,-760)]],[q(-916,-931,-932,-944),[q(-954,-941,-944,-943),q(-928,-940,-936,-927),"list-view",H(-751,-779,-750,-765),q(-937,-937,-925,-935),"swiper-item",q(-939,-934,-928,-937)]],[H(-762,-758,-750,-756),[H(-777,-757,-770,-767),q(-936,-940,-927,-948),H(-757,-748,-763,-761),q(-953,-939,-934,-946),H(-751,-761,-777,-763),q(-946,-938,-947,-934),H(-749,-751,-765,-760)]],[H(-755,-743,-741,-755),[H(-745,-769,-742,-754),"button",H(-761,-743,-764,-753),q(-938,-926,-918,-918)]],[q(-918,-925,-923,-910),[H(-739,-754,-754,-754),q(-925,-924,-936,-934),q(-929,-927,-916,-914),q(-936,-926,-936,-940)]],[q(-918,-923,-933,-918),[q(-918,-928,-932,-926),q(-934,-924,-918,-917),q(-919,-927,-930,-933),H(-743,-737,-740,-752)]],[q(-934,-922,-926,-925),[q(-922,-928,-935,-934),H(-746,-764,-753,-750),q(-932,-927,-924,-919),H(-761,-753,-756,-752),H(-745,-743,-748,-747)]],[q(-906,-920,-922,-922),["text",q(-924,-924,-926,-933)]],[q(-916,-919,-911,-913),[q(-922,-928,-922,-914),"button"]],["text-decoration-color",[H(-740,-745,-740,-754),"button"]],[q(-919,-918,-923,-927),[H(-749,-762,-754,-754),"button"]],[q(-928,-917,-925,-905),["text",H(-742,-750,-747,-750)]],[q(-927,-916,-915,-905),[q(-936,-928,-931,-936),q(-938,-924,-920,-931),"input",q(-912,-926,-928,-936)]],["font-family",["text",H(-765,-736,-757,-750),H(-746,-758,-747,-753),q(-932,-926,-921,-927)]],["text-overflow",[q(-941,-928,-936,-935),q(-928,-924,-915,-913)]],["line-height",[H(-762,-741,-749,-754),q(-934,-924,-932,-928),H(-767,-764,-755,-752)]],["lines",[H(-755,-764,-751,-754),H(-764,-743,-764,-750),H(-749,-747,-765,-753),q(-919,-926,-922,-939)]],[H(-754,-729,-748,-741),[H(-749,-762,-749,-754),"button"]],[q(-928,-914,-913,-912),["text",H(-751,-745,-747,-750)]],["text-shadow",[H(-759,-755,-753,-754),"button"]],["animation-timing-function",["loading"]]]);function Wo(){const e=["zg9TmJPJAgvJA1rHz05HBwu","Aw5JBhvKzxm","CMvZDwX0","v0fstKLorZOGChjVCgvYDhKGya","BwfW","AM9PBG","CMvTB3zL"];return Wo=function(){return e},Wo()}function xt(e,x){const r=Wo();return xt=function(t,o){t=t-0;let n=r[t];if(xt.iuoALs===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};xt.CCHKTG=i,e=arguments,xt.iuoALs=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=xt.CCHKTG(n),e[f]=n),n},xt(e,x)}function _3(e){function x(r,t,o,n){return xt(t- -219,n)}return{postcssPlugin:x(-222,-219,-219,-219),Declaration(r,t){function o(f,u,d,h){return xt(f- -902,u)}function n(f,u,d,h){return xt(h- -327,f)}const i=r.__originalProp||r.prop,a=d3.get(i);a&&(a[n(-325,-328,-329,-326)](e)||(r.warn(t[o(-900,-898)],n(-323,-323,-328,-324)+i+"` is only supported on `"+a[o(-898,-897)](f=>"<"+f+">")[o(-897,-898)]("|")+"`"),r[n(-318,-317,-319,-321)]()))}}}function h0(e,x){const r=Io();return h0=function(t,o){t=t-0;let n=r[t];if(h0.UifmOU===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};h0.tugYPx=i,e=arguments,h0.UifmOU=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=h0.tugYPx(n),e[f]=n),n},h0(e,x)}function Io(){const e=["ChjVCa","DMfSDwu","Aw1WB3j0yw50","D2fYBG","BwvZC2fNzxm","ChvZAa","zw50CMLLCW","zM9YrwfJAa","Aw5JBhvKzxm","iwLTCg9YDgfUDa","CMvWBgfJzq","DhjPBq","Dxz1zq","CgXHDgzVCM0","zNvUy3rPB24","DgfNtMfTzq","CMvWBgfJzvDPDgG","BwfW","CMvTB3zL"];return Io=function(){return e},Io()}function h3(e,x,r,t){return h0(x- -520,r)}function b3(e,x,r,t){return h0(e-497,r)}class hf{constructor(x,r,t){function o(i,a,f,u){return h0(f-571,u)}function n(i,a,f,u){return h0(i- -591,a)}this[o(564,564,571,564)]=x,this[o(571,565,572,572)]=r,this[n(-589,-588)]=t}[h3(-510,-517,-507)](x,r){x.warn(r,{node:this})}}class g3{constructor(){function x(r,t,o,n){return h0(t- -22,o)}this[x(-20,-18,-14)]=[]}[b3(500,499,499)](x,r){function t(n,i,a,f){return h0(f-661,a)}function o(n,i,a,f){return h0(n- -415,f)}this[o(-411,-419,-417,-417)][t(666,660,656,666)](new ao(x,r))}}class p3{constructor(){this.result=new g3}}function v3(e,x){function r(s,b,c,_){return h0(s- -891,_)}const t=L.parseStringStyle(e),o=[];Object[u(-775,-787,-777,-780)](t)[u(-781,-778,-788,-779)](([s,b])=>{function c(v,m,C,y){return h0(v- -757,y)}function _(v,m,C,y){return h0(m- -900,v)}const l=b+"",g=l[c(-749,-750,-755,-750)](c(-748,-749,-753,-755)),p=new hf(s,l[c(-747,-744,-737,-738)](c(-748,-746,-741,-748),"")[_(-892,-889)](),g);o[c(-752,-758,-757,-756)](p)});const n={type:u(-774,-770,-777,-774),platform:x[r(-878,-879,-874,-874)],keepUnitPx:!0},i=new p3,a=[],{Declaration:f}=qt.expand(n);typeof f=="function"?o.forEach(s=>{function b(c,_,l,g){return h0(c-691,g)}a[b(696,701,694,697)](...jo(i,s,f))}):a[u(-780,-784,-789,-781)](...o);function u(s,b,c,_){return h0(_- -786,s)}const d=[],{Declaration:h}=qt.normalize(n);if(typeof h==r(-877,-880,-880,-877)?a[r(-884,-877,-889,-890)](s=>{function b(c,_,l,g){return h0(g-745,l)}d[b(756,748,757,750)](...jo(i,s,h))}):d[u(-786,-787,-789,-781)](...a),x[r(-876,-885,-879,-870)]){const{Declaration:s}=_3(x[u(-772,-762,-766,-771)]);typeof s=="function"&&d.forEach(b=>{function c(_,l,g,p){return h0(_-998,g)}d[c(1003,1001,1010)](...jo(i,b,s))})}return{decls:d,messages:i.result.messages}}function jo(e,x,r){function t(f,u,d,h){return h0(f- -902,h)}let o=!1,n=!1;const i=[];function a(f,u,d,h){return h0(f-707,u)}return x[a(723,721)]=function(f){function u(h,s,b,c){return h0(b- -563,s)}function d(h,s,b,c){return h0(c- -907,b)}return n=!0,i[d(-894,-900,-906,-902)](...f[u(-539,-552,-546)](h=>new hf(h.prop,h.value,h.important))),this},x[a(725,719)]=function(){return o=!0,this},r(x,e),!o&&!n&&i[t(-897,-891,-888,-893)](x),i}function Yo(){const e=["AgvSCgvY","BgvUz3rO","zM9YrwfJAa","DhLWzq","D2fYBMLUzW","zMLUzeLUzgv4","BM9Kzq","C3bSAwnL","CgXHDgzVCM0","DgfYz2v0","x19VCMLNAw5HBfbYB3a","ChjVCa","C3rHCNrZv2L0Aa","DMfSDwu","zxjYB3i","ChvZAa","Aw1WB3j0yw50","DgfNtMfTzq","DMfSDwvdB2rL","ywXS","zg9Tlwm","BNyTyW","DhH0lwm","Dw5ZAgLMDa","vMfYAwfIBgu","vw5Pq1ntuhjVCgvYDhLwywX1zvzHCMLHyMXL","AM9PBG"];return Yo=function(){return e},Yo()}function Q0(e,x){const r=Yo();return Q0=function(t,o){t=t-0;let n=r[t];if(Q0.nTKltr===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Q0.mPuamN=i,e=arguments,Q0.nTKltr=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Q0.mPuamN(n),e[f]=n),n},Q0(e,x)}function bf(e,x){var r;function t(d,h,s,b){return Q0(b-649,h)}const o=((r=x[f(-470,-479,-469,-482)])==null?void 0:r.K)||(d=>d),n={},{decls:i,messages:a}=v3(e,x);function f(d,h,s,b){return Q0(b- -482,d)}i[t(644,654,664,650)]&&a[t(664,645,655,651)](d=>{function h(s,b,c,_){return Q0(s- -871,c)}if(d[h(-868,-863,-862)]===h(-867,-877,-872)||d[h(-868,-870,-861)]==="error"){const s=i[h(-866,-879,-876)](b=>b===d[h(-865,-852,-866)]);s!==-1&&i[h(-864,-862,-856)](s,1)}}),m3(i),l3(i,x);const u=df(o,x[t(667,657,659,657)],x[t(665,644,647,658)],"ts");for(const d of i){const h=d[f(-469,-482,-480,-472)]||d[t(667,658,655,660)];if(h[t(655,657,660,661)]("--")){const s=z1(d[f(-480,-465,-473,-469)],h);s[t(660,659,660,663)]?a[t(666,665,658,664)](new ao(s[t(656,658,662,663)],{node:d})):n[h]=s}else{const s=u[h];if(s){d[t(667,677,666,665)];const b=s(d[f(-461,-462,-471,-469)],h,x?{platform:x[t(666,657,649,657)],target:x[t(665,666,671,658)],tagName:x[f(-457,-457,-472,-465)]||""}:void 0);b.error?a[t(661,660,657,664)](new ao(b[f(-472,-464,-456,-468)],{node:d})):b[t(680,669,678,667)]&&(n[h]=b)}}}return{obj:n,messages:a,code:x.genCode?C3(o,n,x[f(-481,-471,-481,-473)]):void 0}}function C3(e,x,r){function t(n,i,a,f){return Q0(i-453,a)}if(r===o(551,543,550,542)||r===t(464,473,471)||r===t(474,474,487)||r===t(462,475,487)){const n=[],i=[];return Object.entries(x)[t(442,455,462)](([a,f])=>{function u(d,h,s,b){return Q0(s-545,d)}f.valueCode&&(a.startsWith("--")?i.push('{"'+a+'", '+f.valueCode+"}"):n.push("["+kt(e("UniCSSPropertyID"),L.capitalize(L.camelize(a)))+"]: "+f[u(557,573,563)]))}),i[t(463,454,449)]&&n[t(470,476,476)]("["+kt(e("UniCSSPropertyID"),t(476,477,487))+"]: "+e(o(542,550,550,548))+"{"+i[t(472,479,477)](", ")+"}"),"{"+n.join(", ")+"}"}function o(n,i,a,f){return Q0(f-523,a)}return""}function m3(e){function x(t,o,n,i){return Q0(o- -209,n)}function r(t,o,n,i){return Q0(n- -718,i)}for(let t=e[r(-710,-729,-717,-718)]-1;t>=0;t--){const o=e[t],n=o[r(-720,-693,-707,-715)];if(o[r(-714,-711,-702,-689)])for(let i=t-1;i>=0;i--)e[i][r(-711,-704,-707,-695)]===n&&(e[x(-198,-202,-194)](i,1),t--);else for(let i=t-1;i>=0;i--)e[i][r(-699,-706,-707,-718)]===n&&!e[i][x(-192,-193,-185)]&&(e[x(-190,-202,-198)](i,1),t--)}}function Q(e,x){const r=Ro();return Q=function(t,o){t=t-0;let n=r[t];if(Q.UAyToO===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Q.OzCWyA=i,e=arguments,Q.UAyToO=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Q.OzCWyA(n),e[f]=n),n},Q(e,x)}function y3(e,x){const r=z3(x),t=L.isString(e)?w.parse(e,r):e;function o(b,c,_,l){return Q(_-855,l)}f1(t,r);const[n,i]=w3(),{expressionPlugins:a}=r;function f(b,c,_,l){return Q(l- -246,_)}(!a||!a.includes("typescript"))&&(r[o(879,873,855,859)]=[...a||[],o(862,844,856,854)]);const u=w.transform(t,L.extend({checkStaticStyle:S3(r),checkStaticProp:B3(r),resolveChangeProp:D3()},r,{nodeTransforms:[...n,...r[f(-263,-251,-222,-244)]||[]],directiveTransforms:L.extend({},i,r[f(-231,-258,-221,-243)]||{})}));u[f(-266,-257,-255,-242)]=!1,Jf(u,r);const d=Mu(u,r),h=ua(u,{...r,target:ut(r[o(854,871,860,849)],o(844,867,861,851)),renderer:f(-259,-241,-263,-240)}),s=ua(u,{...r,target:ut(r[o(873,880,860,870)],o(863,850,862,881)),renderer:o(843,854,862,862)});return r.filename&&r[o(874,886,863,882)]&&(r[f(-248,-221,-235,-237)]||u1)(bc(r[o(873,886,865,870)]),r.className,s,h,r[f(-259,-227,-234,-235)]),r[o(857,852,867,868)]&&(d[o(882,875,868,875)].hash=vf(d.code+h.code+s.code)),{...d,sharedData:d,nativeView:h,element:s}}function Ro(){const e=["zxHWCMvZC2LVBLbSDwDPBNm","DhLWzxnJCMLWDa","BM9KzvrYyw5ZzM9YBxm","zgLYzwn0AxzLvhjHBNnMB3jTCW","AgfZvgvTCgXHDgvszwy","CgXHDgzVCM0","BMf0AxzLvMLLDW","zwXLBwvUDa","y2XHC3noyw1L","zw1PDfnOyxjLzerHDge","zMLSzw5HBwu","C2nYAxb0q3bWqMXVy2TZ","AxnxyxrJAa","yxn0","CgfYC2vtDgf0AwntDhLSzq","AgfZ","z2v0","C2v0","CgfYC2vtDgf0AwnqCM9W","AxndChbfEhbY","twvTyMvYrxHWCMvZC2LVBG","B2jQzwn0","swrLBNrPzMLLCG","BMfTzq","C29Tzq","Bw9KDwXL","CMvWBgfJzq","rvjst1i6ia","v0fstKLorZOG","DgfN","zM9YrwfJAa","B3b0Aw9UCW","B25xyxjU","Dgv4Da","uhjVCgvYDhKGjW","BgvUz3rO","zxjYB3jZ","ywrK","C2L6zq","ChvZAa","A2v5","y29UDgvUDa","y2HHBMDLoG","C2XPy2u","Aw5JBhvKzxm","jYbPCYbUB3qGzgvMAw5Lza","Bg9J"];return Ro=function(){return e},Ro()}function w3(){return w.getBaseTransformPreset()}function z3(e){function x(n,i,a,f){return Q(i-344,n)}function r(n,i,a,f){return Q(f-581,n)}const t=L.extend({},e),o=new Map;return t[x(372,358)]=(n,i,a,f)=>{const u=n+"-"+i+"-"+a;function d(b,c,_,l){return Q(b- -53,l)}if(o[s(916,949,939)](u))return o[s(931,922,940)](u);const h=bf(a,{platform:e[s(925,922,929)],target:n,tagName:i,genCode:!0,helper:{K:e.r||(b=>b)}});function s(b,c,_,l){return Q(_-924,b)}return o[d(-36,-23,-44,-42)](u,h),h},t[r(587,614,592,599)]=Su(e.platform),t[r(596,587,597,592)]&&!t[r(585,589,623,600)]&&(t.isCppExpr=n=>{if(!n||n.type!==i(-38,-52,-70,-51)||n[i(-67,-41,-58,-50)].type!==i(-32,-30,-30,-49))return!1;function i(u,d,h,s){return Q(s- -71,d)}function a(u,d,h,s){return Q(s- -321,u)}const f=n[i(-61,-72,-66,-50)][a(-310,-284,-299,-298)];return t[i(-56,-67,-48,-60)][i(-51,-55,-68,-47)](u=>u[i(-52,-27,-64,-46)]===f)}),t}function S3(e){const x=e[n(-101,-112,-105,-105)],r=ut(e.platform,o(-134,-141,-153,-163)),t=ut(e.platform,n(-99,-124,-121,-113));function o(a,f,u,d){return Q(u- -160,d)}function n(a,f,u,d){return Q(d- -119,u)}function i(a){function f(d,h,s,b){return Q(h- -642,s)}function u(d,h,s,b){return Q(d- -279,s)}return a[u(-253,-275,-254)](f(-621,-615,-603),"")[u(-253,-272,-243)](f(-618,-614,-627),"")}return(a,f,u,d)=>{function h(_,l,g,p){return Q(_-572,p)}function s(_,l,g,p){return Q(l-954,_)}const{messages:b}=x(r,u.tag,a,!1),{messages:c}=x(t,u[s(965,983)],a,!1);b[h(602,602,597,623)](_=>{function l(p,v,m,C){return Q(C- -453,v)}function g(p,v,m,C){return Q(p- -142,C)}d[l(-413,-399,-426,-422)][l(-415,-440,-404,-421)](sa(i(_[g(-109,-119,-110,-131)]),f))}),c.forEach(_=>{function l(p,v,m,C){return Q(m- -479,p)}function g(p,v,m,C){return Q(C-439,p)}b[g(454,448,456,463)](p=>p[g(464,486,453,472)]===_.text)||d[l(-437,-440,-448)][g(464,484,491,471)](sa(i(_[g(481,473,487,472)]),f))})}}function B3(e){const x=e[n(671,658,632,654)],r=ut(e[i(286,302)],n(622,659,622,643)),t=ut(e[i(286,272)],"nativeView"),o=zu(e[n(653,655,624,641)]);function n(a,f,u,d){return Q(d-636,a)}function i(a,f,u,d){return Q(a-281,f)}return(a,f,u,d,h,s)=>{function b(p,v,m,C){return Q(v-770,p)}if(!a)return o(h[l(461,450,449)],f)?!0:(s[l(463,473,446)].onWarn(wr(b(797,804)+f+"' is not supported on '<"+h[l(461,482,483)]+">'",d)),!1);const c=x(r,h.tag,f,u),_=new Set;c&&c.errors[b(828,805)]>0&&c[b(786,806)][b(779,800)](p=>{_.add(p)});function l(p,v,m,C){return Q(p-432,m)}const g=x(t,h[b(822,799)],f,u);return g&&g.errors.length>0&&g[b(787,806)][b(784,800)](p=>{function v(m,C,y,z){return Q(C-993,z)}_[v(1034,1030,1050,1020)](p)}),_[l(470,478,493)]?(_[b(791,800)](p=>{function v(m,C,y,z){return Q(z-367,m)}s[v(415,408,379,398)][v(421,381,400,399)](wr(p,d))}),!1):!0}}function D3(e){return(x,r)=>{const t=[],o=[];for(const f of x)o[i(-856,-843,-849,-836)](f[i(-841,-842,-837,-829)].content);const n=[];for(let f=0;f<x[a(-568,-551,-590,-587)];f++){const u=x[f],d=u[a(-563,-579,-551,-560)][a(-562,-548,-577,-571)];if(d.startsWith(a(-561,-562,-542,-561))){const h=d[a(-560,-574,-546,-544)](7);o[i(-821,-838,-844,-825)](h)?t.push(h):(n.push(f),r.options[i(-872,-850,-865,-844)](wr("Property '"+h+a(-558,-543,-553,-556),u[i(-851,-842,-866,-841)][i(-846,-836,-819,-847)])))}}for(let f=n[a(-568,-563,-575,-554)]-1;f>=0;f--)x.splice(n[f],1);function i(f,u,d,h){return Q(u- -882,h)}function a(f,u,d,h){return Q(f- -603,h)}return t}}function Jt(e){function x(t,o,n,i){return b0(i- -535,o)}function r(t,o,n,i){return b0(i- -585,t)}return e[x(-556,-554,-519,-535)]||e[r(-575,-574,-570,-584)]}function L3(e){function x(r,t,o,n){return b0(r- -704,o)}return e.name?Jt(e[x(-702,-685,-722)]):""}function A3(e,x){var r;function t(f,u,d,h){return b0(d-416,f)}const o=e.heritageClauses;if(!o)return"";const n=o[a(99,117,78)](f=>f.token===x.SyntaxKind[t(424,403,420)]),i=(r=n==null?void 0:n[t(421,441,421)][0])==null?void 0:r.expression;function a(f,u,d,h){return b0(f-96,d)}return!i||!x.isIdentifier(i)?"":Jt(i)}function $t(e,x){function r(o,n,i,a){return b0(n- -837,i)}function t(o,n,i,a){return b0(a-518,o)}return e[t(536,522,517,524)]===x[t(514,533,515,525)].StringKeyword||e[t(514,540,533,524)]===x[t(524,533,545,525)][t(516,535,541,526)]||e[r(-853,-831,-818)]===x[r(-841,-830,-824)][r(-839,-828,-844)]||e[t(512,533,544,524)]===x[t(526,516,508,525)][r(-825,-827,-826)]}function Vo(){const e=["Dgv4Da","zxnJyxbLzfrLEhq","BMfTzq","zMLUza","rxH0zw5KC0TLExDVCMq","DhLWzxm","A2LUza","u3LUDgf4s2LUza","qM9VBgvHBKTLExDVCMq","tNvTyMvYs2v5D29Yza","vw5KzwzPBMvKs2v5D29Yza","AxnqCM9Wzxj0EurLy2XHCMf0Aw9U","Bw9KAwzPzxjZ","uMvHzg9UBhLlzxL3B3jK","DhLWzq","AxnjzgvUDgLMAwvY","AxnvBMLVBLr5CgvoB2rL","AxnmAxrLCMfSvhLWzu5Vzgu","AxnbCNjHEvr5CgvoB2rL","zMLSDgvY","BgL0zxjHBa","tNvSBeTLExDVCMq","BgvUz3rO","AxnuExbLuMvMzxjLBMnLtM9Kzq","CMvWzwf0","C3bSAxq","BwfW","AM9PBG","zM9YrwfJAa","x3nVDxjJzxm","AgfZ","ywrK","C2v0u291CMnLq29UDgvUDa","C291CMnLC0nVBNrLBNq","zwfJAe1HChbPBMC","z2vUzxjHDgvKtgLUzq","z2vUzxjHDgvKq29SDw1U","ywrKtwfWCgLUzW","BgLUzq","y29SDw1U","B3jPz2LUywXmAw5L","B3jPz2LUywXdB2X1Bw4","C291CMnL"];return Vo=function(){return e},Vo()}function b0(e,x){const r=Vo();return b0=function(t,o){t=t-0;let n=r[t];if(b0.ejfqBG===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};b0.fEnPZA=i,e=arguments,b0.ejfqBG=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=b0.fEnPZA(n),e[f]=n),n},b0(e,x)}function M3(e,x){if(!x[r(581,577,581)](e)||e[a(-549,-530,-550,-548)]&&e[r(582,572,576)].length>0&&e[a(-549,-559,-566,-566)].some(u=>u.kind===x[a(-554,-557,-536,-542)][a(-548,-534,-561,-559)])||!e[r(584,584,593)])return;function r(u,d,h,s){return b0(u-570,h)}const t=e[r(572,578,557)];if(!x[a(-546,-536,-531,-534)](t))return;const o=Jt(t),n=e[r(584,580,570)];if(!x[r(586,569,608)](n))return!x.isTypeReferenceNode(n)&&!$t(n,x)&&!x[r(587,608,568)](n)&&!x[a(-543,-546,-546,-558)](n)?void 0:{memberName:o,type:n,optional:!!e.questionToken};const i=n.types[a(-542,-545,-549,-543)](u=>u[r(576,584,563)]!==x[a(-554,-550,-533,-566)].UndefinedKeyword&&!(x[a(-544,-559,-547,-566)](u)&&u[a(-541,-558,-539,-524)][a(-555,-543,-544,-553)]===x[a(-554,-544,-533,-562)][r(591,600,611)]));function a(u,d,h,s){return b0(u- -561,s)}if(i[a(-539,-553,-541,-559)]!==1)return;const f=i[0];if(!(!x[a(-538,-557,-526,-558)](f)&&!$t(f,x)&&!x[r(587,581,568)](f)))return{memberName:o,type:f,optional:!0}}function J0(e=1,x=2){function r(t,o,n,i){return b0(o- -794,t)}return" "[r(-755,-770)](x*e)}function ko(e,x){function r(o,n,i,a){return b0(o- -122,a)}function t(o,n,i,a){return b0(o- -286,i)}return e[t(-261,-251,-248)](`
-`)[t(-260,-241,-267)](o=>J0(x)+o)[r(-95,-84,-91,-115)](`
-`)}function Ko(e,x,r){e||(e=new rt.SourceMapGenerator);const t=new rt.SourceMapConsumer(x);function o(i,a,f,u){return b0(u-935,a)}function n(i,a,f,u){return b0(u- -217,i)}return x.sources[o(962,962,945,963)]((i,a)=>{function f(h,s,b,c){return b0(h- -680,s)}function u(h,s,b,c){return b0(s-12,b)}const d=e[u(40,41,48)];d[u(61,42,60)](i)||(d[f(-649,-633)](i),e[f(-648,-632)](i,x[u(66,45,44)]?x[u(38,45,63)][a]:null))}),t[n(-194,-183,-168,-183)](i=>{const a=r(i[u(746,779,761,741)],i[u(775,774,762,761)]);function f(d,h,s,b){return b0(d- -58,h)}function u(d,h,s,b){return b0(s-726,b)}e[f(-21,-28)]({generated:{line:a?a[f(-20,-26)]:i[u(759,762,761,746)],column:a?a[u(785,768,765,760)]:i[f(-22,-19)]},original:i[f(-18,-1)]?{line:i[f(-18,-35)],column:i[f(-17,-9)]||0}:null,source:i[f(-16,-11)]||"",name:i.name||""})}),e}function Go(){const e=["qvjsqvLFu1rssu5h"];return Go=function(){return e},Go()}function Tt(e,x){const r=Go();return Tt=function(t,o){t=t-0;let n=r[t];if(Tt.izefAl===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};Tt.LGHGES=i,e=arguments,Tt.izefAl=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=Tt.LGHGES(n),e[f]=n),n},Tt(e,x)}function N3(e,x,r,t){return Tt(e-851,x)}const Xo=N3(851,851);function ge(e,x){const r=Zo();return ge=function(t,o){t=t-0;let n=r[t];if(ge.JCHgjI===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};ge.opdaJM=i,e=arguments,ge.JCHgjI=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=ge.opdaJM(n),e[f]=n),n},ge(e,x)}const P3=new nn(2e3);function gf(e,x){if(e[i(-868,-889,-857,-870)]===0)return"";let r="",t="";for(const a of e)r+=J0(3)+(x(o(788,776,769))+"("+a+`)
-`),t+=J0(3)+(x("DEFINE_SHARED_DATA_MEMBER_FLAG_R")+"("+a+`)
-`);function o(a,f,u,d){return ge(u-768,a)}let n=J0(1)+(x(i(-883,-848,-849,-868))+`(
-`);function i(a,f,u,d){return ge(d- -870,f)}return n+=J0(2)+(x(o(776,787,771))+`(
-`),n+=r,n+=J0(2)+i(-875,-846,-874,-866),n+=J0(2)+(x("DEFINE_SHARED_DATA_MEMBER_FLAG_W")+`(
-`),n+=t,n+=J0(2)+`)
-`,n+=J0(1)+`)
-`,n}function U3(e,x){function r(o,n,i,a){return ge(n-459,o)}function t(o,n,i,a){return ge(a- -164,n)}if(x.isTypeReferenceNode(e)&&x[t(-154,-180,-140,-159)](e[t(-154,-175,-166,-158)]))switch(Jt(e[r(442,465)])){case r(455,466):return r(488,467);case"UniSharedDataAny":return t(-130,-162,-130,-155);case t(-139,-169,-127,-154):return r(449,469);case t(-154,-148,-175,-153):return"UniSharedDataJSONObject";case r(497,471):return r(464,471);case r(466,472):return t(-134,-160,-167,-151);case r(458,473):return r(483,473);case t(-123,-168,-147,-149):return r(454,474);case r(492,475):if(e[r(488,476)]&&e[t(-122,-130,-142,-147)][r(474,477)]===1&&$t(e.typeArguments[0],x)&&e.typeArguments[0][t(-146,-133,-118,-145)]===x[r(484,479)][r(487,480)])return Xo;default:return t(-152,-148,-162,-142)+Jt(e[r(472,465)])}if($t(e,x))switch(e[t(-125,-169,-136,-145)]){case x.SyntaxKind[t(-124,-142,-144,-143)]:return"string";case x[r(481,479)][t(-135,-162,-152,-141)]:return"bool";case x[r(480,479)].NumberKeyword:return t(-147,-119,-148,-140);case x.SyntaxKind[t(-115,-132,-162,-139)]:return r(511,485)}if(x[t(-116,-115,-120,-137)](e)&&$t(e.elementType,x)&&e[r(514,487)][t(-128,-164,-169,-145)]===x[r(458,479)][r(502,480)])return Xo;if(x.isLiteralTypeNode(e)&&e[r(476,488)].kind===x.SyntaxKind.NullKeyword)return t(-127,-143,-113,-138)}function Zo(){const e=["C2L6zq","revgsu5fx1niqvjfrf9eqvrbx01ftujfuL9gtefhx0q","revgsu5fx1niqvjfrf9eqvrbx01ftujfuL9gtefhu19btKrFuKvtrvq","revgsu5fx1niqvjfrf9eqvrbx01ftujfuL9gtefhx1C","ksWk","AxnjzgvUDgLMAwvY","DhLWzu5HBwu","vw5Pu2HHCMvKrgf0yuvUDw0","DwLUDde2","vw5Pu2HHCMvKrgf0yufUEq","vw5Pu2HHCMvKrgf0yufYCMf5","vw5Pu2HHCMvKrgf0yuPtt05pyMPLy3q","vw5Pu2HHCMvKrgf0yvzgB3i","vw5Pu2HHCMvKrgf0yuz1BMn0Aw9UrxzLBNrmAxn0zw5LCG","vw5Pu2HHCMvKrgf0yuz1BMn0Aw9Uu2v0vgvTCgXHDgvszwy","vw5PrwXLBwvUDfn0EwXLCW","qxjYyxK","DhLWzufYz3vTzw50CW","BgvUz3rO","A2LUza","u3LUDgf4s2LUza","u3rYAw5Ns2v5D29Yza","vw5Pu2HHCMvKrgf0yunVBxbVBMvUDhW","qM9VBgvHBKTLExDVCMq","zg91yMXL","vw5KzwzPBMvKs2v5D29Yza","BNvSBa","AxnbCNjHEvr5CgvoB2rL","zwXLBwvUDfr5Cgu","BgL0zxjHBa","vw5Pu2HHCMvKrgf0yunVBxbVBMvUDa","revgsu5fx1vtrvjFu0HbuKvex0rbvee","revgsu5fx1niqvjfrf9eqvrb","x01ftujfuG","x0nqua","x0Losvq","x01ftujfuL9trvrurvi","BwvTyMvYCW","B3b0Aw9UywW","BwvTyMvYtMfTzq","DhLWzq","z2v0r3jVDxbjBMzV","x2zSywC","ywrK","C3bSAxq","Dg9vChbLCKnHC2u","x09sx05vteW","C3rYAw5Nw10","x2zSywCW","CMvUzgvYrwXLBwvUDenVzgu","Aw5SAw5Lia","CMvUzgvYtMf0AxzLvMLLD0nVzgu","cN0k","CMvUzgvYrwXLBwvUDfnVDxjJzu1HCa","lMnWCa"];return Zo=function(){return e},Zo()}function E3(e,x){const r=x.ts,t=e.name,o={files:[]};if(!t)return o;const n=L3(e);if(!n)return o;const i=A3(e,r);if(!i)return o;const a=i==="UniSharedDataPage",f=i===N(23,41,14,37),u=a?"DEFINE_USER_PAGE_SHARED_DATA":f?"DEFINE_USER_COMPONENT_SHARED_DATA":S(308,309),d=S(287,310),h=d+S(335,311),s=u+S(311,312),b=s+N(49,18,53,42),c=d+"_CPP",_=c+"_INIT_MEMBER",l=c+N(16,50,47,43),g=e[N(24,38,43,44)];let p="",v="",m=x.r(u)+"("+n+`,
-`,C=x.r(s)+"("+n+`,
-`,y="export class "+n+` {
-`,z=J0(1)+(x.r(b)+"("+n+`,
-`),B="",D=new Set;for(let u0=0;u0<g[N(-2,15,29,25)];u0++){const g0=g[u0],M=M3(g0,r);if(!M)continue;const w0=M[S(293,316)],o0=M[N(51,71,60,46)],T0=M[S(320,318)],p0=U3(T0,r),{index:q0,bitValue:R0}=P3[N(64,70,42,48)](o0),i0=S(300,320)+q0;if(D[N(52,29,57,50)](i0),!p0)continue;let[P,E]=p0[N(59,36,29,51)]("|"),fe=h+"_"+P[N(79,67,52,52)](),je=l+"_"+P[N(63,48,63,52)]();(w0||P==="UniSharedDataAny")&&P!==N(59,46,38,33)&&(fe+=N(30,38,55,53),je+=S(298,324)),p+=J0(1)+(x.r(fe)+"("+o0),z+=J0(2)+(x.r(_)+"("+o0+`)
-`),B+=J0(1)+(x.r(je)+"("+n+", "+o0),p+=`)
-`,B+=", "+i0+", "+R0+`)
-`,y+=J0(1)+(o0+": "+(p0===Xo?S(324,325):E||p0)+`
-`)}function S(u0,g0,M,w0){return ge(g0-278,u0)}D[N(1,29,-16,7)]===0&&D[S(342,321)](N(38,54,33,55)),v=gf(D,x.r)+`
-`,z+=J0(1)+`)
-`,m+=v+p+")",C+=z+B+")",y+="}";function N(u0,g0,M,w0){return ge(w0-7,M)}let T=null;if(a||f){C=`namespace {
-`+ko("inline "+x[N(79,41,53,56)],1)+`
-`+ko(N(64,37,84,57)+x[S(308,329)],1)+N(44,36,65,59)+C;const u0=new rt.SourceMapGenerator;let g0=1;const M=ko("",1)[N(50,44,11,25)];x[S(352,331)]&&(Ko(u0,x[S(345,331)],(w0,o0)=>({line:w0+g0,column:o0+M})),g0+=x.renderElementCode.split(`
-`).length),x.renderNativeViewSourceMap&&Ko(u0,x.renderNativeViewSourceMap,(w0,o0)=>({line:w0+g0,column:o0+M})),T=u0.toJSON()}return{files:[{code:m,name:n+".h",class:n,map:null},{code:C,name:n+N(61,86,67,61),class:n,map:T}],groupName:f||a?n:void 0}}function Fo(){const e=["DgfYz2v0tgfUz3vHz2u","y3bW","u2HHCMvKrgf0yq","i3bYywDTysbVBMnLcInPBMnSDwrLicjZzgSUAcikcG","revgsu5fx1vtrvjFqvbqx1niqvjfrf9eqvrb","keDLBKfWCfnOyxjLzerHDgeScG","x2zSywCW","lMnWCa","i2LUy2X1zguGiG","lMGIcGO","revgsu5fx1vtrvjFqvbqx1niqvjfrf9eqvrbx0nqua","laOGia","revgsu5fx1vtrvjFqvbqx1niqvjfrf9eqvrbx0nquf9jtKLu","laOGicKkkq","zM9YrwfJAa","ChvZAa","C3jJ","DhjPBq","BMfTzxnWywnL","DxnPBMCGBMfTzxnWywnLia","AM9PBG","BwfW","C2nYAxb0q3bWqMXVy2TZ","Aw5JBhvKzunVzgu","DxnLq29Kzq","C3bSAxq","BgvUz3rO","z3jVDxboyw1L","zMLSzxm","zw5KC1DPDgG","y29Kzq","BMfTzq","y2XHC3nLCW","y2XHC3m","iGOk"];return Fo=function(){return e},Fo()}function A0(e,x){const r=Fo();return A0=function(t,o){t=t-0;let n=r[t];if(A0.GELSHN===void 0){var i=function(d){const h="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=";let s="",b="";for(let c=0,_,l,g=0;l=d.charAt(g++);~l&&(_=c%4?_*64+l:l,c++%4)?s+=String.fromCharCode(255&_>>(-2*c&6)):0)l=h.indexOf(l);for(let c=0,_=s.length;c<_;c++)b+="%"+("00"+s.charCodeAt(c).toString(16)).slice(-2);return decodeURIComponent(b)};A0.SPgVQB=i,e=arguments,A0.GELSHN=!0}const a=r[0],f=t+a,u=e[f];return u?n=u:(n=A0.SPgVQB(n),e[f]=n),n},A0(e,x)}function pf(e,x){function r(t,o,n,i){return A0(n-412,t)}return x[r(416,427,412)]===r(413,421,413)?E3(e,x):{files:[]}}function T3({r:e}){function x(o,n,i,a){return A0(o- -769,a)}function r(o,n,i,a){return A0(n- -832,a)}const t=e("GenApp")+e(r(-832,-830,-820,-846));return{files:[{name:t+".h",code:r(-813,-829,-829,-823)+e(x(-765,-768,-769,-767))+x(-764,-773,-781,-768)+gf(new Set([r(-843,-826,-823,-809)]),e)+`
-)`,classes:[""+t]},{name:t+r(-813,-825,-825,-837),code:x(-761,-756,-763,-745)+t+r(-815,-823,-812,-839)+e(x(-759,-776,-776,-758))+"("+t+r(-818,-821,-838,-838)+e(x(-757,-762,-767,-770))+"("+t+x(-756,-768,-739,-768),classes:[""+t]}]}}function q3(e){function x(o,n,i,a){return A0(o-300,a)}let r=[],t=[];return e[x(314,325,315,319)](o=>{function n(a,f,u,d){return A0(d-396,a)}function i(a,f,u,d){return A0(f- -609,d)}o.src&&r[n(416,425,409,411)](n(386,397,390,404)+o[i(-601,-593,-599,-599)][n(425,396,413,413)]()+'"'),o[i(-579,-591,-577,-609)]&&t.push(n(406,409,411,415)+o.namespace[n(412,419,415,413)]()+";")}),{includeCode:r[x(320,332,303,312)](`
-`),useCode:t[x(320,306,313,332)](`
-`)}}function H3(e,x){x.r||(x.r=b=>b);const r=e[s(901,908,917,922)](b=>pf(b,x)),t={name:".cpp",code:"",classes:[]},o={name:".h",code:"",classes:[]},n=q3(x[h(-85,-93)]||[]),i=n[h(-93,-92)]?n[s(937,933,919,903)]+`
+Object.defineProperty(exports, '__esModule', { value: true });
 
-`:"",a=n[s(915,923,920,926)]?n[h(-82,-91)]+`
+var compilerDom = require('@vue/compiler-dom');
+var hash_sum = require('hash-sum');
+var compilerVapor = require('@vue/compiler-vapor');
+var shared = require('@vue/shared');
+var parser$1 = require('@babel/parser');
+var estreeWalker = require('estree-walker');
+var os = require('os');
+var tinycolor = require('tinycolor2');
+var require$$2 = require('source-map-js');
+var require$$0 = require('fs');
+var require$$1 = require('path');
+var require$$3 = require('url');
+var uniNvueStyler = require('@dcloudio/uni-nvue-styler');
 
-`:"",f=(i?i[s(928,924,921,904)](`
-`)[s(939,909,922,907)]-1:0)+(a?a.split(`
-`)[s(919,906,922,904)]-1:0)+2;let u="",d=null;function h(b,c,_,l){return A0(c- -115,b)}function s(b,c,_,l){return A0(_-896,l)}return r[s(912,896,910,920)](b=>{function c(l,g,p,v){return A0(v- -322,l)}function _(l,g,p,v){return A0(p- -892,g)}b[_(-858,-862,-865)]&&(u=b.groupName),b[_(-876,-852,-864)][c(-320,-292,-316,-308)](l=>{function g(v,m,C,y){return A0(y-571,v)}function p(v,m,C,y){return A0(C- -576,m)}if(l.name[g(584,611,597,600)](".h"))o[g(604,601,599,601)]+=(o[p(-551,-540,-546)]?`
+function transformInsertNode(oper, context) {
+}
+function transformPrependNode(oper, context) {
+}
 
-`:"")+l.code,o.classes[p(-549,-564,-561)](l.class);else if(l[p(-556,-536,-545)][g(609,605,595,600)](g(561,567,580,578))){if(l[g(589,587,593,592)]){const v=t[g(592,609,591,601)]?f+t.code.split(`
-`)[g(614,588,585,597)]+1:f,m=new rt.SourceMapGenerator;Ko(m,l[p(-560,-540,-555)],(C,y)=>({line:C+v,column:y})),d=m.toJSON()}t[g(617,611,618,601)]+=(t.code?`
+function isSharedDataStaticExpression(node, expressionPlugins = []) {
+  const ast = node.ast || node._fastPathAst;
+  if (ast) {
+    return isStaticNode(ast);
+  } else if (node.isStatic) {
+    return true;
+  } else if (node.ast === null) {
+    try {
+      node._fastPathAst = parser$1.parseExpression(node.content, {
+        plugins: expressionPlugins
+      });
+      return isStaticNode(node._fastPathAst);
+    } catch (e) {
+    }
+  }
+  return false;
+}
+function isStaticNode(node) {
+  node = compilerDom.unwrapTSNode(node);
+  switch (node.type) {
+    case "UnaryExpression":
+      if (node.operator === "void") {
+        return false;
+      }
+      return isStaticNode(node.argument);
+    // case 'LogicalExpression': // 1 > 2
+    // case 'BinaryExpression': // 1 + 2
+    //   return isStaticNode(node.left) && isStaticNode(node.right)
+    // case 'ConditionalExpression': {
+    //   // 1 ? 2 : 3
+    //   return (
+    //     isStaticNode(node.test) &&
+    //     isStaticNode(node.consequent) &&
+    //     isStaticNode(node.alternate)
+    //   )
+    // }
+    // case 'SequenceExpression': // (1, 2)
+    // case 'TemplateLiteral': // `foo${1}`
+    //   return node.expressions.every(expr => isStaticNode(expr))
+    case "ParenthesizedExpression":
+      return isStaticNode(node.expression);
+    case "StringLiteral":
+    case "NumericLiteral":
+    case "BooleanLiteral":
+    case "NullLiteral":
+    case "BigIntLiteral":
+      return true;
+  }
+  return false;
+}
+function parseSharedDataBooleanExpression(node) {
+  try {
+    const result = new Function(`return ${node.content}`)();
+    return Boolean(result);
+  } catch (e) {
+  }
+  return null;
+}
+function parseSharedDataStringExpression(node) {
+  try {
+    const result = new Function(`return ${node.content}`)();
+    return typeof result === "string" ? result : null;
+  } catch (e) {
+  }
+  return null;
+}
+function transformIRProp(prop, context) {
+  transformSimpleExpression(prop.key, context);
+  if (prop.values.length > 1 && ["class", "style", "hover-class"].includes(prop.key.content)) {
+    prop.sharedData = {
+      ident: context.nextIdent()
+    };
+  } else {
+    transformSimpleExpressions(prop.values, context);
+  }
+}
+function transformSimpleExpressions(expressions, context, force = false, key = false) {
+  expressions.forEach((expression) => {
+    transformSimpleExpression(expression, context, force, key);
+  });
+}
+function transformSimpleExpression(expression, context, force = false, key = false) {
+  if (force || !isSharedDataStaticExpression(expression)) {
+    expression.sharedData = {
+      ident: context.nextIdent()
+    };
+  }
+}
 
-`:"")+l.code,t[p(-537,-544,-544)][p(-567,-567,-561)](l[p(-537,-554,-543)])}})}),u&&(o[h(-96,-84)]=u+".h",t.name=u+s(908,920,903,911),o[h(-101,-85)]=s(914,909,899,899)+o[s(942,920,926,942)],t[s(935,926,926,931)]=s(918,895,904,897)+o[h(-69,-84)]+s(922,927,930,942)+i+a+t[h(-95,-85)],t[h(-84,-94)]=d),{files:[t,o]}}exports.parse=K.parse,exports.COMPONENT_TYPE=nc,exports.DOM2_APP_PLATFORM=gi,exports.DOM2_APP_TARGET=Qf,exports.RENDERER_TYPE=$f,exports.TARGET_LANGUAGE=tc,exports.TARGET_PLATFORM=gi,exports.compile=y3,exports.genAppSharedData=T3,exports.genSharedData=H3,exports.genSharedDataClass=pf,exports.getSharedDataResult=c1,exports.parseCss=c3,exports.parseStaticStyle=bf;
+function transformSetEvent(oper, context) {
+  var _a, _b;
+  if (oper.value && ((_b = (_a = context.options).isCppExpr) == null ? void 0 : _b.call(_a, oper.value.ast))) {
+    return;
+  }
+  oper.delegate = false;
+  transformSimpleExpression(oper.key, context);
+  oper.sharedData = {
+    ident: context.nextIdent()
+  };
+}
+function transformSetDynamicEvents(oper, context) {
+  transformSimpleExpression(oper.event, context, true);
+}
+
+function walkIdentifiers(root, onIdentifier, includeAll = false, parentStack = [], knownIds = /* @__PURE__ */ Object.create(null)) {
+  const rootExp = root.type === "Program" ? root.body[0].type === "ExpressionStatement" && root.body[0].expression : root;
+  estreeWalker.walk(root, {
+    enter(node, parent) {
+      parent && parentStack.push(parent);
+      if (parent && parent.type.startsWith("TS") && !TS_NODE_TYPES.includes(parent.type)) {
+        return this.skip();
+      }
+      if (node.type === "Identifier") {
+        const isLocal = !!knownIds[node.name];
+        const isRefed = isReferencedIdentifier(node, parent, parentStack);
+        if (includeAll || isRefed && !isLocal) {
+          onIdentifier(node, parent, parentStack, isRefed, isLocal);
+        }
+      } else if (node.type === "ObjectProperty" && // eslint-disable-next-line no-restricted-syntax
+      (parent == null ? void 0 : parent.type) === "ObjectPattern") {
+        node.inPattern = true;
+      } else if (isFunctionType(node)) {
+        if (node.scopeIds) {
+          node.scopeIds.forEach((id) => markKnownIds(id, knownIds));
+        } else {
+          walkFunctionParams(
+            node,
+            (id) => markScopeIdentifier(node, id, knownIds)
+          );
+        }
+      } else if (node.type === "BlockStatement") {
+        if (node.scopeIds) {
+          node.scopeIds.forEach((id) => markKnownIds(id, knownIds));
+        } else {
+          walkBlockDeclarations(
+            node,
+            (id) => markScopeIdentifier(node, id, knownIds)
+          );
+        }
+      } else if (node.type === "SwitchStatement") {
+        if (node.scopeIds) {
+          node.scopeIds.forEach((id) => markKnownIds(id, knownIds));
+        } else {
+          walkSwitchStatement(
+            node,
+            false,
+            (id) => markScopeIdentifier(node, id, knownIds)
+          );
+        }
+      } else if (node.type === "CatchClause" && node.param) {
+        if (node.scopeIds) {
+          node.scopeIds.forEach((id) => markKnownIds(id, knownIds));
+        } else {
+          for (const id of extractIdentifiers(node.param)) {
+            markScopeIdentifier(node, id, knownIds);
+          }
+        }
+      } else if (isForStatement(node)) {
+        if (node.scopeIds) {
+          node.scopeIds.forEach((id) => markKnownIds(id, knownIds));
+        } else {
+          walkForStatement(
+            node,
+            false,
+            (id) => markScopeIdentifier(node, id, knownIds)
+          );
+        }
+      }
+    },
+    leave(node, parent) {
+      parent && parentStack.pop();
+      if (node !== rootExp && node.scopeIds) {
+        for (const id of node.scopeIds) {
+          knownIds[id]--;
+          if (knownIds[id] === 0) {
+            delete knownIds[id];
+          }
+        }
+      }
+    }
+  });
+}
+function isReferencedIdentifier(id, parent, parentStack) {
+  if (!parent) {
+    return true;
+  }
+  if (id.name === "arguments") {
+    return false;
+  }
+  if (isReferenced(id, parent, parentStack[parentStack.length - 2])) {
+    return true;
+  }
+  switch (parent.type) {
+    case "AssignmentExpression":
+    case "AssignmentPattern":
+      return true;
+    case "ObjectProperty":
+      return parent.key !== id && isInDestructureAssignment(parent, parentStack);
+    case "ArrayPattern":
+      return isInDestructureAssignment(parent, parentStack);
+  }
+  return false;
+}
+function isInDestructureAssignment(parent, parentStack) {
+  if (parent && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern")) {
+    let i = parentStack.length;
+    while (i--) {
+      const p = parentStack[i];
+      if (p.type === "AssignmentExpression") {
+        return true;
+      } else if (p.type !== "ObjectProperty" && !p.type.endsWith("Pattern")) {
+        break;
+      }
+    }
+  }
+  return false;
+}
+function walkFunctionParams(node, onIdent) {
+  for (const p of node.params) {
+    for (const id of extractIdentifiers(p)) {
+      onIdent(id);
+    }
+  }
+}
+function walkBlockDeclarations(block, onIdent) {
+  const body = block.type === "SwitchCase" ? block.consequent : block.body;
+  for (const stmt of body) {
+    if (stmt.type === "VariableDeclaration") {
+      if (stmt.declare) continue;
+      for (const decl of stmt.declarations) {
+        for (const id of extractIdentifiers(decl.id)) {
+          onIdent(id);
+        }
+      }
+    } else if (stmt.type === "FunctionDeclaration" || stmt.type === "ClassDeclaration") {
+      if (stmt.declare || !stmt.id) continue;
+      onIdent(stmt.id);
+    } else if (isForStatement(stmt)) {
+      walkForStatement(stmt, true, onIdent);
+    } else if (stmt.type === "SwitchStatement") {
+      walkSwitchStatement(stmt, true, onIdent);
+    }
+  }
+}
+function isForStatement(stmt) {
+  return stmt.type === "ForOfStatement" || stmt.type === "ForInStatement" || stmt.type === "ForStatement";
+}
+function walkForStatement(stmt, isVar, onIdent) {
+  const variable = stmt.type === "ForStatement" ? stmt.init : stmt.left;
+  if (variable && variable.type === "VariableDeclaration" && (variable.kind === "var" ? isVar : !isVar)) {
+    for (const decl of variable.declarations) {
+      for (const id of extractIdentifiers(decl.id)) {
+        onIdent(id);
+      }
+    }
+  }
+}
+function walkSwitchStatement(stmt, isVar, onIdent) {
+  for (const cs of stmt.cases) {
+    for (const stmt2 of cs.consequent) {
+      if (stmt2.type === "VariableDeclaration" && (stmt2.kind === "var" ? isVar : !isVar)) {
+        for (const decl of stmt2.declarations) {
+          for (const id of extractIdentifiers(decl.id)) {
+            onIdent(id);
+          }
+        }
+      }
+    }
+    walkBlockDeclarations(cs, onIdent);
+  }
+}
+function extractIdentifiers(param, nodes = []) {
+  switch (param.type) {
+    case "Identifier":
+      nodes.push(param);
+      break;
+    case "MemberExpression":
+      let object = param;
+      while (object.type === "MemberExpression") {
+        object = object.object;
+      }
+      nodes.push(object);
+      break;
+    case "ObjectPattern":
+      for (const prop of param.properties) {
+        if (prop.type === "RestElement") {
+          extractIdentifiers(prop.argument, nodes);
+        } else {
+          extractIdentifiers(prop.value, nodes);
+        }
+      }
+      break;
+    case "ArrayPattern":
+      param.elements.forEach((element) => {
+        if (element) extractIdentifiers(element, nodes);
+      });
+      break;
+    case "RestElement":
+      extractIdentifiers(param.argument, nodes);
+      break;
+    case "AssignmentPattern":
+      extractIdentifiers(param.left, nodes);
+      break;
+  }
+  return nodes;
+}
+function markKnownIds(name, knownIds) {
+  if (name in knownIds) {
+    knownIds[name]++;
+  } else {
+    knownIds[name] = 1;
+  }
+}
+function markScopeIdentifier(node, child, knownIds) {
+  const { name } = child;
+  if (node.scopeIds && node.scopeIds.has(name)) {
+    return;
+  }
+  markKnownIds(name, knownIds);
+  (node.scopeIds || (node.scopeIds = /* @__PURE__ */ new Set())).add(name);
+}
+const isFunctionType = (node) => {
+  return /Function(?:Expression|Declaration)$|Method$/.test(node.type);
+};
+function isReferenced(node, parent, grandparent) {
+  switch (parent.type) {
+    // yes: PARENT[NODE]
+    // yes: NODE.child
+    // no: parent.NODE
+    case "MemberExpression":
+    case "OptionalMemberExpression":
+      if (parent.property === node) {
+        return !!parent.computed;
+      }
+      return parent.object === node;
+    case "JSXMemberExpression":
+      return parent.object === node;
+    // no: let NODE = init;
+    // yes: let id = NODE;
+    case "VariableDeclarator":
+      return parent.init === node;
+    // yes: () => NODE
+    // no: (NODE) => {}
+    case "ArrowFunctionExpression":
+      return parent.body === node;
+    // no: class { #NODE; }
+    // no: class { get #NODE() {} }
+    // no: class { #NODE() {} }
+    // no: class { fn() { return this.#NODE; } }
+    case "PrivateName":
+      return false;
+    // no: class { NODE() {} }
+    // yes: class { [NODE]() {} }
+    // no: class { foo(NODE) {} }
+    case "ClassMethod":
+    case "ClassPrivateMethod":
+    case "ObjectMethod":
+      if (parent.key === node) {
+        return !!parent.computed;
+      }
+      return false;
+    // yes: { [NODE]: "" }
+    // no: { NODE: "" }
+    // depends: { NODE }
+    // depends: { key: NODE }
+    case "ObjectProperty":
+      if (parent.key === node) {
+        return !!parent.computed;
+      }
+      return !grandparent || grandparent.type !== "ObjectPattern";
+    // no: class { NODE = value; }
+    // yes: class { [NODE] = value; }
+    // yes: class { key = NODE; }
+    case "ClassProperty":
+      if (parent.key === node) {
+        return !!parent.computed;
+      }
+      return true;
+    case "ClassPrivateProperty":
+      return parent.key !== node;
+    // no: class NODE {}
+    // yes: class Foo extends NODE {}
+    case "ClassDeclaration":
+    case "ClassExpression":
+      return parent.superClass === node;
+    // yes: left = NODE;
+    // no: NODE = right;
+    case "AssignmentExpression":
+      return parent.right === node;
+    // no: [NODE = foo] = [];
+    // yes: [foo = NODE] = [];
+    case "AssignmentPattern":
+      return parent.right === node;
+    // no: NODE: for (;;) {}
+    case "LabeledStatement":
+      return false;
+    // no: try {} catch (NODE) {}
+    case "CatchClause":
+      return false;
+    // no: function foo(...NODE) {}
+    case "RestElement":
+      return false;
+    case "BreakStatement":
+    case "ContinueStatement":
+      return false;
+    // no: function NODE() {}
+    // no: function foo(NODE) {}
+    case "FunctionDeclaration":
+    case "FunctionExpression":
+      return false;
+    // no: export NODE from "foo";
+    // no: export * as NODE from "foo";
+    case "ExportNamespaceSpecifier":
+    case "ExportDefaultSpecifier":
+      return false;
+    // no: export { foo as NODE };
+    // yes: export { NODE as foo };
+    // no: export { NODE as foo } from "foo";
+    case "ExportSpecifier":
+      if (grandparent == null ? void 0 : grandparent.source) {
+        return false;
+      }
+      return parent.local === node;
+    // no: import NODE from "foo";
+    // no: import * as NODE from "foo";
+    // no: import { NODE as foo } from "foo";
+    // no: import { foo as NODE } from "foo";
+    // no: import NODE from "bar";
+    case "ImportDefaultSpecifier":
+    case "ImportNamespaceSpecifier":
+    case "ImportSpecifier":
+      return false;
+    // no: import "foo" assert { NODE: "json" }
+    case "ImportAttribute":
+      return false;
+    // no: <div NODE="foo" />
+    case "JSXAttribute":
+      return false;
+    // no: [NODE] = [];
+    // no: ({ NODE }) = [];
+    case "ObjectPattern":
+    case "ArrayPattern":
+      return false;
+    // no: new.NODE
+    // no: NODE.target
+    case "MetaProperty":
+      return false;
+    // yes: type X = { someProperty: NODE }
+    // no: type X = { NODE: OtherType }
+    case "ObjectTypeProperty":
+      return parent.key !== node;
+    // yes: enum X { Foo = NODE }
+    // no: enum X { NODE }
+    case "TSEnumMember":
+      return parent.id !== node;
+    // yes: { [NODE]: value }
+    // no: { NODE: value }
+    case "TSPropertySignature":
+      if (parent.key === node) {
+        return !!parent.computed;
+      }
+      return true;
+  }
+  return true;
+}
+const TS_NODE_TYPES = [
+  "TSAsExpression",
+  // foo as number
+  "TSTypeAssertion",
+  // (<number>foo)
+  "TSNonNullExpression",
+  // foo!
+  "TSInstantiationExpression",
+  // foo<string>
+  "TSSatisfiesExpression"
+  // foo satisfies T
+];
+
+function transformFor(oper, context) {
+  if (isStaticFor(oper)) {
+    return;
+  }
+  transformSimpleExpression(oper.source, context, true);
+  const exitIdent = context.enterIdent();
+  if (oper.keyProp) {
+    transformSimpleExpression(oper.keyProp, context, true);
+  }
+  if (oper.typeProp) {
+    transformSimpleExpression(oper.typeProp, context, true);
+  }
+  transformBlockContent(oper.render, context);
+  exitIdent();
+}
+function isStaticFor(oper, ids = /* @__PURE__ */ new Set()) {
+  if (!oper.once) {
+    return false;
+  }
+  if (oper.component) {
+    return false;
+  }
+  if (!oper.source.ast) {
+    return false;
+  }
+  const type = oper.source.ast.type;
+  if (type !== "NumericLiteral" && type !== "StringLiteral") {
+    return false;
+  }
+  const { value, key, keyProp, index, render } = oper;
+  const curIds = [];
+  if (value) {
+    curIds.push(value.content);
+    ids.add(value.content);
+  }
+  if (key) {
+    curIds.push(key.content);
+    ids.add(key.content);
+  }
+  if (index) {
+    curIds.push(index.content);
+    ids.add(index.content);
+  }
+  function reset() {
+    curIds.forEach((id) => ids.delete(id));
+    curIds.length = 0;
+  }
+  if (keyProp) {
+    if (isComplexExpression(keyProp)) {
+      reset();
+      return false;
+    }
+    const { seenIdentifier } = compilerVapor.analyzeExpressions([keyProp]);
+    if (!Array.from(seenIdentifier).every((id) => ids.has(id))) {
+      reset();
+      return false;
+    }
+  }
+  if (!isStaticBlock(render, ids)) {
+    reset();
+    return false;
+  }
+  return true;
+}
+function isStaticBlock(block, ids) {
+  for (const oper of block.operation) {
+    if (!isStaticOperation(oper, ids)) {
+      return false;
+    }
+  }
+  for (const effect of block.effect) {
+    for (const oper of effect.operations) {
+      if (!isStaticOperation(oper, ids)) {
+        return false;
+      }
+    }
+  }
+  if (block.dynamic) {
+    if (!isStaticDynamic(block.dynamic, ids)) {
+      return false;
+    }
+  }
+  return true;
+}
+function isStaticDynamic(dynamic, ids) {
+  if (dynamic.operation) {
+    if (!isStaticOperation(dynamic.operation, ids)) {
+      return false;
+    }
+  }
+  for (const child of dynamic.children) {
+    if (!isStaticDynamic(child, ids)) {
+      return false;
+    }
+  }
+  return true;
+}
+function isStaticOperation(oper, ids) {
+  switch (oper.type) {
+    case 2:
+    case 3:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+    case 18:
+    case 19:
+      return false;
+    case 17:
+      return true;
+    case 4:
+      if (isStaticExpressions(oper.values, ids)) {
+        return true;
+      }
+      return false;
+    case 16:
+      return isStaticFor(oper, ids);
+    default:
+      const exhaustiveCheck = oper;
+      throw new Error(
+        `Unhandled operation type in genOperation: ${exhaustiveCheck}`
+      );
+  }
+}
+function isStaticExpressions(exprs, ids) {
+  for (const expr of exprs) {
+    if (isComplexExpression(expr)) {
+      return false;
+    }
+  }
+  const { seenIdentifier } = compilerVapor.analyzeExpressions(exprs);
+  return Array.from(seenIdentifier).every((id) => ids.has(id));
+}
+function isComplexExpression(expr) {
+  if (expr.ast) {
+    let hasComplexExpr = false;
+    walkIdentifiers(expr.ast, (_, parent) => {
+      if (parent && parent.type !== "BinaryExpression") {
+        hasComplexExpr = true;
+      }
+    });
+    return hasComplexExpr;
+  }
+  return false;
+}
+
+function transformSetHtml(oper, context) {
+  transformSimpleExpression(oper.value, context);
+}
+
+function transformIf(oper, context) {
+  const { condition, positive, negative } = oper;
+  const result = parseSharedDataBooleanExpression(condition);
+  if (result === null) {
+    transformSimpleExpression(condition, context, true);
+  }
+  transformBlock(positive, context);
+  if (negative) {
+    if (negative.type === 1) {
+      transformBlock(negative, context);
+    } else {
+      transformIf(negative, context);
+    }
+  }
+}
+
+function transformSetProp(oper, context) {
+  transformIRProp(oper.prop, context);
+}
+function transformDynamicProps(oper, context) {
+  oper.sharedData = {
+    ident: context.nextIdent()
+  };
+}
+
+function transformSetTemplateRef({ node, value }, context) {
+  var _a, _b;
+  if (node.tagType === 0) {
+    if ((_b = (_a = context.options).isCppExpr) == null ? void 0 : _b.call(_a, value.ast)) {
+      return;
+    }
+    context.ir.hasTemplateRef = true;
+    transformSimpleExpression(value, context, true);
+  } else {
+    context.ir.hasTemplateRef = true;
+  }
+}
+function transformDeclareOldRef(oper, context) {
+}
+
+function transformSetText(oper, context) {
+  transformSimpleExpressions(oper.values, context, false, true);
+}
+function transformGetTextChild(oper, context) {
+}
+
+function transformCreateComponent(oper, context) {
+  oper.sharedData = {
+    ident: context.nextIdent()
+  };
+  oper.slots.forEach((slot) => {
+    switch (slot.slotType) {
+      case 0:
+        Object.keys(slot.slots).forEach((key) => {
+          transformBlock(slot.slots[key], context);
+        });
+        break;
+      case 1:
+        if (!parseSharedDataStringExpression(slot.name)) {
+          slot.name.sharedData = {
+            ident: context.nextIdent()
+          };
+        }
+        transformBlock(slot.fn, context);
+        break;
+      case 2:
+        transformSimpleExpression(slot.loop.source, context, true);
+        const exitIdent = context.enterIdent();
+        if (!parseSharedDataStringExpression(slot.name)) {
+          slot.name.sharedData = {
+            ident: context.nextIdent()
+          };
+        }
+        transformBlock(slot.fn, context);
+        exitIdent();
+        break;
+      case 3:
+        transformSlotDynamicConditional(slot, context);
+        break;
+    }
+  });
+}
+function transformSlotDynamicConditional(slot, context) {
+  const result = parseSharedDataBooleanExpression(slot.condition);
+  if (result === null) {
+    transformSimpleExpression(slot.condition, context, true);
+  }
+  transformSimpleExpression(slot.positive.name, context);
+  transformBlock(slot.positive.fn, context);
+  if (slot.negative) {
+    if (slot.negative.slotType === 3) {
+      transformSlotDynamicConditional(slot.negative, context);
+    } else {
+      transformSimpleExpression(slot.negative.name, context);
+      transformBlock(slot.negative.fn, context);
+    }
+  }
+}
+
+function transformSlotOutlet(oper, context) {
+  const { fallback, name } = oper;
+  transformSimpleExpression(name, context);
+  if (fallback) {
+    transformBlock(fallback, context);
+  }
+}
+
+function transformVShow({ dir: { exp } }, context) {
+  if (exp) {
+    transformSimpleExpression(exp, context);
+  }
+}
+
+function transformVModel({ dir }, context) {
+  const exp = dir.exp;
+  transformSimpleExpression(exp, context, true);
+  exp.sharedData.vModel = {
+    eventIdent: context.nextIdent()
+  };
+}
+
+function transformBuiltinDirective(oper, context) {
+  switch (oper.name) {
+    case "show":
+      return transformVShow(oper, context);
+    case "model":
+      return transformVModel(oper, context);
+  }
+}
+
+function transformOperations(opers, context) {
+  for (const operation of opers) {
+    transformOperationWithInsertionState(operation, context);
+  }
+}
+function transformOperationWithInsertionState(oper, context) {
+  transformOperation(oper, context);
+}
+function transformOperation(oper, context) {
+  switch (oper.type) {
+    case 2:
+      return transformSetProp(oper, context);
+    case 3:
+      return transformDynamicProps(oper, context);
+    case 4:
+      return transformSetText(oper, context);
+    case 5:
+      return transformSetEvent(oper, context);
+    case 6:
+      return transformSetDynamicEvents(oper, context);
+    case 7:
+      return transformSetHtml(oper, context);
+    case 8:
+      return transformSetTemplateRef(oper, context);
+    case 9:
+      return transformInsertNode();
+    case 10:
+      return transformPrependNode();
+    case 15:
+      return transformIf(oper, context);
+    case 16:
+      return transformFor(oper, context);
+    case 11:
+      return transformCreateComponent(oper, context);
+    case 14:
+      return transformDeclareOldRef();
+    case 12:
+      return transformSlotOutlet(oper, context);
+    case 13:
+      return transformBuiltinDirective(oper, context);
+    case 17:
+      return transformGetTextChild();
+    case 18:
+      return;
+    case 19:
+      return;
+    default:
+      const exhaustiveCheck = oper;
+      throw new Error(
+        `Unhandled operation type in genOperation: ${exhaustiveCheck}`
+      );
+  }
+}
+function transformEffects(effects, context) {
+  for (const effect of effects) {
+    transformEffect(effect, context);
+  }
+  for (const { operations } of effects) {
+    for (const oper of operations) {
+      if (oper.type === 19) {
+        const setPropOper = findSetPropOper(oper.prop.key.content.slice(7));
+        if (setPropOper) {
+          oper.prop.values[0].sharedData = setPropOper.prop.values[0].sharedData;
+        }
+      }
+    }
+  }
+  function findSetPropOper(name) {
+    for (const effect of effects) {
+      for (const oper of effect.operations) {
+        if (oper.type === 2 && oper.prop.key.content === name) {
+          return oper;
+        }
+      }
+    }
+  }
+}
+function transformEffect({ operations }, context) {
+  transformOperations(operations, context);
+}
+
+function transformSelf(dynamic, context) {
+  const { operation } = dynamic;
+  if (operation) {
+    transformOperationWithInsertionState(operation, context);
+  }
+}
+function transformChildren(dynamic, context) {
+  const { children } = dynamic;
+  const childrenToTransform = [];
+  for (const [, child] of children.entries()) {
+    if (child.flags & 2) ;
+    const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
+    if (id === void 0 && !child.hasDynamicChild) {
+      transformSelf(child, context);
+      continue;
+    }
+    if (id === child.anchor) {
+      transformSelf(child, context);
+    }
+    childrenToTransform.push(child);
+  }
+  for (const child of childrenToTransform) {
+    transformChildren(child, context);
+  }
+}
+
+function transformBlock(oper, context) {
+  transformBlockContent(oper, context);
+}
+function transformBlockContent(block, context) {
+  const { dynamic, effect, operation } = block;
+  const resetBlock = context.enterBlock(block);
+  for (const child of dynamic.children) {
+    transformSelf(child, context);
+  }
+  for (const child of dynamic.children) {
+    transformChildren(child, context);
+  }
+  transformOperations(operation, context);
+  transformEffects(effect, context);
+  resetBlock();
+}
+
+class IdentGenerator {
+  constructor(pregenerateCount = 1e3, groupSize = 30) {
+    this._chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    this._nextIds = [0];
+    this._generated = [];
+    this._currentIndex = 0;
+    if (pregenerateCount < 0) {
+      throw new Error("\u9884\u751F\u6210\u6570\u91CF\u4E0D\u80FD\u4E3A\u8D1F\u6570");
+    }
+    this._groupSize = groupSize;
+    if (pregenerateCount > 0) {
+      this._pregenerate(pregenerateCount);
+    }
+  }
+  _generateId() {
+    const r = [];
+    for (const char of this._nextIds) {
+      r.unshift(this._chars[char]);
+    }
+    return r.join("");
+  }
+  _generateNextValidId() {
+    let id;
+    do {
+      id = this._generateId();
+      this._increment();
+    } while (keywords.has(id));
+    return id;
+  }
+  _pregenerate(count) {
+    this._generated = new Array(count);
+    for (let i = 0; i < count; i++) {
+      this._generated[i] = this._generateNextValidId();
+    }
+  }
+  next() {
+    if (this._currentIndex < this._generated.length) {
+      return this._generated[this._currentIndex++];
+    }
+    const newId = this._generateNextValidId();
+    this._generated.push(newId);
+    this._currentIndex++;
+    return newId;
+  }
+  getIndexOf(variableName) {
+    return this._generated.indexOf(variableName);
+  }
+  getGroupInfo(variableName) {
+    const index = this.getIndexOf(variableName);
+    if (index === -1) return null;
+    return {
+      index: Math.floor(index / this._groupSize),
+      bitValue: 1 << index % this._groupSize
+    };
+  }
+  reset() {
+    this._nextIds = [0];
+    this._generated = [];
+    this._currentIndex = 0;
+  }
+  get generatedCount() {
+    return this._generated.length;
+  }
+  get currentIndex() {
+    return this._currentIndex;
+  }
+  get hasPregenerated() {
+    return this._currentIndex < this._generated.length;
+  }
+  get generatedList() {
+    return this._generated;
+  }
+  _increment() {
+    for (let i = 0; i < this._nextIds.length; i++) {
+      const val = ++this._nextIds[i];
+      if (val >= this._chars.length) {
+        this._nextIds[i] = 0;
+      } else {
+        return;
+      }
+    }
+    this._nextIds.push(0);
+  }
+  *[Symbol.iterator]() {
+    while (true) {
+      yield this.next();
+    }
+  }
+}
+const keywords = /* @__PURE__ */ new Set([
+  "abstract",
+  "arguments",
+  "await",
+  "boolean",
+  "break",
+  "byte",
+  "case",
+  "catch",
+  "char",
+  "class",
+  "const",
+  "continue",
+  "debugger",
+  "default",
+  "delete",
+  "do",
+  "double",
+  "else",
+  "enum",
+  "eval",
+  "export",
+  "extends",
+  "false",
+  "final",
+  "finally",
+  "float",
+  "for",
+  "function",
+  "goto",
+  "if",
+  "implements",
+  "import",
+  "in",
+  "instanceof",
+  "int",
+  "interface",
+  "let",
+  "long",
+  "native",
+  "new",
+  "null",
+  "package",
+  "private",
+  "protected",
+  "public",
+  "return",
+  "short",
+  "static",
+  "super",
+  "switch",
+  "synchronized",
+  "this",
+  "throw",
+  "throws",
+  "transient",
+  "true",
+  "try",
+  "typeof",
+  "var",
+  "void",
+  "volatile",
+  "while",
+  "with",
+  "yield"
+]);
+
+class SharedDataTransformContext {
+  constructor(ir, options) {
+    this.isInVFor = false;
+    this._ident = new IdentGenerator();
+    this._identCache = /* @__PURE__ */ new Map();
+    this.ir = ir;
+    this.options = options;
+    this.block = ir.block;
+    this._identCache.set(this._ident, /* @__PURE__ */ new Map());
+  }
+  enterBlock(block) {
+    const parent = this.block;
+    this.block = block;
+    const node = block.node;
+    let resetIsInVFor = () => {
+    };
+    if (!this.isInVFor) {
+      this.isInVFor = node.type === 1 && node.tagType === 3 && node.props.some(
+        (prop) => prop.type === 7 && prop.name === "for"
+      );
+      resetIsInVFor = () => this.isInVFor = false;
+    }
+    return () => {
+      resetIsInVFor();
+      return this.block = parent;
+    };
+  }
+  enterIdent() {
+    const parent = this._ident;
+    this._ident = new IdentGenerator();
+    this._identCache.set(this._ident, /* @__PURE__ */ new Map());
+    return () => this._ident = parent;
+  }
+  nextIdent() {
+    return this._ident.next();
+  }
+}
+function transformSharedData(ir, options) {
+  const context = new SharedDataTransformContext(ir, options);
+  transformBlockContent(ir.block, context);
+}
+
+const RENDERER_TYPE = {
+  "ELEMENT": "element",
+  "NATIVE_VIEW": "nativeView"
+};
+const DOM2_APP_PLATFORM = {
+  "APP": "app",
+  "APP_ANDROID": "app-android",
+  "APP_HARMONY": "app-harmony",
+  "APP_IOS": "app-ios"
+};
+function getDom2AppTarget(platform, type) {
+  switch (platform) {
+    case "app-harmony":
+      return type === "element" ? "dom-c" : "nv-c";
+    case "app-android":
+      return type === "element" ? "dom-kt" : "nv-kt";
+    case "app-ios":
+      return type === "element" ? "dom-c" : "nv-c";
+    case "app":
+      return "all";
+  }
+}
+const DOM2_APP_TARGET = {
+  "ALL": "all",
+  "DOM_C": "dom-c",
+  "DOM_KT": "dom-kt",
+  "NV_KT": "nv-kt",
+  "TXT_KT": "txt-kt",
+  "DOM_OC": "dom-oc",
+  "NV_C": "nv-c",
+  "TXT_C": "txt-c",
+  "DOM_TS": "dom-ts"
+};
+function isCPPTarget(target) {
+  return target === "dom-c" || target === "nv-c" || target === "txt-c";
+}
+function isDomTarget(target) {
+  return target === "dom-c" || target === "dom-kt" || target === "dom-oc" || target === "dom-ts";
+}
+const TARGET_LANGUAGE = {
+  "TS": "ts",
+  "CPP": "cpp",
+  "KOTLIN": "kotlin",
+  "SWIFT": "swift"
+};
+const COMPONENT_TYPE = {
+  "APP": "app",
+  "PAGE": "page",
+  "COMPONENT": "component"
+};
+class SharedDataCodegenContext {
+  constructor() {
+    this.r = (name) => {
+      return name;
+    };
+    this.vForCount = 0;
+    this.vForStack = [];
+    this.vForDepth = 0;
+  }
+  enterVFor() {
+    const id = this.vForCount++;
+    this.vForStack.push(id);
+    return id;
+  }
+  exitVFor() {
+    this.vForStack.pop();
+  }
+  enterBlock(block) {
+    const parent = this.block;
+    this.block = block;
+    const node = this.block.node;
+    const inVFor = node.type === 1 && node.tagType === 3 && node.props.some(
+      (prop) => prop.type === 7 && prop.name === "for"
+    );
+    if (inVFor) {
+      this.vForDepth++;
+    }
+    return () => {
+      if (inVFor) {
+        this.vForDepth--;
+      }
+      return this.block = parent;
+    };
+  }
+  get sharedDataVar() {
+    return this.vForDepth > 0 ? this.sharedDataVForVar : this.r("__sharedData");
+  }
+  get sharedDataVForVar() {
+    const currentVForId = this.vForStack[this.vForStack.length - 1];
+    return `${this.r("__sharedData_VFor")}${currentVForId}`;
+  }
+  get sharedDataVForItemVar() {
+    const currentVForId = this.vForStack[this.vForStack.length - 1];
+    return `${this.r("__vForItem")}${currentVForId}`;
+  }
+}
+
+function genInsertNode$1({ parent, elements, anchor }, { helper }) {
+  let element = elements.map((el) => `n${el}`).join(", ");
+  if (elements.length > 1) element = `[${element}]`;
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      helper("insert"),
+      element,
+      `n${parent}`,
+      anchor === void 0 ? void 0 : `n${anchor}`
+    )
+  ];
+}
+function genPrependNode$1(oper, { helper }) {
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      helper("prepend"),
+      `n${oper.parent}`,
+      ...oper.elements.map((el) => `n${el}`)
+    )
+  ];
+}
+
+function genExpression$1(node, context, assignment) {
+  const { content, ast, isStatic, loc } = node;
+  if (isStatic) {
+    return [[JSON.stringify(content), -2, loc]];
+  }
+  if (!node.content.trim() || // there was a parsing error
+  ast === false || compilerVapor.isConstantExpression(node)) {
+    return [[content, -2, loc], assignment && ` = ${assignment}`];
+  }
+  if (ast === null) {
+    return genIdentifier$1(content, context, loc, assignment);
+  }
+  const ids = [];
+  const parentStackMap = /* @__PURE__ */ new Map();
+  const parentStack = [];
+  compilerDom.walkIdentifiers(
+    ast,
+    (id) => {
+      ids.push(id);
+      parentStackMap.set(id, parentStack.slice());
+    },
+    false,
+    parentStack
+  );
+  let hasMemberExpression = false;
+  if (ids.length) {
+    const [frag, push] = compilerVapor.buildCodeFragment();
+    ids.sort((a, b) => a.start - b.start).forEach((id, i) => {
+      const start = id.start - 1;
+      const end = id.end - 1;
+      const last = ids[i - 1];
+      const leadingText = content.slice(last ? last.end - 1 : 0, start);
+      if (leadingText.length) push([leadingText, -3]);
+      const source = content.slice(start, end);
+      const parentStack2 = parentStackMap.get(id);
+      const parent = parentStack2[parentStack2.length - 1];
+      hasMemberExpression || (hasMemberExpression = parent && (parent.type === "MemberExpression" || parent.type === "OptionalMemberExpression"));
+      push(
+        ...genIdentifier$1(
+          source,
+          context,
+          {
+            start: compilerDom.advancePositionWithClone(node.loc.start, source, start),
+            end: compilerDom.advancePositionWithClone(node.loc.start, source, end),
+            source
+          },
+          hasMemberExpression ? void 0 : assignment,
+          id,
+          parent,
+          parentStack2
+        )
+      );
+      if (i === ids.length - 1 && end < content.length) {
+        push([content.slice(end), -3]);
+      }
+    });
+    if (assignment && hasMemberExpression) {
+      push(` = ${assignment}`);
+    }
+    return frag;
+  } else {
+    return [[content, -3, loc]];
+  }
+}
+function genIdentifier$1(raw, context, loc, assignment, id, parent, parentStack) {
+  const { options, helper, identifiers } = context;
+  const { inline, bindingMetadata } = options;
+  let name = raw;
+  const idMap = identifiers[raw];
+  if (idMap && idMap.length) {
+    const replacement = idMap[0];
+    if (shared.isString(replacement)) {
+      if (parent && parent.type === "ObjectProperty" && parent.shorthand) {
+        return [[`${name}: ${replacement}`, -2, loc]];
+      } else {
+        return [[replacement, -2, loc]];
+      }
+    } else {
+      return genExpression$1(replacement, context, assignment);
+    }
+  }
+  let prefix;
+  if (compilerDom.isStaticProperty(parent) && parent.shorthand) {
+    prefix = `${raw}: `;
+  }
+  const type = bindingMetadata && bindingMetadata[raw];
+  if (inline) {
+    switch (type) {
+      case "setup-let":
+        name = raw = assignment ? `_isRef(${raw}) ? (${raw}.value = ${assignment}) : (${raw} = ${assignment})` : unref();
+        break;
+      case "setup-ref":
+        name = raw = withAssignment(`${raw}.value`);
+        break;
+      case "setup-maybe-ref":
+        const isDestructureAssignment = parent && compilerDom.isInDestructureAssignment(parent, parentStack || []);
+        const isAssignmentLVal = parent && parent.type === "AssignmentExpression" && parent.left === id;
+        const isUpdateArg = parent && parent.type === "UpdateExpression" && parent.argument === id;
+        raw = isAssignmentLVal || isUpdateArg || isDestructureAssignment ? name = `${raw}.value` : assignment ? `${helper("isRef")}(${raw}) ? (${raw}.value = ${assignment}) : null` : unref();
+        break;
+      case "props":
+        raw = shared.genPropsAccessExp(raw);
+        break;
+      case "props-aliased":
+        raw = shared.genPropsAccessExp(bindingMetadata.__propsAliases[raw]);
+        break;
+      default:
+        raw = withAssignment(raw);
+    }
+  } else {
+    if (canPrefix$1(raw)) {
+      if (type === "props-aliased") {
+        raw = `$props['${bindingMetadata.__propsAliases[raw]}']`;
+      } else {
+        raw = `${type === "props" ? "$props" : "_ctx"}.${raw}`;
+      }
+    }
+    raw = withAssignment(raw);
+  }
+  return [prefix, [raw, -2, loc, name]];
+  function withAssignment(s) {
+    return assignment ? `${s} = ${assignment}` : s;
+  }
+  function unref() {
+    return `${helper("unref")}(${raw})`;
+  }
+}
+function canPrefix$1(name) {
+  if (shared.isGloballyAllowed(name)) {
+    return false;
+  }
+  if (
+    // special case for webpack compilation
+    name === "require" || name === "$props" || name === "$emit" || name === "$attrs" || name === "$slots"
+  )
+    return false;
+  return true;
+}
+function processExpressions$1(context, expressions, shouldDeclare) {
+  const {
+    seenVariable,
+    variableToExpMap,
+    expToVariableMap,
+    seenIdentifier,
+    updatedVariable
+  } = compilerVapor.analyzeExpressions(expressions);
+  const varDeclarations = processRepeatedVariables$1(
+    context,
+    seenVariable,
+    variableToExpMap,
+    expToVariableMap,
+    seenIdentifier,
+    updatedVariable
+  );
+  const expDeclarations = processRepeatedExpressions$1(
+    context,
+    expressions,
+    varDeclarations,
+    updatedVariable,
+    expToVariableMap
+  );
+  return genDeclarations$1(
+    [...varDeclarations, ...expDeclarations],
+    context,
+    shouldDeclare
+  );
+}
+function processRepeatedVariables$1(context, seenVariable, variableToExpMap, expToVariableMap, seenIdentifier, updatedVariable) {
+  const declarations = [];
+  const expToReplacementMap = /* @__PURE__ */ new Map();
+  for (const [name, exps] of variableToExpMap) {
+    if (updatedVariable.has(name)) continue;
+    if (seenVariable[name] > 1 && exps.size > 0) {
+      const isIdentifier = seenIdentifier.has(name);
+      const varName = isIdentifier ? name : genVarName$1(name);
+      exps.forEach((node) => {
+        if (node.ast && varName !== name) {
+          const replacements = expToReplacementMap.get(node) || [];
+          replacements.push({
+            name: varName,
+            locs: expToVariableMap.get(node).reduce(
+              (locs, v) => {
+                if (v.name === name && v.loc) locs.push(v.loc);
+                return locs;
+              },
+              []
+            )
+          });
+          expToReplacementMap.set(node, replacements);
+        }
+      });
+      if (!declarations.some((d) => d.name === varName) && (!isIdentifier || shouldDeclareVariable$1(name, expToVariableMap, exps))) {
+        declarations.push({
+          name: varName,
+          isIdentifier,
+          value: shared.extend(
+            { ast: isIdentifier ? null : parseExp$1(context, name) },
+            compilerDom.createSimpleExpression(name)
+          ),
+          rawName: name,
+          exps,
+          seenCount: seenVariable[name]
+        });
+      }
+    }
+  }
+  for (const [exp, replacements] of expToReplacementMap) {
+    replacements.flatMap(
+      ({ name, locs }) => locs.map(({ start, end }) => ({ start, end, name }))
+    ).sort((a, b) => b.end - a.end).forEach(({ start, end, name }) => {
+      exp.content = exp.content.slice(0, start - 1) + name + exp.content.slice(end - 1);
+    });
+    exp.ast = parseExp$1(context, exp.content, exp.loc);
+  }
+  return declarations;
+}
+function shouldDeclareVariable$1(name, expToVariableMap, exps) {
+  const vars = Array.from(
+    exps,
+    (exp) => expToVariableMap.get(exp).map((v) => v.name)
+  );
+  if (vars.every((v) => v.length === 1)) {
+    return true;
+  }
+  if (vars.some((v) => v.filter((e) => e === name).length > 1)) {
+    return true;
+  }
+  const first = vars[0];
+  if (vars.some((v) => v.length !== first.length)) {
+    if (vars.some(
+      (v) => v.length > first.length && v.every((e) => first.includes(e))
+    ) || vars.some((v) => first.length > v.length && first.every((e) => v.includes(e)))) {
+      return false;
+    }
+    return true;
+  }
+  if (vars.every((v) => v.every((e, idx) => e === first[idx]))) {
+    return false;
+  }
+  return true;
+}
+function processRepeatedExpressions$1(context, expressions, varDeclarations, updatedVariable, expToVariableMap) {
+  const declarations = [];
+  const seenExp = expressions.reduce(
+    (acc, exp) => {
+      const vars = expToVariableMap.get(exp);
+      if (!vars) return acc;
+      const variables = vars.map((v) => v.name);
+      if (exp.ast && exp.ast.type !== "Identifier" && !(variables && variables.some((v) => updatedVariable.has(v)))) {
+        acc[exp.content] = (acc[exp.content] || 0) + 1;
+      }
+      return acc;
+    },
+    /* @__PURE__ */ Object.create(null)
+  );
+  Object.entries(seenExp).forEach(([content, count]) => {
+    if (count > 1) {
+      const varName = genVarName$1(content);
+      if (!declarations.some((d) => d.name === varName)) {
+        const delVars = {};
+        for (let i = varDeclarations.length - 1; i >= 0; i--) {
+          const item = varDeclarations[i];
+          if (!item.exps || !item.seenCount) continue;
+          const shouldRemove = [...item.exps].every(
+            (node) => node.content === content && item.seenCount === count
+          );
+          if (shouldRemove) {
+            delVars[item.name] = item.rawName;
+            varDeclarations.splice(i, 1);
+          }
+        }
+        const value = shared.extend(
+          {},
+          expressions.find((exp) => exp.content === content)
+        );
+        Object.keys(delVars).forEach((name) => {
+          value.content = value.content.replace(name, delVars[name]);
+          if (value.ast) value.ast = parseExp$1(context, value.content, value.loc);
+        });
+        declarations.push({
+          name: varName,
+          value
+        });
+      }
+      expressions.forEach((exp) => {
+        if (exp.content === content) {
+          exp.content = varName;
+          exp.ast = null;
+        } else if (exp.content.includes(content)) {
+          exp.content = exp.content.replace(
+            new RegExp(escapeRegExp$1(content), "g"),
+            varName
+          );
+          exp.ast = parseExp$1(context, exp.content, exp.loc);
+        }
+      });
+    }
+  });
+  return declarations;
+}
+function genDeclarations$1(declarations, context, shouldDeclare) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const ids = /* @__PURE__ */ Object.create(null);
+  const varNames = /* @__PURE__ */ new Set();
+  declarations.forEach(({ name, isIdentifier, value }) => {
+    if (isIdentifier) {
+      const varName = ids[name] = `_${name}`;
+      varNames.add(varName);
+      if (shouldDeclare) {
+        push(`const `);
+      }
+      push(`${varName} = `, ...genExpression$1(value, context), compilerVapor.NEWLINE);
+    }
+  });
+  declarations.forEach(({ name, isIdentifier, value }) => {
+    if (!isIdentifier) {
+      const varName = ids[name] = `_${name}`;
+      varNames.add(varName);
+      if (shouldDeclare) {
+        push(`const `);
+      }
+      push(
+        `${varName} = `,
+        ...context.withId(() => genExpression$1(value, context), ids),
+        compilerVapor.NEWLINE
+      );
+    }
+  });
+  return { ids, frag, varNames: [...varNames] };
+}
+function escapeRegExp$1(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+function parseExp$1(context, content, loc) {
+  const plugins = context.options.expressionPlugins;
+  const options = {
+    plugins: plugins ? [...plugins, "typescript"] : ["typescript"]
+  };
+  try {
+    return parser$1.parseExpression(`(${content})`, options);
+  } catch (e) {
+    if (loc) {
+      const error = new SyntaxError(e.message);
+      error.loc = loc;
+      context.options.onError(error);
+      throw error;
+    }
+    throw e;
+  }
+}
+function genVarName$1(exp) {
+  return `${exp.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_").replace(/_+$/, "")}`;
+}
+function genSharedDataExpression(node, context, helper, inVFor) {
+  if (node.sharedData) {
+    return compilerVapor.genCall(
+      context.helper("setSharedData"),
+      context.sharedDataVar,
+      JSON.stringify(node.sharedData.ident),
+      helper ? compilerVapor.genCall(helper, genExpression$1(node, context)) : genExpression$1(node, context)
+    );
+  }
+  return genExpression$1(node, context);
+}
+
+function genSetEvent$1(oper, context) {
+  var _a, _b;
+  const { key, keyOverride, value, modifiers, sharedData } = oper;
+  if (value && ((_b = (_a = context.options).isCppExpr) == null ? void 0 : _b.call(_a, value.ast))) {
+    return [];
+  }
+  const handler = genEventHandler(context, [value], modifiers);
+  return [
+    compilerVapor.NEWLINE,
+    ...key.sharedData ? compilerVapor.genCall(
+      context.helper("setSharedData"),
+      context.sharedDataVar,
+      JSON.stringify(key.sharedData.ident),
+      genName()
+    ).concat(compilerVapor.NEWLINE) : [],
+    ...compilerVapor.genCall(
+      context.helper("setSharedDataEvent"),
+      context.sharedDataVar,
+      JSON.stringify(sharedData.ident),
+      handler
+    )
+  ];
+  function genName() {
+    const expr = genExpression$1(key, context);
+    if (keyOverride) {
+      const find = JSON.stringify(keyOverride[0]);
+      const replacement = JSON.stringify(keyOverride[1]);
+      const wrapped = ["(", ...expr, ")"];
+      return [...wrapped, ` === ${find} ? ${replacement} : `, ...wrapped];
+    } else {
+      return genExpression$1(key, context);
+    }
+  }
+}
+function genSetDynamicEvents$1(oper, context) {
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      context.helper("setSharedDataDynamicEvents"),
+      context.sharedDataVar,
+      JSON.stringify(oper.event.sharedData.ident),
+      genExpression$1(oper.event, context)
+    )
+  ];
+}
+function genEventHandler(context, values, modifiers = { nonKeys: [], keys: [] }, extraWrap = false) {
+  let handlerExp = [];
+  if (values) {
+    values.forEach((value, index) => {
+      let exp = [];
+      if (value && value.content.trim()) {
+        if (compilerDom.isMemberExpression(value, context.options)) {
+          exp = genExpression$1(value, context);
+          if (!isConstantBinding(value, context) && !extraWrap) {
+            const isTSNode = value.ast && compilerDom.TS_NODE_TYPES.includes(value.ast.type);
+            exp = [
+              `(e: any) => `,
+              isTSNode ? "(" : "",
+              ...exp,
+              isTSNode ? ")" : "",
+              `(e)`
+            ];
+          }
+        } else if (compilerDom.isFnExpression(value, context.options)) {
+          exp = genExpression$1(value, context);
+        } else {
+          const referencesEvent = value.content.includes("$event");
+          const hasMultipleStatements = value.content.includes(`;`);
+          const expr = referencesEvent ? context.withId(() => genExpression$1(value, context), {
+            $event: null
+          }) : genExpression$1(value, context);
+          exp = [
+            referencesEvent ? "($event: any) => " : "() => ",
+            hasMultipleStatements ? "{" : "(",
+            ...expr,
+            hasMultipleStatements ? "}" : ")"
+          ];
+        }
+        handlerExp = handlerExp.concat([index !== 0 ? ", " : "", ...exp]);
+      }
+    });
+    if (values.length > 1) {
+      handlerExp = ["[", ...handlerExp, "]"];
+    }
+  }
+  if (handlerExp.length === 0) handlerExp = ["() => {}"];
+  if (extraWrap) handlerExp.unshift(`() => `);
+  return handlerExp;
+}
+function isConstantBinding(value, context) {
+  if (value.ast === null) {
+    const bindingType = context.options.bindingMetadata[value.content];
+    if (bindingType === "setup-const") {
+      return true;
+    }
+  }
+}
+
+const isWindows = os.platform() === "win32";
+function normalizePath(id) {
+  return isWindows ? id.replace(/\\/g, "/") : id;
+}
+function isVForListItem(node) {
+  const isTemplateNode = node.type === 1 && node.tag === "template";
+  if (!isTemplateNode) {
+    return false;
+  }
+  const _node = node;
+  const isListItem = _node.children.length === 1 && _node.children[0].type === 1 && (_node.children[0].tag === "list-item" || _node.children[0].tag === "ListItem");
+  if (!isListItem) {
+    return false;
+  }
+  return true;
+}
+
+function genFor$1(oper, context) {
+  const { helper } = context;
+  const {
+    source,
+    value,
+    key,
+    index,
+    render,
+    keyProp,
+    typeProp,
+    once,
+    id,
+    component,
+    onlyChild
+  } = oper;
+  if (!source.sharedData) {
+    return [];
+  }
+  const isListItem = isVForListItem(oper.node);
+  const preSharedDataVar = context.sharedDataVar;
+  const rawValue = value && value.content;
+  const rawKey = key && key.content;
+  const rawIndex = index && index.content;
+  const sourceExpr = ["() => (", ...genExpression$1(source, context), ")"];
+  const idToPathMap = compilerVapor.parseValueDestructure(value, context);
+  const vForCount = context.enterVFor();
+  const [_, exitScope] = context.enterScope();
+  const itemVar = `_for_item${vForCount}`;
+  const idMap = compilerVapor.buildDestructureIdMap(
+    idToPathMap,
+    `${itemVar}.value`,
+    context.options.expressionPlugins
+  );
+  idMap[itemVar] = null;
+  const args = [context.sharedDataVForVar, ", ", itemVar];
+  if (rawKey) {
+    const keyVar = `_for_key${vForCount}`;
+    args.push(`, ${keyVar}`);
+    idMap[rawKey] = `${keyVar}.value`;
+    idMap[keyVar] = null;
+  }
+  if (rawIndex) {
+    const indexVar = `_for_index${vForCount}`;
+    args.push(`, ${indexVar}`);
+    idMap[rawIndex] = `${indexVar}.value`;
+    idMap[indexVar] = null;
+  }
+  const newSharedDataVForFrag = compilerVapor.genCall(
+    helper("setSharedData"),
+    preSharedDataVar,
+    JSON.stringify(source.sharedData.ident),
+    genSharedDataVFor(context, vForCount)
+  );
+  const getKeyFrag = genCallback(keyProp, context, context.sharedDataVForVar);
+  const getKeyWithoutSharedDataFrag = genCallbackWithoutSharedData(
+    keyProp,
+    context
+  );
+  const getTypeFrag = isListItem && typeProp ? genCallback(typeProp, context, context.sharedDataVForVar) : genDefaultTypeCallback(context.sharedDataVForVar);
+  const { selectorPatterns, keyOnlyBindingPatterns } = matchPatterns(
+    render,
+    keyProp,
+    idMap
+  );
+  const selectorDeclarations = [];
+  const selectorSetup = [];
+  for (let i = 0; i < selectorPatterns.length; i++) {
+    const { selector } = selectorPatterns[i];
+    const selectorName = `_selector${id}_${i}`;
+    selectorDeclarations.push(
+      `let ${selectorName}: (oper: () => void) => void`,
+      compilerVapor.NEWLINE
+    );
+    if (i === 0) {
+      selectorSetup.push(`({ createSelector }) => {`, compilerVapor.INDENT_START);
+    }
+    selectorSetup.push(
+      compilerVapor.NEWLINE,
+      `${selectorName} = `,
+      ...compilerVapor.genCall(`createSelector`, [
+        `() => `,
+        ...genExpression$1(selector, context)
+      ])
+    );
+    if (i === selectorPatterns.length - 1) {
+      selectorSetup.push(compilerVapor.INDENT_END, compilerVapor.NEWLINE, "}");
+    }
+  }
+  const blockFn = context.withId(() => {
+    const frag = [];
+    frag.push("(", ...args, ") => {", compilerVapor.INDENT_START);
+    if (selectorPatterns.length || keyOnlyBindingPatterns.length) {
+      frag.push(
+        ...genBlockContent$1(render, context, false, () => {
+          const patternFrag = [];
+          for (let i = 0; i < selectorPatterns.length; i++) {
+            const { effect } = selectorPatterns[i];
+            patternFrag.push(
+              compilerVapor.NEWLINE,
+              `_selector${id}_${i}(() => {`,
+              compilerVapor.INDENT_START
+            );
+            for (const oper2 of effect.operations) {
+              patternFrag.push(...genOperation$1(oper2, context));
+            }
+            patternFrag.push(compilerVapor.INDENT_END, compilerVapor.NEWLINE, `})`);
+          }
+          for (const { effect } of keyOnlyBindingPatterns) {
+            for (const oper2 of effect.operations) {
+              patternFrag.push(...genOperation$1(oper2, context));
+            }
+          }
+          return patternFrag;
+        })
+      );
+    } else {
+      frag.push(...genBlockContent$1(render, context));
+    }
+    frag.push(compilerVapor.INDENT_END, compilerVapor.NEWLINE, "}");
+    return frag;
+  }, idMap);
+  exitScope();
+  context.exitVFor();
+  let flags = 0;
+  if (onlyChild) {
+    flags |= 1;
+  }
+  if (component) {
+    flags |= 2;
+  }
+  if (once) {
+    flags |= 4;
+  }
+  if (!isListItem) {
+    return [
+      compilerVapor.NEWLINE,
+      ...selectorDeclarations,
+      ...compilerVapor.genCall(
+        [helper("createSharedDataFor"), "undefined"],
+        newSharedDataVForFrag,
+        sourceExpr,
+        blockFn,
+        getKeyFrag,
+        flags ? String(flags) : void 0,
+        selectorSetup.length ? selectorSetup : void 0
+        // todo: hydrationNode
+      )
+    ];
+  }
+  return [
+    compilerVapor.NEWLINE,
+    ...selectorDeclarations,
+    ...compilerVapor.genCall(
+      [helper("createSharedDataRecycleFor"), "undefined"],
+      newSharedDataVForFrag,
+      compilerVapor.genCall(
+        [helper("preCreateSharedDataRecycleFor"), "undefined"],
+        sourceExpr,
+        getKeyWithoutSharedDataFrag
+      ),
+      blockFn,
+      getKeyFrag,
+      getTypeFrag,
+      flags ? String(flags) : void 0,
+      selectorSetup.length ? selectorSetup : void 0
+    )
+  ];
+  function genCallbackWithoutSharedData(expr, context2) {
+    if (!expr) return false;
+    const res = context2.withId(
+      () => genExpression$1(expr, context2),
+      genSimpleIdMap()
+    );
+    return [
+      ...compilerVapor.genMulti(
+        ["(", ")", ", "],
+        rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0,
+        rawKey ? rawKey : rawIndex ? "__" : void 0,
+        rawIndex
+      ),
+      " => {",
+      "return ",
+      ...res,
+      "}"
+    ];
+  }
+  function genCallback(expr, context2, sharedDataVForVar) {
+    if (!expr) return false;
+    const res = context2.withId(
+      () => compilerVapor.genCall(
+        context2.helper("setSharedData"),
+        sharedDataVForVar,
+        JSON.stringify(expr.sharedData.ident),
+        compilerVapor.genCall(
+          context2.helper("toDisplayString"),
+          genExpression$1(expr, context2)
+        )
+      ),
+      genSimpleIdMap()
+    );
+    return [
+      ...compilerVapor.genMulti(
+        ["(", ")", ", "],
+        sharedDataVForVar,
+        rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0,
+        rawKey ? rawKey : rawIndex ? "__" : void 0,
+        rawIndex
+      ),
+      " => (",
+      ...res,
+      ")"
+    ];
+  }
+  function genDefaultTypeCallback(sharedDataVForVar) {
+    return [
+      ...compilerVapor.genMulti(
+        ["(", ")", ", "],
+        sharedDataVForVar,
+        rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0,
+        rawKey ? rawKey : rawIndex ? "__" : void 0,
+        rawIndex
+      ),
+      ' => "0"'
+    ];
+  }
+  function genSimpleIdMap() {
+    const idMap2 = {};
+    if (rawKey) idMap2[rawKey] = null;
+    if (rawIndex) idMap2[rawIndex] = null;
+    idToPathMap.forEach((_2, id2) => idMap2[id2] = null);
+    return idMap2;
+  }
+}
+function matchPatterns(render, keyProp, idMap) {
+  const selectorPatterns = [];
+  const keyOnlyBindingPatterns = [];
+  render.effect.forEach((effect) => {
+    if (keyProp !== void 0) {
+      const selector = matchSelectorPattern(effect, keyProp.content, idMap);
+      if (selector) {
+        selectorPatterns.push(selector);
+        effect.generated = true;
+      }
+      const keyOnly = matchKeyOnlyBindingPattern(effect, keyProp.content);
+      if (keyOnly) {
+        keyOnlyBindingPatterns.push(keyOnly);
+        effect.generated = true;
+      }
+    }
+  });
+  return {
+    keyOnlyBindingPatterns,
+    selectorPatterns
+  };
+}
+function matchKeyOnlyBindingPattern(effect, key) {
+  if (effect.expressions.length === 1) {
+    const { ast, content } = effect.expressions[0];
+    if (typeof ast === "object" && ast !== null) {
+      if (isKeyOnlyBinding(ast, key, content)) {
+        return { effect };
+      }
+    }
+  }
+}
+function matchSelectorPattern(effect, key, idMap) {
+  if (effect.expressions.length === 1) {
+    const { ast, content } = effect.expressions[0];
+    if (typeof ast === "object" && ast) {
+      const matcheds = [];
+      estreeWalker.walk(ast, {
+        enter(node) {
+          if (typeof node === "object" && node && node.type === "BinaryExpression" && node.operator === "===" && node.left.type !== "PrivateName") {
+            const { left, right } = node;
+            for (const [a, b] of [
+              [left, right],
+              [right, left]
+            ]) {
+              const aIsKey = isKeyOnlyBinding(a, key, content);
+              const bIsKey = isKeyOnlyBinding(b, key, content);
+              const bVars = analyzeVariableScopes(b, idMap);
+              if (aIsKey && !bIsKey && !bVars.length) {
+                matcheds.push([a, b]);
+              }
+            }
+          }
+        }
+      });
+      if (matcheds.length === 1) {
+        const [key2, selector] = matcheds[0];
+        const content2 = effect.expressions[0].content;
+        let hasExtraId = false;
+        compilerDom.walkIdentifiers(
+          ast,
+          (id) => {
+            if (id.start !== key2.start && id.start !== selector.start) {
+              hasExtraId = true;
+            }
+          },
+          false
+        );
+        if (!hasExtraId) {
+          const name = content2.slice(selector.start - 1, selector.end - 1);
+          return {
+            effect,
+            // @ts-expect-error
+            selector: {
+              content: name,
+              ast: shared.extend({}, selector, {
+                start: 1,
+                end: name.length + 1
+              }),
+              loc: selector.loc,
+              isStatic: false
+            }
+          };
+        }
+      }
+    }
+  }
+}
+function analyzeVariableScopes(ast, idMap) {
+  let locals = [];
+  const ids = [];
+  compilerDom.walkIdentifiers(
+    ast,
+    (id) => {
+      ids.push(id);
+    },
+    false
+  );
+  for (const id of ids) {
+    if (shared.isGloballyAllowed(id.name)) {
+      continue;
+    }
+    if (idMap[id.name]) {
+      locals.push(id.name);
+    }
+  }
+  return locals;
+}
+function isKeyOnlyBinding(expr, key, source) {
+  let only = true;
+  estreeWalker.walk(expr, {
+    enter(node) {
+      if (source.slice(node.start - 1, node.end - 1) === key) {
+        this.skip();
+        return;
+      }
+      if (node.type === "Identifier") {
+        only = false;
+      }
+    }
+  });
+  return only;
+}
+function genSharedDataVFor(context, vForCount) {
+  return `${context.helper("createSharedDataVFor")}(${context.sharedDataScopeVar}, () => useSharedData<\`${context.sharedDataVForClassType(vForCount)}\`>(${context.sharedDataScopeVar}))`;
+}
+
+function genSetHtml$1(oper, context) {
+  var _a;
+  const { helper } = context;
+  const { value } = oper;
+  return [
+    compilerVapor.NEWLINE,
+    ...((_a = value.sharedData) == null ? void 0 : _a.ident) ? compilerVapor.genCall(
+      helper("setSharedData"),
+      context.sharedDataVar,
+      JSON.stringify(value.sharedData.ident),
+      genExpression$1(value, context)
+    ) : []
+  ];
+}
+
+function genIf$1(oper, context, isNested = false) {
+  const { helper } = context;
+  const { condition, positive, negative, once } = oper;
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const conditionExpr = [
+    "() => ",
+    ...genCondition$1(condition, context),
+    ""
+  ];
+  let positiveArg = genBlock$1(positive, context);
+  let negativeArg = false;
+  if (negative) {
+    if (negative.type === 1) {
+      negativeArg = genBlock$1(negative, context);
+    } else {
+      negativeArg = ["() => ", ...genIf$1(negative, context, true)];
+    }
+  }
+  if (!isNested) push(compilerVapor.NEWLINE);
+  push(
+    ...compilerVapor.genCall(
+      helper("createSharedDataIf"),
+      conditionExpr,
+      positiveArg,
+      negativeArg,
+      once && "true"
+    )
+  );
+  return frag;
+}
+function genCondition$1(condition, context) {
+  return !condition.sharedData ? [JSON.stringify(parseSharedDataBooleanExpression(condition))] : compilerVapor.genCall(
+    context.helper("setSharedData"),
+    context.sharedDataVar,
+    JSON.stringify(condition.sharedData.ident),
+    compilerVapor.genCall(
+      context.helper("toSharedDataBoolean"),
+      genExpression$1(condition, context)
+    )
+  );
+}
+
+const helpers = {
+  setText: { name: "setText" },
+  setHtml: { name: "setHtml" },
+  setClass: { name: "setClass" },
+  setStyle: { name: "setStyle" },
+  setValue: { name: "setValue" },
+  setAttr: { name: "setAttr", needKey: true },
+  setProp: { name: "setProp", needKey: true },
+  setDOMProp: { name: "setDOMProp", needKey: true }};
+function genSetProp$1(oper, context) {
+  const {
+    prop: { key, values, modifier, sharedData },
+    tag,
+    isChangeProp
+  } = oper;
+  const resolvedHelper = getRuntimeHelper(tag, key.content, modifier);
+  const propertyType = context.getPropertyType(tag, key.content);
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  if (sharedData) {
+    push(
+      compilerVapor.NEWLINE,
+      ...compilerVapor.genCall(
+        context.helper(
+          getSetSharedDataHelper(
+            resolvedHelper.name,
+            isChangeProp
+          )
+        ),
+        context.sharedDataVar,
+        JSON.stringify(sharedData.ident),
+        genCastPropValue(
+          propertyType,
+          tag,
+          key.content,
+          genPropValue$1(values, context),
+          context
+        )
+      )
+    );
+    return frag;
+  }
+  values.filter((value) => {
+    var _a;
+    return (_a = value.sharedData) == null ? void 0 : _a.ident;
+  }).forEach((value) => {
+    push(
+      compilerVapor.NEWLINE,
+      ...compilerVapor.genCall(
+        context.helper(
+          getSetSharedDataHelper(
+            resolvedHelper.name,
+            isChangeProp
+          )
+        ),
+        context.sharedDataVar,
+        JSON.stringify(value.sharedData.ident),
+        genCastPropValue(
+          propertyType,
+          tag,
+          key.content,
+          genPropValue$1([value], context),
+          context
+        )
+      )
+    );
+  });
+  return frag;
+}
+function genCastPropValue(type, tagName, name, value, context) {
+  if (type) {
+    switch (type) {
+      case "string":
+      case "number":
+      case "boolean":
+      case "color":
+        return compilerVapor.genCall(
+          context.helper(`toSharedData${shared.capitalize(type)}`),
+          value
+        );
+      case "enum":
+        return genEnumPropValue$1(tagName, name, value, context);
+    }
+  }
+  return value;
+}
+function genEnumPropValue$1(tagName, name, value, context) {
+  return compilerVapor.genCall(
+    context.helper(
+      // @ts-expect-error
+      `toSharedData${shared.capitalize(shared.camelize(tagName))}${shared.capitalize(shared.camelize(name))}`
+    ),
+    value
+  );
+}
+function genDynamicProps$2(oper, context) {
+  const { helper } = context;
+  const values = oper.props.map(
+    (props) => Array.isArray(props) ? genLiteralObjectProps(props, context) : props.kind === 1 ? genLiteralObjectProps([props], context) : genExpression$1(props.value, context)
+  );
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      helper(getSetSharedDataHelper("setDynamicProps")),
+      context.sharedDataVar,
+      JSON.stringify(oper.sharedData.ident),
+      compilerVapor.genMulti(compilerVapor.DELIMITERS_ARRAY, ...values)
+    )
+  ];
+}
+function genLiteralObjectProps(props, context) {
+  return compilerVapor.genMulti(
+    compilerVapor.DELIMITERS_OBJECT,
+    ...props.map((prop) => [
+      ...genPropKey(prop, context),
+      `: `,
+      ...genPropValue$1(prop.values, context)
+    ])
+  );
+}
+function genPropKey({ key: node, modifier, runtimeCamelize, handler, handlerModifiers }, context) {
+  const { helper } = context;
+  const handlerModifierPostfix = handlerModifiers && handlerModifiers.options ? handlerModifiers.options.map(shared.capitalize).join("") : "";
+  if (node.isStatic) {
+    const keyName = (handler ? shared.toHandlerKey(node.content) : node.content) + handlerModifierPostfix;
+    return [
+      [
+        compilerDom.isSimpleIdentifier(keyName) ? keyName : JSON.stringify(keyName),
+        -2,
+        node.loc
+      ]
+    ];
+  }
+  let key = genExpression$1(node, context);
+  if (runtimeCamelize) {
+    key.push(' || ""');
+    key = compilerVapor.genCall(helper("camelize"), key);
+  }
+  if (handler) {
+    key = compilerVapor.genCall(helper("toHandlerKey"), key);
+  }
+  return [
+    "[",
+    modifier && `${JSON.stringify(modifier)} + `,
+    ...key,
+    handlerModifierPostfix ? ` + ${JSON.stringify(handlerModifierPostfix)}` : void 0,
+    "]"
+  ];
+}
+function genPropValue$1(values, context) {
+  if (values.length === 1) {
+    return genExpression$1(values[0], context);
+  }
+  return compilerVapor.genMulti(
+    compilerVapor.DELIMITERS_ARRAY,
+    ...values.map((expr) => genExpression$1(expr, context))
+  );
+}
+function getRuntimeHelper(tag, key, modifier) {
+  const tagName = tag.toUpperCase();
+  if (modifier) {
+    if (modifier === ".") {
+      return getSpecialHelper(key, tagName) || helpers.setDOMProp;
+    } else {
+      return helpers.setAttr;
+    }
+  }
+  const helper = getSpecialHelper(key, tagName);
+  if (helper) {
+    return helper;
+  }
+  if (/aria[A-Z]/.test(key)) {
+    return helpers.setDOMProp;
+  }
+  if (shared.isSVGTag(tag)) {
+    return helpers.setAttr;
+  }
+  if (shared.shouldSetAsAttr(tagName, key) || key.includes("-")) {
+    return helpers.setAttr;
+  }
+  return helpers.setProp;
+}
+function getSpecialHelper(keyName, tagName) {
+  if (keyName === "value" && shared.canSetValueDirectly(tagName)) {
+    return helpers.setValue;
+  } else if (keyName === "class" || keyName === "hover-class" && tagName === "VIEW") {
+    return helpers.setClass;
+  } else if (keyName === "style") {
+    return helpers.setStyle;
+  } else if (keyName === "innerHTML") {
+    return helpers.setHtml;
+  } else if (keyName === "textContent") {
+    return helpers.setText;
+  }
+}
+function getSetSharedDataHelper(name, isChangeProp) {
+  if (isChangeProp) {
+    return "setSharedData";
+  }
+  switch (name) {
+    case "setClass":
+      return `setSharedDataClass`;
+    case "setStyle":
+      return `setSharedDataStyle`;
+    case "setText":
+    case "setHtml":
+    case "setValue":
+    case "setAttr":
+    case "setProp":
+    case "setDOMProp":
+      return `setSharedDataAttr`;
+    case "setDynamicProps":
+      return `setSharedDataDynamicProps`;
+    default:
+      const exhaustiveCheck = name;
+      throw new Error(
+        `Unhandled operation type in genOperation: ${exhaustiveCheck}`
+      );
+  }
+}
+
+const setTemplateRefIdent = `_setTemplateRef`;
+function genSetTemplateRef$1(oper, context) {
+  if (context.options.isCppExpr(oper.value.ast)) {
+    return [];
+  }
+  const [refValue, refKey] = genRefValue(oper.value, context);
+  let setTemplateRefCode = compilerVapor.genCall(
+    setTemplateRefIdent,
+    // will be generated in root scope
+    `n${oper.element}`,
+    refValue,
+    oper.effect ? `r${oper.element}` : oper.refFor ? "null" : void 0,
+    oper.refFor && "true",
+    refKey
+  );
+  if (oper.value.sharedData) {
+    setTemplateRefCode = compilerVapor.genCall(
+      context.helper("setSharedDataTemplateRef"),
+      context.sharedDataVar,
+      JSON.stringify(oper.value.sharedData.ident),
+      [`(n${oper.element}: number) => {`, ...setTemplateRefCode, "}"]
+    );
+  }
+  return [compilerVapor.NEWLINE, oper.effect && `r${oper.element} = `, ...setTemplateRefCode];
+}
+function genDeclareOldRef$1(oper, context) {
+  if (context.options.isCppExpr(oper.value.ast)) {
+    return [];
+  }
+  return [compilerVapor.NEWLINE, `let r${oper.id}: any | null`];
+}
+function genRefValue(value, context) {
+  if (value && context.options.inline) {
+    const binding = context.options.bindingMetadata[value.content];
+    if (binding === "setup-let" || binding === "setup-ref" || binding === "setup-maybe-ref") {
+      return [[value.content], JSON.stringify(value.content)];
+    }
+  }
+  return [genExpression$1(value, context)];
+}
+
+function genSetText$1(oper, context) {
+  const { helper } = context;
+  const { values } = oper;
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const identCache = /* @__PURE__ */ new Set();
+  values.filter((value) => {
+    var _a;
+    return (_a = value.sharedData) == null ? void 0 : _a.ident;
+  }).forEach((value) => {
+    const ident = value.sharedData.ident;
+    if (identCache.has(ident)) {
+      return;
+    }
+    identCache.add(ident);
+    push(
+      compilerVapor.NEWLINE,
+      ...compilerVapor.genCall(
+        helper("setSharedData"),
+        context.sharedDataVar,
+        JSON.stringify(value.sharedData.ident),
+        compilerVapor.genCall(
+          context.helper("toDisplayString"),
+          genExpression$1(value, context)
+        )
+      )
+    );
+  });
+  return frag;
+}
+function genGetTextChild$1(oper, context) {
+  return [];
+}
+
+function genVShow$1({ dir: { exp } }, context) {
+  if (!exp) {
+    return [];
+  }
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(context.helper("renderSharedDataEffect"), [
+      `() => { `,
+      ...compilerVapor.genCall(
+        context.helper("setSharedData"),
+        context.sharedDataVar,
+        JSON.stringify(exp.sharedData.ident),
+        compilerVapor.genCall(
+          context.helper("toSharedDataBoolean"),
+          genExpression$1(exp, context)
+        )
+      ),
+      ` }`
+    ])
+  ];
+}
+
+function genVModel$1(oper, context) {
+  const {
+    dir: { exp, modifiers }
+  } = oper;
+  const sharedData = exp.sharedData;
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      context.helper("setSharedDataEvent"),
+      context.sharedDataVar,
+      JSON.stringify(sharedData.vModel.eventIdent),
+      compilerVapor.genCall(
+        context.helper("setSharedDataModel"),
+        context.sharedDataVar,
+        JSON.stringify(sharedData.ident),
+        // getter
+        [`() => (`, ...genExpression$1(exp, context), `)`],
+        // setter
+        genModelHandler(exp, context),
+        // modifiers
+        modifiers.length ? `{ ${modifiers.map((e) => e.content + ": true").join(",")} }` : void 0
+      )
+    )
+  ];
+}
+function genModelHandler(exp, context) {
+  return [
+    `${context.options.isTS ? `(_value: any)` : `_value`} => (`,
+    ...genExpression$1(exp, context, "_value"),
+    ")"
+  ];
+}
+
+function genBuiltinDirective$1(oper, context) {
+  switch (oper.name) {
+    case "show":
+      return genVShow$1(oper, context);
+    case "model":
+      return genVModel$1(oper, context);
+    default:
+      return [];
+  }
+}
+function genDirectivesForElement$1(id, context) {
+  const dirs = filterCustomDirectives$1(id, context.block.operation);
+  return dirs.length ? genCustomDirectives$1(dirs, context) : [];
+}
+function genCustomDirectives$1(opers, context) {
+  const { helper } = context;
+  const element = `n${opers[0].element}`;
+  const directiveItems = opers.map(genDirectiveItem);
+  const directives = compilerVapor.genMulti(compilerVapor.DELIMITERS_ARRAY, ...directiveItems);
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(helper("withVaporDirectives"), element, directives)
+  ];
+  function genDirectiveItem({
+    dir,
+    name,
+    asset
+  }) {
+    const directiveVar = asset ? compilerDom.toValidAssetId(name, "directive") : genExpression$1(
+      shared.extend(compilerDom.createSimpleExpression(name, false), { ast: null }),
+      context
+    );
+    const value = dir.exp && ["() => ", ...genExpression$1(dir.exp, context)];
+    const argument = dir.arg && genExpression$1(dir.arg, context);
+    const modifiers = !!dir.modifiers.length && [
+      "{ ",
+      genDirectiveModifiers$1(dir.modifiers.map((m) => m.content)),
+      " }"
+    ];
+    return compilerVapor.genMulti(
+      compilerVapor.DELIMITERS_ARRAY.concat("null"),
+      directiveVar,
+      value,
+      argument,
+      modifiers
+    );
+  }
+}
+function genDirectiveModifiers$1(modifiers) {
+  return modifiers.map(
+    (value) => `${compilerDom.isSimpleIdentifier(value) ? value : JSON.stringify(value)}: true`
+  ).join(", ");
+}
+function filterCustomDirectives$1(id, operations) {
+  return operations.filter(
+    (oper) => oper.type === 13 && oper.element === id && !oper.builtin
+  );
+}
+
+function genCreateComponent$1(operation, context) {
+  const { helper } = context;
+  const tag = genTag();
+  const { root, props, slots, sharedData } = operation;
+  const rawSlots = genRawSlots$1(slots, context);
+  const [ids, handlers] = processInlineHandlers(props, context);
+  const rawProps = context.withId(() => genRawProps(props, context), ids);
+  const inlineHandlers = handlers.reduce(
+    (acc, { name, value }) => {
+      const handler = genEventHandler(context, [value], void 0, false);
+      return [...acc, `const ${name} = `, ...handler, compilerVapor.NEWLINE];
+    },
+    []
+  );
+  const isDynamic = operation.dynamic && !operation.dynamic.isStatic;
+  const isFallback = operation.asset;
+  return [
+    compilerVapor.NEWLINE,
+    ...inlineHandlers,
+    `const n${operation.id} = `,
+    ...compilerVapor.genCall(
+      isDynamic ? helper("createSharedDataDynamicComponent") : isFallback ? helper("createSharedDataComponentWithFallback") : helper("createSharedDataComponent"),
+      tag,
+      rawProps,
+      rawSlots,
+      root ? "true" : false
+      // once && 'true',
+    ),
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      helper("setSharedData"),
+      context.sharedDataVar,
+      JSON.stringify(sharedData.ident),
+      [`n${operation.id}`, isFallback ? "?.sharedData" : ".sharedData"]
+    )
+  ];
+  function genTag() {
+    if (operation.dynamic) {
+      if (operation.dynamic.isStatic) {
+        return compilerVapor.genCall(
+          helper("resolveDynamicComponent"),
+          genExpression$1(operation.dynamic, context)
+        );
+      } else {
+        return ["() => (", ...genExpression$1(operation.dynamic, context), ")"];
+      }
+    } else if (operation.asset) {
+      return compilerDom.toValidAssetId(operation.tag, "component");
+    } else {
+      const { tag: tag2 } = operation;
+      const builtInTag = compilerVapor.isBuiltInComponent(tag2);
+      if (builtInTag) {
+        helper(builtInTag);
+        return `_${builtInTag}`;
+      }
+      return genExpression$1(
+        shared.extend(compilerDom.createSimpleExpression(tag2, false), { ast: null }),
+        context
+      );
+    }
+  }
+}
+function getUniqueHandlerName(context, name) {
+  const { seenInlineHandlerNames } = context;
+  name = genVarName$1(name);
+  const count = seenInlineHandlerNames[name] || 0;
+  seenInlineHandlerNames[name] = count + 1;
+  return count === 0 ? name : `${name}${count}`;
+}
+function processInlineHandlers(props, context) {
+  const ids = /* @__PURE__ */ Object.create(null);
+  const handlers = [];
+  const staticProps = props[0];
+  if (shared.isArray(staticProps)) {
+    for (let i = 0; i < staticProps.length; i++) {
+      const prop = staticProps[i];
+      if (!prop.handler) continue;
+      prop.values.forEach((value, i2) => {
+        const isMemberExp = compilerDom.isMemberExpression(value, context.options);
+        if (!isMemberExp) {
+          const name = getUniqueHandlerName(
+            context,
+            `_on_${prop.key.content.replace(/-/g, "_")}`
+          );
+          handlers.push({ name, value });
+          ids[name] = null;
+          prop.values[i2] = shared.extend({ ast: null }, compilerDom.createSimpleExpression(name));
+        }
+      });
+    }
+  }
+  return [ids, handlers];
+}
+function genRawProps(props, context) {
+  const staticProps = props[0];
+  if (shared.isArray(staticProps)) {
+    if (!staticProps.length && props.length === 1) {
+      return;
+    }
+    return genStaticProps(
+      staticProps,
+      context,
+      genDynamicProps$1(props.slice(1), context)
+    );
+  } else if (props.length) {
+    return genStaticProps([], context, genDynamicProps$1(props, context));
+  }
+}
+function genStaticProps(props, context, dynamicProps) {
+  const args = props.map((prop) => genProp(prop, context, true));
+  if (dynamicProps) {
+    args.push([`'$': `, ...dynamicProps]);
+  }
+  return compilerVapor.genMulti(
+    args.length > 1 ? compilerVapor.DELIMITERS_OBJECT_NEWLINE : compilerVapor.DELIMITERS_OBJECT,
+    ...args
+  );
+}
+function genDynamicProps$1(props, context) {
+  const { helper } = context;
+  const frags = [];
+  for (const p of props) {
+    let expr;
+    if (shared.isArray(p)) {
+      if (p.length) {
+        frags.push(genStaticProps(p, context));
+      }
+      continue;
+    } else {
+      if (p.kind === 1)
+        expr = compilerVapor.genMulti(compilerVapor.DELIMITERS_OBJECT, genProp(p, context));
+      else {
+        expr = genExpression$1(p.value, context);
+        if (p.handler) expr = compilerVapor.genCall(helper("toHandlers"), expr);
+      }
+    }
+    frags.push(["() => (", ...expr, ")"]);
+  }
+  if (frags.length) {
+    return compilerVapor.genMulti(compilerVapor.DELIMITERS_ARRAY_NEWLINE, ...frags);
+  }
+}
+function genProp(prop, context, isStatic) {
+  const values = genPropValue$1(prop.values, context);
+  return [
+    ...genPropKey(prop, context),
+    ": ",
+    ...prop.handler ? genEventHandler(
+      context,
+      prop.values,
+      prop.handlerModifiers,
+      true
+    ) : isStatic ? ["() => (", ...values, ")"] : values,
+    ...prop.model ? [...genModelEvent(prop, context), ...genModelModifiers(prop, context)] : []
+  ];
+}
+function genModelEvent(prop, context) {
+  const name = prop.key.isStatic ? [JSON.stringify(`onUpdate:${shared.camelize(prop.key.content)}`)] : ['["onUpdate:" + ', ...genExpression$1(prop.key, context), "]"];
+  const handler = genModelHandler(prop.values[0], context);
+  return [",", compilerVapor.NEWLINE, ...name, ": () => ", ...handler];
+}
+function genModelModifiers(prop, context) {
+  const { key, modelModifiers } = prop;
+  if (!modelModifiers || !modelModifiers.length) return [];
+  const modifiersKey = key.isStatic ? [shared.getModifierPropName(key.content)] : ["[", ...genExpression$1(key, context), ' + "Modifiers"]'];
+  const modifiersVal = genDirectiveModifiers$1(modelModifiers);
+  return [",", compilerVapor.NEWLINE, ...modifiersKey, `: () => ({ ${modifiersVal} })`];
+}
+function genRawSlots$1(slots, context) {
+  if (!slots.length) return;
+  const staticSlots = slots[0];
+  if (staticSlots.slotType === 0) {
+    return genStaticSlots$1(
+      staticSlots,
+      context,
+      slots.length > 1 ? slots.slice(1) : void 0
+    );
+  } else {
+    return genStaticSlots$1(
+      { slots: {} },
+      context,
+      slots
+    );
+  }
+}
+function genStaticSlots$1({ slots }, context, dynamicSlots) {
+  const args = Object.keys(slots).map((name) => [
+    `${JSON.stringify(name)}: `,
+    ...genSlotBlockWithProps$1(slots[name], context)
+  ]);
+  if (dynamicSlots) {
+    args.push([`'$': `, ...genDynamicSlots$1(dynamicSlots, context)]);
+  }
+  return compilerVapor.genMulti(compilerVapor.DELIMITERS_OBJECT_NEWLINE, ...args);
+}
+function genDynamicSlots$1(slots, context) {
+  return compilerVapor.genMulti(
+    compilerVapor.DELIMITERS_ARRAY_NEWLINE,
+    ...slots.map(
+      (slot) => slot.slotType === 0 ? genStaticSlots$1(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot$1(slot, context, true)
+    )
+  );
+}
+function genDynamicSlot$1(slot, context, withFunction = false) {
+  let frag;
+  switch (slot.slotType) {
+    case 1:
+      frag = genBasicDynamicSlot$1(slot, context);
+      break;
+    case 2:
+      frag = genLoopSlot$1(slot, context);
+      break;
+    case 3:
+      frag = genConditionalSlot$1(slot, context);
+      break;
+  }
+  return withFunction ? ["() => (", ...frag, ")"] : frag;
+}
+function genBasicDynamicSlot$1(slot, context) {
+  const { name, fn } = slot;
+  return compilerVapor.genMulti(
+    compilerVapor.DELIMITERS_OBJECT_NEWLINE,
+    [
+      "name: ",
+      ...genSharedDataExpression(
+        name,
+        context,
+        context.helper("toDisplayString")
+      )
+    ],
+    ["fn: ", ...genSlotBlockWithProps$1(fn, context)]
+  );
+}
+function genLoopSlot$1(slot, context) {
+  const vForCount = context.enterVFor();
+  const { name, fn, loop } = slot;
+  const { value, key, index, source } = loop;
+  const rawValue = value && value.content;
+  const rawKey = key && key.content;
+  const rawIndex = index && index.content;
+  const idMap = {};
+  if (rawValue) idMap[rawValue] = rawValue;
+  if (rawKey) idMap[rawKey] = rawKey;
+  if (rawIndex) idMap[rawIndex] = rawIndex;
+  const slotExpr = compilerVapor.genMulti(
+    compilerVapor.DELIMITERS_OBJECT_NEWLINE,
+    [
+      "name: ",
+      ...context.withId(() => {
+        if (!name.sharedData) {
+          return genExpression$1(name, context);
+        }
+        const resetBlock = context.enterBlock(fn);
+        const result2 = genSharedDataExpression(
+          name,
+          context,
+          context.helper("toDisplayString")
+        );
+        resetBlock();
+        return result2;
+      }, idMap)
+    ],
+    [
+      "fn: ",
+      ...context.withId(() => genSlotBlockWithProps$1(fn, context), idMap)
+    ]
+  );
+  const result = [
+    ...compilerVapor.genCall(
+      context.helper("createSharedDataForSlots"),
+      compilerVapor.genCall(
+        context.helper("setSharedData"),
+        context.sharedDataVar,
+        JSON.stringify(source.sharedData.ident),
+        genSharedDataVFor(context, vForCount)
+      ),
+      genExpression$1(source, context),
+      [
+        ...compilerVapor.genMulti(
+          ["(", ")", ", "],
+          context.sharedDataVForVar,
+          rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0,
+          rawKey ? rawKey : rawIndex ? "__" : void 0,
+          rawIndex
+        ),
+        " => (",
+        ...slotExpr,
+        ")"
+      ]
+    )
+  ];
+  context.exitVFor();
+  return result;
+}
+function genConditionalSlot$1(slot, context) {
+  const { condition, positive, negative } = slot;
+  return [
+    ...genCondition$1(condition, context),
+    compilerVapor.INDENT_START,
+    compilerVapor.NEWLINE,
+    "? ",
+    ...genDynamicSlot$1(positive, context),
+    compilerVapor.NEWLINE,
+    ": ",
+    ...negative ? [...genDynamicSlot$1(negative, context)] : ["null"],
+    compilerVapor.INDENT_END
+  ];
+}
+function genSlotBlockWithProps$1(oper, context) {
+  let propsName;
+  let exitScope;
+  let depth;
+  const { props, key, node } = oper;
+  const idToPathMap = props ? compilerVapor.parseValueDestructure(props, context) : /* @__PURE__ */ new Map();
+  if (props) {
+    if (props.ast) {
+      [depth, exitScope] = context.enterScope();
+      propsName = `_slotProps${depth}`;
+    } else {
+      propsName = props.content;
+    }
+  }
+  const idMap = idToPathMap.size ? compilerVapor.buildDestructureIdMap(
+    idToPathMap,
+    propsName || "",
+    context.options.expressionPlugins
+  ) : {};
+  if (propsName) {
+    idMap[propsName] = null;
+  }
+  let blockFn = context.withId(
+    () => genBlock$1(oper, context, propsName ? [propsName] : []),
+    idMap
+  );
+  exitScope && exitScope();
+  if (key) {
+    blockFn = [
+      `() => {`,
+      compilerVapor.INDENT_START,
+      compilerVapor.NEWLINE,
+      `return `,
+      ...compilerVapor.genCall(
+        context.helper("createKeyedFragment"),
+        [`() => `, ...genExpression$1(key, context)],
+        blockFn
+      ),
+      compilerVapor.INDENT_END,
+      compilerVapor.NEWLINE,
+      `}`
+    ];
+  }
+  if (node.type === 1) {
+    const onlyTextNode = isOnlyTextNode(node);
+    if (compilerVapor.needsVaporCtx(oper) || onlyTextNode) {
+      blockFn = [
+        `${context.helper("withSharedDataVaporCtx")}(`,
+        ...blockFn,
+        onlyTextNode ? `, 'string'` : "",
+        `)`
+      ];
+    }
+  }
+  return blockFn;
+}
+function isOnlyTextNode(node) {
+  return node.children.every((child) => isTextLike(child));
+}
+function isTextLike(node) {
+  return node.type === 5 || node.type === 2;
+}
+
+function genSlotOutlet$1(oper, context) {
+  const { helper } = context;
+  const { name, fallback, noSlotted, once } = oper;
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const nameExpr = !name.sharedData ? genExpression$1(name, context) : [
+    "() => (",
+    ...compilerVapor.genCall(
+      context.helper("setSharedData"),
+      context.sharedDataVar,
+      JSON.stringify(name.sharedData.ident),
+      genExpression$1(name, context)
+    ),
+    ")"
+  ];
+  let fallbackArg;
+  if (fallback) {
+    fallbackArg = genBlock$1(fallback, context);
+  }
+  push(
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      helper("createSharedDataSlot"),
+      nameExpr,
+      genRawProps(oper.props, context) || "null",
+      fallbackArg,
+      noSlotted && "null",
+      // instance
+      noSlotted && "true",
+      // noSlotted
+      once && "true"
+      // v-once
+    )
+  );
+  return frag;
+}
+
+function genOperations$1(opers, context) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  for (const operation of opers) {
+    push(...genOperationWithInsertionState$1(operation, context));
+  }
+  return frag;
+}
+function genOperationWithInsertionState$1(oper, context) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  push(...genOperation$1(oper, context));
+  return frag;
+}
+function genOperation$1(oper, context) {
+  switch (oper.type) {
+    case 2:
+      return genSetProp$1(oper, context);
+    case 3:
+      return genDynamicProps$2(oper, context);
+    case 4:
+      return genSetText$1(oper, context);
+    case 5:
+      return genSetEvent$1(oper, context);
+    case 6:
+      return genSetDynamicEvents$1(oper, context);
+    case 7:
+      return genSetHtml$1(oper, context);
+    case 8:
+      return genSetTemplateRef$1(oper, context);
+    case 9:
+      return genInsertNode$1(oper, context);
+    case 10:
+      return genPrependNode$1(oper, context);
+    case 15:
+      return genIf$1(oper, context);
+    case 16:
+      return genFor$1(oper, context);
+    case 11:
+      return genCreateComponent$1(oper, context);
+    case 14:
+      return genDeclareOldRef$1(oper, context);
+    case 12:
+      return genSlotOutlet$1(oper, context);
+    case 13:
+      return genBuiltinDirective$1(oper, context);
+    case 17:
+      return genGetTextChild$1();
+    case 18:
+      return [];
+    case 19:
+      return [];
+    default:
+      const exhaustiveCheck = oper;
+      throw new Error(
+        `Unhandled operation type in genOperation: ${exhaustiveCheck}`
+      );
+  }
+}
+function genEffects$1(effects, context, genExtraFrag) {
+  const { helper } = context;
+  const expressions = effects.flatMap((effect) => effect.expressions);
+  const [frag, push, unshift] = compilerVapor.buildCodeFragment();
+  const shouldDeclare = genExtraFrag === void 0;
+  let operationsCount = 0;
+  const {
+    ids,
+    frag: declarationFrags,
+    varNames
+  } = processExpressions$1(context, expressions, shouldDeclare);
+  push(...declarationFrags);
+  for (let i = 0; i < effects.length; i++) {
+    const effect = effects[i];
+    operationsCount += effect.operations.length;
+    const frags = context.withId(() => genEffect$1(effect, context), ids);
+    i > 0 && push(compilerVapor.NEWLINE);
+    if (frag[frag.length - 1] === ")" && frags[0] === "(") {
+      push(";");
+    }
+    push(...frags);
+  }
+  const newLineCount = frag.filter((frag2) => frag2 === compilerVapor.NEWLINE).length;
+  if (newLineCount > 1 || operationsCount > 1 || declarationFrags.length > 0) {
+    unshift(`{`, compilerVapor.INDENT_START, compilerVapor.NEWLINE);
+    push(compilerVapor.INDENT_END, compilerVapor.NEWLINE, "}");
+    if (!effects.length) {
+      unshift(compilerVapor.NEWLINE);
+    }
+  }
+  if (effects.length && frag.length) {
+    unshift(compilerVapor.NEWLINE, `${helper("renderSharedDataEffect")}(() => `);
+    push(`)`);
+  }
+  if (!shouldDeclare && varNames.length) {
+    unshift(compilerVapor.NEWLINE, `let `, varNames.join(", "));
+  }
+  if (genExtraFrag) {
+    push(...context.withId(genExtraFrag, ids));
+  }
+  return frag;
+}
+function genEffect$1({ operations }, context) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const operationsExps = genOperations$1(operations, context);
+  const newlineCount = operationsExps.filter((frag2) => frag2 === compilerVapor.NEWLINE).length;
+  if (newlineCount > 1) {
+    push(...operationsExps);
+  } else {
+    push(...operationsExps.filter((frag2) => frag2 !== compilerVapor.NEWLINE));
+  }
+  return frag;
+}
+
+function genSelf$1(dynamic, context) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const { operation, hasDynamicChild } = dynamic;
+  if (operation) {
+    push(...genOperationWithInsertionState$1(operation, context));
+  }
+  if (hasDynamicChild) {
+    push(...genChildren$1(dynamic, context));
+  }
+  return frag;
+}
+function genChildren$1(dynamic, context) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const { children } = dynamic;
+  for (const [index, child] of children.entries()) {
+    if (child.operation && child.operation.anchor === -1) ;
+    if (child.flags & 2) ; else if (child.ifBranch) ;
+    const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
+    if (id === void 0 && !child.hasDynamicChild) {
+      push(...genSelf$1(child, context));
+      continue;
+    }
+    id === void 0 ? `p${context.block.tempId++}` : `n${id}`;
+    if (id === child.anchor && !child.hasDynamicChild) {
+      push(...genSelf$1(child, context));
+    }
+    if (id !== void 0) {
+      push(...genDirectivesForElement$1(id, context));
+    }
+    push(...genChildren$1(child, context));
+  }
+  return frag;
+}
+
+function genBlock$1(oper, context, args = [], root) {
+  return [
+    "(",
+    ...args,
+    ") => {",
+    compilerVapor.INDENT_START,
+    ...genBlockContent$1(oper, context, root),
+    compilerVapor.INDENT_END,
+    compilerVapor.NEWLINE,
+    "}"
+  ];
+}
+function genBlockContent$1(block, context, root, genEffectsExtraFrag) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const { dynamic, effect, operation, key } = block;
+  const resetBlock = context.enterBlock(block);
+  if (root) {
+    for (let name of context.ir.component) {
+      const id = compilerDom.toValidAssetId(name, "component");
+      const maybeSelfReference = name.endsWith("__self");
+      if (maybeSelfReference) name = name.slice(0, -6);
+      push(
+        compilerVapor.NEWLINE,
+        `const ${id} = `,
+        ...compilerVapor.genCall(
+          context.helper("resolveComponent"),
+          JSON.stringify(name),
+          // pass additional `maybeSelfReference` flag
+          maybeSelfReference ? "true" : void 0
+        )
+      );
+    }
+    genResolveAssets("directive", "resolveDirective");
+  }
+  for (const child of dynamic.children) {
+    push(...genSelf$1(child, context));
+  }
+  for (const child of dynamic.children) {
+    if (!child.hasDynamicChild) {
+      push(...genChildren$1(child, context));
+    }
+  }
+  push(...genOperations$1(operation, context));
+  push(
+    ...genEffects$1(
+      // fixed by uts for 中 matchPatterns 已经处理了一部分 effect
+      effect.filter((effect2) => !effect2.generated),
+      context,
+      genEffectsExtraFrag
+    )
+  );
+  if (root && context.ir.hasDeferredVShow) {
+    push(compilerVapor.NEWLINE, `deferredApplyVShows.forEach(fn => fn())`);
+  }
+  if (dynamic.needsKey) {
+    for (const child of dynamic.children) {
+      const keyValue = key ? genExpression$1(key, context) : JSON.stringify(child.id);
+      push(compilerVapor.NEWLINE, `n${child.id}.$key = `, ...keyValue);
+    }
+  }
+  resetBlock();
+  return frag;
+  function genResolveAssets(kind, helper) {
+    for (const name of context.ir[kind]) {
+      push(
+        compilerVapor.NEWLINE,
+        `const ${compilerDom.toValidAssetId(name, kind)} = `,
+        ...compilerVapor.genCall(context.helper(helper), JSON.stringify(name))
+      );
+    }
+  }
+}
+
+function isEnumType(type) {
+  if (!type) {
+    return false;
+  }
+  if (type === "string" || type === "number" || type === "boolean" || type === "UniNativeColor" || type.startsWith("Array<")) {
+    return false;
+  }
+  return true;
+}
+function createValueProcessorResult$1(valueCode, setterCode) {
+  return {
+    valueCode,
+    setterCode
+  };
+}
+function createValueProcessorError$1(error, options) {
+  return {
+    error,
+    valueCode: "",
+    setterCode: ""
+  };
+}
+function createPropertyProcessor$1(processor, type, options) {
+  processor.type = type;
+  processor.options = options;
+  return processor;
+}
+
+function createSetPropEnumValueProcessor(options, genEnumCode) {
+  return createPropertyProcessor$1(
+    (value) => {
+      const enumValue = value + "";
+      if (options.values && !options.values.includes(enumValue)) {
+        return createValueProcessorError$1(
+          `Invalid enum value: ${enumValue}. Expected one of: ${options.values.join(", ")}`);
+      }
+      const enumCode = genEnumCode(
+        shared.capitalize(shared.camelize(enumValue.trim().replace(" ", "-")))
+      );
+      if (options.property) {
+        return createValueProcessorResult$1(
+          enumCode,
+          `${options.name} = ${enumCode}`
+        );
+      }
+      return createValueProcessorResult$1(
+        enumCode,
+        `${options.name}(${enumCode})`
+      );
+    },
+    "enum",
+    options
+  );
+}
+function createGenEnumCode$1(target, propertyType) {
+  if (isCPPTarget(target)) {
+    return (enumValue) => {
+      return `UTSCPP.propertyAccess(${propertyType}, "::", "${shared.capitalize(
+        shared.camelize(enumValue + "")
+      )}")`;
+    };
+  }
+  return (enumValue) => {
+    return `${propertyType}.${shared.capitalize(shared.camelize(enumValue + ""))}`;
+  };
+}
+
+const NUMBER_TYPES$1 = ["number"];
+function isNumberType$1(propertyType) {
+  return !!(propertyType && NUMBER_TYPES$1.includes(propertyType));
+}
+function createSetPropNumberValueProcessor(options) {
+  return createPropertyProcessor$1(
+    (value) => {
+      const numValue = parseFloat(String(value));
+      if (!isNaN(numValue)) {
+        if (options.property) {
+          return createValueProcessorResult$1(
+            `${numValue}`,
+            `${options.name} = ${numValue}`
+          );
+        }
+        return createValueProcessorResult$1(
+          `${numValue}`,
+          `${options.name}(${numValue})`
+        );
+      }
+      return createValueProcessorError$1(`Invalid number value: ${value}`);
+    },
+    "number",
+    options
+  );
+}
+
+const STRING_TYPES$1 = ["string"];
+function isStringType$1(propertyType) {
+  return !!(propertyType && STRING_TYPES$1.includes(propertyType));
+}
+function createSetPropStringValueProcessor(options) {
+  return createPropertyProcessor$1(
+    (value) => {
+      if (options.property) {
+        return createValueProcessorResult$1(
+          `"${value}"`,
+          `${options.name} = "${value}"`
+        );
+      }
+      return createValueProcessorResult$1(
+        `"${value}"`,
+        `${options.name}("${value}")`
+      );
+    },
+    "string",
+    options
+  );
+}
+
+var appUVueJson = {
+	global: {
+		description: "全局配置，所有组件都支持的内容",
+		classes: {
+			dom: "UniElement",
+			nv: "UniNativeBaseView"
+		},
+		attributes: {
+			id: {
+				type: "string",
+				description: "组件的唯一标识",
+				uniPlatform: {
+					app: {
+						"dom-c": {
+							propertyName: "id"
+						}
+					},
+					"app-android": {
+						"dom-kt": {
+							propertyName: "id"
+						}
+					}
+				}
+			},
+			"class": {
+				type: "Array<string>",
+				description: "class属性值(class name)的集合，支持vue框架实现class属性",
+				uniPlatform: {
+					app: {
+						"dom-c": {
+							propertyName: "classList"
+						}
+					},
+					"app-android": {
+						"dom-kt": {
+							propertyName: "classList"
+						}
+					}
+				}
+			},
+			"data-*": {
+				description: "自定义数据属性，需要对属性名称做转换，运行期在runtime层统一实现；编译器支持属性名称转换的话直接操作属性",
+				uniPlatform: {
+					app: {
+						"dom-c": {
+							propertyName: "dataset",
+							setter: "setAttributeDataset"
+						}
+					},
+					"app-android": {
+						"dom-kt": {
+							propertyName: "dataset",
+							setter: "setAttributeDataset"
+						}
+					}
+				}
+			},
+			slot: {
+				type: "UniNativeSlotType",
+				description: "插槽类型",
+				defaultValue: "none",
+				values: [
+					"none",
+					"refresher"
+				],
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "slot"
+						}
+					}
+				}
+			}
+		}
+	},
+	view: {
+		classes: {
+			dom: "UniViewElement",
+			nv: "UniNativeView"
+		},
+		attributes: {
+			flatten: {
+				type: "boolean",
+				description: "组件是否被拍平",
+				uniPlatform: {
+					app: {
+						"page-c": {
+							setter: "createNativeView"
+						}
+					},
+					"app-android": {
+						"page-kt": {
+							setter: "createNativeView"
+						}
+					}
+				}
+			},
+			"hover-class": {
+				type: "string",
+				description: "按下去的样式类，需要框架转换为样式列表hoverStyles",
+				uniPlatform: {
+					app: {
+						"dom-c": {
+							setter: "setHoverStyles"
+						}
+					},
+					"app-android": {
+						"dom-kt": {
+							setter: "setHoverStyles"
+						}
+					}
+				}
+			},
+			"hover-stop-propagation": {
+				type: "boolean",
+				description: "是否阻止本节点的祖先节点出现点击态",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "hoverStopPropagation"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "hoverStopPropagation"
+						}
+					}
+				}
+			},
+			"hover-start-time": {
+				type: "number",
+				description: "按住后多久出现点击态",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "hoverStartTime"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "hoverStartTime"
+						}
+					}
+				}
+			},
+			"hover-stay-time": {
+				type: "number",
+				description: "按住后多久出现点击态",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "hoverStayTime"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "hoverStayTime"
+						}
+					}
+				}
+			}
+		}
+	},
+	text: {
+		classes: {
+			dom: "UniTextElement",
+			nv: "UniNativeTextView"
+		},
+		attributes: {
+			flatten: {
+				type: "boolean",
+				description: "组件是否被拍平",
+				uniPlatform: {
+					app: {
+						"page-c": {
+							setter: "createNativeTextView"
+						}
+					},
+					"app-android": {
+						"page-kt": {
+							setter: "createNativeTextView"
+						}
+					}
+				}
+			},
+			"user-select": {
+				type: "boolean",
+				description: "文本是否可选",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "userSelect"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "userSelect"
+						}
+					}
+				}
+			},
+			"max-lines": {
+				type: "number",
+				description: "限制文本的最大行数",
+				uniPlatform: {
+					app: {
+						"dom-c": {
+							setter: "setMaxLines"
+						}
+					},
+					"app-android": {
+						"dom-kt": {
+							setter: "setMaxLines"
+						}
+					}
+				}
+			}
+		}
+	},
+	image: {
+		classes: {
+			dom: "UniImageElement",
+			nv: "UniNativeImageView"
+		},
+		attributes: {
+			flatten: {
+				type: "boolean",
+				description: "组件是否被拍平",
+				uniPlatform: {
+					app: {
+						"page-c": {
+							setter: "createNativeImageView"
+						}
+					},
+					"app-android": {
+						"page-kt": {
+							setter: "createNativeImageView"
+						}
+					}
+				}
+			},
+			src: {
+				type: "string",
+				description: "图片资源地址",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "src"
+						},
+						"dom-c": {
+							setter: "setSrc"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "src"
+						},
+						"dom-c": {
+							setter: "setSrc"
+						}
+					}
+				}
+			},
+			mode: {
+				type: "UniImageModeType",
+				defaultValue: "scaleToFill",
+				values: [
+					"scaleToFill",
+					"aspectFit",
+					"aspectFill",
+					"widthFix",
+					"heightFix",
+					"top",
+					"bottom",
+					"center",
+					"left",
+					"right",
+					"top left",
+					"top right",
+					"bottom left",
+					"bottom right"
+				],
+				description: "图片裁剪、缩放的模式",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "mode"
+						},
+						"dom-c": {
+							setter: "setMode"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "mode"
+						},
+						"dom-c": {
+							setter: "setMode"
+						}
+					}
+				}
+			},
+			"lazy-load": {
+				type: "boolean",
+				description: "是否懒加载图片",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "lazyLoad"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "lazyLoad"
+						}
+					}
+				}
+			},
+			"fade-show": {
+				type: "boolean",
+				description: "是否显示动画效果",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "fadeShow"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "fadeShow"
+						}
+					}
+				}
+			}
+		}
+	},
+	"scroll-view": {
+		classes: {
+			dom: "UniScrollViewElement",
+			nv: "UniNativeScrollView"
+		},
+		attributes: {
+			direction: {
+				type: "UniNativeScrollViewDirectionType",
+				defaultValue: "vertical",
+				values: [
+					"none",
+					"vertical",
+					"horizontal",
+					"all"
+				],
+				description: "滚动方向，可取值 none、all、horizontal、vertical，默认值vertical",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "direction"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "direction"
+						}
+					}
+				}
+			},
+			"enable-back-to-top": {
+				type: "boolean",
+				description: "点击顶部状态栏滚动条返回顶部，只支持竖向",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "enableBackToTop"
+						}
+					}
+				}
+			},
+			bounces: {
+				type: "boolean",
+				description: "控制是否回弹效果",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "bounces"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "bounces"
+						}
+					}
+				}
+			},
+			"show-scrollbar": {
+				type: "boolean",
+				description: "控制是否出现滚动条",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "showScrollbar"
+						}
+					}
+				}
+			},
+			"upper-threshold": {
+				type: "number",
+				description: "距顶部/左边多远时（单位px），触发 scrolltoupper 事件",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "upperThreshold"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "upperThreshold"
+						}
+					}
+				}
+			},
+			"lower-threshold": {
+				type: "number",
+				description: "距底部/右边多远时（单位px），触发 scrolltolower 事件",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "lowerThreshold"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "lowerThreshold"
+						}
+					}
+				}
+			},
+			"scroll-top": {
+				type: "number",
+				description: "设置竖向滚动条位置",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "scrollTop"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "scrollTop"
+						}
+					}
+				}
+			},
+			"scroll-left": {
+				type: "number",
+				description: "设置横向滚动条位置",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "scrollLeft"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "scrollLeft"
+						}
+					}
+				}
+			},
+			"scroll-with-animation": {
+				type: "boolean",
+				description: "是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "scrollWithAnimation"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "scrollWithAnimation"
+						}
+					}
+				}
+			},
+			"refresher-enabled": {
+				type: "boolean",
+				description: "开启下拉刷新，暂时不支持scroll-x = true横向刷新",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "refresherEnabled"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "refresherEnabled"
+						}
+					}
+				}
+			},
+			"refresher-threshold": {
+				type: "number",
+				description: "设置下拉刷新阈值",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "refresherThreshold"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "refresherThreshold"
+						}
+					}
+				}
+			},
+			"refresher-max-drag-distance": {
+				type: "number",
+				description: "设置下拉最大拖拽距离（单位px），默认是下拉刷新控件高度的2.5倍",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "refresherMaxDragDistance"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "refresherMaxDragDistance"
+						}
+					}
+				}
+			},
+			"refresher-background": {
+				type: "UniNativeColor",
+				description: "设置下拉刷新区域背景颜色，默认透明",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "refresherBackground"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "refresherBackground"
+						}
+					}
+				}
+			},
+			"refresher-triggered": {
+				type: "boolean",
+				description: "设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发",
+				uniPlatform: {
+					app: {
+						"nv-c": {
+							setter: "refresherTriggered"
+						}
+					},
+					"app-android": {
+						"nv-kt": {
+							setter: "refresherTriggered"
+						}
+					}
+				}
+			},
+			type: {
+				type: "string",
+				description: "渲染模式，可取值 nested",
+				uniPlatform: {
+					"app-android": {
+						"nv-kt": {
+							setter: "type"
+						}
+					}
+				}
+			},
+			"associative-container": {
+				type: "string",
+				description: "关联的滚动容器",
+				uniPlatform: {
+					"app-android": {
+						"nv-kt": {
+							setter: "associativeContainer"
+						}
+					}
+				}
+			}
+		}
+	}
+};
+
+const cacheElementsProperties = /* @__PURE__ */ new Map();
+function getElementsProperties(platform) {
+  if (cacheElementsProperties.has(platform)) {
+    return cacheElementsProperties.get(platform);
+  }
+  const elements = {};
+  const config = appUVueJson;
+  const globalAttrs = getElementSupportedAttributes(
+    platform,
+    config.global.attributes
+  );
+  Object.keys(config).forEach((key) => {
+    if (key !== "global") {
+      const elementAttrs = getElementSupportedAttributes(
+        platform,
+        config[key].attributes
+      );
+      elements[key] = shared.extend({}, globalAttrs, elementAttrs);
+    }
+  });
+  cacheElementsProperties.set(platform, elements);
+  return elements;
+}
+function getElementSupportedAttributes(platform, attributes) {
+  const attrs = {};
+  Object.keys(attributes).forEach((name) => {
+    const options = attributes[name];
+    if (options.uniPlatform[platform] || options.uniPlatform["app"]) {
+      const type = options.type;
+      if (type) {
+        switch (type) {
+          case "string":
+            attrs[name] = "string";
+            break;
+          case "number":
+            attrs[name] = "number";
+            break;
+          case "boolean":
+            attrs[name] = "boolean";
+            break;
+          case "UniNativeColor":
+            attrs[name] = "color";
+            break;
+          case "Array<string>":
+            attrs[name] = "Array<string>";
+            break;
+          default:
+            attrs[name] = "enum";
+            break;
+        }
+      }
+    }
+  });
+  return attrs;
+}
+function getElementsPropertiesOptions(platform, target) {
+  const elements = {};
+  const config = appUVueJson;
+  const globalAttrs = parseAttributes(
+    platform,
+    target,
+    config.global.attributes
+  );
+  Object.keys(config).forEach((key) => {
+    if (key !== "global") {
+      const elementAttrs = parseAttributes(
+        platform,
+        target,
+        config[key].attributes,
+        config[key].classes[target.split("-")[0]]
+      );
+      elements[key] = {
+        ...globalAttrs,
+        ...elementAttrs
+      };
+    }
+  });
+  return elements;
+}
+function parseAttributes(platform, target, attributes, className) {
+  const properties = {};
+  Object.keys(attributes).forEach((name) => {
+    const options = attributes[name];
+    let propertyOptions;
+    const platformConfig = options.uniPlatform[platform] || options.uniPlatform["app"];
+    if (platformConfig) {
+      const targetConfig = platformConfig[target];
+      if (targetConfig) {
+        const { type, propertyName, setter } = targetConfig;
+        propertyOptions = {
+          type: type || options.type,
+          property: !!propertyName,
+          name: propertyName || setter,
+          values: options.values,
+          className
+        };
+      }
+    }
+    properties[name] = propertyOptions;
+  });
+  return properties;
+}
+
+const BOOLEAN_TYPES = ["boolean"];
+function isBooleanType(propertyType) {
+  return !!(propertyType && BOOLEAN_TYPES.includes(propertyType));
+}
+function createSetPropBooleanValueProcessor(options) {
+  return createPropertyProcessor$1(
+    (value) => {
+      if (options.property) {
+        return createValueProcessorResult$1(`true`, `${options.name} = true`);
+      }
+      return createValueProcessorResult$1(`true`, `${options.name}(true)`);
+    },
+    "boolean",
+    options
+  );
+}
+
+const COLOR_TYPES$1 = ["UniNativeColor"];
+function isColorType$1(propertyType) {
+  return !!(propertyType && COLOR_TYPES$1.includes(propertyType));
+}
+function createSetPropNativeColorValueProcessor(options) {
+  return createPropertyProcessor$1(
+    (value) => {
+      const nativeColorValue = parseNativeColorValue$1(String(value));
+      if (nativeColorValue) {
+        if (options.property) {
+          return createValueProcessorResult$1(
+            nativeColorValue,
+            `${options.name} = ${nativeColorValue}`
+          );
+        }
+        return createValueProcessorResult$1(
+          nativeColorValue,
+          `${options.name}(${nativeColorValue})`
+        );
+      }
+      return createValueProcessorError$1(`Invalid color value: ${value}`);
+    },
+    "color",
+    options
+  );
+}
+function parseNativeColorValue$1(value) {
+  const color = tinycolor(value);
+  if (color.isValid()) {
+    const hex8 = color.toHex8();
+    const argb = hex8.slice(6, 8) + hex8.slice(0, 6);
+    return "0x" + argb;
+  }
+}
+
+const processorMapCache$1 = /* @__PURE__ */ new Map();
+function getCacheKey$1(platform, target) {
+  return `${platform}:${target}`;
+}
+function createDom2ElementsPropertiesProcessors(platform, target) {
+  const cacheKey = getCacheKey$1(platform, target);
+  if (processorMapCache$1.has(cacheKey)) {
+    return processorMapCache$1.get(cacheKey);
+  }
+  const processorMap = {};
+  const elementsPropertiesOptions = getElementsPropertiesOptions(
+    platform,
+    target
+  );
+  Object.keys(elementsPropertiesOptions).forEach((key) => {
+    const propertiesOptions = elementsPropertiesOptions[key];
+    const processors = {};
+    Object.keys(propertiesOptions).forEach((propertyName) => {
+      const propertyOptions = propertiesOptions[propertyName];
+      let processor;
+      if (propertyOptions) {
+        processor = createPropertyValueProcessor(propertyOptions);
+      }
+      processors[propertyName] = processor;
+    });
+    processorMap[key] = processors;
+  });
+  processorMapCache$1.set(cacheKey, processorMap);
+  return processorMap;
+  function createPropertyValueProcessor(options) {
+    const propertyType = options.type;
+    if (isNumberType$1(propertyType)) {
+      return createSetPropNumberValueProcessor(options);
+    } else if (isStringType$1(propertyType)) {
+      return createSetPropStringValueProcessor(options);
+    } else if (isBooleanType(propertyType)) {
+      return createSetPropBooleanValueProcessor(options);
+    } else if (isColorType$1(propertyType)) {
+      return createSetPropNativeColorValueProcessor(options);
+    } else if (propertyType) {
+      return createSetPropEnumValueProcessor(
+        options,
+        createGenEnumCode$1(target, propertyType)
+      );
+    }
+  }
+}
+function createDom2ElementsPropertiesSupportChecker(platform) {
+  const elementsProperties = getElementsProperties(platform);
+  return (tagName, propertyName) => {
+    if (propertyName.startsWith("data-")) {
+      return true;
+    }
+    const properties = elementsProperties[tagName];
+    if (!properties) {
+      return false;
+    }
+    return !!properties[propertyName];
+  };
+}
+
+function createParseStaticProp(platform) {
+  return (target, tagName, propertyName, value) => {
+    let code = "";
+    const errors = [];
+    const processor = createDom2ElementsPropertiesProcessors(platform, target);
+    const processors = processor[tagName];
+    if (processors) {
+      if (propertyName in processors) {
+        const processor2 = processors[propertyName];
+        if (processor2) {
+          const result = processor2(value, propertyName);
+          code = result.setterCode;
+          if (result.error) {
+            errors.push(result.error);
+          }
+        }
+      } else {
+        errors.push(
+          `Property '${propertyName}' is not supported on '<${tagName}>'`
+        );
+      }
+      return {
+        code,
+        errors
+      };
+    }
+  };
+}
+function createGetPropertyOptions(platform, target) {
+  const processor = createDom2ElementsPropertiesProcessors(platform, target);
+  return (tagName, propertyName) => {
+    var _a;
+    const processors = processor[tagName];
+    if (processors) {
+      if (propertyName in processors) {
+        return (_a = processors[propertyName]) == null ? void 0 : _a.options;
+      }
+    }
+  };
+}
+function createGetPlatformPropertyType(platform) {
+  const elementsProperties = getElementsProperties(platform);
+  return (tagName, propertyName) => {
+    const properties = elementsProperties[tagName];
+    if (!properties) {
+      return;
+    }
+    return properties[propertyName];
+  };
+}
+
+class CodegenContext extends SharedDataCodegenContext {
+  constructor(ir, options) {
+    super();
+    this.ir = ir;
+    this.helpers = /* @__PURE__ */ new Set([]);
+    this.helper = (name) => {
+      this.helpers.add(name);
+      return `_${name}`;
+    };
+    this.delegates = /* @__PURE__ */ new Set();
+    this.identifiers = /* @__PURE__ */ Object.create(null);
+    this.seenInlineHandlerNames = /* @__PURE__ */ Object.create(null);
+    this.scopeLevel = 0;
+    const defaultOptions = {
+      root: "",
+      mode: "module",
+      platform: "app-harmony",
+      prefixIdentifiers: true,
+      sourceMap: false,
+      filename: `template.vue.html`,
+      relativeFilename: "",
+      scopeId: null,
+      runtimeGlobalName: `Vue`,
+      runtimeModuleName: `vue`,
+      ssrRuntimeModuleName: "vue/server-renderer",
+      ssr: false,
+      isTS: false,
+      inSSR: false,
+      inline: false,
+      bindingMetadata: {},
+      expressionPlugins: [],
+      componentType: "page",
+      className: "",
+      onError: compilerDom.defaultOnError,
+      onWarn: compilerDom.defaultOnWarn,
+      onVueTemplateCompileLog: () => {
+      },
+      isCppExpr: () => false,
+      r: (name) => name
+    };
+    this.options = shared.extend(defaultOptions, options);
+    this.block = ir.block;
+    this.getPropertyType = createGetPlatformPropertyType(options.platform);
+    if (this.options.r) {
+      this.r = this.options.r;
+    }
+  }
+  withId(fn, map) {
+    const { identifiers } = this;
+    const ids = Object.keys(map);
+    for (const id of ids) {
+      identifiers[id] || (identifiers[id] = []);
+      identifiers[id].unshift(map[id] || id);
+    }
+    const ret = fn();
+    ids.forEach((id) => shared.remove(identifiers[id], map[id] || id));
+    return ret;
+  }
+  enterScope() {
+    return [this.scopeLevel++, () => this.scopeLevel--];
+  }
+  get sharedDataScopeVar() {
+    return "__sharedDataScope";
+  }
+  sharedDataVForClassType(vForCount) {
+    return `\${__SHARED_DATA_CLASS_NAME_TYPE}_VFor${vForCount}`;
+  }
+}
+function generate$1(ir, options) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const context = new CodegenContext(ir, options);
+  const { helpers } = context;
+  const { inline } = options;
+  const functionName = "renderSharedData";
+  push(compilerVapor.NEWLINE, `return (function ${functionName}(): UniSharedData { 'raw js'`);
+  push(compilerVapor.INDENT_START);
+  if (options.componentType === "page") {
+    context.helper("useSharedDataPageId");
+    context.helper("useSharedDataScope");
+    context.helper("withSharedDataPage");
+  } else {
+    context.helper("useSharedDataScope");
+    context.helper("withSharedDataComponent");
+  }
+  if (ir.hasTemplateRef) {
+    push(
+      compilerVapor.NEWLINE,
+      `const ${setTemplateRefIdent} = ${context.helper("createSharedDataTemplateRefSetter")}()`
+    );
+  }
+  if (ir.hasDeferredVShow) {
+    push(compilerVapor.NEWLINE, `const deferredApplyVShows = []`);
+  }
+  push(...genBlockContent$1(ir.block, context, true));
+  push(compilerVapor.NEWLINE, `return __sharedData`);
+  push(compilerVapor.INDENT_END, compilerVapor.NEWLINE);
+  push("})");
+  const imports = genHelperImports$1(context) + genAssetImports$1(context);
+  const preamble = imports + genClassName(context);
+  const newlineCount = [...preamble].filter((c) => c === "\n").length;
+  if (newlineCount && !inline) {
+    frag.unshift(...new Array(newlineCount).fill(compilerVapor.LF));
+  }
+  const [code, map] = compilerVapor.codeFragmentToString(frag, context);
+  return {
+    code,
+    ast: ir,
+    preamble,
+    map: map && map.toJSON(),
+    helpers
+  };
+}
+function genHelperImports$1({ helpers, options }) {
+  let imports = "";
+  if (helpers.size) {
+    imports += `import { ${[...helpers].map((h) => `${h} as _${h}`).join(", ")} } from '${options.runtimeModuleName}';
+`;
+  }
+  return imports;
+}
+function genAssetImports$1({ ir }) {
+  const assetImports = ir.node.imports;
+  let imports = "";
+  for (const assetImport of assetImports) {
+    imports += `import '${assetImport.path}';
+`;
+  }
+  return imports;
+}
+function genClassName(context) {
+  return `
+const __className = '${context.options.className}' as const
+type __SHARED_DATA_CLASS_NAME_TYPE = \`\${typeof __className}${context.r("SharedData")}\`
+`;
+}
+
+const NEWLINE = Symbol(`newline` );
+const LF = Symbol(`line feed` );
+const INDENT_START = Symbol(`indent start` );
+const INDENT_END = Symbol(`indent end` );
+function buildCodeFragment(...frag) {
+  const push = frag.push.bind(frag);
+  const unshift = frag.unshift.bind(frag);
+  return [frag, push, unshift];
+}
+function genMulti([left, right, seg, placeholder], ...frags) {
+  if (placeholder) {
+    while (frags.length > 0 && !frags[frags.length - 1]) {
+      frags.pop();
+    }
+    frags = frags.map((frag2) => frag2 || placeholder);
+  } else {
+    frags = frags.filter(Boolean);
+  }
+  const frag = [];
+  push(left);
+  for (let [i, fn] of frags.entries()) {
+    push(fn);
+    if (i < frags.length - 1) push(seg);
+  }
+  push(right);
+  return frag;
+  function push(fn) {
+    if (!shared.isArray(fn)) fn = [fn];
+    frag.push(...fn);
+  }
+}
+const DELIMITERS_ARRAY = ["[", "]", ", "];
+const DELIMITERS_ARRAY_NEWLINE = [
+  ["[", INDENT_START, NEWLINE],
+  [INDENT_END, NEWLINE, "]"],
+  [",", NEWLINE]
+];
+const DELIMITERS_OBJECT_NEWLINE = [
+  ["{", INDENT_START, NEWLINE],
+  [INDENT_END, NEWLINE, "}"],
+  [",", NEWLINE]
+];
+function genCall(name, ...frags) {
+  const hasPlaceholder = shared.isArray(name);
+  const fnName = hasPlaceholder ? name[0] : name;
+  const placeholder = hasPlaceholder ? name[1] : "null";
+  return [fnName, ...genMulti(["(", ")", ", ", placeholder], ...frags)];
+}
+function codeFragmentToString(code, context) {
+  const {
+    options: { sourceMap }
+  } = context;
+  const filename = context.options.relativeFilename || context.options.filename;
+  let map;
+  if (sourceMap) {
+    map = new require$$2.SourceMapGenerator();
+    map.setSourceContent(filename, context.ir.source);
+    map._sources.add(filename);
+  }
+  let codegen = "";
+  const pos = { line: 1, column: 1, offset: 0 };
+  let indentLevel = 0;
+  for (let frag of code) {
+    if (!frag) continue;
+    if (frag === NEWLINE) {
+      frag = [`
+${`  `.repeat(indentLevel)}`, 0];
+    } else if (frag === INDENT_START) {
+      indentLevel++;
+      continue;
+    } else if (frag === INDENT_END) {
+      indentLevel--;
+      continue;
+    } else if (frag === LF) {
+      pos.line++;
+      pos.column = 0;
+      pos.offset++;
+      continue;
+    }
+    if (shared.isString(frag)) frag = [frag];
+    let [code2, newlineIndex = -2, loc, name] = frag;
+    codegen += code2;
+    if (map) {
+      if (loc) addMapping(loc.start, name);
+      if (newlineIndex === -3) {
+        compilerDom.advancePositionWithMutation(pos, code2);
+      } else {
+        pos.offset += code2.length;
+        if (newlineIndex === -2) {
+          pos.column += code2.length;
+        } else {
+          if (newlineIndex === -1) {
+            newlineIndex = code2.length - 1;
+          }
+          pos.line++;
+          pos.column = code2.length - newlineIndex;
+        }
+      }
+      if (loc && loc !== compilerDom.locStub) {
+        addMapping(loc.end);
+      }
+    }
+  }
+  return [codegen, map];
+  function addMapping(loc, name = null) {
+    const { _names, _mappings } = map;
+    if (name !== null && !_names.has(name)) _names.add(name);
+    _mappings.add({
+      originalLine: loc.line,
+      originalColumn: loc.column - 1,
+      // source-map column is 0 based
+      generatedLine: pos.line,
+      generatedColumn: pos.column - 1,
+      source: filename,
+      name
+    });
+  }
+}
+
+function genInsertNode({ parent, elements, anchor }, { helper }) {
+  let element = elements.map((el) => `n${el}`).join(", ");
+  if (elements.length > 1) element = `[${element}]`;
+  return [
+    NEWLINE,
+    ...genCall(
+      helper("insert"),
+      element,
+      `n${parent}`,
+      anchor === void 0 ? void 0 : `n${anchor}`
+    )
+  ];
+}
+function genPrependNode(oper, { helper }) {
+  return [
+    NEWLINE,
+    ...genCall(
+      helper("prepend"),
+      `n${oper.parent}`,
+      ...oper.elements.map((el) => `n${el}`)
+    )
+  ];
+}
+
+function genExpression(node, context, assignment) {
+  const { content, ast, isStatic, loc, sharedData } = node;
+  if (sharedData) {
+    return [[context.sharedDataIdent(sharedData.ident), -2, loc]];
+  }
+  if (isStatic) {
+    return [[JSON.stringify(content), -2, loc]];
+  }
+  if (!node.content.trim() || // there was a parsing error
+  ast === false || compilerVapor.isConstantExpression(node)) {
+    return [[content, -2, loc], assignment];
+  }
+  if (ast === null) {
+    return genIdentifier(content, context, loc, assignment);
+  }
+  const ids = [];
+  const parentStackMap = /* @__PURE__ */ new Map();
+  const parentStack = [];
+  compilerDom.walkIdentifiers(
+    ast,
+    (id) => {
+      ids.push(id);
+      parentStackMap.set(id, parentStack.slice());
+    },
+    false,
+    parentStack
+  );
+  let hasMemberExpression = false;
+  if (ids.length) {
+    const [frag, push] = buildCodeFragment();
+    ids.sort((a, b) => a.start - b.start).forEach((id, i) => {
+      const start = id.start - 1;
+      const end = id.end - 1;
+      const last = ids[i - 1];
+      const leadingText = content.slice(last ? last.end - 1 : 0, start);
+      if (leadingText.length) push([leadingText, -3]);
+      const source = content.slice(start, end);
+      const parentStack2 = parentStackMap.get(id);
+      const parent = parentStack2[parentStack2.length - 1];
+      hasMemberExpression || (hasMemberExpression = parent && (parent.type === "MemberExpression" || parent.type === "OptionalMemberExpression"));
+      push(
+        ...genIdentifier(
+          source,
+          context,
+          {
+            start: compilerDom.advancePositionWithClone(node.loc.start, source, start),
+            end: compilerDom.advancePositionWithClone(node.loc.start, source, end),
+            source
+          },
+          hasMemberExpression ? void 0 : assignment,
+          id,
+          parent,
+          parentStack2
+        )
+      );
+      if (i === ids.length - 1 && end < content.length) {
+        push([content.slice(end), -3]);
+      }
+    });
+    return frag;
+  } else {
+    return [[content, -3, loc]];
+  }
+}
+function genIdentifier(raw, context, loc, assignment, id, parent, parentStack) {
+  const { options, helper, identifiers } = context;
+  const { inline, bindingMetadata } = options;
+  let name = raw;
+  const idMap = identifiers[raw];
+  if (idMap && idMap.length) {
+    const replacement = idMap[0];
+    if (shared.isString(replacement)) {
+      if (parent && parent.type === "ObjectProperty" && parent.shorthand) {
+        return [[`${name}: ${replacement}`, -2, loc]];
+      } else {
+        return [[replacement, -2, loc]];
+      }
+    } else {
+      return genExpression(replacement, context, assignment);
+    }
+  }
+  let prefix;
+  if (compilerDom.isStaticProperty(parent) && parent.shorthand) {
+    prefix = `${raw}: `;
+  }
+  const type = bindingMetadata && bindingMetadata[raw];
+  if (inline) {
+    switch (type) {
+      case "setup-let":
+        name = raw = unref();
+        break;
+      case "setup-ref":
+        name = raw = withAssignment(`${raw}.value`);
+        break;
+      case "setup-maybe-ref":
+        const isDestructureAssignment = parent && compilerDom.isInDestructureAssignment(parent, parentStack || []);
+        const isAssignmentLVal = parent && parent.type === "AssignmentExpression" && parent.left === id;
+        const isUpdateArg = parent && parent.type === "UpdateExpression" && parent.argument === id;
+        raw = isAssignmentLVal || isUpdateArg || isDestructureAssignment ? name = `${raw}.value` : unref();
+        break;
+      case "props":
+        raw = shared.genPropsAccessExp(raw);
+        break;
+      case "props-aliased":
+        raw = shared.genPropsAccessExp(bindingMetadata.__propsAliases[raw]);
+        break;
+      default:
+        raw = withAssignment(raw);
+    }
+  } else {
+    if (canPrefix(raw)) {
+      if (type === "props-aliased") {
+        raw = `$props['${bindingMetadata.__propsAliases[raw]}']`;
+      } else {
+        raw = `${type === "props" ? "$props" : "_ctx"}.${raw}`;
+      }
+    }
+    raw = withAssignment(raw);
+  }
+  return [prefix, [raw, -2, loc, name]];
+  function withAssignment(s) {
+    return s;
+  }
+  function unref() {
+    return `${helper("unref")}(${raw})`;
+  }
+}
+function canPrefix(name) {
+  if (shared.isGloballyAllowed(name)) {
+    return false;
+  }
+  if (
+    // special case for webpack compilation
+    name === "require" || name === "$props" || name === "$emit" || name === "$attrs" || name === "$slots"
+  )
+    return false;
+  return true;
+}
+function processExpressions(context, expressions, shouldDeclare) {
+  const {
+    seenVariable,
+    variableToExpMap,
+    expToVariableMap,
+    seenIdentifier,
+    updatedVariable
+  } = compilerVapor.analyzeExpressions(expressions);
+  const varDeclarations = processRepeatedVariables(
+    context,
+    seenVariable,
+    variableToExpMap,
+    expToVariableMap,
+    seenIdentifier,
+    updatedVariable
+  );
+  const expDeclarations = processRepeatedExpressions(
+    context,
+    expressions,
+    varDeclarations,
+    updatedVariable,
+    expToVariableMap
+  );
+  return genDeclarations(
+    [...varDeclarations, ...expDeclarations],
+    context,
+    shouldDeclare
+  );
+}
+function processRepeatedVariables(context, seenVariable, variableToExpMap, expToVariableMap, seenIdentifier, updatedVariable) {
+  const declarations = [];
+  const expToReplacementMap = /* @__PURE__ */ new Map();
+  for (const [name, exps] of variableToExpMap) {
+    if (updatedVariable.has(name)) continue;
+    if (seenVariable[name] > 1 && exps.size > 0) {
+      const isIdentifier = seenIdentifier.has(name);
+      const varName = isIdentifier ? name : genVarName(name);
+      exps.forEach((node) => {
+        if (node.ast && varName !== name) {
+          const replacements = expToReplacementMap.get(node) || [];
+          replacements.push({
+            name: varName,
+            locs: expToVariableMap.get(node).reduce(
+              (locs, v) => {
+                if (v.name === name && v.loc) locs.push(v.loc);
+                return locs;
+              },
+              []
+            )
+          });
+          expToReplacementMap.set(node, replacements);
+        }
+      });
+      if (!declarations.some((d) => d.name === varName) && (!isIdentifier || shouldDeclareVariable(name, expToVariableMap, exps))) {
+        declarations.push({
+          name: varName,
+          isIdentifier,
+          value: shared.extend(
+            { ast: isIdentifier ? null : parseExp(context, name) },
+            compilerDom.createSimpleExpression(name)
+          ),
+          rawName: name,
+          exps,
+          seenCount: seenVariable[name]
+        });
+      }
+    }
+  }
+  for (const [exp, replacements] of expToReplacementMap) {
+    replacements.flatMap(
+      ({ name, locs }) => locs.map(({ start, end }) => ({ start, end, name }))
+    ).sort((a, b) => b.end - a.end).forEach(({ start, end, name }) => {
+      exp.content = exp.content.slice(0, start - 1) + name + exp.content.slice(end - 1);
+    });
+    exp.ast = parseExp(context, exp.content, exp.loc);
+  }
+  return declarations;
+}
+function shouldDeclareVariable(name, expToVariableMap, exps) {
+  const vars = Array.from(
+    exps,
+    (exp) => expToVariableMap.get(exp).map((v) => v.name)
+  );
+  if (vars.every((v) => v.length === 1)) {
+    return true;
+  }
+  if (vars.some((v) => v.filter((e) => e === name).length > 1)) {
+    return true;
+  }
+  const first = vars[0];
+  if (vars.some((v) => v.length !== first.length)) {
+    if (vars.some(
+      (v) => v.length > first.length && v.every((e) => first.includes(e))
+    ) || vars.some((v) => first.length > v.length && first.every((e) => v.includes(e)))) {
+      return false;
+    }
+    return true;
+  }
+  if (vars.every((v) => v.every((e, idx) => e === first[idx]))) {
+    return false;
+  }
+  return true;
+}
+function processRepeatedExpressions(context, expressions, varDeclarations, updatedVariable, expToVariableMap) {
+  const declarations = [];
+  const seenExp = expressions.reduce(
+    (acc, exp) => {
+      const vars = expToVariableMap.get(exp);
+      if (!vars) return acc;
+      const variables = vars.map((v) => v.name);
+      if (exp.ast && exp.ast.type !== "Identifier" && !(variables && variables.some((v) => updatedVariable.has(v)))) {
+        acc[exp.content] = (acc[exp.content] || 0) + 1;
+      }
+      return acc;
+    },
+    /* @__PURE__ */ Object.create(null)
+  );
+  Object.entries(seenExp).forEach(([content, count]) => {
+    if (count > 1) {
+      const varName = genVarName(content);
+      if (!declarations.some((d) => d.name === varName)) {
+        const delVars = {};
+        for (let i = varDeclarations.length - 1; i >= 0; i--) {
+          const item = varDeclarations[i];
+          if (!item.exps || !item.seenCount) continue;
+          const shouldRemove = [...item.exps].every(
+            (node) => node.content === content && item.seenCount === count
+          );
+          if (shouldRemove) {
+            delVars[item.name] = item.rawName;
+            varDeclarations.splice(i, 1);
+          }
+        }
+        const value = shared.extend(
+          {},
+          expressions.find((exp) => exp.content === content)
+        );
+        Object.keys(delVars).forEach((name) => {
+          value.content = value.content.replace(name, delVars[name]);
+          if (value.ast) value.ast = parseExp(context, value.content, value.loc);
+        });
+        declarations.push({
+          name: varName,
+          value
+        });
+      }
+      expressions.forEach((exp) => {
+        if (exp.content === content) {
+          exp.content = varName;
+          exp.ast = null;
+        } else if (exp.content.includes(content)) {
+          exp.content = exp.content.replace(
+            new RegExp(escapeRegExp(content), "g"),
+            varName
+          );
+          exp.ast = parseExp(context, exp.content, exp.loc);
+        }
+      });
+    }
+  });
+  return declarations;
+}
+function genDeclarations(declarations, context, shouldDeclare) {
+  const [frag, push] = buildCodeFragment();
+  const ids = /* @__PURE__ */ Object.create(null);
+  const varNames = /* @__PURE__ */ new Set();
+  declarations.forEach(({ name, isIdentifier, value }) => {
+    if (isIdentifier) {
+      const varName = ids[name] = `_${name}`;
+      varNames.add(varName);
+      if (shouldDeclare) {
+        push(`const `);
+      }
+      push(`${varName} = `, ...genExpression(value, context), NEWLINE);
+    }
+  });
+  declarations.forEach(({ name, isIdentifier, value }) => {
+    if (!isIdentifier) {
+      const varName = ids[name] = `_${name}`;
+      varNames.add(varName);
+      if (shouldDeclare) {
+        push(`const `);
+      }
+      push(
+        `${varName} = `,
+        ...context.withId(() => genExpression(value, context), ids),
+        NEWLINE
+      );
+    }
+  });
+  return { ids, frag, varNames: [...varNames] };
+}
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+function parseExp(context, content, loc) {
+  const plugins = context.options.expressionPlugins;
+  const options = {
+    plugins: plugins ? [...plugins, "typescript"] : ["typescript"]
+  };
+  try {
+    return parser$1.parseExpression(`(${content})`, options);
+  } catch (e) {
+    if (loc) {
+      const error = new SyntaxError(e.message);
+      error.loc = loc;
+      context.options.onError(error);
+      throw error;
+    }
+    throw e;
+  }
+}
+function genVarName(exp) {
+  return `${exp.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_").replace(/_+$/, "")}`;
+}
+
+function genSetEvent(oper, context) {
+  var _a;
+  if (!(context.feature & 2)) {
+    return [];
+  }
+  const {
+    element,
+    key,
+    keyOverride,
+    modifiers,
+    delegate,
+    effect,
+    sharedData,
+    value
+  } = oper;
+  const name = genName();
+  const { helper, options, r, sharedDataIdent } = context;
+  if (value && ((_a = options.isCppExpr) == null ? void 0 : _a.call(options, value.ast))) {
+    return [
+      NEWLINE,
+      ...genCall(helper("onElement"), `n${element}`, name, [
+        `(${r("event")}: ${r("UniEvent")}) => {`,
+        ...genExpression(value, context),
+        `(${r("event")})`,
+        `}`
+      ])
+    ];
+  }
+  const eventOptions = genEventOptions();
+  const eventId = `e${sharedData.ident}${oper.element}`;
+  return [
+    NEWLINE,
+    `const ${eventId} = ${sharedDataIdent(sharedData.ident)}`,
+    NEWLINE,
+    ...genCall(
+      helper(delegate ? "delegate" : "onElement"),
+      `n${element}`,
+      name,
+      [
+        `(${r("event")}: ${r("UniEvent")}) => {`,
+        `${eventId}(${r("event")})`,
+        `}`
+      ],
+      eventOptions
+    )
+  ];
+  function genName() {
+    const expr = genExpression(key, context);
+    if (keyOverride) {
+      const find = JSON.stringify(keyOverride[0]);
+      const replacement = JSON.stringify(keyOverride[1]);
+      const wrapped = ["(", ...expr, ")"];
+      return [...wrapped, ` === ${find} ? ${replacement} : `, ...wrapped];
+    } else {
+      return genExpression(key, context);
+    }
+  }
+  function genEventOptions() {
+    let { options: options2 } = modifiers;
+    if (!options2.length && !effect) return;
+    return genMulti(
+      DELIMITERS_OBJECT_NEWLINE,
+      effect && ['"effect": true'],
+      ...options2.map((option) => [`"${option}": true`])
+    );
+  }
+}
+function genSetDynamicEvents(oper, context) {
+  if (!(context.feature & 2)) {
+    return [];
+  }
+  const { helper, sharedDataIdent } = context;
+  return [
+    NEWLINE,
+    ...genCall(
+      helper("setElementDynamicEvents"),
+      `n${oper.element}`,
+      sharedDataIdent(oper.event.sharedData.ident)
+    )
+  ];
+}
+
+function genFor(oper, context) {
+  const { helper, pageVar, r } = context;
+  const {
+    source,
+    value,
+    key,
+    index,
+    render,
+    keyProp,
+    typeProp,
+    once,
+    id,
+    component,
+    onlyChild
+  } = oper;
+  const isListItem = isVForListItem(oper.node);
+  const rawValue = value && value.content;
+  const rawKey = key && key.content;
+  const rawIndex = index && index.content;
+  const isSharedData = !!source.sharedData;
+  const sourceExpr = ["() => (", ...genExpression(source, context), ")"];
+  const idToPathMap = isSharedData ? /* @__PURE__ */ new Map() : compilerVapor.parseValueDestructure(value, context);
+  const vForCount = context.enterVFor();
+  const [_, exitScope] = context.enterScope();
+  const itemVar = `${r("_for_item")}${vForCount}`;
+  const idMap = compilerVapor.buildDestructureIdMap(
+    idToPathMap,
+    isSharedData ? `${itemVar}.value` : `${context.helper("toDisplayString")}(${itemVar})`,
+    context.options.expressionPlugins
+  );
+  idMap[itemVar] = null;
+  const args = isSharedData ? [context.sharedDataVForItemVar] : [itemVar];
+  const useSharedDataVFor = isSharedData ? `const ${context.sharedDataVForVar} = useSharedDataVFor<UniSharedData, ${context.sharedDataVForClass(vForCount)}>(${context.sharedDataVForItemVar})` : "";
+  const keyVar = `${r("_for_key")}${vForCount}`;
+  args.push(`, ${keyVar}`);
+  if (rawKey) {
+    idMap[rawKey] = isSharedData ? `${keyVar}.value` : `${context.helper("toDisplayString")}(${keyVar})`;
+    idMap[keyVar] = null;
+  }
+  const indexVar = `${r("_for_index")}${vForCount}`;
+  args.push(`, ${indexVar}`);
+  if (rawIndex) {
+    idMap[rawIndex] = isSharedData ? `${indexVar}.value` : `${context.helper("toDisplayString")}(${indexVar})`;
+    idMap[indexVar] = null;
+  }
+  const resetBlock = context.enterBlock(render);
+  const getKeyFrag = genCallback(
+    keyProp,
+    isSharedData ? context.sharedDataVForItemVar : void 0
+  );
+  const getTypeFrag = isListItem && typeProp ? genCallback(
+    typeProp,
+    isSharedData ? context.sharedDataVForItemVar : void 0
+  ) : genDefaultTypeCallback(context.sharedDataVForItemVar);
+  resetBlock();
+  const { selectorPatterns, keyOnlyBindingPatterns } = matchPatterns(
+    render,
+    keyProp,
+    idMap
+  );
+  const blockFn = context.withId(() => {
+    const frag = [];
+    frag.push(
+      "(",
+      ...args,
+      ") => {",
+      INDENT_START,
+      NEWLINE,
+      useSharedDataVFor,
+      NEWLINE
+    );
+    if (selectorPatterns.length || keyOnlyBindingPatterns.length) {
+      frag.push(
+        ...genBlockContent(render, context, false, () => {
+          const patternFrag = [];
+          for (let i = 0; i < selectorPatterns.length; i++) {
+            const { effect } = selectorPatterns[i];
+            const operFrag = context.withEffect(
+              () => genEffect(effect, context)
+            );
+            if (operFrag.length) {
+              patternFrag.push(
+                NEWLINE,
+                helper(`render${context.helperType}Effect`),
+                `(() => {`,
+                INDENT_START
+              );
+              patternFrag.push(...operFrag);
+              patternFrag.push(INDENT_END, NEWLINE, `})`);
+            }
+          }
+          for (const { effect } of keyOnlyBindingPatterns) {
+            for (const oper2 of effect.operations) {
+              patternFrag.push(...genOperation(oper2, context));
+            }
+          }
+          return patternFrag;
+        })
+      );
+    } else {
+      frag.push(...genBlockContent(render, context));
+    }
+    frag.push(INDENT_END, NEWLINE, "}");
+    return frag;
+  }, idMap);
+  exitScope();
+  context.exitVFor();
+  let flags = 0;
+  if (onlyChild) {
+    flags |= 1;
+  }
+  if (component) {
+    flags |= 2;
+  }
+  if (once) {
+    flags |= 4;
+  }
+  if (!isListItem) {
+    return [
+      NEWLINE,
+      `const n${id} = `,
+      ...genCall(
+        [helper(`create${context.helperType}For`), "null"],
+        pageVar,
+        sourceExpr,
+        blockFn,
+        getKeyFrag,
+        flags ? String(flags) : void 0,
+        void 0
+        // todo: hydrationNode
+      )
+    ];
+  }
+  return [
+    NEWLINE,
+    `const n${id} = `,
+    ...genCall(
+      [helper(`create${context.helperType}RecycleFor`), "null"],
+      pageVar,
+      sourceExpr,
+      blockFn,
+      getKeyFrag,
+      getTypeFrag,
+      flags ? String(flags) : void 0,
+      void 0
+      // todo: hydrationNode
+    )
+  ];
+  function genCallback(expr, sharedDataVForItemVar) {
+    if (!expr) return false;
+    const res = context.withId(
+      () => genExpression(expr, context),
+      genSimpleIdMap()
+    );
+    return [
+      ...genMulti(
+        ["(", ")", ", "],
+        sharedDataVForItemVar ? sharedDataVForItemVar : rawValue ? rawValue : "_",
+        rawKey ? rawKey : "__",
+        rawIndex ? rawIndex : "___"
+      ),
+      " => {",
+      NEWLINE,
+      useSharedDataVFor,
+      NEWLINE,
+      "return ",
+      ...res,
+      "}"
+    ];
+  }
+  function genDefaultTypeCallback(sharedDataVForItemVar) {
+    return [
+      ...genMulti(["(", ")", ", "], sharedDataVForItemVar, "_", "__"),
+      " => {",
+      NEWLINE,
+      'return "0"',
+      "}"
+    ];
+  }
+  function genSimpleIdMap() {
+    const idMap2 = {};
+    if (rawKey)
+      idMap2[rawKey] = isSharedData ? null : `${context.helper("toDisplayString")}(${rawKey})`;
+    if (rawIndex)
+      idMap2[rawIndex] = isSharedData ? null : `${context.helper("toDisplayString")}(${rawIndex})`;
+    idToPathMap.forEach((_2, id2) => idMap2[id2] = null);
+    return idMap2;
+  }
+}
+
+function genSetHtml(oper, context) {
+  const { helper } = context;
+  const { value, element } = oper;
+  return [
+    NEWLINE,
+    ...genCall(helper("setHtml"), `n${element}`, genExpression(value, context))
+  ];
+}
+
+function genIf(oper, context, isNested = false) {
+  const { helper, pageVar } = context;
+  const { condition, positive, negative, once } = oper;
+  const [frag, push] = buildCodeFragment();
+  const conditionExpr = [
+    "() => (",
+    ...genCondition(condition, context),
+    ")"
+  ];
+  let positiveArg = genBlock(positive, context);
+  let negativeArg = false;
+  if (negative) {
+    if (negative.type === 1) {
+      negativeArg = genBlock(negative, context);
+    } else {
+      negativeArg = ["() => ", ...genIf(negative, context, true)];
+    }
+  }
+  if (!isNested) push(NEWLINE, `const n${oper.id} = `);
+  push(
+    ...genCall(
+      helper(`create${context.helperType}If`),
+      pageVar,
+      conditionExpr,
+      positiveArg,
+      negativeArg,
+      once && "true"
+    )
+  );
+  return frag;
+}
+function genCondition(condition, context) {
+  return !condition.sharedData ? [JSON.stringify(parseSharedDataBooleanExpression(condition))] : genExpression(condition, context);
+}
+
+function genSetProp(oper, context) {
+  const { helper } = context;
+  const {
+    prop: { key, values, sharedData },
+    tag
+  } = oper;
+  const propName = key.content;
+  if (!["class", "style", "hover-class"].includes(propName)) {
+    const options = context.getPropertyOptions(tag, propName);
+    if (!options) {
+      return [];
+    }
+    const { name, property, className } = options;
+    const [frag, push] = buildCodeFragment();
+    push(NEWLINE);
+    const varName = className ? `${context.genCastCode([`n${oper.element}`], className, { dereference: true }).join("")}` : `n${oper.element}`;
+    if (property) {
+      push(`${varName}.${name} = `);
+    } else {
+      push(`${varName}.${name}(`);
+    }
+    if (sharedData) {
+      push(
+        ...genEnumPropValue(
+          options,
+          [context.sharedDataIdent(sharedData.ident)],
+          context
+        )
+      );
+    } else {
+      push(...genEnumPropValue(options, genPropValue(values, context), context));
+    }
+    if (!property) {
+      push(")");
+    }
+    return frag;
+  }
+  if (context.options.renderer === "nativeView") {
+    return [];
+  }
+  const isClassProp = propName === "class" || propName === "hover-class";
+  const args = [`n${oper.element}`, false];
+  if (isClassProp) {
+    args.unshift(`${context.r("__sharedData")}`);
+  }
+  if (sharedData) {
+    args.push(context.sharedDataIdent(sharedData.ident));
+  } else {
+    if (isClassProp && values.length === 1 && values[0].isStatic) {
+      const value = values[0].content;
+      args.push(JSON.stringify(value.split(/\s+/).map((item) => item)));
+    } else {
+      args.push(genPropValue(values, context));
+    }
+  }
+  return [
+    NEWLINE,
+    ...genCall(
+      [
+        helper(
+          propName === "class" ? "setElementClass" : propName === "hover-class" ? "setElementHoverClass" : "setElementStyle"
+        ),
+        null
+      ],
+      ...args
+    )
+  ];
+}
+function genEnumPropValue(options, value, context) {
+  if (!isEnumType(options.type)) {
+    return value;
+  }
+  return context.genCastCode(value, options.type);
+}
+function genDynamicProps(oper, context) {
+  const { helper, sharedDataIdent, r, helperType } = context;
+  return [
+    NEWLINE,
+    ...genCall(
+      helper(`set${helperType}DynamicProps`),
+      `${r("__sharedData")}`,
+      `n${oper.element}`,
+      sharedDataIdent(oper.sharedData.ident)
+    )
+  ];
+}
+function genPropValue(values, context) {
+  if (values.length === 1) {
+    return genExpression(values[0], context);
+  }
+  return genMulti(
+    DELIMITERS_ARRAY,
+    ...values.map((expr) => genExpression(expr, context))
+  );
+}
+function genChangeProp({ prop }, { helper, sharedDataIdent, feature }) {
+  if (!(feature & 32)) {
+    return [];
+  }
+  const [frag, push] = buildCodeFragment();
+  push(NEWLINE);
+  const ident = prop.values[0].sharedData.ident;
+  push(`const p_${ident} = ${sharedDataIdent(ident)}`);
+  push(NEWLINE);
+  push(`${helper(`runOnMainQueue`)}(() => {`);
+  const memberExpr = prop.values[0].content;
+  push(`${memberExpr}(p_${ident})`);
+  push(`})`);
+  return frag;
+}
+
+function genSetTemplateRef(oper, context) {
+  if (!(context.feature & 16)) {
+    return [];
+  }
+  if (context.options.isCppExpr(oper.value.ast)) {
+    const { helper, r } = context;
+    return [
+      NEWLINE,
+      ...genCall(helper("onElementRef"), `n${oper.element}`, [
+        `(${r("el")}: ${r("UniElement")}) => {`,
+        ...genExpression(oper.value, context),
+        `(${r("el")})`,
+        `}`
+      ])
+    ];
+  }
+  if (oper.value.sharedData) {
+    return [
+      NEWLINE,
+      ...genCall(
+        context.helper("onElementRef"),
+        `n${oper.element}`,
+        context.sharedDataIdent(oper.value.sharedData.ident)
+      )
+    ];
+  }
+  return [];
+}
+function genDeclareOldRef(oper) {
+  return [];
+}
+
+function genSetText(oper, context) {
+  if (!(context.feature & 1)) {
+    return [];
+  }
+  const { helper } = context;
+  const { element, values, generated } = oper;
+  const texts = combineValues(values, context);
+  return [
+    NEWLINE,
+    ...genCall(
+      helper("setElementText"),
+      `${generated ? "x" : "n"}${element}`,
+      texts
+    )
+  ];
+}
+function combineValues(values, context) {
+  return values.flatMap((value, i) => {
+    let exp = genExpression(value, context);
+    if (i > 0) {
+      exp.unshift(" + ");
+    }
+    return exp;
+  });
+}
+function genGetTextChild(oper, context) {
+  if (!(context.feature & 1)) {
+    return [];
+  }
+  return [
+    NEWLINE,
+    `const x${oper.parent} = ${context.helper(`child${context.helperType}`)}(n${oper.parent})`
+  ];
+}
+
+function genVShow(oper, context) {
+  if (!(context.feature & 8)) {
+    return [];
+  }
+  return [
+    NEWLINE,
+    ...genCall(context.helper("applyElementVShow"), `n${oper.element}`, [
+      `() => (`,
+      ...genExpression(oper.dir.exp, context),
+      `)`
+    ])
+  ];
+}
+
+const helperMap = {
+  text: "applyElementTextModel",
+  dynamic: "applyElementDynamicModel"
+};
+function genVModel(oper, context) {
+  if (!(context.feature & 4)) {
+    return [];
+  }
+  const {
+    modelType,
+    element,
+    dir: { exp, modifiers }
+  } = oper;
+  return [
+    NEWLINE,
+    ...genCall(
+      context.helper(helperMap[modelType]),
+      `n${element}`,
+      // getter
+      [`() => (`, ...genExpression(exp, context), `)`],
+      // setter
+      context.sharedDataIdent(exp.sharedData.vModel.eventIdent),
+      // modifiers
+      modifiers.length ? `{ ${modifiers.map((e) => e.content + ": true").join(",")} }` : void 0
+    )
+  ];
+}
+
+function genBuiltinDirective(oper, context) {
+  switch (oper.name) {
+    case "show":
+      return genVShow(oper, context);
+    case "model":
+      return genVModel(oper, context);
+    default:
+      return [];
+  }
+}
+function genDirectivesForElement(id, context) {
+  const dirs = filterCustomDirectives(id, context.block.operation);
+  return dirs.length ? genCustomDirectives(dirs, context) : [];
+}
+function genCustomDirectives(opers, context) {
+  const { helper } = context;
+  const element = `n${opers[0].element}`;
+  const directiveItems = opers.map(genDirectiveItem);
+  const directives = genMulti(DELIMITERS_ARRAY, ...directiveItems);
+  return [
+    NEWLINE,
+    ...genCall(helper("withVaporDirectives"), element, directives)
+  ];
+  function genDirectiveItem({
+    dir,
+    name,
+    asset
+  }) {
+    const directiveVar = asset ? compilerDom.toValidAssetId(name, "directive") : genExpression(
+      shared.extend(compilerDom.createSimpleExpression(name, false), { ast: null }),
+      context
+    );
+    const value = dir.exp && ["() => ", ...genExpression(dir.exp, context)];
+    const argument = dir.arg && genExpression(dir.arg, context);
+    const modifiers = !!dir.modifiers.length && [
+      "{ ",
+      genDirectiveModifiers(dir.modifiers.map((m) => m.content)),
+      " }"
+    ];
+    return genMulti(
+      DELIMITERS_ARRAY.concat("null"),
+      directiveVar,
+      value,
+      argument,
+      modifiers
+    );
+  }
+}
+function genDirectiveModifiers(modifiers) {
+  return modifiers.map(
+    (value) => `${compilerDom.isSimpleIdentifier(value) ? value : JSON.stringify(value)}: true`
+  ).join(", ");
+}
+function filterCustomDirectives(id, operations) {
+  return operations.filter(
+    (oper) => oper.type === 13 && oper.element === id && !oper.builtin
+  );
+}
+
+function genCreateComponent(operation, context) {
+  const { helper, sharedDataIdent } = context;
+  const { root, slots, sharedData } = operation;
+  const rawSlots = genRawSlots(slots, context);
+  const args = [
+    sharedDataIdent(sharedData.ident),
+    void 0,
+    rawSlots,
+    root ? "true" : false
+  ];
+  let helperName = helper(`create${context.helperType}Component`);
+  if (operation.dynamic && !operation.dynamic.isStatic) {
+    helperName = helper(`create${context.helperType}DynamicComponent`);
+  } else {
+    if (operation.asset) {
+      helperName = helper(`create${context.helperType}ComponentWithFallback`);
+      args.unshift(context.pageVar);
+    }
+  }
+  return [
+    NEWLINE,
+    `const n${operation.id} = `,
+    ...genCall(
+      helperName,
+      ...args
+      // once && 'true',
+    ),
+    ...genDirectivesForElement(operation.id, context)
+  ];
+}
+function genRawSlots(slots, context) {
+  if (!slots.length) return;
+  const staticSlots = slots[0];
+  if (staticSlots.slotType === 0) {
+    return genStaticSlots(
+      staticSlots,
+      context,
+      slots.length > 1 ? slots.slice(1) : void 0
+    );
+  } else {
+    return genStaticSlots(
+      { slots: {} },
+      context,
+      slots
+    );
+  }
+}
+function genStaticSlots({ slots }, context, dynamicSlots) {
+  const args = Object.keys(slots).map((name) => [
+    `${JSON.stringify(name)}: `,
+    ...genSlotBlockWithProps(slots[name], context)
+  ]);
+  if (dynamicSlots) {
+    args.push([
+      `'$': `,
+      ...genDynamicSlots(dynamicSlots, context),
+      ` as Vue${context.helperType}DynamicSlotSourceArray`
+    ]);
+  }
+  return genMulti(DELIMITERS_OBJECT_NEWLINE, ...args);
+}
+function genDynamicSlots(slots, context) {
+  return genMulti(
+    DELIMITERS_ARRAY_NEWLINE,
+    ...slots.map(
+      (slot) => slot.slotType === 0 ? genStaticSlots(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, true)
+    )
+  );
+}
+function genDynamicSlot(slot, context, withFunction = false) {
+  let frag;
+  switch (slot.slotType) {
+    case 1:
+      frag = genBasicDynamicSlot(slot, context);
+      break;
+    case 2:
+      frag = genLoopSlot(slot, context);
+      break;
+    case 3:
+      frag = genConditionalSlot(slot, context);
+      break;
+  }
+  return withFunction ? ["() => (", ...frag, ")"] : frag;
+}
+function genBasicDynamicSlot(slot, context) {
+  const { name, fn } = slot;
+  return genCall(
+    context.helper(`create${context.helperType}DynamicSlot`),
+    genExpression(name, context),
+    genSlotBlockWithProps(fn, context)
+  );
+}
+function genLoopSlot(slot, context) {
+  const vForCount = context.enterVFor();
+  const { name, fn, loop } = slot;
+  const { value, key, index, source } = loop;
+  const rawValue = value && value.content;
+  const rawKey = key && key.content;
+  const rawIndex = index && index.content;
+  const idMap = {};
+  if (rawValue) idMap[rawValue] = rawValue;
+  if (rawKey) idMap[rawKey] = rawKey;
+  if (rawIndex) idMap[rawIndex] = rawIndex;
+  const slotExpr = genCall(
+    context.helper(`create${context.helperType}DynamicSlot`),
+    context.withId(() => {
+      const resetBlock = context.enterBlock(fn);
+      const result2 = genExpression(name, context);
+      resetBlock();
+      return result2;
+    }, idMap),
+    context.withId(() => genSlotBlockWithProps(fn, context), idMap)
+  );
+  const result = [
+    ...genCall(
+      context.helper(`create${context.helperType}ForSlots`),
+      genExpression(source, context),
+      [
+        ...genMulti(["(", ")", ", "], context.sharedDataVForItemVar, "_", "__"),
+        " => {",
+        INDENT_START,
+        NEWLINE,
+        `const ${context.sharedDataVForVar} = useSharedDataVFor<UniSharedData, ${context.sharedDataVForClass(vForCount)}>(${context.sharedDataVForItemVar})`,
+        NEWLINE,
+        "return ",
+        ...slotExpr,
+        NEWLINE,
+        INDENT_END,
+        "}"
+      ]
+    )
+  ];
+  context.exitVFor();
+  return result;
+}
+function genConditionalSlot(slot, context) {
+  const { condition, positive, negative } = slot;
+  return [
+    ...genExpression(condition, context),
+    INDENT_START,
+    NEWLINE,
+    "? ",
+    ...genDynamicSlot(positive, context),
+    NEWLINE,
+    ": ",
+    ...negative ? [...genDynamicSlot(negative, context)] : ["null"],
+    INDENT_END
+  ];
+}
+function genSlotBlockWithProps(oper, context) {
+  let isDestructureAssignment = false;
+  let propsName;
+  let exitScope;
+  let depth;
+  const { props, key, node } = oper;
+  const idsOfProps = /* @__PURE__ */ new Set();
+  if (props) {
+    if (isDestructureAssignment = !!props.ast) {
+      [depth, exitScope] = context.enterScope();
+    }
+  }
+  const idMap = {};
+  idsOfProps.forEach(
+    (id) => idMap[id] = isDestructureAssignment ? `${propsName}[${JSON.stringify(id)}]` : null
+  );
+  let blockFn = context.withId(
+    () => genBlock(oper, context, [propsName]),
+    idMap
+  );
+  exitScope && exitScope();
+  if (key) {
+    blockFn = [
+      `() => {`,
+      INDENT_START,
+      NEWLINE,
+      `return `,
+      ...genCall(
+        context.helper("createKeyedFragment"),
+        [`() => `, ...genExpression(key, context)],
+        blockFn
+      ),
+      INDENT_END,
+      NEWLINE,
+      `}`
+    ];
+  }
+  if (node.type === 1) {
+    if (compilerVapor.needsVaporCtx(oper)) {
+      blockFn = [
+        `${context.helper(`with${context.helperType}VaporCtx`)}(`,
+        ...blockFn,
+        `)`
+      ];
+    }
+  }
+  return blockFn;
+}
+
+function genSlotOutlet(oper, context) {
+  const { helper, pageVar } = context;
+  const { id, name, fallback, noSlotted, once } = oper;
+  const [frag, push] = buildCodeFragment();
+  const nameExpr = name.isStatic ? genExpression(name, context) : ["() => (", ...genExpression(name, context), ")"];
+  let fallbackArg;
+  if (fallback) {
+    fallbackArg = genBlock(fallback, context);
+  }
+  push(
+    NEWLINE,
+    `const n${id} = `,
+    ...genCall(
+      helper(`create${context.helperType}Slot`),
+      pageVar,
+      nameExpr,
+      "null",
+      fallbackArg,
+      noSlotted && "true",
+      // noSlotted
+      once && "true"
+      // v-once
+    )
+  );
+  return frag;
+}
+
+function genOperations(opers, context) {
+  const [frag, push] = buildCodeFragment();
+  for (const operation of opers) {
+    push(...genOperationWithInsertionState(operation, context));
+  }
+  return frag;
+}
+function genOperationWithInsertionState(oper, context) {
+  const [frag, push] = buildCodeFragment();
+  if (compilerVapor.isBlockOperation(oper) && oper.parent) {
+    push(...genInsertionState(oper, context));
+  }
+  push(...genOperation(oper, context));
+  return frag;
+}
+function genOperation(oper, context) {
+  switch (oper.type) {
+    case 2:
+      return genSetProp(oper, context);
+    case 3:
+      return genDynamicProps(oper, context);
+    case 4:
+      return genSetText(oper, context);
+    case 5:
+      return genSetEvent(oper, context);
+    case 6:
+      return genSetDynamicEvents(oper, context);
+    case 7:
+      return genSetHtml(oper, context);
+    case 8:
+      return genSetTemplateRef(oper, context);
+    case 9:
+      return genInsertNode(oper, context);
+    case 10:
+      return genPrependNode(oper, context);
+    case 15:
+      return genIf(oper, context);
+    case 16:
+      return genFor(oper, context);
+    case 11:
+      return genCreateComponent(oper, context);
+    case 14:
+      return genDeclareOldRef();
+    case 12:
+      return genSlotOutlet(oper, context);
+    case 13:
+      return genBuiltinDirective(oper, context);
+    case 17:
+      return genGetTextChild(oper, context);
+    case 18:
+      return genGetInsertionParent(oper, context);
+    case 19:
+      return genChangeProp(oper, context);
+    default:
+      const exhaustiveCheck = oper;
+      throw new Error(
+        `Unhandled operation type in genOperation: ${exhaustiveCheck}`
+      );
+  }
+}
+function genEffects(effects, context, genExtraFrag) {
+  const { helper } = context;
+  const expressions = effects.flatMap((effect) => effect.expressions);
+  const [frag, push, unshift] = buildCodeFragment();
+  const shouldDeclare = genExtraFrag === void 0;
+  let operationsCount = 0;
+  const {
+    ids,
+    frag: declarationFrags,
+    varNames
+  } = processExpressions(context, expressions, shouldDeclare);
+  for (let i = 0; i < effects.length; i++) {
+    const effect = effects[i];
+    operationsCount += effect.operations.length;
+    const frags = context.withEffect(
+      () => context.withId(() => genEffect(effect, context), ids)
+    );
+    i > 0 && frags.length && push(NEWLINE);
+    if (frag[frag.length - 1] === ")" && frags[0] === "(") {
+      push(";");
+    }
+    push(...frags);
+  }
+  const newLineCount = frag.filter((frag2) => frag2 === NEWLINE).length;
+  if (frag.length && (newLineCount > 1 || operationsCount > 1 || declarationFrags.length > 0)) {
+    unshift(`{`, INDENT_START, NEWLINE);
+    push(INDENT_END, NEWLINE, "}");
+    if (!effects.length) {
+      unshift(NEWLINE);
+    }
+  }
+  if (effects.length && frag.length) {
+    unshift(NEWLINE, `${helper(`render${context.helperType}Effect`)}(() => `);
+    push(`)`);
+  }
+  if (!shouldDeclare && varNames.length) {
+    unshift(NEWLINE, `let `, varNames.join(", "));
+  }
+  if (genExtraFrag) {
+    push(...context.withId(genExtraFrag, ids));
+  }
+  return frag;
+}
+function genEffect({ operations }, context) {
+  const [frag, push] = buildCodeFragment();
+  const operationsExps = genOperations(operations, context);
+  const newlineCount = operationsExps.filter((frag2) => frag2 === NEWLINE).length;
+  if (newlineCount > 1) {
+    push(...operationsExps);
+  } else {
+    push(...operationsExps.filter((frag2) => frag2 !== NEWLINE));
+  }
+  return frag;
+}
+function genInsertionState(operation, context) {
+  const { parent, anchor, append, last } = operation;
+  return [
+    NEWLINE,
+    ...genCall(
+      context.helper(`set${context.helperType}InsertionState`),
+      `n${parent}`,
+      anchor == null ? void 0 : anchor === -1 ? `0` : append ? (
+        // null or anchor > 0 for append
+        // anchor > 0 is the logical index of append node - used for locate node during hydration
+        anchor === 0 ? "null" : `${anchor}`
+      ) : `n${anchor}`,
+      last && "true"
+    )
+  ];
+}
+function genGetInsertionParent({ id }, context) {
+  if (!(context.feature & 1)) {
+    return [];
+  }
+  return [
+    NEWLINE,
+    `const n${id} = ${context.helper(`get${context.helperType}InsertionParent`)}()`
+  ];
+}
+
+const NODE_TYPES = {
+  TEXT: "text",
+  COMMENT: "comment",
+  ELEMENT: "element"
+};
+const flattenTags = ["view", "text", "image"];
+const CONSTANTS = {
+  VALUE_ATTR: "value",
+  EMPTY_STRING: "",
+  TEXT_PLACEHOLDER: compilerVapor.TEXT_PLACEHOLDER,
+  UNKNOWN_COMMENT: "unknown",
+  EXT_STYLE_MARKER: "ext:style"
+};
+const VAR_PREFIXES = {
+  ELEMENT: "e",
+  TEMPLATE: "t",
+  FACTORY: "f"
+};
+
+const COMMENT_START = "<!--";
+const COMMENT_END = "-->";
+const DOCTYPE_START = "<!";
+const WHITESPACE_REGEX = /\s/;
+const ATTRIBUTE_NAME_REGEX = /[\s=]/;
+const SELF_CLOSING_REGEX = /\s*\/$/;
+class HtmlParser {
+  constructor(html) {
+    this.html = html;
+    this.length = html.length;
+    this.index = 0;
+  }
+  /**
+   * Parse HTML string into an array of HTML nodes
+   */
+  parse() {
+    const nodes = [];
+    this.index = 0;
+    while (this.index < this.length) {
+      if (this.html[this.index] === "<") {
+        const result = this.parseTag();
+        if (result) {
+          nodes.push(result.node);
+          this.index = result.endIndex;
+        } else {
+          this.index++;
+        }
+      } else {
+        const textNode = this.parseText();
+        if (textNode) {
+          nodes.push(textNode);
+        }
+      }
+    }
+    return nodes;
+  }
+  // =============================================================================
+  // Private Methods - Main Parsing Logic
+  // =============================================================================
+  /**
+   * Parse text content until next tag
+   */
+  parseText() {
+    const start = this.index;
+    const nextTag = this.html.indexOf("<", start);
+    const end = nextTag === -1 ? this.length : nextTag;
+    if (start === end) return null;
+    const content = this.html.substring(start, end);
+    this.index = end;
+    return { type: "text", content };
+  }
+  /**
+   * Parse a tag (element, comment, or doctype)
+   */
+  parseTag() {
+    if (this.html.startsWith(COMMENT_START, this.index)) {
+      return this.parseComment();
+    }
+    if (this.html.startsWith(DOCTYPE_START, this.index)) {
+      return this.parseDoctype();
+    }
+    return this.parseElement();
+  }
+  /**
+   * Parse HTML comment
+   */
+  parseComment() {
+    const start = this.index + COMMENT_START.length;
+    const end = this.html.indexOf(COMMENT_END, start);
+    if (end === -1) return null;
+    const content = this.html.substring(start, end);
+    return {
+      node: { type: "comment", content },
+      endIndex: end + COMMENT_END.length
+    };
+  }
+  /**
+   * Parse DOCTYPE and other declarations
+   */
+  parseDoctype() {
+    const end = this.html.indexOf(">", this.index + DOCTYPE_START.length);
+    if (end === -1) return null;
+    return {
+      node: { type: "comment", content: "" },
+      endIndex: end + 1
+    };
+  }
+  /**
+   * Parse HTML element
+   */
+  parseElement() {
+    const tagEnd = this.html.indexOf(">", this.index);
+    if (tagEnd === -1) return null;
+    const tagContent = this.html.substring(this.index + 1, tagEnd);
+    const { tag, attrs, selfClosing } = this.parseTagContent(tagContent);
+    if (selfClosing) {
+      return {
+        node: { type: "element", tag, attrs, children: [] },
+        endIndex: tagEnd + 1
+      };
+    }
+    const endTagIndex = this.findMatchingEndTag(tag, tagEnd + 1);
+    if (endTagIndex === -1) {
+      return {
+        node: { type: "element", tag, attrs, children: [] },
+        endIndex: tagEnd + 1
+      };
+    }
+    const innerHtml = this.html.substring(tagEnd + 1, endTagIndex);
+    const children = innerHtml ? new HtmlParser(innerHtml).parse() : [];
+    if (tag === "text" && children.length === 1 && children[0].type === "text" && children[0].content.length === 1 && children[0].content[0] !== "\n") {
+      attrs["max-lines"] = "1";
+    }
+    return {
+      node: { type: "element", tag, attrs, children },
+      endIndex: endTagIndex + `</${tag}>`.length
+    };
+  }
+  // =============================================================================
+  // Private Methods - Tag Content Parsing
+  // =============================================================================
+  /**
+   * Parse tag content to extract tag name, attributes, and self-closing flag
+   */
+  parseTagContent(content) {
+    const selfClosing = SELF_CLOSING_REGEX.test(content);
+    const cleanContent = content.replace(SELF_CLOSING_REGEX, "").trim();
+    if (!cleanContent) {
+      return { tag: "", attrs: {}, selfClosing };
+    }
+    const spaceIndex = cleanContent.search(WHITESPACE_REGEX);
+    const tag = spaceIndex === -1 ? cleanContent : cleanContent.substring(0, spaceIndex);
+    if (spaceIndex === -1) {
+      return { tag, attrs: {}, selfClosing };
+    }
+    const attrContent = cleanContent.substring(spaceIndex + 1);
+    const attrs = this.parseAttributes(attrContent);
+    return { tag, attrs, selfClosing };
+  }
+  /**
+   * Parse attributes from attribute content string
+   */
+  parseAttributes(content) {
+    const attrs = {};
+    let i = 0;
+    const length = content.length;
+    while (i < length) {
+      i = this.skipWhitespace(content, i);
+      if (i >= length) break;
+      const nameStart = i;
+      while (i < length && !ATTRIBUTE_NAME_REGEX.test(content[i])) {
+        i++;
+      }
+      if (i === nameStart) break;
+      const name = content.substring(nameStart, i);
+      i = this.skipWhitespace(content, i);
+      if (i >= length || content[i] !== "=") {
+        if (!this.isSpecialAttribute(name)) {
+          attrs[name] = name;
+        }
+        continue;
+      }
+      i++;
+      i = this.skipWhitespace(content, i);
+      if (i >= length) {
+        if (!this.isSpecialAttribute(name)) {
+          attrs[name] = "";
+        }
+        continue;
+      }
+      const value = this.parseAttributeValue(content, i);
+      if (!this.isSpecialAttribute(name) || value.value.trim() !== "") {
+        attrs[name] = value.value;
+      }
+      i = value.endIndex;
+    }
+    return attrs;
+  }
+  /**
+   * Parse attribute value (quoted or unquoted)
+   */
+  parseAttributeValue(content, startIndex) {
+    const quote = content[startIndex];
+    if (quote === '"' || quote === "'") {
+      const valueStart = startIndex + 1;
+      let i = valueStart;
+      while (i < content.length && content[i] !== quote) {
+        i++;
+      }
+      const value = content.substring(valueStart, i);
+      return {
+        value,
+        endIndex: i < content.length ? i + 1 : i
+        // Skip closing quote if found
+      };
+    } else {
+      const valueStart = startIndex;
+      let i = valueStart;
+      while (i < content.length && !WHITESPACE_REGEX.test(content[i])) {
+        i++;
+      }
+      const value = content.substring(valueStart, i);
+      return { value, endIndex: i };
+    }
+  }
+  // =============================================================================
+  // Private Methods - Utilities
+  // =============================================================================
+  /**
+   * Check if attribute is a special attribute (id, class, style)
+   */
+  isSpecialAttribute(name) {
+    return name === "id" || name === "class" || name === "style" || name === "hover-class";
+  }
+  /**
+   * Skip whitespace characters starting from index
+   */
+  skipWhitespace(content, index) {
+    while (index < content.length && WHITESPACE_REGEX.test(content[index])) {
+      index++;
+    }
+    return index;
+  }
+  /**
+   * Find matching end tag for given tag name
+   */
+  findMatchingEndTag(tag, startIndex) {
+    const startTag = `<${tag}`;
+    const endTag = `</${tag}>`;
+    let depth = 1;
+    let searchIndex = startIndex;
+    while (depth > 0 && searchIndex < this.length) {
+      const nextStart = this.html.indexOf(startTag, searchIndex);
+      const nextEnd = this.html.indexOf(endTag, searchIndex);
+      if (nextEnd === -1) break;
+      if (nextStart !== -1 && nextStart < nextEnd) {
+        const nextTagEnd = this.html.indexOf(">", nextStart);
+        if (nextTagEnd !== -1 && nextTagEnd < nextEnd) {
+          const nextTagContent = this.html.substring(nextStart + 1, nextTagEnd);
+          if (!SELF_CLOSING_REGEX.test(nextTagContent)) {
+            depth++;
+          }
+        }
+        searchIndex = nextTagEnd + 1;
+      } else {
+        depth--;
+        if (depth === 0) {
+          return nextEnd;
+        }
+        searchIndex = nextEnd + endTag.length;
+      }
+    }
+    return -1;
+  }
+}
+
+function extractTextContent(children) {
+  if (!children || children.length !== 1 || children[0].type !== NODE_TYPES.TEXT) {
+    return CONSTANTS.EMPTY_STRING;
+  }
+  if (children[0].content === " ") {
+    return CONSTANTS.EMPTY_STRING;
+  }
+  return children[0].content || CONSTANTS.EMPTY_STRING;
+}
+function isEmptyAttrs(attrs) {
+  return !attrs || Object.keys(attrs).length === 0 || Object.keys(attrs).length === 1 && CONSTANTS.EXT_STYLE_MARKER in attrs;
+}
+function mergeTextAttributes(attrs, textContent) {
+  const result = shared.extend({}, attrs);
+  if (textContent) {
+    result[CONSTANTS.VALUE_ATTR] = textContent;
+  }
+  return result;
+}
+function getFunctionSignature({ r, options }) {
+  const paramType = `${r("page")}: ${r("UniPage")}`;
+  const returnType = options.renderer === "element" ? `: ${r("UniElement")}` : `: ${r("UniNativeBaseView")}`;
+  return { paramType, returnType };
+}
+function getNextVariableName(context) {
+  return `${VAR_PREFIXES.ELEMENT}${context.templateVariableCounter++}`;
+}
+
+function genNodeStatements(node, context, resetCounters = true) {
+  if (resetCounters) {
+    context.resetTemplateCounters();
+  }
+  return genNodeCode(node, context);
+}
+function createDummyNode() {
+  return {
+    variableName: "",
+    statements: []
+  };
+}
+function genNodeCode(node, context) {
+  const isNativeView = context.options.renderer === "nativeView";
+  const renderTextContext = context.renderTextContext;
+  switch (node.type) {
+    case NODE_TYPES.TEXT:
+      if (renderTextContext.inTextElement) {
+        if (isNativeView) {
+          return createDummyNode();
+        }
+        return createTextNode(node.content || CONSTANTS.EMPTY_STRING, context);
+      } else {
+        return createTextElement(
+          node.content || CONSTANTS.EMPTY_STRING,
+          context
+        );
+      }
+    case NODE_TYPES.COMMENT:
+      return createCommentNode(node.content || CONSTANTS.EMPTY_STRING, context);
+    case NODE_TYPES.ELEMENT: {
+      if (renderTextContext.inTextElement && isNativeView) {
+        if (node.tag === "text") {
+          renderTextContext.enterTextElement();
+          genElementCode(node, context);
+          renderTextContext.exitTextElement();
+        }
+        return createDummyNode();
+      }
+      if (node.tag === "text") {
+        renderTextContext.enterTextElement();
+        const result = genElementCode(node, context);
+        if (isNativeView && renderTextContext.textElementCount === 1) {
+          const increaseNativeViewCounter = renderTextContext.genIncreaseNativeViewCounter();
+          if (increaseNativeViewCounter) {
+            result.statements.push(
+              renderTextContext.genIncreaseNativeViewCounter()
+            );
+          }
+        }
+        renderTextContext.exitTextElement();
+        renderTextContext.textElementNames.pop();
+        return result;
+      }
+      return genElementCode(node, context);
+    }
+    default:
+      return createCommentNode(CONSTANTS.UNKNOWN_COMMENT, context);
+  }
+}
+function isEmptyText(content) {
+  return CONSTANTS.EMPTY_STRING === content || content === CONSTANTS.TEXT_PLACEHOLDER;
+}
+function unescapeHtml(content) {
+  return content.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
+}
+function createTextElement(content, context) {
+  const varName = getNextVariableName(context);
+  const statements = [
+    `const ${varName} = ${context.genCreateTag("text")}`
+  ];
+  if (!isEmptyText(content)) {
+    statements.push(
+      `${varName}.${context.r("setText")}(${JSON.stringify(unescapeHtml(content))})`
+    );
+  }
+  return { variableName: varName, statements };
+}
+function createTextNode(content, context) {
+  const varName = getNextVariableName(context);
+  const statements = [
+    // `const ${varName} = ${context.genCreateTag('_text')}`,
+  ];
+  if (!isEmptyText(content)) {
+    const lastTextElementName = context.renderTextContext.textElementNames.slice(-1)[0];
+    statements.push(
+      `${lastTextElementName != null ? lastTextElementName : varName}.${context.r("setText")}(${JSON.stringify(unescapeHtml(content))})`
+    );
+  }
+  return { variableName: "", statements };
+}
+function createCommentNode(content, context) {
+  const varName = getNextVariableName(context);
+  const statements = [
+    `const ${varName} = ${context.genCreateTag("comment", JSON.stringify(content))}`
+  ];
+  return { variableName: varName, statements };
+}
+const specialTagHandlers = {
+  [NODE_TYPES.TEXT]: genTextElementCode
+};
+function genElementCode(node, context) {
+  const { tag, attrs, children } = node;
+  const params = { tag, attrs, children };
+  const handler = specialTagHandlers[tag];
+  if (handler) {
+    return handler(params, context);
+  }
+  return genRegularElementCode(params, context);
+}
+function genTextElementCode(params, context) {
+  const { tag, attrs, children } = params;
+  const hasComplexChildren = children && children.some((child) => child.type === NODE_TYPES.ELEMENT);
+  if (hasComplexChildren) {
+    return buildElementStatements(tag, context, attrs, children);
+  } else {
+    const textContent = extractTextContent(children);
+    const finalAttrs = mergeTextAttributes(attrs, textContent);
+    return buildElementStatements(tag, context, finalAttrs, void 0);
+  }
+}
+function genRegularElementCode(params, context) {
+  const { tag, attrs, children } = params;
+  return buildElementStatements(tag, context, attrs, children);
+}
+function filterAttrs(tag, attrs, context) {
+  if (!attrs) {
+    return;
+  }
+  const newAttrs = {};
+  for (const [name, value] of Object.entries(attrs)) {
+    if (!context.options.isIgnoreAttr(tag, name)) {
+      newAttrs[name] = value;
+    }
+  }
+  return newAttrs;
+}
+function buildElementStatements(tag, context, nodeAttrs, children) {
+  const varName = getNextVariableName(context);
+  const isText = tag === "text";
+  const isNativeView = context.options.renderer === "nativeView";
+  if (isText) {
+    context.renderTextContext.textElementNames.push(varName);
+  }
+  const statements = [];
+  statements.push(
+    `const ${varName} = ${context.genCreateTag({
+      tag,
+      attrs: nodeAttrs,
+      children
+    })}`
+  );
+  const attrs = filterAttrs(tag, nodeAttrs, context);
+  if (attrs && !isEmptyAttrs(attrs)) {
+    let shouldCacheStyle = false;
+    if (CONSTANTS.EXT_STYLE_MARKER in attrs) {
+      shouldCacheStyle = true;
+      delete attrs[CONSTANTS.EXT_STYLE_MARKER];
+    }
+    for (const [name, value] of Object.entries(attrs)) {
+      if (name === "value" && tag === "text") {
+        if (!isEmptyText(value)) {
+          statements.push(
+            `${varName}.${context.r("setText")}(${JSON.stringify(unescapeHtml(value))})`
+          );
+        }
+      } else if (name === "style") {
+        const target = getDom2AppTarget(
+          context.options.platform,
+          context.options.renderer
+        );
+        const { obj: styleObj } = context.options.parseStaticStyle(
+          target,
+          tag,
+          value,
+          false
+        );
+        if (styleObj) {
+          const styleKeys = Object.keys(styleObj);
+          if (shouldCacheStyle && // 仅 DOM 的API需要 cache
+          (isDomTarget(target) || target === "all")) {
+            const { code: styleCode } = context.options.parseStaticStyle(
+              "all",
+              tag,
+              value,
+              true
+            );
+            if (styleCode && styleCode !== "{}") {
+              statements.push(
+                `${context.helper("setElementExtStyle")}(${varName}, ${styleCode})`
+              );
+            }
+          }
+          styleKeys.forEach((key) => {
+            const setterCode = styleObj[key].setterCode;
+            if (setterCode) {
+              statements.push(`${varName}.${styleObj[key].setterCode}`);
+            }
+          });
+        }
+      } else {
+        const result = context.options.parseStaticProp(
+          getDom2AppTarget(context.options.platform, context.options.renderer),
+          tag,
+          name,
+          value
+        );
+        if (result && result.code) {
+          statements.push(
+            `${varName}.${result.code.replace(
+              // replace import expressions with string concatenation
+              new RegExp(`['"]${compilerVapor.IMPORT_EXP_START}(.*?)${compilerVapor.IMPORT_EXP_END}['"]`),
+              `$1`
+            )}`
+          );
+        }
+      }
+    }
+  }
+  if (children && children.length > 0) {
+    for (const child of children) {
+      const inlineCode = !(isText && isNativeView) && tryInlineChild(child, context);
+      if (inlineCode) {
+        statements.push(context.genAppendChild(varName, inlineCode));
+      } else {
+        const childInfo = genNodeCode(child, context);
+        statements.push(...childInfo.statements);
+        statements.push(context.genAppendChild(varName, childInfo.variableName));
+      }
+    }
+  }
+  return { variableName: varName, statements };
+}
+function tryInlineChild(child, context) {
+  switch (child.type) {
+    case NODE_TYPES.TEXT:
+      if (!(context.feature & 1)) {
+        return context.genCreateTag("text");
+      }
+      if (isEmptyText(child.content)) {
+        return context.genCreateTag("text");
+      }
+      return null;
+    case NODE_TYPES.COMMENT:
+      return context.genCreateTag(
+        "comment",
+        JSON.stringify(child.content || CONSTANTS.EMPTY_STRING)
+      );
+    case NODE_TYPES.ELEMENT:
+      const elementChild = child;
+      if (canInlineElement(elementChild)) {
+        return context.genCreateTag(elementChild);
+      }
+      return null;
+    default:
+      return context.genCreateTag(
+        "comment",
+        JSON.stringify(CONSTANTS.UNKNOWN_COMMENT)
+      );
+  }
+}
+function canInlineElement(node) {
+  if (!isEmptyAttrs(node.attrs)) {
+    return false;
+  }
+  if (node.children && node.children.length > 0) {
+    if (node.tag === NODE_TYPES.TEXT && node.children.length === 1 && node.children[0].type === NODE_TYPES.TEXT && isEmptyText(node.children[0].content)) {
+      return true;
+    }
+    return false;
+  }
+  return true;
+}
+
+function genFactoryFunction(template, index, context) {
+  try {
+    if (!template || typeof template !== "string") {
+      return genEmptyFunction(index, context);
+    }
+    const parser = new HtmlParser(template);
+    const nodes = parser.parse();
+    if (nodes.length === 0) {
+      return genEmptyFunction(index, context);
+    }
+    if (nodes.length === 1) {
+      return genSingleNodeFunction(nodes[0], index, context);
+    }
+    return genEmptyFunction(index, context);
+  } catch (error) {
+    return genEmptyFunction(index, context);
+  }
+}
+function genEmptyFunction(index, context) {
+  const { paramType, returnType } = getFunctionSignature(context);
+  return [
+    `const ${VAR_PREFIXES.FACTORY}${index} = (${paramType})${returnType} => {`,
+    NEWLINE,
+    `  return ${context.genCreateTag("text")}`,
+    NEWLINE,
+    `}`
+  ];
+}
+function genSingleNodeFunction(node, index, context) {
+  const { paramType, returnType } = getFunctionSignature(context);
+  const simpleReturn = tryGenSimpleReturn(node, context);
+  if (simpleReturn) {
+    return [
+      `const ${VAR_PREFIXES.FACTORY}${index} = (${paramType})${returnType} => {`,
+      NEWLINE,
+      `  return ${simpleReturn}`,
+      NEWLINE,
+      `}`
+    ];
+  }
+  const nodeInfo = genNodeStatements(node, context);
+  const result = [
+    `const ${VAR_PREFIXES.FACTORY}${index} = (${paramType})${returnType} => {`,
+    NEWLINE
+  ];
+  for (const stmt of nodeInfo.statements) {
+    if (typeof stmt === "string") {
+      result.push(`  ${stmt}`, NEWLINE);
+    } else {
+      result.push(stmt, NEWLINE);
+    }
+  }
+  result.push(`  return ${nodeInfo.variableName}`, NEWLINE, `}`);
+  return result;
+}
+function tryGenSimpleReturn(node, context) {
+  switch (node.type) {
+    case NODE_TYPES.TEXT:
+      return context.genCreateTag("text");
+    case NODE_TYPES.COMMENT:
+      return context.genCreateTag(
+        "comment",
+        JSON.stringify(node.content || CONSTANTS.EMPTY_STRING)
+      );
+    case NODE_TYPES.ELEMENT:
+      const elementNode = node;
+      if (isSimpleElement(elementNode)) {
+        return context.genCreateTag(elementNode);
+      }
+      return null;
+    default:
+      return context.genCreateTag(
+        "comment",
+        JSON.stringify(CONSTANTS.UNKNOWN_COMMENT)
+      );
+  }
+}
+function isSimpleElement(node) {
+  const emptyAttrs = isEmptyAttrs(node.attrs);
+  if (!emptyAttrs) return false;
+  if (node.type === NODE_TYPES.TEXT) {
+    const textContent = extractTextContent(node.children);
+    return !textContent;
+  }
+  return !node.children || node.children.length === 0;
+}
+
+const isTextNode = (template) => {
+  return template[0] !== "<" && template !== compilerVapor.TEXT_PLACEHOLDER;
+};
+function genFactoryFunctions(templates, context) {
+  const result = [];
+  for (let i = 0; i < templates.length; i++) {
+    const template = templates[i];
+    if (!isTextNode(template)) {
+      const functionFragments = genFactoryFunction(template, i, context);
+      result.push(NEWLINE, ...functionFragments);
+    }
+  }
+  return result;
+}
+function genFactoryCallsInRender(templates, rootIndexes, context) {
+  const { helper, options } = context;
+  const result = [];
+  for (let i = 0; i < templates.length; i++) {
+    const template = templates[i];
+    if (isTextNode(template)) {
+      if (template === compilerVapor.TEXT_NODE_PLACEHOLDER) {
+        result.push(
+          `const ${VAR_PREFIXES.TEMPLATE}${i} = () => ${context.options.renderer === "element" ? `${context.pageVar}.${context.r("createTextNode")}()` : '""'}`
+        );
+      } else {
+        result.push(
+          `const ${VAR_PREFIXES.TEMPLATE}${i} = (): string => "${context.options.renderer === "element" ? template : ""}"`
+        );
+      }
+    } else {
+      const rootParam = rootIndexes.has(i) ? ", true" : "";
+      result.push(
+        `const ${VAR_PREFIXES.TEMPLATE}${i} = ${helper(`${options.renderer}Factory`)}(${context.pageVar}, ${VAR_PREFIXES.FACTORY}${i}${rootParam})`
+      );
+    }
+    if (i < templates.length - 1) {
+      result.push(NEWLINE);
+    }
+  }
+  return result;
+}
+
+function genTemplates(templates, _rootIndexes, context) {
+  const factoryFunctions = genFactoryFunctions(
+    Array.from(templates.keys()),
+    context
+  );
+  return factoryFunctions;
+}
+function genSelf(dynamic, context) {
+  const [frag, push] = buildCodeFragment();
+  const { id, template, operation, hasDynamicChild } = dynamic;
+  if (id !== void 0 && template !== void 0) {
+    push(NEWLINE, `const n${id} = t${template}()`);
+    push(...genDirectivesForElement(id, context));
+  }
+  if (operation) {
+    push(...genOperationWithInsertionState(operation, context));
+  }
+  if (hasDynamicChild) {
+    push(...genChildren(dynamic, context, push, `n${id}`));
+  }
+  return frag;
+}
+function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
+  const { helper, helperType, options } = context;
+  const [frag, push] = buildCodeFragment();
+  const { children } = dynamic;
+  let offset = 0;
+  let prev;
+  let textNodeCount = 0;
+  const isDynamicText = dynamic.tag === "text";
+  for (let [index, child] of children.entries()) {
+    if (child.type === 2) {
+      textNodeCount++;
+      continue;
+    }
+    if (isDynamicText && options.renderer === "nativeView" && child.tag === "text") {
+      textNodeCount++;
+      continue;
+    }
+    index = index - textNodeCount;
+    if (child.operation && child.operation.anchor === -1) ;
+    if (child.flags & 2) {
+      offset--;
+    } else if (child.ifBranch) ;
+    const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
+    if (id === void 0 && !child.hasDynamicChild) {
+      push(...genSelf(child, context));
+      continue;
+    }
+    const elementIndex = index + offset;
+    const variable = id === void 0 ? `p${context.block.tempId++}` : `n${id}`;
+    pushBlock(NEWLINE, `const ${variable} = `);
+    if (prev) {
+      if (elementIndex - prev[1] === 1) {
+        pushBlock(
+          ...genCall(
+            helper(`next${helperType}`),
+            prev[0]
+            // String(logicalIndex),
+          )
+        );
+      } else {
+        pushBlock(
+          ...genCall(
+            helper(`nthChild${helperType}`),
+            from,
+            String(elementIndex)
+            // String(logicalIndex),
+          )
+        );
+      }
+    } else {
+      if (elementIndex === 0) {
+        pushBlock(
+          ...genCall(
+            helper(`child${helperType}`),
+            from
+          )
+        );
+      } else {
+        let init = genCall(helper(`child${helperType}`), from);
+        if (elementIndex === 1) {
+          init = genCall(
+            helper(`next${helperType}`),
+            init
+            // String(logicalIndex),
+          );
+        } else if (elementIndex > 1) {
+          init = genCall(
+            helper(`nthChild${helperType}`),
+            from,
+            String(elementIndex)
+            // String(logicalIndex),
+          );
+        }
+        pushBlock(...init);
+      }
+    }
+    if (id === child.anchor && !child.hasDynamicChild) {
+      push(...genSelf(child, context));
+    }
+    if (id !== void 0) {
+      push(...genDirectivesForElement(id, context));
+    }
+    prev = [variable, elementIndex];
+    push(...genChildren(child, context, pushBlock, variable));
+  }
+  return frag;
+}
+
+function genBlock(oper, context, args = [], root) {
+  return [
+    "(",
+    ...args,
+    ") => {",
+    INDENT_START,
+    ...genBlockContent(oper, context, root),
+    INDENT_END,
+    NEWLINE,
+    "}"
+  ];
+}
+function genBlockContent(block, context, root, genEffectsExtraFrag) {
+  const [frag, push] = buildCodeFragment();
+  const { dynamic, effect, operation, returns, key } = block;
+  const resetBlock = context.enterBlock(block);
+  for (const child of dynamic.children) {
+    push(...genSelf(child, context));
+  }
+  for (const child of dynamic.children) {
+    if (!child.hasDynamicChild) {
+      push(...genChildren(child, context, push, `n${child.id}`));
+    }
+  }
+  push(...genOperations(operation, context));
+  push(
+    ...genEffects(
+      // fixed by uts for 中 matchPatterns 已经处理了一部分 effect
+      effect.filter((effect2) => !effect2.generated),
+      context,
+      genEffectsExtraFrag
+    )
+  );
+  if (root && context.ir.hasDeferredVShow) {
+    push(NEWLINE, `deferredApplyVShows.forEach(fn => fn())`);
+  }
+  if (dynamic.needsKey) {
+    for (const child of dynamic.children) {
+      const keyValue = key ? genExpression(key, context) : JSON.stringify(child.id);
+      push(NEWLINE, `n${child.id}.$key = `, ...keyValue);
+    }
+  }
+  push(NEWLINE, `return `);
+  const returnNodes = returns.map((n) => `n${n}`);
+  const returnsCode = returnNodes.length > 1 ? [
+    ...genMulti(DELIMITERS_ARRAY, ...returnNodes),
+    ` as Uni${context.helperType}Block[]`
+  ] : [returnNodes[0] || "null"];
+  push(...returnsCode);
+  resetBlock();
+  return frag;
+}
+
+const RENDER_ELEMENT_FEATURE = 1 | 2 | 4 | 8 | 16 | 32;
+const RENDER_NATIVE_VIEW_FEATURE = 0;
+function isIgnoreElementAttr(tagName, attrName) {
+  return false;
+}
+function isIgnoreNativeViewAttr(tagName, attrName) {
+  if (tagName === "text" && attrName === "value") {
+    return true;
+  }
+  return false;
+}
+
+class RendererTextContext {
+  constructor(options) {
+    this.__inTextElement = false;
+    this.increaseNativeViewCount = 0;
+    this.textElementCount = 0;
+    this.textElementNames = [];
+    this.options = options;
+  }
+  set inTextElement(value) {
+    if (this.__inTextElement === value) {
+      return;
+    }
+    this.__inTextElement = value;
+    if (value) {
+      this.increaseNativeViewCount = 0;
+    }
+  }
+  get inTextElement() {
+    return this.__inTextElement;
+  }
+  enterTextElement() {
+    if (this.inTextElement) {
+      this.increaseNativeViewCount++;
+    }
+    this.inTextElement = true;
+    this.textElementCount++;
+  }
+  exitTextElement() {
+    this.textElementCount--;
+    if (this.textElementCount === 0) {
+      this.inTextElement = false;
+    }
+  }
+  genIncreaseNativeViewCounter() {
+    if (this.increaseNativeViewCount > 0) {
+      return `${this.options.r("page")}.${this.options.r("increaseNativeViewCounter")}(${this.increaseNativeViewCount})`;
+    }
+    return "";
+  }
+}
+class RendererCodegenContext extends SharedDataCodegenContext {
+  constructor(ir, options) {
+    super();
+    this.ir = ir;
+    this.helpers = /* @__PURE__ */ new Set([]);
+    this.helper = (name) => {
+      this.helpers.add(name);
+      return this.r(`_${name}`);
+    };
+    this.delegates = /* @__PURE__ */ new Set();
+    this.identifiers = /* @__PURE__ */ Object.create(null);
+    this.seenInlineHandlerNames = /* @__PURE__ */ Object.create(null);
+    this.scopeLevel = 0;
+    this.sharedDataIdent = (ident) => {
+      this.effectSharedDataIdentifiers.add(ident);
+      return `${this.sharedDataVar}.get_${ident}(${this.r("__reactivity")})`;
+    };
+    // Template factory counters
+    this.templateVariableCounter = 0;
+    this.templateStyleCounter = 0;
+    // 记录当前 effect 中使用的 sharedData 标识符列表
+    this.effectSharedDataIdentifiers = /* @__PURE__ */ new Set();
+    const defaultOptions = {
+      root: "",
+      mode: "module",
+      platform: "app-harmony",
+      target: "dom-c",
+      renderer: "element",
+      prefixIdentifiers: true,
+      sourceMap: false,
+      filename: `template.vue.html`,
+      relativeFilename: "",
+      scopeId: null,
+      runtimeGlobalName: `Vue`,
+      runtimeModuleName: `vue`,
+      ssrRuntimeModuleName: "vue/server-renderer",
+      ssr: false,
+      isTS: false,
+      inSSR: false,
+      inline: false,
+      bindingMetadata: {},
+      expressionPlugins: [],
+      componentType: "page",
+      className: "",
+      scriptCppBlocks: [],
+      parseStaticStyle: (target, tagName, style, genCode) => ({
+        obj: {},
+        messages: []
+      }),
+      parseStaticProp: () => void 0,
+      isIgnoreAttr: () => false,
+      onError: compilerDom.defaultOnError,
+      onWarn: compilerDom.defaultOnWarn,
+      onVueTemplateCompileLog: () => {
+      },
+      isCppExpr: () => false,
+      r: (name) => name
+    };
+    this.options = shared.extend(defaultOptions, options);
+    this.block = ir.block;
+    const isNativeView = this.options.renderer === "nativeView";
+    this.genCreateTag = isNativeView ? this.genCreateNativeView : this.genCreateElement;
+    this.genAppendChild = isNativeView ? this.genAppendChildNativeView : this.genAppendChildElement;
+    this.getPropertyOptions = createGetPropertyOptions(
+      this.options.platform,
+      this.options.target
+    );
+    this.renderTextContext = new RendererTextContext(this.options);
+    this.r = this.options.r;
+  }
+  withId(fn, map) {
+    const { identifiers } = this;
+    const ids = Object.keys(map);
+    for (const id of ids) {
+      identifiers[id] || (identifiers[id] = []);
+      identifiers[id].unshift(map[id] || id);
+    }
+    const ret = fn();
+    ids.forEach((id) => shared.remove(identifiers[id], map[id] || id));
+    return ret;
+  }
+  enterScope() {
+    return [this.scopeLevel++, () => this.scopeLevel--];
+  }
+  get insVar() {
+    return this.r("__ins");
+  }
+  get insMethodName() {
+    return `getCurrent${this.helperType}VaporComponentInstance`;
+  }
+  get pageVar() {
+    return this.r("__page");
+  }
+  get helperType() {
+    return this.options.renderer === "nativeView" ? "NativeView" : "Element";
+  }
+  sharedDataVForClass(vForCount) {
+    return `${this.options.className}${this.r("SharedData_VFor")}${vForCount}`;
+  }
+  get feature() {
+    return this.options.renderer === "nativeView" ? RENDER_NATIVE_VIEW_FEATURE : RENDER_ELEMENT_FEATURE;
+  }
+  resetTemplateCounters() {
+    this.templateVariableCounter = 0;
+    this.templateStyleCounter = 0;
+  }
+  withEffect(fn) {
+    this.effectSharedDataIdentifiers.clear();
+    const result = fn();
+    if (this.effectSharedDataIdentifiers.size) {
+      const [frag, push] = buildCodeFragment();
+      push(NEWLINE);
+      push(`if(${genEffectSharedDataIdentifiers(this)}) {`);
+      push(NEWLINE);
+      push(INDENT_START);
+      push(...result);
+      push(INDENT_END);
+      push(NEWLINE);
+      push("}");
+      this.effectSharedDataIdentifiers.clear();
+      return frag;
+    }
+    return result;
+  }
+  genCreateNativeView(tagOrNode, options, flatten) {
+    var _a;
+    let tag;
+    let createElementParams = null;
+    if (typeof tagOrNode === "string") {
+      tag = tagOrNode;
+    } else {
+      tag = tagOrNode.tag;
+      createElementParams = tagOrNode;
+    }
+    const createArgs = [];
+    if (options && tag !== "text") {
+      createArgs.push(options);
+    }
+    if (flatten == null && createElementParams) {
+      flatten = flattenTags.includes(tag) && !!((_a = createElementParams.attrs) == null ? void 0 : _a.flatten);
+    }
+    if (flatten) {
+      createArgs.push("true");
+    } else {
+      createArgs.push("false");
+    }
+    const { r } = this;
+    const curPageVar = r("page");
+    const args = createArgs.join(", ");
+    switch (tag) {
+      case "view":
+        return `${curPageVar}.${r("createNativeView")}(${args})`;
+      case "text":
+        return `${curPageVar}.${r("createNativeTextView")}(${args})`;
+      case "image":
+        return `${curPageVar}.${r("createNativeImageView")}(${args})`;
+      case "comment":
+        return `null`;
+      case "scroll-view":
+        return `${curPageVar}.${r("createNativeScrollView")}()`;
+      case "native-view":
+        return `${curPageVar}.${r("createNativeCustomView")}()`;
+      default:
+        return `${curPageVar}.${r("createNativeView")}(false)`;
+    }
+  }
+  genCreateElement(tagOrNode, options, flatten) {
+    var _a;
+    let tag;
+    let createElementParams = null;
+    if (typeof tagOrNode === "string") {
+      tag = tagOrNode;
+    } else {
+      tag = tagOrNode.tag;
+      createElementParams = tagOrNode;
+    }
+    const createArgs = [];
+    if (options && tag !== "comment") {
+      createArgs.push(options);
+    }
+    if (flatten == null && createElementParams) {
+      flatten = flattenTags.includes(tag) && !!((_a = createElementParams.attrs) == null ? void 0 : _a.flatten);
+    }
+    if (flatten) {
+      createArgs.push("true");
+    } else if (tag !== "comment") {
+      createArgs.push("false");
+    }
+    const { r } = this;
+    const curPageVar = r("page");
+    const args = createArgs.join(", ");
+    switch (tag) {
+      case "view":
+        return `${curPageVar}.${r("createViewElement")}(${args})`;
+      case "text":
+        return `${curPageVar}.${r("createTextElement")}(${args})`;
+      case "_text":
+        return `${curPageVar}.${r("createTextNode")}()`;
+      case "image":
+        return `${curPageVar}.${r("createImageElement")}(${args})`;
+      case "comment":
+        return `${curPageVar}.${r("createComment")}(${args || '""'})`;
+      case "scroll-view":
+        return `${curPageVar}.${r("createScrollViewElement")}()`;
+      case "native-view":
+        return `${curPageVar}.${r("createNativeViewElement")}()`;
+      default:
+        return `${curPageVar}.${r("createViewElement")}(false)`;
+    }
+  }
+  genAppendChildNativeView(node, child) {
+    if (node === "" || child === "") {
+      return "";
+    }
+    return `${this.helper("appendNativeViewChild")}(${node}, ${child})`;
+  }
+  genAppendChildElement(node, child) {
+    if (node === "" || child === "") {
+      return "";
+    }
+    return `${node}.${this.r("appendChild")}(${child})`;
+  }
+  genCastCode(expr, type, options) {
+    if (isCPPTarget(this.options.target)) {
+      return genCall(
+        `UTSCPP.as<${type}${(options == null ? void 0 : options.dereference) ? `, '*'` : ""}>`,
+        expr
+      );
+    }
+    return [";(", ...expr, "as", type, ")"];
+  }
+}
+function generate(ir, options) {
+  var _a;
+  options.renderer = (_a = options.renderer) != null ? _a : "element";
+  options.isIgnoreAttr = options.renderer === "element" ? isIgnoreElementAttr : isIgnoreNativeViewAttr;
+  const [frag, push] = buildCodeFragment();
+  const context = new RendererCodegenContext(ir, options);
+  const { helpers, r } = context;
+  const functionName = r("render" + shared.capitalize(options.renderer));
+  const signature = [
+    `${r("__sharedData")}: ${options.className}${r("SharedData")}`,
+    `${r("__page")}: ${r("UniPage")}`,
+    `${r("__reactivity")}: ${r("VueReactivity")}`
+  ].join(", ");
+  {
+    push(
+      NEWLINE,
+      `export function ${functionName}(${signature}): ${r(`Uni${context.helperType}Block`)} {`
+    );
+  }
+  push(INDENT_START);
+  const insCodeIndex = push(NEWLINE);
+  if (context.options.scriptCppBlocks.length > 0 && context.feature & 32) {
+    push(...genCppInit(context.options.scriptCppBlocks, context));
+  }
+  push(...genAssetImports(context));
+  const templates = genTemplates(ir.template, ir.rootTemplateIndexes, context);
+  push(...templates);
+  if (ir.template.size > 0) {
+    const templateCalls = genFactoryCallsInRender(
+      Array.from(ir.template.keys()),
+      ir.rootTemplateIndexes,
+      context
+    );
+    push(NEWLINE, ...templateCalls);
+  }
+  push(...genBlockContent(ir.block, context, true));
+  push(INDENT_END, NEWLINE);
+  {
+    push("}");
+  }
+  if (context.helpers.has(context.insMethodName)) {
+    frag.splice(
+      insCodeIndex,
+      0,
+      `const ${context.insVar} = ${context.helper(context.insMethodName)}()!`
+    );
+  } else {
+    frag.splice(insCodeIndex, 1);
+  }
+  const delegates = genDelegates(context);
+  const imports = genHelperImports(context);
+  const preamble = imports + delegates;
+  const newlineCount = [...preamble].filter((c) => c === "\n").length;
+  if (newlineCount && true) {
+    frag.unshift(...new Array(newlineCount).fill(LF));
+  }
+  let [code, map] = codeFragmentToString(frag, context);
+  {
+    code = preamble + code;
+  }
+  return {
+    code,
+    ast: ir,
+    preamble,
+    map: map && map.toJSON(),
+    helpers
+  };
+}
+function genDelegates({ delegates, helper }) {
+  return delegates.size ? genCall(
+    helper("delegateEvents"),
+    ...Array.from(delegates).map((v) => `"${v}"`)
+  ).join("") + "\n" : "";
+}
+function genHelperImports({
+  helpers,
+  helper,
+  options
+}) {
+  let imports = "";
+  ["getRestElement", "getDefaultValue"].forEach((h) => {
+    helpers.delete(h);
+  });
+  if (helpers.size) {
+    imports += `import { ${[...helpers].map((h) => `${h} as _${h}`).join(", ")} } from '${options.runtimeModuleName}';
+`;
+  }
+  return imports;
+}
+function genAssetImports({ ir }) {
+  const assetImports = ir.node.imports;
+  const imports = [];
+  for (const assetImport of assetImports) {
+    const exp = assetImport.exp;
+    const name = exp.content;
+    imports.push(NEWLINE, `const ${name} = '${assetImport.path}';`);
+  }
+  return imports;
+}
+const sharedDataIdentGenerator = new IdentGenerator(2e3);
+function genEffectSharedDataIdentifiers(context) {
+  return Array.from(context.effectSharedDataIdentifiers).map((name) => genEffectSharedDataIdentifier(name, context)).join(" || ");
+}
+function genEffectSharedDataIdentifier(name, context) {
+  const { index, bitValue } = sharedDataIdentGenerator.getGroupInfo(name);
+  return `${context.sharedDataVar}._flag${index} & ${bitValue}`;
+}
+function genCppInit(scriptCppBlocks, context) {
+  const [frag, push] = buildCodeFragment();
+  push(NEWLINE);
+  for (const scriptCppBlock of scriptCppBlocks) {
+    push(
+      `const ${scriptCppBlock.module} = ${context.helper(`createUserClass`)}<${scriptCppBlock.className}>()`
+    );
+  }
+  return frag;
+}
+
+function createDom2CompilerError(msg, loc) {
+  const error = new SyntaxError(msg);
+  if (loc) {
+    error.loc = {
+      start: { ...loc.start },
+      end: { ...loc.end },
+      source: loc.source
+    };
+  }
+  return error;
+}
+function createDom2StaticStyleCompilerError(msg, loc) {
+  const error = createDom2CompilerError(msg, loc);
+  error.errorType = "css";
+  return error;
+}
+function createDom2StaticPropCompilerError(msg, loc) {
+  const error = createDom2CompilerError(msg, loc);
+  error.errorType = "prop";
+  return error;
+}
+const Dom2ErrorMessages = {
+  [1e4]: "Text or interpolation can only be used inside <text> tag.",
+  [10001]: "A <text> element can only contain one text node."
+};
+function createDom2TextCompilerError(code, loc, additionalMessage) {
+  let message = Dom2ErrorMessages[code];
+  return createDom2CompilerError(message, loc);
+}
+
+function isTextTag(element) {
+  return element.type === 1 && element.tagType === 0 && element.tag === "text";
+}
+function isViewTag(element) {
+  return element.type === 1 && element.tagType === 0 && element.tag === "view";
+}
+function isRealParent(element) {
+  return element.tagType === 0 || element.tagType === 1;
+}
+function createTextWrapper(node) {
+  return node;
+}
+function transformTextNodes(root, options) {
+  function processChildren(children, parent, realParent) {
+    var _a, _b;
+    const currentRealParent = isRealParent(parent) ? parent : realParent;
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      if (child.type === 2 || child.type === 5) {
+        if (!currentRealParent) {
+          (_a = options.onError) == null ? void 0 : _a.call(
+            options,
+            createDom2TextCompilerError(
+              1e4,
+              child.loc
+            )
+          );
+        } else if (!isTextTag(currentRealParent) && // 自定义组件允许直接包含文本内容，不需要自动包裹
+        currentRealParent.tagType !== 1) {
+          if (isViewTag(currentRealParent)) {
+            const wrapper = createTextWrapper(
+              child
+            );
+            children[i] = wrapper;
+          } else {
+            (_b = options.onError) == null ? void 0 : _b.call(
+              options,
+              createDom2TextCompilerError(
+                1e4,
+                child.loc
+              )
+            );
+          }
+        }
+      } else if (child.type === 1) {
+        traverseNode(child, currentRealParent);
+      }
+    }
+  }
+  function traverseNode(node, realParent = null) {
+    var _a, _b;
+    if (node.type === 1) {
+      const element = node;
+      if (element.tag === "text") {
+        let childTextNodeCount = 0;
+        let inTextNode = false;
+        for (let i = 0; i < element.children.length; i++) {
+          const child = element.children[i];
+          if (child.type === 2) {
+            if (!inTextNode) {
+              inTextNode = true;
+              childTextNodeCount++;
+              if (childTextNodeCount > 1) {
+                (_a = options.onError) == null ? void 0 : _a.call(
+                  options,
+                  createDom2TextCompilerError(
+                    10001,
+                    element.loc
+                  )
+                );
+                break;
+              }
+            }
+          } else if (child.type === 1) {
+            inTextNode = false;
+          }
+        }
+      }
+      processChildren(element.children, element, realParent);
+    } else if (node.type === 0) {
+      const rootNode = node;
+      for (let i = 0; i < rootNode.children.length; i++) {
+        const child = rootNode.children[i];
+        if (child.type === 2 || child.type === 5) {
+          (_b = options.onError) == null ? void 0 : _b.call(
+            options,
+            createDom2TextCompilerError(
+              1e4,
+              child.loc
+            )
+          );
+        } else if (child.type === 1) {
+          traverseNode(child, null);
+        }
+      }
+    }
+  }
+  traverseNode(root);
+}
+
+const sharedDataCache = /* @__PURE__ */ new Map();
+function getSharedDataResult(key) {
+  return sharedDataCache.get(key) || {
+    className: "",
+    scriptCppBlocks: [],
+    renderElementCode: "",
+    renderNativeViewCode: "",
+    renderElementSourceMap: null,
+    renderNativeViewSourceMap: null
+  };
+}
+function emitSharedData(filename, className, element, nativeView, scriptCppBlocks) {
+  sharedDataCache.set(filename, {
+    className,
+    scriptCppBlocks,
+    renderElementCode: element.code,
+    renderElementSourceMap: element.map,
+    renderNativeViewCode: nativeView.code,
+    renderNativeViewSourceMap: nativeView.map
+  });
+}
+
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+var picocolors = {exports: {}};
+
+var hasRequiredPicocolors;
+
+function requirePicocolors () {
+	if (hasRequiredPicocolors) return picocolors.exports;
+	hasRequiredPicocolors = 1;
+	let p = process || {}, argv = p.argv || [], env = p.env || {};
+	let isColorSupported =
+		!(!!env.NO_COLOR || argv.includes("--no-color")) &&
+		(!!env.FORCE_COLOR || argv.includes("--color") || p.platform === "win32" || ((p.stdout || {}).isTTY && env.TERM !== "dumb") || !!env.CI);
+
+	let formatter = (open, close, replace = open) =>
+		input => {
+			let string = "" + input, index = string.indexOf(close, open.length);
+			return ~index ? open + replaceClose(string, close, replace, index) + close : open + string + close
+		};
+
+	let replaceClose = (string, close, replace, index) => {
+		let result = "", cursor = 0;
+		do {
+			result += string.substring(cursor, index) + replace;
+			cursor = index + close.length;
+			index = string.indexOf(close, cursor);
+		} while (~index)
+		return result + string.substring(cursor)
+	};
+
+	let createColors = (enabled = isColorSupported) => {
+		let f = enabled ? formatter : () => String;
+		return {
+			isColorSupported: enabled,
+			reset: f("\x1b[0m", "\x1b[0m"),
+			bold: f("\x1b[1m", "\x1b[22m", "\x1b[22m\x1b[1m"),
+			dim: f("\x1b[2m", "\x1b[22m", "\x1b[22m\x1b[2m"),
+			italic: f("\x1b[3m", "\x1b[23m"),
+			underline: f("\x1b[4m", "\x1b[24m"),
+			inverse: f("\x1b[7m", "\x1b[27m"),
+			hidden: f("\x1b[8m", "\x1b[28m"),
+			strikethrough: f("\x1b[9m", "\x1b[29m"),
+
+			black: f("\x1b[30m", "\x1b[39m"),
+			red: f("\x1b[31m", "\x1b[39m"),
+			green: f("\x1b[32m", "\x1b[39m"),
+			yellow: f("\x1b[33m", "\x1b[39m"),
+			blue: f("\x1b[34m", "\x1b[39m"),
+			magenta: f("\x1b[35m", "\x1b[39m"),
+			cyan: f("\x1b[36m", "\x1b[39m"),
+			white: f("\x1b[37m", "\x1b[39m"),
+			gray: f("\x1b[90m", "\x1b[39m"),
+
+			bgBlack: f("\x1b[40m", "\x1b[49m"),
+			bgRed: f("\x1b[41m", "\x1b[49m"),
+			bgGreen: f("\x1b[42m", "\x1b[49m"),
+			bgYellow: f("\x1b[43m", "\x1b[49m"),
+			bgBlue: f("\x1b[44m", "\x1b[49m"),
+			bgMagenta: f("\x1b[45m", "\x1b[49m"),
+			bgCyan: f("\x1b[46m", "\x1b[49m"),
+			bgWhite: f("\x1b[47m", "\x1b[49m"),
+
+			blackBright: f("\x1b[90m", "\x1b[39m"),
+			redBright: f("\x1b[91m", "\x1b[39m"),
+			greenBright: f("\x1b[92m", "\x1b[39m"),
+			yellowBright: f("\x1b[93m", "\x1b[39m"),
+			blueBright: f("\x1b[94m", "\x1b[39m"),
+			magentaBright: f("\x1b[95m", "\x1b[39m"),
+			cyanBright: f("\x1b[96m", "\x1b[39m"),
+			whiteBright: f("\x1b[97m", "\x1b[39m"),
+
+			bgBlackBright: f("\x1b[100m", "\x1b[49m"),
+			bgRedBright: f("\x1b[101m", "\x1b[49m"),
+			bgGreenBright: f("\x1b[102m", "\x1b[49m"),
+			bgYellowBright: f("\x1b[103m", "\x1b[49m"),
+			bgBlueBright: f("\x1b[104m", "\x1b[49m"),
+			bgMagentaBright: f("\x1b[105m", "\x1b[49m"),
+			bgCyanBright: f("\x1b[106m", "\x1b[49m"),
+			bgWhiteBright: f("\x1b[107m", "\x1b[49m"),
+		}
+	};
+
+	picocolors.exports = createColors();
+	picocolors.exports.createColors = createColors;
+	return picocolors.exports;
+}
+
+var tokenize;
+var hasRequiredTokenize;
+
+function requireTokenize () {
+	if (hasRequiredTokenize) return tokenize;
+	hasRequiredTokenize = 1;
+
+	const SINGLE_QUOTE = "'".charCodeAt(0);
+	const DOUBLE_QUOTE = '"'.charCodeAt(0);
+	const BACKSLASH = '\\'.charCodeAt(0);
+	const SLASH = '/'.charCodeAt(0);
+	const NEWLINE = '\n'.charCodeAt(0);
+	const SPACE = ' '.charCodeAt(0);
+	const FEED = '\f'.charCodeAt(0);
+	const TAB = '\t'.charCodeAt(0);
+	const CR = '\r'.charCodeAt(0);
+	const OPEN_SQUARE = '['.charCodeAt(0);
+	const CLOSE_SQUARE = ']'.charCodeAt(0);
+	const OPEN_PARENTHESES = '('.charCodeAt(0);
+	const CLOSE_PARENTHESES = ')'.charCodeAt(0);
+	const OPEN_CURLY = '{'.charCodeAt(0);
+	const CLOSE_CURLY = '}'.charCodeAt(0);
+	const SEMICOLON = ';'.charCodeAt(0);
+	const ASTERISK = '*'.charCodeAt(0);
+	const COLON = ':'.charCodeAt(0);
+	const AT = '@'.charCodeAt(0);
+
+	const RE_AT_END = /[\t\n\f\r "#'()/;[\\\]{}]/g;
+	const RE_WORD_END = /[\t\n\f\r !"#'():;@[\\\]{}]|\/(?=\*)/g;
+	const RE_BAD_BRACKET = /.[\r\n"'(/\\]/;
+	const RE_HEX_ESCAPE = /[\da-f]/i;
+
+	tokenize = function tokenizer(input, options = {}) {
+	  let css = input.css.valueOf();
+	  let ignore = options.ignoreErrors;
+
+	  let code, content, escape, next, quote;
+	  let currentToken, escaped, escapePos, n, prev;
+
+	  let length = css.length;
+	  let pos = 0;
+	  let buffer = [];
+	  let returned = [];
+
+	  function position() {
+	    return pos
+	  }
+
+	  function unclosed(what) {
+	    throw input.error('Unclosed ' + what, pos)
+	  }
+
+	  function endOfFile() {
+	    return returned.length === 0 && pos >= length
+	  }
+
+	  function nextToken(opts) {
+	    if (returned.length) return returned.pop()
+	    if (pos >= length) return
+
+	    let ignoreUnclosed = opts ? opts.ignoreUnclosed : false;
+
+	    code = css.charCodeAt(pos);
+
+	    switch (code) {
+	      case NEWLINE:
+	      case SPACE:
+	      case TAB:
+	      case CR:
+	      case FEED: {
+	        next = pos;
+	        do {
+	          next += 1;
+	          code = css.charCodeAt(next);
+	        } while (
+	          code === SPACE ||
+	          code === NEWLINE ||
+	          code === TAB ||
+	          code === CR ||
+	          code === FEED
+	        )
+
+	        currentToken = ['space', css.slice(pos, next)];
+	        pos = next - 1;
+	        break
+	      }
+
+	      case OPEN_SQUARE:
+	      case CLOSE_SQUARE:
+	      case OPEN_CURLY:
+	      case CLOSE_CURLY:
+	      case COLON:
+	      case SEMICOLON:
+	      case CLOSE_PARENTHESES: {
+	        let controlChar = String.fromCharCode(code);
+	        currentToken = [controlChar, controlChar, pos];
+	        break
+	      }
+
+	      case OPEN_PARENTHESES: {
+	        prev = buffer.length ? buffer.pop()[1] : '';
+	        n = css.charCodeAt(pos + 1);
+	        if (
+	          prev === 'url' &&
+	          n !== SINGLE_QUOTE &&
+	          n !== DOUBLE_QUOTE &&
+	          n !== SPACE &&
+	          n !== NEWLINE &&
+	          n !== TAB &&
+	          n !== FEED &&
+	          n !== CR
+	        ) {
+	          next = pos;
+	          do {
+	            escaped = false;
+	            next = css.indexOf(')', next + 1);
+	            if (next === -1) {
+	              if (ignore || ignoreUnclosed) {
+	                next = pos;
+	                break
+	              } else {
+	                unclosed('bracket');
+	              }
+	            }
+	            escapePos = next;
+	            while (css.charCodeAt(escapePos - 1) === BACKSLASH) {
+	              escapePos -= 1;
+	              escaped = !escaped;
+	            }
+	          } while (escaped)
+
+	          currentToken = ['brackets', css.slice(pos, next + 1), pos, next];
+
+	          pos = next;
+	        } else {
+	          next = css.indexOf(')', pos + 1);
+	          content = css.slice(pos, next + 1);
+
+	          if (next === -1 || RE_BAD_BRACKET.test(content)) {
+	            currentToken = ['(', '(', pos];
+	          } else {
+	            currentToken = ['brackets', content, pos, next];
+	            pos = next;
+	          }
+	        }
+
+	        break
+	      }
+
+	      case SINGLE_QUOTE:
+	      case DOUBLE_QUOTE: {
+	        quote = code === SINGLE_QUOTE ? "'" : '"';
+	        next = pos;
+	        do {
+	          escaped = false;
+	          next = css.indexOf(quote, next + 1);
+	          if (next === -1) {
+	            if (ignore || ignoreUnclosed) {
+	              next = pos + 1;
+	              break
+	            } else {
+	              unclosed('string');
+	            }
+	          }
+	          escapePos = next;
+	          while (css.charCodeAt(escapePos - 1) === BACKSLASH) {
+	            escapePos -= 1;
+	            escaped = !escaped;
+	          }
+	        } while (escaped)
+
+	        currentToken = ['string', css.slice(pos, next + 1), pos, next];
+	        pos = next;
+	        break
+	      }
+
+	      case AT: {
+	        RE_AT_END.lastIndex = pos + 1;
+	        RE_AT_END.test(css);
+	        if (RE_AT_END.lastIndex === 0) {
+	          next = css.length - 1;
+	        } else {
+	          next = RE_AT_END.lastIndex - 2;
+	        }
+
+	        currentToken = ['at-word', css.slice(pos, next + 1), pos, next];
+
+	        pos = next;
+	        break
+	      }
+
+	      case BACKSLASH: {
+	        next = pos;
+	        escape = true;
+	        while (css.charCodeAt(next + 1) === BACKSLASH) {
+	          next += 1;
+	          escape = !escape;
+	        }
+	        code = css.charCodeAt(next + 1);
+	        if (
+	          escape &&
+	          code !== SLASH &&
+	          code !== SPACE &&
+	          code !== NEWLINE &&
+	          code !== TAB &&
+	          code !== CR &&
+	          code !== FEED
+	        ) {
+	          next += 1;
+	          if (RE_HEX_ESCAPE.test(css.charAt(next))) {
+	            while (RE_HEX_ESCAPE.test(css.charAt(next + 1))) {
+	              next += 1;
+	            }
+	            if (css.charCodeAt(next + 1) === SPACE) {
+	              next += 1;
+	            }
+	          }
+	        }
+
+	        currentToken = ['word', css.slice(pos, next + 1), pos, next];
+
+	        pos = next;
+	        break
+	      }
+
+	      default: {
+	        if (code === SLASH && css.charCodeAt(pos + 1) === ASTERISK) {
+	          next = css.indexOf('*/', pos + 2) + 1;
+	          if (next === 0) {
+	            if (ignore || ignoreUnclosed) {
+	              next = css.length;
+	            } else {
+	              unclosed('comment');
+	            }
+	          }
+
+	          currentToken = ['comment', css.slice(pos, next + 1), pos, next];
+	          pos = next;
+	        } else {
+	          RE_WORD_END.lastIndex = pos + 1;
+	          RE_WORD_END.test(css);
+	          if (RE_WORD_END.lastIndex === 0) {
+	            next = css.length - 1;
+	          } else {
+	            next = RE_WORD_END.lastIndex - 2;
+	          }
+
+	          currentToken = ['word', css.slice(pos, next + 1), pos, next];
+	          buffer.push(currentToken);
+	          pos = next;
+	        }
+
+	        break
+	      }
+	    }
+
+	    pos++;
+	    return currentToken
+	  }
+
+	  function back(token) {
+	    returned.push(token);
+	  }
+
+	  return {
+	    back,
+	    endOfFile,
+	    nextToken,
+	    position
+	  }
+	};
+	return tokenize;
+}
+
+var terminalHighlight_1;
+var hasRequiredTerminalHighlight;
+
+function requireTerminalHighlight () {
+	if (hasRequiredTerminalHighlight) return terminalHighlight_1;
+	hasRequiredTerminalHighlight = 1;
+
+	let pico = /*@__PURE__*/ requirePicocolors();
+
+	let tokenizer = /*@__PURE__*/ requireTokenize();
+
+	let Input;
+
+	function registerInput(dependant) {
+	  Input = dependant;
+	}
+
+	const HIGHLIGHT_THEME = {
+	  ';': pico.yellow,
+	  ':': pico.yellow,
+	  '(': pico.cyan,
+	  ')': pico.cyan,
+	  '[': pico.yellow,
+	  ']': pico.yellow,
+	  '{': pico.yellow,
+	  '}': pico.yellow,
+	  'at-word': pico.cyan,
+	  'brackets': pico.cyan,
+	  'call': pico.cyan,
+	  'class': pico.yellow,
+	  'comment': pico.gray,
+	  'hash': pico.magenta,
+	  'string': pico.green
+	};
+
+	function getTokenType([type, value], processor) {
+	  if (type === 'word') {
+	    if (value[0] === '.') {
+	      return 'class'
+	    }
+	    if (value[0] === '#') {
+	      return 'hash'
+	    }
+	  }
+
+	  if (!processor.endOfFile()) {
+	    let next = processor.nextToken();
+	    processor.back(next);
+	    if (next[0] === 'brackets' || next[0] === '(') return 'call'
+	  }
+
+	  return type
+	}
+
+	function terminalHighlight(css) {
+	  let processor = tokenizer(new Input(css), { ignoreErrors: true });
+	  let result = '';
+	  while (!processor.endOfFile()) {
+	    let token = processor.nextToken();
+	    let color = HIGHLIGHT_THEME[getTokenType(token, processor)];
+	    if (color) {
+	      result += token[1]
+	        .split(/\r?\n/)
+	        .map(i => color(i))
+	        .join('\n');
+	    } else {
+	      result += token[1];
+	    }
+	  }
+	  return result
+	}
+
+	terminalHighlight.registerInput = registerInput;
+
+	terminalHighlight_1 = terminalHighlight;
+	return terminalHighlight_1;
+}
+
+var cssSyntaxError;
+var hasRequiredCssSyntaxError;
+
+function requireCssSyntaxError () {
+	if (hasRequiredCssSyntaxError) return cssSyntaxError;
+	hasRequiredCssSyntaxError = 1;
+
+	let pico = /*@__PURE__*/ requirePicocolors();
+
+	let terminalHighlight = /*@__PURE__*/ requireTerminalHighlight();
+
+	class CssSyntaxError extends Error {
+	  constructor(message, line, column, source, file, plugin) {
+	    super(message);
+	    this.name = 'CssSyntaxError';
+	    this.reason = message;
+
+	    if (file) {
+	      this.file = file;
+	    }
+	    if (source) {
+	      this.source = source;
+	    }
+	    if (plugin) {
+	      this.plugin = plugin;
+	    }
+	    if (typeof line !== 'undefined' && typeof column !== 'undefined') {
+	      if (typeof line === 'number') {
+	        this.line = line;
+	        this.column = column;
+	      } else {
+	        this.line = line.line;
+	        this.column = line.column;
+	        this.endLine = column.line;
+	        this.endColumn = column.column;
+	      }
+	    }
+
+	    this.setMessage();
+
+	    if (Error.captureStackTrace) {
+	      Error.captureStackTrace(this, CssSyntaxError);
+	    }
+	  }
+
+	  setMessage() {
+	    this.message = this.plugin ? this.plugin + ': ' : '';
+	    this.message += this.file ? this.file : '<css input>';
+	    if (typeof this.line !== 'undefined') {
+	      this.message += ':' + this.line + ':' + this.column;
+	    }
+	    this.message += ': ' + this.reason;
+	  }
+
+	  showSourceCode(color) {
+	    if (!this.source) return ''
+
+	    let css = this.source;
+	    if (color == null) color = pico.isColorSupported;
+
+	    let aside = text => text;
+	    let mark = text => text;
+	    let highlight = text => text;
+	    if (color) {
+	      let { bold, gray, red } = pico.createColors(true);
+	      mark = text => bold(red(text));
+	      aside = text => gray(text);
+	      if (terminalHighlight) {
+	        highlight = text => terminalHighlight(text);
+	      }
+	    }
+
+	    let lines = css.split(/\r?\n/);
+	    let start = Math.max(this.line - 3, 0);
+	    let end = Math.min(this.line + 2, lines.length);
+	    let maxWidth = String(end).length;
+
+	    return lines
+	      .slice(start, end)
+	      .map((line, index) => {
+	        let number = start + 1 + index;
+	        let gutter = ' ' + (' ' + number).slice(-maxWidth) + ' | ';
+	        if (number === this.line) {
+	          if (line.length > 160) {
+	            let padding = 20;
+	            let subLineStart = Math.max(0, this.column - padding);
+	            let subLineEnd = Math.max(
+	              this.column + padding,
+	              this.endColumn + padding
+	            );
+	            let subLine = line.slice(subLineStart, subLineEnd);
+
+	            let spacing =
+	              aside(gutter.replace(/\d/g, ' ')) +
+	              line
+	                .slice(0, Math.min(this.column - 1, padding - 1))
+	                .replace(/[^\t]/g, ' ');
+
+	            return (
+	              mark('>') +
+	              aside(gutter) +
+	              highlight(subLine) +
+	              '\n ' +
+	              spacing +
+	              mark('^')
+	            )
+	          }
+
+	          let spacing =
+	            aside(gutter.replace(/\d/g, ' ')) +
+	            line.slice(0, this.column - 1).replace(/[^\t]/g, ' ');
+
+	          return (
+	            mark('>') +
+	            aside(gutter) +
+	            highlight(line) +
+	            '\n ' +
+	            spacing +
+	            mark('^')
+	          )
+	        }
+
+	        return ' ' + aside(gutter) + highlight(line)
+	      })
+	      .join('\n')
+	  }
+
+	  toString() {
+	    let code = this.showSourceCode();
+	    if (code) {
+	      code = '\n\n' + code + '\n';
+	    }
+	    return this.name + ': ' + this.message + code
+	  }
+	}
+
+	cssSyntaxError = CssSyntaxError;
+	CssSyntaxError.default = CssSyntaxError;
+	return cssSyntaxError;
+}
+
+var stringifier;
+var hasRequiredStringifier;
+
+function requireStringifier () {
+	if (hasRequiredStringifier) return stringifier;
+	hasRequiredStringifier = 1;
+
+	const DEFAULT_RAW = {
+	  after: '\n',
+	  beforeClose: '\n',
+	  beforeComment: '\n',
+	  beforeDecl: '\n',
+	  beforeOpen: ' ',
+	  beforeRule: '\n',
+	  colon: ': ',
+	  commentLeft: ' ',
+	  commentRight: ' ',
+	  emptyBody: '',
+	  indent: '    ',
+	  semicolon: false
+	};
+
+	function capitalize(str) {
+	  return str[0].toUpperCase() + str.slice(1)
+	}
+
+	class Stringifier {
+	  constructor(builder) {
+	    this.builder = builder;
+	  }
+
+	  atrule(node, semicolon) {
+	    let name = '@' + node.name;
+	    let params = node.params ? this.rawValue(node, 'params') : '';
+
+	    if (typeof node.raws.afterName !== 'undefined') {
+	      name += node.raws.afterName;
+	    } else if (params) {
+	      name += ' ';
+	    }
+
+	    if (node.nodes) {
+	      this.block(node, name + params);
+	    } else {
+	      let end = (node.raws.between || '') + (semicolon ? ';' : '');
+	      this.builder(name + params + end, node);
+	    }
+	  }
+
+	  beforeAfter(node, detect) {
+	    let value;
+	    if (node.type === 'decl') {
+	      value = this.raw(node, null, 'beforeDecl');
+	    } else if (node.type === 'comment') {
+	      value = this.raw(node, null, 'beforeComment');
+	    } else if (detect === 'before') {
+	      value = this.raw(node, null, 'beforeRule');
+	    } else {
+	      value = this.raw(node, null, 'beforeClose');
+	    }
+
+	    let buf = node.parent;
+	    let depth = 0;
+	    while (buf && buf.type !== 'root') {
+	      depth += 1;
+	      buf = buf.parent;
+	    }
+
+	    if (value.includes('\n')) {
+	      let indent = this.raw(node, null, 'indent');
+	      if (indent.length) {
+	        for (let step = 0; step < depth; step++) value += indent;
+	      }
+	    }
+
+	    return value
+	  }
+
+	  block(node, start) {
+	    let between = this.raw(node, 'between', 'beforeOpen');
+	    this.builder(start + between + '{', node, 'start');
+
+	    let after;
+	    if (node.nodes && node.nodes.length) {
+	      this.body(node);
+	      after = this.raw(node, 'after');
+	    } else {
+	      after = this.raw(node, 'after', 'emptyBody');
+	    }
+
+	    if (after) this.builder(after);
+	    this.builder('}', node, 'end');
+	  }
+
+	  body(node) {
+	    let last = node.nodes.length - 1;
+	    while (last > 0) {
+	      if (node.nodes[last].type !== 'comment') break
+	      last -= 1;
+	    }
+
+	    let semicolon = this.raw(node, 'semicolon');
+	    for (let i = 0; i < node.nodes.length; i++) {
+	      let child = node.nodes[i];
+	      let before = this.raw(child, 'before');
+	      if (before) this.builder(before);
+	      this.stringify(child, last !== i || semicolon);
+	    }
+	  }
+
+	  comment(node) {
+	    let left = this.raw(node, 'left', 'commentLeft');
+	    let right = this.raw(node, 'right', 'commentRight');
+	    this.builder('/*' + left + node.text + right + '*/', node);
+	  }
+
+	  decl(node, semicolon) {
+	    let between = this.raw(node, 'between', 'colon');
+	    let string = node.prop + between + this.rawValue(node, 'value');
+
+	    if (node.important) {
+	      string += node.raws.important || ' !important';
+	    }
+
+	    if (semicolon) string += ';';
+	    this.builder(string, node);
+	  }
+
+	  document(node) {
+	    this.body(node);
+	  }
+
+	  raw(node, own, detect) {
+	    let value;
+	    if (!detect) detect = own;
+
+	    // Already had
+	    if (own) {
+	      value = node.raws[own];
+	      if (typeof value !== 'undefined') return value
+	    }
+
+	    let parent = node.parent;
+
+	    if (detect === 'before') {
+	      // Hack for first rule in CSS
+	      if (!parent || (parent.type === 'root' && parent.first === node)) {
+	        return ''
+	      }
+
+	      // `root` nodes in `document` should use only their own raws
+	      if (parent && parent.type === 'document') {
+	        return ''
+	      }
+	    }
+
+	    // Floating child without parent
+	    if (!parent) return DEFAULT_RAW[detect]
+
+	    // Detect style by other nodes
+	    let root = node.root();
+	    if (!root.rawCache) root.rawCache = {};
+	    if (typeof root.rawCache[detect] !== 'undefined') {
+	      return root.rawCache[detect]
+	    }
+
+	    if (detect === 'before' || detect === 'after') {
+	      return this.beforeAfter(node, detect)
+	    } else {
+	      let method = 'raw' + capitalize(detect);
+	      if (this[method]) {
+	        value = this[method](root, node);
+	      } else {
+	        root.walk(i => {
+	          value = i.raws[own];
+	          if (typeof value !== 'undefined') return false
+	        });
+	      }
+	    }
+
+	    if (typeof value === 'undefined') value = DEFAULT_RAW[detect];
+
+	    root.rawCache[detect] = value;
+	    return value
+	  }
+
+	  rawBeforeClose(root) {
+	    let value;
+	    root.walk(i => {
+	      if (i.nodes && i.nodes.length > 0) {
+	        if (typeof i.raws.after !== 'undefined') {
+	          value = i.raws.after;
+	          if (value.includes('\n')) {
+	            value = value.replace(/[^\n]+$/, '');
+	          }
+	          return false
+	        }
+	      }
+	    });
+	    if (value) value = value.replace(/\S/g, '');
+	    return value
+	  }
+
+	  rawBeforeComment(root, node) {
+	    let value;
+	    root.walkComments(i => {
+	      if (typeof i.raws.before !== 'undefined') {
+	        value = i.raws.before;
+	        if (value.includes('\n')) {
+	          value = value.replace(/[^\n]+$/, '');
+	        }
+	        return false
+	      }
+	    });
+	    if (typeof value === 'undefined') {
+	      value = this.raw(node, null, 'beforeDecl');
+	    } else if (value) {
+	      value = value.replace(/\S/g, '');
+	    }
+	    return value
+	  }
+
+	  rawBeforeDecl(root, node) {
+	    let value;
+	    root.walkDecls(i => {
+	      if (typeof i.raws.before !== 'undefined') {
+	        value = i.raws.before;
+	        if (value.includes('\n')) {
+	          value = value.replace(/[^\n]+$/, '');
+	        }
+	        return false
+	      }
+	    });
+	    if (typeof value === 'undefined') {
+	      value = this.raw(node, null, 'beforeRule');
+	    } else if (value) {
+	      value = value.replace(/\S/g, '');
+	    }
+	    return value
+	  }
+
+	  rawBeforeOpen(root) {
+	    let value;
+	    root.walk(i => {
+	      if (i.type !== 'decl') {
+	        value = i.raws.between;
+	        if (typeof value !== 'undefined') return false
+	      }
+	    });
+	    return value
+	  }
+
+	  rawBeforeRule(root) {
+	    let value;
+	    root.walk(i => {
+	      if (i.nodes && (i.parent !== root || root.first !== i)) {
+	        if (typeof i.raws.before !== 'undefined') {
+	          value = i.raws.before;
+	          if (value.includes('\n')) {
+	            value = value.replace(/[^\n]+$/, '');
+	          }
+	          return false
+	        }
+	      }
+	    });
+	    if (value) value = value.replace(/\S/g, '');
+	    return value
+	  }
+
+	  rawColon(root) {
+	    let value;
+	    root.walkDecls(i => {
+	      if (typeof i.raws.between !== 'undefined') {
+	        value = i.raws.between.replace(/[^\s:]/g, '');
+	        return false
+	      }
+	    });
+	    return value
+	  }
+
+	  rawEmptyBody(root) {
+	    let value;
+	    root.walk(i => {
+	      if (i.nodes && i.nodes.length === 0) {
+	        value = i.raws.after;
+	        if (typeof value !== 'undefined') return false
+	      }
+	    });
+	    return value
+	  }
+
+	  rawIndent(root) {
+	    if (root.raws.indent) return root.raws.indent
+	    let value;
+	    root.walk(i => {
+	      let p = i.parent;
+	      if (p && p !== root && p.parent && p.parent === root) {
+	        if (typeof i.raws.before !== 'undefined') {
+	          let parts = i.raws.before.split('\n');
+	          value = parts[parts.length - 1];
+	          value = value.replace(/\S/g, '');
+	          return false
+	        }
+	      }
+	    });
+	    return value
+	  }
+
+	  rawSemicolon(root) {
+	    let value;
+	    root.walk(i => {
+	      if (i.nodes && i.nodes.length && i.last.type === 'decl') {
+	        value = i.raws.semicolon;
+	        if (typeof value !== 'undefined') return false
+	      }
+	    });
+	    return value
+	  }
+
+	  rawValue(node, prop) {
+	    let value = node[prop];
+	    let raw = node.raws[prop];
+	    if (raw && raw.value === value) {
+	      return raw.raw
+	    }
+
+	    return value
+	  }
+
+	  root(node) {
+	    this.body(node);
+	    if (node.raws.after) this.builder(node.raws.after);
+	  }
+
+	  rule(node) {
+	    this.block(node, this.rawValue(node, 'selector'));
+	    if (node.raws.ownSemicolon) {
+	      this.builder(node.raws.ownSemicolon, node, 'end');
+	    }
+	  }
+
+	  stringify(node, semicolon) {
+	    /* c8 ignore start */
+	    if (!this[node.type]) {
+	      throw new Error(
+	        'Unknown AST node type ' +
+	          node.type +
+	          '. ' +
+	          'Maybe you need to change PostCSS stringifier.'
+	      )
+	    }
+	    /* c8 ignore stop */
+	    this[node.type](node, semicolon);
+	  }
+	}
+
+	stringifier = Stringifier;
+	Stringifier.default = Stringifier;
+	return stringifier;
+}
+
+var stringify_1;
+var hasRequiredStringify;
+
+function requireStringify () {
+	if (hasRequiredStringify) return stringify_1;
+	hasRequiredStringify = 1;
+
+	let Stringifier = /*@__PURE__*/ requireStringifier();
+
+	function stringify(node, builder) {
+	  let str = new Stringifier(builder);
+	  str.stringify(node);
+	}
+
+	stringify_1 = stringify;
+	stringify.default = stringify;
+	return stringify_1;
+}
+
+var symbols = {};
+
+var hasRequiredSymbols;
+
+function requireSymbols () {
+	if (hasRequiredSymbols) return symbols;
+	hasRequiredSymbols = 1;
+
+	symbols.isClean = Symbol('isClean');
+
+	symbols.my = Symbol('my');
+	return symbols;
+}
+
+var node;
+var hasRequiredNode;
+
+function requireNode () {
+	if (hasRequiredNode) return node;
+	hasRequiredNode = 1;
+
+	let CssSyntaxError = /*@__PURE__*/ requireCssSyntaxError();
+	let Stringifier = /*@__PURE__*/ requireStringifier();
+	let stringify = /*@__PURE__*/ requireStringify();
+	let { isClean, my } = /*@__PURE__*/ requireSymbols();
+
+	function cloneNode(obj, parent) {
+	  let cloned = new obj.constructor();
+
+	  for (let i in obj) {
+	    if (!Object.prototype.hasOwnProperty.call(obj, i)) {
+	      /* c8 ignore next 2 */
+	      continue
+	    }
+	    if (i === 'proxyCache') continue
+	    let value = obj[i];
+	    let type = typeof value;
+
+	    if (i === 'parent' && type === 'object') {
+	      if (parent) cloned[i] = parent;
+	    } else if (i === 'source') {
+	      cloned[i] = value;
+	    } else if (Array.isArray(value)) {
+	      cloned[i] = value.map(j => cloneNode(j, cloned));
+	    } else {
+	      if (type === 'object' && value !== null) value = cloneNode(value);
+	      cloned[i] = value;
+	    }
+	  }
+
+	  return cloned
+	}
+
+	function sourceOffset(inputCSS, position) {
+	  // Not all custom syntaxes support `offset` in `source.start` and `source.end`
+	  if (position && typeof position.offset !== 'undefined') {
+	    return position.offset
+	  }
+
+	  let column = 1;
+	  let line = 1;
+	  let offset = 0;
+
+	  for (let i = 0; i < inputCSS.length; i++) {
+	    if (line === position.line && column === position.column) {
+	      offset = i;
+	      break
+	    }
+
+	    if (inputCSS[i] === '\n') {
+	      column = 1;
+	      line += 1;
+	    } else {
+	      column += 1;
+	    }
+	  }
+
+	  return offset
+	}
+
+	class Node {
+	  get proxyOf() {
+	    return this
+	  }
+
+	  constructor(defaults = {}) {
+	    this.raws = {};
+	    this[isClean] = false;
+	    this[my] = true;
+
+	    for (let name in defaults) {
+	      if (name === 'nodes') {
+	        this.nodes = [];
+	        for (let node of defaults[name]) {
+	          if (typeof node.clone === 'function') {
+	            this.append(node.clone());
+	          } else {
+	            this.append(node);
+	          }
+	        }
+	      } else {
+	        this[name] = defaults[name];
+	      }
+	    }
+	  }
+
+	  addToError(error) {
+	    error.postcssNode = this;
+	    if (error.stack && this.source && /\n\s{4}at /.test(error.stack)) {
+	      let s = this.source;
+	      error.stack = error.stack.replace(
+	        /\n\s{4}at /,
+	        `$&${s.input.from}:${s.start.line}:${s.start.column}$&`
+	      );
+	    }
+	    return error
+	  }
+
+	  after(add) {
+	    this.parent.insertAfter(this, add);
+	    return this
+	  }
+
+	  assign(overrides = {}) {
+	    for (let name in overrides) {
+	      this[name] = overrides[name];
+	    }
+	    return this
+	  }
+
+	  before(add) {
+	    this.parent.insertBefore(this, add);
+	    return this
+	  }
+
+	  cleanRaws(keepBetween) {
+	    delete this.raws.before;
+	    delete this.raws.after;
+	    if (!keepBetween) delete this.raws.between;
+	  }
+
+	  clone(overrides = {}) {
+	    let cloned = cloneNode(this);
+	    for (let name in overrides) {
+	      cloned[name] = overrides[name];
+	    }
+	    return cloned
+	  }
+
+	  cloneAfter(overrides = {}) {
+	    let cloned = this.clone(overrides);
+	    this.parent.insertAfter(this, cloned);
+	    return cloned
+	  }
+
+	  cloneBefore(overrides = {}) {
+	    let cloned = this.clone(overrides);
+	    this.parent.insertBefore(this, cloned);
+	    return cloned
+	  }
+
+	  error(message, opts = {}) {
+	    if (this.source) {
+	      let { end, start } = this.rangeBy(opts);
+	      return this.source.input.error(
+	        message,
+	        { column: start.column, line: start.line },
+	        { column: end.column, line: end.line },
+	        opts
+	      )
+	    }
+	    return new CssSyntaxError(message)
+	  }
+
+	  getProxyProcessor() {
+	    return {
+	      get(node, prop) {
+	        if (prop === 'proxyOf') {
+	          return node
+	        } else if (prop === 'root') {
+	          return () => node.root().toProxy()
+	        } else {
+	          return node[prop]
+	        }
+	      },
+
+	      set(node, prop, value) {
+	        if (node[prop] === value) return true
+	        node[prop] = value;
+	        if (
+	          prop === 'prop' ||
+	          prop === 'value' ||
+	          prop === 'name' ||
+	          prop === 'params' ||
+	          prop === 'important' ||
+	          /* c8 ignore next */
+	          prop === 'text'
+	        ) {
+	          node.markDirty();
+	        }
+	        return true
+	      }
+	    }
+	  }
+
+	  /* c8 ignore next 3 */
+	  markClean() {
+	    this[isClean] = true;
+	  }
+
+	  markDirty() {
+	    if (this[isClean]) {
+	      this[isClean] = false;
+	      let next = this;
+	      while ((next = next.parent)) {
+	        next[isClean] = false;
+	      }
+	    }
+	  }
+
+	  next() {
+	    if (!this.parent) return undefined
+	    let index = this.parent.index(this);
+	    return this.parent.nodes[index + 1]
+	  }
+
+	  positionBy(opts = {}) {
+	    let pos = this.source.start;
+	    if (opts.index) {
+	      pos = this.positionInside(opts.index);
+	    } else if (opts.word) {
+	      let inputString =
+	        'document' in this.source.input
+	          ? this.source.input.document
+	          : this.source.input.css;
+	      let stringRepresentation = inputString.slice(
+	        sourceOffset(inputString, this.source.start),
+	        sourceOffset(inputString, this.source.end)
+	      );
+	      let index = stringRepresentation.indexOf(opts.word);
+	      if (index !== -1) pos = this.positionInside(index);
+	    }
+	    return pos
+	  }
+
+	  positionInside(index) {
+	    let column = this.source.start.column;
+	    let line = this.source.start.line;
+	    let inputString =
+	      'document' in this.source.input
+	        ? this.source.input.document
+	        : this.source.input.css;
+	    let offset = sourceOffset(inputString, this.source.start);
+	    let end = offset + index;
+
+	    for (let i = offset; i < end; i++) {
+	      if (inputString[i] === '\n') {
+	        column = 1;
+	        line += 1;
+	      } else {
+	        column += 1;
+	      }
+	    }
+
+	    return { column, line, offset: end }
+	  }
+
+	  prev() {
+	    if (!this.parent) return undefined
+	    let index = this.parent.index(this);
+	    return this.parent.nodes[index - 1]
+	  }
+
+	  rangeBy(opts = {}) {
+	    let inputString =
+	      'document' in this.source.input
+	        ? this.source.input.document
+	        : this.source.input.css;
+	    let start = {
+	      column: this.source.start.column,
+	      line: this.source.start.line,
+	      offset: sourceOffset(inputString, this.source.start)
+	    };
+	    let end = this.source.end
+	      ? {
+	          column: this.source.end.column + 1,
+	          line: this.source.end.line,
+	          offset:
+	            typeof this.source.end.offset === 'number'
+	              ? // `source.end.offset` is exclusive, so we don't need to add 1
+	                this.source.end.offset
+	              : // Since line/column in this.source.end is inclusive,
+	                // the `sourceOffset(... , this.source.end)` returns an inclusive offset.
+	                // So, we add 1 to convert it to exclusive.
+	                sourceOffset(inputString, this.source.end) + 1
+	        }
+	      : {
+	          column: start.column + 1,
+	          line: start.line,
+	          offset: start.offset + 1
+	        };
+
+	    if (opts.word) {
+	      let stringRepresentation = inputString.slice(
+	        sourceOffset(inputString, this.source.start),
+	        sourceOffset(inputString, this.source.end)
+	      );
+	      let index = stringRepresentation.indexOf(opts.word);
+	      if (index !== -1) {
+	        start = this.positionInside(index);
+	        end = this.positionInside(index + opts.word.length);
+	      }
+	    } else {
+	      if (opts.start) {
+	        start = {
+	          column: opts.start.column,
+	          line: opts.start.line,
+	          offset: sourceOffset(inputString, opts.start)
+	        };
+	      } else if (opts.index) {
+	        start = this.positionInside(opts.index);
+	      }
+
+	      if (opts.end) {
+	        end = {
+	          column: opts.end.column,
+	          line: opts.end.line,
+	          offset: sourceOffset(inputString, opts.end)
+	        };
+	      } else if (typeof opts.endIndex === 'number') {
+	        end = this.positionInside(opts.endIndex);
+	      } else if (opts.index) {
+	        end = this.positionInside(opts.index + 1);
+	      }
+	    }
+
+	    if (
+	      end.line < start.line ||
+	      (end.line === start.line && end.column <= start.column)
+	    ) {
+	      end = {
+	        column: start.column + 1,
+	        line: start.line,
+	        offset: start.offset + 1
+	      };
+	    }
+
+	    return { end, start }
+	  }
+
+	  raw(prop, defaultType) {
+	    let str = new Stringifier();
+	    return str.raw(this, prop, defaultType)
+	  }
+
+	  remove() {
+	    if (this.parent) {
+	      this.parent.removeChild(this);
+	    }
+	    this.parent = undefined;
+	    return this
+	  }
+
+	  replaceWith(...nodes) {
+	    if (this.parent) {
+	      let bookmark = this;
+	      let foundSelf = false;
+	      for (let node of nodes) {
+	        if (node === this) {
+	          foundSelf = true;
+	        } else if (foundSelf) {
+	          this.parent.insertAfter(bookmark, node);
+	          bookmark = node;
+	        } else {
+	          this.parent.insertBefore(bookmark, node);
+	        }
+	      }
+
+	      if (!foundSelf) {
+	        this.remove();
+	      }
+	    }
+
+	    return this
+	  }
+
+	  root() {
+	    let result = this;
+	    while (result.parent && result.parent.type !== 'document') {
+	      result = result.parent;
+	    }
+	    return result
+	  }
+
+	  toJSON(_, inputs) {
+	    let fixed = {};
+	    let emitInputs = inputs == null;
+	    inputs = inputs || new Map();
+	    let inputsNextIndex = 0;
+
+	    for (let name in this) {
+	      if (!Object.prototype.hasOwnProperty.call(this, name)) {
+	        /* c8 ignore next 2 */
+	        continue
+	      }
+	      if (name === 'parent' || name === 'proxyCache') continue
+	      let value = this[name];
+
+	      if (Array.isArray(value)) {
+	        fixed[name] = value.map(i => {
+	          if (typeof i === 'object' && i.toJSON) {
+	            return i.toJSON(null, inputs)
+	          } else {
+	            return i
+	          }
+	        });
+	      } else if (typeof value === 'object' && value.toJSON) {
+	        fixed[name] = value.toJSON(null, inputs);
+	      } else if (name === 'source') {
+	        if (value == null) continue
+	        let inputId = inputs.get(value.input);
+	        if (inputId == null) {
+	          inputId = inputsNextIndex;
+	          inputs.set(value.input, inputsNextIndex);
+	          inputsNextIndex++;
+	        }
+	        fixed[name] = {
+	          end: value.end,
+	          inputId,
+	          start: value.start
+	        };
+	      } else {
+	        fixed[name] = value;
+	      }
+	    }
+
+	    if (emitInputs) {
+	      fixed.inputs = [...inputs.keys()].map(input => input.toJSON());
+	    }
+
+	    return fixed
+	  }
+
+	  toProxy() {
+	    if (!this.proxyCache) {
+	      this.proxyCache = new Proxy(this, this.getProxyProcessor());
+	    }
+	    return this.proxyCache
+	  }
+
+	  toString(stringifier = stringify) {
+	    if (stringifier.stringify) stringifier = stringifier.stringify;
+	    let result = '';
+	    stringifier(this, i => {
+	      result += i;
+	    });
+	    return result
+	  }
+
+	  warn(result, text, opts = {}) {
+	    let data = { node: this };
+	    for (let i in opts) data[i] = opts[i];
+	    return result.warn(text, data)
+	  }
+	}
+
+	node = Node;
+	Node.default = Node;
+	return node;
+}
+
+var comment;
+var hasRequiredComment;
+
+function requireComment () {
+	if (hasRequiredComment) return comment;
+	hasRequiredComment = 1;
+
+	let Node = /*@__PURE__*/ requireNode();
+
+	class Comment extends Node {
+	  constructor(defaults) {
+	    super(defaults);
+	    this.type = 'comment';
+	  }
+	}
+
+	comment = Comment;
+	Comment.default = Comment;
+	return comment;
+}
+
+var declaration;
+var hasRequiredDeclaration;
+
+function requireDeclaration () {
+	if (hasRequiredDeclaration) return declaration;
+	hasRequiredDeclaration = 1;
+
+	let Node = /*@__PURE__*/ requireNode();
+
+	class Declaration extends Node {
+	  get variable() {
+	    return this.prop.startsWith('--') || this.prop[0] === '$'
+	  }
+
+	  constructor(defaults) {
+	    if (
+	      defaults &&
+	      typeof defaults.value !== 'undefined' &&
+	      typeof defaults.value !== 'string'
+	    ) {
+	      defaults = { ...defaults, value: String(defaults.value) };
+	    }
+	    super(defaults);
+	    this.type = 'decl';
+	  }
+	}
+
+	declaration = Declaration;
+	Declaration.default = Declaration;
+	return declaration;
+}
+
+var container;
+var hasRequiredContainer;
+
+function requireContainer () {
+	if (hasRequiredContainer) return container;
+	hasRequiredContainer = 1;
+
+	let Comment = /*@__PURE__*/ requireComment();
+	let Declaration = /*@__PURE__*/ requireDeclaration();
+	let Node = /*@__PURE__*/ requireNode();
+	let { isClean, my } = /*@__PURE__*/ requireSymbols();
+
+	let AtRule, parse, Root, Rule;
+
+	function cleanSource(nodes) {
+	  return nodes.map(i => {
+	    if (i.nodes) i.nodes = cleanSource(i.nodes);
+	    delete i.source;
+	    return i
+	  })
+	}
+
+	function markTreeDirty(node) {
+	  node[isClean] = false;
+	  if (node.proxyOf.nodes) {
+	    for (let i of node.proxyOf.nodes) {
+	      markTreeDirty(i);
+	    }
+	  }
+	}
+
+	class Container extends Node {
+	  get first() {
+	    if (!this.proxyOf.nodes) return undefined
+	    return this.proxyOf.nodes[0]
+	  }
+
+	  get last() {
+	    if (!this.proxyOf.nodes) return undefined
+	    return this.proxyOf.nodes[this.proxyOf.nodes.length - 1]
+	  }
+
+	  append(...children) {
+	    for (let child of children) {
+	      let nodes = this.normalize(child, this.last);
+	      for (let node of nodes) this.proxyOf.nodes.push(node);
+	    }
+
+	    this.markDirty();
+
+	    return this
+	  }
+
+	  cleanRaws(keepBetween) {
+	    super.cleanRaws(keepBetween);
+	    if (this.nodes) {
+	      for (let node of this.nodes) node.cleanRaws(keepBetween);
+	    }
+	  }
+
+	  each(callback) {
+	    if (!this.proxyOf.nodes) return undefined
+	    let iterator = this.getIterator();
+
+	    let index, result;
+	    while (this.indexes[iterator] < this.proxyOf.nodes.length) {
+	      index = this.indexes[iterator];
+	      result = callback(this.proxyOf.nodes[index], index);
+	      if (result === false) break
+
+	      this.indexes[iterator] += 1;
+	    }
+
+	    delete this.indexes[iterator];
+	    return result
+	  }
+
+	  every(condition) {
+	    return this.nodes.every(condition)
+	  }
+
+	  getIterator() {
+	    if (!this.lastEach) this.lastEach = 0;
+	    if (!this.indexes) this.indexes = {};
+
+	    this.lastEach += 1;
+	    let iterator = this.lastEach;
+	    this.indexes[iterator] = 0;
+
+	    return iterator
+	  }
+
+	  getProxyProcessor() {
+	    return {
+	      get(node, prop) {
+	        if (prop === 'proxyOf') {
+	          return node
+	        } else if (!node[prop]) {
+	          return node[prop]
+	        } else if (
+	          prop === 'each' ||
+	          (typeof prop === 'string' && prop.startsWith('walk'))
+	        ) {
+	          return (...args) => {
+	            return node[prop](
+	              ...args.map(i => {
+	                if (typeof i === 'function') {
+	                  return (child, index) => i(child.toProxy(), index)
+	                } else {
+	                  return i
+	                }
+	              })
+	            )
+	          }
+	        } else if (prop === 'every' || prop === 'some') {
+	          return cb => {
+	            return node[prop]((child, ...other) =>
+	              cb(child.toProxy(), ...other)
+	            )
+	          }
+	        } else if (prop === 'root') {
+	          return () => node.root().toProxy()
+	        } else if (prop === 'nodes') {
+	          return node.nodes.map(i => i.toProxy())
+	        } else if (prop === 'first' || prop === 'last') {
+	          return node[prop].toProxy()
+	        } else {
+	          return node[prop]
+	        }
+	      },
+
+	      set(node, prop, value) {
+	        if (node[prop] === value) return true
+	        node[prop] = value;
+	        if (prop === 'name' || prop === 'params' || prop === 'selector') {
+	          node.markDirty();
+	        }
+	        return true
+	      }
+	    }
+	  }
+
+	  index(child) {
+	    if (typeof child === 'number') return child
+	    if (child.proxyOf) child = child.proxyOf;
+	    return this.proxyOf.nodes.indexOf(child)
+	  }
+
+	  insertAfter(exist, add) {
+	    let existIndex = this.index(exist);
+	    let nodes = this.normalize(add, this.proxyOf.nodes[existIndex]).reverse();
+	    existIndex = this.index(exist);
+	    for (let node of nodes) this.proxyOf.nodes.splice(existIndex + 1, 0, node);
+
+	    let index;
+	    for (let id in this.indexes) {
+	      index = this.indexes[id];
+	      if (existIndex < index) {
+	        this.indexes[id] = index + nodes.length;
+	      }
+	    }
+
+	    this.markDirty();
+
+	    return this
+	  }
+
+	  insertBefore(exist, add) {
+	    let existIndex = this.index(exist);
+	    let type = existIndex === 0 ? 'prepend' : false;
+	    let nodes = this.normalize(
+	      add,
+	      this.proxyOf.nodes[existIndex],
+	      type
+	    ).reverse();
+	    existIndex = this.index(exist);
+	    for (let node of nodes) this.proxyOf.nodes.splice(existIndex, 0, node);
+
+	    let index;
+	    for (let id in this.indexes) {
+	      index = this.indexes[id];
+	      if (existIndex <= index) {
+	        this.indexes[id] = index + nodes.length;
+	      }
+	    }
+
+	    this.markDirty();
+
+	    return this
+	  }
+
+	  normalize(nodes, sample) {
+	    if (typeof nodes === 'string') {
+	      nodes = cleanSource(parse(nodes).nodes);
+	    } else if (typeof nodes === 'undefined') {
+	      nodes = [];
+	    } else if (Array.isArray(nodes)) {
+	      nodes = nodes.slice(0);
+	      for (let i of nodes) {
+	        if (i.parent) i.parent.removeChild(i, 'ignore');
+	      }
+	    } else if (nodes.type === 'root' && this.type !== 'document') {
+	      nodes = nodes.nodes.slice(0);
+	      for (let i of nodes) {
+	        if (i.parent) i.parent.removeChild(i, 'ignore');
+	      }
+	    } else if (nodes.type) {
+	      nodes = [nodes];
+	    } else if (nodes.prop) {
+	      if (typeof nodes.value === 'undefined') {
+	        throw new Error('Value field is missed in node creation')
+	      } else if (typeof nodes.value !== 'string') {
+	        nodes.value = String(nodes.value);
+	      }
+	      nodes = [new Declaration(nodes)];
+	    } else if (nodes.selector || nodes.selectors) {
+	      nodes = [new Rule(nodes)];
+	    } else if (nodes.name) {
+	      nodes = [new AtRule(nodes)];
+	    } else if (nodes.text) {
+	      nodes = [new Comment(nodes)];
+	    } else {
+	      throw new Error('Unknown node type in node creation')
+	    }
+
+	    let processed = nodes.map(i => {
+	      /* c8 ignore next */
+	      if (!i[my]) Container.rebuild(i);
+	      i = i.proxyOf;
+	      if (i.parent) i.parent.removeChild(i);
+	      if (i[isClean]) markTreeDirty(i);
+
+	      if (!i.raws) i.raws = {};
+	      if (typeof i.raws.before === 'undefined') {
+	        if (sample && typeof sample.raws.before !== 'undefined') {
+	          i.raws.before = sample.raws.before.replace(/\S/g, '');
+	        }
+	      }
+	      i.parent = this.proxyOf;
+	      return i
+	    });
+
+	    return processed
+	  }
+
+	  prepend(...children) {
+	    children = children.reverse();
+	    for (let child of children) {
+	      let nodes = this.normalize(child, this.first, 'prepend').reverse();
+	      for (let node of nodes) this.proxyOf.nodes.unshift(node);
+	      for (let id in this.indexes) {
+	        this.indexes[id] = this.indexes[id] + nodes.length;
+	      }
+	    }
+
+	    this.markDirty();
+
+	    return this
+	  }
+
+	  push(child) {
+	    child.parent = this;
+	    this.proxyOf.nodes.push(child);
+	    return this
+	  }
+
+	  removeAll() {
+	    for (let node of this.proxyOf.nodes) node.parent = undefined;
+	    this.proxyOf.nodes = [];
+
+	    this.markDirty();
+
+	    return this
+	  }
+
+	  removeChild(child) {
+	    child = this.index(child);
+	    this.proxyOf.nodes[child].parent = undefined;
+	    this.proxyOf.nodes.splice(child, 1);
+
+	    let index;
+	    for (let id in this.indexes) {
+	      index = this.indexes[id];
+	      if (index >= child) {
+	        this.indexes[id] = index - 1;
+	      }
+	    }
+
+	    this.markDirty();
+
+	    return this
+	  }
+
+	  replaceValues(pattern, opts, callback) {
+	    if (!callback) {
+	      callback = opts;
+	      opts = {};
+	    }
+
+	    this.walkDecls(decl => {
+	      if (opts.props && !opts.props.includes(decl.prop)) return
+	      if (opts.fast && !decl.value.includes(opts.fast)) return
+
+	      decl.value = decl.value.replace(pattern, callback);
+	    });
+
+	    this.markDirty();
+
+	    return this
+	  }
+
+	  some(condition) {
+	    return this.nodes.some(condition)
+	  }
+
+	  walk(callback) {
+	    return this.each((child, i) => {
+	      let result;
+	      try {
+	        result = callback(child, i);
+	      } catch (e) {
+	        throw child.addToError(e)
+	      }
+	      if (result !== false && child.walk) {
+	        result = child.walk(callback);
+	      }
+
+	      return result
+	    })
+	  }
+
+	  walkAtRules(name, callback) {
+	    if (!callback) {
+	      callback = name;
+	      return this.walk((child, i) => {
+	        if (child.type === 'atrule') {
+	          return callback(child, i)
+	        }
+	      })
+	    }
+	    if (name instanceof RegExp) {
+	      return this.walk((child, i) => {
+	        if (child.type === 'atrule' && name.test(child.name)) {
+	          return callback(child, i)
+	        }
+	      })
+	    }
+	    return this.walk((child, i) => {
+	      if (child.type === 'atrule' && child.name === name) {
+	        return callback(child, i)
+	      }
+	    })
+	  }
+
+	  walkComments(callback) {
+	    return this.walk((child, i) => {
+	      if (child.type === 'comment') {
+	        return callback(child, i)
+	      }
+	    })
+	  }
+
+	  walkDecls(prop, callback) {
+	    if (!callback) {
+	      callback = prop;
+	      return this.walk((child, i) => {
+	        if (child.type === 'decl') {
+	          return callback(child, i)
+	        }
+	      })
+	    }
+	    if (prop instanceof RegExp) {
+	      return this.walk((child, i) => {
+	        if (child.type === 'decl' && prop.test(child.prop)) {
+	          return callback(child, i)
+	        }
+	      })
+	    }
+	    return this.walk((child, i) => {
+	      if (child.type === 'decl' && child.prop === prop) {
+	        return callback(child, i)
+	      }
+	    })
+	  }
+
+	  walkRules(selector, callback) {
+	    if (!callback) {
+	      callback = selector;
+
+	      return this.walk((child, i) => {
+	        if (child.type === 'rule') {
+	          return callback(child, i)
+	        }
+	      })
+	    }
+	    if (selector instanceof RegExp) {
+	      return this.walk((child, i) => {
+	        if (child.type === 'rule' && selector.test(child.selector)) {
+	          return callback(child, i)
+	        }
+	      })
+	    }
+	    return this.walk((child, i) => {
+	      if (child.type === 'rule' && child.selector === selector) {
+	        return callback(child, i)
+	      }
+	    })
+	  }
+	}
+
+	Container.registerParse = dependant => {
+	  parse = dependant;
+	};
+
+	Container.registerRule = dependant => {
+	  Rule = dependant;
+	};
+
+	Container.registerAtRule = dependant => {
+	  AtRule = dependant;
+	};
+
+	Container.registerRoot = dependant => {
+	  Root = dependant;
+	};
+
+	container = Container;
+	Container.default = Container;
+
+	/* c8 ignore start */
+	Container.rebuild = node => {
+	  if (node.type === 'atrule') {
+	    Object.setPrototypeOf(node, AtRule.prototype);
+	  } else if (node.type === 'rule') {
+	    Object.setPrototypeOf(node, Rule.prototype);
+	  } else if (node.type === 'decl') {
+	    Object.setPrototypeOf(node, Declaration.prototype);
+	  } else if (node.type === 'comment') {
+	    Object.setPrototypeOf(node, Comment.prototype);
+	  } else if (node.type === 'root') {
+	    Object.setPrototypeOf(node, Root.prototype);
+	  }
+
+	  node[my] = true;
+
+	  if (node.nodes) {
+	    node.nodes.forEach(child => {
+	      Container.rebuild(child);
+	    });
+	  }
+	};
+	/* c8 ignore stop */
+	return container;
+}
+
+var atRule;
+var hasRequiredAtRule;
+
+function requireAtRule () {
+	if (hasRequiredAtRule) return atRule;
+	hasRequiredAtRule = 1;
+
+	let Container = /*@__PURE__*/ requireContainer();
+
+	class AtRule extends Container {
+	  constructor(defaults) {
+	    super(defaults);
+	    this.type = 'atrule';
+	  }
+
+	  append(...children) {
+	    if (!this.proxyOf.nodes) this.nodes = [];
+	    return super.append(...children)
+	  }
+
+	  prepend(...children) {
+	    if (!this.proxyOf.nodes) this.nodes = [];
+	    return super.prepend(...children)
+	  }
+	}
+
+	atRule = AtRule;
+	AtRule.default = AtRule;
+
+	Container.registerAtRule(AtRule);
+	return atRule;
+}
+
+var document;
+var hasRequiredDocument;
+
+function requireDocument () {
+	if (hasRequiredDocument) return document;
+	hasRequiredDocument = 1;
+
+	let Container = /*@__PURE__*/ requireContainer();
+
+	let LazyResult, Processor;
+
+	class Document extends Container {
+	  constructor(defaults) {
+	    // type needs to be passed to super, otherwise child roots won't be normalized correctly
+	    super({ type: 'document', ...defaults });
+
+	    if (!this.nodes) {
+	      this.nodes = [];
+	    }
+	  }
+
+	  toResult(opts = {}) {
+	    let lazy = new LazyResult(new Processor(), this, opts);
+
+	    return lazy.stringify()
+	  }
+	}
+
+	Document.registerLazyResult = dependant => {
+	  LazyResult = dependant;
+	};
+
+	Document.registerProcessor = dependant => {
+	  Processor = dependant;
+	};
+
+	document = Document;
+	Document.default = Document;
+	return document;
+}
+
+var nonSecure;
+var hasRequiredNonSecure;
+
+function requireNonSecure () {
+	if (hasRequiredNonSecure) return nonSecure;
+	hasRequiredNonSecure = 1;
+	// This alphabet uses `A-Za-z0-9_-` symbols.
+	// The order of characters is optimized for better gzip and brotli compression.
+	// References to the same file (works both for gzip and brotli):
+	// `'use`, `andom`, and `rict'`
+	// References to the brotli default dictionary:
+	// `-26T`, `1983`, `40px`, `75px`, `bush`, `jack`, `mind`, `very`, and `wolf`
+	let urlAlphabet =
+	  'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict';
+
+	let customAlphabet = (alphabet, defaultSize = 21) => {
+	  return (size = defaultSize) => {
+	    let id = '';
+	    // A compact alternative for `for (var i = 0; i < step; i++)`.
+	    let i = size | 0;
+	    while (i--) {
+	      // `| 0` is more compact and faster than `Math.floor()`.
+	      id += alphabet[(Math.random() * alphabet.length) | 0];
+	    }
+	    return id
+	  }
+	};
+
+	let nanoid = (size = 21) => {
+	  let id = '';
+	  // A compact alternative for `for (var i = 0; i < step; i++)`.
+	  let i = size | 0;
+	  while (i--) {
+	    // `| 0` is more compact and faster than `Math.floor()`.
+	    id += urlAlphabet[(Math.random() * 64) | 0];
+	  }
+	  return id
+	};
+
+	nonSecure = { nanoid, customAlphabet };
+	return nonSecure;
+}
+
+var previousMap;
+var hasRequiredPreviousMap;
+
+function requirePreviousMap () {
+	if (hasRequiredPreviousMap) return previousMap;
+	hasRequiredPreviousMap = 1;
+
+	let { existsSync, readFileSync } = require$$0;
+	let { dirname, join } = require$$1;
+	let { SourceMapConsumer, SourceMapGenerator } = require$$2;
+
+	function fromBase64(str) {
+	  if (Buffer) {
+	    return Buffer.from(str, 'base64').toString()
+	  } else {
+	    /* c8 ignore next 2 */
+	    return window.atob(str)
+	  }
+	}
+
+	class PreviousMap {
+	  constructor(css, opts) {
+	    if (opts.map === false) return
+	    this.loadAnnotation(css);
+	    this.inline = this.startWith(this.annotation, 'data:');
+
+	    let prev = opts.map ? opts.map.prev : undefined;
+	    let text = this.loadMap(opts.from, prev);
+	    if (!this.mapFile && opts.from) {
+	      this.mapFile = opts.from;
+	    }
+	    if (this.mapFile) this.root = dirname(this.mapFile);
+	    if (text) this.text = text;
+	  }
+
+	  consumer() {
+	    if (!this.consumerCache) {
+	      this.consumerCache = new SourceMapConsumer(this.text);
+	    }
+	    return this.consumerCache
+	  }
+
+	  decodeInline(text) {
+	    let baseCharsetUri = /^data:application\/json;charset=utf-?8;base64,/;
+	    let baseUri = /^data:application\/json;base64,/;
+	    let charsetUri = /^data:application\/json;charset=utf-?8,/;
+	    let uri = /^data:application\/json,/;
+
+	    let uriMatch = text.match(charsetUri) || text.match(uri);
+	    if (uriMatch) {
+	      return decodeURIComponent(text.substr(uriMatch[0].length))
+	    }
+
+	    let baseUriMatch = text.match(baseCharsetUri) || text.match(baseUri);
+	    if (baseUriMatch) {
+	      return fromBase64(text.substr(baseUriMatch[0].length))
+	    }
+
+	    let encoding = text.match(/data:application\/json;([^,]+),/)[1];
+	    throw new Error('Unsupported source map encoding ' + encoding)
+	  }
+
+	  getAnnotationURL(sourceMapString) {
+	    return sourceMapString.replace(/^\/\*\s*# sourceMappingURL=/, '').trim()
+	  }
+
+	  isMap(map) {
+	    if (typeof map !== 'object') return false
+	    return (
+	      typeof map.mappings === 'string' ||
+	      typeof map._mappings === 'string' ||
+	      Array.isArray(map.sections)
+	    )
+	  }
+
+	  loadAnnotation(css) {
+	    let comments = css.match(/\/\*\s*# sourceMappingURL=/g);
+	    if (!comments) return
+
+	    // sourceMappingURLs from comments, strings, etc.
+	    let start = css.lastIndexOf(comments.pop());
+	    let end = css.indexOf('*/', start);
+
+	    if (start > -1 && end > -1) {
+	      // Locate the last sourceMappingURL to avoid pickin
+	      this.annotation = this.getAnnotationURL(css.substring(start, end));
+	    }
+	  }
+
+	  loadFile(path) {
+	    this.root = dirname(path);
+	    if (existsSync(path)) {
+	      this.mapFile = path;
+	      return readFileSync(path, 'utf-8').toString().trim()
+	    }
+	  }
+
+	  loadMap(file, prev) {
+	    if (prev === false) return false
+
+	    if (prev) {
+	      if (typeof prev === 'string') {
+	        return prev
+	      } else if (typeof prev === 'function') {
+	        let prevPath = prev(file);
+	        if (prevPath) {
+	          let map = this.loadFile(prevPath);
+	          if (!map) {
+	            throw new Error(
+	              'Unable to load previous source map: ' + prevPath.toString()
+	            )
+	          }
+	          return map
+	        }
+	      } else if (prev instanceof SourceMapConsumer) {
+	        return SourceMapGenerator.fromSourceMap(prev).toString()
+	      } else if (prev instanceof SourceMapGenerator) {
+	        return prev.toString()
+	      } else if (this.isMap(prev)) {
+	        return JSON.stringify(prev)
+	      } else {
+	        throw new Error(
+	          'Unsupported previous source map format: ' + prev.toString()
+	        )
+	      }
+	    } else if (this.inline) {
+	      return this.decodeInline(this.annotation)
+	    } else if (this.annotation) {
+	      let map = this.annotation;
+	      if (file) map = join(dirname(file), map);
+	      return this.loadFile(map)
+	    }
+	  }
+
+	  startWith(string, start) {
+	    if (!string) return false
+	    return string.substr(0, start.length) === start
+	  }
+
+	  withContent() {
+	    return !!(
+	      this.consumer().sourcesContent &&
+	      this.consumer().sourcesContent.length > 0
+	    )
+	  }
+	}
+
+	previousMap = PreviousMap;
+	PreviousMap.default = PreviousMap;
+	return previousMap;
+}
+
+var input;
+var hasRequiredInput;
+
+function requireInput () {
+	if (hasRequiredInput) return input;
+	hasRequiredInput = 1;
+
+	let { nanoid } = /*@__PURE__*/ requireNonSecure();
+	let { isAbsolute, resolve } = require$$1;
+	let { SourceMapConsumer, SourceMapGenerator } = require$$2;
+	let { fileURLToPath, pathToFileURL } = require$$3;
+
+	let CssSyntaxError = /*@__PURE__*/ requireCssSyntaxError();
+	let PreviousMap = /*@__PURE__*/ requirePreviousMap();
+	let terminalHighlight = /*@__PURE__*/ requireTerminalHighlight();
+
+	let lineToIndexCache = Symbol('lineToIndexCache');
+
+	let sourceMapAvailable = Boolean(SourceMapConsumer && SourceMapGenerator);
+	let pathAvailable = Boolean(resolve && isAbsolute);
+
+	function getLineToIndex(input) {
+	  if (input[lineToIndexCache]) return input[lineToIndexCache]
+	  let lines = input.css.split('\n');
+	  let lineToIndex = new Array(lines.length);
+	  let prevIndex = 0;
+
+	  for (let i = 0, l = lines.length; i < l; i++) {
+	    lineToIndex[i] = prevIndex;
+	    prevIndex += lines[i].length + 1;
+	  }
+
+	  input[lineToIndexCache] = lineToIndex;
+	  return lineToIndex
+	}
+
+	class Input {
+	  get from() {
+	    return this.file || this.id
+	  }
+
+	  constructor(css, opts = {}) {
+	    if (
+	      css === null ||
+	      typeof css === 'undefined' ||
+	      (typeof css === 'object' && !css.toString)
+	    ) {
+	      throw new Error(`PostCSS received ${css} instead of CSS string`)
+	    }
+
+	    this.css = css.toString();
+
+	    if (this.css[0] === '\uFEFF' || this.css[0] === '\uFFFE') {
+	      this.hasBOM = true;
+	      this.css = this.css.slice(1);
+	    } else {
+	      this.hasBOM = false;
+	    }
+
+	    this.document = this.css;
+	    if (opts.document) this.document = opts.document.toString();
+
+	    if (opts.from) {
+	      if (
+	        !pathAvailable ||
+	        /^\w+:\/\//.test(opts.from) ||
+	        isAbsolute(opts.from)
+	      ) {
+	        this.file = opts.from;
+	      } else {
+	        this.file = resolve(opts.from);
+	      }
+	    }
+
+	    if (pathAvailable && sourceMapAvailable) {
+	      let map = new PreviousMap(this.css, opts);
+	      if (map.text) {
+	        this.map = map;
+	        let file = map.consumer().file;
+	        if (!this.file && file) this.file = this.mapResolve(file);
+	      }
+	    }
+
+	    if (!this.file) {
+	      this.id = '<input css ' + nanoid(6) + '>';
+	    }
+	    if (this.map) this.map.file = this.from;
+	  }
+
+	  error(message, line, column, opts = {}) {
+	    let endColumn, endLine, endOffset, offset, result;
+
+	    if (line && typeof line === 'object') {
+	      let start = line;
+	      let end = column;
+	      if (typeof start.offset === 'number') {
+	        offset = start.offset;
+	        let pos = this.fromOffset(offset);
+	        line = pos.line;
+	        column = pos.col;
+	      } else {
+	        line = start.line;
+	        column = start.column;
+	        offset = this.fromLineAndColumn(line, column);
+	      }
+	      if (typeof end.offset === 'number') {
+	        endOffset = end.offset;
+	        let pos = this.fromOffset(endOffset);
+	        endLine = pos.line;
+	        endColumn = pos.col;
+	      } else {
+	        endLine = end.line;
+	        endColumn = end.column;
+	        endOffset = this.fromLineAndColumn(end.line, end.column);
+	      }
+	    } else if (!column) {
+	      offset = line;
+	      let pos = this.fromOffset(offset);
+	      line = pos.line;
+	      column = pos.col;
+	    } else {
+	      offset = this.fromLineAndColumn(line, column);
+	    }
+
+	    let origin = this.origin(line, column, endLine, endColumn);
+	    if (origin) {
+	      result = new CssSyntaxError(
+	        message,
+	        origin.endLine === undefined
+	          ? origin.line
+	          : { column: origin.column, line: origin.line },
+	        origin.endLine === undefined
+	          ? origin.column
+	          : { column: origin.endColumn, line: origin.endLine },
+	        origin.source,
+	        origin.file,
+	        opts.plugin
+	      );
+	    } else {
+	      result = new CssSyntaxError(
+	        message,
+	        endLine === undefined ? line : { column, line },
+	        endLine === undefined ? column : { column: endColumn, line: endLine },
+	        this.css,
+	        this.file,
+	        opts.plugin
+	      );
+	    }
+
+	    result.input = { column, endColumn, endLine, endOffset, line, offset, source: this.css };
+	    if (this.file) {
+	      if (pathToFileURL) {
+	        result.input.url = pathToFileURL(this.file).toString();
+	      }
+	      result.input.file = this.file;
+	    }
+
+	    return result
+	  }
+
+	  fromLineAndColumn(line, column) {
+	    let lineToIndex = getLineToIndex(this);
+	    let index = lineToIndex[line - 1];
+	    return index + column - 1
+	  }
+
+	  fromOffset(offset) {
+	    let lineToIndex = getLineToIndex(this);
+	    let lastLine = lineToIndex[lineToIndex.length - 1];
+
+	    let min = 0;
+	    if (offset >= lastLine) {
+	      min = lineToIndex.length - 1;
+	    } else {
+	      let max = lineToIndex.length - 2;
+	      let mid;
+	      while (min < max) {
+	        mid = min + ((max - min) >> 1);
+	        if (offset < lineToIndex[mid]) {
+	          max = mid - 1;
+	        } else if (offset >= lineToIndex[mid + 1]) {
+	          min = mid + 1;
+	        } else {
+	          min = mid;
+	          break
+	        }
+	      }
+	    }
+	    return {
+	      col: offset - lineToIndex[min] + 1,
+	      line: min + 1
+	    }
+	  }
+
+	  mapResolve(file) {
+	    if (/^\w+:\/\//.test(file)) {
+	      return file
+	    }
+	    return resolve(this.map.consumer().sourceRoot || this.map.root || '.', file)
+	  }
+
+	  origin(line, column, endLine, endColumn) {
+	    if (!this.map) return false
+	    let consumer = this.map.consumer();
+
+	    let from = consumer.originalPositionFor({ column, line });
+	    if (!from.source) return false
+
+	    let to;
+	    if (typeof endLine === 'number') {
+	      to = consumer.originalPositionFor({ column: endColumn, line: endLine });
+	    }
+
+	    let fromUrl;
+
+	    if (isAbsolute(from.source)) {
+	      fromUrl = pathToFileURL(from.source);
+	    } else {
+	      fromUrl = new URL(
+	        from.source,
+	        this.map.consumer().sourceRoot || pathToFileURL(this.map.mapFile)
+	      );
+	    }
+
+	    let result = {
+	      column: from.column,
+	      endColumn: to && to.column,
+	      endLine: to && to.line,
+	      line: from.line,
+	      url: fromUrl.toString()
+	    };
+
+	    if (fromUrl.protocol === 'file:') {
+	      if (fileURLToPath) {
+	        result.file = fileURLToPath(fromUrl);
+	      } else {
+	        /* c8 ignore next 2 */
+	        throw new Error(`file: protocol is not available in this PostCSS build`)
+	      }
+	    }
+
+	    let source = consumer.sourceContentFor(from.source);
+	    if (source) result.source = source;
+
+	    return result
+	  }
+
+	  toJSON() {
+	    let json = {};
+	    for (let name of ['hasBOM', 'css', 'file', 'id']) {
+	      if (this[name] != null) {
+	        json[name] = this[name];
+	      }
+	    }
+	    if (this.map) {
+	      json.map = { ...this.map };
+	      if (json.map.consumerCache) {
+	        json.map.consumerCache = undefined;
+	      }
+	    }
+	    return json
+	  }
+	}
+
+	input = Input;
+	Input.default = Input;
+
+	if (terminalHighlight && terminalHighlight.registerInput) {
+	  terminalHighlight.registerInput(Input);
+	}
+	return input;
+}
+
+var root;
+var hasRequiredRoot;
+
+function requireRoot () {
+	if (hasRequiredRoot) return root;
+	hasRequiredRoot = 1;
+
+	let Container = /*@__PURE__*/ requireContainer();
+
+	let LazyResult, Processor;
+
+	class Root extends Container {
+	  constructor(defaults) {
+	    super(defaults);
+	    this.type = 'root';
+	    if (!this.nodes) this.nodes = [];
+	  }
+
+	  normalize(child, sample, type) {
+	    let nodes = super.normalize(child);
+
+	    if (sample) {
+	      if (type === 'prepend') {
+	        if (this.nodes.length > 1) {
+	          sample.raws.before = this.nodes[1].raws.before;
+	        } else {
+	          delete sample.raws.before;
+	        }
+	      } else if (this.first !== sample) {
+	        for (let node of nodes) {
+	          node.raws.before = sample.raws.before;
+	        }
+	      }
+	    }
+
+	    return nodes
+	  }
+
+	  removeChild(child, ignore) {
+	    let index = this.index(child);
+
+	    if (!ignore && index === 0 && this.nodes.length > 1) {
+	      this.nodes[1].raws.before = this.nodes[index].raws.before;
+	    }
+
+	    return super.removeChild(child)
+	  }
+
+	  toResult(opts = {}) {
+	    let lazy = new LazyResult(new Processor(), this, opts);
+	    return lazy.stringify()
+	  }
+	}
+
+	Root.registerLazyResult = dependant => {
+	  LazyResult = dependant;
+	};
+
+	Root.registerProcessor = dependant => {
+	  Processor = dependant;
+	};
+
+	root = Root;
+	Root.default = Root;
+
+	Container.registerRoot(Root);
+	return root;
+}
+
+var list_1;
+var hasRequiredList;
+
+function requireList () {
+	if (hasRequiredList) return list_1;
+	hasRequiredList = 1;
+
+	let list = {
+	  comma(string) {
+	    return list.split(string, [','], true)
+	  },
+
+	  space(string) {
+	    let spaces = [' ', '\n', '\t'];
+	    return list.split(string, spaces)
+	  },
+
+	  split(string, separators, last) {
+	    let array = [];
+	    let current = '';
+	    let split = false;
+
+	    let func = 0;
+	    let inQuote = false;
+	    let prevQuote = '';
+	    let escape = false;
+
+	    for (let letter of string) {
+	      if (escape) {
+	        escape = false;
+	      } else if (letter === '\\') {
+	        escape = true;
+	      } else if (inQuote) {
+	        if (letter === prevQuote) {
+	          inQuote = false;
+	        }
+	      } else if (letter === '"' || letter === "'") {
+	        inQuote = true;
+	        prevQuote = letter;
+	      } else if (letter === '(') {
+	        func += 1;
+	      } else if (letter === ')') {
+	        if (func > 0) func -= 1;
+	      } else if (func === 0) {
+	        if (separators.includes(letter)) split = true;
+	      }
+
+	      if (split) {
+	        if (current !== '') array.push(current.trim());
+	        current = '';
+	        split = false;
+	      } else {
+	        current += letter;
+	      }
+	    }
+
+	    if (last || current !== '') array.push(current.trim());
+	    return array
+	  }
+	};
+
+	list_1 = list;
+	list.default = list;
+	return list_1;
+}
+
+var rule;
+var hasRequiredRule;
+
+function requireRule () {
+	if (hasRequiredRule) return rule;
+	hasRequiredRule = 1;
+
+	let Container = /*@__PURE__*/ requireContainer();
+	let list = /*@__PURE__*/ requireList();
+
+	class Rule extends Container {
+	  get selectors() {
+	    return list.comma(this.selector)
+	  }
+
+	  set selectors(values) {
+	    let match = this.selector ? this.selector.match(/,\s*/) : null;
+	    let sep = match ? match[0] : ',' + this.raw('between', 'beforeOpen');
+	    this.selector = values.join(sep);
+	  }
+
+	  constructor(defaults) {
+	    super(defaults);
+	    this.type = 'rule';
+	    if (!this.nodes) this.nodes = [];
+	  }
+	}
+
+	rule = Rule;
+	Rule.default = Rule;
+
+	Container.registerRule(Rule);
+	return rule;
+}
+
+var fromJSON_1;
+var hasRequiredFromJSON;
+
+function requireFromJSON () {
+	if (hasRequiredFromJSON) return fromJSON_1;
+	hasRequiredFromJSON = 1;
+
+	let AtRule = /*@__PURE__*/ requireAtRule();
+	let Comment = /*@__PURE__*/ requireComment();
+	let Declaration = /*@__PURE__*/ requireDeclaration();
+	let Input = /*@__PURE__*/ requireInput();
+	let PreviousMap = /*@__PURE__*/ requirePreviousMap();
+	let Root = /*@__PURE__*/ requireRoot();
+	let Rule = /*@__PURE__*/ requireRule();
+
+	function fromJSON(json, inputs) {
+	  if (Array.isArray(json)) return json.map(n => fromJSON(n))
+
+	  let { inputs: ownInputs, ...defaults } = json;
+	  if (ownInputs) {
+	    inputs = [];
+	    for (let input of ownInputs) {
+	      let inputHydrated = { ...input, __proto__: Input.prototype };
+	      if (inputHydrated.map) {
+	        inputHydrated.map = {
+	          ...inputHydrated.map,
+	          __proto__: PreviousMap.prototype
+	        };
+	      }
+	      inputs.push(inputHydrated);
+	    }
+	  }
+	  if (defaults.nodes) {
+	    defaults.nodes = json.nodes.map(n => fromJSON(n, inputs));
+	  }
+	  if (defaults.source) {
+	    let { inputId, ...source } = defaults.source;
+	    defaults.source = source;
+	    if (inputId != null) {
+	      defaults.source.input = inputs[inputId];
+	    }
+	  }
+	  if (defaults.type === 'root') {
+	    return new Root(defaults)
+	  } else if (defaults.type === 'decl') {
+	    return new Declaration(defaults)
+	  } else if (defaults.type === 'rule') {
+	    return new Rule(defaults)
+	  } else if (defaults.type === 'comment') {
+	    return new Comment(defaults)
+	  } else if (defaults.type === 'atrule') {
+	    return new AtRule(defaults)
+	  } else {
+	    throw new Error('Unknown node type: ' + json.type)
+	  }
+	}
+
+	fromJSON_1 = fromJSON;
+	fromJSON.default = fromJSON;
+	return fromJSON_1;
+}
+
+var mapGenerator;
+var hasRequiredMapGenerator;
+
+function requireMapGenerator () {
+	if (hasRequiredMapGenerator) return mapGenerator;
+	hasRequiredMapGenerator = 1;
+
+	let { dirname, relative, resolve, sep } = require$$1;
+	let { SourceMapConsumer, SourceMapGenerator } = require$$2;
+	let { pathToFileURL } = require$$3;
+
+	let Input = /*@__PURE__*/ requireInput();
+
+	let sourceMapAvailable = Boolean(SourceMapConsumer && SourceMapGenerator);
+	let pathAvailable = Boolean(dirname && resolve && relative && sep);
+
+	class MapGenerator {
+	  constructor(stringify, root, opts, cssString) {
+	    this.stringify = stringify;
+	    this.mapOpts = opts.map || {};
+	    this.root = root;
+	    this.opts = opts;
+	    this.css = cssString;
+	    this.originalCSS = cssString;
+	    this.usesFileUrls = !this.mapOpts.from && this.mapOpts.absolute;
+
+	    this.memoizedFileURLs = new Map();
+	    this.memoizedPaths = new Map();
+	    this.memoizedURLs = new Map();
+	  }
+
+	  addAnnotation() {
+	    let content;
+
+	    if (this.isInline()) {
+	      content =
+	        'data:application/json;base64,' + this.toBase64(this.map.toString());
+	    } else if (typeof this.mapOpts.annotation === 'string') {
+	      content = this.mapOpts.annotation;
+	    } else if (typeof this.mapOpts.annotation === 'function') {
+	      content = this.mapOpts.annotation(this.opts.to, this.root);
+	    } else {
+	      content = this.outputFile() + '.map';
+	    }
+	    let eol = '\n';
+	    if (this.css.includes('\r\n')) eol = '\r\n';
+
+	    this.css += eol + '/*# sourceMappingURL=' + content + ' */';
+	  }
+
+	  applyPrevMaps() {
+	    for (let prev of this.previous()) {
+	      let from = this.toUrl(this.path(prev.file));
+	      let root = prev.root || dirname(prev.file);
+	      let map;
+
+	      if (this.mapOpts.sourcesContent === false) {
+	        map = new SourceMapConsumer(prev.text);
+	        if (map.sourcesContent) {
+	          map.sourcesContent = null;
+	        }
+	      } else {
+	        map = prev.consumer();
+	      }
+
+	      this.map.applySourceMap(map, from, this.toUrl(this.path(root)));
+	    }
+	  }
+
+	  clearAnnotation() {
+	    if (this.mapOpts.annotation === false) return
+
+	    if (this.root) {
+	      let node;
+	      for (let i = this.root.nodes.length - 1; i >= 0; i--) {
+	        node = this.root.nodes[i];
+	        if (node.type !== 'comment') continue
+	        if (node.text.startsWith('# sourceMappingURL=')) {
+	          this.root.removeChild(i);
+	        }
+	      }
+	    } else if (this.css) {
+	      this.css = this.css.replace(/\n*\/\*#[\S\s]*?\*\/$/gm, '');
+	    }
+	  }
+
+	  generate() {
+	    this.clearAnnotation();
+	    if (pathAvailable && sourceMapAvailable && this.isMap()) {
+	      return this.generateMap()
+	    } else {
+	      let result = '';
+	      this.stringify(this.root, i => {
+	        result += i;
+	      });
+	      return [result]
+	    }
+	  }
+
+	  generateMap() {
+	    if (this.root) {
+	      this.generateString();
+	    } else if (this.previous().length === 1) {
+	      let prev = this.previous()[0].consumer();
+	      prev.file = this.outputFile();
+	      this.map = SourceMapGenerator.fromSourceMap(prev, {
+	        ignoreInvalidMapping: true
+	      });
+	    } else {
+	      this.map = new SourceMapGenerator({
+	        file: this.outputFile(),
+	        ignoreInvalidMapping: true
+	      });
+	      this.map.addMapping({
+	        generated: { column: 0, line: 1 },
+	        original: { column: 0, line: 1 },
+	        source: this.opts.from
+	          ? this.toUrl(this.path(this.opts.from))
+	          : '<no source>'
+	      });
+	    }
+
+	    if (this.isSourcesContent()) this.setSourcesContent();
+	    if (this.root && this.previous().length > 0) this.applyPrevMaps();
+	    if (this.isAnnotation()) this.addAnnotation();
+
+	    if (this.isInline()) {
+	      return [this.css]
+	    } else {
+	      return [this.css, this.map]
+	    }
+	  }
+
+	  generateString() {
+	    this.css = '';
+	    this.map = new SourceMapGenerator({
+	      file: this.outputFile(),
+	      ignoreInvalidMapping: true
+	    });
+
+	    let line = 1;
+	    let column = 1;
+
+	    let noSource = '<no source>';
+	    let mapping = {
+	      generated: { column: 0, line: 0 },
+	      original: { column: 0, line: 0 },
+	      source: ''
+	    };
+
+	    let last, lines;
+	    this.stringify(this.root, (str, node, type) => {
+	      this.css += str;
+
+	      if (node && type !== 'end') {
+	        mapping.generated.line = line;
+	        mapping.generated.column = column - 1;
+	        if (node.source && node.source.start) {
+	          mapping.source = this.sourcePath(node);
+	          mapping.original.line = node.source.start.line;
+	          mapping.original.column = node.source.start.column - 1;
+	          this.map.addMapping(mapping);
+	        } else {
+	          mapping.source = noSource;
+	          mapping.original.line = 1;
+	          mapping.original.column = 0;
+	          this.map.addMapping(mapping);
+	        }
+	      }
+
+	      lines = str.match(/\n/g);
+	      if (lines) {
+	        line += lines.length;
+	        last = str.lastIndexOf('\n');
+	        column = str.length - last;
+	      } else {
+	        column += str.length;
+	      }
+
+	      if (node && type !== 'start') {
+	        let p = node.parent || { raws: {} };
+	        let childless =
+	          node.type === 'decl' || (node.type === 'atrule' && !node.nodes);
+	        if (!childless || node !== p.last || p.raws.semicolon) {
+	          if (node.source && node.source.end) {
+	            mapping.source = this.sourcePath(node);
+	            mapping.original.line = node.source.end.line;
+	            mapping.original.column = node.source.end.column - 1;
+	            mapping.generated.line = line;
+	            mapping.generated.column = column - 2;
+	            this.map.addMapping(mapping);
+	          } else {
+	            mapping.source = noSource;
+	            mapping.original.line = 1;
+	            mapping.original.column = 0;
+	            mapping.generated.line = line;
+	            mapping.generated.column = column - 1;
+	            this.map.addMapping(mapping);
+	          }
+	        }
+	      }
+	    });
+	  }
+
+	  isAnnotation() {
+	    if (this.isInline()) {
+	      return true
+	    }
+	    if (typeof this.mapOpts.annotation !== 'undefined') {
+	      return this.mapOpts.annotation
+	    }
+	    if (this.previous().length) {
+	      return this.previous().some(i => i.annotation)
+	    }
+	    return true
+	  }
+
+	  isInline() {
+	    if (typeof this.mapOpts.inline !== 'undefined') {
+	      return this.mapOpts.inline
+	    }
+
+	    let annotation = this.mapOpts.annotation;
+	    if (typeof annotation !== 'undefined' && annotation !== true) {
+	      return false
+	    }
+
+	    if (this.previous().length) {
+	      return this.previous().some(i => i.inline)
+	    }
+	    return true
+	  }
+
+	  isMap() {
+	    if (typeof this.opts.map !== 'undefined') {
+	      return !!this.opts.map
+	    }
+	    return this.previous().length > 0
+	  }
+
+	  isSourcesContent() {
+	    if (typeof this.mapOpts.sourcesContent !== 'undefined') {
+	      return this.mapOpts.sourcesContent
+	    }
+	    if (this.previous().length) {
+	      return this.previous().some(i => i.withContent())
+	    }
+	    return true
+	  }
+
+	  outputFile() {
+	    if (this.opts.to) {
+	      return this.path(this.opts.to)
+	    } else if (this.opts.from) {
+	      return this.path(this.opts.from)
+	    } else {
+	      return 'to.css'
+	    }
+	  }
+
+	  path(file) {
+	    if (this.mapOpts.absolute) return file
+	    if (file.charCodeAt(0) === 60 /* `<` */) return file
+	    if (/^\w+:\/\//.test(file)) return file
+	    let cached = this.memoizedPaths.get(file);
+	    if (cached) return cached
+
+	    let from = this.opts.to ? dirname(this.opts.to) : '.';
+
+	    if (typeof this.mapOpts.annotation === 'string') {
+	      from = dirname(resolve(from, this.mapOpts.annotation));
+	    }
+
+	    let path = relative(from, file);
+	    this.memoizedPaths.set(file, path);
+
+	    return path
+	  }
+
+	  previous() {
+	    if (!this.previousMaps) {
+	      this.previousMaps = [];
+	      if (this.root) {
+	        this.root.walk(node => {
+	          if (node.source && node.source.input.map) {
+	            let map = node.source.input.map;
+	            if (!this.previousMaps.includes(map)) {
+	              this.previousMaps.push(map);
+	            }
+	          }
+	        });
+	      } else {
+	        let input = new Input(this.originalCSS, this.opts);
+	        if (input.map) this.previousMaps.push(input.map);
+	      }
+	    }
+
+	    return this.previousMaps
+	  }
+
+	  setSourcesContent() {
+	    let already = {};
+	    if (this.root) {
+	      this.root.walk(node => {
+	        if (node.source) {
+	          let from = node.source.input.from;
+	          if (from && !already[from]) {
+	            already[from] = true;
+	            let fromUrl = this.usesFileUrls
+	              ? this.toFileUrl(from)
+	              : this.toUrl(this.path(from));
+	            this.map.setSourceContent(fromUrl, node.source.input.css);
+	          }
+	        }
+	      });
+	    } else if (this.css) {
+	      let from = this.opts.from
+	        ? this.toUrl(this.path(this.opts.from))
+	        : '<no source>';
+	      this.map.setSourceContent(from, this.css);
+	    }
+	  }
+
+	  sourcePath(node) {
+	    if (this.mapOpts.from) {
+	      return this.toUrl(this.mapOpts.from)
+	    } else if (this.usesFileUrls) {
+	      return this.toFileUrl(node.source.input.from)
+	    } else {
+	      return this.toUrl(this.path(node.source.input.from))
+	    }
+	  }
+
+	  toBase64(str) {
+	    if (Buffer) {
+	      return Buffer.from(str).toString('base64')
+	    } else {
+	      return window.btoa(unescape(encodeURIComponent(str)))
+	    }
+	  }
+
+	  toFileUrl(path) {
+	    let cached = this.memoizedFileURLs.get(path);
+	    if (cached) return cached
+
+	    if (pathToFileURL) {
+	      let fileURL = pathToFileURL(path).toString();
+	      this.memoizedFileURLs.set(path, fileURL);
+
+	      return fileURL
+	    } else {
+	      throw new Error(
+	        '`map.absolute` option is not available in this PostCSS build'
+	      )
+	    }
+	  }
+
+	  toUrl(path) {
+	    let cached = this.memoizedURLs.get(path);
+	    if (cached) return cached
+
+	    if (sep === '\\') {
+	      path = path.replace(/\\/g, '/');
+	    }
+
+	    let url = encodeURI(path).replace(/[#?]/g, encodeURIComponent);
+	    this.memoizedURLs.set(path, url);
+
+	    return url
+	  }
+	}
+
+	mapGenerator = MapGenerator;
+	return mapGenerator;
+}
+
+var parser;
+var hasRequiredParser;
+
+function requireParser () {
+	if (hasRequiredParser) return parser;
+	hasRequiredParser = 1;
+
+	let AtRule = /*@__PURE__*/ requireAtRule();
+	let Comment = /*@__PURE__*/ requireComment();
+	let Declaration = /*@__PURE__*/ requireDeclaration();
+	let Root = /*@__PURE__*/ requireRoot();
+	let Rule = /*@__PURE__*/ requireRule();
+	let tokenizer = /*@__PURE__*/ requireTokenize();
+
+	const SAFE_COMMENT_NEIGHBOR = {
+	  empty: true,
+	  space: true
+	};
+
+	function findLastWithPosition(tokens) {
+	  for (let i = tokens.length - 1; i >= 0; i--) {
+	    let token = tokens[i];
+	    let pos = token[3] || token[2];
+	    if (pos) return pos
+	  }
+	}
+
+	class Parser {
+	  constructor(input) {
+	    this.input = input;
+
+	    this.root = new Root();
+	    this.current = this.root;
+	    this.spaces = '';
+	    this.semicolon = false;
+
+	    this.createTokenizer();
+	    this.root.source = { input, start: { column: 1, line: 1, offset: 0 } };
+	  }
+
+	  atrule(token) {
+	    let node = new AtRule();
+	    node.name = token[1].slice(1);
+	    if (node.name === '') {
+	      this.unnamedAtrule(node, token);
+	    }
+	    this.init(node, token[2]);
+
+	    let type;
+	    let prev;
+	    let shift;
+	    let last = false;
+	    let open = false;
+	    let params = [];
+	    let brackets = [];
+
+	    while (!this.tokenizer.endOfFile()) {
+	      token = this.tokenizer.nextToken();
+	      type = token[0];
+
+	      if (type === '(' || type === '[') {
+	        brackets.push(type === '(' ? ')' : ']');
+	      } else if (type === '{' && brackets.length > 0) {
+	        brackets.push('}');
+	      } else if (type === brackets[brackets.length - 1]) {
+	        brackets.pop();
+	      }
+
+	      if (brackets.length === 0) {
+	        if (type === ';') {
+	          node.source.end = this.getPosition(token[2]);
+	          node.source.end.offset++;
+	          this.semicolon = true;
+	          break
+	        } else if (type === '{') {
+	          open = true;
+	          break
+	        } else if (type === '}') {
+	          if (params.length > 0) {
+	            shift = params.length - 1;
+	            prev = params[shift];
+	            while (prev && prev[0] === 'space') {
+	              prev = params[--shift];
+	            }
+	            if (prev) {
+	              node.source.end = this.getPosition(prev[3] || prev[2]);
+	              node.source.end.offset++;
+	            }
+	          }
+	          this.end(token);
+	          break
+	        } else {
+	          params.push(token);
+	        }
+	      } else {
+	        params.push(token);
+	      }
+
+	      if (this.tokenizer.endOfFile()) {
+	        last = true;
+	        break
+	      }
+	    }
+
+	    node.raws.between = this.spacesAndCommentsFromEnd(params);
+	    if (params.length) {
+	      node.raws.afterName = this.spacesAndCommentsFromStart(params);
+	      this.raw(node, 'params', params);
+	      if (last) {
+	        token = params[params.length - 1];
+	        node.source.end = this.getPosition(token[3] || token[2]);
+	        node.source.end.offset++;
+	        this.spaces = node.raws.between;
+	        node.raws.between = '';
+	      }
+	    } else {
+	      node.raws.afterName = '';
+	      node.params = '';
+	    }
+
+	    if (open) {
+	      node.nodes = [];
+	      this.current = node;
+	    }
+	  }
+
+	  checkMissedSemicolon(tokens) {
+	    let colon = this.colon(tokens);
+	    if (colon === false) return
+
+	    let founded = 0;
+	    let token;
+	    for (let j = colon - 1; j >= 0; j--) {
+	      token = tokens[j];
+	      if (token[0] !== 'space') {
+	        founded += 1;
+	        if (founded === 2) break
+	      }
+	    }
+	    // If the token is a word, e.g. `!important`, `red` or any other valid property's value.
+	    // Then we need to return the colon after that word token. [3] is the "end" colon of that word.
+	    // And because we need it after that one we do +1 to get the next one.
+	    throw this.input.error(
+	      'Missed semicolon',
+	      token[0] === 'word' ? token[3] + 1 : token[2]
+	    )
+	  }
+
+	  colon(tokens) {
+	    let brackets = 0;
+	    let prev, token, type;
+	    for (let [i, element] of tokens.entries()) {
+	      token = element;
+	      type = token[0];
+
+	      if (type === '(') {
+	        brackets += 1;
+	      }
+	      if (type === ')') {
+	        brackets -= 1;
+	      }
+	      if (brackets === 0 && type === ':') {
+	        if (!prev) {
+	          this.doubleColon(token);
+	        } else if (prev[0] === 'word' && prev[1] === 'progid') {
+	          continue
+	        } else {
+	          return i
+	        }
+	      }
+
+	      prev = token;
+	    }
+	    return false
+	  }
+
+	  comment(token) {
+	    let node = new Comment();
+	    this.init(node, token[2]);
+	    node.source.end = this.getPosition(token[3] || token[2]);
+	    node.source.end.offset++;
+
+	    let text = token[1].slice(2, -2);
+	    if (/^\s*$/.test(text)) {
+	      node.text = '';
+	      node.raws.left = text;
+	      node.raws.right = '';
+	    } else {
+	      let match = text.match(/^(\s*)([^]*\S)(\s*)$/);
+	      node.text = match[2];
+	      node.raws.left = match[1];
+	      node.raws.right = match[3];
+	    }
+	  }
+
+	  createTokenizer() {
+	    this.tokenizer = tokenizer(this.input);
+	  }
+
+	  decl(tokens, customProperty) {
+	    let node = new Declaration();
+	    this.init(node, tokens[0][2]);
+
+	    let last = tokens[tokens.length - 1];
+	    if (last[0] === ';') {
+	      this.semicolon = true;
+	      tokens.pop();
+	    }
+
+	    node.source.end = this.getPosition(
+	      last[3] || last[2] || findLastWithPosition(tokens)
+	    );
+	    node.source.end.offset++;
+
+	    while (tokens[0][0] !== 'word') {
+	      if (tokens.length === 1) this.unknownWord(tokens);
+	      node.raws.before += tokens.shift()[1];
+	    }
+	    node.source.start = this.getPosition(tokens[0][2]);
+
+	    node.prop = '';
+	    while (tokens.length) {
+	      let type = tokens[0][0];
+	      if (type === ':' || type === 'space' || type === 'comment') {
+	        break
+	      }
+	      node.prop += tokens.shift()[1];
+	    }
+
+	    node.raws.between = '';
+
+	    let token;
+	    while (tokens.length) {
+	      token = tokens.shift();
+
+	      if (token[0] === ':') {
+	        node.raws.between += token[1];
+	        break
+	      } else {
+	        if (token[0] === 'word' && /\w/.test(token[1])) {
+	          this.unknownWord([token]);
+	        }
+	        node.raws.between += token[1];
+	      }
+	    }
+
+	    if (node.prop[0] === '_' || node.prop[0] === '*') {
+	      node.raws.before += node.prop[0];
+	      node.prop = node.prop.slice(1);
+	    }
+
+	    let firstSpaces = [];
+	    let next;
+	    while (tokens.length) {
+	      next = tokens[0][0];
+	      if (next !== 'space' && next !== 'comment') break
+	      firstSpaces.push(tokens.shift());
+	    }
+
+	    this.precheckMissedSemicolon(tokens);
+
+	    for (let i = tokens.length - 1; i >= 0; i--) {
+	      token = tokens[i];
+	      if (token[1].toLowerCase() === '!important') {
+	        node.important = true;
+	        let string = this.stringFrom(tokens, i);
+	        string = this.spacesFromEnd(tokens) + string;
+	        if (string !== ' !important') node.raws.important = string;
+	        break
+	      } else if (token[1].toLowerCase() === 'important') {
+	        let cache = tokens.slice(0);
+	        let str = '';
+	        for (let j = i; j > 0; j--) {
+	          let type = cache[j][0];
+	          if (str.trim().startsWith('!') && type !== 'space') {
+	            break
+	          }
+	          str = cache.pop()[1] + str;
+	        }
+	        if (str.trim().startsWith('!')) {
+	          node.important = true;
+	          node.raws.important = str;
+	          tokens = cache;
+	        }
+	      }
+
+	      if (token[0] !== 'space' && token[0] !== 'comment') {
+	        break
+	      }
+	    }
+
+	    let hasWord = tokens.some(i => i[0] !== 'space' && i[0] !== 'comment');
+
+	    if (hasWord) {
+	      node.raws.between += firstSpaces.map(i => i[1]).join('');
+	      firstSpaces = [];
+	    }
+	    this.raw(node, 'value', firstSpaces.concat(tokens), customProperty);
+
+	    if (node.value.includes(':') && !customProperty) {
+	      this.checkMissedSemicolon(tokens);
+	    }
+	  }
+
+	  doubleColon(token) {
+	    throw this.input.error(
+	      'Double colon',
+	      { offset: token[2] },
+	      { offset: token[2] + token[1].length }
+	    )
+	  }
+
+	  emptyRule(token) {
+	    let node = new Rule();
+	    this.init(node, token[2]);
+	    node.selector = '';
+	    node.raws.between = '';
+	    this.current = node;
+	  }
+
+	  end(token) {
+	    if (this.current.nodes && this.current.nodes.length) {
+	      this.current.raws.semicolon = this.semicolon;
+	    }
+	    this.semicolon = false;
+
+	    this.current.raws.after = (this.current.raws.after || '') + this.spaces;
+	    this.spaces = '';
+
+	    if (this.current.parent) {
+	      this.current.source.end = this.getPosition(token[2]);
+	      this.current.source.end.offset++;
+	      this.current = this.current.parent;
+	    } else {
+	      this.unexpectedClose(token);
+	    }
+	  }
+
+	  endFile() {
+	    if (this.current.parent) this.unclosedBlock();
+	    if (this.current.nodes && this.current.nodes.length) {
+	      this.current.raws.semicolon = this.semicolon;
+	    }
+	    this.current.raws.after = (this.current.raws.after || '') + this.spaces;
+	    this.root.source.end = this.getPosition(this.tokenizer.position());
+	  }
+
+	  freeSemicolon(token) {
+	    this.spaces += token[1];
+	    if (this.current.nodes) {
+	      let prev = this.current.nodes[this.current.nodes.length - 1];
+	      if (prev && prev.type === 'rule' && !prev.raws.ownSemicolon) {
+	        prev.raws.ownSemicolon = this.spaces;
+	        this.spaces = '';
+	        prev.source.end = this.getPosition(token[2]);
+	        prev.source.end.offset += prev.raws.ownSemicolon.length;
+	      }
+	    }
+	  }
+
+	  // Helpers
+
+	  getPosition(offset) {
+	    let pos = this.input.fromOffset(offset);
+	    return {
+	      column: pos.col,
+	      line: pos.line,
+	      offset
+	    }
+	  }
+
+	  init(node, offset) {
+	    this.current.push(node);
+	    node.source = {
+	      input: this.input,
+	      start: this.getPosition(offset)
+	    };
+	    node.raws.before = this.spaces;
+	    this.spaces = '';
+	    if (node.type !== 'comment') this.semicolon = false;
+	  }
+
+	  other(start) {
+	    let end = false;
+	    let type = null;
+	    let colon = false;
+	    let bracket = null;
+	    let brackets = [];
+	    let customProperty = start[1].startsWith('--');
+
+	    let tokens = [];
+	    let token = start;
+	    while (token) {
+	      type = token[0];
+	      tokens.push(token);
+
+	      if (type === '(' || type === '[') {
+	        if (!bracket) bracket = token;
+	        brackets.push(type === '(' ? ')' : ']');
+	      } else if (customProperty && colon && type === '{') {
+	        if (!bracket) bracket = token;
+	        brackets.push('}');
+	      } else if (brackets.length === 0) {
+	        if (type === ';') {
+	          if (colon) {
+	            this.decl(tokens, customProperty);
+	            return
+	          } else {
+	            break
+	          }
+	        } else if (type === '{') {
+	          this.rule(tokens);
+	          return
+	        } else if (type === '}') {
+	          this.tokenizer.back(tokens.pop());
+	          end = true;
+	          break
+	        } else if (type === ':') {
+	          colon = true;
+	        }
+	      } else if (type === brackets[brackets.length - 1]) {
+	        brackets.pop();
+	        if (brackets.length === 0) bracket = null;
+	      }
+
+	      token = this.tokenizer.nextToken();
+	    }
+
+	    if (this.tokenizer.endOfFile()) end = true;
+	    if (brackets.length > 0) this.unclosedBracket(bracket);
+
+	    if (end && colon) {
+	      if (!customProperty) {
+	        while (tokens.length) {
+	          token = tokens[tokens.length - 1][0];
+	          if (token !== 'space' && token !== 'comment') break
+	          this.tokenizer.back(tokens.pop());
+	        }
+	      }
+	      this.decl(tokens, customProperty);
+	    } else {
+	      this.unknownWord(tokens);
+	    }
+	  }
+
+	  parse() {
+	    let token;
+	    while (!this.tokenizer.endOfFile()) {
+	      token = this.tokenizer.nextToken();
+
+	      switch (token[0]) {
+	        case 'space':
+	          this.spaces += token[1];
+	          break
+
+	        case ';':
+	          this.freeSemicolon(token);
+	          break
+
+	        case '}':
+	          this.end(token);
+	          break
+
+	        case 'comment':
+	          this.comment(token);
+	          break
+
+	        case 'at-word':
+	          this.atrule(token);
+	          break
+
+	        case '{':
+	          this.emptyRule(token);
+	          break
+
+	        default:
+	          this.other(token);
+	          break
+	      }
+	    }
+	    this.endFile();
+	  }
+
+	  precheckMissedSemicolon(/* tokens */) {
+	    // Hook for Safe Parser
+	  }
+
+	  raw(node, prop, tokens, customProperty) {
+	    let token, type;
+	    let length = tokens.length;
+	    let value = '';
+	    let clean = true;
+	    let next, prev;
+
+	    for (let i = 0; i < length; i += 1) {
+	      token = tokens[i];
+	      type = token[0];
+	      if (type === 'space' && i === length - 1 && !customProperty) {
+	        clean = false;
+	      } else if (type === 'comment') {
+	        prev = tokens[i - 1] ? tokens[i - 1][0] : 'empty';
+	        next = tokens[i + 1] ? tokens[i + 1][0] : 'empty';
+	        if (!SAFE_COMMENT_NEIGHBOR[prev] && !SAFE_COMMENT_NEIGHBOR[next]) {
+	          if (value.slice(-1) === ',') {
+	            clean = false;
+	          } else {
+	            value += token[1];
+	          }
+	        } else {
+	          clean = false;
+	        }
+	      } else {
+	        value += token[1];
+	      }
+	    }
+	    if (!clean) {
+	      let raw = tokens.reduce((all, i) => all + i[1], '');
+	      node.raws[prop] = { raw, value };
+	    }
+	    node[prop] = value;
+	  }
+
+	  rule(tokens) {
+	    tokens.pop();
+
+	    let node = new Rule();
+	    this.init(node, tokens[0][2]);
+
+	    node.raws.between = this.spacesAndCommentsFromEnd(tokens);
+	    this.raw(node, 'selector', tokens);
+	    this.current = node;
+	  }
+
+	  spacesAndCommentsFromEnd(tokens) {
+	    let lastTokenType;
+	    let spaces = '';
+	    while (tokens.length) {
+	      lastTokenType = tokens[tokens.length - 1][0];
+	      if (lastTokenType !== 'space' && lastTokenType !== 'comment') break
+	      spaces = tokens.pop()[1] + spaces;
+	    }
+	    return spaces
+	  }
+
+	  // Errors
+
+	  spacesAndCommentsFromStart(tokens) {
+	    let next;
+	    let spaces = '';
+	    while (tokens.length) {
+	      next = tokens[0][0];
+	      if (next !== 'space' && next !== 'comment') break
+	      spaces += tokens.shift()[1];
+	    }
+	    return spaces
+	  }
+
+	  spacesFromEnd(tokens) {
+	    let lastTokenType;
+	    let spaces = '';
+	    while (tokens.length) {
+	      lastTokenType = tokens[tokens.length - 1][0];
+	      if (lastTokenType !== 'space') break
+	      spaces = tokens.pop()[1] + spaces;
+	    }
+	    return spaces
+	  }
+
+	  stringFrom(tokens, from) {
+	    let result = '';
+	    for (let i = from; i < tokens.length; i++) {
+	      result += tokens[i][1];
+	    }
+	    tokens.splice(from, tokens.length - from);
+	    return result
+	  }
+
+	  unclosedBlock() {
+	    let pos = this.current.source.start;
+	    throw this.input.error('Unclosed block', pos.line, pos.column)
+	  }
+
+	  unclosedBracket(bracket) {
+	    throw this.input.error(
+	      'Unclosed bracket',
+	      { offset: bracket[2] },
+	      { offset: bracket[2] + 1 }
+	    )
+	  }
+
+	  unexpectedClose(token) {
+	    throw this.input.error(
+	      'Unexpected }',
+	      { offset: token[2] },
+	      { offset: token[2] + 1 }
+	    )
+	  }
+
+	  unknownWord(tokens) {
+	    throw this.input.error(
+	      'Unknown word ' + tokens[0][1],
+	      { offset: tokens[0][2] },
+	      { offset: tokens[0][2] + tokens[0][1].length }
+	    )
+	  }
+
+	  unnamedAtrule(node, token) {
+	    throw this.input.error(
+	      'At-rule without name',
+	      { offset: token[2] },
+	      { offset: token[2] + token[1].length }
+	    )
+	  }
+	}
+
+	parser = Parser;
+	return parser;
+}
+
+var parse_1;
+var hasRequiredParse;
+
+function requireParse () {
+	if (hasRequiredParse) return parse_1;
+	hasRequiredParse = 1;
+
+	let Container = /*@__PURE__*/ requireContainer();
+	let Input = /*@__PURE__*/ requireInput();
+	let Parser = /*@__PURE__*/ requireParser();
+
+	function parse(css, opts) {
+	  let input = new Input(css, opts);
+	  let parser = new Parser(input);
+	  try {
+	    parser.parse();
+	  } catch (e) {
+	    if (process.env.NODE_ENV !== 'production') {
+	      if (e.name === 'CssSyntaxError' && opts && opts.from) {
+	        if (/\.scss$/i.test(opts.from)) {
+	          e.message +=
+	            '\nYou tried to parse SCSS with ' +
+	            'the standard CSS parser; ' +
+	            'try again with the postcss-scss parser';
+	        } else if (/\.sass/i.test(opts.from)) {
+	          e.message +=
+	            '\nYou tried to parse Sass with ' +
+	            'the standard CSS parser; ' +
+	            'try again with the postcss-sass parser';
+	        } else if (/\.less$/i.test(opts.from)) {
+	          e.message +=
+	            '\nYou tried to parse Less with ' +
+	            'the standard CSS parser; ' +
+	            'try again with the postcss-less parser';
+	        }
+	      }
+	    }
+	    throw e
+	  }
+
+	  return parser.root
+	}
+
+	parse_1 = parse;
+	parse.default = parse;
+
+	Container.registerParse(parse);
+	return parse_1;
+}
+
+var warning;
+var hasRequiredWarning;
+
+function requireWarning () {
+	if (hasRequiredWarning) return warning;
+	hasRequiredWarning = 1;
+
+	class Warning {
+	  constructor(text, opts = {}) {
+	    this.type = 'warning';
+	    this.text = text;
+
+	    if (opts.node && opts.node.source) {
+	      let range = opts.node.rangeBy(opts);
+	      this.line = range.start.line;
+	      this.column = range.start.column;
+	      this.endLine = range.end.line;
+	      this.endColumn = range.end.column;
+	    }
+
+	    for (let opt in opts) this[opt] = opts[opt];
+	  }
+
+	  toString() {
+	    if (this.node) {
+	      return this.node.error(this.text, {
+	        index: this.index,
+	        plugin: this.plugin,
+	        word: this.word
+	      }).message
+	    }
+
+	    if (this.plugin) {
+	      return this.plugin + ': ' + this.text
+	    }
+
+	    return this.text
+	  }
+	}
+
+	warning = Warning;
+	Warning.default = Warning;
+	return warning;
+}
+
+var result;
+var hasRequiredResult;
+
+function requireResult () {
+	if (hasRequiredResult) return result;
+	hasRequiredResult = 1;
+
+	let Warning = /*@__PURE__*/ requireWarning();
+
+	class Result {
+	  get content() {
+	    return this.css
+	  }
+
+	  constructor(processor, root, opts) {
+	    this.processor = processor;
+	    this.messages = [];
+	    this.root = root;
+	    this.opts = opts;
+	    this.css = '';
+	    this.map = undefined;
+	  }
+
+	  toString() {
+	    return this.css
+	  }
+
+	  warn(text, opts = {}) {
+	    if (!opts.plugin) {
+	      if (this.lastPlugin && this.lastPlugin.postcssPlugin) {
+	        opts.plugin = this.lastPlugin.postcssPlugin;
+	      }
+	    }
+
+	    let warning = new Warning(text, opts);
+	    this.messages.push(warning);
+
+	    return warning
+	  }
+
+	  warnings() {
+	    return this.messages.filter(i => i.type === 'warning')
+	  }
+	}
+
+	result = Result;
+	Result.default = Result;
+	return result;
+}
+
+/* eslint-disable no-console */
+
+var warnOnce;
+var hasRequiredWarnOnce;
+
+function requireWarnOnce () {
+	if (hasRequiredWarnOnce) return warnOnce;
+	hasRequiredWarnOnce = 1;
+
+	let printed = {};
+
+	warnOnce = function warnOnce(message) {
+	  if (printed[message]) return
+	  printed[message] = true;
+
+	  if (typeof console !== 'undefined' && console.warn) {
+	    console.warn(message);
+	  }
+	};
+	return warnOnce;
+}
+
+var lazyResult;
+var hasRequiredLazyResult;
+
+function requireLazyResult () {
+	if (hasRequiredLazyResult) return lazyResult;
+	hasRequiredLazyResult = 1;
+
+	let Container = /*@__PURE__*/ requireContainer();
+	let Document = /*@__PURE__*/ requireDocument();
+	let MapGenerator = /*@__PURE__*/ requireMapGenerator();
+	let parse = /*@__PURE__*/ requireParse();
+	let Result = /*@__PURE__*/ requireResult();
+	let Root = /*@__PURE__*/ requireRoot();
+	let stringify = /*@__PURE__*/ requireStringify();
+	let { isClean, my } = /*@__PURE__*/ requireSymbols();
+	let warnOnce = /*@__PURE__*/ requireWarnOnce();
+
+	const TYPE_TO_CLASS_NAME = {
+	  atrule: 'AtRule',
+	  comment: 'Comment',
+	  decl: 'Declaration',
+	  document: 'Document',
+	  root: 'Root',
+	  rule: 'Rule'
+	};
+
+	const PLUGIN_PROPS = {
+	  AtRule: true,
+	  AtRuleExit: true,
+	  Comment: true,
+	  CommentExit: true,
+	  Declaration: true,
+	  DeclarationExit: true,
+	  Document: true,
+	  DocumentExit: true,
+	  Once: true,
+	  OnceExit: true,
+	  postcssPlugin: true,
+	  prepare: true,
+	  Root: true,
+	  RootExit: true,
+	  Rule: true,
+	  RuleExit: true
+	};
+
+	const NOT_VISITORS = {
+	  Once: true,
+	  postcssPlugin: true,
+	  prepare: true
+	};
+
+	const CHILDREN = 0;
+
+	function isPromise(obj) {
+	  return typeof obj === 'object' && typeof obj.then === 'function'
+	}
+
+	function getEvents(node) {
+	  let key = false;
+	  let type = TYPE_TO_CLASS_NAME[node.type];
+	  if (node.type === 'decl') {
+	    key = node.prop.toLowerCase();
+	  } else if (node.type === 'atrule') {
+	    key = node.name.toLowerCase();
+	  }
+
+	  if (key && node.append) {
+	    return [
+	      type,
+	      type + '-' + key,
+	      CHILDREN,
+	      type + 'Exit',
+	      type + 'Exit-' + key
+	    ]
+	  } else if (key) {
+	    return [type, type + '-' + key, type + 'Exit', type + 'Exit-' + key]
+	  } else if (node.append) {
+	    return [type, CHILDREN, type + 'Exit']
+	  } else {
+	    return [type, type + 'Exit']
+	  }
+	}
+
+	function toStack(node) {
+	  let events;
+	  if (node.type === 'document') {
+	    events = ['Document', CHILDREN, 'DocumentExit'];
+	  } else if (node.type === 'root') {
+	    events = ['Root', CHILDREN, 'RootExit'];
+	  } else {
+	    events = getEvents(node);
+	  }
+
+	  return {
+	    eventIndex: 0,
+	    events,
+	    iterator: 0,
+	    node,
+	    visitorIndex: 0,
+	    visitors: []
+	  }
+	}
+
+	function cleanMarks(node) {
+	  node[isClean] = false;
+	  if (node.nodes) node.nodes.forEach(i => cleanMarks(i));
+	  return node
+	}
+
+	let postcss = {};
+
+	class LazyResult {
+	  get content() {
+	    return this.stringify().content
+	  }
+
+	  get css() {
+	    return this.stringify().css
+	  }
+
+	  get map() {
+	    return this.stringify().map
+	  }
+
+	  get messages() {
+	    return this.sync().messages
+	  }
+
+	  get opts() {
+	    return this.result.opts
+	  }
+
+	  get processor() {
+	    return this.result.processor
+	  }
+
+	  get root() {
+	    return this.sync().root
+	  }
+
+	  get [Symbol.toStringTag]() {
+	    return 'LazyResult'
+	  }
+
+	  constructor(processor, css, opts) {
+	    this.stringified = false;
+	    this.processed = false;
+
+	    let root;
+	    if (
+	      typeof css === 'object' &&
+	      css !== null &&
+	      (css.type === 'root' || css.type === 'document')
+	    ) {
+	      root = cleanMarks(css);
+	    } else if (css instanceof LazyResult || css instanceof Result) {
+	      root = cleanMarks(css.root);
+	      if (css.map) {
+	        if (typeof opts.map === 'undefined') opts.map = {};
+	        if (!opts.map.inline) opts.map.inline = false;
+	        opts.map.prev = css.map;
+	      }
+	    } else {
+	      let parser = parse;
+	      if (opts.syntax) parser = opts.syntax.parse;
+	      if (opts.parser) parser = opts.parser;
+	      if (parser.parse) parser = parser.parse;
+
+	      try {
+	        root = parser(css, opts);
+	      } catch (error) {
+	        this.processed = true;
+	        this.error = error;
+	      }
+
+	      if (root && !root[my]) {
+	        /* c8 ignore next 2 */
+	        Container.rebuild(root);
+	      }
+	    }
+
+	    this.result = new Result(processor, root, opts);
+	    this.helpers = { ...postcss, postcss, result: this.result };
+	    this.plugins = this.processor.plugins.map(plugin => {
+	      if (typeof plugin === 'object' && plugin.prepare) {
+	        return { ...plugin, ...plugin.prepare(this.result) }
+	      } else {
+	        return plugin
+	      }
+	    });
+	  }
+
+	  async() {
+	    if (this.error) return Promise.reject(this.error)
+	    if (this.processed) return Promise.resolve(this.result)
+	    if (!this.processing) {
+	      this.processing = this.runAsync();
+	    }
+	    return this.processing
+	  }
+
+	  catch(onRejected) {
+	    return this.async().catch(onRejected)
+	  }
+
+	  finally(onFinally) {
+	    return this.async().then(onFinally, onFinally)
+	  }
+
+	  getAsyncError() {
+	    throw new Error('Use process(css).then(cb) to work with async plugins')
+	  }
+
+	  handleError(error, node) {
+	    let plugin = this.result.lastPlugin;
+	    try {
+	      if (node) node.addToError(error);
+	      this.error = error;
+	      if (error.name === 'CssSyntaxError' && !error.plugin) {
+	        error.plugin = plugin.postcssPlugin;
+	        error.setMessage();
+	      } else if (plugin.postcssVersion) {
+	        if (process.env.NODE_ENV !== 'production') {
+	          let pluginName = plugin.postcssPlugin;
+	          let pluginVer = plugin.postcssVersion;
+	          let runtimeVer = this.result.processor.version;
+	          let a = pluginVer.split('.');
+	          let b = runtimeVer.split('.');
+
+	          if (a[0] !== b[0] || parseInt(a[1]) > parseInt(b[1])) {
+	            // eslint-disable-next-line no-console
+	            console.error(
+	              'Unknown error from PostCSS plugin. Your current PostCSS ' +
+	                'version is ' +
+	                runtimeVer +
+	                ', but ' +
+	                pluginName +
+	                ' uses ' +
+	                pluginVer +
+	                '. Perhaps this is the source of the error below.'
+	            );
+	          }
+	        }
+	      }
+	    } catch (err) {
+	      /* c8 ignore next 3 */
+	      // eslint-disable-next-line no-console
+	      if (console && console.error) console.error(err);
+	    }
+	    return error
+	  }
+
+	  prepareVisitors() {
+	    this.listeners = {};
+	    let add = (plugin, type, cb) => {
+	      if (!this.listeners[type]) this.listeners[type] = [];
+	      this.listeners[type].push([plugin, cb]);
+	    };
+	    for (let plugin of this.plugins) {
+	      if (typeof plugin === 'object') {
+	        for (let event in plugin) {
+	          if (!PLUGIN_PROPS[event] && /^[A-Z]/.test(event)) {
+	            throw new Error(
+	              `Unknown event ${event} in ${plugin.postcssPlugin}. ` +
+	                `Try to update PostCSS (${this.processor.version} now).`
+	            )
+	          }
+	          if (!NOT_VISITORS[event]) {
+	            if (typeof plugin[event] === 'object') {
+	              for (let filter in plugin[event]) {
+	                if (filter === '*') {
+	                  add(plugin, event, plugin[event][filter]);
+	                } else {
+	                  add(
+	                    plugin,
+	                    event + '-' + filter.toLowerCase(),
+	                    plugin[event][filter]
+	                  );
+	                }
+	              }
+	            } else if (typeof plugin[event] === 'function') {
+	              add(plugin, event, plugin[event]);
+	            }
+	          }
+	        }
+	      }
+	    }
+	    this.hasListener = Object.keys(this.listeners).length > 0;
+	  }
+
+	  async runAsync() {
+	    this.plugin = 0;
+	    for (let i = 0; i < this.plugins.length; i++) {
+	      let plugin = this.plugins[i];
+	      let promise = this.runOnRoot(plugin);
+	      if (isPromise(promise)) {
+	        try {
+	          await promise;
+	        } catch (error) {
+	          throw this.handleError(error)
+	        }
+	      }
+	    }
+
+	    this.prepareVisitors();
+	    if (this.hasListener) {
+	      let root = this.result.root;
+	      while (!root[isClean]) {
+	        root[isClean] = true;
+	        let stack = [toStack(root)];
+	        while (stack.length > 0) {
+	          let promise = this.visitTick(stack);
+	          if (isPromise(promise)) {
+	            try {
+	              await promise;
+	            } catch (e) {
+	              let node = stack[stack.length - 1].node;
+	              throw this.handleError(e, node)
+	            }
+	          }
+	        }
+	      }
+
+	      if (this.listeners.OnceExit) {
+	        for (let [plugin, visitor] of this.listeners.OnceExit) {
+	          this.result.lastPlugin = plugin;
+	          try {
+	            if (root.type === 'document') {
+	              let roots = root.nodes.map(subRoot =>
+	                visitor(subRoot, this.helpers)
+	              );
+
+	              await Promise.all(roots);
+	            } else {
+	              await visitor(root, this.helpers);
+	            }
+	          } catch (e) {
+	            throw this.handleError(e)
+	          }
+	        }
+	      }
+	    }
+
+	    this.processed = true;
+	    return this.stringify()
+	  }
+
+	  runOnRoot(plugin) {
+	    this.result.lastPlugin = plugin;
+	    try {
+	      if (typeof plugin === 'object' && plugin.Once) {
+	        if (this.result.root.type === 'document') {
+	          let roots = this.result.root.nodes.map(root =>
+	            plugin.Once(root, this.helpers)
+	          );
+
+	          if (isPromise(roots[0])) {
+	            return Promise.all(roots)
+	          }
+
+	          return roots
+	        }
+
+	        return plugin.Once(this.result.root, this.helpers)
+	      } else if (typeof plugin === 'function') {
+	        return plugin(this.result.root, this.result)
+	      }
+	    } catch (error) {
+	      throw this.handleError(error)
+	    }
+	  }
+
+	  stringify() {
+	    if (this.error) throw this.error
+	    if (this.stringified) return this.result
+	    this.stringified = true;
+
+	    this.sync();
+
+	    let opts = this.result.opts;
+	    let str = stringify;
+	    if (opts.syntax) str = opts.syntax.stringify;
+	    if (opts.stringifier) str = opts.stringifier;
+	    if (str.stringify) str = str.stringify;
+
+	    let map = new MapGenerator(str, this.result.root, this.result.opts);
+	    let data = map.generate();
+	    this.result.css = data[0];
+	    this.result.map = data[1];
+
+	    return this.result
+	  }
+
+	  sync() {
+	    if (this.error) throw this.error
+	    if (this.processed) return this.result
+	    this.processed = true;
+
+	    if (this.processing) {
+	      throw this.getAsyncError()
+	    }
+
+	    for (let plugin of this.plugins) {
+	      let promise = this.runOnRoot(plugin);
+	      if (isPromise(promise)) {
+	        throw this.getAsyncError()
+	      }
+	    }
+
+	    this.prepareVisitors();
+	    if (this.hasListener) {
+	      let root = this.result.root;
+	      while (!root[isClean]) {
+	        root[isClean] = true;
+	        this.walkSync(root);
+	      }
+	      if (this.listeners.OnceExit) {
+	        if (root.type === 'document') {
+	          for (let subRoot of root.nodes) {
+	            this.visitSync(this.listeners.OnceExit, subRoot);
+	          }
+	        } else {
+	          this.visitSync(this.listeners.OnceExit, root);
+	        }
+	      }
+	    }
+
+	    return this.result
+	  }
+
+	  then(onFulfilled, onRejected) {
+	    if (process.env.NODE_ENV !== 'production') {
+	      if (!('from' in this.opts)) {
+	        warnOnce(
+	          'Without `from` option PostCSS could generate wrong source map ' +
+	            'and will not find Browserslist config. Set it to CSS file path ' +
+	            'or to `undefined` to prevent this warning.'
+	        );
+	      }
+	    }
+	    return this.async().then(onFulfilled, onRejected)
+	  }
+
+	  toString() {
+	    return this.css
+	  }
+
+	  visitSync(visitors, node) {
+	    for (let [plugin, visitor] of visitors) {
+	      this.result.lastPlugin = plugin;
+	      let promise;
+	      try {
+	        promise = visitor(node, this.helpers);
+	      } catch (e) {
+	        throw this.handleError(e, node.proxyOf)
+	      }
+	      if (node.type !== 'root' && node.type !== 'document' && !node.parent) {
+	        return true
+	      }
+	      if (isPromise(promise)) {
+	        throw this.getAsyncError()
+	      }
+	    }
+	  }
+
+	  visitTick(stack) {
+	    let visit = stack[stack.length - 1];
+	    let { node, visitors } = visit;
+
+	    if (node.type !== 'root' && node.type !== 'document' && !node.parent) {
+	      stack.pop();
+	      return
+	    }
+
+	    if (visitors.length > 0 && visit.visitorIndex < visitors.length) {
+	      let [plugin, visitor] = visitors[visit.visitorIndex];
+	      visit.visitorIndex += 1;
+	      if (visit.visitorIndex === visitors.length) {
+	        visit.visitors = [];
+	        visit.visitorIndex = 0;
+	      }
+	      this.result.lastPlugin = plugin;
+	      try {
+	        return visitor(node.toProxy(), this.helpers)
+	      } catch (e) {
+	        throw this.handleError(e, node)
+	      }
+	    }
+
+	    if (visit.iterator !== 0) {
+	      let iterator = visit.iterator;
+	      let child;
+	      while ((child = node.nodes[node.indexes[iterator]])) {
+	        node.indexes[iterator] += 1;
+	        if (!child[isClean]) {
+	          child[isClean] = true;
+	          stack.push(toStack(child));
+	          return
+	        }
+	      }
+	      visit.iterator = 0;
+	      delete node.indexes[iterator];
+	    }
+
+	    let events = visit.events;
+	    while (visit.eventIndex < events.length) {
+	      let event = events[visit.eventIndex];
+	      visit.eventIndex += 1;
+	      if (event === CHILDREN) {
+	        if (node.nodes && node.nodes.length) {
+	          node[isClean] = true;
+	          visit.iterator = node.getIterator();
+	        }
+	        return
+	      } else if (this.listeners[event]) {
+	        visit.visitors = this.listeners[event];
+	        return
+	      }
+	    }
+	    stack.pop();
+	  }
+
+	  walkSync(node) {
+	    node[isClean] = true;
+	    let events = getEvents(node);
+	    for (let event of events) {
+	      if (event === CHILDREN) {
+	        if (node.nodes) {
+	          node.each(child => {
+	            if (!child[isClean]) this.walkSync(child);
+	          });
+	        }
+	      } else {
+	        let visitors = this.listeners[event];
+	        if (visitors) {
+	          if (this.visitSync(visitors, node.toProxy())) return
+	        }
+	      }
+	    }
+	  }
+
+	  warnings() {
+	    return this.sync().warnings()
+	  }
+	}
+
+	LazyResult.registerPostcss = dependant => {
+	  postcss = dependant;
+	};
+
+	lazyResult = LazyResult;
+	LazyResult.default = LazyResult;
+
+	Root.registerLazyResult(LazyResult);
+	Document.registerLazyResult(LazyResult);
+	return lazyResult;
+}
+
+var noWorkResult;
+var hasRequiredNoWorkResult;
+
+function requireNoWorkResult () {
+	if (hasRequiredNoWorkResult) return noWorkResult;
+	hasRequiredNoWorkResult = 1;
+
+	let MapGenerator = /*@__PURE__*/ requireMapGenerator();
+	let parse = /*@__PURE__*/ requireParse();
+	const Result = /*@__PURE__*/ requireResult();
+	let stringify = /*@__PURE__*/ requireStringify();
+	let warnOnce = /*@__PURE__*/ requireWarnOnce();
+
+	class NoWorkResult {
+	  get content() {
+	    return this.result.css
+	  }
+
+	  get css() {
+	    return this.result.css
+	  }
+
+	  get map() {
+	    return this.result.map
+	  }
+
+	  get messages() {
+	    return []
+	  }
+
+	  get opts() {
+	    return this.result.opts
+	  }
+
+	  get processor() {
+	    return this.result.processor
+	  }
+
+	  get root() {
+	    if (this._root) {
+	      return this._root
+	    }
+
+	    let root;
+	    let parser = parse;
+
+	    try {
+	      root = parser(this._css, this._opts);
+	    } catch (error) {
+	      this.error = error;
+	    }
+
+	    if (this.error) {
+	      throw this.error
+	    } else {
+	      this._root = root;
+	      return root
+	    }
+	  }
+
+	  get [Symbol.toStringTag]() {
+	    return 'NoWorkResult'
+	  }
+
+	  constructor(processor, css, opts) {
+	    css = css.toString();
+	    this.stringified = false;
+
+	    this._processor = processor;
+	    this._css = css;
+	    this._opts = opts;
+	    this._map = undefined;
+	    let root;
+
+	    let str = stringify;
+	    this.result = new Result(this._processor, root, this._opts);
+	    this.result.css = css;
+
+	    let self = this;
+	    Object.defineProperty(this.result, 'root', {
+	      get() {
+	        return self.root
+	      }
+	    });
+
+	    let map = new MapGenerator(str, root, this._opts, css);
+	    if (map.isMap()) {
+	      let [generatedCSS, generatedMap] = map.generate();
+	      if (generatedCSS) {
+	        this.result.css = generatedCSS;
+	      }
+	      if (generatedMap) {
+	        this.result.map = generatedMap;
+	      }
+	    } else {
+	      map.clearAnnotation();
+	      this.result.css = map.css;
+	    }
+	  }
+
+	  async() {
+	    if (this.error) return Promise.reject(this.error)
+	    return Promise.resolve(this.result)
+	  }
+
+	  catch(onRejected) {
+	    return this.async().catch(onRejected)
+	  }
+
+	  finally(onFinally) {
+	    return this.async().then(onFinally, onFinally)
+	  }
+
+	  sync() {
+	    if (this.error) throw this.error
+	    return this.result
+	  }
+
+	  then(onFulfilled, onRejected) {
+	    if (process.env.NODE_ENV !== 'production') {
+	      if (!('from' in this._opts)) {
+	        warnOnce(
+	          'Without `from` option PostCSS could generate wrong source map ' +
+	            'and will not find Browserslist config. Set it to CSS file path ' +
+	            'or to `undefined` to prevent this warning.'
+	        );
+	      }
+	    }
+
+	    return this.async().then(onFulfilled, onRejected)
+	  }
+
+	  toString() {
+	    return this._css
+	  }
+
+	  warnings() {
+	    return []
+	  }
+	}
+
+	noWorkResult = NoWorkResult;
+	NoWorkResult.default = NoWorkResult;
+	return noWorkResult;
+}
+
+var processor;
+var hasRequiredProcessor;
+
+function requireProcessor () {
+	if (hasRequiredProcessor) return processor;
+	hasRequiredProcessor = 1;
+
+	let Document = /*@__PURE__*/ requireDocument();
+	let LazyResult = /*@__PURE__*/ requireLazyResult();
+	let NoWorkResult = /*@__PURE__*/ requireNoWorkResult();
+	let Root = /*@__PURE__*/ requireRoot();
+
+	class Processor {
+	  constructor(plugins = []) {
+	    this.version = '8.5.6';
+	    this.plugins = this.normalize(plugins);
+	  }
+
+	  normalize(plugins) {
+	    let normalized = [];
+	    for (let i of plugins) {
+	      if (i.postcss === true) {
+	        i = i();
+	      } else if (i.postcss) {
+	        i = i.postcss;
+	      }
+
+	      if (typeof i === 'object' && Array.isArray(i.plugins)) {
+	        normalized = normalized.concat(i.plugins);
+	      } else if (typeof i === 'object' && i.postcssPlugin) {
+	        normalized.push(i);
+	      } else if (typeof i === 'function') {
+	        normalized.push(i);
+	      } else if (typeof i === 'object' && (i.parse || i.stringify)) {
+	        if (process.env.NODE_ENV !== 'production') {
+	          throw new Error(
+	            'PostCSS syntaxes cannot be used as plugins. Instead, please use ' +
+	              'one of the syntax/parser/stringifier options as outlined ' +
+	              'in your PostCSS runner documentation.'
+	          )
+	        }
+	      } else {
+	        throw new Error(i + ' is not a PostCSS plugin')
+	      }
+	    }
+	    return normalized
+	  }
+
+	  process(css, opts = {}) {
+	    if (
+	      !this.plugins.length &&
+	      !opts.parser &&
+	      !opts.stringifier &&
+	      !opts.syntax
+	    ) {
+	      return new NoWorkResult(this, css, opts)
+	    } else {
+	      return new LazyResult(this, css, opts)
+	    }
+	  }
+
+	  use(plugin) {
+	    this.plugins = this.plugins.concat(this.normalize([plugin]));
+	    return this
+	  }
+	}
+
+	processor = Processor;
+	Processor.default = Processor;
+
+	Root.registerProcessor(Processor);
+	Document.registerProcessor(Processor);
+	return processor;
+}
+
+var postcss_1;
+var hasRequiredPostcss;
+
+function requirePostcss () {
+	if (hasRequiredPostcss) return postcss_1;
+	hasRequiredPostcss = 1;
+
+	let AtRule = /*@__PURE__*/ requireAtRule();
+	let Comment = /*@__PURE__*/ requireComment();
+	let Container = /*@__PURE__*/ requireContainer();
+	let CssSyntaxError = /*@__PURE__*/ requireCssSyntaxError();
+	let Declaration = /*@__PURE__*/ requireDeclaration();
+	let Document = /*@__PURE__*/ requireDocument();
+	let fromJSON = /*@__PURE__*/ requireFromJSON();
+	let Input = /*@__PURE__*/ requireInput();
+	let LazyResult = /*@__PURE__*/ requireLazyResult();
+	let list = /*@__PURE__*/ requireList();
+	let Node = /*@__PURE__*/ requireNode();
+	let parse = /*@__PURE__*/ requireParse();
+	let Processor = /*@__PURE__*/ requireProcessor();
+	let Result = /*@__PURE__*/ requireResult();
+	let Root = /*@__PURE__*/ requireRoot();
+	let Rule = /*@__PURE__*/ requireRule();
+	let stringify = /*@__PURE__*/ requireStringify();
+	let Warning = /*@__PURE__*/ requireWarning();
+
+	function postcss(...plugins) {
+	  if (plugins.length === 1 && Array.isArray(plugins[0])) {
+	    plugins = plugins[0];
+	  }
+	  return new Processor(plugins)
+	}
+
+	postcss.plugin = function plugin(name, initializer) {
+	  let warningPrinted = false;
+	  function creator(...args) {
+	    // eslint-disable-next-line no-console
+	    if (console && console.warn && !warningPrinted) {
+	      warningPrinted = true;
+	      // eslint-disable-next-line no-console
+	      console.warn(
+	        name +
+	          ': postcss.plugin was deprecated. Migration guide:\n' +
+	          'https://evilmartians.com/chronicles/postcss-8-plugin-migration'
+	      );
+	      if (process.env.LANG && process.env.LANG.startsWith('cn')) {
+	        /* c8 ignore next 7 */
+	        // eslint-disable-next-line no-console
+	        console.warn(
+	          name +
+	            ': 里面 postcss.plugin 被弃用. 迁移指南:\n' +
+	            'https://www.w3ctech.com/topic/2226'
+	        );
+	      }
+	    }
+	    let transformer = initializer(...args);
+	    transformer.postcssPlugin = name;
+	    transformer.postcssVersion = new Processor().version;
+	    return transformer
+	  }
+
+	  let cache;
+	  Object.defineProperty(creator, 'postcss', {
+	    get() {
+	      if (!cache) cache = creator();
+	      return cache
+	    }
+	  });
+
+	  creator.process = function (css, processOpts, pluginOpts) {
+	    return postcss([creator(pluginOpts)]).process(css, processOpts)
+	  };
+
+	  return creator
+	};
+
+	postcss.stringify = stringify;
+	postcss.parse = parse;
+	postcss.fromJSON = fromJSON;
+	postcss.list = list;
+
+	postcss.comment = defaults => new Comment(defaults);
+	postcss.atRule = defaults => new AtRule(defaults);
+	postcss.decl = defaults => new Declaration(defaults);
+	postcss.rule = defaults => new Rule(defaults);
+	postcss.root = defaults => new Root(defaults);
+	postcss.document = defaults => new Document(defaults);
+
+	postcss.CssSyntaxError = CssSyntaxError;
+	postcss.Declaration = Declaration;
+	postcss.Container = Container;
+	postcss.Processor = Processor;
+	postcss.Document = Document;
+	postcss.Comment = Comment;
+	postcss.Warning = Warning;
+	postcss.AtRule = AtRule;
+	postcss.Result = Result;
+	postcss.Input = Input;
+	postcss.Rule = Rule;
+	postcss.Root = Root;
+	postcss.Node = Node;
+
+	LazyResult.registerPostcss(postcss);
+
+	postcss_1 = postcss;
+	postcss.default = postcss;
+	return postcss_1;
+}
+
+var postcssExports = /*@__PURE__*/ requirePostcss();
+var postcss = /*@__PURE__*/getDefaultExportFromCjs(postcssExports);
+
+postcss.stringify;
+postcss.fromJSON;
+postcss.plugin;
+postcss.parse;
+postcss.list;
+
+postcss.document;
+postcss.comment;
+postcss.atRule;
+postcss.rule;
+postcss.decl;
+postcss.root;
+
+postcss.CssSyntaxError;
+postcss.Declaration;
+postcss.Container;
+postcss.Processor;
+postcss.Document;
+postcss.Comment;
+const Warning = postcss.Warning;
+postcss.AtRule;
+postcss.Result;
+postcss.Input;
+postcss.Rule;
+postcss.Root;
+postcss.Node;
+
+function dom2ToString(r, platform) {
+  if (platform === "app-harmony") {
+    return createObjToCppString(r);
+  }
+  return JSON.stringify;
+}
+function createObjToCppString(r) {
+  return function objToCppString(obj, depth = 0) {
+    if (depth === 0 && Object.keys(obj).length === 0) {
+      return "{}";
+    }
+    const method = depth === 0 ? r("make_style_sheet") : depth === 1 ? r("make_property_map") : r("make_styles");
+    const entries = [];
+    const variableEntries = [];
+    Object.entries(obj).forEach(([key, value]) => {
+      if (value == "null") {
+        value = "nullptr";
+      }
+      const keyString = key.includes("::") ? key : `"${key}"`;
+      if (depth >= 2) {
+        if (key.startsWith("--")) {
+          variableEntries.push(`{"${key}", "${value}"}`);
+        } else {
+          if (keyString[0] === "!") {
+            entries.push(
+              `{${keyString.slice(1)}, UniCSSPropertyValueImportant(${value})}`
+            );
+          } else {
+            entries.push(`{${keyString}, ${value}}`);
+          }
+        }
+      } else {
+        entries.push(
+          `{${keyString}, ${objToCppString(
+            value,
+            depth + 1
+          )}}`
+        );
+      }
+    });
+    if (variableEntries.length) {
+      entries.unshift(
+        `{${r("UniCSSPropertyID")}::Variable, ${r("UniCSSPropertyValueVariable")}{${variableEntries.join(
+          ", "
+        )}}}`
+      );
+    }
+    return `${method}({${entries.join(",")}})`;
+  };
+}
+function createDecl(prop, value, important, raws, source) {
+  const decl = {
+    type: "decl",
+    prop,
+    value: value.toString(),
+    raws,
+    source
+  };
+  if (important) {
+    decl.important = true;
+  }
+  return decl;
+}
+
+var appCssJson = {
+	"align-content": {
+		type: "UniCSSAlignContentType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleAlignContent"
+				}
+			}
+		},
+		values: [
+			"auto",
+			"flex-start",
+			"center",
+			"flex-end",
+			"stretch",
+			"baseline",
+			"space-between",
+			"space-around",
+			"space-evenly"
+		],
+		defaultValue: "stretch"
+	},
+	"align-items": {
+		type: "UniCSSAlignItemsType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleAlignItems"
+				}
+			}
+		},
+		values: [
+			"auto",
+			"flex-start",
+			"center",
+			"flex-end",
+			"stretch",
+			"baseline",
+			"space-between",
+			"space-around",
+			"space-evenly"
+		],
+		defaultValue: "stretch"
+	},
+	"align-self": {
+		type: "UniCSSAlignSelfType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleAlignSelf"
+				}
+			}
+		},
+		values: [
+			"auto",
+			"flex-start",
+			"center",
+			"flex-end",
+			"stretch",
+			"baseline",
+			"space-between",
+			"space-around",
+			"space-evenly"
+		],
+		defaultValue: "auto"
+	},
+	"flex-basis": {
+		type: [
+			"UniCSSUnitValue",
+			"UniCSSFlexBasisType"
+		],
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleFlexBasis"
+				}
+			}
+		},
+		values: [
+			"auto",
+			"content"
+		],
+		defaultValue: "auto"
+	},
+	"flex-direction": {
+		type: "UniCSSFlexDirectionType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleFlexDirection"
+				}
+			}
+		},
+		values: [
+			"row",
+			"row-reverse",
+			"column",
+			"column-reverse"
+		],
+		defaultValue: "column"
+	},
+	"flex-grow": {
+		type: "number",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleFlexGrow"
+				}
+			}
+		}
+	},
+	"flex-shrink": {
+		type: "number",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleFlexShrink"
+				}
+			}
+		}
+	},
+	"flex-wrap": {
+		type: "UniCSSFlexWrapType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleFlexWrap"
+				}
+			}
+		},
+		values: [
+			"nowrap",
+			"wrap",
+			"wrap-reverse"
+		],
+		defaultValue: "nowrap"
+	},
+	"justify-content": {
+		type: "UniCSSJustifyContentType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleJustifyContent"
+				}
+			}
+		},
+		values: [
+			"auto",
+			"flex-start",
+			"center",
+			"flex-end",
+			"stretch",
+			"baseline",
+			"space-between",
+			"space-around",
+			"space-evenly"
+		],
+		defaultValue: "flex-start"
+	},
+	bottom: {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleBottom"
+				}
+			}
+		}
+	},
+	display: {
+		type: "UniCSSDisplayType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleDisplay"
+				},
+				"nv-c": {
+					type: "UniNativeDisplayType",
+					setter: "display"
+				}
+			},
+			"app-android": {
+				"dom-c": {
+					setter: "setStyleDisplay"
+				},
+				"nv-kt": {
+					setter: "display"
+				}
+			}
+		},
+		values: [
+			"flex",
+			"none"
+		],
+		defaultValue: "flex"
+	},
+	height: {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleHeight"
+				}
+			}
+		}
+	},
+	left: {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleLeft"
+				}
+			}
+		}
+	},
+	"max-height": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleMaxHeight"
+				}
+			}
+		}
+	},
+	"max-width": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleMaxWidth"
+				}
+			}
+		}
+	},
+	"min-height": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleMinHeight"
+				}
+			}
+		}
+	},
+	"min-width": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleMinWidth"
+				}
+			}
+		}
+	},
+	position: {
+		type: "UniCSSPositionType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStylePosition"
+				},
+				"nv-c": {
+					type: "UniNativePositionType",
+					setter: "position"
+				}
+			},
+			"app-android": {
+				"dom-c": {
+					setter: "setStylePosition"
+				},
+				"nv-kt": {
+					setter: "position"
+				}
+			}
+		},
+		values: [
+			"relative",
+			"absolute",
+			"fixed",
+			"sticky",
+			"static"
+		],
+		defaultValue: "relative"
+	},
+	right: {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleRight"
+				}
+			}
+		}
+	},
+	top: {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleTop"
+				}
+			}
+		}
+	},
+	width: {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleWidth"
+				}
+			}
+		}
+	},
+	visibility: {
+		type: "UniCSSVisibilityType",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					type: "UniNativeVisibilityType",
+					setter: "visibility"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					type: "UniNativeVisibilityType",
+					setter: "visibility"
+				}
+			}
+		},
+		values: [
+			"visible",
+			"hidden"
+		],
+		defaultValue: "visible"
+	},
+	"background-clip": {
+		type: "UniNativeBackgroundClip",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "backgroundClip"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "backgroundClip"
+				}
+			}
+		},
+		values: [
+			"border-box",
+			"padding-box",
+			"content-box"
+		],
+		defaultValue: "border-box"
+	},
+	"background-color": {
+		type: "UniNativeColor",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "backgroundColor"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "backgroundColor"
+				}
+			}
+		}
+	},
+	"background-image": {
+		type: "UniNativeBackgroundImage",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "backgroundImage"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "backgroundImage"
+				}
+			}
+		}
+	},
+	"border-color": {
+		type: "UniNativeBorderColors",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "borderColor"
+				}
+			}
+		}
+	},
+	"border-bottom-color": {
+		type: "UniNativeBorderColor",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "borderColorBottom"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "borderColorBottom"
+				}
+			}
+		}
+	},
+	"border-left-color": {
+		type: "UniNativeBorderColor",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "borderColorLeft"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "borderColorBottom"
+				}
+			}
+		}
+	},
+	"border-right-color": {
+		type: "UniNativeBorderColor",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "borderColorRight"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "borderColorBottom"
+				}
+			}
+		}
+	},
+	"border-top-color": {
+		type: "UniNativeBorderColor",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "borderColorTop"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "borderColorBottom"
+				}
+			}
+		}
+	},
+	"border-style": {
+		type: "UniCSSBorderStyleType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleBorderStyle"
+				},
+				"nv-c": {
+					type: "UniNativeBorderStyles",
+					setter: "borderStyle"
+				}
+			}
+		},
+		values: [
+			"none",
+			"solid",
+			"dashed",
+			"dotted"
+		],
+		defaultValue: "none"
+	},
+	"border-bottom-style": {
+		type: "UniCSSBorderStyleType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleBorderBottomStyle"
+				},
+				"nv-c": {
+					type: "UniNativeBorderStyle",
+					setter: "borderStyleBottom"
+				}
+			},
+			"app-android": {
+				"dom-c": {
+					setter: "setStyleBorderBottomStyle"
+				},
+				"nv-kt": {
+					setter: "borderStyleBottom"
+				}
+			}
+		},
+		values: [
+			"none",
+			"solid",
+			"dashed",
+			"dotted"
+		],
+		defaultValue: "none"
+	},
+	"border-left-style": {
+		type: "UniCSSBorderStyleType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleBorderLeftStyle"
+				},
+				"nv-c": {
+					type: "UniNativeBorderStyle",
+					setter: "borderStyleLeft"
+				}
+			},
+			"app-android": {
+				"dom-c": {
+					setter: "setStyleBorderBottomStyle"
+				},
+				"nv-kt": {
+					setter: "borderStyleLeft"
+				}
+			}
+		},
+		values: [
+			"none",
+			"solid",
+			"dashed",
+			"dotted"
+		],
+		defaultValue: "none"
+	},
+	"border-right-style": {
+		type: "UniCSSBorderStyleType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleBorderRightStyle"
+				},
+				"nv-c": {
+					type: "UniNativeBorderStyle",
+					setter: "borderStyleRight"
+				}
+			},
+			"app-android": {
+				"dom-c": {
+					setter: "setStyleBorderBottomStyle"
+				},
+				"nv-kt": {
+					setter: "borderStyleRight"
+				}
+			}
+		},
+		values: [
+			"none",
+			"solid",
+			"dashed",
+			"dotted"
+		],
+		defaultValue: "none"
+	},
+	"border-top-style": {
+		type: "UniCSSBorderStyleType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleBorderTopStyle"
+				},
+				"nv-c": {
+					type: "UniNativeBorderStyle",
+					setter: "borderStyleTop"
+				}
+			},
+			"app-android": {
+				"dom-c": {
+					setter: "setStyleBorderBottomStyle"
+				},
+				"nv-kt": {
+					setter: "borderStyleTop"
+				}
+			}
+		},
+		values: [
+			"none",
+			"solid",
+			"dashed",
+			"dotted"
+		],
+		defaultValue: "none"
+	},
+	"border-bottom-width": {
+		type: [
+			"UniCSSUnitValue",
+			"UniCSSBorderWidthType"
+		],
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleBorderBottomWidth"
+				}
+			}
+		},
+		values: [
+			"thin",
+			"medium",
+			"thick"
+		],
+		defaultValue: "medium"
+	},
+	"border-left-width": {
+		type: [
+			"UniCSSUnitValue",
+			"UniCSSBorderWidthType"
+		],
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleBorderLeftWidth"
+				}
+			}
+		},
+		values: [
+			"thin",
+			"medium",
+			"thick"
+		],
+		defaultValue: "medium"
+	},
+	"border-right-width": {
+		type: [
+			"UniCSSUnitValue",
+			"UniCSSBorderWidthType"
+		],
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleBorderRightWidth"
+				}
+			}
+		},
+		values: [
+			"thin",
+			"medium",
+			"thick"
+		],
+		defaultValue: "medium"
+	},
+	"border-top-width": {
+		type: [
+			"UniCSSUnitValue",
+			"UniCSSBorderWidthType"
+		],
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleBorderTopWidth"
+				}
+			}
+		},
+		values: [
+			"thin",
+			"medium",
+			"thick"
+		],
+		defaultValue: "medium"
+	},
+	"border-bottom-left-radius": {
+		type: "UniNativeBorderRadius",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "borderRadiusBottomLeft"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "borderRadiusBottomLeft"
+				}
+			}
+		}
+	},
+	"border-bottom-right-radius": {
+		type: "UniNativeBorderRadius",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "borderRadiusBottomRight"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "borderRadiusBottomRight"
+				}
+			}
+		}
+	},
+	"border-top-left-radius": {
+		type: "UniNativeBorderRadius",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "borderRadiusTopLeft"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "borderRadiusTopLeft"
+				}
+			}
+		}
+	},
+	"border-top-right-radius": {
+		type: "UniNativeBorderRadius",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "borderRadiusTopRight"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "borderRadiusTopRight"
+				}
+			}
+		}
+	},
+	"box-shadow": {
+		type: "UniNativeBoxShadow",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "boxShadow"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "boxShadow"
+				}
+			}
+		}
+	},
+	"box-sizing": {
+		type: "UniCSSBoxSizingType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleBoxSizing"
+				}
+			}
+		},
+		values: [
+			"content-box",
+			"border-box"
+		],
+		defaultValue: "border-box"
+	},
+	"margin-bottom": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleMarginBottom"
+				}
+			}
+		}
+	},
+	"margin-left": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleMarginLeft"
+				}
+			}
+		}
+	},
+	"margin-right": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleMarginRight"
+				}
+			}
+		}
+	},
+	"margin-top": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleMarginTop"
+				}
+			}
+		}
+	},
+	"padding-bottom": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStylePaddingBottom"
+				}
+			}
+		}
+	},
+	"padding-left": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStylePaddingLeft"
+				}
+			}
+		}
+	},
+	"padding-right": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStylePaddingRight"
+				}
+			}
+		}
+	},
+	"padding-top": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStylePaddingTop"
+				}
+			}
+		}
+	},
+	opacity: {
+		type: "number",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "opacity"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "opacity"
+				}
+			}
+		}
+	},
+	overflow: {
+		type: "UniNativeOverflowType",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "overflow"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "overflow"
+				}
+			}
+		},
+		values: [
+			"visible",
+			"hidden"
+		],
+		defaultValue: "hidden"
+	},
+	"pointer-events": {
+		type: "UniNativePointerEventType",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "pointerEvents"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "pointerEvents"
+				}
+			}
+		},
+		values: [
+			"auto",
+			"none"
+		],
+		defaultValue: "auto"
+	},
+	"z-index": {
+		type: "number",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "zIndex"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "zIndex"
+				}
+			}
+		}
+	},
+	transform: {
+		type: "UniNativeTransform",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "transform"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "transform"
+				}
+			}
+		}
+	},
+	"transform-origin": {
+		type: "UniNativeTransformOrigin",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "transformOrigin"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "transformOrigin"
+				}
+			}
+		}
+	},
+	"transition-delay": {
+		type: "UniNativeTransitionDelay",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "transitionDelay"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "transitionDelay"
+				}
+			}
+		}
+	},
+	"transition-duration": {
+		type: "UniNativeTransitionDuration",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "transitionDuration"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "transitionDuration"
+				}
+			}
+		}
+	},
+	"transition-property": {
+		type: [
+			"UniNativeTransitionProperty",
+			"UniNativeTransitionPropertys"
+		],
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "transitionProperty"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "transitionProperty"
+				}
+			}
+		}
+	},
+	"transition-timing-function": {
+		type: "UniNativeTransitionTimingFunction",
+		uniPlatform: {
+			app: {
+				"nv-c": {
+					setter: "transitionTimingFunction"
+				}
+			},
+			"app-android": {
+				"nv-kt": {
+					setter: "transitionTimingFunction"
+				}
+			}
+		}
+	},
+	color: {
+		type: "UniNativeColor",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setColor"
+				}
+			},
+			"app-android": {
+				"txt-kt": {
+					setter: "setColor"
+				}
+			}
+		}
+	},
+	"font-family": {
+		type: "string",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setFontFamily"
+				}
+			},
+			"app-android": {
+				"txt-kt": {
+					setter: "setFontFamily"
+				}
+			}
+		}
+	},
+	"font-size": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setFontSize"
+				}
+			},
+			"app-android": {
+				"txt-kt": {
+					setter: "setFontSize"
+				}
+			}
+		}
+	},
+	"font-style": {
+		type: "UniCSSFontStyleType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setFontStyle"
+				}
+			},
+			"app-android": {
+				"txt-kt": {
+					setter: "setFontStyle"
+				}
+			}
+		},
+		values: [
+			"normal",
+			"italic"
+		],
+		defaultValue: "normal"
+	},
+	"font-weight": {
+		type: [
+			"number",
+			"UniCSSFontWeightType"
+		],
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setFontWeight"
+				}
+			},
+			"app-android": {
+				"txt-kt": {
+					setter: "setFontWeight"
+				}
+			}
+		},
+		values: [
+			"normal",
+			"bold",
+			"lighter",
+			"bolder"
+		],
+		defaultValue: "normal"
+	},
+	"letter-spacing": {
+		type: "UniCSSUnitValue",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setLetterSpacing"
+				}
+			},
+			"app-android": {
+				"txt-kt": {
+					setter: "setLetterSpacing"
+				}
+			}
+		}
+	},
+	"line-height": {
+		type: [
+			"UniCSSUnitValue",
+			"UniCSSLineHeightType"
+		],
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setLineHeight"
+				}
+			},
+			"app-android": {
+				"txt-kt": {
+					setter: "setLineHeight"
+				}
+			}
+		},
+		values: [
+			"normal"
+		],
+		defaultValue: "1.2"
+	},
+	"text-align": {
+		type: "UniCSSTextAlign",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setTextAlign"
+				}
+			},
+			"app-android": {
+				"txt-kt": {
+					setter: "setTextAlign"
+				}
+			}
+		},
+		values: [
+			"left",
+			"right",
+			"center"
+		],
+		defaultValue: "left"
+	},
+	"text-decoration-line": {
+		type: "UniCSSTextDecorationLineType",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setTextDecorationLine"
+				}
+			},
+			"app-android": {
+				"txt-kt": {
+					setter: "setTextDecorationLine"
+				}
+			}
+		},
+		values: [
+			"none",
+			"underline",
+			"overline",
+			"line-through"
+		],
+		defaultValue: "none"
+	},
+	"text-overflow": {
+		type: "UniCSSTextOverflow",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setTextOverflow"
+				}
+			},
+			"app-android": {
+				"txt-kt": {
+					setter: "setTextOverflow"
+				}
+			}
+		},
+		values: [
+			"clip",
+			"ellipsis"
+		],
+		defaultValue: "clip"
+	},
+	"text-shadow": {
+		type: "UniCSSTextShadow",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setTextShadow"
+				}
+			},
+			"app-android": {
+				"txt-kt": {
+					setter: "setTextShadow"
+				}
+			}
+		}
+	},
+	"white-space": {
+		type: "UniCSSWhiteSpace",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setWhiteSpace"
+				}
+			},
+			"app-android": {
+				"txt-kt": {
+					setter: "setWhiteSpace"
+				}
+			}
+		},
+		values: [
+			"normal",
+			"nowrap",
+			"pre",
+			"pre-wrap",
+			"pre-line",
+			"break-spaces"
+		],
+		defaultValue: "normal"
+	},
+	"--*": {
+		description: "css变量",
+		type: "string",
+		uniPlatform: {
+			app: {
+				"dom-c": {
+					setter: "setStyleVariable"
+				}
+			}
+		}
+	}
+};
+
+var CSSPropertyProcessorType = /* @__PURE__ */ ((CSSPropertyProcessorType2) => {
+  CSSPropertyProcessorType2["Enum"] = "enum";
+  CSSPropertyProcessorType2["Unit"] = "unit";
+  CSSPropertyProcessorType2["Number"] = "number";
+  CSSPropertyProcessorType2["String"] = "string";
+  CSSPropertyProcessorType2["Color"] = "color";
+  CSSPropertyProcessorType2["Struct"] = "struct";
+  CSSPropertyProcessorType2["DefineVariable"] = "defineVariable";
+  CSSPropertyProcessorType2["SetVariable"] = "setVariable";
+  CSSPropertyProcessorType2["Other"] = "other";
+  CSSPropertyProcessorType2["Combined"] = "combined";
+  return CSSPropertyProcessorType2;
+})(CSSPropertyProcessorType || {});
+
+function createDefineStyleVariableProcessor() {
+  const processor = (value, propertyName) => {
+    return createValueProcessorResult(
+      `"${value}"`,
+      `defineStyleVariable("${propertyName}", "${value}")`
+    );
+  };
+  processor.type = CSSPropertyProcessorType.DefineVariable;
+  return processor;
+}
+const defineStyleVariableProcessor = createDefineStyleVariableProcessor();
+function createSetStyleVariableProcessor(r) {
+  const processor = (value, propertyName) => {
+    return createValueProcessorResult(
+      `"${value}"`,
+      `setStyleVariable(${r("UniCSSPropertyID")}.${shared.capitalize(
+        shared.camelize(propertyName)
+      )}, "${value}")`
+    );
+  };
+  processor.type = CSSPropertyProcessorType.SetVariable;
+  return processor;
+}
+
+function getAppCssJson() {
+  return appCssJson;
+}
+function createValueProcessorResult(valueCode, setterCode) {
+  return {
+    valueCode,
+    setterCode
+  };
+}
+function createValueProcessorError(value, propertyName) {
+  return {
+    error: `Property '${propertyName}' has invalid value: '${value}'`,
+    valueCode: "",
+    setterCode: ""
+  };
+}
+function wrapPropertyProcessor(r, processor) {
+  const setStyleVariableProcessor = createSetStyleVariableProcessor(r);
+  return (value, propertyName, options) => {
+    if (typeof value === "string" && value.includes("var(")) {
+      return setStyleVariableProcessor(value, propertyName, options);
+    }
+    return processor(value, propertyName, options);
+  };
+}
+function createPropertyProcessor(r, processor, type) {
+  const wrappedProcessor = type === CSSPropertyProcessorType.DefineVariable || type === CSSPropertyProcessorType.SetVariable ? processor : wrapPropertyProcessor(r, processor);
+  wrappedProcessor.type = type;
+  return wrappedProcessor;
+}
+const PARTS_REG = /\s(?![^(]*\))/;
+const LENGTH_REG = /^[0-9]+[a-zA-Z%]+?$/;
+const isLength = (v) => v === "0" || LENGTH_REG.test(v);
+function getTargetConfig(propertyName, platform, target) {
+  const property = getAppCssJson()[propertyName];
+  if (!property || !property.uniPlatform) {
+    return null;
+  }
+  const specificPlatform = platform;
+  const generalPlatform = "app";
+  const platformConfig = property.uniPlatform[specificPlatform] || property.uniPlatform[generalPlatform];
+  if (!platformConfig) {
+    return null;
+  }
+  if (propertyName === "background-color" && target === "dom-c") {
+    return {
+      setter: "setBackgroundColor"
+    };
+  }
+  return platformConfig[target] || null;
+}
+function normalizeDurationToMilliseconds(enumValue) {
+  const match = /^(-?\d*\.?\d+)(ms|s)$/i.exec(enumValue.trim());
+  if (!match) {
+    return null;
+  }
+  const numericPart = parseFloat(match[1]);
+  if (Number.isNaN(numericPart)) {
+    return null;
+  }
+  const unit = match[2].toLowerCase();
+  const milliseconds = unit === "s" ? numericPart * 1e3 : numericPart;
+  if (!Number.isFinite(milliseconds)) {
+    return null;
+  }
+  return formatFloatLiteral(milliseconds);
+}
+function formatFloatLiteral(value) {
+  const str = value.toString();
+  return str.includes(".") ? str : `${str}.0`;
+}
+
+const UNIT_TYPES = ["UniCSSUnitValue", "UniNativeBorderRadius"];
+function isUnitType(propertyType) {
+  return propertyType ? UNIT_TYPES.includes(propertyType) : false;
+}
+function toUnitValueCode(unitValue, language) {
+  if (language === "cpp") {
+    return `UniCSSUnitValue{${unitValue.value}, UniCSSUnitType::${unitValue.unit}}`;
+  }
+  return `new UniCSSUnitValue(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`;
+}
+function toUnitValueResult(setter, language, unitValue) {
+  return createValueProcessorResult(
+    toUnitValueCode(unitValue, language),
+    `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
+  );
+}
+function createSetStyleUnitValueProcessor(r, setter, language) {
+  return createPropertyProcessor(
+    r,
+    (value, propertyName) => {
+      const unitValue = parseUnitValue(
+        String(value),
+        propertyName === "line-height" ? "EM" : "NONE"
+      );
+      if (unitValue) {
+        return toUnitValueResult(setter, language, unitValue);
+      }
+      return createValueProcessorError(value, propertyName);
+    },
+    CSSPropertyProcessorType.Unit
+  );
+}
+const unitMatchRe = /^(-?(?:\d*\.\d+|\d+\.?\d*))(%|[a-zA-Z]+)?$/;
+function parseUnitValue(value, defaultUnit = "NONE") {
+  if (value === "auto") {
+    return {
+      value: 0,
+      unit: "AUTO"
+    };
+  }
+  const unitMatch = value.match(unitMatchRe);
+  if (unitMatch) {
+    const value2 = parseFloat(unitMatch[1]);
+    const unit = unitMatch[2] ? unitMatch[2].toUpperCase() : null;
+    if (unit === null) {
+      return {
+        value: value2,
+        unit: defaultUnit
+      };
+    }
+    return {
+      value: value2,
+      unit: unit === "%" ? "PCT" : unit
+    };
+  }
+}
+
+function createSetStyleEnumValueProcessor(r, setter, genEnumCode) {
+  return createPropertyProcessor(
+    r,
+    (value) => {
+      const enumCode = genEnumCode(shared.capitalize(shared.camelize(value + "")));
+      return createValueProcessorResult(
+        enumCode,
+        setter ? `${setter}(${enumCode})` : enumCode
+      );
+    },
+    CSSPropertyProcessorType.Enum
+  );
+}
+function createGenEnumCode(propertyType, language, platform, target) {
+  if (language === "cpp") {
+    return (enumValue) => {
+      return `${propertyType}::${shared.capitalize(shared.camelize(enumValue + ""))}`;
+    };
+  }
+  if (platform === "app-harmony" || platform === "app-ios") {
+    return (enumValue) => {
+      return genCPPEnumCode(propertyType, enumValue);
+    };
+  }
+  return (enumValue) => {
+    return `${propertyType}.${shared.capitalize(shared.camelize(enumValue + ""))}`;
+  };
+}
+function genCPPEnumCode(propertyType, enumValue) {
+  return `UTSCPP.propertyAccess(${propertyType}, "::", "${shared.capitalize(
+    shared.camelize(enumValue + "")
+  )}")`;
+}
+
+const COLOR_TYPES = ["UniNativeColor", "UniNativeBorderColor"];
+function isColorType(propertyType) {
+  return propertyType ? COLOR_TYPES.includes(propertyType) : false;
+}
+const dummyValueProcessorResult = createValueProcessorResult("", "");
+function createSetStyleNativeColorValueProcessor(r, setter) {
+  return createPropertyProcessor(
+    r,
+    (value, propertyName, options) => {
+      if ((options == null ? void 0 : options.target) === "dom-c" && propertyName === "background-color") {
+        if ((options == null ? void 0 : options.tagName) !== "text") {
+          return dummyValueProcessorResult;
+        }
+      }
+      if ((options == null ? void 0 : options.target) === "nv-c" && propertyName === "background-color" && (options == null ? void 0 : options.tagName) === "text") {
+        return dummyValueProcessorResult;
+      }
+      const nativeColorValue = parseNativeColorValue(String(value));
+      if (nativeColorValue) {
+        return createValueProcessorResult(
+          `${nativeColorValue}`,
+          `${setter}(${nativeColorValue})`
+        );
+      }
+      return createValueProcessorError(value, propertyName);
+    },
+    CSSPropertyProcessorType.Color
+  );
+}
+function parseNativeColorValue(value) {
+  const color = tinycolor(value);
+  if (color.isValid()) {
+    const hex8 = color.toHex8();
+    const argb = hex8.slice(6, 8) + hex8.slice(0, 6);
+    return "0x" + argb;
+  }
+}
+
+const NUMBER_TYPES = ["number"];
+function isNumberType(propertyType) {
+  return propertyType ? NUMBER_TYPES.includes(propertyType) : false;
+}
+function createSetStyleNumberValueProcessor(r, setter) {
+  return createPropertyProcessor(
+    r,
+    (value, propertyName) => {
+      const numValue = parseFloat(String(value));
+      if (!isNaN(numValue)) {
+        return createValueProcessorResult(
+          `${numValue}`,
+          `${setter}(${numValue})`
+        );
+      }
+      return createValueProcessorError(value, propertyName);
+    },
+    CSSPropertyProcessorType.Number
+  );
+}
+
+const STRING_TYPES = ["string"];
+function isStringType(propertyType) {
+  return propertyType ? STRING_TYPES.includes(propertyType) : false;
+}
+function createSetStyleStringValueProcessor(r, setter) {
+  return createPropertyProcessor(
+    r,
+    (value) => {
+      return createValueProcessorResult(`"${value}"`, `${setter}("${value}")`);
+    },
+    CSSPropertyProcessorType.String
+  );
+}
+
+const BOX_SHADOW_TYPES = ["UniNativeBoxShadow"];
+function isBoxShadowType(propertyType) {
+  return propertyType ? BOX_SHADOW_TYPES.includes(propertyType) : false;
+}
+function createSetStyleBoxShadowValueProcessor(r, setter) {
+  return createPropertyProcessor(
+    r,
+    (value) => {
+      if (value === "none") {
+        return createValueProcessorResult(`null`, `${setter}(null)`);
+      }
+      const boxShadowValueCode = stringifyBoxShadowValue(
+        parseBoxShadowValue(String(value))
+      );
+      return createValueProcessorResult(
+        `${boxShadowValueCode}`,
+        `${setter}(${boxShadowValueCode})`
+      );
+    },
+    CSSPropertyProcessorType.Struct
+  );
+}
+function stringifyBoxShadowValue(value) {
+  return `UniNativeBoxShadow(${value.isInset}, ${value.offsetX}, ${value.offsetY}, ${value.blurRadius}, ${value.spreadRadius}, ${value.color})`;
+}
+function parseBoxShadowValue(str) {
+  const parts = str.split(PARTS_REG);
+  const isInset = parts.includes("inset");
+  const last = parts.slice(-1)[0];
+  const color = !isLength(last) ? parseNativeColorValue(last) : void 0;
+  const unitValues = parts.filter((n) => n !== "inset").filter((n) => n !== color).map((v) => parseUnitValue(v));
+  if (unitValues.length < 4) {
+    unitValues.push(
+      ...Array(4 - unitValues.length).fill({ value: 0, unit: "NONE" })
+    );
+  }
+  const [offsetX, offsetY, blurRadius, spreadRadius] = unitValues.map(
+    (v) => (v == null ? void 0 : v.value) || 0
+  );
+  return {
+    isInset,
+    offsetX,
+    offsetY,
+    blurRadius,
+    spreadRadius,
+    color: color || 0
+  };
+}
+
+const BORDER_COLOR_TYPES = ["UniNativeBorderColors"];
+function isBorderColorsType(propertyType) {
+  return propertyType ? BORDER_COLOR_TYPES.includes(propertyType) : false;
+}
+function createSetStyleBorderColorsValueProcessor(r, setter) {
+  return createPropertyProcessor(
+    r,
+    (value) => {
+      const borderColorsValueCode = stringifyBorderColorsValue(
+        parseBorderColorsValue(String(value))
+      );
+      return createValueProcessorResult(
+        `${borderColorsValueCode}`,
+        `${setter}(${borderColorsValueCode})`
+      );
+    },
+    CSSPropertyProcessorType.Struct
+  );
+}
+function stringifyBorderColorsValue(value) {
+  return `UniNativeBorderColors(${value.top}, ${value.right}, ${value.bottom}, ${value.left})`;
+}
+function parseBorderColorsValue(str) {
+  const parts = str.split(" ");
+  const [top, right, bottom, left] = parts.map(
+    parseNativeColorValue
+  );
+  return {
+    top,
+    right,
+    bottom,
+    left
+  };
+}
+
+const BORDER_STYLE_TYPES = ["UniNativeBorderStyles"];
+function isBorderStylesType(propertyType) {
+  return propertyType ? BORDER_STYLE_TYPES.includes(propertyType) : false;
+}
+function createSetStyleBorderStylesValueProcessor(r, setter, processorMap) {
+  return createPropertyProcessor(
+    r,
+    (value) => {
+      const borderStylesValueCode = stringifyBorderStylesValue(
+        parseBorderStylesValue(String(value), processorMap)
+      );
+      return createValueProcessorResult(
+        `${borderStylesValueCode}`,
+        `${setter}(${borderStylesValueCode})`
+      );
+    },
+    CSSPropertyProcessorType.Struct
+  );
+}
+function stringifyBorderStylesValue(value) {
+  return `UniNativeBorderStyles(${value.top}, ${value.right}, ${value.bottom}, ${value.left})`;
+}
+function parseBorderStylesValue(str, processorMap) {
+  const parts = str.split(" ");
+  const [top, right, bottom, left] = parts;
+  return {
+    top: processorMap[`border-top-style`](top, "border-top-style").valueCode,
+    right: processorMap[`border-right-style`](right, "border-right-style").valueCode,
+    bottom: processorMap[`border-bottom-style`](bottom, "border-bottom-style").valueCode,
+    left: processorMap[`border-left-style`](left, "border-left-style").valueCode
+  };
+}
+
+const TEXT_SHADOW_TYPES = ["UniCSSTextShadow"];
+function isTextShadowType(propertyType) {
+  return propertyType ? TEXT_SHADOW_TYPES.includes(propertyType) : false;
+}
+function createSetStyleTextShadowValueProcessor(r, setter) {
+  return createPropertyProcessor(
+    r,
+    (value) => {
+      if (value === "none") {
+        return createValueProcessorResult(`null`, `${setter}(null)`);
+      }
+      const textShadowValueCode = stringifyTextShadowValue(
+        parseTextShadowValue(String(value))
+      );
+      return createValueProcessorResult(
+        `${textShadowValueCode}`,
+        `${setter}(${textShadowValueCode})`
+      );
+    },
+    CSSPropertyProcessorType.Struct
+  );
+}
+function stringifyTextShadowValue(value) {
+  if (!value.color) {
+    return `UniCSSTextShadow(${value.offsetX}, ${value.offsetY}, ${value.blurRadius})`;
+  } else {
+    return `UniCSSTextShadow(${value.offsetX}, ${value.offsetY}, ${value.blurRadius}, ${value.color})`;
+  }
+}
+function parseTextShadowValue(str) {
+  var _a, _b, _c;
+  const parts = str.split(PARTS_REG);
+  const unitValues = [];
+  let color;
+  for (const part of parts) {
+    if (isLength(part)) {
+      const unitValue = parseUnitValue(part);
+      if (unitValue) {
+        unitValues.push(unitValue);
+      }
+    } else {
+      color = parseNativeColorValue(part);
+    }
+  }
+  return {
+    color: color || "",
+    offsetX: ((_a = unitValues[0]) == null ? void 0 : _a.value) || 0,
+    offsetY: ((_b = unitValues[1]) == null ? void 0 : _b.value) || 0,
+    blurRadius: ((_c = unitValues[2]) == null ? void 0 : _c.value) || 0
+  };
+}
+
+const TRANSFORM_TYPES = ["UniNativeTransform"];
+function isTransformType(propertyType) {
+  return propertyType ? TRANSFORM_TYPES.includes(propertyType) : false;
+}
+function createSetStyleTransformValueProcessor(r, setter, language) {
+  return createPropertyProcessor(
+    r,
+    (value, propertyName) => {
+      if (value === "none") {
+        return createValueProcessorResult(`null`, `${setter}(null)`);
+      }
+      const transformValueCode = stringifyTransformValue(
+        parseTransformValue(String(value)),
+        language
+      );
+      if (!transformValueCode) {
+        return createValueProcessorError(value, propertyName);
+      }
+      return createValueProcessorResult(
+        `${transformValueCode}`,
+        `${setter}(${transformValueCode})`
+      );
+    },
+    CSSPropertyProcessorType.Struct
+  );
+}
+function genCode$1(language, className, method, args) {
+  if (language === "cpp") {
+    return `${className}::${shared.capitalize(shared.camelize(method + ""))}(${args.join(
+      ", "
+    )})`;
+  }
+  return `${genCPPEnumCode(className, method)}(${args.join(", ")})`;
+}
+const TRANSFORM_CLASS_NAME = "UniCSSTransform";
+const translateOption = {
+  className: `${TRANSFORM_CLASS_NAME}Translate`,
+  type: CSSPropertyProcessorType.Unit,
+  spread: true
+};
+const scaleOption = {
+  className: `${TRANSFORM_CLASS_NAME}Scale`,
+  type: CSSPropertyProcessorType.Unit,
+  spread: true
+};
+const rotateOption = {
+  className: `${TRANSFORM_CLASS_NAME}Rotate`,
+  type: CSSPropertyProcessorType.Unit,
+  spread: true
+};
+const skewOption = {
+  className: `${TRANSFORM_CLASS_NAME}Skew`,
+  type: CSSPropertyProcessorType.Unit,
+  spread: true
+};
+const matrixOption = {
+  className: `${TRANSFORM_CLASS_NAME}Matrix`,
+  type: CSSPropertyProcessorType.Number
+};
+const matrix3dOption = {
+  className: `${TRANSFORM_CLASS_NAME}Matrix3D`,
+  type: CSSPropertyProcessorType.Number
+};
+const perspectiveOption = {
+  className: `${TRANSFORM_CLASS_NAME}Perspective`,
+  type: CSSPropertyProcessorType.Unit,
+  spread: true
+};
+const transformOptions = {
+  translate: translateOption,
+  translateX: translateOption,
+  translateY: translateOption,
+  translateZ: translateOption,
+  translate3d: shared.extend({}, translateOption, { spread: false }),
+  scale: scaleOption,
+  scaleX: scaleOption,
+  scaleY: scaleOption,
+  scaleZ: scaleOption,
+  scale3d: shared.extend({}, scaleOption, { spread: false }),
+  rotate: rotateOption,
+  rotateX: rotateOption,
+  rotateY: rotateOption,
+  rotateZ: rotateOption,
+  rotate3d: shared.extend({}, rotateOption, { spread: false }),
+  skew: skewOption,
+  skewX: skewOption,
+  skewY: skewOption,
+  matrix: matrixOption,
+  matrix3d: matrix3dOption,
+  perspective: perspectiveOption
+};
+function stringifyTransformValue(functions, language) {
+  if (functions.length === 0) {
+    return "";
+  }
+  const functionCodes = functions.map((func) => {
+    const args = func.args;
+    const option = transformOptions[func.name];
+    if (option) {
+      if (option.type === CSSPropertyProcessorType.Unit) {
+        const operator = language === "cpp" ? "::" : ".";
+        return genCode$1(
+          language,
+          option.className,
+          shared.capitalize(func.name.toLowerCase()),
+          args.map((arg) => {
+            if (option.spread) {
+              return `${arg.value}, UniCSSUnitType${operator}${arg.unit}`;
+            }
+            return toUnitValueCode(arg, language);
+          })
+        );
+      } else if (option.type === CSSPropertyProcessorType.Number) {
+        return genCode$1(
+          language,
+          option.className,
+          shared.capitalize(func.name.toLowerCase()),
+          args.map((arg) => `${arg.value}`)
+        );
+      }
+    }
+    return "";
+  }).filter((code) => code !== "");
+  if (functionCodes.length === 0) {
+    return "";
+  }
+  if (language === "cpp") {
+    return `${TRANSFORM_CLASS_NAME}{${functionCodes.join(", ")}}`;
+  }
+  return `[${functionCodes.join(", ")}] as ${TRANSFORM_CLASS_NAME}`;
+}
+function parseTransformValue(str) {
+  const functions = [];
+  const functionRegex = /(\w+)\(([^)]+)\)/g;
+  let match;
+  while ((match = functionRegex.exec(str)) !== null) {
+    const funcName = match[1];
+    const argsString = match[2];
+    const args = parseTransformArgs(funcName, argsString);
+    if (args.length > 0) {
+      functions.push({
+        name: funcName,
+        args
+      });
+    }
+  }
+  return functions;
+}
+function parseTransformArgs(funcName, argsString) {
+  const parts = argsString.split(/[,\s]+/).filter((part) => part.trim() !== "");
+  const args = [];
+  for (const part of parts) {
+    const trimmed = part.trim();
+    if (isAngleFunction(funcName)) {
+      const angleValue = parseAngleValue(trimmed);
+      if (angleValue !== null) {
+        args.push({ value: angleValue, unit: "DEG" });
+      }
+    } else if (isScaleFunction(funcName)) {
+      const numValue = parseFloat(trimmed);
+      if (!isNaN(numValue)) {
+        args.push({ value: numValue, unit: "NONE" });
+      }
+    } else if (funcName === "matrix" || funcName === "matrix3d") {
+      const numValue = parseFloat(trimmed);
+      if (!isNaN(numValue)) {
+        args.push({ value: numValue, unit: "NONE" });
+      }
+    } else {
+      const unitValue = parseUnitValue(trimmed);
+      if (unitValue) {
+        args.push({ value: unitValue.value, unit: unitValue.unit });
+      }
+    }
+  }
+  return args;
+}
+function isAngleFunction(funcName) {
+  return [
+    "rotate",
+    "rotateX",
+    "rotateY",
+    "rotateZ",
+    "rotate3d",
+    "skew",
+    "skewX",
+    "skewY"
+  ].includes(funcName);
+}
+function isScaleFunction(funcName) {
+  return ["scale", "scaleX", "scaleY", "scaleZ", "scale3d"].includes(funcName);
+}
+function parseAngleValue(value) {
+  const angleRegex = /^(-?[\d.]+)(deg|rad|grad|turn)?$/;
+  const match = value.match(angleRegex);
+  if (match) {
+    const numValue = parseFloat(match[1]);
+    const unit = match[2] || "deg";
+    switch (unit) {
+      case "deg":
+        return numValue;
+      case "rad":
+        return numValue * (180 / Math.PI);
+      case "grad":
+        return numValue * (180 / 200);
+      case "turn":
+        return numValue * 360;
+      default:
+        return numValue;
+    }
+  }
+  return null;
+}
+
+const TRANSFORM_ORIGIN_TYPES = ["UniNativeTransformOrigin"];
+function isTransformOriginType(propertyType) {
+  return propertyType ? TRANSFORM_ORIGIN_TYPES.includes(propertyType) : false;
+}
+function createSetStyleTransformOriginValueProcessor(r, setter, language) {
+  return createPropertyProcessor(
+    r,
+    (value, propertyName) => {
+      const result = parseTransformOriginValue(String(value), language);
+      if (!result.code) {
+        return createValueProcessorError(value, propertyName);
+      }
+      return createValueProcessorResult(
+        result.code,
+        `${setter}(${result.code})`
+      );
+    },
+    CSSPropertyProcessorType.Struct
+  );
+}
+function parseTransformOriginValue(str, language) {
+  const parts = str.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) {
+    return { code: "" };
+  }
+  if (parts.length === 1) {
+    const keywordExpansion = expandSingleKeyword(parts[0]);
+    if (keywordExpansion) {
+      return { code: buildTransformOriginCode(keywordExpansion, language) };
+    }
+    const parsed = parseUnitValue(parts[0]);
+    if (parsed) {
+      return {
+        code: buildTransformOriginCode(
+          [
+            {
+              value: parsed.value,
+              unit: parsed.unit
+            }
+          ],
+          language
+        )
+      };
+    }
+    return {
+      code: ""
+    };
+  }
+  if (parts.length === 2 || parts.length === 3) {
+    const x = parseAxisValue(parts[0], "x");
+    if ("error" in x) {
+      return { code: "", error: x.error };
+    }
+    const y = parseAxisValue(parts[1], "y");
+    if ("error" in y) {
+      return { code: "", error: y.error };
+    }
+    const values = [x, y];
+    if (parts.length === 3) {
+      const z = parseZValue(parts[2]);
+      if ("error" in z) {
+        return { code: "", error: z.error };
+      }
+      values.push(z);
+    }
+    return { code: buildTransformOriginCode(values, language) };
+  }
+  return {
+    code: ""
+  };
+}
+function buildTransformOriginCode(values, language) {
+  const args = values.map((v) => toUnitValueCode(v, language)).join(", ");
+  return `UniCSSTransformOrigin(${args})`;
+}
+function expandSingleKeyword(part) {
+  const lower = part.toLowerCase();
+  const mapping = SINGLE_KEYWORD_MAP[lower];
+  if (!mapping) {
+    return null;
+  }
+  return mapping.map((item) => ({ value: item.value, unit: item.unit }));
+}
+function parseAxisValue(part, axis) {
+  const lower = part.toLowerCase();
+  let keywordValue = axisKeywordToValue(lower, axis);
+  if (keywordValue) {
+    return {
+      value: keywordValue.value,
+      unit: keywordValue.unit
+    };
+  }
+  const otherAxis = axis === "x" ? "y" : "x";
+  keywordValue = axisKeywordToValue(lower, otherAxis);
+  if (keywordValue) {
+    return {
+      value: keywordValue.value,
+      unit: keywordValue.unit
+    };
+  }
+  const unitValue = parseUnitValue(part);
+  if (unitValue) {
+    return {
+      value: unitValue.value,
+      unit: unitValue.unit
+    };
+  }
+  return {
+    error: `Invalid transform-origin value: ${part}`
+  };
+}
+function parseZValue(part) {
+  const lower = part.toLowerCase();
+  if (isAxisKeyword(lower)) {
+    return {
+      error: `Invalid transform-origin value: ${part}`
+    };
+  }
+  const unitValue = parseUnitValue(part);
+  if (!unitValue || unitValue.unit === "PCT") {
+    return {
+      error: `Invalid transform-origin value: ${part}`
+    };
+  }
+  return {
+    value: unitValue.value,
+    unit: unitValue.unit
+  };
+}
+function isAxisKeyword(keyword) {
+  return keyword in X_AXIS_KEYWORD_MAP || keyword in Y_AXIS_KEYWORD_MAP;
+}
+function axisKeywordToValue(keyword, axis) {
+  if (axis === "x") {
+    return X_AXIS_KEYWORD_MAP[keyword] || null;
+  }
+  return Y_AXIS_KEYWORD_MAP[keyword] || null;
+}
+const X_AXIS_KEYWORD_MAP = {
+  left: { value: 0, unit: "PCT" },
+  center: { value: 50, unit: "PCT" },
+  right: { value: 100, unit: "PCT" }
+};
+const Y_AXIS_KEYWORD_MAP = {
+  top: { value: 0, unit: "PCT" },
+  center: { value: 50, unit: "PCT" },
+  bottom: { value: 100, unit: "PCT" }
+};
+const SINGLE_KEYWORD_MAP = {
+  left: [
+    { value: 0, unit: "PCT" },
+    { value: 50, unit: "PCT" },
+    { value: 0, unit: "NONE" }
+  ],
+  center: [
+    { value: 50, unit: "PCT" },
+    { value: 50, unit: "PCT" },
+    { value: 0, unit: "NONE" }
+  ],
+  right: [
+    { value: 100, unit: "PCT" },
+    { value: 50, unit: "PCT" },
+    { value: 0, unit: "NONE" }
+  ],
+  top: [
+    { value: 50, unit: "PCT" },
+    { value: 0, unit: "PCT" },
+    { value: 0, unit: "NONE" }
+  ],
+  bottom: [
+    { value: 50, unit: "PCT" },
+    { value: 100, unit: "PCT" },
+    { value: 0, unit: "NONE" }
+  ]
+};
+
+const BORDER_WIDTH_TYPES = ["UniCSSBorderWidthType"];
+function isBorderWidthType(propertyType) {
+  return propertyType ? BORDER_WIDTH_TYPES.includes(propertyType) : false;
+}
+const ENUM_BORDER_WIDTH_TYPE_VALUES = {
+  thin: 1,
+  medium: 3,
+  thick: 5
+};
+function createSetStyleBorderWidthValueProcessor(r, setter, language) {
+  return createPropertyProcessor(
+    r,
+    (value, propertyName) => {
+      const pxValue = ENUM_BORDER_WIDTH_TYPE_VALUES[value];
+      if (pxValue) {
+        return toUnitValueResult(setter, language, {
+          value: pxValue,
+          unit: "PX"
+        });
+      }
+      return createValueProcessorError(value, propertyName);
+    },
+    CSSPropertyProcessorType.Enum
+  );
+}
+
+const BACKGROUND_IMAGE_TYPES = ["UniNativeBackgroundImage"];
+function isBackgroundImageType(propertyType) {
+  return propertyType ? BACKGROUND_IMAGE_TYPES.includes(propertyType) : false;
+}
+function createSetStyleBackgroundImageValueProcessor(r, setter, language) {
+  return createPropertyProcessor(
+    r,
+    (value, propertyName) => {
+      const valueStr = String(value).trim();
+      if (valueStr === "none") {
+        return createValueProcessorResult(`null`, `${setter}(null)`);
+      }
+      if (valueStr.startsWith("linear-gradient(")) {
+        const gradientCode = parseLinearGradient(valueStr, language);
+        if (!gradientCode) {
+          return createValueProcessorError(value, propertyName);
+        }
+        return createValueProcessorResult(
+          gradientCode,
+          `${setter}(${gradientCode})`
+        );
+      }
+      return createValueProcessorError(value, propertyName);
+    },
+    CSSPropertyProcessorType.Struct
+  );
+}
+function parseLinearGradient(str, language) {
+  const content = str.slice(16, -1).trim();
+  const parts = splitGradientArgs(content);
+  if (parts.length < 2) {
+    return "";
+  }
+  const firstPart = parts[0].trim();
+  let direction = "";
+  let startIndex = 0;
+  if (isDirectionKeyword(firstPart)) {
+    direction = parseDirection(firstPart, language);
+    startIndex = 1;
+  } else if (firstPart.includes("deg")) {
+    const angle = parseFloat(firstPart);
+    direction = language === "cpp" ? `UniNativeLinearGradientDirectionType::Angle(${angle})` : `UTSCPP.propertyAccess(UniNativeLinearGradientDirectionType, "::", "Angle")(${angle})`;
+    startIndex = 1;
+  } else {
+    direction = language === "cpp" ? "UniNativeLinearGradientDirectionType::ToBottom" : 'UTSCPP.propertyAccess(UniNativeLinearGradientDirectionType, "::", "ToBottom")';
+    startIndex = 0;
+  }
+  const colorStops = [];
+  for (let i = startIndex; i < parts.length; i++) {
+    const stop = parseColorStop(parts[i].trim());
+    if (stop) {
+      colorStops.push(stop);
+    }
+  }
+  if (colorStops.length < 2) {
+    return "";
+  }
+  if (language === "cpp") {
+    const colorStopsCode = colorStops.map((stop) => {
+      const color = typeof stop.color === "number" ? `0x${stop.color.toString(16).padStart(8, "0")}` : stop.color;
+      return `{${color}, 0.0f}`;
+    }).join(", ");
+    return `UniNativeLinearGradient(${direction}, {${colorStopsCode}})`;
+  } else {
+    const colorStopsCode = colorStops.map((stop) => {
+      const color = typeof stop.color === "number" ? `0x${stop.color.toString(16).padStart(8, "0")}` : stop.color;
+      return `new UniNativeLinearGradientColorStop(${color}, 0)`;
+    }).join(",");
+    return `new UniNativeLinearGradient(${direction},[${colorStopsCode}])`;
+  }
+}
+function splitGradientArgs(str) {
+  const parts = [];
+  let current = "";
+  let depth = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (char === "(") {
+      depth++;
+      current += char;
+    } else if (char === ")") {
+      depth--;
+      current += char;
+    } else if (char === "," && depth === 0) {
+      parts.push(current.trim());
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  if (current.trim()) {
+    parts.push(current.trim());
+  }
+  return parts;
+}
+function isDirectionKeyword(str) {
+  const keywords = [
+    "to top",
+    "to bottom",
+    "to left",
+    "to right",
+    "to top left",
+    "to top right",
+    "to bottom left",
+    "to bottom right",
+    "to left top",
+    "to right top",
+    "to left bottom",
+    "to right bottom"
+  ];
+  return keywords.includes(str.toLowerCase());
+}
+function parseDirection(str, language) {
+  const lower = str.toLowerCase();
+  const directionMap = {
+    "to top": "ToTop",
+    "to bottom": "ToBottom",
+    "to left": "ToLeft",
+    "to right": "ToRight",
+    "to top left": "ToTopLeft",
+    "to left top": "ToTopLeft",
+    "to top right": "ToTopRight",
+    "to right top": "ToTopRight",
+    "to bottom left": "ToBottomLeft",
+    "to left bottom": "ToBottomLeft",
+    "to bottom right": "ToBottomRight",
+    "to right bottom": "ToBottomRight"
+  };
+  const directionName = directionMap[lower] || "ToBottom";
+  if (language === "cpp") {
+    return `UniNativeLinearGradientDirectionType::${directionName}`;
+  } else {
+    return `UTSCPP.propertyAccess(UniNativeLinearGradientDirectionType, "::", "${directionName}")`;
+  }
+}
+function parseColorStop(str) {
+  let colorStr = str;
+  let depth = 0;
+  let lastSpaceIndex = -1;
+  for (let i = str.length - 1; i >= 0; i--) {
+    const char = str[i];
+    if (char === ")") {
+      depth++;
+    } else if (char === "(") {
+      depth--;
+    } else if (char === " " && depth === 0) {
+      lastSpaceIndex = i;
+      break;
+    }
+  }
+  if (lastSpaceIndex > 0) {
+    const potentialPosition = str.slice(lastSpaceIndex + 1).trim();
+    if (potentialPosition.includes("%") || potentialPosition.match(/^\d+(\.\d+)?$/)) {
+      colorStr = str.slice(0, lastSpaceIndex).trim();
+    }
+  }
+  const color = parseNativeColorValue(colorStr);
+  if (color !== void 0 && color !== "") {
+    return {
+      color
+    };
+  }
+  return null;
+}
+
+const TRANSITION_CLASS_NAME = "UniNativeTransition";
+const TRANSITION_DELAY_CLASS_NAME = `${TRANSITION_CLASS_NAME}Delay`;
+const TRANSITION_DURATION_CLASS_NAME = `${TRANSITION_CLASS_NAME}Duration`;
+const TRANSITION_PROPERTY_CLASS_NAME = `${TRANSITION_CLASS_NAME}Property`;
+const TRANSITION_TIMING_FUNCTION_CLASS_NAME = `${TRANSITION_CLASS_NAME}TimingFunction`;
+const TRANSITION_TYPES = [
+  TRANSITION_DELAY_CLASS_NAME,
+  TRANSITION_DURATION_CLASS_NAME,
+  TRANSITION_PROPERTY_CLASS_NAME,
+  // 复数，单词拼写不对，应该是：Properties
+  TRANSITION_PROPERTY_CLASS_NAME + "s",
+  TRANSITION_TIMING_FUNCTION_CLASS_NAME
+];
+function isTransitionType(propertyType) {
+  return propertyType ? TRANSITION_TYPES.includes(propertyType) : false;
+}
+function createSetStyleTransitionValueProcessor(r, setter, language, propertyType) {
+  return createPropertyProcessor(
+    r,
+    (value, propertyName) => {
+      if (value === "none") {
+        return createValueProcessorResult(`null`, `${setter}(null)`);
+      }
+      let code = "";
+      if (propertyType === TRANSITION_DELAY_CLASS_NAME || propertyType === TRANSITION_DURATION_CLASS_NAME) {
+        code = parseTransitionDurationValue(String(value));
+      } else if (propertyType === TRANSITION_PROPERTY_CLASS_NAME) {
+        code = parseTransitionPropertyValue(
+          String(value),
+          propertyType,
+          language
+        );
+      } else if (propertyType === TRANSITION_TIMING_FUNCTION_CLASS_NAME) {
+        code = parseTransitionTimingFunctionValue(
+          String(value),
+          propertyType,
+          language
+        );
+      }
+      if (!code) {
+        return createValueProcessorError(value, propertyName);
+      }
+      return createValueProcessorResult(code, `${setter}(${code})`);
+    },
+    CSSPropertyProcessorType.Struct
+  );
+}
+function parseTransitionPropertyValue(value, propertyType, language) {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) return "";
+  const properties = trimmedValue.includes(",") ? trimmedValue.split(",").map((p) => p.trim()) : [trimmedValue];
+  if (language === "cpp") {
+    return properties.length > 1 ? `UniNativeTransitionPropertys{${properties.map((p) => `${propertyType}::${shared.capitalize(shared.camelize(p))}`).join(",")}}` : `${propertyType}::${shared.capitalize(shared.camelize(properties[0]))}`;
+  } else {
+    return properties.length > 1 ? `[${properties.map(
+      (p) => `UTSCPP.propertyAccess(${propertyType}, "::" , "${shared.capitalize(
+        shared.camelize(p)
+      )}")`
+    ).join(",")}]` : genCPPEnumCode(propertyType, properties[0]);
+  }
+}
+function parseTransitionTimingFunctionValue(value, propertyType, language) {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) return "";
+  const functions = [];
+  let current = "";
+  let parenthesesDepth = 0;
+  for (let i = 0; i < trimmedValue.length; i++) {
+    const char = trimmedValue[i];
+    if (char === "(") {
+      parenthesesDepth++;
+      current += char;
+    } else if (char === ")") {
+      parenthesesDepth--;
+      current += char;
+    } else if (char === "," && parenthesesDepth === 0) {
+      if (current.trim()) {
+        functions.push(current.trim());
+      }
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  if (current.trim()) {
+    functions.push(current.trim());
+  }
+  const parseSingleFunction = (fn) => {
+    const cubicBezierMatch = fn.match(
+      /cubic-bezier\s*\(\s*([\d.-]+)\s*,\s*([\d.-]+)\s*,\s*([\d.-]+)\s*,\s*([\d.-]+)\s*\)/
+    );
+    if (cubicBezierMatch) {
+      const [, x1, y1, x2, y2] = cubicBezierMatch;
+      const params = `${x1}, ${y1}, ${x2}, ${y2}`;
+      if (language === "cpp") {
+        return `${propertyType}(UniCSSTransitionTimingFunction::CubicBezier(${params}))`;
+      } else {
+        return `UTSCPP.propertyAccess(${propertyType}, "::", "CubicBezier(${params})")`;
+      }
+    }
+    if (language === "cpp") {
+      return `${propertyType}(UniCSSTransitionTimingFunction::${shared.capitalize(
+        shared.camelize(fn)
+      )}())`;
+    } else {
+      return `UTSCPP.propertyAccess(${propertyType}, "::", "${shared.capitalize(
+        shared.camelize(fn)
+      )}()")`;
+    }
+  };
+  if (functions.length > 1) {
+    if (language === "cpp") {
+      return `UniNativeTransitionTimingFunctions{${functions.map(parseSingleFunction).join(",")}}`;
+    } else {
+      return `[${functions.map(parseSingleFunction).join(",")}]`;
+    }
+  }
+  return parseSingleFunction(functions[0]);
+}
+function parseTransitionDurationValue(str, language) {
+  const normalized = normalizeDurationToMilliseconds(str);
+  if (normalized === null) {
+    return "0.0";
+  }
+  return normalized;
+}
+
+const processorMapCache = /* @__PURE__ */ new Map();
+function getCacheKey(platform, target, language) {
+  return `${platform}:${target}:${language}`;
+}
+function createDom2PropertyProcessors(r, platform, target, language) {
+  const cacheKey = getCacheKey(platform, target, language);
+  if (processorMapCache.has(cacheKey)) {
+    return processorMapCache.get(cacheKey);
+  }
+  const processorMap = {};
+  const allProperties = Object.keys(getAppCssJson());
+  allProperties.forEach((propertyName) => {
+    const targetConfig = target === "all" ? {
+      setter: "setStyle"
+    } : getTargetConfig(propertyName, platform, target);
+    if (targetConfig) {
+      const setter = targetConfig.setter;
+      const propertyType = targetConfig.type || getAppCssJson()[propertyName].type;
+      if (typeof propertyType === "string") {
+        const processor = createStyleValueProcessor(r, propertyType, setter);
+        if (processor) {
+          processorMap[propertyName] = processor;
+        }
+      } else if (Array.isArray(propertyType)) {
+        const processor = createCombinedStyleValueProcessor(
+          r,
+          propertyType,
+          setter
+        );
+        if (processor) {
+          processorMap[propertyName] = processor;
+        }
+      }
+    }
+  });
+  processorMapCache.set(cacheKey, processorMap);
+  return processorMap;
+  function createCombinedStyleValueProcessor(r2, propertyTypes, setter) {
+    const processorSet = /* @__PURE__ */ new Set();
+    propertyTypes.forEach((type) => {
+      const processor = createStyleValueProcessor(r2, type, setter);
+      if (processor) {
+        processorSet.add(processor);
+      }
+    });
+    const processors = Array.from(processorSet);
+    if (processors.length === 0) {
+      return void 0;
+    }
+    if (processors.length === 1) {
+      return processors[0];
+    }
+    return createPropertyProcessor(
+      r2,
+      (value, propertyName) => {
+        for (const processor of processors) {
+          const result = processor(value, propertyName);
+          if (!result.error) {
+            return result;
+          }
+        }
+        return createValueProcessorError(value, propertyName);
+      },
+      CSSPropertyProcessorType.Combined
+    );
+  }
+  function createStyleValueProcessor(r2, propertyType, setter) {
+    if (isUnitType(propertyType)) {
+      return createSetStyleUnitValueProcessor(r2, setter, language);
+    } else if (isColorType(propertyType)) {
+      return createSetStyleNativeColorValueProcessor(r2, setter);
+    } else if (isNumberType(propertyType)) {
+      return createSetStyleNumberValueProcessor(r2, setter);
+    } else if (isStringType(propertyType)) {
+      return createSetStyleStringValueProcessor(r2, setter);
+    } else if (isBorderColorsType(propertyType)) {
+      return createSetStyleBorderColorsValueProcessor(r2, setter);
+    } else if (isBorderStylesType(propertyType)) {
+      return createSetStyleBorderStylesValueProcessor(r2, setter, processorMap);
+    } else if (isBorderWidthType(propertyType)) {
+      return createSetStyleBorderWidthValueProcessor(r2, setter, language);
+    } else if (isBoxShadowType(propertyType)) {
+      return createSetStyleBoxShadowValueProcessor(r2, setter);
+    } else if (isTextShadowType(propertyType)) {
+      return createSetStyleTextShadowValueProcessor(r2, setter);
+    } else if (isTransformType(propertyType)) {
+      return createSetStyleTransformValueProcessor(r2, setter, language);
+    } else if (isTransformOriginType(propertyType)) {
+      return createSetStyleTransformOriginValueProcessor(r2, setter, language);
+    } else if (isBackgroundImageType(propertyType)) {
+      return createSetStyleBackgroundImageValueProcessor(r2, setter, language);
+    } else if (isTransitionType(propertyType)) {
+      return createSetStyleTransitionValueProcessor(
+        r2,
+        setter,
+        language,
+        propertyType
+      );
+    } else if (propertyType) {
+      return createSetStyleEnumValueProcessor(
+        r2,
+        setter,
+        createGenEnumCode(propertyType, language, platform)
+      );
+    }
+  }
+}
+
+var properties = {
+	invalid: "Invalid",
+	variable: "Variable",
+	top: "Top",
+	right: "Right",
+	bottom: "Bottom",
+	left: "Left",
+	width: "Width",
+	height: "Height",
+	"min-width": "MinWidth",
+	"min-height": "MinHeight",
+	"max-width": "MaxWidth",
+	"max-height": "MaxHeight",
+	"box-sizing": "BoxSizing",
+	margin: "Margin",
+	"margin-top": "MarginTop",
+	"margin-right": "MarginRight",
+	"margin-bottom": "MarginBottom",
+	"margin-left": "MarginLeft",
+	padding: "Padding",
+	"padding-top": "PaddingTop",
+	"padding-right": "PaddingRight",
+	"padding-bottom": "PaddingBottom",
+	"padding-left": "PaddingLeft",
+	border: "Border",
+	"border-width": "BorderWidth",
+	"border-style": "BorderStyle",
+	"border-top": "BorderTop",
+	"border-top-width": "BorderTopWidth",
+	"border-top-style": "BorderTopStyle",
+	"border-right": "BorderRight",
+	"border-right-width": "BorderRightWidth",
+	"border-right-style": "BorderRightStyle",
+	"border-bottom": "BorderBottom",
+	"border-bottom-width": "BorderBottomWidth",
+	"border-bottom-style": "BorderBottomStyle",
+	"border-left": "BorderLeft",
+	"border-left-width": "BorderLeftWidth",
+	"border-left-style": "BorderLeftStyle",
+	flex: "Flex",
+	"flex-direction": "FlexDirection",
+	"flex-wrap": "FlexWrap",
+	"flex-flow": "FlexFlow",
+	"flex-grow": "FlexGrow",
+	"flex-shrink": "FlexShrink",
+	"flex-basis": "FlexBasis",
+	"justify-content": "JustifyContent",
+	"align-items": "AlignItems",
+	"align-self": "AlignSelf",
+	"align-content": "AlignContent",
+	"z-index": "ZIndex",
+	display: "Display",
+	position: "Position",
+	visibility: "Visibility",
+	overflow: "Overflow",
+	"border-bottom-left-radius": "BorderBottomLeftRadius",
+	"border-bottom-right-radius": "BorderBottomRightRadius",
+	"border-top-color": "BorderTopColor",
+	"border-radius": "BorderRadius",
+	"border-color": "BorderColor",
+	"border-top-left-radius": "BorderTopLeftRadius",
+	"border-top-right-radius": "BorderTopRightRadius",
+	"border-left-color": "BorderLeftColor",
+	"border-bottom-color": "BorderBottomColor",
+	"border-right-color": "BorderRightColor",
+	background: "Background",
+	"background-color": "BackgroundColor",
+	"background-image": "BackgroundImage",
+	"background-clip": "BackgroundClip",
+	"font-family": "FontFamily",
+	"font-size": "FontSize",
+	"font-style": "FontStyle",
+	"font-weight": "FontWeight",
+	"line-height": "LineHeight",
+	"letter-spacing": "LetterSpacing",
+	lines: "Lines",
+	color: "Color",
+	"text-align": "TextAlign",
+	"text-decoration": "TextDecoration",
+	"text-decoration-color": "TextDecorationColor",
+	"text-decoration-line": "TextDecorationLine",
+	"text-decoration-style": "TextDecorationStyle",
+	"text-decoration-thickness": "TextDecorationThickness",
+	"text-overflow": "TextOverflow",
+	"text-shadow": "TextShadow",
+	"white-space": "WhiteSpace",
+	transform: "Transform",
+	"transform-origin": "TransformOrigin",
+	transition: "Transition",
+	"transition-property": "TransitionProperty",
+	"transition-duration": "TransitionDuration",
+	"transition-delay": "TransitionDelay",
+	"transition-timing-function": "TransitionTimingFunction",
+	opacity: "Opacity",
+	"box-shadow": "BoxShadow",
+	"pointer-events": "PointerEvents",
+	all: "All"
+};
+
+async function parseCss(input, options) {
+  var _a;
+  const r = ((_a = options.helper) == null ? void 0 : _a.K) || ((name) => name);
+  const normalizeOptions = {
+    ...options,
+    type: "uvue",
+    keepUnitPx: true
+  };
+  const { root, messages } = await postcss([
+    uniNvueStyler.expand(normalizeOptions),
+    uniNvueStyler.normalize(normalizeOptions)
+  ]).process(input).catch((err) => {
+    return {
+      root: null,
+      messages: [
+        {
+          type: "error",
+          text: err.message
+        }
+      ]
+    };
+  });
+  const propertyProcessors = createDom2PropertyProcessors(
+    r,
+    options.platform,
+    // css 解析时，应该传入ALL，不需要根据target获取setter，且目标语言是cpp
+    "all",
+    "cpp"
+  );
+  const { obj, messages: objMessages } = root ? uniNvueStyler.objectifierWithMessages(root, {
+    trim: false,
+    // @ts-expect-error
+    visitor,
+    parseMessages: messages
+  }) : { obj: {}, messages: [] };
+  messages.push(...objMessages);
+  let dom2FontFaces = [];
+  if (obj["@FONT-FACE"]) {
+    dom2FontFaces = obj["@FONT-FACE"];
+    delete obj["@FONT-FACE"];
+  }
+  const code = dom2ToString(r, options.platform)(obj);
+  return { code, messages, fontFaces: dom2FontFaces };
+  function visitor(node, context) {
+    var _a2;
+    let name = node.__originalProp || node.prop;
+    let value = node.value;
+    if (((_a2 = node.parent) == null ? void 0 : _a2.type) === "rule") {
+      if (name.startsWith("--")) ; else {
+        const processor = propertyProcessors[name];
+        if (processor) {
+          const valueResult = processor(value, name);
+          if (valueResult.error) {
+            context.warn(node, `WARNING: ${valueResult.error}`);
+          } else {
+            value = valueResult.valueCode;
+          }
+          name = `${r("UniCSSPropertyID")}::` + properties[name];
+        } else {
+          context.warn(node, uniNvueStyler.supportedPropertyReason(name));
+          return false;
+        }
+      }
+    }
+    return {
+      name,
+      value
+    };
+  }
+}
+
+function mergeShorthand(decls, property, defaultValue) {
+  var _a, _b, _c, _d;
+  const suffix = property;
+  const borderProps = {
+    [`border-top-${suffix}`]: null,
+    [`border-right-${suffix}`]: null,
+    [`border-bottom-${suffix}`]: null,
+    [`border-left-${suffix}`]: null
+  };
+  const indices = [];
+  for (let i = 0; i < decls.length; i++) {
+    const decl = decls[i];
+    const name = decl.__originalProp || decl.prop;
+    if (name in borderProps) {
+      borderProps[name] = decl;
+      indices.push(i);
+    }
+  }
+  if (indices.length === 0) {
+    return false;
+  }
+  const topValue = ((_a = borderProps[`border-top-${suffix}`]) == null ? void 0 : _a.value) || defaultValue;
+  const rightValue = ((_b = borderProps[`border-right-${suffix}`]) == null ? void 0 : _b.value) || defaultValue;
+  const bottomValue = ((_c = borderProps[`border-bottom-${suffix}`]) == null ? void 0 : _c.value) || defaultValue;
+  const leftValue = ((_d = borderProps[`border-left-${suffix}`]) == null ? void 0 : _d.value) || defaultValue;
+  const value = `${topValue} ${rightValue} ${bottomValue} ${leftValue}`;
+  const firstDecl = borderProps[`border-top-${suffix}`] || borderProps[`border-right-${suffix}`] || borderProps[`border-bottom-${suffix}`] || borderProps[`border-left-${suffix}`];
+  const newDecl = createDecl(
+    `border${shared.capitalize(suffix)}`,
+    value,
+    firstDecl.important || false,
+    firstDecl.raws,
+    firstDecl.source
+  );
+  newDecl.__originalProp = `border-${suffix}`;
+  for (let i = indices.length - 1; i >= 0; i--) {
+    decls.splice(indices[i], 1);
+  }
+  decls.splice(indices[0], 0, newDecl);
+  return true;
+}
+function borderColor(decls) {
+  return mergeShorthand(decls, "color", "#00000000");
+}
+
+function borderStyle(decls) {
+  return mergeShorthand(decls, "style", "none");
+}
+
+function shorthand(decls, options) {
+  if (options.platform === "app-harmony" && options.target === "nv-c") {
+    borderColor(decls);
+    borderStyle(decls);
+  }
+}
+
+const tags = /* @__PURE__ */ new Map([["flex-direction", ["view", "scroll-view", "list-item", "swiper-item", "flow-item", "navigator"]], ["justify-content", ["view", "scroll-view", "list-view", "list-item", "flow-item", "swiper-item", "navigator"]], ["flex-wrap", ["view", "scroll-view", "list-item", "flow-item", "swiper-item", "navigator"]], ["align-items", ["view", "scroll-view", "list-view", "list-item", "flow-item", "swiper-item", "navigator"]], ["align-content", ["view", "scroll-view", "list-view", "list-item", "flow-item", "swiper-item", "navigator"]], ["flex-flow", ["view", "scroll-view", "list-view", "list-item", "flow-item", "swiper-item", "navigator"]], ["color", ["text", "button", "input", "textarea"]], ["font-size", ["text", "button", "input", "textarea"]], ["font-style", ["text", "button", "input", "textarea"]], ["font-weight", ["text", "button", "input", "textarea", "loading"]], ["text-decoration", ["text", "button"]], ["text-decoration-line", ["text", "button"]], ["text-decoration-color", ["text", "button"]], ["text-decoration-style", ["text", "button"]], ["text-decoration-thickness", ["text", "button"]], ["text-align", ["text", "button", "input", "textarea"]], ["font-family", ["text", "button", "input", "textarea"]], ["text-overflow", ["text", "button"]], ["line-height", ["text", "button", "textarea"]], ["lines", ["text", "button", "input", "textarea"]], ["letter-spacing", ["text", "button"]], ["white-space", ["text", "button"]], ["text-shadow", ["text", "button"]], ["animation-timing-function", ["loading"]]]);
+
+function checkTagName(tagName) {
+  const plugin = {
+    postcssPlugin: `dom2:checkTagName`,
+    Declaration(decl, helper) {
+      const name = decl.__originalProp || decl.prop;
+      const tags$1 = tags.get(name);
+      if (!tags$1) {
+        return;
+      }
+      if (!tags$1.includes(tagName)) {
+        decl.warn(
+          helper.result,
+          `WARNING: property \`${name}\` is only supported on \`${tags$1.map((tag) => `<${tag}>`).join("|")}\``
+        );
+        decl.remove();
+      }
+    }
+  };
+  return plugin;
+}
+
+class CustomDeclaration {
+  constructor(prop, value, important) {
+    this.prop = prop;
+    this.value = value;
+    this.important = important;
+  }
+  warn(result, reason) {
+    result.warn(reason, {
+      node: this
+    });
+  }
+}
+class CustomResult {
+  constructor() {
+    this.messages = [];
+  }
+  warn(message, options) {
+    this.messages.push(new Warning(message, options));
+  }
+}
+class CustomHelpers {
+  constructor() {
+    this.result = new CustomResult();
+  }
+}
+function parseStaticStyleDeclarations(input, options) {
+  const styleObj = shared.parseStringStyle(input);
+  const declarations = [];
+  Object.entries(styleObj).forEach(([key, value]) => {
+    const valueString = value + "";
+    const important = valueString.includes("!important");
+    const decl = new CustomDeclaration(
+      key,
+      valueString.replace("!important", "").trim(),
+      important
+    );
+    declarations.push(decl);
+  });
+  const normalizeOptions = {
+    type: "uvue",
+    platform: options.platform,
+    keepUnitPx: true
+  };
+  const helpers = new CustomHelpers();
+  const expandedDeclarations = [];
+  const { Declaration: expandDeclaration } = uniNvueStyler.expand(normalizeOptions);
+  if (typeof expandDeclaration === "function") {
+    declarations.forEach((declaration) => {
+      expandedDeclarations.push(
+        ...visit(helpers, declaration, expandDeclaration)
+      );
+    });
+  } else {
+    expandedDeclarations.push(...declarations);
+  }
+  const normalizedDeclarations = [];
+  const { Declaration: normalizeDeclaration } = uniNvueStyler.normalize(normalizeOptions);
+  if (typeof normalizeDeclaration === "function") {
+    expandedDeclarations.forEach((declaration) => {
+      normalizedDeclarations.push(
+        ...visit(helpers, declaration, normalizeDeclaration)
+      );
+    });
+  } else {
+    normalizedDeclarations.push(...expandedDeclarations);
+  }
+  if (options.tagName) {
+    const { Declaration: checkTagNameDeclaration } = checkTagName(
+      options.tagName
+    );
+    if (typeof checkTagNameDeclaration === "function") {
+      normalizedDeclarations.forEach((declaration) => {
+        normalizedDeclarations.push(
+          ...visit(helpers, declaration, checkTagNameDeclaration)
+        );
+      });
+    }
+  }
+  return {
+    decls: normalizedDeclarations,
+    messages: helpers.result.messages
+  };
+}
+function visit(helpers, declaration, transformDecl) {
+  let removed = false;
+  let replaced = false;
+  const result = [];
+  declaration.replaceWith = function(nodes) {
+    replaced = true;
+    result.push(
+      ...nodes.map(
+        (node) => new CustomDeclaration(node.prop, node.value, node.important)
+      )
+    );
+    return this;
+  };
+  declaration.remove = function() {
+    removed = true;
+    return this;
+  };
+  transformDecl(declaration, helpers);
+  if (!removed && !replaced) {
+    result.push(declaration);
+  }
+  return result;
+}
+
+function parseStaticStyle(input, options) {
+  var _a;
+  const r = ((_a = options.helper) == null ? void 0 : _a.K) || ((name) => name);
+  const result = {};
+  const { decls, messages } = parseStaticStyleDeclarations(input, options);
+  if (decls.length) {
+    messages.forEach((m) => {
+      if (m.type === "warning" || m.type === "error") {
+        const index = decls.findIndex((d) => d === m.node);
+        if (index !== -1) {
+          decls.splice(index, 1);
+        }
+      }
+    });
+  }
+  important(decls);
+  shorthand(decls, options);
+  const processors = createDom2PropertyProcessors(
+    r,
+    options.platform,
+    options.target,
+    "ts"
+  );
+  for (const declaration of decls) {
+    const propertyName = declaration.__originalProp || declaration.prop;
+    if (propertyName.startsWith("--")) {
+      const processed = defineStyleVariableProcessor(
+        declaration.value,
+        propertyName
+      );
+      if (processed.error) {
+        messages.push(new Warning(processed.error, { node: declaration }));
+      } else {
+        result[propertyName] = processed;
+      }
+    } else {
+      const processor = processors[propertyName];
+      if (processor) {
+        if (declaration.important) ;
+        const processed = processor(
+          declaration.value,
+          propertyName,
+          options ? {
+            platform: options.platform,
+            target: options.target,
+            tagName: options.tagName || ""
+          } : void 0
+        );
+        if (processed.error) {
+          messages.push(new Warning(processed.error, { node: declaration }));
+        } else {
+          if (processed.valueCode) {
+            result[propertyName] = processed;
+          }
+        }
+      }
+    }
+  }
+  return {
+    obj: result,
+    messages,
+    code: options.genCode ? genCode(r, result, options.target) : void 0
+  };
+}
+function genCode(r, obj, target) {
+  if (target === "all" || target === "dom-c" || target === "nv-c" || target === "txt-c") {
+    const entries = [];
+    const variableEntries = [];
+    Object.entries(obj).forEach(([key, value]) => {
+      if (!value.valueCode) {
+        return;
+      }
+      if (key.startsWith("--")) {
+        variableEntries.push(`{"${key}", ${value.valueCode}}`);
+      } else {
+        entries.push(
+          `[${genCPPEnumCode(
+            r("UniCSSPropertyID"),
+            shared.capitalize(shared.camelize(key))
+          )}]: ${value.valueCode}`
+        );
+      }
+    });
+    if (variableEntries.length) {
+      entries.unshift(
+        `[${genCPPEnumCode(
+          r("UniCSSPropertyID"),
+          "Variable"
+        )}]: ${r("UniCSSPropertyValueVariable")}{${variableEntries.join(", ")}}`
+      );
+    }
+    return `{${entries.join(", ")}}`;
+  }
+  return "";
+}
+function important(decls) {
+  for (let i = decls.length - 1; i >= 0; i--) {
+    const decl = decls[i];
+    const prop = decl.prop;
+    if (decl.important) {
+      for (let j = i - 1; j >= 0; j--) {
+        const prevProp = decls[j].prop;
+        if (prevProp === prop) {
+          decls.splice(j, 1);
+          i--;
+        }
+      }
+    } else {
+      for (let j = i - 1; j >= 0; j--) {
+        const prevProp = decls[j].prop;
+        if (prevProp === prop && !decls[j].important) {
+          decls.splice(j, 1);
+          i--;
+        }
+      }
+    }
+  }
+}
+
+function compile(source, options) {
+  const resolvedOptions = normalizeOptions(options);
+  const ast = shared.isString(source) ? compilerVapor.parse(source, resolvedOptions) : source;
+  transformTextNodes(ast, resolvedOptions);
+  const [nodeTransforms, directiveTransforms] = getBaseTransformPreset();
+  const { expressionPlugins } = resolvedOptions;
+  if (!expressionPlugins || !expressionPlugins.includes("typescript")) {
+    resolvedOptions.expressionPlugins = [
+      ...expressionPlugins || [],
+      "typescript"
+    ];
+  }
+  const vaporIR = compilerVapor.transform(
+    ast,
+    shared.extend(
+      {
+        checkStaticStyle: createStaticStyleChecker(resolvedOptions),
+        checkStaticProp: createStaticPropChecker(resolvedOptions),
+        resolveChangeProp: createResolveChangePropChecker()
+      },
+      resolvedOptions,
+      {
+        nodeTransforms: [
+          ...nodeTransforms,
+          ...resolvedOptions.nodeTransforms || []
+          // user transforms
+        ],
+        directiveTransforms: shared.extend(
+          {},
+          directiveTransforms,
+          resolvedOptions.directiveTransforms || {}
+          // user transforms
+        )
+      }
+    )
+  );
+  vaporIR.hasTemplateRef = false;
+  transformSharedData(vaporIR, resolvedOptions);
+  const sharedDataResult = generate$1(vaporIR, resolvedOptions);
+  const nativeViewResult = generate(vaporIR, {
+    ...resolvedOptions,
+    target: getDom2AppTarget(
+      resolvedOptions.platform,
+      "nativeView"
+    ),
+    renderer: "nativeView"
+  });
+  const elementResult = generate(vaporIR, {
+    ...resolvedOptions,
+    target: getDom2AppTarget(resolvedOptions.platform, "element"),
+    renderer: "element"
+  });
+  if (resolvedOptions.filename && resolvedOptions.className) {
+    const emit = resolvedOptions.emitSharedData || emitSharedData;
+    emit(
+      normalizePath(resolvedOptions.filename),
+      resolvedOptions.className,
+      elementResult,
+      nativeViewResult,
+      resolvedOptions.scriptCppBlocks
+    );
+  }
+  if (resolvedOptions.isWatch) {
+    sharedDataResult.ast.hash = hash_sum(
+      sharedDataResult.code + nativeViewResult.code + elementResult.code
+    );
+  }
+  return {
+    ...sharedDataResult,
+    sharedData: sharedDataResult,
+    nativeView: nativeViewResult,
+    element: elementResult
+  };
+}
+function getBaseTransformPreset() {
+  return compilerVapor.getBaseTransformPreset();
+}
+function normalizeOptions(options) {
+  const resolvedOptions = shared.extend({}, options);
+  const cache = /* @__PURE__ */ new Map();
+  resolvedOptions.parseStaticStyle = (target, tagName, style, genCode) => {
+    const key = `${target}-${tagName}-${style}`;
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    const result = parseStaticStyle(style, {
+      platform: options.platform,
+      target,
+      tagName,
+      genCode: true,
+      helper: {
+        K: options.r || ((name) => name)
+      }
+    });
+    cache.set(key, result);
+    return result;
+  };
+  resolvedOptions.parseStaticProp = createParseStaticProp(options.platform);
+  if (resolvedOptions.scriptCppBlocks && !resolvedOptions.isCppExpr) {
+    resolvedOptions.isCppExpr = (ast) => {
+      if (!ast) {
+        return false;
+      }
+      if (ast.type !== "MemberExpression") {
+        return false;
+      }
+      if (ast.object.type !== "Identifier") {
+        return false;
+      }
+      const name = ast.object.name;
+      return resolvedOptions.scriptCppBlocks.some(
+        (cppBlock) => cppBlock.module === name
+      );
+    };
+  }
+  return resolvedOptions;
+}
+function createStaticStyleChecker(options) {
+  const parseStaticStyle2 = options.parseStaticStyle;
+  const elementTarget = getDom2AppTarget(
+    options.platform,
+    "element"
+  );
+  const nativeViewTarget = getDom2AppTarget(
+    options.platform,
+    "nativeView"
+  );
+  function formatMessage(text) {
+    return text.replace("ERROR: ", "").replace("WARNING: ", "");
+  }
+  return (style, loc, node, context) => {
+    const { messages: elementMessages } = parseStaticStyle2(
+      elementTarget,
+      node.tag,
+      style,
+      false
+    );
+    const { messages: nativeViewMessages } = parseStaticStyle2(
+      nativeViewTarget,
+      node.tag,
+      style,
+      false
+    );
+    elementMessages.forEach((message) => {
+      context.options.onWarn(
+        createDom2StaticStyleCompilerError(formatMessage(message.text), loc)
+      );
+    });
+    nativeViewMessages.forEach((message) => {
+      if (!elementMessages.some((m) => m.text === message.text)) {
+        context.options.onWarn(
+          createDom2StaticStyleCompilerError(formatMessage(message.text), loc)
+        );
+      }
+    });
+  };
+}
+function createStaticPropChecker(options) {
+  const parseStaticProp = options.parseStaticProp;
+  const elementTarget = getDom2AppTarget(
+    options.platform,
+    "element"
+  );
+  const nativeViewTarget = getDom2AppTarget(
+    options.platform,
+    "nativeView"
+  );
+  const isPropertySupported = createDom2ElementsPropertiesSupportChecker(
+    options.platform
+  );
+  return (isStatic, propertyName, value, loc, node, context) => {
+    if (!isStatic) {
+      if (!isPropertySupported(node.tag, propertyName)) {
+        context.options.onWarn(
+          createDom2StaticPropCompilerError(
+            `Property '${propertyName}' is not supported on '<${node.tag}>'`,
+            loc
+          )
+        );
+        return false;
+      }
+      return true;
+    }
+    const elementResult = parseStaticProp(
+      elementTarget,
+      node.tag,
+      propertyName,
+      value
+    );
+    const errors = /* @__PURE__ */ new Set();
+    if (elementResult) {
+      if (elementResult.errors.length > 0) {
+        elementResult.errors.forEach((error) => {
+          errors.add(error);
+        });
+      }
+    }
+    const nativeViewResult = parseStaticProp(
+      nativeViewTarget,
+      node.tag,
+      propertyName,
+      value
+    );
+    if (nativeViewResult) {
+      if (nativeViewResult.errors.length > 0) {
+        nativeViewResult.errors.forEach((error) => {
+          errors.add(error);
+        });
+      }
+    }
+    if (errors.size) {
+      errors.forEach((error) => {
+        context.options.onWarn(createDom2StaticPropCompilerError(error, loc));
+      });
+      return false;
+    }
+    return true;
+  };
+}
+function createResolveChangePropChecker(options) {
+  return (props, context) => {
+    const changeProps = [];
+    const propNames = [];
+    for (const prop of props) {
+      propNames.push(prop.key.content);
+    }
+    const indicesToRemove = [];
+    for (let i = 0; i < props.length; i++) {
+      const prop = props[i];
+      const name = prop.key.content;
+      if (name.startsWith("change:")) {
+        const propName = name.slice(7);
+        if (!propNames.includes(propName)) {
+          indicesToRemove.push(i);
+          context.options.onWarn(
+            createDom2StaticPropCompilerError(
+              `Property '${propName}' is not defined`,
+              prop.key.loc
+            )
+          );
+        } else {
+          changeProps.push(propName);
+        }
+      }
+    }
+    for (let i = indicesToRemove.length - 1; i >= 0; i--) {
+      props.splice(indicesToRemove[i], 1);
+    }
+    return changeProps;
+  };
+}
+
+function getIdentifierText(ident) {
+  return ident.text || ident.escapedText;
+}
+function getClassName(decl) {
+  return decl.name ? getIdentifierText(decl.name) : "";
+}
+function getSuperClassName(decl, ts) {
+  var _a;
+  const heritageClausesNode = decl.heritageClauses;
+  if (!heritageClausesNode) {
+    return "";
+  }
+  const extendsClause = heritageClausesNode.find(
+    (clause) => clause.token === ts.SyntaxKind.ExtendsKeyword
+  );
+  const superTypeNode = (_a = extendsClause == null ? void 0 : extendsClause.types[0]) == null ? void 0 : _a.expression;
+  if (!superTypeNode || !ts.isIdentifier(superTypeNode)) {
+    return "";
+  }
+  return getIdentifierText(superTypeNode);
+}
+function isKeywordTypeNode(node, ts) {
+  return node.kind === ts.SyntaxKind.StringKeyword || node.kind === ts.SyntaxKind.BooleanKeyword || node.kind === ts.SyntaxKind.NumberKeyword || node.kind === ts.SyntaxKind.UndefinedKeyword;
+}
+function parseClassMemberType(member, ts) {
+  if (!ts.isPropertyDeclaration(member)) {
+    return;
+  }
+  if (member.modifiers && member.modifiers.length > 0 && member.modifiers.some(
+    (modifier) => modifier.kind === ts.SyntaxKind.ReadonlyKeyword
+  )) {
+    return;
+  }
+  if (!member.type) {
+    return;
+  }
+  const memberNameNode = member.name;
+  if (!ts.isIdentifier(memberNameNode)) {
+    return;
+  }
+  const memberName = getIdentifierText(memberNameNode);
+  const memberType = member.type;
+  if (!ts.isUnionTypeNode(memberType)) {
+    if (!ts.isTypeReferenceNode(memberType) && !isKeywordTypeNode(memberType, ts) && !ts.isLiteralTypeNode(memberType) && !ts.isArrayTypeNode(memberType)) {
+      return;
+    }
+    return {
+      memberName,
+      type: memberType,
+      optional: !!member.questionToken
+    };
+  }
+  const typeNotNull = memberType.types.filter(
+    (type2) => type2.kind !== ts.SyntaxKind.UndefinedKeyword && !(ts.isLiteralTypeNode(type2) && type2.literal.kind === ts.SyntaxKind.NullKeyword)
+  );
+  if (typeNotNull.length !== 1) {
+    return;
+  }
+  const type = typeNotNull[0];
+  if (!ts.isTypeReferenceNode(type) && !isKeywordTypeNode(type, ts) && !ts.isLiteralTypeNode(type)) {
+    return;
+  }
+  return {
+    memberName,
+    type,
+    optional: true
+  };
+}
+function indent(level = 1, INDENT = 2) {
+  return " ".repeat(INDENT * level);
+}
+function indentMultiLine(code, level) {
+  return code.split("\n").map((line) => indent(level) + line).join("\n");
+}
+function updateSourceMapPosition(generator, sourceMap, updatePosition) {
+  if (!generator) {
+    generator = new require$$2.SourceMapGenerator();
+  }
+  const consumer = new require$$2.SourceMapConsumer(sourceMap);
+  sourceMap.sources.forEach((source, index) => {
+    const sources = generator._sources;
+    if (!sources.has(source)) {
+      sources.add(source);
+      generator.setSourceContent(
+        source,
+        sourceMap.sourcesContent ? sourceMap.sourcesContent[index] : null
+      );
+    }
+  });
+  consumer.eachMapping((mapping) => {
+    const updatedPos = updatePosition(
+      mapping.generatedLine,
+      mapping.generatedColumn
+    );
+    generator.addMapping({
+      generated: {
+        line: updatedPos ? updatedPos.line : mapping.generatedLine,
+        column: updatedPos ? updatedPos.column : mapping.generatedColumn
+      },
+      original: mapping.originalLine ? {
+        line: mapping.originalLine,
+        column: mapping.originalColumn || 0
+      } : null,
+      source: mapping.source || "",
+      name: mapping.name || ""
+    });
+  });
+  return generator;
+}
+
+const TYPE_ARRAY_STRING = "ARRAY_STRING";
+
+const identGenerator = new IdentGenerator(2e3);
+function generateFlagList(flags, rename) {
+  if (flags.size === 0) {
+    return "";
+  }
+  let w = "";
+  let r = "";
+  for (const flag of flags) {
+    w += indent(3) + `${rename("DEFINE_SHARED_DATA_MEMBER_FLAG_D")}(${flag})
+`;
+    r += indent(3) + `${rename("DEFINE_SHARED_DATA_MEMBER_FLAG_R")}(${flag})
+`;
+  }
+  let result = indent(1) + `${rename("DEFINE_SHARED_DATA_MEMBER_FLAGS_AND_RESET")}(
+`;
+  result += indent(2) + `${rename("DEFINE_SHARED_DATA_MEMBER_FLAG_W")}(
+`;
+  result += w;
+  result += indent(2) + `),
+`;
+  result += indent(2) + `${rename("DEFINE_SHARED_DATA_MEMBER_FLAG_W")}(
+`;
+  result += r;
+  result += indent(2) + `)
+`;
+  result += indent(1) + `)
+`;
+  return result;
+}
+function formatTypeNode(type, ts) {
+  if (ts.isTypeReferenceNode(type)) {
+    if (ts.isIdentifier(type.typeName)) {
+      switch (getIdentifierText(type.typeName)) {
+        case "UniSharedDataEnum":
+          return "uint16";
+        case "UniSharedDataAny":
+          return "UniSharedDataAny";
+        case "UniSharedDataArray":
+          return "UniSharedDataArray";
+        case "UniSharedDataJSONObject":
+          return "UniSharedDataJSONObject";
+        case "UniSharedDataVFor":
+          return "UniSharedDataVFor";
+        case "UniSharedDataFunctionEventListener":
+          return "UniSharedDataFunctionEventListener";
+        case "UniSharedDataFunctionSetTemplateRef":
+          return "UniSharedDataFunctionSetTemplateRef";
+        case "UniElementStyles":
+          return "UniElementStyles";
+        case "Array":
+          if (type.typeArguments && type.typeArguments.length === 1 && isKeywordTypeNode(type.typeArguments[0], ts) && type.typeArguments[0].kind === ts.SyntaxKind.StringKeyword) {
+            return TYPE_ARRAY_STRING;
+          }
+        default:
+          return "UniSharedDataComponent|" + getIdentifierText(type.typeName);
+      }
+    }
+  }
+  if (isKeywordTypeNode(type, ts)) {
+    switch (type.kind) {
+      case ts.SyntaxKind.StringKeyword:
+        return "string";
+      case ts.SyntaxKind.BooleanKeyword:
+        return "bool";
+      case ts.SyntaxKind.NumberKeyword:
+        return "double";
+      case ts.SyntaxKind.UndefinedKeyword:
+        return "null";
+    }
+  }
+  if (ts.isArrayTypeNode(type) && isKeywordTypeNode(type.elementType, ts) && type.elementType.kind === ts.SyntaxKind.StringKeyword) {
+    return TYPE_ARRAY_STRING;
+  }
+  if (ts.isLiteralTypeNode(type)) {
+    if (type.literal.kind === ts.SyntaxKind.NullKeyword) {
+      return "null";
+    }
+  }
+}
+function generateCppSharedDataClass(decl, options) {
+  const ts = options.ts;
+  const nameNode = decl.name;
+  const EMPTY_RESULT = {
+    files: []
+  };
+  if (!nameNode) {
+    return EMPTY_RESULT;
+  }
+  const className = getClassName(decl);
+  if (!className) {
+    return EMPTY_RESULT;
+  }
+  const superClassName = getSuperClassName(decl, ts);
+  if (!superClassName) {
+    return EMPTY_RESULT;
+  }
+  const isPage = superClassName === "UniSharedDataPage";
+  const isComponent = superClassName === "UniSharedDataComponent";
+  const defineMacroH = isPage ? "DEFINE_USER_PAGE_SHARED_DATA" : isComponent ? "DEFINE_USER_COMPONENT_SHARED_DATA" : "DEFINE_USER_SHARED_DATA";
+  const defineMacroHCommon = "DEFINE_SHARED_DATA";
+  const defineMacroHMember = defineMacroHCommon + "_MEMBER";
+  const defineMacroCpp = defineMacroH + "_CPP";
+  const defineMacroCppInit = defineMacroCpp + "_INIT";
+  const defineMacroCppCommon = defineMacroHCommon + "_CPP";
+  const defineMacroCppCommonInitMember = defineMacroCppCommon + "_INIT_MEMBER";
+  const defineMacroCppCommonMember = defineMacroCppCommon + "_MEMBER_SETTER";
+  const members = decl.members;
+  let codeHMember = "";
+  let codeHFlag = "";
+  let codeH = `${options.r(defineMacroH)}(${className},
+`;
+  let codeCpp = `${options.r(defineMacroCpp)}(${className},
+`;
+  let codeCppInit = indent(1) + `${options.r(defineMacroCppInit)}(${className},
+`;
+  let codeCppMembers = ``;
+  let flags = /* @__PURE__ */ new Set();
+  for (let i = 0; i < members.length; i++) {
+    const member = members[i];
+    const memberTypeInfo = parseClassMemberType(member, ts);
+    if (!memberTypeInfo) {
+      continue;
+    }
+    const optional = memberTypeInfo.optional;
+    const memberName = memberTypeInfo.memberName;
+    const memberTypeNode = memberTypeInfo.type;
+    const memberType = formatTypeNode(memberTypeNode, ts);
+    const { index: groupIndex, bitValue: memberBitValue } = identGenerator.getGroupInfo(memberName);
+    const memberFlag = "_flag" + groupIndex;
+    flags.add(memberFlag);
+    if (!memberType) {
+      continue;
+    }
+    let [memberSetterType, memberRealType] = memberType.split("|");
+    let _defineMacroHMember = `${defineMacroHMember}_${memberSetterType.toUpperCase()}`;
+    let _defineMacroCppMember = `${defineMacroCppCommonMember}_${memberSetterType.toUpperCase()}`;
+    if ((optional || memberSetterType === "UniSharedDataAny") && memberSetterType !== "null") {
+      _defineMacroHMember += `_OR_NULL`;
+      _defineMacroCppMember += `_OR_NULL`;
+    }
+    codeHMember += indent(1) + `${options.r(_defineMacroHMember)}(${memberName}`;
+    codeCppInit += indent(2) + `${options.r(defineMacroCppCommonInitMember)}(${memberName})
+`;
+    codeCppMembers += indent(1) + `${options.r(_defineMacroCppMember)}(${className}, ${memberName}`;
+    codeHMember += `)
+`;
+    codeCppMembers += `, ${memberFlag}, ${memberBitValue})
+`;
+  }
+  if (flags.size === 0) {
+    flags.add("_flag0");
+  }
+  codeHFlag = generateFlagList(flags, options.r) + "\n";
+  codeCppInit += indent(1) + `)
+`;
+  codeH += codeHFlag + codeHMember + `)`;
+  codeCpp += codeCppInit + codeCppMembers + `)`;
+  let codeCppMap = null;
+  if (isPage || isComponent) {
+    codeCpp = `namespace {
+${indentMultiLine(`inline ${options.renderElementCode}`, 1)}
+${indentMultiLine(`inline ${options.renderNativeViewCode}`, 1)}
+}
+${codeCpp}`;
+    const generator = new require$$2.SourceMapGenerator();
+    let lineOffset = 1;
+    const columnOffset = indentMultiLine("", 1).length;
+    if (options.renderElementSourceMap) {
+      updateSourceMapPosition(
+        generator,
+        options.renderElementSourceMap,
+        (line, column) => {
+          return {
+            line: line + lineOffset,
+            column: column + columnOffset
+          };
+        }
+      );
+      lineOffset += options.renderElementCode.split("\n").length;
+    }
+    if (options.renderNativeViewSourceMap) {
+      updateSourceMapPosition(
+        generator,
+        options.renderNativeViewSourceMap,
+        (line, column) => {
+          return {
+            line: line + lineOffset,
+            column: column + columnOffset
+          };
+        }
+      );
+    }
+    codeCppMap = generator.toJSON();
+  }
+  return {
+    files: [
+      {
+        code: codeH,
+        name: `${className}.h`,
+        class: className,
+        map: null
+      },
+      {
+        code: codeCpp,
+        name: `${className}.cpp`,
+        class: className,
+        map: codeCppMap
+      }
+    ],
+    groupName: isComponent || isPage ? className : void 0
+  };
+}
+
+function genSharedDataClass(decl, options) {
+  if (options.targetLanguage === "cpp") {
+    return generateCppSharedDataClass(decl, options);
+  }
+  return {
+    files: []
+  };
+}
+function genAppSharedData({
+  r
+}) {
+  const className = r("GenApp") + r("SharedData");
+  return {
+    files: [
+      {
+        name: `${className}.h`,
+        code: `#pragma once
+#include "sdk.h"
+
+${r("DEFINE_USER_APP_SHARED_DATA")}(GenAppSharedData,
+${generateFlagList(/* @__PURE__ */ new Set(["_flag0"]), r)}
+)`,
+        classes: [`${className}`]
+      },
+      {
+        name: `${className}.cpp`,
+        code: `#include "${className}.h"
+
+${r("DEFINE_USER_APP_SHARED_DATA_CPP")}(${className},
+  ${r("DEFINE_USER_APP_SHARED_DATA_CPP_INIT")}(${className},
+  )
+)`,
+        classes: [`${className}`]
+      }
+    ]
+  };
+}
+function generateIncludeAndUse(cppBlocks) {
+  let includeCodeArr = [];
+  let useCode = [];
+  cppBlocks.forEach((block) => {
+    if (block.src) {
+      includeCodeArr.push(`#include "${block.src.trim()}"`);
+    }
+    if (block.namespace) {
+      useCode.push(`using namespace ${block.namespace.trim()};`);
+    }
+  });
+  return { includeCode: includeCodeArr.join("\n"), useCode: useCode.join("\n") };
+}
+function genSharedData(decls, options) {
+  if (!options.r) {
+    options.r = (name) => name;
+  }
+  const sharedDataResultList = decls.map(
+    (decl) => genSharedDataClass(decl, options)
+  );
+  const cppFile = {
+    name: ".cpp",
+    code: "",
+    classes: []
+  };
+  const hFile = {
+    name: ".h",
+    code: "",
+    classes: []
+  };
+  const includeAndUse = generateIncludeAndUse(options.scriptCppBlocks || []);
+  const includeCode = includeAndUse.includeCode ? includeAndUse.includeCode + "\n\n" : "";
+  const useCode = includeAndUse.useCode ? includeAndUse.useCode + "\n\n" : "";
+  const baseLineOffset = (
+    // includeCode\n\n
+    (includeCode ? includeCode.split("\n").length - 1 : 0) + // useCode\n\n
+    (useCode ? useCode.split("\n").length - 1 : 0) + // #include "${hFile.name}"\n\n
+    2
+  );
+  let groupName = "";
+  let cppSourceMap = null;
+  sharedDataResultList.forEach((result) => {
+    if (result.groupName) {
+      groupName = result.groupName;
+    }
+    result.files.forEach((file) => {
+      if (file.name.endsWith(".h")) {
+        hFile.code += (hFile.code ? "\n\n" : "") + file.code;
+        hFile.classes.push(file.class);
+      } else if (file.name.endsWith(".cpp")) {
+        if (file.map) {
+          const lineOffset = cppFile.code ? baseLineOffset + cppFile.code.split("\n").length + 1 : baseLineOffset;
+          const generator = new require$$2.SourceMapGenerator();
+          updateSourceMapPosition(generator, file.map, (line, column) => {
+            return {
+              line: line + lineOffset,
+              column
+            };
+          });
+          cppSourceMap = generator.toJSON();
+        }
+        cppFile.code += (cppFile.code ? "\n\n" : "") + file.code;
+        cppFile.classes.push(file.class);
+      }
+    });
+  });
+  if (groupName) {
+    hFile.name = `${groupName}.h`;
+    cppFile.name = `${groupName}.cpp`;
+    hFile.code = `#pragma once
+#include "sdk.h"
+
+${hFile.code}`;
+    cppFile.code = `#include "${hFile.name}"
+
+${includeCode}${useCode}${cppFile.code}`;
+    cppFile.map = cppSourceMap;
+  }
+  return {
+    files: [cppFile, hFile]
+  };
+}
+
+exports.parse = compilerDom.parse;
+exports.COMPONENT_TYPE = COMPONENT_TYPE;
+exports.DOM2_APP_PLATFORM = DOM2_APP_PLATFORM;
+exports.DOM2_APP_TARGET = DOM2_APP_TARGET;
+exports.RENDERER_TYPE = RENDERER_TYPE;
+exports.TARGET_LANGUAGE = TARGET_LANGUAGE;
+exports.TARGET_PLATFORM = DOM2_APP_PLATFORM;
+exports.compile = compile;
+exports.genAppSharedData = genAppSharedData;
+exports.genSharedData = genSharedData;
+exports.genSharedDataClass = genSharedDataClass;
+exports.getSharedDataResult = getSharedDataResult;
+exports.parseCss = parseCss;
+exports.parseStaticStyle = parseStaticStyle;
