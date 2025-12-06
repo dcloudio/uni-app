@@ -209,7 +209,7 @@ export declare const createSharedDataRecycleFor: <S extends UniSharedData, Sourc
 }) => void) => void;
 
 type NodeRef = string | Ref | ((ref: Element) => void);
-type RefEl = Element | VaporSharedDataComponentInstance;
+type RefEl = UniElement | VaporSharedDataComponentInstance;
 type setRefFn = (el: RefEl | number | null, ref: NodeRef, oldRef?: NodeRef | null, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
 export declare function createSharedDataTemplateRefSetter(): setRefFn;
 
