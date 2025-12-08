@@ -1364,6 +1364,7 @@
       }
     }
   },
+  "uni-textarea": {},
   "uni-theme": {
     "uni": {
       "onOsThemeChange": {
@@ -1525,7 +1526,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": "dom2"
         }
       },
       "createWebviewContext": {
@@ -1534,7 +1535,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": "dom2"
         }
       }
     },
