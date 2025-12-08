@@ -4816,9 +4816,9 @@ function setRef(instance, isUnmount = false) {
         }
       });
     });
-    if ($mpPlatform === "mp-alipay") {
-      return;
-    }
+  }
+  if ($mpPlatform === "mp-alipay") {
+    return;
   }
   if ($scope._$setRef) {
     $scope._$setRef(doSet);
