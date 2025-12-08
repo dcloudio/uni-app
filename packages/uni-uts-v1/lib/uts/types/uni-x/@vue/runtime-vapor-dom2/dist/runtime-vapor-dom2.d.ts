@@ -213,7 +213,7 @@ type RefEl = UniElement | VaporSharedDataComponentInstance;
 type setRefFn = (el: RefEl | number | null, ref: NodeRef, oldRef?: NodeRef | null, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
 export declare function createSharedDataTemplateRefSetter(): setRefFn;
 
-export declare function createSharedDataDynamicComponent(getter: () => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean, once?: boolean): void;
+export declare function createSharedDataDynamicComponent(getter: () => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean, once?: boolean): VaporSharedDataComponentInstance | null;
 
 type UseComputedStyleOptions = {
     /**
