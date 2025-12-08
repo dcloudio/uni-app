@@ -685,14 +685,14 @@ function handleRef(ref) {
             (refs[refInForName] || (refs[refInForName] = [])).push(refValue);
         }
         else {
-            setRef(refInForName, refValue, refs, setupState);
+            setRef(refInForName, refValue, refs, setupState, true);
         }
     }
 }
 function isTemplateRef(opts) {
     return !!(opts && opts.r);
 }
-function setRef(ref, refValue, refs, setupState) {
+function setRef(ref, refValue, refs, setupState, isRefInVFor = false) {
     if (isRef(ref)) {
         ref.value = refValue;
     }
@@ -700,6 +700,16 @@ function setRef(ref, refValue, refs, setupState) {
         const templateRef = ref(refValue, refs);
         if (isTemplateRef(templateRef)) {
             setTemplateRef(templateRef, refValue, setupState);
+            // 对于 template ref，需要手动同步到 refs，否则 getCurrentInstance().proxy.$refs 获取不到
+            if (!templateRef.k || !isRef(templateRef.r)) {
+                return;
+            }
+            if (isRefInVFor) {
+                (refs[templateRef.k] || (refs[templateRef.k] = [])).push(refValue);
+            }
+            else {
+                refs[templateRef.k] = refValue;
+            }
         }
     }
 }

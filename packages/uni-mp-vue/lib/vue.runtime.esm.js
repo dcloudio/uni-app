@@ -4764,13 +4764,15 @@ function setRef(instance, isUnmount = false) {
   if (!$scope || !$templateRefs && !$templateUniElementRefs) {
     return;
   }
-  if (isUnmount && $mpPlatform !== "mp-alipay") {
-    $templateRefs && $templateRefs.forEach(
-      (templateRef) => setTemplateRef(templateRef, null, setupState)
-    );
+  if (isUnmount) {
+    if($mpPlatform !== "mp-alipay") { 
+      $templateRefs && $templateRefs.forEach(
+        (templateRef) => setTemplateRef(templateRef, null, setupState)
+      );
+    }
     $templateUniElementRefs && $templateUniElementRefs.forEach(
       (templateRef) => setTemplateRef(templateRef, null, setupState)
-    );  
+    );
     return;
   }
   const check = $mpPlatform === "mp-baidu" || $mpPlatform === "mp-toutiao";
