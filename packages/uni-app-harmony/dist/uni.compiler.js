@@ -170,6 +170,11 @@ var ExternalModulesX = [
 const ComponentsWithProvider = [];
 const ComponentsWithProviderX = ['uni-map'];
 const ExtApiBlackListX = ['uni-pullDownRefresh'];
+const ExtApiBlackListDom2 = [
+    ...ExtApiBlackListX,
+    'uni-createWebviewContext',
+    'uni-video',
+];
 const ExtApiBlackList = [
     'uni-loadFontFace',
     'uni-getElementById',
@@ -675,5 +680,6 @@ var index = [
 ];
 
 exports.ExtApiBlackList = ExtApiBlackList;
+exports.ExtApiBlackListDom2 = ExtApiBlackListDom2;
 exports.ExtApiBlackListX = ExtApiBlackListX;
 exports.default = index;

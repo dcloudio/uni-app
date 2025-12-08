@@ -5828,12 +5828,15 @@ class UniElement {
             console.warn(`getBoundingClientRectAsync is not supported on elements without id`);
             return Promise.reject();
         }
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this._getBoundingClientRectAsync(resolve);
         });
     }
     _getBoundingClientRectAsync(callback) {
-        const query = uni.createSelectorQuery().in(this.$vm);
+        const query = this.$vm
+            .$mpPlatform === 'mp-alipay'
+            ? uni.createSelectorQuery()
+            : uni.createSelectorQuery().in(this.$vm);
         query.select('#' + this.id).boundingClientRect();
         query.exec((res) => {
             this._fixDomRectXY(res[0]);
