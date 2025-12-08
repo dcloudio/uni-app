@@ -173,7 +173,6 @@ const ExtApiBlackListX = ['uni-pullDownRefresh'];
 const ExtApiBlackListDom2 = [
     ...ExtApiBlackListX,
     'uni-createWebviewContext',
-    'uni-video',
 ];
 const ExtApiBlackList = [
     'uni-loadFontFace',
