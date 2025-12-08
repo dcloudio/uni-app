@@ -127,7 +127,7 @@ function initUniCloudEnv() {
                         spaceId: space.id,
                         clientSecret: space.clientSecret,
                         endpoint: space.apiEndpoint,
-                        failoverEndpoint: space.failoverEndpoint
+                        failoverEndpoint: space.failoverEndpoint,
                     };
                 case 'dcloud':
                     return {
@@ -135,7 +135,7 @@ function initUniCloudEnv() {
                         spaceName: space.name,
                         spaceId: space.id,
                         clientSecret: space.clientSecret,
-                        endpoint: space.apiEndpoint
+                        endpoint: space.apiEndpoint,
                     };
                 case 'alipay': {
                     return {
@@ -146,7 +146,7 @@ function initUniCloudEnv() {
                         accessKey: space.accessKey,
                         secretKey: space.secretKey,
                         endpoint: space.apiEndpoint,
-                        failoverEndpoint: space.failoverEndpoint
+                        failoverEndpoint: space.failoverEndpoint,
                     };
                 }
                 case 'tencent':
@@ -155,7 +155,7 @@ function initUniCloudEnv() {
                         provider: space.provider,
                         spaceName: space.name,
                         spaceId: space.id,
-                        failoverEndpoint: space.failoverEndpoint
+                        failoverEndpoint: space.failoverEndpoint,
                     };
                 }
             }
