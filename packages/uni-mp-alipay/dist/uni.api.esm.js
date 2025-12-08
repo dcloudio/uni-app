@@ -1,5 +1,5 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
-import { Emitter, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 import { injectHook } from 'vue';
 
@@ -1144,6 +1144,16 @@ const navigateTo$1 = () => {
     };
 };
 
+const getWindowInfo = {
+    returnValue: (fromRes, toRes) => {
+        addSafeAreaInsets(fromRes, toRes);
+        toRes = sortObject(extend(toRes, {
+            windowTop: 0,
+            windowBottom: 0,
+        }));
+    },
+};
+
 const onError = {
     args(fromArgs) {
         const app = getApp({ allowDefault: true }) || {};
@@ -1917,6 +1927,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getUserInfo: getUserInfo,
+  getWindowInfo: getWindowInfo,
   hideHomeButton: hideHomeButton,
   login: login,
   makePhoneCall: makePhoneCall,

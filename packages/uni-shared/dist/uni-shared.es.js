@@ -243,6 +243,7 @@ const UVUE_BUILT_IN_EASY_COMPONENTS = [
     'live-player',
     'live-pusher',
     'loading',
+    'web-view',
 ];
 function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
