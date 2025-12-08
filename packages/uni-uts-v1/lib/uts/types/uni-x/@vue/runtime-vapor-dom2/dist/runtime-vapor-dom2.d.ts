@@ -186,6 +186,8 @@ export declare const createVaporApp: CreateAppFunction<ParentNode, VaporSharedDa
 export declare const createVaporSSRApp: CreateAppFunction<ParentNode, VaporSharedDataComponent>;
 export declare const createApp: CreateAppFunction<ParentNode, VaporSharedDataComponent>;
 
+export declare function toUniNativeColor(value: string | number, defaultValue?: number): number | undefined;
+
 export declare function toSharedDataStyle(style: Map<string, unknown>, result?: Record<number, unknown>): Record<number, unknown>;
 
 export declare function createMountPage(appContext: AppContext): (pageComponent: ReturnType<typeof defineComponent> | VaporSharedDataComponent, pageProps: Record<string, any>, pageContainer?: Element$1) => ComponentPublicInstance;
