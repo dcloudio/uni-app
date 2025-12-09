@@ -295,6 +295,7 @@ const handleCompileResult = (
   result: CompileResult,
   pluginContext?: PluginContext
 ) => {
+  process.env.UNI_APP_UTS_CHANGED = 'true'
   if (pluginContext) {
     result.deps.forEach((dep) => {
       pluginContext.addWatchFile(dep)
