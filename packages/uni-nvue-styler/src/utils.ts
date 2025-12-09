@@ -12,6 +12,7 @@ export interface NormalizeOptions {
   type?: 'nvue' | 'uvue'
   platform?: typeof process.env.UNI_UTS_PLATFOR
   keepUnitPx?: boolean
+  keepVar?: boolean
 }
 
 export type Normalize = (

@@ -34,7 +34,7 @@ function createNormalizeLength({
         (isSafeAreaInset || envReg || isStatusBarHeight || isWindowPosition)
       ) {
         v = v.replace(/\s/g, '')
-        return { value: normalizeCssVar(v) }
+        return { value: normalizeCssVar(v, options.keepVar) }
       }
     }
 
