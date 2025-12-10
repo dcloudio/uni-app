@@ -21029,6 +21029,7 @@ function processDefineOptions(ctx, node) {
   let emitsOption = void 0;
   let exposeOption = void 0;
   let slotsOption = void 0;
+  let hasRootElementOption = void 0;
   if (ctx.optionsRuntimeDecl.type === "ObjectExpression") {
     for (const prop of ctx.optionsRuntimeDecl.properties) {
       if ((prop.type === "ObjectProperty" || prop.type === "ObjectMethod") && prop.key.type === "Identifier") {
@@ -21045,8 +21046,24 @@ function processDefineOptions(ctx, node) {
           case "slots":
             slotsOption = prop;
             break;
+          // fixed by uts
+          case "name":
+            if (prop.type === "ObjectProperty") {
+              if (prop.value.type === "StringLiteral") {
+                ctx.rootElementTagName = prop.value.value;
+              }
+            }
+            break;
+          case "rootElement":
+            hasRootElementOption = true;
+            break;
         }
       }
+    }
+  }
+  if (ctx.rootElementTagName) {
+    if (!hasRootElementOption) {
+      delete ctx.rootElementTagName;
     }
   }
   if (propsOption) {
@@ -21687,6 +21704,11 @@ let __temp${any}, __restore${any}
             console.warn(warning.message);
           }
         };
+      }
+      if (ctx.rootElementTagName) {
+        compilerOptions.rootElementTagName = ctx.rootElementTagName;
+      } else {
+        delete compilerOptions.rootElementTagName;
       }
       const { code, ast, preamble, tips, errors, helpers, map: map2 } = compileTemplate({
         filename,

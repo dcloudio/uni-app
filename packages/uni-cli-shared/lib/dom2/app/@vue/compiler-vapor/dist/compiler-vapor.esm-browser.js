@@ -24605,6 +24605,10 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
   let template = "";
   template += `<${tag}`;
   if (scopeId) template += ` ${scopeId}`;
+  const rootElementTagName = context.options.rootElementTagName;
+  if (rootElementTagName && singleRoot) {
+    template += ` custom-tag-name="${rootElementTagName}"`;
+  }
   const dynamicProps = [];
   if (propsResult[0]) {
     const [, dynamicArgs, expressions] = propsResult;
