@@ -20,14 +20,7 @@ const ProviderType = {
 }
 
 export default {
-  options: {
-    virtualHost: true
-  },
   props: {
-    style: {
-      type: String,
-      default: ''
-    },
     options: {
       type: [Object, Array],
       default () {
@@ -49,10 +42,6 @@ export default {
     loadnext: {
       type: [Boolean, String],
       default: false
-    },
-    adIntervals: {
-      type: [Number, String],
-      default: ''
     },
     urlCallback: {
       type: Object,
@@ -219,9 +208,7 @@ export default {
         }
       })
     },
-    _customFullscreen () {
-      this.customFullscreen = 'uni-ad-custom-fullscreen'
-    },
+
     _onwxchannelerror (e) {
       this._dispatchEvent(EventType.Error, e.detail || e)
     },
