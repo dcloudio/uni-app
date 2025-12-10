@@ -35206,22 +35206,26 @@ function transformComponentElement(node, propsResult, singleRoot, context, isDyn
   let { tag } = node;
   let asset = true;
   if (!dynamicComponent && !isCustomElement) {
-    const fromSetup = resolveSetupReference(tag, context);
-    if (fromSetup) {
-      tag = fromSetup;
-      asset = false;
-    }
-    const builtInTag = isBuiltInComponent(tag);
-    if (builtInTag) {
-      tag = builtInTag;
-      asset = false;
-    }
-    const dotIndex = tag.indexOf(".");
-    if (dotIndex > 0) {
-      const ns = resolveSetupReference(tag.slice(0, dotIndex), context);
-      if (ns) {
-        tag = ns + tag.slice(dotIndex);
+    const { isEasyComponent } = context.options;
+    const isEasyCom = isEasyComponent && isEasyComponent(tag);
+    if (!isEasyCom) {
+      const fromSetup = resolveSetupReference(tag, context);
+      if (fromSetup) {
+        tag = fromSetup;
         asset = false;
+      }
+      const builtInTag = isBuiltInComponent(tag);
+      if (builtInTag) {
+        tag = builtInTag;
+        asset = false;
+      }
+      const dotIndex = tag.indexOf(".");
+      if (dotIndex > 0) {
+        const ns = resolveSetupReference(tag.slice(0, dotIndex), context);
+        if (ns) {
+          tag = ns + tag.slice(dotIndex);
+          asset = false;
+        }
       }
     }
     if (asset) {

@@ -293,6 +293,8 @@ export function initPluginVueOptions(
       vueOptions.script.babelParserPlugins.push('decorators')
     }
     if (process.env.UNI_APP_X_DOM2 === 'true') {
+      ;(compilerOptions as any).isEasyComponent = (tag: string) =>
+        !!matchEasycom(tag)
       ;(vueOptions.script as any).extraOptions = (
         descriptor: SFCDescriptor
       ) => {
