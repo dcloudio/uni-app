@@ -8,6 +8,13 @@ export const ExtApiBlackListX = ['uni-pullDownRefresh']
 export const ExtApiBlackListDom2 = [
   ...ExtApiBlackListX,
   'uni-createWebviewContext',
+  // 临时屏蔽
+  'uni-chooseLocation',
+  'uni-modal',
+  'uni-picker',
+  'uni-previewImage',
+  'uni-showLoading',
+  'uni-verify',
 ]
 export const ExtApiBlackList = [
   'uni-loadFontFace',
