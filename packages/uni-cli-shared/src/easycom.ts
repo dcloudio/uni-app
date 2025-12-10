@@ -427,6 +427,10 @@ export function genResolveEasycomCode(
   code: string,
   name: string
 ) {
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    // dom2 模式下，为了性能，不再考虑优先级问题，如果开发者需要区别，可以手动导入为其他名称
+    return name
+  }
   if (!importDeclarations.includes(RESOLVE_EASYCOM_IMPORT_CODE)) {
     importDeclarations.push(RESOLVE_EASYCOM_IMPORT_CODE)
   }
