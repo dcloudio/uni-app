@@ -252,6 +252,13 @@ const ExtApiBlackListX = ['uni-pullDownRefresh'];
 const ExtApiBlackListDom2 = [
     ...ExtApiBlackListX,
     'uni-createWebviewContext',
+    // 临时屏蔽
+    'uni-chooseLocation',
+    'uni-modal',
+    'uni-picker',
+    'uni-previewImage',
+    'uni-showLoading',
+    'uni-verify',
 ];
 const ExtApiBlackList = [
     'uni-loadFontFace',
