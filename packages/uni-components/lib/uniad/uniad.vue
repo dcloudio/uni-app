@@ -1,5 +1,5 @@
 <template>
-  <view :class="[customFullscreen?'uni-ad-custom':'',customFullscreen]" :style="style" @click="onclick">
+  <view @click="onclick">
     <uniad-plugin
       class="uniad-plugin"
       :adpid="adpid"
@@ -8,7 +8,6 @@
       @close="_onmpclose"
       @error="_onmperror"
       @nextChannel="_onnextchannel"
-      @customFullscreen="_customFullscreen"
     />
     <!-- #ifdef MP-WEIXIN -->
     <ad-custom v-if="userwx" :unit-id="userUnitId" class="uni-ad-custom" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
@@ -35,9 +34,5 @@ export default {
 .uni-ad-custom-fullscreen {
   display: flex;
   height: 100vh;
-}
-.uniad-plugin {
-  display: flex;
-  flex: 1;
 }
 </style>
