@@ -165,6 +165,85 @@ var ExternalModulesX = [
 	}
 ];
 
+var ExternalModulesDom2 = [
+	{
+		type: "extapi",
+		plugin: "uni-facialVerify",
+		apis: [
+			"startFacialRecognitionVerify",
+			"getFacialRecognitionMetaInfo"
+		]
+	},
+	{
+		type: "provider",
+		plugin: "uni-location-system",
+		provider: "system",
+		service: "location"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-map-tencent",
+		apis: [
+			"createMapContext"
+		]
+	},
+	{
+		type: "provider",
+		plugin: "uni-oauth-huawei",
+		provider: "huawei",
+		service: "oauth"
+	},
+	{
+		type: "provider",
+		plugin: "uni-oauth-weixin",
+		provider: "weixin",
+		service: "oauth"
+	},
+	{
+		type: "provider",
+		plugin: "uni-payment-alipay",
+		provider: "alipay",
+		service: "payment"
+	},
+	{
+		type: "provider",
+		plugin: "uni-payment-huawei",
+		provider: "huawei",
+		service: "payment"
+	},
+	{
+		type: "provider",
+		plugin: "uni-payment-wxpay",
+		provider: "wxpay",
+		service: "payment"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-push",
+		apis: [
+			"getPushClientId",
+			"onPushMessage",
+			"offPushMessage",
+			"createPushMessage",
+			"setAppBadgeNumber"
+		]
+	},
+	{
+		type: "provider",
+		plugin: "uni-share-weixin",
+		provider: "weixin",
+		service: "share"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-verify",
+		apis: [
+			"getUniverifyManager",
+			"getUniVerifyManager"
+		]
+	}
+];
+
 // type ExternalModuleSubType = 'customElements' | 'components' | 'pages' | 'utssdk'
 // TODO 未来component类型的provider需要重构，比如uni-map-tencent需要依赖内置基础模块uni-map，先基于现状实现。
 const ComponentsWithProvider = [];
@@ -209,7 +288,13 @@ async function buildWorkers() {
 }
 
 const isX = process.env.UNI_APP_X === 'true';
-const StandaloneExtApis = isX ? ExternalModulesX : ExternalModules;
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true';
+// TODO next仓库只需要设置一个external modules列表，apis由框架编译步骤同步过来
+const StandaloneExtApis = isDom2
+    ? ExternalModulesDom2
+    : isX
+        ? ExternalModulesX
+        : ExternalModules;
 const Providers = StandaloneExtApis.filter((item) => item.type === 'provider');
 const ComponentWithProviderList = isX
     ? ComponentsWithProviderX
