@@ -218,6 +218,16 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
     // 处理资源文件
     if (DEFAULT_ASSETS_RE.test(filename)) {
       debugChunk('common/assets', normalizedId)
+      const { subPackages } = getSubPackages()
+      if (subPackages.length) {
+        const relativePath = normalizePath(path.relative(inputDir, filename))
+        const subPackageRoot = subPackages.find((subPackage) =>
+          relativePath.startsWith(subPackage)
+        )
+        if (subPackageRoot) {
+          return subPackageRoot + 'common/assets'
+        }
+      }
       return 'common/assets'
     }
     // 处理项目内的js,ts文件
