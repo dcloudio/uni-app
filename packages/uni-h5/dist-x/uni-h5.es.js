@@ -9603,9 +9603,10 @@ function setupPage(comp) {
           }
         }
       });
-      subscribeViewMethod(pageMeta.id);
+      const pageId = getPageProxyId(instance2.proxy);
+      subscribeViewMethod(pageId);
       onBeforeUnmount(() => {
-        unsubscribeViewMethod(pageMeta.id);
+        unsubscribeViewMethod(pageId);
         {
           if (instance2.subTree.el) {
             instance2.subTree.el._page = null;
@@ -19479,6 +19480,7 @@ function removeSubscribe(name, pageId) {
 function useSubscribe(callback, name, multiple, pageId) {
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
+  pageId = pageId == null ? useCurrentPageId() : pageId;
   onMounted(() => {
     addSubscribe(name || normalizeEvent(vm), callback, pageId);
     if (multiple || !name) {

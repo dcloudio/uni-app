@@ -76,9 +76,9 @@ describe('compiler: transform v-slot', () => {
 
     assert(
       `<custom><template v-slot:default="slotProps"><view>{{ slotProps.item }}</view></template></custom>`,
-      `<custom u-s="{{['d']}}" style="{{'--status-bar-height:' + b}}" u-i="2a9ec0b0-0"><view wx:for="{{a}}" wx:for-item="slotProps" wx:key="b" slot="{{slotProps.c}}" style="overflow: visible"><view>{{slotProps.a}}</view></view></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view wx:for="{{a}}" wx:for-item="slotProps" wx:key="b" slot="{{slotProps.c}}" style="overflow: visible"><view>{{slotProps.a}}</view></view></custom>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _w((slotProps, s0, i0) => { return { a: _t(slotProps.item), b: i0, c: s0 }; }, { name: 'd', path: 'a', vueId: '2a9ec0b0-0' }), b: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: _w((slotProps, s0, i0) => { return { a: _t(slotProps.item), b: i0, c: s0 }; }, { name: 'd', path: 'a', vueId: '2a9ec0b0-0' }) }
   return __returned__
 }`,
       {

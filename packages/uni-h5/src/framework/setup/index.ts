@@ -59,6 +59,7 @@ import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { isDialogPageInstance } from '../../x/framework/helpers/utils'
 import { useBackgroundColorContent } from '../../x/framework/setup/page'
 //#endif
+import { getPageProxyId } from '@dcloudio/uni-core'
 
 interface SetupComponentOptions {
   clone?: boolean
@@ -205,9 +206,10 @@ export function setupPage(comp: any) {
         }
       })
 
-      subscribeViewMethod(pageMeta.id!)
+      const pageId = getPageProxyId(instance.proxy!)
+      subscribeViewMethod(pageId)
       onBeforeUnmount(() => {
-        unsubscribeViewMethod(pageMeta.id!)
+        unsubscribeViewMethod(pageId)
         if (__X__) {
           if (instance.subTree.el) {
             instance.subTree.el._page = null

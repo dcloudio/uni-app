@@ -19,7 +19,14 @@ const ProviderType = {
 }
 
 export default {
+  options: {
+    virtualHost: true
+  },
   props: {
+    style: {
+      type: String,
+      default: ''
+    },
     options: {
       type: [Object, Array],
       default () {
@@ -206,7 +213,9 @@ export default {
         }
       })
     },
-
+    _customFullscreen () {
+      this.customFullscreen = 'uni-ad-custom-fullscreen'
+    },
     _onwxchannelerror(e) {
       this._dispatchEvent(EventType.Error, e.detail || e)
     },
