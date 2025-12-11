@@ -252,7 +252,7 @@ onReady(() => {
 })
 
 // onLoad 生命周期
-onLoad((options: any) => {
+onLoad((options) => {
   /**
    * show modal 不需要对内置文案进行i18n适配。（参考微信）
    */
@@ -355,7 +355,7 @@ onUnload(() => {
 })
 
 // onBackPress 生命周期
-onBackPress((_: any): boolean | null => {
+onBackPress((_): boolean | null => {
   let ret = {
     cancel: false,
     confirm: false,
