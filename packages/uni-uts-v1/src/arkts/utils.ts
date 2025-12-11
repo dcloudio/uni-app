@@ -344,10 +344,15 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
     )
   }
 
-  const externalModuleExportsPath = isX
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const externalModuleExportsPath = isDom2
+    ? '../../lib/arkts/external-module-exports-dom2.json'
+    : isX
     ? '../../lib/arkts/external-module-exports-x.json'
     : '../../lib/arkts/external-module-exports.json'
-  const internalModuleExportsPath = isX
+  const internalModuleExportsPath = isDom2
+    ? '../../lib/arkts/internal-module-exports-dom2.json'
+    : isX
     ? '../../lib/arkts/internal-module-exports-x.json'
     : '../../lib/arkts/internal-module-exports.json'
   /**
