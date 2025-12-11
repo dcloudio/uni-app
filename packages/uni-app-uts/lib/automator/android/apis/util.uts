@@ -220,8 +220,7 @@ export function getValidComponentsOrNodes(
       })
     } else {
       list.push({
-        // @ts-expect-error
-        elementId: (vnode.el as UniElementImpl).__id,
+        elementId: (vnode.el as UniElementImpl).getNodeId(),
         tagName: vnode.el!.tagName,
       })
     }
