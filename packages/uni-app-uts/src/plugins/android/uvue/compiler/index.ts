@@ -7,6 +7,7 @@ import {
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
   matchEasycom,
+  transformLineBreak,
   transformTapToClick,
 } from '@dcloudio/uni-cli-shared'
 import { initRuntimeHelpersOnce } from './runtimeHelpers'
@@ -75,6 +76,7 @@ export function getBaseTransformPreset(
       transformObjectExpression,
       transformElements,
       transformStyle,
+      transformLineBreak,
     ] as any,
     {
       on: transformOn,

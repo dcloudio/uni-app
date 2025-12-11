@@ -19,6 +19,7 @@ import {
   normalizePath,
   parseUTSComponent,
   removePlugins,
+  transformLineBreak,
   transformTapToClick,
   transformUTSComponent,
 } from '@dcloudio/uni-cli-shared'
@@ -87,20 +88,7 @@ export function createUniOptions(
               transformTapToClick,
               transformUTSComponent,
               // TODO 合并复用安卓插件逻辑
-              function (node, context) {
-                if (node.type === 2) {
-                  const parent = context.parent
-                  if (parent && parent.type === 1 && parent.tag === 'text') {
-                    // 解析文本节点转义，暂时仅处理换行
-                    node.content = node.content.replace(
-                      /[\\]+n/g,
-                      function (match) {
-                        return JSON.parse(`"${match}"`)
-                      }
-                    )
-                  }
-                }
-              },
+              transformLineBreak,
               (node) => {
                 // 收集可能的 extApiComponents
                 if (
