@@ -9876,7 +9876,7 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("uni-page-refresh", null, [
     createElementVNode("div", {
       style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
@@ -9906,7 +9906,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$3]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$1]]);
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -27369,23 +27369,28 @@ const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
   !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };
-const onLoad = /* @__PURE__ */ createLifeCycleHook(
+const onLoad$1 = /* @__PURE__ */ createLifeCycleHook(
   ON_LOAD,
   2
   /* HookFlags.PAGE */
 );
-const onReady = /* @__PURE__ */ createLifeCycleHook(
+const onReady$1 = /* @__PURE__ */ createLifeCycleHook(
   ON_READY,
   2
   /* HookFlags.PAGE */
 );
-const onUnload = /* @__PURE__ */ createLifeCycleHook(
+const onUnload$1 = /* @__PURE__ */ createLifeCycleHook(
   ON_UNLOAD,
   2
   /* HookFlags.PAGE */
 );
 const onResize = /* @__PURE__ */ createLifeCycleHook(
   ON_RESIZE,
+  2
+  /* HookFlags.PAGE */
+);
+const onBackPress$1 = /* @__PURE__ */ createLifeCycleHook(
+  ON_BACK_PRESS,
   2
   /* HookFlags.PAGE */
 );
@@ -27649,7 +27654,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
         theme.value = appTheme.value;
       }
     };
-    onLoad((options) => {
+    onLoad$1((options) => {
       readyEventName.value = options["readyEventName"];
       optionsEventName.value = options["optionsEventName"];
       successEventName.value = options["successEventName"];
@@ -27799,7 +27804,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     const hoverClass = computed(() => {
       return theme.value == "dark" ? "uni-action-sheet_dialog__hover__dark__mode" : "uni-action-sheet_dialog__hover";
     });
-    onReady(() => {
+    onReady$1(() => {
       bottomNavigationHeight.value = uniPageInstance.safeAreaInsets.bottom;
       setTimeout(() => {
         show.value = true;
@@ -27809,7 +27814,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
       const systemInfo = uni.getSystemInfoSync();
       isLandscape2.value = systemInfo.deviceOrientation == "landscape";
     });
-    onUnload(() => {
+    onUnload$1(() => {
       if (!menuItemClicked.value && !cancelButtonClicked.value) {
         uni.$emit(failEventName.value, {});
       }
@@ -28984,7 +28989,7 @@ uni-image > .uni-image-will-change {\r
 \r
 \r
 `;
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_map = __syscom_0;
   const _component_text = __syscom_1$1;
   const _component_view = __syscom_2;
@@ -29252,7 +29257,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
   }, 8, ["class"]);
 }
-const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$2]]]);
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render], ["styles", [_style_0$2]]]);
 class ChooseLocationFailImpl extends UniError {
   constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
     super();
@@ -29315,374 +29320,368 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const _sfc_main$1 = {
-  data() {
-    return {
-      theme: "light",
-      language: "zh-Hans",
-      i18nCancelText: {
-        en: "Cancel",
-        es: "Cancelar",
-        fr: "Annuler",
-        "zh-Hans": "取消",
-        "zh-Hant": "取消"
-      },
-      i18nConfirmText: {
-        en: "OK",
-        es: "Confirmar",
-        fr: "Confirmer",
-        "zh-Hans": "确定",
-        "zh-Hant": "確定"
-      },
-      readyEventName: "",
-      optionsEventName: "",
-      successEventName: "",
-      failEventName: "",
-      title: "",
-      content: "",
-      showCancel: true,
-      editable: false,
-      placeholderText: null,
-      inputConfirmText: null,
-      inputCancelText: null,
-      cancelColor: "#000000",
-      confirmColor: "#4A5E86",
-      inputBottom: "0px",
-      maxScrollHeight: "192px",
-      inputCancelColor: null,
-      inputConfirmColor: null,
-      hoverClassName: "uni-modal_dialog__content__bottom__button__hover",
-      showAnim: false,
-      isAutoHeight: true
+const _sfc_main$1 = /* @__PURE__ */ defineComponent({
+  __name: "uniModal",
+  setup(__props) {
+    const theme = ref("light");
+    const language = ref("zh-Hans");
+    const i18nCancelText = {
+      en: "Cancel",
+      es: "Cancelar",
+      fr: "Annuler",
+      "zh-Hans": "取消",
+      "zh-Hant": "取消"
     };
-  },
-  onReady() {
-    setTimeout(() => {
-      this.showAnim = true;
-    }, 10);
-  },
-  computed: {
-    cancelText() {
-      if (this.inputCancelText != null) {
-        const res = this.inputCancelText;
+    const i18nConfirmText = {
+      en: "OK",
+      es: "Confirmar",
+      fr: "Confirmer",
+      "zh-Hans": "确定",
+      "zh-Hant": "確定"
+    };
+    const readyEventName = ref("");
+    const optionsEventName = ref("");
+    const successEventName = ref("");
+    const failEventName = ref("");
+    const title = ref("");
+    const content = ref("");
+    const showCancel = ref(true);
+    const editable = ref(false);
+    const placeholderText = ref(null);
+    const inputConfirmText = ref(null);
+    const inputCancelText = ref(null);
+    const cancelColor = ref("#000000");
+    const confirmColor = ref("#4A5E86");
+    const inputBottom = ref("0px");
+    const maxScrollHeight = ref("192px");
+    const inputCancelColor = ref(null);
+    const inputConfirmColor = ref(null);
+    const hoverClassName = ref("uni-modal_dialog__content__bottom__button__hover");
+    const showAnim = ref(false);
+    const isAutoHeight = ref(true);
+    const instance2 = getCurrentInstance();
+    const cancelText = computed(() => {
+      if (inputCancelText.value != null) {
+        const res = inputCancelText.value;
         return res;
       }
-      if (this.language.startsWith("en")) {
-        return this.i18nCancelText["en"];
+      if (language.value.startsWith("en")) {
+        return i18nCancelText["en"];
       }
-      if (this.language.startsWith("es")) {
-        return this.i18nCancelText["es"];
+      if (language.value.startsWith("es")) {
+        return i18nCancelText["es"];
       }
-      if (this.language.startsWith("fr")) {
-        return this.i18nCancelText["fr"];
+      if (language.value.startsWith("fr")) {
+        return i18nCancelText["fr"];
       }
-      if (this.language.startsWith("zh-Hans")) {
-        return this.i18nCancelText["zh-Hans"];
+      if (language.value.startsWith("zh-Hans")) {
+        return i18nCancelText["zh-Hans"];
       }
-      if (this.language.startsWith("zh-Hant")) {
-        return this.i18nCancelText["zh-Hant"];
+      if (language.value.startsWith("zh-Hant")) {
+        return i18nCancelText["zh-Hant"];
       }
       return "取消";
-    },
-    confirmText() {
-      if (this.inputConfirmText != null) {
-        const res = this.inputConfirmText;
+    });
+    const confirmText = computed(() => {
+      if (inputConfirmText.value != null) {
+        const res = inputConfirmText.value;
         return res;
       }
-      if (this.language.startsWith("en")) {
-        return this.i18nConfirmText["en"];
+      if (language.value.startsWith("en")) {
+        return i18nConfirmText["en"];
       }
-      if (this.language.startsWith("es")) {
-        return this.i18nConfirmText["es"];
+      if (language.value.startsWith("es")) {
+        return i18nConfirmText["es"];
       }
-      if (this.language.startsWith("fr")) {
-        return this.i18nConfirmText["fr"];
+      if (language.value.startsWith("fr")) {
+        return i18nConfirmText["fr"];
       }
-      if (this.language.startsWith("zh-Hans")) {
-        return this.i18nConfirmText["zh-Hans"];
+      if (language.value.startsWith("zh-Hans")) {
+        return i18nConfirmText["zh-Hans"];
       }
-      if (this.language.startsWith("zh-Hant")) {
-        return this.i18nConfirmText["zh-Hant"];
+      if (language.value.startsWith("zh-Hant")) {
+        return i18nConfirmText["zh-Hant"];
       }
       return "确定";
-    }
-  },
-  onLoad(options) {
-    const systemInfo = uni.getSystemInfoSync();
-    const osLanguage = systemInfo.osLanguage;
-    const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55);
-    this.maxScrollHeight = scrollHeight + "px";
-    const appLanguage = systemInfo.appLanguage;
-    if (appLanguage != null) {
-      this.language = appLanguage;
-    } else if (osLanguage != null) {
-      this.language = osLanguage;
-    }
-    const hostTheme = systemInfo.hostTheme;
-    if (hostTheme != null) {
-      this.theme = hostTheme;
-      this.updateUI();
-    }
-    uni.onThemeChange((res) => {
-      this.theme = res.theme;
-      this.updateUI();
     });
-    const locale = uni.getLocale();
-    this.language = locale;
-    uni.onLocaleChange((res) => {
-      if (res.locale) {
-        this.language = res.locale;
-      }
-    });
-    this.readyEventName = options["readyEventName"];
-    this.optionsEventName = options["optionsEventName"];
-    this.successEventName = options["successEventName"];
-    this.failEventName = options["failEventName"];
-    uni.$on(this.optionsEventName, (data) => {
-      if (data["title"] != null) {
-        this.title = data["title"];
-      }
-      if (data["content"] != null) {
-        this.content = data["content"];
-      }
-      if (data["showCancel"] != null) {
-        this.showCancel = data["showCancel"];
-      }
-      if (data["editable"] != null) {
-        this.editable = data["editable"];
-      }
-      if (data["placeholderText"] != null) {
-        this.placeholderText = data["placeholderText"];
-      }
-      if (data["confirmText"] != null) {
-        this.inputConfirmText = data["confirmText"];
-      }
-      if (data["cancelText"] != null) {
-        this.inputCancelText = data["cancelText"];
-      }
-      if (data["confirmColor"] != null) {
-        this.inputConfirmColor = data["confirmColor"];
-      }
-      if (data["cancelColor"] != null) {
-        this.inputCancelColor = data["cancelColor"];
-      }
-      this.updateUI();
-    });
-    uni.$emit(this.readyEventName, {});
-  },
-  onUnload() {
-    uni.$off(this.optionsEventName, null);
-    uni.$off(this.readyEventName, null);
-    uni.$off(this.successEventName, null);
-    uni.$off(this.failEventName, null);
-  },
-  onBackPress(_) {
-    let ret = {
-      cancel: false,
-      confirm: false
-    };
-    uni.$emit(this.successEventName, JSON.stringify(ret));
-    return false;
-  },
-  methods: {
-    onInputBlur(e2) {
+    const onInputBlur = (e2) => {
       setTimeout(() => {
-        this.inputBottom = "0px";
+        inputBottom.value = "0px";
       }, 220);
-    },
-    onInputKeyboardChange(e2) {
+    };
+    const onInputKeyboardChange = (e2) => {
       let keyBoardHeight = e2.detail.height;
       if (keyBoardHeight > 0) {
         let calcBottom = keyBoardHeight / 2;
-        this.inputBottom = `${calcBottom}px`;
+        inputBottom.value = `${calcBottom}px`;
       }
-    },
-    isValidColor(inputColor) {
+    };
+    const isValidColor = (inputColor) => {
       const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
       if (inputColor == null) {
         return false;
       }
       return hexColorRegex.test(inputColor);
-    },
-    /**
-     * update ui when theme change.
-     */
-    updateUI() {
-      if (this.isValidColor(this.inputConfirmColor)) {
-        this.confirmColor = this.inputConfirmColor;
+    };
+    const updateUI = () => {
+      if (isValidColor(inputConfirmColor.value)) {
+        confirmColor.value = inputConfirmColor.value;
       } else {
-        if (this.theme == "dark") {
-          this.confirmColor = "#7388a2";
+        if (theme.value == "dark") {
+          confirmColor.value = "#7388a2";
         } else {
-          this.confirmColor = "#4A5E86";
+          confirmColor.value = "#4A5E86";
         }
       }
-      if (this.isValidColor(this.inputCancelColor)) {
-        this.cancelColor = this.inputCancelColor;
+      if (isValidColor(inputCancelColor.value)) {
+        cancelColor.value = inputCancelColor.value;
       } else {
-        if (this.theme == "dark") {
-          this.cancelColor = "#a5a5a5";
+        if (theme.value == "dark") {
+          cancelColor.value = "#a5a5a5";
         } else {
-          this.cancelColor = "#000000";
+          cancelColor.value = "#000000";
         }
       }
-      if (this.theme == "dark") {
-        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode";
+      if (theme.value == "dark") {
+        hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode";
       } else {
-        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover";
+        hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover";
       }
-    },
-    closeModal() {
-      this.showAnim = false;
+    };
+    const closeModal = () => {
+      showAnim.value = false;
       setTimeout(() => {
+        var _a;
         uni.closeDialogPage({
-          dialogPage: this.$page
+          dialogPage: (_a = instance2 == null ? void 0 : instance2.proxy) == null ? void 0 : _a.$page
         });
       }, 300);
-    },
-    handleCancel() {
-      this.closeModal();
+    };
+    const handleCancel = () => {
+      closeModal();
       let ret = {
         cancel: true,
         confirm: false
       };
-      uni.$emit(this.successEventName, JSON.stringify(ret));
-    },
-    handleSure() {
-      this.closeModal();
+      uni.$emit(successEventName.value, JSON.stringify(ret));
+    };
+    const handleSure = () => {
+      closeModal();
       let ret = {
         cancel: false,
         confirm: true,
-        content: this.editable ? this.content : null
+        content: editable.value ? content.value : null
       };
-      uni.$emit(this.successEventName, JSON.stringify(ret));
-    }
-  }
-};
-const _style_0$1 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0.5;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_text = __syscom_1$1;
-  const _component_textarea = __syscom_1;
-  const _component_scroll_view = __syscom_2$1;
-  const _component_view = __syscom_2;
-  return openBlock(), createBlock(_component_view, {
-    class: normalizeClass(["uni-modal_dialog__mask", { "uni-modal_dialog__mask__show": $data.showAnim }])
-  }, {
-    default: withCtx(() => [
-      createVNode(_component_view, {
-        class: normalizeClass(["uni-modal_dialog__container", { "uni-modal_dialog__show": $data.showAnim, "uni-modal_dark__mode": $data.theme == "dark" }]),
-        id: "modal_content",
-        style: normalizeStyle({ bottom: $data.inputBottom })
+      uni.$emit(successEventName.value, JSON.stringify(ret));
+    };
+    onReady(() => {
+      setTimeout(() => {
+        showAnim.value = true;
+      }, 10);
+    });
+    onLoad((options) => {
+      const systemInfo = uni.getSystemInfoSync();
+      const osLanguage = systemInfo.osLanguage;
+      const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55);
+      maxScrollHeight.value = scrollHeight + "px";
+      const appLanguage = systemInfo.appLanguage;
+      if (appLanguage != null) {
+        language.value = appLanguage;
+      } else if (osLanguage != null) {
+        language.value = osLanguage;
+      }
+      const hostTheme = systemInfo.hostTheme;
+      if (hostTheme != null) {
+        theme.value = hostTheme;
+        updateUI();
+      }
+      uni.onThemeChange((res) => {
+        theme.value = res.theme;
+        updateUI();
+      });
+      const locale = uni.getLocale();
+      language.value = locale;
+      uni.onLocaleChange((res) => {
+        if (res.locale) {
+          language.value = res.locale;
+        }
+      });
+      readyEventName.value = options["readyEventName"];
+      optionsEventName.value = options["optionsEventName"];
+      successEventName.value = options["successEventName"];
+      failEventName.value = options["failEventName"];
+      uni.$on(optionsEventName.value, (data) => {
+        if (data["title"] != null) {
+          title.value = data["title"];
+        }
+        if (data["content"] != null) {
+          content.value = data["content"];
+        }
+        if (data["showCancel"] != null) {
+          showCancel.value = data["showCancel"];
+        }
+        if (data["editable"] != null) {
+          editable.value = data["editable"];
+        }
+        if (data["placeholderText"] != null) {
+          placeholderText.value = data["placeholderText"];
+        }
+        if (data["confirmText"] != null) {
+          inputConfirmText.value = data["confirmText"];
+        }
+        if (data["cancelText"] != null) {
+          inputCancelText.value = data["cancelText"];
+        }
+        if (data["confirmColor"] != null) {
+          inputConfirmColor.value = data["confirmColor"];
+        }
+        if (data["cancelColor"] != null) {
+          inputCancelColor.value = data["cancelColor"];
+        }
+        updateUI();
+      });
+      uni.$emit(readyEventName.value, {});
+    });
+    onUnload(() => {
+      uni.$off(optionsEventName.value, null);
+      uni.$off(readyEventName.value, null);
+      uni.$off(successEventName.value, null);
+      uni.$off(failEventName.value, null);
+    });
+    onBackPress((_) => {
+      let ret = {
+        cancel: false,
+        confirm: false
+      };
+      uni.$emit(successEventName.value, JSON.stringify(ret));
+      return false;
+    });
+    return (_ctx, _cache) => {
+      const _component_text = __syscom_1$1;
+      const _component_textarea = __syscom_1;
+      const _component_scroll_view = __syscom_2$1;
+      const _component_view = __syscom_2;
+      return openBlock(), createBlock(_component_view, {
+        class: normalizeClass(["uni-modal_dialog__mask", { "uni-modal_dialog__mask__show": showAnim.value }])
       }, {
         default: withCtx(() => [
           createVNode(_component_view, {
-            class: normalizeClass(["uni-modal_dialog__container__wrapper", { "uni-modal_dark__mode": $data.theme == "dark" }])
+            class: normalizeClass(["uni-modal_dialog__container", { "uni-modal_dialog__show": showAnim.value, "uni-modal_dark__mode": theme.value == "dark" }]),
+            id: "modal_content",
+            style: normalizeStyle({ bottom: inputBottom.value })
           }, {
             default: withCtx(() => [
-              $data.title ? (openBlock(), createBlock(_component_text, {
-                key: 0,
-                class: normalizeClass(["uni-modal_dialog__title__text", { "uni-modal_dark__mode": $data.theme == "dark" }])
+              createVNode(_component_view, {
+                class: normalizeClass(["uni-modal_dialog__container__wrapper", { "uni-modal_dark__mode": theme.value == "dark" }])
               }, {
                 default: withCtx(() => [
-                  createTextVNode(toDisplayString($data.title), 1)
-                ]),
-                _: 1
-              }, 8, ["class"])) : createCommentVNode("", true),
-              createVNode(_component_view, { class: "uni-modal_dialog__content" }, {
-                default: withCtx(() => [
-                  $data.editable ? (openBlock(), createBlock(_component_textarea, {
+                  title.value ? (openBlock(), createBlock(_component_text, {
                     key: 0,
-                    modelValue: $data.content,
-                    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.content = $event),
-                    class: normalizeClass(["uni-modal_dialog__content__textarea", { "uni-modal_dark__mode": $data.theme == "dark" }]),
-                    "placeholder-class": "modalContent_content_edit_placeholder",
-                    "adjust-position": false,
-                    onBlur: $options.onInputBlur,
-                    onKeyboardheightchange: $options.onInputKeyboardChange,
-                    id: "textarea_content_input",
-                    ref: "ref_textarea_content_input",
-                    "auto-height": $data.isAutoHeight,
-                    placeholder: $data.placeholderText
-                  }, null, 8, ["modelValue", "class", "onBlur", "onKeyboardheightchange", "auto-height", "placeholder"])) : createCommentVNode("", true),
-                  !$data.editable && $data.content.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
-                    key: 1,
-                    class: "uni-modal_dialog__content__scrollview",
-                    "show-scrollbar": "true",
-                    style: normalizeStyle({ maxHeight: $data.maxScrollHeight })
+                    class: normalizeClass(["uni-modal_dialog__title__text", { "uni-modal_dark__mode": theme.value == "dark" }])
                   }, {
                     default: withCtx(() => [
-                      createVNode(_component_text, { class: "uni-modal_dialog__content__scrollview__text" }, {
-                        default: withCtx(() => [
-                          createTextVNode(toDisplayString($data.content), 1)
-                        ]),
-                        _: 1
-                      })
+                      createTextVNode(toDisplayString(title.value), 1)
                     ]),
                     _: 1
-                  }, 8, ["style"])) : createCommentVNode("", true)
-                ]),
-                _: 1
-              }),
-              createVNode(_component_view, {
-                class: normalizeClass(["uni-modal_dialog__content__topline", { "uni-modal_dark__mode": $data.theme == "dark" }])
-              }, null, 8, ["class"]),
-              createVNode(_component_view, { class: "uni-modal_dialog__content__bottom" }, {
-                default: withCtx(() => [
-                  $data.showCancel ? (openBlock(), createBlock(_component_view, {
-                    key: 0,
-                    class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": $data.theme == "dark" }]),
-                    "hover-class": $data.hoverClassName,
-                    onClick: $options.handleCancel
-                  }, {
+                  }, 8, ["class"])) : createCommentVNode("", true),
+                  createVNode(_component_view, { class: "uni-modal_dialog__content" }, {
                     default: withCtx(() => [
-                      createVNode(_component_text, {
-                        style: normalizeStyle({ color: $data.cancelColor }),
-                        class: "uni-modal_dialog__content__bottom__button__text"
+                      editable.value ? (openBlock(), createBlock(_component_textarea, {
+                        key: 0,
+                        modelValue: content.value,
+                        "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => content.value = $event),
+                        class: normalizeClass(["uni-modal_dialog__content__textarea", { "uni-modal_dark__mode": theme.value == "dark" }]),
+                        "placeholder-class": "modalContent_content_edit_placeholder",
+                        "adjust-position": false,
+                        onBlur: onInputBlur,
+                        onKeyboardheightchange: onInputKeyboardChange,
+                        id: "textarea_content_input",
+                        ref: "ref_textarea_content_input",
+                        "auto-height": isAutoHeight.value,
+                        placeholder: placeholderText.value
+                      }, null, 8, ["modelValue", "class", "auto-height", "placeholder"])) : createCommentVNode("", true),
+                      !editable.value && content.value.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
+                        key: 1,
+                        class: "uni-modal_dialog__content__scrollview",
+                        "show-scrollbar": "true",
+                        style: normalizeStyle({ maxHeight: maxScrollHeight.value })
                       }, {
                         default: withCtx(() => [
-                          createTextVNode(toDisplayString($options.cancelText), 1)
+                          createVNode(_component_text, { class: "uni-modal_dialog__content__scrollview__text" }, {
+                            default: withCtx(() => [
+                              createTextVNode(toDisplayString(content.value), 1)
+                            ]),
+                            _: 1
+                          })
                         ]),
                         _: 1
-                      }, 8, ["style"])
+                      }, 8, ["style"])) : createCommentVNode("", true)
                     ]),
                     _: 1
-                  }, 8, ["class", "hover-class", "onClick"])) : createCommentVNode("", true),
-                  $data.showCancel ? (openBlock(), createBlock(_component_view, {
-                    key: 1,
-                    class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", { "uni-modal_dark__mode": $data.theme == "dark" }])
-                  }, null, 8, ["class"])) : createCommentVNode("", true),
+                  }),
                   createVNode(_component_view, {
-                    class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": $data.theme == "dark" }]),
-                    "hover-class": $data.hoverClassName,
-                    onClick: $options.handleSure
-                  }, {
+                    class: normalizeClass(["uni-modal_dialog__content__topline", { "uni-modal_dark__mode": theme.value == "dark" }])
+                  }, null, 8, ["class"]),
+                  createVNode(_component_view, { class: "uni-modal_dialog__content__bottom" }, {
                     default: withCtx(() => [
-                      createVNode(_component_text, {
-                        style: normalizeStyle({ color: $data.confirmColor }),
-                        class: "uni-modal_dialog__content__bottom__button__text__sure"
+                      showCancel.value ? (openBlock(), createBlock(_component_view, {
+                        key: 0,
+                        class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": theme.value == "dark" }]),
+                        "hover-class": hoverClassName.value,
+                        onClick: handleCancel
                       }, {
                         default: withCtx(() => [
-                          createTextVNode(toDisplayString($options.confirmText), 1)
+                          createVNode(_component_text, {
+                            style: normalizeStyle({ color: cancelColor.value }),
+                            class: "uni-modal_dialog__content__bottom__button__text"
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode(toDisplayString(cancelText.value), 1)
+                            ]),
+                            _: 1
+                          }, 8, ["style"])
                         ]),
                         _: 1
-                      }, 8, ["style"])
+                      }, 8, ["class", "hover-class"])) : createCommentVNode("", true),
+                      showCancel.value ? (openBlock(), createBlock(_component_view, {
+                        key: 1,
+                        class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", { "uni-modal_dark__mode": theme.value == "dark" }])
+                      }, null, 8, ["class"])) : createCommentVNode("", true),
+                      createVNode(_component_view, {
+                        class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": theme.value == "dark" }]),
+                        "hover-class": hoverClassName.value,
+                        onClick: handleSure
+                      }, {
+                        default: withCtx(() => [
+                          createVNode(_component_text, {
+                            style: normalizeStyle({ color: confirmColor.value }),
+                            class: "uni-modal_dialog__content__bottom__button__text__sure"
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode(toDisplayString(confirmText.value), 1)
+                            ]),
+                            _: 1
+                          }, 8, ["style"])
+                        ]),
+                        _: 1
+                      }, 8, ["class", "hover-class"])
                     ]),
                     _: 1
-                  }, 8, ["class", "hover-class", "onClick"])
+                  })
                 ]),
                 _: 1
-              })
+              }, 8, ["class"])
             ]),
             _: 1
-          }, 8, ["class"])
+          }, 8, ["style", "class"])
         ]),
         _: 1
-      }, 8, ["style", "class"])
-    ]),
-    _: 1
-  }, 8, ["class"]);
-}
-const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
+      }, 8, ["class"]);
+    };
+  }
+});
+const _style_0$1 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0.5;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
+const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
 class ShowModalFailImpl extends UniError {
   constructor(errMsg = "showModal:fail cancel", errCode = 4) {
     super();
@@ -29835,77 +29834,75 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const _sfc_main = {
-  data() {
-    return {
-      readyEventName: "",
-      optionsEventName: "",
-      successEventName: "",
-      failEventName: "",
-      title: "",
-      showAnim: false
-    };
-  },
-  onReady() {
-    setTimeout(() => {
-      this.showAnim = true;
-    }, 10);
-  },
-  onLoad(options) {
-    this.readyEventName = options["readyEventName"];
-    this.optionsEventName = options["optionsEventName"];
-    this.successEventName = options["successEventName"];
-    this.failEventName = options["failEventName"];
-    uni.$on(this.optionsEventName, (data) => {
-      if (data["title"] != null) {
-        this.title = data["title"];
-      }
+const _sfc_main = /* @__PURE__ */ defineComponent({
+  __name: "showLoading",
+  setup(__props) {
+    const readyEventName = ref("");
+    const optionsEventName = ref("");
+    const successEventName = ref("");
+    const failEventName = ref("");
+    const title = ref("");
+    const showAnim = ref(false);
+    onReady$1(() => {
+      setTimeout(() => {
+        showAnim.value = true;
+      }, 10);
     });
-    uni.$emit(this.readyEventName, {});
-    uni.$emit(this.successEventName, "");
-  },
-  onUnload() {
-    uni.$off(this.optionsEventName, null);
-    uni.$off(this.readyEventName, null);
-    uni.$off(this.successEventName, null);
-    uni.$off(this.failEventName, null);
-  },
-  onBackPress(_) {
-    return true;
-  },
-  methods: {}
-};
-const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n\n	\n";
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_loading = _sfc_main$4;
-  const _component_text = __syscom_1$1;
-  const _component_view = __syscom_2;
-  return openBlock(), createBlock(_component_view, {
-    class: normalizeClass(["uni-loading_dialog__mask", { "uni-loading_dialog__mask__show": $data.showAnim }])
-  }, {
-    default: withCtx(() => [
-      createVNode(_component_view, {
-        class: normalizeClass(["uni-loading_dialog__container", { "uni-loading_dialog__show": $data.showAnim }])
+    onLoad$1((options) => {
+      readyEventName.value = options["readyEventName"];
+      optionsEventName.value = options["optionsEventName"];
+      successEventName.value = options["successEventName"];
+      failEventName.value = options["failEventName"];
+      uni.$on(optionsEventName.value, (data) => {
+        if (data["title"] != null) {
+          title.value = data["title"];
+        }
+      });
+      uni.$emit(readyEventName.value, {});
+      uni.$emit(successEventName.value, "");
+    });
+    onUnload$1(() => {
+      uni.$off(optionsEventName.value, null);
+      uni.$off(readyEventName.value, null);
+      uni.$off(successEventName.value, null);
+      uni.$off(failEventName.value, null);
+    });
+    onBackPress$1((_) => {
+      return true;
+    });
+    return (_ctx, _cache) => {
+      const _component_loading = _sfc_main$4;
+      const _component_text = __syscom_1$1;
+      const _component_view = __syscom_2;
+      return openBlock(), createBlock(_component_view, {
+        class: normalizeClass(["uni-loading_dialog__mask", { "uni-loading_dialog__mask__show": showAnim.value }])
       }, {
         default: withCtx(() => [
-          createVNode(_component_loading, { class: "uni-loading_dialog__container__loading" }),
-          $data.title ? (openBlock(), createBlock(_component_text, {
-            key: 0,
-            class: "uni-loading_dialog__container__title"
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-loading_dialog__container", { "uni-loading_dialog__show": showAnim.value }])
           }, {
             default: withCtx(() => [
-              createTextVNode(toDisplayString($data.title), 1)
+              createVNode(_component_loading, { class: "uni-loading_dialog__container__loading" }),
+              title.value ? (openBlock(), createBlock(_component_text, {
+                key: 0,
+                class: "uni-loading_dialog__container__title"
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString(title.value), 1)
+                ]),
+                _: 1
+              })) : createCommentVNode("", true)
             ]),
             _: 1
-          })) : createCommentVNode("", true)
+          }, 8, ["class"])
         ]),
         _: 1
-      }, 8, ["class"])
-    ]),
-    _: 1
-  }, 8, ["class"]);
-}
-const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
+      }, 8, ["class"]);
+    };
+  }
+});
+const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n\n	\n";
+const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["styles", [_style_0]]]);
 class ShowLoadingFailImpl extends UniError {
   constructor(errMsg = "showLoading:fail cancel", errCode = 4) {
     super();

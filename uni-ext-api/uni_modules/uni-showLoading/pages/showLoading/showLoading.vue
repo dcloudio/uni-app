@@ -8,59 +8,50 @@
 		</view>
 	</view>
 </template>
-<script lang='ts'>
+<script setup lang='ts'>
+	import { ref, type Ref } from 'vue'
+	import { onLoad, onReady, onUnload, onBackPress } from '@dcloudio/uni-app'
 
-	export default {
-		data() {
-			return {
-				readyEventName: '',
-				optionsEventName: '',
-				successEventName: '',
-				failEventName: '',
-				title: '',
-				showAnim: false,
+	const readyEventName: Ref<string> = ref('')
+	const optionsEventName: Ref<string> = ref('')
+	const successEventName: Ref<string> = ref('')
+	const failEventName: Ref<string> = ref('')
+	const title: Ref<string> = ref('')
+	const showAnim: Ref<boolean> = ref(false)
+
+	onReady(() => {
+		setTimeout(() => {
+			showAnim.value = true
+		}, 10)
+	})
+
+	onLoad((options) => {
+		readyEventName.value = options['readyEventName'] !
+		optionsEventName.value = options['optionsEventName'] !
+		successEventName.value = options['successEventName'] !
+		failEventName.value = options['failEventName'] !
+
+		uni.$on(optionsEventName.value, (data: UTSJSONObject) => {
+			if (data['title'] != null) {
+				title.value = data['title'] as string
 			}
-		},
+		})
 
-		onReady() {
-			setTimeout(() => {
-				this.showAnim = true
-			}, 10)
+		uni.$emit(readyEventName.value, {})
+		uni.$emit(successEventName.value, "")
+	})
 
-		},
-		onLoad(options) {
+	onUnload(() => {
+		uni.$off(optionsEventName.value, null)
+		uni.$off(readyEventName.value, null)
+		uni.$off(successEventName.value, null)
+		uni.$off(failEventName.value, null)
+	})
 
-			this.readyEventName = options['readyEventName'] !
-			this.optionsEventName = options['optionsEventName'] !
-			this.successEventName = options['successEventName'] !
-			this.failEventName = options['failEventName'] !
-
-			uni.$on(this.optionsEventName, (data: UTSJSONObject) => {
-				if (data['title'] != null) {
-					this.title = data['title'] as string
-				}
-			})
-
-			uni.$emit(this.readyEventName, {})
-			uni.$emit(this.successEventName,"")
-		},
-
-		onUnload() {
-			uni.$off(this.optionsEventName, null)
-			uni.$off(this.readyEventName, null)
-			uni.$off(this.successEventName, null)
-			uni.$off(this.failEventName, null)
-		},
-
-		onBackPress(_):boolean|null {
-			// 不可被回退关闭
-			return true
-		},
-
-		methods: {
-			
-		}
-	}
+	onBackPress((_) => {
+		// 不可被回退关闭
+		return true
+	})
 </script>
 <style>
 

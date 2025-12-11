@@ -64,314 +64,305 @@
 		</view>
 	</view>
 </template>
-<script lang='ts'>
+<script setup lang='ts'>
+import { ref, computed, getCurrentInstance } from 'vue'
 
-	export default {
-		data() {
-			return {
-				theme: 'light',
-				language: 'zh-Hans',
-				i18nCancelText: {
-				  en: 'Cancel',
-				  es: 'Cancelar',
-				  fr: 'Annuler',
-				  'zh-Hans': '取消',
-				  'zh-Hant': '取消',
-				},
-				i18nConfirmText: {
-				  en: 'OK',
-				  es: 'Confirmar',
-				  fr: 'Confirmer',
-				  'zh-Hans': '确定',
-				  'zh-Hant': '確定',
-				},
-				readyEventName: '',
-				optionsEventName: '',
-				successEventName: '',
-				failEventName: '',
-				title: '',
-				content: '',
-				showCancel: true,
-				editable: false,
-				placeholderText: null as string | null,
-				inputConfirmText: null as string | null,
-				inputCancelText: null as string | null,
-				cancelColor: '#000000',
-				confirmColor: '#4A5E86',
-				inputBottom: '0px',
-				maxScrollHeight: '192px',
-				inputCancelColor: null as string | null,
-				inputConfirmColor: null as string | null,
-				hoverClassName:"uni-modal_dialog__content__bottom__button__hover",
-				showAnim: false,
-				isAutoHeight:true,
-				// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-				appThemeChangeCallbackId: -1,
-				// #endif
+const theme = ref('light')
+const language = ref('zh-Hans')
+const i18nCancelText = {
+  en: 'Cancel',
+  es: 'Cancelar',
+  fr: 'Annuler',
+  'zh-Hans': '取消',
+  'zh-Hant': '取消',
+}
+const i18nConfirmText = {
+  en: 'OK',
+  es: 'Confirmar',
+  fr: 'Confirmer',
+  'zh-Hans': '确定',
+  'zh-Hant': '確定',
+}
+const readyEventName = ref('')
+const optionsEventName = ref('')
+const successEventName = ref('')
+const failEventName = ref('')
+const title = ref('')
+const content = ref('')
+const showCancel = ref(true)
+const editable = ref(false)
+const placeholderText = ref<string | null>(null)
+const inputConfirmText = ref<string | null>(null)
+const inputCancelText = ref<string | null>(null)
+const cancelColor = ref('#000000')
+const confirmColor = ref('#4A5E86')
+const inputBottom = ref('0px')
+const maxScrollHeight = ref('192px')
+const inputCancelColor = ref<string | null>(null)
+const inputConfirmColor = ref<string | null>(null)
+const hoverClassName = ref("uni-modal_dialog__content__bottom__button__hover")
+const showAnim = ref(false)
+const isAutoHeight = ref(true)
+// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+const appThemeChangeCallbackId = ref(-1)
+// #endif
 
-			}
-		},
+const instance = getCurrentInstance()
 
-		onReady() {
+const cancelText = computed((): string => {
+  if (inputCancelText.value != null) {
+    const res = inputCancelText.value!
+    return res
+  }
+  if (language.value.startsWith('en')) {
+    return i18nCancelText['en'] as string
+  }
+  if (language.value.startsWith('es')) {
+    return i18nCancelText['es'] as string
+  }
+  if (language.value.startsWith('fr')) {
+    return i18nCancelText['fr'] as string
+  }
+  if (language.value.startsWith('zh-Hans')) {
+    return i18nCancelText['zh-Hans'] as string
+  }
+  if (language.value.startsWith('zh-Hant')) {
+    return i18nCancelText['zh-Hant'] as string
+  }
+  return '取消'
+})
 
-			setTimeout(() => {
-				this.showAnim = true
-			}, 10)
+const confirmText = computed((): string => {
+  if (inputConfirmText.value != null) {
+    const res = inputConfirmText.value!
+    return res
+  }
+  if (language.value.startsWith('en')) {
+    return i18nConfirmText['en'] as string
+  }
+  if (language.value.startsWith('es')) {
+    return i18nConfirmText['es'] as string
+  }
+  if (language.value.startsWith('fr')) {
+    return i18nConfirmText['fr'] as string
+  }
+  if (language.value.startsWith('zh-Hans')) {
+    return i18nConfirmText['zh-Hans'] as string
+  }
+  if (language.value.startsWith('zh-Hant')) {
+    return i18nConfirmText['zh-Hant'] as string
+  }
+  return '确定'
+})
 
-		},
+const onInputBlur = (e: UniTextareaBlurEvent) => {
+  // 退出编辑状态
+  setTimeout(() => {
+    inputBottom.value = '0px'
+  }, 220)
+}
 
-		computed: {
-			cancelText(): string {
-			  if (this.inputCancelText != null) {
-				const res = this.inputCancelText!
-			    return res
-			  }
-			  if (this.language.startsWith('en')) {
-			    return this.i18nCancelText['en'] as string
-			  }
-			  if (this.language.startsWith('es')) {
-			    return this.i18nCancelText['es'] as string
-			  }
-			  if (this.language.startsWith('fr')) {
-			    return this.i18nCancelText['fr'] as string
-			  }
-			  if (this.language.startsWith('zh-Hans')) {
-			    return this.i18nCancelText['zh-Hans'] as string
-			  }
-			  if (this.language.startsWith('zh-Hant')) {
-			    return this.i18nCancelText['zh-Hant'] as string
-			  }
-			  return '取消'
-			},
-			confirmText(): string {
-			  if (this.inputConfirmText != null) {
-				const res = this.inputConfirmText!
-			    return res
-			  }
-			  if (this.language.startsWith('en')) {
-			    return this.i18nConfirmText['en'] as string
-			  }
-			  if (this.language.startsWith('es')) {
-			    return this.i18nConfirmText['es'] as string
-			  }
-			  if (this.language.startsWith('fr')) {
-			    return this.i18nConfirmText['fr'] as string
-			  }
-			  if (this.language.startsWith('zh-Hans')) {
-			    return this.i18nConfirmText['zh-Hans'] as string
-			  }
-			  if (this.language.startsWith('zh-Hant')) {
-			    return this.i18nConfirmText['zh-Hant'] as string
-			  }
-			  return '确定'
-			},
-		},
-		onLoad(options) {
+const onInputKeyboardChange = (e: UniInputKeyboardHeightChangeEvent) => {
+  // 进入编辑状态，设置content 向上偏移键盘高度的 1/2
+  let keyBoardHeight = e.detail.height
+  if (keyBoardHeight > 0) {
+    let calcBottom = keyBoardHeight / 2
+    inputBottom.value = `${calcBottom}px`
+  }
+}
 
-			/**
-			 * show modal 不需要对内置文案进行i18n适配。（参考微信）
-			 */
-			const systemInfo = uni.getSystemInfoSync()
-			const osLanguage = systemInfo.osLanguage
-			// ios need
-			const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55)
-			this.maxScrollHeight = scrollHeight + "px"
-			/**
-			 * add since 2025-04-03 目前暂不支持设置app language
-			 */
-			const appLanguage = systemInfo.appLanguage
-			if (appLanguage != null) {
-			  this.language = appLanguage
-			} else if (osLanguage != null) {
-			  this.language = osLanguage
-			}
-			// #ifdef WEB
-			const hostTheme = systemInfo.hostTheme
-			if (hostTheme != null) {
-				this.theme = hostTheme
-				this.updateUI()
-			}
-			uni.onThemeChange((res) => {
-				this.theme = res.theme
-				this.updateUI()
-			});
-			// 监听浏览器的语言设置
-			const locale = uni.getLocale()
-			this.language = locale
-			uni.onLocaleChange((res) => {
-			  if (res.locale) {
-			    this.language = res.locale
-			  }
-			})
-			// #endif
-			// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-			const appTheme = systemInfo.appTheme
-			if (appTheme != null) {
-				const osTheme = systemInfo.osTheme??'light'
-				this.theme = ('auto'==appTheme)?osTheme:appTheme
-			}
-			this.appThemeChangeCallbackId = uni.onAppThemeChange((res: AppThemeChangeResult) => {
-				this.theme = res.appTheme
-				this.updateUI()
-			})
+const isValidColor = (inputColor: string | null) => {
+  const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
+  if (inputColor == null) {
+    return false
+  }
+  /**
+   * #888
+   * #808080
+   */
+  return hexColorRegex.test(inputColor)
+}
 
-			// #endif
-			this.readyEventName = options['readyEventName'] !
-			this.optionsEventName = options['optionsEventName'] !
-			this.successEventName = options['successEventName'] !
-			this.failEventName = options['failEventName'] !
+/**
+ * update ui when theme change.
+ */
+const updateUI = () => {
+  if (isValidColor(inputConfirmColor.value)) {
+    confirmColor.value = inputConfirmColor.value!
+  } else {
+    /**
+     * init text color with theme
+     */
+    if (theme.value == "dark") {
+      confirmColor.value = '#7388a2'
+    } else {
+      confirmColor.value = '#4A5E86'
+    }
+  }
+  if (isValidColor(inputCancelColor.value)) {
+    cancelColor.value = inputCancelColor.value!
+  } else {
+    if (theme.value == "dark") {
+      cancelColor.value = '#a5a5a5'
+    } else {
+      cancelColor.value = '#000000'
+    }
+  }
 
-			uni.$on(this.optionsEventName, (data: UTSJSONObject) => {
+  if (theme.value == "dark") {
+    hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode"
+  } else {
+    hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover"
+  }
+}
 
-				if (data['title'] != null) {
-					this.title = data['title'] as string
-				}
-				if (data['content'] != null) {
-					this.content = data['content'] as string
-				}
-				if (data['showCancel'] != null) {
-					this.showCancel = data['showCancel'] as boolean
-				}
-				if (data['editable'] != null) {
-					this.editable = data['editable'] as boolean
-				}
-				if (data['placeholderText'] != null) {
-					this.placeholderText = data['placeholderText'] as string
-				}
+const closeModal = () => {
+  showAnim.value = false
+  setTimeout(() => {
+    uni.closeDialogPage({
+      dialogPage: instance?.proxy?.$page
+    })
+  }, 300)
+}
 
-				if (data['confirmText'] != null) {
-					this.inputConfirmText = data['confirmText'] as string
-				}
-				if (data['cancelText'] != null) {
-					this.inputCancelText = data['cancelText'] as string
-				}
+const handleCancel = () => {
+  closeModal()
+  let ret = {
+    cancel: true,
+    confirm: false,
+  }
+  uni.$emit(successEventName.value, JSON.stringify(ret))
+}
 
-				if (data['confirmColor'] != null) {
-					this.inputConfirmColor = data['confirmColor'] as string
-				}
-				if (data['cancelColor'] != null) {
-					this.inputCancelColor = data['cancelColor'] as string
-				}
+const handleSure = () => {
+  closeModal()
+  let ret = {
+    cancel: false,
+    confirm: true,
+    content: editable.value ? content.value : null
+  }
+  uni.$emit(successEventName.value, JSON.stringify(ret))
+}
 
-				this.updateUI()
+// onReady 生命周期
+onReady(() => {
+  setTimeout(() => {
+    showAnim.value = true
+  }, 10)
+})
 
-			})
+// onLoad 生命周期
+onLoad((options: any) => {
+  /**
+   * show modal 不需要对内置文案进行i18n适配。（参考微信）
+   */
+  const systemInfo = uni.getSystemInfoSync()
+  const osLanguage = systemInfo.osLanguage
+  // ios need
+  const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55)
+  maxScrollHeight.value = scrollHeight + "px"
+  /**
+   * add since 2025-04-03 目前暂不支持设置app language
+   */
+  const appLanguage = systemInfo.appLanguage
+  if (appLanguage != null) {
+    language.value = appLanguage
+  } else if (osLanguage != null) {
+    language.value = osLanguage
+  }
+  // #ifdef WEB
+  const hostTheme = systemInfo.hostTheme
+  if (hostTheme != null) {
+    theme.value = hostTheme
+    updateUI()
+  }
+  uni.onThemeChange((res) => {
+    theme.value = res.theme
+    updateUI()
+  })
+  // 监听浏览器的语言设置
+  const locale = uni.getLocale()
+  language.value = locale
+  uni.onLocaleChange((res) => {
+    if (res.locale) {
+      language.value = res.locale
+    }
+  })
+  // #endif
+  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+  const appTheme = systemInfo.appTheme
+  if (appTheme != null) {
+    const osTheme = systemInfo.osTheme ?? 'light'
+    theme.value = ('auto' == appTheme) ? osTheme : appTheme
+  }
+  appThemeChangeCallbackId.value = uni.onAppThemeChange((res: AppThemeChangeResult) => {
+    theme.value = res.appTheme
+    updateUI()
+  })
+  // #endif
 
-			uni.$emit(this.readyEventName, {})
+  readyEventName.value = options['readyEventName']!
+  optionsEventName.value = options['optionsEventName']!
+  successEventName.value = options['successEventName']!
+  failEventName.value = options['failEventName']!
 
+  uni.$on(optionsEventName.value, (data: UTSJSONObject) => {
+    if (data['title'] != null) {
+      title.value = data['title'] as string
+    }
+    if (data['content'] != null) {
+      content.value = data['content'] as string
+    }
+    if (data['showCancel'] != null) {
+      showCancel.value = data['showCancel'] as boolean
+    }
+    if (data['editable'] != null) {
+      editable.value = data['editable'] as boolean
+    }
+    if (data['placeholderText'] != null) {
+      placeholderText.value = data['placeholderText'] as string
+    }
 
-		},
+    if (data['confirmText'] != null) {
+      inputConfirmText.value = data['confirmText'] as string
+    }
+    if (data['cancelText'] != null) {
+      inputCancelText.value = data['cancelText'] as string
+    }
 
-		onUnload() {
-			uni.$off(this.optionsEventName, null)
-			uni.$off(this.readyEventName, null)
-			uni.$off(this.successEventName, null)
-			uni.$off(this.failEventName, null)
-			// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-			uni.offAppThemeChange(this.appThemeChangeCallbackId)
-			// #endif
-		},
+    if (data['confirmColor'] != null) {
+      inputConfirmColor.value = data['confirmColor'] as string
+    }
+    if (data['cancelColor'] != null) {
+      inputCancelColor.value = data['cancelColor'] as string
+    }
 
-		onBackPress(_):boolean|null {
+    updateUI()
+  })
 
-			let ret = {
-				cancel : false,
-				confirm : false,
-			}
-			uni.$emit(this.successEventName, JSON.stringify(ret))
-			return false
-		},
+  uni.$emit(readyEventName.value, {})
+})
 
-		methods: {
-			onInputBlur(e:UniTextareaBlurEvent) {
-				// 退出编辑状态
-				setTimeout(() => {
-					this.inputBottom = '0px';
-				}, 220)
+// onUnload 生命周期
+onUnload(() => {
+  uni.$off(optionsEventName.value, null)
+  uni.$off(readyEventName.value, null)
+  uni.$off(successEventName.value, null)
+  uni.$off(failEventName.value, null)
+  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+  uni.offAppThemeChange(appThemeChangeCallbackId.value)
+  // #endif
+})
 
-			},
-			onInputKeyboardChange(e:UniInputKeyboardHeightChangeEvent) {
-				// 进入编辑状态，设置content 向上偏移键盘高度的 1/2
-				let keyBoardHeight = e.detail.height
-				if(keyBoardHeight > 0){
-					let calcBottom = (keyBoardHeight) / 2
-					this.inputBottom = `${calcBottom}px`;
-				}
-			},
-
-			isValidColor(inputColor:string|null){
-				const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-				if(inputColor == null){
-					return false
-				}
-				/**
-				 * #888
-				 * #808080
-				 */
-				return hexColorRegex.test(inputColor)
-			},
-			/**
-			 * update ui when theme change.
-			 */
-			updateUI(){
-
-				if (this.isValidColor(this.inputConfirmColor)) {
-					this.confirmColor = this.inputConfirmColor!
-				} else {
-					/**
-					 * init text color with theme
-					 */
-					if (this.theme == "dark") {
-						this.confirmColor = '#7388a2'
-					} else {
-						this.confirmColor = '#4A5E86'
-					}
-				}
-				if (this.isValidColor(this.inputCancelColor)) {
-					this.cancelColor = this.inputCancelColor!
-				} else {
-					if (this.theme == "dark") {
-						this.cancelColor = '#a5a5a5'
-					} else {
-						this.cancelColor = '#000000'
-					}
-				}
-
-				if(this.theme == "dark"){
-					this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode"
-				}else{
-					this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover"
-				}
-
-			},
-
-			closeModal() {
-				this.showAnim = false
-				setTimeout(() => {
-					uni.closeDialogPage({
-						dialogPage: this.$page
-					})
-				}, 300)
-			},
-			handleCancel() {
-				this.closeModal()
-				let ret = {
-					cancel : true,
-					confirm : false,
-				}
-				uni.$emit(this.successEventName, JSON.stringify(ret))
-			},
-			handleSure() {
-				this.closeModal()
-				let ret = {
-					cancel : false,
-					confirm : true,
-					content : this.editable ? this.content : null
-				}
-				uni.$emit(this.successEventName, JSON.stringify(ret))
-			}
-		}
-	}
+// onBackPress 生命周期
+onBackPress((_: any): boolean | null => {
+  let ret = {
+    cancel: false,
+    confirm: false,
+  }
+  uni.$emit(successEventName.value, JSON.stringify(ret))
+  return false
+})
 </script>
 <style>
 
