@@ -31,10 +31,15 @@ export default {
       safeAreaTop: 0
     }
   },
+  onShow(){
+    this.webviewElement = this.$refs['webview'] as UniWebViewElement
+    // #ifdef APP-ANDROID
+    this.webviewElement.enableWholeDraw()
+    // #endif
+  },
   onReady() {
     const windowInfo = uni.getWindowInfo()
     this.safeAreaTop = windowInfo.safeAreaInsets.top
-    this.webviewElement = this.$refs['webview'] as UniWebViewElement
     this.webviewContext = uni.createWebviewContext('webview', this)
   },
   methods: {
