@@ -1,4 +1,3 @@
-import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
 import {
   type MiniProgramCompilerOptions,
@@ -6,26 +5,37 @@ import {
   createCopyPluginTarget,
   getNativeTags,
   transformComponentLink,
+  transformDirection,
   // transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
-import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import {
+  type UniMiniProgramPluginOptions,
+  resolveMiniProgramRuntime,
+} from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
 import { transformOn } from './transforms/vOn'
 import { transformModel } from './transforms/vModel'
+import { transformMPBuiltInTag } from './transforms/transformMPBuiltInTag'
 
 const directiveTransforms = {
   on: transformOn,
   model: transformModel,
 }
 
+const nodeTransforms = [
+  transformRef,
+  transformComponentLink,
+  // transformMatchMedia
+]
+
+if (process.env.UNI_APP_X === 'true') {
+  nodeTransforms.push(transformMPBuiltInTag, transformDirection)
+}
+
 export const compilerOptions: CompilerOptions = {
-  nodeTransforms: [
-    transformRef,
-    transformComponentLink,
-    // transformMatchMedia
-  ],
+  nodeTransforms,
   directiveTransforms,
 }
 
@@ -77,6 +87,10 @@ export const miniProgram: MiniProgramCompilerOptions = {
   component: {
     dir: COMPONENTS_DIR,
   },
+  filter: {
+    lang: 'sjs',
+    setStyle: true,
+  },
 }
 const projectConfigFilename = 'project.config.json'
 
@@ -84,10 +98,10 @@ export const options: UniMiniProgramPluginOptions = {
   cdn: 12,
   vite: {
     inject: {
-      uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],
+      uni: [resolveMiniProgramRuntime(__dirname, 'uni.api.esm.js'), 'default'],
     },
     alias: {
-      'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
+      'uni-mp-runtime': resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
       assets: createCopyComponentDirs(COMPONENTS_DIR),
@@ -124,6 +138,7 @@ export const options: UniMiniProgramPluginOptions = {
     ...miniProgram,
     customElements,
     filter: {
+      ...miniProgram.filter,
       extname: '.sjs',
       lang: 'sjs',
       generate(filter, filename) {

@@ -88,7 +88,7 @@ export function initPageInstance(mpPageInstance: MPComponentInstance) {
   if (__X__) {
     Object.assign(mpPageInstance, {
       get width(): number {
-        if (__PLATFORM__ === 'mp-toutiao') {
+        if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-xhs') {
           return __GLOBAL__.getSystemInfoSync().windowWidth
         }
         return __GLOBAL__.getWindowInfo().windowWidth
@@ -96,11 +96,11 @@ export function initPageInstance(mpPageInstance: MPComponentInstance) {
       get height(): number {
         const windowInfo = __GLOBAL__.getWindowInfo()
         // 某些版本的微信小程序开发工具获取tabBar页面的screenTop不对，其数值包含了tabBar高度及底部安全区，如果有开发者问起让他使用真机测试即可。
-        // TODO 抖音小程序没有 getWindowInfo 方法，暂时无法获取 screenTop
+        // TODO 抖音小程序、小红书小程序没有 getWindowInfo 方法，暂时无法获取 screenTop
         return windowInfo.windowHeight + windowInfo.screenTop
       },
       get statusBarHeight(): number {
-        if (__PLATFORM__ === 'mp-toutiao') {
+        if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-xhs') {
           return __GLOBAL__.getSystemInfoSync().statusBarHeight
         }
         return __GLOBAL__.getWindowInfo().statusBarHeight
