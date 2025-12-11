@@ -10,6 +10,7 @@ realGlobal.UTS = uniShared.UTS;
 realGlobal.UTSJSONObject = uniShared.UTSJSONObject;
 realGlobal.UTSValueIterable = uniShared.UTSValueIterable;
 realGlobal.UniError = uniShared.UniError;
+realGlobal.UniCustomEvent = CustomEvent;
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );

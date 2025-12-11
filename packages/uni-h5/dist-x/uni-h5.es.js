@@ -15,6 +15,7 @@ realGlobal.UTS = UTS$1;
 realGlobal.UTSJSONObject = UTSJSONObject;
 realGlobal.UTSValueIterable = UTSValueIterable;
 realGlobal.UniError = UniError$1;
+realGlobal.UniCustomEvent = CustomEvent;
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
