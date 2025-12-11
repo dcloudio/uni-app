@@ -5,13 +5,15 @@ import {
   type Message,
   type Node,
   type Root,
+  type Rule,
   Warning,
 } from 'postcss'
 import { extend, hasOwn } from '@vue/shared'
-import { COMBINATORS_RE } from './utils'
+import { COMBINATORS_RE, SIMPLE_SELECTOR_RE } from './utils'
 
 interface ObjectifierOptions {
   trim: boolean
+  simpleSelectorOnly?: boolean
   parseMessages: Message[]
   visitor?: (
     node: Declaration,
@@ -95,7 +97,7 @@ function transform(
     } else if (child.type === 'rule') {
       const body = transform(child, context, options)
       child.selectors.forEach((selector) => {
-        transformSelector(selector, body, result, context)
+        transformSelector(child, selector, body, result, context, options)
       })
     } else if (child.type === 'decl') {
       let name = child.prop
@@ -123,11 +125,19 @@ function transform(
 }
 
 function transformSelector(
+  node: Rule,
   selector: string,
   body: Record<string, unknown>,
   result: Record<string, unknown | Record<string, unknown>>,
-  context: ObjectifierContext
+  context: ObjectifierContext,
+  options: ObjectifierOptions
 ) {
+  if (options.simpleSelectorOnly) {
+    if (!SIMPLE_SELECTOR_RE.test(selector)) {
+      context.warn(node, `Invalid selector "${selector}".`)
+      return
+    }
+  }
   const res = selector.match(COMBINATORS_RE)
   if (!res) {
     return

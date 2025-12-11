@@ -5,6 +5,10 @@ export type { Declaration } from 'postcss'
 export const COMBINATORS_RE =
   /^((?:(?:\.[A-Za-z0-9_\-]+)+[\+\~\> ])*)((?:\.[A-Za-z0-9_\-\:]+)+)$/
 
+// 单个类选择器或类串联选择器，支持逗号分隔（如 .class1, .class1.class2, .class1,.class2,.class3.class4）
+export const SIMPLE_SELECTOR_RE =
+  /^(?:\.[A-Za-z0-9_\-]+)+(?:\s*,\s*(?:\.[A-Za-z0-9_\-]+)+)*$/
+
 export type TransformDecl = (decl: Declaration) => Declaration[]
 
 export interface NormalizeOptions {
@@ -13,6 +17,7 @@ export interface NormalizeOptions {
   platform?: typeof process.env.UNI_UTS_PLATFOR
   keepUnitPx?: boolean
   keepVar?: boolean
+  simpleSelectorOnly?: boolean
 }
 
 export type Normalize = (
