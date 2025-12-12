@@ -35,9 +35,9 @@ export class UniElement {
   scrollTo(options: unknown) {
     if (
       (this.$vm as ComponentPublicInstance & { $mpPlatform: string })
-        .$mpPlatform === 'mp-alipay'
+        .$mpPlatform !== 'mp-weixin'
     ) {
-      console.warn('scrollTo is not supported on alipay')
+      console.warn('scrollTo is only supported on weixin miniProgram')
       return
     }
     if (!this.id) {
