@@ -42,6 +42,10 @@ declare interface NavigationBarSearchInputFocusChanged {
 
 export declare const onAddToFavorites: (hook: (options: Page.AddToFavoritesOption) => Page.CustomFavoritesContent, target?: ComponentInternalInstance | null) => void;
 
+export declare const onAppHide: (hook: () => any, target?: ComponentInternalInstance | null) => void;
+
+export declare const onAppShow: (hook: ((options?: App.LaunchShowOption | undefined) => void) | (() => void), target?: ComponentInternalInstance | null) => void;
+
 export declare const onBackPress: (hook: (options: Page.BackPressOption) => any, target?: ComponentInternalInstance | null) => void;
 
 export declare const onCopyUrl: (hook: (options: Page.OnCopyUrlOptions) => Page.CopyUrlContent, target?: ComponentInternalInstance | null) => void;

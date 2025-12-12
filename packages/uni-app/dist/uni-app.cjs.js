@@ -161,9 +161,10 @@ const onNavigationBarSearchInputConfirmed =
 /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, 2 /* HookFlags.PAGE */);
 const onNavigationBarSearchInputFocusChanged = 
 /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, 2 /* HookFlags.PAGE */);
-// for uni-app-x web
 const onPageHide = onHide;
 const onPageShow = onShow;
+const onAppHide = onHide;
+const onAppShow = onShow;
 
 function renderComponentSlot(slots, name, props = null) {
     if (slots[name]) {
@@ -193,6 +194,8 @@ exports.formatLog = formatLog;
 exports.getCurrentSubNVue = getCurrentSubNVue;
 exports.getSsrGlobalData = getSsrGlobalData;
 exports.onAddToFavorites = onAddToFavorites;
+exports.onAppHide = onAppHide;
+exports.onAppShow = onAppShow;
 exports.onBackPress = onBackPress;
 exports.onCopyUrl = onCopyUrl;
 exports.onError = onError;

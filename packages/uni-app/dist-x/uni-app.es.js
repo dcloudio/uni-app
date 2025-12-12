@@ -132,9 +132,10 @@ const onNavigationBarSearchInputConfirmed =
 /*#__PURE__*/ createLifeCycleHook(ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, 2 /* HookFlags.PAGE */);
 const onNavigationBarSearchInputFocusChanged = 
 /*#__PURE__*/ createLifeCycleHook(ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, 2 /* HookFlags.PAGE */);
-// for uni-app-x web
 const onPageHide = onHide;
 const onPageShow = onShow;
+const onAppHide = onHide;
+const onAppShow = onShow;
 
 function renderComponentSlot(slots, name, props = null) {
     if (slots[name]) {
@@ -143,4 +144,4 @@ function renderComponentSlot(slots, name, props = null) {
     return null;
 }
 
-export { formatAppLog, formatLog, getCurrentSubNVue, getSsrGlobalData, onAddToFavorites, onBackPress, onCopyUrl, onError, onExit, onHide, onInit, onLastPageBackPress, onLaunch, onLiveMount, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareChat, onShareTimeline, onShow, onTabItemTap, onThemeChange, onTitleClick, onUnhandledRejection, onUnload, onUploadDouyinVideo, renderComponentSlot, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
+export { formatAppLog, formatLog, getCurrentSubNVue, getSsrGlobalData, onAddToFavorites, onAppHide, onAppShow, onBackPress, onCopyUrl, onError, onExit, onHide, onInit, onLastPageBackPress, onLaunch, onLiveMount, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareChat, onShareTimeline, onShow, onTabItemTap, onThemeChange, onTitleClick, onUnhandledRejection, onUnload, onUploadDouyinVideo, renderComponentSlot, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
