@@ -2043,7 +2043,23 @@ function parse$1(source, options = {}) {
         setup: true,
         lang: "uts"
       };
+    }, createDefaultTemplate2 = function() {
+      return {
+        type: "template",
+        content: "",
+        loc: {
+          start: ast.loc.end,
+          end: ast.loc.end,
+          source: ""
+        },
+        attrs: {},
+        ast: void 0
+      };
     };
+    const appUVue = isAppUVue2();
+    if (appUVue) {
+      descriptor.template = createDefaultTemplate2();
+    }
     if (
       // 没有 script 和 scriptSetup
       !descriptor.script && !descriptor.scriptSetup
@@ -2051,7 +2067,7 @@ function parse$1(source, options = {}) {
       descriptor.vapor = true;
       descriptor.scriptSetup = createDefaultScriptSetup2();
     }
-    if (descriptor.script && !isAppUVue2()) {
+    if (descriptor.script && !appUVue) {
       const err = new SyntaxError(
         `\u84B8\u6C7D\u6A21\u5F0F\u4EC5\u652F\u6301\u4F7F\u7528<script setup>\uFF0C\u4E0D\u652F\u6301<script>\u9009\u9879\u5F0F`
       );
@@ -21668,7 +21684,9 @@ let __temp${any}, __restore${any}
     }
     returned = returned.replace(/, $/, "") + ` }`;
   } else {
-    if (sfc.template && !sfc.template.src) {
+    if (options.componentType === "app") {
+      returned = "";
+    } else if (sfc.template && !sfc.template.src) {
       if (ssr) {
         hasInlinedSsrRenderFn = true;
       }

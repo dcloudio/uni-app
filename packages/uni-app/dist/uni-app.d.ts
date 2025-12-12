@@ -54,6 +54,8 @@ export declare const onHide: (hook: () => any, target?: ComponentInternalInstanc
 
 export declare const onInit: (hook: (query?: AnyObject | undefined) => void, target?: ComponentInternalInstance | null) => void;
 
+export declare const onLastPageBackPress: (hook: () => void, target?: ComponentInternalInstance | null) => void;
+
 export declare const onLaunch: (hook: (options?: App.LaunchShowOption | undefined) => void, target?: ComponentInternalInstance | null) => void;
 
 export declare const onLiveMount: (hook: (options: Page.LiveMountOptions) => Page.LiveMountContent | Promise<Page.LiveMountContent>, target?: ComponentInternalInstance | null) => void;

@@ -129,6 +129,7 @@ const onError = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_ERROR, 1 /* HookF
 const onThemeChange = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_THEME_CHANGE, 1 /* HookFlags.APP */);
 const onPageNotFound = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_PAGE_NOT_FOUND, 1 /* HookFlags.APP */);
 const onUnhandledRejection = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_UNHANDLE_REJECTION, 1 /* HookFlags.APP */);
+const onLastPageBackPress = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_LAST_PAGE_BACK_PRESS, 1 /* HookFlags.APP */);
 const onExit = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_EXIT, 1 /* HookFlags.APP */);
 const onInit = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_INIT, 2 /* HookFlags.PAGE */ | 4 /* HookFlags.COMPONENT */);
 // 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧
@@ -198,6 +199,7 @@ exports.onError = onError;
 exports.onExit = onExit;
 exports.onHide = onHide;
 exports.onInit = onInit;
+exports.onLastPageBackPress = onLastPageBackPress;
 exports.onLaunch = onLaunch;
 exports.onLiveMount = onLiveMount;
 exports.onLoad = onLoad;

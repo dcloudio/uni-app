@@ -1,4 +1,4 @@
-import type { App } from 'vue';
+import type { App as App_2 } from 'vue';
 import type { ComponentInternalInstance } from 'vue';
 import { ComponentOptionsBase } from 'vue';
 import { ComponentPublicInstance } from 'vue';
@@ -144,7 +144,7 @@ export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrec
 
 export declare function createUniEvent(evt: Record<string, any>): UniEvent;
 
-declare type CreateVueAppHook = (app: App) => void;
+declare type CreateVueAppHook = (app: App_2) => void;
 
 export declare function customizeEvent(str: string): string;
 
@@ -277,9 +277,9 @@ Partial<UniNodeJSON | UniNodeJSONMinify>?
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
-export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (app: App) => App['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | null, info: string) => void) | undefined;
+export declare const invokeCreateErrorHandler: (app: App_2, createErrorHandler: (app: App_2) => App_2['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | null, info: string) => void) | undefined;
 
-export declare function invokeCreateVueAppHook(app: App): void;
+export declare function invokeCreateVueAppHook(app: App_2): void;
 
 export declare function isAppHarmonyUVueNativeTag(tag: string): boolean;
 
