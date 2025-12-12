@@ -530,6 +530,9 @@ export function cssPostPlugin(
       ) => {
         // replace asset url references with resolved url.
         css = css.replace(assetUrlRE, (_, fileHash, postfix = '') => {
+          if (config.base !== '/') {
+            return config.base + getAssetFilename(fileHash, config) + postfix
+          }
           return normalizePath(
             path.relative(
               path.dirname(filename),
