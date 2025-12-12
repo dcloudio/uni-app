@@ -213,6 +213,7 @@ export const onNavigationBarSearchInputFocusChanged =
     HookFlags.PAGE
   )
 
-// for uni-app-x web
 export const onPageHide = onHide
 export const onPageShow = onShow
+export const onAppHide = onHide
+export const onAppShow = onShow
