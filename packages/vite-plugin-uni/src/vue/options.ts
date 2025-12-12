@@ -23,6 +23,7 @@ import {
   onVueTemplateCompileLog,
   preJs,
   requireUniHelpers,
+  resolveAppVue,
   resolveUniTypeScript,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -293,6 +294,10 @@ export function initPluginVueOptions(
       vueOptions.script.babelParserPlugins.push('decorators')
     }
     if (process.env.UNI_APP_X_DOM2 === 'true') {
+      const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
+      function isAppVue(id: string) {
+        return normalizePath(id) === appVue
+      }
       ;(compilerOptions as any).isEasyComponent = (tag: string) =>
         !!matchEasycom(tag)
       ;(vueOptions.script as any).extraOptions = (
@@ -303,6 +308,8 @@ export function initPluginVueOptions(
           helper: requireUniHelpers(),
           componentType: isUniPageFile(descriptor.filename)
             ? 'page'
+            : isAppVue(descriptor.filename)
+            ? 'app'
             : 'component',
         }
       }
