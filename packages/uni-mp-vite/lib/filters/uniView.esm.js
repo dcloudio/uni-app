@@ -52,7 +52,8 @@ function handleStartAnimation(newValue, _ownerInstance, instance) {
 
     // currentStep removeClass
     if (!element.hasClass('__ct' + res.index) && elapsedTime < duration) {
-      element.setStyle(res.style).addClass('__ct' + res.index)
+      element.setStyle(res.style)
+      element.addClass('__ct' + res.index)
     }
     if (currentStep !== res.index) {
       element.removeClass('__ct' + currentStep)
