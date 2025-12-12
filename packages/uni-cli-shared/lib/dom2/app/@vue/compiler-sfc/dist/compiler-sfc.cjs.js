@@ -21129,7 +21129,7 @@ const MACROS = [
   WITH_DEFAULTS
 ];
 function compileScript(sfc, options) {
-  var _a, _b, _c, _d, _e;
+  var _a, _b, _c;
   if (!options.id) {
     warnOnce(
       `compileScript now requires passing the \`id\` option.
@@ -21797,33 +21797,31 @@ ${vapor && !ssr ? `` : `return `}${returned}
   if (options.className) {
     const componentType = (
       // @ts-expect-error
-      options.componentType || "component"
+      options.componentType
     );
-    (
-      // @ts-expect-error
-      ((_c = (_b = options.templateOptions) == null ? void 0 : _b.compilerOptions) == null ? void 0 : _c.r) || ((k) => k)
-    );
-    if (componentType === "page") {
-      setupPreambleLines.unshift(
-        `const __sharedDataScope =  _useSharedDataScope(__sharedData)`
-      );
-      setupPreambleLines.unshift(
-        `const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataPageId()))`
-      );
-    } else {
-      setupPreambleLines.unshift(
-        `const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope))`
-      );
-      setupPreambleLines.unshift(
-        `const __sharedDataScope =  _useSharedDataScope()`
-      );
-    }
-    if (options.isWatch && templateHash) {
-      runtimeOptions += `
+    if (componentType === "page" || componentType === "component") {
+      if (componentType === "page") {
+        setupPreambleLines.unshift(
+          `const __sharedDataScope =  _useSharedDataScope(__sharedData)`
+        );
+        setupPreambleLines.unshift(
+          `const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataPageId()))`
+        );
+      } else if (componentType === "component") {
+        setupPreambleLines.unshift(
+          `const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope))`
+        );
+        setupPreambleLines.unshift(
+          `const __sharedDataScope =  _useSharedDataScope()`
+        );
+      }
+      if (options.isWatch && templateHash) {
+        runtimeOptions += `
   __hash: "${templateHash}",`;
-    }
-    runtimeOptions += `
+      }
+      runtimeOptions += `
   __className,`;
+    }
   }
   if (!ctx.hasDefaultExportName && filename && filename !== DEFAULT_FILENAME) {
     const match = filename.match(/([^/\\]+)\.\w+$/);
@@ -21894,7 +21892,7 @@ ${setupPreamble}`
     }
   }
   if (ctx.helperImports.size > 0) {
-    const runtimeModuleName = (_e = (_d = options.templateOptions) == null ? void 0 : _d.compilerOptions) == null ? void 0 : _e.runtimeModuleName;
+    const runtimeModuleName = (_c = (_b = options.templateOptions) == null ? void 0 : _b.compilerOptions) == null ? void 0 : _c.runtimeModuleName;
     const importSrc = runtimeModuleName ? JSON.stringify(runtimeModuleName) : `'vue'`;
     ctx.s.prepend(
       `import { ${[...ctx.helperImports].map((h) => `${h} as _${h}`).join(", ")} } from ${importSrc}
