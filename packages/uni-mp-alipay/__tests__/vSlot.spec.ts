@@ -57,9 +57,9 @@ describe('mp-alipay: transform v-slot', () => {
   test('v-if + scoped slots', () => {
     assert(
       `<custom><template v-if="ok" v-slot:default="slotProps"><view>{{ slotProps.item }}</view></template></custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0" onVI="__l"><block a:if="{{a}}"><view a:for="{{b}}" a:for-item="slotProps" a:key="b" slot="{{slotProps.c}}"><view>{{slotProps.a}}</view></view></block></custom>`,
+      `<custom u-s="{{c}}" u-i="2a9ec0b0-0" onVI="__l"><block a:if="{{a}}"><view a:for="{{b}}" a:for-item="slotProps" a:key="b" slot="{{slotProps.c}}"><view>{{slotProps.a}}</view></view></block></custom>`,
       `(_ctx, _cache) => {
-  return _e({ a: _ctx.ok }, _ctx.ok ? { b: _w((slotProps, s0, i0) => { return { a: _t(slotProps.item), b: i0, c: s0 }; }, { name: 'd', path: 'b', vueId: '2a9ec0b0-0' }) } : {})
+  return _e({ a: _ctx.ok }, _ctx.ok ? { b: _w((slotProps, s0, i0) => { return { a: _t(slotProps.item), b: i0, c: s0 }; }, { name: 'd', path: 'b', vueId: '2a9ec0b0-0' }) } : {}, { c: [_ctx.ok ? 'd' : ''] })
 }`
     )
   })
