@@ -2,6 +2,7 @@ import {
   type Expression,
   callExpression,
   identifier,
+  logicalExpression,
   stringLiteral,
 } from '@babel/types'
 import {
@@ -48,7 +49,15 @@ export function rewriteId(
         ? expr
         : identifier(rewriteExpression(idBindingProp.exp!, context).content)
   } else {
-    idBindingExpr = stringLiteral('')
+    // 支付宝小程序组件上的虚拟id，不会直接透传到组件根节点上，导致无法正常触发 setElementId
+    idBindingExpr =
+      isX && process.env.UNI_PLATFORM === 'mp-alipay'
+        ? logicalExpression(
+            '||',
+            identifier('_ctx.$scope.props.virtualHostId'),
+            stringLiteral('')
+          )
+        : stringLiteral('')
   }
   if (virtualHost) {
     idBindingExpr = callExpression(
