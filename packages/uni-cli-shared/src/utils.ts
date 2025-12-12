@@ -183,13 +183,13 @@ Please run \`${colors.cyan(
 }
 
 /**
- * 根据路径判断是否为 App.(u?)vue
- * @param {string} filename 相对、绝对路径
+ * 根据环境变量 UNI_INPUT_DIR 路径判断是否为 App.(u?)vue
+ * @param {string} filename
  * @returns
  */
 export function isAppVue(filename: string) {
-  const _filePath = normalizePath(filename)
-  return /(\/|\\)app\.(u?)vue$/.test(_filePath.toLowerCase())
+  const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
+  return appVue === normalizePath(filename)
 }
 
 export function resolveAppVue(inputDir: string) {
