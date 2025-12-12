@@ -38,7 +38,7 @@ export {
   // onKeyboardHeightChange,
   onPageNotFound,
   onUnhandledRejection,
-  // onLastPageBackPress,
+  onLastPageBackPress,
   onExit,
   // Page
   onPageShow,

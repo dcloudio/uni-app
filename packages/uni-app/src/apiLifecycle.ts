@@ -12,6 +12,7 @@ import {
   ON_EXIT,
   ON_HIDE,
   ON_INIT,
+  ON_LAST_PAGE_BACK_PRESS,
   ON_LAUNCH,
   ON_LIVE_MOUNT,
   ON_LOAD,
@@ -113,6 +114,9 @@ export const onPageNotFound = /*#__PURE__*/ createLifeCycleHook<
 export const onUnhandledRejection = /*#__PURE__*/ createLifeCycleHook<
   Required<App.AppInstance>['onUnhandledRejection']
 >(ON_UNHANDLE_REJECTION, HookFlags.APP)
+export const onLastPageBackPress = /*#__PURE__*/ createLifeCycleHook<
+  Required<App.AppInstance>['onLastPageBackPress']
+>(ON_LAST_PAGE_BACK_PRESS, HookFlags.APP)
 
 export const onExit = /*#__PURE__*/ createLifeCycleHook<() => void>(
   ON_EXIT,
