@@ -33,6 +33,13 @@ export class UniElement {
   }
 
   scrollTo(options: unknown) {
+    if (
+      (this.$vm as ComponentPublicInstance & { $mpPlatform: string })
+        .$mpPlatform === 'mp-alipay'
+    ) {
+      console.warn('scrollTo is not supported on alipay')
+      return
+    }
     if (!this.id) {
       console.warn(`scrollTo is only supported on elements with id`)
       return
