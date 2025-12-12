@@ -131,13 +131,15 @@ const uniAppLifeCyclePreset = {
     'onShow',
     'onHide',
     // App
+    'onAppShow',
+    'onAppHide',
     'onLaunch',
     'onError',
     'onThemeChange',
+    'onLastPageBackPress',
     // onKeyboardHeightChange,
     'onPageNotFound',
     'onUnhandledRejection',
-    // onLastPageBackPress,
     'onExit',
     // Page
     'onPageShow',

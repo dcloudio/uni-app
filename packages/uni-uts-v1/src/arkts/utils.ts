@@ -241,6 +241,8 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['onShow'],
       ['onHide'],
       // App
+      ['onAppShow'],
+      ['onAppHide'],
       ['onLaunch'],
       ['onError'],
       ['onThemeChange'],
