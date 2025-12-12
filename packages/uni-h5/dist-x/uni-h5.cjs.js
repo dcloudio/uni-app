@@ -2797,9 +2797,15 @@ let $uniApp;
 {
   class UniAppImpl {
     get vm() {
+      if (appVm.$.exposed) {
+        return vue.getExposeProxy(appVm.$);
+      }
       return appVm;
     }
     get $vm() {
+      if (appVm.$.exposed) {
+        return vue.getExposeProxy(appVm.$);
+      }
       return appVm;
     }
     get globalData() {
