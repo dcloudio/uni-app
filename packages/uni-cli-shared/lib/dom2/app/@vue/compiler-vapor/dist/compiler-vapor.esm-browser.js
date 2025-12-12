@@ -144,6 +144,8 @@ function registerRuntimeHelpers(helpers) {
   });
 }
 
+const NodeTypes = {
+  "ELEMENT": 1};
 const locStub = {
   start: { line: 1, column: 1, offset: 0 },
   end: { line: 1, column: 1, offset: 0 },
@@ -17121,6 +17123,9 @@ function isWhitespaceText(node) {
 function isCommentOrWhitespace(node) {
   return node.type === 3 || isWhitespaceText(node);
 }
+function isListItem(node) {
+  return node.type === 1 && (node.tag === "list-item" || node.tag === "ListItem");
+}
 
 const defaultParserOptions = {
   parseMode: "base",
@@ -25556,6 +25561,24 @@ function processFor(node, dir, context) {
   const typeProp = findProp(node, "type");
   const keyProperty = keyProp && propToExpression(keyProp);
   const typeProperty = typeProp && propToExpression(typeProp);
+  const isListItemNode = isListItem(node);
+  const isRecycleFor = isListItemNode;
+  if (isRecycleFor && keyProperty) {
+    const itemKeyProp = {
+      type: 7,
+      name: "bind",
+      arg: {
+        type: 4,
+        content: "itemKey",
+        isStatic: true,
+        loc: locStub
+      },
+      exp: keyProperty,
+      modifiers: [],
+      loc: locStub
+    };
+    node.props.push(itemKeyProp);
+  }
   const isComponent = node.tagType === 1 || // template v-for with a single component child
   isTemplateWithSingleComponent(node);
   context.node = node = wrapTemplate(node, ["for"]);

@@ -2339,6 +2339,17 @@ function isWhitespaceText(node) {
 function isCommentOrWhitespace(node) {
   return node.type === 3 || isWhitespaceText(node);
 }
+function isListItem(node) {
+  return node.type === 1 && (node.tag === "list-item" || node.tag === "ListItem");
+}
+function isVForListItem(node) {
+  const isTemplateNode2 = node.type === 1 && node.tag === "template";
+  if (!isTemplateNode2) {
+    return false;
+  }
+  const _node = node;
+  return _node.children.length === 1 && isListItem(_node.children[0]);
+}
 
 const defaultParserOptions = {
   parseMode: "base",
@@ -6786,6 +6797,7 @@ exports.isFnExpressionNode = isFnExpressionNode;
 exports.isFunctionType = isFunctionType;
 exports.isInDestructureAssignment = isInDestructureAssignment;
 exports.isInNewExpression = isInNewExpression;
+exports.isListItem = isListItem;
 exports.isLiteralWhitelisted = isLiteralWhitelisted;
 exports.isMemberExpression = isMemberExpression;
 exports.isMemberExpressionBrowser = isMemberExpressionBrowser;
@@ -6801,6 +6813,7 @@ exports.isStaticProperty = isStaticProperty;
 exports.isStaticPropertyKey = isStaticPropertyKey;
 exports.isTemplateNode = isTemplateNode;
 exports.isText = isText$1;
+exports.isVForListItem = isVForListItem;
 exports.isVPre = isVPre;
 exports.isVSlot = isVSlot;
 exports.isWhitespaceText = isWhitespaceText;
