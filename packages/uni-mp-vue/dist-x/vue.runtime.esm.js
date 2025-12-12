@@ -5776,8 +5776,9 @@ class UniElement {
         this.nodeName = this.tagName;
     }
     scrollTo(options) {
-        if (this.$vm.$mpPlatform === 'mp-alipay') {
-            console.warn('scrollTo is not supported on alipay');
+        if (this.$vm
+            .$mpPlatform !== 'mp-weixin') {
+            console.warn('scrollTo is only supported on weixin miniProgram');
             return;
         }
         if (!this.id) {
@@ -5969,7 +5970,8 @@ function createUniElement(id, tagName, ins) {
     const uniElement = new (customElements.get(tagName) || UniElement)(id, tagName);
     uniElement.$vm = ins.proxy;
     // 目前只有微信小程序支持获取 ScrollViewContext
-    if (ins.proxy.$mpPlatform === 'mp-weixin') {
+    if (ins.proxy
+        .$mpPlatform === 'mp-weixin') {
         initMiniProgramNode(uniElement, ins);
     }
     uniElement.$onStyleChange((styles) => {
