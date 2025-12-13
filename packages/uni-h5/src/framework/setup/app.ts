@@ -1,4 +1,4 @@
-import { type ComponentPublicInstance, getExposeProxy } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import AsyncLoadingComponent from '../components/async-loading'
 import AsyncErrorComponent from '../components/async-error'
 import {
@@ -15,15 +15,9 @@ let $uniApp: UniApp
 if (__X__) {
   class UniAppImpl implements UniApp {
     get vm() {
-      if (appVm.$.exposed) {
-        return getExposeProxy(appVm.$)
-      }
       return appVm
     }
     get $vm() {
-      if (appVm.$.exposed) {
-        return getExposeProxy(appVm.$)
-      }
       return appVm
     }
     get globalData() {

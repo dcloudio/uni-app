@@ -140,6 +140,4 @@ declare module '@vue/runtime-core' {
   ) => ComponentPublicInstance
   function unmountPage(pageInstance: ComponentPublicInstance): void
   function getCurrentGenericInstance(): ComponentInternalInstance
-
-  function getExposeProxy(instance: ComponentInternalInstance): ComponentPublicInstance | null
 }
