@@ -11,6 +11,55 @@ import { getUTSCustomElementsExports } from '../uts'
 
 export type AutoImportOptions = Options
 
+const uniWebLifeCyclePreset = {
+  from: '@dcloudio/uni-app',
+  imports: [
+    // ssr
+    'ssrRef',
+    'shallowSsrRef',
+    // uni-app lifecycle
+    // App and Page
+    'onShow',
+    'onHide',
+    // App
+    'onLaunch',
+    // web平台如下生命周期和uni.xxx api冲突，改为通过uni-h5导入api实现
+    // 'onAppShow',
+    // 'onAppHide',
+    // 'onError',
+    // 'onPageNotFound',
+    // 'onUnhandledRejection',
+    'onThemeChange',
+    'onKeyboardHeightChange',
+    'onLastPageBackPress',
+    'onExit',
+    // Page
+    'onPageShow',
+    'onPageHide',
+    'onLoad',
+    'onReady',
+    'onUnload',
+    'onResize',
+    'onBackPress',
+    'onPageScroll',
+    'onTabItemTap',
+    'onReachBottom',
+    'onPullDownRefresh',
+
+    // 其他
+    'onShareTimeline',
+    'onShareAppMessage',
+    'onShareChat', // xhs-share
+    'onCopyUrl',
+    'onUploadDouyinVideo',
+    'onLiveMount',
+    'onTitleClick',
+
+    // 辅助
+    'renderComponentSlot',
+  ],
+}
+
 const uniLifeCyclePreset = {
   from: '@dcloudio/uni-app',
   imports: [
@@ -249,6 +298,8 @@ export function initAutoImportOptions(
   // 只有app-ios和app-harmony平台特殊处理
   if (platform === 'app-ios' || platform === 'app-harmony') {
     autoImport.push(uniAppLifeCyclePreset)
+  } else if (platform === 'web') {
+    autoImport.push(uniWebLifeCyclePreset)
   } else {
     autoImport.push(uniLifeCyclePreset)
   }
