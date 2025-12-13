@@ -61,10 +61,6 @@ const uniLifeCyclePreset = {
 const uniH5Preset = {
   from: '@dcloudio/uni-h5',
   imports: [
-    'onAppShow',
-    'onAppHide',
-    'offAppHide',
-    'offAppShow',
     'UniElement',
     'UniElementImpl',
     'UniButtonElement',
