@@ -23,7 +23,7 @@ const uniWebLifeCyclePreset = {
     'onHide',
     // App
     'onLaunch',
-    // web平台如下生命周期和uni.xxx api冲突，改为通过uni-h5导入api实现
+    // web平台如下生命周期和uni.xxx api冲突，发行时改为通过uni-h5导入api实现，运行时通过uni-app导入
     // 'onAppShow',
     // 'onAppHide',
     // 'onError',
@@ -150,6 +150,25 @@ const uniH5Preset = {
     'UniCoverImageElement',
     'UniPickerElement',
   ],
+}
+
+if (process.env.NODE_ENV === 'development') {
+  uniWebLifeCyclePreset.imports.push(
+    // web平台如下生命周期和uni.xxx api冲突，发行时改为通过uni-h5导入api实现，运行时通过uni-app导入
+    'onAppShow',
+    'onAppHide',
+    'onError',
+    'onPageNotFound',
+    'onUnhandledRejection'
+  )
+} else {
+  uniH5Preset.imports.push(
+    'onAppShow',
+    'onAppHide',
+    'onError',
+    'onPageNotFound',
+    'onUnhandledRejection'
+  )
 }
 
 const uniMiniProgramPreset = {
