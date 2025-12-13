@@ -162,6 +162,7 @@ let shouldAddErrorBlock: boolean | null = null
 
 const VITE_ROLLUP_FAILED_TO_RESOLVE_IMPORT_RE =
   /\[vite\]: Rollup failed to resolve import "([^"]+)" from "([^"]+)"/
+const CANNOT_FIND_MODULE_RE = /Cannot find module '([^']+)' from '([^']+)'/
 function buildErrorMessage(
   err: RollupError & { customPrint?: () => void },
   args: string[] = [],
@@ -177,6 +178,21 @@ function buildErrorMessage(
     err.message = `Could not resolve "${importPath}" from "${fromPath}"`
     err.id = fromPath
   }
+
+  if (CANNOT_FIND_MODULE_RE.test(err.message)) {
+    const [, modulePath, fromPath] =
+      err.message.match(CANNOT_FIND_MODULE_RE) || []
+    // 清理模块路径和来源路径，移除查询参数等
+    const cleanModulePath = modulePath.split('?')[0]
+    const cleanFromPath = fromPath.split('?')[0]
+
+    const relativeFromPath = toRelativePath(cleanFromPath)
+
+    // 构建更友好的错误消息
+    err.id = cleanFromPath
+    err.message = `Cannot find module "${cleanModulePath}" from "${relativeFromPath}"`
+  }
+
   // 移除 from 后面的内容
   // 主要是处理：Could not resolve "./static/logo1.png" from "../../../../../../Users/xxx/HBuilderProjects/test-x/pages/index/index.uvue?vue&type=script&lang.uts"
   if (err.id && err.message.startsWith('Could not resolve ')) {
@@ -281,4 +297,16 @@ const splitRE = /\r?\n/
 function pad(source: string, n = 2): string {
   const lines = source.split(splitRE)
   return lines.map((l) => ` `.repeat(n) + l).join(`\n`)
+}
+
+function toRelativePath(filePath: string): string {
+  if (!filePath || !process.env.UNI_INPUT_DIR) {
+    return filePath
+  }
+  try {
+    return path.relative(process.env.UNI_INPUT_DIR, filePath)
+  } catch (e) {
+    // 转换失败时返回原路径
+    return filePath
+  }
 }
