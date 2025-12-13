@@ -23,6 +23,8 @@ const uniLifeCyclePreset = {
     'onHide',
     // App
     'onLaunch',
+    'onAppShow',
+    'onAppHide',
     'onError',
     'onThemeChange',
     'onKeyboardHeightChange',
