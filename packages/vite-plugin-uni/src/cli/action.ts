@@ -184,6 +184,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
 
 export async function runBuild(options: CliOptions & BuildOptions) {
   initEnv('build', options)
+  initEasycom()
   if (
     process.env.UNI_APP_X === 'true' &&
     process.env.UNI_UTS_PLATFORM === 'app-android'
