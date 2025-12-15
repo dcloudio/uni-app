@@ -142,7 +142,7 @@ export function createBasicUtsOptions(
       'hbuilderx-language-services/builtin-dts/uniappx/node_modules/@dcloudio/uni-app-x/types/index.d.ts':
         'syntaxdoc/uni-app-x/types/index.d.ts',
       'hbuilderx-language-services/builtin-dts/uniappx/node_modules/@dcloudio/uni-app-x/types/dom2-internal/global.d.ts':
-        'syntaxdoc/uni-app-x/types/types/dom2-internal/global.d.ts',
+        'syntaxdoc/uni-app-x/types/dom2-internal/global.d.ts',
     }
     extend(options.tsconfigOverride.compilerOptions, {
       paths: createTsConfigPaths(pluginPath, cliVitePath, virtualModules),
