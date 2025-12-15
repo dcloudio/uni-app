@@ -9326,7 +9326,11 @@ const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValu
   }
 }), {
   __name: "index-x",
+  props: {
+    paused: { type: Boolean, default: false }
+  },
   setup(__props) {
+    const props2 = __props;
     const LoadingRef = vue.ref(null);
     const loadingStyle = vue.reactive(useLoadingStyle());
     return (_ctx, _cache) => {
@@ -9339,9 +9343,9 @@ const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValu
       }, {
         default: vue.withCtx(() => [
           vue.createVNode(_component_view, {
-            class: "__uni-loading__ __loading-4-3__",
+            class: vue.normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
             style: vue.normalizeStyle([{ "box-sizing": "border-box" }, { width: loadingStyle.size, height: loadingStyle.size, borderWidth: loadingStyle.borderWidth }])
-          }, null, 8, ["style"])
+          }, null, 8, ["class", "style"])
         ]),
         _: 1
       }, 512);
