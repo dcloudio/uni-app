@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<SliderProps>(), {
 }
 
 .__uni-loading__paused {
-  animation: none;
+  animation-play-state: paused;
 }
 
 .__loading-4-3__ {
