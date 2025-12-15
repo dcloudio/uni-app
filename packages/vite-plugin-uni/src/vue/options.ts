@@ -327,6 +327,7 @@ export function initPluginVueOptions(
           relativeFilename,
           helper: requireUniHelpers(),
           scriptCppBlocks: (descriptor as any).scriptCppBlocks,
+          genVueId: !!process.env.UNI_AUTOMATOR_WS_ENDPOINT,
           onVueTemplateCompileLog(
             type: 'warn' | 'error',
             error: CompilerError
