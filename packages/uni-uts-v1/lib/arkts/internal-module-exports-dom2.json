@@ -265,6 +265,27 @@
       "CloseOptions"
     ],
     [
+      "ClosePreviewImage"
+    ],
+    [
+      "ClosePreviewImageCompleteCallback"
+    ],
+    [
+      "ClosePreviewImageFail"
+    ],
+    [
+      "ClosePreviewImageFailCallback"
+    ],
+    [
+      "ClosePreviewImageOptions"
+    ],
+    [
+      "ClosePreviewImageSuccess"
+    ],
+    [
+      "ClosePreviewImageSuccessCallback"
+    ],
+    [
       "CloseSocket"
     ],
     [
@@ -868,6 +889,51 @@
       "HideKeyboardSuccessCallback"
     ],
     [
+      "HideLoading"
+    ],
+    [
+      "HideLoadingCompleteCallback"
+    ],
+    [
+      "HideLoadingFail"
+    ],
+    [
+      "HideLoadingFailCallback"
+    ],
+    [
+      "HideLoadingFailErrorCode"
+    ],
+    [
+      "HideLoadingFailImpl"
+    ],
+    [
+      "HideLoadingOptions"
+    ],
+    [
+      "HideLoadingSuccess"
+    ],
+    [
+      "HideLoadingSuccessCallback"
+    ],
+    [
+      "HideModal"
+    ],
+    [
+      "HideModalErrorCode"
+    ],
+    [
+      "HideModalFail"
+    ],
+    [
+      "HideModalFailImpl"
+    ],
+    [
+      "HideModalOptions"
+    ],
+    [
+      "HideModalResult"
+    ],
+    [
       "HideNavigationBarLoading"
     ],
     [
@@ -926,6 +992,9 @@
     ],
     [
       "IOpenDocumentError"
+    ],
+    [
+      "IPreviewImageError"
     ],
     [
       "IPromptError"
@@ -1072,6 +1141,9 @@
       "LoadFontFaceSuccessCallback"
     ],
     [
+      "LoadingPage"
+    ],
+    [
       "LocationErrorCode"
     ],
     [
@@ -1097,6 +1169,15 @@
     ],
     [
       "LoginSuccessCallback"
+    ],
+    [
+      "LongPressActionsFailResult"
+    ],
+    [
+      "LongPressActionsOptions"
+    ],
+    [
+      "LongPressActionsSuccessResult"
     ],
     [
       "MakePhoneCall"
@@ -1136,6 +1217,9 @@
     ],
     [
       "MkDirSuccessCallback"
+    ],
+    [
+      "ModalPage"
     ],
     [
       "OauthErrorCode"
@@ -1346,6 +1430,30 @@
     ],
     [
       "Popover"
+    ],
+    [
+      "PreviewImage"
+    ],
+    [
+      "PreviewImageCompleteCallback"
+    ],
+    [
+      "PreviewImageErrorCode"
+    ],
+    [
+      "PreviewImageFail"
+    ],
+    [
+      "PreviewImageFailCallback"
+    ],
+    [
+      "PreviewImageOptions"
+    ],
+    [
+      "PreviewImageSuccess"
+    ],
+    [
+      "PreviewImageSuccessCallback"
     ],
     [
       "PrivacyChangeResult"
@@ -1879,6 +1987,51 @@
       "ShowActionSheetSuccessImpl"
     ],
     [
+      "ShowLoading"
+    ],
+    [
+      "ShowLoadingCompleteCallback"
+    ],
+    [
+      "ShowLoadingFail"
+    ],
+    [
+      "ShowLoadingFailCallback"
+    ],
+    [
+      "ShowLoadingFailErrorCode"
+    ],
+    [
+      "ShowLoadingFailImpl"
+    ],
+    [
+      "ShowLoadingOptions"
+    ],
+    [
+      "ShowLoadingSuccess"
+    ],
+    [
+      "ShowLoadingSuccessCallback"
+    ],
+    [
+      "ShowModal"
+    ],
+    [
+      "ShowModalErrorCode"
+    ],
+    [
+      "ShowModalFail"
+    ],
+    [
+      "ShowModalFailImpl"
+    ],
+    [
+      "ShowModalOptions"
+    ],
+    [
+      "ShowModalResult"
+    ],
+    [
       "ShowNavigationBarLoading"
     ],
     [
@@ -2005,6 +2158,12 @@
       "UnLinkSuccessCallback"
     ],
     [
+      "UniHideModalFail"
+    ],
+    [
+      "UniHideModalResult"
+    ],
+    [
       "UniInputElement"
     ],
     [
@@ -2021,6 +2180,12 @@
     ],
     [
       "UniShareProvider"
+    ],
+    [
+      "UniShowModalFail"
+    ],
+    [
+      "UniShowModalResult"
     ],
     [
       "UniTextareaElement"
