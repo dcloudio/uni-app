@@ -1,9 +1,25 @@
 <template>
-  <view class="__uni-loading__ __loading-4-3__" style="box-sizing: border-box;"></view>
+
+
+  <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" style="box-sizing: border-box;"></view>
 </template>
 <script setup lang="uts">
+type SliderProps = {
+  paused: boolean
+}
+const props = withDefaults(defineProps<SliderProps>(), {
+  paused: false
+})
 </script>
 <style>
+.default {
+  width: 16px;
+  height: 16px;
+}
+.defaultNativeView {
+  width: 100%;
+  height: 100%;
+}
 .__uni-loading__ {
   width: 100%;
   height: 100%;
@@ -12,23 +28,15 @@
   border-style: solid;
   border-color: transparent;
   transform: translateZ(0);
-  /* 启用硬件加速 */
   image-rendering: -webkit-optimize-contrast;
-  /* 提高图像对比度 */
   image-rendering: crisp-edges;
-  /* 边缘清晰 */
   animation: k-loading-spin 1.333s infinite;
   animation-timing-function: linear;
 }
 
-/*.uni-loading_.loading-4-1 {
-  border-left-color: #007AFF;
+.__uni-loading__paused {
+  animation: none;
 }
-
-.uni-loading_.loading-4-2 {
-  border-left-color: #007AFF;
-  border-top-color: #007AFF;
-}*/
 
 .__loading-4-3__ {
   border-color: #000;
