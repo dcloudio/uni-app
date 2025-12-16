@@ -47,7 +47,10 @@ var index = () => {
             let uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', `dist/${(process.env.UNI_PLATFORM || '').startsWith('mp-') ? 'mp' : 'index'}.esm.js`));
             if (isX) {
                 if (process.env.UNI_UTS_PLATFORM === 'app-android') {
-                    uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'src/runtime/app/index.ts'));
+                    hasRuntimeSocket = false;
+                    // uniConsolePath = resolveBuiltIn(
+                    //   path.join('@dcloudio/uni-console', 'src/runtime/app/index.ts')
+                    // )
                 }
                 else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
                     uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'dist/app.esm.js'));

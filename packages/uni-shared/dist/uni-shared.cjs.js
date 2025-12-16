@@ -2471,7 +2471,15 @@ function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
     return styles;
 }
 
-const APP_NATIVE_TAGS = ['view', 'text', 'image', 'scroll-view', 'native-view'];
+const APP_NATIVE_TAGS = [
+    'view',
+    'text',
+    'image',
+    'scroll-view',
+    'native-view',
+    'nested-scroll-header',
+    'nested-scroll-body',
+];
 function isDom2AppHarmonyNativeTag(tag) {
     return APP_NATIVE_TAGS.includes(tag);
 }
