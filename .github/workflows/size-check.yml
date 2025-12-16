@@ -15,17 +15,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          filter: blob:none
+          fetch-depth: 2
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 9
+        uses: pnpm/action-setup@v4
 
       - name: Set node version to 18.20.0
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 18.20.0
+          check-latest: false
           cache: 'pnpm'
 
       - run: pnpm install
