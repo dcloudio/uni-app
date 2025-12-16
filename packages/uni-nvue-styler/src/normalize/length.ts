@@ -19,8 +19,8 @@ function createNormalizeLength({
   return (v, options) => {
     v = (v || '').toString()
     if (
-      !v.includes('calc(') &&
       options.type === 'uvue' &&
+      !v.includes('calc(') &&
       ((/var\([^)]+\)/.test(v) &&
         (/--uni-safe-area-inset-(top|bottom|left|right)/.test(v) ||
           /--status-bar-height/.test(v))) ||
