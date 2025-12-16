@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          filter: blob:none
+          fetch-depth: 2
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
