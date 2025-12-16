@@ -24,17 +24,19 @@ jobs:
       CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/node_modules/.cache/Cypress
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 9
+        uses: pnpm/action-setup@v4
 
       - name: Set node version to ${{ matrix.node_version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node_version }}
+          check-latest: false
+          cache: 'pnpm'
 
       - run: pnpm install
 
