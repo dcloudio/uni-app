@@ -270,6 +270,9 @@ export declare const toSharedDataViewSlot: (value: string) => UniNativeSlotType;
 export declare const toSharedDataTextSlot: (value: string) => UniNativeSlotType;
 export declare const toSharedDataImageSlot: (value: string) => UniNativeSlotType;
 export declare const toSharedDataScrollViewSlot: (value: string) => UniNativeSlotType;
+export declare const toSharedDataNativeViewSlot: (value: string) => UniNativeSlotType;
+export declare const toSharedDataNestedScrollHeaderSlot: (value: string) => UniNativeSlotType;
+export declare const toSharedDataNestedScrollBodySlot: (value: string) => UniNativeSlotType;
 
 /**
  * 将字符串值转换为 UniImageModeType 枚举类型
@@ -284,6 +287,24 @@ export declare function toSharedDataImageMode(value: string): UniImageModeType;
  * @returns UniNativeScrollViewDirectionType 枚举值
  */
 export declare function toSharedDataScrollViewDirection(value: string): UniNativeScrollViewDirectionType;
+/**
+ * 将字符串值转换为 UniNativeScrollViewRefresherStyleType 枚举类型
+ * @param value - 字符串值
+ * @returns UniNativeScrollViewRefresherStyleType 枚举值
+ */
+export declare function toSharedDataScrollViewRefresherDefaultStyle(value: string): UniNativeScrollViewRefresherStyleType;
+/**
+ * 将字符串值转换为 UniNativeScrollViewType 枚举类型
+ * @param value - 字符串值
+ * @returns UniNativeScrollViewType 枚举值
+ */
+export declare function toSharedDataScrollViewType(value: string): UniNativeScrollViewType;
+/**
+ * 将字符串值转换为 UniNativeScrollViewAssociativeContainerType 枚举类型
+ * @param value - 字符串值
+ * @returns UniNativeScrollViewAssociativeContainerType 枚举值
+ */
+export declare function toSharedDataScrollViewAssociativeContainer(value: string): UniNativeScrollViewAssociativeContainerType;
 
 export declare function getCurrentElementVaporComponentInstance(): VaporSharedDataComponentInstance | null;
 type TemplateFactory = (page: UniPage) => UniElement & {
