@@ -21145,7 +21145,7 @@ const MACROS = [
   WITH_DEFAULTS
 ];
 function compileScript(sfc, options) {
-  var _a, _b, _c;
+  var _a, _b, _c, _d, _e, _f;
   if (!options.id) {
     warnOnce(
       `compileScript now requires passing the \`id\` option.
@@ -21818,16 +21818,18 @@ ${vapor && !ssr ? `` : `return `}${returned}
       options.componentType
     );
     if (componentType === "page" || componentType === "component") {
+      const hasScriptCpp = ((_d = (_c = (_b = options.templateOptions) == null ? void 0 : _b.compilerOptions) == null ? void 0 : _c.scriptCppBlocks) == null ? void 0 : _d.length) > 0;
+      const optionsCode = hasScriptCpp ? `, { scriptCpp: true }` : "";
       if (componentType === "page") {
         setupPreambleLines.unshift(
           `const __sharedDataScope =  _useSharedDataScope(__sharedData)`
         );
         setupPreambleLines.unshift(
-          `const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataPageId()))`
+          `const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataPageId())${optionsCode})`
         );
       } else if (componentType === "component") {
         setupPreambleLines.unshift(
-          `const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope))`
+          `const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope)${optionsCode})`
         );
         setupPreambleLines.unshift(
           `const __sharedDataScope =  _useSharedDataScope()`
@@ -21910,7 +21912,7 @@ ${setupPreamble}`
     }
   }
   if (ctx.helperImports.size > 0) {
-    const runtimeModuleName = (_c = (_b = options.templateOptions) == null ? void 0 : _b.compilerOptions) == null ? void 0 : _c.runtimeModuleName;
+    const runtimeModuleName = (_f = (_e = options.templateOptions) == null ? void 0 : _e.compilerOptions) == null ? void 0 : _f.runtimeModuleName;
     const importSrc = runtimeModuleName ? JSON.stringify(runtimeModuleName) : `'vue'`;
     ctx.s.prepend(
       `import { ${[...ctx.helperImports].map((h) => `${h} as _${h}`).join(", ")} } from ${importSrc}

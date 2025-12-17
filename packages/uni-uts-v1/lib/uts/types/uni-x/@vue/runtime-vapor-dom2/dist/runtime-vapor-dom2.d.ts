@@ -249,8 +249,11 @@ export declare function toSharedDataNumber(value: any | null): number;
 export declare function toSharedDataString(value: any | null): string;
 export declare function toSharedDataColor(value: any | null): number;
 export declare function createSharedDataVFor<T extends UniSharedData>(scope: UniSharedDataPage, create: () => T): UniSharedDataVFor<T>;
-export declare function withSharedDataPage<T extends UniSharedDataPage>(sharedData: T): T;
-export declare function withSharedDataComponent<T extends UniSharedDataComponent>(sharedData: T): T;
+interface WithSharedDataComponentOptions {
+    scriptCpp?: boolean;
+}
+export declare function withSharedDataPage<T extends UniSharedDataPage>(sharedData: T, options?: WithSharedDataComponentOptions | null): T;
+export declare function withSharedDataComponent<T extends UniSharedDataComponent>(sharedData: T, options?: WithSharedDataComponentOptions | null): T;
 /**
  * 仅限页面 renderSharedData 紧跟着 useSharedDataPage 使用，用于及时给页面示例挂靠 sharedDataScope
  * 这样组件 create 的时候，就可以及时获取到sharedDataScope
