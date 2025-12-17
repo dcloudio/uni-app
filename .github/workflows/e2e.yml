@@ -20,8 +20,6 @@ jobs:
             node_version: 18.20.0
       fail-fast: false
     name: 'e2e: node-${{ matrix.node_version }}, ${{ matrix.os }}'
-    env:
-      CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/node_modules/.cache/Cypress
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,10 +36,20 @@ jobs:
           check-latest: false
           cache: 'pnpm'
 
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+
       - name: Install dependencies
         run: pnpm install
-        env:
-          CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/node_modules/.cache/Cypress
+
+      - name: Ensure Cypress is installed
+        run: npx cypress install
 
       - name: Build
         run: npm run build:h5
@@ -67,7 +75,6 @@ jobs:
           wait-on-timeout: 480
           browser: chrome
         env:
-          CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/node_modules/.cache/Cypress
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cypress run
@@ -80,5 +87,4 @@ jobs:
           wait-on-timeout: 480
           browser: chrome
         env:
-          CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/node_modules/.cache/Cypress
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
