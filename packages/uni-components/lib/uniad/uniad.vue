@@ -3,7 +3,9 @@
     <uniad-plugin
       class="uniad-plugin"
       :adpid="adpid"
+      :isUni="true"
       :unit-id="unitId"
+      :adIntervals="adIntervals"
       @load="_onmpload"
       @close="_onmpclose"
       @error="_onmperror"
@@ -11,7 +13,7 @@
       @customFullscreen="_customFullscreen"
     />
     <!-- #ifdef MP-WEIXIN -->
-    <ad-custom v-if="userwx" :unit-id="userUnitId" class="uni-ad-custom" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
+    <ad-custom v-if="userwx" :unit-id="userUnitId" :adIntervals="adIntervals" class="uni-ad-custom" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
     <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" :class="[customFullscreen]" @load="_onmpload" @error="_onwxchannelerror"></uniad-plugin-wx>
     <!-- #endif -->
   </view>
