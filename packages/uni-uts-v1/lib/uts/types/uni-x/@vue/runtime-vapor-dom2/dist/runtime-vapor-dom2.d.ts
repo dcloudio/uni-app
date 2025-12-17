@@ -252,6 +252,7 @@ export declare function toSharedDataColor(value: any | null): number;
 export declare function createSharedDataVFor<T extends UniSharedData>(scope: UniSharedDataPage, create: () => T): UniSharedDataVFor<T>;
 interface WithSharedDataComponentOptions {
     scriptCpp?: boolean;
+    setVueId?: boolean;
 }
 export declare function withSharedDataPage<T extends UniSharedDataPage>(sharedData: T, options?: WithSharedDataComponentOptions | null): T;
 export declare function withSharedDataComponent<T extends UniSharedDataComponent>(sharedData: T, options?: WithSharedDataComponentOptions | null): T;
@@ -329,7 +330,7 @@ type TemplateFactory = (page: UniPage) => UniElement & {
     $root?: true;
 };
 export declare function elementFactory(page: UniPage, factory: TemplateFactory, root?: boolean): () => UniElement;
-export declare const renderElementEffect: typeof renderSharedDataEffect;
+export declare function renderElementEffect(fn: (first: boolean) => void, noLifecycle?: boolean): void;
 export declare function nextElement(node: UniElement): UniElement;
 export declare function nthChildElement(node: UniElement, i: number): UniElement;
 export declare function childElement(node: UniElement): UniElement;
@@ -381,7 +382,7 @@ type NativeViewFactory = (page: UniPage) => UniNativeBaseView & {
     $root?: true;
 };
 export declare function nativeViewFactory(page: UniPage, factory: NativeViewFactory, root?: boolean): () => UniNativeBaseView;
-export declare const renderNativeViewEffect: typeof renderSharedDataEffect;
+export declare function renderNativeViewEffect(fn: (first: boolean) => void, noLifecycle?: boolean): void;
 export declare function nextNativeView(node: UniNativeBaseView): UniNativeBaseView;
 export declare function nthChildNativeView(node: UniNativeBaseView, i: number): UniNativeBaseView;
 export declare function childNativeView(node: UniNativeBaseView): UniNativeBaseView;
