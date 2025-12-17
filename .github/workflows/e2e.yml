@@ -41,6 +41,8 @@ jobs:
         with:
           path: |
             ~/.cache/Cypress
+            ~/Library/Caches/Cypress
+            %LOCALAPPDATA%\Cypress\Cache
           key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-cypress-
