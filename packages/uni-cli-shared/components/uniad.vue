@@ -3,6 +3,7 @@
     <uniad-plugin
       class="uniad-plugin"
       :adpid="adpid"
+      :isUni="true"
       :adIntervals="adIntervals"
       @load="_onmpload"
       @close="_onmpclose"
