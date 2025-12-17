@@ -55375,11 +55375,11 @@ ${vapor && !ssr ? `` : `return `}${returned}
           `const __sharedDataScope =  _useSharedDataScope(__sharedData)`
         );
         setupPreambleLines.unshift(
-          `const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataPageId())${optionsCode})`
+          `const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataPageId(), _useSharedDataPageOptions())${optionsCode})`
         );
       } else if (componentType === "component") {
         setupPreambleLines.unshift(
-          `const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope)${optionsCode})`
+          `const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope, _useSharedDataComponentOptions())${optionsCode})`
         );
         setupPreambleLines.unshift(
           `const __sharedDataScope =  _useSharedDataScope()`

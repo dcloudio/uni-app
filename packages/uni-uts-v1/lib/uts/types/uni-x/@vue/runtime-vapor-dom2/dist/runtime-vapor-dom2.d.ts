@@ -56,6 +56,7 @@ export declare function createSharedDataSlot(name: string | (() => string), rawP
 export type VaporSharedDataComponent = ObjectVaporSharedDataComponent & {
     __className?: string;
     externalClasses?: string[];
+    styleIsolation?: 'isolated' | 'app-shared';
 };
 type VaporSharedDataSetupFn = (props: any, ctx: Pick<VaporSharedDataComponentInstance, 'slots' | 'attrs' | 'emit' | 'expose' | 'pageId'>) => UniSharedData;
 interface ObjectVaporSharedDataComponent extends ComponentInternalOptions, SharedInternalOptions {
@@ -262,6 +263,20 @@ export declare function withSharedDataComponent<T extends UniSharedDataComponent
  */
 export declare function useSharedDataScope<T extends UniSharedDataPage>(scope?: T): T;
 export declare function useSharedDataPageId(): number;
+declare enum UniSharedDataComponentStyleIsolation {
+    Isolated = 0,
+    AppShared = 1
+}
+declare enum UniSharedDataComponentRenderer {
+    Component = 0,
+    Page = 1
+}
+interface UniSharedDataComponentOptions {
+    styleIsolation: UniSharedDataComponentStyleIsolation;
+    renderer: UniSharedDataComponentRenderer;
+}
+export declare function useSharedDataPageOptions(): UniSharedDataComponentOptions;
+export declare function useSharedDataComponentOptions(): UniSharedDataComponentOptions;
 
 /**
  * 将字符串值转换为 UniNativeSlotType 枚举类型
