@@ -20,38 +20,23 @@ jobs:
             node_version: 18.20.0
       fail-fast: false
     name: 'e2e: node-${{ matrix.node_version }}, ${{ matrix.os }}'
+    env:
+      CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/node_modules/.cache/Cypress
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
+        uses: actions/checkout@v2
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 9
 
       - name: Set node version to ${{ matrix.node_version }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
-          check-latest: false
-          cache: 'pnpm'
 
-      - name: Cache Cypress binary
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/Cypress
-            ~/Library/Caches/Cypress
-            ~\AppData\Local\Cypress\Cache
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-cypress-
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Ensure Cypress is installed
-        run: npx cypress install
+      - run: pnpm install
 
       - name: Build
         run: npm run build:h5
