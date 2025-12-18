@@ -155,6 +155,18 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
     rtc?: LifecycleHook;
     ec?: LifecycleHook;
     sp?: LifecycleHook<() => Promise<unknown>>;
+    /**
+     * fixed by uts
+     * 页面 ready 之前收集到的 mounted 事件列表，包括自己和子组件的
+     * 为了确保 mounted 事件在页面 ready 之前执行
+     * 目前页面 ready 是 c 层 waitNativeRender 触发的
+     * 如果在 mountComponent 的时候，把 mounted 放到 waitNativeRender 里执行，此时还没有任务，会导致执行过早
+     * 如果放到 nextTick 或 queuePostFlushCb 里执行，又会导致执行过晚(比如页面 ready 之后才执行)
+     * 所以简单起见先收集，等页面 ready 了，再统一执行
+     * 另一个方案是 mounted 也由 c 层触发，但这样还要判断开发者是否监听了 mounted 事件，还牵扯多次跨语言通讯的问题
+     * 所以采用方案1，简单处理
+     */
+    mountedJobs?: Array<() => void>;
     setupState?: Record<string, any>;
     devtoolsRawSetupState?: any;
     hmrRerender?: () => void;

@@ -1884,6 +1884,16 @@ function parsePageStyle(route) {
   }
   return style;
 }
+function invokeMountedJobs(proxy2) {
+  var {
+    mountedJobs
+  } = proxy2.$;
+  if (mountedJobs) {
+    var jobs = mountedJobs.slice();
+    mountedJobs.length = 0;
+    jobs.forEach((job) => job());
+  }
+}
 function registerPage(_ref, onCreated) {
   var {
     url,
@@ -1955,6 +1965,9 @@ function registerPage(_ref, onCreated) {
         invokeHook(pageComponentPublicInstance, ON_UNLOAD);
       });
       nativePage.addPageEventListener(ON_READY, (_) => {
+        {
+          invokeMountedJobs(pageComponentPublicInstance);
+        }
         invokePageReadyHooks(pageComponentPublicInstance);
         invokeHook(pageComponentPublicInstance, ON_READY);
       });
