@@ -67,6 +67,9 @@
       "Base64ToArrayBuffer"
     ],
     [
+      "CanvasContext"
+    ],
+    [
       "Certificate"
     ],
     [
@@ -383,6 +386,21 @@
     ],
     [
       "CreateBackgroundAudioErrorCode"
+    ],
+    [
+      "CreateCanvasContextAsync"
+    ],
+    [
+      "CreateCanvasContextAsyncCompleteCallback"
+    ],
+    [
+      "CreateCanvasContextAsyncFailCallback"
+    ],
+    [
+      "CreateCanvasContextAsyncOptions"
+    ],
+    [
+      "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
       "CreateInnerAudioContext"
@@ -1555,6 +1573,9 @@
       "RenameOptions"
     ],
     [
+      "RequestAnimationFrameCallback"
+    ],
+    [
       "RequestCompleteCallback"
     ],
     [
@@ -2156,6 +2177,9 @@
     ],
     [
       "UnLinkSuccessCallback"
+    ],
+    [
+      "UniCanvasDom2Element"
     ],
     [
       "UniHideModalFail"
