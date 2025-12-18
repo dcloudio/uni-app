@@ -14,14 +14,14 @@ declare class VaporFragment {
     constructor(nodes: Block);
 }
 declare class DynamicFragment extends VaporFragment {
-    anchor: Node;
     scope: EffectScope | undefined;
     current?: BlockFn;
     fallback?: BlockFn;
     getScope?: (key: any) => EffectScope | undefined;
+    slotOwner: VaporSharedDataComponentInstance | null;
     constructor(anchorLabel?: string);
     update(render?: BlockFn | null, key?: any): void;
-    private render;
+    private renderBranch;
 }
 
 type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | Block[];
@@ -135,6 +135,8 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
     asyncDep: Promise<any> | null;
     asyncResolved: boolean;
     hasFallthrough: boolean;
+    shapeFlag?: number;
+    oncePropsCache?: Record<string | symbol, any>;
     isMounted: boolean;
     isUnmounted: boolean;
     isDeactivated: boolean;

@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-alpha.6
+* @vue/compiler-sfc v3.6.0-alpha.7
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -22114,7 +22114,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
   return generator.toJSON();
 }
 
-const version = "3.6.0-alpha.6";
+const version = "3.6.0-alpha.7";
 const parseCache = parseCache$1;
 const errorMessages = {
   ...CompilerDOM.errorMessages,

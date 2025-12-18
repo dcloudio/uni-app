@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-vapor v3.6.0-alpha.6
+* @vue/compiler-vapor v3.6.0-alpha.7
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -1647,7 +1647,7 @@ function genPropKey({ key: node, modifier, runtimeCamelize, handler, handlerModi
   const { helper } = context;
   const handlerModifierPostfix = handlerModifiers && handlerModifiers.options ? handlerModifiers.options.map(shared.capitalize).join("") : "";
   if (node.isStatic) {
-    const keyName = (handler ? shared.toHandlerKey(node.content) : node.content) + handlerModifierPostfix;
+    const keyName = (handler ? shared.toHandlerKey(shared.camelize(node.content)) : node.content) + handlerModifierPostfix;
     return [
       [
         compilerDom.isSimpleIdentifier(keyName) ? keyName : JSON.stringify(keyName),
@@ -2018,7 +2018,15 @@ function genDynamicProps(props, context) {
         expr = genMulti(DELIMITERS_OBJECT, genProp(p, context));
       else {
         expr = genExpression(p.value, context);
-        if (p.handler) expr = genCall(helper("toHandlers"), expr);
+        if (p.handler)
+          expr = genCall(
+            helper("toHandlers"),
+            expr,
+            `false`,
+            // preserveCaseIfNecessary: false, not needed for component
+            `true`
+            // wrap handler values in functions
+          );
       }
     }
     frags.push(["() => (", ...expr, ")"]);
@@ -2497,7 +2505,13 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
       }
     } else {
       if (elementIndex === 0) {
-        pushBlock(...genCall(helper("child"), from, String(logicalIndex)));
+        pushBlock(
+          ...genCall(
+            helper("child"),
+            from,
+            logicalIndex !== 0 ? String(logicalIndex) : void 0
+          )
+        );
       } else {
         let init = genCall(helper("child"), from);
         if (elementIndex === 1) {

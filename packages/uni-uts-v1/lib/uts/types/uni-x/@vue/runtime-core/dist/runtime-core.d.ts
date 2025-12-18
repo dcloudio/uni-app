@@ -385,7 +385,7 @@ export type EmitsToProps<T extends EmitsOptions | ComponentTypeEmits> = T extend
 } : T extends ObjectEmitsOptions ? {
     [K in string & keyof T as `on${Capitalize<K>}`]?: (...args: T[K] extends (...args: infer P) => any ? P : T[K] extends null ? any[] : never) => any;
 } : {};
-type TypeEmitsToOptions<T extends ComponentTypeEmits> = {
+export type TypeEmitsToOptions<T extends ComponentTypeEmits> = {
     [K in keyof T & string]: T[K] extends [...args: infer Args] ? (...args: Args) => any : () => any;
 } & (T extends (...args: any[]) => any ? ParametersToFns<OverloadParameters<T>> : {});
 type ParametersToFns<T extends any[]> = {
@@ -481,7 +481,7 @@ type ComponentPublicInstanceConstructor<T extends ComponentPublicInstance<Props,
     __isFragment?: never;
     __isTeleport?: never;
     __isSuspense?: never;
-    new (...args: any[]): T;
+    new (props?: T['$props']): T;
 };
 /**
  * @deprecated This is no longer used internally, but exported and relied on by
@@ -563,7 +563,7 @@ declare const SuspenseImpl: {
 };
 export declare const Suspense: {
     __isSuspense: true;
-    new (): {
+    new (props?: VNodeProps & SuspenseProps): {
         $props: VNodeProps & SuspenseProps;
         $slots: {
             default(): VNode[];
@@ -763,7 +763,7 @@ export interface KeepAliveContext extends ComponentRenderContext {
 }
 export declare const KeepAlive: {
     __isKeepAlive: true;
-    new (): {
+    new (props?: VNodeProps & KeepAliveProps): {
         $props: VNodeProps & KeepAliveProps;
         $slots: {
             default(): VNode[];
@@ -1209,7 +1209,7 @@ declare function moveTeleport(vnode: VNode, container: RendererElement, parentAn
 declare function hydrateTeleport(node: Node, vnode: TeleportVNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean, { o: { nextSibling, parentNode, querySelector, insert, createText }, }: RendererInternals<Node, Element>, hydrateChildren: (node: Node | null, vnode: VNode, container: Element, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean) => Node | null, container: RendererElement): Node | null;
 export declare const Teleport: {
     __isTeleport: true;
-    new (): {
+    new (props?: VNodeProps & TeleportProps): {
         $props: VNodeProps & TeleportProps;
         $slots: {
             default(): VNode[];
@@ -1408,7 +1408,7 @@ type Data = Record<string, unknown>;
  * ```
  */
 export type ComponentInstance<T> = T extends {
-    new (): ComponentPublicInstance;
+    new (...args: any[]): ComponentPublicInstance;
 } ? InstanceType<T> : T extends FunctionalComponent<infer Props, infer Emits> ? ComponentPublicInstance<Props, {}, {}, {}, {}, ShortEmitsToObject<Emits>> : T extends Component<infer PropsOrInstance, infer RawBindings, infer D, infer C, infer M> ? PropsOrInstance extends {
     $props: unknown;
 } ? PropsOrInstance : ComponentPublicInstance<unknown extends PropsOrInstance ? {} : PropsOrInstance, unknown extends RawBindings ? {} : RawBindings, unknown extends D ? {} : D, C, M> : never;
@@ -1676,7 +1676,7 @@ interface Constructor<P = any> {
     __isFragment?: never;
     __isTeleport?: never;
     __isSuspense?: never;
-    new (...args: any[]): {
+    new (props?: P): {
         $props: P;
     };
 }
@@ -1810,7 +1810,7 @@ export declare function renderList<T>(source: T, renderItem: <K extends keyof T>
  * For prefixing keys in v-on="obj" with "on"
  * @private
  */
-export declare function toHandlers(obj: Record<string, any>, preserveCaseIfNecessary?: boolean): Record<string, any>;
+export declare function toHandlers(obj: Record<string, any>, preserveCaseIfNecessary?: boolean, needWrap?: boolean): Record<string, any>;
 
 /**
  * Compiler runtime helper for rendering `<slot/>`
