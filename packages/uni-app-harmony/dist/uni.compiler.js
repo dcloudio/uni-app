@@ -255,6 +255,7 @@ const ExtApiBlackListDom2 = [
     // 临时屏蔽
     'uni-chooseLocation',
     'uni-picker',
+    'uni-canvas-dom2',
 ];
 const ExtApiBlackList = [
     'uni-loadFontFace',
