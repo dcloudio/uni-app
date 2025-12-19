@@ -1,5 +1,5 @@
-import { extend, invokeArrayFns, isPromise } from '@vue/shared'
-import type { ComponentPublicInstance, LifecycleHook } from 'vue'
+import { extend, isPromise } from '@vue/shared'
+import type { ComponentPublicInstance } from 'vue'
 import type { IPage } from '@dcloudio/uni-app-x/types/native'
 import type { EventChannel, UniNode } from '@dcloudio/uni-shared'
 import {
