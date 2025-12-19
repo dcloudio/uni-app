@@ -62,6 +62,15 @@
         })
     })
 
+    onResize((res : OnResizeOptions) => {
+        const expressions: Expression[] = getExpressions()
+        show.value = isValid(expressions, {
+            width: res.size.windowWidth,
+            height: res.size.windowHeight,
+            orientation: res.deviceOrientation,
+        })
+    })
+
     watch(props, () => {
         const expressions: Expression[] = getExpressions()
         const { windowWidth, windowHeight } = uni.getWindowInfo()
