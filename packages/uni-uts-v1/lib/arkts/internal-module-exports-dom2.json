@@ -67,6 +67,9 @@
       "Base64ToArrayBuffer"
     ],
     [
+      "CanvasContext"
+    ],
+    [
       "Certificate"
     ],
     [
@@ -176,6 +179,30 @@
     ],
     [
       "ChooseImageTempFile"
+    ],
+    [
+      "ChooseLocation"
+    ],
+    [
+      "ChooseLocationComplete"
+    ],
+    [
+      "ChooseLocationErrorCode"
+    ],
+    [
+      "ChooseLocationFail"
+    ],
+    [
+      "ChooseLocationFailImpl"
+    ],
+    [
+      "ChooseLocationOptions"
+    ],
+    [
+      "ChooseLocationSuccess"
+    ],
+    [
+      "ChooseLocationSuccessImpl"
     ],
     [
       "ChooseMedia"
@@ -383,6 +410,21 @@
     ],
     [
       "CreateBackgroundAudioErrorCode"
+    ],
+    [
+      "CreateCanvasContextAsync"
+    ],
+    [
+      "CreateCanvasContextAsyncCompleteCallback"
+    ],
+    [
+      "CreateCanvasContextAsyncFailCallback"
+    ],
+    [
+      "CreateCanvasContextAsyncOptions"
+    ],
+    [
+      "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
       "CreateInnerAudioContext"
@@ -1555,6 +1597,9 @@
       "RenameOptions"
     ],
     [
+      "RequestAnimationFrameCallback"
+    ],
+    [
       "RequestCompleteCallback"
     ],
     [
@@ -2156,6 +2201,9 @@
     ],
     [
       "UnLinkSuccessCallback"
+    ],
+    [
+      "UniCanvasElement"
     ],
     [
       "UniHideModalFail"
