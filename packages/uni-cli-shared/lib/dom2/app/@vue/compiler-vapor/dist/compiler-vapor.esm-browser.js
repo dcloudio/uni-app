@@ -24544,9 +24544,9 @@ function transformComponentElement(node, propsResult, singleRoot, context, isDyn
   let { tag } = node;
   let asset = true;
   if (!dynamicComponent && !isCustomElement) {
-    const { isEasyComponent } = context.options;
-    const isEasyCom = isEasyComponent && isEasyComponent(tag);
-    if (!isEasyCom) {
+    const { isVueComponent } = context.options;
+    const isVueCom = isVueComponent && isVueComponent(tag);
+    if (!isVueCom) {
       const fromSetup = resolveSetupReference(tag, context);
       if (fromSetup) {
         tag = fromSetup;
