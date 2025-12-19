@@ -2480,8 +2480,59 @@ const APP_NATIVE_TAGS = [
     'nested-scroll-header',
     'nested-scroll-body',
 ];
-function isDom2AppHarmonyNativeTag(tag) {
+function isDom2AppNativeTag(tag) {
     return APP_NATIVE_TAGS.includes(tag);
+}
+const APP_VUE_COMPONENT_TAGS = [
+    'swiper',
+    'swiper-item',
+    'match-media',
+    // 'movable-area',
+    // 'movable-view',
+    // 'cover-view',
+    // 'cover-image',
+    'list-view',
+    'list-item',
+    // 'waterflow',
+    // 'flow-item',
+    // 'sticky-header',
+    // 'sticky-section',
+    // 'share-element',
+    'icon',
+    'rich-text',
+    'progress',
+    'button',
+    'checkbox-group',
+    'checkbox',
+    'form',
+    'input',
+    // 'editor',
+    'label',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'radio-group',
+    'radio',
+    'slider',
+    'switch',
+    'textarea',
+    'navigator',
+    'video',
+    // 'animation-view',
+    // 'camera',
+    // 'live-player',
+    // 'live-pusher',
+    'map',
+    'canvas',
+    // 'ad',
+    'web-view',
+    'loading',
+];
+function isDom2VueComponentTag(tag) {
+    return APP_VUE_COMPONENT_TAGS.includes(tag);
+}
+function isDom2AppVueComponentTag(tag) {
+    return APP_VUE_COMPONENT_TAGS.includes(tag);
 }
 
 function getEnvLocale() {
@@ -2681,7 +2732,9 @@ exports.isAppVoidTag = isAppVoidTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;
-exports.isDom2AppHarmonyNativeTag = isDom2AppHarmonyNativeTag;
+exports.isDom2AppNativeTag = isDom2AppNativeTag;
+exports.isDom2AppVueComponentTag = isDom2AppVueComponentTag;
+exports.isDom2VueComponentTag = isDom2VueComponentTag;
 exports.isGloballyAllowed = isGloballyAllowed;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;

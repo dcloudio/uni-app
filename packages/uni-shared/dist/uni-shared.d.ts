@@ -301,7 +301,11 @@ export declare function isComponentInternalInstance(vm: unknown): vm is Componen
 
 export declare function isComponentTag(tag: string): boolean;
 
-export declare function isDom2AppHarmonyNativeTag(tag: string): boolean;
+export declare function isDom2AppNativeTag(tag: string): boolean;
+
+export declare function isDom2AppVueComponentTag(tag: string): boolean;
+
+export declare function isDom2VueComponentTag(tag: string): boolean;
 
 export declare const isGloballyAllowed: (key: string) => boolean;
 
