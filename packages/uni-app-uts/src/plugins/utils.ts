@@ -3,7 +3,7 @@ import {
   isAppHarmonyUVueNativeTag,
   isAppIOSUVueNativeTag,
   isAppUVueBuiltInEasyComponent,
-  isDom2AppHarmonyNativeTag,
+  isDom2AppNativeTag,
 } from '@dcloudio/uni-shared'
 import {
   MANIFEST_JSON_UTS,
@@ -74,7 +74,7 @@ export function createUniOptions(
         ? {
             isNativeTag(tag) {
               if (process.env.UNI_APP_X_DOM2 === 'true') {
-                return isDom2AppHarmonyNativeTag(tag)
+                return isDom2AppNativeTag(tag)
               }
               return (
                 isUTSCustomElement(tag) ||

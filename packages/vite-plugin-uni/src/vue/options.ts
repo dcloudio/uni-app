@@ -10,6 +10,7 @@ import type {
   TemplateCompiler,
 } from '@vue/compiler-sfc'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
+import { isDom2VueComponentTag } from '@dcloudio/uni-shared'
 import {
   EXTNAME_VUE_RE,
   type UniVitePlugin,
@@ -298,8 +299,9 @@ export function initPluginVueOptions(
       function isAppVue(id: string) {
         return normalizePath(id) === appVue
       }
-      ;(compilerOptions as any).isEasyComponent = (tag: string) =>
-        !!matchEasycom(tag)
+      ;(compilerOptions as any).isVueComponent = (tag: string) => {
+        return isDom2VueComponentTag(tag) || !!matchEasycom(tag)
+      }
       ;(vueOptions.script as any).extraOptions = (
         descriptor: SFCDescriptor
       ) => {
