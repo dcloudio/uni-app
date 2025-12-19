@@ -23,12 +23,71 @@
 
 
     interface MatchMediaProps {
+        /**
+         * 屏幕方向
+         * @uniPlatform {
+           "app": {
+             "harmony": {
+               "unixvVer": "5.0"
+             }
+           }
+         }
+         */
         orientation? : string;
+        /**
+         * 页面宽度（px 为单位）
+         * @uniPlatform {
+           "app": {
+             "harmony": {
+               "unixvVer": "5.0"
+             }
+           }
+         }
+         */
         width?: string | number;
+        /**
+         * 页面最小宽度（px 为单位）
+         * @uniPlatform {
+           "app": {
+             "harmony": {
+               "unixvVer": "5.0"
+             }
+           }
+         }
+         */
         minWidth?: string | number;
-        maxWidth?: string | number;
+        /**
+         * 页面最大宽度（px 为单位）
+         * @uniPlatform {
+           "app": {
+             "harmony": {
+               "unixvVer": "5.0"
+             }
+           }
+         }
+         */
         height?: string | number;
+        /**
+         * 页面最小高度（px 为单位）
+         * @uniPlatform {
+           "app": {
+             "harmony": {
+               "unixvVer": "5.0"
+             }
+           }
+         }
+         */
         minHeight?: string | number;
+        /**
+         * 页面最大高度（px 为单位）
+         * @uniPlatform {
+           "app": {
+             "harmony": {
+               "unixvVer": "5.0"
+             }
+           }
+         }
+         */
         maxHeight?: string | number;
     }
 
