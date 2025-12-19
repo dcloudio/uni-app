@@ -389,6 +389,7 @@ export declare function setElementInsertionState(parent: UniElement, anchor?: Un
 export declare function getElementInsertionParent(): UniElement | null;
 export declare function onElement(node: UniElement, event: string, fn: (event: UniEvent) => void, options?: AddEventListenerOptions & {
     effect?: boolean;
+    stop?: boolean;
 }): void;
 export declare function onElementRef(node: UniElement, fn: Function): void;
 
