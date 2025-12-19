@@ -3,6 +3,10 @@
   Author Tobias Koppers @sokra
   Modified by Evan You @yyx990803
 */
+const {
+  createRpx2Unit,
+  getRpx2Unit
+} = require('@dcloudio/uni-cli-shared/lib/style')
 
 import listToStyles from './listToStyles'
 
@@ -230,6 +234,8 @@ var VAR_WINDOW_LEFT = /var\(--window-left\)/gi
 var VAR_WINDOW_RIGHT = /var\(--window-right\)/gi
 
 var statusBarHeight = false
+var rpx2unit = createRpx2Unit(getRpx2Unit().unit, getRpx2Unit().unitRatio, getRpx2Unit().unitPrecision)
+
 function processCss(css) {
 	if (!uni.canIUse('css.var')) { //不支持 css 变量
     if (statusBarHeight === false) {
@@ -246,9 +252,10 @@ function processCss(css) {
             .replace(VAR_WINDOW_LEFT, '0px')
             .replace(VAR_WINDOW_RIGHT, '0px')
 	}
+  const dynamicRpx = (__uniConfig.globalStyle || __uniConfig.window || {}).dynamicRpx === true
   return css.replace(/\{[\s\S]+?\}|@media.+?\{/g, function (css) {
     return css.replace(UPX_RE, function (a, b) {
-      return uni.upx2px(b) + 'px'
+      return dynamicRpx ? rpx2unit(b) : uni.upx2px(b) + 'px'
     })
   })
 }

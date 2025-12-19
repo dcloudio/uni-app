@@ -1,13 +1,13 @@
 const compiler = require('../lib')
 
-function assertCodegen (template, templateCode, renderCode = 'with(this){}') {
+function assertCodegen (template, templateCode, renderCode = 'with(this){}', platform = 'mp-weixin') {
   const res = compiler.compile(template, {
     resourcePath: 'it.wxml',
     mp: Object.assign(
       {
         minified: true,
         isTest: true,
-        platform: 'mp-weixin'
+        platform: platform
       },
       { mergeVirtualHostAttributes: true }
     )
@@ -22,7 +22,7 @@ function assertCodegen (template, templateCode, renderCode = 'with(this){}') {
   }
 }
 
-describe('compiler-mp-merge-virtual-host-attributes', () => {
+describe('compiler-mp-weixin-merge-virtual-host-attributes', () => {
   it('root node class', () => {
     assertCodegen(
       '<view class="red blue"><text>hello world</text></view>',
@@ -103,6 +103,45 @@ describe('compiler-mp-merge-virtual-host-attributes', () => {
     assertCodegen(
       '<view><text v-for="item in 3" :key="item" :style="{ color: \'red\' }" :class="{ \'blue\': true }">hello world {{ item }}</text></view>',
       '<view class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}"><block wx:for="{{3}}" wx:for-item="item" wx:for-index="__i0__" wx:key="*this"><text class="{{[(true)?\'blue\':\'\']}}" style="{{\'color:\'+(\'red\')+\';\'}}">{{"hello world "+item}}</text></block></view>'
+    )
+  })
+})
+
+describe('compiler-mp-alipay-merge-virtual-host-attributes', () => {
+  it('root node class', () => {
+    assertCodegen(
+      '<view>hello</view>',
+      "<view class=\"{{(virtualHostClass||'')}}\" style=\"{{virtualHostStyle}}\">hello</view>",
+      undefined,
+      'mp-alipay'
+    )
+
+    assertCodegen(
+      '<view class="red blue"><text>hello world</text></view>',
+      "<view class=\"{{((('red')+' '+'blue')+' '+(virtualHostClass||''))}}\" style=\"{{virtualHostStyle}}\"><text>hello world</text></view>",
+      undefined,
+      'mp-alipay'
+    )
+
+    assertCodegen(
+      '<view :class="class1"><text>hello world</text></view>',
+      "<view class=\"{{((class1)+' '+(virtualHostClass||''))}}\" style=\"{{virtualHostStyle}}\"><text>hello world</text></view>",
+      undefined,
+      'mp-alipay'
+    )
+
+    assertCodegen(
+      '<view class="red blue" :class="class1"><text>hello world</text></view>',
+      "<view class=\"{{(((('red')+' '+'blue')+' '+class1)+' '+(virtualHostClass||''))}}\" style=\"{{virtualHostStyle}}\"><text>hello world</text></view>",
+      undefined,
+      'mp-alipay'
+    )
+
+    assertCodegen(
+      '<view class="red blue" :class="{ class1: true }"><text>hello world</text></view>',
+      "<view class=\"{{(((('red')+' '+'blue')+' '+((true)?'class1':''))+' '+(virtualHostClass||''))}}\" style=\"{{virtualHostStyle}}\"><text>hello world</text></view>",
+      undefined,
+      'mp-alipay'
     )
   })
 })

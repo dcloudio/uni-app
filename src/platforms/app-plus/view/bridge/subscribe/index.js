@@ -19,6 +19,7 @@ import {
   WEBVIEW_READY,
   SET_LOCALE
 } from '../../../constants'
+import { useRem } from 'uni-core/view/plugins/rem'
 
 const passiveOptions = supportsPassive ? {
   passive: false
@@ -76,6 +77,9 @@ function onPageCreate ({
         onReachBottomDistance
       }))
     })
+  }
+  if ((__uniConfig.globalStyle || __uniConfig.window || {}).dynamicRpx === true) {
+    useRem()
   }
 }
 

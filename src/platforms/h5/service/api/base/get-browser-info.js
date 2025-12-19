@@ -59,6 +59,12 @@ const isLinux = /Linux|X11/i.test(ua)
  * 是否是iPadOS
  */
 const isIPadOS = isMac && navigator.maxTouchPoints > 0
+
+/**
+ * 是否是鸿蒙
+ */
+const isHarmony = /OpenHarmony/i.test(ua)
+
 /**
  * 获取系统信息-同步
  */
@@ -74,6 +80,14 @@ export function getBrowserInfo () {
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/)
     if (osversionFind) {
       osversion = osversionFind[1].replace(/_/g, '.')
+    }
+    // iOS 26+ 需要从 Version/ 中读取真实版本号
+    const iosVersion = osversion.split('.')[0]
+    if (Number(iosVersion) >= 18) {
+      const versionMatch = ua.match(/Version\/([\d.]+)/)
+      if (versionMatch) {
+        osversion = versionMatch[1]
+      }
     }
     const modelFind = ua.match(/\(([a-zA-Z]+);/)
     if (modelFind) {
@@ -176,6 +190,15 @@ export function getBrowserInfo () {
         }
       }
     }
+  } else if (isHarmony) {
+    osname = 'Harmony'
+    const versionMatch = ua.match(/OpenHarmony\s([\d.]+)/i)
+    if (versionMatch) {
+      osversion = versionMatch[1]
+    }
+    // 不区分 pad/phone，统一按手机处理
+    deviceType = 'phone'
+    model = undefined
   } else {
     osname = 'Other'
     osversion = '0'

@@ -74,6 +74,14 @@ const {
   initTheme
 } = require('./theme')
 
+const {
+  createRpx2Unit,
+  defaultRpx2Unit,
+  unitRE,
+  setRpx2Unit,
+  getRpx2Unit
+} = require('./style')
+
 module.exports = {
   uts,
   md5,
@@ -130,5 +138,10 @@ module.exports = {
   getPlatformUniCloud,
   parseTheme,
   initTheme,
-  getDevUniConsoleCode
+  getDevUniConsoleCode,
+  createRpx2Unit,
+  defaultRpx2Unit,
+  unitRE,
+  setRpx2Unit,
+  getRpx2Unit
 }

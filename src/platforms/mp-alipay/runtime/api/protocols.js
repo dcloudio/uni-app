@@ -65,7 +65,7 @@ function _handleNetworkInfo (result) {
       result.networkType = 'none'
       break
     case 'WWAN':
-      // TODO ?
+      // TODO 无线广域网，微信没有对应的值，使用 3g 代替 https://opendocs.alipay.com/mini/api/network-status#success%20%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0
       result.networkType = '3g'
       break
     default:
@@ -76,7 +76,7 @@ function _handleNetworkInfo (result) {
 }
 
 const protocols = { // 需要做转换的 API 列表
-  navigateTo: navigateTo(),
+  navigateTo: my.canIUse('page.getOpenerEventChannel') ? {} : navigateTo(),
   redirectTo,
   returnValue (methodName, res = {}) { // 通用 returnValue 解析
     if (res.error || res.errorMessage) {
@@ -213,7 +213,9 @@ const protocols = { // 需要做转换的 API 列表
       if (!fromArgs.mask) {
         toArgs.mask = false
       }
-      toArgs.content = fromArgs.title
+      if (fromArgs.title) {
+        toArgs.content = fromArgs.title
+      }
     }
   },
   uploadFile: {
@@ -254,8 +256,7 @@ const protocols = { // 需要做转换的 API 列表
   },
   connectSocket: {
     args: {
-      method: false,
-      protocols: false
+      method: false
     }
     // TODO 有没有返回值还需要测试下
   },

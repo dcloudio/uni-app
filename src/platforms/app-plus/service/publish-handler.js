@@ -13,6 +13,9 @@ export function publishHandler (eventType, args, pageIds) {
   }
   pageIds.forEach(id => {
     const webview = plus.webview.getWebviewById(String(id))
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, `webview(${String(id)}) not found`)
+    }
     webview && webview.evalJS(evalJSCode.replace('__PAGE_ID__', id))
   })
 }

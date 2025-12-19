@@ -86,7 +86,7 @@ function processStyleObjectExpression (styleValuePath) {
         '+',
         t.binaryExpression(
           '+',
-          t.stringLiteral(hyphenate(key.name || key.value) + ':'),
+          propertyPath.node.computed ? t.binaryExpression('+', t.parenthesizedExpression(key), t.stringLiteral(':')) : t.stringLiteral(hyphenate(key.name || key.value) + ':'),
           t.parenthesizedExpression(propertyPath.node.value)
         ),
         t.stringLiteral(';')

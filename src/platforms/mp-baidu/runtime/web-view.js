@@ -6,6 +6,10 @@ export function initWebviewApi (readyCallback) {
   if (!isBaidu) {
     return
   }
-  document.addEventListener('DOMContentLoaded', readyCallback)
+  if (document.readyState !== 'loading') {
+    setTimeout(readyCallback, 0)
+  } else {
+    document.addEventListener('DOMContentLoaded', readyCallback)
+  }
   return window.swan.webView
 }

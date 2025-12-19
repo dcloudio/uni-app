@@ -78,4 +78,33 @@ describe('shared:cache', () => {
     }, null, 2))
     expect(0).toBe(getChangedJsonFileMap().size)
   })
+
+  it('mp-toutiao generate component.json', () => {
+    process.env.UNI_PLATFORM = 'mp-toutiao'
+    const name = 'components/component-tag-name'
+    let usingComponents = {
+      'my-component': '/components/component-tag-name'
+    }
+    const componentPlaceholder = {
+      'my-component': 'view'
+    }
+    updateUsingComponents(name, usingComponents, 'Component')
+    let componentJsonStr = getChangedJsonFileMap().get(name + '.json')
+    expect(componentJsonStr).toBe(JSON.stringify({
+      usingComponents,
+      component: true,
+      componentPlaceholder
+    }, null, 2))
+    expect(0).toBe(getChangedJsonFileMap().size)
+
+    usingComponents = {}
+    updateUsingComponents(name, usingComponents, 'Component')
+    componentJsonStr = getChangedJsonFileMap().get(name + '.json')
+    expect(componentJsonStr).toBe(JSON.stringify({
+      usingComponents,
+      component: true,
+      componentPlaceholder
+    }, null, 2))
+    expect(0).toBe(getChangedJsonFileMap().size)
+  })
 })

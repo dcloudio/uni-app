@@ -39,6 +39,7 @@ html {
 body {
   overflow-x: hidden;
   background-color: white;
+  font-size: 16px;
 }
 
 [class^="uni-icon-"],

@@ -14,7 +14,7 @@
   "author": "fxy060608",
   "license": "Apache-2.0",
   "dependencies": {
-    "i18n": "^0.13.3",
+    "i18n": "^0.15.2",
     "os-locale-s-fix": "^1.0.8-fix-1"
   }
 }

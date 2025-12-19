@@ -725,6 +725,55 @@ var serviceContext = (function () {
     return styles
   }
 
+  const unitRE = new RegExp('"[^"]+"|\'[^\']+\'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px', 'g');
+
+  function toFixed (number, precision) {
+    const multiplier = Math.pow(10, precision + 1);
+    const wholeNumber = Math.floor(number * multiplier);
+    return (Math.round(wholeNumber / 10) * 10) / multiplier
+  }
+
+  const defaultRpx2Unit = {
+    unit: 'rem',
+    unitRatio: 10 / 320,
+    unitPrecision: 5
+  };
+
+  const Rpx2Unit = Object.assign({}, defaultRpx2Unit);
+
+  function getRpx2Unit () {
+    return Rpx2Unit
+  }
+
+  function _rpx2Unit (rpx, unit, unitRatio, unitPrecision) {
+    if (unitRatio === 1) {
+      return `${rpx}${unit}`
+    }
+    const value = toFixed(rpx * unitRatio, unitPrecision);
+    return value === 0 ? '0' : `${value}${unit}`
+  }
+
+  function createRpx2Unit (unit, unitRatio, unitPrecision) {
+    // ignore: rpxCalcIncludeWidth
+    /**
+     * @param {string | number} val
+     * @returns {string}
+     */
+    return (val) => {
+      if (typeof val === 'string') {
+        return val.replace(unitRE, (m, $1) => {
+          if (!$1) {
+            return m
+          }
+
+          return _rpx2Unit(parseFloat($1), unit, unitRatio, unitPrecision)
+        })
+      } else if (typeof val === 'number') {
+        return _rpx2Unit(val, unit, unitRatio, unitPrecision)
+      }
+    }
+  }
+
   /**
    * 框架内 try-catch
    */
@@ -6520,11 +6569,17 @@ var serviceContext = (function () {
     }
   }
 
+  const rpx2unit = createRpx2Unit(getRpx2Unit().unit, getRpx2Unit().unitRatio, getRpx2Unit().unitPrecision);
   const REGEX_UPX = /(\d+(\.\d+)?)[r|u]px/g;
 
   function transformCSS (css) {
+    const config = __uniConfig.globalStyle || __uniConfig.window || {};
+    if (config.dynamicRpx === true) {
+      return rpx2unit(css)
+    }
+
     return css.replace(REGEX_UPX, (a, b) => {
-      return uni.upx2px(parseInt(b) || 0) + 'px'
+      return uni.upx2px(parseInt(b) || 0)
     })
   }
 
@@ -9297,7 +9352,7 @@ var serviceContext = (function () {
 
   const publishStateChange$1 = res => {
     publish('onRequestTaskStateChange', res);
-    delete requestTasks[requestTaskId];
+    delete requestTasks[res.requestTaskId];
   };
 
   const cookiesParse = header => {
@@ -21810,6 +21865,7 @@ var serviceContext = (function () {
     errMsg
   }) => {
     const downloadTask = downloadTasks$1[downloadTaskId];
+    if (downloadTask == null) return
     const callbackId = downloadTask._callbackId;
 
     switch (state) {
@@ -21821,26 +21877,25 @@ var serviceContext = (function () {
             totalBytesExpectedToWrite
           });
         });
-        break
+        return
       case 'success':
         invoke$1(callbackId, {
           tempFilePath,
           statusCode,
           errMsg: 'request:ok'
         });
-        // eslint-disable-next-line no-fallthrough
+        break
       case 'fail':
         invoke$1(callbackId, {
           errMsg: 'request:fail ' + errMsg
         });
-        // eslint-disable-next-line no-fallthrough
-      default:
-        // progressUpdate 可能晚于 success
-        setTimeout(() => {
-          delete downloadTasks$1[downloadTaskId];
-        }, 100);
         break
     }
+
+    // progressUpdate 可能晚于 success
+    setTimeout(() => {
+      delete downloadTasks$1[downloadTaskId];
+    }, 100);
   });
   function downloadFile$1 (args, callbackId) {
     const {
@@ -22242,6 +22297,8 @@ var serviceContext = (function () {
     errMsg
   }) => {
     const uploadTask = uploadTasks$1[uploadTaskId];
+    if (uploadTask == null) return
+
     const callbackId = uploadTask._callbackId;
 
     switch (state) {
@@ -22253,26 +22310,25 @@ var serviceContext = (function () {
             totalBytesExpectedToSend
           });
         });
-        break
+        return
       case 'success':
         invoke$1(callbackId, {
           data,
           statusCode,
           errMsg: 'request:ok'
         });
-        // eslint-disable-next-line no-fallthrough
+        break
       case 'fail':
         invoke$1(callbackId, {
           errMsg: 'request:fail ' + errMsg
         });
-        // eslint-disable-next-line no-fallthrough
-      default:
-        // progressUpdate 可能晚于 success
-        setTimeout(() => {
-          delete uploadTasks$1[uploadTaskId];
-        }, 100);
         break
     }
+
+    // progressUpdate 可能晚于 success
+    setTimeout(() => {
+      delete uploadTasks$1[uploadTaskId];
+    }, 100);
   });
   function uploadFile$1 (args, callbackId) {
     const {
@@ -23066,6 +23122,9 @@ var serviceContext = (function () {
     }
     pageIds.forEach(id => {
       const webview = plus.webview.getWebviewById(String(id));
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, `webview(${String(id)}) not found`);
+      }
       webview && webview.evalJS(evalJSCode.replace('__PAGE_ID__', id));
     });
   }
@@ -24448,7 +24507,7 @@ var serviceContext = (function () {
           setupString = setup.toString();
         } catch (error) {}
         injectHooks.forEach(hook => {
-          if (setupString.indexOf(`uniApp.${hook}`) && !extendOptions[hook]) {
+          if (setupString.includes(`uniApp.${hook}`) && !extendOptions[hook]) {
             extendOptions[hook] = [() => {}];
           }
         });

@@ -31,6 +31,7 @@ body {
 
 body {
     overflow-x: hidden;
+    font-size: 16px;
 }
 
 [class^="uni-icon-"],
@@ -66,7 +67,7 @@ body {
 
 .uni-icon-error:before {
     content: "\EA0B";
-}  
+}
 
 .uni-loading,
 uni-button[loading]:before {

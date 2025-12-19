@@ -3,8 +3,6 @@ import {
   hasOwn
 } from 'uni-shared'
 
-export const isComponent2 = xhs.canIUse('component2')
-
 export const mocks = ['$id']
 
 export function initSpecialMethods (mpInstance) {
@@ -45,7 +43,13 @@ export const handleWrap = function (mp, destory) {
     } else {
       // TODO remove handleRef
       this[key] = function () {
-        mp.props[eventName].apply(this, arguments)
+        if (mp.props[eventName]) {
+          mp.props[eventName].apply(this, arguments)
+        } else {
+          if (process.env.NODE_ENV !== 'production') {
+            console.log(`UNIAPP[xhs handleWrap]:[${+new Date()}]`, `事件 ${eventName} 未绑定处理函数`)
+          }
+        }
       }
     }
   })

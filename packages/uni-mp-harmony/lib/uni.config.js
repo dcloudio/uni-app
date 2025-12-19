@@ -1,5 +1,8 @@
 const fs = require('fs')
 const path = require('path')
+const {
+  parseJson
+} = require('@dcloudio/uni-cli-shared/lib/json')
 
 const SIGN_DIR_NAME = 'sign'
 // TODO quickapp ide 有bug，不识别项目根目录 sign，暂时拷贝到 .quickapp 目录
@@ -36,7 +39,7 @@ module.exports = {
     Object.assign(platformOptions, manifestJson['mp-harmony'] || {}, platformOptions)
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = []
+    const copyOptions = ['ascf.config.json']
     let jsConfigPath = path.resolve(process.env.UNI_INPUT_DIR, 'jsconfig.json')
     if (!fs.existsSync(jsConfigPath)) {
       jsConfigPath = path.resolve(__dirname, 'assets/jsconfig.json')
@@ -46,6 +49,14 @@ module.exports = {
     const signCopyOption = getSignCopyOption()
     if (signCopyOption) {
       copyOptions.push(signCopyOption)
+    }
+
+    const extJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'ext.json')
+    if (fs.existsSync(extJsonPath)) {
+      copyOptions.push({
+        from: extJsonPath,
+        transform: content => JSON.stringify(parseJson(content.toString(), true), null, 2)
+      })
     }
 
     return copyOptions
