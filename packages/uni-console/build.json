@@ -110,7 +110,6 @@
       "__HARMONY__": "false",
       "__DEV__": "process.env.UNI_DEBUG",
       "process.env.UNI_CONSOLE_WEBVIEW": false,
-      "process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE": "''",
       "__HARMONY_JSVM__": "false"
     },
     "compilerOptions": {

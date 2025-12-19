@@ -43,3 +43,15 @@ export function createRpx2Unit(
       return value === 0 ? '0' : `${value}${unit}`
     })
 }
+
+export function getPartClass(partName: string) {
+  return `-_part__${partName}_-`
+}
+
+export function batchGetPartClass(partNames: string) {
+  return partNames
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((partName) => getPartClass(partName))
+    .join(' ')
+}

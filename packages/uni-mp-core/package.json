@@ -16,5 +16,9 @@
   "dependencies": {
     "@vue/shared": "catalog:",
     "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "catalog:",
+    "mini-types": "^0.1.7"
   }
 }

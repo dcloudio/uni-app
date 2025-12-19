@@ -2,6 +2,8 @@ import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   type MiniProgramCompilerOptions,
+  createCopyComponentDirs,
+  createCopyPluginTarget,
   getNativeTags,
   transformComponentLink,
   transformRef,
@@ -64,14 +66,15 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: [COMPONENTS_DIR],
+      assets: createCopyComponentDirs(COMPONENTS_DIR),
       targets: [
         {
-          src: ['ext.json', 'project.private.config.json'],
+          src: ['project.private.config.json'],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },
         },
+        createCopyPluginTarget(['ext.json']),
       ],
     },
   },

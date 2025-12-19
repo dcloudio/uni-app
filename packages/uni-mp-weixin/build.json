@@ -58,10 +58,6 @@
         {
           "find": "@dcloudio/uni-mp-platform",
           "replacement": "packages/uni-mp-core/src/platform/index.ts"
-        },
-        {
-          "find": "@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts.js",
-          "replacement": "packages/uni-uts-v1/lib/javascript/lib/runtime/uts.js"
         }
       ]
     },

@@ -20,6 +20,10 @@ export function uniStatsPlugin(): Plugin {
       const emittedHash = emittedHashMap.get(resolvedConfig)!
       const changedFiles: string[] = []
       Object.keys(bundle).forEach((filename) => {
+        // 不处理sourcemap
+        if (filename.endsWith('.map')) {
+          return
+        }
         const outputFile = bundle[filename]
         let outputFileHash = ''
         if (outputFile.type === 'asset') {

@@ -328,6 +328,7 @@ export default {
 
   return {
     code: requireUTSPluginCode(pluginId, !!isExtApi),
+    errMsg: '',
     deps,
     encrypt: true,
     dir: outputUniModuleDir,

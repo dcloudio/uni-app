@@ -1,5 +1,5 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
-import { Emitter, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 import { injectHook } from 'vue';
 
@@ -1144,6 +1144,16 @@ const navigateTo$1 = () => {
     };
 };
 
+const getWindowInfo = {
+    returnValue: (fromRes, toRes) => {
+        addSafeAreaInsets(fromRes, toRes);
+        toRes = sortObject(extend(toRes, {
+            windowTop: 0,
+            windowBottom: 0,
+        }));
+    },
+};
+
 const onError = {
     args(fromArgs) {
         const app = getApp({ allowDefault: true }) || {};
@@ -1392,13 +1402,13 @@ var shims = /*#__PURE__*/Object.freeze({
 });
 
 function handleNetworkInfo(fromRes, toRes) {
-    const nextworkType = fromRes.networkType;
-    switch (nextworkType) {
+    const networkType = fromRes.networkType;
+    switch (networkType) {
         case 'NOTREACHABLE':
             toRes.networkType = 'none';
             break;
         case 'WWAN':
-            // TODO ?
+            // TODO 无线广域网，微信没有对应的值，使用 3g 代替 https://opendocs.alipay.com/mini/api/network-status#success%20%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0
             toRes.networkType = '3g';
             break;
         default:
@@ -1595,7 +1605,9 @@ const showLoading = {
         if (!fromArgs.mask) {
             toArgs.mask = false;
         }
-        toArgs.content = fromArgs.title;
+        if (fromArgs.title) {
+            toArgs.content = fromArgs.title;
+        }
     },
 };
 const uploadFile = {
@@ -1640,7 +1652,6 @@ const chooseVideo = {
 const connectSocket = {
     args: {
         method: false,
-        protocols: false,
     },
     // TODO 有没有返回值还需要测试下
 };
@@ -1916,6 +1927,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getUserInfo: getUserInfo,
+  getWindowInfo: getWindowInfo,
   hideHomeButton: hideHomeButton,
   login: login,
   makePhoneCall: makePhoneCall,

@@ -1,5 +1,4 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-import path from 'path'
 import {
   API_DEPS_CSS,
   BASE_COMPONENTS_STYLE_PATH,
@@ -7,7 +6,6 @@ import {
   H5_FRAMEWORK_STYLE_PATH,
   MANIFEST_JSON_JS,
   checkPagesJson,
-  createRollupError,
   defineUniPagesJsonPlugin,
   getWorkers,
   isEnableTreeShaking,
@@ -32,24 +30,10 @@ export function uniPagesJsonPlugin(): Plugin {
           if (process.env.UNI_APP_X === 'true') {
             // 调整换行符，确保 parseTree 的loc正确
             const jsonCode = code.replace(/\r\n/g, '\n')
-            try {
-              checkPagesJson(
-                preUVueJson(jsonCode, 'pages.json'),
-                process.env.UNI_INPUT_DIR
-              )
-            } catch (err: any) {
-              if (err.loc) {
-                const error = createRollupError(
-                  'uni:h5-pages-json',
-                  path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
-                  err,
-                  jsonCode
-                )
-                this.error(error)
-              } else {
-                throw err
-              }
-            }
+            checkPagesJson(
+              preUVueJson(jsonCode, 'pages.json'),
+              process.env.UNI_INPUT_DIR
+            )
           }
           return {
             code:

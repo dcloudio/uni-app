@@ -1,8 +1,7 @@
 import { camelize } from '@vue/shared'
-import { isElementNode } from '../../../vite'
+import { isAttributeNode, isDirectiveNode, isElementNode } from '../../../vite'
 import { createAttributeNode, isPropNameEquals, renameProp } from '../../utils'
 import {
-  NodeTypes,
   type RootNode,
   type TemplateChildNode,
   type TransformContext,
@@ -92,12 +91,12 @@ export function createMPBuiltInTagTransform(
     if (options.propRename && node.tag in options.propRename) {
       const propMap = options.propRename[node.tag]
       node.props.forEach((prop) => {
-        if (prop.type === NodeTypes.ATTRIBUTE) {
+        if (isAttributeNode(prop)) {
           const propName = camelize(prop.name)
           if (propName in propMap && propMap[propName]) {
             renameProp(propMap[propName], prop)
           }
-        } else if (prop.type === NodeTypes.DIRECTIVE) {
+        } else if (isDirectiveNode(prop)) {
           if (!prop.rawName || !prop.arg || !isStaticExp(prop.arg)) {
             return
           }

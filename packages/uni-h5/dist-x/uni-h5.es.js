@@ -4,651 +4,17 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, isInSSRComponentSetup, normalizeClass, toDisplayString, createCommentVNode } from "vue";
-import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, sortObject, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_READY, onCreateVueApp } from "@dcloudio/uni-shared";
-import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, sortObject, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_READY, onCreateVueApp } from "@dcloudio/uni-shared";
+import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
+import { withModifiers, createVNode, getCurrentInstance as getCurrentInstance$1, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, isInSSRComponentSetup, toDisplayString, createCommentVNode } from "vue";
+import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
-function arrayPop(array) {
-  if (array.length === 0) {
-    return null;
-  }
-  return array.pop();
-}
-function arrayShift(array) {
-  if (array.length === 0) {
-    return null;
-  }
-  return array.shift();
-}
-function arrayFind(array, predicate) {
-  const index2 = array.findIndex(predicate);
-  if (index2 < 0) {
-    return null;
-  }
-  return array[index2];
-}
-function arrayFindLast(array, predicate) {
-  const index2 = array.findLastIndex(predicate);
-  if (index2 < 0) {
-    return null;
-  }
-  return array[index2];
-}
-function arrayAt(array, index2) {
-  if (index2 < -array.length || index2 >= array.length) {
-    return null;
-  }
-  return array.at(index2);
-}
-var IDENTIFIER;
-(function(IDENTIFIER2) {
-  IDENTIFIER2["UTSJSONObject"] = "UTSJSONObject";
-  IDENTIFIER2["JSON"] = "JSON";
-  IDENTIFIER2["UTS"] = "UTS";
-  IDENTIFIER2["VUE"] = "vue";
-  IDENTIFIER2["GLOBAL_THIS"] = "globalThis";
-  IDENTIFIER2["UTS_TYPE"] = "UTSType";
-  IDENTIFIER2["UTS_METADATA"] = "$UTSMetadata$";
-  IDENTIFIER2["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
-  IDENTIFIER2["JSON_FIELD"] = "JSON_FIELD";
-})(IDENTIFIER || (IDENTIFIER = {}));
-var UTS_CLASS_METADATA_KIND;
-(function(UTS_CLASS_METADATA_KIND2) {
-  UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["CLASS"] = 0] = "CLASS";
-  UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["INTERFACE"] = 1] = "INTERFACE";
-  UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["TYPE"] = 2] = "TYPE";
-})(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
-function getType$1(val) {
-  return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
-}
-function isPlainObject(val) {
-  if (val == null || typeof val !== "object") {
-    return false;
-  }
-  const proto = Object.getPrototypeOf(val);
-  return proto === Object.prototype || proto === null;
-}
-class UTSError extends Error {
-  constructor(message) {
-    super(message);
-  }
-}
-function isUTSMetadata(metadata) {
-  return !!(metadata && metadata.kind in UTS_CLASS_METADATA_KIND && metadata.interfaces);
-}
-function isNativeType(proto) {
-  return !proto || proto === Object.prototype;
-}
-const utsMetadataKey = IDENTIFIER.UTS_METADATA;
-function getParentTypeList(type) {
-  const metadata = utsMetadataKey in type ? type[utsMetadataKey] : {};
-  let interfaces = [];
-  if (!isUTSMetadata(metadata)) {
-    interfaces = [];
-  } else {
-    interfaces = metadata.interfaces || [];
-  }
-  const proto = Object.getPrototypeOf(type);
-  if (!isNativeType(proto)) {
-    interfaces.push(proto.constructor);
-  }
-  return interfaces;
-}
-function isImplementationOf(leftType, rightType, visited = []) {
-  if (isNativeType(leftType)) {
-    return false;
-  }
-  if (leftType === rightType) {
-    return true;
-  }
-  visited.push(leftType);
-  const parentTypeList = getParentTypeList(leftType);
-  return parentTypeList.some((parentType) => {
-    if (visited.includes(parentType)) {
-      return false;
-    }
-    return isImplementationOf(parentType, rightType, visited);
-  });
-}
-function isInstanceOf(value, type) {
-  if (type === UTSValueIterable) {
-    return value && value[Symbol.iterator];
-  }
-  const isNativeInstanceofType = value instanceof type;
-  if (isNativeInstanceofType || typeof value !== "object" || value === null) {
-    return isNativeInstanceofType;
-  }
-  const proto = Object.getPrototypeOf(value).constructor;
-  return isImplementationOf(proto, type);
-}
-function isBaseType(type) {
-  return type === Number || type === String || type === Boolean;
-}
-function isUnknownType(type) {
-  return type === "Unknown";
-}
-function isAnyType(type) {
-  return type === "Any";
-}
-function isUTSType(type) {
-  return type && type.prototype && type.prototype instanceof UTSType;
-}
-function normalizeGenericValue(value, genericType, isJSONParse = false) {
-  return value == null ? null : isBaseType(genericType) || isUnknownType(genericType) || isAnyType(genericType) ? value : genericType === Array ? new Array(...value) : new genericType(value, void 0, isJSONParse);
-}
-class UTSType {
-  static get$UTSMetadata$(...args) {
-    return {
-      name: "",
-      kind: UTS_CLASS_METADATA_KIND.TYPE,
-      interfaces: [],
-      fields: {}
-    };
-  }
-  get $UTSMetadata$() {
-    return UTSType.get$UTSMetadata$();
-  }
-  // TODO 缓存withGenerics结果
-  static withGenerics(parent, generics, isJSONParse = false) {
-    if (isJSONParse) {
-      const illegalGeneric = generics.find((item) => !(item === Array || isBaseType(item) || isUnknownType(item) || isAnyType(item) || item === UTSJSONObject || item.prototype && item.prototype instanceof UTSType));
-      if (illegalGeneric) {
-        throw new Error("Generic is not UTSType or Array or UTSJSONObject or base type, generic: " + illegalGeneric);
-      }
-    }
-    if (parent === Array) {
-      return class UTSArray extends UTSType {
-        constructor(options, isJSONParse2 = false) {
-          if (!Array.isArray(options)) {
-            throw new UTSError(`Failed to contruct type, ${options} is not an array`);
-          }
-          super();
-          return options.map((item) => {
-            return normalizeGenericValue(item, generics[0], isJSONParse2);
-          });
-        }
-      };
-    } else if (parent === Map || parent === WeakMap) {
-      return class UTSMap extends UTSType {
-        constructor(options, isJSONParse2 = false) {
-          if (options == null || typeof options !== "object") {
-            throw new UTSError(`Failed to contruct type, ${options} is not an object`);
-          }
-          super();
-          const obj = new parent();
-          for (const key in options) {
-            obj.set(normalizeGenericValue(key, generics[0], isJSONParse2), normalizeGenericValue(options[key], generics[1], isJSONParse2));
-          }
-          return obj;
-        }
-      };
-    } else if (isUTSType(parent)) {
-      return class VirtualClassWithGenerics extends parent {
-        static get$UTSMetadata$() {
-          return parent.get$UTSMetadata$(...generics);
-        }
-        constructor(options, metadata = VirtualClassWithGenerics.get$UTSMetadata$(), isJSONParse2 = false) {
-          super(options, metadata, isJSONParse2);
-        }
-      };
-    } else {
-      return parent;
-    }
-  }
-  constructor() {
-  }
-  static initProps(options, metadata, isJSONParse = false) {
-    const obj = {};
-    if (!metadata.fields) {
-      return obj;
-    }
-    for (const key in metadata.fields) {
-      const { type, optional, jsonField } = metadata.fields[key];
-      const realKey = isJSONParse ? jsonField || key : key;
-      if (options[realKey] == null) {
-        if (optional) {
-          obj[key] = null;
-          continue;
-        } else {
-          throw new UTSError(`Failed to contruct type, missing required property: ${key}`);
-        }
-      }
-      if (isUTSType(type)) {
-        obj[key] = isJSONParse ? (
-          // @ts-ignore
-          new type(options[realKey], void 0, isJSONParse)
-        ) : options[realKey];
-      } else if (type === Array) {
-        if (!Array.isArray(options[realKey])) {
-          throw new UTSError(`Failed to contruct type, property ${key} is not an array`);
-        }
-        obj[key] = options[realKey];
-      } else {
-        obj[key] = options[realKey];
-      }
-    }
-    return obj;
-  }
-}
-function initUTSJSONObjectProperties(obj) {
-  const propertyList = [
-    "_resolveKeyPath",
-    "_getValue",
-    "toJSON",
-    "get",
-    "set",
-    "getAny",
-    "getString",
-    "getNumber",
-    "getBoolean",
-    "getJSON",
-    "getArray",
-    "toMap",
-    "forEach"
-  ];
-  const propertyDescriptorMap = {};
-  for (let i = 0; i < propertyList.length; i++) {
-    const property = propertyList[i];
-    propertyDescriptorMap[property] = {
-      enumerable: false,
-      value: obj[property]
-    };
-  }
-  Object.defineProperties(obj, propertyDescriptorMap);
-}
-function getRealDefaultValue(defaultValue) {
-  return defaultValue === void 0 ? null : defaultValue;
-}
-let UTSJSONObject$1 = class UTSJSONObject2 {
-  static keys(obj) {
-    return Object.keys(obj);
-  }
-  static assign(target, ...sources) {
-    for (let i = 0; i < sources.length; i++) {
-      const source = sources[i];
-      for (let key in source) {
-        target[key] = source[key];
-      }
-    }
-    return target;
-  }
-  constructor(content = {}) {
-    if (content instanceof Map) {
-      content.forEach((value, key) => {
-        this[key] = value;
-      });
-    } else {
-      for (const key in content) {
-        if (Object.prototype.hasOwnProperty.call(content, key)) {
-          this[key] = content[key];
-        }
-      }
-    }
-    initUTSJSONObjectProperties(this);
-  }
-  _resolveKeyPath(keyPath) {
-    let token = "";
-    const keyPathArr = [];
-    let inOpenParentheses = false;
-    for (let i = 0; i < keyPath.length; i++) {
-      const word = keyPath[i];
-      switch (word) {
-        case ".":
-          if (token.length > 0) {
-            keyPathArr.push(token);
-            token = "";
-          }
-          break;
-        case "[": {
-          inOpenParentheses = true;
-          if (token.length > 0) {
-            keyPathArr.push(token);
-            token = "";
-          }
-          break;
-        }
-        case "]":
-          if (inOpenParentheses) {
-            if (token.length > 0) {
-              const tokenFirstChar = token[0];
-              const tokenLastChar = token[token.length - 1];
-              if (tokenFirstChar === '"' && tokenLastChar === '"' || tokenFirstChar === "'" && tokenLastChar === "'" || tokenFirstChar === "`" && tokenLastChar === "`") {
-                if (token.length > 2) {
-                  token = token.slice(1, -1);
-                } else {
-                  return [];
-                }
-              } else if (!/^\d+$/.test(token)) {
-                return [];
-              }
-              keyPathArr.push(token);
-              token = "";
-            } else {
-              return [];
-            }
-            inOpenParentheses = false;
-          } else {
-            return [];
-          }
-          break;
-        default:
-          token += word;
-          break;
-      }
-      if (i === keyPath.length - 1) {
-        if (token.length > 0) {
-          keyPathArr.push(token);
-          token = "";
-        }
-      }
-    }
-    return keyPathArr;
-  }
-  _getValue(keyPath, defaultValue) {
-    const keyPathArr = this._resolveKeyPath(keyPath);
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    if (keyPathArr.length === 0) {
-      return realDefaultValue;
-    }
-    let value = this;
-    for (let i = 0; i < keyPathArr.length; i++) {
-      const key = keyPathArr[i];
-      if (value instanceof Object) {
-        if (key in value) {
-          value = value[key];
-        } else {
-          return realDefaultValue;
-        }
-      } else {
-        return realDefaultValue;
-      }
-    }
-    return value;
-  }
-  get(key) {
-    return this._getValue(key);
-  }
-  set(key, value) {
-    this[key] = value;
-  }
-  getAny(key, defaultValue) {
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    return this._getValue(key, realDefaultValue);
-  }
-  getString(key, defaultValue) {
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    const value = this._getValue(key, realDefaultValue);
-    if (typeof value === "string") {
-      return value;
-    } else {
-      return realDefaultValue;
-    }
-  }
-  getNumber(key, defaultValue) {
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    const value = this._getValue(key, realDefaultValue);
-    if (typeof value === "number") {
-      return value;
-    } else {
-      return realDefaultValue;
-    }
-  }
-  getBoolean(key, defaultValue) {
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    const boolean = this._getValue(key, realDefaultValue);
-    if (typeof boolean === "boolean") {
-      return boolean;
-    } else {
-      return realDefaultValue;
-    }
-  }
-  getJSON(key, defaultValue) {
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    let value = this._getValue(key, realDefaultValue);
-    if (value instanceof Object) {
-      return value;
-    } else {
-      return realDefaultValue;
-    }
-  }
-  getArray(key, defaultValue) {
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    let value = this._getValue(key, realDefaultValue);
-    if (value instanceof Array) {
-      return value;
-    } else {
-      return realDefaultValue;
-    }
-  }
-  toMap() {
-    let map = /* @__PURE__ */ new Map();
-    for (let key in this) {
-      map.set(key, this[key]);
-    }
-    return map;
-  }
-  forEach(callback) {
-    for (let key in this) {
-      callback(this[key], key);
-    }
-  }
-};
-const OriginalJSON = JSON;
-function createUTSJSONObjectOrArray(obj) {
-  if (Array.isArray(obj)) {
-    return obj.map((item) => {
-      return createUTSJSONObjectOrArray(item);
-    });
-  } else if (isPlainObject(obj)) {
-    const result = new UTSJSONObject$1({});
-    for (const key in obj) {
-      const value = obj[key];
-      result[key] = createUTSJSONObjectOrArray(value);
-    }
-    return result;
-  }
-  return obj;
-}
-function parseObjectOrArray(object, utsType) {
-  const objectType = getType$1(object);
-  if (object === null || objectType !== "object" && objectType !== "array") {
-    return object;
-  }
-  if (utsType && utsType !== UTSJSONObject$1) {
-    try {
-      return new utsType(object, void 0, true);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  }
-  if (objectType === "array" || objectType === "object") {
-    return createUTSJSONObjectOrArray(object);
-  }
-  return object;
-}
-const UTSJSON = {
-  parse: (text2, reviver, utsType) => {
-    if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject$1)) {
-      utsType = reviver;
-      reviver = void 0;
-    }
-    try {
-      const parseResult = OriginalJSON.parse(text2, reviver);
-      return parseObjectOrArray(parseResult, utsType);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  parseArray(text2, utsType) {
-    try {
-      const parseResult = OriginalJSON.parse(text2);
-      if (Array.isArray(parseResult)) {
-        return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : void 0);
-      }
-      return null;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  parseObject(text2, utsType) {
-    try {
-      const parseResult = OriginalJSON.parse(text2);
-      if (Array.isArray(parseResult)) {
-        return null;
-      }
-      return parseObjectOrArray(parseResult, utsType);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  stringify: (value, replacer, space) => {
-    try {
-      if (!replacer) {
-        const visited = /* @__PURE__ */ new Set();
-        replacer = function(_, v2) {
-          if (typeof v2 === "object") {
-            if (visited.has(v2)) {
-              return null;
-            }
-            visited.add(v2);
-          }
-          return v2;
-        };
-      }
-      return OriginalJSON.stringify(value, replacer, space);
-    } catch (error) {
-      console.error(error);
-      return "";
-    }
-  }
-};
-function mapGet(map, key) {
-  if (!map.has(key)) {
-    return null;
-  }
-  return map.get(key);
-}
-function stringCodePointAt(str, pos) {
-  if (pos < 0 || pos >= str.length) {
-    return null;
-  }
-  return str.codePointAt(pos);
-}
-function stringAt(str, pos) {
-  if (pos < -str.length || pos >= str.length) {
-    return null;
-  }
-  return str.at(pos);
-}
-function weakMapGet(map, key) {
-  if (!map.has(key)) {
-    return null;
-  }
-  return map.get(key);
-}
-const UTS$1 = {
-  arrayAt,
-  arrayFind,
-  arrayFindLast,
-  arrayPop,
-  arrayShift,
-  isInstanceOf,
-  UTSType,
-  mapGet,
-  stringAt,
-  stringCodePointAt,
-  weakMapGet,
-  JSON: UTSJSON
-};
-let UniError$1 = class UniError2 extends Error {
-  constructor(errSubject, errCode, errMsg) {
-    let options = {};
-    const argsLength = Array.from(arguments).length;
-    switch (argsLength) {
-      case 0:
-        errSubject = "";
-        errMsg = "";
-        errCode = 0;
-        break;
-      case 1:
-        errMsg = errSubject;
-        errSubject = "";
-        errCode = 0;
-        break;
-      case 2:
-        errMsg = errSubject;
-        options = errCode;
-        errCode = options.errCode || 0;
-        errSubject = options.errSubject || "";
-        break;
-    }
-    super(errMsg);
-    this.name = "UniError";
-    this.errSubject = errSubject;
-    this.errCode = errCode;
-    this.errMsg = errMsg;
-    if (options.data) {
-      this.data = options.data;
-    }
-    if (options.cause) {
-      this.cause = options.cause;
-    }
-  }
-  set errMsg(msg) {
-    this.message = msg;
-  }
-  get errMsg() {
-    return this.message;
-  }
-  toString() {
-    return this.errMsg;
-  }
-  toJSON() {
-    return {
-      errSubject: this.errSubject,
-      errCode: this.errCode,
-      errMsg: this.errMsg,
-      data: this.data,
-      cause: this.cause && typeof this.cause.toJSON === "function" ? this.cause.toJSON() : this.cause
-    };
-  }
-};
-let UTSValueIterable$1 = class UTSValueIterable2 {
-};
-function getGlobal() {
-  if (typeof globalThis !== "undefined") {
-    return globalThis;
-  }
-  if (typeof self !== "undefined") {
-    return self;
-  }
-  if (typeof window !== "undefined") {
-    return window;
-  }
-  if (typeof window !== "undefined") {
-    return window;
-  }
-  function g2() {
-    return this;
-  }
-  if (typeof g2() !== "undefined") {
-    return g2();
-  }
-  return function() {
-    return new Function("return this")();
-  }();
-}
 const realGlobal = getGlobal();
-realGlobal.UTSJSONObject = UTSJSONObject$1;
-realGlobal.UniError = UniError$1;
 realGlobal.UTS = UTS$1;
-realGlobal.UTSValueIterable = UTSValueIterable$1;
+realGlobal.UTSJSONObject = UTSJSONObject;
+realGlobal.UTSValueIterable = UTSValueIterable;
+realGlobal.UniError = UniError$1;
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -1104,6 +470,9 @@ function initTabBarI18n(tabBar2) {
       defineI18nProperty(item, ["text"]);
     });
   }
+  if (isEnableLocale() && tabBar2.midButton) {
+    defineI18nProperty(tabBar2.midButton, ["text"]);
+  }
   return tabBar2;
 }
 function initBridge(subscribeNamespace) {
@@ -1246,15 +615,16 @@ function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
   return isNaN(newValue) ? defaultValue : newValue;
 }
+const isApple = () => /^Apple/.test(navigator.vendor);
 function getWindowWidth$1() {
-  const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+  const screenFix = isApple() && typeof window.orientation === "number";
   const landscape = screenFix && Math.abs(window.orientation) === 90;
   var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-  var windowWidth = Math.min(
+  var windowWidth = screenFix ? Math.min(
     window.innerWidth,
     document.documentElement.clientWidth,
     screenWidth
-  ) || screenWidth;
+  ) || screenWidth : Math.min(window.innerWidth, document.documentElement.clientWidth);
   return windowWidth;
 }
 function useRem() {
@@ -1270,6 +640,12 @@ function useRem() {
   document.addEventListener("DOMContentLoaded", updateRem);
   window.addEventListener("load", updateRem);
   window.addEventListener("resize", updateRem);
+  if (isApple()) {
+    window.addEventListener("orientationchange", () => {
+      updateRem();
+      setTimeout(updateRem, 50);
+    });
+  }
 }
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
@@ -1603,7 +979,7 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
 }
 function useCurrentPageId() {
   {
-    const { $pageInstance } = getCurrentInstance();
+    const { $pageInstance } = getCurrentInstance$1();
     return $pageInstance && getPageProxyId($pageInstance.proxy);
   }
 }
@@ -1626,7 +1002,7 @@ function getPageIdByVm(instance2) {
     return getPageProxyId(rootProxy);
   }
 }
-function getCurrentPage$1() {
+function getCurrentPage() {
   const pages = getCurrentPages();
   const len = pages.length;
   if (len) {
@@ -1635,7 +1011,7 @@ function getCurrentPage$1() {
 }
 function getCurrentPageMeta() {
   var _a, _b;
-  const $page = (_b = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm) == null ? void 0 : _b.$basePage;
+  const $page = (_b = (_a = getCurrentPage()) == null ? void 0 : _a.vm) == null ? void 0 : _b.$basePage;
   if ($page) {
     return $page.meta;
   }
@@ -1649,7 +1025,7 @@ function getCurrentPageId() {
 }
 function getCurrentPageVm() {
   var _a;
-  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   if (page) {
     return page.$vm;
   }
@@ -2007,7 +1383,7 @@ class ComponentDescriptor {
     if (isString(style)) {
       style = parseStringStyle(style);
     }
-    if (isPlainObject$1(style)) {
+    if (isPlainObject(style)) {
       this.$el.__wxsStyle = style;
       this.forceUpdate("style");
     }
@@ -2200,7 +1576,7 @@ function createNativeEvent(evt, htmlElement = false) {
     detail: {},
     currentTarget: realCurrentTarget
   };
-  if (evt instanceof CustomEvent && isPlainObject$1(evt.detail)) {
+  if (evt instanceof CustomEvent && isPlainObject(evt.detail)) {
     event.detail = evt.detail;
   }
   if (evt._stopped) {
@@ -2273,13 +1649,13 @@ const ServiceJSBridge = /* @__PURE__ */ extend(
 );
 function initOn() {
   const { on: on2 } = UniServiceJSBridge;
-  on2(ON_RESIZE, onResize$2);
+  on2(ON_RESIZE, onResize$3);
   on2(ON_APP_ENTER_FOREGROUND, onAppEnterForeground);
   on2(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
 }
-function onResize$2(res) {
+function onResize$3(res) {
   var _a;
-  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   invokeHook(page, ON_RESIZE, res);
   {
     const dialogPages = page == null ? void 0 : page.$page.getDialogPages();
@@ -2299,7 +1675,7 @@ function onResize$2(res) {
 }
 function onAppEnterForeground(enterOptions2) {
   var _a;
-  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   invokeHook(
     getApp().vm,
     ON_SHOW,
@@ -2314,7 +1690,7 @@ function onAppEnterBackground() {
     ON_HIDE
   );
   invokeHook(
-    (_a = getCurrentPage$1()) == null ? void 0 : _a.vm,
+    (_a = getCurrentPage()) == null ? void 0 : _a.vm,
     ON_HIDE
   );
 }
@@ -2931,7 +2307,7 @@ function _addListeners(id2, listeners2, watch2) {
   if (watch2 && !id2) {
     return;
   }
-  if (!isPlainObject$1(listeners2)) {
+  if (!isPlainObject(listeners2)) {
     return;
   }
   Object.keys(listeners2).forEach((name) => {
@@ -2953,7 +2329,7 @@ function _removeListeners(id2, listeners2, watch2) {
   if (watch2 && !id2) {
     return;
   }
-  if (!isPlainObject$1(listeners2)) {
+  if (!isPlainObject(listeners2)) {
     return;
   }
   Object.keys(listeners2).forEach((name) => {
@@ -3421,7 +2797,7 @@ const props$s = {
 const emit$1 = ["keyboardheightchange"];
 function useKeyboard$1(props2, elRef, trigger) {
   function initKeyboard(el) {
-    const isApple = computed(
+    const isApple2 = computed(
       () => String(navigator.vendor).indexOf("Apple") === 0
     );
     el.addEventListener("focus", () => {
@@ -3430,7 +2806,7 @@ function useKeyboard$1(props2, elRef, trigger) {
     });
     const onKeyboardHide = () => {
       document.removeEventListener("click", iosHideKeyboard, false);
-      if (isApple.value) {
+      if (isApple2.value) {
         document.documentElement.scrollTo(
           document.documentElement.scrollLeft,
           document.documentElement.scrollTop
@@ -3438,7 +2814,7 @@ function useKeyboard$1(props2, elRef, trigger) {
       }
     };
     el.addEventListener("blur", () => {
-      if (isApple.value) {
+      if (isApple2.value) {
         el.blur();
       }
       onKeyboardHide();
@@ -3672,7 +3048,7 @@ function validateProtocols(name, args, protocol, onFail) {
   }
 }
 function validateProp(name, value, prop, isAbsent) {
-  if (!isPlainObject$1(prop)) {
+  if (!isPlainObject(prop)) {
     prop = { type: prop };
   }
   const { type, required, validator: validator2 } = prop;
@@ -3844,7 +3220,7 @@ function normalizeErrMsg(errMsg, name) {
   return name + errMsg.substring(errMsg.indexOf(":fail"));
 }
 function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
-  if (!isPlainObject$1(args)) {
+  if (!isPlainObject(args)) {
     args = {};
   }
   const { success, fail, complete } = getApiCallbacks(args);
@@ -3971,7 +3347,7 @@ function invokeApi(method, api2, options, params) {
   return api2(options, ...params);
 }
 function hasCallback(args) {
-  if (isPlainObject$1(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find(
+  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find(
     (cb) => isFunction(args[cb])
   )) {
     return true;
@@ -4006,7 +3382,7 @@ function promisify(name, fn) {
 }
 function formatApiArgs(args, options) {
   const params = args[0];
-  if (!options || !options.formatArgs || !isPlainObject$1(options.formatArgs) && isPlainObject$1(params)) {
+  if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
     return;
   }
   const formatArgs = options.formatArgs;
@@ -4329,12 +3705,12 @@ function dedupeHooks(hooks) {
 const addInterceptor = /* @__PURE__ */ defineSyncApi(
   API_ADD_INTERCEPTOR,
   (method, interceptor) => {
-    if (isString(method) && isPlainObject$1(interceptor)) {
+    if (isString(method) && isPlainObject(interceptor)) {
       mergeInterceptorHook(
         scopedInterceptors[method] || (scopedInterceptors[method] = {}),
         interceptor
       );
-    } else if (isPlainObject$1(method)) {
+    } else if (isPlainObject(method)) {
       mergeInterceptorHook(globalInterceptors, method);
     }
   },
@@ -4344,12 +3720,12 @@ const removeInterceptor = /* @__PURE__ */ defineSyncApi(
   API_REMOVE_INTERCEPTOR,
   (method, interceptor) => {
     if (isString(method)) {
-      if (isPlainObject$1(interceptor)) {
+      if (isPlainObject(interceptor)) {
         removeInterceptorHook(scopedInterceptors[method], interceptor);
       } else {
         delete scopedInterceptors[method];
       }
-    } else if (isPlainObject$1(method)) {
+    } else if (isPlainObject(method)) {
       removeInterceptorHook(globalInterceptors, method);
     }
   },
@@ -5273,7 +4649,7 @@ class CanvasContext {
     });
   }
   set font(value) {
-    var self2 = this;
+    var self = this;
     this.state.font = value;
     var fontFormat = value.match(
       // 支持小数点 github #5329
@@ -5290,19 +4666,19 @@ class CanvasContext {
             method: "setFontStyle",
             data: [value2]
           });
-          self2.state.fontStyle = value2;
+          self.state.fontStyle = value2;
         } else if (["bold", "normal", "lighter", "bolder"].indexOf(value2) > -1 || /^\d+$/.test(value2)) {
           actions.push({
             method: "setFontWeight",
             data: [value2]
           });
-          self2.state.fontWeight = value2;
+          self.state.fontWeight = value2;
         } else if (index2 === 0) {
           actions.push({
             method: "setFontStyle",
             data: ["normal"]
           });
-          self2.state.fontStyle = "normal";
+          self.state.fontStyle = "normal";
         } else if (index2 === 1) {
           pushAction();
         }
@@ -5327,7 +4703,7 @@ class CanvasContext {
         method: "setFontWeight",
         data: ["normal"]
       });
-      self2.state.fontWeight = "normal";
+      self.state.fontWeight = "normal";
     }
   }
   get font() {
@@ -6763,7 +6139,7 @@ function stringifyQuery(url, data) {
       let v2 = data[key];
       if (typeof v2 === "undefined" || v2 === null) {
         v2 = "";
-      } else if (isPlainObject$1(v2)) {
+      } else if (isPlainObject(v2)) {
         v2 = JSON.stringify(v2);
       }
       params[encode(key)] = encode(v2);
@@ -6796,7 +6172,7 @@ const RequestOptions = {
       params.data = value || "";
     },
     url(value, params) {
-      if (params.method === HTTP_METHODS[0] && isPlainObject$1(params.data) && Object.keys(params.data).length) {
+      if (params.method === HTTP_METHODS[0] && isPlainObject(params.data) && Object.keys(params.data).length) {
         params.url = stringifyQuery(value, params.data);
       }
     },
@@ -7086,7 +6462,6 @@ function createNormalizeUrl(type) {
     }
   };
 }
-const API_HIDE_LOADING = "hideLoading";
 const API_HIDE_TOAST = "hideToast";
 const API_LOAD_FONT_FACE = "loadFontFace";
 const LoadFontFaceProtocol = {
@@ -7153,16 +6528,6 @@ const PageScrollToOptions = {
 };
 const API_SHOW_ACTION_SHEET = "showActionSheet";
 const API_SHOW_LOADING = "showLoading";
-const ShowLoadingProtocol = {
-  title: String,
-  mask: Boolean
-};
-const ShowLoadingOptions = {
-  formatArgs: {
-    title: "",
-    mask: false
-  }
-};
 const API_SHOW_MODAL = "showModal";
 const API_SHOW_TOAST = "showToast";
 const SHOW_TOAST_ICON = [
@@ -7966,7 +7331,7 @@ const switchTab = /* @__PURE__ */ defineAsyncApi(
 );
 function removeLastPage() {
   var _a;
-  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   if (!page) {
     return;
   }
@@ -8194,7 +7559,7 @@ const homeDialogPages = [];
 const homeSystemDialogPages = [];
 function getPageElement(page) {
   var _a;
-  const currentPage = getCurrentPage$1();
+  const currentPage = getCurrentPage();
   if (page !== currentPage) {
     const dialogPages = currentPage.getDialogPages();
     const dialogPage = dialogPages[dialogPages.length - 1];
@@ -8311,7 +7676,7 @@ class UniPageImpl {
     this.setPageStyle(style);
   }
   getElementById(id2) {
-    const currentPage = getCurrentPage$1();
+    const currentPage = getCurrentPage();
     if (currentPage !== this) {
       return null;
     }
@@ -8325,7 +7690,7 @@ class UniPageImpl {
     return null;
   }
   getHTMLElement() {
-    const currentPage = getCurrentPage$1();
+    const currentPage = getCurrentPage();
     if (currentPage !== this) {
       return null;
     }
@@ -8388,7 +7753,7 @@ class UniDialogPageImpl extends UniPageImpl {
   }
   getElementById(id2) {
     var _a;
-    const currentPage = getCurrentPage$1();
+    const currentPage = getCurrentPage();
     if (currentPage !== this.getParentPage()) {
       return null;
     }
@@ -8399,7 +7764,7 @@ class UniDialogPageImpl extends UniPageImpl {
   }
   getHTMLElement() {
     var _a;
-    const currentPage = getCurrentPage$1();
+    const currentPage = getCurrentPage();
     if (currentPage !== this.getParentPage()) {
       return null;
     }
@@ -8485,7 +7850,7 @@ function useBackgroundColorContent$1(vm) {
 }
 function handleEscKeyPress(event) {
   if (event.key === "Escape") {
-    const currentPage = getCurrentPage$1();
+    const currentPage = getCurrentPage();
     const dialogPages = currentPage.getDialogPages();
     const dialogPage = dialogPages[dialogPages.length - 1];
     if (!dialogPage.$disableEscBack) {
@@ -8506,7 +7871,7 @@ function decrementEscBackPageNum() {
   }
 }
 const closeDialogPage = (options) => {
-  var _a, _b;
+  var _a, _b, _c, _d, _e;
   const currentPages = getCurrentPages();
   const currentPage = currentPages[currentPages.length - 1];
   if (!currentPage) {
@@ -8534,7 +7899,11 @@ const closeDialogPage = (options) => {
         return;
       }
     } else {
-      const parentSystemDialogPages = parentPage.vm.$pageLayoutInstance.$systemDialogPages.value;
+      const parentSystemDialogPages = (_c = (_b = (_a = parentPage.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages) == null ? void 0 : _c.value;
+      if (!parentSystemDialogPages) {
+        triggerFailCallback$1(options, "dialogPage is not a valid page");
+        return;
+      }
       const index2 = parentSystemDialogPages.indexOf(dialogPage);
       if (index2 > -1) {
         invokeHook(parentSystemDialogPages[index2].vm, ON_UNLOAD);
@@ -8563,8 +7932,8 @@ const closeDialogPage = (options) => {
     dialogPages.length = 0;
   }
   const successOptions = { errMsg: "closeDialogPage: ok" };
-  (_a = options == null ? void 0 : options.success) == null ? void 0 : _a.call(options, successOptions);
-  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, successOptions);
+  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, successOptions);
+  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, successOptions);
 };
 function triggerFailCallback$1(options, errMsg) {
   var _a, _b;
@@ -8906,6 +8275,7 @@ const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
 const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
 const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
 const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+const isHarmony = /OpenHarmony/i.test(ua);
 function getScreenFix() {
   return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
 }
@@ -8918,18 +8288,21 @@ function getScreenWidth(screenFix, landscape) {
 function getScreenHeight(screenFix, landscape) {
   return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
 }
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
+function getWindowWidth() {
+  const screenFix = getScreenFix();
+  if (screenFix) {
+    const screenWidth = getScreenWidth(screenFix, isLandscape(screenFix));
+    return Math.min(
+      window.innerWidth,
+      document.documentElement.clientWidth,
+      screenWidth
+    ) || screenWidth;
+  } else {
+    return Math.min(window.innerWidth, document.documentElement.clientWidth);
+  }
 }
 function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  );
+  const windowWidth = getWindowWidth();
   return {
     platform: isIOS ? "ios" : "other",
     pixelRatio: window.devicePixelRatio,
@@ -9494,7 +8867,7 @@ function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
   before && before(comp);
   const oldSetup = comp.setup;
   comp.setup = (props2, ctx) => {
-    const instance2 = getCurrentInstance();
+    const instance2 = getCurrentInstance$1();
     init2(instance2.proxy);
     setup(instance2);
     if (oldSetup) {
@@ -9553,7 +8926,7 @@ function setupPage(comp) {
       watch(
         [instance2.onReachBottom, instance2.onPageScroll],
         () => {
-          const currentPage = getCurrentPage$1().vm;
+          const currentPage = getCurrentPage().vm;
           if (instance2.proxy === currentPage) {
             initPageScrollListener(instance2, pageMeta);
           }
@@ -9641,7 +9014,7 @@ function setupApp(comp) {
               notFound: true,
               openType: "appLaunch",
               path: route.path,
-              query: {},
+              query: decodedQuery(route.query),
               scene: 1001
             };
             handleBeforeEntryPageRoutes();
@@ -9657,7 +9030,7 @@ function setupApp(comp) {
       onMounted(() => {
         window.addEventListener(
           "resize",
-          debounce(onResize$1, 50, { setTimeout, clearTimeout })
+          debounce(onResize$2, 50, { setTimeout, clearTimeout })
         );
         window.addEventListener("message", onMessage);
         document.addEventListener("visibilitychange", onVisibilityChange);
@@ -9679,7 +9052,7 @@ function setupApp(comp) {
     }
   });
 }
-function onResize$1() {
+function onResize$2() {
   const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
   const landscape = Math.abs(Number(window.orientation)) === 90;
   const deviceOrientation = landscape ? "landscape" : "portrait";
@@ -9694,7 +9067,7 @@ function onResize$1() {
   });
 }
 function onMessage(evt) {
-  if (isPlainObject$1(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
+  if (isPlainObject(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
     UniServiceJSBridge.emit(
       ON_WEB_INVOKE_APP_SERVICE,
       evt.data.data,
@@ -9740,7 +9113,7 @@ function invokeOnTabItemTap(route) {
   }
 }
 function updateDocumentTitle(title) {
-  {
+  if (title && title !== document.title) {
     document.title = title;
   }
   UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
@@ -9794,6 +9167,13 @@ function getBrowserInfo() {
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
     if (osversionFind) {
       osversion = osversionFind[1].replace(/_/g, ".");
+    }
+    const iosVersion = osversion.split(".")[0];
+    if (Number(iosVersion) >= 18) {
+      const versionMatch = ua.match(/Version\/([\d\.]+)/);
+      if (versionMatch) {
+        osversion = versionMatch[1];
+      }
     }
     const modelFind = ua.match(/\(([a-zA-Z]+);/);
     if (modelFind) {
@@ -9899,6 +9279,14 @@ function getBrowserInfo() {
         }
       }
     }
+  } else if (isHarmony) {
+    osname = "Harmony";
+    deviceType = "phone";
+    const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/);
+    if (osversionFind) {
+      osversion = osversionFind[1];
+    }
+    model = "";
   } else {
     osname = "Other";
     osversion = "0";
@@ -10248,7 +9636,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": placeholderClass
   }, [createVNode("div", {
     "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3$1, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3, {
     "disabled": true,
     "style": {
       color
@@ -10257,7 +9645,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": "uni-page-head-search-input",
     "confirm-type": "search",
     "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3$1, {
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3, {
     "focus": autoFocus,
     "style": {
       color
@@ -10452,7 +9840,7 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main$3 = {
+const _sfc_main$5 = {
   name: "PageRefresh",
   setup() {
     const { pullToRefresh } = usePageMeta();
@@ -10487,7 +9875,7 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("uni-page-refresh", null, [
     createElementVNode("div", {
       style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
@@ -10517,7 +9905,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$2]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render]]);
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -10829,7 +10217,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);
-    const currentInstance = getCurrentInstance();
+    const currentInstance = getCurrentInstance$1();
     {
       currentInstance.$dialogPages = ref([]);
       currentInstance.$systemDialogPages = ref([]);
@@ -10850,6 +10238,9 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         }
         if (!(routePageMeta == null ? void 0 : routePageMeta.navigationBar.style)) {
           pageMeta.navigationBar.style = "custom";
+        }
+        if (ctx.attrs["data-type"] === SYSTEM_DIALOG_TAG) {
+          pageMeta.navigationBar.titleText = "";
         }
         const parentInstance = inject(
           "parentInstance"
@@ -12326,7 +11717,7 @@ function useScopedAttrs() {
     attrs: {}
   });
   onMounted(() => {
-    let instance2 = getCurrentInstance();
+    let instance2 = getCurrentInstance$1();
     while (instance2) {
       const scopeId = instance2.type.__scopeId;
       if (scopeId) {
@@ -12348,7 +11739,7 @@ function useFormField(nameKey, value) {
   if (!uniForm) {
     return;
   }
-  const instance2 = getCurrentInstance();
+  const instance2 = getCurrentInstance$1();
   const initialValue = isString(value) ? instance2.proxy[value] : value.value;
   const ctx = {
     submit() {
@@ -12800,7 +12191,7 @@ class UniInputElement extends UniElement {
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$o,
   emits: ["confirm", ...emit],
@@ -12927,7 +12318,7 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
         "key": "input",
         "ref": fieldRef,
         "value": state2.value,
-        "onInput": (event) => {
+        "onInput": withModifiers((event) => {
           const value = event.target.value.toString();
           if (type.value === "number" && state2.maxlength > 0 && value.length > state2.maxlength) {
             if (isPaste(event)) {
@@ -12935,8 +12326,11 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
             }
             return;
           }
+          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+            return;
+          }
           state2.value = value;
-        },
+        }, ["stop"]),
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state2.maxlength,
@@ -12973,7 +12367,7 @@ const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
 const LISTENER_PREFIX = /^on[A-Z]+/;
 const useAttrs = (params = {}) => {
   const { excludeListeners = false, excludeKeys = [] } = params;
-  const instance2 = getCurrentInstance();
+  const instance2 = getCurrentInstance$1();
   const attrs2 = shallowRef({});
   const listeners2 = shallowRef({});
   const excludeAttrs = shallowRef({});
@@ -14571,7 +13965,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     slots
   }) {
     const rootRef = ref(null);
-    const vm = getCurrentInstance();
+    const vm = getCurrentInstance$1();
     const __scopeId = vm && vm.vnode.scopeId || "";
     const {
       hovering,
@@ -15490,7 +14884,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = ref(null);
     const contentRef = ref(null);
     const getPickerViewColumn = inject("getPickerViewColumn");
-    const instance2 = getCurrentInstance();
+    const instance2 = getCurrentInstance$1();
     const currentRef = getPickerViewColumn ? getPickerViewColumn(instance2) : ref(0);
     const pickerViewProps2 = inject("pickerViewProps");
     const pickerViewState = inject("pickerViewState");
@@ -16238,7 +15632,7 @@ function processClickEvent(node, triggerItemClick) {
   }
 }
 function normalizeAttrs(tagName, attrs2) {
-  if (!isPlainObject$1(attrs2))
+  if (!isPlainObject(attrs2))
     return;
   for (const key in attrs2) {
     if (hasOwn(attrs2, key)) {
@@ -16253,7 +15647,7 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
     return [];
   return nodeList.map((node) => {
     var _a;
-    if (!isPlainObject$1(node)) {
+    if (!isPlainObject(node)) {
       return;
     }
     if (!hasOwn(node, "type") || node.type === "node") {
@@ -16394,7 +15788,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     emit: emit2
   }) {
-    const vm = getCurrentInstance();
+    const vm = getCurrentInstance$1();
     const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = ref(null);
     const _vnode = ref([]);
@@ -16595,7 +15989,7 @@ const props$k = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -18361,7 +17755,7 @@ function parseText(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -18634,7 +18028,7 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniViewElement extends UniElement {
 }
-const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ extend({}, hoverProps),
   rootElement: {
@@ -19450,6 +18844,121 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+function useLoadingStyle(targetElement, options = {}) {
+  const loadingSize = ref("16px");
+  const loadingBorderWidth = ref("0px");
+  let observer = null;
+  const coefficientMap = {
+    medium: options.coefficientMedium || 1,
+    thick: options.coefficientThick || 2
+  };
+  const calculateLoadingWidth = (element) => {
+    if (!element)
+      return;
+    const computedStyle = window.getComputedStyle(element);
+    const width = parseFloat(computedStyle.width);
+    const height = parseFloat(computedStyle.height);
+    const styleAttribute = element.getAttribute("style") || "";
+    let currentBorderWidthKeyword = "medium";
+    const match = styleAttribute.match(/border-width:\s*(medium|thick)/);
+    if (match && match[1]) {
+      currentBorderWidthKeyword = match[1];
+    }
+    if (!coefficientMap[currentBorderWidthKeyword]) {
+      console.warn(
+        `[uni-loading] 无效的 border-width 值: "${currentBorderWidthKeyword}"。将使用默认值 "medium"。`
+      );
+      currentBorderWidthKeyword = "medium";
+    }
+    const coefficient = coefficientMap[currentBorderWidthKeyword];
+    const minSide = Math.min(width, height);
+    const calculatedWidth = minSide / 16 * coefficient;
+    loadingSize.value = `${minSide}px`;
+    loadingBorderWidth.value = `${calculatedWidth}px`;
+  };
+  const setupObserver = () => {
+    if (!targetElement.value)
+      return;
+    calculateLoadingWidth(targetElement.value);
+    observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === "attributes" && (mutation.attributeName === "class" || mutation.attributeName === "style")) {
+          calculateLoadingWidth(targetElement.value);
+          break;
+        }
+      }
+    });
+    observer.observe(targetElement.value, {
+      attributes: true,
+      attributeFilter: ["class", "style"]
+    });
+  };
+  onMounted(() => {
+    setupObserver();
+  });
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect();
+    }
+  });
+  return {
+    size: loadingSize,
+    borderWidth: loadingBorderWidth
+  };
+}
+var __defProp2 = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp2 = (obj, key, value) => key in obj ? __defProp2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp2(a2, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp2(a2, prop, b[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
+const _sfc_main$4 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
+  name: "Loading",
+  __reserved: true,
+  compatConfig: {
+    MODE: 3
+  }
+}), {
+  __name: "index-x",
+  props: {
+    paused: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = ref(null);
+    const loadingStyle = reactive(useLoadingStyle(LoadingRef));
+    return (_ctx, _cache) => {
+      const _component_view = __syscom_2;
+      return openBlock(), createBlock(_component_view, {
+        class: "__uni_loading_container__",
+        ref_key: "LoadingRef",
+        ref: LoadingRef,
+        style: { "display": "flex" }
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            class: normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
+            style: normalizeStyle([{ "box-sizing": "border-box" }, { width: loadingStyle.size, height: loadingStyle.size, borderWidth: loadingStyle.borderWidth }])
+          }, null, 8, ["class", "style"])
+        ]),
+        _: 1
+      }, 512);
+    };
+  }
+}));
 function normalizeEvent(vm, id2) {
   if (!id2) {
     id2 = vm.id;
@@ -19478,7 +18987,7 @@ function removeSubscribe(name, pageId) {
   unregisterViewMethod(pageId || getCurrentPageId(), name);
 }
 function useSubscribe(callback, name, multiple, pageId) {
-  const instance2 = getCurrentInstance();
+  const instance2 = getCurrentInstance$1();
   const vm = instance2.proxy;
   pageId = pageId == null ? useCurrentPageId() : pageId;
   onMounted(() => {
@@ -19504,7 +19013,7 @@ function useOn(name, callback) {
 let index$d = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
-  const instance2 = getCurrentInstance();
+  const instance2 = getCurrentInstance$1();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
   const id2 = vm.id || `context${index$d++}`;
@@ -19875,7 +19384,16 @@ function initRouter(app) {
   const router = createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
     uni.hideToast();
-    uni.hideLoading();
+    uni.hideLoading({
+      fail(error) {
+        const pages = getCurrentBasePages();
+        const currentPage = pages[pages.length - 1];
+        if (!currentPage) {
+          return;
+        }
+        throw new Error(error.errMsg);
+      }
+    });
   });
   router.beforeEach((to, from) => {
     if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
@@ -20787,7 +20305,10 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
         "poster": props2.poster,
         "autoplay": !!props2.autoplay
       }, videoAttrs.value, {
-        "class": "uni-video-video",
+        "class": {
+          "uni-video-video": true,
+          "uni-video-video-fullscreen": fullscreenState.fullscreen
+        },
         "webkit-playsinline": true,
         "playsinline": true,
         "onDurationchange": onDurationChange,
@@ -22313,7 +21834,7 @@ const getWindowInfo = /* @__PURE__ */ defineSyncApi(
     const landscape = isLandscape(screenFix);
     const screenWidth = getScreenWidth(screenFix, landscape);
     const screenHeight = getScreenHeight(screenFix, landscape);
-    const windowWidth = getWindowWidth(screenWidth);
+    const windowWidth = getWindowWidth();
     let windowHeight = window.innerHeight;
     const statusBarHeight = safeAreaInsets$1.top;
     const safeArea = {
@@ -22641,7 +22162,7 @@ const vibrateShort = /* @__PURE__ */ defineAsyncApi(
     if (_isSupport && window.navigator.vibrate(15)) {
       resolve();
     } else {
-      reject("vibrateLong:fail");
+      reject("vibrateShort:fail");
     }
   }
 );
@@ -24100,9 +23621,18 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
       xhr.onload = function() {
         clearTimeout(timer);
         const statusCode = xhr.status;
+        const responseHeaders = xhr.getAllResponseHeaders();
+        const header2 = responseHeaders ? responseHeaders.trim().split(/[\r\n]+/).reduce((acc, line) => {
+          const parts = line.split(": ");
+          const header3 = parts.shift();
+          const value = parts.join(": ");
+          acc[header3] = value;
+          return acc;
+        }, {}) : {};
         resolve({
           statusCode,
-          data: xhr.responseText || xhr.response
+          data: xhr.responseText || xhr.response,
+          header: header2
         });
       };
       if (!uploadTask._isAbort) {
@@ -24699,7 +24229,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
       canBack = false;
     }
     {
-      const currentPage = getCurrentPage$1();
+      const currentPage = getCurrentPage();
       if (currentPage) {
         const dialogPages = currentPage.getDialogPages();
         const dialogPage = dialogPages[dialogPages.length - 1];
@@ -24742,7 +24272,7 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(
     const path = url.split("?")[0];
     const route = getRouteOptions(path);
     if (!route) {
-      reject(`${url}}`);
+      reject(`${url}`);
       return;
     }
     route.loader && route.loader().then(() => {
@@ -24933,33 +24463,10 @@ const showToast = /* @__PURE__ */ defineAsyncApi(
   ShowToastProtocol,
   ShowToastOptions
 );
-const showLoadingDefaultState = {
-  icon: "loading",
-  duration: 1e8,
-  image: ""
-};
-const showLoading = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_LOADING,
-  (args, { resolve, reject }) => {
-    extend(args, showLoadingDefaultState);
-    createToast(args);
-    showType = "onShowLoading";
-    resolve();
-  },
-  ShowLoadingProtocol,
-  ShowLoadingOptions
-);
 const hideToast = /* @__PURE__ */ defineAsyncApi(
   API_HIDE_TOAST,
   (args, { resolve, reject }) => {
     hidePopup("onHideToast");
-    resolve();
-  }
-);
-const hideLoading = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_LOADING,
-  (args, { resolve, reject }) => {
-    hidePopup("onHideLoading");
     resolve();
   }
 );
@@ -27862,26 +27369,31 @@ const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
 const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
 const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
-const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
+const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance$1()) => {
   !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };
-const onLoad = /* @__PURE__ */ createLifeCycleHook(
+const onLoad$1 = /* @__PURE__ */ createLifeCycleHook(
   ON_LOAD,
   2
   /* HookFlags.PAGE */
 );
-const onReady = /* @__PURE__ */ createLifeCycleHook(
+const onReady$1 = /* @__PURE__ */ createLifeCycleHook(
   ON_READY,
   2
   /* HookFlags.PAGE */
 );
-const onUnload = /* @__PURE__ */ createLifeCycleHook(
+const onUnload$1 = /* @__PURE__ */ createLifeCycleHook(
   ON_UNLOAD,
   2
   /* HookFlags.PAGE */
 );
-const onResize = /* @__PURE__ */ createLifeCycleHook(
+const onResize$1 = /* @__PURE__ */ createLifeCycleHook(
   ON_RESIZE,
+  2
+  /* HookFlags.PAGE */
+);
+const onBackPress$1 = /* @__PURE__ */ createLifeCycleHook(
+  ON_BACK_PRESS,
   2
   /* HookFlags.PAGE */
 );
@@ -27911,7 +27423,7 @@ class UniMatchMediaElement extends UniViewElement {
         orientation: uni.getDeviceInfo().deviceOrientation
       }));
     });
-    onResize((res) => {
+    onResize$1((res) => {
       this.toggleElement(this.isValid({
         orientation: res.deviceOrientation,
         width: res.size.windowWidth,
@@ -28080,10 +27592,10 @@ function triggerFailCallback(options, errMsg) {
   (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
-const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+const _sfc_main$3 = /* @__PURE__ */ defineComponent({
   __name: "actionSheet",
   setup(__props) {
-    const pageInstance = getCurrentInstance().proxy;
+    const pageInstance = getCurrentInstance$1().proxy;
     const uniPageInstance = pageInstance.$page;
     const show = ref(false);
     const i18nCancelText = reactive({
@@ -28145,7 +27657,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
         theme.value = appTheme.value;
       }
     };
-    onLoad((options) => {
+    onLoad$1((options) => {
       readyEventName.value = options["readyEventName"];
       optionsEventName.value = options["optionsEventName"];
       successEventName.value = options["successEventName"];
@@ -28295,17 +27807,17 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     const hoverClass = computed(() => {
       return theme.value == "dark" ? "uni-action-sheet_dialog__hover__dark__mode" : "uni-action-sheet_dialog__hover";
     });
-    onReady(() => {
+    onReady$1(() => {
       bottomNavigationHeight.value = uniPageInstance.safeAreaInsets.bottom;
       setTimeout(() => {
         show.value = true;
       }, 10);
     });
-    onResize((_) => {
+    onResize$1((_) => {
       const systemInfo = uni.getSystemInfoSync();
       isLandscape2.value = systemInfo.deviceOrientation == "landscape";
     });
-    onUnload(() => {
+    onUnload$1(() => {
       if (!menuItemClicked.value && !cancelButtonClicked.value) {
         uni.$emit(failEventName.value, {});
       }
@@ -28316,8 +27828,8 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       window.removeEventListener("resize", fixSize);
     });
     return (_ctx, _cache) => {
-      const _component_view = __syscom_3;
-      const _component_text = __syscom_0$1;
+      const _component_view = __syscom_2;
+      const _component_text = __syscom_1$1;
       return openBlock(), createBlock(_component_view, null, {
         default: withCtx(() => [
           createVNode(_component_view, {
@@ -28432,8 +27944,8 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0$2 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.uni-action-sheet_dialog__hover__dark__mode {\n		background-color: #1c1c1c;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$2]]]);
+const _style_0$3 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.uni-action-sheet_dialog__hover__dark__mode {\n		background-color: #1c1c1c;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["styles", [_style_0$3]]]);
 class ShowActionSheetSuccessImpl {
   constructor(tapIndex, errMsg = "showActionSheet:ok") {
     this.errMsg = errMsg;
@@ -28523,212 +28035,127 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const defaultPoi = {
-  latitude: 39.908823,
-  longitude: 116.39747
-};
-const languageData = {
-  "en": {
-    "ok": "ok",
-    "cancel": "cancel",
-    "locationLoading": "positioning...",
-    "search": "Search location"
-  },
-  "zh-Hans": {
-    "ok": "确定",
-    "cancel": "取消",
-    "locationLoading": "获取定位中...",
-    "search": "搜索地点"
-  },
-  "zh-Hant": {
-    "ok": "確定",
-    "cancel": "取消",
-    "locationLoading": "獲取定位中...",
-    "search": "蒐索地點"
-  }
-};
-const loadingPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
-const _sfc_main$1 = {
-  data() {
-    const id1 = `UniMap1_${(Math.random() * 1e6).toString(36)}`;
-    const id2 = `UniMap2_${(Math.random() * 1e6).toString(36)}`;
-    const id3 = `UniMap3_${(Math.random() * 1e6).toString(36)}`;
-    return {
-      readyEventName: "",
-      optionsEventName: "",
-      successEventName: "",
-      failEventName: "",
-      mapId: id1,
-      mapTargetId: id2,
-      scrollId: id3,
-      isFocus: false,
-      latitude: 0,
-      longitude: 0,
-      locationComplete: false,
-      locationLoading: false,
-      chooseLocationOptions: {},
-      pageIndex: 1,
-      pageSize: 20,
-      pois: [],
-      selected: -1,
-      searchValue: "",
-      safeArea: {
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0
-      },
-      icon: {
-        target: "",
-        success: "",
-        position: "",
-        search: ""
-      },
-      lastTime: 0,
-      searchLoading: false,
-      language: "zh-Hans",
-      scrollTop: 0,
-      isLandscape: false,
-      theme: "light",
-      searchValueChangeTimer: -1,
-      lastPoi: {
-        latitude: null,
-        longitude: null,
-        selected: -1,
-        pois: [],
-        scrollTop: 0
-      },
-      errMsg: "",
-      callUniMapCoErr: false,
-      useUniCloud: true,
-      mapHeight: 350,
-      loadingPath,
-      loadingRotate: 0,
-      loadingTimer: -1
+const loadingPathData = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
+const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+  __name: "chooseLocation",
+  setup(__props) {
+    const defaultPoi = {
+      latitude: 39.908823,
+      longitude: 116.39747
     };
-  },
-  onLoad(options) {
-    this.checkUniCloud();
-    this.initPageOptions(options);
-    this.getSystemInfo();
-    this.getLocation();
-  },
-  onReady() {
-    this.getSafeAreaInsets();
-  },
-  onUnload() {
-    uni.$off(this.optionsEventName, null);
-    uni.$off(this.readyEventName, null);
-    uni.$off(this.successEventName, null);
-    uni.$off(this.failEventName, null);
-  },
-  onResize() {
-    this.getSystemInfo();
-  },
-  methods: {
-    checkUniCloud() {
-      if (typeof uniCloud == "undefined" || typeof uniCloud.config == "undefined" || uniCloud.config.spaceId == "") {
-        this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
-        this.useUniCloud = false;
-        console.error(this.errMsg);
+    const languageData = {
+      "en": {
+        "ok": "ok",
+        "cancel": "cancel",
+        "locationLoading": "positioning...",
+        "search": "Search location"
+      },
+      "zh-Hans": {
+        "ok": "确定",
+        "cancel": "取消",
+        "locationLoading": "获取定位中...",
+        "search": "搜索地点"
+      },
+      "zh-Hant": {
+        "ok": "確定",
+        "cancel": "取消",
+        "locationLoading": "獲取定位中...",
+        "search": "蒐索地點"
       }
-    },
-    initPageOptions(options) {
-      this.readyEventName = options["readyEventName"];
-      this.optionsEventName = options["optionsEventName"];
-      this.successEventName = options["successEventName"];
-      this.failEventName = options["failEventName"];
-      uni.$on(this.optionsEventName, (data) => {
+    };
+    const currentInstance = getCurrentInstance().proxy;
+    const uniPage = currentInstance.$page;
+    const readyEventName = ref("");
+    const optionsEventName = ref("");
+    const successEventName = ref("");
+    const failEventName = ref("");
+    const mapId = ref(`UniMap1_${(Math.random() * 1e6).toString(36)}`);
+    const isFocus = ref(false);
+    const latitude = ref(0);
+    const longitude = ref(0);
+    const locationComplete = ref(false);
+    const locationLoading = ref(false);
+    const chooseLocationOptions = reactive({});
+    const pageIndex = ref(1);
+    const pageSize = ref(20);
+    const pois = ref([]);
+    const selected = ref(-1);
+    const searchValue = ref("");
+    const safeArea = reactive({
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0
+    });
+    const icon = reactive({
+      target: "",
+      success: "",
+      position: "",
+      search: ""
+    });
+    ref(0);
+    const searchLoading = ref(false);
+    const language = ref("zh-Hans");
+    const scrollTop = ref(0);
+    const isLandscape2 = ref(false);
+    const theme = ref("light");
+    const searchValueChangeTimer = ref(-1);
+    const lastPoi = reactive({
+      latitude: null,
+      longitude: null,
+      selected: -1,
+      pois: [],
+      scrollTop: 0
+    });
+    const errMsg = ref("");
+    const callUniMapCoErr = ref(false);
+    const useUniCloud = ref(true);
+    const mapHeight = ref(350);
+    const loadingPath = ref(loadingPathData);
+    const loadingRotate = ref(0);
+    const loadingTimer = ref(-1);
+    const timeoutTimers = ref([]);
+    const mapTargetRef = ref(null);
+    const scrollRef = ref(null);
+    const checkUniCloud = () => {
+      if (typeof uniCloud == "undefined" || typeof uniCloud.config == "undefined" || uniCloud.config.spaceId == "") {
+        errMsg.value = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+        useUniCloud.value = false;
+        console.error(errMsg.value);
+      }
+    };
+    const initPageOptions = (options) => {
+      readyEventName.value = options["readyEventName"];
+      optionsEventName.value = options["optionsEventName"];
+      successEventName.value = options["successEventName"];
+      failEventName.value = options["failEventName"];
+      uni.$on(optionsEventName.value, (data) => {
         if (data["latitude"] != null) {
-          this.chooseLocationOptions.latitude = data["latitude"];
+          chooseLocationOptions.latitude = data["latitude"];
         }
         if (data["longitude"] != null) {
-          this.chooseLocationOptions.longitude = data["longitude"];
+          chooseLocationOptions.longitude = data["longitude"];
         }
         if (data["keyword"] != null) {
           let keyword = data["keyword"];
-          this.chooseLocationOptions.keyword = keyword;
-          this.searchValue = keyword;
+          chooseLocationOptions.keyword = keyword;
+          searchValue.value = keyword;
         } else {
-          this.chooseLocationOptions.keyword = "";
+          chooseLocationOptions.keyword = "";
         }
         if (data["payload"] != null) {
-          this.chooseLocationOptions.payload = data["payload"];
+          chooseLocationOptions.payload = data["payload"];
         }
       });
-      uni.$emit(this.readyEventName, {});
-    },
-    getLocation() {
-      if (this.chooseLocationOptions.latitude != null && this.chooseLocationOptions.longitude != null) {
-        this.latitude = this.chooseLocationOptions.latitude;
-        this.longitude = this.chooseLocationOptions.longitude;
-        this.locationComplete = true;
-        this.getPoi("getLocation");
-      } else {
-        this.locationLoading = true;
-        uni.getLocation({
-          type: "gcj02",
-          success: (res) => {
-            this.latitude = res.latitude;
-            this.longitude = res.longitude;
-            this.locationComplete = true;
-            this.locationLoading = false;
-            this.getPoi("getLocation");
-          },
-          fail: (err) => {
-            console.error("getLocationErr: ", err);
-            this.latitude = defaultPoi.latitude;
-            this.longitude = defaultPoi.longitude;
-            this.locationComplete = true;
-            this.locationLoading = false;
-            this.getPoi("getLocation");
-          }
-        });
-      }
-    },
-    distanceHandle(distance) {
-      if (distance < 1e3) {
-        return distance + "m";
-      } else {
-        return parseFloat((distance / 1e3).toFixed(2)) + "km";
-      }
-    },
-    poiHandle(pois) {
-      let list2 = pois.map((item, index2) => {
-        const location2 = item["location"];
-        let distance = item["distance"];
-        let latitude = location2["lat"];
-        let longitude = location2["lng"];
-        if (distance == 0) {
-          latitude = this.latitude;
-          longitude = this.longitude;
-        }
-        return {
-          title: item["title"],
-          address: item["address"],
-          distance,
-          distanceStr: this.distanceHandle(distance),
-          location: {
-            latitude,
-            longitude
-          }
-        };
-      });
-      let pageIndex = this.pageIndex;
-      if (pageIndex == 1) {
-        this.pois = list2;
-        this.updateScrollTop(0);
-      } else {
-        this.pois = this.pois.concat(list2);
-      }
-    },
-    callUniMapCo(action, data) {
+      uni.$emit(readyEventName.value, {});
+    };
+    const callUniMapCo = (action, data) => {
       let promise = new Promise((resolve, reject) => {
-        if (this.useUniCloud == false) {
-          reject(this.errMsg);
+        if (useUniCloud.value == false) {
+          reject(errMsg.value);
           return;
         }
-        this.errMsg = "";
+        errMsg.value = "";
         const uniMapCo = uniCloud.importObject("uni-map-co", {
           customUI: true
         });
@@ -28736,8 +28163,8 @@ const _sfc_main$1 = {
           action,
           data
         };
-        if (this.chooseLocationOptions.payload != null) {
-          chooseLocationData["payload"] = this.chooseLocationOptions.payload;
+        if (chooseLocationOptions.payload != null) {
+          chooseLocationData["payload"] = chooseLocationOptions.payload;
         }
         uniMapCo.chooseLocation(chooseLocationData).then((res) => {
           resolve(res);
@@ -28745,110 +28172,27 @@ const _sfc_main$1 = {
           if (err instanceof UniCloudError) {
             const cloudError = err;
             const errCode = cloudError.errCode;
-            const errMsg = cloudError.errMsg;
+            const errorMsg = cloudError.errMsg;
             const errSubject = cloudError.errSubject;
-            if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
-              this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
-              console.error(this.errMsg);
+            if (errorMsg.indexOf("在云端不存在") > -1 || errorMsg.indexOf("未匹配") > -1) {
+              errMsg.value = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+              console.error(errMsg.value);
             } else {
-              this.errMsg = errMsg;
-              console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg, errSubject }));
+              errMsg.value = errorMsg;
+              console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg: errorMsg, errSubject }));
             }
           }
           reject(err);
         });
       });
       promise.then((res) => {
-        this.callUniMapCoErr = false;
+        callUniMapCoErr.value = false;
       }).catch((err) => {
-        this.callUniMapCoErr = true;
+        callUniMapCoErr.value = true;
       });
       return promise;
-    },
-    getPoi(type) {
-      let searchValue = this.searchValue;
-      let latitude = this.latitude;
-      let longitude = this.longitude;
-      let pageIndex = this.pageIndex;
-      let pageSize = this.pageSize;
-      if (["searchValueChange"].indexOf(type) == -1) {
-        this.searchLoading = true;
-      }
-      if (searchValue != "" && searchValue.length > 0) {
-        this.callUniMapCo("search", {
-          keyword: searchValue,
-          location: {
-            lat: latitude,
-            lng: longitude
-          },
-          radius: 5e3,
-          auto_extend: 1,
-          orderby: "weight",
-          page_index: pageIndex,
-          page_size: pageSize
-        }).then((res) => {
-          var _a, _b;
-          let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("data");
-          this.poiHandle(pois);
-          this.searchLoading = false;
-        }).catch((err) => {
-          this.searchLoading = false;
-        });
-      } else {
-        this.callUniMapCo("location2address", {
-          location: `${latitude},${longitude}`,
-          get_poi: 1,
-          poi_options: {
-            radius: 3e3,
-            policy: pageIndex == 1 ? 3 : 4,
-            roadlevel: 1,
-            homeorcorp: 1,
-            page_index: pageIndex,
-            page_size: pageSize
-          }
-        }).then((res) => {
-          var _a, _b;
-          let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("pois");
-          this.poiHandle(pois);
-          if (this.pois.length > 0 && pageIndex == 1) {
-            let poi = this.pois[0];
-            if (poi.distance > 0) {
-              let poi1 = poi.location;
-              let poi2 = {
-                latitude: this.latitude,
-                longitude: this.longitude
-              };
-              let distance = poi.distance;
-              let direction2 = this.calcDirection(poi1, poi2);
-              if (poi.address.indexOf("米") == -1) {
-                let suffix = `向${direction2}${distance}米`;
-                let newPoi = {
-                  title: `${poi.title}${suffix}`,
-                  address: `${poi.address}${suffix}`,
-                  distance: 0,
-                  distanceStr: this.distanceHandle(distance),
-                  location: poi2
-                };
-                this.pois.unshift(newPoi);
-              }
-            }
-            this.searchLoading = false;
-            if (this.selected == -1) {
-              setTimeout(() => {
-                this.selected = 0;
-              }, 20);
-              this.lastPoi.latitude = this.latitude;
-              this.lastPoi.longitude = this.longitude;
-              this.lastPoi.selected = this.selected;
-              this.lastPoi.pois = this.pois;
-            }
-          }
-        }).catch((err) => {
-          this.searchLoading = false;
-        });
-      }
-    },
-    calcDirection(poi1, poi2) {
+    };
+    const calcDirection = (poi1, poi2) => {
       const toRadians = (angle2) => angle2 * (Math.PI / 180);
       const toDegrees = (angle2) => angle2 * (180 / Math.PI);
       const lat1 = toRadians(poi1.latitude);
@@ -28878,71 +28222,209 @@ const _sfc_main$1 = {
       } else {
         return "西北";
       }
-    },
-    getSafeAreaInsets() {
-      const info = uni.getWindowInfo();
-      this.safeArea.top = info.safeAreaInsets.top;
-      this.safeArea.bottom = info.safeAreaInsets.bottom;
-      this.safeArea.left = info.safeAreaInsets.left;
-      this.safeArea.right = info.safeAreaInsets.right;
-    },
-    getSystemInfo() {
-      const info = uni.getWindowInfo();
-      this.safeArea.top = info.safeAreaInsets.top;
-      this.safeArea.bottom = info.safeAreaInsets.bottom;
-      this.safeArea.left = info.safeAreaInsets.left;
-      this.safeArea.right = info.safeAreaInsets.right;
-      let screenHeight = info.screenHeight;
-      this.mapHeight = (screenHeight - this.safeArea.top - this.safeArea.bottom) * 0.6;
-      const systemInfo = uni.getSystemInfoSync();
-      const appLanguage = systemInfo.appLanguage;
-      this.language = appLanguage;
-      const osTheme = systemInfo.osTheme;
-      const appTheme = systemInfo.appTheme;
-      if (appTheme != null && appTheme != "auto") {
-        this.theme = appTheme;
-      } else if (osTheme != null) {
-        this.theme = osTheme;
+    };
+    const distanceHandle = (distance) => {
+      if (distance < 1e3) {
+        return distance + "m";
+      } else {
+        return parseFloat((distance / 1e3).toFixed(2)) + "km";
       }
-      this.isLandscape = systemInfo.windowWidth >= 900 ? true : false;
-      const hostTheme = systemInfo.hostTheme;
-      if (hostTheme != null) {
-        this.theme = hostTheme;
+    };
+    const safeSetTimeout = (callback, delay) => {
+      let timerId = -1;
+      timerId = setTimeout(() => {
+        callback();
+        const index2 = timeoutTimers.value.indexOf(timerId);
+        if (index2 > -1) {
+          timeoutTimers.value.splice(index2, 1);
+        }
+      }, delay);
+      timeoutTimers.value.push(timerId);
+      return timerId;
+    };
+    const updateScrollTop = (scrollTopValue) => {
+      safeSetTimeout(() => {
+        scrollTop.value = scrollTopValue;
+      }, 10);
+    };
+    const poiHandle = (poisData) => {
+      let list2 = poisData.map((item, index22) => {
+        const location2 = item["location"];
+        let distance = item["distance"];
+        let lat = location2["lat"];
+        let lng = location2["lng"];
+        if (distance == 0) {
+          lat = latitude.value;
+          lng = longitude.value;
+        }
+        return {
+          title: item["title"],
+          address: item["address"],
+          distance,
+          distanceStr: distanceHandle(distance),
+          location: {
+            latitude: lat,
+            longitude: lng
+          }
+        };
+      });
+      let index2 = pageIndex.value;
+      if (index2 == 1) {
+        pois.value = list2;
+        updateScrollTop(0);
+      } else {
+        pois.value = pois.value.concat(list2);
       }
-      const locale = uni.getLocale();
-      this.language = locale;
-    },
-    getMapContext() {
-      return uni.createMapContext(this.mapId, this);
-    },
-    regionchange(e2) {
+    };
+    const getPoi = (type) => {
+      let searchVal = searchValue.value;
+      let lat = latitude.value;
+      let lng = longitude.value;
+      let index2 = pageIndex.value;
+      let size = pageSize.value;
+      if (["searchValueChange"].indexOf(type) == -1) {
+        searchLoading.value = true;
+      }
+      if (searchVal != "" && searchVal.length > 0) {
+        callUniMapCo("search", {
+          keyword: searchVal,
+          location: {
+            lat,
+            lng
+          },
+          radius: 5e3,
+          auto_extend: 1,
+          orderby: "weight",
+          page_index: index2,
+          page_size: size
+        }).then((res) => {
+          var _a, _b;
+          let poisData = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("data");
+          poiHandle(poisData);
+          searchLoading.value = false;
+        }).catch((err) => {
+          searchLoading.value = false;
+        });
+      } else {
+        callUniMapCo("location2address", {
+          location: `${lat},${lng}`,
+          get_poi: 1,
+          poi_options: {
+            radius: 3e3,
+            policy: index2 == 1 ? 3 : 4,
+            roadlevel: 1,
+            homeorcorp: 1,
+            page_index: index2,
+            page_size: size
+          }
+        }).then((res) => {
+          var _a, _b;
+          let poisData = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("pois");
+          poiHandle(poisData);
+          if (pois.value.length > 0 && index2 == 1) {
+            let poi = pois.value[0];
+            if (poi.distance > 0) {
+              let poi1 = poi.location;
+              let poi2 = {
+                latitude: latitude.value,
+                longitude: longitude.value
+              };
+              let distance = poi.distance;
+              let direction2 = calcDirection(poi1, poi2);
+              if (poi.address.indexOf("米") == -1) {
+                let suffix = `向${direction2}${distance}米`;
+                let newPoi = {
+                  title: `${poi.title}${suffix}`,
+                  address: `${poi.address}${suffix}`,
+                  distance: 0,
+                  distanceStr: distanceHandle(distance),
+                  location: poi2
+                };
+                pois.value.unshift(newPoi);
+              }
+            }
+            searchLoading.value = false;
+            if (selected.value == -1) {
+              safeSetTimeout(() => {
+                selected.value = 0;
+              }, 20);
+              lastPoi.latitude = latitude.value;
+              lastPoi.longitude = longitude.value;
+              lastPoi.selected = selected.value;
+              lastPoi.pois = pois.value;
+            }
+          }
+        }).catch((err) => {
+          searchLoading.value = false;
+        });
+      }
+    };
+    const getLocation2 = () => {
+      if (chooseLocationOptions.latitude != null && chooseLocationOptions.longitude != null) {
+        latitude.value = chooseLocationOptions.latitude;
+        longitude.value = chooseLocationOptions.longitude;
+        locationComplete.value = true;
+        getPoi("getLocation");
+      } else {
+        locationLoading.value = true;
+        uni.getLocation({
+          type: "gcj02",
+          success: (res) => {
+            latitude.value = res.latitude;
+            longitude.value = res.longitude;
+            locationComplete.value = true;
+            locationLoading.value = false;
+            getPoi("getLocation");
+          },
+          fail: (err) => {
+            console.error("getLocationErr: ", err);
+            latitude.value = defaultPoi.latitude;
+            longitude.value = defaultPoi.longitude;
+            locationComplete.value = true;
+            locationLoading.value = false;
+            getPoi("getLocation");
+          }
+        });
+      }
+    };
+    const getSafeAreaInsets2 = () => {
+      const info = uni.getWindowInfo();
+      safeArea.top = info.safeAreaInsets.top;
+      safeArea.bottom = info.safeAreaInsets.bottom;
+      safeArea.left = info.safeAreaInsets.left;
+      safeArea.right = info.safeAreaInsets.right;
+    };
+    const getMapContext = () => {
+      return uni.createMapContext(mapId.value, currentInstance);
+    };
+    const regionchange = (e2) => {
       let causedBy = e2.causedBy;
       if (!causedBy) {
         causedBy = e2.detail.causedBy;
       }
-      if (e2.type !== "end" || causedBy != "drag" || this.locationComplete == false) {
+      if (e2.type !== "end" || causedBy != "drag" || locationComplete.value == false) {
         return;
       }
-      const mapContext = this.getMapContext();
+      const mapContext = getMapContext();
       if (mapContext != null) {
         mapContext.getCenterLocation({
           success: (res) => {
-            let latitudeDiff = Math.abs(res.latitude - this.latitude);
-            let longitudeDiff = Math.abs(res.longitude - this.longitude);
+            let latitudeDiff = Math.abs(res.latitude - latitude.value);
+            let longitudeDiff = Math.abs(res.longitude - longitude.value);
             if (latitudeDiff > 1e-6 || longitudeDiff > 1e-6) {
-              this.latitude = parseFloat(res.latitude.toFixed(6));
-              this.longitude = parseFloat(res.longitude.toFixed(6));
-              this.searchValue = "";
-              this.selected = -1;
-              this.pageIndex = 1;
-              this.getPoi("regionchange");
-              const element = this.$refs[this.mapTargetId];
+              latitude.value = parseFloat(res.latitude.toFixed(6));
+              longitude.value = parseFloat(res.longitude.toFixed(6));
+              searchValue.value = "";
+              selected.value = -1;
+              pageIndex.value = 1;
+              getPoi("regionchange");
+              const element = mapTargetRef.value;
               if (element != null) {
                 const duration = 250;
                 element.style.setProperty("transition-duration", `${duration}ms`);
                 element.style.setProperty("transform", "translateY(0px)");
                 element.style.setProperty("transform", "translateY(-15px)");
-                setTimeout(() => {
+                safeSetTimeout(() => {
                   element.style.setProperty("transform", "translateY(0px)");
                 }, duration);
               }
@@ -28950,778 +28432,838 @@ const _sfc_main$1 = {
           }
         });
       }
-    },
-    clearSearchValueChangeTimer() {
-      if (this.searchValueChangeTimer != -1) {
-        clearTimeout(this.searchValueChangeTimer);
-        this.searchValueChangeTimer = -1;
+    };
+    const clearSearchValueChangeTimer = () => {
+      if (searchValueChangeTimer.value != -1) {
+        clearTimeout(searchValueChangeTimer.value);
+        searchValueChangeTimer.value = -1;
       }
-    },
-    searchValueChange(e2) {
-      this.clearSearchValueChangeTimer();
-      this.searchValueChangeTimer = setTimeout(() => {
-        this.poiSearch("searchValueChange");
+    };
+    const clearLoadingTimer = () => {
+      if (loadingTimer.value != -1) {
+        clearInterval(loadingTimer.value);
+        loadingTimer.value = -1;
+      }
+    };
+    const clearAllTimeoutTimers = () => {
+      timeoutTimers.value.forEach((timer) => {
+        if (timer != -1) {
+          clearTimeout(timer);
+        }
+      });
+      timeoutTimers.value = [];
+    };
+    const poiSearch = (type) => {
+      clearSearchValueChangeTimer();
+      pageIndex.value = 1;
+      selected.value = -1;
+      getPoi(type);
+    };
+    const searchValueChange = (e2) => {
+      clearSearchValueChangeTimer();
+      searchValueChangeTimer.value = setTimeout(() => {
+        poiSearch("searchValueChange");
       }, 200);
-    },
-    poiSearch(type) {
-      this.clearSearchValueChangeTimer();
-      this.pageIndex = 1;
-      this.selected = -1;
-      this.getPoi(type);
-    },
-    cancelSearch() {
-      this.isFocus = false;
-      this.searchValue = "";
-      if (this.lastPoi.latitude != null) {
-        this.latitude = this.lastPoi.latitude;
+    };
+    const cancelSearch = () => {
+      isFocus.value = false;
+      searchValue.value = "";
+      if (lastPoi.latitude != null) {
+        latitude.value = lastPoi.latitude;
       }
-      if (this.lastPoi.longitude != null) {
-        this.longitude = this.lastPoi.longitude;
+      if (lastPoi.longitude != null) {
+        longitude.value = lastPoi.longitude;
       }
-      if (this.lastPoi.pois.length - 1 > this.lastPoi.selected) {
-        this.pois = this.lastPoi.pois;
-        this.selected = this.lastPoi.selected;
-        this.updateScrollTop(this.lastPoi.scrollTop);
+      if (lastPoi.pois.length - 1 > lastPoi.selected) {
+        pois.value = lastPoi.pois;
+        selected.value = lastPoi.selected;
+        updateScrollTop(lastPoi.scrollTop);
       } else {
-        this.poiSearch("cancelSearch");
+        poiSearch("cancelSearch");
       }
-    },
-    updateScrollTop(scrollTop) {
-      setTimeout(() => {
-        this.scrollTop = scrollTop;
-      }, 10);
-    },
-    selectPoi(item, index2) {
-      this.isFocus = false;
-      this.selected = index2;
-      this.latitude = item.location.latitude;
-      this.longitude = item.location.longitude;
-      if (this.searchValue == this.chooseLocationOptions.keyword) {
-        this.lastPoi.latitude = this.latitude;
-        this.lastPoi.longitude = this.longitude;
-        this.lastPoi.selected = this.selected;
-        this.lastPoi.pois = this.pois;
-        const scrollElement = this.$refs[this.scrollId];
+    };
+    const selectPoi = (item, index2) => {
+      isFocus.value = false;
+      selected.value = index2;
+      latitude.value = item.location.latitude;
+      longitude.value = item.location.longitude;
+      if (searchValue.value == chooseLocationOptions.keyword) {
+        lastPoi.latitude = latitude.value;
+        lastPoi.longitude = longitude.value;
+        lastPoi.selected = selected.value;
+        lastPoi.pois = pois.value;
+        const scrollElement = scrollRef.value;
         if (scrollElement != null) {
-          const scrollTop = scrollElement.scrollTop;
-          this.lastPoi.scrollTop = scrollTop;
-          this.scrollTop = scrollTop;
+          const scrollTopVal = scrollElement.scrollTop;
+          lastPoi.scrollTop = scrollTopVal;
+          scrollTop.value = scrollTopVal;
         }
       }
-    },
-    scrolltolower() {
-      this.pageIndex++;
-      this.getPoi("scrolltolower");
-    },
-    mapReset() {
-      this.isFocus = false;
-      this.pageIndex = 1;
-      this.getLocation();
-    },
-    closeDialogPage() {
+    };
+    const scrolltolower = () => {
+      pageIndex.value++;
+      getPoi("scrolltolower");
+    };
+    const mapReset = () => {
+      isFocus.value = false;
+      pageIndex.value = 1;
+      selected.value = -1;
+      getLocation2();
+    };
+    const closeDialogPage2 = () => {
       uni.closeDialogPage({
-        dialogPage: this.$page
+        dialogPage: uniPage
       });
-    },
-    back() {
-      uni.$emit(this.failEventName, 1);
-      this.closeDialogPage();
-    },
-    confirm() {
-      if (this.selected < 0) {
-        if (this.callUniMapCoErr) {
-          uni.$emit(this.successEventName, {
+    };
+    const back = () => {
+      uni.$emit(failEventName.value, 1);
+      closeDialogPage2();
+    };
+    const confirm = () => {
+      if (selected.value < 0) {
+        if (callUniMapCoErr.value) {
+          uni.$emit(successEventName.value, {
             name: "",
             address: "",
-            latitude: parseFloat(this.latitude.toFixed(6)),
-            longitude: parseFloat(this.longitude.toFixed(6))
+            latitude: parseFloat(latitude.value.toFixed(6)),
+            longitude: parseFloat(longitude.value.toFixed(6))
           });
-          this.closeDialogPage();
+          closeDialogPage2();
         }
         return;
       }
-      let item = this.pois[this.selected];
+      let item = pois.value[selected.value];
       let res = {
         name: item.title,
         address: item.address,
         latitude: item.location.latitude,
         longitude: item.location.longitude
       };
-      uni.$emit(this.successEventName, res);
-      this.closeDialogPage();
-    }
-  },
-  watch: {
-    searchLoading(val) {
-      if (this.loadingTimer != -1) {
-        clearInterval(this.loadingTimer);
-        this.loadingTimer = -1;
+      uni.$emit(successEventName.value, res);
+      closeDialogPage2();
+    };
+    const getSystemInfo2 = () => {
+      const info = uni.getWindowInfo();
+      safeArea.top = info.safeAreaInsets.top;
+      safeArea.bottom = info.safeAreaInsets.bottom;
+      safeArea.left = info.safeAreaInsets.left;
+      safeArea.right = info.safeAreaInsets.right;
+      let screenHeight = info.screenHeight;
+      mapHeight.value = (screenHeight - safeArea.top - safeArea.bottom) * 0.6;
+      const systemInfo = uni.getSystemInfoSync();
+      const appLanguage = systemInfo.appLanguage;
+      language.value = appLanguage;
+      const osTheme = systemInfo.osTheme;
+      const appTheme = systemInfo.appTheme;
+      if (appTheme != null && appTheme != "auto") {
+        theme.value = appTheme;
+      } else if (osTheme != null) {
+        theme.value = osTheme;
       }
+      isLandscape2.value = systemInfo.windowWidth >= 900 ? true : false;
+      const hostTheme = systemInfo.hostTheme;
+      if (hostTheme != null) {
+        theme.value = hostTheme;
+      }
+      const locale = uni.getLocale();
+      language.value = locale;
+    };
+    watch(searchLoading, (val) => {
+      clearLoadingTimer();
       if (val) {
-        this.loadingRotate += 100;
-        this.loadingTimer = setInterval(() => {
-          this.loadingRotate += 100;
+        loadingRotate.value += 100;
+        loadingTimer.value = setInterval(() => {
+          loadingRotate.value += 100;
         }, 200);
       } else {
-        this.loadingRotate = 0;
+        loadingRotate.value = 0;
       }
-    }
-  },
-  computed: {
-    languageCom() {
-      const textInfo = languageData[this.language] != null ? languageData[this.language] : languageData["zh-Hans"];
+    });
+    const languageCom = computed(() => {
+      const textInfo = languageData[language.value] != null ? languageData[language.value] : languageData["zh-Hans"];
       return textInfo;
-    },
-    uniChooseLocationClassCom() {
+    });
+    const darkClassCom = computed(() => {
+      return theme.value == "dark" ? "uni-choose-location-dark" : "uni-choose-location-light";
+    });
+    const landscapeClassCom = computed(() => {
+      return isLandscape2.value ? "uni-choose-location-landscape" : "uni-choose-location-vertical";
+    });
+    const mapBoxStyleCom = computed(() => {
       let list2 = [];
-      if (this.theme == "dark") {
-        list2.push("uni-choose-location-dark");
-      } else {
-        list2.push("uni-choose-location-light");
-      }
-      return list2.join(" ");
-    },
-    landscapeClassCom() {
-      return this.isLandscape ? "uni-choose-location-landscape" : "uni-choose-location-vertical";
-    },
-    mapBoxStyleCom() {
-      let list2 = [];
-      if (!this.useUniCloud) {
+      if (!useUniCloud.value) {
         list2.push(`flex: 1;`);
       }
-      if (!this.isLandscape) {
-        let top = this.isFocus ? (300 - this.mapHeight) / 2 : 0;
+      if (!isLandscape2.value) {
+        let top = isFocus.value ? (300 - mapHeight.value) / 2 : 0;
         list2.push(`transform:translateY(${top}px);`);
-        list2.push(`height:${this.mapHeight}px;`);
+        list2.push(`height:${mapHeight.value}px;`);
       }
       return list2.join("");
-    },
-    poiBoxStyleCom() {
+    });
+    const poiBoxStyleCom = computed(() => {
       let list2 = [];
-      if (!this.isLandscape) {
-        let top = this.isFocus ? 300 : this.mapHeight;
+      if (!isLandscape2.value) {
+        let top = isFocus.value ? 300 : mapHeight.value;
         list2.push(`top:${top}px;`);
       }
       return list2.join("");
-    },
-    resetStyleCom() {
+    });
+    const resetStyleCom = computed(() => {
       let list2 = [];
-      if (!this.isLandscape) {
-        let bottom = this.isFocus ? (this.mapHeight - 300) / 2 + 300 - this.mapHeight : 0;
+      if (!isLandscape2.value) {
+        let bottom = isFocus.value ? (mapHeight.value - 300) / 2 + 300 - mapHeight.value : 0;
         list2.push(`transform:translateY(${bottom}px);`);
       }
       return list2.join("");
-    }
-  }
-};
-const _style_0$1 = `
-@font-face {\r
-    font-family: UniChooseLocationFontFamily;\r
-    src: url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8Rkp9AAABjAAAAGBjbWFw0euemwAAAgAAAAGyZ2x5ZuUB/iAAAAPAAAACsGhlYWQp23fyAAAA4AAAADZoaGVhB94DhgAAALwAAAAkaG10eBQAAAAAAAHsAAAAFGxvY2EBUAG+AAADtAAAAAxtYXhwARIAfQAAARgAAAAgbmFtZUTMSfwAAAZwAAADS3Bvc3RLRtf0AAAJvAAAAFIAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAUAAQAAAAEAAIZo1N5fDzz1AAsEAAAAAADjXhn6AAAAAONeGfoAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABQBxAAMAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYx560DgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAAAAAFAAAAAwAAACwAAAAEAAABcgABAAAAAABsAAMAAQAAACwAAwAKAAABcgAEAEAAAAAKAAgAAgAC5jHmU+aD563//wAA5jHmU+aD563//wAAAAAAAAAAAAEACgAKAAoACgAAAAIAAwAEAAEAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAEAAAAAAAAAABAAA5jEAAOYxAAAAAgAA5lMAAOZTAAAAAwAA5oMAAOaDAAAABAAA560AAOetAAAAAQAAAAAAAABIAGYBCAFYAAIAAP/SA4cDNgAdACoAACUGBwYnLgEnJjc+ATc2Fx4BFxYHBgcXHgEOAiYnJTI+ATQuASIOARQeAQJlSFdVT1FsDQwdHodWU1JTeBQUFhc+7AUFBAsPEAX+T0uASkqAln9LS3/MMwkIICKLV1RQUnMQEBoagVZTUlU+7AYPDwsEBAbrSoCWf0tLf5aASgAAAAEAAAAAA8ACyAANAAATNwU3Njc2NxcHBgcGB0A5AQdAVGaPnxdXbWuWfAGPN986TFl8hTpVbG6aiQAAAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAwYeAj4BNC4CDgEBwCU1JiY1JWoGBEAEB0d1ISIpJ0RFokVEJykiIXX9AiRATEImJT9KQCdUEhkZIxkZAXH+iAQGBgQBeApTP0FJUUVEJykpJ0RFUUlBP1MBIiZDJwImQks/JQEjPQAAABIA3gABAAAAAAAAABMAAAABAAAAAAABABsAEwABAAAAAAACAAcALgABAAAAAAADABsANQABAAAAAAAEABsAUAABAAAAAAAFAAsAawABAAAAAAAGABsAdgABAAAAAAAKACsAkQABAAAAAAALABMAvAADAAEECQAAACYAzwADAAEECQABADYA9QADAAEECQACAA4BKwADAAEECQADADYBOQADAAEECQAEADYBbwADAAEECQAFABYBpQADAAEECQAGADYBuwADAAEECQAKAFYB8QADAAEECQALACYCR0NyZWF0ZWQgYnkgaWNvbmZvbnRVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlSZWd1bGFyVW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VmVyc2lvbiAxLjBVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlHZW5lcmF0ZWQgYnkgc3ZnMnR0ZiBmcm9tIEZvbnRlbGxvIHByb2plY3QuaHR0cDovL2ZvbnRlbGxvLmNvbQBDAHIAZQBhAHQAZQBkACAAYgB5ACAAaQBjAG8AbgBmAG8AbgB0AFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFIAZQBnAHUAbABhAHIAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVgBlAHIAcwBpAG8AbgAgADEALgAwAFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AEcAZQBuAGUAcgBhAHQAZQBkACAAYgB5ACAAcwB2AGcAMgB0AHQAZgAgAGYAcgBvAG0AIABGAG8AbgB0AGUAbABsAG8AIABwAHIAbwBqAGUAYwB0AC4AaAB0AHQAcAA6AC8ALwBmAG8AbgB0AGUAbABsAG8ALgBjAG8AbQAAAgAAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAQIBAwEEAQUBBgAGc291c3VvB2dvdXh1YW4HZGluZ3dlaQtkaXR1LXR1ZGluZwAAAAA=') format('truetype');
-}
-.uni-choose-location-icons {\r
-    font-family: "UniChooseLocationFontFamily";\r
-    font-size: 16px;\r
-    font-style: normal;
-}
-.uni-choose-location {\r
-    position: relative;\r
-    left: 0;\r
-    top: 0;\r
-    width: 100%;\r
-    height: 100%;\r
-    background: #f8f8f8;\r
-    z-index: 999;
-}
-.uni-choose-location-map-box {\r
-    position: relative;\r
-    width: 100%;\r
-    height: 350px;
-}
-.uni-choose-location-map-box.uni-choose-location-vertical {\r
-    transition-property: transform;\r
-    transition-duration: 0.25s;\r
-    transition-timing-function: ease-out;
-}
-.uni-choose-location-map {\r
-    width: 100%;\r
-    height: 100%;
-}
-.uni-choose-location-map-target {\r
-    position: absolute;\r
-    left: 50%;\r
-    bottom: 50%;\r
-    width: 50px;\r
-    height: 50px;\r
-    margin-left: -25px;\r
-    transition-property: transform;\r
-    transition-duration: 0.25s;\r
-    transition-timing-function: ease-out;
-}
-.uni-choose-location-map-target-icon {\r
-    font-size: 50px;\r
-    color: #f0493e;
-}\r
-\r
-  /* #1aad19; #f0493e; #007aff;*/
-.uni-choose-location-map-reset {\r
-    position: absolute;\r
-    left: 20px;\r
-    bottom: 40px;\r
-    width: 40px;\r
-    height: 40px;\r
-    box-sizing: border-box;\r
-    background-color: #fff;\r
-    border-radius: 20px;\r
-    pointer-events: auto;\r
-    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);\r
-    z-index: 9;\r
-    display: flex;\r
-    justify-content: center;\r
-    align-items: center;
-}
-.uni-choose-location-map-reset.uni-choose-location-vertical {\r
-    transition-property: transform;\r
-    transition-duration: 0.25s;\r
-    transition-timing-function: ease-out;
-}
-.uni-choose-location-map-reset-icon {\r
-    font-size: 26px;\r
-    text-align: center;\r
-    line-height: 40px;
-}
-.uni-choose-location-nav {\r
-    position: absolute;\r
-    top: 0;\r
-    left: 0;\r
-    width: 100%;\r
-    height: 60px;\r
-    background-color: rgba(0, 0, 0, 0);\r
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0));
-}
-.uni-choose-location-nav-btn {\r
-    position: absolute;\r
-    top: 5px;\r
-    left: 5px;\r
-    width: 64px;\r
-    height: 44px;\r
-    padding: 5px;
-}
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {\r
-    left: auto;\r
-    right: 5px;
-}
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {\r
-    background-color: #007aff;\r
-    border-radius: 5px;
-}
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {\r
-    opacity: 0.7;
-}
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {\r
-    opacity: 0.4;
-}
-.uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {\r
-    color: #fff;
-}
-.uni-choose-location-nav-text {\r
-    padding: 8px 0px;\r
-    font-size: 14px;\r
-    text-align: center;\r
-\r
-    letter-spacing: 0.1em;\r
-\r
-    color: #fff;
-}
-.uni-choose-location-poi {\r
-    position: absolute;\r
-    top: 350px;\r
-    width: 100%;\r
-    bottom: 0;\r
-    background-color: #fff;\r
-    z-index: 10
-}
-.uni-choose-location-poi.uni-choose-location-vertical {\r
-    transition-property: top;\r
-    transition-duration: 0.25s;\r
-    transition-timing-function: ease-out;
-}
-.uni-choose-location-poi-search {\r
-    display: flex;\r
-    flex-direction: row;\r
-    align-items: center;\r
-    justify-content: center;\r
-    height: 50px;\r
-    padding: 8px;\r
-    background-color: #fff;
-}
-.uni-choose-location-poi-search-box {\r
-    display: flex;\r
-    flex-direction: row;\r
-    align-items: center;\r
-    justify-content: center;\r
-    height: 32px;\r
-    flex: 1;\r
-    border-radius: 5px;\r
-    padding: 0 15px;\r
-    background-color: #ededed;
-}
-.uni-choose-location-poi-search-input {\r
-    flex: 1;\r
-    height: 100%;\r
-    border-radius: 5px;\r
-    padding: 0 5px;\r
-    background: #ededed;
-}
-.uni-choose-location-poi-search-cancel {\r
-    margin-left: 5px;\r
-    color: #007aff;\r
-    font-size: 15px;\r
-    text-align: center;
-}
-.uni-choose-location-poi-list {\r
-    flex: 1;
-}
-.uni-choose-location-poi-search-loading {\r
-    display: flex;\r
-    align-items: center;\r
-    padding: 10px 0px;
-}
-.uni-choose-location-poi-search-loading-text {\r
-    color: #191919;
-}
-.uni-choose-location-poi-search-error {\r
-    display: flex;\r
-    align-items: center;\r
-    padding: 10px;
-}
-.uni-choose-location-poi-search-error-text {\r
-    color: #191919;\r
-    font-size: 14px;
-}
-.uni-choose-location-poi-item {\r
-    position: relative;\r
-    padding: 15px 10px;\r
-    padding-right: 40px;
-}
-.uni-choose-location-poi-item-title-text {\r
-    font-size: 14px;\r
-    overflow: hidden;\r
-    white-space: nowrap;\r
-    text-overflow: ellipsis;\r
-    color: #191919;
-}
-.uni-choose-location-poi-item-detail-text {\r
-    font-size: 12px;\r
-    margin-top: 5px;\r
-    color: #b2b2b2;\r
-    overflow: hidden;\r
-    white-space: nowrap;\r
-    text-overflow: ellipsis;
-}
-.uni-choose-location-poi-item-selected-icon {\r
-    position: absolute;\r
-    top: 50%;\r
-    right: 10px;\r
-    width: 26px;\r
-    height: 26px;\r
-    margin-top: -13px;\r
-    color: #007aff;\r
-    font-size: 24px;
-}
-.uni-choose-location-poi-item-after {\r
-    position: absolute;\r
-    height: 1px;\r
-    left: 10px;\r
-    bottom: 0px;\r
-    right: 10px;\r
-    width: auto;\r
-    border-bottom: 1px solid #f8f8f8;
-}
-.uni-choose-location-search-icon {\r
-    color: #808080;\r
-    padding-left: 5px;
-}
-.uni-choose-location-poi-search-loading-image {\r
-    width: 28px;\r
-    height: 28px;\r
-    transition-property: transform;\r
-    transition-duration: 0.2s;\r
-    transition-timing-function: linear;
-}\r
-\r
-  /* 横屏样式开始 */
-.uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {\r
-    height: 100%;
-}
-.uni-choose-location .uni-choose-location-poi.uni-choose-location-landscape {\r
-    position: absolute;\r
-    top: 80px;\r
-    right: 25px;\r
-    width: 300px;\r
-    bottom: 20px;\r
-    max-height: 600px;\r
-    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);\r
-    border-radius: 5px;
-}
-.uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {\r
-    left: 40px;\r
-    bottom: 40px;
-}
-.uni-choose-location .uni-choose-location-poi-item.uni-choose-location-landscape {\r
-    padding: 10px;
-}
-.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-landscape {\r
-    top: 10px;\r
-    left: 20px;
-}
-.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {\r
-    left: auto;\r
-    right: 20px;
-}\r
-\r
-  /* 横屏样式结束 */\r
-\r
-  /* 暗黑模式样式开始 */
-.uni-choose-location-dark .uni-choose-location-map-reset {\r
-    background-color: #111111;\r
-    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
-}
-.uni-choose-location-dark .uni-choose-location-poi-search-box {\r
-    background-color: #111111;
-}
-.uni-choose-location-dark .uni-choose-location-search-icon {\r
-    color: #d1d1d1;
-}
-.uni-choose-location-dark .uni-choose-location-poi-search-loading-text {\r
-    color: #d1d1d1;
-}
-.uni-choose-location-dark .uni-choose-location-poi-search {\r
-    background-color: #181818
-}
-.uni-choose-location-dark .uni-choose-location-poi-search-input {\r
-    background: #111111;\r
-    color: #d1d1d1;
-}
-.uni-choose-location-dark .uni-choose-location-poi-item-title-text {\r
-    color: #d1d1d1;
-}
-.uni-choose-location-dark .uni-choose-location-poi-item-detail-text {\r
-    color: #595959;
-}
-.uni-choose-location-dark .uni-choose-location-poi {\r
-    background-color: #181818
-}
-.uni-choose-location-dark .uni-choose-location-poi-item-after {\r
-    border-bottom: 1px solid #1e1e1e;
-}
-.uni-choose-location-dark .uni-choose-location-map-reset-icon {\r
-    color: #d1d1d1;
-}
-.uni-choose-location-dark .uni-choose-location-poi-search-error-text {\r
-    color: #d1d1d1;
-}\r
-\r
-  /* 暗黑模式样式结束 */
-uni-image {\r
-    display: inline-block;\r
-    overflow: hidden;\r
-    position: relative;
-}
-uni-image[hidden] {\r
-    display: none;
-}
-uni-image > div {\r
-    width: 100%;\r
-    height: 100%;\r
-    background-repeat: no-repeat;
-}
-uni-image > img {\r
-    -webkit-touch-callout: none;\r
-    user-select: none;\r
-    display: block;\r
-    position: absolute;\r
-    top: 0;\r
-    left: 0;\r
-    width: 100%;\r
-    height: 100%;\r
-    opacity: 0;
-}
-uni-image > .uni-image-will-change {\r
-    will-change: transform;
-}\r
-\r
-\r
-`;
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_map = __syscom_0;
-  const _component_text = __syscom_0$1;
-  const _component_view = __syscom_3;
-  const _component_input = __syscom_3$1;
-  const _component_image = __syscom_4;
-  const _component_scroll_view = __syscom_2;
-  return openBlock(), createBlock(_component_view, {
-    class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
-  }, {
-    default: withCtx(() => [
-      createVNode(_component_view, {
-        class: normalizeClass(["uni-choose-location-map-box", [$options.landscapeClassCom]]),
-        style: normalizeStyle($options.mapBoxStyleCom)
-      }, {
-        default: withCtx(() => [
-          createVNode(_component_map, {
-            class: "uni-choose-location-map",
-            id: $data.mapId,
-            ref: $data.mapId,
-            latitude: $data.latitude,
-            longitude: $data.longitude,
-            "layer-style": $data.theme == "dark" ? "2" : "1",
-            "show-compass": false,
-            "enable-zoom": true,
-            "enable-scroll": true,
-            "enable-rotate": false,
-            "enable-poi": true,
-            "show-location": true,
-            onRegionchange: $options.regionchange
-          }, null, 8, ["id", "latitude", "longitude", "layer-style", "onRegionchange"]),
-          createVNode(_component_view, {
-            class: "uni-choose-location-map-target",
-            ref: $data.mapTargetId,
-            id: $data.mapTargetId
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-target-icon" }, {
-                default: withCtx(() => [
-                  createTextVNode(toDisplayString($data.icon.target), 1)
-                ]),
-                _: 1
-              })
-            ]),
-            _: 1
-          }, 8, ["id"]),
-          createVNode(_component_view, {
-            class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
-            onClick: $options.mapReset,
-            style: normalizeStyle($options.resetStyleCom)
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-reset-icon" }, {
-                default: withCtx(() => [
-                  createTextVNode(toDisplayString($data.icon.position), 1)
-                ]),
-                _: 1
-              })
-            ]),
-            _: 1
-          }, 8, ["class", "onClick", "style"])
-        ]),
-        _: 1
-      }, 8, ["class", "style"]),
-      createVNode(_component_view, {
-        class: "uni-choose-location-nav",
-        style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
+    });
+    onLoad((options) => {
+      checkUniCloud();
+      initPageOptions(options);
+      getSystemInfo2();
+      getLocation2();
+    });
+    onReady(() => {
+      getSafeAreaInsets2();
+    });
+    onUnload(() => {
+      uni.$off(optionsEventName.value, null);
+      uni.$off(readyEventName.value, null);
+      uni.$off(successEventName.value, null);
+      uni.$off(failEventName.value, null);
+      clearSearchValueChangeTimer();
+      clearLoadingTimer();
+      clearAllTimeoutTimers();
+    });
+    onResize(() => {
+      getSystemInfo2();
+    });
+    return (_ctx, _cache) => {
+      const _component_map = __syscom_0;
+      const _component_text = __syscom_1$1;
+      const _component_view = __syscom_2;
+      const _component_input = __syscom_3;
+      const _component_image = __syscom_4;
+      const _component_scroll_view = __syscom_2$1;
+      return openBlock(), createBlock(_component_view, {
+        class: normalizeClass(["uni-choose-location", darkClassCom.value])
       }, {
         default: withCtx(() => [
           createVNode(_component_view, {
-            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-back-btn", [$options.landscapeClassCom]]),
-            style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : "")
+            class: normalizeClass(["uni-choose-location-map-box", [landscapeClassCom.value]]),
+            style: normalizeStyle(mapBoxStyleCom.value)
           }, {
             default: withCtx(() => [
-              createVNode(_component_text, {
-                class: "uni-choose-location-nav-text uni-choose-location-nav-back-text",
-                onClick: $options.back
+              createVNode(_component_map, {
+                class: "uni-choose-location-map",
+                id: mapId.value,
+                latitude: latitude.value,
+                longitude: longitude.value,
+                "layer-style": theme.value == "dark" ? "2" : "1",
+                "show-compass": false,
+                "enable-zoom": true,
+                "enable-scroll": true,
+                "enable-rotate": false,
+                "enable-poi": true,
+                "show-location": true,
+                onRegionchange: regionchange
+              }, null, 8, ["id", "latitude", "longitude", "layer-style"]),
+              createVNode(_component_view, {
+                class: "uni-choose-location-map-target",
+                ref_key: "mapTargetRef",
+                ref: mapTargetRef
               }, {
                 default: withCtx(() => [
-                  createTextVNode(toDisplayString($options.languageCom["cancel"]), 1)
+                  createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-target-icon" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString(icon.target), 1)
+                    ]),
+                    _: 1
+                  })
                 ]),
                 _: 1
-              }, 8, ["onClick"])
+              }, 512),
+              createVNode(_component_view, {
+                class: normalizeClass(["uni-choose-location-map-reset", [landscapeClassCom.value, darkClassCom.value]]),
+                onClick: mapReset,
+                style: normalizeStyle(resetStyleCom.value)
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, {
+                    class: normalizeClass(["uni-choose-location-icons uni-choose-location-map-reset-icon", [darkClassCom.value]])
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString(icon.position), 1)
+                    ]),
+                    _: 1
+                  }, 8, ["class"])
+                ]),
+                _: 1
+              }, 8, ["class", "style"])
             ]),
             _: 1
           }, 8, ["class", "style"]),
           createVNode(_component_view, {
-            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 && !$data.callUniMapCoErr ? "disable" : "active"]]),
-            style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : ""),
-            onClick: $options.confirm
+            class: "uni-choose-location-nav",
+            style: normalizeStyle("height:" + (60 + safeArea.top) + "px;")
           }, {
             default: withCtx(() => [
-              createVNode(_component_text, { class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text" }, {
-                default: withCtx(() => [
-                  createTextVNode(toDisplayString($options.languageCom["ok"]), 1)
-                ]),
-                _: 1
-              })
-            ]),
-            _: 1
-          }, 8, ["class", "style", "onClick"])
-        ]),
-        _: 1
-      }, 8, ["style"]),
-      $data.useUniCloud ? (openBlock(), createBlock(_component_view, {
-        key: 0,
-        class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
-        style: normalizeStyle($options.poiBoxStyleCom)
-      }, {
-        default: withCtx(() => [
-          createVNode(_component_view, { class: "uni-choose-location-poi-search" }, {
-            default: withCtx(() => [
-              createVNode(_component_view, { class: "uni-choose-location-poi-search-box" }, {
-                default: withCtx(() => [
-                  createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-search-icon" }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString($data.icon.search), 1)
-                    ]),
-                    _: 1
-                  }),
-                  createVNode(_component_input, {
-                    modelValue: $data.searchValue,
-                    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.searchValue = $event),
-                    type: "text",
-                    placeholder: $options.languageCom["search"],
-                    class: "uni-choose-location-poi-search-input uni-choose-location-icons",
-                    onFocus: _cache[1] || (_cache[1] = ($event) => $data.isFocus = true),
-                    onConfirm: _cache[2] || (_cache[2] = ($event) => $options.poiSearch("poiSearch")),
-                    onInput: $options.searchValueChange
-                  }, null, 8, ["modelValue", "placeholder", "onInput"])
-                ]),
-                _: 1
-              }),
-              $data.isFocus || $data.searchValue != "" ? (openBlock(), createBlock(_component_text, {
-                key: 0,
-                class: "uni-choose-location-poi-search-cancel",
-                onClick: $options.cancelSearch
+              createVNode(_component_view, {
+                class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-back-btn", [landscapeClassCom.value]]),
+                style: normalizeStyle(safeArea.top > 0 ? "top: " + safeArea.top + "px;" : "")
               }, {
                 default: withCtx(() => [
-                  createTextVNode(toDisplayString($options.languageCom["cancel"]), 1)
-                ]),
-                _: 1
-              }, 8, ["onClick"])) : createCommentVNode("", true)
-            ]),
-            _: 1
-          }),
-          createVNode(_component_scroll_view, {
-            id: $data.scrollId,
-            ref: $data.scrollId,
-            "scroll-with-animation": false,
-            direction: "vertical",
-            "scroll-top": $data.scrollTop,
-            "lower-threshold": 50,
-            onScrolltolower: $options.scrolltolower,
-            class: "uni-choose-location-poi-list"
-          }, {
-            default: withCtx(() => [
-              $data.errMsg != "" ? (openBlock(), createBlock(_component_view, {
-                key: 0,
-                class: "uni-choose-location-poi-search-error"
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_text, { class: "uni-choose-location-poi-search-error-text" }, {
+                  createVNode(_component_text, {
+                    class: "uni-choose-location-nav-text uni-choose-location-nav-back-text",
+                    onClick: back
+                  }, {
                     default: withCtx(() => [
-                      createTextVNode(toDisplayString($data.errMsg), 1)
+                      createTextVNode(toDisplayString(languageCom.value["cancel"]), 1)
                     ]),
                     _: 1
                   })
                 ]),
                 _: 1
-              })) : $data.locationLoading ? (openBlock(), createBlock(_component_view, {
-                key: 1,
-                class: "uni-choose-location-poi-search-loading"
+              }, 8, ["class", "style"]),
+              createVNode(_component_view, {
+                class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [landscapeClassCom.value, selected.value < 0 && !callUniMapCoErr.value ? "disable" : "active"]]),
+                style: normalizeStyle(safeArea.top > 0 ? "top: " + safeArea.top + "px;" : ""),
+                onClick: confirm
               }, {
                 default: withCtx(() => [
-                  createVNode(_component_text, { class: "uni-choose-location-poi-search-loading-text" }, {
+                  createVNode(_component_text, { class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text" }, {
                     default: withCtx(() => [
-                      createTextVNode(toDisplayString($options.languageCom["locationLoading"]), 1)
+                      createTextVNode(toDisplayString(languageCom.value["ok"]), 1)
                     ]),
                     _: 1
                   })
                 ]),
                 _: 1
-              })) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createBlock(_component_view, {
-                key: 2,
-                class: "uni-choose-location-poi-search-loading"
+              }, 8, ["class", "style"])
+            ]),
+            _: 1
+          }, 8, ["style"]),
+          useUniCloud.value ? (openBlock(), createBlock(_component_view, {
+            key: 0,
+            class: normalizeClass(["uni-choose-location-poi", [landscapeClassCom.value, darkClassCom.value]]),
+            style: normalizeStyle(poiBoxStyleCom.value)
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_view, {
+                class: normalizeClass(["uni-choose-location-poi-search", [darkClassCom.value]])
               }, {
                 default: withCtx(() => [
-                  createVNode(_component_image, {
-                    src: $data.loadingPath,
-                    class: "uni-choose-location-poi-search-loading-image",
-                    mode: "widthFix",
-                    style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
-                  }, null, 8, ["src", "style"])
+                  createVNode(_component_view, {
+                    class: normalizeClass(["uni-choose-location-poi-search-box", [darkClassCom.value]])
+                  }, {
+                    default: withCtx(() => [
+                      createVNode(_component_text, {
+                        class: normalizeClass(["uni-choose-location-icons uni-choose-location-search-icon", [darkClassCom.value]])
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode(toDisplayString(icon.search), 1)
+                        ]),
+                        _: 1
+                      }, 8, ["class"]),
+                      createVNode(_component_input, {
+                        modelValue: searchValue.value,
+                        "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => searchValue.value = $event),
+                        type: "text",
+                        placeholder: languageCom.value["search"],
+                        class: normalizeClass(["uni-choose-location-poi-search-input uni-choose-location-icons", [darkClassCom.value]]),
+                        onFocus: _cache[1] || (_cache[1] = ($event) => isFocus.value = true),
+                        onConfirm: _cache[2] || (_cache[2] = ($event) => poiSearch("poiSearch")),
+                        onInput: searchValueChange
+                      }, null, 8, ["modelValue", "placeholder", "class"])
+                    ]),
+                    _: 1
+                  }, 8, ["class"]),
+                  isFocus.value || searchValue.value != "" ? (openBlock(), createBlock(_component_text, {
+                    key: 0,
+                    class: "uni-choose-location-poi-search-cancel",
+                    onClick: cancelSearch
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString(languageCom.value["cancel"]), 1)
+                    ]),
+                    _: 1
+                  })) : createCommentVNode("", true)
                 ]),
                 _: 1
-              })) : (openBlock(true), createElementBlock(Fragment, { key: 3 }, renderList($data.pois, (item, index2) => {
-                return openBlock(), createBlock(_component_view, {
-                  key: index2,
-                  class: normalizeClass(["uni-choose-location-poi-item", [$options.landscapeClassCom]]),
-                  onClick: ($event) => $options.selectPoi(item, index2)
-                }, {
-                  default: withCtx(() => [
-                    createVNode(_component_view, null, {
+              }, 8, ["class"]),
+              createVNode(_component_scroll_view, {
+                ref_key: "scrollRef",
+                ref: scrollRef,
+                "scroll-with-animation": false,
+                direction: "vertical",
+                "scroll-top": scrollTop.value,
+                "lower-threshold": 50,
+                onScrolltolower: scrolltolower,
+                class: "uni-choose-location-poi-list"
+              }, {
+                default: withCtx(() => [
+                  errMsg.value != "" ? (openBlock(), createBlock(_component_view, {
+                    key: 0,
+                    class: "uni-choose-location-poi-search-error"
+                  }, {
+                    default: withCtx(() => [
+                      createVNode(_component_text, {
+                        class: normalizeClass(["uni-choose-location-poi-search-error-text", [darkClassCom.value]])
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode(toDisplayString(errMsg.value), 1)
+                        ]),
+                        _: 1
+                      }, 8, ["class"])
+                    ]),
+                    _: 1
+                  })) : locationLoading.value ? (openBlock(), createBlock(_component_view, {
+                    key: 1,
+                    class: "uni-choose-location-poi-search-loading"
+                  }, {
+                    default: withCtx(() => [
+                      createVNode(_component_text, {
+                        class: normalizeClass(["uni-choose-location-poi-search-loading-text", [darkClassCom.value]])
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode(toDisplayString(languageCom.value["locationLoading"]), 1)
+                        ]),
+                        _: 1
+                      }, 8, ["class"])
+                    ]),
+                    _: 1
+                  })) : searchLoading.value && pageIndex.value == 1 ? (openBlock(), createBlock(_component_view, {
+                    key: 2,
+                    class: "uni-choose-location-poi-search-loading"
+                  }, {
+                    default: withCtx(() => [
+                      createVNode(_component_image, {
+                        src: loadingPath.value,
+                        class: "uni-choose-location-poi-search-loading-image",
+                        mode: "widthFix",
+                        style: normalizeStyle("transform: rotate(" + loadingRotate.value + "deg)")
+                      }, null, 8, ["src", "style"])
+                    ]),
+                    _: 1
+                  })) : (openBlock(true), createElementBlock(Fragment, { key: 3 }, renderList(pois.value, (item, index2) => {
+                    return openBlock(), createBlock(_component_view, {
+                      key: index2,
+                      class: normalizeClass(["uni-choose-location-poi-item", [landscapeClassCom.value]]),
+                      onClick: ($event) => selectPoi(item, index2)
+                    }, {
                       default: withCtx(() => [
                         createVNode(_component_view, null, {
                           default: withCtx(() => [
-                            createVNode(_component_text, { class: "uni-choose-location-poi-item-title-text" }, {
+                            createVNode(_component_view, null, {
                               default: withCtx(() => [
-                                createTextVNode(toDisplayString(item.title), 1)
+                                createVNode(_component_text, {
+                                  class: normalizeClass(["uni-choose-location-poi-item-title-text", [darkClassCom.value]])
+                                }, {
+                                  default: withCtx(() => [
+                                    createTextVNode(toDisplayString(item.title), 1)
+                                  ]),
+                                  _: 2
+                                }, 1032, ["class"])
+                              ]),
+                              _: 2
+                            }, 1024),
+                            createVNode(_component_view, null, {
+                              default: withCtx(() => [
+                                createVNode(_component_text, {
+                                  class: normalizeClass(["uni-choose-location-poi-item-detail-text", [darkClassCom.value]])
+                                }, {
+                                  default: withCtx(() => [
+                                    createTextVNode(toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)
+                                  ]),
+                                  _: 2
+                                }, 1032, ["class"])
                               ]),
                               _: 2
                             }, 1024)
                           ]),
                           _: 2
                         }, 1024),
-                        createVNode(_component_view, null, {
+                        selected.value == index2 ? (openBlock(), createBlock(_component_text, {
+                          key: 0,
+                          class: "uni-choose-location-icons uni-choose-location-poi-item-selected-icon"
+                        }, {
                           default: withCtx(() => [
-                            createVNode(_component_text, { class: "uni-choose-location-poi-item-detail-text" }, {
-                              default: withCtx(() => [
-                                createTextVNode(toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)
-                              ]),
-                              _: 2
-                            }, 1024)
+                            createTextVNode(toDisplayString(icon.success), 1)
                           ]),
-                          _: 2
-                        }, 1024)
+                          _: 1
+                        })) : createCommentVNode("", true),
+                        createVNode(_component_view, {
+                          class: normalizeClass(["uni-choose-location-poi-item-after", [darkClassCom.value]])
+                        }, null, 8, ["class"])
                       ]),
                       _: 2
-                    }, 1024),
-                    $data.selected == index2 ? (openBlock(), createBlock(_component_text, {
-                      key: 0,
-                      class: "uni-choose-location-icons uni-choose-location-poi-item-selected-icon"
-                    }, {
-                      default: withCtx(() => [
-                        createTextVNode(toDisplayString($data.icon.success), 1)
-                      ]),
-                      _: 1
-                    })) : createCommentVNode("", true),
-                    createVNode(_component_view, { class: "uni-choose-location-poi-item-after" })
-                  ]),
-                  _: 2
-                }, 1032, ["class", "onClick"]);
-              }), 128)),
-              $data.searchLoading && $data.pageIndex > 1 ? (openBlock(), createBlock(_component_view, {
-                key: 4,
-                class: "uni-choose-location-poi-search-loading"
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_image, {
-                    src: $data.loadingPath,
-                    class: "uni-choose-location-poi-search-loading-image",
-                    mode: "widthFix",
-                    style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
-                  }, null, 8, ["src", "style"])
+                    }, 1032, ["class", "onClick"]);
+                  }), 128)),
+                  searchLoading.value && pageIndex.value > 1 ? (openBlock(), createBlock(_component_view, {
+                    key: 4,
+                    class: "uni-choose-location-poi-search-loading"
+                  }, {
+                    default: withCtx(() => [
+                      createVNode(_component_image, {
+                        src: loadingPath.value,
+                        class: "uni-choose-location-poi-search-loading-image",
+                        mode: "widthFix",
+                        style: normalizeStyle("transform: rotate(" + loadingRotate.value + "deg)")
+                      }, null, 8, ["src", "style"])
+                    ]),
+                    _: 1
+                  })) : createCommentVNode("", true)
                 ]),
                 _: 1
-              })) : createCommentVNode("", true)
+              }, 8, ["scroll-top"])
             ]),
             _: 1
-          }, 8, ["id", "scroll-top", "onScrolltolower"])
+          }, 8, ["class", "style"])) : createCommentVNode("", true)
         ]),
         _: 1
-      }, 8, ["class", "style"])) : createCommentVNode("", true)
-    ]),
-    _: 1
-  }, 8, ["class"]);
+      }, 8, ["class"]);
+    };
+  }
+});
+const _style_0$2 = `
+@font-face {
+    font-family: UniChooseLocationFontFamily;
+    src: url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8Rkp9AAABjAAAAGBjbWFw0euemwAAAgAAAAGyZ2x5ZuUB/iAAAAPAAAACsGhlYWQp23fyAAAA4AAAADZoaGVhB94DhgAAALwAAAAkaG10eBQAAAAAAAHsAAAAFGxvY2EBUAG+AAADtAAAAAxtYXhwARIAfQAAARgAAAAgbmFtZUTMSfwAAAZwAAADS3Bvc3RLRtf0AAAJvAAAAFIAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAUAAQAAAAEAAIZo1N5fDzz1AAsEAAAAAADjXhn6AAAAAONeGfoAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABQBxAAMAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYx560DgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAAAAAFAAAAAwAAACwAAAAEAAABcgABAAAAAABsAAMAAQAAACwAAwAKAAABcgAEAEAAAAAKAAgAAgAC5jHmU+aD563//wAA5jHmU+aD563//wAAAAAAAAAAAAEACgAKAAoACgAAAAIAAwAEAAEAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAEAAAAAAAAAABAAA5jEAAOYxAAAAAgAA5lMAAOZTAAAAAwAA5oMAAOaDAAAABAAA560AAOetAAAAAQAAAAAAAABIAGYBCAFYAAIAAP/SA4cDNgAdACoAACUGBwYnLgEnJjc+ATc2Fx4BFxYHBgcXHgEOAiYnJTI+ATQuASIOARQeAQJlSFdVT1FsDQwdHodWU1JTeBQUFhc+7AUFBAsPEAX+T0uASkqAln9LS3/MMwkIICKLV1RQUnMQEBoagVZTUlU+7AYPDwsEBAbrSoCWf0tLf5aASgAAAAEAAAAAA8ACyAANAAATNwU3Njc2NxcHBgcGB0A5AQdAVGaPnxdXbWuWfAGPN986TFl8hTpVbG6aiQAAAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAwYeAj4BNC4CDgEBwCU1JiY1JWoGBEAEB0d1ISIpJ0RFokVEJykiIXX9AiRATEImJT9KQCdUEhkZIxkZAXH+iAQGBgQBeApTP0FJUUVEJykpJ0RFUUlBP1MBIiZDJwImQks/JQEjPQAAABIA3gABAAAAAAAAABMAAAABAAAAAAABABsAEwABAAAAAAACAAcALgABAAAAAAADABsANQABAAAAAAAEABsAUAABAAAAAAAFAAsAawABAAAAAAAGABsAdgABAAAAAAAKACsAkQABAAAAAAALABMAvAADAAEECQAAACYAzwADAAEECQABADYA9QADAAEECQACAA4BKwADAAEECQADADYBOQADAAEECQAEADYBbwADAAEECQAFABYBpQADAAEECQAGADYBuwADAAEECQAKAFYB8QADAAEECQALACYCR0NyZWF0ZWQgYnkgaWNvbmZvbnRVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlSZWd1bGFyVW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VmVyc2lvbiAxLjBVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlHZW5lcmF0ZWQgYnkgc3ZnMnR0ZiBmcm9tIEZvbnRlbGxvIHByb2plY3QuaHR0cDovL2ZvbnRlbGxvLmNvbQBDAHIAZQBhAHQAZQBkACAAYgB5ACAAaQBjAG8AbgBmAG8AbgB0AFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFIAZQBnAHUAbABhAHIAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVgBlAHIAcwBpAG8AbgAgADEALgAwAFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AEcAZQBuAGUAcgBhAHQAZQBkACAAYgB5ACAAcwB2AGcAMgB0AHQAZgAgAGYAcgBvAG0AIABGAG8AbgB0AGUAbABsAG8AIABwAHIAbwBqAGUAYwB0AC4AaAB0AHQAcAA6AC8ALwBmAG8AbgB0AGUAbABsAG8ALgBjAG8AbQAAAgAAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAQIBAwEEAQUBBgAGc291c3VvB2dvdXh1YW4HZGluZ3dlaQtkaXR1LXR1ZGluZwAAAAA=') format('truetype');
 }
-const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
+.uni-choose-location-icons {
+    font-family: "UniChooseLocationFontFamily";
+    font-size: 16px;
+    font-style: normal;
+}
+.uni-choose-location {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #f8f8f8;
+    z-index: 999;
+}
+.uni-choose-location-map-box {
+    position: relative;
+    width: 100%;
+    height: 350px;
+}
+.uni-choose-location-map-box.uni-choose-location-vertical {
+    transition-property: transform;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
+}
+.uni-choose-location-map {
+    width: 100%;
+    height: 100%;
+}
+.uni-choose-location-map-target {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    width: 50px;
+    height: 50px;
+    margin-left: -25px;
+    transition-property: transform;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
+}
+.uni-choose-location-map-target-icon {
+    font-size: 50px;
+    color: #f0493e;
+}
+
+  /* #1aad19; #f0493e; #007aff;*/
+.uni-choose-location-map-reset {
+    position: absolute;
+    left: 20px;
+    bottom: 40px;
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 20px;
+    pointer-events: auto;
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+    z-index: 9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.uni-choose-location-map-reset.uni-choose-location-vertical {
+    transition-property: transform;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
+}
+.uni-choose-location-map-reset-icon {
+    font-size: 26px;
+    text-align: center;
+    line-height: 40px;
+}
+.uni-choose-location-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0));
+}
+.uni-choose-location-nav-btn {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 64px;
+    height: 44px;
+    padding: 5px;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
+    left: auto;
+    right: 5px;
+}
+.uni-choose-location-nav-confirm-text {
+    background-color: #007aff;
+    border-radius: 5px;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {
+    opacity: 0.7;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {
+    opacity: 0.4;
+}
+.uni-choose-location-nav-back-text {
+    color: #fff;
+}
+.uni-choose-location-nav-text {
+    padding: 8px 0px;
+    font-size: 14px;
+    text-align: center;
+
+    letter-spacing: 0.1em;
+
+    color: #fff;
+}
+.uni-choose-location-poi {
+    position: absolute;
+    top: 350px;
+    width: 100%;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 10
+}
+.uni-choose-location-poi.uni-choose-location-vertical {
+    transition-property: top;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
+}
+.uni-choose-location-poi-search {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding: 8px;
+    background-color: #fff;
+}
+.uni-choose-location-poi-search-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    flex: 1;
+    border-radius: 5px;
+    padding: 0 15px;
+    background-color: #ededed;
+}
+.uni-choose-location-poi-search-input {
+    flex: 1;
+    height: 100%;
+    border-radius: 5px;
+    padding: 0 5px;
+    background: #ededed;
+}
+.uni-choose-location-poi-search-cancel {
+    margin-left: 5px;
+    color: #007aff;
+    font-size: 15px;
+    text-align: center;
+}
+.uni-choose-location-poi-list {
+    flex: 1;
+}
+.uni-choose-location-poi-search-loading {
+    display: flex;
+    align-items: center;
+    padding: 10px 0px;
+}
+.uni-choose-location-poi-search-loading-text {
+    color: #191919;
+}
+.uni-choose-location-poi-search-error {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+.uni-choose-location-poi-search-error-text {
+    color: #191919;
+    font-size: 14px;
+}
+.uni-choose-location-poi-item {
+    position: relative;
+    padding: 15px 10px;
+    padding-right: 40px;
+}
+.uni-choose-location-poi-item-title-text {
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #191919;
+}
+.uni-choose-location-poi-item-detail-text {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #b2b2b2;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.uni-choose-location-poi-item-selected-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+    margin-top: -13px;
+    color: #007aff;
+    font-size: 24px;
+}
+.uni-choose-location-poi-item-after {
+    position: absolute;
+    height: 1px;
+    left: 10px;
+    bottom: 0px;
+    right: 10px;
+    width: auto;
+    border-bottom: 1px solid #f8f8f8;
+}
+.uni-choose-location-search-icon {
+    color: #808080;
+    padding-left: 5px;
+}
+.uni-choose-location-poi-search-loading-image {
+    width: 28px;
+    height: 28px;
+    transition-property: transform;
+    transition-duration: 0.2s;
+    transition-timing-function: linear;
+}
+
+  /* 横屏样式开始 */
+.uni-choose-location-map-box.uni-choose-location-landscape {
+    height: 100%;
+}
+.uni-choose-location-poi.uni-choose-location-landscape {
+    position: absolute;
+    top: 80px;
+    right: 25px;
+    width: 300px;
+    bottom: 20px;
+    max-height: 600px;
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+    border-radius: 5px;
+}
+.uni-choose-location-map-reset.uni-choose-location-landscape {
+    left: 40px;
+    bottom: 40px;
+}
+.uni-choose-location-poi-item.uni-choose-location-landscape {
+    padding: 10px;
+}
+.uni-choose-location-nav-btn.uni-choose-location-landscape {
+    top: 10px;
+    left: 20px;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {
+    left: auto;
+    right: 20px;
+}
+
+  /* 横屏样式结束 */
+
+  /* 暗黑模式样式开始 */
+.uni-choose-location-dark.uni-choose-location-map-reset {
+    background-color: #111111;
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
+}
+.uni-choose-location-dark.uni-choose-location-poi-search-box {
+    background-color: #111111;
+}
+.uni-choose-location-dark.uni-choose-location-search-icon {
+    color: #d1d1d1;
+}
+.uni-choose-location-dark.uni-choose-location-poi-search-loading-text {
+    color: #d1d1d1;
+}
+.uni-choose-location-dark.uni-choose-location-poi-search {
+    background-color: #181818
+}
+.uni-choose-location-dark.uni-choose-location-poi-search-input {
+    background: #111111;
+    color: #d1d1d1;
+}
+.uni-choose-location-dark.uni-choose-location-poi-item-title-text {
+    color: #d1d1d1;
+}
+.uni-choose-location-dark.uni-choose-location-poi-item-detail-text {
+    color: #595959;
+}
+.uni-choose-location-dark.uni-choose-location-poi {
+    background-color: #181818
+}
+.uni-choose-location-dark.uni-choose-location-poi-item-after {
+    border-bottom: 1px solid #1e1e1e;
+}
+.uni-choose-location-dark.uni-choose-location-map-reset-icon {
+    color: #d1d1d1;
+}
+.uni-choose-location-dark.uni-choose-location-poi-search-error-text {
+    color: #d1d1d1;
+}
+  /* 暗黑模式样式结束 */
+uni-image {
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+}
+uni-image[hidden] {
+    display: none;
+}
+uni-image > div {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+}
+uni-image > img {
+    -webkit-touch-callout: none;
+    user-select: none;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+uni-image > .uni-image-will-change {
+    will-change: transform;
+}
+
+
+`;
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$2]]]);
 class ChooseLocationFailImpl extends UniError {
   constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
     super();
@@ -29784,382 +29326,376 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const _sfc_main = {
-  data() {
-    return {
-      theme: "light",
-      language: "zh-Hans",
-      i18nCancelText: {
-        en: "Cancel",
-        es: "Cancelar",
-        fr: "Annuler",
-        "zh-Hans": "取消",
-        "zh-Hant": "取消"
-      },
-      i18nConfirmText: {
-        en: "OK",
-        es: "Confirmar",
-        fr: "Confirmer",
-        "zh-Hans": "确定",
-        "zh-Hant": "確定"
-      },
-      readyEventName: "",
-      optionsEventName: "",
-      successEventName: "",
-      failEventName: "",
-      title: "",
-      content: "",
-      showCancel: true,
-      editable: false,
-      placeholderText: null,
-      inputConfirmText: null,
-      inputCancelText: null,
-      cancelColor: "#000000",
-      confirmColor: "#4A5E86",
-      inputBottom: "0px",
-      maxScrollHeight: "192px",
-      inputCancelColor: null,
-      inputConfirmColor: null,
-      hoverClassName: "uni-modal_dialog__content__bottom__button__hover",
-      showAnim: false,
-      isAutoHeight: true
+const _sfc_main$1 = /* @__PURE__ */ defineComponent({
+  __name: "uniModal",
+  setup(__props) {
+    const theme = ref("light");
+    const language = ref("zh-Hans");
+    const i18nCancelText = {
+      en: "Cancel",
+      es: "Cancelar",
+      fr: "Annuler",
+      "zh-Hans": "取消",
+      "zh-Hant": "取消"
     };
-  },
-  onReady() {
-    setTimeout(() => {
-      this.showAnim = true;
-    }, 10);
-  },
-  computed: {
-    cancelText() {
-      if (this.inputCancelText != null) {
-        const res = this.inputCancelText;
+    const i18nConfirmText = {
+      en: "OK",
+      es: "Confirmar",
+      fr: "Confirmer",
+      "zh-Hans": "确定",
+      "zh-Hant": "確定"
+    };
+    const readyEventName = ref("");
+    const optionsEventName = ref("");
+    const successEventName = ref("");
+    const failEventName = ref("");
+    const title = ref("");
+    const content = ref("");
+    const showCancel = ref(true);
+    const editable = ref(false);
+    const placeholderText = ref(null);
+    const inputConfirmText = ref(null);
+    const inputCancelText = ref(null);
+    const cancelColor = ref("#000000");
+    const confirmColor = ref("#4A5E86");
+    const inputBottom = ref("0px");
+    const maxScrollHeight = ref("192px");
+    const inputCancelColor = ref(null);
+    const inputConfirmColor = ref(null);
+    const hoverClassName = ref("uni-modal_dialog__content__bottom__button__hover");
+    const showAnim = ref(false);
+    const isAutoHeight = ref(true);
+    const instance2 = getCurrentInstance$1();
+    const cancelText = computed(() => {
+      if (inputCancelText.value != null) {
+        const res = inputCancelText.value;
         return res;
       }
-      if (this.language.startsWith("en")) {
-        return this.i18nCancelText["en"];
+      if (language.value.startsWith("en")) {
+        return i18nCancelText["en"];
       }
-      if (this.language.startsWith("es")) {
-        return this.i18nCancelText["es"];
+      if (language.value.startsWith("es")) {
+        return i18nCancelText["es"];
       }
-      if (this.language.startsWith("fr")) {
-        return this.i18nCancelText["fr"];
+      if (language.value.startsWith("fr")) {
+        return i18nCancelText["fr"];
       }
-      if (this.language.startsWith("zh-Hans")) {
-        return this.i18nCancelText["zh-Hans"];
+      if (language.value.startsWith("zh-Hans")) {
+        return i18nCancelText["zh-Hans"];
       }
-      if (this.language.startsWith("zh-Hant")) {
-        return this.i18nCancelText["zh-Hant"];
+      if (language.value.startsWith("zh-Hant")) {
+        return i18nCancelText["zh-Hant"];
       }
       return "取消";
-    },
-    confirmText() {
-      if (this.inputConfirmText != null) {
-        const res = this.inputConfirmText;
+    });
+    const confirmText = computed(() => {
+      if (inputConfirmText.value != null) {
+        const res = inputConfirmText.value;
         return res;
       }
-      if (this.language.startsWith("en")) {
-        return this.i18nConfirmText["en"];
+      if (language.value.startsWith("en")) {
+        return i18nConfirmText["en"];
       }
-      if (this.language.startsWith("es")) {
-        return this.i18nConfirmText["es"];
+      if (language.value.startsWith("es")) {
+        return i18nConfirmText["es"];
       }
-      if (this.language.startsWith("fr")) {
-        return this.i18nConfirmText["fr"];
+      if (language.value.startsWith("fr")) {
+        return i18nConfirmText["fr"];
       }
-      if (this.language.startsWith("zh-Hans")) {
-        return this.i18nConfirmText["zh-Hans"];
+      if (language.value.startsWith("zh-Hans")) {
+        return i18nConfirmText["zh-Hans"];
       }
-      if (this.language.startsWith("zh-Hant")) {
-        return this.i18nConfirmText["zh-Hant"];
+      if (language.value.startsWith("zh-Hant")) {
+        return i18nConfirmText["zh-Hant"];
       }
       return "确定";
-    }
-  },
-  onLoad(options) {
-    const systemInfo = uni.getSystemInfoSync();
-    const osLanguage = systemInfo.osLanguage;
-    const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55);
-    this.maxScrollHeight = scrollHeight + "px";
-    const appLanguage = systemInfo.appLanguage;
-    if (appLanguage != null) {
-      this.language = appLanguage;
-    } else if (osLanguage != null) {
-      this.language = osLanguage;
-    }
-    const hostTheme = systemInfo.hostTheme;
-    if (hostTheme != null) {
-      this.theme = hostTheme;
-      this.updateUI();
-    }
-    uni.onThemeChange((res) => {
-      this.theme = res.theme;
-      this.updateUI();
     });
-    const locale = uni.getLocale();
-    this.language = locale;
-    uni.onLocaleChange((res) => {
-      if (res.locale) {
-        this.language = res.locale;
-      }
-    });
-    this.readyEventName = options["readyEventName"];
-    this.optionsEventName = options["optionsEventName"];
-    this.successEventName = options["successEventName"];
-    this.failEventName = options["failEventName"];
-    uni.$on(this.optionsEventName, (data) => {
-      if (data["title"] != null) {
-        this.title = data["title"];
-      }
-      if (data["content"] != null) {
-        this.content = data["content"];
-      }
-      if (data["showCancel"] != null) {
-        this.showCancel = data["showCancel"];
-      }
-      if (data["editable"] != null) {
-        this.editable = data["editable"];
-      }
-      if (data["placeholderText"] != null) {
-        this.placeholderText = data["placeholderText"];
-      }
-      if (data["confirmText"] != null) {
-        this.inputConfirmText = data["confirmText"];
-      }
-      if (data["cancelText"] != null) {
-        this.inputCancelText = data["cancelText"];
-      }
-      if (data["confirmColor"] != null) {
-        this.inputConfirmColor = data["confirmColor"];
-      }
-      if (data["cancelColor"] != null) {
-        this.inputCancelColor = data["cancelColor"];
-      }
-      this.updateUI();
-    });
-    uni.$emit(this.readyEventName, {});
-  },
-  onUnload() {
-    uni.$off(this.optionsEventName, null);
-    uni.$off(this.readyEventName, null);
-    uni.$off(this.successEventName, null);
-    uni.$off(this.failEventName, null);
-  },
-  onBackPress(_) {
-    let ret = {
-      cancel: false,
-      confirm: false
-    };
-    uni.$emit(this.successEventName, JSON.stringify(ret));
-    return false;
-  },
-  methods: {
-    onInputBlur(e2) {
+    const onInputBlur = (e2) => {
       setTimeout(() => {
-        this.inputBottom = "0px";
+        inputBottom.value = "0px";
       }, 220);
-    },
-    onInputKeyboardChange(e2) {
+    };
+    const onInputKeyboardChange = (e2) => {
       let keyBoardHeight = e2.detail.height;
       if (keyBoardHeight > 0) {
         let calcBottom = keyBoardHeight / 2;
-        this.inputBottom = `${calcBottom}px`;
+        inputBottom.value = `${calcBottom}px`;
       }
-    },
-    isValidColor(inputColor) {
+    };
+    const isValidColor = (inputColor) => {
       const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
       if (inputColor == null) {
         return false;
       }
       return hexColorRegex.test(inputColor);
-    },
-    /**
-     * update ui when theme change.
-     */
-    updateUI() {
-      if (this.isValidColor(this.inputConfirmColor)) {
-        this.confirmColor = this.inputConfirmColor;
+    };
+    const updateUI = () => {
+      if (isValidColor(inputConfirmColor.value)) {
+        confirmColor.value = inputConfirmColor.value;
       } else {
-        if (this.theme == "dark") {
-          this.confirmColor = "#7388a2";
+        if (theme.value == "dark") {
+          confirmColor.value = "#7388a2";
         } else {
-          this.confirmColor = "#4A5E86";
+          confirmColor.value = "#4A5E86";
         }
       }
-      if (this.isValidColor(this.inputCancelColor)) {
-        this.cancelColor = this.inputCancelColor;
+      if (isValidColor(inputCancelColor.value)) {
+        cancelColor.value = inputCancelColor.value;
       } else {
-        if (this.theme == "dark") {
-          this.cancelColor = "#a5a5a5";
+        if (theme.value == "dark") {
+          cancelColor.value = "#a5a5a5";
         } else {
-          this.cancelColor = "#000000";
+          cancelColor.value = "#000000";
         }
       }
-      if (this.theme == "dark") {
-        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode";
+      if (theme.value == "dark") {
+        hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode";
       } else {
-        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover";
+        hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover";
       }
-    },
-    closeModal() {
-      this.showAnim = false;
+    };
+    const closeModal = () => {
+      showAnim.value = false;
       setTimeout(() => {
+        var _a;
         uni.closeDialogPage({
-          dialogPage: this.$page
+          dialogPage: (_a = instance2 == null ? void 0 : instance2.proxy) == null ? void 0 : _a.$page
         });
       }, 300);
-    },
-    handleCancel() {
-      this.closeModal();
+    };
+    const handleCancel = () => {
+      closeModal();
       let ret = {
         cancel: true,
         confirm: false
       };
-      uni.$emit(this.successEventName, JSON.stringify(ret));
-    },
-    handleSure() {
-      this.closeModal();
+      uni.$emit(successEventName.value, JSON.stringify(ret));
+    };
+    const handleSure = () => {
+      closeModal();
       let ret = {
         cancel: false,
         confirm: true,
-        content: this.editable ? this.content : null
+        content: editable.value ? content.value : null
       };
-      uni.$emit(this.successEventName, JSON.stringify(ret));
-    }
-  }
-};
-const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_text = __syscom_0$1;
-  const _component_textarea = __syscom_1;
-  const _component_scroll_view = __syscom_2;
-  const _component_view = __syscom_3;
-  return openBlock(), createBlock(_component_view, {
-    class: normalizeClass(["uni-modal_dialog__mask", { "uni-modal_dialog__mask__show": $data.showAnim }])
-  }, {
-    default: withCtx(() => [
-      createVNode(_component_view, {
-        class: normalizeClass(["uni-modal_dialog__container", { "uni-modal_dialog__show": $data.showAnim, "uni-modal_dark__mode": $data.theme == "dark" }]),
-        id: "modal_content",
-        style: normalizeStyle({ bottom: $data.inputBottom })
+      uni.$emit(successEventName.value, JSON.stringify(ret));
+    };
+    onReady(() => {
+      setTimeout(() => {
+        showAnim.value = true;
+      }, 10);
+    });
+    onLoad((options) => {
+      const systemInfo = uni.getSystemInfoSync();
+      const osLanguage = systemInfo.osLanguage;
+      const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55);
+      maxScrollHeight.value = scrollHeight + "px";
+      const appLanguage = systemInfo.appLanguage;
+      if (appLanguage != null) {
+        language.value = appLanguage;
+      } else if (osLanguage != null) {
+        language.value = osLanguage;
+      }
+      const hostTheme = systemInfo.hostTheme;
+      if (hostTheme != null) {
+        theme.value = hostTheme;
+        updateUI();
+      }
+      uni.onThemeChange((res) => {
+        theme.value = res.theme;
+        updateUI();
+      });
+      const locale = uni.getLocale();
+      language.value = locale;
+      uni.onLocaleChange((res) => {
+        if (res.locale) {
+          language.value = res.locale;
+        }
+      });
+      readyEventName.value = options["readyEventName"];
+      optionsEventName.value = options["optionsEventName"];
+      successEventName.value = options["successEventName"];
+      failEventName.value = options["failEventName"];
+      uni.$on(optionsEventName.value, (data) => {
+        if (data["title"] != null) {
+          title.value = data["title"];
+        }
+        if (data["content"] != null) {
+          content.value = data["content"];
+        }
+        if (data["showCancel"] != null) {
+          showCancel.value = data["showCancel"];
+        }
+        if (data["editable"] != null) {
+          editable.value = data["editable"];
+        }
+        if (data["placeholderText"] != null) {
+          placeholderText.value = data["placeholderText"];
+        }
+        if (data["confirmText"] != null) {
+          inputConfirmText.value = data["confirmText"];
+        }
+        if (data["cancelText"] != null) {
+          inputCancelText.value = data["cancelText"];
+        }
+        if (data["confirmColor"] != null) {
+          inputConfirmColor.value = data["confirmColor"];
+        }
+        if (data["cancelColor"] != null) {
+          inputCancelColor.value = data["cancelColor"];
+        }
+        updateUI();
+      });
+      uni.$emit(readyEventName.value, {});
+    });
+    onUnload(() => {
+      uni.$off(optionsEventName.value, null);
+      uni.$off(readyEventName.value, null);
+      uni.$off(successEventName.value, null);
+      uni.$off(failEventName.value, null);
+    });
+    onBackPress((_) => {
+      let ret = {
+        cancel: false,
+        confirm: false
+      };
+      uni.$emit(successEventName.value, JSON.stringify(ret));
+      return false;
+    });
+    return (_ctx, _cache) => {
+      const _component_text = __syscom_1$1;
+      const _component_textarea = __syscom_1;
+      const _component_scroll_view = __syscom_2$1;
+      const _component_view = __syscom_2;
+      return openBlock(), createBlock(_component_view, {
+        class: normalizeClass(["uni-modal_dialog__mask", { "uni-modal_dialog__mask__show": showAnim.value }])
       }, {
         default: withCtx(() => [
           createVNode(_component_view, {
-            class: normalizeClass(["uni-modal_dialog__container__wrapper", { "uni-modal_dark__mode": $data.theme == "dark" }])
+            class: normalizeClass(["uni-modal_dialog__container", { "uni-modal_dialog__show": showAnim.value, "uni-modal_dark__mode": theme.value == "dark" }]),
+            id: "modal_content",
+            style: normalizeStyle({ bottom: inputBottom.value })
           }, {
             default: withCtx(() => [
-              $data.title ? (openBlock(), createBlock(_component_text, {
-                key: 0,
-                class: normalizeClass(["uni-modal_dialog__title__text", { "uni-modal_dark__mode": $data.theme == "dark" }])
+              createVNode(_component_view, {
+                class: normalizeClass(["uni-modal_dialog__container__wrapper", { "uni-modal_dark__mode": theme.value == "dark" }])
               }, {
                 default: withCtx(() => [
-                  createTextVNode(toDisplayString($data.title), 1)
-                ]),
-                _: 1
-              }, 8, ["class"])) : createCommentVNode("", true),
-              createVNode(_component_view, { class: "uni-modal_dialog__content" }, {
-                default: withCtx(() => [
-                  $data.editable ? (openBlock(), createBlock(_component_textarea, {
+                  title.value ? (openBlock(), createBlock(_component_text, {
                     key: 0,
-                    modelValue: $data.content,
-                    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.content = $event),
-                    class: normalizeClass(["uni-modal_dialog__content__textarea", { "uni-modal_dark__mode": $data.theme == "dark" }]),
-                    "placeholder-class": "modalContent_content_edit_placeholder",
-                    "adjust-position": false,
-                    onBlur: $options.onInputBlur,
-                    onKeyboardheightchange: $options.onInputKeyboardChange,
-                    id: "textarea_content_input",
-                    ref: "ref_textarea_content_input",
-                    "auto-height": $data.isAutoHeight,
-                    placeholder: $data.placeholderText
-                  }, null, 8, ["modelValue", "class", "onBlur", "onKeyboardheightchange", "auto-height", "placeholder"])) : createCommentVNode("", true),
-                  !$data.editable && $data.content.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
-                    key: 1,
-                    class: "uni-modal_dialog__content__scrollview",
-                    "show-scrollbar": "true",
-                    style: normalizeStyle({ maxHeight: $data.maxScrollHeight })
+                    class: normalizeClass(["uni-modal_dialog__title__text", { "uni-modal_dark__mode": theme.value == "dark" }])
                   }, {
                     default: withCtx(() => [
-                      createVNode(_component_text, { class: "uni-modal_dialog__content__scrollview__text" }, {
-                        default: withCtx(() => [
-                          createTextVNode(toDisplayString($data.content), 1)
-                        ]),
-                        _: 1
-                      })
+                      createTextVNode(toDisplayString(title.value), 1)
                     ]),
                     _: 1
-                  }, 8, ["style"])) : createCommentVNode("", true)
-                ]),
-                _: 1
-              }),
-              createVNode(_component_view, {
-                class: normalizeClass(["uni-modal_dialog__content__topline", { "uni-modal_dark__mode": $data.theme == "dark" }])
-              }, null, 8, ["class"]),
-              createVNode(_component_view, { class: "uni-modal_dialog__content__bottom" }, {
-                default: withCtx(() => [
-                  $data.showCancel ? (openBlock(), createBlock(_component_view, {
-                    key: 0,
-                    class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": $data.theme == "dark" }]),
-                    "hover-class": $data.hoverClassName,
-                    onClick: $options.handleCancel
-                  }, {
+                  }, 8, ["class"])) : createCommentVNode("", true),
+                  createVNode(_component_view, { class: "uni-modal_dialog__content" }, {
                     default: withCtx(() => [
-                      createVNode(_component_text, {
-                        style: normalizeStyle({ color: $data.cancelColor }),
-                        class: "uni-modal_dialog__content__bottom__button__text"
+                      editable.value ? (openBlock(), createBlock(_component_textarea, {
+                        key: 0,
+                        modelValue: content.value,
+                        "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => content.value = $event),
+                        class: normalizeClass(["uni-modal_dialog__content__textarea", { "uni-modal_dark__mode": theme.value == "dark" }]),
+                        "placeholder-class": "modalContent_content_edit_placeholder",
+                        "adjust-position": false,
+                        onBlur: onInputBlur,
+                        onKeyboardheightchange: onInputKeyboardChange,
+                        id: "textarea_content_input",
+                        ref: "ref_textarea_content_input",
+                        "auto-height": isAutoHeight.value,
+                        placeholder: placeholderText.value
+                      }, null, 8, ["modelValue", "class", "auto-height", "placeholder"])) : createCommentVNode("", true),
+                      !editable.value && content.value.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
+                        key: 1,
+                        class: "uni-modal_dialog__content__scrollview",
+                        "show-scrollbar": "true",
+                        style: normalizeStyle({ maxHeight: maxScrollHeight.value })
                       }, {
                         default: withCtx(() => [
-                          createTextVNode(toDisplayString($options.cancelText), 1)
+                          createVNode(_component_text, { class: "uni-modal_dialog__content__scrollview__text" }, {
+                            default: withCtx(() => [
+                              createTextVNode(toDisplayString(content.value), 1)
+                            ]),
+                            _: 1
+                          })
                         ]),
                         _: 1
-                      }, 8, ["style"])
+                      }, 8, ["style"])) : createCommentVNode("", true)
                     ]),
                     _: 1
-                  }, 8, ["class", "hover-class", "onClick"])) : createCommentVNode("", true),
-                  $data.showCancel ? (openBlock(), createBlock(_component_view, {
-                    key: 1,
-                    class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", { "uni-modal_dark__mode": $data.theme == "dark" }])
-                  }, null, 8, ["class"])) : createCommentVNode("", true),
+                  }),
                   createVNode(_component_view, {
-                    class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": $data.theme == "dark" }]),
-                    "hover-class": $data.hoverClassName,
-                    onClick: $options.handleSure
-                  }, {
+                    class: normalizeClass(["uni-modal_dialog__content__topline", { "uni-modal_dark__mode": theme.value == "dark" }])
+                  }, null, 8, ["class"]),
+                  createVNode(_component_view, { class: "uni-modal_dialog__content__bottom" }, {
                     default: withCtx(() => [
-                      createVNode(_component_text, {
-                        style: normalizeStyle({ color: $data.confirmColor }),
-                        class: "uni-modal_dialog__content__bottom__button__text__sure"
+                      showCancel.value ? (openBlock(), createBlock(_component_view, {
+                        key: 0,
+                        class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": theme.value == "dark" }]),
+                        "hover-class": hoverClassName.value,
+                        onClick: handleCancel
                       }, {
                         default: withCtx(() => [
-                          createTextVNode(toDisplayString($options.confirmText), 1)
+                          createVNode(_component_text, {
+                            style: normalizeStyle({ color: cancelColor.value }),
+                            class: "uni-modal_dialog__content__bottom__button__text"
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode(toDisplayString(cancelText.value), 1)
+                            ]),
+                            _: 1
+                          }, 8, ["style"])
                         ]),
                         _: 1
-                      }, 8, ["style"])
+                      }, 8, ["class", "hover-class"])) : createCommentVNode("", true),
+                      showCancel.value ? (openBlock(), createBlock(_component_view, {
+                        key: 1,
+                        class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", { "uni-modal_dark__mode": theme.value == "dark" }])
+                      }, null, 8, ["class"])) : createCommentVNode("", true),
+                      createVNode(_component_view, {
+                        class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": theme.value == "dark" }]),
+                        "hover-class": hoverClassName.value,
+                        onClick: handleSure
+                      }, {
+                        default: withCtx(() => [
+                          createVNode(_component_text, {
+                            style: normalizeStyle({ color: confirmColor.value }),
+                            class: "uni-modal_dialog__content__bottom__button__text__sure"
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode(toDisplayString(confirmText.value), 1)
+                            ]),
+                            _: 1
+                          }, 8, ["style"])
+                        ]),
+                        _: 1
+                      }, 8, ["class", "hover-class"])
                     ]),
                     _: 1
-                  }, 8, ["class", "hover-class", "onClick"])
+                  })
                 ]),
                 _: 1
-              })
+              }, 8, ["class"])
             ]),
             _: 1
-          }, 8, ["class"])
+          }, 8, ["style", "class"])
         ]),
         _: 1
-      }, 8, ["style", "class"])
-    ]),
-    _: 1
-  }, 8, ["class"]);
-}
-const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
-class UniShowModalFailImpl extends UniError {
+      }, 8, ["class"]);
+    };
+  }
+});
+const _style_0$1 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0.5;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
+const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
+class ShowModalFailImpl extends UniError {
   constructor(errMsg = "showModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;
   }
 }
-class UniHideModalFailImpl extends UniError {
+class HideModalFailImpl extends UniError {
   constructor(errMsg = "hideModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -30190,7 +29726,7 @@ const showModal$1 = (options) => {
   });
   uni.$on(failEventName, () => {
     var _a2, _b2;
-    const res = new UniShowModalFailImpl();
+    const res = new ShowModalFailImpl();
     (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
     (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
   });
@@ -30198,7 +29734,7 @@ const showModal$1 = (options) => {
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a2, _b2;
-      const res = new UniShowModalFailImpl(`showModal failed, ${err.errMsg}`);
+      const res = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
       (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
       (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
       uni.$off(readyEventName);
@@ -30209,7 +29745,7 @@ const showModal$1 = (options) => {
   if (openRet != null) {
     return openRet;
   } else {
-    const res = new UniShowModalFailImpl();
+    const res = new ShowModalFailImpl();
     (_a = options.fail) == null ? void 0 : _a.call(options, res);
     (_b = options.complete) == null ? void 0 : _b.call(options, res);
     return null;
@@ -30217,9 +29753,10 @@ const showModal$1 = (options) => {
 };
 const hideModal$1 = function(options) {
   var _a, _b, _c, _d, _e;
-  const currentPage = getCurrentPage();
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
   if (!currentPage) {
-    const res2 = new UniHideModalFailImpl();
+    const res2 = new HideModalFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;
@@ -30289,6 +29826,212 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
   (args, { resolve, reject }) => {
     registerModalOnce();
     showModal$1(
+      extend(
+        {
+          success: (res) => {
+            resolve(res);
+          },
+          fail: (err) => {
+            reject(err);
+          }
+        },
+        args
+      )
+    );
+  }
+);
+const _sfc_main = /* @__PURE__ */ defineComponent({
+  __name: "showLoading",
+  setup(__props) {
+    const readyEventName = ref("");
+    const optionsEventName = ref("");
+    const successEventName = ref("");
+    const failEventName = ref("");
+    const title = ref("");
+    const showAnim = ref(false);
+    onReady$1(() => {
+      setTimeout(() => {
+        showAnim.value = true;
+      }, 10);
+    });
+    onLoad$1((options) => {
+      readyEventName.value = options["readyEventName"];
+      optionsEventName.value = options["optionsEventName"];
+      successEventName.value = options["successEventName"];
+      failEventName.value = options["failEventName"];
+      uni.$on(optionsEventName.value, (data) => {
+        if (data["title"] != null) {
+          title.value = data["title"];
+        }
+      });
+      uni.$emit(readyEventName.value, {});
+      uni.$emit(successEventName.value, "");
+    });
+    onUnload$1(() => {
+      uni.$off(optionsEventName.value, null);
+      uni.$off(readyEventName.value, null);
+      uni.$off(successEventName.value, null);
+      uni.$off(failEventName.value, null);
+    });
+    onBackPress$1((_) => {
+      return true;
+    });
+    return (_ctx, _cache) => {
+      const _component_loading = _sfc_main$4;
+      const _component_text = __syscom_1$1;
+      const _component_view = __syscom_2;
+      return openBlock(), createBlock(_component_view, {
+        class: normalizeClass(["uni-loading_dialog__mask", { "uni-loading_dialog__mask__show": showAnim.value }])
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-loading_dialog__container", { "uni-loading_dialog__show": showAnim.value }])
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_loading, { class: "uni-loading_dialog__container__loading" }),
+              title.value ? (openBlock(), createBlock(_component_text, {
+                key: 0,
+                class: "uni-loading_dialog__container__title"
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString(title.value), 1)
+                ]),
+                _: 1
+              })) : createCommentVNode("", true)
+            ]),
+            _: 1
+          }, 8, ["class"])
+        ]),
+        _: 1
+      }, 8, ["class"]);
+    };
+  }
+});
+const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n\n	\n";
+const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["styles", [_style_0]]]);
+class ShowLoadingFailImpl extends UniError {
+  constructor(errMsg = "showLoading:fail cancel", errCode = 4) {
+    super();
+    this.errMsg = errMsg;
+    this.errCode = errCode;
+  }
+}
+class HideLoadingFailImpl extends UniError {
+  constructor(errMsg = "hideLoading:fail cancel", errCode = 4) {
+    super();
+    this.errMsg = errMsg;
+    this.errCode = errCode;
+  }
+}
+const showLoading$1 = (options) => {
+  var _a, _b;
+  const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
+  const baseEventName = `uni_loading_${uuid}`;
+  const readyEventName = `${baseEventName}_ready`;
+  const optionsEventName = `${baseEventName}_options`;
+  const successEventName = `${baseEventName}_success`;
+  const failEventName = `${baseEventName}_fail`;
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, options);
+  });
+  uni.$on(successEventName, (inputParamStr) => {
+    var _a2, _b2;
+    let res = {};
+    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
+  });
+  uni.$on(failEventName, () => {
+    var _a2, _b2;
+    const res = new ShowLoadingFailImpl();
+    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
+  });
+  let openRet = uni.openDialogPage({
+    url: `uni:showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    fail(err) {
+      var _a2, _b2;
+      const res = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);
+      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res);
+      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
+  if (openRet != null) {
+    return openRet;
+  } else {
+    const res = new ShowLoadingFailImpl();
+    (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
+    (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
+    return null;
+  }
+};
+const hideLoading$1 = function(options) {
+  var _a, _b, _c, _d, _e;
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
+  if (!currentPage) {
+    const res2 = new HideLoadingFailImpl();
+    (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
+    (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
+    return;
+  }
+  const systemDialogPages = (_c = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _c.$systemDialogPages.value;
+  let shallClosePages = [];
+  for (let perPage of systemDialogPages) {
+    if (isSystemShowLoadingDialogPage(perPage)) {
+      if ((options == null ? void 0 : options.loadingPage) == null) {
+        shallClosePages.push(perPage);
+      } else {
+        if (perPage.options["optionsEventName"] === options.loadingPage.options["optionsEventName"]) {
+          shallClosePages.push(perPage);
+          break;
+        }
+      }
+    }
+  }
+  shallClosePages.forEach((item) => {
+    const index2 = systemDialogPages.indexOf(item);
+    if (index2 > -1) {
+      systemDialogPages.splice(index2, 1);
+    }
+  });
+  let res = {};
+  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, res);
+  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, res);
+};
+function isSystemShowLoadingDialogPage(page) {
+  return page.route.startsWith("uni:showLoading");
+}
+const API_HIDE_LOADING = "hideLoading";
+const registerLoadingOnce = /* @__PURE__ */ once(() => {
+  registerSystemRoute("uni:showLoading", UniLoadingPage);
+});
+const hideLoading = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_LOADING,
+  (args, { resolve, reject }) => {
+    registerLoadingOnce();
+    hideLoading$1(
+      /* @__PURE__ */ extend(
+        {
+          success: (res) => {
+            resolve(res);
+          },
+          fail: (err) => {
+            reject(err);
+          }
+        },
+        args
+      )
+    );
+  }
+);
+const showLoading = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_LOADING,
+  (args, { resolve, reject }) => {
+    registerLoadingOnce();
+    return showLoading$1(
       extend(
         {
           success: (res) => {
@@ -30578,13 +30321,14 @@ export {
   index$t as Form,
   index$m as Icon,
   __syscom_4 as Image,
-  __syscom_3$1 as Input,
+  __syscom_3 as Input,
   index$s as Label,
   LayoutComponent,
   index$g as ListItem,
   index$h as ListView,
   index$1 as LivePlayer,
   index as LivePusher,
+  _sfc_main$4 as Loading,
   __syscom_0 as Map,
   MatchMedia,
   MovableArea,
@@ -30599,15 +30343,18 @@ export {
   index$j as RadioGroup,
   ResizeSensor,
   index$i as RichText,
-  __syscom_2 as ScrollView,
+  __syscom_2$1 as ScrollView,
   indexX$2 as Slider,
   index$e as StickyHeader,
   index$f as StickySection,
   Swiper,
   SwiperItem,
   indexX$1 as Switch,
-  __syscom_0$1 as Text,
+  __syscom_1$1 as Text,
   __syscom_1 as Textarea,
+  UTS2 as UTS,
+  UTSJSONObject2 as UTSJSONObject,
+  UTSValueIterable2 as UTSValueIterable,
   UniButtonElement,
   UniButtonElement as UniButtonElementImpl,
   UniCanvasElement,
@@ -30622,6 +30369,7 @@ export {
   UniEditorElement as UniEditorElementImpl,
   UniElement,
   UniElement as UniElementImpl,
+  UniError2 as UniError,
   UniFormElement,
   UniFormElement as UniFormElementImpl,
   UniIconElement,
@@ -30681,7 +30429,7 @@ export {
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
   index$b as Video,
-  __syscom_3 as View,
+  __syscom_2 as View,
   indexX as WebView,
   __f__,
   addInterceptor,

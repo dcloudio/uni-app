@@ -65,6 +65,9 @@ export default /*#__PURE__*/ defineSystemComponent({
         if (!routePageMeta?.navigationBar.style) {
           pageMeta.navigationBar.style = 'custom'
         }
+        if (ctx.attrs['data-type'] === SYSTEM_DIALOG_TAG) {
+          pageMeta.navigationBar.titleText = ''
+        }
         const parentInstance = inject(
           'parentInstance'
         ) as ComponentInternalInstance

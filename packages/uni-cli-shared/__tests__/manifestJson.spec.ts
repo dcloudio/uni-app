@@ -1,6 +1,6 @@
 /// <reference types="../../shims-uni-app.d.ts" />
 
-import { normalizeAppManifestJson } from '../src/json'
+import { getNativeTags, normalizeAppManifestJson } from '../src/json'
 import { initDefaultManifestJson } from '../src/json/app/manifest/defaultManifestJson'
 import { initLaunchwebview } from '../src/json/app/manifest/launchwebview'
 import { initRecursiveMerge } from '../src/json/app/manifest/merge'
@@ -157,5 +157,39 @@ describe('manifest.json', () => {
       concatenate: true,
       value: 'uni-app app123',
     })
+  })
+
+  test('getNativeTags', () => {
+    expect(getNativeTags(undefined, 'mp-weixin')).toEqual([])
+    expect(
+      getNativeTags(
+        'packages/uni-cli-shared/__tests__/examples/native-tags',
+        undefined
+      )
+    ).toEqual([])
+    expect(
+      getNativeTags(
+        'packages/uni-cli-shared/__tests__/examples/native-tags',
+        'mp-weixin'
+      )
+    ).toEqual(['voip-room', 'root-portal'])
+    expect(
+      getNativeTags(
+        'packages/uni-cli-shared/__tests__/examples/native-tags',
+        'mp-alipay'
+      )
+    ).toEqual([])
+    expect(
+      getNativeTags(
+        'packages/uni-cli-shared/__tests__/examples/native-tags',
+        'mp-baidu'
+      )
+    ).toEqual([])
+    expect(
+      getNativeTags(
+        'packages/uni-cli-shared/__tests__/examples/native-tags',
+        'mp-toutiao'
+      )
+    ).toEqual([])
   })
 })

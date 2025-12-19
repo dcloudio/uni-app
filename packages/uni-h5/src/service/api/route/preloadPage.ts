@@ -12,7 +12,7 @@ export const preloadPage = defineAsyncApi<API_TYPE_PRELOAD_PAGE>(
     const path = url.split('?')[0]
     const route = getRouteOptions(path)
     if (!route) {
-      reject(`${url}}`)
+      reject(`${url}`)
       return
     }
     route.loader &&

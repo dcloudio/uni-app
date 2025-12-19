@@ -113,6 +113,21 @@ export function parsePageStyle(
   return style
 }
 
+/**
+ * DOM2 生命周期 beforeReadyMounted 调用
+ * @param proxy
+ */
+function invokeMountedJobs(proxy: ComponentPublicInstance) {
+  const { mountedJobs } = proxy.$ as {
+    mountedJobs?: Array<() => void>
+  }
+  if (mountedJobs) {
+    const jobs = mountedJobs.slice()
+    mountedJobs.length = 0
+    jobs.forEach((job) => job())
+  }
+}
+
 export function registerPage(
   {
     url,
@@ -204,6 +219,9 @@ export function registerPage(
           invokeHook(pageComponentPublicInstance, ON_UNLOAD)
         })
         nativePage.addPageEventListener(ON_READY, (_) => {
+          if (__VAPOR__) {
+            invokeMountedJobs(pageComponentPublicInstance)
+          }
           invokePageReadyHooks(pageComponentPublicInstance)
           invokeHook(pageComponentPublicInstance, ON_READY)
         })

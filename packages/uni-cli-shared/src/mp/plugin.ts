@@ -50,3 +50,20 @@ export const copyMiniProgramThemeJson: () => UniViteCopyPluginTarget[] = () => {
   }
   return []
 }
+
+export function createCopyPluginTarget(src: string[]): UniViteCopyPluginTarget {
+  return {
+    src,
+    get dest() {
+      return process.env.UNI_OUTPUT_DIR
+    },
+    transform(source, filename) {
+      const extJson = parseJson(
+        source.toString(),
+        true,
+        path.basename(filename)
+      )
+      return JSON.stringify(extJson, null, 2)
+    },
+  }
+}

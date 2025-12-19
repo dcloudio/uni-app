@@ -7,6 +7,41 @@ function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
 
+const transformMPBuiltInTagOptions = {
+    propRename: {
+        checkbox: {
+            foreColor: 'color',
+        },
+        radio: {
+            activeBackgroundColor: 'color',
+        },
+        slider: {
+            foreColor: 'block-color',
+        },
+        switch: {
+            activeBackgroundColor: 'color',
+        },
+    },
+    propAdd: {
+        canvas: [
+            {
+                name: 'type',
+                value: '2d',
+            },
+        ],
+        'scroll-view': [
+            {
+                name: 'enhanced',
+                value: 'true',
+            },
+        ],
+    },
+    tagRename: {
+        'list-view': 'scroll-view',
+    },
+};
+const transformMPBuiltInTag = uniCliShared.createMPBuiltInTagTransform(transformMPBuiltInTagOptions);
+
 var setting = {
 	urlCheck: false,
 	es6: true,
@@ -42,16 +77,19 @@ const customElements = [
     'rtc-room',
     'clue-order-form',
     'shop-follow-card',
+    'match-media',
+    'mask',
+    'video-player',
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const projectConfigFilename = 'project.config.json';
 const nodeTransforms = [
     uniCliShared.transformRef,
-    uniCliShared.transformMatchMedia,
+    // transformMatchMedia,
     uniCliShared.transformComponentLink,
 ];
 if (process.env.UNI_APP_X === 'true') {
-    nodeTransforms.push(uniCliShared.transformMPBuiltInTag, uniCliShared.transformDirection);
+    nodeTransforms.push(transformMPBuiltInTag, uniCliShared.transformDirection);
 }
 const compilerOptions = {
     nodeTransforms,
@@ -75,6 +113,14 @@ const miniProgram = {
         setStyle: true,
     },
 };
+const commonCopyTargets = [
+    {
+        src: ['package.json', 'project.private.config.json'],
+        get dest() {
+            return process.env.UNI_OUTPUT_DIR;
+        },
+    },
+];
 const options = {
     cdn: 4,
     vite: {
@@ -85,15 +131,8 @@ const options = {
             'uni-mp-runtime': initMiniProgramPlugin.resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
-            assets: [COMPONENTS_DIR],
-            targets: [
-                {
-                    src: ['ext.json', 'package.json', 'project.private.config.json'],
-                    get dest() {
-                        return process.env.UNI_OUTPUT_DIR;
-                    },
-                },
-            ],
+            assets: uniCliShared.createCopyComponentDirs(COMPONENTS_DIR),
+            targets: [...commonCopyTargets, uniCliShared.createCopyPluginTarget(['ext.json'])],
         },
     },
     global: 'tt',

@@ -56,7 +56,13 @@ function createUniElement(
     tagName
   )
   uniElement.$vm = ins.proxy
-  initMiniProgramNode(uniElement, ins)
+  // 目前只有微信小程序支持获取 ScrollViewContext
+  if (
+    (ins.proxy as ComponentPublicInstance & { $mpPlatform: string })
+      .$mpPlatform === 'mp-weixin'
+  ) {
+    initMiniProgramNode(uniElement, ins)
+  }
   uniElement.$onStyleChange((styles) => {
     let cssText = ''
     // 如果不支持 wxs setStyle，需要合并模板绑定的 style
@@ -166,7 +172,6 @@ function initMiniProgramNode(
   uniElement: UniElement,
   ins: ComponentInternalInstance
 ) {
-  // 可能需要条件编译，部分小程序不支持
   if (uniElement.tagName === 'SCROLL-VIEW') {
     uniElement.$node = new Promise((resolve) => {
       setTimeout(() => {

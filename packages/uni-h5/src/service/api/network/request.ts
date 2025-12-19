@@ -9,6 +9,7 @@ import {
 import { LINEFEED } from '@dcloudio/uni-shared'
 import type { RequestFail } from '@dcloudio/uni-app-x/types/uni'
 import { Emitter } from '@dcloudio/uni-shared'
+import type { UTSJSONObject } from '@dcloudio/uni-shared'
 
 export const request = defineTaskApi<API_TYPE_REQUEST>(
   API_REQUEST,

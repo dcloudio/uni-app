@@ -120,6 +120,10 @@ export interface UTSOptions {
   output: UTSOutputOptions
 }
 
+export interface ToCppCodeOptions {
+  code: string
+  treeshake?: boolean
+}
 export interface UTSResult {
   filename?: string
   deps?: string[]

@@ -1,6 +1,11 @@
 import type { ComponentOptions } from 'vue'
 
-import { ON_LOAD, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared'
+import {
+  ON_LOAD,
+  UTSJSONObject,
+  addLeadingSlash,
+  stringifyQuery,
+} from '@dcloudio/uni-shared'
 
 import {
   type CustomComponentInstanceProperty,

@@ -29,16 +29,19 @@ export {
   // shallowSsrRef,
   // uni-app lifecycle
   // App and Page
+
   onShow,
   onHide,
   // App
+  onAppShow,
+  onAppHide,
   onLaunch,
   onError,
   onThemeChange,
   // onKeyboardHeightChange,
   onPageNotFound,
   onUnhandledRejection,
-  // onLastPageBackPress,
+  onLastPageBackPress,
   onExit,
   // Page
   onPageShow,

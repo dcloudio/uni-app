@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { parse, bundle, UTSTarget } = require('../packages/uts/dist')
+const { parse, bundle, UTSTarget, toCppCode } = require('../packages/uts/dist')
 const projectDir = path.resolve(__dirname, '../packages/playground/uts')
 
 const outDir = path.resolve(projectDir, 'unpackage/dist/dev/app-plus')
@@ -177,7 +177,7 @@ async function testSwift() {
       logFilename: true,
       isPlugin: true,
     },
-    })
+  })
 }
 
 async function testSwiftComponent() {
@@ -252,12 +252,23 @@ async function testArkTS() {
   })
 }
 
+async function testCppCode() {
+  console.log(await toCppCode({
+    code: `function test1() {
+  const a = test()
+}`
+  }))
+}
+
 async function test() {
   await testArkTS()
   await testKotlinComponent()
   await testKotlin()
   await testSwiftComponent()
   await testSwift()
+  await testCppCode()
 }
+
+
 
 test()

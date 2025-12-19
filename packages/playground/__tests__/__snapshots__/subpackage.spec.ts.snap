@@ -100,7 +100,7 @@ exports._imports_2 = _imports_2;
 exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin pages/index/index.wxss 1`] = `
 "@import "../../app.wxss";
 @import "../../uvue.wxss";
-:host{display:flex;flex-direction:column}
+:host,page{display:flex;flex-direction:column}
 
 .test {
     background-color: red;
@@ -109,7 +109,7 @@ exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-wei
 `;
 
 exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin uni_modules/test-module/components/test-component/test-component.wxss 1`] = `
-":host{display:flex;flex-direction:column}
+":host,page{display:flex;flex-direction:column}
 
 .test {
   background-color: red;
@@ -120,7 +120,7 @@ exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-wei
 exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin uni_modules/test-module/pages/index/index.wxss 1`] = `
 "@import "../../../../app.wxss";
 @import "../../../../uvue.wxss";
-:host{display:flex;flex-direction:column}
+:host,page{display:flex;flex-direction:column}
 
 .test {
   background-color: red;
@@ -146,7 +146,7 @@ exports._imports_2 = _imports_2;
 exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin pages/index/index.wxss 1`] = `
 "@import "../../app.wxss";
 @import "../../uvue.wxss";
-:host{display:flex;flex-direction:column}
+:host,page{display:flex;flex-direction:column}
 
 .test {
     background-color: red;
@@ -155,7 +155,7 @@ exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin 
 `;
 
 exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin uni_modules/test-module/components/test-component/test-component.wxss 1`] = `
-":host{display:flex;flex-direction:column}
+":host,page{display:flex;flex-direction:column}
 
 .test {
   background-color: red;
@@ -166,7 +166,7 @@ exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin 
 exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin uni_modules/test-module/pages/index/index.wxss 1`] = `
 "@import "../../../../app.wxss";
 @import "../../../../uvue.wxss";
-:host{display:flex;flex-direction:column}
+:host,page{display:flex;flex-direction:column}
 
 .test {
   background-color: red;

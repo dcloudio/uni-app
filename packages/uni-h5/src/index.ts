@@ -1,5 +1,11 @@
 //#if _X_
-import '@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts.js'
+import './x/polyfill/polyfill'
+export {
+  UTS,
+  UTSJSONObject,
+  UTSValueIterable,
+  UniError,
+} from '@dcloudio/uni-shared'
 //#endif
 
 export {
@@ -32,6 +38,7 @@ export {
   Textarea,
   View,
   //#if _X_
+  Loading,
   ListView,
   ListItem,
   StickySection,

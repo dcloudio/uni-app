@@ -12,6 +12,7 @@ import {
   parseManifestJsonOnce,
   parseRpx2UnitOnce,
   parseUniXFlexDirection,
+  preCss,
   resolveBuiltIn,
   resolveVueI18nRuntime,
 } from '@dcloudio/uni-cli-shared'
@@ -191,19 +192,25 @@ export function uniMiniProgramPlugin(
       return (createConfigResolved(options) as Function)(config)
     },
     generateBundle() {
+      const isX = process.env.UNI_APP_X === 'true'
       if (template.filter) {
         const extname = template.filter.extname
-        if (process.env.UNI_APP_X === 'true') {
+        if (isX) {
           if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
             // 目前 mp-weixin（mp-qq）、mp-alipay（mp-dingtalk）、mp-toutiao（mp-lark）均支持视图层setStyle
             if (template.filter.setStyle && !autoImportFilterEmitted) {
               autoImportFilterEmitted = true
+              let uniViewPath = '../../lib/filters/uniView.cjs.js'
+              // 支付宝小程序 sjs 只支持 import/export
+              if (process.env.UNI_PLATFORM === 'mp-alipay') {
+                uniViewPath = '../../lib/filters/uniView.esm.js'
+              }
               this.emitFile({
                 type: 'asset',
                 // uniView.wxs文件在分包内的引用路径不对
                 fileName: `common/uniView${extname}`,
                 source: fs.readFileSync(
-                  path.resolve(__dirname, '../../lib/filters/uniView.js'),
+                  path.resolve(__dirname, uniViewPath),
                   'utf8'
                 ),
               })
@@ -232,7 +239,7 @@ export function uniMiniProgramPlugin(
         return
       }
       if (!resetCssEmitted) {
-        if (process.env.UNI_APP_X === 'true') {
+        if (isX) {
           resetCssEmitted = true
           this.emitFile({
             type: 'asset',
@@ -260,9 +267,9 @@ export function uniMiniProgramPlugin(
 }
 
 export function genUVueCssCode(manifestJson: Record<string, any>) {
-  let cssCode = fs.readFileSync(
-    path.resolve(__dirname, '../../lib/uvue.css'),
-    'utf8'
+  let cssCode = preCss(
+    fs.readFileSync(path.resolve(__dirname, '../../lib/uvue.css'), 'utf8'),
+    'uvue.css'
   )
   const flexDirection = parseUniXFlexDirection(manifestJson)
   if (flexDirection !== 'column') {

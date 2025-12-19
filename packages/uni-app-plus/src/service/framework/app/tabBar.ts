@@ -249,6 +249,8 @@ export default {
   },
   removeEventListener(_name: string, callback: Function) {
     const callbackIndex = maskClickCallback.indexOf(callback)
-    maskClickCallback.splice(callbackIndex, 1)
+    if (callbackIndex > -1) {
+      maskClickCallback.splice(callbackIndex, 1)
+    }
   },
 }

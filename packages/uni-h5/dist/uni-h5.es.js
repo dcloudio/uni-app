@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, createElementVNode, normalizeStyle } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, createRouter, createWebHistory, createWebHashHistory, useRouter, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -564,6 +564,9 @@ function initTabBarI18n(tabBar2) {
       defineI18nProperty(item, ["text"]);
     });
   }
+  if (isEnableLocale() && tabBar2.midButton) {
+    defineI18nProperty(tabBar2.midButton, ["text"]);
+  }
   return tabBar2;
 }
 function initBridge(subscribeNamespace) {
@@ -706,15 +709,16 @@ function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
   return isNaN(newValue) ? defaultValue : newValue;
 }
+const isApple = () => /^Apple/.test(navigator.vendor);
 function getWindowWidth$1() {
-  const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+  const screenFix = isApple() && typeof window.orientation === "number";
   const landscape = screenFix && Math.abs(window.orientation) === 90;
   var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-  var windowWidth = Math.min(
+  var windowWidth = screenFix ? Math.min(
     window.innerWidth,
     document.documentElement.clientWidth,
     screenWidth
-  ) || screenWidth;
+  ) || screenWidth : Math.min(window.innerWidth, document.documentElement.clientWidth);
   return windowWidth;
 }
 function useRem() {
@@ -730,6 +734,12 @@ function useRem() {
   document.addEventListener("DOMContentLoaded", updateRem);
   window.addEventListener("load", updateRem);
   window.addEventListener("resize", updateRem);
+  if (isApple()) {
+    window.addEventListener("orientationchange", () => {
+      updateRem();
+      setTimeout(updateRem, 50);
+    });
+  }
 }
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
@@ -7432,6 +7442,7 @@ const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
 const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
 const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
 const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+const isHarmony = /OpenHarmony/i.test(ua);
 function getScreenFix() {
   return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
 }
@@ -7444,18 +7455,21 @@ function getScreenWidth(screenFix, landscape) {
 function getScreenHeight(screenFix, landscape) {
   return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
 }
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
+function getWindowWidth() {
+  const screenFix = getScreenFix();
+  if (screenFix) {
+    const screenWidth = getScreenWidth(screenFix, isLandscape(screenFix));
+    return Math.min(
+      window.innerWidth,
+      document.documentElement.clientWidth,
+      screenWidth
+    ) || screenWidth;
+  } else {
+    return Math.min(window.innerWidth, document.documentElement.clientWidth);
+  }
 }
 function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  );
+  const windowWidth = getWindowWidth();
   return {
     platform: isIOS ? "ios" : "other",
     pixelRatio: window.devicePixelRatio,
@@ -8793,7 +8807,7 @@ const props$u = {
 const emit$1 = ["keyboardheightchange"];
 function useKeyboard$1(props2, elRef, trigger) {
   function initKeyboard(el) {
-    const isApple = computed(
+    const isApple2 = computed(
       () => String(navigator.vendor).indexOf("Apple") === 0
     );
     el.addEventListener("focus", () => {
@@ -8802,7 +8816,7 @@ function useKeyboard$1(props2, elRef, trigger) {
     });
     const onKeyboardHide = () => {
       document.removeEventListener("click", iosHideKeyboard, false);
-      if (isApple.value) {
+      if (isApple2.value) {
         document.documentElement.scrollTo(
           document.documentElement.scrollLeft,
           document.documentElement.scrollTop
@@ -8810,7 +8824,7 @@ function useKeyboard$1(props2, elRef, trigger) {
       }
     };
     el.addEventListener("blur", () => {
-      if (isApple.value) {
+      if (isApple2.value) {
         el.blur();
       }
       onKeyboardHide();
@@ -10660,7 +10674,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "key": "input",
         "ref": fieldRef,
         "value": state2.value,
-        "onInput": (event) => {
+        "onInput": withModifiers((event) => {
           const value = event.target.value.toString();
           if (type.value === "number" && state2.maxlength > 0 && value.length > state2.maxlength) {
             if (isPaste(event)) {
@@ -10668,8 +10682,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
             }
             return;
           }
+          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+            return;
+          }
           state2.value = value;
-        },
+        }, ["stop"]),
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state2.maxlength,
@@ -14681,6 +14698,12 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
     const sliderValueRef = ref(null);
     const sliderHandleRef = ref(null);
     const sliderValue = ref(Number(props2.value));
+    if (sliderValue.value < Number(props2.min)) {
+      sliderValue.value = Number(props2.min);
+    }
+    if (sliderValue.value > Number(props2.max)) {
+      sliderValue.value = Number(props2.max);
+    }
     watch(() => props2.value, (val) => {
       sliderValue.value = Number(val);
     });
@@ -14765,6 +14788,13 @@ function useSliderState(props2, sliderValue) {
   return state2;
 }
 function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
+  const truthStep = computed(() => {
+    const step = Number(props2.step);
+    if (isNaN(step)) {
+      return 1;
+    }
+    return step;
+  });
   const _onClick = ($event) => {
     if (props2.disabled) {
       return;
@@ -14774,11 +14804,8 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
       value: sliderValue.value
     });
   };
-  const _filterValue = (e2) => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    const step = Number(props2.step);
-    return e2 < min ? min : e2 > max ? max : computeController.mul.call(Math.round((e2 - min) / step), step) + min;
+  const _filterValue = (min, step, value) => {
+    return Math.round((value - min) / step) * step + min;
   };
   const _onUserChangedValue = (e2) => {
     const max = Number(props2.max);
@@ -14790,8 +14817,9 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     const slider = sliderRef.value;
     const offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
     const boxLeft = slider.getBoundingClientRect().left;
-    const value = (e2.x - boxLeft) * (max - min) / offsetWidth + min;
-    sliderValue.value = _filterValue(value);
+    const proportion = (e2.x - boxLeft) / offsetWidth;
+    const stepDecimal = (truthStep.value + "").split(".")[1];
+    sliderValue.value = parseFloat(_filterValue(min, truthStep.value, lerp(min, max, proportion)).toFixed(stepDecimal ? stepDecimal.length : 0));
   };
   const _onTrack = (e2) => {
     if (!props2.disabled) {
@@ -14827,22 +14855,10 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     _onTrack
   };
 }
-var computeController = {
-  mul: function(arg) {
-    let m = 0;
-    let s1 = this.toString();
-    let s2 = arg.toString();
-    try {
-      m += s1.split(".")[1].length;
-    } catch (e2) {
-    }
-    try {
-      m += s2.split(".")[1].length;
-    } catch (e2) {
-    }
-    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-  }
-};
+function lerp(min, max, t2) {
+  t2 = Math.min(1, Math.max(0, t2));
+  return min * (1 - t2) + max * t2;
+}
 const props$k = {
   indicatorDots: {
     type: [Boolean, String],
@@ -16558,7 +16574,7 @@ function setupApp(comp) {
               notFound: true,
               openType: "appLaunch",
               path: route.path,
-              query: {},
+              query: decodedQuery(route.query),
               scene: 1001
             };
             handleBeforeEntryPageRoutes();
@@ -17449,7 +17465,10 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "poster": props2.poster,
         "autoplay": !!props2.autoplay
       }, videoAttrs.value, {
-        "class": "uni-video-video",
+        "class": {
+          "uni-video-video": true,
+          "uni-video-video-fullscreen": fullscreenState.fullscreen
+        },
         "webkit-playsinline": true,
         "playsinline": true,
         "onDurationchange": onDurationChange,
@@ -19082,6 +19101,13 @@ function getBrowserInfo() {
     if (osversionFind) {
       osversion = osversionFind[1].replace(/_/g, ".");
     }
+    const iosVersion = osversion.split(".")[0];
+    if (Number(iosVersion) >= 18) {
+      const versionMatch = ua.match(/Version\/([\d\.]+)/);
+      if (versionMatch) {
+        osversion = versionMatch[1];
+      }
+    }
     const modelFind = ua.match(/\(([a-zA-Z]+);/);
     if (modelFind) {
       model = modelFind[1];
@@ -19186,6 +19212,14 @@ function getBrowserInfo() {
         }
       }
     }
+  } else if (isHarmony) {
+    osname = "Harmony";
+    deviceType = "phone";
+    const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/);
+    if (osversionFind) {
+      osversion = osversionFind[1];
+    }
+    model = "";
   } else {
     osname = "Other";
     osversion = "0";
@@ -19238,7 +19272,7 @@ const getWindowInfo = /* @__PURE__ */ defineSyncApi(
     const landscape = isLandscape(screenFix);
     const screenWidth = getScreenWidth(screenFix, landscape);
     const screenHeight = getScreenHeight(screenFix, landscape);
-    const windowWidth = getWindowWidth(screenWidth);
+    const windowWidth = getWindowWidth();
     let windowHeight = window.innerHeight;
     const statusBarHeight = safeAreaInsets$1.top;
     const safeArea = {
@@ -19562,7 +19596,7 @@ const vibrateShort = /* @__PURE__ */ defineAsyncApi(
     if (_isSupport && window.navigator.vibrate(15)) {
       resolve();
     } else {
-      reject("vibrateLong:fail");
+      reject("vibrateShort:fail");
     }
   }
 );
@@ -21077,9 +21111,18 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
       xhr.onload = function() {
         clearTimeout(timer);
         const statusCode = xhr.status;
+        const responseHeaders = xhr.getAllResponseHeaders();
+        const header2 = responseHeaders ? responseHeaders.trim().split(/[\r\n]+/).reduce((acc, line) => {
+          const parts = line.split(": ");
+          const header3 = parts.shift();
+          const value = parts.join(": ");
+          acc[header3] = value;
+          return acc;
+        }, {}) : {};
         resolve({
           statusCode,
-          data: xhr.responseText || xhr.response
+          data: xhr.responseText || xhr.response,
+          header: header2
         });
       };
       if (!uploadTask._isAbort) {
@@ -22059,7 +22102,7 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(
     const path = url.split("?")[0];
     const route = getRouteOptions(path);
     if (!route) {
-      reject(`${url}}`);
+      reject(`${url}`);
       return;
     }
     route.loader && route.loader().then(() => {
@@ -22890,7 +22933,7 @@ const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   LoadFontFaceProtocol
 );
 function updateDocumentTitle(title) {
-  {
+  if (title && title !== document.title) {
     document.title = title;
   }
   UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });

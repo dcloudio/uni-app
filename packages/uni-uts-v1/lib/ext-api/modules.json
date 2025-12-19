@@ -102,6 +102,20 @@
       }
     }
   },
+  "uni-canvas-dom2": {
+    "uni": {
+      "createCanvasContextAsync": {
+        "name": "createCanvasContextAsync",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-chooseLocation": {
     "uni": {
       "chooseLocation": {
@@ -157,7 +171,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "__offAppCrash": {
@@ -165,7 +180,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "__getAppCrashInfo": {
@@ -173,7 +189,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "__deleteAppCrashInfo": {
@@ -181,7 +198,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "__createAppCrash": {
@@ -189,7 +207,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -211,7 +230,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       }
     }
@@ -224,18 +243,6 @@
           "js": true,
           "kotlin": true,
           "swift": false
-        }
-      }
-    }
-  },
-  "uni-createWebviewContext": {
-    "uni": {
-      "createWebviewContext": {
-        "name": "createWebviewContext",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
         }
       }
     }
@@ -520,6 +527,7 @@
       }
     }
   },
+  "uni-input": {},
   "uni-installApk": {
     "uni": {
       "installApk": {
@@ -593,6 +601,11 @@
     },
     "easycom": [
       "live-pusher"
+    ]
+  },
+  "uni-loading": {
+    "easycom": [
+      "loading"
     ]
   },
   "uni-location": {
@@ -692,6 +705,19 @@
     "uni": {
       "makePhoneCall": {
         "name": "makePhoneCall",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-map-amap": {
+    "uni": {
+      "createMapContext": {
+        "name": "createMapContext",
         "app": {
           "js": false,
           "kotlin": true,
@@ -1033,7 +1059,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "x-arkts": false
         }
       },
       "hideLoading": {
@@ -1041,7 +1068,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "x-arkts": false
         }
       },
       "showModal": {
@@ -1221,6 +1249,28 @@
       }
     }
   },
+  "uni-showLoading": {
+    "uni": {
+      "showLoading": {
+        "name": "showLoading",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "hideLoading": {
+        "name": "hideLoading",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-sse": {
     "uni": {
       "connectEventSource": {
@@ -1328,6 +1378,8 @@
       }
     }
   },
+  "uni-swiper": {},
+  "uni-textarea": {},
   "uni-theme": {
     "uni": {
       "onOsThemeChange": {
@@ -1480,6 +1532,31 @@
         }
       }
     }
+  },
+  "uni-web-view": {
+    "uni": {
+      "createWebViewContext": {
+        "name": "createWebViewContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": "dom2"
+        }
+      },
+      "createWebviewContext": {
+        "name": "createWebviewContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": "dom2"
+        }
+      }
+    },
+    "easycom": [
+      "web-view"
+    ]
   },
   "uni-websocket": {
     "uni": {

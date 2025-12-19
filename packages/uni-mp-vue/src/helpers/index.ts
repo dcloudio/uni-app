@@ -19,8 +19,10 @@ import { withModelModifiers } from './withModelModifiers'
 
 // #if _X_
 import { setUniElementId, setUniElementStyle } from './uniElement'
+import { mergePartClass } from './part'
 // #endif
 import { genUniElementId } from './id'
+import { parseVirtualHostClass } from './virtualHost'
 
 export { setupDevtoolsPlugin } from './devtools'
 
@@ -58,5 +60,7 @@ export const j = (obj: unknown) => JSON.stringify(obj)
 // #if _X_
 export const sei = setUniElementId
 export const ses = setUniElementStyle
+export const mpc = mergePartClass
 // #endif
 export const gei = genUniElementId
+export const pvhc = parseVirtualHostClass

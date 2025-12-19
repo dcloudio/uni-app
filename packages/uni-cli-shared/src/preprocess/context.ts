@@ -39,6 +39,7 @@ const DEFAULT_KEYS = [
   'VUE2',
   'VUE3',
   'WEB',
+  'VUE3_VAPOR',
 ] as const
 
 const preVueContext = Object.create(null)
@@ -79,6 +80,8 @@ export function initScopedPreContext(
   vueContext.VUE3 = true
   nvueContext.VUE3 = true
   uvueContext.VUE3 = true
+
+  uvueContext.VUE3_VAPOR = process.env.UNI_APP_X_DOM2 === 'true'
 
   if (isX) {
     vueContext.UNI_APP_X = true

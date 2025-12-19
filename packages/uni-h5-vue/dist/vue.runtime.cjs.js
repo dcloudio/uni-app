@@ -11167,6 +11167,7 @@ exports.effect = effect;
 exports.effectScope = effectScope;
 exports.getCurrentInstance = getCurrentInstance;
 exports.getCurrentScope = getCurrentScope;
+exports.getExposeProxy = getExposeProxy;
 exports.getTransitionRawChildren = getTransitionRawChildren;
 exports.guardReactiveProps = guardReactiveProps;
 exports.h = h;

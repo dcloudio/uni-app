@@ -6,6 +6,8 @@ import {
   createTransformTag,
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
+  matchEasycom,
+  transformLineBreak,
   transformTapToClick,
 } from '@dcloudio/uni-cli-shared'
 import { initRuntimeHelpersOnce } from './runtimeHelpers'
@@ -74,6 +76,7 @@ export function getBaseTransformPreset(
       transformObjectExpression,
       transformElements,
       transformStyle,
+      transformLineBreak,
     ] as any,
     {
       on: transformOn,
@@ -98,10 +101,19 @@ export function compile(
       : options.mode === 'module'
 
   wrapOptionsLog(template, options)
-
+  const isDevX =
+    process.env.UNI_HX_VERSION_DEV === 'true' &&
+    process.env.UNI_APP_X === 'true'
   const isNativeTag =
     options?.isNativeTag ||
     function (tag: string) {
+      if (isDevX) {
+        const source = matchEasycom(tag)
+        // 不能是uts插件的easycom组件
+        if (source && !source.includes('?uts-proxy')) {
+          return false
+        }
+      }
       return (
         isAppUVueNativeTag(tag) ||
         !!options.parseUTSCustomElement?.(tag, options.targetLanguage!) ||

@@ -41,9 +41,11 @@ export default {
     'When the standard playground runs to an IOS phone, the uts plugin is temporarily not supported. If you need to call the uts plugin, please use a custom playground',
   'prompt.run.message': 'Run method: open {devtools}, import {outputDir} run.',
   'prompt.run.devtools.app': 'HBuilderX',
+  'prompt.run.devtools.app-harmony': 'HBuilderX',
+  'prompt.run.devtools.mp-harmony': 'HBuilderX',
   'prompt.run.devtools.mp-alipay': 'Alipay Mini Program Devtools',
   'prompt.run.devtools.mp-baidu': 'Baidu Mini Program Devtools',
-  'prompt.run.devtools.mp--kuaishou': 'Kuaishou Mini Program Devtools',
+  'prompt.run.devtools.mp-kuaishou': 'Kuaishou Mini Program Devtools',
   'prompt.run.devtools.mp-lark': 'Lark Mini Program Devtools',
   'prompt.run.devtools.mp-qq': 'QQ Mini Program Devtools',
   'prompt.run.devtools.mp-toutiao': 'Douyin Mini Program Devtools',
@@ -59,4 +61,5 @@ export default {
     'The compilation outcome remains unchanged; there is no need to synchronize.',
   'uni_modules.import': 'Plug-in [{0}] only supports @/uni_modules/{1}.',
   'pages.json.page.notfound': 'The page "{pagePath}" does not exist.',
+  'pages.json.page.slash': 'The Path "{pagePath}" cannot start with "/"',
 } as const

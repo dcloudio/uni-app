@@ -41,9 +41,11 @@ export default {
     'iOS手机在标准基座真机运行暂不支持uts插件，如需调用uts插件请使用自定义基座',
   'prompt.run.message': '运行方式：打开 {devtools}, 导入 {outputDir} 运行。',
   'prompt.run.devtools.app': 'HBuilderX',
+  'prompt.run.devtools.app-harmony': 'HBuilderX',
+  'prompt.run.devtools.mp-harmony': 'HBuilderX',
   'prompt.run.devtools.mp-alipay': '支付宝小程序开发者工具',
   'prompt.run.devtools.mp-baidu': '百度开发者工具',
-  'prompt.run.devtools.mp--kuaishou': '快手开发者工具',
+  'prompt.run.devtools.mp-kuaishou': '快手开发者工具',
   'prompt.run.devtools.mp-lark': '飞书开发者工具',
   'prompt.run.devtools.mp-qq': 'QQ小程序开发者工具',
   'prompt.run.devtools.mp-toutiao': '抖音开发者工具',
@@ -62,4 +64,5 @@ export default {
     '插件[{0}]仅支持 @/uni_modules/{1} 方式引入，不支持直接导入内部文件 {2}。',
   'pages.json.page.notfound':
     '页面"{pagePath}"不存在，请确保填写的页面路径不包含文件后缀，且必须与真实的文件路径大小写保持一致。',
+  'pages.json.page.slash': '路径 "{pagePath}" 不能以 "/" 开头',
 } as const

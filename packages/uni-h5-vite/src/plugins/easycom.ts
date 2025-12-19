@@ -22,7 +22,7 @@ import {
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
 
-const xBaseComponents = ['slider', 'switch']
+const xBaseComponents = ['slider', 'switch', 'loading']
 const baseComponents = [
   'audio',
   'button',
@@ -71,6 +71,9 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
   let needCombineBuiltInCss = false
   componentDepsCss = COMPONENT_DEPS_CSS(process.env.UNI_APP_X === 'true')
+  const isDevX =
+    process.env.UNI_HX_VERSION_DEV === 'true' &&
+    process.env.UNI_APP_X === 'true'
   return {
     name: 'uni:h5-easycom',
     configResolved(config) {
@@ -93,26 +96,15 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
         /_resolveComponent\("(.+?)"(, true)?\)/g,
         (str, name) => {
           if (name && !name.startsWith('_')) {
-            if (isBuiltInComponent(name)) {
-              name = name.replace(COMPONENT_PREFIX, '')
-              const local = `__syscom_${i++}`
-              if (needCombineBuiltInCss) {
-                // 发行模式下，应该将内置组件css输出到入口css中
-                resolveBuiltInCssImport(name).forEach((cssImport) =>
-                  buildInCssSet.add(cssImport)
-                )
-                return addImportDeclaration(
-                  importDeclarations,
-                  local,
-                  H5_COMPONENTS_PATH,
-                  capitalize(camelize(name))
-                )
+            // 为了兼容性，仅处理dev模式
+            if (!isDevX) {
+              const result = buildInComponent()
+              if (result) {
+                return result
               }
-              return addBuiltInImportDeclaration(
-                importDeclarations,
-                local,
-                name
-              )
+            }
+            if (isDevX && name.startsWith('v-uni-')) {
+              name = name.replace('v-uni-', '')
             }
             const source = matchEasycom(name)
             if (source) {
@@ -146,6 +138,35 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
                 )
               )
             }
+            if (isDevX) {
+              const result = buildInComponent()
+              if (result) {
+                return result
+              }
+            }
+            function buildInComponent() {
+              if (isBuiltInComponent(name)) {
+                name = name.replace(COMPONENT_PREFIX, '')
+                const local = `__syscom_${i++}`
+                if (needCombineBuiltInCss) {
+                  // 发行模式下，应该将内置组件css输出到入口css中
+                  resolveBuiltInCssImport(name).forEach((cssImport) =>
+                    buildInCssSet.add(cssImport)
+                  )
+                  return addImportDeclaration(
+                    importDeclarations,
+                    local,
+                    H5_COMPONENTS_PATH,
+                    capitalize(camelize(name))
+                  )
+                }
+                return addBuiltInImportDeclaration(
+                  importDeclarations,
+                  local,
+                  name
+                )
+              }
+            }
           }
           return str
         }
@@ -163,13 +184,11 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
 
 function resolveBuiltInCssImport(name: string) {
   const cssImports: string[] = []
-  if (baseComponents.includes(name)) {
-    const isX = process.env.UNI_APP_X === 'true'
-    if (isX && xBaseComponents.includes(name)) {
-      cssImports.push(X_BASE_COMPONENTS_STYLE_PATH + name + '.css')
-    } else {
-      cssImports.push(BASE_COMPONENTS_STYLE_PATH + name + '.css')
-    }
+  const isX = process.env.UNI_APP_X === 'true'
+  if (isX && xBaseComponents.includes(name)) {
+    cssImports.push(X_BASE_COMPONENTS_STYLE_PATH + name + '.css')
+  } else if (baseComponents.includes(name)) {
+    cssImports.push(BASE_COMPONENTS_STYLE_PATH + name + '.css')
   } else {
     cssImports.push(H5_COMPONENTS_STYLE_PATH + name + '.css')
   }

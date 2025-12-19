@@ -126,6 +126,23 @@ c
       expect(res).toMatchSnapshot()
     })
 
+    test(`#ifdef match with \\n`, () => {
+      const res = preprocess(
+        `a
+// #ifdef B
+
+
+b
+
+
+// #endif
+c
+`,
+        { type: 'js', context: { B: true }, sourceMap: sourceMap }
+      )
+      expect(res).toMatchSnapshot()
+    })
+
     test(`#ifdef not match`, () => {
       const res = preprocess(
         `a

@@ -11,8 +11,12 @@ import {
 
 import { normalizePath } from '../utils'
 
-import { offsetToLineColumn } from '../vite/plugins/vitejs/utils'
+import {
+  offsetToLineColumn,
+  offsetToStartAndEnd,
+} from '../vite/plugins/vitejs/utils'
 import { M } from '../messages'
+import { type CompileLogError, onCompileLog } from '../logs'
 
 interface CheckPagesJsonError extends CompilerError {
   offsetStart: number
@@ -44,40 +48,71 @@ export function checkPagesJson(jsonStr: string, inputDir: string) {
     return false
   }
   const pagePathNodes = walkNodes(findRootNode(root, ['pages']))
+  for (const node of pagePathNodes) {
+    const pagePath = node.value ?? ''
+    if (pagePath.startsWith('/')) {
+      throwCompilerError(
+        jsonStr,
+        node,
+        M['pages.json.page.slash'].replace('{pagePath}', pagePath)
+      )
+    }
+  }
   findRootNode(root, ['subPackages', 'subpackages']).forEach((node) => {
-    const subPackageRoot = findSubPackageRoot(node)
-    if (subPackageRoot) {
+    const subPackageRootNode = findSubPackageRoot(node)
+    if (subPackageRootNode) {
+      const subPackageRoot = subPackageRootNode.value ?? ''
+      if (subPackageRoot.startsWith('/')) {
+        throwCompilerError(
+          jsonStr,
+          subPackageRootNode,
+          M['pages.json.page.slash'].replace('{pagePath}', subPackageRoot)
+        )
+      }
       findRootNode(node, ['pages']).forEach((subNode) => {
         walkNodes(subNode.children ?? []).forEach((node) => {
+          const pagePath = node.value ?? ''
+          if (pagePath.startsWith('/')) {
+            throwCompilerError(
+              jsonStr,
+              node,
+              M['pages.json.page.slash'].replace('{pagePath}', pagePath)
+            )
+          }
           pagePathNodes.push({
             ...node,
-            value: normalizePath(path.join(subPackageRoot, node.value)),
+            value: normalizePath(path.join(subPackageRoot, pagePath)),
           })
         })
       })
     }
   })
 
-  if (pagePathNodes.length) {
-    for (const node of pagePathNodes) {
-      const pagePath: string = node.value ?? ''
-      if (pageExistsWithCaseSync(path.join(inputDir, pagePath))) {
-        continue
-      }
-      const { line, column } = offsetToLineColumn(jsonStr, node.offset)
-      throw {
-        name: 'CompilerError',
-        code: 'CompilerError',
-        message: M['pages.json.page.notfound'].replace('{pagePath}', pagePath),
-        loc: {
-          start: { line, column },
-        },
-        offsetStart: node.offset,
-        offsetEnd: node.offset + node.length,
-      } as unknown as CheckPagesJsonError
+  for (const node of pagePathNodes) {
+    const pagePath: string = node.value ?? ''
+    if (!pageExistsWithCaseSync(path.join(inputDir, pagePath))) {
+      throwCompilerError(
+        jsonStr,
+        node,
+        M['pages.json.page.notfound'].replace('{pagePath}', pagePath)
+      )
     }
   }
+
   return true
+}
+
+function throwCompilerError(jsonStr: string, node: Node, message: string) {
+  const error: CompileLogError = new Error(message)
+  error.loc = offsetToStartAndEnd(
+    jsonStr,
+    node.offset,
+    node.offset + node.length
+  )
+  error.customPrint = () => {
+    onCompileLog('error', error, jsonStr, 'pages.json')
+  }
+  throw error
 }
 
 function pageExistsWithCaseSync(pagePath: string) {
@@ -102,9 +137,8 @@ function findSubPackageRoot(node: Node) {
       )
   )
   if (child && child.children?.length === 2) {
-    return child.children[1].value
+    return child.children[1]
   }
-  return ''
 }
 
 function findRootNode(node: Node, property: string[]) {

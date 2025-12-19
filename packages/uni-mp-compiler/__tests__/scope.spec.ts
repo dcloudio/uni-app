@@ -6,7 +6,7 @@ describe('compiler: scope', () => {
       `<view v-for="item in items" :key="item.id" :class="{red: item.isRed}" @longpress="longpress" @click="onClick(item)">{{item.title}}</view>`,
       `<view wx:for="{{a}}" wx:for-item="item" wx:key="b" class="{{[item.c && 'red']}}" bindlongpress="{{b}}" bindtap="{{item.d}}">{{item.a}}</view>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _t(item.title), b: item.id, c: item.isRed ? 1 : '', d: _o($event => _ctx.onClick(item)) }; }), b: _o(_ctx.longpress) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _t(item.title), b: item.id, c: item.isRed ? 1 : '', d: _o($event => _ctx.onClick(item), "db") }; }), b: _o(_ctx.longpress, "f6") }
 }`
     )
   })
@@ -15,7 +15,7 @@ describe('compiler: scope', () => {
       `<view v-for="item in items" :key="item.id">{{item.title}}{{handle(foo)}}<view v-for="item1 in item.list" :key="item1.id" @click="onClick(item)" @longpress="longpress(item1)">{{item.id}}{{item1.title}}</view></view>`,
       `<view wx:for="{{a}}" wx:for-item="item" wx:key="e">{{item.a}}{{b}}<view wx:for="{{item.b}}" wx:for-item="item1" wx:key="b" bindtap="{{item.d}}" bindlongpress="{{item1.c}}">{{item.c}}{{item1.a}}</view></view>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _t(item.title), b: _f(item.list, (item1, k1, i1) => { return { a: _t(item1.title), b: item1.id, c: _o($event => _ctx.longpress(item1)) }; }), c: _t(item.id), d: _o($event => _ctx.onClick(item)), e: item.id }; }), b: _t(_ctx.handle(_ctx.foo)) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _t(item.title), b: _f(item.list, (item1, k1, i1) => { return { a: _t(item1.title), b: item1.id, c: _o($event => _ctx.longpress(item1), "c9") }; }), c: _t(item.id), d: _o($event => _ctx.onClick(item), "58"), e: item.id }; }), b: _t(_ctx.handle(_ctx.foo)) }
 }`
     )
     assert(
@@ -111,7 +111,7 @@ describe('compiler: scope', () => {
       `<view v-if="ok"><view v-for="item in items" :key="item.id" :data-title="item.title" :data-foo="foo" @click="onClick"/></view><view v-else-if="ok1"><view v-for="item in items" :key="item.id" :data-title="item.title" :data-foo="foo" @click="onClick"/></view><view v-else><view v-for="item in items" :key="item.id" :data-title="item.title" :data-foo="foo" @click="onClick"/></view>`,
       `<view wx:if="{{a}}"><view wx:for="{{b}}" wx:for-item="item" wx:key="a" data-title="{{item.b}}" data-foo="{{c}}" bindtap="{{d}}"/></view><view wx:elif="{{e}}"><view wx:for="{{f}}" wx:for-item="item" wx:key="a" data-title="{{item.b}}" data-foo="{{g}}" bindtap="{{h}}"/></view><view wx:else><view wx:for="{{i}}" wx:for-item="item" wx:key="a" data-title="{{item.b}}" data-foo="{{j}}" bindtap="{{k}}"/></view>`,
       `(_ctx, _cache) => {
-  return _e({ a: _ctx.ok }, _ctx.ok ? { b: _f(_ctx.items, (item, k0, i0) => { return { a: item.id, b: item.title }; }), c: _ctx.foo, d: _o(_ctx.onClick) } : _ctx.ok1 ? { f: _f(_ctx.items, (item, k0, i0) => { return { a: item.id, b: item.title }; }), g: _ctx.foo, h: _o(_ctx.onClick) } : { i: _f(_ctx.items, (item, k0, i0) => { return { a: item.id, b: item.title }; }), j: _ctx.foo, k: _o(_ctx.onClick) }, { e: _ctx.ok1 })
+  return _e({ a: _ctx.ok }, _ctx.ok ? { b: _f(_ctx.items, (item, k0, i0) => { return { a: item.id, b: item.title }; }), c: _ctx.foo, d: _o(_ctx.onClick, "d6") } : _ctx.ok1 ? { f: _f(_ctx.items, (item, k0, i0) => { return { a: item.id, b: item.title }; }), g: _ctx.foo, h: _o(_ctx.onClick, "49") } : { i: _f(_ctx.items, (item, k0, i0) => { return { a: item.id, b: item.title }; }), j: _ctx.foo, k: _o(_ctx.onClick, "e1") }, { e: _ctx.ok1 })
 }`
     )
   })

@@ -7,6 +7,8 @@ import {
   type OnTabBarMidButtonTap,
 } from '@dcloudio/uni-api'
 
+import { useTabBarThemeChange } from '@dcloudio/uni-app-plus/service/theme'
+
 let config: UniApp.TabBarOptions
 
 /**
@@ -160,7 +162,7 @@ export default {
         )
       })
 
-    // TODO useTabBarThemeChange(tabBar, options)
+    useTabBarThemeChange(tabBar, options)
   },
   indexOf(page: string) {
     const config = this.config

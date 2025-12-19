@@ -4482,6 +4482,8 @@ const PublicInstanceProxyHandlers = {
     } else if (ctx !== shared.EMPTY_OBJ && shared.hasOwn(ctx, key)) {
       accessCache[key] = 4 /* CONTEXT */;
       return ctx[key];
+    } else if (instance.exposed && shared.hasOwn(instance.exposed, key)) {
+      return instance.exposed[key];
     } else if (
       // global properties
       globalProperties = appContext.config.globalProperties, shared.hasOwn(globalProperties, key)
@@ -11211,6 +11213,7 @@ exports.effect = effect;
 exports.effectScope = effectScope;
 exports.getCurrentInstance = getCurrentInstance;
 exports.getCurrentScope = getCurrentScope;
+exports.getExposeProxy = getExposeProxy;
 exports.getTransitionRawChildren = getTransitionRawChildren;
 exports.guardReactiveProps = guardReactiveProps;
 exports.h = h;

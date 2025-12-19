@@ -16,13 +16,20 @@ import {
   resolveUTSCompiler,
 } from '@dcloudio/uni-cli-shared'
 import type { OutputChunk, PluginContext } from 'rollup'
-import ExternalModuls from './external-modules.json'
-import ExternalModulsX from './external-modules-x.json'
+import ExternalModules from './external-modules.json'
+import ExternalModulesX from './external-modules-x.json'
+import ExternalModulesDom2 from './external-modules-dom2.json'
 import { ComponentsWithProvider, ComponentsWithProviderX } from './constants'
 import { buildWorkers } from './workers'
 
 const isX = process.env.UNI_APP_X === 'true'
-const StandaloneExtApis = isX ? ExternalModulsX : ExternalModuls
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+// TODO next仓库只需要设置一个external modules列表，apis由框架编译步骤同步过来
+const StandaloneExtApis = isDom2
+  ? ExternalModulesDom2
+  : isX
+  ? ExternalModulesX
+  : ExternalModules
 const Providers = StandaloneExtApis.filter(
   (item) => item.type === 'provider'
 ) as {
@@ -116,7 +123,11 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       return {
         build: {
           rollupOptions: {
-            external: [...Object.keys(commandGlobals), ...harmonyGlobals],
+            external: [
+              ...Object.keys(commandGlobals),
+              ...harmonyGlobals,
+              /.*\.so$/,
+            ],
             output: {
               globals: function (id: string) {
                 if (id.startsWith('@kit.')) {
@@ -138,6 +149,7 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
     },
     async generateBundle(_, bundle) {
       const utsExtApis = new Set<string>()
+
       const utsPlugins = getCurrentCompiledUTSPlugins()
       const utsProviders = getCurrentCompiledUTSProviders()
       // utsPlugins.difference(utsProviders)

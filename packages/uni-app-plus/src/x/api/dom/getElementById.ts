@@ -5,16 +5,10 @@ import { getCurrentPage } from '@dcloudio/uni-core'
 export const getElementById = defineSyncApi<GetElementById>(
   'getElementById',
   (id: string.IDString | string): UniElement | null => {
-    const page = (getCurrentPage() as unknown as UniPage).vm
+    const page = getCurrentPage() as unknown as UniPage
     if (page == null) {
       return null
     }
-
-    const bodyNode = page.$el?.parentNode
-    if (bodyNode == null) {
-      console.warn('bodyNode is null')
-      return null
-    }
-    return bodyNode.querySelector(`#${id}`)
+    return page.getElementById(id)
   }
 )

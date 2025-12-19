@@ -2607,6 +2607,8 @@ const PublicInstanceProxyHandlers = {
     } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
       accessCache[key] = 4 /* CONTEXT */;
       return ctx[key];
+    } else if (instance.exposed && hasOwn(instance.exposed, key)) {
+      return instance.exposed[key];
     } else if (
       // global properties
       globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)
@@ -4759,16 +4761,15 @@ function setRef$1(instance, isUnmount = false) {
     $templateUniElementRefs,
     ctx: { $scope, $mpPlatform }
   } = instance;
-  if ($mpPlatform === "mp-alipay") {
-    return;
-  }
   if (!$scope || !$templateRefs && !$templateUniElementRefs) {
     return;
   }
   if (isUnmount) {
-    $templateRefs && $templateRefs.forEach(
-      (templateRef) => setTemplateRef(templateRef, null, setupState)
-    );
+    if ($mpPlatform !== "mp-alipay") {
+      $templateRefs && $templateRefs.forEach(
+        (templateRef) => setTemplateRef(templateRef, null, setupState)
+      );
+    }
     $templateUniElementRefs && $templateUniElementRefs.forEach(
       (templateRef) => setTemplateRef(templateRef, null, setupState)
     );
@@ -4817,6 +4818,9 @@ function setRef$1(instance, isUnmount = false) {
         }
       });
     });
+  }
+  if ($mpPlatform === "mp-alipay") {
+    return;
   }
   if ($scope._$setRef) {
     $scope._$setRef(doSet);
@@ -5843,6 +5847,23 @@ function genUniElementId(_ctx, idBinding, genId) {
     return genIdWithVirtualHost(_ctx, idBinding) || genId || '';
 }
 
+function parseVirtualHostClass(className) {
+    if (isArray(className)) {
+        return className
+            .filter(Boolean)
+            .map((name) => `^${name}`)
+            .join(' ');
+    }
+    if (isString(className)) {
+        return className
+            .split(/\s+/)
+            .filter(Boolean)
+            .map((name) => `^${name}`)
+            .join(' ');
+    }
+    return '';
+}
+
 function setupDevtoolsPlugin() {
     // noop
 }
@@ -5863,6 +5884,7 @@ const sr = (ref, id, opts) => setRef(ref, id, opts);
 const m = (fn, modifiers, isComponent = false) => withModelModifiers(fn, modifiers, isComponent);
 const j = (obj) => JSON.stringify(obj);
 const gei = genUniElementId;
+const pvhc = parseVirtualHostClass;
 
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
@@ -5870,4 +5892,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pvhc, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

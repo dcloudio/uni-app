@@ -5,50 +5,43 @@
     "apis": [
       "startFacialRecognitionVerify",
       "getFacialRecognitionMetaInfo"
-    ],
-    "version": "1.0.3"
+    ]
   },
   {
     "type": "provider",
     "plugin": "uni-location-system",
     "provider": "system",
-    "service": "location",
-    "version": "1.0.0"
+    "service": "location"
   },
   {
     "type": "provider",
     "plugin": "uni-oauth-huawei",
     "provider": "huawei",
-    "service": "oauth",
-    "version": "1.0.2"
+    "service": "oauth"
   },
   {
     "type": "provider",
     "plugin": "uni-oauth-weixin",
     "provider": "weixin",
-    "service": "oauth",
-    "version": "1.0.0"
+    "service": "oauth"
   },
   {
     "type": "provider",
     "plugin": "uni-payment-alipay",
     "provider": "alipay",
-    "service": "payment",
-    "version": "1.0.2"
+    "service": "payment"
   },
   {
     "type": "provider",
     "plugin": "uni-payment-huawei",
     "provider": "huawei",
-    "service": "payment",
-    "version": "1.0.0"
+    "service": "payment"
   },
   {
     "type": "provider",
     "plugin": "uni-payment-wxpay",
     "provider": "wxpay",
-    "service": "payment",
-    "version": "1.0.0"
+    "service": "payment"
   },
   {
     "type": "extapi",
@@ -59,15 +52,13 @@
       "offPushMessage",
       "createPushMessage",
       "setAppBadgeNumber"
-    ],
-    "version": "1.0.3"
+    ]
   },
   {
     "type": "provider",
     "plugin": "uni-share-weixin",
     "provider": "weixin",
-    "service": "share",
-    "version": "1.0.0"
+    "service": "share"
   },
   {
     "type": "extapi",
@@ -75,7 +66,6 @@
     "apis": [
       "getUniverifyManager",
       "getUniVerifyManager"
-    ],
-    "version": "1.0.0"
+    ]
   }
 ]

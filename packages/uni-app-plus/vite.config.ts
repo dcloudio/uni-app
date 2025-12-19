@@ -71,6 +71,7 @@ export default defineConfig({
     'process.env.NODE_ENV': JSON.stringify('production'),
     __X__: false,
     __PLUS__: true,
+    __VAPOR__: false,
   },
   resolve: {
     alias: [

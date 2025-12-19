@@ -31,7 +31,6 @@ for (const Plugin of [
 ]) {
   // @ts-expect-error: no params
   app.use(Plugin)
-
   // @ts-expect-error option2 and option3 (required) missing
   app.use(Plugin, {})
   // @ts-expect-error type mismatch
@@ -79,7 +78,6 @@ for (const Plugin of [PluginOptionalOptions, PluginOptionalOptions.install]) {
   // both version are valid
   app.use(Plugin)
   app.use(Plugin, undefined)
-
   // @ts-expect-error option2 and option3 (required) missing
   app.use(Plugin, {})
   // valid options
@@ -89,7 +87,6 @@ for (const Plugin of [PluginOptionalOptions, PluginOptionalOptions.install]) {
 
 // still valid but it's better to use the regular function because this one can accept an optional param
 const PluginTyped: Plugin<PluginOptions> = (app, options) => {}
-
 // @ts-expect-error: needs options
 app.use(PluginTyped)
 app.use(PluginTyped, { option2: 2, option3: true })

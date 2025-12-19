@@ -158,6 +158,7 @@ const UVUE_WEB_BUILT_IN_TAGS = [
     'sticky-section',
     'sticky-header',
     'cloud-db-element',
+    'loading',
 ].map((tag) => 'uni-' + tag);
 const UVUE_IOS_BUILT_IN_TAGS = [
     'scroll-view',
@@ -243,6 +244,8 @@ const UVUE_BUILT_IN_EASY_COMPONENTS = [
     'camera',
     'live-player',
     'live-pusher',
+    'loading',
+    'web-view',
 ];
 function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
@@ -277,6 +280,9 @@ function isAppIOSUVueNativeTag(tag) {
     if (tag.startsWith('uni-') && tag.endsWith('-element')) {
         return true;
     }
+    if (UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag)) {
+        return false;
+    }
     if (NVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
@@ -304,9 +310,10 @@ function isAppIOSUVueNativeTag(tag) {
     }
     return false;
 }
+const UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY = ['video', 'map', 'loading'];
 function isAppHarmonyUVueNativeTag(tag) {
     // video 目前是easycom实现的
-    if (tag === 'video' || tag === 'map') {
+    if (UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY.includes(tag)) {
         return false;
     }
     // 前端实现的内置组件都会注册一个根组件
@@ -415,6 +422,11 @@ const ON_UNLOAD = 'onUnload';
 const ON_INIT = 'onInit';
 // 微信特有
 const ON_SAVE_EXIT_STATE = 'onSaveExitState';
+// 抖音特有
+const ON_UPLOAD_DOUYIN_VIDEO = 'onUploadDouyinVideo';
+const ON_LIVE_MOUNT = 'onLiveMount';
+// 支付宝特有
+const ON_TITLE_CLICK = 'onTitleClick';
 const ON_RESIZE = 'onResize';
 const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
@@ -423,6 +435,7 @@ const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_SHARE_TIMELINE = 'onShareTimeline';
 const ON_SHARE_CHAT = 'onShareChat'; // xhs-share
+const ON_COPY_URL = 'onCopyUrl';
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 // navigationBar
@@ -442,6 +455,815 @@ const VIRTUAL_HOST_STYLE = 'virtualHostStyle';
 const VIRTUAL_HOST_CLASS = 'virtualHostClass';
 const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden';
 const VIRTUAL_HOST_ID = 'virtualHostId';
+// statusBarHeight
+const UNI_STATUS_BAR_HEIGHT = 'u_s_b_h';
+
+function arrayPop(array) {
+    if (array.length === 0) {
+        return null;
+    }
+    return array.pop();
+}
+function arrayShift(array) {
+    if (array.length === 0) {
+        return null;
+    }
+    return array.shift();
+}
+function arrayFind(array, predicate) {
+    const index = array.findIndex(predicate);
+    if (index < 0) {
+        return null;
+    }
+    return array[index];
+}
+function arrayFindLast(array, predicate) {
+    const index = array.findLastIndex(predicate);
+    if (index < 0) {
+        return null;
+    }
+    return array[index];
+}
+function arrayAt(array, index) {
+    if (index < -array.length || index >= array.length) {
+        return null;
+    }
+    return array.at(index);
+}
+
+/**
+ * copy from @uts/shared
+ */
+const UTS_CLASS_METADATA_KIND_LIST = [0, 1, 2];
+
+function getType(val) {
+    return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
+}
+function isPlainObject(val) {
+    if (val == null || typeof val !== 'object') {
+        return false;
+    }
+    const proto = Object.getPrototypeOf(val);
+    return proto === Object.prototype || proto === null;
+}
+
+// TODO 实现UTSError
+class UTSError extends Error {
+    constructor(message) {
+        super(message);
+    }
+}
+
+function isUTSMetadata(metadata) {
+    return !!(metadata &&
+        UTS_CLASS_METADATA_KIND_LIST.includes(metadata.kind) &&
+        metadata.interfaces);
+}
+function isNativeType(proto) {
+    return !proto || proto === Object.prototype;
+}
+const utsMetadataKey = "$UTSMetadata$" /* IDENTIFIER.UTS_METADATA */;
+/**
+ * 处理复杂的继承关系。
+ * 例如：
+ * class A extends abstract class B，abstract class B implements interface C
+ * new A() instanceof C -> true
+ */
+function getParentTypeList(type) {
+    const metadata = utsMetadataKey in type ? type[utsMetadataKey] : {};
+    let interfaces = [];
+    if (!isUTSMetadata(metadata)) {
+        interfaces = [];
+    }
+    else {
+        interfaces = metadata.interfaces || [];
+    }
+    const proto = Object.getPrototypeOf(type);
+    if (!isNativeType(proto)) {
+        interfaces.push(proto.constructor);
+    }
+    return interfaces;
+}
+function isImplementationOf(leftType, rightType, visited = []) {
+    if (isNativeType(leftType)) {
+        return false;
+    }
+    if (leftType === rightType) {
+        return true;
+    }
+    visited.push(leftType);
+    const parentTypeList = getParentTypeList(leftType);
+    return parentTypeList.some((parentType) => {
+        if (visited.includes(parentType)) {
+            return false;
+        }
+        return isImplementationOf(parentType, rightType, visited);
+    });
+}
+function isInstanceOf(value, type) {
+    if (type === UTSValueIterable) {
+        return value && value[Symbol.iterator];
+    }
+    const isNativeInstanceofType = value instanceof type;
+    if (isNativeInstanceofType || typeof value !== 'object' || value === null) {
+        return isNativeInstanceofType;
+    }
+    const proto = Object.getPrototypeOf(value).constructor;
+    return isImplementationOf(proto, type);
+}
+function isBaseType(type) {
+    return type === Number || type === String || type === Boolean;
+}
+function isUnknownType(type) {
+    return type === 'Unknown';
+}
+function isAnyType(type) {
+    return type === 'Any';
+}
+function isUTSType(type) {
+    return type && type.prototype && type.prototype instanceof UTSType;
+}
+function normalizeGenericValue(value, genericType, isJSONParse = false) {
+    return value == null
+        ? null
+        : isBaseType(genericType) ||
+            isUnknownType(genericType) ||
+            isAnyType(genericType)
+            ? value
+            : genericType === Array
+                ? new Array(...value)
+                : new genericType(value, undefined, isJSONParse);
+}
+class UTSType {
+    static get$UTSMetadata$(...args) {
+        return {
+            name: '',
+            kind: 2 /* UTS_CLASS_METADATA_KIND.TYPE */,
+            interfaces: [],
+            fields: {},
+        };
+    }
+    get $UTSMetadata$() {
+        return UTSType.get$UTSMetadata$();
+    }
+    // TODO 缓存withGenerics结果
+    static withGenerics(parent, generics, isJSONParse = false) {
+        // 仅JSON.parse uni.request内报错，其他地方不报错
+        // generic类型为UTSType子类或Array或基础类型，否则报错
+        if (isJSONParse) {
+            const illegalGeneric = generics.find((item) => !(item === Array ||
+                isBaseType(item) ||
+                isUnknownType(item) ||
+                isAnyType(item) ||
+                item === UTSJSONObject ||
+                (item.prototype && item.prototype instanceof UTSType)));
+            if (illegalGeneric) {
+                throw new Error('Generic is not UTSType or Array or UTSJSONObject or base type, generic: ' +
+                    illegalGeneric);
+            }
+        }
+        if (parent === Array) {
+            // 不带泛型的Array有一部分不会进入这里，需要在构造type时处理
+            return class UTSArray extends UTSType {
+                constructor(options, isJSONParse = false) {
+                    if (!Array.isArray(options)) {
+                        throw new UTSError(`Failed to contruct type, ${options} is not an array`);
+                    }
+                    super();
+                    // @ts-expect-error
+                    return options.map((item) => {
+                        return normalizeGenericValue(item, generics[0], isJSONParse);
+                    });
+                }
+            };
+        }
+        else if (parent === Map || parent === WeakMap) {
+            return class UTSMap extends UTSType {
+                constructor(options, isJSONParse = false) {
+                    if (options == null || typeof options !== 'object') {
+                        throw new UTSError(`Failed to contruct type, ${options} is not an object`);
+                    }
+                    super();
+                    const obj = new parent();
+                    for (const key in options) {
+                        obj.set(normalizeGenericValue(key, generics[0], isJSONParse), normalizeGenericValue(options[key], generics[1], isJSONParse));
+                    }
+                    return obj;
+                }
+            };
+        }
+        else if (isUTSType(parent)) {
+            return class VirtualClassWithGenerics extends parent {
+                static get$UTSMetadata$() {
+                    return parent.get$UTSMetadata$(...generics);
+                }
+                constructor(options, metadata = VirtualClassWithGenerics.get$UTSMetadata$(), isJSONParse = false) {
+                    // @ts-expect-error
+                    super(options, metadata, isJSONParse);
+                }
+            };
+        }
+        else {
+            return parent;
+        }
+    }
+    constructor() { }
+    static initProps(options, metadata, isJSONParse = false) {
+        const obj = {};
+        if (!metadata.fields) {
+            return obj;
+        }
+        for (const key in metadata.fields) {
+            const { type, optional, jsonField } = metadata.fields[key];
+            const realKey = isJSONParse ? jsonField || key : key;
+            if (options[realKey] == null) {
+                if (optional) {
+                    obj[key] = null;
+                    continue;
+                }
+                else {
+                    throw new UTSError(`Failed to contruct type, missing required property: ${key}`);
+                }
+            }
+            if (isUTSType(type)) {
+                // 带有泛型的数组会走此分支
+                obj[key] = isJSONParse
+                    ? // @ts-expect-error
+                        new type(options[realKey], undefined, isJSONParse)
+                    : options[realKey];
+            }
+            else if (type === Array) {
+                // 不带泛型的数组会走此分支
+                if (!Array.isArray(options[realKey])) {
+                    throw new UTSError(`Failed to contruct type, property ${key} is not an array`);
+                }
+                obj[key] = options[realKey];
+            }
+            else {
+                obj[key] = options[realKey];
+            }
+        }
+        return obj;
+    }
+}
+
+function initUTSJSONObjectProperties(obj) {
+    const propertyList = [
+        '_resolveKeyPath',
+        '_getValue',
+        'toJSON',
+        'get',
+        'set',
+        'getAny',
+        'getString',
+        'getNumber',
+        'getBoolean',
+        'getJSON',
+        'getArray',
+        'toMap',
+        'forEach',
+    ];
+    const propertyDescriptorMap = {};
+    for (let i = 0; i < propertyList.length; i++) {
+        const property = propertyList[i];
+        propertyDescriptorMap[property] = {
+            enumerable: false,
+            value: obj[property],
+        };
+    }
+    Object.defineProperties(obj, propertyDescriptorMap);
+}
+function getRealDefaultValue(defaultValue) {
+    return defaultValue === void 0 ? null : defaultValue;
+}
+class UTSJSONObject {
+    static keys(obj) {
+        return Object.keys(obj);
+    }
+    static assign(target, ...sources) {
+        for (let i = 0; i < sources.length; i++) {
+            const source = sources[i];
+            for (let key in source) {
+                target[key] = source[key];
+            }
+        }
+        return target;
+    }
+    constructor(content = {}) {
+        if (content instanceof Map) {
+            content.forEach((value, key) => {
+                this[key] = value;
+            });
+        }
+        else {
+            for (const key in content) {
+                if (Object.prototype.hasOwnProperty.call(content, key)) {
+                    this[key] = content[key];
+                }
+            }
+        }
+        initUTSJSONObjectProperties(this);
+    }
+    _resolveKeyPath(keyPath) {
+        // 非法keyPath不抛出错误，直接返回空数组
+        let token = '';
+        const keyPathArr = [];
+        let inOpenParentheses = false;
+        for (let i = 0; i < keyPath.length; i++) {
+            const word = keyPath[i];
+            switch (word) {
+                case '.':
+                    if (token.length > 0) {
+                        keyPathArr.push(token);
+                        token = '';
+                    }
+                    break;
+                case '[': {
+                    inOpenParentheses = true;
+                    if (token.length > 0) {
+                        keyPathArr.push(token);
+                        token = '';
+                    }
+                    break;
+                }
+                case ']':
+                    if (inOpenParentheses) {
+                        if (token.length > 0) {
+                            const tokenFirstChar = token[0];
+                            const tokenLastChar = token[token.length - 1];
+                            if ((tokenFirstChar === '"' && tokenLastChar === '"') ||
+                                (tokenFirstChar === "'" && tokenLastChar === "'") ||
+                                (tokenFirstChar === '`' && tokenLastChar === '`')) {
+                                if (token.length > 2) {
+                                    token = token.slice(1, -1);
+                                }
+                                else {
+                                    return [];
+                                }
+                            }
+                            else if (!/^\d+$/.test(token)) {
+                                return [];
+                            }
+                            keyPathArr.push(token);
+                            token = '';
+                        }
+                        else {
+                            return [];
+                        }
+                        inOpenParentheses = false;
+                    }
+                    else {
+                        return [];
+                    }
+                    break;
+                default:
+                    token += word;
+                    break;
+            }
+            if (i === keyPath.length - 1) {
+                if (token.length > 0) {
+                    keyPathArr.push(token);
+                    token = '';
+                }
+            }
+        }
+        return keyPathArr;
+    }
+    _getValue(keyPath, defaultValue) {
+        const keyPathArr = this._resolveKeyPath(keyPath);
+        const realDefaultValue = getRealDefaultValue(defaultValue);
+        if (keyPathArr.length === 0) {
+            return realDefaultValue;
+        }
+        let value = this;
+        for (let i = 0; i < keyPathArr.length; i++) {
+            const key = keyPathArr[i];
+            if (value instanceof Object) {
+                if (key in value) {
+                    value = value[key];
+                }
+                else {
+                    return realDefaultValue;
+                }
+            }
+            else {
+                return realDefaultValue;
+            }
+        }
+        return value;
+    }
+    get(key) {
+        return this._getValue(key);
+    }
+    set(key, value) {
+        this[key] = value;
+    }
+    getAny(key, defaultValue) {
+        const realDefaultValue = getRealDefaultValue(defaultValue);
+        return this._getValue(key, realDefaultValue);
+    }
+    getString(key, defaultValue) {
+        const realDefaultValue = getRealDefaultValue(defaultValue);
+        const value = this._getValue(key, realDefaultValue);
+        if (typeof value === 'string') {
+            return value;
+        }
+        else {
+            return realDefaultValue;
+        }
+    }
+    getNumber(key, defaultValue) {
+        const realDefaultValue = getRealDefaultValue(defaultValue);
+        const value = this._getValue(key, realDefaultValue);
+        if (typeof value === 'number') {
+            return value;
+        }
+        else {
+            return realDefaultValue;
+        }
+    }
+    getBoolean(key, defaultValue) {
+        const realDefaultValue = getRealDefaultValue(defaultValue);
+        const boolean = this._getValue(key, realDefaultValue);
+        if (typeof boolean === 'boolean') {
+            return boolean;
+        }
+        else {
+            return realDefaultValue;
+        }
+    }
+    getJSON(key, defaultValue) {
+        const realDefaultValue = getRealDefaultValue(defaultValue);
+        let value = this._getValue(key, realDefaultValue);
+        if (value instanceof Object) {
+            return value;
+        }
+        else {
+            return realDefaultValue;
+        }
+    }
+    getArray(key, defaultValue) {
+        const realDefaultValue = getRealDefaultValue(defaultValue);
+        let value = this._getValue(key, realDefaultValue);
+        if (value instanceof Array) {
+            return value;
+        }
+        else {
+            return realDefaultValue;
+        }
+    }
+    toMap() {
+        let map = new Map();
+        for (let key in this) {
+            map.set(key, this[key]);
+        }
+        return map;
+    }
+    forEach(callback) {
+        for (let key in this) {
+            callback(this[key], key);
+        }
+    }
+}
+
+const OriginalJSON = JSON;
+function createUTSJSONObjectOrArray(obj) {
+    if (Array.isArray(obj)) {
+        return obj.map((item) => {
+            return createUTSJSONObjectOrArray(item);
+        });
+    }
+    else if (isPlainObject(obj)) {
+        const result = new UTSJSONObject({});
+        for (const key in obj) {
+            const value = obj[key];
+            result[key] = createUTSJSONObjectOrArray(value);
+        }
+        return result;
+    }
+    return obj;
+}
+function parseObjectOrArray(object, utsType) {
+    const objectType = getType(object);
+    if (object === null || (objectType !== 'object' && objectType !== 'array')) {
+        return object;
+    }
+    if (utsType && utsType !== UTSJSONObject) {
+        try {
+            return new utsType(object, undefined, true);
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    }
+    if (objectType === 'array' || objectType === 'object') {
+        return createUTSJSONObjectOrArray(object);
+    }
+    return object;
+}
+const UTSJSON = {
+    parse: (text, reviver, utsType) => {
+        // @ts-expect-error
+        if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject)) {
+            utsType = reviver;
+            reviver = undefined;
+        }
+        try {
+            const parseResult = OriginalJSON.parse(text, reviver);
+            return parseObjectOrArray(parseResult, utsType);
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    parseArray(text, utsType) {
+        try {
+            const parseResult = OriginalJSON.parse(text);
+            if (Array.isArray(parseResult)) {
+                return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : undefined);
+            }
+            return null;
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    parseObject(text, utsType) {
+        try {
+            const parseResult = OriginalJSON.parse(text);
+            if (Array.isArray(parseResult)) {
+                return null;
+            }
+            return parseObjectOrArray(parseResult, utsType);
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    stringify: (value, replacer, space) => {
+        try {
+            if (!replacer) {
+                const visited = new Set();
+                replacer = function (_, v) {
+                    if (typeof v === 'object') {
+                        if (visited.has(v)) {
+                            return null;
+                        }
+                        visited.add(v);
+                    }
+                    return v;
+                };
+            }
+            return OriginalJSON.stringify(value, replacer, space);
+        }
+        catch (error) {
+            console.error(error);
+            return '';
+        }
+    },
+};
+
+function mapGet(map, key) {
+    if (!map.has(key)) {
+        return null;
+    }
+    return map.get(key);
+}
+
+function stringCodePointAt(str, pos) {
+    if (pos < 0 || pos >= str.length) {
+        return null;
+    }
+    return str.codePointAt(pos);
+}
+function stringAt(str, pos) {
+    if (pos < -str.length || pos >= str.length) {
+        return null;
+    }
+    return str.at(pos);
+}
+
+function weakMapGet(map, key) {
+    if (!map.has(key)) {
+        return null;
+    }
+    return map.get(key);
+}
+
+const UTS = {
+    arrayAt,
+    arrayFind,
+    arrayFindLast,
+    arrayPop,
+    arrayShift,
+    isInstanceOf,
+    UTSType,
+    mapGet,
+    stringAt,
+    stringCodePointAt,
+    weakMapGet,
+    JSON: UTSJSON,
+};
+
+class UniError extends Error {
+    constructor(errSubject, errCode, errMsg) {
+        let options = {};
+        const argsLength = Array.from(arguments).length;
+        switch (argsLength) {
+            case 0:
+                errSubject = '';
+                errMsg = '';
+                errCode = 0;
+                break;
+            case 1:
+                errMsg = errSubject;
+                errSubject = '';
+                errCode = 0;
+                break;
+            case 2:
+                errMsg = errSubject;
+                options = errCode;
+                errCode = options.errCode || 0;
+                errSubject = options.errSubject || '';
+                break;
+        }
+        super(errMsg);
+        this.name = 'UniError';
+        this.errSubject = errSubject;
+        this.errCode = errCode;
+        this.errMsg = errMsg;
+        if (options.data) {
+            this.data = options.data;
+        }
+        if (options.cause) {
+            this.cause = options.cause;
+        }
+    }
+    set errMsg(msg) {
+        this.message = msg;
+    }
+    get errMsg() {
+        return this.message;
+    }
+    toString() {
+        return this.errMsg;
+    }
+    toJSON() {
+        return {
+            errSubject: this.errSubject,
+            errCode: this.errCode,
+            errMsg: this.errMsg,
+            data: this.data,
+            cause: this.cause && typeof this.cause.toJSON === 'function'
+                ? this.cause.toJSON()
+                : this.cause,
+        };
+    }
+}
+
+class UTSValueIterable {
+}
+
+function isComponentInternalInstance(vm) {
+    return !!vm.appContext;
+}
+function resolveComponentInstance(instance) {
+    return (instance &&
+        (isComponentInternalInstance(instance) ? instance.proxy : instance));
+}
+function resolveOwnerVm(vm) {
+    if (!vm) {
+        return;
+    }
+    let componentName = vm.type.name;
+    while (componentName && isBuiltInComponent(shared.hyphenate(componentName))) {
+        // ownerInstance 内置组件需要使用父 vm
+        vm = vm.parent;
+        componentName = vm.type.name;
+    }
+    return vm.proxy;
+}
+function isElement(el) {
+    // Element
+    return el.nodeType === 1;
+}
+function resolveOwnerEl(instance, multi = false) {
+    const { vnode } = instance;
+    if (isElement(vnode.el)) {
+        return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
+    }
+    const { subTree } = instance;
+    // ShapeFlags.ARRAY_CHILDREN = 1<<4
+    if (subTree.shapeFlag & 16) {
+        const elemVNodes = subTree.children.filter((vnode) => vnode.el && isElement(vnode.el));
+        if (elemVNodes.length > 0) {
+            if (multi) {
+                return elemVNodes.map((node) => node.el);
+            }
+            return elemVNodes[0].el;
+        }
+    }
+    return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
+}
+function dynamicSlotName(name) {
+    return name === 'default' ? SLOT_DEFAULT_NAME : name;
+}
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return shared.camelize(str.replace(customizeRE, '-'));
+}
+function normalizeStyle(value) {
+    if (value instanceof UTSJSONObject) {
+        const styleObject = {};
+        UTSJSONObject.keys(value).forEach((key) => {
+            styleObject[key] = value[key];
+        });
+        return shared.normalizeStyle(styleObject);
+    }
+    else if (value instanceof Map) {
+        const styleObject = {};
+        value.forEach((value, key) => {
+            styleObject[key] = value;
+        });
+        return shared.normalizeStyle(styleObject);
+    }
+    else if (shared.isString(value)) {
+        return shared.parseStringStyle(value);
+    }
+    else if (shared.isArray(value)) {
+        const res = {};
+        for (let i = 0; i < value.length; i++) {
+            const item = value[i];
+            const normalized = shared.isString(item)
+                ? shared.parseStringStyle(item)
+                : normalizeStyle(item);
+            if (normalized) {
+                for (const key in normalized) {
+                    res[key] = normalized[key];
+                }
+            }
+        }
+        return res;
+    }
+    else {
+        return shared.normalizeStyle(value);
+    }
+}
+function normalizeClass(value) {
+    let res = '';
+    if (value instanceof UTSJSONObject) {
+        UTSJSONObject.keys(value).forEach((key) => {
+            if (value[key]) {
+                res += key + ' ';
+            }
+        });
+    }
+    else if (value instanceof Map) {
+        value.forEach((value, key) => {
+            if (value) {
+                res += key + ' ';
+            }
+        });
+    }
+    else if (shared.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+            const normalized = normalizeClass(value[i]);
+            if (normalized) {
+                res += normalized + ' ';
+            }
+        }
+    }
+    else {
+        res = shared.normalizeClass(value);
+    }
+    return res.trim();
+}
+function normalizeProps(props) {
+    if (!props)
+        return null;
+    let { class: klass, style } = props;
+    if (klass && !shared.isString(klass)) {
+        props.class = normalizeClass(klass);
+    }
+    if (style) {
+        props.style = normalizeStyle(style);
+    }
+    return props;
+}
+
+let lastLogTime = 0;
+function formatLog(module, ...args) {
+    const now = Date.now();
+    const diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    return `[${now}][${diff}ms][${module}]：${args
+        .map((arg) => JSON.stringify(arg))
+        .join(' ')}`;
+}
 
 function cache(fn) {
     const cache = Object.create(null);
@@ -584,145 +1406,6 @@ function getGlobal() {
     return g;
 }
 
-function isComponentInternalInstance(vm) {
-    return !!vm.appContext;
-}
-function resolveComponentInstance(instance) {
-    return (instance &&
-        (isComponentInternalInstance(instance) ? instance.proxy : instance));
-}
-function resolveOwnerVm(vm) {
-    if (!vm) {
-        return;
-    }
-    let componentName = vm.type.name;
-    while (componentName && isBuiltInComponent(shared.hyphenate(componentName))) {
-        // ownerInstance 内置组件需要使用父 vm
-        vm = vm.parent;
-        componentName = vm.type.name;
-    }
-    return vm.proxy;
-}
-function isElement(el) {
-    // Element
-    return el.nodeType === 1;
-}
-function resolveOwnerEl(instance, multi = false) {
-    const { vnode } = instance;
-    if (isElement(vnode.el)) {
-        return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
-    }
-    const { subTree } = instance;
-    // ShapeFlags.ARRAY_CHILDREN = 1<<4
-    if (subTree.shapeFlag & 16) {
-        const elemVNodes = subTree.children.filter((vnode) => vnode.el && isElement(vnode.el));
-        if (elemVNodes.length > 0) {
-            if (multi) {
-                return elemVNodes.map((node) => node.el);
-            }
-            return elemVNodes[0].el;
-        }
-    }
-    return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
-}
-function dynamicSlotName(name) {
-    return name === 'default' ? SLOT_DEFAULT_NAME : name;
-}
-const customizeRE = /:/g;
-function customizeEvent(str) {
-    return shared.camelize(str.replace(customizeRE, '-'));
-}
-function normalizeStyle(value) {
-    const g = getGlobal();
-    if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
-        const styleObject = {};
-        g.UTSJSONObject.keys(value).forEach((key) => {
-            styleObject[key] = value[key];
-        });
-        return shared.normalizeStyle(styleObject);
-    }
-    else if (value instanceof Map) {
-        const styleObject = {};
-        value.forEach((value, key) => {
-            styleObject[key] = value;
-        });
-        return shared.normalizeStyle(styleObject);
-    }
-    else if (shared.isString(value)) {
-        return shared.parseStringStyle(value);
-    }
-    else if (shared.isArray(value)) {
-        const res = {};
-        for (let i = 0; i < value.length; i++) {
-            const item = value[i];
-            const normalized = shared.isString(item)
-                ? shared.parseStringStyle(item)
-                : normalizeStyle(item);
-            if (normalized) {
-                for (const key in normalized) {
-                    res[key] = normalized[key];
-                }
-            }
-        }
-        return res;
-    }
-    else {
-        return shared.normalizeStyle(value);
-    }
-}
-function normalizeClass(value) {
-    let res = '';
-    const g = getGlobal();
-    if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
-        g.UTSJSONObject.keys(value).forEach((key) => {
-            if (value[key]) {
-                res += key + ' ';
-            }
-        });
-    }
-    else if (value instanceof Map) {
-        value.forEach((value, key) => {
-            if (value) {
-                res += key + ' ';
-            }
-        });
-    }
-    else if (shared.isArray(value)) {
-        for (let i = 0; i < value.length; i++) {
-            const normalized = normalizeClass(value[i]);
-            if (normalized) {
-                res += normalized + ' ';
-            }
-        }
-    }
-    else {
-        res = shared.normalizeClass(value);
-    }
-    return res.trim();
-}
-function normalizeProps(props) {
-    if (!props)
-        return null;
-    let { class: klass, style } = props;
-    if (klass && !shared.isString(klass)) {
-        props.class = normalizeClass(klass);
-    }
-    if (style) {
-        props.style = normalizeStyle(style);
-    }
-    return props;
-}
-
-let lastLogTime = 0;
-function formatLog(module, ...args) {
-    const now = Date.now();
-    const diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    return `[${now}][${diff}ms][${module}]：${args
-        .map((arg) => JSON.stringify(arg))
-        .join(' ')}`;
-}
-
 function formatKey(key) {
     return shared.camelize(key.substring(5));
 }
@@ -738,7 +1421,10 @@ const initCustomDatasetOnce = /*#__PURE__*/ once((isBuiltInElement) => {
                 (this.__uniDataset = {});
             dataset[formatKey(key)] = value;
         }
-        setAttribute.call(this, key, value);
+        // github issues5773 过滤 web 端 query key为数字开头
+        if (!/^\d/.test(key)) {
+            setAttribute.call(this, key, value);
+        }
     };
     const removeAttribute = prototype.removeAttribute;
     prototype.removeAttribute = function (key) {
@@ -783,6 +1469,16 @@ function createRpx2Unit(unit, unitRatio, unitPrecision) {
         const value = toFixed(parseFloat($1) * unitRatio, unitPrecision);
         return value === 0 ? '0' : `${value}${unit}`;
     });
+}
+function getPartClass(partName) {
+    return `-_part__${partName}_-`;
+}
+function batchGetPartClass(partNames) {
+    return partNames
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((partName) => getPartClass(partName))
+        .join(' ');
 }
 
 function passive(passive) {
@@ -1561,6 +2257,10 @@ const PAGE_HOOKS = [
     ON_SHARE_TIMELINE,
     ON_SHARE_APP_MESSAGE,
     ON_SHARE_CHAT,
+    ON_COPY_URL,
+    ON_UPLOAD_DOUYIN_VIDEO,
+    ON_LIVE_MOUNT,
+    ON_TITLE_CLICK,
     ON_ADD_TO_FAVORITES,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -1600,12 +2300,17 @@ const UniLifecycleHooks = [
     ON_ADD_TO_FAVORITES,
     ON_SHARE_APP_MESSAGE,
     ON_SHARE_CHAT,
+    ON_COPY_URL,
+    ON_UPLOAD_DOUYIN_VIDEO,
+    ON_LIVE_MOUNT,
+    ON_TITLE_CLICK,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
+    ON_LAST_PAGE_BACK_PRESS,
 ];
 const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
     return {
@@ -1613,6 +2318,10 @@ const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
         onShareAppMessage: 1 << 1,
         onShareTimeline: 1 << 2,
         onShareChat: 1 << 3,
+        onCopyUrl: 1 << 4,
+        onUploadDouyinVideo: 1 << 5,
+        onLiveMount: 1 << 6,
+        onTitleClick: 1 << 7,
     };
 })();
 function isUniLifecycleHook(name, value, checkType = true) {
@@ -1762,6 +2471,70 @@ function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
     return styles;
 }
 
+const APP_NATIVE_TAGS = [
+    'view',
+    'text',
+    'image',
+    'scroll-view',
+    'native-view',
+    'nested-scroll-header',
+    'nested-scroll-body',
+];
+function isDom2AppNativeTag(tag) {
+    return APP_NATIVE_TAGS.includes(tag);
+}
+const APP_VUE_COMPONENT_TAGS = [
+    'swiper',
+    'swiper-item',
+    'match-media',
+    // 'movable-area',
+    // 'movable-view',
+    // 'cover-view',
+    // 'cover-image',
+    'list-view',
+    'list-item',
+    // 'waterflow',
+    // 'flow-item',
+    // 'sticky-header',
+    // 'sticky-section',
+    // 'share-element',
+    'icon',
+    'rich-text',
+    'progress',
+    'button',
+    'checkbox-group',
+    'checkbox',
+    'form',
+    'input',
+    // 'editor',
+    'label',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'radio-group',
+    'radio',
+    'slider',
+    'switch',
+    'textarea',
+    'navigator',
+    'video',
+    // 'animation-view',
+    // 'camera',
+    // 'live-player',
+    // 'live-pusher',
+    'map',
+    'canvas',
+    // 'ad',
+    'web-view',
+    'loading',
+];
+function isDom2VueComponentTag(tag) {
+    return APP_VUE_COMPONENT_TAGS.includes(tag);
+}
+function isDom2AppVueComponentTag(tag) {
+    return APP_VUE_COMPONENT_TAGS.includes(tag);
+}
+
 function getEnvLocale() {
     const { env } = process;
     const lang = env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE;
@@ -1838,6 +2611,7 @@ exports.ON_ADD_TO_FAVORITES = ON_ADD_TO_FAVORITES;
 exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
 exports.ON_APP_ENTER_FOREGROUND = ON_APP_ENTER_FOREGROUND;
 exports.ON_BACK_PRESS = ON_BACK_PRESS;
+exports.ON_COPY_URL = ON_COPY_URL;
 exports.ON_ERROR = ON_ERROR;
 exports.ON_EXIT = ON_EXIT;
 exports.ON_HIDE = ON_HIDE;
@@ -1846,6 +2620,7 @@ exports.ON_INIT = ON_INIT;
 exports.ON_KEYBOARD_HEIGHT_CHANGE = ON_KEYBOARD_HEIGHT_CHANGE;
 exports.ON_LAST_PAGE_BACK_PRESS = ON_LAST_PAGE_BACK_PRESS;
 exports.ON_LAUNCH = ON_LAUNCH;
+exports.ON_LIVE_MOUNT = ON_LIVE_MOUNT;
 exports.ON_LOAD = ON_LOAD;
 exports.ON_NAVIGATION_BAR_BUTTON_TAP = ON_NAVIGATION_BAR_BUTTON_TAP;
 exports.ON_NAVIGATION_BAR_CHANGE = ON_NAVIGATION_BAR_CHANGE;
@@ -1867,8 +2642,10 @@ exports.ON_SHARE_TIMELINE = ON_SHARE_TIMELINE;
 exports.ON_SHOW = ON_SHOW;
 exports.ON_TAB_ITEM_TAP = ON_TAB_ITEM_TAP;
 exports.ON_THEME_CHANGE = ON_THEME_CHANGE;
+exports.ON_TITLE_CLICK = ON_TITLE_CLICK;
 exports.ON_UNHANDLE_REJECTION = ON_UNHANDLE_REJECTION;
 exports.ON_UNLOAD = ON_UNLOAD;
+exports.ON_UPLOAD_DOUYIN_VIDEO = ON_UPLOAD_DOUYIN_VIDEO;
 exports.ON_WEB_INVOKE_APP_SERVICE = ON_WEB_INVOKE_APP_SERVICE;
 exports.ON_WXS_INVOKE_CALL_METHOD = ON_WXS_INVOKE_CALL_METHOD;
 exports.PLUS_RE = PLUS_RE;
@@ -1886,8 +2663,12 @@ exports.UNI_SSR_DATA = UNI_SSR_DATA;
 exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
 exports.UNI_SSR_STORE = UNI_SSR_STORE;
 exports.UNI_SSR_TITLE = UNI_SSR_TITLE;
+exports.UNI_STATUS_BAR_HEIGHT = UNI_STATUS_BAR_HEIGHT;
 exports.UNI_STORAGE_LOCALE = UNI_STORAGE_LOCALE;
 exports.UNI_UI_CONFLICT_TAGS = UNI_UI_CONFLICT_TAGS;
+exports.UTS = UTS;
+exports.UTSJSONObject = UTSJSONObject;
+exports.UTSValueIterable = UTSValueIterable;
 exports.UVUE_BUILT_IN_TAGS = UVUE_BUILT_IN_TAGS;
 exports.UVUE_HARMONY_BUILT_IN_TAGS = UVUE_HARMONY_BUILT_IN_TAGS;
 exports.UVUE_IOS_BUILT_IN_TAGS = UVUE_IOS_BUILT_IN_TAGS;
@@ -1896,6 +2677,7 @@ exports.UVUE_WEB_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS;
 exports.UniBaseNode = UniBaseNode;
 exports.UniCommentNode = UniCommentNode;
 exports.UniElement = UniElement;
+exports.UniError = UniError;
 exports.UniEvent = UniEvent;
 exports.UniInputElement = UniInputElement;
 exports.UniLifecycleHooks = UniLifecycleHooks;
@@ -1911,6 +2693,7 @@ exports.WXS_MODULES = WXS_MODULES;
 exports.WXS_PROTOCOL = WXS_PROTOCOL;
 exports.addFont = addFont;
 exports.addLeadingSlash = addLeadingSlash;
+exports.batchGetPartClass = batchGetPartClass;
 exports.borderStyles = borderStyles;
 exports.cache = cache;
 exports.cacheStringFunction = cacheStringFunction;
@@ -1933,6 +2716,7 @@ exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;
 exports.getGlobal = getGlobal;
 exports.getLen = getLen;
+exports.getPartClass = getPartClass;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
@@ -1948,6 +2732,9 @@ exports.isAppVoidTag = isAppVoidTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;
+exports.isDom2AppNativeTag = isDom2AppNativeTag;
+exports.isDom2AppVueComponentTag = isDom2AppVueComponentTag;
+exports.isDom2VueComponentTag = isDom2VueComponentTag;
 exports.isGloballyAllowed = isGloballyAllowed;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;

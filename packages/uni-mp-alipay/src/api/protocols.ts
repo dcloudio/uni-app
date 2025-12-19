@@ -11,6 +11,7 @@ import {
 import { getStorageSync } from './shims'
 
 export {
+  getWindowInfo,
   redirectTo,
   onError,
   offError,
@@ -22,13 +23,13 @@ function handleNetworkInfo(
   fromRes: my.IGetNetworkTypeSuccessResult,
   toRes: UniApp.GetNetworkTypeSuccess
 ) {
-  const nextworkType = fromRes.networkType
-  switch (nextworkType) {
+  const networkType = fromRes.networkType
+  switch (networkType) {
     case 'NOTREACHABLE':
       toRes.networkType = 'none'
       break
     case 'WWAN':
-      // TODO ?
+      // TODO 无线广域网，微信没有对应的值，使用 3g 代替 https://opendocs.alipay.com/mini/api/network-status#success%20%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0
       toRes.networkType = '3g'
       break
     default:
@@ -240,12 +241,14 @@ export const showActionSheet = {
 export const showLoading = {
   args(
     fromArgs: UniApp.ShowLoadingOptions,
-    toArgs: my.IShowLoadingOptions & { mask: boolean } // mini-types feedback.d.ts 未包含 mask
+    toArgs: my.IShowLoadingOptions & { mask?: boolean } // mini-types feedback.d.ts 未包含 mask
   ) {
     if (!fromArgs.mask) {
       toArgs.mask = false
     }
-    toArgs.content = fromArgs.title
+    if (fromArgs.title) {
+      toArgs.content = fromArgs.title
+    }
   },
 }
 export const uploadFile = {
@@ -296,7 +299,6 @@ export const chooseVideo = {
 export const connectSocket = {
   args: {
     method: false,
-    protocols: false,
   },
   // TODO 有没有返回值还需要测试下
 }

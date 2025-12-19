@@ -1,19 +1,20 @@
 import { type TransformDecl, createDecl } from '../utils'
 
-const borderTopLeftRadius = __NODE_JS__
+const borderTopLeftRadius = __HYPHENATE__
   ? 'border-top-left-radius'
   : 'borderTopLeftRadius'
-const borderTopRightRadius = __NODE_JS__
+const borderTopRightRadius = __HYPHENATE__
   ? 'border-top-right-radius'
   : 'borderTopRightRadius'
-const borderBottomRightRadius = __NODE_JS__
+const borderBottomRightRadius = __HYPHENATE__
   ? 'border-bottom-right-radius'
   : 'borderBottomRightRadius'
-const borderBottomLeftRadius = __NODE_JS__
+const borderBottomLeftRadius = __HYPHENATE__
   ? 'border-bottom-left-radius'
   : 'borderBottomLeftRadius'
 export const transformBorderRadius: TransformDecl = (decl) => {
-  const { value, important, raws, source } = decl
+  let { value, important, raws, source } = decl
+  value = value.trim()
   const splitResult = value.split(/\s+/)
   if (value.includes('/')) {
     return [decl]
@@ -44,12 +45,13 @@ export const transformBorderRadius: TransformDecl = (decl) => {
 }
 
 export const transformBorderRadiusNvue: TransformDecl = (decl) => {
-  const { value, important, raws, source } = decl
+  let { value, important, raws, source } = decl
+  value = value.trim()
   const splitResult = value.split(/\s+/)
   if (value.includes('/')) {
     return [decl]
   }
-  // const isUvuePlatform = options.type == 'uvue'
+  // const isUvuePlatform = options.type === 'uvue'
   switch (splitResult.length) {
     case 1:
       return [decl]

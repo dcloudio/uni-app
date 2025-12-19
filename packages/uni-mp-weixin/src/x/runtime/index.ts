@@ -1,3 +1,8 @@
-// @ts-expect-error
-export * from '@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts.js'
+import './polyfill'
+export {
+  UTS,
+  UTSJSONObject,
+  UTSValueIterable,
+  UniError,
+} from '@dcloudio/uni-shared'
 export * from '../../runtime'

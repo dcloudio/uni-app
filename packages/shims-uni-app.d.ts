@@ -7,6 +7,15 @@ declare namespace string {
   type PageURIString = string
   type ColorString = string
 }
+
+declare namespace App {
+  interface AppInstance<T extends AnyObject = {}> {
+    /**
+     * onLastPageBackPress仅uni-app-x支持，不可放入非uni-app-x类型定义中
+     */
+    onLastPageBackPress?(): void
+  }
+}
 declare namespace Page {
   interface PageInstance {
     $page: {
@@ -276,11 +285,14 @@ declare namespace UniNamespace {
   }
   interface PagesJsonSubpackagesOptions {
     root: string
+    name?: string
     pages: PagesJsonPageOptions[]
     plugins?: Record<
       string,
       { version: string; provider: string; export?: string; lazy?: boolean }
     >
+    entry?: string
+    common?: boolean // mp-harmony
   }
 
   interface PagesJsonWindowOptions extends PagesJsonPageOptions {

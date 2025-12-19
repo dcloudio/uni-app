@@ -26,7 +26,7 @@ const transformOn = uniCliShared.createTransformOn(uniMpCompiler.transformOn, {
  * 京东小程序 input 事件不支持动态事件，故 v-model 也需要调整
  */
 const transformModel = uniCliShared.createTransformModel(uniMpCompiler.transformModel, {
-    match: (node, context) => {
+    match: (node) => {
         if (node.tag === 'input' || node.tag === 'textarea') {
             return true;
         }
@@ -43,7 +43,6 @@ var source = {
 	setting: setting
 };
 
-// import { transformSwiper } from './transforms/transformSwiper'
 const projectConfigFilename = 'project.config.json';
 const nodeTransforms = [
     uniCliShared.transformRef,
@@ -57,6 +56,7 @@ const directiveTransforms = {
 const customElements = [
     'root-portal',
     'page-container',
+    'match-media',
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const compilerOptions = {
@@ -103,7 +103,7 @@ const options = {
             /**
              * 静态资源，配置的目录，在 uni_modules 中同样支持
              */
-            assets: [COMPONENTS_DIR],
+            assets: uniCliShared.createCopyComponentDirs(COMPONENTS_DIR),
             targets: [
                 {
                     // FileWatcher这个类监听的文件，文件改动触发整体编译？编译什么？
@@ -113,6 +113,7 @@ const options = {
                         return process.env.UNI_OUTPUT_DIR;
                     },
                 },
+                ...uniCliShared.copyMiniProgramThemeJson(),
             ],
         },
     },

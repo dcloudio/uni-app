@@ -8,6 +8,7 @@ import {
   type UniVitePlugin,
   buildNonTreeShakingUniModules,
   buildUniExtApis,
+  createErrorWithBlockFlag,
   emptyDir,
   enableSourceMap,
   getCssDepMap,
@@ -375,7 +376,7 @@ export function uniAppPlugin(): UniVitePlugin {
           if (res.changed) {
             // 触发了kotlinc编译，且没有编译成功
             if (!res.changed.length && res.kotlinc) {
-              throw new Error('编译失败')
+              throw createErrorWithBlockFlag('编译失败')
             }
             files.push(...res.changed)
           }

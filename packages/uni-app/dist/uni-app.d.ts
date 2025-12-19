@@ -42,7 +42,13 @@ declare interface NavigationBarSearchInputFocusChanged {
 
 export declare const onAddToFavorites: (hook: (options: Page.AddToFavoritesOption) => Page.CustomFavoritesContent, target?: ComponentInternalInstance | null) => void;
 
+export declare const onAppHide: (hook: () => any, target?: ComponentInternalInstance | null) => void;
+
+export declare const onAppShow: (hook: ((options?: App.LaunchShowOption | undefined) => void) | (() => void), target?: ComponentInternalInstance | null) => void;
+
 export declare const onBackPress: (hook: (options: Page.BackPressOption) => any, target?: ComponentInternalInstance | null) => void;
+
+export declare const onCopyUrl: (hook: (options: Page.OnCopyUrlOptions) => Page.CopyUrlContent, target?: ComponentInternalInstance | null) => void;
 
 export declare const onError: (hook: (error: string) => void, target?: ComponentInternalInstance | null) => void;
 
@@ -52,7 +58,11 @@ export declare const onHide: (hook: () => any, target?: ComponentInternalInstanc
 
 export declare const onInit: (hook: (query?: AnyObject | undefined) => void, target?: ComponentInternalInstance | null) => void;
 
+export declare const onLastPageBackPress: (hook: () => void, target?: ComponentInternalInstance | null) => void;
+
 export declare const onLaunch: (hook: (options?: App.LaunchShowOption | undefined) => void, target?: ComponentInternalInstance | null) => void;
+
+export declare const onLiveMount: (hook: (options: Page.LiveMountOptions) => Page.LiveMountContent | Promise<Page.LiveMountContent>, target?: ComponentInternalInstance | null) => void;
 
 export declare const onLoad: (hook: (query?: AnyObject | undefined) => void, target?: ComponentInternalInstance | null) => void;
 
@@ -92,7 +102,7 @@ export declare const onShareAppMessage: (hook: (options: Page.ShareAppMessageOpt
 
 export declare const onShareChat: (hook: (options: Page.OnShareChatOptions) => Page.ShareChatContent, target?: ComponentInternalInstance | null) => void;
 
-export declare const onShareTimeline: (hook: () => Page.ShareTimelineContent, target?: ComponentInternalInstance | null) => void;
+export declare const onShareTimeline: (hook: (options: Page.OnShareTimelineOptions) => Page.ShareTimelineContent, target?: ComponentInternalInstance | null) => void;
 
 export declare const onShow: (hook: ((options?: App.LaunchShowOption | undefined) => void) | (() => void), target?: ComponentInternalInstance | null) => void;
 
@@ -100,9 +110,13 @@ export declare const onTabItemTap: (hook: (options: Page.TabItemTapOption) => vo
 
 export declare const onThemeChange: (hook: (options: UniApp.OnThemeChangeCallbackResult) => void, target?: ComponentInternalInstance | null) => void;
 
+export declare const onTitleClick: (hook: () => void, target?: ComponentInternalInstance | null) => void;
+
 export declare const onUnhandledRejection: (hook: (options: UniApp.OnUnhandledRejectionCallbackResult) => void, target?: ComponentInternalInstance | null) => void;
 
 export declare const onUnload: (hook: () => any, target?: ComponentInternalInstance | null) => void;
+
+export declare const onUploadDouyinVideo: (hook: (options: Page.UploadDouyinVideoOptions) => Page.UploadDouyinVideoContent | Promise<Page.UploadDouyinVideoContent>, target?: ComponentInternalInstance | null) => void;
 
 export declare function renderComponentSlot(slots: Slots, name: string, props?: any | null): any | null;
 

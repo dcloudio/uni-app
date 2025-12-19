@@ -1024,7 +1024,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               poster={props.poster}
               autoplay={!!props.autoplay}
               {...videoAttrs.value}
-              class="uni-video-video"
+              class={{
+                'uni-video-video': true,
+                'uni-video-video-fullscreen': fullscreenState.fullscreen,
+              }}
               webkit-playsinline
               playsinline
               onDurationchange={onDurationChange}

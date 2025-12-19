@@ -3,6 +3,7 @@ import { type ComponentPublicInstance, markRaw, watchEffect } from 'vue'
 import { getCurrentPage, initPageVm } from '@dcloudio/uni-core'
 import {
   ON_REACH_BOTTOM_DISTANCE,
+  UTSJSONObject,
   normalizeTitleColor,
   removeLeadingSlash,
 } from '@dcloudio/uni-shared'

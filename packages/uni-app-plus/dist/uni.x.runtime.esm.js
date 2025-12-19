@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, onMounted, onBeforeUnmount, getCurrentGenericInstance, injectHook, defineComponent, getCurrentInstance, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
@@ -790,34 +790,27 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
       return new UTSJSONObject(pageVm.$basePage.options);
     }
   });
-  uniPage.getElementById = (id2) => {
-    var _pageVm$$el;
-    var containerNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentElement;
-    if (containerNode == null) {
-      console.warn("bodyNode is null");
-      return null;
-    }
-    return containerNode.querySelector("#".concat(id2));
-  };
   uniPage.vm = pageVm;
   uniPage.$vm = pageVm;
   if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
     addCurrentPageWithInitScope(pageId, pageVm, pageInstance);
   }
-  onMounted(() => {
-    var _pageVm$$el2;
-    var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentElement;
-    if (rootElement) {
-      rootElement._page = pageVm.$page;
-    }
-  });
-  onBeforeUnmount(() => {
-    var _pageVm$$el3;
-    var rootElement = (_pageVm$$el3 = pageVm.$el) === null || _pageVm$$el3 === void 0 ? void 0 : _pageVm$$el3.parentElement;
-    if (rootElement) {
-      rootElement._page = null;
-    }
-  });
+  {
+    onMounted(() => {
+      var _pageVm$$el;
+      var rootElement = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentElement;
+      if (rootElement) {
+        rootElement._page = pageVm.$page;
+      }
+    });
+    onBeforeUnmount(() => {
+      var _pageVm$$el2;
+      var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentElement;
+      if (rootElement) {
+        rootElement._page = null;
+      }
+    });
+  }
 }
 var beforeSetupPage = (props, ctx) => {
   var {
@@ -1432,6 +1425,27 @@ function fixBorderStyle(tabBarConfig) {
   }
   tabBarConfig.set("borderStyle", borderStyle);
   tabBarConfig.delete("borderColor");
+}
+function parseRedirectInfo(app) {
+  var _redirectInfo$get, _redirectInfo$get2, _redirectInfo$get3, _redirectInfo$get4, _redirectInfo$get5;
+  var redirectInfo = app.getRedirectInfo();
+  var path = (_redirectInfo$get = redirectInfo.get("path")) !== null && _redirectInfo$get !== void 0 ? _redirectInfo$get : "";
+  var query = (_redirectInfo$get2 = redirectInfo.get("query")) !== null && _redirectInfo$get2 !== void 0 ? _redirectInfo$get2 : "";
+  var userAction = (_redirectInfo$get3 = redirectInfo.get("userAction")) !== null && _redirectInfo$get3 !== void 0 ? _redirectInfo$get3 : false;
+  var appScheme = (_redirectInfo$get4 = redirectInfo.get("appScheme")) !== null && _redirectInfo$get4 !== void 0 ? _redirectInfo$get4 : "";
+  var appLink = (_redirectInfo$get5 = redirectInfo.get("appLink")) !== null && _redirectInfo$get5 !== void 0 ? _redirectInfo$get5 : "";
+  var referrerInfo = {
+    appId: app.appid,
+    extraData: {}
+  };
+  return {
+    path: path || "",
+    query: query ? "?" + query : "",
+    referrerInfo,
+    userAction,
+    appScheme,
+    appLink
+  };
 }
 var onTabBarMidButtonTapCallback = [];
 var tabBar0 = null;
@@ -2110,6 +2124,43 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
     }
   };
 }
+var isInitEntryPage = false;
+function initEntry(app) {
+  if (isInitEntryPage) {
+    return;
+  }
+  isInitEntryPage = true;
+  var entryPagePath;
+  var entryPageQuery;
+  var redirectInfo = app.getRedirectInfo();
+  if (redirectInfo.size > 0) {
+    var {
+      path,
+      query
+      /* referrerInfo, appScheme, appLink */
+    } = parseRedirectInfo(app);
+    if (path) {
+      entryPagePath = path;
+      entryPageQuery = query;
+    }
+  }
+  if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+    if (entryPageQuery) {
+      __uniConfig.entryPageQuery = entryPageQuery;
+    }
+    return;
+  }
+  var entryRoute = addLeadingSlash(entryPagePath);
+  var routeOptions = getRouteOptions(entryRoute);
+  if (!routeOptions) {
+    return;
+  }
+  if (!routeOptions.meta.isTabBar) {
+    __uniConfig.realEntryPagePath = __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+  }
+  __uniConfig.entryPagePath = entryPagePath;
+  __uniConfig.entryPageQuery = entryPageQuery;
+}
 function initGlobalEvent(app) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
     var currentPage = getCurrentPage();
@@ -2422,7 +2473,9 @@ function _reLaunch(_ref3) {
 }
 var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 function closePage(page, animationType, animationDuration) {
-  clearDialogPages(page.$page);
+  if (page.$page) {
+    clearDialogPages(page.$page);
+  }
   var nativePage = page.$nativePage;
   nativePage && closeWebview(nativePage, animationType, animationDuration);
   removePage(page);
@@ -2712,7 +2765,7 @@ function initComponentInstance(app) {
     initNativePage,
     initFontFace
   };
-  app.mixin({
+  !app.vapor && app.mixin({
     beforeCreate() {
       initNativePage(this);
     },
@@ -2744,7 +2797,6 @@ function initUniApp(uniApp) {
   });
 }
 function registerApp(appVm, nativeApp2, uniApp) {
-  initEntryPagePath(nativeApp2);
   setNativeApp(nativeApp2);
   initVueApp(appVm);
   appCtx = appVm;
@@ -2756,6 +2808,8 @@ function registerApp(appVm, nativeApp2, uniApp) {
   extend(appCtx, defaultApp);
   defineGlobalData(appCtx, defaultApp.globalData);
   initService(nativeApp2, unregisterApp);
+  initEntry(nativeApp2);
+  initEntryPagePath(nativeApp2);
   initGlobalEvent(nativeApp2);
   initAppLaunch(appVm);
   initAppError(appVm, nativeApp2);
@@ -3289,17 +3343,11 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
   resolve();
 });
 var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
-  var _page$$el;
-  var page = getCurrentPage().vm;
+  var page = getCurrentPage();
   if (page == null) {
     return null;
   }
-  var bodyNode = (_page$$el = page.$el) === null || _page$$el === void 0 ? void 0 : _page$$el.parentNode;
-  if (bodyNode == null) {
-    console.warn("bodyNode is null");
-    return null;
-  }
-  return bodyNode.querySelector("#".concat(id2));
+  return page.getElementById(id2);
 });
 function isVueComponent(comp) {
   var has$instance = typeof comp.$ === "object";

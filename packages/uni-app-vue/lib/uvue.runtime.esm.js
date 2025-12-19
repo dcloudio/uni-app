@@ -8340,8 +8340,22 @@ const NODE_EXT_IS_TEXT_NODE = "isTextNode";
 const NODE_EXT_CHILD_NODE = "childNode";
 const NODE_EXT_PARENT_NODE = "parentNode";
 const NODE_EXT_CHILD_NODES = "childNodes";
+const RootElementInstanceMap = /* @__PURE__ */ new WeakMap();
+const PartElementInstanceMap = /* @__PURE__ */ new WeakMap();
 function setNodeExtraData(el, name, value) {
   el.ext.set(name, value);
+}
+function setRootElementInstance(el, instance) {
+  RootElementInstanceMap.set(el, instance);
+}
+function getRootElementInstance(el) {
+  return RootElementInstanceMap.get(el) || null;
+}
+function getPartElementInstance(el) {
+  return PartElementInstanceMap.get(el) || null;
+}
+function setPartElementInstance(el, instance) {
+  PartElementInstanceMap.set(el, instance);
 }
 function getNodeExtraData(el, name) {
   return el.ext.get(name);
@@ -8431,9 +8445,42 @@ function useCssStyles(componentStyles) {
   });
   return normalized;
 }
-function hasClass(calssName, el) {
-  const classList = el && el.classList;
-  return classList && classList.includes(calssName);
+function hasClass(className, el) {
+  if (!el) {
+    return [false, null];
+  }
+  if (!className.endsWith(")")) {
+    const classList = el && el.classList;
+    return [!!classList && classList.includes(className), el];
+  }
+  const partStart = className.lastIndexOf("::part(");
+  const partName = className.slice(partStart + 7, className.length - 1);
+  const part = el.getAnyAttribute("part");
+  if (part == null || !part.split(" ").includes(partName)) {
+    return [false, null];
+  }
+  const baseClassName = className.slice(0, partStart);
+  const partInstance = getPartElementInstance(el);
+  let hostEl = partInstance == null ? void 0 : partInstance.subTree.el;
+  if (hostEl == null) {
+    return [false, null];
+  }
+  if (isCommentNode(hostEl)) {
+    const instanceClass = partInstance == null ? void 0 : partInstance.attrs.class;
+    if (!instanceClass || typeof instanceClass !== "string") {
+      return [false, null];
+    }
+    const classList = instanceClass.split(" ");
+    if (!classList.includes(baseClassName)) {
+      return [false, null];
+    }
+    return [true, hostEl];
+  }
+  const [matched, curEl] = hasClass(baseClassName, hostEl);
+  if (!matched) {
+    return [false, null];
+  }
+  return [true, curEl];
 }
 const TYPE_RE = /[+~> ]$/;
 const PROPERTY_PARENT_NODE = "parentNode";
@@ -8448,7 +8495,9 @@ function isMatchParentSelector(parentSelector, el) {
       const property = type === "~" ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
       while (el) {
         el = el[property];
-        if (hasClass(className, el)) {
+        const [matched, curEl] = hasClass(className, el);
+        if (matched) {
+          el = curEl;
           break;
         }
       }
@@ -8461,9 +8510,11 @@ function isMatchParentSelector(parentSelector, el) {
       } else if (type === "+") {
         el = el && el[PROPERTY_PREVIOUS_SIBLING];
       }
-      if (!hasClass(className, el)) {
+      const [matched, curEl] = hasClass(className, el);
+      if (!matched) {
         return false;
       }
+      el = curEl;
     }
   }
   return true;
@@ -8484,8 +8535,8 @@ function parseClassName({ styles, weights }, parentStyles, el) {
       if (isImportant) {
         name = name.slice(1);
       }
-      const oldWeight = weights[name] || 0;
       const weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
+      const oldWeight = weights[name] || 0;
       if (weight >= oldWeight) {
         weights[name] = weight;
         styles.set(name, value);
@@ -8576,8 +8627,11 @@ function extendMap(a, b) {
   return a;
 }
 function toStyle(el, classStyle, classStyleWeights) {
-  const res = extendMap(/* @__PURE__ */ new Map(), classStyle);
   const style = getExtraStyle(el);
+  return mergeClassStyles(classStyle, classStyleWeights, style);
+}
+function mergeClassStyles(classStyle, classStyleWeights, style) {
+  const res = extendMap(/* @__PURE__ */ new Map(), classStyle);
   if (style != null) {
     style.forEach((value, key) => {
       const weight = classStyleWeights[key];
@@ -8589,6 +8643,175 @@ function toStyle(el, classStyle, classStyleWeights) {
   return res;
 }
 
+function useComputedStyle(options = {}) {
+  var _a;
+  const i = getCurrentInstance();
+  const r = reactive(/* @__PURE__ */ new Map());
+  if (i) {
+    const propsDef = i.propsOptions === EMPTY_ARR ? {} : i.propsOptions[0];
+    let { classAttr, styleAttr, properties } = options;
+    let filterProperties = (_a = options.filterProperties) != null ? _a : true;
+    if (classAttr || styleAttr) {
+      if (classAttr && classAttr in propsDef) {
+        classAttr = void 0;
+      }
+      if (styleAttr && styleAttr in propsDef) {
+        styleAttr = void 0;
+      }
+    } else if (!("class" in propsDef) && !("style" in propsDef)) {
+      classAttr = "class";
+      styleAttr = "style";
+    }
+    const computedStyleInterceptor = {
+      classAttr,
+      styleAttr,
+      properties,
+      reactiveComputedStyle: r,
+      filterProperties
+    };
+    i.computedStyleInterceptors = i.computedStyleInterceptors || [];
+    i.computedStyleInterceptors.push(computedStyleInterceptor);
+  } else if (!!(process.env.NODE_ENV !== "production")) {
+    warn(
+      `useComputedStyle() is called when there is no active component instance to be associated with.`
+    );
+  }
+  return r;
+}
+function triggerComputedStyleUpdate(instance, styles) {
+  if (instance.computedStyleInterceptors) {
+    const keysToDelete = /* @__PURE__ */ new Set();
+    let clearStyles = false;
+    instance.computedStyleInterceptors.forEach((interceptor) => {
+      const r = interceptor.reactiveComputedStyle;
+      const properties = interceptor.properties;
+      if (properties) {
+        styles.forEach((value, key) => {
+          const isCSSVar = key.startsWith("--");
+          const hyphenatedKey = isCSSVar ? key : hyphenate(key);
+          if (properties.includes(hyphenatedKey)) {
+            if (value === "" || value == null) {
+              r.delete(hyphenatedKey);
+            } else {
+              r.set(hyphenatedKey, value);
+            }
+            if (interceptor.filterProperties) {
+              keysToDelete.add(key);
+            }
+          }
+        });
+      } else {
+        styles.forEach((value, key) => {
+          const isCSSVar = key.startsWith("--");
+          const hyphenatedKey = isCSSVar ? key : hyphenate(key);
+          if (value === "" || value == null) {
+            r.delete(hyphenatedKey);
+          } else {
+            r.set(hyphenatedKey, value);
+          }
+        });
+        clearStyles = true;
+      }
+    });
+    if (clearStyles) {
+      styles.clear();
+    } else if (keysToDelete.size > 0) {
+      keysToDelete.forEach((key) => {
+        styles.delete(key);
+      });
+    }
+  }
+}
+
+const PartElementContextMap = /* @__PURE__ */ new WeakMap();
+function setPartElementContext(el, context) {
+  PartElementContextMap.set(el, context);
+}
+function getPartElementContext(el) {
+  return PartElementContextMap.get(el) || null;
+}
+function patchPart(el, part, instance = null) {
+  el.setAnyAttribute("part", part);
+  if (instance == null) {
+    return;
+  }
+  setPartElementInstance(el, instance);
+  updatePartStyles(el);
+}
+function updatePartStyles(el) {
+  const instance = getPartElementInstance(el);
+  if (instance == null) {
+    return;
+  }
+  const part = el.getAttribute("part");
+  if (!isString(part) || !part) {
+    setPartElementContext(el, new ParseStyleContext());
+    mergeAndUpdateClassStyles(el);
+    return;
+  }
+  const hostEl = instance.subTree.el;
+  if (hostEl == null || hostEl.tagName == null) {
+    return;
+  }
+  const ownerInstance = instance.vnode.hostInstance;
+  if (ownerInstance == null) {
+    return;
+  }
+  const parentStylesheet = ownerInstance.type.styles;
+  if (parentStylesheet == null || parentStylesheet.length === 0) {
+    return;
+  }
+  const partList = part.split(" ");
+  const context = new ParseStyleContext();
+  let stylesUpdated = false;
+  const partSelectors = partList.map((partName) => `::part(${partName})`);
+  const parentStyles = (parentStylesheet != null ? parentStylesheet : []).filter(
+    (style) => partSelectors.some((partSelector) => style[partSelector] != null)
+  );
+  if (isCommentNode(hostEl)) {
+    const instanceClass = instance.attrs.class;
+    if (typeof instanceClass === "string") {
+      hostEl.classList = instanceClass.split(" ");
+    }
+  }
+  for (let i = 0; i < parentStyles.length; i++) {
+    const style = parentStyles[i];
+    for (let j = 0; j < partSelectors.length; j++) {
+      const partSelector = partSelectors[j];
+      if (style[partSelector] != null) {
+        const parentPartStyles = style[partSelector];
+        for (let parentSelector in parentPartStyles) {
+          if (!isMatchParentSelector(parentSelector, hostEl)) {
+            continue;
+          }
+          const style2 = parentPartStyles[parentSelector];
+          const weight = parentSelector.split(".").length + 1;
+          for (let key in style2) {
+            const existing = context.weights[key];
+            if (existing == null || weight >= existing) {
+              context.styles.set(key, style2[key]);
+              context.weights[key] = weight;
+              stylesUpdated = true;
+            }
+          }
+        }
+      }
+    }
+  }
+  if (!stylesUpdated) {
+    return;
+  }
+  setPartElementContext(el, context);
+  mergeAndUpdateClassStyles(el);
+}
+
+const ElementClassContextMap = /* @__PURE__ */ new WeakMap();
+function setElementClassContext(el, context) {
+  ElementClassContextMap.set(el, context);
+}
+function getElementClassContext(el) {
+  return ElementClassContextMap.get(el) || null;
+}
 function patchClass(el, pre, next, instance = null) {
   if (!instance) {
     return;
@@ -8601,10 +8824,16 @@ function patchClass(el, pre, next, instance = null) {
       el,
       instance.parent.type.styles
     );
+    setRootElementInstance(el, instance);
   }
   updateClassStyles(el);
 }
 function updateClassStyles(el) {
+  const parseClassStylesResult = parseClassStyles(el);
+  setElementClassContext(el, parseClassStylesResult);
+  mergeAndUpdateClassStyles(el);
+}
+function mergeAndUpdateClassStyles(el) {
   if (el.parentNode == null || isCommentNode(el)) {
     return;
   }
@@ -8615,11 +8844,40 @@ function updateClassStyles(el) {
   oldClassStyle.forEach((_value, key) => {
     oldClassStyle.set(key, "");
   });
-  const parseClassStylesResult = parseClassStyles(el);
-  parseClassStylesResult.styles.forEach((value, key) => {
+  const elementClassContext = getElementClassContext(el);
+  const partStyleContext = getPartElementContext(el);
+  let mergedStyleContext = null;
+  if (elementClassContext && partStyleContext) {
+    mergedStyleContext = new ParseStyleContext();
+    elementClassContext.styles.forEach((value, key) => {
+      mergedStyleContext.styles.set(key, value);
+      mergedStyleContext.weights[key] = elementClassContext.weights[key];
+    });
+    partStyleContext.styles.forEach((value, key) => {
+      var _a;
+      const weight = partStyleContext.weights[key];
+      const oldWeight = (_a = mergedStyleContext.weights[key]) != null ? _a : 0;
+      if (weight > oldWeight) {
+        mergedStyleContext.weights[key] = weight;
+        mergedStyleContext.styles.set(key, partStyleContext.styles.get(key));
+      }
+    });
+  } else if (elementClassContext) {
+    mergedStyleContext = elementClassContext;
+  } else if (partStyleContext) {
+    mergedStyleContext = partStyleContext;
+  }
+  if (mergedStyleContext == null) {
+    return;
+  }
+  mergedStyleContext.styles.forEach((value, key) => {
     oldClassStyle.set(key, value);
   });
-  const styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
+  const styles = toStyle(el, oldClassStyle, mergedStyleContext.weights);
+  const instance = getRootElementInstance(el);
+  if (instance && instance.computedStyleInterceptors) {
+    triggerComputedStyleUpdate(instance, styles);
+  }
   if (styles.size == 0) {
     return;
   }
@@ -8664,6 +8922,7 @@ const nodeOps = {
       parent.insertBefore(el, anchor);
     }
     if (parent.isConnected) {
+      updatePartStyles(el);
       updateClassStyles(el);
       updateChildrenClassStyle(el);
     }
@@ -8742,6 +9001,7 @@ const nodeOps = {
 function updateChildrenClassStyle(el) {
   if (el !== null) {
     el.childNodes.forEach((child) => {
+      updatePartStyles(child);
       updateClassStyles(child);
       updateChildrenClassStyle(child);
     });
@@ -8908,7 +9168,7 @@ function parseStyleDecl(prop, value) {
 function isSame(a, b) {
   return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
 }
-function patchStyle(el, prev, next) {
+function patchStyle(el, prev, next, instance = null) {
   if (!next) {
     return;
   }
@@ -8949,6 +9209,13 @@ function patchStyle(el, prev, next) {
     }
     setExtraStyle(el, batchedStyles);
   }
+  if (instance && instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
+    setRootElementInstance(el, instance);
+    const computedStyleInterceptors = instance == null ? void 0 : instance.computedStyleInterceptors;
+    if (computedStyleInterceptors) {
+      triggerComputedStyleUpdate(instance, batchedStyles);
+    }
+  }
   if (batchedStyles.size == 0) {
     return;
   }
@@ -8968,7 +9235,9 @@ const patchProp = (el, key, prevValue, nextValue, namespace, prevChildren, paren
   if (key === "class") {
     patchClass(el, prevValue, nextValue, hostInstance || parentComponent);
   } else if (key === "style") {
-    patchStyle(el, prevValue, nextValue);
+    patchStyle(el, prevValue, nextValue, hostInstance || parentComponent);
+  } else if (key === "part") {
+    patchPart(el, nextValue, parentComponent);
   } else if (isOn(key)) {
     if (!isModelListener(key)) {
       patchEvent(el, key, prevValue, nextValue, parentComponent);
@@ -9179,4 +9448,4 @@ function unmountPage(pageInstance) {
   }
 }
 
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, Static, Suspense, Teleport, Text, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, unmountPage, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, Static, Suspense, Teleport, Text, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, unmountPage, useAttrs, useComputedStyle, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

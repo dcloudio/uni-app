@@ -3,6 +3,7 @@ import {
   isAppHarmonyUVueNativeTag,
   isAppIOSUVueNativeTag,
   isAppUVueBuiltInEasyComponent,
+  isDom2AppNativeTag,
 } from '@dcloudio/uni-shared'
 import {
   MANIFEST_JSON_UTS,
@@ -18,6 +19,7 @@ import {
   normalizePath,
   parseUTSComponent,
   removePlugins,
+  transformLineBreak,
   transformTapToClick,
   transformUTSComponent,
 } from '@dcloudio/uni-cli-shared'
@@ -33,6 +35,10 @@ export function createUniOptions(
   platform: 'app-android' | 'app-ios' | 'app-harmony'
 ): UniVitePlugin['uni'] {
   return {
+    compiler:
+      process.env.UNI_APP_X_DOM2 === 'true'
+        ? require('@dcloudio/compiler-vapor-dom2')
+        : undefined,
     copyOptions() {
       const inputDir = process.env.UNI_INPUT_DIR
       const outputDir = process.env.UNI_OUTPUT_DIR
@@ -67,6 +73,9 @@ export function createUniOptions(
       platform === 'app-ios' || platform === 'app-harmony'
         ? {
             isNativeTag(tag) {
+              if (process.env.UNI_APP_X_DOM2 === 'true') {
+                return isDom2AppNativeTag(tag)
+              }
               return (
                 isUTSCustomElement(tag) ||
                 matchUTSComponent(tag) ||
@@ -79,20 +88,7 @@ export function createUniOptions(
               transformTapToClick,
               transformUTSComponent,
               // TODO 合并复用安卓插件逻辑
-              function (node, context) {
-                if (node.type === 2) {
-                  const parent = context.parent
-                  if (parent && parent.type === 1 && parent.tag === 'text') {
-                    // 解析文本节点转义，暂时仅处理换行
-                    node.content = node.content.replace(
-                      /[\\]+n/g,
-                      function (match) {
-                        return JSON.parse(`"${match}"`)
-                      }
-                    )
-                  }
-                }
-              },
+              transformLineBreak,
               (node) => {
                 // 收集可能的 extApiComponents
                 if (
@@ -291,3 +287,9 @@ export function addExtApiComponents(components: string[]) {
 export function getExtApiComponents() {
   return extApiComponents
 }
+
+export function isVue(filename: string) {
+  return filename.endsWith('.vue') || filename.endsWith('.uvue')
+}
+
+export const DOM2_CSS_CACHE_MAP = new Map<string, string>()

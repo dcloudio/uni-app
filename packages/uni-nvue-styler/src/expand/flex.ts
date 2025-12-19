@@ -1,13 +1,14 @@
 import { type TransformDecl, createDecl, isNumber } from '../utils'
 
-const flexGrow = __NODE_JS__ ? 'flex-grow' : 'flexGrow'
-const flexShrink = __NODE_JS__ ? 'flex-shrink' : 'flexShrink'
-const flexBasis = __NODE_JS__ ? 'flex-basis' : 'flexBasis'
+const flexGrow = __HYPHENATE__ ? 'flex-grow' : 'flexGrow'
+const flexShrink = __HYPHENATE__ ? 'flex-shrink' : 'flexShrink'
+const flexBasis = __HYPHENATE__ ? 'flex-basis' : 'flexBasis'
 
 export const transformFlex: TransformDecl = (decl) => {
-  const { value, important, raws, source } = decl
+  let { value, important, raws, source } = decl
+  value = value.trim()
   const result: ReturnType<TransformDecl> = []
-  const splitResult = value.trim().split(/\s+/)
+  const splitResult = value.split(/\s+/)
 
   // 是否 flex-grow 的有效值 <number [0,∞]>
   const isFlexGrowValid = (v: string) =>

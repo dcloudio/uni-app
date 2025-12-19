@@ -11,6 +11,55 @@ import { getUTSCustomElementsExports } from '../uts'
 
 export type AutoImportOptions = Options
 
+const uniWebLifeCyclePreset = {
+  from: '@dcloudio/uni-app',
+  imports: [
+    // ssr
+    'ssrRef',
+    'shallowSsrRef',
+    // uni-app lifecycle
+    // App and Page
+    'onShow',
+    'onHide',
+    // App
+    'onLaunch',
+    // web平台如下生命周期和uni.xxx api冲突，发行时改为通过uni-h5导入api实现，运行时通过uni-app导入
+    // 'onAppShow',
+    // 'onAppHide',
+    // 'onError',
+    // 'onPageNotFound',
+    // 'onUnhandledRejection',
+    'onThemeChange',
+    'onKeyboardHeightChange',
+    'onLastPageBackPress',
+    'onExit',
+    // Page
+    'onPageShow',
+    'onPageHide',
+    'onLoad',
+    'onReady',
+    'onUnload',
+    'onResize',
+    'onBackPress',
+    'onPageScroll',
+    'onTabItemTap',
+    'onReachBottom',
+    'onPullDownRefresh',
+
+    // 其他
+    'onShareTimeline',
+    'onShareAppMessage',
+    'onShareChat', // xhs-share
+    'onCopyUrl',
+    'onUploadDouyinVideo',
+    'onLiveMount',
+    'onTitleClick',
+
+    // 辅助
+    'renderComponentSlot',
+  ],
+}
+
 const uniLifeCyclePreset = {
   from: '@dcloudio/uni-app',
   imports: [
@@ -23,6 +72,8 @@ const uniLifeCyclePreset = {
     'onHide',
     // App
     'onLaunch',
+    'onAppShow',
+    'onAppHide',
     'onError',
     'onThemeChange',
     'onKeyboardHeightChange',
@@ -47,6 +98,10 @@ const uniLifeCyclePreset = {
     'onShareTimeline',
     'onShareAppMessage',
     'onShareChat', // xhs-share
+    'onCopyUrl',
+    'onUploadDouyinVideo',
+    'onLiveMount',
+    'onTitleClick',
 
     // 辅助
     'renderComponentSlot',
@@ -55,10 +110,6 @@ const uniLifeCyclePreset = {
 const uniH5Preset = {
   from: '@dcloudio/uni-h5',
   imports: [
-    'onAppShow',
-    'onAppHide',
-    'offAppHide',
-    'offAppShow',
     'UniElement',
     'UniElementImpl',
     'UniButtonElement',
@@ -101,6 +152,25 @@ const uniH5Preset = {
   ],
 }
 
+if (process.env.NODE_ENV === 'development') {
+  uniWebLifeCyclePreset.imports.push(
+    // web平台如下生命周期和uni.xxx api冲突，发行时改为通过uni-h5导入api实现，运行时通过uni-app导入
+    'onAppShow',
+    'onAppHide',
+    'onError',
+    'onPageNotFound',
+    'onUnhandledRejection'
+  )
+} else {
+  uniH5Preset.imports.push(
+    'onAppShow',
+    'onAppHide',
+    'onError',
+    'onPageNotFound',
+    'onUnhandledRejection'
+  )
+}
+
 const uniMiniProgramPreset = {
   from: 'vue',
   imports: ['UniElement', 'UniElementImpl'],
@@ -109,6 +179,11 @@ const uniMiniProgramPreset = {
 const cloudPreset = {
   from: '@dcloudio/uni-cloud',
   imports: ['uniCloud', 'UniCloudError'],
+}
+
+const utsJsPreset = {
+  from: '@dcloudio/uni-shared',
+  imports: ['UTS', 'UTSJSONObject', 'UTSValueIterable', 'UniError'],
 }
 
 const uniAppLifeCyclePreset = {
@@ -122,13 +197,15 @@ const uniAppLifeCyclePreset = {
     'onShow',
     'onHide',
     // App
+    'onAppShow',
+    'onAppHide',
     'onLaunch',
     'onError',
     'onThemeChange',
+    'onLastPageBackPress',
     // onKeyboardHeightChange,
     'onPageNotFound',
     'onUnhandledRejection',
-    // onLastPageBackPress,
     'onExit',
     // Page
     'onPageShow',
@@ -171,6 +248,7 @@ const vuePreset = {
     // setup helpers
     'useAttrs',
     'useSlots',
+    'useComputedStyle',
 
     // reactivity,
     'computed',
@@ -239,6 +317,8 @@ export function initAutoImportOptions(
   // 只有app-ios和app-harmony平台特殊处理
   if (platform === 'app-ios' || platform === 'app-harmony') {
     autoImport.push(uniAppLifeCyclePreset)
+  } else if (platform === 'web') {
+    autoImport.push(uniWebLifeCyclePreset)
   } else {
     autoImport.push(uniLifeCyclePreset)
   }
@@ -250,6 +330,10 @@ export function initAutoImportOptions(
     autoImport.push(uniH5Preset)
   } else if (platform.startsWith('mp-')) {
     autoImport.push(uniMiniProgramPreset)
+    if (process.env.UNI_APP_X === 'true') {
+      // 小程序端使用autoImport
+      autoImport.push(utsJsPreset)
+    }
   }
   return {
     ...userOptions,

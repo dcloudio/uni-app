@@ -1,6 +1,7 @@
 import { addMiniProgramPageJson } from '@dcloudio/uni-cli-shared'
 import { customElements } from '../src/compiler/options'
 import { assert } from './testUtils'
+import { transformMPBuiltInTag } from '../src/compiler/transforms/transformMPBuiltInTag'
 
 const blankScript = `(_ctx, _cache) => {
   return {}
@@ -11,10 +12,10 @@ describe('mp-alipay: transform component', () => {
     const code = customElements.map((tag) => `<${tag}/>`).join('')
     assert(code, code, blankScript)
   })
-  test(`match-media`, () => {
+  test('match-media', () => {
     assert(
-      `<match-media/>`,
-      `<uni-match-media u-i="2a9ec0b0-0" onVI="__l"/>`,
+      `<match-media min-width="600" max-height="1000"/>`,
+      `<match-media min-width="600" max-height="1000"/>`,
       blankScript
     )
   })
@@ -43,7 +44,7 @@ describe('mp-alipay: transform component', () => {
   ></web-view>`,
       `<web-view src=\"https://https://uniapp.dcloud.io/\" onMessage=\"{{a}}\"></web-view>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onmessage) }
+  return { a: _o(_ctx.onmessage, "69") }
 }`
     )
   })
@@ -96,7 +97,17 @@ describe('mp-alipay: transform component', () => {
       `<subscribe-message template-id='xxxxx' @complete="completeHandler" />`,
       `<subscribe-message template-id="xxxxx" onComplete="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.completeHandler) }
+  return { a: _o(_ctx.completeHandler, "88") }
+}`
+    )
+  })
+
+  test('alipay open component - ad-feeds', () => {
+    assert(
+      `<ad-feeds space-code="ad_tiny_123" @renderSuccess="renderSuccess" />`,
+      `<ad-feeds space-code="ad_tiny_123" onRenderSuccess="{{a}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.renderSuccess, "ee") }
 }`
     )
   })
@@ -106,8 +117,150 @@ describe('mp-alipay: transform component', () => {
       `<button open-type="chooseAvatar" @chooseavatar="onChooseAvatar" />`,
       `<button open-type="chooseAvatar" onChooseAvatar="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onChooseAvatar) }
+  return { a: _o(_ctx.onChooseAvatar, "3e") }
 }`
+    )
+  })
+})
+
+describe('mp-alipay: transform component x', () => {
+  test(`canvas`, () => {
+    assert(
+      `<canvas/>`,
+      `<canvas style="{{'--status-bar-height:' + a}}" type="2d"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<canvas type="2d"/>`,
+      `<canvas type="2d" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<canvas type="webgl"/>`,
+      `<canvas type="webgl" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test(`checkbox`, () => {
+    assert(
+      `<checkbox fore-color="#FF0000"/>`,
+      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<checkbox fore-color="#FF0000"/>`,
+      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test(`radio`, () => {
+    assert(
+      `<radio active-background-color="#FF0000"/>`,
+      `<radio color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<radio color="#FF0000"/>`,
+      `<radio color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test(`switch`, () => {
+    assert(
+      `<switch active-background-color="#FF0000"/>`,
+      `<switch color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<switch color="#FF0000"/>`,
+      `<switch color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test(`slider`, () => {
+    assert(
+      `<slider active-background-color="#FF0000" fore-color="#FF0000"/>`,
+      `<slider active-color="#FF0000" handle-color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
     )
   })
 })

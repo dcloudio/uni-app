@@ -30,6 +30,8 @@ import {
 } from '../transform'
 import { processExpression } from './transformExpression'
 import { isStaticLiteral, rewriteExpression } from './utils'
+import { isCommentNode } from '@dcloudio/uni-cli-shared'
+
 interface IfOptions {
   name: string
   condition?: string
@@ -139,7 +141,7 @@ export function processIf(
     let i = siblings.indexOf(node)
     while (i-- >= -1) {
       const sibling = siblings[i]
-      if (sibling && sibling.type === NodeTypes.COMMENT) {
+      if (sibling && isCommentNode(sibling)) {
         context.removeNode(sibling)
         continue
       }

@@ -14,7 +14,14 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "removeComments": false,
-    "lib": ["ESNext", "DOM"]
+    "lib": [
+      "ESNext",
+      "DOM"
+    ]
   },
-  "include": ["src", "../global.d.ts", "../shims-uni-app.d.ts"]
+  "include": [
+    "src",
+    "../global.d.ts",
+    "../shims-uni-app.d.ts"
+  ]
 }

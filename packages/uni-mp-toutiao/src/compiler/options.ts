@@ -2,17 +2,19 @@ import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN_BIND,
   type MiniProgramCompilerOptions,
+  createCopyComponentDirs,
+  createCopyPluginTarget,
   getNativeTags,
   transformComponentLink,
   transformDirection,
-  transformMPBuiltInTag,
-  transformMatchMedia,
+  // transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import {
   type UniMiniProgramPluginOptions,
   resolveMiniProgramRuntime,
 } from '@dcloudio/uni-mp-vite'
+import { transformMPBuiltInTag } from './transforms/transformMPBuiltInTag'
 
 import source from './project.config.json'
 
@@ -30,6 +32,9 @@ export const customElements = [
   'rtc-room',
   'clue-order-form',
   'shop-follow-card',
+  'match-media',
+  'mask',
+  'video-player',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
@@ -37,7 +42,7 @@ const projectConfigFilename = 'project.config.json'
 
 const nodeTransforms = [
   transformRef,
-  transformMatchMedia,
+  // transformMatchMedia,
   transformComponentLink,
 ]
 
@@ -68,6 +73,14 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
 }
 
+export const commonCopyTargets = [
+  {
+    src: ['package.json', 'project.private.config.json'],
+    get dest() {
+      return process.env.UNI_OUTPUT_DIR
+    },
+  },
+]
 export const options: UniMiniProgramPluginOptions = {
   cdn: 4,
   vite: {
@@ -78,15 +91,8 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: [COMPONENTS_DIR],
-      targets: [
-        {
-          src: ['ext.json', 'package.json', 'project.private.config.json'],
-          get dest() {
-            return process.env.UNI_OUTPUT_DIR
-          },
-        },
-      ],
+      assets: createCopyComponentDirs(COMPONENTS_DIR),
+      targets: [...commonCopyTargets, createCopyPluginTarget(['ext.json'])],
     },
   },
   global: 'tt',

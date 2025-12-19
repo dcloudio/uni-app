@@ -8,7 +8,7 @@ import { isString } from '@vue/shared'
 import { normalizePath } from '../utils'
 import type { Formatter } from '../logs/format'
 
-import { EXTNAME_VUE_RE } from '../constants'
+import { EXTNAME_VUE_RE, SPECIAL_CHARS } from '../constants'
 import { parseVue } from '../vite/utils/ast'
 import { generateCodeFrame } from '../vite/plugins/vitejs/utils'
 
@@ -148,8 +148,21 @@ export const errorFormatter: Formatter<LogErrorOptions> = {
   },
 }
 
+interface ErrorWithBlockFlag extends Error {
+  __errorBlocked: true
+}
+
+export function createErrorWithBlockFlag(msg: string): ErrorWithBlockFlag {
+  const error = new Error(msg) as ErrorWithBlockFlag
+  error.__errorBlocked = true
+  return error
+}
+
+let shouldAddErrorBlock: boolean | null = null
+
 const VITE_ROLLUP_FAILED_TO_RESOLVE_IMPORT_RE =
   /\[vite\]: Rollup failed to resolve import "([^"]+)" from "([^"]+)"/
+const CANNOT_FIND_MODULE_RE = /Cannot find module '([^']+)' from '([^']+)'/
 function buildErrorMessage(
   err: RollupError & { customPrint?: () => void },
   args: string[] = [],
@@ -165,6 +178,21 @@ function buildErrorMessage(
     err.message = `Could not resolve "${importPath}" from "${fromPath}"`
     err.id = fromPath
   }
+
+  if (CANNOT_FIND_MODULE_RE.test(err.message)) {
+    const [, modulePath, fromPath] =
+      err.message.match(CANNOT_FIND_MODULE_RE) || []
+    // 清理模块路径和来源路径，移除查询参数等
+    const cleanModulePath = modulePath.split('?')[0]
+    const cleanFromPath = fromPath.split('?')[0]
+
+    const relativeFromPath = toRelativePath(cleanFromPath)
+
+    // 构建更友好的错误消息
+    err.id = cleanFromPath
+    err.message = `Cannot find module "${cleanModulePath}" from "${relativeFromPath}"`
+  }
+
   // 移除 from 后面的内容
   // 主要是处理：Could not resolve "./static/logo1.png" from "../../../../../../Users/xxx/HBuilderProjects/test-x/pages/index/index.uvue?vue&type=script&lang.uts"
   if (err.id && err.message.startsWith('Could not resolve ')) {
@@ -241,6 +269,19 @@ function buildErrorMessage(
   if (includeStack && err.stack) {
     args.push(pad(cleanStack(err.stack)))
   }
+  if (shouldAddErrorBlock === null) {
+    shouldAddErrorBlock = // 目前仅限 x 的 app 平台
+      process.env.UNI_APP_X === 'true' &&
+      (process.env.UNI_UTS_PLATFORM === 'app-android' ||
+        process.env.UNI_UTS_PLATFORM === 'app-ios' ||
+        process.env.UNI_UTS_PLATFORM === 'app-harmony')
+  }
+  if (shouldAddErrorBlock) {
+    if (!(err as ErrorWithBlockFlag).__errorBlocked) {
+      args[0] = SPECIAL_CHARS.ERROR_BLOCK + args[0]
+      args[args.length - 1] = args[args.length - 1] + SPECIAL_CHARS.ERROR_BLOCK
+    }
+  }
   return args.join('\n')
 }
 
@@ -256,4 +297,16 @@ const splitRE = /\r?\n/
 function pad(source: string, n = 2): string {
   const lines = source.split(splitRE)
   return lines.map((l) => ` `.repeat(n) + l).join(`\n`)
+}
+
+function toRelativePath(filePath: string): string {
+  if (!filePath || !process.env.UNI_INPUT_DIR) {
+    return filePath
+  }
+  try {
+    return path.relative(process.env.UNI_INPUT_DIR, filePath)
+  } catch (e) {
+    // 转换失败时返回原路径
+    return filePath
+  }
 }

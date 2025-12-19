@@ -36,7 +36,7 @@ describe('compiler: transform text', () => {
 </view>`,
       `_cE(\"view\", null, [
   _cE(\"text\", null, \"\\\\\\\\ 换行\"),
-  _cE(\"text\", null, \"\\\\n 换行\"),
+  _cE(\"text\", null, \"\\n 换行\"),
   _cE(\"text\", null, \"\\\\ 换行\"),
   _cE(\"text\", null, \"\\n 换行\"),
   _cE(\"text\", null, \" 换行\"),

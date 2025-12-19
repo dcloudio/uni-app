@@ -1,4 +1,4 @@
-import { isRootHook, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, normalizeStyle as normalizeStyle$1, dynamicSlotName, normalizeClass as normalizeClass$1 } from '@dcloudio/uni-shared';
+import { isRootHook, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, UNI_STATUS_BAR_HEIGHT, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass, normalizeClass as normalizeClass$1 } from '@dcloudio/uni-shared';
 import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, isString, normalizeClass, normalizeStyle, isOn, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, looseToNumber, NO, EMPTY_ARR, isModelListener, toNumber, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
@@ -2607,6 +2607,8 @@ const PublicInstanceProxyHandlers = {
     } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
       accessCache[key] = 4 /* CONTEXT */;
       return ctx[key];
+    } else if (instance.exposed && hasOwn(instance.exposed, key)) {
+      return instance.exposed[key];
     } else if (
       // global properties
       globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)
@@ -4759,16 +4761,15 @@ function setRef$1(instance, isUnmount = false) {
     $templateUniElementRefs,
     ctx: { $scope, $mpPlatform }
   } = instance;
-  if ($mpPlatform === "mp-alipay") {
-    return;
-  }
   if (!$scope || !$templateRefs && !$templateUniElementRefs) {
     return;
   }
   if (isUnmount) {
-    $templateRefs && $templateRefs.forEach(
-      (templateRef) => setTemplateRef(templateRef, null, setupState)
-    );
+    if ($mpPlatform !== "mp-alipay") {
+      $templateRefs && $templateRefs.forEach(
+        (templateRef) => setTemplateRef(templateRef, null, setupState)
+      );
+    }
     $templateUniElementRefs && $templateUniElementRefs.forEach(
       (templateRef) => setTemplateRef(templateRef, null, setupState)
     );
@@ -4817,6 +4818,9 @@ function setRef$1(instance, isUnmount = false) {
         }
       });
     });
+  }
+  if ($mpPlatform === "mp-alipay") {
+    return;
   }
   if ($scope._$setRef) {
     $scope._$setRef(doSet);
@@ -5473,11 +5477,23 @@ function findComponentPropsData(up) {
     return propsCaches[uid][parseInt(propsId)];
 }
 
+function getStatusBarHeight() {
+    if (typeof wx !== 'undefined') {
+        return wx.getWindowInfo().statusBarHeight;
+        // @ts-expect-error
+    }
+    else if (typeof my !== 'undefined') {
+        // @ts-expect-error
+        return my.getWindowInfo().statusBarHeight;
+    }
+}
 var plugin = {
     install(app) {
         initApp(app);
         app.config.globalProperties.pruneComponentPropsCache =
             pruneComponentPropsCache;
+        // TODO 此处不支持 __GLOBAL__，并且有些小程序(如抖音小程序)没有 getWindowInfo 方法
+        app.config.globalProperties[UNI_STATUS_BAR_HEIGHT] = getStatusBarHeight();
         const oldMount = app.mount;
         app.mount = function mount(rootContainer) {
             const instance = oldMount.call(app, rootContainer);
@@ -5762,6 +5778,11 @@ class UniElement {
         this.nodeName = this.tagName;
     }
     scrollTo(options) {
+        if (this.$vm
+            .$mpPlatform !== 'mp-weixin') {
+            console.warn('scrollTo is only supported on weixin miniProgram');
+            return;
+        }
         if (!this.id) {
             console.warn(`scrollTo is only supported on elements with id`);
             return;
@@ -5816,12 +5837,15 @@ class UniElement {
             console.warn(`getBoundingClientRectAsync is not supported on elements without id`);
             return Promise.reject();
         }
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this._getBoundingClientRectAsync(resolve);
         });
     }
     _getBoundingClientRectAsync(callback) {
-        const query = uni.createSelectorQuery().in(this.$vm);
+        const query = this.$vm
+            .$mpPlatform === 'mp-alipay'
+            ? uni.createSelectorQuery()
+            : uni.createSelectorQuery().in(this.$vm);
         query.select('#' + this.id).boundingClientRect();
         query.exec((res) => {
             this._fixDomRectXY(res[0]);
@@ -5947,7 +5971,11 @@ function createUniElement(id, tagName, ins) {
     }
     const uniElement = new (customElements.get(tagName) || UniElement)(id, tagName);
     uniElement.$vm = ins.proxy;
-    initMiniProgramNode(uniElement, ins);
+    // 目前只有微信小程序支持获取 ScrollViewContext
+    if (ins.proxy
+        .$mpPlatform === 'mp-weixin') {
+        initMiniProgramNode(uniElement, ins);
+    }
     uniElement.$onStyleChange((styles) => {
         var _a;
         let cssText = '';
@@ -6039,7 +6067,6 @@ function createEventTarget(target, ins) {
     return element;
 }
 function initMiniProgramNode(uniElement, ins) {
-    // 可能需要条件编译，部分小程序不支持
     if (uniElement.tagName === 'SCROLL-VIEW') {
         uniElement.$node = new Promise((resolve) => {
             setTimeout(() => {
@@ -6503,6 +6530,35 @@ function setUniElementRef(ins, ref, id, opts, tagType) {
     }
 }
 
+function getPartClassList(partName) {
+    return partName
+        .split(/\s+/)
+        .map((name) => '^' + getPartClass(name))
+        .join(' ');
+}
+function mergePartClass(partName, existingClass) {
+    let existingClassStr = '';
+    if (Array.isArray(existingClass)) {
+        existingClassStr = existingClass.join(' ');
+    }
+    else if (typeof existingClass === 'object') {
+        existingClassStr = Object.keys(existingClass)
+            .filter((key) => !!existingClass[key])
+            .join(' ');
+    }
+    else {
+        existingClassStr = existingClass || '';
+    }
+    if (typeof partName !== 'string') {
+        return existingClassStr;
+    }
+    const partClass = getPartClassList(partName);
+    if (existingClassStr) {
+        return `${existingClassStr} ${partClass}`;
+    }
+    return partClass;
+}
+
 function hasIdProp(_ctx) {
     return (_ctx.$.propsOptions &&
         _ctx.$.propsOptions[0] &&
@@ -6522,6 +6578,23 @@ function genIdWithVirtualHost(_ctx, idBinding) {
 }
 function genUniElementId(_ctx, idBinding, genId) {
     return genIdWithVirtualHost(_ctx, idBinding) || genId || '';
+}
+
+function parseVirtualHostClass(className) {
+    if (isArray(className)) {
+        return className
+            .filter(Boolean)
+            .map((name) => `^${name}`)
+            .join(' ');
+    }
+    if (isString(className)) {
+        return className
+            .split(/\s+/)
+            .filter(Boolean)
+            .map((name) => `^${name}`)
+            .join(' ');
+    }
+    return '';
 }
 
 function setupDevtoolsPlugin() {
@@ -6545,7 +6618,9 @@ const m = (fn, modifiers, isComponent = false) => withModelModifiers(fn, modifie
 const j = (obj) => JSON.stringify(obj);
 const sei = setUniElementId;
 const ses = setUniElementStyle;
+const mpc = mergePartClass;
 const gei = genUniElementId;
+const pvhc = parseVirtualHostClass;
 
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
@@ -6553,4 +6628,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, UniElement as UniElementImpl, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, queuePostFlushCb, r, reactive, readonly, ref, registerCustomElement, resolveComponent, resolveDirective, resolveFilter, s, sei, ses, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, UniElement as UniElementImpl, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, mpc, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, pvhc, queuePostFlushCb, r, reactive, readonly, ref, registerCustomElement, resolveComponent, resolveDirective, resolveFilter, s, sei, ses, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

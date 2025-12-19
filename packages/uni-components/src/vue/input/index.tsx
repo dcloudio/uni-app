@@ -8,6 +8,7 @@ import {
   onMounted,
   ref,
   watch,
+  withModifiers,
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
@@ -358,20 +359,33 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             ref={fieldRef}
             // v-model 会导致 type 为 number 或 digit 时赋值为 number 类型
             value={state.value}
-            onInput={(event: Event) => {
-              const value = (event.target as HTMLInputElement).value.toString()
-              if (
-                type.value === 'number' &&
-                state.maxlength > 0 &&
-                value.length > state.maxlength
-              ) {
-                if (isPaste(event as InputEvent)) {
-                  state.value = value.slice(0, state.maxlength)
+            onInput={withModifiers(
+              (event: Event) => {
+                const value = (
+                  event.target as HTMLInputElement
+                ).value.toString()
+                if (
+                  type.value === 'number' &&
+                  state.maxlength > 0 &&
+                  value.length > state.maxlength
+                ) {
+                  if (isPaste(event as InputEvent)) {
+                    state.value = value.slice(0, state.maxlength)
+                  }
+                  return
                 }
-                return
-              }
-              state.value = value
-            }}
+                // fix: 已有小数点，再输入小数点时 value 为空，不可赋值 state.value
+                if (
+                  value.length === 0 &&
+                  (event as InputEvent).inputType === 'insertText' &&
+                  (event as InputEvent).data === '.'
+                ) {
+                  return
+                }
+                state.value = value
+              },
+              ['stop']
+            )}
             disabled={!!props.disabled}
             type={type.value}
             maxlength={state.maxlength}

@@ -819,6 +819,16 @@
   var ON_PAGE_SCROLL = "onPageScroll";
   var ON_REACH_BOTTOM = "onReachBottom";
   var ON_WXS_INVOKE_CALL_METHOD = "onWxsInvokeCallMethod";
+  var lastLogTime = 0;
+  function formatLog(module) {
+    var now = Date.now();
+    var diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
+      args[_key2 - 1] = arguments[_key2];
+    }
+    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]：").concat(args.map((arg) => JSON.stringify(arg)).join(" "));
+  }
   function cache(fn) {
     var cache2 = /* @__PURE__ */ Object.create(null);
     return (str) => {
@@ -840,8 +850,8 @@
     var res;
     return function() {
       if (fn) {
-        for (var _len = arguments.length, args = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
-          args[_key2] = arguments[_key2];
+        for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
+          args[_key3] = arguments[_key3];
         }
         res = fn.apply(ctx2, args);
         fn = null;
@@ -864,16 +874,6 @@
     }
     return getValueByDataPath(obj[key2], parts.slice(1).join("."));
   }
-  var lastLogTime = 0;
-  function formatLog(module) {
-    var now = Date.now();
-    var diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
-      args[_key3 - 1] = arguments[_key3];
-    }
-    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]：").concat(args.map((arg) => JSON.stringify(arg)).join(" "));
-  }
   function formatKey(key2) {
     return camelize(key2.substring(5));
   }
@@ -886,7 +886,9 @@
         var dataset = this.__uniDataset || (this.__uniDataset = {});
         dataset[formatKey(key2)] = value;
       }
-      setAttribute.call(this, key2, value);
+      if (!/^\d/.test(key2)) {
+        setAttribute.call(this, key2, value);
+      }
     };
     var removeAttribute = prototype.removeAttribute;
     prototype.removeAttribute = function(key2) {
@@ -1653,11 +1655,12 @@
     var newValue = Number(value);
     return isNaN(newValue) ? defaultValue : newValue;
   }
+  var isApple = () => /^Apple/.test(navigator.vendor);
   function getWindowWidth() {
-    var screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+    var screenFix = isApple() && typeof window.orientation === "number";
     var landscape = screenFix && Math.abs(window.orientation) === 90;
     var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-    var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+    var windowWidth = screenFix ? Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth : Math.min(window.innerWidth, document.documentElement.clientWidth);
     return windowWidth;
   }
   function useRem() {
@@ -1673,6 +1676,12 @@
     document.addEventListener("DOMContentLoaded", updateRem);
     window.addEventListener("load", updateRem);
     window.addEventListener("resize", updateRem);
+    if (isApple()) {
+      window.addEventListener("orientationchange", () => {
+        updateRem();
+        setTimeout(updateRem, 50);
+      });
+    }
   }
   var activeEffectScope;
   class EffectScope {
@@ -14647,7 +14656,7 @@
     var state = {};
     function initKeyboard(el) {
       var focus;
-      var isApple = computed(() => String(navigator.vendor).indexOf("Apple") === 0);
+      var isApple2 = computed(() => String(navigator.vendor).indexOf("Apple") === 0);
       var keyboardChange = () => {
         trigger2("keyboardheightchange", {}, {
           height: keyboardHeight,
@@ -14717,12 +14726,12 @@
             }, 300);
           }
         }
-        if (isApple.value) {
+        if (isApple2.value) {
           document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
         }
       };
       el.addEventListener("blur", () => {
-        if (isApple.value) {
+        if (isApple2.value) {
           el.blur();
         }
         focus = false;
@@ -16489,7 +16498,7 @@
           "key": "input",
           "ref": fieldRef,
           "value": state.value,
-          "onInput": (event) => {
+          "onInput": withModifiers((event) => {
             var value = event.target.value.toString();
             if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
               if (isPaste(event)) {
@@ -16497,8 +16506,11 @@
               }
               return;
             }
+            if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+              return;
+            }
             state.value = value;
-          },
+          }, ["stop"]),
           "disabled": !!props2.disabled,
           "type": type.value,
           "maxlength": state.maxlength,
@@ -20510,6 +20522,12 @@
       var sliderValueRef = ref(null);
       var sliderHandleRef = ref(null);
       var sliderValue = ref(Number(props2.value));
+      if (sliderValue.value < Number(props2.min)) {
+        sliderValue.value = Number(props2.min);
+      }
+      if (sliderValue.value > Number(props2.max)) {
+        sliderValue.value = Number(props2.max);
+      }
       watch(() => props2.value, (val) => {
         sliderValue.value = Number(val);
       });
@@ -20594,6 +20612,13 @@
     return state;
   }
   function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger2) {
+    var truthStep = computed(() => {
+      var step2 = Number(props2.step);
+      if (isNaN(step2)) {
+        return 1;
+      }
+      return step2;
+    });
     var _onClick = ($event) => {
       if (props2.disabled) {
         return;
@@ -20603,11 +20628,8 @@
         value: sliderValue.value
       });
     };
-    var _filterValue = (e2) => {
-      var max2 = Number(props2.max);
-      var min2 = Number(props2.min);
-      var step2 = Number(props2.step);
-      return e2 < min2 ? min2 : e2 > max2 ? max2 : computeController.mul.call(Math.round((e2 - min2) / step2), step2) + min2;
+    var _filterValue = (min2, step2, value) => {
+      return Math.round((value - min2) / step2) * step2 + min2;
     };
     var _onUserChangedValue = (e2) => {
       var max2 = Number(props2.max);
@@ -20619,8 +20641,9 @@
       var slider = sliderRef.value;
       var offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
       var boxLeft = slider.getBoundingClientRect().left;
-      var value = (e2.x - boxLeft) * (max2 - min2) / offsetWidth + min2;
-      sliderValue.value = _filterValue(value);
+      var proportion = (e2.x - boxLeft) / offsetWidth;
+      var stepDecimal = (truthStep.value + "").split(".")[1];
+      sliderValue.value = parseFloat(_filterValue(min2, truthStep.value, lerp(min2, max2, proportion)).toFixed(stepDecimal ? stepDecimal.length : 0));
     };
     var _onTrack = (e2) => {
       if (!props2.disabled) {
@@ -20656,22 +20679,10 @@
       _onTrack
     };
   }
-  var computeController = {
-    mul: function(arg) {
-      var m = 0;
-      var s1 = this.toString();
-      var s2 = arg.toString();
-      try {
-        m += s1.split(".")[1].length;
-      } catch (e2) {
-      }
-      try {
-        m += s2.split(".")[1].length;
-      } catch (e2) {
-      }
-      return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-    }
-  };
+  function lerp(min2, max2, t2) {
+    t2 = Math.min(1, Math.max(0, t2));
+    return min2 * (1 - t2) + max2 * t2;
+  }
   var props$h = {
     indicatorDots: {
       type: [Boolean, String],
@@ -21748,7 +21759,7 @@
     if (!name) {
       return;
     }
-    registerViewMethod(getCurrentPageId(), name, (_ref, resolve) => {
+    registerViewMethod(pageId || getCurrentPageId(), name, (_ref, resolve) => {
       var {
         type,
         data
@@ -21760,22 +21771,23 @@
     if (!name) {
       return;
     }
-    unregisterViewMethod(getCurrentPageId(), name);
+    unregisterViewMethod(pageId || getCurrentPageId(), name);
   }
   function useSubscribe(callback, name, multiple, pageId) {
     var instance = getCurrentInstance();
     var vm = instance.proxy;
+    pageId = pageId == null ? useCurrentPageId() : pageId;
     onMounted(() => {
-      addSubscribe(name || normalizeEvent(vm), callback);
+      addSubscribe(name || normalizeEvent(vm), callback, pageId);
       {
         watch(() => vm.id, (value, oldValue) => {
-          addSubscribe(normalizeEvent(vm, value), callback);
+          addSubscribe(normalizeEvent(vm, value), callback, pageId);
           removeSubscribe(oldValue && normalizeEvent(vm, oldValue));
         });
       }
     });
     onBeforeUnmount(() => {
-      removeSubscribe(name || normalizeEvent(vm));
+      removeSubscribe(name || normalizeEvent(vm), pageId);
     });
   }
   var index$2 = 0;
@@ -22346,6 +22358,9 @@
           },
           setPullToRefresh(options) {
             invokeHarmonyChannel("setPullToRefresh", [options]);
+          },
+          setStyle(options) {
+            invokeHarmonyChannel("setStyle", [options]);
           }
         }, invokeHarmonyChannel("currentWebview"));
       },
@@ -22468,9 +22483,15 @@
           case "loadUrl":
             resolve(embed[HarmonyNativeMethodMap[methodName]](data.url, data.headers));
             break;
-          case "loadData":
-            resolve(embed[HarmonyNativeMethodMap[methodName]](data.data, data.mimeType, data.encoding, data.baseUrl));
+          case "loadData": {
+            var _data$encoding;
+            var _data = data.data;
+            if (((_data$encoding = data.encoding) === null || _data$encoding === void 0 ? void 0 : _data$encoding.toLowerCase()) !== "base64") {
+              _data = _data.replace(/#/g, "%23");
+            }
+            resolve(embed[HarmonyNativeMethodMap[methodName]](_data, data.mimeType, data.encoding, data.baseUrl));
             break;
+          }
           case "clear":
             resolve(embed[HarmonyNativeMethodMap[methodName]](data.clearRom));
             break;
@@ -23354,7 +23375,10 @@
           "poster": props2.poster,
           "autoplay": !!props2.autoplay
         }, videoAttrs.value, {
-          "class": "uni-video-video",
+          "class": {
+            "uni-video-video": true,
+            "uni-video-video-fullscreen": fullscreenState.fullscreen
+          },
           "webkit-playsinline": true,
           "playsinline": true,
           "onDurationchange": onDurationChange,

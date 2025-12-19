@@ -2,8 +2,10 @@ import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   type MiniProgramCompilerOptions,
+  createCopyComponentDirs,
+  createCopyPluginTarget,
   getNativeTags,
-  transformMatchMedia,
+  // transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
@@ -40,7 +42,11 @@ export const customElements = [
   'talos-svg',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
-const nodeTransforms = [transformRef, transformFor, transformMatchMedia]
+const nodeTransforms = [
+  transformRef,
+  transformFor,
+  // transformMatchMedia
+]
 const directiveTransforms = {
   on: transformOn,
   model: transformModel,
@@ -90,15 +96,8 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: [COMPONENTS_DIR],
-      targets: [
-        {
-          src: ['ext.json'],
-          get dest() {
-            return process.env.UNI_OUTPUT_DIR
-          },
-        },
-      ],
+      assets: createCopyComponentDirs(COMPONENTS_DIR),
+      targets: [createCopyPluginTarget(['ext.json'])],
     },
   },
   global: 'swan',

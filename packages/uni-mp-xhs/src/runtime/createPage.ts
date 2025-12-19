@@ -21,6 +21,7 @@ import {
   ON_READY,
   ON_SHOW,
   ON_UNLOAD,
+  UTSJSONObject,
   addLeadingSlash,
   stringifyQuery,
 } from '@dcloudio/uni-shared'

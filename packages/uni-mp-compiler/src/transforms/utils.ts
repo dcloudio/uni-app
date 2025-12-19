@@ -14,7 +14,12 @@ import {
   objectProperty,
   stringLiteral,
 } from '@babel/types'
-import { VUE_REF, VUE_REF_IN_FOR } from '@dcloudio/uni-cli-shared'
+import {
+  VUE_REF,
+  VUE_REF_IN_FOR,
+  isCompoundExpressionNode,
+  isSimpleExpressionNode,
+} from '@dcloudio/uni-cli-shared'
 import {
   type ElementNode,
   type ExpressionNode,
@@ -30,6 +35,7 @@ import { genBabelExpr, genExpr } from '../codegen'
 import type { CodegenScope } from '../options'
 import { type TransformContext, isVForScope, isVIfScope } from '../transform'
 import { isString, isSymbol } from '@vue/shared'
+import { ATTR_CHANGE_PREFIX } from '@dcloudio/uni-shared'
 
 // v-i,v-s 不能在 quickapp-webview 中使用，估计是内部处理成了指令之类的
 export const ATTR_VUE_ID = 'u-i'
@@ -54,7 +60,7 @@ export const FILTER_SET_ELEMENT_ANIMATION = 'sA' // setAnimation
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
 
 export function filterObserverName(name: string) {
-  return 'change:' + name
+  return ATTR_CHANGE_PREFIX + name
 }
 
 export function filterName(name: string) {
@@ -67,10 +73,10 @@ export function rewriteSpreadElement(
   loc: SourceLocation,
   context: TransformContext
 ) {
-  return rewirteWithHelper(name, expr.argument, loc, context)
+  return rewriteWithHelper(name, expr.argument, loc, context)
 }
 
-export function rewirteWithHelper(
+export function rewriteWithHelper(
   name: symbol,
   expr: Expression,
   loc: SourceLocation,
@@ -239,13 +245,13 @@ export function removeAttribute(node: ElementNode, name: string) {
   }
 }
 
-export function isFilterExpr(value: ExpressionNode, context: TransformContext) {
-  if (context.filters.length && value.type === NodeTypes.COMPOUND_EXPRESSION) {
-    const firstChild = value.children[0]
+export function isFilterExpr(node: ExpressionNode, context: TransformContext) {
+  if (context.filters.length && isCompoundExpressionNode(node)) {
+    const firstChild = node.children[0]
     if (
       !isString(firstChild) &&
       !isSymbol(firstChild) &&
-      firstChild.type === NodeTypes.SIMPLE_EXPRESSION &&
+      isSimpleExpressionNode(firstChild) &&
       context.filters.includes(firstChild.content)
     ) {
       return true

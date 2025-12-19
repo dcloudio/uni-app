@@ -129,6 +129,7 @@ const onError = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_ERROR, 1 /* HookF
 const onThemeChange = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_THEME_CHANGE, 1 /* HookFlags.APP */);
 const onPageNotFound = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_PAGE_NOT_FOUND, 1 /* HookFlags.APP */);
 const onUnhandledRejection = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_UNHANDLE_REJECTION, 1 /* HookFlags.APP */);
+const onLastPageBackPress = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_LAST_PAGE_BACK_PRESS, 1 /* HookFlags.APP */);
 const onExit = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_EXIT, 1 /* HookFlags.APP */);
 const onInit = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_INIT, 2 /* HookFlags.PAGE */ | 4 /* HookFlags.COMPONENT */);
 // 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧
@@ -143,10 +144,14 @@ const onReachBottom = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_REACH_BOTTO
 const onPullDownRefresh = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_PULL_DOWN_REFRESH, 2 /* HookFlags.PAGE */);
 const onSaveExitState = 
 /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SAVE_EXIT_STATE, 2 /* HookFlags.PAGE */);
+const onTitleClick = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_TITLE_CLICK, 2 /* HookFlags.PAGE */);
 const onShareTimeline = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_TIMELINE, 2 /* HookFlags.PAGE */);
 const onShareChat = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_CHAT, 2 /* HookFlags.PAGE */);
 const onAddToFavorites = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_ADD_TO_FAVORITES, 2 /* HookFlags.PAGE */);
 const onShareAppMessage = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_APP_MESSAGE, 2 /* HookFlags.PAGE */);
+const onCopyUrl = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_COPY_URL, 2 /* HookFlags.PAGE */);
+const onUploadDouyinVideo = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_UPLOAD_DOUYIN_VIDEO, 2 /* HookFlags.PAGE */);
+const onLiveMount = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_LIVE_MOUNT, 2 /* HookFlags.PAGE */);
 const onNavigationBarButtonTap = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, 2 /* HookFlags.PAGE */);
 const onNavigationBarSearchInputChanged = 
 /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, 2 /* HookFlags.PAGE */);
@@ -156,9 +161,10 @@ const onNavigationBarSearchInputConfirmed =
 /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, 2 /* HookFlags.PAGE */);
 const onNavigationBarSearchInputFocusChanged = 
 /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, 2 /* HookFlags.PAGE */);
-// for uni-app-x web
 const onPageHide = onHide;
 const onPageShow = onShow;
+const onAppHide = onHide;
+const onAppShow = onShow;
 
 function renderComponentSlot(slots, name, props = null) {
     if (slots[name]) {
@@ -188,12 +194,17 @@ exports.formatLog = formatLog;
 exports.getCurrentSubNVue = getCurrentSubNVue;
 exports.getSsrGlobalData = getSsrGlobalData;
 exports.onAddToFavorites = onAddToFavorites;
+exports.onAppHide = onAppHide;
+exports.onAppShow = onAppShow;
 exports.onBackPress = onBackPress;
+exports.onCopyUrl = onCopyUrl;
 exports.onError = onError;
 exports.onExit = onExit;
 exports.onHide = onHide;
 exports.onInit = onInit;
+exports.onLastPageBackPress = onLastPageBackPress;
 exports.onLaunch = onLaunch;
+exports.onLiveMount = onLiveMount;
 exports.onLoad = onLoad;
 exports.onNavigationBarButtonTap = onNavigationBarButtonTap;
 exports.onNavigationBarSearchInputChanged = onNavigationBarSearchInputChanged;
@@ -215,8 +226,10 @@ exports.onShareTimeline = onShareTimeline;
 exports.onShow = onShow;
 exports.onTabItemTap = onTabItemTap;
 exports.onThemeChange = onThemeChange;
+exports.onTitleClick = onTitleClick;
 exports.onUnhandledRejection = onUnhandledRejection;
 exports.onUnload = onUnload;
+exports.onUploadDouyinVideo = onUploadDouyinVideo;
 exports.renderComponentSlot = renderComponentSlot;
 exports.requireNativePlugin = requireNativePlugin;
 exports.resolveEasycom = resolveEasycom;

@@ -228,6 +228,9 @@ function initTabBarI18n(tabBar2) {
       defineI18nProperty(item, ["text"]);
     });
   }
+  if (isEnableLocale() && tabBar2.midButton) {
+    defineI18nProperty(tabBar2.midButton, ["text"]);
+  }
   return tabBar2;
 }
 function initBridge(subscribeNamespace) {
@@ -4108,7 +4111,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "key": "input",
         "ref": fieldRef,
         "value": state.value,
-        "onInput": (event) => {
+        "onInput": vue.withModifiers((event) => {
           const value = event.target.value.toString();
           if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
             if (isPaste(event)) {
@@ -4116,8 +4119,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
             }
             return;
           }
+          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+            return;
+          }
           state.value = value;
-        },
+        }, ["stop"]),
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state.maxlength,
@@ -6851,6 +6857,12 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     const sliderValueRef = vue.ref(null);
     const sliderHandleRef = vue.ref(null);
     const sliderValue = vue.ref(Number(props2.value));
+    if (sliderValue.value < Number(props2.min)) {
+      sliderValue.value = Number(props2.min);
+    }
+    if (sliderValue.value > Number(props2.max)) {
+      sliderValue.value = Number(props2.max);
+    }
     vue.watch(() => props2.value, (val) => {
       sliderValue.value = Number(val);
     });
@@ -6932,6 +6944,13 @@ function useSliderState(props2, sliderValue) {
   return state;
 }
 function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
+  const truthStep = vue.computed(() => {
+    const step = Number(props2.step);
+    if (isNaN(step)) {
+      return 1;
+    }
+    return step;
+  });
   const _onClick = ($event) => {
     if (props2.disabled) {
       return;
@@ -6941,11 +6960,8 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
       value: sliderValue.value
     });
   };
-  const _filterValue = (e2) => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    const step = Number(props2.step);
-    return e2 < min ? min : e2 > max ? max : computeController.mul.call(Math.round((e2 - min) / step), step) + min;
+  const _filterValue = (min, step, value) => {
+    return Math.round((value - min) / step) * step + min;
   };
   const _onUserChangedValue = (e2) => {
     const max = Number(props2.max);
@@ -6957,8 +6973,9 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     const slider = sliderRef.value;
     const offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
     const boxLeft = slider.getBoundingClientRect().left;
-    const value = (e2.x - boxLeft) * (max - min) / offsetWidth + min;
-    sliderValue.value = _filterValue(value);
+    const proportion = (e2.x - boxLeft) / offsetWidth;
+    const stepDecimal = (truthStep.value + "").split(".")[1];
+    sliderValue.value = parseFloat(_filterValue(min, truthStep.value, lerp(min, max, proportion)).toFixed(stepDecimal ? stepDecimal.length : 0));
   };
   const _onTrack = (e2) => {
     if (!props2.disabled) {
@@ -6991,22 +7008,10 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     _onTrack
   };
 }
-var computeController = {
-  mul: function(arg) {
-    let m = 0;
-    let s1 = this.toString();
-    let s2 = arg.toString();
-    try {
-      m += s1.split(".")[1].length;
-    } catch (e2) {
-    }
-    try {
-      m += s2.split(".")[1].length;
-    } catch (e2) {
-    }
-    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-  }
-};
+function lerp(min, max, t2) {
+  t2 = Math.min(1, Math.max(0, t2));
+  return min * (1 - t2) + max * t2;
+}
 const props$d = {
   indicatorDots: {
     type: [Boolean, String],
@@ -9153,7 +9158,10 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "poster": props2.poster,
         "autoplay": !!props2.autoplay
       }, videoAttrs.value, {
-        "class": "uni-video-video",
+        "class": {
+          "uni-video-video": true,
+          "uni-video-video-fullscreen": fullscreenState.fullscreen
+        },
         "webkit-playsinline": true,
         "playsinline": true,
         "onDurationchange": onDurationChange,

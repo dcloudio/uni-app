@@ -1,12 +1,16 @@
-import type { Declaration } from 'postcss'
-import { type NormalizeOptions, type TransformDecl, createDecl } from '../utils'
+import {
+  type Declaration,
+  type NormalizeOptions,
+  type TransformDecl,
+  createDecl,
+} from '../utils'
 
-const backgroundColor = __NODE_JS__ ? 'background-color' : 'backgroundColor'
-const backgroundImage = __NODE_JS__ ? 'background-image' : 'backgroundImage'
+const backgroundColor = __HYPHENATE__ ? 'background-color' : 'backgroundColor'
+const backgroundImage = __HYPHENATE__ ? 'background-image' : 'backgroundImage'
 
-const handleTransformBackground = (decl: Declaration) => {
-  const { value, important, raws, source } = decl
-
+const handleTransformBackground = (decl: Declaration): Declaration[] => {
+  let { value, important, raws, source } = decl
+  value = value.trim()
   if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
     return [
       createDecl(backgroundImage, 'none', important, raws, source),
@@ -25,7 +29,7 @@ const handleTransformBackground = (decl: Declaration) => {
   }
   return [decl]
 }
-const handleTransformBackgroundNvue = (decl: Declaration) => {
+const handleTransformBackgroundNvue = (decl: Declaration): Declaration[] => {
   const { value, important, raws, source } = decl
   if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
     return [createDecl(backgroundColor, value, important, raws, source)]

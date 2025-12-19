@@ -14,7 +14,7 @@ describe('mp-kuaishou: transform component', () => {
       `<switch @change="change"/>`,
       `<block ks:if="{{r0}}"><switch bindchange="{{a}}"/></block>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.change) }
+  return { a: _o(_ctx.change, "3f") }
 }`
     )
   })
@@ -43,14 +43,14 @@ describe('mp-kuaishou: transform component', () => {
       `<ad :type='13001' :unit-id='13001001' @load='onLoad' @error='onError' @close='onClose'/>`,
       `<ad type=\"{{13001}}\" unit-id=\"{{13001001}}\" bindload=\"{{a}}\" binderror=\"{{b}}\" bindclose=\"{{c}}\"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onLoad), b: _o(_ctx.onError), c: _o(_ctx.onClose) }
+  return { a: _o(_ctx.onLoad, "3b"), b: _o(_ctx.onError, "fb"), c: _o(_ctx.onClose, "af") }
 }`
     )
     assert(
       `<ad :type='13001' :unit-id='13001001' @load='onLoad' @error='onError' @close='onClose'></ad>`,
       `<ad type=\"{{13001}}\" unit-id=\"{{13001001}}\" bindload=\"{{a}}\" binderror=\"{{b}}\" bindclose=\"{{c}}\"></ad>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onLoad), b: _o(_ctx.onError), c: _o(_ctx.onClose) }
+  return { a: _o(_ctx.onLoad, "3b"), b: _o(_ctx.onError, "fb"), c: _o(_ctx.onClose, "af") }
 }`
     )
   })
@@ -60,14 +60,14 @@ describe('mp-kuaishou: transform component', () => {
       `<payment-list @change="handlePaymentSelect" @error="handleError" />`,
       `<payment-list bindchange=\"{{a}}\" binderror=\"{{b}}\"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.handlePaymentSelect), b: _o(_ctx.handleError) }
+  return { a: _o(_ctx.handlePaymentSelect, "77"), b: _o(_ctx.handleError, "21") }
 }`
     )
     assert(
       `<payment-list @change="handlePaymentSelect" @error="handleError"></payment-list>`,
       `<payment-list bindchange=\"{{a}}\" binderror=\"{{b}}\"></payment-list>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.handlePaymentSelect), b: _o(_ctx.handleError) }
+  return { a: _o(_ctx.handlePaymentSelect, "77"), b: _o(_ctx.handleError, "21") }
 }`
     )
   })
@@ -112,14 +112,14 @@ describe('mp-kuaishou: transform component', () => {
       `<playlet playlet-id='123' :show-bottom-safe-area='true' @play='onPlay' @pause='onPause'/>`,
       `<playlet playlet-id=\"123\" show-bottom-safe-area=\"{{true}}\" bindplay=\"{{a}}\" bindpause=\"{{b}}\"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onPlay), b: _o(_ctx.onPause) }
+  return { a: _o(_ctx.onPlay, "67"), b: _o(_ctx.onPause, "43") }
 }`
     )
     assert(
       `<playlet playlet-id='123' :show-bottom-safe-area='true' @play='onPlay' @pause='onPause'></playlet>`,
       `<playlet playlet-id=\"123\" show-bottom-safe-area=\"{{true}}\" bindplay=\"{{a}}\" bindpause=\"{{b}}\"></playlet>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onPlay), b: _o(_ctx.onPause) }
+  return { a: _o(_ctx.onPlay, "67"), b: _o(_ctx.onPause, "43") }
 }`
     )
   })

@@ -5,7 +5,12 @@
     "module": "esnext",
     "strict": true,
     "moduleResolution": "node",
-    "lib": ["esnext", "dom"]
+    "lib": [
+      "esnext",
+      "dom"
+    ]
   },
-  "include": ["./*"]
+  "include": [
+    "./*"
+  ]
 }

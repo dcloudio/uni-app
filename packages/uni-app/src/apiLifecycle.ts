@@ -7,11 +7,14 @@ import { getCurrentInstance, injectHook, isInSSRComponentSetup } from 'vue'
 import {
   ON_ADD_TO_FAVORITES,
   ON_BACK_PRESS,
+  ON_COPY_URL,
   ON_ERROR,
   ON_EXIT,
   ON_HIDE,
   ON_INIT,
+  ON_LAST_PAGE_BACK_PRESS,
   ON_LAUNCH,
+  ON_LIVE_MOUNT,
   ON_LOAD,
   ON_NAVIGATION_BAR_BUTTON_TAP,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
@@ -31,8 +34,10 @@ import {
   ON_SHOW,
   ON_TAB_ITEM_TAP,
   ON_THEME_CHANGE,
+  ON_TITLE_CLICK,
   ON_UNHANDLE_REJECTION,
   ON_UNLOAD,
+  ON_UPLOAD_DOUYIN_VIDEO,
   type UniLifecycleHooks,
 } from '@dcloudio/uni-shared'
 
@@ -109,6 +114,9 @@ export const onPageNotFound = /*#__PURE__*/ createLifeCycleHook<
 export const onUnhandledRejection = /*#__PURE__*/ createLifeCycleHook<
   Required<App.AppInstance>['onUnhandledRejection']
 >(ON_UNHANDLE_REJECTION, HookFlags.APP)
+export const onLastPageBackPress = /*#__PURE__*/ createLifeCycleHook<
+  Required<App.AppInstance>['onLastPageBackPress']
+>(ON_LAST_PAGE_BACK_PRESS, HookFlags.APP)
 
 export const onExit = /*#__PURE__*/ createLifeCycleHook<() => void>(
   ON_EXIT,
@@ -157,6 +165,9 @@ export const onSaveExitState =
     HookFlags.PAGE
   )
 
+export const onTitleClick = /*#__PURE__*/ createLifeCycleHook<
+  Required<Page.PageInstance>['onTitleClick']
+>(ON_TITLE_CLICK, HookFlags.PAGE)
 export const onShareTimeline = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onShareTimeline']
 >(ON_SHARE_TIMELINE, HookFlags.PAGE)
@@ -169,6 +180,15 @@ export const onAddToFavorites = /*#__PURE__*/ createLifeCycleHook<
 export const onShareAppMessage = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onShareAppMessage']
 >(ON_SHARE_APP_MESSAGE, HookFlags.PAGE)
+export const onCopyUrl = /*#__PURE__*/ createLifeCycleHook<
+  Required<Page.PageInstance>['onCopyUrl']
+>(ON_COPY_URL, HookFlags.PAGE)
+export const onUploadDouyinVideo = /*#__PURE__*/ createLifeCycleHook<
+  Required<Page.PageInstance>['onUploadDouyinVideo']
+>(ON_UPLOAD_DOUYIN_VIDEO, HookFlags.PAGE)
+export const onLiveMount = /*#__PURE__*/ createLifeCycleHook<
+  Required<Page.PageInstance>['onLiveMount']
+>(ON_LIVE_MOUNT, HookFlags.PAGE)
 
 export const onNavigationBarButtonTap = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onNavigationBarButtonTap']
@@ -193,6 +213,7 @@ export const onNavigationBarSearchInputFocusChanged =
     HookFlags.PAGE
   )
 
-// for uni-app-x web
 export const onPageHide = onHide
 export const onPageShow = onShow
+export const onAppHide = onHide
+export const onAppShow = onShow

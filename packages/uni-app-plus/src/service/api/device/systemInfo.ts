@@ -10,7 +10,9 @@ let _initSystemInfo = true
 export function weexGetSystemInfoSync() {
   if (!_initSystemInfo) return
   const { getSystemInfoSync } = weex.requireModule('plus')
-  systemInfo = getSystemInfoSync()
+  try {
+    systemInfo = getSystemInfoSync()
+  } catch (error) {}
   if (isString(systemInfo)) {
     try {
       systemInfo = JSON.parse(systemInfo)

@@ -129,9 +129,23 @@ export const uploadFile = defineTaskApi<API_TYPE_UPLOAD_FILE>(
       xhr.onload = function () {
         clearTimeout(timer)
         const statusCode = xhr.status
+        const responseHeaders = xhr.getAllResponseHeaders()
+        const header = responseHeaders
+          ? responseHeaders
+              .trim()
+              .split(/[\r\n]+/)
+              .reduce((acc, line) => {
+                const parts = line.split(': ')
+                const header = parts.shift()
+                const value = parts.join(': ')
+                acc[header!] = value
+                return acc
+              }, {})
+          : {}
         resolve({
           statusCode,
           data: xhr.responseText || xhr.response,
+          header,
         })
       }
       if (!uploadTask._isAbort) {

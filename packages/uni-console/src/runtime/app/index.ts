@@ -6,16 +6,6 @@ export function initRuntimeSocketService(): Promise<boolean> {
   const id: string = process.env.UNI_SOCKET_ID
   if (hosts == '' || port == '' || id == '') return Promise.resolve(false)
   let socketTask: SocketTask | null = null
-  __registerWebViewUniConsole(
-    (): string => {
-      return process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE
-    },
-    (data: string) => {
-      socketTask?.send({
-        data,
-      } as SendSocketMessageOptions)
-    }
-  )
   return Promise.resolve()
     .then((): Promise<boolean> => {
       return initRuntimeSocket(hosts, port, id).then((socket): boolean => {

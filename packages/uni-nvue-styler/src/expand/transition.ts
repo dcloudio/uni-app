@@ -1,18 +1,18 @@
-import type { Declaration } from 'postcss'
-import { type TransformDecl, createDecl } from '../utils'
+import { type Declaration, type TransformDecl, createDecl } from '../utils'
 
-const transitionProperty = __NODE_JS__
+const transitionProperty = __HYPHENATE__
   ? 'transition-property'
   : 'transitionProperty'
-const transitionDuration = __NODE_JS__
+const transitionDuration = __HYPHENATE__
   ? 'transition-duration'
   : 'transitionDuration'
-const transitionTimingFunction = __NODE_JS__
+const transitionTimingFunction = __HYPHENATE__
   ? 'transition-timing-function'
   : 'transitionTimingFunction'
-const transitionDelay = __NODE_JS__ ? 'transition-delay' : 'transitionDelay'
+const transitionDelay = __HYPHENATE__ ? 'transition-delay' : 'transitionDelay'
 export const transformTransition: TransformDecl = (decl) => {
-  const { value, important, raws, source } = decl
+  let { value, important, raws, source } = decl
+  value = value.trim()
 
   const result: Declaration[] = []
 
@@ -20,7 +20,7 @@ export const transformTransition: TransformDecl = (decl) => {
 
   // 针对 cubic-bezier 特殊处理
   // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
-  if (decl.value.includes('cubic-bezier')) {
+  if (value.includes('cubic-bezier')) {
     const CHUNK_REGEXP =
       /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/
 

@@ -103,3 +103,10 @@ export const DEFAULT_ASSETS_RE = new RegExp(
 )
 
 export const TEXT_STYLE = ['black', 'white']
+
+export const JS_STYLE_PLACEHOLDER_MARKER = '__js_style_placeholder__'
+export const JS_STYLE_PLACEHOLDER_STR = JSON.stringify({
+  [JS_STYLE_PLACEHOLDER_MARKER]: 0,
+})
+export const JS_STYLE_PLACEHOLDER_RE =
+  /\{\s*"__js_style_placeholder__"\s*:\s*0\s*}/

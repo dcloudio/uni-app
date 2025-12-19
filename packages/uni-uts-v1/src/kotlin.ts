@@ -559,7 +559,6 @@ export async function compile(
     outputDir,
     sourceMap,
     components,
-    customElements,
     isX,
     isSingleThread,
     isPlugin,

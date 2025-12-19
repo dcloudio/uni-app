@@ -17,6 +17,9 @@ export default {
           setPullToRefresh(options: any) {
             invokeHarmonyChannel('setPullToRefresh', [options])
           },
+          setStyle(options: any) {
+            invokeHarmonyChannel('setStyle', [options])
+          },
         },
         invokeHarmonyChannel('currentWebview')
       )

@@ -5,7 +5,10 @@ import {
   ASSETS_INLINE_LIMIT,
   copyMiniProgramThemeJson,
 } from '@dcloudio/uni-cli-shared'
-import { options } from '@dcloudio/uni-mp-toutiao/src/compiler/options'
+import {
+  commonCopyTargets,
+  options,
+} from '@dcloudio/uni-mp-toutiao/src/compiler/options'
 
 const uniMiniProgramToutiaoPlugin: Plugin = {
   name: 'uni:mp-lark',
@@ -23,7 +26,7 @@ const uniMiniProgramToutiaoPlugin: Plugin = {
 }
 
 options.vite.copyOptions.targets = [
-  ...(options.vite.copyOptions.targets || []),
+  ...commonCopyTargets,
   ...copyMiniProgramThemeJson(),
 ]
 

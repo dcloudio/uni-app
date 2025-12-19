@@ -14,8 +14,9 @@
       "@uni-x/app-android.d.ts": ["./uni-x/app-android/index.d.ts"],
       "@vue/shared": ["./uni-x/@vue/shared/dist/shared.d.ts"],
       "@vue/reactivity": ["./uni-x/@vue/reactivity/dist/reactivity.d.ts"],
-      "vue": ["./uni-x/@vue/runtime-core/dist/runtime-core.d.ts"],
-      "@vue/runtime-core": ["./uni-x/@vue/runtime-core/dist/runtime-core.d.ts"]
+      "vue": ["./uni-x/@vue/vue/dist/vue.d.ts"],
+      "@vue/runtime-core": ["./uni-x/@vue/runtime-core/dist/runtime-core.d.ts"],
+      "@vue/runtime-vapor-dom2": ["./uni-x/@vue/runtime-vapor-dom2/dist/runtime-vapor-dom2.d.ts"],
     }
   },
   "include": ["uni-x/app-android.d.ts"]

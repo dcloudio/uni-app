@@ -1,4 +1,4 @@
-import type { App } from 'vue';
+import type { App as App_2 } from 'vue';
 import type { ComponentInternalInstance } from 'vue';
 import { ComponentOptionsBase } from 'vue';
 import { ComponentPublicInstance } from 'vue';
@@ -62,6 +62,16 @@ string | number,
 number
 ];
 
+declare function arrayAt<T>(array: T[], index: number): T | null;
+
+declare function arrayFind<T>(array: T[], predicate: any): T | null;
+
+declare function arrayFindLast<T>(array: T[], predicate: any): T | null;
+
+declare function arrayPop<T>(array: T[]): T | null;
+
+declare function arrayShift<T>(array: T[]): T | null;
+
 export declare const ATTR_CHANGE_PREFIX = "change:";
 
 export declare const ATTR_CLASS = "class";
@@ -79,6 +89,8 @@ export declare const ATTR_V_RENDERJS = ".vRenderjs";
 export declare const ATTR_V_SHOW = ".vShow";
 
 export declare const BACKGROUND_COLOR = "#f7f7f7";
+
+export declare function batchGetPartClass(partNames: string): string;
 
 export declare const borderStyles: {
     black: string;
@@ -106,6 +118,10 @@ export declare const COMPONENT_PREFIX: string;
 
 export declare const COMPONENT_SELECTOR_PREFIX = "uni-";
 
+declare interface Constructible {
+    new (...args: any[]): any;
+}
+
 /**
  * nodeId
  * tag
@@ -128,7 +144,7 @@ export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrec
 
 export declare function createUniEvent(evt: Record<string, any>): UniEvent;
 
-declare type CreateVueAppHook = (app: App) => void;
+declare type CreateVueAppHook = (app: App_2) => void;
 
 export declare function customizeEvent(str: string): string;
 
@@ -233,6 +249,8 @@ export declare function getGlobal(): any;
 
 export declare function getLen(str?: string): number;
 
+export declare function getPartClass(partName: string): string;
+
 export declare function getValueByDataPath(obj: any, path: string): unknown;
 
 declare interface HTMLElementWithDataset extends HTMLElement {
@@ -259,9 +277,9 @@ Partial<UniNodeJSON | UniNodeJSONMinify>?
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
-export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (app: App) => App['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | null, info: string) => void) | undefined;
+export declare const invokeCreateErrorHandler: (app: App_2, createErrorHandler: (app: App_2) => App_2['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | null, info: string) => void) | undefined;
 
-export declare function invokeCreateVueAppHook(app: App): void;
+export declare function invokeCreateVueAppHook(app: App_2): void;
 
 export declare function isAppHarmonyUVueNativeTag(tag: string): boolean;
 
@@ -283,11 +301,19 @@ export declare function isComponentInternalInstance(vm: unknown): vm is Componen
 
 export declare function isComponentTag(tag: string): boolean;
 
+export declare function isDom2AppNativeTag(tag: string): boolean;
+
+export declare function isDom2AppVueComponentTag(tag: string): boolean;
+
+export declare function isDom2VueComponentTag(tag: string): boolean;
+
 export declare const isGloballyAllowed: (key: string) => boolean;
 
 export declare function isH5CustomElement(tag: string, isX?: boolean): boolean;
 
 export declare function isH5NativeTag(tag: string): boolean;
+
+declare function isInstanceOf(value: any, type: Function): any;
 
 /**
  * 用于替代@vue/shared的isIntegerKey，原始方法在鸿蒙arkts中会引发bug。根本原因是arkts的数组的key是数字而不是字符串。
@@ -331,11 +357,17 @@ export declare const JSON_PROTOCOL = "json://";
 
 export declare const LINEFEED = "\n";
 
+declare function mapGet<K, V>(map: Map<K, V>, key: K): V | null;
+
 export declare const MINI_PROGRAM_PAGE_RUNTIME_HOOKS: {
     readonly onPageScroll: 1;
     readonly onShareAppMessage: number;
     readonly onShareTimeline: number;
     readonly onShareChat: number;
+    readonly onCopyUrl: number;
+    readonly onUploadDouyinVideo: number;
+    readonly onLiveMount: number;
+    readonly onTitleClick: number;
 };
 
 export declare const NAVBAR_HEIGHT = 44;
@@ -489,6 +521,8 @@ export declare const ON_APP_ENTER_FOREGROUND = "onAppEnterForeground";
 
 export declare const ON_BACK_PRESS = "onBackPress";
 
+export declare const ON_COPY_URL = "onCopyUrl";
+
 export declare const ON_ERROR = "onError";
 
 export declare const ON_EXIT = "onExit";
@@ -504,6 +538,8 @@ export declare const ON_KEYBOARD_HEIGHT_CHANGE = "onKeyboardHeightChange";
 export declare const ON_LAST_PAGE_BACK_PRESS = "onLastPageBackPress";
 
 export declare const ON_LAUNCH = "onLaunch";
+
+export declare const ON_LIVE_MOUNT = "onLiveMount";
 
 export declare const ON_LOAD = "onLoad";
 
@@ -547,9 +583,13 @@ export declare const ON_TAB_ITEM_TAP = "onTabItemTap";
 
 export declare const ON_THEME_CHANGE = "onThemeChange";
 
+export declare const ON_TITLE_CLICK = "onTitleClick";
+
 export declare const ON_UNHANDLE_REJECTION = "onUnhandledRejection";
 
 export declare const ON_UNLOAD = "onUnload";
+
+export declare const ON_UPLOAD_DOUYIN_VIDEO = "onUploadDouyinVideo";
 
 export declare const ON_WEB_INVOKE_APP_SERVICE = "onWebInvokeAppService";
 
@@ -711,6 +751,10 @@ export declare const SLOT_DEFAULT_NAME = "d";
 
 export declare function sortObject<T extends Object>(obj: T): T;
 
+declare function stringAt(str: string, pos: number): string | null;
+
+declare function stringCodePointAt(str: string, pos: number): number | null;
+
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
 
 export declare const TABBAR_HEIGHT = 50;
@@ -733,6 +777,8 @@ export declare const UNI_SSR_GLOBAL_DATA = "globalData";
 export declare const UNI_SSR_STORE = "store";
 
 export declare const UNI_SSR_TITLE = "title";
+
+export declare const UNI_STATUS_BAR_HEIGHT = "u_s_b_h";
 
 export declare const UNI_STORAGE_LOCALE = "UNI_LOCALE";
 
@@ -778,6 +824,18 @@ export declare class UniElement extends UniBaseNode {
     constructor(nodeName: string, container: UniElement | IUniPageNode);
 }
 
+export declare class UniError extends Error {
+    errSubject: string;
+    errCode: number;
+    cause?: Error;
+    data?: any;
+    constructor(errSubject?: string, errCode?: number | Record<string, any>, errMsg?: string);
+    set errMsg(msg: string);
+    get errMsg(): string;
+    toString(): string;
+    toJSON(): Record<string, any>;
+}
+
 export declare class UniEvent {
     type: string;
     bubbles: boolean;
@@ -816,7 +874,7 @@ export declare class UniInputElement extends UniElement {
     set value(val: string | number);
 }
 
-export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onExit", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onShareChat", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
+export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onExit", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onShareChat", "onCopyUrl", "onUploadDouyinVideo", "onLiveMount", "onTitleClick", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged", "onLastPageBackPress"];
 
 export declare class UniNode extends UniEventTarget {
     nodeId?: number;
@@ -918,6 +976,79 @@ export declare class UniTextNode extends UniBaseNode {
 
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
 
+export declare const UTS: {
+    arrayAt: typeof arrayAt;
+    arrayFind: typeof arrayFind;
+    arrayFindLast: typeof arrayFindLast;
+    arrayPop: typeof arrayPop;
+    arrayShift: typeof arrayShift;
+    isInstanceOf: typeof isInstanceOf;
+    UTSType: typeof UTSType;
+    mapGet: typeof mapGet;
+    stringAt: typeof stringAt;
+    stringCodePointAt: typeof stringCodePointAt;
+    weakMapGet: typeof weakMapGet;
+    JSON: {
+        parse: (text: string, reviver?: ((this: any, key: string, value: any) => any) | undefined, utsType?: Constructible | undefined) => any;
+        parseArray(text: string, utsType?: typeof UTSType | undefined): any[] | null;
+        parseObject(text: string, utsType?: typeof UTSType | undefined): any;
+        stringify: (value: any, replacer?: any, space?: any) => string;
+    };
+};
+
+declare const enum UTS_CLASS_METADATA_KIND {
+    CLASS = 0,
+    INTERFACE = 1,
+    TYPE = 2
+}
+
+declare class UTSJSONObject_2 {
+    [key: string]: any;
+    static keys(obj: UTSJSONObject_2): string[];
+    static assign(target: UTSJSONObject_2, ...sources: UTSJSONObject_2[]): UTSJSONObject_2;
+    constructor(content?: Map<string, any> | Record<string, any>);
+    private _resolveKeyPath;
+    private _getValue;
+    get(key: string): any | null;
+    set(key: string, value: any): void;
+    getAny(key: string, defaultValue: any): any | null;
+    getString(key: string, defaultValue: string): string | null;
+    getNumber(key: string, defaultValue: number): number | null;
+    getBoolean(key: string, defaultValue: boolean): boolean | null;
+    getJSON(key: string, defaultValue: UTSJSONObject_2): UTSJSONObject_2 | null;
+    getArray<T = any>(key: string, defaultValue: Array<T>): Array<T> | null;
+    toMap(): Map<string, any>;
+    forEach(callback: (value: any, key: string) => void): void;
+}
+export { UTSJSONObject_2 as UTSJSONObject }
+
+declare interface UTSMetadata {
+    name: string;
+    kind: UTS_CLASS_METADATA_KIND;
+    interfaces?: Function[] | undefined;
+    fields?: Record<string, UTSTypeFieldType>;
+}
+
+declare class UTSType {
+    [key: string]: any;
+    static get$UTSMetadata$(...args: any[]): UTSTypeMetadata;
+    protected get $UTSMetadata$(): Required<UTSMetadata>;
+    static withGenerics(parent: Constructible, generics: Array<any>, isJSONParse?: boolean): Constructible;
+    constructor();
+    static initProps(options: Record<string, any>, metadata: UTSTypeMetadata, isJSONParse?: boolean): Record<string, any>;
+}
+
+declare type UTSTypeFieldType = {
+    type: Function;
+    optional: boolean;
+    jsonField?: string;
+};
+
+declare type UTSTypeMetadata = Required<UTSMetadata>;
+
+export declare abstract class UTSValueIterable {
+}
+
 export declare const UVUE_BUILT_IN_TAGS: string[];
 
 export declare const UVUE_HARMONY_BUILT_IN_TAGS: string[];
@@ -940,6 +1071,8 @@ declare interface Vue_2 {
     createApp: typeof createApp;
 }
 export { Vue_2 as Vue }
+
+declare function weakMapGet<K extends symbol | object, V>(map: WeakMap<K, V>, key: K): V | null;
 
 export declare const WEB_INVOKE_APPSERVICE = "WEB_INVOKE_APPSERVICE";
 

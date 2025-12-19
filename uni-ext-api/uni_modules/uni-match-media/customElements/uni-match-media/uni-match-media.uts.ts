@@ -35,12 +35,21 @@ export class UniMatchMediaElement extends UniViewElementImpl implements UniCusto
         this._experssions = this.getExpressions();
 
         this.uniPage.vm!.$.$waitNativeRender(() => {
+            // #ifdef APP-HARMONY
+            this.toggleElement(this.isValid({
+                width: this.uniPage.pageBody.width,
+                height: this.uniPage.pageBody.height,
+                orientation: globalThis.uni.getDeviceInfo().deviceOrientation as string
+            }))
+            // #endif
+            // #ifndef APP-HARMONY
             this.toggleElement(this.isValid({
                 width: this.uniPage.pageBody.width,
                 height: this.uniPage.pageBody.height,
                 orientation: uni.getDeviceInfo().deviceOrientation
             }))
-		})
+            // #endif
+        })
 
         onResize((res : OnResizeOptions) => {
             this.toggleElement(this.isValid({
@@ -48,7 +57,7 @@ export class UniMatchMediaElement extends UniViewElementImpl implements UniCusto
                 width: res.size.windowWidth,
                 height: res.size.windowHeight
             }))
-		}, this.uniPage.vm!.$)
+        }, this.uniPage.vm!.$)
     }
 
     override attributeChangedCallback(name : string, oldValue : any | null, newValue : any | null) {

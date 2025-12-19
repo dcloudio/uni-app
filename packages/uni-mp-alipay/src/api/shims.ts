@@ -4,7 +4,9 @@ import { initGetProvider } from '@dcloudio/uni-mp-core'
 
 import { $off, $on } from '@dcloudio/uni-api/src/service/base/eventBus'
 
-let onKeyboardHeightChangeCallback: undefined | ((result: any) => void)
+type OnKeyboardHeightChangeCallback = (result: { height: number }) => void
+
+let onKeyboardHeightChangeCallback: undefined | OnKeyboardHeightChangeCallback
 
 export const getProvider = initGetProvider({
   oauth: ['alipay'],
@@ -122,7 +124,9 @@ export function createIntersectionObserver(
   return (my as any).createIntersectionObserver(options)
 }
 
-export function onKeyboardHeightChange(callback: (result: any) => void) {
+export function onKeyboardHeightChange(
+  callback: OnKeyboardHeightChangeCallback
+) {
   // 与微信小程序一致仅保留最后一次监听
   if (onKeyboardHeightChangeCallback) {
     $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback)

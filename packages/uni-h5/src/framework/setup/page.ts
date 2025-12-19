@@ -7,6 +7,7 @@ import {
   nextTick,
   watch,
 } from 'vue'
+import { ShapeFlags } from '@vue/shared'
 import { type RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import {
   type CreateScrollListenerOptions,
@@ -114,6 +115,11 @@ function removeRouteCache(routeKey: string) {
   const vnode = pageCacheMap.get(routeKey)
   if (vnode) {
     pageCacheMap.delete(routeKey)
+    /**
+     * 此逻辑为处理首页->非首页->back回首页后首页reLaunch不触发当前首页的onUnmount问题
+     * 但是相关的问题并没有彻底解决，比如activated、deactivated触发不符合预期的问题，后续需要继续跟进
+     */
+    // resetShapeFlag(vnode)
     routeCache.pruneCacheEntry!(vnode)
   }
 }
@@ -201,6 +207,11 @@ export function useKeepAliveRoute() {
   }
 }
 
+function resetShapeFlag(vnode: VNode) {
+  vnode.shapeFlag &= ~ShapeFlags.COMPONENT_SHOULD_KEEP_ALIVE
+  vnode.shapeFlag &= ~ShapeFlags.COMPONENT_KEPT_ALIVE
+}
+
 // https://github.com/vuejs/rfcs/pull/284
 // https://github.com/vuejs/vue-next/pull/3414
 
@@ -253,6 +264,7 @@ function pruneRouteCache(key: string) {
         return
       }
       routeCache.delete(key)
+      // resetShapeFlag(vnode)
       routeCache.pruneCacheEntry!(vnode)
       nextTick(() => pruneCurrentPages())
     }

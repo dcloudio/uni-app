@@ -1,12 +1,16 @@
+import path from 'path'
 import fsExtra from 'fs-extra'
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type { Plugin } from 'vite'
 import type {
   AssetURLOptions,
+  CompilerError,
+  SFCDescriptor,
   SFCStyleCompileOptions,
   TemplateCompiler,
 } from '@vue/compiler-sfc'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
+import { isDom2VueComponentTag } from '@dcloudio/uni-shared'
 import {
   EXTNAME_VUE_RE,
   type UniVitePlugin,
@@ -14,12 +18,17 @@ import {
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
   isExternalUrl,
+  isUniPageFile,
+  matchEasycom,
   normalizePath,
+  onVueTemplateCompileLog,
   preJs,
+  requireUniHelpers,
+  resolveAppVue,
   resolveUniTypeScript,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
-import { parseInlineStyleSync } from '@dcloudio/uni-nvue-styler'
+
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
 
@@ -76,25 +85,10 @@ export function initPluginVueOptions(
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
   ;(compilerOptions as any).isX = process.env.UNI_APP_X === 'true'
+  ;(compilerOptions as any).dom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
   // 默认就移除comments节点
   compilerOptions.comments = false
-
-  if (process.env.UNI_PLATFORM !== 'web') {
-    // 非 web 平台，使用 factory 模式
-    ;(compilerOptions as any).templateMode = 'factory'
-    // 目前禁用事件委托
-    ;(compilerOptions as any).disableEventDelegation = true
-    // 禁用 class 绑定，全部编译为 setClass 模式
-    ;(compilerOptions as any).disableClassBinding = true
-    // 解析静态样式
-    ;(compilerOptions as any).parseStaticStyle = (style: string) => {
-      return parseInlineStyleSync(style, {
-        type: 'uvue',
-        platform: process.env.UNI_UTS_PLATFORM,
-      })
-    }
-  }
 
   const {
     compiler,
@@ -121,9 +115,19 @@ export function initPluginVueOptions(
     ;(compilerOptions as any).miniProgram = miniProgram
   }
 
+  const isDevX =
+    process.env.UNI_HX_VERSION_DEV === 'true' &&
+    process.env.UNI_APP_X === 'true'
   if (isNativeTag) {
     const userIsNativeTag = compilerOptions.isNativeTag
     compilerOptions.isNativeTag = (tag) => {
+      if (isDevX) {
+        const source = matchEasycom(tag)
+        // 不能是uts插件的easycom组件
+        if (source && !source.includes('?uts-proxy')) {
+          return false
+        }
+      }
       if (isNativeTag(tag)) {
         return true
       }
@@ -188,7 +192,7 @@ export function initPluginVueOptions(
   if (
     typeof userOptionsTransformAssetUrls !== 'boolean' &&
     !!userOptionsTransformAssetUrls?.tags &&
-    !Array.isArray(userOptionsTransformAssetUrls.tags)
+    !isArray(userOptionsTransformAssetUrls.tags)
   ) {
     templateOptions.transformAssetUrls = {
       ...builtInTransformAssetUrls,
@@ -203,7 +207,8 @@ export function initPluginVueOptions(
     compilerOptions.nodeTransforms.push(
       ...getBaseNodeTransforms(
         options.base,
-        process.env.UNI_VUE_VAPOR === 'true'
+        process.env.UNI_VUE_VAPOR === 'true' ||
+          process.env.UNI_APP_X_DOM2 === 'true'
           ? createResolveStaticAsset(options.inputDir)
           : undefined
       )
@@ -288,6 +293,56 @@ export function initPluginVueOptions(
     // decorators or decorators-legacy
     if (!vueOptions.script.babelParserPlugins.includes('decorators')) {
       vueOptions.script.babelParserPlugins.push('decorators')
+    }
+    if (process.env.UNI_APP_X_DOM2 === 'true') {
+      const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
+      function isAppVue(id: string) {
+        return normalizePath(id) === appVue
+      }
+      ;(compilerOptions as any).isVueComponent = (tag: string) => {
+        return isDom2VueComponentTag(tag) || !!matchEasycom(tag)
+      }
+      ;(vueOptions.script as any).extraOptions = (
+        descriptor: SFCDescriptor
+      ) => {
+        return {
+          isWatch: process.env.NODE_ENV === 'development',
+          helper: requireUniHelpers(),
+          componentType: isUniPageFile(descriptor.filename)
+            ? 'page'
+            : isAppVue(descriptor.filename)
+            ? 'app'
+            : 'component',
+        }
+      }
+      ;(vueOptions.template.compilerOptions as any).extraOptions = (
+        descriptor: SFCDescriptor
+      ) => {
+        const filename = normalizePath(descriptor.filename.split('?')[0])
+        const relativeFilename = normalizePath(
+          path.relative(process.env.UNI_INPUT_DIR, filename)
+        )
+        return {
+          root: normalizePath(process.env.UNI_INPUT_DIR),
+          platform: process.env.UNI_UTS_PLATFORM,
+          componentType: isUniPageFile(filename) ? 'page' : 'component',
+          relativeFilename,
+          helper: requireUniHelpers(),
+          scriptCppBlocks: (descriptor as any).scriptCppBlocks,
+          genVueId: !!process.env.UNI_AUTOMATOR_WS_ENDPOINT,
+          onVueTemplateCompileLog(
+            type: 'warn' | 'error',
+            error: CompilerError
+          ) {
+            return onVueTemplateCompileLog(
+              type,
+              error,
+              descriptor.source,
+              relativeFilename
+            )
+          },
+        }
+      }
     }
   }
 

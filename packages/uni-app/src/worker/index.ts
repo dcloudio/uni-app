@@ -1,5 +1,21 @@
-// @ts-expect-error
-export * from '@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts.js'
+import {
+  UTS,
+  UTSJSONObject,
+  UTSValueIterable,
+  UniError,
+  getGlobal,
+} from '@dcloudio/uni-shared'
+const realGlobal = getGlobal()
+realGlobal.UTS = UTS
+realGlobal.UTSJSONObject = UTSJSONObject
+realGlobal.UTSValueIterable = UTSValueIterable
+realGlobal.UniError = UniError
+export {
+  UTS,
+  UTSJSONObject,
+  UTSValueIterable,
+  UniError,
+} from '@dcloudio/uni-shared'
 
 declare const worker: UniNamespace.Worker
 declare const __WEB__: boolean

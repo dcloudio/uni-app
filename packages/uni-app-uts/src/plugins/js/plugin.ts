@@ -22,8 +22,9 @@ import {
 import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
 import { uniAppJsPlugin } from './js'
+import { rewriteImportVuePlugin } from './rewriteImportVue'
 
-export function initUniAppJsEngineCssPlugin(config: ResolvedConfig) {
+export function initUniAppJsEngineDom1CssPlugin(config: ResolvedConfig) {
   injectCssPlugin(
     config,
     process.env.UNI_COMPILE_TARGET === 'uni_modules'
@@ -80,7 +81,7 @@ export function createUniAppJsEnginePlugin(
 
     const paths: Record<string, string> = isESM
       ? {
-          vue: '@dcloudio/uni-app-x-runtime',
+          // vue: '@dcloudio/uni-app-x-runtime',
           '@vue/shared': '@dcloudio/uni-app-x-runtime',
         }
       : {}
@@ -123,6 +124,7 @@ export function createUniAppJsEnginePlugin(
                   '@vue/shared': 'uni.VueShared',
                 },
                 paths,
+                plugins: isESM ? [rewriteImportVuePlugin()] : [],
                 manualChunks(id) {
                   if (isESM) {
                     const chunkName = normalizePath(id.split('?')[0])
@@ -150,17 +152,30 @@ export function createUniAppJsEnginePlugin(
                   )
                 },
               },
+              treeshake: {
+                moduleSideEffects: (id: string, external: boolean) => {
+                  if (id === '@vue/shared') {
+                    return false
+                  }
+                  return true
+                },
+              },
             },
           },
         }
       },
       configResolved(config) {
         configResolved(config)
-        initUniAppJsEngineCssPlugin(config)
+        if (process.env.UNI_APP_X_DOM2 !== 'true') {
+          initUniAppJsEngineDom1CssPlugin(config)
+        }
         insertBeforePlugin(uniAppJsPlugin(config), 'uni:app-main', config)
         // 如果开启了 vapor 模式，则禁用 vue 的 devtools，让 @vitejs/plugin-vue 不管是开发还是发行，均生成发行代码
         // 理论上非 vapor 也应该禁用，但为了不引发其他问题，暂时只禁用 vapor 模式
-        if (process.env.UNI_VUE_VAPOR === 'true') {
+        if (
+          process.env.UNI_VUE_VAPOR === 'true' ||
+          process.env.UNI_APP_X_DOM2 === 'true'
+        ) {
           const plugin = config.plugins.find((p) => p.name === 'vite:vue')
           if (plugin?.api?.options) {
             plugin.api.options.devToolsEnabled = false
@@ -172,27 +187,20 @@ export function createUniAppJsEnginePlugin(
         }
       },
       generateBundle(_, bundle) {
-        const APP_SERVICE_FILENAME_MAP = APP_SERVICE_FILENAME + '.map'
-        const appServiceMap = bundle[APP_SERVICE_FILENAME_MAP]
-        if (appServiceMap && appServiceMap.type === 'asset') {
-          const source = JSON.parse(appServiceMap.source as string)
-          source.sourceRoot = normalizePath(inputDir)
-          const newSourceMapFileName = path.resolve(
-            process.env.UNI_APP_X_CACHE_DIR,
-            'sourcemap',
-            APP_SERVICE_FILENAME_MAP
-          )
-          fs.outputFileSync(newSourceMapFileName, JSON.stringify(source))
-          delete bundle[APP_SERVICE_FILENAME_MAP]
-          const appService = bundle[APP_SERVICE_FILENAME]
-          if (appService && appService.type === 'chunk') {
-            appService.code = appService.code.replace(
-              `//# sourceMappingURL=app-service.js.map`,
-              `//# sourceMappingURL=` +
-                path.relative(process.env.UNI_OUTPUT_DIR, newSourceMapFileName)
+        // 调整所有sourceMap文件
+        const sourceRoot = normalizePath(inputDir)
+        Object.entries(bundle).forEach(([file, asset]) => {
+          if (file.endsWith('.js.map') && asset.type === 'asset') {
+            const source = JSON.parse(asset.source as string)
+            source.sourceRoot = sourceRoot
+            const newSourceMapFileName = path.resolve(
+              process.env.UNI_APP_X_CACHE_DIR,
+              'sourcemap',
+              file
             )
+            fs.outputFileSync(newSourceMapFileName, JSON.stringify(source))
           }
-        }
+        })
       },
       async writeBundle() {
         // x 上暂时编译所有uni ext api，不管代码里是否调用了

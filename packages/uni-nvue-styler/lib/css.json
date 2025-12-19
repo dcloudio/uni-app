@@ -5,7 +5,6 @@
       "name": "width",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
@@ -27,7 +26,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -59,7 +59,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -91,7 +92,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -123,7 +125,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -154,7 +157,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -173,8 +177,7 @@
     {
       "name": "min-width",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length>",
       "values": [
@@ -195,7 +198,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -227,7 +231,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -259,7 +264,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -291,7 +297,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -323,7 +330,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -354,7 +362,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -376,8 +385,7 @@
     {
       "name": "max-width",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length>",
       "values": [
@@ -398,7 +406,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -430,7 +439,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -462,7 +472,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -494,7 +505,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -526,7 +538,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -557,7 +570,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -577,7 +591,6 @@
       "name": "height",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
@@ -631,7 +644,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -663,7 +677,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -695,7 +710,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -726,7 +742,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -745,8 +762,7 @@
     {
       "name": "min-height",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length>",
       "values": [
@@ -767,7 +783,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -799,7 +816,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -831,7 +849,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -863,7 +882,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -895,7 +915,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -926,7 +947,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -948,8 +970,7 @@
     {
       "name": "max-height",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length>",
       "values": [
@@ -970,7 +991,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -1002,7 +1024,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -1034,7 +1057,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -1066,7 +1090,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -1098,7 +1123,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -1129,7 +1155,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -1147,6 +1174,7 @@
     },
     {
       "name": "position",
+      "description": "position 属性用于指定元素在页面中的定位方式。与 top、right、bottom、left 等属性决定该元素的最终位置。",
       "restrictions": [
         "enum"
       ],
@@ -1154,6 +1182,7 @@
       "values": [
         {
           "name": "relative",
+          "description": "当前元素将参与父节点布局，根据 top、right、bottom、left 等属性相对于自身偏移。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -1169,7 +1198,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1186,6 +1216,7 @@
         },
         {
           "name": "absolute",
+          "description": "当前元素将不参与父节点布局，布局时不会为该元素创建任何空间，在父元素的内容区域中进行绝对布局，根据 top、right、bottom、left 等属性决定其位置。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -1201,7 +1232,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1218,6 +1250,7 @@
         },
         {
           "name": "fixed",
+          "description": "当前元素将不参与父节点布局，将被视为页面根节点的子元素进行绝对布局，根据 top、right、bottom、left 等属性决定其位置。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -1233,7 +1266,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1265,7 +1299,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -1297,7 +1332,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -1328,7 +1364,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -1369,7 +1406,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -1393,7 +1431,6 @@
       "name": "top",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1415,7 +1452,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1446,7 +1484,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -1466,7 +1505,6 @@
       "name": "bottom",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1488,7 +1526,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1519,7 +1558,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -1539,7 +1579,6 @@
       "name": "left",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1561,7 +1600,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1592,7 +1632,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -1612,7 +1653,6 @@
       "name": "right",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1634,7 +1674,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1665,7 +1706,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -1683,6 +1725,7 @@
     },
     {
       "name": "flex-direction",
+      "description": "flex-direction 属性设置弹性容器中的子元素的布局方向，该方向定义为主轴，另一个垂直与它的方向为交叉轴。",
       "restrictions": [
         "enum"
       ],
@@ -1705,7 +1748,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1737,7 +1781,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1769,7 +1814,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1801,7 +1847,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1832,7 +1879,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -1861,6 +1909,7 @@
     },
     {
       "name": "justify-content",
+      "description": "justify-content 属性设置弹性容器的子元素在主轴方向的对齐方式，控制如何在主轴方向分配内容元素之间和周围的空间。",
       "restrictions": [
         "enum"
       ],
@@ -1884,7 +1933,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1917,7 +1967,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1950,7 +2001,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -1983,7 +2035,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2016,7 +2069,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2049,7 +2103,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2080,7 +2135,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -2110,6 +2166,7 @@
     },
     {
       "name": "flex-wrap",
+      "description": "flex-wrap 属性设置弹性容器中的子元素在主轴方向是单行（列）还是多行（列）显示，以及多行（列）显示时的堆叠方向。",
       "restrictions": [
         "enum"
       ],
@@ -2132,7 +2189,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2164,7 +2222,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2196,7 +2255,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2227,7 +2287,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -2253,6 +2314,7 @@
     },
     {
       "name": "align-items",
+      "description": "align-items 属性将所有直接子元素上的 align-self 值设置为一个组。在 Flex 弹性布局中控制子元素在交叉轴方向的对齐方式。",
       "restrictions": [
         "enum"
       ],
@@ -2260,6 +2322,7 @@
       "values": [
         {
           "name": "center",
+          "description": "元素在交叉轴上居中。如果元素在交叉轴上的尺寸（高度/宽度）大于其容器，那么在两个方向均等溢出。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2275,7 +2338,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2292,6 +2356,7 @@
         },
         {
           "name": "flex-start",
+          "description": "元素在交叉轴上对齐起始位置。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2307,7 +2372,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2324,6 +2390,7 @@
         },
         {
           "name": "flex-end",
+          "description": "元素在交叉轴上对齐结尾位置。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2339,7 +2406,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2356,6 +2424,7 @@
         },
         {
           "name": "stretch",
+          "description": "元素在交叉轴方向未设置尺寸（高度/宽度）或设置为 auto，会被拉伸到与行相同的高度或列相同的宽度。同时元素仍然保持其宽高比例的约束。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2371,7 +2440,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2388,6 +2458,7 @@
         },
         {
           "name": "baseline",
+          "description": "所有元素向基线对齐。交叉轴起点到元素基线距离最大的元素将会于交叉轴起点对齐以确定基线。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2403,7 +2474,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -2434,7 +2506,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -2464,6 +2537,7 @@
     },
     {
       "name": "align-self",
+       "description": "align-self 属性在 Flex 弹性布局中设置元素在容器中的交叉轴方向的对齐方式，覆盖父元素设置的 align-items 值。",
       "restrictions": [
         "enum"
       ],
@@ -2471,6 +2545,7 @@
       "values": [
         {
           "name": "auto",
+          "description": "默认值。与父元素的 align-items 值一致。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2486,7 +2561,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2503,6 +2579,7 @@
         },
         {
           "name": "center",
+          "description": "元素在交叉轴上居中。如果元素在交叉轴上的尺寸（高度/宽度）大于其容器，那么在两个方向均等溢出。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2518,7 +2595,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2535,6 +2613,7 @@
         },
         {
           "name": "flex-start",
+          "description": "元素在交叉轴上对齐起始位置。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2550,7 +2629,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2567,6 +2647,7 @@
         },
         {
           "name": "flex-end",
+          "description": "元素在交叉轴上对齐结尾位置。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2582,7 +2663,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2599,6 +2681,7 @@
         },
         {
           "name": "stretch",
+          "description": "元素在交叉轴方向未设置尺寸（高度/宽度）或设置为 auto，会被拉伸到与行相同的高度或列相同的宽度。同时元素仍然保持其宽高比例的约束。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2614,7 +2697,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2631,6 +2715,7 @@
         },
         {
           "name": "baseline",
+          "description": "所有元素向基线对齐。交叉轴起点到元素基线距离最大的元素将会于交叉轴起点对齐以确定基线。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2646,7 +2731,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -2677,7 +2763,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -2698,11 +2785,12 @@
       "restrictions": [
         "enum"
       ],
-      "description": "CSS 的 align-content 属性用于设置交叉轴方向多个行或列的分布方式",
+      "description": "align-content 属性用于在 Flex 弹性布局中设置行或列在交叉轴方向的分布方式。",
       "syntax": "center | flex-start | flex-end | space-between | space-around | stretch",
       "values": [
         {
           "name": "center",
+          "description": "所有行朝向容器的中心填充。每行互相紧挨，相对于容器居中对齐。容器的交叉轴起点边和第一行的距离相等于容器的交叉轴终点边和最后一行的距离。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2718,7 +2806,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2735,6 +2824,7 @@
         },
         {
           "name": "flex-start",
+          "description": "所有行从容器交叉轴起点开始填充。第一行的交叉轴起点边和容器的交叉轴起点边对齐。接下来的每一行紧跟前一行。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2750,7 +2840,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2767,6 +2858,7 @@
         },
         {
           "name": "flex-end",
+          "description": "所有行从容器交叉轴末尾开始填充。最后一行的交叉轴终点和容器的交叉轴终点对齐，同时所有后续行与前一个对齐。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2782,7 +2874,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2799,6 +2892,7 @@
         },
         {
           "name": "space-between",
+          "description": "所有行在容器中平均分布，相邻两行间距相等。容器的交叉轴起点边和终点边分别与第一行和最后一行的边对齐。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2814,7 +2908,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2831,6 +2926,7 @@
         },
         {
           "name": "space-around",
+          "description": "所有行在容器中平均分布，相邻两行间距相等。容器的交叉轴起点边和终点边分别与第一行和最后一行的距离是相邻两行间距的一半。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2846,7 +2942,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2863,6 +2960,7 @@
         },
         {
           "name": "stretch",
+          "description": "拉伸所有行来填满剩余空间，剩余空间平均地分配给每一行。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2878,7 +2976,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2909,7 +3008,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -2940,10 +3040,10 @@
     {
       "name": "flex",
       "shorthand": true,
+      "description": "flex 属性设置弹性项目如何增大或缩小以适应其弹性容器中可用的空间，是 flex-grow、flex-shrink、flex-basis 的简写。",
       "restrictions": [
         "number",
         "length",
-        "length-function",
         "enum"
       ],
       "syntax": "none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]",
@@ -2965,7 +3065,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -2997,7 +3098,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3029,7 +3131,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3060,7 +3163,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -3081,6 +3185,7 @@
     },
     {
       "name": "flex-grow",
+      "description": "flex-grow 属性设置弹性元素在主轴方向的增长系数。此属性定义了元素在弹性容器中分配主轴方向剩余空间的相对比例（即弹性增长因子），增长的可能是弹性元素的宽度或高度，取决于 flex-direction 值。\n剩余空间是指弹性容器尺寸减去所有子元素尺寸之和后的空间。若所有子元素有相同的增长系数，则各子元素将获得等量的剩余空间，否则按不同增长系数的比例进行分配。",
       "restrictions": [
         "number"
       ],
@@ -3100,7 +3205,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -3118,6 +3224,7 @@
     },
     {
       "name": "flex-shrink",
+      "description": "flex-shrink 属性设置弹性元素在主轴方向的收缩系数。当所有子元素在主轴方向的尺寸之和大于容器时才会发生收缩，会根据元素的收缩系数进行收缩保证不溢出弹性容器。",
       "restrictions": [
         "number"
       ],
@@ -3137,7 +3244,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -3158,10 +3266,10 @@
     },
     {
       "name": "flex-basis",
+      "description": "flex-basis 属性设置弹性元素在主轴方向的初始大小，即在分配剩余空间（flex-grow）或收缩溢出空间（flex-shrink）的基准尺寸。当弹性元素同时设置了 flex-basis（除 auto 外的值）和 width（或 flex-direction 为 column 时设置了 height），flex-basis 的优先级更高。",
       "restrictions": [
         "number",
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
@@ -3183,7 +3291,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3215,7 +3324,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -3246,7 +3356,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -3265,6 +3376,7 @@
     {
       "name": "flex-flow",
       "shorthand": true,
+      "description": "flex-flow 属性设置弹性容器中子元素的布局主轴方向及单或多行（列）堆叠方向，，是 flex-direction、flex-wrap 的简写。",
       "restrictions": [
         "enum"
       ],
@@ -3287,7 +3399,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3319,7 +3432,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3351,7 +3465,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3383,7 +3498,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3415,7 +3531,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3447,7 +3564,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3479,7 +3597,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3510,7 +3629,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -3536,7 +3656,7 @@
     },
     {
       "name": "display",
-      "description": "CSS display 属性设置元素的布局方式，默认值为flex（弹性布局）。",
+      "description": "display 属性设置元素的显示或布局方式，默认值为flex（弹性布局）。",
       "restrictions": [
         "enum"
       ],
@@ -3544,6 +3664,7 @@
       "values": [
         {
           "name": "flex",
+          "description": "该元素根据弹性盒模型布局。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -3559,7 +3680,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3576,6 +3698,7 @@
         },
         {
           "name": "none",
+          "description": "使元素不再显示，其对布局不会有影响（页面渲染得好像此元素并不存在），所有的子元素也不会再显示。如需元素占据空间，但不渲染任何东西，应该使用 visibility 属性。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -3591,7 +3714,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3622,7 +3746,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -3666,7 +3791,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3698,7 +3824,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3730,7 +3857,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -3762,7 +3890,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -3794,7 +3923,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -3825,7 +3955,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -3868,7 +3999,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3900,7 +4032,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -3931,7 +4064,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -3968,7 +4102,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4008,7 +4143,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -4040,7 +4176,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -4071,7 +4208,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4115,7 +4253,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -4147,7 +4286,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -4179,7 +4319,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -4211,7 +4352,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -4242,7 +4384,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4278,7 +4421,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4318,7 +4462,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -4350,7 +4495,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -4381,7 +4527,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4420,7 +4567,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -4452,7 +4600,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -4484,7 +4633,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -4515,7 +4665,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -4536,7 +4687,6 @@
       "shorthand": true,
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "[ <length> | <percentage> ]{1,4}",
@@ -4555,7 +4705,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4574,7 +4725,6 @@
       "name": "padding-left",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -4593,7 +4743,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4613,7 +4764,6 @@
       "name": "padding-top",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -4632,7 +4782,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4652,7 +4803,6 @@
       "name": "padding-right",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -4671,7 +4821,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4691,7 +4842,6 @@
       "name": "padding-bottom",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -4710,7 +4860,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4731,7 +4882,6 @@
       "shorthand": true,
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "[ <length> | <percentage> | auto ]{1,4}",
@@ -4753,7 +4903,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -4784,7 +4935,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4804,7 +4956,6 @@
       "name": "margin-left",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -4826,7 +4977,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -4857,7 +5009,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4877,7 +5030,6 @@
       "name": "margin-top",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -4899,7 +5051,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -4930,7 +5083,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -4950,7 +5104,6 @@
       "name": "margin-right",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -4972,7 +5125,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5003,7 +5157,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -5023,7 +5178,6 @@
       "name": "margin-bottom",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "description": "margin-bottom 属性设置与元素相关联的盒子模型的下外边距。可以为负值",
@@ -5046,7 +5200,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5077,7 +5232,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -5097,7 +5253,6 @@
       "name": "border",
       "restrictions": [
         "length",
-        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -5119,7 +5274,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -5161,7 +5317,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5193,7 +5350,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5225,7 +5383,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5257,7 +5416,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5288,7 +5448,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -5327,7 +5488,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5359,7 +5521,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5391,7 +5554,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5423,7 +5587,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5454,7 +5619,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -5493,7 +5659,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5525,7 +5692,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5557,7 +5725,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5589,7 +5758,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5620,7 +5790,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -5659,7 +5830,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5691,7 +5863,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5723,7 +5896,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5755,7 +5929,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5786,7 +5961,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -5825,7 +6001,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5857,7 +6034,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5889,7 +6067,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5921,7 +6100,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -5952,7 +6132,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -5971,7 +6152,6 @@
       "name": "border-width",
       "restrictions": [
         "length",
-        "length-function",
         "enum"
       ],
       "syntax": "<line-width>{1,4}",
@@ -5993,7 +6173,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6025,7 +6206,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6057,7 +6239,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6088,7 +6271,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6108,7 +6292,6 @@
       "name": "border-left-width",
       "restrictions": [
         "length",
-        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -6130,7 +6313,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6162,7 +6346,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6194,7 +6379,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6225,7 +6411,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6245,7 +6432,6 @@
       "name": "border-top-width",
       "restrictions": [
         "length",
-        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -6267,7 +6453,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6299,7 +6486,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6331,7 +6519,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6362,7 +6551,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6382,7 +6572,6 @@
       "name": "border-right-width",
       "restrictions": [
         "length",
-        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -6404,7 +6593,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6436,7 +6626,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6468,7 +6659,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6499,7 +6691,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6519,7 +6712,6 @@
       "name": "border-bottom-width",
       "restrictions": [
         "length",
-        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -6541,7 +6733,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6573,7 +6766,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6605,7 +6799,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -6636,7 +6831,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6673,7 +6869,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6709,7 +6906,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6745,7 +6943,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6781,7 +6980,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6817,7 +7017,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6835,8 +7036,7 @@
     {
       "name": "border-radius",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length-percentage>{1,4} [ / <length-percentage>{1,4} ]?",
       "uniPlatform": {
@@ -6854,7 +7054,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6872,8 +7073,7 @@
     {
       "name": "border-top-left-radius",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -6891,7 +7091,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6909,8 +7110,7 @@
     {
       "name": "border-top-right-radius",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -6928,7 +7128,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6946,8 +7147,7 @@
     {
       "name": "border-bottom-left-radius",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -6965,7 +7165,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -6983,8 +7184,7 @@
     {
       "name": "border-bottom-right-radius",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -7002,7 +7202,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -7021,7 +7222,6 @@
       "name": "border-top",
       "restrictions": [
         "length",
-        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -7042,7 +7242,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -7062,7 +7263,6 @@
       "name": "border-bottom",
       "restrictions": [
         "length",
-        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -7083,7 +7283,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -7103,7 +7304,6 @@
       "name": "border-left",
       "restrictions": [
         "length",
-        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -7124,7 +7324,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -7144,7 +7345,6 @@
       "name": "border-right",
       "restrictions": [
         "length",
-        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -7165,7 +7365,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -7183,7 +7384,7 @@
     },
     {
       "name": "color",
-      "description": "color CSS 属性设置文本及文本装饰（text-decoration）的前景色颜色值。",
+      "description": "color 属性设置元素的文本及文本装饰（text-decoration）的前景色颜色值。",
       "restrictions": [
         "color"
       ],
@@ -7203,7 +7404,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -7230,10 +7432,9 @@
     },
     {
       "name": "font-size",
-      "description": "font-size CSS 属性设置字体大小。更改字体大小还会更新字体大小相关的 `<length>` 单位，例如 line-height 属性的 em 单位值。",
+      "description": "font-size 属性用于设置字体大小，更改字体大小还会更新字体大小相关的 `<length>` 单位，例如 line-height 属性的 em 单位值。",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<absolute-size> | <relative-size> | <length-percentage>",
       "uniPlatform": {
@@ -7251,7 +7452,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -7278,6 +7480,7 @@
     },
     {
       "name": "font-style",
+      "description": "font-style 属性用于设置字体样式。",
       "restrictions": [
         "enum"
       ],
@@ -7300,7 +7503,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -7332,7 +7536,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -7363,7 +7568,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -7387,6 +7593,7 @@
     },
     {
       "name": "font-weight",
+      "description": "font-weight 属性用于设置字体的粗细程度。",
       "restrictions": [
         "enum"
       ],
@@ -7409,7 +7616,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -7441,7 +7649,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -7473,7 +7682,74 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "500",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "600",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -7505,7 +7781,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -7536,7 +7813,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -7554,17 +7832,18 @@
         "text",
         "button",
         "input",
-        "textarea"
+        "textarea",
+        "loading"
       ],
       "defaultValue": "normal"
     },
     {
       "name": "text-decoration",
+      "description": "text-decoration 属性用于设置元素中文本的修饰线外观，是 text-decoration-line、text-decoration-color、text-decoration-style、text-decoration-thickness 属性的缩写。",
       "restrictions": [
         "enum",
         "color",
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<'text-decoration-line'> || <'text-decoration-style'> || <'text-decoration-color'> || <'text-decoration-thickness'>",
       "uniPlatform": {
@@ -7582,7 +7861,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -7603,6 +7883,7 @@
     },
     {
       "name": "text-decoration-line",
+      "description": "text-decoration-line 属性用于设置元素中文本的修饰线类型。",
       "restrictions": [
         "enum"
       ],
@@ -7625,7 +7906,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -7657,7 +7939,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -7689,7 +7972,41 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -7720,7 +8037,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -7742,6 +8060,7 @@
     },
     {
       "name": "text-decoration-color",
+      "description": "text-decoration-color 属性用于设置元素中文本的修饰线颜色。",
       "restrictions": [
         "color"
       ],
@@ -7761,7 +8080,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -7782,6 +8102,7 @@
     },
     {
       "name": "text-decoration-style",
+      "description": "text-decoration-style 属性用于设置元素中文本的修饰线样式，线的样式会应用到所有被 text-decoration-line 设定的线，不能为其中的每条线设置不同的样式。",
       "restrictions": [
         "enum"
       ],
@@ -7804,7 +8125,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -7836,7 +8158,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -7868,7 +8191,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -7900,7 +8224,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -7931,7 +8256,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -7952,11 +8278,81 @@
     },
     {
       "name": "text-decoration-thickness",
+      "description": "text-decoration-thickness 属性用于设置元素中文本的修饰线的粗细。",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "auto | from-font | <length> | <percentage> ",
+      "values": [
+        {
+          "name": "auto",
+          "description": "自动为文本装饰线选择合适的粗细。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixvVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "-"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "from-font",
+          "description": "如果字体文件中包含了首选的粗细值，则使用字体文件的粗细值。如果字体文件中没有包含首选的粗细值，则效果和设置为 auto 一样。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixvVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "-"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -7972,7 +8368,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -7993,6 +8390,7 @@
     },
     {
       "name": "text-align",
+      "description": "text-align 属性设置元素中文本内容的水平对齐方式。",
       "restrictions": [
         "enum"
       ],
@@ -8015,7 +8413,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8047,7 +8446,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8079,7 +8479,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8110,7 +8511,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -8138,6 +8540,7 @@
     },
     {
       "name": "font-family",
+      "description": "font-family 属性用于设置元素使用的字体，允许通过给定一个有先后顺序的，由字体名或者字体族名组成的列表来为元素设置字体。",
       "restrictions": [
         "font"
       ],
@@ -8160,7 +8563,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8192,7 +8596,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8224,7 +8629,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8256,7 +8662,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8288,7 +8695,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8321,7 +8729,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "web": {
@@ -8346,7 +8755,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -8391,7 +8801,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8423,7 +8834,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8454,7 +8866,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -8476,12 +8889,48 @@
     },
     {
       "name": "line-height",
+      "description": "line-height 属性用于设置多行文本的间距。",
       "restrictions": [
         "length",
-        "length-function",
         "number"
       ],
       "syntax": "normal | <number> | <length> | <percentage>",
+      "values": [
+        {
+          "name": "normal",
+          "description": "web平台由浏览器实现，通常约为 1.2，这取决于元素的 font-family。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixvVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "-"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -8497,7 +8946,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -8523,7 +8973,7 @@
     },
     {
       "name": "lines",
-      "description": "text 组件专有样式，设置文本组件最大行数",
+      "description": "text 组件专有样式，设置文本的最大行数。",
       "restrictions": [
         "integer"
       ],
@@ -8543,7 +8993,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "x"
           }
         },
         "web": {
@@ -8561,9 +9012,9 @@
     },
     {
       "name": "letter-spacing",
+      "description": "letter-spacing 属性用于设置文本字符的间距表现，正值会导致字符分布得更远，而负值会使字符更接近。",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "normal | <length>",
       "uniPlatform": {
@@ -8581,7 +9032,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -8606,6 +9058,7 @@
     },
     {
       "name": "white-space",
+      "description": "white-space 属性用于设置如何处理元素中的空白字符。",
       "restrictions": [
         "enum"
       ],
@@ -8628,7 +9081,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8660,7 +9114,140 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "pre-line",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixvVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "pre",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixvVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "pre-wrap",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixvVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "break-spaces",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8819,7 +9406,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -8865,13 +9453,14 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "x",
-                "unixVer": "x"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
               "weixin": {
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -8896,13 +9485,14 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "x",
-            "unixVer": "x"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
           "weixin": {
             "uniVer": "√",
-            "unixVer": "x"
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -8920,7 +9510,6 @@
       "restrictions": [
         "enum",
         "length",
-        "length-function",
         "color"
       ],
       "syntax": "none | <shadow>#",
@@ -8942,7 +9531,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "x"
+                "unixVer": "x",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8974,7 +9564,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9005,7 +9596,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -9045,7 +9637,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9077,7 +9670,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9108,7 +9702,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -9147,7 +9742,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9179,7 +9775,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9211,7 +9808,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9243,7 +9841,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9275,7 +9874,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -9307,7 +9907,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -9339,7 +9940,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -9371,7 +9973,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -9403,7 +10006,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -9435,7 +10039,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9467,7 +10072,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9499,7 +10105,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9531,7 +10138,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9563,7 +10171,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -9595,7 +10204,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -9627,7 +10237,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -9659,7 +10270,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -9691,7 +10303,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "x"
               }
             },
             "mp": {
@@ -9723,7 +10336,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9755,7 +10369,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9787,7 +10402,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9819,7 +10435,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9851,7 +10468,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9883,7 +10501,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9915,7 +10534,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9947,7 +10567,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -9978,7 +10599,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -10019,7 +10641,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -10059,7 +10682,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10091,7 +10715,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10123,7 +10748,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10155,7 +10781,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10187,7 +10814,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10219,7 +10847,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10250,7 +10879,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -10287,7 +10917,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -10327,7 +10958,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10359,7 +10991,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10391,7 +11024,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10423,7 +11057,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10455,7 +11090,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10487,7 +11123,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10519,7 +11156,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10551,7 +11189,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10583,7 +11222,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10615,7 +11255,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10646,7 +11287,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -10666,7 +11308,6 @@
       "shorthand": true,
       "restrictions": [
         "length",
-        "length-function",
         "percentage",
         "enum"
       ],
@@ -10689,7 +11330,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10721,7 +11363,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10753,7 +11396,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10785,7 +11429,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10817,7 +11462,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10848,7 +11494,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -10892,7 +11539,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10924,7 +11572,8 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
-                "unixVer": "4.61"
+                "unixVer": "4.61",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -10955,7 +11604,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -10970,6 +11620,115 @@
         }
       },
       "defaultValue": "auto"
+    },
+    {
+      "name": "animation-timing-function",
+      "restrictions": [
+        "enum"
+      ],
+      "syntax": "ease | linear",
+      "values": [
+        {
+          "name": "ease",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "x",
+                "unixVer": "4.84+"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "x",
+                "unixVer": "4.84"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "x",
+                "unixVer": "4.84",
+                "unixvVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "linear",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.84"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "x",
+                "unixVer": "4.84"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "x",
+                "unixVer": "4.84",
+                "unixvVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "4.84+"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "x",
+            "unixVer": "4.84"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "x",
+            "unixVer": "4.84",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "unixTags": [
+        "loading"
+      ],
+      "defaultValue": "linear"
     }
   ],
   "atDirectives": [
@@ -10990,7 +11749,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11022,7 +11782,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "4.61"
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
           }
         },
         "mp": {
@@ -11054,7 +11815,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11087,7 +11849,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11120,7 +11883,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11152,7 +11916,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11185,7 +11950,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11217,7 +11983,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11250,7 +12017,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11282,7 +12050,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11314,7 +12083,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11346,7 +12116,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11378,7 +12149,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11410,7 +12182,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11442,7 +12215,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {
@@ -11474,7 +12248,8 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
-            "unixVer": "x"
+            "unixVer": "x",
+            "unixvVer": "x"
           }
         },
         "mp": {

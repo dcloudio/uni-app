@@ -17,6 +17,7 @@ import {
   normalizeRoute,
 } from '@dcloudio/uni-core'
 import { closePreSystemDialogPage } from './utils'
+import { UTSJSONObject } from '@dcloudio/uni-shared'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions

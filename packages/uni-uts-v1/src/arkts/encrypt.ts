@@ -35,6 +35,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
   }
   return {
     dir: outputPluginDir,
+    errMsg: '',
     code: requireUTSPluginCode(pluginId, false),
     deps: [] as string[],
     encrypt: true,

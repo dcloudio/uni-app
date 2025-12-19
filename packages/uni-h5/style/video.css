@@ -100,6 +100,10 @@ uni-video[hidden] {
   left: 0;
 }
 
+.uni-video-video-fullscreen .uni-video-bar {
+  padding-bottom: 8px;
+}
+
 .uni-video-controls {
   display: flex;
   flex-grow: 1;
@@ -110,6 +114,7 @@ uni-video[hidden] {
 .uni-video-control-button {
   width: 17px;
   height: 17px;
+  font-size: 16px;
   line-height: 17px;
   padding: 0px 16px 0px 0px;
   margin-left: -6px;

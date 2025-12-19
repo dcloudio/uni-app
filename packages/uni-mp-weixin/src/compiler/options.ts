@@ -4,6 +4,8 @@ import {
   type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
   copyMiniProgramThemeJson,
+  createCopyComponentDirs,
+  createCopyPluginTarget,
   getNativeTags,
   transformComponentLink,
   transformDirection,
@@ -15,52 +17,52 @@ import {
   resolveMiniProgramRuntime,
 } from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
+import { transformLoading } from '../x/compiler/transforms/transformLoading'
 
 import source from './project.config.json'
 
 export const customElements = [
-  'page-container',
-  'page-meta',
-  'navigation-bar',
-  'match-media',
   'ad-custom',
-  'share-element',
   'channel-live',
   'channel-video',
-  'voip-room',
-  'root-portal',
-  'subscribe',
-  // 手势组件
-  'tap-gesture-handler',
   'double-tap-gesture-handler',
-  'scale-gesture-handler',
-  'force-press-gesture-handler',
-  'pan-gesture-handler',
-  'vertical-drag-gesture-handler',
-  'horizontal-drag-gesture-handler',
-  'long-press-gesture-handler',
-  //其他
   'draggable-sheet',
+  'editor-portal',
+  'force-press-gesture-handler',
   'grid-builder',
   'grid-view',
+  'horizontal-drag-gesture-handler',
+  'keyboard-accessory',
   'list-builder',
   'list-view',
+  'long-press-gesture-handler',
+  'match-media',
+  'navigation-bar',
   'nested-scroll-body',
   'nested-scroll-header',
+  'official-account-publish',
   'open-container',
+  'open-data-item',
+  'open-data-list',
+  'page-container',
+  'page-meta',
+  'pan-gesture-handler',
+  'root-portal',
+  'scale-gesture-handler',
+  'selection',
   'share-element',
   'snapshot',
-  // 'span', //  todo: 临时移除 span 的支持，后续判断 skyline 环境进行区分 ask 190418
   'sticky-header',
   'sticky-section',
   'store-product',
   'store-home',
   'store-gift',
   'store-coupon',
-  'keyboard-accessory',
-  'open-data-list',
-  'open-data-item',
-  'selection',
+  'subscribe',
+  'tap-gesture-handler',
+  'vertical-drag-gesture-handler',
+  'voip-room',
+  // 'span', //  todo: 临时移除 span 的支持，后续判断 skyline 环境进行区分 ask 190418
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
@@ -70,7 +72,11 @@ const nodeTransforms: NodeTransform[] = [
   transformAd,
 ]
 if (process.env.UNI_APP_X === 'true') {
-  nodeTransforms.push(transformMPBuiltInTag, transformDirection)
+  nodeTransforms.push(
+    transformMPBuiltInTag,
+    transformDirection,
+    transformLoading
+  )
 }
 
 export const compilerOptions: CompilerOptions = {
@@ -119,6 +125,7 @@ export function getMiniProgramOptions(
       input: [{ name: 'bind', arg: ['type'] }],
       textarea: [{ name: 'on', arg: ['input'] }],
       'movable-view': [{ name: 'bind', arg: ['direction'] }],
+      'store-home': [{ name: 'bind', arg: ['appid'] }],
     },
     component: {
       ':host': true,
@@ -151,13 +158,12 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: [COMPONENTS_DIR],
+      assets: createCopyComponentDirs(COMPONENTS_DIR),
       targets: [
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
           src: [
             'sitemap.json',
-            'ext.json',
             'custom-tab-bar',
             'functional-pages',
             'project.private.config.json',
@@ -168,6 +174,7 @@ export const options: UniMiniProgramPluginOptions = {
           },
         },
         ...copyMiniProgramThemeJson(),
+        createCopyPluginTarget(['ext.json']),
       ],
     },
   },

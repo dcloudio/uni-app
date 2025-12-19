@@ -90,7 +90,6 @@ export function registerApp(
   if (__DEV__) {
     console.log(formatLog('registerApp'))
   }
-  initEntryPagePath(nativeApp)
 
   setNativeApp(nativeApp)
 
@@ -121,7 +120,8 @@ export function registerApp(
 
   initService(nativeApp, unregisterApp)
 
-  // initEntry()
+  initEntry(nativeApp)
+  initEntryPagePath(nativeApp)
   // initTabBar()
   initGlobalEvent(nativeApp)
   // initKeyboardEvent()

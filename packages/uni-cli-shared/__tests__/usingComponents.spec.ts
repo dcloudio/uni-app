@@ -25,8 +25,14 @@ function dynamicImport(name: string, source: string) {
 }
 
 describe('transformVueComponentImports', () => {
+  let oldInputDir = process.env.UNI_INPUT_DIR
+
+  afterAll(() => {
+    process.env.UNI_INPUT_DIR = oldInputDir
+  })
   describe('global', () => {
     const filename = '/usr/xxx/projects/test/src/main.js'
+    process.env.UNI_INPUT_DIR = '/usr/xxx/projects/test/src'
     test(`basic`, async () => {
       const source = `
 import { createSSRApp } from 'vue'

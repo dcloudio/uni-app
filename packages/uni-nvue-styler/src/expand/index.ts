@@ -24,33 +24,37 @@ function getDeclTransforms(
   options: NormalizeOptions
 ): Record<string, TransformDecl> {
   const transformBorder =
-    options.type == 'uvue'
+    options.type === 'uvue'
       ? createTransformBorder(options)
       : createTransformBorderNvue(options)
   const styleMap: Record<string, TransformDecl> = {
     transition: transformTransition,
     border: transformBorder,
     background: createTransformBackground(options),
-    borderTop: transformBorder,
-    borderRight: transformBorder,
-    borderBottom: transformBorder,
-    borderLeft: transformBorder,
-    borderStyle:
-      options.type == 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
-    borderWidth:
-      options.type == 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
-    borderColor:
-      options.type == 'uvue' ? transformBorderColor : transformBorderColorNvue,
-    borderRadius:
-      options.type == 'uvue'
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-top' : 'borderTop']:
+      transformBorder,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-right' : 'borderRight']:
+      transformBorder,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-bottom' : 'borderBottom']:
+      transformBorder,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-left' : 'borderLeft']:
+      transformBorder,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-style' : 'borderStyle']:
+      options.type === 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-width' : 'borderWidth']:
+      options.type === 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-color' : 'borderColor']:
+      options.type === 'uvue' ? transformBorderColor : transformBorderColorNvue,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-radius' : 'borderRadius']:
+      options.type === 'uvue'
         ? transformBorderRadius
         : transformBorderRadiusNvue,
     // uvue已经支持这些简写属性，不需要展开
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
     padding: transformPadding,
-
-    flexFlow: transformFlexFlow,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'flex-flow' : 'flexFlow']:
+      transformFlexFlow,
   }
 
   if (options.type === 'uvue') {
@@ -127,7 +131,7 @@ export function vueStyleValidator(options: NormalizeOptions): Plugin {
             }
           }
 
-          if (needLog && helper) {
+          if (needLog && helper && decl.warn) {
             decl.warn(helper.result, reason)
           }
 

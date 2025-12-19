@@ -5,7 +5,7 @@ import debug from 'debug'
 import { camelize, capitalize, extend } from '@vue/shared'
 import { createFilter } from '@rollup/pluginutils'
 
-import { once } from '@dcloudio/uni-shared'
+import { isBuiltInComponent, once } from '@dcloudio/uni-shared'
 import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 import { M } from './messages'
@@ -119,7 +119,9 @@ export function initEasycoms(
     clearUTSComponents()
     clearUTSCustomElements()
     initEasycom(easyComOptions)
-    initUTSEasycomCustomElements()
+    if (isX) {
+      initUTSEasycomCustomElements()
+    }
     initUTSEasycom()
   }
   const componentExtNames = isX ? 'uvue|vue' : 'vue'
@@ -131,7 +133,7 @@ export function initEasycoms(
         'uni_modules/*/components/*/*.(' + componentExtNames + '|jsx|tsx)',
         'utssdk/*/**/*.(' + componentExtNames + ')',
         'uni_modules/*/utssdk/*/*.(' + componentExtNames + ')',
-        'uni_modules/*/customElements/*/*.uts',
+        ...(isX ? ['uni_modules/*/customElements/*/*.uts'] : []),
       ],
       [],
       {
@@ -145,7 +147,9 @@ export function initEasycoms(
         clearUTSComponents()
         clearUTSCustomElements()
         initEasycom(easyComOptions)
-        initUTSEasycomCustomElements()
+        if (isX) {
+          initUTSEasycomCustomElements()
+        }
         initUTSEasycom()
       }
     },
@@ -279,15 +283,19 @@ function initAutoScanEasycom(
   if (!fs.existsSync(dir)) {
     return easycoms
   }
+  const isDevX =
+    process.env.UNI_HX_VERSION_DEV === 'true' &&
+    process.env.UNI_APP_X === 'true'
   const isMp = platform.startsWith('mp-')
   const is_uni_modules =
     path.basename(path.resolve(dir, '../..')) === 'uni_modules'
+  const has_uts_sdk_dir = fs.existsSync(path.resolve(dir, '../utssdk'))
   const is_easycom_encrypt_uni_modules = // uni_modules模式不需要此逻辑
     process.env.UNI_COMPILE_TARGET !== 'uni_modules' &&
     is_uni_modules &&
     // 前端加密插件，不能包含utssdk目录
     fs.existsSync(path.resolve(dir, '../encrypt')) &&
-    !fs.existsSync(path.resolve(dir, '../utssdk'))
+    !has_uts_sdk_dir
   const uni_modules_plugin_id =
     is_easycom_encrypt_uni_modules && path.basename(path.resolve(dir, '..'))
   fs.readdirSync(dir).forEach((name) => {
@@ -295,6 +303,24 @@ function initAutoScanEasycom(
     if (!isDir(folder)) {
       return
     }
+    if (isDevX) {
+      if (
+        has_uts_sdk_dir &&
+        process.env.UNI_UTS_PLATFORM &&
+        isBuiltInComponent(name)
+      ) {
+        // dev下，如果是内置组件，且存在utssdk目录，则判断utssdk下是否存在当前平台，如果不存在，则跳过
+        const utsSdkPlatformDir = path.resolve(
+          dir,
+          '../utssdk',
+          process.env.UNI_UTS_PLATFORM
+        )
+        if (!fs.existsSync(utsSdkPlatformDir)) {
+          return
+        }
+      }
+    }
+
     const importDir = normalizePath(folder)
     const files = fs.readdirSync(folder)
     // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
@@ -401,13 +427,17 @@ export function genResolveEasycomCode(
   code: string,
   name: string
 ) {
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    // dom2 模式下，为了性能，不再考虑优先级问题，如果开发者需要区别，可以手动导入为其他名称
+    return name
+  }
   if (!importDeclarations.includes(RESOLVE_EASYCOM_IMPORT_CODE)) {
     importDeclarations.push(RESOLVE_EASYCOM_IMPORT_CODE)
   }
-  return `resolveEasycom(${code.replace(
-    '_resolveComponent',
-    '__resolveDynamicComponent'
-  )}, ${name})`
+  return `resolveEasycom(${code
+    .replace('_resolveComponent', '__resolveDynamicComponent')
+    // 移除 maybeSelfReference 逻辑，easycom 优先级高于自引用组件
+    .replace(', true)', ')')}, ${name})`
 }
 
 export const UNI_EASYCOM_EXCLUDE = [/@dcloudio\/uni-h5/]

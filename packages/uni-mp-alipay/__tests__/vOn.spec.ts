@@ -6,14 +6,14 @@ describe('mp-alipay: transform v-on', () => {
       `<button open-type='getPhoneNumber' @getphonenumber="getPhoneNumber">获取手机号</button>`,
       `<button open-type="getAuthorize" scope="phoneNumber" onGetAuthorize="{{a}}" onError="{{b}}">获取手机号</button>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => _ctx.$onAliGetAuthorize(_ctx.getPhoneNumber, $event)), b: _o($event => _ctx.$onAliAuthError(_ctx.getPhoneNumber, $event)) }
+  return { a: _o($event => _ctx.$onAliGetAuthorize(_ctx.getPhoneNumber, $event), "1a"), b: _o($event => _ctx.$onAliAuthError(_ctx.getPhoneNumber, $event), "21") }
 }`
     )
     assert(
       `<button open-type='getPhoneNumber' @getphonenumber="getPhoneNumber($event)">获取手机号</button>`,
       `<button open-type="getAuthorize" scope="phoneNumber" onGetAuthorize="{{a}}" onError="{{b}}">获取手机号</button>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => _ctx.$onAliGetAuthorize($event => { _ctx.getPhoneNumber($event); }, $event)), b: _o($event => _ctx.$onAliAuthError($event => { _ctx.getPhoneNumber($event); }, $event)) }
+  return { a: _o($event => _ctx.$onAliGetAuthorize($event => { _ctx.getPhoneNumber($event); }, $event), "7e"), b: _o($event => _ctx.$onAliAuthError($event => { _ctx.getPhoneNumber($event); }, $event), "09") }
 }`
     )
   })
@@ -22,14 +22,14 @@ describe('mp-alipay: transform v-on', () => {
       `<view v-on:click="onClick"/>`,
       `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
+  return { a: _o(_ctx.onClick, "0c") }
 }`
     )
     assert(
       `<custom v-on:click="onClick"/>`,
       `<custom onClick="{{a}}" u-i="2a9ec0b0-0" onVI="__l"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
+  return { a: _o(_ctx.onClick, "ca") }
 }`
     )
   })
@@ -38,7 +38,7 @@ describe('mp-alipay: transform v-on', () => {
       `<view @click.capture="onClick"/>`,
       `<view capture-onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
+  return { a: _o(_ctx.onClick, "ea") }
 }`
     )
   })
@@ -47,14 +47,14 @@ describe('mp-alipay: transform v-on', () => {
       `<view @click.stop="onClick"/>`,
       `<view catchTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
+  return { a: _o(_ctx.onClick, "6f") }
 }`
     )
     assert(
       `<view @click.prevent="onClick"/>`,
       `<view catchTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
+  return { a: _o(_ctx.onClick, "ea") }
 }`
     )
   })
@@ -63,14 +63,14 @@ describe('mp-alipay: transform v-on', () => {
       `<view @touchStart.capture.stop="onClick"/>`,
       `<view capture-catchTouchStart="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
+  return { a: _o(_ctx.onClick, "ba") }
 }`
     )
     assert(
       `<view @touchStart.capture.prevent="onClick"/>`,
       `<view capture-catchTouchStart="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
+  return { a: _o(_ctx.onClick, "92") }
 }`
     )
   })
@@ -88,7 +88,7 @@ describe('mp-alipay: transform v-on', () => {
       `<view @click="i++"/>`,
       `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => _ctx.i++) }
+  return { a: _o($event => _ctx.i++, "d2") }
 }`
     )
   })
@@ -97,7 +97,7 @@ describe('mp-alipay: transform v-on', () => {
       `<view @click="foo();bar()"/>`,
       `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => { _ctx.foo(); _ctx.bar(); }) }
+  return { a: _o($event => { _ctx.foo(); _ctx.bar(); }, "a9") }
 }`
     )
   })
@@ -109,7 +109,7 @@ describe('mp-alipay: transform v-on', () => {
   with (_ctx) {
     const { o: _o } = _Vue
 
-    return { a: _o($event => { foo(); bar(); }) }
+    return { a: _o($event => { foo(); bar(); }, "c7") }
   }
 }`,
       { prefixIdentifiers: false, mode: 'function' }
@@ -120,7 +120,7 @@ describe('mp-alipay: transform v-on', () => {
       `<view @click="foo($event)"/>`,
       `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => _ctx.foo($event)) }
+  return { a: _o($event => _ctx.foo($event), "e4") }
 }`
     )
   })
@@ -129,7 +129,7 @@ describe('mp-alipay: transform v-on', () => {
       `<view @click="foo($event);bar()"/>`,
       `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => { _ctx.foo($event); _ctx.bar(); }) }
+  return { a: _o($event => { _ctx.foo($event); _ctx.bar(); }, "ff") }
 }`
     )
   })
@@ -138,7 +138,7 @@ describe('mp-alipay: transform v-on', () => {
       `<view @click="$event => foo($event)"/>`,
       `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => _ctx.foo($event)) }
+  return { a: _o($event => _ctx.foo($event), "7c") }
 }`
     )
   })
@@ -151,7 +151,7 @@ describe('mp-alipay: transform v-on', () => {
 "/>`,
       `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => { _ctx.foo($event); }) }
+  return { a: _o($event => { _ctx.foo($event); }, "5c") }
 }`
     )
   })
@@ -164,7 +164,7 @@ describe('mp-alipay: transform v-on', () => {
 "/>`,
       `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(function ($event) { _ctx.foo($event); }) }
+  return { a: _o(function ($event) { _ctx.foo($event); }, "d2") }
 }`
     )
   })
@@ -176,7 +176,7 @@ describe('mp-alipay: transform v-on', () => {
   with (_ctx) {
     const { o: _o } = _Vue
 
-    return { a: _o(a['b' + c]) }
+    return { a: _o(a['b' + c], "c2") }
   }
 }`,
       {
@@ -190,7 +190,7 @@ describe('mp-alipay: transform v-on', () => {
       `<view @click="a['b' + c]"/>`,
       `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.a['b' + _ctx.c]) }
+  return { a: _o(_ctx.a['b' + _ctx.c], "08") }
 }`
     )
   })
@@ -199,7 +199,7 @@ describe('mp-alipay: transform v-on', () => {
       `<view @click="e => foo(e)"/>`,
       `<view onTap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(e => _ctx.foo(e)) }
+  return { a: _o(e => _ctx.foo(e), "6a") }
 }`
     )
   })
@@ -209,7 +209,7 @@ describe('mp-alipay: transform v-on', () => {
       `<view v-on:foo-bar="onMount"/>`,
       `<view onFooBar="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onMount) }
+  return { a: _o(_ctx.onMount, "bc") }
 }`
     )
   })
@@ -219,7 +219,7 @@ describe('mp-alipay: transform v-on', () => {
       `<view v-on:vnode-mounted="onMount"/>`,
       `<view onVnodeMounted="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onMount) }
+  return { a: _o(_ctx.onMount, "fb") }
 }`
     )
   })
@@ -230,7 +230,7 @@ describe('mp-alipay: transform v-on', () => {
         `<view v-on:click.prevent />`,
         `<view catchTap="{{a}}"/>`,
         `(_ctx, _cache) => {
-  return { a: _o(() => {}) }
+  return { a: _o(() => {}, "2a") }
 }`
       )
     })

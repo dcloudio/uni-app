@@ -9,7 +9,6 @@ import { normalizePath } from '../../utils'
 import { isMiniProgramProjectJsonKey, projectKeys } from './project'
 import { getPlatformManifestJsonOnce } from '../manifest'
 import { hasThemeJson, initTheme } from '../theme'
-import { checkPagesJson } from '../utils'
 
 interface ParsePagesJsonOptions {
   debug?: boolean
@@ -26,10 +25,6 @@ export function parseMiniProgramPagesJson(
   platform: UniApp.PLATFORM,
   options: ParsePagesJsonOptions = { subpackages: false }
 ) {
-  if (process.env.UNI_APP_X === 'true') {
-    // 目前仅对x开放
-    checkPagesJson(jsonStr, process.env.UNI_INPUT_DIR)
-  }
   return parsePagesJson(jsonStr, platform, options)
 }
 

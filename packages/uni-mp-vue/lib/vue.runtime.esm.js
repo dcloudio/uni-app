@@ -2609,6 +2609,8 @@ const PublicInstanceProxyHandlers = {
     } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
       accessCache[key] = 4 /* CONTEXT */;
       return ctx[key];
+    } else if (instance.exposed && hasOwn(instance.exposed, key)) {
+      return instance.exposed[key];
     } else if (
       // global properties
       globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)
@@ -4761,16 +4763,15 @@ function setRef(instance, isUnmount = false) {
     $templateUniElementRefs,
     ctx: { $scope, $mpPlatform }
   } = instance;
-  if ($mpPlatform === "mp-alipay") {
-    return;
-  }
   if (!$scope || !$templateRefs && !$templateUniElementRefs) {
     return;
   }
   if (isUnmount) {
-    $templateRefs && $templateRefs.forEach(
-      (templateRef) => setTemplateRef(templateRef, null, setupState)
-    );
+    if ($mpPlatform !== "mp-alipay") {
+      $templateRefs && $templateRefs.forEach(
+        (templateRef) => setTemplateRef(templateRef, null, setupState)
+      );
+    }
     $templateUniElementRefs && $templateUniElementRefs.forEach(
       (templateRef) => setTemplateRef(templateRef, null, setupState)
     );
@@ -4819,6 +4820,9 @@ function setRef(instance, isUnmount = false) {
         }
       });
     });
+  }
+  if ($mpPlatform === "mp-alipay") {
+    return;
   }
   if ($scope._$setRef) {
     $scope._$setRef(doSet);

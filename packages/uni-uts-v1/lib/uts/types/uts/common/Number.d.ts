@@ -1146,6 +1146,53 @@ interface NumberConstructor {
      }
    */
   from(value: Int | Float | Double | Int64 | Int32 | Int16 | Int8 | UInt | UInt64 | UInt32 | UInt16 | UInt8 | Byte | Short | Long): number;
+
+
+  /**
+    isNaN() 函数用来确定一个值是否为NaN 。注：isNaN函数内包含一些非常有趣的规则；你也可以使用 ECMAScript 2015 中定义的 Number.isNaN() 来判断。
+    @param number 要被检测的值。
+    @return 如果给定值为 NaN则返回值为true；否则为false。
+    @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#isNaN
+    @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91",
+          "unixUtsPlugin": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "√",
+            "unixVer": "4.61",
+            "uniUtsPlugin": "√",
+            "unixUtsPlugin": "4.61"
+        }
+      },
+          "mp": {
+            "weixin": {
+              "hostVer": "√",
+              "uniVer": "√",
+              "unixVer": "4.41"
+            }
+          },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+    isNaN(number: number): boolean;
+
 }
 
 /** An object that represents a number of any kind. All JavaScript numbers are 64-bit floating-point numbers. */

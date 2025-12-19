@@ -31,7 +31,7 @@ function isValidContinue(c: string): boolean {
   return !!c.match(/^[A-Za-z0-9_-]$/)
 }
 
-function verifySymbol(s: string) {
+export function verifySymbol(s: string) {
   const chars = Array.from(s)
 
   if (isValidStart(chars[0]) && chars.slice(1).every(isValidContinue)) {

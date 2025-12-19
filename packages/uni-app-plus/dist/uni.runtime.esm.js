@@ -13401,10 +13401,13 @@ function parseTheme(pageStyle) {
     if (__uniConfig.darkmode) {
         let parsedStyle = {};
         let theme = plus.navigator.getUIStyle();
-        const systemInfo = weexGetSystemInfoSync();
-        // 小程序 SDK
-        if (systemInfo && systemInfo.hostTheme) {
-            theme = systemInfo.hostTheme;
+        // @ts-expect-error 鸿蒙端编译时写入 plus.os.name 鸿蒙暂不支持 hostTheme
+        if (plus.os.name !== 'HarmonyOS') {
+            const systemInfo = weexGetSystemInfoSync();
+            // 小程序 SDK
+            if (systemInfo && systemInfo.hostTheme) {
+                theme = systemInfo.hostTheme;
+            }
         }
         parsedStyle = normalizeStyles(pageStyle, __uniConfig.themeConfig, theme);
         return parsedStyle;
@@ -13672,7 +13675,9 @@ var tabBarInstance = {
     },
     removeEventListener(_name, callback) {
         const callbackIndex = maskClickCallback.indexOf(callback);
-        maskClickCallback.splice(callbackIndex, 1);
+        if (callbackIndex > -1) {
+            maskClickCallback.splice(callbackIndex, 1);
+        }
     },
 };
 
@@ -13816,7 +13821,10 @@ function weexGetSystemInfoSync() {
     if (!_initSystemInfo)
         return;
     const { getSystemInfoSync } = weex.requireModule('plus');
-    systemInfo = getSystemInfoSync();
+    try {
+        systemInfo = getSystemInfoSync();
+    }
+    catch (error) { }
     if (isString(systemInfo)) {
         try {
             systemInfo = JSON.parse(systemInfo);
