@@ -260,6 +260,7 @@ export declare function setSharedDataModel<S extends UniSharedData, V>(sharedDat
 }): UniSharedDataFunctionEventListener;
 export declare function setSharedDataTemplateRef<S extends UniSharedData>(sharedData: S, key: string, value: UniSharedDataFunctionSetTemplateRef): UniSharedDataFunctionSetTemplateRef;
 export declare function toSharedDataBoolean(value: any | null): boolean;
+export declare function toSharedDataAttrBoolean(value: any | null, defaultValue?: boolean): boolean;
 export declare function toSharedDataNumber(value: any | null): number;
 export declare function toSharedDataString(value: any | null): string;
 export declare function toSharedDataColor(value: any | null): number;
