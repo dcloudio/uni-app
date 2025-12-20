@@ -13,6 +13,7 @@ import type { OutputChunk } from 'rollup'
 
 import {
   UNI_EASYCOM_EXCLUDE,
+  initAutoImportOptions,
   initPreContext,
   normalizePath,
   stripOptions,
@@ -109,6 +110,11 @@ if (isNewX) {
   prePlugin = uniPrePlugin({} as any, { include: ['**/*.vue', '**/*.uts.ts'] })
   prePlugin.enforce = 'pre'
 }
+const autoImportOptions = initAutoImportOptions('web', {})
+autoImportOptions.imports = autoImportOptions.imports!.filter(
+  (item: any) => item.from !== '@dcloudio/uni-cloud'
+)
+autoImportOptions.include = ['**/uni-ext-api/uni_modules/**']
 
 export default defineConfig({
   root: __dirname,
@@ -153,6 +159,7 @@ export default defineConfig({
       ? [
           uniUVueTypeScriptPlugin(),
           prePlugin,
+          AutoImport(autoImportOptions),
           uniExtApi(),
           uts2ts({ target: 'uni-h5', platform: 'web' }),
         ]
