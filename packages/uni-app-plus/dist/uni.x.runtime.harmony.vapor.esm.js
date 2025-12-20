@@ -2065,6 +2065,9 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
         dialogPageTriggerParentShow(dialogPage, isSystemDialogPage(dialogPage) ? 1 : 0);
       });
       nativePage.addPageEventListener(ON_READY, (_) => {
+        {
+          invokeMountedJobs(pageComponentPublicInstance);
+        }
         invokePageReadyHooks(pageComponentPublicInstance);
         invokeHook(pageComponentPublicInstance, ON_READY);
       });
