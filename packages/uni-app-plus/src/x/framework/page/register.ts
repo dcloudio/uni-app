@@ -351,6 +351,9 @@ export function registerDialogPage(
           )
         })
         nativePage.addPageEventListener(ON_READY, (_) => {
+          if (__VAPOR__) {
+            invokeMountedJobs(pageComponentPublicInstance)
+          }
           invokePageReadyHooks(pageComponentPublicInstance)
           invokeHook(pageComponentPublicInstance, ON_READY)
         })
