@@ -526,9 +526,9 @@ declare function encodeURIComponent(uriComponent: string): string | null;
       "harmony": {
           "osVer": "5.0.0",
           "uniVer": "√",
-          "unixVer": "4.61",
-          "uniUtsPlugin": "√",
-          "unixUtsPlugin": "4.61"
+          "unixVer": "x",
+          "uniUtsPlugin": "x",
+          "unixUtsPlugin": "x"
       }
     },
     "web": {
@@ -565,9 +565,9 @@ declare function atob(encodedData: string): string
       "harmony": {
           "osVer": "5.0.0",
           "uniVer": "√",
-          "unixVer": "4.61",
-          "uniUtsPlugin": "√",
-          "unixUtsPlugin": "4.61"
+          "unixVer": "x",
+          "uniUtsPlugin": "x",
+          "unixUtsPlugin": "x"
       }
     },
     "web": {
