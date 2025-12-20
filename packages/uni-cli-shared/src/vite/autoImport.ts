@@ -139,6 +139,7 @@ const uniH5Preset = {
     'UniTextElement',
     'UniTextareaElement',
     'UniViewElement',
+    'UniViewElementImpl',
     'UniListViewElement',
     'UniListItemElement',
     'UniStickySectionElement',
