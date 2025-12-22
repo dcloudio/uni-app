@@ -11,6 +11,7 @@ import {
   type UniViteCopyPluginOptions,
   type UniVitePlugin,
   createTransformTag,
+  initI18n,
   initI18nOptions,
   injectAssetPlugin,
   isUTSCustomElement,
@@ -209,7 +210,7 @@ export function normalizeManifestJson(
     }
   }
 
-  return manifest
+  return initI18n(manifest)
 }
 
 export function updateHarmonyManifestModules(
