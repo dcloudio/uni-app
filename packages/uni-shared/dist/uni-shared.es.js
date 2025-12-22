@@ -244,6 +244,7 @@ const UVUE_BUILT_IN_EASY_COMPONENTS = [
     'live-pusher',
     'loading',
     'web-view',
+    'rich-text',
 ];
 function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
