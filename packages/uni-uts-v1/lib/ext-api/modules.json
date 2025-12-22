@@ -1185,6 +1185,12 @@
       }
     }
   },
+  "uni-rich-text": {
+    "uni": {},
+    "easycom": [
+      "rich-text"
+    ]
+  },
   "uni-rpx2px": {
     "uni": {
       "rpx2px": {
