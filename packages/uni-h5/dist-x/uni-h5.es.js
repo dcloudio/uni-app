@@ -17750,8 +17750,8 @@ function normalizeText(text2, { space, decode: decode2 }) {
   }
   return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-function parseText(text2, options) {
-  return normalizeText(text2, options).split(LINEFEED);
+function parseTextIgnoreLinefeed(text2, options) {
+  return normalizeText(text2, options);
 }
 class UniTextElement extends UniElement {
 }
@@ -17788,10 +17788,11 @@ const __syscom_1$1 = /* @__PURE__ */ defineBuiltInComponent({
       if (slots.default) {
         slots.default().forEach((vnode) => {
           if (vnode.shapeFlag & 8 && vnode.type !== Comment) {
-            const lines = parseText(vnode.children, {
+            let lines = [];
+            lines = [parseTextIgnoreLinefeed(vnode.children, {
               space: props2.space,
               decode: props2.decode
-            });
+            })];
             const len = lines.length - 1;
             lines.forEach((line, index2) => {
               if (index2 === 0 && !line)

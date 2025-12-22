@@ -7819,7 +7819,8 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       if (slots.default) {
         slots.default().forEach((vnode) => {
           if (vnode.shapeFlag & 8 && vnode.type !== vue.Comment) {
-            const lines = parseText(vnode.children, {
+            let lines = [];
+            lines = parseText(vnode.children, {
               space: props2.space,
               decode: props2.decode
             });

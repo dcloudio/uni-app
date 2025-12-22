@@ -8474,8 +8474,8 @@ function normalizeText(text, { space, decode }) {
   }
   return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-function parseText(text, options) {
-  return normalizeText(text, options).split(uniShared.LINEFEED);
+function parseTextIgnoreLinefeed(text, options) {
+  return normalizeText(text, options);
 }
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
@@ -8502,10 +8502,11 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       if (slots.default) {
         slots.default().forEach((vnode) => {
           if (vnode.shapeFlag & 8 && vnode.type !== vue.Comment) {
-            const lines = parseText(vnode.children, {
+            let lines = [];
+            lines = [parseTextIgnoreLinefeed(vnode.children, {
               space: props2.space,
               decode: props2.decode
-            });
+            })];
             const len = lines.length - 1;
             lines.forEach((line, index2) => {
               if (index2 === 0 && !line)
