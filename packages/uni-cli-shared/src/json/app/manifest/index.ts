@@ -62,3 +62,4 @@ export {
   getNVueFlexDirection,
 } from './nvue'
 export { parseArguments } from './arguments'
+export { initI18n } from './i18n'
