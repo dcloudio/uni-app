@@ -372,10 +372,10 @@ const IMPORT_EXPR_RE = new RegExp(
   `${IMPORT_EXP_START}(.*?)${IMPORT_EXP_END}`,
   "g"
 );
-const NEWLINE = Symbol(`newline` );
-const LF = Symbol(`line feed` );
-const INDENT_START = Symbol(`indent start` );
-const INDENT_END = Symbol(`indent end` );
+const NEWLINE = /* @__PURE__ */ Symbol(`newline` );
+const LF = /* @__PURE__ */ Symbol(`line feed` );
+const INDENT_START = /* @__PURE__ */ Symbol(`indent start` );
+const INDENT_END = /* @__PURE__ */ Symbol(`indent end` );
 function buildCodeFragment(...frag) {
   const push = frag.push.bind(frag);
   const unshift = frag.unshift.bind(frag);
@@ -1102,7 +1102,7 @@ function genSetDynamicEvents(oper, context) {
     )
   ];
 }
-function genEventHandler(context, values, modifiers = { nonKeys: [], keys: [] }, extraWrap = false) {
+function genEventHandler(context, values, modifiers = { nonKeys: [], keys: [] }, asComponentProp = false, extraWrap = false) {
   let handlerExp = [];
   if (values) {
     values.forEach((value, index) => {
@@ -1110,7 +1110,7 @@ function genEventHandler(context, values, modifiers = { nonKeys: [], keys: [] },
       if (value && value.content.trim()) {
         if (compilerDom.isMemberExpression(value, context.options)) {
           exp = genExpression(value, context);
-          if (!isConstantBinding(value, context) && !extraWrap) {
+          if (!isConstantBinding(value, context) && !asComponentProp) {
             const isTSNode = value.ast && compilerDom.TS_NODE_TYPES.includes(value.ast.type);
             exp = [
               `e => `,
@@ -1900,7 +1900,7 @@ function genCreateComponent(operation, context) {
   const rawProps = context.withId(() => genRawProps(props, context), ids);
   const inlineHandlers = handlers.reduce(
     (acc, { name, value }) => {
-      const handler = genEventHandler(context, [value], void 0, false);
+      const handler = genEventHandler(context, [value], void 0, false, false);
       return [...acc, `const ${name} = `, ...handler, NEWLINE];
     },
     []
@@ -1994,7 +1994,89 @@ function genRawProps(props, context) {
   }
 }
 function genStaticProps(props, context, dynamicProps) {
-  const args = props.map((prop) => genProp(prop, context, true));
+  const args = [];
+  const handlerGroups = /* @__PURE__ */ new Map();
+  const ensureHandlerGroup = (keyName, keyFrag) => {
+    let group = handlerGroups.get(keyName);
+    if (!group) {
+      const index = args.length;
+      args.push([]);
+      group = { keyFrag, handlers: [], index };
+      handlerGroups.set(keyName, group);
+    }
+    return group;
+  };
+  const addHandler = (keyName, keyFrag, handlerExp) => {
+    ensureHandlerGroup(keyName, keyFrag).handlers.push(handlerExp);
+  };
+  const getStaticPropKeyName = (prop) => {
+    if (!prop.key.isStatic) return;
+    const handlerModifierPostfix = prop.handlerModifiers && prop.handlerModifiers.options ? prop.handlerModifiers.options.map((m) => m.charAt(0).toUpperCase() + m.slice(1)).join("") : "";
+    const keyName = (prop.handler ? shared.toHandlerKey(shared.camelize(prop.key.content)) : prop.key.content) + handlerModifierPostfix;
+    return keyName;
+  };
+  for (const prop of props) {
+    if (prop.handler) {
+      const keyName = getStaticPropKeyName(prop);
+      if (!keyName) {
+        args.push(genProp(prop, context, true));
+        continue;
+      }
+      const keyFrag = genPropKey(prop, context);
+      const hasModifiers = !!prop.handlerModifiers && (prop.handlerModifiers.keys.length > 0 || prop.handlerModifiers.nonKeys.length > 0);
+      if (hasModifiers || prop.values.length <= 1) {
+        const handlerExp = genEventHandler(
+          context,
+          prop.values,
+          prop.handlerModifiers,
+          true,
+          false
+        );
+        addHandler(keyName, keyFrag, handlerExp);
+      } else {
+        for (const value of prop.values) {
+          const handlerExp = genEventHandler(
+            context,
+            [value],
+            prop.handlerModifiers,
+            true,
+            false
+          );
+          addHandler(keyName, keyFrag, handlerExp);
+        }
+      }
+      continue;
+    }
+    args.push(genProp(prop, context, true));
+    if (prop.model) {
+      if (prop.key.isStatic) {
+        const keyName = `onUpdate:${shared.camelize(prop.key.content)}`;
+        const keyFrag = [JSON.stringify(keyName)];
+        addHandler(keyName, keyFrag, genModelHandler(prop.values[0], context));
+      } else {
+        const keyFrag = [
+          '["onUpdate:" + ',
+          ...genExpression(prop.key, context),
+          "]"
+        ];
+        args.push([
+          ...keyFrag,
+          ": () => ",
+          ...genModelHandler(prop.values[0], context)
+        ]);
+      }
+      const { key, modelModifiers } = prop;
+      if (modelModifiers && modelModifiers.length) {
+        const modifiersKey = key.isStatic ? [shared.getModifierPropName(key.content)] : ["[", ...genExpression(key, context), ' + "Modifiers"]'];
+        const modifiersVal = genDirectiveModifiers(modelModifiers);
+        args.push([...modifiersKey, `: () => ({ ${modifiersVal} })`]);
+      }
+    }
+  }
+  for (const group of handlerGroups.values()) {
+    const handlerValue = group.handlers.length > 1 ? genMulti(DELIMITERS_ARRAY_NEWLINE, ...group.handlers) : group.handlers[0];
+    args[group.index] = [...group.keyFrag, ": () => ", ...handlerValue];
+  }
   if (dynamicProps) {
     args.push([`$: `, ...dynamicProps]);
   }
@@ -2014,9 +2096,36 @@ function genDynamicProps(props, context) {
       }
       continue;
     } else {
-      if (p.kind === 1)
-        expr = genMulti(DELIMITERS_OBJECT, genProp(p, context));
-      else {
+      if (p.kind === 1) {
+        if (p.model) {
+          const entries = [genProp(p, context)];
+          const updateKey = p.key.isStatic ? [
+            JSON.stringify(`onUpdate:${shared.camelize(p.key.content)}`)
+          ] : [
+            '["onUpdate:" + ',
+            ...genExpression(p.key, context),
+            "]"
+          ];
+          entries.push([
+            ...updateKey,
+            ": () => ",
+            ...genModelHandler(p.values[0], context)
+          ]);
+          const { modelModifiers } = p;
+          if (modelModifiers && modelModifiers.length) {
+            const modifiersKey = p.key.isStatic ? [shared.getModifierPropName(p.key.content)] : [
+              "[",
+              ...genExpression(p.key, context),
+              ' + "Modifiers"]'
+            ];
+            const modifiersVal = genDirectiveModifiers(modelModifiers);
+            entries.push([...modifiersKey, `: () => ({ ${modifiersVal} })`]);
+          }
+          expr = genMulti(DELIMITERS_OBJECT_NEWLINE, ...entries);
+        } else {
+          expr = genMulti(DELIMITERS_OBJECT, genProp(p, context));
+        }
+      } else {
         expr = genExpression(p.value, context);
         if (p.handler)
           expr = genCall(
@@ -2044,22 +2153,10 @@ function genProp(prop, context, isStatic) {
       context,
       prop.values,
       prop.handlerModifiers,
+      true,
       true
-    ) : isStatic ? ["() => (", ...values, ")"] : values,
-    ...prop.model ? [...genModelEvent(prop, context), ...genModelModifiers(prop, context)] : []
+    ) : isStatic ? ["() => (", ...values, ")"] : values
   ];
-}
-function genModelEvent(prop, context) {
-  const name = prop.key.isStatic ? [JSON.stringify(`onUpdate:${shared.camelize(prop.key.content)}`)] : ['["onUpdate:" + ', ...genExpression(prop.key, context), "]"];
-  const handler = genModelHandler(prop.values[0], context);
-  return [",", NEWLINE, ...name, ": () => ", ...handler];
-}
-function genModelModifiers(prop, context) {
-  const { key, modelModifiers } = prop;
-  if (!modelModifiers || !modelModifiers.length) return [];
-  const modifiersKey = key.isStatic ? [shared.getModifierPropName(key.content)] : ["[", ...genExpression(key, context), ' + "Modifiers"]'];
-  const modifiersVal = genDirectiveModifiers(modelModifiers);
-  return [",", NEWLINE, ...modifiersKey, `: () => ({ ${modifiersVal} })`];
 }
 function genRawSlots(slots, context) {
   if (!slots.length) return;
@@ -3366,13 +3463,13 @@ const transformVHtml = (dir, node, context) => {
   let { exp, loc } = dir;
   if (!exp) {
     context.options.onError(
-      compilerDom.createDOMCompilerError(53, loc)
+      compilerDom.createDOMCompilerError(54, loc)
     );
     exp = EMPTY_EXPRESSION;
   }
   if (node.children.length) {
     context.options.onError(
-      compilerDom.createDOMCompilerError(54, loc)
+      compilerDom.createDOMCompilerError(55, loc)
     );
     context.childrenTemplate.length = 0;
   }
@@ -3400,13 +3497,13 @@ const transformVText = (dir, node, context) => {
   let { exp, loc } = dir;
   if (!exp) {
     context.options.onError(
-      compilerDom.createDOMCompilerError(55, loc)
+      compilerDom.createDOMCompilerError(56, loc)
     );
     exp = EMPTY_EXPRESSION;
   }
   if (node.children.length) {
     context.options.onError(
-      compilerDom.createDOMCompilerError(56, loc)
+      compilerDom.createDOMCompilerError(57, loc)
     );
     context.childrenTemplate.length = 0;
   }
@@ -3445,7 +3542,7 @@ function normalizeBindShorthand(arg, context) {
   if (arg.type !== 4 || !arg.isStatic) {
     context.options.onError(
       compilerDom.createCompilerError(
-        52,
+        53,
         arg.loc
       )
     );
@@ -3564,7 +3661,7 @@ const transformVShow = (dir, node, context) => {
   const { exp, loc } = dir;
   if (!exp) {
     context.options.onError(
-      compilerDom.createDOMCompilerError(61, loc)
+      compilerDom.createDOMCompilerError(62, loc)
     );
     return;
   }
@@ -3792,7 +3889,7 @@ const transformVModel = (dir, node, context) => {
   if (dir.arg)
     context.options.onError(
       compilerDom.createDOMCompilerError(
-        58,
+        59,
         dir.arg.loc
       )
     );
@@ -3817,7 +3914,7 @@ const transformVModel = (dir, node, context) => {
               modelType = void 0;
               context.options.onError(
                 compilerDom.createDOMCompilerError(
-                  59,
+                  60,
                   dir.loc
                 )
               );
@@ -3840,7 +3937,7 @@ const transformVModel = (dir, node, context) => {
   } else {
     context.options.onError(
       compilerDom.createDOMCompilerError(
-        57,
+        58,
         dir.loc
       )
     );
@@ -3861,7 +3958,7 @@ const transformVModel = (dir, node, context) => {
     if (value && compilerDom.isStaticArgOf(value.arg, "value")) {
       context.options.onError(
         compilerDom.createDOMCompilerError(
-          60,
+          61,
           value.loc
         )
       );

@@ -384,7 +384,7 @@ export declare function applyElementDynamicModel(el: UniElement, get: () => any,
     number?: true;
     lazy?: true;
 }): void;
-export declare function applyElementVShow(component: UniSharedDataComponent, target: UniElement, source: () => boolean): void;
+export declare function applyElementVShow(target: UniElement, source: () => boolean): void;
 export declare function setElementInsertionState(parent: UniElement, anchor?: UniElement | 0 | null | number, last?: boolean): void;
 export declare function getElementInsertionParent(): UniElement | null;
 export declare function onElement(node: UniElement, event: string, fn: (event: UniEvent) => void, options?: AddEventListenerOptions & {

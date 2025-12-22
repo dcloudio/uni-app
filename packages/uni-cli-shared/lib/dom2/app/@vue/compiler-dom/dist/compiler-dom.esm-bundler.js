@@ -7,26 +7,26 @@ import { registerRuntimeHelpers, createSimpleExpression, createCompilerError, cr
 export * from '@vue/compiler-core';
 import { isHTMLTag, isSVGTag, isMathMLTag, isVoidTag, parseStringStyle, makeMap, capitalize, isString, extend } from '@vue/shared';
 
-const V_MODEL_RADIO = Symbol(!!(process.env.NODE_ENV !== "production") ? `vModelRadio` : ``);
-const V_MODEL_CHECKBOX = Symbol(
+const V_MODEL_RADIO = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `vModelRadio` : ``);
+const V_MODEL_CHECKBOX = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `vModelCheckbox` : ``
 );
-const V_MODEL_TEXT = Symbol(!!(process.env.NODE_ENV !== "production") ? `vModelText` : ``);
-const V_MODEL_SELECT = Symbol(
+const V_MODEL_TEXT = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `vModelText` : ``);
+const V_MODEL_SELECT = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `vModelSelect` : ``
 );
-const V_MODEL_DYNAMIC = Symbol(
+const V_MODEL_DYNAMIC = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `vModelDynamic` : ``
 );
-const V_ON_WITH_MODIFIERS = Symbol(
+const V_ON_WITH_MODIFIERS = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `vOnModifiersGuard` : ``
 );
-const V_ON_WITH_KEYS = Symbol(
+const V_ON_WITH_KEYS = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `vOnKeysGuard` : ``
 );
-const V_SHOW = Symbol(!!(process.env.NODE_ENV !== "production") ? `vShow` : ``);
-const TRANSITION = Symbol(!!(process.env.NODE_ENV !== "production") ? `Transition` : ``);
-const TRANSITION_GROUP = Symbol(
+const V_SHOW = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `vShow` : ``);
+const TRANSITION = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `Transition` : ``);
+const TRANSITION_GROUP = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `TransitionGroup` : ``
 );
 registerRuntimeHelpers({
@@ -137,57 +137,57 @@ function createDOMCompilerError(code, loc) {
   );
 }
 const DOMErrorCodes = {
-  "X_V_HTML_NO_EXPRESSION": 53,
-  "53": "X_V_HTML_NO_EXPRESSION",
-  "X_V_HTML_WITH_CHILDREN": 54,
-  "54": "X_V_HTML_WITH_CHILDREN",
-  "X_V_TEXT_NO_EXPRESSION": 55,
-  "55": "X_V_TEXT_NO_EXPRESSION",
-  "X_V_TEXT_WITH_CHILDREN": 56,
-  "56": "X_V_TEXT_WITH_CHILDREN",
-  "X_V_MODEL_ON_INVALID_ELEMENT": 57,
-  "57": "X_V_MODEL_ON_INVALID_ELEMENT",
-  "X_V_MODEL_ARG_ON_ELEMENT": 58,
-  "58": "X_V_MODEL_ARG_ON_ELEMENT",
-  "X_V_MODEL_ON_FILE_INPUT_ELEMENT": 59,
-  "59": "X_V_MODEL_ON_FILE_INPUT_ELEMENT",
-  "X_V_MODEL_UNNECESSARY_VALUE": 60,
-  "60": "X_V_MODEL_UNNECESSARY_VALUE",
-  "X_V_SHOW_NO_EXPRESSION": 61,
-  "61": "X_V_SHOW_NO_EXPRESSION",
-  "X_TRANSITION_INVALID_CHILDREN": 62,
-  "62": "X_TRANSITION_INVALID_CHILDREN",
-  "X_IGNORED_SIDE_EFFECT_TAG": 63,
-  "63": "X_IGNORED_SIDE_EFFECT_TAG",
-  "__EXTEND_POINT__": 64,
-  "64": "__EXTEND_POINT__"
+  "X_V_HTML_NO_EXPRESSION": 54,
+  "54": "X_V_HTML_NO_EXPRESSION",
+  "X_V_HTML_WITH_CHILDREN": 55,
+  "55": "X_V_HTML_WITH_CHILDREN",
+  "X_V_TEXT_NO_EXPRESSION": 56,
+  "56": "X_V_TEXT_NO_EXPRESSION",
+  "X_V_TEXT_WITH_CHILDREN": 57,
+  "57": "X_V_TEXT_WITH_CHILDREN",
+  "X_V_MODEL_ON_INVALID_ELEMENT": 58,
+  "58": "X_V_MODEL_ON_INVALID_ELEMENT",
+  "X_V_MODEL_ARG_ON_ELEMENT": 59,
+  "59": "X_V_MODEL_ARG_ON_ELEMENT",
+  "X_V_MODEL_ON_FILE_INPUT_ELEMENT": 60,
+  "60": "X_V_MODEL_ON_FILE_INPUT_ELEMENT",
+  "X_V_MODEL_UNNECESSARY_VALUE": 61,
+  "61": "X_V_MODEL_UNNECESSARY_VALUE",
+  "X_V_SHOW_NO_EXPRESSION": 62,
+  "62": "X_V_SHOW_NO_EXPRESSION",
+  "X_TRANSITION_INVALID_CHILDREN": 63,
+  "63": "X_TRANSITION_INVALID_CHILDREN",
+  "X_IGNORED_SIDE_EFFECT_TAG": 64,
+  "64": "X_IGNORED_SIDE_EFFECT_TAG",
+  "__EXTEND_POINT__": 65,
+  "65": "__EXTEND_POINT__"
 };
 const DOMErrorMessages = {
-  [53]: `v-html is missing expression.`,
-  [54]: `v-html will override element children.`,
-  [55]: `v-text is missing expression.`,
-  [56]: `v-text will override element children.`,
-  [57]: `v-model can only be used on <input>, <textarea> and <select> elements.`,
-  [58]: `v-model argument is not supported on plain elements.`,
-  [59]: `v-model cannot be used on file inputs since they are read-only. Use a v-on:change listener instead.`,
-  [60]: `Unnecessary value binding used alongside v-model. It will interfere with v-model's behavior.`,
-  [61]: `v-show is missing expression.`,
-  [62]: `<Transition> expects exactly one child element or component.`,
-  [63]: `Tags with side effect (<script> and <style>) are ignored in client component templates.`,
+  [54]: `v-html is missing expression.`,
+  [55]: `v-html will override element children.`,
+  [56]: `v-text is missing expression.`,
+  [57]: `v-text will override element children.`,
+  [58]: `v-model can only be used on <input>, <textarea> and <select> elements.`,
+  [59]: `v-model argument is not supported on plain elements.`,
+  [60]: `v-model cannot be used on file inputs since they are read-only. Use a v-on:change listener instead.`,
+  [61]: `Unnecessary value binding used alongside v-model. It will interfere with v-model's behavior.`,
+  [62]: `v-show is missing expression.`,
+  [63]: `<Transition> expects exactly one child element or component.`,
+  [64]: `Tags with side effect (<script> and <style>) are ignored in client component templates.`,
   // just to fulfill types
-  [64]: ``
+  [65]: ``
 };
 
 const transformVHtml = (dir, node, context) => {
   const { exp, loc } = dir;
   if (!exp) {
     context.onError(
-      createDOMCompilerError(53, loc)
+      createDOMCompilerError(54, loc)
     );
   }
   if (node.children.length) {
     context.onError(
-      createDOMCompilerError(54, loc)
+      createDOMCompilerError(55, loc)
     );
     node.children.length = 0;
   }
@@ -205,12 +205,12 @@ const transformVText = (dir, node, context) => {
   const { exp, loc } = dir;
   if (!exp) {
     context.onError(
-      createDOMCompilerError(55, loc)
+      createDOMCompilerError(56, loc)
     );
   }
   if (node.children.length) {
     context.onError(
-      createDOMCompilerError(56, loc)
+      createDOMCompilerError(57, loc)
     );
     node.children.length = 0;
   }
@@ -236,7 +236,7 @@ const transformModel = (dir, node, context) => {
   if (dir.arg) {
     context.onError(
       createDOMCompilerError(
-        58,
+        59,
         dir.arg.loc
       )
     );
@@ -246,7 +246,7 @@ const transformModel = (dir, node, context) => {
     if (value && isStaticArgOf(value.arg, "value")) {
       context.onError(
         createDOMCompilerError(
-          60,
+          61,
           value.loc
         )
       );
@@ -274,7 +274,7 @@ const transformModel = (dir, node, context) => {
               isInvalidType = true;
               context.onError(
                 createDOMCompilerError(
-                  59,
+                  60,
                   dir.loc
                 )
               );
@@ -300,7 +300,7 @@ const transformModel = (dir, node, context) => {
   } else {
     context.onError(
       createDOMCompilerError(
-        57,
+        58,
         dir.loc
       )
     );
@@ -411,7 +411,7 @@ const transformShow = (dir, node, context) => {
   const { exp, loc } = dir;
   if (!exp) {
     context.onError(
-      createDOMCompilerError(61, loc)
+      createDOMCompilerError(62, loc)
     );
   }
   return {
@@ -435,7 +435,7 @@ function postTransformTransition(node, onError, hasMultipleChildren = defaultHas
     }
     if (hasMultipleChildren(node)) {
       onError(
-        createDOMCompilerError(62, {
+        createDOMCompilerError(63, {
           start: node.children[0].loc.start,
           end: node.children[node.children.length - 1].loc.end,
           source: ""
@@ -470,7 +470,7 @@ const ignoreSideEffectTags = (node, context) => {
   if (node.type === 1 && node.tagType === 0 && (node.tag === "script" || node.tag === "style")) {
     !!(process.env.NODE_ENV !== "production") && context.onError(
       createDOMCompilerError(
-        63,
+        64,
         node.loc
       )
     );
