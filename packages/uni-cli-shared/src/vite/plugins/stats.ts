@@ -5,12 +5,21 @@ const emittedHashMap = new WeakMap<ResolvedConfig, Map<string, string>>()
 
 export function uniStatsPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
+  let isManifestChanged = false
+  const shouldTrackManifestChange =
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_PLATFORM === 'app-harmony'
   return {
     name: 'uni:app-stats',
     enforce: 'post',
     configResolved(config) {
       resolvedConfig = config
       emittedHashMap.set(resolvedConfig, new Map<string, string>())
+    },
+    watchChange(id) {
+      if (shouldTrackManifestChange && id.endsWith('manifest.json')) {
+        isManifestChanged = true
+      }
     },
     writeBundle(_, bundle) {
       if (resolvedConfig.isProduction) {
@@ -36,6 +45,10 @@ export function uniStatsPlugin(): Plugin {
           changedFiles.push(filename)
         }
       })
+      if (isManifestChanged) {
+        isManifestChanged = false
+        changedFiles.unshift('manifest.json')
+      }
       process.env.UNI_APP_CHANGED_FILES = changedFiles.length
         ? JSON.stringify(changedFiles)
         : ''
