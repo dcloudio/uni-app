@@ -45,7 +45,7 @@
     "chokidar": "catalog:",
     "compare-versions": "^3.6.0",
     "debug": "catalog:",
-    "entities": "^4.5.0",
+    "entities": "^7.0.0",
     "es-module-lexer": "catalog:",
     "esbuild": "catalog:",
     "estree-walker": "catalog:",

@@ -8,7 +8,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var shared = require('@vue/shared');
-var decode_js = require('entities/lib/decode.js');
+var decode_js = require('entities/decode');
 var parser = require('@babel/parser');
 var estreeWalker = require('estree-walker');
 var sourceMapJs = require('source-map-js');
