@@ -159,6 +159,7 @@ uni-app uni-rich-text {
 
 uni-app uni-text {
   display: block;
+  white-space: pre-line;
 }
 
 uni-app uni-text>span>uni-text {

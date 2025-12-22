@@ -9,7 +9,11 @@ import {
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
-import { type DecodeOptions, parseText } from '../../helpers/text'
+import {
+  type DecodeOptions,
+  parseText,
+  parseTextIgnoreLinefeed,
+} from '../../helpers/text'
 
 export class UniTextElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
@@ -50,10 +54,21 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             vnode.shapeFlag & 8 /* TEXT_CHILDREN */ &&
             vnode.type !== Comment
           ) {
-            const lines = parseText(vnode.children as string, {
+            let lines: string[] = []
+            // #if !_X_
+            lines = parseText(vnode.children as string, {
               space: props.space as DecodeOptions['space'],
               decode: props.decode as boolean,
             })
+            // #endif
+            // #if _X_
+            lines = [
+              parseTextIgnoreLinefeed(vnode.children as string, {
+                space: props.space as DecodeOptions['space'],
+                decode: props.decode as boolean,
+              }),
+            ]
+            // #endif
             const len = lines.length - 1
             lines.forEach((line, index) => {
               if (index === 0 && !line) {
