@@ -266,6 +266,7 @@ const UVUE_BUILT_IN_EASY_COMPONENTS = [
   'live-pusher',
   'loading',
   'web-view',
+  'rich-text',
 ]
 
 export function isAppUVueBuiltInEasyComponent(tag: string) {
