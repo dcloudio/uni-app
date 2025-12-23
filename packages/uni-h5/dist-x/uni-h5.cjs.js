@@ -9284,13 +9284,9 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useLoadingStyle(targetElement, options = {}) {
+function useLoadingStyle(targetElement, bold) {
   const loadingSize = vue.ref("16px");
   const loadingBorderWidth = vue.ref("0px");
-  ({
-    medium: options.coefficientMedium || 1,
-    thick: options.coefficientThick || 2
-  });
   return {
     size: loadingSize,
     borderWidth: loadingBorderWidth
@@ -9324,12 +9320,13 @@ const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValu
 }), {
   __name: "index-x",
   props: {
-    paused: { type: Boolean, default: false }
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false }
   },
   setup(__props) {
     const props2 = __props;
     const LoadingRef = vue.ref(null);
-    const loadingStyle = vue.reactive(useLoadingStyle());
+    const loadingStyle = vue.reactive(useLoadingStyle(LoadingRef, vue.computed(() => props2.bold)));
     return (_ctx, _cache) => {
       const _component_view = __syscom_0;
       return vue.openBlock(), vue.createBlock(_component_view, {

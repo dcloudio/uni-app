@@ -110,6 +110,7 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
     type: VaporSharedDataComponent;
     root: VaporSharedDataComponentInstance | null;
     parent: VaporSharedDataComponentInstance | null;
+    page: UniPage | null;
     appContext: GenericAppContext;
     block: Block;
     scope: EffectScope$1;
