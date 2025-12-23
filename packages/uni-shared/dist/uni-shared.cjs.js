@@ -123,7 +123,8 @@ const UVUE_BUILT_IN_TAGS = [
     'list-item',
     'swiper',
     'swiper-item',
-    'rich-text',
+    // 已经交由 vue 实现
+    // 'rich-text',
     'sticky-view',
     'sticky-header',
     'sticky-section',
