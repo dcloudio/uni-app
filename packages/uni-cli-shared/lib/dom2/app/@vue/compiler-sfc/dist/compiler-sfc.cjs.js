@@ -1712,14 +1712,21 @@ function createCache(max = 500) {
 function isUsedInTemplate(identifier, sfc) {
   return resolveTemplateUsedIdentifiers(sfc).has(identifier);
 }
-const templateUsageCheckCache = createCache();
+const templateAnalysisCache = createCache();
+function resolveTemplateVModelIdentifiers(sfc) {
+  return resolveTemplateAnalysisResult(sfc, false).vModelIds;
+}
 function resolveTemplateUsedIdentifiers(sfc) {
+  return resolveTemplateAnalysisResult(sfc).usedIds;
+}
+function resolveTemplateAnalysisResult(sfc, collectUsedIds = true) {
   const { content, ast } = sfc.template;
-  const cached = templateUsageCheckCache.get(content);
-  if (cached) {
+  const cached = templateAnalysisCache.get(content);
+  if (cached && (!collectUsedIds || cached.usedIds)) {
     return cached;
   }
-  const ids = /* @__PURE__ */ new Set();
+  const ids = collectUsedIds ? /* @__PURE__ */ new Set() : void 0;
+  const vModelIds = /* @__PURE__ */ new Set();
   ast.children.forEach(walk);
   function walk(node) {
     var _a;
@@ -1728,39 +1735,55 @@ function resolveTemplateUsedIdentifiers(sfc) {
         let tag = node.tag;
         if (tag.includes(".")) tag = tag.split(".")[0].trim();
         if (!CompilerDOM.parserOptions.isNativeTag(tag) && !CompilerDOM.parserOptions.isBuiltInComponent(tag)) {
-          ids.add(shared.camelize(tag));
-          ids.add(shared.capitalize(shared.camelize(tag)));
+          if (ids) {
+            ids.add(shared.camelize(tag));
+            ids.add(shared.capitalize(shared.camelize(tag)));
+          }
         }
         for (let i = 0; i < node.props.length; i++) {
           const prop = node.props[i];
           if (prop.type === 7) {
-            if (!shared.isBuiltInDirective(prop.name)) {
-              ids.add(`v${shared.capitalize(shared.camelize(prop.name))}`);
+            if (ids) {
+              if (!shared.isBuiltInDirective(prop.name)) {
+                ids.add(`v${shared.capitalize(shared.camelize(prop.name))}`);
+              }
             }
-            if (prop.arg && !prop.arg.isStatic) {
+            if (prop.name === "model") {
+              const exp = prop.exp;
+              if (exp && exp.type === 4) {
+                const expString = exp.content.trim();
+                if (CompilerDOM.isSimpleIdentifier(expString) && expString !== "undefined") {
+                  vModelIds.add(expString);
+                }
+              }
+            }
+            if (ids && prop.arg && !prop.arg.isStatic) {
               extractIdentifiers(ids, prop.arg);
             }
-            if (prop.name === "for") {
-              extractIdentifiers(ids, prop.forParseResult.source);
-            } else if (prop.exp) {
-              extractIdentifiers(ids, prop.exp);
-            } else if (prop.name === "bind" && !prop.exp) {
-              ids.add(shared.camelize(prop.arg.content));
+            if (ids) {
+              if (prop.name === "for") {
+                extractIdentifiers(ids, prop.forParseResult.source);
+              } else if (prop.exp) {
+                extractIdentifiers(ids, prop.exp);
+              } else if (prop.name === "bind" && !prop.exp) {
+                ids.add(shared.camelize(prop.arg.content));
+              }
             }
           }
-          if (prop.type === 6 && prop.name === "ref" && ((_a = prop.value) == null ? void 0 : _a.content)) {
+          if (ids && prop.type === 6 && prop.name === "ref" && ((_a = prop.value) == null ? void 0 : _a.content)) {
             ids.add(prop.value.content);
           }
         }
         node.children.forEach(walk);
         break;
       case 5:
-        extractIdentifiers(ids, node.content);
+        if (ids) extractIdentifiers(ids, node.content);
         break;
     }
   }
-  templateUsageCheckCache.set(content, ids);
-  return ids;
+  const result = { usedIds: ids, vModelIds };
+  templateAnalysisCache.set(content, result);
+  return result;
 }
 function extractIdentifiers(ids, node) {
   if (node.ast) {
@@ -2571,7 +2594,7 @@ var hasRequiredConsolidate$1;
 function requireConsolidate$1 () {
 	if (hasRequiredConsolidate$1) return consolidate$2.exports;
 	hasRequiredConsolidate$1 = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 		/*
 		 * Engines which do not support caching of their file contents
 		 * should use the `read()` function defined in consolidate.js
@@ -2617,7 +2640,7 @@ function requireConsolidate$1 () {
 		 * @api public
 		 */
 
-		exports.clearCache = function() {
+		exports$1.clearCache = function() {
 		  readCache = {};
 		  cacheStore = {};
 		};
@@ -2750,11 +2773,11 @@ function requireConsolidate$1 () {
 		        opts.partials = partials;
 		        if (err) return cb(err);
 		        if (cache(opts)) {
-		          exports[name].render('', opts, cb);
+		          exports$1[name].render('', opts, cb);
 		        } else {
 		          read(path, opts, function(err, str) {
 		            if (err) return cb(err);
-		            exports[name].render(str, opts, cb);
+		            exports$1[name].render(str, opts, cb);
 		          });
 		        }
 		      });
@@ -2766,13 +2789,13 @@ function requireConsolidate$1 () {
 		 * velocity support.
 		 */
 
-		exports.velocityjs = fromStringRenderer('velocityjs');
+		exports$1.velocityjs = fromStringRenderer('velocityjs');
 
 		/**
 		 * velocity string support.
 		 */
 
-		exports.velocityjs.render = function(str, options, cb) {
+		exports$1.velocityjs.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.velocityjs || (requires.velocityjs = require('velocityjs'));
 		    try {
@@ -2788,7 +2811,7 @@ function requireConsolidate$1 () {
 		 * Liquid support.
 		 */
 
-		exports.liquid = fromStringRenderer('liquid');
+		exports$1.liquid = fromStringRenderer('liquid');
 
 		/**
 		 * Liquid string support.
@@ -2892,7 +2915,7 @@ function requireConsolidate$1 () {
 		  tmpl(context, cb);
 		}
 
-		exports.liquid.render = function(str, options, cb) {
+		exports$1.liquid.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.liquid;
 		    var Liquid;
@@ -2991,7 +3014,7 @@ function requireConsolidate$1 () {
 		 * Jade support.
 		 */
 
-		exports.jade = function(path, options, cb) {
+		exports$1.jade = function(path, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.jade;
 		    if (!engine) {
@@ -3019,7 +3042,7 @@ function requireConsolidate$1 () {
 		 * Jade string support.
 		 */
 
-		exports.jade.render = function(str, options, cb) {
+		exports$1.jade.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.jade;
 		    if (!engine) {
@@ -3047,13 +3070,13 @@ function requireConsolidate$1 () {
 		 * Dust support.
 		 */
 
-		exports.dust = fromStringRenderer('dust');
+		exports$1.dust = fromStringRenderer('dust');
 
 		/**
 		 * Dust string support.
 		 */
 
-		exports.dust.render = function(str, options, cb) {
+		exports$1.dust.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.dust;
 		    if (!engine) {
@@ -3102,13 +3125,13 @@ function requireConsolidate$1 () {
 		 * Swig support.
 		 */
 
-		exports.swig = fromStringRenderer('swig');
+		exports$1.swig = fromStringRenderer('swig');
 
 		/**
 		 * Swig string support.
 		 */
 
-		exports.swig.render = function(str, options, cb) {
+		exports$1.swig.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.swig;
 		    if (!engine) {
@@ -3138,7 +3161,7 @@ function requireConsolidate$1 () {
 		 * Razor support.
 		 */
 
-		exports.razor = function(path, options, cb) {
+		exports$1.razor = function(path, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.razor;
 		    if (!engine) {
@@ -3168,7 +3191,7 @@ function requireConsolidate$1 () {
 		 * razor string support.
 		 */
 
-		exports.razor.render = function(str, options, cb) {
+		exports$1.razor.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 
 		    try {
@@ -3191,13 +3214,13 @@ function requireConsolidate$1 () {
 		 * Atpl support.
 		 */
 
-		exports.atpl = fromStringRenderer('atpl');
+		exports$1.atpl = fromStringRenderer('atpl');
 
 		/**
 		 * Atpl string support.
 		 */
 
-		exports.atpl.render = function(str, options, cb) {
+		exports$1.atpl.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.atpl || (requires.atpl = require('atpl'));
 		    try {
@@ -3213,13 +3236,13 @@ function requireConsolidate$1 () {
 		 * Liquor support,
 		 */
 
-		exports.liquor = fromStringRenderer('liquor');
+		exports$1.liquor = fromStringRenderer('liquor');
 
 		/**
 		 * Liquor string support.
 		 */
 
-		exports.liquor.render = function(str, options, cb) {
+		exports$1.liquor.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.liquor || (requires.liquor = require('liquor'));
 		    try {
@@ -3235,13 +3258,13 @@ function requireConsolidate$1 () {
 		 * Twig support.
 		 */
 
-		exports.twig = fromStringRenderer('twig');
+		exports$1.twig = fromStringRenderer('twig');
 
 		/**
 		 * Twig string support.
 		 */
 
-		exports.twig.render = function(str, options, cb) {
+		exports$1.twig.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.twig || (requires.twig = require('twig').twig);
 		    var templateData = {
@@ -3263,13 +3286,13 @@ function requireConsolidate$1 () {
 		 * EJS support.
 		 */
 
-		exports.ejs = fromStringRenderer('ejs');
+		exports$1.ejs = fromStringRenderer('ejs');
 
 		/**
 		 * EJS string support.
 		 */
 
-		exports.ejs.render = function(str, options, cb) {
+		exports$1.ejs.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.ejs || (requires.ejs = require('ejs'));
 		    try {
@@ -3285,13 +3308,13 @@ function requireConsolidate$1 () {
 		 * Eco support.
 		 */
 
-		exports.eco = fromStringRenderer('eco');
+		exports$1.eco = fromStringRenderer('eco');
 
 		/**
 		 * Eco string support.
 		 */
 
-		exports.eco.render = function(str, options, cb) {
+		exports$1.eco.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.eco || (requires.eco = require('eco'));
 		    try {
@@ -3306,13 +3329,13 @@ function requireConsolidate$1 () {
 		 * Jazz support.
 		 */
 
-		exports.jazz = fromStringRenderer('jazz');
+		exports$1.jazz = fromStringRenderer('jazz');
 
 		/**
 		 * Jazz string support.
 		 */
 
-		exports.jazz.render = function(str, options, cb) {
+		exports$1.jazz.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.jazz || (requires.jazz = require('jazz'));
 		    try {
@@ -3330,13 +3353,13 @@ function requireConsolidate$1 () {
 		 * JQTPL support.
 		 */
 
-		exports.jqtpl = fromStringRenderer('jqtpl');
+		exports$1.jqtpl = fromStringRenderer('jqtpl');
 
 		/**
 		 * JQTPL string support.
 		 */
 
-		exports.jqtpl.render = function(str, options, cb) {
+		exports$1.jqtpl.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.jqtpl || (requires.jqtpl = require('jqtpl'));
 		    try {
@@ -3352,13 +3375,13 @@ function requireConsolidate$1 () {
 		 * Haml support.
 		 */
 
-		exports.haml = fromStringRenderer('haml');
+		exports$1.haml = fromStringRenderer('haml');
 
 		/**
 		 * Haml string support.
 		 */
 
-		exports.haml.render = function(str, options, cb) {
+		exports$1.haml.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.haml || (requires.haml = require('hamljs'));
 		    try {
@@ -3374,13 +3397,13 @@ function requireConsolidate$1 () {
 		 * Hamlet support.
 		 */
 
-		exports.hamlet = fromStringRenderer('hamlet');
+		exports$1.hamlet = fromStringRenderer('hamlet');
 
 		/**
 		 * Hamlet string support.
 		 */
 
-		exports.hamlet.render = function(str, options, cb) {
+		exports$1.hamlet.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.hamlet || (requires.hamlet = require('hamlet'));
 		    try {
@@ -3396,7 +3419,7 @@ function requireConsolidate$1 () {
 		 * Whiskers support.
 		 */
 
-		exports.whiskers = function(path, options, cb) {
+		exports$1.whiskers = function(path, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.whiskers || (requires.whiskers = require('whiskers'));
 		    engine.__express(path, options, cb);
@@ -3407,7 +3430,7 @@ function requireConsolidate$1 () {
 		 * Whiskers string support.
 		 */
 
-		exports.whiskers.render = function(str, options, cb) {
+		exports$1.whiskers.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.whiskers || (requires.whiskers = require('whiskers'));
 		    try {
@@ -3422,13 +3445,13 @@ function requireConsolidate$1 () {
 		 * Coffee-HAML support.
 		 */
 
-		exports['haml-coffee'] = fromStringRenderer('haml-coffee');
+		exports$1['haml-coffee'] = fromStringRenderer('haml-coffee');
 
 		/**
 		 * Coffee-HAML string support.
 		 */
 
-		exports['haml-coffee'].render = function(str, options, cb) {
+		exports$1['haml-coffee'].render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires['haml-coffee'] || (requires['haml-coffee'] = require('haml-coffee'));
 		    try {
@@ -3444,13 +3467,13 @@ function requireConsolidate$1 () {
 		 * Hogan support.
 		 */
 
-		exports.hogan = fromStringRenderer('hogan');
+		exports$1.hogan = fromStringRenderer('hogan');
 
 		/**
 		 * Hogan string support.
 		 */
 
-		exports.hogan.render = function(str, options, cb) {
+		exports$1.hogan.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.hogan || (requires.hogan = require('hogan.js'));
 		    try {
@@ -3466,13 +3489,13 @@ function requireConsolidate$1 () {
 		 * templayed.js support.
 		 */
 
-		exports.templayed = fromStringRenderer('templayed');
+		exports$1.templayed = fromStringRenderer('templayed');
 
 		/**
 		 * templayed.js string support.
 		 */
 
-		exports.templayed.render = function(str, options, cb) {
+		exports$1.templayed.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.templayed || (requires.templayed = require('templayed'));
 		    try {
@@ -3488,13 +3511,13 @@ function requireConsolidate$1 () {
 		 * Handlebars support.
 		 */
 
-		exports.handlebars = fromStringRenderer('handlebars');
+		exports$1.handlebars = fromStringRenderer('handlebars');
 
 		/**
 		 * Handlebars string support.
 		 */
 
-		exports.handlebars.render = function(str, options, cb) {
+		exports$1.handlebars.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.handlebars || (requires.handlebars = require('handlebars'));
 		    try {
@@ -3516,13 +3539,13 @@ function requireConsolidate$1 () {
 		 * Underscore support.
 		 */
 
-		exports.underscore = fromStringRenderer('underscore');
+		exports$1.underscore = fromStringRenderer('underscore');
 
 		/**
 		 * Underscore string support.
 		 */
 
-		exports.underscore.render = function(str, options, cb) {
+		exports$1.underscore.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.underscore || (requires.underscore = require('underscore'));
 		    try {
@@ -3543,13 +3566,13 @@ function requireConsolidate$1 () {
 		 * Lodash support.
 		 */
 
-		exports.lodash = fromStringRenderer('lodash');
+		exports$1.lodash = fromStringRenderer('lodash');
 
 		/**
 		 * Lodash string support.
 		 */
 
-		exports.lodash.render = function(str, options, cb) {
+		exports$1.lodash.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.lodash || (requires.lodash = require('lodash'));
 		    try {
@@ -3565,7 +3588,7 @@ function requireConsolidate$1 () {
 		 * Pug support. (formerly Jade)
 		 */
 
-		exports.pug = function(path, options, cb) {
+		exports$1.pug = function(path, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.pug;
 		    if (!engine) {
@@ -3593,7 +3616,7 @@ function requireConsolidate$1 () {
 		 * Pug string support.
 		 */
 
-		exports.pug.render = function(str, options, cb) {
+		exports$1.pug.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.pug;
 		    if (!engine) {
@@ -3621,13 +3644,13 @@ function requireConsolidate$1 () {
 		 * QEJS support.
 		 */
 
-		exports.qejs = fromStringRenderer('qejs');
+		exports$1.qejs = fromStringRenderer('qejs');
 
 		/**
 		 * QEJS string support.
 		 */
 
-		exports.qejs.render = function(str, options, cb) {
+		exports$1.qejs.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    try {
 		      var engine = requires.qejs || (requires.qejs = require('qejs'));
@@ -3646,13 +3669,13 @@ function requireConsolidate$1 () {
 		 * Walrus support.
 		 */
 
-		exports.walrus = fromStringRenderer('walrus');
+		exports$1.walrus = fromStringRenderer('walrus');
 
 		/**
 		 * Walrus string support.
 		 */
 
-		exports.walrus.render = function(str, options, cb) {
+		exports$1.walrus.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.walrus || (requires.walrus = require('walrus'));
 		    try {
@@ -3668,13 +3691,13 @@ function requireConsolidate$1 () {
 		 * Mustache support.
 		 */
 
-		exports.mustache = fromStringRenderer('mustache');
+		exports$1.mustache = fromStringRenderer('mustache');
 
 		/**
 		 * Mustache string support.
 		 */
 
-		exports.mustache.render = function(str, options, cb) {
+		exports$1.mustache.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.mustache || (requires.mustache = require('mustache'));
 		    try {
@@ -3689,7 +3712,7 @@ function requireConsolidate$1 () {
 		 * Just support.
 		 */
 
-		exports.just = function(path, options, cb) {
+		exports$1.just = function(path, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.just;
 		    if (!engine) {
@@ -3705,7 +3728,7 @@ function requireConsolidate$1 () {
 		 * Just string support.
 		 */
 
-		exports.just.render = function(str, options, cb) {
+		exports$1.just.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var JUST = require('just');
 		    var engine = new JUST({ root: { page: str }});
@@ -3717,7 +3740,7 @@ function requireConsolidate$1 () {
 		 * ECT support.
 		 */
 
-		exports.ect = function(path, options, cb) {
+		exports$1.ect = function(path, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.ect;
 		    if (!engine) {
@@ -3733,7 +3756,7 @@ function requireConsolidate$1 () {
 		 * ECT string support.
 		 */
 
-		exports.ect.render = function(str, options, cb) {
+		exports$1.ect.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var ECT = require('ect');
 		    var engine = new ECT({ root: { page: str }});
@@ -3745,13 +3768,13 @@ function requireConsolidate$1 () {
 		 * mote support.
 		 */
 
-		exports.mote = fromStringRenderer('mote');
+		exports$1.mote = fromStringRenderer('mote');
 
 		/**
 		 * mote string support.
 		 */
 
-		exports.mote.render = function(str, options, cb) {
+		exports$1.mote.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.mote || (requires.mote = require('mote'));
 		    try {
@@ -3767,7 +3790,7 @@ function requireConsolidate$1 () {
 		 * Toffee support.
 		 */
 
-		exports.toffee = function(path, options, cb) {
+		exports$1.toffee = function(path, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var toffee = requires.toffee || (requires.toffee = require('toffee'));
 		    toffee.__consolidate_engine_render(path, options, cb);
@@ -3778,7 +3801,7 @@ function requireConsolidate$1 () {
 		 * Toffee string support.
 		 */
 
-		exports.toffee.render = function(str, options, cb) {
+		exports$1.toffee.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.toffee || (requires.toffee = require('toffee'));
 		    try {
@@ -3793,13 +3816,13 @@ function requireConsolidate$1 () {
 		 * doT support.
 		 */
 
-		exports.dot = fromStringRenderer('dot');
+		exports$1.dot = fromStringRenderer('dot');
 
 		/**
 		 * doT string support.
 		 */
 
-		exports.dot.render = function(str, options, cb) {
+		exports$1.dot.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.dot || (requires.dot = require('dot'));
 		    var extend = (requires.extend || (requires.extend = require$$2._extend));
@@ -3819,13 +3842,13 @@ function requireConsolidate$1 () {
 		 * bracket support.
 		 */
 
-		exports.bracket = fromStringRenderer('bracket');
+		exports$1.bracket = fromStringRenderer('bracket');
 
 		/**
 		 * bracket string support.
 		 */
 
-		exports.bracket.render = function(str, options, cb) {
+		exports$1.bracket.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.bracket || (requires.bracket = require('bracket-template'));
 		    try {
@@ -3841,13 +3864,13 @@ function requireConsolidate$1 () {
 		 * Ractive support.
 		 */
 
-		exports.ractive = fromStringRenderer('ractive');
+		exports$1.ractive = fromStringRenderer('ractive');
 
 		/**
 		 * Ractive string support.
 		 */
 
-		exports.ractive.render = function(str, options, cb) {
+		exports$1.ractive.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var Engine = requires.ractive || (requires.ractive = require('ractive'));
 
@@ -3882,13 +3905,13 @@ function requireConsolidate$1 () {
 		 * Nunjucks support.
 		 */
 
-		exports.nunjucks = fromStringRenderer('nunjucks');
+		exports$1.nunjucks = fromStringRenderer('nunjucks');
 
 		/**
 		 * Nunjucks string support.
 		 */
 
-		exports.nunjucks.render = function(str, options, cb) {
+		exports$1.nunjucks.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 
 		    try {
@@ -3947,13 +3970,13 @@ function requireConsolidate$1 () {
 		 * HTMLing support.
 		 */
 
-		exports.htmling = fromStringRenderer('htmling');
+		exports$1.htmling = fromStringRenderer('htmling');
 
 		/**
 		 * HTMLing string support.
 		 */
 
-		exports.htmling.render = function(str, options, cb) {
+		exports$1.htmling.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.htmling || (requires.htmling = require('htmling'));
 		    try {
@@ -3976,7 +3999,7 @@ function requireConsolidate$1 () {
 		  return module._compile(compiled, filename);
 		}
 
-		exports.requireReact = requireReact;
+		exports$1.requireReact = requireReact;
 
 		/**
 		 *  Converting a string into a node module.
@@ -4025,13 +4048,13 @@ function requireConsolidate$1 () {
 		* Plates Support.
 		*/
 
-		exports.plates = fromStringRenderer('plates');
+		exports$1.plates = fromStringRenderer('plates');
 
 		/**
 		* Plates string support.
 		*/
 
-		exports.plates.render = function(str, options, cb) {
+		exports$1.plates.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.plates || (requires.plates = require('plates'));
 		    var map = options.map || undefined;
@@ -4132,24 +4155,24 @@ function requireConsolidate$1 () {
 		/**
 		 * React JS Support
 		 */
-		exports.react = reactRenderer('path');
+		exports$1.react = reactRenderer('path');
 
 		/**
 		 * React JS string support.
 		 */
-		exports.react.render = reactRenderer('string');
+		exports$1.react.render = reactRenderer('string');
 
 		/**
 		 * ARC-templates support.
 		 */
 
-		exports['arc-templates'] = fromStringRenderer('arc-templates');
+		exports$1['arc-templates'] = fromStringRenderer('arc-templates');
 
 		/**
 		 * ARC-templates string support.
 		 */
 
-		exports['arc-templates'].render = function(str, options, cb) {
+		exports$1['arc-templates'].render = function(str, options, cb) {
 		  var readFileWithOptions = util.promisify(read);
 		  var consolidateFileSystem = {};
 		  consolidateFileSystem.readFile = function(path) {
@@ -4177,12 +4200,12 @@ function requireConsolidate$1 () {
 		/**
 		 * Vash support
 		 */
-		exports.vash = fromStringRenderer('vash');
+		exports$1.vash = fromStringRenderer('vash');
 
 		/**
 		 * Vash string support
 		 */
-		exports.vash.render = function(str, options, cb) {
+		exports$1.vash.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.vash || (requires.vash = require('vash'));
 
@@ -4213,13 +4236,13 @@ function requireConsolidate$1 () {
 		 * Slm support.
 		 */
 
-		exports.slm = fromStringRenderer('slm');
+		exports$1.slm = fromStringRenderer('slm');
 
 		/**
 		 * Slm string support.
 		 */
 
-		exports.slm.render = function(str, options, cb) {
+		exports$1.slm.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.slm || (requires.slm = require('slm'));
 
@@ -4236,7 +4259,7 @@ function requireConsolidate$1 () {
 		 * Marko support.
 		 */
 
-		exports.marko = function(path, options, cb) {
+		exports$1.marko = function(path, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.marko || (requires.marko = require('marko'));
 		    options.writeToDisk = !!options.cache;
@@ -4254,7 +4277,7 @@ function requireConsolidate$1 () {
 		 * Marko string support.
 		 */
 
-		exports.marko.render = function(str, options, cb) {
+		exports$1.marko.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.marko || (requires.marko = require('marko'));
 		    options.writeToDisk = !!options.cache;
@@ -4272,7 +4295,7 @@ function requireConsolidate$1 () {
 		/**
 		 * Teacup support.
 		 */
-		exports.teacup = function(path, options, cb) {
+		exports$1.teacup = function(path, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.teacup || (requires.teacup = require('teacup/lib/express'));
 		    commonjsRequire.extensions['.teacup'] = commonjsRequire.extensions['.coffee'];
@@ -4293,7 +4316,7 @@ function requireConsolidate$1 () {
 		/**
 		 * Teacup string support.
 		 */
-		exports.teacup.render = function(str, options, cb) {
+		exports$1.teacup.render = function(str, options, cb) {
 		  var coffee = require('coffee-script');
 		  var vm = require('vm');
 		  var sandbox = {
@@ -4311,13 +4334,13 @@ function requireConsolidate$1 () {
 		 * Squirrelly support.
 		 */
 
-		exports.squirrelly = fromStringRenderer('squirrelly');
+		exports$1.squirrelly = fromStringRenderer('squirrelly');
 
 		/**
 		 * Squirrelly string support.
 		 */
 
-		exports.squirrelly.render = function(str, options, cb) {
+		exports$1.squirrelly.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.squirrelly || (requires.squirrelly = require('squirrelly'));
 		    try {
@@ -4338,13 +4361,13 @@ function requireConsolidate$1 () {
 		 * Twing support.
 		 */
 
-		exports.twing = fromStringRenderer('twing');
+		exports$1.twing = fromStringRenderer('twing');
 
 		/**
 		 * Twing string support.
 		 */ 
 
-		exports.twing.render = function(str, options, cb) {
+		exports$1.twing.render = function(str, options, cb) {
 		  return promisify(cb, function(cb) {
 		    var engine = requires.twing || (requires.twing = require('twing'));
 		    try {
@@ -4362,7 +4385,7 @@ function requireConsolidate$1 () {
 		/**
 		 * expose the instance of the engine
 		 */
-		exports.requires = requires; 
+		exports$1.requires = requires; 
 	} (consolidate$2, consolidate$2.exports));
 	return consolidate$2.exports;
 }
@@ -4656,10 +4679,10 @@ var hasRequiredUnesc;
 function requireUnesc () {
 	if (hasRequiredUnesc) return unesc.exports;
 	hasRequiredUnesc = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = unesc;
+		exports$1.__esModule = true;
+		exports$1["default"] = unesc;
 		// Many thanks for this post which made this migration much easier.
 		// https://mathiasbynens.be/notes/css-escapes
 
@@ -4731,7 +4754,7 @@ function requireUnesc () {
 		  }
 		  return ret;
 		}
-		module.exports = exports.default; 
+		module.exports = exports$1.default; 
 	} (unesc, unesc.exports));
 	return unesc.exports;
 }
@@ -4743,10 +4766,10 @@ var hasRequiredGetProp;
 function requireGetProp () {
 	if (hasRequiredGetProp) return getProp.exports;
 	hasRequiredGetProp = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = getProp;
+		exports$1.__esModule = true;
+		exports$1["default"] = getProp;
 		function getProp(obj) {
 		  for (var _len = arguments.length, props = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
 		    props[_key - 1] = arguments[_key];
@@ -4760,7 +4783,7 @@ function requireGetProp () {
 		  }
 		  return obj;
 		}
-		module.exports = exports.default; 
+		module.exports = exports$1.default; 
 	} (getProp, getProp.exports));
 	return getProp.exports;
 }
@@ -4772,10 +4795,10 @@ var hasRequiredEnsureObject;
 function requireEnsureObject () {
 	if (hasRequiredEnsureObject) return ensureObject.exports;
 	hasRequiredEnsureObject = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = ensureObject;
+		exports$1.__esModule = true;
+		exports$1["default"] = ensureObject;
 		function ensureObject(obj) {
 		  for (var _len = arguments.length, props = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
 		    props[_key - 1] = arguments[_key];
@@ -4788,7 +4811,7 @@ function requireEnsureObject () {
 		    obj = obj[prop];
 		  }
 		}
-		module.exports = exports.default; 
+		module.exports = exports$1.default; 
 	} (ensureObject, ensureObject.exports));
 	return ensureObject.exports;
 }
@@ -4800,10 +4823,10 @@ var hasRequiredStripComments;
 function requireStripComments () {
 	if (hasRequiredStripComments) return stripComments.exports;
 	hasRequiredStripComments = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = stripComments;
+		exports$1.__esModule = true;
+		exports$1["default"] = stripComments;
 		function stripComments(str) {
 		  var s = "";
 		  var commentStart = str.indexOf("/*");
@@ -4820,7 +4843,7 @@ function requireStripComments () {
 		  s = s + str.slice(lastEnd);
 		  return s;
 		}
-		module.exports = exports.default; 
+		module.exports = exports$1.default; 
 	} (stripComments, stripComments.exports));
 	return stripComments.exports;
 }
@@ -4850,10 +4873,10 @@ var hasRequiredNode$1;
 function requireNode$1 () {
 	if (hasRequiredNode$1) return node$1.exports;
 	hasRequiredNode$1 = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _util = /*@__PURE__*/ requireUtil$1();
 		function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 		function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -5040,8 +5063,8 @@ function requireNode$1 () {
 		  }]);
 		  return Node;
 		}();
-		exports["default"] = Node;
-		module.exports = exports.default; 
+		exports$1["default"] = Node;
+		module.exports = exports$1.default; 
 	} (node$1, node$1.exports));
 	return node$1.exports;
 }
@@ -5088,10 +5111,10 @@ var hasRequiredContainer;
 function requireContainer () {
 	if (hasRequiredContainer) return container.exports;
 	hasRequiredContainer = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _node = _interopRequireDefault(/*@__PURE__*/ requireNode$1());
 		var types = _interopRequireWildcard(/*@__PURE__*/ requireTypes());
 		function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -5407,8 +5430,8 @@ function requireContainer () {
 		  }]);
 		  return Container;
 		}(_node["default"]);
-		exports["default"] = Container;
-		module.exports = exports.default; 
+		exports$1["default"] = Container;
+		module.exports = exports$1.default; 
 	} (container, container.exports));
 	return container.exports;
 }
@@ -5418,10 +5441,10 @@ var hasRequiredRoot;
 function requireRoot () {
 	if (hasRequiredRoot) return root.exports;
 	hasRequiredRoot = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _container = _interopRequireDefault(/*@__PURE__*/ requireContainer());
 		var _types = /*@__PURE__*/ requireTypes();
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -5460,8 +5483,8 @@ function requireRoot () {
 		  }]);
 		  return Root;
 		}(_container["default"]);
-		exports["default"] = Root;
-		module.exports = exports.default; 
+		exports$1["default"] = Root;
+		module.exports = exports$1.default; 
 	} (root, root.exports));
 	return root.exports;
 }
@@ -5473,10 +5496,10 @@ var hasRequiredSelector;
 function requireSelector () {
 	if (hasRequiredSelector) return selector.exports;
 	hasRequiredSelector = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _container = _interopRequireDefault(/*@__PURE__*/ requireContainer());
 		var _types = /*@__PURE__*/ requireTypes();
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -5492,8 +5515,8 @@ function requireSelector () {
 		  }
 		  return Selector;
 		}(_container["default"]);
-		exports["default"] = Selector;
-		module.exports = exports.default; 
+		exports$1["default"] = Selector;
+		module.exports = exports$1.default; 
 	} (selector, selector.exports));
 	return selector.exports;
 }
@@ -5623,10 +5646,10 @@ var hasRequiredClassName;
 function requireClassName () {
 	if (hasRequiredClassName) return className.exports;
 	hasRequiredClassName = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _cssesc = _interopRequireDefault(/*@__PURE__*/ requireCssesc());
 		var _util = /*@__PURE__*/ requireUtil$1();
 		var _node = _interopRequireDefault(/*@__PURE__*/ requireNode$1());
@@ -5671,8 +5694,8 @@ function requireClassName () {
 		  }]);
 		  return ClassName;
 		}(_node["default"]);
-		exports["default"] = ClassName;
-		module.exports = exports.default; 
+		exports$1["default"] = ClassName;
+		module.exports = exports$1.default; 
 	} (className, className.exports));
 	return className.exports;
 }
@@ -5684,10 +5707,10 @@ var hasRequiredComment;
 function requireComment () {
 	if (hasRequiredComment) return comment.exports;
 	hasRequiredComment = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _node = _interopRequireDefault(/*@__PURE__*/ requireNode$1());
 		var _types = /*@__PURE__*/ requireTypes();
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -5703,8 +5726,8 @@ function requireComment () {
 		  }
 		  return Comment;
 		}(_node["default"]);
-		exports["default"] = Comment;
-		module.exports = exports.default; 
+		exports$1["default"] = Comment;
+		module.exports = exports$1.default; 
 	} (comment, comment.exports));
 	return comment.exports;
 }
@@ -5716,10 +5739,10 @@ var hasRequiredId;
 function requireId () {
 	if (hasRequiredId) return id.exports;
 	hasRequiredId = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _node = _interopRequireDefault(/*@__PURE__*/ requireNode$1());
 		var _types = /*@__PURE__*/ requireTypes();
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -5739,8 +5762,8 @@ function requireId () {
 		  };
 		  return ID;
 		}(_node["default"]);
-		exports["default"] = ID;
-		module.exports = exports.default; 
+		exports$1["default"] = ID;
+		module.exports = exports$1.default; 
 	} (id, id.exports));
 	return id.exports;
 }
@@ -5754,10 +5777,10 @@ var hasRequiredNamespace;
 function requireNamespace () {
 	if (hasRequiredNamespace) return namespace.exports;
 	hasRequiredNamespace = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _cssesc = _interopRequireDefault(/*@__PURE__*/ requireCssesc());
 		var _util = /*@__PURE__*/ requireUtil$1();
 		var _node = _interopRequireDefault(/*@__PURE__*/ requireNode$1());
@@ -5831,8 +5854,8 @@ function requireNamespace () {
 		  }]);
 		  return Namespace;
 		}(_node["default"]);
-		exports["default"] = Namespace;
-		module.exports = exports.default; 
+		exports$1["default"] = Namespace;
+		module.exports = exports$1.default; 
 	} (namespace, namespace.exports));
 	return namespace.exports;
 }
@@ -5842,10 +5865,10 @@ var hasRequiredTag;
 function requireTag () {
 	if (hasRequiredTag) return tag.exports;
 	hasRequiredTag = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _namespace = _interopRequireDefault(/*@__PURE__*/ requireNamespace());
 		var _types = /*@__PURE__*/ requireTypes();
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -5861,8 +5884,8 @@ function requireTag () {
 		  }
 		  return Tag;
 		}(_namespace["default"]);
-		exports["default"] = Tag;
-		module.exports = exports.default; 
+		exports$1["default"] = Tag;
+		module.exports = exports$1.default; 
 	} (tag, tag.exports));
 	return tag.exports;
 }
@@ -5874,10 +5897,10 @@ var hasRequiredString;
 function requireString () {
 	if (hasRequiredString) return string.exports;
 	hasRequiredString = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _node = _interopRequireDefault(/*@__PURE__*/ requireNode$1());
 		var _types = /*@__PURE__*/ requireTypes();
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -5893,8 +5916,8 @@ function requireString () {
 		  }
 		  return String;
 		}(_node["default"]);
-		exports["default"] = String;
-		module.exports = exports.default; 
+		exports$1["default"] = String;
+		module.exports = exports$1.default; 
 	} (string, string.exports));
 	return string.exports;
 }
@@ -5906,10 +5929,10 @@ var hasRequiredPseudo;
 function requirePseudo () {
 	if (hasRequiredPseudo) return pseudo.exports;
 	hasRequiredPseudo = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _container = _interopRequireDefault(/*@__PURE__*/ requireContainer());
 		var _types = /*@__PURE__*/ requireTypes();
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -5930,8 +5953,8 @@ function requirePseudo () {
 		  };
 		  return Pseudo;
 		}(_container["default"]);
-		exports["default"] = Pseudo;
-		module.exports = exports.default; 
+		exports$1["default"] = Pseudo;
+		module.exports = exports$1.default; 
 	} (pseudo, pseudo.exports));
 	return pseudo.exports;
 }
@@ -5957,11 +5980,11 @@ var hasRequiredAttribute;
 function requireAttribute () {
 	if (hasRequiredAttribute) return attribute;
 	hasRequiredAttribute = 1;
-	(function (exports) {
+	(function (exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
-		exports.unescapeValue = unescapeValue;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
+		exports$1.unescapeValue = unescapeValue;
 		var _cssesc = _interopRequireDefault(/*@__PURE__*/ requireCssesc());
 		var _unesc = _interopRequireDefault(/*@__PURE__*/ requireUnesc());
 		var _namespace = _interopRequireDefault(/*@__PURE__*/ requireNamespace());
@@ -6386,7 +6409,7 @@ function requireAttribute () {
 		  }]);
 		  return Attribute;
 		}(_namespace["default"]);
-		exports["default"] = Attribute;
+		exports$1["default"] = Attribute;
 		Attribute.NO_QUOTE = null;
 		Attribute.SINGLE_QUOTE = "'";
 		Attribute.DOUBLE_QUOTE = '"';
@@ -6416,10 +6439,10 @@ var hasRequiredUniversal;
 function requireUniversal () {
 	if (hasRequiredUniversal) return universal.exports;
 	hasRequiredUniversal = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _namespace = _interopRequireDefault(/*@__PURE__*/ requireNamespace());
 		var _types = /*@__PURE__*/ requireTypes();
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -6436,8 +6459,8 @@ function requireUniversal () {
 		  }
 		  return Universal;
 		}(_namespace["default"]);
-		exports["default"] = Universal;
-		module.exports = exports.default; 
+		exports$1["default"] = Universal;
+		module.exports = exports$1.default; 
 	} (universal, universal.exports));
 	return universal.exports;
 }
@@ -6449,10 +6472,10 @@ var hasRequiredCombinator;
 function requireCombinator () {
 	if (hasRequiredCombinator) return combinator.exports;
 	hasRequiredCombinator = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _node = _interopRequireDefault(/*@__PURE__*/ requireNode$1());
 		var _types = /*@__PURE__*/ requireTypes();
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -6468,8 +6491,8 @@ function requireCombinator () {
 		  }
 		  return Combinator;
 		}(_node["default"]);
-		exports["default"] = Combinator;
-		module.exports = exports.default; 
+		exports$1["default"] = Combinator;
+		module.exports = exports$1.default; 
 	} (combinator, combinator.exports));
 	return combinator.exports;
 }
@@ -6481,10 +6504,10 @@ var hasRequiredNesting;
 function requireNesting () {
 	if (hasRequiredNesting) return nesting.exports;
 	hasRequiredNesting = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _node = _interopRequireDefault(/*@__PURE__*/ requireNode$1());
 		var _types = /*@__PURE__*/ requireTypes();
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -6501,8 +6524,8 @@ function requireNesting () {
 		  }
 		  return Nesting;
 		}(_node["default"]);
-		exports["default"] = Nesting;
-		module.exports = exports.default; 
+		exports$1["default"] = Nesting;
+		module.exports = exports$1.default; 
 	} (nesting, nesting.exports));
 	return nesting.exports;
 }
@@ -6514,16 +6537,16 @@ var hasRequiredSortAscending;
 function requireSortAscending () {
 	if (hasRequiredSortAscending) return sortAscending.exports;
 	hasRequiredSortAscending = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = sortAscending;
+		exports$1.__esModule = true;
+		exports$1["default"] = sortAscending;
 		function sortAscending(list) {
 		  return list.sort(function (a, b) {
 		    return a - b;
 		  });
 		}
-		module.exports = exports.default; 
+		module.exports = exports$1.default; 
 	} (sortAscending, sortAscending.exports));
 	return sortAscending.exports;
 }
@@ -6614,11 +6637,11 @@ var hasRequiredTokenize;
 function requireTokenize () {
 	if (hasRequiredTokenize) return tokenize;
 	hasRequiredTokenize = 1;
-	(function (exports) {
+	(function (exports$1) {
 
-		exports.__esModule = true;
-		exports.FIELDS = void 0;
-		exports["default"] = tokenize;
+		exports$1.__esModule = true;
+		exports$1.FIELDS = void 0;
+		exports$1["default"] = tokenize;
 		var t = _interopRequireWildcard(/*@__PURE__*/ requireTokenTypes());
 		var _unescapable, _wordDelimiters;
 		function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -6688,7 +6711,7 @@ function requireTokenize () {
 		  START_POS: 5,
 		  END_POS: 6
 		};
-		exports.FIELDS = FIELDS;
+		exports$1.FIELDS = FIELDS;
 		function tokenize(input) {
 		  var tokens = [];
 		  var css = input.css.valueOf();
@@ -6860,10 +6883,10 @@ var hasRequiredParser$1;
 function requireParser$1 () {
 	if (hasRequiredParser$1) return parser.exports;
 	hasRequiredParser$1 = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _root = _interopRequireDefault(/*@__PURE__*/ requireRoot());
 		var _selector = _interopRequireDefault(/*@__PURE__*/ requireSelector());
 		var _className = _interopRequireDefault(/*@__PURE__*/ requireClassName());
@@ -7871,8 +7894,8 @@ function requireParser$1 () {
 		  }]);
 		  return Parser;
 		}();
-		exports["default"] = Parser;
-		module.exports = exports.default; 
+		exports$1["default"] = Parser;
+		module.exports = exports$1.default; 
 	} (parser, parser.exports));
 	return parser.exports;
 }
@@ -7882,10 +7905,10 @@ var hasRequiredProcessor;
 function requireProcessor () {
 	if (hasRequiredProcessor) return processor.exports;
 	hasRequiredProcessor = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _parser = _interopRequireDefault(/*@__PURE__*/ requireParser$1());
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 		var Processor = /*#__PURE__*/function () {
@@ -8050,8 +8073,8 @@ function requireProcessor () {
 		  };
 		  return Processor;
 		}();
-		exports["default"] = Processor;
-		module.exports = exports.default; 
+		exports$1["default"] = Processor;
+		module.exports = exports$1.default; 
 	} (processor, processor.exports));
 	return processor.exports;
 }
@@ -8204,26 +8227,26 @@ var hasRequiredSelectors;
 function requireSelectors () {
 	if (hasRequiredSelectors) return selectors;
 	hasRequiredSelectors = 1;
-	(function (exports) {
+	(function (exports$1) {
 
-		exports.__esModule = true;
+		exports$1.__esModule = true;
 		var _types = /*@__PURE__*/ requireTypes();
 		Object.keys(_types).forEach(function (key) {
 		  if (key === "default" || key === "__esModule") return;
-		  if (key in exports && exports[key] === _types[key]) return;
-		  exports[key] = _types[key];
+		  if (key in exports$1 && exports$1[key] === _types[key]) return;
+		  exports$1[key] = _types[key];
 		});
 		var _constructors = /*@__PURE__*/ requireConstructors();
 		Object.keys(_constructors).forEach(function (key) {
 		  if (key === "default" || key === "__esModule") return;
-		  if (key in exports && exports[key] === _constructors[key]) return;
-		  exports[key] = _constructors[key];
+		  if (key in exports$1 && exports$1[key] === _constructors[key]) return;
+		  exports$1[key] = _constructors[key];
 		});
 		var _guards = /*@__PURE__*/ requireGuards();
 		Object.keys(_guards).forEach(function (key) {
 		  if (key === "default" || key === "__esModule") return;
-		  if (key in exports && exports[key] === _guards[key]) return;
-		  exports[key] = _guards[key];
+		  if (key in exports$1 && exports$1[key] === _guards[key]) return;
+		  exports$1[key] = _guards[key];
 		}); 
 	} (selectors));
 	return selectors;
@@ -8234,10 +8257,10 @@ var hasRequiredDist;
 function requireDist () {
 	if (hasRequiredDist) return dist.exports;
 	hasRequiredDist = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 
-		exports.__esModule = true;
-		exports["default"] = void 0;
+		exports$1.__esModule = true;
+		exports$1["default"] = void 0;
 		var _processor = _interopRequireDefault(/*@__PURE__*/ requireProcessor());
 		var selectors = _interopRequireWildcard(/*@__PURE__*/ requireSelectors());
 		function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -8249,8 +8272,8 @@ function requireDist () {
 		Object.assign(parser, selectors);
 		delete parser.__esModule;
 		var _default = parser;
-		exports["default"] = _default;
-		module.exports = exports.default; 
+		exports$1["default"] = _default;
+		module.exports = exports$1.default; 
 	} (dist, dist.exports));
 	return dist.exports;
 }
@@ -8713,7 +8736,7 @@ var hasRequiredUtil;
 function requireUtil () {
 	if (hasRequiredUtil) return util;
 	hasRequiredUtil = 1;
-	(function (exports) {
+	(function (exports$1) {
 		/*
 		 * Copyright 2011 Mozilla Foundation and contributors
 		 * Licensed under the New BSD license. See LICENSE or:
@@ -8739,7 +8762,7 @@ function requireUtil () {
 		    throw new Error('"' + aName + '" is a required argument.');
 		  }
 		}
-		exports.getArg = getArg;
+		exports$1.getArg = getArg;
 
 		var urlRegexp = /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/;
 		var dataUrlRegexp = /^data:.+\,.+$/;
@@ -8757,7 +8780,7 @@ function requireUtil () {
 		    path: match[5]
 		  };
 		}
-		exports.urlParse = urlParse;
+		exports$1.urlParse = urlParse;
 
 		function urlGenerate(aParsedUrl) {
 		  var url = '';
@@ -8779,7 +8802,7 @@ function requireUtil () {
 		  }
 		  return url;
 		}
-		exports.urlGenerate = urlGenerate;
+		exports$1.urlGenerate = urlGenerate;
 
 		/**
 		 * Normalizes a path, or the path portion of a URL:
@@ -8801,7 +8824,7 @@ function requireUtil () {
 		    }
 		    path = url.path;
 		  }
-		  var isAbsolute = exports.isAbsolute(path);
+		  var isAbsolute = exports$1.isAbsolute(path);
 
 		  var parts = path.split(/\/+/);
 		  for (var part, up = 0, i = parts.length - 1; i >= 0; i--) {
@@ -8835,7 +8858,7 @@ function requireUtil () {
 		  }
 		  return path;
 		}
-		exports.normalize = normalize;
+		exports$1.normalize = normalize;
 
 		/**
 		 * Joins two paths/URLs.
@@ -8894,9 +8917,9 @@ function requireUtil () {
 		  }
 		  return joined;
 		}
-		exports.join = join;
+		exports$1.join = join;
 
-		exports.isAbsolute = function (aPath) {
+		exports$1.isAbsolute = function (aPath) {
 		  return aPath.charAt(0) === '/' || urlRegexp.test(aPath);
 		};
 
@@ -8938,7 +8961,7 @@ function requireUtil () {
 		  // Make sure we add a "../" for each component we removed from the root.
 		  return Array(level + 1).join("../") + aPath.substr(aRoot.length + 1);
 		}
-		exports.relative = relative;
+		exports$1.relative = relative;
 
 		var supportsNullProto = (function () {
 		  var obj = Object.create(null);
@@ -8965,7 +8988,7 @@ function requireUtil () {
 
 		  return aStr;
 		}
-		exports.toSetString = supportsNullProto ? identity : toSetString;
+		exports$1.toSetString = supportsNullProto ? identity : toSetString;
 
 		function fromSetString(aStr) {
 		  if (isProtoString(aStr)) {
@@ -8974,7 +8997,7 @@ function requireUtil () {
 
 		  return aStr;
 		}
-		exports.fromSetString = supportsNullProto ? identity : fromSetString;
+		exports$1.fromSetString = supportsNullProto ? identity : fromSetString;
 
 		function isProtoString(s) {
 		  if (!s) {
@@ -9044,7 +9067,7 @@ function requireUtil () {
 
 		  return strcmp(mappingA.name, mappingB.name);
 		}
-		exports.compareByOriginalPositions = compareByOriginalPositions;
+		exports$1.compareByOriginalPositions = compareByOriginalPositions;
 
 		/**
 		 * Comparator between two mappings with deflated source and name indices where
@@ -9083,7 +9106,7 @@ function requireUtil () {
 
 		  return strcmp(mappingA.name, mappingB.name);
 		}
-		exports.compareByGeneratedPositionsDeflated = compareByGeneratedPositionsDeflated;
+		exports$1.compareByGeneratedPositionsDeflated = compareByGeneratedPositionsDeflated;
 
 		function strcmp(aStr1, aStr2) {
 		  if (aStr1 === aStr2) {
@@ -9137,7 +9160,7 @@ function requireUtil () {
 
 		  return strcmp(mappingA.name, mappingB.name);
 		}
-		exports.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflated;
+		exports$1.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflated;
 
 		/**
 		 * Strip any JSON XSSI avoidance prefix from the string (as documented
@@ -9147,7 +9170,7 @@ function requireUtil () {
 		function parseSourceMapInput(str) {
 		  return JSON.parse(str.replace(/^\)]}'[^\n]*\n/, ''));
 		}
-		exports.parseSourceMapInput = parseSourceMapInput;
+		exports$1.parseSourceMapInput = parseSourceMapInput;
 
 		/**
 		 * Compute the URL of a source given the the source root, the source's
@@ -9200,7 +9223,7 @@ function requireUtil () {
 
 		  return normalize(sourceURL);
 		}
-		exports.computeSourceURL = computeSourceURL; 
+		exports$1.computeSourceURL = computeSourceURL; 
 	} (util));
 	return util;
 }
@@ -9872,15 +9895,15 @@ var hasRequiredBinarySearch;
 function requireBinarySearch () {
 	if (hasRequiredBinarySearch) return binarySearch;
 	hasRequiredBinarySearch = 1;
-	(function (exports) {
+	(function (exports$1) {
 		/*
 		 * Copyright 2011 Mozilla Foundation and contributors
 		 * Licensed under the New BSD license. See LICENSE or:
 		 * http://opensource.org/licenses/BSD-3-Clause
 		 */
 
-		exports.GREATEST_LOWER_BOUND = 1;
-		exports.LEAST_UPPER_BOUND = 2;
+		exports$1.GREATEST_LOWER_BOUND = 1;
+		exports$1.LEAST_UPPER_BOUND = 2;
 
 		/**
 		 * Recursive implementation of binary search.
@@ -9920,7 +9943,7 @@ function requireBinarySearch () {
 
 		    // The exact needle element was not found in this haystack. Determine if
 		    // we are in termination case (3) or (2) and return the appropriate thing.
-		    if (aBias == exports.LEAST_UPPER_BOUND) {
+		    if (aBias == exports$1.LEAST_UPPER_BOUND) {
 		      return aHigh < aHaystack.length ? aHigh : -1;
 		    } else {
 		      return mid;
@@ -9934,7 +9957,7 @@ function requireBinarySearch () {
 		    }
 
 		    // we are in termination case (3) or (2) and return the appropriate thing.
-		    if (aBias == exports.LEAST_UPPER_BOUND) {
+		    if (aBias == exports$1.LEAST_UPPER_BOUND) {
 		      return mid;
 		    } else {
 		      return aLow < 0 ? -1 : aLow;
@@ -9960,13 +9983,13 @@ function requireBinarySearch () {
 		 *     searching for, respectively, if the exact element cannot be found.
 		 *     Defaults to 'binarySearch.GREATEST_LOWER_BOUND'.
 		 */
-		exports.search = function search(aNeedle, aHaystack, aCompare, aBias) {
+		exports$1.search = function search(aNeedle, aHaystack, aCompare, aBias) {
 		  if (aHaystack.length === 0) {
 		    return -1;
 		  }
 
 		  var index = recursiveSearch(-1, aHaystack.length, aNeedle, aHaystack,
-		                              aCompare, aBias || exports.GREATEST_LOWER_BOUND);
+		                              aCompare, aBias || exports$1.GREATEST_LOWER_BOUND);
 		  if (index < 0) {
 		    return -1;
 		  }
@@ -12153,11 +12176,11 @@ function requireCreateICSSRules () {
 	  });
 	};
 
-	const createExports = (exports, postcss, mode = "rule") => {
-	  const declarations = Object.keys(exports).map((key) =>
+	const createExports = (exports$1, postcss, mode = "rule") => {
+	  const declarations = Object.keys(exports$1).map((key) =>
 	    postcss.decl({
 	      prop: key,
-	      value: exports[key],
+	      value: exports$1[key],
 	      raws: { before: "\n  " },
 	    })
 	  );
@@ -12181,9 +12204,9 @@ function requireCreateICSSRules () {
 	  return [rule];
 	};
 
-	const createICSSRules = (imports, exports, postcss, mode) => [
+	const createICSSRules = (imports, exports$1, postcss, mode) => [
 	  ...createImports(imports, postcss, mode),
-	  ...createExports(exports, postcss, mode),
+	  ...createExports(exports$1, postcss, mode),
 	];
 
 	createICSSRules_1 = createICSSRules;
@@ -12284,12 +12307,12 @@ function requireParser () {
 	  async fetchImport(importNode, relativeTo, depNr) {
 	    const file = importNode.selector.match(importRegexp)[1];
 	    const depTrace = this.trace + String.fromCharCode(depNr);
-	    const exports = await this.pathFetcher(file, relativeTo, depTrace);
+	    const exports$1 = await this.pathFetcher(file, relativeTo, depTrace);
 
 	    try {
 	      importNode.each(decl => {
 	        if (decl.type == "decl") {
-	          this.translations[decl.prop] = exports[decl.value];
+	          this.translations[decl.prop] = exports$1[decl.value];
 	        }
 	      });
 	      importNode.remove();
@@ -13460,12 +13483,12 @@ function requireWasmHash () {
 	   * @param {number} digestSize size of digest returned by wasm
 	   */
 	  constructor(instance, instancesPool, chunkSize, digestSize) {
-	    const exports = /** @type {any} */ (instance.exports);
+	    const exports$1 = /** @type {any} */ (instance.exports);
 
-	    exports.init();
+	    exports$1.init();
 
-	    this.exports = exports;
-	    this.mem = Buffer.from(exports.memory.buffer, 0, 65536);
+	    this.exports = exports$1;
+	    this.mem = Buffer.from(exports$1.memory.buffer, 0, 65536);
 	    this.buffered = 0;
 	    this.instancesPool = instancesPool;
 	    this.chunkSize = chunkSize;
@@ -13505,7 +13528,7 @@ function requireWasmHash () {
 	   * @returns {void}
 	   */
 	  _updateWithShortString(data, encoding) {
-	    const { exports, buffered, mem, chunkSize } = this;
+	    const { exports: exports$1, buffered, mem, chunkSize } = this;
 
 	    let endPos;
 
@@ -13547,7 +13570,7 @@ function requireWasmHash () {
 	    } else {
 	      const l = endPos & ~(this.chunkSize - 1);
 
-	      exports.update(l);
+	      exports$1.update(l);
 
 	      const newBuffered = endPos - l;
 
@@ -13564,7 +13587,7 @@ function requireWasmHash () {
 	   * @returns {void}
 	   */
 	  _updateWithBuffer(data) {
-	    const { exports, buffered, mem } = this;
+	    const { exports: exports$1, buffered, mem } = this;
 	    const length = data.length;
 
 	    if (buffered + length < this.chunkSize) {
@@ -13578,23 +13601,23 @@ function requireWasmHash () {
 	        let i = 65536 - buffered;
 
 	        data.copy(mem, buffered, 0, i);
-	        exports.update(65536);
+	        exports$1.update(65536);
 
 	        const stop = l - buffered - 65536;
 
 	        while (i < stop) {
 	          data.copy(mem, 0, i, i + 65536);
-	          exports.update(65536);
+	          exports$1.update(65536);
 	          i += 65536;
 	        }
 
 	        data.copy(mem, 0, i, l - buffered);
 
-	        exports.update(l - buffered - i);
+	        exports$1.update(l - buffered - i);
 	      } else {
 	        data.copy(mem, buffered, 0, l - buffered);
 
-	        exports.update(l);
+	        exports$1.update(l);
 	      }
 
 	      const newBuffered = length + buffered - l;
@@ -13608,9 +13631,9 @@ function requireWasmHash () {
 	  }
 
 	  digest(type) {
-	    const { exports, buffered, mem, digestSize } = this;
+	    const { exports: exports$1, buffered, mem, digestSize } = this;
 
-	    exports.final(buffered);
+	    exports$1.final(buffered);
 
 	    this.instancesPool.push(this);
 
@@ -15656,7 +15679,7 @@ function requireSrc$1 () {
 	  return {
 	    postcssPlugin: "postcss-modules-scope",
 	    Once(root, { rule }) {
-	      const exports = Object.create(null);
+	      const exports$1 = Object.create(null);
 
 	      function exportScopedName(name, rawName, node) {
 	        const scopedName = generateScopedName(
@@ -15674,10 +15697,10 @@ function requireSrc$1 () {
 	        );
 	        const { key, value } = exportEntry;
 
-	        exports[key] = exports[key] || [];
+	        exports$1[key] = exports$1[key] || [];
 
-	        if (exports[key].indexOf(value) < 0) {
-	          exports[key].push(value);
+	        if (exports$1[key].indexOf(value) < 0) {
+	          exports$1[key].push(value);
 	        }
 
 	        return scopedName;
@@ -15759,7 +15782,7 @@ function requireSrc$1 () {
 	          case "id":
 	          case "class":
 	            if (exportGlobals) {
-	              exports[node.value] = [node.value];
+	              exports$1[node.value] = [node.value];
 	            }
 	            break;
 	        }
@@ -15796,16 +15819,16 @@ function requireSrc$1 () {
 
 	              if (global) {
 	                localNames.forEach((exportedName) => {
-	                  exports[exportedName].push(global[1]);
+	                  exports$1[exportedName].push(global[1]);
 	                });
 	              } else if (hasOwnProperty.call(importedNames, className)) {
 	                localNames.forEach((exportedName) => {
-	                  exports[exportedName].push(className);
+	                  exports$1[exportedName].push(className);
 	                });
-	              } else if (hasOwnProperty.call(exports, className)) {
+	              } else if (hasOwnProperty.call(exports$1, className)) {
 	                localNames.forEach((exportedName) => {
-	                  exports[className].forEach((item) => {
-	                    exports[exportedName].push(item);
+	                  exports$1[className].forEach((item) => {
+	                    exports$1[exportedName].push(item);
 	                  });
 	                });
 	              } else {
@@ -15887,7 +15910,7 @@ function requireSrc$1 () {
 	      });
 
 	      // If we found any :locals, insert an :export rule
-	      const exportedNames = Object.keys(exports);
+	      const exportedNames = Object.keys(exports$1);
 
 	      if (exportedNames.length > 0) {
 	        const exportRule = rule({ selector: ":export" });
@@ -15895,7 +15918,7 @@ function requireSrc$1 () {
 	        exportedNames.forEach((exportedName) =>
 	          exportRule.append({
 	            prop: exportedName,
-	            value: exports[exportedName].join(" "),
+	            value: exports$1[exportedName].join(" "),
 	            raws: { before: "\n  " },
 	          })
 	        );
@@ -21597,6 +21620,43 @@ const ${normalScriptDefaultVar} = ${defaultSpecifier.local.name}
   }
   for (const key in setupBindings) {
     ctx.bindingMetadata[key] = setupBindings[key];
+  }
+  if (sfc.template && !sfc.template.src && sfc.template.ast) {
+    const vModelIds = resolveTemplateVModelIdentifiers(sfc);
+    if (vModelIds.size) {
+      const toDemote = /* @__PURE__ */ new Set();
+      for (const id of vModelIds) {
+        if (setupBindings[id] === "setup-reactive-const") {
+          toDemote.add(id);
+        }
+      }
+      if (toDemote.size) {
+        for (const node of scriptSetupAst.body) {
+          if (node.type === "VariableDeclaration" && node.kind === "const" && !node.declare) {
+            const demotedInDecl = [];
+            for (const decl of node.declarations) {
+              if (decl.id.type === "Identifier" && toDemote.has(decl.id.name)) {
+                demotedInDecl.push(decl.id.name);
+              }
+            }
+            if (demotedInDecl.length) {
+              ctx.s.overwrite(
+                node.start + startOffset,
+                node.start + startOffset + "const".length,
+                "let"
+              );
+              for (const id of demotedInDecl) {
+                setupBindings[id] = "setup-let";
+                ctx.bindingMetadata[id] = "setup-let";
+                warnOnce(
+                  `\`v-model\` cannot update a \`const\` reactive binding \`${id}\`. The compiler has transformed it to \`let\` to make the update work.`
+                );
+              }
+            }
+          }
+        }
+      }
+    }
   }
   if (sfc.cssVars.length && // no need to do this when targeting SSR
   !ssr) {

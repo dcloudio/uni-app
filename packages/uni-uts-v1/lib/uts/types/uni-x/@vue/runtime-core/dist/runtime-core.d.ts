@@ -211,7 +211,7 @@ export declare function defineProps<TypeProps>(): DefineProps<LooseRequired<Type
 export type DefineProps<T, BKeys extends keyof T> = Readonly<T> & {
     readonly [K in BKeys]-?: boolean;
 };
-type BooleanKey<T, K extends keyof T = keyof T> = K extends any ? [T[K]] extends [boolean | undefined] ? K : never : never;
+type BooleanKey<T, K extends keyof T = keyof T> = K extends any ? T[K] extends boolean | undefined ? T[K] extends never | undefined ? never : K : never : never;
 /**
  * Vue `<script setup>` compiler macro for declaring a component's emitted
  * events. The expected argument is the same as the component `emits` option.
@@ -481,7 +481,7 @@ type ComponentPublicInstanceConstructor<T extends ComponentPublicInstance<Props,
     __isFragment?: never;
     __isTeleport?: never;
     __isSuspense?: never;
-    new (props?: T['$props']): T;
+    new (...args: any[]): T;
 };
 /**
  * @deprecated This is no longer used internally, but exported and relied on by
@@ -563,7 +563,7 @@ declare const SuspenseImpl: {
 };
 export declare const Suspense: {
     __isSuspense: true;
-    new (props?: VNodeProps & SuspenseProps): {
+    new (): {
         $props: VNodeProps & SuspenseProps;
         $slots: {
             default(): VNode[];
@@ -763,7 +763,7 @@ export interface KeepAliveContext extends ComponentRenderContext {
 }
 export declare const KeepAlive: {
     __isKeepAlive: true;
-    new (props?: VNodeProps & KeepAliveProps): {
+    new (): {
         $props: VNodeProps & KeepAliveProps;
         $slots: {
             default(): VNode[];
@@ -1209,7 +1209,7 @@ declare function moveTeleport(vnode: VNode, container: RendererElement, parentAn
 declare function hydrateTeleport(node: Node, vnode: TeleportVNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean, { o: { nextSibling, parentNode, querySelector, insert, createText }, }: RendererInternals<Node, Element>, hydrateChildren: (node: Node | null, vnode: VNode, container: Element, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean) => Node | null, container: RendererElement): Node | null;
 export declare const Teleport: {
     __isTeleport: true;
-    new (props?: VNodeProps & TeleportProps): {
+    new (): {
         $props: VNodeProps & TeleportProps;
         $slots: {
             default(): VNode[];
@@ -1408,7 +1408,7 @@ type Data = Record<string, unknown>;
  * ```
  */
 export type ComponentInstance<T> = T extends {
-    new (...args: any[]): ComponentPublicInstance;
+    new (): ComponentPublicInstance;
 } ? InstanceType<T> : T extends FunctionalComponent<infer Props, infer Emits> ? ComponentPublicInstance<Props, {}, {}, {}, {}, ShortEmitsToObject<Emits>> : T extends Component<infer PropsOrInstance, infer RawBindings, infer D, infer C, infer M> ? PropsOrInstance extends {
     $props: unknown;
 } ? PropsOrInstance : ComponentPublicInstance<unknown extends PropsOrInstance ? {} : PropsOrInstance, unknown extends RawBindings ? {} : RawBindings, unknown extends D ? {} : D, C, M> : never;
@@ -1676,7 +1676,7 @@ interface Constructor<P = any> {
     __isFragment?: never;
     __isTeleport?: never;
     __isSuspense?: never;
-    new (props?: P): {
+    new (...args: any[]): {
         $props: P;
     };
 }

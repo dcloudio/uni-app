@@ -110,6 +110,7 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
     type: VaporSharedDataComponent;
     root: VaporSharedDataComponentInstance | null;
     parent: VaporSharedDataComponentInstance | null;
+    page: UniPage | null;
     appContext: GenericAppContext;
     block: Block;
     scope: EffectScope$1;
@@ -384,11 +385,12 @@ export declare function applyElementDynamicModel(el: UniElement, get: () => any,
     number?: true;
     lazy?: true;
 }): void;
-export declare function applyElementVShow(component: UniSharedDataComponent, target: UniElement, source: () => boolean): void;
+export declare function applyElementVShow(target: UniElement, source: () => boolean): void;
 export declare function setElementInsertionState(parent: UniElement, anchor?: UniElement | 0 | null | number, last?: boolean): void;
 export declare function getElementInsertionParent(): UniElement | null;
 export declare function onElement(node: UniElement, event: string, fn: (event: UniEvent) => void, options?: AddEventListenerOptions & {
     effect?: boolean;
+    stop?: boolean;
 }): void;
 export declare function onElementRef(node: UniElement, fn: Function): void;
 

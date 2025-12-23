@@ -6,81 +6,81 @@
 import { isString, NOOP, isObject, extend, NO, isSymbol, PatchFlagNames, isArray, EMPTY_OBJ, capitalize, camelize, makeMap, slotFlagsText, isOn, isBuiltInDirective, isReservedProp, toHandlerKey, getModifierPropName } from '@vue/shared';
 export { generateCodeFrame } from '@vue/shared';
 
-const FRAGMENT = Symbol(!!(process.env.NODE_ENV !== "production") ? `Fragment` : ``);
-const TELEPORT = Symbol(!!(process.env.NODE_ENV !== "production") ? `Teleport` : ``);
-const SUSPENSE = Symbol(!!(process.env.NODE_ENV !== "production") ? `Suspense` : ``);
-const KEEP_ALIVE = Symbol(!!(process.env.NODE_ENV !== "production") ? `KeepAlive` : ``);
-const BASE_TRANSITION = Symbol(
+const FRAGMENT = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `Fragment` : ``);
+const TELEPORT = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `Teleport` : ``);
+const SUSPENSE = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `Suspense` : ``);
+const KEEP_ALIVE = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `KeepAlive` : ``);
+const BASE_TRANSITION = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `BaseTransition` : ``
 );
-const OPEN_BLOCK = Symbol(!!(process.env.NODE_ENV !== "production") ? `openBlock` : ``);
-const CREATE_BLOCK = Symbol(!!(process.env.NODE_ENV !== "production") ? `createBlock` : ``);
-const CREATE_ELEMENT_BLOCK = Symbol(
+const OPEN_BLOCK = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `openBlock` : ``);
+const CREATE_BLOCK = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `createBlock` : ``);
+const CREATE_ELEMENT_BLOCK = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `createElementBlock` : ``
 );
-const CREATE_VNODE = Symbol(!!(process.env.NODE_ENV !== "production") ? `createVNode` : ``);
-const CREATE_ELEMENT_VNODE = Symbol(
+const CREATE_VNODE = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `createVNode` : ``);
+const CREATE_ELEMENT_VNODE = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `createElementVNode` : ``
 );
-const CREATE_COMMENT = Symbol(
+const CREATE_COMMENT = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `createCommentVNode` : ``
 );
-const CREATE_TEXT = Symbol(
+const CREATE_TEXT = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `createTextVNode` : ``
 );
-const CREATE_STATIC = Symbol(
+const CREATE_STATIC = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `createStaticVNode` : ``
 );
-const RESOLVE_COMPONENT = Symbol(
+const RESOLVE_COMPONENT = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `resolveComponent` : ``
 );
-const RESOLVE_DYNAMIC_COMPONENT = Symbol(
+const RESOLVE_DYNAMIC_COMPONENT = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `resolveDynamicComponent` : ``
 );
-const RESOLVE_DIRECTIVE = Symbol(
+const RESOLVE_DIRECTIVE = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `resolveDirective` : ``
 );
-const RESOLVE_FILTER = Symbol(
+const RESOLVE_FILTER = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `resolveFilter` : ``
 );
-const WITH_DIRECTIVES = Symbol(
+const WITH_DIRECTIVES = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `withDirectives` : ``
 );
-const RENDER_LIST = Symbol(!!(process.env.NODE_ENV !== "production") ? `renderList` : ``);
-const RENDER_SLOT = Symbol(!!(process.env.NODE_ENV !== "production") ? `renderSlot` : ``);
-const CREATE_SLOTS = Symbol(!!(process.env.NODE_ENV !== "production") ? `createSlots` : ``);
-const TO_DISPLAY_STRING = Symbol(
+const RENDER_LIST = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `renderList` : ``);
+const RENDER_SLOT = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `renderSlot` : ``);
+const CREATE_SLOTS = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `createSlots` : ``);
+const TO_DISPLAY_STRING = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `toDisplayString` : ``
 );
-const MERGE_PROPS = Symbol(!!(process.env.NODE_ENV !== "production") ? `mergeProps` : ``);
-const NORMALIZE_CLASS = Symbol(
+const MERGE_PROPS = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `mergeProps` : ``);
+const NORMALIZE_CLASS = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `normalizeClass` : ``
 );
-const NORMALIZE_STYLE = Symbol(
+const NORMALIZE_STYLE = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `normalizeStyle` : ``
 );
-const NORMALIZE_PROPS = Symbol(
+const NORMALIZE_PROPS = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `normalizeProps` : ``
 );
-const GUARD_REACTIVE_PROPS = Symbol(
+const GUARD_REACTIVE_PROPS = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `guardReactiveProps` : ``
 );
-const TO_HANDLERS = Symbol(!!(process.env.NODE_ENV !== "production") ? `toHandlers` : ``);
-const CAMELIZE = Symbol(!!(process.env.NODE_ENV !== "production") ? `camelize` : ``);
-const CAPITALIZE = Symbol(!!(process.env.NODE_ENV !== "production") ? `capitalize` : ``);
-const TO_HANDLER_KEY = Symbol(
+const TO_HANDLERS = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `toHandlers` : ``);
+const CAMELIZE = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `camelize` : ``);
+const CAPITALIZE = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `capitalize` : ``);
+const TO_HANDLER_KEY = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `toHandlerKey` : ``
 );
-const SET_BLOCK_TRACKING = Symbol(
+const SET_BLOCK_TRACKING = /* @__PURE__ */ Symbol(
   !!(process.env.NODE_ENV !== "production") ? `setBlockTracking` : ``
 );
-const PUSH_SCOPE_ID = Symbol(!!(process.env.NODE_ENV !== "production") ? `pushScopeId` : ``);
-const POP_SCOPE_ID = Symbol(!!(process.env.NODE_ENV !== "production") ? `popScopeId` : ``);
-const WITH_CTX = Symbol(!!(process.env.NODE_ENV !== "production") ? `withCtx` : ``);
-const UNREF = Symbol(!!(process.env.NODE_ENV !== "production") ? `unref` : ``);
-const IS_REF = Symbol(!!(process.env.NODE_ENV !== "production") ? `isRef` : ``);
-const WITH_MEMO = Symbol(!!(process.env.NODE_ENV !== "production") ? `withMemo` : ``);
-const IS_MEMO_SAME = Symbol(!!(process.env.NODE_ENV !== "production") ? `isMemoSame` : ``);
+const PUSH_SCOPE_ID = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `pushScopeId` : ``);
+const POP_SCOPE_ID = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `popScopeId` : ``);
+const WITH_CTX = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `withCtx` : ``);
+const UNREF = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `unref` : ``);
+const IS_REF = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `isRef` : ``);
+const WITH_MEMO = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `withMemo` : ``);
+const IS_MEMO_SAME = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? `isMemoSame` : ``);
 const helperNameMap = {
   [FRAGMENT]: `Fragment`,
   [TELEPORT]: `Teleport`,
@@ -496,13 +496,27 @@ class Tokenizer {
   getPos(index) {
     let line = 1;
     let column = index + 1;
-    for (let i = this.newlines.length - 1; i >= 0; i--) {
-      const newlineIndex = this.newlines[i];
-      if (index > newlineIndex) {
-        line = i + 2;
-        column = index - newlineIndex;
-        break;
+    const length = this.newlines.length;
+    let j = -1;
+    if (length > 100) {
+      let l = -1;
+      let r = length;
+      while (l + 1 < r) {
+        const m = l + r >>> 1;
+        this.newlines[m] < index ? l = m : r = m;
       }
+      j = l;
+    } else {
+      for (let i = length - 1; i >= 0; i--) {
+        if (index > this.newlines[i]) {
+          j = i;
+          break;
+        }
+      }
+    }
+    if (j >= 0) {
+      line = j + 2;
+      column = index - this.newlines[j];
     }
     return {
       column,
@@ -1380,24 +1394,26 @@ const ErrorCodes = {
   "43": "X_V_MODEL_ON_SCOPE_VARIABLE",
   "X_V_MODEL_ON_PROPS": 44,
   "44": "X_V_MODEL_ON_PROPS",
-  "X_INVALID_EXPRESSION": 45,
-  "45": "X_INVALID_EXPRESSION",
-  "X_KEEP_ALIVE_INVALID_CHILDREN": 46,
-  "46": "X_KEEP_ALIVE_INVALID_CHILDREN",
-  "X_PREFIX_ID_NOT_SUPPORTED": 47,
-  "47": "X_PREFIX_ID_NOT_SUPPORTED",
-  "X_MODULE_MODE_NOT_SUPPORTED": 48,
-  "48": "X_MODULE_MODE_NOT_SUPPORTED",
-  "X_CACHE_HANDLER_NOT_SUPPORTED": 49,
-  "49": "X_CACHE_HANDLER_NOT_SUPPORTED",
-  "X_SCOPE_ID_NOT_SUPPORTED": 50,
-  "50": "X_SCOPE_ID_NOT_SUPPORTED",
-  "X_VNODE_HOOKS": 51,
-  "51": "X_VNODE_HOOKS",
-  "X_V_BIND_INVALID_SAME_NAME_ARGUMENT": 52,
-  "52": "X_V_BIND_INVALID_SAME_NAME_ARGUMENT",
-  "__EXTEND_POINT__": 53,
-  "53": "__EXTEND_POINT__"
+  "X_V_MODEL_ON_CONST": 45,
+  "45": "X_V_MODEL_ON_CONST",
+  "X_INVALID_EXPRESSION": 46,
+  "46": "X_INVALID_EXPRESSION",
+  "X_KEEP_ALIVE_INVALID_CHILDREN": 47,
+  "47": "X_KEEP_ALIVE_INVALID_CHILDREN",
+  "X_PREFIX_ID_NOT_SUPPORTED": 48,
+  "48": "X_PREFIX_ID_NOT_SUPPORTED",
+  "X_MODULE_MODE_NOT_SUPPORTED": 49,
+  "49": "X_MODULE_MODE_NOT_SUPPORTED",
+  "X_CACHE_HANDLER_NOT_SUPPORTED": 50,
+  "50": "X_CACHE_HANDLER_NOT_SUPPORTED",
+  "X_SCOPE_ID_NOT_SUPPORTED": 51,
+  "51": "X_SCOPE_ID_NOT_SUPPORTED",
+  "X_VNODE_HOOKS": 52,
+  "52": "X_VNODE_HOOKS",
+  "X_V_BIND_INVALID_SAME_NAME_ARGUMENT": 53,
+  "53": "X_V_BIND_INVALID_SAME_NAME_ARGUMENT",
+  "__EXTEND_POINT__": 54,
+  "54": "__EXTEND_POINT__"
 };
 const errorMessages = {
   // parse errors
@@ -1438,7 +1454,7 @@ const errorMessages = {
   [32]: `v-for has invalid expression.`,
   [33]: `<template v-for> key should be placed on the <template> tag.`,
   [34]: `v-bind is missing expression.`,
-  [52]: `v-bind with same-name shorthand only allows static argument.`,
+  [53]: `v-bind with same-name shorthand only allows static argument.`,
   [35]: `v-on is missing expression.`,
   [36]: `Unexpected custom directive on <slot> outlet.`,
   [37]: `Mixed v-slot usage on both the component and nested <template>. When there are multiple named slots, all slots should use <template> syntax to avoid scope ambiguity.`,
@@ -1450,16 +1466,17 @@ const errorMessages = {
   [43]: `v-model cannot be used on v-for or v-slot scope variables because they are not writable.`,
   [44]: `v-model cannot be used on a prop, because local prop bindings are not writable.
 Use a v-bind binding combined with a v-on listener that emits update:x event instead.`,
-  [45]: `Error parsing JavaScript expression: `,
-  [46]: `<KeepAlive> expects exactly one child component.`,
-  [51]: `@vnode-* hooks in templates are no longer supported. Use the vue: prefix instead. For example, @vnode-mounted should be changed to @vue:mounted. @vnode-* hooks support has been removed in 3.4.`,
+  [45]: `v-model cannot be used on a const binding because it is not writable.`,
+  [46]: `Error parsing JavaScript expression: `,
+  [47]: `<KeepAlive> expects exactly one child component.`,
+  [52]: `@vnode-* hooks in templates are no longer supported. Use the vue: prefix instead. For example, @vnode-mounted should be changed to @vue:mounted. @vnode-* hooks support has been removed in 3.4.`,
   // generic errors
-  [47]: `"prefixIdentifiers" option is not supported in this build of compiler.`,
-  [48]: `ES module mode is not supported in this build of compiler.`,
-  [49]: `"cacheHandlers" option is only supported when the "prefixIdentifiers" option is enabled.`,
-  [50]: `"scopeId" option is only supported in module mode.`,
+  [48]: `"prefixIdentifiers" option is not supported in this build of compiler.`,
+  [49]: `ES module mode is not supported in this build of compiler.`,
+  [50]: `"cacheHandlers" option is only supported when the "prefixIdentifiers" option is enabled.`,
+  [51]: `"scopeId" option is only supported in module mode.`,
   // just to fulfill types
-  [53]: ``
+  [54]: ``
 };
 
 function walkIdentifiers(root, onIdentifier, includeAll = false, parentStack = [], knownIds = /* @__PURE__ */ Object.create(null)) {
@@ -1968,7 +1985,7 @@ function getMemoedVNodeCall(node) {
   }
 }
 function filterNonCommentChildren(node) {
-  return node.children.filter((n) => n.type !== 3);
+  return node.children.filter((n) => !isCommentOrWhitespace(n));
 }
 function hasSingleChild(node) {
   return filterNonCommentChildren(node).length === 1;
@@ -3966,7 +3983,7 @@ function validateBrowserExpression(node, context, asParams = false, asRawStateme
     }
     context.onError(
       createCompilerError(
-        45,
+        46,
         node.loc,
         void 0,
         message
@@ -4761,7 +4778,7 @@ const transformElement = (node, context) => {
         patchFlag |= 1024;
         if (!!(process.env.NODE_ENV !== "production") && node.children.length > 1) {
           context.onError(
-            createCompilerError(46, {
+            createCompilerError(47, {
               start: node.children[0].loc.start,
               end: node.children[node.children.length - 1].loc.end,
               source: ""
@@ -5348,7 +5365,7 @@ const transformOn = (dir, node, context, augmentor) => {
     if (arg.isStatic) {
       let rawName = arg.content;
       if (!!(process.env.NODE_ENV !== "production") && rawName.startsWith("vnode")) {
-        context.onError(createCompilerError(51, arg.loc));
+        context.onError(createCompilerError(52, arg.loc));
       }
       if (rawName.startsWith("vue:")) {
         rawName = `vnode-${rawName.slice(4)}`;
@@ -5581,6 +5598,10 @@ const transformModel = (dir, node, context) => {
     context.onError(createCompilerError(44, exp.loc));
     return createTransformProps();
   }
+  if (bindingType === "literal-const" || bindingType === "setup-const") {
+    context.onError(createCompilerError(45, exp.loc));
+    return createTransformProps();
+  }
   if (!expString.trim() || !isMemberExpression(exp) && true) {
     context.onError(
       createCompilerError(42, exp.loc)
@@ -5809,7 +5830,7 @@ const transformVBindShorthand = (node, context) => {
         if (arg.type !== 4 || !arg.isStatic) {
           context.onError(
             createCompilerError(
-              52,
+              53,
               arg.loc
             )
           );
@@ -5853,17 +5874,17 @@ function baseCompile(source, options = {}) {
   const isModuleMode = options.mode === "module";
   {
     if (options.prefixIdentifiers === true) {
-      onError(createCompilerError(47));
-    } else if (isModuleMode) {
       onError(createCompilerError(48));
+    } else if (isModuleMode) {
+      onError(createCompilerError(49));
     }
   }
   const prefixIdentifiers = false;
   if (options.cacheHandlers) {
-    onError(createCompilerError(49));
+    onError(createCompilerError(50));
   }
   if (options.scopeId && !isModuleMode) {
-    onError(createCompilerError(50));
+    onError(createCompilerError(51));
   }
   const resolvedOptions = extend({}, options, {
     prefixIdentifiers
