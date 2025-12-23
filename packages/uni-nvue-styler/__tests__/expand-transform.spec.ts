@@ -1176,4 +1176,15 @@ describe('nvue-styler: expand', () => {
     expect(result.length).toBe(1)
     expect(result[0]).toBe(decl)
   })
+
+  test('transform border-color with rgba and spaces', () => {
+    const decl = parseDecl(
+      `.test { border-color: rgba(0, 0, 0, 0.5) rgba(255, 255, 255, 1) }`
+    )
+    const result = transformBorderColor(decl)
+    expect(result.length).toBe(4)
+    // Preservation of spaces inside parentheses (normalized)
+    expect(result[0].value).toBe('rgba(0, 0, 0, 0.5)')
+    expect(result[1].value).toBe('rgba(255, 255, 255, 1)')
+  })
 })
