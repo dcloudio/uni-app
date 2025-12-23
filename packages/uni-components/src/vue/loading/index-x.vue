@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useLoadingStyle } from './useLoadingStyle'
 
 defineOptions({
@@ -11,16 +11,27 @@ defineOptions({
 })
 
 
-type SliderProps = {
-  paused: boolean
-}
-const props = withDefaults(defineProps<SliderProps>(), {
-  paused: false
+const props = withDefaults(defineProps<{
+  /**
+   * 是否暂停动画
+   * @uniPlatform {
+     "app": {
+       "harmony": {
+         "unixvVer": "5.0"
+       }
+     }
+   }
+ */
+  paused?: boolean,
+  bold ?: boolean
+}>(), {
+  paused: false,
+  bold: false
 })
 
 
 const LoadingRef = ref<HTMLElement | null>(null)
-const loadingStyle = reactive(useLoadingStyle(LoadingRef))
+const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props.bold)))
 
 </script>
 
