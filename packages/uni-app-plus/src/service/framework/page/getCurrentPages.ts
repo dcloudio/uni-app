@@ -78,9 +78,11 @@ export function removePage(
   }
   pages.splice(index, 1)
   if (__X__) {
-    ;(curPage.$page as UniPage).vm = null
-    // @ts-expect-error
-    curPage.$page = null
+    const ins = curPage as ComponentPublicInstance
+    if (ins.$.page) {
+      ins.$.page.vm = null
+      ins.$.page = null
+    }
   }
   if (__DEV__) {
     console.log(formatLog('removePage', $basePage))

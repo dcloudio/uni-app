@@ -3055,6 +3055,8 @@ const publicPropertiesMap = (
     $refs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.refs) : i.refs,
     $parent: (i) => getPublicInstance(i.parent),
     $root: (i) => getPublicInstance(i.root),
+    // fixed by xxxxxx
+    $page: (i) => i.page,
     $emit: (i) => i.emit,
     $options: (i) => __VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type,
     $forceUpdate: (i) => i.f || (i.f = () => {
@@ -7673,6 +7675,9 @@ function createComponentInstance(vnode, parent, suspense) {
   }
   instance.root = parent ? parent.root : instance;
   instance.emit = emit.bind(null, instance);
+  if (parent) {
+    instance.page = parent.root.page;
+  }
   if (vnode.ce) {
     vnode.ce(instance);
   }
