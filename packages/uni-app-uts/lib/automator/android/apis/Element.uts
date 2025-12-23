@@ -100,7 +100,7 @@ export const getDOMProperties = (
       if (name == 'innerText') {
         // @ts-expect-error
         if (isTextElement(dom)) {
-          return dom.getAttribute('value')
+          return (dom as UniTextElement).value
         } else {
           return getChildrenText(dom)
         }
