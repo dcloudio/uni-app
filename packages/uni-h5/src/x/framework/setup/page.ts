@@ -28,7 +28,6 @@ import {
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import { isDialogPageInstance } from '../helpers/utils'
 import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
-import type { UniPageBody } from '@dcloudio/uni-app-x/types/native/UniPage'
 
 let escBackPageNum = 0
 type PageStyle = {
@@ -91,7 +90,7 @@ class UniPageImpl implements UniPage {
     return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0)
   }
 
-  get pageBody(): UniPageBody {
+  get pageBody() {
     const pageEle = getPageElement(this)
     const pageBody = pageEle.querySelector('uni-page-wrapper') as HTMLElement
     const pageWrapperInfo = getPageWrapperInfo(pageBody)
@@ -213,12 +212,7 @@ class UniPageImpl implements UniPage {
   }
   exitFullscreen() {}
   createElement() {
-    return new UniElementImpl({
-      id: '',
-      name: '',
-      attrs: new Map(),
-      style: new Map(),
-    })
+    return null as any
   }
   constructor({
     route,
@@ -326,7 +320,6 @@ export function initXPage(
       },
     })
   }
-  vm.$basePage = vm.$page as Page.PageInstance['$page']
 
   // 暂时只在page上加 $waitNativeRender 方法
   vm.$.$waitNativeRender = (callback: () => void) => {
@@ -341,7 +334,7 @@ export function initXPage(
       options: new UTSJSONObject(route?.query || {}),
       vm,
     })
-    vm.$page = uniPage
+    vm.$.page = uniPage
     vm.$dialogPage = vm.$pageLayoutInstance?.$dialogPage
 
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
@@ -366,12 +359,12 @@ export function initXPage(
       }
     }
   } else {
-    vm.$page = vm.$pageLayoutInstance?.$dialogPage!
+    vm.$.page = vm.$pageLayoutInstance?.$dialogPage!
     pageInstance.$dialogPage!.vm = vm
     pageInstance.$dialogPage!.$vm = vm
     // fix dialogPage $basePage.fullPath & $basePage.id
     vm.$basePage.fullPath = vm.$basePage.path
-    const parentPage = vm.$page.getParentPage()
+    const parentPage = (vm.$page as UniPage).getParentPage()
     if (parentPage) {
       if (!parentPage.vm.$dialogPagesNum) {
         parentPage.vm.$dialogPagesNum = 0
