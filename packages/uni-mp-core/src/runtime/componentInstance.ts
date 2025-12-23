@@ -83,6 +83,16 @@ export function initBaseInstance(
   ctx.$mpPlatform = __PLATFORM__
   ctx.$scope = options.mpInstance
 
+  if (__X__) {
+    Object.defineProperties(ctx, {
+      $page: {
+        get() {
+          return instance.root.proxy?.$scope
+        },
+      },
+    })
+  }
+
   if (
     __PLATFORM__ === 'mp-weixin' ||
     __PLATFORM__ === 'mp-alipay' ||
