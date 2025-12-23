@@ -1,4 +1,4 @@
-import { type TransformDecl, createDecl } from '../utils'
+import { type TransformDecl, createDecl, splitValues } from '../utils'
 
 const borderTopLeftRadius = __HYPHENATE__
   ? 'border-top-left-radius'
@@ -15,7 +15,7 @@ const borderBottomLeftRadius = __HYPHENATE__
 export const transformBorderRadius: TransformDecl = (decl) => {
   let { value, important, raws, source } = decl
   value = value.trim()
-  const splitResult = value.split(/\s+/)
+  const splitResult = splitValues(value)
   if (value.includes('/')) {
     return [decl]
   }

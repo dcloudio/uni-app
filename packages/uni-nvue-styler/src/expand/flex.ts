@@ -1,4 +1,4 @@
-import { type TransformDecl, createDecl, isNumber } from '../utils'
+import { type TransformDecl, createDecl, isNumber, splitValues } from '../utils'
 
 const flexGrow = __HYPHENATE__ ? 'flex-grow' : 'flexGrow'
 const flexShrink = __HYPHENATE__ ? 'flex-shrink' : 'flexShrink'
@@ -8,7 +8,7 @@ export const transformFlex: TransformDecl = (decl) => {
   let { value, important, raws, source } = decl
   value = value.trim()
   const result: ReturnType<TransformDecl> = []
-  const splitResult = value.split(/\s+/)
+  const splitResult = splitValues(value)
 
   // 是否 flex-grow 的有效值 <number [0,∞]>
   const isFlexGrowValid = (v: string) =>

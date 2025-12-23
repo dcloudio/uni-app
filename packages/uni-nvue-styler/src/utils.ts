@@ -492,12 +492,14 @@ export function coverColorToRgba(e: string | undefined) {
  * css value 分割多值，兼容包含括号的 css 方法，比如 var/env/calc() 等
  */
 export function splitValues(value: string): string[] {
+  if (!value.includes('(')) {
+    return value.trim().split(/\s+/)
+  }
   const parts: string[] = []
   let current = ''
   let depth = 0
   for (let i = 0; i < value.length; i++) {
     const char = value[i]
-    // 括号内不分割
     if (char === '(') {
       depth++
       current += char
@@ -513,7 +515,10 @@ export function splitValues(value: string): string[] {
           current = ''
         }
       } else {
-        current += char
+        // 多个空格处理一个
+        if (current.length > 0 && !/\s$/.test(current)) {
+          current += ' '
+        }
       }
     } else {
       current += char

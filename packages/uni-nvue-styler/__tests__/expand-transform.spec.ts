@@ -1123,4 +1123,57 @@ describe('nvue-styler: expand', () => {
     expect(result[2].value).toBe('5px')
     expect(result[3].value).toBe('var(--aa, 5px)')
   })
+
+  test('transform border with var', () => {
+    const transform = createTransformBorder({ type: 'uvue' })
+    const decl = parseDecl(`.test { border: 1px solid var(--color, red) }`)
+    const result = transform(decl)
+    expect(result.length).toBe(12)
+    const topColor = result.find((d) => d.prop === 'border-top-color')
+    expect(topColor?.value).toBe('var(--color, red)')
+  })
+
+  test('transform margin with calc', () => {
+    const transform = createTransformBox('margin')
+    const decl = parseDecl(`.test { margin: calc(10px + 2px) 5px }`)
+    const result = transform(decl)
+    expect(result[0].value).toBe('calc(10px + 2px)')
+    expect(result[1].value).toBe('5px')
+  })
+
+  test('transform border-color with var', () => {
+    const decl = parseDecl(`.test { border-color: red var(--color, blue) }`)
+    const result = transformBorderColor(decl)
+    expect(result.length).toBe(4)
+    expect(result[1].value).toBe('var(--color, blue)')
+  })
+
+  test('transform border-radius with var', () => {
+    const decl = parseDecl(`.test { border-radius: 10px var(--radius, 20px) }`)
+    const result = transformBorderRadius(decl)
+    expect(result.length).toBe(4)
+    expect(result[1].value).toBe('var(--radius, 20px)')
+  })
+
+  test('transform border-color with var spaces', () => {
+    const decl = parseDecl(`.test { border-color: red var(--color,   blue) }`)
+    const result = transformBorderColor(decl)
+    expect(result.length).toBe(4)
+    expect(result[1].value).toBe('var(--color, blue)')
+  })
+
+  test('transform margin with calc spaces', () => {
+    const decl = parseDecl(`.test { margin: calc(10px  +  2px) 5px }`)
+    const transform = createTransformBox('margin')
+    const result = transform(decl)
+    expect(result[0].value).toBe('calc(10px + 2px)')
+    expect(result[1].value).toBe('5px')
+  })
+
+  test('transform flex-flow with var', () => {
+    const decl = parseDecl(`.test { flex-flow: var(--direction, row) wrap }`)
+    const result = transformFlexFlow(decl)
+    expect(result.length).toBe(1)
+    expect(result[0]).toBe(decl)
+  })
 })

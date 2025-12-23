@@ -18,12 +18,12 @@ describe('splitValues', () => {
   })
 
   test('ignore spaces in parentheses', () => {
-    expect(splitValues('10px var(--color, red) 20px')).toEqual([
+    expect(splitValues('10px var(--color,   red) 20px')).toEqual([
       '10px',
       'var(--color, red)',
       '20px',
     ])
-    expect(splitValues('calc(100% - 20px) 10px')).toEqual([
+    expect(splitValues('calc(100% -   20px) 10px')).toEqual([
       'calc(100% - 20px)',
       '10px',
     ])
@@ -46,5 +46,10 @@ describe('splitValues', () => {
     expect(
       splitValues('10px calc(var(--c, 10px) + 10px) var(--c, blue) 2em')
     ).toEqual(['10px', 'calc(var(--c, 10px) + 10px)', 'var(--c, blue)', '2em'])
+  })
+
+  test('quotes and normalization', () => {
+    expect(splitValues('rgb(1,   2, 3)')).toEqual(['rgb(1, 2, 3)'])
+    expect(splitValues('calc(10px  +  20px)')).toEqual(['calc(10px + 20px)'])
   })
 })
