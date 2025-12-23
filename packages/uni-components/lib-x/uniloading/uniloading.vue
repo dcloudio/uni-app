@@ -4,11 +4,22 @@
   <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" style="box-sizing: border-box;"></view>
 </template>
 <script setup lang="uts">
-type SliderProps = {
-  paused: boolean
-}
-const props = withDefaults(defineProps<SliderProps>(), {
-  paused: false
+const props = withDefaults(defineProps<{
+  /**
+   * 是否暂停动画
+   * @uniPlatform {
+     "app": {
+       "harmony": {
+         "unixvVer": "5.0"
+       }
+     }
+   }
+ */
+  paused?: boolean,
+  bold ?: boolean
+}>(), {
+  paused: false,
+  bold: false
 })
 </script>
 <style>
