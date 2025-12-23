@@ -123,6 +123,8 @@ const UVUE_BUILT_IN_TAGS = [
     'swiper-item',
     // 已经交由 vue 实现
     // 'rich-text',
+    // android 平台 type=native 时原生实现
+    'rich-text-native',
     'sticky-view',
     'sticky-header',
     'sticky-section',

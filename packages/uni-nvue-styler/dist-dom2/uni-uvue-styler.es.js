@@ -14,6 +14,52 @@ function createDecl(prop, value, important, raws, source) {
     return decl;
 }
 const isNumber = (val) => typeof val === 'number';
+/**
+ * css value 分割多值，兼容包含括号的 css 方法，比如 var/env/calc() 等
+ */
+function splitValues(value) {
+    const trimmedValue = value.trim();
+    if (!trimmedValue.includes('(')) {
+        return trimmedValue.split(/\s+/);
+    }
+    const parts = [];
+    let current = '';
+    let depth = 0;
+    for (let i = 0; i < trimmedValue.length; i++) {
+        const char = trimmedValue[i];
+        if (char === '(') {
+            depth++;
+            current += char;
+        }
+        else if (char === ')') {
+            if (depth > 0) {
+                depth--;
+            }
+            current += char;
+        }
+        else if (/\s/.test(char)) {
+            if (depth === 0) {
+                if (current) {
+                    parts.push(current);
+                    current = '';
+                }
+            }
+            else {
+                // 多个空格处理一个
+                if (current.length > 0 && !/\s$/.test(current)) {
+                    current += ' ';
+                }
+            }
+        }
+        else {
+            current += char;
+        }
+    }
+    if (current) {
+        parts.push(current);
+    }
+    return parts;
+}
 
 const backgroundColor = 'background-color' ;
 const backgroundImage = 'background-image' ;
@@ -57,7 +103,7 @@ const transformBorderColor = (decl) => {
     value = value.trim();
     const _property_split = hyphenate(prop).split('-');
     let property = _property_split[_property_split.length - 1];
-    const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/); // 1pt
+    const splitResult = splitValues(value); // 1pt
     switch (splitResult.length) {
         case 1:
             if (_property_split.length === 3) {
@@ -92,7 +138,7 @@ const borderColor = '-color' ;
 function createTransformBorder(options) {
     return (decl) => {
         const { prop, value, important, raws, source } = decl;
-        let splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+        let splitResult = splitValues(value);
         const havVar = splitResult.some((str) => str.startsWith('var('));
         let result = [];
         // 包含 var ，直接视为 width/style/color 都使用默认值
@@ -150,7 +196,7 @@ const borderBottomLeftRadius = 'border-bottom-left-radius'
 const transformBorderRadius = (decl) => {
     let { value, important, raws, source } = decl;
     value = value.trim();
-    const splitResult = value.split(/\s+/);
+    const splitResult = splitValues(value);
     if (value.includes('/')) {
         return [decl];
     }
@@ -178,7 +224,7 @@ const flexWrap = 'flex-wrap' ;
 const transformFlexFlow = (decl) => {
     let { value, important, raws, source } = decl;
     value = value.trim();
-    const splitResult = value.split(/\s+/);
+    const splitResult = splitValues(value);
     const result = [
         /^(column|column-reverse|row|row-reverse)$/,
         /^(nowrap|wrap|wrap-reverse)$/,
@@ -202,7 +248,7 @@ const left = '-left' ;
 const createTransformBox = (type) => {
     return (decl) => {
         const { value, important, raws, source } = decl;
-        const splitResult = value.trim().split(/\s+/);
+        const splitResult = splitValues(value);
         switch (splitResult.length) {
             case 1:
                 splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
@@ -269,7 +315,7 @@ const transformFlex = (decl) => {
     let { value, important, raws, source } = decl;
     value = value.trim();
     const result = [];
-    const splitResult = value.split(/\s+/);
+    const splitResult = splitValues(value);
     // 是否 flex-grow 的有效值 <number [0,∞]>
     const isFlexGrowValid = (v) => isNumber(Number(v)) && !Number.isNaN(Number(v));
     const isFlexShrinkValid = (v) => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
