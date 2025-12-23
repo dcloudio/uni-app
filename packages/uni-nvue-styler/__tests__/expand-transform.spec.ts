@@ -11,6 +11,7 @@ import { createTransformBox } from '../src/expand/margin'
 import { transformTransition } from '../src/expand/transition'
 import { fillBorderPostion, postionTypes } from './test_utils'
 import { transformFlex } from '../src/expand/flex'
+export type { Declaration } from 'postcss'
 
 function parseDecl(input: string) {
   return (parse(input).nodes[0] as Rule).nodes[0] as Declaration
@@ -1074,5 +1075,52 @@ describe('nvue-styler: expand', () => {
         })
       )
     })
+  })
+
+  // transform margin cssvar
+  test('transform margin cssvar2', () => {
+    const transform = createTransformBox('margin')
+
+    const opt = {
+      value: 'var(--marginVal, 6px)',
+      important: false,
+      raws: {
+        before: '',
+      },
+    } as any
+
+    const res = transform(opt).map((i) => ({
+      prop: i.prop,
+      value: i.value,
+    }))
+
+    expect(res).toEqual([
+      {
+        prop: 'margin-top',
+        value: 'var(--marginVal, 6px)',
+      },
+      {
+        prop: 'margin-right',
+        value: 'var(--marginVal, 6px)',
+      },
+      {
+        prop: 'margin-bottom',
+        value: 'var(--marginVal, 6px)',
+      },
+      {
+        prop: 'margin-left',
+        value: 'var(--marginVal, 6px)',
+      },
+    ])
+  })
+
+  test('transform margin with var', () => {
+    const transform = createTransformBox('margin')
+    const decl = parseDecl(`.test { margin: 5px var(--aa, 5px) }`)
+    const result = transform(decl)
+    expect(result[0].value).toBe('5px')
+    expect(result[1].value).toBe('var(--aa, 5px)')
+    expect(result[2].value).toBe('5px')
+    expect(result[3].value).toBe('var(--aa, 5px)')
   })
 })
