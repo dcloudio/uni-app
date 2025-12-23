@@ -1727,7 +1727,9 @@ function initAppVm(appVm2) {
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
   pageVm.$vm = pageVm;
-  pageVm.$page = page;
+  {
+    pageVm.$basePage = page;
+  }
   pageVm.$mpType = "page";
   pageVm.$fontFamilySet = /* @__PURE__ */ new Set();
   if (page.meta.isTabBar) {
@@ -7712,12 +7714,7 @@ class UniPageImpl {
   exitFullscreen() {
   }
   createElement() {
-    return new UniElementImpl({
-      id: "",
-      name: "",
-      attrs: /* @__PURE__ */ new Map(),
-      style: /* @__PURE__ */ new Map()
-    });
+    return null;
   }
 }
 class UniNormalPageImpl extends UniPageImpl {
@@ -7788,7 +7785,6 @@ function initXPage(vm, route, page) {
       }
     });
   }
-  vm.$basePage = vm.$page;
   vm.$.$waitNativeRender = (callback) => {
     vm.$nextTick(() => {
       callback && callback();
@@ -7801,7 +7797,7 @@ function initXPage(vm, route, page) {
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
       vm
     });
-    vm.$page = uniPage;
+    vm.$.page = uniPage;
     vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
     if (currentPagesMap.size === 1) {
@@ -7824,7 +7820,7 @@ function initXPage(vm, route, page) {
       }
     }
   } else {
-    vm.$page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
+    vm.$.page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
     pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;

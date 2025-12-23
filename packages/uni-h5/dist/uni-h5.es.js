@@ -1792,7 +1792,9 @@ function initAppVm(appVm2) {
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
   pageVm.$vm = pageVm;
-  pageVm.$page = page;
+  {
+    pageVm.$page = page;
+  }
   pageVm.$mpType = "page";
   pageVm.$fontFamilySet = /* @__PURE__ */ new Set();
   if (page.meta.isTabBar) {

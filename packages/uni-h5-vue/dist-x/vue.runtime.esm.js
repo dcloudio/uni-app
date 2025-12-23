@@ -4411,6 +4411,7 @@ const publicPropertiesMap = (
   })
 );
 {
+  publicPropertiesMap.$page = (i) => i.page;
   publicPropertiesMap.$callMethod = (i) => {
     return (methodName, ...args) => {
       const proxy = getExposeProxy(i) || i.proxy;
@@ -8833,6 +8834,7 @@ function invokeVNodeHook(hook, instance, vnode, prevVNode = null) {
 const emptyAppContext = createAppContext();
 let uid = 0;
 function createComponentInstance(vnode, parent, suspense) {
+  var _a;
   const type = vnode.type;
   const appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
   const instance = {
@@ -8932,6 +8934,11 @@ function createComponentInstance(vnode, parent, suspense) {
   instance.root = parent ? parent.root : instance;
   instance.emit = emit.bind(null, instance);
   instance.$pageInstance = parent && parent.$pageInstance;
+  {
+    if (parent) {
+      instance.page = (_a = parent.$pageInstance) == null ? void 0 : _a.page;
+    }
+  }
   if (vnode.ce) {
     vnode.ce(instance);
   }
