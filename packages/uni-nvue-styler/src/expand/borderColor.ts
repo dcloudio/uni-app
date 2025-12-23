@@ -1,5 +1,5 @@
 import { capitalize, hyphenate } from '@vue/shared'
-import { type Declaration, createDecl } from '../utils'
+import { type Declaration, createDecl, splitValues } from '../utils'
 
 const borderTop = __HYPHENATE__ ? 'border-top-' : 'borderTop'
 const borderRight = __HYPHENATE__ ? 'border-right-' : 'borderRight'
@@ -14,7 +14,7 @@ export const transformBorderColor = (decl: Declaration): Declaration[] => {
   if (!__HYPHENATE__) {
     property = capitalize(property)
   }
-  const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/) // 1pt
+  const splitResult = splitValues(value) // 1pt
   switch (splitResult.length) {
     case 1:
       if (_property_split.length === 3) {

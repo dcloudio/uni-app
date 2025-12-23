@@ -11,6 +11,7 @@ import { createTransformBox } from '../src/expand/margin'
 import { transformTransition } from '../src/expand/transition'
 import { fillBorderPostion, postionTypes } from './test_utils'
 import { transformFlex } from '../src/expand/flex'
+export type { Declaration } from 'postcss'
 
 function parseDecl(input: string) {
   return (parse(input).nodes[0] as Rule).nodes[0] as Declaration
@@ -1074,5 +1075,116 @@ describe('nvue-styler: expand', () => {
         })
       )
     })
+  })
+
+  // transform margin cssvar
+  test('transform margin cssvar2', () => {
+    const transform = createTransformBox('margin')
+
+    const opt = {
+      value: 'var(--marginVal, 6px)',
+      important: false,
+      raws: {
+        before: '',
+      },
+    } as any
+
+    const res = transform(opt).map((i) => ({
+      prop: i.prop,
+      value: i.value,
+    }))
+
+    expect(res).toEqual([
+      {
+        prop: 'margin-top',
+        value: 'var(--marginVal, 6px)',
+      },
+      {
+        prop: 'margin-right',
+        value: 'var(--marginVal, 6px)',
+      },
+      {
+        prop: 'margin-bottom',
+        value: 'var(--marginVal, 6px)',
+      },
+      {
+        prop: 'margin-left',
+        value: 'var(--marginVal, 6px)',
+      },
+    ])
+  })
+
+  test('transform margin with var', () => {
+    const transform = createTransformBox('margin')
+    const decl = parseDecl(`.test { margin: 5px var(--aa, 5px) }`)
+    const result = transform(decl)
+    expect(result[0].value).toBe('5px')
+    expect(result[1].value).toBe('var(--aa, 5px)')
+    expect(result[2].value).toBe('5px')
+    expect(result[3].value).toBe('var(--aa, 5px)')
+  })
+
+  test('transform border with var', () => {
+    const transform = createTransformBorder({ type: 'uvue' })
+    const decl = parseDecl(`.test { border: 1px solid var(--color, red) }`)
+    const result = transform(decl)
+    expect(result.length).toBe(12)
+    const topColor = result.find((d) => d.prop === 'border-top-color')
+    expect(topColor?.value).toBe('var(--color, red)')
+  })
+
+  test('transform margin with calc', () => {
+    const transform = createTransformBox('margin')
+    const decl = parseDecl(`.test { margin: calc(10px + 2px) 5px }`)
+    const result = transform(decl)
+    expect(result[0].value).toBe('calc(10px + 2px)')
+    expect(result[1].value).toBe('5px')
+  })
+
+  test('transform border-color with var', () => {
+    const decl = parseDecl(`.test { border-color: red var(--color, blue) }`)
+    const result = transformBorderColor(decl)
+    expect(result.length).toBe(4)
+    expect(result[1].value).toBe('var(--color, blue)')
+  })
+
+  test('transform border-radius with var', () => {
+    const decl = parseDecl(`.test { border-radius: 10px var(--radius, 20px) }`)
+    const result = transformBorderRadius(decl)
+    expect(result.length).toBe(4)
+    expect(result[1].value).toBe('var(--radius, 20px)')
+  })
+
+  test('transform border-color with var spaces', () => {
+    const decl = parseDecl(`.test { border-color: red var(--color,   blue) }`)
+    const result = transformBorderColor(decl)
+    expect(result.length).toBe(4)
+    expect(result[1].value).toBe('var(--color, blue)')
+  })
+
+  test('transform margin with calc spaces', () => {
+    const decl = parseDecl(`.test { margin: calc(10px  +  2px) 5px }`)
+    const transform = createTransformBox('margin')
+    const result = transform(decl)
+    expect(result[0].value).toBe('calc(10px + 2px)')
+    expect(result[1].value).toBe('5px')
+  })
+
+  test('transform flex-flow with var', () => {
+    const decl = parseDecl(`.test { flex-flow: var(--direction, row) wrap }`)
+    const result = transformFlexFlow(decl)
+    expect(result.length).toBe(1)
+    expect(result[0]).toBe(decl)
+  })
+
+  test('transform border-color with rgba and spaces', () => {
+    const decl = parseDecl(
+      `.test { border-color: rgba(0, 0, 0, 0.5) rgba(255, 255, 255, 1) }`
+    )
+    const result = transformBorderColor(decl)
+    expect(result.length).toBe(4)
+    // Preservation of spaces inside parentheses (normalized)
+    expect(result[0].value).toBe('rgba(0, 0, 0, 0.5)')
+    expect(result[1].value).toBe('rgba(255, 255, 255, 1)')
   })
 })
