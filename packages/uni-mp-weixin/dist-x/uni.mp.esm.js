@@ -148,6 +148,16 @@ function initBaseInstance(instance, options) {
     ctx.$mpPlatform = "mp-weixin";
     ctx.$scope = options.mpInstance;
     {
+        Object.defineProperties(ctx, {
+            $page: {
+                get() {
+                    var _a;
+                    return (_a = instance.root.proxy) === null || _a === void 0 ? void 0 : _a.$scope;
+                },
+            },
+        });
+    }
+    {
         // mergeVirtualHostAttributes
         Object.defineProperties(ctx, {
             // only id
