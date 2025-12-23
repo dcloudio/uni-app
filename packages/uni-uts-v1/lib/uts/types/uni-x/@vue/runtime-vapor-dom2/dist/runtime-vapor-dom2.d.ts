@@ -295,18 +295,18 @@ export declare function useSharedDataPageOptions(): UniSharedDataComponentOption
 export declare function useSharedDataComponentOptions(): UniSharedDataComponentOptions;
 
 /**
- * 将字符串值转换为 UniNativeSlotType 枚举类型
+ * 将字符串值转换为 UniSlotType 枚举类型
  * @param value - 字符串值
- * @returns UniNativeSlotType 枚举值
+ * @returns UniSlotType 枚举值
  */
-export declare function toSharedDataGlobalSlot(value: string): UniNativeSlotType;
-export declare const toSharedDataViewSlot: (value: string) => UniNativeSlotType;
-export declare const toSharedDataTextSlot: (value: string) => UniNativeSlotType;
-export declare const toSharedDataImageSlot: (value: string) => UniNativeSlotType;
-export declare const toSharedDataScrollViewSlot: (value: string) => UniNativeSlotType;
-export declare const toSharedDataNativeViewSlot: (value: string) => UniNativeSlotType;
-export declare const toSharedDataNestedScrollHeaderSlot: (value: string) => UniNativeSlotType;
-export declare const toSharedDataNestedScrollBodySlot: (value: string) => UniNativeSlotType;
+export declare function toSharedDataGlobalSlot(value: string): UniSlotType;
+export declare const toSharedDataViewSlot: (value: string) => UniSlotType;
+export declare const toSharedDataTextSlot: (value: string) => UniSlotType;
+export declare const toSharedDataImageSlot: (value: string) => UniSlotType;
+export declare const toSharedDataScrollViewSlot: (value: string) => UniSlotType;
+export declare const toSharedDataNativeViewSlot: (value: string) => UniSlotType;
+export declare const toSharedDataNestedScrollHeaderSlot: (value: string) => UniSlotType;
+export declare const toSharedDataNestedScrollBodySlot: (value: string) => UniSlotType;
 
 /**
  * 将字符串值转换为 UniImageModeType 枚举类型

@@ -4657,6 +4657,8 @@ extend(/* @__PURE__ */Object.create(null), {
   $refs: i => shallowReadonly(i.refs),
   $parent: i => getPublicInstance(i.parent),
   $root: i => getPublicInstance(i.root),
+  // fixed by xxxxxx
+  $page: i => i.page,
   $emit: i => i.emit,
   $options: i => resolveMergedOptions(i),
   $forceUpdate: i => i.f || (i.f = () => {
@@ -8614,6 +8616,9 @@ function createComponentInstance(vnode, parent, suspense) {
   }
   instance.root = parent ? parent.root : instance;
   instance.emit = emit.bind(null, instance);
+  if (parent) {
+    instance.page = parent.root.page;
+  }
   if (vnode.ce) {
     vnode.ce(instance);
   }

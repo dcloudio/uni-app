@@ -211,7 +211,9 @@ function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
   pageVm.$vm = pageVm;
-  pageVm.$page = page;
+  {
+    pageVm.$basePage = page;
+  }
   pageVm.$mpType = "page";
   pageVm.$fontFamilySet = /* @__PURE__ */ new Set();
   if (page.meta.isTabBar) {
@@ -707,8 +709,11 @@ function removePage(curPage) {
   }
   pages.splice(index2, 1);
   {
-    curPage.$page.vm = null;
-    curPage.$page = null;
+    var ins = curPage;
+    if (ins.$.page) {
+      ins.$.page.vm = null;
+      ins.$.page = null;
+    }
   }
 }
 function backbuttonListener() {
@@ -781,8 +786,7 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   } else {
     uniPage = new UniNormalPageImpl();
   }
-  pageVm.$basePage = pageVm.$page;
-  pageVm.$page = uniPage;
+  pageVm.$.page = uniPage;
   uniPage.route = pageVm.$basePage.route;
   uniPage.optionsByJS = pageVm.$basePage.options;
   Object.defineProperty(uniPage, "options", {

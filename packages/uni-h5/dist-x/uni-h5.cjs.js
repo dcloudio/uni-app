@@ -8470,8 +8470,8 @@ function normalizeText(text, { space, decode }) {
   }
   return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-function parseText(text, options) {
-  return normalizeText(text, options).split(uniShared.LINEFEED);
+function parseTextIgnoreLinefeed(text, options) {
+  return normalizeText(text, options);
 }
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
@@ -8498,10 +8498,11 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       if (slots.default) {
         slots.default().forEach((vnode) => {
           if (vnode.shapeFlag & 8 && vnode.type !== vue.Comment) {
-            const lines = parseText(vnode.children, {
+            let lines = [];
+            lines = [parseTextIgnoreLinefeed(vnode.children, {
               space: props2.space,
               decode: props2.decode
-            });
+            })];
             const len = lines.length - 1;
             lines.forEach((line, index2) => {
               if (index2 === 0 && !line)
@@ -9283,13 +9284,9 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useLoadingStyle(targetElement, options = {}) {
+function useLoadingStyle(targetElement, bold) {
   const loadingSize = vue.ref("16px");
   const loadingBorderWidth = vue.ref("0px");
-  ({
-    medium: options.coefficientMedium || 1,
-    thick: options.coefficientThick || 2
-  });
   return {
     size: loadingSize,
     borderWidth: loadingBorderWidth
@@ -9323,12 +9320,13 @@ const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValu
 }), {
   __name: "index-x",
   props: {
-    paused: { type: Boolean, default: false }
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false }
   },
   setup(__props) {
     const props2 = __props;
     const LoadingRef = vue.ref(null);
-    const loadingStyle = vue.reactive(useLoadingStyle());
+    const loadingStyle = vue.reactive(useLoadingStyle(LoadingRef, vue.computed(() => props2.bold)));
     return (_ctx, _cache) => {
       const _component_view = __syscom_0;
       return vue.openBlock(), vue.createBlock(_component_view, {

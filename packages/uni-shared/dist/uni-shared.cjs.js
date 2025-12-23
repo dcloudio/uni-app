@@ -123,7 +123,10 @@ const UVUE_BUILT_IN_TAGS = [
     'list-item',
     'swiper',
     'swiper-item',
-    'rich-text',
+    // 已经交由 vue 实现
+    // 'rich-text',
+    // android 平台 type=native 时原生实现
+    'rich-text-native',
     'sticky-view',
     'sticky-header',
     'sticky-section',
@@ -246,6 +249,7 @@ const UVUE_BUILT_IN_EASY_COMPONENTS = [
     'live-pusher',
     'loading',
     'web-view',
+    'rich-text',
 ];
 function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
