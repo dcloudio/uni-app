@@ -40,8 +40,7 @@ export function setupXPage(
   } else {
     uniPage = new UniNormalPageImpl() as unknown as UniPage
   }
-  pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
-  pageVm.$page = uniPage
+  pageVm.$.page = uniPage
   uniPage.route = pageVm.$basePage.route
   // @ts-expect-error
   uniPage.optionsByJS = pageVm.$basePage.options
