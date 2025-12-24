@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-vapor v3.6.0-alpha.7
+* @vue/compiler-vapor v3.6.0-beta.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/

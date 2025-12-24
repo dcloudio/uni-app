@@ -725,7 +725,7 @@ type UnmountFn = (vnode: VNode, parentComponent: ComponentInternalInstance | nul
 type RemoveFn = (vnode: VNode) => void;
 type MountComponentFn = (initialVNode: VNode, container: RendererElement, anchor: RendererNode | null, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, namespace: ElementNamespace, optimized: boolean) => void;
 type UnmountComponentFn = (instance: ComponentInternalInstance, parentSuspense: SuspenseBoundary | null, doRemove?: boolean) => void;
-declare enum MoveType {
+export declare enum MoveType {
     ENTER = 0,
     LEAVE = 1,
     REORDER = 2

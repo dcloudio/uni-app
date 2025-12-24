@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-alpha.7
+* @vue/compiler-sfc v3.6.0-beta.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -55962,7 +55962,7 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
-const version = "3.6.0-alpha.7";
+const version = "3.6.0-beta.1";
 const parseCache = parseCache$1;
 const errorMessages = __spreadValues(__spreadValues({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;
