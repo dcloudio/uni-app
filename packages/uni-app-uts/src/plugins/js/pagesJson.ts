@@ -28,6 +28,7 @@ export function uniAppPagesPlugin(): Plugin {
 
   let allPagePaths: string[] = []
   let isFirst = true
+  let hasTabBar = false
   return {
     name: 'uni:app-pages-json',
     apply: 'build',
@@ -77,6 +78,13 @@ export function uniAppPagesPlugin(): Plugin {
         // pages.json
         const pagesJson = normalizeUniAppXAppPagesJson(code)
 
+        // vapor 暂不支持 tabBar
+        if (process.env.UNI_APP_X_DOM2 === 'true') {
+          if (pagesJson.tabBar) {
+            hasTabBar = true
+            delete pagesJson.tabBar
+          }
+        }
         // add themeConfig - can move to uni-x/index.ts
         pagesJson.themeConfig = readThemeJSONFile()
 
@@ -115,6 +123,9 @@ export function uniAppPagesPlugin(): Plugin {
       }
     },
     buildEnd() {
+      if (isFirst && hasTabBar) {
+        console.warn(`蒸汽模式下暂不支持 tabBar 配置，已忽略。`)
+      }
       isFirst = false
     },
   }
