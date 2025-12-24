@@ -124,7 +124,12 @@ export function resolveVueI18nRuntime() {
 let componentsLibPath: string = ''
 export function resolveComponentsLibPath() {
   if (!componentsLibPath) {
-    const dir = process.env.UNI_APP_X === 'true' ? '../lib-x' : '../lib'
+    const dir =
+      process.env.UNI_APP_X_DOM2 === 'true'
+        ? '../lib-x-vapor'
+        : process.env.UNI_APP_X === 'true'
+        ? '../lib-x'
+        : '../lib'
     if (isInHBuilderX()) {
       componentsLibPath = path.join(
         resolveBuiltIn('@dcloudio/uni-components/package.json'),
