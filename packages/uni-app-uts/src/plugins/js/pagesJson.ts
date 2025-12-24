@@ -124,7 +124,7 @@ export function uniAppPagesPlugin(): Plugin {
     },
     buildEnd() {
       if (isFirst && hasTabBar) {
-        console.warn(`蒸汽模式下暂不支持 tabBar 配置，已忽略。`)
+        console.warn(`蒸汽模式下 pages.json 暂不支持 tabBar 配置，已忽略。`)
       }
       isFirst = false
     },
