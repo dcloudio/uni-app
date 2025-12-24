@@ -132,7 +132,7 @@ describe('compiler: v-bind', () => {
   test('complex expression', () => {
     assert(
       `<rich-text :nodes="[{'name':'div','attrs':{'class':'div-class','style':'line-height: 60px; color: red; text-align:center;'},'children':[{'type':'text','text':'this is text'}]}]" />`,
-      `_cE("rich-text", _uM({ nodes: [_uM({'name':'div','attrs':_uM({'class':'div-class','style':'line-height: 60px; color: red; text-align:center;'}),'children':[_uM({'type':'text','text':'this is text'})]})] }), null, 8 /* PROPS */, ["nodes"])`
+      `_cV(_component_rich_text, _uM({ nodes: [_uM({'name':'div','attrs':_uM({'class':'div-class','style':'line-height: 60px; color: red; text-align:center;'}),'children':[_uM({'type':'text','text':'this is text'})]})] }), null, 8 /* PROPS */, ["nodes"])`
     )
   })
   test('empty object syntax with \n', () => {
@@ -152,7 +152,7 @@ describe('compiler: v-bind', () => {
     }
   ]"
 />`,
-      `_cE("rich-text", _uM({ nodes: [
+      `_cV(_component_rich_text, _uM({ nodes: [
     _uM({
       'name': 'div',
       'attrs': _uM({
