@@ -995,6 +995,18 @@ describe('nvue-styler: expand', () => {
           value: 'transparent',
         },
       ],
+      none: [
+        {
+          type: 'decl',
+          prop: 'background-image',
+          value: 'none',
+        },
+        {
+          type: 'decl',
+          prop: 'background-color',
+          value: 'transparent',
+        },
+      ],
     }
     Object.keys(backgrounds).forEach((value) => {
       const decl = parseDecl(`.test {
