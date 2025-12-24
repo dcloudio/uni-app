@@ -7,7 +7,8 @@
     "style",
     "style-x",
     "lib",
-    "lib-x"
+    "lib-x",
+    "lib-x-vapor"
   ],
   "repository": {
     "type": "git",
