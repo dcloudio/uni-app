@@ -2255,6 +2255,9 @@ var handleTransformBackground = decl => {
     source
   } = decl;
   value = value.trim();
+  if (value === 'none') {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  }
   if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
     return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
   } else if (/^linear-gradient(.+)$/.test(value)) {
