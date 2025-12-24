@@ -24,9 +24,11 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       if (currentPage) {
         const dialogPages = (currentPage as unknown as UniPage).getDialogPages()
         const dialogPage = dialogPages[dialogPages.length - 1]
-        if (dialogPage?.vm.$options.onBackPress?.() === true) {
-          canBack = false
-        }
+        dialogPage?.vm.$.onBackPress?.forEach((item) => {
+          if (item() === true) {
+            canBack = false
+          }
+        })
       }
     }
     if (!canBack) {
