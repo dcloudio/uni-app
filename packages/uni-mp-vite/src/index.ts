@@ -1,15 +1,18 @@
 import path from 'path'
 import { extend } from '@vue/shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
+import type { Plugin } from 'vite'
 import {
   enableSourceMap,
   getWorkers,
   isEnableConsole,
   isNormalCompileTarget,
   normalizePath,
+  requireUniHelpers,
   resolveSourceMapPath,
   resolveUTSCompiler,
   resolveWorkersRootDir,
+  runByHBuilderX,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
@@ -56,7 +59,13 @@ export default (options: UniMiniProgramPluginOptions) => {
     process.env.UNI_PLATFORM
   )
 
+  const plugins: Plugin[] = []
+  if (runByHBuilderX() && process.env.UNI_PLATFORM === 'mp-weixin') {
+    const { UUVP } = requireUniHelpers()
+    plugins.push(UUVP())
+  }
   return [
+    ...plugins,
     ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniJavaScriptWorkersPlugin()]
       : []),
