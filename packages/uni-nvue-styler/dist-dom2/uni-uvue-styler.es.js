@@ -66,6 +66,12 @@ const backgroundImage = 'background-image' ;
 const handleTransformBackground = (decl) => {
     let { value, important, raws, source } = decl;
     value = value.trim();
+    if (value === 'none') {
+        return [
+            createDecl(backgroundImage, 'none', important, raws, source),
+            createDecl(backgroundColor, 'transparent', important, raws, source),
+        ];
+    }
     if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
         return [
             createDecl(backgroundImage, 'none', important, raws, source),
