@@ -288,9 +288,15 @@ declare enum UniSharedDataComponentRenderer {
     Component = 0,
     Page = 1
 }
+declare enum UniSharedDataComponentFlatten {
+    None = 0,
+    True = 1,
+    False = 2
+}
 interface UniSharedDataComponentOptions {
     styleIsolation: UniSharedDataComponentStyleIsolation;
     renderer: UniSharedDataComponentRenderer;
+    flatten: UniSharedDataComponentFlatten;
 }
 export declare function useSharedDataPageOptions(): UniSharedDataComponentOptions;
 export declare function useSharedDataComponentOptions(): UniSharedDataComponentOptions;

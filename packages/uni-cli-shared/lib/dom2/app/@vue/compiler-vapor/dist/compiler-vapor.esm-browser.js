@@ -26808,7 +26808,9 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
   let template = "";
   template += `<${tag}`;
   if (scopeId) template += ` ${scopeId}`;
-  if (singleRoot) {
+  const isDom2 = !!context.options.platform;
+  if (isDom2 && singleRoot) {
+    template += ` gen-flag-flatten=""`;
     if (context.options.genVueId) {
       template += ` gen-vue-id=""`;
     }
@@ -26833,7 +26835,6 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
       getEffectIndex
     );
   } else {
-    const isDom2 = !!context.options.platform;
     const changeProps = [];
     if (isDom2) {
       const resolveChangeProp = context.options.resolveChangeProp;
