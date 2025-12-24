@@ -24186,7 +24186,6 @@ const offLocationChangeError = /* @__PURE__ */ defineOffApi(
 const navigateBack = /* @__PURE__ */ defineAsyncApi(
   API_NAVIGATE_BACK,
   (args, { resolve, reject }) => {
-    var _a;
     let canBack = true;
     if (invokeHook(ON_BACK_PRESS, {
       from: args.from || "navigateBack"
@@ -24198,11 +24197,11 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
       if (currentPage) {
         const dialogPages = currentPage.getDialogPages();
         const dialogPage = dialogPages[dialogPages.length - 1];
-        (_a = dialogPage == null ? void 0 : dialogPage.vm.$.onBackPress) == null ? void 0 : _a.forEach((item) => {
-          if (item() === true) {
-            canBack = false;
-          }
-        });
+        if (invokeHook(dialogPage.vm, ON_BACK_PRESS, {
+          from: args.from || "navigateBack"
+        }) === true) {
+          canBack = false;
+        }
       }
     }
     if (!canBack) {
