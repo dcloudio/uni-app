@@ -28,8 +28,8 @@ catalogs:
       specifier: 3.4.28
       version: 3.4.28
     '@dcloudio/uni-app-x':
-      specifier: 0.7.87
-      version: 0.7.87
+      specifier: 0.7.88
+      version: 0.7.88
     '@rollup/pluginutils':
       specifier: 5.1.0
       version: 5.1.0
@@ -259,7 +259,7 @@ importers:
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
         specifier: 'catalog:'
-        version: 0.7.87
+        version: 0.7.88
       '@dcloudio/uni-nvue-styler':
         specifier: workspace:*
         version: link:packages/uni-nvue-styler
@@ -2345,7 +2345,7 @@ importers:
         version: 7.24.7
       '@dcloudio/uni-app-x':
         specifier: 'catalog:'
-        version: 0.7.87
+        version: 0.7.88
       '@dcloudio/uts':
         specifier: workspace:*
         version: link:../uts
@@ -3212,8 +3212,8 @@ packages:
   '@dcloudio/types@3.4.28':
     resolution: {integrity: sha512-uVIRp1VLBkrL0LaGLgIS/sT3bl1zzVTKZQbfqJEQcSAvBffRdirbSh5OvOHfA1WV5lmCAGfjhKsUQouNEVUQHg==}
 
-  '@dcloudio/uni-app-x@0.7.87':
-    resolution: {integrity: sha512-Y0h9Fs3md3sXWirilP4nSu8BQ+vD5mVbEHuBGnJMHARf1wpAquAh4Wk7YOzyuhszh/ul1al2GcPw6uF7FJaxaQ==}
+  '@dcloudio/uni-app-x@0.7.88':
+    resolution: {integrity: sha512-O+7puNyN8BpovM0RljyvhqpEjon4E53tC/DEBExmObbRBaAcCPtuMm4mdeBK7f9hTQ9KIzxQXohFuX0urVObvw==}
 
   '@dcloudio/uni-ui@1.5.6':
     resolution: {integrity: sha512-jmb98PasFvZkrIDXGh94GbdWg2/jyhgs1HUG+bU8eyL7Ltias/5XBz4q8w9RXyWUfqepJRqapPA2IIQpLCuTIg==}
@@ -8797,7 +8797,7 @@ snapshots:
 
   '@dcloudio/types@3.4.28': {}
 
-  '@dcloudio/uni-app-x@0.7.87': {}
+  '@dcloudio/uni-app-x@0.7.88': {}
 
   '@dcloudio/uni-ui@1.5.6': {}
 
