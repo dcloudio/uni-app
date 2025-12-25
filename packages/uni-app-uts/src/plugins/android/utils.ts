@@ -271,9 +271,18 @@ export function getUniCloudSpaceList(): Array<UniCloudSpace> {
       }
       switch (space.provider) {
         case 'aliyun':
-        case 'dcloud':
           return {
             provider: space.provider || 'aliyun',
+            spaceName: space.name,
+            spaceId: space.id,
+            clientSecret: space.clientSecret,
+            endpoint: space.apiEndpoint,
+            workspaceFolder: space.workspaceFolder,
+            failoverEndpoint: space.failoverEndpoint,
+          }
+        case 'dcloud':
+          return {
+            provider: space.provider || 'dcloud',
             spaceName: space.name,
             spaceId: space.id,
             clientSecret: space.clientSecret,
@@ -289,6 +298,8 @@ export function getUniCloudSpaceList(): Array<UniCloudSpace> {
             accessKey: space.accessKey,
             secretKey: space.secretKey,
             workspaceFolder: space.workspaceFolder,
+            endpoint: space.apiEndpoint,
+            failoverEndpoint: space.failoverEndpoint,
           }
         }
         case 'tencent':
@@ -298,6 +309,7 @@ export function getUniCloudSpaceList(): Array<UniCloudSpace> {
             spaceName: space.name,
             spaceId: space.id,
             workspaceFolder: space.workspaceFolder,
+            failoverEndpoint: space.failoverEndpoint,
           }
         }
       }
