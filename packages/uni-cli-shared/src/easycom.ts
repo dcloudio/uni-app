@@ -113,13 +113,16 @@ export function initEasycoms(
     })
   }
 
+  const supportCustomElements = isX && process.env.UNI_APP_X_DOM2 !== 'true'
+
   // ext-api 模式下，不存在 easycom 特性
   if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
     clearEasycom()
     clearUTSComponents()
     clearUTSCustomElements()
     initEasycom(easyComOptions)
-    if (isX) {
+    // dom2 模式下，不需要注册 customElements 组件
+    if (supportCustomElements) {
       initUTSEasycomCustomElements()
     }
     initUTSEasycom()
@@ -133,7 +136,9 @@ export function initEasycoms(
         'uni_modules/*/components/*/*.(' + componentExtNames + '|jsx|tsx)',
         'utssdk/*/**/*.(' + componentExtNames + ')',
         'uni_modules/*/utssdk/*/*.(' + componentExtNames + ')',
-        ...(isX ? ['uni_modules/*/customElements/*/*.uts'] : []),
+        ...(supportCustomElements
+          ? ['uni_modules/*/customElements/*/*.uts']
+          : []),
       ],
       [],
       {
