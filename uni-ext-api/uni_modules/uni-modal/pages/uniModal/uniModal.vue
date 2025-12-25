@@ -464,6 +464,7 @@ onBackPress((_): boolean | null => {
 		font-weight: normal;
 		text-align: center;
 		color: #747474;
+		line-height: 1.5;
 		width: 100%;
 		padding-bottom: 10px;
 	}
@@ -542,7 +543,6 @@ onBackPress((_): boolean | null => {
 	.uni-modal_dialog__content__bottom__button__text {
 		letter-spacing: 1px;
 		font-size: 16px;
-		font-weight: bold;
 		text-align: center;
 		lines : 1;
 		white-space: nowrap;
@@ -551,7 +551,6 @@ onBackPress((_): boolean | null => {
 	.uni-modal_dialog__content__bottom__button__text__sure {
 		letter-spacing: 1px;
 		font-size: 16px;
-		font-weight: bold;
 		lines : 1;
 		white-space: nowrap;
 		text-align: center;
