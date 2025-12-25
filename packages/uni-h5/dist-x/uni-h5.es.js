@@ -29839,9 +29839,6 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       uni.$off(successEventName.value, null);
       uni.$off(failEventName.value, null);
     });
-    onBackPress((_) => {
-      return true;
-    });
     return (_ctx, _cache) => {
       const _component_loading = _sfc_main$4;
       const _component_text = __syscom_1$1;
