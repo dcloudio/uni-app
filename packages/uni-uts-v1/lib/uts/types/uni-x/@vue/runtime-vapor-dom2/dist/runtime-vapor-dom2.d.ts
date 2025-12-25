@@ -294,6 +294,7 @@ declare enum UniSharedDataComponentFlatten {
     False = 2
 }
 interface UniSharedDataComponentOptions {
+    vueId: number;
     styleIsolation: UniSharedDataComponentStyleIsolation;
     renderer: UniSharedDataComponentRenderer;
     flatten: UniSharedDataComponentFlatten;
