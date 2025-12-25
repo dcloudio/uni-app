@@ -26811,10 +26811,10 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
   const isDom2 = !!context.options.platform;
   if (isDom2 && singleRoot) {
     template += ` gen-flag-flatten=""`;
-    if (context.options.genVueId) {
+    const rootElementTagName = context.options.rootElementTagName;
+    if (rootElementTagName || context.options.genVueId) {
       template += ` gen-vue-id=""`;
     }
-    const rootElementTagName = context.options.rootElementTagName;
     if (rootElementTagName) {
       template += ` custom-tag-name="${rootElementTagName}"`;
     }

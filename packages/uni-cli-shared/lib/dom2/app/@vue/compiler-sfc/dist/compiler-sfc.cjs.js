@@ -21880,13 +21880,9 @@ ${vapor && !ssr ? `` : `return `}${returned}
     if (componentType === "page" || componentType === "component") {
       const compilerOptions = ((_b = options.templateOptions) == null ? void 0 : _b.compilerOptions) || {};
       const hasScriptCpp = ((_c = compilerOptions.scriptCppBlocks) == null ? void 0 : _c.length) > 0;
-      const genVueId = !!compilerOptions.genVueId;
       const optionsProps = [];
       if (hasScriptCpp) {
         optionsProps.push("scriptCpp: true");
-      }
-      if (genVueId) {
-        optionsProps.push("setVueId: true");
       }
       const optionsCode = optionsProps.length ? `, { ${optionsProps.join(", ")} }` : "";
       if (componentType === "page") {

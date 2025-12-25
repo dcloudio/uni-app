@@ -35564,10 +35564,10 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
   const isDom2 = !!context.options.platform;
   if (isDom2 && singleRoot) {
     template += ` gen-flag-flatten=""`;
-    if (context.options.genVueId) {
+    const rootElementTagName = context.options.rootElementTagName;
+    if (rootElementTagName || context.options.genVueId) {
       template += ` gen-vue-id=""`;
     }
-    const rootElementTagName = context.options.rootElementTagName;
     if (rootElementTagName) {
       template += ` custom-tag-name="${rootElementTagName}"`;
     }
@@ -55654,13 +55654,9 @@ ${vapor && !ssr ? `` : `return `}${returned}
     if (componentType === "page" || componentType === "component") {
       const compilerOptions = ((_b = options.templateOptions) == null ? void 0 : _b.compilerOptions) || {};
       const hasScriptCpp = ((_c = compilerOptions.scriptCppBlocks) == null ? void 0 : _c.length) > 0;
-      const genVueId = !!compilerOptions.genVueId;
       const optionsProps = [];
       if (hasScriptCpp) {
         optionsProps.push("scriptCpp: true");
-      }
-      if (genVueId) {
-        optionsProps.push("setVueId: true");
       }
       const optionsCode = optionsProps.length ? `, { ${optionsProps.join(", ")} }` : "";
       if (componentType === "page") {
