@@ -251,6 +251,9 @@ function normalizeContentType(header: Record<string, string>) {
     delete header[name]
   }
   //#endif
+  if (!contentType) {
+    return 'string'
+  }
   if (contentType.indexOf('application/json') === 0) {
     return 'json'
   } else if (contentType.indexOf('application/x-www-form-urlencoded') === 0) {
