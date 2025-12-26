@@ -3,13 +3,14 @@ import { defineAsyncApi, defineOffApi, defineOnApi } from '@dcloudio/uni-api'
 type OnNetworkStatusChange = typeof uni.onNetworkStatusChange
 
 const API_ON_NETWORK_STATUS_CHANGE = 'onNetworkStatusChange'
+const NONE = 'none'
 
 function networkListener() {
   getNetworkType().then(({ networkType }) => {
     UniServiceJSBridge.invokeOnCallback<OnNetworkStatusChange>(
       API_ON_NETWORK_STATUS_CHANGE,
       {
-        isConnected: networkType !== 'none',
+        isConnected: networkType !== NONE,
         networkType,
       }
     )
@@ -56,18 +57,20 @@ export const getNetworkType = defineAsyncApi<typeof uni.getNetworkType>(
     let networkType = 'unknown'
     if (connection) {
       // 现代浏览器拿不到这部分逻辑，主要走 effectiveType
+      const effectiveType = connection.effectiveType
       networkType = connection.type
       // 数据网络
-      if (networkType === 'cellular' && connection.effectiveType) {
-        networkType = connection.effectiveType.replace('slow-', '')
-      } else if (!networkType && connection.effectiveType) {
+      if (networkType === 'cellular' && effectiveType) {
+        networkType = effectiveType.replace('slow-', '')
+      } else if ((!networkType || networkType === NONE) && effectiveType) {
         // mac/ios 不支持，h5 模式下可能会因为用户隐私的原因，无法获取到具体网络状态
-        networkType = connection.effectiveType
-      } else if (!['none', 'wifi'].includes(networkType)) {
+        // 在鸿蒙 Web 组件中 networkType 为 none 但是 effectiveType 有值
+        networkType = effectiveType
+      } else if (![NONE, 'wifi'].includes(networkType)) {
         networkType = 'unknown'
       }
     } else if (navigator.onLine === false) {
-      networkType = 'none'
+      networkType = NONE
     }
     return resolve({ networkType })
   }
