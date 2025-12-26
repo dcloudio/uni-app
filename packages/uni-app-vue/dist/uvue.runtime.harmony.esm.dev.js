@@ -10446,7 +10446,9 @@ var getCurrentGenericInstance = getCurrentInstance;
 var defineComponent = options => {
   var rootElement = options.rootElement;
   if (rootElement && typeof customElements !== 'undefined') {
-    customElements.define(rootElement.name, rootElement.class, rootElement.options);
+    {
+      customElements.define(rootElement.name, rootElement.class, rootElement.options);
+    }
   }
   return defineComponent$1(options);
 };
