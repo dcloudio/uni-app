@@ -4109,27 +4109,9 @@ function processFor(node, dir, context) {
   }
   const { source, value, key, index } = parseResult;
   const keyProp = findProp(node, "key");
-  const typeProp = findProp(node, "type");
   const keyProperty = keyProp && propToExpression(keyProp);
+  const typeProp = findProp(node, "type");
   const typeProperty = typeProp && propToExpression(typeProp);
-  const isListItemNode = compilerDom.isListItem(node);
-  const isRecycleFor = isListItemNode;
-  if (isRecycleFor && keyProperty) {
-    const itemKeyProp = {
-      type: 7,
-      name: "bind",
-      arg: {
-        type: 4,
-        content: "itemKey",
-        isStatic: true,
-        loc: compilerDom.locStub
-      },
-      exp: keyProperty,
-      modifiers: [],
-      loc: compilerDom.locStub
-    };
-    node.props.push(itemKeyProp);
-  }
   const isComponent = node.tagType === 1 || // template v-for with a single component child
   isTemplateWithSingleComponent(node);
   context.node = node = wrapTemplate(node, ["for"]);
@@ -4152,6 +4134,7 @@ function processFor(node, dir, context) {
       key,
       index,
       keyProp: keyProperty,
+      // fixed by uts
       typeProp: typeProperty,
       render,
       once: context.inVOnce || isStaticExpression(
@@ -4623,6 +4606,7 @@ exports.isTransitionGroupTag = isTransitionGroupTag;
 exports.isTransitionTag = isTransitionTag;
 exports.needsVaporCtx = needsVaporCtx;
 exports.parseValueDestructure = parseValueDestructure;
+exports.propToExpression = propToExpression;
 exports.transform = transform;
 exports.transformChildren = transformChildren;
 exports.transformComment = transformComment;

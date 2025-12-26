@@ -1070,8 +1070,6 @@ export declare const forAliasRE: RegExp;
 export declare function isAllWhitespace(str: string): boolean;
 export declare function isWhitespaceText(node: TemplateChildNode): boolean;
 export declare function isCommentOrWhitespace(node: TemplateChildNode): boolean;
-export declare function isListItem(node: Node): boolean;
-export declare function isVForListItem(node: Node): boolean;
 
 /**
  * Return value indicates whether the AST walked can be a constant

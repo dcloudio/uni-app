@@ -144,8 +144,6 @@ function registerRuntimeHelpers(helpers) {
   });
 }
 
-const NodeTypes = {
-  "ELEMENT": 1};
 const locStub = {
   start: { line: 1, column: 1, offset: 0 },
   end: { line: 1, column: 1, offset: 0 },
@@ -19210,9 +19208,6 @@ function isWhitespaceText(node) {
 function isCommentOrWhitespace(node) {
   return node.type === 3 || isWhitespaceText(node);
 }
-function isListItem(node) {
-  return node.type === 1 && (node.tag === "list-item" || node.tag === "ListItem");
-}
 
 const defaultParserOptions = {
   parseMode: "base",
@@ -27762,27 +27757,9 @@ function processFor(node, dir, context) {
   }
   const { source, value, key, index } = parseResult;
   const keyProp = findProp(node, "key");
-  const typeProp = findProp(node, "type");
   const keyProperty = keyProp && propToExpression(keyProp);
+  const typeProp = findProp(node, "type");
   const typeProperty = typeProp && propToExpression(typeProp);
-  const isListItemNode = isListItem(node);
-  const isRecycleFor = isListItemNode;
-  if (isRecycleFor && keyProperty) {
-    const itemKeyProp = {
-      type: 7,
-      name: "bind",
-      arg: {
-        type: 4,
-        content: "itemKey",
-        isStatic: true,
-        loc: locStub
-      },
-      exp: keyProperty,
-      modifiers: [],
-      loc: locStub
-    };
-    node.props.push(itemKeyProp);
-  }
   const isComponent = node.tagType === 1 || // template v-for with a single component child
   isTemplateWithSingleComponent(node);
   context.node = node = wrapTemplate(node, ["for"]);
@@ -27805,6 +27782,7 @@ function processFor(node, dir, context) {
       key,
       index,
       keyProp: keyProperty,
+      // fixed by uts
       typeProp: typeProperty,
       render,
       once: context.inVOnce || isStaticExpression(
@@ -28233,4 +28211,4 @@ const VaporErrorMessages = {
   [101]: ``
 };
 
-export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicFlag, IMPORT_EXPR_RE, IMPORT_EXP_END, IMPORT_EXP_START, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_NODE_PLACEHOLDER, TEXT_PLACEHOLDER, VaporErrorCodes, VaporErrorMessages, analyzeExpressions, buildCodeFragment, buildDestructureIdMap, codeFragmentToString, compile, createStructuralDirectiveTransform, createVaporCompilerError, genCall, genMulti, generate, getBaseTransformPreset, getLiteralExpressionValue, isBlockOperation, isBuiltInComponent, isConstantExpression, isKeepAliveTag, isStaticExpression, isTeleportTag, isTransitionGroupTag, isTransitionTag, needsVaporCtx, parse, parseValueDestructure, transform, transformChildren, transformComment, transformElement, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };
+export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicFlag, IMPORT_EXPR_RE, IMPORT_EXP_END, IMPORT_EXP_START, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_NODE_PLACEHOLDER, TEXT_PLACEHOLDER, VaporErrorCodes, VaporErrorMessages, analyzeExpressions, buildCodeFragment, buildDestructureIdMap, codeFragmentToString, compile, createStructuralDirectiveTransform, createVaporCompilerError, genCall, genMulti, generate, getBaseTransformPreset, getLiteralExpressionValue, isBlockOperation, isBuiltInComponent, isConstantExpression, isKeepAliveTag, isStaticExpression, isTeleportTag, isTransitionGroupTag, isTransitionTag, needsVaporCtx, parse, parseValueDestructure, propToExpression, transform, transformChildren, transformComment, transformElement, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };

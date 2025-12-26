@@ -20243,17 +20243,6 @@ function isWhitespaceText(node) {
 function isCommentOrWhitespace(node) {
   return node.type === 3 || isWhitespaceText(node);
 }
-function isListItem(node) {
-  return node.type === 1 && (node.tag === "list-item" || node.tag === "ListItem");
-}
-function isVForListItem(node) {
-  const isTemplateNode2 = node.type === 1 && node.tag === "template";
-  if (!isTemplateNode2) {
-    return false;
-  }
-  const _node = node;
-  return _node.children.length === 1 && isListItem(_node.children[0]);
-}
 
 const defaultParserOptions = {
   parseMode: "base",
@@ -28875,7 +28864,6 @@ var CompilerDOM = /*#__PURE__*/Object.freeze({
   isInDestructureAssignment: isInDestructureAssignment,
   isInNewExpression: isInNewExpression,
   isKeyboardEvent: isKeyboardEvent,
-  isListItem: isListItem,
   isLiteralWhitelisted: isLiteralWhitelisted,
   isMemberExpression: isMemberExpression$1,
   isMemberExpressionBrowser: isMemberExpressionBrowser,
@@ -28891,7 +28879,6 @@ var CompilerDOM = /*#__PURE__*/Object.freeze({
   isStaticPropertyKey: isStaticPropertyKey,
   isTemplateNode: isTemplateNode,
   isText: isText$1,
-  isVForListItem: isVForListItem,
   isVPre: isVPre,
   isVSlot: isVSlot,
   isValidHTMLNesting: isValidHTMLNesting,
@@ -36515,27 +36502,9 @@ function processFor(node, dir, context) {
   }
   const { source, value, key, index } = parseResult;
   const keyProp = findProp(node, "key");
-  const typeProp = findProp(node, "type");
   const keyProperty = keyProp && propToExpression(keyProp);
+  const typeProp = findProp(node, "type");
   const typeProperty = typeProp && propToExpression(typeProp);
-  const isListItemNode = isListItem(node);
-  const isRecycleFor = isListItemNode;
-  if (isRecycleFor && keyProperty) {
-    const itemKeyProp = {
-      type: 7,
-      name: "bind",
-      arg: {
-        type: 4,
-        content: "itemKey",
-        isStatic: true,
-        loc: locStub
-      },
-      exp: keyProperty,
-      modifiers: [],
-      loc: locStub
-    };
-    node.props.push(itemKeyProp);
-  }
   const isComponent = node.tagType === 1 || // template v-for with a single component child
   isTemplateWithSingleComponent(node);
   context.node = node = wrapTemplate(node, ["for"]);
@@ -36558,6 +36527,7 @@ function processFor(node, dir, context) {
       key,
       index,
       keyProp: keyProperty,
+      // fixed by uts
       typeProp: typeProperty,
       render,
       once: context.inVOnce || isStaticExpression(
@@ -37031,6 +37001,7 @@ var CompilerVapor = /*#__PURE__*/Object.freeze({
   needsVaporCtx: needsVaporCtx,
   parse: parse$3,
   parseValueDestructure: parseValueDestructure,
+  propToExpression: propToExpression,
   transform: transform,
   transformChildren: transformChildren,
   transformComment: transformComment,
