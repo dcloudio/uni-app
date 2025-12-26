@@ -268,7 +268,6 @@ export declare function toSharedDataColor(value: any | null): number;
 export declare function createSharedDataVFor<T extends UniSharedData>(scope: UniSharedDataPage, create: () => T): UniSharedDataVFor<T>;
 interface WithSharedDataComponentOptions {
     scriptCpp?: boolean;
-    setVueId?: boolean;
 }
 export declare function withSharedDataPage<T extends UniSharedDataPage>(sharedData: T, options?: WithSharedDataComponentOptions | null): T;
 export declare function withSharedDataComponent<T extends UniSharedDataComponent>(sharedData: T, options?: WithSharedDataComponentOptions | null): T;
@@ -288,9 +287,16 @@ declare enum UniSharedDataComponentRenderer {
     Component = 0,
     Page = 1
 }
+declare enum UniSharedDataComponentFlatten {
+    None = 0,
+    True = 1,
+    False = 2
+}
 interface UniSharedDataComponentOptions {
+    vueId: number;
     styleIsolation: UniSharedDataComponentStyleIsolation;
     renderer: UniSharedDataComponentRenderer;
+    flatten: UniSharedDataComponentFlatten;
 }
 export declare function useSharedDataPageOptions(): UniSharedDataComponentOptions;
 export declare function useSharedDataComponentOptions(): UniSharedDataComponentOptions;
@@ -430,6 +436,16 @@ export declare function createNativeViewDynamicSlot(name: string, fn: VaporSlot)
 
 export declare function runOnMainQueue(fn: () => void): void;
 export declare function createUserClass<T>(): T;
+
+/**
+ * 根据 uid 查找 Vue 实例
+ * 主要用于 root element 通过 uid 获取对应的 vue 实例，以访问组件数据和方法
+ * 1. 内置组件的 Element 暴露的属性方法需要访问组件实例
+ * 2. 自动化测试框架需要通过 Element 获取组件实例，以访问组件数据和方法
+ * @param uid
+ * @returns
+ */
+export declare function findVueInstanceByUid(uid: number): VaporSharedDataComponentInstance | null;
 
 export declare const ssrRef: typeof ref;
 export declare const shallowSsrRef: typeof shallowRef;

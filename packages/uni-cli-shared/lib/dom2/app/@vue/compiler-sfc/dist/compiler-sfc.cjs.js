@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-alpha.7
+* @vue/compiler-sfc v3.6.0-beta.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -21880,13 +21880,9 @@ ${vapor && !ssr ? `` : `return `}${returned}
     if (componentType === "page" || componentType === "component") {
       const compilerOptions = ((_b = options.templateOptions) == null ? void 0 : _b.compilerOptions) || {};
       const hasScriptCpp = ((_c = compilerOptions.scriptCppBlocks) == null ? void 0 : _c.length) > 0;
-      const genVueId = !!compilerOptions.genVueId;
       const optionsProps = [];
       if (hasScriptCpp) {
         optionsProps.push("scriptCpp: true");
-      }
-      if (genVueId) {
-        optionsProps.push("setVueId: true");
       }
       const optionsCode = optionsProps.length ? `, { ${optionsProps.join(", ")} }` : "";
       if (componentType === "page") {
@@ -22174,7 +22170,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
   return generator.toJSON();
 }
 
-const version = "3.6.0-alpha.7";
+const version = "3.6.0-beta.1";
 const parseCache = parseCache$1;
 const errorMessages = {
   ...CompilerDOM.errorMessages,

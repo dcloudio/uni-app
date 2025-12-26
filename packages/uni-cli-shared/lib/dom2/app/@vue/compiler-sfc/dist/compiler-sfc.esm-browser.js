@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-alpha.7
+* @vue/compiler-sfc v3.6.0-beta.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -35561,11 +35561,13 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
   let template = "";
   template += `<${tag}`;
   if (scopeId) template += ` ${scopeId}`;
-  if (singleRoot) {
-    if (context.options.genVueId) {
+  const isDom2 = !!context.options.platform;
+  if (isDom2 && singleRoot) {
+    template += ` gen-flag-flatten=""`;
+    const rootElementTagName = context.options.rootElementTagName;
+    if (rootElementTagName || context.options.genVueId) {
       template += ` gen-vue-id=""`;
     }
-    const rootElementTagName = context.options.rootElementTagName;
     if (rootElementTagName) {
       template += ` custom-tag-name="${rootElementTagName}"`;
     }
@@ -35586,7 +35588,6 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
       getEffectIndex
     );
   } else {
-    const isDom2 = !!context.options.platform;
     const changeProps = [];
     if (isDom2) {
       const resolveChangeProp = context.options.resolveChangeProp;
@@ -55653,13 +55654,9 @@ ${vapor && !ssr ? `` : `return `}${returned}
     if (componentType === "page" || componentType === "component") {
       const compilerOptions = ((_b = options.templateOptions) == null ? void 0 : _b.compilerOptions) || {};
       const hasScriptCpp = ((_c = compilerOptions.scriptCppBlocks) == null ? void 0 : _c.length) > 0;
-      const genVueId = !!compilerOptions.genVueId;
       const optionsProps = [];
       if (hasScriptCpp) {
         optionsProps.push("scriptCpp: true");
-      }
-      if (genVueId) {
-        optionsProps.push("setVueId: true");
       }
       const optionsCode = optionsProps.length ? `, { ${optionsProps.join(", ")} }` : "";
       if (componentType === "page") {
@@ -55962,7 +55959,7 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
-const version = "3.6.0-alpha.7";
+const version = "3.6.0-beta.1";
 const parseCache = parseCache$1;
 const errorMessages = __spreadValues(__spreadValues({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

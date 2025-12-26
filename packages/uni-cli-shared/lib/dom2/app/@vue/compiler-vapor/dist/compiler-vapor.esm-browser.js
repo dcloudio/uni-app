@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-vapor v3.6.0-alpha.7
+* @vue/compiler-vapor v3.6.0-beta.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -26808,11 +26808,13 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
   let template = "";
   template += `<${tag}`;
   if (scopeId) template += ` ${scopeId}`;
-  if (singleRoot) {
-    if (context.options.genVueId) {
+  const isDom2 = !!context.options.platform;
+  if (isDom2 && singleRoot) {
+    template += ` gen-flag-flatten=""`;
+    const rootElementTagName = context.options.rootElementTagName;
+    if (rootElementTagName || context.options.genVueId) {
       template += ` gen-vue-id=""`;
     }
-    const rootElementTagName = context.options.rootElementTagName;
     if (rootElementTagName) {
       template += ` custom-tag-name="${rootElementTagName}"`;
     }
@@ -26833,7 +26835,6 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
       getEffectIndex
     );
   } else {
-    const isDom2 = !!context.options.platform;
     const changeProps = [];
     if (isDom2) {
       const resolveChangeProp = context.options.resolveChangeProp;

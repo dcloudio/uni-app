@@ -47,11 +47,14 @@
 		uni.$off(successEventName.value, null)
 		uni.$off(failEventName.value, null)
 	})
-
-	onBackPress((_) => {
-		// 不可被回退关闭
-		return true
-	})
+	/**
+	 * add since 2025-12-25 
+	 * 所有的showLoading 不屏蔽回退事件
+	 */
+	// onBackPress((_) => {
+	// 	// 不可被回退关闭
+	// 	return true
+	// })
 </script>
 <style>
 

@@ -19425,12 +19425,13 @@ const getSystemInfo = /* @__PURE__ */ defineAsyncApi(
   }
 );
 const API_ON_NETWORK_STATUS_CHANGE = "onNetworkStatusChange";
+const NONE = "none";
 function networkListener() {
   getNetworkType().then(({ networkType }) => {
     UniServiceJSBridge.invokeOnCallback(
       API_ON_NETWORK_STATUS_CHANGE,
       {
-        isConnected: networkType !== "none",
+        isConnected: networkType !== NONE,
         networkType
       }
     );
@@ -19466,16 +19467,17 @@ const getNetworkType = /* @__PURE__ */ defineAsyncApi(
     const connection = getConnection();
     let networkType = "unknown";
     if (connection) {
+      const effectiveType = connection.effectiveType;
       networkType = connection.type;
-      if (networkType === "cellular" && connection.effectiveType) {
-        networkType = connection.effectiveType.replace("slow-", "");
-      } else if (!networkType && connection.effectiveType) {
-        networkType = connection.effectiveType;
-      } else if (!["none", "wifi"].includes(networkType)) {
+      if (networkType === "cellular" && effectiveType) {
+        networkType = effectiveType.replace("slow-", "");
+      } else if ((!networkType || networkType === NONE) && effectiveType) {
+        networkType = effectiveType;
+      } else if (![NONE, "wifi"].includes(networkType)) {
         networkType = "unknown";
       }
     } else if (navigator.onLine === false) {
-      networkType = "none";
+      networkType = NONE;
     }
     return resolve({ networkType });
   }
