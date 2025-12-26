@@ -155,7 +155,8 @@ export type ExtractPublicPropTypes<O> = {
 };
 declare enum BooleanFlags {
     shouldCast = 0,
-    shouldCastTrue = 1
+    shouldCastTrue = 1,
+    externalClasses = 2
 }
 export type ExtractDefaultPropTypes<O> = O extends object ? {
     [K in keyof Pick<O, DefaultKeys<O>>]: InferPropType<O[K]>;
@@ -163,6 +164,7 @@ export type ExtractDefaultPropTypes<O> = O extends object ? {
 type NormalizedProp = PropOptions & {
     [BooleanFlags.shouldCast]?: boolean;
     [BooleanFlags.shouldCastTrue]?: boolean;
+    [BooleanFlags.externalClasses]?: boolean;
 };
 /**
  * normalized value is a tuple of the actual normalized options
