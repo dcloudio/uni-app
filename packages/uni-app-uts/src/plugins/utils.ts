@@ -150,7 +150,40 @@ if (process.env.UNI_UTS_PLATFORM === 'app-android') {
   REMOVED_PLUGINS.push('vite:esbuild-transpile')
 }
 
+const JSON_EXT_RE = /\.json(?:$|\?)(?!commonjs-(?:proxy|external))/
+const SPECIAL_QUERY_RE = /[?&](?:worker|sharedworker|raw|url)\b/
+const FAST_CHECK_THRESHOLD = 8000
+const LARGE_JSON_THRESHOLD = 10 * 1024 // 10KB
+
 export function configResolved(config: ResolvedConfig, isAndroidX = false) {
+  if (
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_UTS_PLATFORM !== 'app-android'
+  ) {
+    const jsonPlugin = config.plugins.find((ele) => ele.name === 'vite:json')
+    if (jsonPlugin) {
+      // 扩展 vite:json 处理逻辑，大文件跳过转换以避免 Kotlin 编译器 "Method too large" 错误
+      const originalTransform = jsonPlugin.transform
+      if (originalTransform && typeof originalTransform === 'function') {
+        jsonPlugin.transform = function jsonTransformWrapper(code, id) {
+          if (!JSON_EXT_RE.test(id)) {
+            return originalTransform.call(this, code, id)
+          }
+          if (SPECIAL_QUERY_RE.test(id)) {
+            return originalTransform.call(this, code, id)
+          }
+          if (code.length <= FAST_CHECK_THRESHOLD) {
+            return originalTransform.call(this, code, id)
+          }
+          const fileSize = Buffer.byteLength(code, 'utf-8')
+          if (fileSize > LARGE_JSON_THRESHOLD) {
+            return `export default JSON.parseObject(\`${code}\`);`
+          }
+          return originalTransform.call(this, code, id)
+        }
+      }
+    }
+  }
   removePlugins(REMOVED_PLUGINS.slice(0), config)
   // console.log(plugins.map((p) => p.name))
   // 强制不inline
