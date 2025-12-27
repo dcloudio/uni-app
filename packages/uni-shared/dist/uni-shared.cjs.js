@@ -2538,6 +2538,9 @@ function isDom2VueComponentTag(tag) {
 function isDom2AppVueComponentTag(tag) {
     return APP_VUE_COMPONENT_TAGS.includes(tag);
 }
+function isDom2AppUserVueComponentTag(tag) {
+    return !isDom2AppNativeTag(tag) && !isDom2VueComponentTag(tag);
+}
 
 function getEnvLocale() {
     const { env } = process;
@@ -2737,6 +2740,7 @@ exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;
 exports.isDom2AppNativeTag = isDom2AppNativeTag;
+exports.isDom2AppUserVueComponentTag = isDom2AppUserVueComponentTag;
 exports.isDom2AppVueComponentTag = isDom2AppVueComponentTag;
 exports.isDom2VueComponentTag = isDom2VueComponentTag;
 exports.isGloballyAllowed = isGloballyAllowed;
