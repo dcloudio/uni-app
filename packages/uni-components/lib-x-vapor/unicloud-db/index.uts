@@ -37,15 +37,6 @@ export type MixinDatacomEasyGetOptions = {
 }
 
 export const mixinDatacom = defineMixin({
-  slots: Object as SlotsType<{
-    default : {
-      data : Array<UTSJSONObject>,
-      loading : boolean,
-      hasMore : boolean,
-      pagination : MixinDatacomPaginationType,
-      error : UniCloudError | null
-    }
-  }>,
   props: {
     localdata: {
       type: Array as PropType<Array<UTSJSONObject>>,
@@ -185,7 +176,7 @@ export const mixinDatacom = defineMixin({
     // changed，发生变化的属性名，类型为Array，例如 ['collection', 'action']
     onMixinDatacomPropsChange(_ : boolean, changed : Array<string>) {
     },
-    mixinDatacomEasyGet(options ?: MixinDatacomEasyGetOptions) {
+    mixinDatacomEasyGet(options ?: MixinDatacomEasyGetOptions | null) {
       if (this.mixinDatacomLoading) {
         return
       }
