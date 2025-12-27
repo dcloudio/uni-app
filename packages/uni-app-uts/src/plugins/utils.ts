@@ -158,7 +158,7 @@ const LARGE_JSON_THRESHOLD = 10 * 1024 // 10KB
 export function configResolved(config: ResolvedConfig, isAndroidX = false) {
   if (
     process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM !== 'app-android'
+    process.env.UNI_UTS_PLATFORM === 'app-android'
   ) {
     const jsonPlugin = config.plugins.find((ele) => ele.name === 'vite:json')
     if (jsonPlugin) {
