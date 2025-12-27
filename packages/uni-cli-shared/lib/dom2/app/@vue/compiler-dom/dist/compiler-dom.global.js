@@ -3206,6 +3206,10 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
     transformHoist = null,
     isBuiltInComponent = NOOP,
     isCustomElement = NOOP,
+    // fixed by uts
+    isUserComponent = (element) => {
+      return element.tagType === 1;
+    },
     expressionPlugins = [],
     scopeId = null,
     slotted = true,
@@ -3232,6 +3236,8 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
       transformHoist,
       isBuiltInComponent,
       isCustomElement,
+      // fixed by uts
+      isUserComponent,
       expressionPlugins,
       scopeId,
       slotted,

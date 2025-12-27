@@ -23925,6 +23925,10 @@ const defaultOptions = {
   transformHoist: null,
   isBuiltInComponent: NOOP,
   isCustomElement: NOOP,
+  // fixed by uts
+  isUserComponent(element) {
+    return element.tagType === 1;
+  },
   expressionPlugins: [],
   scopeId: null,
   slotted: true,

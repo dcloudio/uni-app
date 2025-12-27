@@ -3070,6 +3070,10 @@ function createTransformContext(root, {
   transformHoist = null,
   isBuiltInComponent = NOOP,
   isCustomElement = NOOP,
+  // fixed by uts
+  isUserComponent = (element) => {
+    return element.tagType === 1;
+  },
   expressionPlugins = [],
   scopeId = null,
   slotted = true,
@@ -3096,6 +3100,8 @@ function createTransformContext(root, {
     transformHoist,
     isBuiltInComponent,
     isCustomElement,
+    // fixed by uts
+    isUserComponent,
     expressionPlugins,
     scopeId,
     slotted,

@@ -125,7 +125,7 @@ export interface TransformContext extends Required<Omit<TransformOptions, keyof 
     filters?: Set<string>;
 }
 export declare function getSelfName(filename: string): string | null;
-export declare function createTransformContext(root: RootNode, { filename, prefixIdentifiers, hoistStatic, hmr, cacheHandlers, nodeTransforms, directiveTransforms, transformHoist, isBuiltInComponent, isCustomElement, expressionPlugins, scopeId, slotted, ssr, inSSR, ssrCssVars, bindingMetadata, inline, isTS, onError, onWarn, compatConfig, }: TransformOptions): TransformContext;
+export declare function createTransformContext(root: RootNode, { filename, prefixIdentifiers, hoistStatic, hmr, cacheHandlers, nodeTransforms, directiveTransforms, transformHoist, isBuiltInComponent, isCustomElement, isUserComponent, expressionPlugins, scopeId, slotted, ssr, inSSR, ssrCssVars, bindingMetadata, inline, isTS, onError, onWarn, compatConfig, }: TransformOptions): TransformContext;
 export declare function transform(root: RootNode, options: TransformOptions): void;
 export declare function traverseNode(node: RootNode | TemplateChildNode, context: TransformContext): void;
 export declare function createStructuralDirectiveTransform(name: string | RegExp, fn: StructuralDirectiveTransform): NodeTransform;
@@ -853,6 +853,12 @@ export interface TransformOptions extends SharedTransformCodegenOptions, ErrorHa
      * Used by some transforms that expects only native elements
      */
     isCustomElement?: (tag: string) => boolean | void;
+    /**
+     * fixed by uts
+     * @param tag
+     * @returns
+     */
+    isUserComponent?: (element: ElementNode) => boolean | void;
     /**
      * Transform expressions like {{ foo }} to `_ctx.foo`.
      * If this option is false, the generated code will be wrapped in a
