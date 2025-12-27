@@ -2,6 +2,7 @@ import path from 'path'
 import fsExtra from 'fs-extra'
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type { Plugin } from 'vite'
+import type { ElementNode } from '@vue/compiler-core'
 import type {
   AssetURLOptions,
   CompilerError,
@@ -10,7 +11,10 @@ import type {
   TemplateCompiler,
 } from '@vue/compiler-sfc'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
-import { isDom2VueComponentTag } from '@dcloudio/uni-shared'
+import {
+  isDom2AppUserVueComponentTag,
+  isDom2VueComponentTag,
+} from '@dcloudio/uni-shared'
 import {
   EXTNAME_VUE_RE,
   type UniVitePlugin,
@@ -28,7 +32,6 @@ import {
   resolveUniTypeScript,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
-
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
 
@@ -301,6 +304,9 @@ export function initPluginVueOptions(
       }
       ;(compilerOptions as any).isVueComponent = (tag: string) => {
         return isDom2VueComponentTag(tag) || !!matchEasycom(tag)
+      }
+      ;(compilerOptions as any).isUserComponent = (element: ElementNode) => {
+        return isDom2AppUserVueComponentTag(element.tag)
       }
       ;(vueOptions.script as any).extraOptions = (
         descriptor: SFCDescriptor

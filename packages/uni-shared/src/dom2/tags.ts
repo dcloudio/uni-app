@@ -65,3 +65,7 @@ export function isDom2VueComponentTag(tag: string) {
 export function isDom2AppVueComponentTag(tag: string) {
   return APP_VUE_COMPONENT_TAGS.includes(tag)
 }
+
+export function isDom2AppUserVueComponentTag(tag: string) {
+  return !isDom2AppNativeTag(tag) && !isDom2VueComponentTag(tag)
+}
