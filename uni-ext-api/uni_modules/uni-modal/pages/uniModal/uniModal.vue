@@ -380,7 +380,7 @@ onBackPress((_): boolean | null => {
 		background-color: rgba(0, 0, 0, 0.5);
 		transition-duration: 0.1s;
 		transition-property: opacity;
-		opacity: 0.5;
+		opacity: 0;
 	}
 
 	.uni-modal_dialog__mask__show {
