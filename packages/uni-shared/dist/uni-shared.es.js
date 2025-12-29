@@ -2481,6 +2481,7 @@ const APP_NATIVE_TAGS = [
     'native-view',
     'nested-scroll-header',
     'nested-scroll-body',
+    'rich-text-native',
 ];
 function isDom2AppNativeTag(tag) {
     return APP_NATIVE_TAGS.includes(tag);
