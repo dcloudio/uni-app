@@ -314,6 +314,7 @@ export declare const toSharedDataScrollViewSlot: (value: string) => UniSlotType;
 export declare const toSharedDataNativeViewSlot: (value: string) => UniSlotType;
 export declare const toSharedDataNestedScrollHeaderSlot: (value: string) => UniSlotType;
 export declare const toSharedDataNestedScrollBodySlot: (value: string) => UniSlotType;
+export declare const toSharedDataRichTextNativeSlot: (value: string) => UniSlotType;
 
 /**
  * 将字符串值转换为 UniImageModeType 枚举类型
