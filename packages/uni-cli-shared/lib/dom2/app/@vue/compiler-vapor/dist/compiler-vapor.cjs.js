@@ -3066,9 +3066,9 @@ function transformComponentElement(node, propsResult, singleRoot, context, isDyn
   let { tag } = node;
   let asset = true;
   if (!dynamicComponent && !isCustomElement) {
-    const { isVueComponent } = context.options;
-    const isVueCom = isVueComponent && isVueComponent(tag);
-    if (!isVueCom) {
+    const { isEasyComponent } = context.options;
+    const isEasyCom = isEasyComponent && isEasyComponent(tag);
+    if (!isEasyCom) {
       const fromSetup = resolveSetupReference(tag, context);
       if (fromSetup) {
         tag = fromSetup;
@@ -3089,7 +3089,7 @@ function transformComponentElement(node, propsResult, singleRoot, context, isDyn
       }
     }
     if (asset) {
-      if (context.selfName && shared.capitalize(shared.camelize(tag)) === context.selfName) {
+      if (!isEasyCom && context.selfName && shared.capitalize(shared.camelize(tag)) === context.selfName) {
         tag += `__self`;
       }
       context.component.add(tag);
