@@ -302,7 +302,7 @@ export function initPluginVueOptions(
       function isAppVue(id: string) {
         return normalizePath(id) === appVue
       }
-      ;(compilerOptions as any).isVueComponent = (tag: string) => {
+      ;(compilerOptions as any).isEasyComponent = (tag: string) => {
         return isDom2VueComponentTag(tag) || !!matchEasycom(tag)
       }
       ;(compilerOptions as any).isUserComponent = (element: ElementNode) => {
