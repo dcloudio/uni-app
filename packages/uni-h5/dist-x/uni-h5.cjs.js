@@ -12864,6 +12864,9 @@ function normalizeContentType(header) {
     header["Content-Type"] = header[name];
     delete header[name];
   }
+  if (!contentType) {
+    return "string";
+  }
   if (contentType.indexOf("application/json") === 0) {
     return "json";
   } else if (contentType.indexOf("application/x-www-form-urlencoded") === 0) {
