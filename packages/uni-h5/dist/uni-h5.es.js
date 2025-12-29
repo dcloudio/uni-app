@@ -10286,11 +10286,15 @@ function useBase(props2, rootRef, emit2) {
     trigger
   };
 }
-function useValueSync(props2, state2, emit2, trigger) {
+function useValueSync(props2, state2, emit2, trigger, fieldRef) {
   let valueChangeFn = null;
   {
     valueChangeFn = debounce(
       (val) => {
+        const fieldElement = fieldRef.value;
+        if (fieldElement && document.activeElement === fieldElement) {
+          return;
+        }
         state2.value = getValueString(val, props2.type);
       },
       100,
@@ -10453,7 +10457,7 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
 function useField(props2, rootRef, emit2, beforeInput) {
   UniViewJSBridgeSubscribe();
   const { fieldRef, state: state2, trigger } = useBase(props2, rootRef, emit2);
-  const { triggerInput } = useValueSync(props2, state2, emit2, trigger);
+  const { triggerInput } = useValueSync(props2, state2, emit2, trigger, fieldRef);
   useAutoFocus(props2, fieldRef);
   useKeyboard$1(props2, fieldRef);
   const { state: scopedAttrsState } = useScopedAttrs();

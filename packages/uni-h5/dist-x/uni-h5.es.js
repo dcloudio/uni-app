@@ -11959,7 +11959,7 @@ function useBase(props2, rootRef, emit2) {
     trigger
   };
 }
-function useValueSync(props2, state2, emit2, trigger) {
+function useValueSync(props2, state2, emit2, trigger, fieldRef) {
   let valueChangeFn = null;
   {
     valueChangeFn = throttle((val) => {
