@@ -1741,6 +1741,30 @@
       "SaveVideoToPhotosAlbumSuccessCallback"
     ],
     [
+      "ScanCode"
+    ],
+    [
+      "ScanCodeCompleteCallback"
+    ],
+    [
+      "ScanCodeFail"
+    ],
+    [
+      "ScanCodeFailCallback"
+    ],
+    [
+      "ScanCodeOptions"
+    ],
+    [
+      "ScanCodeSuccess"
+    ],
+    [
+      "ScanCodeSuccessCallback"
+    ],
+    [
+      "ScanCodeSupportedTypes"
+    ],
+    [
       "SendSocketMessage"
     ],
     [
