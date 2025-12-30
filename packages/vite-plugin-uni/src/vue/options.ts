@@ -26,6 +26,7 @@ import {
   matchEasycom,
   normalizePath,
   onVueTemplateCompileLog,
+  parseManifestJsonOnce,
   preJs,
   requireUniHelpers,
   resolveAppVue,
@@ -321,6 +322,16 @@ export function initPluginVueOptions(
             : 'component',
         }
       }
+
+      let disableStaticStyle = false
+      if (isDevX && process.env.NODE_ENV === 'development') {
+        if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+          // 开发版本、开发模式下，非鸿蒙release模式打包
+          const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+          disableStaticStyle =
+            manifestJson['app-harmony']?.distribute?.['no-debug'] !== true
+        }
+      }
       ;(vueOptions.template.compilerOptions as any).extraOptions = (
         descriptor: SFCDescriptor
       ) => {
@@ -336,6 +347,7 @@ export function initPluginVueOptions(
           helper: requireUniHelpers(),
           scriptCppBlocks: (descriptor as any).scriptCppBlocks,
           genVueId: !!process.env.UNI_AUTOMATOR_WS_ENDPOINT,
+          disableStaticStyle,
           onVueTemplateCompileLog(
             type: 'warn' | 'error',
             error: CompilerError
