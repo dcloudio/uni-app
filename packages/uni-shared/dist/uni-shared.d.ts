@@ -303,6 +303,8 @@ export declare function isComponentTag(tag: string): boolean;
 
 export declare function isDom2AppNativeTag(tag: string): boolean;
 
+export declare function isDom2AppUserVueComponentTag(tag: string): boolean;
+
 export declare function isDom2AppVueComponentTag(tag: string): boolean;
 
 export declare function isDom2VueComponentTag(tag: string): boolean;

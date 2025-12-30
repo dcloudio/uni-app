@@ -2483,6 +2483,7 @@ const APP_NATIVE_TAGS = [
     'native-view',
     'nested-scroll-header',
     'nested-scroll-body',
+    'rich-text-native',
 ];
 function isDom2AppNativeTag(tag) {
     return APP_NATIVE_TAGS.includes(tag);
@@ -2491,17 +2492,17 @@ const APP_VUE_COMPONENT_TAGS = [
     'swiper',
     'swiper-item',
     'match-media',
-    // 'movable-area',
-    // 'movable-view',
-    // 'cover-view',
-    // 'cover-image',
+    'movable-area',
+    'movable-view',
+    'cover-view',
+    'cover-image',
     'list-view',
     'list-item',
-    // 'waterflow',
-    // 'flow-item',
-    // 'sticky-header',
-    // 'sticky-section',
-    // 'share-element',
+    'waterflow',
+    'flow-item',
+    'sticky-header',
+    'sticky-section',
+    'share-element',
     'icon',
     'rich-text',
     'progress',
@@ -2510,7 +2511,7 @@ const APP_VUE_COMPONENT_TAGS = [
     'checkbox',
     'form',
     'input',
-    // 'editor',
+    'editor',
     'label',
     'picker',
     'picker-view',
@@ -2522,13 +2523,13 @@ const APP_VUE_COMPONENT_TAGS = [
     'textarea',
     'navigator',
     'video',
-    // 'animation-view',
-    // 'camera',
-    // 'live-player',
-    // 'live-pusher',
+    'animation-view',
+    'camera',
+    'live-player',
+    'live-pusher',
     'map',
     'canvas',
-    // 'ad',
+    'ad',
     'web-view',
     'loading',
 ];
@@ -2537,6 +2538,9 @@ function isDom2VueComponentTag(tag) {
 }
 function isDom2AppVueComponentTag(tag) {
     return APP_VUE_COMPONENT_TAGS.includes(tag);
+}
+function isDom2AppUserVueComponentTag(tag) {
+    return !isDom2AppNativeTag(tag) && !isDom2VueComponentTag(tag);
 }
 
 function getEnvLocale() {
@@ -2737,6 +2741,7 @@ exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;
 exports.isDom2AppNativeTag = isDom2AppNativeTag;
+exports.isDom2AppUserVueComponentTag = isDom2AppUserVueComponentTag;
 exports.isDom2AppVueComponentTag = isDom2AppVueComponentTag;
 exports.isDom2VueComponentTag = isDom2VueComponentTag;
 exports.isGloballyAllowed = isGloballyAllowed;
