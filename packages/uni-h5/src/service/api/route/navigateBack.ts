@@ -23,13 +23,15 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       const currentPage = getCurrentPage()
       if (currentPage) {
         const dialogPages = (currentPage as unknown as UniPage).getDialogPages()
-        const dialogPage = dialogPages[dialogPages.length - 1]
-        if (
-          invokeHook(dialogPage.vm, ON_BACK_PRESS, {
-            from: (args as any).from || 'navigateBack',
-          }) === true
-        ) {
-          canBack = false
+        if (dialogPages.length > 0) {
+          const dialogPage = dialogPages[dialogPages.length - 1]
+          if (
+            invokeHook(dialogPage.vm, ON_BACK_PRESS, {
+              from: (args as any).from || 'navigateBack',
+            }) === true
+          ) {
+            canBack = false
+          }
         }
       }
     }
