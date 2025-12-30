@@ -24201,11 +24201,13 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
       const currentPage = getCurrentPage();
       if (currentPage) {
         const dialogPages = currentPage.getDialogPages();
-        const dialogPage = dialogPages[dialogPages.length - 1];
-        if (invokeHook(dialogPage.vm, ON_BACK_PRESS, {
-          from: args.from || "navigateBack"
-        }) === true) {
-          canBack = false;
+        if (dialogPages.length > 0) {
+          const dialogPage = dialogPages[dialogPages.length - 1];
+          if (invokeHook(dialogPage.vm, ON_BACK_PRESS, {
+            from: args.from || "navigateBack"
+          }) === true) {
+            canBack = false;
+          }
         }
       }
     }
