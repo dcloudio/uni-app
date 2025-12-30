@@ -57,6 +57,9 @@ export type VaporSharedDataComponent = ObjectVaporSharedDataComponent & {
     __className?: string;
     externalClasses?: string[];
     styleIsolation?: 'isolated' | 'app-shared';
+    rootElement?: {
+        class?: string;
+    };
 };
 type VaporSharedDataSetupFn = (props: any, ctx: Pick<VaporSharedDataComponentInstance, 'slots' | 'attrs' | 'emit' | 'expose' | 'pageId'>) => UniSharedData;
 interface ObjectVaporSharedDataComponent extends ComponentInternalOptions, SharedInternalOptions {
