@@ -26919,7 +26919,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
             );
           }
         }
-        if (isDom2 && (key.content === "class" || key.content === "hover-class")) {
+        if (isDom2 && (key.content === "class" || key.content === "hover-class" || key.content === "style" && context.options.disableStaticStyle)) {
           dynamicProps.push(key.content);
           context.registerEffect(
             values,
