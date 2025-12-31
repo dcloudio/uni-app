@@ -1,1 +1,1 @@
-export class UniMatchMediaElement extends UniElementImpl {}
+export class UniMatchMediaElement extends UniVueElement {}
