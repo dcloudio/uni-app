@@ -20243,17 +20243,6 @@ function isWhitespaceText(node) {
 function isCommentOrWhitespace(node) {
   return node.type === 3 || isWhitespaceText(node);
 }
-function isListItem(node) {
-  return node.type === 1 && (node.tag === "list-item" || node.tag === "ListItem");
-}
-function isVForListItem(node) {
-  const isTemplateNode2 = node.type === 1 && node.tag === "template";
-  if (!isTemplateNode2) {
-    return false;
-  }
-  const _node = node;
-  return _node.children.length === 1 && isListItem(_node.children[0]);
-}
 
 const defaultParserOptions = {
   parseMode: "base",
@@ -21238,6 +21227,10 @@ function createTransformContext(root, {
   transformHoist = null,
   isBuiltInComponent = NOOP,
   isCustomElement = NOOP,
+  // fixed by uts
+  isUserComponent = (element) => {
+    return element.tagType === 1;
+  },
   expressionPlugins = [],
   scopeId = null,
   slotted = true,
@@ -21264,6 +21257,8 @@ function createTransformContext(root, {
     transformHoist,
     isBuiltInComponent,
     isCustomElement,
+    // fixed by uts
+    isUserComponent,
     expressionPlugins,
     scopeId,
     slotted,
@@ -28875,7 +28870,6 @@ var CompilerDOM = /*#__PURE__*/Object.freeze({
   isInDestructureAssignment: isInDestructureAssignment,
   isInNewExpression: isInNewExpression,
   isKeyboardEvent: isKeyboardEvent,
-  isListItem: isListItem,
   isLiteralWhitelisted: isLiteralWhitelisted,
   isMemberExpression: isMemberExpression$1,
   isMemberExpressionBrowser: isMemberExpressionBrowser,
@@ -28891,7 +28885,6 @@ var CompilerDOM = /*#__PURE__*/Object.freeze({
   isStaticPropertyKey: isStaticPropertyKey,
   isTemplateNode: isTemplateNode,
   isText: isText$1,
-  isVForListItem: isVForListItem,
   isVPre: isVPre,
   isVSlot: isVSlot,
   isValidHTMLNesting: isValidHTMLNesting,
@@ -32683,6 +32676,10 @@ const defaultOptions = {
   transformHoist: null,
   isBuiltInComponent: NOOP,
   isCustomElement: NOOP,
+  // fixed by uts
+  isUserComponent(element) {
+    return element.tagType === 1;
+  },
   expressionPlugins: [],
   scopeId: null,
   slotted: true,
@@ -35481,9 +35478,9 @@ function transformComponentElement(node, propsResult, singleRoot, context, isDyn
   let { tag } = node;
   let asset = true;
   if (!dynamicComponent && !isCustomElement) {
-    const { isVueComponent } = context.options;
-    const isVueCom = isVueComponent && isVueComponent(tag);
-    if (!isVueCom) {
+    const { isEasyComponent } = context.options;
+    const isEasyCom = isEasyComponent && isEasyComponent(tag);
+    if (!isEasyCom) {
       const fromSetup = resolveSetupReference(tag, context);
       if (fromSetup) {
         tag = fromSetup;
@@ -35504,7 +35501,7 @@ function transformComponentElement(node, propsResult, singleRoot, context, isDyn
       }
     }
     if (asset) {
-      if (context.selfName && capitalize(camelize(tag)) === context.selfName) {
+      if (!isEasyCom && context.selfName && capitalize(camelize(tag)) === context.selfName) {
         tag += `__self`;
       }
       context.component.add(tag);
@@ -35673,7 +35670,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
             );
           }
         }
-        if (isDom2 && (key.content === "class" || key.content === "hover-class")) {
+        if (isDom2 && (key.content === "class" || key.content === "hover-class" || key.content === "style" && context.options.disableStaticStyle)) {
           dynamicProps.push(key.content);
           context.registerEffect(
             values,
@@ -36515,27 +36512,9 @@ function processFor(node, dir, context) {
   }
   const { source, value, key, index } = parseResult;
   const keyProp = findProp(node, "key");
-  const typeProp = findProp(node, "type");
   const keyProperty = keyProp && propToExpression(keyProp);
+  const typeProp = findProp(node, "type");
   const typeProperty = typeProp && propToExpression(typeProp);
-  const isListItemNode = isListItem(node);
-  const isRecycleFor = isListItemNode;
-  if (isRecycleFor && keyProperty) {
-    const itemKeyProp = {
-      type: 7,
-      name: "bind",
-      arg: {
-        type: 4,
-        content: "itemKey",
-        isStatic: true,
-        loc: locStub
-      },
-      exp: keyProperty,
-      modifiers: [],
-      loc: locStub
-    };
-    node.props.push(itemKeyProp);
-  }
   const isComponent = node.tagType === 1 || // template v-for with a single component child
   isTemplateWithSingleComponent(node);
   context.node = node = wrapTemplate(node, ["for"]);
@@ -36558,6 +36537,7 @@ function processFor(node, dir, context) {
       key,
       index,
       keyProp: keyProperty,
+      // fixed by uts
       typeProp: typeProperty,
       render,
       once: context.inVOnce || isStaticExpression(
@@ -37031,6 +37011,7 @@ var CompilerVapor = /*#__PURE__*/Object.freeze({
   needsVaporCtx: needsVaporCtx,
   parse: parse$3,
   parseValueDestructure: parseValueDestructure,
+  propToExpression: propToExpression,
   transform: transform,
   transformChildren: transformChildren,
   transformComment: transformComment,
@@ -54946,7 +54927,7 @@ const MACROS = [
   WITH_DEFAULTS
 ];
 function compileScript(sfc, options) {
-  var _a, _b, _c, _d, _e;
+  var _a, _b, _c, _d, _e, _f;
   if (!options.id) {
     warnOnce$1(
       `compileScript now requires passing the \`id\` option.
@@ -55680,6 +55661,8 @@ ${vapor && !ssr ? `` : `return `}${returned}
       }
       runtimeOptions += `
   __className,`;
+      runtimeOptions += `
+  __filename: '${((_d = options.templateOptions) == null ? void 0 : _d.compilerOptions).relativeFilename || ""}',`;
     }
   }
   if (!ctx.hasDefaultExportName && filename && filename !== DEFAULT_FILENAME) {
@@ -55751,7 +55734,7 @@ ${setupPreamble}`
     }
   }
   if (ctx.helperImports.size > 0) {
-    const runtimeModuleName = (_e = (_d = options.templateOptions) == null ? void 0 : _d.compilerOptions) == null ? void 0 : _e.runtimeModuleName;
+    const runtimeModuleName = (_f = (_e = options.templateOptions) == null ? void 0 : _e.compilerOptions) == null ? void 0 : _f.runtimeModuleName;
     const importSrc = runtimeModuleName ? JSON.stringify(runtimeModuleName) : `'vue'`;
     ctx.s.prepend(
       `import { ${[...ctx.helperImports].map((h) => `${h} as _${h}`).join(", ")} } from ${importSrc}

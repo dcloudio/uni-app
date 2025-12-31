@@ -17,7 +17,8 @@ export declare enum ReactiveFlags$1 {
     IS_READONLY = "__v_isReadonly",
     IS_SHALLOW = "__v_isShallow",
     RAW = "__v_raw",
-    IS_REF = "__v_isRef"
+    IS_REF = "__v_isRef",
+    NAPIWRAPPER = "_napiwrapper"
 }
 
 export declare class EffectScope implements ReactiveNode {

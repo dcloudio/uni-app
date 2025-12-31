@@ -1,11 +1,11 @@
-import { type TransformDecl, createDecl } from '../utils'
+import { type TransformDecl, createDecl, splitValues } from '../utils'
 
 const flexDirection = __HYPHENATE__ ? 'flex-direction' : 'flexDirection'
 const flexWrap = __HYPHENATE__ ? 'flex-wrap' : 'flexWrap'
 export const transformFlexFlow: TransformDecl = (decl) => {
   let { value, important, raws, source } = decl
   value = value.trim()
-  const splitResult = value.split(/\s+/)
+  const splitResult = splitValues(value)
   const result = [
     /^(column|column-reverse|row|row-reverse)$/,
     /^(nowrap|wrap|wrap-reverse)$/,

@@ -125,7 +125,7 @@ export interface TransformContext extends Required<Omit<TransformOptions, keyof 
     filters?: Set<string>;
 }
 export declare function getSelfName(filename: string): string | null;
-export declare function createTransformContext(root: RootNode, { filename, prefixIdentifiers, hoistStatic, hmr, cacheHandlers, nodeTransforms, directiveTransforms, transformHoist, isBuiltInComponent, isCustomElement, expressionPlugins, scopeId, slotted, ssr, inSSR, ssrCssVars, bindingMetadata, inline, isTS, onError, onWarn, compatConfig, }: TransformOptions): TransformContext;
+export declare function createTransformContext(root: RootNode, { filename, prefixIdentifiers, hoistStatic, hmr, cacheHandlers, nodeTransforms, directiveTransforms, transformHoist, isBuiltInComponent, isCustomElement, isUserComponent, expressionPlugins, scopeId, slotted, ssr, inSSR, ssrCssVars, bindingMetadata, inline, isTS, onError, onWarn, compatConfig, }: TransformOptions): TransformContext;
 export declare function transform(root: RootNode, options: TransformOptions): void;
 export declare function traverseNode(node: RootNode | TemplateChildNode, context: TransformContext): void;
 export declare function createStructuralDirectiveTransform(name: string | RegExp, fn: StructuralDirectiveTransform): NodeTransform;
@@ -854,6 +854,12 @@ export interface TransformOptions extends SharedTransformCodegenOptions, ErrorHa
      */
     isCustomElement?: (tag: string) => boolean | void;
     /**
+     * fixed by uts
+     * @param tag
+     * @returns
+     */
+    isUserComponent?: (element: ElementNode) => boolean | void;
+    /**
      * Transform expressions like {{ foo }} to `_ctx.foo`.
      * If this option is false, the generated code will be wrapped in a
      * `with (this) { ... }` block.
@@ -1070,8 +1076,6 @@ export declare const forAliasRE: RegExp;
 export declare function isAllWhitespace(str: string): boolean;
 export declare function isWhitespaceText(node: TemplateChildNode): boolean;
 export declare function isCommentOrWhitespace(node: TemplateChildNode): boolean;
-export declare function isListItem(node: Node): boolean;
-export declare function isVForListItem(node: Node): boolean;
 
 /**
  * Return value indicates whether the AST walked can be a constant

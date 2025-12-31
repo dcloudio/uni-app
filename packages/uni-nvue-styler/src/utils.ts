@@ -487,3 +487,46 @@ export function coverColorToRgba(e: string | undefined) {
   // 最后一位除以 255
   return [n[0], n[1], n[2], n[3] / 255]
 }
+
+/**
+ * css value 分割多值，兼容包含括号的 css 方法，比如 var/env/calc() 等
+ */
+export function splitValues(value: string): string[] {
+  const trimmedValue = value.trim()
+  if (!trimmedValue.includes('(')) {
+    return trimmedValue.split(/\s+/)
+  }
+  const parts: string[] = []
+  let current = ''
+  let depth = 0
+  for (let i = 0; i < trimmedValue.length; i++) {
+    const char = trimmedValue[i]
+    if (char === '(') {
+      depth++
+      current += char
+    } else if (char === ')') {
+      if (depth > 0) {
+        depth--
+      }
+      current += char
+    } else if (/\s/.test(char)) {
+      if (depth === 0) {
+        if (current) {
+          parts.push(current)
+          current = ''
+        }
+      } else {
+        // 多个空格处理一个
+        if (current.length > 0 && !/\s$/.test(current)) {
+          current += ' '
+        }
+      }
+    } else {
+      current += char
+    }
+  }
+  if (current) {
+    parts.push(current)
+  }
+  return parts
+}

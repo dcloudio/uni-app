@@ -322,7 +322,7 @@ export function getChildrenText(node: UniElement): string {
   node.childNodes.forEach((child: UniElement) => {
     // @ts-expect-error
     if (isTextElement(child)) {
-      result += child.getAttribute('value')
+      result += (child as UniTextElement).value
     } else {
       result += getChildrenText(child)
     }

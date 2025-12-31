@@ -2054,6 +2054,48 @@ function createDecl(prop, value, important, raws, source) {
   return decl;
 }
 var isNumber = val => typeof val === 'number';
+/**
+ * css value 分割多值，兼容包含括号的 css 方法，比如 var/env/calc() 等
+ */
+function splitValues(value) {
+  var trimmedValue = value.trim();
+  if (!trimmedValue.includes('(')) {
+    return trimmedValue.split(/\s+/);
+  }
+  var parts = [];
+  var current = '';
+  var depth = 0;
+  for (var i = 0; i < trimmedValue.length; i++) {
+    var char = trimmedValue[i];
+    if (char === '(') {
+      depth++;
+      current += char;
+    } else if (char === ')') {
+      if (depth > 0) {
+        depth--;
+      }
+      current += char;
+    } else if (/\s/.test(char)) {
+      if (depth === 0) {
+        if (current) {
+          parts.push(current);
+          current = '';
+        }
+      } else {
+        // 多个空格处理一个
+        if (current.length > 0 && !/\s$/.test(current)) {
+          current += ' ';
+        }
+      }
+    } else {
+      current += char;
+    }
+  }
+  if (current) {
+    parts.push(current);
+  }
+  return parts;
+}
 var backgroundColor = 'backgroundColor';
 var backgroundImage = 'backgroundImage';
 var handleTransformBackground = decl => {
@@ -2064,6 +2106,9 @@ var handleTransformBackground = decl => {
     source
   } = decl;
   value = value.trim();
+  if (value === 'none') {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  }
   if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
     return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
   } else if (/^linear-gradient(.+)$/.test(value)) {
@@ -2118,7 +2163,7 @@ var transformBorderColor = decl => {
   {
     property = capitalize(property);
   }
-  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/); // 1pt
+  var splitResult = splitValues(value); // 1pt
   switch (splitResult.length) {
     case 1:
       if (_property_split.length === 3) {
@@ -2179,7 +2224,7 @@ function createTransformBorder(options) {
       raws,
       source
     } = decl;
-    var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+    var splitResult = splitValues(value);
     var havVar = splitResult.some(str => str.startsWith('var('));
     var result = [];
     // 包含 var ，直接视为 width/style/color 都使用默认值
@@ -2216,6 +2261,9 @@ function createTransformBorder(options) {
     return [...transformBorderWidth(createDecl(prop + borderWidth, defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle, defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor, defaultColor(result[2]), important, raws, source))];
   };
 }
+/**
+ * nvue 逻辑不变
+ */
 function createTransformBorderNvue(options) {
   return decl => {
     var {
@@ -2249,7 +2297,7 @@ var transformBorderRadius = decl => {
     source
   } = decl;
   value = value.trim();
-  var splitResult = value.split(/\s+/);
+  var splitResult = splitValues(value);
   if (value.includes('/')) {
     return [decl];
   }
@@ -2301,7 +2349,7 @@ var transformFlexFlow = decl => {
     source
   } = decl;
   value = value.trim();
-  var splitResult = value.split(/\s+/);
+  var splitResult = splitValues(value);
   var result = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/].map(item => {
     var index = splitResult.findIndex(str => item.test(str));
     return index < 0 ? null : splitResult.splice(index, 1)[0];
@@ -2323,7 +2371,7 @@ var createTransformBox = type => {
       raws,
       source
     } = decl;
-    var splitResult = value.trim().split(/\s+/);
+    var splitResult = splitValues(value);
     switch (splitResult.length) {
       case 1:
         splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
@@ -2384,7 +2432,7 @@ var transformFlex = decl => {
   } = decl;
   value = value.trim();
   var result = [];
-  var splitResult = value.split(/\s+/);
+  var splitResult = splitValues(value);
   // 是否 flex-grow 的有效值 <number [0,∞]>
   var isFlexGrowValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v));
   var isFlexShrinkValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;

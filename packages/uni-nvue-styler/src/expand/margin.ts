@@ -1,4 +1,4 @@
-import { type TransformDecl, createDecl } from '../utils'
+import { type TransformDecl, createDecl, splitValues } from '../utils'
 
 const top = __HYPHENATE__ ? '-top' : 'Top'
 const right = __HYPHENATE__ ? '-right' : 'Right'
@@ -9,7 +9,7 @@ export const createTransformBox = (
 ): TransformDecl => {
   return (decl) => {
     const { value, important, raws, source } = decl
-    const splitResult = value.trim().split(/\s+/)
+    const splitResult = splitValues(value)
 
     switch (splitResult.length) {
       case 1:

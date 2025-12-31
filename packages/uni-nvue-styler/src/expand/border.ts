@@ -3,6 +3,7 @@ import {
   type NormalizeOptions,
   type TransformDecl,
   createDecl,
+  splitValues,
 } from '../utils'
 import { transformBorderColor } from './borderColor'
 import { transformBorderStyle } from './borderStyle'
@@ -17,7 +18,7 @@ export function createTransformBorder(
 ): TransformDecl {
   return (decl: Declaration): Declaration[] => {
     const { prop, value, important, raws, source } = decl
-    let splitResult: Array<string> = value.replace(/\s*,\s*/g, ',').split(/\s+/)
+    let splitResult: Array<string> = splitValues(value)
     const havVar = splitResult.some((str: string): boolean =>
       str.startsWith('var(')
     )
@@ -94,6 +95,9 @@ export function createTransformBorder(
   }
 }
 
+/**
+ * nvue 逻辑不变
+ */
 export function createTransformBorderNvue(
   options: NormalizeOptions
 ): TransformDecl {

@@ -16100,10 +16100,14 @@
       trigger: trigger2
     };
   }
-  function useValueSync(props2, state, emit2, trigger2) {
+  function useValueSync(props2, state, emit2, trigger2, fieldRef) {
     var valueChangeFn = null;
     {
       valueChangeFn = debounce((val) => {
+        var fieldElement = fieldRef.value;
+        if (fieldElement && document.activeElement === fieldElement) {
+          return;
+        }
         state.value = getValueString(val, props2.type);
       }, 100, {
         setTimeout,
@@ -16283,7 +16287,7 @@
     } = useBase(props2, rootRef, emit2);
     var {
       triggerInput
-    } = useValueSync(props2, state, emit2, trigger2);
+    } = useValueSync(props2, state, emit2, trigger2, fieldRef);
     useAutoFocus(props2, fieldRef);
     useKeyboard(props2, fieldRef, trigger2);
     var {

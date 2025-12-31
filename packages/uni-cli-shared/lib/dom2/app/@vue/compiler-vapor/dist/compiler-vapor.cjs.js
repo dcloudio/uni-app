@@ -264,6 +264,10 @@ const defaultOptions = {
   transformHoist: null,
   isBuiltInComponent: shared.NOOP,
   isCustomElement: shared.NOOP,
+  // fixed by uts
+  isUserComponent(element) {
+    return element.tagType === 1;
+  },
   expressionPlugins: [],
   scopeId: null,
   slotted: true,
@@ -3062,9 +3066,9 @@ function transformComponentElement(node, propsResult, singleRoot, context, isDyn
   let { tag } = node;
   let asset = true;
   if (!dynamicComponent && !isCustomElement) {
-    const { isVueComponent } = context.options;
-    const isVueCom = isVueComponent && isVueComponent(tag);
-    if (!isVueCom) {
+    const { isEasyComponent } = context.options;
+    const isEasyCom = isEasyComponent && isEasyComponent(tag);
+    if (!isEasyCom) {
       const fromSetup = resolveSetupReference(tag, context);
       if (fromSetup) {
         tag = fromSetup;
@@ -3085,7 +3089,7 @@ function transformComponentElement(node, propsResult, singleRoot, context, isDyn
       }
     }
     if (asset) {
-      if (context.selfName && shared.capitalize(shared.camelize(tag)) === context.selfName) {
+      if (!isEasyCom && context.selfName && shared.capitalize(shared.camelize(tag)) === context.selfName) {
         tag += `__self`;
       }
       context.component.add(tag);
@@ -3254,7 +3258,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
             );
           }
         }
-        if (isDom2 && (key.content === "class" || key.content === "hover-class")) {
+        if (isDom2 && (key.content === "class" || key.content === "hover-class" || key.content === "style" && context.options.disableStaticStyle)) {
           dynamicProps.push(key.content);
           context.registerEffect(
             values,
@@ -4109,27 +4113,9 @@ function processFor(node, dir, context) {
   }
   const { source, value, key, index } = parseResult;
   const keyProp = findProp(node, "key");
-  const typeProp = findProp(node, "type");
   const keyProperty = keyProp && propToExpression(keyProp);
+  const typeProp = findProp(node, "type");
   const typeProperty = typeProp && propToExpression(typeProp);
-  const isListItemNode = compilerDom.isListItem(node);
-  const isRecycleFor = isListItemNode;
-  if (isRecycleFor && keyProperty) {
-    const itemKeyProp = {
-      type: 7,
-      name: "bind",
-      arg: {
-        type: 4,
-        content: "itemKey",
-        isStatic: true,
-        loc: compilerDom.locStub
-      },
-      exp: keyProperty,
-      modifiers: [],
-      loc: compilerDom.locStub
-    };
-    node.props.push(itemKeyProp);
-  }
   const isComponent = node.tagType === 1 || // template v-for with a single component child
   isTemplateWithSingleComponent(node);
   context.node = node = wrapTemplate(node, ["for"]);
@@ -4152,6 +4138,7 @@ function processFor(node, dir, context) {
       key,
       index,
       keyProp: keyProperty,
+      // fixed by uts
       typeProp: typeProperty,
       render,
       once: context.inVOnce || isStaticExpression(
@@ -4623,6 +4610,7 @@ exports.isTransitionGroupTag = isTransitionGroupTag;
 exports.isTransitionTag = isTransitionTag;
 exports.needsVaporCtx = needsVaporCtx;
 exports.parseValueDestructure = parseValueDestructure;
+exports.propToExpression = propToExpression;
 exports.transform = transform;
 exports.transformChildren = transformChildren;
 exports.transformComment = transformComment;
