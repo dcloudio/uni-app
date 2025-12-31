@@ -60,10 +60,10 @@ export default (options: UniMiniProgramPluginOptions) => {
   )
 
   const plugins: Plugin[] = []
-  if (runByHBuilderX() && process.env.UNI_PLATFORM === 'mp-weixin') {
-    const { UUVP } = requireUniHelpers()
-    plugins.push(UUVP())
-  }
+  // if (runByHBuilderX() && process.env.UNI_PLATFORM === 'mp-weixin') {
+  //   const { UUVP } = requireUniHelpers()
+  //   plugins.push(UUVP())
+  // }
   return [
     ...plugins,
     ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
