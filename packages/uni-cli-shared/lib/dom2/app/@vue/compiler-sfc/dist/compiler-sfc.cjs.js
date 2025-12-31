@@ -21168,7 +21168,7 @@ const MACROS = [
   WITH_DEFAULTS
 ];
 function compileScript(sfc, options) {
-  var _a, _b, _c, _d, _e;
+  var _a, _b, _c, _d, _e, _f;
   if (!options.id) {
     warnOnce(
       `compileScript now requires passing the \`id\` option.
@@ -21906,6 +21906,8 @@ ${vapor && !ssr ? `` : `return `}${returned}
       }
       runtimeOptions += `
   __className,`;
+      runtimeOptions += `
+  __filename: '${((_d = options.templateOptions) == null ? void 0 : _d.compilerOptions).relativeFilename || ""}',`;
     }
   }
   if (!ctx.hasDefaultExportName && filename && filename !== DEFAULT_FILENAME) {
@@ -21977,7 +21979,7 @@ ${setupPreamble}`
     }
   }
   if (ctx.helperImports.size > 0) {
-    const runtimeModuleName = (_e = (_d = options.templateOptions) == null ? void 0 : _d.compilerOptions) == null ? void 0 : _e.runtimeModuleName;
+    const runtimeModuleName = (_f = (_e = options.templateOptions) == null ? void 0 : _e.compilerOptions) == null ? void 0 : _f.runtimeModuleName;
     const importSrc = runtimeModuleName ? JSON.stringify(runtimeModuleName) : `'vue'`;
     ctx.s.prepend(
       `import { ${[...ctx.helperImports].map((h) => `${h} as _${h}`).join(", ")} } from ${importSrc}
