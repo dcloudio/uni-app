@@ -17184,7 +17184,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
       }
       const current = normalizeCurrentValue(viewportPosition + n);
       if (isCancel) {
-        updateViewport(contentTrackViewport);
+        animateViewport(state2.current, "", 0);
       } else {
         currentChangeSource = "touch";
         state2.current = current;
@@ -17230,7 +17230,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
           return false;
         }
       }
-    });
+    }, true);
   });
   onUnmounted(() => {
     cancelSchedule();
