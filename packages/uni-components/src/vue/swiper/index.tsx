@@ -22,6 +22,7 @@ import { flatVNode } from '../../helpers/flatVNode'
 import { useRebuild } from '../../helpers/useRebuild'
 import { rpx2px } from '@dcloudio/uni-core'
 import { ICON_PATH_BACK, createSvgIconVNode } from '@dcloudio/uni-core'
+import { debounce } from '@dcloudio/uni-shared'
 
 const props = {
   indicatorDots: {
@@ -500,12 +501,20 @@ function useLayout(
   watch(() => props.autoplay && !state.userTracking, inintAutoplay)
   inintAutoplay(props.autoplay && !state.userTracking)
 
+  // ios 平台 type=circle 滚动 swiper 时 touchend 事件不会触发 ask_201306
+  let debouncedTrackEndFallback: ReturnType<typeof debounce> | null = null
+  const TRACK_END_FALLBACK_DELAY = 1000 // ms
+  const isIOS = __PLATFORM__ === 'app' && plus.os.name === 'iOS'
+  const ws = __PLATFORM__ === 'app' && plus.webview.currentWebview()
+  const style = ws && ws.getStyle()?.pullToRefresh?.style
+
   onMounted(() => {
     let userDirectionChecked = false
     let contentTrackSpeed = 0
     let contentTrackT = 0
     function handleTrackStart() {
       cancelSchedule()
+      debouncedTrackEndFallback?.cancel()
       contentTrackViewport = viewportPosition
       contentTrackSpeed = 0
       contentTrackT = Date.now()
@@ -551,6 +560,7 @@ function useLayout(
       }
     }
     function handleTrackEnd(isCancel: boolean) {
+      debouncedTrackEndFallback?.cancel()
       state.userTracking = false
       const t = contentTrackSpeed / Math.abs(contentTrackSpeed)
       let n = 0
@@ -559,7 +569,8 @@ function useLayout(
       }
       const current = normalizeCurrentValue(viewportPosition + n)
       if (isCancel) {
-        updateViewport(contentTrackViewport)
+        // 避免下拉刷新时 swiper 卡在中间位置
+        animateViewport(state.current, '', 0)
       } else {
         currentChangeSource = 'touch'
         state.current = current
@@ -574,47 +585,66 @@ function useLayout(
         )
       }
     }
-    useTouchtrack(slideFrameRef.value as HTMLElement, (event) => {
-      if (props.disableTouch) {
-        return
-      }
-      if (!invalid) {
-        if (event.detail.state === 'start') {
-          state.userTracking = true
-          userDirectionChecked = false
-          return handleTrackStart()
+    useTouchtrack(
+      slideFrameRef.value as HTMLElement,
+      (event) => {
+        if (props.disableTouch) {
+          return
         }
-        // fixed by xxxxxx
-        if (event.detail.state === 'end') {
-          return handleTrackEnd(false)
-        }
-        if (event.detail.state === 'cancel') {
-          return handleTrackEnd(true)
-        }
-        if (state.userTracking) {
-          if (!userDirectionChecked) {
-            userDirectionChecked = true
-            const t = Math.abs(event.detail.dx)
-            const n = Math.abs(event.detail.dy)
-            if (t >= n && props.vertical) {
-              state.userTracking = false
-            } else {
-              if (t <= n && !props.vertical) {
-                state.userTracking = false
-              }
-            }
-            if (!state.userTracking) {
-              if (props.autoplay) {
-                scheduleAutoplay()
-              }
-              return
-            }
+        if (!invalid) {
+          if (event.detail.state === 'start') {
+            state.userTracking = true
+            userDirectionChecked = false
+            return handleTrackStart()
           }
-          handleTrackMove(event.detail)
-          return false
+          // fixed by xxxxxx
+          if (event.detail.state === 'end') {
+            return handleTrackEnd(false)
+          }
+          if (event.detail.state === 'cancel') {
+            return handleTrackEnd(true)
+          }
+          if (state.userTracking) {
+            if (!userDirectionChecked) {
+              userDirectionChecked = true
+              const t = Math.abs(event.detail.dx)
+              const n = Math.abs(event.detail.dy)
+              if (t >= n && props.vertical) {
+                state.userTracking = false
+              } else {
+                if (t <= n && !props.vertical) {
+                  state.userTracking = false
+                }
+              }
+              if (!state.userTracking) {
+                if (props.autoplay) {
+                  scheduleAutoplay()
+                }
+                return
+              }
+            }
+            handleTrackMove(event.detail)
+
+            if (isIOS && style === 'circle') {
+              if (!debouncedTrackEndFallback) {
+                debouncedTrackEndFallback = debounce(
+                  () => {
+                    if (state.userTracking) {
+                      handleTrackEnd(true)
+                    }
+                  },
+                  TRACK_END_FALLBACK_DELAY,
+                  { setTimeout, clearTimeout }
+                )
+              }
+              debouncedTrackEndFallback()
+            }
+            return false
+          }
         }
-      }
-    })
+      },
+      true
+    )
   })
   onUnmounted(() => {
     cancelSchedule()
