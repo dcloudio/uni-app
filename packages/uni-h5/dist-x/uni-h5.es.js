@@ -7685,6 +7685,30 @@ class UniPageImpl {
     const uniPageBody = document.querySelector("uni-page-body");
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
+  querySelector(selector) {
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      return null;
+    }
+    const uniPageBody = document.querySelector("uni-page-body");
+    return uniPageBody ? uniPageBody.querySelector(selector) : null;
+  }
+  querySelectorAll(selector) {
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      return [];
+    }
+    const uniPageBody = document.querySelector("uni-page-body");
+    if (!uniPageBody) {
+      return [];
+    }
+    const nodeList = uniPageBody.querySelectorAll(selector);
+    const res = [];
+    nodeList.forEach((node) => {
+      res.push(node);
+    });
+    return res;
+  }
   getAndroidView() {
     return null;
   }

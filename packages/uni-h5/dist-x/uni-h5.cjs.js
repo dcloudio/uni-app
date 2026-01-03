@@ -2463,6 +2463,16 @@ class UniPageImpl {
       return null;
     }
   }
+  querySelector(selector) {
+    {
+      return null;
+    }
+  }
+  querySelectorAll(selector) {
+    {
+      return [];
+    }
+  }
   getAndroidView() {
     return null;
   }
