@@ -7696,18 +7696,18 @@ class UniPageImpl {
   querySelectorAll(selector) {
     const currentPage = getCurrentPage();
     if (currentPage !== this) {
-      return [];
+      return null;
     }
     const uniPageBody = document.querySelector("uni-page-body");
     if (!uniPageBody) {
-      return [];
+      return null;
     }
     const nodeList = uniPageBody.querySelectorAll(selector);
     const res = [];
     nodeList.forEach((node) => {
       res.push(node);
     });
-    return res;
+    return res.length ? res : null;
   }
   getAndroidView() {
     return null;

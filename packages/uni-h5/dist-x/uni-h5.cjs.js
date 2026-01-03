@@ -2470,7 +2470,7 @@ class UniPageImpl {
   }
   querySelectorAll(selector) {
     {
-      return [];
+      return null;
     }
   }
   getAndroidView() {
