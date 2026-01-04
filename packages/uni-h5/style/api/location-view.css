@@ -33,6 +33,11 @@
 .uni-system-open-location .info>.name {
   font-size: 17px;
   color: #111111;
+  /* vue3 一行展示避免被导航图标挡住 */
+  padding-right: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .uni-system-open-location .info>.address {
