@@ -23,6 +23,7 @@ import { event } from './event'
 import { transformOpenType } from './transforms/transformOpenType'
 import { isArray } from '@vue/shared'
 import { transformMPBuiltInTag } from './transforms/transformMPBuiltInTag'
+import { transformLoading } from '../x/compiler/transforms/transformLoading'
 
 const projectConfigFilename = 'mini.project.json'
 const COMPONENTS_DIR = 'mycomponents'
@@ -69,7 +70,11 @@ const nodeTransforms = [
   createTransformComponentLink(COMPONENT_ON_LINK, NodeTypes.ATTRIBUTE),
 ]
 if (process.env.UNI_APP_X === 'true') {
-  nodeTransforms.push(transformMPBuiltInTag, transformDirection)
+  nodeTransforms.push(
+    transformMPBuiltInTag,
+    transformDirection,
+    transformLoading
+  )
 }
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,
