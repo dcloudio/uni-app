@@ -76,5 +76,5 @@ catalog:
   'vue-router': 4.4.4
   'vuex': 4.1.0
   'ws': 8.18.0
-  'xregexp': 3.1.0
+  'xregexp': 5.1.2
   "tinycolor2": 1.6.0
