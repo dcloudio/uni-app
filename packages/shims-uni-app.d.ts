@@ -259,6 +259,7 @@ declare namespace UniNamespace {
     disableSwipeBack?: Boolean
     popGesture?: 'close' | 'none'
     enableUcssReset?: boolean
+    styleIsolation?: 'app-shared' | 'isolated'
   }
   interface PageRouteMeta extends PagesJsonPageStyle {
     id?: number
