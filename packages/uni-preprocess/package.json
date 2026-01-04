@@ -20,6 +20,6 @@
   },
   "dependencies": {
     "magic-string": "catalog:",
-    "xregexp": "^5.1.1"
+    "xregexp": "catalog:"
   }
 }
