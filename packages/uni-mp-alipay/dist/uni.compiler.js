@@ -198,6 +198,16 @@ const transformMPBuiltInTagOptions = {
 };
 const transformMPBuiltInTag = uniCliShared.createMPBuiltInTagTransform(transformMPBuiltInTagOptions);
 
+function transformLoading(node, context) {
+    if (!uniCliShared.isElementNode(node)) {
+        return;
+    }
+    if (node.tag === 'loading') {
+        node.tag = 'uniloading';
+        node.tagType = compilerCore.ElementTypes.COMPONENT;
+    }
+}
+
 const projectConfigFilename = 'mini.project.json';
 const COMPONENTS_DIR = 'mycomponents';
 const miniProgram = {
@@ -230,7 +240,7 @@ const nodeTransforms = [
     uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, compilerCore.NodeTypes.ATTRIBUTE),
 ];
 if (process.env.UNI_APP_X === 'true') {
-    nodeTransforms.push(transformMPBuiltInTag, uniCliShared.transformDirection);
+    nodeTransforms.push(transformMPBuiltInTag, uniCliShared.transformDirection, transformLoading);
 }
 const compilerOptions = {
     nodeTransforms,
