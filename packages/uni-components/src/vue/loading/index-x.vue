@@ -23,6 +23,16 @@ const props = withDefaults(defineProps<{
    }
  */
   paused?: boolean,
+  /**
+   * 是否加粗线条
+   * @uniPlatform {
+     "app": {
+       "harmony": {
+         "unixvVer": "5.0"
+       }
+     }
+   }
+ */
   bold ?: boolean
 }>(), {
   paused: false,

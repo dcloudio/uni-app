@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, sortObject, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_READY, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, isInSSRComponentSetup, toDisplayString, createCommentVNode } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted as onUnmounted$1, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, isInSSRComponentSetup, toDisplayString, createCommentVNode } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -2300,7 +2300,7 @@ function useListeners(props2, listeners2) {
       _addListeners(newId, listeners2, true);
     }
   );
-  onUnmounted(() => {
+  onUnmounted$1(() => {
     _removeListeners(props2.id, listeners2);
   });
 }
@@ -13808,11 +13808,11 @@ function useMovableViewState(props2, trigger, rootRef) {
       _setScale
     };
     addMovableViewContext(context);
-    onUnmounted(() => {
+    onUnmounted$1(() => {
       removeMovableViewContext(context);
     });
   });
-  onUnmounted(() => {
+  onUnmounted$1(() => {
     FAandSFACancel();
   });
   return {
@@ -17232,7 +17232,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
       }
     });
   });
-  onUnmounted(() => {
+  onUnmounted$1(() => {
     cancelSchedule();
     cancelAnimationFrame(animationFrame);
   });
@@ -17526,7 +17526,7 @@ const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
         addSwiperContext(context);
       }
     });
-    onUnmounted(() => {
+    onUnmounted$1(() => {
       const removeSwiperContext = inject("removeSwiperContext");
       if (removeSwiperContext) {
         removeSwiperContext(context);
@@ -17706,7 +17706,7 @@ function useSwitchInject(rootRef, props2, switchChecked) {
   };
   if (!!uniForm) {
     uniForm.addField(formField);
-    onUnmounted(() => {
+    onUnmounted$1(() => {
       uniForm.removeField(formField);
     });
   }
@@ -18841,33 +18841,42 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const coefficientMap = {
-  medium: 1,
-  thick: 2
-};
 function useLoadingStyle(targetElement, bold) {
   const loadingSize = ref("16px");
-  const loadingBorderWidth = ref("0px");
+  const loadingBorderWidth = ref("1px");
+  const loadingBorderRadius = ref("8px");
+  let observer = null;
   const calculateLoadingWidth = (element, bold2) => {
-    if (!element)
-      return;
-    const computedStyle = window.getComputedStyle(element);
-    const width = parseFloat(computedStyle.width);
-    const height = parseFloat(computedStyle.height);
-    const coefficient = coefficientMap[bold2 ? "thick" : "medium"];
+    const { width, height } = element.getBoundingClientRect();
+    const coefficient = bold2 ? 2 : 1;
     const minSide = Math.min(width, height);
     const calculatedWidth = minSide / 16 * coefficient;
     loadingSize.value = `${minSide}px`;
     loadingBorderWidth.value = `${calculatedWidth}px`;
+    loadingBorderRadius.value = `${minSide / 2}px`;
+  };
+  const setupObserver = (cb) => {
+    const el = targetElement.value;
+    if (!el)
+      return;
+    observer.observe(el);
   };
   onMounted(() => {
+    setupObserver();
     watchEffect(() => {
-      calculateLoadingWidth(targetElement.value, bold.value);
+      const _bold = bold.value;
+      const el = targetElement.value;
+      if (el !== null) {
+        calculateLoadingWidth(el, _bold);
+      }
     });
+  });
+  onUnmounted(() => {
   });
   return {
     size: loadingSize,
-    borderWidth: loadingBorderWidth
+    borderWidth: loadingBorderWidth,
+    borderRadius: loadingBorderRadius
   };
 }
 var __defProp2 = Object.defineProperty;
@@ -19249,7 +19258,7 @@ function usePopupStyle(props2) {
     };
     window.addEventListener("resize", fixSize);
     fixSize();
-    onUnmounted(() => {
+    onUnmounted$1(() => {
       window.removeEventListener("resize", fixSize);
     });
   });
@@ -20959,7 +20968,7 @@ function useMarkerLabelStyle(id2) {
   const styleEl = document.createElement("style");
   styleEl.id = className;
   document.head.appendChild(styleEl);
-  onUnmounted(() => {
+  onUnmounted$1(() => {
     styleEl.remove();
   });
   return function updateMarkerLabelStyle(style) {
@@ -21313,9 +21322,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
         }
       };
       addMapChidlContext(context);
-      onUnmounted(() => removeMapChidlContext(context));
+      onUnmounted$1(() => removeMapChidlContext(context));
     }
-    onUnmounted(removeMarker);
+    onUnmounted$1(removeMarker);
     return () => {
       return null;
     };
@@ -21450,7 +21459,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
       addPolyline(props2);
       watch(props2, updatePolyline);
     });
-    onUnmounted(removePolyline);
+    onUnmounted$1(removePolyline);
     return () => {
       return null;
     };
@@ -21558,7 +21567,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
       addCircle(props2);
       watch(props2, updateCircle);
     });
-    onUnmounted(removeCircle);
+    onUnmounted$1(removeCircle);
     return () => {
       return null;
     };
@@ -22741,7 +22750,7 @@ function preventScroll(prevent) {
 }
 function usePreventScroll() {
   onMounted(() => preventScroll(true));
-  onUnmounted(() => preventScroll(false));
+  onUnmounted$1(() => preventScroll(false));
 }
 const props$7 = {
   src: {
@@ -25831,7 +25840,7 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
       let timer;
       onCompassChange(compassChangeHandler);
       onMapReady(updateLocation);
-      onUnmounted(removeLocation);
+      onUnmounted$1(removeLocation);
       const addMapChidlContext = inject("addMapChidlContext");
       const removeMapChidlContext = inject("removeMapChidlContext");
       const context = {
@@ -25839,7 +25848,7 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
         state: state2
       };
       addMapChidlContext(context);
-      onUnmounted(() => removeMapChidlContext(context));
+      onUnmounted$1(() => removeMapChidlContext(context));
     }
     return () => {
       return state2.latitude ? createVNode(MapMarker, mergeProps({
@@ -25975,7 +25984,7 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
       drawPolygon();
       watch(props2, drawPolygon);
     });
-    onUnmounted(() => {
+    onUnmounted$1(() => {
       polygonIns.setMap(null);
     });
     return () => null;

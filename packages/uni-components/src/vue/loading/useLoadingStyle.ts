@@ -1,26 +1,18 @@
 import { type Ref, onMounted, ref, watchEffect } from 'vue'
 
-const coefficientMap: Record<string, number> = {
-  medium: 1,
-  thick: 2,
-}
-
 export function useLoadingStyle(
-  targetElement: Ref<HTMLElement | null>,
+  targetElement: Ref<_Element | null>,
   bold: Ref<boolean>
 ) {
   const loadingSize = ref('16px')
-  const loadingBorderWidth = ref('0px')
+  const loadingBorderWidth = ref('1px')
+  const loadingBorderRadius = ref('8px')
+  let observer: _ResizeObserver | null = null
 
-  const calculateLoadingWidth = (element: HTMLElement, bold: boolean) => {
-    if (!element) return
+  const calculateLoadingWidth = (element: _Element, bold: boolean) => {
+    const { width, height } = element.getBoundingClientRect()
 
-    const computedStyle = window.getComputedStyle(element)
-
-    const width = parseFloat(computedStyle.width)
-    const height = parseFloat(computedStyle.height)
-
-    const coefficient = coefficientMap[bold ? 'thick' : 'medium']
+    const coefficient = bold ? 2 : 1
     const minSide = Math.min(width, height)
 
     // (最小边 / 16) * 系数
@@ -28,16 +20,38 @@ export function useLoadingStyle(
 
     loadingSize.value = `${minSide}px`
     loadingBorderWidth.value = `${calculatedWidth}px`
+    loadingBorderRadius.value = `${minSide / 2}px`
+  }
+
+  const setupObserver = (cb: (el: _Element) => void) => {
+    const el = targetElement.value as _Element
+    if (!el) return
+
+    observer!.observe(el)
   }
 
   onMounted(() => {
-    watchEffect(() => {
-      calculateLoadingWidth(targetElement.value, bold.value)
+    setupObserver((el) => {
+      calculateLoadingWidth(el, bold.value)
     })
+    watchEffect(() => {
+      const _bold = bold.value
+      const el = targetElement.value
+      if (el !== null) {
+        calculateLoadingWidth(el, _bold)
+      }
+    })
+  })
+
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect()
+    }
   })
 
   return {
     size: loadingSize,
     borderWidth: loadingBorderWidth,
+    borderRadius: loadingBorderRadius,
   }
 }

@@ -9286,10 +9286,12 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useLoadingStyle(targetElement, bold) {
   const loadingSize = vue.ref("16px");
-  const loadingBorderWidth = vue.ref("0px");
+  const loadingBorderWidth = vue.ref("1px");
+  const loadingBorderRadius = vue.ref("8px");
   return {
     size: loadingSize,
-    borderWidth: loadingBorderWidth
+    borderWidth: loadingBorderWidth,
+    borderRadius: loadingBorderRadius
   };
 }
 var __defProp = Object.defineProperty;
