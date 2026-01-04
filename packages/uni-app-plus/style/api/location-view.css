@@ -33,6 +33,8 @@
 .uni-system-open-location .info>.name {
   font-size: 17px;
   color: #111111;
+  /* vue3 腾讯地图导航图标挡住名称 */
+  padding-right: 50px; 
 }
 
 .uni-system-open-location .info>.address {
