@@ -76,11 +76,11 @@ export function init() {
         },
       },
     }),
-    ...(process.env.UNI_APP_X_DOM2 === 'true' ? [uniSharedDataPlugin()] : []),
+    ...(isDom2 ? [uniSharedDataPlugin()] : []),
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
       ? [replaceExtApiPagePaths()]
       : []),
-    ...(process.env.UNI_APP_X_DOM2 === 'true' ? [uniAppCssPlugin()] : []),
+    ...(isDom2 ? [uniAppCssPlugin()] : []),
     ...(isNormalCompileTarget() ? [uniStatsPlugin()] : []),
   ]
 }

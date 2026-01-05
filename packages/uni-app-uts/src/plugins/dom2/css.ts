@@ -34,6 +34,8 @@ export function uniAppCssPrePlugin(): Plugin {
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   const appUVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
   const { parseCss } = require('@dcloudio/compiler-vapor-dom2')
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const isDom2Harmony = isDom2 && process.env.UNI_UTS_PLATFORM === 'app-harmony'
   return {
     name,
     // 需要提前，因为unocss会在configResolved读取vite:css-post插件
@@ -69,9 +71,6 @@ export function uniAppCssPrePlugin(): Plugin {
             platform: process.env.UNI_UTS_PLATFORM,
             helper: requireUniHelpers(),
           })
-          const isDom2Harmony =
-            process.env.UNI_APP_X_DOM2 === 'true' &&
-            process.env.UNI_UTS_PLATFORM === 'app-harmony'
           if (isDom2Harmony && fontFaces) {
             const id = CSS_FILE_ID_MAP.get(filename)
             if (id) {
@@ -121,10 +120,6 @@ export function uniAppCssPrePlugin(): Plugin {
         name: 'uni:app-uvue-css-inline-post',
         apply: 'build',
         generateBundle(_, bundle) {
-          // 暂时保留此条件容错
-          const isDom2Harmony =
-            process.env.UNI_APP_X_DOM2 === 'true' &&
-            process.env.UNI_UTS_PLATFORM === 'app-harmony'
           if (isDom2Harmony) {
             Object.entries(bundle).forEach(([file, asset]) => {
               // 不支持多style标签
@@ -158,9 +153,6 @@ export function uniAppCssPrePlugin(): Plugin {
       // 重要：必须放到 unplugin-auto-import、uni:sd 前
       const index = plugins.findIndex((p) => p.name === 'unplugin-auto-import')
       plugins.splice(index, 0, uvueCssPostPlugin)
-      const isDom2Harmony =
-        process.env.UNI_APP_X_DOM2 === 'true' &&
-        process.env.UNI_UTS_PLATFORM === 'app-harmony'
       if (isDom2Harmony) {
         plugins.splice(index + 1, 0, uvueCssInlinePostPlugin)
       }
