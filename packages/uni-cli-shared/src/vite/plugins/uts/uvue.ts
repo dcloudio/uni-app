@@ -26,10 +26,7 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
       return {
         code: code.replace(/<script([^>]*)>/gi, (match, attributes) => {
           let vapor = false
-          if (
-            process.env.UNI_VUE_VAPOR_ALL === 'true' ||
-            process.env.UNI_APP_X_DOM2 === 'true'
-          ) {
+          if (process.env.UNI_APP_X_DOM2 === 'true') {
             if (attributes.includes('setup') && !attributes.includes('vapor')) {
               vapor = true
             }

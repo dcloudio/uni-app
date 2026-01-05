@@ -18,23 +18,6 @@ export function initModuleAlias() {
   const libDir = path.resolve(__dirname, '../../lib')
   const compilerSfcPath = path.resolve(libDir, '@vue/compiler-sfc')
   const serverRendererPath = require.resolve('@vue/server-renderer')
-  // TODO 临时开关启用vapor
-  if (
-    !process.env.UNI_VUE_VAPOR &&
-    process.env.UNI_INPUT_DIR &&
-    // 该代码执行较早，不能使用UNI_UTS_PLATFORM
-    (process.env.UNI_PLATFORM === 'app-harmony' ||
-      (process.env.UNI_PLATFORM === 'app' &&
-        process.env.UNI_APP_PLATFORM === 'ios'))
-  ) {
-    const vaporConfig = path.resolve(process.env.UNI_INPUT_DIR, '.vapor')
-    if (fs.existsSync(vaporConfig)) {
-      process.env.UNI_VUE_VAPOR = 'true'
-      if (fs.readFileSync(vaporConfig, 'utf-8').trim() === '*') {
-        process.env.UNI_VUE_VAPOR_ALL = 'true'
-      }
-    }
-  }
 
   if (process.env.UNI_APP_X_DOM2 === 'true') {
     if (
@@ -50,27 +33,7 @@ export function initModuleAlias() {
       }
     }
   }
-  if (process.env.UNI_VUE_VAPOR === 'true') {
-    const vuePkgs = [
-      '@vue/compiler-core',
-      '@vue/compiler-dom',
-      '@vue/compiler-sfc',
-      '@vue/compiler-ssr',
-      '@vue/compiler-vapor',
-      '@vue/server-renderer',
-      '@vue/shared',
-    ]
-    vuePkgs.forEach((pkg) => {
-      moduleAlias.addAlias(
-        pkg,
-        path.resolve(libDir, 'vapor', '@vue', pkg.split('/').pop()!)
-      )
-    })
-    moduleAlias.addAlias(
-      '@vitejs/plugin-vue',
-      path.resolve(libDir, 'vapor', '@vitejs', 'plugin-vue')
-    )
-  } else if (process.env.UNI_APP_X_DOM2 === 'true') {
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
     const vuePkgs = [
       '@vue/compiler-core',
       '@vue/compiler-dom',
