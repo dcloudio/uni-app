@@ -18865,33 +18865,54 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const coefficientMap = {
-  medium: 1,
-  thick: 2
-};
+class UniVueElement extends HTMLElement {
+}
+class UniLoadingElement extends UniVueElement {
+}
 function useLoadingStyle(targetElement, bold) {
   const loadingSize = ref("16px");
-  const loadingBorderWidth = ref("0px");
+  const loadingBorderWidth = ref("1px");
+  const loadingBorderRadius = ref("8px");
+  let observer = null;
   const calculateLoadingWidth = (element, bold2) => {
-    if (!element)
-      return;
-    const computedStyle = window.getComputedStyle(element);
-    const width = parseFloat(computedStyle.width);
-    const height = parseFloat(computedStyle.height);
-    const coefficient = coefficientMap[bold2 ? "thick" : "medium"];
+    const { width, height } = element.getBoundingClientRect();
+    const coefficient = bold2 ? 2 : 1;
     const minSide = Math.min(width, height);
     const calculatedWidth = minSide / 16 * coefficient;
     loadingSize.value = `${minSide}px`;
     loadingBorderWidth.value = `${calculatedWidth}px`;
+    loadingBorderRadius.value = `${minSide / 2}px`;
+  };
+  const setupObserver = (cb) => {
+    const el = targetElement.value;
+    if (!el)
+      return;
+    observer = new ResizeObserver((entries2) => {
+      cb(el);
+    });
+    observer.observe(el);
   };
   onMounted(() => {
-    watchEffect(() => {
-      calculateLoadingWidth(targetElement.value, bold.value);
+    setupObserver((el) => {
+      calculateLoadingWidth(el, bold.value);
     });
+    watchEffect(() => {
+      const _bold = bold.value;
+      const el = targetElement.value;
+      if (el !== null) {
+        calculateLoadingWidth(el, _bold);
+      }
+    });
+  });
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect();
+    }
   });
   return {
     size: loadingSize,
-    borderWidth: loadingBorderWidth
+    borderWidth: loadingBorderWidth,
+    borderRadius: loadingBorderRadius
   };
 }
 var __defProp2 = Object.defineProperty;
@@ -18914,7 +18935,12 @@ var __spreadValues = (a2, b) => {
 };
 var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
 const _sfc_main$4 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
-  name: "Loading",
+  name: "loading",
+  // @ts-ignore
+  rootElement: {
+    name: "uni-loading-element",
+    class: UniLoadingElement
+  },
   __reserved: true,
   compatConfig: {
     MODE: 3

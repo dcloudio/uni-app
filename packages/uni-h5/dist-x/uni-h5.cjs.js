@@ -9294,12 +9294,18 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+class UniVueElement extends HTMLElement {
+}
+class UniLoadingElement extends UniVueElement {
+}
 function useLoadingStyle(targetElement, bold) {
   const loadingSize = vue.ref("16px");
-  const loadingBorderWidth = vue.ref("0px");
+  const loadingBorderWidth = vue.ref("1px");
+  const loadingBorderRadius = vue.ref("8px");
   return {
     size: loadingSize,
-    borderWidth: loadingBorderWidth
+    borderWidth: loadingBorderWidth,
+    borderRadius: loadingBorderRadius
   };
 }
 var __defProp = Object.defineProperty;
@@ -9322,7 +9328,12 @@ var __spreadValues = (a, b) => {
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValues({}, {
-  name: "Loading",
+  name: "loading",
+  // @ts-ignore
+  rootElement: {
+    name: "uni-loading-element",
+    class: UniLoadingElement
+  },
   __reserved: true,
   compatConfig: {
     MODE: 3
