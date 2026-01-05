@@ -134,8 +134,9 @@ async function build(target) {
   if (['uni-app-harmony'].includes(target)) {
     await fs.remove(`${pkgDir}/dist-x`)
   }
-  if (['uni-h5', 'uni-mp-weixin'].includes(target) && process.env.UNI_APP_EXT_COMPONENT_DIR) {
-    syncExtComponentFile([process.env.UNI_APP_EXT_COMPONENT_DIR])
+  if (process.env.UNI_APP_EXT_COMPONENT_DIR) {
+    const platform = target === 'uni-h5' ? 'web' : target.startsWith('uni-mp') ? 'mp' : ''
+    platform && syncExtComponentFile([process.env.UNI_APP_EXT_COMPONENT_DIR], platform)
   }
 
   const env = devOnly ? 'development' : 'production'

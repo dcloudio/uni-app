@@ -4,6 +4,8 @@
   <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" style="box-sizing: border-box;"></view>
 </template>
 <script setup lang="uts">
+import { UniLoadingElement } from "./global";
+
 const props = withDefaults(defineProps<{
   /**
    * 是否暂停动画
@@ -31,6 +33,16 @@ const props = withDefaults(defineProps<{
   paused: false,
   bold: false
 })
+
+defineOptions({
+  name: 'loading',
+  // @ts-ignore
+  rootElement: {
+    name: 'uni-loading-element',
+    class: UniLoadingElement
+  },
+});
+
 </script>
 <style>
 .default {
