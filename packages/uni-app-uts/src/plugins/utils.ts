@@ -35,9 +35,12 @@ const isXHarmony =
 export function createUniOptions(
   platform: 'app-android' | 'app-ios' | 'app-harmony'
 ): UniVitePlugin['uni'] {
-  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const isDom2Harmony =
+    process.env.UNI_APP_X_DOM2 === 'true' && platform === 'app-harmony'
   return {
-    compiler: isDom2 ? require('@dcloudio/compiler-vapor-dom2') : undefined,
+    compiler: isDom2Harmony
+      ? require('@dcloudio/compiler-vapor-dom2')
+      : undefined,
     copyOptions() {
       const inputDir = process.env.UNI_INPUT_DIR
       const outputDir = process.env.UNI_OUTPUT_DIR
@@ -72,7 +75,7 @@ export function createUniOptions(
       platform === 'app-ios' || platform === 'app-harmony'
         ? {
             isNativeTag(tag) {
-              if (isDom2) {
+              if (isDom2Harmony) {
                 return isDom2AppNativeTag(tag)
               }
               return (

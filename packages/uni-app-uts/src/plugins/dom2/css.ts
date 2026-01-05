@@ -34,8 +34,9 @@ export function uniAppCssPrePlugin(): Plugin {
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   const appUVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
   const { parseCss } = require('@dcloudio/compiler-vapor-dom2')
-  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
-  const isDom2Harmony = isDom2 && process.env.UNI_UTS_PLATFORM === 'app-harmony'
+  const isDom2Harmony =
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-harmony'
   return {
     name,
     // 需要提前，因为unocss会在configResolved读取vite:css-post插件
