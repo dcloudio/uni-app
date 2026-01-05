@@ -125,6 +125,7 @@ export default defineConfig({
     __APP_VIEW__: false,
     __NODE_JS__: FORMAT === 'cjs' ? true : false,
     __X__: isX,
+    HTMLElement: FORMAT === 'cjs' ? 'Object' : 'HTMLElement',
   },
   resolve: {
     alias: [

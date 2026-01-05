@@ -9284,7 +9284,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniVueElement extends HTMLElement {
+class UniVueElement extends Object {
 }
 class UniLoadingElement extends UniVueElement {
 }
