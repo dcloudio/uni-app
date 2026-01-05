@@ -2179,7 +2179,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2249,7 +2249,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2392,7 +2392,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -2524,7 +2524,7 @@ const props$u = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$u,
   emits: ["change"],
@@ -2635,7 +2635,7 @@ const props$t = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$t,
   rootElement: {
@@ -5189,13 +5189,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$o = 0;
+let index$p = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$o++);
+    const callbackId = String(index$p++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -11239,7 +11239,7 @@ const props$r = /* @__PURE__ */ extend({}, props$s, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$r,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -11311,7 +11311,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -11456,7 +11456,7 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const __syscom_4 = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$q,
   rootElement: {
@@ -28032,7 +28032,6 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const loadingPathData = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
 const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   __name: "chooseLocation",
   setup(__props) {
@@ -28108,9 +28107,6 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     const callUniMapCoErr = ref(false);
     const useUniCloud = ref(true);
     const mapHeight = ref(350);
-    const loadingPath = ref(loadingPathData);
-    const loadingRotate = ref(0);
-    const loadingTimer = ref(-1);
     const timeoutTimers = ref([]);
     const mapTargetRef = ref(null);
     const scrollRef = ref(null);
@@ -28436,12 +28432,6 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
         searchValueChangeTimer.value = -1;
       }
     };
-    const clearLoadingTimer = () => {
-      if (loadingTimer.value != -1) {
-        clearInterval(loadingTimer.value);
-        loadingTimer.value = -1;
-      }
-    };
     const clearAllTimeoutTimers = () => {
       timeoutTimers.value.forEach((timer) => {
         if (timer != -1) {
@@ -28565,17 +28555,6 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       const locale = uni.getLocale();
       language.value = locale;
     };
-    watch(searchLoading, (val) => {
-      clearLoadingTimer();
-      if (val) {
-        loadingRotate.value += 100;
-        loadingTimer.value = setInterval(() => {
-          loadingRotate.value += 100;
-        }, 200);
-      } else {
-        loadingRotate.value = 0;
-      }
-    });
     const languageCom = computed(() => {
       const textInfo = languageData[language.value] != null ? languageData[language.value] : languageData["zh-Hans"];
       return textInfo;
@@ -28629,7 +28608,6 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       uni.$off(successEventName.value, null);
       uni.$off(failEventName.value, null);
       clearSearchValueChangeTimer();
-      clearLoadingTimer();
       clearAllTimeoutTimers();
     });
     onResize(() => {
@@ -28640,7 +28618,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       const _component_text = __syscom_1$1;
       const _component_view = __syscom_2;
       const _component_input = __syscom_3;
-      const _component_image = __syscom_4;
+      const _component_loading = _sfc_main$4;
       const _component_scroll_view = __syscom_2$1;
       return openBlock(), createBlock(_component_view, {
         class: normalizeClass(["uni-choose-location", darkClassCom.value])
@@ -28834,12 +28812,9 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
                     class: "uni-choose-location-poi-search-loading"
                   }, {
                     default: withCtx(() => [
-                      createVNode(_component_image, {
-                        src: loadingPath.value,
-                        class: "uni-choose-location-poi-search-loading-image",
-                        mode: "widthFix",
-                        style: normalizeStyle("transform: rotate(" + loadingRotate.value + "deg)")
-                      }, null, 8, ["src", "style"])
+                      createVNode(_component_loading, {
+                        class: normalizeClass(["uni-choose-location-poi-search-loading-item", [darkClassCom.value]])
+                      }, null, 8, ["class"])
                     ]),
                     _: 1
                   })) : (openBlock(true), createElementBlock(Fragment, { key: 3 }, renderList(pois.value, (item, index2) => {
@@ -28901,12 +28876,9 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
                     class: "uni-choose-location-poi-search-loading"
                   }, {
                     default: withCtx(() => [
-                      createVNode(_component_image, {
-                        src: loadingPath.value,
-                        class: "uni-choose-location-poi-search-loading-image",
-                        mode: "widthFix",
-                        style: normalizeStyle("transform: rotate(" + loadingRotate.value + "deg)")
-                      }, null, 8, ["src", "style"])
+                      createVNode(_component_loading, {
+                        class: normalizeClass(["uni-choose-location-poi-search-loading-item", [darkClassCom.value]])
+                      }, null, 8, ["class"])
                     ]),
                     _: 1
                   })) : createCommentVNode("", true)
@@ -29150,12 +29122,10 @@ const _style_0$2 = `
     color: #808080;
     padding-left: 5px;
 }
-.uni-choose-location-poi-search-loading-image {
+.uni-choose-location-poi-search-loading-item {
     width: 28px;
     height: 28px;
-    transition-property: transform;
-    transition-duration: 0.2s;
-    transition-timing-function: linear;
+    border-color: #D0D0D0;
 }
 
   /* 横屏样式开始 */
@@ -29228,6 +29198,9 @@ const _style_0$2 = `
 }
 .uni-choose-location-dark.uni-choose-location-poi-search-error-text {
     color: #d1d1d1;
+}
+.uni-choose-location-dark.uni-choose-location-poi-search-loading-item {
+    border-color: #d1d1d1;
 }
   /* 暗黑模式样式结束 */
 uni-image {
@@ -30304,19 +30277,19 @@ export {
   index$3 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$r as Button,
+  index$s as Button,
   index$2 as Camera,
   indexX$4 as Canvas,
-  index$p as Checkbox,
-  index$q as CheckboxGroup,
+  index$q as Checkbox,
+  index$r as CheckboxGroup,
   index$7 as CoverImage,
   index$8 as CoverView,
-  index$n as Editor,
-  index$t as Form,
-  index$m as Icon,
-  __syscom_4 as Image,
+  index$o as Editor,
+  index$u as Form,
+  index$n as Icon,
+  index$m as Image,
   __syscom_3 as Input,
-  index$s as Label,
+  index$t as Label,
   LayoutComponent,
   index$g as ListItem,
   index$h as ListView,

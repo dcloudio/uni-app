@@ -35,7 +35,7 @@
         <view class="uni-choose-location-poi-search-loading" v-else-if="locationLoading"><text
             class="uni-choose-location-poi-search-loading-text" :class="[darkClassCom]">{{ languageCom['locationLoading'] }}</text></view>
         <view class="uni-choose-location-poi-search-loading" v-else-if="searchLoading && pageIndex == 1">
-          <image :src="loadingPath" class="uni-choose-location-poi-search-loading-image" mode="widthFix" :style="'transform: rotate('+loadingRotate+'deg)'"></image>
+          <loading class="uni-choose-location-poi-search-loading-item" :class="[darkClassCom]"></loading>
         </view>
         <template v-else>
           <view v-for="(item,index) in pois" :key="index" class="uni-choose-location-poi-item" :class="[landscapeClassCom]" @click="selectPoi(item, index)">
@@ -49,7 +49,7 @@
           </view>
         </template>
         <view class="uni-choose-location-poi-search-loading" v-if="searchLoading && pageIndex > 1">
-          <image :src="loadingPath" class="uni-choose-location-poi-search-loading-image" mode="widthFix" :style="'transform: rotate('+loadingRotate+'deg)'"></image>
+          <loading class="uni-choose-location-poi-search-loading-item" :class="[darkClassCom]"></loading>
         </view>
       </scroll-view>
     </view>
@@ -152,8 +152,6 @@
   }
   // #endif
 
-  const loadingPathData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg=='
-
   const currentInstance = getCurrentInstance()!.proxy!
   const uniPage = currentInstance.$page
 
@@ -203,9 +201,6 @@
   const callUniMapCoErr = ref(false)
   const useUniCloud = ref(true)
   const mapHeight = ref(350)
-  const loadingPath = ref(loadingPathData)
-  const loadingRotate = ref(0)
-  const loadingTimer = ref(-1)
   const timeoutTimers = ref([] as Array<number>)
 
   const mapTargetRef = ref(null as UniElement | null)
@@ -581,13 +576,6 @@
     }
   }
 
-  const clearLoadingTimer = () => {
-    if (loadingTimer.value != -1) {
-      clearInterval(loadingTimer.value);
-      loadingTimer.value = -1;
-    }
-  }
-
   const clearAllTimeoutTimers = () => {
     timeoutTimers.value.forEach((timer : number) => {
       if (timer != -1) {
@@ -745,18 +733,6 @@
     // #endif
   }
 
-  watch(searchLoading, (val : boolean) => {
-    clearLoadingTimer();
-    if (val) {
-      loadingRotate.value += 100;
-      loadingTimer.value = setInterval(() => {
-        loadingRotate.value += 100;
-      }, 200);
-    } else {
-      loadingRotate.value = 0;
-    }
-  })
-
   const languageCom = computed(() : UTSJSONObject => {
     const textInfo = languageData[language.value] != null ? languageData[language.value] as UTSJSONObject : languageData['zh-Hans'] as UTSJSONObject;
     return textInfo;
@@ -818,7 +794,6 @@
     uni.$off(successEventName.value, null);
     uni.$off(failEventName.value, null);
     clearSearchValueChangeTimer();
-    clearLoadingTimer();
     clearAllTimeoutTimers();
   })
 
@@ -1093,12 +1068,10 @@
     padding-left: 5px;
   }
 
-  .uni-choose-location-poi-search-loading-image {
+  .uni-choose-location-poi-search-loading-item {
     width: 28px;
     height: 28px;
-    transition-property: transform;
-    transition-duration: 0.2s;
-    transition-timing-function: linear;
+    border-color: #D0D0D0;
   }
 
   /* 横屏样式开始 */
@@ -1188,6 +1161,10 @@
 
   .uni-choose-location-dark.uni-choose-location-poi-search-error-text {
     color: #d1d1d1;
+  }
+
+  .uni-choose-location-dark.uni-choose-location-poi-search-loading-item {
+    border-color: #d1d1d1;
   }
   /* 暗黑模式样式结束 */
 
