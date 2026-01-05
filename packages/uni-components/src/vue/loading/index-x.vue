@@ -1,14 +1,8 @@
 <script setup lang="ts">
+import { UniLoadingElement } from "./global";
 import { ref, reactive, computed } from 'vue'
 import { useLoadingStyle } from './useLoadingStyle'
 
-defineOptions({
-  name: "Loading",
-  __reserved: true,
-  compatConfig: {
-    MODE: 3
-  }
-})
 
 
 const props = withDefaults(defineProps<{
@@ -23,11 +17,34 @@ const props = withDefaults(defineProps<{
    }
  */
   paused?: boolean,
+  /**
+   * 是否加粗线条
+   * @uniPlatform {
+     "app": {
+       "harmony": {
+         "unixvVer": "5.0"
+       }
+     }
+   }
+ */
   bold ?: boolean
 }>(), {
   paused: false,
   bold: false
 })
+
+defineOptions({
+  name: 'loading',
+  // @ts-ignore
+  rootElement: {
+    name: 'uni-loading-element',
+    class: UniLoadingElement
+  },
+  __reserved: true,
+  compatConfig: {
+    MODE: 3
+  }
+});
 
 
 const LoadingRef = ref<HTMLElement | null>(null)
