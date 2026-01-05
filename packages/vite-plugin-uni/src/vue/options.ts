@@ -88,8 +88,12 @@ export function initPluginVueOptions(
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
+  const isDom2Harmony =
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_PLATFORM === 'app-harmony'
+
   ;(compilerOptions as any).isX = process.env.UNI_APP_X === 'true'
-  ;(compilerOptions as any).dom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  ;(compilerOptions as any).dom2 = isDom2Harmony
 
   // 默认就移除comments节点
   compilerOptions.comments = false
@@ -207,13 +211,12 @@ export function initPluginVueOptions(
       },
     }
   }
+
   if (options.platform !== 'h5' && options.platform !== 'web') {
     compilerOptions.nodeTransforms.push(
       ...getBaseNodeTransforms(
         options.base,
-        process.env.UNI_APP_X_DOM2 === 'true'
-          ? createResolveStaticAsset(options.inputDir)
-          : undefined
+        isDom2Harmony ? createResolveStaticAsset(options.inputDir) : undefined
       )
     )
   }
@@ -297,7 +300,7 @@ export function initPluginVueOptions(
     if (!vueOptions.script.babelParserPlugins.includes('decorators')) {
       vueOptions.script.babelParserPlugins.push('decorators')
     }
-    if (process.env.UNI_APP_X_DOM2 === 'true') {
+    if (isDom2Harmony) {
       const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
       function isAppVue(id: string) {
         return normalizePath(id) === appVue
