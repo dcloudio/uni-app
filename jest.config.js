@@ -20,6 +20,7 @@ module.exports = {
     // source-map
     __PLATFORM_WEB__: false,
     __HARMONY__: false,
+    HTMLElement: class { }
   },
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'lcov', 'text'],
