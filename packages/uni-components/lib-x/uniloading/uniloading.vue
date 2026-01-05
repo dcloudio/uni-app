@@ -6,6 +6,7 @@
 <script setup lang="uts">
 import { UniLoadingElement } from "./global";
 
+
 const props = withDefaults(defineProps<{
   /**
    * 是否暂停动画
@@ -42,6 +43,7 @@ defineOptions({
     class: UniLoadingElement
   },
 });
+
 
 </script>
 <style>
