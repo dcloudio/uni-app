@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { UniLoadingElement } from "./global";
+import { UniLoadingElement } from './element';
 import { ref, reactive, computed } from 'vue'
 import { useLoadingStyle } from './useLoadingStyle'
-
 
 
 
