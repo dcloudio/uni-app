@@ -12,6 +12,5 @@ export {
   isUniXPageFile,
   getUniXPagePaths,
   parseUniXAppAndroidPackage,
-  isEnableUniXVapor,
 } from './uni-x'
 export { checkPagesJson } from './utils'

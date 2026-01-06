@@ -5,10 +5,8 @@ import {
   getWorkers,
   isAppVue,
   isEnableConsole,
-  isEnableUniXVapor,
   isNormalCompileTarget,
   isVueSfcFile,
-  parseManifestJsonOnce,
   resolveUTSCompiler,
   uniCssScopedPlugin,
   uniDecryptUniModulesPlugin,
@@ -38,9 +36,7 @@ import { uniCustomElementPlugin } from './plugins/customElement'
 import { uniApiPlugin } from './plugins/api'
 
 export default () => {
-  const isEnableVapor =
-    process.env.UNI_APP_X === 'true' &&
-    isEnableUniXVapor(parseManifestJsonOnce(process.env.UNI_INPUT_DIR))
+  const isVapor = process.env.UNI_APP_X_VAPOR === 'true'
   return [
     ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniJavaScriptWorkersPlugin()]
@@ -76,7 +72,7 @@ export default () => {
     uniCssScopedPlugin({
       filter: (id) => {
         // Vapor 模式下，App.vue 也需要处理
-        if (isEnableVapor) {
+        if (isVapor) {
           return isVueSfcFile(id)
         }
         return isVueSfcFile(id) && !isAppVue(id)
