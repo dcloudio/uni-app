@@ -350,21 +350,19 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
 
   if (isDom2) {
     // dom2 特有
-    runtimeExports.push(
-      ['UniVueElement']
-    )
+    runtimeExports.push(['UniVueElement'])
   }
 
   const externalModuleExportsPath = isDom2
     ? '../../lib/arkts/external-module-exports-dom2.json'
     : isX
-      ? '../../lib/arkts/external-module-exports-x.json'
-      : '../../lib/arkts/external-module-exports.json'
+    ? '../../lib/arkts/external-module-exports-x.json'
+    : '../../lib/arkts/external-module-exports.json'
   const internalModuleExportsPath = isDom2
     ? '../../lib/arkts/internal-module-exports-dom2.json'
     : isX
-      ? '../../lib/arkts/internal-module-exports-x.json'
-      : '../../lib/arkts/internal-module-exports.json'
+    ? '../../lib/arkts/internal-module-exports-x.json'
+    : '../../lib/arkts/internal-module-exports.json'
   /**
    * uni-video、uni-canvas、uni-chooseLocation等内置component、api。uni_module目录下包含
    */
