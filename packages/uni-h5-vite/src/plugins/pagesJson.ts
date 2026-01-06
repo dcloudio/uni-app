@@ -13,6 +13,7 @@ import {
   normalizePagePath,
   normalizePagesJson,
   normalizePagesRoute,
+  normalizeStyleIsolation,
   parseManifestJsonOnce,
   preUVueJson,
 } from '@dcloudio/uni-cli-shared'
@@ -213,7 +214,7 @@ function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
     pagePathWithExtname = pageOptions.path + '.vue'
   }
   const pageIdent = normalizeIdentifier(pageOptions.path)
-  return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}').then(com => setupPage(com.default || com))
+  return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}').then(com => setupPage(com.default || com, '${pagePathWithExtname}'))
 const ${pageIdent} = defineAsyncComponent(extend({loader:${pageIdent}Loader},AsyncComponentOptions))`
 }
 
@@ -300,11 +301,18 @@ function generateConfig(
   pagesJson: Record<string, any>,
   config: ResolvedConfig
 ) {
+  const isX = process.env.UNI_APP_X === 'true'
+  const isVapor = process.env.UNI_APP_X_VAPOR === 'true'
+  const styleIsolationCode = isVapor
+    ? `${globalName}.__uniConfig.styleIsolation = ${normalizeStyleIsolation(
+        pagesJson as any
+      )};`
+    : ''
   delete pagesJson.pages
   delete pagesJson.subPackages
   delete pagesJson.subpackages
   pagesJson.compilerVersion = process.env.UNI_COMPILER_VERSION
-  const isX = process.env.UNI_APP_X === 'true'
+
   const vueType = isX ? 'uvue' : 'nvue'
   let tabBarCode = ''
   if (isX) {
@@ -340,5 +348,6 @@ function generateConfig(
   themeConfig,
 })
 ${tabBarCode}
+${styleIsolationCode}
 `
 }

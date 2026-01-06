@@ -8895,7 +8895,8 @@ function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, 
     }
   };
   if (type === "page") {
-    if (comp.styleIsolation !== "isolated") {
+    const styleIsolation = comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename];
+    if (styleIsolation !== "isolated") {
       comp.styleIsolation = "app-shared";
     }
   }
@@ -8921,9 +8922,12 @@ function setupWindow(comp, id2) {
     }
   });
 }
-function setupPage(comp) {
+function setupPage(comp, path) {
   if (process.env.NODE_ENV !== "production") {
     comp.__mpType = "page";
+  }
+  if (path) {
+    comp.__filename = path;
   }
   return setupComponent(comp, {
     type: "page",

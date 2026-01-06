@@ -91,7 +91,9 @@ function wrapperComponentSetup(
   }
   if (__X_VAPOR__ && type === 'page') {
     // 只要不是手动设置隔离样式的组件，全部设置为 app-shared
-    if (comp.styleIsolation !== 'isolated') {
+    const styleIsolation =
+      comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename]
+    if (styleIsolation !== 'isolated') {
       comp.styleIsolation = 'app-shared'
     }
   }
@@ -124,9 +126,12 @@ export function setupWindow(comp: any, id: number) {
   })
 }
 
-export function setupPage(comp: any) {
+export function setupPage(comp: any, path: string) {
   if (__DEV__) {
     comp.__mpType = 'page'
+  }
+  if (__X_VAPOR__ && path) {
+    comp.__filename = path
   }
   return setupComponent(comp, {
     type: 'page',

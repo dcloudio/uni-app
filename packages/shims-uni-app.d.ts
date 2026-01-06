@@ -73,6 +73,7 @@ declare namespace UniNamespace {
     uvue?: {
       'flex-direction': 'column' | 'row'
     }
+    styleIsolation?: Record<string, 'isolated'>
     globalStyle: PagesJsonPageStyle & {
       rpxCalcMaxDeviceWidth?: number
       rpxCalcBaseDeviceWidth?: number
