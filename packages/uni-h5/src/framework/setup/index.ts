@@ -62,15 +62,19 @@ import { useBackgroundColorContent } from '../../x/framework/setup/page'
 import { getPageProxyId } from '@dcloudio/uni-core'
 
 interface SetupComponentOptions {
+  type?: 'app' | 'page'
   clone?: boolean
   init: (vm: ComponentPublicInstance) => void
   setup: (instance: ComponentInternalInstance) => Record<string, any> | void
   before?: (comp: DefineComponent) => void
+  options?: {
+    styleIsolation?: 'isolated' | 'app-shared'
+  }
 }
 
 function wrapperComponentSetup(
   comp: DefineComponent,
-  { clone, init, setup, before }: SetupComponentOptions
+  { type, clone, init, setup, before, options }: SetupComponentOptions
 ) {
   if (clone) {
     comp = extend({}, comp)
@@ -83,6 +87,12 @@ function wrapperComponentSetup(
     setup(instance)
     if (oldSetup) {
       return oldSetup(props, ctx)
+    }
+  }
+  if (__X_VAPOR__ && type === 'page') {
+    // 只要不是手动设置隔离样式的组件，全部设置为 app-shared
+    if (comp.styleIsolation !== 'isolated') {
+      comp.styleIsolation = 'app-shared'
     }
   }
   return comp
@@ -119,6 +129,7 @@ export function setupPage(comp: any) {
     comp.__mpType = 'page'
   }
   return setupComponent(comp, {
+    type: 'page',
     clone: true, // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
     setup(instance) {

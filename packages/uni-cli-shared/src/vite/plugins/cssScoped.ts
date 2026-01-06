@@ -51,6 +51,7 @@ export function uniRemoveCssScopedPlugin(
 export function uniCssScopedPlugin(
   { filter }: UniCssScopedPluginOptions = { filter: () => false }
 ): Plugin {
+  const isVapor = process.env.UNI_APP_X_VAPOR === 'true'
   return {
     name: 'uni:css-scoped',
     enforce: 'pre',
@@ -67,7 +68,7 @@ export function uniCssScopedPlugin(
       if (!EXTNAME_VUE.includes(path.extname(ctx.file))) {
         return
       }
-      const scoped = !isAppVue(ctx.file)
+      const scoped = isVapor || !isAppVue(ctx.file)
       debugScoped('hmr', ctx.file)
       const oldRead = ctx.read
       ctx.read = async () => {

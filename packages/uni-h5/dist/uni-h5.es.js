@@ -16454,7 +16454,7 @@ function initApp(vm) {
   initService();
   initView();
 }
-function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
+function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
   if (clone) {
     comp = extend({}, comp);
   }
@@ -16495,6 +16495,7 @@ function setupPage(comp) {
     comp.__mpType = "page";
   }
   return setupComponent(comp, {
+    type: "page",
     clone: true,
     // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,

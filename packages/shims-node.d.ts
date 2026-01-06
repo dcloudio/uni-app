@@ -43,6 +43,7 @@ declare namespace NodeJS {
     __VUE_DEVTOOLS_PORT__: string
 
     UNI_APP_X?: 'true' | 'false'
+    UNI_APP_X_VAPOR?: 'true' | 'false'
 
     HX_Version: string
 

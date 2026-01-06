@@ -7043,7 +7043,23 @@ function baseCreateRenderer(options, createHydrationFns) {
         );
       }
     }
+    if (vnode.ctx) {
+      const ctx = vnode.ctx;
+      const styleIsolation = (ctx == null ? void 0 : ctx.type).styleIsolation;
+      if (styleIsolation === "app-shared") {
+        const appScopeId2 = resolveAppScopeId(ctx);
+        appScopeId2 && hostSetScopeId(el, appScopeId2);
+      }
+    }
   };
+  let appScopeId = void 0;
+  function resolveAppScopeId(ctx) {
+    if (appScopeId) {
+      return appScopeId;
+    }
+    appScopeId = ctx.appContext.app._component.__scopeId;
+    return appScopeId;
+  }
   const mountChildren = (children, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, start = 0) => {
     for (let i = start; i < children.length; i++) {
       const child = children[i] = optimized ? cloneIfMounted(children[i]) : normalizeVNode(children[i]);

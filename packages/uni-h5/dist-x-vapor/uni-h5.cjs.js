@@ -2842,7 +2842,7 @@ function initApp$1(vm) {
   initAppVm(appVm);
   defineGlobalData(appVm);
 }
-function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
+function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
   if (clone) {
     comp = shared.extend({}, comp);
   }
@@ -2856,6 +2856,11 @@ function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
       return oldSetup(props2, ctx);
     }
   };
+  if (type === "page") {
+    if (comp.styleIsolation !== "isolated") {
+      comp.styleIsolation = "app-shared";
+    }
+  }
   return comp;
 }
 function setupComponent(comp, options) {
@@ -2883,6 +2888,7 @@ function setupPage(comp) {
     comp.__mpType = "page";
   }
   return setupComponent(comp, {
+    type: "page",
     clone: true,
     // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
