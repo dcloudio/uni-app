@@ -5,8 +5,6 @@
 **/
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var shared = require('@vue/shared');
 var uniShared = require('@dcloudio/uni-shared');
 
@@ -3162,25 +3160,6 @@ function doWatch(source, cb, {
       cleanup = effect.onStop = void 0;
     };
   };
-  let ssrCleanup;
-  if (exports.isInSSRComponentSetup) {
-    onCleanup = shared.NOOP;
-    if (!cb) {
-      getter();
-    } else if (immediate) {
-      callWithAsyncErrorHandling(cb, instance, 3, [
-        getter(),
-        isMultiSource ? [] : void 0,
-        onCleanup
-      ]);
-    }
-    if (flush === "sync") {
-      const ctx = useSSRContext();
-      ssrCleanup = ctx.__watcherHandles || (ctx.__watcherHandles = []);
-    } else {
-      return shared.NOOP;
-    }
-  }
   let oldValue = isMultiSource ? new Array(source.length).fill(INITIAL_WATCHER_VALUE) : INITIAL_WATCHER_VALUE;
   const job = () => {
     if (!effect.active || !effect.dirty) {
@@ -3242,8 +3221,6 @@ function doWatch(source, cb, {
   } else {
     effect.run();
   }
-  if (ssrCleanup)
-    ssrCleanup.push(unwatch);
   return unwatch;
 }
 function instanceWatch(source, value, options) {
@@ -3768,7 +3745,7 @@ function defineAsyncComponent(source) {
           !errorComponent
         );
       };
-      if (suspensible && instance.suspense || exports.isInSSRComponentSetup) {
+      if (suspensible && instance.suspense || false) {
         return load().then((comp) => {
           return () => createInnerComp(comp, instance);
         }).catch((err) => {
@@ -3884,12 +3861,6 @@ const KeepAliveImpl = {
   setup(props, { slots }) {
     const instance = getCurrentInstance();
     const sharedContext = instance.ctx;
-    if (!sharedContext.renderer) {
-      return () => {
-        const children = slots.default && slots.default();
-        return children && children.length === 1 ? children[0] : children;
-      };
-    }
     if (props.cache && props.max) {
       warn$1(
         "The `max` prop will be ignored if you provide a custom caching strategy"
@@ -5541,7 +5512,12 @@ function setFullProps(instance, rawProps, props, attrs) {
       if (options && shared.hasOwn(options, camelKey = shared.camelize(key))) {
         if (!needCastKeys || !needCastKeys.includes(camelKey)) {
           {
-            props[camelKey] = value;
+            props[camelKey] = resolveExternalClassesPropValue(
+              camelKey,
+              value,
+              options,
+              false
+            );
           }
         } else {
           (rawCastValues || (rawCastValues = {}))[camelKey] = value;
@@ -5571,6 +5547,25 @@ function setFullProps(instance, rawProps, props, attrs) {
   }
   return hasAttrsChanged;
 }
+function normalizeExternalClasses(classes) {
+  const clz = uniShared.normalizeClass(classes);
+  return clz.split(/\s+/g).map((item) => "^" + item);
+}
+function resolveExternalClassesPropValue(key, value, options, isAbsent) {
+  if (
+    // 只有外部传入的 externalClasses 才走这里，没有传入，但有默认值的不应该处理，比如button组件内部hover-class有默认值button-hover
+    !isAbsent
+  ) {
+    const opt = options[key];
+    if (opt && opt[
+      2
+      /* BooleanFlags.externalClasses */
+    ]) {
+      return normalizeExternalClasses(value);
+    }
+  }
+  return value;
+}
 function resolvePropValue(options, props, key, value, instance, isAbsent) {
   const result = _resolvePropValue(
     options,
@@ -5580,7 +5575,9 @@ function resolvePropValue(options, props, key, value, instance, isAbsent) {
     instance,
     isAbsent
   );
-  return result;
+  {
+    return resolveExternalClassesPropValue(key, result, options, isAbsent);
+  }
 }
 function _resolvePropValue(options, props, key, value, instance, isAbsent) {
   const opt = options[key];
@@ -5613,6 +5610,16 @@ function _resolvePropValue(options, props, key, value, instance, isAbsent) {
     }
   }
   return value;
+}
+function initExternalClassesOptions(comp) {
+  if (shared.isArray(comp.externalClasses)) {
+    const cached = comp.__externalClassesOptions;
+    if (!cached) {
+      comp.__externalClassesOptions = comp.externalClasses.map(
+        (className) => shared.camelize(className)
+      );
+    }
+  }
 }
 function normalizePropsOptions(comp, appContext, asMixin = false) {
   const cache = appContext.propsCache;
@@ -5672,6 +5679,10 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
           const stringIndex = getTypeIndex(String, prop.type);
           prop[0 /* shouldCast */] = booleanIndex > -1;
           prop[1 /* shouldCastTrue */] = stringIndex < 0 || booleanIndex < stringIndex;
+          if (comp.__externalClassesOptions && comp.__externalClassesOptions.includes(key)) {
+            prop[2 /* externalClasses */] = true;
+            prop.skipCheck = true;
+          }
           if (booleanIndex > -1 || shared.hasOwn(prop, "default")) {
             needCastKeys.push(normalizedKey);
           }
@@ -6881,6 +6892,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       invokeDirectiveHook(vnode, null, parentComponent, "created");
     }
     setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
+    {
+      el.__vueVNodeCtx = vnode.ctx;
+    }
     if (props) {
       for (const key in props) {
         if (key !== "value" && !shared.isReservedProp(key)) {
@@ -8793,6 +8807,9 @@ let uid = 0;
 function createComponentInstance(vnode, parent, suspense) {
   var _a;
   const type = vnode.type;
+  {
+    initExternalClassesOptions(type);
+  }
   const appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
   const instance = {
     uid: uid++,
@@ -8904,27 +8921,12 @@ const getCurrentInstance = () => currentInstance || currentRenderingInstance;
 let internalSetCurrentInstance;
 let setInSSRSetupState;
 {
-  const g = shared.getGlobalThis();
-  const registerGlobalSetter = (key, setter) => {
-    let setters;
-    if (!(setters = g[key]))
-      setters = g[key] = [];
-    setters.push(setter);
-    return (v) => {
-      if (setters.length > 1)
-        setters.forEach((set) => set(v));
-      else
-        setters[0](v);
-    };
+  internalSetCurrentInstance = (i) => {
+    currentInstance = i;
   };
-  internalSetCurrentInstance = registerGlobalSetter(
-    `__VUE_INSTANCE_SETTERS__`,
-    (v) => currentInstance = v
-  );
-  setInSSRSetupState = registerGlobalSetter(
-    `__VUE_SSR_SETTERS__`,
-    (v) => exports.isInSSRComponentSetup = v
-  );
+  setInSSRSetupState = (v) => {
+    exports.isInSSRComponentSetup = v;
+  };
 }
 const setCurrentInstance = (instance) => {
   const prev = currentInstance;
@@ -9033,9 +9035,7 @@ function setupStatefulComponent(instance, isSSR) {
 }
 function handleSetupResult(instance, setupResult, isSSR) {
   if (shared.isFunction(setupResult)) {
-    if (instance.type.__ssrInlineRender) {
-      instance.ssrRender = setupResult;
-    } else {
+    {
       instance.render = setupResult;
     }
   } else if (shared.isObject(setupResult)) {
@@ -9526,15 +9526,7 @@ const warn = warn$1 ;
 const ErrorTypeStrings = ErrorTypeStrings$1 ;
 const devtools = devtools$1 ;
 const setDevtoolsHook = setDevtoolsHook$1 ;
-const _ssrUtils = {
-  createComponentInstance,
-  setupComponent,
-  renderComponentRoot,
-  setCurrentRenderingInstance,
-  isVNode: isVNode,
-  normalizeVNode
-};
-const ssrUtils = _ssrUtils ;
+const ssrUtils = null;
 const resolveFilter = null;
 const compatUtils = null;
 const DeprecationTypes = null;
@@ -9898,9 +9890,54 @@ function patchClass(el, value, isSVG) {
     el.setAttribute("class", value);
   } else {
     {
-      el.className = value;
+      el.className = processParentScopedClass(el, value);
     }
   }
+}
+function processParentScopedClass(el, classValue) {
+  const instance = el.__vueVNodeCtx;
+  if (!instance) {
+    return classValue;
+  }
+  if (!classValue || classValue.indexOf("^") === -1) {
+    return classValue;
+  }
+  const classes = classValue.split(/\s+/);
+  const processed = [];
+  let maxLevel = 0;
+  for (let i = 0; i < classes.length; i++) {
+    const cls = classes[i];
+    if (cls.charCodeAt(0) === 94) {
+      let level = 1;
+      while (cls.charCodeAt(level) === 94) {
+        level++;
+      }
+      const actualClass = cls.slice(level);
+      if (actualClass) {
+        processed.push(actualClass);
+        if (level > maxLevel) {
+          maxLevel = level;
+        }
+      }
+    } else {
+      processed.push(cls);
+    }
+  }
+  let current = instance.parent;
+  let scopeIdCount = 0;
+  while (current && scopeIdCount < maxLevel) {
+    if (current.type.__reserved) {
+      current = current.parent;
+      continue;
+    }
+    const scopeId = current.vnode.scopeId;
+    if (scopeId) {
+      el.setAttribute(scopeId, "");
+      scopeIdCount++;
+    }
+    current = current.parent;
+  }
+  return processed.join(" ");
 }
 
 const vShowOriginalDisplay = Symbol("_vod");
@@ -9946,13 +9983,6 @@ const vShow = {
 function setDisplay(el, value) {
   el.style.display = value ? el[vShowOriginalDisplay] : "none";
   el[vShowHidden] = !value;
-}
-function initVShowForSSR() {
-  vShow.getSSRProps = ({ value }) => {
-    if (!value) {
-      return { style: { display: "none" } };
-    }
-  };
 }
 
 const CSS_VAR_TEXT = Symbol("CSS_VAR_TEXT" );
@@ -10951,40 +10981,6 @@ function callModelHook(el, binding, vnode, prevVNode, hook) {
   const fn = modelToUse[hook];
   fn && fn(el, binding, vnode, prevVNode);
 }
-function initVModelForSSR() {
-  vModelText.getSSRProps = ({ value }) => ({ value });
-  vModelRadio.getSSRProps = ({ value }, vnode) => {
-    if (vnode.props && shared.looseEqual(vnode.props.value, value)) {
-      return { checked: true };
-    }
-  };
-  vModelCheckbox.getSSRProps = ({ value }, vnode) => {
-    if (shared.isArray(value)) {
-      if (vnode.props && shared.looseIndexOf(value, vnode.props.value) > -1) {
-        return { checked: true };
-      }
-    } else if (shared.isSet(value)) {
-      if (vnode.props && value.has(vnode.props.value)) {
-        return { checked: true };
-      }
-    } else if (value) {
-      return { checked: true };
-    }
-  };
-  vModelDynamic.getSSRProps = (binding, vnode) => {
-    if (typeof vnode.type !== "string") {
-      return;
-    }
-    const modelToUse = resolveDynamicModel(
-      // resolveDynamicModel expects an uppercase tag name, but vnode.type is lowercase
-      vnode.type.toUpperCase(),
-      vnode.props && vnode.props.type
-    );
-    if (modelToUse.getSSRProps) {
-      return modelToUse.getSSRProps(binding, vnode);
-    }
-  };
-}
 
 const systemModifiers = ["ctrl", "shift", "alt", "meta"];
 const modifierGuards = {
@@ -11155,14 +11151,7 @@ function normalizeContainer(container) {
   }
   return container;
 }
-let ssrDirectiveInitialized = false;
-const initDirectivesForSSR = () => {
-  if (!ssrDirectiveInitialized) {
-    ssrDirectiveInitialized = true;
-    initVModelForSSR();
-    initVShowForSSR();
-  }
-} ;
+const initDirectivesForSSR = shared.NOOP;
 
 const compile = () => {
   {

@@ -138,9 +138,15 @@ function createConfig(entryFile, output, buildOption) {
 
   const external = parseExternal(buildOption.external)
   let isX = process.env.UNI_APP_X === 'true'
+  let isX_VAPOR = isX && process.env.UNI_APP_X_VAPOR === 'true'
   if (!isX && buildOption.replacements) {
     if (buildOption.replacements.__X__ === 'true') {
       isX = true
+    }
+  }
+  if (isX && !isX_VAPOR && buildOption.replacements) {
+    if (buildOption.replacements.__X_VAPOR__ === 'true') {
+      isX_VAPOR = true
     }
   }
   const plugins = [
@@ -162,6 +168,7 @@ function createConfig(entryFile, output, buildOption) {
         // 该插件限制了不能以__开头
         _NODE_JS_: 0,
         _X_: isX ? 1 : 0,
+        _X_VAPOR_: isX_VAPOR ? 1 : 0,
       },
       exclude: ['**/node_modules/**']
     }))

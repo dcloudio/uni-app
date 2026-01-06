@@ -5493,7 +5493,9 @@ function setFullProps(instance, rawProps, props, attrs) {
       let camelKey;
       if (options && shared.hasOwn(options, camelKey = shared.camelize(key))) {
         if (!needCastKeys || !needCastKeys.includes(camelKey)) {
-          props[camelKey] = value;
+          {
+            props[camelKey] = value;
+          }
         } else {
           (rawCastValues || (rawCastValues = {}))[camelKey] = value;
         }
@@ -5523,6 +5525,17 @@ function setFullProps(instance, rawProps, props, attrs) {
   return hasAttrsChanged;
 }
 function resolvePropValue(options, props, key, value, instance, isAbsent) {
+  const result = _resolvePropValue(
+    options,
+    props,
+    key,
+    value,
+    instance,
+    isAbsent
+  );
+  return result;
+}
+function _resolvePropValue(options, props, key, value, instance, isAbsent) {
   const opt = options[key];
   if (opt != null) {
     const hasDefault = shared.hasOwn(opt, "default");
@@ -9831,7 +9844,9 @@ function patchClass(el, value, isSVG) {
   } else if (isSVG) {
     el.setAttribute("class", value);
   } else {
-    el.className = value;
+    {
+      el.className = value;
+    }
   }
 }
 

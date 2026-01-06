@@ -26,3 +26,7 @@ export function parseUniXSplashScreen(
 export function parseUniXAppAndroidPackage(appid: string) {
   return 'uni.' + appid.replace(/_/g, '')
 }
+
+export function isEnableUniXVapor(manifestJson: Record<string, any>) {
+  return manifestJson?.['uni-app-x']?.['vapor'] === true
+}
