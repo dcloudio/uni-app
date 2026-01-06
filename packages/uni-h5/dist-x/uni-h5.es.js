@@ -7623,8 +7623,8 @@ class UniPageImpl {
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
-    var _a;
-    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
+    var _a, _b;
+    const pageMeta = ((_a = this.vm) == null ? void 0 : _a.$basePage.meta) ? normalizeStyles((_b = this.vm) == null ? void 0 : _b.$basePage.meta, __uniConfig.themeConfig) : void 0;
     return pageMeta ? new UTSJSONObject({
       navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
       navigationBarTextStyle: pageMeta.navigationBar.titleColor,
@@ -18916,10 +18916,6 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues
   rootElement: {
     name: "uni-loading-element",
     class: UniLoadingElement
-  },
-  __reserved: true,
-  compatConfig: {
-    MODE: 3
   }
 }), {
   __name: "index-x",
