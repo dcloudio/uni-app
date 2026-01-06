@@ -28,6 +28,7 @@ import {
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import { isDialogPageInstance } from '../helpers/utils'
 import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
+import { normalizeStyles } from '@dcloudio/uni-shared'
 
 let escBackPageNum = 0
 type PageStyle = {
@@ -110,6 +111,8 @@ class UniPageImpl implements UniPage {
   }
   getPageStyle(): UTSJSONObject {
     const pageMeta = this.vm?.$basePage.meta
+      ? normalizeStyles(this.vm?.$basePage.meta, __uniConfig.themeConfig)
+      : undefined
     return pageMeta
       ? new UTSJSONObject({
           navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
