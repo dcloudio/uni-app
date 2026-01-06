@@ -40,10 +40,6 @@ defineOptions({
   rootElement: {
     name: 'uni-loading-element',
     class: UniLoadingElement
-  },
-  __reserved: true,
-  compatConfig: {
-    MODE: 3
   }
 });
 

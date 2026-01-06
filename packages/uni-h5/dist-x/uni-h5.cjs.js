@@ -2404,8 +2404,8 @@ class UniPageImpl {
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
-    var _a;
-    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
+    var _a, _b;
+    const pageMeta = ((_a = this.vm) == null ? void 0 : _a.$basePage.meta) ? uniShared.normalizeStyles((_b = this.vm) == null ? void 0 : _b.$basePage.meta, __uniConfig.themeConfig) : void 0;
     return pageMeta ? new uniShared.UTSJSONObject({
       navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
       navigationBarTextStyle: pageMeta.navigationBar.titleColor,
@@ -9333,10 +9333,6 @@ const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValu
   rootElement: {
     name: "uni-loading-element",
     class: UniLoadingElement
-  },
-  __reserved: true,
-  compatConfig: {
-    MODE: 3
   }
 }), {
   __name: "index-x",
