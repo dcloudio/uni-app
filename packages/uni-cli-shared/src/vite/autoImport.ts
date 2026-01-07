@@ -250,6 +250,7 @@ const vuePreset = {
     'useAttrs',
     'useSlots',
     'useComputedStyle',
+    'useRecycleState',
 
     // reactivity,
     'computed',
