@@ -5469,7 +5469,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
         if (options) {
           if (hasOwn(attrs, key)) {
             if (value !== attrs[key]) {
-              attrs[key] = value;
+              attrs[key] = normalizeInheritAttrsValue(key, value);
               hasAttrsChanged = true;
             }
           } else {
@@ -5485,7 +5485,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
           }
         } else {
           if (value !== attrs[key]) {
-            attrs[key] = value;
+            attrs[key] = normalizeInheritAttrsValue(key, value);
             hasAttrsChanged = true;
           }
         }
@@ -5563,7 +5563,7 @@ function setFullProps(instance, rawProps, props, attrs) {
         }
       } else if (!isEmitListener(instance.emitsOptions, key)) {
         if (!(key in attrs) || value !== attrs[key]) {
-          attrs[key] = value;
+          attrs[key] = normalizeInheritAttrsValue(key, value);
           hasAttrsChanged = true;
         }
       }
@@ -5586,9 +5586,19 @@ function setFullProps(instance, rawProps, props, attrs) {
   }
   return hasAttrsChanged;
 }
+function toExternalClasses(classes) {
+  return classes.split(/\s+/g).map((item) => "^" + item);
+}
 function normalizeExternalClasses(classes) {
-  const clz = normalizeClass(classes);
-  return clz.split(/\s+/g).map((item) => "^" + item);
+  return toExternalClasses(normalizeClass(classes));
+}
+function normalizeInheritAttrsValue(key, value) {
+  if (__X_STYLE_ISOLATION__) {
+    if (key === "class") {
+      return toExternalClasses(value).join(" ");
+    }
+  }
+  return value;
 }
 function resolveExternalClassesPropValue(key, value, options, isAbsent) {
   if (
