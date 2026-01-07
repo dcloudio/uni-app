@@ -302,8 +302,9 @@ function generateConfig(
   config: ResolvedConfig
 ) {
   const isX = process.env.UNI_APP_X === 'true'
-  const isVapor = process.env.UNI_APP_X_VAPOR === 'true'
-  const styleIsolationCode = isVapor
+  const isNewStyleIsolation =
+    process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
+  const styleIsolationCode = isNewStyleIsolation
     ? `${globalName}.__uniConfig.styleIsolation = ${normalizeStyleIsolation(
         pagesJson as any
       )};`

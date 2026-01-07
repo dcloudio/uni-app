@@ -8894,6 +8894,12 @@ function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, 
       return oldSetup(props2, ctx);
     }
   };
+  if (type === "page") {
+    const styleIsolation = comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename];
+    if (styleIsolation !== "isolated") {
+      comp.styleIsolation = "app-shared";
+    }
+  }
   return comp;
 }
 function setupComponent(comp, options) {
@@ -8919,6 +8925,9 @@ function setupWindow(comp, id2) {
 function setupPage(comp, path) {
   if (process.env.NODE_ENV !== "production") {
     comp.__mpType = "page";
+  }
+  if (path) {
+    comp.__filename = path;
   }
   return setupComponent(comp, {
     type: "page",

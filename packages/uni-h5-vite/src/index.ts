@@ -36,7 +36,8 @@ import { uniCustomElementPlugin } from './plugins/customElement'
 import { uniApiPlugin } from './plugins/api'
 
 export default () => {
-  const isVapor = process.env.UNI_APP_X_VAPOR === 'true'
+  const isNewStyleIsolation =
+    process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
   return [
     ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniJavaScriptWorkersPlugin()]
@@ -72,7 +73,7 @@ export default () => {
     uniCssScopedPlugin({
       filter: (id) => {
         // Vapor 模式下，App.vue 也需要处理
-        if (isVapor) {
+        if (isNewStyleIsolation) {
           return isVueSfcFile(id)
         }
         return isVueSfcFile(id) && !isAppVue(id)

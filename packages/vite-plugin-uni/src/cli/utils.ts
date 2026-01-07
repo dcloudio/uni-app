@@ -248,8 +248,8 @@ export function initEnv(
     ) {
       process.env.UNI_APP_X_TSC = 'false'
     }
-    if (manifestJson['uni-app-x']?.['vapor'] === true) {
-      process.env.UNI_APP_X_VAPOR = 'true'
+    if (manifestJson['styleIsolationVersion'] === '2') {
+      process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
     }
   } catch (e) {}
 

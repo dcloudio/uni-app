@@ -8,6 +8,8 @@ export function initDefine(stringifyBoolean: boolean = false) {
   const isRunByHBuilderX = runByHBuilderX()
   const isDebug = !!manifestJson.debug
   const isX = process.env.UNI_APP_X === 'true'
+  const isNewStyleIsolation =
+    process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
   const isMP =
     process.env.UNI_PLATFORM && process.env.UNI_PLATFORM.startsWith('mp-')
 
@@ -79,6 +81,9 @@ export function initDefine(stringifyBoolean: boolean = false) {
       process.env.UNI_PLATFORM === 'mp-weixin' ? getShadowImagePath('grey') : ''
     ),
     ...mpXDefine,
+    __X_STYLE_ISOLATION__: stringifyBoolean
+      ? JSON.stringify(isNewStyleIsolation)
+      : isNewStyleIsolation,
   }
 }
 

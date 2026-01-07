@@ -89,7 +89,7 @@ function wrapperComponentSetup(
       return oldSetup(props, ctx)
     }
   }
-  if (__X_VAPOR__ && type === 'page') {
+  if (__X__ && type === 'page') {
     // 只要不是手动设置隔离样式的组件，全部设置为 app-shared
     const styleIsolation =
       comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename]
@@ -130,7 +130,7 @@ export function setupPage(comp: any, path: string) {
   if (__DEV__) {
     comp.__mpType = 'page'
   }
-  if (__X_VAPOR__ && path) {
+  if (__X__ && path) {
     comp.__filename = path
   }
   return setupComponent(comp, {

@@ -5548,7 +5548,14 @@ function setFullProps(instance, rawProps, props, attrs) {
       let camelKey;
       if (options && hasOwn(options, camelKey = camelize(key))) {
         if (!needCastKeys || !needCastKeys.includes(camelKey)) {
-          {
+          if (__X_STYLE_ISOLATION__) {
+            props[camelKey] = resolveExternalClassesPropValue(
+              camelKey,
+              value,
+              options,
+              false
+            );
+          } else {
             props[camelKey] = value;
           }
         } else {
@@ -5579,6 +5586,25 @@ function setFullProps(instance, rawProps, props, attrs) {
   }
   return hasAttrsChanged;
 }
+function normalizeExternalClasses(classes) {
+  const clz = normalizeClass(classes);
+  return clz.split(/\s+/g).map((item) => "^" + item);
+}
+function resolveExternalClassesPropValue(key, value, options, isAbsent) {
+  if (
+    // 只有外部传入的 externalClasses 才走这里，没有传入，但有默认值的不应该处理，比如button组件内部hover-class有默认值button-hover
+    !isAbsent
+  ) {
+    const opt = options[key];
+    if (opt && opt[
+      2
+      /* BooleanFlags.externalClasses */
+    ]) {
+      return normalizeExternalClasses(value);
+    }
+  }
+  return value;
+}
 function resolvePropValue(options, props, key, value, instance, isAbsent) {
   const result = _resolvePropValue(
     options,
@@ -5588,6 +5614,9 @@ function resolvePropValue(options, props, key, value, instance, isAbsent) {
     instance,
     isAbsent
   );
+  if (__X_STYLE_ISOLATION__) {
+    return resolveExternalClassesPropValue(key, result, options, isAbsent);
+  }
   return result;
 }
 function _resolvePropValue(options, props, key, value, instance, isAbsent) {
@@ -5621,6 +5650,16 @@ function _resolvePropValue(options, props, key, value, instance, isAbsent) {
     }
   }
   return value;
+}
+function initExternalClassesOptions(comp) {
+  if (isArray(comp.externalClasses)) {
+    const cached = comp.__externalClassesOptions;
+    if (!cached) {
+      comp.__externalClassesOptions = comp.externalClasses.map(
+        (className) => camelize(className)
+      );
+    }
+  }
 }
 function normalizePropsOptions(comp, appContext, asMixin = false) {
   const cache = appContext.propsCache;
@@ -5680,6 +5719,10 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
           const stringIndex = getTypeIndex(String, prop.type);
           prop[0 /* shouldCast */] = booleanIndex > -1;
           prop[1 /* shouldCastTrue */] = stringIndex < 0 || booleanIndex < stringIndex;
+          if (__X_STYLE_ISOLATION__ && comp.__externalClassesOptions && comp.__externalClassesOptions.includes(key)) {
+            prop[2 /* externalClasses */] = true;
+            prop.skipCheck = true;
+          }
           if (booleanIndex > -1 || hasOwn(prop, "default")) {
             needCastKeys.push(normalizedKey);
           }
@@ -6926,6 +6969,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       invokeDirectiveHook(vnode, null, parentComponent, "created");
     }
     setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
+    if (__X_STYLE_ISOLATION__) {
+      el.__vueVNodeCtx = vnode.ctx;
+    }
     if (props) {
       for (const key in props) {
         if (key !== "value" && !isReservedProp(key)) {
@@ -7000,7 +7046,23 @@ function baseCreateRenderer(options, createHydrationFns) {
         );
       }
     }
+    if (__X_STYLE_ISOLATION__ && vnode.ctx) {
+      const ctx = vnode.ctx;
+      const styleIsolation = (ctx == null ? void 0 : ctx.type).styleIsolation;
+      if (styleIsolation === "app-shared") {
+        const appScopeId2 = resolveAppScopeId(ctx);
+        appScopeId2 && hostSetScopeId(el, appScopeId2);
+      }
+    }
   };
+  let appScopeId = void 0;
+  function resolveAppScopeId(ctx) {
+    if (appScopeId) {
+      return appScopeId;
+    }
+    appScopeId = ctx.appContext.app._component.__scopeId;
+    return appScopeId;
+  }
   const mountChildren = (children, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, start = 0) => {
     for (let i = start; i < children.length; i++) {
       const child = children[i] = optimized ? cloneIfMounted(children[i]) : normalizeVNode(children[i]);
@@ -8849,6 +8911,9 @@ let uid = 0;
 function createComponentInstance(vnode, parent, suspense) {
   var _a;
   const type = vnode.type;
+  if (__X_STYLE_ISOLATION__) {
+    initExternalClassesOptions(type);
+  }
   const appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
   const instance = {
     uid: uid++,
@@ -9969,10 +10034,57 @@ function patchClass(el, value, isSVG) {
   } else if (isSVG) {
     el.setAttribute("class", value);
   } else {
-    {
+    if (__X_STYLE_ISOLATION__) {
+      el.className = processParentScopedClass(el, value);
+    } else {
       el.className = value;
     }
   }
+}
+function processParentScopedClass(el, classValue) {
+  const instance = el.__vueVNodeCtx;
+  if (!instance) {
+    return classValue;
+  }
+  if (!classValue || classValue.indexOf("^") === -1) {
+    return classValue;
+  }
+  const classes = classValue.split(/\s+/);
+  const processed = [];
+  let maxLevel = 0;
+  for (let i = 0; i < classes.length; i++) {
+    const cls = classes[i];
+    if (cls.charCodeAt(0) === 94) {
+      let level = 1;
+      while (cls.charCodeAt(level) === 94) {
+        level++;
+      }
+      const actualClass = cls.slice(level);
+      if (actualClass) {
+        processed.push(actualClass);
+        if (level > maxLevel) {
+          maxLevel = level;
+        }
+      }
+    } else {
+      processed.push(cls);
+    }
+  }
+  let current = instance.parent;
+  let scopeIdCount = 0;
+  while (current && scopeIdCount < maxLevel) {
+    if (current.type.__reserved) {
+      current = current.parent;
+      continue;
+    }
+    const scopeId = current.vnode.scopeId;
+    if (scopeId) {
+      el.setAttribute(scopeId, "");
+      scopeIdCount++;
+    }
+    current = current.parent;
+  }
+  return processed.join(" ");
 }
 
 const vShowOriginalDisplay = Symbol("_vod");

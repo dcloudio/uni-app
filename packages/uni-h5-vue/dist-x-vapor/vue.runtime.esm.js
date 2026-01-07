@@ -5548,13 +5548,15 @@ function setFullProps(instance, rawProps, props, attrs) {
       let camelKey;
       if (options && hasOwn(options, camelKey = camelize(key))) {
         if (!needCastKeys || !needCastKeys.includes(camelKey)) {
-          {
+          if (__X_STYLE_ISOLATION__) {
             props[camelKey] = resolveExternalClassesPropValue(
               camelKey,
               value,
               options,
               false
             );
+          } else {
+            props[camelKey] = value;
           }
         } else {
           (rawCastValues || (rawCastValues = {}))[camelKey] = value;
@@ -5612,9 +5614,10 @@ function resolvePropValue(options, props, key, value, instance, isAbsent) {
     instance,
     isAbsent
   );
-  {
+  if (__X_STYLE_ISOLATION__) {
     return resolveExternalClassesPropValue(key, result, options, isAbsent);
   }
+  return result;
 }
 function _resolvePropValue(options, props, key, value, instance, isAbsent) {
   const opt = options[key];
@@ -5716,7 +5719,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
           const stringIndex = getTypeIndex(String, prop.type);
           prop[0 /* shouldCast */] = booleanIndex > -1;
           prop[1 /* shouldCastTrue */] = stringIndex < 0 || booleanIndex < stringIndex;
-          if (comp.__externalClassesOptions && comp.__externalClassesOptions.includes(key)) {
+          if (__X_STYLE_ISOLATION__ && comp.__externalClassesOptions && comp.__externalClassesOptions.includes(key)) {
             prop[2 /* externalClasses */] = true;
             prop.skipCheck = true;
           }
@@ -6966,7 +6969,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       invokeDirectiveHook(vnode, null, parentComponent, "created");
     }
     setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
-    {
+    if (__X_STYLE_ISOLATION__) {
       el.__vueVNodeCtx = vnode.ctx;
     }
     if (props) {
@@ -7043,7 +7046,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         );
       }
     }
-    if (vnode.ctx) {
+    if (__X_STYLE_ISOLATION__ && vnode.ctx) {
       const ctx = vnode.ctx;
       const styleIsolation = (ctx == null ? void 0 : ctx.type).styleIsolation;
       if (styleIsolation === "app-shared") {
@@ -8908,7 +8911,7 @@ let uid = 0;
 function createComponentInstance(vnode, parent, suspense) {
   var _a;
   const type = vnode.type;
-  {
+  if (__X_STYLE_ISOLATION__) {
     initExternalClassesOptions(type);
   }
   const appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
@@ -10031,8 +10034,10 @@ function patchClass(el, value, isSVG) {
   } else if (isSVG) {
     el.setAttribute("class", value);
   } else {
-    {
+    if (__X_STYLE_ISOLATION__) {
       el.className = processParentScopedClass(el, value);
+    } else {
+      el.className = value;
     }
   }
 }

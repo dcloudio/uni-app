@@ -197,34 +197,34 @@ async function build(target) {
       )
       await sleep(500)
       // uni-h5(uni-app x vapor)
-      await execa(
-        'vite',
-        ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
-        {
-          stdio: 'inherit',
-          env: Object.assign(
-            { FORMAT: 'es', UNI_APP_X: 'true', UNI_APP_X_VAPOR: 'true' },
-            process.env,
-            env
-          ),
-          cwd: pkgDir,
-        }
-      )
-      await sleep(500)
-      await execa(
-        'vite',
-        ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
-        {
-          stdio: 'inherit',
-          env: Object.assign(
-            { FORMAT: 'cjs', UNI_APP_X: 'true', UNI_APP_X_VAPOR: 'true' },
-            process.env,
-            env
-          ),
-          cwd: pkgDir,
-        }
-      )
-      await sleep(500)
+      // await execa(
+      //   'vite',
+      //   ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
+      //   {
+      //     stdio: 'inherit',
+      //     env: Object.assign(
+      //       { FORMAT: 'es', UNI_APP_X: 'true', UNI_APP_X_VAPOR: 'true' },
+      //       process.env,
+      //       env
+      //     ),
+      //     cwd: pkgDir,
+      //   }
+      // )
+      // await sleep(500)
+      // await execa(
+      //   'vite',
+      //   ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
+      //   {
+      //     stdio: 'inherit',
+      //     env: Object.assign(
+      //       { FORMAT: 'cjs', UNI_APP_X: 'true', UNI_APP_X_VAPOR: 'true' },
+      //       process.env,
+      //       env
+      //     ),
+      //     cwd: pkgDir,
+      //   }
+      // )
+      // await sleep(500)
     }
     if (target === 'uni-app-plus') {
       await execa(

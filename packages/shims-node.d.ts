@@ -44,6 +44,7 @@ declare namespace NodeJS {
 
     UNI_APP_X?: 'true' | 'false'
     UNI_APP_X_VAPOR?: 'true' | 'false'
+    UNI_APP_STYLE_ISOLATION_VERSION?: '2'
 
     HX_Version: string
 
