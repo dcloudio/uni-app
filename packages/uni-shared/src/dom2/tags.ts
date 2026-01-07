@@ -7,6 +7,7 @@ const APP_NATIVE_TAGS = [
   'nested-scroll-header',
   'nested-scroll-body',
   'rich-text-native',
+  'cover-image',
 ]
 
 export function isDom2AppNativeTag(tag: string) {
@@ -20,7 +21,6 @@ const APP_VUE_COMPONENT_TAGS = [
   'movable-area',
   'movable-view',
   'cover-view',
-  'cover-image',
   'list-view',
   'list-item',
   'waterflow',
