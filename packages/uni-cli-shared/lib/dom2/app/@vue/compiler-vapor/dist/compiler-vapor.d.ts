@@ -352,6 +352,7 @@ export declare class TransformContext<T extends AllNode = AllNode> {
     node: T;
     selfName: string | null;
     parent: TransformContext<RootNode | ElementNode> | null;
+    effectiveParent: TransformContext<RootNode | ElementNode> | null;
     root: TransformContext<RootNode>;
     index: number;
     block: BlockIRNode;
@@ -366,6 +367,8 @@ export declare class TransformContext<T extends AllNode = AllNode> {
     component: Set<string>;
     directive: Set<string>;
     slots: IRSlots[];
+    isLastEffectiveChild: boolean;
+    isOnRightmostPath: boolean;
     private globalId;
     private nextIdMap;
     constructor(ir: RootIRNode, node: T, options?: TransformOptions);
@@ -378,6 +381,7 @@ export declare class TransformContext<T extends AllNode = AllNode> {
     registerEffect(expressions: SimpleExpressionNode[], operation: OperationNode | OperationNode[], getIndex?: () => number): void;
     registerOperation(...node: OperationNode[]): void;
     create<T extends TemplateChildNode>(node: T, index: number): TransformContext<T>;
+    private isEffectivelyLastChild;
 }
 export declare function transform(node: RootNode, options?: TransformOptions): RootIRNode;
 export declare function createStructuralDirectiveTransform(name: string | string[], fn: StructuralDirectiveTransform): NodeTransform;

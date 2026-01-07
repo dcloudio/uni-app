@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-core v3.6.0-beta.1
+* @vue/compiler-core v3.6.0-beta.2
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -1562,8 +1562,7 @@ function walkIdentifiers(root, onIdentifier, includeAll = false, parentStack = [
         if (includeAll || isRefed && !isLocal) {
           onIdentifier(node, parent, parentStack, isRefed, isLocal);
         }
-      } else if (node.type === "ObjectProperty" && // eslint-disable-next-line no-restricted-syntax
-      (parent == null ? void 0 : parent.type) === "ObjectPattern") {
+      } else if (node.type === "ObjectProperty" && (parent == null ? void 0 : parent.type) === "ObjectPattern") {
         node.inPattern = true;
       } else if (isFunctionType(node)) {
         if (node.scopeIds) {

@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-beta.1
+* @vue/compiler-sfc v3.6.0-beta.2
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -223,10 +223,12 @@ const HTML_TAGS = "html,body,base,head,link,meta,style,title,address,article,asi
 const SVG_TAGS = "svg,animate,animateMotion,animateTransform,circle,clipPath,color-profile,defs,desc,discard,ellipse,feBlend,feColorMatrix,feComponentTransfer,feComposite,feConvolveMatrix,feDiffuseLighting,feDisplacementMap,feDistantLight,feDropShadow,feFlood,feFuncA,feFuncB,feFuncG,feFuncR,feGaussianBlur,feImage,feMerge,feMergeNode,feMorphology,feOffset,fePointLight,feSpecularLighting,feSpotLight,feTile,feTurbulence,filter,foreignObject,g,hatch,hatchpath,image,line,linearGradient,marker,mask,mesh,meshgradient,meshpatch,meshrow,metadata,mpath,path,pattern,polygon,polyline,radialGradient,rect,set,solidcolor,stop,switch,symbol,text,textPath,title,tspan,unknown,use,view";
 const MATH_TAGS = "annotation,annotation-xml,maction,maligngroup,malignmark,math,menclose,merror,mfenced,mfrac,mfraction,mglyph,mi,mlabeledtr,mlongdiv,mmultiscripts,mn,mo,mover,mpadded,mphantom,mprescripts,mroot,mrow,ms,mscarries,mscarry,msgroup,msline,mspace,msqrt,msrow,mstack,mstyle,msub,msubsup,msup,mtable,mtd,mtext,mtr,munder,munderover,none,semantics";
 const VOID_TAGS = "area,base,br,col,embed,hr,img,input,link,meta,param,source,track,wbr";
+const FORMATTING_TAGS = "a,b,big,code,em,font,i,nobr,s,small,strike,strong,tt,u";
 const isHTMLTag = /* @__PURE__ */ makeMap(HTML_TAGS);
 const isSVGTag = /* @__PURE__ */ makeMap(SVG_TAGS);
 const isMathMLTag = /* @__PURE__ */ makeMap(MATH_TAGS);
 const isVoidTag = /* @__PURE__ */ makeMap(VOID_TAGS);
+const isFormattingTag = /* @__PURE__ */ makeMap(FORMATTING_TAGS);
 
 const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
 const isBooleanAttr = /* @__PURE__ */ makeMap(
@@ -19445,8 +19447,7 @@ function walkIdentifiers(root, onIdentifier, includeAll = false, parentStack = [
         if (includeAll || isRefed && !isLocal) {
           onIdentifier(node, parent, parentStack, isRefed, isLocal);
         }
-      } else if (node.type === "ObjectProperty" && // eslint-disable-next-line no-restricted-syntax
-      (parent == null ? void 0 : parent.type) === "ObjectPattern") {
+      } else if (node.type === "ObjectProperty" && (parent == null ? void 0 : parent.type) === "ObjectPattern") {
         node.inPattern = true;
       } else if (isFunctionType(node)) {
         if (node.scopeIds) {
@@ -32440,7 +32441,29 @@ const newBlock = (node) => ({
 });
 function wrapTemplate(node, dirs) {
   if (node.tagType === 3) {
-    return node;
+    const otherStructuralDirs = ["if", "else-if", "else", "for"];
+    const hasOtherStructuralDir = node.props.some(
+      (prop) => prop.type === 7 && otherStructuralDirs.includes(prop.name) && !dirs.includes(prop.name)
+    );
+    if (!hasOtherStructuralDir) {
+      return node;
+    }
+    const reserved2 = [];
+    const pass2 = [];
+    node.props.forEach((prop) => {
+      if (prop.type === 7 && dirs.includes(prop.name)) {
+        reserved2.push(prop);
+      } else {
+        pass2.push(prop);
+      }
+    });
+    return extend({}, node, {
+      type: 1,
+      tag: "template",
+      props: reserved2,
+      tagType: 3,
+      children: [extend({}, node, { props: pass2 })]
+    });
   }
   const reserved = [];
   const pass = [];
@@ -32563,6 +32586,8 @@ class TransformContext {
     this.node = node;
     this.selfName = null;
     this.parent = null;
+    // cached parent that skips template tags
+    this.effectiveParent = null;
     this.index = 0;
     this.block = this.ir.block;
     this.template = "";
@@ -32575,6 +32600,12 @@ class TransformContext {
     this.component = this.ir.component;
     this.directive = this.ir.directive;
     this.slots = [];
+    // whether this node is the last effective child of its parent
+    // (all siblings after it are components, which don't appear in HTML template)
+    this.isLastEffectiveChild = true;
+    // whether this node is on the rightmost path of the tree
+    // (all ancestors are also last effective children)
+    this.isOnRightmostPath = true;
     this.globalId = 0;
     this.nextIdMap = null;
     this.increaseId = () => {
@@ -32655,14 +32686,30 @@ class TransformContext {
     this.block.operation.push(...node);
   }
   create(node, index) {
+    let effectiveParent = this;
+    while (effectiveParent && effectiveParent.node.type === 1 && effectiveParent.node.tagType === 3) {
+      effectiveParent = effectiveParent.parent;
+    }
+    const isLastEffectiveChild = this.isEffectivelyLastChild(index);
+    const isOnRightmostPath = this.isOnRightmostPath && isLastEffectiveChild;
     return Object.assign(Object.create(TransformContext.prototype), this, {
       node,
       parent: this,
       index,
       template: "",
       childrenTemplate: [],
-      dynamic: newDynamic()
+      dynamic: newDynamic(),
+      effectiveParent,
+      isLastEffectiveChild,
+      isOnRightmostPath
     });
+  }
+  isEffectivelyLastChild(index) {
+    const children = this.node.children;
+    if (!children) return true;
+    return children.every(
+      (c, i) => i <= index || c.type === 1 && c.tagType === 1
+    );
   }
 }
 const defaultOptions = {
@@ -33213,6 +33260,10 @@ function analyzeExpressions(expressions) {
             end: id.end
           });
         });
+        const parentOfMemberExp = parentStack[parentStack.length - 2];
+        if (parentOfMemberExp && isCallExpression(parentOfMemberExp)) {
+          return;
+        }
         registerVariable(
           memberExp,
           exp,
@@ -33439,6 +33490,8 @@ function extractMemberExpression(exp, onIdentifier) {
       return `${extractMemberExpression(exp.left, onIdentifier)} ${exp.operator} ${extractMemberExpression(exp.right, onIdentifier)}`;
     case "CallExpression":
       return `${extractMemberExpression(exp.callee, onIdentifier)}(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
+    case "OptionalCallExpression":
+      return `${extractMemberExpression(exp.callee, onIdentifier)}?.(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
     case "MemberExpression":
     // foo[bar.baz]
     case "OptionalMemberExpression":
@@ -33451,6 +33504,9 @@ function extractMemberExpression(exp, onIdentifier) {
       return "";
   }
 }
+const isCallExpression = (node) => {
+  return node.type === "CallExpression" || node.type === "OptionalCallExpression";
+};
 const isMemberExpression = (node) => {
   return node.type === "MemberExpression" || node.type === "OptionalMemberExpression" || node.type === "TSNonNullExpression";
 };
@@ -34543,15 +34599,7 @@ function genDynamicProps(props, context) {
         }
       } else {
         expr = genExpression(p.value, context);
-        if (p.handler)
-          expr = genCall(
-            helper("toHandlers"),
-            expr,
-            `false`,
-            // preserveCaseIfNecessary: false, not needed for component
-            `true`
-            // wrap handler values in functions
-          );
+        if (p.handler) expr = genCall(helper("toHandlers"), expr);
       }
     }
     frags.push(["() => (", ...expr, ")"]);
@@ -35449,7 +35497,10 @@ const transformElement = (node, context) => {
         propsResult,
         singleRoot,
         context,
-        getEffectIndex
+        getEffectIndex,
+        // Root-level elements generate dedicated templates
+        // so closing tags can be omitted
+        context.root === context.effectiveParent || canOmitEndTag(node, context)
       );
     }
     if (parentSlots) {
@@ -35457,6 +35508,17 @@ const transformElement = (node, context) => {
     }
   };
 };
+function canOmitEndTag(node, context) {
+  const { block, parent } = context;
+  if (!parent) return false;
+  if (block !== parent.block) {
+    return true;
+  }
+  if (isFormattingTag(node.tag) || parent.node.type === 1 && node.tag === parent.node.tag) {
+    return context.isOnRightmostPath;
+  }
+  return context.isLastEffectiveChild;
+}
 function isSingleRoot(context) {
   if (context.inVFor) {
     return false;
@@ -35552,13 +35614,17 @@ function resolveSetupReference(name, context) {
   return bindings[name] ? name : bindings[camelName] ? camelName : bindings[PascalName] ? PascalName : void 0;
 }
 const dynamicKeys = ["indeterminate"];
-function transformNativeElement(node, propsResult, singleRoot, context, getEffectIndex) {
+const NEEDS_QUOTES_RE = /[\s"'`=<>]/;
+function transformNativeElement(node, propsResult, singleRoot, context, getEffectIndex, omitEndTag) {
+  const isDom2 = !!context.options.platform;
+  if (isDom2) {
+    omitEndTag = false;
+  }
   const { tag } = node;
   const { scopeId } = context.options;
   let template = "";
   template += `<${tag}`;
   if (scopeId) template += ` ${scopeId}`;
-  const isDom2 = !!context.options.platform;
   if (isDom2 && singleRoot) {
     template += ` gen-flag-flatten=""`;
     const rootElementTagName = context.options.rootElementTagName;
@@ -35628,6 +35694,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
     }
     let hasStaticStyle = false;
     let hasClass = false;
+    let prevWasQuoted = false;
     for (const prop of propsResult[1]) {
       const { key, values } = prop;
       if (isDom2) {
@@ -35653,7 +35720,9 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
       if (context.imports.some(
         (imported) => values[0].content.includes(imported.exp.content)
       )) {
-        template += ` ${key.content}="${IMPORT_EXP_START}${values[0].content}${IMPORT_EXP_END}"`;
+        if (!prevWasQuoted) template += ` `;
+        template += `${key.content}="${IMPORT_EXP_START}${values[0].content}${IMPORT_EXP_END}"`;
+        prevWasQuoted = true;
       } else if (key.isStatic && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content)) {
         if (isDom2 && key.content === "style") {
           hasStaticStyle = true;
@@ -35685,9 +35754,14 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
           );
           continue;
         }
-        template += ` ${key.content}`;
-        if (values[0].content)
-          template += `="${values[0].content === "''" ? "" : values[0].content}"`;
+        if (!prevWasQuoted) template += ` `;
+        const value = values[0].content === "''" ? "" : values[0].content;
+        template += key.content;
+        if (value) {
+          template += (prevWasQuoted = NEEDS_QUOTES_RE.test(value)) ? `="${value.replace(/"/g, "&quot;")}"` : `=${value}`;
+        } else {
+          prevWasQuoted = false;
+        }
       } else {
         dynamicProps.push(key.content);
         context.registerEffect(
@@ -35711,7 +35785,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
     }
   }
   template += `>` + context.childrenTemplate.join("");
-  if (!isVoidTag(tag)) {
+  if (!isVoidTag(tag) && !omitEndTag) {
     template += `</${tag}>`;
   }
   if (singleRoot) {
@@ -46307,7 +46381,7 @@ function requireParser () {
 		      if (_space2.endsWith(' ') && _rawSpace2.endsWith(' ')) {
 		        spaces.before = _space2.slice(0, _space2.length - 1);
 		        raws.spaces.before = _rawSpace2.slice(0, _rawSpace2.length - 1);
-		      } else if (_space2.startsWith(' ') && _rawSpace2.startsWith(' ')) {
+		      } else if (_space2[0] === ' ' && _rawSpace2[0] === ' ') {
 		        spaces.after = _space2.slice(1);
 		        raws.spaces.after = _rawSpace2.slice(1);
 		      } else {
@@ -55595,7 +55669,8 @@ let __temp${any}, __restore${any}
       if (preamble) {
         ctx.s.prepend(preamble);
       }
-      if (helpers && helpers.has(UNREF)) {
+      if (helpers && (helpers.has(UNREF) || // vapor compiler uses 'unref' instead of UNREF
+      helpers.has("unref"))) {
         ctx.helperImports.delete("unref");
       }
       returned = code;
@@ -55942,7 +56017,7 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
-const version = "3.6.0-beta.1";
+const version = "3.6.0-beta.2";
 const parseCache = parseCache$1;
 const errorMessages = __spreadValues(__spreadValues({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

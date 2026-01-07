@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-beta.1
+* @vue/compiler-sfc v3.6.0-beta.2
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -7431,7 +7431,7 @@ function requireParser$1 () {
 		      if (_space2.endsWith(' ') && _rawSpace2.endsWith(' ')) {
 		        spaces.before = _space2.slice(0, _space2.length - 1);
 		        raws.spaces.before = _rawSpace2.slice(0, _rawSpace2.length - 1);
-		      } else if (_space2.startsWith(' ') && _rawSpace2.startsWith(' ')) {
+		      } else if (_space2[0] === ' ' && _rawSpace2[0] === ' ') {
 		        spaces.after = _space2.slice(1);
 		        raws.spaces.after = _rawSpace2.slice(1);
 		      } else {
@@ -21840,7 +21840,8 @@ let __temp${any}, __restore${any}
       if (preamble) {
         ctx.s.prepend(preamble);
       }
-      if (helpers && helpers.has(CompilerDOM.UNREF)) {
+      if (helpers && (helpers.has(CompilerDOM.UNREF) || // vapor compiler uses 'unref' instead of UNREF
+      helpers.has("unref"))) {
         ctx.helperImports.delete("unref");
       }
       returned = code;
@@ -22172,7 +22173,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
   return generator.toJSON();
 }
 
-const version = "3.6.0-beta.1";
+const version = "3.6.0-beta.2";
 const parseCache = parseCache$1;
 const errorMessages = {
   ...CompilerDOM.errorMessages,
