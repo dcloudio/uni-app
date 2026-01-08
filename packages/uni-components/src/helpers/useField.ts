@@ -289,6 +289,7 @@ function useValueSync(
   trigger: CustomEventTrigger,
   fieldRef: Ref<HTMLFieldElement | null>
 ) {
+  let lastUserInputValue: string | null = null
   let valueChangeFn:
     | ReturnType<typeof throttle>
     | ReturnType<typeof debounce>
@@ -301,12 +302,17 @@ function useValueSync(
     valueChangeFn = debounce(
       (val: any) => {
         const fieldElement = fieldRef.value
+        const newValue = getValueString(val, props.type)
 
-        if (fieldElement && document.activeElement === fieldElement) {
+        if (
+          fieldElement &&
+          document.activeElement === fieldElement &&
+          newValue === lastUserInputValue
+        ) {
           return
         }
 
-        state.value = getValueString(val, props.type)
+        state.value = newValue
       },
       100,
       { setTimeout, clearTimeout }
@@ -326,6 +332,7 @@ function useValueSync(
     force: boolean
   ) => {
     valueChangeFn!.cancel()
+    lastUserInputValue = detail.value
     triggerInputFn(event, detail)
     if (force) {
       triggerInputFn.flush()
