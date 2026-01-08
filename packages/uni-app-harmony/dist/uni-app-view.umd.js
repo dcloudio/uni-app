@@ -16101,14 +16101,16 @@
     };
   }
   function useValueSync(props2, state, emit2, trigger2, fieldRef) {
+    var lastUserInputValue = null;
     var valueChangeFn = null;
     {
       valueChangeFn = debounce((val) => {
         var fieldElement = fieldRef.value;
-        if (fieldElement && document.activeElement === fieldElement) {
+        var newValue = getValueString(val, props2.type);
+        if (fieldElement && document.activeElement === fieldElement && newValue === lastUserInputValue) {
           return;
         }
-        state.value = getValueString(val, props2.type);
+        state.value = newValue;
       }, 100, {
         setTimeout,
         clearTimeout
@@ -16124,6 +16126,7 @@
     }, 100);
     var triggerInput = (event, detail, force) => {
       valueChangeFn.cancel();
+      lastUserInputValue = detail.value;
       triggerInputFn(event, detail);
       if (force) {
         triggerInputFn.flush();

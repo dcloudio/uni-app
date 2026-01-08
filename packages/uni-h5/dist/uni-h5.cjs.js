@@ -3747,15 +3747,17 @@ function useBase(props2, rootRef, emit2) {
   };
 }
 function useValueSync(props2, state, emit2, trigger, fieldRef) {
+  let lastUserInputValue = null;
   let valueChangeFn = null;
   {
     valueChangeFn = uniShared.debounce(
       (val) => {
         const fieldElement = fieldRef.value;
-        if (fieldElement && document.activeElement === fieldElement) {
+        const newValue = getValueString(val, props2.type);
+        if (fieldElement && document.activeElement === fieldElement && newValue === lastUserInputValue) {
           return;
         }
-        state.value = getValueString(val, props2.type);
+        state.value = newValue;
       },
       100,
       { setTimeout, clearTimeout }
@@ -3771,6 +3773,7 @@ function useValueSync(props2, state, emit2, trigger, fieldRef) {
   }, 100);
   const triggerInput = (event, detail, force) => {
     valueChangeFn.cancel();
+    lastUserInputValue = detail.value;
     triggerInputFn(event, detail);
     if (force) {
       triggerInputFn.flush();

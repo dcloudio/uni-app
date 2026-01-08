@@ -4479,6 +4479,7 @@ function useValueSync(props2, state, emit2, trigger, fieldRef) {
   }, 100);
   const triggerInput = (event, detail, force) => {
     valueChangeFn.cancel();
+    detail.value;
     triggerInputFn(event, detail);
     if (force) {
       triggerInputFn.flush();
