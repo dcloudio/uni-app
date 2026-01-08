@@ -16304,16 +16304,6 @@
       trigger: trigger2
     };
   }
-  var props$n = /* @__PURE__ */ extend({}, props$o, {
-    placeholderClass: {
-      type: String,
-      default: "input-placeholder"
-    },
-    textContentType: {
-      type: String,
-      default: ""
-    }
-  });
   var resolveDigitDecimalPointDeleteContentBackward = once(() => {
     {
       return false;
@@ -16326,7 +16316,7 @@
           state.value = input.value = cache2.value = cache2.value.slice(0, -1);
           return false;
         }
-        if (cache2.value && !cache2.value.includes(".")) {
+        if (cache2.value && !cache2.value.includes(".") && cache2.value === input.value) {
           cache2.value += ".";
           if (resetCache) {
             resetCache.fn = () => {
@@ -16347,6 +16337,16 @@
       }
     }
   }
+  var props$n = /* @__PURE__ */ extend({}, props$o, {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    textContentType: {
+      type: String,
+      default: ""
+    }
+  });
   function isPaste(event) {
     return event.inputType === "insertFromPaste";
   }

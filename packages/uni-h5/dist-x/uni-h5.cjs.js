@@ -4631,6 +4631,8 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
+uniShared.once(() => {
+});
 const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
   placeholderClass: {
     type: String,
@@ -4640,8 +4642,6 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
     type: String,
     default: ""
   }
-});
-uniShared.once(() => {
 });
 function isPaste(event) {
   return event.inputType === "insertFromPaste";

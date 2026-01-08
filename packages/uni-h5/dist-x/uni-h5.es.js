@@ -12171,16 +12171,6 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$o = /* @__PURE__ */ extend({}, props$p, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  },
-  textContentType: {
-    type: String,
-    default: ""
-  }
-});
 once(() => {
   {
     const ua2 = navigator.userAgent;
@@ -12195,6 +12185,16 @@ once(() => {
       }
     }
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
+  }
+});
+const props$o = /* @__PURE__ */ extend({}, props$p, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  textContentType: {
+    type: String,
+    default: ""
   }
 });
 function isPaste(event) {

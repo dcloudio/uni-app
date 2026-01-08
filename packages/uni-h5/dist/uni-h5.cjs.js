@@ -3923,16 +3923,6 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  },
-  textContentType: {
-    type: String,
-    default: ""
-  }
-});
 const resolveDigitDecimalPointDeleteContentBackward = uniShared.once(() => {
 });
 function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
@@ -3942,7 +3932,7 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
         state.value = input.value = cache.value = cache.value.slice(0, -1);
         return false;
       }
-      if (cache.value && !cache.value.includes(".")) {
+      if (cache.value && !cache.value.includes(".") && cache.value === input.value) {
         cache.value += ".";
         if (resetCache) {
           resetCache.fn = () => {
@@ -3963,6 +3953,16 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
     }
   }
 }
+const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  textContentType: {
+    type: String,
+    default: ""
+  }
+});
 function isPaste(event) {
   return event.inputType === "insertFromPaste";
 }
