@@ -7951,20 +7951,19 @@ function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet) {
   var el = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
   var context = new ParseStyleContext();
   classList.forEach(className => {
-    var parentStyles = stylesheet && stylesheet[className];
-    if (parentStyles) {
-      parseClassName(context, parentStyles, el);
+    var style = stylesheet && stylesheet[className];
+    if (style) {
+      parseClassName(context, style, el);
+    }
+    if (parentStylesheet != null) {
+      parentStylesheet.forEach(style2 => {
+        var parentStyle = style2[className];
+        if (parentStyle != null) {
+          parseClassName(context, parentStyle, el);
+        }
+      });
     }
   });
-  if (parentStylesheet != null) {
-    classList.forEach(className => {
-      var _a;
-      var parentStyles = (_a = (parentStylesheet != null ? parentStylesheet : []).find(style => style[className] !== null)) == null ? void 0 : _a[className];
-      if (parentStyles != null) {
-        parseClassName(context, parentStyles, el);
-      }
-    });
-  }
   return context;
 }
 function parseClassStyles(el) {
