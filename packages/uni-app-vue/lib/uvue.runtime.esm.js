@@ -8558,22 +8558,19 @@ class ParseStyleContext {
 function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet, el = null) {
   const context = new ParseStyleContext();
   classList.forEach((className) => {
-    const parentStyles = stylesheet && stylesheet[className];
-    if (parentStyles) {
-      parseClassName(context, parentStyles, el);
+    const style = stylesheet && stylesheet[className];
+    if (style) {
+      parseClassName(context, style, el);
+    }
+    if (parentStylesheet != null) {
+      parentStylesheet.forEach((style2) => {
+        const parentStyle = style2[className];
+        if (parentStyle != null) {
+          parseClassName(context, parentStyle, el);
+        }
+      });
     }
   });
-  if (parentStylesheet != null) {
-    classList.forEach((className) => {
-      var _a;
-      const parentStyles = (_a = (parentStylesheet != null ? parentStylesheet : []).find(
-        (style) => style[className] !== null
-      )) == null ? void 0 : _a[className];
-      if (parentStyles != null) {
-        parseClassName(context, parentStyles, el);
-      }
-    });
-  }
   return context;
 }
 function parseClassStyles(el) {
