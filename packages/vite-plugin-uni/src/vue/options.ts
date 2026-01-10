@@ -12,6 +12,7 @@ import type {
 } from '@vue/compiler-sfc'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import {
+  isBuiltInComponent,
   isDom2AppUserVueComponentTag,
   isDom2VueComponentTag,
 } from '@dcloudio/uni-shared'
@@ -362,6 +363,11 @@ export function initPluginVueOptions(
             )
           },
         }
+      }
+    } else {
+      // 如果是 easyComponent 组件，则不需要从setup中导入组件且不支持 self 引用
+      ;(compilerOptions as any).isEasyComponent = (tag: string) => {
+        return isBuiltInComponent(tag) || !!matchEasycom(tag)
       }
     }
   }
