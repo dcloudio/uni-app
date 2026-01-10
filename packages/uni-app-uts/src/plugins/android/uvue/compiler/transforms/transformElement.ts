@@ -293,10 +293,16 @@ export function resolveComponentType(
     return builtIn
   }
 
+  // fixed by xxxxxx 识别 easycom 组件，如果是，则不需要执行以下逻辑（解决一个自定义组件定义了一个跟其他自定义组件同名的props，比如button组件定义了loading属性）
+  // 理论上如果把 easycom 的注册，提前到 transform 之前，就不会有这个问题了，不过目前架构不太好改动
+  const isEasyComponent = context.isEasyComponent
+  const isEasyCom = isEasyComponent && isEasyComponent(tag)
+
   // 3. user component (from setup bindings)
   // this is skipped in browser build since browser builds do not perform
   // binding analysis.
-  if (!__BROWSER__) {
+  // fixed by xxxxxx
+  if (!__BROWSER__ && !isEasyCom) {
     const fromSetup = resolveSetupReference(tag, context)
     if (fromSetup) {
       return fromSetup
@@ -313,6 +319,8 @@ export function resolveComponentType(
   // 4. Self referencing component (inferred from filename)
   if (
     !__BROWSER__ &&
+    // fixed by xxxxxx
+    !isEasyCom &&
     context.selfName &&
     capitalize(camelize(tag)) === context.selfName
   ) {
