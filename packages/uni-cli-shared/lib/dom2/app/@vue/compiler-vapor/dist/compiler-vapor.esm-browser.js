@@ -27867,7 +27867,8 @@ function processFor(node, dir, context) {
         source,
         context.options.bindingMetadata
       ),
-      component: isComponent,
+      component: isComponent && // fixed by uts 需要二次确认，因为 transformListView 会把 list-item 转换成 view
+      node.children[0].type === 1 && node.children[0].tagType === 1,
       onlyChild: !!isOnlyChild
     };
   };
