@@ -37,7 +37,7 @@ export const openDialogPage = (
   let { path, query } = parseUrl(url)
   path = normalizeRoute(path)
   const normalizeUrl = createNormalizeUrl('navigateTo')
-  const errMsg = normalizeUrl(path, {})
+  const errMsg = normalizeUrl(url, {})
   if (errMsg) {
     triggerFailCallback(options, errMsg)
     return null
