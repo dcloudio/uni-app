@@ -2179,7 +2179,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2249,7 +2249,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2392,7 +2392,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -2524,7 +2524,7 @@ const props$u = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$u,
   emits: ["change"],
@@ -2635,7 +2635,7 @@ const props$t = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$t,
   rootElement: {
@@ -5189,13 +5189,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$o = 0;
+let index$p = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$o++);
+    const callbackId = String(index$p++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -11215,7 +11215,7 @@ const props$r = /* @__PURE__ */ extend({}, props$s, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$r,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -11287,7 +11287,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -11432,7 +11432,7 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const __syscom_4 = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$q,
   rootElement: {
@@ -11976,6 +11976,7 @@ function useValueSync(props2, state2, emit2, trigger, fieldRef) {
   }, 100);
   const triggerInput = (event, detail, force) => {
     valueChangeFn.cancel();
+    detail.value;
     triggerInputFn(event, detail);
     if (force) {
       triggerInputFn.flush();
@@ -12137,16 +12138,6 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$o = /* @__PURE__ */ extend({}, props$p, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  },
-  textContentType: {
-    type: String,
-    default: ""
-  }
-});
 once(() => {
   {
     const ua2 = navigator.userAgent;
@@ -12161,6 +12152,16 @@ once(() => {
       }
     }
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
+  }
+});
+const props$o = /* @__PURE__ */ extend({}, props$p, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  textContentType: {
+    type: String,
+    default: ""
   }
 });
 function isPaste(event) {
@@ -17184,7 +17185,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
       }
       const current = normalizeCurrentValue(viewportPosition + n);
       if (isCancel) {
-        updateViewport(contentTrackViewport);
+        animateViewport(state2.current, "", 0);
       } else {
         currentChangeSource = "touch";
         state2.current = current;
@@ -17230,7 +17231,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
           return false;
         }
       }
-    });
+    }, true);
   });
   onUnmounted(() => {
     cancelSchedule();
@@ -28030,7 +28031,6 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const loadingPathData = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
 const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   __name: "chooseLocation",
   setup(__props) {
@@ -28106,9 +28106,6 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     const callUniMapCoErr = ref(false);
     const useUniCloud = ref(true);
     const mapHeight = ref(350);
-    const loadingPath = ref(loadingPathData);
-    const loadingRotate = ref(0);
-    const loadingTimer = ref(-1);
     const timeoutTimers = ref([]);
     const mapTargetRef = ref(null);
     const scrollRef = ref(null);
@@ -28434,12 +28431,6 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
         searchValueChangeTimer.value = -1;
       }
     };
-    const clearLoadingTimer = () => {
-      if (loadingTimer.value != -1) {
-        clearInterval(loadingTimer.value);
-        loadingTimer.value = -1;
-      }
-    };
     const clearAllTimeoutTimers = () => {
       timeoutTimers.value.forEach((timer) => {
         if (timer != -1) {
@@ -28563,17 +28554,6 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       const locale = uni.getLocale();
       language.value = locale;
     };
-    watch(searchLoading, (val) => {
-      clearLoadingTimer();
-      if (val) {
-        loadingRotate.value += 100;
-        loadingTimer.value = setInterval(() => {
-          loadingRotate.value += 100;
-        }, 200);
-      } else {
-        loadingRotate.value = 0;
-      }
-    });
     const languageCom = computed(() => {
       const textInfo = languageData[language.value] != null ? languageData[language.value] : languageData["zh-Hans"];
       return textInfo;
@@ -28627,7 +28607,6 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       uni.$off(successEventName.value, null);
       uni.$off(failEventName.value, null);
       clearSearchValueChangeTimer();
-      clearLoadingTimer();
       clearAllTimeoutTimers();
     });
     onResize(() => {
@@ -28638,7 +28617,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       const _component_text = __syscom_1$1;
       const _component_view = __syscom_2;
       const _component_input = __syscom_3;
-      const _component_image = __syscom_4;
+      const _component_loading = _sfc_main$4;
       const _component_scroll_view = __syscom_2$1;
       return openBlock(), createBlock(_component_view, {
         class: normalizeClass(["uni-choose-location", darkClassCom.value])
@@ -28832,12 +28811,9 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
                     class: "uni-choose-location-poi-search-loading"
                   }, {
                     default: withCtx(() => [
-                      createVNode(_component_image, {
-                        src: loadingPath.value,
-                        class: "uni-choose-location-poi-search-loading-image",
-                        mode: "widthFix",
-                        style: normalizeStyle("transform: rotate(" + loadingRotate.value + "deg)")
-                      }, null, 8, ["src", "style"])
+                      createVNode(_component_loading, {
+                        class: normalizeClass(["uni-choose-location-poi-search-loading-item", [darkClassCom.value]])
+                      }, null, 8, ["class"])
                     ]),
                     _: 1
                   })) : (openBlock(true), createElementBlock(Fragment, { key: 3 }, renderList(pois.value, (item, index2) => {
@@ -28899,12 +28875,9 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
                     class: "uni-choose-location-poi-search-loading"
                   }, {
                     default: withCtx(() => [
-                      createVNode(_component_image, {
-                        src: loadingPath.value,
-                        class: "uni-choose-location-poi-search-loading-image",
-                        mode: "widthFix",
-                        style: normalizeStyle("transform: rotate(" + loadingRotate.value + "deg)")
-                      }, null, 8, ["src", "style"])
+                      createVNode(_component_loading, {
+                        class: normalizeClass(["uni-choose-location-poi-search-loading-item", [darkClassCom.value]])
+                      }, null, 8, ["class"])
                     ]),
                     _: 1
                   })) : createCommentVNode("", true)
@@ -29148,12 +29121,10 @@ const _style_0$2 = `
     color: #808080;
     padding-left: 5px;
 }
-.uni-choose-location-poi-search-loading-image {
+.uni-choose-location-poi-search-loading-item {
     width: 28px;
     height: 28px;
-    transition-property: transform;
-    transition-duration: 0.2s;
-    transition-timing-function: linear;
+    border-color: #D0D0D0;
 }
 
   /* 横屏样式开始 */
@@ -29226,6 +29197,9 @@ const _style_0$2 = `
 }
 .uni-choose-location-dark.uni-choose-location-poi-search-error-text {
     color: #d1d1d1;
+}
+.uni-choose-location-dark.uni-choose-location-poi-search-loading-item {
+    border-color: #d1d1d1;
 }
   /* 暗黑模式样式结束 */
 uni-image {
@@ -29681,7 +29655,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0$1 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0.5;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
+const _style_0$1 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		line-height: 1.5;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
 const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
 class ShowModalFailImpl extends UniError {
   constructor(errMsg = "showModal:fail cancel", errCode = 4) {
@@ -30302,19 +30276,19 @@ export {
   index$3 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$r as Button,
+  index$s as Button,
   index$2 as Camera,
   indexX$4 as Canvas,
-  index$p as Checkbox,
-  index$q as CheckboxGroup,
+  index$q as Checkbox,
+  index$r as CheckboxGroup,
   index$7 as CoverImage,
   index$8 as CoverView,
-  index$n as Editor,
-  index$t as Form,
-  index$m as Icon,
-  __syscom_4 as Image,
+  index$o as Editor,
+  index$u as Form,
+  index$n as Icon,
+  index$m as Image,
   __syscom_3 as Input,
-  index$s as Label,
+  index$t as Label,
   LayoutComponent,
   index$g as ListItem,
   index$h as ListView,

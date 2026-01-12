@@ -16101,14 +16101,16 @@
     };
   }
   function useValueSync(props2, state, emit2, trigger2, fieldRef) {
+    var lastUserInputValue = null;
     var valueChangeFn = null;
     {
       valueChangeFn = debounce((val) => {
         var fieldElement = fieldRef.value;
-        if (fieldElement && document.activeElement === fieldElement) {
+        var newValue = getValueString(val, props2.type);
+        if (fieldElement && document.activeElement === fieldElement && newValue === lastUserInputValue) {
           return;
         }
-        state.value = getValueString(val, props2.type);
+        state.value = newValue;
       }, 100, {
         setTimeout,
         clearTimeout
@@ -16124,6 +16126,7 @@
     }, 100);
     var triggerInput = (event, detail, force) => {
       valueChangeFn.cancel();
+      lastUserInputValue = detail.value;
       triggerInputFn(event, detail);
       if (force) {
         triggerInputFn.flush();
@@ -16304,16 +16307,6 @@
       trigger: trigger2
     };
   }
-  var props$n = /* @__PURE__ */ extend({}, props$o, {
-    placeholderClass: {
-      type: String,
-      default: "input-placeholder"
-    },
-    textContentType: {
-      type: String,
-      default: ""
-    }
-  });
   var resolveDigitDecimalPointDeleteContentBackward = once(() => {
     {
       return false;
@@ -16326,7 +16319,7 @@
           state.value = input.value = cache2.value = cache2.value.slice(0, -1);
           return false;
         }
-        if (cache2.value && !cache2.value.includes(".")) {
+        if (cache2.value && !cache2.value.includes(".") && cache2.value === input.value) {
           cache2.value += ".";
           if (resetCache) {
             resetCache.fn = () => {
@@ -16347,6 +16340,16 @@
       }
     }
   }
+  var props$n = /* @__PURE__ */ extend({}, props$o, {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    textContentType: {
+      type: String,
+      default: ""
+    }
+  });
   function isPaste(event) {
     return event.inputType === "insertFromPaste";
   }
@@ -20785,6 +20788,7 @@
     return state;
   }
   function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger2) {
+    var _ws$getStyle;
     function cancelSchedule() {
       if (timer) {
         clearTimeout(timer);
@@ -21072,12 +21076,17 @@
     }
     watch(() => props2.autoplay && !state.userTracking, inintAutoplay);
     inintAutoplay(props2.autoplay && !state.userTracking);
+    var debouncedTrackEndFallback = null;
+    var ws = plus.webview.currentWebview();
+    ws && ((_ws$getStyle = ws.getStyle()) === null || _ws$getStyle === void 0 || (_ws$getStyle = _ws$getStyle.pullToRefresh) === null || _ws$getStyle === void 0 ? void 0 : _ws$getStyle.style);
     onMounted(() => {
       var userDirectionChecked = false;
       var contentTrackSpeed = 0;
       var contentTrackT = 0;
       function handleTrackStart() {
+        var _debouncedTrackEndFal;
         cancelSchedule();
+        (_debouncedTrackEndFal = debouncedTrackEndFallback) === null || _debouncedTrackEndFal === void 0 || _debouncedTrackEndFal.cancel();
         contentTrackViewport = viewportPosition;
         contentTrackSpeed = 0;
         contentTrackT = Date.now();
@@ -21117,6 +21126,8 @@
         }
       }
       function handleTrackEnd(isCancel) {
+        var _debouncedTrackEndFal2;
+        (_debouncedTrackEndFal2 = debouncedTrackEndFallback) === null || _debouncedTrackEndFal2 === void 0 || _debouncedTrackEndFal2.cancel();
         state.userTracking = false;
         var t2 = contentTrackSpeed / Math.abs(contentTrackSpeed);
         var n = 0;
@@ -21125,7 +21136,7 @@
         }
         var current = normalizeCurrentValue(viewportPosition + n);
         if (isCancel) {
-          updateViewport(contentTrackViewport);
+          animateViewport(state.current, "", 0);
         } else {
           currentChangeSource = "touch";
           state.current = current;
@@ -21171,7 +21182,7 @@
             return false;
           }
         }
-      });
+      }, true);
     });
     onUnmounted(() => {
       cancelSchedule();
