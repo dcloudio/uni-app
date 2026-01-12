@@ -9461,6 +9461,9 @@ function useQuill(props2, rootRef, trigger) {
             {
               let { name = "", value = false } = options;
               range = quill.getSelection(true);
+              if (!name) {
+                break;
+              }
               let format = quill.getFormat(range)[name] || false;
               if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
                 value = !format;
