@@ -245,6 +245,8 @@ const vuePreset = {
     'onServerPrefetch',
     'onUnmounted',
     'onUpdated',
+    // uni-app specific lifecycle
+    'onReuse',
 
     // setup helpers
     'useAttrs',
