@@ -39,7 +39,7 @@ const toTypeString = (value) => objectToString$1.call(value);
 const isPlainObject = (val) => toTypeString(val) === "[object Object]";
 const isReservedProp$1 = /* @__PURE__ */ makeMap(
   // the leading comma is intentional so empty string "" is also included
-  ",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
+  ",key,ref,ref_for,ref_key,__cid,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
 );
 const isBuiltInDirective = /* @__PURE__ */ makeMap(
   "bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo"
@@ -28825,6 +28825,7 @@ var CompilerDOM = /*#__PURE__*/Object.freeze({
   createCompoundExpression: createCompoundExpression,
   createConditionalExpression: createConditionalExpression,
   createDOMCompilerError: createDOMCompilerError,
+  createExp: createExp,
   createForLoopParams: createForLoopParams,
   createFunctionExpression: createFunctionExpression,
   createIfStatement: createIfStatement,

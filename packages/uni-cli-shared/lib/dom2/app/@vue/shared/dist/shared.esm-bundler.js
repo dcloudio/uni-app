@@ -51,7 +51,7 @@ const isPlainObject = (val) => toTypeString(val) === "[object Object]";
 const isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key || typeof key === "number" && Number.isInteger(key) && key >= 0;
 const isReservedProp = /* @__PURE__ */ makeMap(
   // the leading comma is intentional so empty string "" is also included
-  ",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
+  ",key,ref,ref_for,ref_key,__cid,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
 );
 const isBuiltInTag = /* @__PURE__ */ makeMap("slot,component");
 const isBuiltInDirective = /* @__PURE__ */ makeMap(

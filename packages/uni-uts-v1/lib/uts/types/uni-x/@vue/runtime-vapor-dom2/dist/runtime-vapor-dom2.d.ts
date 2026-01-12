@@ -185,6 +185,7 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
      */
     accessedAttrs: boolean;
     renderer: 'app' | 'page' | 'component';
+    private cachedCid;
     constructor(comp: VaporSharedDataComponent, rawProps?: RawProps | null, rawSlots?: RawSlots | null, appContext?: GenericAppContext, once?: boolean);
     /**
      * Expose `getKeysFromRawProps` on the instance so it can be used in code
@@ -192,6 +193,7 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
      */
     rawKeys(): string[];
     $waitNativeRender(fn: () => void): void;
+    get cid(): string;
 }
 export declare function isVaporSharedDataComponent(value: unknown): value is VaporSharedDataComponentInstance;
 /**

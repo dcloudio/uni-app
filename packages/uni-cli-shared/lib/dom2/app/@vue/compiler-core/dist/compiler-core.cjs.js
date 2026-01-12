@@ -6893,6 +6893,7 @@ exports.createCallExpression = createCallExpression;
 exports.createCompilerError = createCompilerError;
 exports.createCompoundExpression = createCompoundExpression;
 exports.createConditionalExpression = createConditionalExpression;
+exports.createExp = createExp;
 exports.createForLoopParams = createForLoopParams;
 exports.createFunctionExpression = createFunctionExpression;
 exports.createIfStatement = createIfStatement;

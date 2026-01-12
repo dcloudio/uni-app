@@ -54,6 +54,13 @@ export declare function registerRuntimeHelpers(helpers: Record<symbol, string>):
 
 type OptionalOptions = 'decodeEntities' | 'whitespace' | 'isNativeTag' | 'isBuiltInComponent' | 'expressionPlugins' | keyof CompilerCompatOptions;
 type MergedParserOptions = Omit<Required<ParserOptions>, OptionalOptions> & Pick<ParserOptions, OptionalOptions>;
+declare enum ExpParseMode {
+    Normal = 0,
+    Params = 1,
+    Statements = 2,
+    Skip = 3
+}
+export declare function createExp(content: SimpleExpressionNode['content'], isStatic: boolean | undefined, loc: SourceLocation, constType?: ConstantTypes, parseMode?: ExpParseMode): SimpleExpressionNode;
 export declare function baseParse(input: string, options?: ParserOptions): RootNode;
 
 type CompilerCompatConfig = Partial<Record<CompilerDeprecationTypes, boolean | 'suppress-warning'>> & {
