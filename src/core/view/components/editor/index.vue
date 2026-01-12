@@ -124,6 +124,9 @@ export default {
             {
               let { name = '', value = false } = options
               range = quill.getSelection(true)
+              if (!name) {
+                break
+              }
               let format = quill.getFormat(range)[name] || false
               if (['bold', 'italic', 'underline', 'strike', 'ins'].includes(name)) {
                 value = !format
@@ -364,5 +367,4 @@ export default {
 </script>
 
 <style src="./editor.css"></style>
-<style>
-</style>
+<style></style>
