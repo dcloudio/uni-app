@@ -5,7 +5,7 @@ interface Boolean {
 
 interface BooleanConstructor {
   /**
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Boolean.html#constructor
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/boolean.html#constructor
      @uniPlatform {
         "app": {
             "android": {
@@ -45,7 +45,7 @@ interface BooleanConstructor {
    */
   new(value?: any): Boolean;
   /**
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Boolean.html#constructor
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/boolean.html#constructor
      @uniPlatform {
         "app": {
             "android": {

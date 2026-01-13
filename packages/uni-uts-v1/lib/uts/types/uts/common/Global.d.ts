@@ -2,7 +2,7 @@
      表示“非数字”（Not-A-Number）。和 NaN 相同。
      在相等比较中，NaN不等于任何值，包括它自己。要测试一个值是否等于NaN，使用isNaN函数。
 
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/global.html#NaN
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/global.html#nan
      @uniPlatform {
         "app": {
             "android": {
@@ -44,7 +44,7 @@ declare var NaN: number;
 /**
      全局属性 Infinity 是一个数值，表示无穷大。
 
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/global.html#Infinity
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/global.html#infinity
      @uniPlatform {
         "app": {
             "android": {
@@ -90,7 +90,7 @@ declare type RequestAnimationFrameCallback = (task: number) => void
 /**
   eval() 函数会将传入的字符串当做 JavaScript 代码进行执行。
   @param x 一个表示 JavaScript 表达式、语句或一系列语句的字符串。表达式可以包含变量与已存在对象的属性。
-  @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/eval.html
+  @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/global.html#eval
   @uniPlatform
   {
     "app": {

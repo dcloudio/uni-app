@@ -6,7 +6,7 @@
 interface ArrayBuffer {
   /**
      ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长度（以字节为单位）。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/arraybuffer.html#bytelength
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/arraybuffer.html#bytelength
      @uniPlatform {
         "app": {
             "android": {
@@ -48,7 +48,7 @@ interface ArrayBuffer {
      如果 end >= buffer.length 或省略了 end，则会使用 buffer.length，则会导致直到末尾的所有元素都被提取。
      如果标准化后的 end 位置在 start 位置之前，则不会提取任何内容。
      @return 一个新的 ArrayBuffer 对象。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/arraybuffer.html#slice-begin-end
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/arraybuffer.html#slice-begin-end
      @uniPlatform {
         "app": {
             "android": {
@@ -113,7 +113,7 @@ interface ArrayBuffer {
   /**
      ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
      @return iOS 原生 Data 对象。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/arraybuffer.html#toData
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/arraybuffer.html#todata
      @uniPlatform {
         "app": {
             "android": {
@@ -149,7 +149,7 @@ interface ArrayBufferConstructor {
      构造函数创建一个以字节为单位的给定长度的新 ArrayBuffer
      @param byteLength 长度，单位字节
      @return ArrayBuffer
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/arraybuffer.html#constructor-bytelength
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/arraybuffer.html#constructor-bytelength
      @uniPlatform {
         "app": {
             "android": {
@@ -183,7 +183,7 @@ interface ArrayBufferConstructor {
      ArrayBuffer.isView() 静态方法用于确定传递的值是否是 ArrayBuffer 视图之一。
      @param arg 需要检测的值。
      @return 如果 arg 是 ArrayBuffer 视图之一，则返回 true，例如类型化数组对象或者 DataView。否则返回 false。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/arraybuffer.html#isView
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/arraybuffer.html#isview
      @uniPlatform {
         "app": {
             "android": {
@@ -250,7 +250,7 @@ interface ArrayBufferConstructor {
      ArrayBuffer.fromData() 静态方法用于将 iOS 原生的 Data 对象转换为 ArrayBuffer
      @param data iOS 原生 Data 对象
      @return ArrayBuffer
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/arraybuffer.html#fromData
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/arraybuffer.html#fromdata
      @uniPlatform {
         "app": {
             "android": {

@@ -1,7 +1,7 @@
 interface Array<T> {
   /**
      length 是 Array 的实例属性，表示该数组中元素的个数。该值是一个无符号 32 位整数，并且其数值总是大于数组最大索引。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#length
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#length
      @uniPlatform {
         "app": {
             "android": {
@@ -43,7 +43,7 @@ interface Array<T> {
 
   /**
      toString() 方法返回一个字符串，表示指定的数组及其元素。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#toString
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#tostring
      @uniPlatform {
         "app": {
             "android": {
@@ -85,7 +85,7 @@ interface Array<T> {
 
   /**
      toKotlinList() 将当前的Array对象转换为 kotlin 中对应的List对象
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#toKotlinList
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#tokotlinlist
      @uniPlatform {
         "app": {
             "android": {
@@ -125,7 +125,7 @@ interface Array<T> {
      将指定的元素追加到此列表的末尾，不推荐使用本方法，推荐使用push替代。
      @param item 添加到数组的元素。
      @return 是否成功添加
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#add
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#add
      @deprecated
      @uniPlatform {
         "app": {
@@ -169,7 +169,7 @@ interface Array<T> {
   /**
 
      toLocaleString() 方法返回一个字符串，表示数组中的所有元素。每个元素通过调用它们自己的 toLocaleString 方法转换为字符串，并且使用特定于语言环境的字符串（例如逗号“,”）分隔开。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#toLocaleString
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#tolocalestring
      @deprecated
      @uniPlatform {
         "app": {
@@ -210,7 +210,7 @@ interface Array<T> {
      从所有元素中使用[separator]创建字符串
      @param separator 分隔符
      @return 拼接完成的字符串
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#joinToString
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#jointostring
      @deprecated
      @uniPlatform {
         "app": {
@@ -239,7 +239,7 @@ interface Array<T> {
   /**
      pop() 方法从数组中删除最后一个元素，并返回该元素的值。此方法会更改数组的长度。
 
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#pop
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#pop
      @uniPlatform {
         "app": {
             "android": {
@@ -282,7 +282,7 @@ interface Array<T> {
      push() 方法将指定的元素添加到数组的末尾，并返回新的数组长度。
      @param items 添加到数组末尾的元素。
      @return 调用方法的对象的新 length 属性。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#push
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#push
      @uniPlatform {
         "app": {
             "android": {
@@ -326,7 +326,7 @@ interface Array<T> {
 
      @param items 数组和/或值，将被合并到一个新的数组中。如果省略了所有 valueN 参数，则 concat 会返回调用此方法的现存数组的一个浅拷贝。详情请参阅下文描述。
      @return 新的 Array 实例。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#concat
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#concat
      @uniPlatform {
         "app": {
             "android": {
@@ -369,7 +369,7 @@ interface Array<T> {
      concat() 方法用于合并两个或多个数组。此方法不会更改现有数组，而是返回一个新数组。
      @param items 数组和/或值，将被合并到一个新的数组中。如果省略了所有 valueN 参数，则 concat 会返回调用此方法的现存数组的一个浅拷贝。详情请参阅下文描述。
      @return 新的 Array 实例。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#concat
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#concat
      @uniPlatform {
         "app": {
             "android": {
@@ -412,7 +412,7 @@ interface Array<T> {
      join() 方法将一个数组（或一个类数组对象）的所有元素连接成一个字符串并返回这个字符串，用逗号或指定的分隔符字符串分隔。如果数组只有一个元素，那么将返回该元素而不使用分隔符。
      @param separator 指定一个字符串来分隔数组的每个元素。如果需要，将分隔符转换为字符串。如果省略，数组元素用逗号（,）分隔。如果 separator 是空字符串（""），则所有元素之间都没有任何字符。
      @return 一个所有数组元素连接的字符串。如果 arr.length 为 0，则返回空字符串。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#join
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#join
      @uniPlatform {
         "app": {
             "android": {
@@ -443,7 +443,7 @@ interface Array<T> {
   /**
      reverse() 方法就地反转数组中的元素，并返回同一数组的引用。数组的第一个元素会变成最后一个，数组的最后一个元素变成第一个。换句话说，数组中的元素顺序将被翻转，变为与之前相反的方向。
      @return 原始数组反转后的引用。注意，数组是就地反转的，并且没有复制。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reverse
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#reverse
      @uniPlatform {
         "app": {
             "android": {
@@ -485,7 +485,7 @@ interface Array<T> {
   /**
      shift() 方法从数组中删除第一个元素，并返回该元素的值。此方法更改数组的长度。
      @return 从数组中删除的元素；如果数组为空则返回 null。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#shift
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#shift
      @uniPlatform {
         "app": {
             "android": {
@@ -528,7 +528,7 @@ interface Array<T> {
      slice() 方法返回一个新的数组对象，这一对象是一个由 start 和 end 决定的原数组的浅拷贝（包括 start，不包括 end），其中 start 和 end 代表了数组元素的索引。原始数组不会被改变。
      @param start 提取起始处的索引（从 0 开始），会转换为整数。
      @param end 提取终止处的索引（从 0 开始），会转换为整数。slice() 会提取到但不包括 end 的位置。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#slice
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#slice
      @uniPlatform {
         "app": {
             "android": {
@@ -575,7 +575,7 @@ interface Array<T> {
          b:第二个用于比较的元素。不会是 null。
      如果省略该函数，数组元素会被转换为字符串，然后根据每个字符的 Unicode 码位值进行排序。
      @return 经过排序的原始数组的引用。注意数组是就地排序的，不会进行复制。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#sort
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#sort
      @uniPlatform {
         "app": {
             "android": {
@@ -619,7 +619,7 @@ interface Array<T> {
      @param start 从 0 开始计算的索引，表示要开始改变数组的位置，它会被转换成整数。
      @param deleteCount 一个整数，表示数组中要从 start 开始删除的元素数量。
      @return 一个包含了删除的元素的数组。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#splice
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#splice
      @uniPlatform {
         "app": {
             "android": {
@@ -663,7 +663,7 @@ interface Array<T> {
      @param start 从 0 开始计算的索引，表示要开始改变数组的位置，它会被转换成整数。
      @param deleteCount 一个整数，表示数组中要从 start 开始删除的元素数量。
      @return 一个包含了删除的元素的数组。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#splice
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#splice
      @uniPlatform {
         "app": {
             "android": {
@@ -706,7 +706,7 @@ interface Array<T> {
   /**
      unshift() 方法将指定元素添加到数组的开头，并返回数组的新长度。
      @param items 添加到 arr 开头的元素。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#unshift
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#unshift
      @uniPlatform {
         "app": {
             "android": {
@@ -750,7 +750,7 @@ interface Array<T> {
      indexOf() 方法返回数组中第一次出现给定元素的下标，如果不存在则返回 -1。
      @param searchElement 数组中要查找的元素。
      @param fromIndex 开始搜索的索引（从零开始），会转换为整数。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#indexOf
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#indexof
      @uniPlatform {
         "app": {
             "android": {
@@ -793,7 +793,7 @@ interface Array<T> {
      lastIndexOf() 方法返回数组中给定元素最后一次出现的索引，如果不存在则返回 -1。该方法从 fromIndex 开始向前搜索数组。
      @param searchElement 被查找的元素。
      @param fromIndex 以 0 起始的索引，表明反向搜索的起始位置，会被转换为整数。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#lastIndexOf
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#lastindexof
      @uniPlatform {
         "app": {
             "android": {
@@ -839,7 +839,7 @@ interface Array<T> {
          index:正在处理的元素在数组中的索引。
          array:调用了 every() 的数组本身。
      @param thisArg 执行 callbackFn 时用作 this 的值
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#every
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#every
      @uniPlatform {
         "app": {
             "android": {
@@ -884,7 +884,7 @@ interface Array<T> {
          index:正在处理的元素在数组中的索引。
          array:调用了 every() 的数组本身。
      @param thisArg 执行 callbackFn 时用作 this 的值
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#every
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#every
      @uniPlatform {
         "app": {
             "android": {
@@ -934,7 +934,7 @@ interface Array<T> {
          array:调用了 some() 的数组本身。
      @param thisArg 执行 callbackFn 时用作 this 的值。
      @return 如果回调函数对数组中至少一个元素返回一个真值，则返回 true。否则返回 false。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#some
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#some
      @uniPlatform {
         "app": {
             "android": {
@@ -983,7 +983,7 @@ interface Array<T> {
          index:数组中正在处理的当前元素的索引。
          array:调用了 forEach() 的数组本身。
      @param thisArg  执行 callbackFn 时用作 this 的值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#forEach
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#foreach
      @uniPlatform {
         "app": {
             "android": {
@@ -1032,7 +1032,7 @@ interface Array<T> {
          index:正在处理的元素在数组中的索引。
          array:调用了 map() 的数组本身。
      @param thisArg 执行 callbackFn 时用作 this 的值
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#map
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#map
      @uniPlatform {
         "app": {
             "android": {
@@ -1081,7 +1081,7 @@ interface Array<T> {
          index:正在处理的元素在数组中的索引。
          array:调用了 filter() 的数组本身。
      @param thisArg 执行 callbackFn 时用作 this 的值
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#filter
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#filter
      @uniPlatform {
         "app": {
             "android": {
@@ -1126,7 +1126,7 @@ interface Array<T> {
          index:正在处理的元素在数组中的索引。
          array:调用了 filter() 的数组本身。
      @param thisArg 执行 callbackFn 时用作 this 的值
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#filter
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#filter
      @uniPlatform {
         "app": {
             "android": {
@@ -1175,7 +1175,7 @@ interface Array<T> {
          currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
          currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
          array:调用了 reduce() 的数组本身。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#reduce
      @uniPlatform {
         "app": {
             "android": {
@@ -1229,7 +1229,7 @@ interface Array<T> {
          currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
          array:调用了 reduce() 的数组本身。
      @param initialValue 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#reduce
      @uniPlatform {
         "app": {
             "android": {
@@ -1284,7 +1284,7 @@ interface Array<T> {
          currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
          array:调用了 reduce() 的数组本身。
      @param initialValue 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#reduce
      @uniPlatform {
         "app": {
             "android": {
@@ -1334,7 +1334,7 @@ interface Array<T> {
          currentValue:数组中当前正在处理的元素。
          currentIndex:正在处理的元素在数组中的索引。
          array:调用了 reduceRight() 的数组本身。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#reduceright
      @uniPlatform {
         "app": {
             "android": {
@@ -1388,7 +1388,7 @@ interface Array<T> {
          currentIndex:正在处理的元素在数组中的索引。
          array:调用了 reduceRight() 的数组本身。
      @param initialValue 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#reduceright
      @uniPlatform {
         "app": {
             "android": {
@@ -1443,7 +1443,7 @@ interface Array<T> {
          index:正在处理的元素在数组中的索引。
          array:调用了 reduceRight() 的数组本身。
      @param initialValue 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#reduceright
      @uniPlatform {
         "app": {
             "android": {
@@ -1494,7 +1494,7 @@ interface Array<T> {
      @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值来表示已经找到了匹配的元素。
      @param thisArg 执行 callbackFn 时用作 this 的值。
      @return 数组中第一个满足所提供测试函数的元素的值，否则返回 null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#find
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#find
      @uniPlatform {
         "app": {
             "android": {
@@ -1546,7 +1546,7 @@ interface Array<T> {
      @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示已找到匹配元素，否则返回一个假值。
      @param thisArg 执行 callbackFn 时用作 this 的值。
      @return 数组中第一个满足测试条件的元素的索引。否则返回 -1。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#findIndex
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#findindex
      @uniPlatform {
         "app": {
             "android": {
@@ -1593,7 +1593,7 @@ interface Array<T> {
      @param value 用来填充数组元素的值。注意所有数组中的元素都将是这个确定的值：如果 value 是个对象，那么数组的每一项都会引用这个元素。
      @param start 基于零的索引，从此开始填充，转换为整数。
      @param end 基于零的索引，在此结束填充，转换为整数。fill() 填充到但不包含 end 索引。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#fill
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#fill
      @uniPlatform {
         "app": {
             "android": {
@@ -1638,7 +1638,7 @@ interface Array<T> {
      @param target 序列开始替换的目标位置，以 0 为起始的下标表示，且将被转换为整数
      @param start 要复制的元素序列的起始位置，以 0 为起始的下标表示，且将被转换为整数
      @param end 要复制的元素序列的结束位置，以 0 为起始的下标表示，且将被转换为整数。copyWithin 将会拷贝到该位置，但不包括 end 这个位置的元素。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#copyWithin
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#copywithin
      @uniPlatform {
         "app": {
             "android": {
@@ -1683,7 +1683,7 @@ interface Array<T> {
      @param searchElement 需要查找的值。
      @param fromIndex 可选。开始搜索的索引（从零开始），会转换为整数。
      @return 一个布尔值，如果在数组中（或者在 fromIndex 所指示的数组部分中，如果指定 fromIndex 的话）找到 searchElement 值，则该值为 true。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#includes
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#includes
      @uniPlatform {
         "app": {
             "android": {
@@ -1726,7 +1726,7 @@ interface Array<T> {
 
 interface ArrayConstructor {
   // /**
-  //  * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#constructor
+  //  * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#constructor
   //  * @uniPlatform {
   //  *    "app": {
   //  *        "android": {
@@ -1748,7 +1748,7 @@ interface ArrayConstructor {
   //  */
   // new(arrayLength ?: number) : any[];
   // /**
-  //  * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#constructor
+  //  * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#constructor
   //  * @uniPlatform {
   //  *    "app": {
   //  *        "android": {
@@ -1770,7 +1770,7 @@ interface ArrayConstructor {
   //  */
   // new <T>(arrayLength : number) : T[];
   /**
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#constructor
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#constructor
      @uniPlatform {
         "app": {
             "android": {
@@ -1810,7 +1810,7 @@ interface ArrayConstructor {
    */
   new <T>(...items: T[]): T[]
   // /**
-  //  * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#constructor
+  //  * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#constructor
   //  * @uniPlatform {
   //  *    "app": {
   //  *        "android": {
@@ -1832,7 +1832,7 @@ interface ArrayConstructor {
   //  */
   // (arrayLength ?: number) : any[];
   // /**
-  //  * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#constructor
+  //  * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#constructor
   //  * @uniPlatform {
   //  *    "app": {
   //  *        "android": {
@@ -1854,7 +1854,7 @@ interface ArrayConstructor {
   //  */
   // <T>(arrayLength : number) : T[];
   // /**
-  //  * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#constructor
+  //  * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#constructor
   //  * @uniPlatform {
   //  *    "app": {
   //  *        "android": {
@@ -1879,7 +1879,7 @@ interface ArrayConstructor {
      Array.isArray() 静态方法用于确定传递的值是否是一个 Array。
      @param arg 需要检测的值。
      @return 如果 value 是 Array，则为 true；否则为 false。如果 value 是 TypedArray 实例，则总是返回 false。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#isArray
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#isarray
      @uniPlatform {
         "app": {
             "android": {
@@ -1923,7 +1923,7 @@ interface ArrayConstructor {
      Array.of() 静态方法通过可变数量的参数创建一个新的 Array 实例，而不考虑参数的数量或类型
      @param items 用于创建数组的元素。
      @return 新的 Array 实例。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#of
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#of
      @uniPlatform {
         "app": {
             "android": {
@@ -1967,7 +1967,7 @@ interface ArrayConstructor {
   /**
    * Array.from() 静态方法从可迭代或类数组对象创建一个新的浅拷贝的数组实例。
       @param arrayLike 想要转换成数组的类数组或可迭代对象。
-      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#from
+      @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#from
       @uniPlatform {
         "app": {
             "android": {
@@ -2011,7 +2011,7 @@ interface ArrayConstructor {
    * Array.from() 静态方法从可迭代或类数组对象创建一个新的浅拷贝的数组实例。
    * @param arrayLike 想要转换成数组的类数组或可迭代对象。
    * @param mapfn 调用数组每个元素的函数。如果提供，每个将要添加到数组中的值首先会传递给该函数，然后将 mapFn 的返回值增加到数组中。使用以下参数调用该函数：element 数组当前正在处理的元素。index 数组当前正在处理的元素的索引。
-    @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#from
+    @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#from
     @uniPlatform {
         "app": {
             "android": {
@@ -2056,7 +2056,7 @@ interface ArrayConstructor {
    * @param arrayLike 要转换为数组的异步可迭代、可迭代或类数组对象。
    * @param mapfn 为数组中的每个元素执行的函数。如果提供了该函数，则每个要添加到数组中的值都会先通过该函数处理，mapFn 的返回值将代替该值被添加到数组中（在等待兑现后）。该函数被调用时将传入以下参数：element 数组当前正在处理的元素。index 数组当前正在处理的元素的索引。
    * @return 一个新的 Promise，其兑现值是一个新的 Array 实例。
-    @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#fromAsync
+    @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#fromasync
     @uniPlatform {
       "app": {
           "android": {
@@ -2099,7 +2099,7 @@ interface ArrayConstructor {
   /**
      fromNative() 方法 从native 数据结构中 转换得到一个UTS环境下的Array对象
      支持传入的参数类型有: kotlin.collections.List/ kotlin.Array/kotlin.ByteArray/Kotlin.LongArray/Kotlin.IntArray 等
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#fromNative
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array.html#fromnative
      @uniPlatform {
         "app": {
             "android": {
