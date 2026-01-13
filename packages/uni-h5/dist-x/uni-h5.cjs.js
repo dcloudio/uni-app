@@ -2463,6 +2463,16 @@ class UniPageImpl {
       return null;
     }
   }
+  querySelector(selector) {
+    {
+      return null;
+    }
+  }
+  querySelectorAll(selector) {
+    {
+      return null;
+    }
+  }
   getAndroidView() {
     return null;
   }
@@ -2832,7 +2842,7 @@ function initApp$1(vm) {
   initAppVm(appVm);
   defineGlobalData(appVm);
 }
-function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
+function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
   if (clone) {
     comp = shared.extend({}, comp);
   }
@@ -2846,6 +2856,12 @@ function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
       return oldSetup(props2, ctx);
     }
   };
+  if (type === "page") {
+    const styleIsolation = comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename];
+    if (styleIsolation !== "isolated") {
+      comp.styleIsolation = "app-shared";
+    }
+  }
   return comp;
 }
 function setupComponent(comp, options) {
@@ -2868,11 +2884,15 @@ function setupWindow(comp, id2) {
     }
   });
 }
-function setupPage(comp) {
+function setupPage(comp, path) {
   if (process.env.NODE_ENV !== "production") {
     comp.__mpType = "page";
   }
+  if (path) {
+    comp.__filename = path;
+  }
   return setupComponent(comp, {
+    type: "page",
     clone: true,
     // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,

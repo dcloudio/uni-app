@@ -131,6 +131,8 @@ export function createTransformContext(
     inline = false,
     isBuiltInComponent = NOOP,
     isCustomElement = NOOP,
+    // fixed by xxxxxx
+    isEasyComponent = NOOP,
     onError = defaultOnError,
     onWarn = defaultOnWarn,
     parseUTSComponent = NOOP,
@@ -154,6 +156,8 @@ export function createTransformContext(
     elements: new Set(),
     isBuiltInComponent,
     isCustomElement,
+    // fixed by xxxxxx
+    isEasyComponent,
     scopeId,
     slotted,
     onError,

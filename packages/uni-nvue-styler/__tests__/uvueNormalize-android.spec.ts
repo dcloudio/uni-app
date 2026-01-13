@@ -827,7 +827,7 @@ flexBasis: fill;
     })
     expect(messages.length).toEqual(2)
     expect(messages[0].text).toBe(
-      'ERROR: property value `abc` is not supported for `line-height` (supported values are: `number`|`pixel`)'
+      'ERROR: property value `abc` is not supported for `line-height` (supported values are: `number`|`pixel`|`normal`)'
     )
     expect(messages[1].text).toBe(
       'ERROR: property value `abc` is not supported for `flex-basis` (supported values are: `number`|`pixel`|`percent`|`auto`)'

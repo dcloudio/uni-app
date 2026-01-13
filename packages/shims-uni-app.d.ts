@@ -73,6 +73,7 @@ declare namespace UniNamespace {
     uvue?: {
       'flex-direction': 'column' | 'row'
     }
+    styleIsolation?: Record<string, 'isolated'>
     globalStyle: PagesJsonPageStyle & {
       rpxCalcMaxDeviceWidth?: number
       rpxCalcBaseDeviceWidth?: number
@@ -259,6 +260,7 @@ declare namespace UniNamespace {
     disableSwipeBack?: Boolean
     popGesture?: 'close' | 'none'
     enableUcssReset?: boolean
+    styleIsolation?: 'app-shared' | 'isolated'
   }
   interface PageRouteMeta extends PagesJsonPageStyle {
     id?: number

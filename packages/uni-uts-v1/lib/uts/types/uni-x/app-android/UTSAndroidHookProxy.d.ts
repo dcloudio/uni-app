@@ -2,7 +2,7 @@ interface UTSAndroidHookProxy {
   /**
      uts 插件创建时的回调。
      对应原生 Application onCreate 函数
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroidHookProxy.html#onCreate
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroidhookproxy.html#oncreate
      @uniPlatform {
         "app": {
             "android": {

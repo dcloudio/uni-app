@@ -2253,6 +2253,7 @@ const PAGE_HOOKS = [
     ON_SHOW,
     ON_HIDE,
     ON_UNLOAD,
+    ON_RESIZE,
     ON_BACK_PRESS,
     ON_PAGE_SCROLL,
     ON_TAB_ITEM_TAP,
@@ -2484,6 +2485,7 @@ const APP_NATIVE_TAGS = [
     'nested-scroll-header',
     'nested-scroll-body',
     'rich-text-native',
+    'cover-image',
 ];
 function isDom2AppNativeTag(tag) {
     return APP_NATIVE_TAGS.includes(tag);
@@ -2495,7 +2497,6 @@ const APP_VUE_COMPONENT_TAGS = [
     'movable-area',
     'movable-view',
     'cover-view',
-    'cover-image',
     'list-view',
     'list-item',
     'waterflow',

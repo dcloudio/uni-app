@@ -8898,24 +8898,24 @@
       "values": [
         {
           "name": "normal",
-          "description": "web平台由浏览器实现，通常约为 1.2，这取决于元素的 font-family。",
+          "description": "由各平台实现，约为 1.2，取决于元素的 font-family。",
           "uniPlatform": {
             "app": {
               "android": {
                 "osVer": "5.0",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.0"
               },
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.0"
               },
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "√",
-                "unixVer": "x",
-                "unixvVer": "x"
+                "unixVer": "5.0",
+                "unixvVer": "5.0"
               }
             },
             "mp": {
@@ -8967,7 +8967,7 @@
         "textarea"
       ],
       "defaultValue": {
-        "uvue": "1.2",
+        "uvue": "normal",
         "w3c": "normal"
       }
     },

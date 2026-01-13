@@ -19,6 +19,7 @@ import type { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
 import type resolve from 'resolve'
 import type { resolveComponentType } from '@vue/compiler-dom'
 import { transformPageHead } from '../plugin/transforms/transformPageHead'
+import { resolveDistDir, resolveVueDistDir } from './utils'
 
 // Temporal handling for 2.7 breaking change
 export const isSSR = (opt: { ssr?: boolean } | boolean | undefined) =>
@@ -92,11 +93,12 @@ export const initSsrAliasOnce = once(() => {
       )
       if (shouldRedirectToDistX) {
         const pkgData = JSON.parse(res as string)
+        const distDir = resolveDistDir() + '/'
         if (pkgData.module) {
-          pkgData.module = pkgData.module.replace(/dist\//, 'dist-x/')
+          pkgData.module = pkgData.module.replace(/dist\//, distDir)
         }
         if (pkgData.main) {
-          pkgData.main = pkgData.main.replace(/dist\//, 'dist-x/')
+          pkgData.main = pkgData.main.replace(/dist\//, distDir)
         }
         return JSON.stringify(pkgData, null, 2)
       }
@@ -155,9 +157,7 @@ export function rewriteSsrVue() {
   // 解决 @vue/server-renderer 中引入 vue 的映射
   require('module-alias').addAliases({
     vue: resolveBuiltIn(
-      '@dcloudio/uni-h5-vue/' +
-        (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
-        '/vue.runtime.cjs.js'
+      '@dcloudio/uni-h5-vue/' + resolveVueDistDir() + '/vue.runtime.cjs.js'
     ),
     'vue/package.json': resolveBuiltIn('@dcloudio/uni-h5-vue/package.json'),
   })
@@ -196,9 +196,7 @@ export function rewriteSsrResolve() {
   resolve.sync = (id: string, opts?: resolve.SyncOpts) => {
     if (id === 'vue') {
       return resolveBuiltIn(
-        '@dcloudio/uni-h5-vue/' +
-          (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
-          '/vue.runtime.cjs.js'
+        '@dcloudio/uni-h5-vue/' + resolveVueDistDir() + '/vue.runtime.cjs.js'
       )
     } else if (id === 'vue/package.json') {
       return resolveBuiltIn(`@dcloudio/uni-h5-vue/package.json`)

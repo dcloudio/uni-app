@@ -86,6 +86,9 @@ export function createUniAppJsEnginePlugin(
         }
       : {}
 
+    const isDom2Harmony =
+      process.env.UNI_APP_X_DOM2 === 'true' &&
+      process.env.UNI_UTS_PLATFORM === 'app-harmony'
     return {
       name: 'uni:app-uts',
       apply: 'build',
@@ -166,16 +169,13 @@ export function createUniAppJsEnginePlugin(
       },
       configResolved(config) {
         configResolved(config)
-        if (process.env.UNI_APP_X_DOM2 !== 'true') {
+        if (!isDom2Harmony) {
           initUniAppJsEngineDom1CssPlugin(config)
         }
         insertBeforePlugin(uniAppJsPlugin(config), 'uni:app-main', config)
         // 如果开启了 vapor 模式，则禁用 vue 的 devtools，让 @vitejs/plugin-vue 不管是开发还是发行，均生成发行代码
         // 理论上非 vapor 也应该禁用，但为了不引发其他问题，暂时只禁用 vapor 模式
-        if (
-          process.env.UNI_VUE_VAPOR === 'true' ||
-          process.env.UNI_APP_X_DOM2 === 'true'
-        ) {
+        if (isDom2Harmony) {
           const plugin = config.plugins.find((p) => p.name === 'vite:vue')
           if (plugin?.api?.options) {
             plugin.api.options.devToolsEnabled = false

@@ -90,6 +90,9 @@ export function createBasicUtsOptions(
   const options: UTS2JavaScriptBaseOptions = {
     cwd: inputDir,
     check: isWeb,
+    // ||
+    // (process.env.UNI_APP_X_DOM2 === 'true' &&
+    //   process.env.UNI_UTS_PLATFORM === 'app-harmony'),
     noCache:
       // modules 模式不使用缓存
       process.env.UNI_COMPILE_TARGET === 'uni_modules' ||

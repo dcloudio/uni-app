@@ -7685,6 +7685,30 @@ class UniPageImpl {
     const uniPageBody = document.querySelector("uni-page-body");
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
+  querySelector(selector) {
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      return null;
+    }
+    const uniPageBody = document.querySelector("uni-page-body");
+    return uniPageBody ? uniPageBody.querySelector(selector) : null;
+  }
+  querySelectorAll(selector) {
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      return null;
+    }
+    const uniPageBody = document.querySelector("uni-page-body");
+    if (!uniPageBody) {
+      return null;
+    }
+    const nodeList = uniPageBody.querySelectorAll(selector);
+    const res = [];
+    nodeList.forEach((node) => {
+      res.push(node);
+    });
+    return res.length ? res : null;
+  }
   getAndroidView() {
     return null;
   }
@@ -8856,7 +8880,7 @@ function initApp$1(vm) {
   initService();
   initView();
 }
-function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
+function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
   if (clone) {
     comp = extend({}, comp);
   }
@@ -8870,6 +8894,12 @@ function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
       return oldSetup(props2, ctx);
     }
   };
+  if (type === "page") {
+    const styleIsolation = comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename];
+    if (styleIsolation !== "isolated") {
+      comp.styleIsolation = "app-shared";
+    }
+  }
   return comp;
 }
 function setupComponent(comp, options) {
@@ -8892,11 +8922,15 @@ function setupWindow(comp, id2) {
     }
   });
 }
-function setupPage(comp) {
+function setupPage(comp, path) {
   if (process.env.NODE_ENV !== "production") {
     comp.__mpType = "page";
   }
+  if (path) {
+    comp.__filename = path;
+  }
   return setupComponent(comp, {
+    type: "page",
     clone: true,
     // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
@@ -11019,6 +11053,9 @@ function useQuill(props2, rootRef, trigger) {
             {
               let { name = "", value = false } = options;
               range = quill.getSelection(true);
+              if (!name) {
+                break;
+              }
               let format = quill.getFormat(range)[name] || false;
               if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
                 value = !format;
@@ -27513,7 +27550,7 @@ const openDialogPage = (options) => {
   let { path, query } = parseUrl(options.url);
   path = normalizeRoute(path);
   const normalizeUrl = createNormalizeUrl("navigateTo");
-  const errMsg = normalizeUrl(path, {});
+  const errMsg = normalizeUrl(options.url, {});
   if (errMsg) {
     triggerFailCallback(options, errMsg);
     return null;

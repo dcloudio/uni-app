@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import {
   APP_SERVICE_FILENAME,
   type UniVitePlugin,
+  createShadowImageUrl,
   cssPostPlugin,
   getPlatformManifestJsonOnce,
   initPostcssPlugin,
@@ -89,6 +90,16 @@ export function uniAppVuePlugin(): UniVitePlugin {
                   resolveBuiltIn('@dcloudio/uni-app-plus/dist/style.css'),
                   'utf8'
                 )
+              }
+              if (process.env.UNI_PLATFORM === 'app-harmony') {
+                if (process.env.NODE_ENV === 'production') {
+                  const url = createShadowImageUrl(400, 'grey')
+                  appCss = appCss.replace(/U_S_I_U/g, url)
+                } else {
+                  appCss = appCss
+                    .replace(/background-image:\s*url\(U_S_I_U\);/g, '')
+                    .replace(/animation:\s*shadow-preload\s+0\.1s;/g, '')
+                }
               }
               return appCss + '\n' + cssCode
             }

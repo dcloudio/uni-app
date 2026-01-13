@@ -2865,6 +2865,8 @@ function createTransformContext(root, {
   transformHoist = null,
   isBuiltInComponent = NOOP,
   isCustomElement = NOOP,
+  // fixed by xxxxxx
+  isEasyComponent = NOOP,
   expressionPlugins = [],
   scopeId = null,
   slotted = true,
@@ -2892,6 +2894,8 @@ function createTransformContext(root, {
     transformHoist,
     isBuiltInComponent,
     isCustomElement,
+    // fixed by xxxxxx
+    isEasyComponent,
     expressionPlugins,
     scopeId,
     slotted,
@@ -4628,6 +4632,8 @@ function resolveComponentType(node, context, ssr = false) {
       context.helper(builtIn);
     return builtIn;
   }
+  const isEasyComponent = context.isEasyComponent;
+  isEasyComponent && isEasyComponent(tag);
   context.helper(RESOLVE_COMPONENT);
   context.components.add(tag);
   return toValidAssetId(tag, `component`);

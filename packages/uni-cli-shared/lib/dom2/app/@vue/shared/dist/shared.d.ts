@@ -274,6 +274,11 @@ export declare const isMathMLTag: (key: string) => boolean;
  * Do NOT use in runtime code paths unless behind `__DEV__` flag.
  */
 export declare const isVoidTag: (key: string) => boolean;
+/**
+ * Compiler only.
+ * Do NOT use in runtime code paths unless behind `__DEV__` flag.
+ */
+export declare const isFormattingTag: (key: string) => boolean;
 
 export declare const isSpecialBooleanAttr: (key: string) => boolean;
 /**

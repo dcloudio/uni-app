@@ -3,7 +3,7 @@
 interface Console {
   /**
      如果断言为 false，则将一个错误消息写入控制台。如果断言是 true，没有任何反应。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#assert
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#assert
      @uniPlatform {
         "app": {
             "android": {
@@ -44,7 +44,7 @@ interface Console {
   assert(condition?: boolean, ...data: (any | null)[]): void;
   /**
      console.clear() 方法清空控制台，但前提是该控制台允许清空。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#clear
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#clear
      @uniPlatform {
         "app": {
             "android": {
@@ -85,7 +85,7 @@ interface Console {
   clear(): void;
   /**
      console.count() 方法会记录调用 count() 的次数。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#count
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#count
      @uniPlatform {
         "app": {
             "android": {
@@ -126,7 +126,7 @@ interface Console {
   count(label?: string): void;
   /**
      重置计数器。此函数有一个可选参数 label。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#countReset
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#countreset
      @uniPlatform {
         "app": {
             "android": {
@@ -168,7 +168,7 @@ interface Console {
   /**
      在控制台打印 debug 日志
      @param data 要输出的对象列表。按传参的顺序把对象输出到控制台。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#debug
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#debug
      @uniPlatform {
         "app": {
             "android": {
@@ -209,7 +209,7 @@ interface Console {
   debug(...data: (any | null)[]): void;
   /**
      console.dir() 方法可以显示指定 JavaScript 对象的属性列表，并以交互式的形式展现。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#dir
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#dir
      @uniPlatform {
         "app": {
             "android": {
@@ -251,7 +251,7 @@ interface Console {
   /**
    显示一个明确的 XML/HTML 元素的包括所有后代元素的交互树。
      非标准: 该特性是非标准的，请尽量不要在生产环境中使用它！
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#dirxml
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#dirxml
      @uniPlatform {
         "app": {
             "android": {
@@ -293,7 +293,7 @@ interface Console {
   /**
      在控制台打印 error 日志
      @param data 要输出的对象列表。按传参的顺序把对象输出到控制台。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#error
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#error
      @uniPlatform {
         "app": {
             "android": {
@@ -334,7 +334,7 @@ interface Console {
   error(...data: (any | null)[]): void;
   /**
      console.group() 方法在控制台上创建一个新的分组。随后输出到控制台上的内容都会被添加一个缩进，表示该内容属于当前分组，直到调用 console.groupEnd() 之后，当前分组结束。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#group
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#group
      @uniPlatform {
         "app": {
             "android": {
@@ -375,7 +375,7 @@ interface Console {
   group(...data: (any | null)[]): void;
   /**
      console.groupCollapsed() 方法在控制台上创建一个新的分组。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#groupCollapsed
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#groupcollapsed
      @uniPlatform {
         "app": {
             "android": {
@@ -416,7 +416,7 @@ interface Console {
   groupCollapsed(...data: (any | null)[]): void;
   /**
      在控制台中退出一格缩进 (结束分组).
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#groupEnd
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#groupend
      @uniPlatform {
         "app": {
             "android": {
@@ -458,7 +458,7 @@ interface Console {
   /**
      在控制台打印 info 日志
      @param data 要输出的对象列表。按传参的顺序把对象输出到控制台。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#info
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#info
      @uniPlatform {
         "app": {
             "android": {
@@ -500,7 +500,7 @@ interface Console {
   /**
      在控制台打印 log 日志
      @param data 要输出的对象列表。按传参的顺序把对象输出到控制台。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#log
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#log
      @uniPlatform {
         "app": {
             "android": {
@@ -534,7 +534,7 @@ interface Console {
   log(...data: (any | null)[]): void;
   /**
      将数据以表格的形式显示。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#table
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#table
      @uniPlatform {
         "app": {
             "android": {
@@ -575,7 +575,7 @@ interface Console {
   table(tabularData?: any | null, properties?: string[]): void;
   /**
      你可以启动一个计时器来跟踪某一个操作的占用时长。每一个计时器必须拥有唯一的名字，页面中最多能同时运行 10,000 个计时器。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#time
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#time
      @uniPlatform {
         "app": {
             "android": {
@@ -617,7 +617,7 @@ interface Console {
   /**
      停止一个通过 console.time() 启动的计时器
    非标准: 该特性是非标准的，请尽量不要在生产环境中使用它！
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#timeEnd
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#timeend
      @uniPlatform {
         "app": {
             "android": {
@@ -658,7 +658,7 @@ interface Console {
   timeEnd(label?: string): void;
   /**
      在控制台输出计时器的值，该计时器必须已经通过 console.time() 启动。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#timeLog
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#timelog
      @uniPlatform {
         "app": {
             "android": {
@@ -699,7 +699,7 @@ interface Console {
   timeLog(label?: string, ...data: (any | null)[]): void;
   /**
      非标准: 该特性是非标准的，请尽量不要在生产环境中使用它！
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#timeStamp
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#timestamp
      @uniPlatform {
         "app": {
             "android": {
@@ -740,7 +740,7 @@ interface Console {
   timeStamp(label?: string): void;
   /**
      向控制台 输出一个堆栈跟踪。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#trace
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#trace
      @uniPlatform {
         "app": {
             "android": {
@@ -782,7 +782,7 @@ interface Console {
   /**
      在控制台打印 warn 日志
      @param data 要输出的对象列表。按传参的顺序把对象输出到控制台。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#warn
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/console.html#warn
      @uniPlatform {
         "app": {
             "android": {

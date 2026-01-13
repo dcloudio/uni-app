@@ -56,7 +56,7 @@ export declare function createSharedDataSlot(name: string | (() => string), rawP
 export type VaporSharedDataComponent = ObjectVaporSharedDataComponent & {
     __className?: string;
     externalClasses?: string[];
-    styleIsolation?: 'isolated' | 'app-shared';
+    styleIsolation?: 'isolated' | 'app' | 'app-shared' | 'app-and-page';
     rootElement?: {
         class?: string;
     };
@@ -185,6 +185,7 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
      */
     accessedAttrs: boolean;
     renderer: 'app' | 'page' | 'component';
+    private cachedCid;
     constructor(comp: VaporSharedDataComponent, rawProps?: RawProps | null, rawSlots?: RawSlots | null, appContext?: GenericAppContext, once?: boolean);
     /**
      * Expose `getKeysFromRawProps` on the instance so it can be used in code
@@ -192,6 +193,7 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
      */
     rawKeys(): string[];
     $waitNativeRender(fn: () => void): void;
+    get cid(): string;
 }
 export declare function isVaporSharedDataComponent(value: unknown): value is VaporSharedDataComponentInstance;
 /**
@@ -219,7 +221,7 @@ export declare function createSharedDataIf(condition: () => any, b1: () => void,
 type ItemOf<S> = S extends readonly (infer T)[] ? T : S extends Reactive<readonly (infer T)[]> ? T : S extends Set<infer T> ? T : S extends Map<infer K, infer V> ? [K, V] : S extends string ? string : S extends number ? number : S extends Record<any, infer V> ? V : S extends Iterable<infer T> ? T : any;
 type KeyOf<S> = S extends Record<any, any> ? string : number;
 type IndexOfKey<K> = K extends string ? number : undefined;
-export declare const createSharedDataFor: <S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number, setup?: (_: {
+export declare const createSharedDataFor: <S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => VaporSharedDataComponentInstance | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number, setup?: (_: {
     createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void) => void;
 export declare function createSharedDataForSlots<S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, rawSource: Source, getSlot: (sharedData: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: IndexOfKey<KeyOf<Source>>) => DynamicSlot): DynamicSlot[];
@@ -227,9 +229,18 @@ export declare function getSharedDataRestElement(val: any, keys: string[]): any;
 export declare function getSharedDataDefaultValue(val: any, defaultVal: any): any;
 
 export declare const preCreateSharedDataRecycleFor: <Source>(src: () => Source, getKey?: (item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) => (() => Source);
-export declare const createSharedDataRecycleFor: <S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getType?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number, setup?: (_: {
+export declare const createSharedDataRecycleFor: <S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => VaporSharedDataComponentInstance | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getType?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number, setup?: (_: {
     createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void) => void;
+/**
+ * list-item内的组件在进入等待复用状态时不会触发onUnmount钩子
+ * 复用时如果需要移除此时会触发onUnmount钩子
+ */
+export declare function useRecycleState<T>(getState: () => T): Ref<T>;
+declare function onReused(callback: () => void): void;
+declare function onBeforeRecycle(callback: () => void): void;
+export declare const onRecycle: typeof onBeforeRecycle;
+export declare const onReuse: typeof onReused;
 
 type NodeRef = string | Ref | ((ref: Element) => void);
 type RefEl = UniElement | VaporSharedDataComponentInstance;
@@ -274,6 +285,7 @@ export declare function createSharedDataVFor<T extends UniSharedData>(scope: Uni
 interface WithSharedDataComponentOptions {
     scriptCpp?: boolean;
 }
+export declare function useSharedDataRenderer(): 'app' | 'page' | 'component';
 export declare function withSharedDataPage<T extends UniSharedDataPage>(sharedData: T, options?: WithSharedDataComponentOptions | null): T;
 export declare function withSharedDataComponent<T extends UniSharedDataComponent>(sharedData: T, options?: WithSharedDataComponentOptions | null): T;
 /**
@@ -286,7 +298,8 @@ export declare function useSharedDataScope<T extends UniSharedDataPage>(scope?: 
 export declare function useSharedDataPageId(): number;
 declare enum UniSharedDataComponentStyleIsolation {
     Isolated = 0,
-    AppShared = 1
+    App = 1,
+    AppAndPage = 2
 }
 declare enum UniSharedDataComponentRenderer {
     Component = 0,

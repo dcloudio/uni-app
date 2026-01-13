@@ -1,16 +1,15 @@
 import { type Ref, onMounted, onUnmounted, watchEffect, ref } from 'vue'
 
-
-
-
-
-export function useLoadingStyle(targetElement : Ref<_Element | null>, bold : Ref<boolean>) {
+export function useLoadingStyle(
+  targetElement: Ref<_Element | null>,
+  bold: Ref<boolean>
+) {
   const loadingSize = ref('16px')
   const loadingBorderWidth = ref('1px')
   const loadingBorderRadius = ref('8px')
-  let observer : _ResizeObserver | null = null
+  let observer: _ResizeObserver | null = null
 
-  const calculateLoadingWidth = (element : _Element, bold : boolean) => {
+  const calculateLoadingWidth = (element: _Element, bold: boolean) => {
     const { width, height } = element.getBoundingClientRect()
 
     const coefficient = bold ? 2 : 1
@@ -24,10 +23,9 @@ export function useLoadingStyle(targetElement : Ref<_Element | null>, bold : Ref
     loadingBorderRadius.value = `${minSide / 2}px`
   }
 
-  const setupObserver = (cb : (el : _Element) => void) => {
+  const setupObserver = (cb: (el: _Element) => void) => {
     const el = targetElement.value as _Element
     if (!el) return
-
 
     observer!.observe(el)
   }

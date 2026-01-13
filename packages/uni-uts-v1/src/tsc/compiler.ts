@@ -108,6 +108,7 @@ export function createUniXCompiler(
             : undefined,
       },
     },
+    // dom2: process.env.UNI_APP_X_DOM2 === 'true',
     ...options,
   }
   const { UniXCompiler } = require('../../lib/uni-x/dist/compiler')

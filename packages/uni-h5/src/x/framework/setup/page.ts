@@ -184,6 +184,38 @@ class UniPageImpl implements UniPage {
       ? (uniPageBody.querySelector(`#${id}`) as unknown as UniElement)
       : null
   }
+  querySelector(selector: string): UniElement | null {
+    if (__NODE_JS__) {
+      return null
+    }
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this) {
+      return null
+    }
+    const uniPageBody = document.querySelector('uni-page-body')
+    return uniPageBody
+      ? (uniPageBody.querySelector(selector) as unknown as UniElement)
+      : null
+  }
+  querySelectorAll(selector: string): UniElement[] | null {
+    if (__NODE_JS__) {
+      return null
+    }
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this) {
+      return null
+    }
+    const uniPageBody = document.querySelector('uni-page-body')
+    if (!uniPageBody) {
+      return null
+    }
+    const nodeList = uniPageBody.querySelectorAll(selector)
+    const res: UniElement[] = []
+    nodeList.forEach((node) => {
+      res.push(node as unknown as UniElement)
+    })
+    return res.length ? res : null
+  }
   getAndroidView() {
     return null
   }

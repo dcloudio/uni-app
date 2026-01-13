@@ -140,6 +140,12 @@ export interface TransformOptions
    */
   isCustomElement?: (tag: string) => boolean | void
   /**
+   * fixed by xxxxxx 识别 easycom 组件
+   * @param tag
+   * @returns
+   */
+  isEasyComponent?: (tag: string) => boolean | void
+  /**
    * SFC scoped styles ID
    */
   scopeId?: string | null

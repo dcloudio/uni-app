@@ -1812,7 +1812,7 @@ export declare function renderList<T>(source: T, renderItem: <K extends keyof T>
  * For prefixing keys in v-on="obj" with "on"
  * @private
  */
-export declare function toHandlers(obj: Record<string, any>, preserveCaseIfNecessary?: boolean, needWrap?: boolean): Record<string, any>;
+export declare function toHandlers(obj: Record<string, any>, preserveCaseIfNecessary?: boolean): Record<string, any>;
 
 /**
  * Compiler runtime helper for rendering `<slot/>`

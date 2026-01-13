@@ -15310,6 +15310,9 @@
                 value = false
               } = options;
               range = quill.getSelection(true);
+              if (!name) {
+                break;
+              }
               var format = quill.getFormat(range)[name] || false;
               if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
                 value = !format;

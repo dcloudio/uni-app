@@ -14,7 +14,6 @@ import { normalizeAppUniRoutes } from '../app/pages/uniRoutes'
 import { normalizeAppXUniConfig } from './uniConfig'
 import { preUVueJson } from '../../preprocess'
 import { checkPagesJson } from '../utils'
-
 export * from './manifest'
 
 export function normalizeUniAppXAppPagesJson(jsonStr: string) {

@@ -6,6 +6,7 @@ import type {
   SFCTemplateCompileOptions,
 } from 'vue/compiler-sfc'
 import path from 'path'
+import { isBuiltInComponent } from '@dcloudio/uni-shared'
 import {
   createRollupError,
   matchEasycom,
@@ -101,6 +102,9 @@ export function resolveGenTemplateCodeOptions(
     },
     parseUTSComponent,
     parseUTSCustomElement,
+    isEasyComponent(tag) {
+      return isBuiltInComponent(tag) || !!matchEasycom(tag)
+    },
   }
 }
 

@@ -35,56 +35,66 @@ import { uniPostSourceMapPlugin } from './plugins/sourcemap'
 import { uniCustomElementPlugin } from './plugins/customElement'
 import { uniApiPlugin } from './plugins/api'
 
-export default () => [
-  ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
-    ? [uniWorkersPlugin(), uniJavaScriptWorkersPlugin()]
-    : []),
-  ...(isEnableConsole() ? [uniHBuilderXConsolePlugin('uni.__f__')] : []),
-  ...(process.env.UNI_APP_X === 'true'
-    ? [
-        uniDecryptUniModulesPlugin(),
-        uniUTSUVueJavaScriptPlugin(),
-        resolveUTSCompiler().uts2js({
-          platform: 'web',
-          inputDir: process.env.UNI_INPUT_DIR,
-          version: process.env.UNI_COMPILER_VERSION,
-          sourceMap: enableSourceMap(),
-          cacheRoot: path.resolve(
-            process.env.UNI_APP_X_CACHE_DIR,
-            '.uts2js/cache'
-          ),
-          modules: {
-            vueCompilerDom,
-            uniCliShared,
-          },
-          workers: {
-            extname: '.js',
-            resolve: () => {
-              return getWorkers()
+export default () => {
+  const isNewStyleIsolation =
+    process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
+  return [
+    ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
+      ? [uniWorkersPlugin(), uniJavaScriptWorkersPlugin()]
+      : []),
+    ...(isEnableConsole() ? [uniHBuilderXConsolePlugin('uni.__f__')] : []),
+    ...(process.env.UNI_APP_X === 'true'
+      ? [
+          uniDecryptUniModulesPlugin(),
+          uniUTSUVueJavaScriptPlugin(),
+          resolveUTSCompiler().uts2js({
+            platform: 'web',
+            inputDir: process.env.UNI_INPUT_DIR,
+            version: process.env.UNI_COMPILER_VERSION,
+            sourceMap: enableSourceMap(),
+            cacheRoot: path.resolve(
+              process.env.UNI_APP_X_CACHE_DIR,
+              '.uts2js/cache'
+            ),
+            modules: {
+              vueCompilerDom,
+              uniCliShared,
             },
-          },
-        }),
-      ]
-    : []),
-  uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
-  uniCssScopedPlugin({
-    filter: (id) => isVueSfcFile(id) && !isAppVue(id),
-  }),
-  uniResolveIdPlugin(),
-  ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
-    ? []
-    : [uniMainJsPlugin(), uniManifestJsonPlugin(), uniPagesJsonPlugin()]),
-  uniInjectPlugin(),
-  uniCssPlugin(),
-  uniSSRPlugin(),
-  uniSetupPlugin(),
-  uniRenderjsPlugin(),
-  uniH5Plugin(),
-  ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
-    ? [uniEncryptUniModulesAssetsPlugin(), uniEncryptUniModulesPlugin()]
-    : []),
-  uniPostVuePlugin(),
-  uniPostSourceMapPlugin(),
-  uniCustomElementPlugin(),
-  uniApiPlugin(),
-]
+            workers: {
+              extname: '.js',
+              resolve: () => {
+                return getWorkers()
+              },
+            },
+          }),
+        ]
+      : []),
+    uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
+    uniCssScopedPlugin({
+      filter: (id) => {
+        // Vapor 模式下，App.vue 也需要处理
+        if (isNewStyleIsolation) {
+          return isVueSfcFile(id)
+        }
+        return isVueSfcFile(id) && !isAppVue(id)
+      },
+    }),
+    uniResolveIdPlugin(),
+    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
+      ? []
+      : [uniMainJsPlugin(), uniManifestJsonPlugin(), uniPagesJsonPlugin()]),
+    uniInjectPlugin(),
+    uniCssPlugin(),
+    uniSSRPlugin(),
+    uniSetupPlugin(),
+    uniRenderjsPlugin(),
+    uniH5Plugin(),
+    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
+      ? [uniEncryptUniModulesAssetsPlugin(), uniEncryptUniModulesPlugin()]
+      : []),
+    uniPostVuePlugin(),
+    uniPostSourceMapPlugin(),
+    uniCustomElementPlugin(),
+    uniApiPlugin(),
+  ]
+}

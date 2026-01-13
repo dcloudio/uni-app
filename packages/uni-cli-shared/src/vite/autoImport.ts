@@ -245,11 +245,15 @@ const vuePreset = {
     'onServerPrefetch',
     'onUnmounted',
     'onUpdated',
+    // uni-app specific lifecycle
+    'onReuse',
+    'onRecycle',
 
     // setup helpers
     'useAttrs',
     'useSlots',
     'useComputedStyle',
+    'useRecycleState',
 
     // reactivity,
     'computed',

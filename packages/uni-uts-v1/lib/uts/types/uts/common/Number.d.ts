@@ -21,7 +21,7 @@ interface Number {
   /**
      返回指定 Number 对象的字符串表示形式。如果转换的基数大于 10，则会使用字母来表示大于 9 的数字，比如基数为 16 的情况，则使用 a 到 f 的字母来表示 10 到 15。如果基数没有指定，则使用 10。如果对象是负数，则会保留负号。即使 radix 是 2 时也是如此：返回的字符串包含一个负号（-）前缀和正数的二进制表示，不是 数值的二进制补码。进行数字到字符串的转换时，建议用小括号将要转换的目标括起来，防止出错。
      @param radix 指定要用于数字到字符串的转换的基数 (从 2 到 36)。如果未指定 radix 参数，则默认值为 10。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toString
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#tostring
      @uniPlatform {
         "app": {
            "android": {
@@ -65,7 +65,7 @@ interface Number {
      使用定点表示法来格式化一个数值。
      @param fractionDigits 小数点后数字的个数；介于 0 到 20（包括）之间，实现环境可能支持更大范围。如果忽略该参数，则默认为 0。
      @return 使用定点表示法表示给定数字的字符串。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toFixed
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#tofixed
      @uniPlatform {
         "app": {
            "android": {
@@ -109,7 +109,7 @@ interface Number {
      以指数表示法返回该数值字符串表示形式。
      @param fractionDigits 可选。一个整数，用来指定小数点后有几位数字。默认情况下用尽可能多的位数来显示数字。如果 fractionDigits 太小或太大将会抛出该错误。必须介于 0 和 20（包括 20）之间。
      @return 一个用幂的形式 (科学记数法) 来表示Number 对象的字符串。小数点后以 fractionDigits 提供的值来四舍五入。如果 fractionDigits 参数被忽略了，小数点后的将尽可能用最多的位数来表示该数值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toExponential
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#toexponential
      @uniPlatform {
         "app": {
             "android": {
@@ -151,7 +151,7 @@ interface Number {
      以指定的精度返回该数值对象的字符串表示。
      @param precision 一个用来指定有效数个数的整数。 必须介于 1 到 21 之间。
      @return 以定点表示法或指数表示法表示的一个数值对象的字符串表示，四舍五入到 precision 参数指定的显示数字位数。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toPrecision
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#toprecision
      @uniPlatform {
         "app": {
             "android": {
@@ -192,7 +192,7 @@ interface Number {
   /**
      返回一个被 Number 对象包装的原始值。
      @return 表示指定 Number 对象的原始值的数字。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#valueOf
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#valueof
      @uniPlatform {
         "app": {
             "android": {
@@ -235,7 +235,7 @@ interface Number {
   /**
      返回一个Int 值
      @return 返回 number 对应的 Int 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toInt
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#toint
      @uniPlatform {
         "app": {
             "android": {
@@ -271,7 +271,7 @@ interface Number {
   /**
      返回一个Float 值
      @return 返回 number 对应的 Float 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toFloat
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#tofloat
      @uniPlatform {
         "app": {
             "android": {
@@ -307,7 +307,7 @@ interface Number {
   /**
      返回一个 Double 值
      @return 返回 number 对应的 Double 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toDouble
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#todouble
      @uniPlatform {
         "app": {
             "android": {
@@ -343,7 +343,7 @@ interface Number {
   /**
      返回一个 Int64 值, app-iOS平台特有。
      @return 返回 number 对应的 Int64 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toInt64
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#toint64
      @uniPlatform {
         "app": {
             "android": {
@@ -380,7 +380,7 @@ interface Number {
   /**
      返回一个 Int32 值, app-iOS平台特有。
      @return 返回 number 对应的 Int32 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toInt32
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#toint32
      @uniPlatform {
         "app": {
             "android": {
@@ -417,7 +417,7 @@ interface Number {
   /**
      返回一个 Int16 值, app-iOS平台特有。
      @return 返回 number 对应的 Int16 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toInt16
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#toint16
      @uniPlatform {
         "app": {
             "android": {
@@ -453,7 +453,7 @@ interface Number {
   /**
      返回一个 Int8 值, app-iOS平台特有。
      @return 返回 number 对应的 Int8 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toInt8
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#toint8
      @uniPlatform {
         "app": {
             "android": {
@@ -489,7 +489,7 @@ interface Number {
   /**
      返回一个 UInt 值
      @return 返回 number 对应的 UInt 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toUInt
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#touint
      @uniPlatform {
         "app": {
             "android": {
@@ -525,7 +525,7 @@ interface Number {
   /**
      返回一个 UInt64 值, app-iOS平台特有。
      @return 返回 number 对应的 UInt64 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toUInt64
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#touint64
      @uniPlatform {
         "app": {
             "android": {
@@ -562,7 +562,7 @@ interface Number {
   /**
      返回一个 UInt32 值, app-iOS平台特有。
      @return 返回 number 对应的 UInt32 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toUInt32
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#touint32
      @uniPlatform {
         "app": {
             "android": {
@@ -599,7 +599,7 @@ interface Number {
   /**
      返回一个 UInt16 值, app-iOS平台特有。
      @return 返回 number 对应的 UInt16 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toUInt16
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#touint16
      @uniPlatform {
         "app": {
             "android": {
@@ -635,7 +635,7 @@ interface Number {
   /**
      返回一个 UInt8 值, app-iOS平台特有。
      @return 返回 number 对应的 UInt8 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toUInt8
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#touint8
      @uniPlatform {
         "app": {
             "android": {
@@ -671,7 +671,7 @@ interface Number {
   /**
      将当前的Number数据转换为Byte表示，如果超出Byte最大值表示范围，会得到溢出后余数表示, app-andorid平台特有。
      @return 返回 number 对应的 Byte 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toByte
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#tobyte
      @uniPlatform {
         "app": {
             "android": {
@@ -698,7 +698,7 @@ interface Number {
   /**
      将当前的Number数据转换为Long表示，如果超出Long最大值表示范围，会得到溢出后余数表示, app-andorid平台特有。
      @return 返回 number 对应的 Long 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toLong
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#tolong
      @uniPlatform {
         "app": {
             "android": {
@@ -732,7 +732,7 @@ interface Number {
   /**
      将当前的Number数据转换为Short表示，如果超出Short最大值表示范围，会得到溢出后余数表示, app-andorid平台特有。
      @return 返回 number 对应的 Short 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toShort
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#toshort
      @uniPlatform {
         "app": {
             "android": {
@@ -767,7 +767,7 @@ interface Number {
   /**
      将当前的 Number 数据转换为 UShort 表示，如果超出 UShort 最大值表示范围，会得到溢出后余数表示, app-andorid平台特有。
      @return 返回 number 对应的 UShort 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toUShort
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#toushort
      @uniPlatform {
         "app": {
             "android": {
@@ -801,7 +801,7 @@ interface Number {
   /**
      将当前的 Number 数据转换为 ULong 表示，如果超出 ULong 最大值表示范围，会得到溢出后余数表示, app-andorid平台特有。
      @return 返回 number 对应的 ULong 值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#toULong
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#toulong
      @uniPlatform {
         "app": {
             "android": {
@@ -838,7 +838,7 @@ interface NumberConstructor {
 
   /**
      创建一个 Number 对象。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#constructor
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#constructor
      @uniPlatform {
         "app": {
             "android": {
@@ -871,7 +871,7 @@ interface NumberConstructor {
   /**
      创建一个 Number 对象。
      @param 所创建对象的数值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#constructor
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#constructor
      @uniPlatform {
         "app": {
             "android": {
@@ -912,7 +912,7 @@ interface NumberConstructor {
 
   /**
      在 JavaScript 里所能表示的最大数值。无限接近于 1.79E+308。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#MAX_VALUE
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#max_value
      @uniPlatform {
         "app": {
             "android": {
@@ -953,7 +953,7 @@ interface NumberConstructor {
   /**
      表示在 JavaScript 中所能表示的最小的正值。 无限接近于 5.00E-324。
 
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#MIN_VALUE
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#min_value
      @uniPlatform {
         "app": {
             "android": {
@@ -995,7 +995,7 @@ interface NumberConstructor {
      表示“非数字”（Not-A-Number）。和 NaN 相同。
      在相等比较中，NaN不等于任何值，包括它自己。要测试一个值是否等于NaN，使用isNaN函数。
 
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#NaN
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#nan
      @uniPlatform {
         "app": {
             "android": {
@@ -1037,7 +1037,7 @@ interface NumberConstructor {
      表示负无穷大。
      Number.NEGATIVE_INFINITY 的值和全局对象的 Infinity 属性的负值相同。
 
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#NEGATIVE_INFINITY
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#negative_infinity
      @uniPlatform {
         "app": {
             "android": {
@@ -1072,7 +1072,7 @@ interface NumberConstructor {
      表示正无穷大。
      Number.POSITIVE_INFINITY 的值同全局对象 Infinity 属性的值相同。
 
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#POSITIVE_INFINITY
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#positive_infinity
      @uniPlatform {
         "app": {
             "android": {
@@ -1114,7 +1114,7 @@ interface NumberConstructor {
      通过 Int | Float | Double | Int64 | Int32 | Int16 | Int8 | UInt | UInt64 | UInt32 | UInt16 | UInt8  | Byte | Short | Long 类型创建一个 number
      @param value 必填。一个 Swift 或者 Kotlin 专有数字类型的值。其中 Swift 平台 支持 Int, Float, Double, Int64, Int32, Int16, Int8, UInt,  UInt64, UInt32, UInt16, UInt8。Kotlin 平台支持  Int, Float, Double, Byte, Short, Long
      @return 返回 number
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#from
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#from
      @uniPlatform {
         "app": {
             "android": {
@@ -1152,7 +1152,7 @@ interface NumberConstructor {
     isNaN() 函数用来确定一个值是否为NaN 。注：isNaN函数内包含一些非常有趣的规则；你也可以使用 ECMAScript 2015 中定义的 Number.isNaN() 来判断。
     @param number 要被检测的值。
     @return 如果给定值为 NaN则返回值为true；否则为false。
-    @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#isNaN
+    @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/number.html#isnan
     @uniPlatform
     {
       "app": {

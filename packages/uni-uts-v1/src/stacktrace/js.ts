@@ -47,6 +47,12 @@ export function parseUTSJavaScriptRuntimeStacktrace(
   const sourceMapDir = resolveSourceMapDirByCacheDir(options.cacheDir)
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (options.platform === 'app-harmony') {
+      // 移除无用行
+      if (line === 'Cannot get SourceMap info, dump raw stack:') {
+        continue
+      }
+    }
     let codes = parseUTSJavaScriptRuntimeStacktraceJsErrorLine(
       options.platform === 'app-harmony'
         ? APP_HARMONY_JS_ERROR_RE

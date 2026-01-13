@@ -9461,6 +9461,9 @@ function useQuill(props2, rootRef, trigger) {
             {
               let { name = "", value = false } = options;
               range = quill.getSelection(true);
+              if (!name) {
+                break;
+              }
               let format = quill.getFormat(range)[name] || false;
               if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
                 value = !format;
@@ -16457,7 +16460,7 @@ function initApp(vm) {
   initService();
   initView();
 }
-function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
+function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
   if (clone) {
     comp = extend({}, comp);
   }
@@ -16493,11 +16496,12 @@ function setupWindow(comp, id2) {
     }
   });
 }
-function setupPage(comp) {
+function setupPage(comp, path) {
   if (process.env.NODE_ENV !== "production") {
     comp.__mpType = "page";
   }
   return setupComponent(comp, {
+    type: "page",
     clone: true,
     // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,

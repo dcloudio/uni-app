@@ -3,7 +3,12 @@ import debug from 'debug'
 import type { Plugin } from 'vite'
 
 import { resolveBuiltIn, resolveMainPathOnce } from '@dcloudio/uni-cli-shared'
-import { isSSR, ownerModuleName } from '../utils'
+import {
+  isSSR,
+  ownerModuleName,
+  resolveFrameworkDistDir,
+  resolveVueDistDir,
+} from '../utils'
 
 const debugResolve = debug('uni:resolve')
 
@@ -15,16 +20,12 @@ export function uniResolveIdPlugin(): Plugin {
     enforce: 'pre',
     configResolved(config) {
       resolveCache[ownerModuleName] = resolveBuiltIn(
-        path.join(
-          ownerModuleName,
-          (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
-            '/uni-h5.es.js'
-        )
+        path.join(ownerModuleName, resolveFrameworkDistDir() + '/uni-h5.es.js')
       )
       resolveCache['@dcloudio/uni-h5-vue'] = resolveBuiltIn(
         path.join(
           '@dcloudio/uni-h5-vue',
-          (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
+          resolveVueDistDir() +
             `/vue.runtime.${process.env.VITEST ? 'cjs' : 'esm'}.js`
         )
       )
@@ -41,8 +42,7 @@ export function uniResolveIdPlugin(): Plugin {
           return resolveBuiltIn(
             path.join(
               '@dcloudio/uni-h5-vue',
-              (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
-                `/vue.runtime.cjs.js`
+              resolveVueDistDir() + `/vue.runtime.cjs.js`
             )
           )
         }

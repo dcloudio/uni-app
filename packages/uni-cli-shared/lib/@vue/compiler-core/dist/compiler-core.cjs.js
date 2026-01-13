@@ -3120,6 +3120,8 @@ function createTransformContext(root, {
   transformHoist = null,
   isBuiltInComponent = shared.NOOP,
   isCustomElement = shared.NOOP,
+  // fixed by xxxxxx
+  isEasyComponent = shared.NOOP,
   expressionPlugins = [],
   scopeId = null,
   slotted = true,
@@ -3147,6 +3149,8 @@ function createTransformContext(root, {
     transformHoist,
     isBuiltInComponent,
     isCustomElement,
+    // fixed by xxxxxx
+    isEasyComponent,
     expressionPlugins,
     scopeId,
     slotted,
@@ -5312,7 +5316,9 @@ function resolveComponentType(node, context, ssr = false) {
       context.helper(builtIn);
     return builtIn;
   }
-  {
+  const isEasyComponent = context.isEasyComponent;
+  const isEasyCom = isEasyComponent && isEasyComponent(tag);
+  if (!isEasyCom) {
     const fromSetup = resolveSetupReference(tag, context);
     if (fromSetup) {
       return fromSetup;
@@ -5325,7 +5331,8 @@ function resolveComponentType(node, context, ssr = false) {
       }
     }
   }
-  if (context.selfName && shared.capitalize(shared.camelize(tag)) === context.selfName) {
+  if (// fixed by xxxxxx
+  !isEasyCom && context.selfName && shared.capitalize(shared.camelize(tag)) === context.selfName) {
     context.helper(RESOLVE_COMPONENT);
     context.components.add(tag + `__self`);
     return toValidAssetId(tag, `component`);

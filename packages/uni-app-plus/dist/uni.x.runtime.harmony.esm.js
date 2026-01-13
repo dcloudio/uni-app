@@ -3063,7 +3063,7 @@ var openDialogPage = (options) => {
   } = parseUrl(url);
   path = normalizeRoute(path);
   var normalizeUrl = createNormalizeUrl("navigateTo");
-  var errMsg = normalizeUrl(path, {});
+  var errMsg = normalizeUrl(url, {});
   if (errMsg) {
     triggerFailCallback(options, errMsg);
     return null;

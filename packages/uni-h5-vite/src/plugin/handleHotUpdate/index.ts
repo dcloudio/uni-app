@@ -13,6 +13,7 @@ import {
   resolveBuiltIn,
   resolveComponentsLibDirs,
 } from '@dcloudio/uni-cli-shared'
+import { resolveFrameworkDistDir } from '../../utils'
 
 const debugHmr = debug('uni:hmr')
 
@@ -35,9 +36,7 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
         path.resolve(inputDir, PAGES_JSON_JS),
         path.resolve(inputDir, MANIFEST_JSON_JS),
         resolveBuiltIn(
-          '@dcloudio/uni-h5/' +
-            (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
-            '/uni-h5.es.js'
+          '@dcloudio/uni-h5/' + resolveFrameworkDistDir() + '/uni-h5.es.js'
         ),
       ]
       try {

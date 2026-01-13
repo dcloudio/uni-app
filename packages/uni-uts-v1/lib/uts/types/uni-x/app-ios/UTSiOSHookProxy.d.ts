@@ -6,7 +6,7 @@ interface UTSiOSHookProxy {
 	/**
 	 * uts 插件创建时的回调。
    * 此回调的准确时机对应于 OC 类的 load() 函数调用时机。
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#onCreate
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#oncreate
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -29,7 +29,7 @@ interface UTSiOSHookProxy {
    * @param application   App 的 UIApplicationDelegate 对象。
    * @param launchOptions 启动参数。默认值为 null (用户通过点击 push 通知启动应用时，该参数内会包含通知的信息)
    * @return 返回一个 boolean 值，正常返回true。
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#applicationDidFinishLaunchingWithOptions
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#applicationdidfinishlaunchingwithoptions
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -50,7 +50,7 @@ interface UTSiOSHookProxy {
 	 * 远程通知注册成功时的回调函数。
    * 可以在此函数里将 deviceToken 发送给服务端。
    * @param deviceToken 设备的推送令牌
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#didRegisterForRemoteNotifications
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#didregisterforremotenotifications
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -70,7 +70,7 @@ interface UTSiOSHookProxy {
 	/**
 	 * 远程通知注册失败时的回调函数。
 	 * @param error 失败的原因。
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#didFailToRegisterForRemoteNotifications
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#didfailtoregisterforremotenotifications
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -91,7 +91,7 @@ interface UTSiOSHookProxy {
 	 * 应用收到远程通知时的回调函数。(iOS 10.0之后废弃)
    * 当应用在前台运行中，收到远程通知时(不会弹出系统通知界面)，会回调这个方法；当应用在后台状态时，点击push消息启动应用，也会回调这个方法；当应用完全没有启动时，点击push消息启动应用，就不会回调这个方法。
 	 * @param userInfo 收到的远程通知信息。
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#didReceiveRemoteNotification
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#didreceiveremotenotification
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -111,7 +111,7 @@ interface UTSiOSHookProxy {
 	/**
 	 * 应用收到本地通知时的回调函数。(iOS 10.0之后废弃)
 	 * @param notification 接收到的本地通知
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#didReceiveLocalNotification
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#didreceivelocalnotification
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -133,7 +133,7 @@ interface UTSiOSHookProxy {
 	 * @param application App 的 UIApplicationDelegate 对象。
    * @param url 要打开的URL资源。该资源可以是网络资源或文件。
    * @return 如果成功处理请求，则为true;如果尝试打开URL资源失败，则为false。
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#applicationHandleOpenURL
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#applicationhandleopenurl
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -156,7 +156,7 @@ interface UTSiOSHookProxy {
 	 * @param url 要打开的URL资源。该资源可以是网络资源或文件。
    * @param options URL处理选项的字典, 默认值为 null 。
 	 * @return 如果成功处理请求，则为true;如果尝试打开URL资源失败，则为false。
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#applicationOpenURLOptions
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#applicationopenurloptions
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -175,7 +175,7 @@ interface UTSiOSHookProxy {
 	applicationOpenURLOptions(app ?: UIApplication, url ?: URL, options ?: Map<UIApplication.OpenURLOptionsKey, any>) : boolean;
 	/**
 	 * 当应用从活动状态主动变为非活动状态的时的回调函数。
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#applicationWillResignActive
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#applicationwillresignactive
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -195,7 +195,7 @@ interface UTSiOSHookProxy {
 	/**
 	 * 应用完全激活时的回调函数。
    * 应用程序冷启动或者从后台转到前台后都会完全激活应用程序。
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#applicationDidBecomeActive
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#applicationdidbecomeactive
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -214,7 +214,7 @@ interface UTSiOSHookProxy {
 	applicationDidBecomeActive(application ?: UIApplication) : void;
 	/**
 	 * 应用程序进入后台时的回调函数。
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#applicationDidEnterBackground
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#applicationdidenterbackground
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -234,7 +234,7 @@ interface UTSiOSHookProxy {
 	/**
 	 * 当应用在后台状态，将要进入到前台运行时的回调函数。
 	 * 应用程序冷启动时不会回调此方法。
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#applicationWillEnterForeground
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#applicationwillenterforeground
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -253,7 +253,7 @@ interface UTSiOSHookProxy {
 	applicationWillEnterForeground(application ?: UIApplication) : void;
 	/**
 	 * 应用程序的 main 函数。
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#applicationMain
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#applicationmain
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
@@ -276,7 +276,7 @@ interface UTSiOSHookProxy {
    * @param userActivity 包含与用户正在执行的任务相关联的数据的活动对象。使用这些数据来继续用户在iOS应用中的活动。
    * @param restorationHandler 需要执行的回调，该回调是可选的，默认值为 null。
 	 * @return true表示你的应用处理了这个活动，false表示让iOS知道你的应用没有处理这个活动。
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOSHookProxy.html#applicationContinueUserActivityRestorationHandler
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsioshookproxy.html#applicationcontinueuseractivityrestorationhandler
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {

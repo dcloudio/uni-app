@@ -12,6 +12,7 @@ import type {
 } from '@vue/compiler-sfc'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import {
+  isBuiltInComponent,
   isDom2AppUserVueComponentTag,
   isDom2VueComponentTag,
 } from '@dcloudio/uni-shared'
@@ -31,6 +32,7 @@ import {
   requireUniHelpers,
   resolveAppVue,
   resolveUniTypeScript,
+  uniPostcssExternalPlugin,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
@@ -82,14 +84,26 @@ export function initPluginVueOptions(
   }
   // 解析 scoped 中 deep 等特殊语法
   styleOptions.postcssPlugins.push(uniPostcssScopedPlugin())
+  // 解析 :external() 语法，dom2 + 小程序平台下提升外部类选择器权重
+  if (
+    process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_PLATFORM?.startsWith('mp-')
+  ) {
+    styleOptions.postcssPlugins.push(uniPostcssExternalPlugin())
+  }
 
   const templateOptions = vueOptions.template || (vueOptions.template = {})
 
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
+  const isDom2Harmony =
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_PLATFORM === 'app-harmony'
+
   ;(compilerOptions as any).isX = process.env.UNI_APP_X === 'true'
-  ;(compilerOptions as any).dom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  ;(compilerOptions as any).dom2 = isDom2Harmony
 
   // 默认就移除comments节点
   compilerOptions.comments = false
@@ -207,14 +221,12 @@ export function initPluginVueOptions(
       },
     }
   }
+
   if (options.platform !== 'h5' && options.platform !== 'web') {
     compilerOptions.nodeTransforms.push(
       ...getBaseNodeTransforms(
         options.base,
-        process.env.UNI_VUE_VAPOR === 'true' ||
-          process.env.UNI_APP_X_DOM2 === 'true'
-          ? createResolveStaticAsset(options.inputDir)
-          : undefined
+        isDom2Harmony ? createResolveStaticAsset(options.inputDir) : undefined
       )
     )
   }
@@ -298,7 +310,7 @@ export function initPluginVueOptions(
     if (!vueOptions.script.babelParserPlugins.includes('decorators')) {
       vueOptions.script.babelParserPlugins.push('decorators')
     }
-    if (process.env.UNI_APP_X_DOM2 === 'true') {
+    if (isDom2Harmony) {
       const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
       function isAppVue(id: string) {
         return normalizePath(id) === appVue
@@ -360,6 +372,11 @@ export function initPluginVueOptions(
             )
           },
         }
+      }
+    } else {
+      // 如果是 easyComponent 组件，则不需要从setup中导入组件且不支持 self 引用
+      ;(compilerOptions as any).isEasyComponent = (tag: string) => {
+        return isBuiltInComponent(tag) || !!matchEasycom(tag)
       }
     }
   }

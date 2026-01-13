@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-dom v3.6.0-beta.1
+* @vue/compiler-dom v3.6.0-beta.2
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -26,7 +26,7 @@ var VueCompilerDOM = (function (exports) {
   const isObject = (val) => val !== null && typeof val === "object";
   const isReservedProp = /* @__PURE__ */ makeMap(
     // the leading comma is intentional so empty string "" is also included
-    ",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
+    ",key,ref,ref_for,ref_key,__cid,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
   );
   const isBuiltInDirective = /* @__PURE__ */ makeMap(
     "bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo"
@@ -6820,6 +6820,7 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
   exports.createCompoundExpression = createCompoundExpression;
   exports.createConditionalExpression = createConditionalExpression;
   exports.createDOMCompilerError = createDOMCompilerError;
+  exports.createExp = createExp;
   exports.createForLoopParams = createForLoopParams;
   exports.createFunctionExpression = createFunctionExpression;
   exports.createIfStatement = createIfStatement;
