@@ -7059,10 +7059,10 @@ function baseCreateRenderer(options, createHydrationFns) {
     if (__X_STYLE_ISOLATION__ && vnode.ctx) {
       const ctx = vnode.ctx;
       const styleIsolation = (ctx == null ? void 0 : ctx.type).styleIsolation;
-      if (styleIsolation === "app-shared") {
+      if (styleIsolation === "app" || styleIsolation === "app-shared") {
         const appScopeId2 = resolveAppScopeId(ctx);
         appScopeId2 && hostSetScopeId(el, appScopeId2);
-      } else if (styleIsolation === "apply-shared") {
+      } else if (styleIsolation === "app-and-page") {
         const appScopeId2 = resolveAppScopeId(ctx);
         appScopeId2 && hostSetScopeId(el, appScopeId2);
         const pageScopeId = resolvePageScopId(ctx);
