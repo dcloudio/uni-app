@@ -232,8 +232,15 @@ export declare const preCreateSharedDataRecycleFor: <Source>(src: () => Source, 
 export declare const createSharedDataRecycleFor: <S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => VaporSharedDataComponentInstance | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getType?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number, setup?: (_: {
     createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void) => void;
+/**
+ * list-item内的组件在进入等待复用状态时不会触发onUnmount钩子
+ * 复用时如果需要移除此时会触发onUnmount钩子
+ */
 export declare function useRecycleState<T>(getState: () => T): Ref<T>;
-export declare function onReuse(callback: () => void): void;
+export declare function onBeforeReuse(callback: () => void): void;
+export declare function onReused(callback: () => void): void;
+export declare function onBeforeRecycle(callback: () => void): void;
+export declare function onRecycled(callback: () => void): void;
 
 type NodeRef = string | Ref | ((ref: Element) => void);
 type RefEl = UniElement | VaporSharedDataComponentInstance;
