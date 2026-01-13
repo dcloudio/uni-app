@@ -237,10 +237,10 @@ export declare const createSharedDataRecycleFor: <S extends UniSharedData, Sourc
  * 复用时如果需要移除此时会触发onUnmount钩子
  */
 export declare function useRecycleState<T>(getState: () => T): Ref<T>;
-export declare function onBeforeReuse(callback: () => void): void;
-export declare function onReused(callback: () => void): void;
-export declare function onBeforeRecycle(callback: () => void): void;
-export declare function onRecycled(callback: () => void): void;
+declare function onReused(callback: () => void): void;
+declare function onBeforeRecycle(callback: () => void): void;
+export declare const onRecycle: typeof onBeforeRecycle;
+export declare const onReuse: typeof onReused;
 
 type NodeRef = string | Ref | ((ref: Element) => void);
 type RefEl = UniElement | VaporSharedDataComponentInstance;
