@@ -13,7 +13,7 @@
     />
     <!-- #ifdef MP-WEIXIN -->
     <ad-custom v-if="userwx" :adIntervals="adIntervals" :unit-id="userUnitId" class="uni-ad-custom" data-com-type="wx" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
-    <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" :class="[customFullscreen]" data-com-type="wx" @load="_onmpload" @error="_onwxchannelerror"></uniad-plugin-wx>
+    <!-- <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" :class="[customFullscreen]" data-com-type="wx" @load="_onmpload" @error="_onwxchannelerror"></uniad-plugin-wx> -->
     <!-- #endif -->
   </view>
 </template>
@@ -39,6 +39,11 @@ export default {
 .uni-ad-custom-fullscreen {
   display: flex;
   height: 100vh;
+}
+.uni-ad-custom {
+  display: flex;
+  flex: 1;
+  width: 100%;
 }
 .uniad-plugin {
   display: flex;
