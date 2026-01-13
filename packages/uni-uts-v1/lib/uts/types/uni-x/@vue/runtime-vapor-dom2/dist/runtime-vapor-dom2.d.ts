@@ -233,6 +233,7 @@ export declare const createSharedDataRecycleFor: <S extends UniSharedData, Sourc
     createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void) => void;
 export declare function useRecycleState<T>(getState: () => T): Ref<T>;
+export declare function onReuse(callback: () => void): void;
 
 type NodeRef = string | Ref | ((ref: Element) => void);
 type RefEl = UniElement | VaporSharedDataComponentInstance;
@@ -277,6 +278,7 @@ export declare function createSharedDataVFor<T extends UniSharedData>(scope: Uni
 interface WithSharedDataComponentOptions {
     scriptCpp?: boolean;
 }
+export declare function useSharedDataRenderer(): 'app' | 'page' | 'component';
 export declare function withSharedDataPage<T extends UniSharedDataPage>(sharedData: T, options?: WithSharedDataComponentOptions | null): T;
 export declare function withSharedDataComponent<T extends UniSharedDataComponent>(sharedData: T, options?: WithSharedDataComponentOptions | null): T;
 /**

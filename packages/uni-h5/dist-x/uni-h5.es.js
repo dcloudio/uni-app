@@ -27550,7 +27550,7 @@ const openDialogPage = (options) => {
   let { path, query } = parseUrl(options.url);
   path = normalizeRoute(path);
   const normalizeUrl = createNormalizeUrl("navigateTo");
-  const errMsg = normalizeUrl(path, {});
+  const errMsg = normalizeUrl(options.url, {});
   if (errMsg) {
     triggerFailCallback(options, errMsg);
     return null;
