@@ -5432,7 +5432,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
         if (options) {
           if (shared.hasOwn(attrs, key)) {
             if (value !== attrs[key]) {
-              attrs[key] = normalizeInheritAttrsValue(key, value);
+              attrs[key] = normalizeInheritAttrsValue(instance, key, value);
               hasAttrsChanged = true;
             }
           } else {
@@ -5448,7 +5448,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
           }
         } else {
           if (value !== attrs[key]) {
-            attrs[key] = normalizeInheritAttrsValue(key, value);
+            attrs[key] = normalizeInheritAttrsValue(instance, key, value);
             hasAttrsChanged = true;
           }
         }
@@ -5526,7 +5526,7 @@ function setFullProps(instance, rawProps, props, attrs) {
         }
       } else if (!isEmitListener(instance.emitsOptions, key)) {
         if (!(key in attrs) || value !== attrs[key]) {
-          attrs[key] = normalizeInheritAttrsValue(key, value);
+          attrs[key] = normalizeInheritAttrsValue(instance, key, value);
           hasAttrsChanged = true;
         }
       }
@@ -5555,8 +5555,8 @@ function toExternalClasses(classes) {
 function normalizeExternalClasses(classes) {
   return toExternalClasses(uniShared.normalizeClass(classes));
 }
-function normalizeInheritAttrsValue(key, value) {
-  if (__X_STYLE_ISOLATION__) {
+function normalizeInheritAttrsValue(instance, key, value) {
+  if (__X_STYLE_ISOLATION__ && !instance.type.__reserved) {
     if (key === "class") {
       return toExternalClasses(value).join(" ");
     }
@@ -6988,6 +6988,11 @@ function baseCreateRenderer(options, createHydrationFns) {
       if (styleIsolation === "app-shared") {
         const appScopeId2 = resolveAppScopeId(ctx);
         appScopeId2 && hostSetScopeId(el, appScopeId2);
+      } else if (styleIsolation === "apply-shared") {
+        const appScopeId2 = resolveAppScopeId(ctx);
+        appScopeId2 && hostSetScopeId(el, appScopeId2);
+        const pageScopeId = resolvePageScopId(ctx);
+        pageScopeId && hostSetScopeId(el, pageScopeId);
       }
     }
   };
@@ -6998,6 +7003,10 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     appScopeId = ctx.appContext.app._component.__scopeId;
     return appScopeId;
+  }
+  function resolvePageScopId(ctx) {
+    const pageInstance = ctx.$pageInstance;
+    return pageInstance && pageInstance.type.__scopeId;
   }
   const mountChildren = (children, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, start = 0) => {
     for (let i = start; i < children.length; i++) {

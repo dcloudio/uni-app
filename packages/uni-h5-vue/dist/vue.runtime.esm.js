@@ -5422,7 +5422,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
         if (options) {
           if (hasOwn(attrs, key)) {
             if (value !== attrs[key]) {
-              attrs[key] = normalizeInheritAttrsValue(key, value);
+              attrs[key] = normalizeInheritAttrsValue(instance, key, value);
               hasAttrsChanged = true;
             }
           } else {
@@ -5438,7 +5438,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
           }
         } else {
           if (value !== attrs[key]) {
-            attrs[key] = normalizeInheritAttrsValue(key, value);
+            attrs[key] = normalizeInheritAttrsValue(instance, key, value);
             hasAttrsChanged = true;
           }
         }
@@ -5509,7 +5509,7 @@ function setFullProps(instance, rawProps, props, attrs) {
         }
       } else if (!isEmitListener(instance.emitsOptions, key)) {
         if (!(key in attrs) || value !== attrs[key]) {
-          attrs[key] = normalizeInheritAttrsValue(key, value);
+          attrs[key] = normalizeInheritAttrsValue(instance, key, value);
           hasAttrsChanged = true;
         }
       }
@@ -5532,7 +5532,7 @@ function setFullProps(instance, rawProps, props, attrs) {
   }
   return hasAttrsChanged;
 }
-function normalizeInheritAttrsValue(key, value) {
+function normalizeInheritAttrsValue(instance, key, value) {
   return value;
 }
 function resolvePropValue(options, props, key, value, instance, isAbsent) {
