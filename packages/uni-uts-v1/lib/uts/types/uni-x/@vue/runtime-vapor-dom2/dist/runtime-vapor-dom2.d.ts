@@ -56,7 +56,7 @@ export declare function createSharedDataSlot(name: string | (() => string), rawP
 export type VaporSharedDataComponent = ObjectVaporSharedDataComponent & {
     __className?: string;
     externalClasses?: string[];
-    styleIsolation?: 'isolated' | 'app-shared';
+    styleIsolation?: 'isolated' | 'app' | 'app-shared' | 'app-and-page';
     rootElement?: {
         class?: string;
     };
@@ -298,7 +298,8 @@ export declare function useSharedDataScope<T extends UniSharedDataPage>(scope?: 
 export declare function useSharedDataPageId(): number;
 declare enum UniSharedDataComponentStyleIsolation {
     Isolated = 0,
-    AppShared = 1
+    App = 1,
+    AppAndPage = 2
 }
 declare enum UniSharedDataComponentRenderer {
     Component = 0,
