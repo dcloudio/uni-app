@@ -13,7 +13,6 @@ import {
   normalizePagePath,
   normalizePagesJson,
   normalizePagesRoute,
-  normalizeStyleIsolation,
   parseManifestJsonOnce,
   preUVueJson,
 } from '@dcloudio/uni-cli-shared'
@@ -302,13 +301,6 @@ function generateConfig(
   config: ResolvedConfig
 ) {
   const isX = process.env.UNI_APP_X === 'true'
-  const isNewStyleIsolation =
-    process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
-  const styleIsolationCode = isNewStyleIsolation
-    ? `${globalName}.__uniConfig.styleIsolation = ${normalizeStyleIsolation(
-        pagesJson as any
-      )};`
-    : ''
   delete pagesJson.pages
   delete pagesJson.subPackages
   delete pagesJson.subpackages
@@ -349,6 +341,5 @@ function generateConfig(
   themeConfig,
 })
 ${tabBarCode}
-${styleIsolationCode}
 `
 }

@@ -11,10 +11,9 @@ import {
 } from '../pages'
 import { normalizePath } from '../../utils'
 import { normalizeAppUniRoutes } from '../app/pages/uniRoutes'
-import { normalizeAppXUniConfig, normalizeStyleIsolation } from './uniConfig'
+import { normalizeAppXUniConfig } from './uniConfig'
 import { preUVueJson } from '../../preprocess'
 import { checkPagesJson } from '../utils'
-export { normalizeStyleIsolation } from './uniConfig'
 export * from './manifest'
 
 export function normalizeUniAppXAppPagesJson(jsonStr: string) {
@@ -124,7 +123,6 @@ __uniConfig.getTabBarConfig = () =>  {return ${
     tabBar ? JSON.stringify(tabBar) : 'undefined'
   }};
 __uniConfig.tabBar = __uniConfig.getTabBarConfig();
-__uniConfig.styleIsolation = ${normalizeStyleIsolation(pagesJson)}
 const __uniRoutes = ${normalizeAppUniRoutes(
     pagesJson
   )}.map(uniRoute=>(uniRoute.meta.route=uniRoute.path,__uniConfig.pages.push(uniRoute.path),uniRoute.path='/'+uniRoute.path,uniRoute)).concat(typeof __uniSystemRoutes !== 'undefined' ? __uniSystemRoutes : []);
