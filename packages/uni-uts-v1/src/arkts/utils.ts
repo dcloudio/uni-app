@@ -282,7 +282,10 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['onUnmounted'],
       ['onUpdated'],
       // uni-app specific lifecycle
-      ['onReuse'],
+      ['onReused'],
+      ['onRecycled'],
+      ['onBeforeReuse'],
+      ['onBeforeRecycle'],
 
       // setup helpers
       ['useAttrs'],

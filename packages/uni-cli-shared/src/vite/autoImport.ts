@@ -246,7 +246,10 @@ const vuePreset = {
     'onUnmounted',
     'onUpdated',
     // uni-app specific lifecycle
-    'onReuse',
+    'onReused',
+    'onRecycled',
+    'onBeforeReuse',
+    'onBeforeRecycle',
 
     // setup helpers
     'useAttrs',
