@@ -15053,7 +15053,8 @@ class DownloadTask {
 const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, ({ url, header, timeout }, { resolve, reject }) => {
     timeout =
         (timeout ||
-            (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) ||
+            (__uniConfig.networkTimeout &&
+                __uniConfig.networkTimeout.downloadFile) ||
             60 * 1000) / 1000;
     const downloader = plus.downloader.createDownload(url, {
         timeout,
@@ -15063,8 +15064,13 @@ const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, ({ url, header, timeout },
         retryInterval: 0,
     }, (download, statusCode) => {
         if (statusCode) {
+            let tempFilePath = download.filename;
+            try {
+                tempFilePath = decodeURIComponent(tempFilePath);
+            }
+            catch (e) { }
             resolve({
-                tempFilePath: download.filename,
+                tempFilePath,
                 statusCode,
             });
         }
@@ -15705,17 +15711,24 @@ const onAudioStateChange = ({ state, audioId, errMsg, errCode, }) => {
     if (audio) {
         emit(audio, state, errMsg, errCode);
         if (state === 'play') {
-            const oldCurrentTime = audio.currentTime;
-            emit(audio, 'timeUpdate');
-            audio.__timing = setInterval(() => {
-                const currentTime = audio.currentTime;
-                if (currentTime !== oldCurrentTime) {
-                    emit(audio, 'timeUpdate');
-                }
-            }, TIME_UPDATE$1);
+            if (!audio.__timing) {
+                emit(audio, 'timeUpdate');
+                let lastCurrentTime = audio.currentTime;
+                audio.__timing = setInterval(() => {
+                    const currentTime = audio.currentTime;
+                    if (currentTime !== lastCurrentTime) {
+                        lastCurrentTime = currentTime;
+                        emit(audio, 'timeUpdate');
+                    }
+                }, TIME_UPDATE$1);
+            }
         }
-        else if (state === 'pause' || state === 'stop' || state === 'error') {
+        else if (state === 'pause' ||
+            state === 'stop' ||
+            state === 'ended' ||
+            state === 'error') {
             clearInterval(audio.__timing);
+            audio.__timing = undefined;
         }
     }
 };
@@ -15825,6 +15838,7 @@ class InnerAudioContext {
     }
     destroy() {
         clearInterval(this.__timing);
+        this.__timing = undefined;
         if (audios[this.id]) {
             audios[this.id].close();
             delete audios[this.id];
