@@ -167,7 +167,7 @@ export function parseComponent(
   }
 
   // 支持 externalClasses
-  if (__X_STYLE_ISOLATION__ && vueOptions.externalClasses) {
+  if (__X__ && __X_STYLE_ISOLATION__ && vueOptions.externalClasses) {
     mpComponentOptions.externalClasses = vueOptions.externalClasses
   }
 
