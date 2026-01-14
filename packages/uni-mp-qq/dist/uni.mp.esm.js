@@ -696,10 +696,6 @@ function parseComponent(vueOptions, { parse, mocks, isPage, isPageInProject, ini
     if (parse) {
         parse(mpComponentOptions, { handleLink });
     }
-    // 支持 externalClasses
-    if (__X_STYLE_ISOLATION__ && vueOptions.externalClasses) {
-        mpComponentOptions.externalClasses = vueOptions.externalClasses;
-    }
     return mpComponentOptions;
 }
 function initCreateComponent(parseOptions) {
