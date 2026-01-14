@@ -69,6 +69,7 @@ onMethod('onDownloadTaskStateChange', ({
       })
       return
     case 'success':
+      try { tempFilePath = decodeURIComponent(tempFilePath) } catch (e) { }
       invoke(callbackId, {
         tempFilePath,
         statusCode,
