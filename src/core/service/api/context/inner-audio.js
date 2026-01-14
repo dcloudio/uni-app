@@ -123,6 +123,7 @@ class InnerAudioContext {
 
   destroy () {
     clearInterval(this.__timing)
+    this.__timing = undefined
     invokeMethod('destroyAudioInstance', {
       audioId: this.id
     })
@@ -173,16 +174,20 @@ onMethod('onAudioStateChange', ({
   if (audio) {
     emit(audio, state, errMsg, errCode)
     if (state === 'play') {
-      const oldCurrentTime = audio.currentTime
-      emit(audio, 'timeupdate')
-      audio.__timing = setInterval(() => {
-        const currentTime = audio.currentTime
-        if (currentTime !== oldCurrentTime) {
-          emit(audio, 'timeupdate')
-        }
-      }, 200)
-    } else if (state === 'pause' || state === 'stop' || state === 'error') {
+      if (!audio.__timing) {
+        emit(audio, 'timeupdate')
+        let lastCurrentTime = audio.currentTime
+        audio.__timing = setInterval(() => {
+          const currentTime = audio.currentTime
+          if (currentTime !== lastCurrentTime) {
+            lastCurrentTime = currentTime
+            emit(audio, 'timeupdate')
+          }
+        }, 200)
+      }
+    } else if (state === 'pause' || state === 'stop' || state === 'ended' || state === 'error') {
       clearInterval(audio.__timing)
+      audio.__timing = undefined
     }
   }
 })
