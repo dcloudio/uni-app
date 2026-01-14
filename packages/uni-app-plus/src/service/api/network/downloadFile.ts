@@ -57,7 +57,8 @@ export const downloadFile = defineTaskApi<API_TYPE_DOWNLOAD_FILE>(
   ({ url, header, timeout }, { resolve, reject }) => {
     timeout =
       (timeout ||
-        (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) ||
+        (__uniConfig.networkTimeout &&
+          __uniConfig.networkTimeout.downloadFile) ||
         60 * 1000) / 1000
     const downloader = plus.downloader.createDownload(
       url,
