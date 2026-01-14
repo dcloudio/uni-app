@@ -22,7 +22,7 @@ const createDownloadTaskById = function (downloadTaskId, {
   header,
   timeout
 } = {}) {
-  timeout = (timeout || (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000) / 1000
+  timeout = (timeout || (__uniConfig.networkTimeout && __uniConfig.networkTimeout.downloadFile) || 60 * 1000) / 1000
   const downloader = plus.downloader.createDownload(url, {
     timeout,
     filename: TEMP_PATH + '/download/',
