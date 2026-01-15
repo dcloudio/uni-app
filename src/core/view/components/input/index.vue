@@ -27,7 +27,7 @@
         class="uni-input-input"
         :style="cursorColor ? { caretColor: cursorColor } : {}"
         :autocomplete="autocomplete"
-        :inputmode="inputmode"
+        :inputmode="computedInputmode"
         @change.stop
         @focus="_onFocus"
         @blur="_onBlur"
@@ -45,6 +45,7 @@
         tabindex="-1"
         :readonly="disabled"
         :type="inputType"
+        :inputmode="computedInputmode"
         :maxlength="maxlength"
         :step="_step"
         class="uni-input-input"
@@ -170,11 +171,32 @@ export default {
         case 'digit':
           type = 'number'
           break
+        case 'none':
+          type = 'text'
+          break
         default:
           type = ~INPUT_TYPES.indexOf(this.type) ? this.type : 'text'
           break
       }
       return this.password ? 'password' : type
+    },
+    computedInputmode () {
+      // 如果同时配置 type、 inputmode，则以 inputmode 为准。防止与用户之前逻辑冲突
+      if (this.inputmode !== undefined) {
+        return this.inputmode
+      }
+      if (INPUT_MODES.indexOf(this.type) !== -1) {
+        return this.type
+      }
+      switch (this.type) {
+        case 'digit':
+          return 'decimal'
+        case 'number':
+          return 'numeric'
+        case 'idcard':
+          return 'text'
+      }
+      return this.inputmode
     },
     _step () {
       // 处理部分设备中无法输入小数点的问题
