@@ -3,11 +3,18 @@ import selectorParser from 'postcss-selector-parser'
 
 /**
  * PostCSS plugin to handle :external() pseudo-class
- * Transforms :external(.out-class) to .out-class,.out-class-external.out-class-external.out-class-external
- * to increase specificity weight while preserving the original class for selector query APIs
+ * Transforms :external(.out-class) into two separate rules:
+ *   .out-class { ... }
+ *   .out-class-external.out-class-external.out-class-external { ... }
+ *
+ * This preserves the original class for selector query APIs
+ * while using -external suffixed classes for specificity boost
  *
  * Example:
- *   :external(.foo) -> .foo,.foo-external.foo-external.foo-external
+ *   :external(.foo) { color: red; }
+ *   ->
+ *   .foo { color: red; }
+ *   .foo-external.foo-external.foo-external { color: red; }
  */
 const externalPlugin: PluginCreator<void> = () => {
   return {
@@ -44,59 +51,55 @@ function processRule(rule: Rule) {
     return
   }
 
-  rule.selector = selectorParser((selectorRoot) => {
-    rewriteExternalSelectors(selectorRoot)
-  }).processSync(rule.selector)
-}
-
-/**
- * Rewrite :external(.class) to .class,.class-external.class-external.class-external
- * Creates two selectors: one with original class, one with -external suffixed classes for specificity
- */
-function rewriteExternalSelectors(selectorRoot: selectorParser.Root) {
-  const newSelectors: selectorParser.Selector[] = []
-
-  selectorRoot.each((selector) => {
-    // Check if this selector contains valid :external with class
-    let hasValidExternal = false
-    selector.walk((node) => {
+  // Check if there are valid :external selectors with single class
+  let hasValidExternal = false
+  selectorParser((selectorRoot) => {
+    selectorRoot.walk((node) => {
       if (node.type === 'pseudo' && node.value === ':external') {
         const innerSelector = node.nodes?.[0] as
           | selectorParser.Selector
           | undefined
+        // Only consider valid if it's a single class selector
         if (
-          innerSelector?.nodes?.length &&
+          innerSelector?.nodes?.length === 1 &&
           innerSelector.nodes[0].type === 'class'
         ) {
           hasValidExternal = true
-          return false // stop walking
         }
       }
     })
+  }).processSync(rule.selector)
 
-    if (!hasValidExternal) {
-      // Remove empty :external() without cloning
+  if (!hasValidExternal) {
+    // Just remove empty :external() without creating new rule
+    rule.selector = selectorParser((selectorRoot) => {
+      selectorRoot.each((selector) => {
+        processSelector(selector, false)
+      })
+    }).processSync(rule.selector)
+    return
+  }
+
+  // Clone the rule for the -external version
+  const externalRule = rule.clone()
+  processedRules.add(externalRule)
+
+  // Process original rule: replace :external(.foo) with .foo
+  rule.selector = selectorParser((selectorRoot) => {
+    selectorRoot.each((selector) => {
       processSelector(selector, false)
-      return
-    }
+    })
+  }).processSync(rule.selector)
 
-    // Clone the selector for the -external version
-    const externalSelector = selector.clone() as selectorParser.Selector
+  // Process cloned rule: replace :external(.foo) with .foo-external.foo-external.foo-external
+  externalRule.selector = selectorParser((selectorRoot) => {
+    selectorRoot.each((selector) => {
+      processSelector(selector, true)
+    })
+  }).processSync(externalRule.selector)
 
-    // Process original selector: replace :external(.foo) with .foo
-    processSelector(selector, false)
-
-    // Process cloned selector: replace :external(.foo) with .foo-external.foo-external.foo-external
-    processSelector(externalSelector, true)
-
-    // Add the external selector to be appended later
-    newSelectors.push(externalSelector)
-  })
-
-  // Append all new selectors
-  newSelectors.forEach((sel) => {
-    selectorRoot.append(sel)
-  })
+  // Insert the external rule after the original rule
+  rule.after(externalRule)
 }
 
 /**
@@ -136,9 +139,9 @@ function processSelector(
       return
     }
 
-    // Only handle simple class selector case: :external(.foo)
+    // Only handle simple single class selector case: :external(.foo)
     const firstNode = innerSelector.nodes[0]
-    if (firstNode.type === 'class') {
+    if (innerSelector.nodes.length === 1 && firstNode.type === 'class') {
       const originalClass = firstNode.value
 
       if (useExternalSuffix) {
@@ -160,6 +163,11 @@ function processSelector(
           })
         )
       }
+    } else {
+      // For complex selectors like :external(.a .b), just extract the inner content
+      innerSelector.nodes.forEach((innerNode) => {
+        parent.insertBefore(node, innerNode.clone())
+      })
     }
 
     // Remove the :external pseudo

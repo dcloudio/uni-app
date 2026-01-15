@@ -166,6 +166,11 @@ export function parseComponent(
     parse(mpComponentOptions, { handleLink })
   }
 
+  // 支持 externalClasses
+  if (__X__ && __X_STYLE_ISOLATION__ && vueOptions.externalClasses) {
+    mpComponentOptions.externalClasses = vueOptions.externalClasses
+  }
+
   return mpComponentOptions
 }
 

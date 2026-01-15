@@ -3366,9 +3366,9 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
           getEffectIndex
         );
       }
-      if (hasStaticStyle && hasClass) {
-        template += ` ext:style`;
-      }
+    }
+    if (hasStaticStyle && hasClass) {
+      template += ` ext:style`;
     }
   }
   template += `>` + context.childrenTemplate.join("");

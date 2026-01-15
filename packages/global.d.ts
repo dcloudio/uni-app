@@ -32,6 +32,7 @@ declare var __IMPORT_META_ENV_BASE_URL__:
 
 // Global compile-time constants
 declare var __X__: boolean
+declare var __X_STYLE_ISOLATION__: boolean
 // 暂不启用
 // declare var __X_VAPOR__: boolean
 declare var __DEV__: boolean
