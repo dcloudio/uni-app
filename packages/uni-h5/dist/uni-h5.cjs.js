@@ -4009,6 +4009,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         case "digit":
           type2 = "number";
           break;
+        case "none":
+          type2 = "text";
+          break;
         default:
           type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
@@ -4022,9 +4025,18 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       return AUTOCOMPLETES[index2];
     });
     const inputmode = vue.computed(() => {
-      if (props2.inputmode) {
+      if (props2.inputmode !== void 0) {
         return props2.inputmode;
       }
+      if (INPUT_MODES.includes(props2.type)) {
+        return props2.type;
+      }
+      const inputmodeMap = {
+        number: "numeric",
+        digit: "decimal",
+        idcard: "text"
+      };
+      return inputmodeMap[props2.type];
     });
     let cache = useCache(props2, type);
     let resetCache = {
@@ -4115,8 +4127,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "style": props2.cursorColor ? {
           caretColor: props2.cursorColor
         } : {},
+        "inputmode": inputmode.value,
         "onFocus": (event) => event.target.blur()
-      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : vue.createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "value": state.value,
