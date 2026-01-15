@@ -105,6 +105,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         case 'digit':
           type = 'number'
           break
+        case 'none':
+          type = 'text'
+          break
         default:
           type = INPUT_TYPES.includes(props.type) ? props.type : 'text'
           break
@@ -125,18 +128,19 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return AUTOCOMPLETES[index]
     })
     const inputmode = computed(() => {
-      if (props.inputmode) {
+      // 如果同时配置 type、 inputmode，则以 inputmode 为准。防止与用户之前逻辑冲突
+      if (props.inputmode !== undefined) {
         return props.inputmode
       }
-      if (__X__) {
-        const inputmodeMap = {
-          number: 'numeric',
-          digit: 'decimal',
-        }
-        return Object.values(INPUT_MODES).includes(props.type as INPUT_MODE)
-          ? props.type
-          : inputmodeMap[props.type]
+      if (INPUT_MODES.includes(props.type as INPUT_MODE)) {
+        return props.type
       }
+      const inputmodeMap = {
+        number: 'numeric',
+        digit: 'decimal',
+        idcard: 'text',
+      }
+      return inputmodeMap[props.type]
     })
     let cache = useCache(props, type)
     let resetCache: ResetCache = { fn: null }
@@ -278,6 +282,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             step={step.value}
             class="uni-input-input"
             style={props.cursorColor ? { caretColor: props.cursorColor } : {}}
+            inputmode={inputmode.value}
             // fix: 禁止 readonly 状态获取焦点
             onFocus={(event: Event) =>
               (event.target as HTMLInputElement).blur()
