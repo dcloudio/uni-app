@@ -446,9 +446,13 @@ function normalizeCode(code: string, isMain = false) {
     process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true'
       ? 'initAutomator();\n'
       : ''
+  const styleIsolationCode =
+    process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
+      ? 'enableStyleIsolation();\n    '
+      : ''
   return `${code}
 export function main(app: IApp) {
-    definePageRoutes();
+    ${styleIsolationCode}definePageRoutes();
     defineAppConfig();
     ${automatorCode}(createApp()['app'] as VueApp).mount(app, ${UVUE_CLASS_NAME_PREFIX}UniApp());
 }
