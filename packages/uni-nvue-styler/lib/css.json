@@ -1386,7 +1386,7 @@
     },
     {
       "name": "z-index",
-      "description": "z-index 属性设定了一个定位元素及其后代元素或 flex 项目的 z-order。当元素之间重叠的时候，z-index 较大的元素会覆盖较小的元素在上层进行显示。",
+      "description": "z-index 属性设定了一个定位元素及其后代元素的 z-order。当元素之间重叠的时候，z-index 较大的元素会覆盖较小的元素在上层进行显示。",
       "restrictions": [
         "integer"
       ],
@@ -2087,7 +2087,7 @@
         },
         {
           "name": "space-evenly",
-          "description": "元素都沿着主轴均匀分布在指定的对齐容器中。相邻项之间的间距，主轴起始位置到第一个项的间距，主轴结束位置到最后一个项的间距，都完全一样",
+          "description": "元素都沿着主轴均匀分布在指定的对齐容器中。相邻元素之间的间距，主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，都完全一样",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2314,7 +2314,7 @@
     },
     {
       "name": "align-items",
-      "description": "align-items 属性将所有直接子元素上的 align-self 值设置为一个组。在 Flex 弹性布局中控制子元素在交叉轴方向的对齐方式。",
+      "description": "align-items 属性将所有直接子元素上的 align-self 值设置为一个组。在 Flex 弹性布局中控制子元素在交叉轴方向的对齐方式，相当于为所有子元素设置了默认的 align-self 值。",
       "restrictions": [
         "enum"
       ],
@@ -2785,7 +2785,7 @@
       "restrictions": [
         "enum"
       ],
-      "description": "align-content 属性用于在 Flex 弹性布局中设置行或列在交叉轴方向的分布方式。",
+      "description": "align-content 属性用于在 Flex 弹性布局中设置多行（或多列）作为一个整体在交叉轴方向的分布方式。注意：如果子元素只有一行（或一列）该属性不起作用，需配合 flex-wrap: wrap 使用。",
       "syntax": "center | flex-start | flex-end | space-between | space-around | stretch",
       "values": [
         {
@@ -3040,7 +3040,7 @@
     {
       "name": "flex",
       "shorthand": true,
-      "description": "flex 属性设置弹性项目如何增大或缩小以适应其弹性容器中可用的空间，是 flex-grow、flex-shrink、flex-basis 的简写。",
+      "description": "flex 属性设置弹性元素如何增大或缩小以适应其弹性容器中可用的空间，是 flex-grow、flex-shrink、flex-basis 的简写。",
       "restrictions": [
         "number",
         "length",
@@ -9058,7 +9058,7 @@
     },
     {
       "name": "white-space",
-      "description": "white-space 属性用于设置如何处理元素中的空白字符。",
+      "description": "white-space 属性用于设置如何处理元素中的空白字符（空格、换行符、制表符）以及文本是否自动换行。",
       "restrictions": [
         "enum"
       ],
@@ -9066,6 +9066,7 @@
       "values": [
         {
           "name": "normal",
+          "description": "换行符（\\n）当做空白符处理，连续的多个空白字符会合并为一个空格，文本遇到边界会自动换行，行末空白字符移除。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -9099,6 +9100,7 @@
         },
         {
           "name": "nowrap",
+          "description": "换行符（\\n）当做空白符处理，连续的多个空白字符会合并为一个空格，文本遇到边界不会自动换行，行末空白字符移除。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -9131,40 +9133,8 @@
           }
         },
         {
-          "name": "pre-line",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "4.81"
-              },
-              "ios": {
-                "osVer": "12.0",
-                "uniVer": "√",
-                "unixVer": "4.81"
-              },
-              "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "4.23",
-                "unixVer": "x",
-                "unixvVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
-        },
-        {
           "name": "pre",
+          "description": "换行符（\\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界不会自动换行，行末空白字符保留。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -9198,6 +9168,41 @@
         },
         {
           "name": "pre-wrap",
+          "description": "换行符（\\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符保留但“不占位置”。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixvVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "pre-line",
+          "description": "换行符（\\n）保留并换行显示，连续的多个空白字符会合并为一个空格，文本遇到边界会自动换行，行末空白字符移除。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -9231,6 +9236,7 @@
         },
         {
           "name": "break-spaces",
+          "description": "换行符（\\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符换行处理。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -9297,7 +9303,7 @@
         "text",
         "button"
       ],
-      "defaultValue": "normal"
+      "defaultValue": "pre-line"
     },
     {
       "name": "text-shadow",
