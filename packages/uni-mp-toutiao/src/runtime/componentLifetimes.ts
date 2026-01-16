@@ -84,10 +84,7 @@ export function initLifetimes({
     if (__PLATFORM__ === 'mp-harmony') {
       // 处理延迟的 uP 更新
       if (this._pendingUP) {
-        updateComponentProps(
-          resolvePropValue(this._pendingUP as any),
-          this.$vm.$
-        )
+        updateComponentProps(resolvePropValue(this._pendingUP!), this.$vm.$)
       }
     }
 

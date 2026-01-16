@@ -29,7 +29,7 @@ export interface CustomComponentInstanceProperty {
   _$vueId: string
   _$vuePid?: string
   _$setRef?: (fn: Function) => void
-  _pendingUP?: any // 缓存在 attached 之前触发的 observer 的 uP 值
+  _pendingUP?: string // 缓存在 attached 之前触发的 observer 的 uP 值
 }
 
 export type MPComponentOptions = Component.Options<
