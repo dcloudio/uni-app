@@ -2469,8 +2469,9 @@ class UniPageImpl {
     }
   }
   querySelectorAll(selector) {
+    const res = [];
     {
-      return null;
+      return res;
     }
   }
   getAndroidView() {
