@@ -7694,20 +7694,20 @@ class UniPageImpl {
     return uniPageBody ? uniPageBody.querySelector(selector) : null;
   }
   querySelectorAll(selector) {
+    const res = [];
     const currentPage = getCurrentPage();
     if (currentPage !== this) {
-      return null;
+      return res;
     }
     const uniPageBody = document.querySelector("uni-page-body");
     if (!uniPageBody) {
-      return null;
+      return res;
     }
     const nodeList = uniPageBody.querySelectorAll(selector);
-    const res = [];
     nodeList.forEach((node) => {
       res.push(node);
     });
-    return res.length ? res : null;
+    return res;
   }
   getAndroidView() {
     return null;
