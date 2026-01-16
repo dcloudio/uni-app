@@ -12,6 +12,7 @@ import {
   initSetRef,
   nextSetDataTick,
   resolvePropValue,
+  updateComponentProps,
 } from '@dcloudio/uni-mp-core'
 
 import {
@@ -78,6 +79,17 @@ export function initLifetimes({
         },
       }
     ) as ComponentPublicInstance
+
+    // mp-harmony 目前发现 observe.uP 和 this.$vm 出发表现不稳定
+    if (__PLATFORM__ === 'mp-harmony') {
+      // 处理延迟的 uP 更新
+      if (this._pendingUP) {
+        updateComponentProps(
+          resolvePropValue(this._pendingUP as any),
+          this.$vm.$
+        )
+      }
+    }
 
     if (__X__) {
       this.vm = this.$vm
