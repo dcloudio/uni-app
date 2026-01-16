@@ -22,6 +22,7 @@ export {
   updateMiniProgramComponentsByMainFilename,
   updateMiniProgramComponentsByScriptFilename,
   updateMiniProgramComponentsByTemplateFilename,
+  getGlobalComponentSource,
 } from './usingComponents'
 export {
   hasExternalClasses,

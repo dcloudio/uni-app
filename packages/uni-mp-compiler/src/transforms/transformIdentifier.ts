@@ -8,7 +8,6 @@ import {
   createSimpleExpression,
   isSlotOutlet,
 } from '@vue/compiler-core'
-
 import type { NodeTransform } from '../transform'
 import {
   ATTR_ELEMENT_ID,
@@ -52,6 +51,8 @@ import {
   rewritePropsBinding,
 } from './transformComponent'
 import {
+  findMiniProgramComponentExternalClasses,
+  getGlobalComponentSource,
   hasExternalClasses,
   isDirectiveNode,
   isElementNode,
@@ -60,6 +61,7 @@ import {
   matchEasycom,
   parseExternalClasses,
   parseProgram,
+  updateMiniProgramComponentExternalClasses,
 } from '@dcloudio/uni-cli-shared'
 import fs from 'fs'
 import { parse as sfcParse } from '@vue/compiler-sfc'
@@ -67,14 +69,10 @@ import { parse as sfcParse } from '@vue/compiler-sfc'
 import { rewriteId as rewriteIdX } from './transformUniElement'
 
 // externalClasses 缓存，包含 mtime 用于检测文件变化
-const externalClassesCache = new Map<
-  string,
-  { mtime: number; classes: string[] }
->()
-const UNI_APP_STYLE_CLASSES =
-  process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
-  process.env.UNI_APP_X === 'true' &&
-  process.env.UNI_PLATFORM?.startsWith('mp-')
+const UNI_APP_STYLE_CLASSES = true
+// process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+// process.env.UNI_APP_X === 'true' &&
+// process.env.UNI_PLATFORM?.startsWith('mp-')
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
@@ -135,9 +133,16 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         // 先尝试 easycom
         let source = matchEasycom(tag)
         // 如果 easycom 没匹配到，尝试从手动 import 中查找
-        const externalClasses = source
-          ? getComponentExternalClasses(source)
-          : undefined
+        let externalClasses: string[] = []
+        if (source) {
+          externalClasses = getComponentExternalClasses(source) || []
+        } else {
+          const globalComponentSource = getGlobalComponentSource(tag)
+          if (globalComponentSource) {
+            externalClasses =
+              getComponentExternalClasses(globalComponentSource) || []
+          }
+        }
 
         rewriteBinding(node as ComponentNode, context, externalClasses)
       }
@@ -391,7 +396,7 @@ function getComponentExternalClasses(source: string): string[] | undefined {
     return undefined
   }
 
-  const cached = externalClassesCache.get(source)
+  const cached = findMiniProgramComponentExternalClasses(source)
   if (cached && cached.mtime === mtime) {
     return cached.classes
   }
@@ -404,7 +409,7 @@ function getComponentExternalClasses(source: string): string[] | undefined {
   }
 
   if (!hasExternalClasses(code)) {
-    externalClassesCache.set(source, { mtime, classes: [] })
+    updateMiniProgramComponentExternalClasses(source, { mtime, classes: [] })
     return []
   }
 
@@ -418,12 +423,12 @@ function getComponentExternalClasses(source: string): string[] | undefined {
   }
 
   if (!scriptContent || !hasExternalClasses(scriptContent)) {
-    externalClassesCache.set(source, { mtime, classes: [] })
+    updateMiniProgramComponentExternalClasses(source, { mtime, classes: [] })
     return []
   }
 
   const program = parseProgram(scriptContent, source, {})
   const classes = parseExternalClasses(program)
-  externalClassesCache.set(source, { mtime, classes })
+  updateMiniProgramComponentExternalClasses(source, { mtime, classes })
   return classes
 }
