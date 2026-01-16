@@ -1,4 +1,5 @@
 import {
+  type ComponentNode,
   type DirectiveNode,
   ElementTypes,
   NodeTypes,
@@ -51,12 +52,29 @@ import {
   rewritePropsBinding,
 } from './transformComponent'
 import {
+  hasExternalClasses,
   isDirectiveNode,
   isElementNode,
   isSimpleExpressionNode,
   isUserComponent,
+  matchEasycom,
+  parseExternalClasses,
+  parseProgram,
 } from '@dcloudio/uni-cli-shared'
+import fs from 'fs'
+import { parse as sfcParse } from '@vue/compiler-sfc'
+
 import { rewriteId as rewriteIdX } from './transformUniElement'
+
+// externalClasses 缓存，包含 mtime 用于检测文件变化
+const externalClassesCache = new Map<
+  string,
+  { mtime: number; classes: string[] }
+>()
+const UNI_APP_STYLE_CLASSES =
+  process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+  process.env.UNI_APP_X === 'true' &&
+  process.env.UNI_PLATFORM?.startsWith('mp-')
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
@@ -112,9 +130,16 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         }
         rewriteIdX(node, context)
       }
-
       if (isUserComponent(node, context)) {
-        rewriteBinding(node, context)
+        const tag = node.tag
+        // 先尝试 easycom
+        let source = matchEasycom(tag)
+        // 如果 easycom 没匹配到，尝试从手动 import 中查找
+        const externalClasses = source
+          ? getComponentExternalClasses(source)
+          : undefined
+
+        rewriteBinding(node as ComponentNode, context, externalClasses)
       }
 
       let elementId: string = ''
@@ -348,4 +373,57 @@ function isBuiltIn({ arg, exp }: DirectiveNode) {
     exp &&
     isSimpleExpressionNode(exp)
   )
+}
+
+/**
+ * 获取组件的 externalClasses
+ * @param source 组件文件绝对路径
+ * @returns externalClasses 数组，未找到时返回 undefined
+ */
+function getComponentExternalClasses(source: string): string[] | undefined {
+  if (!UNI_APP_STYLE_CLASSES) {
+    return undefined
+  }
+  let mtime: number
+  try {
+    mtime = fs.statSync(source).mtimeMs
+  } catch {
+    return undefined
+  }
+
+  const cached = externalClassesCache.get(source)
+  if (cached && cached.mtime === mtime) {
+    return cached.classes
+  }
+
+  let code: string
+  try {
+    code = fs.readFileSync(source, 'utf-8')
+  } catch {
+    return undefined
+  }
+
+  if (!hasExternalClasses(code)) {
+    externalClassesCache.set(source, { mtime, classes: [] })
+    return []
+  }
+
+  let scriptContent: string
+  if (source) {
+    const { descriptor } = sfcParse(code, { filename: source })
+    scriptContent =
+      descriptor.scriptSetup?.content || descriptor.script?.content || ''
+  } else {
+    scriptContent = code
+  }
+
+  if (!scriptContent || !hasExternalClasses(scriptContent)) {
+    externalClassesCache.set(source, { mtime, classes: [] })
+    return []
+  }
+
+  const program = parseProgram(scriptContent, source, {})
+  const classes = parseExternalClasses(program)
+  externalClassesCache.set(source, { mtime, classes })
+  return classes
 }

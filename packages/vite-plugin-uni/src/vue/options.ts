@@ -31,7 +31,7 @@ import {
   requireUniHelpers,
   resolveAppVue,
   resolveUniTypeScript,
-  // uniPostcssExternalPlugin,
+  uniPostcssExternalPlugin,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
@@ -84,13 +84,13 @@ export function initPluginVueOptions(
   // 解析 scoped 中 deep 等特殊语法
   styleOptions.postcssPlugins.push(uniPostcssScopedPlugin())
   // 解析 :external() 语法，dom2 + 小程序平台下提升外部类选择器权重
-  // if (
-  //   process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
-  //   process.env.UNI_APP_X === 'true' &&
-  //   process.env.UNI_PLATFORM?.startsWith('mp-')
-  // ) {
-  //   styleOptions.postcssPlugins.push(uniPostcssExternalPlugin())
-  // }
+  if (
+    process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_PLATFORM?.startsWith('mp-')
+  ) {
+    styleOptions.postcssPlugins.push(uniPostcssExternalPlugin())
+  }
 
   const templateOptions = vueOptions.template || (vueOptions.template = {})
 

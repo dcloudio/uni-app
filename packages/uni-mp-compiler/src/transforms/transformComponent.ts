@@ -167,10 +167,12 @@ function isComponentProp(name: string) {
  * 重写组件 props 绑定
  * @param node
  * @param context
+ * @param externalClasses 组件的 externalClasses 数组
  */
 export function rewriteBinding(
   { tag, props }: ComponentNode,
-  context: TransformContext
+  context: TransformContext,
+  externalClasses?: string[]
 ) {
   const isMiniProgramComponent = context.isMiniProgramComponent(tag)
   if (
@@ -201,6 +203,9 @@ export function rewriteBinding(
     let isIdProp = false
     if (isAttributeNode(prop)) {
       const { name } = prop
+      if (externalClasses?.includes(name)) {
+        continue
+      }
       isIdProp = name === 'id'
       if (!isComponentProp(name)) {
         continue

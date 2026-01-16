@@ -321,7 +321,7 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     host: tsTypes.FormatDiagnosticsHost
   ): DiagnosticError {
     const ts = compiler.getTypeScript()
-    const errorMessage = `${diagnosticCategoryName(diagnostic)}${
+    const errorMessage = `${diagnosticCategoryName(diagnostic)}:${
       diagnostic.code ? ' UTS' + diagnostic.code : ''
     }: ${ts.flattenDiagnosticMessageText(
       diagnostic.messageText,
