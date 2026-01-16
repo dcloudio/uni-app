@@ -69,10 +69,10 @@ import { parse as sfcParse } from '@vue/compiler-sfc'
 import { rewriteId as rewriteIdX } from './transformUniElement'
 
 // externalClasses 缓存，包含 mtime 用于检测文件变化
-const UNI_APP_STYLE_CLASSES = true
-// process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
-// process.env.UNI_APP_X === 'true' &&
-// process.env.UNI_PLATFORM?.startsWith('mp-')
+const UNI_APP_STYLE_CLASSES =
+  process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+  process.env.UNI_APP_X === 'true' &&
+  process.env.UNI_PLATFORM?.startsWith('mp-')
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
@@ -129,22 +129,11 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         rewriteIdX(node, context)
       }
       if (isUserComponent(node, context)) {
-        const tag = node.tag
-        // 先尝试 easycom
-        let source = matchEasycom(tag)
-        // 如果 easycom 没匹配到，尝试从手动 import 中查找
-        let externalClasses: string[] = []
-        if (source) {
-          externalClasses = getComponentExternalClasses(source) || []
-        } else {
-          const globalComponentSource = getGlobalComponentSource(tag)
-          if (globalComponentSource) {
-            externalClasses =
-              getComponentExternalClasses(globalComponentSource) || []
-          }
-        }
-
-        rewriteBinding(node as ComponentNode, context, externalClasses)
+        rewriteBinding(
+          node as ComponentNode,
+          context,
+          getExternalClasses(node as ComponentNode)
+        )
       }
 
       let elementId: string = ''
@@ -431,4 +420,35 @@ function getComponentExternalClasses(source: string): string[] | undefined {
   const classes = parseExternalClasses(program)
   updateMiniProgramComponentExternalClasses(source, { mtime, classes })
   return classes
+}
+
+function getExternalClasses(node: ComponentNode): string[] {
+  // @ts-expect-error importSource 是编译时扩展的属性
+  const importSource: string | undefined = node.importSource
+  if (importSource) {
+    if (fs.existsSync(importSource)) {
+      return getComponentExternalClasses(importSource) || []
+    }
+    // 尝试添加扩展名
+    for (const ext of ['.uvue', '.vue']) {
+      const fullPath = importSource + ext
+      if (fs.existsSync(fullPath)) {
+        return getComponentExternalClasses(fullPath) || []
+      }
+    }
+  }
+
+  const tag = node.tag
+
+  const easycomSource = matchEasycom(tag)
+  if (easycomSource) {
+    return getComponentExternalClasses(easycomSource) || []
+  }
+
+  const globalComponentSource = getGlobalComponentSource(tag)
+  if (globalComponentSource) {
+    return getComponentExternalClasses(globalComponentSource) || []
+  }
+
+  return []
 }
