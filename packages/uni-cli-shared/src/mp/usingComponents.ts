@@ -37,6 +37,12 @@ type BindingComponents = Record<
 const mainDescriptors = new Map<string, MainDescriptor>()
 const scriptDescriptors = new Map<string, ScriptDescriptor>()
 const templateDescriptors = new Map<string, TemplateDescriptor>()
+// 存储全局组件名到完整源文件路径的映射
+const globalComponentSourceMap = new Map<string, string>()
+
+export function getGlobalComponentSource(componentName: string) {
+  return globalComponentSourceMap.get(componentName)
+}
 
 interface MainDescriptor {
   imports: ImportDeclaration[]
@@ -176,6 +182,16 @@ export async function updateMiniProgramGlobalComponents(
     ast,
     resolve
   )
+  // 存储全局组件名到完整源文件路径的映射
+  imports.forEach(({ source: { value }, specifiers: [specifier] }) => {
+    const { name } = specifier.local
+    if (!bindingComponents[name]) {
+      return
+    }
+    if (!globalComponentSourceMap.has(bindingComponents[name].tag)) {
+      globalComponentSourceMap.set(bindingComponents[name].tag, value)
+    }
+  })
   addMiniProgramUsingComponents(
     'app',
     createUsingComponents(

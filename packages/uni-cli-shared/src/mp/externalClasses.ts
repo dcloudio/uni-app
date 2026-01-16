@@ -8,7 +8,10 @@ import {
 } from '@babel/types'
 import { walk } from 'estree-walker'
 
-const externalClassesCache = new Map<string, string[]>()
+const externalClassesCache = new Map<
+  string,
+  { mtime: number; classes: string[] }
+>()
 
 export function hasExternalClasses(code: string) {
   return code.includes('externalClasses')
@@ -20,9 +23,9 @@ export function findMiniProgramComponentExternalClasses(filename: string) {
 
 export function updateMiniProgramComponentExternalClasses(
   filename: string,
-  classes: string[]
+  value: { mtime: number; classes: string[] }
 ) {
-  externalClassesCache.set(filename, classes)
+  externalClassesCache.set(filename, value)
 }
 
 export function parseExternalClasses(ast: Program) {
