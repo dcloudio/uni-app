@@ -7709,6 +7709,16 @@ function isMemoSame(cached, memo) {
   }
   return true;
 }
+var __X_STYLE_ISOLATION__ = false;
+function enableStyleIsolation() {
+  __X_STYLE_ISOLATION__ = true;
+}
+var UniSharedDataComponentStyleIsolation = /* @__PURE__ */(UniSharedDataComponentStyleIsolation2 => {
+  UniSharedDataComponentStyleIsolation2[UniSharedDataComponentStyleIsolation2["Isolated"] = 0] = "Isolated";
+  UniSharedDataComponentStyleIsolation2[UniSharedDataComponentStyleIsolation2["App"] = 1] = "App";
+  UniSharedDataComponentStyleIsolation2[UniSharedDataComponentStyleIsolation2["AppAndPage"] = 2] = "AppAndPage";
+  return UniSharedDataComponentStyleIsolation2;
+})(UniSharedDataComponentStyleIsolation || {});
 var version = "3.4.21";
 var warn = NOOP;
 var ErrorTypeStrings = ErrorTypeStrings$1;
@@ -7991,18 +8001,43 @@ function parseStyleSheet(_ref22) {
   }
   var cache = pageInstance.componentStylesCache.get(component);
   if (!cache) {
+    var addAppStyles2 = function () {
+        if (appContext && __globalStyles) {
+          var globalStyles = isArray$1(__globalStyles) ? __globalStyles : [__globalStyles];
+          styles.push(...globalStyles);
+        }
+      },
+      addPageStyles2 = function () {
+        if (!isPage && isArray$1(page.styles)) {
+          styles.push(...page.styles);
+        }
+      };
     var __globalStyles = appContext.provides.__globalStyles;
     if (appContext && isArray$1(__globalStyles)) {
       appContext.provides.__globalStyles = useCssStyles(__globalStyles);
     }
-    var styles = [];
-    if (appContext && __globalStyles) {
-      var globalStyles = isArray$1(__globalStyles) ? __globalStyles : [__globalStyles];
-      styles.push(...globalStyles);
-    }
     var page = root.type;
-    if (component !== page && isArray$1(page.styles)) {
-      styles.push(...page.styles);
+    var isPage = component === page;
+    var styles = [];
+    if (__X_STYLE_ISOLATION__) {
+      var styleIsolation = component.styleIsolation;
+      if (!styleIsolation) {
+        styleIsolation = isPage ? UniSharedDataComponentStyleIsolation.App : UniSharedDataComponentStyleIsolation.Isolated;
+      }
+      switch (styleIsolation) {
+        case UniSharedDataComponentStyleIsolation.Isolated:
+          break;
+        case UniSharedDataComponentStyleIsolation.App:
+          addAppStyles2();
+          break;
+        case UniSharedDataComponentStyleIsolation.AppAndPage:
+          addAppStyles2();
+          addPageStyles2();
+          break;
+      }
+    } else {
+      addAppStyles2();
+      addPageStyles2();
     }
     if (isArray$1(component.styles)) {
       styles.push(...component.styles);
@@ -8919,4 +8954,4 @@ var defineComponent = options => {
 };
 var ssrRef = ref;
 var shallowSsrRef = shallowRef;
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onAppHide, onAppShow, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLastPageBackPress, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderComponentSlot, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, ssrContextKey, ssrRef, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountPage, unref, useAttrs, useComputedStyle, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, UniSharedDataComponentStyleIsolation, __X_STYLE_ISOLATION__, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, enableStyleIsolation, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onAppHide, onAppShow, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLastPageBackPress, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderComponentSlot, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, ssrContextKey, ssrRef, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountPage, unref, useAttrs, useComputedStyle, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
