@@ -166,9 +166,45 @@ export function parseComponent(
     parse(mpComponentOptions, { handleLink })
   }
 
-  // 支持 externalClasses
-  if (__X__ && __X_STYLE_ISOLATION__ && vueOptions.externalClasses) {
-    mpComponentOptions.externalClasses = vueOptions.externalClasses
+  if (__X__ && __X_STYLE_ISOLATION__) {
+    // 支持 externalClasses
+    if (vueOptions.externalClasses) {
+      mpComponentOptions.externalClasses = vueOptions.externalClasses
+    }
+
+    // 支持 styleIsolation
+    if (vueOptions.styleIsolation) {
+      const styleIsolation = vueOptions.styleIsolation
+      if (
+        __PLATFORM__ === 'mp-weixin' ||
+        __PLATFORM__ === 'mp-xhs' ||
+        __PLATFORM__ === 'mp-harmony'
+      ) {
+        if (styleIsolation === 'isolated') {
+          mpComponentOptions.options!.styleIsolation = isPageInProject
+            ? 'page-apply-shared'
+            : 'isolated'
+        } else if (styleIsolation === 'app') {
+          mpComponentOptions.options!.styleIsolation = 'apply-shared'
+        } else if (styleIsolation === 'app-and-page') {
+          mpComponentOptions.options!.styleIsolation = 'apply-shared'
+        }
+      } else if (__PLATFORM__ === 'mp-alipay') {
+        if (styleIsolation === 'app') {
+          mpComponentOptions.options!.styleIsolation = 'apply-shared'
+        } else if (styleIsolation === 'app-and-page') {
+          if (isPageInProject) {
+            mpComponentOptions.options!.styleIsolation = 'shared'
+          }
+        }
+      } else if (__PLATFORM__ === 'mp-baidu') {
+        if (styleIsolation === 'app') {
+          mpComponentOptions.options!.addGlobalClass = true
+        } else if (styleIsolation === 'app-and-page') {
+          mpComponentOptions.options!.addGlobalClass = true
+        }
+      }
+    }
   }
 
   return mpComponentOptions
