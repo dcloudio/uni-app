@@ -27440,7 +27440,7 @@ const RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
 class UniMatchMediaElement extends UniViewElement {
   constructor() {
     super();
-    this._experssions = [];
+    this._expressions = [];
   }
   static get observedAttributes() {
     return [
@@ -27454,7 +27454,7 @@ class UniMatchMediaElement extends UniViewElement {
     ];
   }
   connectedCallback() {
-    this._experssions = this.getExpressions();
+    this._expressions = this.getExpressions();
     this.uniPage.vm.$.$waitNativeRender(() => {
       this.toggleElement(this.isValid({
         width: this.uniPage.pageBody.width,
@@ -27471,7 +27471,7 @@ class UniMatchMediaElement extends UniViewElement {
     }, this.uniPage.vm.$);
   }
   attributeChangedCallback(name, oldValue, newValue) {
-    if (this._experssions.length == 0 || newValue == null) {
+    if (this._expressions.length == 0 || newValue == null) {
       return;
     }
     const matches2 = name.match(RE_MQ_FEATURE);
@@ -27480,7 +27480,7 @@ class UniMatchMediaElement extends UniViewElement {
     }
     const modifier = matches2[1] != null ? matches2[1] : "";
     const feature = matches2[2] != null ? matches2[2].toLowerCase() : "";
-    const expression = this._experssions.find((expr) => expr.feature == feature && expr.modifier == modifier);
+    const expression = this._expressions.find((expr) => expr.feature == feature && expr.modifier == modifier);
     if (expression == null) {
       return;
     }
@@ -27511,7 +27511,7 @@ class UniMatchMediaElement extends UniViewElement {
     this.style.setProperty("display", show ? "flex" : "none");
   }
   isValid(values) {
-    return this._experssions.every((expression) => {
+    return this._expressions.every((expression) => {
       switch (expression.feature) {
         case "orientation":
           return values[expression.feature] === this.getAttribute(expression.feature);
