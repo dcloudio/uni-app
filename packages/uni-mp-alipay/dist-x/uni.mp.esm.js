@@ -1070,7 +1070,7 @@ function initCreateComponent() {
         if (vueOptions.options) {
             mpComponentOptions.options = vueOptions.options;
         }
-        if (__UNI_FEATURE_EXTERNAL_CLASSES__) {
+        if (__X_STYLE_ISOLATION__) {
             mpComponentOptions.options = (_a = mpComponentOptions.options) !== null && _a !== void 0 ? _a : {};
             mpComponentOptions.options.externalClasses =
                 (_c = (_b = vueOptions.options) === null || _b === void 0 ? void 0 : _b.externalClasses) !== null && _c !== void 0 ? _c : true;
