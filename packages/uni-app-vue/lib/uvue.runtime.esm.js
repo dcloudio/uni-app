@@ -8319,6 +8319,17 @@ function isMemoSame(cached, memo) {
   return true;
 }
 
+let __X_STYLE_ISOLATION__ = false;
+function enableStyleIsolation() {
+  __X_STYLE_ISOLATION__ = true;
+}
+var UniSharedDataComponentStyleIsolation = /* @__PURE__ */ ((UniSharedDataComponentStyleIsolation2) => {
+  UniSharedDataComponentStyleIsolation2[UniSharedDataComponentStyleIsolation2["Isolated"] = 0] = "Isolated";
+  UniSharedDataComponentStyleIsolation2[UniSharedDataComponentStyleIsolation2["App"] = 1] = "App";
+  UniSharedDataComponentStyleIsolation2[UniSharedDataComponentStyleIsolation2["AppAndPage"] = 2] = "AppAndPage";
+  return UniSharedDataComponentStyleIsolation2;
+})(UniSharedDataComponentStyleIsolation || {});
+
 const version = "3.4.21";
 const warn = !!(process.env.NODE_ENV !== "production") ? warn$1 : NOOP;
 const ErrorTypeStrings = ErrorTypeStrings$1 ;
@@ -8601,18 +8612,42 @@ function parseStyleSheet({
   }
   let cache = pageInstance.componentStylesCache.get(component);
   if (!cache) {
+    let addAppStyles2 = function() {
+      if (appContext && __globalStyles) {
+        const globalStyles = isArray(__globalStyles) ? __globalStyles : [__globalStyles];
+        styles.push(...globalStyles);
+      }
+    }, addPageStyles2 = function() {
+      if (!isPage && isArray(page.styles)) {
+        styles.push(...page.styles);
+      }
+    };
     const __globalStyles = appContext.provides.__globalStyles;
     if (appContext && isArray(__globalStyles)) {
       appContext.provides.__globalStyles = useCssStyles(__globalStyles);
     }
-    const styles = [];
-    if (appContext && __globalStyles) {
-      const globalStyles = isArray(__globalStyles) ? __globalStyles : [__globalStyles];
-      styles.push(...globalStyles);
-    }
     const page = root.type;
-    if (component !== page && isArray(page.styles)) {
-      styles.push(...page.styles);
+    const isPage = component === page;
+    const styles = [];
+    if (__X_STYLE_ISOLATION__) {
+      let styleIsolation = component.styleIsolation;
+      if (!styleIsolation) {
+        styleIsolation = isPage ? UniSharedDataComponentStyleIsolation.App : UniSharedDataComponentStyleIsolation.Isolated;
+      }
+      switch (styleIsolation) {
+        case UniSharedDataComponentStyleIsolation.Isolated:
+          break;
+        case UniSharedDataComponentStyleIsolation.App:
+          addAppStyles2();
+          break;
+        case UniSharedDataComponentStyleIsolation.AppAndPage:
+          addAppStyles2();
+          addPageStyles2();
+          break;
+      }
+    } else {
+      addAppStyles2();
+      addPageStyles2();
     }
     if (isArray(component.styles)) {
       styles.push(...component.styles);
@@ -9450,4 +9485,4 @@ function unmountPage(pageInstance) {
   }
 }
 
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, Static, Suspense, Teleport, Text, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, unmountPage, useAttrs, useComputedStyle, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, Static, Suspense, Teleport, Text, UniSharedDataComponentStyleIsolation, __X_STYLE_ISOLATION__, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, enableStyleIsolation, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, unmountPage, useAttrs, useComputedStyle, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
