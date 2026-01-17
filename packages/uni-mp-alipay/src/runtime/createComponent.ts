@@ -133,7 +133,7 @@ export function initCreateComponent() {
     if (vueOptions.options) {
       mpComponentOptions.options = vueOptions.options
     }
-    if (__X__ && __UNI_FEATURE_EXTERNAL_CLASSES__) {
+    if (__X__ && __X_STYLE_ISOLATION__) {
       mpComponentOptions.options = mpComponentOptions.options ?? {}
       mpComponentOptions.options.externalClasses =
         vueOptions.options?.externalClasses ?? true

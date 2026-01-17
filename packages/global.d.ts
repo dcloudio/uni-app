@@ -49,7 +49,6 @@ declare var __VUE_OPTIONS_API__: boolean
 declare var __VUE_PROD_DEVTOOLS__: boolean
 
 declare var __UNI_FEATURE_VIRTUAL_HOST__: boolean
-declare var __UNI_FEATURE_EXTERNAL_CLASSES__: boolean
 declare var __UNI_FEATURE_WX__: boolean
 declare var __UNI_FEATURE_WXS__: boolean
 declare var __UNI_FEATURE_RPX__: boolean
