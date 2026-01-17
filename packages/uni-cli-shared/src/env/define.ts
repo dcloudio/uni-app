@@ -15,7 +15,7 @@ export function initDefine(stringifyBoolean: boolean = false) {
 
   process.env['UNI_APP_ID'] = manifestJson.appid
 
-  let mpXDefine =
+  const mpXDefine: Record<string, boolean> =
     isX && isMP
       ? {
           __UNI_FEATURE_VIRTUAL_HOST__: true,
@@ -26,6 +26,11 @@ export function initDefine(stringifyBoolean: boolean = false) {
   if (isX && isMP) {
     mpXDefine.__UNI_FEATURE_VIRTUAL_HOST__ =
       platformManifestJson.enableVirtualHost !== false
+  }
+  if (isX && process.env.UNI_PLATFORM === 'mp-alipay') {
+    mpXDefine.__UNI_FEATURE_EXTERNAL_CLASSES__ =
+      manifestJson['uni-app-x']?.['styleIsolationVersion'] === '2' &&
+      manifestJson['uni-app-x']?.['vapor'] === true
   }
 
   return {

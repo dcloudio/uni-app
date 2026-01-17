@@ -132,6 +132,11 @@ export function initCreateComponent() {
     if (vueOptions.options) {
       mpComponentOptions.options = vueOptions.options
     }
+    if (__X__ && __UNI_FEATURE_EXTERNAL_CLASSES__) {
+      mpComponentOptions.options = mpComponentOptions.options ?? {}
+      mpComponentOptions.options.externalClasses =
+        vueOptions.options?.externalClasses ?? true
+    }
     if (__VUE_OPTIONS_API__) {
       mpComponentOptions.data = initData(vueOptions)
       mpComponentOptions.mixins = initBehaviors(vueOptions)
