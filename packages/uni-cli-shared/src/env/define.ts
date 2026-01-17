@@ -20,9 +20,8 @@ export function initDefine(stringifyBoolean: boolean = false) {
       isX && isMP && platformManifestJson.enableVirtualHost !== false,
   }
   if (isX && process.env.UNI_PLATFORM === 'mp-alipay') {
-    const { styleIsolationVersion, vapor } = manifestJson['uni-app-x'] ?? {}
     mpXDefine.__UNI_FEATURE_EXTERNAL_CLASSES__ =
-      styleIsolationVersion === '2' && vapor === true
+      manifestJson['uni-app-x']?.['styleIsolationVersion'] === '2'
   }
 
   return {
