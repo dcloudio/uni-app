@@ -102,6 +102,9 @@ export function parseComponent(
     addGlobalClass: true,
     pureDataPattern: /^uP$/,
   }
+  if (__X__ && __X_STYLE_ISOLATION__) {
+    options.addGlobalClass = false
+  }
 
   if (__X__ && __UNI_FEATURE_VIRTUAL_HOST__ && !isPageInProject) {
     options.virtualHost = true
