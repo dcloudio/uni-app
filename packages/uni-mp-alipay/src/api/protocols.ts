@@ -215,18 +215,20 @@ export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
   }
 }
 export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
-  const args = {
-    title: 'content',
-  }
   if (icon === 'loading') {
     return {
       name: 'showLoading',
-      args,
+      args: {
+        title: 'content',
+      },
     }
   }
   return {
     name: 'showToast',
-    args: extend({ icon: 'type' }, args),
+    args(fromArgs: UniApp.ShowToastOptions, toArgs: my.IShowToastOptions) {
+      toArgs.content = fromArgs.title
+      toArgs.type = (fromArgs.icon ?? icon) as my.IShowToastOptions['type']
+    },
   }
 }
 export const showActionSheet = {
