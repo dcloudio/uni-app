@@ -179,21 +179,20 @@ const protocols = { // 需要做转换的 API 列表
   showToast ({
     icon = 'success'
   } = {}) {
-    const args = {
-      title: 'content',
-      icon: 'type',
-      image: false,
-      mask: false
-    }
     if (icon === 'loading') {
       return {
         name: 'showLoading',
-        args
+        args: {
+          title: 'content'
+        }
       }
     }
     return {
       name: 'showToast',
-      args
+      args(fromArgs, toArgs) {
+        toArgs.content = fromArgs.title
+        toArgs.type = fromArgs.icon ?? icon
+      }
     }
   },
   showActionSheet: {
