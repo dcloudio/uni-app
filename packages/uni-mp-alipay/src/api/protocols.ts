@@ -1,4 +1,4 @@
-import { extend, hasOwn, isArray, isObject } from '@vue/shared'
+import { hasOwn, isArray, isObject } from '@vue/shared'
 
 import {
   navigateTo as _navigateTo,
