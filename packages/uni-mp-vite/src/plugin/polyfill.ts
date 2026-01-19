@@ -1,6 +1,6 @@
 import { extend } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
-import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import { isMiniProgramPageFile, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 import type {
   SFCAsyncStyleCompileOptions,
   SFCDescriptor,
@@ -47,6 +47,17 @@ function rewriteCompileScript() {
     // https://github.com/dcloudio/uni-app/issues/4076
     // dev模式下，会生成：{ "83a5a03c-style.color": style.color}
     options.isProd = true
+    if (
+      process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+      process.env.UNI_APP_X === 'true' &&
+      process.env.UNI_PLATFORM?.startsWith('mp-')
+    ) {
+      // @ts-expect-error
+      options.__isPage = isMiniProgramPageFile(
+        sfc.filename,
+        process.env.UNI_INPUT_DIR
+      )
+    }
     return compileScript(sfc, options)
   }
   // script + v-bind
@@ -60,7 +71,6 @@ function rewriteCompileScript() {
     return compileTemplate(options)
   }
 }
-
 /**
  * 重写 parse，解决相同内容被缓存，未触发 template 编译的问题
  */
