@@ -1691,18 +1691,21 @@ function showModal({ showCancel = true } = {}) {
     };
 }
 function showToast({ icon = 'success' } = {}) {
-    const args = {
-        title: 'content',
-    };
     if (icon === 'loading') {
         return {
             name: 'showLoading',
-            args,
+            args: {
+                title: 'content',
+            },
         };
     }
     return {
         name: 'showToast',
-        args: extend({ icon: 'type' }, args),
+        args(fromArgs, toArgs) {
+            var _a;
+            toArgs.content = fromArgs.title;
+            toArgs.type = ((_a = fromArgs.icon) !== null && _a !== void 0 ? _a : icon);
+        },
     };
 }
 const showActionSheet = {
