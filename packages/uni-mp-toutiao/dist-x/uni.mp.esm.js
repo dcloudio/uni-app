@@ -747,6 +747,9 @@ function parseComponent(vueOptions, { parse, mocks, isPage, isPageInProject, ini
         addGlobalClass: true,
         pureDataPattern: /^uP$/,
     };
+    if (__X_STYLE_ISOLATION__) {
+        options.addGlobalClass = false;
+    }
     if (__UNI_FEATURE_VIRTUAL_HOST__ && !isPageInProject) {
         options.virtualHost = true;
     }
