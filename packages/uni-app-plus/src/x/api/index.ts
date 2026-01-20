@@ -21,7 +21,7 @@ export { setNavigationBarColor } from './navigationBar/setNavigationBarColor'
 export { setNavigationBarTitle } from './navigationBar/setNavigationBarTitle'
 
 // dom
-// export { getElementById } from './dom/getElementById'
+export { getElementById } from './dom/getElementById'
 export { createSelectorQuery } from './dom/createSelectorQuery'
 export { createCanvasContextAsync } from './dom/createCanvasContextAsync'
 
