@@ -3346,13 +3346,6 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
   appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTitleText", options.title]]));
   resolve();
 });
-var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
-  var page = getCurrentPage();
-  if (page == null) {
-    return null;
-  }
-  return page.getElementById(id2);
-});
 var isFunction = (val) => typeof val === "function";
 class NodesRefImpl {
   constructor(selectorQuery, component, selector, single) {
@@ -4585,7 +4578,6 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   createCanvasContextAsync,
   createSelectorQuery,
   env,
-  getElementById,
   getEnterOptionsSync,
   getLaunchOptionsSync,
   getPerformance,
