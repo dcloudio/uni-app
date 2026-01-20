@@ -153,9 +153,17 @@ export default {
   getEnv (callback) {
     /* eslint-disable standard/no-callback-literal */
     if (isUvue()) {
-      callback({
+      // uniapp 环境中runtime-harmony 注入 __uniapp_x_ 变量，错误返回了 uvue:true
+      // 不影响线上用户，目前增加 harmony:true 仅在 Uniapp+harmony 中返回
+      const isUniapp = navigator.userAgent.includes('uniapp')
+      const isHarmony = navigator.userAgent.includes('OpenHarmony')
+      const obj = {
         uvue: true
-      })
+      }
+      if (isUniapp && isHarmony) {
+        obj.harmony = true
+      }
+      callback(obj)
     } else if (isNvue()) {
       callback({
         nvue: true
