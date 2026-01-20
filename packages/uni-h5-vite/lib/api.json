@@ -35,7 +35,6 @@
   "getAppBaseInfo",
   "getClipboardData",
   "getDeviceInfo",
-  "getElementById",
   "getEnterOptionsSync",
   "getFacialRecognitionMetaInfo",
   "getFileInfo",

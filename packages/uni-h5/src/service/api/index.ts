@@ -74,7 +74,6 @@ export * from './ui/startPullDownRefresh'
 export * from './ui/stopPullDownRefresh'
 export * from './ui/tabBar'
 export * from './ui/window'
-export * from './ui/getElementById'
 
 export * from './plugin/facialVerify'
 
