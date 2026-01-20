@@ -80,6 +80,18 @@ function processRule(rule: Rule) {
     return
   }
 
+  // Only mp and web platforms need the -external suffix rules
+  // Other platforms just remove :external() and keep original class
+  const platform = process.env.UNI_PLATFORM || ''
+  if (!platform.startsWith('mp-') && platform !== 'h5') {
+    rule.selector = selectorParser((selectorRoot) => {
+      selectorRoot.each((selector) => {
+        processSelector(selector, false)
+      })
+    }).processSync(rule.selector)
+    return
+  }
+
   // Clone the rule for the -external version
   const externalRule = rule.clone()
   processedRules.add(externalRule)
