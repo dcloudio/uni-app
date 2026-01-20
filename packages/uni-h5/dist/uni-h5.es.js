@@ -24079,13 +24079,6 @@ const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle",
     state2.rightWindowStyle = style;
   }
 });
-const getElementById = /* @__PURE__ */ defineSyncApi(
-  "getElementById",
-  (id2) => {
-    const uniPageBody = document.querySelector("uni-page-body");
-    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
-  }
-);
 const getFacialRecognitionMetaInfo = /* @__PURE__ */ defineSyncApi(
   "getFacialRecognitionMetaInfo",
   () => {
@@ -24262,7 +24255,6 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getAppBaseInfo,
   getClipboardData,
   getDeviceInfo,
-  getElementById,
   getEnterOptionsSync,
   getFacialRecognitionMetaInfo,
   getFileInfo,
@@ -26807,7 +26799,6 @@ export {
   getClipboardData,
   getCurrentPages$1 as getCurrentPages,
   getDeviceInfo,
-  getElementById,
   getEnterOptionsSync,
   getFacialRecognitionMetaInfo,
   getFileInfo,
