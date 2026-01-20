@@ -9366,11 +9366,14 @@ function patchStyle(el, prev, next, instance = null) {
     const style = getExtraStyle(el);
     for (const key in prev) {
       if (next[key] == null) {
-        const _key = key.startsWith("--") ? key : camelize(key);
-        const value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
-        parseStyleDecl(_key, value).forEach((item) => {
-          batchedStyles.set(item.prop, item.value);
-          style == null ? void 0 : style.delete(item.prop);
+        parseStyleDecl(
+          key.startsWith("--") ? key : camelize(key),
+          prev[key]
+        ).forEach((item) => {
+          const key2 = item.prop;
+          const value = (classStyle == null ? void 0 : classStyle.has(key2)) == true ? classStyle.get(key2) : "";
+          batchedStyles.set(key2, value);
+          style == null ? void 0 : style.delete(key2);
         });
       }
     }
