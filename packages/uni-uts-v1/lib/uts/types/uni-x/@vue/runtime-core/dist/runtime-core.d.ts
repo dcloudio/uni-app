@@ -1223,7 +1223,7 @@ export declare const Teleport: {
  * @private
  */
 export declare function resolveComponent(name: string, maybeSelfReference?: boolean): ConcreteComponent | string;
-declare const NULL_DYNAMIC_COMPONENT: unique symbol;
+export declare const NULL_DYNAMIC_COMPONENT: unique symbol;
 /**
  * @private
  */

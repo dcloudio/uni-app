@@ -81,12 +81,11 @@ export declare enum IRNodeTypes {
     CREATE_COMPONENT_NODE = 11,
     SLOT_OUTLET_NODE = 12,
     DIRECTIVE = 13,
-    DECLARE_OLD_REF = 14,// consider make it more general
-    IF = 15,
-    FOR = 16,
-    GET_TEXT_CHILD = 17,
-    GET_INSERTION_PARENT = 18,
-    SET_CHANGE_PROP = 19
+    IF = 14,
+    FOR = 15,
+    GET_TEXT_CHILD = 16,
+    GET_INSERTION_PARENT = 17,
+    SET_CHANGE_PROP = 18
 }
 export interface BaseIRNode {
     type: IRNodeTypes;
@@ -253,11 +252,6 @@ export interface CreateComponentIRNode extends BaseIRNode {
      */
     sharedData?: SimpleExpressionNode['sharedData'];
 }
-export interface DeclareOldRefIRNode extends BaseIRNode {
-    type: IRNodeTypes.DECLARE_OLD_REF;
-    id: number;
-    value: SimpleExpressionNode;
-}
 export interface SlotOutletIRNode extends BaseIRNode {
     type: IRNodeTypes.SLOT_OUTLET_NODE;
     id: number;
@@ -284,7 +278,7 @@ export interface SetChangePropIRNode extends BaseIRNode {
     prop: IRProp;
 }
 export type IRNode = OperationNode | RootIRNode;
-export type OperationNode = SetPropIRNode | SetDynamicPropsIRNode | SetTextIRNode | SetEventIRNode | SetDynamicEventsIRNode | SetHtmlIRNode | SetTemplateRefIRNode | InsertNodeIRNode | PrependNodeIRNode | DirectiveIRNode | IfIRNode | ForIRNode | CreateComponentIRNode | DeclareOldRefIRNode | SlotOutletIRNode | GetTextChildIRNode | GetInsertionParentIRNode | SetChangePropIRNode;
+export type OperationNode = SetPropIRNode | SetDynamicPropsIRNode | SetTextIRNode | SetEventIRNode | SetDynamicEventsIRNode | SetHtmlIRNode | SetTemplateRefIRNode | InsertNodeIRNode | PrependNodeIRNode | DirectiveIRNode | IfIRNode | ForIRNode | CreateComponentIRNode | SlotOutletIRNode | GetTextChildIRNode | GetInsertionParentIRNode | SetChangePropIRNode;
 export declare enum DynamicFlag {
     NONE = 0,
     /**
@@ -307,7 +301,6 @@ export interface IRDynamicInfo {
     children: IRDynamicInfo[];
     template?: number;
     hasDynamicChild?: boolean;
-    needsKey?: boolean;
     operation?: OperationNode;
     ifBranch?: boolean;
     type?: NodeTypes;
