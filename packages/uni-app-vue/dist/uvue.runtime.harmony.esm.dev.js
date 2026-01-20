@@ -10255,20 +10255,20 @@ function patchStyle(el, prev, next) {
       var style = getExtraStyle(el);
       for (var key in prev) {
         if (next[key] == null) {
-          var _key = key.startsWith("--") ? key : camelize(key);
-          var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
-          parseStyleDecl(_key, value).forEach(item => {
-            batchedStyles.set(item.prop, item.value);
-            style == null ? void 0 : style.delete(item.prop);
+          parseStyleDecl(key.startsWith("--") ? key : camelize(key), prev[key]).forEach(item => {
+            var key2 = item.prop;
+            var value = (classStyle == null ? void 0 : classStyle.has(key2)) == true ? classStyle.get(key2) : "";
+            batchedStyles.set(key2, value);
+            style == null ? void 0 : style.delete(key2);
           });
         }
       }
       for (var _key22 in next) {
-        var _value2 = next[_key22];
+        var value = next[_key22];
         var prevValue = prev[_key22];
-        if (!isSame(prevValue, _value2)) {
-          var _key23 = _key22.startsWith("--") ? _key22 : camelize(_key22);
-          parseStyleDecl(_key23, _value2).forEach(item => {
+        if (!isSame(prevValue, value)) {
+          var _key = _key22.startsWith("--") ? _key22 : camelize(_key22);
+          parseStyleDecl(_key, value).forEach(item => {
             batchedStyles.set(item.prop, item.value);
             style == null ? void 0 : style.set(item.prop, item.value);
           });
@@ -10418,8 +10418,8 @@ var withModifiers = (fn, modifiers) => {
       var guard = modifierGuards[modifiers[i]];
       if (guard && guard(event, modifiers)) return;
     }
-    for (var _len13 = arguments.length, args = new Array(_len13 > 1 ? _len13 - 1 : 0), _key24 = 1; _key24 < _len13; _key24++) {
-      args[_key24 - 1] = arguments[_key24];
+    for (var _len13 = arguments.length, args = new Array(_len13 > 1 ? _len13 - 1 : 0), _key23 = 1; _key23 < _len13; _key23++) {
+      args[_key23 - 1] = arguments[_key23];
     }
     return fn(event, ...args);
   };

@@ -8729,20 +8729,20 @@ function patchStyle(el, prev, next) {
       var style = getExtraStyle(el);
       for (var key in prev) {
         if (next[key] == null) {
-          var _key = key.startsWith("--") ? key : camelize(key);
-          var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
-          parseStyleDecl(_key, value).forEach(item => {
-            batchedStyles.set(item.prop, item.value);
-            style == null ? void 0 : style.delete(item.prop);
+          parseStyleDecl(key.startsWith("--") ? key : camelize(key), prev[key]).forEach(item => {
+            var key2 = item.prop;
+            var value = (classStyle == null ? void 0 : classStyle.has(key2)) == true ? classStyle.get(key2) : "";
+            batchedStyles.set(key2, value);
+            style == null ? void 0 : style.delete(key2);
           });
         }
       }
       for (var _key15 in next) {
-        var _value2 = next[_key15];
+        var value = next[_key15];
         var prevValue = prev[_key15];
-        if (!isSame(prevValue, _value2)) {
-          var _key16 = _key15.startsWith("--") ? _key15 : camelize(_key15);
-          parseStyleDecl(_key16, _value2).forEach(item => {
+        if (!isSame(prevValue, value)) {
+          var _key = _key15.startsWith("--") ? _key15 : camelize(_key15);
+          parseStyleDecl(_key, value).forEach(item => {
             batchedStyles.set(item.prop, item.value);
             style == null ? void 0 : style.set(item.prop, item.value);
           });
@@ -8888,8 +8888,8 @@ var withModifiers = (fn, modifiers) => {
       var guard = modifierGuards[modifiers[i]];
       if (guard && guard(event, modifiers)) return;
     }
-    for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key17 = 1; _key17 < _len8; _key17++) {
-      args[_key17 - 1] = arguments[_key17];
+    for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key16 = 1; _key16 < _len8; _key16++) {
+      args[_key16 - 1] = arguments[_key16];
     }
     return fn(event, ...args);
   };
