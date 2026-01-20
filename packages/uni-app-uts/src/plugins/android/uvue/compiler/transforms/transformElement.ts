@@ -707,12 +707,22 @@ export function buildProps(
         }
       } else if (!isBuiltInDirective(name)) {
         // no built-in transform, this is a user custom directive.
-        runtimeDirectives.push(prop)
+        // fixed by xxxxxx
+        // runtimeDirectives.push(prop)
         // custom dirs may use beforeUpdate so they need to force blocks
         // to ensure before-update gets called before children update
-        if (hasChildren) {
-          shouldUseBlock = true
-        }
+        // fixed by xxxxxx
+        // if (hasChildren) {
+        //   shouldUseBlock = true
+        // }
+        context.onWarn(
+          createCompilerError(
+            ErrorCodes.X_V_CUSTOM_DIRECTIVE,
+            loc,
+            undefined,
+            ': v-' + name
+          )
+        )
       }
     }
   }
