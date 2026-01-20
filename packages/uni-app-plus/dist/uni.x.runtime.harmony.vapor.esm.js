@@ -3353,11 +3353,6 @@ var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
   }
   return page.getElementById(id2);
 });
-function isVueComponent(comp) {
-  var has$instance = typeof comp.$ === "object";
-  var has$el = typeof comp.$el === "object";
-  return has$instance && has$el;
-}
 var isFunction = (val) => typeof val === "function";
 class NodesRefImpl {
   constructor(selectorQuery, component, selector, single) {
@@ -3416,26 +3411,30 @@ class SelectorQueryImpl {
     this._queueCb = [];
   }
   exec(callback) {
-    var _this$_component;
-    (_this$_component = this._component) === null || _this$_component === void 0 || (_this$_component = _this$_component.$) === null || _this$_component === void 0 || _this$_component.$waitNativeRender(() => {
-      requestComponentInfo(this._component, this._queue, (res) => {
-        var queueCbs = this._queueCb;
-        res.forEach((info, _index) => {
-          var queueCb = queueCbs[_index];
-          if (isFunction(queueCb)) {
-            queueCb(info);
+    {
+      var _this$_component;
+      (_this$_component = this._component) === null || _this$_component === void 0 || (_this$_component = _this$_component.$nativePage) === null || _this$_component === void 0 || _this$_component.waitNativeRender(() => {
+        requestComponentInfo(this._component, this._queue, (res) => {
+          var queueCbs = this._queueCb;
+          res.forEach((info, _index) => {
+            var queueCb = queueCbs[_index];
+            if (isFunction(queueCb)) {
+              queueCb(info);
+            }
+          });
+          if (callback && isFunction(callback)) {
+            callback(res);
           }
         });
-        if (callback && isFunction(callback)) {
-          callback(res);
-        }
       });
-    });
+    }
     return this._nodesRef;
   }
   in(component) {
-    if (component && isVueComponent(component)) {
-      this._component = component;
+    {
+      if (component) {
+        this._component = component;
+      }
     }
     return this;
   }
