@@ -94,6 +94,8 @@ export const enum ErrorCodes {
   X_KEEP_ALIVE_INVALID_CHILDREN,
   X_V_HTML_NO_EXPRESSION = 53 /* ErrorCodes.__EXTEND_POINT__ */,
   X_V_HTML_WITH_CHILDREN,
+  // fixed by xxxxxx
+  X_V_CUSTOM_DIRECTIVE,
 
   // generic errors
   X_PREFIX_ID_NOT_SUPPORTED,
@@ -178,6 +180,7 @@ export const errorMessages: Record<ErrorCodes, string> = {
   [ErrorCodes.X_KEEP_ALIVE_INVALID_CHILDREN]: `<KeepAlive> expects exactly one child component.`,
   [ErrorCodes.X_V_HTML_NO_EXPRESSION]: `v-html is missing expression.`,
   [ErrorCodes.X_V_HTML_WITH_CHILDREN]: `v-html will override element children.`,
+  [ErrorCodes.X_V_CUSTOM_DIRECTIVE]: `Custom directive not supported yet`,
 
   // generic errors
   [ErrorCodes.X_PREFIX_ID_NOT_SUPPORTED]: `"prefixIdentifiers" option is not supported in this build of compiler.`,
