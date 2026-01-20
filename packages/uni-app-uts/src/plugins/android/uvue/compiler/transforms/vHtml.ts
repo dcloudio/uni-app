@@ -48,7 +48,7 @@ function createRichText(
   return {
     tag: 'rich-text',
     type: NodeTypes.ELEMENT,
-    tagType: ElementTypes.ELEMENT,
+    tagType: ElementTypes.COMPONENT,
     props: [createBindDirectiveNode('nodes', prop.exp || '')],
     isSelfClosing: true,
     children: [],
