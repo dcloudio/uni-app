@@ -3416,26 +3416,30 @@ class SelectorQueryImpl {
     this._queueCb = [];
   }
   exec(callback) {
-    var _this$_component;
-    (_this$_component = this._component) === null || _this$_component === void 0 || (_this$_component = _this$_component.$) === null || _this$_component === void 0 || _this$_component.$waitNativeRender(() => {
-      requestComponentInfo(this._component, this._queue, (res) => {
-        var queueCbs = this._queueCb;
-        res.forEach((info, _index) => {
-          var queueCb = queueCbs[_index];
-          if (isFunction(queueCb)) {
-            queueCb(info);
+    {
+      var _this$_component2;
+      (_this$_component2 = this._component) === null || _this$_component2 === void 0 || (_this$_component2 = _this$_component2.$) === null || _this$_component2 === void 0 || _this$_component2.$waitNativeRender(() => {
+        requestComponentInfo(this._component, this._queue, (res) => {
+          var queueCbs = this._queueCb;
+          res.forEach((info, _index) => {
+            var queueCb = queueCbs[_index];
+            if (isFunction(queueCb)) {
+              queueCb(info);
+            }
+          });
+          if (callback && isFunction(callback)) {
+            callback(res);
           }
         });
-        if (callback && isFunction(callback)) {
-          callback(res);
-        }
       });
-    });
+    }
     return this._nodesRef;
   }
   in(component) {
-    if (component && isVueComponent(component)) {
-      this._component = component;
+    {
+      if (component && isVueComponent(component)) {
+        this._component = component;
+      }
     }
     return this;
   }
