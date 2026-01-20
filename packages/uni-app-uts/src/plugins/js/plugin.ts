@@ -131,6 +131,9 @@ export function createUniAppJsEnginePlugin(
                 manualChunks(id) {
                   if (isESM) {
                     const chunkName = normalizePath(id.split('?')[0])
+                    if (chunkName.startsWith('\0plugin-vue:')) {
+                      return 'plugin-vue-' + chunkName.split(':')[1]
+                    }
                     if (chunkName.includes('/@dcloudio/uni-cloud/')) {
                       return '@dcloudio/uni-cloud'
                     }
