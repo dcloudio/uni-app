@@ -15,7 +15,8 @@ export function uniAppJsEngineMainPlugin(): Plugin {
     async transform(code, id) {
       if (normalizePath(id) === mainUTS) {
         const styleIsolationCode =
-          process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
+          process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+          process.env.UNI_APP_X_DOM2 !== 'true'
             ? 'enableStyleIsolation();\n'
             : ''
         return {
