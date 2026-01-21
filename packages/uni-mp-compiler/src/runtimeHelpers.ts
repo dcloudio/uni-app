@@ -19,6 +19,7 @@ export const SET_UNI_ELEMENT_STYLE = Symbol(`setUniElementStyle`)
 export const GEN_UNI_ELEMENT_ID = Symbol(`genUniElementId`)
 export const MERGE_PART_CLASS = Symbol(`mergePartClass`)
 export const PARSE_VIRTUAL_HOST_CLASS = Symbol(`parseVirtualHostClass`)
+export const EXTERNAL_CLASS = Symbol(`externalClass`)
 
 registerRuntimeHelpers({
   [V_ON]: 'o',
@@ -41,4 +42,5 @@ registerRuntimeHelpers({
   [GEN_UNI_ELEMENT_ID]: 'gei',
   [MERGE_PART_CLASS]: 'mpc',
   [PARSE_VIRTUAL_HOST_CLASS]: 'pvhc',
+  [EXTERNAL_CLASS]: 'ec',
 })

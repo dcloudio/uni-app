@@ -4,6 +4,7 @@ import {
   type DirectiveNode,
   type ElementNode,
   NodeTypes,
+  createCompoundExpression,
   createSimpleExpression,
   isSimpleIdentifier,
   isStaticExp,
@@ -31,6 +32,7 @@ import {
   ATTR_VUE_REF_IN_FOR,
   ATTR_VUE_SLOTS,
   filterObserverName,
+  rewriteExpression,
   rewriteWithHelper,
 } from './utils'
 import { genBabelExpr, genExpr } from '../codegen'
@@ -45,7 +47,7 @@ import {
   spreadElement,
   stringLiteral,
 } from '@babel/types'
-import { RENDER_PROPS } from '../runtimeHelpers'
+import { EXTERNAL_CLASS, RENDER_PROPS } from '../runtimeHelpers'
 import { parseExpr } from '../ast'
 import { isIfElementNode } from './vIf'
 
@@ -204,6 +206,25 @@ export function rewriteBinding(
     if (isAttributeNode(prop)) {
       const { name } = prop
       if (externalClasses?.includes(name)) {
+        const value = prop.value?.content || ''
+        const wrappedExpr = rewriteExpression(
+          createCompoundExpression([
+            context.helperString(EXTERNAL_CLASS) + '(',
+            createSimpleExpression(`'${value}'`, false, prop.loc),
+            ')',
+          ]),
+          context
+        )
+        // 将静态属性转换为绑定指令，直接设置 exp 避免二次处理
+        const bindDir: DirectiveNode = {
+          type: NodeTypes.DIRECTIVE,
+          name: 'bind',
+          arg: createSimpleExpression(name, true, prop.loc),
+          exp: wrappedExpr,
+          modifiers: [],
+          loc: prop.loc,
+        }
+        props.splice(i, 1, bindDir)
         continue
       }
       isIdProp = name === 'id'
@@ -227,6 +248,18 @@ export function rewriteBinding(
           properties.push(spreadElement)
         }
       } else if (isStaticExp(arg)) {
+        if (externalClasses?.includes(arg.content)) {
+          const wrappedExpr = rewriteExpression(
+            createCompoundExpression([
+              context.helperString(EXTERNAL_CLASS) + '(',
+              exp,
+              ')',
+            ]),
+            context
+          )
+          prop.exp = wrappedExpr
+          continue
+        }
         isIdProp = arg.content === 'id'
         if (!isComponentProp(arg.content)) {
           continue

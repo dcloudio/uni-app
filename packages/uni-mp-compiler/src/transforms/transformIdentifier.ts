@@ -128,12 +128,11 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         }
         rewriteIdX(node, context)
       }
+      // 获取组件的 externalClasses，用于后续跳过已处理的绑定
+      let externalClasses: string[] = []
       if (isUserComponent(node, context)) {
-        rewriteBinding(
-          node as ComponentNode,
-          context,
-          getExternalClasses(node as ComponentNode)
-        )
+        externalClasses = getExternalClasses(node as ComponentNode)
+        rewriteBinding(node as ComponentNode, context, externalClasses)
       }
 
       let elementId: string = ''
@@ -290,6 +289,12 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               rewriteId(i, dir, props, virtualHost, context)
             } else if (isPropsBinding(dir)) {
               rewritePropsBinding(dir, node, context)
+            } else if (
+              arg &&
+              isSimpleExpressionNode(arg) &&
+              externalClasses.includes(arg.content)
+            ) {
+              // externalClasses 绑定已经在 rewriteBinding 中处理过了，跳过
             } else {
               if (
                 context.isX &&

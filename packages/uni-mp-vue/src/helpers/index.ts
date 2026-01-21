@@ -16,6 +16,7 @@ import { dynamicSlot } from './dynamicSlot'
 import { setRef } from './ref'
 import { renderProps } from './renderProps'
 import { withModelModifiers } from './withModelModifiers'
+import { externalClass } from './externalClass'
 
 // #if _X_
 import { setUniElementId, setUniElementStyle } from './uniElement'
@@ -64,3 +65,4 @@ export const mpc = mergePartClass
 // #endif
 export const gei = genUniElementId
 export const pvhc = parseVirtualHostClass
+export const ec: typeof externalClass = (className) => externalClass(className)
