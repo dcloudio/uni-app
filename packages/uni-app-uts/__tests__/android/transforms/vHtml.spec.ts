@@ -29,7 +29,7 @@ describe('compiler: transform v-html', () => {
     assert(
       `<view v-html="html" />`,
       `_cE(\"view\", null, [
-  _cE(\"rich-text\", _uM({ nodes: _ctx.html }), null, 8 /* PROPS */, [\"nodes\"])
+  _cV(_component_rich_text, _uM({ nodes: _ctx.html }), null, 8 /* PROPS */, ["nodes"])
 ])`
     )
   })
