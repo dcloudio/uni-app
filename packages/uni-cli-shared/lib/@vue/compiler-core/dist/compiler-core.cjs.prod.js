@@ -374,12 +374,6 @@ function convertToBlock(node, { helper, removeHelper, inSSR }) {
   }
 }
 
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 const defaultDelimitersOpen = new Uint8Array([123, 123]);
 const defaultDelimitersClose = new Uint8Array([125, 125]);
 function isTagStartChar(c) {
@@ -430,32 +424,31 @@ class Tokenizer {
     this.stack = stack;
     this.cbs = cbs;
     /** The current state the tokenizer is in. */
-    __publicField(this, "state", 1);
+    this.state = 1;
     /** The read buffer. */
-    __publicField(this, "buffer", "");
+    this.buffer = "";
     /** The beginning of the section that is currently being read. */
-    __publicField(this, "sectionStart", 0);
+    this.sectionStart = 0;
     /** The index within the buffer that we are currently looking at. */
-    __publicField(this, "index", 0);
+    this.index = 0;
     /** The start of the last entity. */
-    __publicField(this, "entityStart", 0);
+    this.entityStart = 0;
     /** Some behavior, eg. when decoding entities, is done while we are in another state. This keeps track of the other state type. */
-    __publicField(this, "baseState", 1);
+    this.baseState = 1;
     /** For special parsing behavior inside of script and style tags. */
-    __publicField(this, "inRCDATA", false);
+    this.inRCDATA = false;
     /** For disabling RCDATA tags handling */
-    __publicField(this, "inXML", false);
+    this.inXML = false;
     /** For disabling interpolation parsing in v-pre */
-    __publicField(this, "inVPre", false);
+    this.inVPre = false;
     /** Record newline positions for fast line / column calculation */
-    __publicField(this, "newlines", []);
-    __publicField(this, "entityDecoder");
-    __publicField(this, "mode", 0);
-    __publicField(this, "delimiterOpen", defaultDelimitersOpen);
-    __publicField(this, "delimiterClose", defaultDelimitersClose);
-    __publicField(this, "delimiterIndex", -1);
-    __publicField(this, "currentSequence");
-    __publicField(this, "sequenceIndex", 0);
+    this.newlines = [];
+    this.mode = 0;
+    this.delimiterOpen = defaultDelimitersOpen;
+    this.delimiterClose = defaultDelimitersClose;
+    this.delimiterIndex = -1;
+    this.currentSequence = void 0;
+    this.sequenceIndex = 0;
     {
       this.entityDecoder = new decode_js.EntityDecoder(
         decode_js.htmlDecodeTree,
