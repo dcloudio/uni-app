@@ -5826,6 +5826,41 @@ function withModelModifiers(fn, { number, trim }, isComponent = false) {
     };
 }
 
+/**
+ * 处理 externalClasses，为类名添加 -external 后缀
+ * @param className 类名，支持字符串、数组或动态值
+ * @returns 添加了 -external 后缀的类名
+ * @example
+ * // 静态值
+ * externalClass('title') // => 'title-external'
+ *
+ * // 动态值
+ * externalClass(someVar) // => 'someVar-external'
+ */
+function externalClass(className) {
+    if (!className) {
+        return '';
+    }
+    if (isArray(className)) {
+        return className
+            .filter(Boolean)
+            .map((name) => appendExternalSuffix(String(name)))
+            .join(' ');
+    }
+    if (isString(className)) {
+        return className
+            .split(/\s+/)
+            .filter(Boolean)
+            .map((name) => appendExternalSuffix(name))
+            .join(' ');
+    }
+    // 处理其他类型（如数字等），转为字符串
+    return appendExternalSuffix(String(className));
+}
+function appendExternalSuffix(name) {
+    return name ? `${name}-external` : '';
+}
+
 function hasIdProp(_ctx) {
     return (_ctx.$.propsOptions &&
         _ctx.$.propsOptions[0] &&
@@ -5885,6 +5920,7 @@ const m = (fn, modifiers, isComponent = false) => withModelModifiers(fn, modifie
 const j = (obj) => JSON.stringify(obj);
 const gei = genUniElementId;
 const pvhc = parseVirtualHostClass;
+const ec = (className) => externalClass(className);
 
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
@@ -5892,4 +5928,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pvhc, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, ec, effect, effectScope, f, findComponentPropsData, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pvhc, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
