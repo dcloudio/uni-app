@@ -14,6 +14,12 @@ function warn$2(msg, ...args) {
   console.warn(`[Vue warn] ${msg}`, ...args);
 }
 
+var __defProp$5 = Object.defineProperty;
+var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$5 = (obj, key, value) => {
+  __defNormalProp$5(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 let activeEffectScope;
 class EffectScope {
   constructor(detached = false) {
@@ -21,15 +27,31 @@ class EffectScope {
     /**
      * @internal
      */
-    this._active = true;
+    __publicField$5(this, "_active", true);
     /**
      * @internal
      */
-    this.effects = [];
+    __publicField$5(this, "effects", []);
     /**
      * @internal
      */
-    this.cleanups = [];
+    __publicField$5(this, "cleanups", []);
+    /**
+     * only assigned by undetached scope
+     * @internal
+     */
+    __publicField$5(this, "parent");
+    /**
+     * record undetached scopes
+     * @internal
+     */
+    __publicField$5(this, "scopes");
+    /**
+     * track a child scope's index in its parent's scopes array for optimized
+     * removal
+     * @internal
+     */
+    __publicField$5(this, "index");
     this.parent = activeEffectScope;
     if (!detached && activeEffectScope) {
       this.index = (activeEffectScope.scopes || (activeEffectScope.scopes = [])).push(
@@ -114,34 +136,54 @@ function onScopeDispose(fn) {
   }
 }
 
+var __defProp$4 = Object.defineProperty;
+var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$4 = (obj, key, value) => {
+  __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 let activeEffect;
 class ReactiveEffect {
   constructor(fn, trigger, scheduler, scope) {
     this.fn = fn;
     this.trigger = trigger;
     this.scheduler = scheduler;
-    this.active = true;
-    this.deps = [];
+    __publicField$4(this, "active", true);
+    __publicField$4(this, "deps", []);
+    /**
+     * Can be attached after creation
+     * @internal
+     */
+    __publicField$4(this, "computed");
     /**
      * @internal
      */
-    this._dirtyLevel = 4;
+    __publicField$4(this, "allowRecurse");
+    __publicField$4(this, "onStop");
+    // dev only
+    __publicField$4(this, "onTrack");
+    // dev only
+    __publicField$4(this, "onTrigger");
     /**
      * @internal
      */
-    this._trackId = 0;
+    __publicField$4(this, "_dirtyLevel", 4);
     /**
      * @internal
      */
-    this._runnings = 0;
+    __publicField$4(this, "_trackId", 0);
     /**
      * @internal
      */
-    this._shouldSchedule = false;
+    __publicField$4(this, "_runnings", 0);
     /**
      * @internal
      */
-    this._depsLength = 0;
+    __publicField$4(this, "_shouldSchedule", false);
+    /**
+     * @internal
+     */
+    __publicField$4(this, "_depsLength", 0);
     recordEffectScope(this, scope);
   }
   get dirty() {
@@ -976,14 +1018,27 @@ function markRaw(value) {
 const toReactive = (value) => shared.isObject(value) ? reactive(value) : value;
 const toReadonly = (value) => shared.isObject(value) ? readonly(value) : value;
 
+var __defProp$3 = Object.defineProperty;
+var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$3 = (obj, key, value) => {
+  __defNormalProp$3(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 const COMPUTED_SIDE_EFFECT_WARN = `Computed is still dirty after getter evaluation, likely because a computed is mutating its own dependency in its getter. State mutations in computed getters should be avoided.  Check the docs for more details: https://vuejs.org/guide/essentials/computed.html#getters-should-be-side-effect-free`;
 class ComputedRefImpl {
   constructor(getter, _setter, isReadonly, isSSR) {
     this.getter = getter;
     this._setter = _setter;
-    this.dep = void 0;
-    this.__v_isRef = true;
-    this["__v_isReadonly"] = false;
+    __publicField$3(this, "dep");
+    __publicField$3(this, "_value");
+    __publicField$3(this, "effect");
+    __publicField$3(this, "__v_isRef", true);
+    __publicField$3(this, "__v_isReadonly", false);
+    __publicField$3(this, "_cacheable");
+    /**
+     * Dev only
+     */
+    __publicField$3(this, "_warnRecursive");
     this.effect = new ReactiveEffect(
       () => getter(this._value),
       () => triggerRefValue(
@@ -1044,6 +1099,12 @@ function computed$1(getterOrOptions, debugOptions, isSSR = false) {
   return cRef;
 }
 
+var __defProp$2 = Object.defineProperty;
+var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$2 = (obj, key, value) => {
+  __defNormalProp$2(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 function trackRefValue(ref2) {
   var _a;
   if (shouldTrack && activeEffect) {
@@ -1096,8 +1157,10 @@ function createRef(rawValue, shallow) {
 class RefImpl {
   constructor(value, __v_isShallow) {
     this.__v_isShallow = __v_isShallow;
-    this.dep = void 0;
-    this.__v_isRef = true;
+    __publicField$2(this, "_value");
+    __publicField$2(this, "_rawValue");
+    __publicField$2(this, "dep");
+    __publicField$2(this, "__v_isRef", true);
     this._rawValue = __v_isShallow ? value : toRaw(value);
     this._value = __v_isShallow ? value : toReactive(value);
   }
@@ -1141,8 +1204,10 @@ function proxyRefs(objectWithRefs) {
 }
 class CustomRefImpl {
   constructor(factory) {
-    this.dep = void 0;
-    this.__v_isRef = true;
+    __publicField$2(this, "dep");
+    __publicField$2(this, "_get");
+    __publicField$2(this, "_set");
+    __publicField$2(this, "__v_isRef", true);
     const { get, set } = factory(
       () => trackRefValue(this),
       () => triggerRefValue(this)
@@ -1175,7 +1240,7 @@ class ObjectRefImpl {
     this._object = _object;
     this._key = _key;
     this._defaultValue = _defaultValue;
-    this.__v_isRef = true;
+    __publicField$2(this, "__v_isRef", true);
   }
   get value() {
     const val = this._object[this._key];
@@ -1191,8 +1256,8 @@ class ObjectRefImpl {
 class GetterRefImpl {
   constructor(_getter) {
     this._getter = _getter;
-    this.__v_isRef = true;
-    this.__v_isReadonly = true;
+    __publicField$2(this, "__v_isRef", true);
+    __publicField$2(this, "__v_isReadonly", true);
   }
   get value() {
     return this._getter();
@@ -3830,12 +3895,20 @@ function createInnerComp(comp, parent) {
   return vnode;
 }
 
+var __defProp$1 = Object.defineProperty;
+var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$1 = (obj, key, value) => {
+  __defNormalProp$1(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 const isKeepAlive = (vnode) => vnode.type.__isKeepAlive;
 class Cache {
   constructor(max) {
     this.max = max;
-    this._cache = /* @__PURE__ */ new Map();
-    this._keys = /* @__PURE__ */ new Set();
+    __publicField$1(this, "_cache", /* @__PURE__ */ new Map());
+    __publicField$1(this, "_keys", /* @__PURE__ */ new Set());
+    __publicField$1(this, "_max");
+    __publicField$1(this, "pruneCacheEntry");
     this._max = parseInt(max, 10);
   }
   get(key) {
@@ -4126,8 +4199,8 @@ function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
   }, target);
 }
 function resetShapeFlag(vnode) {
-  vnode.shapeFlag &= ~256;
-  vnode.shapeFlag &= ~512;
+  vnode.shapeFlag &= -257;
+  vnode.shapeFlag &= -513;
 }
 function getInnerChild(vnode) {
   return isSuspense(vnode.type) ? vnode.ssContent : vnode;
@@ -5582,7 +5655,11 @@ function toExternalClasses(classes) {
   return classes.split(/\s+/g).map((item) => "^" + item);
 }
 function normalizeExternalClasses(classes) {
-  return toExternalClasses(uniShared.normalizeClass(classes));
+  const res = toExternalClasses(uniShared.normalizeClass(classes));
+  if (__X_STYLE_ISOLATION__) {
+    return res.flatMap((item) => [item, item + "-external"]);
+  }
+  return res;
 }
 function normalizeInheritAttrsValue(instance, key, value) {
   if (__X_STYLE_ISOLATION__ && !instance.type.__reserved) {
@@ -8559,8 +8636,8 @@ function isVNode(value) {
 }
 function isSameVNodeType(n1, n2) {
   if (n2.shapeFlag & 6 && hmrDirtyComponents.has(n2.type)) {
-    n1.shapeFlag &= ~256;
-    n2.shapeFlag &= ~512;
+    n1.shapeFlag &= -257;
+    n2.shapeFlag &= -513;
     return false;
   }
   return n1.type === n2.type && n1.key === n2.key;
@@ -10470,6 +10547,12 @@ function shouldSetAsProp(el, key, value, isSVG) {
   return key in el;
 }
 
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
 function defineCustomElement(options, hydrate2) {
@@ -10479,7 +10562,7 @@ function defineCustomElement(options, hydrate2) {
       super(Comp, initialProps, hydrate2);
     }
   }
-  VueCustomElement.def = Comp;
+  __publicField(VueCustomElement, "def", Comp);
   return VueCustomElement;
 }
 /*! #__NO_SIDE_EFFECTS__ */
@@ -10496,11 +10579,12 @@ class VueElement extends BaseClass {
     /**
      * @internal
      */
-    this._instance = null;
-    this._connected = false;
-    this._resolved = false;
-    this._numberProps = null;
-    this._ob = null;
+    __publicField(this, "_instance", null);
+    __publicField(this, "_connected", false);
+    __publicField(this, "_resolved", false);
+    __publicField(this, "_numberProps", null);
+    __publicField(this, "_styles");
+    __publicField(this, "_ob", null);
     if (this.shadowRoot && hydrate2) {
       hydrate2(this._createVNode(), this.shadowRoot);
     } else {
