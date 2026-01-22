@@ -70,6 +70,9 @@
       "CanvasContext"
     ],
     [
+      "CanvasContext"
+    ],
+    [
       "Certificate"
     ],
     [
@@ -415,13 +418,28 @@
       "CreateCanvasContextAsync"
     ],
     [
+      "CreateCanvasContextAsync"
+    ],
+    [
+      "CreateCanvasContextAsyncCompleteCallback"
+    ],
+    [
       "CreateCanvasContextAsyncCompleteCallback"
     ],
     [
       "CreateCanvasContextAsyncFailCallback"
     ],
     [
+      "CreateCanvasContextAsyncFailCallback"
+    ],
+    [
       "CreateCanvasContextAsyncOptions"
+    ],
+    [
+      "CreateCanvasContextAsyncOptions"
+    ],
+    [
+      "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
       "CreateCanvasContextAsyncSuccessCallback"
@@ -1600,6 +1618,9 @@
       "RequestAnimationFrameCallback"
     ],
     [
+      "RequestAnimationFrameCallback"
+    ],
+    [
       "RequestCompleteCallback"
     ],
     [
@@ -2230,16 +2251,16 @@
       "UniCanvasElement"
     ],
     [
+      "UniCanvasElement"
+    ],
+    [
+      "UniCanvasRenderingContext2D"
+    ],
+    [
       "UniHideModalFail"
     ],
     [
       "UniHideModalResult"
-    ],
-    [
-      "UniInputElement"
-    ],
-    [
-      "UniLoadingElement"
     ],
     [
       "UniLocationProvider"
@@ -2258,9 +2279,6 @@
     ],
     [
       "UniShowModalResult"
-    ],
-    [
-      "UniTextareaElement"
     ],
     [
       "UniVerifyButtonListItem"
