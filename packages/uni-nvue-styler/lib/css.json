@@ -8966,10 +8966,7 @@
         "button",
         "textarea"
       ],
-      "defaultValue": {
-        "uvue": "normal",
-        "w3c": "normal"
-      }
+      "defaultValue": "normal"
     },
     {
       "name": "lines",
