@@ -27,7 +27,6 @@ import {
   matchEasycom,
   normalizePath,
   onVueTemplateCompileLog,
-  parseManifestJsonOnce,
   preJs,
   requireUniHelpers,
   resolveAppVue,
