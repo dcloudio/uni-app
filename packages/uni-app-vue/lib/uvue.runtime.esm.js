@@ -4260,7 +4260,7 @@ function normalizeExternalClasses(classes) {
   return toExternalClasses(normalizeClass(classes));
 }
 function normalizeInheritAttrsValue(instance, key, value) {
-  if (__X_STYLE_ISOLATION__ && !instance.type.__reserved) {
+  if (__X_STYLE_ISOLATION__) {
     if (key === "class") {
       return toExternalClasses(value).join(" ");
     }
