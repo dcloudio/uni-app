@@ -9267,6 +9267,40 @@
               "unixVer": "4.0"
             }
           }
+        },
+        {
+          "name": "keep",
+          "description": "不对空白字符处理，保持原始值。换行符（\\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符保留。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "x",
+                "unixVer": "5.0"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "x",
+                "unixVer": "5.0"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixvVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "x"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -9303,7 +9337,11 @@
         "text",
         "button"
       ],
-      "defaultValue": "pre-line"
+      "defaultValue": {
+        "uvue-app": "keep",
+        "uvue-web": "pre-line",
+        "w3c": "normal"
+      }
     },
     {
       "name": "text-shadow",
