@@ -62,6 +62,7 @@ declare namespace NodeJS {
     UNI_MODULES_ENCRYPT_CACHE_DIR?: string
 
     UNI_APP_HARMONY_PROJECT_PATH?: string
+    UNI_APP_HARMONY_RUN_MODE?: 'debug' | 'release'
 
     UNI_COMPILE_EXT_API_INPUT?: string
     UNI_APP_NEXT_WORKSPACE?: string

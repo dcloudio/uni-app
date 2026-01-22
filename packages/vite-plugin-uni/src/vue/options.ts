@@ -339,9 +339,8 @@ export function initPluginVueOptions(
       if (isDevX && process.env.NODE_ENV === 'development') {
         if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
           // 开发版本、开发模式下，非鸿蒙release模式打包
-          const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
           disableStaticStyle =
-            manifestJson['app-harmony']?.distribute?.['no-debug'] !== true
+            process.env.UNI_APP_HARMONY_RUN_MODE !== 'release'
         }
       }
       ;(vueOptions.template.compilerOptions as any).extraOptions = (
