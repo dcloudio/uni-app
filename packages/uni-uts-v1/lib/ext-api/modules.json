@@ -347,7 +347,6 @@
       }
     }
   },
-  "uni-form": {},
   "uni-getAccessibilityInfo": {
     "uni": {
       "getAccessibilityInfo": {
@@ -605,7 +604,11 @@
       "live-pusher"
     ]
   },
-  "uni-loading": {},
+  "uni-loading": {
+    "easycom": [
+      "loading"
+    ]
+  },
   "uni-location": {
     "provider": {
       "service": "location"
@@ -741,11 +744,6 @@
       "map"
     ]
   },
-  "uni-match-media": {
-    "easycom": [
-      "match-media"
-    ]
-  },
   "uni-media": {
     "uni": {
       "chooseImage": {
@@ -873,7 +871,6 @@
       }
     }
   },
-  "uni-navigator": {},
   "uni-network": {
     "uni": {
       "request": {
@@ -1039,7 +1036,6 @@
       }
     }
   },
-  "uni-progress": {},
   "uni-prompt": {
     "uni": {
       "showToast": {
