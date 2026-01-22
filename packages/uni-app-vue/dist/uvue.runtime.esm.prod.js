@@ -5079,7 +5079,8 @@ function setFullProps(instance, rawProps, props, attrs) {
   return hasAttrsChanged;
 }
 function toExternalClasses(classes) {
-  return classes.split(/\s+/g).map(item => "^" + item);
+  var trimmed = classes.trim();
+  return trimmed ? trimmed.split(/\s+/).map(item => "^" + item) : [];
 }
 function normalizeExternalClasses(classes) {
   return toExternalClasses(normalizeClass(classes));
