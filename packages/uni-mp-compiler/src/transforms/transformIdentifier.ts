@@ -8,6 +8,7 @@ import {
   createSimpleExpression,
   isSlotOutlet,
 } from '@vue/compiler-core'
+import type { ParserPlugin } from '@babel/parser'
 import type { NodeTransform } from '../transform'
 import {
   ATTR_ELEMENT_ID,
@@ -131,7 +132,10 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       // 获取组件的 externalClasses，用于后续跳过已处理的绑定
       let externalClasses: string[] = []
       if (isUserComponent(node, context)) {
-        externalClasses = getExternalClasses(node as ComponentNode)
+        externalClasses = getExternalClasses(
+          node as ComponentNode,
+          context.expressionPlugins
+        )
         rewriteBinding(node as ComponentNode, context, externalClasses)
       }
 
@@ -377,9 +381,13 @@ function isBuiltIn({ arg, exp }: DirectiveNode) {
 /**
  * 获取组件的 externalClasses
  * @param source 组件文件绝对路径
+ * @param babelParserPlugins babel parser 插件
  * @returns externalClasses 数组，未找到时返回 undefined
  */
-function getComponentExternalClasses(source: string): string[] | undefined {
+function getComponentExternalClasses(
+  source: string,
+  babelParserPlugins?: ParserPlugin[]
+): string[] | undefined {
   if (!UNI_APP_STYLE_CLASSES) {
     return undefined
   }
@@ -424,7 +432,7 @@ function getComponentExternalClasses(source: string): string[] | undefined {
   let program
   try {
     program = parseProgram(scriptContent, source, {
-      babelParserPlugins: ['typescript', 'decorators-legacy'],
+      babelParserPlugins,
     })
   } catch (error) {}
   if (program) {
@@ -434,18 +442,21 @@ function getComponentExternalClasses(source: string): string[] | undefined {
   }
 }
 
-function getExternalClasses(node: ComponentNode): string[] {
+function getExternalClasses(
+  node: ComponentNode,
+  babelParserPlugins?: ParserPlugin[]
+): string[] {
   // @ts-expect-error importSource 是编译时扩展的属性
   const importSource: string | undefined = node.importSource
   if (importSource) {
     if (fs.existsSync(importSource)) {
-      return getComponentExternalClasses(importSource) || []
+      return getComponentExternalClasses(importSource, babelParserPlugins) || []
     }
     // 尝试添加扩展名
     for (const ext of ['.uvue', '.vue']) {
       const fullPath = importSource + ext
       if (fs.existsSync(fullPath)) {
-        return getComponentExternalClasses(fullPath) || []
+        return getComponentExternalClasses(fullPath, babelParserPlugins) || []
       }
     }
   }
@@ -454,12 +465,15 @@ function getExternalClasses(node: ComponentNode): string[] {
 
   const easycomSource = matchEasycom(tag)
   if (easycomSource) {
-    return getComponentExternalClasses(easycomSource) || []
+    return getComponentExternalClasses(easycomSource, babelParserPlugins) || []
   }
 
   const globalComponentSource = getGlobalComponentSource(tag)
   if (globalComponentSource) {
-    return getComponentExternalClasses(globalComponentSource) || []
+    return (
+      getComponentExternalClasses(globalComponentSource, babelParserPlugins) ||
+      []
+    )
   }
 
   return []
