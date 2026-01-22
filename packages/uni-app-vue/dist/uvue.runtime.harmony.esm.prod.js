@@ -8225,6 +8225,19 @@ function useComputedStyle() {
   }
   return r;
 }
+var excludedPxKeys = /* @__PURE__ */new Set(["z-index", "opacity", "font-weight", "line-height", "flex-grow", "flex-shrink", "flex"]);
+function formatValue(key, value) {
+  if (typeof value != "number") {
+    return value;
+  }
+  if (isPxKey(key)) {
+    return "".concat(value, "px");
+  }
+  return "".concat(value);
+}
+function isPxKey(key) {
+  return !excludedPxKeys.has(key);
+}
 function triggerComputedStyleUpdate(instance, styles) {
   if (instance.computedStyleInterceptors) {
     var keysToDelete = /* @__PURE__ */new Set();
@@ -8240,7 +8253,7 @@ function triggerComputedStyleUpdate(instance, styles) {
             if (value === "" || value == null) {
               r.delete(hyphenatedKey);
             } else {
-              r.set(hyphenatedKey, value);
+              r.set(hyphenatedKey, formatValue(hyphenatedKey, value));
             }
             if (interceptor.filterProperties) {
               keysToDelete.add(key);
@@ -8254,7 +8267,7 @@ function triggerComputedStyleUpdate(instance, styles) {
           if (value === "" || value == null) {
             r.delete(hyphenatedKey);
           } else {
-            r.set(hyphenatedKey, value);
+            r.set(hyphenatedKey, formatValue(hyphenatedKey, value));
           }
         });
         clearStyles = true;
