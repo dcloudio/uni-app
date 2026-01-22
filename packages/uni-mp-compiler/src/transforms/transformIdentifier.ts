@@ -421,10 +421,17 @@ function getComponentExternalClasses(source: string): string[] | undefined {
     return []
   }
 
-  const program = parseProgram(scriptContent, source, {})
-  const classes = parseExternalClasses(program)
-  updateMiniProgramComponentExternalClasses(source, { mtime, classes })
-  return classes
+  let program
+  try {
+    program = parseProgram(scriptContent, source, {
+      babelParserPlugins: ['typescript', 'decorators-legacy'],
+    })
+  } catch (error) {}
+  if (program) {
+    const classes = parseExternalClasses(program)
+    updateMiniProgramComponentExternalClasses(source, { mtime, classes })
+    return classes
+  }
 }
 
 function getExternalClasses(node: ComponentNode): string[] {
