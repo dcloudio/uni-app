@@ -172,6 +172,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "auto"
     },
     {
@@ -375,6 +388,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": {
@@ -585,6 +611,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "none"
     },
     {
@@ -755,6 +794,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "auto"
@@ -960,6 +1012,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": {
@@ -1168,6 +1233,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "none"
@@ -1379,6 +1457,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": {
         "uvue": "relative",
         "w3c": "static"
@@ -1419,6 +1510,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
         }
       },
       "defaultValue": {
@@ -1499,6 +1603,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "auto"
     },
     {
@@ -1571,6 +1688,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "auto"
@@ -1647,6 +1777,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "auto"
     },
     {
@@ -1719,6 +1862,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "auto"
@@ -1892,6 +2048,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "unixTags": [
@@ -2150,6 +2319,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "unixTags": [
         "view",
         "scroll-view",
@@ -2300,6 +2482,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "unixTags": [
@@ -2519,6 +2714,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "unixTags": [
@@ -2778,6 +2986,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "auto"
     },
     {
@@ -3023,6 +3244,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "unixTags": [
         "view",
         "scroll-view",
@@ -3178,6 +3412,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": {
         "uvue": "none",
         "w3c": "initial"
@@ -3220,6 +3467,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "0"
     },
     {
@@ -3257,6 +3517,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": {
@@ -3369,6 +3642,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "auto"
@@ -3644,6 +3930,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "unixTags": [
         "view",
         "scroll-view",
@@ -3759,6 +4058,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": {
@@ -3970,6 +4282,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": {
         "uvue": "hidden",
         "w3c": "visible"
@@ -4079,6 +4404,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
+        }
+      },
       "defaultValue": "visible"
     },
     {
@@ -4115,6 +4453,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "1"
@@ -4221,6 +4572,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": {
@@ -4398,6 +4762,19 @@
           "uniVer": "√",
           "unixVer": "4.0"
         }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
       }
     },
     {
@@ -4434,6 +4811,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "transparent"
@@ -4540,6 +4930,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
         }
       }
     },
@@ -4680,6 +5083,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
+        }
+      },
       "defaultValue": "border-box"
     },
     {
@@ -4719,6 +5135,19 @@
           "uniVer": "√",
           "unixVer": "4.0"
         }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
       }
     },
     {
@@ -4756,6 +5185,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "0"
@@ -4797,6 +5239,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "0"
     },
     {
@@ -4836,6 +5291,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "0"
     },
     {
@@ -4873,6 +5341,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "0"
@@ -4950,6 +5431,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "0"
     },
     {
@@ -5022,6 +5516,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "0"
@@ -5098,6 +5605,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "0"
     },
     {
@@ -5170,6 +5690,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "0"
@@ -5247,6 +5780,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "0"
     },
     {
@@ -5287,6 +5833,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": {
@@ -5462,6 +6021,19 @@
           "uniVer": "√",
           "unixVer": "4.0"
         }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
       }
     },
     {
@@ -5632,6 +6204,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       }
     },
@@ -5804,6 +6389,19 @@
           "uniVer": "√",
           "unixVer": "4.0"
         }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
       }
     },
     {
@@ -5974,6 +6572,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       }
     },
@@ -6146,6 +6757,19 @@
           "uniVer": "√",
           "unixVer": "4.0"
         }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
       }
     },
     {
@@ -6284,6 +6908,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "medium"
@@ -6426,6 +7063,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "medium"
     },
     {
@@ -6564,6 +7214,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "medium"
@@ -6706,6 +7369,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "medium"
     },
     {
@@ -6846,6 +7522,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "medium"
     },
     {
@@ -6882,6 +7571,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       }
     },
@@ -6920,6 +7622,19 @@
           "uniVer": "√",
           "unixVer": "4.0"
         }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
       }
     },
     {
@@ -6956,6 +7671,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       }
     },
@@ -6994,6 +7722,19 @@
           "uniVer": "√",
           "unixVer": "4.0"
         }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
       }
     },
     {
@@ -7030,6 +7771,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       }
     },
@@ -7068,6 +7822,19 @@
           "uniVer": "√",
           "unixVer": "4.0"
         }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
       }
     },
     {
@@ -7104,6 +7871,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       }
     },
@@ -7142,6 +7922,19 @@
           "uniVer": "√",
           "unixVer": "4.0"
         }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
       }
     },
     {
@@ -7179,6 +7972,19 @@
           "uniVer": "√",
           "unixVer": "4.0"
         }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
       }
     },
     {
@@ -7215,6 +8021,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       }
     },
@@ -7255,6 +8074,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "0"
@@ -7298,6 +8130,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "0"
     },
     {
@@ -7339,6 +8184,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": "0"
     },
     {
@@ -7378,6 +8236,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "defaultValue": "0"
@@ -7425,6 +8296,19 @@
         "input",
         "textarea"
       ],
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": {
         "uvue": "#000000",
         "w3c": "canvastext"
@@ -7465,6 +8349,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "unixTags": [
@@ -7581,6 +8478,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "unixTags": [
@@ -7828,6 +8738,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "unixTags": [
         "text",
         "button",
@@ -7874,6 +8797,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
         }
       },
       "unixTags": [
@@ -8019,6 +8955,19 @@
               "uniVer": "√",
               "unixVer": "4.0"
             }
+          },
+          "flatten": {
+            "app": {
+              "android": {
+                "unixvVer": "x"
+              },
+              "ios": {
+                "unixvVer": "x"
+              },
+              "harmony": {
+                "unixvVer": "5.0"
+              }
+            }
           }
         }
       ],
@@ -8050,6 +8999,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "unixTags": [
@@ -8093,6 +9055,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
         }
       },
       "unixTags": [
@@ -8271,6 +9246,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
+        }
+      },
       "unixTags": [
         "text",
         "button"
@@ -8381,6 +9369,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "unixTags": [
@@ -8524,6 +9525,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "unixTags": [
@@ -8770,6 +9784,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "unixTags": [
         "text",
         "button",
@@ -8881,6 +9908,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "unixTags": [
         "text",
         "button"
@@ -8961,6 +10001,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "unixTags": [
         "text",
         "button",
@@ -8997,6 +10050,19 @@
         "web": {
           "uniVer": "x",
           "unixVer": "x"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
         }
       },
       "unixTags": [
@@ -9042,6 +10108,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       },
       "unixTags": [
@@ -9330,6 +10409,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "unixTags": [
         "text",
         "button"
@@ -9413,6 +10505,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "unixTags": [
         "text",
         "button"
@@ -9458,6 +10563,19 @@
               "uniVer": "√",
               "unixVer": "4.0"
             }
+          },
+          "flatten": {
+            "app": {
+              "android": {
+                "unixvVer": "x"
+              },
+              "ios": {
+                "unixvVer": "x"
+              },
+              "harmony": {
+                "unixvVer": "x"
+              }
+            }
           }
         },
         {
@@ -9491,6 +10609,19 @@
               "uniVer": "√",
               "unixVer": "4.0"
             }
+          },
+          "flatten": {
+            "app": {
+              "android": {
+                "unixvVer": "x"
+              },
+              "ios": {
+                "unixvVer": "x"
+              },
+              "harmony": {
+                "unixvVer": "5.0"
+              }
+            }
           }
         }
       ],
@@ -9522,6 +10653,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
         }
       }
     },
@@ -9628,6 +10772,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
         }
       }
     },
@@ -10527,6 +11684,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
+        }
+      },
       "defaultValue": {
         "uvue-app": "all",
         "uvue-web": "all",
@@ -10567,6 +11737,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
         }
       },
       "defaultValue": "0s"
@@ -10807,6 +11990,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
+        }
+      },
       "defaultValue": "ease"
     },
     {
@@ -10843,6 +12039,19 @@
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "x"
+          }
         }
       },
       "defaultValue": "0s"
@@ -11214,6 +12423,19 @@
           "uniVer": "√",
           "unixVer": "4.0"
         }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
       }
     },
     {
@@ -11422,6 +12644,19 @@
           "unixVer": "4.0"
         }
       },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixvVer": "x"
+          },
+          "ios": {
+            "unixvVer": "x"
+          },
+          "harmony": {
+            "unixvVer": "5.0"
+          }
+        }
+      },
       "defaultValue": {
         "uvue-app": "50% 50%",
         "uvue-web": "50% 50% 0",
@@ -11532,116 +12767,20 @@
           "unixVer": "4.0"
         }
       },
-      "defaultValue": "auto"
-    },
-    {
-      "name": "animation-timing-function",
-      "restrictions": [
-        "enum"
-      ],
-      "syntax": "ease | linear",
-      "values": [
-        {
-          "name": "ease",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "x",
-                "unixVer": "4.84+"
-              },
-              "ios": {
-                "osVer": "12.0",
-                "uniVer": "x",
-                "unixVer": "4.84"
-              },
-              "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "x",
-                "unixVer": "4.84",
-                "unixvVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
-        },
-        {
-          "name": "linear",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "4.84"
-              },
-              "ios": {
-                "osVer": "12.0",
-                "uniVer": "x",
-                "unixVer": "4.84"
-              },
-              "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "x",
-                "unixVer": "4.84",
-                "unixvVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
-        }
-      ],
-      "uniPlatform": {
+      "flatten": {
         "app": {
           "android": {
-            "osVer": "5.0",
-            "uniVer": "√",
-            "unixVer": "4.84+"
+            "unixvVer": "x"
           },
           "ios": {
-            "osVer": "12.0",
-            "uniVer": "x",
-            "unixVer": "4.84"
+            "unixvVer": "x"
           },
           "harmony": {
-            "osVer": "5.0.0",
-            "uniVer": "x",
-            "unixVer": "4.84",
-            "unixvVer": "5.0"
+            "unixvVer": "x"
           }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
-        "web": {
-          "uniVer": "√",
-          "unixVer": "4.0"
         }
       },
-      "unixTags": [
-        "loading"
-      ],
-      "defaultValue": "linear"
+      "defaultValue": "auto"
     }
   ],
   "atDirectives": [
