@@ -244,6 +244,7 @@ var VAR_WINDOW_LEFT = /var\(--window-left\)/gi
 var VAR_WINDOW_RIGHT = /var\(--window-right\)/gi
 
 var rpx2unit = createRpx2Unit(getRpx2Unit().unit, getRpx2Unit().unitRatio, getRpx2Unit().unitPrecision)
+var dynamicRpx = null
 
 function processCss(css) {
 	var page = getPage()
@@ -255,7 +256,6 @@ function processCss(css) {
             .replace(VAR_WINDOW_LEFT, '0px')
             .replace(VAR_WINDOW_RIGHT, '0px')
 	}
-	const dynamicRpx = (__uniConfig.globalStyle || __uniConfig.window || {}).dynamicRpx === true
 	return css
 		.replace(BODY_SCOPED_RE, page)
 		.replace(BODY_RE, '')
@@ -265,6 +265,9 @@ function processCss(css) {
         return css
       }
 			return css.replace(UPX_RE, function (a, b) {
+				if (dynamicRpx === null) {
+					dynamicRpx = __uniConfig && (__uniConfig.globalStyle || __uniConfig.window || {}).dynamicRpx === true
+				}
       	return dynamicRpx ? rpx2unit(b) : uni.upx2px(b) + 'px'
 			})
 		})
