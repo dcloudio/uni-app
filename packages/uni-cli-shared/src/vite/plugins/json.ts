@@ -65,30 +65,39 @@ export function uniJsonPlugin(): Plugin {
       let codeObj = parseJson(preJson(code, id), false, id)
       let codeJson = ''
       if (IS_UNI_X_ANDROID) {
-        codeJson +=
-          'let __jsonObj = JSON.parseObject(`' +
-          JSON.stringify(codeObj, null, 2) +
-          '`);\n'
+        if (Array.isArray(codeObj)) {
+          codeJson +=
+            'export default JSON.parseArray(`' +
+            JSON.stringify(codeObj, null, 2) +
+            '`)' +
+            UTS_CAST_ARRAY_MARKER +
+            ';\n'
+        } else {
+          codeJson +=
+            'let __jsonObj = JSON.parseObject(`' +
+            JSON.stringify(codeObj, null, 2) +
+            '`);\n'
 
-        for (const key in codeObj) {
-          if (!Object.hasOwn(codeObj, key)) continue
-          const element = codeObj[key]
+          for (const key in codeObj) {
+            if (!Object.hasOwn(codeObj, key)) continue
+            const element = codeObj[key]
 
-          if (Array.isArray(element)) {
-            codeJson += `export const ${key} = __jsonObj?.getArray("${key}")${UTS_CAST_ARRAY_MARKER};\n`
-          } else if (typeof element === 'object' && element !== null) {
-            codeJson += `export const ${key} = __jsonObj?.get("${key}")${UTS_CAST_OBJECT_MARKER};\n`
-          } else if (typeof element === 'string') {
-            codeJson += `export const ${key} = __jsonObj?.getString("${key}") ?? '';\n`
-          } else if (typeof element === 'number') {
-            codeJson += `export const ${key} = __jsonObj?.getNumber("${key}") ?? 0;\n`
-          } else if (typeof element === 'boolean') {
-            codeJson += `export const ${key} = __jsonObj?.getBoolean("${key}") ?? false;\n`
-          } else {
-            codeJson += `export const ${key} = __jsonObj?.get("${key}")${UTS_CAST_OBJECT_MARKER};\n`
+            if (Array.isArray(element)) {
+              codeJson += `export const ${key} = __jsonObj?.getArray("${key}")${UTS_CAST_ARRAY_MARKER};\n`
+            } else if (typeof element === 'object' && element !== null) {
+              codeJson += `export const ${key} = __jsonObj?.get("${key}")${UTS_CAST_OBJECT_MARKER};\n`
+            } else if (typeof element === 'string') {
+              codeJson += `export const ${key} = __jsonObj?.getString("${key}") ?? '';\n`
+            } else if (typeof element === 'number') {
+              codeJson += `export const ${key} = __jsonObj?.getNumber("${key}") ?? 0;\n`
+            } else if (typeof element === 'boolean') {
+              codeJson += `export const ${key} = __jsonObj?.getBoolean("${key}") ?? false;\n`
+            } else {
+              codeJson += `export const ${key} = __jsonObj?.get("${key}")${UTS_CAST_OBJECT_MARKER};\n`
+            }
           }
+          codeJson += `export default __jsonObj;`
         }
-        codeJson += `export default __jsonObj;`
       } else {
         codeJson = JSON.stringify(codeObj, null, 2)
       }
