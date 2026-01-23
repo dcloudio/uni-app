@@ -302,10 +302,16 @@ export function isAppUVueNativeTag(tag: string) {
   return false
 }
 
+// dom1 ios端 vue 实现的组件
+const IOS_DOM1_VUE_COMPONENTS = ['match-media']
+
 export function isAppIOSUVueNativeTag(tag: string) {
   // 前端实现的内置组件都会注册一个根组件
   if (tag.startsWith('uni-') && tag.endsWith('-element')) {
     return true
+  }
+  if (IOS_DOM1_VUE_COMPONENTS.includes(tag)) {
+    return false
   }
   if (UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag)) {
     return false
