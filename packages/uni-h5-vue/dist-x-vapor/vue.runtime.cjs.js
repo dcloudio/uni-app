@@ -4097,8 +4097,8 @@ function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
   }, target);
 }
 function resetShapeFlag(vnode) {
-  vnode.shapeFlag &= -257;
-  vnode.shapeFlag &= -513;
+  vnode.shapeFlag &= ~256;
+  vnode.shapeFlag &= ~512;
 }
 function getInnerChild(vnode) {
   return isSuspense(vnode.type) ? vnode.ssContent : vnode;
@@ -8535,8 +8535,8 @@ function isVNode(value) {
 }
 function isSameVNodeType(n1, n2) {
   if (n2.shapeFlag & 6 && hmrDirtyComponents.has(n2.type)) {
-    n1.shapeFlag &= -257;
-    n2.shapeFlag &= -513;
+    n1.shapeFlag &= ~256;
+    n2.shapeFlag &= ~512;
     return false;
   }
   return n1.type === n2.type && n1.key === n2.key;
