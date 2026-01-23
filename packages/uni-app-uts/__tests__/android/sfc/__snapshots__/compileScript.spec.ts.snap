@@ -187,9 +187,7 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return withDirectives(_cE("view", null, null, 512 /* NEED_PATCH */), [
-    [unref(vMyDir)]
-  ])
+  return _cE("view")
 }
 }
 
@@ -522,9 +520,7 @@ const _cache = __ins.renderCache;
 return (): any | null => {
 
   return _cE(Fragment, null, [
-    withDirectives(_cE("view", null, null, 512 /* NEED_PATCH */), [
-      [unref(vMyDir)]
-    ]),
+    _cE("view"),
     _cV(ChildComp),
     _cV(SomeOtherComp)
   ], 64 /* STABLE_FRAGMENT */)

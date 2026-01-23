@@ -314,9 +314,7 @@ describe('compiler: v-for', () => {
     assert(
       `<view v-for="i in list" v-foo/>`,
       `_cE(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, __key, __index, _cached): any => {
-  return withDirectives(_cE(\"view\", null, null, 512 /* NEED_PATCH */), [
-    [_directive_foo]
-  ])
+  return _cE("view")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
   })
