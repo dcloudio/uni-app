@@ -314,7 +314,7 @@ function isAppIOSUVueNativeTag(tag) {
     }
     return false;
 }
-const UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY = ['video', 'map', 'loading'];
+const UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY = ['video', 'map', 'loading', 'rich-text'];
 function isAppHarmonyUVueNativeTag(tag) {
     // video 目前是easycom实现的
     if (UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY.includes(tag)) {
