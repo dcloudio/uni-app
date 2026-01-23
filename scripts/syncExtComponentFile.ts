@@ -18,7 +18,7 @@ interface syncExtComponentOptions {
   path?: string
   libX?: syncExtComponentOptions
 }
-type Platform = 'web' | 'mp-weixin' | 'mp-alipay'
+type Platform = 'web' | 'mp'
 
 const uniComponentsPath = resolve('../packages/uni-components')
 const uniComponentsStyleXPath = path.resolve(uniComponentsPath, './style-x')
@@ -146,8 +146,8 @@ export function syncExtComponentFile(apiDirs: string[], platform: Platform = 'we
                     }
                   ).code
 
-                  const _path = syncExtComponentOption.path || syncExtComponentOption.libX.path
-                  const _dir = syncExtComponentOption.dir || syncExtComponentOption.libX.dir
+                  const _path = syncExtComponentOption.path || syncExtComponentOption?.libX?.path
+                  const _dir = syncExtComponentOption.dir || syncExtComponentOption?.libX?.dir
                   if (_path) {
                     fs.outputFileSync(
                       path.resolve(_path, `${_dir ?? dir}/${name}.ts`),
