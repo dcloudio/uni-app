@@ -107,7 +107,7 @@ export function isUTSType(type: any): type is typeof UTSType {
 }
 
 export interface Constructible {
-  new(...args: any[]): any
+  new (...args: any[]): any
 }
 
 function normalizeGenericValue(
@@ -120,10 +120,10 @@ function normalizeGenericValue(
     : isBaseType(genericType) ||
       isUnknownType(genericType) ||
       isAnyType(genericType)
-      ? value
-      : genericType === Array
-        ? new Array(...value)
-        : new genericType(value, undefined, isJSONParse)
+    ? value
+    : genericType === Array
+    ? new Array(...value)
+    : new genericType(value, undefined, isJSONParse)
 }
 
 export class UTSType {
@@ -163,7 +163,7 @@ export class UTSType {
       if (illegalGeneric) {
         throw new Error(
           'Generic is not UTSType or Array or UTSJSONObject or base type, generic: ' +
-          illegalGeneric
+            illegalGeneric
         )
       }
     }
@@ -220,7 +220,7 @@ export class UTSType {
       return parent
     }
   }
-  constructor() { }
+  constructor() {}
   static initProps(
     options: Record<string, any>,
     metadata: UTSTypeMetadata,
@@ -251,7 +251,7 @@ export class UTSType {
         // 带有泛型的数组会走此分支
         obj[key] = isJSONParse
           ? // @ts-expect-error
-          new type(options[realKey], undefined, isJSONParse)
+            new type(options[realKey], undefined, isJSONParse)
           : options[realKey]
       } else if (type === Array) {
         // 不带泛型的数组会走此分支
