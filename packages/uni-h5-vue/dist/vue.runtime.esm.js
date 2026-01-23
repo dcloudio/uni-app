@@ -3,7 +3,7 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { NOOP, extend, isMap, isArray, isIntegerKey, isSymbol, hasOwn, hasChanged, makeMap, isObject, capitalize, toRawType, def, isFunction, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isOn, isModelListener, toNumber, remove, isSet, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, EMPTY_ARR, isReservedProp, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, isSpecialBooleanAttr, looseIndexOf, looseEqual, isHTMLTag, isSVGTag, isMathMLTag } from '@vue/shared';
+import { NOOP, extend, isArray, isSymbol, isMap, isIntegerKey, hasOwn, hasChanged, isObject, makeMap, capitalize, toRawType, def, isFunction, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isOn, isModelListener, toNumber, remove, isSet, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, isReservedProp, EMPTY_ARR, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, isSpecialBooleanAttr, looseIndexOf, looseEqual, isHTMLTag, isSVGTag, isMathMLTag } from '@vue/shared';
 export { camelize, capitalize, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle, createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
@@ -4130,8 +4130,8 @@ function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
   }, target);
 }
 function resetShapeFlag(vnode) {
-  vnode.shapeFlag &= -257;
-  vnode.shapeFlag &= -513;
+  vnode.shapeFlag &= ~256;
+  vnode.shapeFlag &= ~512;
 }
 function getInnerChild(vnode) {
   return isSuspense(vnode.type) ? vnode.ssContent : vnode;
@@ -8490,8 +8490,8 @@ function isVNode(value) {
 }
 function isSameVNodeType(n1, n2) {
   if (!!(process.env.NODE_ENV !== "production") && n2.shapeFlag & 6 && hmrDirtyComponents.has(n2.type)) {
-    n1.shapeFlag &= -257;
-    n2.shapeFlag &= -513;
+    n1.shapeFlag &= ~256;
+    n2.shapeFlag &= ~512;
     return false;
   }
   return n1.type === n2.type && n1.key === n2.key;
