@@ -341,7 +341,12 @@ export function isAppIOSUVueNativeTag(tag: string) {
   return false
 }
 
-const UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY = ['video', 'map', 'loading']
+const UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY = [
+  'video',
+  'map',
+  'loading',
+  'rich-text',
+]
 
 export function isAppHarmonyUVueNativeTag(tag: string) {
   // video 目前是easycom实现的
