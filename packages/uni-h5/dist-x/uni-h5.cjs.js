@@ -9356,8 +9356,7 @@ const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValu
   __name: "index-x",
   props: {
     paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSnow: { type: Boolean, default: false }
+    bold: { type: Boolean, default: false }
   },
   setup(__props) {
     const props2 = __props;
