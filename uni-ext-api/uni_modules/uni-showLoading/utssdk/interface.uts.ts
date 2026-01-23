@@ -112,6 +112,76 @@ export type ShowLoadingOptions = {
 		}
    */
   mask?: boolean | null,
+	/**
+	 * iOS是否采用系统雪花状样式
+	 * @defaultValue false
+	 * @uniPlatform {
+			"app": {
+				"android": {
+					"osVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "x",
+					"unixVer": "5.0"
+				},
+				"harmony": {
+					"osVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			},
+			"mp": {
+				"weixin": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			},
+			"web": {
+				"uniVer": "x",
+				"unixVer": "x"
+			}
+		}
+	 */
+	iosSnow?: boolean | null,
   /**
    * 接口调用成功的回调函数
    */

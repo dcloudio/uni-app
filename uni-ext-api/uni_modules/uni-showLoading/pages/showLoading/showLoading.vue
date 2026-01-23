@@ -1,9 +1,9 @@
 <template>
 	<view class="uni-loading_dialog__mask" :class="{ 'uni-loading_dialog__mask__show': showAnim }" >
-	
+
 		<view class="uni-loading_dialog__container"
 			:class="{'uni-loading_dialog__show': showAnim}">
-			<loading class="uni-loading_dialog__container__loading"  />
+			<loading class="uni-loading_dialog__container__loading" :ios-snow="iosSnow" />
 			<text class="uni-loading_dialog__container__title" v-if="title" >{{title}}</text>
 		</view>
 	</view>
@@ -18,6 +18,7 @@
 	const failEventName: Ref<string> = ref('')
 	const title: Ref<string> = ref('')
 	const showAnim: Ref<boolean> = ref(false)
+	const iosSnow: Ref<boolean> = ref(false)
 
 	onReady(() => {
 		setTimeout(() => {
@@ -34,6 +35,9 @@
 		uni.$on(optionsEventName.value, (data: UTSJSONObject) => {
 			if (data['title'] != null) {
 				title.value = data['title'] as string
+			}
+			if (data['iosSnow'] != null) {
+				iosSnow.value = data['iosSnow'] as boolean
 			}
 		})
 
