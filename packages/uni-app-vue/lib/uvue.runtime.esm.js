@@ -7,7 +7,7 @@ import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend, 
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, shallowReadonly, track, reactive, shallowReactive, trigger, isProxy, proxyRefs, markRaw, EffectScope, computed as computed$1, customRef, isReadonly } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
-import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle as normalizeStyle$1 } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle as normalizeStyle$1, forcePatchProp } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 import PromisePolyfill from 'promise-polyfill';
 import { expand } from '@dcloudio/uni-nvue-styler/dist/uni-nvue-styler.es';
@@ -9590,7 +9590,7 @@ function setDisplay(el, value) {
   el._vsh = !value;
 }
 
-const rendererOptions = extend({ patchProp }, nodeOps);
+const rendererOptions = extend({ patchProp, forcePatchProp }, nodeOps);
 let renderer;
 function ensureRenderer() {
   return renderer || (renderer = createRenderer(rendererOptions));
