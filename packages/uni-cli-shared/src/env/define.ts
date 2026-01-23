@@ -20,6 +20,10 @@ export function initDefine(stringifyBoolean: boolean = false) {
       isX && isMP && platformManifestJson.enableVirtualHost !== false,
   }
 
+  const styleIsolation = stringifyBoolean
+    ? JSON.stringify(isNewStyleIsolation)
+    : isNewStyleIsolation
+
   return {
     ...initCustomDefine(),
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
@@ -73,9 +77,9 @@ export function initDefine(stringifyBoolean: boolean = false) {
       process.env.UNI_PLATFORM === 'mp-weixin' ? getShadowImagePath('grey') : ''
     ),
     ...mpXDefine,
-    __X_STYLE_ISOLATION__: stringifyBoolean
-      ? JSON.stringify(isNewStyleIsolation)
-      : isNewStyleIsolation,
+    __X_STYLE_ISOLATION__: styleIsolation,
+    // 下边这个主要是为web服务，因为ssr目前只能识别process.env中的内容
+    'process.env.UNI_APP_X_NEW_STYLE_ISOLATION': styleIsolation,
   }
 }
 
