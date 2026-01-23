@@ -9673,7 +9673,7 @@ function formatTime(val) {
   }
   return str;
 }
-function useGesture(props2, videoRef, fullscreenState) {
+function useGesture(props2, videoState, videoRef, fullscreenState) {
   const state = vue.reactive({
     seeking: false,
     gestureType: "none",
@@ -9776,8 +9776,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     state.gestureType = "none";
   }
   function changeProgress(x) {
-    const video = videoRef.value;
-    const duration = video.duration;
+    const duration = videoState.currentDuration;
     let currentTimeNew = x / 600 * duration + state.currentTimeOld;
     if (currentTimeNew < 0) {
       currentTimeNew = 0;
@@ -9889,6 +9888,7 @@ function useVideo(props2, attrs2, trigger) {
     playing: false,
     currentTime: 0,
     duration: 0,
+    currentDuration: 0,
     progress: 0,
     buffered: 0,
     muted,
@@ -9906,6 +9906,11 @@ function useVideo(props2, attrs2, trigger) {
   vue.watch(() => muted.value, (muted2) => {
     const video = videoRef.value;
     video.muted = muted2;
+  });
+  vue.watch([() => state.duration, () => props2.duration], () => {
+    let _duration = Number(props2.duration);
+    isNaN(_duration) && (_duration = 0);
+    state.currentDuration = _duration > 0 ? _duration : state.duration;
   });
   function onDurationChange({
     target
@@ -10041,7 +10046,7 @@ function useControls(props2, videoState, seek, seeking) {
     let progress = 0;
     if (x >= 0 && x <= w) {
       progress = x / w;
-      seek(videoState.duration * progress);
+      seek(videoState.currentDuration * progress);
     }
   }
   function toggleControls() {
@@ -10168,10 +10173,15 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
       controlsState.controlsVisible = val;
     }
   });
-  vue.watch([() => videoState.currentTime, () => {
-    props$9.duration;
-  }], () => {
-    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  vue.watch([() => videoState.currentTime, () => videoState.currentDuration], () => {
+    if (videoState.currentDuration > 0) {
+      videoState.progress = videoState.currentTime / videoState.currentDuration * 100;
+    } else {
+      videoState.progress = 0;
+    }
+    videoState.progress > 100 && (videoState.progress = 100);
+  }, {
+    immediate: true
   });
   vue.watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
     videoState.currentTime = currentTimeNew;
@@ -10286,7 +10296,6 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    useI18n();
     initI18nVideoMsgsOnce();
     const {
       videoRef,
@@ -10327,7 +10336,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       onTouchstart,
       onTouchend,
       onTouchmove
-    } = useGesture(props2, videoRef, fullscreenState);
+    } = useGesture(props2, videoState, videoRef, fullscreenState);
     const {
       state: controlsState,
       progressRef,
@@ -10434,7 +10443,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-inner"
       }, null)], 6)], 2)], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
+      }, [formatTime(videoState.currentDuration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
         "class": {
           "uni-video-icon": true,
           "uni-video-danmu-button": true,
@@ -10487,7 +10496,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title"
       }, [vue.createVNode("span", {
         "class": "uni-video-toast-title-current-time"
-      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), vue.createVNode("div", {
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), vue.createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };

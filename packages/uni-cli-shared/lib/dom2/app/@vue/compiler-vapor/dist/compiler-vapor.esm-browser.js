@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-vapor v3.6.0-beta.2
+* @vue/compiler-vapor v3.6.0-beta.3
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -23793,10 +23793,6 @@ function getLiteralExpressionValue(exp, excludeNumber) {
   }
   return exp.isStatic ? exp.content : null;
 }
-function isInTransition(context) {
-  const parentNode = context.parent && context.parent.node;
-  return !!(parentNode && isTransitionNode(parentNode));
-}
 function isTransitionNode(node) {
   return node.type === 1 && isTransitionTag(node.tag);
 }
@@ -24253,18 +24249,16 @@ const IRNodeTypes = {
   "12": "SLOT_OUTLET_NODE",
   "DIRECTIVE": 13,
   "13": "DIRECTIVE",
-  "DECLARE_OLD_REF": 14,
-  "14": "DECLARE_OLD_REF",
-  "IF": 15,
-  "15": "IF",
-  "FOR": 16,
-  "16": "FOR",
-  "GET_TEXT_CHILD": 17,
-  "17": "GET_TEXT_CHILD",
-  "GET_INSERTION_PARENT": 18,
-  "18": "GET_INSERTION_PARENT",
-  "SET_CHANGE_PROP": 19,
-  "19": "SET_CHANGE_PROP"
+  "IF": 14,
+  "14": "IF",
+  "FOR": 15,
+  "15": "FOR",
+  "GET_TEXT_CHILD": 16,
+  "16": "GET_TEXT_CHILD",
+  "GET_INSERTION_PARENT": 17,
+  "17": "GET_INSERTION_PARENT",
+  "SET_CHANGE_PROP": 18,
+  "18": "SET_CHANGE_PROP"
 };
 const DynamicFlag = {
   "NONE": 0,
@@ -24278,7 +24272,7 @@ const DynamicFlag = {
 };
 function isBlockOperation(op) {
   const type = op.type;
-  return type === 11 || type === 12 || type === 15 || type === 16;
+  return type === 11 || type === 12 || type === 14 || type === 15;
 }
 
 function genInsertNode({ parent, elements, anchor }, { helper }) {
@@ -25446,20 +25440,15 @@ function genSetTemplateRef(oper, context) {
   const [refValue, refKey] = genRefValue(oper.value, context);
   return [
     NEWLINE,
-    oper.effect && `r${oper.element} = `,
     ...genCall(
       setTemplateRefIdent,
       // will be generated in root scope
       `n${oper.element}`,
       refValue,
-      oper.effect ? `r${oper.element}` : oper.refFor ? "void 0" : void 0,
       oper.refFor && "true",
       refKey
     )
   ];
-}
-function genDeclareOldRef(oper) {
-  return [NEWLINE, `let r${oper.id}`];
 }
 function genRefValue(value, context) {
   if (value && context.options.inline) {
@@ -26042,10 +26031,10 @@ function hasComponentOrSlotInDynamic(dynamic) {
     if (type === 11 || type === 12) {
       return true;
     }
-    if (type === 15) {
+    if (type === 14) {
       if (hasComponentOrSlotInIf(dynamic.operation)) return true;
     }
-    if (type === 16) {
+    if (type === 15) {
       if (hasComponentOrSlotInBlock(dynamic.operation.render))
         return true;
     }
@@ -26061,10 +26050,10 @@ function hasComponentOrSlotInOperations(operations) {
       case 11:
       case 12:
         return true;
-      case 15:
+      case 14:
         if (hasComponentOrSlotInIf(op)) return true;
         break;
-      case 16:
+      case 15:
         if (hasComponentOrSlotInBlock(op.render)) return true;
         break;
     }
@@ -26144,25 +26133,23 @@ function genOperation(oper, context) {
       return genInsertNode(oper, context);
     case 10:
       return genPrependNode(oper, context);
-    case 15:
+    case 14:
       return genIf(oper, context);
-    case 16:
+    case 15:
       return genFor(oper, context);
     case 11:
       return genCreateComponent(oper, context);
-    case 14:
-      return genDeclareOldRef(oper);
     case 12:
       return genSlotOutlet(oper, context);
     case 13:
       return genBuiltinDirective(oper, context);
-    case 17:
+    case 16:
       return genGetTextChild(oper, context);
     // fixed by uts
-    case 18:
+    case 17:
       return [];
     // fixed by uts
-    case 19:
+    case 18:
       return [];
     default:
       const exhaustiveCheck = oper;
@@ -26363,7 +26350,7 @@ function genBlock(oper, context, args = [], root) {
 }
 function genBlockContent(block, context, root, genEffectsExtraFrag) {
   const [frag, push] = buildCodeFragment();
-  const { dynamic, effect, operation, returns, key } = block;
+  const { dynamic, effect, operation, returns } = block;
   const resetBlock = context.enterBlock(block);
   if (root) {
     for (let name of context.ir.component) {
@@ -26395,12 +26382,6 @@ function genBlockContent(block, context, root, genEffectsExtraFrag) {
   push(...genEffects(effect, context, genEffectsExtraFrag));
   if (root && context.ir.hasDeferredVShow) {
     push(NEWLINE, `deferredApplyVShows.forEach(fn => fn())`);
-  }
-  if (dynamic.needsKey) {
-    for (const child of dynamic.children) {
-      const keyValue = key ? genExpression(key, context) : JSON.stringify(child.id);
-      push(NEWLINE, `n${child.id}.$key = `, ...keyValue);
-    }
   }
   push(NEWLINE, `return `);
   const returnNodes = returns.map((n) => `n${n}`);
@@ -26953,7 +26934,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
           context.registerEffect(
             values,
             {
-              type: 19,
+              type: 18,
               // fixed by uts
               node,
               prop
@@ -27250,7 +27231,7 @@ const transformVText = (dir, node, context) => {
     const isComponent = node.tagType === 1;
     if (!isComponent) {
       context.registerOperation({
-        type: 17,
+        type: 16,
         // fixed by uts
         node,
         parent: context.reference()
@@ -27435,13 +27416,6 @@ const transformTemplateRef = (node, context) => {
   return () => {
     const id = context.reference();
     const effect = !isConstantExpression(value);
-    effect && context.registerOperation({
-      type: 14,
-      // fixed by uts
-      node,
-      value,
-      id
-    });
     context.registerEffect([value], {
       type: 8,
       // fixed by uts
@@ -27546,7 +27520,7 @@ function processTextContainer(children, context) {
       context.options.platform ? TEXT_PLACEHOLDER : " "
     ];
     context.registerOperation({
-      type: 17,
+      type: 16,
       // fixed by uts
       node: context.node,
       parent: context.reference()
@@ -27741,7 +27715,7 @@ function processIf(node, dir, context) {
     return () => {
       onExit();
       context.dynamic.operation = {
-        type: 15,
+        type: 14,
         // fixed by uts
         node,
         id,
@@ -27758,7 +27732,7 @@ function processIf(node, dir, context) {
     if (siblings) {
       let i = siblings.length;
       while (i--) {
-        if (siblings[i].operation && siblings[i].operation.type === 15) {
+        if (siblings[i].operation && siblings[i].operation.type === 14) {
           lastIfNode = siblings[i].operation;
           break;
         }
@@ -27767,14 +27741,14 @@ function processIf(node, dir, context) {
     if (
       // check if v-if is the sibling node
       !siblingIf || // check if IfNode is the last operation and get the root IfNode
-      !lastIfNode || lastIfNode.type !== 15
+      !lastIfNode || lastIfNode.type !== 14
     ) {
       context.options.onError(
         createCompilerError(30, node.loc)
       );
       return;
     }
-    while (lastIfNode.negative && lastIfNode.negative.type === 15) {
+    while (lastIfNode.negative && lastIfNode.negative.type === 14) {
       lastIfNode = lastIfNode.negative;
     }
     if (dir.name === "else-if" && lastIfNode.negative) {
@@ -27794,7 +27768,7 @@ function processIf(node, dir, context) {
       lastIfNode.negative = branch;
     } else {
       lastIfNode.negative = {
-        type: 15,
+        type: 14,
         // fixed by uts
         node,
         id: -1,
@@ -27811,7 +27785,6 @@ function createIfBranch(node, context) {
   const branch = newBlock(node);
   const exitBlock = context.enterBlock(branch);
   context.reference();
-  branch.dynamic.needsKey = isInTransition(context);
   return [branch, exitBlock];
 }
 
@@ -27851,7 +27824,7 @@ function processFor(node, dir, context) {
     const { parent } = context;
     const isOnlyChild = parent && parent.block.node !== parent.node && parent.node.children.length === 1;
     context.dynamic.operation = {
-      type: 16,
+      type: 15,
       // fixed by uts
       node,
       id,
@@ -28019,10 +27992,10 @@ function transformComponentSlot(node, dir, context) {
       markNonTemplate(n, context);
     });
   }
-  let slotKey;
+  const [block, onExit] = createSlotBlock(node, dir, context);
   if (isTransitionNode(node) && nonSlotTemplateChildren.length) {
     const nonCommentChild = nonSlotTemplateChildren.find(
-      (n) => n.type !== 3
+      (n) => !isCommentOrWhitespace(n)
     );
     if (nonCommentChild) {
       const keyProp = findProp(
@@ -28030,11 +28003,10 @@ function transformComponentSlot(node, dir, context) {
         "key"
       );
       if (keyProp) {
-        slotKey = keyProp.exp;
+        block.key = keyProp.exp;
       }
     }
   }
-  const [block, onExit] = createSlotBlock(node, dir, context, slotKey);
   const { slots } = context;
   return () => {
     onExit();
@@ -28168,13 +28140,9 @@ function hasStaticSlot(slots, name) {
     if (slot.slotType === 0) return !!slot.slots[name];
   });
 }
-function createSlotBlock(slotNode, dir, context, key = void 0) {
+function createSlotBlock(slotNode, dir, context) {
   const block = newBlock(slotNode);
   block.props = dir && dir.exp;
-  if (key) {
-    block.key = key;
-    block.dynamic.needsKey = true;
-  }
   const exitBlock = context.enterBlock(block);
   return [block, exitBlock];
 }

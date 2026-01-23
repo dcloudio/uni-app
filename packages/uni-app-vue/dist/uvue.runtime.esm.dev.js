@@ -5853,13 +5853,14 @@ function setFullProps(instance, rawProps, props, attrs) {
   return hasAttrsChanged;
 }
 function toExternalClasses(classes) {
-  return classes.split(/\s+/g).map(item => "^" + item);
+  var trimmed = classes.trim();
+  return trimmed ? trimmed.split(/\s+/).map(item => "^" + item) : [];
 }
 function normalizeExternalClasses(classes) {
   return toExternalClasses(normalizeClass(classes));
 }
 function normalizeInheritAttrsValue(instance, key, value) {
-  if (__X_STYLE_ISOLATION__ && !instance.type.__reserved) {
+  if (__X_STYLE_ISOLATION__) {
     if (key === "class") {
       return toExternalClasses(value).join(" ");
     }

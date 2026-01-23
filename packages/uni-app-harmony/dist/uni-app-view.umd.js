@@ -22625,7 +22625,7 @@
     }
     return str;
   }
-  function useGesture(props2, videoRef, fullscreenState) {
+  function useGesture(props2, videoState, videoRef, fullscreenState) {
     var state = reactive({
       seeking: false,
       gestureType: "none",
@@ -22728,8 +22728,7 @@
       state.gestureType = "none";
     }
     function changeProgress(x) {
-      var video = videoRef.value;
-      var duration = video.duration;
+      var duration = videoState.currentDuration;
       var currentTimeNew = x / 600 * duration + state.currentTimeOld;
       if (currentTimeNew < 0) {
         currentTimeNew = 0;
@@ -22842,6 +22841,7 @@
       playing: false,
       currentTime: 0,
       duration: 0,
+      currentDuration: 0,
       progress: 0,
       buffered: 0,
       muted,
@@ -22859,6 +22859,11 @@
     watch(() => muted.value, (muted2) => {
       var video = videoRef.value;
       video.muted = muted2;
+    });
+    watch([() => state.duration, () => props2.duration], () => {
+      var _duration = Number(props2.duration);
+      isNaN(_duration) && (_duration = 0);
+      state.currentDuration = _duration > 0 ? _duration : state.duration;
     });
     function onDurationChange(_ref) {
       var {
@@ -22995,7 +23000,7 @@
       var progress = 0;
       if (x >= 0 && x <= w) {
         progress = x / w;
-        seek(videoState.duration * progress);
+        seek(videoState.currentDuration * progress);
       }
     }
     function toggleControls() {
@@ -23050,7 +23055,7 @@
           progress = 100;
         }
         videoState.progress = progress;
-        seeking === null || seeking === void 0 || seeking(videoState.duration * progress / 100);
+        seeking === null || seeking === void 0 || seeking(videoState.currentDuration * progress / 100);
         state.seeking = true;
         event.preventDefault();
         event.stopPropagation();
@@ -23062,7 +23067,7 @@
           if (!moveOnce) {
             event.preventDefault();
             event.stopPropagation();
-            seek(videoState.duration * videoState.progress / 100);
+            seek(videoState.currentDuration * videoState.progress / 100);
           }
           state.touching = false;
         }
@@ -23208,10 +23213,15 @@
         controlsState.controlsVisible = val;
       }
     });
-    watch([() => videoState.currentTime, () => {
-      props$b.duration;
-    }], () => {
-      videoState.progress = videoState.currentTime / videoState.duration * 100;
+    watch([() => videoState.currentTime, () => videoState.currentDuration], () => {
+      if (videoState.currentDuration > 0) {
+        videoState.progress = videoState.currentTime / videoState.currentDuration * 100;
+      } else {
+        videoState.progress = 0;
+      }
+      videoState.progress > 100 && (videoState.progress = 100);
+    }, {
+      immediate: true
     });
     watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
       videoState.currentTime = currentTimeNew;
@@ -23327,7 +23337,6 @@
       } = useAttrs({
         excludeListeners: true
       });
-      useI18n();
       initI18nVideoMsgsOnce();
       var {
         videoRef,
@@ -23368,7 +23377,7 @@
         onTouchstart,
         onTouchend,
         onTouchmove
-      } = useGesture(props2, videoRef, fullscreenState);
+      } = useGesture(props2, videoState, videoRef, fullscreenState);
       var {
         state: controlsState,
         progressRef,
@@ -23477,7 +23486,7 @@
           "class": "uni-video-inner"
         }, null)], 6)], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
           "class": "uni-video-duration"
-        }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
+        }, [formatTime(videoState.currentDuration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
           "class": {
             "uni-video-icon": true,
             "uni-video-danmu-button": true,
@@ -23530,7 +23539,7 @@
           "class": "uni-video-toast-title"
         }, [createVNode("span", {
           "class": "uni-video-toast-title-current-time"
-        }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), createVNode("div", {
+        }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), createVNode("div", {
           "class": "uni-video-slots"
         }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
       };

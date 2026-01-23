@@ -244,7 +244,7 @@ export declare const onReuse: typeof onReused;
 
 type NodeRef = string | Ref | ((ref: Element) => void);
 type RefEl = UniElement | VaporSharedDataComponentInstance;
-type setRefFn = (el: RefEl | number | null, ref: NodeRef, oldRef?: NodeRef | null, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
+type setRefFn = (el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
 export declare function createSharedDataTemplateRefSetter(): setRefFn;
 
 export declare function createSharedDataDynamicComponent(getter: () => any, setter: (ins: VaporSharedDataComponentInstance | null) => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean, once?: boolean): VaporSharedDataComponentInstance | null;
