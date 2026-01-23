@@ -6,13 +6,12 @@ import {
   onMounted,
   reactive,
   ref,
-  renderList,
   watch,
   withModifiers,
 } from 'vue'
 import { isArray } from '@vue/shared'
 import { passive } from '@dcloudio/uni-shared'
-import { initI18nVideoMsgsOnce, useI18n } from '@dcloudio/uni-core'
+import { initI18nVideoMsgsOnce } from '@dcloudio/uni-core'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
   type CustomEventTrigger,
@@ -59,6 +58,7 @@ function useGesture(
     pageGesture: boolean | string
     vslideGesture: boolean | string
   },
+  videoState: VideoState,
   videoRef: Ref<HTMLVideoElement | null>,
   fullscreenState: FullscreenState
 ) {
@@ -168,8 +168,7 @@ function useGesture(
     state.gestureType = 'none'
   }
   function changeProgress(x: number) {
-    const video = videoRef.value as HTMLVideoElement
-    const duration = video.duration
+    const duration = videoState.currentDuration
     let currentTimeNew = (x / 600) * duration + state.currentTimeOld
     if (currentTimeNew < 0) {
       currentTimeNew = 0
@@ -316,6 +315,7 @@ interface VideoState {
   playing: boolean
   currentTime: number
   duration: number
+  currentDuration: number
   progress: number
   buffered: number
   muted: boolean
@@ -331,6 +331,7 @@ function useVideo(props: Props, attrs: Data, trigger: CustomEventTrigger) {
     playing: false,
     currentTime: 0,
     duration: 0,
+    currentDuration: 0,
     progress: 0,
     buffered: 0,
     muted,
@@ -358,6 +359,11 @@ function useVideo(props: Props, attrs: Data, trigger: CustomEventTrigger) {
       video.muted = muted
     }
   )
+  watch([() => state.duration, () => props.duration], () => {
+    let _duration = Number(props.duration)
+    isNaN(_duration) && (_duration = 0)
+    state.currentDuration = _duration > 0 ? _duration : state.duration
+  })
   function onDurationChange({ target }: Event) {
     state.duration = (target as HTMLVideoElement).duration
   }
@@ -509,7 +515,7 @@ function useControls(
     let progress = 0
     if (x >= 0 && x <= w) {
       progress = x / w
-      seek(videoState.duration * progress)
+      seek(videoState.currentDuration * progress)
     }
   }
   function toggleControls() {
@@ -567,7 +573,7 @@ function useControls(
         progress = 100
       }
       videoState.progress = progress
-      seeking?.((videoState.duration * progress) / 100)
+      seeking?.((videoState.currentDuration * progress) / 100)
       state.seeking = true
       event.preventDefault()
       event.stopPropagation()
@@ -583,7 +589,7 @@ function useControls(
         if (!moveOnce) {
           event.preventDefault()
           event.stopPropagation()
-          seek((videoState.duration * videoState.progress) / 100)
+          seek((videoState.currentDuration * videoState.progress) / 100)
         }
         state.touching = false
       }
@@ -770,15 +776,17 @@ function useProgressing(
     }
   })
   watch(
-    [
-      () => videoState.currentTime,
-      () => {
-        props.duration
-      },
-    ],
+    [() => videoState.currentTime, () => videoState.currentDuration],
     () => {
-      videoState.progress = (videoState.currentTime / videoState.duration) * 100
-    }
+      if (videoState.currentDuration > 0) {
+        videoState.progress =
+          (videoState.currentTime / videoState.currentDuration) * 100
+      } else {
+        videoState.progress = 0
+      }
+      videoState.progress > 100 && (videoState.progress = 100)
+    },
+    { immediate: true }
   )
   watch(
     () => gestureState.currentTimeNew,
@@ -911,7 +919,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const { $attrs: videoAttrs } = useAttrs({
       excludeListeners: true,
     })
-    const { t } = useI18n()
     initI18nVideoMsgsOnce()
     const {
       videoRef,
@@ -952,7 +959,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       onTouchstart,
       onTouchend,
       onTouchmove,
-    } = useGesture(props, videoRef, fullscreenState)
+    } = useGesture(props, videoState, videoRef, fullscreenState)
     const {
       state: controlsState,
       progressRef,
@@ -1102,7 +1109,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                   </div>
                 </div>
                 <div class="uni-video-duration" v-show={props.showProgress}>
-                  {formatTime(Number(props.duration) || videoState.duration)}
+                  {formatTime(videoState.currentDuration)}
                 </div>
               </div>
               <div
@@ -1191,7 +1198,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                   {formatTime(gestureState.currentTimeNew)}
                 </span>
                 {' / '}
-                {Number(props.duration) || formatTime(videoState.duration)}
+                {formatTime(videoState.currentDuration)}
               </div>
             </div>
             <div class="uni-video-slots">
