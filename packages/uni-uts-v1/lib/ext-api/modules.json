@@ -347,6 +347,7 @@
       }
     }
   },
+  "uni-form": {},
   "uni-getAccessibilityInfo": {
     "uni": {
       "getAccessibilityInfo": {
@@ -744,6 +745,7 @@
       "map"
     ]
   },
+  "uni-match-media": {},
   "uni-media": {
     "uni": {
       "chooseImage": {
@@ -871,6 +873,7 @@
       }
     }
   },
+  "uni-navigator": {},
   "uni-network": {
     "uni": {
       "request": {
@@ -1036,6 +1039,7 @@
       }
     }
   },
+  "uni-progress": {},
   "uni-prompt": {
     "uni": {
       "showToast": {
