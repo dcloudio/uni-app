@@ -2,6 +2,9 @@ import postcss from 'postcss'
 
 import externalPlugin from '../src/postcss/plugins/stylePluginExternal'
 
+// Set platform to h5 to enable -external suffix rules generation
+process.env.UNI_PLATFORM = 'h5'
+
 const processor = postcss([externalPlugin])
 
 const options = { from: 'a.css', map: false }
