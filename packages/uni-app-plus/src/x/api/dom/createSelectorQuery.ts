@@ -142,6 +142,7 @@ class SelectorQueryImpl implements SelectorQuery {
 
   exec(callback?: (result: Array<any>) => void | null): NodesRef | null {
     if (__VAPOR__) {
+      // @ts-expect-error
       this._component?.$nativePage?.waitNativeRender(() => {
         requestComponentInfo(
           this._component,
