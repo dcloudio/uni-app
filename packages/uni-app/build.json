@@ -39,6 +39,7 @@
       "format": "iife",
       "extend": false
     },
+    "external": false,
     "replacements": {
       "__X__": "true",
       "__WEB__": "true",
@@ -56,6 +57,7 @@
       "format": "iife",
       "extend": false
     },
+    "external": false,
     "replacements": {
       "__X__": "true",
       "__WEB__": "false",
