@@ -3,7 +3,6 @@ import deviceId from '../../../helpers/uuid'
 import { getBrowserInfo } from '../base/getBrowserInfo'
 import { getWindowInfo } from './getWindowInfo'
 import { extend } from '@vue/shared'
-import { sortObject } from '@dcloudio/uni-shared'
 
 type BrowserInfo = ReturnType<typeof getBrowserInfo>
 
@@ -46,10 +45,10 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
       deviceOrientation,
       deviceType,
       model,
-      platform,
-      system,
       osName: osname ? osname.toLowerCase() : undefined,
       osVersion: osversion,
+      platform,
+      system,
     })
   }
 )
@@ -74,15 +73,15 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
         hostVersion: browserVersion,
         hostTheme: theme,
         hostLanguage: language,
+        isUniAppX: __X__,
         language,
         SDKVersion: '',
         theme,
-        version: '',
         uniPlatform: 'web',
-        isUniAppX: __X__,
         uniCompileVersion: __uniConfig.compilerVersion,
         uniCompilerVersion: __uniConfig.compilerVersion,
         uniRuntimeVersion: __uniConfig.compilerVersion,
+        version: '',
       },
       __X__
         ? {
@@ -124,17 +123,17 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
       deviceInfo,
       appBaseInfo,
       {
-        ua,
         browserName,
         browserVersion,
-        uniPlatform: 'web',
-        uniCompileVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion,
         fontSizeSetting: undefined,
         osName: osname!.toLowerCase(),
         osVersion: osversion,
         osLanguage: undefined,
         osTheme: undefined,
+        ua,
+        uniPlatform: 'web',
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion,
       }
     )
 
@@ -142,6 +141,6 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     delete (systemInfo as any).enableDebug
     if (!__uniConfig.darkmode) delete (systemInfo as any).theme
 
-    return sortObject(systemInfo)
+    return systemInfo
   }
 )

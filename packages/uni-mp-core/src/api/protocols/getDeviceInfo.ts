@@ -6,7 +6,6 @@ import {
   useDeviceId,
 } from './enhanceSystemInfo'
 import { extend } from '@vue/shared'
-import { sortObject } from '@dcloudio/uni-shared'
 
 export const getDeviceInfo: MPProtocol = {
   returnValue: (fromRes, toRes) => {
@@ -17,14 +16,12 @@ export const getDeviceInfo: MPProtocol = {
 
     const { osName, osVersion } = getOSInfo(system, platform)
 
-    toRes = sortObject(
-      extend(toRes, {
-        deviceType,
-        deviceBrand,
-        deviceModel: model,
-        osName,
-        osVersion,
-      })
-    )
+    toRes = extend(toRes, {
+      deviceType,
+      deviceBrand,
+      deviceModel: model,
+      osName,
+      osVersion,
+    })
   },
 }
