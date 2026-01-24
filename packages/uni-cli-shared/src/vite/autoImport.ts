@@ -1,3 +1,4 @@
+import path from 'path'
 import { once } from '@dcloudio/uni-shared'
 import type {
   ImportExtended,
@@ -8,6 +9,8 @@ import type {
 import type { Unimport, UnimportOptions } from 'unimport'
 
 import { getUTSCustomElementsExports } from '../uts'
+import { resolveWorkersDir } from '../workers'
+import { normalizePath } from '../utils'
 
 export type AutoImportOptions = Options
 
@@ -343,7 +346,7 @@ export function initAutoImportOptions(
   return {
     ...userOptions,
     include: [/\.[u]?ts$/, /\.[u]?vue/],
-    exclude: [/[\\/]\.git[\\/]/],
+    exclude: [/[\\/]\.git[\\/]/, ...resolveWorkersDir(process.env.UNI_INPUT_DIR).map((dir) => normalizePath(path.join(process.env.UNI_INPUT_DIR!, dir, '*')))],
     imports: (imports as any[]).concat(
       // app-android 平台暂不注入其他
       platform === 'app-android' ? [] : autoImport
