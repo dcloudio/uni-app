@@ -745,7 +745,11 @@
       "map"
     ]
   },
-  "uni-match-media": {},
+  "uni-match-media": {
+    "easycom": [
+      "match-media"
+    ]
+  },
   "uni-media": {
     "uni": {
       "chooseImage": {
