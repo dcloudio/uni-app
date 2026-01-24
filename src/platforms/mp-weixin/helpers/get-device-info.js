@@ -1,5 +1,4 @@
 import { useDeviceId, getGetDeviceType, getDeviceBrand, getOSInfo } from './enhance-system-info'
-import { sortObject } from 'uni-shared'
 
 export default {
   returnValue: function (result) {
@@ -10,12 +9,12 @@ export default {
 
     const { osName, osVersion } = getOSInfo(system, platform)
 
-    result = sortObject(Object.assign(result, {
+    result = Object.assign(result, {
       deviceType,
       deviceBrand,
       deviceModel: model,
       osName,
       osVersion
-    }))
+    })
   }
 }
