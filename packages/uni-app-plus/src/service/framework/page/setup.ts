@@ -15,6 +15,7 @@ import {
 import type { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
 import { setupXPage } from '../../../x/framework/page/setup'
+import { initNativePage } from '../../../x/framework/app/initComponentInstance'
 
 export const beforeSetupPage: Required<VuePageComponent>['setup'] = (
   props,
@@ -37,6 +38,8 @@ export const beforeSetupPage: Required<VuePageComponent>['setup'] = (
       __pageId as number,
       __pagePath as string
     )
+    // TODO 存在重复执行的场景，后续详细验证iOS、鸿蒙 + 组合式、选项式后优化
+    initNativePage(pageVm)
   } else {
     addCurrentPageWithInitScope(
       __pageId as number,
