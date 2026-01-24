@@ -279,6 +279,21 @@ export declare const isVoidTag: (key: string) => boolean;
  * Do NOT use in runtime code paths unless behind `__DEV__` flag.
  */
 export declare const isFormattingTag: (key: string) => boolean;
+/**
+ * Compiler only.
+ * Do NOT use in runtime code paths unless behind `__DEV__` flag.
+ */
+export declare const isAlwaysCloseTag: (key: string) => boolean;
+/**
+ * Compiler only.
+ * Do NOT use in runtime code paths unless behind `__DEV__` flag.
+ */
+export declare const isInlineTag: (key: string) => boolean;
+/**
+ * Compiler only.
+ * Do NOT use in runtime code paths unless behind `__DEV__` flag.
+ */
+export declare const isBlockTag: (key: string) => boolean;
 
 export declare const isSpecialBooleanAttr: (key: string) => boolean;
 /**

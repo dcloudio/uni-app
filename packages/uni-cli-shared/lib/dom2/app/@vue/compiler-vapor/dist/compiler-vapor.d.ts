@@ -125,6 +125,7 @@ export interface IfIRNode extends BaseIRNode {
     once?: boolean;
     parent?: number;
     anchor?: number;
+    logicalIndex?: number;
     append?: boolean;
     last?: boolean;
 }
@@ -145,6 +146,7 @@ export interface ForIRNode extends BaseIRNode, IRFor {
     onlyChild: boolean;
     parent?: number;
     anchor?: number;
+    logicalIndex?: number;
     append?: boolean;
     last?: boolean;
 }
@@ -175,7 +177,6 @@ export interface SetTextIRNode extends BaseIRNode {
     element: number;
     values: SimpleExpressionNode[];
     generated?: boolean;
-    jsx?: boolean;
     isComponent?: boolean;
 }
 export type KeyOverride = [find: string, replacement: string];
@@ -245,6 +246,7 @@ export interface CreateComponentIRNode extends BaseIRNode {
     isCustomElement: boolean;
     parent?: number;
     anchor?: number;
+    logicalIndex?: number;
     append?: boolean;
     last?: boolean;
     /**
@@ -262,6 +264,7 @@ export interface SlotOutletIRNode extends BaseIRNode {
     once?: boolean;
     parent?: number;
     anchor?: number;
+    logicalIndex?: number;
     append?: boolean;
     last?: boolean;
 }
@@ -298,11 +301,11 @@ export interface IRDynamicInfo {
     id?: number;
     flags: DynamicFlag;
     anchor?: number;
+    logicalIndex?: number;
     children: IRDynamicInfo[];
     template?: number;
     hasDynamicChild?: boolean;
     operation?: OperationNode;
-    ifBranch?: boolean;
     type?: NodeTypes;
     tag?: string;
 }
@@ -362,6 +365,7 @@ export declare class TransformContext<T extends AllNode = AllNode> {
     slots: IRSlots[];
     isLastEffectiveChild: boolean;
     isOnRightmostPath: boolean;
+    hasInlineAncestorNeedingClose: boolean;
     private globalId;
     private nextIdMap;
     constructor(ir: RootIRNode, node: T, options?: TransformOptions);

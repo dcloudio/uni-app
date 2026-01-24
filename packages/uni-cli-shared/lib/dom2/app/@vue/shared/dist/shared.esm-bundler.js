@@ -1,5 +1,5 @@
 /**
-* @vue/shared v3.6.0-beta.3
+* @vue/shared v3.6.0-beta.4
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -338,11 +338,17 @@ const SVG_TAGS = "svg,animate,animateMotion,animateTransform,circle,clipPath,col
 const MATH_TAGS = "annotation,annotation-xml,maction,maligngroup,malignmark,math,menclose,merror,mfenced,mfrac,mfraction,mglyph,mi,mlabeledtr,mlongdiv,mmultiscripts,mn,mo,mover,mpadded,mphantom,mprescripts,mroot,mrow,ms,mscarries,mscarry,msgroup,msline,mspace,msqrt,msrow,mstack,mstyle,msub,msubsup,msup,mtable,mtd,mtext,mtr,munder,munderover,none,semantics";
 const VOID_TAGS = "area,base,br,col,embed,hr,img,input,link,meta,param,source,track,wbr";
 const FORMATTING_TAGS = "a,b,big,code,em,font,i,nobr,s,small,strike,strong,tt,u";
+const ALWAYS_CLOSE_TAGS = "title,style,script,noscript,template,object,table,button,textarea,select,iframe,fieldset";
+const INLINE_TAGS = "a,abbr,acronym,b,bdi,bdo,big,br,button,canvas,cite,code,data,datalist,del,dfn,em,embed,i,iframe,img,input,ins,kbd,label,map,mark,meter,noscript,object,output,picture,progress,q,ruby,s,samp,script,select,small,span,strong,sub,sup,svg,textarea,time,u,tt,var,video";
+const BLOCK_TAGS = "address,article,aside,blockquote,dd,details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,li,main,menu,nav,ol,p,pre,section,table,ul";
 const isHTMLTag = /* @__PURE__ */ makeMap(HTML_TAGS);
 const isSVGTag = /* @__PURE__ */ makeMap(SVG_TAGS);
 const isMathMLTag = /* @__PURE__ */ makeMap(MATH_TAGS);
 const isVoidTag = /* @__PURE__ */ makeMap(VOID_TAGS);
 const isFormattingTag = /* @__PURE__ */ makeMap(FORMATTING_TAGS);
+const isAlwaysCloseTag = /* @__PURE__ */ makeMap(ALWAYS_CLOSE_TAGS);
+const isInlineTag = /* @__PURE__ */ makeMap(INLINE_TAGS);
+const isBlockTag = /* @__PURE__ */ makeMap(BLOCK_TAGS);
 
 const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
 const isSpecialBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs);
@@ -638,4 +644,4 @@ const VaporVForFlags = {
   "4": "ONCE"
 };
 
-export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, Namespaces, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getModifierPropName, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isArray, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFormattingTag, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };
+export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, Namespaces, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getModifierPropName, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isAlwaysCloseTag, isArray, isBlockTag, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFormattingTag, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isInlineTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };

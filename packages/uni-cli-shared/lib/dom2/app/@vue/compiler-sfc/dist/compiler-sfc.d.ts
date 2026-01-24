@@ -434,11 +434,13 @@ export type SimpleTypeResolveOptions = Partial<Pick<SFCScriptCompileOptions, 'gl
  * }
  * ```
  */
-export type SimpleTypeResolveContext = Pick<ScriptCompileContext, 'source' | 'filename' | 'error' | 'helper' | 'getString' | 'propsTypeDecl' | 'propsRuntimeDefaults' | 'propsDestructuredBindings' | 'emitsTypeDecl' | 'isCE'> & Partial<Pick<ScriptCompileContext, 'scope' | 'globalScopes' | 'deps' | 'fs'>> & {
+export type SimpleTypeResolveContext = Pick<ScriptCompileContext, 'source' | 'filename' | 'error' | 'warn' | 'helper' | 'getString' | 'propsTypeDecl' | 'propsRuntimeDefaults' | 'propsDestructuredBindings' | 'emitsTypeDecl' | 'isCE'> & Partial<Pick<ScriptCompileContext, 'scope' | 'globalScopes' | 'deps' | 'fs'>> & {
     ast: Statement[];
     options: SimpleTypeResolveOptions;
 };
-export type TypeResolveContext = ScriptCompileContext | SimpleTypeResolveContext;
+export type TypeResolveContext = (ScriptCompileContext | SimpleTypeResolveContext) & {
+    silentOnExtendsFailure?: boolean;
+};
 type Import = Pick<ImportBinding, 'source' | 'imported'>;
 interface WithScope {
     _ownerScope: TypeScope;

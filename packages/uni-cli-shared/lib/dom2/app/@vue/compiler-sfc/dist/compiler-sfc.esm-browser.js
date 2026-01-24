@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-beta.3
+* @vue/compiler-sfc v3.6.0-beta.4
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -224,11 +224,17 @@ const SVG_TAGS = "svg,animate,animateMotion,animateTransform,circle,clipPath,col
 const MATH_TAGS = "annotation,annotation-xml,maction,maligngroup,malignmark,math,menclose,merror,mfenced,mfrac,mfraction,mglyph,mi,mlabeledtr,mlongdiv,mmultiscripts,mn,mo,mover,mpadded,mphantom,mprescripts,mroot,mrow,ms,mscarries,mscarry,msgroup,msline,mspace,msqrt,msrow,mstack,mstyle,msub,msubsup,msup,mtable,mtd,mtext,mtr,munder,munderover,none,semantics";
 const VOID_TAGS = "area,base,br,col,embed,hr,img,input,link,meta,param,source,track,wbr";
 const FORMATTING_TAGS = "a,b,big,code,em,font,i,nobr,s,small,strike,strong,tt,u";
+const ALWAYS_CLOSE_TAGS = "title,style,script,noscript,template,object,table,button,textarea,select,iframe,fieldset";
+const INLINE_TAGS = "a,abbr,acronym,b,bdi,bdo,big,br,button,canvas,cite,code,data,datalist,del,dfn,em,embed,i,iframe,img,input,ins,kbd,label,map,mark,meter,noscript,object,output,picture,progress,q,ruby,s,samp,script,select,small,span,strong,sub,sup,svg,textarea,time,u,tt,var,video";
+const BLOCK_TAGS = "address,article,aside,blockquote,dd,details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,li,main,menu,nav,ol,p,pre,section,table,ul";
 const isHTMLTag = /* @__PURE__ */ makeMap(HTML_TAGS);
 const isSVGTag = /* @__PURE__ */ makeMap(SVG_TAGS);
 const isMathMLTag = /* @__PURE__ */ makeMap(MATH_TAGS);
 const isVoidTag = /* @__PURE__ */ makeMap(VOID_TAGS);
 const isFormattingTag = /* @__PURE__ */ makeMap(FORMATTING_TAGS);
+const isAlwaysCloseTag = /* @__PURE__ */ makeMap(ALWAYS_CLOSE_TAGS);
+const isInlineTag = /* @__PURE__ */ makeMap(INLINE_TAGS);
+const isBlockTag = /* @__PURE__ */ makeMap(BLOCK_TAGS);
 
 const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
 const isBooleanAttr = /* @__PURE__ */ makeMap(
@@ -32603,6 +32609,9 @@ class TransformContext {
     // whether this node is on the rightmost path of the tree
     // (all ancestors are also last effective children)
     this.isOnRightmostPath = true;
+    // whether there is an inline ancestor that needs closing
+    // (i.e. is an inline tag and not on the rightmost path)
+    this.hasInlineAncestorNeedingClose = false;
     this.globalId = 0;
     this.nextIdMap = null;
     this.increaseId = () => {
@@ -32689,6 +32698,14 @@ class TransformContext {
     }
     const isLastEffectiveChild = this.isEffectivelyLastChild(index);
     const isOnRightmostPath = this.isOnRightmostPath && isLastEffectiveChild;
+    let hasInlineAncestorNeedingClose = this.hasInlineAncestorNeedingClose;
+    if (this.node.type === 1) {
+      if (this.node.tag === "template") {
+        hasInlineAncestorNeedingClose = false;
+      } else if (!hasInlineAncestorNeedingClose && !this.isOnRightmostPath && isInlineTag(this.node.tag)) {
+        hasInlineAncestorNeedingClose = true;
+      }
+    }
     return Object.assign(Object.create(TransformContext.prototype), this, {
       node,
       parent: this,
@@ -32698,7 +32715,8 @@ class TransformContext {
       dynamic: newDynamic(),
       effectiveParent,
       isLastEffectiveChild,
-      isOnRightmostPath
+      isOnRightmostPath,
+      hasInlineAncestorNeedingClose
     });
   }
   isEffectivelyLastChild(index) {
@@ -34214,8 +34232,8 @@ function genRefValue(value, context) {
 
 function genSetText(oper, context) {
   const { helper } = context;
-  const { element, values, generated, jsx, isComponent } = oper;
-  const texts = combineValues(values, context, jsx);
+  const { element, values, generated, isComponent } = oper;
+  const texts = combineValues(values, context);
   return [
     NEWLINE,
     ...genCall(
@@ -34226,14 +34244,14 @@ function genSetText(oper, context) {
     )
   ];
 }
-function combineValues(values, context, jsx) {
+function combineValues(values, context) {
   return values.flatMap((value, i) => {
     let exp = genExpression(value, context);
-    if (!jsx && getLiteralExpressionValue(value, true) == null) {
+    if (getLiteralExpressionValue(value, true) == null) {
       exp = genCall(context.helper("toDisplayString"), exp);
     }
     if (i > 0) {
-      exp.unshift(jsx ? ", " : " + ");
+      exp.unshift(" + ");
     }
     return exp;
   });
@@ -34964,17 +34982,17 @@ function genEffect({ operations }, context) {
   return frag;
 }
 function genInsertionState(operation, context) {
-  const { parent, anchor, append, last } = operation;
+  const { parent, anchor, logicalIndex, append, last } = operation;
   return [
     NEWLINE,
     ...genCall(
       context.helper("setInsertionState"),
       `n${parent}`,
       anchor == null ? void 0 : anchor === -1 ? `0` : append ? (
-        // null or anchor > 0 for append
-        // anchor > 0 is the logical index of append node - used for locate node during hydration
-        anchor === 0 ? "null" : `${anchor}`
+        // for append, always use null since we have logicalIndex
+        "null"
       ) : `n${anchor}`,
+      logicalIndex !== void 0 ? String(logicalIndex) : void 0,
       last && "true"
     )
   ];
@@ -35019,16 +35037,9 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
   const { children } = dynamic;
   let offset = 0;
   let prev;
-  let ifBranchCount = 0;
-  let prependCount = 0;
   for (const [index, child] of children.entries()) {
-    if (child.operation && child.operation.anchor === -1) {
-      prependCount++;
-    }
     if (child.flags & 2) {
       offset--;
-    } else if (child.ifBranch) {
-      ifBranchCount++;
     }
     const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
     if (id === void 0 && !child.hasDynamicChild) {
@@ -35036,19 +35047,19 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
       continue;
     }
     const elementIndex = index + offset;
-    const logicalIndex = elementIndex - ifBranchCount + prependCount;
+    const logicalIndex = child.logicalIndex !== void 0 ? String(child.logicalIndex) : void 0;
     const variable = id === void 0 ? context.pName(context.block.tempId++) : `n${id}`;
     pushBlock(NEWLINE, `const ${variable} = `);
     if (prev) {
       if (elementIndex - prev[1] === 1) {
-        pushBlock(...genCall(helper("next"), prev[0], String(logicalIndex)));
+        pushBlock(...genCall(helper("next"), prev[0], logicalIndex));
       } else {
         pushBlock(
           ...genCall(
             helper("nthChild"),
             from,
             String(elementIndex),
-            String(logicalIndex)
+            logicalIndex
           )
         );
       }
@@ -35058,19 +35069,19 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
           ...genCall(
             helper("child"),
             from,
-            logicalIndex !== 0 ? String(logicalIndex) : void 0
+            child.logicalIndex !== 0 ? logicalIndex : void 0
           )
         );
       } else {
         let init = genCall(helper("child"), from);
         if (elementIndex === 1) {
-          init = genCall(helper("next"), init, String(logicalIndex));
+          init = genCall(helper("next"), init, logicalIndex);
         } else if (elementIndex > 1) {
           init = genCall(
             helper("nthChild"),
             from,
             String(elementIndex),
-            String(logicalIndex)
+            logicalIndex
           );
         }
         pushBlock(...init);
@@ -35371,11 +35382,15 @@ function processDynamicChildren(context) {
   let dynamicCount = 0;
   let lastInsertionChild;
   const children = context.dynamic.children;
+  let logicalIndex = 0;
   for (const [index, child] of children.entries()) {
     if (child.flags & 4) {
+      child.logicalIndex = logicalIndex;
       prevDynamics.push(lastInsertionChild = child);
+      logicalIndex++;
     }
     if (!(child.flags & 2)) {
+      child.logicalIndex = logicalIndex;
       if (prevDynamics.length) {
         if (staticCount) {
           context.childrenTemplate[index - prevDynamics.length] = `<!>`;
@@ -35394,6 +35409,7 @@ function processDynamicChildren(context) {
         prevDynamics = [];
       }
       staticCount++;
+      logicalIndex++;
     }
   }
   if (prevDynamics.length) {
@@ -35411,6 +35427,7 @@ function processDynamicChildren(context) {
 }
 function registerInsertion(dynamics, context, anchor, append) {
   for (const child of dynamics) {
+    const logicalIndex = child.logicalIndex;
     if (child.template != null) {
       context.registerOperation({
         type: 9,
@@ -35423,6 +35440,7 @@ function registerInsertion(dynamics, context, anchor, append) {
     } else if (child.operation && isBlockOperation(child.operation)) {
       child.operation.parent = context.reference();
       child.operation.anchor = anchor;
+      child.operation.logicalIndex = logicalIndex;
       child.operation.append = append;
     }
   }
@@ -35496,8 +35514,14 @@ function canOmitEndTag(node, context) {
   if (block !== parent.block) {
     return true;
   }
+  if (isAlwaysCloseTag(node.tag) && !context.isOnRightmostPath) {
+    return false;
+  }
   if (isFormattingTag(node.tag) || parent.node.type === 1 && node.tag === parent.node.tag) {
     return context.isOnRightmostPath;
+  }
+  if (isBlockTag(node.tag) && context.hasInlineAncestorNeedingClose) {
+    return false;
   }
   return context.isLastEffectiveChild;
 }
@@ -36185,6 +36209,7 @@ function markNonTemplate(node, context) {
   seen.get(context.root).add(node);
 }
 const transformText = (node, context) => {
+  var _a;
   if (!seen.has(context.root)) seen.set(context.root, /* @__PURE__ */ new WeakSet());
   if (seen.get(context.root).has(node)) {
     context.dynamic.flags |= 2;
@@ -36218,7 +36243,9 @@ const transformText = (node, context) => {
   } else if (node.type === 5) {
     processInterpolation(context);
   } else if (node.type === 2) {
-    context.template += escapeHtml(node.content);
+    const parent = (_a = context.parent) == null ? void 0 : _a.node;
+    const isRootText = !parent || parent.type === 0 || parent.type === 1 && (parent.tagType === 3 || parent.tagType === 1);
+    context.template += isRootText ? node.content : escapeHtml(node.content);
   }
 };
 function processInterpolation(context) {
@@ -36478,7 +36505,6 @@ function processIf(node, dir, context) {
     };
   } else {
     const siblingIf = getSiblingIf(context, true);
-    context.dynamic.ifBranch = true;
     const siblings = context.parent && context.parent.dynamic.children;
     let lastIfNode;
     if (siblings) {
@@ -36927,7 +36953,7 @@ function hasMultipleChildren(node) {
     (c, index) => c.type === 1 && // not template
     !isTemplateNode(c) && // not has v-for
     !findDir(c, "for") && // if the first child has v-if, the rest should also have v-else-if/v-else
-    (index === 0 ? findDir(c, "if") : hasElse(c)) && !hasMultipleChildren(c)
+    (index === 0 ? findDir(c, "if") : hasElse(c))
   )) {
     return false;
   }
@@ -53013,16 +53039,18 @@ function resolveInterfaceMembers(ctx, node, scope, typeParameters) {
           (base.calls || (base.calls = [])).push(...calls);
         }
       } catch (e) {
-        ctx.error(
-          `Failed to resolve extends base type.
+        if (!ctx.silentOnExtendsFailure) {
+          ctx.error(
+            `Failed to resolve extends base type.
 If this previously worked in 3.2, you can instruct the compiler to ignore this extend by adding /* @vue-ignore */ before it, for example:
 
 interface Props extends /* @vue-ignore */ Base {}
 
 Note: both in 3.2 or with the ignore, the properties in the base type are treated as fallthrough attrs at runtime.`,
-          ext,
-          scope
-        );
+            ext,
+            scope
+          );
+        }
       }
     }
   }
@@ -53634,6 +53662,17 @@ function recordType(node, types, declares, overwriteId) {
     case "TSInterfaceDeclaration":
     case "TSEnumDeclaration":
     case "TSModuleDeclaration": {
+      if (node.type === "TSModuleDeclaration" && node.global) {
+        const body = node.body;
+        for (const s of body.body) {
+          if (s.type === "ExportNamedDeclaration" && s.declaration) {
+            recordType(s.declaration, types, declares);
+          } else {
+            recordType(s, types, declares);
+          }
+        }
+        break;
+      }
       const id = overwriteId || getId(node.id);
       let existing = types[id];
       if (existing) {
@@ -53738,6 +53777,8 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
   if (node.leadingComments && node.leadingComments.some((c) => c.value.includes("@vue-ignore"))) {
     return [UNKNOWN_TYPE];
   }
+  const prevSilent = ctx.silentOnExtendsFailure;
+  ctx.silentOnExtendsFailure = true;
   try {
     switch (node.type) {
       case "TSStringKeyword":
@@ -54042,18 +54083,32 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
       }
     }
   } catch (e) {
+  } finally {
+    ctx.silentOnExtendsFailure = prevSilent;
   }
   return [UNKNOWN_TYPE];
 }
 function flattenTypes(ctx, types, scope, isKeyOf = false, typeParameters = void 0) {
   if (types.length === 1) {
-    return inferRuntimeType(ctx, types[0], scope, isKeyOf, typeParameters);
+    return inferRuntimeType(
+      ctx,
+      types[0],
+      types[0]._ownerScope || scope,
+      isKeyOf,
+      typeParameters
+    );
   }
   return [
     ...new Set(
       [].concat(
         ...types.map(
-          (t) => inferRuntimeType(ctx, t, scope, isKeyOf, typeParameters)
+          (t) => inferRuntimeType(
+            ctx,
+            t,
+            t._ownerScope || scope,
+            isKeyOf,
+            typeParameters
+          )
         )
       )
     )
@@ -54621,8 +54676,6 @@ function transformDestructuredProps(ctx, vueImportAliases) {
       } else if (stmt.type === "FunctionDeclaration" || stmt.type === "ClassDeclaration") {
         if (stmt.declare || !stmt.id) continue;
         registerLocalBinding(stmt.id);
-      } else if ((stmt.type === "ForOfStatement" || stmt.type === "ForInStatement") && stmt.left.type === "VariableDeclaration") {
-        walkVariableDeclaration(stmt.left);
       } else if (stmt.type === "ExportNamedDeclaration" && stmt.declaration && stmt.declaration.type === "VariableDeclaration") {
         walkVariableDeclaration(stmt.declaration, isRoot);
       } else if (stmt.type === "LabeledStatement" && stmt.body.type === "VariableDeclaration") {
@@ -54701,6 +54754,17 @@ function transformDestructuredProps(ctx, vueImportAliases) {
         walkScope(node.body);
         return;
       }
+      if (node.type === "ForOfStatement" || node.type === "ForInStatement" || node.type === "ForStatement") {
+        pushScope();
+        const varDecl = node.type === "ForStatement" ? node.init : node.left;
+        if (varDecl && varDecl.type === "VariableDeclaration") {
+          walkVariableDeclaration(varDecl);
+        }
+        if (node.body.type === "BlockStatement") {
+          walkScope(node.body);
+        }
+        return;
+      }
       if (node.type === "BlockStatement" && !isFunctionType(parent)) {
         pushScope();
         walkScope(node);
@@ -54716,7 +54780,7 @@ function transformDestructuredProps(ctx, vueImportAliases) {
     },
     leave(node, parent) {
       parent && parentStack.pop();
-      if (node.type === "BlockStatement" && !isFunctionType(parent) || isFunctionType(node) || node.type === "CatchClause") {
+      if (node.type === "BlockStatement" && !isFunctionType(parent) || isFunctionType(node) || node.type === "CatchClause" || node.type === "ForOfStatement" || node.type === "ForInStatement" || node.type === "ForStatement") {
         popScope();
       }
     }
@@ -55987,7 +56051,7 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
-const version = "3.6.0-beta.3";
+const version = "3.6.0-beta.4";
 const parseCache = parseCache$1;
 const errorMessages = __spreadValues(__spreadValues({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

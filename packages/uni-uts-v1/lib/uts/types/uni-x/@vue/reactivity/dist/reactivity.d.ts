@@ -482,8 +482,9 @@ export declare const toReadonly: <T extends unknown>(value: T) => DeepReadonly<T
 
 declare const RefSymbol: unique symbol;
 declare const RawSymbol: unique symbol;
-export interface Ref<T = any> {
-    value: T;
+export interface Ref<T = any, S = T> {
+    get value(): T;
+    set value(_: S);
     /**
      * Type differentiator only.
      * We need this to be in public d.ts but don't want it to show up in IDE
@@ -505,10 +506,10 @@ export declare function isRef<T>(r: Ref<T> | unknown): r is Ref<T>;
  * @param value - The object to wrap in the ref.
  * @see {@link https://vuejs.org/api/reactivity-core.html#ref}
  */
-export declare function ref<T>(value: T): [T] extends [Ref] ? IfAny<T, Ref<T>, T> : Ref<UnwrapRef<T>>;
+export declare function ref<T>(value: T): [T] extends [Ref] ? IfAny<T, Ref<T>, T> : Ref<UnwrapRef<T>, UnwrapRef<T> | T>;
 export declare function ref<T = any>(): Ref<T | undefined>;
 declare const ShallowRefMarker: unique symbol;
-export type ShallowRef<T = any, S = T> = Ref<T> & {
+export type ShallowRef<T = any, S = T> = Ref<T, S> & {
     [ShallowRefMarker]?: true;
 };
 /**
@@ -672,8 +673,6 @@ export type ToRef<T> = IfAny<T, Ref<T>, [T] extends [Ref] ? T : Ref<T>>;
 export declare function toRef<T>(value: T): T extends () => infer R ? Readonly<Ref<R>> : T extends Ref ? T : Ref<UnwrapRef<T>>;
 export declare function toRef<T extends object, K extends keyof T>(object: T, key: K): ToRef<T[K]>;
 export declare function toRef<T extends object, K extends keyof T>(object: T, key: K, defaultValue: T[K]): ToRef<Exclude<T[K], undefined>>;
-export declare function toRef<T>(value: object, key: string): T extends () => infer R ? Readonly<Ref<R>> : T extends Ref ? T : Ref<UnwrapRef<T>>;
-export declare function toRef<T>(value: () => T): Readonly<Ref<T>>;
 /**
  * This is a special exported interface for other packages to declare
  * additional types that should bail out for ref unwrapping. For example
@@ -692,15 +691,13 @@ export interface RefUnwrapBailTypes {
 export type ShallowUnwrapRef<T> = {
     [K in keyof T]: DistributeRef<T[K]>;
 };
-type DistributeRef<T> = T extends Ref<infer V> ? V : T;
-export type UnwrapRef<T> = T extends ShallowRef<infer V> ? V : T extends Ref<infer V> ? UnwrapRefSimple<V> : UnwrapRefSimple<T>;
+type DistributeRef<T> = T extends Ref<infer V, unknown> ? V : T;
+export type UnwrapRef<T> = T extends ShallowRef<infer V, unknown> ? V : T extends Ref<infer V, unknown> ? UnwrapRefSimple<V> : UnwrapRefSimple<T>;
 type UnwrapRefSimple<T> = T extends Builtin | Ref | RefUnwrapBailTypes[keyof RefUnwrapBailTypes] | {
     [RawSymbol]?: true;
 } ? T : T extends Map<infer K, infer V> ? Map<K, UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof Map<any, any>>> : T extends WeakMap<infer K, infer V> ? WeakMap<K, UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof WeakMap<any, any>>> : T extends Set<infer V> ? Set<UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof Set<any>>> : T extends WeakSet<infer V> ? WeakSet<UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof WeakSet<any>>> : T extends ReadonlyArray<any> ? {
     [K in keyof T]: UnwrapRefSimple<T[K]>;
-} : T extends {
-    [UTSObjectMarker]?: true;
-} ? T : T extends object & {
+} : T extends object & {
     [ShallowReactiveMarker]?: never;
 } ? {
     [P in keyof T]: P extends symbol ? T[P] : UnwrapRef<T[P]>;

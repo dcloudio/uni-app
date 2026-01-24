@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-beta.3
+* @vue/compiler-sfc v3.6.0-beta.4
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -19135,16 +19135,18 @@ function resolveInterfaceMembers(ctx, node, scope, typeParameters) {
           (base.calls || (base.calls = [])).push(...calls);
         }
       } catch (e) {
-        ctx.error(
-          `Failed to resolve extends base type.
+        if (!ctx.silentOnExtendsFailure) {
+          ctx.error(
+            `Failed to resolve extends base type.
 If this previously worked in 3.2, you can instruct the compiler to ignore this extend by adding /* @vue-ignore */ before it, for example:
 
 interface Props extends /* @vue-ignore */ Base {}
 
 Note: both in 3.2 or with the ignore, the properties in the base type are treated as fallthrough attrs at runtime.`,
-          ext,
-          scope
-        );
+            ext,
+            scope
+          );
+        }
       }
     }
   }
@@ -19850,6 +19852,17 @@ function recordType(node, types, declares, overwriteId) {
     case "TSInterfaceDeclaration":
     case "TSEnumDeclaration":
     case "TSModuleDeclaration": {
+      if (node.type === "TSModuleDeclaration" && node.global) {
+        const body = node.body;
+        for (const s of body.body) {
+          if (s.type === "ExportNamedDeclaration" && s.declaration) {
+            recordType(s.declaration, types, declares);
+          } else {
+            recordType(s, types, declares);
+          }
+        }
+        break;
+      }
       const id = overwriteId || getId(node.id);
       let existing = types[id];
       if (existing) {
@@ -19954,6 +19967,8 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
   if (node.leadingComments && node.leadingComments.some((c) => c.value.includes("@vue-ignore"))) {
     return [UNKNOWN_TYPE];
   }
+  const prevSilent = ctx.silentOnExtendsFailure;
+  ctx.silentOnExtendsFailure = true;
   try {
     switch (node.type) {
       case "TSStringKeyword":
@@ -20258,18 +20273,32 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
       }
     }
   } catch (e) {
+  } finally {
+    ctx.silentOnExtendsFailure = prevSilent;
   }
   return [UNKNOWN_TYPE];
 }
 function flattenTypes(ctx, types, scope, isKeyOf = false, typeParameters = void 0) {
   if (types.length === 1) {
-    return inferRuntimeType(ctx, types[0], scope, isKeyOf, typeParameters);
+    return inferRuntimeType(
+      ctx,
+      types[0],
+      types[0]._ownerScope || scope,
+      isKeyOf,
+      typeParameters
+    );
   }
   return [
     ...new Set(
       [].concat(
         ...types.map(
-          (t) => inferRuntimeType(ctx, t, scope, isKeyOf, typeParameters)
+          (t) => inferRuntimeType(
+            ctx,
+            t,
+            t._ownerScope || scope,
+            isKeyOf,
+            typeParameters
+          )
         )
       )
     )
@@ -20837,8 +20866,6 @@ function transformDestructuredProps(ctx, vueImportAliases) {
       } else if (stmt.type === "FunctionDeclaration" || stmt.type === "ClassDeclaration") {
         if (stmt.declare || !stmt.id) continue;
         registerLocalBinding(stmt.id);
-      } else if ((stmt.type === "ForOfStatement" || stmt.type === "ForInStatement") && stmt.left.type === "VariableDeclaration") {
-        walkVariableDeclaration(stmt.left);
       } else if (stmt.type === "ExportNamedDeclaration" && stmt.declaration && stmt.declaration.type === "VariableDeclaration") {
         walkVariableDeclaration(stmt.declaration, isRoot);
       } else if (stmt.type === "LabeledStatement" && stmt.body.type === "VariableDeclaration") {
@@ -20917,6 +20944,17 @@ function transformDestructuredProps(ctx, vueImportAliases) {
         walkScope(node.body);
         return;
       }
+      if (node.type === "ForOfStatement" || node.type === "ForInStatement" || node.type === "ForStatement") {
+        pushScope();
+        const varDecl = node.type === "ForStatement" ? node.init : node.left;
+        if (varDecl && varDecl.type === "VariableDeclaration") {
+          walkVariableDeclaration(varDecl);
+        }
+        if (node.body.type === "BlockStatement") {
+          walkScope(node.body);
+        }
+        return;
+      }
       if (node.type === "BlockStatement" && !CompilerDOM.isFunctionType(parent)) {
         pushScope();
         walkScope(node);
@@ -20932,7 +20970,7 @@ function transformDestructuredProps(ctx, vueImportAliases) {
     },
     leave(node, parent) {
       parent && parentStack.pop();
-      if (node.type === "BlockStatement" && !CompilerDOM.isFunctionType(parent) || CompilerDOM.isFunctionType(node) || node.type === "CatchClause") {
+      if (node.type === "BlockStatement" && !CompilerDOM.isFunctionType(parent) || CompilerDOM.isFunctionType(node) || node.type === "CatchClause" || node.type === "ForOfStatement" || node.type === "ForInStatement" || node.type === "ForStatement") {
         popScope();
       }
     }
@@ -22173,7 +22211,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
   return generator.toJSON();
 }
 
-const version = "3.6.0-beta.3";
+const version = "3.6.0-beta.4";
 const parseCache = parseCache$1;
 const errorMessages = {
   ...CompilerDOM.errorMessages,
