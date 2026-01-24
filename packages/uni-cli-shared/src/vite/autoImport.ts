@@ -343,10 +343,15 @@ export function initAutoImportOptions(
       autoImport.push(utsJsPreset)
     }
   }
+
+  const exclude: (RegExp | string)[] = [/[\\/]\.git[\\/]/];
+  if (process.env.UNI_INPUT_DIR) {
+    exclude.push(...resolveWorkersDir(process.env.UNI_INPUT_DIR).map((dir) => normalizePath(path.join(process.env.UNI_INPUT_DIR, dir, '*'))));
+  }
   return {
     ...userOptions,
     include: [/\.[u]?ts$/, /\.[u]?vue/],
-    exclude: [/[\\/]\.git[\\/]/, ...resolveWorkersDir(process.env.UNI_INPUT_DIR).map((dir) => normalizePath(path.join(process.env.UNI_INPUT_DIR!, dir, '*')))],
+    exclude,
     imports: (imports as any[]).concat(
       // app-android 平台暂不注入其他
       platform === 'app-android' ? [] : autoImport
