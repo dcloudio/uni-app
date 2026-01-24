@@ -27865,7 +27865,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
       const systemInfo = uni.getSystemInfoSync();
       isLandscape2.value = systemInfo.deviceOrientation == "landscape";
     });
-    onUnload(() => {
+    onBeforeUnmount(() => {
       if (!menuItemClicked.value && !cancelButtonClicked.value) {
         uni.$emit(failEventName.value, {});
       }
