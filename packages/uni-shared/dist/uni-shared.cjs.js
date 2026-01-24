@@ -1373,17 +1373,11 @@ function getValueByDataPath(obj, path) {
     }
     return getValueByDataPath(obj[key], parts.slice(1).join('.'));
 }
+/**
+ * @deprecated
+ */
 function sortObject(obj) {
-    let sortObj = {};
-    if (shared.isPlainObject(obj)) {
-        Object.keys(obj)
-            .sort()
-            .forEach((key) => {
-            const _key = key;
-            sortObj[_key] = obj[_key];
-        });
-    }
-    return !Object.keys(sortObj) ? obj : sortObj;
+    return obj;
 }
 function getGlobalOnce() {
     if (typeof globalThis !== 'undefined') {

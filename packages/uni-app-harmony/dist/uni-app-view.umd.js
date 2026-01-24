@@ -777,37 +777,6 @@
   function includeBooleanAttr(value) {
     return !!value || value === "";
   }
-  var _strictMethod;
-  var hasRequired_strictMethod;
-  function require_strictMethod() {
-    if (hasRequired_strictMethod)
-      return _strictMethod;
-    hasRequired_strictMethod = 1;
-    var fails2 = _fails;
-    _strictMethod = function(method, arg) {
-      return !!method && fails2(function() {
-        arg ? method.call(null, function() {
-        }, 1) : method.call(null);
-      });
-    };
-    return _strictMethod;
-  }
-  var $export$2 = _export;
-  var aFunction$2 = _aFunction;
-  var toObject = _toObject;
-  var fails = _fails;
-  var $sort = [].sort;
-  var test = [1, 2, 3];
-  $export$2($export$2.P + $export$2.F * (fails(function() {
-    test.sort(void 0);
-  }) || !fails(function() {
-    test.sort(null);
-  }) || !require_strictMethod()($sort)), "Array", {
-    // 22.1.3.25 Array.prototype.sort(comparefn)
-    sort: function sort(comparefn) {
-      return comparefn === void 0 ? $sort.call(toObject(this)) : $sort.call(toObject(this), aFunction$2(comparefn));
-    }
-  });
   var LINEFEED = "\n";
   var PRIMARY_COLOR = "#007aff";
   var SCHEME_RE = /^([a-z-]+:)?\/\//i;
@@ -1683,6 +1652,37 @@
       });
     }
   }
+  var _strictMethod;
+  var hasRequired_strictMethod;
+  function require_strictMethod() {
+    if (hasRequired_strictMethod)
+      return _strictMethod;
+    hasRequired_strictMethod = 1;
+    var fails2 = _fails;
+    _strictMethod = function(method, arg) {
+      return !!method && fails2(function() {
+        arg ? method.call(null, function() {
+        }, 1) : method.call(null);
+      });
+    };
+    return _strictMethod;
+  }
+  var $export$2 = _export;
+  var aFunction$2 = _aFunction;
+  var toObject = _toObject;
+  var fails = _fails;
+  var $sort = [].sort;
+  var test = [1, 2, 3];
+  $export$2($export$2.P + $export$2.F * (fails(function() {
+    test.sort(void 0);
+  }) || !fails(function() {
+    test.sort(null);
+  }) || !require_strictMethod()($sort)), "Array", {
+    // 22.1.3.25 Array.prototype.sort(comparefn)
+    sort: function sort(comparefn) {
+      return comparefn === void 0 ? $sort.call(toObject(this)) : $sort.call(toObject(this), aFunction$2(comparefn));
+    }
+  });
   var activeEffectScope;
   class EffectScope {
     constructor() {

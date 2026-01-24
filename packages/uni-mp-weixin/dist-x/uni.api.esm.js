@@ -1,5 +1,5 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
-import { Emitter, UTS, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { Emitter, UTS, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
 import { findUniElement, injectHook } from 'vue';
 
@@ -1316,13 +1316,13 @@ const getDeviceInfo = {
         let deviceBrand = getDeviceBrand(brand);
         useDeviceId()(fromRes, toRes);
         const { osName, osVersion } = getOSInfo(system, platform);
-        toRes = sortObject(extend(toRes, {
+        toRes = extend(toRes, {
             deviceType,
             deviceBrand,
             deviceModel: model,
             osName,
             osVersion,
-        }));
+        });
     },
 };
 
@@ -1332,16 +1332,16 @@ const getAppBaseInfo = {
         let _hostName = getHostName(fromRes);
         let hostLanguage = (language || '').replace(/_/g, '-');
         const parameters = {
-            hostVersion: version,
-            hostLanguage,
-            hostName: _hostName,
-            hostSDKVersion: SDKVersion,
-            hostTheme: theme,
             appId: process.env.UNI_APP_ID,
             appName: process.env.UNI_APP_NAME,
             appVersion: process.env.UNI_APP_VERSION_NAME,
             appVersionCode: process.env.UNI_APP_VERSION_CODE,
             appLanguage: getAppLanguage(hostLanguage),
+            hostVersion: version,
+            hostLanguage,
+            hostName: _hostName,
+            hostSDKVersion: SDKVersion,
+            hostTheme: theme,
             isUniAppX: true,
             uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
             uniCompileVersion: process.env.UNI_COMPILER_VERSION,
@@ -1362,10 +1362,10 @@ const getAppBaseInfo = {
 const getWindowInfo = {
     returnValue: (fromRes, toRes) => {
         addSafeAreaInsets(fromRes, toRes);
-        toRes = sortObject(extend(toRes, {
+        toRes = extend(toRes, {
             windowTop: 0,
             windowBottom: 0,
-        }));
+        });
     },
 };
 
