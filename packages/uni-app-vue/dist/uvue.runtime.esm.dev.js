@@ -1,6 +1,6 @@
 import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, isIntegerKey, hasOwn, isMap, makeMap, capitalize, hyphenate, isPromise, getGlobalThis, isString, camelize, EMPTY_OBJ, remove, toHandlerKey, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isBuiltInDirective, isReservedProp, parseStringStyle, normalizeStyle as normalizeStyle$1, looseToNumber, isGloballyAllowed, NO, normalizeClass as normalizeClass$1, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_LAST_PAGE_BACK_PRESS, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle, forcePatchProp, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_LAST_PAGE_BACK_PRESS, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 
 /**
@@ -9322,6 +9322,7 @@ var ssrUtils = _ssrUtils;
 var resolveFilter = null;
 var compatUtils = null;
 var DeprecationTypes = null;
+var NODE_EXT_CLASS_LIST = "classList";
 var NODE_EXT_INSTANCE = "instance";
 var NODE_EXT_STYLES = "styles";
 var NODE_EXT_PARENT_STYLES = "parentStyles";
@@ -9350,6 +9351,12 @@ function setPartElementInstance(el, instance) {
 }
 function getNodeExtraData(el, name) {
   return el.ext.get(name);
+}
+function getExtraClassList(el) {
+  return getNodeExtraData(el, NODE_EXT_CLASS_LIST);
+}
+function setExtraClassList(el, classList) {
+  setNodeExtraData(el, NODE_EXT_CLASS_LIST, classList);
 }
 function getExtraInstance(el) {
   return getNodeExtraData(el, NODE_EXT_INSTANCE);
@@ -9570,8 +9577,9 @@ function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet) {
   return context;
 }
 function parseClassStyles(el) {
+  var _a;
   if (__X_STYLE_ISOLATION__) {
-    return parseClassListWithCtx(el.classList, getExtraInstance(el), el);
+    return parseClassListWithCtx((_a = getExtraClassList(el)) != null ? _a : el.classList, getExtraInstance(el), el);
   }
   var styles = getExtraStyles(el);
   var parentStyles = getExtraParentStyles(el);
@@ -9896,7 +9904,13 @@ function patchClass(el, pre, next) {
     return;
   }
   var classList = next ? next.split(" ") : [];
-  el.classList = classList;
+  if (__X_STYLE_ISOLATION__) {
+    setExtraClassList(el, classList);
+    var hasCaretPrefix = classList.some(c => c.charCodeAt(0) == 94);
+    el.classList = hasCaretPrefix ? normalizeClassList(classList) : classList;
+  } else {
+    el.classList = classList;
+  }
   if (__X_STYLE_ISOLATION__) {
     setExtraInstance(el, instance);
   } else {
@@ -9965,6 +9979,31 @@ function mergeAndUpdateClassStyles(el) {
     styles.set("display", "none");
   }
   el.updateStyle(styles);
+}
+function normalizeClassList(classList) {
+  var len = classList.length;
+  if (len == 1) {
+    var className = classList[0];
+    var start = 1;
+    while (start < className.length && className.charCodeAt(start) == 94) {
+      start++;
+    }
+    return [className.slice(start)];
+  }
+  var seen = /* @__PURE__ */new Set();
+  for (var i = 0; i < len; i++) {
+    var _className = classList[i];
+    if (_className.charCodeAt(0) == 94) {
+      var _start = 1;
+      while (_start < _className.length && _className.charCodeAt(_start) == 94) {
+        _start++;
+      }
+      seen.add(_className.slice(_start));
+    } else {
+      seen.add(_className);
+    }
+  }
+  return Array.from(seen);
 }
 var rootDocument;
 function getDocument() {
@@ -10497,7 +10536,8 @@ function setDisplay(el, value) {
   el._vsh = !value;
 }
 var rendererOptions = extend({
-  patchProp
+  patchProp,
+  forcePatchProp
 }, nodeOps);
 var renderer;
 function ensureRenderer() {

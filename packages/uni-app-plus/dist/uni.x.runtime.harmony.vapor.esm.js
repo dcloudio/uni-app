@@ -800,6 +800,131 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
     addCurrentPageWithInitScope(pageId, pageVm, pageInstance);
   }
 }
+var nativeApp;
+function getNativeApp() {
+  return nativeApp;
+}
+function setNativeApp(app) {
+  nativeApp = app;
+}
+function getPageManager() {
+  return nativeApp.pageManager;
+}
+function removeUrlWrap(source) {
+  if (source.startsWith("url(")) {
+    if (source.split("format(").length > 1) {
+      source = source.split("format(")[0].trim();
+    }
+    source = source.substring(4, source.length - 1);
+  }
+  if (source.startsWith('"') || source.startsWith("'")) {
+    source = source.substring(1, source.length - 1);
+  }
+  return source;
+}
+function getLoadFontFaceOptions(options, res) {
+  return {
+    family: options.family,
+    source: options.source,
+    success: (_) => {
+      res.resolve(null);
+    },
+    fail: (error) => {
+      res.reject(
+        // new LoadFontFaceErrorImpl(
+        error.errMsg,
+        error.errCode
+        // )
+      );
+    }
+  };
+}
+var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
+  options.source = removeUrlWrap(options.source);
+  if (options.global === true) {
+    var app = getNativeApp();
+    var fontInfo = getLoadFontFaceOptions(options, res);
+    app.loadFontFace(fontInfo);
+  } else {
+    var page = getCurrentPage().vm;
+    if (!page) {
+      res.reject("page is not ready", 99);
+      return;
+    }
+    if (page.$fontFamilySet.has(options.family)) {
+      return;
+    }
+    page.$fontFamilySet.add(options.family);
+    var _fontInfo = getLoadFontFaceOptions(options, res);
+    page.$nativePage.loadFontFace(_fontInfo);
+  }
+});
+function loadFontFaceByStyles(styles, global) {
+  styles = Array.isArray(styles) ? styles : [styles];
+  var fontFaceStyle = [];
+  styles.forEach((style) => {
+    if (style["@FONT-FACE"]) {
+      fontFaceStyle.push(...style["@FONT-FACE"]);
+    }
+  });
+  if (fontFaceStyle.length === 0)
+    return;
+  fontFaceStyle.forEach((style) => {
+    var fontFamily = style["fontFamily"];
+    var fontWeight = style["fontWeight"];
+    var fontStyle = style["fontStyle"];
+    var fontVariant = style["fontVariant"];
+    var src = style["src"];
+    if (fontFamily != null && src != null) {
+      loadFontFace({
+        global,
+        family: fontFamily,
+        source: src,
+        desc: {
+          style: fontStyle,
+          weight: fontWeight,
+          variant: fontVariant
+        }
+      });
+    } else {
+      console.warn("loadFontFace: fail, font-family or src is null");
+    }
+  });
+}
+function initNativePage(vm) {
+  var instance = vm.$;
+  if (instance.type.mpType === "app") {
+    return;
+  }
+  var pageId = instance.root.attrs.__pageId;
+  vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
+  if (vm.$page) {
+    vm.$page.__nativePageId = vm.$nativePage.pageId;
+  }
+}
+function initFontFace(vm) {
+  var _vm$$options$styles;
+  var instance = vm.$;
+  if (instance.type.mpType === "app") {
+    return;
+  }
+  loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
+}
+function initComponentInstance(app) {
+  app.config.uniX = {
+    beforeSetupPage,
+    initNativePage,
+    initFontFace
+  };
+  !app.vapor && app.mixin({
+    beforeCreate() {
+      initNativePage(this);
+    },
+    beforeMount() {
+      initFontFace(this);
+    }
+  });
+}
 var beforeSetupPage = (props, ctx) => {
   var {
     attrs: {
@@ -814,6 +939,7 @@ var beforeSetupPage = (props, ctx) => {
   initPageVm(pageVm, __pageInstance);
   {
     setupXPage(instance, __pageInstance, pageVm, __pageId, __pagePath);
+    initNativePage(pageVm);
   }
 };
 function setupPage(component) {
@@ -1363,16 +1489,6 @@ function closeWebview(nPage, animationType, animationDuration, callback) {
     options.set("animationDuration", animationDuration);
   }
   nPage.close(options, callback);
-}
-var nativeApp;
-function getNativeApp() {
-  return nativeApp;
-}
-function setNativeApp(app) {
-  nativeApp = app;
-}
-function getPageManager() {
-  return nativeApp.pageManager;
 }
 var beforeRouteHooks = [];
 var afterRouteHooks = [];
@@ -2199,87 +2315,6 @@ function handleDialogPageBack(dialogPage) {
     });
   }
 }
-function removeUrlWrap(source) {
-  if (source.startsWith("url(")) {
-    if (source.split("format(").length > 1) {
-      source = source.split("format(")[0].trim();
-    }
-    source = source.substring(4, source.length - 1);
-  }
-  if (source.startsWith('"') || source.startsWith("'")) {
-    source = source.substring(1, source.length - 1);
-  }
-  return source;
-}
-function getLoadFontFaceOptions(options, res) {
-  return {
-    family: options.family,
-    source: options.source,
-    success: (_) => {
-      res.resolve(null);
-    },
-    fail: (error) => {
-      res.reject(
-        // new LoadFontFaceErrorImpl(
-        error.errMsg,
-        error.errCode
-        // )
-      );
-    }
-  };
-}
-var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
-  options.source = removeUrlWrap(options.source);
-  if (options.global === true) {
-    var app = getNativeApp();
-    var fontInfo = getLoadFontFaceOptions(options, res);
-    app.loadFontFace(fontInfo);
-  } else {
-    var page = getCurrentPage().vm;
-    if (!page) {
-      res.reject("page is not ready", 99);
-      return;
-    }
-    if (page.$fontFamilySet.has(options.family)) {
-      return;
-    }
-    page.$fontFamilySet.add(options.family);
-    var _fontInfo = getLoadFontFaceOptions(options, res);
-    page.$nativePage.loadFontFace(_fontInfo);
-  }
-});
-function loadFontFaceByStyles(styles, global) {
-  styles = Array.isArray(styles) ? styles : [styles];
-  var fontFaceStyle = [];
-  styles.forEach((style) => {
-    if (style["@FONT-FACE"]) {
-      fontFaceStyle.push(...style["@FONT-FACE"]);
-    }
-  });
-  if (fontFaceStyle.length === 0)
-    return;
-  fontFaceStyle.forEach((style) => {
-    var fontFamily = style["fontFamily"];
-    var fontWeight = style["fontWeight"];
-    var fontStyle = style["fontStyle"];
-    var fontVariant = style["fontVariant"];
-    var src = style["src"];
-    if (fontFamily != null && src != null) {
-      loadFontFace({
-        global,
-        family: fontFamily,
-        source: src,
-        desc: {
-          style: fontStyle,
-          weight: fontWeight,
-          variant: fontVariant
-        }
-      });
-    } else {
-      console.warn("loadFontFace: fail, font-family or src is null");
-    }
-  });
-}
 var API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
 var launchOptions = {
   path: "",
@@ -2743,40 +2778,6 @@ function initOn(app, unregisterApp2) {
 }
 function initService(app, unregisterApp2) {
   initOn(app, unregisterApp2);
-}
-function initNativePage(vm) {
-  var instance = vm.$;
-  if (instance.type.mpType === "app") {
-    return;
-  }
-  var pageId = instance.root.attrs.__pageId;
-  vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
-  if (vm.$page) {
-    vm.$page.__nativePageId = vm.$nativePage.pageId;
-  }
-}
-function initFontFace(vm) {
-  var _vm$$options$styles;
-  var instance = vm.$;
-  if (instance.type.mpType === "app") {
-    return;
-  }
-  loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
-}
-function initComponentInstance(app) {
-  app.config.uniX = {
-    beforeSetupPage,
-    initNativePage,
-    initFontFace
-  };
-  !app.vapor && app.mixin({
-    beforeCreate() {
-      initNativePage(this);
-    },
-    beforeMount() {
-      initFontFace(this);
-    }
-  });
 }
 var appCtx;
 var entryPageState = {
