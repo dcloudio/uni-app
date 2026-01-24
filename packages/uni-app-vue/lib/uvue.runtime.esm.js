@@ -8423,6 +8423,7 @@ const resolveFilter = null;
 const compatUtils = null;
 const DeprecationTypes = null;
 
+const NODE_EXT_CLASS_LIST = "classList";
 const NODE_EXT_INSTANCE = "instance";
 const NODE_EXT_STYLES = "styles";
 const NODE_EXT_PARENT_STYLES = "parentStyles";
@@ -8451,6 +8452,12 @@ function setPartElementInstance(el, instance) {
 }
 function getNodeExtraData(el, name) {
   return el.ext.get(name);
+}
+function getExtraClassList(el) {
+  return getNodeExtraData(el, NODE_EXT_CLASS_LIST);
+}
+function setExtraClassList(el, classList) {
+  setNodeExtraData(el, NODE_EXT_CLASS_LIST, classList);
 }
 function getExtraInstance(el) {
   return getNodeExtraData(
@@ -8670,8 +8677,13 @@ function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet, e
   return context;
 }
 function parseClassStyles(el) {
+  var _a;
   if (__X_STYLE_ISOLATION__) {
-    return parseClassListWithCtx(el.classList, getExtraInstance(el), el);
+    return parseClassListWithCtx(
+      (_a = getExtraClassList(el)) != null ? _a : el.classList,
+      getExtraInstance(el),
+      el
+    );
   }
   const styles = getExtraStyles(el);
   const parentStyles = getExtraParentStyles(el);
@@ -9019,7 +9031,13 @@ function patchClass(el, pre, next, instance = null) {
     return;
   }
   const classList = next ? next.split(" ") : [];
-  el.classList = classList;
+  if (__X_STYLE_ISOLATION__) {
+    setExtraClassList(el, classList);
+    const hasCaretPrefix = classList.some((c) => c.charCodeAt(0) == 94);
+    el.classList = hasCaretPrefix ? normalizeClassList(classList) : classList;
+  } else {
+    el.classList = classList;
+  }
   if (__X_STYLE_ISOLATION__) {
     setExtraInstance(el, instance);
   } else {
@@ -9091,6 +9109,31 @@ function mergeAndUpdateClassStyles(el) {
     styles.set("display", "none");
   }
   el.updateStyle(styles);
+}
+function normalizeClassList(classList) {
+  const len = classList.length;
+  if (len == 1) {
+    const className = classList[0];
+    let start = 1;
+    while (start < className.length && className.charCodeAt(start) == 94) {
+      start++;
+    }
+    return [className.slice(start)];
+  }
+  const seen = /* @__PURE__ */ new Set();
+  for (let i = 0; i < len; i++) {
+    const className = classList[i];
+    if (className.charCodeAt(0) == 94) {
+      let start = 1;
+      while (start < className.length && className.charCodeAt(start) == 94) {
+        start++;
+      }
+      seen.add(className.slice(start));
+    } else {
+      seen.add(className);
+    }
+  }
+  return Array.from(seen);
 }
 
 let rootDocument;
