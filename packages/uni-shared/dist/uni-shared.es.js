@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag, isVoidTag, hyphenate, camelize, normalizeStyle as normalizeStyle$1, isString, parseStringStyle, isArray, normalizeClass as normalizeClass$1, isFunction, isPlainObject as isPlainObject$1, extend, capitalize, makeMap } from '@vue/shared';
+import { isHTMLTag, isSVGTag, isVoidTag, hyphenate, camelize, normalizeStyle as normalizeStyle$1, isString, parseStringStyle, isArray, normalizeClass as normalizeClass$1, isFunction, extend, isPlainObject as isPlainObject$1, capitalize, makeMap } from '@vue/shared';
 
 const BUILT_IN_TAG_NAMES = [
     'ad',
@@ -1375,17 +1375,11 @@ function getValueByDataPath(obj, path) {
     }
     return getValueByDataPath(obj[key], parts.slice(1).join('.'));
 }
+/**
+ * @deprecated
+ */
 function sortObject(obj) {
-    let sortObj = {};
-    if (isPlainObject$1(obj)) {
-        Object.keys(obj)
-            .sort()
-            .forEach((key) => {
-            const _key = key;
-            sortObj[_key] = obj[_key];
-        });
-    }
-    return !Object.keys(sortObj) ? obj : sortObj;
+    return obj;
 }
 function getGlobalOnce() {
     if (typeof globalThis !== 'undefined') {

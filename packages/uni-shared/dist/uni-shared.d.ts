@@ -751,6 +751,9 @@ export declare const enum SetUniElementIdTagType {
 
 export declare const SLOT_DEFAULT_NAME = "d";
 
+/**
+ * @deprecated
+ */
 export declare function sortObject<T extends Object>(obj: T): T;
 
 declare function stringAt(str: string, pos: number): string | null;
