@@ -746,6 +746,9 @@ function parseComponent(vueOptions, { parse, mocks, isPage, isPageInProject, ini
         addGlobalClass: true,
         pureDataPattern: /^uP$/,
     };
+    if (__X_STYLE_ISOLATION__) {
+        options.addGlobalClass = false;
+    }
     if (__UNI_FEATURE_VIRTUAL_HOST__ && !isPageInProject) {
         options.virtualHost = true;
     }
@@ -790,9 +793,15 @@ function parseComponent(vueOptions, { parse, mocks, isPage, isPageInProject, ini
     if (parse) {
         parse(mpComponentOptions, { handleLink });
     }
-    // 支持 externalClasses
-    if (__X_STYLE_ISOLATION__ && vueOptions.externalClasses) {
-        mpComponentOptions.externalClasses = vueOptions.externalClasses;
+    if (__X_STYLE_ISOLATION__) {
+        // 支持 externalClasses
+        if (vueOptions.externalClasses) {
+            mpComponentOptions.externalClasses = vueOptions.externalClasses;
+        }
+        // 支持 styleIsolation
+        if (vueOptions.styleIsolation) {
+            vueOptions.styleIsolation;
+        }
     }
     return mpComponentOptions;
 }

@@ -782,9 +782,28 @@ function parseComponent(vueOptions, { parse, mocks, isPage, isPageInProject, ini
     if (parse) {
         parse(mpComponentOptions, { handleLink });
     }
-    // 支持 externalClasses
-    if (__X_STYLE_ISOLATION__ && vueOptions.externalClasses) {
-        mpComponentOptions.externalClasses = vueOptions.externalClasses;
+    if (__X_STYLE_ISOLATION__) {
+        // 支持 externalClasses
+        if (vueOptions.externalClasses) {
+            mpComponentOptions.externalClasses = vueOptions.externalClasses;
+        }
+        // 支持 styleIsolation
+        if (vueOptions.styleIsolation) {
+            const styleIsolation = vueOptions.styleIsolation;
+            {
+                if (styleIsolation === 'isolated') {
+                    mpComponentOptions.options.styleIsolation = isPageInProject
+                        ? 'page-apply-shared'
+                        : 'isolated';
+                }
+                else if (styleIsolation === 'app') {
+                    mpComponentOptions.options.styleIsolation = 'apply-shared';
+                }
+                else if (styleIsolation === 'app-and-page') {
+                    mpComponentOptions.options.styleIsolation = 'apply-shared';
+                }
+            }
+        }
     }
     return mpComponentOptions;
 }
