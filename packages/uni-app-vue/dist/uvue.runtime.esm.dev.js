@@ -9928,10 +9928,12 @@ function patchClass(el, pre, next) {
     setExtraInstance(el, instance);
   } else {
     setExtraStyles(el, parseStyleSheet(instance));
-    if (instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
+  }
+  if (instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
+    if (!__X_STYLE_ISOLATION__) {
       setExtraParentStyles(el, instance.parent.type.styles);
-      setRootElementInstance(el, instance);
     }
+    setRootElementInstance(el, instance);
   }
   updateClassStyles(el);
 }
