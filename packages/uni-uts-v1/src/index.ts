@@ -383,7 +383,7 @@ export async function compile(
         resolveRootIndex(pluginDir, pkg)
       if (
         !filename &&
-        (Object.keys(androidComponents).length ||
+        (Object.keys(iosComponents).length ||
           Object.keys(customElements).length)
       ) {
         filename = resolvePlatformIndexFilename('app-ios', pluginDir, pkg)
