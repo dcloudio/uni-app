@@ -1,5 +1,5 @@
 <template>
-	<view class="uni-modal_dialog__mask" :class="{ 'uni-modal_dialog__mask__show': showAnim }" >
+	<view class="uni-modal_dialog__mask" :class="{ 'uni-modal_dialog__mask__show': showAnim,'uni-modal_dialog__mask__hide': !showAnim }" >
 
 		<view class="uni-modal_dialog__container"
 			id="modal_content"
@@ -378,12 +378,15 @@ onBackPress((_): boolean | null => {
 		align-items: center;
 		/* 垂直居中 */
 		background-color: rgba(0, 0, 0, 0.5);
-		transition-duration: 0.1s;
 		transition-property: opacity;
+	}
+	.uni-modal_dialog__mask__hide {
+		transition-duration: 0s;
 		opacity: 0;
 	}
 
 	.uni-modal_dialog__mask__show {
+		transition-duration: 0.1s;
 		opacity: 1;
 	}
 
