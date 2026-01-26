@@ -440,6 +440,10 @@ function getExternalClasses(
   node: ComponentNode,
   babelParserPlugins?: ParserPlugin[]
 ): string[] {
+  // 微信小程序不需要处理 externalClasses
+  if (process.env.UNI_PLATFORM === 'mp-weixin') {
+    return []
+  }
   // @ts-expect-error importSource 是编译时扩展的属性
   const importSource: string | undefined = node.importSource
   if (importSource) {
