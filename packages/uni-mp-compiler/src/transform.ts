@@ -96,7 +96,7 @@ export const enum BindingComponentTypes {
   UNKNOWN = 'unknown',
 }
 export interface TransformContext
-  extends Required<Omit<TransformOptions, 'filename' | 'root'>> {
+  extends Required<Omit<TransformOptions, 'root'>> {
   selfName: string | null
   currentNode: RootNode | TemplateChildNode | null
   parent: ParentNode | null
@@ -352,6 +352,7 @@ export function createTransformContext(
     // options
     // 暂不提供根据文件名生成递归组件
     isX,
+    filename,
     selfName: '', //nameMatch && capitalize(camelize(nameMatch[1])),
     miniProgram,
     isTS,

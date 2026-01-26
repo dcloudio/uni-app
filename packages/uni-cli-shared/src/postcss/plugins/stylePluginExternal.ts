@@ -1,22 +1,27 @@
 import type { AtRule, PluginCreator, Root, Rule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import { isUniPageFile } from '../../json/pages'
+import { findPageExternalClasses } from '../../mp/externalClasses'
 
 /**
- * PostCSS plugin to boost specificity for page CSS
+ * PostCSS plugin to boost specificity for page CSS based on externalClasses usage
  *
  * For mini-program platforms (mp-*):
- *   .a -> page .a
- *   .b .c -> page .b .c
+ *   - If page has no externalClasses usage: no transformation
+ *   - If page has dynamic externalClasses: all selectors get page prefix
+ *     .a -> page .a
+ *   - If page has only static externalClasses: only matching selectors get page prefix
+ *     .foo -> page .foo (if "foo" is in staticClasses)
+ *     .bar -> .bar (unchanged, if "bar" is not in staticClasses)
  *
  * This ensures page styles have higher specificity than component styles
+ * while minimizing unnecessary transformations for performance
  */
 const externalPlugin: PluginCreator<void> = () => {
   return {
     postcssPlugin: 'uni-external',
     prepare() {
       const processedRules = new WeakSet<Rule>()
-      let isPageFile = false
 
       return {
         OnceExit(root: Root) {
@@ -33,13 +38,26 @@ const externalPlugin: PluginCreator<void> = () => {
           }
 
           // Only process page files
-          isPageFile = isUniPageFile(filePath)
-          if (!isPageFile) {
+          if (!isUniPageFile(filePath)) {
+            return
+          }
+
+          // Get page's externalClasses info
+          const externalClassesInfo = findPageExternalClasses(filePath)
+
+          // If page has no externalClasses usage, skip processing
+          if (!externalClassesInfo) {
+            return
+          }
+
+          const { staticClasses, hasDynamic } = externalClassesInfo
+          // If no static classes and no dynamic, skip processing
+          if (staticClasses.size === 0 && !hasDynamic) {
             return
           }
 
           root.walkRules((rule) => {
-            processRule(rule, processedRules)
+            processRule(rule, processedRules, staticClasses, hasDynamic)
           })
         },
       }
@@ -47,7 +65,12 @@ const externalPlugin: PluginCreator<void> = () => {
   }
 }
 
-function processRule(rule: Rule, processedRules: WeakSet<Rule>) {
+function processRule(
+  rule: Rule,
+  processedRules: WeakSet<Rule>,
+  staticClasses: Set<string>,
+  hasDynamic: boolean
+) {
   // Skip already processed rules
   if (processedRules.has(rule)) {
     return
@@ -62,12 +85,37 @@ function processRule(rule: Rule, processedRules: WeakSet<Rule>) {
   }
   processedRules.add(rule)
 
-  // Prepend 'page' selector
+  // Process selector based on externalClasses info
   rule.selector = selectorParser((selectorRoot) => {
     selectorRoot.each((selector) => {
-      prependPageSelector(selector)
+      if (hasDynamic) {
+        // Dynamic externalClasses: prepend page to all selectors
+        prependPageSelector(selector)
+      } else {
+        // Static only: only prepend page if selector contains any staticClasses
+        if (selectorContainsClasses(selector, staticClasses)) {
+          prependPageSelector(selector)
+        }
+      }
     })
   }).processSync(rule.selector)
+}
+
+/**
+ * Check if selector contains any of the specified classes
+ */
+function selectorContainsClasses(
+  selector: selectorParser.Selector,
+  classes: Set<string>
+): boolean {
+  let found = false
+  selector.walk((node) => {
+    if (node.type === 'class' && classes.has(node.value)) {
+      found = true
+      return false // stop walking
+    }
+  })
+  return found
 }
 
 /**

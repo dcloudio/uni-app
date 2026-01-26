@@ -29,4 +29,9 @@ export {
   parseExternalClasses,
   findMiniProgramComponentExternalClasses,
   updateMiniProgramComponentExternalClasses,
+  findPageExternalClasses,
+  updatePageExternalClasses,
+  addPageExternalClasses,
+  clearPageExternalClasses,
 } from './externalClasses'
+export type { PageExternalClassesInfo } from './externalClasses'

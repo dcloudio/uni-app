@@ -52,9 +52,11 @@ import {
   rewritePropsBinding,
 } from './transformComponent'
 import {
+  addPageExternalClasses,
   findMiniProgramComponentExternalClasses,
   getGlobalComponentSource,
   hasExternalClasses,
+  isAttributeNode,
   isDirectiveNode,
   isElementNode,
   isSimpleExpressionNode,
@@ -64,6 +66,7 @@ import {
   parseProgram,
   updateMiniProgramComponentExternalClasses,
 } from '@dcloudio/uni-cli-shared'
+import { isUniPageFile } from '@dcloudio/uni-cli-shared'
 import fs from 'fs'
 import { parse as sfcParse } from '@vue/compiler-sfc'
 
@@ -136,6 +139,23 @@ export const transformIdentifier: NodeTransform = (node, context) => {
           node as ComponentNode,
           context.expressionPlugins
         )
+        // 收集页面使用的 externalClasses 信息（静态值和是否有动态绑定）
+        if (
+          UNI_APP_STYLE_CLASSES &&
+          externalClasses.length > 0 &&
+          context.filename &&
+          isUniPageFile(context.filename)
+        ) {
+          collectPageExternalClasses(
+            context.filename,
+            node as ComponentNode,
+            externalClasses
+          )
+        }
+        // 微信小程序不需要处理 externalClasses
+        if (process.env.UNI_PLATFORM === 'mp-weixin') {
+          externalClasses = []
+        }
         rewriteBinding(node as ComponentNode, context, externalClasses)
       }
 
@@ -440,10 +460,6 @@ function getExternalClasses(
   node: ComponentNode,
   babelParserPlugins?: ParserPlugin[]
 ): string[] {
-  // 微信小程序不需要处理 externalClasses
-  if (process.env.UNI_PLATFORM === 'mp-weixin') {
-    return []
-  }
   // @ts-expect-error importSource 是编译时扩展的属性
   const importSource: string | undefined = node.importSource
   if (importSource) {
@@ -475,4 +491,42 @@ function getExternalClasses(
   }
 
   return []
+}
+
+/**
+ * 收集页面使用的 externalClasses 信息
+ * @param filename 页面文件路径
+ * @param node 组件节点
+ * @param externalClasses 组件定义的 externalClasses 数组
+ */
+function collectPageExternalClasses(
+  filename: string,
+  node: ComponentNode,
+  externalClasses: string[]
+) {
+  const staticClasses: string[] = []
+  let hasDynamic = false
+
+  for (const prop of node.props) {
+    if (isAttributeNode(prop)) {
+      // 静态属性，如 my-class="foo"
+      if (externalClasses.includes(prop.name) && prop.value?.content) {
+        // 可能有多个 class，如 my-class="foo bar"
+        const classes = prop.value.content.split(/\s+/).filter(Boolean)
+        staticClasses.push(...classes)
+      }
+    } else if (isDirectiveNode(prop) && prop.name === 'bind') {
+      // 动态绑定，如 :my-class="bar"
+      const { arg } = prop
+      if (arg && isSimpleExpressionNode(arg) && arg.isStatic) {
+        if (externalClasses.includes(arg.content)) {
+          hasDynamic = true
+        }
+      }
+    }
+  }
+
+  if (staticClasses.length > 0 || hasDynamic) {
+    addPageExternalClasses(filename, staticClasses, hasDynamic)
+  }
 }
