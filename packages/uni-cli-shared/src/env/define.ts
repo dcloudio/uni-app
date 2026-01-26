@@ -10,6 +10,9 @@ export function initDefine(stringifyBoolean: boolean = false) {
   const isX = process.env.UNI_APP_X === 'true'
   const isNewStyleIsolation =
     process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
+  // 目前仅微信小程序支持^穿透
+  const isNewStyleIsolationUpArrow =
+    isNewStyleIsolation && process.env.UNI_PLATFORM === 'mp-weixin'
   const isMP =
     process.env.UNI_PLATFORM && process.env.UNI_PLATFORM.startsWith('mp-')
 
@@ -86,6 +89,9 @@ export function initDefine(stringifyBoolean: boolean = false) {
     ),
     ...mpXDefine,
     __X_STYLE_ISOLATION__: styleIsolation,
+    __X_STYLE_ISOLATION_UP_ARROW__: stringifyBoolean
+      ? JSON.stringify(isNewStyleIsolationUpArrow)
+      : isNewStyleIsolationUpArrow,
     // 下边这个主要是为web服务，因为ssr目前只能识别process.env中的内容
     'process.env.UNI_APP_X_NEW_STYLE_ISOLATION': styleIsolation,
   }
