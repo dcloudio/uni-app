@@ -34,6 +34,14 @@ import { uniSSRPlugin } from './plugins/ssr'
 import { uniPostSourceMapPlugin } from './plugins/sourcemap'
 import { uniCustomElementPlugin } from './plugins/customElement'
 import { uniApiPlugin } from './plugins/api'
+import { rewriteCompilerSfcParse } from './utils/polyfill'
+
+if (
+  process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+  process.env.UNI_APP_X === 'true'
+) {
+  rewriteCompilerSfcParse()
+}
 
 export default () => {
   const isNewStyleIsolation =
