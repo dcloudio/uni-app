@@ -8738,26 +8738,35 @@ function parseStyleSheet({
         } else if (styleIsolationStr === "app" || styleIsolationStr === "app-shared") {
           styleIsolation = 1;
         } else if (styleIsolationStr === "app-and-page") {
-          styleIsolation = 2;
+          styleIsolation = isPage ? 1 : 2;
         }
       }
       switch (styleIsolation) {
         case 0:
+          if (isArray(component.styles)) {
+            styles.push(...component.styles);
+          }
           break;
         case 1:
           addAppStyles2();
+          if (isArray(component.styles)) {
+            styles.push(...component.styles);
+          }
           break;
         case 2:
           addAppStyles2();
+          if (isArray(component.styles)) {
+            styles.push(...component.styles);
+          }
           addPageStyles2();
           break;
       }
     } else {
       addAppStyles2();
       addPageStyles2();
-    }
-    if (isArray(component.styles)) {
-      styles.push(...component.styles);
+      if (isArray(component.styles)) {
+        styles.push(...component.styles);
+      }
     }
     cache = useCssStyles(styles);
     pageInstance.componentStylesCache.set(component, cache);
