@@ -359,6 +359,7 @@ export declare class TransformContext<T extends AllNode = AllNode> {
     imports: ImportItem[];
     inVOnce: boolean;
     inVFor: number;
+    inText: number;
     comment: CommentNode[];
     component: Set<string>;
     directive: Set<string>;
