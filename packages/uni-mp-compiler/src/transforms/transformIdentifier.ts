@@ -293,12 +293,6 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               rewriteId(i, dir, props, virtualHost, context)
             } else if (isPropsBinding(dir)) {
               rewritePropsBinding(dir, node, context)
-            } else if (
-              arg &&
-              isSimpleExpressionNode(arg) &&
-              externalClasses.includes(arg.content)
-            ) {
-              // externalClasses 绑定已经在 rewriteBinding 中处理过了，跳过
             } else {
               if (
                 context.isX &&
