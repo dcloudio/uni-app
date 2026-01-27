@@ -2330,7 +2330,7 @@ function onCloseTag(el, end, isImplied = false) {
       el.tagType = 1;
       const importSources = (_a = currentOptions.bindingMetadata) == null ? void 0 : _a.__importSources;
       if (importSources) {
-        const source = importSources[tag] || importSources[capitalize(camelize(tag))];
+        const source = importSources[tag] || importSources[capitalize(camelize(tag))] || importSources[camelize(tag)] || importSources[capitalize(tag)];
         if (source) {
           el.importSource = source;
         }

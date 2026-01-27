@@ -27,8 +27,11 @@ export {
 export {
   hasExternalClasses,
   parseExternalClasses,
+  parseStyleIsolation,
   findMiniProgramComponentExternalClasses,
   updateMiniProgramComponentExternalClasses,
+  updateMiniProgramComponentStyleIsolation,
+  findMiniProgramComponentStyleIsolation,
   findPageExternalClasses,
   updatePageExternalClasses,
   addPageExternalClasses,

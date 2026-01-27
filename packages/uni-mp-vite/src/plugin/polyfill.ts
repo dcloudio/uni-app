@@ -1,6 +1,12 @@
 import { extend } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
-import { isMiniProgramPageFile, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import {
+  findMiniProgramComponentStyleIsolation,
+  isMiniProgramPageFile,
+  parseStyleIsolation,
+  resolveBuiltIn,
+  updateMiniProgramComponentStyleIsolation,
+} from '@dcloudio/uni-cli-shared'
 import type {
   SFCAsyncStyleCompileOptions,
   SFCDescriptor,
@@ -30,6 +36,9 @@ function rewriteCompileScript() {
   compiler.compileStyleAsync = (
     options: SFCAsyncStyleCompileOptions
   ): Promise<SFCStyleCompileResults> => {
+    if (findMiniProgramComponentStyleIsolation(options.filename)) {
+      options.source = `@import "/app.wxss";\n` + options.source
+    }
     // https://github.com/dcloudio/uni-app/issues/4076
     options.isProd = true
     return compileStyleAsync(options)
@@ -58,7 +67,12 @@ function rewriteCompileScript() {
         process.env.UNI_INPUT_DIR
       )
     }
-    return compileScript(sfc, options)
+    let res = compileScript(sfc, options)
+    // @ts-expect-error
+    if (!options.__isPage && parseStyleIsolation(res)) {
+      updateMiniProgramComponentStyleIsolation(sfc.filename, true)
+    }
+    return res
   }
   // script + v-bind
   compiler.compileTemplate = (options: SFCTemplateCompileOptions) => {
