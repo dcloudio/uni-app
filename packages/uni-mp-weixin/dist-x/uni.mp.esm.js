@@ -798,7 +798,12 @@ function parseComponent(vueOptions, { parse, mocks, isPage, isPageInProject, ini
                         : 'isolated';
                 }
                 else if (styleIsolation === 'app') {
-                    mpComponentOptions.options.styleIsolation = 'apply-shared';
+                    if (isPageInProject) {
+                        mpComponentOptions.options.styleIsolation = 'apply-shared';
+                    }
+                    else {
+                        mpComponentOptions.options.styleIsolation = 'isolated';
+                    }
                 }
                 else if (styleIsolation === 'app-and-page') {
                     mpComponentOptions.options.styleIsolation = 'apply-shared';
