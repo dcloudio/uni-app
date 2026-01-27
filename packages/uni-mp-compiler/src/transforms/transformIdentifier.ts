@@ -3,13 +3,16 @@ import {
   type DirectiveNode,
   ElementTypes,
   NodeTypes,
+  type RootNode,
   type SimpleExpressionNode,
+  type TemplateChildNode,
+  baseParse,
   createCompoundExpression,
   createSimpleExpression,
   isSlotOutlet,
 } from '@vue/compiler-core'
 import type { ParserPlugin } from '@babel/parser'
-import type { NodeTransform } from '../transform'
+import type { NodeTransform, TransformContext } from '../transform'
 import {
   ATTR_ELEMENT_ID,
   ATTR_SET_ELEMENT_ANIMATION,
@@ -137,20 +140,35 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       if (isUserComponent(node, context)) {
         externalClasses = getExternalClasses(
           node as ComponentNode,
+          context.filename,
           context.expressionPlugins
         )
         // 收集页面使用的 externalClasses 信息（静态值和是否有动态绑定）
         if (
           UNI_APP_STYLE_CLASSES &&
-          externalClasses.length > 0 &&
           context.filename &&
           isUniPageFile(context.filename)
         ) {
-          collectPageExternalClasses(
-            context.filename,
-            node as ComponentNode,
-            externalClasses
-          )
+          let hasAppAndPageStyle = false
+          // 仅发行模式下检测
+          if (process.env.NODE_ENV !== 'development') {
+            const source = resolveSource(node as ComponentNode)
+            if (source) {
+              hasAppAndPageStyle = checkComponentAppAndPageIsolation(
+                source,
+                context
+              )
+            }
+          }
+
+          if (externalClasses.length > 0 || hasAppAndPageStyle) {
+            collectPageExternalClasses(
+              context.filename,
+              node as ComponentNode,
+              externalClasses,
+              hasAppAndPageStyle
+            )
+          }
         }
         // 微信小程序不需要处理 externalClasses
         if (process.env.UNI_PLATFORM === 'mp-weixin') {
@@ -400,6 +418,7 @@ function isBuiltIn({ arg, exp }: DirectiveNode) {
  */
 function getComponentExternalClasses(
   source: string,
+  parentFile: string,
   babelParserPlugins?: ParserPlugin[]
 ): string[] | undefined {
   if (!UNI_APP_STYLE_CLASSES) {
@@ -424,7 +443,7 @@ function getComponentExternalClasses(
     return undefined
   }
 
-  if (!hasExternalClasses(code)) {
+  if (!hasExternalClasses(code) && !code.includes('styleIsolation')) {
     updateMiniProgramComponentExternalClasses(source, { mtime, classes: [] })
     return []
   }
@@ -438,11 +457,14 @@ function getComponentExternalClasses(
     scriptContent = code
   }
 
-  if (!scriptContent || !hasExternalClasses(scriptContent)) {
+  if (
+    !scriptContent ||
+    (!hasExternalClasses(scriptContent) &&
+      !scriptContent.includes('styleIsolation'))
+  ) {
     updateMiniProgramComponentExternalClasses(source, { mtime, classes: [] })
     return []
   }
-
   let program
   try {
     program = parseProgram(scriptContent, source, {
@@ -458,19 +480,32 @@ function getComponentExternalClasses(
 
 function getExternalClasses(
   node: ComponentNode,
+  parentFile: string,
   babelParserPlugins?: ParserPlugin[]
 ): string[] {
   // @ts-expect-error importSource 是编译时扩展的属性
   const importSource: string | undefined = node.importSource
   if (importSource) {
     if (fs.existsSync(importSource)) {
-      return getComponentExternalClasses(importSource, babelParserPlugins) || []
+      return (
+        getComponentExternalClasses(
+          importSource,
+          parentFile,
+          babelParserPlugins
+        ) || []
+      )
     }
     // 尝试添加扩展名
     for (const ext of ['.uvue', '.vue']) {
       const fullPath = importSource + ext
       if (fs.existsSync(fullPath)) {
-        return getComponentExternalClasses(fullPath, babelParserPlugins) || []
+        return (
+          getComponentExternalClasses(
+            fullPath,
+            parentFile,
+            babelParserPlugins
+          ) || []
+        )
       }
     }
   }
@@ -479,18 +514,116 @@ function getExternalClasses(
 
   const easycomSource = matchEasycom(tag)
   if (easycomSource) {
-    return getComponentExternalClasses(easycomSource, babelParserPlugins) || []
+    return (
+      getComponentExternalClasses(
+        easycomSource,
+        parentFile,
+        babelParserPlugins
+      ) || []
+    )
   }
 
   const globalComponentSource = getGlobalComponentSource(tag)
   if (globalComponentSource) {
     return (
-      getComponentExternalClasses(globalComponentSource, babelParserPlugins) ||
-      []
+      getComponentExternalClasses(
+        globalComponentSource,
+        parentFile,
+        babelParserPlugins
+      ) || []
     )
   }
 
   return []
+}
+
+function resolveSource(node: ComponentNode): string | undefined {
+  // @ts-expect-error importSource 是编译时扩展的属性
+  const importSource: string | undefined = node.importSource
+  if (importSource) {
+    if (fs.existsSync(importSource)) {
+      return importSource
+    }
+    // 尝试添加扩展名
+    for (const ext of ['.uvue', '.vue']) {
+      const fullPath = importSource + ext
+      if (fs.existsSync(fullPath)) {
+        return fullPath
+      }
+    }
+  }
+
+  const tag = node.tag
+
+  const easycomSource = matchEasycom(tag)
+  if (easycomSource) {
+    return easycomSource
+  }
+
+  const globalComponentSource = getGlobalComponentSource(tag)
+  if (globalComponentSource) {
+    return globalComponentSource
+  }
+}
+
+function checkComponentAppAndPageIsolation(
+  source: string,
+  context: TransformContext
+): boolean {
+  return checkRecursive(source, new Set(), context)
+}
+
+function checkRecursive(
+  source: string,
+  visited: Set<string>,
+  context: TransformContext
+): boolean {
+  if (visited.has(source)) {
+    return false
+  }
+  visited.add(source)
+
+  try {
+    const code = fs.readFileSync(source, 'utf-8')
+    if (code.includes('styleIsolation') && code.includes('app-and-page')) {
+      return true
+    }
+
+    const { descriptor } = sfcParse(code, { filename: source })
+
+    const template = descriptor.template?.content || ''
+    const ast = baseParse(template)
+
+    const nodeTags = new Set<RootNode | TemplateChildNode>()
+    const walk = (node: any) => {
+      if (node.type === 1) {
+        // Element
+        nodeTags.add(node)
+        node.children.forEach(walk)
+      } else if (node.type === 11) {
+        // For
+        node.children.forEach(walk)
+      } else if (node.type === 9) {
+        // If
+        node.branches.forEach(walk)
+      }
+    }
+    ast.children.forEach(walk)
+
+    for (const nodeTag of nodeTags) {
+      let childSource
+      if (isUserComponent(nodeTag, context)) {
+        childSource = resolveSource(nodeTag)
+      }
+
+      if (childSource && fs.existsSync(childSource)) {
+        if (checkRecursive(childSource, visited, context)) {
+          return true
+        }
+      }
+    }
+  } catch (e) {}
+  return false
 }
 
 /**
@@ -502,7 +635,8 @@ function getExternalClasses(
 function collectPageExternalClasses(
   filename: string,
   node: ComponentNode,
-  externalClasses: string[]
+  externalClasses: string[],
+  hasAppAndPageStyle: boolean = false
 ) {
   const staticClasses: string[] = []
   let hasDynamic = false
@@ -526,7 +660,12 @@ function collectPageExternalClasses(
     }
   }
 
-  if (staticClasses.length > 0 || hasDynamic) {
-    addPageExternalClasses(filename, staticClasses, hasDynamic)
+  if (staticClasses.length > 0 || hasDynamic || hasAppAndPageStyle) {
+    addPageExternalClasses(
+      filename,
+      staticClasses,
+      hasDynamic,
+      hasAppAndPageStyle
+    )
   }
 }

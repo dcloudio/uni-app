@@ -36,7 +36,6 @@ const externalPlugin: PluginCreator<void> = () => {
           if (!filePath) {
             return
           }
-
           // Only process page files
           if (!isUniPageFile(filePath)) {
             return
@@ -45,12 +44,21 @@ const externalPlugin: PluginCreator<void> = () => {
           // Get page's externalClasses info
           const externalClassesInfo = findPageExternalClasses(filePath)
 
-          // If page has no externalClasses usage, skip processing
-          if (!externalClassesInfo) {
-            return
+          let staticClasses = new Set<string>()
+          let hasDynamic = false
+
+          if (process.env.NODE_ENV === 'development') {
+            hasDynamic = true
+          } else if (externalClassesInfo) {
+            staticClasses = externalClassesInfo.staticClasses
+            if (
+              externalClassesInfo.hasDynamic ||
+              externalClassesInfo.hasAppAndPageStyle
+            ) {
+              hasDynamic = true
+            }
           }
 
-          const { staticClasses, hasDynamic } = externalClassesInfo
           // If no static classes and no dynamic, skip processing
           if (staticClasses.size === 0 && !hasDynamic) {
             return
