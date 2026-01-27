@@ -193,6 +193,7 @@ checkbox {
 /* 
  * 目前仅适配微信小程序，其他小程序平台需要额外适配
  */
+.uni__inherit_flex_box_style,
 radio .wx-radio-wrapper {
   display: flex;
   flex-direction: inherit;
@@ -201,4 +202,5 @@ radio .wx-radio-wrapper {
   align-items: inherit;
   flex: 1;
 }
+
 /* #endif */
