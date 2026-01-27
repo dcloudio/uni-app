@@ -23847,8 +23847,6 @@ class TransformContext {
     this.imports = [];
     this.inVOnce = false;
     this.inVFor = 0;
-    // fixed by uts 当前text节点深度
-    this.inText = 0;
     this.comment = [];
     this.component = this.ir.component;
     this.directive = this.ir.directive;
