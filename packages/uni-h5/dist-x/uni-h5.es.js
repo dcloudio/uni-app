@@ -29916,7 +29916,8 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
               }, null, 8, ["ios-snow"]),
               title.value ? (openBlock(), createBlock(_component_text, {
                 key: 0,
-                class: "uni-loading_dialog__container__title"
+                class: "uni-loading_dialog__container__title",
+                "max-lines": "1"
               }, {
                 default: withCtx(() => [
                   createTextVNode(toDisplayString(title.value), 1)
