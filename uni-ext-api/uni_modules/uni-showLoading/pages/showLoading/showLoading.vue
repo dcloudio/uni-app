@@ -4,7 +4,7 @@
 		<view class="uni-loading_dialog__container"
 			:class="{'uni-loading_dialog__show': showAnim}">
 			<loading class="uni-loading_dialog__container__loading" :ios-snow="iosSnow" />
-			<text class="uni-loading_dialog__container__title" v-if="title" >{{title}}</text>
+			<text class="uni-loading_dialog__container__title" max-lines="1" v-if="title" >{{title}}</text>
 		</view>
 	</view>
 </template>
