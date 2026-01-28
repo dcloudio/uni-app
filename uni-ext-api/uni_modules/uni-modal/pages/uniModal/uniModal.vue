@@ -8,7 +8,7 @@
 			<!--ios need -->
 			<view class="uni-modal_dialog__container__wrapper" :class="{'uni-modal_dark__mode': theme == 'dark'}">
 
-				<text class="uni-modal_dialog__title__text" :class="{'uni-modal_dark__mode': theme == 'dark'}" v-if="title">
+				<text class="uni-modal_dialog__title__text" max-lines="2" :class="{'uni-modal_dark__mode': theme == 'dark'}" v-if="title">
 					{{ title }}
 				</text>
 
@@ -45,6 +45,7 @@
 						:hover-class="hoverClassName"
 						 @click="handleCancel">
 						<text :style="{ color: cancelColor }"
+							max-lines="1"
 							class="uni-modal_dialog__content__bottom__button__text">{{cancelText}}</text>
 					</view>
 					<view v-if="showCancel" class="uni-modal_dialog__content__bottom__splitline"
@@ -55,6 +56,7 @@
 						:hover-class="hoverClassName"
 						@click="handleSure">
 						<text :style="{ color: confirmColor }"
+							max-lines="1"
 							class="uni-modal_dialog__content__bottom__button__text__sure">
 							{{confirmText}}
 						</text>

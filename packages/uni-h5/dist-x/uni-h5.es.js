@@ -29604,7 +29604,8 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                 default: withCtx(() => [
                   title.value ? (openBlock(), createBlock(_component_text, {
                     key: 0,
-                    class: normalizeClass(["uni-modal_dialog__title__text", { "uni-modal_dark__mode": theme.value == "dark" }])
+                    class: normalizeClass(["uni-modal_dialog__title__text", { "uni-modal_dark__mode": theme.value == "dark" }]),
+                    "max-lines": "2"
                   }, {
                     default: withCtx(() => [
                       createTextVNode(toDisplayString(title.value), 1)
@@ -29660,6 +29661,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                         default: withCtx(() => [
                           createVNode(_component_text, {
                             style: normalizeStyle({ color: cancelColor.value }),
+                            "max-lines": "1",
                             class: "uni-modal_dialog__content__bottom__button__text"
                           }, {
                             default: withCtx(() => [
@@ -29682,6 +29684,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                         default: withCtx(() => [
                           createVNode(_component_text, {
                             style: normalizeStyle({ color: confirmColor.value }),
+                            "max-lines": "1",
                             class: "uni-modal_dialog__content__bottom__button__text__sure"
                           }, {
                             default: withCtx(() => [
