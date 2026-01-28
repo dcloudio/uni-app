@@ -29,8 +29,11 @@ import {
   FILTER_MODULE_NAME,
   FILTER_SET_ELEMENT_ANIMATION,
   FILTER_SET_ELEMENT_STYLE,
+  FILTER_SET_ROOT_ELEMENT_STYLE,
+  builtInComponents,
+  builtInCustomElements,
   filterName,
-  filterObserverName,
+  filterObserverName
 } from './utils'
 import { parseVForKeyAlias } from './transformSlot'
 import { parseRefCode } from './transformRef'
@@ -47,8 +50,6 @@ import {
 import { parseExpr } from '../ast'
 import { genBabelExpr } from '../codegen'
 
-const builtInCustomElements = ['uni-cloud-db-element']
-const builtInComponents = ['unicloud-db']
 
 export function rewriteId(node: ElementNode, context: TransformContext) {
   const isUniElement = !isUserComponent(node, context)
@@ -143,9 +144,9 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
   }
   let idOptions:
     | {
-        name: string
-        type?: SetUniElementIdTagType
-      }
+      name: string
+      type?: SetUniElementIdTagType
+    }
     | string = origTagName
   if (isBuiltInComponent || isBuiltInCustomElement) {
     idOptions = {
@@ -203,7 +204,7 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
     node.props.push(
       createBindDirectiveNode(
         filterObserverName(ATTR_SET_ELEMENT_STYLE),
-        filterName(FILTER_SET_ELEMENT_STYLE)
+        filterName(isBuiltInComponent ? FILTER_SET_ROOT_ELEMENT_STYLE : FILTER_SET_ELEMENT_STYLE)
       )
     )
     node.props.push(createBindDirectiveNode(ATTR_SET_ELEMENT_STYLE, ''))

@@ -21,7 +21,7 @@ import {
   isDirectiveNode,
 } from '@dcloudio/uni-cli-shared'
 import type { TransformContext } from '../transform'
-import { ATTR_VUE_ID, parseExprWithRewrite } from './utils'
+import { ATTR_VUE_ID, builtInComponents, parseExprWithRewrite } from './utils'
 
 import { SET_REF } from '../runtimeHelpers'
 import { genBabelExpr } from '../codegen'
@@ -119,12 +119,12 @@ export function rewriteRefProp(
   }
   parseExprWithRewrite(
     context.helperString(helper) +
-      '(' +
-      code +
-      ', ' +
-      id +
-      (Object.keys(opts).length ? ', ' + JSON.stringify(opts) : '') +
-      ')',
+    '(' +
+    code +
+    ', ' +
+    id +
+    (Object.keys(opts).length ? ', ' + JSON.stringify(opts) : '') +
+    ')',
     prop.loc,
     context
   )

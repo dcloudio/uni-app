@@ -4,6 +4,12 @@ module.exports = {
       instance.setStyle(newValue)
     }
   },
+  sRS (newValue, oldValue, _ownerInstance, instance) {
+    if (newValue) {
+      const root = instance.selectComponent && instance.selectComponent('.uni__component_root')
+      root && root.setStyle(newValue)
+    }
+  },
   sA: function (newValue, oldValue, _ownerInstance, instance) {
     if (newValue) {
       handleStartAnimation(newValue, _ownerInstance, instance)
@@ -11,7 +17,7 @@ module.exports = {
   },
 }
 
-function handleStartAnimation(newValue, _ownerInstance, instance) {
+function handleStartAnimation (newValue, _ownerInstance, instance) {
   var info = {}
   info = JSON.parse(newValue)
   var element = _ownerInstance.selectComponent('#' + info.id)
@@ -30,7 +36,7 @@ function handleStartAnimation(newValue, _ownerInstance, instance) {
       ? info.options.duration * 2
       : info.options.duration
 
-  function interpolateKeyframe(keyframes, usedTime) {
+  function interpolateKeyframe (keyframes, usedTime) {
     var index = 0
     for (var i = 0; i < keyframes.length; i++) {
       if (keyframes[i]._startTime + keyframes[i]._duration >= usedTime) {
@@ -45,7 +51,7 @@ function handleStartAnimation(newValue, _ownerInstance, instance) {
     }
   }
 
-  function step() {
+  function step () {
     var isCancelled = state.playState === 'cancel'
     var currentTime = Date.now()
     if (startTime === null) {
