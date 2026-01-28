@@ -4,7 +4,7 @@ module.exports = {
       instance.setStyle(newValue)
     }
   },
-  sRS (newValue, oldValue, _ownerInstance, instance) {
+  sRS: function (newValue, oldValue, _ownerInstance, instance) {
     if (newValue) {
       const root = instance.selectComponent && instance.selectComponent('.uni__component_root')
       root && root.setStyle(newValue)
