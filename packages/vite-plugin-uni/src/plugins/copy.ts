@@ -22,10 +22,8 @@ export function uniCopyPlugin({
 }: Pick<VitePluginUniResolvedOptions, 'outputDir' | 'copyOptions'>): Plugin {
   const staticDir = PUBLIC_DIR + '/**/*'
   const uniModulesStaticDir = 'uni_modules/*/' + PUBLIC_DIR + '/**/*'
-  const isDom2Harmony =
-    process.env.UNI_APP_X_DOM2 === 'true' &&
-    process.env.UNI_PLATFORM === 'app-harmony'
-  const uniModulesCppDir = isDom2Harmony ? 'uni_modules/*/cppsdk/**/*' : ''
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const uniModulesCppDir = isDom2 ? 'uni_modules/*/cppsdk/**/*' : ''
   const assets = [staticDir, uniModulesStaticDir]
   const cppAssets: string[] = []
   if (uniModulesCppDir) {

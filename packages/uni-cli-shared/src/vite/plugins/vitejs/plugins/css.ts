@@ -386,8 +386,7 @@ export function cssPostPlugin(
   // styles initialization in buildStart causes a styling loss in watch
   const styles: Map<string, string> = new Map<string, string>()
   let cssChunks: Map<string, string[]>
-  const isDom2Harmony =
-    process.env.UNI_APP_X_DOM2 === 'true' && platform === 'app-harmony'
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return {
     name: 'vite:css-post',
     buildStart() {
@@ -407,7 +406,7 @@ export function cssPostPlugin(
         code:
           modulesCode ||
           (isJsCode
-            ? isDom2Harmony
+            ? isDom2
               ? `export default ${JS_STYLE_PLACEHOLDER_STR}`
               : 'export default {}'
             : ''),
@@ -418,7 +417,7 @@ export function cssPostPlugin(
       }
     },
     async renderChunk(_code, chunk, _opts) {
-      if (isDom2Harmony) {
+      if (isDom2) {
         // 通过 generateBundle 实现
         return null
       }

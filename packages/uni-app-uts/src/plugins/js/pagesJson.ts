@@ -26,9 +26,7 @@ export function uniAppPagesPlugin(): Plugin {
     PAGES_JSON_UTS
   )
 
-  const isDom2Harmony =
-    process.env.UNI_APP_X_DOM2 === 'true' &&
-    process.env.UNI_UTS_PLATFORM === 'app-harmony'
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
   let allPagePaths: string[] = []
   let isFirst = true
@@ -83,7 +81,7 @@ export function uniAppPagesPlugin(): Plugin {
         const pagesJson = normalizeUniAppXAppPagesJson(code)
 
         // vapor 暂不支持 tabBar
-        if (isDom2Harmony) {
+        if (isDom2) {
           if (pagesJson.tabBar) {
             hasTabBar = true
             delete pagesJson.tabBar

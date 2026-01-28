@@ -29,11 +29,9 @@ import { replaceExtApiPagePaths } from '../js/extApiPages'
 import { uniAppCssPlugin, uniAppCssPrePlugin } from '../dom2/css'
 
 export function init() {
-  const isDom2Harmony =
-    process.env.UNI_APP_X_DOM2 === 'true' &&
-    process.env.UNI_UTS_PLATFORM === 'app-harmony'
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return [
-    ...(isDom2Harmony ? [uniAppCssPrePlugin()] : []),
+    ...(isDom2 ? [uniAppCssPrePlugin()] : []),
     ...(isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniDecryptUniModulesPlugin()]
       : []),
@@ -60,13 +58,13 @@ export function init() {
         ]),
     uniUTSUVueJavaScriptPlugin(),
     resolveUTSCompiler().uts2js({
-      dom2: isDom2Harmony,
+      dom2: isDom2,
       platform: 'app-harmony',
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
       sourceMap: enableSourceMap(),
-      sharedDataLibName: isDom2Harmony ? 'libentry.so' : undefined,
+      sharedDataLibName: isDom2 ? 'libentry.so' : undefined,
       modules: {
         vueCompilerDom,
         uniCliShared,
@@ -78,11 +76,11 @@ export function init() {
         },
       },
     }),
-    ...(isDom2Harmony ? [uniSharedDataPlugin()] : []),
+    ...(isDom2 ? [uniSharedDataPlugin()] : []),
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
       ? [replaceExtApiPagePaths()]
       : []),
-    ...(isDom2Harmony ? [uniAppCssPlugin()] : []),
+    ...(isDom2 ? [uniAppCssPlugin()] : []),
     ...(isNormalCompileTarget() ? [uniStatsPlugin()] : []),
   ]
 }
