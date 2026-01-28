@@ -163,9 +163,10 @@ export const UVUE_WEB_BUILT_IN_TAGS = [
   'list-item',
   'sticky-section',
   'sticky-header',
-  'cloud-db-element',
-  'loading',
+  'cloud-db-element'
 ].map((tag) => 'uni-' + tag)
+
+export const UVUE_MP_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS
 
 export const UVUE_IOS_BUILT_IN_TAGS = [
   'scroll-view',

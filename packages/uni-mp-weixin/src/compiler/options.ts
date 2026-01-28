@@ -17,7 +17,6 @@ import {
   resolveMiniProgramRuntime,
 } from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
-import { transformLoading } from '../x/compiler/transforms/transformLoading'
 
 import source from './project.config.json'
 
@@ -74,8 +73,7 @@ const nodeTransforms: NodeTransform[] = [
 if (process.env.UNI_APP_X === 'true') {
   nodeTransforms.push(
     transformMPBuiltInTag,
-    transformDirection,
-    transformLoading
+    transformDirection
   )
 }
 
