@@ -344,9 +344,13 @@ export function initAutoImportOptions(
     }
   }
 
-  const exclude: (RegExp | string)[] = [/[\\/]\.git[\\/]/];
+  const exclude: (RegExp | string)[] = [/[\\/]\.git[\\/]/]
   if (process.env.UNI_INPUT_DIR) {
-    exclude.push(...resolveWorkersDir(process.env.UNI_INPUT_DIR).map((dir) => normalizePath(path.join(process.env.UNI_INPUT_DIR, dir, '*'))));
+    exclude.push(
+      ...resolveWorkersDir(process.env.UNI_INPUT_DIR).map((dir) =>
+        normalizePath(path.join(process.env.UNI_INPUT_DIR, dir, '*'))
+      )
+    )
   }
   return {
     ...userOptions,

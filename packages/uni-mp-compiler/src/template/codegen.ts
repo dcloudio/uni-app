@@ -161,7 +161,7 @@ export function genNode(
                 p.value?.content === SLOT_DEFAULT_NAME) ||
               (p.name === 'bind' &&
                 (p as NameScopedSlotDirectiveNode).slotName ===
-                SLOT_DEFAULT_NAME)
+                  SLOT_DEFAULT_NAME)
           ) && node.children.length === 0
         // 当存在 <slot name="default" :xxx="xxx"><slot> 时，在后面添加 <slot></slot>，使默认插槽生效
         if (isEmptyDefaultSlot) {
@@ -366,7 +366,7 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
     ) {
       child.props.push(slotProp)
       if (isIfElementNode(node)) {
-        ; (child as IfElementNode).vIf = (node as IfElementNode).vIf
+        ;(child as IfElementNode).vIf = (node as IfElementNode).vIf
       }
       return genElement(child, context)
     }
@@ -395,7 +395,7 @@ function genComponent(node: ComponentNode, context: TemplateCodegenContext) {
   }
   // 小程序原生组件，补充 if(r0)
   if (context.isMiniProgramComponent(node.tag)) {
-    ; (node as IfElementNode).vIf = {
+    ;(node as IfElementNode).vIf = {
       name: 'if',
       condition: 'r0',
     }
@@ -405,7 +405,7 @@ function genComponent(node: ComponentNode, context: TemplateCodegenContext) {
   if (!prop) {
     return genElement(node, context)
   }
-  ; (node as IfElementNode).vIf = {
+  ;(node as IfElementNode).vIf = {
     name: 'if',
     condition: (prop.exp as SimpleExpressionNode).content,
   }
