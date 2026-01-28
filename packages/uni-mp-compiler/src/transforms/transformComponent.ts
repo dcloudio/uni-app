@@ -163,6 +163,17 @@ function isComponentProp(name: string) {
   }
   return true
 }
+
+function isComponentReservedProp(name: string, context: TransformContext) {
+  const reservedProps = ['id']
+  if (context.isX) {
+    reservedProps.push('class')
+    // 暂不处理 style，现在 style 会默认补一个 --status-bar-height 样式，搞得每个组件都有 style 属性，太别扭了，后续看看怎么优化。
+    reservedProps.push('style')
+  }
+  return reservedProps.includes(name)
+}
+
 /**
  * 重写组件 props 绑定
  * @param node
@@ -200,14 +211,14 @@ export function rewriteBinding(
   const properties: (ObjectProperty | SpreadElement)[] = []
   for (let i = 0; i < props.length; i++) {
     const prop = props[i]
-    let isIdProp = false
+    let isReservedProp = false
     if (isAttributeNode(prop)) {
       const { name } = prop
       if (externalClasses?.includes(name)) {
         continue
       }
-      isIdProp = name === 'id'
-      if (!isComponentProp(name)) {
+      isReservedProp = isComponentReservedProp(name, context)
+      if (!isReservedProp && !isComponentProp(name)) {
         continue
       }
       properties.push(
@@ -227,8 +238,8 @@ export function rewriteBinding(
           properties.push(spreadElement)
         }
       } else if (isStaticExp(arg)) {
-        isIdProp = arg.content === 'id'
-        if (!isComponentProp(arg.content)) {
+        isReservedProp = isComponentReservedProp(arg.content, context)
+        if (!isReservedProp && !isComponentProp(arg.content)) {
           continue
         }
         // :name="name"
@@ -256,8 +267,8 @@ export function rewriteBinding(
         )
       }
     }
-    // 即保留 id 属性，又补充到 props 中
-    if (!isIdProp) {
+    // 即保留属性，又补充到 props 中
+    if (!isReservedProp) {
       props.splice(i, 1)
       i--
     }

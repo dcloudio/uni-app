@@ -49,7 +49,7 @@ describe('virtualHost', () => {
       `<custom/>`,
       `<custom style="{{'--status-bar-height:' + b + ';' + (virtualHostStyle || '')}}" virtualHostStyle="{{'--status-bar-height:' + b + ';' + (virtualHostStyle || '')}}" u-i="2a9ec0b0-0" id="{{a}}" virtualHostId="{{a}}" u-p="{{c||''}}" class="{{[d]}}" virtualHostClass="{{[d]}}" hidden="{{virtualHostHidden || false}}" virtualHostHidden="{{virtualHostHidden || false}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _gei(_ctx, ''), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ id: _gei(_ctx, '') }), d: _pvhc(_ctx.$scope.data.virtualHostClass) }
+  const __returned__ = { a: _gei(_ctx, ''), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ style: { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }, id: _gei(_ctx, '') }), d: _pvhc(_ctx.$scope.data.virtualHostClass) }
   return __returned__
 }`,
       optionsX
@@ -59,7 +59,7 @@ describe('virtualHost', () => {
       `<custom class="foo"/>`,
       `<custom style="{{'--status-bar-height:' + b + ';' + (virtualHostStyle || '')}}" virtualHostStyle="{{'--status-bar-height:' + b + ';' + (virtualHostStyle || '')}}" u-i="2a9ec0b0-0" id="{{a}}" virtualHostId="{{a}}" u-p="{{c||''}}" class="{{['foo', d]}}" virtualHostClass="{{['foo', d]}}" hidden="{{virtualHostHidden || false}}" virtualHostHidden="{{virtualHostHidden || false}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _gei(_ctx, ''), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ id: _gei(_ctx, '') }), d: _pvhc(_ctx.$scope.data.virtualHostClass) }
+  const __returned__ = { a: _gei(_ctx, ''), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ class: 'foo', style: { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }, id: _gei(_ctx, '') }), d: _pvhc(_ctx.$scope.data.virtualHostClass) }
   return __returned__
 }`,
       optionsX
@@ -69,7 +69,7 @@ describe('virtualHost', () => {
       `<custom :class="foo"><view class="bar">Hello</view></custom>`,
       `<custom u-s="{{['d']}}" class="{{[b, c]}}" virtualHostClass="{{[b, c]}}" style="{{'--status-bar-height:' + d + ';' + (virtualHostStyle || '')}}" virtualHostStyle="{{'--status-bar-height:' + d + ';' + (virtualHostStyle || '')}}" u-i="2a9ec0b0-0" id="{{a}}" virtualHostId="{{a}}" u-p="{{e||''}}" hidden="{{virtualHostHidden || false}}" virtualHostHidden="{{virtualHostHidden || false}}"><view class="bar">Hello</view></custom>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _gei(_ctx, ''), b: _n(_ctx.foo), c: _pvhc(_ctx.$scope.data.virtualHostClass), d: \`\${_ctx.u_s_b_h}px\`, e: _p({ id: _gei(_ctx, '') }) }
+  const __returned__ = { a: _gei(_ctx, ''), b: _n(_ctx.foo), c: _pvhc(_ctx.$scope.data.virtualHostClass), d: \`\${_ctx.u_s_b_h}px\`, e: _p({ class: _ctx.foo, style: { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }, id: _gei(_ctx, '') }) }
   return __returned__
 }`,
       optionsX
