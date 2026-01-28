@@ -68,7 +68,9 @@ const nestedRefSource = ref({
 })
 
 watch(nestedRefSource, (v, ov) => {
+  // @ts-expect-error
   expectType<{ foo: number }>(v)
+  // @ts-expect-error
   expectType<{ foo: number }>(ov)
 })
 
