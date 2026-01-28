@@ -104,7 +104,10 @@ export function createUniOptions(
                   }
                 }
               },
-              createTransformTag({ 'cover-image': 'image' }),
+              createTransformTag({
+                'cover-image': 'image',
+                'cover-view': 'view',
+              }),
             ],
           }
         : {},
