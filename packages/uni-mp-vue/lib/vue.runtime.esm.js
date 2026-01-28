@@ -3479,7 +3479,7 @@ function normalizeExternalClasses(classes) {
 function normalizeInheritAttrsValue(instance, key, value) {
   if (__X__ && __X_STYLE_ISOLATION__ && __X_STYLE_ISOLATION_UP_ARROW__ && !instance.type.__reserved) {
     if (key === "class") {
-      return toExternalClasses(value).join(" ");
+      return toExternalClasses(normalizeClass(value)).join(" ");
     }
   }
   return value;
