@@ -21,7 +21,7 @@ import {
   isDirectiveNode,
 } from '@dcloudio/uni-cli-shared'
 import type { TransformContext } from '../transform'
-import { ATTR_VUE_ID, builtInComponents, parseExprWithRewrite } from './utils'
+import { ATTR_VUE_ID, parseExprWithRewrite } from './utils'
 
 import { SET_REF } from '../runtimeHelpers'
 import { genBabelExpr } from '../codegen'
