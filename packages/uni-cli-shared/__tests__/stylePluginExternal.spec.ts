@@ -3,6 +3,7 @@ import postcss from 'postcss'
 import externalPlugin from '../src/postcss/plugins/stylePluginExternal'
 
 process.env.UNI_PLATFORM = 'mp-weixin'
+process.env.NODE_ENV = 'development'
 
 describe('stylePluginExternal', () => {
   const originalPlatform = process.env.UNI_PLATFORM
