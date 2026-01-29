@@ -160,7 +160,8 @@ const UVUE_WEB_BUILT_IN_TAGS = [
     'list-item',
     'sticky-section',
     'sticky-header',
-    'cloud-db-element'
+    'cloud-db-element',
+    'loading-element'
 ].map((tag) => 'uni-' + tag);
 const UVUE_MP_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS;
 const UVUE_IOS_BUILT_IN_TAGS = [
