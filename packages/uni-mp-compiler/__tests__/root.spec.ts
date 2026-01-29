@@ -99,4 +99,45 @@ describe('compiler: root', () => {
       { isX: true }
     )
   })
+  test('user component', () => {
+    assert(
+      `<custom/>`,
+      `<custom u-i="2a9ec0b0-0"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = {}
+  return __returned__
+}`,
+      { isX: true }
+    )
+
+    assert(
+      `<custom><view/></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view/></custom>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = {}
+  return __returned__
+}`,
+      { isX: true }
+    )
+
+    assert(
+      `<custom></custom><view/>`,
+      `<custom u-i="2a9ec0b0-0"></custom><view style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      { isX: true }
+    )
+
+    assert(
+      `<custom></custom><view><custom/></view>`,
+      `<custom u-i="2a9ec0b0-0"></custom><view style="{{'--status-bar-height:' + a}}"><custom u-i="2a9ec0b0-1"/></view>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      { isX: true }
+    )
+  })
 })
