@@ -34,9 +34,9 @@ bar
     )
     assert(
       `<custom class="foo"/>`,
-      `<custom class="foo" style="{{'--status-bar-height:' + a}}" u-i="2a9ec0b0-0" u-p="{{b||''}}"/>`,
+      `<custom class="foo" u-i="2a9ec0b0-0" u-p="{{a||''}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: _p({ class: 'foo', style: _normalizeStyle({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }) }) }
+  const __returned__ = { a: _p({ class: 'foo' }) }
   return __returned__
 }`,
       {
@@ -61,9 +61,9 @@ bar
     )
     assert(
       `<custom :class="foo"/>`,
-      `<custom class="{{a}}" style="{{'--status-bar-height:' + b}}" u-i="2a9ec0b0-0" u-p="{{c||''}}"/>`,
+      `<custom class="{{a}}" u-i="2a9ec0b0-0" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _n(_ctx.foo), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ class: _normalizeClass(_ctx.foo), style: _normalizeStyle({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }) }) }
+  const __returned__ = { a: _n(_ctx.foo), b: _p({ class: _ctx.foo }) }
   return __returned__
 }`,
       {
@@ -88,9 +88,9 @@ bar
     )
     assert(
       `<custom :class="foo" class="bar"/>`,
-      `<custom class="{{[a, 'bar']}}" style="{{'--status-bar-height:' + b}}" u-i="2a9ec0b0-0" u-p="{{c||''}}"/>`,
+      `<custom class="{{[a, 'bar']}}" u-i="2a9ec0b0-0" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _n(_ctx.foo), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ class: _normalizeClass([_ctx.foo, 'bar']), style: _normalizeStyle({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }) }) }
+  const __returned__ = { a: _n(_ctx.foo), b: _p({ class: _normalizeClass([_ctx.foo, 'bar']) }) }
   return __returned__
 }`,
       {
@@ -99,9 +99,9 @@ bar
     )
     assert(
       `<custom class="bar" :class="foo"/>`,
-      `<custom class="{{['bar', a]}}" style="{{'--status-bar-height:' + b}}" u-i="2a9ec0b0-0" u-p="{{c||''}}"/>`,
+      `<custom class="{{['bar', a]}}" u-i="2a9ec0b0-0" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _n(_ctx.foo), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ class: _normalizeClass(['bar', _ctx.foo]), style: _normalizeStyle({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }) }) }
+  const __returned__ = { a: _n(_ctx.foo), b: _p({ class: _normalizeClass(['bar', _ctx.foo]) }) }
   return __returned__
 }`,
       {
@@ -126,9 +126,9 @@ bar
     )
     assert(
       `<custom :class="{ red: \`\${isRed}\` }"/>`,
-      `<custom class="{{[a && 'red']}}" style="{{'--status-bar-height:' + b}}" u-i="2a9ec0b0-0" u-p="{{c||''}}"/>`,
+      `<custom class="{{[a && 'red']}}" u-i="2a9ec0b0-0" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.isRed}\` ? 1 : '', b: \`\${_ctx.u_s_b_h}px\`, c: _p({ class: _normalizeClass({ red: \`\${_ctx.isRed}\` }), style: _normalizeStyle({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }) }) }
+  const __returned__ = { a: \`\${_ctx.isRed}\` ? 1 : '', b: _p({ class: { red: \`\${_ctx.isRed}\` } }) }
   return __returned__
 }`,
       {
@@ -167,9 +167,9 @@ bar
     )
     assert(
       `<custom :class="{ red: isRed }" class="foo  bar"/>`,
-      `<custom class="{{[a && 'red', 'foo', 'bar']}}" style="{{'--status-bar-height:' + b}}" u-i="2a9ec0b0-0" u-p="{{c||''}}"/>`,
+      `<custom class="{{[a && 'red', 'foo', 'bar']}}" u-i="2a9ec0b0-0" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _ctx.isRed ? 1 : '', b: \`\${_ctx.u_s_b_h}px\`, c: _p({ class: _normalizeClass([{ red: _ctx.isRed }, 'foo bar']), style: _normalizeStyle({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }) }) }
+  const __returned__ = { a: _ctx.isRed ? 1 : '', b: _p({ class: _normalizeClass([{ red: _ctx.isRed }, 'foo bar']) }) }
   return __returned__
 }`,
       {
