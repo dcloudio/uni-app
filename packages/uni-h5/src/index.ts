@@ -38,6 +38,7 @@ export {
   Textarea,
   View,
   //#if _X_
+  Loading,
   ListView,
   ListItem,
   StickySection,
