@@ -3,6 +3,8 @@ import {
   type ComponentNode,
   type DirectiveNode,
   type ElementNode,
+  NORMALIZE_CLASS,
+  NORMALIZE_STYLE,
   NodeTypes,
   createSimpleExpression,
   isSimpleIdentifier,
@@ -38,6 +40,8 @@ import {
   type Expression,
   type ObjectProperty,
   type SpreadElement,
+  arrayExpression,
+  callExpression,
   identifier,
   logicalExpression,
   objectExpression,
@@ -164,16 +168,6 @@ function isComponentProp(name: string) {
   return true
 }
 
-function isComponentReservedProp(name: string, context: TransformContext) {
-  const reservedProps = ['id']
-  if (context.isX) {
-    reservedProps.push('class')
-    // 暂不处理 style，现在 style 会默认补一个 --status-bar-height 样式，搞得每个组件都有 style 属性，太别扭了，后续看看怎么优化。
-    reservedProps.push('style')
-  }
-  return reservedProps.includes(name)
-}
-
 /**
  * 重写组件 props 绑定
  * @param node
@@ -209,6 +203,8 @@ export function rewriteBinding(
         )
       }
   const properties: (ObjectProperty | SpreadElement)[] = []
+  const classExprArr: Expression[] = []
+  const styleExprArr: Expression[] = []
   for (let i = 0; i < props.length; i++) {
     const prop = props[i]
     let isReservedProp = false
@@ -217,7 +213,16 @@ export function rewriteBinding(
       if (externalClasses?.includes(name)) {
         continue
       }
-      isReservedProp = isComponentReservedProp(name, context)
+      if (context.isX) {
+        if (name === 'class') {
+          classExprArr.push(stringLiteral(prop.value?.content || ''))
+          continue
+        } else if (name === 'style') {
+          styleExprArr.push(stringLiteral(prop.value?.content || ''))
+          continue
+        }
+      }
+      isReservedProp = name === 'id'
       if (!isReservedProp && !isComponentProp(name)) {
         continue
       }
@@ -238,8 +243,24 @@ export function rewriteBinding(
           properties.push(spreadElement)
         }
       } else if (isStaticExp(arg)) {
-        isReservedProp = isComponentReservedProp(arg.content, context)
-        if (!isReservedProp && !isComponentProp(arg.content)) {
+        const name = arg.content
+        if (context.isX) {
+          if (name === 'class') {
+            const valueExpr = parseExpr(genExpr(exp), context, exp)
+            if (valueExpr) {
+              classExprArr.push(valueExpr)
+            }
+            continue
+          } else if (name === 'style') {
+            const valueExpr = parseExpr(genExpr(exp), context, exp)
+            if (valueExpr) {
+              styleExprArr.push(valueExpr)
+            }
+            continue
+          }
+        }
+        isReservedProp = name === 'id'
+        if (!isReservedProp && !isComponentProp(name)) {
           continue
         }
         // :name="name"
@@ -247,7 +268,7 @@ export function rewriteBinding(
         if (!valueExpr) {
           continue
         }
-        properties.push(createObjectProperty(arg.content, valueExpr))
+        properties.push(createObjectProperty(name, valueExpr))
       } else {
         // :[dynamic]="dynamic"
         const leftExpr = parseExpr(genExpr(arg), context, exp)
@@ -274,6 +295,28 @@ export function rewriteBinding(
     }
   }
 
+  if (classExprArr.length) {
+    properties.push(
+      createObjectProperty(
+        'class',
+        classExprArr.length === 1
+          ? classExprArr[0]
+          : createMergeExpr(NORMALIZE_CLASS, classExprArr, context)
+      )
+    )
+  }
+
+  if (styleExprArr.length) {
+    properties.push(
+      createObjectProperty(
+        'style',
+        styleExprArr.length === 1
+          ? styleExprArr[0]
+          : createMergeExpr(NORMALIZE_STYLE, styleExprArr, context)
+      )
+    )
+  }
+
   if (properties.length) {
     props.push(
       createBindDirectiveNode(
@@ -282,6 +325,16 @@ export function rewriteBinding(
       )
     )
   }
+}
+
+function createMergeExpr(
+  name: symbol,
+  args: Expression[],
+  context: TransformContext
+) {
+  return callExpression(identifier(context.helperString(name)), [
+    arrayExpression(args),
+  ])
 }
 
 function createVBindSpreadElement(

@@ -32,6 +32,17 @@ bar
   return {}
 }`
     )
+    assert(
+      `<custom class="foo"/>`,
+      `<custom class="foo" style="{{'--status-bar-height:' + a}}" u-i="2a9ec0b0-0" u-p="{{b||''}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: _p({ class: 'foo', style: { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` } }) }
+  return __returned__
+}`,
+      {
+        isX: true,
+      }
+    )
   })
   test('v-bind:class basic', () => {
     assert(
@@ -47,6 +58,17 @@ bar
       `(_ctx, _cache) => {
   return { a: _n(_ctx.foo | _ctx.bar) }
 }`
+    )
+    assert(
+      `<custom :class="foo"/>`,
+      `<custom class="{{a}}" style="{{'--status-bar-height:' + b}}" u-i="2a9ec0b0-0" u-p="{{c||''}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _n(_ctx.foo), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ class: _ctx.foo, style: { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` } }) }
+  return __returned__
+}`,
+      {
+        isX: true,
+      }
     )
   })
   test('v-bind:class basic + class ', () => {
@@ -64,6 +86,28 @@ bar
   return { a: _n(_ctx.foo) }
 }`
     )
+    assert(
+      `<custom :class="foo" class="bar"/>`,
+      `<custom class="{{[a, 'bar']}}" style="{{'--status-bar-height:' + b}}" u-i="2a9ec0b0-0" u-p="{{c||''}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _n(_ctx.foo), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ class: _normalizeClass([_ctx.foo, 'bar']), style: { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` } }) }
+  return __returned__
+}`,
+      {
+        isX: true,
+      }
+    )
+    assert(
+      `<custom class="bar" :class="foo"/>`,
+      `<custom class="{{['bar', a]}}" style="{{'--status-bar-height:' + b}}" u-i="2a9ec0b0-0" u-p="{{c||''}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _n(_ctx.foo), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ class: _normalizeClass(['bar', _ctx.foo]), style: { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` } }) }
+  return __returned__
+}`,
+      {
+        isX: true,
+      }
+    )
   })
   test('v-bind:class object syntax', () => {
     assert(
@@ -79,6 +123,17 @@ bar
       `(_ctx, _cache) => {
   return { a: _ctx.ok ? 1 : '', b: _ctx.handle(_ctx.ok) ? 1 : '', c: _ctx.ok > 1 ? 1 : '', d: _ctx.j ? 1 : '', e: _ctx.k, f: _ctx.l, g: _ctx.m ? 1 : '', h: _n(_ctx.n), i: _n({ a: true }), j: _n({ b: _ctx.o }) }
 }`
+    )
+    assert(
+      `<custom :class="{ red: \`\${isRed}\` }"/>`,
+      `<custom class="{{[a && 'red']}}" style="{{'--status-bar-height:' + b}}" u-i="2a9ec0b0-0" u-p="{{c||''}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.isRed}\` ? 1 : '', b: \`\${_ctx.u_s_b_h}px\`, c: _p({ class: { red: \`\${_ctx.isRed}\` }, style: { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` } }) }
+  return __returned__
+}`,
+      {
+        isX: true,
+      }
     )
   })
   test('v-bind:class object syntax + class', () => {
@@ -109,6 +164,17 @@ bar
       `(_ctx, _cache) => {
   return { a: _ctx.ok ? 1 : '', b: _ctx.handle(_ctx.ok) ? 1 : '', c: _ctx.ok > 1 ? 1 : '', d: _ctx.j ? 1 : '', e: _ctx.k, f: _ctx.l, g: _ctx.m ? 1 : '', h: _n(_ctx.n), i: _n({ a: true }), j: _n({ b: _ctx.o }) }
 }`
+    )
+    assert(
+      `<custom :class="{ red: isRed }" class="foo  bar"/>`,
+      `<custom class="{{[a && 'red', 'foo', 'bar']}}" style="{{'--status-bar-height:' + b}}" u-i="2a9ec0b0-0" u-p="{{c||''}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _ctx.isRed ? 1 : '', b: \`\${_ctx.u_s_b_h}px\`, c: _p({ class: _normalizeClass([{ red: _ctx.isRed }, 'foo bar']), style: { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` } }) }
+  return __returned__
+}`,
+      {
+        isX: true,
+      }
     )
   })
   test('v-bind:class array syntax', () => {
