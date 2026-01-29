@@ -250,7 +250,7 @@ describe('compiler: options with mergeVirtualHostAttributes', () => {
       `<custom-view><view/></custom-view>`,
       `<custom-view u-s=\"{{['d']}}\" style=\"{{'--status-bar-height:' + b + ';' + (virtualHostStyle || '')}}\" virtualHostStyle=\"{{'--status-bar-height:' + b + ';' + (virtualHostStyle || '')}}\" u-i=\"2a9ec0b0-0\" id=\"{{a}}\" virtualHostId=\"{{a}}\" u-p=\"{{c||''}}\" class=\"{{[virtualHostClass]}}\" virtualHostClass=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}\" virtualHostHidden=\"{{virtualHostHidden || false}}\"><view/></custom-view>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _gei(_ctx, ''), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ id: _gei(_ctx, ''), style: { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` } }) }
+  const __returned__ = { a: _gei(_ctx, ''), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ id: _gei(_ctx, ''), style: _normalizeStyle({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }) }) }
   return __returned__
 }`,
       optionsX
