@@ -7,6 +7,7 @@ import {
   isStringLiteral,
 } from '@babel/types'
 import { walk } from 'estree-walker'
+import { normalizePath } from '../utils'
 
 const externalClassesCache = new Map<
   string,
@@ -25,19 +26,27 @@ export interface PageExternalClassesInfo {
   hasAppAndPageStyle?: boolean
 }
 
-const pageStyleIsolationCache = new Map<string, boolean>() // 子组件是否存在 styleIsolation 为app
+export type StyleIsolation = 'isolated' | 'app' | 'app-and-page'
+
+const pageStyleIsolationCache = new Map<
+  string,
+  {
+    styleIsolation: StyleIsolation
+    isPage: boolean
+  }
+>()
 
 const pageExternalClassesCache = new Map<string, PageExternalClassesInfo>()
 
 export function findPageExternalClasses(filename: string) {
-  return pageExternalClassesCache.get(filename)
+  return pageExternalClassesCache.get(normalizePath(filename))
 }
 
 export function updatePageExternalClasses(
   filename: string,
   info: PageExternalClassesInfo
 ) {
-  pageExternalClassesCache.set(filename, info)
+  pageExternalClassesCache.set(normalizePath(filename), info)
 }
 
 export function addPageExternalClasses(
@@ -46,10 +55,11 @@ export function addPageExternalClasses(
   hasDynamic: boolean,
   hasAppAndPageStyle?: boolean
 ) {
-  let info = pageExternalClassesCache.get(filename)
+  const normalizedFilename = normalizePath(filename)
+  let info = pageExternalClassesCache.get(normalizedFilename)
   if (!info) {
     info = { staticClasses: new Set(), hasDynamic: false }
-    pageExternalClassesCache.set(filename, info)
+    pageExternalClassesCache.set(normalizedFilename, info)
   }
   staticClasses.forEach((cls) => info!.staticClasses.add(cls))
   if (hasDynamic) {
@@ -61,7 +71,7 @@ export function addPageExternalClasses(
 }
 
 export function clearPageExternalClasses(filename: string) {
-  pageExternalClassesCache.delete(filename)
+  pageExternalClassesCache.delete(normalizePath(filename))
 }
 
 export function hasExternalClasses(code: string) {
@@ -69,14 +79,14 @@ export function hasExternalClasses(code: string) {
 }
 
 export function findMiniProgramComponentExternalClasses(filename: string) {
-  return externalClassesCache.get(filename)
+  return externalClassesCache.get(normalizePath(filename))
 }
 
 export function updateMiniProgramComponentExternalClasses(
   filename: string,
   value: { mtime: number; classes: string[] }
 ) {
-  externalClassesCache.set(filename, value)
+  externalClassesCache.set(normalizePath(filename), value)
 }
 
 export function parseExternalClasses(ast: Program) {
@@ -103,8 +113,8 @@ export function parseExternalClasses(ast: Program) {
   return classes
 }
 
-export function parseStyleIsolation(ast: Program) {
-  let styleIsolationValue = ''
+export function parseStyleIsolation(ast: Program): StyleIsolation | '' {
+  let styleIsolationValue: StyleIsolation | '' = ''
   ;(walk as any)(ast, {
     enter(child: Node, parent: Node) {
       if (!isIdentifier(child) || child.name !== 'styleIsolation') {
@@ -116,8 +126,12 @@ export function parseStyleIsolation(ast: Program) {
       if (!isStringLiteral(parent.value)) {
         return
       }
-      if (parent.value.value === 'app') {
-        styleIsolationValue = 'app'
+      if (
+        parent.value.value === 'app' ||
+        parent.value.value === 'app-and-page' ||
+        parent.value.value === 'isolated'
+      ) {
+        styleIsolationValue = parent.value.value
       }
       return parent.value.value
     },
@@ -125,13 +139,23 @@ export function parseStyleIsolation(ast: Program) {
   return styleIsolationValue
 }
 
+/**
+ * 目前只有小程序平台才会走这个逻辑
+ * @param pagePahth
+ * @param value
+ * @param isPage
+ */
 export function updateMiniProgramComponentStyleIsolation(
   pagePahth: string,
-  value: boolean
+  value: StyleIsolation,
+  isPage = false
 ) {
-  pageStyleIsolationCache.set(pagePahth, value)
+  pageStyleIsolationCache.set(normalizePath(pagePahth), {
+    styleIsolation: value,
+    isPage,
+  })
 }
 
 export function findMiniProgramComponentStyleIsolation(pagePahth: string) {
-  return pageStyleIsolationCache.get(pagePahth)
+  return pageStyleIsolationCache.get(normalizePath(pagePahth))
 }
