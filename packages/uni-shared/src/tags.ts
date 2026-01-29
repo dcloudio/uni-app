@@ -164,10 +164,18 @@ export const UVUE_WEB_BUILT_IN_TAGS = [
   'sticky-section',
   'sticky-header',
   'cloud-db-element',
-  'loading-element'
+  'loading-element',
+  'loading'
 ].map((tag) => 'uni-' + tag)
 
-export const UVUE_MP_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS
+export const UVUE_MP_BUILT_IN_TAGS = [
+  'list-view',
+  'list-item',
+  'sticky-section',
+  'sticky-header',
+  'cloud-db-element',
+  'loading-element',
+].map((tag) => 'uni-' + tag)
 
 export const UVUE_IOS_BUILT_IN_TAGS = [
   'scroll-view',
@@ -213,6 +221,32 @@ export function isBuiltInComponent(tag: string) {
   )
 }
 
+export function isWebBuiltInComponent(tag: string) {
+  if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
+    return false
+  }
+  // h5 平台会被转换为 v-uni-
+  const realTag = 'uni-' + tag.replace('v-uni-', '')
+  // TODO 区分x和非x
+  return (
+    BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
+    UVUE_WEB_BUILT_IN_TAGS.indexOf(realTag) !== -1
+  )
+}
+
+export function isMPBuiltInComponent(tag: string) {
+  if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
+    return false
+  }
+  // h5 平台会被转换为 v-uni-
+  const realTag = 'uni-' + tag.replace('v-uni-', '')
+  // TODO 区分x和非x
+  return (
+    BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
+    UVUE_MP_BUILT_IN_TAGS.indexOf(realTag) !== -1
+  )
+}
+
 export function isH5CustomElement(tag: string, isX = false) {
   if (isX && UVUE_WEB_BUILT_IN_TAGS.indexOf(tag) !== -1) {
     return true
@@ -228,7 +262,7 @@ export function isH5NativeTag(tag: string) {
   return (
     tag !== 'head' &&
     (isHTMLTag(tag) || isSVGTag(tag)) &&
-    !isBuiltInComponent(tag)
+    !isWebBuiltInComponent(tag)
   )
 }
 
@@ -403,7 +437,7 @@ export function isMiniProgramUVueNativeTag(tag: string) {
   if (tag.startsWith('uni-') && tag.endsWith('-element')) {
     return true
   }
-  return isBuiltInComponent(tag)
+  return isMPBuiltInComponent(tag)
 }
 
 export function createIsCustomElement(tags: string[] = []) {
