@@ -191,7 +191,7 @@ checkbox {
 
 /* #ifdef MP-WEIXIN */
 /* 
- * 目前仅适配微信小程序，其他小程序平台需要额外适配
+ * radio目前仅适配微信小程序，其他小程序平台需要额外适配
  */
 .uni__inherit_flex_box_style,
 radio .wx-radio-wrapper {
@@ -200,6 +200,9 @@ radio .wx-radio-wrapper {
   align-content: inherit;
   justify-content: inherit;
   align-items: inherit;
+}
+
+radio .wx-radio-wrapper {
   flex: 1;
 }
 
