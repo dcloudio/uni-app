@@ -39,7 +39,7 @@ export const transformRoot: NodeTransform = (node, context) => {
       return
     }
     hasBindingCssVars && addCssVars(child, context)
-    context.isX && addStatusBarStyle(child, context)
+    context.isX && traverseChildren(child, context)
   })
 }
 
@@ -90,5 +90,15 @@ function addStatusBarStyle(node: ElementNode, context: TransformContext) {
         : arrayExpression([originalExpr, style])
       styleProp.exp.content = genBabelExpr(newExpr)
     }
+  }
+}
+
+function traverseChildren(node: ElementNode, context: TransformContext) {
+  if (node.tag !== 'template') {
+    addStatusBarStyle(node, context)
+  } else {
+    node.children.forEach((child) => {
+      traverseChildren(child as ElementNode, context)
+    })
   }
 }
