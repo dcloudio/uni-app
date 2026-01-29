@@ -261,5 +261,5 @@ export function isFilterExpr(node: ExpressionNode, context: TransformContext) {
   return false
 }
 
-export const builtInCustomElements = ['uni-cloud-db-element']
-export const builtInComponents = ['unicloud-db', 'loading']
+export const builtInCustomElements = ['uni-cloud-db-element', 'uni-loading-element']
+export const builtInComponents = ['unicloud-db', 'uniloading']
