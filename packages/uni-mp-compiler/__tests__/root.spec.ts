@@ -161,4 +161,15 @@ describe('compiler: root', () => {
       { isX: true }
     )
   })
+  test('v-for', () => {
+    assert(
+      `<template v-for="item in list"><view>item -- {{ item }}</view></template>`,
+      `<block wx:for="{{a}}" wx:for-item="item"><view style="{{'--status-bar-height:' + b}}">item -- {{item.a}}</view></block>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _f(_ctx.list, (item, k0, i0) => { return { a: _t(item) }; }), b: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      { isX: true }
+    )
+  })
 })
