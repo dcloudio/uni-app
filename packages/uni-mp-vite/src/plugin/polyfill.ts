@@ -51,6 +51,8 @@ function rewriteCompileScript() {
         options.source = `@import "/app.wxss";\n` + options.source
       } else if (styleIsolation === 'isolated') {
         options.source = `@import "/uvue.wxss";\n` + options.source
+      } else if (styleIsolation === undefined) {
+        options.source = `@import "/uvue.wxss";\n` + options.source
       }
     }
     // https://github.com/dcloudio/uni-app/issues/4076
