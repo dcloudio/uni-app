@@ -8,6 +8,7 @@ const APP_NATIVE_TAGS = [
   'nested-scroll-body',
   'rich-text-native',
   'cover-image',
+  'cover-view',
 ]
 
 export function isDom2AppNativeTag(tag: string) {
