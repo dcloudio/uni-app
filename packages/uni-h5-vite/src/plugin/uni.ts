@@ -15,7 +15,6 @@ import {
 import type { CompilerOptions } from '@vue/compiler-core'
 import { transformCustomElement } from './transforms/transformCustomElement'
 import { transformAttributePart } from './transforms/transformAttributePart'
-import { transformLoading } from './transforms/transformLoading'
 
 function realIsH5CustomElement(tag: string) {
   // TODO isH5CustomElement目前被多个平台引用，重构比较麻烦
@@ -41,7 +40,6 @@ if (process.env.UNI_APP_X === 'true') {
   nodeTransforms.push(transformCustomElement)
   if (process.env.UNI_UTS_PLATFORM === 'web') {
     nodeTransforms.push(transformAttributePart)
-    nodeTransforms.push(transformLoading)
   }
 }
 
