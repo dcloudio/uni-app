@@ -25,7 +25,7 @@ import { transformModel } from './transforms/vModel'
 import { transformShow } from './transforms/vShow'
 import { transformVText } from './transforms/vText'
 import { transformInterpolation } from './transforms/transformInterpolation'
-import { transformText } from './transforms/transformText'
+// import { transformText } from './transforms/transformText'
 import { transformOn } from './transforms/vOnWithModifier'
 import { transformBind } from './transforms/vBind'
 import { transformSlotOutlet } from './transforms/transformSlotOutlet'
@@ -70,7 +70,7 @@ export function getBaseTransformPreset(
       transformSlotOutlet,
       transformElement,
       trackSlotScopes,
-      transformText,
+      // transformText,
       transformTapToClick,
       transformInterpolation,
       transformObjectExpression,
