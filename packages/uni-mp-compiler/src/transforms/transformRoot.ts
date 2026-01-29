@@ -8,6 +8,7 @@ import {
   createBindDirectiveNode,
   isElementNode,
   isSimpleExpressionNode,
+  isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import { UNI_STATUS_BAR_HEIGHT } from '@dcloudio/uni-shared'
 import type { NodeTransform, TransformContext } from '../transform'
@@ -94,6 +95,9 @@ function addStatusBarStyle(node: ElementNode, context: TransformContext) {
 }
 
 function traverseChildren(node: ElementNode, context: TransformContext) {
+  if (isUserComponent(node, context)) {
+    return
+  }
   if (node.tag !== 'template') {
     addStatusBarStyle(node, context)
   } else {
