@@ -198,6 +198,21 @@ const transformMPBuiltInTagOptions = {
 };
 const transformMPBuiltInTag = uniCliShared.createMPBuiltInTagTransform(transformMPBuiltInTagOptions);
 
+function transformLoading(node, context) {
+    if (!uniCliShared.isElementNode(node)) {
+        return;
+    }
+    /**
+     * loading组件在easycom目录名为uniloading，
+     * 不使用loading作为名称，是因为app平台内置了loading，easycom会覆盖内置loading
+     * 不使用uni-loading作为名称，是因为uni-ui有同名组件
+     */
+    if (node.tag === 'loading') {
+        node.tag = 'uniloading';
+        node.tagType = compilerCore.ElementTypes.COMPONENT;
+    }
+}
+
 const projectConfigFilename = 'mini.project.json';
 const COMPONENTS_DIR = 'mycomponents';
 const miniProgram = {
@@ -230,7 +245,7 @@ const nodeTransforms = [
     uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, compilerCore.NodeTypes.ATTRIBUTE),
 ];
 if (process.env.UNI_APP_X === 'true') {
-    nodeTransforms.push(transformMPBuiltInTag, uniCliShared.transformDirection);
+    nodeTransforms.push(transformMPBuiltInTag, uniCliShared.transformDirection, transformLoading);
 }
 const compilerOptions = {
     nodeTransforms,
