@@ -3,7 +3,7 @@
 
 		<view class="uni-loading_dialog__container"
 			:class="{'uni-loading_dialog__show': showAnim}">
-			<loading class="uni-loading_dialog__container__loading" :ios-snow="iosSnow" />
+			<loading class="uni-loading_dialog__container__loading" :ios-spinner="iosSpinner" />
 			<text class="uni-loading_dialog__container__title" max-lines="1" v-if="title" >{{title}}</text>
 		</view>
 	</view>
@@ -18,7 +18,7 @@
 	const failEventName: Ref<string> = ref('')
 	const title: Ref<string> = ref('')
 	const showAnim: Ref<boolean> = ref(false)
-	const iosSnow: Ref<boolean> = ref(false)
+	const iosSpinner: Ref<boolean> = ref(false)
 
 	onReady(() => {
 		setTimeout(() => {
@@ -36,8 +36,8 @@
 			if (data['title'] != null) {
 				title.value = data['title'] as string
 			}
-			if (data['iosSnow'] != null) {
-				iosSnow.value = data['iosSnow'] as boolean
+			if (data['iosSpinner'] != null) {
+				iosSpinner.value = data['iosSpinner'] as boolean
 			}
 		})
 
