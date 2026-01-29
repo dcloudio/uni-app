@@ -14,13 +14,13 @@
   <!-- #endif -->
 
   <!-- #ifdef WEB -->
-  <view class="__uni_loading_container__" ref="LoadingRef" style="display: flex;">
+  <uni-loading-element class="__uni_loading_container__" ref="LoadingRef" style="display: flex;">
     <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" style="box-sizing: border-box;" :style="{ width: loadingStyle.size, height: loadingStyle.size, borderWidth: loadingStyle.borderWidth }"></view>
-  </view>
+  </uni-loading-element>
   <!-- #endif -->
 
   <!-- #ifdef MP -->
-  <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" style="box-sizing: border-box;"></view>
+  <uni-loading-element class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" style="box-sizing: border-box;"></uni-loading-element>
   <!-- #endif -->
 </template>
 
