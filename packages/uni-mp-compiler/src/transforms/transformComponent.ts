@@ -43,6 +43,7 @@ import {
   arrayExpression,
   callExpression,
   identifier,
+  isStringLiteral,
   logicalExpression,
   objectExpression,
   objectProperty,
@@ -296,23 +297,31 @@ export function rewriteBinding(
   }
 
   if (classExprArr.length) {
+    const classValue =
+      classExprArr.length === 1
+        ? classExprArr[0]
+        : arrayExpression(classExprArr)
     properties.push(
       createObjectProperty(
         'class',
-        classExprArr.length === 1
-          ? classExprArr[0]
-          : createMergeExpr(NORMALIZE_CLASS, classExprArr, context)
+        isStringLiteral(classValue)
+          ? classValue
+          : createNormalizeExpr(NORMALIZE_CLASS, classValue, context)
       )
     )
   }
 
   if (styleExprArr.length) {
+    const styleValue =
+      styleExprArr.length === 1
+        ? styleExprArr[0]
+        : arrayExpression(styleExprArr)
     properties.push(
       createObjectProperty(
         'style',
-        styleExprArr.length === 1
-          ? styleExprArr[0]
-          : createMergeExpr(NORMALIZE_STYLE, styleExprArr, context)
+        isStringLiteral(styleValue)
+          ? styleValue
+          : createNormalizeExpr(NORMALIZE_STYLE, styleValue, context)
       )
     )
   }
@@ -327,14 +336,12 @@ export function rewriteBinding(
   }
 }
 
-function createMergeExpr(
+function createNormalizeExpr(
   name: symbol,
-  args: Expression[],
+  args: Expression,
   context: TransformContext
 ) {
-  return callExpression(identifier(context.helperString(name)), [
-    arrayExpression(args),
-  ])
+  return callExpression(identifier(context.helperString(name)), [args])
 }
 
 function createVBindSpreadElement(
