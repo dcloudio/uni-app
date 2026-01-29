@@ -5007,6 +5007,18 @@ const getFunctionalFallthrough = (attrs) => {
   }
   return res;
 };
+function clearTemplateRefs(templateRefs) {
+  if (!templateRefs) {
+    return [];
+  }
+  return templateRefs.filter((templateRef) => {
+    const v = templateRef.v;
+    if (v && typeof v === "object" && ["UNI-LOADING-ELEMENT", "UNI-CLOUD-DB-ELEMENT"].includes(v.nodeName)) {
+      return true;
+    }
+    return false;
+  });
+}
 function renderComponentRoot(instance) {
   const {
     type: Component,
@@ -5034,8 +5046,12 @@ function renderComponentRoot(instance) {
     inheritAttrs
   } = instance;
   instance.$uniElementIds = /* @__PURE__ */ new Map();
-  instance.$templateRefs = [];
-  instance.$templateUniElementRefs = [];
+  instance.$templateRefs = clearTemplateRefs(
+    instance.$templateRefs || []
+  );
+  instance.$templateUniElementRefs = clearTemplateRefs(
+    instance.$templateUniElementRefs || []
+  );
   instance.$templateUniElementStyles = {};
   instance.$ei = 0;
   pruneComponentPropsCache(uid);
