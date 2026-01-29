@@ -161,8 +161,9 @@ const UVUE_WEB_BUILT_IN_TAGS = [
     'sticky-section',
     'sticky-header',
     'cloud-db-element',
-    'loading',
+    'loading-element'
 ].map((tag) => 'uni-' + tag);
+const UVUE_MP_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS;
 const UVUE_IOS_BUILT_IN_TAGS = [
     'scroll-view',
     'web-view',
@@ -2685,6 +2686,7 @@ exports.UTSValueIterable = UTSValueIterable;
 exports.UVUE_BUILT_IN_TAGS = UVUE_BUILT_IN_TAGS;
 exports.UVUE_HARMONY_BUILT_IN_TAGS = UVUE_HARMONY_BUILT_IN_TAGS;
 exports.UVUE_IOS_BUILT_IN_TAGS = UVUE_IOS_BUILT_IN_TAGS;
+exports.UVUE_MP_BUILT_IN_TAGS = UVUE_MP_BUILT_IN_TAGS;
 exports.UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS = UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS;
 exports.UVUE_WEB_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS;
 exports.UniBaseNode = UniBaseNode;
