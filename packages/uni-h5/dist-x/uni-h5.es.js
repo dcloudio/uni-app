@@ -29768,7 +29768,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     const failEventName = ref("");
     const title = ref("");
     const showAnim = ref(false);
-    const iosSnow = ref(false);
+    const iosSpinner = ref(false);
     onReady(() => {
       setTimeout(() => {
         showAnim.value = true;
@@ -29783,8 +29783,8 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
         if (data["title"] != null) {
           title.value = data["title"];
         }
-        if (data["iosSnow"] != null) {
-          iosSnow.value = data["iosSnow"];
+        if (data["iosSpinner"] != null) {
+          iosSpinner.value = data["iosSpinner"];
         }
       });
       uni.$emit(readyEventName.value, {});
@@ -29810,8 +29810,8 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
             default: withCtx(() => [
               createVNode(_component_loading, {
                 class: "uni-loading_dialog__container__loading",
-                "ios-snow": iosSnow.value
-              }, null, 8, ["ios-snow"]),
+                "ios-spinner": iosSpinner.value
+              }, null, 8, ["ios-spinner"]),
               title.value ? (openBlock(), createBlock(_component_text, {
                 key: 0,
                 class: "uni-loading_dialog__container__title",

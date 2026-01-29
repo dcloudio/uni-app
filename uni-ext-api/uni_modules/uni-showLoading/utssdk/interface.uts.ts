@@ -181,7 +181,7 @@ export type ShowLoadingOptions = {
 			}
 		}
 	 */
-	iosSnow?: boolean | null,
+	iosSpinner?: boolean | null,
   /**
    * 接口调用成功的回调函数
    */
