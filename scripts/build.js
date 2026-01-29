@@ -6,7 +6,7 @@ const { spawn } = require('child_process')
 const { parse } = require('jsonc-parser')
 const { config } = require('dotenv')
 const { genHarmonyExtApiExport } = require('./genHarmonyExtApiExport')
-// const { syncExtComponentFile } = require('./syncExtComponentFile')
+const { syncExtComponentFile } = require('./syncExtComponentFile')
 
 config()
 
@@ -134,10 +134,9 @@ async function build(target) {
   if (['uni-app-harmony'].includes(target)) {
     await fs.remove(`${pkgDir}/dist-x`)
   }
-  // if (process.env.UNI_APP_EXT_COMPONENT_DIR) {
-  //   const platform = target === 'uni-h5' ? 'web' : target.startsWith('uni-mp') ? 'mp' : ''
-  //   platform && syncExtComponentFile([process.env.UNI_APP_EXT_COMPONENT_DIR], platform)
-  // }
+  if (process.env.UNI_APP_EXT_COMPONENT_DIR && (target === 'uni-h5' || target.startsWith('uni-mp'))) {
+    syncExtComponentFile([process.env.UNI_APP_EXT_COMPONENT_DIR])
+  }
 
   const env = devOnly ? 'development' : 'production'
 

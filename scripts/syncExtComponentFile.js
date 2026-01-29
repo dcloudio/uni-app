@@ -2,127 +2,43 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.syncExtComponentFile = syncExtComponentFile;
 var fs_extra_1 = __importDefault(require("fs-extra"));
 var path_1 = __importDefault(require("path"));
 var fast_glob_1 = require("fast-glob");
-var compiler_sfc_1 = require("@vue/compiler-sfc");
 function resolve(file) {
     return path_1.default.resolve(__dirname, file);
 }
 var uniComponentsPath = resolve('../packages/uni-components');
-var uniComponentsStyleXPath = path_1.default.resolve(uniComponentsPath, './style-x');
-var syncExtComponents = {
-    'uni-loading': (_a = {
-            web: {
-                name: 'Loading',
-                path: path_1.default.resolve(uniComponentsPath, './src/vue'),
-                dir: 'loading',
-                index: 'index-x',
-                css: 'loading',
-                preContext: { APP: false, APP_ANDROID: false, APP_HARMONY: false, APP_IOS: false, MP: false, MP_WEIXIN: false, H5: true, WEB: true }
-            }
-        },
-        _a['mp'] = {
-            preContext: { APP: false, APP_ANDROID: false, APP_HARMONY: false, APP_IOS: false, MP: true, H5: false, WEB: false },
-            libX: {
-                path: path_1.default.resolve(uniComponentsPath, './lib-x'),
-                dir: 'uniloading',
-                index: 'uniloading',
-                preContext: { APP: false, APP_ANDROID: false, APP_HARMONY: false, APP_IOS: false, MP: true, H5: false, WEB: false },
-            }
-        },
-        _a)
-};
-function createVueSFCCode(name, templateContent, scriptContent) {
-    return "<script setup lang=\"ts\">\n".concat(scriptContent.import, "\n\n").concat(scriptContent.content, "\n</script>\n\n<template>\n").concat(templateContent, "\n</template>\n");
-}
-function syncExtComponentFile(apiDirs, platform) {
-    if (platform === void 0) { platform = 'web'; }
-    var preprocess = require('../packages/uni-preprocess').preprocess;
+var libXPath = path_1.default.resolve(uniComponentsPath, './lib-x');
+var components = [{
+        originName: 'loading',
+        targetName: 'uniloading'
+    }];
+function syncExtComponentFile(apiDirs) {
     try {
         apiDirs.forEach(function (apiDir) {
-            var extComponentDir = apiDir;
-            Object.keys(syncExtComponents).forEach(function (componentName) {
-                (0, fast_glob_1.sync)(path_1.default.join(extComponentDir, "./".concat(componentName, "/package.json"))).forEach(function (packageJsonPath) {
-                    var _a;
-                    var packageJson = fs_extra_1.default.readJsonSync(packageJsonPath, { encoding: 'utf-8' });
-                    var componentOptions = syncExtComponents[componentName];
-                    var platforms = Object.keys(componentOptions);
-                    var syncExtComponentOption = componentOptions[platform];
-                    var supported = (_a = packageJson['uni_modules']) === null || _a === void 0 ? void 0 : _a.components[platform];
-                    if ((supported === true || typeof supported === 'undefined') && syncExtComponentOption) {
-                        var componentPath_1 = path_1.default.resolve(packageJsonPath, '../components');
-                        (0, fast_glob_1.sync)(path_1.default.join(componentPath_1, '**')).forEach(function (filePath) {
-                            var _a, _b, _c, _d, _e, _f, _g, _h;
-                            var _j = path_1.default.parse(path_1.default.relative(componentPath_1, filePath)), buildInComponentName = _j.name, ext = _j.ext, dir = _j.dir;
-                            switch (ext) {
-                                case '.uvue':
-                                case '.vue': {
-                                    var originCode = fs_extra_1.default.readFileSync(filePath, { encoding: 'utf-8' });
-                                    if (syncExtComponentOption.name) {
-                                        var vueCode = preprocess(preprocess(originCode, { type: 'html', context: syncExtComponentOption.preContext }).code, { type: 'js', context: syncExtComponentOption.preContext }).code;
-                                        var sfcParseResult = (0, compiler_sfc_1.parse)(vueCode);
-                                        if (sfcParseResult.errors.length) {
-                                            console.error("[uni-h5 (syncExtComponentFile)] ".concat(componentName, " parse ").concat(filePath, " error:"), sfcParseResult.errors);
-                                            return;
-                                        }
-                                        else {
-                                            var descriptor = sfcParseResult.descriptor;
-                                            var scriptSetupContent = ((_a = descriptor.scriptSetup) === null || _a === void 0 ? void 0 : _a.content) || '';
-                                            var scriptContent = ((_b = descriptor.script) === null || _b === void 0 ? void 0 : _b.content) || '';
-                                            var parseScriptContent = { import: '', content: '' };
-                                            if (scriptSetupContent.length) {
-                                                var regex = /^\s*(import[\s\S]*?from\s+['"][\s\S]*?['"];?)/gm;
-                                                var imports = [];
-                                                var execResult = void 0;
-                                                while (execResult = regex.exec(scriptSetupContent)) {
-                                                    var importStr = execResult[1];
-                                                    imports.push(importStr);
-                                                    scriptSetupContent = scriptSetupContent.replace(execResult[0], '');
-                                                    regex.lastIndex = 0;
-                                                }
-                                                parseScriptContent.import = imports.join('\n');
-                                                parseScriptContent.content = scriptSetupContent;
-                                            }
-                                            else if (scriptContent.length) {
-                                                parseScriptContent.content = scriptContent;
-                                            }
-                                            var finalVueCode = createVueSFCCode(syncExtComponentOption.name, ((_c = descriptor.template) === null || _c === void 0 ? void 0 : _c.content) || '', parseScriptContent);
-                                            if (syncExtComponentOption.path) {
-                                                fs_extra_1.default.outputFileSync(path_1.default.resolve(syncExtComponentOption.path, "".concat((_d = syncExtComponentOption.dir) !== null && _d !== void 0 ? _d : dir, "/").concat((_e = syncExtComponentOption.index) !== null && _e !== void 0 ? _e : buildInComponentName, ".vue")), finalVueCode);
-                                            }
-                                            fs_extra_1.default.outputFileSync(path_1.default.resolve(uniComponentsStyleXPath, "".concat((_f = syncExtComponentOption.css) !== null && _f !== void 0 ? _f : buildInComponentName, ".css")), descriptor.styles.map(function (styleBlock) { return styleBlock.content; }).join('\n'));
-                                        }
-                                    }
-                                    // libX 暂只支持 .vue 文件
-                                    var libX = syncExtComponentOption.libX;
-                                    if (libX) {
-                                        var vueCode = preprocess(preprocess(originCode, { type: 'html', context: libX.preContext }).code, { type: 'js', context: libX.preContext }).code;
-                                        if (libX.path) {
-                                            fs_extra_1.default.outputFileSync(path_1.default.resolve(libX.path, "".concat((_g = libX.dir) !== null && _g !== void 0 ? _g : buildInComponentName, "/").concat((_h = libX.index) !== null && _h !== void 0 ? _h : buildInComponentName, ".vue")), vueCode);
-                                        }
-                                    }
-                                    break;
-                                }
-                                case '.ts':
-                                case '.js':
-                                case '.uts': {
-                                    var _k = path_1.default.parse(filePath), name_1 = _k.name, ext_1 = _k.ext;
-                                    var originCode = fs_extra_1.default.readFileSync(filePath, { encoding: 'utf-8' });
-                                    var preCode = preprocess(originCode, {
-                                        type: 'js',
-                                        context: syncExtComponentOption.preContext
-                                    }).code;
-                                    var _path = syncExtComponentOption.path || syncExtComponentOption.libX.path;
-                                    var _dir = syncExtComponentOption.dir || syncExtComponentOption.libX.dir;
-                                    if (_path) {
-                                        fs_extra_1.default.outputFileSync(path_1.default.resolve(_path, "".concat(_dir !== null && _dir !== void 0 ? _dir : dir, "/").concat(name_1, ".ts")), preCode);
-                                    }
-                                    break;
-                                }
+            components.forEach(function (component) {
+                // 查找 uni-${originName} 组件
+                var componentDir = "uni-".concat(component.originName);
+                (0, fast_glob_1.sync)(path_1.default.join(apiDir, "./".concat(componentDir, "/package.json"))).forEach(function (packageJsonPath) {
+                    var componentsDir = path_1.default.resolve(packageJsonPath, '../components', component.originName);
+                    var originComponentPath = path_1.default.join(componentsDir, "".concat(component.originName, ".vue"));
+                    var targetPath = path_1.default.resolve(libXPath, component.targetName);
+                    // 复制 uni-${originName}/components/${originName}/${originName}.vue 到 targetPath/${targetName}.vue
+                    if (fs_extra_1.default.existsSync(originComponentPath)) {
+                        var targetFilePath = path_1.default.resolve(targetPath, "".concat(component.targetName, ".vue"));
+                        fs_extra_1.default.copySync(originComponentPath, targetFilePath);
+                    }
+                    // 复制 uni-${originName}/components 中的其他内容
+                    if (fs_extra_1.default.existsSync(componentsDir)) {
+                        (0, fast_glob_1.sync)(path_1.default.join(componentsDir, '*')).forEach(function (itemPath) {
+                            var itemName = path_1.default.basename(itemPath);
+                            // 跳过已经处理过的 originName 目录
+                            if (itemPath !== originComponentPath) {
+                                var targetItemPath = path_1.default.resolve(targetPath, itemName);
+                                fs_extra_1.default.copySync(itemPath, targetItemPath);
                             }
                         });
                     }
@@ -131,6 +47,6 @@ function syncExtComponentFile(apiDirs, platform) {
         });
     }
     catch (error) {
-        console.error('[uni-h5 (syncExtComponentFile)] sync ext component file error:', error);
+        console.error('[syncExtComponentFile] sync ext component file error:', error);
     }
 }
