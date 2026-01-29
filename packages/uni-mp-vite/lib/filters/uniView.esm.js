@@ -86,12 +86,6 @@ function sS (newValue, oldValue, _ownerInstance, instance) {
     instance.setStyle(newValue)
   }
 }
-function sRS (newValue, oldValue, _ownerInstance, instance) {
-  if (newValue) {
-    const root = instance.selectComponent && instance.selectComponent('.uni__component_root')
-    root && root.setStyle(newValue)
-  }
-}
 function sA (newValue, oldValue, _ownerInstance, instance) {
   if (newValue) {
     handleStartAnimation(newValue, _ownerInstance, instance)
@@ -100,6 +94,5 @@ function sA (newValue, oldValue, _ownerInstance, instance) {
 
 export default {
   sS,
-  sRS,
   sA,
 }

@@ -55,7 +55,6 @@ export const FILTER_MODULE_NAME = 'uV' // uniView
 export const FILTER_MODULE_FILE_NAME = 'uniView'
 
 export const FILTER_SET_ELEMENT_STYLE = 'sS' // setStyle
-export const FILTER_SET_ROOT_ELEMENT_STYLE = 'sRS' // setRootStyle
 export const FILTER_SET_ELEMENT_ANIMATION = 'sA' // setAnimation
 
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'

@@ -4,12 +4,6 @@ module.exports = {
       instance.setStyle(newValue)
     }
   },
-  sRS: function (newValue, oldValue, _ownerInstance, instance) {
-    if (newValue) {
-      const root = instance.selectComponent && instance.selectComponent('.uni__component_root')
-      root && root.setStyle(newValue)
-    }
-  },
   sA: function (newValue, oldValue, _ownerInstance, instance) {
     if (newValue) {
       handleStartAnimation(newValue, _ownerInstance, instance)
