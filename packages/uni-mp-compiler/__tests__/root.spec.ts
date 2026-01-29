@@ -140,4 +140,25 @@ describe('compiler: root', () => {
       { isX: true }
     )
   })
+  test('template', () => {
+    assert(
+      `<template v-if="show"><view/></template><template v-else><view/><text>123</text></template>`,
+      `<block wx:if="{{a}}"><view style="{{'--status-bar-height:' + b}}"/></block><block wx:else><view style="{{'--status-bar-height:' + c}}"/><text style="{{'--status-bar-height:' + d}}">123</text></block>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = _e({ a: _ctx.show }, _ctx.show ? { b: \`\${_ctx.u_s_b_h}px\` } : { c: \`\${_ctx.u_s_b_h}px\`, d: \`\${_ctx.u_s_b_h}px\` })
+  return __returned__
+}`,
+      { isX: true }
+    )
+
+    assert(
+      `<template v-if="show"><template v-if="show2"><view/></template><text>123</text></template>`,
+      `<block wx:if="{{a}}"><block wx:if="{{b}}"><view style="{{'--status-bar-height:' + c}}"/></block><text style="{{'--status-bar-height:' + d}}">123</text></block>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = _e({ a: _ctx.show }, _ctx.show ? _e({ b: _ctx.show2 }, _ctx.show2 ? { c: \`\${_ctx.u_s_b_h}px\` } : {}, { d: \`\${_ctx.u_s_b_h}px\` }) : {})
+  return __returned__
+}`,
+      { isX: true }
+    )
+  })
 })
