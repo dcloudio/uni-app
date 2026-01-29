@@ -63,7 +63,7 @@ bar
       `<custom :class="foo"/>`,
       `<custom class="{{a}}" u-i="2a9ec0b0-0" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _n(_ctx.foo), b: _p({ class: _ctx.foo }) }
+  const __returned__ = { a: _n(_ctx.foo), b: _p({ class: _normalizeClass(_ctx.foo) }) }
   return __returned__
 }`,
       {
@@ -128,7 +128,7 @@ bar
       `<custom :class="{ red: \`\${isRed}\` }"/>`,
       `<custom class="{{[a && 'red']}}" u-i="2a9ec0b0-0" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.isRed}\` ? 1 : '', b: _p({ class: { red: \`\${_ctx.isRed}\` } }) }
+  const __returned__ = { a: \`\${_ctx.isRed}\` ? 1 : '', b: _p({ class: _normalizeClass({ red: \`\${_ctx.isRed}\` }) }) }
   return __returned__
 }`,
       {
