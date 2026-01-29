@@ -69,7 +69,7 @@ describe('virtualHost', () => {
       `<custom :class="foo"><view class="bar">Hello</view></custom>`,
       `<custom u-s="{{['d']}}" class="{{[b, c]}}" virtualHostClass="{{[b, c]}}" u-i="2a9ec0b0-0" id="{{a}}" virtualHostId="{{a}}" u-p="{{d||''}}" style="{{virtualHostStyle}}" virtualHostStyle="{{virtualHostStyle || ''}}" hidden="{{virtualHostHidden || false}}" virtualHostHidden="{{virtualHostHidden || false}}"><view class="bar">Hello</view></custom>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _gei(_ctx, ''), b: _n(_ctx.foo), c: _pvhc(_ctx.$scope.data.virtualHostClass), d: _p({ id: _gei(_ctx, ''), class: _ctx.foo }) }
+  const __returned__ = { a: _gei(_ctx, ''), b: _n(_ctx.foo), c: _pvhc(_ctx.$scope.data.virtualHostClass), d: _p({ id: _gei(_ctx, ''), class: _normalizeClass(_ctx.foo) }) }
   return __returned__
 }`,
       optionsX
