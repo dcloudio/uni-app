@@ -13,14 +13,10 @@
 
   <!-- #endif -->
 
-  <!-- #ifdef WEB -->
-  <uni-loading-element class="__uni_loading_container__" ref="LoadingRef" style="display: flex;">
-    <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" style="box-sizing: border-box;" :style="{ width: loadingStyle.size, height: loadingStyle.size, borderWidth: loadingStyle.borderWidth }"></view>
+  <!-- #ifdef WEB || MP -->
+  <uni-loading-element class="default __uni_loading_container__" ref="LoadingRef" style="display: flex;">
+    <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" :style="loadingStyle"></view>
   </uni-loading-element>
-  <!-- #endif -->
-
-  <!-- #ifdef MP -->
-  <uni-loading-element class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" style="box-sizing: border-box;"></uni-loading-element>
   <!-- #endif -->
 </template>
 
@@ -65,11 +61,11 @@ const props = withDefaults(defineProps<{
 	    }
 	  }
 	*/
- iosSnow ?: boolean
+ iosSpinner ?: boolean
 }>(), {
   paused: false,
   bold: false,
-  iosSnow: false
+  iosSpinner: false
 })
 
 defineOptions({
@@ -82,15 +78,19 @@ defineOptions({
 });
 
 // #ifdef WEB
-import { ref, reactive, computed } from 'vue'
 import { useLoadingStyle } from './useLoadingStyle'
 
 const LoadingRef = ref<HTMLElement | null>(null)
 const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props.bold)))
 // #endif
-// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 
-// iOS 的ios-snow 属性需要监听color
+// #ifdef MP
+const LoadingRef = ref<HTMLElement | null>(null)
+const loadingStyle = reactive({})
+// #endif
+
+// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+// iOS 的ios-spinner 属性需要监听color
 // #ifdef APP-IOS
 const style = useComputedStyle({
   properties: [
@@ -130,7 +130,7 @@ function rgba2argb(color: string | null): string | null {
 
 // border-color 会被解为四个方向的值，取 top 值（哪个方向都一样）vapor 模式下需要转换为 argb 格式
 const borderColor = computed<string | null>(() => style.get('border-color')?.toString() ?? style.get('border-top-color')?.toString())
-// ios 增加ios-snow = true, color 优先级 > border-color, 两个css style 均生效
+// ios 增加ios-spinner = true, color 优先级 > border-color, 两个css style 均生效
 const color = computed<string | null>(() => style.get('color')?.toString())
 const timingFunction = computed<string | null>(() => style.get('animation-timing-function')?.toString())
 
@@ -142,11 +142,11 @@ const loadingState = reactive<LoadingState>({
 watchEffect(() => {
   let colorValue = borderColor.value
 	// #ifdef APP-IOS
-	if (color?.value != null && props.iosSnow == true) {
+	if (color?.value != null && props.iosSpinner == true) {
 		colorValue = color.value
 	}
 	// #endif
-	
+
   // #ifdef VUE3-VAPOR
   colorValue = rgba2argb(colorValue)
   // #endif
@@ -165,8 +165,8 @@ watchEffect(() => {
 
 // #ifdef APP-IOS
 watchEffect(() => {
-  const iosSnow = props.iosSnow
-  loadingState.nativeLoading?.updateIosSnow(iosSnow)
+  const iosSpinner = props.iosSpinner
+  loadingState.nativeLoading?.updateIosSpinner(iosSpinner)
 })
 // #endif
 
@@ -191,19 +191,18 @@ onUnmounted(() => {
   height: 100%;
 }
 /* #ifdef WEB || MP*/
-/* #ifdef WEB */
 .__uni_loading_container__ {
-  width: 16px;
-  height: 16px;
-  border-color: #000;
-  animation-timing-function: linear;
   justify-content: center;
   align-items: center;
+  /* #ifdef MP */
+  flex-shrink: 0;
+  /* #endif */
 }
-/* #endif */
+
 .__uni-loading__ {
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
   border-radius: 100%;
   border-width: 1px;
   border-style: solid;
@@ -220,12 +219,7 @@ onUnmounted(() => {
 }
 
 .__loading-4-3__ {
-  /* #ifdef MP */
-  border-color: #000;
-  /* #endif */
-  /* #ifdef WEB */
   border-color: inherit;
-  /* #endif */
   border-right-color: transparent !important;
 }
 
