@@ -446,7 +446,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
       `<unicloud-db ref="udb"/>`,
       `<unicloud-db ref="udb" style=\"{{'--status-bar-height:' + b}}\" u-i="2a9ec0b0-0" id="r0-2a9ec0b0" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}" u-p="{{c||''}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "unicloud-db", "type": 1 }, 'udb'), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ id: 'r0-2a9ec0b0', style: { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` } }) }
+  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "unicloud-db", "type": 1 }, 'udb'), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ id: 'r0-2a9ec0b0', style: _normalizeStyle({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }) }) }
   return __returned__
 }`,
       {
