@@ -29,7 +29,6 @@ import {
   FILTER_MODULE_NAME,
   FILTER_SET_ELEMENT_ANIMATION,
   FILTER_SET_ELEMENT_STYLE,
-  FILTER_SET_ROOT_ELEMENT_STYLE,
   builtInComponents,
   builtInCustomElements,
   filterName,
@@ -204,7 +203,7 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
     node.props.push(
       createBindDirectiveNode(
         filterObserverName(ATTR_SET_ELEMENT_STYLE),
-        filterName(isBuiltInComponent ? FILTER_SET_ROOT_ELEMENT_STYLE : FILTER_SET_ELEMENT_STYLE)
+        filterName(FILTER_SET_ELEMENT_STYLE)
       )
     )
     node.props.push(createBindDirectiveNode(ATTR_SET_ELEMENT_STYLE, ''))
