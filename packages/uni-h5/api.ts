@@ -27,7 +27,9 @@ const BLACKLIST = [
   'cssEnv',
   'cssVar',
   'useI18n',
-  'MatchMedia'
+  'MatchMedia',
+  // TODO 整理tags后调整此处
+  'Loading'
 ]
 
 export function genApiJson(code: string) {
