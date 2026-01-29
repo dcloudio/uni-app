@@ -2,6 +2,7 @@ import { extend } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import {
   findMiniProgramComponentStyleIsolation,
+  isAppVue,
   isMiniProgramPageFile,
   parseStyleIsolation,
   resolveBuiltIn,
@@ -36,8 +37,21 @@ function rewriteCompileScript() {
   compiler.compileStyleAsync = (
     options: SFCAsyncStyleCompileOptions
   ): Promise<SFCStyleCompileResults> => {
-    if (findMiniProgramComponentStyleIsolation(options.filename)) {
-      options.source = `@import "/app.wxss";\n` + options.source
+    if (
+      process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+      process.env.UNI_APP_X === 'true' &&
+      isAppVue(options.filename)
+    ) {
+      options.source = `@import "/uvue.wxss";\n` + options.source
+    }
+    const { styleIsolation, isPage } =
+      findMiniProgramComponentStyleIsolation(options.filename) || {}
+    if (!isPage) {
+      if (styleIsolation === 'app') {
+        options.source = `@import "/app.wxss";\n` + options.source
+      } else if (styleIsolation === 'isolated') {
+        options.source = `@import "/uvue.wxss";\n` + options.source
+      }
     }
     // https://github.com/dcloudio/uni-app/issues/4076
     options.isProd = true
@@ -56,6 +70,7 @@ function rewriteCompileScript() {
     // https://github.com/dcloudio/uni-app/issues/4076
     // dev模式下，会生成：{ "83a5a03c-style.color": style.color}
     options.isProd = true
+    let res = compileScript(sfc, options)
     if (
       process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
       process.env.UNI_APP_X === 'true' &&
@@ -66,11 +81,15 @@ function rewriteCompileScript() {
         sfc.filename,
         process.env.UNI_INPUT_DIR
       )
-    }
-    let res = compileScript(sfc, options)
-    // @ts-expect-error
-    if (!options.__isPage && parseStyleIsolation(res)) {
-      updateMiniProgramComponentStyleIsolation(sfc.filename, true)
+      const styleIsolation = parseStyleIsolation(res)
+      if (styleIsolation) {
+        // @ts-expect-error
+        updateMiniProgramComponentStyleIsolation(
+          sfc.filename,
+          styleIsolation,
+          options.__isPage
+        )
+      }
     }
     return res
   }
