@@ -1,5 +1,5 @@
-import { isRootHook, normalizeClass as normalizeClass$1, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, UNI_STATUS_BAR_HEIGHT, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass } from '@dcloudio/uni-shared';
-import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, isString, normalizeClass, normalizeStyle, isOn, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, looseToNumber, NO, EMPTY_ARR, isModelListener, toNumber, toDisplayString } from '@vue/shared';
+import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, UNI_STATUS_BAR_HEIGHT, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass } from '@dcloudio/uni-shared';
+import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, isString, normalizeClass as normalizeClass$1, normalizeStyle, isOn, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, looseToNumber, NO, EMPTY_ARR, isModelListener, toNumber, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
 /**
@@ -3472,12 +3472,12 @@ function toExternalClasses(classes) {
   return trimmed ? trimmed.split(/\s+/).map((item) => "^" + item) : [];
 }
 function normalizeExternalClasses(classes) {
-  return toExternalClasses(normalizeClass$1(classes));
+  return toExternalClasses(normalizeClass(classes));
 }
 function normalizeInheritAttrsValue(instance, key, value) {
   if (__X_STYLE_ISOLATION__ && __X_STYLE_ISOLATION_UP_ARROW__ && !instance.type.__reserved) {
     if (key === "class") {
-      return toExternalClasses(value).join(" ");
+      return toExternalClasses(normalizeClass(value)).join(" ");
     }
   }
   return value;
@@ -3924,7 +3924,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
     props = guardReactiveProps(props);
     let { class: klass, style } = props;
     if (klass && !isString(klass)) {
-      props.class = normalizeClass(klass);
+      props.class = normalizeClass$1(klass);
     }
     if (isObject(style)) {
       if (isProxy(style) && !isArray(style)) {
@@ -4068,7 +4068,7 @@ function mergeProps(...args) {
     for (const key in toMerge) {
       if (key === "class") {
         if (ret.class !== toMerge.class) {
-          ret.class = normalizeClass([ret.class, toMerge.class]);
+          ret.class = normalizeClass$1([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
         ret.style = normalizeStyle([ret.style, toMerge.style]);
@@ -6698,7 +6698,7 @@ const s = (value) => stringifyStyle(value);
 const c = (str) => camelize(str);
 const e = (target, ...sources) => extend(target, ...sources);
 const h = (str) => hyphenate(str);
-const n = (value) => normalizeClass$1(value) ;
+const n = (value) => normalizeClass(value) ;
 const t = (val) => toDisplayString(val);
 const p = (props) => renderProps(props);
 const sr = (ref, id, opts) => setRef(ref, id, opts);
