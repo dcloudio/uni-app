@@ -145,9 +145,9 @@ export function rewriteExpression(
     ignoreLiteral: boolean
     referencedScope?: CodegenScope
   } = {
-      property: true,
-      ignoreLiteral: false,
-    }
+    property: true,
+    ignoreLiteral: false,
+  }
 ) {
   if (node.type === NodeTypes.SIMPLE_EXPRESSION && node.isStatic) {
     return node
@@ -260,5 +260,8 @@ export function isFilterExpr(node: ExpressionNode, context: TransformContext) {
   return false
 }
 
-export const builtInCustomElements = ['uni-cloud-db-element', 'uni-loading-element']
+export const builtInCustomElements = [
+  'uni-cloud-db-element',
+  'uni-loading-element',
+]
 export const builtInComponents = ['unicloud-db', 'uniloading']

@@ -160,7 +160,7 @@ const UVUE_WEB_BUILT_IN_TAGS = [
     'sticky-header',
     'cloud-db-element',
     'loading-element',
-    'loading'
+    'loading',
 ].map((tag) => 'uni-' + tag);
 const UVUE_MP_BUILT_IN_TAGS = [
     'list-view',

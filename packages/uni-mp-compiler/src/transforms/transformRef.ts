@@ -119,12 +119,12 @@ export function rewriteRefProp(
   }
   parseExprWithRewrite(
     context.helperString(helper) +
-    '(' +
-    code +
-    ', ' +
-    id +
-    (Object.keys(opts).length ? ', ' + JSON.stringify(opts) : '') +
-    ')',
+      '(' +
+      code +
+      ', ' +
+      id +
+      (Object.keys(opts).length ? ', ' + JSON.stringify(opts) : '') +
+      ')',
     prop.loc,
     context
   )
