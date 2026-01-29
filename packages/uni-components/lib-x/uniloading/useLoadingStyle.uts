@@ -66,8 +66,9 @@ export function useLoadingStyle(targetElement : Ref<_Element | null>, bold : Ref
   })
 
   return {
-    size: loadingSize,
+    width: loadingSize,
+    height: loadingSize,
     borderWidth: loadingBorderWidth,
-    borderRadius: loadingBorderRadius,
+    // borderRadius: loadingBorderRadius,
   }
 }
