@@ -35,9 +35,9 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<custom id="custom"/>`,
-      `<custom id="custom" style="{{'--status-bar-height:' + a}}" u-i="2a9ec0b0-0" u-p="{{b||''}}"/>`,
+      `<custom id="custom" u-i="2a9ec0b0-0" u-p="{{a||''}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: _p({ id: 'custom', style: _normalizeStyle({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }) }) }
+  const __returned__ = { a: _p({ id: 'custom' }) }
   return __returned__
 }`,
       {
@@ -46,9 +46,9 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<custom id="custom"/>`,
-      `<custom style="{{'--status-bar-height:' + b + ';' + (virtualHostStyle || '')}}" virtualHostStyle="{{'--status-bar-height:' + b + ';' + (virtualHostStyle || '')}}" u-i="2a9ec0b0-0" id="{{a}}" virtualHostId="{{a}}" u-p="{{c||''}}" class=\"{{[virtualHostClass]}}\" virtualHostClass=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}\" virtualHostHidden=\"{{virtualHostHidden || false}}\"/>`,
+      `<custom u-i="2a9ec0b0-0" id="{{a}}" virtualHostId="{{a}}" u-p="{{b||''}}" class=\"{{[virtualHostClass]}}\" virtualHostClass=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" virtualHostStyle=\"{{virtualHostStyle || ''}}\" hidden=\"{{virtualHostHidden || false}}\" virtualHostHidden=\"{{virtualHostHidden || false}}\"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _gei(_ctx, 'custom'), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ id: _gei(_ctx, 'custom'), style: _normalizeStyle({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\` }) }) }
+  const __returned__ = { a: _gei(_ctx, 'custom'), b: _p({ id: _gei(_ctx, 'custom') }) }
   return __returned__
 }`,
       {
@@ -58,9 +58,9 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<unicloud-db ref="udb"/>`,
-      `<unicloud-db ref="udb" style="{{$eS[a]}}" u-i="2a9ec0b0-0" id="r0-2a9ec0b0" u-p="{{c||''}}"/>`,
+      `<unicloud-db ref="udb" u-i="2a9ec0b0-0" id="r0-2a9ec0b0" style="{{$eS[a]}}" u-p="{{c||''}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "unicloud-db", "type": 1 }, 'udb'), b: _s(_ses('r0-2a9ec0b0', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` })), c: _p({ id: 'r0-2a9ec0b0', style: _normalizeStyle(_ses('r0-2a9ec0b0', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` })) }) }
+  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "unicloud-db", "type": 1 }, 'udb'), b: _s(_ses('r0-2a9ec0b0')), c: _p({ id: 'r0-2a9ec0b0', style: _ses('r0-2a9ec0b0') }) }
   return __returned__
 }`,
       {
@@ -444,9 +444,9 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
   test('static ref with unicloud-db', () => {
     assert(
       `<unicloud-db ref="udb"/>`,
-      `<unicloud-db ref="udb" style=\"{{'--status-bar-height:' + b}}\" u-i="2a9ec0b0-0" id="r0-2a9ec0b0" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}" u-p="{{c||''}}"/>`,
+      `<unicloud-db ref="udb" u-i="2a9ec0b0-0" id="r0-2a9ec0b0" change:eS="{{uV.sRS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "unicloud-db", "type": 1 }, 'udb'), b: \`\${_ctx.u_s_b_h}px\`, c: _p({ id: 'r0-2a9ec0b0', style: { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` } }) }
+  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "unicloud-db", "type": 1 }, 'udb'), b: _p({ id: 'r0-2a9ec0b0' }) }
   return __returned__
 }`,
       {
