@@ -83,10 +83,10 @@ function rewriteCompileScript() {
       )
       const styleIsolation = parseStyleIsolation(res)
       if (styleIsolation) {
-        // @ts-expect-error
         updateMiniProgramComponentStyleIsolation(
           sfc.filename,
           styleIsolation,
+          // @ts-expect-error
           options.__isPage
         )
       }
