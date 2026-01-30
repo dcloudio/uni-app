@@ -161,9 +161,17 @@ const UVUE_WEB_BUILT_IN_TAGS = [
     'sticky-section',
     'sticky-header',
     'cloud-db-element',
-    'loading-element'
+    'loading-element',
+    'loading'
 ].map((tag) => 'uni-' + tag);
-const UVUE_MP_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS;
+const UVUE_MP_BUILT_IN_TAGS = [
+    'list-view',
+    'list-item',
+    'sticky-section',
+    'sticky-header',
+    'cloud-db-element',
+    'loading-element',
+].map((tag) => 'uni-' + tag);
 const UVUE_IOS_BUILT_IN_TAGS = [
     'scroll-view',
     'web-view',
@@ -200,6 +208,26 @@ function isBuiltInComponent(tag) {
     return (BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
         UVUE_WEB_BUILT_IN_TAGS.indexOf(realTag) !== -1);
 }
+function isWebBuiltInComponent(tag) {
+    if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
+        return false;
+    }
+    // h5 平台会被转换为 v-uni-
+    const realTag = 'uni-' + tag.replace('v-uni-', '');
+    // TODO 区分x和非x
+    return (BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
+        UVUE_WEB_BUILT_IN_TAGS.indexOf(realTag) !== -1);
+}
+function isMPBuiltInComponent(tag) {
+    if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
+        return false;
+    }
+    // h5 平台会被转换为 v-uni-
+    const realTag = 'uni-' + tag.replace('v-uni-', '');
+    // TODO 区分x和非x
+    return (BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
+        UVUE_MP_BUILT_IN_TAGS.indexOf(realTag) !== -1);
+}
 function isH5CustomElement(tag, isX = false) {
     if (isX && UVUE_WEB_BUILT_IN_TAGS.indexOf(tag) !== -1) {
         return true;
@@ -212,7 +240,7 @@ function isUniXElement(name) {
 function isH5NativeTag(tag) {
     return (tag !== 'head' &&
         (shared.isHTMLTag(tag) || shared.isSVGTag(tag)) &&
-        !isBuiltInComponent(tag));
+        !isWebBuiltInComponent(tag));
 }
 function isAppNativeTag(tag) {
     return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
@@ -370,7 +398,7 @@ function isMiniProgramUVueNativeTag(tag) {
     if (tag.startsWith('uni-') && tag.endsWith('-element')) {
         return true;
     }
-    return isBuiltInComponent(tag);
+    return isMPBuiltInComponent(tag);
 }
 function createIsCustomElement(tags = []) {
     return function isCustomElement(tag) {
@@ -2756,12 +2784,14 @@ exports.isGloballyAllowed = isGloballyAllowed;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
 exports.isIntegerKey = isIntegerKey;
+exports.isMPBuiltInComponent = isMPBuiltInComponent;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isMiniProgramUVueNativeTag = isMiniProgramUVueNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
 exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.isUniXElement = isUniXElement;
+exports.isWebBuiltInComponent = isWebBuiltInComponent;
 exports.normalizeClass = normalizeClass;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
