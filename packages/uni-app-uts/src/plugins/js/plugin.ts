@@ -114,7 +114,8 @@ export function createUniAppJsEnginePlugin(
                 : undefined,
             rollupOptions: {
               input: resolveMainPathOnce(inputDir),
-              external: ['vue', '@vue/shared'],
+              // import "libentry.so"
+              external: ['vue', '@vue/shared', /.*\.so$/],
               output: {
                 name: 'AppService',
                 banner: ``,
