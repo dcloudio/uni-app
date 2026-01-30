@@ -23,6 +23,7 @@ const modifyVueLoader = require('../vue-loader')
 const {
   createTemplateCacheLoader
 } = require('../cache-loader')
+const { getFilterPaths } = require('./utils')
 
 function createUniMPPlugin () {
   const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
@@ -203,7 +204,7 @@ module.exports = {
         const {
           UUWP
         } = require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
-        plugins.push(new UUWP())
+        plugins.push(new UUWP(getFilterPaths))
       }
     } catch (e) {}
 
