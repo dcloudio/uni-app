@@ -2857,10 +2857,10 @@ function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, 
       return oldSetup(props2, ctx);
     }
   };
-  if (type === "page") {
+  if (type === "page" || type === "window") {
     const styleIsolation = comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename];
     if (styleIsolation !== "isolated") {
-      comp.styleIsolation = "app-shared";
+      comp.styleIsolation = "app";
     }
   }
   return comp;
@@ -2873,6 +2873,7 @@ function setupComponent(comp, options) {
 }
 function setupWindow(comp, id2) {
   return setupComponent(comp, {
+    type: "window",
     init: (vm) => {
       {
         vm.$basePage = {

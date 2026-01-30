@@ -8418,6 +8418,7 @@ function setupComponent(comp, options) {
 }
 function setupWindow(comp, id2) {
   return setupComponent(comp, {
+    type: "window",
     init: (vm) => {
       {
         vm.$page = {
