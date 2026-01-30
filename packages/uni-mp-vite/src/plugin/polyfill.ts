@@ -39,20 +39,22 @@ function rewriteCompileScript() {
   ): Promise<SFCStyleCompileResults> => {
     if (
       process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
-      process.env.UNI_APP_X === 'true' &&
-      isAppVue(options.filename)
+      process.env.UNI_APP_X === 'true'
     ) {
-      options.source = `@import "/uvue.wxss";\n` + options.source
-    }
-    const { styleIsolation, isPage } =
-      findMiniProgramComponentStyleIsolation(options.filename) || {}
-    if (!isPage) {
-      if (styleIsolation === 'app') {
-        options.source = `@import "/app.wxss";\n` + options.source
-      } else if (styleIsolation === 'isolated') {
+      if (isAppVue(options.filename)) {
         options.source = `@import "/uvue.wxss";\n` + options.source
-      } else if (styleIsolation === undefined) {
-        options.source = `@import "/uvue.wxss";\n` + options.source
+      } else {
+        const { styleIsolation, isPage } =
+          findMiniProgramComponentStyleIsolation(options.filename) || {}
+        if (!isPage) {
+          if (styleIsolation === 'app') {
+            options.source = `@import "/app.wxss";\n` + options.source
+          } else if (styleIsolation === 'isolated') {
+            options.source = `@import "/uvue.wxss";\n` + options.source
+          } else if (styleIsolation === undefined) {
+            options.source = `@import "/uvue.wxss";\n` + options.source
+          }
+        }
       }
     }
     // https://github.com/dcloudio/uni-app/issues/4076
