@@ -7,6 +7,7 @@ export function uniSharedDataPlugin(): Plugin {
   const { USDP } = requireUniHelpers()
   const compiler = require('@dcloudio/compiler-vapor-dom2')
   return USDP({
+    platform: process.env.UNI_UTS_PLATFORM!,
     compilerVaporDom2: compiler,
     utsCompiler: resolveUTSCompiler(),
     isUniPageFile,

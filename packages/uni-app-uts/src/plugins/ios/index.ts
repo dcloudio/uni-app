@@ -11,6 +11,7 @@ import {
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniSharedDataPlugin,
   uniUTSAppUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniUniModulesExtApiPlugin,
@@ -26,6 +27,7 @@ import { uniAppPagesPlugin } from '../js/pagesJson'
 import { replaceExtApiPagePaths } from '../js/extApiPages'
 
 export function init() {
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return [
     ...(isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniDecryptUniModulesPlugin()]
@@ -53,6 +55,7 @@ export function init() {
         ]),
     uniUTSUVueJavaScriptPlugin(),
     resolveUTSCompiler().uts2js({
+      dom2: isDom2,
       platform: 'app-ios',
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,
@@ -68,6 +71,7 @@ export function init() {
         },
       },
     }),
+    ...(isDom2 ? [uniSharedDataPlugin()] : []),
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
       ? [replaceExtApiPagePaths()]
       : []),
