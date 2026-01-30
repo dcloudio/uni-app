@@ -1,9 +1,10 @@
 // 注意：该文件尽可能少依赖其他文件，否则可能会导致还没有alias的时候，就加载了目标模块
-
+import fs from 'fs'
 import path from 'path'
 import moduleAlias from 'module-alias'
 import { isInHBuilderX } from './utils'
 import type { Formatter } from '../logs/format'
+import { parse } from 'jsonc-parser'
 
 const hbxPlugins = {
   typescript: 'compile-typescript/node_modules/typescript',
@@ -18,22 +19,51 @@ export function initModuleAlias() {
   const compilerSfcPath = path.resolve(libDir, '@vue/compiler-sfc')
   const serverRendererPath = require.resolve('@vue/server-renderer')
 
+  // 对路径进行兼容
+  if (
+    !process.env.UNI_APP_X_DOM2_CPP_DIR &&
+    process.env.UNI_APP_HARMONY_DOM2_CPP_DIR
+  ) {
+    process.env.UNI_APP_X_DOM2_CPP_DIR =
+      process.env.UNI_APP_HARMONY_DOM2_CPP_DIR
+  }
+
+  if (process.env.UNI_APP_PLATFORM === 'ios') {
+    if (process.env.UNI_INPUT_DIR) {
+      const manifestJsonFilename = path.resolve(
+        process.env.UNI_INPUT_DIR,
+        'manifest.json'
+      )
+      if (fs.existsSync(manifestJsonFilename)) {
+        const manifestJsonStr = fs.readFileSync(manifestJsonFilename, 'utf-8')
+        const manifestJson = parse(manifestJsonStr)
+        if (manifestJson?.['uni-app-x']?.vapor === true) {
+          const vaporFilename = path.resolve(
+            process.env.UNI_INPUT_DIR,
+            '.vapor'
+          )
+          if (fs.existsSync(vaporFilename)) {
+            process.env.UNI_APP_X_DOM2 = 'true'
+          }
+        }
+      }
+    }
+  }
+
   if (process.env.UNI_APP_X_DOM2 === 'true') {
     if (
       // 该代码执行较早，不能使用UNI_UTS_PLATFORM
-      process.env.UNI_PLATFORM === 'app-harmony'
+      process.env.UNI_PLATFORM === 'app-harmony' ||
+      process.env.UNI_APP_PLATFORM
     ) {
       if (process.env.UNI_OUTPUT_DIR) {
-        if (!process.env.UNI_APP_HARMONY_DOM2_CPP_DIR) {
-          process.env.UNI_APP_HARMONY_DOM2_CPP_DIR = path.resolve(
+        if (!process.env.UNI_APP_X_DOM2_CPP_DIR) {
+          process.env.UNI_APP_X_DOM2_CPP_DIR = path.resolve(
             process.env.UNI_OUTPUT_DIR,
             'cpp'
           )
         }
       }
-    } else {
-      // 目前仅支持 app-harmony 平台启用 dom2
-      delete process.env.UNI_APP_X_DOM2
     }
   }
   if (process.env.UNI_APP_X_DOM2 === 'true') {

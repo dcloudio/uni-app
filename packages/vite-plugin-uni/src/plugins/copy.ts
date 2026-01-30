@@ -87,10 +87,10 @@ export function uniCopyPlugin({
     },
   ]
   targets.push(...copyOptions!.targets)
-  if (process.env.UNI_APP_HARMONY_DOM2_CPP_DIR && cppAssets.length) {
+  if (process.env.UNI_APP_X_DOM2_CPP_DIR && cppAssets.length) {
     targets.push({
       src: cppAssets,
-      dest: process.env.UNI_APP_HARMONY_DOM2_CPP_DIR,
+      dest: process.env.UNI_APP_X_DOM2_CPP_DIR,
       watchOptions: {
         readyTimeout: getReadyTimeout(),
         ignored(path: string) {
