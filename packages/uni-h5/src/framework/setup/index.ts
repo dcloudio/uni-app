@@ -62,13 +62,13 @@ import { useBackgroundColorContent } from '../../x/framework/setup/page'
 import { getPageProxyId } from '@dcloudio/uni-core'
 
 interface SetupComponentOptions {
-  type?: 'app' | 'page'
+  type?: 'app' | 'page' | 'window'
   clone?: boolean
   init: (vm: ComponentPublicInstance) => void
   setup: (instance: ComponentInternalInstance) => Record<string, any> | void
   before?: (comp: DefineComponent) => void
   options?: {
-    styleIsolation?: 'isolated' | 'app-shared'
+    styleIsolation?: 'isolated' | 'app' | 'app-and-page'
   }
 }
 
@@ -89,12 +89,12 @@ function wrapperComponentSetup(
       return oldSetup(props, ctx)
     }
   }
-  if (__X__ && type === 'page') {
+  if (__X__ && (type === 'page' || type === 'window')) {
     // 只要不是手动设置隔离样式的组件，全部设置为 app-shared
     const styleIsolation =
       comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename]
     if (styleIsolation !== 'isolated') {
-      comp.styleIsolation = 'app-shared'
+      comp.styleIsolation = 'app'
     }
   }
   return comp
@@ -109,6 +109,7 @@ function setupComponent(comp: any, options: SetupComponentOptions) {
 
 export function setupWindow(comp: any, id: number) {
   return setupComponent(comp, {
+    type: 'window',
     init: (vm) => {
       if (__X__) {
         vm.$basePage = {
