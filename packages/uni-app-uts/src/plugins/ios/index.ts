@@ -25,10 +25,12 @@ import { uniAppJsEngineMainPlugin } from '../js/mainUTS'
 import { uniAppManifestPlugin } from '../js/manifestJson'
 import { uniAppPagesPlugin } from '../js/pagesJson'
 import { replaceExtApiPagePaths } from '../js/extApiPages'
+import { uniAppCssPrePlugin } from '../dom2/css'
 
 export function init() {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return [
+    ...(isDom2 ? [uniAppCssPrePlugin()] : []),
     ...(isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniDecryptUniModulesPlugin()]
       : []),
