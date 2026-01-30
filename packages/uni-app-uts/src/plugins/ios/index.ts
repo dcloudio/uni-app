@@ -63,6 +63,7 @@ export function init() {
       version: process.env.UNI_COMPILER_VERSION,
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
       sourceMap: enableSourceMap(),
+      sharedDataLibName: isDom2 ? 'libentry.so' : undefined,
       modules: {
         vueCompilerDom,
         uniCliShared,
