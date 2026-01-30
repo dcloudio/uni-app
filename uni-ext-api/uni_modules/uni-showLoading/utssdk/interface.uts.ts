@@ -114,7 +114,7 @@ export type ShowLoadingOptions = {
   mask?: boolean | null,
 	/**
 	 * iOS是否采用系统雪花状样式
-	 * @defaultValue false
+	 * @defaultValue true
 	 * @uniPlatform {
 			"app": {
 				"android": {
