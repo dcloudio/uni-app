@@ -18,7 +18,7 @@
 	const failEventName: Ref<string> = ref('')
 	const title: Ref<string> = ref('')
 	const showAnim: Ref<boolean> = ref(false)
-	const iosSpinner: Ref<boolean> = ref(false)
+	const iosSpinner: Ref<boolean> = ref(true)
 
 	onReady(() => {
 		setTimeout(() => {
