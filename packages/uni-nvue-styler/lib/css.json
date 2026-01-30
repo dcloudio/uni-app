@@ -6778,10 +6778,12 @@
         "length",
         "enum"
       ],
+      "description": "border-width 属性用于设置元素边框的宽度。",
       "syntax": "<line-width>{1,4}",
       "values": [
         {
           "name": "thin",
+          "description": "细边线，App平台对应值为1px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -6815,6 +6817,7 @@
         },
         {
           "name": "medium",
+          "description": "中等边线，App平台对应值为3px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -6848,6 +6851,7 @@
         },
         {
           "name": "thick",
+          "description": "宽边线，App平台对应值为5px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -6931,10 +6935,12 @@
         "length",
         "enum"
       ],
+      "description": "border-left-width 属性用于设置元素的左边框的宽度。",
       "syntax": "<length> | thin | medium | thick",
       "values": [
         {
           "name": "thin",
+          "description": "细边线，App平台对应值为1px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -6968,6 +6974,7 @@
         },
         {
           "name": "medium",
+          "description": "中等边线，App平台对应值为3px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -7001,6 +7008,7 @@
         },
         {
           "name": "thick",
+          "description": "宽边线，App平台对应值为5px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -7084,10 +7092,12 @@
         "length",
         "enum"
       ],
+      "description": "border-top-width 属性用于设置元素的上边框的宽度。",
       "syntax": "<length> | thin | medium | thick",
       "values": [
         {
           "name": "thin",
+          "description": "细边线，App平台对应值为1px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -7121,6 +7131,7 @@
         },
         {
           "name": "medium",
+          "description": "中等边线，App平台对应值为3px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -7154,6 +7165,7 @@
         },
         {
           "name": "thick",
+          "description": "宽边线，App平台对应值为5px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -7237,10 +7249,12 @@
         "length",
         "enum"
       ],
+      "description": "border-right-width 属性用于设置元素的右边框的宽度。",
       "syntax": "<length> | thin | medium | thick",
       "values": [
         {
           "name": "thin",
+          "description": "细边线，App平台对应值为1px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -7274,6 +7288,7 @@
         },
         {
           "name": "medium",
+          "description": "中等边线，App平台对应值为3px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -7307,6 +7322,7 @@
         },
         {
           "name": "thick",
+          "description": "宽边线，App平台对应值为5px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -7390,6 +7406,7 @@
         "length",
         "enum"
       ],
+      "description": "border-bottom-width 属性用于设置元素的底部边框的宽度。",
       "syntax": "<length> | thin | medium | thick",
       "values": [
         {
@@ -7427,6 +7444,7 @@
         },
         {
           "name": "medium",
+          "description": "中等边线，App平台对应值为3px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -7460,6 +7478,7 @@
         },
         {
           "name": "thick",
+          "description": "宽边线，App平台对应值为5px",
           "uniPlatform": {
             "app": {
               "android": {
@@ -7585,6 +7604,11 @@
             "unixvVer": "5.0"
           }
         }
+      },
+      "defaultValue": {
+        "uvue-app": "#000000",
+        "uvue-web": "currentcolor",
+        "w3c": "currentcolor"
       }
     },
     {
@@ -7635,6 +7659,11 @@
             "unixvVer": "5.0"
           }
         }
+      },
+      "defaultValue": {
+        "uvue-app": "#000000",
+        "uvue-web": "currentcolor",
+        "w3c": "currentcolor"
       }
     },
     {
@@ -7685,6 +7714,11 @@
             "unixvVer": "5.0"
           }
         }
+      },
+      "defaultValue": {
+        "uvue-app": "#000000",
+        "uvue-web": "currentcolor",
+        "w3c": "currentcolor"
       }
     },
     {
@@ -7735,6 +7769,11 @@
             "unixvVer": "5.0"
           }
         }
+      },
+      "defaultValue": {
+        "uvue-app": "#000000",
+        "uvue-web": "currentcolor",
+        "w3c": "currentcolor"
       }
     },
     {
@@ -7785,6 +7824,11 @@
             "unixvVer": "5.0"
           }
         }
+      },
+      "defaultValue": {
+        "uvue-app": "#000000",
+        "uvue-web": "currentcolor",
+        "w3c": "currentcolor"
       }
     },
     {
