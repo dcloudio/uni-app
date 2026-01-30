@@ -202,6 +202,8 @@ function createConfig(
               ? isVapor
                 ? 'uni.x.runtime.harmony.vapor.esm.js'
                 : 'uni.x.runtime.harmony.esm.js'
+              : isVapor
+              ? 'uni.x.runtime.vapor.esm.js'
               : 'uni.x.runtime.esm.js',
         },
         preserveEntrySignatures: 'strict',
