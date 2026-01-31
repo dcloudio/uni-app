@@ -161,6 +161,53 @@ describe('compiler: root', () => {
       { isX: true }
     )
   })
+  test('slot', () => {
+    assert(
+      `<slot>test</slot>`,
+      `<block wx:if="{{$slots.d}}"><slot></slot></block><block wx:else>test</block>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = {}
+  return __returned__
+}`,
+      { isX: true }
+    )
+    assert(
+      `<slot><view>test</view></slot>`,
+      `<block wx:if="{{$slots.d}}"><slot></slot></block><block wx:else><view style="{{'--status-bar-height:' + a}}">test</view></block>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      { isX: true }
+    )
+    assert(
+      `<slot>test1<view>test2</view></slot>`,
+      `<block wx:if="{{$slots.d}}"><slot></slot></block><block wx:else>test1<view style="{{'--status-bar-height:' + a}}">test2</view></block>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      { isX: true }
+    )
+    assert(
+      `<slot>test1</slot><view>test2</view>`,
+      `<block wx:if="{{$slots.d}}"><slot></slot></block><block wx:else>test1</block><view style="{{'--status-bar-height:' + a}}">test2</view>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      { isX: true }
+    )
+    assert(
+      `<slot name="test">test1</slot>`,
+      `<block wx:if="{{$slots.test}}"><slot name="test"></slot></block><block wx:else>test1</block>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = {}
+  return __returned__
+}`,
+      { isX: true }
+    )
+  })
   test('v-for', () => {
     assert(
       `<template v-for="item in list"><view>item -- {{ item }}</view></template>`,
