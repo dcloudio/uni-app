@@ -217,10 +217,15 @@ export function processProps(
               createMPCompilerError(MPErrorCodes.X_V_ON_NO_ARGUMENT, loc)
             )
           }
-          if (isVBind && (!isComponent || isPluginComponent)) {
-            context.onError(
-              createMPCompilerError(MPErrorCodes.X_V_BIND_NO_ARGUMENT, loc)
-            )
+          if (isVBind) {
+            const isVBindAttrs =
+              prop.exp?.type === NodeTypes.SIMPLE_EXPRESSION &&
+              prop.exp.content === '$attrs'
+            if (!isVBindAttrs) {
+              context.onError(
+                createMPCompilerError(MPErrorCodes.X_V_BIND_NO_ARGUMENT, loc)
+              )
+            }
           }
           continue
         }
