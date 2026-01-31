@@ -924,7 +924,7 @@
       "name": "weixin",
       "app": {
         "js": false,
-        "kotlin": false,
+        "kotlin": true,
         "swift": false,
         "arkts": true
       }
