@@ -98,8 +98,8 @@ function traverseChildren(node: ElementNode, context: TransformContext) {
   if (isUserComponent(node, context)) {
     return
   }
-  if (node.tag !== 'template') {
-    addStatusBarStyle(node, context)
+  if (node.tag !== 'template' && node.tag !== 'slot') {
+    isElementNode(node) && addStatusBarStyle(node, context)
   } else {
     node.children.forEach((child) => {
       traverseChildren(child as ElementNode, context)
