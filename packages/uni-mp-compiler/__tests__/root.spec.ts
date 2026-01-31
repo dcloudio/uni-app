@@ -109,7 +109,6 @@ describe('compiler: root', () => {
 }`,
       { isX: true }
     )
-
     assert(
       `<custom><view/></custom>`,
       `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view/></custom>`,
@@ -119,7 +118,6 @@ describe('compiler: root', () => {
 }`,
       { isX: true }
     )
-
     assert(
       `<custom></custom><view/>`,
       `<custom u-i="2a9ec0b0-0"></custom><view style="{{'--status-bar-height:' + a}}"/>`,
@@ -129,12 +127,29 @@ describe('compiler: root', () => {
 }`,
       { isX: true }
     )
-
     assert(
       `<custom></custom><view><custom/></view>`,
       `<custom u-i="2a9ec0b0-0"></custom><view style="{{'--status-bar-height:' + a}}"><custom u-i="2a9ec0b0-1"/></view>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      { isX: true }
+    )
+    assert(
+      `<custom>test</custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0">test</custom>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = {}
+  return __returned__
+}`,
+      { isX: true }
+    )
+    assert(
+      `<custom><template #name><view>test</view></template></custom>`,
+      `<custom u-s="{{['name']}}" u-i="2a9ec0b0-0"><view slot="name">test</view></custom>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = {}
   return __returned__
 }`,
       { isX: true }
@@ -207,13 +222,31 @@ describe('compiler: root', () => {
 }`,
       { isX: true }
     )
+    assert(
+      `<view>test</view><view><slot name="s1"><view><view>test1</view></view><view>test2</view></slot></view>`,
+      `<view style="{{'--status-bar-height:' + a}}">test</view><view style="{{'--status-bar-height:' + b}}"><block wx:if="{{$slots.s1}}"><slot name="s1"></slot></block><block wx:else><view><view>test1</view></view><view>test2</view></block></view>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      { isX: true }
+    )
   })
   test('v-for', () => {
     assert(
-      `<template v-for="item in list"><view>item -- {{ item }}</view></template>`,
-      `<block wx:for="{{a}}" wx:for-item="item"><view style="{{'--status-bar-height:' + b}}">item -- {{item.a}}</view></block>`,
+      `<template v-for="item in list"><view><text>item -- {{ item }}</text></view></template>`,
+      `<block wx:for="{{a}}" wx:for-item="item"><view style="{{'--status-bar-height:' + b}}"><text>item -- {{item.a}}</text></view></block>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _f(_ctx.list, (item, k0, i0) => { return { a: _t(item) }; }), b: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      { isX: true }
+    )
+    assert(
+      `<template v-for="item in list"><view>item -- {{ item }}</view></template><view><text>test</text></view>`,
+      `<block wx:for="{{a}}" wx:for-item="item"><view style="{{'--status-bar-height:' + b}}">item -- {{item.a}}</view></block><view style="{{'--status-bar-height:' + c}}"><text>test</text></view>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _f(_ctx.list, (item, k0, i0) => { return { a: _t(item) }; }), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_b_h}px\` }
   return __returned__
 }`,
       { isX: true }
