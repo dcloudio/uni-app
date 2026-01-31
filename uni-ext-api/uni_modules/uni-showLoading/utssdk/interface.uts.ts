@@ -115,6 +115,7 @@ export type ShowLoadingOptions = {
 	/**
 	 * iOS是否采用系统雪花状样式
 	 * @defaultValue true
+	 * @default true
 	 * @internal
 	 * @uniPlatform {
 			"app": {
