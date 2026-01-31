@@ -28,41 +28,62 @@ export const transformVBindAttrs: NodeTransform = (node, context) => {
         const content = prop.exp.content
         const newProps: DirectiveNode[] = []
         // :class
-        const classProp = props.find(
+        const classIndex = props.findIndex(
           (p) =>
             p.type === NodeTypes.DIRECTIVE &&
             p.name === 'bind' &&
             isStaticArgOf(p.arg, 'class')
-        ) as DirectiveNode
+        )
+        const classProp =
+          classIndex > -1 ? (props[classIndex] as DirectiveNode) : undefined
         if (classProp && classProp.exp?.type === NodeTypes.SIMPLE_EXPRESSION) {
-          classProp.exp.content = `[${classProp.exp.content}, ${content}.class]`
+          classProp.exp.content =
+            classIndex < i
+              ? `[${classProp.exp.content}, ${content}.class]`
+              : `[${content}.class, ${classProp.exp.content}]`
         } else {
           newProps.push(
             createBindDirective('class', `${content}.class`, prop.loc)
           )
         }
         // :style
-        const styleProp = props.find(
+        const styleIndex = props.findIndex(
           (p) =>
             p.type === NodeTypes.DIRECTIVE &&
             p.name === 'bind' &&
             isStaticArgOf(p.arg, 'style')
-        ) as DirectiveNode
+        )
+        const styleProp =
+          styleIndex > -1 ? (props[styleIndex] as DirectiveNode) : undefined
         if (styleProp && styleProp.exp?.type === NodeTypes.SIMPLE_EXPRESSION) {
-          styleProp.exp.content = `[${styleProp.exp.content}, ${content}.style]`
+          styleProp.exp.content =
+            styleIndex < i
+              ? `[${styleProp.exp.content}, ${content}.style]`
+              : `[${content}.style, ${styleProp.exp.content}]`
         } else {
           newProps.push(
             createBindDirective('style', `${content}.style`, prop.loc)
           )
         }
         // @click (only add if not already defined)
-        const hasClick = props.some(
+        const clickIndex = props.findIndex(
           (p) =>
             p.type === NodeTypes.DIRECTIVE &&
             p.name === 'on' &&
             isStaticArgOf(p.arg, 'click')
         )
-        if (!hasClick) {
+        if (clickIndex > -1) {
+          const clickProp = props[clickIndex] as DirectiveNode
+          if (
+            clickProp &&
+            clickProp.exp?.type === NodeTypes.SIMPLE_EXPRESSION
+          ) {
+            clickProp.exp.content =
+              clickIndex < i
+                ? `[${clickProp.exp.content}, ${content}.onClick]`
+                : `[${content}.onClick, ${clickProp.exp.content}]`
+          }
+        } else {
           newProps.push(
             createOnDirective('click', `${content}.onClick`, prop.loc)
           )

@@ -151,15 +151,15 @@ describe('compiler: transform v-bind="$attrs"', () => {
     )
     const styleProp = getProp(node, 'style')
     expect(styleProp).toBeDefined()
-    // Should merge: [original, $attrs.style]
+    // Should merge: [$attrs.style, original]
     expect((styleProp!.exp as SimpleExpression).content).toBe(
-      `[{ color: 'red' }, $attrs.style]`
+      `[$attrs.style, { color: 'red' }]`
     )
     expect(formatProps(node)).toEqual([
       ':class=$attrs.class',
       '@click=$attrs.onClick',
       ':id=$attrs.id',
-      ":style=[{ color: 'red' }, $attrs.style]",
+      ":style=[$attrs.style, { color: 'red' }]",
     ])
   })
 
@@ -175,6 +175,21 @@ describe('compiler: transform v-bind="$attrs"', () => {
       ':style=$attrs.style',
       '@click=$attrs.onClick',
       ':id=$attrs.id',
+    ])
+  })
+
+  test('should merge with existing dynamic class after v-bind', () => {
+    const node = runTransform(`<view v-bind="$attrs" :class="foo"/>`)
+    const classProp = getProp(node, 'class')
+    expect(classProp).toBeDefined()
+    expect((classProp!.exp as SimpleExpression).content).toBe(
+      `[$attrs.class, foo]`
+    )
+    expect(formatProps(node)).toEqual([
+      ':style=$attrs.style',
+      '@click=$attrs.onClick',
+      ':id=$attrs.id',
+      ':class=[$attrs.class, foo]',
     ])
   })
 
@@ -217,17 +232,35 @@ describe('compiler: transform v-bind="$attrs"', () => {
     expect(formatProps(node)).toEqual([':class=$attrs'])
   })
 
-  test('should not add click if already defined', () => {
+  test('should merge click if already defined after v-bind', () => {
     const node = runTransform(`<view v-bind="$attrs" @click="foo">123</view>`)
     const clickProp = getOnProp(node, 'click')
     expect(clickProp).toBeDefined()
-    expect((clickProp!.exp as SimpleExpression).content).toBe('foo')
+    expect((clickProp!.exp as SimpleExpression).content).toBe(
+      `[$attrs.onClick, foo]`
+    )
     expect(countOnProp(node, 'click')).toBe(1)
     expect(formatProps(node)).toEqual([
       ':class=$attrs.class',
       ':style=$attrs.style',
       ':id=$attrs.id',
-      '@click=foo',
+      '@click=[$attrs.onClick, foo]',
+    ])
+  })
+
+  test('should merge click if already defined before v-bind', () => {
+    const node = runTransform(`<view @click="foo" v-bind="$attrs">123</view>`)
+    const clickProp = getOnProp(node, 'click')
+    expect(clickProp).toBeDefined()
+    expect((clickProp!.exp as SimpleExpression).content).toBe(
+      `[foo, $attrs.onClick]`
+    )
+    expect(countOnProp(node, 'click')).toBe(1)
+    expect(formatProps(node)).toEqual([
+      '@click=[foo, $attrs.onClick]',
+      ':class=$attrs.class',
+      ':style=$attrs.style',
+      ':id=$attrs.id',
     ])
   })
 })
