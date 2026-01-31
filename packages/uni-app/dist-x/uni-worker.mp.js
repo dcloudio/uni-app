@@ -213,6 +213,10 @@
         }
         constructor() { }
         static initProps(options, metadata, isJSONParse = false) {
+            // 为了性能，非JSON.parse场景直接返回
+            if (!isJSONParse) {
+                return options;
+            }
             const obj = {};
             if (!metadata.fields) {
                 return obj;
