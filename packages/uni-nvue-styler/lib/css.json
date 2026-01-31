@@ -7834,7 +7834,8 @@
     {
       "name": "border-radius",
       "restrictions": [
-        "length"
+        "length",
+        "percentage"
       ],
       "syntax": "<length-percentage>{1,4} [ / <length-percentage>{1,4} ]?",
       "uniPlatform": {
@@ -7884,7 +7885,8 @@
     {
       "name": "border-top-left-radius",
       "restrictions": [
-        "length"
+        "length",
+        "percentage"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -7934,7 +7936,8 @@
     {
       "name": "border-top-right-radius",
       "restrictions": [
-        "length"
+        "length",
+        "percentage"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -7984,7 +7987,8 @@
     {
       "name": "border-bottom-left-radius",
       "restrictions": [
-        "length"
+        "length",
+        "percentage"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -8034,7 +8038,8 @@
     {
       "name": "border-bottom-right-radius",
       "restrictions": [
-        "length"
+        "length",
+        "percentage"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -8354,7 +8359,8 @@
         }
       },
       "defaultValue": {
-        "uvue": "#000000",
+        "uvue-app": "#000000",
+        "uvue-web": "canvastext",
         "w3c": "canvastext"
       }
     },
