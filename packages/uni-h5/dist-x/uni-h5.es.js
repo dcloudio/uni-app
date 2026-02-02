@@ -8591,7 +8591,7 @@ function getNodesInfo(pageVm, component, selector, single, fields2) {
       selector,
       fields2,
       !single,
-      component == null ? void 0 : component.$.subTree
+      (component || pageVm).$.subTree
     );
   if (single) {
     const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
