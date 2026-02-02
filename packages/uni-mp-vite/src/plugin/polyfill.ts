@@ -1,6 +1,7 @@
 import { extend } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import {
+  createDefaultSFCStyleBlock,
   findMiniProgramComponentStyleIsolation,
   isAppVue,
   isMiniProgramPageFile,
@@ -108,6 +109,7 @@ function rewriteCompileScript() {
     return compileTemplate(options)
   }
 }
+
 /**
  * 重写 parse，解决相同内容被缓存，未触发 template 编译的问题
  */
@@ -124,6 +126,13 @@ function rewriteCompilerSfcParse() {
     // https://github.com/vitejs/vite/blob/v2.9.13/packages/plugin-vue/src/script.ts#L44
     // https://github.com/dcloudio/uni-app/issues/3685
     res.descriptor = extend({}, res.descriptor)
+    if (
+      process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+      process.env.UNI_APP_X === 'true' &&
+      res.descriptor.styles.length === 0
+    ) {
+      res.descriptor.styles = [createDefaultSFCStyleBlock(source)]
+    }
     return res
   }
 }

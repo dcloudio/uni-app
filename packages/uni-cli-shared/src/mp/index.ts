@@ -36,5 +36,6 @@ export {
   updatePageExternalClasses,
   addPageExternalClasses,
   clearPageExternalClasses,
+  createDefaultSFCStyleBlock,
 } from './externalClasses'
 export type { PageExternalClassesInfo } from './externalClasses'

@@ -8,6 +8,7 @@ import {
 } from '@babel/types'
 import { walk } from 'estree-walker'
 import { normalizePath } from '../utils'
+import type { SFCStyleBlock } from '@vue/compiler-sfc'
 
 const externalClassesCache = new Map<
   string,
@@ -158,4 +159,18 @@ export function updateMiniProgramComponentStyleIsolation(
 
 export function findMiniProgramComponentStyleIsolation(pagePahth: string) {
   return pageStyleIsolationCache.get(normalizePath(pagePahth))
+}
+
+export function createDefaultSFCStyleBlock(source: string): SFCStyleBlock {
+  const offset = source.length
+  return {
+    type: 'style',
+    content: '',
+    attrs: {},
+    loc: {
+      source: '',
+      start: { line: 1, column: 1, offset },
+      end: { line: 1, column: 1, offset },
+    },
+  }
 }

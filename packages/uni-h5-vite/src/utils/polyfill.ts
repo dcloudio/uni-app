@@ -1,23 +1,8 @@
-import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
-import type {
-  SFCParseOptions,
-  SFCParseResult,
-  SFCStyleBlock,
-} from '@vue/compiler-sfc'
-
-function createDefaultSFCStyleBlock(source: string): SFCStyleBlock {
-  const offset = source.length
-  return {
-    type: 'style',
-    content: '',
-    attrs: {},
-    loc: {
-      source: '',
-      start: { line: 1, column: 1, offset },
-      end: { line: 1, column: 1, offset },
-    },
-  }
-}
+import {
+  createDefaultSFCStyleBlock,
+  resolveBuiltIn,
+} from '@dcloudio/uni-cli-shared'
+import type { SFCParseOptions, SFCParseResult } from '@vue/compiler-sfc'
 
 /**
  * 重写 @vue/compiler-sfc 的 parse 函数
