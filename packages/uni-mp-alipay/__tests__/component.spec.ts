@@ -112,6 +112,14 @@ describe('mp-alipay: transform component', () => {
     )
   })
 
+  test('alipay open component - open-avatar', () => {
+    assert(
+      `<open-avatar userId="12345" size="normal"></open-avatar>`,
+      `<open-avatar userId="12345" size="normal"></open-avatar>`,
+      blankScript
+    )
+  })
+
   test(`button chooseAvatar`, () => {
     assert(
       `<button open-type="chooseAvatar" @chooseavatar="onChooseAvatar" />`,
