@@ -20358,18 +20358,19 @@ function genPropValue(values, context) {
 }
 function getRuntimeHelper(tag, key, modifier) {
 	const tagName = tag.toUpperCase();
-	if (isSVGTag(tag)) return extend({ isSVG: true }, helpers.setAttr);
-	if (modifier) if (modifier === ".") return getSpecialHelper(key, tagName) || helpers.setDOMProp;
-	else return helpers.setAttr;
-	const helper = getSpecialHelper(key, tagName);
+	const isSVG = isSVGTag(tag);
+	if (modifier) if (modifier === ".") return getSpecialHelper(key, tagName, isSVG) || helpers.setDOMProp;
+	else return isSVG ? extend({ isSVG: true }, helpers.setAttr) : helpers.setAttr;
+	const helper = getSpecialHelper(key, tagName, isSVG);
 	if (helper) return helper;
 	if (/aria[A-Z]/.test(key)) return helpers.setDOMProp;
+	if (isSVG) return extend({ isSVG: true }, helpers.setAttr);
 	if (shouldSetAsAttr(tagName, key) || key.includes("-")) return helpers.setAttr;
 	return helpers.setProp;
 }
-function getSpecialHelper(keyName, tagName) {
+function getSpecialHelper(keyName, tagName, isSVG) {
 	if (keyName === "value" && canSetValueDirectly(tagName)) return helpers.setValue;
-	else if (keyName === "class") return helpers.setClass;
+	else if (keyName === "class") return extend({ isSVG }, helpers.setClass);
 	else if (keyName === "style") return helpers.setStyle;
 	else if (keyName === "innerHTML") return helpers.setHtml;
 	else if (keyName === "textContent") return helpers.setText;
@@ -20984,6 +20985,10 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
 	let prev;
 	for (const [index, child] of children.entries()) {
 		if (child.flags & 2) offset--;
+		if (child.flags & 4 && child.template != null) {
+			push(...genSelf(child, context));
+			continue;
+		}
 		const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
 		if (id === void 0 && !child.hasDynamicChild) {
 			push(...genSelf(child, context));
@@ -21859,6 +21864,13 @@ function processInterpolation(context) {
 	if (prev && prev.type === 2) nodes.unshift(prev);
 	const values = processTextLikeChildren(nodes, context);
 	if (values.length === 0 && parentNode.type !== 0) return;
+	const literalValues = values.map((v) => getLiteralExpressionValue(v));
+	if (literalValues.every((v) => v != null) && parentNode.type !== 0) {
+		const text = literalValues.join("");
+		const isElementChild = parentNode.type === 1 && parentNode.tagType === 0;
+		context.template += isElementChild ? escapeHtml(text) : text;
+		return;
+	}
 	const isDom2 = !!context.options.platform;
 	let isTextNode = false;
 	let isInComponentSlot = false;
@@ -21874,7 +21886,7 @@ function processInterpolation(context) {
 	}
 	context.template += isDom2 ? isTextNode ? TEXT_NODE_PLACEHOLDER : TEXT_PLACEHOLDER : " ";
 	const id = context.reference();
-	if (values.length === 0 || values.every((v) => getLiteralExpressionValue(v) != null) && parentNode.type !== 0) return;
+	if (values.length === 0) return;
 	context.registerEffect(values, {
 		type: 4,
 		node: context.node,
