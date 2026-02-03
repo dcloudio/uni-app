@@ -272,6 +272,7 @@ const customElements = [
     'mpaas-component',
     'match-media',
     'ad-feeds',
+    'open-avatar',
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const options = {
