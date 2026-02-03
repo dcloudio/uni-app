@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-vue-devtools",
-  "version": "3.0.0-alpha-5000020260104004",
+  "version": "3.0.0-alpha-5000020260203001",
   "description": "uni-vue-devtools",
   "module": "dist/runtime.es.js",
   "files": [
