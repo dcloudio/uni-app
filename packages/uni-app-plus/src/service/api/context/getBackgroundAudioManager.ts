@@ -65,17 +65,17 @@ const eventNames: eventNames[] = [
   'waiting',
 ]
 
-const callbacks: Record<eventNames, Function[]> = {
-  canplay: [],
-  play: [],
-  pause: [],
-  stop: [],
-  ended: [],
-  timeUpdate: [],
-  prev: [],
-  next: [],
-  error: [],
-  waiting: [],
+const callbacks: Record<eventNames, Function | null> = {
+  canplay: null,
+  play: null,
+  pause: null,
+  stop: null,
+  ended: null,
+  timeUpdate: null,
+  prev: null,
+  next: null,
+  error: null,
+  waiting: null,
 }
 
 let audio: Audio
@@ -119,7 +119,9 @@ function initMusic() {
       // 添加 isStopped 属性是为了解决 安卓设备停止播放后获取播放进度不正确的问题
       if (event === 'play') {
         audio.isStopped = false
-        startTimeUpdateTimer()
+        if (callbacks.timeUpdate) {
+          startTimeUpdateTimer()
+        }
       } else if (event === 'stop') {
         audio.isStopped = true
       }
@@ -298,25 +300,42 @@ function onBackgroundAudioStateChange({
   errCode?: number
   dataUrl?: string
 }) {
-  callbacks[state].forEach((callback) => {
-    if (isFunction(callback)) {
-      callback(
-        state === 'error'
-          ? {
-              errMsg,
-              errCode,
-            }
-          : {}
-      )
-    }
-  })
+  const callback = callbacks[state]
+  if (isFunction(callback)) {
+    callback(
+      state === 'error'
+        ? {
+            errMsg,
+            errCode,
+          }
+        : {}
+    )
+  }
 }
 
 const onInitBackgroundAudioManager = /*#__PURE__*/ once(() => {
   eventNames.forEach((item) => {
     BackgroundAudioManager.prototype[`on${capitalize(item)}` as onEventNames] =
       function (callback: Function) {
-        callbacks[item].push(callback)
+        // Align with other platforms: keep only the latest listener
+        callbacks[item] = callback
+        if (
+          item === 'timeUpdate' &&
+          audio &&
+          !audio.isPaused() &&
+          !audio.isStopped
+        ) {
+          startTimeUpdateTimer()
+        }
+      }
+    BackgroundAudioManager.prototype[`off${capitalize(item)}` as any] =
+      function (callback?: Function) {
+        if (!callback || callbacks[item] === callback) {
+          callbacks[item] = null
+          if (item === 'timeUpdate') {
+            stopTimeUpdateTimer()
+          }
+        }
       }
   })
 })
