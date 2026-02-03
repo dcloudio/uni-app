@@ -3231,7 +3231,181 @@ declare module "@vue/reactivity" {
   }
 }
 //#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/CSSStyleDeclaration.d.ts
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/UniEvent.d.ts
+/**
+ * @package io.dcloud.uniapp.runtime
+ */
+declare class UniEvent$1 {
+  /**
+   * 创建一个新的事件对象
+   * @param {string} type 事件的名称
+   */
+  constructor(type: string);
+  /**
+   * 创建一个新的事件对象
+   * @param {string} type 事件的名称
+   * @param {string} eventInit 事件初始参数。支持字段：`bubbles`表明该事件是否冒泡。可选，默认为false；`cancelable`表明该事件是否可以被取消。可选，默认为false。
+   */
+  constructor(type: string, eventInit: UTSJSONObject);
+  /**
+   * 是否冒泡
+   */
+  bubbles: boolean;
+  /**
+   * 是否可以取消
+   */
+  cancelable: boolean;
+  /**
+   * 事件类型
+   *
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "3.9"
+   *        },
+   *        "harmony": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.61"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  type: string;
+  /**
+   * 触发事件的组件
+   *
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "3.9"
+   *        },
+   *        "harmony": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.61"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  target?: UniElement$1 | null;
+  /**
+   * 当前组件
+   *
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "3.9"
+   *        },
+   *        "harmony": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.61"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  currentTarget?: UniElement$1 | null;
+  /**
+   * 事件发生时的时间戳
+   *
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "3.9"
+   *        },
+   *        "harmony": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.61"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  timeStamp: number;
+  /**
+   * 阻止当前事件的进一步传播
+   *
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "3.9"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.0"
+   *        },
+   *        "harmony": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.61"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  stopPropagation(): void;
+  /**
+   * 阻止当前事件的默认行为
+   *
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "3.9"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.55"
+   *        },
+   *        "harmony": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.61"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  preventDefault(): void;
+}
+//#endregion
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/CSSStyleDeclaration.d.ts
 /**
  * CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键值对的集合，暴露样式信息和各种与样式相关的方法和属性。
  * @package io.dcloud.uniapp.runtime
@@ -3251,7 +3425,7 @@ declare module "@vue/reactivity" {
  *            "osVer": "5.0.0",
  *            "uniVer": "x",
  *            "unixVer": "4.61",
- *            "unixvVer": "4.61"
+ *            "unixvVer": "5.0"
  *        }
  *    },
  *    "web": {
@@ -3317,7 +3491,8 @@ declare class CSSStyleDeclaration {
    *        "harmony": {
    *            "osVer": "5.0.0",
    *            "uniVer": "x",
-   *            "unixVer": "4.61"
+   *            "unixVer": "4.61",
+   *            "unixVer": "x"
    *        }
    *    },
    *    "mp": {
@@ -3400,14 +3575,14 @@ declare class CSSStyleDeclaration {
   removeProperty(property: string | string.cssPropertyString): string;
 }
 //#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/UniCallbackWrapper.d.ts
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/UniCallbackWrapper.d.ts
 /**
  * 事件回调封装类，用于注销监听函数的形参
  * @package io.dcloud.uts
  */
 declare class UniCallbackWrapper {}
 //#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/IUniElement.d.ts
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/IUniElement.d.ts
 type GetBoundingClientRectAsyncSuccessCallback = (rect: DOMRect) => void;
 type GetBoundingClientRectAsyncFailCallback = () => void;
 type GetBoundingClientRectAsyncCompleteCallback = (rect: any | null) => void;
@@ -3611,7 +3786,7 @@ declare global {
      *    }
      * }
      */
-    readonly firstChild: UniElement$2 | null;
+    readonly firstChild: UniElement | null;
     /**
      * 只读属性 获取当前元素的最后一个子元素，如果没有子元素，则返回 null。
      * @uniPlatform {
@@ -3641,7 +3816,7 @@ declare global {
      *    }
      * }
      */
-    readonly lastChild: UniElement$2 | null;
+    readonly lastChild: UniElement | null;
     /**
      * 只读属性 获取当前元素在 DOM 树中的父元素，如果没有父元素（如未添加到DOM树中），则返回null。
      * @internal
@@ -3677,7 +3852,7 @@ declare global {
      *    }
      * }
      */
-    readonly parentNode: UniElement$2 | null;
+    readonly parentNode: UniElement | null;
     /**
      * 只读属性 获取当前元素在 DOM 树中的父元素，如果没有父元素（如未添加到DOM树中），则返回null。
      * @uniPlatform {
@@ -3712,7 +3887,7 @@ declare global {
      *    }
      * }
      */
-    readonly parentElement: UniElement$2 | null;
+    readonly parentElement: UniElement | null;
     /**
      * 只读属性 获取当前元素的前一个同级元素，没有则返回null。
      * @uniPlatform {
@@ -3747,7 +3922,7 @@ declare global {
      *    }
      * }
      */
-    readonly previousSibling: UniElement$2 | null;
+    readonly previousSibling: UniElement | null;
     /**
      * 只读属性 获取在 DOM 树中紧跟在其后面的同级元素，如果指定的元素为最后一个元素，则返回 null。
      * @internal
@@ -3783,7 +3958,7 @@ declare global {
      *    }
      * }
      */
-    readonly nextSibling: UniElement$2 | null;
+    readonly nextSibling: UniElement | null;
     /**
      * 只读属性 获取在 DOM 树中紧跟在其后面的同级元素，如果指定的元素为最后一个元素，则返回 null。
      * @uniPlatform {
@@ -3818,7 +3993,7 @@ declare global {
      *    }
      * }
      */
-    readonly nextElementSibling: UniElement$2 | null;
+    readonly nextElementSibling: UniElement | null;
     /**
      * 只读属性 获取当前元素包含的子元素的集合
      * @uniPlatform {
@@ -3853,7 +4028,7 @@ declare global {
      *    }
      * }
      */
-    readonly children: UniElement$2[];
+    readonly children: UniElement[];
     /**
      * 只读属性 获取当前节点包含的子节点的集合
      * @internal
@@ -3889,7 +4064,7 @@ declare global {
      *    }
      * }
      */
-    readonly childNodes: UniElement$2[];
+    readonly childNodes: UniElement[];
     /**
      * 只读属性 获取当前元素的标签名
      * @uniPlatform {
@@ -4533,7 +4708,7 @@ declare global {
      *    }
      * }
      */
-    appendChild(aChild: UniElement$2): void;
+    appendChild(aChild: UniElement): void;
     /**
      * 在参考元素之前插入一个拥有指定父元素的子元素。如果给定的子元素是对文档中现有元素的引用，insertBefore() 会将其从当前位置移动到新位置。
      * @param newChild 插入子元素对象
@@ -4571,7 +4746,7 @@ declare global {
      *    }
      * }
      */
-    insertBefore(newChild: UniElement$2, refChild?: UniElement$2 | null): UniElement$2 | null;
+    insertBefore(newChild: UniElement, refChild?: UniElement | null): UniElement | null;
     /**
      * 将一个元素添加到指定父元素的子元素列表的末尾处 功能等同于appendChild
      * @param newChild 插入子元素对象
@@ -4608,7 +4783,7 @@ declare global {
      *    }
      * }
      */
-    insertBefore(newChild: UniElement$2): UniElement$2 | null;
+    insertBefore(newChild: UniElement): UniElement | null;
     /**
      * 设置指定元素上的某个属性值。如果设置的属性已经存在，则更新该属性值；否则使用指定的名称和值添加一个新的属性。
      * @param {string} key 属性名称
@@ -5082,7 +5257,7 @@ declare global {
      *    }
      * }
      */
-    removeChild(aChild: UniElement$2): UniElement$2 | null;
+    removeChild(aChild: UniElement): UniElement | null;
     /**
      * 把元素对象从它所属的 DOM 树中删除。
      * @uniPlatform {
@@ -5304,7 +5479,7 @@ declare global {
      *    }
      * }
      */
-    querySelector(selector: string.cssSelectorString): UniElement$2 | null;
+    querySelector(selector: string.cssSelectorString): UniElement | null;
     /**
      * 返回与指定的选择器组匹配的文档中的元素列表
      * @param {string.cssSelectorString}selector CSS 选择器字符串
@@ -5340,7 +5515,7 @@ declare global {
      *    }
      * }
      */
-    querySelectorAll(selector: string.cssSelectorString): UniElement$2[] | null;
+    querySelectorAll(selector: string.cssSelectorString): UniElement[];
     /**
      * 使元素获取焦点 仅input、Textarea组件支持
      * @uniPlatform {
@@ -5764,6 +5939,10 @@ declare global {
      */
     testClick(): void;
   }
+  const UniElement: {
+    prototype: UniElement;
+    new (): UniElement;
+  };
 }
 type RequestFullscreenOptions = {
   /**
@@ -7022,7 +7201,7 @@ type UniAnimationOption = {
    */
   iterations?: number | null;
 };
-type Element$1 = UniElement$2;
+type Element$1 = UniElement;
 declare global {
   /**
    * view 组件的 DOM 元素对象。
@@ -7059,7 +7238,7 @@ declare global {
    *    }
    * }
    */
-  interface UniViewElement extends UniElement$2 {}
+  interface UniViewElement extends UniElement {}
 }
 declare global {
   /**
@@ -7097,7 +7276,7 @@ declare global {
    *    }
    * }
    */
-  interface UniScrollViewElement extends UniElement$2 {}
+  interface UniScrollViewElement extends UniElement {}
 }
 /**
  * list-view 组件的 DOM 元素对象。
@@ -7205,7 +7384,7 @@ declare global {
    *    }
    * }
    */
-  interface UniImageElement extends UniElement$2 {
+  interface UniImageElement extends UniElement {
     /**
      * 图片url
      * @uniPlatform {
@@ -7420,7 +7599,7 @@ declare global {
    *    }
    * }
    */
-  interface UniTextElement extends UniElement$2 {
+  interface UniTextElement extends UniElement {
     /**
      * 只读属性 text元素的文案内容
      * @uniPlatform {
@@ -7487,7 +7666,7 @@ declare global {
      *    },
      *    "web": {
      *        "uniVer": "x",
-     *        "unixVer": "4.0"
+     *        "unixVer": "x"
      *    }
      * }
      */
@@ -7558,7 +7737,7 @@ declare global {
      *    },
      *    "web": {
      *        "uniVer": "x",
-     *        "unixVer": "4.0"
+     *        "unixVer": "x"
      *    }
      * }
      */
@@ -7707,187 +7886,8 @@ declare global {
     getContentSize(): UniLayoutSize$1;
   }
 }
-// 允许instanceof检查
-declare let UniElement$2: {
-  prototype: UniElement$2;
-  new (): UniElement$2;
-};
 //#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/UniEvent.d.ts
-/**
- * @package io.dcloud.uniapp.runtime
- */
-declare class UniEvent$1 {
-  /**
-   * 创建一个新的事件对象
-   * @param {string} type 事件的名称
-   */
-  constructor(type: string);
-  /**
-   * 创建一个新的事件对象
-   * @param {string} type 事件的名称
-   * @param {string} eventInit 事件初始参数。支持字段：`bubbles`表明该事件是否冒泡。可选，默认为false；`cancelable`表明该事件是否可以被取消。可选，默认为false。
-   */
-  constructor(type: string, eventInit: UTSJSONObject);
-  /**
-   * 是否冒泡
-   */
-  bubbles: boolean;
-  /**
-   * 是否可以取消
-   */
-  cancelable: boolean;
-  /**
-   * 事件类型
-   *
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "3.9"
-   *        },
-   *        "harmony": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.61"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  type: string;
-  /**
-   * 触发事件的组件
-   *
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "3.9"
-   *        },
-   *        "harmony": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.61"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  target?: UniElement$2 | null;
-  /**
-   * 当前组件
-   *
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "3.9"
-   *        },
-   *        "harmony": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.61"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  currentTarget?: UniElement$2 | null;
-  /**
-   * 事件发生时的时间戳
-   *
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "3.9"
-   *        },
-   *        "harmony": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.61"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  timeStamp: number;
-  /**
-   * 阻止当前事件的进一步传播
-   *
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "3.9"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.0"
-   *        },
-   *        "harmony": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.61"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  stopPropagation(): void;
-  /**
-   * 阻止当前事件的默认行为
-   *
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "3.9"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.55"
-   *        },
-   *        "harmony": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.61"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  preventDefault(): void;
-}
-//#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/DOMRect.d.ts
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/DOMRect.d.ts
 /**
  * 一个 DOMRect 代表一个矩形。
  * @package io.dcloud.uniapp.runtime
@@ -8585,7 +8585,2477 @@ declare class DOMRect {
   bottom: number;
 }
 //#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/DrawableContext.d.ts
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/SnapshotOptions.d.ts
+/**
+ * 组件截图成功的返回数据
+ */
+type TakeSnapshotSuccess = {
+  /**
+   * 截图保存的临时文件路径
+   */
+  tempFilePath: string;
+};
+/**
+ * 组件截图失败的返回数据
+ */
+type TakeSnapshotFail = {
+  errMsg: string;
+};
+/**
+ * 成功回调函数定义
+ */
+type TakeSnapshotSuccessCallback = (res: TakeSnapshotSuccess) => void;
+/**
+ * 失败回调函数定义
+ */
+type TakeSnapshotFailCallback = (res: TakeSnapshotFail) => void;
+/**
+ * 完成回调函数定义
+ */
+type TakeSnapshotCompleteCallback = (res: any) => void;
+/**
+ * 组件截图的参数配置选项
+ */
+type TakeSnapshotOptions = {
+  /**
+   * 截图导出类型，目前仅支持 'file' 保存到临时文件目录
+   * @defaultValue "file"
+   */
+  type?: string | null;
+  /**
+   * 截图文件格式，目前仅支持 'png'
+   * @defaultValue "png"
+   */
+  format?: string | null;
+  /**
+   * 接口调用成功的回调函数
+   */
+  success?: TakeSnapshotSuccessCallback | null;
+  /**
+   * 接口调用失败的回调函数
+   */
+  fail?: TakeSnapshotFailCallback | null;
+  /**
+   * 接口调用结束的回调函数（调用成功、失败都会执行）
+   */
+  complete?: TakeSnapshotCompleteCallback | null;
+};
+//#endregion
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/UniAnimationPlaybackEvent.d.ts
+/**
+ * @package io.dcloud.uniapp.runtime
+ * @autodoc false
+ */
+declare class UniAnimationPlaybackEvent extends UniEvent$1 {
+  /**
+   * 动画的事件类型
+   */
+  type: string;
+}
+//#endregion
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/UniAnimation.d.ts
+type UniAnimationOnCancel = (event: UniAnimationPlaybackEvent) => void;
+type UniAnimationOnFinish = (event: UniAnimationPlaybackEvent) => void;
+/**
+ * @package io.dcloud.uniapp.runtime
+ * @uniPlatform {
+ *    "app": {
+ *        "android": {
+ *            "osVer": "5.0",
+ *            "uniVer": "x",
+ *            "unixVer": "4.51"
+ *        },
+ *        "ios": {
+ *            "osVer": "12.0",
+ *            "uniVer": "x",
+ *            "unixVer": "4.53"
+ *   	  }
+ *    },
+ *    "mp": {
+ *      "weixin": {
+ *        "hostVer": "√",
+ *        "uniVer": "x",
+ *        "unixVer": "x"
+ *      },
+ *      "alipay": {
+ *        "hostVer": "√",
+ *        "uniVer": "x",
+ *        "unixVer": "x"
+ *      },
+ *      "baidu": {
+ *        "hostVer": "√",
+ *        "uniVer": "x",
+ *        "unixVer": "x"
+ *      },
+ *      "toutiao": {
+ *        "hostVer": "√",
+ *        "uniVer": "x",
+ *        "unixVer": "x"
+ *      },
+ *      "lark": {
+ *        "hostVer": "√",
+ *        "uniVer": "x",
+ *        "unixVer": "x"
+ *      },
+ *      "qq": {
+ *        "hostVer": "√",
+ *        "uniVer": "x",
+ *        "unixVer": "x"
+ *      },
+ *      "kuaishou": {
+ *        "hostVer": "√",
+ *        "uniVer": "x",
+ *        "unixVer": "x"
+ *      },
+ *      "jd": {
+ *        "hostVer": "√",
+ *        "uniVer": "x",
+ *        "unixVer": "x"
+ *      }
+ *    },
+ *    "web": {
+ *        "uniVer": "x",
+ *        "unixVer": "√"
+ *    }
+ * }
+ */
+declare class UniAnimation {
+  /**
+   * 获取或设置用于标识动画的字符串
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.53"
+   *   	  }
+   *    },
+   *    "mp": {
+   *      "weixin": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "4.53"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "baidu": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "toutiao": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "lark": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "qq": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "kuaishou": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "jd": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      }
+   *    },
+   *    "web": {
+   *        "uniVer": "x",
+   *        "unixVer": "√"
+   *    }
+   * }
+   */
+  id: string;
+  /**
+   * 返回动画播放状态。可选值：`running`动画正在运行；`paused`动画暂停；`finished`动画播放完成；`idle`动画取消或者失败
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.53"
+   *   	  }
+   *    },
+   *    "mp": {
+   *      "weixin": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "baidu": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "toutiao": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "lark": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "qq": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "kuaishou": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "jd": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      }
+   *    },
+   *    "web": {
+   *        "uniVer": "x",
+   *        "unixVer": "√"
+   *    }
+   * }
+   */
+  playState: string;
+  /**
+   * 监听动画取消事件
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.53"
+   *   	  }
+   *    },
+   *    "mp": {
+   *      "weixin": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "baidu": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "toutiao": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "lark": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "qq": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "kuaishou": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "jd": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      }
+   *    },
+   *    "web": {
+   *        "uniVer": "x",
+   *        "unixVer": "√"
+   *    }
+   * }
+   */
+  oncancel: UniAnimationOnCancel | null;
+  /**
+   * 监听动画完成事件
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.53"
+   *   	  }
+   *    },
+   *    "mp": {
+   *      "weixin": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "baidu": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "toutiao": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "lark": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "qq": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "kuaishou": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "jd": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      }
+   *    },
+   *    "web": {
+   *        "uniVer": "x",
+   *        "unixVer": "√"
+   *    }
+   * }
+   */
+  onfinish: UniAnimationOnFinish | null;
+  /**
+   * 终止并取消所有动画
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.53"
+   *   	  }
+   *    },
+   *    "mp": {
+   *      "weixin": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "4.53"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "baidu": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "toutiao": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "lark": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "qq": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "kuaishou": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "jd": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      }
+   *    },
+   *    "web": {
+   *        "uniVer": "x",
+   *        "unixVer": "√"
+   *    }
+   * }
+   */
+  cancel(): void;
+  /**
+   * 动画跳转到最后一毫秒并立即播放完成
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.53"
+   *   	  }
+   *    },
+   *    "mp": {
+   *      "weixin": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "baidu": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "toutiao": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "lark": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "qq": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "kuaishou": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "jd": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      }
+   *    },
+   *    "web": {
+   *        "uniVer": "x",
+   *        "unixVer": "√"
+   *    }
+   * }
+   */
+  finish(): void;
+  /**
+   * 暂停动画播放
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.53"
+   *   	  }
+   *    },
+   *    "mp": {
+   *      "weixin": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "baidu": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "toutiao": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "lark": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "qq": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "kuaishou": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "jd": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      }
+   *    },
+   *    "web": {
+   *        "uniVer": "x",
+   *        "unixVer": "√"
+   *    }
+   * }
+   */
+  pause(): void;
+  /**
+   * 开始或恢复动画播放
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.53"
+   *   	  }
+   *    },
+   *    "mp": {
+   *      "weixin": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "4.53"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "baidu": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "toutiao": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "lark": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "qq": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "kuaishou": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      },
+   *      "jd": {
+   *        "hostVer": "√",
+   *        "uniVer": "x",
+   *        "unixVer": "x"
+   *      }
+   *    },
+   *    "web": {
+   *        "uniVer": "x",
+   *        "unixVer": "√"
+   *    }
+   * }
+   */
+  play(): void;
+}
+//#endregion
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/UniVideoElement.d.ts
+declare global {
+  interface RequestFullScreenOptions {
+    /**
+     * direction
+     */
+    direction?:
+    /**
+     * 正常竖向
+     */
+    0 |
+    /**
+     * 屏幕逆时针90度
+     */
+    90 |
+    /**
+     * 屏幕顺时针90度
+     */
+    -90 | null;
+  }
+}
+//#endregion
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/UniTextLayout.d.ts
+declare global {
+  /**
+   * 文本对象
+   */
+  interface UniTextLayout {
+    /**
+     * 设置文本
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    setText(text: string): void;
+    /**
+     * 设置文本颜色
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    setColor(color: string): void;
+    /**
+     * 设置字体名称
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    setFontFamily(family: string): void;
+    /**
+     * 设置字体大小
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    setFontSize(size: string): void;
+    /**
+     * 设置字体样式
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    setFontStyle(style: string): void;
+    /**
+     * 设置字体粗细
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    setFontWeight(weight: string): void;
+    /**
+     * 设置行高
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    setLineHeight(height: string): void;
+    /**
+     * 设置文字水平对齐方式
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    setTextAlign(align: string): void;
+    /**
+     * 设置文字溢出裁剪方式
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    setTextOverflow(overflow: string): void;
+    /**
+     * 设置文字阴影
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    setTextShadow(shadow: string): void;
+    /**
+     * 设置文本修饰类型
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    setTextDecorationLine(decorationLine: string): void;
+    /**
+     * 设置处理空白字符
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    setWhiteSpace(whiteSpace: string): void;
+    /**
+     * 添加子文本对象
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    append(layout: UniTextLayout): void;
+    /**
+     * 测量文本大小
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    measure(constraint: UniLayoutConstraintSize): UniLayoutSize;
+  }
+  /**
+   * 布局大小
+   */
+  interface UniLayoutSize {
+    /**
+     * 元素宽度，逻辑像素值
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    width: number;
+    /**
+     * 元素高度，逻辑像素值
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    height: number;
+  }
+  /**
+   * 布局约束大小
+   */
+  interface UniLayoutConstraintSize {
+    /**
+     * 元素最小宽度，逻辑像素值
+     * 可选值，不设置则认为没有最小宽度
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.81"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *   	    }
+     *    }
+     * }
+     */
+    minWidth?: number | null;
+    /**
+       * 元素最大宽度，逻辑像素值
+       * 可选值，不设置则认为可以无限宽
+       * @uniPlatform {
+       *    "app": {
+       *        "android": {
+       *            "osVer": "5.0",
+       *            "uniVer": "x",
+       *            "unixVer": "4.81"
+       *        },
+       *        "ios": {
+       *            "osVer": "12.0",
+       *            "uniVer": "x",
+       *            "unixVer": "x"
+       *   	    }
+       *    }
+       * }
+       */
+    maxWidth?: number | null;
+    /**
+       * 元素最小高度，逻辑像素值
+       * 可选值，不设置则认为没有最小高度
+       * @uniPlatform {
+       *    "app": {
+       *        "android": {
+       *            "osVer": "5.0",
+       *            "uniVer": "x",
+       *            "unixVer": "4.81"
+       *        },
+       *        "ios": {
+       *            "osVer": "12.0",
+       *            "uniVer": "x",
+       *            "unixVer": "x"
+       *   	    }
+       *    }
+       * }
+       */
+    minHeight?: number | null;
+    /**
+       * 元素最大高度，逻辑像素值
+       * 可选值，不设置则认为可以无限高
+       * @uniPlatform {
+       *    "app": {
+       *        "android": {
+       *            "osVer": "5.0",
+       *            "uniVer": "x",
+       *            "unixVer": "4.81"
+       *        },
+       *        "ios": {
+       *            "osVer": "12.0",
+       *            "uniVer": "x",
+       *            "unixVer": "x"
+       *   	    }
+       *    }
+       * }
+       */
+    maxHeight?: number | null;
+  }
+}
+//#endregion
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/UniSafeAreaInsets.d.ts
+type UniSafeAreaInsets = {
+  /**
+   * 安全区域左侧插入位置（距离左边边界距离）
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *   	    }
+   *    }
+   * }
+   */
+  readonly left: number;
+  /**
+   * 安全区域右侧插入位置（距离右边边界距离）
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *   	    }
+   *    }
+   * }
+   */
+  readonly right: number;
+  /**
+   * 安全区顶部插入位置（距离顶部边界距离）
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *   	    }
+   *    }
+   * }
+   */
+  readonly top: number;
+  /**
+   * 安全区域底部插入位置（距离底部边界距离）
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *   	    }
+   *    }
+   * }
+   */
+  readonly bottom: number;
+};
+//#endregion
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/UniPageBody.d.ts
+type UniPageBody = {
+  /**
+   * 页面内容区域左上角横坐标
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *   	    }
+   *    }
+   * }
+   */
+  readonly left: number;
+  /**
+   * 页面内容区域右下角横坐标
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *   	    }
+   *    }
+   * }
+   */
+  readonly right: number;
+  /**
+   * 页面内容区域左上角纵坐标
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *   	    }
+   *    }
+   * }
+   */
+  readonly top: number;
+  /**
+   * 页面内容区域右下角纵坐标
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *   	    }
+   *    }
+   * }
+   */
+  readonly bottom: number;
+  /**
+   * 页面内容区域宽度
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *   	    }
+   *    }
+   * }
+   */
+  readonly width: number;
+  /**
+   * 页面内容区域高度
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "x",
+   *            "unixVer": "4.51"
+   *   	    }
+   *    }
+   * }
+   */
+  readonly height: number;
+};
+//#endregion
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/UniPage.d.ts
+// export type UniPageBody = {
+//   /**
+//    * 页面可使用区域左上角纵坐标，单位为px
+//    */
+//   top: number,
+//   /**
+//    * 页面可使用区域右下角纵坐标，单位为px
+//    */
+//   bottom: number,
+//   /**
+//    * 页面可使用区域左上角横坐标，单位为px
+//    */
+//   left: number,
+//   /**
+//    * 页面可使用区域右下角横坐标，单位为px
+//    */
+//   right: number,
+//   /**
+//    * 页面可使用区域的宽度，单位为px
+//    */
+//   width: number,
+//   /**
+//    * 页面可使用区域的高度，单位为px
+//    */
+//   height: number
+// }
+declare global {
+  interface UniPage {
+    /**
+     * 页面的路由地址
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31",
+     *      "unixUtsPlugin": "4.31"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.31"
+     *  }
+     * }
+     */
+    route: string;
+    /**
+     * 页面的路由参数信息
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31",
+     *      "unixUtsPlugin": "4.31"
+     *    },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.31"
+     *  }
+     * }
+     */
+    options: UTSJSONObject;
+    /**
+     * UniPage vue 实例对象
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31",
+     *      "unixUtsPlugin": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.31"
+     *  }
+     * }
+     */
+    vm?: ComponentPublicInstance | null;
+    /**
+     * UniPage vue 实例对象
+     * @deprecated 已废弃，仅为了向下兼容保留
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31",
+     *      "unixUtsPlugin": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.31"
+     *  }
+     * }
+     */
+    $vm?: ComponentPublicInstance | null;
+    /**
+     * UniPage 页面可使用区域信息，单位为px
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.51"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.51"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.51"
+     *  }
+     * }
+     */
+    pageBody: UniPageBody;
+    /**
+     * UniPage 安全区域插入位置（与屏幕边界的距离）信息
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.51"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.51"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.51"
+     *  }
+     * }
+     */
+    safeAreaInsets: UniSafeAreaInsets;
+    /**
+     * 已经进入全屏状态的元素
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    readonly fullscreenElement?: UniElement$1 | null;
+    /**
+     * 页面窗口宽度
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "unixVer": "4.61",
+     *      "unixUtsPlugin": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.63"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "4.63"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.63"
+     *  }
+     * }
+     */
+    readonly width: number;
+    /**
+     * 页面窗口高度
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "unixVer": "4.61",
+     *      "unixUtsPlugin": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.63"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "4.63"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.63"
+     *  }
+     * }
+     */
+    readonly height: number;
+    /**
+     * 页面状态栏高度
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "unixVer": "4.61",
+     *      "unixUtsPlugin": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.63"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "4.63"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.63"
+     *  }
+     * }
+     */
+    readonly statusBarHeight: number;
+    /**
+     * 获取当前页面样式。详细属性配置请参考PageStyle
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getpagestyle
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31",
+     *      "unixUtsPlugin": "4.31"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.31"
+     *  }
+     * }
+     */
+    getPageStyle(): UTSJSONObject;
+    /**
+     * 获取当前页面样式。详细属性配置请参考PageStyle
+     * @deprecated 已废弃，仅为了向下兼容保留
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getpagestyle-2
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.13"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.13"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.13"
+     *  }
+     * }
+     */
+    $getPageStyle(): UTSJSONObject;
+    /**
+     * 设置当前页面样式。详细属性配置请参考PageStyle
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#setpagestyle
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31",
+     *      "unixUtsPlugin": "4.31"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.31"
+     *  }
+     * }
+     */
+    setPageStyle(style: UTSJSONObject): void;
+    /**
+     * 设置当前页面样式。详细属性配置请参考PageStyle
+     * @deprecated 已废弃，仅为了向下兼容保留
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#setpagestyle-2
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.13"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.13"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.13"
+     *  }
+     * }
+     */
+    $setPageStyle(style: UTSJSONObject): void;
+    /**
+     * 用于 dialogPage 获取所属父页面
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#emit
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#emit
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31",
+     *      "unixUtsPlugin": "4.31"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.31"
+     *  }
+     * }
+     */
+    getParentPage(): UniPage | null;
+    /**
+     * 获取当前页面的 dialog 子页面集合
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#emit
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#emit
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31",
+     *      "unixUtsPlugin": "4.31"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.31"
+     *  }
+     * }
+     */
+    getDialogPages(): UniPage[];
+    /**
+     * 返回一个匹配特定 ID 的元素， 如果不存在，返回 null。\
+     * 如果需要获取指定的节点类型，需要使用 as 进行类型转换。\
+     * ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素，则返回第一个匹配的元素。
+     *
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getelementbyid
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getelementbyid
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.31"
+     *  }
+     * }
+     */
+    getElementById(id: string.IDString | string): UniElement$1 | null;
+    /**
+     * 返回 android 平台页面根 view
+     *
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getandroidview
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getandroidview
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.31"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    getAndroidView(): View | null;
+    /**
+     * 返回 android 平台加载页面内容的Activity
+     *
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getandroidactivity
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getandroidactivity
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    getAndroidActivity(): Activity | null;
+    /**
+     * 返回 ios 平台页面根 view
+     *
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getiosview
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getiosview
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "12",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixUtsPlugin": "4.33"
+     *    },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    getIOSView(): UIView | null;
+    /**
+     * 返回页面 HTML Element 对象
+     *
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#gethtmlelement
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#gethtmlelement
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.31"
+     *  }
+     * }
+     */
+    getHTMLElement(): UniElement$1 | null;
+    /**
+     * 将当前在全屏模式下显示的元素退出全屏模式，恢复全屏之前的状态
+     *
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#exitfullscreen
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#exitfullscreen
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    exitFullscreen(options: ExitFullscreenOptions | null): void;
+    /**
+     * 创建组件
+     *
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#createelement
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#createelement
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.63"
+     *      "unixvVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    createElement(tagName: string): UniElement$1;
+    /**
+     * @internal
+     * web android harmony 获取当前页面 dialogPage 创建的 API 弹框集合
+     */
+    $getSystemDialogPages(): UniPage[];
+    /**
+     * @internal
+     * ios 获取当前页面 dialogPage 创建的 API 弹框集合
+     */
+    __$$getSystemDialogPages(): UniPage[];
+    /**
+     * 监听页面布局变化更新事件
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "6.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "5.0"
+     *    }
+     *  }
+     * }
+     */
+    onLayoutChange(callback: UniPageOnLayoutChangeCallback): number;
+    /**
+     * 取消监听页面布局变化更新事件
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "6.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "5.0"
+     *    }
+     *  }
+     * }
+     */
+    offLayoutChange(id: number): void;
+    /**
+     * 监听页面渲染变化更新事件
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "6.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "5.0"
+     *    }
+     *  }
+     * }
+     */
+    onRenderChange(callback: UniPageOnRenderChangeCallback): number;
+    /**
+     * 取消监听页面渲染变化更新事件
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "6.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "5.0"
+     *    }
+     *  }
+     * }
+     */
+    offRenderChange(id: number): void;
+    /**
+     * 监听页面触摸开始事件
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "6.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "5.0"
+     *    }
+     *  }
+     * }
+     */
+    onTouchStart(callback: UniPageOnTouchEventCallback): number;
+    /**
+     * 取消监听页面触摸开始事件
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "6.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "5.0"
+     *    }
+     *  }
+     * }
+     */
+    offTouchStart(id: number): void;
+    /**
+     * 监听页面触摸结束事件
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "6.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "5.0"
+     *    }
+     *  }
+     * }
+     */
+    onTouchEnd(callback: UniPageOnTouchEventCallback): number;
+    /**
+     * 取消监听页面触摸结束事件
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "6.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixvVer": "5.0"
+     *    }
+     *  }
+     * }
+     */
+    offTouchEnd(id: number): void;
+    /**
+    * 返回页面中与指定选择器或选择器组匹配的第一个 Element对象。如果找不到匹配项，则返回null
+    * @param {string.cssSelectorString}selector CSS 选择器字符串
+    * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "5.0",
+    *            "uniVer": "x",
+    *            "unixVer": "5.0"
+    *        },
+    *        "ios": {
+    *            "osVer": "12.0",
+    *            "uniVer": "x",
+    *            "unixVer": "5.0",
+    *            "unixUtsPlugin": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0",
+    *            "uniVer": "x",
+    *            "unixVer": "5.0",
+    *            "unixUtsPlugin": "x",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "mp": {
+    *      "weixin": {
+    *        "osVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *      }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "5.0"
+    *    }
+    * }
+    */
+    querySelector(selector: string.cssSelectorString): UniElement$1 | null;
+    /**
+    * 返回页面中与指定选择器或选择器组匹配的元素列表。
+    * @param {string.cssSelectorString}selector CSS 选择器字符串
+    * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "5.0",
+    *            "uniVer": "x",
+    *            "unixVer": "5.0"
+    *        },
+    *        "ios": {
+    *            "osVer": "12.0",
+    *            "uniVer": "x",
+    *            "unixVer": "5.0",
+    *            "unixUtsPlugin": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0",
+    *            "uniVer": "x",
+    *            "unixVer": "5.0",
+    *            "unixUtsPlugin": "x",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "mp": {
+    *      "weixin": {
+    *        "osVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *      }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "5.0"
+    *    }
+    * }
+    */
+    querySelectorAll(selector: string.cssSelectorString): UniElement$1[];
+  }
+}
+type ExitFullscreenSuccessCallback = () => void;
+type ExitFullscreenFailCallback = (error: FullscreenError) => void;
+type ExitFullscreenCompleteCallback = (result: any | null) => void;
+type ExitFullscreenOptions = {
+  /**
+   * 成功回调
+   */
+  success: ExitFullscreenSuccessCallback | null;
+  /**
+   * 失败回调
+   */
+  fail: ExitFullscreenFailCallback | null;
+  /**
+   * 完成回调
+   */
+  complete: ExitFullscreenCompleteCallback | null;
+};
+/**
+ * 监听页面布局变化更新事件回调函数
+ */
+type UniPageOnLayoutChangeCallback = (res: UniPageOnLayoutChangeCallbackResult) => void;
+/**
+ * 监听页面布局变化更新事件回调参数
+ */
+type UniPageOnLayoutChangeCallbackResult = UniPagePerformanceTiming;
+/**
+ * 监听页面布局变化更新事件回调函数
+ */
+type UniPageOnRenderChangeCallback = (res: UniPageOnRenderChangeCallbackResult) => void;
+/**
+ * 监听页面布局变化更新事件回调参数
+ */
+type UniPageOnRenderChangeCallbackResult = UniPagePerformanceRenderTiming;
+/**
+ * 页面性能计时信息
+ */
+interface UniPagePerformanceTiming {
+  /**
+   * 性能计时持续的时间，单位为ms
+   */
+  duration: number;
+}
+/**
+ * 渲染性能计时信息
+ *  UniPagePerformanceTiming基类的duration属性为渲染到屏幕的总时间
+ */
+interface UniPagePerformanceRenderTiming extends UniPagePerformanceTiming {
+  /**
+   * 更新渲染属性的总时间，单位为ms
+   */
+  updateDuration: number;
+}
+/**
+ * 监听页面触摸事件回调函数
+ */
+type UniPageOnTouchEventCallback = (event: UniTouchEvent) => void;
+//#endregion
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/DrawableContext.d.ts
 // TODO 需要 export 以支持 declare global，否则会报错无法扩展全局接口
 type DrawableContextColorString = string.ColorString;
 declare global {
@@ -8672,13 +11142,13 @@ declare global {
      *        "ios": {
      *            "osVer": "12.0",
      *            "uniVer": "x",
-     *            "unixVer": "4.11",
-     *            "unixvVer": "x"
+     *            "unixVer": "4.11"
      *        },
      *        "harmony": {
      *            "osVer": "x",
      *            "uniVer": "x",
-     *            "unixVer": "4.61"
+     *            "unixVer": "4.61",
+     *            "unixvVer": "x"
      *        }
      *    },
      *    "mp": {
@@ -10460,2475 +12930,7 @@ declare global {
   }
 }
 //#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/SnapshotOptions.d.ts
-/**
- * 组件截图成功的返回数据
- */
-type TakeSnapshotSuccess = {
-  /**
-   * 截图保存的临时文件路径
-   */
-  tempFilePath: string;
-};
-/**
- * 组件截图失败的返回数据
- */
-type TakeSnapshotFail = {
-  errMsg: string;
-};
-/**
- * 成功回调函数定义
- */
-type TakeSnapshotSuccessCallback = (res: TakeSnapshotSuccess) => void;
-/**
- * 失败回调函数定义
- */
-type TakeSnapshotFailCallback = (res: TakeSnapshotFail) => void;
-/**
- * 完成回调函数定义
- */
-type TakeSnapshotCompleteCallback = (res: any) => void;
-/**
- * 组件截图的参数配置选项
- */
-type TakeSnapshotOptions = {
-  /**
-   * 截图导出类型，目前仅支持 'file' 保存到临时文件目录
-   * @defaultValue "file"
-   */
-  type?: string | null;
-  /**
-   * 截图文件格式，目前仅支持 'png'
-   * @defaultValue "png"
-   */
-  format?: string | null;
-  /**
-   * 接口调用成功的回调函数
-   */
-  success?: TakeSnapshotSuccessCallback | null;
-  /**
-   * 接口调用失败的回调函数
-   */
-  fail?: TakeSnapshotFailCallback | null;
-  /**
-   * 接口调用结束的回调函数（调用成功、失败都会执行）
-   */
-  complete?: TakeSnapshotCompleteCallback | null;
-};
-//#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/UniAnimationPlaybackEvent.d.ts
-/**
- * @package io.dcloud.uniapp.runtime
- * @autodoc false
- */
-declare class UniAnimationPlaybackEvent extends UniEvent$1 {
-  /**
-   * 动画的事件类型
-   */
-  type: string;
-}
-//#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/UniAnimation.d.ts
-type UniAnimationOnCancel = (event: UniAnimationPlaybackEvent) => void;
-type UniAnimationOnFinish = (event: UniAnimationPlaybackEvent) => void;
-/**
- * @package io.dcloud.uniapp.runtime
- * @uniPlatform {
- *    "app": {
- *        "android": {
- *            "osVer": "5.0",
- *            "uniVer": "x",
- *            "unixVer": "4.51"
- *        },
- *        "ios": {
- *            "osVer": "12.0",
- *            "uniVer": "x",
- *            "unixVer": "4.53"
- *   	  }
- *    },
- *    "mp": {
- *      "weixin": {
- *        "hostVer": "√",
- *        "uniVer": "x",
- *        "unixVer": "x"
- *      },
- *      "alipay": {
- *        "hostVer": "√",
- *        "uniVer": "x",
- *        "unixVer": "x"
- *      },
- *      "baidu": {
- *        "hostVer": "√",
- *        "uniVer": "x",
- *        "unixVer": "x"
- *      },
- *      "toutiao": {
- *        "hostVer": "√",
- *        "uniVer": "x",
- *        "unixVer": "x"
- *      },
- *      "lark": {
- *        "hostVer": "√",
- *        "uniVer": "x",
- *        "unixVer": "x"
- *      },
- *      "qq": {
- *        "hostVer": "√",
- *        "uniVer": "x",
- *        "unixVer": "x"
- *      },
- *      "kuaishou": {
- *        "hostVer": "√",
- *        "uniVer": "x",
- *        "unixVer": "x"
- *      },
- *      "jd": {
- *        "hostVer": "√",
- *        "uniVer": "x",
- *        "unixVer": "x"
- *      }
- *    },
- *    "web": {
- *        "uniVer": "x",
- *        "unixVer": "√"
- *    }
- * }
- */
-declare class UniAnimation {
-  /**
-   * 获取或设置用于标识动画的字符串
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.53"
-   *   	  }
-   *    },
-   *    "mp": {
-   *      "weixin": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "4.53"
-   *      },
-   *      "alipay": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "baidu": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "toutiao": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "lark": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "qq": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "kuaishou": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "jd": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      }
-   *    },
-   *    "web": {
-   *        "uniVer": "x",
-   *        "unixVer": "√"
-   *    }
-   * }
-   */
-  id: string;
-  /**
-   * 返回动画播放状态。可选值：`running`动画正在运行；`paused`动画暂停；`finished`动画播放完成；`idle`动画取消或者失败
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.53"
-   *   	  }
-   *    },
-   *    "mp": {
-   *      "weixin": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "alipay": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "baidu": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "toutiao": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "lark": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "qq": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "kuaishou": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "jd": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      }
-   *    },
-   *    "web": {
-   *        "uniVer": "x",
-   *        "unixVer": "√"
-   *    }
-   * }
-   */
-  playState: string;
-  /**
-   * 监听动画取消事件
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.53"
-   *   	  }
-   *    },
-   *    "mp": {
-   *      "weixin": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "alipay": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "baidu": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "toutiao": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "lark": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "qq": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "kuaishou": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "jd": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      }
-   *    },
-   *    "web": {
-   *        "uniVer": "x",
-   *        "unixVer": "√"
-   *    }
-   * }
-   */
-  oncancel: UniAnimationOnCancel | null;
-  /**
-   * 监听动画完成事件
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.53"
-   *   	  }
-   *    },
-   *    "mp": {
-   *      "weixin": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "alipay": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "baidu": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "toutiao": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "lark": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "qq": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "kuaishou": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "jd": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      }
-   *    },
-   *    "web": {
-   *        "uniVer": "x",
-   *        "unixVer": "√"
-   *    }
-   * }
-   */
-  onfinish: UniAnimationOnFinish | null;
-  /**
-   * 终止并取消所有动画
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.53"
-   *   	  }
-   *    },
-   *    "mp": {
-   *      "weixin": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "4.53"
-   *      },
-   *      "alipay": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "baidu": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "toutiao": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "lark": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "qq": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "kuaishou": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "jd": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      }
-   *    },
-   *    "web": {
-   *        "uniVer": "x",
-   *        "unixVer": "√"
-   *    }
-   * }
-   */
-  cancel(): void;
-  /**
-   * 动画跳转到最后一毫秒并立即播放完成
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.53"
-   *   	  }
-   *    },
-   *    "mp": {
-   *      "weixin": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "alipay": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "baidu": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "toutiao": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "lark": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "qq": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "kuaishou": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "jd": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      }
-   *    },
-   *    "web": {
-   *        "uniVer": "x",
-   *        "unixVer": "√"
-   *    }
-   * }
-   */
-  finish(): void;
-  /**
-   * 暂停动画播放
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.53"
-   *   	  }
-   *    },
-   *    "mp": {
-   *      "weixin": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "alipay": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "baidu": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "toutiao": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "lark": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "qq": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "kuaishou": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "jd": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      }
-   *    },
-   *    "web": {
-   *        "uniVer": "x",
-   *        "unixVer": "√"
-   *    }
-   * }
-   */
-  pause(): void;
-  /**
-   * 开始或恢复动画播放
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.53"
-   *   	  }
-   *    },
-   *    "mp": {
-   *      "weixin": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "4.53"
-   *      },
-   *      "alipay": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "baidu": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "toutiao": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "lark": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "qq": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "kuaishou": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      },
-   *      "jd": {
-   *        "hostVer": "√",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
-   *      }
-   *    },
-   *    "web": {
-   *        "uniVer": "x",
-   *        "unixVer": "√"
-   *    }
-   * }
-   */
-  play(): void;
-}
-//#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/UniVideoElement.d.ts
-declare global {
-  interface RequestFullScreenOptions {
-    /**
-     * direction
-     */
-    direction?:
-    /**
-     * 正常竖向
-     */
-    0 |
-    /**
-     * 屏幕逆时针90度
-     */
-    90 |
-    /**
-     * 屏幕顺时针90度
-     */
-    -90 | null;
-  }
-}
-//#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/UniTextLayout.d.ts
-declare global {
-  /**
-   * 文本对象
-   */
-  interface UniTextLayout {
-    /**
-     * 设置文本
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    setText(text: string): void;
-    /**
-     * 设置文本颜色
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    setColor(color: string): void;
-    /**
-     * 设置字体名称
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    setFontFamily(family: string): void;
-    /**
-     * 设置字体大小
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    setFontSize(size: string): void;
-    /**
-     * 设置字体样式
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    setFontStyle(style: string): void;
-    /**
-     * 设置字体粗细
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    setFontWeight(weight: string): void;
-    /**
-     * 设置行高
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    setLineHeight(height: string): void;
-    /**
-     * 设置文字水平对齐方式
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    setTextAlign(align: string): void;
-    /**
-     * 设置文字溢出裁剪方式
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    setTextOverflow(overflow: string): void;
-    /**
-     * 设置文字阴影
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    setTextShadow(shadow: string): void;
-    /**
-     * 设置文本修饰类型
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    setTextDecorationLine(decorationLine: string): void;
-    /**
-     * 设置处理空白字符
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    setWhiteSpace(whiteSpace: string): void;
-    /**
-     * 添加子文本对象
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    append(layout: UniTextLayout): void;
-    /**
-     * 测量文本大小
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    measure(constraint: UniLayoutConstraintSize): UniLayoutSize;
-  }
-  /**
-   * 布局大小
-   */
-  interface UniLayoutSize {
-    /**
-     * 元素宽度，逻辑像素值
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    width: number;
-    /**
-     * 元素高度，逻辑像素值
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    height: number;
-  }
-  /**
-   * 布局约束大小
-   */
-  interface UniLayoutConstraintSize {
-    /**
-     * 元素最小宽度，逻辑像素值
-     * 可选值，不设置则认为没有最小宽度
-     * @uniPlatform {
-     *    "app": {
-     *        "android": {
-     *            "osVer": "5.0",
-     *            "uniVer": "x",
-     *            "unixVer": "4.81"
-     *        },
-     *        "ios": {
-     *            "osVer": "12.0",
-     *            "uniVer": "x",
-     *            "unixVer": "x"
-     *   	    }
-     *    }
-     * }
-     */
-    minWidth?: number | null;
-    /**
-       * 元素最大宽度，逻辑像素值
-       * 可选值，不设置则认为可以无限宽
-       * @uniPlatform {
-       *    "app": {
-       *        "android": {
-       *            "osVer": "5.0",
-       *            "uniVer": "x",
-       *            "unixVer": "4.81"
-       *        },
-       *        "ios": {
-       *            "osVer": "12.0",
-       *            "uniVer": "x",
-       *            "unixVer": "x"
-       *   	    }
-       *    }
-       * }
-       */
-    maxWidth?: number | null;
-    /**
-       * 元素最小高度，逻辑像素值
-       * 可选值，不设置则认为没有最小高度
-       * @uniPlatform {
-       *    "app": {
-       *        "android": {
-       *            "osVer": "5.0",
-       *            "uniVer": "x",
-       *            "unixVer": "4.81"
-       *        },
-       *        "ios": {
-       *            "osVer": "12.0",
-       *            "uniVer": "x",
-       *            "unixVer": "x"
-       *   	    }
-       *    }
-       * }
-       */
-    minHeight?: number | null;
-    /**
-       * 元素最大高度，逻辑像素值
-       * 可选值，不设置则认为可以无限高
-       * @uniPlatform {
-       *    "app": {
-       *        "android": {
-       *            "osVer": "5.0",
-       *            "uniVer": "x",
-       *            "unixVer": "4.81"
-       *        },
-       *        "ios": {
-       *            "osVer": "12.0",
-       *            "uniVer": "x",
-       *            "unixVer": "x"
-       *   	    }
-       *    }
-       * }
-       */
-    maxHeight?: number | null;
-  }
-}
-//#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/UniSafeAreaInsets.d.ts
-type UniSafeAreaInsets = {
-  /**
-   * 安全区域左侧插入位置（距离左边边界距离）
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *   	    }
-   *    }
-   * }
-   */
-  readonly left: number;
-  /**
-   * 安全区域右侧插入位置（距离右边边界距离）
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *   	    }
-   *    }
-   * }
-   */
-  readonly right: number;
-  /**
-   * 安全区顶部插入位置（距离顶部边界距离）
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *   	    }
-   *    }
-   * }
-   */
-  readonly top: number;
-  /**
-   * 安全区域底部插入位置（距离底部边界距离）
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *   	    }
-   *    }
-   * }
-   */
-  readonly bottom: number;
-};
-//#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/UniPageBody.d.ts
-type UniPageBody = {
-  /**
-   * 页面内容区域左上角横坐标
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *   	    }
-   *    }
-   * }
-   */
-  readonly left: number;
-  /**
-   * 页面内容区域右下角横坐标
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *   	    }
-   *    }
-   * }
-   */
-  readonly right: number;
-  /**
-   * 页面内容区域左上角纵坐标
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *   	    }
-   *    }
-   * }
-   */
-  readonly top: number;
-  /**
-   * 页面内容区域右下角纵坐标
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *   	    }
-   *    }
-   * }
-   */
-  readonly bottom: number;
-  /**
-   * 页面内容区域宽度
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *   	    }
-   *    }
-   * }
-   */
-  readonly width: number;
-  /**
-   * 页面内容区域高度
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "x",
-   *            "unixVer": "4.51"
-   *   	    }
-   *    }
-   * }
-   */
-  readonly height: number;
-};
-//#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/UniPage.d.ts
-// export type UniPageBody = {
-//   /**
-//    * 页面可使用区域左上角纵坐标，单位为px
-//    */
-//   top: number,
-//   /**
-//    * 页面可使用区域右下角纵坐标，单位为px
-//    */
-//   bottom: number,
-//   /**
-//    * 页面可使用区域左上角横坐标，单位为px
-//    */
-//   left: number,
-//   /**
-//    * 页面可使用区域右下角横坐标，单位为px
-//    */
-//   right: number,
-//   /**
-//    * 页面可使用区域的宽度，单位为px
-//    */
-//   width: number,
-//   /**
-//    * 页面可使用区域的高度，单位为px
-//    */
-//   height: number
-// }
-declare global {
-  interface UniPage {
-    /**
-     * 页面的路由地址
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31",
-     *      "unixUtsPlugin": "4.31"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.31"
-     *  }
-     * }
-     */
-    route: string;
-    /**
-     * 页面的路由参数信息
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31",
-     *      "unixUtsPlugin": "4.31"
-     *    },
-     *    "harmony": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.31"
-     *  }
-     * }
-     */
-    options: UTSJSONObject;
-    /**
-     * UniPage vue 实例对象
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31",
-     *      "unixUtsPlugin": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.31"
-     *  }
-     * }
-     */
-    vm?: ComponentPublicInstance | null;
-    /**
-     * UniPage vue 实例对象
-     * @deprecated 已废弃，仅为了向下兼容保留
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31",
-     *      "unixUtsPlugin": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.31"
-     *  }
-     * }
-     */
-    $vm?: ComponentPublicInstance | null;
-    /**
-     * UniPage 页面可使用区域信息，单位为px
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.51"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.51"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.51"
-     *  }
-     * }
-     */
-    pageBody: UniPageBody;
-    /**
-     * UniPage 安全区域插入位置（与屏幕边界的距离）信息
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.51"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.51"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.51"
-     *  }
-     * }
-     */
-    safeAreaInsets: UniSafeAreaInsets;
-    /**
-     * 已经进入全屏状态的元素
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "x"
-     *  }
-     * }
-     */
-    readonly fullscreenElement?: UniElement$2 | null;
-    /**
-     * 页面窗口宽度
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "unixVer": "4.61",
-     *      "unixUtsPlugin": "4.61"
-     *    },
-     *    "harmony": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.63"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "4.63"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.63"
-     *  }
-     * }
-     */
-    readonly width: number;
-    /**
-     * 页面窗口高度
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "unixVer": "4.61",
-     *      "unixUtsPlugin": "4.61"
-     *    },
-     *    "harmony": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.63"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "4.63"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.63"
-     *  }
-     * }
-     */
-    readonly height: number;
-    /**
-     * 页面状态栏高度
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "unixVer": "4.61",
-     *      "unixUtsPlugin": "4.61"
-     *    },
-     *    "harmony": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.63"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "4.63"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.63"
-     *  }
-     * }
-     */
-    readonly statusBarHeight: number;
-    /**
-     * 获取当前页面样式。详细属性配置请参考PageStyle
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getpagestyle
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31",
-     *      "unixUtsPlugin": "4.31"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.31"
-     *  }
-     * }
-     */
-    getPageStyle(): UTSJSONObject;
-    /**
-     * 获取当前页面样式。详细属性配置请参考PageStyle
-     * @deprecated 已废弃，仅为了向下兼容保留
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getpagestyle-2
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.13"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.13"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.13"
-     *  }
-     * }
-     */
-    $getPageStyle(): UTSJSONObject;
-    /**
-     * 设置当前页面样式。详细属性配置请参考PageStyle
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#setpagestyle
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31",
-     *      "unixUtsPlugin": "4.31"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.31"
-     *  }
-     * }
-     */
-    setPageStyle(style: UTSJSONObject): void;
-    /**
-     * 设置当前页面样式。详细属性配置请参考PageStyle
-     * @deprecated 已废弃，仅为了向下兼容保留
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#setpagestyle-2
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.13"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.13"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.13"
-     *  }
-     * }
-     */
-    $setPageStyle(style: UTSJSONObject): void;
-    /**
-     * 用于 dialogPage 获取所属父页面
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#emit
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#emit
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31",
-     *      "unixUtsPlugin": "4.31"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.31"
-     *  }
-     * }
-     */
-    getParentPage(): UniPage | null;
-    /**
-     * 获取当前页面的 dialog 子页面集合
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#emit
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#emit
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31",
-     *      "unixUtsPlugin": "4.31"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.31"
-     *  }
-     * }
-     */
-    getDialogPages(): UniPage[];
-    /**
-     * 返回一个匹配特定 ID 的元素， 如果不存在，返回 null。\
-     * 如果需要获取指定的节点类型，需要使用 as 进行类型转换。\
-     * ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素，则返回第一个匹配的元素。
-     *
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getelementbyid
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getelementbyid
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.31"
-     *  }
-     * }
-     */
-    getElementById(id: string.IDString | string): UniElement$2 | null;
-    /**
-     * 返回 android 平台页面根 view
-     *
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getandroidview
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getandroidview
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.31"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "x"
-     *  }
-     * }
-     */
-    getAndroidView(): View | null;
-    /**
-     * 返回 android 平台加载页面内容的Activity
-     *
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getandroidactivity
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getandroidactivity
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "x"
-     *  }
-     * }
-     */
-    getAndroidActivity(): Activity | null;
-    /**
-     * 返回 ios 平台页面根 view
-     *
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getiosview
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#getiosview
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *    "ios": {
-     *      "osVer": "12",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixUtsPlugin": "4.33"
-     *    },
-     *    "harmony": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "x"
-     *  }
-     * }
-     */
-    getIOSView(): UIView | null;
-    /**
-     * 返回页面 HTML Element 对象
-     *
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#gethtmlelement
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#gethtmlelement
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "4.31"
-     *  }
-     * }
-     */
-    getHTMLElement(): UniElement$2 | null;
-    /**
-     * 将当前在全屏模式下显示的元素退出全屏模式，恢复全屏之前的状态
-     *
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#exitfullscreen
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#exitfullscreen
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.61"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "x"
-     *  }
-     * }
-     */
-    exitFullscreen(options: ExitFullscreenOptions | null): void;
-    /**
-     * 创建组件
-     *
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#createelement
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/unipage.html#createelement
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *    "ios": {
-     *      "osVer": "x",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "5.0.0",
-     *      "uniVer": "x",
-     *      "unixVer": "4.63"
-     *      "unixvVer": "x"
-     *    }
-     *  },
-     *  "mp": {
-     *    "weixin": {
-     *      "hostVer": "√",
-     *      "uniVer": "x",
-     *      "unixVer": "x"
-     *    },
-     *  },
-     *  "web": {
-     *    "uniVer": "x",
-     *    "unixVer": "x"
-     *  }
-     * }
-     */
-    createElement(tagName: string): UniElement$2;
-    /**
-     * @internal
-     * web android harmony 获取当前页面 dialogPage 创建的 API 弹框集合
-     */
-    $getSystemDialogPages(): UniPage[];
-    /**
-     * @internal
-     * ios 获取当前页面 dialogPage 创建的 API 弹框集合
-     */
-    __$$getSystemDialogPages(): UniPage[];
-    /**
-     * 监听页面布局变化更新事件
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "ios": {
-     *      "osVer": "12.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "6.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "5.0"
-     *    }
-     *  }
-     * }
-     */
-    onLayoutChange(callback: UniPageOnLayoutChangeCallback): number;
-    /**
-     * 取消监听页面布局变化更新事件
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "ios": {
-     *      "osVer": "12.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "6.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "5.0"
-     *    }
-     *  }
-     * }
-     */
-    offLayoutChange(id: number): void;
-    /**
-     * 监听页面渲染变化更新事件
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "ios": {
-     *      "osVer": "12.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "6.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "5.0"
-     *    }
-     *  }
-     * }
-     */
-    onRenderChange(callback: UniPageOnRenderChangeCallback): number;
-    /**
-     * 取消监听页面渲染变化更新事件
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "ios": {
-     *      "osVer": "12.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "6.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "5.0"
-     *    }
-     *  }
-     * }
-     */
-    offRenderChange(id: number): void;
-    /**
-     * 监听页面触摸开始事件
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "ios": {
-     *      "osVer": "12.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "6.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "5.0"
-     *    }
-     *  }
-     * }
-     */
-    onTouchStart(callback: UniPageOnTouchEventCallback): number;
-    /**
-     * 取消监听页面触摸开始事件
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "ios": {
-     *      "osVer": "12.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "6.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "5.0"
-     *    }
-     *  }
-     * }
-     */
-    offTouchStart(id: number): void;
-    /**
-     * 监听页面触摸结束事件
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "ios": {
-     *      "osVer": "12.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "6.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "5.0"
-     *    }
-     *  }
-     * }
-     */
-    onTouchEnd(callback: UniPageOnTouchEventCallback): number;
-    /**
-     * 取消监听页面触摸结束事件
-     * @uniPlatform {
-     *  "app": {
-     *    "android": {
-     *      "osVer": "5.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "ios": {
-     *      "osVer": "12.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "x"
-     *    },
-     *    "harmony": {
-     *      "osVer": "6.0",
-     *      "uniVer": "x",
-     *      "unixVer": "x",
-     *      "unixvVer": "5.0"
-     *    }
-     *  }
-     * }
-     */
-    offTouchEnd(id: number): void;
-    /**
-    * 返回页面中与指定选择器或选择器组匹配的第一个 Element对象。如果找不到匹配项，则返回null
-    * @param {string.cssSelectorString}selector CSS 选择器字符串
-    * @uniPlatform {
-    *    "app": {
-    *        "android": {
-    *            "osVer": "5.0",
-    *            "uniVer": "x",
-    *            "unixVer": "x"
-    *        },
-    *        "ios": {
-    *            "osVer": "12.0",
-    *            "uniVer": "x",
-    *            "unixVer": "x",
-    *            "unixUtsPlugin": "x"
-    *        },
-    *        "harmony": {
-    *            "osVer": "5.0",
-    *            "uniVer": "x",
-    *            "unixVer": "x",
-    *            "unixUtsPlugin": "x"
-    *        }
-    *    },
-    *    "mp": {
-    *      "weixin": {
-    *        "osVer": "x",
-    *        "uniVer": "x",
-    *        "unixVer": "x"
-    *      }
-    *    },
-    *    "web": {
-    *        "uniVer": "x",
-    *        "unixVer": "x"
-    *    }
-    * }
-    */
-    querySelector(selector: string.cssSelectorString): UniElement$2 | null;
-    /**
-    * 返回页面中与指定选择器或选择器组匹配的元素列表。
-    * @param {string.cssSelectorString}selector CSS 选择器字符串
-    * @uniPlatform {
-    *    "app": {
-    *        "android": {
-    *            "osVer": "5.0",
-    *            "uniVer": "x",
-    *            "unixVer": "x"
-    *        },
-    *        "ios": {
-    *            "osVer": "12.0",
-    *            "uniVer": "x",
-    *            "unixVer": "x",
-    *            "unixUtsPlugin": "x"
-    *        },
-    *        "harmony": {
-    *            "osVer": "5.0",
-    *            "uniVer": "x",
-    *            "unixVer": "x",
-    *            "unixUtsPlugin": "x"
-    *        }
-    *    },
-    *    "mp": {
-    *      "weixin": {
-    *        "osVer": "x",
-    *        "uniVer": "x",
-    *        "unixVer": "x"
-    *      }
-    *    },
-    *    "web": {
-    *        "uniVer": "x",
-    *        "unixVer": "x"
-    *    }
-    * }
-    */
-    querySelectorAll(selector: string.cssSelectorString): UniElement$2[] | null;
-  }
-}
-type ExitFullscreenSuccessCallback = () => void;
-type ExitFullscreenFailCallback = (error: FullscreenError) => void;
-type ExitFullscreenCompleteCallback = (result: any | null) => void;
-type ExitFullscreenOptions = {
-  /**
-   * 成功回调
-   */
-  success: ExitFullscreenSuccessCallback | null;
-  /**
-   * 失败回调
-   */
-  fail: ExitFullscreenFailCallback | null;
-  /**
-   * 完成回调
-   */
-  complete: ExitFullscreenCompleteCallback | null;
-};
-/**
- * 监听页面布局变化更新事件回调函数
- */
-type UniPageOnLayoutChangeCallback = (res: UniPageOnLayoutChangeCallbackResult) => void;
-/**
- * 监听页面布局变化更新事件回调参数
- */
-type UniPageOnLayoutChangeCallbackResult = UniPagePerformanceTiming;
-/**
- * 监听页面布局变化更新事件回调函数
- */
-type UniPageOnRenderChangeCallback = (res: UniPageOnRenderChangeCallbackResult) => void;
-/**
- * 监听页面布局变化更新事件回调参数
- */
-type UniPageOnRenderChangeCallbackResult = UniPagePerformanceRenderTiming;
-/**
- * 页面性能计时信息
- */
-interface UniPagePerformanceTiming {
-  /**
-   * 性能计时持续的时间，单位为ms
-   */
-  duration: number;
-}
-/**
- * 渲染性能计时信息
- *  UniPagePerformanceTiming基类的duration属性为渲染到屏幕的总时间
- */
-interface UniPagePerformanceRenderTiming extends UniPagePerformanceTiming {
-  /**
-   * 更新渲染属性的总时间，单位为ms
-   */
-  updateDuration: number;
-}
-/**
- * 监听页面触摸事件回调函数
- */
-type UniPageOnTouchEventCallback = (event: UniTouchEvent) => void;
-//#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.97/node_modules/@dcloudio/uni-app-x/types/native/index.d.ts
+//#region node_modules/.pnpm/@dcloudio+uni-app-x@0.7.99/node_modules/@dcloudio/uni-app-x/types/native/index.d.ts
 type UniPage$1 = globalThis.UniPage;
 type DrawableContext = globalThis.DrawableContext;
 type UniTextLayout$1 = globalThis.UniTextLayout;
