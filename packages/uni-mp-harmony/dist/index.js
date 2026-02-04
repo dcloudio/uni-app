@@ -1682,6 +1682,15 @@ function createObserver (name) {
   return function observer (newVal, oldVal) {
     if (this.$vm) {
       this.$vm[name] = newVal; // 为了触发其他非 render watcher
+    } else {
+      // mp-harmony 平台兼容 observer 触发时 this.$vm 不稳定的情况
+      {
+        // 缓存在 attached 之前触发的 observer 更新
+        if (!this._pendingProps) {
+          this._pendingProps = {};
+        }
+        this._pendingProps[name] = newVal;
+      }
     }
   }
 }
@@ -2481,6 +2490,16 @@ function parseComponent (vueComponentOptions, needVueOptions) {
 
     // 初始化 vue 实例
     this.$vm = new VueComponent(options);
+
+    // mp-harmony 平台兼容 observer 触发时 this.$vm 不稳定的情况
+    {
+      if (this._pendingProps) {
+        Object.keys(this._pendingProps).forEach(name => {
+          this.$vm[name] = this._pendingProps[name];
+        });
+        delete this._pendingProps;
+      }
+    }
 
     // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
     initSlots(this.$vm, resolvePropValue(properties.vueSlots));
