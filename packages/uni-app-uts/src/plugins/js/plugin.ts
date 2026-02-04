@@ -19,7 +19,11 @@ import {
   uvueOutDir,
   withSourcemap,
 } from '@dcloudio/uni-cli-shared'
-import { configResolved, createUniOptions } from '../utils'
+import {
+  SHARED_DATA_LIB_NAME,
+  configResolved,
+  createUniOptions,
+} from '../utils'
 import { uniAppCssPlugin } from './css'
 import { uniAppJsPlugin } from './js'
 import { rewriteImportVuePlugin } from './rewriteImportVue'
@@ -87,6 +91,13 @@ export function createUniAppJsEnginePlugin(
       : {}
 
     const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+    const globals = {
+      vue: 'Vue',
+      '@vue/shared': 'uni.VueShared',
+    }
+    if (isDom2 && process.env.UNI_UTS_PLATFORM === 'app-ios') {
+      globals[SHARED_DATA_LIB_NAME] = '__uniSharedDataLib'
+    }
     return {
       name: 'uni:app-uts',
       apply: 'build',
@@ -121,10 +132,7 @@ export function createUniAppJsEnginePlugin(
                 banner: ``,
                 format: isESM ? 'esm' : 'iife',
                 entryFileNames: APP_SERVICE_FILENAME,
-                globals: {
-                  vue: 'Vue',
-                  '@vue/shared': 'uni.VueShared',
-                },
+                globals,
                 paths,
                 plugins: isESM ? [rewriteImportVuePlugin()] : [],
                 manualChunks(id) {

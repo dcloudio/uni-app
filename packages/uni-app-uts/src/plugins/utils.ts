@@ -28,9 +28,7 @@ import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { ResolvedConfig } from 'vite'
 import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 
-const isXHarmony =
-  process.env.UNI_APP_X === 'true' &&
-  process.env.UNI_UTS_PLATFORM === 'app-harmony'
+export const SHARED_DATA_LIB_NAME = 'libentry.so'
 
 export function createUniOptions(
   platform: 'app-android' | 'app-ios' | 'app-harmony'
@@ -173,6 +171,10 @@ export function normalizeManifestJson(
   platform: 'app-android' | 'app-ios' | 'app-harmony',
   userManifestJson: Record<string, any>
 ) {
+  const isXHarmony =
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-harmony'
+
   const app = userManifestJson[platform] || userManifestJson.app || {}
   const x = userManifestJson['uni-app-x'] || {}
   x.compilerVersion = process.env.UNI_COMPILER_VERSION || ''
