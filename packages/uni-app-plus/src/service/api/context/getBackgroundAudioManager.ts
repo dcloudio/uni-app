@@ -325,7 +325,12 @@ const onInitBackgroundAudioManager = /*#__PURE__*/ once(() => {
           !audio.isPaused() &&
           !audio.isStopped
         ) {
-          startTimeUpdateTimer()
+          if (timeUpdateTimer !== null) {
+            clearInterval(timeUpdateTimer)
+          }
+          timeUpdateTimer = setInterval(() => {
+            onBackgroundAudioStateChange({ state: 'timeUpdate' })
+          }, TIME_UPDATE)
         }
       }
     BackgroundAudioManager.prototype[`off${capitalize(item)}` as any] =
