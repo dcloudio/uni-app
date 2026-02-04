@@ -77,6 +77,16 @@ export default function parseComponent (vueComponentOptions, needVueOptions) {
     // 初始化 vue 实例
     this.$vm = new VueComponent(options)
 
+    // mp-harmony 平台兼容 observer 触发时 this.$vm 不稳定的情况
+    if (__PLATFORM__ === 'mp-harmony') {
+      if (this._pendingProps) {
+        Object.keys(this._pendingProps).forEach(name => {
+          this.$vm[name] = this._pendingProps[name]
+        })
+        delete this._pendingProps
+      }
+    }
+
     // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
     initSlots(this.$vm, resolvePropValue(properties.vueSlots))
 
