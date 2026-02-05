@@ -38,11 +38,12 @@ export function createCopyComponentDirs(dir: string) {
   if (!inputDir || !platform) {
     return dirs
   }
+  const pagesJsonFile = path.resolve(normalizePath(inputDir), 'pages.json')
+  if (!fs.existsSync(pagesJsonFile)) {
+    return dirs
+  }
   const { appJson } = parseMiniProgramPagesJson(
-    fs.readFileSync(
-      path.resolve(normalizePath(inputDir), 'pages.json'),
-      'utf8'
-    ),
+    fs.readFileSync(pagesJsonFile, 'utf8'),
     platform,
     { subpackages: true }
   )
