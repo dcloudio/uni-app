@@ -61,12 +61,18 @@ let hasOptimizationSubPackages = false // 是否开启分包优化配置
 let subPackages: string[] = []
 function initSubPackages() {
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+  const pagesJsonFile = path.resolve(inputDir, 'pages.json')
+  if (!fs.existsSync(pagesJsonFile)) {
+    hasOptimizationSubPackages = false
+    subPackages = []
+    return
+  }
   const platform = process.env.UNI_PLATFORM
   const manifestJson = parseManifestJsonOnce(inputDir)
   hasOptimizationSubPackages =
     platform && manifestJson[platform]?.optimization?.subPackages
   const { appJson } = parseMiniProgramPagesJson(
-    fs.readFileSync(path.resolve(inputDir, 'pages.json'), 'utf8'),
+    fs.readFileSync(pagesJsonFile, 'utf8'),
     platform,
     { subpackages: true }
   )
