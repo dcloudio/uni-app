@@ -64,4 +64,6 @@ export default {
   'uni_modules.import': 'Plug-in [{0}] only supports @/uni_modules/{1}.',
   'pages.json.page.notfound': 'The page "{pagePath}" does not exist.',
   'pages.json.page.slash': 'The Path "{pagePath}" cannot start with "/"',
+  'pages.json.tabbar.page.notfound':
+    'The tabBar page "{pagePath}" is not declared in "pages".',
 } as const
