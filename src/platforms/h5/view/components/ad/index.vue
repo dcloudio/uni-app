@@ -102,7 +102,6 @@ class AdConfig {
       dataType: 'json',
       success: (res) => {
         const rd = res.data
-        console.log('AdConfig 加载数据:', rd)
         if (rd.ret === 0) {
           const data = rd.data
 
@@ -272,8 +271,17 @@ class AdScript {
 
   loadScript (provider, script) {
     this._cache[provider] = 0
+
+    const domid = 'uniad_provider' + provider
+    // 判断是否已经加载平台sdk
+    const adScriptDom = document.getElementById(domid)
+    const src = adScriptDom && adScriptDom.getAttribute('src')
+    if (src) {
+      this._cache[provider] = 1
+      return
+    }
     var ads = document.createElement('script')
-    ads.setAttribute('id', 'uniad_provider' + provider)
+    ads.setAttribute('id', domid)
     for (const var1 in script) {
       ads.setAttribute(var1, script[var1])
     }
@@ -411,7 +419,6 @@ export default {
         type: 'native', // 原生模板广告
         count: 1, // 拉取广告数量
         onComplete: (res) => {
-          console.log('GDT onComplete:', res)
           // 原生模板广告返回数组
           if (res && res.constructor === Array && res.length > 0) {
             // 直接调用 renderAd 渲染模板广告
