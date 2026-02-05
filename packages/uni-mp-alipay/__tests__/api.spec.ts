@@ -200,34 +200,19 @@ describe('api', () => {
     })
   })
 
-  test('api-alipay showModal', () => {
-    global.my.canIUse = jest.fn().mockImplementation((api) => {
-      if (api === 'showModal') {
-        return true
-      }
-      return true
-    })
-    expect(typeof showModal).toBe('function')
-
-    const args = showModal() as any
-
-    expect(args).toEqual({
-      name: 'showModal',
-    })
-  })
-
+  // 目前不区分 dingding/alipay
   test('api-dingding showModal', () => {
-    global.my.canIUse = jest.fn().mockImplementation((api) => {
-      if (api === 'showModal') {
-        return false
-      }
-      return true
-    })
     expect(typeof showModal).toBe('function')
-    const args = showModal().args as any
-    expect(typeof args).toBe('object')
 
-    expect(args.cancelColor).toBe(false)
-    expect(args.confirmColor).toBe(false)
+    const result = showModal() as any
+    expect(result.name).toBe('confirm')
+    expect(typeof result.args).toBe('function')
+
+    const fromArgs = { cancelText: '取消按钮' }
+    const toArgs: any = {}
+    result.args(fromArgs, toArgs)
+
+    expect(toArgs.cancelButtonText).toBe('取消按钮')
+    expect(toArgs.confirmButtonText).toBe('确定')
   })
 })
