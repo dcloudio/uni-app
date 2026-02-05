@@ -163,7 +163,7 @@ ${global}.createPage(MiniProgramPage)`,
         if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
           // 云编译时，组件的代码会直接内联到入口文件中，以方法对外导出，不能立刻执行createComponent
           return {
-            code: `import Component from '${filepath}
+            code: `import Component from '${filepath}'
 export default Component`,
           }
         }
