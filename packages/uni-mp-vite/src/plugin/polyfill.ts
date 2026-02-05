@@ -24,7 +24,7 @@ import type {
 export const rewriteCompileScriptOnce = once(rewriteCompileScript)
 export const rewriteCompilerSfcParseOnce = once(rewriteCompilerSfcParse)
 
-function rewriteCompileScript() {
+function rewriteCompileScript(extname: string) {
   const compiler = require(resolveBuiltIn('@vue/compiler-sfc'))
   const { compileScript, compileTemplate, compileStyle, compileStyleAsync } =
     compiler
@@ -43,17 +43,17 @@ function rewriteCompileScript() {
       process.env.UNI_APP_X === 'true'
     ) {
       if (isAppVue(options.filename)) {
-        options.source = `@import "/uvue.wxss";\n` + options.source
+        options.source = `@import "/uvue${extname}";\n` + options.source
       } else {
         const { styleIsolation, isPage } =
           findMiniProgramComponentStyleIsolation(options.filename) || {}
         if (!isPage) {
           if (styleIsolation === 'app') {
-            options.source = `@import "/app.wxss";\n` + options.source
+            options.source = `@import "/app${extname}";\n` + options.source
           } else if (styleIsolation === 'isolated') {
-            options.source = `@import "/uvue.wxss";\n` + options.source
+            options.source = `@import "/uvue${extname}";\n` + options.source
           } else if (styleIsolation === undefined) {
-            options.source = `@import "/uvue.wxss";\n` + options.source
+            options.source = `@import "/uvue${extname}";\n` + options.source
           }
         }
       }
