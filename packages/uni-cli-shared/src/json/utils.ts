@@ -90,15 +90,17 @@ export function checkPagesJson(jsonStr: string, inputDir: string) {
     }
   })
 
-  allPages.push(...pagePathNodes.map((node) => node.value as string))
-
   const tabBarNode = root.children?.find(
     (child) =>
       child.type === 'property' &&
       child.children?.length === 2 &&
       child.children[0].value === 'tabBar'
   )
-  if (tabBarNode) {
+  if (process.env.UNI_APP_X_DOM2 !== 'true' && tabBarNode) {
+    // dom2下不支持tabBar配置项，这里先不校验
+    let allPages: string[] = [] // 收集全部页面,包含分包页面
+    let tabBarPages: string[] = [] // 收集 tabBar 页面
+    allPages.push(...pagePathNodes.map((node) => node.value as string))
     findRootNode(tabBarNode.children![1], ['list']).forEach((node) => {
       const pagePathNode =
         node.type === 'object' &&
