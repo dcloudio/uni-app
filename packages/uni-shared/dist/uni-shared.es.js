@@ -2569,6 +2569,7 @@ const APP_VUE_COMPONENT_TAGS = [
     'ad',
     'web-view',
     'loading',
+    'page-container',
 ];
 function isDom2VueComponentTag(tag) {
     return APP_VUE_COMPONENT_TAGS.includes(tag);
