@@ -22678,7 +22678,7 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   nextIfIndex(): number;
   pushTemplate(content: string): number;
   registerTemplate(): number;
-  registerEffect(expressions: SimpleExpressionNode[], operation: OperationNode | OperationNode[], getIndex?: () => number): void;
+  registerEffect(expressions: SimpleExpressionNode[], operation: OperationNode | OperationNode[], getIndex?: () => number, getOperationIndex?: () => number): void;
   registerOperation(...node: OperationNode[]): void;
   create<T extends TemplateChildNode>(node: T, index: number): TransformContext<T>;
   private isEffectivelyLastChild;

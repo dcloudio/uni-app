@@ -19159,10 +19159,16 @@ var TransformContext = class TransformContext {
 		const id = this.pushTemplate(this.template);
 		return this.dynamic.template = id;
 	}
-	registerEffect(expressions, operation, getIndex = () => this.block.effect.length) {
+	registerEffect(expressions, operation, getIndex = () => this.block.effect.length, getOperationIndex) {
 		const operations = [operation].flat();
 		expressions = expressions.filter((exp) => !isConstantExpression(exp));
-		if (this.inVOnce || expressions.length === 0 || expressions.every((e) => isStaticExpression(e, this.root.options.bindingMetadata))) return this.registerOperation(...operations);
+		if (this.inVOnce || expressions.length === 0 || expressions.every((e) => isStaticExpression(e, this.root.options.bindingMetadata))) {
+			if (getOperationIndex) {
+				this.block.operation.splice(getOperationIndex(), 0, ...operations);
+				return;
+			}
+			return this.registerOperation(...operations);
+		}
 		this.block.effect.splice(getIndex(), 0, {
 			expressions,
 			operations
@@ -21286,6 +21292,8 @@ const isReservedProp = /* @__PURE__ */ makeMap(",key,ref,ref_for,ref_key,");
 const transformElement = (node, context) => {
 	let effectIndex = context.block.effect.length;
 	const getEffectIndex = () => effectIndex++;
+	let operationIndex = context.block.operation.length;
+	const getOperationIndex = () => operationIndex++;
 	let parentSlots;
 	if (node.type === 1 && (node.tagType === 1 || context.options.isCustomElement(node.tag))) {
 		parentSlots = context.slots;
@@ -21300,7 +21308,7 @@ const transformElement = (node, context) => {
 		const propsResult = buildProps(node, context, isComponent, isDynamicComponent, getEffectIndex);
 		const singleRoot = isSingleRoot(context);
 		if (isComponent) transformComponentElement(node, propsResult, singleRoot, context, isDynamicComponent, isCustomElement);
-		else transformNativeElement(node, propsResult, singleRoot, context, getEffectIndex, context.root === context.effectiveParent || canOmitEndTag(node, context));
+		else transformNativeElement(node, propsResult, singleRoot, context, getEffectIndex, context.root === context.effectiveParent || canOmitEndTag(node, context), getOperationIndex);
 		if (parentSlots) context.slots = parentSlots;
 	};
 };
@@ -21386,7 +21394,7 @@ function resolveSetupReference(name, context) {
 }
 const dynamicKeys = ["indeterminate"];
 const NEEDS_QUOTES_RE = /[\s"'`=<>]/;
-function transformNativeElement(node, propsResult, singleRoot, context, getEffectIndex, omitEndTag) {
+function transformNativeElement(node, propsResult, singleRoot, context, getEffectIndex, omitEndTag, getOperationIndex) {
 	const isDom2 = !!context.options.platform;
 	if (isDom2) omitEndTag = false;
 	const { tag } = node;
@@ -21473,7 +21481,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
 						element: context.reference(),
 						prop,
 						tag
-					}, getEffectIndex);
+					}, getEffectIndex, getOperationIndex);
 					continue;
 				}
 				if (!prevWasQuoted) template += ` `;
