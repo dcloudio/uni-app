@@ -58,6 +58,7 @@ const APP_VUE_COMPONENT_TAGS = [
   'ad',
   'web-view',
   'loading',
+  'page-container',
 ]
 
 export function isDom2VueComponentTag(tag: string) {
