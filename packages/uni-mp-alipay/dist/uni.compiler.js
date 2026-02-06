@@ -179,6 +179,8 @@ const transformMPBuiltInTagOptions = {
         slider: {
             activeBackgroundColor: 'active-color',
             foreColor: 'handle-color',
+            blockColor: 'handle-color',
+            blockSize: 'handle-size',
         },
         switch: {
             activeBackgroundColor: 'color',
