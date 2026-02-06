@@ -448,7 +448,9 @@ export declare function getCurrentNativeViewVaporComponentInstance(): VaporShare
 type NativeViewFactory = (page: UniPage) => UniNativeBaseView & {
   $root?: true;
 };
+type NativeViewArrayFactory = (page: UniPage) => UniNativeBaseViewArray;
 export declare function nativeViewFactory(page: UniPage, factory: NativeViewFactory, root?: boolean): () => UniNativeBaseView;
+export declare function nativeViewFactory(page: UniPage, factory: NativeViewArrayFactory, root?: boolean): () => UniNativeBaseView;
 export declare function renderNativeViewEffect(fn: (first: boolean) => void, noLifecycle?: boolean): void;
 export declare function nextNativeView(node: UniNativeBaseView): UniNativeBaseView;
 export declare function nthChildNativeView(node: UniNativeBaseView, i: number): UniNativeBaseView;
