@@ -270,5 +270,18 @@ describe('mp-alipay: transform component x', () => {
         nodeTransforms: [transformMPBuiltInTag],
       }
     )
+
+    assert(
+      `<slider block-color="#00FF00" block-size="20"/>`,
+      `<slider handle-color="#00FF00" handle-size="20" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
   })
 })
