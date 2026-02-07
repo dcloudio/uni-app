@@ -82,7 +82,7 @@ export function uniAppPagesPlugin(): Plugin {
         if (pagesJson.tabBar) {
           tabBar = stringifyMap(pagesJson.tabBar)
         }
-        if (pagesJson.condition) {
+        if (process.env.UNI_CLI_LAUNCH_PAGE_PATH || pagesJson.condition) {
           const conditionInfo = parseArguments(pagesJson)
           if (conditionInfo) {
             const { path, query } = JSON.parse(conditionInfo)
