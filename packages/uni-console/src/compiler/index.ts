@@ -63,10 +63,9 @@ export default () => {
       )
       if (isX) {
         if (process.env.UNI_UTS_PLATFORM === 'app-android') {
-          hasRuntimeSocket = false
-          // uniConsolePath = resolveBuiltIn(
-          //   path.join('@dcloudio/uni-console', 'src/runtime/app/index.ts')
-          // )
+          uniConsolePath = resolveBuiltIn(
+            path.join('@dcloudio/uni-console', 'src/runtime/app/index.ts')
+          )
         } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
           uniConsolePath = resolveBuiltIn(
             path.join('@dcloudio/uni-console', 'dist/app.esm.js')
