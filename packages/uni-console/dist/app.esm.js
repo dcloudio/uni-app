@@ -1,3 +1,30 @@
+function currentPageCaptureScreenshot(callback) {
+    var _a;
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    (_a = currentPage.vm) === null || _a === void 0 ? void 0 : _a.$viewToTempFilePath({
+        wholeContent: true,
+        overwrite: true,
+        success: (res) => {
+            const fileManager = uni.getFileSystemManager();
+            // @ts-expect-error
+            fileManager.readFile({
+                encoding: "base64",
+                filePath: res.tempFilePath,
+                success(readFileRes) {
+                    callback(readFileRes.data, '');
+                },
+                fail(err) {
+                    callback('', `captureScreenshot fail: ${JSON.stringify(err)}`);
+                }
+            });
+        },
+        fail: (err) => {
+            callback('', `captureScreenshot fail: ${JSON.stringify(err)}`);
+        },
+    });
+}
+
 /// <reference types="@dcloudio/uni-app-x/types/uni/global" />
 // 之所以又写了一份，是因为外层的socket，connectSocket的时候必须传入multiple:true
 // 但是android又不能传入，目前代码里又不能写条件编译之类的。
@@ -41,6 +68,27 @@ function tryConnectSocket(host, port, id) {
         });
         socket.onError((e) => {
             clearTimeout(timer);
+            resolve(null);
+        });
+        // 接收 hx 消息，处理截屏请求
+        socket.onMessage((result) => {
+            if (typeof result['data'] == 'string') {
+                // @ts-expect-error
+                const message = JSON.parse(result['data']);
+                if (message['type'] == 'screencap') {
+                    const id = message['id'];
+                    currentPageCaptureScreenshot((base64, error) => {
+                        // @ts-expect-error
+                        socket.send({
+                            data: JSON.stringify({
+                                id,
+                                base64,
+                                error,
+                            }),
+                        });
+                    });
+                }
+            }
             resolve(null);
         });
     });
