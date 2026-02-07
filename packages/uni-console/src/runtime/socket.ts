@@ -1,5 +1,7 @@
 /// <reference types="@dcloudio/uni-app-x/types/uni/global" />
 
+import { currentPageCaptureScreenshot } from './utils'
+
 export function initRuntimeSocket(
   hosts: string,
   port: string,
@@ -55,6 +57,23 @@ function tryConnectSocket(
     })
     socket.onError((e) => {
       clearTimeout(timer)
+      resolve(null)
+    })
+    // 接收 hx 消息，处理截屏请求
+    socket.onMessage((result) => {
+      const message = JSON.parse(result.data)
+      if (message['type'] == 'screencap') {
+        const id = message['id']
+        currentPageCaptureScreenshot((base64: string, error: string) => {
+          socket.send({
+            data: JSON.stringify({
+              id,
+              base64,
+              error,
+            }),
+          })
+        })
+      }
       resolve(null)
     })
   })
