@@ -5,10 +5,7 @@ import {
 } from '@dcloudio/uni-api'
 
 import { getCurrentPage } from '@dcloudio/uni-core'
-
-export interface StartPullDownRefreshFail {
-  errMsg: string
-}
+import type { StartPullDownRefreshFail } from '@dcloudio/uni-app-x/types/uni'
 
 export const startPullDownRefresh =
   defineAsyncApi<API_TYPE_START_PULL_DOWN_REFRESH>(
@@ -24,7 +21,7 @@ export const startPullDownRefresh =
       page.$nativePage!.startPullDownRefresh({
         success: res.resolve,
         fail: (err: StartPullDownRefreshFail) => {
-          res.reject(err.errMsg)
+          res.reject(err.errMsg, err)
         },
       })
     }
