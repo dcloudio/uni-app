@@ -9,14 +9,14 @@ function currentPageCaptureScreenshot(callback) {
             const fileManager = uni.getFileSystemManager();
             // @ts-expect-error
             fileManager.readFile({
-                encoding: "base64",
+                encoding: 'base64',
                 filePath: res.tempFilePath,
                 success(readFileRes) {
                     callback(readFileRes.data, '');
                 },
                 fail(err) {
                     callback('', `captureScreenshot fail: ${JSON.stringify(err)}`);
-                }
+                },
             });
         },
         fail: (err) => {
