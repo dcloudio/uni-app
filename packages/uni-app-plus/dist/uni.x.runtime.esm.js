@@ -3700,7 +3700,7 @@ var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_RE
   page.$nativePage.startPullDownRefresh({
     success: res.resolve,
     fail: (err) => {
-      res.reject(err.errMsg);
+      res.reject(err.errMsg, err);
     }
   });
 });
