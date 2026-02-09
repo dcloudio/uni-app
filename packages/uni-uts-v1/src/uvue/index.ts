@@ -40,7 +40,6 @@ import {
   type KotlinManifestCache,
   hbuilderKotlinCompileErrorFormatter,
 } from '../stacktrace/kotlin'
-import { isWindows } from '../shared'
 
 const DEFAULT_IMPORTS = [
   'kotlin.properties.Delegates',
