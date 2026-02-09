@@ -70,6 +70,7 @@ export const getElement = (params: GetElementParams, callback: Callback): void =
   if (page == null) {
     callback(null, { errMsg: `Page[${params.pageId}] not exists` })
   } else {
+    // 暂时无法通过 UniPage.querySelector 重构，因为没有 element 到 vnode 的映射，无法判断 element 是否是组件根节点
     // @ts-expect-error
     const list: UTSJSONObject[] = []
     getValidComponentsOrNodes(page.vm!.$.subTree, removeUniPrefix(params.selector), list)
