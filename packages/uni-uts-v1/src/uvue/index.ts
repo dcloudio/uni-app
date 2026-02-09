@@ -340,12 +340,6 @@ async function runKotlinDev(
             `检测到编译缓存部分失效，开始差量编译。详见：https://uniapp.dcloud.net.cn/uni-app-x/compiler/#cache`
           )
         }
-        // 仅windows
-        if (isWindows) {
-          console.log(
-            `请在杀毒软件中设置扫描排除名单，减少系统资源消耗。[详情](https://uniapp.dcloud.net.cn/uni-app-x/compiler/#tips)`
-          )
-        }
       }
       const {
         getDefaultJar,

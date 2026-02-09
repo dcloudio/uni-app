@@ -3,8 +3,6 @@ export default {
   compiling: 'Compiling...',
   'dev.performance':
     'Please note that in running mode, due to log output, sourcemap, and uncompressed source code, the performance and package size are not as good as release mode.',
-  'dev.exclusion':
-    'Please configure the antivirus software to set up an exclusion list for scanning, reducing system resource consumption. [详情](https://uniapp.dcloud.net.cn/uni-app-x/compiler/#tips)',
   'dev.performance.nvue':
     'Especially the sourcemap of app-nvue has a greater impact',
   'dev.performance.mp':
@@ -12,7 +10,7 @@ export default {
   'dev.performance.web':
     '\nVite is compiled on demand, and clicking on an uncompiled page at runtime will compile first and then load, resulting in a slower display, and there is no such problem after release.',
   'build.done': 'DONE  Build complete.',
-  'dev.watching.start': 'Compiling...',
+  'dev.watching.start': 'Incremental Compiling...',
   'dev.watching.end': 'DONE  Build complete. Watching for changes...',
   'dev.watching.end.pages': 'DONE  Build complete. PAGES:{pages}',
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
