@@ -1,9 +1,9 @@
-function currentPageCaptureScreenshot(callback) {
+function currentPageCaptureScreenshot(fullPage, callback) {
     var _a;
     const pages = getCurrentPages();
     const currentPage = pages[pages.length - 1];
     (_a = currentPage.vm) === null || _a === void 0 ? void 0 : _a.$viewToTempFilePath({
-        wholeContent: true,
+        wholeContent: fullPage,
         overwrite: true,
         success: (res) => {
             const fileManager = uni.getFileSystemManager();
@@ -77,7 +77,7 @@ function tryConnectSocket(host, port, id) {
                 const message = JSON.parse(result['data']);
                 if (message['type'] == 'screencap') {
                     const id = message['id'];
-                    currentPageCaptureScreenshot((base64, error) => {
+                    currentPageCaptureScreenshot(message['fullPage'], (base64, error) => {
                         // @ts-expect-error
                         socket.send({
                             data: JSON.stringify({
