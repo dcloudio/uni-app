@@ -67,16 +67,19 @@ function tryConnectSocket(
         const message = JSON.parse<UTSJSONObject>(result['data'] as string)!
         if ((message['type'] as string) == 'screencap') {
           const id = message['id'] as string
-          currentPageCaptureScreenshot((base64: string, error: string) => {
-            // @ts-expect-error
-            socket.send({
-              data: JSON.stringify({
-                id,
-                base64,
-                error,
-              }),
-            } as SendSocketMessageOptions)
-          })
+          currentPageCaptureScreenshot(
+            message['fullPage'] as boolean,
+            (base64: string, error: string) => {
+              // @ts-expect-error
+              socket.send({
+                data: JSON.stringify({
+                  id,
+                  base64,
+                  error,
+                }),
+              } as SendSocketMessageOptions)
+            }
+          )
         }
       }
       resolve(null)

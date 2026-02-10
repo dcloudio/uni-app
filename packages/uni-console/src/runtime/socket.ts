@@ -64,15 +64,18 @@ function tryConnectSocket(
       const message = JSON.parse(result.data)
       if (message['type'] == 'screencap') {
         const id = message['id']
-        currentPageCaptureScreenshot((base64: string, error: string) => {
-          socket.send({
-            data: JSON.stringify({
-              id,
-              base64,
-              error,
-            }),
-          })
-        })
+        currentPageCaptureScreenshot(
+          message.fullPage,
+          (base64: string, error: string) => {
+            socket.send({
+              data: JSON.stringify({
+                id,
+                base64,
+                error,
+              }),
+            })
+          }
+        )
       }
       resolve(null)
     })
