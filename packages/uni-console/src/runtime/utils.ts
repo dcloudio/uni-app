@@ -6,12 +6,13 @@ export type currentPageCaptureScreenshotCallBack = (
 ) => void
 
 export function currentPageCaptureScreenshot(
+  fullPage: boolean,
   callback: currentPageCaptureScreenshotCallBack
 ) {
   const pages = getCurrentPages() as UniPage[]
   const currentPage = pages[pages.length - 1]
   currentPage.vm?.$viewToTempFilePath({
-    wholeContent: true,
+    wholeContent: fullPage,
     overwrite: true,
     success: (res) => {
       const fileManager = uni.getFileSystemManager()
