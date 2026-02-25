@@ -147,6 +147,32 @@ describe('mp-alipay: transform component x', () => {
     )
 
     assert(
+      `<canvas id="myCanvas"/>`,
+      `<canvas id="myCanvas" style="{{'--status-bar-height:' + b}}" type="2d" change:eS="{{uV.sS}}" eS=\"{{$eS[a]}}\" change:eA="{{uV.sA}}" eA=\"{{$eA[a]}}\"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _sei('myCanvas', 'canvas'), b: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<canvas canvas-id="myCanvas"/>`,
+      `<canvas id="myCanvas" style="{{'--status-bar-height:' + b}}" type="2d" change:eS="{{uV.sS}}" eS=\"{{$eS[a]}}\" change:eA="{{uV.sA}}" eA=\"{{$eA[a]}}\"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _sei('myCanvas', 'canvas'), b: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
       `<canvas type="2d"/>`,
       `<canvas type="2d" style="{{'--status-bar-height:' + a}}"/>`,
       `(_ctx, _cache) => { "raw js"
