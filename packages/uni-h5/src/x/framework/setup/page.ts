@@ -249,6 +249,23 @@ class UniPageImpl implements UniPage {
   createElement() {
     return null as any
   }
+  onLayoutChange() {
+    return -1
+  }
+  offLayoutChange() {}
+  onRenderChange() {
+    return -1
+  }
+  offRenderChange() {}
+  onTouchStart() {
+    return -1
+  }
+  offTouchStart() {}
+  onTouchEnd() {
+    return -1
+  }
+  offTouchEnd() {}
+  takeSnapshot() {}
   constructor({
     route,
     options,
