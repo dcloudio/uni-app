@@ -41,6 +41,9 @@ export default {
   created () {
     this._pc = {}
     this._pl = []
+    this._interstitialData = {}
+    this._adShow = false
+    this._id = ''
     this._loadData()
   },
   methods: {
@@ -51,15 +54,21 @@ export default {
     show () {
       this.errorMessage = null
 
-      const data = this._pl[0]
-      const providerConfig = this._pc[data.a1][data.t]
-
-      AdScript.instance.load(data.t, providerConfig.script, () => {
-        this._renderData(data)
-      }, (err) => {
-        this.errorMessage = err.message
-        this._dispatchEvent(EventType.Error, err)
-      })
+      const res = this._interstitialData
+      // 插屏广告返回格式：{ ret: 0, data: [...] }
+      if (this._adShow) {
+        if (res && res.ret === 0) {
+          const id = this._createView()
+          // 直接调用 renderAd 渲染插屏广告
+          window.TencentGDT.NATIVE.renderAd(res.data[0], id)
+          this._dispatchEvent(EventType.Load, {})
+        } else {
+          this.errorMessage = res ? `Error code: ${res.ret}` : 'No advertisement'
+          this._dispatchEvent(EventType.Error, res || { errMsg: 'No advertisement' })
+        }
+      } else {
+        this._dispatchEvent(EventType.Error, this.errorMessage)
+      }
     },
 
     _onclick () {
@@ -73,6 +82,25 @@ export default {
         this._pc = a
         this._pl = b
         this.loading = false
+
+        const data = this._pl[0]
+        const providerConfig = this._pc[data.a1]
+
+        if (data.a1 === '2') {
+          if (!window.TencentGDT) {
+            window.TencentGDT = window.TencentGDT || []
+          }
+          // 优量汇（广点通）
+          AdScript.instance.load(data.a1, providerConfig.script, () => {
+            this._adShow = true
+            // 脚本加载成功后初始化
+            this._renderGdt(data)
+          }, (err) => {
+            this._adShow = false
+            this.errorMessage = err.message
+            this._dispatchEvent(EventType.Error, err)
+          })
+        }
       }, (err) => {
         this.loading = false
         this.errorMessage = err
@@ -80,24 +108,17 @@ export default {
       })
     },
 
-    _renderData (data) {
-      const id = this._createView()
-
-      const coral = new window.CoralAdv({
-        app_id: data.a2,
-        placement_id: data.a3,
-        type: data.a4,
-        display_type: data.a5,
-        container_id: id,
-        count: 1
-      })
-      coral.ready().then(async (res) => {
-        if (res.ret === 0) {
-        } else {
-          this._dispatchEvent(EventType.Error, res)
+    _renderGdt (data) {
+      window.TencentGDT.push({
+        placement_id: data.a3, // 广告位ID
+        app_id: data.a2, // APP ID
+        type: 'native',
+        display_type: 'interstitial', // 插屏广告
+        count: 1,
+        onComplete: (res) => {
+          // 缓存数据
+          this._interstitialData = res
         }
-      }).catch((err) => {
-        this._dispatchEvent(EventType.Error, err)
       })
     },
 
@@ -303,8 +324,18 @@ class AdScript {
 
   loadScript (provider, script) {
     this._cache[provider] = 0
+    const domid = 'uniad_provider' + provider
+    // 判断是否已经加载平台sdk
+    const adScriptDom = document.getElementById(domid)
+    const src = adScriptDom && adScriptDom.getAttribute('src')
+    if (src) {
+      this._cache[provider] = 1
+      return
+    }
+
     var ads = document.createElement('script')
-    ads.setAttribute('id', 'uniad_provider' + provider)
+    ads.setAttribute('id', domid)
+
     for (const var1 in script) {
       ads.setAttribute(var1, script[var1])
     }
