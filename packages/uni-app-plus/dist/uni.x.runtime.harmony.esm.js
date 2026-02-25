@@ -165,9 +165,9 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle) {
     }
   }
   if (triggerParentHideDialogPageNum <= 1) {
-    var systemDialogPage = getSystemDialogPages(parentPage);
-    for (var _i = 0; _i < systemDialogPage.length; _i++) {
-      if (!!systemDialogPage[_i].$triggerParentHide) {
+    var systemDialogPages = getSystemDialogPages(parentPage);
+    for (var _i = 0; _i < systemDialogPages.length; _i++) {
+      if (!!systemDialogPages[_i].$triggerParentHide) {
         triggerParentHideDialogPageNum++;
         if (triggerParentHideDialogPageNum > 1) {
           return;
@@ -191,22 +191,24 @@ function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
   var currentPage = pages2[pages2.length - 1];
   if (!currentPage || parentPage !== currentPage)
     return;
-  var dialogPages = currentPage.getDialogPages();
-  var systemDialogPage = getSystemDialogPages(parentPage);
-  var lastSystemDialogPage = systemDialogPage[systemDialogPage.length - 1];
-  var lastDialogPage = dialogPages[dialogPages.length - 1];
-  var prevDialogPage;
-  if (!lastDialogPage) {
-    prevDialogPage = lastSystemDialogPage;
-  } else if (!lastSystemDialogPage) {
-    prevDialogPage = lastDialogPage;
-  } else {
-    var _lastSystemDialogPage, _lastDialogPage$vm;
-    var lastSystemDialogPageId = ((_lastSystemDialogPage = lastSystemDialogPage.vm) === null || _lastSystemDialogPage === void 0 || (_lastSystemDialogPage = _lastSystemDialogPage.$basePage) === null || _lastSystemDialogPage === void 0 ? void 0 : _lastSystemDialogPage.id) || Number.MAX_SAFE_INTEGER;
-    var lastDialogPageId = ((_lastDialogPage$vm = lastDialogPage.vm) === null || _lastDialogPage$vm === void 0 || (_lastDialogPage$vm = _lastDialogPage$vm.$basePage) === null || _lastDialogPage$vm === void 0 ? void 0 : _lastDialogPage$vm.id) || Number.MAX_SAFE_INTEGER;
-    prevDialogPage = lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
-  }
+  var prevDialogPage = getLastDialogPage(currentPage);
   prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle);
+}
+function getLastDialogPage(parentPage) {
+  var _lastSystemDialogPage, _lastDialogPage$vm;
+  if (!parentPage)
+    return null;
+  var dialogPages = parentPage.getDialogPages();
+  var systemDialogPages = getSystemDialogPages(parentPage);
+  var lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
+  var lastDialogPage = dialogPages[dialogPages.length - 1];
+  if (!lastDialogPage)
+    return lastSystemDialogPage;
+  if (!lastSystemDialogPage)
+    return lastDialogPage;
+  var lastSystemDialogPageId = ((_lastSystemDialogPage = lastSystemDialogPage.vm) === null || _lastSystemDialogPage === void 0 || (_lastSystemDialogPage = _lastSystemDialogPage.$basePage) === null || _lastSystemDialogPage === void 0 ? void 0 : _lastSystemDialogPage.id) || Number.MAX_SAFE_INTEGER;
+  var lastDialogPageId = ((_lastDialogPage$vm = lastDialogPage.vm) === null || _lastDialogPage$vm === void 0 || (_lastDialogPage$vm = _lastDialogPage$vm.$basePage) === null || _lastDialogPage$vm === void 0 ? void 0 : _lastDialogPage$vm.id) || Number.MAX_SAFE_INTEGER;
+  return lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
 }
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
@@ -2285,18 +2287,9 @@ function initGlobalEvent(app) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
     var currentPage = getCurrentPage();
     if (currentPage) {
-      var systemDialogPages = getSystemDialogPages(currentPage);
-      var dialogPages = currentPage.getDialogPages();
-      if (systemDialogPages.length > 0 || dialogPages.length > 0) {
-        var lastSystemDialog = systemDialogPages[systemDialogPages.length - 1];
-        var lastDialog = dialogPages[dialogPages.length - 1];
-        if (!systemDialogPages.length) {
-          handleDialogPageBack(lastDialog);
-        } else if (!dialogPages.length) {
-          handleDialogPageBack(lastSystemDialog);
-        } else {
-          handleDialogPageBack(parseInt(lastDialog.vm.$nativePage.pageId) > parseInt(lastSystemDialog.vm.$nativePage.pageId) ? lastDialog : lastSystemDialog);
-        }
+      var lastDialogPage = getLastDialogPage(currentPage);
+      if (lastDialogPage) {
+        handleDialogPageBack(lastDialogPage);
         return true;
       }
     }

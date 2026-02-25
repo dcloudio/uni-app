@@ -185,6 +185,9 @@ const transformMPBuiltInTagOptions = {
         switch: {
             activeBackgroundColor: 'color',
         },
+        canvas: {
+            canvasId: 'id',
+        },
     },
     propAdd: {
         canvas: [
