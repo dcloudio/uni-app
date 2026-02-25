@@ -3,7 +3,8 @@ import type { ComponentInternalInstance } from 'vue'
 export const DIALOG_TAG = 'dialog'
 export const SYSTEM_DIALOG_TAG = 'systemDialog'
 
-export function isDialogPageInstance(vm: ComponentInternalInstance) {
+export function isDialogPageInstance(vm: ComponentInternalInstance | null) {
+  if (!vm) return false
   return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm)
 }
 export function isNormalDialogPageInstance(vm: ComponentInternalInstance) {

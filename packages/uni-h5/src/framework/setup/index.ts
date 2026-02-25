@@ -18,7 +18,9 @@ import {
 import {
   ON_APP_ENTER_BACKGROUND,
   ON_APP_ENTER_FOREGROUND,
+  ON_HIDE,
   ON_RESIZE,
+  ON_SHOW,
   ON_THEME_CHANGE,
   ON_WEB_INVOKE_APP_SERVICE,
   WEB_INVOKE_APPSERVICE,
@@ -33,6 +35,7 @@ import {
   //#endif
   getCurrentPage,
   invokeHook,
+  invokeLastDialogPageHookByUniPage,
   subscribeViewMethod,
   unsubscribeViewMethod,
 } from '@dcloudio/uni-core'
@@ -151,7 +154,9 @@ export function setupPage(comp: any, path: string) {
         const pageInstance = getPageInstanceByChild(instance)
         if (isDialogPageInstance(pageInstance)) {
           instance.attrs.__pageQuery = decodedQuery(
-            parseQuery((pageInstance.attrs.route as string).split('?')[1] || '')
+            parseQuery(
+              (pageInstance?.attrs.route as string).split('?')[1] || ''
+            )
           )
         }
       }
@@ -200,8 +205,20 @@ export function setupPage(comp: any, path: string) {
         if (!instance.__isVisible) {
           onPageShow(instance, pageMeta)
           instance.__isVisible = true
-          const { onShow } = instance
-          onShow && invokeArrayFns(onShow)
+          if (__X__) {
+            const pageInstance = getPageInstanceByChild(instance)
+            if (!isDialogPageInstance(pageInstance)) {
+              const { onShow } = instance
+              onShow && invokeArrayFns(onShow)
+              invokeLastDialogPageHookByUniPage(
+                instance.proxy?.$page as UniPage,
+                ON_SHOW
+              )
+            }
+          } else {
+            const { onShow } = instance
+            onShow && invokeArrayFns(onShow)
+          }
           nextTick(() => {
             invokeOnTabItemTap(route)
           })
@@ -215,6 +232,10 @@ export function setupPage(comp: any, path: string) {
             if (!isDialogPageInstance(pageInstance)) {
               const { onHide } = instance
               onHide && invokeArrayFns(onHide)
+              invokeLastDialogPageHookByUniPage(
+                instance.proxy?.$page as UniPage,
+                ON_HIDE
+              )
             }
           } else {
             const { onHide } = instance
