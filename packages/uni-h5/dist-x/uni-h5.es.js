@@ -1262,9 +1262,9 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHi
     }
   }
   if (triggerParentHideDialogPageNum <= 1) {
-    const systemDialogPage = getSystemDialogPages(parentPage);
-    for (let i = 0; i < systemDialogPage.length; i++) {
-      if (!!systemDialogPage[i].$triggerParentHide) {
+    const systemDialogPages = getSystemDialogPages(parentPage);
+    for (let i = 0; i < systemDialogPages.length; i++) {
+      if (!!systemDialogPages[i].$triggerParentHide) {
         triggerParentHideDialogPageNum++;
         if (triggerParentHideDialogPageNum > 1) {
           return;
@@ -1280,28 +1280,36 @@ function getSystemDialogPages(parentPage) {
   return parentPage.$getSystemDialogPages();
 }
 function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
-  var _a, _b, _c, _d;
   if (!parentPage)
     return;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
   if (!currentPage || parentPage !== currentPage)
     return;
-  const dialogPages = currentPage.getDialogPages();
-  const systemDialogPage = getSystemDialogPages(parentPage);
-  const lastSystemDialogPage = systemDialogPage[systemDialogPage.length - 1];
-  const lastDialogPage = dialogPages[dialogPages.length - 1];
-  let prevDialogPage;
-  if (!lastDialogPage) {
-    prevDialogPage = lastSystemDialogPage;
-  } else if (!lastSystemDialogPage) {
-    prevDialogPage = lastDialogPage;
-  } else {
-    const lastSystemDialogPageId = ((_b = (_a = lastSystemDialogPage.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
-    const lastDialogPageId = ((_d = (_c = lastDialogPage.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
-    prevDialogPage = lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
-  }
+  let prevDialogPage = getLastDialogPage(currentPage);
   prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle);
+}
+function getLastDialogPage(parentPage) {
+  var _a, _b, _c, _d;
+  if (!parentPage)
+    return null;
+  const dialogPages = parentPage.getDialogPages();
+  const systemDialogPages = getSystemDialogPages(parentPage);
+  const lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
+  const lastDialogPage = dialogPages[dialogPages.length - 1];
+  if (!lastDialogPage)
+    return lastSystemDialogPage;
+  if (!lastSystemDialogPage)
+    return lastDialogPage;
+  const lastSystemDialogPageId = ((_b = (_a = lastSystemDialogPage.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
+  const lastDialogPageId = ((_d = (_c = lastDialogPage.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
+  return lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
+}
+function invokeLastDialogPageHookByUniPage(parentPage, hook) {
+  const lastDialogPage = getLastDialogPage(parentPage);
+  if (lastDialogPage) {
+    invokeHook(lastDialogPage.vm, hook);
+  }
 }
 function initView() {
   useRem();
@@ -7548,6 +7556,8 @@ function getSafeAreaInsets(pageBody) {
 const DIALOG_TAG = "dialog";
 const SYSTEM_DIALOG_TAG = "systemDialog";
 function isDialogPageInstance(vm) {
+  if (!vm)
+    return false;
   return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
 }
 function isNormalDialogPageInstance(vm) {
@@ -7739,6 +7749,28 @@ class UniPageImpl {
   }
   createElement() {
     return null;
+  }
+  onLayoutChange() {
+    return -1;
+  }
+  offLayoutChange() {
+  }
+  onRenderChange() {
+    return -1;
+  }
+  offRenderChange() {
+  }
+  onTouchStart() {
+    return -1;
+  }
+  offTouchStart() {
+  }
+  onTouchEnd() {
+    return -1;
+  }
+  offTouchEnd() {
+  }
+  takeSnapshot() {
   }
 }
 class UniNormalPageImpl extends UniPageImpl {
@@ -8798,7 +8830,7 @@ function initLaunchOptions({
 function getPageInstanceByChild(child) {
   var _a;
   let pageInstance = child;
-  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
     pageInstance = pageInstance.parent;
   }
   return pageInstance;
@@ -8944,7 +8976,9 @@ function setupPage(comp, path) {
         const pageInstance = getPageInstanceByChild(instance2);
         if (isDialogPageInstance(pageInstance)) {
           instance2.attrs.__pageQuery = decodedQuery(
-            parseQuery(pageInstance.attrs.route.split("?")[1] || "")
+            parseQuery(
+              (pageInstance == null ? void 0 : pageInstance.attrs.route).split("?")[1] || ""
+            )
           );
         }
       }
@@ -8985,17 +9019,28 @@ function setupPage(comp, path) {
         invokeOnTabItemTap(route);
       });
       onBeforeActivate(() => {
+        var _a;
         if (!instance2.__isVisible) {
           onPageShow(instance2, pageMeta);
           instance2.__isVisible = true;
-          const { onShow } = instance2;
-          onShow && invokeArrayFns$1(onShow);
+          {
+            const pageInstance = getPageInstanceByChild(instance2);
+            if (!isDialogPageInstance(pageInstance)) {
+              const { onShow } = instance2;
+              onShow && invokeArrayFns$1(onShow);
+              invokeLastDialogPageHookByUniPage(
+                (_a = instance2.proxy) == null ? void 0 : _a.$page,
+                ON_SHOW
+              );
+            }
+          }
           nextTick(() => {
             invokeOnTabItemTap(route);
           });
         }
       });
       onBeforeDeactivate(() => {
+        var _a;
         if (instance2.__isVisible && !instance2.__isUnload) {
           instance2.__isVisible = false;
           {
@@ -9003,6 +9048,10 @@ function setupPage(comp, path) {
             if (!isDialogPageInstance(pageInstance)) {
               const { onHide } = instance2;
               onHide && invokeArrayFns$1(onHide);
+              invokeLastDialogPageHookByUniPage(
+                (_a = instance2.proxy) == null ? void 0 : _a.$page,
+                ON_HIDE
+              );
             }
           }
         }

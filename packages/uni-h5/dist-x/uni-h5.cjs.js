@@ -2347,6 +2347,8 @@ function normalizeWindowBottom(windowBottom) {
 const DIALOG_TAG = "dialog";
 const SYSTEM_DIALOG_TAG = "systemDialog";
 function isDialogPageInstance(vm) {
+  if (!vm)
+    return false;
   return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
 }
 function isNormalDialogPageInstance(vm) {
@@ -2502,6 +2504,28 @@ class UniPageImpl {
   }
   createElement() {
     return null;
+  }
+  onLayoutChange() {
+    return -1;
+  }
+  offLayoutChange() {
+  }
+  onRenderChange() {
+    return -1;
+  }
+  offRenderChange() {
+  }
+  onTouchStart() {
+    return -1;
+  }
+  offTouchStart() {
+  }
+  onTouchEnd() {
+    return -1;
+  }
+  offTouchEnd() {
+  }
+  takeSnapshot() {
   }
 }
 class UniNormalPageImpl extends UniPageImpl {
@@ -2763,7 +2787,7 @@ function getRealPath(filePath) {
 function getPageInstanceByChild(child) {
   var _a;
   let pageInstance = child;
-  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
     pageInstance = pageInstance.parent;
   }
   return pageInstance;
@@ -2907,7 +2931,9 @@ function setupPage(comp, path) {
         const pageInstance = getPageInstanceByChild(instance);
         if (isDialogPageInstance(pageInstance)) {
           instance.attrs.__pageQuery = uniShared.decodedQuery(
-            uniShared.parseQuery(pageInstance.attrs.route.split("?")[1] || "")
+            uniShared.parseQuery(
+              (pageInstance == null ? void 0 : pageInstance.attrs.route).split("?")[1] || ""
+            )
           );
         }
       }

@@ -16553,8 +16553,10 @@ function setupPage(comp, path) {
         if (!instance2.__isVisible) {
           onPageShow(instance2, pageMeta);
           instance2.__isVisible = true;
-          const { onShow } = instance2;
-          onShow && invokeArrayFns$1(onShow);
+          {
+            const { onShow } = instance2;
+            onShow && invokeArrayFns$1(onShow);
+          }
           nextTick(() => {
             invokeOnTabItemTap(route);
           });
