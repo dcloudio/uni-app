@@ -133,6 +133,10 @@ export function invokeNewDialogPageHook(page: UniDialogPage, hook: string) {
 }
 
 export function getPageInstanceByChild(child: ComponentInternalInstance) {
+  if (__PLATFORM__ === 'app') {
+    // @ts-expect-error
+    return child.ctx.$basePage
+  }
   let pageInstance: ComponentInternalInstance | null = child
   while (pageInstance && pageInstance.type?.name !== 'Page') {
     pageInstance = pageInstance.parent
@@ -145,6 +149,11 @@ export const SYSTEM_DIALOG_TAG = 'systemDialog'
 
 export function isDialogPageInstance(vm: ComponentInternalInstance | null) {
   if (!vm) return false
+  if (__PLATFORM__ === 'app') {
+    // @ts-expect-error
+    return vm.openType === 'openDialogPage'
+  }
+
   return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm)
 }
 export function isNormalDialogPageInstance(vm: ComponentInternalInstance) {

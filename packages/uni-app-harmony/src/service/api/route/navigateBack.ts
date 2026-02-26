@@ -10,6 +10,7 @@ import {
   getCurrentPage,
   initI18nAppMsgsOnce,
   invokeHook,
+  invokeLastDialogPageHookByUniPage,
   useI18n,
 } from '@dcloudio/uni-core'
 import { ON_BACK_PRESS, ON_SHOW } from '@dcloudio/uni-shared'
@@ -131,6 +132,10 @@ function back(
     setStatusBarStyle()
     // 前一个页面触发 onShow
     invokeHook(ON_SHOW)
+    invokeLastDialogPageHookByUniPage(
+      getCurrentPage() as unknown as UniPage,
+      ON_SHOW
+    )
   }
 
   _backWebview(currentPage, backPage)

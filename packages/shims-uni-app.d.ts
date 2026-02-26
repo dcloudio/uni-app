@@ -592,8 +592,8 @@ declare class UniNormalPageImpl implements UniPage {
   readonly width: number
   readonly height: number
   readonly statusBarHeight: number
-  getParentPage: () => UniPage | null
-  getParentPageByJS: () => UniPage | null
+  getParentPage(): UniPage | null
+  getParentPageByJS(): UniPage | null
   getDialogPages(): UniDialogPage[]
   $getSystemDialogPages(): UniDialogPage[]
   __$$getSystemDialogPages(): UniDialogPage[]
@@ -610,6 +610,17 @@ declare class UniNormalPageImpl implements UniPage {
   getAndroidActivity(): Activity | null
   exitFullscreen(options: ExitFullscreenOptions | null): void
   createElement(tagName: string): UniElement
+  querySelector(selector: string): UniElement | null
+  querySelectorAll(selector: string): UniElement[]
+  onLayoutChange(): number
+  offLayoutChange(): void
+  onRenderChange(): number
+  offRenderChange(): void
+  onTouchStart(): number
+  offTouchStart(): void
+  onTouchEnd(): number
+  offTouchEnd(): void
+  takeSnapshot(): void
 }
 
 declare class UniDialogPageImpl implements UniPage {
@@ -624,8 +635,8 @@ declare class UniDialogPageImpl implements UniPage {
   readonly width: number
   readonly height: number
   readonly statusBarHeight: number
-  getParentPage: () => UniPage | null
-  getParentPageByJS: () => UniPage | null
+  getParentPage(): UniPage | null
+  getParentPageByJS(): UniPage | null
   getDialogPages(): UniDialogPage[]
   $getSystemDialogPages(): UniDialogPage[]
   __$$getSystemDialogPages(): UniDialogPage[]
@@ -639,9 +650,20 @@ declare class UniDialogPageImpl implements UniPage {
   getAndroidView(): null
   getIOSView(): null
   getHTMLElement(): null
-  getAndroidActivity: () => Activity | null
+  getAndroidActivity(): Activity | null
   exitFullscreen(options: ExitFullscreenOptions | null): void
   createElement(tagName: string): UniElement
+  querySelector(selector: string): UniElement | null
+  querySelectorAll(selector: string): UniElement[]
+  onLayoutChange(): number
+  offLayoutChange(): void
+  onRenderChange(): number
+  offRenderChange(): void
+  onTouchStart(): number
+  offTouchStart(): void
+  onTouchEnd(): number
+  offTouchEnd(): void
+  takeSnapshot(): void
   $component: any | null
   $disableEscBack: boolean
   $triggerParentHide: boolean
