@@ -19162,14 +19162,12 @@ function initHooks(options, instance2, publicThis) {
       const $basePage = true ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
-          if (true) {
-            if (isDialogPageInstance(getPageInstanceByChild(instance2))) {
-              invokeNewDialogPageHook(publicThis.$page, ON_SHOW);
-            } else {
-              invokeHook(publicThis, ON_SHOW);
-            }
-            return;
+          if (isDialogPageInstance(getPageInstanceByChild(instance2))) {
+            invokeNewDialogPageHook(publicThis.$page, ON_SHOW);
+          } else {
+            invokeHook(publicThis, ON_SHOW);
           }
+          return;
           invokeHook(publicThis, ON_SHOW);
         }
       }

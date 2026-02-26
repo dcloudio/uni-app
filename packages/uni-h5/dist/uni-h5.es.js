@@ -16177,8 +16177,6 @@ function initHooks(options, instance2, publicThis) {
       const $basePage = false ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
-          if (false)
-            ;
           invokeHook(publicThis, ON_SHOW);
         }
       }

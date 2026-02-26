@@ -9482,14 +9482,12 @@ function initHooks(options, instance, publicThis) {
       const $basePage = true ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
-          if (true) {
-            if (isDialogPageInstance(getPageInstanceByChild(instance))) {
-              invokeNewDialogPageHook(publicThis.$page, uniShared.ON_SHOW);
-            } else {
-              invokeHook(publicThis, uniShared.ON_SHOW);
-            }
-            return;
+          if (isDialogPageInstance(getPageInstanceByChild(instance))) {
+            invokeNewDialogPageHook(publicThis.$page, uniShared.ON_SHOW);
+          } else {
+            invokeHook(publicThis, uniShared.ON_SHOW);
           }
+          return;
           invokeHook(publicThis, uniShared.ON_SHOW);
         }
       }
