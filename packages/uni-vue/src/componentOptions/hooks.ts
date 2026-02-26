@@ -93,8 +93,15 @@ export function initHooks(
         : (publicThis.$page as Page.PageInstance['$page'])
       if (!(__PLATFORM__ === 'app' && __X__ && $basePage?.meta.isTabBar)) {
         if ($basePage?.openType !== 'preloadPage') {
-          if (__X__ && isDialogPageInstance(getPageInstanceByChild(instance))) {
-            invokeNewDialogPageHook(publicThis.$page as UniDialogPage, ON_SHOW)
+          if (__X__) {
+            if (isDialogPageInstance(getPageInstanceByChild(instance))) {
+              invokeNewDialogPageHook(
+                publicThis.$page as UniDialogPage,
+                ON_SHOW
+              )
+            } else {
+              invokeHook(publicThis, ON_SHOW)
+            }
             return
           }
           invokeHook(publicThis, ON_SHOW)
