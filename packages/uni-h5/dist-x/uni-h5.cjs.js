@@ -679,6 +679,48 @@ function getRouteOptions(path, alias = false) {
   }
   return __uniRoutes.find((route) => route.path === path);
 }
+const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
+function isSystemDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
+}
+function getSystemDialogPages(parentPage) {
+  if (!parentPage)
+    return [];
+  return parentPage.$getSystemDialogPages();
+}
+function invokeNewDialogPageHook(page, hook) {
+  let shouldInvoke = false;
+  const currentPage = getCurrentPage();
+  if (isSystemDialogPage(page)) {
+    const systemDialogPages = getSystemDialogPages(currentPage);
+    shouldInvoke = systemDialogPages.includes(page);
+  } else {
+    const dialogPages = currentPage.getDialogPages();
+    shouldInvoke = dialogPages.includes(page);
+  }
+  shouldInvoke && invokeHook(page.vm, hook);
+}
+function getPageInstanceByChild(child) {
+  var _a;
+  let pageInstance = child;
+  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
+const DIALOG_TAG = "dialog";
+const SYSTEM_DIALOG_TAG = "systemDialog";
+function isDialogPageInstance(vm) {
+  if (!vm)
+    return false;
+  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
+}
+function isNormalDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === DIALOG_TAG;
+}
+function isSystemDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
+}
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
 let invokeViewMethodId = 1;
 function publishViewMethodName(pageId) {
@@ -2344,19 +2386,6 @@ const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
 }
-const DIALOG_TAG = "dialog";
-const SYSTEM_DIALOG_TAG = "systemDialog";
-function isDialogPageInstance(vm) {
-  if (!vm)
-    return false;
-  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
-}
-function isNormalDialogPageInstance(vm) {
-  return vm.attrs["data-type"] === DIALOG_TAG;
-}
-function isSystemDialogPageInstance(vm) {
-  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
-}
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
 function getPageElement(page) {
@@ -2783,14 +2812,6 @@ function getRealPath(filePath) {
     );
   }
   return filePath;
-}
-function getPageInstanceByChild(child) {
-  var _a;
-  let pageInstance = child;
-  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
-    pageInstance = pageInstance.parent;
-  }
-  return pageInstance;
 }
 const clazz = { class: "uni-async-loading" };
 const loadingVNode = /* @__PURE__ */ vue.createVNode(
@@ -9461,6 +9482,10 @@ function initHooks(options, instance, publicThis) {
       const $basePage = true ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
+          if (isDialogPageInstance(getPageInstanceByChild(instance))) {
+            invokeNewDialogPageHook(publicThis.$page, uniShared.ON_SHOW);
+            return;
+          }
           invokeHook(publicThis, uniShared.ON_SHOW);
         }
       }

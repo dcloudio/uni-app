@@ -8115,6 +8115,8 @@ function initHooks(options, instance, publicThis) {
       const $basePage = false ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
+          if (false)
+            ;
           invokeHook(publicThis, uniShared.ON_SHOW);
         }
       }

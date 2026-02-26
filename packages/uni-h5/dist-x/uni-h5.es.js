@@ -1311,6 +1311,39 @@ function invokeLastDialogPageHookByUniPage(parentPage, hook) {
     invokeHook(lastDialogPage.vm, hook);
   }
 }
+function invokeNewDialogPageHook(page, hook) {
+  let shouldInvoke = false;
+  const currentPage = getCurrentPage();
+  if (isSystemDialogPage(page)) {
+    const systemDialogPages = getSystemDialogPages(currentPage);
+    shouldInvoke = systemDialogPages.includes(page);
+  } else {
+    const dialogPages = currentPage.getDialogPages();
+    shouldInvoke = dialogPages.includes(page);
+  }
+  shouldInvoke && invokeHook(page.vm, hook);
+}
+function getPageInstanceByChild(child) {
+  var _a;
+  let pageInstance = child;
+  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
+const DIALOG_TAG = "dialog";
+const SYSTEM_DIALOG_TAG = "systemDialog";
+function isDialogPageInstance(vm) {
+  if (!vm)
+    return false;
+  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
+}
+function isNormalDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === DIALOG_TAG;
+}
+function isSystemDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
+}
 function initView() {
   useRem();
   initCustomDatasetOnce(isBuiltInElement);
@@ -7553,19 +7586,6 @@ function getSafeAreaInsets(pageBody) {
     bottom: Math.max(pageWrapperEdge.bottom, systemSafeAreaInsets.bottom)
   };
 }
-const DIALOG_TAG = "dialog";
-const SYSTEM_DIALOG_TAG = "systemDialog";
-function isDialogPageInstance(vm) {
-  if (!vm)
-    return false;
-  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
-}
-function isNormalDialogPageInstance(vm) {
-  return vm.attrs["data-type"] === DIALOG_TAG;
-}
-function isSystemDialogPageInstance(vm) {
-  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
-}
 let escBackPageNum = 0;
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
@@ -8826,14 +8846,6 @@ function initLaunchOptions({
   });
   extend(enterOptions, launchOptions);
   return extend({}, launchOptions);
-}
-function getPageInstanceByChild(child) {
-  var _a;
-  let pageInstance = child;
-  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
-    pageInstance = pageInstance.parent;
-  }
-  return pageInstance;
 }
 const clazz = { class: "uni-async-loading" };
 const loadingVNode = /* @__PURE__ */ createVNode(
@@ -19150,6 +19162,10 @@ function initHooks(options, instance2, publicThis) {
       const $basePage = true ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
+          if (isDialogPageInstance(getPageInstanceByChild(instance2))) {
+            invokeNewDialogPageHook(publicThis.$page, ON_SHOW);
+            return;
+          }
           invokeHook(publicThis, ON_SHOW);
         }
       }
