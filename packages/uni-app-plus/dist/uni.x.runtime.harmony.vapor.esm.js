@@ -2158,7 +2158,8 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     pageStyle.set("disableSwipeBack", true);
   }
   var parentPage = dialogPage.getParentPage();
-  var createDialogPage = getPageManager().createDialogPage;
+  var pageManager = getPageManager();
+  var createDialogPage = pageManager.createDialogPage.bind(pageManager);
   var isHarmony = createDialogPage.length === 6;
   var nativePage = isHarmony ? createDialogPage(url, id2.toString(), pageStyle, parentPage === null || parentPage === void 0 ? void 0 : parentPage.getNativePage()) : createDialogPage(
     // @ts-expect-error
