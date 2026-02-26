@@ -49,17 +49,16 @@ import {
   onPageShow,
 } from './page'
 import { usePageMeta, usePageRoute } from './provide'
-import {
-  getEnterOptions,
-  getPageInstanceByChild,
-  initLaunchOptions,
-} from './utils'
+import { getEnterOptions, initLaunchOptions } from './utils'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { handleBeforeEntryPageRoutes } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 //#if _X_
-import { isDialogPageInstance } from '../../x/framework/helpers/utils'
+import {
+  getPageInstanceByChild,
+  isDialogPageInstance,
+} from '@dcloudio/uni-core'
 import { useBackgroundColorContent } from '../../x/framework/setup/page'
 //#endif
 import { getPageProxyId } from '@dcloudio/uni-core'

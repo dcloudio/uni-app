@@ -26,7 +26,7 @@ import {
   normalizeRouteKey,
 } from '../../../framework/setup/page'
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
-import { isDialogPageInstance } from '../helpers/utils'
+import { isDialogPageInstance } from '@dcloudio/uni-core'
 import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
 import { normalizeStyles } from '@dcloudio/uni-shared'
 

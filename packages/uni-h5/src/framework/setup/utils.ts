@@ -28,11 +28,3 @@ export function initLaunchOptions({
   extend(enterOptions, launchOptions)
   return extend({}, launchOptions)
 }
-
-export function getPageInstanceByChild(child: ComponentInternalInstance) {
-  let pageInstance: ComponentInternalInstance | null = child
-  while (pageInstance && pageInstance.type?.name !== 'Page') {
-    pageInstance = pageInstance.parent
-  }
-  return pageInstance
-}

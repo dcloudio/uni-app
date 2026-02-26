@@ -1,6 +1,8 @@
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import { ON_HIDE, ON_SHOW } from '@dcloudio/uni-shared'
 import { invokeHook } from './hook'
+import { getCurrentPage } from '@dcloudio/uni-core'
+import type { ComponentInternalInstance } from 'vue'
 
 export const SYSTEM_DIALOG_PAGE_PATH_STARTER = 'uni:'
 export const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = 'uni:actionSheet'
@@ -115,4 +117,39 @@ export function invokeLastDialogPageHookByUniPage(
   if (lastDialogPage) {
     invokeHook(lastDialogPage.vm, hook)
   }
+}
+
+export function invokeNewDialogPageHook(page: UniDialogPage, hook: string) {
+  let shouldInvoke = false
+  const currentPage = getCurrentPage() as unknown as UniPage
+  if (isSystemDialogPage(page)) {
+    const systemDialogPages = getSystemDialogPages(currentPage)
+    shouldInvoke = systemDialogPages.includes(page as UniDialogPage)
+  } else {
+    const dialogPages = currentPage.getDialogPages()
+    shouldInvoke = dialogPages.includes(page as UniDialogPage)
+  }
+  shouldInvoke && invokeHook(page.vm, hook)
+}
+
+export function getPageInstanceByChild(child: ComponentInternalInstance) {
+  let pageInstance: ComponentInternalInstance | null = child
+  while (pageInstance && pageInstance.type?.name !== 'Page') {
+    pageInstance = pageInstance.parent
+  }
+  return pageInstance
+}
+
+export const DIALOG_TAG = 'dialog'
+export const SYSTEM_DIALOG_TAG = 'systemDialog'
+
+export function isDialogPageInstance(vm: ComponentInternalInstance | null) {
+  if (!vm) return false
+  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm)
+}
+export function isNormalDialogPageInstance(vm: ComponentInternalInstance) {
+  return vm.attrs['data-type'] === DIALOG_TAG
+}
+export function isSystemDialogPageInstance(vm: ComponentInternalInstance) {
+  return vm.attrs['data-type'] === SYSTEM_DIALOG_TAG
 }
