@@ -210,6 +210,12 @@ function getLastDialogPage(parentPage) {
   var lastDialogPageId = ((_lastDialogPage$vm = lastDialogPage.vm) === null || _lastDialogPage$vm === void 0 || (_lastDialogPage$vm = _lastDialogPage$vm.$basePage) === null || _lastDialogPage$vm === void 0 ? void 0 : _lastDialogPage$vm.id) || Number.MAX_SAFE_INTEGER;
   return lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
 }
+function invokeLastDialogPageHookByUniPage(parentPage, hook) {
+  var lastDialogPage = getLastDialogPage(parentPage);
+  if (lastDialogPage) {
+    invokeHook(lastDialogPage.vm, hook);
+  }
+}
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
   pageVm.$vm = pageVm;
@@ -2900,6 +2906,7 @@ function _navigateTo(_ref2) {
   var currentRouteType = currentPage == null ? "appLaunch" : API_NAVIGATE_TO;
   invokeBeforeRouteHooks(currentRouteType);
   invokeHook(ON_HIDE);
+  currentPage && invokeLastDialogPageHookByUniPage(currentPage.$page, ON_HIDE);
   var eventChannel = new EventChannel(getWebviewId() + 1, events);
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -3033,6 +3040,7 @@ function back(delta, animationType, animationDuration) {
     closeWebview(webview2, animationType, animationDuration, () => {
       pages2.slice(len - delta, len).forEach((page) => removePage(page));
       invokeHook(ON_SHOW);
+      invokeLastDialogPageHookByUniPage(getCurrentPage(), ON_SHOW);
       setStatusBarStyle();
     });
   };

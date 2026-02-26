@@ -51,6 +51,48 @@ function invokeHook(vm, name, args) {
     return hooks && invokeArrayFns(hooks, args);
 }
 
+const SYSTEM_DIALOG_PAGE_PATH_STARTER = 'uni:';
+function isSystemDialogPage(page) {
+    return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
+}
+function getSystemDialogPages(parentPage) {
+    if (!parentPage)
+        return [];
+    {
+        // $getSystemDialogPages harmony __$$getSystemDialogPages ios
+        return typeof parentPage.__$$getSystemDialogPages === 'undefined'
+            ? parentPage.$getSystemDialogPages()
+            : parentPage.__$$getSystemDialogPages();
+    }
+}
+function invokeNewDialogPageHook(page, hook) {
+    let shouldInvoke = false;
+    const currentPage = getCurrentPage();
+    if (isSystemDialogPage(page)) {
+        const systemDialogPages = getSystemDialogPages(currentPage);
+        shouldInvoke = systemDialogPages.includes(page);
+    }
+    else {
+        const dialogPages = currentPage.getDialogPages();
+        shouldInvoke = dialogPages.includes(page);
+    }
+    shouldInvoke && invokeHook(page.vm, hook);
+}
+function getPageInstanceByChild(child) {
+    {
+        // @ts-expect-error
+        return child.ctx.$basePage;
+    }
+}
+function isDialogPageInstance(vm) {
+    if (!vm)
+        return false;
+    {
+        // @ts-expect-error
+        return vm.openType === 'openDialogPage';
+    }
+}
+
 function injectLifecycleHook(name, hook, publicThis, instance) {
     if (isFunction(hook)) {
         injectHook(name, hook.bind(publicThis), instance);
@@ -106,6 +148,15 @@ function initHooks(options, instance, publicThis) {
                 : publicThis.$page;
             if (!('app' === 'app' && true && ($basePage === null || $basePage === void 0 ? void 0 : $basePage.meta.isTabBar))) {
                 if (($basePage === null || $basePage === void 0 ? void 0 : $basePage.openType) !== 'preloadPage') {
+                    if (true) {
+                        if (isDialogPageInstance(getPageInstanceByChild(instance))) {
+                            invokeNewDialogPageHook(publicThis.$page, ON_SHOW);
+                        }
+                        else {
+                            invokeHook(publicThis, ON_SHOW);
+                        }
+                        return;
+                    }
                     invokeHook(publicThis, ON_SHOW);
                 }
             }
