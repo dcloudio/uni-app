@@ -310,4 +310,19 @@ describe('mp-alipay: transform component x', () => {
       }
     )
   })
+
+  test(`scroll-view`, () => {
+    assert(
+      `<list-view/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
 })
