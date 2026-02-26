@@ -92,7 +92,6 @@ function initHooks(options, instance, publicThis) {
                 : publicThis.$page;
             if (!('app' === 'app' && false && ($basePage === null || $basePage === void 0 ? void 0 : $basePage.meta.isTabBar))) {
                 if (($basePage === null || $basePage === void 0 ? void 0 : $basePage.openType) !== 'preloadPage') {
-                    if (false) ;
                     invokeHook(publicThis, ON_SHOW);
                 }
             }
