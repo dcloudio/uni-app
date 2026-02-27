@@ -34,6 +34,7 @@ interface CreateTransformerOptions {
         extname?: '.ets' | '.js';
         rewriteRootDir?: string;
     };
+    enableUTSBooleanConversion?: boolean;
 }
 declare function initTargetTransformers(targetLanguage: TargetLanguage, options?: CreateTransformerOptions): _uts_transforms_base.UTSTransformerFactoryCreator[];
 
