@@ -75,6 +75,7 @@ export type UTSOutputOptions = {
     uvueOutDir: string
   }
   transform?: {
+    enableUTSBooleanConversion?: boolean
     enableSwiftUtsArray?: boolean
     enableSwiftUtsMap?: boolean
     enableUtsNumber?: boolean
