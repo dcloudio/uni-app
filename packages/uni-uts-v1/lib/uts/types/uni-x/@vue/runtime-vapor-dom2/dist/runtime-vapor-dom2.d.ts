@@ -14,7 +14,6 @@ declare class VaporFragment {
   parentComponent?: VaporSharedDataComponentInstance | null;
   insert?: (parent: ParentNode, anchor: Node | null) => void;
   remove?: (parent?: ParentNode) => void;
-  onUpdated?: ((nodes?: Block) => void)[];
   constructor(nodes: Block);
 }
 declare class DynamicFragment extends VaporFragment {
@@ -54,8 +53,8 @@ export type DynamicSlotSource = StaticSlots | DynamicSlotFn;
 * Wrap a slot function to track the slot owner.
 *
 * This ensures:
-* 1. createSlot gets rawSlots from the correct instance (slot owner)
-* 2. elements inherit the slot owner's scopeId
+* 1. createSlot gets rawSlots from the correct component (slot owner)
+* 2. Elements inherit the slot owner's scopeId
 */
 export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any, type?: "string"): BlockFn;
 export declare function createSharedDataSlot(name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot, noSlotted?: boolean, once?: boolean): void;
@@ -259,7 +258,7 @@ export declare const onReuse: typeof onReused;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiTemplateRef.d.ts
 type NodeRef = string | Ref | ((ref: Element) => void);
-type RefEl = UniElement | VaporSharedDataComponentInstance | DynamicFragment | VaporFragment;
+type RefEl = UniElement | VaporSharedDataComponentInstance;
 type setRefFn = (el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
 export declare function createSharedDataTemplateRefSetter(): setRefFn;
 //#endregion

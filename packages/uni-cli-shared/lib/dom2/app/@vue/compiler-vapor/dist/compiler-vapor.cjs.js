@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-beta.7
+  * @vue/compiler-vapor v3.6.0-beta.5
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -50,7 +50,7 @@ function wrapTemplate(node, dirs) {
 	const reserved = [];
 	const pass = [];
 	node.props.forEach((prop) => {
-		if (prop.type === 7 && (dirs.includes(prop.name) || prop.name === "bind" && prop.arg && prop.arg.type === 4 && prop.arg.content === "key" && dirs.includes("key"))) reserved.push(prop);
+		if (prop.type === 7 && dirs.includes(prop.name)) reserved.push(prop);
 		else pass.push(prop);
 	});
 	return (0, _vue_shared.extend)({}, node, {
@@ -109,6 +109,13 @@ function getLiteralExpressionValue(exp, excludeNumber) {
 		}
 	}
 	return exp.isStatic ? exp.content : null;
+}
+function isInTransition(context) {
+	const parentNode = context.parent && context.parent.node;
+	return !!(parentNode && isTransitionNode(parentNode));
+}
+function isTransitionNode(node) {
+	return node.type === 1 && isTransitionTag(node.tag);
 }
 function isTransitionTag(tag) {
 	tag = tag.toLowerCase();
@@ -576,14 +583,12 @@ const IRNodeTypes = {
 	"14": "IF",
 	"FOR": 15,
 	"15": "FOR",
-	"KEY": 16,
-	"16": "KEY",
-	"GET_TEXT_CHILD": 17,
-	"17": "GET_TEXT_CHILD",
-	"GET_INSERTION_PARENT": 18,
-	"18": "GET_INSERTION_PARENT",
-	"SET_CHANGE_PROP": 19,
-	"19": "SET_CHANGE_PROP"
+	"GET_TEXT_CHILD": 16,
+	"16": "GET_TEXT_CHILD",
+	"GET_INSERTION_PARENT": 17,
+	"17": "GET_INSERTION_PARENT",
+	"SET_CHANGE_PROP": 18,
+	"18": "SET_CHANGE_PROP"
 };
 const DynamicFlag = {
 	"NONE": 0,
@@ -597,7 +602,7 @@ const DynamicFlag = {
 };
 function isBlockOperation(op) {
 	const type = op.type;
-	return type === 11 || type === 12 || type === 14 || type === 16 || type === 15;
+	return type === 11 || type === 12 || type === 14 || type === 15;
 }
 
 //#endregion
@@ -1855,7 +1860,7 @@ function genSlotBlockWithProps(oper, context) {
 	let propsName;
 	let exitScope;
 	let depth;
-	const { props, node } = oper;
+	const { props, key, node } = oper;
 	const idToPathMap = props ? parseValueDestructure(props, context) : /* @__PURE__ */ new Map();
 	if (props) if (props.ast) {
 		[depth, exitScope] = context.enterScope();
@@ -1865,6 +1870,16 @@ function genSlotBlockWithProps(oper, context) {
 	if (propsName) idMap[propsName] = null;
 	let blockFn = context.withId(() => genBlock(oper, context, propsName ? [propsName] : []), idMap);
 	exitScope && exitScope();
+	if (key) blockFn = [
+		`() => {`,
+		INDENT_START,
+		NEWLINE,
+		`return `,
+		...genCall(context.helper("createKeyedFragment"), [`() => `, ...genExpression(key, context)], blockFn),
+		INDENT_END,
+		NEWLINE,
+		`}`
+	];
 	if (node.type === 1) {
 		if (needsVaporCtx(oper)) blockFn = [
 			`${context.helper("withVaporCtx")}(`,
@@ -1939,20 +1954,6 @@ function genSlotOutlet(oper, context) {
 }
 
 //#endregion
-//#region packages/compiler-vapor/src/generators/key.ts
-function genKey(oper, context) {
-	const { id, value, block } = oper;
-	const [frag, push] = buildCodeFragment();
-	const blockFn = genBlock(block, context);
-	push(NEWLINE, `const n${id} = `, ...genCall(context.helper("createKeyedFragment"), [
-		`() => (`,
-		...genExpression(value, context),
-		")"
-	], blockFn));
-	return frag;
-}
-
-//#endregion
 //#region packages/compiler-vapor/src/generators/operation.ts
 function genOperations(opers, context) {
 	const [frag, push] = buildCodeFragment();
@@ -1978,13 +1979,12 @@ function genOperation(oper, context) {
 		case 10: return genPrependNode(oper, context);
 		case 14: return genIf(oper, context);
 		case 15: return genFor(oper, context);
-		case 16: return genKey(oper, context);
 		case 11: return genCreateComponent(oper, context);
 		case 12: return genSlotOutlet(oper, context);
 		case 13: return genBuiltinDirective(oper, context);
-		case 17: return genGetTextChild(oper, context);
+		case 16: return genGetTextChild(oper, context);
+		case 17: return [];
 		case 18: return [];
-		case 19: return [];
 		default:
 			const exhaustiveCheck = oper;
 			throw new Error(`Unhandled operation type in genOperation: ${exhaustiveCheck}`);
@@ -2522,7 +2522,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
 					dynamicProps.push(key.content);
 					values[0].isStatic = false;
 					context.registerEffect(values, {
-						type: 19,
+						type: 18,
 						node,
 						prop
 					}, getEffectIndex);
@@ -2769,7 +2769,7 @@ const transformVText = (dir, node, context) => {
 		context.childrenTemplate = [context.options.platform ? TEXT_PLACEHOLDER : " "];
 		const isComponent = node.tagType === 1;
 		if (!isComponent) context.registerOperation({
-			type: 17,
+			type: 16,
 			node,
 			parent: context.reference()
 		});
@@ -3004,7 +3004,7 @@ function processTextContainer(children, context) {
 	else {
 		context.childrenTemplate = [context.options.platform ? TEXT_PLACEHOLDER : " "];
 		context.registerOperation({
-			type: 17,
+			type: 16,
 			node: context.node,
 			parent: context.reference()
 		});
@@ -3149,7 +3149,7 @@ function processIf(node, dir, context) {
 				id,
 				condition: dir.exp,
 				positive: branch,
-				index: context.root.nextIfIndex(),
+				index: isInTransition(context) ? context.root.nextIfIndex() : void 0,
 				once: context.inVOnce || isStaticExpression(dir.exp, context.options.bindingMetadata)
 			};
 		};
@@ -3183,7 +3183,7 @@ function processIf(node, dir, context) {
 			id: -1,
 			condition: dir.exp,
 			positive: branch,
-			index: context.root.nextIfIndex(),
+			index: isInTransition(context) ? context.root.nextIfIndex() : void 0,
 			once: context.inVOnce || isStaticExpression(dir.exp, context.options.bindingMetadata)
 		};
 		return () => onExit();
@@ -3220,7 +3220,7 @@ function processFor(node, dir, context) {
 	const typeProp = findProp$1(node, "type");
 	const typeProperty = typeProp && propToExpression(typeProp);
 	const isComponent = node.tagType === 1 || isTemplateWithSingleComponent(node);
-	context.node = node = wrapTemplate(node, ["for", "key"]);
+	context.node = node = wrapTemplate(node, ["for"]);
 	context.dynamic.flags |= 6;
 	const id = context.reference();
 	const render = newBlock(node);
@@ -3337,6 +3337,13 @@ function transformComponentSlot(node, dir, context) {
 		markNonTemplate(n, context);
 	});
 	const [block, onExit] = createSlotBlock(node, dir, context);
+	if (isTransitionNode(node) && nonSlotTemplateChildren.length) {
+		const nonCommentChild = nonSlotTemplateChildren.find((n) => !(0, _vue_compiler_dom.isCommentOrWhitespace)(n));
+		if (nonCommentChild) {
+			const keyProp = findProp$1(nonCommentChild, "key");
+			if (keyProp) block.key = keyProp.exp;
+		}
+	}
 	const { slots } = context;
 	return () => {
 		onExit();
@@ -3456,32 +3463,6 @@ function hasMultipleChildren(node) {
 }
 
 //#endregion
-//#region packages/compiler-vapor/src/transforms/transformKey.ts
-const transformKey = (node, context) => {
-	if (node.type !== 1 || context.inVOnce || findDir$2(node, "for")) return;
-	const dir = findProp$1(node, "key", true, true);
-	if (!dir || dir.type === 6) return;
-	let value;
-	value = dir.exp || normalizeBindShorthand(dir.arg, context);
-	if (isStaticExpression(value, context.options.bindingMetadata)) return;
-	let id = context.reference();
-	context.dynamic.flags |= 6;
-	context.node = node = wrapTemplate(node, ["key"]);
-	const block = newBlock(node);
-	const exitBlock = context.enterBlock(block);
-	return () => {
-		exitBlock();
-		context.dynamic.operation = {
-			type: 16,
-			node,
-			id,
-			value,
-			block
-		};
-	};
-};
-
-//#endregion
 //#region packages/compiler-vapor/src/compile.ts
 function compile(source, options = {}) {
 	const resolvedOptions = (0, _vue_shared.extend)({}, options);
@@ -3505,7 +3486,6 @@ function getBaseTransformPreset() {
 		transformVOnce,
 		transformVIf,
 		transformVFor,
-		transformKey,
 		transformSlotOutlet,
 		transformTemplateRef,
 		transformElement,
@@ -3588,7 +3568,6 @@ exports.transform = transform;
 exports.transformChildren = transformChildren;
 exports.transformComment = transformComment;
 exports.transformElement = transformElement;
-exports.transformKey = transformKey;
 exports.transformSlotOutlet = transformSlotOutlet;
 exports.transformTemplateRef = transformTemplateRef;
 exports.transformText = transformText;
