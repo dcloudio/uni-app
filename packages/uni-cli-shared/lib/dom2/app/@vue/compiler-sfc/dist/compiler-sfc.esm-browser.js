@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-beta.5
+  * @vue/compiler-sfc v3.6.0-beta.7
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -3651,7 +3651,7 @@ const errorMessages$1 = {
 };
 
 //#endregion
-//#region node_modules/.pnpm/@babel+parser@7.28.6/node_modules/@babel/parser/lib/index.js
+//#region node_modules/.pnpm/@babel+parser@7.29.0/node_modules/@babel/parser/lib/index.js
 var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	function _objectWithoutPropertiesLoose(r, e) {
@@ -12083,7 +12083,7 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 						return this.finishCallExpression(node, state.optionalChainMember);
 					}
 					const tokenType = this.state.type;
-					if (tokenType === 48 || tokenType === 52 || tokenType !== 10 && tokenCanStartExpression(tokenType) && !this.hasPrecedingLineBreak()) return;
+					if (tokenType === 48 || tokenType === 52 || tokenType !== 10 && tokenType !== 93 && tokenType !== 120 && tokenCanStartExpression(tokenType) && !this.hasPrecedingLineBreak()) return;
 					const node = this.startNodeAt(startLoc);
 					node.expression = base;
 					node.typeParameters = typeArguments;
@@ -12443,7 +12443,17 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		}
 		parseClassSuper(node) {
 			super.parseClassSuper(node);
-			if (node.superClass && (this.match(47) || this.match(51))) node.superTypeParameters = this.tsParseTypeArgumentsInExpression();
+			if (node.superClass) {
+				if (node.superClass.type === "TSInstantiationExpression") {
+					const tsInstantiationExpression = node.superClass;
+					const superClass = tsInstantiationExpression.expression;
+					this.takeSurroundingComments(superClass, superClass.start, superClass.end);
+					const superTypeArguments = tsInstantiationExpression.typeParameters;
+					this.takeSurroundingComments(superTypeArguments, superTypeArguments.start, superTypeArguments.end);
+					node.superClass = superClass;
+					node.superTypeParameters = superTypeArguments;
+				} else if (this.match(47) || this.match(51)) node.superTypeParameters = this.tsParseTypeArgumentsInExpression();
+			}
 			if (this.eatContextual(113)) node.implements = this.tsParseHeritageClause("implements");
 		}
 		parseObjPropValue(prop, startLoc, isGenerator, isAsync, isPattern, isAccessor, refExpressionErrors) {
@@ -24904,7 +24914,7 @@ function wrapTemplate(node, dirs) {
 	const reserved = [];
 	const pass = [];
 	node.props.forEach((prop) => {
-		if (prop.type === 7 && dirs.includes(prop.name)) reserved.push(prop);
+		if (prop.type === 7 && (dirs.includes(prop.name) || prop.name === "bind" && prop.arg && prop.arg.type === 4 && prop.arg.content === "key" && dirs.includes("key"))) reserved.push(prop);
 		else pass.push(prop);
 	});
 	return extend({}, node, {
@@ -24963,13 +24973,6 @@ function getLiteralExpressionValue(exp, excludeNumber) {
 		}
 	}
 	return exp.isStatic ? exp.content : null;
-}
-function isInTransition(context) {
-	const parentNode = context.parent && context.parent.node;
-	return !!(parentNode && isTransitionNode(parentNode));
-}
-function isTransitionNode(node) {
-	return node.type === 1 && isTransitionTag(node.tag);
 }
 function isTransitionTag(tag) {
 	tag = tag.toLowerCase();
@@ -25437,12 +25440,14 @@ const IRNodeTypes = {
 	"14": "IF",
 	"FOR": 15,
 	"15": "FOR",
-	"GET_TEXT_CHILD": 16,
-	"16": "GET_TEXT_CHILD",
-	"GET_INSERTION_PARENT": 17,
-	"17": "GET_INSERTION_PARENT",
-	"SET_CHANGE_PROP": 18,
-	"18": "SET_CHANGE_PROP"
+	"KEY": 16,
+	"16": "KEY",
+	"GET_TEXT_CHILD": 17,
+	"17": "GET_TEXT_CHILD",
+	"GET_INSERTION_PARENT": 18,
+	"18": "GET_INSERTION_PARENT",
+	"SET_CHANGE_PROP": 19,
+	"19": "SET_CHANGE_PROP"
 };
 const DynamicFlag = {
 	"NONE": 0,
@@ -25456,7 +25461,7 @@ const DynamicFlag = {
 };
 function isBlockOperation(op) {
 	const type = op.type;
-	return type === 11 || type === 12 || type === 14 || type === 15;
+	return type === 11 || type === 12 || type === 14 || type === 16 || type === 15;
 }
 
 //#endregion
@@ -26714,7 +26719,7 @@ function genSlotBlockWithProps(oper, context) {
 	let propsName;
 	let exitScope;
 	let depth;
-	const { props, key, node } = oper;
+	const { props, node } = oper;
 	const idToPathMap = props ? parseValueDestructure(props, context) : /* @__PURE__ */ new Map();
 	if (props) if (props.ast) {
 		[depth, exitScope] = context.enterScope();
@@ -26724,16 +26729,6 @@ function genSlotBlockWithProps(oper, context) {
 	if (propsName) idMap[propsName] = null;
 	let blockFn = context.withId(() => genBlock(oper, context, propsName ? [propsName] : []), idMap);
 	exitScope && exitScope();
-	if (key) blockFn = [
-		`() => {`,
-		INDENT_START,
-		NEWLINE,
-		`return `,
-		...genCall(context.helper("createKeyedFragment"), [`() => `, ...genExpression(key, context)], blockFn),
-		INDENT_END,
-		NEWLINE,
-		`}`
-	];
 	if (node.type === 1) {
 		if (needsVaporCtx(oper)) blockFn = [
 			`${context.helper("withVaporCtx")}(`,
@@ -26808,6 +26803,20 @@ function genSlotOutlet(oper, context) {
 }
 
 //#endregion
+//#region packages/compiler-vapor/src/generators/key.ts
+function genKey(oper, context) {
+	const { id, value, block } = oper;
+	const [frag, push] = buildCodeFragment();
+	const blockFn = genBlock(block, context);
+	push(NEWLINE, `const n${id} = `, ...genCall(context.helper("createKeyedFragment"), [
+		`() => (`,
+		...genExpression(value, context),
+		")"
+	], blockFn));
+	return frag;
+}
+
+//#endregion
 //#region packages/compiler-vapor/src/generators/operation.ts
 function genOperations(opers, context) {
 	const [frag, push] = buildCodeFragment();
@@ -26833,12 +26842,13 @@ function genOperation(oper, context) {
 		case 10: return genPrependNode(oper, context);
 		case 14: return genIf(oper, context);
 		case 15: return genFor(oper, context);
+		case 16: return genKey(oper, context);
 		case 11: return genCreateComponent(oper, context);
 		case 12: return genSlotOutlet(oper, context);
 		case 13: return genBuiltinDirective(oper, context);
-		case 16: return genGetTextChild(oper, context);
-		case 17: return [];
+		case 17: return genGetTextChild(oper, context);
 		case 18: return [];
+		case 19: return [];
 		default:
 			const exhaustiveCheck = oper;
 			throw new Error(`Unhandled operation type in genOperation: ${exhaustiveCheck}`);
@@ -27376,7 +27386,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
 					dynamicProps.push(key.content);
 					values[0].isStatic = false;
 					context.registerEffect(values, {
-						type: 18,
+						type: 19,
 						node,
 						prop
 					}, getEffectIndex);
@@ -27598,7 +27608,7 @@ const transformVText = (dir, node, context) => {
 		context.childrenTemplate = [context.options.platform ? TEXT_PLACEHOLDER : " "];
 		const isComponent = node.tagType === 1;
 		if (!isComponent) context.registerOperation({
-			type: 16,
+			type: 17,
 			node,
 			parent: context.reference()
 		});
@@ -27833,7 +27843,7 @@ function processTextContainer(children, context) {
 	else {
 		context.childrenTemplate = [context.options.platform ? TEXT_PLACEHOLDER : " "];
 		context.registerOperation({
-			type: 16,
+			type: 17,
 			node: context.node,
 			parent: context.reference()
 		});
@@ -27978,7 +27988,7 @@ function processIf(node, dir, context) {
 				id,
 				condition: dir.exp,
 				positive: branch,
-				index: isInTransition(context) ? context.root.nextIfIndex() : void 0,
+				index: context.root.nextIfIndex(),
 				once: context.inVOnce || isStaticExpression(dir.exp, context.options.bindingMetadata)
 			};
 		};
@@ -28012,7 +28022,7 @@ function processIf(node, dir, context) {
 			id: -1,
 			condition: dir.exp,
 			positive: branch,
-			index: isInTransition(context) ? context.root.nextIfIndex() : void 0,
+			index: context.root.nextIfIndex(),
 			once: context.inVOnce || isStaticExpression(dir.exp, context.options.bindingMetadata)
 		};
 		return () => onExit();
@@ -28049,7 +28059,7 @@ function processFor(node, dir, context) {
 	const typeProp = findProp(node, "type");
 	const typeProperty = typeProp && propToExpression(typeProp);
 	const isComponent = node.tagType === 1 || isTemplateWithSingleComponent(node);
-	context.node = node = wrapTemplate(node, ["for"]);
+	context.node = node = wrapTemplate(node, ["for", "key"]);
 	context.dynamic.flags |= 6;
 	const id = context.reference();
 	const render = newBlock(node);
@@ -28166,13 +28176,6 @@ function transformComponentSlot(node, dir, context) {
 		markNonTemplate(n, context);
 	});
 	const [block, onExit] = createSlotBlock(node, dir, context);
-	if (isTransitionNode(node) && nonSlotTemplateChildren.length) {
-		const nonCommentChild = nonSlotTemplateChildren.find((n) => !isCommentOrWhitespace(n));
-		if (nonCommentChild) {
-			const keyProp = findProp(nonCommentChild, "key");
-			if (keyProp) block.key = keyProp.exp;
-		}
-	}
 	const { slots } = context;
 	return () => {
 		onExit();
@@ -28292,6 +28295,32 @@ function hasMultipleChildren(node) {
 }
 
 //#endregion
+//#region packages/compiler-vapor/src/transforms/transformKey.ts
+const transformKey = (node, context) => {
+	if (node.type !== 1 || context.inVOnce || findDir(node, "for")) return;
+	const dir = findProp(node, "key", true, true);
+	if (!dir || dir.type === 6) return;
+	let value;
+	value = dir.exp || normalizeBindShorthand(dir.arg, context);
+	if (isStaticExpression(value, context.options.bindingMetadata)) return;
+	let id = context.reference();
+	context.dynamic.flags |= 6;
+	context.node = node = wrapTemplate(node, ["key"]);
+	const block = newBlock(node);
+	const exitBlock = context.enterBlock(block);
+	return () => {
+		exitBlock();
+		context.dynamic.operation = {
+			type: 16,
+			node,
+			id,
+			value,
+			block
+		};
+	};
+};
+
+//#endregion
 //#region packages/compiler-vapor/src/compile.ts
 function compile$1(source, options = {}) {
 	const resolvedOptions = extend({}, options);
@@ -28315,6 +28344,7 @@ function getBaseTransformPreset() {
 		transformVOnce,
 		transformVIf,
 		transformVFor,
+		transformKey,
 		transformSlotOutlet,
 		transformTemplateRef,
 		transformElement,
@@ -28399,6 +28429,7 @@ var src_exports$1 = /* @__PURE__ */ __exportAll({
 	transformChildren: () => transformChildren,
 	transformComment: () => transformComment,
 	transformElement: () => transformElement,
+	transformKey: () => transformKey,
 	transformSlotOutlet: () => transformSlotOutlet,
 	transformTemplateRef: () => transformTemplateRef,
 	transformText: () => transformText,
@@ -39412,7 +39443,7 @@ function resolveParserPlugins(lang, userPlugins, dts = false) {
 	if (!userPlugins || !userPlugins.some((p) => p === "importAssertions" || p === "importAttributes" || isArray$3(p) && p[0] === "importAttributes")) plugins.push("importAttributes");
 	if (lang === "jsx" || lang === "tsx" || lang === "mtsx") plugins.push("jsx");
 	else if (userPlugins) userPlugins = userPlugins.filter((p) => p !== "jsx");
-	if (lang === "uts" || lang === "ts" || lang === "mts" || lang === "tsx" || lang === "mtsx") {
+	if (lang === "uts" || lang === "ts" || lang === "mts" || lang === "tsx" || lang === "cts" || lang === "mtsx") {
 		plugins.push(["typescript", { dts }], "explicitResourceManagement");
 		if (!userPlugins || !userPlugins.includes("decorators")) plugins.push("decorators-legacy");
 	}
@@ -39916,11 +39947,17 @@ function importSourceToScope(ctx, node, scope, source) {
 	} else return ctx.error(`Failed to resolve import source ${JSON.stringify(source)}.`, node, scope);
 }
 function resolveExt(filename, fs) {
-	filename = filename.replace(/\.js$/, "");
+	let moduleType = "u";
+	if (filename.endsWith(".mjs")) moduleType = "m";
+	else if (filename.endsWith(".cjs")) moduleType = "c";
+	filename = filename.replace(/\.[cm]?jsx?$/, "");
 	const tryResolve = (filename) => {
 		if (fs.fileExists(filename)) return filename;
 	};
-	return tryResolve(filename) || tryResolve(filename + `.ts`) || tryResolve(filename + `.tsx`) || tryResolve(filename + `.d.ts`) || tryResolve(joinPaths(filename, `index.ts`)) || tryResolve(joinPaths(filename, `index.tsx`)) || tryResolve(joinPaths(filename, `index.d.ts`));
+	const resolveTs = () => tryResolve(filename + `.uts`) || tryResolve(filename + `.ts`) || tryResolve(filename + `.tsx`) || tryResolve(filename + `.d.ts`);
+	const resolveMts = () => tryResolve(filename + `.mts`) || tryResolve(filename + `.d.mts`);
+	const resolveCts = () => tryResolve(filename + `.cts`) || tryResolve(filename + `.d.cts`);
+	return tryResolve(filename) || (moduleType === "m" ? resolveMts() || resolveTs() : moduleType === "c" ? resolveCts() || resolveTs() : resolveTs() || resolveMts() || resolveCts()) || tryResolve(joinPaths(filename, `index.uts`)) || tryResolve(joinPaths(filename, `index.ts`)) || tryResolve(joinPaths(filename, `index.tsx`)) || tryResolve(joinPaths(filename, `index.d.ts`));
 }
 const tsConfigCache = createCache();
 const tsConfigRefMap = /* @__PURE__ */ new Map();
@@ -39948,8 +39985,8 @@ function fileToScope(ctx, filename, asGlobal = false) {
 }
 function parseFile(filename, content, fs, parserPlugins) {
 	const ext = extname(filename);
-	if (ext === ".uts" || ext === ".ts" || ext === ".mts" || ext === ".tsx" || ext === ".mtsx") return (0, import_lib.parse)(content, {
-		plugins: resolveParserPlugins(ext.slice(1), parserPlugins, /\.d\.m?ts$/.test(filename)),
+	if (ext === ".uts" || ext === ".ts" || ext === ".mts" || ext === ".tsx" || ext === ".cts" || ext === ".mtsx") return (0, import_lib.parse)(content, {
+		plugins: resolveParserPlugins(ext.slice(1), parserPlugins, /\.d\.[cm]?ts$/.test(filename)),
 		sourceType: "module"
 	}).program.body;
 	const isUnknownTypeSource = !/\.[cm]?[tj]sx?$/.test(filename);
@@ -40579,7 +40616,18 @@ function genRuntimePropFromType(ctx, { key, required, type, skipCheck }, hasStat
 			return resolveObjectKey(node.key, node.computed) === key;
 		});
 		if (prop) if (prop.type === "ObjectProperty") defaultString = `default: ${ctx.getString(prop.value)}`;
-		else defaultString = `${prop.async ? "async " : ""}${prop.kind !== "method" ? `${prop.kind} ` : ""}default() ${ctx.getString(prop.body)}`;
+		else {
+			let paramsString = "";
+			if (prop.params.length) {
+				const start = prop.params[0].start;
+				const end = prop.params[prop.params.length - 1].end;
+				paramsString = ctx.getString({
+					start,
+					end
+				});
+			}
+			defaultString = `${prop.async ? "async " : ""}${prop.kind !== "method" ? `${prop.kind} ` : ""}default(${paramsString}) ${ctx.getString(prop.body)}`;
+		}
 	}
 	const finalKey = getEscapedPropName(key);
 	if (!ctx.options.isProd) return `${finalKey}: { ${concatStrings([
@@ -41499,7 +41547,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
 init_objectSpread2();
-const version = "3.6.0-beta.5";
+const version = "3.6.0-beta.7";
 const parseCache = parseCache$1;
 const errorMessages = _objectSpread2(_objectSpread2({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;
