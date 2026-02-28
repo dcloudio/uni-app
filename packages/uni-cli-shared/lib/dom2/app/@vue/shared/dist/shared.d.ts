@@ -407,10 +407,6 @@ export declare enum VaporVForFlags {
   /**
   * v-for inside v-once
   */
-  ONCE = 4,
-  /**
-  * recycle v-for runs in sticky-section mode
-  */
-  SECTION_MODE = 8
+  ONCE = 4
 }
 //#endregion
