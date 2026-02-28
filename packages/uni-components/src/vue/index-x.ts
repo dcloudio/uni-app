@@ -32,7 +32,8 @@ import ListView, { UniListViewElement } from './list-view/index'
 import ListItem, { UniListItemElement } from './list-item/index'
 import StickySection, { UniStickySectionElement } from './sticky-section/index'
 import StickyHeader, { UniStickyHeaderElement } from './sticky-header/index'
-import PageContainer, { UniPageContainerElement } from './page-container/index'
+import PageContainer from './page-container/index.vue'
+import { UniPageContainerElement } from './page-container/element'
 import Loading from './loading/index-x.vue'
 export {
   Loading,
