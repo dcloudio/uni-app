@@ -1,3 +1,11 @@
+uni-page-container {
+  display: block;
+}
+
+uni-page-container[hidden] {
+  display: none;
+}
+
 .uni-page-container-popup {
   background-color: #fff;
   box-sizing: border-box;
