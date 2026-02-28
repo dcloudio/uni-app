@@ -159,6 +159,7 @@ export const UVUE_BUILT_IN_TAGS = [
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
+  'page-container',
   'list-view',
   'list-item',
   'sticky-section',
