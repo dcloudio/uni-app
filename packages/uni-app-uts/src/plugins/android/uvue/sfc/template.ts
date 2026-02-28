@@ -9,6 +9,7 @@ import path from 'path'
 import { isBuiltInComponent } from '@dcloudio/uni-shared'
 import {
   createRollupError,
+  initVueTemplateCompilerExtraOptions,
   matchEasycom,
   normalizePath,
   onVueTemplateCompileLog,
@@ -37,7 +38,14 @@ export function resolveGenTemplateCodeOptions(
     preprocessOptions?: any
   },
   pluginContext?: TransformPluginContext
-): TemplateCompilerOptions & { genDefaultAs?: string } {
+): TemplateCompilerOptions & { genDefaultAs?: string } & { r?: unknown } {
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    return {
+      ...options,
+      inline: true,
+      ...initVueTemplateCompilerExtraOptions(descriptor),
+    }
+  }
   const block = descriptor.template
   if (!block) {
     return {

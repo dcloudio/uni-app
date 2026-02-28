@@ -28,7 +28,10 @@ export function initModuleAlias() {
       process.env.UNI_APP_HARMONY_DOM2_CPP_DIR
   }
 
-  if (process.env.UNI_APP_PLATFORM === 'ios') {
+  if (
+    process.env.UNI_APP_PLATFORM === 'ios' ||
+    process.env.UNI_APP_PLATFORM === 'android'
+  ) {
     if (process.env.UNI_INPUT_DIR) {
       const manifestJsonFilename = path.resolve(
         process.env.UNI_INPUT_DIR,
