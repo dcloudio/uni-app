@@ -98,6 +98,7 @@ export function createUniXCompiler(
       enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
       // TODO 调整参数传递方式
       isPureSwift: options.isPureSwift,
+      disableUTSBooleanConversion: process.env.UNI_COMPILE_TARGET === 'ext-api',
       workers: {
         resolve: options.resolveWorkers,
         extname:
