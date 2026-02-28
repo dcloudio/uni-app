@@ -1061,7 +1061,7 @@ uniShared.createRpx2Unit(
   uniShared.defaultRpx2Unit.unitPrecision
 );
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -1121,7 +1121,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1197,7 +1197,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1248,7 +1248,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$r = {
+const props$s = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -1260,7 +1260,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$r,
+  props: props$s,
   setup(props2, {}) {
     const rootRef = vue.ref(null);
     const canvas = vue.ref(null);
@@ -1275,15 +1275,15 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$q = {
+const props$r = {
   name: {
     type: String,
     default: ""
   }
 };
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$q,
+  props: props$r,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -1335,7 +1335,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$p = {
+const props$q = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -1382,9 +1382,9 @@ const props$p = {
     default: ""
   }
 };
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$p,
+  props: props$q,
   setup(props2, {
     slots
   }) {
@@ -1488,7 +1488,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$o = {
+const props$p = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -3864,7 +3864,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
+const props$o = /* @__PURE__ */ shared.extend({}, props$p, {
   id: {
     type: String,
     default: ""
@@ -3890,9 +3890,9 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
     default: false
   }
 });
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$n,
+  props: props$o,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -3951,7 +3951,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -4033,7 +4033,7 @@ function useResizeSensorReset(rootRef) {
     lastElementChild.scrollTop = 1e5;
   };
 }
-const props$m = {
+const props$n = {
   src: {
     type: String,
     default: ""
@@ -4070,9 +4070,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$m,
+  props: props$n,
   setup(props2, {
     emit: emit2
   }) {
@@ -4349,7 +4349,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$l = /* @__PURE__ */ shared.extend(
+const props$m = /* @__PURE__ */ shared.extend(
   {},
   {
     name: {
@@ -4439,7 +4439,7 @@ const props$l = /* @__PURE__ */ shared.extend(
       default: ""
     }
   },
-  props$o
+  props$p
 );
 const emit = [
   "input",
@@ -4683,7 +4683,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
 }
 uniShared.once(() => {
 });
-const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
+const props$l = /* @__PURE__ */ shared.extend({}, props$m, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -4713,7 +4713,7 @@ function useCache(props2, type) {
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$k,
+  props: props$l,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2,
@@ -4933,7 +4933,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -5481,7 +5481,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -6128,7 +6128,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -6450,7 +6450,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -6534,15 +6534,15 @@ function _activeAnimation(state, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$j = {
+const props$k = {
   name: {
     type: String,
     default: ""
   }
 };
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$j,
+  props: props$k,
   // emits: ['change'],
   setup(props2, {
     emit: emit2,
@@ -6611,7 +6611,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$i = {
+const props$j = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -6660,7 +6660,7 @@ const props$i = {
 };
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$i,
+  props: props$j,
   setup(props2, {
     slots
   }) {
@@ -7014,7 +7014,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$h = {
+const props$i = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -7022,12 +7022,12 @@ const props$h = {
     }
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: props$h,
+  props: props$i,
   emits: ["itemclick"],
   setup(props2, {
     emit: emit2
@@ -7160,7 +7160,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$g = {
+const props$h = {
   direction: {
     type: [String],
     default: "vertical"
@@ -7226,12 +7226,12 @@ const props$g = {
     default: false
   }
 };
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
   },
-  props: props$g,
+  props: props$h,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   setup(props2, {
     emit: emit2,
@@ -7525,7 +7525,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$f = {
+const props$g = {
   name: {
     type: String,
     default: ""
@@ -7595,7 +7595,7 @@ const props$f = {
 };
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$f,
+  props: props$g,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -7732,7 +7732,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$e = {
+const props$f = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -8125,9 +8125,9 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$e,
+  props: props$f,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -8350,15 +8350,15 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
   }
   return createNavigationTsx;
 };
-const props$d = {
+const props$e = {
   itemId: {
     type: String,
     default: ""
   }
 };
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$d,
+  props: props$e,
   setup(props2, {
     slots
   }) {
@@ -8375,7 +8375,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$c = {
+const props$d = {
   name: {
     type: String,
     default: ""
@@ -8419,7 +8419,7 @@ const props$c = {
 };
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$c,
+  props: props$d,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -8549,7 +8549,7 @@ function normalizeText(text, { space, decode }) {
 function parseTextIgnoreLinefeed(text, options) {
   return normalizeText(text, options);
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -8605,7 +8605,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
+const props$c = /* @__PURE__ */ shared.extend({}, props$m, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -8624,9 +8624,9 @@ const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$b,
+  props: props$c,
   emits: ["confirm", "change", "linechange", ...emit],
   setup(props2, {
     emit: emit2,
@@ -8846,7 +8846,7 @@ function traverseStickySection(stickySectionVNode, callback) {
     callback(child);
   }
 }
-const props$a = {
+const props$b = {
   direction: {
     type: String,
     default: "vertical",
@@ -8904,9 +8904,9 @@ const props$a = {
     default: false
   }
 };
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props: props$a,
+  props: props$b,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -9224,7 +9224,7 @@ function getSize(isVertical, el) {
     return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
   }
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
   setup(props2, {
@@ -9275,7 +9275,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
   props: {
     padding: {
@@ -9320,7 +9320,7 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
   props: {
     padding: {
@@ -9357,6 +9357,283 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef,
         "style": style.value
       }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 4);
+    };
+  }
+});
+const MAX_SLIDE_DISTANCE = 100;
+const MIN_SLIDE_VELOCITY = 0.3;
+const props$a = {
+  show: {
+    type: Boolean,
+    default: false
+  },
+  duration: {
+    type: Number,
+    default: 300
+  },
+  zIndex: {
+    type: Number,
+    default: 100
+  },
+  overlay: {
+    type: Boolean,
+    default: true
+  },
+  round: {
+    type: Boolean,
+    default: false
+  },
+  position: {
+    type: String,
+    default: "bottom"
+  },
+  customStyle: {
+    type: String,
+    default: ""
+  },
+  overlayStyle: {
+    type: String,
+    default: ""
+  },
+  closeOnSlideDown: {
+    type: Boolean,
+    default: false
+  }
+};
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
+  name: "PageContainer",
+  props: props$a,
+  emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = vue.ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const showPageContainer = vue.ref(false);
+    const isAnimating = vue.ref(false);
+    const transitionTimer = vue.ref(null);
+    const isEntered = vue.ref(false);
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isDragging = false;
+    const translateValue = vue.ref(0);
+    const overlayStyleMap = vue.computed(() => {
+      const styleMap = /* @__PURE__ */ new Map([["z-index", String(props2.zIndex)], ["transition-duration", props2.duration + "ms"]]);
+      if (isEntered.value) {
+        styleMap.set("opacity", "1").set("pointer-events", "auto");
+      }
+      return styleMap;
+    });
+    const innerStyleMap = vue.computed(() => {
+      const styleMap = /* @__PURE__ */ new Map([["z-index", String(props2.zIndex + 1)], ["transition-duration", props2.duration + "ms"]]);
+      if (translateValue.value !== 0 && isDragging) {
+        let transformValue = "";
+        switch (props2.position) {
+          case "bottom":
+          case "top":
+            transformValue = `translateY(${translateValue.value}px)`;
+            break;
+          case "left":
+          case "right":
+            transformValue = `translateX(${translateValue.value}px)`;
+            break;
+        }
+        if (transformValue) {
+          styleMap.set("transform", transformValue);
+          styleMap.set("transition", "none");
+        }
+      } else if (translateValue.value !== 0 && !isDragging) {
+        styleMap.set("transition", `transform ${props2.duration}ms ease`);
+      }
+      return styleMap;
+    });
+    const popupClasses = vue.computed(() => {
+      const classes = [];
+      if (props2.position) {
+        classes.push(`uni-page-container-popup-${props2.position}`);
+      }
+      if (props2.round) {
+        classes.push("uni-page-container-popup-round");
+      }
+      if (isEntered.value) {
+        classes.push("uni-page-container-popup-enter");
+      }
+      return classes;
+    });
+    function clearTransitionTimer() {
+      if (transitionTimer.value !== null) {
+        clearTimeout(transitionTimer.value);
+        transitionTimer.value = null;
+      }
+    }
+    function onAnimationEnd(type) {
+      isAnimating.value = false;
+      clearTransitionTimer();
+      if (type === "enter") {
+        trigger("afterenter", {});
+      } else if (type === "leave") {
+        showPageContainer.value = false;
+        trigger("afterleave", {});
+      }
+    }
+    function listenTransitionEnd(type) {
+      clearTransitionTimer();
+      transitionTimer.value = setTimeout(() => {
+        onAnimationEnd(type);
+      }, props2.duration);
+    }
+    function resetDragState() {
+      isDragging = false;
+      translateValue.value = 0;
+    }
+    function openContainer() {
+      trigger("beforeenter", {});
+      showPageContainer.value = true;
+      isEntered.value = false;
+      resetDragState();
+      vue.nextTick(() => {
+        trigger("enter", {});
+        isAnimating.value = true;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            isEntered.value = true;
+            listenTransitionEnd("enter");
+          });
+        });
+      });
+    }
+    function closeContainer() {
+      if (isAnimating.value)
+        return;
+      trigger("beforeleave", {});
+      isAnimating.value = true;
+      vue.nextTick(() => {
+        isEntered.value = false;
+        trigger("leave", {});
+        listenTransitionEnd("leave");
+      });
+    }
+    vue.watch(() => props2.show, (newVal) => {
+      if (newVal && !showPageContainer.value) {
+        openContainer();
+      } else if (!newVal && showPageContainer.value) {
+        closeContainer();
+      }
+    });
+    function onClickOverlay(event) {
+      if (isAnimating.value)
+        return;
+      trigger("clickoverlay", event);
+      vue.nextTick(() => {
+        closeContainer();
+      });
+    }
+    function onTouchStart(e2) {
+      if (!props2.closeOnSlideDown)
+        return;
+      if (e2.touches.length > 0) {
+        const {
+          clientX,
+          clientY
+        } = e2.touches[0];
+        touchStartX = clientX;
+        touchStartY = clientY;
+        touchStartTime = Date.now();
+        isDragging = false;
+      }
+    }
+    function onTouchMove(e2) {
+      if (!props2.closeOnSlideDown) {
+        e2.preventDefault();
+        e2.stopPropagation();
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const {
+          clientX,
+          clientY
+        } = e2.touches[0];
+        const deltaX = clientX - touchStartX;
+        const deltaY = clientY - touchStartY;
+        let shouldDrag = false;
+        let dragValue = 0;
+        switch (props2.position) {
+          case "bottom":
+            if (deltaY > 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "top":
+            if (deltaY < 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "left":
+            if (deltaX < 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+          case "right":
+            if (deltaX > 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+        }
+        if (shouldDrag) {
+          isDragging = true;
+          translateValue.value = dragValue;
+          e2.preventDefault();
+          e2.stopPropagation();
+        }
+      }
+    }
+    function onTouchEnd() {
+      if (!props2.closeOnSlideDown)
+        return;
+      if (isDragging) {
+        const deltaTime = Date.now() - touchStartTime;
+        const velocity = Math.abs(translateValue.value) / deltaTime;
+        if (Math.abs(translateValue.value) > MAX_SLIDE_DISTANCE || velocity > MIN_SLIDE_VELOCITY) {
+          resetDragState();
+          closeContainer();
+        } else {
+          resetDragState();
+        }
+      }
+    }
+    function onTouchCancel() {
+      if (!props2.closeOnSlideDown)
+        return;
+      if (isDragging) {
+        resetDragState();
+      }
+    }
+    return () => {
+      var _a;
+      return vue.createVNode("uni-page-container", {
+        "ref": rootRef
+      }, [props2.overlay && showPageContainer.value && vue.createVNode("div", {
+        "class": "uni-page-container-overlay",
+        "style": [overlayStyleMap.value, props2.overlayStyle],
+        "onClick": onClickOverlay,
+        "onTouchmove": (e2) => {
+          e2.preventDefault();
+          e2.stopPropagation();
+        }
+      }, null, 44, ["onClick", "onTouchmove"]), showPageContainer.value && vue.createVNode("div", {
+        "class": ["uni-page-container-popup", ...popupClasses.value],
+        "style": [innerStyleMap.value, props2.customStyle],
+        "onTouchstart": onTouchStart,
+        "onTouchmove": onTouchMove,
+        "onTouchend": onTouchEnd,
+        "onTouchcancel": onTouchCancel
+      }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 46, ["onTouchstart", "onTouchmove", "onTouchend", "onTouchcancel"])], 512);
     };
   }
 });
@@ -14084,47 +14361,48 @@ exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$x;
+exports.Button = index$y;
 exports.Camera = index$2;
 exports.Canvas = indexX$4;
-exports.Checkbox = index$v;
-exports.CheckboxGroup = index$w;
+exports.Checkbox = index$w;
+exports.CheckboxGroup = index$x;
 exports.CoverImage = index$7;
 exports.CoverView = index$8;
-exports.Editor = index$u;
-exports.Form = index$z;
-exports.Icon = index$t;
-exports.Image = index$s;
+exports.Editor = index$v;
+exports.Form = index$A;
+exports.Icon = index$u;
+exports.Image = index$t;
 exports.Input = Input;
-exports.Label = index$y;
+exports.Label = index$z;
 exports.LayoutComponent = LayoutComponent;
-exports.ListItem = index$f;
-exports.ListView = index$g;
+exports.ListItem = index$g;
+exports.ListView = index$h;
 exports.LivePlayer = index$1;
 exports.LivePusher = index;
 exports.Loading = _sfc_main;
 exports.Map = index$9;
-exports.MovableArea = index$r;
-exports.MovableView = index$q;
-exports.Navigator = index$p;
+exports.MovableArea = index$s;
+exports.MovableView = index$r;
+exports.Navigator = index$q;
 exports.PageComponent = PageComponent;
+exports.PageContainer = index$d;
 exports.Picker = index$6;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$o;
+exports.Progress = index$p;
 exports.Radio = indexX$3;
-exports.RadioGroup = index$n;
+exports.RadioGroup = index$o;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$m;
-exports.ScrollView = index$l;
+exports.RichText = index$n;
+exports.ScrollView = index$m;
 exports.Slider = indexX$2;
-exports.StickyHeader = index$d;
-exports.StickySection = index$e;
-exports.Swiper = index$k;
-exports.SwiperItem = index$j;
+exports.StickyHeader = index$e;
+exports.StickySection = index$f;
+exports.Swiper = index$l;
+exports.SwiperItem = index$k;
 exports.Switch = indexX$1;
-exports.Text = index$i;
-exports.Textarea = index$h;
+exports.Text = index$j;
+exports.Textarea = index$i;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
 exports.Video = index$a;

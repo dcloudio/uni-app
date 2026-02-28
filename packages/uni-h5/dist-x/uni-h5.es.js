@@ -2220,7 +2220,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2290,7 +2290,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2433,7 +2433,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -2498,7 +2498,7 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$v = {
+const props$w = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -2534,7 +2534,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$v,
+  props: props$w,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -2557,7 +2557,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$u = {
+const props$v = {
   name: {
     type: String,
     default: ""
@@ -2565,9 +2565,9 @@ const props$u = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$u,
+  props: props$v,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -2627,7 +2627,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$t = {
+const props$u = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2676,9 +2676,9 @@ const props$t = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$t,
+  props: props$u,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -2819,7 +2819,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$s = {
+const props$t = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -5230,13 +5230,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$p = 0;
+let index$q = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$p++);
+    const callbackId = String(index$q++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -11286,7 +11286,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$r = /* @__PURE__ */ extend({}, props$s, {
+const props$s = /* @__PURE__ */ extend({}, props$t, {
   id: {
     type: String,
     default: ""
@@ -11314,9 +11314,9 @@ const props$r = /* @__PURE__ */ extend({}, props$s, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$r,
+  props: props$s,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   rootElement: {
     name: "uni-editor",
@@ -11386,7 +11386,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -11492,7 +11492,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$q = {
+const props$r = {
   src: {
     type: String,
     default: ""
@@ -11531,9 +11531,9 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$q,
+  props: props$r,
   rootElement: {
     name: "uni-image",
     class: UniImageElement
@@ -11896,7 +11896,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$p = /* @__PURE__ */ extend(
+const props$q = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -11986,7 +11986,7 @@ const props$p = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$s
+  props$t
 );
 const emit = [
   "input",
@@ -12253,7 +12253,7 @@ once(() => {
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
 });
-const props$o = /* @__PURE__ */ extend({}, props$p, {
+const props$p = /* @__PURE__ */ extend({}, props$q, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -12289,7 +12289,7 @@ class UniInputElement extends UniElement {
 }
 const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$o,
+  props: props$p,
   emits: ["confirm", ...emit],
   rootElement: {
     name: "uni-input",
@@ -14047,7 +14047,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -15214,7 +15214,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -15322,7 +15322,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$n = {
+const props$o = {
   name: {
     type: String,
     default: ""
@@ -15330,9 +15330,9 @@ const props$n = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$n,
+  props: props$o,
   // emits: ['change'],
   rootElement: {
     name: "uni-radio-group",
@@ -15424,7 +15424,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$m = {
+const props$n = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -15475,7 +15475,7 @@ class UniRadioElement extends UniElement {
 }
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$m,
+  props: props$n,
   rootElement: {
     name: "uni-radio",
     class: UniRadioElement
@@ -15866,7 +15866,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$l = {
+const props$m = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -15876,12 +15876,12 @@ const props$l = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: props$l,
+  props: props$m,
   emits: ["itemclick"],
   rootElement: {
     name: "uni-rich-text",
@@ -16023,7 +16023,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$k = {
+const props$l = {
   direction: {
     type: [String],
     default: "vertical"
@@ -16096,7 +16096,7 @@ const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$k,
+  props: props$l,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   rootElement: {
     name: "uni-scroll-view",
@@ -16593,7 +16593,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$j = {
+const props$k = {
   name: {
     type: String,
     default: ""
@@ -16702,7 +16702,7 @@ class UniSliderElement extends UniElement {
 }
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$j,
+  props: props$k,
   emits: ["changing", "change"],
   rootElement: {
     name: "uni-slider",
@@ -16852,7 +16852,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$i = {
+const props$j = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -17355,7 +17355,7 @@ class UniSwiperElement extends UniElement {
 }
 const Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$i,
+  props: props$j,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   rootElement: {
     name: "uni-swiper",
@@ -17587,7 +17587,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   }
   return createNavigationTsx;
 };
-const props$h = {
+const props$i = {
   itemId: {
     type: String,
     default: ""
@@ -17597,7 +17597,7 @@ class UniSwiperItemElement extends UniElement {
 }
 const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$h,
+  props: props$i,
   rootElement: {
     name: "uni-swiper-item",
     class: UniSwiperItemElement
@@ -17654,7 +17654,7 @@ const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$g = {
+const props$h = {
   name: {
     type: String,
     default: ""
@@ -17700,7 +17700,7 @@ class UniSwitchElement extends UniElement {
 }
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$g,
+  props: props$h,
   emits: ["change"],
   rootElement: {
     name: "uni-switch",
@@ -17921,7 +17921,7 @@ const __syscom_1$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$f = /* @__PURE__ */ extend({}, props$p, {
+const props$g = /* @__PURE__ */ extend({}, props$q, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -17952,7 +17952,7 @@ class UniTextareaElement extends UniElement {
 }
 const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$f,
+  props: props$g,
   emits: ["confirm", "change", "linechange", ...emit],
   rootElement: {
     name: "uni-textarea",
@@ -18201,7 +18201,7 @@ function traverseStickySection(stickySectionVNode, callback) {
     callback(child);
   }
 }
-const props$e = {
+const props$f = {
   direction: {
     type: String,
     default: "vertical",
@@ -18261,9 +18261,9 @@ const props$e = {
 };
 class UniListViewElement extends UniElement {
 }
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props: props$e,
+  props: props$f,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -18775,7 +18775,7 @@ function getSize(isVertical, el) {
 }
 class UniListItemElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
   rootElement: {
@@ -18838,7 +18838,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickySectionElement extends UniElement {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
   props: {
     padding: {
@@ -18893,7 +18893,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickyHeaderElement extends UniElement {
 }
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
   props: {
     padding: {
@@ -18944,6 +18944,297 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef,
         "style": style.value
       }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 4);
+    };
+  }
+});
+const MAX_SLIDE_DISTANCE = 100;
+const MIN_SLIDE_VELOCITY = 0.3;
+const props$e = {
+  show: {
+    type: Boolean,
+    default: false
+  },
+  duration: {
+    type: Number,
+    default: 300
+  },
+  zIndex: {
+    type: Number,
+    default: 100
+  },
+  overlay: {
+    type: Boolean,
+    default: true
+  },
+  round: {
+    type: Boolean,
+    default: false
+  },
+  position: {
+    type: String,
+    default: "bottom"
+  },
+  customStyle: {
+    type: String,
+    default: ""
+  },
+  overlayStyle: {
+    type: String,
+    default: ""
+  },
+  closeOnSlideDown: {
+    type: Boolean,
+    default: false
+  }
+};
+class UniPageContainerElement extends UniElement {
+}
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
+  name: "PageContainer",
+  props: props$e,
+  rootElement: {
+    name: "uni-page-container-element",
+    class: UniPageContainerElement
+  },
+  emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const showPageContainer = ref(false);
+    const isAnimating = ref(false);
+    const transitionTimer = ref(null);
+    const isEntered = ref(false);
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isDragging = false;
+    const translateValue = ref(0);
+    const overlayStyleMap = computed(() => {
+      const styleMap = /* @__PURE__ */ new Map([["z-index", String(props2.zIndex)], ["transition-duration", props2.duration + "ms"]]);
+      if (isEntered.value) {
+        styleMap.set("opacity", "1").set("pointer-events", "auto");
+      }
+      return styleMap;
+    });
+    const innerStyleMap = computed(() => {
+      const styleMap = /* @__PURE__ */ new Map([["z-index", String(props2.zIndex + 1)], ["transition-duration", props2.duration + "ms"]]);
+      if (translateValue.value !== 0 && isDragging) {
+        let transformValue = "";
+        switch (props2.position) {
+          case "bottom":
+          case "top":
+            transformValue = `translateY(${translateValue.value}px)`;
+            break;
+          case "left":
+          case "right":
+            transformValue = `translateX(${translateValue.value}px)`;
+            break;
+        }
+        if (transformValue) {
+          styleMap.set("transform", transformValue);
+          styleMap.set("transition", "none");
+        }
+      } else if (translateValue.value !== 0 && !isDragging) {
+        styleMap.set("transition", `transform ${props2.duration}ms ease`);
+      }
+      return styleMap;
+    });
+    const popupClasses = computed(() => {
+      const classes = [];
+      if (props2.position) {
+        classes.push(`uni-page-container-popup-${props2.position}`);
+      }
+      if (props2.round) {
+        classes.push("uni-page-container-popup-round");
+      }
+      if (isEntered.value) {
+        classes.push("uni-page-container-popup-enter");
+      }
+      return classes;
+    });
+    function clearTransitionTimer() {
+      if (transitionTimer.value !== null) {
+        clearTimeout(transitionTimer.value);
+        transitionTimer.value = null;
+      }
+    }
+    function onAnimationEnd(type) {
+      isAnimating.value = false;
+      clearTransitionTimer();
+      if (type === "enter") {
+        trigger("afterenter", {});
+      } else if (type === "leave") {
+        showPageContainer.value = false;
+        trigger("afterleave", {});
+      }
+    }
+    function listenTransitionEnd(type) {
+      clearTransitionTimer();
+      transitionTimer.value = setTimeout(() => {
+        onAnimationEnd(type);
+      }, props2.duration);
+    }
+    function resetDragState() {
+      isDragging = false;
+      translateValue.value = 0;
+    }
+    function openContainer() {
+      trigger("beforeenter", {});
+      showPageContainer.value = true;
+      isEntered.value = false;
+      resetDragState();
+      nextTick(() => {
+        trigger("enter", {});
+        isAnimating.value = true;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            isEntered.value = true;
+            listenTransitionEnd("enter");
+          });
+        });
+      });
+    }
+    function closeContainer() {
+      if (isAnimating.value)
+        return;
+      trigger("beforeleave", {});
+      isAnimating.value = true;
+      nextTick(() => {
+        isEntered.value = false;
+        trigger("leave", {});
+        listenTransitionEnd("leave");
+      });
+    }
+    watch(() => props2.show, (newVal) => {
+      if (newVal && !showPageContainer.value) {
+        openContainer();
+      } else if (!newVal && showPageContainer.value) {
+        closeContainer();
+      }
+    });
+    function onClickOverlay(event) {
+      if (isAnimating.value)
+        return;
+      trigger("clickoverlay", event);
+      nextTick(() => {
+        closeContainer();
+      });
+    }
+    function onTouchStart(e2) {
+      if (!props2.closeOnSlideDown)
+        return;
+      if (e2.touches.length > 0) {
+        const {
+          clientX,
+          clientY
+        } = e2.touches[0];
+        touchStartX = clientX;
+        touchStartY = clientY;
+        touchStartTime = Date.now();
+        isDragging = false;
+      }
+    }
+    function onTouchMove(e2) {
+      if (!props2.closeOnSlideDown) {
+        e2.preventDefault();
+        e2.stopPropagation();
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const {
+          clientX,
+          clientY
+        } = e2.touches[0];
+        const deltaX = clientX - touchStartX;
+        const deltaY = clientY - touchStartY;
+        let shouldDrag = false;
+        let dragValue = 0;
+        switch (props2.position) {
+          case "bottom":
+            if (deltaY > 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "top":
+            if (deltaY < 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "left":
+            if (deltaX < 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+          case "right":
+            if (deltaX > 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+        }
+        if (shouldDrag) {
+          isDragging = true;
+          translateValue.value = dragValue;
+          e2.preventDefault();
+          e2.stopPropagation();
+        }
+      }
+    }
+    function onTouchEnd() {
+      if (!props2.closeOnSlideDown)
+        return;
+      if (isDragging) {
+        const deltaTime = Date.now() - touchStartTime;
+        const velocity = Math.abs(translateValue.value) / deltaTime;
+        if (Math.abs(translateValue.value) > MAX_SLIDE_DISTANCE || velocity > MIN_SLIDE_VELOCITY) {
+          resetDragState();
+          closeContainer();
+        } else {
+          resetDragState();
+        }
+      }
+    }
+    function onTouchCancel() {
+      if (!props2.closeOnSlideDown)
+        return;
+      if (isDragging) {
+        resetDragState();
+      }
+    }
+    onMounted(() => {
+      if (props2.show) {
+        openContainer();
+      }
+    });
+    onBeforeUnmount(() => {
+      clearTransitionTimer();
+    });
+    return () => {
+      var _a;
+      return createVNode("uni-page-container", {
+        "ref": rootRef
+      }, [props2.overlay && showPageContainer.value && createVNode("div", {
+        "class": "uni-page-container-overlay",
+        "style": [overlayStyleMap.value, props2.overlayStyle],
+        "onClick": onClickOverlay,
+        "onTouchmove": (e2) => {
+          e2.preventDefault();
+          e2.stopPropagation();
+        }
+      }, null, 44, ["onClick", "onTouchmove"]), showPageContainer.value && createVNode("div", {
+        "class": ["uni-page-container-popup", ...popupClasses.value],
+        "style": [innerStyleMap.value, props2.customStyle],
+        "onTouchstart": onTouchStart,
+        "onTouchmove": onTouchMove,
+        "onTouchend": onTouchEnd,
+        "onTouchcancel": onTouchCancel
+      }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 46, ["onTouchstart", "onTouchmove", "onTouchend", "onTouchcancel"])], 512);
     };
   }
 });
@@ -30407,22 +30698,22 @@ export {
   index$3 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$s as Button,
+  index$t as Button,
   index$2 as Camera,
   indexX$4 as Canvas,
-  index$q as Checkbox,
-  index$r as CheckboxGroup,
+  index$r as Checkbox,
+  index$s as CheckboxGroup,
   index$7 as CoverImage,
   index$8 as CoverView,
-  index$o as Editor,
-  index$u as Form,
-  index$n as Icon,
-  index$m as Image,
+  index$p as Editor,
+  index$v as Form,
+  index$o as Icon,
+  index$n as Image,
   __syscom_3 as Input,
-  index$t as Label,
+  index$u as Label,
   LayoutComponent,
-  index$g as ListItem,
-  index$h as ListView,
+  index$h as ListItem,
+  index$i as ListView,
   index$1 as LivePlayer,
   index as LivePusher,
   _sfc_main$4 as Loading,
@@ -30430,20 +30721,21 @@ export {
   MatchMedia,
   MovableArea,
   MovableView,
-  index$l as Navigator,
+  index$m as Navigator,
   PageComponent,
+  index$e as PageContainer,
   index$6 as Picker,
   PickerView,
   PickerViewColumn,
-  index$k as Progress,
+  index$l as Progress,
   indexX$3 as Radio,
-  index$j as RadioGroup,
+  index$k as RadioGroup,
   ResizeSensor,
-  index$i as RichText,
+  index$j as RichText,
   __syscom_2$1 as ScrollView,
   indexX$2 as Slider,
-  index$e as StickyHeader,
-  index$f as StickySection,
+  index$f as StickyHeader,
+  index$g as StickySection,
   Swiper,
   SwiperItem,
   indexX$1 as Switch,
@@ -30488,6 +30780,8 @@ export {
   UniMovableViewElement as UniMovableViewElementImpl,
   UniNavigatorElement,
   UniNavigatorElement as UniNavigatorElementImpl,
+  UniPageContainerElement,
+  UniPageContainerElement as UniPageContainerElementImpl,
   UniPickerElement,
   UniPickerViewColumnElement,
   UniPickerViewColumnElement as UniPickerViewColumnElementImpl,

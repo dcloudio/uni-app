@@ -681,7 +681,9 @@ const VaporVForFlags = {
 	"IS_COMPONENT": 2,
 	"2": "IS_COMPONENT",
 	"ONCE": 4,
-	"4": "ONCE"
+	"4": "ONCE",
+	"SECTION_MODE": 8,
+	"8": "SECTION_MODE"
 };
 
 //#endregion
