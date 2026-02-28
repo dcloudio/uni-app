@@ -656,8 +656,6 @@ export async function compile(
         enableNarrowType: false, // 这里的启用是把部分typeof转换成instanceof，这样确实好一点，但会引发一些kotlin之类的警告，暂不开启
         enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
         enableInlineReified: isEnableInlineReified(),
-        enableUTSBooleanConversion:
-          process.env.UNI_COMPILE_TARGET === 'ext-api',
         ...transform,
       },
     },
