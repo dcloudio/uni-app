@@ -254,11 +254,11 @@ export declare function getSharedDataDefaultValue(val: any, defaultVal: any): an
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateRecycleFor.d.ts
 export declare const preCreateSharedDataRecycleFor: <Source>(src: () => Source, getKey?: (item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) => (() => Source);
-declare class RecycleContext$2 {
+declare class RecycleContext {
   cachedSharedData: Map<any, SharedDataForItem[]>;
 }
-export declare function createRecycleContext(): RecycleContext$2;
-export declare const createSharedDataRecycleFor: <S extends UniSharedData, Source>(recycleContext: RecycleContext$2, sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => VaporSharedDataComponentInstance | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getType?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number, setup?: (_: {
+export declare function createRecycleContext(): RecycleContext;
+export declare const createSharedDataRecycleFor: <S extends UniSharedData, Source>(recycleContext: RecycleContext, sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => VaporSharedDataComponentInstance | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getType?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number, setup?: (_: {
   createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void) => void;
 /**
@@ -421,11 +421,11 @@ export declare function createElementSlot(page: UniPage, name: string | (() => s
 export declare function createElementFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source> | string | number, renderItem: (shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index: number | undefined) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
   createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void): VaporFragment;
-export declare function createElementRecycleFor<Source extends UniSharedData>(page: UniPage, recycleContext: RecycleContext$1, src: () => UniSharedDataVFor<Source>, renderItem: (shareDataVForItem: Source, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, getType?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
+export declare function createElementRecycleFor<Source extends UniSharedData>(page: UniPage, recycleContext: ElementRecycleContext, src: () => UniSharedDataVFor<Source>, renderItem: (shareDataVForItem: Source, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, getType?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
   createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void): VaporFragment;
-declare class RecycleContext$1 {}
-export declare function createElementRecycleContext(): RecycleContext$1;
+export declare class ElementRecycleContext {}
+export declare function createElementRecycleContext(): ElementRecycleContext;
 export declare function createElementForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (shareDataVForItem: Source, key: KeyOf<Source>, index?: number) => DynamicSlot): DynamicSlot[];
 export declare function createElementDynamicSlot(name: string, fn: VaporSlot): DynamicSlot;
 export declare function createElementIf(page: UniPage, condition: () => any, b1: BlockFn, b2?: BlockFn | null, once?: boolean): Block;
@@ -481,11 +481,11 @@ export declare function appendNativeViewChild(node: UniNativeBaseView, child: Un
 export declare function createNativeViewFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source> | string | number, renderItem: (shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index: number | undefined) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
   createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void): VaporFragment;
-export declare function createNativeViewRecycleFor<Source extends UniSharedData>(page: UniPage, recycleContext: RecycleContext, src: () => UniSharedDataVFor<Source>, renderItem: (shareDataVForItem: Source, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, getType?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
+export declare function createNativeViewRecycleFor<Source extends UniSharedData>(page: UniPage, recycleContext: NativeViewRecycleContext, src: () => UniSharedDataVFor<Source>, renderItem: (shareDataVForItem: Source, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, getType?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
   createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void): VaporFragment;
-declare class RecycleContext {}
-export declare function createNativeViewRecycleContext(): RecycleContext;
+export declare class NativeViewRecycleContext {}
+export declare function createNativeViewRecycleContext(): NativeViewRecycleContext;
 export declare function createNativeViewIf(page: UniPage, condition: () => any, b1: BlockFn, b2?: BlockFn | null, once?: boolean): Block;
 export declare function setNativeViewAttr(el: UniNativeBaseView, key: string, value: any): void;
 export declare function setNativeViewInsertionState(parent: UniNativeBaseView, anchor?: UniNativeBaseView | 0 | null | number, last?: boolean): void;
