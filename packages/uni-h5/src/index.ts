@@ -38,6 +38,7 @@ export {
   Textarea,
   View,
   //#if _X_
+  PageContainer,
   Loading,
   ListView,
   ListItem,
@@ -109,6 +110,8 @@ export {
   UniStickySectionElement as UniStickySectionElementImpl,
   UniStickyHeaderElement,
   UniStickyHeaderElement as UniStickyHeaderElementImpl,
+  UniPageContainerElement,
+  UniPageContainerElement as UniPageContainerElementImpl,
   //#endif
 } from '@dcloudio/uni-components'
 
