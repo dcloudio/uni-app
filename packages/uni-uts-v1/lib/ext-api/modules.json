@@ -1535,6 +1535,7 @@
       }
     }
   },
+  "uni-waterflow": {},
   "uni-web-view": {
     "uni": {
       "createWebViewContext": {
