@@ -942,6 +942,11 @@
       }
     }
   },
+  "uni-page-container": {
+    "easycom": [
+      "page-container"
+    ]
+  },
   "uni-payment": {
     "provider": {
       "service": "payment"
