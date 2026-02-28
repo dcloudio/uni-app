@@ -4,9 +4,9 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_READY, onCreateVueApp } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, ON_BACK_PRESS, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, isInSSRComponentSetup, toDisplayString, createCommentVNode } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, isInSSRComponentSetup, createCommentVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, toDisplayString } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -9871,7 +9871,7 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main$5 = {
+const _sfc_main$6 = {
   name: "PageRefresh",
   setup() {
     const { pullToRefresh } = usePageMeta();
@@ -9936,7 +9936,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render]]);
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -18886,6 +18886,337 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
+  !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+};
+const onLoad = /* @__PURE__ */ createLifeCycleHook(
+  ON_LOAD,
+  2
+  /* HookFlags.PAGE */
+);
+const onReady = /* @__PURE__ */ createLifeCycleHook(
+  ON_READY,
+  2
+  /* HookFlags.PAGE */
+);
+const onUnload = /* @__PURE__ */ createLifeCycleHook(
+  ON_UNLOAD,
+  2
+  /* HookFlags.PAGE */
+);
+const onResize = /* @__PURE__ */ createLifeCycleHook(
+  ON_RESIZE,
+  2
+  /* HookFlags.PAGE */
+);
+const onBackPress = /* @__PURE__ */ createLifeCycleHook(
+  ON_BACK_PRESS,
+  2
+  /* HookFlags.PAGE */
+);
+class UniPageContainerElement extends UniElement {
+}
+var __defProp$1 = Object.defineProperty;
+var __defProps$1 = Object.defineProperties;
+var __getOwnPropDescs$1 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$1 = Object.getOwnPropertySymbols;
+var __hasOwnProp$1 = Object.prototype.hasOwnProperty;
+var __propIsEnum$1 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$1 = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$1.call(b, prop))
+      __defNormalProp$1(a2, prop, b[prop]);
+  if (__getOwnPropSymbols$1)
+    for (var prop of __getOwnPropSymbols$1(b)) {
+      if (__propIsEnum$1.call(b, prop))
+        __defNormalProp$1(a2, prop, b[prop]);
+    }
+  return a2;
+};
+var __spreadProps$1 = (a2, b) => __defProps$1(a2, __getOwnPropDescs$1(b));
+const MAX_SLIDER_DISTANCE = 100;
+const MIN_SLIDER_VELOCITY = 0.3;
+const _sfc_main$5 = /* @__PURE__ */ defineComponent(__spreadProps$1(__spreadValues$1({}, {
+  name: "page-container",
+  rootElement: {
+    name: "uni-page-container",
+    class: UniPageContainerElement
+  }
+}), {
+  __name: "index",
+  props: {
+    show: { type: Boolean, default: false },
+    duration: { default: 300, type: Number },
+    zIndex: { default: 100, type: Number },
+    overlay: { type: Boolean, default: true },
+    round: { type: Boolean, default: false },
+    position: { default: "bottom", type: String },
+    customStyle: { default: "", type: String },
+    overlayStyle: { default: "", type: String },
+    closeOnSlideDown: { type: Boolean, default: false }
+  },
+  emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    const emits = __emit;
+    const showPageContainer = ref(false);
+    const isAnimating = ref(false);
+    const transitionTimer = ref(null);
+    const isEntered = ref(false);
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isDragging = false;
+    const translateValue = ref(0);
+    const overlayStyleMap = computed(() => {
+      const styleObj = {
+        "z-index": props2.zIndex,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (isEntered.value) {
+        styleObj["opacity"] = "1";
+        styleObj["pointer-events"] = "auto";
+      }
+      return styleObj;
+    });
+    const innerStyleMap = computed(() => {
+      const styleObj = {
+        "z-index": props2.zIndex + 1,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (translateValue.value != 0 && isDragging) {
+        let transformValue = "";
+        switch (props2.position) {
+          case "bottom":
+          case "top":
+            transformValue = `translateY(${translateValue.value}px)`;
+            break;
+          case "left":
+          case "right":
+            transformValue = `translateX(${translateValue.value}px)`;
+            break;
+        }
+        if (transformValue != "") {
+          styleObj["transform"] = transformValue;
+          styleObj["transition"] = "none";
+        }
+      } else if (translateValue.value != 0 && !isDragging) {
+        styleObj["transition"] = `transform ${props2.duration}ms ease`;
+      }
+      return styleObj;
+    });
+    const popupClasses = computed(() => {
+      const classes = [];
+      if (props2.position != null) {
+        classes.push(`uni-page-container-popup-${props2.position}`);
+      }
+      if (props2.round) {
+        classes.push("uni-page-container-popup-round");
+      }
+      if (isEntered.value) {
+        classes.push("uni-page-container-popup-enter");
+      }
+      return classes;
+    });
+    function clearTransitionTimer() {
+      if (transitionTimer.value != null) {
+        clearTimeout(transitionTimer.value);
+        transitionTimer.value = null;
+      }
+    }
+    function onAnimationEnd(type) {
+      isAnimating.value = false;
+      clearTransitionTimer();
+      if (type == "enter") {
+        emits("afterenter");
+      } else if (type == "leave") {
+        showPageContainer.value = false;
+        emits("afterleave");
+      }
+    }
+    function listenTransitionEnd(type) {
+      clearTransitionTimer();
+      transitionTimer.value = setTimeout(() => {
+        onAnimationEnd(type);
+      }, props2.duration);
+    }
+    function resetDragState() {
+      isDragging = false;
+      translateValue.value = 0;
+    }
+    function openContainer() {
+      emits("beforeenter");
+      showPageContainer.value = true;
+      isEntered.value = false;
+      resetDragState();
+      nextTick(() => {
+        emits("enter");
+        isAnimating.value = true;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            isEntered.value = true;
+            listenTransitionEnd("enter");
+          });
+        });
+      });
+    }
+    function closeContainer() {
+      if (isAnimating.value) {
+        return;
+      }
+      emits("beforeleave");
+      isAnimating.value = true;
+      nextTick(() => {
+        isEntered.value = false;
+        emits("leave");
+        listenTransitionEnd("leave");
+      });
+    }
+    watch(
+      () => props2.show,
+      (newVal) => {
+        if (newVal && !showPageContainer.value) {
+          openContainer();
+        } else if (!newVal && showPageContainer.value) {
+          closeContainer();
+        }
+      }
+    );
+    function onClickOverlay(event) {
+      if (isAnimating.value) {
+        return;
+      }
+      emits("clickoverlay", event);
+      nextTick(() => {
+        closeContainer();
+      });
+    }
+    function onTouchStart(e2) {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        touchStartX = clientX;
+        touchStartY = clientY;
+        touchStartTime = Date.now();
+        isDragging = false;
+      }
+    }
+    function onTouchMove(e2) {
+      if (!props2.closeOnSlideDown) {
+        e2.preventDefault();
+        e2.stopPropagation();
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        const deltaX = clientX - touchStartX;
+        const deltaY = clientY - touchStartY;
+        let shouldDrag = false;
+        let dragValue = 0;
+        switch (props2.position) {
+          case "bottom":
+            if (deltaY > 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "top":
+            if (deltaY < 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "left":
+            if (deltaX < 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+          case "right":
+            if (deltaX > 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+        }
+        if (shouldDrag) {
+          isDragging = true;
+          translateValue.value = dragValue;
+          e2.preventDefault();
+          e2.stopPropagation();
+        }
+      }
+    }
+    function onTouchEnd() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        const deltaTime = Date.now() - touchStartTime;
+        const velocity = Math.abs(translateValue.value) / deltaTime;
+        if (Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY) {
+          resetDragState();
+          closeContainer();
+        } else {
+          resetDragState();
+        }
+      }
+    }
+    function onTouchCancel() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        resetDragState();
+      }
+    }
+    onBackPress(() => {
+      if (showPageContainer.value) {
+        closeContainer();
+        return true;
+      }
+      return false;
+    });
+    onMounted(() => {
+      if (props2.show) {
+        openContainer();
+      }
+    });
+    onBeforeUnmount(() => {
+      clearTransitionTimer();
+    });
+    return (_ctx, _cache) => {
+      const _component_view = __syscom_2;
+      return openBlock(), createElementBlock(Fragment, null, [
+        _ctx.overlay && showPageContainer.value ? (openBlock(), createBlock(_component_view, {
+          key: 0,
+          class: "uni-page-container-overlay",
+          style: normalizeStyle([overlayStyleMap.value, _ctx.overlayStyle]),
+          onClick: onClickOverlay,
+          onTouchmove: _cache[0] || (_cache[0] = withModifiers(() => {
+          }, ["prevent", "stop"]))
+        }, null, 8, ["style"])) : createCommentVNode("", true),
+        showPageContainer.value ? (openBlock(), createBlock(_component_view, {
+          key: 1,
+          class: normalizeClass(["uni-page-container-popup", popupClasses.value]),
+          style: normalizeStyle([innerStyleMap.value, _ctx.customStyle]),
+          onTouchstart: onTouchStart,
+          onTouchmove: onTouchMove,
+          onTouchend: onTouchEnd,
+          onTouchcancel: onTouchCancel
+        }, {
+          default: withCtx(() => [
+            renderSlot(_ctx.$slots, "default")
+          ]),
+          _: 3
+        }, 8, ["class", "style"])) : createCommentVNode("", true)
+      ], 64);
+    };
+  }
+}));
 class UniVueElement extends HTMLElement {
 }
 class UniLoadingElement extends UniVueElement {
@@ -27411,34 +27742,6 @@ const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
 const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
 const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
-const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
-  !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
-};
-const onLoad = /* @__PURE__ */ createLifeCycleHook(
-  ON_LOAD,
-  2
-  /* HookFlags.PAGE */
-);
-const onReady = /* @__PURE__ */ createLifeCycleHook(
-  ON_READY,
-  2
-  /* HookFlags.PAGE */
-);
-const onUnload = /* @__PURE__ */ createLifeCycleHook(
-  ON_UNLOAD,
-  2
-  /* HookFlags.PAGE */
-);
-const onResize = /* @__PURE__ */ createLifeCycleHook(
-  ON_RESIZE,
-  2
-  /* HookFlags.PAGE */
-);
-const onBackPress = /* @__PURE__ */ createLifeCycleHook(
-  ON_BACK_PRESS,
-  2
-  /* HookFlags.PAGE */
-);
 const RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
 class UniMatchMediaElement extends UniViewElement {
   constructor() {
@@ -30365,6 +30668,7 @@ export {
   MovableView,
   index$l as Navigator,
   PageComponent,
+  _sfc_main$5 as PageContainer,
   index$6 as Picker,
   PickerView,
   PickerViewColumn,
@@ -30421,6 +30725,8 @@ export {
   UniMovableViewElement as UniMovableViewElementImpl,
   UniNavigatorElement,
   UniNavigatorElement as UniNavigatorElementImpl,
+  UniPageContainerElement,
+  UniPageContainerElement as UniPageContainerElementImpl,
   UniPickerElement,
   UniPickerViewColumnElement,
   UniPickerViewColumnElement as UniPickerViewColumnElementImpl,

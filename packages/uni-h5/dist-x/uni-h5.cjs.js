@@ -1013,11 +1013,91 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
-uniShared.createRpx2Unit(
+const rpx2Unit = uniShared.createRpx2Unit(
   uniShared.defaultRpx2Unit.unit,
   uniShared.defaultRpx2Unit.unitRatio,
   uniShared.defaultRpx2Unit.unitPrecision
 );
+function transformRpx(value) {
+  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
+    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
+      return rpx2Unit(num + "rpx");
+    });
+  }
+  return value;
+}
+class UniElement extends Object {
+  constructor() {
+    super();
+    this._props = {};
+    this._page = null;
+    this.__isUniElement = true;
+  }
+  attachVmProps(props2) {
+    this._props = props2;
+  }
+  getAttribute(qualifiedName) {
+    const name = shared.camelize(qualifiedName);
+    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
+    return attr2 === void 0 ? null : attr2;
+  }
+  getPage() {
+    if (this._page) {
+      return this._page;
+    }
+    let parent = this.parentNode;
+    while (parent && !parent._page) {
+      parent = parent.parentNode;
+    }
+    return (parent == null ? void 0 : parent._page) || null;
+  }
+  get uniPage() {
+    return this.getPage();
+  }
+  getBoundingClientRectAsync(callback) {
+    var _a, _b;
+    if (callback) {
+      const domRect = this.getBoundingClientRect();
+      try {
+        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      try {
+        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      return;
+    }
+    return new Promise((resolve, reject) => {
+      const domRect = this.getBoundingClientRect();
+      resolve(domRect);
+    });
+  }
+  get style() {
+    const originalStyle = super.style;
+    if (originalStyle.__patchRpx__) {
+      return originalStyle;
+    }
+    originalStyle.__patchRpx__ = true;
+    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
+    super.style.setProperty = function(property, value, priority) {
+      return originalSetProperty(
+        property,
+        value ? transformRpx(value + "") : value,
+        priority || void 0
+      );
+    };
+    return super.style;
+  }
+  get tagName() {
+    return super.tagName.replace(/^UNI-/, "");
+  }
+  get nodeName() {
+    return super.nodeName.replace(/^UNI-/, "");
+  }
+}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -3415,7 +3495,7 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main$1 = {
+const _sfc_main$2 = {
   name: "PageRefresh",
   setup() {
     const { pullToRefresh } = usePageMeta();
@@ -3480,7 +3560,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render]]);
 const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
@@ -9313,6 +9393,309 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = vue.getCurrentInstance()) => {
+  !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
+};
+const onBackPress = /* @__PURE__ */ createLifeCycleHook(
+  uniShared.ON_BACK_PRESS,
+  2
+  /* HookFlags.PAGE */
+);
+class UniPageContainerElement extends UniElement {
+}
+var __defProp$1 = Object.defineProperty;
+var __defProps$1 = Object.defineProperties;
+var __getOwnPropDescs$1 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$1 = Object.getOwnPropertySymbols;
+var __hasOwnProp$1 = Object.prototype.hasOwnProperty;
+var __propIsEnum$1 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$1 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$1.call(b, prop))
+      __defNormalProp$1(a, prop, b[prop]);
+  if (__getOwnPropSymbols$1)
+    for (var prop of __getOwnPropSymbols$1(b)) {
+      if (__propIsEnum$1.call(b, prop))
+        __defNormalProp$1(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$1 = (a, b) => __defProps$1(a, __getOwnPropDescs$1(b));
+const MAX_SLIDER_DISTANCE = 100;
+const MIN_SLIDER_VELOCITY = 0.3;
+const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent(__spreadProps$1(__spreadValues$1({}, {
+  name: "page-container",
+  rootElement: {
+    name: "uni-page-container",
+    class: UniPageContainerElement
+  }
+}), {
+  __name: "index",
+  props: {
+    show: { type: Boolean, default: false },
+    duration: { default: 300, type: Number },
+    zIndex: { default: 100, type: Number },
+    overlay: { type: Boolean, default: true },
+    round: { type: Boolean, default: false },
+    position: { default: "bottom", type: String },
+    customStyle: { default: "", type: String },
+    overlayStyle: { default: "", type: String },
+    closeOnSlideDown: { type: Boolean, default: false }
+  },
+  emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    const emits = __emit;
+    const showPageContainer = vue.ref(false);
+    const isAnimating = vue.ref(false);
+    const transitionTimer = vue.ref(null);
+    const isEntered = vue.ref(false);
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isDragging = false;
+    const translateValue = vue.ref(0);
+    const overlayStyleMap = vue.computed(() => {
+      const styleObj = {
+        "z-index": props2.zIndex,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (isEntered.value) {
+        styleObj["opacity"] = "1";
+        styleObj["pointer-events"] = "auto";
+      }
+      return styleObj;
+    });
+    const innerStyleMap = vue.computed(() => {
+      const styleObj = {
+        "z-index": props2.zIndex + 1,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (translateValue.value != 0 && isDragging) {
+        let transformValue = "";
+        switch (props2.position) {
+          case "bottom":
+          case "top":
+            transformValue = `translateY(${translateValue.value}px)`;
+            break;
+          case "left":
+          case "right":
+            transformValue = `translateX(${translateValue.value}px)`;
+            break;
+        }
+        if (transformValue != "") {
+          styleObj["transform"] = transformValue;
+          styleObj["transition"] = "none";
+        }
+      } else if (translateValue.value != 0 && !isDragging) {
+        styleObj["transition"] = `transform ${props2.duration}ms ease`;
+      }
+      return styleObj;
+    });
+    const popupClasses = vue.computed(() => {
+      const classes = [];
+      if (props2.position != null) {
+        classes.push(`uni-page-container-popup-${props2.position}`);
+      }
+      if (props2.round) {
+        classes.push("uni-page-container-popup-round");
+      }
+      if (isEntered.value) {
+        classes.push("uni-page-container-popup-enter");
+      }
+      return classes;
+    });
+    function clearTransitionTimer() {
+      if (transitionTimer.value != null) {
+        clearTimeout(transitionTimer.value);
+        transitionTimer.value = null;
+      }
+    }
+    function onAnimationEnd(type) {
+      isAnimating.value = false;
+      clearTransitionTimer();
+      if (type == "enter") {
+        emits("afterenter");
+      } else if (type == "leave") {
+        showPageContainer.value = false;
+        emits("afterleave");
+      }
+    }
+    function listenTransitionEnd(type) {
+      clearTransitionTimer();
+      transitionTimer.value = setTimeout(() => {
+        onAnimationEnd(type);
+      }, props2.duration);
+    }
+    function resetDragState() {
+      isDragging = false;
+      translateValue.value = 0;
+    }
+    function openContainer() {
+      emits("beforeenter");
+      showPageContainer.value = true;
+      isEntered.value = false;
+      resetDragState();
+      vue.nextTick(() => {
+        emits("enter");
+        isAnimating.value = true;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            isEntered.value = true;
+            listenTransitionEnd("enter");
+          });
+        });
+      });
+    }
+    function closeContainer() {
+      if (isAnimating.value) {
+        return;
+      }
+      emits("beforeleave");
+      isAnimating.value = true;
+      vue.nextTick(() => {
+        isEntered.value = false;
+        emits("leave");
+        listenTransitionEnd("leave");
+      });
+    }
+    vue.watch(
+      () => props2.show,
+      (newVal) => {
+        if (newVal && !showPageContainer.value) {
+          openContainer();
+        } else if (!newVal && showPageContainer.value) {
+          closeContainer();
+        }
+      }
+    );
+    function onClickOverlay(event) {
+      if (isAnimating.value) {
+        return;
+      }
+      emits("clickoverlay", event);
+      vue.nextTick(() => {
+        closeContainer();
+      });
+    }
+    function onTouchStart(e2) {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        touchStartX = clientX;
+        touchStartY = clientY;
+        touchStartTime = Date.now();
+        isDragging = false;
+      }
+    }
+    function onTouchMove(e2) {
+      if (!props2.closeOnSlideDown) {
+        e2.preventDefault();
+        e2.stopPropagation();
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        const deltaX = clientX - touchStartX;
+        const deltaY = clientY - touchStartY;
+        let shouldDrag = false;
+        let dragValue = 0;
+        switch (props2.position) {
+          case "bottom":
+            if (deltaY > 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "top":
+            if (deltaY < 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "left":
+            if (deltaX < 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+          case "right":
+            if (deltaX > 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+        }
+        if (shouldDrag) {
+          isDragging = true;
+          translateValue.value = dragValue;
+          e2.preventDefault();
+          e2.stopPropagation();
+        }
+      }
+    }
+    function onTouchEnd() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        const deltaTime = Date.now() - touchStartTime;
+        const velocity = Math.abs(translateValue.value) / deltaTime;
+        if (Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY) {
+          resetDragState();
+          closeContainer();
+        } else {
+          resetDragState();
+        }
+      }
+    }
+    function onTouchCancel() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        resetDragState();
+      }
+    }
+    onBackPress(() => {
+      if (showPageContainer.value) {
+        closeContainer();
+        return true;
+      }
+      return false;
+    });
+    return (_ctx, _cache) => {
+      const _component_view = __syscom_0;
+      return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
+        _ctx.overlay && showPageContainer.value ? (vue.openBlock(), vue.createBlock(_component_view, {
+          key: 0,
+          class: "uni-page-container-overlay",
+          style: vue.normalizeStyle([overlayStyleMap.value, _ctx.overlayStyle]),
+          onClick: onClickOverlay,
+          onTouchmove: _cache[0] || (_cache[0] = vue.withModifiers(() => {
+          }, ["prevent", "stop"]))
+        }, null, 8, ["style"])) : vue.createCommentVNode("", true),
+        showPageContainer.value ? (vue.openBlock(), vue.createBlock(_component_view, {
+          key: 1,
+          class: vue.normalizeClass(["uni-page-container-popup", popupClasses.value]),
+          style: vue.normalizeStyle([innerStyleMap.value, _ctx.customStyle]),
+          onTouchstart: onTouchStart,
+          onTouchmove: onTouchMove,
+          onTouchend: onTouchEnd,
+          onTouchcancel: onTouchCancel
+        }, {
+          default: vue.withCtx(() => [
+            vue.renderSlot(_ctx.$slots, "default")
+          ]),
+          _: 3
+        }, 8, ["class", "style"])) : vue.createCommentVNode("", true)
+      ], 64);
+    };
+  }
+}));
 class UniVueElement extends Object {
 }
 class UniLoadingElement extends UniVueElement {
@@ -14055,6 +14438,7 @@ exports.MovableArea = index$r;
 exports.MovableView = index$q;
 exports.Navigator = index$p;
 exports.PageComponent = PageComponent;
+exports.PageContainer = _sfc_main$1;
 exports.Picker = index$6;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;

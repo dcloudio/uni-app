@@ -156,6 +156,7 @@ const UVUE_BUILT_IN_TAGS = [
     // 'radio-group',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
+    'page-container',
     'list-view',
     'list-item',
     'sticky-section',
@@ -2571,6 +2572,7 @@ const APP_VUE_COMPONENT_TAGS = [
     'ad',
     'web-view',
     'loading',
+    'page-container',
 ];
 function isDom2VueComponentTag(tag) {
     return APP_VUE_COMPONENT_TAGS.includes(tag);
