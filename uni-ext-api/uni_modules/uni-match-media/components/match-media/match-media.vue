@@ -9,6 +9,8 @@
 
   const RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/
 
+  type Orientation = 'portrait' | 'landscape'
+
   type Expression = {
     feature: string
     modifier: string
@@ -16,11 +18,10 @@
   }
 
   type Values = {
-    orientation?: string
+    orientation?: Orientation
     width?: number
     height?: number
   }
-
 
   interface MatchMediaProps {
     /**
@@ -33,7 +34,7 @@
       }
     }
     */
-    orientation?: string;
+    orientation?: Orientation;
     /**
      * 页面宽度（px 为单位）
      * @uniPlatform {
@@ -58,6 +59,17 @@
     minWidth?: string | number;
     /**
      * 页面最大宽度（px 为单位）
+     * @uniPlatform {
+       "app": {
+        "harmony": {
+          "unixvVer": "5.0"
+        }
+      }
+    }
+    */
+    maxWidth?: string | number;
+    /**
+     * 页面高度（px 为单位）
      * @uniPlatform {
        "app": {
         "harmony": {
@@ -92,7 +104,6 @@
   }
 
   const props = withDefaults(defineProps<MatchMediaProps>(), {
-    orientation: 'portrait',
     width: '',
     minWidth: '',
     maxWidth: '',
@@ -156,7 +167,8 @@
     return expressions.every((expression) => {
       switch (expression.feature) {
         case 'orientation':
-          return values.orientation === props.orientation
+          // don't check orientation prop if it's not set
+          return props.orientation != null ? values.orientation === props.orientation : true
         case 'width':
         case 'height':
           break
