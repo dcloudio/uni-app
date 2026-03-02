@@ -16,6 +16,7 @@ import {
 
 import { type Injects, parseUniExtApis } from './uni_modules'
 import type { EasycomMatcher } from './easycom'
+import { preUVueJs } from './preprocess'
 
 function once<T extends (...args: any[]) => any>(
   fn: T,
@@ -651,7 +652,7 @@ async function parseUniExtApiAutoImports(
           filename
         )
         if (fs.existsSync(interfaceFileName)) {
-          const ids = await parseExportIdentifiers(interfaceFileName)
+          const ids = await parseExportIdentifiers(interfaceFileName, preUVueJs)
           ids
             // 过滤掉 Uni
             .filter((id) => id !== 'Uni')
