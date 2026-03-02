@@ -43,8 +43,10 @@ function useResizeSensorUpdate(
   return () => {
     const rootEl = rootRef.value
     if (!rootEl) return
-    size.width = rootEl.offsetWidth
-    size.height = rootEl.offsetHeight
+    // 使用 getBoundingClientRect 获取精确的浮点数高度，避免 offsetHeight 四舍五入导致累积误差
+    const rect = rootEl.getBoundingClientRect()
+    size.width = rect.width
+    size.height = rect.height
     reset()
   }
 }
