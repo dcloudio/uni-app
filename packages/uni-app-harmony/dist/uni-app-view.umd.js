@@ -13632,8 +13632,9 @@
       var rootEl = rootRef.value;
       if (!rootEl)
         return;
-      size2.width = rootEl.offsetWidth;
-      size2.height = rootEl.offsetHeight;
+      var rect = rootEl.getBoundingClientRect();
+      size2.width = rect.width;
+      size2.height = rect.height;
       reset();
     };
   }
@@ -19015,7 +19016,7 @@
       var resizeSensorRef = ref(null);
       var initIndicatorHeight = () => {
         var resizeSensor = resizeSensorRef.value;
-        indicatorHeight.value = resizeSensor.$el.offsetHeight;
+        indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height;
       };
       var maskSize = computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
       var {

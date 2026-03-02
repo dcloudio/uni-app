@@ -11460,8 +11460,9 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
     const rootEl = rootRef.value;
     if (!rootEl)
       return;
-    size.width = rootEl.offsetWidth;
-    size.height = rootEl.offsetHeight;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
     reset();
   };
 }
@@ -14994,7 +14995,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const resizeSensorRef = ref(null);
     const initIndicatorHeight = () => {
       const resizeSensor = resizeSensorRef.value;
-      indicatorHeight.value = resizeSensor.$el.offsetHeight;
+      indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height;
     };
     {
       onMounted(initIndicatorHeight);

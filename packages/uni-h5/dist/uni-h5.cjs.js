@@ -2204,8 +2204,9 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
     const rootEl = rootRef.value;
     if (!rootEl)
       return;
-    size.width = rootEl.offsetWidth;
-    size.height = rootEl.offsetHeight;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
     reset();
   };
 }
