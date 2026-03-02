@@ -152,7 +152,12 @@ export function createConfigResolved({
               const flexDirection = parseUniXFlexDirection(
                 parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
               )
-              cssCode = `:host,page{display:flex;flex-direction:${flexDirection}}\n${cssCode}`
+              // 微信小程序使用 page 标签选择器会产生警告，支付宝小程序主动添加 page，解决 :host 选择器在页面中不生效的问题 https://opendocs.alipay.com/mini/framework/component-template#%3Ahost%20%E9%80%89%E6%8B%A9%E5%99%A8
+              const selector =
+                process.env.UNI_PLATFORM === 'mp-alipay'
+                  ? ':host,page'
+                  : ':host'
+              cssCode = `${selector}{display:flex;flex-direction:${flexDirection}}\n${cssCode}`
             }
 
             if (!isMiniProgramPageFile(filename)) {
