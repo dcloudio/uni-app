@@ -182,6 +182,7 @@ export function compileScript(
   const { script, scriptSetup, source, filename } = sfc
   const hoistStatic = options.hoistStatic !== false && !script
   const scopeId = options.id ? options.id.replace(/^data-v-/, '') : ''
+  const setupPreambleLines = [] as string[]
 
   // 目前暂不提供<script setup>和<script>同时使用
   // 目前给了个开关，用于单元测试
@@ -784,26 +785,7 @@ __ins.emit(event, ...do_not_transform_spread)
   //   transformDestructuredProps(ctx, vueImportAliases)
   // }
 
-  // 4. Apply reactivity transform
-  // TODO remove in 3.4
-  // if (
-  //   enableReactivityTransform &&
-  //   // normal <script> had ref bindings that maybe used in <script setup>
-  //   (refBindings || shouldTransform(scriptSetup.content))
-  // ) {
-  //   const { rootRefs, importedHelpers } = transformAST(
-  //     scriptSetupAst,
-  //     ctx.s,
-  //     startOffset,
-  //     refBindings
-  //   )
-  //   refBindings = refBindings ? [...refBindings, ...rootRefs] : rootRefs
-  //   for (const h of importedHelpers) {
-  //     ctx.helperImports.add(h)
-  //   }
-  // }
-
-  // 5. check macro args to make sure it doesn't reference setup scope
+  // 4. check macro args to make sure it doesn't reference setup scope
   // variables
   checkInvalidScopeReference(ctx.propsRuntimeDecl, DEFINE_PROPS)
   checkInvalidScopeReference(ctx.propsRuntimeDefaults, DEFINE_PROPS)
@@ -811,7 +793,7 @@ __ins.emit(event, ...do_not_transform_spread)
   checkInvalidScopeReference(ctx.emitsRuntimeDecl, DEFINE_EMITS)
   checkInvalidScopeReference(ctx.optionsRuntimeDecl, DEFINE_OPTIONS)
 
-  // 6. remove non-script content
+  // 5. remove non-script content
   if (script) {
     if (startOffset < scriptStartOffset!) {
       // <script setup> before <script>
@@ -830,7 +812,7 @@ __ins.emit(event, ...do_not_transform_spread)
     ctx.s.remove(endOffset, source.length)
   }
 
-  // 7. analyze binding metadata
+  // 6. analyze binding metadata
   // `defineProps` & `defineModel` also register props bindings
   if (scriptAst) {
     Object.assign(ctx.bindingMetadata, analyzeScriptBindings(scriptAst.body))
@@ -859,7 +841,7 @@ __ins.emit(event, ...do_not_transform_spread)
     }
   }
 
-  // 8. inject `useCssVars` calls
+  // 7. inject `useCssVars` calls
   // if (
   //   sfc.cssVars.length &&
   //   // no need to do this when targeting SSR
@@ -878,7 +860,7 @@ __ins.emit(event, ...do_not_transform_spread)
   //   )
   // }
 
-  // 9. finalize setup() argument signature
+  // 8. finalize setup() argument signature
   let args = `__props`
   // inject user assignment of props
   // we use a default __props so that template expressions referencing props
@@ -927,6 +909,59 @@ __ins.emit(event, ...do_not_transform_spread)
     })
     setupCtxCode = `\n` + setupCtxCodes.join('\n')
   }
+
+  let templateHash = ''
+  let scriptMap: RawSourceMap | undefined
+  // 9. generate return statement
+  // 剩余由 rust 编译器处理
+  if (options.componentType !== 'app') {
+    const { code, ast, preamble, map } = processTemplate(sfc, {
+      relativeFilename,
+      bindingMetadata: ctx.bindingMetadata,
+      rootDir: options.root,
+      className: options.className,
+      sourceMap: options.sourceMap,
+    })
+    if (preamble) {
+      ctx.s.prepend(preamble)
+    }
+    // fixed by uts 开发模式会返回 hash
+    if (ast && (ast as any).hash) {
+      templateHash = (ast as any).hash
+    }
+    // 放到最后，以免查找 offset 有问题
+    let offset = map ? ctx.s.toString().match(/\r?\n/g)?.length ?? 0 : 0
+    if (process.env.UNI_APP_X_DOM2 === 'true') {
+      ctx.s.appendRight(endOffset, `\n${code}\n}\n\n})`)
+    } else {
+      ctx.s.appendRight(endOffset, `\nreturn ${code}\n}\n\n})`)
+    }
+
+    scriptMap =
+      options.sourceMap !== false
+        ? (ctx.s.generateMap({
+            source: relativeFilename,
+            hires: true,
+            includeContent: true,
+          }) as unknown as RawSourceMap)
+        : undefined
+    if (map && scriptMap) {
+      scriptMap = generateScriptMap(offset, map, scriptMap)
+    }
+  } else {
+    ctx.s.appendRight(endOffset, 'return (): any | null => { return null } }\n')
+    ctx.s.appendRight(endOffset, `})`)
+    ctx.s.trim()
+    scriptMap =
+      options.sourceMap !== false
+        ? (ctx.s.generateMap({
+            source: relativeFilename,
+            hires: true,
+            includeContent: true,
+          }) as unknown as RawSourceMap)
+        : undefined
+  }
+
   // 10. finalize default export
   const genDefaultAs = options.genDefaultAs
     ? `const ${options.genDefaultAs} =`
@@ -937,6 +972,61 @@ __ins.emit(event, ...do_not_transform_spread)
   }
 
   let runtimeOptions = ``
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    // fixed by uts 增加 __className 标识
+    if (options.className) {
+      const componentType: 'app' | 'page' | 'component' = options.componentType
+      if (componentType === 'page' || componentType === 'component') {
+        const compilerOptions =
+          (options.templateOptions?.compilerOptions as any) || {}
+        const hasScriptCpp = compilerOptions.scriptCppBlocks?.length > 0
+        const optionsProps: string[] = []
+        if (hasScriptCpp) {
+          optionsProps.push('scriptCpp: true')
+        }
+        const optionsCode = optionsProps.length
+          ? `, { ${optionsProps.join(', ')} }`
+          : ''
+        if (componentType === 'page') {
+          setupPreambleLines.unshift(
+            `const __sharedDataScope =  _useSharedDataScope(__sharedData)`
+          )
+          // setupPreambleLines.unshift(
+          //   `const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataPageId(), _useSharedDataPageOptions())${optionsCode})`,
+          // )
+          setupPreambleLines.unshift(
+            `const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataRenderer() == 'component' ? _useSharedDataScope() : _useSharedDataPageId(), _useSharedDataPageOptions())${optionsCode})`
+          )
+        } else if (componentType === 'component') {
+          setupPreambleLines.unshift(
+            `const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope, _useSharedDataComponentOptions())${optionsCode})`
+          )
+          setupPreambleLines.unshift(
+            `const __sharedDataScope =  _useSharedDataScope()`
+          )
+        }
+        // fixed by uts 非生产环境，需要补充内容hash，来触发编译（因为开发者的模板代码一部分生成了c代码而不会生成js代码，这会导致即使修改了不同的代码，但生成后的js代码仍一样）
+        if ((options as any).isWatch && templateHash) {
+          runtimeOptions += `\n  __hash: "${templateHash}",`
+        }
+        runtimeOptions += `\n  __className,`
+        runtimeOptions += `\n  __filename: '${
+          (options.templateOptions?.compilerOptions as any).relativeFilename ||
+          ''
+        }',`
+      }
+    }
+  } else {
+    setupPreambleLines.push(`const __ins = getCurrentInstance()!;`)
+    setupPreambleLines.push(
+      `const _ctx = __ins.proxy${
+        options.genDefaultAs
+          ? ` as InstanceType<typeof ${options.genDefaultAs}>`
+          : ''
+      };`
+    )
+    setupPreambleLines.push(`const _cache = __ins.renderCache;`)
+  }
   if (!ctx.hasDefaultExportName && filename && filename !== DEFAULT_FILENAME) {
     const match = filename.match(/([^/\\]+)\.\w+$/)
     if (match) {
@@ -987,63 +1077,9 @@ __ins.emit(event, ...do_not_transform_spread)
       resolveDefineCode(ctx.options.componentType!)
     )}({${runtimeOptions}\n  ` +
       `${hasAwait ? `async ` : ``}setup(${args}) {${setupCtxCode}
-const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy${
-        options.genDefaultAs
-          ? ` as InstanceType<typeof ${options.genDefaultAs}>`
-          : ''
-      };
-const _cache = __ins.renderCache;
+${setupPreambleLines.length ? `${setupPreambleLines.join('\n  ')}\n` : ''}
 ${exposeCall}`
   )
-
-  let scriptMap: RawSourceMap | undefined
-  // 11. generate return statement
-  // 剩余由 rust 编译器处理
-  if (options.componentType !== 'app') {
-    const { code, preamble, map } = processTemplate(sfc, {
-      relativeFilename,
-      bindingMetadata: ctx.bindingMetadata,
-      rootDir: options.root,
-      className: options.className,
-      sourceMap: options.sourceMap,
-    })
-    if (preamble) {
-      ctx.s.prepend(preamble)
-    }
-
-    // 放到最后，以免查找 offset 有问题
-    let offset = map ? ctx.s.toString().match(/\r?\n/g)?.length ?? 0 : 0
-    if (process.env.UNI_APP_X_DOM2 === 'true') {
-      ctx.s.appendRight(endOffset, `\n${code}\n}\n\n})`)
-    } else {
-      ctx.s.appendRight(endOffset, `\nreturn ${code}\n}\n\n})`)
-    }
-
-    scriptMap =
-      options.sourceMap !== false
-        ? (ctx.s.generateMap({
-            source: relativeFilename,
-            hires: true,
-            includeContent: true,
-          }) as unknown as RawSourceMap)
-        : undefined
-    if (map && scriptMap) {
-      scriptMap = generateScriptMap(offset, map, scriptMap)
-    }
-  } else {
-    ctx.s.appendRight(endOffset, 'return (): any | null => { return null } }\n')
-    ctx.s.appendRight(endOffset, `})`)
-    ctx.s.trim()
-    scriptMap =
-      options.sourceMap !== false
-        ? (ctx.s.generateMap({
-            source: relativeFilename,
-            hires: true,
-            includeContent: true,
-          }) as unknown as RawSourceMap)
-        : undefined
-  }
 
   // 12. finalize Vue helper imports
   // if (ctx.helperImports.size > 0) {
