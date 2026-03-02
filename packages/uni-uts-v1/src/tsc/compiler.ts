@@ -93,6 +93,7 @@ export function createUniXCompiler(
     watchFile,
     incremental: mode === 'development',
     transformOptions: {
+      dom2: process.env.UNI_APP_X_DOM2 === 'true',
       enableUTSNumber: false,
       enableNarrowType: true, // 默认开启
       enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
