@@ -1014,7 +1014,12 @@ ${exposeCall}`
 
     // 放到最后，以免查找 offset 有问题
     let offset = map ? ctx.s.toString().match(/\r?\n/g)?.length ?? 0 : 0
-    ctx.s.appendRight(endOffset, `\nreturn ${code}\n}\n\n})`)
+    if (process.env.UNI_APP_X_DOM2 === 'true') {
+      ctx.s.appendRight(endOffset, `\n${code}\n}\n\n})`)
+    } else {
+      ctx.s.appendRight(endOffset, `\nreturn ${code}\n}\n\n})`)
+    }
+
     scriptMap =
       options.sourceMap !== false
         ? (ctx.s.generateMap({

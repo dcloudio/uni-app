@@ -30,15 +30,16 @@ export function genTemplate(
   const preprocessor = preprocessLang
     ? (require('@vue/consolidate')[preprocessLang] as PreProcessor | undefined)
     : false
-  return compile(
-    preprocessor
-      ? preprocess(
-          { source: template.content, filename: '', preprocessOptions },
-          preprocessor
-        )
-      : template.content,
-    options
-  )
+  const code = preprocessor
+    ? preprocess(
+        { source: template.content, filename: '', preprocessOptions },
+        preprocessor
+      )
+    : template.content
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    return require('@dcloudio/compiler-vapor-dom2').compile(code, options)
+  }
+  return compile(code, options)
 }
 
 export const genTemplateCode = genTemplate

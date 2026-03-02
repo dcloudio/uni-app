@@ -38,11 +38,24 @@ export function resolveGenTemplateCodeOptions(
     preprocessOptions?: any
   },
   pluginContext?: TransformPluginContext
-): TemplateCompilerOptions & { genDefaultAs?: string } & { r?: unknown } {
+): TemplateCompilerOptions & { genDefaultAs?: string } & {
+  dom2?: boolean
+  r?: unknown
+  isTS?: boolean
+  isWatch?: boolean
+  isX?: boolean
+} {
   if (process.env.UNI_APP_X_DOM2 === 'true') {
     return {
       ...options,
       inline: true,
+      comments: false,
+      dom2: true,
+      expressionPlugins: ['typescript'],
+      isTS: true,
+      isWatch: true,
+      isX: true,
+      prefixIdentifiers: true,
       ...initVueTemplateCompilerExtraOptions(descriptor),
     }
   }
