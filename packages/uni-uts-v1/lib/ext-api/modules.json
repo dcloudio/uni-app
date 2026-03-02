@@ -1231,6 +1231,19 @@
       }
     }
   },
+  "uni-share": {
+    "uni": {
+      "share": {
+        "name": "share",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-share-weixin": {
     "provider": {
       "service": "share",
