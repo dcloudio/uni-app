@@ -4262,7 +4262,7 @@ function normalizeExternalClasses(classes) {
 }
 function normalizeInheritAttrsValue(instance, key, value) {
   if (__X_STYLE_ISOLATION__) {
-    if (key === "class") {
+    if (key == "class" || key == "hover-class" || key == "placeholder-class") {
       return toExternalClasses(value).join(" ");
     }
   }
