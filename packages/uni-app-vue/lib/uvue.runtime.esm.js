@@ -8693,6 +8693,9 @@ function parseClassStyles(el) {
   return parseClassListWithStyleSheet(el.classList, styles, parentStyles, el);
 }
 function parseClassList(classList, instance, el = null) {
+  if (__X_STYLE_ISOLATION__ && el) {
+    return parseClassListWithCtx(classList, instance, el).styles;
+  }
   return parseClassListWithStyleSheet(
     classList,
     parseStyleSheet(instance),
@@ -9294,7 +9297,11 @@ function transformAttr(el, key, value, instance) {
   if (opts) {
     const camelized = camelize(key);
     if (opts["class"].indexOf(camelized) > -1) {
-      const classStyle = parseClassList([value], instance, el);
+      const classStyle = parseClassList(
+        Array.isArray(value) ? value : [value],
+        instance,
+        el
+      );
       if (el.tagName === "BUTTON") {
         if (value === "none" || value == "button-hover" && classStyle.size == 0) {
           return [camelized, value];
@@ -9488,7 +9495,12 @@ const patchProp = (el, key, prevValue, nextValue, namespace, prevChildren, paren
     el.setAnyAttribute("modelValue", nextValue);
     el.setAnyAttribute("value", nextValue);
   } else {
-    patchAttr(el, key, nextValue, parentComponent);
+    patchAttr(
+      el,
+      key,
+      nextValue,
+      hostInstance !== null ? hostInstance : parentComponent
+    );
   }
 };
 
