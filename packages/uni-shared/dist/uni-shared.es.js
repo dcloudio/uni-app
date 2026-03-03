@@ -278,6 +278,7 @@ const UVUE_BUILT_IN_EASY_COMPONENTS = [
     'loading',
     'web-view',
     'rich-text',
+    'page-container',
 ];
 function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
