@@ -10076,8 +10076,7 @@
       "unixTags": [
         "text",
         "button",
-        "textarea",
-        "input"
+        "textarea"
       ],
       "defaultValue": "normal"
     },
