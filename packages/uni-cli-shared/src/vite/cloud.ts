@@ -25,6 +25,7 @@ import {
 import { removePlugins } from './utils'
 import { findChangedJsonFiles } from '../json'
 import { getWorkers } from '../workers'
+import { initSourceFileCallback } from '../dom2'
 
 export function createEncryptCssUrlReplacer(
   resolve: ResolveFn
@@ -209,6 +210,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         process.env.UNI_APP_X_TSC === 'true'
           ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
               resolveWorkers: () => getWorkers(),
+              sourceFileCallback: initSourceFileCallback(),
             })
           : null
       if (uniXKotlinCompiler) {
@@ -493,7 +495,10 @@ export function compileCloudUniModuleWithTsc(
     platform,
     pluginDir,
     platform === 'app-android'
-      ? createUniXKotlinCompilerOnce({ resolveWorkers })
+      ? createUniXKotlinCompilerOnce({
+          resolveWorkers,
+          sourceFileCallback: initSourceFileCallback(),
+        })
       : platform === 'app-harmony'
       ? createUniXArkTSCompilerOnce({ resolveWorkers })
       : createUniXSwiftCompilerOnce({ resolveWorkers }),

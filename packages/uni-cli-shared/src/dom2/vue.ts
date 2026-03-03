@@ -24,6 +24,7 @@ export function initVueTemplateCompilerExtraOptions(descriptor: SFCDescriptor) {
     root: normalizePath(process.env.UNI_INPUT_DIR),
     platform: process.env.UNI_UTS_PLATFORM,
     componentType: isUniPageFile(filename) ? 'page' : 'component',
+    filename: filename,
     relativeFilename,
     helper,
     scriptCppBlocks: (descriptor as any).scriptCppBlocks,

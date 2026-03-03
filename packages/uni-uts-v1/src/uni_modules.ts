@@ -6,6 +6,7 @@ import type { CompilerOptions } from 'typescript'
 import { isInHBuilderX, normalizePath, once } from './shared'
 import { resolveCustomElements } from './utils'
 import { camelize, capitalize } from '@vue/shared'
+import type { UniXCompilerOptions } from '../lib/uni-x/dist/compiler'
 
 type TargetLanguage = Parameters<typeof createUniXCompiler>[1]
 
@@ -30,12 +31,14 @@ function createUniXTargetLanguageCompiler(
       normalizeFileName: normalizeNodeModules,
       // 非 uni x 项目，不传 resolveWorkers 参数
       resolveWorkers: options?.resolveWorkers || (() => ({})),
+      sourceFileCallback: options?.sourceFileCallback,
     }
   )
 }
 
 interface CreateUniXCompilerOptions {
   resolveWorkers?: () => Record<string, string>
+  sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
 }
 
 export function createUniXArkTSCompiler(options: CreateUniXCompilerOptions) {

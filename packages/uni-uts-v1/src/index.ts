@@ -57,6 +57,7 @@ import {
 import { existsSync, readdirSync, rmSync } from 'fs-extra'
 import { restoreDebuggerFiles } from './manifest/dex'
 import { compileArkTS } from './arkts'
+import type { UniXCompilerOptions } from '../lib/uni-x/dist/compiler'
 
 export { syncUTSFiles } from './uni_modules'
 export * from './tsc'
@@ -74,7 +75,7 @@ export {
   resolveAppHarmonyUniModulesEntryDir,
 } from './arkts'
 
-export { toCppCode } from '@dcloudio/uts'
+export { toCppCode, toKotlinCode, toSwiftCode } from '@dcloudio/uts'
 
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
@@ -785,6 +786,7 @@ export async function buildUniModules(
       fileName: string
     ) => Promise<string>
     rootFiles?: string[]
+    sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
   },
   compilerOptions: UTSPluginCompilerOptions
 ) {
@@ -805,6 +807,7 @@ export async function buildUniModules(
       pluginDir,
       createUniXKotlinCompiler({
         resolveWorkers: () => ({}),
+        sourceFileCallback: options.sourceFileCallback,
       }),
       {
         rootFiles: options.rootFiles,

@@ -16,6 +16,7 @@ import {
   getUniExtApiProviderRegisters,
   getUniXPagePaths,
   getWorkers,
+  initSourceFileCallback,
   initUTSKotlinAutoImportsOnce,
   isNormalCompileTarget,
   normalizeEmitAssetFileName,
@@ -98,7 +99,10 @@ export function uniAppPlugin(): UniVitePlugin {
 
   const uniXKotlinCompiler =
     process.env.UNI_APP_X_TSC === 'true'
-      ? resolveUTSCompiler().createUniXKotlinCompilerOnce({ resolveWorkers })
+      ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
+          resolveWorkers,
+          sourceFileCallback: initSourceFileCallback(),
+        })
       : null
   const changedFiles: { fileName: string; event: ChangeEvent }[] = []
 

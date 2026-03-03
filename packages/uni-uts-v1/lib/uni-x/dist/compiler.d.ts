@@ -66,6 +66,7 @@ type UniXCompilerOptions = {
     sharedDataLibName?: string;
     normalizeFileName: (fileName: string) => string;
     watchFile?(path: string, callback: tsTypes__default.FileWatcherCallback, pollingInterval?: number, options?: tsTypes__default.WatchOptions): tsTypes__default.FileWatcher;
+    sourceFileCallback?: (sourceFile: tsTypes__default.SourceFile) => void;
     transformOptions?: CreateTransformerOptions;
 };
 declare class UniXCompiler implements IUTSCompiler {

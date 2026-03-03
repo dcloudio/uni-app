@@ -47,6 +47,7 @@ import { initScopedPreContext } from '../../../preprocess/context'
 import { isInHBuilderX } from '../../../hbx'
 import { appendConsoleExpr, rewriteConsoleExpr } from '../../../logs/console'
 import { getWorkers } from '../../../workers'
+import { initSourceFileCallback } from '../../../dom2'
 
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../../../lib/preprocess')
@@ -371,7 +372,10 @@ export function uniUTSAppUniModulesPlugin(
     process.env.UNI_APP_X_TSC === 'true' &&
     (process.env.UNI_UTS_PLATFORM === 'app-android' ||
       process.env.UNI_UTS_PLATFORM === 'app')
-      ? createUniXKotlinCompilerOnce({ resolveWorkers })
+      ? createUniXKotlinCompilerOnce({
+          resolveWorkers,
+          sourceFileCallback: initSourceFileCallback(),
+        })
       : null
   const uniXSwiftCompiler =
     process.env.UNI_APP_X_TSC === 'true' &&
