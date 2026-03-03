@@ -18619,6 +18619,9 @@
       return e2;
     }
   }
+  function calculateSnapIndex(position, itemSize) {
+    return Math.round(Math.abs(position) / itemSize);
+  }
   function createAnimation(scroll, onScroll, onEnd) {
     var state = {
       id: 0,
@@ -18735,7 +18738,7 @@
       this._lastDelay = 0;
       this._scrolling = true;
       this._lastChangePos = this._position;
-      this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
+      this._lastIdx = calculateSnapIndex(this._position, this._itemSize);
       this._animation = createAnimation(this._scroll, () => {
         var e2 = Date.now();
         var i2 = (e2 - this._scroll._startTime) / 1e3;
@@ -18755,7 +18758,7 @@
             this.updatePosition();
           }
           if (isFunction(this._options.onSnap)) {
-            this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+            this._options.onSnap(calculateSnapIndex(this._position, this._itemSize));
           }
         }
         if (this._shouldDispatchScrollEvent) {
@@ -18781,7 +18784,7 @@
         this._snapping = true;
         this.scrollTo(-i2);
         if (isFunction(this._options.onSnap)) {
-          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+          this._options.onSnap(Math.round(Math.abs(this._position) / this._itemSize));
         }
       }
     }
@@ -18847,7 +18850,7 @@
       if (position !== this._position) {
         this.dispatchScroll();
         if (isFunction(this._options.onSnap)) {
-          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+          this._options.onSnap(Math.round(Math.abs(this._position) / this._itemSize));
         }
       }
       this._extent = extent;

@@ -14577,6 +14577,9 @@ class Scroll {
     return e2;
   }
 }
+function calculateSnapIndex(position, itemSize) {
+  return Math.round(Math.abs(position) / itemSize);
+}
 function createAnimation(scroll, onScroll, onEnd) {
   const state2 = {
     id: 0,
@@ -14695,7 +14698,7 @@ class Scroller {
     this._lastDelay = 0;
     this._scrolling = true;
     this._lastChangePos = this._position;
-    this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
+    this._lastIdx = calculateSnapIndex(this._position, this._itemSize);
     this._animation = createAnimation(
       this._scroll,
       () => {
@@ -14719,7 +14722,7 @@ class Scroller {
           }
           if (isFunction(this._options.onSnap)) {
             this._options.onSnap(
-              Math.floor(Math.abs(this._position) / this._itemSize)
+              calculateSnapIndex(this._position, this._itemSize)
             );
           }
         }
@@ -14748,7 +14751,7 @@ class Scroller {
       this.scrollTo(-i);
       if (isFunction(this._options.onSnap)) {
         this._options.onSnap(
-          Math.floor(Math.abs(this._position) / this._itemSize)
+          Math.round(Math.abs(this._position) / this._itemSize)
         );
       }
     }
@@ -14816,7 +14819,7 @@ class Scroller {
       this.dispatchScroll();
       if (isFunction(this._options.onSnap)) {
         this._options.onSnap(
-          Math.floor(Math.abs(this._position) / this._itemSize)
+          Math.round(Math.abs(this._position) / this._itemSize)
         );
       }
     }
