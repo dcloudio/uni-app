@@ -8164,40 +8164,6 @@ function normalizeTabBarRoute(index, oldPagePath, newPagePath) {
     }
 }
 
-function getSystemDialogPages(parentPage) {
-    if (!parentPage)
-        return [];
-    {
-        // $getSystemDialogPages harmony __$$getSystemDialogPages ios
-        return typeof parentPage.__$$getSystemDialogPages === 'undefined'
-            ? parentPage.$getSystemDialogPages()
-            : parentPage.__$$getSystemDialogPages();
-    }
-}
-function getLastDialogPage(parentPage) {
-    if (!parentPage)
-        return null;
-    const dialogPages = parentPage.getDialogPages();
-    const systemDialogPages = getSystemDialogPages(parentPage);
-    const lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
-    const lastDialogPage = dialogPages[dialogPages.length - 1];
-    if (!lastDialogPage)
-        return lastSystemDialogPage;
-    if (!lastSystemDialogPage)
-        return lastDialogPage;
-    const lastSystemDialogPageId = lastSystemDialogPage.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER;
-    const lastDialogPageId = lastDialogPage.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER;
-    return lastSystemDialogPageId > lastDialogPageId
-        ? lastSystemDialogPage
-        : lastDialogPage;
-}
-function invokeLastDialogPageHookByUniPage(parentPage, hook) {
-    const lastDialogPage = getLastDialogPage(parentPage);
-    if (lastDialogPage) {
-        invokeHook(lastDialogPage.vm, hook);
-    }
-}
-
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit('api.' + name, res);
 
 let invokeViewMethodId = 1;
@@ -12821,7 +12787,6 @@ const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtoc
 function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
     // 当前页面触发 onHide
     invokeHook(ON_HIDE);
-    invokeLastDialogPageHookByUniPage(getCurrentPage(), ON_HIDE);
     const eventChannel = new EventChannel(getWebviewId() + 1, events);
     return new Promise((resolve) => {
         showWebview(registerPage({ url, path, query, openType: 'navigateTo', eventChannel }), aniType, aniDuration, () => {
@@ -12943,7 +12908,6 @@ function back(delta, animationType, animationDuration, from) {
         setStatusBarStyle();
         // 前一个页面触发 onShow
         invokeHook(ON_SHOW);
-        invokeLastDialogPageHookByUniPage(getCurrentPage(), ON_SHOW);
     };
     _backWebview(currentPage, backPage);
 }
