@@ -6,7 +6,6 @@ import {
   createEncryptCssUrlReplacer,
   createShadowImageUrl,
   cssPostPlugin,
-  findMiniProgramComponentStyleIsolation,
   getUniModulesEncryptType,
   injectAssetPlugin,
   injectCssPlugin,
@@ -31,7 +30,6 @@ import {
   parseVirtualComponentPath,
   parseVirtualPagePath,
 } from '../plugins/entry'
-import path from 'path'
 
 const debugNVueCss = debug('uni:nvue-css')
 const cssVars = `page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}`
@@ -192,35 +190,40 @@ export function createConfigResolved({
                 (page.style as any).renderer === 'skyline')
 
             if (!shouldNotResetStyle) {
-              let addUvueCss = false
-              if (
-                process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
-                process.env.UNI_APP_X === 'true'
-              ) {
-                const basePath = path.join(
-                  process.env.UNI_INPUT_DIR!,
-                  removeExt(filename)
-                )
-                const styleIsolation =
-                  findMiniProgramComponentStyleIsolation(basePath + '.uvue') ||
-                  findMiniProgramComponentStyleIsolation(basePath + '.vue')
-                if (
-                  styleIsolation &&
-                  styleIsolation.isPage &&
-                  styleIsolation.styleIsolation === 'isolated'
-                ) {
-                  addUvueCss = true
-                }
-              } else {
-                addUvueCss = true
-              }
-              if (addUvueCss) {
-                /**
-                 * 兼容发布为小程序分包模式
-                 */
-                const uvueCssPath = relativeFile(filename, `uvue${extname}`)
-                cssCode = `@import "${uvueCssPath}";\n` + cssCode
-              }
+              /**
+               * 兼容发布为小程序分包模式
+               */
+              const uvueCssPath = relativeFile(filename, `uvue${extname}`)
+              cssCode = `@import "${uvueCssPath}";\n` + cssCode
+              // let addUvueCss = false
+              // if (
+              //   process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+              //   process.env.UNI_APP_X === 'true'
+              // ) {
+              //   const basePath = path.join(
+              //     process.env.UNI_INPUT_DIR!,
+              //     removeExt(filename)
+              //   )
+              //   const styleIsolation =
+              //     findMiniProgramComponentStyleIsolation(basePath + '.uvue') ||
+              //     findMiniProgramComponentStyleIsolation(basePath + '.vue')
+              //   if (
+              //     styleIsolation &&
+              //     styleIsolation.isPage &&
+              //     styleIsolation.styleIsolation === 'isolated'
+              //   ) {
+              //     addUvueCss = true
+              //   }
+              // } else {
+              //   addUvueCss = true
+              // }
+              // if (addUvueCss) {
+              //   /**
+              //    * 兼容发布为小程序分包模式
+              //    */
+              //   const uvueCssPath = relativeFile(filename, `uvue${extname}`)
+              //   cssCode = `@import "${uvueCssPath}";\n` + cssCode
+              // }
             }
             return cssCode
           }

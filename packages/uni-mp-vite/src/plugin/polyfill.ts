@@ -50,11 +50,13 @@ function rewriteCompileScript(extname: string) {
         if (!isPage) {
           if (styleIsolation === 'app') {
             options.source = `@import "/app${extname}";\n` + options.source
-          } else if (styleIsolation === 'isolated') {
-            options.source = `@import "/uvue${extname}";\n` + options.source
-          } else if (styleIsolation === undefined) {
-            options.source = `@import "/uvue${extname}";\n` + options.source
           }
+          //  else if (styleIsolation === 'isolated') {
+          //   options.source = `@import "/uvue${extname}";\n` + options.source
+          // }
+          //  else if (styleIsolation === undefined) {
+          //   options.source = `@import "/uvue${extname}";\n` + options.source
+          // }
         }
       }
     }
