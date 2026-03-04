@@ -40,5 +40,6 @@ export function initVueTemplateCompilerExtraOptions(descriptor: SFCDescriptor) {
     },
     r: helper.K,
     className: helper.GCN(descriptor.filename, process.env.UNI_INPUT_DIR),
+    inlineRender: process.env.UNI_UTS_PLATFORM === 'app-android',
   }
 }
