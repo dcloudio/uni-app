@@ -262,6 +262,15 @@ export function matchEasycom(tag: string) {
   source = tag.replace(matcher.pattern, matcher.replacement)
   easycomsCache.set(tag, source)
   debugEasycom('matchEasycom', tag, source)
+
+  // 检查 H5 专用组件 ask163203
+  const H5_ONLY_COMPONENTS = ['custom-tab-bar']
+  if (H5_ONLY_COMPONENTS.includes(tag) && process.env.UNI_PLATFORM !== 'h5') {
+    console.warn(
+      `[uni-app] 组件 <${tag}> 是 H5 平台专用组件，在 ${process.env.UNI_PLATFORM} 平台使用可能导致错误。如果你要引入自定义 tabBar 可重命名为其他名称。`
+    )
+  }
+
   return source
 }
 
