@@ -1653,7 +1653,7 @@ export async function parseExportIdentifiers(
   try {
     let code = fs.readFileSync(fileName, 'utf8')
     if (preprocessor) {
-      code = await preprocessor(fileName, code)
+      code = await preprocessor(code, fileName)
     }
     ast = await parseUtsCode(code, {
       filename: fileName,
