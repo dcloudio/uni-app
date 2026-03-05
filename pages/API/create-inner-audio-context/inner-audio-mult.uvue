@@ -1,0 +1,91 @@
+<template>
+	<page-head :title="title"></page-head>
+	<view class="uni-padding-wrap uni-common-mt">
+		<view class="uni-title">
+			<text class="uni-title-text">多音频同时播放</text>
+		</view>
+		<button type="primary" @tap="play1()"  class="uni-btn"> 播放/停止(进度：{{currentTime1}})</button>
+		<button type="primary" @tap="play2()"  class="uni-btn"> 播放/停止(进度：{{currentTime2}})</button>
+	</view>
+</template>
+
+<script setup lang="uts">
+
+  // Types
+  type AudioPath = {
+    description : string
+    src : string
+  }
+
+  // Data
+  const title = ref("多音频同时播放")
+  const _audioContext1 = ref<InnerAudioContext | null>(null)
+  const src = ref('https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3')
+  const _audioContext2 = ref<InnerAudioContext | null>(null)
+  const playing1 = ref(false)
+  const playing2 = ref(false)
+  const currentTime1 = ref(0)
+  const currentTime2 = ref(0)
+
+  // Functions
+  function play1() {
+    if (_audioContext1.value != null) {
+      currentTime1.value = 0
+      if (playing1.value) {
+        _audioContext1.value!.stop()
+      } else {
+        _audioContext1.value!.play()
+      }
+    }
+    playing1.value = !playing1.value
+  }
+
+  function play2() {
+    if (_audioContext2.value != null) {
+      currentTime2.value = 0
+      if (playing2.value) {
+        _audioContext2.value!.stop()
+      } else {
+        _audioContext2.value!.play()
+      }
+    }
+    playing2.value = !playing2.value
+  }
+
+  // Lifecycle hooks
+  onReady(() => {
+    _audioContext1.value = uni.createInnerAudioContext();
+    _audioContext1.value!.src = src.value
+    _audioContext1.value!.onTimeUpdate((res) => {
+      currentTime1.value = _audioContext1.value!.currentTime;
+    })
+    _audioContext2.value = uni.createInnerAudioContext();
+    _audioContext2.value!.src = src.value
+    _audioContext2.value!.onTimeUpdate((res) => {
+      currentTime2.value = _audioContext2.value!.currentTime;
+    })
+  })
+
+  onUnload(() => {
+    if (_audioContext1.value != null) {
+      _audioContext1.value!.stop()
+      _audioContext1.value!.destroy()
+    }
+    if (_audioContext2.value != null) {
+      _audioContext2.value!.stop()
+      _audioContext2.value!.destroy()
+    }
+  })
+</script>
+
+<style>
+	.formats {
+		align-items: center;
+	}
+
+	.icon-play {
+		width: 60px;
+		height: 60px;
+		margin: 10px;
+	}
+</style>

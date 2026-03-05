@@ -1,0 +1,325 @@
+
+import { Report } from "./report.uts";
+import { StatType } from "./stat-type";
+import { EventParams, UniStatOptions, ErrorCallback, ReportErrorCode } from '../../interface.uts'
+import { is_page, is_page_report, get_space, calibration, get_crash_logs } from '../utils/pageInfo.uts'
+import { Config } from "../config";
+
+const reportInstance = new Report()
+
+export class Stat {
+  static __stat_instance : Stat | null = null;
+  static is_register : boolean = false
+  static no_space : boolean = false
+  // 上报逻辑实例
+  // 使用单例，只初始化一次
+  static getInstance() : Stat {
+    // 获取服务空间配置信息
+    let space = get_space(uniCloud.config)
+    if (Report.uniCloudInstance == null) {
+      // 判断不为空对象
+      if (space != null) {
+        // 重新构造 uniCloud
+        let spaceData : UniCloudInitOptions = {
+          provider: space.provider,
+          spaceId: space.spaceId,
+          clientSecret: space.clientSecret,
+        }
+        const endpoint = space.endpoint
+        if (endpoint != null) {
+          spaceData.endpoint = space.endpoint
+        }
+
+        // 支付宝单独处理一些参数
+        if (space.provider == 'alipay') {
+          spaceData.secretKey = space.secretKey
+          spaceData.accessKey = space.accessKey
+          spaceData.spaceAppId = space.spaceAppId
+        }
+
+        // 初始化 uniCloud
+        // @ts-ignore
+        Report.uniCloudInstance = uniCloud.init(spaceData)
+
+      } else {
+        if (!Stat.no_space) {
+          // #ifdef APP-IOS
+          console.error('应用已集成uni统计，但未关联服务空间，请在uniCloud目录右键关联服务空间')
+          // #endif
+          // #ifndef APP-IOS
+          console.log("\u001b[31m应用已集成uni统计，但未关联服务空间，请在uniCloud目录右键关联服务空间\u001b[0m")
+          // #endif
+          Stat.no_space = true
+        }
+      }
+    }
+
+    // 实例化统计sdk ，要在 实例 unicloud 之后进行，避免 Report 无法拿到 uniCloud 实例
+    if (this.__stat_instance == null) {
+      this.__stat_instance = new Stat()
+    }
+
+    return this.__stat_instance as Stat
+  }
+
+
+  // 当前生命周期内的页面或应用实例
+  appInstance ?: Page | null = null
+
+  private isHide : boolean = false
+  constructor() { }
+
+  /**
+   * 初始化插件参数
+   * @param {Object} options
+   */
+  init(options : UTSJSONObject) {
+    // 插件挂载玩成，可以进行后续操作
+    Stat.is_register = true
+    // 参数处理
+    Config.setOptions({ ...options } as UniStatOptions)
+    const uniStatConfig = Config.getOptions()
+
+    // 设置上报周期时间
+    reportInstance.eportInterval = uniStatConfig.reportInterval ?? 10
+
+    // #ifdef APP-ANDROID || APP-IOS
+    // 获取崩溃日志
+    get_crash_logs((logs) => {
+      this.registerEvent(StatType.Crash, null, logs)
+    })
+    // #endif
+  }
+  /**
+   * 应用启动
+   * @param {OnLaunchOptions} options 应用参数
+   * @param {ComponentPublicInstance} appInstance 应用实例
+   */
+  // options : OnLaunchOptions, appInstance : ComponentPublicInstance
+  onLaunch(options : OnLaunchOptions, appInstance : ComponentPublicInstance) {
+    // 注册事件 onLaunch ,需要手动触发
+    // this.registerEvent(StatType.LifeCycleLaunch, appInstance, options as any)
+  }
+  /**
+   * 页面加载
+   * @param {ComponentPublicInstance} appInstance 应用实例
+   */
+  onLoad(appInstance : Page) {
+    this.registerEvent(StatType.LifeCycleLoad, appInstance)
+  }
+  /**
+   * 显示页面或应用进入前台
+   * @param {ComponentPublicInstance} appInstance 应用实例
+   */
+  onShow(appInstance : Page) {
+    this.isHide = false
+    // @ts-ignore
+    const mptype = is_page(appInstance)
+    // 页面执行，应用需要手动调用
+    if (mptype) {
+      this.registerEvent(StatType.LifeCyclePageShow, appInstance, null)
+    }
+    // const life_type = mptype == 'app' ? StatType.LifeCycleAppShow : StatType.LifeCyclePageShow
+    // this.registerEvent(life_type, appInstance, null)
+  }
+
+  /**
+   * 页面隐藏或应用进入后台
+   * @param {ComponentPublicInstance} appInstance 应用实例
+   */
+  onHide(appInstance : Page) {
+
+    this.isHide = true
+    // @ts-ignore
+    const mptype = is_page(appInstance)
+
+    // 页面执行，应用需要手动调用
+    if (mptype) {
+      this.registerEvent(StatType.LifeCyclePageHide, appInstance, null)
+    }
+    // const life_type = mptype == 'app' ? StatType.LifeCycleAppHide : StatType.LifeCyclePageHide
+    // this.registerEvent(life_type, appInstance, null)
+  }
+
+  /**
+   * 卸载页面
+   * @param {ComponentPublicInstance} appInstance 应用实例
+   */
+  onUnload(appInstance : Page) {
+    // 如果 isHide 为true 说明页面隐藏了，不走卸载逻辑，如果走卸载逻辑，isHide 必不可能是true
+    if (this.isHide) {
+      this.isHide = false
+      return
+    }
+    this.registerEvent(StatType.LifeCyclePageUnLoad, appInstance, null)
+  }
+
+  /**
+   * 错误
+   * @param {String} error 应用实例
+   */
+  onError(error : string) {
+    // 单独处理错误上报
+    this.error(error)
+  }
+
+  /**
+   * 获取推送ID
+   */
+  // pushEvent(options : any) {
+  //   // TODO uni x 暂不支持，如需要开启，请放开注释
+  //   const ClientID = is_push_clientid()
+  //   if (ClientID) {
+  //     uni.getPushClientId({
+  //       success: (res) => {
+  //         const cid = res.cid
+  //         //  只有获取到才会上传
+  //         // if (cid != null) {
+  //         reportInstance.sendPushRequest(options, cid)
+  //         // }
+  //       },
+  //     } as GetPushClientIdOptions)
+  //   }
+  // }
+
+  /**
+   * 注册事件
+   * @param {number} EventType 事件类型
+   * @param {Page} appInstance	当前页面实例
+   * @param {UTSJSONObject} options 应用参数
+   */
+  registerEvent(EventType : number, appInstance : Page | null, options : any | null = null, error : any | null = '') {
+    const statConfig = Config.getOptions()
+    if (statConfig.enable == false) return
+		// TODO 之前想的是，可能其他地方可能会用到 vue 实例 ，但是实际上在安卓上会有泄露问题，如果用到，需要在看实际方案
+    // this.appInstance = appInstance
+    // 是否要上报页面数据
+    const isPageReport = is_page_report()
+    switch (EventType) {
+      case StatType.LifeCycleLaunch:
+        // 使用非空断言，options在这里肯定非空
+        reportInstance.launch(options!)
+        // this.pushEvent(options)
+        break
+      case StatType.LifeCycleAppShow:
+        // TODO 目前只兼容 web 和 app ，小程序等平台需要调用 api onAppHide
+        reportInstance.appShow()
+        break
+      case StatType.LifeCycleAppHide:
+        reportInstance.appHide(true)
+        break
+      case StatType.LifeCycleLoad:
+        break
+      case StatType.LifeCyclePageShow:
+        if (isPageReport) {
+          reportInstance.pageShow(appInstance!)
+        }
+        break
+      case StatType.LifeCyclePageHide:
+        if (isPageReport) {
+          reportInstance.pageHide(appInstance!)
+        }
+        break
+      case StatType.LifeCyclePageUnLoad:
+        if (isPageReport) {
+          reportInstance.pageHide(appInstance!)
+        }
+        break
+      case StatType.LifeCycleError:
+        if (error != null) {
+          reportInstance.appError(error)
+        }
+        break
+      case StatType.Crash:
+        reportInstance.appCrash(options as string[])
+        break
+    }
+  }
+
+  error(em : string) {
+    // 生命周期监听，暂时无用，需要手动调用api
+  }
+  // 自定义参数上报
+  appEvent(name : string, options : any | null = null, fn : ErrorCallback) {
+    const statConfig = Config.getOptions()
+    if (statConfig.enable == false) return
+    if (Stat.no_space) {
+      fn(false, 61000 as ReportErrorCode)
+      return
+    }
+    if (!Stat.is_register) {
+      fn(false, 61001 as ReportErrorCode)
+      return
+    }
+    // const names = ['uni-app-launch', 'uni-app-show', 'uni-app-hide', 'uni-app-error']
+    // if (names.indexOf(name) <= -1) {
+    // 	// console.error('uniStatReport 事件名不存在，请检查！');
+    // 	fn(false, 'uniStatReport 事件名不存在，请检查！')
+    // 	return
+    // }
+    if (name == 'uni-app-launch' && options == null) {
+      fn(false, 61002 as ReportErrorCode)
+      return
+    }
+
+    if (name == 'uni-app-launch') {
+      this.registerEvent(StatType.LifeCycleLaunch, null, options)
+      // 61001 占位，无实际用途
+      fn(true, 61001 as ReportErrorCode)
+      return
+    }
+    if (name == 'uni-app-show') {
+      this.registerEvent(StatType.LifeCycleAppShow, null, null)
+      // 61001 占位，无实际用途
+      fn(true, 61001 as ReportErrorCode)
+      return
+    }
+    if (name == 'uni-app-hide') {
+      this.registerEvent(StatType.LifeCycleAppHide, null, null)
+      // 61001 占位，无实际用途
+      fn(true, 61001 as ReportErrorCode)
+      return
+    }
+
+    if (name == 'uni-page-show') {
+      reportInstance.pageShow(options as Page)
+      // 61001 占位，无实际用途
+      fn(true, 61001 as ReportErrorCode)
+      return
+    }
+
+    if (name == 'uni-page-hide') {
+      reportInstance.pageHide(options as Page)
+      // 61001 占位，无实际用途
+      fn(true, 61001 as ReportErrorCode)
+      return
+    }
+
+    if (name == 'uni-app-error') {
+      this.registerEvent(StatType.LifeCycleError, null, null, options)
+      // 61001 占位，无实际用途
+      fn(true, 61001 as ReportErrorCode)
+      return
+    }
+
+    // 校验 type 参数
+    const is_calibration = calibration(name, options)
+    if (is_calibration != null) {
+      fn(false, is_calibration)
+      return
+    }
+
+    if (name === 'title') {
+      reportInstance._navigationBarTitle.report = (options as string)
+    }
+
+    const value = (typeof options === 'object' ? JSON.stringify(options) : options) as string
+    const data : EventParams = {
+      key: name,
+      value: value as string,
+    }
+    reportInstance.sendEventRequest(data)
+    // 61001 占位，无实际用途
+    fn(true, 61001 as ReportErrorCode)
+  }
+}

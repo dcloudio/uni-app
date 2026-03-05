@@ -1,0 +1,424 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;" enable-back-to-top="true">
+  <!-- #endif -->
+    <view class="uni-container" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+      <view v-if="!hasLeftWin" class="uni-header-logo">
+        <image class="uni-header-image" src="/static/templateIndex.png"></image>
+      </view>
+      <view v-if="!hasLeftWin" class="uni-text-box">
+        <text class="hello-text">以下是部分模板示例，更多模板见插件市场：</text>
+        <u-link class="hello-text" href="https://ext.dcloud.net.cn" :text="'https://ext.dcloud.net.cn'" :inWhiteList="true"></u-link>
+      </view>
+      <view class="uni-panel" v-for="(item, index) in list" :key="item.id">
+        <view hover-class="is--active" class="uni-panel-h" @click="triggerCollapse(index, item)">
+          <text class="uni-panel-text"
+            :class="item.enable == false || item.open == true ? 'text-disabled' : '',item.url == leftWinActive && item.pages.length == 0 ? 'left-win-active' : ''">{{ item.name }}</text>
+          <image :src="
+              item.pages.length > 0
+                ? item.open
+                  ? arrowUpIcon
+                  : arrowDownIcon
+                : arrowRightIcon
+            " class="uni-icon-size">
+          </image>
+        </view>
+        <view v-if="item.open">
+          <view style="padding-left: 18px;" class="uni-navigate-item"
+            :hover-class="page.enable == false ? '' : 'is--active'" v-for="(page, key) in item.pages" :key="key"
+            @click="goDetailPage(page)">
+            <text class="uni-navigate-text"
+              :class="{'left-win-active': leftWinActive === page.url  && hasLeftWin,'text-disabled' : page.enable == false}">{{ page.name }}</text>
+            <image :src="arrowRightIcon" class="uni-icon-size"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  // #ifdef VUE3-VAPOR && APP || WEB
+  import { generateMockList as generateListViewMockList } from '../template/long-list-perf/mock-data'
+  import { generateMockList as generateWaterflowMockList } from '../template/waterflow-perf/mock-data'
+  // #endif
+  defineOptions({
+    styleIsolation: 'app'
+  })
+
+  const activeIndex = inject<Ref<number>>('tabBarCurrentIndex', ref(0))
+
+  const instance = getCurrentInstance()?.proxy
+
+  type Page = {
+    name : string
+    enable ?: boolean
+    url : string
+  }
+
+  type ListItem = {
+    id : string
+    name : string
+    open : boolean
+    pages : Page[]
+    url ?: string
+    enable ?: boolean
+  }
+  import { state } from '@/store/index.uts'
+
+  const list = ref<ListItem[]>([
+    // #ifdef APP && VUE3-VAPOR
+    {
+      id: '4050',
+      url: '4050',
+      name: 'view和text性能测试',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: '2000-image',
+      url: '2000-image',
+      name: 'image性能测试',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: 'long-rich-text',
+      url: 'long-rich-text',
+      name: 'rich-text 5万字性能测试',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: 'long-list-perf',
+      url: 'long-list-perf',
+      name: '死亡长列表',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: 'waterflow-perf',
+      url: 'waterflow-perf',
+      name: 'waterflow滚动加载长列表',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #endif
+    {
+      id: 'long-list',
+      url: 'long-list',
+      name: '左右滑动长列表',
+      open: false,
+      enable: true,
+      pages: [
+        // #ifdef WEB
+        {
+          name: '顶部banner长列表（嵌套滚动）',
+          url: 'long-list2'
+        },
+        // #endif
+        // #ifdef APP
+        {
+          name: '顶部banner长列表（嵌套滚动）',
+          url: 'long-list-nested'
+        },
+        {
+          name: '顶部banner瀑布流长列表（嵌套滚动）',
+          url: 'long-waterflow-nested'
+        },
+        // #endif
+        {
+          name: '顶部搜索框随时下移长列表',
+          url: 'long-list'
+        }
+      ] as Page[],
+    },
+    {
+      id: 'list-news',
+      url: 'list-news',
+      name: '列表到详情（吸顶）',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #ifdef APP || WEB
+    {
+      id: 'long-list-deleteable',
+      url: 'long-list-deleteable',
+      name: '带删除的不等高长列表',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #endif
+    // #ifndef VUE3-VAPOR
+    {
+      id: 'long-list-batch',
+      url: 'long-list-batch',
+      name: '分批加载长列表',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: 'custom-long-list',
+      url: 'custom-long-list',
+      name: '回收复用长列表',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #endif
+    {
+      id: 'swiper-list',
+      url: 'swiper-list',
+      name: 'swiper-list',
+      open: false,
+      pages: [
+        {
+          name: '下划线样式',
+          url: 'swiper-list'
+        },
+        {
+          name: '字体放大样式',
+          url: 'swiper-list2'
+        },
+      ] as Page[],
+    },
+    {
+      id: 'scroll-fold-nav',
+      url: 'scroll-fold-nav',
+      name: '随滚动折叠的导航栏',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #ifdef APP
+    {
+      id: 'pull-zoom-image',
+      url: 'pull-zoom-image',
+      name: '下拉缩放顶部封面图',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: 'scroll-sticky',
+      url: 'scroll-sticky',
+      name: 'scroll-view自定义滚动吸顶',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #endif
+    {
+      id: 'navbar-lite',
+      url: 'navbar-lite',
+      name: '自定义导航栏',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: 'nav-transparent',
+      url: 'nav-transparent',
+      name: '自定义透明渐变导航栏',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: 'custom-tab-bar',
+      url: 'custom-tab-bar',
+      name: '自定义TabBar',
+      open: false,
+      enable: true,
+      pages: [] as Page[],
+    },{
+      id: 'swiper-vertical-video',
+      url: 'swiper-vertical-video',
+      name: '竖滑视频',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #ifdef VUE3-VAPOR || APP-IOS || APP-ANDROID || WEB
+    {
+      id: 'ai-chat',
+      url: 'ai-chat',
+      name: 'ai-chat聊天示例',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #endif
+    {
+      id: 'half-screen',
+      url: 'half-screen',
+      name: '半屏弹窗',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: 'drop-card',
+      url: 'drop-card',
+      name: '划走式卡片',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: 'calendar',
+    // #ifdef APP && !VUE3-VAPOR
+      url: 'calendar',
+    // #endif
+    // #ifdef WEB || MP || VUE3-VAPOR
+      url: 'calendar-vapor',
+    // #endif
+      name: '日历',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #ifdef APP || WEB
+    {
+      id: 'schema',
+      url: 'schema',
+      name: '打开外部链接',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #endif
+    // #ifdef WEB
+    {
+      id: 'browser-element',
+      url: 'browser-element',
+      name: '如何使用浏览器 element',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #endif
+    // #ifdef MP-WEIXIN
+    {
+      id: 'vant',
+      url: 'vant',
+      name: '微信自定义组件示例',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: 'WXS',
+      url: 'WXS',
+      name: 'WXS',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #endif
+    {
+      id: 'about',
+      url: 'about',
+      name: '关于',
+      open: false,
+      pages: [] as Page[],
+    }
+  ] as ListItem[])
+  const arrowUpIcon = ref('/static/icons/arrow-up.png')
+  const arrowDownIcon = ref('/static/icons/arrow-down.png')
+  const arrowRightIcon = ref('/static/icons/arrow-right.png')
+
+  const hasLeftWin = computed(() : boolean => {
+    return !state.noMatchLeftWindow
+  })
+  const leftWinActive = computed(() : string => {
+    return state.leftWinActive.split('/')[3]
+  })
+  const isDarkMode = computed(() : boolean => {
+    return state.isDarkMode
+  })
+  const netless = computed(() : boolean => {
+    return state.netless
+  })
+
+  function goDetailPage(e : Page) {
+    if (e.enable == false) {
+      uni.showToast({
+        icon: 'none',
+        title: '暂不支持',
+      })
+      return
+    }
+    const url =
+      e.url.indexOf('platform') > -1
+        ? e.url
+        : `/pages/template/${e.url}/${e.url}`
+    if (hasLeftWin.value) {
+      uni.reLaunch({ url })
+    } else {
+      uni.navigateTo({ url
+      ,fail() {
+        console.log('页面跳转失败：' + url)
+      }
+      })
+    }
+  }
+
+  function triggerCollapse(index : number, item : ListItem) {
+    if (item.pages.length == 0) {
+      const page : Page = {
+        name: item.name,
+        enable: item.enable,
+        url: item.url!,
+      }
+      goDetailPage(page)
+      return
+    }
+    for (var i = 0; i < list.value.length; ++i) {
+      if (index == i) {
+        list.value[i].open = !list.value[i].open
+      } else {
+        list.value[i].open = false
+      }
+    }
+  }
+
+  // #ifdef APP-HARMONY
+  watch(() => netless.value, (netless) => {
+    if (netless) {
+      list.value = list.value.filter(item => {
+        return !['list-news'].includes(item.id)
+      })
+    }
+  }, { immediate: true })
+  // #endif
+
+  // #ifdef WEB
+  watch(() => (instance as any)?.$route, (newRoute) => {
+    if (newRoute && newRoute.matched.length) {
+      let path = newRoute.path.split('/')[3]
+      for (const item of list.value) {
+        if (Array.isArray(item.pages)) {
+          for (const page of item.pages) {
+            if (page.url && page.url === path) {
+              item.open = true
+            }
+          }
+        }
+      }
+    }
+  }, { immediate: true })
+  // #endif
+
+  onMounted(() => {
+    // #ifdef VUE3-VAPOR && APP || WEB
+    // 预加载长列表数据
+    generateListViewMockList()
+    generateWaterflowMockList()
+    // #endif
+    // 预请求网络，只发送head请求，预先完成dns解析和tcp握手，提升后续请求速度
+    uni.request({
+      url: 'https://unidemo.dcloud.net.cn', // 替换为实际请求的URL
+      method: 'HEAD',
+      success: (res) => {
+        console.log('预热网络成功', res)
+      },
+      fail: (err) => {
+        console.log('预热网络失败', err);
+      }
+    })
+  })
+</script>
+
+<style>
+  .uni-panel-h {
+    padding: 12px 18px;
+  }
+</style>

@@ -1,0 +1,44 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="padding: 0 10px;">
+      <button class="uni-common-mb component-check-page-btn" @click="check$page">
+        component check $page
+      </button>
+      <view class="flex-row uni-common-mb">
+        <text>check page:</text>
+        <text class="check-page-res">{{checkPageRes}}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  const instance = getCurrentInstance()
+
+  const checkPageRes = ref(false)
+
+  const check$page = () => {
+  	const pages = getCurrentPages()
+		const page = pages[pages.length-1]
+    const $page = instance?.proxy?.$page
+    const res = $page === page
+    uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
+    checkPageRes.value = res
+    return res
+  }
+
+	defineExpose({
+		check$page
+	})
+</script>
+
+<style>
+.flex-row{
+  flex-direction: row;
+  justify-content: space-between;
+}
+</style>

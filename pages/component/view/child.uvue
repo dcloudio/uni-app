@@ -1,0 +1,30 @@
+<template>
+  <view class="box">
+    <text class="text">child-view</text>
+    <image class="logo" src="/static/test-image/logo.png"></image>
+  </view>
+</template>
+
+<script setup lang="uts">
+</script>
+
+<style>
+  .box {
+    width: 80px;
+    height: 80px;
+    border: 2px solid #007aff;
+    border-radius: 8px;
+    background-color: #f0f8ff;
+    justify-content: center;
+    align-items: center;
+  }
+  .logo{
+    width: 50px;
+    height: 50px;
+  }
+  .text {
+    font-size: 12px;
+    color: #007aff;
+    font-weight: 500;
+  }
+</style>

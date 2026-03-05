@@ -1,0 +1,76 @@
+<template>
+  <view>
+    <page-intro style="margin: 10px 20px 0;" content="本页演示 match-media 媒体查询组件：按 min-width、max-width、width、高度与 orientation 等条件匹配，控制子节点在不同屏幕下的显示。"></page-intro>
+    <view class="container">
+      <view class="section">
+        <text class="subtitle">基础条件匹配</text>
+
+        <match-media :min-width="400">
+          <view class="demo-box">屏幕宽度 ≥ 400px 时显示</view>
+        </match-media>
+
+        <match-media :max-width="600">
+          <view class="demo-box">屏幕宽度 ≤ 600px 时显示</view>
+        </match-media>
+
+        <match-media :width="375">
+          <view class="demo-box">屏幕宽度 = 375px 时显示</view>
+        </match-media>
+
+        <match-media :min-height="600">
+          <view class="demo-box">屏幕高度 ≥ 600px 时显示</view>
+        </match-media>
+
+        <match-media :max-height="800">
+          <view class="demo-box">屏幕高度 ≤ 800px 时显示</view>
+        </match-media>
+
+        <match-media :height="667">
+          <view class="demo-box">屏幕高度 = 667px 时显示</view>
+        </match-media>
+
+        <match-media orientation="portrait">
+          <view class="demo-box">竖屏 时显示</view>
+        </match-media>
+        <match-media orientation="landscape">
+          <view class="demo-box">横屏 时显示</view>
+        </match-media>
+      </view>
+      <view class="section">
+        <text class="subtitle">组合条件匹配</text>
+
+        <match-media :min-width="500" :max-width="1000" orientation="landscape">
+          <view class="demo-box">横屏 且宽度在 500px ~ 1000px 时显示</view>
+        </match-media>
+
+        <match-media :min-height="200" :max-height="800" orientation="portrait">
+          <view class="demo-box">竖屏 且高度在 200px ~ 800px 时显示</view>
+        </match-media>
+
+        <match-media :min-width="300" :max-width="900" :min-height="400" :max-height="800" orientation="portrait">
+          <view class="demo-box">竖屏 且宽度在 300px ~ 900px，高度在 400px ~ 800px 时显示</view>
+        </match-media>
+      </view>
+    </view>
+  </view>
+</template>
+
+<style>
+  .container {
+    padding: 20px;
+  }
+
+  .section {
+    padding-top: 5px;
+  }
+
+  .subtitle {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .demo-box {
+    padding: 5px 0;
+  }
+</style>

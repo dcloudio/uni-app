@@ -1,0 +1,79 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="margin: 15px;border-radius: 10px;background-color: white;">
+      <view v-for="index in [0,1,2,3,4,5,6,7,8,9]" :key="index"
+        :class="(index < 9 ? 'bb1' : '') + ' ' + (currentIndex == 0 ? 'btlr10 btrr10' : currentIndex == 9 ? 'bblr10 bbrr10' : '')"
+        style="flex-direction: row;align-items: center;padding: 15px"
+        :style="index == currentIndex ? 'background-color :#57BE6A;' : ''" @tap="changeIndex(index)">
+        <view>
+          <text style="font-size: 14px;" :style="index == currentIndex ? 'color: #FFFFFF;' : ''">{{ index }}</text>
+        </view>
+      </view>
+    </view>
+
+    <view style="margin: 15px;margin-top: 20px;">
+      <text>动态切换 border 为空值</text>
+      <text @click="setBorderBlank" class="common" :style="style">
+        {{isSelect?'选中':'未选中'}}
+      </text>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+  const defaultStyle = 'border:2px solid black;background :#57BE6A;'
+
+  const currentIndex = ref(0)
+  const style = ref('' as string)
+
+  const isSelect = computed(() : boolean => {
+    return style.value == defaultStyle
+  })
+
+  const changeIndex = (index : number) => {
+    currentIndex.value = index
+  }
+
+  const setBorderBlank = () => {
+    style.value = style.value == '' ? defaultStyle : ''
+  }
+	defineExpose({
+		changeIndex,
+		setBorderBlank
+	})
+</script>
+
+<style>
+  .common {
+    padding: 15px;
+    border-radius: 4px;
+    width: 120px;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .bb1 {
+    border-bottom: 1rpx solid #EEEEEE;
+  }
+
+  .btlr10 {
+    border-top-left-radius: 10rpx;
+  }
+
+  .btrr10 {
+    border-top-right-radius: 10rpx;
+  }
+
+  .bblr10 {
+    border-bottom-left-radius: 10rpx;
+  }
+
+  .bbrr10 {
+    border-bottom-right-radius: 10rpx;
+  }
+</style>

@@ -1,0 +1,178 @@
+<template>
+  <scroll-view class="scroll-view">
+    <unicloud-db ref="udbRef" v-slot:default="{data, loading, error}" :collection="collection" :where="where"
+      page-data="replace">
+      <view v-if="error!=null" class="error">{{error.errMsg}}</view>
+      <view v-if="loading" class="loading">正在加载...</view>
+      <form v-if="data.length>0" @submit="onFormSubmit">
+        <view class="form-item">
+          <text class="form-item-label">姓名</text>
+          <input class="form-item-input" placeholder="姓名" name="username" :value="data[0].getString('username')" />
+        </view>
+        <view class="form-item">
+          <text class="form-item-label">电话</text>
+          <input class="form-item-input" placeholder="电话" name="mobile" :value="data[0].getString('mobile')" />
+        </view>
+        <view class="form-item">
+          <text class="form-item-label">邮箱</text>
+          <input class="form-item-input" placeholder="邮箱地址" name="email" :value="data[0].getString('email')" />
+        </view>
+        <view class="form-item">
+          <text class="form-item-label">备注</text>
+          <textarea class="form-item-input-comment" placeholder="备注" name="comment" maxlength="-1"
+            :value="data[0].getString('comment')" />
+        </view>
+        <view class="form-item">
+          <text class="form-item-label">性别</text>
+          <radio-group class="radio-list" name="gender">
+            <view class="radio-item" v-for="(item, _) in genderList" :key="item.value">
+              <radio :value="item.value" :checked="item.value == data[0].getNumber('gender')" />
+              <text>{{item.text}}</text>
+            </view>
+          </radio-group>
+        </view>
+        <view class="btn-group">
+          <button class="btn-submit" type="primary" form-type="submit">保存</button>
+          <button class="btn-delete" type="warn"
+            @click="remove(data[0].getString('_id'), data[0].getString('username'))">删除联系人</button>
+        </view>
+      </form>
+    </unicloud-db>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+
+  import { COLLECTION_NAME, GenderType, GenderList, UNICLOUD_DB_CONTACTS_UPDATE, UNICLOUD_DB_CONTACTS_DELETE } from './types.uts'
+
+  const collection = ref('')
+  const where = ref('')
+  const genderList = ref(GenderList as GenderType[])
+  const whereID = ref('')
+  const udbRef = ref<UniCloudDBElement | null>(null)
+
+  function onFormSubmit(e : UniFormSubmitEvent) {
+    const formData = e.detail.value
+    const genderString = formData['gender'] as string
+    formData['gender'] = (genderString.length > 0) ? parseInt(genderString) : -1
+    if (udbRef.value != null) {
+      udbRef.value!.update(whereID.value, formData, {
+      showToast: false,
+      needLoading: true,
+      needConfirm: false,
+      loadingTitle: "正在保存...",
+      success: (_ : UniCloudDBUpdateResult) => {
+        // TODO 后续通过 EventChannel 实现
+        uni.$emit(UNICLOUD_DB_CONTACTS_UPDATE, whereID.value)
+        setTimeout(() => {
+          uni.navigateBack()
+        }, 500)
+      },
+        fail: (err : any | null) => {
+          const error = err as UniCloudError
+          uni.showModal({
+            content: error.errMsg,
+            showCancel: false
+          })
+        }
+      })
+    }
+  }
+  function remove(id : string | null, name : string | null) {
+    if (udbRef.value != null) {
+      udbRef.value!.remove(id!, {
+      needConfirm: true,
+      needLoading: true,
+      loadingTitle: "正在删除...",
+      confirmTitle: "确定删除?",
+      confirmContent: name,
+      success: (_ : UniCloudDBRemoveResult) => {
+        // TODO 后续通过 EventChannel 实现
+        uni.$emit(UNICLOUD_DB_CONTACTS_DELETE, whereID.value)
+        setTimeout(() => {
+          uni.navigateBack({
+            delta: 2
+          })
+        }, 500)
+      },
+        fail: (err : any | null) => {
+          const error = err as UniCloudError
+          uni.showModal({
+            content: error.errMsg,
+            showCancel: false
+          })
+        }
+      })
+    }
+  }
+
+  onLoad((options) => {
+    collection.value = COLLECTION_NAME;
+    whereID.value = options['id'] as string;
+    where.value = `_id=='${whereID.value}'`;
+  })
+</script>
+
+<style>
+  .page {
+    flex: 1;
+  }
+
+  .scroll-view {
+    padding: 15px;
+    flex: 1;
+  }
+
+  .loading {
+    align-items: center;
+  }
+
+  .form-item {
+    flex-direction: row;
+    margin-bottom: 15px;
+    align-items: center;
+  }
+
+  .form-item-label {
+    width: 45px;
+    margin-right: 10px;
+  }
+
+  .form-item-input {
+    flex: 1;
+    font-size: 14px;
+    color: #666;
+    border: 1px #e5e5e5 solid;
+    border-radius: 5px;
+    height: 34px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .form-item-input-comment {
+    flex: 1;
+    font-size: 14px;
+    color: #666;
+    border: 1px #e5e5e5 solid;
+    border-radius: 5px;
+    padding: 8px;
+  }
+
+  .radio-list {
+    flex-direction: row;
+  }
+
+  .radio-item {
+    flex-direction: row;
+    margin-right: 30px;
+    align-items: center;
+  }
+
+  .btn-group {
+    margin-top: 30px;
+  }
+
+  .btn-delete {
+    margin-top: 15px;
+  }
+</style>

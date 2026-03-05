@@ -1,0 +1,15 @@
+<template>
+  <view class="content">
+    <datacom class="datacom" collection="unicloud-db-test"></datacom>
+  </view>
+</template>
+
+<script setup lang="uts">
+import datacom from './datacom.uvue'
+</script>
+
+<style>
+  .content {
+    flex: 1;
+  }
+</style>

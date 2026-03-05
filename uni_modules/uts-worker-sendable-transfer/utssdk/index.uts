@@ -1,0 +1,78 @@
+import { UTSWorkerAddListenerOptions, UTSWorkerAddListenerOptionsSuccess, UTSWorkerSendWorkerMessageOptions } from './interface.uts';
+// #ifdef APP-HARMONY
+import { SendableObject } from './sendable.ets';
+// #endif
+
+export * from './interface.uts';
+
+type WorkerPostMessageOptions = {
+  harmonySendable ?: boolean
+  transfer ?: any[]
+}
+
+export class UTSSendableWorkerImpl {
+  private workerImp : Worker | null = null;
+  private options : UTSWorkerAddListenerOptions | null = null;
+
+  create() {
+    if (this.workerImp != null) {
+      console.warn('[UTS Plugin] Worker已存在，先销毁旧的Worker');
+      this.destroy();
+    }
+
+    console.log('[UTS Plugin] 创建Worker');
+    const worker = uni.createWorker('workers/sendableTransferWorker.uts');
+    this.workerImp = worker;
+  }
+
+  sendMessage(options : UTSWorkerSendWorkerMessageOptions) {
+    if (this.workerImp == null) {
+      console.error('Worker未创建，无法发送消息');
+      return;
+    }
+
+    let message = options.message;
+    const harmonySendable = options.harmonySendable;
+    const transfer = options.transfer;
+
+    console.log(`[UTS Plugin] 向Worker发送消息: ${message}`);
+
+    // #ifdef APP-HARMONY
+    if (harmonySendable) {
+      message = new SendableObject();
+    }
+    // #endif
+    this.workerImp!.postMessage(message, {
+      harmonySendable,
+      transfer
+    } as WorkerPostMessageOptions);
+  }
+
+  onMessage(options : UTSWorkerAddListenerOptions) {
+    if (this.workerImp == null) {
+      console.error('Worker未创建，无法监听消息');
+      return;
+    }
+
+    this.options = options;
+    this.workerImp!.onMessage((result) => {
+      // 处理Worker返回的消息
+      console.log(`[UTS Plugin] 收到Worker消息:`, result);
+
+      if (this.options != null && this.options.success != null) {
+        let success : UTSWorkerAddListenerOptionsSuccess = {
+          result: result as UTSJSONObject
+        }
+        this.options.success(success);
+      }
+    })
+  }
+  destroy() {
+    if (this.workerImp != null) {
+      console.log('[UTS Plugin] 销毁Worker');
+      this.workerImp.terminate();
+      this.workerImp = null;
+      this.options = null;
+    }
+  }
+}

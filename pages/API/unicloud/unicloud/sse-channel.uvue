@@ -1,0 +1,67 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <button @click="receiveMessage">接收服务端通知</button>
+      <view>
+        <view v-for="item in data.messages">{{item}}</view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+type DataType = {
+  messages: Array<string>,
+}
+
+const title = ref('服务端通知通道')
+const data = reactive({
+  messages: [] as Array<string>,
+} as DataType)
+
+async function receiveMessage() {
+  data.messages.splice(0, data.messages.length)
+  const sseChannel = new uniCloud.SSEChannel()
+  sseChannel.on('message', (message?: any | null) => {
+    if(typeof message === 'string') {
+      data.messages.push(message)
+    }
+  })
+  sseChannel.on('end', (message?: any | null) => {
+    if(typeof message === 'string') {
+      data.messages.push(message)
+    }
+  })
+  sseChannel.on('open', () => {
+    console.log('sseChannel open')
+  })
+  sseChannel.on('close', () => {
+    console.log('sseChannel close')
+  })
+  sseChannel.on('error', (error: UniCloudError) => {
+    console.log('sseChannel error: ' + error.message)
+  })
+  await sseChannel.open()
+  const res = await uniCloud.callFunction({
+    name: 'sse',
+    data: {
+      sseChannel
+    }
+  } as UniCloudCallFunctionOptions)
+  console.log(res)
+}
+
+defineExpose({
+  data,
+  receiveMessage
+})
+</script>
+
+<style>
+</style>

@@ -1,0 +1,56 @@
+<template>
+	<uni-badge-view :always-wrap-with-content="true" style="align-self: center;align-items: center;"
+		 :text="badgeText" :badge-class="badgeClass" :badge-style="badgeStyle" flatten>
+		<slot></slot>
+	</uni-badge-view>
+</template>
+
+<script setup lang="uts">
+// 定义组件属性
+type Props = {
+	/**
+	 * @description badge 的内容
+	 */
+	badgeText?: string,
+	/**
+	 * @description badge 的样式类
+	 */
+	badgeClass?: string.ClassString,
+	/**
+	 * @description badge 的内联样式
+	 */
+	badgeStyle?: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	badgeText: '0',
+	badgeClass: '',
+	badgeStyle: ''
+})
+
+// 从父组件注入数据和方法
+/* const currentIndex = inject<Ref<number>>('tabBarCurrentIndex', ref(0))
+const changeTab = inject<(index: number) => void>('tabBarChangeTab', (index: number) => {})
+const registerItem = inject<() => number>('tabListRegisterItem', () => 0) */
+
+// 当前项的索引
+// const itemIndex = ref<number>(-1)
+
+// 组件挂载时注册
+/* onMounted(() => {
+	itemIndex.value = registerItem()
+}) */
+
+// 计算是否激活
+/* const isActive = computed((): boolean => {
+	return currentIndex.value == itemIndex.value
+})
+ */
+// 处理点击事件
+/* function handleClick(): void {
+	// 需要注意，这个事件触发的前提是badge-view组件里的点击事情透传过去了，需要用$attr传递
+	if (itemIndex.value >= 0) {
+		changeTab(itemIndex.value)
+	}
+} */
+</script>

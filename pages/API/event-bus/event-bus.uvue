@@ -1,0 +1,141 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+    <!-- #endif -->
+    <view class="box">
+      <button class="uni-btn" @click="on">开始监听</button>
+      <button class="uni-btn" @click="once">监听一次</button>
+      <button class="uni-btn" @click="off">取消监听</button>
+      <!-- <button @click="offAll">取消全部监听</button> -->
+      <button class="uni-btn" @click="emit">触发监听</button>
+      <button class="uni-btn" @click="clear">清空消息</button>
+      <view>
+        <view class="uni-btn">收到的消息：</view>
+        <view class="uni-btn">
+          <view v-for="(item, index) in data.log" :key="index">{{ item }}</view>
+        </view>
+        <button class="uni-btn" @click="onObj">开始监听 obj 参数</button>
+        <button class="uni-btn" @click="emitWithObj">触发监听 obj 参数</button>
+        <view class='uni-btn'>
+          <text>接收到的 obj 参数：</text>
+          <text>{{ JSON.stringify(data.objArg) }}</text>
+        </view>
+        <button class='uni-btn' @click="testReturnId">测试返回 id</button>
+        <button class='uni-btn' @click="testEmitNoArgs">测试 $emit 无参</button>
+        <button class='uni-btn' @click="testEmitMultipleArgs">测试 $emit 多个参数</button>
+      </view>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  type DataType = {
+    log: string[];
+    objArg: UTSJSONObject;
+  }
+
+  const data = reactive({
+    log: [],
+    objArg: {},
+  } as DataType)
+
+  const fn = (res : string) => {
+    data.log.push(res)
+  }
+  
+  const fn2 = (res : string) => {
+    data.log.push(res)
+  }
+  
+  const on = () => {
+    uni.$on('test', fn)
+  }
+  
+  const on2 = () => {
+    uni.$on('test', fn2)
+  }
+  
+  const onObj = () => {
+    uni.$on('test-obj', (res : UTSJSONObject) => {
+      data.objArg = res
+    })
+  }
+  
+  const once = () => {
+    uni.$once('test', fn)
+  }
+  
+  const off = () => {
+    uni.$off('test', fn)
+  }
+  
+  const offAll = () => {
+    uni.$off('test')
+  }
+  
+  const emit = () => {
+    uni.$emit('test', 'msg:' + Date.now())
+  }
+  
+  const emitWithObj = () => {
+    uni.$emit('test-obj', { a: 1, b: 2 })
+  }
+  
+  const clear = () => {
+    data.log.length = 0
+  }
+  
+  const testReturnId = () => {
+    const id1 = uni.$on('test-return-id', fn)
+    uni.$emit('test-return-id', '触发 test-return-id $on fn')
+    uni.$off('test-return-id', id1)
+    uni.$emit('test-return-id', '触发 test-return-id $on fn')
+
+    uni.$once('test-return-id', fn)
+    uni.$emit('test-return-id', '触发 test-return-id $once fn')
+    uni.$emit('test-return-id', '触发 test-return-id $once fn')
+    const id2 = uni.$once('test-id', fn)
+    uni.$off('test-return-id', id2)
+    uni.$emit('test-return-id', '触发 test-return-id $once fn')
+  }
+  
+  const testEmitNoArgs = () => {
+    uni.$on('test-emit-no-args', () => {
+      data.log.push('test-emit-no-args')
+    })
+    uni.$emit('test-emit-no-args')
+    uni.$off('test-emit-no-args')
+  }
+  
+  const testEmitMultipleArgs = () => {
+    uni.$on('test-emit-multiple-args', (arg1 : string, arg2 : number) => {
+      data.log.push(`${arg1}_${arg2}`)
+    })
+    uni.$emit('test-emit-multiple-args', 'arg1', 2)
+    uni.$off('test-emit-multiple-args')
+  }
+  
+  defineExpose({
+    data,
+    on,
+    on2,
+    onObj,
+    once,
+    off,
+    offAll,
+    emit,
+    emitWithObj,
+    clear,
+    testReturnId,
+    testEmitNoArgs,
+    testEmitMultipleArgs
+  })
+</script>
+
+<style>
+.box {
+  padding: 10px;
+}
+</style>

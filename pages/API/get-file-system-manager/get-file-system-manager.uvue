@@ -1,0 +1,2130 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="本页演示文件系统 API：递归获取目录、创建文件夹、读写/复制/重命名/删除文件、同步与异步接口等，操作结果在日志区展示。"></page-intro>
+  <text>显示简易操作日志(可滚动查看),详细日志需真机运行查看</text><button size="mini" @click="data.log=''">清空日志</button>
+  <scroll-view style="max-height: 300px;">
+    <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ data.log }}</text>
+  </scroll-view>
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <!-- #ifdef MP -->
+    <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ data.log }}</text>
+    <!-- #endif -->
+    <button class="btnstyle" type="primary" @tap="statFileInfoTest"
+      id="btn-stat-file">递归获取目录files的Stats对象{{data.statFile}}</button>
+    <button class="btnstyle" type="primary" @tap="mkdirTest" id="btn-mkdir">创建文件夹{{data.mkdirFile}}</button>
+    <button class="btnstyle" type="primary" @tap="writeFileTest" id="btn-write-file">覆盖写入文件{{data.writeFile}}</button>
+    <button class="btnstyle" type="primary" @tap="readDirTest" id="btn-read-dir">读取文件夹{{data.readDir}}</button>
+    <button class="btnstyle" type="primary" @tap="readFileTest" id="btn-read-file">读取文件{{data.readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="copyFileTest"
+      id="btn-copy-file">复制文件{{data.copyFromFile}}到{{data.copyToFile}}</button>
+    <button class="btnstyle" type="primary" @tap="renameFileTest"
+      id="btn-rename-file">重命名文件{{data.renameFromFile}}到{{data.renameToFile}}</button>
+    <button class="btnstyle" type="primary" @tap="accessFileTest"
+      id="btn-access-file">判断文件{{data.accessFile}}是否存在</button>
+    <button class="btnstyle" type="primary" @tap="getFileInfoTest"
+      id="btn-get-file-info">获取文件信息{{data.getFileInfoFile}}</button>
+    <button class="btnstyle" type="primary" @tap="unlinkTest" id="btn-unlink-file">删除文件{{data.unlinkFile}}</button>
+    <button class="btnstyle" type="primary" @tap="unlinkAllFileTest"
+      id="btn-clear-file">删除文件夹{{data.rmDirFile}}下的所有文件</button>
+    <button class="btnstyle" type="primary" @tap="rmdirTest" id="btn-remove-dir">删除文件夹{{data.rmDirFile}}</button>
+
+    <button class="btnstyle" type="primary" @tap="statFileInfoSyncTest"
+      id="btn-stat-file-sync">同步递归获取目录files的Stats对象{{data.statFile}}</button>
+    <button class="btnstyle" type="primary" @tap="appendFileTest"
+      id="btn-append-file">在文件{{data.readFile}}结尾追加内容</button>
+    <button class="btnstyle" type="primary" @tap="appendFileSyncTest"
+      id="btn-append-file-sync">同步在文件{{data.readFile}}结尾追加内容</button>
+    <button class="btnstyle" type="primary" @tap="writeFileSyncTest"
+      id="btn-write-file-sync">同步覆盖写入文件{{data.writeFile}}</button>
+    <button class="btnstyle" type="primary" @tap="readFileSyncTest"
+      id="btn-read-file-sync">同步读取文件{{data.readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="unlinkSyncTest"
+      id="btn-unlink-file-sync">同步删除文件{{data.unlinkFile}}</button>
+    <button class="btnstyle" type="primary" @tap="mkdirSyncTest" id="btn-mkdir-sync">同步创建文件夹{{data.mkdirFile}}</button>
+    <button class="btnstyle" type="primary" @tap="rmdirSyncTest"
+      id="btn-remove-dir-sync">同步删除文件夹{{data.rmDirFile}}</button>
+    <button class="btnstyle" type="primary" @tap="readDirSyncTest"
+      id="btn-read-dir-sync">同步读取文件夹{{data.readDir}}</button>
+    <button class="btnstyle" type="primary" @tap="accessFileSyncTest"
+      id="btn-access-file-sync">同步判断文件{{data.accessFile}}是否存在</button>
+    <button class="btnstyle" type="primary" @tap="renameFileSync"
+      id="btn-rename-file-sync">同步重命名文件{{data.renameFromFile}}到{{data.renameToFile}}</button>
+    <button class="btnstyle" type="primary" @tap="copyFileSyncTest"
+      id="btn-copy-file-sync">同步复制文件{{data.copyFromFile}}到{{data.copyToFile}}</button>
+    <button class="btnstyle" type="primary" @tap="removeSavedFileTest" id="btn-remove-saved-file">删除已保存的本地文件</button>
+    <button class="btnstyle" type="primary" @tap="getSavedFileListTest"
+      id="btn-getsaved-filelist">获取该已保存的本地缓存文件列表</button>
+    <button class="btnstyle" type="primary" @tap="truncateFileTest"
+      id="btn-truncate-file">对文件{{data.writeFile}}内容进行截断操作</button>
+    <button class="btnstyle" type="primary" @tap="openFileTest" id="btn-open-file">打开文件{{data.readFile}}，返回描述符</button>
+    <button class="btnstyle" type="primary" @tap="openFileSyncTest('r',true)"
+      id="btn-open-file-sync">同步打开文件{{data.readFile}}，返回描述符</button>
+    <button class="btnstyle" type="primary" @tap="closeTest" id="btn-close-file">通过文件描述符关闭文件{{data.readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="closeSyncTest"
+      id="btn-close-file-sync">通过文件描述符同步关闭文件{{data.readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="writeTest" id="btn-write">通过文件描述符写入文件{{data.readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="writeSyncTest"
+      id="btn-write-sync">同步通过文件描述符写入文件{{data.readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="fstatTest"
+      id="btn-fstat-file">通过文件描述符获取{{data.statFile}}的状态信息</button>
+    <button class="btnstyle" type="primary" @tap="fstatSyncTest"
+      id="btn-fstat-file-sync">同步通过文件描述符获取{{data.statFile}}的状态信息</button>
+    <button class="btnstyle" type="primary" @tap="ftruncateFileTest"
+      id="btn-ftruncate-file">通过文件描述符对文件{{data.writeFile}}内容进行截断</button>
+    <button class="btnstyle" type="primary" @tap="ftruncateFileSyncTest"
+      id="btn-ftruncate-file-sync">同步通过文件描述符对文件{{data.writeFile}}内容进行截断</button>
+    <button class="btnstyle" type="primary" @tap="testWriteReadFileBuffer" id="btn-writereadfile-buffer">写入/读取
+      ArrayBuffer</button>
+    <button class="btnstyle" type="primary" @tap="testWriteReadBuffer" id="btn-writeread-buffer">通过文件描述符写入/读取
+      ArrayBuffer</button>
+    <button class="btnstyle" type="primary" @tap="testWriteReadSyncBuffer" id="btn-writereadsync-buffer">通过文件描述符同步写入/读取
+      ArrayBuffer</button>
+    <button class="btnstyle" type="primary" @tap="testAppendFileBuffer" id="btn-appendfile-buffer">在文件末尾追加
+      ArrayBuffer</button>
+    <button class="btnstyle" type="primary" @tap="testAppendFileBufferSync" id="btn-appendfilesync-buffer">同步在文件末尾追加
+      ArrayBuffer</button>
+
+    <!-- #ifdef APP -->
+    <button class="btnstyle" type="primary" @tap="copyStaticToFilesTest"
+      id="btn-copyStatic-file">从static目录复制文件到a目录</button>
+    <button class="btnstyle" type="primary" @tap="saveFileTest" id="btn-save-file">保存临时文件到本地, filePath=null</button>
+    <button class="btnstyle" type="primary" @tap="saveFileTest1" id="btn-save-file1">保存临时文件到本地,
+      filePath=xxx/path.txt</button>
+    <button class="btnstyle" type="primary" @tap="saveFileTest2" id="btn-save-file2">保存临时文件到本地,
+      filePath=xxx/path</button>
+    <button class="btnstyle" type="primary" @tap="saveFileTest3" id="btn-save-file3">保存临时文件到本地,
+      filePath=xxx/path/</button>
+
+    <button class="btnstyle" type="primary" @tap="saveFileAndReadFileTest" id="btn-save-file-read-file">saveFile成功后验证是否可以readFile</button>
+    <button class="btnstyle" type="primary" @tap="saveFileSyncTest" id="btn-save-file-sync">同步保存临时文件到本地</button>
+    <button class="btnstyle" type="primary" @tap="unzipFileTest" id="btn-unzip-file-sync">解压文件</button>
+    <button class="btnstyle" type="primary" @tap="truncateFileSyncTest"
+      id="btn-truncate-file-sync">同步对文件{{data.writeFile}}内容进行截断操作</button>
+    <button class="btnstyle" type="primary" @tap="readCompressedFileTest"
+      id="btn-compressed-file">读取指定压缩类型的本地文件内容</button>
+    <button class="btnstyle" type="primary" @tap="readCompressedFileSyncTest"
+      id="btn-compressed-file-sync">同步读取指定压缩类型的本地文件内容</button>
+    <button class="btnstyle" type="primary" @tap="readZipEntry" id="btn-readzip-entry">读取压缩包内的文件</button>
+    <button class="btnstyle" type="primary" @tap="testWriteReadFileSyncBuffer" id="btn-writereadfilesync-buffer">同步写入/读取
+      ArrayBuffer</button>
+    <button class="btnstyle" type="primary" @tap="testReadFileEncoding('base64')">readFile(content://base64)</button>
+    <button class="btnstyle" type="primary" @tap="testReadFileEncoding('utf-8')">readFile(content://utf-8)</button>
+    <button class="btnstyle" type="primary" @tap="testReadFileEncoding('ascii')">readFile(content://ascii)</button>
+    <button class="btnstyle" type="primary" @tap="testReadFileArrayBuffer()">readFile(content://arraybuffer)</button>
+    <button class="btnstyle" type="primary"
+      @tap="testReadFileSyncEncoding('base64')">readFileSync(content://base64)</button>
+    <button class="btnstyle" type="primary"
+      @tap="testReadFileSyncEncoding('utf-8')">readFileSync(content://utf-8)</button>
+    <button class="btnstyle" type="primary"
+      @tap="testReadFileSyncEncoding('ascii')">readFileSync(content://ascii)</button>
+    <button class="btnstyle" type="primary"
+      @tap="testReadFileSyncArrayBuffer()">readFileSync(content://arraybuffer)</button>
+    <button class="btnstyle" type="primary" @tap="copyFileByContent()">copyFile(content://)</button>
+    <button class="btnstyle" type="primary" @tap="copyFileSyncByContent()">copyFileSync(content://)</button>
+    <button class="btnstyle" type="primary" @tap="getFileInfoByContent">getFileInfo(content://)</button>
+
+    <!-- #endif -->
+    <button class="btnstyle" type="primary" @tap="gotoExplore()">前往沙盒文件管理器</button>
+    <button class="btnstyle" type="primary" @tap="gotoTestStatic()">前往Static文件测试</button>
+    <button class="btnstyle" type="primary" @tap="gotoIssue26433()">test issue-26433</button>
+    <view style="height: 4px;"></view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  type DataType = {
+    log : string
+    logAble : boolean
+    fileListSuccess : string[]
+    fileListComplete : string[]
+    accessFileRet : string
+    lastFailError : UniError
+    lastCompleteError : UniError
+    readDir : string
+    readFileRet : string
+    writeFileContent : string
+    appendFileContent : string
+    getFileInfoAlgorithm : string
+    getFileInfoSize : number
+    getFileInfoDigest : string
+    unlinkFile : string
+    accessFile : string
+    writeFile : string
+    writeData : string
+    brFile : string
+    temFile : string
+    copyFromFile : string
+    copyToFile : string
+    renameFromFile : string
+    renameToFile : string
+    getFileInfoFile : string
+    statFile : string
+    rmDirFile : string
+    mkdirFile : string
+    readFile : string
+    recursiveVal : boolean
+    done : boolean
+    writeFileEncoding : string
+    readFileEncoding : string
+    statsRet : Array<FileStats>
+    unzipFile : string
+    targetZip : string
+    renameFileRet : string
+    saveFileRet : string
+    removeSavedFileRet : string
+    fd : string
+    closeFileRet : string
+    bytesWritten : number
+    fstat : Stats | null
+    fstatSize : number
+    ftruncateRet : string
+    readZipFile : string
+    getSavedFileListRet : string
+    arrayBufferRes : number
+    basePath : string
+    copyToBasePath : string
+    globalTempPath : string
+    globalRootPath : string
+    globalUserDataPath : string
+    testOpenFlataplusWrite:boolean
+  }
+
+  const data = reactive({
+    log: "",
+    /**
+     * 自动化测试需要关闭log
+     */
+    logAble: true,
+    fileListSuccess: [] as string[],
+    fileListComplete: [] as string[],
+    accessFileRet: '',
+    lastFailError: new UniError("uni-file-manager", 1300000, "mock error"),
+    lastCompleteError: new UniError("uni-file-manager", 1300000, "mock error"),
+    readDir: 'a',
+    readFileRet: "",
+    writeFileContent: "中文 en.\r\n\t换行",
+    appendFileContent: "append content",
+    getFileInfoAlgorithm: "md5",
+    getFileInfoSize: -1,
+    getFileInfoDigest: "",
+    unlinkFile: 'a/1.txt',
+    accessFile: 'a/1.txt',
+    writeFile: 'a/1.txt',
+    writeData: 'insert data哈哈哈',
+    brFile: 'a/1.txt.br',
+    temFile: 'a/1.txt',
+    copyFromFile: 'a/1.txt',
+    copyToFile: 'a/2.txt',
+    renameFromFile: 'a/2.txt',
+    renameToFile: 'a/3.txt',
+    getFileInfoFile: 'a/1.txt',
+    statFile: '',
+    rmDirFile: 'a',
+    mkdirFile: 'a',
+    readFile: 'a/1.txt',
+    recursiveVal: true,
+    done: false,
+    writeFileEncoding: "utf-8",
+    readFileEncoding: "utf-8",
+    statsRet: [] as Array<FileStats>,
+    unzipFile: 'zip/1.zip',
+    targetZip: "unzip",
+    renameFileRet: '',
+    saveFileRet: '',
+    removeSavedFileRet: '',
+    fd: '',
+    closeFileRet: '',
+    bytesWritten: 0,
+    fstat: null as Stats | null,
+    fstatSize: 0,
+    ftruncateRet: '',
+    readZipFile: 'to.zip',
+    getSavedFileListRet: '',
+    arrayBufferRes: 0,
+    testOpenFlataplusWrite:false,
+    /**
+     * 待测试的全局环境变量
+     */
+    // #ifdef MP-WEIXIN
+    basePath: uni.env.USER_DATA_PATH + '/',
+    copyToBasePath: uni.env.USER_DATA_PATH + '/',
+    // TODO uni.env类型拉齐
+    globalTempPath: uni.env.CACHE_PATH || '',
+    globalRootPath: uni.env.SANDBOX_PATH || '',
+    globalUserDataPath: uni.env.USER_DATA_PATH + '/',
+    // #endif
+    // #ifndef MP-WEIXIN
+    basePath: uni.env.USER_DATA_PATH,
+    copyToBasePath: uni.env.USER_DATA_PATH,
+    globalTempPath: uni.env.CACHE_PATH,
+    globalRootPath: uni.env.SANDBOX_PATH,
+    globalUserDataPath: uni.env.USER_DATA_PATH,
+    // #endif
+  } as DataType)
+
+  const statFileInfoTest = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.stat({
+      path: `${data.basePath}${data.statFile}`, //USER_DATA_PATH
+      // path: `${data.globalTempPath}${data.statFile}`, //CACHE_PATH
+      recursive: data.recursiveVal,
+      success: (res : StatSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'statFileInfoTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('statFileInfoTest success', res)
+        data.statsRet = res.stats
+        console.log('data.statsRet', data.statsRet)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'statFileInfoTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('statFileInfoTest fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+      },
+      complete: (res : any) => {
+        console.log("statFileInfoTest complete", res)
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+      }
+    } as StatOptions)
+  }
+
+  const getFileInfoTest = () => {
+    const fileManager = uni.getFileSystemManager()
+
+    fileManager.getFileInfo({
+      filePath: `${data.basePath}${data.getFileInfoFile}`,
+      digestAlgorithm: data.getFileInfoAlgorithm,
+      success: (res : GetFileInfoSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'getFileInfoTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('success', res)
+        data.getFileInfoSize = res.size
+        data.getFileInfoDigest = res.digest
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'getFileInfoTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+      },
+      complete: (res : any) => {
+        console.log("complete", res)
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+      }
+    } as GetFileInfoOptions)
+  }
+  const copyFileTest = () => {
+    const fileManager = uni.getFileSystemManager()
+
+    fileManager.copyFile({
+      srcPath: `${data.basePath}${data.copyFromFile}`,
+      destPath: `${data.copyToBasePath}${data.copyToFile}`,
+      success: (res : FileManagerSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'copyFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('success', res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'copyFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+      },
+      complete: (res : any) => {
+        console.log("complete", res)
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+      }
+    } as CopyFileOptions)
+  }
+
+  const renameFileTest = () => {
+    const fileManager = uni.getFileSystemManager()
+
+    fileManager.rename({
+      oldPath: `${data.basePath}${data.renameFromFile}`,
+      newPath: `${data.basePath}${data.renameToFile}`,
+      success: (res) => {
+        if (data.logAble) {
+          data.log += 'renameFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        data.renameFileRet = "rename:ok"
+        console.log('success', res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'renameFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+      },
+      complete: (res : any) => {
+        data.done = true
+        console.log("complete", res)
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+      }
+    } as RenameOptions)
+  }
+
+  const readDirTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.readdir({
+      dirPath: `${data.basePath}${data.readDir}`,
+      success: (res : ReadDirSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'readDirTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log("success", res)
+        data.fileListSuccess = res.files
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'readDirTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+      },
+      complete: (res : any) => {
+        console.log("complete", res)
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        } else {
+          data.fileListComplete = (res as ReadDirSuccessResult).files
+        }
+      }
+    } as ReadDirOptions)
+  }
+
+  const writeFileTest = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+
+    fileManager.writeFile({
+      filePath: `${data.basePath}${data.writeFile}`,
+      data: data.writeFileContent,
+      encoding: data.writeFileEncoding,
+      success: (res) => {
+        if (data.logAble) {
+          data.log += 'writeFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('success', res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'writeFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail')
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+      },
+      complete: (res : any) => {
+        data.done = true
+        console.log("complete")
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+
+      }
+    } as WriteFileOptions)
+  }
+
+  const readFileTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.readFile({
+      filePath: `${data.basePath}${data.readFile}`,
+      encoding: data.readFileEncoding,
+      success: (res : ReadFileSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'readFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('success', res)
+        data.readFileRet = res.data.toString()
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'readFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+      },
+      complete: (res : any) => {
+        console.log("complete", res)
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+      }
+    } as ReadFileOptions)
+  }
+
+  const rmdirTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.rmdir({
+      dirPath: `${data.basePath}${data.rmDirFile}`,
+      recursive: data.recursiveVal,
+      success: (res : FileManagerSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'rmdirTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('success', res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'rmdirTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+      },
+      complete: (res : any) => {
+        console.log("complete", res)
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+      }
+    } as RmDirOptions)
+  }
+
+  const mkdirTest = () => {
+    // 准备测试数据
+    const fileManager = uni.getFileSystemManager()
+
+    fileManager.mkdir({
+      dirPath: `${data.basePath}${data.mkdirFile}`,
+      recursive: data.recursiveVal,
+      success: (res : FileManagerSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'mkdirTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('success', res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'mkdirTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (res : any) => {
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+        data.done = true
+        console.log("complete", res)
+      }
+    } as MkDirOptions)
+
+  }
+  const accessFileTest = () => {
+    data.accessFileRet = ''
+    const fileManager = uni.getFileSystemManager()
+    fileManager.access({
+      path: `${data.basePath}${data.accessFile}`,
+      success: (res : FileManagerSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'accessFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('success', res)
+        data.accessFileRet = res.errMsg
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'accessFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (res : any) => {
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+        console.log("complete", res)
+        data.done = true
+      }
+    } as AccessOptions)
+
+  }
+  const unlinkTest = () => {
+    const fileManager = uni.getFileSystemManager()
+
+    fileManager.unlink({
+      filePath: `${data.basePath}${data.unlinkFile}`,
+      success: (res : FileManagerSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'unlinkTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('success', res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'unlinkTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (res : any) => {
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+        console.log("complete", res)
+        data.done = true
+      }
+    } as UnLinkOptions)
+  }
+  const unlinkAllFileTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.readdir({
+      dirPath: `${data.basePath}${data.rmDirFile}`,
+      success: (res : ReadDirSuccessResult) => {
+        console.log("success to readdir", res)
+        res.files.forEach(element => {
+          console.log(element)
+          let filePath : string
+          if (data.rmDirFile.length <= 0) {
+            filePath = `${data.basePath}${element}`
+          } else {
+            filePath = `${data.basePath}${data.rmDirFile}/${element}`
+          }
+          fileManager.unlink({
+            filePath: filePath,
+            success: (res : FileManagerSuccessResult) => {
+              if (data.logAble) {
+                data.log += 'unlinkAllFileTest success:' + JSON.stringify(res) + '\n\n'
+              }
+              console.log('success unlink', res)
+            },
+            fail: (res : IUniError) => {
+              if (data.logAble) {
+                data.log += 'unlinkAllFileTest fail:' + JSON.stringify(res) + '\n\n'
+              }
+              console.log('fail unlink', res)
+              data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+            },
+            complete: (res : any) => {
+              if (res instanceof UniError) {
+                data.lastCompleteError = res
+              }
+              console.log("complete unlink", res)
+              data.done = true
+            }
+          } as UnLinkOptions)
+        });
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'unlinkAllFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail to readdir', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (res : any) => {
+        console.log("complete readdir", res)
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        } else {
+          data.fileListComplete = (res as ReadDirSuccessResult).files
+        }
+      }
+    } as ReadDirOptions)
+  }
+  const copyStaticToFilesTest = () => {
+    const fileManager = uni.getFileSystemManager()
+
+    fileManager.copyFile({
+      srcPath: "/static/list-mock/mock.json",
+      destPath: `${data.copyToBasePath}/a/mock.json`,
+      success: (res : FileManagerSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'copyFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('success', res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'copyFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (res : any) => {
+        console.log("complete", res)
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+      }
+    } as CopyFileOptions)
+  }
+  //start
+  const appendFileTest = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.appendFile({
+      filePath: `${data.basePath}${data.writeFile}`,
+      data: data.appendFileContent,
+      encoding: data.writeFileEncoding,
+      success: (res : FileManagerSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'appendFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('success', res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'appendFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail')
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (res : any) => {
+        data.done = true
+        console.log("complete")
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+
+      }
+    } as AppendFileOptions)
+  }
+  const writeFileSyncTest = (_ : any) => {
+    try {
+      const fileManager = uni.getFileSystemManager()
+      fileManager.writeFileSync(`${data.basePath}${data.writeFile}`, data.writeFileContent, data.writeFileEncoding)
+      if (data.logAble) {
+        data.log += 'writeFileSyncTest success:' + '\n\n'
+      }
+      data.done = true
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'writeFileSyncTest fail:' + e + '\n\n'
+      }
+      data.done = true
+    }
+
+  }
+  const readFileSyncTest = () => {
+    try {
+      const fileManager = uni.getFileSystemManager()
+      let result = fileManager.readFileSync(
+        `${data.basePath}${data.readFile}`,
+        data.readFileEncoding)
+      if (data.logAble) {
+        data.log += 'readFileSyncTest result:' + result + '\n\n'
+      }
+      data.done = true
+      data.readFileRet = result.toString()
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'readFileSyncTest fail:' + e + '\n\n'
+      }
+      data.done = true
+    }
+
+  }
+  const unlinkSyncTest = () => {
+    try {
+      const fileManager = uni.getFileSystemManager()
+      fileManager.unlinkSync(
+        `${data.basePath}${data.unlinkFile}`)
+      data.done = true
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'unlinkSyncTest fail:' + e + '\n\n'
+      }
+      data.done = true
+    }
+  }
+  const mkdirSyncTest = () => {
+    // 准备测试数据
+    try {
+      const fileManager = uni.getFileSystemManager()
+      fileManager.mkdirSync(`${data.basePath}${data.mkdirFile}`, data.recursiveVal)
+      data.done = true
+    } catch (e) {
+      data.done = true
+      if (data.logAble) {
+        data.log += 'mkdirSyncTest fail:' + e + '\n\n'
+      }
+    }
+
+  }
+  const rmdirSyncTest = () => {
+    try {
+      const fileManager = uni.getFileSystemManager()
+      fileManager.rmdirSync(
+        `${data.basePath}${data.rmDirFile}`,
+        data.recursiveVal)
+      data.done = true
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'rmdirSyncTest fail:' + e + '\n\n'
+      }
+      data.done = true
+    }
+  }
+  const readDirSyncTest = () => {
+    try {
+      const fileManager = uni.getFileSystemManager()
+      let res = fileManager.readdirSync(
+        `${data.basePath}${data.readDir}`)
+      if (data.logAble) {
+        data.log += 'readDirTest success:' + JSON.stringify(res) + '\n\n'
+      }
+      if (res != null) {
+        data.fileListSuccess = res
+      }
+      data.done = true
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'rmdirSyncTest fail:' + e + '\n\n'
+      }
+      data.done = true
+    }
+  }
+  const accessFileSyncTest = () => {
+    data.accessFileRet = ''
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.accessSync(`${data.basePath}${data.accessFile}`)
+      data.done = true
+      data.accessFileRet = 'access:ok'
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'rmdirSyncTest fail:' + e + '\n\n'
+      }
+      data.done = true
+    }
+  }
+  const renameFileSync = () => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.renameSync(`${data.basePath}${data.renameFromFile}`,
+        `${data.basePath}${data.renameToFile}`)
+      data.done = true
+      data.renameFileRet = "rename:ok"
+
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'rmdirSyncTest fail:' + e + '\n\n'
+      }
+      console.log('renameSync:' + e)
+      data.done = true
+    }
+  }
+  const copyFileSyncTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.copyFileSync(
+        `${data.basePath}${data.copyFromFile}`,
+        `${data.copyToBasePath}${data.copyToFile}`)
+      data.done = true
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'rmdirSyncTest fail:' + e + '\n\n'
+      }
+      data.done = true
+    }
+  }
+  const appendFileSyncTest = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.appendFileSync(
+        `${data.basePath}${data.writeFile}`,
+        data.appendFileContent,
+        data.writeFileEncoding)
+      data.done = true
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'rmdirSyncTest fail:' + e + '\n\n'
+      }
+      data.done = true
+    }
+  }
+
+  const saveFileTest = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+    writeFileSyncTest("")
+    fileManager.saveFile({
+      tempFilePath: `${data.basePath}${data.temFile}`,
+      success: (res : SaveFileSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('success', res)
+        data.saveFileRet = res.savedFilePath
+        data.done = true
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('saveFileTest fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+        data.done = true
+      },
+      complete: (_) => {
+        data.done = true
+      }
+    } as SaveFileOptions)
+  }
+
+  const saveFileAndReadFileTest = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+    writeFileSyncTest("")
+
+    fileManager.saveFile({
+      tempFilePath: `${data.basePath}${data.temFile}`,
+      success: (res : SaveFileSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        fileManager.readFile({
+          encoding: 'utf-8',
+          filePath: res.savedFilePath,
+          success: (res) => {
+            data.log += 'saveFileAndReadFileTest 成功:' + JSON.stringify(res.data) + '\n\n'
+            console.log('success', res)
+            data.readFileRet = 'saveFileAndReadFileTest:ok'
+            data.done = true
+          },
+          fail: (err) => {
+            data.log += 'saveFileAndReadFileTest 失败:' + JSON.stringify(err.errMsg) + '\n\n'
+            data.done = true
+          }
+        })
+
+      },
+
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('saveFileTest fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+        data.done = true
+      },
+      complete: (_) => {
+        data.done = true
+      }
+    } as SaveFileOptions)
+  }
+
+  const saveFileTest1 = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+    writeFileSyncTest("")
+    fileManager.access({
+      path: `${data.basePath}local`,
+      success: () => {
+        if (fileManager.fstatSync({ fd: fileManager.openSync({ filePath: `${data.basePath}local`, flag: "r" }) }).isDirectory()) {
+          fileManager.rmdirSync(`${data.basePath}local`, true)
+        } else {
+          fileManager.unlinkSync(`${data.basePath}local`)
+        }
+        fileManager.saveFile({
+          tempFilePath: `${data.basePath}${data.temFile}`,
+          filePath: `${data.basePath}local/1.txt`,
+          success: (res : SaveFileSuccessResult) => {
+            if (data.logAble) {
+              data.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('success', res)
+            data.saveFileRet = res.savedFilePath
+            data.done = true
+          },
+          fail: (res : IUniError) => {
+            if (data.logAble) {
+              data.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('saveFileTest fail', res)
+            data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+            data.done = true
+          },
+          complete: (_) => {
+            data.done = true
+          }
+        } as SaveFileOptions)
+      },
+      fail: () => {
+        fileManager.saveFile({
+          tempFilePath: `${data.basePath}${data.temFile}`,
+          filePath: `${data.basePath}local/1.txt`,
+          success: (res : SaveFileSuccessResult) => {
+            if (data.logAble) {
+              data.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('success', res)
+            data.saveFileRet = res.savedFilePath
+            data.done = true
+          },
+          fail: (res : IUniError) => {
+            if (data.logAble) {
+              data.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('saveFileTest fail', res)
+            data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+            data.done = true
+          },
+          complete: (_) => {
+            data.done = true
+          }
+        } as SaveFileOptions)
+      }
+    })
+  }
+  const saveFileTest2 = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+    writeFileSyncTest("")
+    fileManager.access({
+      path: `${data.basePath}local`,
+      success: () => {
+        if (fileManager.fstatSync({ fd: fileManager.openSync({ filePath: `${data.basePath}local`, flag: "r" }) }).isDirectory()) {
+          fileManager.rmdirSync(`${data.basePath}local`, true)
+        } else {
+          fileManager.unlinkSync(`${data.basePath}local`)
+        }
+        fileManager.saveFile({
+          tempFilePath: `${data.basePath}${data.temFile}`,
+          filePath: `${data.basePath}local`,
+          success: (res : SaveFileSuccessResult) => {
+            if (data.logAble) {
+              data.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('success', res)
+            data.saveFileRet = res.savedFilePath
+            data.done = true
+          },
+          fail: (res : IUniError) => {
+            if (data.logAble) {
+              data.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('saveFileTest fail', res)
+            data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+            data.done = true
+          },
+          complete: (_) => {
+            data.done = true
+          }
+        } as SaveFileOptions)
+      }
+    })
+  }
+  const saveFileTest3 = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+    writeFileSyncTest("")
+    fileManager.access({
+      path: `${data.basePath}local`,
+      success: () => {
+        if (fileManager.fstatSync({ fd: fileManager.openSync({ filePath: `${data.basePath}local`, flag: "r" }) }).isDirectory()) {
+          fileManager.rmdirSync(`${data.basePath}local`, true)
+        } else {
+          fileManager.unlinkSync(`${data.basePath}local`)
+        }
+
+        fileManager.saveFile({
+          tempFilePath: `${data.basePath}${data.temFile}`,
+          filePath: `${data.basePath}local/`,
+          success: (res : SaveFileSuccessResult) => {
+            if (data.logAble) {
+              data.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('success', res)
+            data.saveFileRet = res.savedFilePath
+            data.done = true
+          },
+          fail: (res : IUniError) => {
+            if (data.logAble) {
+              data.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('saveFileTest fail', res)
+            data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+            data.done = true
+          },
+          complete: (_) => {
+            data.done = true
+          }
+        } as SaveFileOptions)
+      }
+    })
+  }
+  const saveFileSyncTest = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+    writeFileSyncTest("")
+    try {
+      fileManager.saveFileSync(
+        `${data.basePath}${data.temFile}`, null)
+      data.done = true
+
+      //todo 后面打开
+      // data.saveFileRet=res
+    } catch (e) {
+      console.log('saveFileSyncTest:' + e)
+      data.done = true
+    }
+  }
+  const unzipFileTest = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.mkdirSync(`${data.basePath}${data.targetZip}`, true)
+    } catch (e) {
+      console.error(e)
+    }
+    fileManager.unzip({
+      zipFilePath: '/static/filemanager/to.zip',
+      targetPath: `${data.basePath}${data.targetZip}`,
+      success: (res : FileManagerSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'unzipFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('success', res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'unzipFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (_) => {
+        data.done = true
+      }
+    } as UnzipFileOptions)
+  }
+
+  const getSavedFileListTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.getSavedFileList({
+      success: (res : GetSavedFileListResult) => {
+        if (data.logAble) {
+          data.log += 'getSavedFileListTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log("getSavedFileListTest success", res)
+        data.fileListSuccess = res.fileList
+        data.getSavedFileListRet = "getSavedFileList:ok"
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'getSavedFileListTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('getSavedFileListTest fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+        data.getSavedFileListRet = JSON.stringify(res)
+      },
+      complete: (res : any) => {
+        console.log("complete", res)
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        } else {
+          data.fileListComplete = (res as GetSavedFileListResult).fileList
+        }
+      }
+    } as GetSavedFileListOptions)
+  }
+  const truncateFileTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.truncate({
+      filePath: `${data.basePath}${data.writeFile}`,
+      length: 6,
+      success: (res : FileManagerSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'truncateFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log("success", res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'truncateFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (res : any) => {
+        console.log("complete", res)
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+      }
+    } as TruncateFileOptions)
+  }
+  const truncateFileSyncTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.truncateSync(
+        `${data.basePath}${data.writeFile}`,
+        3)
+      data.done = true
+    } catch (e) {
+      console.log(e)
+      data.done = true
+    }
+  }
+  const readCompressedFileTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.readCompressedFile({
+      filePath: '/static/filemanager/1.txt.br',
+      compressionAlgorithm: "br",
+      success: (res : ReadCompressedFileResult) => {
+        if (data.logAble) {
+          data.log += 'readCompressedFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log("success", res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'readCompressedFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (_) => {
+        data.done = true
+      }
+    } as ReadCompressedFileOptions)
+  }
+  const readCompressedFileSyncTest = () => {
+    console.log('readCompressedFileSyncTest')
+    const fileManager = uni.getFileSystemManager()
+    try {
+      let result = fileManager.readCompressedFileSync(
+        '/static/filemanager/1.txt.br',
+        "br")
+      if (data.logAble) {
+        data.log += result
+      }
+      data.done = true
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'readCompressedFileSyncTest fail:' + e + '\n\n'
+      }
+      data.done = true
+    }
+
+  }
+  const removeSavedFileTest = () => {
+    console.log("removeSavedFileTest enter")
+    const fileManager = uni.getFileSystemManager()
+    fileManager.removeSavedFile({
+      filePath: `${data.basePath}${data.writeFile}`,
+      success: (res : FileManagerSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'removeSavedFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        data.removeSavedFileRet = res.errMsg
+        console.log("removeSavedFileTest success", res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'removeSavedFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('removeSavedFileTest fail', res)
+      },
+      complete: (_) => {
+        data.done = true
+      }
+    } as RemoveSavedFileOptions)
+  }
+
+  const statFileInfoSyncTest = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      let res = fileManager.statSync(
+        // path: `${data.basePath}${data.statFile}`, //USER_DATA_PATH
+        `${data.globalTempPath}${data.statFile}`, //CACHE_PATH
+        data.recursiveVal)
+      if (data.logAble) {
+        data.log += 'statFileInfoSyncTest success:' + JSON.stringify(res) + '\n\n'
+      }
+      data.statsRet = res
+      data.done = true
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'statFileInfoSyncTest fail:' + e + '\n\n'
+      }
+      data.done = true
+    }
+
+  }
+  const openFileTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.open({
+      filePath: `${data.basePath}${data.readFile}`,
+      flag: "a",
+      success: (res : OpenFileSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'openFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log("success", res)
+        data.fd = res.fd
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'openFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (_) => {
+        data.done = true
+      }
+    } as OpenFileOptions)
+  }
+  const openFileSyncTest = (param : string, isTest : boolean) : string => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      let fd = fileManager.openSync({
+        filePath: `${data.basePath}${data.readFile}`,
+        flag: param,
+      } as OpenFileSyncOptions)
+      if (data.logAble && isTest) {
+        data.log += 'openFileSyncTest success:' + fd + '\n\n'
+      }
+      if (isTest) {
+        data.done = true
+      }
+
+      data.fd = fd
+      return fd
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'openFileSyncTest fail:' + JSON.stringify(e) + '\n\n'
+      }
+      console.log('fail', e)
+      data.done = true
+    }
+    return ""
+  }
+  const closeSyncTest = () => {
+    console.log('closeSyncTest')
+    const fileManager = uni.getFileSystemManager()
+    try {
+      console.log('closeSync')
+      fileManager.closeSync({
+        fd: openFileSyncTest('r', false)
+      } as CloseSyncOptions)
+      if (data.logAble) {
+        data.log += 'closeSyncTest success:' + '\n\n'
+      }
+      data.done = true
+      data.closeFileRet = "close:ok"
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'closeSyncTest fail:' + JSON.stringify(e) + '\n\n'
+      }
+      console.log('fail', e)
+      data.done = true
+    }
+  }
+  const closeTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.close({
+      fd: openFileSyncTest('r', false),
+      success: (res : FileManagerSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'closeTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        data.closeFileRet = res.errMsg
+        console.log("success", res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'closeTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (_) => {
+        data.done = true
+      }
+
+    } as CloseOptions)
+  }
+  const writeTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.mkdirSync(`${data.basePath}${data.mkdirFile}`, true)
+    } catch (e) {
+      console.error(e)
+    }
+
+    fileManager.write({
+      fd: openFileSyncTest('w+', false),
+      data: data.writeData,
+      encoding: "utf-8",
+      success: (res : WriteResult) => {
+        if (data.logAble) {
+          data.log += 'writeTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log("success", res)
+        data.bytesWritten = res.bytesWritten
+        data.lastFailError = new UniError('uni-fileSystemManager', 0, 'writeTest success:' + JSON.stringify(res))
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'writeTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, 'writeTest:' + res.errMsg)
+
+      },
+      complete: (_) => {
+        data.done = true
+      }
+
+    } as WriteOptions)
+  }
+  const writeSyncTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.mkdirSync(`${data.basePath}${data.mkdirFile}`, true)
+    } catch (e) {
+      console.error(e)
+    }
+    fileManager.open({
+      filePath: `${data.basePath}${data.readFile}`,
+      flag: "r+",
+      success: (res : OpenFileSuccessResult) => {
+        console.log("success", res)
+        if (res.fd.length <= 0) {
+          data.done = true
+          return
+        }
+        try {
+          let ret = fileManager.writeSync({
+            fd: res.fd,
+            data: data.writeData,
+            encoding: "utf-8"
+          } as WriteSyncOptions)
+          if (data.logAble) {
+            data.log += 'writeSyncTest success:' + JSON.stringify(ret) + '\n\n'
+          }
+          console.log("success", ret)
+          data.done = true
+          data.bytesWritten = ret.bytesWritten
+        } catch (e) {
+          if (data.logAble) {
+            data.log += 'writeSyncTest fail:' + JSON.stringify(e) + '\n\n'
+          }
+          console.log('fail', e)
+          data.done = true
+        }
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'openFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+        data.done = true
+      }
+    } as OpenFileOptions)
+
+  }
+  const fstatTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.fstat({
+      fd: openFileSyncTest('r', false),
+      success: (res : FStatSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'fstatTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log("success", res)
+        data.fstat = res.stats
+        data.fstatSize = res.stats.size
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'fstatTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (_) => {
+        data.done = true
+      }
+
+    } as FStatOptions)
+  }
+  const fstatSyncTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      let stat =
+        fileManager.fstatSync({
+          fd: openFileSyncTest('r', false),
+        } as FStatSyncOptions)
+      if (data.logAble) {
+        data.log += 'fstatSyncTest success:' + JSON.stringify(stat) + '\n\n'
+      }
+      data.done = true
+      data.fstat = stat
+      data.fstatSize = stat.size
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'fstatSyncTest fail:' + JSON.stringify(e) + '\n\n'
+      }
+      data.done = true
+    }
+  }
+  const ftruncateFileTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.ftruncate({
+      fd: openFileSyncTest('r+', false),
+      length: 6,
+      success: (res : FileManagerSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'ftruncateFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        data.ftruncateRet = res.errMsg
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'ftruncateFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      },
+      complete: (res : any) => {
+        console.log("complete", res)
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+      }
+    } as FTruncateFileOptions)
+  }
+  const ftruncateFileSyncTest = () => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.ftruncateSync({
+        fd: openFileSyncTest('r+', false),
+        length: 4
+      } as FTruncateFileSyncOptions)
+      if (data.logAble) {
+        data.log += 'ftruncateFileSyncTest success:' + '\n\n'
+      }
+      data.done = true
+      data.ftruncateRet = 'ftruncate:ok'
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'ftruncateFileSyncTest fail:' + JSON.stringify(e) + '\n\n'
+      }
+      data.done = true
+    }
+  }
+  const readZipEntry = () => {
+    const fileManager = uni.getFileSystemManager()
+    fileManager.readZipEntry({
+      filePath: '/static/filemanager/to.zip',
+      encoding: 'utf-8',
+      success: (res : EntriesResult) => {
+        if (data.logAble) {
+          data.log += 'readZipEntry success:size=' + res.result + '\n\n'
+        }
+        console.log("success", res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'readZipEntry fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+      }
+    } as ReadZipEntryOptions)
+  }
+
+  const testReadFileBuffer = () => {
+    const fs = uni.getFileSystemManager()
+    fs.readFile({
+      filePath: `${uni.env.USER_DATA_PATH}/hello.txt`,
+
+      success: (res) => {
+
+        console.log(res)
+        // let uint8Array = new Uint8Array(res.data as ArrayBuffer)
+        // for (let i = 0; i < uint8Array.length; i++) {
+        // 	console.log(`Byte ${i}: ${uint8Array[i]}`);
+        // }
+        let float64 = new Float64Array(res.data as ArrayBuffer)
+        if (data.logAble) {
+          for (let i = 0; i < float64.length; i++) {
+            if (data.logAble) {
+              data.log += 'testReadFileBuffer success ：' + `Byte ${i}: ${float64[i]}` + '\n\n'
+            }
+          }
+        }
+        data.arrayBufferRes = float64[1] //1.2222222
+        console.log(data.arrayBufferRes)
+      },
+      fail: (res) => {
+        if (data.logAble) {
+          data.log += 'testReadFileBuffer fail:' + JSON.stringify(res) + '\n\n'
+        }
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+        console.error(res)
+      },
+      complete: (res : any) => {
+        console.log("complete", res)
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+      }
+    } as ReadFileOptions)
+  }
+
+  const testWriteReadFileBuffer = () => {
+    const fs = uni.getFileSystemManager()
+    let buffer = new ArrayBuffer(16)
+    let float64 = new Float64Array(buffer)
+    float64[1] = 1.2222222
+    let that = this
+    fs.writeFile({
+      filePath: `${uni.env.USER_DATA_PATH}/hello.txt`,
+      // data: 'test some',
+      data: buffer,
+      // encoding: 'ascii',
+      success: (res) => {
+        if (data.logAble) {
+          data.log += 'testWriteReadFileBuffer ：' + res.errMsg + '\n\n'
+        }
+        console.log(res)
+        // that.testAppendFile()
+        testReadFileBuffer()
+      },
+      fail: (res) => {
+        if (data.logAble) {
+          data.log += 'testWriteReadFileBuffer fail:' + JSON.stringify(res) + '\n\n'
+        }
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+        console.error(res)
+        data.done = true
+      },
+      complete: (_ : any) => {
+
+      }
+    } as WriteFileOptions)
+  }
+
+  const testReadFileSyncBuffer = () => {
+    try {
+      const fs = uni.getFileSystemManager()
+      let res = fs.readFileSync(`${uni.env.USER_DATA_PATH}/hello.txt`, null)
+      console.log(res)
+      let float64 = new Float64Array(res as ArrayBuffer)
+      for (let i = 0; i < float64.length; i++) {
+        if (data.logAble) {
+          data.log += 'testReadFileSyncBuffer success:' + `Byte ${i}: ${float64[i]}` + '\n\n'
+        }
+        console.log(`Byte ${i}: ${float64[i]}`);
+      }
+      data.arrayBufferRes = float64[1] // 1.333
+      console.log(data.arrayBufferRes)
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'testReadFileSyncBuffer fail:' + JSON.stringify(e) + '\n\n'
+      }
+      data.done = true
+    }
+  }
+
+  const testWriteReadFileSyncBuffer = () => {
+    try {
+      const fs = uni.getFileSystemManager()
+      let buffer = new ArrayBuffer(16)
+      // let int8 = new Int8Array(buffer)
+      // int8[1] = 20
+      let float64 = new Float64Array(buffer)
+      float64[1] = 1.333
+      fs.writeFileSync(`${uni.env.USER_DATA_PATH}/hello.txt`, buffer, 'utf-8')
+      if (data.logAble) {
+        data.log += 'testWriteReadFileSyncBuffer success' + '\n\n'
+      }
+      testReadFileSyncBuffer()
+      data.done = true
+    } catch (e) {
+      if (data.logAble) {
+        data.log += 'testWriteReadFileSyncBuffer fail:' + JSON.stringify(e) + '\n\n'
+      }
+      data.done = true
+    }
+  }
+
+  const testWriteReadBuffer = () => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.mkdirSync(`${data.basePath}${data.mkdirFile}`, true)
+    } catch (e) {
+      console.error(e)
+    }
+
+    let buffer = new ArrayBuffer(24)
+    let float64 = new Float64Array(buffer)
+    float64[1] = 1.24
+    float64[2] = 1.33
+
+    fileManager.write({
+      fd: openFileSyncTest('w+', false),
+      length: 16,
+      offset: 8,
+      data: buffer,
+      position: 10,
+      success: (res : WriteResult) => {
+        console.log("success", res)
+
+        const ab = new ArrayBuffer(24)
+        fileManager.read({
+          arrayBuffer: ab,
+          fd: openFileSyncTest('a+', false),
+          length: 8,
+          position: 10,
+          success: (res : ReadSuccessCallbackResult) => {
+            console.log(res)
+            let value = new Float64Array(res.arrayBuffer)
+            for (let i = 0; i < value.length; i++) {
+              console.log(`Byte ${i}: ${value[i]}`);
+              if (data.logAble) {
+                data.log += 'testWriteReadBuffer success:' + `Byte ${i}: ${value[i]}` + '\n\n'
+              }
+            }
+            data.arrayBufferRes = value[0] //1.24
+            console.log(data.arrayBufferRes)
+          },
+          fail: (res) => {
+            console.log(res)
+            data.done = true
+            if (res instanceof UniError) {
+              data.lastCompleteError = res
+            }
+          },
+          complete: (res : any) => {
+            console.log("complete", res)
+            data.done = true
+            if (res instanceof UniError) {
+              data.lastCompleteError = res
+            }
+          }
+        } as ReadOption)
+      },
+      fail: (res : IUniError) => {
+        data.done = true
+        if (res instanceof UniError) {
+          data.lastCompleteError = res
+        }
+      },
+      complete: (_) => {
+
+      }
+
+    } as WriteOptions)
+  }
+  const testWriteReadSyncBuffer = () => {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.mkdirSync(`${data.basePath}${data.mkdirFile}`, true)
+    } catch (e) {
+    }
+    try {
+
+      let buffer = new ArrayBuffer(24)
+      let float64 = new Float64Array(buffer)
+      float64[1] = 1.11
+      float64[2] = 1.33
+      let ret = fileManager.writeSync({
+        fd: openFileSyncTest('w+', false),
+        // data: data.writeData,
+        data: buffer,
+        length: 16,
+        offset: 8,
+        position: 10,
+        encoding: "utf-8"
+      } as WriteSyncOptions)
+      console.log("success", ret)
+
+      const ab = new ArrayBuffer(24)
+      let res = fileManager.readSync({
+        arrayBuffer: ab,
+        fd: openFileSyncTest('a+', false),
+        length: 8,
+        offset: 8,
+        position: 10
+      } as ReadSyncOption)
+      console.log(res)
+      let value = new Float64Array(res.arrayBuffer)
+      for (let i = 0; i < value.length; i++) {
+        if (data.logAble) {
+          data.log += 'testWriteReadSyncBuffer success ：' + `Byte ${i}: ${value[i]}` + '\n\n'
+        }
+      }
+      data.done = true
+      data.arrayBufferRes = float64[1] //1.11
+      console.log(data.arrayBufferRes)
+    } catch (e) {
+      data.done = true
+      console.error(e)
+    }
+  }
+
+
+  const testAppendFileBufferSync = () => {
+    // 同步接口
+    const fs = uni.getFileSystemManager()
+    try {
+      let buffer = new ArrayBuffer(24)
+      let float64 = new Float64Array(buffer)
+      float64[1] = 1.2222222
+      float64[2] = 1.33
+      let ret = fs.writeSync({
+        fd: fs.openSync({ filePath: `${uni.env.USER_DATA_PATH}/hello.txt`, flag: 'w+' } as OpenFileSyncOptions),
+        data: buffer,
+        length: 16,
+        offset: 8,
+        position: 10
+      } as WriteSyncOptions)
+      console.log(ret)
+
+
+      buffer = new ArrayBuffer(16)
+      float64 = new Float64Array(buffer)
+      float64[0] = 20
+      fs.appendFileSync(`${uni.env.USER_DATA_PATH}/hello.txt`, buffer, null)
+      const ab = new ArrayBuffer(32)
+      // 打开文件
+      // 读取文件到 ArrayBuffer 中
+      let readResult = fs.readSync({
+        fd: fs.openSync({
+          filePath: `${uni.env.USER_DATA_PATH}/hello.txt`,
+          flag: 'a+',
+        } as OpenFileSyncOptions),
+        arrayBuffer: ab,
+        length: 24,
+        position: 10,
+        offset: 8
+      } as ReadSyncOption)
+      console.log(readResult)
+      float64 = new Float64Array(readResult.arrayBuffer)
+
+      for (let i = 0; i < float64.length; i++) {
+        if (data.logAble) {
+          data.log += 'testAppendFileBufferSync success ：' + `Byte ${i}: ${float64[i]}` + '\n\n'
+        }
+        console.log(`Byte ${i}: ${float64[i]}`);
+      }
+      data.arrayBufferRes = float64[3] //20
+      console.log(data.arrayBufferRes)
+      data.done = true
+    } catch (e) {
+      data.done = true
+      if (data.logAble) {
+        data.log += 'testAppendFileBufferSync fail:' + JSON.stringify(e) + '\n\n'
+      }
+      console.error(e)
+    }
+  }
+
+  const testAppendFileBuffer = () => {
+    // 同步接口
+    const fs = uni.getFileSystemManager()
+    try {
+      let buffer = new ArrayBuffer(24)
+      let float64 = new Float64Array(buffer)
+      float64[1] = 1.2222222
+      float64[2] = 1.33
+      let ret = fs.writeSync({
+        fd: fs.openSync({ filePath: `${uni.env.USER_DATA_PATH}/hello.txt`, flag: 'w+' } as OpenFileSyncOptions),
+        data: buffer,
+        length: 16,
+        offset: 8,
+        position: 10
+      } as WriteSyncOptions)
+      console.log(ret)
+
+      buffer = new ArrayBuffer(16)
+      float64 = new Float64Array(buffer)
+      float64[0] = 21
+      fs.appendFile({
+        filePath: `${uni.env.USER_DATA_PATH}/hello.txt`,
+        data: buffer,
+        success: (res) => {
+          console.log(res)
+          const ab = new ArrayBuffer(32)
+          // 打开文件
+          // 读取文件到 ArrayBuffer 中
+          let readResult = fs.readSync({
+            fd: fs.openSync({
+              filePath: `${uni.env.USER_DATA_PATH}/hello.txt`,
+              flag: 'a+',
+            } as OpenFileSyncOptions),
+            arrayBuffer: ab,
+            length: 24,
+            position: 10,
+            offset: 8
+          } as ReadSyncOption)
+          console.log(readResult)
+          float64 = new Float64Array(readResult.arrayBuffer)
+
+          for (let i = 0; i < float64.length; i++) {
+            console.log(`Byte ${i}: ${float64[i]}`);
+            if (data.logAble) {
+              data.log += 'testAppendFileBuffer success ：' + `Byte ${i}: ${float64[i]}` + '\n\n'
+            }
+          }
+          data.arrayBufferRes = float64[3] //21
+          console.log(data.arrayBufferRes)
+        },
+        fail: (res) => {
+          console.log(res)
+        },
+        complete: (_) => {
+          data.done = true
+        }
+      } as AppendFileOptions)
+
+    } catch (e) {
+      data.done = true
+      if (data.logAble) {
+        data.log += 'testAppendFileBufferSync fail:' + JSON.stringify(e) + '\n\n'
+      }
+      console.error(e)
+    }
+  }
+  // #ifdef APP
+  const testReadFileEncoding = (encoding : string) => {
+    console.log('testEncoding', encoding)
+    uni.chooseImage({
+      count: 1,
+      albumMode: "system",
+      sizeType: ["original"],
+      sourceType: ["album"],
+      success: (e) => {
+        console.log(e.tempFilePaths[0])
+        uni.getFileSystemManager().readFile({
+          filePath: e.tempFilePaths[0],
+          encoding: encoding,
+          success: (res) => {
+            console.log('success:', (res.data as string).length)
+          }
+        })
+      }
+    })
+  }
+  const testReadFileArrayBuffer = () => {
+    uni.chooseImage({
+      count: 1,
+      albumMode: "system",
+      sizeType: ["original"],
+      sourceType: ["album"],
+      success: (e) => {
+        console.log(e.tempFilePaths[0])
+        uni.getFileSystemManager().readFile({
+          filePath: e.tempFilePaths[0],
+          success: (res) => {
+            console.log('success:', (res.data as ArrayBuffer).byteLength)
+          }
+        })
+      }
+    })
+  }
+  const testReadFileSyncEncoding = (encoding : string) => {
+    console.log('testEncoding', encoding)
+    uni.chooseImage({
+      count: 1,
+      albumMode: "system",
+      sizeType: ["original"],
+      sourceType: ["album"],
+      success: (e) => {
+        console.log(e.tempFilePaths[0])
+        try {
+          let res = uni.getFileSystemManager().readFileSync(e.tempFilePaths[0], encoding)
+          console.log('success:', (res as string).length)
+        } catch (e) {
+          console.log(e)
+        }
+      }
+    })
+  }
+  const testReadFileSyncArrayBuffer = () => {
+    uni.chooseImage({
+      count: 1,
+      albumMode: "system",
+      sizeType: ["original"],
+      sourceType: ["album"],
+      success: (e) => {
+        console.log(e.tempFilePaths[0])
+        try {
+          let res = uni.getFileSystemManager().readFileSync(e.tempFilePaths[0], null)
+          console.log('success:', (res as ArrayBuffer).byteLength)
+        } catch (e) {
+          console.log(e)
+        }
+      }
+    })
+  }
+  const copyFileByContent = () => {
+    uni.chooseImage({
+      count: 1,
+      albumMode: "system",
+      sizeType: ["original"],
+      sourceType: ["album"],
+      success: (e) => {
+        console.log(e.tempFilePaths[0])
+        uni.getFileSystemManager().copyFile({
+          srcPath: e.tempFilePaths[0],
+          destPath: uni.env.CACHE_PATH + 'copyFileByContent.jpg',
+          complete: (res) => {
+            console.log('success:', res)
+          }
+        })
+      }
+    })
+  }
+  const copyFileSyncByContent = () => {
+    uni.chooseImage({
+      count: 1,
+      albumMode: "system",
+      sizeType: ["original"],
+      sourceType: ["album"],
+      success: (e) => {
+        console.log(e.tempFilePaths[0])
+        try {
+          let res = uni.getFileSystemManager().copyFileSync(e.tempFilePaths[0], uni.env.CACHE_PATH + 'copyFileSyncByContent.jpg',)
+          console.log('success:', res)
+        } catch (e) {
+          console.log(e)
+        }
+      }
+    })
+  }
+  // #endif
+  const gotoExplore = () => {
+    uni.navigateTo({
+      url: "/pages/API/get-file-system-manager/filemanage"
+    })
+  }
+  const gotoTestStatic = () => {
+    uni.navigateTo({
+      url: "/pages/API/get-file-system-manager/testStatic"
+    })
+  }
+  const gotoIssue26433 = () => {
+    uni.navigateTo({
+      url: "/pages/API/get-file-system-manager/rename-issue-26433"
+    })
+  }
+  const getFileInfoByContent = (event : UniPointerEvent) => {
+    uni.chooseFile({
+      count: 1,
+      success(e) {
+        console.log(JSON.stringify(e.tempFiles[0].path))
+        uni.getFileSystemManager().getFileInfo({
+          filePath: e.tempFiles[0].path,
+          success(e2) {
+            console.log('success:', (e2))
+          }
+        })
+      }
+    })
+  }
+
+  const testOpenFlagWrite = () => {
+    try {
+      uni.getFileSystemManager().mkdirSync(`${data.basePath}b/`,true)
+      uni.getFileSystemManager().writeFileSync(`${data.basePath}b/t.txt`, "aaa", "utf-8")
+    } catch(e:Error){}
+    uni.getFileSystemManager().open({
+    	filePath : `${data.basePath}b/t.txt`,
+    	flag : "a+",
+    	success : (res: OpenFileSuccessResult) => {
+    		uni.getFileSystemManager().write({
+    			fd : res.fd,
+    			data : "appended",
+    			position : 10,
+          success:(e)=> {
+            data.testOpenFlataplusWrite = true
+          },
+          fail:(e)=> {
+            data.testOpenFlataplusWrite = false
+          }
+    		})
+    	},
+      fail(e) {}
+    })
+  }
+
+  const testWriteLongString = () =>{
+    try {
+      uni.getFileSystemManager().mkdirSync(`${data.basePath}b/`,true)
+      uni.getFileSystemManager().writeFileSync(`${data.basePath}b/t.txt`, "aaa", "utf-8")
+    } catch(e:Error){}
+    uni.getFileSystemManager().open({
+    	filePath : `${data.basePath}b/t.txt`,
+    	flag : "a+",
+    	success : (res: OpenFileSuccessResult) => {
+    		uni.getFileSystemManager().write({
+    			fd : res.fd,
+    			data : "appended long strings.appended long strings.appended long strings.appended long strings.appended long strings.",
+    			position : 10,
+          success:(e)=> {
+            data.testOpenFlataplusWrite = true
+          },
+          fail:(e)=> {
+            data.testOpenFlataplusWrite = false
+          }
+    		})
+    	},
+      fail(e) {}
+    })
+  }
+
+  defineExpose({
+    data,
+    testOpenFlagWrite,
+    testWriteLongString
+  })
+</script>
+
+<style>
+  .btnstyle {
+    margin: 4px;
+  }
+</style>

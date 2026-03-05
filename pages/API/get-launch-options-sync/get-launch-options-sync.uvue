@@ -1,0 +1,68 @@
+<template>
+  <page-head title="getLaunchOptionsSync"></page-head>
+  <view class="uni-padding-wrap">
+    <button @click="getLaunchOptionsSync">getLaunchOptionsSync</button>
+    <view class="uni-common-mt">
+      <text>应用本次启动路径：</text>
+      <text style="margin-top: 5px">{{ data.launchOptionsPath }}</text>
+    </view>
+    <view class="uni-common-mt">
+      <text>应用本次启动：</text>
+      <text style="margin-top: 5px">{{ data.launchOptionsString }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import { state } from '@/store/index.uts'
+
+  type DataType = {
+    checked: boolean;
+    homePagePath: string;
+    launchOptionsPath: string;
+    launchOptionsString: string;
+    testResult: boolean;
+  }
+
+  const data = reactive({
+    checked: false,
+    // #ifdef VUE3-VAPOR
+    homePagePath: 'pages/tabBar/tab-bar',
+    // #endif
+    // #ifndef VUE3-VAPOR
+    homePagePath: 'pages/tabBar/component',
+    // #endif
+    launchOptionsPath: '',
+    launchOptionsString: '',
+    testResult: false
+  } as DataType)
+
+  const compareOnLaunchRes = () => {
+    const launchOptions = uni.getLaunchOptionsSync();
+    data.launchOptionsString = JSON.stringify(launchOptions, null, 2)
+
+    const appLaunchOptions = state.globalData.launchOptions
+
+    const isPathSame = launchOptions.path == appLaunchOptions.path
+    const isAppSchemeSame = launchOptions.appScheme == appLaunchOptions.appScheme
+    const isAppLinkSame = launchOptions.appLink == appLaunchOptions.appLink
+    data.testResult = isPathSame && isAppSchemeSame && isAppLinkSame
+  }
+
+  const getLaunchOptionsSync = () => {
+    const launchOptions = uni.getLaunchOptionsSync()
+    data.launchOptionsPath = launchOptions.path
+    if (launchOptions.path == data.homePagePath) {
+      data.checked = true
+    }
+  }
+
+  onReady(() => {
+    compareOnLaunchRes()
+  })
+
+  defineExpose({
+    data,
+    getLaunchOptionsSync
+  })
+</script>

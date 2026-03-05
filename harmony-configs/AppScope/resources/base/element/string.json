@@ -1,0 +1,36 @@
+{
+  "string": [
+    {
+      "name": "app_name",
+      "value": "DCloud开发者中心系统"
+    },
+		{
+			"name": "permission_location_tips",
+			"value": "正在申请获取您的位置信息，以便为您提供相应的服务"
+		},
+		{
+			"name": "permission_write_imagevideo_tips",
+			"value": "正在申请写入相册权限，以便保存文件到相册"
+		},
+		{
+			"name": "permission_get_networkinfo_tips",
+			"value": "正在申请获取网络信息权限，以便为您提供相应的服务"
+		},
+		{
+			"name": "permission_microphone",
+			"value": "正在申请使用麦克风权限，以便为您提供相应的服务"
+		},
+		{
+			"name": "permission_read_pasteboard",
+			"value": "正在申请读取剪切板，以便为您提供相应的服务"
+		},
+    {
+    	"name": "permission_read_privacywindow",
+    	"value": "正在申请隐私窗口权限，以便为您提供相应的服务"
+    },
+    {
+    	"name": "permission_read_accessbiometric",
+    	"value": "正在申请访问设备的生物识别功能权限，以便为您提供相应的服务"
+    }
+  ]
+}

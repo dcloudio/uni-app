@@ -1,0 +1,102 @@
+{
+	"debug": false,
+	"redis": false,
+	"cachetime": 604800,
+	"sessionExpireTime": 1800,
+	"realtimeStat": true,
+	"cronMin": false,
+	"cronMinTips": "如果设置cronMin: true（开启分钟级统计）则你必须再修改 cloudfunctions/uni-stat-cron/package.json 文件内的 triggers 属性的 config的值为 0 */10 * * * * * 代表每10分钟运行一次定时任务",
+	"cron": [
+		{
+			"type": "stat",
+			"time": "* * * 0"
+		},
+		{
+			"type": "stat",
+			"time": "* * 1 10"
+		},
+		{
+			"type": "stat",
+			"time": "1 * 1 20"
+		},
+		{
+			"type": "stat",
+			"time": "* 1 3 30"
+		},
+		{
+			"type": "active-device",
+			"time": "* * 0 10"
+		},
+		{
+			"type": "active-user",
+			"time": "* * 0 20"
+		},
+		{
+			"type": "page",
+			"time": "* * 3 20"
+		},
+		{
+			"type": "event",
+			"time": "* * 4 20"
+		},
+		{
+			"type": "error",
+			"time": "* * 5 20"
+		},
+		{
+			"type": "loyalty",
+			"time": "* * 6 20"
+		},
+		{
+			"type": "clean",
+			"time": "* * 5 30"
+		},
+		{
+			"type": "retention-device",
+			"time": "* * 2 20"
+		},
+		{
+			"type": "retention-device",
+			"time": "* 1 4 30"
+		},
+		{
+			"type": "retention-device",
+			"time": "1 * 2 30"
+		},
+		{
+			"type": "retention-user",
+			"time": "* * 3 40"
+		},
+		{
+			"type": "retention-user",
+			"time": "* 1 5 40"
+		},
+		{
+			"type": "retention-user",
+			"time": "1 * 6 30"
+		},
+		{
+			"type": "pay-result",
+			"time": "* * * 10",
+			"dimension": "hour",
+			"description": "每小时执行统计（会自动统计小时、天、周、月、季度、年度）",
+			"timely": true
+		}
+	],
+	"batchInsertNum": 5000,
+	"errorCheck": {
+		"needCheck": true,
+		"checkTime": 5
+	},
+	"cleanLog": {
+		"open": true,
+		"reserveDays": {
+			"sessionLog": 31,
+			"userSessionLog": 31,
+			"pageLog": 7,
+			"eventLog": 7,
+			"shareLog": 7,
+			"errorLog": 7
+		}
+	}
+}

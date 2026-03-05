@@ -1,0 +1,39 @@
+<template>
+  <view>
+    <text>当前电量：{{data.level}}%</text>
+    <text>是否充电中：{{data.isCharging}}</text>
+  </view>
+</template>
+
+<script setup lang="uts">
+  type DataType = {
+    level: number;
+    isCharging: boolean;
+  }
+
+  const data = reactive({
+    level: 0,
+    isCharging: false
+  } as DataType)
+
+  onLoad(() => {
+    try {
+      uni.getBatteryInfo({
+        success: res => {
+          data.level = res.level;
+          data.isCharging = res.isCharging;
+        }
+      });
+    } catch (e) {
+      console.error((e as Error).message);
+      uni.showModal({
+        content: (e as Error).message,
+        showCancel: false
+      });
+    }
+  })
+
+  defineExpose({
+    data
+  })
+</script>

@@ -1,0 +1,19 @@
+<template>
+		<list-view>
+			<list-item class="aaa">
+			</list-item>
+		</list-view>
+</template>
+
+<script setup>
+
+</script>
+
+<style lang="scss" scoped>
+.aaa {
+	flex-direction: row;
+	flex-wrap: wrap;
+  // iOS平台 margin 为负数时可能引起应用闪退
+	margin: -10px;
+}
+</style>

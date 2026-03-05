@@ -1,0 +1,154 @@
+<template>
+	<page-head :title="title"></page-head>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;">
+	<!-- #endif -->
+		<view class="uni-padding-wrap uni-common-mt">
+
+			<view class="formats" v-for="(item,index) in supportFormats" :key="index">
+				<text class="uni-subtitle-text">{{item.format}}</text>
+				<image class="icon-play" :src="(isPlaying && playIndex==index)?'/static/test-audio/pause.png':'/static/test-audio/play.png'"
+					@click="play(item.src,index)"></image>
+			</view>
+			<view class="formats" v-for="(item,index) in notSupportFormats" :key="index">
+				<text class="uni-subtitle-text">{{ item.format + (item.support) }}</text>
+				<image class="icon-play" :src="(isPlaying && playIndex==index)?'/static/test-audio/pause.png':'/static/test-audio/play.png'"
+					@click="play(item.src,index)"></image>
+			</view>
+
+		</view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+
+type AudioFormat = {
+	format : string
+	support: string | null
+	src : string
+}
+
+const title = ref('audio-format')
+const playIndex = ref(0)
+const isPlaying = ref(false)
+const _audioContext = ref(null as InnerAudioContext | null)
+const supportFormats = ref([
+	{
+		format: 'mp3',
+		src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.mp3'
+	},
+	{
+		format: 'mp4',
+		src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.mp4'
+	},
+	{
+		format: 'm4a',
+		src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.m4a'
+	},
+	{
+		format: 'aac',
+		src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.aac'
+	},
+	{
+		format: 'flac',
+		src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.flac'
+	},
+	{
+		format: 'wav',
+		src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.wav'
+	},
+	{
+		format:"m3u8",
+		src:'https://qiniu-web-assets.dcloud.net.cn/audio/sample/m3u8/ForElise.m3u8'
+	}
+] as Array<AudioFormat>)
+const notSupportFormats = ref([
+	{
+		format: 'ogg',
+		support: '(iOS 不支持)',
+		src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.ogg'
+	},
+	{
+		format: 'wma',
+		support: '(iOS/Android/web/Harmony 不支持)',
+		src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.wma'
+	},
+	{
+		format: 'aiff',
+		support: '(Android/web/Harmony 不支持)',
+		src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.aiff'
+	},
+	{
+		format: 'caf',
+		support: '(Android/web/Harmony 不支持)',
+		src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.caf'
+	},
+	{
+		format:"dash",
+		support: '(iOS 不支持)',
+		src:'https://qiniu-web-assets.dcloud.net.cn/audio/sample/dash/ForElise.mpd'
+	},
+	{
+		format: '错误格式',
+		support: '(iOS/Android/web/Harmony 不支持)',
+		src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.wmaa'
+	},
+] as Array<AudioFormat>)
+
+function pause() {
+	_audioContext.value!.pause();
+	isPlaying.value = false;
+}
+
+function play(audioUrl : string, index : number) {
+	// console.log(index,audioUrl);
+	if (isPlaying.value && playIndex.value == index) {
+		pause();
+		return;
+	}
+	playIndex.value = index
+	_audioContext.value!.src = audioUrl;
+	_audioContext.value!.play();
+	isPlaying.value = true;
+}
+
+onReady(() => {
+	_audioContext.value = uni.createInnerAudioContext();
+	_audioContext.value!.onPlay(() => {
+		console.log('开始播放');
+	});
+	_audioContext.value!.onPause(() => {
+		console.log('播放暂停');
+	})
+	_audioContext.value!.onEnded(() => {
+		console.log('播放结束');
+		isPlaying.value = false;
+	});
+	_audioContext.value!.onError((err) => {
+		isPlaying.value = false;
+		console.log('err', err);
+	});
+})
+
+onUnload(() => {
+	if (_audioContext.value != null) {
+		pause();
+		_audioContext.value!.destroy()
+	}
+})
+</script>
+
+<style>
+	.formats {
+		align-items: center;
+	}
+
+	.icon-play {
+		width: 60px;
+		height: 60px;
+		margin: 10px;
+	}
+</style>

@@ -1,0 +1,344 @@
+<template>
+<!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <view class="page">
+      <view class="trace">
+        <view class="base reserve">
+          <text class="reserve-text">translateX(80%)</text>
+          <text class="reserve-text">转变前位置</text>
+        </view>
+
+        <view class="base reserve" flatten>
+          <text class="reserve-text" flatten>translateX(80%)</text>
+          <text class="reserve-text" flatten>拍平 转变前位置</text>
+        </view>
+
+        <view class="base reserve" style="margin-bottom: 50px;">
+          <text class="reserve-text">translateY(50px)</text>
+          <text class="reserve-text">转变前位置</text>
+        </view>
+        <view class="base reserve" style="margin-bottom: 50px;" flatten>
+          <text class="reserve-text" flatten>translateY(50px)</text>
+          <text class="reserve-text" flatten>拍平 转变前位置</text>
+        </view>
+
+        <view class="base reserve" style="margin-bottom: 70px;">
+          <text class="reserve-text">translate(-50%,50%)</text>
+          <text class="reserve-text">转变前位置</text>
+        </view>
+        <view class="base reserve" style="margin-bottom: 80px;" flatten>
+          <text class="reserve-text" flatten>translate(-50%,50%)</text>
+          <text class="reserve-text" flatten>拍平 转变前位置</text>
+        </view>
+      </view>
+      <view class="trace-res">
+        <view class="base transform" style="transform: translateX(80%)">
+          <text>translateX(80%)</text>
+          <text>转变后位置</text>
+        </view>
+
+        <view class="base transform" style="transform: translateX(80%)" flatten>
+          <text flatten>拍平</text>
+          <text flatten>translateX(80%)</text>
+          <text flatten>转变后位置</text>
+        </view>
+
+        <view class="base transform" style="transform: translateY(50px);margin-bottom: 50px;">
+          <text>translateY(50px)</text>
+          <text>转变后位置</text>
+        </view>
+        <view class="base transform" style="transform: translateY(50px);margin-bottom: 50px;" flatten>
+          <text flatten>拍平</text>
+          <text flatten>translateY(50px)</text>
+          <text flatten>转变后位置</text>
+        </view>
+        <view class="base transform" style="transform: translate(-50%, 50%);margin-bottom: 70px;">
+          <text>translate(-50%,50%)</text>
+          <text>转变后位置</text>
+        </view>
+        <view class="base transform" style="transform: translate(-50%, 50%);margin-bottom: 80px;" flatten>
+          <text flatten>拍平</text>
+          <text flatten>translate(-50%,50%)</text>
+          <text flatten>转变后位置</text>
+        </view>
+      </view>
+
+      <text class="uni-title-text uni-common-mt" style="margin-top: 50px;">scroll-view 组件</text>
+      <view class="demo-box">
+        <view class="scroll-view-item">
+          <scroll-view class="scroll-view-base transform" style="transform: translateX(50px);">
+            <text>translateX(50px)</text>
+          </scroll-view>
+        </view>
+        <view class="scroll-view-item">
+          <scroll-view class="scroll-view-base transform" style="transform: translateY(30px);">
+            <text>translateY(30px)</text>
+          </scroll-view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transform (translate) </text>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.transformValueDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transformActual}}</text>
+          <view class="test-box">
+            <view ref="viewRefDynamic" class="common-image" :style="{ transform: data.transformValueDynamic }">
+              <text style="font-size: 12px;">view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.transformValueDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transformActualText}}</text>
+          <view class="test-box">
+            <text ref="textRefDynamic" class="common-text" :style="{ transform: data.transformValueDynamic }">text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.transformValueDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transformActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRefDynamic" class="common-image" :style="{ transform: data.transformValueDynamic }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.transformValueDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transformActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefDynamicFlat" class="common-image" :style="{ transform: data.transformValueDynamic }" flatten>
+              <text style="font-size: 12px;" flatten>view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.transformValueDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transformActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefDynamicFlat" class="common-text" :style="{ transform: data.transformValueDynamic }" flatten>text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.transformValueDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transformActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefDynamicFlat" class="common-image" :style="{ transform: data.transformValueDynamic }" src="/static/test-image/logo.png" flatten></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="transformEnum" title="transform 枚举值" @change="radioChangeTransform" :compact="true"></enum-data>
+        <input-data :defaultValue="data.transformValueDynamic" title="transform 自定义值" type="text" @confirm="inputChangeTransform"></input-data>
+      </view>
+
+      <navigator style="width: 80%;" url="/pages/CSS/transform/transform-origin">
+        <button type="primary">transform-origin</button>
+      </navigator>
+
+      <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
+      <view class="demo-box">
+        <view class="scroll-view-item">
+          <native-view class="scroll-view-base transform" style="transform: translateX(50px);"></native-view>
+        </view>
+        <view class="scroll-view-item">
+          <native-view class="scroll-view-base transform" style="transform: translateY(30px);"></native-view>
+        </view>
+      </view>
+
+
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const data = reactive({
+    transformValueDynamic: 'translateX(0px)',
+    transformActual: '',
+    transformActualText: '',
+    transformActualImage: '',
+    transformActualFlat: '',
+    transformActualTextFlat: '',
+    transformActualImageFlat: ''
+  })
+  const viewRefDynamic = ref(null as UniElement | null)
+  const textRefDynamic = ref(null as UniTextElement | null)
+  const imageRefDynamic = ref(null as UniImageElement | null)
+  const viewRefDynamicFlat = ref(null as UniElement | null)
+  const textRefDynamicFlat = ref(null as UniTextElement | null)
+  const imageRefDynamicFlat = ref(null as UniImageElement | null)
+
+  const transformEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'translateX(0px)' },
+    { value: 2, name: 'translateX(50px)' },
+    { value: 3, name: 'translateY(50px)' },
+    { value: 4, name: 'translate(50px, 50px)' },
+    { value: 5, name: 'translateX(80%)' },
+    { value: 6, name: 'translateY(50%)' },
+    { value: 7, name: 'translate(-50%, 50%)' }
+  ]
+
+  const getPropertyValues = () => {
+    data.transformActual = viewRefDynamic.value?.style.getPropertyValue('transform') ?? ''
+    data.transformActualFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transform') ?? ''
+    data.transformActualText = textRefDynamic.value?.style.getPropertyValue('transform') ?? ''
+    data.transformActualTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transform') ?? ''
+    data.transformActualImage = imageRefDynamic.value?.style.getPropertyValue('transform') ?? ''
+    data.transformActualImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform') ?? ''
+  }
+
+  const changeTransformDynamic = (value: string) => {
+    data.transformValueDynamic = value
+    viewRefDynamic.value?.style.setProperty('transform', value)
+    viewRefDynamicFlat.value?.style.setProperty('transform', value)
+    textRefDynamic.value?.style.setProperty('transform', value)
+    textRefDynamicFlat.value?.style.setProperty('transform', value)
+    imageRefDynamic.value?.style.setProperty('transform', value)
+    imageRefDynamicFlat.value?.style.setProperty('transform', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeTransform = (index: number) => {
+    const selectedItem = transformEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeTransformDynamic(selectedItem.name)
+    }
+  }
+
+  const inputChangeTransform = (value: string) => {
+    changeTransformDynamic(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+  .page {
+    align-items: center;
+  }
+
+  .trace {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .trace-res {
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .base {
+    margin: 10px;
+    width: 150px;
+    height: 150px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .reserve {
+    border: 1px dotted #588;
+    background-color: #DDD;
+  }
+
+  .reserve-text {
+    color: #CCC;
+  }
+
+  .transform {
+    border: 1px solid #00F;
+    background-color: rgba(0, 255, 255, 0.5);
+  }
+
+  .common-text {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+    font-size: 12px;
+    color: white;
+  }
+
+  .common-image {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+  }
+
+  .test-container {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 90%;
+    height: 120px;
+    padding: 10px;
+    background-color: gray;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .scroll-view-item {
+    position: relative;
+    width: 200px;
+    height: 180px;
+    margin: 10px;
+    border:#ddd solid 1px;
+  }
+
+  .scroll-view-base {
+    width: 120px;
+    height: 120px;
+    align-items: center;
+    justify-content: center;
+  }
+
+</style>

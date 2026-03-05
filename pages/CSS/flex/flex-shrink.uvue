@@ -1,0 +1,341 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view>
+        <text>flex-shrink</text>
+        <view class="demo-box">
+          <view class="flex-container">
+            <view class="common red" style="flex-shrink: 1">
+              <text>1</text>
+            </view>
+            <view class="common green" style="flex-shrink: 2">
+              <text>2</text>
+            </view>
+            <view class="common blue" style="flex-shrink: 3">
+              <text>3</text>
+            </view>
+          </view>
+          <view class="flex-container">
+            <view class="common red" style="flex-shrink: 1" flatten>
+              <text>1</text>
+            </view>
+            <view class="common green" style="flex-shrink: 2" flatten>
+              <text>2</text>
+            </view>
+            <view class="common blue" style="flex-shrink: 3" flatten>
+              <text>3</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件：flex-shrink: 1 、2、3</text>
+      </view>
+      <view class="demo-box">
+        <view class="flex-container-shrink">
+          <scroll-view class="scroll-view-shrink red" style="width: 100px; flex-shrink: 1;">
+            <text class="scroll-view-label">flex-shrink: 1</text>
+          </scroll-view>
+          <scroll-view class="scroll-view-shrink green" style="width: 100px; flex-shrink: 2;">
+            <text class="scroll-view-label">flex-shrink: 2</text>
+          </scroll-view>
+          <scroll-view class="scroll-view-shrink blue" style="width: 100px; flex-shrink: 3;">
+            <text class="scroll-view-label">flex-shrink: 3</text>
+          </scroll-view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-shrink </text>
+      </view>
+
+      <!-- 普通版本 -->
+      <view class="test-container">
+        <!-- view 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActual}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <view class="common-image red" style="flex-shrink: 1;"></view>
+              <view ref="viewRef" class="common-image green test-view" :style="{ flexShrink: data.flexShrink }">
+                <text class="test-label">{{data.flexShrink}}</text>
+              </view>
+              <view class="common-image blue" style="flex-shrink: 1;"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- text 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualText}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <text class="common-text red" style="flex-shrink: 1;">红色</text>
+              <text ref="textRef" class="common-text green test-text" :style="{ flexShrink: data.flexShrink }">text</text>
+              <text class="common-text blue" style="flex-shrink: 1;">蓝色</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- image 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualImage}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <image class="common-image red" style="flex-shrink: 1;" src="/static/test-image/logo.png"></image>
+              <image ref="imageRef" class="common-image green test-image" :style="{ flexShrink: data.flexShrink }" src="/static/test-image/logo.png"></image>
+              <image class="common-image blue" style="flex-shrink: 1;" src="/static/test-image/logo.png"></image>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <!-- view 组件拍平测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualFlat}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <view class="common-image red" style="flex-shrink: 1;"></view>
+              <view ref="viewRefFlat" class="common-image green test-view-flatten" :style="{ flexShrink: data.flexShrink }" flatten>
+                <text class="test-label">{{data.flexShrink}}</text>
+              </view>
+              <view class="common-image blue" style="flex-shrink: 1;"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- text 组件拍平测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualTextFlat}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <text class="common-text red" style="flex-shrink: 1;">红色</text>
+              <text ref="textRefFlat" class="common-text green test-text-flatten" :style="{ flexShrink: data.flexShrink }" flatten>text</text>
+              <text class="common-text blue" style="flex-shrink: 1;">蓝色</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- image 组件拍平测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualImageFlat}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <image class="common-image red" style="flex-shrink: 1;" src="/static/test-image/logo.png"></image>
+              <image ref="imageRefFlat" class="common-image green test-image-flatten" :style="{ flexShrink: data.flexShrink }" flatten src="/static/test-image/logo.png"></image>
+              <image class="common-image blue" style="flex-shrink: 1;" src="/static/test-image/logo.png"></image>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="flexShrinkEnum" title="flex-shrink 枚举值" @change="radioChangeFlexShrink" :compact="true"></enum-data>
+        <input-data :defaultValue="data.flexShrink" title="flex-shrink 自定义值" type="text" @confirm="inputChangeFlexShrink"></input-data>
+      </view>
+
+      <text class="uni-title-text uni-common-mt">native-view 组件：flex-shrink: 1 、2、3</text>
+      <view class="demo-box uni-common-mb">
+        <view class="flex-container-shrink">
+          <native-view class="native-view-shrink red" style="width: 100px; flex-shrink: 1;"></native-view>
+          <native-view class="native-view-shrink green" style="width: 100px; flex-shrink: 2;"></native-view>
+          <native-view class="native-view-shrink blue" style="width: 100px; flex-shrink: 3;"></native-view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const flexShrinkEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '1' },
+    { value: 3, name: '2' },
+    { value: 4, name: '3' }
+  ]
+
+  const data = reactive({
+    flexShrink: '1',
+    flexShrinkActual: '',
+    flexShrinkActualFlat: '',
+    flexShrinkActualText: '',
+    flexShrinkActualImage: '',
+    flexShrinkActualTextFlat: '',
+    flexShrinkActualImageFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const getPropertyValues = () => {
+    data.flexShrinkActual = viewRef.value?.style.getPropertyValue('flex-shrink') ?? ''
+    data.flexShrinkActualFlat = viewRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
+    data.flexShrinkActualText = textRef.value?.style.getPropertyValue('flex-shrink') ?? ''
+    data.flexShrinkActualTextFlat = textRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
+    data.flexShrinkActualImage = imageRef.value?.style.getPropertyValue('flex-shrink') ?? ''
+    data.flexShrinkActualImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
+  }
+
+  const changeFlexShrink = (value: string) => {
+    data.flexShrink = value
+    viewRef.value?.style.setProperty('flex-shrink', value)
+    viewRefFlat.value?.style.setProperty('flex-shrink', value)
+    textRef.value?.style.setProperty('flex-shrink', value)
+    textRefFlat.value?.style.setProperty('flex-shrink', value)
+    imageRef.value?.style.setProperty('flex-shrink', value)
+    imageRefFlat.value?.style.setProperty('flex-shrink', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeFlexShrink = (index: number) => {
+    const selectedItem = flexShrinkEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeFlexShrink(selectedItem.name)
+    }
+  }
+
+  const inputChangeFlexShrink = (value: string) => {
+    changeFlexShrink(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeFlexShrink,
+    data
+  })
+</script>
+
+<style>
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .flex-container {
+    width: 200px;
+    margin: 0 10px;
+    height: 100px;
+    background-color: gray;
+    flex-direction: row;
+  }
+  .common {
+    width: 100px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .common-text {
+    width: 60px;
+    height: 30px;
+    background-color: green;
+    font-size: 12px;
+    color: white;
+  }
+
+  .common-image {
+    width: 60px;
+    height: 30px;
+    background-color: green;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 50px;
+    background-color: gray;
+  }
+
+
+  .test-flex-container {
+    width: 135px;
+    height: 100%;
+    flex-direction: row;
+  }
+
+  .red {
+    background-color: red;
+  }
+
+  .blue {
+    background-color: blue;
+  }
+
+  .green {
+    background-color: green;
+  }
+
+  .test-label {
+    font-size: 12px;
+    color: white;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .flex-container-shrink {
+    width: 200px;
+    height: 100px;
+    background-color: gray;
+    flex-direction: row;
+    margin: 10px;
+  }
+
+  .scroll-view-shrink {
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .native-view-shrink {
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+  }
+</style>

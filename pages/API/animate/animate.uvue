@@ -1,0 +1,386 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-intro content="本页演示 uni.createAnimation 与 uni.createAnimateContext：点击开始/暂停/恢复/取消动画，可点击各 view 修改宽度、高度、margin、padding 等属性动画。"></page-intro>
+    <view id="main" style="width: 100px;height: 100px; background-color: brown; transform: scale(1);"></view>
+
+    <button @click="startAnimate">开始动画</button>
+    <!-- #ifndef APP-HARMONY -->
+    <!-- #ifndef MP-WEIXIN -->
+    <button @click="pauseAnimate">暂停动画</button>
+    <button @click="resumeAnimate">恢复动画</button>
+    <!-- #endif -->
+    <button @click="cancelAnimate">取消动画</button>
+    <!-- #endif -->
+
+    <image src="/static/test-image/logo.png" id="roll" style="width: 100px; height: 100px;margin: 10px;"></image>
+
+    <!-- #ifndef APP-HARMONY -->
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改宽度</text>
+     <view id="widthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="widthProperty"></view>
+   </view>
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改高度</text>
+     <view id="height1" style="width: 100px;height: 100px;background-color: brown;" @click="heightProperty"></view>
+   </view>
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改margin</text>
+     <view id="marginProperty" style="width: 100px;height: 100px;background-color: brown;" @click="marginProperty"></view>
+   </view>
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改padding</text>
+     <view id="paddingProperty" style="width: 100px;height: 100px;background-color: brown;" @click="paddingProperty">
+       <view style="width: 50px;height: 50px;background-color: black;"></view>
+     </view>
+   </view>
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改border颜色</text>
+     <view id="borderProperty"
+       style="width: 100px;height: 100px;background-color: brown;border-width: 10px;border-color: black;border-style: solid;"
+       @click="borderProperty"></view>
+   </view>
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改transform</text>
+     <view id="transformProperty" style="width: 100px;height: 100px;background-color: brown;" @click="transformProperty"></view>
+   </view>
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改position</text>
+     <view id="positionProperty" style="width: 100px;height: 100px;background-color: brown;" @click="positionProperty"></view>
+   </view>
+   <!-- #endif -->
+   <!-- #ifndef MP-WEIXIN -->
+   <!-- #ifndef APP-HARMONY -->
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改背景色和宽度</text>
+     <view id="backgroundAndWidthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndWidthProperty"></view>
+   </view>
+   <!-- #endif -->
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">执行的动画只有一个值1</text>
+     <view id="oneProperty1" style="width: 100px;height: 100px;background-color: brown;" @click="oneProperty1"></view>
+   </view>
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">执行的动画只有一个值2</text>
+     <view id="oneProperty2" style="width: 100px;height: 100px;background-color: brown;" @click="oneProperty2"></view>
+   </view>
+   <!-- #endif -->
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改背景色和margin-left(关键帧)</text>
+     <view id="backgroundAndMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndMarginLeftProperty"></view>
+   </view>
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改背景色和transform(关键帧)</text>
+     <view id="backgroundAndTransformProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndTransformProperty"></view>
+   </view>
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改背景色(关键帧)</text>
+     <view id="backgroundProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundProperty"></view>
+   </view>
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改opacity(关键帧)</text>
+     <view id="opacityProperty" style="width: 100px;height: 100px;background-color: brown;" @click="opacityProperty"></view>
+   </view>
+   <!-- #ifndef APP-HARMONY -->
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改border-color和margin-left(关键帧)</text>
+     <view id="borderColorMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;border-width: 5px;border-style: solid;"
+       @click="borderColorMarginLeftProperty"></view>
+   </view>
+   <!-- #endif -->
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  let mainView: UniElement | null = null
+  let animation: UniAnimation | null = null
+
+  function startAnimate() {
+    animation = mainView!.animate([
+      {
+        transform: "scale(1)",
+        transformOrigin: "0px 0px"
+      },
+      {
+        transform: "scale(0)",
+        transformOrigin: "50px 50px"
+      },
+      {
+        transform: "scale(1)",
+        transformOrigin: "100px 100px"
+      }
+    ], {
+      duration: 5000,
+
+    })
+    animation!.oncancel = (_ : UniAnimationPlaybackEvent) => {
+      uni.showToast({
+        title: "动画被取消了"
+      })
+    }
+    animation!.onfinish = (_ : UniAnimationPlaybackEvent) => {
+      uni.showToast({
+        title: "动画播放完成"
+      })
+    }
+  }
+
+  function pauseAnimate() {
+    animation?.pause()
+  }
+
+  function resumeAnimate() {
+    animation?.play()
+  }
+
+  function cancelAnimate() {
+    animation?.cancel()
+  }
+
+  function widthProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      width: ["100px", "200px", "100px"]
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function heightProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      height: ["100px", "200px"]
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function marginProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      margin: ["8px", "16px", "32px"]
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function paddingProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      padding: ["0px", "16px", "32px", "0px"]
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function backgroundProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate([
+      {
+        offset: 0.3,
+        backgroundColor: "yellow"
+      },
+      {
+        offset: 0.6,
+        backgroundColor: "red"
+      },
+      {
+        backgroundColor: "blue"
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function borderProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate([
+      {
+        offset: 0.3,
+        borderColor: "yellow"
+      },
+      {
+        offset: 0.6,
+        borderColor: "pink"
+      },
+      {
+        borderColor: "blue"
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function transformProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate([
+      {
+        transform: "translateX(0px) scale(1) rotate(0deg)"
+      },
+      {
+        transform: "translateX(100px)"
+      },
+      {
+        transform: "scale(0.8) rotate(180deg)"
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function positionProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      left: ["0px", "16px", "32px", "0px"]
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function backgroundAndWidthProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      width: ["100px", "200px"],
+      backgroundColor: ["red", "yellow", "blue"]
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function backgroundAndMarginLeftProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate([
+      {
+        offset: 0.2,
+        backgroundColor: "red"
+      }, {
+        marginLeft: "10px"
+      }, {
+        marginLeft: "20px"
+      }, {
+        marginLeft: "30px",
+        backgroundColor: "pink"
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function backgroundAndTransformProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate([
+      {
+        offset: 0.2,
+        backgroundColor: "red"
+      }, {
+        transform: "translate(30px,0px)"
+      }, {
+        transform: "translate(50px,0px)"
+      }, {
+        transform: "translate(100px,0px)",
+        backgroundColor: "pink"
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function oneProperty1(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      backgroundColor: "green"
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function oneProperty2(e : UniPointerEvent) {
+    e.currentTarget?.animate([{
+      backgroundColor: "blue"
+    }], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function borderColorMarginLeftProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate([
+      {
+        borderColor: "red",
+        marginLeft: "0px",
+        offset: 0
+      },
+      {
+        marginLeft: "20px",
+        offset: 0.5
+      },
+      {
+        marginLeft: "60px",
+        borderColor: "yellow",
+        offset: 1
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function opacityProperty(e : UniPointerEvent){
+    e.currentTarget?.animate([
+      {
+        offset: 0.3,
+        opacity: "1"
+      },
+      {
+        offset: 0.6,
+        opacity: "0.1"
+      },
+      {
+        opacity: "1"
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  onReady(() => {
+    mainView = uni.getElementById("main")
+    var roll = uni.getElementById("roll")
+    roll!.animate([
+      { transform: "translateX(0) rotate(0)" },
+      { transform: "translateX(200px) rotate(540deg)" },
+    ],
+      {
+        duration: 2000,
+        direction: "alternate",
+        easing: "ease-in-out",
+        iterations: Infinity,
+      },
+    )
+  })
+</script>
+
+<style>
+  .view-margin {
+    margin: 8px;
+  }
+</style>

@@ -1,0 +1,452 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view" style="padding-bottom: var(--uni-safe-area-inset-bottom);">
+  <!-- #endif -->
+    <view class="page uni-list-cell-db-text" id="page">
+      <page-head :title="data.title"></page-head>
+      <page-intro content="本页演示 uni.createSelectorQuery：通过 select/selectAll 与 boundingClientRect 获取节点布局信息（left、top、right、bottom、width、height）；含 view、text、image、scroll-view 及子组件多根节点等查询示例，可测试 .fields/.node 结果；底部可跳转「滚动容器中的 createSelectorQuery」子页。"></page-intro>
+      <button class="btn btn-get-node-info" @click="getNodeInfo">getNodeInfo</button>
+      <button class="btn btn-get-all-node-info" @click="getAllNodeInfo">getAllNodeInfo</button>
+      <view id="rect-1-2" class="rect-1-2">
+        <view class="rect rect1"></view>
+        <view class="rect rect2"></view>
+      </view>
+      <view class="rect-info-1-2">
+        <view class="rect-info" v-for="(nodeInfo, index) in data.nodeInfoList" :key="index">
+          <view class="node-info-item">
+            <text class="node-info-item-k">left: </text>
+            <text class="node-info-item-v">{{nodeInfo.left}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">top: </text>
+            <text class="node-info-item-v">{{nodeInfo.top}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">right: </text>
+            <text class="node-info-item-v">{{nodeInfo.right}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">bottom: </text>
+            <text class="node-info-item-v">{{nodeInfo.bottom}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">width: </text>
+            <text class="node-info-item-v">{{nodeInfo.width}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">height: </text>
+            <text class="node-info-item-v">{{nodeInfo.height}}</text>
+          </view>
+        </view>
+      </view>
+      <node-child class="node-child"></node-child>
+      <text>子组件多根节点</text>
+      <multi-child ref="multiChildRef" id="multi-child"></multi-child>
+      <text>子组件多根节点(仅测试，用于验证查询是否超出范围)</text>
+      <multi-child id="multi-child-2"></multi-child>
+      <view>
+        <text>测试.fields</text>
+        <text>{{data.fieldsResultContainNode}}</text>
+      </view>
+      <view>
+        <text>测试.node</text>
+        <text>{{data.nodeResultContainNode}}</text>
+      </view>
+      <canvas id="canvas1"></canvas>
+
+      <!-- text 组件 -->
+      <view class="uni-common-mt">
+        <text class="uni-title-text">Text 组件查询示例</text>
+        <text id="test-text" class="test-text">这是一个测试文本元素</text>
+        <button class="btn" @click="getTextNodeInfo">查询 Text 节点信息</button>
+        <view v-if="data.textNodeInfo" class="rect-info">
+          <view class="node-info-item">
+            <text class="node-info-item-k">left: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.left}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">right: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.right}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">top: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.top}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">bottom: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.bottom}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">width: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.width}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">height: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.height}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- image 组件 -->
+      <view class="uni-common-mt">
+        <text class="uni-title-text">Image 组件查询示例</text>
+        <image id="test-image" class="test-image" src="/static/test-image/logo.png" mode="aspectFit"></image>
+        <button class="btn" @click="getImageNodeInfo">查询 Image 节点信息</button>
+        <view v-if="data.imageNodeInfo" class="rect-info">
+          <view class="node-info-item">
+            <text class="node-info-item-k">left: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.left}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">right: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.right}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">top: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.top}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">bottom: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.bottom}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">width: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.width}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">height: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.height}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- scroll-view 组件 -->
+      <view class="uni-common-mt">
+        <text class="uni-title-text">Scroll-view 组件查询示例</text>
+        <scroll-view id="test-scroll-view" class="test-scroll-view">
+          <view style="padding: 10px;">
+            <text v-for="i in 10" :key="i">Scroll-view 第 {{i}} 行</text>
+          </view>
+        </scroll-view>
+        <button class="btn" @click="getScrollViewNodeInfo">查询 Scroll-view 节点信息</button>
+        <view v-if="data.scrollViewNodeInfo" class="rect-info">
+          <view class="node-info-item">
+            <text class="node-info-item-k">left: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.left}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">right: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.right}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">top: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.top}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">bottom: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.bottom}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">width: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.width}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">height: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.height}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <navigator url="/pages/API/create-selector-query/create-selector-query-onScroll"><button>滚动容器中的createSelectorQuery</button></navigator>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import nodeChild from './nodes-info-child.uvue'
+  import multiChild from './selector-query-child-multi.uvue'
+
+  type NodeInfoType = {
+    left : number | null,
+    top : number | null,
+    right : number | null,
+    bottom : number | null,
+    width : number | null,
+    height : number | null,
+  }
+
+  type DataType = {
+    title: string;
+    nodeInfoList: NodeInfoType[];
+    rootNodeInfo: NodeInfoType | null;
+    selectCount: number;
+    selectAllCount: number;
+    fieldsResultContainNode: boolean;
+    nodeResultContainNode: boolean;
+    textNodeInfo: NodeInfoType | null;
+    imageNodeInfo: NodeInfoType | null;
+    scrollViewNodeInfo: NodeInfoType | null;
+  }
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    title: 'createSelectorQuery',
+    nodeInfoList: [],
+    // 仅用于自动化测试
+    rootNodeInfo: null,
+    //供自动化测试使用
+    // resizeRectValid: false
+    // TODO
+    selectCount: 0,
+    selectAllCount: 0,
+    fieldsResultContainNode: false,
+    nodeResultContainNode: false,
+    textNodeInfo: null,
+    imageNodeInfo: null,
+    scrollViewNodeInfo: null
+  } as DataType)
+
+  const multiChildRef = ref<ComponentPublicInstance | null>(null)
+
+  // 仅用于自动化测试
+  const onChildReady = (count: number, allCount: number) => {
+    // 通过事件传递数据，子组件在ready时通过事件发送数据
+    data.selectCount = count
+    data.selectAllCount = allCount
+  }
+
+  // 仅用于自动化测试
+  const getRootNodeInfo = (selector: string) => {
+    uni.createSelectorQuery().select(selector).boundingClientRect().exec((ret) => {
+      if (ret.length == 1) {
+        const nodeInfo = ret[0] as NodeInfo;
+        const nodeType = {
+          left: nodeInfo.left,
+          top: nodeInfo.top,
+          right: nodeInfo.right,
+          bottom: nodeInfo.bottom,
+          width: nodeInfo.width,
+          height: nodeInfo.height,
+        } as NodeInfoType;
+        data.rootNodeInfo = nodeType
+      }
+    })
+  }
+
+  const getNodeInfo = () => {
+    uni.createSelectorQuery().select('.rect1').boundingClientRect().exec((ret) => {
+      data.nodeInfoList.length = 0
+      const i = ret[0] as NodeInfo
+      data.nodeInfoList.push({
+        left: i.left,
+        top: i.top,
+        right: i.right,
+        bottom: i.bottom,
+        width: i.width,
+        height: i.height,
+      } as NodeInfoType)
+    })
+  }
+
+  const getAllNodeInfo = () => {
+    uni.createSelectorQuery().selectAll('.rect').boundingClientRect().exec((ret) => {
+      data.nodeInfoList.length = 0
+      const array = ret[0] as NodeInfo[]
+      array.forEach((i) => {
+        data.nodeInfoList.push({
+          left: i.left,
+          top: i.top,
+          right: i.right,
+          bottom: i.bottom,
+          width: i.width,
+          height: i.height,
+        } as NodeInfoType)
+      })
+    })
+  }
+
+  // test .fields
+  const testFields = () => {
+    uni.createSelectorQuery().select('.rect1').fields({
+      node: true
+    } as NodeField, (ret) => {
+      const isElement = (ret as NodeInfo).node instanceof UniElement
+      if (isElement) {
+        data.fieldsResultContainNode = true
+      } else {
+        data.fieldsResultContainNode = false
+      }
+    }).exec()
+  }
+
+  // test .node
+  const testNode = () => {
+    uni.createSelectorQuery().select('#canvas1').node((ret) => {
+      const isElement = (ret as NodeInfo).node instanceof UniElement
+      const isCanvasElement = ((ret as NodeInfo).node as UniCanvasElement).tagName == 'CANVAS'
+      if (isElement && isCanvasElement) {
+        data.nodeResultContainNode = true
+      } else {
+        data.nodeResultContainNode = false
+      }
+    }).exec()
+  }
+
+  // 查询 text 节点信息
+  const getTextNodeInfo = () => {
+    uni.createSelectorQuery().select('#test-text').boundingClientRect().exec((ret) => {
+      if (ret.length > 0) {
+        const i = ret[0] as NodeInfo
+        data.textNodeInfo = {
+          left: i.left,
+          top: i.top,
+          right: i.right,
+          bottom: i.bottom,
+          width: i.width,
+          height: i.height,
+        } as NodeInfoType
+      }
+    })
+  }
+
+  // 查询 image 节点信息
+  const getImageNodeInfo = () => {
+    uni.createSelectorQuery().select('#test-image').boundingClientRect().exec((ret) => {
+      if (ret.length > 0) {
+        const i = ret[0] as NodeInfo
+        data.imageNodeInfo = {
+          left: i.left,
+          top: i.top,
+          right: i.right,
+          bottom: i.bottom,
+          width: i.width,
+          height: i.height,
+        } as NodeInfoType
+      }
+    })
+  }
+
+  // 查询 scroll-view 节点信息
+  const getScrollViewNodeInfo = () => {
+    uni.createSelectorQuery().select('#test-scroll-view').boundingClientRect().exec((ret) => {
+      if (ret.length > 0) {
+        const i = ret[0] as NodeInfo
+        data.scrollViewNodeInfo = {
+          left: i.left,
+          top: i.top,
+          right: i.right,
+          bottom: i.bottom,
+          width: i.width,
+          height: i.height,
+        } as NodeInfoType
+      }
+    })
+  }
+
+  onLoad(() => {
+    uni.$on('childDataReady', onChildReady)
+  })
+
+  onUnload(() => {
+    uni.$off('childDataReady', onChildReady)
+  })
+
+  onReady(() => {
+    testFields()
+    testNode()
+  })
+
+  onResize(() => {
+    //供自动化测试使用
+    /* var rect12Element = uni.getElementById("rect-1-2")
+    if(rect12Element != null) {
+      var domRect = rect12Element.getBoundingClientRect()
+      if(domRect.width > 100) {
+        data.resizeRectValid = true
+      }
+    } */
+  })
+
+  defineExpose({
+    data,
+    getRootNodeInfo,
+    getTextNodeInfo,
+    getImageNodeInfo,
+    getScrollViewNodeInfo
+  })
+</script>
+
+<style>
+  .page {
+    padding: 15px;
+  }
+
+  .btn {
+    margin-top: 15px;
+  }
+
+  .rect-1-2 {
+    flex-direction: row;
+    margin-top: 15px;
+  }
+
+  .rect {
+    width: 150px;
+    height: 100px;
+  }
+
+  .rect1 {
+    background-color: dodgerblue;
+  }
+
+  .rect2 {
+    margin-left: auto;
+    background-color: seagreen;
+  }
+
+  .rect-info-1-2 {
+    flex-direction: row;
+    margin-top: 15px;
+  }
+
+  .rect-info {
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .node-info-item {
+    flex-direction: row;
+  }
+
+  .node-info-item-k {
+    width: 72px;
+    line-height: 2;
+  }
+
+  .node-info-item-v {
+    font-weight: bold;
+    line-height: 2;
+  }
+
+  .test-text {
+    padding: 10px;
+    background-color: #d6d6d6;
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+  }
+
+  .test-image {
+    margin: 10px 0;
+    width: 100px;
+    height: 100px;
+  }
+
+  .test-scroll-view {
+    margin: 10px 0;
+    width: 300px;
+    height: 100px;
+    border: 1px solid #ccc;
+  }
+
+</style>

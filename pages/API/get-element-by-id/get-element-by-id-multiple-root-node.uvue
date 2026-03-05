@@ -1,0 +1,48 @@
+<template>
+  <page-head id="page-head" title="getElementById-multiple-root-node"></page-head>
+  <view class="uni-padding-wrap">
+    <text id="text">this is text</text>
+    <view id="view" class="uni-common-mt" style="border: 1px solid red">this is view</view>
+    <button class="uni-btn" @click="changePageHeadBackgroundColor">
+      修改 page-head 背景色
+    </button>
+    <button class="uni-btn" @click="changeTextColor">修改 text 字体颜色</button>
+    <button class="uni-btn" @click="changeViewStyle">
+      修改 view 宽高及背景色
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+// Methods
+function getElementByNotExistId() : Element | null {
+  return uni.getElementById('not-exist-id')
+}
+
+function changePageHeadBackgroundColor() {
+  const pageHead = uni.getElementById('page-head')!
+  pageHead.style.setProperty('background-color', 'red')
+}
+
+function changeTextColor() {
+  const text = uni.getElementById('text')!
+  text.style.setProperty('color', 'red')
+}
+
+function changeViewStyle() {
+  const view = uni.getElementById<UniViewElement>('view')
+  if (view !== null) {
+    view.style.setProperty('width', '90%')
+    view.style.setProperty('height', '50px')
+    view.style.setProperty('background-color', '#007AFF')
+  }
+}
+
+defineExpose({
+  getElementByNotExistId,
+  changePageHeadBackgroundColor,
+  changeTextColor,
+  changeViewStyle
+})
+</script>

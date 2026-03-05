@@ -1,0 +1,280 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view>
+        <text>justify-content: center</text>
+        <view class="demo-box">
+          <view class="common" style="justify-content: center">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="common" style="justify-content: center" flatten>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>justify-content: flex-start</text>
+        <view class="demo-box">
+          <view class="common" style="justify-content: flex-start">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="common" style="justify-content: flex-start" flatten>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>justify-content: flex-end</text>
+        <view class="demo-box">
+          <view class="common" style="justify-content: flex-end">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="common" style="justify-content: flex-end" flatten>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>justify-content: space-between</text>
+        <view class="demo-box">
+          <view class="common" style="justify-content: space-between">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="common" style="justify-content: space-between" flatten>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>justify-content: space-around</text>
+        <view class="demo-box">
+          <view class="common" style="justify-content: space-around">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="common" style="justify-content: space-around" flatten>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>justify-content: space-evenly </text>
+        <view class="demo-box">
+          <view class="common" style="justify-content: space-evenly">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="common" style="justify-content: space-evenly" flatten>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
+      </view>
+
+      <view>
+        <text class="uni-subtitle-text">justify-content：center 和 space-between</text>
+        <view class="demo-box">
+          <scroll-view class="common" style="justify-content: center;" direction="horizontal">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </scroll-view>
+          <scroll-view class="common" style="justify-content: space-between;" direction="horizontal">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </scroll-view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 justify-content </text>
+      </view>
+
+      <view class="common-box">
+        <!-- 普通版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">justify-content</text>
+          <text class="uni-info">设置值: {{data.justifyContent}}</text>
+          <text class="uni-info">获取值: {{data.justifyContentActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="test-flex-container test-view" :style="{ justifyContent: data.justifyContent }">
+              <view class="test-item-small red"></view>
+              <view class="test-item-small green"></view>
+              <view class="test-item-small blue"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 拍平版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">拍平</text>
+          <text class="uni-info">设置值: {{data.justifyContent}}</text>
+          <text class="uni-info">获取值: {{data.justifyContentActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ justifyContent: data.justifyContent }" flatten>
+              <view class="test-item-small red"></view>
+              <view class="test-item-small green"></view>
+              <view class="test-item-small blue"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+          <enum-data :items="justifyContentEnum" title="justify-content 枚举值" @change="radioChangeJustifyContent" :compact="true"></enum-data>
+        <input-data :defaultValue="data.justifyContent" title="justify-content 自定义值" type="text" @confirm="inputChangeJustifyContent"></input-data>
+      </view>
+
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const justifyContentEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'flex-start' },
+    { value: 2, name: 'flex-end' },
+    { value: 3, name: 'center' },
+    { value: 4, name: 'space-between' },
+    { value: 5, name: 'space-around' },
+    { value: 6, name: 'space-evenly' }
+  ]
+
+  const data = reactive({
+    justifyContent: 'center',
+    justifyContentActual: '',
+    justifyContentActualFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+
+  const getPropertyValues = () => {
+    data.justifyContentActual = viewRef.value?.style.getPropertyValue('justify-content') ?? ''
+    data.justifyContentActualFlat = viewRefFlat.value?.style.getPropertyValue('justify-content') ?? ''
+  }
+
+  const changeJustifyContent = (value: string) => {
+    data.justifyContent = value
+    viewRef.value?.style.setProperty('justify-content', value)
+    viewRefFlat.value?.style.setProperty('justify-content', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeJustifyContent = (index: number) => {
+    const selectedItem = justifyContentEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeJustifyContent(selectedItem.name)
+    }
+  }
+
+  const inputChangeJustifyContent = (value: string) => {
+    changeJustifyContent(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeJustifyContent,
+    data
+  })
+</script>
+
+<style>
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .flex-item {
+    width: 40px;
+    height: 40px;
+  }
+
+  .red {
+    background-color: red;
+  }
+
+  .green {
+    background-color: green;
+  }
+
+  .blue {
+    background-color: blue;
+  }
+
+  .common {
+    flex: 1;
+    margin: 0 10px;
+    height: 80px;
+    background-color: gray;
+    flex-direction: row;
+  }
+
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .test-box {
+    width: 180px;
+    height: 100px;
+    background-color: gray;
+  }
+
+  .test-flex-container {
+    width: 100%;
+    height: 100%;
+    background-color: gray;
+    flex-direction: row;
+  }
+
+  .test-item-small {
+    width: 30px;
+    height: 30px;
+  }
+</style>

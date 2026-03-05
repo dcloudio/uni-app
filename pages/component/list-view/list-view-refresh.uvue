@@ -1,0 +1,131 @@
+<template>
+  <list-view v-if="list_show" id="listview" style="flex: 1;" show-scrollbar=false :refresher-enabled="true"
+    :refresher-triggered="data.refresherTriggered" @refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort"
+    @refresherrestore="onRefresherrestore" @refresherpulling="onRefresherpulling">
+    <list-item class="item">
+      <text>向下滑动触发下拉刷新</text>
+    </list-item>
+    <list-item v-for="index in item_count" :key="index" class="item">
+      <text>item-------{{index}}</text>
+    </list-item>
+  </list-view>
+</template>
+
+<script setup lang="uts">
+
+
+type RefresherEventTest = {
+  type : string;
+  target : UniElement | null;
+  currentTarget : UniElement | null;
+  dy : number;
+}
+
+type DataType = {
+  refresherTriggered: boolean,
+  refresherrefreshTest: string,
+  onRefresherabortTest: string,
+  onRefresherrestoreTest: string,
+  onRefresherpullingTest: string,
+}
+
+// Data
+const item_count = ref(20)
+const list_show = ref(false)
+const data = reactive({
+  refresherTriggered: true,
+  refresherrefreshTest: "",
+  onRefresherabortTest: "",
+  onRefresherrestoreTest: "",
+  onRefresherpullingTest: "",
+} as DataType)
+
+// Methods
+function checkEventTest(e : RefresherEventTest, eventName : String) {
+  const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement && e.dy > 0
+  const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`
+  switch (eventName) {
+    case 'refresherrefresh':
+      data.refresherrefreshTest = result
+      break
+    case 'refresherpulling':
+      data.onRefresherpullingTest = result
+      break
+    case 'refresherrestore':
+      data.onRefresherrestoreTest = result
+      break
+    case 'refresherabort':
+      data.onRefresherabortTest = result
+      break
+    default:
+      break
+  }
+}
+
+function onRefresherrefresh(e : UniRefresherEvent) {
+  console.log('refresherrefresh-----下拉刷新被触发', e.detail.dy)
+  data.refresherTriggered = true
+  checkEventTest({
+    type: e.type,
+    target: e.target,
+    currentTarget: e.currentTarget,
+    dy: e.detail.dy,
+  } as RefresherEventTest, 'refresherrefresh')
+  setTimeout(() => {
+    data.refresherTriggered = false
+  }, 1000)
+}
+
+function onRefresherabort(e : UniRefresherEvent) {
+  console.log("onRefresherabort------下拉刷新被中止", e.detail)
+  checkEventTest({
+    type: e.type,
+    target: e.target,
+    currentTarget: e.currentTarget,
+    dy: e.detail.dy,
+  } as RefresherEventTest, 'refresherabort')
+}
+
+function onRefresherrestore(e : UniRefresherEvent) {
+  console.log("onRefresherrestore------下拉刷新被复位", e.detail.dy)
+  checkEventTest({
+    type: e.type,
+    target: e.target,
+    currentTarget: e.currentTarget,
+    dy: e.detail.dy,
+  } as RefresherEventTest, 'refresherrestore')
+}
+
+function onRefresherpulling(e : UniRefresherEvent) {
+  console.log("onRefresherpulling------拉刷新控件被下拉-dy=" + e.detail.dy)
+  checkEventTest({
+    type: e.type,
+    target: e.target,
+    currentTarget: e.currentTarget,
+    dy: e.detail.dy,
+  } as RefresherEventTest, 'refresherpulling')
+}
+
+// Lifecycle
+onLoad(() => {
+  setTimeout(() => {
+    list_show.value = true
+  }, 500)
+})
+
+defineExpose({
+  data
+})
+</script>
+<style>
+  .item {
+    padding: 15px;
+    margin: 0 0 5px 0;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+
+  .button_item {
+    width: 200px;
+  }
+</style>

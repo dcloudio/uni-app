@@ -1,0 +1,84 @@
+<template>
+  <page-meta
+    :background-text-style="data.bgTextStyle"
+    :background-color="data.bgColor"
+    :background-color-top="data.bgColorTop"
+    :background-color-bottom="data.bgColorBottom"
+    :scroll-top="data.scrollTop"
+    :scroll-duration="2000"
+    @scroll="scroll"
+    @scrolldone="scrolldone"
+    page-style="color: green"
+    root-font-size="30px"
+  >
+    <navigation-bar
+      :title="data.nbTitle"
+      :loading="data.nbLoading"
+      :front-color="data.nbFrontColor"
+      :background-color="data.nbBackgroundColor"
+    />
+  </page-meta>
+  <view class="content">
+    <page-intro content="本页演示 page-meta 与 navigation-bar：配置页面背景色、滚动、导航栏标题与样式，通过按钮触发滚动到指定位置并监听 scroll 与 scrolldone。"></page-intro>
+    <text class="title">页面内容</text>
+    <button @click="scrollTo">点击跳到 300px 处</button>
+    <view class="uni-list" v-for="(_, index) in 30" :key="index">
+      <view class="uni-list-cell">{{ index }}</view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  type DataType = {
+    bgTextStyle: string,
+    scrollTop: string,
+    bgColor: string,
+    bgColorTop: string,
+    bgColorBottom: string,
+    nbTitle: string,
+    nbLoading: boolean,
+    nbFrontColor: string,
+    nbBackgroundColor: string,
+    scrollType: string | null,
+    scrolldoneType: string | null,
+  }
+
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    bgTextStyle: 'dark',
+    scrollTop: '0px',
+    bgColor: '#ff0000',
+    bgColorTop: '#00ff00',
+    bgColorBottom: '#0000ff',
+    nbTitle: '标题',
+    nbLoading: false,
+    nbFrontColor: '#ffffff',
+    nbBackgroundColor: '#00aaff',
+    scrollType: null as string | null,
+    scrolldoneType: null as string | null,
+  } as DataType)
+
+  // Methods
+  function scrollTo() {
+    data.scrollTop = '300px'
+  }
+
+  function scroll(e : any) {
+    data.scrollType = e.type
+  }
+
+  function scrolldone(e : any) {
+    data.scrolldoneType = e.type
+  }
+
+  // Lifecycle
+  onLoad(() => {
+    setTimeout(() => {
+      data.nbLoading = true
+    }, 2000)
+  })
+
+  defineExpose({
+    data
+  })
+</script>

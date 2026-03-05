@@ -1,0 +1,258 @@
+<script setup lang="uts">
+  type DataType = {
+    sliderValue: number;
+    sliderBlockSize: number;
+    sliderBackgroundColor: string;
+    sliderActiveColor: string;
+    sliderBlockColor: string;
+    // 组件属性 autotest
+    show_value_boolean: boolean;
+    disabled_boolean: boolean;
+    min_input: number;
+    max_input: number;
+    step_input: number;
+    value_input: number;
+    activeColor_input: string;
+    backgroundColor_input: string;
+    block_size_input: number;
+    block_color_input: string;
+    valueColor: string;
+  }
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    sliderValue: 50,
+    sliderBlockSize: 20,
+    sliderBackgroundColor: "#000000",
+    sliderActiveColor: "#FFCC33",
+    sliderBlockColor: "#8A6DE9",
+    // 组件属性 autotest
+    show_value_boolean: false,
+    disabled_boolean: false,
+    min_input: 0,
+    max_input: 100,
+    step_input: 1,
+    value_input: 0,
+    activeColor_input: "#007aff",
+    backgroundColor_input: "#e9e9e9",
+    block_size_input: 28,
+    block_color_input: "#ffffff",
+    valueColor: "#888888"
+  } as DataType)
+
+  const sliderChange = (e: UniSliderChangeEvent) => {
+    console.log("value 发生变化：" + e.detail.value);
+  }
+
+  const slider_click = () => {
+    console.log("组件被点击时触发");
+  }
+
+  const slider_touchstart = () => {
+    console.log("手指触摸动作开始");
+  }
+
+  const slider_touchmove = () => {
+    console.log("手指触摸后移动");
+  }
+
+  const slider_touchcancel = () => {
+    console.log("手指触摸动作被打断，如来电提醒，弹窗");
+  }
+
+  const slider_touchend = () => {
+    console.log("手指触摸动作结束");
+  }
+
+  const slider_tap = () => {
+    console.log("手指触摸后马上离开");
+  }
+
+  const slider_longpress = () => {
+    console.log(
+      "如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。"
+    );
+  }
+
+  const slider_change = () => {
+    console.log("完成一次拖动后触发的事件，event.detail = {value: value}");
+  }
+
+  const slider_changing = () => {
+    console.log("拖动过程中触发的事件，event.detail = {value: value}");
+  }
+
+  const change_show_value_boolean = (checked: boolean) => {
+    data.show_value_boolean = checked;
+  }
+
+  const change_disabled_boolean = (checked: boolean) => {
+    data.disabled_boolean = checked;
+  }
+
+  const confirm_min_input = (value: number) => {
+    data.min_input = value;
+  }
+
+  const confirm_max_input = (value: number) => {
+    data.max_input = value;
+  }
+
+  const confirm_step_input = (value: number) => {
+    data.step_input = value;
+  }
+
+  const confirm_value_input = (value: number) => {
+    data.value_input = value;
+  }
+
+  const confirm_activeColor_input = (value: string) => {
+    data.activeColor_input = value;
+  }
+
+  const confirm_backgroundColor_input = (value: string) => {
+    data.backgroundColor_input = value;
+  }
+
+  const confirm_block_size_input = (value: number) => {
+    data.block_size_input = value;
+  }
+
+  const confirm_block_color_input = (value: string) => {
+    data.block_color_input = value;
+  }
+
+  const confirm_value_color_input = (value: string) => {
+    data.valueColor = value;
+  }
+
+  defineExpose({
+    data
+  })
+</script>
+
+<template>
+  <view class="main">
+    <slider :disabled="data.disabled_boolean" :min="data.min_input" :max="data.max_input" :step="data.step_input" :value="data.value_input"
+      :activeColor="data.activeColor_input" :backgroundColor="data.backgroundColor_input" :block-size="data.block_size_input"
+      :block-color="data.block_color_input" :show-value="data.show_value_boolean" :valueColor="data.valueColor" @click="slider_click"
+      @touchstart="slider_touchstart" @touchmove="slider_touchmove" @touchcancel="slider_touchcancel"
+      @touchend="slider_touchend" @tap="slider_tap" @longpress="slider_longpress" @change="slider_change"
+      @changing="slider_changing" style="width: 90%"></slider>
+  </view>
+
+  <scroll-view style="flex: 1">
+    <view class="content">
+      <page-head title="组件属性"></page-head>
+      <boolean-data :defaultValue="false" title="是否显示当前 value" @change="change_show_value_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
+      <input-data defaultValue="0" title="最小值(min)" type="number" @confirm="confirm_min_input"></input-data>
+      <input-data defaultValue="100" title="最大值(max)" type="number" @confirm="confirm_max_input"></input-data>
+      <input-data defaultValue="1" title="步长(step)，取值必须大于 0，并且可被(max - min)整除" type="number"
+        @confirm="confirm_step_input"></input-data>
+      <input-data defaultValue="0" title="当前取值(value)" type="number" @confirm="confirm_value_input"></input-data>
+      <!-- #ifndef VUE3-VAPOR -->
+      <input-data defaultValue="#007aff" title="滑块左侧已选择部分的线条颜色(active-color)" type="text"
+        @confirm="confirm_activeColor_input"></input-data>
+      <input-data defaultValue="#e9e9e9" title="背景条的颜色(background-color)" type="text"
+        @confirm="confirm_backgroundColor_input"></input-data>
+      <input-data defaultValue="28" title="滑块的大小(block-size)，取值范围为 12 - 28" type="number"
+        @confirm="confirm_block_size_input"></input-data>
+      <input-data defaultValue="#ffffff" title="滑块颜色(block-color)" type="text"
+        @confirm="confirm_block_color_input"></input-data>
+      <input-data defaultValue="#888888" title="Value颜色(value-color)" type="text"
+        @confirm="confirm_value_color_input"></input-data>
+      <!-- #endif -->
+    </view>
+
+    <view class="uni-padding-wrap">
+      <page-head title="默认及使用"></page-head>
+      <view class="uni-title">显示当前value</view>
+      <view>
+        <slider style="padding: 5px 0;" @change="sliderChange" :value="50" :show-value="true" />
+      </view>
+
+      <view class="uni-title">设置步进:step=10跳动</view>
+      <view>
+        <view class="uni-row">
+          <text>0</text>
+          <text class="m-l-a">100</text>
+        </view>
+        <slider style="padding: 5px 0;" @change="sliderChange" :value="60" :step="10" />
+      </view>
+
+      <view class="uni-title">浮点步进:step=0.01跳动</view>
+      <view>
+        <slider style="padding: 5px 0;" :value="0.5" :min="0" :max="1" :step="0.01" :show-value="true" />
+      </view>
+
+      <view class="uni-title">设置最小/最大值</view>
+      <view>
+        <slider style="padding: 5px 0;" @change="sliderChange" :value="100" :min="50" :max="200" :show-value="true" />
+      </view>
+
+      <view class="uni-title">不同颜色和大小的滑块</view>
+      <view>
+        <!-- vapor 模式不支持 activeColor、blockColor 等属性，需要使用 track-class、track-active-class、thumb-class -->
+        <slider style="padding: 5px 0;" id="slider-custom-color-and-size" @change="sliderChange" :value="data.sliderValue"
+          :backgroundColor="data.sliderBackgroundColor" :activeColor="data.sliderActiveColor"
+          :activeBackgroundColor="data.sliderActiveColor" :blockColor="data.sliderBlockColor" :foreColor="data.sliderBlockColor"
+          :block-size="data.sliderBlockSize"
+          track-class="custom-track" track-active-class="custom-track-active" thumb-class="custom-thumb"/>
+      </view>
+      <view class="uni-title">暗黑模式</view>
+      <view>
+        <slider style="padding: 5px 0;" :show-value="true" backgroundColor="rgba(32,32,32,0.5)" valueColor="#555" track-class="dark-track" thumb-class="dark-thumb"/>
+      </view>
+
+      <navigator class="uni-common-mb" url="/pages/template/slider-100/slider-100">
+        <button>组件性能测试</button>
+      </navigator>
+
+      <navigator class="uni-common-mb" url="./slider-in-swiper">
+        <button>slider in swiper</button>
+      </navigator>
+
+      <navigator class="uni-common-mb" url="./slider-maxValue">
+        <button>slider maxValue</button>
+      </navigator>
+    </view>
+  </scroll-view>
+</template>
+
+<style>
+  .main {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .m-l-a {
+    margin-left: auto;
+  }
+
+  /* 自定义样式示例 */
+  .custom-track {
+    background-color: #000000;
+  }
+
+  .custom-track-active {
+    background-color: #FFCC33;
+  }
+
+  .custom-thumb {
+    width: 20px;
+    height: 20px;
+    background-color: #8A6DE9;
+    border-radius: 10px;
+  }
+
+  /* 暗黑模式样式 */
+  .dark-track {
+    background-color: rgba(32, 32, 32, 0.5);
+  }
+
+  .dark-thumb {
+    background-color: #555;
+  }
+</style>

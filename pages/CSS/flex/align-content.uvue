@@ -1,0 +1,331 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view>
+        <text>align-content: center</text>
+        <view class="demo-box">
+          <view class="common" style="align-content: center">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="common" style="align-content: center" flatten>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>align-content: flex-start</text>
+        <view class="demo-box">
+          <view class="common" style="align-content: flex-start">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="common" style="align-content: flex-start" flatten>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>align-content: flex-end</text>
+        <view class="demo-box">
+          <view class="common" style="align-content: flex-end">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="common" style="align-content: flex-end" flatten>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>align-content: space-between</text>
+        <view class="demo-box">
+          <view class="common" style="align-content: space-between">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="common" style="align-content: space-between" flatten>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>align-content: space-around</text>
+        <view class="demo-box">
+          <view class="common" style="align-content: space-around">
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="common" style="align-content: space-around" flatten>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+            <view class="flex-item red"></view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>align-content: stretch</text>
+        <view class="demo-box">
+          <view class="common" style="align-content: stretch">
+            <view class="flex-item-stretch red"></view>
+            <view class="flex-item-stretch green"></view>
+            <view class="flex-item-stretch blue"></view>
+            <view class="flex-item-stretch red"></view>
+            <view class="flex-item-stretch green"></view>
+            <view class="flex-item-stretch blue"></view>
+          </view>
+          <view class="common" style="align-content: stretch" flatten>
+            <view class="flex-item-stretch red"></view>
+            <view class="flex-item-stretch green"></view>
+            <view class="flex-item-stretch blue"></view>
+            <view class="flex-item-stretch red"></view>
+            <view class="flex-item-stretch green"></view>
+            <view class="flex-item-stretch blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
+        <text class="uni-subtitle-text">align-content: center; 和 align-content: flex-start;</text>
+      </view>
+
+      <view class="demo-box">
+        <scroll-view class="common" style="align-content: center;" direction="horizontal">
+          <view class="flex-item red"></view>
+          <view class="flex-item green"></view>
+          <view class="flex-item blue"></view>
+          <view class="flex-item red"></view>
+          <view class="flex-item green"></view>
+          <view class="flex-item blue"></view>
+        </scroll-view>
+        <scroll-view class="common" style="align-content: flex-start;" direction="horizontal">
+          <view class="flex-item red"></view>
+          <view class="flex-item green"></view>
+          <view class="flex-item blue"></view>
+          <view class="flex-item red"></view>
+          <view class="flex-item green"></view>
+          <view class="flex-item blue"></view>
+        </scroll-view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 align-content </text>
+      </view>
+
+      <view class="common-box">
+        <!-- 普通版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">align-content</text>
+          <text class="uni-info">设置值: {{data.alignContent}}</text>
+          <text class="uni-info">获取值: {{data.alignContentActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="test-flex-container test-view" :style="{ alignContent: data.alignContent }">
+              <view class="test-item-small red"></view>
+              <view class="test-item-small green"></view>
+              <view class="test-item-small blue"></view>
+              <view class="test-item-small red"></view>
+              <view class="test-item-small green"></view>
+              <view class="test-item-small blue"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 拍平版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">拍平</text>
+          <text class="uni-info">设置值: {{data.alignContent}}</text>
+          <text class="uni-info">获取值: {{data.alignContentActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ alignContent: data.alignContent }" flatten>
+              <view class="test-item-small red"></view>
+              <view class="test-item-small green"></view>
+              <view class="test-item-small blue"></view>
+              <view class="test-item-small red"></view>
+              <view class="test-item-small green"></view>
+              <view class="test-item-small blue"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="alignContentEnum" title="align-content 枚举值" @change="radioChangeAlignContent" :compact="true"></enum-data>
+        <input-data :defaultValue="data.alignContent" title="align-content 自定义值" type="text" @confirm="inputChangeAlignContent"></input-data>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const alignContentEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'flex-start' },
+    { value: 2, name: 'flex-end' },
+    { value: 3, name: 'center' },
+    { value: 4, name: 'space-between' },
+    { value: 5, name: 'space-around' },
+    { value: 6, name: 'stretch' }
+  ]
+
+  const data = reactive({
+    alignContent: 'center',
+    alignContentActual: '',
+    alignContentActualFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+
+  const getPropertyValues = () => {
+    data.alignContentActual = viewRef.value?.style.getPropertyValue('align-content') ?? ''
+    data.alignContentActualFlat = viewRefFlat.value?.style.getPropertyValue('align-content') ?? ''
+  }
+
+  const changeAlignContent = (value: string) => {
+    data.alignContent = value
+    viewRef.value?.style.setProperty('align-content', value)
+    viewRefFlat.value?.style.setProperty('align-content', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeAlignContent = (index: number) => {
+    const selectedItem = alignContentEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeAlignContent(selectedItem.name)
+    }
+  }
+
+  const inputChangeAlignContent = (value: string) => {
+    changeAlignContent(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeAlignContent,
+    data
+  })
+</script>
+
+<style>
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .flex-item {
+    width: 40px;
+    height: 40px;
+    border-bottom:#ddd solid 1px;
+  }
+  .flex-item-stretch {
+    width: 40px;
+  }
+  .red {
+    background-color: red;
+  }
+  .green {
+    background-color: green;
+  }
+  .blue {
+    background-color: blue;
+  }
+  .common {
+    flex: 1;
+    margin: 0 10px;
+    height: 160px;
+    background-color: gray;
+    flex-flow: row wrap;
+  }
+
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .test-box {
+    width: 180px;
+    height: 150px;
+    background-color: gray;
+  }
+
+
+  .test-flex-container {
+    width: 100%;
+    height: 100%;
+    background-color: gray;
+    flex-flow: row wrap;
+  }
+
+  .test-item-small {
+    width: 35px;
+    height: 35px;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    text-align: center;
+  }
+</style>

@@ -1,0 +1,142 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view class="demo-box">
+        <view class="common">
+          <text ref="text" :style="{'font-size': data.fontSize}">font-size: {{data.fontSize}}</text>
+          <text style="font-size: 30px;">font-size: 30px</text>
+        </view>
+        <view class="common">
+          <text ref="text" :style="{'font-size': data.fontSize}" flatten>font-size: {{data.fontSize}}</text>
+          <text style="font-size: 30px;" flatten>font-size: 30px</text>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 font-size 测试</text>
+      </view>
+
+      <view class="common-box">
+        <!-- 普通版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">font-size</text>
+          <text class="uni-info">设置值: {{data.fontSizeProp}}</text>
+          <text class="uni-info">获取值: {{data.fontSizeActual}}</text>
+          <view class="test-box">
+            <text ref="textRef" :style="{ fontSize: data.fontSizeProp }">当前 font-size: {{data.fontSizeProp}}</text>
+          </view>
+        </view>
+
+        <!-- 拍平版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">测试拍平</text>
+          <text class="uni-info">设置值: {{data.fontSizeProp}}</text>
+          <text class="uni-info">获取值: {{data.fontSizeActualFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" :style="{ fontSize: data.fontSizeProp }" flatten>当前 font-size: {{data.fontSizeProp}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+          <enum-data :items="fontSizeEnum" title="font-size 枚举值" @change="radioChangeFontSize" :compact="true"></enum-data>
+          <input-data :defaultValue="data.fontSizeProp" title="font-size 自定义值" type="text" @confirm="inputChangeFontSize"></input-data>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const data = reactive({
+    fontSize: '15px',
+    fontSizeProp: '15px',
+    fontSizeActual: '',
+    fontSizeActualFlat: ''
+  })
+  // 自动化测试
+  const setFontSize = () => {
+    data.fontSize = '30px'
+  }
+
+  defineExpose({
+    setFontSize,
+    data
+  })
+
+  const fontSizeEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '10px' },
+    { value: 4, name: '20px' },
+    { value: 5, name: '0rpx' },
+    { value: 6, name: '20rpx' },
+  ]
+
+  const textRef = ref(null as UniTextElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+
+  const getPropertyValues = () => {
+    data.fontSizeActual = textRef.value?.style.getPropertyValue('font-size') ?? ''
+    data.fontSizeActualFlat = textRefFlat.value?.style.getPropertyValue('font-size') ?? ''
+  }
+
+  const changeFontSize = (value: string) => {
+    data.fontSizeProp = value
+    textRef.value?.style.setProperty('font-size', value)
+    textRefFlat.value?.style.setProperty('font-size', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeFontSize = (index: number) => {
+    const selectedItem = fontSizeEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeFontSize(selectedItem.name)
+    }
+  }
+
+  const inputChangeFontSize = (value: string) => {
+    changeFontSize(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+</script>
+
+<style>
+.common{
+  background-color: gray;
+  justify-content: center;
+  height: 100px;
+  flex:1;
+}
+.demo-box {
+  flex-direction: row;
+  margin-top: 10px;
+  justify-content: space-around;
+}
+.common-box{
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.test-box {
+  width: 180px;
+  height: 80px;
+  background-color: gray;
+  justify-content: center;
+  align-items: center;
+}
+</style>

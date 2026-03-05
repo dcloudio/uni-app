@@ -1,0 +1,26 @@
+<template>
+	<view style="flex: 1;">
+    <view class="item">
+      <text>check-box设置background-color</text>
+      <view class="case">
+        <view class="warp">
+          <checkbox>select</checkbox>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<style>
+  .item {
+    margin: 15px;
+  }
+  .case {
+    margin-top: 10px;
+  }
+  .warp {
+    padding: 16px;
+    background-color: #000;
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.7);
+  }
+</style>

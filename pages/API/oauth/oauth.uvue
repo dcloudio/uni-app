@@ -1,0 +1,118 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-container">
+        <view class="uni-center">登录状态</view>
+        <view v-if="userInfo == null">
+          <template v-if="logging">
+            <view class="uni-center uni-common-mt">登录中...</view>
+          </template>
+          <template v-else>
+            <view class="uni-center uni-common-mt">未登录</view>
+            <view class="uni-center uni-common-mt">请点击下面按钮登录</view>
+          </template>
+        </view>
+        <view v-else>
+          <view class="uni-center uni-common-mt">
+            <image :src="userInfo.avatarUrl" style="width: 60px;height: 60px;border-radius: 30px;"></image>
+          </view>
+          <view class="uni-center uni-common-mt">Hello, {{userInfo.nickName}}</view>
+        </view>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <!-- #ifdef APP-HARMONY -->
+        <button type="primary" @click="hwLogin">华为登录</button>
+        <button class="uni-common-mt" type="primary" @click="wxLogin">微信登录</button>
+        <!-- #endif -->
+        <button class="uni-common-mt" @click="clear">清空</button>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { state, setUserInfo, UserInfo } from '@/store/index.uts'
+
+  const title = ref('OAuth')
+  const logging = ref(false)
+  const userInfo = computed(() => state.userInfo)
+  const testUserInfo = ref<UserInfo | null>(null)
+
+  const clear = () => {
+    setUserInfo(null)
+    testUserInfo.value = null
+    logging.value = false
+  }
+
+  const hwLogin = () => {
+    logging.value = true
+    if (userInfo.value != null) return
+    uni.login({
+      provider: 'huawei',
+      success() {
+        uni.getUserInfo({
+          provider: 'huawei',
+          success(res) {
+            console.log('获取用户信息成功')
+            const info : UserInfo = {
+              nickName: res.userInfo.nickName,
+              avatarUrl: res.userInfo.avatarUrl
+            }
+            testUserInfo.value = info
+            setUserInfo(info)
+            logging.value = false
+          },
+          fail(err) {
+            clear()
+            console.log('获取用户信息错误: ', JSON.stringify(err));
+          }
+        })
+      },
+      fail(err) {
+        clear()
+        console.log('获取用户信息错误: ', JSON.stringify(err));
+      }
+    })
+  }
+
+  const wxLogin = () => {
+    uni.showLoading({
+      title: '微信登录...'
+    })
+    uni.login({
+      provider: 'weixin',
+      success(res) {
+        uni.hideLoading()
+        uni.showModal({
+          title: '微信登录成功',
+          content: `code: ${res.code}`
+        })
+      },
+      fail(err) {
+        uni.hideLoading()
+        uni.showToast({
+          title: err.errMsg
+        })
+      }
+    })
+  }
+
+  function getTestUserInfo() {
+    return testUserInfo.value
+  }
+
+  defineExpose({
+    getTestUserInfo,
+    hwLogin,
+    setUserInfo
+  })
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,346 @@
+<template>
+  <view :class="['uni-container', { 'flex-row': isWideScreen }, isDarkMode ? 'theme-dark' : 'theme-light']" style="flex: 1;padding: 0px;">
+    <!-- 列表区域 ：宽屏时在左侧显示，窄屏时只显示列表 -->
+    <list-view class="list-container" :class="{'list-narrow': isWideScreen}" refresher-enabled
+      @refresherrefresh="onRefresherrefresh" :refresher-triggered="refresherTriggered" enable-back-to-top>
+      <list-item class="banner" @click="bannerClick(banner)">
+        <image class="banner-img" :src="banner.cover"></image>
+        <text class="banner-title">{{ banner.title }}</text>
+      </list-item>
+
+      <!-- #ifndef VUE3-VAPOR -->
+      <sticky-section>
+        <sticky-header>
+          <view class="th-item">
+            <text v-for="(name,index) in th_item" :key="index" @click="clickTH(index)" class="th-item-text">
+              {{name}}
+            </text>
+          </view>
+        </sticky-header>
+        <!-- #endif -->
+        <list-item v-for="(value, index) in listData" :key="index"
+          <!-- #ifndef VUE3-VAPOR -->
+          type=2
+          <!-- #endif -->
+        >
+          <view class="uni-list-cell" hover-class="uni-list-cell-hover" @click="goDetail(value, index)">
+            <view class="uni-media-list">
+              <image v-if="isWideScreen" class="uni-media-list-logo" :src="value.cover"></image>
+              <!-- #ifdef VUE3-VAPOR -->
+              <image v-else class="uni-media-list-logo" :src="value.cover"></image>
+              <!-- #endif -->
+              <!-- #ifndef VUE3-VAPOR -->
+              <share-element v-else :share-key="'image_'+index">
+                <image class="uni-media-list-logo" :src="value.cover"></image>
+              </share-element>
+              <!-- #endif -->
+              <view class="uni-media-list-body">
+                <text class="uni-media-list-text-top">{{ value.title }}</text>
+                <view class="uni-media-list-text-bottom">
+                  <text class="uni-media-list-text">{{ value.author_name }}</text>
+                  <text class="uni-media-list-text">{{ value.published_at }}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </list-item>
+        <!-- #ifndef VUE3-VAPOR -->
+        </sticky-section>
+        <!-- #endif -->
+    </list-view>
+
+    <!-- 详情区域：宽屏时，右侧显示-->
+    <view v-if="isWideScreen" class="detail-container">
+      <detail
+        v-if="post_id != '' && title != '' && cover != ''"
+        :key="post_id"
+        :post_id="post_id"
+        :cover="cover"
+        :title="title"
+        :isWideScreen="isWideScreen"
+        :firstDetailContent="currentDetailContent"
+      />
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import { state } from '@/store/index.uts'
+  type Item = {
+    author_name : string,
+    cover : string,
+    id : number,
+    post_id : string,
+    published_at : string,
+    title : string
+  }
+  // 导入详情组件，宽屏时，右侧直接展示详情内容
+  import detail from './detail/detail.uvue'
+
+  const th_item = ref(["排序", "筛选"])
+  const refresherTriggered = ref(false)
+  let banner = ref({} as UTSJSONObject)
+  const listData = ref([] as Item[])
+  let last_id = ''
+  const isWideScreen = ref(false) // 是否为宽屏模式
+  const currentIndex = ref(0) // 当前选中的列表项索引
+  const post_id = ref('')
+  const cover = ref('')
+  const title = ref('')
+  const firstDetailContent = ref('') // 并行预加载的第一个详情内容
+
+  function checkScreenWidth() {
+    const { windowWidth } = uni.getWindowInfo()
+    // 只要是pad/pc，或者宽度大于700，都算宽屏
+    // #ifdef WEB
+    // WEB 端切换设备模拟器时 deviceType 不会改变，只依赖 windowWidth 判断
+    isWideScreen.value = windowWidth > 700
+    // #endif
+    // #ifndef WEB
+    const deviceType = uni.getDeviceInfo().deviceType
+    isWideScreen.value = deviceType === 'pad' || windowWidth > 700
+    // #endif
+  }
+
+  function getBanner() {
+    let data = {
+      column: 'post_id,title,cover' //需要的字段名
+    };
+    uni.request({
+      url: 'https://unidemo.dcloud.net.cn/api/banner/36kr',
+      data: data,
+      success: data => {
+        refresherTriggered.value = false
+        if (data.statusCode == 200) {
+          banner.value = data.data as UTSJSONObject
+          // banner = data.data as UTSJSONObject
+          // console.log(banner.title)
+        }
+      },
+      fail: (e) => {
+        console.log('fail', e);
+      }
+    });
+  }
+
+  function goDetail(e: Item, key: number) {
+    currentIndex.value = key
+    const detail = e;
+    post_id.value = detail.post_id;
+    cover.value = detail.cover;
+    title.value = detail.title;
+    // 窄屏时跳转到详情页，宽屏时右侧直接展示
+    if (!isWideScreen.value) {
+      // #ifdef APP-ANDROID
+      cover.value = btoa(cover.value);
+      // #endif
+      uni.navigateTo({
+        url: '/pages/template/list-news/detail/detail?post_id=' + post_id.value + "&cover=" + cover.value + "&title=" + title.value + "&shareKey=image_" + key
+      });
+    }
+  }
+
+  function getList() {
+    let url = "https://unidemo.dcloud.net.cn/api/news?column=id,post_id,title,author_name,cover,published_at";
+    /* if (last_id != "") {
+      const minId = parseInt((last_id))
+      const time = new Date().getTime() + '';
+      const pageSize = 10;
+      url = url + "&minId=" + minId + "&time=" + time + "&pageSize=" + pageSize;
+    } */
+    uni.request<Item[]>({
+      url: url,
+      method: "GET",
+      success: (res) => {
+        if (res.statusCode == 200) {
+          const result = res.data
+          //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
+          // listData.value.push(...result)
+          // last_id = listData.value[0].id + "";
+          if (result != null) {
+            listData.value = result
+            // 宽屏模式下，自动选中并展示第一个新闻详情
+            if (isWideScreen.value && listData.value.length > 0) {
+              goDetail(listData.value[0], 0)
+              // 并行预加载第一个详情内容，提升右侧展示速度
+              const first = listData.value[0]
+              uni.request({
+                url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + first.post_id,
+                success: (res) => {
+                  if (res.statusCode == 200) {
+                    const result = res.data as UTSJSONObject;
+                    firstDetailContent.value = result["content"] as string
+                  }
+                }
+              })
+            }
+          }
+          refresherTriggered.value = false;
+        }
+      },
+      fail: (res) => {
+        console.log('fail', res);
+        refresherTriggered.value = false
+      }
+    });
+  }
+
+  function bannerClick(e:UTSJSONObject) {
+    // const detail = e;
+    const post_id_val = e.post_id as string;
+    let cover_val = e.cover as string;
+    // #ifdef APP-ANDROID
+    cover_val = btoa(cover_val);
+    // #endif
+    const title_val = e.title;
+    uni.navigateTo({
+      url: '/pages/template/list-news/detail/detail?post_id=' + post_id_val + "&cover=" + cover_val + "&title=" + title_val
+    });
+  }
+
+  function clickTH(index: number) {
+    uni.showModal({
+      content: "点击表头项：" + index,
+      showCancel: false
+    });
+  }
+
+  function onRefresherrefresh() {
+    refresherTriggered.value = true
+    getBanner();
+    getList();
+  }
+
+  const currentDetailContent = computed(() => {
+    // 只在宽屏且是第一个文章时用预加载内容
+    if (
+      isWideScreen.value &&
+      listData.value.length > 0 &&
+      post_id.value === listData.value[0].post_id &&
+      firstDetailContent.value !== ''
+    ) {
+      return firstDetailContent.value
+    }
+    return ''
+  })
+
+  const isDarkMode = computed(() => state.isDarkMode)
+
+  onLoad(() => {
+    checkScreenWidth()
+    getBanner()
+    getList()
+  })
+
+  onResize(() => {
+    checkScreenWidth()
+  })
+</script>
+
+<style>
+  .flex-row {
+    flex-direction: row;
+  }
+
+  .list-container {
+    width: 100%;
+    background-color: var(--list-background-color,#ffffff);
+    flex: 1;
+  }
+
+  .list-narrow {
+    /* #ifdef WEB */
+    width: 360px;
+    /* #endif */
+    /* #ifndef WEB */
+    width: 100px;
+    /* #endif */
+  }
+  .th-item{
+    width: 100%;
+    height:44px;
+    background-color: var(--list-background-color,#ffffff);
+    flex-direction: row;
+    justify-content:center;
+    align-items:center;
+  }
+  .th-item-text{
+    margin-right: 20px;
+    color: var(--text-color,#333333);
+  }
+
+  .detail-container {
+    flex: 1;
+    min-width: 0;
+    /* 防止溢出 */
+    padding: 20px;
+    background-color: var(--background-color,#f8f8f8);
+    /* #ifdef WEB */
+    overflow: auto;
+    /* #endif */
+  }
+
+  .banner {
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--background-color,#f8f8f8);
+  }
+
+  .banner-img {
+    width: 100%;
+  }
+
+  .banner-title {
+    max-height: 42px;
+    overflow: hidden;
+    position: absolute;
+    left: 15px;
+    bottom: 15px;
+    width: 90%;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    color: white;
+  }
+
+  .uni-media-list {
+    padding: 11px 15px;
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+  }
+
+  .uni-media-list-logo {
+    width: 90px;
+    height: 70px;
+  }
+
+  .uni-media-list-body {
+    flex: 1;
+    padding-left: 7px;
+    justify-content: space-around;
+  }
+
+  .uni-media-list-text-top {
+    /* height: 37px; */
+    font-size: 14px;
+    /* #ifndef VUE3-VAPOR */
+    lines: 2;
+    /* #endif */
+    overflow: hidden;
+    color: var(--text-color,#333333);
+  }
+
+  .uni-media-list-text-bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .uni-media-list-text {
+    color: #9D9D9F;
+    font-size: 13px;
+  }
+</style>

@@ -1,0 +1,58 @@
+<template>
+	<view class="padding-safe-area-inset">
+		<view class="text-background">我在状态栏下边</view>
+    <view class="content">
+      <text>此页面使用env()函数适配安全区域，仅在app平台生效。</text>
+      <text>safe-area-inset-top: {{safeareaInsetTop}}px</text>
+      <text>safe-area-inset-left: {{safeareaInsetLeft}}px</text>
+      <text>safe-area-inset-right: {{safeareaInsetRight}}px</text>
+      <text>safe-area-inset-bottom: {{safeareaInsetBottom}}px</text>
+    </view>
+		<view class="text-background">我在导航栏上边</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+
+	const safeareaInsetTop = ref(0)
+	const safeareaInsetLeft = ref(0)
+	const safeareaInsetRight = ref(0)
+	const safeareaInsetBottom = ref(0)
+
+	const instance = getCurrentInstance()
+
+	onReady(() => {
+		const page = instance?.proxy?.$page
+		safeareaInsetTop.value = page?.safeAreaInsets.top ?? 0
+		safeareaInsetLeft.value = page?.safeAreaInsets.left ?? 0
+		safeareaInsetRight.value = page?.safeAreaInsets.right ?? 0
+		safeareaInsetBottom.value = page?.safeAreaInsets.bottom ?? 0
+	})
+
+	onResize((options) => {
+		const page = instance?.proxy?.$page
+		safeareaInsetTop.value = page?.safeAreaInsets.top ?? 0
+		safeareaInsetLeft.value = page?.safeAreaInsets.left ?? 0
+		safeareaInsetRight.value = page?.safeAreaInsets.right ?? 0
+		safeareaInsetBottom.value = page?.safeAreaInsets.bottom ?? 0
+	})
+</script>
+
+<style>
+  .text-background {
+    background-color: red;
+  }
+	.padding-safe-area-inset {
+		flex: 1;
+		justify-content: space-between;
+/* #ifdef APP */
+		padding-top: env(safe-area-inset-top, 0px);
+		padding-left: env(safe-area-inset-left, 0px);
+		padding-right: env(safe-area-inset-right, 0px);
+		padding-bottom: env(safe-area-inset-bottom, 0px);
+/* #endif */
+	}
+  .content{
+    padding: 20px;
+  }
+</style>

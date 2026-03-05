@@ -1,0 +1,22 @@
+<template>
+  <view class="uni-padding-wrap">
+    <button @click="goOnLoad('adjustData')">onLoad adjust data</button>
+    <button @click="goOnLoad('navigateTo')">onLoad navigateTo</button>
+    <button @click="goOnLoad('navigateBack')">onLoad navigateBack</button>
+    <button @click="goOnLoad('redirectTo')">onLoad redirectTo</button>
+    <button @click="goOnLoad('reLaunch')">onLoad reLaunch</button>
+    <button @click="goOnLoad('switchTab')">onLoad switchTab</button>
+    <button @click="goOnLoad('showToast')">onLoad showToast</button>
+    <button @click="goOnLoad('showLoading')">onLoad showLoading</button>
+    <button @click="goOnLoad('showModal')">onLoad showModal</button>
+    <button @click="goOnLoad('showActionSheet')">onLoad showActionSheet</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+function goOnLoad(type: string){
+  uni.navigateTo({
+    url: `/pages/API/navigator/new-page/onLoad?type=${type}`
+  })
+}
+</script>

@@ -1,0 +1,163 @@
+<template>
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-btn-v uni-common-mt">
+        <button type="default" @click="verify(false)">一键登录（半屏）</button>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="default" @click="verify(true)">一键登录（全屏）</button>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="default" @click="customLoginIn()">一键登录（自定义页面）</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const title = ref('一键登录')
+  const uniVerifyManager = ref(null as UniVerifyManager | null)
+  const phone = ref('')
+  const slogan = ref('')
+  const privacyName = ref('')
+  const privacyUrl = ref('')
+
+  const preLogin = (callback: (() => void)) => {
+    uniVerifyManager.value?.preLogin({
+      success: (res) => {
+        phone.value = res.number;
+        slogan.value = res.slogan;
+        privacyName.value = res.privacyName;
+        privacyUrl.value = res.privacyUrl;
+        console.log("pre login success");
+        callback();
+      },
+      fail: (err) => {
+        console.error("pre login fail => " + JSON.stringify(err));
+        const hasCauseMessage = (err.cause?.cause?.message ?? '').length > 0
+        uni.showModal({
+          title: '预登录失败',
+          content: hasCauseMessage ? JSON.parseObject(err.cause?.cause?.message ?? '')?.getString("errorDesc") : err.errMsg,
+          showCancel: false
+        });
+      }
+    });
+  }
+
+  const pushCustomPage = () => {
+    const url = '/pages/API/get-uni-verify-manager/uni-verify-custom-page?phone=' + phone.value + '&slogan=' + slogan.value + '&name=' + privacyName.value + '&link=' + privacyUrl.value;
+    uni.openDialogPage({
+      url: url,
+      animationType: 'slide-in-bottom',
+      success(res) {
+        console.log("成功打开自定义登录页面");
+      },
+      fail(err) {
+        console.log(err);
+      }
+    })
+  }
+
+  const customLoginIn = () => {
+    if('production' === process.env.NODE_ENV && '__UNI__HelloUniAppX'===uni.getAppBaseInfo().appId){
+      uni.showModal({
+        title: '提示',
+        content: '一键登录为收费功能，当前环境暂不支持。请在HBuilderX中新建Hello uni-app x项目真机运行体验！',
+        showCancel: false
+      })
+      return
+    }
+    const isPreLoginValid = uniVerifyManager.value?.isPreLoginValid() ?? false;
+    if (isPreLoginValid) {
+      pushCustomPage();
+    } else {
+      preLogin(() => {
+        pushCustomPage();
+      })
+    }
+  }
+
+  const takePhoneNumber = (accessToken: string, openId: string) => {
+    // 云函数取号
+    uniCloud.callFunction({
+      name: 'univerify',
+      data: {
+        access_token: accessToken, // 客户端一键登录接口返回的access_token
+        openid: openId // 客户端一键登录接口返回的openid
+      }
+    }).then(res => {
+      // 关闭登录页
+      uniVerifyManager.value?.close();
+      setTimeout(() => {
+        uni.showModal({
+          title: '取号成功',
+          content: res.result.getJSON("res")?.getString("phoneNumber"),
+          showCancel: false
+        });
+      }, 100);
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+      // 关闭登录页
+      uniVerifyManager.value?.close();
+      setTimeout(() => {
+        uni.showModal({
+          title: '取号失败',
+          content: (err as Error).message,
+          showCancel: false
+        });
+      }, 100);
+    });
+  }
+
+  const login = (fullScreen: boolean) => {
+    uniVerifyManager.value?.login({
+      uniVerifyStyle:{
+        fullScreen: fullScreen,
+        loginBtnText: "一键登录",
+        logoPath: "/static/test-image/logo.png"
+      },
+      success: (res) => {
+        console.log("login success => " + JSON.stringify(res));
+        takePhoneNumber(res.accessToken,res.openId);
+      },
+      fail: (err) => {
+        console.error("login fail => " + err);
+        const hasCauseMessage = (err.cause?.cause?.message ?? '').length > 0
+        uni.showModal({
+          title: '登录失败',
+          content: hasCauseMessage ? JSON.parseObject(err.cause?.cause?.message ?? "")?.getString("errorDesc") : err.errMsg,
+          showCancel: false
+        });
+      }
+    });
+  }
+
+  const verify = (fullScreen: boolean) => {
+    if('production' === process.env.NODE_ENV && '__UNI__HelloUniAppX'===uni.getAppBaseInfo().appId){
+      uni.showModal({
+        title: '提示',
+        content: '一键登录为收费功能，当前环境暂不支持。请在HBuilderX中新建Hello uni-app x项目真机运行体验！',
+        showCancel: false
+      })
+      return
+    }
+    // 校验预登录是否有效
+    const isPreLoginValid = uniVerifyManager.value?.isPreLoginValid() ?? false;
+    if (isPreLoginValid) {
+      // 预登录有效，执行登录
+      login(fullScreen);
+    } else {
+      // 预登录无效，执行预登录
+      preLogin(() => {
+        login(fullScreen);
+      })
+    }
+  }
+
+  onLoad(() => {
+    uniVerifyManager.value = uni.getUniVerifyManager();
+    // 预登录
+    preLogin(() => { });
+  })
+</script>

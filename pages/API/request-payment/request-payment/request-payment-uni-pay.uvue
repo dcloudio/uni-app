@@ -1,0 +1,576 @@
+<template>
+  <view class="app">
+    <view class="uni-common-mb">
+      <text>如对当前页面的支付示例功能有任何疑问，通过在线IM联系我们 https://im.dcloud.net.cn/#/?joinGroup=662b3d7e8551460030874a5d</text>
+    </view>
+    <view v-if="errMsg != ''">
+      <text class="err-msg">注意：{{ errMsg }}</text>
+    </view>
+    <view>
+      <view class="margin"><text>支付单号：</text></view>
+      <view><input class="input" v-model="out_trade_no" placeholder="点击发起支付会自动生成" /></view>
+    </view>
+    <view>
+      <view class="margin"><text>支付金额（单位分，100=1元）：</text></view>
+      <view><input class="input" v-model="total_fee" /></view>
+    </view>
+    <!-- #ifdef APP || H5 -->
+    <button class="button" @click="open()">打开收银台（弹窗模式）</button>
+    <view v-if="!isPcCom">
+      <button class="button" @click="toPayDesk">打开收银台（新页面模式）</button>
+    </view>
+    <!-- #endif -->
+
+    <!-- #ifdef MP-WEIXIN || H5 || APP -->
+    <button class="button" @click="createOrder('wxpay')">发起支付（微信）</button>
+    <!-- #endif -->
+
+    <!-- #ifdef MP-ALIPAY || H5 || APP -->
+    <button class="button" @click="createOrder('alipay')">发起支付（支付宝）</button>
+    <!-- #endif -->
+
+    <!-- #ifdef APP -->
+    <button class="button" @click="createQRcode('alipay')">APP扫码支付（支付宝）</button>
+    <!-- #endif -->
+
+    <button class="button" @click="getOrderPopup(true)">查询支付状态</button>
+    <button class="button"
+      @click="pageTo('/uni_modules/uni-pay-x/pages/success/success?out_trade_no=test2024030501-1&order_no=test2024030501&total_fee=1&adpid=1000000001&return_url=/pages/API/request-payment/request-payment/order-detail')">支付成功页面示例</button>
+    <!-- #ifdef APP-IOS -->
+    <button class="button" @click="pageTo('/pages/API/virtual-payment/virtual-payment-uni-pay')">苹果虚拟支付示例（iOS内购）</button>
+    <!-- #endif -->
+    <!-- 查询支付的弹窗 -->
+    <uni-pay-popup ref="getOrderPopupRef" type="center">
+      <scroll-view direction="vertical" class="get-order-popup">
+        <view class="margin">插件支付单号：</view>
+        <view class="mt20">
+          <input class="input pd2030" v-model="out_trade_no" placeholder="请输入" />
+          <view><text class="tips">插件支付单号和第三方交易单号2选1填即可</text> </view>
+        </view>
+        <view class="margin">第三方交易单号：</view>
+        <view class="mt20">
+          <input class="input pd2030" v-model="transaction_id" placeholder="请输入" />
+          <view><text class="tips">可从支付宝账单（订单号）、微信账单（交易单号）中复制</text></view>
+        </view>
+        <view class="mt20">
+          <button class="button" @click="getOrder">查询支付状态</button>
+        </view>
+        <view class="mt20" v-if="getOrderRes['transaction_id']">
+          <view class="table">
+            <view class="table-tr">
+              <view class="table-td label"><text class="text align-left">订单描述</text></view>
+              <view class="table-td"><text class="text align-right">{{ getOrderRes['description'] }}</text></view>
+            </view>
+            <view class="table-tr">
+              <view class="table-td label"><text class="text align-left">支付金额</text></view>
+              <view class="table-td"><text class="text align-right">{{ amountFormat(getOrderRes.getNumber('total_fee')) }}</text></view>
+            </view>
+            <view class="table-tr">
+              <view class="table-td label"><text class="text align-left">支付方式</text></view>
+              <view class="table-td"><text class="text align-right">{{ providerFormat(getOrderRes['provider'] as string) }}</text></view>
+            </view>
+            <view class="table-tr">
+              <view class="table-td label"><text class="text align-left">第三方交易单号</text></view>
+              <view class="table-td"><text class="text align-right">{{ getOrderRes['transaction_id'] }}</text></view>
+            </view>
+            <view class="table-tr">
+              <view class="table-td label"><text class="text align-left">插件支付单号</text></view>
+              <view class="table-td"><text class="text align-right">{{ getOrderRes['out_trade_no'] }}</text></view>
+            </view>
+            <view class="table-tr">
+              <view class="table-td label"><text class="text align-left">回调状态</text></view>
+              <view class="table-td"><text
+                  class="text align-right">{{ getOrderRes.getBoolean('user_order_success') != null && getOrderRes.getBoolean('user_order_success') == true ? "成功" : "异常" }}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </uni-pay-popup>
+
+    <!-- #ifdef APP -->
+    <!-- <button class="button" v-if="isIosAppCom" @click="pageTo('/pages/iosiap/iosiap')">苹果内购示例</button> -->
+    <!-- #endif -->
+
+    <!-- <button class="button" @click="refund">发起退款</button>
+		<view><text class="tips">发起退款需要admin权限，本示例未对接登录功能</text></view>
+		<button class="button" @click="getRefund">查询退款状态</button>
+		<button class="button" @click="closeOrder">关闭订单</button> -->
+
+    <!-- #ifdef H5 -->
+    <button class="button" v-if="h5Env === 'h5-weixin'" @click="getWeiXinJsCode('snsapi_base')">公众号获取openid示例</button>
+    <!-- #endif -->
+    <!-- 统一支付组件，注意：vue3下ref不可以等于组件名，因此这里ref="pay" 而不能是 ref="uniPay" -->
+    <uni-pay ref="payRef" :adpid="adpid" height="450px" return-url="/pages/API/request-payment/request-payment/order-detail" logo="/static/test-image/logo.png" @success="onSuccess"
+      @create="onCreate" @fail="onFail" @cancel="onCancel"></uni-pay>
+  </view>
+</template>
+
+<script setup>
+  // 响应式数据
+  const total_fee = ref("1") // 支付金额，单位分 100 = 1元
+  const order_no = ref("") // 业务系统订单号（即你自己业务系统的订单表的订单号）
+  const out_trade_no = ref("") // 插件支付单号
+  const description = ref("测试订单") // 支付描述
+  const type = ref("test") // 支付回调类型 如 recharge 代表余额充值 goods 代表商品订单（可自定义，任意英文单词都可以，只要你在 uni-pay-co/notify/目录下创建对应的 xxx.js文件进行编写对应的回调逻辑即可）
+  const openid = ref("") // 微信公众号需要
+  const custom = ref({
+    a: "a",
+    b: 1
+  } as UTSJSONObject)
+  const adpid = ref("1000000001") // uni-ad的广告位id
+
+  const transaction_id = ref("") // 查询订单接口的查询条件
+  const getOrderRes = ref({} as UTSJSONObject) // 查询订单支付成功后的返回值
+  const useUniCloud = ref(true)
+  const errMsg = ref("")
+
+  // 组件引用
+  const payRef = ref<UniPayComponentPublicInstance | null>(null)
+  const getOrderPopupRef = ref<UniPayPopupComponentPublicInstance | null>(null)
+
+  // 计算属性
+  // 计算当前H5环境
+  const h5Env = computed(() => {
+    // #ifdef H5
+    const ua = window.navigator.userAgent.toLowerCase();
+    const isWeixin = /micromessenger/i.test(ua);
+    const isAlipay = /alipay/i.test(ua);
+    const isMiniProgram = /miniprogram/i.test(ua);
+    if (isWeixin) {
+      if (isMiniProgram) {
+        return "mp-weixin";
+      } else {
+        return "h5-weixin";
+      }
+    } else if (isAlipay) {
+      if (isMiniProgram) {
+        return "mp-alipay";
+      } else {
+        return "h5-alipay";
+      }
+    }
+    return "h5";
+    // #endif
+    return "";
+  })
+
+  // 计算当前是否是ios app
+  const isIosAppCom = computed(() => {
+    let info = uni.getSystemInfoSync();
+    return info.uniPlatform == 'app' && info.osName == 'ios' ? true : false;
+  })
+
+  // 计算当前是否是PC环境
+  const isPcCom = computed(() => {
+    let isPC = false;
+    // #ifdef WEB
+    let info = uni.getSystemInfoSync();
+    isPC = info.deviceType == 'pc' ? true : false;
+    // #endif
+    return isPC;
+  })
+
+  // 方法
+  /**
+   * 发起支付（唤起收银台，如果只有一种支付方式，则收银台不会弹出来，会直接使用此支付方式）
+   * 在调用此api前，你应该先创建自己的业务系统订单，并获得订单号 order_no，把order_no当参数传给此api，而示例中为了简化跟支付插件无关的代码，这里直接已时间戳生成了order_no
+   */
+  const open = () => {
+    order_no.value = `test` + Date.now();
+    out_trade_no.value = `${order_no.value}-1`;
+    // 打开支付收银台
+    const payInstance = payRef.value as UniPayComponentPublicInstance;
+    payInstance.open({
+      total_fee: parseInt(total_fee.value), // 支付金额，单位分 100 = 1元
+      order_no: order_no.value, // 业务系统订单号（即你自己业务系统的订单表的订单号）
+      out_trade_no: out_trade_no.value, // 插件支付单号
+      description: description.value, // 支付描述
+      type: type.value, // 支付回调类型
+      openid: openid.value, // 微信公众号需要
+      custom: custom.value, // 自定义数据
+      qr_code: isPcCom.value, // 如果是PC端，则强制扫码支付
+    });
+  }
+
+  /**
+   * 发起支付（不唤起收银台，手动指定支付方式）
+   * 在调用此api前，你应该先创建自己的业务系统订单，并获得订单号 order_no，把order_no当参数传给此api，而示例中为了简化跟支付插件无关的代码，这里直接已时间戳生成了order_no
+   */
+  const createOrder = (provider : string) => {
+    order_no.value = `test` + Date.now();
+    out_trade_no.value = `${order_no.value}-1`;
+    // 发起支付
+    const payInstance = payRef.value as UniPayComponentPublicInstance;
+    payInstance.createOrder({
+      provider: provider, // 支付供应商
+      total_fee: parseInt(total_fee.value), // 支付金额，单位分 100 = 1元
+      order_no: order_no.value, // 业务系统订单号（即你自己业务系统的订单表的订单号）
+      out_trade_no: out_trade_no.value, // 插件支付单号
+      description: description.value, // 支付描述
+      type: type.value, // 支付回调类型
+      openid: openid.value, // 微信公众号需要
+      custom: custom.value, // 自定义数据
+      qr_code: isPcCom.value, // 如果是PC端，则强制扫码支付
+    });
+  }
+
+  /**
+   * 生成支付独立二维码（只返回支付二维码）
+   * 在调用此api前，你应该先创建自己的业务系统订单，并获得订单号 order_no，把order_no当参数传给此api，而示例中为了简化跟支付插件无关的代码，这里直接已时间戳生成了order_no
+   */
+  const createQRcode = (provider : string) => {
+    order_no.value = `test` + Date.now();
+    out_trade_no.value = `${order_no.value}-1`;
+    // 发起支付
+    const payInstance = payRef.value as UniPayComponentPublicInstance;
+    payInstance.createOrder({
+      provider: provider, // 支付供应商
+      total_fee: parseInt(total_fee.value), // 支付金额，单位分 100 = 1元
+      order_no: order_no.value, // 业务系统订单号（即你自己业务系统的订单表的订单号）
+      out_trade_no: out_trade_no.value, // 插件支付单号
+      description: description.value, // 支付描述
+      type: type.value, // 支付回调类型
+      qr_code: true, // 强制扫码支付
+      openid: openid.value, // 微信公众号需要
+      custom: custom.value, // 自定义数据
+    });
+  }
+
+  /**
+   * 前往自定义收银台页面
+   * 在调用此api前，你应该先创建自己的业务系统订单，并获得订单号 order_no，把order_no当参数传给此api，而示例中为了简化跟支付插件无关的代码，这里直接已时间戳生成了order_no
+   */
+  const toPayDesk = () => {
+    order_no.value = `test` + Date.now();
+    out_trade_no.value = `${order_no.value}-1`;
+    let options = {
+      total_fee: parseInt(total_fee.value), // 支付金额，单位分 100 = 1元
+      order_no: order_no.value, // 业务系统订单号（即你自己业务系统的订单表的订单号）
+      out_trade_no: out_trade_no.value, // 插件支付单号
+      description: description.value, // 支付描述
+      type: type.value, // 支付回调类型
+      openid: openid.value, // 微信公众号需要
+      custom: custom.value, // 自定义数据
+    };
+    let optionsStr = encodeURI(JSON.stringify(options));
+    uni.navigateTo({
+      url: `/uni_modules/uni-pay-x/pages/pay-desk/pay-desk?options=${optionsStr}`
+    });
+  }
+
+  // 打开查询订单的弹窗
+  const getOrderPopup = (key : boolean) => {
+    const getOrderPopupInstance = getOrderPopupRef.value as UniPayPopupComponentPublicInstance;
+    if (key) {
+      getOrderPopupInstance.open();
+    } else {
+      getOrderPopupInstance.close();
+    }
+  }
+
+  // 查询支付状态
+  const getOrder = async () : Promise<void> => {
+    getOrderRes.value = {} as UTSJSONObject;
+    const payInstance = payRef.value as UniPayComponentPublicInstance;
+    let getOrderData = {
+      await_notify: true
+    } as UTSJSONObject;
+    if (transaction_id.value != "") {
+      getOrderData['transaction_id'] = transaction_id.value;
+    } else if (out_trade_no.value != "") {
+      getOrderData['out_trade_no'] = out_trade_no.value;
+    }
+    let res = await payInstance.getOrder(getOrderData);
+    if (res['errCode'] == 0) {
+      getOrderRes.value = res.getJSON('pay_order') as UTSJSONObject;
+      let obj = {
+        "-1": "已关闭",
+        "1": "已支付",
+        "0": "未支付",
+        "2": "已部分退款",
+        "3": "已全额退款"
+      } as UTSJSONObject;
+      let status = res['status'] as number;
+      let statusStr = status + "";
+      let title = obj[statusStr] as string;
+      uni.showToast({
+        title: title,
+        icon: "none"
+      });
+    }
+  }
+
+  // 发起退款
+  const refund = async () : Promise<void> => {
+    const payInstance = payRef.value as UniPayComponentPublicInstance;
+    let res = await payInstance.refund({
+      out_trade_no: out_trade_no.value, // 插件支付单号
+    });
+    if (res['errCode'] == 0) {
+      uni.showToast({
+        title: res['errMsg'] as string,
+        icon: "none"
+      });
+    }
+  }
+
+  // 查询退款状态
+  const getRefund = async () : Promise<void> => {
+    const payInstance = payRef.value as UniPayComponentPublicInstance;
+    let res = await payInstance.getRefund({
+      out_trade_no: out_trade_no.value, // 插件支付单号
+    });
+    if (res['errCode'] == 0) {
+      uni.showModal({
+        content: res['errMsg'] as string,
+        showCancel: false
+      });
+    }
+  }
+
+  // 关闭订单
+  const closeOrder = async () : Promise<void> => {
+    const payInstance = payRef.value as UniPayComponentPublicInstance;
+    let res = await payInstance.closeOrder({
+      out_trade_no: out_trade_no.value, // 插件支付单号
+    });
+    if (res['errCode'] == 0) {
+      uni.showModal({
+        content: res['errMsg'] as string,
+        showCancel: false
+      });
+    }
+  }
+
+  // #ifdef H5
+  // 获取公众号code
+  const getWeiXinJsCode = async (scope = "snsapi_base") : Promise<void> => {
+    const payInstance = payRef.value as UniPayComponentPublicInstance;
+    let res = await payInstance.getProviderAppId({
+      provider: "wxpay",
+      provider_pay_type: "jsapi"
+    });
+    if (res['appid'] != null && res['appid'] != "") {
+      let appid = res['appid'] as string;
+      let redirect_uri = window.location.href.split("?")[0];
+      let url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=STATE#wechat_redirect`;
+      window.location.href = url;
+    }
+  }
+
+  // 获取公众号openid
+  const getOpenid = async (data : UTSJSONObject) : Promise<void> => {
+    const payInstance = payRef.value as UniPayComponentPublicInstance;
+    let res = await payInstance.getOpenid(data);
+    if (res['openid'] != null && res['openid'] != "") {
+      let openidResult = res['openid'] as string;
+      let code = data['code'] as string;
+      openid.value = openidResult;
+      console.log('openid: ', openidResult)
+      // 将openid缓存到本地
+      uni.setStorageSync("uni-pay-weixin-h5-openid", openidResult);
+      uni.setStorageSync("uni-pay-weixin-h5-code", code);
+      uni.showToast({
+        title: "已获取到openid，可以开始支付",
+        icon: "none"
+      });
+    }
+  }
+  // #endif
+
+  // 监听事件 - 支付订单创建成功（此时用户还未支付）
+  const onCreate = (res : UTSJSONObject) => {
+    console.log('create: ', res);
+    // 如果只是想生成支付二维码，不需要组件自带的弹窗，则在这里可以获取到支付二维码 qr_code_image
+  }
+
+  // 监听事件 - 支付成功
+  const onSuccess = (res : UTSJSONObject) => {
+    console.log('success: ', res);
+    let user_order_success = res.getBoolean('user_order_success');
+    if (user_order_success != null && user_order_success != true) {
+      // 代表用户已付款，且你自己写的回调成功并正确执行了
+
+    } else {
+      // 代表用户已付款，但你自己写的回调执行失败（通常是因为你的回调代码有问题）
+
+    }
+  }
+
+  // 监听事件 - 支付失败
+  const onFail = (err : UTSJSONObject) => {
+    console.log('fail: ', err)
+
+  }
+
+  // 监听事件 - 取消支付
+  const onCancel = (err : UTSJSONObject) => {
+    console.log('cancel: ', err)
+    uni.showToast({
+      title: "用户取消了支付",
+      icon: "none"
+    });
+  }
+
+  // 页面跳转
+  const pageTo = (url : string) => {
+    uni.navigateTo({
+      url
+    });
+  }
+
+  // provider格式化
+  const providerFormat = (provider ?: string) : string => {
+    if (provider == null) {
+      return "";
+    }
+    let providerObj = {
+      "wxpay": "微信支付",
+      "alipay": "支付宝支付",
+      "appleiap": "ios内购"
+    } as UTSJSONObject;
+    let providerStr = providerObj[provider] as string;
+    return providerStr;
+  }
+
+  // amount格式化
+  const amountFormat = (totalFee : number | null) : string => {
+    if (totalFee == null) {
+      return "0";
+    } else {
+      return (totalFee / 100).toFixed(2)
+    }
+  }
+
+  const checkUniCloud = () : boolean => {
+    let useUniCloudResult = false;
+    if (typeof uniCloud != 'undefined' && typeof uniCloud.config == "object" && uniCloud.config.spaceId != "") {
+      useUniCloudResult = true;
+    }
+    if (!useUniCloudResult) {
+      let errMsgText = "本示例依赖 uniCloud，请先关联服务空间，填写正确的支付配置，支付配置文件地址：/uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center/uni-pay/config.js";
+      errMsg.value = errMsgText;
+      uni.showModal({
+        title: "提示",
+        content: errMsgText,
+        showCancel: false
+      })
+      console.error(errMsgText);
+    }
+    return useUniCloudResult;
+  }
+
+  // 生命周期
+  onLoad((options) => {
+    console.log('onLoad: ', options);
+    useUniCloud.value = checkUniCloud();
+    // #ifdef H5
+    // 微信公众号特殊逻辑开始-----------------------------------------------------------
+    // 以下代码仅为获取openid，正常你自己项目应该是登录后才能支付，登录后已经拿到openid，无需编写下面的代码
+    if (h5Env.value == 'h5-weixin') {
+      let openidStorage = uni.getStorageSync("uni-pay-weixin-h5-openid");
+      let oldCode = uni.getStorageSync("uni-pay-weixin-h5-code");
+      if (openidStorage != null && openidStorage != "") {
+        openid.value = openidStorage;
+      }
+      let code = options['code'] as string;
+      let state = options['state'] as string;
+      // 如果code和state有值，且此code没有被使用过，则执行获取微信公众号的openid
+      if (code != null && code != "" && state != null && state != "" && code != oldCode) {
+        // 获取微信公众号的openid
+        setTimeout(() => {
+          getOpenid({
+            provider: "wxpay",
+            code
+          });
+        }, 300);
+      } else if (!openidStorage) {
+        // 如果openid为空，则执行微信公众号的网页授权登录逻辑
+        setTimeout(() => {
+          getWeiXinJsCode('snsapi_base');
+        }, 300);
+      }
+    }
+    // 微信公众号特殊逻辑结束-----------------------------------------------------------
+    // #endif
+  })
+</script>
+
+<style lang="scss" scoped>
+  .app {
+    padding: 15px;
+  }
+
+  .input {
+    border: 1px solid #f3f3f3;
+    padding: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    height: 40px;
+    background: #FFF;
+  }
+
+  .button {
+    margin-top: 10px;
+  }
+
+  .margin {
+    margin: 5px 0;
+  }
+
+  .tips {
+    margin: 10px 0;
+    font-size: 12px;
+    color: #565656;
+  }
+
+  .get-order-popup {
+    background-color: #ffffff;
+    padding: 15px;
+    height: 450px;
+    border-radius: 10px;
+    width: 100%;
+  }
+
+  .mt20 {
+    margin-top: 10px;
+  }
+
+  .pd2030 {
+    padding: 10px 15px;
+  }
+
+  .table-tr {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+  }
+
+  .table-td {
+    flex: 1;
+  }
+
+  .align-left {
+    text-align: left;
+  }
+
+  .align-right {
+    text-align: right;
+  }
+
+  .label {
+    width: 90px;
+  }
+
+  .text {
+    font-size: 12px;
+  }
+
+  .err-msg {
+    color: red;
+    font-size: 14px;
+  }
+</style>

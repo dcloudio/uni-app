@@ -1,0 +1,11 @@
+<template>
+	<levelChild></levelChild>
+</template>
+
+<script setup>
+		import levelChild from './level-child.uvue'
+</script>
+
+<style>
+
+</style>

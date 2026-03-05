@@ -1,0 +1,146 @@
+<template>
+  <scroll-view style="flex: 1">
+    <page-head title="拖拽图标测试相关事件"></page-head>
+    <view class="uni-padding-wrap uni-common-mt" style="bottom: 20px;">
+      <navigator url="/pages/component/global-events/touch-events-case" hover-class="none">
+        <button type="default">
+          stopPropagation / preventDefault
+        </button>
+      </navigator>
+    </view>
+    <view class="container">
+      <view class="view-box" @touchstart="onViewTouchStart">
+        <image class="icon" id="icon" src="../image/logo.png" @touchstart="onTouchStart" @touchcancel="onTouchCancel"
+          @touchmove="onTouchMove" @touchend="onTouchEnd"></image>
+      </view>
+
+    </view>
+    <view v-if="touchEvent !== null">
+      <text class="title1">touches: </text>
+      <template v-for="(touch, index) in touchEvent!.touches" :key="index">
+        <text class="title2">touch[{{ index }}]:</text>
+        <text>identifier: {{touch.identifier}}</text>
+        <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+        <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
+        <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
+      </template>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+type DataType = {
+  touchTargets: string,
+  touchTargetsCount: number,
+  iconRect: DOMRect | null,
+}
+
+const move = ref(false)
+const posX = ref(0)
+const posY = ref(0)
+const lastX = ref(0)
+const lastY = ref(0)
+const touchEvent = ref(null as TouchEvent | null)
+const icon = ref(null as UniElement | null)
+const data = reactive({
+  touchTargets: "",
+  touchTargetsCount: 0,
+  iconRect: null as DOMRect | null,
+} as DataType)
+
+function onViewTouchStart(e : TouchEvent) {
+  data.touchTargets += e.target!.tagName + e.currentTarget!.tagName
+  data.touchTargetsCount++
+}
+
+function onTouchStart(e : TouchEvent) {
+  data.touchTargetsCount++
+  data.touchTargets += e.target!.tagName + e.currentTarget!.tagName
+
+  touchEvent.value = e
+  if (!move.value) {
+    move.value = true
+    posX.value = e.touches[0].screenX
+    posY.value = e.touches[0].screenY
+  }
+}
+
+function onTouchMove(e : TouchEvent) {
+  e.preventDefault()
+  touchEvent.value = e
+  let p = e.touches[0]
+  if (p.screenX == lastX.value && p.screenY == lastY.value) {
+    return
+  }
+  let x = p.screenX - posX.value
+  let y = p.screenY - posY.value
+  lastX.value = p.screenX
+  lastY.value = p.screenY
+  icon.value?.style?.setProperty('transform', 'translate(' + x + 'px,' + y + 'px)')
+}
+
+function resetIcon() {
+  move.value = false;
+  posX.value = 0;
+  posY.value = 0;
+  icon.value?.style?.setProperty('transform', 'translate(0px,0px)')
+}
+
+function onTouchEnd(e : TouchEvent) {
+  if (e.touches.length == 0) {
+    resetIcon()
+    touchEvent.value = null
+  }
+}
+
+function onTouchCancel(event : TouchEvent) {
+  resetIcon()
+  touchEvent.value = null
+}
+
+onReady(() => {
+  icon.value = uni.getElementById("icon")
+  // #ifdef APP-IOS || APP-HARMONY
+  data.iconRect = icon.value?.getBoundingClientRect() ?? null
+  // 加上导航栏及状态栏高度
+  if (data.iconRect != null) {
+    data.iconRect.y += uni.getSystemInfoSync().safeArea.top + 44
+  }
+  // #endif
+})
+
+defineExpose({
+  data
+})
+</script>
+
+<style>
+  .container {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .view-box {
+    width: 300px;
+    height: 300px;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+  }
+
+  .icon {
+    width: 100px;
+    height: 100px;
+  }
+
+  .title1 {
+    margin-top: 10px;
+    font-size: 18px;
+  }
+
+  .title2 {
+    margin-top: 5px;
+    font-size: 16px;
+  }
+</style>

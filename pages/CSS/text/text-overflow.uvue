@@ -1,0 +1,175 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view style="padding: 0 10px; background-color: gray;justify-content: center;">
+        <view class="margin-bottom-10">
+          <text class="font-weight-bold">text-overflow:clip white-space:nowrap</text>
+          <text class="font-size-20" style="text-overflow: clip;white-space: nowrap;">{{data.multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平版本</text>
+          <text class="font-size-20" style="text-overflow: clip;white-space: nowrap;" flatten>{{data.multiLineText}}</text>
+        </view>
+        <view class="margin-bottom-10">
+          <text class="font-weight-bold">text-overflow:ellipsis white-space:nowrap</text>
+          <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;">{{data.singleLineText}}</text>
+          <text style="color:#dbd9d9;">拍平版本</text>
+          <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;" flatten>{{data.singleLineText}}</text>
+          <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;">{{data.multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平版本</text>
+          <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;" flatten>{{data.multiLineText}}</text>
+        </view>
+        <view class="margin-bottom-10">
+          <text class="font-weight-bold">white-space:normal</text>
+          <text class="font-size-20" style="white-space: normal;">{{data.multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平版本</text>
+          <text class="font-size-20" style="white-space: normal;" flatten>{{data.multiLineText}}</text>
+        </view>
+        <view class="margin-bottom-10" style="overflow: visible;">
+          <text class="font-weight-bold">white-space: nowrap</text>
+          <text class="font-size-20" style="white-space: nowrap;align-self: flex-start;">{{data.multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平版本</text>
+          <text class="font-size-20" style="white-space: nowrap;align-self: flex-start;" flatten>{{data.multiLineText}}</text>
+        </view>
+        <view class="margin-bottom-10">
+          <text class="font-weight-bold">任意宽度截断（100px、200px、300px）</text>
+          <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 100px;">{{data.multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平版本</text>
+          <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 100px;" flatten>{{data.multiLineText}}</text>
+          <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 200px;">{{data.multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平版本</text>
+          <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 200px;" flatten>{{data.multiLineText}}</text>
+          <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 300px;">{{data.multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平版本</text>
+          <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 300px;" flatten>{{data.multiLineText}}</text>
+        </view>
+         <!-- #ifdef !VUE3-VAPOR && (APP-IOS || APP-ANDROID || APP-HARMONY) -->
+        <view class="margin-bottom-10">
+          <text class="font-weight-bold">lines:1 text-overflow:ellipsis</text>
+          <text class="font-size-20" style="text-overflow: ellipsis; lines: 1;">{{data.multiLineText}}</text>
+        </view>
+        <!-- #endif -->
+
+        <view class="margin-bottom-10 uni-common-mt">
+          <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-overflow </text>
+        </view>
+
+        <view class="common-box">
+          <!-- 普通版本 -->
+          <view class="uni-common-mt">
+            <text class="uni-title-text">text-overflow</text>
+            <text class="uni-info">设置值: {{data.textOverflow}}</text>
+            <text class="uni-info">获取值: {{data.textOverflowActual}}</text>
+            <view class="test-box">
+              <text ref="textRef" class="font-size-14 test-text" :style="{ textOverflow: data.textOverflow, whiteSpace: 'nowrap', width: '150px' }">{{data.multiLineText}}</text>
+            </view>
+          </view>
+
+          <!-- 拍平版本 -->
+          <view class="uni-common-mt">
+            <text class="uni-title-text">拍平</text>
+            <text class="uni-info">设置值: {{data.textOverflow}}</text>
+            <text class="uni-info">获取值: {{data.textOverflowActualFlat}}</text>
+            <view class="test-box">
+              <text ref="textRefFlat" class="font-size-14 test-text-flatten" :style="{ textOverflow: data.textOverflow, whiteSpace: 'nowrap', width: '150px' }" flatten>{{data.multiLineText}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="uni-common-mt uni-common-mb">
+            <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+            <enum-data :items="textOverflowEnum" title="text-overflow 枚举值" @change="radioChangeTextOverflow" :compact="true"></enum-data>
+            <input-data :defaultValue="data.textOverflow" title="text-overflow 自定义值" type="text" @confirm="inputChangeTextOverflow"></input-data>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const data = reactive({
+    multiLineText: 'HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言',
+    singleLineText: 'uts，大一统语言（单行文本）',
+    textOverflow: 'clip',
+    textOverflowActual: '',
+    textOverflowActualFlat: ''
+  })
+
+  const textOverflowEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'clip' },
+    { value: 2, name: 'ellipsis' }
+  ]
+
+  const textRef = ref(null as UniTextElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+
+  const getPropertyValues = () => {
+    data.textOverflowActual = textRef.value?.style.getPropertyValue('text-overflow') ?? ''
+    data.textOverflowActualFlat = textRefFlat.value?.style.getPropertyValue('text-overflow') ?? ''
+  }
+
+  const changeTextOverflow = (value: string) => {
+    data.textOverflow = value
+    textRef.value?.style.setProperty('text-overflow', value)
+    textRefFlat.value?.style.setProperty('text-overflow', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeTextOverflow = (index: number) => {
+    const selectedItem = textOverflowEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeTextOverflow(selectedItem.name)
+    }
+  }
+
+  const inputChangeTextOverflow = (value: string) => {
+    changeTextOverflow(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeTextOverflow,
+    data
+  })
+</script>
+
+<style>
+  .font-size-20 {
+    font-size: 20px;
+  }
+  .font-size-14{
+    font-size: 14px;
+  }
+
+  .font-weight-bold {
+    font-weight: bold;
+  }
+
+  .margin-bottom-10 {
+    margin-bottom: 10px;
+  }
+
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .test-box {
+    width: 160px;
+    height: 80px;
+    background-color: #cccccc;
+    justify-content: center;
+    align-items: center;
+  }
+</style>

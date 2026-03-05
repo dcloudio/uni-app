@@ -1,0 +1,410 @@
+<script setup lang="uts">
+  type ScrollEventTest = {
+    type : string;
+    target : UniElement | null;
+    currentTarget : UniElement | null;
+    direction ?: string
+  }
+
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  type DataType = {
+    refresher_triggered_boolean: boolean;
+    refresher_enabled_boolean: boolean;
+    scroll_with_animation_boolean: boolean;
+    show_scrollbar_boolean: boolean;
+    bounces_boolean: boolean;
+    scroll_y_boolean: boolean;
+    scroll_x_boolean: boolean;
+    scroll_direction: string;
+    upper_threshold_input: number;
+    lower_threshold_input: number;
+    scroll_top_input: number;
+    scroll_left_input: number;
+    refresher_background_input: string;
+    scrollData: Array<string>;
+    size_enum: ItemType[];
+    scrollIntoView: string;
+    refresherrefresh: boolean;
+    refresher_default_style_input: string;
+    text: string[];
+    state: number;
+    reset: boolean;
+    // 自动化测试
+    isScrollTest: string;
+    isScrolltolowerTest: string;
+    isScrolltoupperTest: string;
+    scrollDetailTest: UniScrollEventDetail | null;
+    scrollEndDetailTest: UniScrollEventDetail | null;
+  }
+
+  // 使用reactive解决ref数据在自动化测试中无法访问
+  const data = reactive({
+    refresher_triggered_boolean: false,
+    refresher_enabled_boolean: false,
+    scroll_with_animation_boolean: false,
+    show_scrollbar_boolean: false,
+    bounces_boolean: true,
+    scroll_y_boolean: true,
+    scroll_x_boolean: false,
+    scroll_direction: "vertical",
+    upper_threshold_input: 50,
+    lower_threshold_input: 50,
+    scroll_top_input: 0,
+    scroll_left_input: 0,
+    refresher_background_input: "#FFF",
+    scrollData: [],
+    size_enum: [{ "value": 0, "name": "item---0" }, { "value": 3, "name": "item---3" }],
+    scrollIntoView: "",
+    refresherrefresh: false,
+    refresher_default_style_input: "black",
+    text: ['继续下拉执行刷新', '释放立即刷新', '刷新中', ""],
+    state: 3,
+    reset: true,
+    // 自动化测试
+    isScrollTest: '',
+    isScrolltolowerTest: '',
+    isScrolltoupperTest: '',
+    scrollDetailTest: null,
+    scrollEndDetailTest: null,
+  } as DataType)
+
+  onLoad(() => {
+    let lists : Array<string> = []
+    for (let i = 0; i < 10; i++) {
+      lists.push("item---" + i)
+    }
+    data.scrollData = lists
+  })
+  const list_view_click = () => { console.log("组件被点击时触发") }
+  const list_view_touchstart = () => { console.log("手指触摸动作开始") }
+  const list_view_touchmove = () => { console.log("手指触摸后移动") }
+  const list_view_touchcancel = () => { console.log("手指触摸动作被打断，如来电提醒，弹窗") }
+  const list_view_touchend = () => { console.log("手指触摸动作结束") }
+  const list_view_tap = () => { console.log("手指触摸后马上离开") }
+  const list_view_longpress = () => { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") }
+
+  const list_view_refresherpulling = (e: RefresherEvent) => {
+    console.log("下拉刷新控件被下拉")
+    if (data.reset) {
+      if (e.detail.dy > 45) {
+        data.state = 1
+      } else {
+        data.state = 0
+      }
+    }
+  }
+
+  const list_view_refresherrefresh = () => {
+    console.log("下拉刷新被触发 ")
+    data.refresherrefresh = true
+    data.refresher_triggered_boolean = true
+    data.state = 2
+    data.reset = false;
+    setTimeout(() => {
+      data.refresher_triggered_boolean = false
+    }, 1500)
+  }
+
+  const list_view_refresherrestore = () => {
+    data.refresherrefresh = false
+    data.state = 3
+    data.reset = true
+    console.log("下拉刷新被复位")
+  }
+
+  const list_view_refresherabort = () => { console.log("下拉刷新被中止") }
+
+  // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
+  const checkEventTest = (e: ScrollEventTest, eventName: String) => {
+    const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement;
+    const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
+    switch (eventName) {
+      case 'scroll':
+        data.isScrollTest = result
+        break;
+      case 'scrolltolower':
+        data.isScrolltolowerTest = result + `-${e.direction}`
+        break;
+      case 'scrolltoupper':
+        data.isScrolltoupperTest = result + `-${e.direction}`
+        break;
+      default:
+        break;
+    }
+  }
+
+
+  const list_view_scrolltoupper = (e: UniScrollToUpperEvent) => {
+    console.log("滚动到顶部/左边，会触发 scrolltoupper 事件  direction=" + e.detail.direction)
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget,
+      direction: e.detail.direction,
+    } as ScrollEventTest, 'scrolltoupper')
+  }
+
+  const list_view_scrolltolower = (e: UniScrollToLowerEvent) => {
+    console.log("滚动到底部/右边，会触发 scrolltolower 事件  direction=" + e.detail.direction)
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget,
+      direction: e.detail.direction,
+    } as ScrollEventTest, 'scrolltolower')
+  }
+
+  const list_view_scroll = (e: UniScrollEvent) => {
+    console.log("滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY}")
+    data.scrollDetailTest = e.detail
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget
+    } as ScrollEventTest, 'scroll')
+  }
+
+  const list_view_scrollend = (e: UniScrollEvent) => {
+    console.log("滚动结束时触发", e.detail)
+    data.scrollEndDetailTest = e.detail
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget
+    } as ScrollEventTest, 'scrollend')
+  }
+
+  const list_item_click = () => { console.log("list-item组件被点击时触发") }
+  const list_item_touchstart = () => { console.log("手指触摸list-item组件动作开始") }
+  const list_item_touchmove = () => { console.log("手指触摸list-item组件后移动") }
+  const list_item_touchcancel = () => { console.log("手指触摸list-item组件动作被打断，如来电提醒，弹窗") }
+  const list_item_touchend = () => { console.log("手指触摸list-item组件动作结束") }
+  const list_item_tap = () => { console.log("手指触摸list-item组件后马上离开") }
+  const list_item_longpress = () => { console.log("list-item组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") }
+
+  const change_refresher_triggered_boolean = (checked: boolean) => { data.refresher_triggered_boolean = checked }
+  const change_refresher_enabled_boolean = (checked: boolean) => { data.refresher_enabled_boolean = checked }
+  const change_scroll_with_animation_boolean = (checked: boolean) => { data.scroll_with_animation_boolean = checked }
+  const change_show_scrollbar_boolean = (checked: boolean) => { data.show_scrollbar_boolean = checked }
+  const change_bounces_boolean = (checked: boolean) => { data.bounces_boolean = checked }
+
+  const change_scroll_direction = () => {
+    if (data.scroll_y_boolean && data.scroll_x_boolean || data.scroll_y_boolean) {
+      data.scroll_direction = "vertical"
+    } else if (!data.scroll_y_boolean && !data.scroll_x_boolean) {
+      data.scroll_direction = "none"
+    } else if (!data.scroll_y_boolean && data.scroll_x_boolean) {
+      data.scroll_direction = "horizontal"
+    }
+  }
+
+  const change_scroll_y_boolean = (checked: boolean) => {
+    data.scroll_y_boolean = checked
+    change_scroll_direction()
+  }
+
+  const change_scroll_x_boolean = (checked: boolean) => {
+    data.scroll_x_boolean = checked
+    change_scroll_direction()
+  }
+
+  const confirm_upper_threshold_input = (value: number) => { data.upper_threshold_input = value }
+  const confirm_lower_threshold_input = (value: number) => { data.lower_threshold_input = value }
+  const confirm_scroll_top_input = (value: number) => { data.scroll_top_input = value }
+  const confirm_scroll_left_input = (value: number) => { data.scroll_left_input = value }
+  const confirm_refresher_background_input = (value: string) => { data.refresher_background_input = value }
+  const item_change_size_enum = (index: number) => { data.scrollIntoView = "item---" + index }
+
+  //自动化测试专用
+  const setScrollIntoView = (id: string) => { data.scrollIntoView = id }
+
+  //自动化测试例专用
+  const check_scroll_height = (): Boolean => {
+    var listElement = uni.getElementById("listview") as UniElement
+    console.log("check_scroll_height--" + listElement.scrollHeight)
+    if (listElement.scrollHeight > 2000) {
+      return true
+    }
+    return false
+  }
+
+  //自动化测试例专用
+  const check_scroll_width = (): Boolean => {
+    var listElement = uni.getElementById("listview") as UniElement
+    console.log("check_scroll_width" + listElement.scrollWidth)
+    if (listElement.scrollWidth > 2000) {
+      return true
+    }
+    return false
+  }
+
+  const change_refresher_style_boolean = (checked: boolean) => {
+    if (checked) {
+      data.refresher_default_style_input = "none"
+    } else {
+      data.refresher_default_style_input = "black"
+    }
+  }
+
+  defineExpose({
+    data,
+    confirm_scroll_top_input,
+    change_scroll_x_boolean,
+    change_scroll_y_boolean,
+    confirm_scroll_left_input,
+    check_scroll_height,
+    check_scroll_width,
+    item_change_size_enum,
+    setScrollIntoView
+  })
+</script>
+
+<template>
+  <view class="main">
+    <list-view :direction="data.scroll_direction" :bounces="data.bounces_boolean" :upper-threshold="data.upper_threshold_input"
+      :lower-threshold="data.lower_threshold_input" :scroll-top="data.scroll_top_input" :scroll-left="data.scroll_left_input"
+      :show-scrollbar="data.show_scrollbar_boolean" :scroll-into-view="data.scrollIntoView"
+      :scroll-with-animation="data.scroll_with_animation_boolean" :refresher-enabled="data.refresher_enabled_boolean"
+      :refresher-background="data.refresher_background_input" :refresher-triggered="data.refresher_triggered_boolean"
+      :refresher-default-style="data.refresher_default_style_input" @click="list_view_click"
+      @touchstart="list_view_touchstart" @touchmove="list_view_touchmove" @touchcancel="list_view_touchcancel"
+      @touchend="list_view_touchend" @tap="list_view_tap" @longpress="list_view_longpress"
+      @refresherpulling="list_view_refresherpulling" @refresherrefresh="list_view_refresherrefresh"
+      @refresherrestore="list_view_refresherrestore" @refresherabort="list_view_refresherabort"
+      @scrolltoupper="list_view_scrolltoupper" ref="listview" @scrolltolower="list_view_scrolltolower"
+      @scroll="list_view_scroll" @scrollend="list_view_scrollend" style="width:100%;" id="listview">
+      <list-item v-for="key in data.scrollData" :key="key" :id="key" @click="list_item_click"
+        @touchstart="list_item_touchstart" @touchmove="list_item_touchmove" @touchcancel="list_item_touchcancel"
+        @touchend="list_item_touchend" @tap="list_item_tap" @longpress="list_item_longpress" class="list-item">
+        <text>{{key}}</text>
+      </list-item>
+      <!-- #ifdef APP -->
+      <list-item slot="refresher" class="refresh-box">
+        <text class="tip-text">{{data.text[data.state]}}</text>
+      </list-item>
+      <!-- #endif -->
+    </list-view>
+  </view>
+
+  <scroll-view style="flex:1" direction="vertical">
+    <view class="content">
+      <!-- #ifdef APP -->
+      <boolean-data :defaultValue="false" title="设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发"
+        @change="change_refresher_triggered_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="开启下拉刷新" @change="change_refresher_enabled_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="开启自定义样式" @change="change_refresher_style_boolean"></boolean-data>
+      <!-- #endif -->
+      <boolean-data :defaultValue="false" title="是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画"
+        @change="change_scroll_with_animation_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="控制是否出现滚动条" @change="change_show_scrollbar_boolean"></boolean-data>
+      <!-- #ifdef APP -->
+      <boolean-data :defaultValue="true" title="控制是否回弹效果" @change="change_bounces_boolean"></boolean-data>
+      <!-- #endif -->
+      <boolean-data :defaultValue="true" title="允许纵向滚动" @change="change_scroll_y_boolean"></boolean-data>
+      <!-- #ifdef APP -->
+      <boolean-data :defaultValue="false" title="允许横向滚动" @change="change_scroll_x_boolean"></boolean-data>
+      <!-- #endif -->
+      <input-data defaultValue="50" title="距顶部/左边多远时（单位px），触发 scrolltoupper 事件" type="number"
+        @confirm="confirm_upper_threshold_input"></input-data>
+      <input-data defaultValue="50" title="距底部/右边多远时（单位px），触发 scrolltolower 事件" type="number"
+        @confirm="confirm_lower_threshold_input"></input-data>
+      <input-data defaultValue="0" title="设置竖向滚动条位置" type="number" @confirm="confirm_scroll_top_input"></input-data>
+      <!-- #ifdef APP -->
+      <input-data defaultValue="0" title="设置横向滚动条位置" type="number" @confirm="confirm_scroll_left_input"></input-data>
+      <input-data defaultValue="#FFF" title="设置下拉刷新区域背景颜色" type="text"
+        @confirm="confirm_refresher_background_input"></input-data>
+      <enum-data :items="data.size_enum" title="通过id位置跳转" @change="item_change_size_enum"></enum-data>
+      <navigator url="/pages/component/list-view/list-view-refresh">
+        <button type="primary" class="button">
+          list-view 下拉刷新
+        </button>
+      </navigator>
+      <!-- #endif -->
+      <navigator url="/pages/component/list-view/list-view-multiplex">
+        <button type="primary" class="button">
+          list-view 对list-item复用测试
+        </button>
+      </navigator>
+      <navigator url="/pages/component/list-view/list-view-multiplex-input">
+        <button type="primary" class="button">
+          list-view 复用测试（item中嵌入input）
+        </button>
+      </navigator>
+      <navigator url="/pages/component/list-view/list-view-multiplex-video">
+        <button type="primary" class="button">
+          list-view 复用测试（item中嵌入video）
+        </button>
+      </navigator>
+      <navigator url="/pages/component/list-view/list-view-children-in-slot">
+        <button type="primary" class="button">
+          list-view 测试插槽中子组件增删
+        </button>
+      </navigator>
+      <navigator url="/pages/component/list-view/list-view-children-if-show">
+        <button type="primary" class="button">
+          list-item v-if v-show 组合增删
+        </button>
+      </navigator>
+      <navigator url="/pages/template/im/im">
+        <button type="primary" class="button">
+          list-item 中设置长按事件测试
+        </button>
+      </navigator>
+      <navigator url="/pages/component/list-view/list-view-form-item">
+        <button type="primary" class="button">
+          list-item 中使用表单元素测试
+        </button>
+      </navigator>
+      <navigator url="/pages/component/list-view/list-view-with-type">
+        <button type="primary" class="button">
+          list-item 上使用 type 属性测试
+        </button>
+      </navigator>
+      <navigator url="/pages/component/list-view/list-view-issue-17610">
+        <button type="primary" class="button">
+          list-view 子节点为多根节点组件
+        </button>
+      </navigator>
+    </view>
+  </scroll-view>
+</template>
+
+<style>
+  .main {
+    max-height: 250px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .06);
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .list-item {
+    width: 100%;
+    height: 250px;
+    border: 1px solid #666;
+    background-color: #66ccff;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tip-text {
+    color: #888;
+    font-size: 12px;
+  }
+
+  .refresh-box {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 45px;
+    width: 100%;
+  }
+
+  .button {
+    margin-top: 15px;
+  }
+  .content{
+    padding-bottom: 20px;
+  }
+</style>

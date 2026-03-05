@@ -1,0 +1,201 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view class="page" style="flex:1">
+      <view class="head">
+        <text class="tip">下面有一个灰色区域，display默认值为none</text>
+        <text class="tip">当前display值：{{data.display}}</text>
+      </view>
+      <view class="content" :style="{display:data.display}">
+        <text style="background-color: aquamarine;">展示display区域</text>
+        <scroll-view>
+          <text class="common-text"  style="height: 20px;">scroll-view</text>
+        </scroll-view>
+        <text class="common-text" style="height: 20px;">下方有个native-view</text>
+        <native-view style="width: 20px;height: 20px;background-color: cyan;"></native-view>
+      </view>
+      <button @tap="switchDisplay">切换display属性</button>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 display </text>
+      </view>
+
+      <view class="test-container">
+        <!-- view 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.displayProp}}</text>
+          <text class="uni-info">获取值: {{data.displayActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common-view test-view" :style="{ display: data.displayProp }">
+              <text class="common-text">view</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- text 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.displayProp}}</text>
+          <text class="uni-info">获取值: {{data.displayActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-text test-text" :style="{ display: data.displayProp }">text</text>
+          </view>
+        </view>
+
+        <!-- image 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.displayProp}}</text>
+          <text class="uni-info">获取值: {{data.displayActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-image test-image" :style="{ display: data.displayProp }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 测试控制区域 -->
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="displayEnum" title="display 枚举值" @change="radioChangeDisplay" :compact="true"></enum-data>
+        <input-data :defaultValue="data.displayProp" title="display 自定义值" type="text" @confirm="inputChangeDisplay"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: display: none</text>
+        <native-view class="common-view" style="display: none;width:100px;"></native-view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const data = reactive({
+    display: 'none',
+    displayProp: 'none',
+    displayActual: '',
+    displayActualText: '',
+    displayActualImage: ''
+  })
+
+  const switchDisplay = () => {
+    data.display = ('flex' == data.display) ? 'none' : 'flex'
+  }
+
+  const displayEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'flex' },
+    { value: 2, name: 'none' }
+  ]
+
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+
+  const getPropertyValues = () => {
+    data.displayActual = viewRef.value?.style.getPropertyValue('display') ?? ''
+    data.displayActualText = textRef.value?.style.getPropertyValue('display') ?? ''
+    data.displayActualImage = imageRef.value?.style.getPropertyValue('display') ?? ''
+  }
+
+  const changeDisplay = (value: string) => {
+    data.displayProp = value
+    viewRef.value?.style.setProperty('display', value)
+    textRef.value?.style.setProperty('display', value)
+    imageRef.value?.style.setProperty('display', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeDisplay = (index: number) => {
+    const selectedItem = displayEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeDisplay(selectedItem.name)
+    }
+  }
+
+  const inputChangeDisplay = (value: string) => {
+    changeDisplay(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeDisplay,
+    data
+  })
+</script>
+
+<style>
+  .page {
+    height: 100%;
+  }
+
+  .head {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+
+  .tip {
+    color: red;
+  }
+
+  .content {
+    border: 5px solid blue;
+    margin: 20px auto;
+    padding: 20px;
+    width: 200px;
+    height: 150px;
+    background-color: gray;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 多组件横向布局样式 */
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 60px;
+    background-color: gray;
+  }
+
+
+  .common-view {
+    height: 50px;
+    background-color: green;
+  }
+
+  .common-text {
+    height: 50px;
+    background-color: green;
+    font-size: 12px;
+    color: white;
+  }
+
+  .common-image {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+  }
+
+</style>

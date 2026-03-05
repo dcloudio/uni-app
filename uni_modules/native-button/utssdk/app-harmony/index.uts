@@ -1,0 +1,98 @@
+import { BuilderNode } from "@kit.ArkUI"
+// 导入混编实现的声明式UI构建函数
+import { buildButton } from "./builder.ets"
+
+import { INativeButtonContext } from "../interface.uts"
+// 定义 buildButton 的参数类型
+interface NativeButtonOptions {
+    text : string
+    onClick : () => void
+}
+
+export class NativeButton {
+    private $element : UniNativeViewElement;
+    private builder : BuilderNode<[NativeButtonOptions]> | null = null
+    // 初始化 buildButton 默认参数
+    private params : NativeButtonOptions = {
+        text: '',
+        onClick: () => {
+            this.$element.dispatchEvent(new UniNativeViewEvent("customClick", {}))
+        }
+    }
+
+    constructor(element : UniNativeViewElement) {
+        // 绑定 wrapBuilder 函数
+        this.builder = element.bindHarmonyWrappedBuilder(wrapBuilder<[NativeButtonOptions]>(buildButton), this.params)
+        this.$element = element
+        // 绑定当前实例为自定义的controller，方便其他地方通过 element 获取使用
+        this.$element.bindHarmonyController(this)
+    }
+
+    updateText(text : string) {
+        this.params.text = text
+        // 调用 builder update 函数来更新 UI
+        this.builder?.update(this.params)
+    }
+}
+
+
+class NativeButtonContext implements INativeButtonContext {
+    private controller : NativeButton
+    constructor(element : UniNativeViewElement) {
+        // 获取自定义的 controller
+        this.controller = element.getHarmonyController<NativeButton>()!
+    }
+    updateText(text : string) {
+        // 调用 controller 来更新文字
+        this.controller?.updateText(text)
+    }
+}
+/**
+ * 递归查询
+ */
+function iterateElement(homeElement : UniElement) : UniNativeViewElement | null {
+    if ("NATIVE-VIEW" == homeElement.nodeName) {
+        return homeElement as UniNativeViewElement
+    }
+    for (const perChildEle of homeElement.children) {
+        let findEle = iterateElement(perChildEle)
+        if (findEle != null) {
+            return findEle
+        }
+    }
+
+    return null
+}
+
+
+
+export function createNativeButtonContext(id : string, ins : ComponentPublicInstance | null = null) : INativeButtonContext | null {
+    if (ins == null) {
+        const pages = getCurrentPages()
+        if (pages.length > 0) {
+            const page = pages[pages.length - 1]
+            const rootViewElement = page.getElementById(id)
+            if (rootViewElement != null) {
+                /**
+                 * 找到了root节点，递归检索目标 native-view
+                 */
+                const nativeViewElement = iterateElement(rootViewElement)
+                if (nativeViewElement != null) {
+                    return new NativeButtonContext(nativeViewElement)
+                }
+            }
+        }
+    } else {
+        /**
+         * 尝试迭代遍历
+         */
+        if (ins.$el != null) {
+            const nativeViewElement = iterateElement(ins.$el as UniElement)
+            if (nativeViewElement != null) {
+                return new NativeButtonContext(nativeViewElement)
+            }
+        }
+    }
+
+    return null
+}

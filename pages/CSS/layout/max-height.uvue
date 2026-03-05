@@ -1,0 +1,232 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view>
+        <text>max-height: 100px</text>
+        <view class="common" style="max-height: 100px;">
+          <text>height: 400px</text>
+        </view>
+        <text>拍平</text>
+        <view class="common" style="max-height: 100px;" flatten>
+          <text>height: 400px</text>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
+      </view>
+
+      <view class="demo-box">
+        <scroll-view class="common" style="max-height: 80px; background-color: cyan;width:100px;">
+          <text class="scroll-view-label">max-height: 80px</text>
+        </scroll-view>
+        <scroll-view class="common" style="max-height: 120px; background-color: cyan;width:100px;">
+          <text class="scroll-view-label">max-height: 120px</text>
+        </scroll-view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 max-height </text>
+      </view>
+
+      <!-- 普通版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.maxHeight}}</text>
+          <text class="uni-info">获取值: {{data.maxHeightActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ maxHeight: data.maxHeight }">
+              <text style="font-size: 12px;">view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.maxHeight}}</text>
+          <text class="uni-info">获取值: {{data.maxHeightActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-dynamic test-text" :style="{ maxHeight: data.maxHeight }">text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.maxHeight}}</text>
+          <text class="uni-info">获取值: {{data.maxHeightActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ maxHeight: data.maxHeight }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.maxHeight}}</text>
+          <text class="uni-info">获取值: {{data.maxHeightActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ maxHeight: data.maxHeight }" flatten>
+              <text style="font-size: 12px;">view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.maxHeight}}</text>
+          <text class="uni-info">获取值: {{data.maxHeightActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ maxHeight: data.maxHeight }" flatten>text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.maxHeight}}</text>
+          <text class="uni-info">获取值: {{data.maxHeightActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ maxHeight: data.maxHeight }" flatten src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="maxHeightEnum" title="max-height 枚举值" @change="radioChangeMaxHeight" :compact="true"></enum-data>
+        <input-data :defaultValue="data.maxHeight" title="max-height 自定义值" type="text" @confirm="inputChangeMaxHeight"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: max-height: 80px 和 max-height: 120px</text>
+        <view class="demo-box">
+          <native-view class="common" style="max-height: 80px; background-color: cyan;width:100px;"></native-view>
+          <native-view class="common" style="max-height: 120px; background-color: cyan;width:100px;"></native-view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const maxHeightEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '100px' },
+    { value: 4, name: '150px' },
+    { value: 5, name: '80rpx' },
+    { value: 6, name: 'none' }
+  ]
+
+  const data = reactive({
+    maxHeight: '50px',
+    maxHeightActual: '',
+    maxHeightActualText: '',
+    maxHeightActualImage: '',
+    maxHeightActualFlat: '',
+    maxHeightActualTextFlat: '',
+    maxHeightActualImageFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const getPropertyValues = () => {
+    data.maxHeightActual = viewRef.value?.style.getPropertyValue('max-height') ?? ''
+    data.maxHeightActualFlat = viewRefFlat.value?.style.getPropertyValue('max-height') ?? ''
+    data.maxHeightActualText = textRef.value?.style.getPropertyValue('max-height') ?? ''
+    data.maxHeightActualTextFlat = textRefFlat.value?.style.getPropertyValue('max-height') ?? ''
+    data.maxHeightActualImage = imageRef.value?.style.getPropertyValue('max-height') ?? ''
+    data.maxHeightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('max-height') ?? ''
+  }
+
+  const changeMaxHeight = (value: string) => {
+    data.maxHeight = value
+    viewRef.value?.style.setProperty('max-height', value)
+    viewRefFlat.value?.style.setProperty('max-height', value)
+    textRef.value?.style.setProperty('max-height', value)
+    textRefFlat.value?.style.setProperty('max-height', value)
+    imageRef.value?.style.setProperty('max-height', value)
+    imageRefFlat.value?.style.setProperty('max-height', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeMaxHeight = (index: number) => {
+    const selectedItem = maxHeightEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeMaxHeight(selectedItem.name)
+    }
+  }
+
+  const inputChangeMaxHeight = (value: string) => {
+    changeMaxHeight(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeMaxHeight,
+    data
+  })
+</script>
+
+<style>
+  .common {
+    width: 200px;
+    height: 400px;
+    background-color: cyan;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .common-dynamic {
+    width: 100px;
+    height: 150px;
+    background-color: cyan;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 150px;
+    background-color: gray;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    text-align: center;
+  }
+</style>

@@ -1,0 +1,106 @@
+<template>
+  <sticky-header>
+    <scroll-view class="flex-row">
+      <view class="tab-container w-100 flex-row items-center justify-around">
+        <text v-for="(item, index) in list" :key="item.id" @click="handleTabClick(index)" class="tab-text"
+          :class="{active: item.id == currentId}" :id="`${item.id}-tab`">{{item.name}}</text>
+      </view>
+    </scroll-view>
+  </sticky-header>
+  <list-item>
+    <swiper class="swiper" :current-item-id="currentId">
+      <swiper-item v-for="item in list" :item-id="item.id">
+        <view class="item" v-for="itemChild in item.childNum" :key="itemChild" :id="`${item.id}-item`">
+          <text>{{item.id}}-{{itemChild}}</text>
+        </view>
+      </swiper-item>
+    </swiper>
+  </list-item>
+</template>
+
+<script setup lang="uts">
+  type Item = {
+    id : string,
+    name : string,
+    childNum : number
+  }
+  const list = ref<Item[]>([
+    {
+      id: 'id-1',
+      name: 'Item 1',
+      childNum: 10
+    },
+    {
+      id: 'id-2',
+      name: 'Item 2',
+      childNum: 10
+    },
+    {
+      id: 'id-3',
+      name: 'Item 3',
+      childNum: 10
+    },
+    {
+      id: 'id-4',
+      name: 'Item 4',
+      childNum: 10
+    },
+    {
+      id: 'id-5',
+      name: 'Item 5',
+      childNum: 10
+    }
+  ])
+  const currentId = ref('1')
+
+  const handleTabClick = (index : number) => {
+    currentId.value = list.value[index].id
+  }
+</script>
+
+<style>
+  .flex-row {
+    flex-direction: row;
+  }
+
+  .w-100 {
+    width: 100%;
+  }
+
+  .flex-1 {
+    height: 100%;
+  }
+
+  .justify-around {
+    justify-content: space-around;
+  }
+
+  .items-center {
+    align-items: center;
+  }
+
+  .tab-container {
+    height: 40px;
+    background-color: antiquewhite;
+  }
+
+  .tab-text {
+    color: #ccc;
+  }
+
+  /* #ifndef APP-ANDROID */
+  /* 存在该样式 android 端 swiper 切换异常，临时条件编译 */
+   .active{
+    color: #000;
+  }
+  /* #endif */
+
+  .swiper {
+    height: 500px;
+  }
+
+  .item {
+    margin-top: 20px;
+    align-items: center;
+  }
+</style>

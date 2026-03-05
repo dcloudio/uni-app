@@ -1,0 +1,15 @@
+export type UTSWorkerAddListenerOptions = {
+  success ?: UTSWorkerReceiveEventCallback
+}
+
+export type UTSWorkerAddListenerOptionsSuccess = {
+  result : UTSJSONObject
+}
+
+export type UTSWorkerSendWorkerMessageOptions = {
+  message : Object,
+  harmonySendable ?: boolean
+  transfer ?: ArrayBuffer[]
+}
+
+export type UTSWorkerReceiveEventCallback = (callback : UTSWorkerAddListenerOptionsSuccess) => void

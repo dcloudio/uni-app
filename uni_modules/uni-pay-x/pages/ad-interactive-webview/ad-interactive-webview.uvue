@@ -1,0 +1,17 @@
+<template>
+  <web-view :src="url"></web-view>
+</template>
+
+<script setup lang="uts">
+  const url = ref('')
+
+  onLoad((options) => {
+    let urlParam = options["url"] as string | null;
+    if (urlParam != null) {
+      let decodedUrl = decodeURIComponent(urlParam);
+      if (decodedUrl != null) {
+        url.value = decodedUrl;
+      }
+    }
+  })
+</script>

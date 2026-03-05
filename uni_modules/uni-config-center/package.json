@@ -1,0 +1,81 @@
+{
+  "id": "uni-config-center",
+  "displayName": "uni-config-center",
+  "version": "0.0.3",
+  "description": "uniCloud 配置中心",
+  "keywords": [
+    "配置",
+    "配置中心"
+],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^3.1.0"
+  },
+"dcloudext": {
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "无"
+    },
+    "npmurl": "",
+    "type": "unicloud-template-function"
+  },
+  "directories": {
+    "example": "../../../scripts/dist"
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "y",
+        "aliyun": "y"
+      },
+      "client": {
+        "App": {
+          "app-vue": "u",
+          "app-nvue": "u"
+        },
+        "H5-mobile": {
+          "Safari": "u",
+          "Android Browser": "u",
+          "微信浏览器(Android)": "u",
+          "QQ浏览器(Android)": "u"
+        },
+        "H5-pc": {
+          "Chrome": "u",
+          "IE": "u",
+          "Edge": "u",
+          "Firefox": "u",
+          "Safari": "u"
+        },
+        "小程序": {
+          "微信": "u",
+          "阿里": "u",
+          "百度": "u",
+          "字节跳动": "u",
+          "QQ": "u"
+        },
+        "快应用": {
+          "华为": "u",
+          "联盟": "u"
+        },
+        "Vue": {
+            "vue2": "y",
+            "vue3": "u"
+        }
+      }
+    }
+  }
+}

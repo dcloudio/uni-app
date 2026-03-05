@@ -1,0 +1,48 @@
+<template>
+  <view>
+    <canvas id="canvas1"></canvas>
+  </view>
+  <view>
+    <canvas id="canvas2"></canvas>
+  </view>
+  <view>
+    {{testCounter}}
+  </view>
+</template>
+
+<script setup lang="uts">
+const instance = getCurrentInstance()!.proxy!
+
+// 仅测试
+const testCounter = ref(0)
+
+function _dispatchEvent() {
+  if (testCounter.value == 2) {
+    uni.$emit('canvasChildReady',testCounter.value)
+  }
+}
+
+onMounted(()=>{
+  uni.createCanvasContextAsync({
+    id: 'canvas1',
+    component: instance,
+    success: (_ : CanvasContext) => {
+      testCounter.value++
+      _dispatchEvent()
+    }
+  });
+  uni.createCanvasContextAsync({
+    id: 'canvas2',
+    component: instance,
+    success: (_ : CanvasContext) => {
+      testCounter.value++
+      _dispatchEvent()
+    }
+  });
+})
+
+defineExpose({
+  testCounter
+})
+
+</script>

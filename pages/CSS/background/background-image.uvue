@@ -1,0 +1,163 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <view>
+      <!-- 测试iOS平台宽高为0时，设置渐变色会不会导致闪退 -->
+      <view style="width: 0px; height: 0px; background-image: linear-gradient(to bottom,#f5f5f5,#eff2f5);"></view>
+      <text>不支持背景图片，仅支持linear-gradient方法</text>
+      <view v-for="(direction) in directionData">
+        <text>background-image: linear-gradient({{direction}}, red, yellow)</text>
+        <view class="common"
+          :style="{'background-image': backgroundSelect ?'linear-gradient('+direction+', red, yellow)':''}"></view>
+      </view>
+      <view>
+        <text>style 动态切换 background</text>
+        <view @click='changeBgStyle' class="common" :style='testStyle'>{{ testStyle}}</view>
+      </view>
+      <view>
+        <text>class 动态切换 background</text>
+        <view @click='changeBgClass' class="common" :class='testClass'>{{testClass}}</view>
+      </view>
+
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+      <text class="uni-subtitle-text">background-image: linear-gradient(to right, cyan, yellow);</text>
+      <text class="uni-subtitle-text">background-image: linear-gradient(to bottom, blue, green);</text>
+      <view class="demo-box">
+        <scroll-view class="common" style="background-image: linear-gradient(to right, cyan, yellow);width: 150px;">
+          <text class="common-text">to right</text>
+        </scroll-view>
+        <scroll-view class="common" style="background-image: linear-gradient(to bottom, blue, green);width: 150px;">
+          <text class="common-text">to bottom</text>
+        </scroll-view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 background-image </text>
+        <text>background-image: {{backgroundImage}}</text>
+        <view ref="viewRef" class="common" :style="{ backgroundImage: backgroundImage }">
+          <text style="color: white;">当前 background-image: {{backgroundImage}}</text>
+        </view>
+      </view>
+
+      <!-- 测试控制区域 -->
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :compact="true" :items="backgroundImageEnum" title="background-image 枚举值" @change="radioChangeBackgroundImage"></enum-data>
+        <input-data :defaultValue="backgroundImage" title="background-image 自定义值" type="text" @confirm="inputChangeBackgroundImage"></input-data>
+      </view>
+
+      <text class="uni-title-text uni-common-mt">native-view 组件</text>
+      <text class="uni-subtitle-text">background-image: linear-gradient(to right, cyan, yellow);</text>
+      <text class="uni-subtitle-text">background-image: linear-gradient(to bottom, blue, green);</text>
+      <view class="demo-box uni-common-mb">
+        <native-view class="native-view-bg" style="background-image: linear-gradient(to right, cyan, yellow);"></native-view>
+        <native-view class="native-view-bg" style="background-image: linear-gradient(to bottom, blue, green);"></native-view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const backgroundSelect = ref(true)
+  const directionData = ref(['to right', 'to left', 'to bottom', 'to top', 'to bottom left', 'to bottom right', 'to top left', 'to top right'])
+  const testStyle = ref("background:linear-gradient(to right, red, yellow)")
+  const testClass = ref("bg-color")
+
+  //供自动化测试使用
+  const updateBackgroundSelect = () => {
+    backgroundSelect.value = !backgroundSelect.value
+  }
+
+  const setBackgroundColor = () => {
+    testStyle.value = "background:blue"
+  }
+
+  const setBackgroundImage = () => {
+    testStyle.value = "background:linear-gradient(to right, red, yellow)"
+  }
+
+  const changeBgStyle = () => {
+    const isColor = testStyle.value == "background:blue"
+    if (isColor) {
+      setBackgroundImage()
+    } else {
+      setBackgroundColor()
+    }
+  }
+
+  const changeBgClass = () => {
+    testClass.value = testClass.value == "bg-color" ? "bg-image" : "bg-color"
+  }
+
+  defineExpose({
+    updateBackgroundSelect,
+    setBackgroundColor,
+    setBackgroundImage,
+    changeBgClass
+  })
+
+  const backgroundImage = ref('linear-gradient(to right, red, yellow)')
+  const viewRef = ref(null as UniElement | null)
+
+  const backgroundImageEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'linear-gradient(to right, red, yellow)' },
+    { value: 2, name: 'linear-gradient(to bottom, blue, green)' },
+    { value: 3, name: 'linear-gradient(to top, red, blue)' },
+    { value: 4, name: 'linear-gradient(45deg, red, yellow)' },
+    { value: 5, name: 'linear-gradient(to right, red, yellow, green)' },
+    { value: 6, name: '(to right, red 0%, yellow 50%, green 100%)' },
+    { value: 7, name: 'linear-gradient(to bottom left, red, yellow)' }
+  ]
+
+  const changeBackgroundImage = (value: string) => {
+    backgroundImage.value = value
+    viewRef.value?.style.setProperty('background-image', value)
+  }
+
+  const radioChangeBackgroundImage = (index: number) => {
+    const selectedItem = backgroundImageEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBackgroundImage(selectedItem.name)
+    }
+  }
+
+  const inputChangeBackgroundImage = (value: string) => {
+    changeBackgroundImage(value)
+  }
+
+</script>
+
+<style>
+  .common {
+    width: 250px;
+    height: 100px;
+  }
+  .bg-color {
+    background: blue;
+  }
+  .bg-image {
+    background: linear-gradient(to right, red, yellow);
+  }
+
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+
+  .common-text {
+    font-size: 12px;
+    color: white;
+  }
+
+  .native-view-bg {
+    width: 150px;
+    height: 100px;
+  }
+</style>

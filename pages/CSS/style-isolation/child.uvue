@@ -1,0 +1,49 @@
+<template>
+	<!-- 单根节点组件 - 测试外部class和style是否会覆盖到根节点上 -->
+	<view class="single-root-box">
+		<text class="global-text" style="font-size: 10px;">我是组件，测试全局样式不影响组件，文字应为：紫色</text>
+		<text class="single-root-text">{{ text }}</text>
+		<!-- 内联style测试：这个view有内联style，外部class无法覆盖 -->
+		<view class="inline-style-box" style="border-width: 3px; background-color: #ffeb37;">
+        <text style="font-size: 10px;">内联style，外部class无法覆盖</text>
+    </view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	defineProps({
+	  text: {
+	    type: String,
+	    default: '单根节点组件'
+	  }
+	})
+</script>
+
+<style>
+	.single-root-box {
+		background-color: #FFF3E0;
+		padding: 15px;
+		border-radius: 8px;
+		border: 2px solid #FF9800;
+		margin: 5px;
+	}
+
+	.single-root-text {
+		color: #E65100;
+		font-size: 14px;
+	}
+
+	.global-text{
+		color: #5555ff;
+	}
+
+	.inline-style-box {
+		width: 200px;
+		height: 30px;
+		background-color: #FFF3E0;
+		border: 1px solid #FF9800;
+		margin-top: 10px;
+        justify-content: center;
+        align-items: center;
+	}
+</style>

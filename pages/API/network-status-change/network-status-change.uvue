@@ -1,0 +1,86 @@
+<template>
+  <page-head title="networkStatusChange"></page-head>
+  <view class="uni-list-cell-padding status-box">
+    <text class="uni-title-text">网络状态</text>
+    <view class="uni-row uni-common-mt">
+      <text class="uni-hello-text">是否连接：</text>
+      <text>{{ isConnected ? '已连接' : '未连接' }}</text>
+    </view>
+    <view class="uni-row uni-common-mt">
+      <text class="uni-hello-text">网络类型：</text>
+      <text>{{ networkType }}</text>
+    </view>
+    <view class="uni-row uni-common-mt">
+      <text class="uni-hello-text">监听状态：</text>
+      <text>{{ listenStatus }}</text>
+    </view>
+  </view>
+  <view class="uni-list-cell-padding uni-common-mt">
+    <button type="primary" @click="startListen">开始监听</button>
+    <button type="default" class="uni-common-mt" @click="stopListen">停止监听</button>
+  </view>
+</template>
+
+<script lang="uts" setup>
+  const isConnected = ref(false)
+  const networkType = ref('unknown')
+  const listenStatus = ref('未监听')
+  const networkCallback = ref<((result : OnNetworkStatusChangeCallbackResult) => void) | null>(null)
+  // 获取当前网络状态
+  const getCurrentNetworkStatus = () => {
+    uni.getNetworkType({
+      success: (res) => {
+        networkType.value = res.networkType
+        isConnected.value = res.networkType != 'none'
+      },
+      fail: () => {
+        console.log('获取网络状态失败')
+        networkType.value = 'unknown'
+        isConnected.value = false
+      }
+    })
+  }
+  // 开始监听
+  const startListen = () => {
+    if (networkCallback.value != null) {
+      listenStatus.value = '正在监听'
+      return
+    }
+    networkCallback.value = (result : OnNetworkStatusChangeCallbackResult) => {
+      console.log('网络状态: ', result);
+      isConnected.value = result.isConnected
+      networkType.value = result.networkType
+      if (!result.isConnected) {
+        networkType.value = 'none'
+      }
+    }
+    uni.onNetworkStatusChange(networkCallback.value)
+    // console.log('开始监听网络状态')
+    listenStatus.value = '正在监听'
+  }
+  // 停止监听
+  const stopListen = () => {
+    if (networkCallback.value == null) {
+      listenStatus.value = '未监听'
+      return
+    }
+    uni.offNetworkStatusChange(networkCallback.value)
+    networkCallback.value = null
+    // console.log('停止监听网络状态')
+    listenStatus.value = '停止监听'
+  }
+
+  onLoad(() => {
+    getCurrentNetworkStatus()
+  })
+  onUnload(() => {
+    stopListen()
+  })
+</script>
+
+<style>
+  .status-box {
+    background-color: #FFFFFF;
+    margin: 0 20px;
+  }
+</style>

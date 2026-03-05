@@ -1,0 +1,35 @@
+import { GetBatteryInfoErrorCode, GetBatteryInfoFail } from "./interface.uts"
+/**
+ * 错误主题
+ */
+export const UniErrorSubject = 'uni-getBatteryInfo';
+
+
+/**
+ * 错误信息
+ * @UniError
+ */
+export const UniErrors: Map<GetBatteryInfoErrorCode, string> = new Map([
+  /**
+   * 错误码及对应的错误信息
+   */
+  [1001, 'getBatteryInfo:fail getAppContext is null'],
+  [1002, 'getBatteryInfo:fail not support'],
+]);
+
+
+/**
+ * 错误对象实现
+ */
+export class GetBatteryInfoFailImpl extends UniError implements GetBatteryInfoFail {
+  override errCode: GetBatteryInfoErrorCode;
+  /**
+   * 错误对象构造函数
+   */
+  constructor(errCode: GetBatteryInfoErrorCode) {
+    super();
+    this.errSubject = UniErrorSubject;
+    this.errCode = errCode;
+    this.errMsg = UniErrors[errCode] ?? "";
+  }
+}

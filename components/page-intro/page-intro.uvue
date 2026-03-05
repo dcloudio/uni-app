@@ -1,0 +1,65 @@
+<script setup lang="uts">
+const props = defineProps({
+  content: {
+    type: String,
+    default: ''
+  }
+})
+
+const expanded = ref(false)
+
+const toggle = () => {
+  expanded.value = !expanded.value
+}
+</script>
+
+<template>
+  <view class="page-intro" @click="toggle">
+    <view class="page-intro-header">
+      <text class="page-intro-label">页面介绍</text>
+      <text class="page-intro-arrow">{{ expanded ? '▲' : '▼' }}</text>
+    </view>
+    <view v-if="expanded" class="page-intro-body">
+      <text class="page-intro-content">{{ content }}</text>
+    </view>
+  </view>
+</template>
+
+<style>
+  .page-intro {
+    margin: 10px;
+    border-radius: 4px;
+    border-left: 4px solid #91caff;
+    background-color: #e6f4ff;
+    overflow: hidden;
+  }
+
+  .page-intro-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 12px;
+  }
+
+  .page-intro-label {
+    font-size: 13px;
+    color: #0958d9;
+    font-weight: bold;
+  }
+
+  .page-intro-arrow {
+    font-size: 11px;
+    color: #0958d9;
+  }
+
+  .page-intro-body {
+    padding: 12px 10px;
+    border-top: 1px solid #91caff;
+  }
+
+  .page-intro-content {
+    font-size: 13px;
+    color: #1d39c4;
+    line-height: 22px;
+  }
+</style>

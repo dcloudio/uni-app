@@ -1,0 +1,249 @@
+<template>
+    <view ref="pageRef" class="page">
+    <text class="tip">半屏弹窗，演示了弹出层内scroll-view滚动到顶时由滚变拖。本效果是通过监听TouchEvent实现，当半屏窗口移动时禁用scroll-view的滚动，避免两者的冲突。</text>
+    <button class="bottomButton" @click="switchHalfScreen(true)">打开弹窗</button>
+    <view ref="halfScreenRef" class="halfScreen" @touchstart="onHalfTouchStart" @touchmove="onHalfTouchMove"
+      @touchend="onHalfTouchEnd">
+      <view class="halfTitle">半屏弹窗标题</view>
+      <scroll-view ref="halfScrollRef" class="halfScroll" bounces="true" :direction="scrollDirection">
+        <view v-for="(item,index) in list" :key="index" class="item">
+          half screen content-{{item}}
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+const list = ref(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'])
+let totalHeight = 0		//总高度
+let halfMove = false	//是否Move，响应TouchMove
+let halfScreenY = 0		//响应TouchMove的起始点Y坐标
+let halfOffset = 0		//偏移的位置，translateY
+let halfHeight = 0		//高度
+let lastY = 0			//上次
+let lastY2 = 0			//
+let bAnimation = false	//是否动画
+const pageRef = ref<UniElement | null>(null)
+const halfScreenRef = ref<UniElement | null>(null)
+const halfScrollRef = ref<UniScrollViewElement | null>(null)
+const scrollDirection = ref('vertical')
+
+function onHalfTouchStart(event : TouchEvent) {
+  halfScreenRef.value?.style?.setProperty('transition-duration', 0);
+}
+
+function onHalfTouchMove(e : TouchEvent) {
+  if (bAnimation) {//容错处理
+    return;
+  }
+  let top : number = halfScrollRef.value?.scrollTop ?? 0;
+  let p = e.touches[0];
+  lastY2 = lastY;
+  lastY = p.screenY;
+  if (top <= 0.01 || halfMove) {
+    if (halfScreenY == 0) {
+      halfScreenY = p.screenY;
+    }
+    let offset = p.screenY - halfScreenY;
+    if (offset > 0) {//向下滚动
+      halfMove = true;
+      // #ifdef APP
+      //halfScrollRef.value?.setAttribute('scroll-y', 'false');
+      halfScrollRef.value?.setAttribute('direction', 'none');
+      // #endif
+      // #ifdef WEB || MP
+      scrollDirection.value = 'none';
+      // #endif
+      halfScreenRef.value?.style?.setProperty('transform', 'translateY(' + offset.toFixed(2) + 'px)');
+      halfOffset = offset;
+    } else if (halfOffset > 0) {//向上滚动
+      offset = halfScreenY - p.screenY;
+      if (offset > halfOffset) {
+        offset = 0;
+        halfMove = false;
+      }
+      // #ifdef APP
+      //halfScrollRef.value?.setAttribute('scroll-y', 'true');
+      halfScrollRef.value?.setAttribute('direction', 'vertical');
+      // #endif
+      // #ifdef WEB || MP
+      scrollDirection.value = 'vertical';
+      // #endif
+      halfScreenRef.value?.style?.setProperty('transform', 'translateY(' + offset.toFixed(2) + 'px)');
+      halfOffset = offset;
+    }
+  }
+  // #ifdef WEB
+  e.preventDefault();
+  // #endif
+}
+
+function switchHalfScreen(show : boolean) {
+  if (show && ('visible' == halfScreenRef.value?.style?.getPropertyValue('visibility'))) {//容错处理
+    console.log('quick click button!!!');
+    return;
+  }
+  halfMove = false;
+  // #ifdef APP
+  //halfScrollRef.value?.setAttribute('scroll-y', 'true');
+  halfScrollRef.value?.setAttribute('direction', 'vertical');
+  // #endif
+  // #ifdef WEB || MP
+  scrollDirection.value = 'vertical';
+  // #endif
+  halfScreenY = 0;
+  halfOffset = 0;
+  let top = totalHeight;
+  let time = 300;
+  if (show) {
+    top = totalHeight * 30 / 100;	//计算显示的位置
+    halfScreenRef.value?.style?.setProperty('visibility', 'visible');
+    halfScreenRef.value?.style?.setProperty('transition-timing-function', 'ease-in-out');
+  } else {
+    halfScreenRef.value?.style?.setProperty('transition-timing-function', 'linear');
+    time *= (halfHeight / totalHeight);		//计算关闭动画时间
+  }
+  halfScreenRef.value?.style?.setProperty('transition-duration', time.toFixed(0)+'ms');
+  halfScreenRef.value?.style?.setProperty('transition-property', 'top');
+  halfScreenRef.value?.style?.setProperty('top', top.toFixed(2)+'px');
+  setTimeout(() => {
+    if (!show) {
+      halfScreenRef.value?.style?.setProperty('visibility', 'hidden');
+      halfScreenRef.value?.style?.setProperty('transition-duration', 0);
+      halfScreenRef.value?.style?.setProperty('transform', '');
+    }
+    halfScreenRef.value?.style?.setProperty('transition-property', 'none');
+    bAnimation = false;
+  }, time)
+  bAnimation = true;
+}
+
+function resumeHalfScreen() {
+  let time = 300;//(500*halfOffset/halfHeight).toFixed(0); //回弹动画时间
+  halfScreenRef.value?.style?.setProperty('transition-duration', time.toFixed(0)+'ms');
+  halfScreenRef.value?.style?.setProperty('transition-timing-function', 'ease-in-out');
+  halfScreenRef.value?.style?.setProperty('transition-property', 'transform');
+  halfScreenRef.value?.style?.setProperty('transform', 'translateY(0px)');
+  halfMove = false;
+  // #ifdef APP
+  //halfScrollRef.value?.setAttribute('scroll-y', 'true');
+  halfScrollRef.value?.setAttribute('direction', 'vertical');
+  // #endif
+  // #ifdef WEB || MP
+  scrollDirection.value = 'vertical';
+  // #endif
+  halfScreenY = 0;
+  halfOffset = 0;
+  setTimeout(() => {
+    bAnimation = false;
+    halfScreenRef.value?.style?.setProperty('transition-property', 'none');
+  }, time)
+  bAnimation = true;
+}
+
+function onHalfTouchEnd(event : TouchEvent) {
+  halfScreenY = 0;
+  if (bAnimation) {//容错处理
+    return;
+  }
+  let top : number = halfScrollRef.value?.scrollTop ?? 0;
+  let bHide = (halfHeight - halfOffset) < halfHeight / 4;
+  if (bHide) {
+    bHide = lastY2 > 0 && lastY2 <= lastY;
+  } else if (top <= 0.01) {
+    bHide = (lastY - lastY2) > 3;		//向下滑动计算加速度判断是否关闭，简单处理未考虑时间
+  }
+  if (bHide) {
+    switchHalfScreen(false);
+  } else if (halfOffset > 0) {
+    resumeHalfScreen();
+  }
+}
+
+onReady(() => {
+  halfScreenRef.value!.getBoundingClientRectAsync()!.then((rect: DOMRect) => {
+      halfHeight = rect.height
+  });
+  pageRef.value!.getBoundingClientRectAsync()!.then((rect: DOMRect) => {
+      totalHeight = rect.height
+      halfScreenRef.value?.style?.setProperty('top', totalHeight.toFixed(2)+'px');
+  });
+})
+
+onResize(() => {
+  halfScreenRef.value?.getBoundingClientRectAsync()!.then((rect: DOMRect) => {
+      halfHeight = rect.height
+  });
+  totalHeight = uni.getWindowInfo().windowHeight;
+  halfScreenRef.value?.style?.setProperty('top', totalHeight.toFixed(2)+'px');
+  halfScreenRef.value?.style?.setProperty('visibility', 'hidden');
+})
+
+// #ifndef MP
+onBackPress((): boolean => {
+  if('visible' == halfScreenRef.value?.style?.getPropertyValue('visibility')){
+    switchHalfScreen(false);
+    return true;
+  }
+  return false;
+})
+// #endif
+
+</script>
+
+<style>
+  /* #ifdef MP */
+  page {
+    overflow: hidden
+  }
+  /* #endif */
+
+  .page {
+    flex: 1;
+    background-color: darkgrey;
+  }
+
+  .tip {
+    margin: 10px
+  }
+
+  .bottomButton {
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+    /* #ifdef APP */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    /* #endif */
+  }
+
+  .halfScreen {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    height: 70%;
+    transition-timing-function: ease-in-out;
+    /*ease ease-in ease-out ease-in-out linear step-start step-end*/
+    transition-property: top;
+    transition-duration: 0ms;
+    visibility: hidden;
+  }
+
+  .halfTitle {
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    background-color: ghostwhite;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .halfScroll {
+    background-color: white;
+    flex: 1;
+  }
+
+  .item {
+    height: 100px;
+  }
+</style>

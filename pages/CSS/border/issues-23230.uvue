@@ -1,0 +1,114 @@
+<template>
+	<scroll-view class="content">
+		<text v-if="info == null">正在加载数据</text>
+		<view class="vipView" v-else>
+			<scroll-view class="functionVip" direction="horizontal" :show-scrollbar="false">
+				<view :style="{ height: '2rpx', width: '36rpx' }"></view>
+				<view class="item" v-for="index in info">
+					<image src="/static/test-image/logo.png" mode="aspectFill" class="icon"></image>
+					<text class="text ell">按钮{{ index + 1 }}</text>
+				</view>
+				<view :style="{ height: '2rpx', width: '20rpx' }"></view>
+			</scroll-view>
+			<view class="borderBtn">
+				<text class="text borderBtn-text">有圆角及边框</text>
+			</view>
+		</view>
+	</scroll-view>
+</template>
+
+<script lang="uts" setup>
+	// 模拟加载网络
+	const info = ref<string[] | null>(null);
+	onMounted(() => {
+		setTimeout(() => {
+			const arr = new Array<string>()
+			for (let i = 0; i < 15; i++) {
+				arr.push(i.toString())
+			}
+			info.value = arr
+		}, 500);
+	});
+</script>
+
+<style lang="scss">
+	$background: #1770d6;
+	.content{
+		flex: 1;
+		padding: 0 30rpx;
+		background: #FFF;
+	}
+
+	.vipView{
+		background: #f6f7f9;
+		padding: 20rpx 0 36rpx 0;
+		border-radius: 20rpx;
+		margin-bottom: 22rpx;
+	}
+
+	.head{
+		flex-direction: row;
+		align-items: center;
+		height: 60rpx;
+		padding: 0 36rpx 0 36rpx;
+	}
+
+	.functionVip{
+		flex-direction: row;
+		margin-top: 10rpx;
+	}
+
+	.item{
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		width: 180rpx;
+		background: #FFF;
+		padding: 34rpx 10rpx;
+		border-radius: 20rpx;
+		margin-right: 16rpx;
+		overflow: hidden;
+	}
+
+	.icon{
+		width: 70rpx;
+		height: 70rpx;
+		border-radius: 70rpx;
+	}
+
+	.btn{
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		border-radius: 100rpx;
+		background: $background;
+		margin: 30rpx 36rpx 0 36rpx;
+		height: 84rpx;
+	}
+
+	.borderBtn{
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		border: 4rpx solid blue;
+		border-radius: 100rpx;
+		background: #FFF;
+		margin: 30rpx 36rpx 0 36rpx;
+		height: 84rpx;
+	}
+
+	.text{
+		font-size: 22rpx;
+		width: 100%;
+		text-align: center;
+		line-height: 1.1;
+		margin-top: 15rpx;
+		color: #7a90a8;
+	}
+
+	.borderBtn-text{
+		color: $background;
+		font-size: 28rpx;
+	}
+</style>

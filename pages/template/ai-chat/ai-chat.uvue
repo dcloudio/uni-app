@@ -1,0 +1,550 @@
+<template>
+  <view style="flex:1;background-color: #f5f5f5;">
+    <scroll-view @click="hideKeyboard" @touchmove="onUserScroll" @touchend="onUserScrollEnd" :show-scrollbar="false" :scroll-with-animation="true" style="flex: 1;padding-bottom: 10px;" :bounces="false">
+      <list-view ref="messageView" @scrolltoupper="clearData" @scrolltolower="loadData" :scroll-with-animation="true"
+        :show-scrollbar="false" style="flex: 1;transform: scale(1, -1)">
+        <list-item v-for="(item, index) in messageList" @longpress="listItemLongPress(index)" :key="'listItem' + index"
+          :id="'listItem' + item.id" style="transform: scale(1, -1);padding: 10px 12px;" type="0">
+          <view class="item" :class="{self: item.self}">
+            <image :fade-show="true" :src="item.avatar"
+              :style="{width: avatarWidth + 'px',height: avatarWidth + 'px',borderRadius: avatarWidth + 'px'}"></image>
+            <view :id="'listItemContent' + item.id" class="flex-row content" :class="{'self-content': item.self}">
+              <view v-if="item.type == 'rich-text'" class="content-rich-wrap">
+                <rich-text-msg :nodes="item.content" />
+              </view>
+              <text v-else class="content-text" :class="{'self-content-text': item.self}">
+                {{ item.content }}
+              </text>
+            </view>
+            <view style="flex: 1;">
+            </view>
+          </view>
+        </list-item>
+        <list-item class="loading">
+          <loading v-if="load" style="border-color:#999;"></loading>
+        </list-item>
+      </list-view>
+    </scroll-view>
+    <view class="input-box">
+      <textarea class="input-el" v-model="message" placeholder="发消息体验流式回复" :adjust-position="false"
+        :hold-keyboard="true" :auto-height="true" @keyboardheightchange="onKeyboardheightchange"
+      />
+      <text class="send-msg" :class="{active: message.length > 0}" @click="send">发送</text>
+      <view class="placeholder-box">
+        <view v-if="keyboardIsShow" :style="{height: maxKeyboardHeight}"></view>
+        <!-- Android 端的键盘高度不包括底部安全区，其他包括 -->
+        <view v-if="!keyboardIsShow || isAndroid" class="safe-area-inset-bottom"></view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import richTextMsg from './rich-text-msg.uvue'
+  import type { TextNode, ElementNode, RichNode, RichNodes } from './types.uts'
+
+  type Nodes = RichNodes
+  type MessageItem = {
+    id : number;
+    avatar : string;
+    self : boolean;
+    content : string | Nodes;
+    type : string;
+    height : number;
+  }
+  // 自动化测试使用
+  type AutoTest = {
+    done : boolean;
+    waitNode1:boolean;
+    waitNode2:boolean;
+    waitNode3:boolean;
+    waitNode4:boolean;
+    waitNode5:boolean;
+  }
+
+  const messageView = ref<UniElement | null>(null)
+  const bottom = ref<UniElement | null>(null)
+  const avatarWidth = ref(38)
+  let scrollTop = 0
+  const message = ref('')
+  const showBottom = ref(false)
+  const load = ref(false)
+  const messageList = ref<MessageItem[]>([])
+  const maxKeyboardHeight = ref(0)
+  const keyboardIsShow = ref(false)
+  const isAndroid = ref(uni.getSystemInfoSync().platform == 'android')
+  const isUserScrolling = ref(false)
+  let scrollEndTimer : number = -1
+  // 自动化测试使用，在不同节点截图
+  let autoTest = reactive<AutoTest>({
+    done:false,
+    waitNode1:false,
+    waitNode2:false,
+    waitNode3:false,
+    waitNode4:false,
+    waitNode5:false,
+  })
+
+  const screenWidth = computed(() : number => {
+    return 1080
+  })
+  const clearData = () => {
+    if (messageList.value.length >= 40) {
+      messageList.value.splice(39, messageList.value.length - 1)
+    }
+  }
+
+  const listItemLongPress = (index : number) => {
+    uni.showToast({
+      title: '触发长按:' + index,
+      position: "bottom"
+    })
+  }
+
+  const loadData = () => {
+    load.value = true
+    setTimeout(() => {
+      load.value = false
+      let length = messageList.value.length
+      for (let i = 0; i < 20; i++) {
+        let item = {
+          id: length + i,
+          avatar: "/static/test-image/logo.png",
+          type: 'text',
+          self: true,
+          content: '这是一些占位消息',
+          height: 0
+        } as MessageItem
+        messageList.value.push(item)
+      }
+    }, 800)
+  }
+  const getMessage = () => {
+    let idList : number[] = []
+    for (let index = 0; index < 20; index++) {
+      let item = {
+        id: index,
+        avatar: '/static/test-image/logo.png',
+        type: 'text',
+        self: false,
+        content: `这是一条消息${index}`,
+        height: 0
+      } as MessageItem
+      messageList.value.push(item)
+      idList.push(item.id)
+    }
+  }
+  function hideKeyboard() {
+    uni.hideKeyboard()
+    keyboardIsShow.value = false
+  }
+
+  function sleep(ms : number) : Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(), ms)
+    })
+  }
+
+  function onUserScroll() {
+    isUserScrolling.value = true
+    if (scrollEndTimer >= 0) {
+      clearTimeout(scrollEndTimer)
+      scrollEndTimer = -1
+    }
+  }
+
+  function onUserScrollEnd() {
+    if (scrollEndTimer >= 0) clearTimeout(scrollEndTimer)
+    scrollEndTimer = setTimeout(() => {
+      isUserScrolling.value = false
+      scrollEndTimer = -1
+    }, 600) as number
+  }
+
+  async function waitUntilNotScrolling() {
+    while (isUserScrolling.value) {
+      await sleep(80)
+    }
+  }
+
+  /** demo：模拟“发送成功” */
+  async function mockSendSuccess() : Promise<void> {
+    await sleep(250)
+  }
+
+  /** 列表项：text + 是否加粗；与 SegmentInput 统一用 bold 表示加粗 */
+  type ListItemInput = { text : string; bold? : boolean }
+
+  async function demoStreamRichText() {
+    // content 由 rootTail 组成，发送成功后只对 content 增加节点
+    let rootTail : RichNode[] = [] as RichNode[]
+    let content : Nodes = rootTail
+
+    let item = {
+      id: Date.now(),
+      avatar: '/static/test-image/logo.png',
+      self: false,
+      type: 'rich-text',
+      content: content,
+      height: 0
+    } as MessageItem
+    messageList.value.unshift(item)
+    item = messageList.value[0]
+    await mockSendSuccess()
+
+    function rebuildAndFlush() {
+      content = [...rootTail] as Nodes
+      item.content = content
+      messageList.value = messageList.value.slice() as MessageItem[]
+    }
+
+    /** 在 rootTail 末尾追加一个块级节点并逐字打出 text */
+    async function typeBlock(tagName : string, text : string, charDelay = 60) {
+      rootTail = [...rootTail, { name: tagName, children: [{ type: 'text', text: '' } as TextNode] as Nodes } as ElementNode] as Nodes
+      rebuildAndFlush()
+      for (let i = 0; i < text.length; i++) {
+        await waitUntilNotScrolling()
+        const buf = text.substring(0, i + 1)
+        rootTail = [...rootTail.slice(0, -1), { name: tagName, children: [{ type: 'text', text: buf } as TextNode] as Nodes } as ElementNode] as Nodes
+        rebuildAndFlush()
+        await sleep(charDelay)
+      }
+    }
+
+    /** 类型守卫：判断是否为 ElementNode */
+    function isElementNode(node : RichNode) : boolean {
+      if (typeof node === 'string') return false
+      try {
+        const en = node as ElementNode
+        return en.name != null
+      } catch {
+        return false
+      }
+    }
+
+    /** 段落内多段（纯文本 / strong / i / code / a），每段逐字打出；加粗与 ListItemInput 统一用 bold */
+    type SegmentInput = { text : string; bold? : boolean; i? : boolean; code? : boolean; href? : string }
+    async function typeBlockMixed(tagName : string, segments : SegmentInput[], charDelay = 60) {
+      const emptyNodes : RichNode[] = [] as RichNode[]
+      rootTail = [...rootTail, { name: tagName, children: emptyNodes } as ElementNode] as Nodes
+      rebuildAndFlush()
+      let children : RichNode[] = [] as RichNode[]
+      for (let s = 0; s < segments.length; s++) {
+        const seg = segments[s]
+        for (let c = 0; c < seg.text.length; c++) {
+          await waitUntilNotScrolling()
+          const buf = seg.text.substring(0, c + 1)
+          const tn = { type: 'text', text: buf } as TextNode
+          const inner : Nodes = [tn] as Nodes
+          let node : ElementNode | TextNode = tn
+          if (seg.href != null) {
+            const attrs = new Map<string, string>()
+            attrs.set('href', seg.href!)
+            node = { name: 'a', attrs: attrs, children: inner } as ElementNode
+          } else if (seg.bold == true) {
+            node = { name: 'strong', children: inner } as ElementNode
+          } else if (seg.i == true) {
+            node = { name: 'i', children: inner } as ElementNode
+          } else if (seg.code == true) {
+            node = { name: 'code', children: inner } as ElementNode
+          }
+          const segNodes : Nodes = [node] as Nodes
+          rootTail = [...rootTail.slice(0, -1), { name: tagName, children: [...children, ...segNodes] as Nodes } as ElementNode] as Nodes
+          rebuildAndFlush()
+          await sleep(charDelay)
+        }
+        const fullTn = { type: 'text', text: seg.text } as TextNode
+        const fullInner : Nodes = [fullTn] as Nodes
+        let fullNode : RichNode = fullTn
+        if (seg.href != null) {
+          const attrs = new Map<string, string>()
+          attrs.set('href', seg.href!)
+          fullNode = { name: 'a', attrs: attrs, children: fullInner } as ElementNode
+        } else if (seg.bold == true) {
+          fullNode = { name: 'strong', children: fullInner } as ElementNode
+        } else if (seg.i == true) {
+          fullNode = { name: 'i', children: fullInner } as ElementNode
+        } else if (seg.code == true) {
+          fullNode = { name: 'code', children: fullInner } as ElementNode
+        }
+        children = [...children, fullNode] as Nodes
+        rootTail = [...rootTail.slice(0, -1), { name: tagName, children: children } as ElementNode] as Nodes
+        rebuildAndFlush()
+      }
+    }
+
+    // 列表项支持 { text, bold }，逐字打出，bold 时包在 strong 里
+    async function typeList(listName : string, items : ListItemInput[], charDelay = 60, itemDelay = 160) {
+      const listIndex = rootTail.length
+      let listChildren : RichNode[] = [] as RichNode[]
+      rootTail = [...rootTail, { name: listName, children: listChildren } as ElementNode] as Nodes
+      rebuildAndFlush()
+
+      for (let i = 0; i < items.length; i++) {
+        await waitUntilNotScrolling()
+        const it = items[i]
+        const emptyChildren : RichNode[] = [] as RichNode[]
+        let liNode : ElementNode = { name: 'li', children: emptyChildren }
+        listChildren = [...listChildren, liNode] as Nodes
+        rootTail = [
+          ...rootTail.slice(0, listIndex),
+          { name: listName, children: listChildren } as ElementNode,
+          ...rootTail.slice(listIndex + 1)
+        ] as Nodes
+        rebuildAndFlush()
+
+        let buf = ''
+        for (let c = 0; c < it.text.length; c++) {
+          await waitUntilNotScrolling()
+          buf = buf + it.text.substring(c, c + 1)
+          const inner : Nodes = it.bold == true
+            ? [{ name: 'strong', children: [{ type: 'text', text: buf } as TextNode] as Nodes } as ElementNode] as Nodes
+            : [{ type: 'text', text: buf } as TextNode] as Nodes
+          liNode = { name: 'li', children: inner }
+          listChildren = [...listChildren.slice(0, listChildren.length - 1), liNode] as Nodes
+          rootTail = [
+            ...rootTail.slice(0, listIndex),
+            { name: listName, children: listChildren } as ElementNode,
+            ...rootTail.slice(listIndex + 1)
+          ] as Nodes
+          rebuildAndFlush()
+          await sleep(charDelay)
+        }
+        await sleep(itemDelay)
+      }
+    }
+
+    // 完整项目样例请参考 uni-ai x，末尾链接用 a 标签以在 rich-text-msg 中可点击，整段逐字出
+    await typeBlockMixed('p', [
+      { text: '完整项目样例请参考 uni-ai x，地址：' }
+    ] as SegmentInput[], 60)
+    // 自动化测试例使用
+    autoTest.waitNode1 = true
+    // 换行
+    rootTail = [...rootTail, { name: 'br' } as ElementNode] as Nodes
+    rebuildAndFlush()
+    await sleep(180)
+
+    await typeBlockMixed('p', [
+      { text: 'https://ext.dcloud.net.cn/plugin?id=23902', href: 'https://ext.dcloud.net.cn/plugin?id=23902' }
+    ] as SegmentInput[], 60)
+    rootTail = [...rootTail, { name: 'br' } as ElementNode] as Nodes
+    rebuildAndFlush()
+    await sleep(180)
+    // 1）由简到繁：先不同大小的标题，逐字出
+    await typeBlock('h1', '大标题', 60)
+    rootTail = [...rootTail, { name: 'br' } as ElementNode] as Nodes
+    rebuildAndFlush()
+    await sleep(180)
+    // 自动化测试例使用
+    autoTest.waitNode2 = true
+
+    await typeBlock('h2', '中标题', 60)
+    rootTail = [...rootTail, { name: 'br' } as ElementNode] as Nodes
+    rebuildAndFlush()
+    await sleep(180)
+    await typeBlock('h3', '小标题', 60)
+    rebuildAndFlush()
+
+    // 2）段落，逐字出
+    await sleep(220)
+    rootTail = [...rootTail, { name: 'br' } as ElementNode] as Nodes
+    rebuildAndFlush()
+    await sleep(180)
+    await typeBlock('p', '这是段落文字。', 60)
+    // 自动化测试例使用
+    autoTest.waitNode3 = true
+
+    // 3）加粗斜体，逐字出
+    await sleep(220)
+    rootTail = [...rootTail, { name: 'br' } as ElementNode] as Nodes
+    rebuildAndFlush()
+    await sleep(180)
+    await typeBlockMixed('p', [
+      { text: '这是 ' },
+      { text: '加粗', bold: true },
+      { text: ' 和 ' },
+      { text: '斜体', i: true },
+      { text: ' 的示例。' }
+    ] as SegmentInput[], 60)
+    // 自动化测试例使用
+    autoTest.waitNode4 = true
+
+    // 4）无序列表（其中一项加粗），标题逐字出
+    await sleep(220)
+    rootTail = [...rootTail, { name: 'br' } as ElementNode] as Nodes
+    rebuildAndFlush()
+    await sleep(180)
+    await typeBlock('p', '无序列表：', 60)
+    await sleep(180)
+    await typeList('ul', [
+      { text: '苹果' },
+      { text: '香蕉（加粗）', bold: true },
+      { text: '橙子' }
+    ] as ListItemInput[], 70, 180)
+    // 自动化测试例使用
+    autoTest.waitNode5 = true
+
+    // 5）有序列表（其中一项加粗），标题逐字出
+    await sleep(220)
+    rootTail = [...rootTail, { name: 'br' } as ElementNode] as Nodes
+    rebuildAndFlush()
+    await sleep(180)
+    await typeBlock('p', '有序列表：', 60)
+    await sleep(180)
+    await typeList('ol', [
+      { text: '第一步' },
+      { text: '第二步（加粗）', bold: true },
+      { text: '第三步' }
+    ] as ListItemInput[], 70, 180)
+
+    // 6）链接与行内代码、引用，全部逐字出
+    await sleep(220)
+    rootTail = [...rootTail, { name: 'br' } as ElementNode] as Nodes
+    rebuildAndFlush()
+    await sleep(180)
+    await typeBlockMixed('p', [
+      { text: '链接：' },
+      { text: 'uni-app 官网', href: 'https://uniapp.dcloud.net.cn' }
+    ] as SegmentInput[], 60)
+    await sleep(180)
+    await typeBlockMixed('p', [
+      { text: '行内代码 ' },
+      { text: 'const x = 1', code: true },
+      { text: '。' }
+    ] as SegmentInput[], 60)
+    await sleep(180)
+    await typeBlock('blockquote', '这是一段引用。', 60)
+    //仅供测试例使用
+    autoTest.done = true
+  }
+
+  function send() {
+    const content = message.value.trim()
+    if (content.length == 0) {
+      return
+    }
+    let id = messageList.value.length
+    let item = {
+      id: id,
+      avatar: '/static/test-image/logo.png',
+      self: true,
+      type: 'text',
+      content: content,
+      height: 0
+    } as MessageItem
+    messageList.value.unshift(item)
+    message.value = ''
+    setTimeout(() => {
+      demoStreamRichText()
+    }, 1000)
+  }
+
+  // setTimeout(() => {
+  //   demoStreamRichText()
+  // }, 1000)
+
+  function onKeyboardheightchange(e: UniInputKeyboardHeightChangeEvent) {
+    if (e.detail.height > maxKeyboardHeight.value) {
+      maxKeyboardHeight.value = e.detail.height
+    }
+    keyboardIsShow.value = e.detail.height > 0
+  }
+
+  onReady(() => {
+    getMessage()
+  })
+
+  defineExpose({autoTest})
+</script>
+
+<style scoped lang="scss">
+  .flex-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .item {
+    flex-direction: row;
+  }
+
+  .self {
+    flex-direction: row-reverse;
+  }
+  .self-content {
+    background-color: #3c99ff;
+  }
+  .self-content-text {
+    color: #fff;
+  }
+
+  .content {
+    margin: 0 8px;
+    max-width: 562rpx;
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    border-radius: 7px;
+    padding: 9px 11px 9px 11px;
+    align-items: center;
+    background-color: #fff;
+  }
+
+  .content-rich-wrap {
+    max-width: 540rpx;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .content-text {
+    display: flex;
+    font-size: 13px;
+    line-height: 20px;
+    color: #666;
+  }
+
+  .loading {
+    height: 30px;
+    justify-content: center;
+    align-items: center;
+    transform: scale(1, -1)
+  }
+
+  .input-box {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 10px;
+    padding-bottom: 5px;
+    border-top: 1px solid #e5e5e5;
+    width: 100%;
+  }
+  .placeholder-box {
+    width: 100%;
+  }
+  .safe-area-inset-bottom {
+    height: env(safe-area-inset-bottom);
+  }
+  .input-el {
+    flex: 1;
+    height: 30px;
+    padding: 5px 10px;
+    background-color: #EEE;
+    color: #333;
+  }
+  .send-msg {
+    margin-left: 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    color: #999;
+    margin-top: 2px;
+    padding: 0 10px;
+    height: 26px;
+    line-height: 26px;
+    border: 1px solid #eee;
+  }
+  .active {
+    color: #fff;
+    background-color: #3c99ff;
+    border-color: #3c99ff;
+  }
+</style>

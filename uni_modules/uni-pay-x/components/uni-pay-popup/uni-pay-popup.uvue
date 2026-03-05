@@ -1,0 +1,73 @@
+<template>
+  <view class="popup-root" :class="['popup-'+type, isOpen ? 'open' : 'close']" @click="clickMask">
+    <view @click.stop class="popup-box">
+      <slot></slot>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const props = withDefaults(defineProps<{
+    maskClick ?: boolean
+    type ?: string
+  }>(), {
+    maskClick: true,
+    type: "center"
+  })
+
+  const emit = defineEmits(['close', 'clickMask'])
+
+  const isOpen = ref(false)
+
+  function open() {
+    isOpen.value = true;
+  }
+
+  function close() : void {
+    isOpen.value = false;
+    emit('close');
+  }
+
+  function clickMask() {
+    if (props.maskClick == true) {
+      emit('clickMask');
+      close();
+    }
+  }
+
+  defineExpose({
+    open,
+    close
+  })
+</script>
+
+<style>
+  .popup-root {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+    display: none;
+  }
+
+  .popup-bottom {
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .popup-box {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .popup-root.open {
+    display: flex;
+  }
+</style>

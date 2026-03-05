@@ -1,0 +1,215 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1; padding-bottom: 20px">
+  <!-- #endif -->
+    <view>
+      <page-head title="getApp"></page-head>
+      <view class="uni-padding-wrap">
+        <button @click="getGlobalData">get globalData</button>
+        <template v-if="data.originGlobalData.str.length">
+          <text class="uni-common-mt bold">初始的 globalData:</text>
+          <text class="uni-common-mt">globalData string: {{ data.originGlobalData.str }}</text>
+          <text class="uni-common-mt">globalData number: {{ data.originGlobalData.num }}</text>
+          <text class="uni-common-mt">globalData boolean: {{ data.originGlobalData.bool }}</text>
+          <text class="uni-common-mt">globalData object: {{ data.originGlobalData.obj }}</text>
+          <text class="uni-common-mt">globalData null: {{ data.originGlobalData.null }}</text>
+          <text class="uni-common-mt">globalData array: {{ data.originGlobalData.arr }}</text>
+          <text class="uni-common-mt">globalData Set: {{ data.originGlobalData.set }}</text>
+          <text class="uni-common-mt">globalData Map: {{ data.originGlobalData.map }}</text>
+          <text class="uni-common-mt">globalData fun 返回值: {{ data.originGlobalDataFuncRes }}</text>
+        </template>
+        <button @click="setGlobalData" class="uni-common-mt">
+          set globalData
+        </button>
+        <template v-if="data.newGlobalData.bool">
+          <text class="uni-common-mt bold">更新后的 globalData:</text>
+          <text class="uni-common-mt">globalData string: {{ data.newGlobalData.str }}</text>
+          <text class="uni-common-mt">globalData number: {{ data.newGlobalData.num }}</text>
+          <text class="uni-common-mt">globalData boolean: {{ data.newGlobalData.bool }}</text>
+          <text class="uni-common-mt">globalData object: {{ data.newGlobalData.obj }}</text>
+          <text class="uni-common-mt">globalData null: {{ data.newGlobalData.null }}</text>
+          <text class="uni-common-mt">globalData array: {{ data.newGlobalData.arr }}</text>
+          <text class="uni-common-mt">globalData Set: {{ data.newGlobalData.set }}</text>
+          <text class="uni-common-mt">globalData Map: {{ data.newGlobalData.map }}</text>
+          <text class="uni-common-mt">globalData fun 返回值: {{ data.newGlobalDataFuncRes }}</text>
+        </template>
+        <text class="uni-common-mt">点击按钮调用 App.uvue methods</text>
+        <text class="uni-common-mt">increaseLifeCycleNum 方法</text>
+        <button class="uni-common-mt" @click="_increaseLifeCycleNum">
+          increase lifeCycleNum
+        </button>
+        <text class="uni-common-mt">lifeCycleNum: {{ data.lifeCycleNum }}</text>
+        <!-- #ifndef MP -->
+        <button class="uni-common-mt" @click="getAndroidApplication">
+          getAndroidApplication
+        </button>
+        <text class="uni-common-mt">androidApplication is null: {{ data.androidApplication == null }}</text>
+        <!-- #endif -->
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { state, setLifeCycleNum, updateGlobalData } from '@/store/index.uts'
+
+  type MyGlobalData = {
+    str : string,
+    num : number,
+    bool : boolean,
+    obj : UTSJSONObject,
+    null : string | null,
+    arr : number[],
+    set : string[],
+    map : UTSJSONObject,
+    fun : () => string
+  }
+
+  type DataType = {
+    originGlobalData: MyGlobalData;
+    originGlobalDataFuncRes: string;
+    newGlobalData: MyGlobalData;
+    newGlobalDataFuncRes: string;
+    lifeCycleNum: number;
+    androidApplication: any | null;
+  }
+
+  const data = reactive({
+    originGlobalData: {
+      str: '',
+      num: 0,
+      bool: false,
+      obj: {
+        str: '',
+        num: 0,
+        bool: false
+      },
+      null: null,
+      arr: [] as number[],
+      set: [] as string[],
+      map: {},
+      fun: () : string => ''
+    },
+    originGlobalDataFuncRes: '',
+    newGlobalData: {
+      str: '',
+      num: 0,
+      bool: false,
+      obj: {
+        str: '',
+        num: 0,
+        bool: false
+      },
+      null: null,
+      arr: [] as number[],
+      set: [] as string[],
+      map: {},
+      fun: () : string => ''
+    },
+    newGlobalDataFuncRes: '',
+    lifeCycleNum: 0,
+    androidApplication: null
+  } as DataType)
+
+  const getGlobalData = () => {
+    data.originGlobalData.str = state.globalData.str
+    data.originGlobalData.num = state.globalData.num
+    data.originGlobalData.bool = state.globalData.bool
+    data.originGlobalData.obj = state.globalData.obj
+    data.originGlobalData.null = state.globalData.null
+    data.originGlobalData.arr = state.globalData.arr
+    state.globalData.set.forEach((value : string) => {
+      data.originGlobalData.set.push(value)
+    })
+    state.globalData.map.forEach((value : any, key : string) => {
+      data.originGlobalData.map[key] = value
+    })
+    data.originGlobalData.fun = state.globalData.fun
+    data.originGlobalDataFuncRes = data.originGlobalData.fun()
+  }
+
+  const setGlobalData = () => {
+    updateGlobalData('str', 'new globalData str')
+    updateGlobalData('num', 100)
+    updateGlobalData('bool', true)
+    updateGlobalData('obj',{
+      str: 'new globalData obj str',
+      num: 200,
+      bool: true
+    })
+    updateGlobalData('null', 'not null')
+    updateGlobalData('arr', [1, 2, 3])
+    updateGlobalData('set', new Set(['a', 'b', 'c']))
+    updateGlobalData('map', new Map<string, any>([
+      ['a', 1],
+      ['b', 2],
+      ['c', 3]
+    ]))
+    updateGlobalData('fun', () : string => {
+      return 'new globalData fun'
+    })
+
+    data.newGlobalData.str = state.globalData.str
+    data.newGlobalData.num = state.globalData.num
+    data.newGlobalData.bool = state.globalData.bool
+    data.newGlobalData.obj = state.globalData.obj
+    data.newGlobalData.null = state.globalData.null
+    data.newGlobalData.arr = state.globalData.arr
+    console.log('state.globalData.arr',state.globalData.arr)
+    console.log('state.globalData.set',state.globalData.set)
+    state.globalData.set.forEach((value : string) => {
+      data.newGlobalData.set.push(value)
+    })
+    state.globalData.map.forEach((value : any, key : string) => {
+      data.newGlobalData.map[key] = value
+    })
+    data.newGlobalData.fun = state.globalData.fun
+    data.newGlobalDataFuncRes = data.newGlobalData.fun()
+  }
+
+  const _increaseLifeCycleNum = () => {
+    const app = getApp()
+    app.vm!.increaseLifeCycleNum()
+    data.lifeCycleNum = state.lifeCycleNum
+  }
+
+  // 自动化测试
+  const setLifeCycleNumFunc = (num : number) => {
+    setLifeCycleNum(num)
+  }
+
+  // #ifndef MP
+  const getAndroidApplication = () : boolean => {
+    const app = getApp()
+    data.androidApplication = app.getAndroidApplication()
+    return data.androidApplication !== null
+  }
+  // #endif
+
+  onReady(() => {
+    data.lifeCycleNum = state.lifeCycleNum
+  })
+
+  defineExpose({
+    data,
+    getGlobalData,
+    setGlobalData,
+    _increaseLifeCycleNum,
+    setLifeCycleNumFunc,
+    // #ifndef MP
+    getAndroidApplication
+    // #endif
+  })
+</script>
+
+<style>
+  .bold {
+    font-weight: bold;
+  }
+
+  .hr {
+    border-bottom: 1px solid #ccc;
+  }
+</style>

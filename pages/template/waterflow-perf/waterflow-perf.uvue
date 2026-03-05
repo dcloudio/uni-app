@@ -1,0 +1,288 @@
+<template>
+	<view class="page">
+    <!-- #ifndef MP -->
+		<fps />
+    <!-- #endif -->
+		<view class="header">
+			<text class="header-info">{{ listData.length }}项 | 瀑布流动态列数 | 圆角边框阴影</text>
+		</view>
+		<waterflow class="waterflow-container" :max-cross-axis-extent="200" :main-axis-gap="4" :cross-axis-gap="4" @scrolltolower="onScrollToLower">
+			<flow-item v-for="(item, index) in listData" :key="item.id" class="flow-item" :type="item.type">
+
+				<!-- ========== Type 1: 单图配文 ========== -->
+				<view v-if="item.type == 1" class="card card-type1">
+					<view class="card-header">
+						<text class="card-title" @click.stop="onTitleClick(item.id + 1)">#{{ item.id + 1 }}</text>
+						<text class="tag-sm">单图</text>
+					</view>
+					<view class="card-image-area">
+						<image class="card-image" :src="item.image" mode="aspectFill" @click.stop="onImageClick([item.image], 0)"></image>
+					</view>
+					<view class="card-content">
+						<text class="content-title">{{ item.title }}</text>
+						<text class="content-desc">{{ item.desc }}</text>
+						<view class="meta-info">
+							<text class="author-text">{{ item.author }}</text>
+						</view>
+					</view>
+				</view>
+
+				<!-- ========== Type 2: 三图配文 ========== -->
+				<view v-else-if="item.type == 2" class="card card-type2">
+					<view class="card-header">
+						<text class="card-title" @click.stop="onTitleClick(item.id + 1)">#{{ item.id + 1 }}</text>
+						<text class="tag-sm">三图</text>
+					</view>
+					<view class="card-images-row">
+						<image class="card-image-sm" :src="item.images[0]" mode="aspectFill" @click.stop="onImageClick(item.images, 0)"></image>
+						<image class="card-image-sm" :src="item.images[1]" mode="aspectFill" @click.stop="onImageClick(item.images, 1)"></image>
+						<image class="card-image-sm" :src="item.images[2]" mode="aspectFill" @click.stop="onImageClick(item.images, 2)"></image>
+					</view>
+					<view class="card-content">
+						<text class="content-title">{{ item.title }}</text>
+						<view class="meta-info">
+							<text class="author-text">{{ item.author }}</text>
+							<text class="view-count">1024阅读</text>
+						</view>
+					</view>
+				</view>
+
+				<!-- ========== Type 3: 视频 ========== -->
+				<view v-else-if="item.type == 3" class="card card-type5">
+					<view class="card-header">
+						<text class="card-title" @click.stop="onTitleClick(item.id + 1)">#{{ item.id + 1 }}</text>
+						<text class="tag-sm">视频</text>
+					</view>
+					<view class="video-area">
+						<video
+							class="card-video"
+							:src="item.videoUrl"
+							:poster="item.videoPoster"
+							:controls="true"
+							object-fit="cover"
+						></video>
+					</view>
+					<view class="card-content">
+						<view class="meta-info">
+							<text class="info-text">播放:{{ item.playCount }}</text>
+							<text class="info-text">弹幕:99+</text>
+						</view>
+					</view>
+				</view>
+
+			</flow-item>
+      <flow-item slot="load-more">
+        <text style="line-height: 50px; text-align: center; font-size: 12px; color: #999999;">{{ hasMore ? '加载中...' : '没有更多' }}</text>
+      </flow-item>
+		</waterflow>
+	</view>
+</template>
+
+<script setup lang="uts">
+import { generateMockList, type ListItemData } from './mock-data.uts'
+
+const fullData = generateMockList()
+const pageSize = 20
+function getPageData(pageIndex: number): ListItemData[] {
+  const start = pageIndex * pageSize
+  return fullData.slice(start, start + pageSize)
+}
+// 使用预生成的数据
+const listData = ref<ListItemData[]>([])
+const hasMore = ref(true)
+let cucurrentPage = 0
+onMounted(() => {
+	listData.value = getPageData(cucurrentPage)
+})
+
+function onScrollToLower() {
+  // 模拟加载更多数据
+  setTimeout(() => {
+    cucurrentPage++
+    const newData = getPageData(cucurrentPage)
+    if (newData.length > 0) {
+      listData.value = listData.value.concat(newData)
+    } else {
+      hasMore.value = false
+    }
+  }, 200)
+}
+
+function onTitleClick(index: number) {
+	uni.showToast({
+		title: `序号: ${index}`,
+		icon: 'none'
+	})
+}
+
+function onImageClick(urls: string[], current: number) {
+	uni.previewImage({
+		urls: urls,
+		current: current
+	})
+}
+</script>
+
+<style>
+.page {
+	flex: 1;
+	background-color: #f5f5f5;
+}
+
+.header {
+	padding: 10px 15px;
+	background-color: #333;
+}
+
+.header-info {
+	font-size: 10px;
+	color: #aaa;
+	margin-top: 2px;
+}
+
+.waterflow-container {
+	flex: 1;
+}
+
+.flow-item {
+	flex: 1;
+}
+
+/* ===== 卡片基础样式 ===== */
+.card {
+	background-color: #fff;
+	border-radius: 8px;
+	padding: 10px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+}
+
+.card-header {
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 6px;
+	padding-bottom: 4px;
+	border-bottom-width: 0.5px;
+	border-bottom-color: #eee;
+	border-bottom-style: solid;
+}
+
+.card-title {
+	font-size: 12px;
+	font-weight: bold;
+	color: #333;
+	flex: 1;
+}
+
+.tag-sm {
+	font-size: 8px;
+	color: #fff;
+	background-color: #3498db;
+	padding: 2px 6px;
+	border-radius: 3px;
+	margin-left: 4px;
+}
+
+.card-content {
+	padding-top: 4px;
+}
+
+.content-title {
+	font-size: 12px;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 4px;
+	/* #ifdef APP-ANDROID || APP-IOS */
+	lines: 2;
+	/* #endif */
+	text-overflow: ellipsis;
+}
+.content-desc {
+	font-size: 10px;
+	color: #666;
+	margin-bottom: 4px;
+	/* #ifdef APP-ANDROID || APP-IOS */
+	lines: 2;
+	/* #endif */
+	text-overflow: ellipsis;
+}
+
+.meta-info {
+	flex-direction: row;
+	align-items: center;
+	margin-top: 4px;
+}
+
+.author-text {
+	font-size: 8px;
+	color: #999;
+}
+
+.view-count {
+	font-size: 8px;
+	color: #aaa;
+	margin-left: 6px;
+}
+
+.info-text {
+	font-size: 8px;
+	color: #666;
+	margin-right: 4px;
+}
+
+.status-text {
+	font-size: 8px;
+	color: #2ecc71;
+	margin-left: 6px;
+	font-weight: bold;
+}
+
+/* ===== Type 1: 单图配文 ===== */
+
+.card-image-area {
+	margin: 6px 0;
+	height: 100px;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.card-image {
+	width: 100%;
+	height: 100%;
+}
+
+/* ===== Type 2: 三图配文 ===== */
+
+.card-images-row {
+	flex-direction: row;
+	justify-content: space-between;
+	margin: 6px 0;
+	height: 70px;
+}
+
+.card-image-sm {
+	flex: 1;
+	height: 70px;
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+
+/* ===== Type 5: 视频 ===== */
+.video-area {
+	margin: 6px 0;
+}
+
+.video-area {
+	margin: 6px 0;
+	height: 240px;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.card-video {
+	width: 100%;
+	height: 240px;
+}
+</style>

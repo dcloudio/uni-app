@@ -1,0 +1,8 @@
+{
+  "name": "sse",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {},
+    "uni-cloud-push": {}
+  }
+}

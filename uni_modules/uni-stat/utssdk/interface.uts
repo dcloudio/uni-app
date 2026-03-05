@@ -1,0 +1,550 @@
+/**
+ * 接口调用成功回调
+ */
+export type ReportSuccess = {
+  /**
+  * 成功的详细信息
+  */
+  errMsg : string
+}
+
+/**
+ * 错误码
+ */
+export type ReportErrorCode =
+  /**
+   * 应用已集成uni统计，但未关联服务空间，请在uniCloud目录右键关联服务空间
+   */
+  61000 |
+  /**
+   * 统计服务尚未初始化，需在`main.uts`中引入统计插件
+   */
+  61001 |
+  /**
+   * name参数是uni-app-launch时， options 参数未填写
+   */
+  61002 |
+  /**
+   * name参数未填写
+   */
+  61003 |
+  /**
+   * name参数类型错误，应为`String`类型
+   */
+  61004 |
+  /**
+   * name参数长度超限，最大不超过255
+   */
+  61005 |
+  /**
+   * options参数错误，应为String或Object类型
+   */
+  61006 |
+  /**
+   * options参数为String类型时，长度超限，最大不超过255
+   */
+  61007 |
+  /**
+   * name参数为title时，options参数类型错误，应为String
+   */
+  61008
+
+/**
+ * 错误回调
+ */
+export interface ReportError extends IUniError {
+  /**
+   * 错误码
+   */
+  errCode : ReportErrorCode
+}
+
+/**
+ * 接口调用失败回调
+ */
+export type ReportFail = ReportError
+
+/**
+ * 接口调用成功回调
+ */
+export type ReportSuccessCallback = (res : ReportSuccess) => void
+/**
+ * 接口调用失败回调
+ */
+export type ReportFailCallback = (err : ReportFail) => void
+/**
+ * 接口调用结束回调（调用成功、失败都会执行）
+ */
+export type ReportCompleteCallback = (res : any) => void
+
+/**
+ * Report 参数定义
+ */
+export type ReportOptions = {
+  /**
+   * 自定义事件名称，内置名称不允许覆盖，可选值:
+   * `uni-app-launch`：应用启动，options 参数必填，值为 onLaunch 返回值
+   * `uni-app-show`：应用进入前台
+   * `uni-app-hide`：应用进入后台
+   * `uni-app-error`：应用发生错误，options 参数必填，值为错误信息，类型为String
+   * `title`：标题采集
+   * `自定义name`：用户自定义
+   */
+  name : string
+  /**
+   * 额外参数
+   */
+  options ?: any | null
+  /**
+   * 接口调用成功的回调函数
+   */
+  success ?: ReportSuccessCallback | null,
+  /**
+   * 接口调用失败的回调函数
+   */
+  fail ?: ReportFailCallback | null,
+  /**
+   * 接口调用结束的回调函数（调用成功、失败都会执行）
+   */
+  complete ?: ReportCompleteCallback | null
+}
+
+/**
+* 自定义事件信息
+* @param {ReportOptions} options
+*
+* @platforms APP-IOS = ^9.0,APP-ANDROID = ^22
+* @since 4.25
+*/
+
+export type Report = (options : ReportOptions) => void
+
+export interface Uni {
+  /**
+   * 统计自定义事件
+   * @description uni统计自定义上报方法。
+   * @param {ReportOptions} options 自定义事件参数
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "unixVer": "4.33"
+   *        },
+   *        "ios": {
+   *            "unixVer": "4.33"
+   *   	 	 	}
+   *    },
+   *  	"web": {
+   *    	"unixVer": "4.33"
+   *  	},
+   *    "mp-weixin": {
+   *      "unixVer": "4.41"
+   *  	}
+   * }
+   * @example
+   * ```typescript
+   *	 uni.report({
+   *			name:'uni-app-launch',
+   *			success(res) {
+   *				console.log(res);
+   *			},
+   *			fail(err) {
+   *				console.log(err);
+   *			}
+   * 	})
+   * ```
+   * @remark
+   * - 该接口需要同步调用
+   */
+  report(options : ReportOptions) : void;
+}
+
+// 统计插件参数类型
+export type UniStatOptions = {
+	/**
+   * 是否开启统计，默认引入卡其
+   * @defaultValue true
+	 */
+	enable ?: boolean
+  /**
+   * 是否开启debug模式
+   * @defaultValue false
+   */
+  debug ?: boolean
+  /**
+   * 前端数据上报周期 ，单位s
+   * @defaultValue 10
+   */
+  reportInterval ?: number
+  /* 多服务空间配置 */
+  uniCloud ?: UniCloudInitOptions
+  /* 采集项配置 */
+  collectItems ?: UniStatCollectItemsOptions
+}
+
+export type UniStatCollectItemsOptions = {
+  /**
+   * 是否开启推送PushClientID的采集
+   * @defaultValue false
+   */
+  uniPushClientID ?: boolean
+  /**
+   * 是否开启页面数据采集
+   * @defaultValue true
+   */
+  uniStatPageLog ?: boolean
+}
+
+/**
+ * 应用参数扩展
+ */
+export type OnLaunchOptionsWithCst = {
+  /** 页面路径 */
+  path ?: string
+  /** 上报时机，参看 ReprotCstType */
+  cst ?: number
+  /** 场景值 */
+  scene ?: number
+  /** 参数 */
+  query ?: string
+};
+
+/**
+ * 停留时长
+ */
+export type ResidenceTimeReturn = {
+  /** 停留时长 */
+  residenceTime : number
+  /** 是否超时 */
+  overtime : boolean
+}
+
+/**
+ * 路由
+ */
+export type RouteParams = {
+  path : string
+  fullpath : string
+}
+
+/**
+ * 页面标题
+ */
+export type TitleConfigParams = {
+  /** pages.json 中的标题 */
+  config : string
+  /** setNavigationBarTitle 获取的标题*/
+  page : string
+  /** 自定义上报的标题 */
+  report : string
+  /** 统计数据类型 */
+  lt : string
+}
+
+/**
+ * 页面参数
+ */
+export type PageParams = {
+  /** 当前页面的完整 url，包含参数在内。最多255字符 */
+  url ?: string
+  /** pages.json 中定义的页面的 title，获取不到时，可以不传 */
+  ttpj ?: string
+  /** 通过接口 uni.setnavigationbartitle 设置的 title，获取不到时，可以不传 */
+  ttn ?: string
+  /** 通过 uni.report 上报的页面的 title，获取不到时，可以不传 */
+  ttc ?: string
+  /** title 组件中设置的 title，获取不到时，可以不传 */
+  ttct ?: string
+  /** 上个页面的完整 url */
+  urlref : string
+  /** 上个页面停留时间，单位为秒，不足1秒按1秒计。 url */
+  urlref_ts : number
+  /** 上个页面的标题 */
+  urlref_tt ?: string
+}
+
+/**
+ * 上传 unicloud 参数
+ */
+export type RequestData = {
+  /** 统计 SDK 版本号 */
+  usv : string
+  /** 发送请求时的时间戮 */
+  t : number
+  /** 组合数据 */
+  requests : string
+}
+
+/**
+ * 用户自定义服务空间配置信息
+ */
+export type CustomUnicloudConfig = {
+  /** 服务空间id */
+  spaceId : string,
+  /** 云厂商 */
+  provider : string,
+  /** clientSecret */
+  clientSecret ?: string
+  /** secretKey */
+  secretKey ?: string
+  /** secretId */
+  secretId ?: string
+}
+
+/**
+ * 事件类型
+ */
+export type EventParams = {
+  /** 事件名字*/
+  key : string
+  /** 事件内容 */
+  value ?: string
+}
+
+/**
+ * 统计默认值
+ */
+export type StatDefault = {
+  /** 设备标识 */
+  uuid : string
+  /** uni-app 应用 Appid */
+  ak : string
+  /** 手机系统 */
+  p : string
+  /** 平台类型 */
+  ut : string
+  /** 原生平台包名、小程序 appid */
+  mpn ?: string
+  /** 统计 sdk 版本 */
+  usv ?: string
+  /**  应用版本，仅app */
+  v ?: string
+  /** 渠道信息 */
+  ch ?: string
+  /** 国家 */
+  cn ?: string
+  /** 省份 */
+  pn ?: string
+  /** 城市 */
+  ct ?: string
+  /** 上报数据时的时间戳 */
+  t ?: number
+  /** 页面标题 */
+  tt ?: string
+  /** 手机品牌 */
+  brand ?: string
+  /** 手机型号 */
+  md ?: string
+  /** 手机系统版本 */
+  sv ?: string
+  /** x程序 sdk version */
+  mpsdk ?: string
+  /** 小程序平台版本 ，如微信、支付宝 */
+  mpv ?: string
+  /** 语言 */
+  lang ?: string
+  /** pixelRatio 设备像素比 */
+  pr ?: number
+  /** windowWidth 可使用窗口宽度 */
+  ww ?: number
+  /** windowHeight 可使用窗口高度 */
+  wh ?: number
+  /** screenWidth 屏幕宽度 */
+  sw ?: number
+  /** screenHeight 屏幕高度 */
+  sh ?: number
+
+  /** 场景值 */
+  sc ?: number
+  /** 统计数据类型 */
+  lt ?: string
+  /** 老用户错误的的设备id */
+  odid ?: string
+  url ?: string
+  /** 首次访问时间戳。需要保存在 storage 中。用户首次访问时，取当前时间。*/
+  fvts ?: number
+  /** 上次访问时间戳。需要保存在 storage 中。用户首次访问时，设置为0。*/
+  lvts ?: number
+  /** total visit count 用户到本次访问为止总共的访问次数。*/
+  tvc ?: number
+  /** 上报时机，参看 ReprotCstType */
+  cst ?: number
+  urlref_ts ?: number
+  urlref ?: string
+
+  // 标题相关
+  /** pages.json 中定义的页面的 title，获取不到时，可以不传 */
+  ttpj ?: string
+  /** 通过接口 uni.setnavigationbartitle 设置的 title，获取不到时，可以不传 */
+  ttn ?: string
+  /** 通过 uni.report 上报的页面的 title，获取不到时，可以不传 */
+  ttc ?: string
+  /** title 组件中设置的 title，获取不到时，可以不传 */
+  ttct ?: string
+
+  /** push id */
+  cid ?: string
+
+  /** 自定义事件key  */
+  e_n ?: string
+  /** 自定义事件value  */
+  e_v ?: string
+
+  /** 纬度 */
+  lat ?: string
+  /** 经度 */
+  lng ?: string
+  /** 网络 */
+  net ?: string
+  /** 错误信息 */
+  em ?: string
+  /* 是否root ios为越狱 */
+  root ?: number
+  /*manifest.json 中应用版本名称。*/
+  pv ?: string
+  log ?: string
+  did ?: string
+  os ?: string
+}
+
+/**
+ * 应用首次启动上报参数
+ */
+export type AppShowReportParams = {
+  /** uni-app 应用 Appid */
+  uuid : string
+  /** 设备标识 */
+  ak : string
+  /** 统计数据类型 */
+  lt : string
+  /** 平台类型 */
+  ut : string
+  /** x程序 sdk version */
+  mpsdk : string
+  /** 小程序平台版本 ，如微信、支付宝 */
+  mpv : string
+  /** 原生平台包名、小程序 appid */
+  mpn : string
+  /**  应用版本，仅app */
+  v : string
+  /** 手机系统 */
+  p : string
+  /** 手机系统版本 */
+  sv : string
+  /** 设备网络 */
+  net : string
+  /** 手机品牌 */
+  brand : string
+  /** 手机型号 */
+  md : string
+  /** 语言 */
+  lang : string
+  /** 纬度 */
+  lat : string
+  /** 经度 */
+  lng : string
+  /** pixelRatio 设备像素比 */
+  pr : number
+  /** windowWidth 可使用窗口宽度 */
+  ww : number
+  /** windowHeight 可使用窗口高度 */
+  wh : number
+  /** screenWidth 屏幕宽度 */
+  sw : number
+  /** screenHeight 屏幕高度 */
+  sh : number
+  /** 页面启动的url */
+  url : string
+  /** 页面标题 */
+  tt : string
+  /** 渠道信息 */
+  ch : string
+  /** 首次访问时间戳。需要保存在 storage 中。用户首次访问时，取当前时间。*/
+  fvts : number
+  /** 上次访问时间戳。需要保存在 storage 中。用户首次访问时，设置为0。*/
+  lvts : number
+  /** 国家 */
+  cn : string
+  /** 省份 */
+  pn : string
+  /** 城市 */
+  ct : string
+  /** 场景值 */
+  sc : number
+  /** total visit count 用户到本次访问为止总共的访问次数。*/
+  tvc : number
+  /** 统计 sdk 版本 */
+  usv : string
+  /** 上报数据时的时间戳 */
+  t : number
+  /** 老用户错误的的设备id */
+  odid : string
+  /** 上报时机，参看 ReprotCstType */
+  cst : number
+}
+
+/**
+ * 应用进入后台上报参数
+ */
+export type AppHideReportParams = {
+  /** uni-app 应用 Appid */
+  ak : string
+  /** 设备标识 */
+  uuid : string
+  /** 统计数据类型 */
+  lt : string
+  /** 平台类型 */
+  ut : string
+  /** 手机系统 */
+  p : string
+  /** 上个页面的完整 url */
+  urlref : string
+  /** 上个页面停留时间，单位为秒，不足1秒按1秒计。 */
+  urlref_ts : number
+  /** 渠道信息 */
+  ch : string
+  /** 统计 sdk 版本 */
+  usv : string
+  /** 上报数据时的时间戳。 */
+  t : number
+}
+
+/**
+ * 页面切换上报参数
+ */
+export type PageReportParams = {
+  /** uni-app 应用 Appid */
+  ak : string
+  /** 设备标识 */
+  uuid : string
+  /** 统计数据类型 */
+  lt : string
+  /** 平台类型 */
+  ut : string
+  /** 手机系统 */
+  p : string
+  /** 当前页面 url */
+  url : string
+  // 标题相关
+  /** pages.json 中定义的页面的 title，获取不到时，可以不传 */
+  ttpj : string
+  /** 通过接口 uni.setnavigationbartitle 设置的 title，获取不到时，可以不传 */
+  ttn : string
+  /** 通过 uni.report 上报的页面的 title，获取不到时，可以不传 */
+  ttc : string
+  /** title 组件中设置的 title，获取不到时，可以不传 */
+  ttct : string
+  /** 上个页面的完整 url */
+  urlref : string
+  /** 上个页面停留时间，单位为秒，不足1秒按1秒计。 */
+  urlref_ts : number
+  /** 渠道信息 */
+  ch : string
+  /** 统计 sdk 版本 */
+  usv : string
+  /** 上报数据时的时间戳。 */
+  t : number
+  /** 上报时机，参看 ReprotCstType */
+  cst ?: number
+}
+
+export type ErrorCallback = (is_err : boolean, code : ReportErrorCode) => void

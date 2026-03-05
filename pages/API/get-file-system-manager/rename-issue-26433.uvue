@@ -1,0 +1,133 @@
+<template>
+	<!-- #ifdef APP -->
+	<text>显示简易操作日志(可滚动查看),详细日志需真机运行查看</text><button size="mini" @click="data.log=''">清空日志</button>
+	<scroll-view style="max-height: 300px;">
+		<text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ data.log }}</text>
+	</scroll-view>
+	<scroll-view style="flex: 1;">
+	<!-- #endif -->
+		<button class="btnstyle" type="primary" @tap="renameDir" id="renameDir">renameDir</button>
+		<button class="btnstyle" type="primary" @tap="renameFile" id="renameFile">renameFile</button>
+
+		<view style="height: 4px;"></view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="uts">
+	type DataType = {
+		log: string,
+		logAble: boolean,
+		renamePath: string,
+		basePath: string,
+	}
+
+	const data = reactive({
+		log: '',
+		logAble: true,
+		renamePath: '',
+		// #ifdef MP
+		basePath: uni.env.USER_DATA_PATH + '/',
+		// #endif
+		// #ifndef MP
+		basePath: uni.env.USER_DATA_PATH,
+		// #endif
+	} as DataType)
+
+	function renameDir() {
+		const fileManager = uni.getFileSystemManager()
+		const oldPath = `${data.basePath}uni-store`
+		const newPath = `${data.basePath}uni-store2`
+
+		// 先创建源目录，确保目录存在
+		try {
+			fileManager.mkdirSync(oldPath, true)
+			if (data.logAble) {
+				data.log += 'mkdir uni-store success\n\n'
+			}
+		} catch (e) {
+			if (data.logAble) {
+				data.log += 'mkdir uni-store: ' + JSON.stringify(e) + '\n\n'
+			}
+		}
+
+		fileManager.rename({
+			oldPath: oldPath,
+			newPath: newPath,
+			success: (res) => {
+				console.log(res)
+				data.renamePath = newPath
+				if (data.logAble) {
+					data.log += 'renameDir success:' + newPath + '\n\n'
+				}
+
+			},
+			fail: (err) => {
+				console.log(err)
+				if (data.logAble) {
+					data.log += 'renameDir fail:' + JSON.stringify(err) + '\n\n'
+				}
+			}
+		})
+	}
+
+	function renameFile() {
+		const fileManager = uni.getFileSystemManager()
+		const dirPath = `${data.basePath}uni-store`
+		const oldFilePath = `${dirPath}/1.txt`
+		const newFilePath = `${dirPath}/2.txt`
+
+		// 先创建目录，确保目录存在
+		try {
+			fileManager.mkdirSync(dirPath, true)
+			if (data.logAble) {
+				data.log += 'mkdir uni-store success\n\n'
+			}
+		} catch (e) {
+			if (data.logAble) {
+				data.log += 'mkdir uni-store: ' + JSON.stringify(e) + '\n\n'
+			}
+		}
+
+		// 创建源文件，确保文件存在
+		try {
+			fileManager.writeFileSync(oldFilePath, "test content", "utf-8")
+			if (data.logAble) {
+				data.log += 'create 1.txt success\n\n'
+			}
+		} catch (e) {
+			if (data.logAble) {
+				data.log += 'create 1.txt: ' + JSON.stringify(e) + '\n\n'
+			}
+		}
+
+		fileManager.rename({
+			oldPath: oldFilePath,
+			newPath: newFilePath,
+			success: (res) => {
+				console.log(res)
+				data.renamePath = newFilePath
+				if (data.logAble) {
+					data.log += 'renameFile success:' + newFilePath + '\n\n'
+				}
+			},
+			fail: (err) => {
+				console.log(err)
+				if (data.logAble) {
+					data.log += 'renameFile fail:' + JSON.stringify(err) + '\n\n'
+				}
+			}
+		})
+	}
+
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+	.btnstyle {
+		margin: 4px;
+	}
+</style>

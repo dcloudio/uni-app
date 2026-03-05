@@ -1,0 +1,38 @@
+<template>
+  <scroll-view style="flex: 1;">
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title">
+        <text class="uni-title-text">大图示例</text>
+      </view>
+      <view class="uni-common-mt" v-for="_ in 10">
+        <text class="uni-subtitle-text">width={{width}}px height={{height}}px memory={{memory}}MB</text>
+        <image class="image" mode="widthFix" :src="src" @load="load"></image>
+      </view>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+
+
+// Data
+const title = ref('image-large')
+const src = ref('https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/img/building.jpg')
+const width = ref(0)
+const height = ref(0)
+const memory = ref(0)
+
+// Methods
+function load(event : ImageLoadEvent) {
+  width.value = event.detail.width
+  height.value = event.detail.height
+  memory.value = Math.round(width.value * height.value * 4 / 1024 / 1024 * 100) / 100
+}
+</script>
+
+<style>
+  .image {
+    width: 100%;
+  }
+</style>

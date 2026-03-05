@@ -1,0 +1,251 @@
+<template>
+  <view class="uni-flex-item">
+    <live-player id="live-player" class="live-player" :src="src" :autoplay="autoplay" :muted="muted"
+      :object-fit="objectFit" :background-mute="backgroundMute" :sound-mode="soundMode" :orientation="orientation"
+      @statechange="statechange" @fullscreenchange="fullscreenchange" @error="error">
+    </live-player>
+    <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
+      <view class="uni-title">
+        <text class="uni-title-text">API示例</text>
+      </View>
+      <view class="uni-btn-v">
+        <button type="primary" @click="play" :disabled="playState">播放</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="pause" :disabled="!playState">暂停</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="resume" :disabled="initState || playState || stopState">恢复</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="stop" :disabled="!playState">停止</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="mute" :disabled="!playState">静音</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="requestFullScreen" :disabled="!playState">进入全屏</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="exitFullScreen" :disabled="!playState">退出全屏</button>
+      </view>
+      <view class="uni-title">
+        <text class="uni-title-text">属性示例</text>
+      </view>
+      <input class="input margin-10" type="string" placeholder="设置播放地址" @confirm="onSrcComfirm"></input>
+      <boolean-data title="设置是否自动播放" :defaultValue="autoplay" @change="onAutoplayChange"></boolean-data>
+      <boolean-data title="设置是否静音" :defaultValue="muted" @change="onMutedChange"></boolean-data>
+      <boolean-data title="设置进入后台时是否静音" :defaultValue="backgroundMute" @change="onBackgroundMuteChange"></boolean-data>
+      <enum-data title="设置填充模式" :items="objectFitItemTypes" @change="onObjectFitChange"></enum-data>
+      <enum-data title="设置声音输出方式" :items="soundModeItemTypes" @change="onSoundModeChange"></enum-data>
+      <enum-data title="设置画面方向" :items="orientationItemTypes" @change="onOrientationChange"></enum-data>
+    </scroll-view>
+  </view>
+</template>
+
+<script setup>
+  import { ItemType } from '@/components/enum-data/enum-data-types';
+
+  const context = ref(null as LivePlayerContext | null);
+  const src = ref("");
+  const autoplay = ref(false);
+  const muted = ref(false);
+  const objectFit = ref("contain");
+  const backgroundMute = ref(false);
+  const soundMode = ref("speaker");
+  const orientation = ref("vertical");
+  const initState = ref(true);
+  const playState = ref(false);
+  const stopState = ref(false);
+
+  onReady(() => {
+    context.value = uni.createLivePlayerContext("live-player", getCurrentInstance()!.proxy);
+  });
+
+  const statechange = (e : UniLivePlayerStatechangeEvent) => {
+    console.log("statechange", e);
+    switch (e.detail.code) {
+      case 10004:
+        initState.value = false;
+        playState.value = true;
+        stopState.value = false;
+        break;
+      case 10009:
+        stopState.value = true;
+      case 10006:
+      case 10007:
+      case 10010:
+      case 10011:
+        playState.value = false;
+        break;
+    }
+  };
+  const fullscreenchange = (e : UniLivePlayerFullscreenchangeEvent) => {
+    console.log("fullscreenchange", e);
+  };
+  const error = (e : UniLivePlayerErrorEvent) => {
+    console.log("error", e);
+  };
+  const isSrcValid = () : boolean => {
+    const length = src.value.length;
+    if (length <= 0) {
+      uni.showToast({
+        title: "请输入播放地址",
+        icon: "none"
+      });
+    }
+    return length > 0;
+  };
+  const play = () => {
+    if (!isSrcValid()) return;
+    context.value?.play({
+      success: (res) => {
+        console.log("play", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("play", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("play", JSON.stringify(res));
+      }
+    });
+  };
+  const pause = () => {
+    if (!isSrcValid()) return;
+    context.value?.pause({
+      success: (res) => {
+        console.log("pause", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("pause", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("pause", JSON.stringify(res));
+      }
+    });
+  };
+  const resume = () => {
+    if (!isSrcValid()) return;
+    context.value?.resume({
+      success: (res) => {
+        console.log("resume", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("resume", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("resume", JSON.stringify(res));
+      }
+    });
+  };
+  const stop = () => {
+    if (!isSrcValid()) return;
+    context.value?.stop({
+      success: (res) => {
+        console.log("stop", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("stop", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("stop", JSON.stringify(res));
+      }
+    });
+  };
+  const mute = () => {
+    if (!isSrcValid()) return;
+    context.value?.mute({
+      success: (res) => {
+        console.log("mute", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("mute", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("mute", JSON.stringify(res));
+      }
+    });
+  };
+  const requestFullScreen = () => {
+    if (!isSrcValid()) return;
+    context.value?.requestFullScreen({
+      success: (res) => {
+        console.log("requestFullScreen", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("requestFullScreen", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("requestFullScreen", JSON.stringify(res));
+      }
+    });
+  };
+  const exitFullScreen = () => {
+    if (!isSrcValid()) return;
+    context.value?.exitFullScreen({
+      success: (res) => {
+        console.log("exitFullScreen", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("exitFullScreen", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("exitFullScreen", JSON.stringify(res));
+      }
+    });
+  };
+
+  const objectFitItemTypes = [{ "value": 0, "name": "contain" }, { "value": 1, "name": "fillCrop" }] as ItemType[];
+  const objectFitItems = ["contain", "fillCrop"];
+  const soundModeItemTypes = [{ "value": 0, "name": "speaker" }, { "value": 1, "name": "ear" }] as ItemType[];
+  const soundModeItems = ["speaker", "ear"];
+  const orientationItemTypes = [{ "value": 0, "name": "vertical" }, { "value": 1, "name": "horizontal" }] as ItemType[];
+  const orientationItems = ["vertical", "horizontal"];
+  const onSrcComfirm = (event : UniInputConfirmEvent) => {
+    let value = event.detail.value;
+    if (value == '') return;
+    src.value = value;
+    console.log("src ->", value);
+  };
+  const onAutoplayChange = (value : boolean) => {
+    autoplay.value = value;
+    console.log("autoplay ->", autoplay.value);
+  };
+  const onMutedChange = (value : boolean) => {
+    muted.value = value;
+    console.log("muted ->", muted.value);
+  };
+  const onBackgroundMuteChange = (value : boolean) => {
+    backgroundMute.value = value;
+    console.log("background-mute ->", backgroundMute.value);
+  };
+  const onObjectFitChange = (value : number) => {
+    objectFit.value = objectFitItems[value];
+    console.log("object-fit ->", objectFit.value);
+  };
+  const onSoundModeChange = (value : number) => {
+    soundMode.value = soundModeItems[value];
+    console.log("sound-mode ->", soundMode.value);
+  };
+  const onOrientationChange = (value : number) => {
+    orientation.value = orientationItems[value];
+    console.log("orientation ->", orientation.value);
+  };
+</script>
+
+<style>
+  .live-player {
+    width: 100%;
+    height: 40%;
+  }
+
+  .input {
+    height: 40px;
+    background: #FFF;
+    padding: 8px 13px;
+  }
+
+  .margin-10 {
+    margin: 10px;
+  }
+</style>

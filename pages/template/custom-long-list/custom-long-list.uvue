@@ -1,0 +1,174 @@
+<template>
+  <view style="flex: 1;">
+    <page-head :title="title"></page-head>
+    <view class="tips">滚动期间对子组件回收复用。此示例限制列表子项固定高度。注意回收复用引发的副作用，详情参考custom-recycle-view-buttons组件内的错误用法。</view>
+    <uni-recycle-view :itemHeight="140" :list="list" style="flex: 1;" @scrolltolower="onScrollToLower"
+      @refresherrefresh="onRefresherRefresh" :refresher-enabled="refresherEnabled"
+      :refresher-triggered="refresherTriggered">
+      <template v-slot:default="{layoutItems, items}">
+        <!-- 注意为复用custom-recycle-item，key只能是layoutItem的id -->
+        <uni-recycle-item v-for="(item, index) in (items as Item[])" :key="(layoutItems as LayoutItem[])[index].id" :offset="(layoutItems as LayoutItem[])[index].offset">
+          <view class="item-wrapper">
+            <navigator :hover-stay-time="0" :url="'/pages/template/custom-long-list/detail?name='+item.name">
+              <!-- 测试稍微复杂的模板 -->
+              <view class="item-content">
+                <image class="item-image" :src="item.img" mode="aspectFill"></image>
+                <view class="item-text">
+                  <view><text class="item-name">{{item.name}}</text></view>
+                  <view><text class="item-info">{{item.name.length % 2 == 0 ? "name长度为偶数" : "name长度为奇数"}}</text></view>
+                  <view><text class="item-info">{{item.info}}</text></view>
+                  <view><text class="item-info">{{item.info.length % 2 == 0 ? "info长度为偶数" : "info长度为奇数"}}</text></view>
+                  <view><text
+                      class="item-info">{{(item.info.length +item.name.length) % 2 == 0 ? "name+info长度为偶数" : "name+info长度为奇数"}}</text>
+                  </view>
+                  <view v-if="item.tags.length > 0" class="item-tags"><text class="item-info">随机tag：</text><text class="item-tag" v-for="(tag, index) in item.tags"
+                      :key="index">{{tag}}</text></view>
+                </view>
+              </view>
+            </navigator>
+            <!-- 由于存在Element复用，事件内使用实例相关的变量时务必每次从实例上获取，不要获取后保存再使用，详见custom-recycle-view-buttons组件内的错误用法 -->
+            <custom-recycle-view-buttons :name="item.name"></custom-recycle-view-buttons>
+          </view>
+        </uni-recycle-item>
+      </template>
+      <template #load-more>
+        <view class="load-more"><text class="load-more-text">{{ hasMore ? "加载中..." : "没有更多"}}</text></view>
+      </template>
+    </uni-recycle-view>
+  </view>
+</template>
+
+<script setup>
+  import {
+    LayoutItem
+  } from '@/uni_modules/uni-recycle-view/common/types.uts'
+  type Item = {
+    img : string,
+    name : string,
+    info : string,
+    tags : string[]
+  }
+  const title = ref('自定义复用滚动列表')
+  const list = reactive<Item[]>([] as Item[])
+
+  const refresherEnabled = ref(true)
+  const refresherTriggered = ref(false)
+  const hasMore = ref(true)
+  // 常用中文字符Unicode范围: 0x4E00 - 0x9FFF
+  const minCode = 0x4E00;
+  const maxCode = 0x9FFF;
+  const codeRange = maxCode - minCode
+
+  function generateChineseString(index: number, length = 4) {
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      const code = (index * length + i) % codeRange + minCode;
+      result += String.fromCharCode(code);
+    }
+    return result;
+  }
+
+  function loadData() {
+    for (var i = 0; i < 200; i++) {
+      const index = list.length
+      const tags : string[] = []
+      const tagCount = 4
+      for (let i = 0; i < tagCount; i++) {
+        tags.push(generateChineseString(index * tagCount + i, 4))
+      }
+      list.push({
+        img: `https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-${index % 3 + 1}.jpg`,
+        name: 'Name_' + index,
+        info: 'Info_' + index,
+        tags
+      } as Item)
+    }
+  }
+
+  onMounted(() => {
+    loadData()
+  })
+
+  function onRefresherRefresh() {
+    refresherTriggered.value = true
+    setTimeout(() => {
+      list.splice(0, list.length)
+      loadData()
+      refresherTriggered.value = false
+    }, 1000)
+  }
+
+  function onScrollToLower() {
+    if (list.length >= 5000) {
+      hasMore.value = false
+    } else {
+      loadData()
+    }
+  }
+</script>
+
+<style>
+  .tips {
+    margin: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: white;
+  }
+
+  .item-wrapper {
+    height: 140px;
+    justify-content: center;
+    box-sizing: border-box;
+    border-bottom: solid 1px #cccccc;
+    padding: 0px 15px;
+  }
+
+  .item-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .item-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .item-text {
+    flex-direction: column;
+    margin-left: 5px;
+  }
+
+  .item-name {
+    font-size: 14px;
+  }
+
+  .item-info {
+    font-size: 12px;
+    color: #999999;
+  }
+
+  .item-tags {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .item-tag {
+    background-color: aliceblue;
+    color: #999999;
+    border: solid 1px #999999;
+    border-radius: 3px;
+    padding: 0px 2px;
+    font-size: 12px;
+    line-height: 16px;
+    margin-right: 2px;
+  }
+
+  .load-more-text {
+    color: #cccccc;
+    font-size: 12px;
+    text-align: center;
+    line-height: 50px;
+  }
+</style>

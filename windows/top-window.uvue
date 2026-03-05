@@ -1,0 +1,127 @@
+<template>
+  <view class="top-window-header" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+    <view class="left-header">
+      <navigator class="left-header" open-type="reLaunch" url="/pages/component/view/view">
+        <image src="/static/test-image/logo.png" class="logo" mode="heightFix"></image>
+        <text>hello uni-app x</text>
+      </navigator>
+    </view>
+    <custom-tab-bar class="tab-bar-flex" direction="horizontal" :show-icon="false" :selected="current"
+      @onTabItemTap="toSecondMenu" />
+  </view>
+</template>
+
+<script lang="uts">
+  type IndexPageItem = {
+    tabBar : string.PageURIString;
+    indexPageUrl : string.PageURIString;
+  }
+  import { state } from '@/store/index.uts'
+  export default {
+    data() {
+      return {
+        selected: {
+          component: 0,
+          API: 1,
+          CSS: 2,
+          template: 3
+        },
+        current: 0,
+        indexPage: [{
+          tabBar: '/pages/tabBar/component',
+          indexPageUrl: '/pages/component/view/view'
+        }, {
+          tabBar: '/pages/tabBar/API',
+          indexPageUrl: '/pages/API/get-app/get-app'
+        }, {
+          tabBar: '/pages/tabBar/CSS',
+          indexPageUrl: '/pages/CSS/layout/width'
+        }, {
+          tabBar: '/pages/tabBar/template',
+          indexPageUrl: '/pages/template/long-list2/long-list2'
+        }] as IndexPageItem[]
+      }
+    },
+    computed: {
+      isDarkMode() : boolean {
+        return state.isDarkMode
+      }
+    },
+    watch: {
+      $route: {
+        // immediate: true,
+        handler(newRoute) {
+          const width = uni.getSystemInfoSync().windowWidth
+          if (width <= 768) {
+            return
+          }
+          let path = newRoute.path
+          let category
+          if (path === '/') {
+            category = 'component'
+            uni.redirectTo({
+              url: '/pages/component/view/view'
+            })
+            return
+          } else if (path.indexOf('/pages/tabBar') === 0) {
+            const indexPageItem = this.indexPage.find(item => item.tabBar === path)
+            if (!indexPageItem) {
+              console.error('Invalid page path: ', path)
+              return
+            }
+            uni.redirectTo({
+              url: indexPageItem.indexPageUrl
+            })
+            return
+          } else {
+            category = path.split('/')[2]
+          }
+          this.current = this.selected[category]
+        }
+      }
+    },
+    methods: {
+      toSecondMenu(e : OnTabItemTapOption) {
+        const activeTabBar = '/' + e.pagePath
+        for (const item of this.indexPage) {
+          if (activeTabBar === item.tabBar) {
+            uni.redirectTo({
+              url: item.indexPageUrl
+            })
+          }
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  .top-window-header {
+    height: 60px;
+    padding: 0 15px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    border-bottom: 1px solid #e1e1e1;
+    color: var(--text-color, #333333);
+    background-color: var(--list-background-color,#ffffff);
+  }
+
+  .left-header {
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+  }
+
+  .logo {
+    height: 30px;
+    width: 30px;
+    margin-right: 8px;
+  }
+
+  .tab-bar-flex {
+    width: 360px;
+  }
+
+</style>

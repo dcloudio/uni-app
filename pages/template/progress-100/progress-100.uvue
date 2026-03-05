@@ -1,0 +1,72 @@
+<template>
+  <view style="flex-direction: column;background-color: #f5f5f5;">
+    <!-- #ifndef MP -->
+    <fps />
+    <!-- #endif -->
+
+    <!-- 控制按钮区域 -->
+    <view style="padding: 3px;background-color: #ffffff;flex-direction: row;flex-wrap: wrap;align-items: center;">
+      <button @click="setPercent(0)" :type="sharedPercent == 0 ? 'primary' : 'default'" size="mini" style="margin: 2px;">0%</button>
+      <button @click="setPercent(60)" :type="sharedPercent == 60 ? 'primary' : 'default'" size="mini" style="margin: 2px;">60%</button>
+      <button @click="setPercent(100)" :type="sharedPercent == 100 ? 'primary' : 'default'" size="mini" style="margin: 2px;">100%</button>
+      <button @click="toggleShowInfo" :type="sharedShowInfo ? 'primary' : 'default'" size="mini" style="margin: 2px;">{{ sharedShowInfo ? '隐藏%' : '显示%' }}</button>
+      <button @click="changeStrokeWidth" size="mini" style="margin: 2px;">{{ sharedStrokeWidth }}px</button>
+      <button @click="changeActiveColor" size="mini" style="margin: 2px;">颜色</button>
+    </view>
+
+    <!-- 100个progress组件 -->
+    <view style="flex-direction: row;flex-wrap: wrap;padding: 5px;">
+      <view v-for="index in 100" :key="index" style="width: 15%;margin: 8rpx;flex-direction: column;">
+        <text style="font-size: 10px;color: #666;margin-bottom: 2px;">{{ index }}</text>
+        <progress
+          :percent="sharedPercent"
+          :show-info="sharedShowInfo"
+          :stroke-width="sharedStrokeWidth"
+          :activeColor="sharedActiveColor"
+          :backgroundColor="sharedBackgroundColor"
+					:font-size="fontSize"
+        />
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const sharedPercent = ref(50)
+  const sharedShowInfo = ref(false)
+  const sharedStrokeWidth = ref(4)
+	const fontSize = ref(8)
+  const sharedActiveColor = ref('#09BB07')
+  const sharedBackgroundColor = ref('#EBEBEB')
+
+  const strokeWidths = [3, 4, 5, 6]
+  const activeColors = ['#09BB07', '#FF6B6B', '#4ECDC4', '#FFA07A']
+
+  let strokeWidthIndex = 1
+  let activeColorIndex = 0
+
+  function setPercent(percent : number) {
+    sharedPercent.value = percent
+    console.log('percent:', percent)
+  }
+
+  function toggleShowInfo() {
+    sharedShowInfo.value = !sharedShowInfo.value
+    console.log('show-info:', sharedShowInfo.value)
+  }
+
+  function changeStrokeWidth() {
+    strokeWidthIndex = (strokeWidthIndex + 1) % strokeWidths.length
+    sharedStrokeWidth.value = strokeWidths[strokeWidthIndex]
+    console.log('stroke-width:', sharedStrokeWidth.value)
+  }
+
+  function changeActiveColor() {
+    activeColorIndex = (activeColorIndex + 1) % activeColors.length
+    sharedActiveColor.value = activeColors[activeColorIndex]
+    console.log('activeColor:', sharedActiveColor.value)
+  }
+</script>
+
+<style>
+</style>

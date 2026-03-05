@@ -1,0 +1,49 @@
+<template>
+  <list-view style="flex: 1;" :scroll-top="data.scrollTop">
+    <list-item v-for="item in 50" :key="item" @longpress="longpress_item"
+      style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: black;">
+      <view style="width: 100%; height: 40px; background-color: antiquewhite;">
+        <text @longpress="longpress_text"
+          style="font-size: 10px; width: 100px; height: 100%; background-color: red;">{{ item }}</text>
+      </view>
+    </list-item>
+  </list-view>
+</template>
+
+<script setup lang="uts">
+  
+  type DataType = {
+    longpressItem: boolean,
+    longpressText: boolean,
+    isStopPropagation: boolean,
+    scrollTop: number,
+  }
+
+  const data = reactive({
+    longpressItem: false,
+    longpressText: false,
+    isStopPropagation: false,
+    scrollTop: 0,
+  } as DataType)
+
+  function longpress_item(_e : UniTouchEvent) {
+    console.log("longpress listItem")
+    data.longpressItem = true
+  }
+
+  function longpress_text(e : UniTouchEvent) {
+    console.log("longpress text")
+    data.longpressText = true
+    if (data.isStopPropagation) {
+      e.stopPropagation()
+    }
+  }
+
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+
+</style>

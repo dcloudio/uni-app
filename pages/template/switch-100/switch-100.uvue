@@ -1,0 +1,41 @@
+<template>
+  <view style="flex-direction: column;background-color: #f5f5f5;">
+    <!-- #ifndef MP -->
+    <fps />
+    <!-- #endif -->
+
+    <!-- 控制按钮 -->
+    <view style="padding: 2px;background-color: #ffffff;flex-direction: row;flex-wrap: wrap;align-items: center;">
+      <button @click="toggleChecked" :type="sharedChecked ? 'primary' : 'default'" size="mini" style="margin: 2px;">{{ sharedChecked ? '关闭' : '开启' }}</button>
+      <button @click="toggleDisabled" :type="sharedDisabled ? 'primary' : 'default'" size="mini" style="margin: 2px;">{{ sharedDisabled ? '启用' : '禁用' }}</button>
+    </view>
+
+    <!-- 100个switch组件 -->
+    <view style="flex-direction: row;flex-wrap: wrap;padding: 2px;">
+      <switch v-for="index in 100" :key="index" :checked="sharedChecked" :disabled="sharedDisabled" @change="onSharedChange" style="margin: 2px;" />
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const sharedChecked = ref(false)
+  const sharedDisabled = ref(false)
+
+  function toggleChecked() {
+    sharedChecked.value = !sharedChecked.value
+    console.log('切换checked状态:', sharedChecked.value)
+  }
+
+  function toggleDisabled() {
+    sharedDisabled.value = !sharedDisabled.value
+    console.log('切换disabled状态:', sharedDisabled.value)
+  }
+
+  function onSharedChange(e : UniSwitchChangeEvent) {
+    sharedChecked.value = e.detail.value
+    console.log('switch状态改变:', e.detail.value)
+  }
+</script>
+
+<style>
+</style>

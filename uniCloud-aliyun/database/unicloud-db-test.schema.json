@@ -1,0 +1,40 @@
+{
+  "bsonType": "object",
+  "permission": {
+    "read": true,
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "required": ["title", "comment"],
+  "properties": {
+    "_id": {
+      "description": "存储文档 ID（用户 ID），系统自动生成"
+    },
+    "title": {
+      "bsonType": "string",
+      "title": "姓名",
+      "description": "姓名",
+      "order": 1,
+      "trim": "both"
+    },
+    "comment": {
+      "bsonType": "string",
+      "title": "备注",
+      "order": 5,
+      "description": "备注",
+      "trim": "both",
+      "component": {
+        "name": "textarea"
+      }
+    },
+    "create_date": {
+      "bsonType": "timestamp",
+      "description": "创建时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    }
+  },
+  "version": "0.0.1"
+}

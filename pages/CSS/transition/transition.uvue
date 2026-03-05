@@ -1,0 +1,973 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+		<!-- #ifndef APP-ANDROID -->
+		<view style="margin: 7px; height: 60px;">
+			<navigator url="/pages/CSS/transition/transition-transform" hover-class="none">
+				<button type="primary">
+					transform 多个属性示例
+				</button>
+			</navigator>
+		</view>
+		<!-- #endif -->
+    <view class="container">
+      <text class="text">点击修改宽度</text>
+      <view class="base-style transition-width" id="widthOrHeight" @click="changeWidthOrHeight"></view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改宽度(递增)</text>
+      <view class="width-progress transition-width" id="widthProgress" @click="changeWidthProgress"></view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改宽度(通过style设置transition)</text>
+      <view class="base-style" style="transition-property: width; transition-duration: 1s;" id="widthOrHeightStyle"
+        @click="changeWidthOrHeightStyle"></view>
+    </view>
+
+    <view class="container">
+      <text class="text">点击修改Margin</text>
+      <view class="base-style transition-margin" id="styleMargin" @click="changeMargin"></view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改Padding</text>
+      <view class="base-style transition-padding" id="stylePadding" @click="changePadding">
+        <view style="background-color: black; height: 50px; width: 50px"></view>
+      </view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改background-color和opacity</text>
+      <view class="base-style transition-background" id="styleBackground" @click="changeBackground"></view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改background-color（rgba）</text>
+      <view style="flex: 1;">
+        <view class="base-style transition-background" id="styleBackground2" @click="changeBackground2"></view>
+      </view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改opacity渐隐渐现</text>
+      <view class="base-style transition-opacity" id="styleOpacity" @click="changeStyleOpacity"></view>
+    </view>
+    <view class="container">
+      <text class="text">动态修改background-color和duration</text>
+      <view class="base-style" id="propertyStyleBackground" @click="propertyChangeBackground"></view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改Transform</text>
+      <view class="base-style transition-transform" id="styleTransform" @click="changeTransform"></view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改TransformTranslate</text>
+      <view class="base-style transition-transform" id="transformTranslate" @click="changeTransformTranslate"></view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改Transform和宽</text>
+      <view class="base-style transition-transform-width" id="styleTransformWithWidth"
+        @click="changeTransformWithWidth"></view>
+    </view>
+    <view class="container" @click="changeTransformWithOrigin">
+      <text class="text">点击修改Transform（含transform-origin）</text>
+      <view class="base-style transition-transform" style="transform-origin: 0 0;" id="styleTransformWithOrigin"></view>
+    </view>
+
+    <view class="container">
+      <text class="text">点击修改Border</text>
+      <view class="base-style transition-border" id="styleBorder" @click="changeBorder"></view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改Position</text>
+      <view class="base-style transition-position" id="stylePosition" @click="changestylePosition"></view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改Scale
+      </text>
+      <view class="base-style transition-transform" id="styleChangScale" @click="changestyleScale"></view>
+    </view>
+    <view class="container">
+      <text class="text">仅指定transition-duration背影有动画为正常</text>
+      <view style="width: 100%;height: 50px;" :style="changestyleTransitionDuration"
+        @click="doChangeTransitionDuration">
+      </view>
+    </view>
+
+    <view class="container">
+      <text class="text">transition-property: all/none 演示</text>
+      <view class="base-style transition-all" id="styleTransitionAll" @click="changeTransitionAll"></view>
+    </view>
+
+    <view class="container">
+      <text class="text">在组件内滑动测试是否闪动</text>
+      <view class="base-style transition-transform" id="styleTransformTranslateScale" @touchmove="handleTouchMove"
+        @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+        这是一段文字
+      </view>
+    </view>
+
+    <view class="container">
+      <text class="text">测试在style中同时修改transform和width</text>
+      <view style="width:100%;height: 100%;">
+        <view class="base-style transition-transform-width" :style="{transform:`translateX(${lineLeft}px)`,width:`${lineWidth}px`}" @click="changeTransform61">
+        </view>
+      </view>
+    </view>
+
+    <view class="container">
+      <text class="text">点击修改宽度(值为auto有无动画交替出现)</text>
+      <view class="base-style transition-width" id="widthOrHeightAuto" @click="changeWidthOrHeightAuto"></view>
+    </view>
+
+    <view class="container">
+      <view class="text">重复修改width</view>
+      <view class="base-style transition-width" id="changeWidthInEnd" style="transition-duration: 0.5s;" @transitionend="onChangeWidthEnd" @click="changeWidthInEndFun"></view>
+    </view>
+
+    <view style="margin-top: 20px; margin-left: 7px;">
+      <text style="font-size: 18px; font-weight: bold;">text 组件 transition </text>
+    </view>
+
+    <view class="container">
+      <text class="text">text 点击修改 transform (rotate)</text>
+      <text class="text-base-style transition-transform" id="textTransform" @click="changeTextTransform">文字内容</text>
+    </view>
+
+    <view class="container">
+      <text class="text">text 点击修改 opacity</text>
+      <text class="text-base-style transition-opacity" id="textOpacity" @click="changeTextOpacity">文字内容</text>
+    </view>
+
+    <view class="container">
+      <text class="text">text 点击修改 background-color</text>
+      <text class="text-base-style transition-background" id="textBackground" @click="changeTextBackground">文字内容</text>
+    </view>
+
+    <view style="margin-top: 20px; margin-left: 7px;">
+      <text style="font-size: 18px; font-weight: bold;">image 组件 transition </text>
+    </view>
+
+    <view class="container">
+      <text class="text">image 点击修改 transform (rotate)</text>
+      <image class="image-base-style transition-transform" id="imageTransform" @click="changeImageTransform" src="/static/test-image/logo.png"></image>
+    </view>
+
+    <view class="container">
+      <text class="text">image 点击修改 opacity</text>
+      <image class="image-base-style transition-opacity" id="imageOpacity" @click="changeImageOpacity" src="/static/test-image/logo.png"></image>
+    </view>
+
+    <view class="container">
+      <text class="text">image 点击修改 transform (scale)</text>
+      <image class="image-base-style transition-transform" id="imageScale" @click="changeImageScale" src="/static/test-image/logo.png"></image>
+    </view>
+
+    <view class="container">
+      <text class="text">设置box-shadow之后验证border和background-color效果</text>
+      <view class="base-style transition-border-background" id="borderAndBackgroundColor" @click="changeBorderAndBackgroundColor"></view>
+    </view>
+
+    <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+    <text class="text">点击 scroll-view 查看 transition 效果</text>
+
+    <view class="demo-box">
+      <scroll-view ref="scrollView1" class="base-style" style="transition: width 1s;" @click="changeScrollViewWidth1">
+        <text>transition: width 1s</text>
+      </scroll-view>
+      <scroll-view ref="scrollView2" class="base-style" style="transition: width 2s ease-in-out;" @click="changeScrollViewWidth2">
+        <text>transition: width 2s ease-in-out</text>
+      </scroll-view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition </text>
+    </view>
+
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件</text>
+        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">获取值: {{data.transitionActual}}</text>
+        <view class="test-box">
+          <view ref="viewRefTransition" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionView">
+            <text style="font-size: 12px;">点击view</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件</text>
+        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">获取值: {{data.transitionActualText}}</text>
+        <view class="test-box">
+          <text ref="textRefTransition" class="common-text" :style="{ transition: data.transitionValue }" @click="triggerTransitionText">点击text</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件</text>
+        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">获取值: {{data.transitionActualImage}}</text>
+        <view class="test-box">
+          <image ref="imageRefTransition" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionImage" src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件拍平</text>
+        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">获取值: {{data.transitionActualFlat}}</text>
+        <view class="test-box">
+          <view ref="viewRefTransitionFlat" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionView" flatten>
+            <text style="font-size: 12px;">点击view</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件拍平</text>
+        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">获取值: {{data.transitionActualTextFlat}}</text>
+        <view class="test-box">
+          <text ref="textRefTransitionFlat" class="common-text" :style="{ transition: data.transitionValue }" @click="triggerTransitionText" flatten>点击text</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件拍平</text>
+        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">获取值: {{data.transitionActualImageFlat}}</text>
+        <view class="test-box">
+          <image ref="imageRefTransitionFlat" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionImage" src="/static/test-image/logo.png" flatten></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt uni-common-mb">
+      <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <enum-data :items="transitionEnum" title="transition 枚举值" @change="radioChangeTransition" :compact="true"></enum-data>
+      <input-data :defaultValue="data.transitionValue" title="transition 自定义值" type="text" @confirm="inputChangeTransition"></input-data>
+    </view>
+
+    <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
+    <text class="text">点击 native-view 查看 transition 效果</text>
+    <view class="demo-box">
+      <native-view ref="nativeView1" class="base-style" style="transition: width 1s;" @click="changeNativeViewWidth1"></native-view>
+      <native-view ref="nativeView2" class="base-style" style="transition: width 2s ease-in-out;" @click="changeNativeViewWidth2"></native-view>
+    </view>
+
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  let isTranstionWidthOrHeight = false
+  let isTranstionWidthAuto = false
+  let widthOrHeightAuto: UniElement | null = null
+  let widthOrHeight: UniElement | null = null
+  let widthProgress: UniElement | null = null
+  let isTranstionWidthOrHeightStyle = false
+  let widthOrHeightStyle: UniElement | null = null
+  let progressWidth = 200
+  let isScrollViewWidth1 = false
+  let isScrollViewWidth2 = false
+  const scrollView1 = ref(null as UniElement | null)
+  const scrollView2 = ref(null as UniElement | null)
+  let isNativeViewWidth1 = false
+  let isNativeViewWidth2 = false
+  const nativeView1 = ref(null as UniElement | null)
+  const nativeView2 = ref(null as UniElement | null)
+  let isTranstionChangeMargin = false
+  let styleMargin: UniElement | null = null
+  let isTransitionStylePadding = false
+  let stylePadding: UniElement | null = null
+  let isTransitionstyleBackground = false
+  let isTransitionstyleBackground2 = false
+  let isTransitionstyleOpacity = false
+  let styleBackground: UniElement | null = null
+  let styleBackground2: UniElement | null = null
+  let styleOpacity: UniElement | null = null
+  let isTransitionStyleTransform = false
+  let styleTransform: UniElement | null = null
+  let isTransitionStyleTransformWithWidth = false
+  let styleTransformWithWidth: UniElement | null = null
+  let isTransitionstyleBorder = false
+  let styleBorder: UniElement | null = null
+  let isTransitionstylePosition = false
+  let stylePosition: UniElement | null = null
+  let isSetTransition = false
+  let isTransitionpropertystyleBackground = false
+  let propertyStyleBackground: UniElement | null = null
+  let isTransitionStyleTransformWithOrigin = false
+  let styleTransformWithOrigin: UniElement | null = null
+  let styleTransformTranslate: UniElement | null = null
+  let isTransformTranslate = false
+  let styleTransformTranslateScale: UniElement | null = null
+  let startX = 0
+  let moveX = 0
+  let oldX = 0
+  const changestyleTransitionDuration = ref('background-color:brown;')
+  let styleTransitionAll: UniElement | null = null
+  let isTransitionAll = false
+  const lineLeft = ref(0)
+  const lineWidth = ref(200)
+  let changeWidthInEnd: UniElement | null = null
+  let changeWidthInEndCount = 0
+  let isTextTransform = false
+  let textTransform: UniElement | null = null
+  let isTextOpacity = false
+  let textOpacity: UniElement | null = null
+  let isTextBackground = false
+  let textBackground: UniElement | null = null
+  let isImageTransform = false
+  let imageTransform: UniElement | null = null
+  let isImageOpacity = false
+  let imageOpacity: UniElement | null = null
+  let isImageScale = false
+  let imageScale: UniElement | null = null
+  let isChangeBorderAndBackgroundColor = false
+  let elChangeBorderAndBackgroundColor: UniElement | null = null
+	// 测试例辅助函数
+	const getChangeWidthInEndCount = ():number => {
+	  return changeWidthInEndCount
+	}
+
+  onReady(() => {
+    widthOrHeight = uni.getElementById("widthOrHeight")
+    widthProgress = uni.getElementById("widthProgress")
+    widthOrHeightStyle = uni.getElementById("widthOrHeightStyle")
+    styleMargin = uni.getElementById("styleMargin")
+    stylePadding = uni.getElementById("stylePadding")
+    styleBackground = uni.getElementById("styleBackground")
+    styleBackground2 = uni.getElementById("styleBackground2")
+    styleOpacity = uni.getElementById("styleOpacity")
+    styleTransform = uni.getElementById("styleTransform")
+    styleBorder = uni.getElementById("styleBorder")
+    stylePosition = uni.getElementById("stylePosition")
+    propertyStyleBackground = uni.getElementById("propertyStyleBackground")
+    styleTransformWithOrigin = uni.getElementById("styleTransformWithOrigin")
+    styleTransformWithWidth = uni.getElementById("styleTransformWithWidth")
+    styleTransformTranslate = uni.getElementById("transformTranslate")
+    styleTransformTranslateScale = uni.getElementById("styleTransformTranslateScale")
+    styleTransitionAll = uni.getElementById("styleTransitionAll")
+    widthOrHeightAuto = uni.getElementById("widthOrHeightAuto")
+    changeWidthInEnd = uni.getElementById("changeWidthInEnd")
+    textTransform = uni.getElementById("textTransform")
+    textOpacity = uni.getElementById("textOpacity")
+    textBackground = uni.getElementById("textBackground")
+    imageTransform = uni.getElementById("imageTransform")
+    imageOpacity = uni.getElementById("imageOpacity")
+    imageScale = uni.getElementById("imageScale")
+    elChangeBorderAndBackgroundColor = uni.getElementById("borderAndBackgroundColor")
+  })
+
+  const changeWidthOrHeight = () => {
+    widthOrHeight?.style?.setProperty("width", isTranstionWidthOrHeight
+      ? '200px'
+      : '300px')
+    isTranstionWidthOrHeight = !isTranstionWidthOrHeight
+  }
+
+  const changeWidthOrHeightAuto = () => {
+    widthOrHeightAuto?.style?.setProperty("width", isTranstionWidthAuto
+      ? '200px'
+      : 'auto')
+    isTranstionWidthAuto = !isTranstionWidthAuto
+  }
+
+  const changeWidthProgress = () => {
+    progressWidth += 20
+    widthProgress?.style?.setProperty("width", progressWidth + 'px')
+  }
+
+  const changeWidthOrHeightStyle = () => {
+    widthOrHeightStyle?.style?.setProperty("width", isTranstionWidthOrHeightStyle
+      ? '200px'
+      : '300px')
+    isTranstionWidthOrHeightStyle = !isTranstionWidthOrHeightStyle
+  }
+
+  const changeScrollViewWidth1 = () => {
+    scrollView1.value?.style.setProperty("width", isScrollViewWidth1 ? '100px' : '150px')
+    isScrollViewWidth1 = !isScrollViewWidth1
+  }
+
+  const changeScrollViewWidth2 = () => {
+    scrollView2.value?.style.setProperty("width", isScrollViewWidth2 ? '100px' : '150px')
+    isScrollViewWidth2 = !isScrollViewWidth2
+  }
+
+  const changeNativeViewWidth1 = () => {
+    nativeView1.value?.style.setProperty("width", isNativeViewWidth1 ? '100px' : '150px')
+    isNativeViewWidth1 = !isNativeViewWidth1
+  }
+
+  const changeNativeViewWidth2 = () => {
+    nativeView2.value?.style.setProperty("width", isNativeViewWidth2 ? '100px' : '150px')
+    isNativeViewWidth2 = !isNativeViewWidth2
+  }
+
+  const changeMargin = () => {
+    styleMargin?.style?.setProperty("margin-top", isTranstionChangeMargin
+      ? '0px'
+      : '50px'
+    )
+    styleMargin?.style?.setProperty("margin-left", isTranstionChangeMargin
+      ? '0px'
+      : '50px'
+    )
+    isTranstionChangeMargin = !isTranstionChangeMargin
+  }
+
+  const changePadding = () => {
+    stylePadding?.style?.setProperty("padding-top", isTransitionStylePadding
+      ? '0px'
+      : '50px')
+    stylePadding?.style?.setProperty("padding-left", isTransitionStylePadding
+      ? '0px'
+      : '50px')
+    isTransitionStylePadding = !isTransitionStylePadding
+  }
+
+  const changeBackground = () => {
+    styleBackground?.style?.setProperty("background-color", isTransitionstyleBackground
+      ? 'brown'
+      : 'black'
+    )
+    styleBackground?.style?.setProperty("opacity", isTransitionstyleBackground
+      ? '1'
+      : '0.5'
+    )
+    isTransitionstyleBackground = !isTransitionstyleBackground
+  }
+
+  const changeBackground2 = () => {
+    styleBackground2?.style?.setProperty("background-color", isTransitionstyleBackground2
+      ? 'brown'
+      : 'rgba(0, 0, 0, 0.5)'
+    )
+    isTransitionstyleBackground2 = !isTransitionstyleBackground2
+  }
+
+  const changeStyleOpacity = () => {
+    styleOpacity?.style?.setProperty("opacity", isTransitionstyleOpacity
+      ? '1'
+      : '0'
+    )
+    isTransitionstyleOpacity = !isTransitionstyleOpacity
+  }
+
+  const propertyChangeBackground = () => {
+    if (!isSetTransition) {
+      propertyStyleBackground?.style?.setProperty("transition-property", "background-color")
+      propertyStyleBackground?.style?.setProperty("transition-duration", "1000ms")
+      isSetTransition = true
+    }
+    propertyStyleBackground?.style?.setProperty("background-color", isTransitionpropertystyleBackground
+      ? 'brown'
+      : 'black'
+    )
+    isTransitionpropertystyleBackground = !isTransitionpropertystyleBackground
+  }
+
+  const changeTransform = () => {
+    styleTransform?.style?.setProperty("transform", isTransitionStyleTransform
+      ? 'rotate(0deg)'
+      : 'rotate(135deg)'
+    )
+    isTransitionStyleTransform = !isTransitionStyleTransform
+  }
+
+  const changeTransformTranslate = () => {
+    const translate = isTransformTranslate ? `translate(0%,0%)` : `translate(100%,0%)`
+    styleTransformTranslate?.style?.setProperty('transform', translate)
+    isTransformTranslate = !isTransformTranslate
+  }
+
+  const changeTransformWithWidth = () => {
+    styleTransformWithWidth?.style?.setProperty("transform", isTransitionStyleTransformWithWidth
+      ? 'rotate(0deg)'
+      : 'rotate(135deg)'
+    )
+    styleTransformWithWidth?.style?.setProperty("width", isTransitionStyleTransformWithWidth
+      ? '200px'
+      : '100px'
+    )
+    isTransitionStyleTransformWithWidth = !isTransitionStyleTransformWithWidth
+  }
+
+  const changeTransformWithOrigin = () => {
+    styleTransformWithOrigin?.style?.setProperty("transform", isTransitionStyleTransformWithOrigin
+      ? 'scaleX(1)'
+      : 'scaleX(0)'
+    )
+    isTransitionStyleTransformWithOrigin = !isTransitionStyleTransformWithOrigin
+  }
+
+  const changeBorder = () => {
+    styleBorder?.style?.setProperty("border-color", isTransitionstyleBorder
+      ? 'brown'
+      : 'yellow'
+    )
+    isTransitionstyleBorder = !isTransitionstyleBorder
+  }
+
+  const changestylePosition = () => {
+    stylePosition?.style?.setProperty("left", isTransitionstylePosition
+      ? '0px'
+      : '100px'
+    )
+    isTransitionstylePosition = !isTransitionstylePosition
+  }
+
+  const changestyleScale = () => {
+    const el = uni.getElementById("styleChangScale")
+    el?.style.setProperty("transition-duration", "0ms")
+    el?.style.setProperty("transform", "translate(10px,10px) scale(1)")
+    setTimeout(() => {
+      el?.style.setProperty("transition-duration", "200ms")
+      el?.style.setProperty("transform", "translate(10px,10px) scale(0.5)")
+    }, 200)
+  }
+
+  const handleTouchStart = (e : UniTouchEvent) => {
+    startX = e.changedTouches[0].clientX
+  }
+
+  const handleTouchMove = (e : UniTouchEvent) => {
+    console.log("touchmove:" + e.touches[0].clientX + "," + e.touches[0].clientY)
+    e.preventDefault()
+    e.stopPropagation()
+    const difX = e.changedTouches[0].clientX
+    moveX = difX - startX + oldX
+    styleTransformTranslateScale?.style?.setProperty('transition-duration', '0ms')
+    styleTransformTranslateScale?.style?.setProperty('transform', `translate(${moveX}px,0px) scale(0.5) rotate(90deg)`)
+  }
+
+  const handleTouchEnd = (_ : UniTouchEvent) => {
+    oldX = moveX
+  }
+
+  const doChangeTransitionDuration = () => {
+    console.log("doChangeTransitionDuration")
+    changestyleTransitionDuration.value
+      = changestyleTransitionDuration.value == 'background-color:brown;' ? 'transition-duration: 2000ms;background-color: blue;' : 'background-color:brown;'
+  }
+
+  const changeTransitionAll = () => {
+    if (!isTransitionAll) {
+      // 设置为 all 时的效果
+      styleTransitionAll?.style?.setProperty("transition-property", "all")
+      styleTransitionAll?.style?.setProperty("width", "300px")
+      styleTransitionAll?.style?.setProperty("height", "300px")
+      styleTransitionAll?.style?.setProperty("background-color", "blue")
+      styleTransitionAll?.style?.setProperty("transform", "rotate(45deg)")
+    } else {
+      // 设置为 none 时的效果
+      styleTransitionAll?.style?.setProperty("transition-property", "none")
+      styleTransitionAll?.style?.setProperty("width", "200px")
+      styleTransitionAll?.style?.setProperty("height", "200px")
+      styleTransitionAll?.style?.setProperty("background-color", "brown")
+      styleTransitionAll?.style?.setProperty("transform", "rotate(0deg)")
+    }
+    isTransitionAll = !isTransitionAll
+  }
+
+  const changeTransform61 = () => {
+    if (lineLeft.value == 0) {
+      lineLeft.value = 70
+      lineWidth.value = 300
+    } else {
+      lineLeft.value = 0
+      lineWidth.value = 200
+    }
+  }
+
+  const onChangeWidthEnd = (event : UniEvent) => {
+    changeWidthInEnd?.style.setProperty("width","300px")
+    changeWidthInEndCount++
+  }
+
+  const changeWidthInEndFun = () => {
+    changeWidthInEnd?.style.setProperty("width","300px")
+  }
+
+  const changeTextTransform = () => {
+    textTransform?.style?.setProperty("transform", isTextTransform
+      ? 'rotate(0deg)'
+      : 'rotate(45deg)'
+    )
+    isTextTransform = !isTextTransform
+  }
+
+  const changeTextOpacity = () => {
+    textOpacity?.style?.setProperty("opacity", isTextOpacity
+      ? '1'
+      : '0.5'
+    )
+    isTextOpacity = !isTextOpacity
+  }
+
+  const changeTextBackground = () => {
+    textBackground?.style?.setProperty("background-color", isTextBackground
+      ? 'transparent'
+      : 'yellow'
+    )
+    isTextBackground = !isTextBackground
+  }
+
+  const changeImageTransform = () => {
+    imageTransform?.style?.setProperty("transform", isImageTransform
+      ? 'rotate(0deg)'
+      : 'rotate(45deg)'
+    )
+    isImageTransform = !isImageTransform
+  }
+
+  const changeImageOpacity = () => {
+    imageOpacity?.style?.setProperty("opacity", isImageOpacity
+      ? '1'
+      : '0.5'
+    )
+    isImageOpacity = !isImageOpacity
+  }
+
+  const changeImageScale = () => {
+    imageScale?.style?.setProperty("transform", isImageScale
+      ? 'scale(1)'
+      : 'scale(1.5)'
+    )
+    isImageScale = !isImageScale
+  }
+
+  function changeBorderAndBackgroundColor() {
+    elChangeBorderAndBackgroundColor?.style?.setProperty("background-color",!isChangeBorderAndBackgroundColor?"pink":"brown")
+    elChangeBorderAndBackgroundColor?.style?.setProperty("border-color",!isChangeBorderAndBackgroundColor?"yellow":"blue")
+    isChangeBorderAndBackgroundColor = !isChangeBorderAndBackgroundColor
+  }
+
+  type TransitionData = {
+    transitionValue: string
+    transitionActual: string
+    transitionActualText: string
+    transitionActualImage: string
+    transitionActualFlat: string
+    transitionActualTextFlat: string
+    transitionActualImageFlat: string
+  }
+  const data = reactive({
+    transitionValue: 'width 1s',
+    transitionActual: '',
+    transitionActualText: '',
+    transitionActualImage: '',
+    transitionActualFlat: '',
+    transitionActualTextFlat: '',
+    transitionActualImageFlat: ''
+  } as TransitionData)
+
+  const viewRefTransition = ref(null as UniElement | null)
+  const textRefTransition = ref(null as UniTextElement | null)
+  const imageRefTransition = ref(null as UniImageElement | null)
+  const viewRefTransitionFlat = ref(null as UniElement | null)
+  const textRefTransitionFlat = ref(null as UniTextElement | null)
+  const imageRefTransitionFlat = ref(null as UniImageElement | null)
+  const isExpandedTransition = ref(false)
+  const isExpandedTransitionText = ref(false)
+  const isExpandedTransitionImage = ref(false)
+
+  const transitionEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'width 2s' },
+    { value: 2, name: 'background-color 1s' },
+    { value: 3, name: 'transform 1s' },
+    { value: 4, name: 'all 1s' },
+    { value: 5, name: 'width 1s, background-color 1s' }
+  ]
+
+  const getPropertyValues = () => {
+    data.transitionActual = viewRefTransition.value?.style.getPropertyValue('transition') ?? ''
+    data.transitionActualFlat = viewRefTransitionFlat.value?.style.getPropertyValue('transition') ?? ''
+    data.transitionActualText = textRefTransition.value?.style.getPropertyValue('transition') ?? ''
+    data.transitionActualTextFlat = textRefTransitionFlat.value?.style.getPropertyValue('transition') ?? ''
+    data.transitionActualImage = imageRefTransition.value?.style.getPropertyValue('transition') ?? ''
+    data.transitionActualImageFlat = imageRefTransitionFlat.value?.style.getPropertyValue('transition') ?? ''
+  }
+
+  const changeTransition = (value: string) => {
+    data.transitionValue = value
+    viewRefTransition.value?.style.setProperty('transition', value)
+    viewRefTransitionFlat.value?.style.setProperty('transition', value)
+    textRefTransition.value?.style.setProperty('transition', value)
+    textRefTransitionFlat.value?.style.setProperty('transition', value)
+    imageRefTransition.value?.style.setProperty('transition', value)
+    imageRefTransitionFlat.value?.style.setProperty('transition', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeTransition = (index: number) => {
+    const selectedItem = transitionEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeTransition(selectedItem.name)
+    }
+  }
+
+  const inputChangeTransition = (value: string) => {
+    changeTransition(value)
+  }
+
+  const triggerTransitionView = () => {
+    const transition: string = data.transitionValue
+    isExpandedTransition.value = !isExpandedTransition.value
+
+    if (transition.includes('background-color')) {
+      const color = isExpandedTransition.value ? 'red' : 'green'
+      viewRefTransition.value?.style.setProperty('background-color', color)
+      viewRefTransitionFlat.value?.style.setProperty('background-color', color)
+    } else if (transition.includes('width')) {
+      const width = isExpandedTransition.value ? '100px' : '50px'
+      viewRefTransition.value?.style.setProperty('width', width)
+      viewRefTransitionFlat.value?.style.setProperty('width', width)
+    } else if (transition.includes('transform')) {
+      const transform = isExpandedTransition.value ? 'rotate(45deg)' : 'rotate(0deg)'
+      viewRefTransition.value?.style.setProperty('transform', transform)
+      viewRefTransitionFlat.value?.style.setProperty('transform', transform)
+    } else if (transition.includes('all')) {
+      const width = isExpandedTransition.value ? '100px' : '50px'
+      const color = isExpandedTransition.value ? 'red' : 'green'
+      viewRefTransition.value?.style.setProperty('width', width)
+      viewRefTransition.value?.style.setProperty('background-color', color)
+      viewRefTransitionFlat.value?.style.setProperty('width', width)
+      viewRefTransitionFlat.value?.style.setProperty('background-color', color)
+    }
+  }
+
+  const triggerTransitionText = () => {
+    const transition: string = data.transitionValue
+    isExpandedTransitionText.value = !isExpandedTransitionText.value
+
+    if (transition.includes('background-color')) {
+      const color = isExpandedTransitionText.value ? 'red' : 'green'
+      textRefTransition.value?.style.setProperty('background-color', color)
+      textRefTransitionFlat.value?.style.setProperty('background-color', color)
+    } else if (transition.includes('width')) {
+      const width = isExpandedTransitionText.value ? '100px' : '50px'
+      textRefTransition.value?.style.setProperty('width', width)
+      textRefTransitionFlat.value?.style.setProperty('width', width)
+    } else if (transition.includes('transform')) {
+      const transform = isExpandedTransitionText.value ? 'rotate(45deg)' : 'rotate(0deg)'
+      textRefTransition.value?.style.setProperty('transform', transform)
+      textRefTransitionFlat.value?.style.setProperty('transform', transform)
+    } else if (transition.includes('all')) {
+      const width = isExpandedTransitionText.value ? '100px' : '50px'
+      const color = isExpandedTransitionText.value ? 'red' : 'green'
+      textRefTransition.value?.style.setProperty('width', width)
+      textRefTransition.value?.style.setProperty('background-color', color)
+      textRefTransitionFlat.value?.style.setProperty('width', width)
+      textRefTransitionFlat.value?.style.setProperty('background-color', color)
+    }
+  }
+
+  const triggerTransitionImage = () => {
+    const transition: string = data.transitionValue
+    isExpandedTransitionImage.value = !isExpandedTransitionImage.value
+
+    if (transition.includes('background-color')) {
+      const color = isExpandedTransitionImage.value ? 'red' : 'green'
+      imageRefTransition.value?.style.setProperty('background-color', color)
+      imageRefTransitionFlat.value?.style.setProperty('background-color', color)
+    } else if (transition.includes('width')) {
+      const width = isExpandedTransitionImage.value ? '100px' : '50px'
+      imageRefTransition.value?.style.setProperty('width', width)
+      imageRefTransitionFlat.value?.style.setProperty('width', width)
+    } else if (transition.includes('transform')) {
+      const transform = isExpandedTransitionImage.value ? 'rotate(45deg)' : 'rotate(0deg)'
+      imageRefTransition.value?.style.setProperty('transform', transform)
+      imageRefTransitionFlat.value?.style.setProperty('transform', transform)
+    } else if (transition.includes('all')) {
+      const width = isExpandedTransitionImage.value ? '100px' : '50px'
+      const color = isExpandedTransitionImage.value ? 'red' : 'green'
+      imageRefTransition.value?.style.setProperty('width', width)
+      imageRefTransition.value?.style.setProperty('background-color', color)
+      imageRefTransitionFlat.value?.style.setProperty('width', width)
+      imageRefTransitionFlat.value?.style.setProperty('background-color', color)
+    }
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+	defineExpose({
+	  changeWidthOrHeight,
+	  changeWidthProgress,
+	  changeMargin,
+	  changePadding,
+	  changeBackground,
+	  changeBackground2,
+	  changeStyleOpacity,
+	  propertyChangeBackground,
+	  changeTransform,
+	  changeTransformTranslate,
+	  changeTransformWithWidth,
+	  changeTransformWithOrigin,
+	  changeBorder,
+	  changestylePosition,
+	  changeTransitionAll,
+	  changeWidthInEndFun,
+	  getChangeWidthInEndCount,
+    changeBorderAndBackgroundColor,
+	  data
+	})
+
+</script>
+
+<style>
+  .container {
+    margin: 7px;
+    background-color: white;
+  }
+
+  .text {
+    margin-top: 10px;
+    margin-bottom: 16px;
+  }
+
+  .base-style {
+    width: 100px;
+    height: 100px;
+    background-color: brown;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+
+  .width-progress {
+    width: 100px;
+    height: 100px;
+    background-color: brown;
+  }
+
+  .transform-bgColor {
+    transition-property: background-color;
+    transition-duration: 0.5s;
+  }
+
+  .transition-width {
+    transition-property: width;
+    transition-duration: 1s;
+  }
+
+  .transition-margin {
+    transition-property: margin-left, margin-top;
+    transition-duration: 1s;
+  }
+
+  .transition-padding {
+    transition-property: padding-left, padding-top;
+    transition-duration: 1s;
+  }
+
+  .transition-background {
+    transition-property: background-color, opacity;
+    transition-duration: 1s;
+  }
+
+  .transition-opacity {
+    transition-property: opacity;
+    transition-duration: 1s;
+  }
+
+  .transition-transform {
+    transform: translate(0%, 0%) scaleX(1) rotate(0deg);
+    transition-property: transform;
+    transition-duration: 1s;
+  }
+
+  .transition-border {
+    border-width: 5px;
+    border-color: brown;
+    border-style: solid;
+    transition-property: border-color;
+    transition-duration: 1s;
+  }
+
+  .transition-position {
+    left: 0px;
+    transition-property: left;
+    transition-duration: 1s;
+  }
+
+  .transition-transform-width {
+    transform: rotate(0deg);
+    transition-property: transform, width;
+    transition-duration: 1s;
+  }
+
+  .transition-all {
+    transition-property: all;
+    transition-duration: 1s;
+  }
+
+  .text-base-style {
+    width: 200px;
+    height: 50px;
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+    background-color: lightblue;
+  }
+
+  .image-base-style {
+    width: 100px;
+    height: 100px;
+  }
+  .transition-border-background {
+    box-shadow: 8px 8px 8px rgba(0, 255, 0, 1);
+    border-color: blue;
+    border-width: 3px;
+    border-style: solid;
+    transition-property: border-color, background-color;
+    transition-duration: 1s;
+  }
+
+  .common-text {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+    font-size: 12px;
+    color: white;
+  }
+
+  .common-image {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 120px;
+    background-color: gray;
+  }
+
+</style>

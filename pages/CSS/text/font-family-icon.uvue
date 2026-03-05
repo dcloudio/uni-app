@@ -1,0 +1,156 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <view style="align-items: center;align-self: center;">
+      <view class="iconContainer">
+        <view class="iconItem" v-for="item in uniIcons">
+          <text class="icon" :style="{'font-weight': data.fontWeight, 'font-style': data.fontStyle}">{{String.fromCharCode(parseInt(item.code,16))}}</text>
+          <text class="code">\u{{item.code}}</text>
+          <text class="name">{{item.name}}</text>
+        </view>
+      </view>
+
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+  type Icon = {
+    name : string,
+    code : string,
+  }
+
+  const uniIcons = ref([ //图标数据
+    {
+      'name':'back',
+      'code':'E601',
+    },
+    {
+      'name':'forward',
+      'code':'E600',
+    },
+    {
+      'name':'share',
+      'code':'E602',
+    },
+    {
+      'name':'favorites',
+      'code':'E604',
+    },
+    {
+      'name':'home',
+      'code':'E605',
+    },
+    {
+      'name':'more',
+      'code':'E606',
+    },
+    {
+      'name':'close',
+      'code':'E650',
+    },
+    {
+      'name':'down',
+      'code':'E661',
+    },
+    {
+      'name':'circle',
+      'code':'EA01',
+    },
+    {
+      'name':'warn',
+      'code':'EA0F',
+    },
+    {
+      'name':'info',
+      'code':'EA03',
+    },
+    {
+      'name':'info circle',
+      'code':'EA04',
+    },
+    {
+      'name':'success',
+      'code':'EA06',
+    },
+    {
+      'name':'success circle',
+      'code':'EA07',
+    },
+    {
+      'name':'success no circle',
+      'code':'EA08',
+    },
+    {
+      'name':'cancel circle',
+      'code':'EA0B',
+    },
+    {
+      'name':'clear',
+      'code':'EA14',
+    },
+    {
+      'name':'download',
+      'code':'EA19',
+    },
+    {
+      'name':'waitnig',
+      'code':'EA1E',
+    },
+    {
+      'name':'search',
+      'code':'EA23',
+    }
+  ] as Icon[])
+  // 自动化测试
+  const data = reactive({
+    fontWeight: 'normal',
+    fontStyle: 'normal'
+  })
+
+  const changeStyle = () => {
+    data.fontWeight = 'bold'
+    data.fontStyle = 'italic'
+  }
+
+	defineExpose({
+	  changeStyle,
+	  data
+	})
+
+</script>
+
+<style>
+.iconContainer {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.iconItem {
+  width: 100px;
+  height: 150px;
+  justify-content: center;
+  align-items: center;
+}
+.icon {
+  width: 48px;
+  height: 48px;
+  font-family: uni-icon;
+  font-size: 42px;
+  line-height: 48px;
+  color: #333;
+  margin-bottom: 8px;
+}
+.code {
+  font-size: 14px;
+  color: #f00;
+}
+.name {
+  font-size: 12px;
+  color: #000;
+}
+</style>

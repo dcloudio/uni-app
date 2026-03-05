@@ -1,0 +1,92 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1;" v-if="isShow">
+  <!-- #endif -->
+    <image class="transition-transform" id="transition-transform" @transitionend="onEnd" src="/static/test-image/logo.png"></image>
+    <text class="adjust">对图片设置transform进行旋转，在旋转完成的transitionend事件后，继续旋转</text>
+    <button class="adjust" @click="switchBtn">{{buttonValue}}</button>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+type DataType = {
+  onTransitionEndTriggr: boolean,
+}
+
+let times = 0
+let element: UniElement | null = null
+let isStart = false
+const buttonValue = ref("开启图片旋转")
+const data = reactive({
+  onTransitionEndTriggr: false,
+} as DataType)
+const isShow = ref(false)
+
+function switchBtn() {
+  if (!isStart) {
+    if (element == null) {
+      element = uni.getElementById('transition-transform')
+    }
+    buttonValue.value = "关闭图片旋转"
+    times = times + 1
+    element!.style.setProperty('transition-duration', '2000ms')
+    element!.style.setProperty('transform', 'rotate(' + times * 360 + 'deg)')
+    isStart = true
+  } else {
+    isStart = false
+    times = 0
+    data.onTransitionEndTriggr = false
+    buttonValue.value = "开启图片旋转"
+    element!.style.setProperty('transition-duration', '0ms')
+    element!.style.setProperty('transform', 'rotate(0deg)')
+  }
+}
+
+function onEnd() {
+  console.log('transform transitionend')
+  if (isStart) {
+    times = times + 1
+    element!.style.setProperty('transform', 'rotate(' + times * 360 + 'deg)')
+    data.onTransitionEndTriggr = true
+  }
+}
+
+onReady(() => {
+  // onReady中动态修改isShow是为了验证在安卓手机上子线程中创建节点可能会崩溃的问题，不具备代码参考性。
+  // #ifdef APP-ANDROID
+  class ThreadRunnable extends Runnable {
+    override run() {
+      isShow.value = true
+    }
+  }
+  new Thread(new ThreadRunnable()).start()
+  // #endif
+  // #ifndef APP-ANDROID
+  isShow.value = true
+  // #endif
+})
+
+defineExpose({
+  data,
+  switchBtn
+})
+</script>
+
+<style>
+  .adjust {
+    margin: 10px;
+  }
+
+  .transition-transform {
+    width: 200px;
+    height: 200px;
+    margin: 25px auto;
+    border-radius: 100px;
+    transition-property: transform;
+    transition-timing-function: linear;
+    transform: rotate(0deg);
+  }
+</style>

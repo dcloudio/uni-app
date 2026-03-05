@@ -1,0 +1,301 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+  <view style="flex-grow: 1;">
+    <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+    <view>
+      <text>align-self: auto</text>
+      <view class="demo-box">
+        <view class="demo-container align-start">
+          <view class="common" style="align-self: auto;"></view>
+        </view>
+        <view class="demo-container align-start">
+          <view class="common" style="align-self: auto;" flatten></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text>align-self: center</text>
+      <view class="demo-box">
+        <view class="demo-container align-center">
+          <view class="common" style="align-self: center;"></view>
+        </view>
+        <view class="demo-container align-center">
+          <view class="common" style="align-self: center;" flatten></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text>align-self: flex-start</text>
+      <view class="demo-box">
+        <view class="demo-container align-start">
+          <view class="common" style="align-self: flex-start;"></view>
+        </view>
+        <view class="demo-container align-start">
+          <view class="common" style="align-self: flex-start;" flatten></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text>align-self: flex-end</text>
+      <view class="demo-box">
+        <view class="demo-container">
+          <view class="common" style="align-self: flex-end;"></view>
+        </view>
+        <view class="demo-container">
+          <view class="common" style="align-self: flex-end;" flatten></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text>align-self: stretch</text>
+      <view class="demo-box">
+        <view class="demo-container">
+          <view class="common" style="align-self: stretch;"></view>
+        </view>
+        <view class="demo-container">
+          <view class="common" style="align-self: stretch;" flatten></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">scroll-view 组件</text>
+    </view>
+
+    <view class="demo-box">
+      <view class="demo-container align-center">
+        <scroll-view class="common" style="align-self: center;" direction="horizontal">
+          <text class="scroll-view-label">align-self: center</text>
+        </scroll-view>
+      </view>
+      <view class="demo-container align-center">
+        <scroll-view class="common" style="align-self: flex-start;" direction="horizontal">
+          <text class="scroll-view-label">align-self: flex-start</text>
+        </scroll-view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 align-self </text>
+    </view>
+
+    <!-- 普通版本 -->
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件</text>
+        <text class="uni-info">设置值: {{data.alignSelf}}</text>
+        <text class="uni-info">获取值: {{data.alignSelfActual}}</text>
+        <view class="test-box">
+          <view ref="viewRef" class="common test-view" :style="{ alignSelf: data.alignSelf }">
+            <text class="common-text">view</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件</text>
+        <text class="uni-info">设置值: {{data.alignSelf}}</text>
+        <text class="uni-info">获取值: {{data.alignSelfActualText}}</text>
+        <view class="test-box">
+          <text ref="textRef" class="common test-text" :style="{ alignSelf: data.alignSelf }">text</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件</text>
+        <text class="uni-info">设置值: {{data.alignSelf}}</text>
+        <text class="uni-info">获取值: {{data.alignSelfActualImage}}</text>
+        <view class="test-box">
+          <image ref="imageRef" class="common test-image" :style="{ alignSelf: data.alignSelf }" src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 拍平版本 -->
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件拍平</text>
+        <text class="uni-info">设置值: {{data.alignSelf}}</text>
+        <text class="uni-info">获取值: {{data.alignSelfActualFlat}}</text>
+        <view class="test-box">
+          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ alignSelf: data.alignSelf }" flatten>
+            <text class="common-text">view</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件拍平</text>
+        <text class="uni-info">设置值: {{data.alignSelf}}</text>
+        <text class="uni-info">获取值: {{data.alignSelfActualTextFlat}}</text>
+        <view class="test-box">
+          <text ref="textRefFlat" class="common test-text-flatten" :style="{ alignSelf: data.alignSelf }" flatten>text</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件拍平</text>
+        <text class="uni-info">设置值: {{data.alignSelf}}</text>
+        <text class="uni-info">获取值: {{data.alignSelfActualImageFlat}}</text>
+        <view class="test-box">
+          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ alignSelf: data.alignSelf }" flatten src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt uni-common-mb">
+      <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <enum-data :items="alignSelfEnum" title="align-self 枚举值" @change="radioChangeAlignSelf" :compact="true"></enum-data>
+      <input-data :defaultValue="data.alignSelf" title="align-self 自定义值" type="text" @confirm="inputChangeAlignSelf"></input-data>
+    </view>
+
+    <text class="uni-title-text uni-common-mt">native-view 组件：align-self: center 和 flex-start</text>
+    <text class="uni-subtitle-text">native-view 作为 flex 子项</text>
+    <view class="demo-box uni-common-mb">
+      <view class="demo-container align-center">
+        <native-view class="common" style="align-self: center;"></native-view>
+      </view>
+      <view class="demo-container align-center">
+        <native-view class="common" style="align-self: flex-start;"></native-view>
+      </view>
+    </view>
+  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const alignSelfEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'auto' },
+    { value: 2, name: 'center' },
+    { value: 3, name: 'flex-start' },
+    { value: 4, name: 'flex-end' },
+    { value: 5, name: 'stretch' }
+  ]
+
+  const data = reactive({
+    alignSelf: 'center',
+    alignSelfActual: '',
+    alignSelfActualText: '',
+    alignSelfActualImage: '',
+    alignSelfActualFlat: '',
+    alignSelfActualTextFlat: '',
+    alignSelfActualImageFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const getPropertyValues = () => {
+    data.alignSelfActual = viewRef.value?.style.getPropertyValue('align-self') ?? ''
+    data.alignSelfActualFlat = viewRefFlat.value?.style.getPropertyValue('align-self') ?? ''
+    data.alignSelfActualText = textRef.value?.style.getPropertyValue('align-self') ?? ''
+    data.alignSelfActualTextFlat = textRefFlat.value?.style.getPropertyValue('align-self') ?? ''
+    data.alignSelfActualImage = imageRef.value?.style.getPropertyValue('align-self') ?? ''
+    data.alignSelfActualImageFlat = imageRefFlat.value?.style.getPropertyValue('align-self') ?? ''
+  }
+
+  const changeAlignSelf = (value: string) => {
+    data.alignSelf = value
+    viewRef.value?.style.setProperty('align-self', value)
+    viewRefFlat.value?.style.setProperty('align-self', value)
+    textRef.value?.style.setProperty('align-self', value)
+    textRefFlat.value?.style.setProperty('align-self', value)
+    imageRef.value?.style.setProperty('align-self', value)
+    imageRefFlat.value?.style.setProperty('align-self', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeAlignSelf = (index: number) => {
+    const selectedItem = alignSelfEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeAlignSelf(selectedItem.name)
+    }
+  }
+
+  const inputChangeAlignSelf = (value: string) => {
+    changeAlignSelf(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeAlignSelf,
+    data
+  })
+</script>
+
+<style>
+  .demo-container {
+    display: flex;
+    background-color: #cdcbcb;
+    border: #ddd solid 1px;
+    flex: 1;
+    margin: 0 10px;
+  }
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .align-start {
+    align-items: flex-start;
+  }
+
+  .align-center {
+    align-items: center;
+  }
+
+  .common {
+    width: 80px;
+    height: 80px;
+    background-color: cyan;
+  }
+
+  .common-text {
+    width: 50px;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    display: flex;
+    width: 100%;
+    height: 80px;
+    background-color: gray;
+    align-items: flex-start;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    text-align: center;
+  }
+</style>

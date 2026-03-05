@@ -1,0 +1,190 @@
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  type DataType = {
+    plain_boolean: boolean;
+    disabled_boolean: boolean;
+    default_style: boolean;
+    size_enum: ItemType[];
+    size_enum_current: number;
+    type_enum: ItemType[];
+    type_enum_current: number;
+    count: number;
+    text: string;
+    loading: boolean;
+  }
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    plain_boolean: false,
+    disabled_boolean: false,
+    default_style: false,
+    size_enum: [{ "value": 0, "name": "default" }, { "value": 1, "name": "mini" }],
+    size_enum_current: 0,
+    type_enum: [{ "value": 0, "name": "default" }, { "value": 1, "name": "primary" }, { "value": 2, "name": "warn" }],
+    type_enum_current: 0,
+    count: 0,
+    text: '',
+    loading: false,
+  } as DataType)
+
+  onReady(() => {
+    data.text = 'uni-app-x'
+  })
+
+  const button_click = () => {
+    console.log("组件被点击时触发")
+    data.count++
+  }
+
+  const button_touchstart = () => {
+    console.log("手指触摸动作开始")
+  }
+
+  const button_touchmove = () => {
+    console.log("手指触摸后移动")
+  }
+
+  const button_touchcancel = () => {
+    console.log("手指触摸动作被打断，如来电提醒，弹窗")
+  }
+
+  const button_touchend = () => {
+    console.log("手指触摸动作结束")
+  }
+
+  const button_tap = () => {
+    console.log("手指触摸后马上离开")
+  }
+
+  const button_longpress = () => {
+    console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。")
+  }
+
+  const change_plain_boolean = (checked: boolean) => {
+    data.plain_boolean = checked
+  }
+
+  const change_loading = (checked: boolean) => {
+    data.loading = checked
+  }
+
+  const change_disabled_boolean = (checked: boolean) => {
+    data.disabled_boolean = checked
+  }
+
+  const change_default_style = (checked: boolean) => {
+    data.default_style = checked
+  }
+
+  const radio_change_size_enum = (checked: number) => {
+    data.size_enum_current = checked
+  }
+
+  const radio_change_type_enum = (checked: number) => {
+    data.type_enum_current = checked
+  }
+
+  const confirm_text_input = (value: string) => {
+    data.text = value
+  }
+
+  const navigateToChild = () => {
+    uni.navigateTo({
+      url: 'buttonstatus',
+    })
+  }
+
+  const openPrivacyDialog = () => {
+    uni.openDialogPage({
+      url: '/pages/component/button/privacy',
+    })
+  }
+
+  //用于自动化测试
+  const checkUniButtonElement = (): boolean => {
+    const button = uni.getElementById("testButton")
+    if (button != null && button instanceof UniButtonElement) {
+      return true
+    }
+    return false
+  }
+
+  defineExpose({
+    data,
+    checkUniButtonElement
+  })
+</script>
+
+<template>
+  <view class="main">
+    <button id="testButton" :loading="data.loading" :disabled="data.disabled_boolean"
+      :size="data.size_enum[data.size_enum_current].name" :type="data.type_enum[data.type_enum_current].name"
+      :plain="data.plain_boolean" @touchstart="button_touchstart" @touchmove="button_touchmove"
+      @touchcancel="button_touchcancel" @touchend="button_touchend" @tap="button_tap" @click="button_click"
+      @longpress="button_longpress" class="btn"
+      :class="data.default_style ? (data.disabled_boolean ? 'custom-btn-disable' : 'custom-btn') : ''"
+      :hover-class="data.default_style ? 'is-hover' : 'button-hover'">
+      {{ data.text }}
+    </button>
+  </view>
+  <scroll-view style="flex: 1">
+    <view class="content">
+      <boolean-data :defaultValue="false" title="按钮是否镂空，背景色透明" @change="change_plain_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="修改默认样式和点击效果(高优先)" @change="change_default_style"></boolean-data>
+      <boolean-data :defaultValue="false" title="显示loading（限小程序和蒸汽模式的App）" @change="change_loading"></boolean-data>
+      <enum-data :items="data.size_enum" title="按钮的大小" @change="radio_change_size_enum"></enum-data>
+      <enum-data :items="data.type_enum" title="按钮的类型" @change="radio_change_type_enum"></enum-data>
+      <input-data :defaultValue="data.text" title="按钮的文案" type="text" @confirm="confirm_text_input"></input-data>
+      <view style="height: 10px;"></view>
+      <button @click="navigateToChild">更多button示例</button>
+      <view style="height: 10px;"></view>
+      <!-- #ifdef APP -->
+      <button @click="openPrivacyDialog">open-type实现App隐私政策弹框</button>
+      <view style="height: 10px;"></view>
+      <!-- #endif -->
+    </view>
+
+    <navigator url="/pages/template/button-100/button-100">
+      <button>组件性能测试</button>
+    </navigator>
+  </scroll-view>
+</template>
+
+<style>
+  .main {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .custom-btn {
+    color: #ffffff;
+    background-color: #1AAD19;
+    border-color: #1AAD19;
+  }
+
+  .custom-btn-disable {
+    color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(26, 173, 25, 0.7);
+    border-color: rgba(26, 173, 25, 0.7);
+  }
+
+  .is-hover {
+    color: rgba(255, 255, 255, 0.6);
+    background-color: #179b16;
+    border-color: #179b16;
+  }
+
+  .button-hover {
+    color: rgba(0, 0, 0, 0.6);
+    background-color: #dedede;
+  }
+
+  .default-button {
+    color: #000000;
+    background-color: #f8f8f8;
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+</style>

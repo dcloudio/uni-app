@@ -1,0 +1,231 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view>
+      <page-head :title="data.title"></page-head>
+      <view>
+        <view v-if="data.imageSrc">
+          <image class="img" :src="data.imageSrc" mode="aspectFit" />
+        </view>
+        <view v-else style="margin: 10px;">
+          <text class="uni-hello-text">点击按钮下载服务端示例图片（下载网络文件到本地临时目录）</text>
+          <button type="primary" @tap="downloadImage">下载</button>
+        </view>
+        <view style="margin: 10px;">
+          <text class="uni-hello-text">下载接口的Content-Disposition中的filename非法值例子</text>
+          <button type="primary" @tap="downloadErrorFilename">下载</button>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+  import {
+    testInovkeDownloadFile,
+    CommonOptions
+  } from '@/uni_modules/test-invoke-network-api'
+  // #endif
+
+  type DataType = {
+    title: string;
+    imageSrc: string;
+    task: DownloadTask | null;
+    jest_result: boolean;
+    jest_callback_triggred: boolean;
+  }
+
+  const data = reactive({
+    title: 'downloadFile',
+    imageSrc: '',
+    task: null,
+    //自动化测试例专用
+    jest_result: false,
+    jest_callback_triggred: false
+  } as DataType)
+
+  onUnload(() => {
+    // data.imageSrc = '';
+    uni.hideLoading();
+    data.task?.abort();
+  })
+
+  const downloadImage = () => {
+    uni.showLoading({
+      title: '下载中'
+    })
+    data.task = uni.downloadFile({
+      url: "https://web-assets.dcloud.net.cn/hello-uni-app-x/uni-app.png",
+      success: (res) => {
+        console.log('downloadFile success, res is', res.tempFilePath)
+        data.imageSrc = res.tempFilePath;
+      },
+      fail: (err) => {
+        console.log('downloadFile fail, err is:', err)
+      },
+      complete: (res) => {
+        uni.hideLoading();
+        data.task = null;
+      }
+    });
+    data.task?.onProgressUpdate((update) => {
+      console.log("progress : ", update.progress);
+    })
+  }
+
+  const downloadErrorFilename = () => {
+    data.task = uni.downloadFile({
+      url:"https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/file/test9.txt",
+      success: (res) => {
+        console.log('downloadFile success, res is', res.tempFilePath)
+      },
+      fail: (err) => {
+        console.log('downloadFile fail, err is:', err)
+      }
+    })
+  }
+
+
+
+
+  //自动化测试例专用
+  const jest_downloadFile = () => {
+    data.task = uni.downloadFile({
+      url: "https://web-assets.dcloud.net.cn/hello-uni-app-x/uni-app.png",
+      success: () => {
+        data.jest_result = true
+        data.jest_callback_triggred = true
+      },
+      fail: () => {
+        data.jest_result = false
+        data.jest_callback_triggred = true
+      }
+    });
+  }
+
+  const jest_downloadFile_with_uni_env = () => {
+    data.task = uni.downloadFile({
+      url: "https://web-assets.dcloud.net.cn/hello-uni-app-x/uni-app.png",
+      filePath: `${uni.env.CACHE_PATH}/a/b/`,
+      success: () => {
+        data.jest_result = true
+        data.jest_callback_triggred = true
+      },
+      fail: () => {
+        data.jest_result = false
+        data.jest_callback_triggred = true
+      }
+    });
+  }
+
+  const jest_cookie_download = (needCookie : boolean) => {
+    data.task = uni.downloadFile({
+      url: "https://request.dcloud.net.cn/api/http/header/download",
+      success: () => {
+        data.jest_result = needCookie ? true : false;
+        data.jest_callback_triggred = true
+      },
+      fail: () => {
+        data.jest_result = needCookie ? false : true;
+      }
+    });
+  }
+
+  const jest_set_cookie = () => {
+    uni.request({
+      url: "https://request.dcloud.net.cn/api/http/header/setCookie",
+      method: "GET",
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: true,
+      firstIpv4: false,
+      success: () => {
+        jest_cookie_download(true)
+      },
+      fail: () => {
+        data.jest_result = false;
+        data.jest_callback_triggred = true
+      },
+    });
+  }
+
+  const jest_delete_cookie = () => {
+    uni.request({
+      url: "https://request.dcloud.net.cn/api/http/header/deleteCookie",
+      method: "GET",
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: true,
+      firstIpv4: false,
+      success: () => {
+        jest_cookie_download(false)
+      },
+      fail: () => {
+        data.jest_result = false;
+        data.jest_callback_triggred = true
+      },
+    });
+  }
+
+  const jest_uts_module_invoked = () => {
+    // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+    testInovkeDownloadFile({
+      success: (res : any) => {
+        data.jest_result = true
+        data.jest_callback_triggred = true
+      },
+      fail: (err : any) => {
+        data.jest_result = false
+        data.jest_callback_triggred = true
+      }
+    } as CommonOptions)
+    // #endif
+  }
+
+  const jest_special_characters_download = () => {
+    data.task = uni.downloadFile({
+      url: "https://web-assets.dcloud.net.cn/hello-uni-app-x/1789834995055525889-你好%23你好.png",
+      success: () => {
+        data.jest_result = true;
+        data.jest_callback_triggred = true
+      },
+      fail: () => {
+        data.jest_result = false;
+        data.jest_callback_triggred = true
+      }
+    });
+  }
+
+  const jest_download_call_timeout = () => {
+    data.task = uni.downloadFile({
+      url: "https://web-assets.dcloud.net.cn/video/sample/2minute-demo-10k.mp4",
+      timeout: 3000,
+      fail: () => {
+        data.jest_result = false;
+      }
+    })
+    setTimeout(() => {
+      data.jest_result = true;
+    }, 4000)
+  }
+
+  defineExpose({
+    data,
+    jest_downloadFile,
+    jest_downloadFile_with_uni_env,
+    jest_set_cookie,
+    jest_delete_cookie,
+    jest_uts_module_invoked,
+    jest_special_characters_download,
+    jest_download_call_timeout
+  })
+</script>
+
+<style>
+  .img {
+    margin: 0 auto;
+  }
+</style>

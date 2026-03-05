@@ -1,0 +1,67 @@
+<template>
+	<view>
+		<view>
+			<button class="btnstyle" type="primary" @tap="arrayBufferToBase64"> arrayBufferToBase64 </button>
+			<button class="btnstyle" type="primary" @tap="base64ToArrayBuffer"> base64ToArrayBuffer </button>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	type DataType = {
+		arrayBufferToBase64Res: string;
+		base64ToArrayBufferRes: string;
+	}
+
+	const data = reactive({
+		arrayBufferToBase64Res: '',
+		base64ToArrayBufferRes: ''
+	} as DataType)
+
+	const arrayBufferToBase64 = () => {
+		const arraybuffer = new ArrayBuffer(3)
+		const uint8 = new Uint8Array(arraybuffer)
+		uint8.set([11, 22, 33])
+		const base64 = uni.arrayBufferToBase64(arraybuffer)
+		console.log(base64) //CxYh
+		data.arrayBufferToBase64Res = base64
+		uni.showToast({
+			title: data.arrayBufferToBase64Res
+		})
+	}
+
+	const base64ToArrayBuffer = () => {
+		const base64 = 'CxYh'
+		const arrayBuffer = uni.base64ToArrayBuffer(base64)
+		const uint8 = new Uint8Array(arrayBuffer)
+		console.log(uint8.toString())//11, 22, 33
+		data.base64ToArrayBufferRes = uint8.toString()
+		uni.showToast({
+			title: data.base64ToArrayBufferRes
+		})
+	}
+
+	defineExpose({
+		data,
+		arrayBufferToBase64,
+		base64ToArrayBuffer
+	})
+</script>
+
+<style>
+	.logo {
+		height: 100px;
+		width: 100px;
+		margin: 100px auto 25px auto;
+	}
+
+	.title {
+		font-size: 18px;
+		color: #8f8f94;
+		text-align: center;
+	}
+
+  .btnstyle {
+  	margin: 4px;
+  }
+</style>

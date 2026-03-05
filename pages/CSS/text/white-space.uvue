@@ -1,0 +1,142 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <scroll-view style="padding: 10px 0px; background-color: gray;justify-content: center;" direction="horizontal">
+        <text class="text" :style="{ whiteSpace: data.whiteSpace }">{{data.multiLineText}}</text>
+      </scroll-view>
+      <text>拍平</text>
+      <scroll-view style="padding: 10px 0px; background-color: gray;justify-content: center;" direction="horizontal">
+        <text class="text" :style="{ whiteSpace: data.whiteSpace }" flatten>{{data.multiLineText}}</text>
+      </scroll-view>
+
+      <scroll-view style="flex: 1">
+        <view class="content uni-common-mt">
+          <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 white-space </text>
+        </view>
+
+        <view class="common-box">
+          <!-- 普通版本 -->
+          <view class="uni-common-mt">
+            <text class="uni-title-text">white-space</text>
+            <text class="uni-info">设置值: {{data.whiteSpace}}</text>
+            <text class="uni-info">获取值: {{data.whiteSpaceActual}}</text>
+            <view class="test-box">
+              <text ref="textRef" class="text test-text" :style="{ whiteSpace: data.whiteSpace }">{{data.multiLineText}}</text>
+            </view>
+          </view>
+
+          <!-- 拍平版本 -->
+          <view class="uni-common-mt">
+            <text class="uni-title-text">拍平</text>
+            <text class="uni-info">设置值: {{data.whiteSpace}}</text>
+            <text class="uni-info">获取值: {{data.whiteSpaceActualFlat}}</text>
+            <view class="test-box">
+              <text ref="textRefFlat" class="text test-text-flatten" :style="{ whiteSpace: data.whiteSpace }" flatten>{{data.multiLineText}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="uni-common-mt uni-common-mb">
+            <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+            <enum-data :items="whiteSpaceEnum" title="white-space 枚举值" @change="radioChangeWhiteSpace" :compact="true"></enum-data>
+            <input-data :defaultValue="data.whiteSpace" title="white-space 自定义值" type="text" @confirm="inputChangeWhiteSpace"></input-data>
+        </view>
+      </scroll-view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const whiteSpaceEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'normal' },
+    { value: 2, name: 'nowrap' },
+    { value: 3, name: 'pre' },
+    { value: 4, name: 'pre-wrap' },
+    { value: 5, name: 'pre-line' },
+    { value: 6, name: 'break-spaces' },
+    { value: 7, name: 'keep' }
+  ]
+
+  const data = reactive({
+    multiLineText: `HBuilderX，
+	轻巧、
+		极速，
+			极客编辑器；
+				uni-app x，
+					终极跨平台方案；
+				uts，
+			大一统语言
+
+HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言`,
+    whiteSpace: 'normal',
+    whiteSpaceActual: '',
+    whiteSpaceActualFlat: ''
+  })
+
+  const textRef = ref(null as UniTextElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+
+  const getPropertyValues = () => {
+    data.whiteSpaceActual = textRef.value?.style.getPropertyValue('white-space') ?? ''
+    data.whiteSpaceActualFlat = textRefFlat.value?.style.getPropertyValue('white-space') ?? ''
+  }
+
+  const changeWhiteSpace = (value: string) => {
+    data.whiteSpace = value
+    textRef.value?.style.setProperty('white-space', value)
+    textRefFlat.value?.style.setProperty('white-space', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeWhiteSpace = (index: number) => {
+    const selectedItem = whiteSpaceEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeWhiteSpace(selectedItem.name)
+    }
+  }
+
+  const inputChangeWhiteSpace = (value: string) => {
+    changeWhiteSpace(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeWhiteSpace,
+    data
+  })
+</script>
+
+<style>
+  .text {
+    font-size: 16px;
+    /* 需要设置 align-self text组件才会自适应宽度 */
+    align-self: flex-start;
+  }
+
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .test-box {
+    width: 180px;
+    height: 200px;
+    background-color: gray;
+    justify-content: center;
+    align-items: center;
+  }
+
+</style>

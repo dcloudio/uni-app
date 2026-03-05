@@ -1,0 +1,50 @@
+<template>
+	<view class="uni-padding-wrap">
+    <view class="uni-title">最大值溢出测试（不能滑动到最右侧）</view>
+    <view>
+      <slider id="slider" :value="0" :min="0" :max="10.5" :step="1" :show-value="true" @change="valueChange"/>
+    </view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	
+
+	type DataType = {
+		sliderX: number,
+		sliderY: number,
+		sliderHeight: number,
+		sliderValue: number,
+	}
+
+	const data = reactive({
+		sliderX: 0,
+		sliderY: 0,
+		sliderHeight: 0,
+		sliderValue: 0,
+	} as DataType)
+
+	function valueChange(e: UniSliderChangeEvent) {
+		console.log('valueChange', e.detail.value)
+		data.sliderValue = e.detail.value
+	}
+
+	onReady(() => {
+		// #ifdef APP-IOS || APP-HARMONY
+		const sliderEle = uni.getElementById("slider")
+		const sliderRect = sliderEle?.getBoundingClientRect()
+		if (sliderRect != null) {
+			data.sliderX = sliderRect.x
+			data.sliderY = sliderRect.y
+			data.sliderHeight = sliderRect.height
+		}
+		// 加上导航栏及状态栏高度
+		const systemInfo = uni.getSystemInfoSync()
+		data.sliderY += systemInfo.safeAreaInsets.top + 44
+		// #endif
+	})
+
+	defineExpose({
+		data
+	})
+</script>

@@ -1,0 +1,19 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;">
+	<!-- #endif -->
+  <image style="width: 100%;" src="/static/test-image/longPath.jpg" mode="widthFix" @load="load"></image>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+function load(event : ImageLoadEvent) {
+  console.log("load event:", event)
+}
+</script>
+
+<style>
+
+</style>

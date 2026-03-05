@@ -1,0 +1,36 @@
+<template>
+  <page-head title="getEnterOptionsSync"></page-head>
+  <view class="uni-padding-wrap">
+    <view class="uni-common-mt">
+      <text>应用本次启动路径：</text>
+      <text style="margin-top: 5px">{{ data.enterOptionsString }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+import { state } from '@/store/index.uts'
+
+type DataType = {
+  enterOptionsString: string,
+  testResult: boolean,
+}
+
+// Data
+const data = reactive({
+  enterOptionsString: '',
+  testResult: false,
+} as DataType)
+
+// Lifecycle
+onReady(() => {
+  const appShowOptions = state.globalData.showOptions
+  const enterOptions = uni.getEnterOptionsSync()
+  data.enterOptionsString = JSON.stringify(enterOptions, null, 2)
+  data.testResult = (enterOptions.path == appShowOptions.path && enterOptions.appScheme == appShowOptions.appScheme && enterOptions.appLink == appShowOptions.appLink)
+})
+
+defineExpose({
+  data
+})
+</script>

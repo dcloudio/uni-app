@@ -1,0 +1,46 @@
+<template>
+  <view style="align-items: center;">
+    <page-head title="微信小程序自定义组件示例"></page-head>
+    <text class="uni-list-cell-padding">
+      uni-app-x支持在微信小程序端引入微信小程序自定义组件。以下以vant weapp组件为例演示
+    </text>
+    <text class="uni-common-mt uni-title-text uni-common-mb">vant-button组件</text>
+    <vant-button color="#55aa00" @click="onClick">vant weapp的vant-button按钮组件</vant-button>
+    <text class="uni-common-mt uni-title-text uni-common-mb">vant-icon组件</text>
+    <vant-icon name="balance-list" size="30" color="#aa55ff"></vant-icon>
+    <text class="uni-common-mt uni-title-text uni-common-mb">vant-info组件</text>
+    <vant-info info="99"></vant-info>
+    <text class="uni-common-mt uni-title-text uni-common-mb">vant-loading组件</text>
+    <vant-loading color="#00aaff"></vant-loading>
+  </view>
+</template>
+<script setup lang="uts">
+  type DataType = {
+    jest: boolean,
+  }
+
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    jest: false,
+  } as DataType)
+
+  function onClick() {
+    data.jest = true
+    uni.showToast({
+      title: "click van-button",
+      mask: false,
+      icon: "none",
+      duration: 1500
+    });
+  }
+
+  defineExpose({
+    data
+  })
+</script>
+<style>
+  .van-info {
+    right: 200px !important;
+    top: 370px !important;
+  }
+</style>

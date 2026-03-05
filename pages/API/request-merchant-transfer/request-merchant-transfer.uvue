@@ -1,0 +1,247 @@
+<template>
+  <view class="content">
+    <button class="button" @click="pay">支付0.2元</button>
+    <button class="button" @click="transfer" :disabled="disabled">接受0.1元转账</button>
+    <view class="tips" v-if="disabled" style="color: #ff5a5f;">请先支付 0.2 元，才能体验接收转账 0.1 元</view>
+    <!-- #ifdef MP-WEIXIN -->
+    <view class="tips" v-else><text style="color: #42b983;">若已支付 0.2 元，请点击“接受0.1元转账”按钮</text></view>
+    <!-- #endif -->
+
+    <!-- #ifndef MP-WEIXIN -->
+    <view class="tips" v-else><text style="color: #42b983;">已支付 0.2 元，请点击“接受0.1元转账”按钮</text></view>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script setup lang="uts">
+  const outTradeNo = ref<string>("")
+  const disabled = ref<boolean>(true)
+  const openid = ref<string>("")
+
+  const getBundleId = (): string | null => {
+    let baseInfo = uni.getAppBaseInfo();
+    let bundleId : string | null;
+    // #ifdef APP-ANDROID
+    bundleId = baseInfo.packageName;
+    // #endif
+    // #ifdef APP-IOS
+    bundleId = baseInfo.bundleId;
+    // #endif
+    // #ifdef MP-WEIXIN
+    bundleId = uni.getAccountInfoSync().miniProgram.appId;
+    // #endif
+    return bundleId;
+  }
+
+  // #ifdef MP-WEIXIN
+  const getOpenId = () => {
+    uni.showLoading({
+      title: "请稍等...",
+      mask: true
+    });
+    let bundleId = getBundleId();
+    uni.login({
+      provider: 'weixin',
+      success: (res) => {
+        uni.request({
+          url: "https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api/getOpenId",
+          method: "GET",
+          data: {
+            code: res.code,
+            bundleId
+          },
+          success: (res) => {
+            uni.hideLoading();
+            openid.value = res.data.openid;
+            console.log('openid: ', openid.value);
+          },
+          fail: (err) => {
+            uni.hideLoading();
+            console.error("request-err", err);
+          }
+        });
+      }
+    })
+  }
+  // #endif
+
+  const pay = () => {
+    let bundleId = getBundleId();
+    let random = Math.floor(Math.random() * 9000) + 1000;
+    outTradeNo.value = `test${Date.now()}${random}`;
+    console.log('outTradeNo: ', outTradeNo.value)
+    disabled.value = true;
+    uni.showLoading({
+      title: "请求中..."
+    });
+    // #ifdef APP
+    const getProviderRes = uni.getProviderSync({
+      service: "payment"
+    });
+    if (getProviderRes.providerIds.indexOf("wxpay") == -1) {
+      uni.showToast({
+        title: "未添加微信支付依赖",
+        icon: 'error'
+      });
+      uni.hideLoading();
+      return;
+    }
+    // #endif
+    uni.request({
+      url: "https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api/getOrderInfo",
+      method: "GET",
+      data: {
+        outTradeNo: outTradeNo.value,
+        bundleId,
+        openid: openid.value
+      },
+      success: (res) => {
+        uni.hideLoading();
+        let data = res.data as UTSJSONObject;
+        let errCode = data['errCode'] as number;
+        if (errCode != 0) {
+          uni.showModal({
+            title: "提示",
+            content: data['errMsg'] as string,
+            showCancel: false
+          });
+          return;
+        }
+        let orderInfo = data["orderInfo"] as string;
+        console.log('orderInfo: ', orderInfo)
+        // #ifdef MP-WEIXIN
+        setTimeout(() => {
+          disabled.value = false;
+        }, 3000);
+        // #endif
+        uni.requestPayment({
+          provider: "wxpay",
+          orderInfo: orderInfo,
+          // #ifdef MP-WEIXIN
+          ...JSON.parse(orderInfo),
+          // #endif
+          success: (res) => {
+            console.log('res: ', res)
+            uni.showToast({
+              title: "支付成功",
+              icon: 'success'
+            });
+            disabled.value = false;
+          },
+          fail: (err) => {
+            console.error("err", err);
+            uni.hideLoading();
+            uni.showToast({
+              title: "支付失败",
+              icon: 'error'
+            });
+          }
+        });
+      },
+      fail: (err) => {
+        uni.hideLoading();
+        console.error("request-err", err);
+      }
+    });
+  }
+
+  const transfer = () => {
+    uni.showLoading({
+      title: "请求中..."
+    });
+    try {
+      let bundleId = getBundleId();
+      uni.request({
+        url: "https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api/transfer",
+        method: "GET",
+        data: {
+          outTradeNo: outTradeNo.value,
+          bundleId
+        },
+        success: (res) => {
+          let data = res.data as UTSJSONObject;
+          if (data['errCode'] != null && typeof data['errCode'] == "number" && data['errCode'] == 0) {
+            let options = data['options'] as UTSJSONObject;
+            uni.requestMerchantTransfer({
+              mchId: options['mchId'] as string,
+              appId: options['appId'] as string,
+              package: options['package'] as string,
+              success: (res) => {
+                uni.hideLoading();
+                console.log('res: ', res)
+                uni.showToast({
+                  title: "转账成功",
+                  icon: 'success'
+                });
+                disabled.value = true;
+              },
+              fail: (err) => {
+                uni.hideLoading();
+                let errMsg = err.errMsg;
+                if (errMsg == "requestMerchantTransfer:fail cancel") {
+                  errMsg = "取消转账";
+                }
+                uni.showToast({
+                  title: errMsg,
+                  icon: 'none'
+                });
+                console.error("转账失败", err);
+              }
+            });
+          } else {
+            uni.hideLoading();
+            if (data['errMsg'] != null) {
+              uni.showModal({
+                title: "提示",
+                content: data['errMsg'] as string,
+                showCancel: false
+              });
+            }
+            return;
+          }
+        },
+        fail: (err) => {
+          console.error("request-err", err);
+          uni.hideLoading();
+        }
+      });
+    } catch (err) {
+      console.error('err: ', err)
+      uni.showToast({
+        title: "运行异常",
+        icon: 'error'
+      });
+      uni.hideLoading();
+    }
+  }
+
+  onLoad(() => {
+    // outTradeNo.value = "test17404775193789726";
+    // disabled.value = false;
+    // #ifdef MP-WEIXIN
+    getOpenId();
+    // #endif
+  })
+
+</script>
+
+<style>
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .button {
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 5px;
+  }
+
+  .tips {
+    color: #999;
+    font-size: 14px;
+  }
+</style>

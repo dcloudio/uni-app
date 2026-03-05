@@ -1,0 +1,69 @@
+<template>
+  <view class="main">
+    <share-element class="share-element" share-key="left"
+      :shuttle-on-pop="shuttleOnPush" :transition-on-gesture="transitionOnGesture" @tap="openPage()">
+      <image src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-1.jpg" mode="widthFix">
+      </image>
+      <view class="text-label">
+        <text style="color: white;">每一口，都是幸福</text>
+      </view>
+    </share-element>
+  </view>
+  <share-element class="bottomWrap" share-key="bottom" @tap="openPage()"
+    transitionOnGesture=true>
+    <view class="bottom">
+      <text style="color: white;">share-element(底部固定)</text>
+    </view>
+  </share-element>
+</template>
+<script setup lang="uts">
+
+const shuttleOnPush = ref("to")
+const transitionOnGesture = ref(false)
+
+function openPage() {
+  uni.navigateBack()
+}
+
+onLoad((event : OnLoadOptions) => {
+  shuttleOnPush.value = event["shuttleOnPush"] as string
+  transitionOnGesture.value = event["transitionOnGesture"] === "true"
+  console.log(`shuttleOnPush:${shuttleOnPush.value} transitionOnGesture:${transitionOnGesture.value}`)
+})
+</script>
+
+<style>
+  .bottomWrap {
+    width: 100%;
+    bottom: 0px;
+    height: 80px;
+    position: fixed;
+  }
+
+  .bottom {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: #007aff;
+  }
+
+  .text-label {
+    position: absolute;
+    background-color:  #007aff;
+    opacity: 0.8;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: 30px;
+  }
+
+  .main {
+    padding: 5px;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

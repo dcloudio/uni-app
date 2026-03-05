@@ -1,0 +1,245 @@
+<template>
+	<view>
+		<page-head :title="title"></page-head>
+		<view class="uni-padding-wrap">
+			<text>
+				注意：1.离开当前页面后背景音乐将保持播放；\n
+				2. 硬退出app、调用stop api、播放结束都会清理后台控制中心和锁屏信息显示
+			</text>
+			<boolean-data :defaultValue="false" title="是否循环播放" @change="setLoop"></boolean-data>
+			<view class="uni-common-mt">
+				<slider ref="sliderRef" :value="position" :min="0" :max="duration" @changing="onchanging"
+					@change="onchange"></slider>
+			</view>
+			<view class="page-body-buttons">
+				<template v-if="playing">
+					<view class="page-body-button" @tap="stop">
+						<image class="image" src="/static/test-audio/stop.png"></image>
+					</view>
+					<view class="page-body-button" @tap="pause" style="margin-top: 20px;">
+						<image class="image" src="/static/test-audio/pause.png"></image>
+					</view>
+				</template>
+				<template v-if="!playing">
+					<view class="page-body-button" @tap="play">
+						<image class="image" src="/static/test-audio/play.png"></image>
+					</view>
+				</template>
+				<view class="page-body-button"></view>
+			</view>
+		</view>
+	</view>
+</template>
+<script setup lang="uts">
+	const title = ref("backgroundAudio")
+	const sliderRef = ref<UniSliderElement | null>(null)
+	const bgAudioMannager = ref(null as BackgroundAudioManager | null)
+	const dataUrl = ref('https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3')
+	const playing = ref(false)
+	const playTime = ref(0)
+	const formatedPlayTime = ref('00:00:00')
+	const count = ref(100)
+	const isPlayEnd = ref(false)
+	const duration = ref(100)
+	const currentTime = ref(0)
+	const _isChanging = ref(false)
+	const buffered = ref(0)
+	const isLoop = ref(false)
+
+	const position = computed((): number => {
+		return isPlayEnd.value ? 0 : currentTime.value;
+	})
+
+	const play = () => {
+		console.log('play')
+		isPlayEnd.value = false;
+		bgAudioMannager.value!.play()
+	}
+
+	const pause = () => {
+		bgAudioMannager.value?.pause();
+	}
+
+	const stop = () => {
+		bgAudioMannager.value?.stop();
+		playing.value = false
+	}
+
+	const onchanging = () => {
+		_isChanging.value = true;
+	}
+
+	const onchange = (e: UniSliderChangeEvent) => {
+		let pos = e.detail.value;
+		console.log('pos', pos);
+		bgAudioMannager.value!.seek(pos);
+		_isChanging.value = false;
+	}
+
+	const setLoop = () => {
+		isLoop.value = !isLoop.value;
+		console.log('当前是否设置循环播放，loop= ', isLoop.value);
+	}
+
+  onUnload(()=>{
+    // #ifdef APP
+    bgAudioMannager.value?.offCanplay()
+    bgAudioMannager.value?.offEnded()
+    bgAudioMannager.value?.offError()
+    bgAudioMannager.value?.offNext()
+    bgAudioMannager.value?.offPause()
+    bgAudioMannager.value?.offPlay()
+    bgAudioMannager.value?.offPrev()
+    bgAudioMannager.value?.offSeeked()
+    bgAudioMannager.value?.offSeeking()
+    bgAudioMannager.value?.offStop()
+    bgAudioMannager.value?.offTimeUpdate()
+    bgAudioMannager.value?.offWaiting()
+    // #endif
+  })
+
+	onLoad(() => {
+		let bgAudioMannagerInstance = uni.getBackgroundAudioManager();
+		bgAudioMannagerInstance.title = '致爱丽丝' + count.value;
+		bgAudioMannagerInstance.epname = '专辑名：致爱丽丝' + count.value
+		bgAudioMannagerInstance.singer = '歌手：暂无' + count.value;
+		bgAudioMannagerInstance.coverImgUrl = 'https://web-assets.dcloud.net.cn/unidoc/zh/Alice.jpeg';
+		bgAudioMannagerInstance.src = dataUrl.value;
+		currentTime.value = bgAudioMannagerInstance.currentTime
+		duration.value = bgAudioMannagerInstance.duration
+		bgAudioMannagerInstance.onCanplay(() => {
+			console.log("音频进入可以播放状态事件");
+			buffered.value = bgAudioMannagerInstance.buffered;
+			duration.value = bgAudioMannagerInstance.duration
+		})
+		bgAudioMannagerInstance.onPlay(() => {
+			console.log("开始播放");
+			playing.value = true;
+		})
+		bgAudioMannagerInstance.onPause(() => {
+			console.log("暂停播放");
+			playing.value = false;
+		})
+		bgAudioMannagerInstance.onStop(() => {
+			console.log("停止播放");
+			playing.value = false;
+		})
+		bgAudioMannagerInstance.onEnded(() => {
+			if (isLoop.value == false) {
+				console.log("播放结束");
+				playing.value = false;
+				currentTime.value = 0;
+				isPlayEnd.value = true;
+				sliderRef.value!.value = 0
+			} else {
+				console.log("播放结束, 开始循环播放");
+				bgAudioMannager.value!.src = dataUrl.value;
+				bgAudioMannager.value?.play()
+			}
+		})
+		bgAudioMannagerInstance.onNext(() => {
+			count.value++
+			console.log("下一曲", count.value);
+			bgAudioMannager.value?.stop()
+			bgAudioMannagerInstance.title = '致爱丽丝' + count.value;
+			bgAudioMannagerInstance.singer = '歌手：暂无' + count.value;
+			dataUrl.value = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
+			bgAudioMannagerInstance.coverImgUrl = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/music-a.png';
+			bgAudioMannager.value!.src = dataUrl.value;
+			bgAudioMannager.value?.play()
+		})
+		bgAudioMannagerInstance.onPrev(() => {
+			count.value--
+			console.log("上一曲", count.value);
+			bgAudioMannager.value?.stop()
+			bgAudioMannagerInstance.title = '致爱丽丝' + count.value;
+			bgAudioMannagerInstance.singer = '歌手：暂无' + count.value;
+			dataUrl.value = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
+			bgAudioMannagerInstance.coverImgUrl = 'https://web-assets.dcloud.net.cn/unidoc/zh/Alice.jpeg';
+			bgAudioMannager.value!.src = dataUrl.value;
+			bgAudioMannager.value?.play()
+		})
+		bgAudioMannagerInstance.onSeeking(() => {
+			console.log('音频进行 seek 操作事件');
+		})
+		bgAudioMannagerInstance.onSeeked(() => {
+			console.log('音频完成 seek 操作事件');
+		})
+		bgAudioMannagerInstance.onWaiting(() => {
+			console.log('音频加载中事件');
+		})
+		bgAudioMannagerInstance.onTimeUpdate(() => {
+			console.log('onTimeUpdate', bgAudioMannagerInstance.currentTime)
+			if (_isChanging.value) { return; }
+			currentTime.value = bgAudioMannager.value!.currentTime;
+			buffered.value = bgAudioMannager.value!.buffered;
+			console.log('onTimeUpdateCb', currentTime.value)
+
+			// #ifdef MP
+			// 微信小程序安卓端过早的时机获取的buffered、duration为0，改为在此处获取
+			if (bgAudioMannager.value!.duration === 0) {
+				buffered.value = bgAudioMannager.value!.buffered;
+				duration.value = bgAudioMannager.value!.duration
+			}
+			// #endif
+			if (currentTime.value > buffered.value) {
+				console.log('缓冲不足');
+			}
+		})
+		bgAudioMannagerInstance.onError((err) => {
+			console.log('播放出错err', err);
+		})
+		bgAudioMannager.value = bgAudioMannagerInstance;
+		playing.value = !bgAudioMannagerInstance.paused
+		console.log('currentTime=', bgAudioMannager.value!.currentTime, bgAudioMannager.value!.currentTime == 0)
+	})
+
+</script>
+
+<style>
+	.image {
+		width: 75px;
+		height: 75px;
+	}
+
+	.page-body-text {
+		padding: 0 15px;
+	}
+
+	.page-body-wrapper {
+		margin-top: 0;
+	}
+
+	.page-body-info {
+		padding-bottom: 25px;
+	}
+
+	.time-big {
+		font-size: 30px;
+		margin: 10px;
+	}
+
+	.slider {
+		width: 315px;
+	}
+
+	.play-time {
+		width: 100%;
+		padding: 10px 0;
+		display: flex;
+		justify-content: space-between;
+		box-sizing: border-box;
+	}
+
+	.page-body-buttons {
+		display: flex;
+		justify-content: center;
+		margin-top: 50px;
+		flex-direction: column;
+	}
+
+	.page-body-button {
+		flex-direction: row;
+		justify-content: center;
+	}
+</style>

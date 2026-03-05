@@ -1,0 +1,144 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap">
+      <view class="uni-title">
+        <text class="uni-subtitle-text">获取本地绝对路径视频信息</text>
+      </view>
+      <video class="video" :src="absoluteVideoPath" :controls="true" :poster="absoluteCoverImagePath"></video>
+      <text class="margin-top-10">{{absoluteVideoInfo}}</text>
+      <view class="uni-btn-v">
+        <button type="primary" @click="chooseVideo">拍摄视频或从相册中选择视频</button>
+      </view>
+    </view>
+    <!-- #ifndef MP -->
+    <view class="uni-padding-wrap">
+      <view class="uni-title">
+        <text class="uni-subtitle-text">获取本地相对路径视频信息</text>
+      </view>
+      <video class="video" :src="relativeVideoPath" :controls="true" :poster="relativeCoverImagePath"></video>
+      <text class="margin-top-10">{{relativeVideoInfo}}</text>
+    </view>
+    <!-- #endif -->
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  type TestStateType = {
+    videoInfoForTest: UTSJSONObject | null
+  }
+
+  const title = ref("getVideoInfo")
+  const relativeVideoPath = ref("/static/test-video/10second-demo.mp4")
+  const relativeVideoInfo = ref("")
+  const relativeCoverImagePath = ref("")
+  const absoluteVideoPath = ref("")
+  const absoluteVideoInfo = ref("")
+  const absoluteCoverImagePath = ref("")
+  // 自动化测试
+  const testState = reactive({
+    videoInfoForTest: null as UTSJSONObject | null
+  } as TestStateType)
+  const needLoadOnReady = ref(true)
+
+  // #ifdef APP-ANDROID
+  onLoad((event : OnLoadOptions)=>{
+    needLoadOnReady.value = (event["is_debug"] ?? "1") == "1";
+  })
+  // #endif
+
+  onReady(() => {
+    // #ifndef MP
+    if(!needLoadOnReady.value) return;
+    uni.getVideoInfo({
+      src: relativeVideoPath.value,
+      success: (res) => {
+        console.log("getVideoInfo success", JSON.stringify(res));
+        relativeVideoInfo.value = `视频画面方向: ${res.orientation}\n视频格式: ${res.type}\n视频长度: ${res.duration}s\n视频大小: ${res.size}KB\n视频宽度: ${res.width}\n视频高度: ${res.height}\n视频帧率: ${res.fps}fps\n视频码率: ${res.bitrate}kbps`;
+        // #ifdef APP-ANDROID || APP-IOS
+        relativeVideoInfo.value = relativeVideoInfo.value + `\n视频字节大小: ${res.byteSize}B\n视频首帧图片路径: ${res.thumbTempFilePath}`
+        if(res.thumbTempFilePath != null) {
+        relativeCoverImagePath.value = res.thumbTempFilePath!;
+        }
+        // #endif
+
+      },
+      fail: (err) => {
+        uni.showModal({
+          title: "获取视频信息失败",
+          content: JSON.stringify(err),
+          showCancel: false
+        });
+      }
+    });
+    // #endif
+  })
+
+  const chooseVideo = () => {
+    uni.chooseVideo({
+      compressed: false,
+      success: (res) => {
+        absoluteVideoPath.value = res.tempFilePath;
+        uni.getVideoInfo({
+          src: res.tempFilePath,
+          success: (_res) => {
+            console.log("getVideoInfo success", JSON.stringify(_res));
+            absoluteVideoInfo.value = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${_res.size}KB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
+            // #ifdef APP-ANDROID || APP-IOS
+            absoluteVideoInfo.value = absoluteVideoInfo.value + `\n视频字节大小: ${_res.byteSize}B\n视频首帧图片路径: ${_res.thumbTempFilePath}`
+            if(_res.thumbTempFilePath != null) {
+            absoluteCoverImagePath.value = _res.thumbTempFilePath!
+            }
+            // #endif
+          },
+          fail: (err) => {
+            uni.showModal({
+              title: "获取视频信息失败",
+              content: JSON.stringify(err),
+              showCancel: false
+            });
+          }
+        });
+      }
+    });
+  }
+
+  const testGetVideoInfo = () => {
+    uni.getVideoInfo({
+      src: '/static/test-video/10second-demo.mp4',
+      success: (res) => {
+        testState.videoInfoForTest = {
+          "orientation": res.orientation,
+          "type": res.type,
+          "duration": Math.trunc(res.duration),
+          "size": res.size,
+          "width": res.width,
+          "height": res.height,
+          "fps": res.fps,
+          "bitrate": res.bitrate
+        };
+      },
+      fail: (_) => {
+        testState.videoInfoForTest = null;
+      }
+    });
+  }
+  defineExpose({
+    testState,
+    testGetVideoInfo
+  })
+</script>
+
+<style>
+  .video {
+    width: 100%;
+  }
+
+  .margin-top-10 {
+    margin-top: 10px;
+  }
+</style>

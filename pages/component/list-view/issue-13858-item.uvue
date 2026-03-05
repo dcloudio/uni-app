@@ -1,0 +1,17 @@
+<template>
+  <view>bug</view>
+</template>
+
+<script setup lang="uts">
+const emit = defineEmits<{
+  itemMounted: []
+}>()
+
+onMounted(()=>{
+  emit('itemMounted')
+})
+
+</script>
+
+<style>
+</style>

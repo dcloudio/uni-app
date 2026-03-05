@@ -1,0 +1,237 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view>
+        <text>max-width: 200px</text>
+        <view class="common" style="max-width: 200px;">
+          <text>width: 400px</text>
+        </view>
+        <text>拍平</text>
+        <view class="common" style="max-width: 200px;" flatten>
+          <text>width: 400px</text>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
+      </view>
+
+      <view class="demo-box">
+        <scroll-view class="common" style="max-width: 100px; background-color: cyan;">
+          <text class="scroll-view-label">max-width: 100px</text>
+        </scroll-view>
+        <scroll-view class="common" style="max-width: 200px; background-color: cyan;">
+          <text class="scroll-view-label">max-width: 200px</text>
+        </scroll-view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 max-width </text>
+      </view>
+
+      <!-- 普通版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.maxWidth}}</text>
+          <text class="uni-info">获取值: {{data.maxWidthActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ maxWidth: data.maxWidth }">
+              <text>view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.maxWidth}}</text>
+          <text class="uni-info">获取值: {{data.maxWidthActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-dynamic test-text" :style="{ maxWidth: data.maxWidth }">text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.maxWidth}}</text>
+          <text class="uni-info">获取值: {{data.maxWidthActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ maxWidth: data.maxWidth }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.maxWidth}}</text>
+          <text class="uni-info">获取值: {{data.maxWidthActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ maxWidth: data.maxWidth }" flatten>
+              <text class="common-text">view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.maxWidth}}</text>
+          <text class="uni-info">获取值: {{data.maxWidthActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ maxWidth: data.maxWidth }" flatten>text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.maxWidth}}</text>
+          <text class="uni-info">获取值: {{data.maxWidthActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ maxWidth: data.maxWidth }" flatten src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="maxWidthEnum" title="max-width 枚举值" @change="radioChangeMaxWidth" :compact="true"></enum-data>
+        <input-data :defaultValue="data.maxWidth" title="max-width 自定义值" type="text" @confirm="inputChangeMaxWidth"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: max-width: 100px 和 max-width: 200px</text>
+        <view class="demo-box">
+          <native-view class="common" style="max-width: 100px; background-color: cyan;"></native-view>
+          <native-view class="common" style="max-width: 200px; background-color: cyan;"></native-view>
+        </view>
+      </view>
+
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const maxWidthEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '50px' },
+    { value: 4, name: '120px' },
+    { value: 5, name: '80rpx' },
+    { value: 6, name: 'none' }
+  ]
+
+  const data = reactive({
+    maxWidth: '100px',
+    maxWidthActual: '',
+    maxWidthActualText: '',
+    maxWidthActualImage: '',
+    maxWidthActualFlat: '',
+    maxWidthActualTextFlat: '',
+    maxWidthActualImageFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const getPropertyValues = () => {
+    data.maxWidthActual = viewRef.value?.style.getPropertyValue('max-width') ?? ''
+    data.maxWidthActualFlat = viewRefFlat.value?.style.getPropertyValue('max-width') ?? ''
+    data.maxWidthActualText = textRef.value?.style.getPropertyValue('max-width') ?? ''
+    data.maxWidthActualTextFlat = textRefFlat.value?.style.getPropertyValue('max-width') ?? ''
+    data.maxWidthActualImage = imageRef.value?.style.getPropertyValue('max-width') ?? ''
+    data.maxWidthActualImageFlat = imageRefFlat.value?.style.getPropertyValue('max-width') ?? ''
+  }
+
+  const changeMaxWidth = (value: string) => {
+    data.maxWidth = value
+    viewRef.value?.style.setProperty('max-width', value)
+    viewRefFlat.value?.style.setProperty('max-width', value)
+    textRef.value?.style.setProperty('max-width', value)
+    textRefFlat.value?.style.setProperty('max-width', value)
+    imageRef.value?.style.setProperty('max-width', value)
+    imageRefFlat.value?.style.setProperty('max-width', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeMaxWidth = (index: number) => {
+    const selectedItem = maxWidthEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeMaxWidth(selectedItem.name)
+    }
+  }
+
+  function inputChangeMaxWidth(value: string) {
+    changeMaxWidth(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeMaxWidth,
+    data
+  })
+</script>
+
+<style>
+  .common {
+    width: 400px;
+    height: 80px;
+    background-color: cyan;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .common-text{
+    width: 50px;
+  }
+
+  .common-dynamic {
+    width: 100px;
+    height: 80px;
+    background-color: cyan;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 80px;
+    background-color: gray;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    text-align: center;
+  }
+</style>

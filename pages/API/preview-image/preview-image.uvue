@@ -1,0 +1,227 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="padding-left: 8px; padding-right: 8px">
+      <view>
+        <text class="text-desc">图片指示器样式</text>
+        <radio-group class="cell-ct" style="background-color: white" @change="onIndicatorChanged">
+          <view class="indicator-it" v-for="(item, index) in indicator" :key="item.value">
+            <radio :disabled="isWeb" :checked="index == 0" :value="item.value">{{
+              item.name
+            }}</radio>
+          </view>
+        </radio-group>
+      </view>
+      <view>
+        <checkbox-group @change="onCheckboxChange" style="margin-top: 16px; margin-left: 8px">
+          <checkbox :disabled="isWeb" :checked="isLoop" style="margin-right: 15px">循环播放</checkbox>
+        </checkbox-group>
+      </view>
+      <view>
+        <text class="text-desc">长按行为</text>
+        <radio-group class="cell-ct" style="background-color: white; margin-bottom: 16px;" @change="onLongPressCheckboxChange">
+          <view class="indicator-it" v-for="(item, index) in longPressAction" :key="item.value">
+            <radio :disabled="isWeb" :checked="index == 1" :value="item.value">{{
+              item.name
+            }}</radio>
+          </view>
+        </radio-group>
+      </view>
+      <view style="background-color: white">
+        <text class="text-desc">点击图片开始预览</text>
+        <view class="cell-ct" style="margin: 8px;">
+          <view class="cell cell-choose-image" v-for="(image, index) in imageList" :key="index">
+            <text style="width: 100px; height: 100px;background-color: lightgray; color: red; text-align: center; line-height: 100px;font-size: 14px;" v-if="image.error"
+              @click="previewImage(index)">图片路径非法</text>
+            <image style="width: 100px; height: 100px;background-color: white;" mode="aspectFit" :src="image.src"
+              v-if="!image.error" @click="previewImage(index)"
+              @error="onImageLoadError(index,$event as ImageErrorEvent)">
+            </image>
+          </view>
+          <image class="cell cell-choose-image" src="/static/plus.png" @click="chooseImage">
+          </image>
+        </view>
+      </view>
+      <view style="margin:8px;">
+        <text style="color: black;font-size: 18px;margin-bottom: 4px;">注意事项:</text>
+        <text style="font-size: 17px;margin-left: 4px;color: darkgray;">1、indicator属性仅App平台支持。</text>
+        <text style="font-size: 17px;margin-left: 4px;color: darkgray;">2、Web平台不支持loop属性。</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  type Indicator = "number" | "default" | "none"
+  type ItemType = {
+    value : Indicator,
+    name : string
+  }
+
+  type ImageType = {
+    src : string,
+    error : boolean
+  }
+
+  type LongPressType = {
+    value : string,
+    name : string
+  }
+
+  const imageList = ref([
+    { src: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png", error: false },
+    { src: "/static/test-image/logo.png", error: false },
+    { src: "/static/test-image/logo.svg", error: false },
+    // #ifdef APP
+    { src: "/static/uni2.png", error: false },
+    // #endif
+  ] as ImageType[])
+
+  const indicator = ref([{
+    value: "default",
+    name: "圆点"
+  }, {
+    value: "number",
+    name: "数字"
+  }, {
+    value: "none",
+    name: "不显示"
+  }] as ItemType[])
+
+  const longPressAction = ref([{
+    value: "0",
+    name: "默认长按行为"
+  }, {
+    value: "1",
+    name: "自定义长按行为"
+  }] as LongPressType[])
+
+  const currentIndicator = ref("default"  as Indicator)
+
+  // #ifdef WEB
+  const isWeb = ref(true)
+  // #endif
+  // #ifndef WEB
+  const isWeb = ref(false)
+  // #endif
+
+  // #ifdef APP-IOS
+  const isIOS = ref(true)
+  // #endif
+  // #ifndef APP-IOS
+  const isIOS = ref(false)
+  // #endif
+
+  const isLongPress = ref(true)
+  const isLoop = ref(true)
+
+  const previewImage = (index : number) => {
+    let list = [] as Array<string>
+    imageList.value.forEach((item : ImageType) => {
+      list.push(item.src)
+    })
+    uni.previewImage({
+      urls: list,
+      current: index,
+      indicator: currentIndicator.value,
+      loop: isLoop.value,
+      longPressActions: (isLongPress.value ? ({
+        itemList: ["按钮1", "按钮2", "按钮3"],
+        itemColor: "#ccc",
+        success: (e : LongPressActionsSuccessResult) => {
+          uni.showToast({
+            title: "用户选中了第" + (e.index + 1) + "张图片，并选中了第" + (e.tapIndex + 1) + "个选项",
+            position: "bottom"
+          })
+        },
+        fail: (e : LongPressActionsFailResult) => {
+          uni.showToast({
+            title: "用户关闭了action sheet",
+            position: "bottom"
+          })
+        }
+      } as LongPressActionsOptions) : null)
+    })
+  }
+
+  const chooseImage = () => {
+    uni.chooseImage({
+      sourceType: ['album'],
+      count: 1,
+      success: (e) => {
+        imageList.value = imageList.value.concat({ src: e.tempFilePaths[0], error: false } as ImageType)
+        // imageList.value = imageList.value.concat(e.tempFilePaths)
+      },
+      fail(_) {
+      }
+    })
+  }
+
+  const onIndicatorChanged = (e : UniRadioGroupChangeEvent) => {
+    currentIndicator.value = e.detail.value as Indicator
+  }
+
+  const onCheckboxChange = (_ : UniCheckboxGroupChangeEvent) => {
+    isLoop.value = !isLoop.value
+  }
+
+  const onLongPressCheckboxChange = (e: UniRadioGroupChangeEvent) => {
+    isLongPress.value = (e.detail.value == "1")
+  }
+
+  const onImageLoadError = (index : number, error : UniImageErrorEvent) => {
+    imageList.value[index].error = true
+  }
+
+  const closePreviewImage = ()=>{
+    uni.closePreviewImage({})
+  }
+
+  const testSetCurrentIndicator = (value:string) =>{
+    currentIndicator.value = value as Indicator
+  }
+
+  defineExpose({
+  	testSetCurrentIndicator,
+    previewImage,
+    closePreviewImage
+  })
+</script>
+
+<style>
+  .text-desc {
+    margin-top: 16px;
+    margin-left: 8px;
+    margin-bottom: 16px;
+    font-weight: bold;
+  }
+
+  .cell-ct {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+
+  .cell {
+    margin-left: 3px;
+    margin-right: 3px;
+    width: 100px;
+    height: 100px;
+  }
+
+  .cell-choose-image {
+    border-width: 1px;
+    border-style: solid;
+    border-color: lightgray;
+  }
+
+  .indicator-it {
+    margin: 8px;
+  }
+  .cell-pd {
+    padding: 11px 0px;
+  }
+</style>

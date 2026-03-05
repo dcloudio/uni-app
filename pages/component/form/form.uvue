@@ -1,0 +1,359 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="scroll-view">
+  <!-- #endif -->
+    <view class="page">
+      <form @submit="onFormSubmit" @reset="onFormReset">
+        <view class="uni-form-item">
+          <text class="title">姓名</text>
+          <input class="uni-input" name="nickname" :value="data.nickname" placeholder="请输入姓名" :maxlength="-1" />
+        </view>
+        <view class="uni-form-item">
+          <text class="title">性别</text>
+          <radio-group name="gender" class="flex-row">
+            <view class="group-item">
+              <radio value="0" :checked="data.gender=='0'" /><text>男</text>
+            </view>
+            <view class="group-item">
+              <radio value="1" :checked="data.gender=='1'" /><text>女</text>
+            </view>
+          </radio-group>
+        </view>
+        <view class="uni-form-item">
+          <text class="title">爱好</text>
+          <checkbox-group name="loves" class="flex-row">
+            <view class="group-item">
+              <checkbox value="0" :checked="data.loves.indexOf('0')>-1" /><text>读书</text>
+            </view>
+            <view class="group-item">
+              <checkbox value="1" :checked="data.loves.indexOf('1')>-1" /><text>写字</text>
+            </view>
+          </checkbox-group>
+        </view>
+        <view class="uni-form-item">
+          <text class="title">年龄</text>
+          <slider name="age" :value="data.age" :show-value="true"></slider>
+        </view>
+        <view class="uni-form-item">
+          <text class="title">保留选项</text>
+          <view>
+            <switch name="switch" :checked="data.switch" />
+          </view>
+        </view>
+        <view class="uni-form-item">
+          <text class="title">备注</text>
+          <textarea name="comment" :value="data.comment" placeholder="请输入备注" style="background: #FFF;" />
+          <!-- <textarea class="uni-input" name="comment" :value="comment" placeholder="这个class的写法，导致iOS和Android产生了高度差异"/> -->
+        </view>
+        <!-- picker -->
+        <!-- #ifdef APP-HARMONY || WEB || MP -->
+        <view class="uni-form-item flex-row">
+          <text class="picker-title">时区</text>
+          <picker class="picker" name="timeZone" @change="onTimeZoneChange" :value="data.timeZoneIndex" :range="data.timeZoneList">
+            <view class="uni-picker-select-value pickerValue">{{data.timeZoneList[data.timeZoneIndex]}}</view>
+          </picker>
+        </view>
+        <view class="uni-form-item flex-row">
+          <text class="picker-title">多列选择器</text>
+          <picker class="picker pickerMulti" mode="multiSelector" @columnchange="onMultiPickerColumnChange"
+            :value="data.multiIndex" :range="data.multiArray">
+            <view class="uni-picker-select-value pickerMultiValue">
+              {{data.multiArray[0][data.multiIndex[0]]}}，{{data.multiArray[1][data.multiIndex[1]]}}，{{data.multiArray[2][data.multiIndex[2]]}}
+            </view>
+          </picker>
+        </view>
+        <view class="uni-form-item flex-row">
+          <text class="picker-title">时间选择器</text>
+          <picker class="picker pickerTime" mode="time" :value="data.timePickerValue" start="09:01" end="21:01" @change="onTimeChange">
+            <view class="uni-picker-select-value">{{data.timePickerValue}}</view>
+          </picker>
+        </view>
+        <view class="uni-form-item flex-row">
+          <text class="picker-title">日期选择器</text>
+          <picker class="picker pickerDate" mode="date" :value="data.datePickerValue" :start="data.startDate" :end="data.endDate"
+            @change="onDateChange">
+            <view class="uni-picker-select-value">{{data.datePickerValue}}</view>
+          </picker>
+        </view>
+        <!-- #endif -->
+        <view class="uni-form-item">
+          <text class="title">时间</text>
+          <picker-view class="picker-view" name="time" :value="data.time" indicator-style="height:50px">
+            <picker-view-column>
+              <view class="picker-view-item" v-for="(item,index) in data.hours" :key="index">
+                <text class="picker-view-text">{{item}}时</text>
+              </view>
+            </picker-view-column>
+            <picker-view-column>
+              <view class="picker-view-item" v-for="(item,index) in data.minutes" :key="index">
+                <text class="picker-view-text">{{item}}分</text>
+              </view>
+            </picker-view-column>
+          </picker-view>
+        </view>
+        <view class="flex-row">
+          <button class="btn btn-submit" form-type="submit" type="primary">Submit</button>
+          <button class="btn btn-reset" type="default" form-type="reset">Reset</button>
+        </view>
+      </form>
+      <view class="result">提交的表单数据</view>
+      <textarea class="textarea" :value="formDataText" :maxlength="-1" :auto-height="true"></textarea>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  function getDate(type?: string): string {
+    const date = new Date();
+
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+
+    if (type === 'start') {
+      year = year - 10;
+    } else if (type === 'end') {
+      year = year + 10;
+    }
+
+    const monthString = month > 9 ? month.toString() : '0' + month;
+    const dayString = day > 9 ? day.toString() : '0' + day;
+
+    return `${year}-${monthString}-${dayString}`;
+  }
+
+  type DataType = {
+    nickname: string;
+    gender: string;
+    age: number;
+    loves: string[];
+    switch: boolean;
+    timeZoneIndex: number;
+    timeZoneList: string[];
+    multiArray: string[][];
+    multiIndex: number[];
+    datePickerValue: string;
+    startDate: string;
+    endDate: string;
+    timePickerValue: string;
+    time: number[];
+    hours: string[];
+    minutes: string[];
+    comment: string;
+    formData: UTSJSONObject;
+    // 仅测试
+    testVerifySubmit: boolean;
+    testVerifyReset: boolean;
+  }
+
+  let hours = new Array<string>()
+  let minutes = new Array<string>()
+  for (let i = 1; i <= 24; i++) {
+    hours.push(i.toString())
+  }
+  for (let i = 1; i <= 60; i++) {
+    minutes.push(i.toString())
+  }
+  const date = new Date()
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    nickname: '',
+    gender: '0',
+    age: 18,
+    loves: ['0'],
+    switch: true,
+    timeZoneIndex: 0,
+    timeZoneList: ['中国', '美国', '巴西', '日本'],
+    multiArray: [
+      ['亚洲', '欧洲'],
+      ['中国', '日本'],
+      ['北京', '上海', '广州']
+    ],
+    multiIndex: [0, 0, 0],
+    datePickerValue: getDate(null),
+    startDate: getDate('start'),
+    endDate: getDate('end'),
+    timePickerValue: '12:01',
+    time: [date.getHours() - 1, date.getMinutes() - 1],
+    hours: hours,
+    minutes: minutes,
+    comment: '',
+    formData: {},
+    // 仅测试
+    testVerifySubmit: false,
+    testVerifyReset: false
+  } as DataType)
+
+  const formDataText = computed((): string => {
+    return JSON.stringify(data.formData)
+  })
+
+  // #ifdef APP-HARMONY
+  const onTimeZoneChange = (e: UniPickerChangeEvent) => {
+    data.timeZoneIndex = e.detail.value as number
+    console.log('时区选择改变，携带值为：' + e.detail.value)
+  }
+
+  const onMultiPickerColumnChange = (e: UniPickerColumnChangeEvent) => {
+    console.log('修改的列为：' + e.detail.column + '，值为：' + e.detail.value)
+    data.multiIndex[e.detail.column] = e.detail.value
+    switch (e.detail.column) {
+      case 0: //拖动第1列
+        switch (data.multiIndex[0]) {
+          case 0:
+            data.multiArray[1] = ['中国', '日本']
+            data.multiArray[2] = ['北京', '上海', '广州']
+            break
+          case 1:
+            data.multiArray[1] = ['英国', '法国']
+            data.multiArray[2] = ['伦敦', '曼彻斯特']
+            break
+        }
+        data.multiIndex.splice(1, 1, 0)
+        data.multiIndex.splice(2, 1, 0)
+        break
+      case 1: //拖动第2列
+        switch (data.multiIndex[0]) { //判断第一列是什么
+          case 0:
+            switch (data.multiIndex[1]) {
+              case 0:
+                data.multiArray[2] = ['北京', '上海', '广州']
+                break
+              case 1:
+                data.multiArray[2] = ['东京', '北海道']
+                break
+            }
+            break
+          case 1:
+            switch (data.multiIndex[1]) {
+              case 0:
+                data.multiArray[2] = ['伦敦', '曼彻斯特']
+                break
+              case 1:
+                data.multiArray[2] = ['巴黎', '马赛']
+                break
+            }
+            break
+        }
+        data.multiIndex.splice(2, 1, 0)
+        break
+    }
+  }
+
+  const onDateChange = (e: UniPickerChangeEvent) => {
+    data.datePickerValue = e.detail.value as string
+  }
+
+  const onTimeChange = (e: UniPickerChangeEvent) => {
+    data.timePickerValue = e.detail.value as string
+  }
+  // #endif
+
+  const onFormSubmit = (e: UniFormSubmitEvent) => {
+    data.formData = e.detail.value
+
+    // 仅测试
+    data.testVerifySubmit = (e.type == 'submit' && (e.target?.tagName ?? '') == "FORM")
+  }
+
+  const onFormReset = (e: UniFormResetEvent) => {
+    data.formData = {}
+    data.timeZoneIndex = 0
+
+    // 仅测试
+    data.testVerifyReset = (e.type == 'reset' && (e.target?.tagName ?? '') == "FORM")
+  }
+
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+  .scroll-view {
+    flex: 1;
+  }
+
+  .page {
+    padding: 15px;
+  }
+
+  .flex-row {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .uni-form-item {
+    padding: 15px 0;
+  }
+
+  .title {
+    margin-bottom: 10px;
+    opacity: 0.8;
+  }
+
+  .picker-title {
+    opacity: 0.8;
+  }
+
+  .picker {
+    margin-left: 15px;
+  }
+
+  .group-item {
+    flex-direction: row;
+    margin-right: 20px;
+  }
+
+  .picker-view {
+    width: 200px;
+    height: 320px;
+    margin-top: 10px;
+  }
+
+  .picker-view-item {
+    height: 50px;
+  }
+
+  .picker-view-text {
+    line-height: 50px;
+    text-align: center;
+  }
+
+  .btn {
+    flex: 1;
+  }
+
+  .btn-submit {
+    margin-right: 5px;
+  }
+
+  .btn-reset {
+    margin-left: 5px;
+  }
+
+  .result {
+    margin-top: 30px;
+  }
+
+  .textarea {
+    margin-top: 5px;
+    padding: 5px;
+    background-color: #fff;
+  }
+
+  .uni-picker-select-value {
+    height: 41px;
+    padding: 0 13px;
+    font-size: 14px;
+    /* #ifndef VUE3-VAPOR */
+    background: var(--list-background-color,#ffffff);
+    /* #endif */
+    /* #ifdef VUE3-VAPOR */
+    background: #ffffff;
+    /* #endif */
+    justify-content: center;
+  }
+</style>

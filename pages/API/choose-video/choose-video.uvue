@@ -1,0 +1,131 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap">
+      <video class="video" :src="src" :controls="true" :poster="videoCoverImage"></video>
+      <view class="uni-title">
+        <text class="uni-subtitle-text">视频信息</text>
+      </view>
+      <text>{{videoInfo}}</text>
+      <view class="uni-btn-v">
+        <button type="primary" @click="chooseVideo">选取视频</button>
+      </view>
+      <enum-data title="视频来源" :items="sourceTypeItemTypes" @change="onSourceTypeChange"></enum-data>
+      <!-- #ifdef APP -->
+      <enum-data title="屏幕方向" :items="orientationTypeItemTypes" @change="onOrientationTypeChange"></enum-data>
+      <!-- #endif -->
+      <enum-data title="摄像头" :items="cameraItemTypes" @change="onCameraChange"></enum-data>
+      <!-- #ifdef APP-ANDROID -->
+      <enum-data title="相册模式" :items="albumModeTypes" @change="onAlbumModeChange"></enum-data>
+      <!-- #endif -->
+    </view>
+    <input-data title="最长拍摄时间，单位秒" defaultValue="60" type="number" @confirm="onMaxDurationConfirm"></input-data>
+    <!-- #ifdef APP -->
+    <view class="uni-padding-wrap">
+      <boolean-data title="是否压缩（HamonyOS 不支持，推荐使用 uni.compressVideo 进行压缩）" :defaultValue="true" @change="onCompressedChange"></boolean-data>
+    </view>
+    <!-- #endif -->
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types';
+  type Camera = "back" | "front"
+  type Source = "album" | "camera"
+
+  const title = ref("chooseVideo")
+  const src = ref("")
+  const orientationTypeItemTypes = ref([{ "value": 0, "name": "竖屏" }, { "value": 1, "name": "横屏" }, { "value": 2, "name": "自动" }] as ItemType[])
+  const sourceTypeItemTypes = ref([{ "value": 0, "name": "从相册中选择视频" }, { "value": 1, "name": "拍摄视频" }, { "value": 2, "name": "从相册中选择视频或拍摄视频" }] as ItemType[])
+  const sourceTypeItems = ref([["album"], ["camera"], ["album", "camera"]] as Source[][])
+  const cameraItemTypes = ref([{ "value": 0, "name": "后置摄像头" }, { "value": 1, "name": "前置摄像头" }] as ItemType[])
+  const albumModeTypes = ref([{ "value": 0, "name": "自定义视频选择器" }, { "value": 1, "name": "系统视频选择器" }] as ItemType[])
+  const albumModeTypeItems = ref(["custom", "system"])
+  const cameraItems = ref(["back", "front"] as Camera[])
+  const sourceType = ref(["album", "camera"] as Source[])
+  const orientationType = ref("portrait")
+  const orientationTypeItems = ref(["portrait", "landscape", "auto"])
+  const compressed = ref(true)
+  const maxDuration = ref(60)
+  const camera = ref("back" as Camera)
+  const videoInfo = ref("")
+  const videoCoverImage = ref("")
+  const albumMode = ref("custom")
+
+  onPageHide(() => {
+    console.log("Page Hide");
+  })
+
+  const chooseVideo = () => {
+    uni.chooseVideo({
+      sourceType: sourceType.value,
+      // #ifdef APP
+      compressed: compressed.value,
+      pageOrientation: orientationType.value,
+      // #endif
+      maxDuration: maxDuration.value,
+      // #ifdef APP-ANDROID
+      albumMode: albumMode.value,
+      // #endif
+      camera: camera.value,
+      success: (res) => {
+        console.log("chooseVideo success", JSON.stringify(res));
+        src.value = res.tempFilePath;
+        videoInfo.value = `视频长度: ${res.duration}s\n视频大小: ${Math.ceil(res.size)}KB\n视频宽度: ${res.width}\n视频高度: ${res.height}\n`;
+        // #ifdef APP-ANDROID || APP-IOS
+        uni.getVideoInfo({
+          src: res.tempFilePath,
+          success: (_res) => {
+            if(_res.thumbTempFilePath != null) {
+            videoCoverImage.value = _res.thumbTempFilePath!
+            }
+          }
+        });
+        // #endif
+      },
+      fail: (err) => {
+        uni.showModal({
+          title: "选择视频失败",
+          content: JSON.stringify(err),
+          showCancel: false
+        });
+      }
+    });
+  }
+
+  const onOrientationTypeChange = (value: number) => {
+    orientationType.value = orientationTypeItems.value[value];
+  }
+
+  const onSourceTypeChange = (value: number) => {
+    sourceType.value = sourceTypeItems.value[value];
+  }
+
+  const onCompressedChange = (value: boolean) => {
+    compressed.value = value;
+  }
+
+  const onMaxDurationConfirm = (value: number) => {
+    maxDuration.value = value;
+  }
+
+  const onCameraChange = (value: number) => {
+    camera.value = cameraItems.value[value];
+  }
+
+  const onAlbumModeChange = (value: number) => {
+    albumMode.value = albumModeTypeItems.value[value]
+  }
+</script>
+
+<style>
+  .video {
+    align-self: center;
+    width: 300px;
+    height: 225px;
+  }
+</style>

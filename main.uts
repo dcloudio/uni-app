@@ -1,0 +1,37 @@
+// 仅测试 console.log 时机问题
+import './test-main-console.uts'
+// #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
+import { uniStat } from '@/uni_modules/uni-stat/plugin.uts'
+// #endif
+import App from './App.uvue'
+
+import { createSSRApp } from 'vue'
+
+// 统计配置
+const uniStatcollectItems = {
+	uniStatPageLog: true
+}
+
+const uniStatOptions = {
+  enable: process.env.NODE_ENV == 'production',
+	debug: false,
+	collectItems: uniStatcollectItems,
+}
+
+export function createApp() {
+  const app = createSSRApp(App)
+  // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
+  app.use(uniStat, uniStatOptions)
+  // #endif
+  // app.mixin({
+  //   onReady() {
+  //     setTimeout(() => {
+  //       console.log((this as BasePage).$nativePage!.getDomJson())
+  //     }, 100)
+  //   }
+  // })
+  return {
+    app
+  }
+}
+// 此注释必须放在此文件的最后一行，用于测试issue#18520

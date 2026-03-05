@@ -1,0 +1,547 @@
+<template>
+  <view class="mask flex-center">
+    <view class="content">
+      <view class="content-top">
+        <text class="content-top-text">{{title}}</text>
+        <image class="content-top-image" mode="widthFix"
+          src="/uni_modules/uni-upgrade-center-app/static/app/bg_top.png"></image>
+      </view>
+
+      <view class="content-space"></view>
+
+      <view class="content-body">
+        <view class="content-body-title">
+          <text class="text title content-body-title_title">{{subTitle}}</text>
+          <text class="text version content-body-title_version">v{{version}}</text>
+        </view>
+        <view class="body">
+          <scroll-view class="box-des-scroll">
+            <text class="text box-des">
+              {{contents}}
+            </text>
+          </scroll-view>
+        </view>
+        <view class="footer flex-center">
+          <template v-if="isiOS || isHarmony">
+            <button class="content-button" style="border: none;color: #fff;" type="primary" plain
+              @click="jumpToAppStore">
+              {{downLoadBtnTextiOS}}
+            </button>
+          </template>
+          <template v-else>
+            <template v-if="!downloadSuccess">
+              <view class="progress-box flex-column" v-if="downloading">
+                <progress class="progress" :percent="downLoadPercent" activeColor="#3DA7FF" :show-info="true"
+                  :stroke-width="10" />
+                <view style="width:100%;display: flex;justify-content: space-around;flex-direction: row;">
+                  <text class="text" style="font-size: 14px;">{{downLoadingText}}</text>
+                  <text class="text" style="font-size: 14px;">({{downloadedSize}}/{{packageFileSize}}M)</text>
+                </view>
+              </view>
+
+              <button v-else class="content-button" @click="updateApp">
+                {{downLoadBtnText}}
+              </button>
+            </template>
+
+            <button v-else-if="downloadSuccess && !installed" class="content-button" :loading="installing"
+              :disabled="installing" @click="installPackage">
+              {{installing ? '正在安装……' : '下载完成，立即安装'}}
+            </button>
+
+            <button v-else-if="installed" class="content-button" @click="installPackage">
+              安装未完成，点击安装
+            </button>
+          </template>
+        </view>
+      </view>
+
+      <view class="content-bottom">
+        <image v-if="!is_mandatory" class="close-img" mode="widthFix"
+          src="/uni_modules/uni-upgrade-center-app/static/app/app_update_close.png" @click="closeUpdate">
+        </image>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import { openSchema as utsOpenSchema } from '@/uni_modules/uts-openSchema'
+  import { UniUpgradeCenterResult, StoreListItem } from '../../utils/call-check-version'
+  import { platform_iOS, platform_Android, platform_Harmony } from '../../utils/utils'
+  // #ifdef APP-ANDROID
+  import { createNotificationProgress, cancelNotificationProgress, finishNotificationProgress } from '@/uni_modules/uts-progressNotification'
+  import { type CreateNotificationProgressOptions, type FinishNotificationProgressOptions } from '@/uni_modules/uts-progressNotification/utssdk/interface.uts'
+  // #endif
+
+  const requiredKey = ['version', 'url', 'type']
+  let downloadTask : DownloadTask | null = null;
+  let openSchemePromise : Promise<boolean> | null = null;
+
+  const openSchema = (url : string) : Promise<boolean> => new Promise<boolean>((resolve, reject) => {
+    try {
+      utsOpenSchema(url)
+      resolve(true)
+    } catch (e) {
+      reject(false)
+    }
+  })
+
+  // 从之前下载安装
+  const installForBeforeFilePath = ref<string>('')
+
+  // 安装
+  const installed = ref<boolean>(false)
+  const installing = ref<boolean>(false)
+
+  // 下载
+  const downloadSuccess = ref<boolean>(false)
+  const downloading = ref<boolean>(false)
+
+  const downLoadPercent = ref<number>(0)
+  const downloadedSize = ref<number>(0)
+  const packageFileSize = ref<number>(0)
+
+  // 要安装的本地包地址
+  const tempFilePath = ref<string>('')
+
+  // 默认安装包信息
+  const title = ref<string>('更新日志')
+  const contents = ref<string>('')
+  const version = ref<string>('')
+  const is_mandatory = ref<boolean>(false)
+  const url = ref<string>("")
+  const platform = ref<string[]>([])
+  const store_list = ref<StoreListItem[] | null>(null)
+
+  // 可自定义属性
+  const subTitle = ref<string>('发现新版本')
+  const downLoadBtnTextiOS = ref<string>('立即跳转更新')
+  const downLoadBtnText = ref<string>('立即下载更新')
+  const downLoadingText = ref<string>('安装包下载中，请稍后')
+
+  const isiOS = computed(() : boolean => platform.value.includes(platform_iOS))
+  const isHarmony = computed(() : boolean => platform.value.includes(platform_Harmony))
+  const isAndroid = computed(() : boolean => platform.value.includes(platform_Android))
+  const needNotificationProgress = computed(() : boolean => isAndroid.value && !is_mandatory.value)
+
+  function getCurrentDialogPage() : UniPage | null {
+    const pages = getCurrentPages()
+    if (pages.length > 0) {
+      const dialogPages = pages[pages.length - 1].getDialogPages()
+      if (dialogPages.length > 0) {
+        return dialogPages[dialogPages.length - 1]
+      }
+    }
+    return null
+  }
+
+  function closePopup() {
+    downloadSuccess.value = false
+    downloading.value = false
+    downLoadPercent.value = 0
+    downloadedSize.value = 0
+    packageFileSize.value = 0
+    tempFilePath.value = ''
+
+    installing.value = false
+    installed.value = false
+
+    uni.closeDialogPage({
+      dialogPage: getCurrentDialogPage(),
+      fail(e) {
+        console.log('e: ', e);
+      }
+    })
+  }
+
+  function askAbortDownload() {
+    uni.showModal({
+      title: '是否取消下载？',
+      cancelText: '否',
+      confirmText: '是',
+      success: res => {
+        if (res.confirm) {
+          if (downloadTask !== null) downloadTask!.abort()
+          if (needNotificationProgress.value) {
+            // #ifdef APP-ANDROID
+            cancelNotificationProgress();
+            // #endif
+          }
+          closePopup()
+        }
+      }
+    });
+  }
+
+  function closeUpdate() {
+    if (downloading.value && !needNotificationProgress.value) {
+      askAbortDownload()
+      return;
+    }
+    closePopup()
+  }
+
+  function jumpToAppStore() {
+    openSchema(url.value)
+  }
+
+  function show(localPackageInfo : UniUpgradeCenterResult | null) {
+    if (localPackageInfo === null) return;
+    for (let key in localPackageInfo) {
+      if (requiredKey.indexOf(key) != -1 && localPackageInfo[key] === null) {
+        console.error(`参数 ${key} 必填，请检查后重试`)
+        closePopup()
+        return;
+      }
+    }
+    title.value = localPackageInfo.title
+    url.value = localPackageInfo.url
+    contents.value = localPackageInfo.contents
+    is_mandatory.value = localPackageInfo.is_mandatory
+    platform.value = localPackageInfo.platform
+    version.value = localPackageInfo.version
+    store_list.value = localPackageInfo.store_list
+  }
+
+  function checkStoreScheme() : Promise<boolean> | null {
+    if (store_list.value !== null) {
+      const storeList : StoreListItem[] = store_list.value!.filter((item : StoreListItem) : boolean => item.enable)
+      if (storeList.length > 0) {
+        if (openSchemePromise === null) {
+          openSchemePromise = Promise.reject() as Promise<boolean>
+        }
+        storeList
+          .sort((cur : StoreListItem, next : StoreListItem) : number => next.priority - cur.priority)
+          .map((item : StoreListItem) : string => item.scheme)
+          .reduce((promise : Promise<boolean>, cur : string) : Promise<boolean> => {
+            openSchemePromise = promise.catch<boolean>(() : Promise<boolean> => openSchema(cur))
+            return openSchemePromise!
+          }, openSchemePromise!)
+        return openSchemePromise!
+      }
+    }
+    return null
+  }
+
+  function installPackage() {
+    installing.value = true;
+    // #ifdef APP
+    uni.installApk({
+      filePath: tempFilePath.value,
+      success: _ => {
+        installing.value = false;
+        installed.value = true;
+      },
+      fail: err => {
+        console.error('installApk fail', err);
+        // 安装失败需要重新下载安装包
+        installing.value = false;
+        installed.value = false;
+        uni.showModal({
+          title: '更新失败，请重新下载',
+          content: `uni.installApk 错误码 ${err.errCode}`,
+          showCancel: false
+        });
+      }
+    });
+    // 安装跳出覆盖安装，此处直接返回上一页
+    if (!is_mandatory.value) {
+      uni.navigateBack()
+    }
+    // #endif
+  }
+
+  function downloadFail() {
+    const errMsg = '下载失败，请点击重试'
+    downloadSuccess.value = false;
+    downloading.value = false;
+    downLoadPercent.value = 0;
+    downloadedSize.value = 0;
+    packageFileSize.value = 0;
+    downLoadBtnText.value = errMsg
+    downloadTask = null;
+    if (needNotificationProgress.value) {
+      // #ifdef APP-ANDROID
+      finishNotificationProgress({
+        title: '升级包下载失败',
+        content: '请重新检查更新',
+        onClick() { }
+      } as FinishNotificationProgressOptions);
+      // #endif
+    }
+  }
+
+  function downLoadComplete() {
+    downloadSuccess.value = true;
+    downloading.value = false;
+    downLoadPercent.value = 0
+    downloadedSize.value = 0
+    packageFileSize.value = 0
+    downloadTask = null;
+    if (needNotificationProgress.value) {
+      // #ifdef APP-ANDROID
+      finishNotificationProgress({
+        title: "安装升级包",
+        content: "下载完成",
+        onClick() { }
+      } as FinishNotificationProgressOptions)
+      installPackage();
+      // #endif
+      return
+    }
+    // 强制更新，直接安装
+    if (is_mandatory.value) {
+      installPackage();
+    }
+  }
+
+  function downloadPackage() {
+    //下载包
+    downloadTask = uni.downloadFile({
+      url: url.value,
+      success: res => {
+        if (res.statusCode == 200) {
+          tempFilePath.value = res.tempFilePath
+          downLoadComplete()
+        } else {
+          console.log('downloadFile err: ', res);
+          downloadFail()
+        }
+      },
+      fail: err => {
+        console.log('downloadFile err: ', err);
+        downloadFail()
+      }
+    });
+    if (downloadTask !== null) {
+      downloading.value = true;
+      if (needNotificationProgress.value) {
+        closePopup()
+      }
+      downloadTask!.onProgressUpdate(res => {
+        downLoadPercent.value = parseFloat(res.progress.toFixed(0));
+        downloadedSize.value = parseFloat((res.totalBytesWritten / Math.pow(1024, 2)).toFixed(2));
+        packageFileSize.value = parseFloat((res.totalBytesExpectedToWrite / Math.pow(1024, 2)).toFixed(2));
+        if (needNotificationProgress.value) {
+          // #ifdef APP-ANDROID
+          createNotificationProgress({
+            title: "升级中心正在下载安装包……",
+            content: `${downLoadPercent.value}%`,
+            progress: downLoadPercent.value,
+            onClick: () => {
+              if (!downloadSuccess.value) {
+                askAbortDownload()
+              }
+            }
+          } as CreateNotificationProgressOptions)
+          // #endif
+        }
+      });
+    }
+  }
+
+  function updateApp() {
+    const checkStoreSchemeResult = checkStoreScheme()
+    if (checkStoreSchemeResult !== null) {
+      checkStoreSchemeResult
+        .then(_ => { })
+        .catch(() => { downloadPackage() })
+        .finally(() => {
+          openSchemePromise = null
+        })
+    } else { downloadPackage() }
+  }
+
+  onUnload(() => {
+    if (needNotificationProgress.value) {
+      // #ifdef APP-ANDROID
+      cancelNotificationProgress()
+      // #endif
+    }
+  })
+
+  onLoad((onLoadOptions : OnLoadOptions) => {
+    const local_storage_key : string | null = onLoadOptions['local_storage_key']
+    if (local_storage_key == null) {
+      console.error('local_storage_key为空，请检查后重试')
+      closePopup()
+      return;
+    };
+    const localPackageInfo = uni.getStorageSync(local_storage_key);
+    if (localPackageInfo == null) {
+      console.error('安装包信息为空，请检查后重试')
+      closePopup()
+      return;
+    };
+    show(JSON.parse<UniUpgradeCenterResult>(JSON.stringify(localPackageInfo)) as UniUpgradeCenterResult)
+  })
+
+  onBackPress((options : OnBackPressOptions) : boolean | null => {
+    if (is_mandatory.value) return true
+    if (!needNotificationProgress.value) {
+      if (downloadTask !== null) {
+        downloadTask!.abort()
+      }
+    }
+    return false
+  })
+</script>
+
+<style>
+  .flex-center {
+    /* #ifndef APP-NVUE | UNI-APP-X */
+    display: flex;
+    /* #endif */
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mask {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .65);
+  }
+
+  .content {
+    position: relative;
+    top: 0;
+    width: 600rpx;
+    background-color: transparent;
+  }
+
+  .text {
+    font-family: Source Han Sans CN;
+  }
+
+  .content-top {
+    width: 100%;
+    border-bottom-color: #fff;
+    border-bottom-width: 15px;
+    border-bottom-style: solid;
+  }
+
+  .content-space {
+    width: 100%;
+    height: 120px;
+    background-color: #fff;
+    position: absolute;
+    top: 30%;
+    z-index: -1;
+  }
+
+  .content-top-image {
+    width: 100%;
+    position: relative;
+    bottom: -10%;
+  }
+
+  .content-top-text {
+    font-size: 22px;
+    font-weight: bold;
+    color: #F8F8FA;
+    position: absolute;
+    width: 65%;
+    top: 50%;
+    left: 25px;
+    z-index: 1;
+  }
+
+  .content-body {
+    box-sizing: border-box;
+    padding: 0 25px;
+    width: 100%;
+    background-color: #fff;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+
+  .content-body-title {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .content-body-title_version {
+    padding-left: 10px;
+    color: #fff;
+    font-size: 10px;
+    margin-left: 5px;
+    padding: 2px 4px;
+    border-radius: 10px;
+    background: #50aefd;
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #3DA7FF;
+    line-height: 38px;
+  }
+
+  .footer {
+    height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .box-des-scroll {
+    box-sizing: border-box;
+    padding: 0 15px;
+    height: 100px;
+  }
+
+  .box-des {
+    font-size: 13px;
+    color: #000000;
+    line-height: 25px;
+  }
+
+  .progress-box {
+    width: 100%;
+  }
+
+  .progress {
+    width: 90%;
+    height: 20px;
+  }
+
+  .content-bottom {
+    height: 75px;
+  }
+
+  .close-img {
+    width: 35px;
+    height: 35px;
+    z-index: 1000;
+    position: relative;
+    bottom: -30%;
+    left: 50%;
+    margin-left: -17px;
+  }
+
+  .content-button {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+
+    font-size: 15px;
+    font-weight: 400;
+    border-radius: 20px;
+    border: none;
+    color: #fff;
+
+    text-align: center;
+
+    background-color: #1785ff;
+  }
+
+  .flex-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>

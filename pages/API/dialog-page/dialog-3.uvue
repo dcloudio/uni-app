@@ -1,0 +1,187 @@
+<template>
+  <view id="dialog3" class="dialog-container">
+    <scroll-view class="dialog-content">
+      <text>title: {{ title }}</text>
+      <template v-for="(item, index) in PageStyleArray">
+        <view class="page-style-item" v-if="currentPageStyle[item.key] != null" :key="index">
+          <view class="item-text">
+            <text class="item-text-key">{{ item.key }}:</text>
+            <text class="item-text-value">{{
+              currentPageStyle[item.key]
+            }}</text>
+          </view>
+          <view class="mt-10" v-if="item.type == 'boolean'">
+            <switch :checked="currentPageStyle.getBoolean(item.key)"
+              @change="switchChange(item.key, $event as UniSwitchChangeEvent)">
+            </switch>
+          </view>
+          <view class="mt-10" v-else-if="item.type == 'number'">
+            <slider :value="currentPageStyle.getNumber(item.key)" :show-value="true"
+              @change="sliderChange(item.key, $event as UniSliderChangeEvent)" />
+          </view>
+          <view class="mt-10" v-else-if="item.type == 'string'">
+            <radio-group class="radio-set-value" @change="radioChange(item.key, $event as RadioGroupChangeEvent)">
+              <radio class="ml-10" v-for="(item2, index2) in item.value" :key="index2" :value="item2"
+                :checked="currentPageStyle[item.key] == item2">{{ item2 }}
+              </radio>
+            </radio-group>
+          </view>
+        </view>
+      </template>
+      <text class="mt-10 choose-close-animation-type-title">choose close dialogPage animationType</text>
+      <radio-group class="choose-close-animation-type-radio-group" @change="handleChooseAnimationType">
+        <radio class="ml-10 mt-10" v-for="item in closeAnimationTypeList" :key="item" :value="item"
+          :checked="closeAnimationType == item">{{ item }}
+        </radio>
+      </radio-group>
+      <button class="mt-10" @click="closeThisDialog">
+        closeThisDialog
+      </button>
+    </scroll-view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
+  import { PageStyleItem, PageStyleArray } from './page-style.uts';
+
+  type CloseAnimationType =
+    'auto' |
+    'none' |
+    'slide-out-right' |
+    'slide-out-left' |
+    'slide-out-top' |
+    'slide-out-bottom' |
+    'fade-out' |
+    'zoom-in' |
+    'zoom-fade-in'
+
+  const title = ref('dialog 3')
+  const currentPageStyle = ref({} as UTSJSONObject)
+  const closeAnimationType = ref('auto' as CloseAnimationType)
+  const closeAnimationTypeList = [
+    'auto',
+    'none',
+    'slide-out-right',
+    'slide-out-left',
+    'slide-out-top',
+    'slide-out-bottom',
+    'fade-out',
+    'zoom-in',
+    'zoom-fade-in'
+  ]
+
+  function getPageStyle() {
+    if (currentPage != null) {
+      currentPageStyle.value = currentPage.getPageStyle()
+    }
+  }
+
+  function setPageStyle(style : UTSJSONObject) {
+    if (currentPage != null) {
+      currentPage.setPageStyle(style);
+    }
+  }
+
+  onLoad((_ : OnLoadOptions) => {
+    getPageStyle()
+  })
+
+  function setStyleValue(key : string, value : any) {
+    const style = {}
+    style[key] = value
+    setPageStyle(style)
+    getPageStyle()
+  }
+
+  function radioChange(key : string, e : RadioGroupChangeEvent) {
+    setStyleValue(key, e.detail.value);
+  }
+
+  function sliderChange(key : string, e : UniSliderChangeEvent) {
+    setStyleValue(key, e.detail.value);
+  }
+
+  function switchChange(key : string, e : UniSwitchChangeEvent) {
+    setStyleValue(key, e.detail.value);
+  }
+
+  function handleChooseAnimationType(e : RadioGroupChangeEvent){
+    closeAnimationType.value = e.detail.value as CloseAnimationType
+  }
+
+  function closeThisDialog() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+        animationType: closeAnimationType.value,
+        success(res) {
+          console.log('closeDialog success', res)
+        },
+        fail(err) {
+          console.log('closeDialog fail', err)
+        },
+        complete(res) {
+          console.log('closeDialog complete', res)
+        }
+      })
+    }
+  }
+</script>
+
+<style>
+  .dialog-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dialog-content {
+    width: 90%;
+    height: 500px;
+    padding: 10px 6px;
+    background-color: #fff;
+    border-radius: 6px;
+  }
+
+  .mt-10 {
+    margin-top: 10px;
+  }
+  .ml-10 {
+    margin-left: 10px;
+  }
+
+  .page-style-item {
+    padding: 6px 0;
+    margin-top: 10px;
+    background-color: #ffffff;
+    border-radius: 5px;
+  }
+
+  .item-text {
+    flex-direction: row;
+  }
+
+  .item-text-key {
+    font-weight: bold;
+  }
+
+  .item-text-value {
+    margin-left: 5px;
+  }
+
+  .radio-set-value {
+    flex-direction: row;
+  }
+  .choose-close-animation-type-title{
+    font-weight: bold;
+  }
+  .choose-close-animation-type-radio-group{
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  </style

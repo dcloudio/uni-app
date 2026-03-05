@@ -1,0 +1,69 @@
+<template>
+    <text>初始化时1帧内显示110个元素。勿使用debug方式运行来测试性能</text>
+		<view>
+		    <view style="flex-direction: row;" v-for="(_,index) in 5" :key="index" flatten>
+		        <view v-for="(_,i) in 10" :key="index+'-'+i" style="background-color: #85d8b4;margin: 0.5px;" flatten>
+		            <text flatten>{{i}}</text>
+		        </view>
+		    </view>
+		</view>
+    <view class="btnShow" @click="ShowEvent()">
+        <text class="btnText">同屏显示4050个元素</text>
+    </view>
+		<view>
+        <view v-if="show" style="flex-direction: row;" v-for="(_,index) in 50" :key="index" flatten>
+            <view v-for="(_,i) in 40" :key="index+'-'+i" style="background-color: #85d8b4;margin: 0.5px;" flatten>
+                <text style="font-size: 5px;line-height: 5px;" flatten>{{i}}</text>
+            </view>
+        </view>
+    </view>
+
+</template>
+
+<script setup>
+    const show = ref(false);
+    var isBackPress = false;
+    var startime = Date.now();
+    const ShowEvent = (() => {
+			startime = Date.now();
+      show.value = !show.value
+			// nextTick(() => {
+			// 	const endtime = Date.now();
+			// 	console.log('nextTick duration', endtime - startime);
+			// })
+    });
+
+		// #ifdef APP
+    // const instance = getCurrentInstance();
+    const insPage = getCurrentInstance().proxy.$page;
+    insPage.onRenderChange(({ duration }) => {
+      if (isBackPress) { return }
+			const endtime = Date.now();
+			uni.showToast({
+				title: `${endtime - startime}ms`,
+			})
+			console.log(`show.value :${show.value} total duration(click -> render end):${endtime - startime}  render duration:${duration}`)
+    });
+		// #endif
+		onBackPress(() => {
+			show.value = false
+      isBackPress = true
+		});
+
+</script>
+
+<style>
+    .btnShow {
+        height: 48px;
+        margin: 16px;
+        background-color: #1677ff;
+        border-radius: 8px;
+        justify-content: center;
+        align-items: center;
+        /* box-shadow: 0 4px 12px rgba(22, 119, 255, 0.3); */
+    }
+
+    .btnText {
+        color: #ffffff;
+    }
+</style>

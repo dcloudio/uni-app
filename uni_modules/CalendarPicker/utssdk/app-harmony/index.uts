@@ -1,0 +1,108 @@
+import { BuilderNode } from "@kit.ArkUI"
+import { buildCalendarPicker } from "./builder.ets"
+
+interface CalendarPickerOptions {
+    selected ?: Date
+    hintRadius ?: number
+    alignType ?: CalendarAlign
+    offsetX ?: number | string
+    offsetY ?: number | string
+    color ?: string
+    fontSize ?: number
+    fontWeight ?: 100 | 400 | 500 | 700 | 900
+    fontStyle ?: FontStyle
+    onChange ?: (value : Date) => void
+}
+
+export class CalendarPicker {
+    private onChanges : Array<(value : Date) => void> = []
+    private params : CalendarPickerOptions = {
+        onChange: (value : Date) => {
+            this.onChanges.forEach((onChange) => {
+                onChange(value)
+            })
+        }
+    }
+    private builder : BuilderNode<[CalendarPickerOptions]> | null = null
+
+    init(element : UniNativeViewElement) {
+        this.builder =
+            element.bindHarmonyWrappedBuilder(wrapBuilder<[CalendarPickerOptions]>(buildCalendarPicker), this.params)
+    }
+
+    onChange(callback : (value : Date) => void) : CalendarPicker {
+        this.onChanges.push(callback)
+        return this
+    }
+
+    setSelected(date : Date) : CalendarPicker {
+        this.params.selected = date
+        this.builder?.update(this.params)
+        return this
+    }
+
+    setAlignType(alignType : 'start' | 'center' | 'end') : CalendarPicker {
+        switch (alignType) {
+            case 'start':
+                this.params.alignType = CalendarAlign.START
+                break
+            case 'center':
+                this.params.alignType = CalendarAlign.CENTER
+                break
+            case 'end':
+                this.params.alignType = CalendarAlign.END
+                break
+        }
+        this.builder?.update(this.params)
+        return this
+    }
+
+    setOffsetX(offsetX : number | string) : CalendarPicker {
+        this.params.offsetX = offsetX
+        this.builder?.update(this.params)
+        return this
+    }
+
+    setOffsetY(offsetY : number | string) : CalendarPicker {
+        this.params.offsetY = offsetY
+        this.builder?.update(this.params)
+        return this
+    }
+
+    setHintRadius(hintRadius : number) : CalendarPicker {
+        this.params.hintRadius = hintRadius
+        this.builder?.update(this.params)
+        return this
+    }
+
+    setColor(color : string) : CalendarPicker {
+        this.params.color = color
+        this.builder?.update(this.params)
+        return this
+    }
+
+    setFontSize(fontSize : number) : CalendarPicker {
+        this.params.fontSize = fontSize
+        this.builder?.update(this.params)
+        return this
+    }
+
+    setFontWeight(fontWeight : 100 | 400 | 500 | 700 | 900) : CalendarPicker {
+        this.params.fontWeight = fontWeight
+        this.builder?.update(this.params)
+        return this
+    }
+
+    setFontStyle(fontStyle : 'normal' | 'italic') : CalendarPicker {
+        switch (fontStyle) {
+            case 'normal':
+                this.params.fontStyle = FontStyle.Normal
+                break
+            case 'italic':
+                this.params.fontStyle = FontStyle.Italic
+                break
+        }
+        this.builder?.update(this.params)
+        return this
+    }
+}

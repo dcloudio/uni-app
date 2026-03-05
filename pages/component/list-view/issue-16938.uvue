@@ -1,0 +1,40 @@
+<template>
+  <list-view ref="listRef" style="flex: 1;">
+    <list-item class="item" v-for="item in 1000" :key="item" @click="toNextPage">
+      <text>{{item}}点击跳转下一页</text>
+    </list-item>
+  </list-view>
+</template>
+
+<script setup lang="uts">
+const scrollTop = ref(0)
+const listRef = ref<UniListViewElement | null>(null)
+
+function toNextPage() {
+  uni.navigateTo({
+    url: '/pages/component/list-view/list-view'
+  })
+}
+
+function getScrollTop() {
+  return listRef.value?.scrollTop ?? 0
+}
+
+function setScrollTop(top: number) {
+  if (listRef.value != null) {
+    listRef.value!.scrollTop = top
+  }
+}
+
+defineExpose({
+  setScrollTop,
+  toNextPage,
+  getScrollTop
+})
+</script>
+
+<style>
+  .item {
+    height: 100px;
+  }
+</style>

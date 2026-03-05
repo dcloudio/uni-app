@@ -1,0 +1,105 @@
+<template>
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap">
+      <view class="uni-title">请输入剪贴板内容</view>
+      <view class="uni-list">
+        <view class="uni-list-cell">
+          <input class="uni-input" type="text" placeholder="请输入剪贴板内容" :value="data.data" @input="dataChange" />
+        </view>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="setClipboard">存储数据</button>
+        <button @tap="getClipboard">读取数据</button>
+      </view>
+    </view>
+  </view>
+</template>
+<script setup lang="uts">
+  type DataType = {
+    data: string;
+    // 自动化测试
+    getDataTest: string;
+    setClipboardTest: boolean;
+  }
+
+  const title = ref('get/setClipboardData')
+  const data = reactive({
+    data: '',
+    // 自动化测试
+    getDataTest: '',
+    setClipboardTest: false
+  } as DataType)
+
+  // 页面卸载时清空剪贴板，避免影响其他测试用例
+  onUnload(() => {
+    uni.setClipboardData({
+      data: ''
+    })
+  })
+
+  const dataChange = (e:UniInputEvent) => {
+    data.data = e.detail.value
+  }
+
+  const getClipboard = () => {
+    uni.getClipboardData({
+      success: (res) => {
+        console.log(res.data);
+        data.getDataTest = res.data;
+        const content = res.data != "" ? '剪贴板内容为:' + res.data : '剪贴板暂无内容';
+        uni.showModal({
+          content,
+          title: '读取剪贴板',
+          showCancel: false
+        })
+      },
+      fail: (err) => {
+        uni.showModal({
+          content: `读取剪贴板失败: ${err.errMsg}`,
+          showCancel: false
+        })
+      }
+    });
+  }
+
+  const setClipboard = () => {
+    if (data.data.length == 0) {
+      uni.showModal({
+        title: '设置剪贴板失败',
+        content: '内容不能为空',
+        showCancel: false
+      })
+    } else {
+      uni.setClipboardData({
+        data: data.data,
+        success: () => {
+          data.setClipboardTest = true
+          // 成功处理
+          uni.showToast({
+            title: '设置剪贴板成功',
+            icon: "success"
+          })
+        },
+        fail: () => {
+          // bug：自动化测试时设置成功也进入了fail
+          data.setClipboardTest = false
+          // 失败处理
+          uni.showToast({
+            title: '储存数据失败!',
+            icon: "none"
+          })
+        }
+      });
+    }
+  }
+
+  defineExpose({
+    data,
+    getClipboard,
+    setClipboard
+  })
+</script>
+
+<style>
+</style>

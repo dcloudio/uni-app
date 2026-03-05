@@ -1,0 +1,449 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view>
+      <page-head title="navigate"></page-head>
+      <page-intro content="本页演示页面路由：开关控制共享元素动画，展示 onLoad/onShow/onReady 等生命周期时间戳；通过按钮跳转新页、返回、redirect 等，可传递参数。"></page-intro>
+      <view style="flex-direction: row;">
+        <switch @change="onChange"></switch>
+        <view class="uni-title">是否启用共享元素动画</view>
+      </view>
+      <share-element :share-key="data.shareElementKey">
+        <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
+      </share-element>
+      <text style="font-size: 13px;" >注意：开启共享元素动画后仅支持slide-in-right和fade-in动画效果</text>
+      <view class="uni-padding-wrap uni-common-mt uni-common-mb">
+        <view class="direction-row">
+          <text class="label">onLoad触发时间戳:</text>
+          <text>{{ data.onLoadTime }}</text>
+        </view>
+        <view class="direction-row">
+          <text class="label">onShow触发时间戳:</text>
+          <text>{{ data.onShowTime }}</text>
+        </view>
+        <view class="direction-row">
+          <text class="label">onReady触发时间戳:</text>
+          <text>{{ data.onReadyTime }}</text>
+        </view>
+        <view class="direction-row">
+          <text class="label">onHide触发时间戳:</text>
+          <text>{{ data.onHideTime }}</text>
+        </view>
+        <view class="direction-row">
+          <text class="label">onBackPress触发时间戳:</text>
+          <text>见控制台</text>
+        </view>
+        <view class="direction-row">
+          <text class="label">onUnload触发时间戳:</text>
+          <text>见控制台</text>
+        </view>
+        <view class="uni-btn-v">
+          <button @tap="navigateTo" class="uni-btn">
+            跳转新页面，并传递数据
+          </button>
+          <button @tap="navigateBack" class="uni-btn">返回上一页</button>
+          <button @tap="redirectTo" class="uni-btn">在当前页面打开</button>
+          <button @tap="switchTab" class="uni-btn">切换到模板选项卡</button>
+          <button @tap="reLaunch" class="uni-btn">
+            关闭所有页面，打开首页
+          </button>
+          <button @tap="navigateToErrorPage" class="uni-btn">
+            打开不存在的页面
+          </button>
+          <button v-for="(item, _) in data.animationTypeList" @tap="navigateToAnimationType(item)"
+            class="uni-btn">navigateTo动画({{item}})</button>
+          <button class="uni-btn" @click="goOnLoadCallAPI">测试 onLoad 调用 API</button>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { state, setLifeCycleNum } from '@/store/index.uts'
+  type AnimationType = "slide-in-right" | "slide-in-left" | "slide-in-top" | "slide-in-bottom" | "pop-in" | "fade-in" | "zoom-out" | "zoom-fade-out" | "none" | "auto"
+
+  type DataType = {
+    onLoadTime: number;
+    onShowTime: number;
+    onReadyTime: number;
+    onHideTime: number;
+    shareElementKey: string;
+    animationTypeList: string[];
+  }
+
+  const data = reactive({
+    onLoadTime: 0,
+    onShowTime: 0,
+    onReadyTime: 0,
+    onHideTime: 0,
+    shareElementKey: "",
+    animationTypeList: [
+      'slide-in-right',
+      'slide-in-left',
+      'slide-in-top',
+      'slide-in-bottom',
+      'pop-in',
+      'fade-in',
+      'zoom-out',
+      'zoom-fade-out',
+      'none'
+    ]
+  } as DataType)
+  onLoad(() => {
+    data.onLoadTime = Date.now()
+    console.log('onLoad', data.onLoadTime)
+  })
+
+  onPageShow(() => {
+    data.onShowTime = Date.now()
+    console.log('onShow', data.onShowTime)
+  })
+
+  onReady(() => {
+    data.onReadyTime = Date.now()
+    console.log('onReady', data.onReadyTime)
+  })
+
+  onPageHide(() => {
+    data.onHideTime = Date.now()
+    console.log('onHide', data.onHideTime)
+  })
+
+  onBackPress((options : OnBackPressOptions) : boolean | null => {
+    console.log('onBackPress', Date.now())
+    console.log('onBackPress from', options.from)
+    return null
+  })
+
+  onUnload(() => {
+    console.log('onUnload', Date.now())
+  })
+  const reLaunch = () => {
+    uni.reLaunch({
+      url: '/pages/tabBar/component',
+      success(result) {
+        console.log('reLaunch success', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(error) {
+        console.log('reLaunch fail', error.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete(result) {
+        console.log('reLaunch complete', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+    })
+  }
+
+  const navigateTo = () => {
+    uni.navigateTo({
+      url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
+      success(result) {
+        console.log('navigateTo success', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(error) {
+        console.log('navigateTo fail', error.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete(result) {
+        console.log('navigateTo complete', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+    })
+  }
+
+  const navigateToAnimationType = (animationType : AnimationType) => {
+    uni.navigateTo({
+      url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
+      animationType: animationType,
+      success(result) {
+        console.log('navigateTo success', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(error) {
+        console.log('navigateTo fail', error.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete(result) {
+        console.log('navigateTo complete', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+    })
+  }
+
+  const navigateToErrorPage = () => {
+    uni.navigateTo({
+      url: '/pages/error-page/error-page',
+      success(result) {
+        console.log('navigateTo success', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      fail(error) {
+        console.log('navigateTo fail', error.errMsg)
+        uni.showToast({
+          title: error.errMsg,
+          icon: 'none',
+        })
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      complete(result) {
+        console.log('navigateTo complete', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+    })
+  }
+
+  const navigateToDebounce = () => {
+    uni.navigateTo({
+      url: '/pages/API/navigator/new-page/new-page-1?data=debounce',
+      success(result) {
+        console.log('navigateTo success', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(error) {
+        console.log('navigateTo fail', error.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete(result) {
+        console.log('navigateTo complete', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+    })
+    uni.navigateTo({
+      url: '/pages/API/navigator/new-page/new-page-1?data=debounce',
+      success(result) {
+        console.log('navigateTo success', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      fail(error) {
+        console.log('navigateTo fail', error.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      complete(result) {
+        console.log('navigateTo complete', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+    })
+  }
+
+  // 自动化测试
+  const navigateToRelativePath1 = () => {
+    uni.navigateTo({
+      url: 'new-page/new-page-1?data=new-page/new-page-1',
+      success() {
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail() {
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete() {
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+    })
+  }
+
+  // 自动化测试
+  const navigateToRelativePath2 = () => {
+    uni.navigateTo({
+      url: './new-page/new-page-1?data=./new-page/new-page-1',
+      success() {
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail() {
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete() {
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+    })
+  }
+
+  // 自动化测试
+  const navigateToRelativePath3 = () => {
+    uni.navigateTo({
+      url: '../navigator/new-page/new-page-1?data=../navigator/new-page/new-page-1',
+      success() {
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail() {
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete() {
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+    })
+  }
+
+  const navigateBack = () => {
+    uni.navigateBack({
+      success(result) {
+        console.log('navigateBack success', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(error) {
+        console.log('navigateBack fail', error.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete(result) {
+        console.log('navigateBack complete', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+    })
+  }
+
+  const navigateBackWithDelta1 = () => {
+    uni.navigateTo({
+      url: '/pages/API/navigator/new-page/new-page-1',
+      success() {
+        uni.navigateBack({
+          delta: 1,
+          success(result) {
+            console.log('navigateBack success', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail(error) {
+            console.log('navigateBack fail', error.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete(result) {
+            console.log('navigateBack complete', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+    })
+  }
+
+  const navigateBackWithDelta100 = () => {
+    uni.navigateTo({
+      url: '/pages/API/navigator/new-page/new-page-1',
+      success() {
+        uni.navigateBack({
+          delta: 100,
+          success(result) {
+            console.log('navigateBack success', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail(error) {
+            console.log('navigateBack fail', error.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete(result) {
+            console.log('navigateBack complete', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+    })
+  }
+
+  const redirectTo = () => {
+    uni.redirectTo({
+      url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
+      success(result) {
+        console.log('redirectTo success', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(error) {
+        console.log('redirectTo fail', error.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete(result) {
+        console.log('redirectTo complete', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+    })
+  }
+
+  const switchTab = () => {
+    uni.switchTab({
+      url: '/pages/tabBar/template',
+      success(result) {
+        console.log('switchTab success', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(error) {
+        console.log('switchTab fail', error.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete(result) {
+        console.log('switchTab complete', result.errMsg)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+    })
+  }
+
+  // 自动化测试
+  const getLifeCycleNum = () : number => {
+    return state.lifeCycleNum
+  }
+
+  // 自动化测试
+  const setLifeCycleNumWrapper = (num : number) => {
+    setLifeCycleNum(num)
+  }
+
+  const onChange = (event: UniSwitchChangeEvent) => {
+    if(event.detail.value) {
+      data.shareElementKey = "test-share-element-key"
+    } else {
+      data.shareElementKey = ""
+    }
+  }
+
+  const goOnLoadCallAPI = () => {
+    uni.navigateTo({
+      url: '/pages/API/navigator/new-page/onLoad-call-api'
+    })
+  }
+
+</script>
+
+<style>
+  .direction-row {
+    flex-direction: row;
+  }
+
+  .label {
+    width: 190px;
+  }
+</style>

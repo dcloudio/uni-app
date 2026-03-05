@@ -1,0 +1,35 @@
+{
+  "name": "uni-ai-code-review",
+  "version": "1.0.0",
+  "description": "AI 代码评审系统",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@gitbeaker/rest": "^42.5.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "minimatch": "^5.1.6",
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "./coverage",
+    "collectCoverageFrom": [
+      "**/*.js",
+      "!**/*.test.js",
+      "!__tests__/setup.js"
+    ],
+    "setupFiles": [
+      "./__tests__/setup.js"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ]
+  }
+}

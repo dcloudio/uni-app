@@ -1,0 +1,32 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-common-mt">
+        <view class="uni-padding-wrap">
+          <view class="uni-btn-v">
+            <button type="primary" @tap="installApk">
+              installApk
+            </button>
+          </view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+  const title = ref('installApk')
+  const installApk = () => {
+    uni.installApk({
+      filePath: "/static/app-android/test.apk",
+      complete(res : any) {
+        console.log(res);
+      }
+    })
+  }
+</script>
+

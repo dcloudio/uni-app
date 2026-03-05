@@ -1,0 +1,54 @@
+<template>
+  <view>
+    <page-head title="cover-view用于覆盖map、video等原生组件"></page-head>
+    <view class="uni-padding-wrap uni-common-mb">
+      <text class="uni-subtitle-text">注意：Web和App需正确配置地图SDK的Key才能正常显示地图组件</text>
+    </view>
+    <view class="cover-content" v-if="showMap">
+      <map class="map" :latitude="latitude" :longitude="longitude"></map>
+      <cover-view class="cover-view"><text>简单的cover-view</text></cover-view>
+      <cover-image class="cover-image" src="/static/test-image/logo.png"></cover-image>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const showMap = ref(false)
+  const latitude = ref(39.909)
+  const longitude = ref(116.39742)
+  onLoad(() => {
+    showMap.value = true
+  })
+</script>
+
+<style>
+  .map {
+    width: 100%;
+    height: 600px;
+  }
+
+  .cover-content {
+    position: relative;
+  }
+
+  .cover-view {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    width: 188px;
+    text-align: center;
+    background-color: #DDDDDD;
+  }
+
+  .cover-image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 96px;
+    height: 96px;
+  }
+
+</style>

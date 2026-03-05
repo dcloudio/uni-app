@@ -1,0 +1,16 @@
+<template>
+  <view style="padding: 15px;">
+    {{name}}的详情页面
+  </view>
+</template>
+
+<script setup>
+  let name = ref("")
+  onLoad((options: OnLoadOptions) => {
+    name.value = (options["name"] as string | null) ?? ""
+  })
+</script>
+
+<style>
+
+</style>

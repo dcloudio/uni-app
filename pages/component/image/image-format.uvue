@@ -1,0 +1,131 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+
+      <!-- <view class="uni-title">
+        <text class="uni-title-text">支持的图片格式示例</text>
+      </view> -->
+      <view v-for="(item,index) in supportFormats" :key="index">
+        <text class="uni-subtitle-text">{{item.format}}，右边为拍平测试</text>
+        <view class="uni-center" style="background:#FFFFFF;">
+          <!-- <image class="image" mode="widthFix" :src="item.src"></image> -->
+          <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
+            @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
+
+          <image class="image" mode="widthFix" :src="item.errorImageFlatten == null ? item.src : item.errorImageFlatten"
+            @error="imageErrorEventFlatten(index, $event as ImageErrorEvent)" flatten></image>
+        </view>
+      </view>
+
+      <!-- <view class="uni-title">
+        <text class="uni-title-text">暂不支持的格式</text>
+      </view>
+      <view v-for="(item,index) in notSupportFormats" :key="index">
+        <text class="uni-subtitle-text">{{item.format}}</text>
+        <view class="uni-center" style="background:#FFFFFF;">
+          <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
+            @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
+        </view>
+      </view> -->
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+  type ImageFormat = {
+    format : string
+    src : string.ImageURIString
+    errorImage ?: string.ImageURIString | null
+    errorImageFlatten ?: string.ImageURIString | null
+  }
+
+  const title = ref('image-format')
+  const supportFormats = ref([
+    {
+      format: 'bmp',
+      src: '/static/test-image/logo.bmp'
+    },
+    {
+      format: 'gif',
+      src: '/static/test-image/logo.gif'
+    },
+    {
+      format: 'gif 动画',
+      src: '/static/test-image/animated.gif'
+    },
+    {
+      format: 'ico',
+      src: '/static/test-image/logo.ico'
+    },
+    {
+      format: 'jpg',
+      src: '/static/test-image/logo.jpg'
+    },
+    {
+      format: 'png',
+      src: '/static/test-image/logo.png'
+    },
+    {
+      format: 'webp',
+      src: '/static/test-image/logo.webp'
+    },
+    {
+      format: 'webp 动画',
+      src: '/static/test-image/animated.webp'
+    },
+    {
+      format: 'heic（Android10+）',
+      src: '/static/test-image/logo.heic'
+    },
+    {
+      format: 'avif（iOS16+）',
+      src: '/static/test-image/logo.avif'
+    },
+    {
+      format: 'tif（Android不支持）',
+      src: '/static/test-image/logo.tif'
+    },
+    {
+      format: 'svg本地路径（iOS13+）',
+      src: '/static/test-image/logo.svg'
+    },
+    {
+      format: 'svg网络路径（iOS13+）',
+      src: 'https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/w3c.svg',
+    }
+  ] as Array<ImageFormat>)
+  /* notSupportFormats: [
+    {
+      format: 'avif',
+      src: '/static/test-image/logo.avif'
+    },
+    {
+      format: 'tif',
+      src: '/static/test-image/logo.tif'
+    }
+  ] as Array<ImageFormat> */
+
+  function imageErrorEvent(index : number, e : ImageErrorEvent) {
+    console.log("图片加载错误", e.detail);
+    // 图片加载失败，加载本地占位图
+    supportFormats.value[index].errorImage = '/static/dislike.png'
+  }
+  function imageErrorEventFlatten(index : number, e : ImageErrorEvent) {
+    console.log("拍平图片加载错误", e.detail);
+    // 图片加载失败，加载本地占位图
+    supportFormats.value[index].errorImageFlatten = '/static/dislike.png'
+  }
+</script>
+
+<style>
+  .image {
+    margin: 40px auto;
+    width: 100px;
+  }
+</style>

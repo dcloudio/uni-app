@@ -1,0 +1,79 @@
+<template>
+  <page-head title="setNavigationBarColor"></page-head>
+  <view class="uni-padding-wrap uni-common-mt">
+    <button @tap="setNavigationBarColor1" class="uni-btn">
+      设置导航条背景绿色，标题白色
+    </button>
+    <button @tap="setNavigationBarColor2" class="uni-btn">
+      设置导航条背景红色，标题黑色
+    </button>
+    <button @tap="goNavbarLite" class="uni-btn">
+      跳转自定义导航栏页面
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import { state, setLifeCycleNum } from '@/store/index.uts'
+
+  // 自动化测试
+  const getLifeCycleNum = () : number => {
+    return state.lifeCycleNum
+  }
+
+  // 自动化测试
+  const setLifeCycleNumFunc = (num : number) => {
+    setLifeCycleNum(num)
+  }
+
+  const setNavigationBarColor1 = () => {
+    uni.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#00ff00',
+      success: () => {
+        console.log('setNavigationBarColor success')
+        setLifeCycleNumFunc(state.lifeCycleNum + 1)
+      },
+      fail: () => {
+        console.log('setNavigationBarColor fail')
+        setLifeCycleNumFunc(state.lifeCycleNum - 1)
+      },
+      complete: () => {
+        console.log('setNavigationBarColor complete')
+        setLifeCycleNumFunc(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  const setNavigationBarColor2 = () => {
+    uni.setNavigationBarColor({
+      frontColor: '#000000',
+      backgroundColor: '#ff0000',
+      success: () => {
+        console.log('setNavigationBarColor success')
+        setLifeCycleNumFunc(state.lifeCycleNum + 1)
+      },
+      fail: () => {
+        console.log('setNavigationBarColor fail')
+        setLifeCycleNumFunc(state.lifeCycleNum - 1)
+      },
+      complete: () => {
+        console.log('setNavigationBarColor complete')
+        setLifeCycleNumFunc(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  const goNavbarLite = () => {
+    uni.navigateTo({
+      url: '/pages/template/navbar-lite/navbar-lite'
+    })
+  }
+
+  defineExpose({
+    getLifeCycleNum,
+    setLifeCycleNum: setLifeCycleNumFunc,
+    setNavigationBarColor1,
+    setNavigationBarColor2
+  })
+</script>

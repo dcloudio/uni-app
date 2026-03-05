@@ -1,0 +1,40 @@
+<template>
+  <view style="flex-direction: row;">
+    <view @click="onClickWrong" class="btn">
+      <text class="btn-text">点击测试，错误写法</text>
+    </view>
+    <view @click="onClickRight" class="btn">
+      <text class="btn-text">点击测试，正确写法</text>
+    </view>
+  </view>
+</template>
+
+<script setup>
+  const props = defineProps({
+    name: {
+      type: String,
+      default: ''
+    }
+  })
+
+  const testName = props.name // 开发者如果意识不到item会被复用，错误的存储了初次传入的name，在触发onClick事件时会一直使用初次传入的name
+  function onClickWrong() {
+    console.log('current name is ' + testName)
+  }
+  function onClickRight() {
+    console.log('current name is ' + props.name)
+  }
+</script>
+
+<style>
+  .btn {
+    padding: 5px;
+  }
+
+  .btn-text {
+    font-size: 12px;
+    color: #ccc;
+    border-radius: 3px;
+    border: solid 1px #ccc;
+  }
+</style>

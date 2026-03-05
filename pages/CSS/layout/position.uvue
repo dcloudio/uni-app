@@ -1,0 +1,416 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1">
+      <view class="common-box">
+        <view>
+          <view class="title-container">
+            <text class="uni-title-text uni-common-mt">position: fixed</text>
+          </view>
+          <scroll-view class="test-scroll-view">
+            <view class="test-block red"></view>
+            <view class="common fixed" style="position: fixed">
+              <text class="text">fixed</text>
+            </view>
+            <view class="common fixed" style="position: fixed" flatten>
+              <text class="text">fixed(拍平)</text>
+            </view>
+            <view class="test-block blue"></view>
+            <view class="test-block red"></view>
+            <view class="test-block green"></view>
+            <view class="test-block blue"></view>
+            <view class="test-block red"></view>
+            <view class="test-block green"></view>
+            <view class="test-block blue"></view>
+          </scroll-view>
+        </view>
+        <view>
+          <view class="title-container">
+            <text class="uni-subtitle-text">(四方向组合: top + left + bottom + right)</text>
+          </view>
+          <scroll-view class="test-scroll-view">
+            <view class="test-block red"></view>
+            <view class="common combo-all-sides fixed-combo" style="position: fixed">
+              <text class="text">fixed 四方向</text>
+            </view>
+            <view class="common combo-all-sides fixed-combo" style="position: fixed" flatten>
+              <text class="text">fixed 四方向(拍平)</text>
+            </view>
+            <view class="test-block blue"></view>
+            <view class="test-block red"></view>
+            <view class="test-block green"></view>
+            <view class="test-block blue"></view>
+            <view class="test-block red"></view>
+            <view class="test-block green"></view>
+            <view class="test-block blue"></view>
+          </scroll-view>
+        </view>
+      </view>
+
+      <view class="common-box">
+        <view>
+          <view class="title-container">
+            <text class="uni-title-text uni-common-mt">position: absolute</text>
+          </view>
+          <scroll-view class="test-scroll-view">
+            <view class="test-block red"></view>
+            <view class="common" style="position: absolute">
+              <text class="text">absolute</text>
+            </view>
+            <view class="common" style="position: absolute" flatten>
+              <text class="text">absolute(拍平)</text>
+            </view>
+            <view class="test-block blue"></view>
+            <view class="test-block red"></view>
+            <view class="test-block green"></view>
+            <view class="test-block blue"></view>
+            <view class="test-block red"></view>
+            <view class="test-block green"></view>
+            <view class="test-block blue"></view>
+          </scroll-view>
+        </view>
+        <view>
+          <view class="title-container">
+            <text class="uni-subtitle-text">(四方向组合: top + left + bottom + right)</text>
+          </view>
+          <scroll-view class="test-scroll-view">
+            <view class="test-block red"></view>
+            <view class="common combo-all-sides-container" style="position: absolute">
+              <text class="text">absolute 四方向</text>
+            </view>
+            <view class="common combo-all-sides-container" style="position: absolute" flatten>
+              <text class="text">absolute 四方向(拍平)</text>
+            </view>
+            <view class="test-block blue"></view>
+            <view class="test-block red"></view>
+            <view class="test-block green"></view>
+            <view class="test-block blue"></view>
+            <view class="test-block red"></view>
+            <view class="test-block green"></view>
+            <view class="test-block blue"></view>
+          </scroll-view>
+        </view>
+      </view>
+
+      <view class="common-box">
+        <view>
+          <view class="title-container">
+            <text class="uni-title-text uni-common-mt">position: relative</text>
+          </view>
+          <scroll-view class="test-scroll-view">
+            <view class="test-block red"></view>
+            <view class="common" style="position: relative">
+              <text class="text">relative</text>
+            </view>
+            <view class="common" style="position: relative" flatten>
+              <text class="text">relative(拍平)</text>
+            </view>
+            <view class="test-block blue"></view>
+            <view class="test-block red"></view>
+            <view class="test-block green"></view>
+            <view class="test-block blue"></view>
+            <view class="test-block red"></view>
+            <view class="test-block green"></view>
+            <view class="test-block blue"></view>
+          </scroll-view>
+        </view>
+        <view>
+          <view class="title-container">
+            <text class="uni-subtitle-text uni-common-mt">(四方向组合: top + left + bottom + right)</text>
+          </view>
+          <scroll-view class="test-scroll-view">
+            <view class="test-block red"></view>
+            <view class="common combo-all-sides-container" style="position: relative">
+              <text class="text">relative 四方向</text>
+            </view>
+            <view class="common combo-all-sides-container" style="position: relative" flatten>
+              <text class="text">relative 四方向(拍平)</text>
+            </view>
+            <view class="test-block blue"></view>
+            <view class="test-block red"></view>
+            <view class="test-block green"></view>
+            <view class="test-block blue"></view>
+            <view class="test-block red"></view>
+            <view class="test-block green"></view>
+            <view class="test-block blue"></view>
+          </scroll-view>
+        </view>
+      </view>
+
+      <view class="uni-common-mb">
+        <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+        <text class="uni-subtitle-text">position: relative 和 position: absolute</text>
+        <view class="position-test-box">
+          <scroll-view class="scroll-view-common" style="position: relative; top: 20px; left: 20px; background-color: cyan;">
+            <text>relative</text>
+          </scroll-view>
+          <scroll-view class="scroll-view-common" style="position: absolute; top: 65px; left: 65px; background-color: green;">
+            <text>absolute</text>
+          </scroll-view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 position </text>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.position}}</text>
+          <text class="uni-info">获取值: {{data.positionActual}}</text>
+          <view class="test-box">
+            <view class="test-block-small red"></view>
+            <view ref="viewRef" class="common-dynamic test-view" style="top: 10px; left: 10px;" :style="{ position: data.position }">
+              <text style="font-size: 10px;">view</text>
+            </view>
+            <view class="test-block-small blue"></view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.position}}</text>
+          <text class="uni-info">获取值: {{data.positionActualText}}</text>
+          <view class="test-box">
+            <text class="test-block-small red test-block-small-text">红</text>
+            <text ref="textRef" class="common-dynamic common-text-dynamic test-text" style="top: 10px; left: 10px;" :style="{ position: data.position }">text</text>
+            <text class="test-block-small blue test-block-small-text">蓝</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.position}}</text>
+          <text class="uni-info">获取值: {{data.positionActualImage}}</text>
+          <view class="test-box">
+            <image class="common-image-static" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic test-image" style="top: 10px; left: 10px;" :style="{ position: data.position }" src="/static/test-image/logo.png"></image>
+            <image class="common-image-static" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="positionEnum" title="position 枚举值" @change="radioChangePosition" :compact="true"></enum-data>
+        <input-data :defaultValue="data.position" title="position 自定义值" type="text" @confirm="inputChangePosition"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: position: relative 和 position: absolute</text>
+        <view class="position-test-box">
+          <native-view class="scroll-view-common" style="position: relative; top: 20px; left: 20px; background-color: cyan;"></native-view>
+          <native-view class="scroll-view-common" style="position: absolute; top: 65px; left: 65px; background-color: green;"></native-view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const positionEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'static' },
+    { value: 2, name: 'relative' },
+    { value: 3, name: 'absolute' },
+    { value: 4, name: 'fixed' }
+  ]
+
+  const data = reactive({
+    position: 'relative',
+    positionActual: '',
+    positionActualText: '',
+    positionActualImage: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+
+  const getPropertyValues = () => {
+    data.positionActual = viewRef.value?.style.getPropertyValue('position') ?? ''
+    data.positionActualText = textRef.value?.style.getPropertyValue('position') ?? ''
+    data.positionActualImage = imageRef.value?.style.getPropertyValue('position') ?? ''
+  }
+
+  const changePosition = (value: string) => {
+    data.position = value
+    viewRef.value?.style.setProperty('position', value)
+    textRef.value?.style.setProperty('position', value)
+    imageRef.value?.style.setProperty('position', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangePosition = (index: number) => {
+    const selectedItem = positionEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changePosition(selectedItem.name)
+    }
+  }
+
+  const inputChangePosition = (value: string) => {
+    changePosition(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangePosition,
+    data
+  })
+</script>
+
+<style>
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .title-container {
+    width: 180px;
+    height: 45px;
+    flex-direction: column;
+  }
+
+  .common {
+    width: 80px;
+    height: 50px;
+    background-color: green;
+    top: 60px;
+    left: 30px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .fixed {
+    /* #ifdef WEB*/
+    top: calc(var(--uni-safe-area-inset-top) + 60px);
+    left: calc(var(--uni-safe-area-inset-left) + 30px);
+    /* #endif */
+  }
+
+  .text {
+    width: 100%;
+    font-size:12px;
+  }
+
+  .test-block {
+    width: 50px;
+    height: 50px;
+  }
+
+  .test-block-small {
+    width: 40px;
+    height: 40px;
+  }
+
+  .test-block-small-text {
+    font-size: 10px;
+  }
+
+  .red {
+    background-color: red;
+  }
+
+  .blue {
+    background-color: blue;
+  }
+
+  .green {
+    background-color: green;
+  }
+
+  .test-scroll-view {
+    width: 180px;
+    height: 200px;
+    background-color: gray;
+  }
+
+  .combo-all-sides {
+    top: 60px;
+    left: 220px;
+    bottom: 40px;
+    right: 40px;
+  }
+
+  .fixed-combo {
+    /* #ifdef WEB*/
+    top: calc(var(--uni-safe-area-inset-top) + 60px);
+    left: calc(var(--uni-safe-area-inset-left) + 220px);
+    bottom: calc(var(--uni-safe-area-inset-bottom) + 40px);
+    right: calc(var(--uni-safe-area-inset-right) + 40px);
+    /* #endif */
+  }
+
+  .combo-all-sides-container {
+    top: 60px;
+    left: 30px;
+    bottom: 40px;
+    right: 30px;
+  }
+
+  .common-dynamic {
+    width: 40px;
+    height: 40px;
+    background-color: green;
+  }
+
+  .common-text-dynamic {
+    background-color: green;
+    color: white;
+    font-size: 10px;
+    padding: 5px;
+  }
+
+  .common-image-static {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 0, 0, 0.3);
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 120px;
+    background-color: gray;
+    position: relative;
+  }
+
+  .position-test-box {
+    position: relative;
+    width: 200px;
+    height: 150px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+  }
+
+  .scroll-view-common {
+    width: 80px;
+    height: 60px;
+    justify-content: center;
+    align-items: center;
+  }
+
+</style>

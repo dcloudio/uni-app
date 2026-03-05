@@ -1,0 +1,133 @@
+<template>
+  <view style="flex: 1;">
+    <scroll-view direction="horizontal" style="flex-direction: row;">
+      <button class="button_item" @click="delayShow">测试延时显示</button>
+      <button class="button_item" @click="switchItemContent">修改item子元素</button>
+    </scroll-view>
+    <list-view v-show="data.list_show" id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
+      <list-item v-for="(item,index) in list" :key="item.id" :id="'item_'+item.id" class="item" @click="itemClick(item.id)">
+        <view style="flex-direction: row;">
+          <text>item-------<text>{{item.id}}</text></text>
+          <scroll-view direction="horizontal" show-scrollbar="false" class="scroll_item">
+            <text>scroll-view{{item.id}}：</text>
+            <text class="tip_text" v-for="tab in 5">元素{{tab}}</text>
+          </scroll-view>
+        </view>
+        <text v-show="data.displayArrow">item-------<text>{{item.id}}</text></text>
+        <checkbox-group @change="checkedChange(index)">
+            <checkbox :checked="item.checked" />
+        </checkbox-group>
+      </list-item>
+    </list-view>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+type Item = {
+  id: number
+  checked: boolean
+}
+const list = ref<Item[]>([])
+const listViewElement = ref(null as UniListViewElement | null)
+
+type DataType = {
+  list_show: boolean,
+  displayArrow: boolean,
+}
+
+const data = reactive({
+  list_show: true,
+  displayArrow: false,
+} as DataType)
+
+function generateItems(count: number) {
+  const startIndex = list.value.length
+  for (let i = 0; i < count; i++) {
+    list.value.push({
+      id: startIndex + i + 1,
+      checked: false,
+    } as Item)
+  }
+}
+
+function onScrollTolower(event : ScrollToLowerEvent) {
+  setTimeout(() => {
+    generateItems(20)
+  }, 300)
+}
+
+onMounted(() => {
+  generateItems(20)
+})
+
+//用于自动化测试
+function listViewScrollByY(y : number) {
+  listViewElement.value?.scrollBy(0, y)
+}
+
+function itemClick(index : number) {
+  console.log("itemTextClick---" + index)
+}
+
+function checkedChange(index : number) {
+  list.value[index].checked = !list.value[index].checked
+}
+
+function delayShow() {
+  data.list_show = !data.list_show
+  //延时显示list-view 测试list-item延时显示bug
+  setTimeout(() => {
+    data.list_show = !data.list_show
+  }, 400)
+}
+
+function modifyItemPadding(index: number) {
+  var element = uni.getElementById("item_"+index)
+  element?.style.setProperty("padding", "0px")
+}
+
+function switchItemContent() {
+  data.displayArrow = !data.displayArrow
+  modifyItemPadding(1)
+}
+
+onReady(() => {
+  listViewElement.value = uni.getElementById<UniListViewElement>('listview')
+})
+
+defineExpose({
+  data,
+  listViewScrollByY,
+  delayShow,
+  switchItemContent
+})
+</script>
+
+<style>
+  .item {
+    padding: 15px;
+    margin: 0 0 5px 0;
+    border: 1px solid #000000;
+    background-color: #fdfdfd;
+    border-radius: 5px;
+  }
+
+  .button_item {
+    width: 200px;
+  }
+
+  .scroll_item {
+    flex: 1;
+    flex-direction: row;
+    overflow: hidden;
+    margin-left: 10px;
+  }
+
+  .tip_text {
+    border-style: solid;
+    border-radius: 3px;
+    border-width: 1px;
+    margin: 0px 10px;
+  }
+</style>

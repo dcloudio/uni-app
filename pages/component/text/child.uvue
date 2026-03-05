@@ -1,0 +1,17 @@
+<template>
+  <text class="child-text">child-text<text style="color: #007aff;">嵌套</text></text>
+</template>
+
+<script setup lang="uts">
+</script>
+
+<style>
+  .child-text {
+    font-size: 16px;
+    color: #007aff;
+    border: 1px solid #007aff;
+    padding: 10px;
+    margin: 10px;
+    text-align: center;
+  }
+</style>

@@ -1,0 +1,352 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1;">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view>
+        <text>margin-left: auto (元素会靠右)</text>
+        <view class="demo-box">
+          <view class="demo-item">
+            <view class="common" style="width: 150px; margin-left: auto;"></view>
+          </view>
+          <view class="demo-item">
+            <view class="common" style="width: 150px; margin-left: auto;" flatten></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>margin-right: auto (元素会靠左)</text>
+        <view class="demo-box">
+          <view class="demo-item">
+            <view class="common" style="width: 150px; margin-right: auto;"></view>
+          </view>
+          <view class="demo-item">
+            <view class="common" style="width: 150px; margin-right: auto;" flatten></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>margin-left: auto; margin-right: auto (水平居中)</text>
+        <view class="demo-box">
+          <view class="demo-item">
+            <view class="common" style="width: 150px; margin-left: auto; margin-right: auto;"></view>
+          </view>
+          <view class="demo-item">
+            <view class="common" style="width: 150px; margin-left: auto; margin-right: auto;" flatten></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>margin: 0 auto (常用的水平居中写法)</text>
+        <view class="demo-box">
+          <view class="demo-item">
+            <view class="common" style="width: 150px; margin: 0 auto;"></view>
+          </view>
+          <view class="demo-item">
+            <view class="common" style="width: 150px; margin: 0 auto;" flatten></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>margin: auto (所有方向auto)</text>
+        <view class="demo-box">
+          <view class="demo-item demo-item-tall">
+            <view class="common" style="width: 150px; height: 80px; margin: auto;"></view>
+          </view>
+          <view class="demo-item demo-item-tall">
+            <view class="common" style="width: 150px; height: 80px; margin: auto;" flatten></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>margin: 10px auto (垂直固定，水平auto)</text>
+        <view class="demo-box">
+          <view class="demo-item demo-item-medium">
+            <view class="common" style="width: 150px; margin: 10px auto;"></view>
+          </view>
+          <view class="demo-item demo-item-medium">
+            <view class="common" style="width: 150px; margin: 10px auto;" flatten></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>margin: auto 20px (垂直auto，水平固定)</text>
+        <view class="demo-box">
+          <view class="demo-item">
+            <view class="common" style="width: 150px; margin: auto 20px;"></view>
+          </view>
+          <view class="demo-item">
+            <view class="common" style="width: 150px; margin: auto 20px;" flatten></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>对比: 无margin (默认左对齐)</text>
+        <view class="demo-box">
+          <view class="demo-item">
+            <view class="common" style="width: 150px;"></view>
+          </view>
+          <view class="demo-item">
+            <view class="common" style="width: 150px;" flatten></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
+      </view>
+
+      <view>
+        <text class="uni-subtitle-text">margin-left: auto (元素会靠右) 和 margin-right: auto (元素会靠左)</text>
+        <view class="demo-box">
+          <view class="demo-item">
+            <scroll-view class="scroll-view-test" style="margin-left: auto;"></scroll-view>
+          </view>
+          <view class="demo-item">
+            <scroll-view class="scroll-view-test" style="margin-right: auto;"></scroll-view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text class="uni-subtitle-text">margin: auto 20px (垂直auto，水平固定) 和 margin: auto;(水平居中)</text>
+        <view class="demo-box">
+          <view class="demo-item">
+            <scroll-view class="scroll-view-test" style="margin: auto 20px;"></scroll-view>
+          </view>
+          <view class="demo-item">
+            <scroll-view class="scroll-view-test" style="margin: auto;"></scroll-view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 margin </text>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common test-view" style="width: 100px;" :style="{ margin: data.margin }">
+              <text class="common-text">view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-text test-text" style="width: 100px;" :style="{ margin: data.margin }">text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-image test-image" :style="{ margin: data.margin }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common test-view-flatten" style="width: 100px;" :style="{ margin: data.margin }" flatten>
+              <text class="common-text">view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-text test-text-flatten" style="width: 100px;" :style="{ margin: data.margin }" flatten>text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ margin: data.margin }" flatten src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="marginAutoEnum" title="margin 枚举值" @change="radioChangeMargin" :compact="true"></enum-data>
+        <input-data :defaultValue="data.margin" title="margin 自定义值" type="text" @confirm="inputChangeMargin"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: margin-left: auto 和 margin: auto</text>
+        <view class="demo-box">
+          <view class="demo-item">
+            <native-view class="common" style="width: 150px; margin-left: auto;"></native-view>
+          </view>
+          <view class="demo-item">
+            <native-view class="common" style="width: 150px; margin: auto;"></native-view>
+          </view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const data = reactive({
+    margin: '0 auto',
+    marginActual: '',
+    marginActualText: '',
+    marginActualImage: '',
+    marginActualFlat: '',
+    marginActualTextFlat: '',
+    marginActualImageFlat: ''
+  })
+
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const marginAutoEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'auto' },
+    { value: 2, name: '0' },
+    { value: 3, name: '20px' },
+    { value: 4, name: '10%' }
+  ]
+
+  const getPropertyValues = () => {
+    data.marginActual = viewRef.value?.style.getPropertyValue('margin') ?? ''
+    data.marginActualFlat = viewRefFlat.value?.style.getPropertyValue('margin') ?? ''
+    data.marginActualText = textRef.value?.style.getPropertyValue('margin') ?? ''
+    data.marginActualTextFlat = textRefFlat.value?.style.getPropertyValue('margin') ?? ''
+    data.marginActualImage = imageRef.value?.style.getPropertyValue('margin') ?? ''
+    data.marginActualImageFlat = imageRefFlat.value?.style.getPropertyValue('margin') ?? ''
+  }
+
+  const changeMargin = (value: string) => {
+    data.margin = value
+    viewRef.value?.style.setProperty('margin', value)
+    viewRefFlat.value?.style.setProperty('margin', value)
+    textRef.value?.style.setProperty('margin', value)
+    textRefFlat.value?.style.setProperty('margin', value)
+    imageRef.value?.style.setProperty('margin', value)
+    imageRefFlat.value?.style.setProperty('margin', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeMargin = (index: number) => {
+    const selectedItem = marginAutoEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeMargin(selectedItem.name)
+    }
+  }
+
+  const inputChangeMargin = (value: string) => {
+    changeMargin(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeMargin,
+    data
+  })
+</script>
+
+<style>
+  .common {
+    height: 50px;
+    background-color: green;
+  }
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+  .demo-item {
+    flex: 1;
+    margin:0 10px;
+    height: 100px;
+    background-color: gray;
+  }
+
+  .demo-item-medium {
+    height: 120px;
+  }
+
+  .demo-item-tall {
+    height: 150px;
+  }
+
+  .scroll-view-test {
+    width: 100px;
+    height: 100px;
+    background-color: green;
+  }
+
+  .common-text {
+    height: 50px;
+    background-color: green;
+    font-size: 14px;
+    color: white;
+  }
+
+  .common-image {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 100px;
+    background-color: gray;
+  }
+
+</style>

@@ -1,0 +1,259 @@
+<template>
+	<view style="flex-direction: row;" id="rootview">
+		<radio-group @change="switchCacheOrData">
+      <radio value="data" :checked="true">数据目录</radio>
+      <radio value="cache"
+      <!-- #ifdef MP-WEIXIN -->
+      disabled
+      <!-- #endif -->
+      >缓存目录</radio>
+    </radio-group>
+    <button @click="refreshFile">刷新</button>
+		<!-- #ifdef APP -->
+		<button @click="clearFile">清空缓存</button>
+		<!-- #endif -->
+		<button @click="snapshot">截图</button>
+	</view>
+  <text>文件总数：{{ count }}；\n文件总大小：{{size}} M</text>
+	<text style="border: 1px solid #ccc;margin: 5px;">根路径：{{rootPath}}</text>
+	<list-view style="flex: 1;">
+		<list-item v-for="(item, index) in fileList" :key="index" style="padding: 5px;border-bottom: 1px solid #ccc;" :style="getIndentStyle(item.shotPath)"
+		@click="showDialog(item)">
+			<view style="flex-direction: row;">
+				<!-- <text style="font-family: uni-icon;" v-if="!item.isFile">\uE661</text> -->
+				<!-- #ifdef APP -->
+        <!-- TODO: 微信小程序不支持uni内置字体，还得再找一个图标-->
+        <text style="font-family: uni-icon;" v-if="!item.isFile">{{uniIcon}}</text> <!-- TODO @颜伊林 必须写响应式变量，多端表现不一致-->
+				<!-- #endif -->
+				<text >{{(item.shotPath as string)}}</text>
+			</view>
+			<text style="font-size: 12px;color: #ccc;" v-if="item.isFile" >{{item.size}}k</text>
+		</list-item>
+	</list-view>
+	<view v-if="dialogShow" style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; align-items: center; justify-content: center; z-index: 1000; background-color: rgba(16, 16, 16, 0.5);">
+		<view style="background-color: #fff;padding: 10px;border-radius: 10px;width: 90%;margin: 0 auto;">
+			<text style="font-size: 20px;font-weight: bold;">{{currentFile.shotPath}}</text>
+			<text>类型：{{currentFile.isFile ? '文件' : '目录'}}</text>
+			<text>路径：{{currentFile.path}}</text>
+			<text>大小：{{currentFile.size}}k</text>
+			<text>修改时间：{{currentFile.modifyTime}}</text>
+			<view style="flex-direction: row;width: 100%;justify-content: space-between;padding: 10px;">
+				<button @click="openFile(currentFile)" size="mini" v-if="currentFile.isFile">打开</button>
+				<button @click="deleteFile(currentFile)" size="mini">删除</button>
+				<button @click="closeDialog" size="mini">关闭</button>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup>
+	type fileListType = {
+		path : string,
+		shotPath : string,
+		size : number,
+		isFile : boolean,
+		modifyTime : string
+	}
+	let fileList = ref([] as fileListType[])
+	let count = ref(0), size = ref(0)
+	let rootPath = ref("")
+	let dialogShow = ref(false)
+	const uniIcon = ref("\uE661")
+	let currentFile = ref({"path":"","shotPath":"","size":0,isFile:false,modifyTime:''} as fileListType)
+  let cacheOrData = ref(uni.env.USER_DATA_PATH)
+
+  const switchCacheOrData = (e : UniRadioGroupChangeEvent) => {
+		cacheOrData.value = (e.detail.value=="cache") ? uni.env.CACHE_PATH : uni.env.USER_DATA_PATH
+	}
+
+// 遍历文件刷新列表
+	const refreshFile = () => {
+	  const fileManager = uni.getFileSystemManager()
+	  fileManager.stat({
+	    // path: uni.env.CACHE_PATH, //沙盒cache目录
+	    // path: uni.env.USER_DATA_PATH, //沙盒根目录
+      path: cacheOrData.value,
+	    recursive: true,
+	    success: (res : StatSuccessResult) => {
+				// log.value += 'statFileInfoTest success:' + JSON.stringify(res) + '\n\n'
+	      console.log('statFileInfo success1')
+	      console.log('res.stats', res.stats)
+				console.log('uni.env.CACHE_PATH: ',uni.env.CACHE_PATH);
+				console.log('uni.env.USER_DATA_PATH: ',uni.env.USER_DATA_PATH);
+				console.log('uni.env.SANDBOX_PATH: ',uni.env.SANDBOX_PATH);
+				let tempFileList = [] as fileListType[]
+				let tempSize = 0
+				for (let i=0;i<res.stats.length;i++) {
+					console.log("resitem",res.stats[i].path);
+          if (i==0) {
+            rootPath.value = res.stats[i].path
+						continue
+          }
+					let tempFileItem = {
+						"path":"",
+						"shotPath":"",
+						"size":0,
+						isFile:false,
+						modifyTime:''
+					} as fileListType
+
+					tempFileItem.shotPath = res.stats[i].path.replace(rootPath.value, "")
+					tempFileItem.path = res.stats[i].path
+					tempFileItem.size = res.stats[i].stats.size/1024
+					tempFileItem.isFile = res.stats[i].stats.isFile()
+					const mdate = new Date(res.stats[i].stats.lastModifiedTime * 1000)
+					tempFileItem.modifyTime = mdate.getFullYear().toString() + "-" + (mdate.getMonth()+1).toString() + "-" + mdate.getDate().toString() + " "
+					+ mdate.getHours().toString() + ":" + mdate.getMinutes().toString() + ":" + mdate.getSeconds().toString()
+					tempSize = tempSize + res.stats[i].stats.size
+					tempFileList.push(tempFileItem)
+				}
+				fileList.value = tempFileList
+				size.value = tempSize/1024/1024
+				count.value = tempFileList.length
+	    },
+	    fail: (res : IUniError) => {
+        uni.showModal({
+        	title: '获取文件状态失败',
+        	content: res.errMsg,
+        	showCancel: false
+        })
+	      console.error('statFileInfo fail', res)
+	    },
+	    complete: (res : any) => {
+	      console.log("statFileInfo complete", res)
+	    }
+	  } as StatOptions)
+	}
+
+	const showDialog = (item: fileListType) => {
+		currentFile.value = item
+		dialogShow.value = true
+	}
+	const closeDialog = () => {
+		dialogShow.value = false
+	}
+
+	const deleteFile = (fileItem: fileListType) => {
+    const fileManager = uni.getFileSystemManager()
+    let path = cacheOrData.value + fileItem.path
+    if (fileItem.isFile) {
+      fileManager.unlink({
+      	filePath: path,
+      	success: () => {
+      		refreshFile()
+      		closeDialog()
+      	},
+      	fail: (err : IFileSystemManagerFail) => {
+      		uni.showModal({
+      			title: '删除文件失败',
+      			content: err.errMsg,
+      			showCancel: false
+      		})
+      	}
+      })
+    } else {
+      fileManager.rmdir({
+      	dirPath: path,
+        recursive: true,
+      	success: () => {
+      		refreshFile()
+      		closeDialog()
+      	},
+      	fail: (err : IFileSystemManagerFail) => {
+      		uni.showModal({
+      			title: '删除目录失败',
+      			content: err.errMsg,
+      			showCancel: false
+      		})
+      	}
+      })
+    }
+	}
+
+	const clearFile = () => {
+    const fileManager = uni.getFileSystemManager()
+    // TODO 3个App平台表现不一致 @颜伊林
+    fileManager.rmdir({
+      "dirPath":uni.env.CACHE_PATH,
+      "recursive":true,
+      success: (res : FileManagerSuccessResult) => {
+        console.log("rmdir success", res)
+        fileList.value = [] as fileListType[]
+        size.value = 0
+        count.value = 0
+        uni.showToast({
+          title:"清空缓存目录成功",
+          icon:"success"
+        })
+      },
+      fail: (res : IFileSystemManagerFail) => {
+        console.error('清空缓存目录失败', res)
+        uni.showModal({
+        	title: '清空缓存目录失败',
+        	content: res.errMsg,
+        	showCancel: false
+        })
+      },
+      complete: (res : any) => {
+        console.log("rmdir complete", res)
+      }
+    })
+  }
+
+  const openFile = (fileItem: fileListType) => {
+		let path = cacheOrData.value + fileItem.path
+		let suffix = path.split('.').pop()
+		switch(suffix) {
+			case 'jpg':
+			case 'png':
+			case 'gif':
+			case 'jpeg':
+			case 'webp':
+			case 'bmp':
+			case 'ico':
+			case 'heic':
+			case 'heif':
+			case 'tif':
+				console.log("path:", path)
+				uni.previewImage({
+					urls: [path]
+				})
+				break
+
+      default:
+        uni.openDocument({
+        	filePath: path,
+        	success: (res) => {
+        		console.log("openDocument success", res)
+        	},
+        	fail: (res) => {
+        		console.error("openDocument fail", res)
+            uni.showModal({
+            	title: '打开文件失败',
+            	content: res.errMsg,
+            	showCancel: false
+            })
+        	}
+        })
+
+		}
+  }
+	const snapshot = () => {
+			uni.getElementById("rootview")!.takeSnapshot({})
+	}
+
+// 根据路径中/的数量计算缩进样式
+	const getIndentStyle = (path: string) => {
+		const matches = path.match(/\//g)
+		// console.log("matches", matches)
+		let level = 0
+		if (matches!=null) {
+			level = matches.length
+		}
+		return {
+			paddingLeft: `${level * 20}px`
+
+		}
+	}
+
+</script>

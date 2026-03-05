@@ -1,0 +1,329 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view>
+      <page-intro content="本页演示 canvas 绘制：在 view 上绘制文本、线条、圆、虚线、图形、样式、arcto 等。"></page-intro>
+      <view class="drawing" id="draw-text-view"></view>
+      <view class="drawing" id="draw-line-view"></view>
+      <view class="drawing" id="draw-circle-view"></view>
+      <view class="drawing" id="draw-dash-line"></view>
+      <view class="drawing" id="draw-house"></view>
+      <view class="drawing" id="draw-style"></view>
+      <view class="drawing" id="draw-odd"></view>
+      <view class="drawing" id="draw-arcto"></view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  var y = 160
+  const texts: string[] = [
+    'HBuilderX，轻巧、极速，极客编辑器',
+    'uni-app x，终极跨平台方案',
+    'uniCloud，js serverless云服务',
+    'uts，大一统语言',
+    'uniMPSdk，让你的App具备小程序能力',
+    'uni-admin，开源、现成的全端管理后台',
+    'uni-id，开源、全端的账户中心',
+    'uni-pay，开源、云端一体、全平台的支付',
+    'uni-ai，聚合ai能力',
+    'uni-cms，开源、云端一体、全平台的内容管理平台',
+    'uni-im，开源、云端一体、全平台的im即时消息',
+    'uni统计，开源、完善、全平台的统计报表',
+    '......'
+  ]
+
+  onPageShow(() => {
+  })
+
+  onUnload(() => {
+    y = 160
+  })
+
+  function drawText() {
+    let element = uni.getElementById('draw-text-view')!
+    let ctx = element.getDrawableContext()!
+    let width = element.getBoundingClientRect().width
+    ctx.reset()
+    ctx.font = "15px Arial"
+    ctx.textAlign = "center"
+    for (var i = 0; i < texts.length; i++) {
+      let value = texts[i]
+      if (i % 2 == 0) {
+        ctx.fillText(value, width / 2, (20 * (i + 1)))
+      } else {
+        ctx.lineWidth = 0.5
+        ctx.strokeText(value, width / 2, (20 * (i + 1)))
+      }
+    }
+    ctx.update()
+  }
+
+  function drawDashedLine(pattern : Array<number>, ctx : DrawableContext) {
+    ctx.beginPath();
+    ctx.setLineDash(pattern);
+    ctx.moveTo(0, y);
+    ctx.lineTo(300, y);
+    ctx.stroke();
+    y += 15;
+  }
+
+  function drawLines() {
+    let ctx = uni.getElementById('draw-line-view')!.getDrawableContext()!
+    ctx.reset()
+    ctx.lineWidth = 10;
+
+    ["round", "bevel", "miter"].forEach((join, i) => {
+      ctx.lineJoin = join;
+      ctx.beginPath();
+      ctx.moveTo(5, 10 + i * 40);
+      ctx.lineTo(50, 50 + i * 40);
+      ctx.lineTo(90, 10 + i * 40);
+      ctx.lineTo(130, 50 + i * 40);
+      ctx.lineTo(170, 10 + i * 40);
+      ctx.stroke();
+    });
+    ctx.lineWidth = 1
+    var space = 170
+    ctx.strokeStyle = '#09f';
+    ctx.beginPath();
+    ctx.moveTo(10 + space, 10);
+    ctx.lineTo(140 + space, 10);
+    ctx.moveTo(10 + space, 140);
+    ctx.lineTo(140 + space, 140);
+    ctx.stroke();
+    // Draw lines
+    ctx.strokeStyle = 'black';
+    ['butt', 'round', 'square'].forEach((lineCap, i) => {
+      ctx.lineWidth = 15;
+      ctx.lineCap = lineCap;
+      ctx.beginPath();
+      ctx.moveTo(25 + space + i * 50, 10);
+      ctx.lineTo(25 + space + i * 50, 140);
+      ctx.stroke();
+    });
+    ctx.lineWidth = 1;
+    drawDashedLine([], ctx);
+    drawDashedLine([2, 2], ctx);
+    drawDashedLine([10, 10], ctx);
+    drawDashedLine([20, 5], ctx);
+    drawDashedLine([15, 3, 3, 3], ctx);
+    drawDashedLine([20, 3, 3, 3, 3, 3, 3, 3], ctx);
+    ctx.lineDashOffset = 18;
+    drawDashedLine([12, 3, 3], ctx);
+    ctx.lineDashOffset = 0
+    ctx.setLineDash([0])
+    ctx.update()
+  }
+
+  function drawCircles() {
+    let ctx = uni.getElementById('draw-circle-view')!.getDrawableContext()!
+    ctx.reset()
+    // Draw shapes
+    for (var i = 0; i < 4; i++) {
+      for (var j = 0; j < 3; j++) {
+        ctx.beginPath();
+        var x = 25 + j * 50;               // x coordinate
+        var y = 25 + i * 50;               // y coordinate
+        var radius = 20;                    // Arc radius
+        var startAngle = 0;                     // Starting point on circle
+        var endAngle = Math.PI + (Math.PI * j) / 2; // End point on circle
+        var clockwise = i % 2 == 0 ? false : true; // clockwise or anticlockwise
+
+        ctx.arc(x, y, radius, startAngle, endAngle, clockwise);
+
+        if (i > 1) {
+          ctx.fill();
+        } else {
+          ctx.stroke();
+        }
+      }
+    }
+    ctx.update()
+  }
+
+  function drawStar() {
+    let ctx = uni.getElementById('draw-dash-line')!.getDrawableContext()!
+    ctx.reset()
+    ctx.beginPath();
+    var horn = 5; // 画5个角
+    var angle = 360 / horn; // 五个角的度数
+    // 两个圆的半径
+    var R = 50;
+    var r = 20;
+    // 坐标
+    var x = 100;
+    var y = 100;
+    // #ifdef APP-HARMONY
+    //TODO 鸿蒙首次调用lineTo并不是起始点，这里暂时先调用一次moveTo
+    ctx.moveTo(Math.cos((18 + 0 * angle) / 180.0 * Math.PI) * R + x, -Math.sin((18 + 0 * angle) / 180.0 * Math.PI) * R + y);
+    // #endif
+    for (var i = 0; i < horn; i++) {
+      // 角度转弧度：角度/180*Math.PI
+      // 外圆顶点坐标
+      ctx.lineTo(Math.cos((18 + i * angle) / 180.0 * Math.PI) * R + x, -Math.sin((18 + i * angle) / 180.0 * Math.PI) * R + y);
+      // 內圆顶点坐标
+      ctx.lineTo(Math.cos((54 + i * angle) / 180.0 * Math.PI) * r + x, -Math.sin((54 + i * angle) / 180.0 * Math.PI) * r + y);
+    }
+    // closePath：关闭路径，将路径的终点与起点相连
+    ctx.closePath();
+    ctx.lineWidth = 3;
+    ctx.fillStyle = '#E4EF00';
+    ctx.strokeStyle = "red";
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.lineWidth = 10;
+    ctx.beginPath()
+    ctx.moveTo(170, 100)
+    ctx.lineTo(255, 15)
+    ctx.lineTo(340, 100)
+    ctx.closePath()
+    ctx.fill()
+    ctx.strokeStyle = "blue"
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.moveTo(170, 145)
+    ctx.lineTo(255, 45)
+    ctx.lineTo(340, 145)
+    ctx.closePath()
+    ctx.fill()
+    ctx.strokeStyle = "gray"
+    ctx.stroke()
+    // 未设置beginPath，导致上下表现一致，与前端一致
+    ctx.moveTo(170, 190)
+    ctx.lineTo(255, 90)
+    ctx.lineTo(340, 190)
+    ctx.closePath()
+    ctx.fillStyle = "orange"
+    ctx.fill()
+    ctx.strokeStyle = "khaki"
+    ctx.stroke()
+    ctx.update()
+  }
+
+  function hex(num : number) : string {
+    if (num == 0) {
+      return "00"
+    }
+    let hexChars = "0123456789ABCDEF";
+    let result = "";
+    while (num > 0) {
+      let remainder = Math.floor(num) % 16;
+      result = hexChars[remainder] + result;
+      num = Math.floor(Math.floor(num) / 16);
+    }
+    if (result.length == 1) {
+      return "0" + result
+    }
+    return result
+  }
+
+  function drawhouse() {
+    let ctx = uni.getElementById('draw-house')!.getDrawableContext()!
+    ctx.reset()
+    ctx.lineWidth = 10;
+
+    // Wall
+    ctx.strokeRect(75, 140, 150, 110);
+
+    // Door
+    ctx.fillRect(130, 190, 40, 60);
+
+    // Roof
+    ctx.beginPath();
+    ctx.moveTo(50, 140);
+    ctx.lineTo(150, 60);
+    ctx.lineTo(250, 140);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.update()
+  }
+
+  function drawPoint() {
+    let ctx = uni.getElementById('draw-style')!.getDrawableContext()!
+    ctx.reset()
+    for (let i = 0; i < 6; i++) {
+      for (let j = 0; j < 6; j++) {
+        ctx.strokeStyle = `rgb(0,${Math.floor(255 - 42.5 * i)},${Math.floor(255 - 42.5 * j)})`;
+        ctx.beginPath();
+        ctx.arc(12.5 + j * 25, 12.5 + i * 25, 10, 0, Math.PI * 2, true);
+        ctx.stroke();
+      }
+    }
+    for (let i = 0; i < 6; i++) {
+      for (let j = 0; j < 6; j++) {
+        ctx.fillStyle = `rgb(${Math.floor(255 - 42.5 * i)},${Math.floor(255 - 42.5 * j)},0)`;
+        ctx.fillRect(180 + j * 25, i * 25, 25, 25);
+      }
+    }
+    ctx.update()
+  }
+
+  function drawRect() {
+    let ctx = uni.getElementById('draw-odd')!.getDrawableContext()!
+    ctx.reset()
+    // Create path
+    ctx.moveTo(30, 90);
+    ctx.lineTo(110, 20);
+    ctx.lineTo(240, 130);
+    ctx.lineTo(60, 130);
+    ctx.lineTo(190, 20);
+    ctx.lineTo(270, 90);
+    ctx.closePath();
+
+    // Fill path
+    ctx.fillStyle = "green";
+    ctx.fill("evenodd");
+    ctx.update()
+
+  }
+
+  function drawArcTo() {
+    let ctx = uni.getElementById('draw-arcto')!.getDrawableContext()!
+    ctx.reset()
+    ctx.beginPath();
+    ctx.moveTo(50, 20);
+    ctx.bezierCurveTo(230, 30, 150, 60, 50, 100);
+    ctx.stroke();
+
+    ctx.fillStyle = "blue";
+    // start point
+    ctx.fillRect(50, 20, 10, 10);
+    // end point
+    ctx.fillRect(50, 100, 10, 10);
+
+    ctx.fillStyle = "red";
+    // control point one
+    ctx.fillRect(230, 30, 10, 10);
+    // control point two
+    ctx.fillRect(150, 70, 10, 10);
+
+    ctx.fillStyle = 'transparent'
+    ctx.fillRect(150, 70, 20, 20);
+
+    ctx.update()
+  }
+
+  onReady(() => {
+    drawText()
+    drawLines()
+    drawCircles()
+    drawStar()
+    drawhouse()
+    drawPoint()
+    drawRect()
+    drawArcTo()
+  })
+</script>
+
+<style>
+  .drawing {
+    height: 275px;
+    background-color: lightgray;
+    margin-bottom: 15px;
+  }
+</style>

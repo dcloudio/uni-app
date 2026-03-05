@@ -1,0 +1,226 @@
+<template>
+  <view class="tabs">
+    <view ref="tabview" class="tab-view">
+      <!-- 注意tab的逻辑是：第一次使用v-if创建，创建之后不再使用v-if，而是设置visibility来隐藏和显示。不能设置tab的v-if为false，因为销毁再创建影响性能 -->
+      <tab1 ref="tab1Ref" class="tab-page" v-if="tabList[0].init" :style="{visibility:(selectedIndex==0?'visible':'hidden')}"></tab1>
+      <tab2 ref="tab2Ref" class="tab-page" v-if="tabList[1].init" :style="{visibility:(selectedIndex==1?'visible':'hidden')}"></tab2>
+    </view>
+    <view ref="tabbar" class="tab-bar">
+      <view class="tab-item" @click="onTabClick(0)">
+        <view ref="tab-item1" class="tab-item-content">
+          <text v-if="displayArrow" class="tab-item-icon tab-item-arrow uni-icon"
+            :class="selectedIndex==0 ? 'tab-item-text-active' : ''">
+            {{'\ue6bd'}}
+          </text>
+          <text v-if="!displayArrow" class="tab-item-icon uni-icon"
+            :class="selectedIndex==0 ? 'tab-item-text-active' : ''">{{'\ue644'}}</text>
+          <text v-if="!displayArrow" class="tab-item-text" :class="selectedIndex==0 ? 'tab-item-text-active' : ''">
+            首页
+          </text>
+        </view>
+      </view>
+      <view>
+        <image class="concave-image" mode="heightFix" src="/static/template/custom-tab-bar/concave.png"></image>
+      </view>
+      <view class="tab-item" @click="onTabClick(1)">
+        <view ref="tab-item2" class="tab-item-content">
+          <text class="tab-item-icon uni-icon"
+            :class="selectedIndex==1 ? 'tab-item-text-active' : ''">{{'\ue699'}}</text>
+          <text class="tab-item-text" :class="selectedIndex==1 ? 'tab-item-text-active' : ''">
+            我的
+          </text>
+        </view>
+      </view>
+    </view>
+    <view class="btn-plus" @click="onPlusClick">
+      <text class="btn-plus-text">+</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+import tab1 from './custom-tab-bar-tab1.uvue'
+import tab2 from './custom-tab-bar-tab2.uvue'
+
+type TabItem = {
+  init : boolean,
+  preload : boolean,
+}
+
+// Template refs
+const tabview = ref<UniElement | null>(null)
+const tab1Ref = ref<ComponentPublicInstance | null>(null)
+const tab2Ref = ref<ComponentPublicInstance | null>(null)
+
+// Data
+const tabList = ref([
+  {
+    init: true,
+    preload: false
+  } as TabItem,
+  {
+    init: false,
+    preload: false
+  } as TabItem,
+] as TabItem[])
+const selectedIndex = ref(0)
+const displayArrow = ref(false)
+let lastTab1Top = 0
+let tabViewHeight = 0
+
+// Methods
+function setSelectedIndex(index : number) {
+  if (selectedIndex.value === index) {
+    return
+  }
+  if (!tabList.value[index].init) {
+    tabList.value[index].init = true
+  }
+  selectedIndex.value = index
+}
+
+function onTabClick(index : number) {
+  if (selectedIndex.value == index && index == 0 && displayArrow.value == true) {
+    displayArrow.value = false;
+    const tab1Instance = tab1Ref.value
+    if (tab1Instance != null) {
+      tab1Instance.$callMethod('scrollTop', 0)
+    }
+  }
+  else if (index !=0){
+    displayArrow.value = false
+  }
+  else if (index == 0 && selectedIndex.value !=0){
+    displayArrow.value = lastTab1Top > tabViewHeight
+  }
+  setSelectedIndex(index)
+}
+
+function onTabPageEvent(top : number) {
+  displayArrow.value = top > tabViewHeight
+  lastTab1Top = top
+}
+
+function onPlusClick() {
+  uni.showModal({
+    title: "提示",
+    content: "你点击了 +",
+    showCancel: false
+  })
+}
+
+// Lifecycle
+onLoad(() => {
+  uni.$on('tabchange', onTabPageEvent)
+})
+
+onReady(() => {
+  const tabviewElement = tabview.value
+  if (tabviewElement != null) {
+    tabviewElement.getBoundingClientRectAsync()!.then((res : DOMRect) => {
+      tabViewHeight = res.height
+    })
+  }
+})
+
+onUnload(() => {
+  uni.$off('tabchange', onTabPageEvent)
+})
+</script>
+
+<style>
+  @font-face {
+    font-family: "UniFontFamily";
+    src: url('@/static/font/uni.ttf');
+  }
+
+  .uni-icon {
+    font-family: "UniFontFamily";
+    font-size: 16px;
+    font-style: normal;
+  }
+
+  .tabs {
+    flex: 1;
+    background-color: #fff;
+    overflow: visible;
+  }
+
+  .tab-view {
+    flex: 1;
+  }
+
+  .tab-page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .tab-bar {
+    flex-direction: row;
+    height: 56px;
+    overflow: visible;
+  }
+
+  .tab-item {
+    flex: 1;
+    position: relative;
+    background-color: #1e90ff;
+    overflow: visible;
+  }
+
+  .tab-item-content {
+    margin: auto;
+    transition: transform 0.3s;
+  }
+
+  .tab-item-icon {
+    color: #ccc;
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .tab-item-text {
+    color: #ccc;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .tab-item-text-active {
+    color: #fff;
+  }
+
+  .tab-item-arrow {
+    font-size: 30px !important;
+    font-weight: bold;
+  }
+
+  .concave-image {
+    height: 56px;
+    /* TODO fix(harmony)排版取整导致在部分设备上出现白缝的问题 */
+    /* #ifdef VUE3-VAPOR */
+    margin-left: -1px;
+    margin-right: -1px;
+    /* #endif */
+  }
+
+  .btn-plus {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    bottom: 21px;
+    border-radius: 50px;
+    background-color: #FE5722;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .btn-plus-text {
+    color: #fff;
+    font-size: 32px;
+  }
+</style>

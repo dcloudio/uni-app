@@ -1,0 +1,263 @@
+<template>
+  <scroll-view class="container">
+   <page-head title="loading组件"></page-head>
+   <view class="section">
+      <view class="row">
+        <view class="item">
+          <text class="label">默认样式</text>
+          <loading/>
+        </view>
+        <view class="item">
+          <text class="label">paused为true</text>
+          <loading paused/>
+        </view>
+        <view class="item">
+          <text class="label">bold为true</text>
+          <loading bold/>
+        </view>
+        <view class="item">
+          <text class="label">背景圈黑色，前景白色</text>
+          <view style="width: 17px;height: 17px;border-radius: 8.5px;border: black 2px solid;align-items: center;justify-content: center;overflow: visible;">
+            <loading style="border-color: white;" bold />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 动态 style 控制 -->
+    <view class="section">
+      <text class="section-title">动态 style</text>
+      <view class="controls">
+        <button size="mini" @click="decreaseSize">-10px</button>
+        <button size="mini" @click="increaseSize">+10px</button>
+        <button size="mini" @click="toggleBold">bold 属性: {{ isBold }}</button>
+        <button size="mini" @click="nextColor">color style: {{ borderColor }}</button>
+        <button size="mini" @click="setPaused">paused 属性：{{ paused }}</button>
+        <!-- #ifdef APP-IOS -->
+        <button size="mini" @click="setIOSSpinner">ios-spinner 属性：{{ iosSpinner }}</button>
+        <!-- #endif -->
+        <button size="mini" @click="reset">reset</button>
+      </view>
+
+      <view class="row">
+        <view class="item">
+          <text class="label">{{ widthPx }}×{{ heightPx }} / {{ borderColor }} / bold: {{ isBold }} / paused: {{ paused }} / ios-spinner: {{ iosSpinner }}</text>
+          <view class="box">
+            <loading :bold=isBold :paused="paused" :ios-spinner="iosSpinner" :style="dynamicStyle" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 一、Class 实现 -->
+   <view class="section">
+      <text class="section-title">Class 自定义样式</text>
+      <view class="row">
+        <view class="item">
+          <text class="label">100×100 / blue / bold=false</text>
+          <view class="box">
+            <loading :bold=false class="size-100 bc-blue" />
+          </view>
+        </view>
+        <view class="item">
+          <text class="label">100×100 / red / bold=true</text>
+          <view class="box">
+            <loading :bold=true class="size-100 bc-red" />
+          </view>
+        </view>
+        <view class="item">
+          <text class="label">80×80 / green / bold=false</text>
+          <view class="box">
+            <loading :bold=false class="size-80 bc-green" />
+          </view>
+        </view>
+        <view class="item">
+          <text class="label">140×140 / yellow / bold=true</text>
+          <view class="box">
+            <loading :bold=true class="size-140 bc-yellow" />
+          </view>
+        </view>
+        <view class="item">
+          <text class="label">140×140 / yellow / bold=true, 默认paused属性=true</text>
+          <view class="box">
+            <loading :bold=true :paused="true" class="size-140 bc-yellow" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 二、Style 实现 -->
+   <view class="section">
+      <text class="section-title">Style 自定义样式</text>
+      <view class="row">
+        <view class="item">
+          <text class="label">80×80 / red / bold=true</text>
+          <view class="box">
+            <loading :bold=true :style="{ width:'80px', height:'80px', borderColor:'red'}" />
+          </view>
+        </view>
+
+        <view class="item">
+          <text class="label">120×120 / green / bold=false</text>
+          <view class="box">
+            <loading :bold=false :style="{ width:'120px', height:'120px', borderColor:'green'}" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+   <navigator class="uni-common-mb" url="/pages/template/loading-100/loading-100">
+      <button>组件性能测试</button>
+    </navigator>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+const widthPx = ref(100)
+const heightPx = ref(100)
+const borderColor = ref('blue')
+const isBold = ref(false)
+const colors = ['blue', 'red', 'green', 'yellow']
+const colorIndex = ref(0)
+const paused = ref(false)
+const iosSpinner = ref(false)
+
+const dynamicStyle = computed(() => {
+  return {
+    width: widthPx.value + 'px',
+    height: heightPx.value + 'px',
+    borderColor: borderColor.value,
+    borderWidth: isBold.value ? 'thick' : 'medium'
+  }
+})
+
+const increaseSize = () => {
+  widthPx.value += 10
+  heightPx.value += 10
+}
+
+const decreaseSize = () => {
+  widthPx.value = Math.max(20, widthPx.value - 10)
+  heightPx.value = Math.max(20, heightPx.value - 10)
+}
+
+const toggleBold = () => {
+  isBold.value = !isBold.value
+}
+
+const nextColor = () => {
+  colorIndex.value = (colorIndex.value + 1) % colors.length
+  borderColor.value = colors[colorIndex.value]
+}
+
+const reset = () => {
+  widthPx.value = 100
+  heightPx.value = 100
+  borderColor.value = 'blue'
+  isBold.value = false
+  iosSpinner.value = false
+  colorIndex.value = 0
+  paused.value = false
+}
+
+const setPaused = () => {
+  paused.value = !paused.value
+}
+
+const setIOSSpinner = () => {
+  iosSpinner.value = !iosSpinner.value
+}
+</script>
+
+<style>
+.container {
+  flex: 1;
+  padding: 8px;
+  background-color: #f8f8f8;
+}
+
+.header {
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-top: 6px;
+  text-align: center;
+}
+
+.section {
+  margin-bottom: 18px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 10px;
+  text-align: center;
+  background-color: #f0f0f0;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.item {
+  align-items: center;
+  margin: 8px 4px;
+}
+
+.label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.box {
+ border-style: none;
+}
+
+/* NOTE mp-weixin 类名需要加上父级以提高优先级，否则 class 样式无法生效 */
+
+/* #ifdef MP-WEIXIN */
+.item .size-80 { width: 80px; height: 80px; }
+.item .size-100 { width: 100px; height: 100px; }
+.item .size-140 { width: 140px; height: 140px; }
+
+.item .bc-blue { border-color: blue; }
+.item .bc-red { border-color: red; }
+.item .bc-green { border-color: green; }
+.item .bc-yellow { border-color: yellow; }
+/* #endif */
+
+/* #ifndef MP-WEIXIN */
+.size-80 { width: 80px; height: 80px; }
+.size-100 { width: 100px; height: 100px; }
+.size-140 { width: 140px; height: 140px; }
+
+.bc-blue { border-color: blue; }
+.bc-red { border-color: red; }
+.bc-green { border-color: green; }
+.bc-yellow { border-color: yellow; }
+/* #endif */
+
+</style>

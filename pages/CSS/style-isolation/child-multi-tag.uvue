@@ -1,0 +1,52 @@
+<template>
+    <!-- <text>多跟节点继承 $attrs.style 和 $attrs.class</text> -->
+    <view class="multi-root-box" :class="$attrs['class']">
+      <text class="multi-root-text">hasClassAttr</text>
+      <text class="multi-root-text">{{ hasClassAttr }}</text>
+    </view>
+    <view class="multi-root-box" :style="$attrs['style']?? ''">
+      <text class="multi-root-text">hasStyleAttr</text>
+      <text class="multi-root-text">{{ hasStyleAttr }}</text>
+    </view>
+</template>
+
+<script setup lang="uts">
+
+defineProps({
+  text: {
+    type: String,
+    required: true
+  }
+})
+
+const attrs = useAttrs()
+
+const hasClassAttr = computed(():boolean => {
+  return attrs['class'] != null
+})
+
+const hasStyleAttr = computed(():boolean=>{
+  return attrs['style'] != null
+})
+
+</script>
+
+<style>
+	.multi-root-box {
+		background-color: #FFF3E0;
+		padding: 15px;
+		border-radius: 8px;
+		border: 2px solid #FF9800;
+		margin: 5px;
+		flex-direction: row;
+	}
+
+	.multi-root-text {
+		color: #E65100;
+		font-size: 14px;
+		margin: 0 20px;
+	}
+
+</style>
+
+

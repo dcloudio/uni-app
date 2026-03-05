@@ -1,0 +1,60 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1" scroll-with-animation="true">
+  <!-- #endif -->
+    <view class="uni-padding-wrap">
+      <page-head :title="title"></page-head>
+      <button type="default" class="btn-scrollTo" @click="scrollTo">
+        scrollTo
+      </button>
+      <button type="default" class="btn-scrollToElement" @click="scrollToElement">
+        scrollToElement
+      </button>
+      <view class="uni-list" v-for="(_, index) in 10" :key="index">
+        <view class="uni-list-cell list-item">{{ index }}</view>
+      </view>
+      <view class="custom-element">scrollTo-custom-element</view>
+      <view class="uni-list" v-for="(_, index2) in 10" :key="index2">
+        <view class="uni-list-cell list-item">{{ index2 }}</view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  const title = ref('pageScrollTo')
+
+  const scrollTo = () => {
+    uni.pageScrollTo({
+      scrollTop: 100,
+      duration: 300,
+      success: () => {
+        console.log('success')
+      },
+    })
+  }
+
+  const scrollToElement = () => {
+    uni.pageScrollTo({
+      selector: '.custom-element',
+      duration: 300,
+      success: () => {
+        console.log('success')
+      },
+    })
+  }
+
+  defineExpose({
+    scrollTo
+  })
+
+</script>
+
+<style>
+  .list-item {
+    height: 100px;
+    padding-left: 30px;
+  }
+</style>

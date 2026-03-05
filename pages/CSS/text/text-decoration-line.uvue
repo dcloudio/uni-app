@@ -1,0 +1,140 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view class="content">
+        <text style="text-decoration-line: underline;">text-decoration-line: underline 下划线 底部易重叠字符：,.9pQqyzgj;\{}[]</text>
+        <text style="text-decoration-line: line-through;">text-decoration-line: line-through 删除线 较多文字测试换行和裁剪效果</text>
+      </view>
+      <view class="content">
+        <text style="text-decoration-line: underline;" flatten>text-decoration-line: underline flatten</text>
+        <text style="text-decoration-line: line-through;" flatten>text-decoration-line: line-through flatten</text>
+      </view>
+      <view class="content">
+        <text class="common" style="text-decoration-line: underline;color: blue;text-overflow: ellipsis;width: 200px;white-space: nowrap;">下划线颜色和ellipsis组合</text>
+        <text class="common" style="text-decoration-line: line-through;color: blue;text-overflow: ellipsis;width: 200px;white-space: nowrap;">删除线颜色和ellipsis组合</text>
+      </view>
+      <view style="background-color: gray;justify-content: center;align-items: center;margin-bottom: 16px;">
+        <text class="common" style="text-decoration-line: underline;color: blue;" flatten>text-decoration-line: underline 自适应宽高且拍平</text>
+        <text class="common" style="text-decoration-line: line-through;color: blue;" flatten>text-decoration-line: line-through 自适应宽高且拍平</text>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-decoration-line </text>
+      </view>
+
+      <view class="common-box">
+        <!-- 普通版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">text-decoration-line</text>
+          <text class="uni-info">设置值: {{data.textDecorationLine}}</text>
+          <text class="uni-info">获取值: {{data.textDecorationLineActual}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common test-text" :style="{ textDecorationLine: data.textDecorationLine }">当前 text-decoration-line: {{data.textDecorationLine}}</text>
+          </view>
+        </view>
+
+        <!-- 拍平版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">拍平</text>
+          <text class="uni-info">设置值: {{data.textDecorationLine}}</text>
+          <text class="uni-info">获取值: {{data.textDecorationLineActualFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common test-text-flatten" :style="{ textDecorationLine: data.textDecorationLine }" flatten>当前 text-decoration-line: {{data.textDecorationLine}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+          <enum-data :items="textDecorationLineEnum" title="text-decoration-line 枚举值" @change="radioChangeTextDecorationLine" :compact="true"></enum-data>
+          <input-data :defaultValue="data.textDecorationLine" title="text-decoration-line 自定义值" type="text" @confirm="inputChangeTextDecorationLine"></input-data>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+	import { ItemType } from '@/components/enum-data/enum-data-types'
+
+	const textDecorationLineEnum: ItemType[] = [
+		{ value: 0, name: '' },
+		{ value: 1, name: 'none' },
+		{ value: 2, name: 'underline' },
+		{ value: 3, name: 'line-through' }
+	]
+
+	const data = reactive({
+		textDecorationLine: 'none',
+		textDecorationLineActual: '',
+		textDecorationLineActualFlat: ''
+	})
+	const textRef = ref(null as UniTextElement | null)
+	const textRefFlat = ref(null as UniTextElement | null)
+
+	const getPropertyValues = () => {
+		data.textDecorationLineActual = textRef.value?.style.getPropertyValue('text-decoration-line') ?? ''
+		data.textDecorationLineActualFlat = textRefFlat.value?.style.getPropertyValue('text-decoration-line') ?? ''
+	}
+
+	const changeTextDecorationLine = (value: string) => {
+		data.textDecorationLine = value
+		textRef.value?.style.setProperty('text-decoration-line', value)
+		textRefFlat.value?.style.setProperty('text-decoration-line', value)
+		// 使用 nextTick 确保样式已应用后再获取值
+		nextTick(() => {
+			getPropertyValues()
+		})
+	}
+
+	const radioChangeTextDecorationLine = (index: number) => {
+		const selectedItem = textDecorationLineEnum.find((item): boolean => item.value === index)
+		if (selectedItem != null) {
+			changeTextDecorationLine(selectedItem.name)
+		}
+	}
+
+	const inputChangeTextDecorationLine = (value: string) => {
+		changeTextDecorationLine(value)
+	}
+
+	onReady(() => {
+		getPropertyValues()
+	})
+
+	defineExpose({
+		radioChangeTextDecorationLine,
+		data
+	})
+</script>
+
+<style>
+	.common {
+		font-size: 20px;
+	}
+  .content {
+    width: 200px;
+    height: 100px;
+    background-color: gray;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .test-box {
+    width: 180px;
+    height: 80px;
+    background-color: gray;
+    justify-content: center;
+    align-items: center;
+  }
+
+</style>

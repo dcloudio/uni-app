@@ -1,0 +1,223 @@
+<template>
+	<view>
+		<page-head :title="data.title"></page-head>
+		<view class="uni-list">
+			<view class="uni-padding-wrap">
+				<view class="uni-title uni-common-mt">
+					<text class="uni-title-text"> 设置标题 </text>
+				</view>
+			</view>
+			<view class="uni-list uni-common-pl">
+				<radio-group @change="radioChange">
+					<radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in data.items"
+						:key="item.value" :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''"
+						:value="item.value" :checked="index === data.current">
+						{{ item.name }}
+					</radio>
+				</radio-group>
+			</view>
+		</view>
+
+<!-- 		<view class="uni-padding-wrap uni-common-mt" style="flex-direction: row; justify-content: space-between; align-items: center;">
+			<text class="uni-title-text"> iOS 雪花样式 </text>
+			<switch :checked="data.iosSpinner" @change="iosSpinnerChange" />
+		</view> -->
+
+		<view class="uni-padding-wrap">
+			<view class="uni-btn-v">
+				<button type="primary" @click="showLoading">显示 loading 提示框</button>
+				<button @click="hideLoading">隐藏 loading 提示框</button>
+				<text>为方便演示，loading弹出3秒后自动关闭</text>
+			</view>
+		</view>
+		<view class="uni-padding-wrap">
+			<text>{{data.callbackText}}</text>
+			<view class="uni-btn-v">
+				<button type="primary" @click="closeSomeLoading">关闭指定loading</button>
+				<button type="primary" @click="noParamLoading">无参数测试</button>
+			</view>
+		</view>
+	</view>
+</template>
+<script setup lang="uts">
+	type ItemType = {
+		value : string
+		name : string
+	}
+
+	type DataType = {
+		title : string;
+		items : ItemType[];
+		current : number;
+		callbackText : string[];
+		titleSelect : string;
+		iosSpinner : boolean;
+	}
+
+	const data = reactive({
+		title: 'loading',
+		items: [
+			{
+				value: 'null',
+				name: '无标题',
+			},
+			{
+				value: '三秒后自动关闭',
+				name: '普通标题',
+			},
+			{
+				value: '超长文本内容，测试超出范围-超长文本内容，测试超出范围-三秒后自动关闭',
+				name: '长标题',
+			},
+		],
+		callbackText: [] as Array<string>,
+		current: 0,
+		titleSelect: "null",
+		iosSpinner: true
+	} as DataType)
+
+	const jest_getWindowInfo = () : GetWindowInfoResult => {
+		return uni.getWindowInfo();
+	}
+
+	const radioChange = (e : UniRadioGroupChangeEvent) => {
+		const selected = data.items.find((item) : boolean => {
+			return item.value == e.detail.value
+		})
+		if (selected != null) {
+			data.titleSelect = selected.value
+		}
+	}
+
+	const iosSpinnerChange = (e : UniSwitchChangeEvent) => {
+		data.iosSpinner = e.detail.value
+	}
+
+	const hideLoading = () => {
+		uni.hideLoading();
+	}
+	const noParamLoading = () => {
+
+		uni.showLoading()
+		uni.showLoading({
+			success: function (showRet : ShowLoadingSuccess) {
+				data.callbackText.push("noParamLoading 1 success")
+			}
+		})
+		uni.showLoading({
+			complete: function (showRet : any) {
+				data.callbackText.push("noParamLoading 2 complete")
+			}
+		})
+		setTimeout(function () {
+			uni.hideLoading({
+				success: function (ret : HideLoadingSuccess) {
+					data.callbackText.push("hide loading success")
+				}
+			})
+		}, 2000)
+	}
+	/**
+	 * 关闭指定loading
+	 */
+	const closeSomeLoading = () => {
+		const loading1 = uni.showLoading({
+			title: "第一个loading",
+			iosSpinner: data.iosSpinner,
+			success: function (res : ShowLoadingSuccess) {
+				data.callbackText.push("showLoading 1 success")
+				console.log("showLoading 1 success", res)
+			},
+			fail: function (res : ShowLoadingFail) {
+				data.callbackText.push("showLoading 1 fail")
+				console.log("showLoading 1 fail", res)
+			},
+			complete: function (res : any) {
+				data.callbackText.push("showLoading 1 complete")
+				console.log("showLoading 1 complete", res)
+			},
+		})
+		const loading2 = uni.showLoading({
+			title: "第二个loading",
+			iosSpinner: data.iosSpinner,
+			success: function (res : ShowLoadingSuccess) {
+				data.callbackText.push("showLoading 2 success")
+				console.log("showLoading 2 success", res)
+			},
+			fail: function (res : ShowLoadingFail) {
+				data.callbackText.push("showLoading 2 fail")
+				console.log("showLoading 2 fail", res)
+			},
+			complete: function (res : any) {
+				data.callbackText.push("showLoading 2 complete")
+				console.log("showLoading 2 complete", res)
+			},
+		})
+		setTimeout(function () {
+			uni.hideLoading({
+				loadingPage: loading2,
+				success: function (res : HideLoadingSuccess) {
+					data.callbackText.push("hideLoading 2 success")
+					console.log("hideLoading 2 success", res)
+				},
+				fail: function (res : HideLoadingFail) {
+					data.callbackText.push("hideLoading 2 fail")
+					console.log("hideLoading 2 fail", res)
+				},
+				complete: function (res : any) {
+					data.callbackText.push("hideLoading 2 complete")
+					console.log("hideLoading 2 complete", res)
+				},
+			})
+		}, 1000)
+		setTimeout(function () {
+			uni.hideLoading({
+				loadingPage: loading1,
+				success: function (res : HideLoadingSuccess) {
+					data.callbackText.push("hideLoading 1 success")
+					console.log("hideLoading 1 success", res)
+				},
+				fail: function (res : HideLoadingFail) {
+					data.callbackText.push("hideLoading 1 fail")
+					console.log("hideLoading 1 fail", res)
+				},
+				complete: function (res : any) {
+					data.callbackText.push("hideLoading 1 complete")
+					console.log("hideLoading 1 complete", res)
+				},
+			})
+		}, 3000)
+	}
+	const showLoading = () => {
+		console.log(data.titleSelect)
+		if (data.titleSelect == "null") {
+			uni.showLoading({
+				title: "",
+				iosSpinner: data.iosSpinner,
+			});
+		} else {
+			uni.showLoading({
+				title: data.titleSelect,
+				iosSpinner: data.iosSpinner,
+			});
+		}
+		setTimeout(() => {
+			hideLoading();
+		}, 3000);
+	}
+
+	onLoad(() => {
+		// uni.showLoading()
+		// setTimeout(() => {
+		// 	uni.hideLoading()
+		// }, 2000);
+	})
+
+	defineExpose({
+    data,
+		showLoading,
+		hideLoading,
+    closeSomeLoading,
+    noParamLoading,
+	})
+</script>

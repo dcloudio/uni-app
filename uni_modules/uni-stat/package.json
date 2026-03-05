@@ -1,0 +1,119 @@
+{
+  "id": "uni-stat",
+  "displayName": "uni统计 for uni-app x",
+  "version": "1.0.16",
+  "description": "uni统计的uni-app x 版本",
+  "keywords": [
+    "uni-stat",
+    "统计",
+    "uni统计"
+],
+  "repository": "https://gitcode.net/dcloud/uni-api",
+  "engines": {
+    "HBuilderX": "^4.33",
+    "uni-app": "",
+    "uni-app-x": "^4.62"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "采集页面路由\n采集页面停留时长\n采集常用设备信息",
+      "permissions": "无"
+    },
+    "npmurl": "",
+    "darkmode": "x",
+    "i18n": "x",
+    "widescreen": "x"
+  },
+  "uni_modules": {
+    "uni-ext-api": {
+      "uni": {
+        "report": {
+          "name": "report",
+          "app": {
+            "js": true,
+            "kotlin": true,
+            "swift": false,
+            "arkts": false
+          }
+        }
+      }
+    },
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "√",
+        "aliyun": "√",
+        "alipay": "√"
+      },
+      "client": {
+        "uni-app": {
+          "vue": {
+            "vue2": "-",
+            "vue3": "-"
+          },
+          "web": {
+            "safari": "-",
+            "chrome": "-"
+          },
+          "app": {
+            "vue": "-",
+            "nvue": "-",
+            "android": "-",
+            "ios": "-",
+            "harmony": "-"
+          },
+          "mp": {
+            "weixin": "-",
+            "alipay": "-",
+            "toutiao": "-",
+            "baidu": "-",
+            "kuaishou": "-",
+            "jd": "-",
+            "harmony": "-",
+            "qq": "-",
+            "lark": "-"
+          },
+          "quickapp": {
+            "huawei": "-",
+            "union": "-"
+          }
+        },
+        "uni-app-x": {
+          "web": {
+            "safari": "√",
+            "chrome": "√"
+          },
+          "app": {
+            "android": {
+                "extVersion": "",
+                "minVersion": "21"
+            },
+            "ios": {
+                "extVersion": "",
+                "minVersion": "12"
+            },
+            "harmony": "x"
+          },
+          "mp": {
+            "weixin": {
+            }
+          }
+        }
+      }
+    }
+  }
+}

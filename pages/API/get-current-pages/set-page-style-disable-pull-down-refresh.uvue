@@ -1,0 +1,115 @@
+<template>
+  <page-head title="getCurrentPages"></page-head>
+  <view class="uni-padding-wrap">
+    <button class="btn btn-get-page-style" type="default" @click="getPageStyle">getPageStyle</button>
+    <button class="btn btn-set-page-style-1" type="default" @click="setPageStyle(true)">setPageStyle(true)</button>
+    <button class="btn btn-set-page-style-0" type="default" @click="setPageStyle(false)">setPageStyle(false)</button>
+    <text class="page-style">当前 PageStyle</text>
+      <text class="page-style-value">{{pageStyleText}}</text>
+      <text class="status">状态：</text>
+      <view class="status-list">
+        <text>enablePullDownRefresh: {{data.enablePullDownRefreshStatus}}</text>
+      </view>
+    <text class="tips">当前版本仅支持设置属性 enablePullDownRefresh</text>
+  </view>
+</template>
+
+<script setup lang="uts">
+  
+
+  class Page {
+    constructor(public route : string) {
+    }
+  }
+
+  type DataType = {
+    currentPageStyle: UTSJSONObject,
+    enablePullDownRefreshStatus: boolean,
+  }
+
+  const checked = ref(false)
+  const pages = ref([] as Page[])
+  const data = reactive({
+    currentPageStyle: {} as UTSJSONObject,
+    enablePullDownRefreshStatus: true,
+  } as DataType)
+
+  const pageStyleText = computed(() : string => {
+    return JSON.stringify(data.currentPageStyle)
+  })
+
+  function getPageStyle() {
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    data.currentPageStyle = currentPage.getPageStyle();
+  }
+
+  function setPageStyle(enable : boolean) {
+    // 目前仅支持 enablePullDownRefresh
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    currentPage.setPageStyle({
+      enablePullDownRefresh: enable
+    });
+    data.enablePullDownRefreshStatus = enable
+  }
+
+  function startPullDownRefresh() {
+    uni.startPullDownRefresh()
+  }
+
+  onLoad(() => {
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    data.currentPageStyle = currentPage.getPageStyle();
+    data.enablePullDownRefreshStatus = data.currentPageStyle["enablePullDownRefresh"] as boolean
+  })
+
+  defineExpose({
+    data,
+    getPageStyle,
+    setPageStyle,
+    startPullDownRefresh
+  })
+
+  onPullDownRefresh(() => {
+    setTimeout(() => {
+      uni.stopPullDownRefresh()
+    }, 3000)
+  })
+</script>
+
+
+<style>
+  .btn {
+    margin-top: 10px;
+  }
+
+  .page-style {
+    margin-top: 15px;
+  }
+
+  .page-style-value {
+    margin-top: 5px;
+    padding: 5px;
+    background-color: #fff;
+    width: 100%;
+    /* #ifdef WEB */
+    overflow-wrap: break-word;
+    /* #endif */
+  }
+
+  .status {
+    margin-top: 20px;
+  }
+
+  .status-list {
+    margin-top: 5px;
+  }
+
+  .tips {
+    font-size: 12px;
+    margin-top: 15px;
+    opacity: .8;
+  }
+</style>

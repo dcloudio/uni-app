@@ -1,0 +1,43 @@
+<template>
+  <view class="dialog-container">
+    <!-- native-time-picker 通过 native-view 绑定原生time-picker 实现的UTS插件-标准模式组件 -->
+    <native-time-picker class="native-time-picker" :hour=2 :minute=3 @changed="onChanged"></native-time-picker>
+    <button @click="sure">确定</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const currentPage = getCurrentInstance()?.proxy?.$page
+
+function onChanged(e : UniNativeViewEvent) {
+  console.log("onchanged-----", e.detail)
+}
+
+function sure() {
+  if (currentPage != null) {
+    uni.closeDialogPage({
+      dialogPage: currentPage
+    })
+  }
+}
+</script>
+
+<style>
+ .native-time-picker {
+    margin: 10px auto 25px auto;
+    border-style: solid;
+    border-radius: 5px;
+    background-color: white;
+  }
+
+
+  .dialog-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+</style>

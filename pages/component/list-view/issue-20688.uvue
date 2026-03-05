@@ -1,0 +1,20 @@
+<template>
+  <view style="width:100%;flex: 1;">
+    <list-view style="flex:1">
+      <list-item style="background-color: black; flex-direction: column;">
+        <image mode="widthFix" src="/static/test-image/logo.png" />
+        <view style="width: 100%;height: 100px;background-color: rgba(170, 170, 255, 0.5);"></view>
+      </list-item>
+    </list-view>
+    <view style="flex: 1; background-color: red; flex-direction: column;">
+      <image mode="widthFix" src="/static/test-image/logo.png" />
+      <view style="width: 100%;height: 100px;background-color: rgba(170, 170, 255, 0.5);"></view>
+    </view>
+  </view>
+</template>
+
+<script setup>
+</script>
+
+<style lang="scss" scoped>
+</style>

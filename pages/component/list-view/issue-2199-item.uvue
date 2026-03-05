@@ -1,0 +1,14 @@
+<template>
+  <list-item>
+    <slot></slot>
+  </list-item>
+</template>
+
+<script setup lang="uts">
+defineOptions({
+  name: 'Item'
+})
+</script>
+
+<style>
+</style>

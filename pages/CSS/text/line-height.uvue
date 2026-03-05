@@ -1,0 +1,203 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <template v-if="autoTestData.begin">
+      <view>
+        <text id="testText"
+          :style="`line-height: ${data.lineHeight_mix};`">
+          uni-app 是一个使用 Vue.js
+          开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、鸿蒙Next、Web（响应式）、以及各种小程序（微信/支付宝/百度/抖音/飞书/QQ/快手/钉钉/淘宝/京东/小红书）、快应用、鸿蒙元服务等多个平台。</text>
+        <view style="flex-direction: row;">
+          <button @click="plusLineHeight">+行高</button>
+          <button @click="minusLineHeight">-行高</button>
+        </view>
+      </view>
+    </template>
+    <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+    <view class="demo-box">
+      <view class="box">
+        <text class="common" style="line-height: 75px;">line-height: 75px</text>
+        <text class="line-height-3 common">line-height: 3</text>
+        <text class="common" style="line-height: 3em;">line-height: 3em</text>
+        <text class="common" style="line-height: 3;">line-height: 3\nline-height: 3\nline-height: 3</text>
+      </view>
+      <view class="box">
+        <text class="common" style="line-height: 75px;" flatten>line-height: 75px</text>
+        <text class="line-height-3 common" flatten>line-height: 3</text>
+        <text class="common" style="line-height: 3em;" flatten>line-height: 3em</text>
+        <text class="common" style="line-height: 3;" flatten>line-height: 3\nline-height: 3\nline-height: 3</text>
+      </view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 line-height </text>
+    </view>
+
+    <view class="common-box">
+      <!-- 普通版本 -->
+      <view class="uni-common-mt">
+        <text class="uni-title-text">line-height</text>
+        <text class="uni-info">设置值: {{data.lineHeight}}</text>
+        <text class="uni-info">获取值: {{data.lineHeightActual}}</text>
+        <view class="test-box">
+          <text ref="textRef" class="common" :style="{ lineHeight: data.lineHeight }">当前 line-height: {{data.lineHeight}}</text>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="uni-common-mt">
+        <text class="uni-title-text">拍平</text>
+        <text class="uni-info">设置值: {{data.lineHeight}}</text>
+        <text class="uni-info">获取值: {{data.lineHeightActualFlat}}</text>
+        <view class="test-box">
+          <text ref="textRefFlat" class="common" :style="{ lineHeight: data.lineHeight }" flatten>当前 line-height: {{data.lineHeight}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="lineHeightEnum" title="line-height 枚举值" @change="radioChangeLineHeight" :compact="true"></enum-data>
+        <input-data :defaultValue="data.lineHeight" title="line-height 自定义值" type="text" @confirm="inputChangeLineHeight"></input-data>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const lineHeightEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '1.5' },
+    { value: 2, name: '2' },
+    { value: 3, name: '25px' },
+    { value: 4, name: '50rpx' },
+    { value: 5, name: '1.5em' },
+    { value: 6, name: '2em' }
+  ]
+
+  type LineHeightData = {
+    lineHeight: string
+    lineHeightActual: string
+    lineHeightActualFlat: string
+    lineHeight_mix: number
+  }
+  const data = reactive({
+    lineHeight: '20px',
+    lineHeightActual: '',
+    lineHeightActualFlat: '',
+    lineHeight_mix: 1.5
+  } as LineHeightData)
+  const textRef = ref(null as UniTextElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+
+  const getPropertyValues = () => {
+    data.lineHeightActual = textRef.value?.style.getPropertyValue('line-height') ?? ''
+    data.lineHeightActualFlat = textRefFlat.value?.style.getPropertyValue('line-height') ?? ''
+  }
+
+  const changeLineHeight = (value: string) => {
+    data.lineHeight = value
+    textRef.value?.style.setProperty('line-height', value)
+    textRefFlat.value?.style.setProperty('line-height', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeLineHeight = (index: number) => {
+    const selectedItem = lineHeightEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeLineHeight(selectedItem.name)
+    }
+  }
+
+  const inputChangeLineHeight = (value: string) => {
+    changeLineHeight(value)
+  }
+
+
+  /**
+   * * * * * * * * * * * * * *
+   * 自动化测试
+   * * * * * * * * * * * * * *
+   */
+  type AutoTextData = {
+    begin: boolean
+  }
+  const autoTestData = reactive<AutoTextData>({
+    begin: false
+  } as AutoTextData)
+
+  function plusLineHeight() {
+    data.lineHeight_mix = data.lineHeight_mix + 0.2
+  }
+  function minusLineHeight() {
+    data.lineHeight_mix = data.lineHeight_mix - 0.2
+  }
+  function getLineHeight() {
+    const testText = uni.getElementById('testText')
+    if (testText != null) {
+      return parseFloat(testText.style.getPropertyValue('line-height'))
+    }
+    return 0
+  }
+
+  defineExpose({
+    autoTestData,
+    getLineHeight,
+    plusLineHeight,
+    minusLineHeight,
+    data
+  })
+  /**
+   * * * * * * * * * * * * * *
+   * 自动化测试 END
+   * * * * * * * * * * * * * *
+   */
+
+  onReady(() => {
+    getPropertyValues()
+  })
+</script>
+
+<style>
+  .common {
+    font-size: 20px;
+    border: 1px cyan solid;
+    margin: 10px 0;
+    padding: 0 10px;
+  }
+  .line-height-3 {
+    line-height: 3;
+  }
+  .box{
+    height: 500px;
+    background-color: gray;
+    justify-content: center;
+    align-items: center;
+    flex:1;
+  }
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .test-box {
+    width: 180px;
+    height: 150px;
+    background-color: gray;
+    justify-content: center;
+    align-items: center;
+  }
+
+</style>

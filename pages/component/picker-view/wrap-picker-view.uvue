@@ -1,0 +1,32 @@
+<template>
+  <view>
+    <MyPickerView ref='pickerViewRef' v-if='visible'></MyPickerView>
+    <button class="btn_toggle" @click="toggle">btn</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import MyPickerView from './picker-view.uvue'
+
+  const visible = ref(false)
+  const pickerViewRef = ref<ComponentPublicInstance | null>(null)
+
+  function setValue() {
+    if (pickerViewRef.value != null) {
+      pickerViewRef.value!.$callMethod('setValue')
+    }
+  }
+
+  function toggle() {
+    visible.value = !visible.value
+    if (visible.value) {
+      nextTick(() => {
+        setValue()
+      })
+    }
+  }
+</script>
+
+<style>
+
+</style>

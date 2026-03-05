@@ -1,0 +1,777 @@
+<template>
+  <view class="content">
+    <map class="map" id="map1" ref="map1" :longitude="location.longitude" :latitude="location.latitude" :scale="scale"
+      :markers="markers" :include-points="includePoints" :polyline="polyline" :polygons="polygons" :circles="circles"
+      :controls="controls" :show-location="showLocation" :enable-3D="enable3D" :rotate="rotate" :skew="skew"
+      :show-compass="showCompass" :enable-overlooking="enableOverlooking" :enable-zoom="enableZoom"
+      :enable-scroll="enableScroll" :enable-rotate="enableRotate" :enable-satellite="enableSatellite"
+      :enable-traffic="enableTraffic" @markertap="onmarkertap" @callouttap="oncallouttap" @controltap="oncontroltap"
+      @regionchange="onregionchange" @tap="maptap" @updated="onupdated" @poitap="onpoitap"></map>
+    <scroll-view class="scrollview">
+      <view class="tips">注意：App和Web需要正确配置地图服务商的Key才能显示地图组件</view>
+      <view class="uni-title">
+        <text class="uni-title-text">属性示例</text>
+      </View>
+      <input-data defaultValue="13" title="scale: 缩放级别，取值范围为5-18" type="number"
+        @confirm="confirm_scale_input"></input-data>
+      <boolean-data :defaultValue="showLocation" title="开启显示带有方向的当前定位点" @change="change_show_location"></boolean-data>
+      <boolean-data :default-value="enable3D" :disabled="enableSatellite" title="3D效果(放大缩放级别才能看到建筑物3D效果)" @change="change_enable_3d"></boolean-data>
+      <boolean-data :default-value="showCompass" title="显示指南针" @change="change_show_campass"></boolean-data>
+      <boolean-data :default-value="enableOverlooking" title="俯视支持" @change="change_enable_overlooking"></boolean-data>
+      <boolean-data :default-value="enableRotate" title="旋转支持" @change="change_enable_rotate"></boolean-data>
+      <boolean-data :default-value="enableZoom" title="缩放支持" @change="change_enable_zoom"></boolean-data>
+      <boolean-data :default-value="enableScroll" title="拖动支持" @change="change_enable_scroll"></boolean-data>
+      <boolean-data :default-value="enableSatellite" title="卫星图" @change="change_enable_satellite"></boolean-data>
+      <boolean-data :default-value="enableTraffic" title="实时路况" @change="change_enable_traffic"></boolean-data>
+
+      <button class="button" @click="addControls">控件</button>
+      <button class="button" @click="addMarkers">添加标记点</button>
+      <!-- #ifdef WEB || MP -->
+      <button class="button" @click="addMarkersLabel">为标记点旁边增加标签</button>
+      <!-- #endif -->
+      <button class="button" @click="removeMarker">移除ID为4的标记点和标签</button>
+      <button class="button" @click="addPolyline">添加路线</button>
+      <button class="button" @click="removePolyline">移除一条路线</button>
+      <button class="button" @click="addPolygons">添加多边形</button>
+      <button class="button" @click="removePolygon">移除一个多边形</button>
+      <button class="button" @click="addCircles">添加圆</button>
+      <button class="button" @click="removeCircle">移除一个圆</button>
+      <button class="button" @click="includePoint">缩放视野以包含所有给定的坐标点</button>
+      <view class="uni-title">
+        <text class="uni-title-text">方法示例</text>
+      </View>
+      <button class="button" @click="handleGetCenterLocation">获取当前地图中心的经纬度</button>
+      <button class="button" @click="handleGetRegion">获取当前地图的视野范围</button>
+      <button class="button" @click="handleTranslateMarker">平移marker</button>
+      <button class="button" @click="handleMoveToLocation(true)">将地图中心移动到指定坐标</button>
+      <button class="button" @click="handleMoveToMyLocation">将地图中心移动到当前位置</button>
+      <button class="button" @click="handleGetScale">获取当前地图的缩放级别</button>
+    </scroll-view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  type TypeJestResult = {
+    translateMarkerMsg : string,
+    animationEnd : boolean,
+    centerPoints : LocationObject,
+    southwest : LocationObject,
+    northeast : LocationObject,
+    moveToLocationMsg : string,
+    scale : number,
+    eventDetailJsonStringify: string,
+  }
+
+  const testMarkers :Marker[]= [{
+    id: 0,
+    latitude: 39.989631,
+    longitude: 116.481018,
+    title: '方恒国际 阜通东大街6号',
+    iconPath: '../../../static/location.png',
+    rotate: 0,
+    width: 20,
+    height: 20,
+    anchor: {
+      x: 0.5,
+      y: 1
+    } ,
+    callout: {
+      content: '方恒国际 阜通东大街6号',
+      color: '#00BFFF',
+      fontSize: 10,
+      borderRadius: 4,
+      borderWidth: 1,
+      borderColor: '#333300',
+      bgColor: '#CCFF99',
+      padding: 5,
+      display: 'ALWAYS'
+    } as MapMarkerCallout
+  },
+  {
+    id: 1,
+    latitude: 39.9086920000,
+    longitude: 116.3974770000,
+    title: '天安门',
+    // zIndex: '1',
+    iconPath: '../../../static/location.png',
+    width: 40,
+    height: 40,
+    anchor: {
+      x: 0.5,
+      y: 1
+    },
+    callout: {
+      content: '首都北京\n天安门',
+      color: '#00BFFF',
+      fontSize: 12,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: '#333300',
+      bgColor: '#CCFF11',
+      padding: 5,
+      display: 'ALWAYS'
+    } as MapMarkerCallout
+  },
+  {
+    id: 2,
+    latitude: 39.894793,
+    longitude: 116.321592,
+    title: '北京西站',
+    iconPath: '../../../static/location.png',
+    width: 40,
+    height: 40,
+    anchor: {
+      x: 0.5,
+      y: 1
+    },
+    callout: {
+      content: '北京西站',
+      color: '#ffffff',
+      fontSize: 12,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: '#333300',
+      bgColor: '#ff5500',
+      padding: 5,
+      display: 'ALWAYS'
+    } as MapMarkerCallout
+  },
+  {
+    id: 3,
+    latitude: 39.902344,
+    longitude: 116.484822,
+    title: '北京东站',
+    iconPath: '../../../static/location.png',
+    width: 20,
+    height: 20,
+    anchor: {
+      x: 0.5,
+      y: 1
+    },
+    callout: {
+      content: '北京东站',
+      color: '#ffffff',
+      fontSize: 12,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: '#333300',
+      bgColor: '#ff5500',
+      padding: 5,
+      display: 'ALWAYS'
+    } as MapMarkerCallout
+  },
+  {
+    id: 4,
+    latitude: 39.865011,
+    longitude: 116.379007,
+    title: '北京南站',
+    iconPath: '../../../static/location.png',
+    width: 40,
+    height: 40,
+    anchor: {
+      x: 0.5,
+      y: 1
+    },
+    callout: {
+      content: '北京南站',
+      color: '#ffffff',
+      fontSize: 12,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: '#333300',
+      bgColor: '#00aa00',
+      padding: 5,
+      display: 'ALWAYS'
+    } as MapMarkerCallout
+  },
+  ];
+
+
+  const testPolyline: Polyline[] = [{
+    points: [{
+      latitude: 39.925539,
+      longitude: 116.279037
+    },
+    {
+      latitude: 39.925539,
+      longitude: 116.520285
+    }],
+    color: '#FFCCFF',
+    width: 7,
+    dottedLine: true,
+    arrowLine: true,
+    borderColor: '#000000',
+    borderWidth: 2
+  },
+  {
+    points: [{
+      latitude: 39.938698,
+      longitude: 116.275177
+    },
+    {
+      latitude: 39.966069,
+      longitude: 116.289253
+    },
+    {
+      latitude: 39.944226,
+      longitude: 116.306076
+    },
+    {
+      latitude: 39.966069,
+      longitude: 116.322899
+    },
+    {
+      latitude: 39.938698,
+      longitude: 116.336975
+    }],
+    color: '#CCFFFF',
+    width: 5,
+    dottedLine: false,
+    arrowLine: true,
+    borderColor: '#CC0000',
+    borderWidth: 3
+  }
+  ];
+
+  const testPolygons : Polygon[] = [{
+    points: [{
+      latitude: 39.781892,
+      longitude: 116.293413
+    },
+    {
+      latitude: 39.787600,
+      longitude: 116.391842
+    },
+    {
+      latitude: 39.733187,
+      longitude: 116.417932
+    },
+    {
+      latitude: 39.704653,
+      longitude: 116.338255
+    }],
+    fillColor: '#FFCCFF',
+    strokeWidth: 3,
+    strokeColor: '#CC99CC',
+    zIndex: 11
+  },
+  {
+    points: [{
+      latitude: 39.887600,
+      longitude: 116.518932
+    },
+    {
+      latitude: 39.781892,
+      longitude: 116.518932
+    },
+    {
+      latitude: 39.781892,
+      longitude: 116.428932
+    },
+    {
+      latitude: 39.887600,
+      longitude: 116.428932
+    }
+    ],
+    fillColor: '#CCFFFF',
+    strokeWidth: 5,
+    strokeColor: '#CC0000',
+    zIndex: 3
+  }
+  ];
+
+  const testCircles: Circle[] = [{
+    latitude: 39.996441,
+    longitude: 116.411146,
+    radius: 15000,
+    strokeWidth: 5,
+    color: '#CCFFFF',
+    fillColor: '#CC0000'
+  },
+  {
+    latitude: 40.096441,
+    longitude: 116.511146,
+    radius: 12000,
+    strokeWidth: 3,
+    color: '#CCFFFF',
+    fillColor: '#FFCCFF'
+  },
+  {
+    latitude: 39.896441,
+    longitude: 116.311146,
+    radius: 9000,
+    strokeWidth: 1,
+    color: '#CCFFFF',
+    fillColor: '#CC0000'
+  }
+  ];
+
+  const testIncludePoints :LocationObject[] = [{
+    latitude: 39.989631,
+    longitude: 116.481018,
+  },
+  {
+    latitude: 39.9086920000,
+    longitude: 116.3974770000,
+  }
+  ];
+
+
+  const mapContext = ref(null as MapContext | null);
+  const location = ref({ longitude: 116.39742, latitude: 39.909 } as LocationObject);
+  const rotate = ref(0);
+  const skew = ref(0);
+  // 自动化测试
+  const autoTest = ref(false);
+  const updateAutoTest = (value : boolean) => {
+    autoTest.value = value
+  }
+
+
+  const jestResult = reactive({
+    translateMarkerMsg: "",
+    animationEnd: false,
+    centerPoints: {
+      latitude: 0,
+      longitude: 0
+    },
+    southwest: {
+      latitude: 0,
+      longitude: 0
+    },
+    northeast: {
+      latitude: 0,
+      longitude: 0
+    },
+    moveToLocationMsg: "",
+    scale: 0,
+    eventDetailJsonStringify: "{}"
+  } as TypeJestResult);
+
+
+  onReady(() => {
+    mapContext.value = uni.createMapContext("map1", getCurrentInstance()!.proxy!)
+  });
+
+  const scale = ref(13);
+  const confirm_scale_input = (value : number) => {
+    scale.value = value
+  };
+
+  const controls = ref([] as Control[]);
+  const addControls = () => {
+    controls.value = [{
+      id: 1,
+      position: {
+        left: 5,
+        top: 180,
+        width: 30,
+        height: 30
+      } as ControlPosition,
+      iconPath: '../../../static/test-image/logo.png',
+      clickable: true
+    } as Control]
+  }
+
+  const showLocation = ref(false);
+  const enable3D = ref(false);
+  const showCompass = ref(false);
+  const enableOverlooking = ref(false);
+  const enableRotate = ref(false);
+  const enableZoom = ref(true);
+  const enableScroll = ref(true);
+  const enableSatellite = ref(false);
+  const enableTraffic = ref(false);
+  const change_show_location = (checked : boolean) => {
+    showLocation.value = checked
+  }
+
+  const change_enable_3d = (checked : boolean) => {
+    enable3D.value = checked
+  }
+
+  const change_show_campass = (checked : boolean) => {
+    showCompass.value = checked
+  }
+
+  const change_enable_overlooking = (checked : boolean) => {
+    enableOverlooking.value = checked
+  }
+
+  const change_enable_rotate = (checked : boolean) => {
+    enableRotate.value = checked
+  }
+
+  const change_enable_zoom = (checked : boolean) => {
+    enableZoom.value = checked
+  }
+
+  const change_enable_scroll = (checked : boolean) => {
+    enableScroll.value = checked
+  }
+
+  const change_enable_satellite = (checked : boolean) => {
+    enableSatellite.value = checked
+  }
+
+  const change_enable_traffic = (checked : boolean) => {
+    enableTraffic.value = checked
+  }
+
+  const includePoints = ref([] as LocationObject[]);
+  const includePoint = () => {
+    includePoints.value = testIncludePoints;
+  };
+
+
+  let markers = ref([] as Marker[]);
+  const addMarkers = () => {
+    scale.value = 11
+    const temp = JSON.parse<Marker[]>(JSON.stringify(testMarkers))!
+    markers.value = temp
+  };
+
+  const removeMarker = () => {
+    // #ifdef APP
+    mapContext.value?.removeMarkers({markerIds:[4]})
+    // #endif
+    // #ifdef WEB || MP
+    const index = markers.value.findIndex((marker: Marker):boolean=>{
+       return marker.id == 4
+    });
+    if (index != -1) {
+      delete markers.value[index].label;
+      markers.value.splice(index, 1);
+    } else {
+      uni.showToast({
+        title: '未找到该标记点',
+        icon: 'none'
+      });
+    }
+    // #endif
+  };
+
+  // #ifdef WEB || MP
+  const addMarkersLabel = () => {
+    markers.value.forEach((marker, index) => {
+      marker.label = {
+        content: 'Hello Label' + (index + 1),
+        color: '#aa00ff',
+        fontSize: 12,
+        x: 5,
+        y: 0,
+        borderColor: '#333300',
+        borderWidth: 2,
+        borderRadius: 20,
+        bgColor: '#aaffff',
+        padding: 10
+      };
+    });
+  };
+  // #endif
+
+
+  const polyline = ref([] as Polyline[]);
+  const addPolyline = () => {
+    scale.value = 11;
+    polyline.value = JSON.parse<Polyline[]>(JSON.stringify(testPolyline))!;
+  };
+  const removePolyline = () => {
+    if (polyline.value.length > 1) {
+      polyline.value = JSON.parse<Polyline[]>(JSON.stringify(testPolyline))!.splice(0, 1);
+    }
+  };
+
+
+  const polygons = ref([] as Polygon[]);
+  const addPolygons = () => {
+    scale.value = 10;
+    polygons.value = JSON.parse<Polygon[]>(JSON.stringify(testPolygons))!;
+  };
+  const removePolygon = () => {
+    if (polygons.value.length > 1) {
+      polygons.value = JSON.parse<Polygon[]>(JSON.stringify(testPolygons))!.splice(0, 1);
+    }
+  };
+
+
+  const circles = ref([] as Circle[]);
+  const addCircles = () => {
+    scale.value = 10;
+    circles.value = JSON.parse<Circle[]>(JSON.stringify(testCircles))!;
+  };
+  const removeCircle = () => {
+    if (circles.value.length > 1) {
+      circles.value = JSON.parse<Circle[]>(JSON.stringify(testCircles))!.slice(1);
+    }
+  };
+
+  const handleGetCenterLocation = () => {
+    mapContext.value?.getCenterLocation({
+      success: ret => {
+        // console.log('getCenterLocation',ret);
+        jestResult.centerPoints = ret;
+        if (!autoTest.value) {
+          uni.showModal({
+            content: JSON.stringify(ret)
+          });
+        }
+      }
+    });
+  };
+
+  const handleGetRegion = () => {
+      mapContext.value?.getRegion({
+        success: ret => {
+          // console.log('getRegion',JSON.stringify(ret));
+          jestResult.southwest = ret.southwest;
+          jestResult.northeast = ret.northeast
+          if (!autoTest.value) {
+            uni.showModal({
+              content: JSON.stringify(ret)
+            });
+          }
+        }
+      });
+  };
+
+
+  const handleTranslateMarker = () => {
+      mapContext.value?.translateMarker({
+        markerId: 1,
+        destination: {
+          latitude: 39.989631,
+          longitude: 116.481018
+        },
+        autoRotate: true,
+        rotate: 10,
+        duration: 2000,
+        moveWithRotate: true,
+        // #ifdef WEB || MP
+        animationEnd: () => {
+          console.log('动画结束');
+          jestResult.animationEnd = true;
+        },
+        // #endif
+        success: ret => {
+          console.log('handleTranslateMarker',JSON.stringify(ret));
+          const result = ret as UTSJSONObject
+          jestResult.translateMarkerMsg = result["errMsg"] as string;
+        },
+        fail: error => {
+          console.log(error)
+        }
+      });
+      mapContext.value?.translateMarker({
+        markerId: 2,
+        destination: {
+          latitude: 39.902344,
+          longitude: 116.484822,
+        },
+        autoRotate: true,
+        rotate: 0,
+        duration: 2000,
+        success: ret => {
+          console.log('handleTranslateMarker', JSON.stringify(ret));
+        },
+        fail: error => {
+          console.log(error)
+        }
+      });
+  };
+
+
+  const handleGetScale = () => {
+      mapContext.value?.getScale({
+        success: res => {
+          // console.log('getScale',res);
+          scale.value = res.scale
+          jestResult.scale = res.scale
+          if (!autoTest.value) {
+            uni.showModal({
+              content: '当前地图的缩放级别为：' + res.scale
+            });
+          }
+        },
+        fail: error => {
+          console.log(error)
+        },
+      });
+  };
+
+  // showModal - 操作结束后是否显示 Modal 弹框，默认为 true。在自动化或内部调用时可设为 false。
+  function handleMoveToLocation(showModal: boolean = true) {
+      mapContext.value?.moveToLocation({
+        latitude: 39.909,
+        longitude: 116.39742,
+        success: res => {
+          // console.log('moveToLocation',res);
+          const result = res as UTSJSONObject
+          jestResult.moveToLocationMsg = result["errMsg"] as string;
+
+          if (!autoTest.value && showModal) {
+            uni.showModal({
+              content: JSON.stringify(res)
+            });
+          }
+        },
+        fail: error => {
+          console.log(error)
+        }
+      });
+  }
+
+  const handleMoveToMyLocation = () => {
+    mapContext.value?.moveToLocation({
+      success: res => {
+        uni.showModal({
+          content: '地图中心已经移动到当前位置'
+        })
+      },
+      fail: error => {
+        console.log(error);
+      }
+    })
+  }
+
+  const maptap = (e : UniMapTapEvent) => {
+    // #ifdef WEB || MP
+    uni.showModal({
+      content: 'web端map组件tap事件不支持返回经纬度'
+    });
+    // #endif
+    // #ifndef WEB || MP
+    // console.log('点击地图时触发',e)
+    //js运行环境删除多余的信息
+    // #ifndef APP-ANDROID
+    Reflect.deleteProperty(e, "target")
+    Reflect.deleteProperty(e, "currentTarget")
+    Reflect.deleteProperty(e, "_bubbles")
+    Reflect.deleteProperty(e, "_cancelable")
+    Reflect.deleteProperty(e, "timeStamp")
+    // #endif
+    uni.showModal({
+      content: JSON.stringify(e)
+    });
+    // #endif
+  };
+
+  const onmarkertap = (e : UniMapMarkerTapEvent) => {
+    // console.log('点击标记点时触发',e)
+    //js运行环境删除多余的信息
+    // #ifndef APP-ANDROID
+    Reflect.deleteProperty(e, "target")
+    Reflect.deleteProperty(e, "currentTarget")
+    Reflect.deleteProperty(e, "_bubbles")
+    Reflect.deleteProperty(e, "_cancelable")
+    Reflect.deleteProperty(e, "timeStamp")
+    // #endif
+    uni.showModal({
+      content: JSON.stringify(e)
+    });
+  };
+
+  const oncontroltap = (e : UniMapControlTapEvent) => {
+    // console.log('点击控件时触发',e)
+    uni.showModal({
+      content: JSON.stringify(e.detail)
+    });
+  };
+
+  const oncallouttap = (e : UniMapCalloutTapEvent) => {
+    // console.log('点击标记点对应的气泡时触发',e)
+    uni.showModal({
+      content: JSON.stringify(e.detail)
+    });
+  };
+
+  const onupdated = (e : UniMapUpdatedEvent) => {
+    // console.log('在地图渲染更新完成时触发', e)
+    // 检查地图位置，如果经纬度为0则调用moveToLocation将地图中心移动到当前定位点
+    // #ifdef MP
+    if (mapContext.value) {
+      mapContext.value.getCenterLocation({
+        success: ret => {
+          // console.log('地图更新后获取中心位置:', ret)
+          if (ret.latitude === 0 && ret.longitude === 0) {
+            // console.log('检测到无效经纬度')
+            handleMoveToLocation(false); // 不显示弹框
+          }
+        }
+      })
+    }
+    // #endif
+  };
+
+  const onregionchange = (e : UniMapRegionChangeEvent) => {
+    // console.log('视野发生变化时触发', e.detail)
+    jestResult.eventDetailJsonStringify = JSON.stringify(e.detail)
+  };
+
+  const onpoitap = (e : UniMapPoiTapEvent) => {
+    // console.log('点击地图poi点时触发',e)
+    //js运行环境删除多余的信息
+    // #ifndef APP-ANDROID
+    Reflect.deleteProperty(e, "target")
+    Reflect.deleteProperty(e, "currentTarget")
+    Reflect.deleteProperty(e, "_bubbles")
+    Reflect.deleteProperty(e, "_cancelable")
+    Reflect.deleteProperty(e, "timeStamp")
+    // #endif
+    uni.showModal({
+      content: JSON.stringify(e)
+    });
+  };
+
+  defineExpose({
+    jestResult,
+    autoTest,
+    updateAutoTest,
+    addControls,
+    addMarkers,
+    // #ifdef WEB || MP
+    addMarkersLabel,
+    // #endif
+    removeMarker,
+    addPolyline,
+    removePolyline,
+    addPolygons,
+    removePolygon,
+    addCircles,
+    removeCircle,
+    includePoint,
+    handleGetCenterLocation,
+    handleGetRegion,
+    handleTranslateMarker,
+    handleMoveToLocation,
+    handleGetScale
+  })
+</script>
+
+<style>
+  .content {
+    flex: 1;
+  }
+
+  .map {
+    width: 100%;
+    height: 300px;
+    background-color: #f0f0f0;
+  }
+
+  .scrollview {
+    flex: 1;
+    padding: 10px;
+  }
+
+  .button {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .tips {
+    font-size: 12px;
+    margin-top: 15px;
+    opacity: .8;
+  }
+</style>

@@ -1,0 +1,482 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;">
+	<!-- #endif -->
+	<view style="padding: 10px;">
+		<text style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px;">Swiper组件演示</text>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">不等高slider测试（Auto Height）harmony 无效：</text>
+			<text style="color: #999; font-size: 12px; margin-bottom: 5px;">容器高度随当前slider内容自动调整</text>
+			<swiper auto-height>
+				<swiper-item>
+					<view style="background-color: #ff6b6b; padding: 20px;">
+						<view style="background-color: white; padding: 15px; border-radius: 8px;">
+							<text style="color: #333; font-size: 16px; line-height: 24px;">短内容 - 高度约100px</text>
+						</view>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="background-color: #4ecdc4; padding: 20px;">
+						<view style="background-color: white; padding: 15px; border-radius: 8px;">
+							<text style="color: #333; font-size: 16px; line-height: 24px;">中等内容 - 高度约150px
+这里有更多的文字来测试不同高度的slider是否能正常显示和切换。容器应该自动调整到这个高度。</text>
+						</view>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="background-color: #95e1d3; padding: 20px;">
+						<view style="background-color: white; padding: 15px; border-radius: 8px;">
+							<text style="color: #333; font-size: 16px; line-height: 24px;">长内容 - 高度约200px
+这是一个高度较大的内容。这里有很多文字来测试不同高度的slider。
+包含了更多的信息和描述内容，用于验证swiper在处理不等高内容时的表现。
+容器高度应该自动调整到这个slider的高度。</text>
+						</view>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">基础用法（横向滑动，测试指示器可见性）：</text>
+			<swiper style="height: 150px;" :indicator-dots="true">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #ff6b6b; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Item 1 红</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #fff; align-items: center; justify-content: center;">
+						<text style="color: #333; font-size: 24px;">Item 2 白</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #000; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Item 3 黑</text>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">3D卡片（previousMargin + nextMargin + circular），应用层实现缩放：</text>
+			<swiper
+				circular
+				previous-margin="40px"
+				next-margin="40px"
+				style="height: 120px;"
+				@change="handleScaleChange1"
+			>
+				<swiper-item>
+					<view class="scale-card" :class="{'scale-card-active': scaleCurrentIndex1 == 0}">
+						<view style="width: 100%; height: 100%; background-color: #e74c3c; align-items: center; justify-content: center; border-radius: 8px;">
+							<text style="color: white; font-size: 20px;">A</text>
+						</view>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view class="scale-card" :class="{'scale-card-active': scaleCurrentIndex1 == 1}">
+						<view style="width: 100%; height: 100%; background-color: #3498db; align-items: center; justify-content: center; border-radius: 8px;">
+							<text style="color: white; font-size: 20px;">B</text>
+						</view>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view class="scale-card" :class="{'scale-card-active': scaleCurrentIndex1 == 2}">
+						<view style="width: 100%; height: 100%; background-color: #2ecc71; align-items: center; justify-content: center; border-radius: 8px;">
+							<text style="color: white; font-size: 20px;">C</text>
+						</view>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">3D卡片（previousMargin + nextMargin + circular），应用层实现缩放：</text>
+			<swiper
+				circular
+				previous-margin="40px"
+				next-margin="40px"
+				style="height: 120px;"
+				@change="handleScaleChange2"
+			>
+				<swiper-item>
+					<view class="scale-card" :class="{'scale-card-active': scaleCurrentIndex2 == 0}">
+						<view style="width: 100%; height: 100%; background-color: #e74c3c; align-items: center; justify-content: center; border-radius: 8px;">
+							<text style="color: white; font-size: 20px;">A</text>
+						</view>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view class="scale-card" :class="{'scale-card-active': scaleCurrentIndex2 == 1}">
+						<view style="width: 100%; height: 100%; background-color: #3498db; align-items: center; justify-content: center; border-radius: 8px;">
+							<text style="color: white; font-size: 20px;">B</text>
+						</view>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">垂直滑动（vertical）：</text>
+			<swiper vertical style="height: 200px;">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #8e44ad; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Vertical 1</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #2c3e50; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Vertical 2</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #e67e22; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Vertical 3</text>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">垂直滑动（vertical）且开启 disable-rebound：</text>
+			<swiper vertical :disable-bounce="true" style="height: 200px;">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #8e44ad; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Vertical 1</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #2c3e50; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Vertical 2</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #e67e22; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Vertical 3</text>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">垂直滑动（vertical）且开启 circular：</text>
+			<swiper vertical circular style="height: 200px;">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #8e44ad; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Vertical 1</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #2c3e50; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Vertical 2</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #e67e22; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Vertical 3</text>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">自动播放 + 循环（autoplay + circular）：</text>
+			<swiper autoplay circular :interval="2000" style="height: 150px;">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #ee5a6f; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Auto 1</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #f368e0; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Auto 2</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #ff9ff3; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Auto 3</text>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">2卡片 + 循环circular：</text>
+			<swiper circular :interval="2000" style="height: 150px;">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #ee5a6f; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">A</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #f368e0; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">B</text>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">指示器短横线样式（item-style）：</text>
+			<swiper style="height: 150px;" :indicator-dots="true" indicator-style="width: 20px; height: 3px; border-radius: 2px;">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #9b59b6; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Line 1</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #ffffff; align-items: center; justify-content: center;">
+						<text style="color: black; font-size: 24px;">Line 2</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #000000; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Line 3</text>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">高亮指示器加长（item-active-style）：</text>
+			<swiper style="height: 150px;" :indicator-dots="true" indicator-style="width: 8px; height: 8px;" indicator-active-style="width: 12px; height: 8px;">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #e84118; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Scale 1</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #c23616; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Scale 2</text>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">指示器class定制（item-class + item-active-class）：</text>
+			<swiper style="height: 150px;" :indicator-dots="true" indicator-class="custom-item" indicator-active-class="custom-item-active">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #f39c12; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Class 1</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #d35400; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Class 2</text>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">指示器样式定制（item-style + item-active-style）：</text>
+			<swiper style="height: 150px;" :indicator-dots="true" indicator-style="width: 16px; height: 4px; border-radius: 2px; background-color: rgba(100, 100, 255, 0.5);" indicator-active-style="width: 24px; background-color: rgba(100, 100, 255, 1);">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #8e44ad; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Style 1</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #9b59b6; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Style 2</text>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">事件监听（@change、@transition、@animationfinish）：</text>
+			<text style="color: #999; font-size: 12px; margin-bottom: 5px;">当前索引: {{eventCurrentIndex}}</text>
+			<text style="color: #999; font-size: 12px; margin-bottom: 5px;">上次触发: {{eventSource}}</text>
+			<text style="color: #999; font-size: 12px; margin-bottom: 5px;">过渡位置: dx={{transitionDx}}, dy={{transitionDy}}</text>
+			<swiper
+				@change="handleChange"
+				@transition="handleTransition"
+				@animationfinish="handleAnimationFinish"
+				style="height: 150px;"
+			>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #2d3436; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Event 1</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #636e72; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Event 2</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #b2bec3; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Event 3</text>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">自定义数字指示器（slot）：</text>
+			<swiper @change="handleCustomIndicatorChange" style="height: 150px;">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #16a085; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Custom 1</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #ffffff; align-items: center; justify-content: center;">
+						<text style="color: black; font-size: 24px;">Custom 2</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #000000; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Custom 3</text>
+					</view>
+				</swiper-item>
+				<template v-slot:indicator>
+					<view style="position: absolute; bottom: 10px; right: 10px; background-color: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 12px;">
+						<text style="color: white; font-size: 14px; font-weight: bold;">{{customIndicatorIndex + 1}}/{{customIndicatorTotal}}</text>
+					</view>
+				</template>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">自定义指示器并绑定点击事件(仅web支持点击)：</text>
+			<swiper :current='customIndicatorCurrent' style="height: 150px;" @change="handleCustomIndicatorHandleClickChange">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #16a085; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Custom 1</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #ffffff; align-items: center; justify-content: center;">
+						<text style="color: black; font-size: 24px;">Custom 2</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #000000; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Custom 3</text>
+					</view>
+				</swiper-item>
+				<template v-slot:indicator>
+					<view v-for="item in 3" style="margin: 0 10px;">
+						<text class="custom-indicator-text" :class="{ 'active': customIndicatorCurrent == item - 1 }" @click="handleCustomIndicatorClick(item - 1)">{{item - 1}}</text>
+					</view>
+				</template>
+			</swiper>
+		</view>
+
+		<view style="margin-bottom: 20px;">
+			<text style="color: #666; margin-bottom: 10px;">circular 和 disabled-bounce 同时设置：</text>
+			<text style="color: #999; font-size: 12px; margin-bottom: 5px;">以circular为优先</text>
+			<swiper :disable-bounce="false" :circular="true" style="height: 150px;">
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #3742fa; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Rebound 1</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #5352ed; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Rebound 2</text>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view style="width: 100%; height: 100%; background-color: #a29bfe; align-items: center; justify-content: center;">
+						<text style="color: white; font-size: 24px;">Rebound 3</text>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+	</view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="uts">
+	import { ref } from 'vue'
+
+	const scaleCurrentIndex1 = ref<number>(0)
+	const scaleCurrentIndex2 = ref<number>(0)
+
+
+	const eventCurrentIndex = ref<number>(0)
+	const eventSource = ref<string>('none')
+	const transitionDx = ref<number>(0)
+	const transitionDy = ref<number>(0)
+
+	const customIndicatorIndex = ref<number>(0)
+	const customIndicatorTotal = ref<number>(3)
+	const customIndicatorCurrent = ref<number>(0)
+
+	const handleScaleChange1 = (e: UniSwiperChangeEvent) => {
+		scaleCurrentIndex1.value = e.detail.current
+	}
+	const handleScaleChange2 = (e: UniSwiperChangeEvent) => {
+		scaleCurrentIndex2.value = e.detail.current
+	}
+
+	const handleChange = (e: UniSwiperChangeEvent) => {
+		eventCurrentIndex.value = e.detail.current
+		eventSource.value = 'change-' + e.detail.source
+	}
+
+	const handleTransition = (e: UniSwiperTransitionEvent) => {
+		transitionDx.value = Math.round(e.detail.dx)
+		transitionDy.value = Math.round(e.detail.dy)
+	}
+
+	const handleAnimationFinish = (e: UniSwiperAnimationFinishEvent) => {
+		eventSource.value = 'animationfinish-' + e.detail.source
+	}
+
+	const handleCustomIndicatorChange = (e: UniSwiperChangeEvent) => {
+		customIndicatorIndex.value = e.detail.current
+	}
+	const handleCustomIndicatorHandleClickChange = (e: UniSwiperChangeEvent) => {
+		customIndicatorCurrent.value = e.detail.current
+	}
+	const handleCustomIndicatorClick = (index: number) => {
+		customIndicatorCurrent.value = index
+	}
+</script>
+
+<style>
+	.scale-card {
+		width: 100%;
+		height: 100%;
+		align-items: center;
+		justify-content: center;
+		transform: scale(0.9);
+		opacity: 0.7;
+		transition: all 300ms ease;
+	}
+
+	.scale-card-active {
+		transform: scale(1);
+		opacity: 1;
+	}
+
+	.custom-item {
+		width: 16px;
+		height: 4px;
+		border-radius: 2px;
+		background-color: rgba(255, 165, 0, 0.5);
+	}
+
+	.custom-item-active {
+		width: 24px;
+		background-color: rgba(255, 165, 0, 1);
+	}
+	.custom-indicator-text {
+		padding: 10px;
+		font-size: 14px;
+		color: #ccc;
+	}
+	.custom-indicator-text.active {
+		font-size: 18px;
+		color: yellow;
+		font-weight: bold;
+	}
+</style>

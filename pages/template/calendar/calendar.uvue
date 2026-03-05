@@ -1,0 +1,369 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <view class="root">
+      <view class="date">
+        <text class="date-text">{{ current_month }}</text>
+      </view>
+      <view ref="drawHeaderRef" class="calendar-header"></view>
+      <view ref="drawWeeksRef" class="calendar-week" @click="select"></view>
+      <view class="btn-group">
+        <button size="mini" @click="preDate">上个月</button>
+        <button size="mini" @click="gotoToday">回到今天</button>
+        <button size="mini" @click="nextDate">下个月</button>
+      </view>
+      <view>{{ timeData.fullDate }} {{ current_day }}</view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+  import { Calendar, DateType } from './index.uts'
+
+  type CoordsType = {
+    x : number;
+    y : number;
+    width : number;
+    height : number;
+    data : DateType
+  }
+
+  // Template refs
+  const drawHeaderRef = ref<UniElement | null>(null)
+  const drawWeeksRef = ref<UniElement | null>(null)
+
+  const weeks = ref<Array<Array<DateType>>>([])
+  const $coords = ref<Array<CoordsType>>([])
+  const $calendar = ref(new Calendar() as Calendar)
+  const timeData = ref<DateType>({
+    fullDate: '',
+    year: 0,
+    month: 0,
+    date: 0,
+    day: 0,
+    lunar: '',
+    disabled: false,
+    is_today: false
+  } as DateType)
+  type DataType = {
+    testWidth: number,
+  }
+
+  const data = reactive({
+    testWidth: 0,
+  } as DataType)
+
+  // 获取月份
+  const current_month = computed((): string => {
+    const nowDate = timeData.value
+    const month = nowDate.month
+    return month < 10 ? '0' + month : month.toString()
+  })
+
+  const current_day = computed((): string => {
+    const time = timeData.value.data
+    if (time == null) {
+      return ''
+    }
+    return time.IMonthCn + time.IDayCn
+  })
+
+  // 绘制日历顶部信息
+  function drawHeader() {
+    const refs = drawHeaderRef.value
+    if (refs == null) return
+    let ctx = refs.getDrawableContext()
+    if (ctx == null) return
+    // 渲染之前如果有内容，需要清空
+    ctx.reset()
+    const date_header_map = ['一', '二', '三', '四', '五', '六', '日']
+
+    const width = refs.getBoundingClientRect().width
+    const num = date_header_map.length
+    const one_width = width / num
+
+    ctx.font = '12'
+    ctx.textAlign = 'center'
+
+    for (let i = 0; i < num; i++) {
+      let box_left = i * one_width + 2
+      let box_width = one_width - 4
+      let box_height = 26
+
+      // 文本赋值
+      const text = date_header_map[i]
+      let text_left = box_width / 2 + box_left
+      let text_top = box_height / 2 + 6
+
+      ctx.fillText(text, text_left, text_top)
+    }
+    ctx.update()
+  }
+
+  // 绘制日历主体
+  function drawWeek(weeks : Array<Array<DateType>>, time : string) {
+    const start_time = Date.now()
+    const refs = drawWeeksRef.value
+    if (refs == null) return
+    let ctx = refs.getDrawableContext()
+    if (ctx == null) return
+    const dom = refs.getBoundingClientRect()
+    const width = dom.width
+    const height = dom.height
+    let week_len = weeks.length
+    const one_width = width / weeks[0].length
+    const one_height = height / week_len
+
+    if (time != '') {
+      $coords.value = [] as Array<CoordsType>
+      ctx.reset()
+    }
+
+    ctx.textAlign = 'center'
+
+    for (let week = 0; week < week_len; week++) {
+
+      const week_item = weeks[week]
+      for (let day = 0; day < week_item.length; day++) {
+        const day_item = week_item[day]
+        let day_left = day * one_width + 2
+        let day_top = one_height * week + 2
+        let day_width = one_width - 4
+        let day_height = one_height - 4
+
+        // 文本赋值
+        let text = day_item.date.toString()
+        let text_left = day * one_width + (one_width / 2)
+        let text_top = one_height * week + 25
+
+        ctx.font = '16'
+
+        // 日期是否禁用
+        if (day_item.disabled) {
+          ctx.fillStyle = '#ccc'
+        } else {
+          // 是否为今天
+          if (day_item.is_today) {
+            ctx.fillStyle = 'red'
+          } // 是否为选中日期
+          else if (time == day_item.fullDate) {
+            ctx.fillStyle = 'blue';
+          }
+          // 默认颜色
+          else {
+            ctx.fillStyle = '#666';
+          }
+
+          // 第一次渲染获取数据
+          // if (time == '') {
+          // 存储坐标组，用于点击事件
+          const coords : CoordsType = {
+            x: day_left,
+            y: day_top,
+            width: day_width,
+            height: day_height,
+            data: day_item
+          }
+
+          // TODO 兼容安卓data内$开头的属性的赋值问题
+          let gridArr = $coords.value
+          gridArr.push(coords)
+          // }
+        }
+
+        ctx.fillText(text, text_left, text_top)
+
+        text = day_item.lunar
+        let lunar_left = day * one_width + (one_width / 2)
+        let lunar_top = one_height * week + 42
+        ctx.font = '10'
+        ctx.fillText(text, lunar_left, lunar_top)
+      }
+    }
+
+    ctx.update()
+    console.log('diff time', Date.now() - start_time);
+  }
+
+  function init() {
+    const calendar = $calendar.value
+    const refs = drawWeeksRef.value
+    if (refs != null) {
+      let ctx = refs.getDrawableContext()
+      if (ctx != null) {
+        ctx.reset()
+      }
+    }
+
+    // timeData.value = calendar.getDateInfo()
+    // 检查是否有fulltime ,来确定是否初次渲染
+    let fulltime = timeData.value.fullDate
+    if (fulltime == '') {
+      timeData.value = calendar.getDateInfo()
+      fulltime = timeData.value.fullDate
+    }
+
+    weeks.value = calendar.getWeeks(fulltime)
+    // 绘制日历头部
+    drawHeader()
+    drawWeek(weeks.value, fulltime)
+  }
+
+  // 点击具体的日历格子
+  function clickGrid(x : number, y : number) {
+    // 小格子数组
+    const calendar = $calendar.value
+    const gridArray = $coords.value
+
+    // 遍历小格子数组，找到最接近点击坐标的小格子
+    for (let i = 0; i < gridArray.length; i++) {
+      const grid = gridArray[i]
+      // 计算小格子理论上的最大值
+      const max_x = grid.x + grid.width
+      const max_y = grid.y + grid.height
+
+      const is_x_limit = grid.x < x && x < max_x
+      const is_y_limit = grid.y < y && y < max_y
+
+      const is_select = is_x_limit && is_y_limit
+
+      if (is_select) {
+        const data = grid.data
+        timeData.value = calendar.getDateInfo(data.fullDate)
+        drawWeek(weeks.value, grid.data.fullDate)
+      }
+    }
+  }
+
+  // 触发整个日历的点击事件，需要计算点击位置
+  function select(event : UniPointerEvent) {
+    const refs = drawWeeksRef.value
+    if (refs == null) return
+    const rect = refs.getBoundingClientRect();
+    const dom_x = rect.left; // 元素左上角相对于视口的 X 坐标
+    const dom_y = rect.top; // 元素左上角相对于视口的 Y 坐标
+    // const touch = event.touches[0];
+    const clientX = event.clientX; // X 坐标
+    const clientY = event.clientY; // Y 坐标
+    // 计算点击的相对位置
+    const x = clientX - dom_x
+    const y = clientY - dom_y
+
+    clickGrid(x, y)
+  }
+
+  // 回到今天
+  function gotoToday() {
+    const calendar = $calendar.value
+    const time = calendar.getDate()
+    timeData.value = calendar.getDateInfo(time.fullDate)
+    weeks.value = calendar.getWeeks(time.fullDate)
+
+    // 重新绘制日历
+    drawWeek(weeks.value, time.fullDate)
+  }
+
+  // 判断是否为当前月份
+  function isCurrentMonth(year : number, month : number) : boolean {
+    const today = new Date();
+    return year === today.getFullYear() && month === today.getMonth() + 1;
+  }
+
+  // 切换上个月
+  function preDate() {
+    const fulldate = timeData.value.fullDate
+    const calendar = $calendar.value
+    let time = calendar.getDate(fulldate, -1, 'month')
+    const newDate = time.year + '-' + time.month + '-1';
+    time = calendar.getDate(newDate)
+
+    timeData.value = calendar.getDateInfo(time.fullDate)
+    weeks.value = calendar.getWeeks(time.fullDate)
+
+    // 判断是否回到当前月份
+    if (isCurrentMonth(time.year, time.month)) {
+      gotoToday();
+    } else {
+      // 否则正常绘制日历
+      drawWeek(weeks.value, time.fullDate)
+    }
+  }
+
+  // 切换下个他
+  function nextDate() {
+    const fulldate = timeData.value.fullDate
+    const calendar = $calendar.value
+    let time = calendar.getDate(fulldate, 1, 'month')
+
+    const newDate = time.year + '-' + time.month + '-1';
+    time = calendar.getDate(newDate)
+
+    timeData.value = calendar.getDateInfo(time.fullDate)
+    weeks.value = calendar.getWeeks(time.fullDate)
+
+    // 判断是否回到当前月份
+    if (isCurrentMonth(time.year, time.month)) {
+      gotoToday();
+    } else {
+      // 否则正常绘制日历
+      drawWeek(weeks.value, time.fullDate)
+    }
+  }
+
+  onResize(() => {
+    // 屏幕发生变化，初始化日历
+    init()
+  })
+
+  onReady(() => {
+    init()
+
+    // 仅自动化测试
+    const header = drawHeaderRef.value
+    if (header != null) {
+      data.testWidth = header.getBoundingClientRect().width;
+    }
+  })
+
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+  .root {
+    /* flex: 1; */
+    position: relative;
+    padding: 15px;
+    background-color: #fff;
+  }
+
+  .calendar-header {
+    height: 30px;
+    margin-bottom: 10px;
+  }
+
+  .date {
+    margin-bottom: 10px;
+    margin-left: 10px;
+  }
+
+  .date-text {
+    font-size: 34px;
+    font-weight: bold;
+  }
+
+  .calendar-week {
+    height: 350px;
+    margin: 2px 0;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 20px 0;
+  }
+</style>

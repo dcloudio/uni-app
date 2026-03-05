@@ -1,0 +1,20 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1">
+	<!-- #endif -->
+    <view>{{text}}</view>
+
+    <input style="border: 1px solid #999;position: absolute;bottom: 100px;" placeholder="请输入" v-model="text"/>
+
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup>
+		const text = ref('')
+</script>
+
+<style>
+
+</style>

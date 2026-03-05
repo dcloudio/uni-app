@@ -1,0 +1,74 @@
+<template>
+  <view style="flex-direction: column;background-color: #f5f5f5;padding: 3px;">
+    <!-- #ifndef MP -->
+    <fps />
+    <!-- #endif -->
+
+    <view style="flex-direction: row;flex-wrap: wrap;align-items: center;margin-top: 40px;">
+      <button size="mini" @click="toggleTimer" style="margin-right:4px;">停止/启动 计时</button>
+      <text>{{datetime}}</text>
+    </view>
+    <text style="">计时器主线程一直占用绘制文字，但100个loading圈不卡顿</text>
+    <!-- 控制按钮区域 -->
+    <button size="mini" @click="changePaused">{{ paused ? '旋转' : '暂停' }}</button>
+
+    <!-- 100个loading组件 -->
+    <view style="flex-direction: row;flex-wrap: wrap;padding: 2px;">
+      <loading v-for="index in 100" :key="index" :paused="paused" style="margin: 10px;"/>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const paused = ref(false)
+  const datetime = ref('')
+
+  let timerId : number | null = null
+  let timerRunning = false
+
+  function updateTime() {
+    const now = new Date()
+    const hours = now.getHours().toString().padStart(2, '0')
+    const minutes = now.getMinutes().toString().padStart(2, '0')
+    const seconds = now.getSeconds().toString().padStart(2, '0')
+    const milliseconds = now.getMilliseconds().toString()
+    datetime.value = `${hours}:${minutes}:${seconds}.${milliseconds}`
+  }
+
+  function startTimer() {
+    updateTime()
+    timerId = setInterval(() => {
+      updateTime()
+    }, 1) // 每毫秒更新一次时间显示
+    timerRunning = true
+  }
+
+  function stopTimer() {
+    if (timerId !== null) {
+      clearInterval(timerId as number)
+      timerId = null
+    }
+    timerRunning = false
+  }
+
+  function toggleTimer() {
+    if (timerRunning) {
+      stopTimer()
+    } else {
+      startTimer()
+    }
+  }
+
+  onReady(() => {
+    startTimer()
+  })
+
+  onUnload(() => {
+    stopTimer()
+  })
+
+  function changePaused() {
+    paused.value = !paused.value
+  }
+
+</script>

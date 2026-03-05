@@ -1,0 +1,107 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <!-- 实际开发中，长列表应该使用list-view -->
+    <view class="uni-padding-wrap uni-common-mt">
+      <text class="text" v-for="(num,index) in listData" :key="index">list - {{num}}</text>
+      <view v-if="showLoadMore">{{loadMoreText}}</view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+  
+
+  type DataType = {
+    pulldownRefreshTriggered: boolean,
+    startPullDownRefreshStaus: boolean,
+    stopPullDownRefreshStatus: boolean,
+  }
+
+  const listData = ref([] as Array<number>)
+  const loadMoreText = ref("加载中...")
+  const showLoadMore = ref(false)
+  const max = ref(0)
+  const data = reactive({
+    pulldownRefreshTriggered: false,
+    startPullDownRefreshStaus: false,
+    stopPullDownRefreshStatus: false,
+  } as DataType)
+
+  function initData() {
+    setTimeout(() => {
+      max.value = 0;
+      listData.value = [];
+      let dataArr : Array<number> = [];
+      max.value += 20;
+      for (let i : number = max.value - 19; i < max.value + 1; i++) {
+        dataArr.push(i)
+      }
+      listData.value = listData.value.concat(dataArr);
+      let status = false
+      uni.stopPullDownRefresh();
+    }, 1000);
+  }
+
+  function setListData() {
+    let dataArr : Array<number> = [];
+    max.value += 10;
+    for (let i : number = max.value - 9; i < max.value + 1; i++) {
+      dataArr.push(i)
+    }
+    listData.value = listData.value.concat(dataArr);
+  }
+
+  onReady(() => {
+    let status = false
+    uni.startPullDownRefresh({
+      success() {
+        status = true
+      },
+      fail() {
+        status = false
+      },
+      complete: () => {
+        data.startPullDownRefreshStaus = status
+      }
+    });
+    initData();
+  })
+
+  onReachBottom(() => {
+    console.log("onReachBottom");
+    if (max.value > 40) {
+      loadMoreText.value = "没有更多数据了!"
+      return;
+    }
+    showLoadMore.value = true;
+    setTimeout(() => {
+      setListData();
+    }, 300);
+  })
+
+  onPullDownRefresh(() => {
+    console.log('onPullDownRefresh');
+    data.pulldownRefreshTriggered = true
+    initData();
+  })
+
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+  .text {
+    margin: 6px 0;
+    width: 100%;
+    background-color: #fff;
+    height: 52px;
+    line-height: 52px;
+    text-align: center;
+    color: #555;
+    border-radius: 4px;
+  }
+</style>

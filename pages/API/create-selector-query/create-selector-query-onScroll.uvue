@@ -1,0 +1,50 @@
+<template>
+  <scroll-view @scroll="onScroll" style="flex: 1;">
+    <view v-for="i in 60" class="content-item">
+      <text class="text">item-{{i}}</text>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+
+  const instance = getCurrentInstance()!.proxy!
+
+  type DataType = {
+    ret: boolean,
+  }
+
+  const count = ref(0)
+  const data = reactive({
+    ret: true,
+  } as DataType)
+
+  function onScroll() {
+    count.value++
+    console.log("scroll: ", count.value)
+    uni.createSelectorQuery()
+      .in(instance)
+      .selectAll('content-item')
+      .boundingClientRect()
+      .exec((result) => {
+        count.value--
+      })
+    console.log("scroll: ", count.value)
+
+    if (count.value > 0) {
+      data.ret = false
+    }
+  }
+
+  onLoad(() => {
+
+  })
+
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,76 @@
+<template>
+  <view class="selector-query-view">
+    <text>selector-query</text>
+    <text class="text red">{{text1}}</text>
+  </view>
+  <view class="selector-query-view">
+    <text>selector-query</text>
+    <text class="text green">{{text2}}</text>
+  </view>
+  <view v-if="text1.length>0">1</view>
+  <text>{{text3}}</text>
+</template>
+
+<script setup lang="uts">
+  const instance =  getCurrentInstance()!.proxy!
+
+  const text1 = ref("")
+  const text2 = ref("")
+  const text3 = ref("test-text-node")
+  const viewCount = ref(0)
+  const selectCount = ref(0)
+  const selectAllCount = ref(0)
+  const show = ref(false)
+  const testCounter = ref(0)
+
+  function _dispatchEvent() {
+    if (testCounter.value == 2) {
+      // 通过事件传递数据，避免UTS无法访问动态属性的问题
+      uni.$emit('childDataReady', selectCount.value, selectAllCount.value)
+    }
+  }
+
+  onMounted(() => {
+    uni.createSelectorQuery().in(instance).select('.selector-query-view').boundingClientRect().exec((ret) => {
+      text1.value = JSON.stringify(ret, null, 2)
+      if (ret.length == 1) {
+        selectCount.value = ret.length
+      }
+      testCounter.value++
+      _dispatchEvent()
+    })
+    uni.createSelectorQuery().in(instance).selectAll('.selector-query-view').boundingClientRect().exec((ret) => {
+      text2.value = JSON.stringify(ret, null, 2)
+      if (ret.length == 1) {
+        selectAllCount.value = (ret[0] as NodeInfo[]).length
+      }
+      testCounter.value++
+      _dispatchEvent()
+    })
+  })
+
+  defineExpose({
+    selectCount,
+    selectAllCount
+  })
+</script>
+
+<style>
+  .green {
+    border: 3px solid green;
+  }
+
+  .red {
+    border: 3px solid red;
+  }
+
+  .view {
+    border: 3px dashed lime;
+    padding: 10px;
+  }
+
+  .text {
+    margin-top: 20px;
+    padding: 5px;
+  }
+</style>

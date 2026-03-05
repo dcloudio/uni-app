@@ -1,0 +1,231 @@
+<template>
+  <view class="content">
+    <view class="uni-list">
+      <radio-group @change="applePriceChange">
+        <view class="uni-list-cell" v-for="(item, index) in productList" :key="index">
+          <radio :value="item['product_id']" :checked="product_id == item['product_id']" />
+          <view class="price" @click="applePriceClick(item)">{{item['title']}} {{item['goods_price']}}元</view>
+        </view>
+      </radio-group>
+    </view>
+    <view class="uni-padding-wrap">
+      <button class="button btn-pay" @click="createOrder" :loading="loading" :disabled="disabled">立即支付</button>
+    </view>
+
+    <!-- 统一支付组件 -->
+    <uni-pay ref="payRef" :debug="true" :adpid="adpid"
+      return-url="/pages/API/request-payment/request-payment/order-detail" @mounted="onMounted" @success="onSuccess"
+      @fail="onFail" @cancel="onCancel"></uni-pay>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+  const order_no = ref("") // 业务系统订单号（即你自己业务系统的订单表的订单号）
+  const out_trade_no = ref("") // 插件支付单号
+  const adpid = ref("1000000001") // uni-ad的广告位id
+  const loading = ref(false) // 支付按钮是否在loading中
+  const disabled = ref(true) // 支付按钮是否禁用
+  const product_id = ref("") // 用户选择的商品id
+
+  function getPackageName() : string {
+    const res = uni.getAppBaseInfo();
+    let packageName : string = ""
+
+    // #ifdef APP-ANDROID
+    packageName = res.packageName
+    // #endif
+
+    // #ifdef APP-IOS
+    packageName = res.bundleId
+    // #endif
+
+    return packageName
+  }
+
+  function isDebug() : boolean {
+    if (getPackageName() == 'io.dcloud.uniappx') {
+      return true
+    }
+    return false
+  }
+
+  // 出售的苹果虚拟商品列表
+  const productList = computed(() => {
+    return [
+      {
+        "description": "为DCloud提供的免费软件进行赞助",
+        "goods_price": 1, // 单价（元）
+        "buy_quantity": 1, // 数量（消耗性类型: 数量默认是1，最大值是10）
+        "product_id": isDebug() ? "uniappx.consumable.sponsor_1" : "uniappx.consumable.sponsor1",
+        "product_type": "consumable", // 消耗性类型
+        "title": "消耗性产品：赞助"
+      },
+      {
+        "description": "为DCloud提供的免费软件进行赞助",
+        "goods_price": 5, // 单价（元）
+        "buy_quantity": 1, // 数量（消耗性类型: 数量默认是1，最大值是10）
+        "product_id": isDebug() ? "uniappx.consumable.sponsor_50" : "uniappx.consumable.sponsor50",
+        "product_type": "consumable", // 消耗性类型
+        "title": "消耗性产品：赞助"
+      },
+      {
+        "description": "为DCloud提供的免费软件进行赞助",
+        "goods_price": 1, // 单价（元）
+        "buy_quantity": 1, // 数量（非消耗性: 数量只能是1，且一个该类型产品一个appleId只能购买一次）
+        "product_id": isDebug() ? "uniappx.nonconsumable.sponsorskin_1" : "uniappx.nonconsumable.sponsorskin1",
+        "product_type": "nonconsumable", // 非消耗性类型
+        "title": "非消耗性产品: 赞助"
+      },
+      // {
+      //   "description": "为DCloud提供的免费软件进行赞助",
+      //   "goods_price": 1, // 单价（元）
+      //   "buy_quantity": 1, // 数量（自动续期订阅产品: 数量只能是1）
+      //   "product_id": isDebug() ? "uniappx.autorenewable.monthly_1" : "uniappx.autorenewable.monthly1",
+      //   "product_type": "autorenewable", // 自动续期订阅产品
+      //   "title": "自动续期订阅产品：每月定期赞助", // 注意自动续期订阅产品在沙盒模式下，实际周期会缩短到几分钟续期一次（即现实世界几分钟 = 沙盒世界1个月）
+      // },
+      {
+        "description": "为DCloud提供的免费软件进行赞助",
+        "goods_price": 1, // 单价（元）
+        "buy_quantity": 1, // 数量（非自动续期订阅产品: 数量只能是1）
+        "product_id": isDebug() ? "uniappx.nonrenewable.monthly_1" : "uniappx.nonrenewable.monthly1",
+        "product_type": "nonrenewable", // 非自动续期订阅产品
+        "title": "非自动续期订阅产品：月赞助",
+      },
+      // {
+      //   "description": "为DCloud提供的免费软件进行赞助",
+      //   "goods_price": 1, // 单价（元）
+      //   "buy_quantity": 1, // 数量
+      //   "product_id": "uniappx.nonrenewable.none",
+      //   "product_type": "consumable", // 消耗性类型
+      //   "title": "测试不存在的产品"
+      // }
+    ] as Array<UTSJSONObject>
+  })
+
+  const payRef = ref<UniPayComponentPublicInstance | null>(null)
+
+  // 支付组件加载完毕后执行
+  function onMounted(insideData : any) {
+    init();
+  }
+
+  // 初始化
+  function init() {
+    product_id.value = productList.value[0]["product_id"] as string;
+    disabled.value = false;
+    if (payRef.value != null) {
+      // 苹果虚拟支付未完成订单检测
+      payRef.value!.appleiapRestore();
+    }
+  }
+
+  /**
+   * 发起支付
+   * 在调用此api前，你应该先创建自己的业务系统订单，并获得订单号 order_no，把order_no当参数传给此api，而示例中为了简化跟支付插件无关的代码，这里直接已时间戳生成了order_no
+   */
+  function createOrder() {
+    order_no.value = `test` + Date.now();
+    out_trade_no.value = order_no.value;
+    let productInfo : UTSJSONObject = productList.value.find((item : UTSJSONObject) : boolean => {
+      return item['product_id'] == product_id.value;
+    }) || {};
+    let buy_quantity = productInfo.getNumber('buy_quantity') || 1;
+    let goods_price = productInfo.getNumber('goods_price') || 1;
+    let product_type = productInfo['product_type'];
+    // 发起支付
+    if (payRef.value != null) {
+      payRef.value!.createOrder({
+        provider: "appleiap", // 支付供应商（这里固定为appleiap，代表苹果虚拟支付）
+        order_no: order_no.value, // 业务系统订单号（即你自己业务系统的订单表的订单号）
+        out_trade_no: out_trade_no.value, // 插件支付单号
+        type: "appleiap", // 支付回调类型（可自定义，建议填写appleiap）
+        description: productInfo.description,
+        total_fee: parseInt((goods_price * 100 * buy_quantity).toFixed(0)), // 插件是以分为单位，故这里需要乘以100
+        // apple_virtual字段仅苹果虚拟支付生效
+        apple_virtual: {
+          product_id: product_id.value, // 产品id
+          goods_price: goods_price, // 单价
+          buy_quantity: buy_quantity, // 购买数量
+          product_type: product_type // 产品类型
+        },
+        // 自定义数据
+        custom: {}
+      });
+    }
+  }
+
+  // 监听事件 - 支付成功
+  function onSuccess(res: any) {
+    console.log('success: ', res);
+    if (res.user_order_success) {
+      // 代表用户已付款，且你自己写的回调成功并正确执行了
+
+    } else {
+      // 代表用户已付款，但你自己写的回调执行失败（通常是因为你的回调代码有问题）
+
+    }
+  }
+
+  function onFail(err: any) {
+    uni.showModal({
+      content: `${err.errSubject} : ${err.errCode} : ${err.errMsg}`,
+      showCancel: false,
+      title: `发起支付失败`,
+    });
+  }
+
+  function onCancel(err: any) {
+    uni.showToast({
+      title: "用户取消了支付",
+      icon: 'none'
+    });
+  }
+
+  // 监听-多选框选中的值改变
+  function applePriceChange(e: any) {
+    product_id.value = e.detail.value;
+  }
+
+  function applePriceClick(item : any) {
+    product_id.value = item['product_id'] as string;
+  }
+
+  onLoad(() => {
+
+  })
+
+  onPageShow(() => {
+
+  })
+
+  onUnload(() => { })
+</script>
+
+<style>
+  .content {
+    padding: 15px;
+  }
+
+  .button {
+    background-color: #007aff;
+    color: #ffffff;
+  }
+
+  .uni-list-cell {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .price {
+    margin-left: 10px;
+  }
+
+  .btn-pay {
+    margin-top: 30px;
+  }
+</style>

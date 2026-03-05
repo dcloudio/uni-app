@@ -1,0 +1,148 @@
+<template>
+  <page-head :title="title"></page-head>
+  <view class="uni-padding-wrap uni-common-mt">
+    <view class="uni-title">
+      <text class="uni-title-text">音频路径示例</text>
+    </view>
+    <view class="formats" v-for="(item,index) in supportPaths" :key="index">
+      <text class="uni-subtitle-text">{{item.description}}</text>
+      <image class="icon-play" :src="(isPlaying && playIndex==index)?'/static/test-audio/pause.png':'/static/test-audio/play.png'"
+        @click="play(item.src,index)"></image>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+type AudioPath = {
+  description : string
+  src : string
+}
+
+const title = ref('audio-path')
+const playIndex = ref(0)
+const isPlaying = ref(false)
+// #ifdef APP
+const nativePath = ref(uni.env.CACHE_PATH + 'uni-audio/test/test.mp3' as string)
+// sdcardPath: 'sdcard/uni-audio/test.mp3',
+// #endif
+const _audioContext = ref(null as InnerAudioContext | null)
+const supportPaths = ref([
+  {
+    description: '本地路径：/static方式',
+    src: '/static/test-audio/ForElise.mp3'
+  },
+  {
+    description: '本地路径：../static/',
+    src: '../../../static/test-audio/ForElise.mp3'
+  },
+  // #ifdef APP
+  {
+    description: '本地路径：env方式',
+    src: 'env'
+  },
+  // #endif
+  {
+    description: '网络路径',
+    src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.mp3'
+  },
+  {
+    description: '不存在的音频',
+    src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/invalid_url.mp3'
+  },
+  {
+    description: '错误路径',
+    src: '../static/test-audio/ForElise22.mp3'
+  },
+] as Array<AudioPath>)
+
+function pause() {
+  _audioContext.value!.pause();
+  isPlaying.value = false;
+}
+
+function play(audioUrl : string, index : number) {
+  console.log(index, audioUrl);
+  if (isPlaying.value && playIndex.value == index) {
+    pause();
+    return;
+  }
+  // #ifdef APP
+  if (audioUrl == 'env') {
+    audioUrl = nativePath.value
+  }
+  // #endif
+
+  playIndex.value = index
+  _audioContext.value!.src = audioUrl;
+  _audioContext.value!.play();
+  isPlaying.value = true;
+}
+
+onReady(() => {
+  _audioContext.value = uni.createInnerAudioContext();
+  _audioContext.value!.onPlay(() => {
+    console.log('开始播放');
+  });
+  _audioContext.value!.onEnded(() => {
+    console.log('播放结束');
+    isPlaying.value = false;
+  });
+  _audioContext.value!.onError((err) => {
+    isPlaying.value = false;
+    console.log('err', err);
+  });
+
+  // #ifdef APP
+  const fileManager = uni.getFileSystemManager()
+  fileManager.mkdir({
+    dirPath: uni.env.CACHE_PATH + 'uni-audio/test',
+    recursive: true,
+    success: (res) => {
+      fileManager.copyFile({
+        srcPath: '/static/test-audio/ForElise.mp3',
+        destPath: nativePath.value,
+        success: () => {
+          console.log("copy成功： ", res)
+        }
+      })
+    },
+    fail: (err) => {
+      console.log("创建路径失败： ", err.errMsg)
+      if (err.errMsg.includes("file already exists")) {
+        console.log("已经包含该路径")
+        fileManager.copyFile({
+          srcPath: '/static/test-audio/ForElise.mp3',
+          destPath: nativePath.value,
+          success: (res) => {
+            console.log("copy成功： ", res)
+          },
+          fail: (err) => {
+            console.log("copy失败： ", err)
+          }
+        })
+      }
+    }
+  })
+  // #endif
+})
+
+onUnload(() => {
+  if (_audioContext.value != null) {
+    pause();
+    _audioContext.value!.destroy()
+  }
+})
+</script>
+
+<style>
+  .formats {
+    align-items: center;
+  }
+
+  .icon-play {
+    width: 60px;
+    height: 60px;
+    margin: 10px;
+  }
+</style>

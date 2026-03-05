@@ -1,0 +1,42 @@
+<template>
+  <view>
+    <list-view>
+      <list-item>
+        <Item @itemMounted="itemMounted"></Item>
+      </list-item>
+    </list-view>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+import Item from './issue-13858-item.uvue'
+
+type DataType = {
+  childMountedTriggeredCount: number,
+}
+
+const data = reactive({
+  childMountedTriggeredCount: 0,
+} as DataType)
+
+function itemMounted() {
+  data.childMountedTriggeredCount++
+}
+
+defineExpose({
+  data
+})
+
+onLoad(() => {
+
+})
+</script>
+
+<style>
+  .title {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+</style>

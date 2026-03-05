@@ -1,0 +1,32 @@
+<template>
+  <view class="parent-box">
+    <text class="parent-text">父组件样式（橙色背景）</text>
+    <parent-child text="子组件"></parent-child>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import parentChild from './parent-child.uvue'
+</script>
+
+<style>
+  .parent-box {
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #FFF3E0;
+    border: 2px solid #FF9800;
+    margin: 5px;
+  }
+
+  .parent-text {
+    color: #ff7b00;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  /* 父组件中的样式，测试是否会影响子组件 */
+  .child-box {
+    background-color: yellow !important;
+    border-color: orange !important;
+  }
+</style>

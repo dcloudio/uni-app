@@ -1,0 +1,383 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <page-head title="单tag测试（web模式时页面中有较多web-view）"></page-head>
+    <!-- #ifdef APP-ANDROID || (APP-HARMONY && VUE3-VAPOR) -->
+    <enum-data title="设置mode（仅Android和鸿蒙蒸汽模式支持，默认值为web）" :items="modeItemTypes" @change="onModeChange"></enum-data>
+    <!-- #endif -->
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title">
+        <text class="uni-title-text">支持的HTML标签</text>
+      </view>
+      <view class="uni-common-mt" v-for="(item,index) in data" :key="index">
+        <text class="uni-subtitle-text">{{item.name}}</text>
+        <view style="background:#FFFFFF;">
+          <rich-text :nodes="item.html" @itemclick="itemClick" :mode="modeData.mode"></rich-text>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+  import { ItemType } from '@/components/enum-data/enum-data-types';
+
+  type TagInfo = {
+    name : string,
+    html : Array<UTSJSONObject>
+  }
+
+  const data = ref<Array<TagInfo>>([
+    {
+      name: '<br/>',
+      html: [
+        {
+          name: 'br'
+        },
+        {
+          type: 'text',
+          text: 'hello uni-app x'
+        },
+        {
+          name: 'br'
+        },
+        {
+          type: 'text',
+          text: 'hello uni-app x'
+        }
+      ] as Array<UTSJSONObject>
+    },
+     {
+      name: '<p/>',
+      html: [
+        {
+          name: 'p',
+          attrs: {
+            style: 'text-align: center; text-decoration: line-through;'
+          },
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        },
+        {
+          name: 'p',
+          attrs: {
+            style: 'background-color: green; color: red;'
+          },
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '<ul/> <li/>',
+      html: [
+        {
+          name: 'ul',
+          children: [
+            {
+              name: 'li',
+              attrs: {
+                style: 'text-decoration: line-through; text-align: center;'
+              },
+              children: [
+                {
+                  type: 'text',
+                  text: 'hello uni-app x'
+                }
+              ]
+            },
+            {
+              name: 'li',
+              attrs: {
+                style: 'color: red; background-color: green; text-align: center;'
+              },
+              children: [
+                {
+                  type: 'text',
+                  text: 'hello uni-app x'
+                }
+              ]
+            }
+          ],
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '<span/>',
+      html: [
+        {
+          name: 'span',
+          attrs: {
+            style: 'color: red; background-color: green; text-decoration: line-through;'
+          },
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '<strong/>',
+      html: [
+        {
+          name: 'strong',
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '<i/>',
+      html: [
+        {
+          name: 'i',
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '<big/>',
+      html: [
+        {
+          name: 'big',
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '<small/>',
+      html: [
+        {
+          name: 'small',
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '<a/>',
+      html: [
+        {
+          name: 'a',
+          attrs: {
+            href: 'https://www.baidu.com'
+          },
+          children: [
+            {
+              type: 'text',
+              text: '百度'
+            }
+          ]
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '<u/>',
+      html: [
+        {
+          name: 'u',
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '<del/>',
+      html: [
+        {
+          name: 'del',
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '<h1/> <h2/> <h3/> <h4/> <h5/> <h6/>',
+      html: [
+        {
+          name: 'h1',
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        },
+        {
+          name: 'h2',
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        },
+        {
+          name: 'h3',
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        },
+        {
+          name: 'h4',
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        },
+        {
+          name: 'h5',
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        },
+        {
+          name: 'h6',
+          children: [
+            {
+              type: 'text',
+              text: 'hello uni-app x'
+            }
+          ]
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '带 # 内容',
+      html: [
+        {
+          name: 'span',
+          attrs: {
+            style: "color: #42b983;"
+          },
+          children: [
+            {
+              type: 'text',
+              text: 'span 标签 style 中使用 16 进制颜色 # 正常显示'
+            }
+          ]
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '<img/>',
+      html: [
+        {
+          name: 'img',
+          attrs: {
+            src: 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png',
+            width: '100',
+            height: '100'
+          }
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
+      name: '超长链接是否换行测试，rich-text组件应该适当位置换行',
+      html: [
+        {
+        	name: "p",
+        	attrs: {
+        		style: "font-family: PingFang-SC, PingFang-SC; font-weight: 500; font-size: 28rpx; color: #333333; line-height: 40rpx; letter-spacing: 1px; margin-bottom: 16rpx;"
+        	},
+        	children: [
+        		{
+        			name: "span",
+        			attrs: {
+        				style: "font-size:16px"
+        			},
+        			children: [
+        				{
+        					text: "uni-app x超长链接换行测试：https://doc.dcloud.net.cn/uni-app-x/testlonglonglonglonglonglonglonglongltlonglonglonglonglonglonglonglonglononglink.com"
+        				}
+        			]
+        		}
+        	]
+        }
+      ] as Array<UTSJSONObject>
+    },
+
+  ] as Array<TagInfo>)
+
+  type ModeDataType = {
+    mode: string
+  }
+
+  const modeData = reactive({
+    mode: 'web'
+  } as ModeDataType)
+
+  const modeItems = ref(['web', 'native'])
+  const modeItemTypes = ref<ItemType[]>([{ 'value': 0, 'name': 'web', 'checked': true }, { 'value': 1, 'name': 'native' }] as ItemType[])
+
+  function itemClick(e : UniRichTextItemClickEvent) {
+    console.log(JSON.stringify(e.detail));
+    let clicktext = '';
+    if (e.detail.src != null) {
+      clicktext = '点击了图片，src = ' + e.detail.src;
+    } else if (e.detail.href != null) {
+      clicktext = '点击了链接，href = ' + e.detail.href;
+    }
+    uni.showModal({
+      content: clicktext,
+      showCancel: false
+    });
+  }
+
+  function onModeChange(value : number) {
+    modeData.mode = modeItems.value[value];
+  }
+
+  defineExpose({
+    modeData
+  })
+</script>

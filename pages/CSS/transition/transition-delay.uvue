@@ -1,0 +1,357 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view>
+      <text class="uni-title-text">view 组件 transition-delay：1s</text>
+      <view :class="classValue"></view>
+      <view class="button-container">
+        <button class="button-item" @click="start">start</button>
+        <button class="button-item" @click="reset">reset</button>
+      </view>
+
+      <text class="uni-title-text uni-common-mt">text 组件 transition-delay：2s</text>
+      <text :class="textClassValue">transition-delay: 2s</text>
+      <view class="button-container">
+        <button class="button-item" @click="textStart">text start</button>
+        <button class="button-item" @click="textReset">text reset</button>
+      </view>
+
+      <text class="uni-title-text uni-common-mt">image 组件 transition-delay：1s</text>
+      <image :class="imageClassValue" src="/static/test-image/logo.png"></image>
+      <view class="button-container">
+        <button class="button-item" @click="imageStart">image start</button>
+        <button class="button-item" @click="imageReset">image reset</button>
+      </view>
+
+      <text class="uni-title-text uni-common-mt">scroll-view 组件 transition-delay：1s</text>
+      <scroll-view :class="scrollViewClassValue"></scroll-view>
+      <view class="button-container">
+        <button class="button-item" @click="scrollViewStart">scroll-view start</button>
+        <button class="button-item" @click="scrollViewReset">scroll-view reset</button>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition-delay </text>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.transitionDelayDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionDelayActual}}</text>
+          <view class="test-box">
+            <view ref="viewRefDynamic" class="common-image test-view" :style="{ transitionDelay: data.transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionDynamic">
+              <text style="font-size: 12px;">点击view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.transitionDelayDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionDelayActualText}}</text>
+          <view class="test-box">
+            <text ref="textRefDynamic" class="common-text test-text" :style="{ transitionDelay: data.transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionTextDynamic">点击text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.transitionDelayDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionDelayActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRefDynamic" class="common-image test-image" :style="{ transitionDelay: data.transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="transitionDelayEnum" title="transition-delay 枚举值" @change="radioChangeTransitionDelay" :compact="true"></enum-data>
+        <input-data :defaultValue="data.transitionDelayDynamic" title="transition-delay 自定义值" type="text" @confirm="inputChangeTransitionDelay"></input-data>
+      </view>
+
+      <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-delay：1s</text>
+      <native-view :class="nativeViewClassValue"></native-view>
+      <view class="button-container">
+        <button class="button-item" @click="nativeViewStart">native-view start</button>
+        <button class="button-item" @click="nativeViewReset">native-view reset</button>
+      </view>
+
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+  const classValue = ref('box')
+  const textClassValue = ref('text-box')
+  const imageClassValue = ref('image-box')
+  const scrollViewClassValue = ref('scroll-view-box')
+  const nativeViewClassValue = ref('native-view-box')
+
+  const start = () => {
+    classValue.value = 'box ani'
+  }
+
+  const reset = () => {
+    classValue.value = 'box'
+  }
+
+  const textStart = () => {
+    textClassValue.value = 'text-box text-ani'
+  }
+
+  const textReset = () => {
+    textClassValue.value = 'text-box'
+  }
+
+  const imageStart = () => {
+    imageClassValue.value = 'image-box image-ani'
+  }
+
+  const imageReset = () => {
+    imageClassValue.value = 'image-box'
+  }
+
+  const scrollViewStart = () => {
+    scrollViewClassValue.value = 'scroll-view-box scroll-view-ani'
+  }
+
+  const scrollViewReset = () => {
+    scrollViewClassValue.value = 'scroll-view-box'
+  }
+
+  const nativeViewStart = () => {
+    nativeViewClassValue.value = 'native-view-box native-view-ani'
+  }
+
+  const nativeViewReset = () => {
+    nativeViewClassValue.value = 'native-view-box'
+  }
+
+  const jest_start = () => {
+    start()
+  }
+
+  const jest_reset = () => {
+    reset()
+  }
+
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const data = reactive({
+    transitionDelayDynamic: '1s',
+    transitionDelayActual: '',
+    transitionDelayActualText: '',
+    transitionDelayActualImage: ''
+  })
+  const viewRefDynamic = ref(null as UniElement | null)
+  const textRefDynamic = ref(null as UniTextElement | null)
+  const imageRefDynamic = ref(null as UniImageElement | null)
+  const scrollViewRefDynamic = ref(null as UniElement | null)
+  const isExpandedDynamic = ref(false)
+  const isExpandedDynamicText = ref(false)
+  const isExpandedDynamicImage = ref(false)
+  const isExpandedDynamicScrollView = ref(false)
+
+  const transitionDelayEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0s' },
+    { value: 2, name: '0.5s' },
+    { value: 3, name: '1s' },
+    { value: 4, name: '2s' },
+  ]
+
+  const getPropertyValues = () => {
+    data.transitionDelayActual = viewRefDynamic.value?.style.getPropertyValue('transition-delay') ?? ''
+    data.transitionDelayActualText = textRefDynamic.value?.style.getPropertyValue('transition-delay') ?? ''
+    data.transitionDelayActualImage = imageRefDynamic.value?.style.getPropertyValue('transition-delay') ?? ''
+  }
+
+  const changeTransitionDelayDynamic = (value: string) => {
+    data.transitionDelayDynamic = value
+    viewRefDynamic.value?.style.setProperty('transition-delay', value)
+    textRefDynamic.value?.style.setProperty('transition-delay', value)
+    imageRefDynamic.value?.style.setProperty('transition-delay', value)
+    scrollViewRefDynamic.value?.style.setProperty('transition-delay', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeTransitionDelay = (index: number) => {
+    const selectedItem = transitionDelayEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeTransitionDelayDynamic(selectedItem.name)
+    }
+  }
+
+  const inputChangeTransitionDelay = (value: string) => {
+    changeTransitionDelayDynamic(value)
+  }
+
+  const triggerTransitionDynamic = () => {
+    isExpandedDynamic.value = !isExpandedDynamic.value
+    const width = isExpandedDynamic.value ? '100px' : '50px'
+    viewRefDynamic.value?.style.setProperty('width', width)
+  }
+
+  const triggerTransitionTextDynamic = () => {
+    isExpandedDynamicText.value = !isExpandedDynamicText.value
+    const width = isExpandedDynamicText.value ? '100px' : '50px'
+    textRefDynamic.value?.style.setProperty('width', width)
+  }
+
+  const triggerTransitionImageDynamic = () => {
+    isExpandedDynamicImage.value = !isExpandedDynamicImage.value
+    const width = isExpandedDynamicImage.value ? '100px' : '50px'
+    imageRefDynamic.value?.style.setProperty('width', width)
+  }
+
+  const triggerTransitionScrollViewDynamic = () => {
+    isExpandedDynamicScrollView.value = !isExpandedDynamicScrollView.value
+    const width = isExpandedDynamicScrollView.value ? '100px' : '50px'
+    scrollViewRefDynamic.value?.style.setProperty('width', width)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+    if (scrollViewRefDynamic.value != null) {
+      scrollViewRefDynamic.value.style.setProperty('transition-delay', data.transitionDelayDynamic)
+      scrollViewRefDynamic.value.style.setProperty('transition-property', 'width')
+      scrollViewRefDynamic.value.style.setProperty('transition-duration', '1s')
+    }
+  })
+
+  defineExpose({
+    jest_start,
+    jest_reset,
+    radioChangeTransitionDelay,
+    data
+  })
+
+</script>
+
+<style>
+  .box {
+    width: 200px;
+    height: 50px;
+    background-color: blue;
+  }
+
+  .ani {
+    transition-property: width;
+    transition-duration: 2s;
+    transition-delay: 1s;
+    width: 300px;
+  }
+
+  .text-box {
+    width: 200px;
+    height: 60px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: lightblue;
+    text-align: center;
+  }
+
+  .text-ani {
+    transition-property: width;
+    transition-duration: 2s;
+    transition-delay: 2s;
+    width: 300px;
+  }
+
+  .image-box {
+    width: 100px;
+    height: 100px;
+  }
+
+  .image-ani {
+    transition-property: width, height;
+    transition-duration: 2s;
+    transition-delay: 1s;
+    width: 150px;
+    height: 150px;
+  }
+
+  .common-text {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+    font-size: 12px;
+    color: white;
+  }
+
+  .common-image {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+  }
+
+  .scroll-view-box {
+    width: 200px;
+    height: 50px;
+    background-color: green;
+  }
+
+  .scroll-view-ani {
+    transition-property: width;
+    transition-duration: 2s;
+    transition-delay: 1s;
+    width: 300px;
+  }
+
+  .native-view-box {
+    width: 200px;
+    height: 50px;
+    background-color: green;
+  }
+
+  .native-view-ani {
+    transition-property: width;
+    transition-duration: 2s;
+    transition-delay: 1s;
+    width: 300px;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 80px;
+    background-color: gray;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+
+
+  .button-container {
+    flex-direction: row;
+    margin-top: 10px;
+    padding-bottom: 15px;
+    border-bottom:#d3d3d3 solid 1px;
+  }
+
+  .button-item {
+    margin-right: 10px;
+  }
+</style>

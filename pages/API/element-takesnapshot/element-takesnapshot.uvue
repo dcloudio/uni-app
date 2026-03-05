@@ -1,0 +1,379 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view id="snapshot-content">
+      <page-head title="对本页面根view截图"></page-head>
+      <view class="uni-padding-wrap">
+        <text>this is text</text>
+      </view>
+      <button class="uni-btn btn-TakeSnapshot" type="primary" @tap="takeSnapshotClick">
+        点击截图并替换显示下方图片
+      </button>
+      <image class="snapshot-original-image" :src="data.snapImage" :mode="mode" @longpress="saveToAlbum"></image>
+
+      <!-- 新增 takeSnapshot 测试 -->
+      <view class="section-divider"></view>
+      <text class="section-title">takeSnapshot 测试</text>
+
+      <!-- View 元素测试 -->
+      <view class="test-group">
+        <view class="test-buttons">
+          <button class="btn-small" @click="takeViewSnapshot">View</button>
+        </view>
+        <view class="test-elements">
+          <view id="snapshot-test-view" class="snapshot-test-small"></view>
+        </view>
+      </view>
+      <!-- View 截图展示 -->
+      <view class="snapshot-row" v-if="snapshotData.viewSnapshot != null">
+        <view class="snapshot-data-col">
+          <text class="snapshot-data-subtitle">截图结果</text>
+          <image class="snapshot-preview" :src="snapshotData.viewSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
+        </view>
+      </view>
+
+      <!-- Text 元素测试 -->
+      <view class="test-group">
+        <view class="test-buttons">
+          <button class="btn-small" @click="takeTextSnapshot">Text</button>
+        </view>
+        <view class="test-elements">
+          <text id="snapshot-test-text" class="snapshot-test-text-small">测试文本</text>
+        </view>
+      </view>
+      <!-- Text 截图展示 -->
+      <view class="snapshot-row" v-if="snapshotData.textSnapshot != null">
+        <view class="snapshot-data-col">
+          <text class="snapshot-data-subtitle">截图结果</text>
+          <image class="snapshot-preview" :src="snapshotData.textSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
+        </view>
+      </view>
+
+      <!-- Image 元素测试 -->
+      <view class="test-group">
+        <view class="test-buttons">
+          <button class="btn-small" @click="takeImageSnapshot">Image</button>
+        </view>
+        <view class="test-elements">
+          <image id="snapshot-test-image" class="snapshot-test-image-small" src="/static/test-image/logo.png" mode="aspectFit"></image>
+        </view>
+      </view>
+      <!-- Image 截图展示 -->
+      <view class="snapshot-row" v-if="snapshotData.imageSnapshot != null">
+        <view class="snapshot-data-col">
+          <text class="snapshot-data-subtitle">截图结果</text>
+          <image class="snapshot-preview" :src="snapshotData.imageSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
+        </view>
+      </view>
+
+      <!-- ScrollView 元素测试 -->
+      <button class="btn uni-common-mt" type="default" @click="takeScrollViewSnapshot">takeSnapshot - ScrollView</button>
+      <scroll-view id="snapshot-test-scrollview" class="snapshot-test-scrollview">
+        <view class="scroll-content">
+          <text class="scroll-text">滚动区域内容1</text>
+        </view>
+        <view class="scroll-content">
+          <text class="scroll-text">滚动区域内容2</text>
+        </view>
+        <view class="scroll-content">
+          <text class="scroll-text">滚动区域内容3</text>
+        </view>
+      </scroll-view>
+      <image v-if="snapshotData.scrollViewSnapshot" class="snapshot-result-image" :src="snapshotData.scrollViewSnapshot" mode="widthFix" @longpress="saveToAlbum"></image>
+      <text v-else class="snapshot-placeholder-center">暂无截图</text>
+
+      <!-- 自定义组件测试 -->
+      <button class="btn uni-common-mt" type="default" @click="takeCustomComponentSnapshot">takeSnapshot - 自定义组件</button>
+      <child id="snapshot-test-component" class="snapshot-test-component"></child>
+      <image v-if="snapshotData.customComponentSnapshot" class="snapshot-result-image uni-common-mb" :src="snapshotData.customComponentSnapshot" mode="widthFix" @longpress="saveToAlbum"></image>
+      <text v-else class="snapshot-placeholder-center">暂无截图</text>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import Child from './child.uvue'
+
+  type DataType = {
+    snapImage: string,
+    completeTriggered: boolean,
+  }
+
+  type SnapshotDataType = {
+    viewSnapshot: string,
+    textSnapshot: string,
+    imageSnapshot: string,
+    scrollViewSnapshot: string,
+    customComponentSnapshot: string,
+  }
+
+  const mode = ref("center")//aspectFit
+  const data = reactive({
+    snapImage: "/static/test-image/logo.png",
+    completeTriggered: false,
+  } as DataType)
+
+  const snapshotData = reactive({
+    viewSnapshot: '',
+    textSnapshot: '',
+    imageSnapshot: '',
+    scrollViewSnapshot: '',
+    customComponentSnapshot: '',
+  } as SnapshotDataType)
+
+  function takeSnapshotClick() {
+    const view = uni.getElementById('snapshot-content')!
+    view.takeSnapshot({
+      success: (res) => {
+        console.log('takeSnapshot success', res.tempFilePath)
+        data.snapImage = res.tempFilePath
+        mode.value = 'widthFix'
+        uni.showToast({
+          title: '截图成功，路径：' + res.tempFilePath,
+          icon: "none"
+        })
+      },
+      fail: (res) => {
+        console.log('takeSnapshot fail', res)
+        uni.showToast({
+          icon: 'error',
+          title: '截图失败'
+        })
+      },
+      complete: (res) => {
+        data.completeTriggered = true
+        console.log('takeSnapshot complete', res)
+      }
+    })
+  }
+
+  function saveToAlbum(e : TouchEvent) {
+    // console.log(e.currentTarget!.getAttribute("src"));
+    let filePath : string = e.currentTarget!.getAttribute("src") as string
+    uni.showActionSheet({
+      itemList: ["保存"],
+      success: res => {
+        // console.log(res.tapIndex);
+        if (res.tapIndex == 0) {
+          uni.saveImageToPhotosAlbum({
+            filePath: filePath,
+            success() {
+              uni.showToast({
+                position: "center",
+                icon: "none",
+                title: "图片保存成功，请到手机相册查看"
+              })
+            },
+            fail(e) {
+              uni.showModal({
+                content: "保存相册失败，errCode：" + e.errCode + "，errMsg：" + e.errMsg + "，errSubject：" + e.errSubject,
+                showCancel: false
+              });
+            }
+          })
+        }
+      },
+      fail: () => { },
+      complete: () => { }
+    });
+  }
+
+  // 通用方法：对元素进行截图
+  function takeSnapshotForElement(elementId: string, dataKey: keyof SnapshotDataType) {
+    const element = uni.getElementById(elementId)!
+    element.takeSnapshot({
+      success: (res) => {
+        // console.log('takeSnapshot success', elementId, res.tempFilePath)
+        snapshotData[dataKey] = res.tempFilePath
+        uni.showToast({
+          title: '截图成功',
+          icon: "success"
+        })
+      },
+      fail: (res) => {
+        // console.log('takeSnapshot fail', elementId, res)
+        uni.showToast({
+          icon: 'error',
+          title: '截图失败'
+        })
+      }
+    })
+  }
+
+  function takeViewSnapshot() {
+    takeSnapshotForElement('snapshot-test-view', 'viewSnapshot')
+  }
+
+  function takeTextSnapshot() {
+    takeSnapshotForElement('snapshot-test-text', 'textSnapshot')
+  }
+
+  function takeImageSnapshot() {
+    takeSnapshotForElement('snapshot-test-image', 'imageSnapshot')
+  }
+
+  function takeScrollViewSnapshot() {
+    takeSnapshotForElement('snapshot-test-scrollview', 'scrollViewSnapshot')
+  }
+
+  function takeCustomComponentSnapshot() {
+    takeSnapshotForElement('snapshot-test-component', 'customComponentSnapshot')
+  }
+
+  defineExpose({
+    data,
+    snapshotData,
+    takeSnapshotClick,
+    takeViewSnapshot,
+    takeTextSnapshot,
+    takeImageSnapshot,
+    takeScrollViewSnapshot,
+    takeCustomComponentSnapshot
+  })
+</script>
+
+<style>
+  .section-divider {
+    margin-top: 30px;
+    height: 1px;
+    background-color: #e0e0e0;
+  }
+
+  .section-title {
+    margin-top: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .test-group {
+    margin: 20px;
+    flex-direction: column;
+  }
+
+  .test-buttons {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 10px;
+  }
+
+  .btn-small {
+    padding: 5px 15px;
+    font-size: 13px;
+    border-radius: 4px;
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-elements {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    margin: 20px;
+  }
+
+  .snapshot-test-small {
+    width: 80%;
+    height: 60px;
+    background-color: dodgerblue;
+  }
+
+  .snapshot-test-text-small {
+    width: 80%;
+    padding: 8px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #ff6b6b;
+  }
+
+  .snapshot-test-image-small {
+    width: 80%;
+    height: 60px;
+    background-color: #f0f0f0;
+  }
+
+  .snapshot-row {
+    flex-direction: row;
+    margin-top: 10px;
+    background-color: #f5f7fa;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    padding: 10px;
+  }
+
+  .snapshot-data-col {
+    flex: 1;
+    flex-direction: column;
+    margin: 0 5px;
+    align-items: center;
+  }
+
+  .snapshot-data-subtitle {
+    font-size: 13px;
+    font-weight: bold;
+    color: #409eff;
+    margin-bottom: 5px;
+  }
+
+  .snapshot-preview {
+    width: 100%;
+    height: 120px;
+    background-color: #fff;
+    border-radius: 4px;
+  }
+
+  .snapshot-placeholder {
+    font-size: 12px;
+    color: #909399;
+    padding: 20px 0;
+  }
+
+  .snapshot-original-image {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    width: 90%;
+  }
+
+  .snapshot-result-image {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    width: 90%;
+  }
+
+  .snapshot-placeholder-center {
+    font-size: 12px;
+    color: #909399;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .snapshot-test-scrollview {
+    margin-top: 15px;
+    height: 120px;
+    border: 1px solid #dcdfe6;
+    background-color: #f5f7fa;
+  }
+
+  .scroll-content {
+    height: 120px;
+    padding: 10px;
+    border: 1px solid #37b4ea;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .scroll-text {
+    line-height: 30px;
+    font-size: 14px;
+    color: #606266;
+  }
+
+  .snapshot-test-component {
+    margin-top: 15px;
+  }
+</style>

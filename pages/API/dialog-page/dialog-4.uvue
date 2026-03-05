@@ -1,0 +1,96 @@
+<template>
+  <view class="dialog-container">
+    <view class="dialog-content">
+      <text>title: {{ title }}</text>
+      <button class="mt-10" @click="closeDialog">
+        closeDialog
+      </button>
+      <button class="mt-10" @click="closeThisDialog">
+        closeThisDialog
+      </button>
+      <button class="mt-10" @click="openDialog3">
+        open dialog 3
+      </button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
+  import {
+    state,
+    setLifeCycleNum
+  } from '@/store/index.uts'
+
+  const title = ref('dialog 4')
+
+  onPageShow(() => {
+    console.log('dialog 4 onShow')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+  })
+
+  onUnload(() => {
+    console.log('dialog 4 onUnload')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 5)
+  })
+
+  function closeDialog() {
+    uni.closeDialogPage({
+      success(res) {
+        console.log('closeDialog success', res)
+      },
+      fail(err) {
+        console.log('closeDialog fail', err)
+      },
+      complete(res) {
+        console.log('closeDialog complete', res)
+      }
+    })
+  }
+
+  function closeThisDialog() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+        success(res) {
+          console.log('closeThisDialog success', res)
+        },
+        fail(err) {
+          console.log('closeThisDialog fail', err)
+        },
+        complete(res) {
+          console.log('closeThisDialog complete', res)
+        }
+      })
+    }
+  }
+
+  function openDialog3(){
+    uni.openDialogPage({url: '/pages/API/dialog-page/dialog-3'})
+  }
+</script>
+
+<style>
+  .dialog-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dialog-content {
+    width: 80%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 6px;
+  }
+
+  .mt-10 {
+    margin-top: 10px;
+  }
+</style>

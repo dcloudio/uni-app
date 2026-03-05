@@ -1,0 +1,44 @@
+<template>
+  <view class="container" @click="changeColor">
+    <text>点击切换页面容器颜色</text>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+
+// Data
+const isChange = ref(false)
+
+type DataType = {
+  currentBackgroundColorContent: string | null,
+}
+
+const data = reactive({
+  currentBackgroundColorContent: null as string | null,
+} as DataType)
+
+// Methods
+function changeColor() {
+  let pages = getCurrentPages()
+  let page = pages[pages.length - 1]
+  page.setPageStyle({ "backgroundColorContent": isChange.value ? "" : "red" })
+  isChange.value = !isChange.value
+
+  let pageJson = page.getPageStyle()
+  data.currentBackgroundColorContent = pageJson["backgroundColorContent"] as string | null
+}
+
+defineExpose({
+  data,
+  changeColor
+})
+</script>
+
+<style>
+  .container {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

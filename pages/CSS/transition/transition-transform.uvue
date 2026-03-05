@@ -1,0 +1,498 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <view>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition-property </text>
+      </view>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.transitionTransform}}</text>
+          <text class="uni-info">获取值: {{data.transitionTransformActual}}</text>
+          <view class="test-box">
+            <view ref="viewRefDynamic" class="common-image" @click="triggerTransitionDynamic">
+              <text style="font-size: 12px;">view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.transitionTransform}}</text>
+          <text class="uni-info">获取值: {{data.transitionTransformActualText}}</text>
+          <view class="test-box">
+            <text ref="textRefDynamic" class="common-text" @click="triggerTransitionTextDynamic">text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.transitionTransform}}</text>
+          <text class="uni-info">获取值: {{data.transitionTransformActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRefDynamic" class="common-image" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.transitionTransform}}</text>
+          <text class="uni-info">获取值: {{data.transitionTransformActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefDynamicFlat" class="common-image" @click="triggerTransitionDynamic" flatten>
+              <text style="font-size: 12px;">view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.transitionTransform}}</text>
+          <text class="uni-info">获取值: {{data.transitionTransformActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefDynamicFlat" class="common-text" @click="triggerTransitionTextDynamic" flatten>text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.transitionTransform}}</text>
+          <text class="uni-info">获取值: {{data.transitionTransformActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefDynamicFlat" class="common-image" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png" flatten></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="transitionTransformEnum" title="transition-property 枚举值" @change="radioChangeTransitionTransform" :compact="true"></enum-data>
+        <input-data :defaultValue="data.transitionTransform" title="transition-property 自定义值" type="text" @confirm="inputChangeTransitionTransform"></input-data>
+      </view>
+
+      <view id="v" class="popup" @click="open">open</view>
+      <view class="test"></view>
+
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+      <scroll-view ref="scrollViewRefDynamic" class="common-image" style="margin: 30px;" @click="triggerTransitionScrollViewDynamic">
+        <text style="font-size: 12px;">点击</text>
+      </scroll-view>
+
+      <view class="text-container">
+        <text class="tip">text 组件 transition-property </text>
+        <text id="textTransform" class="text-popup" @click="openText">点击 text 测试 transform transition</text>
+      </view>
+
+      <view class="image-container">
+        <text class="tip">image 组件 transition-property </text>
+        <image id="imageTransform" class="image-popup" @click="openImage" src="/static/test-image/logo.png"></image>
+      </view>
+
+      <text class="uni-title-text uni-common-mb">native-view 组件</text>
+      <native-view ref="nativeViewRefDynamic" class="common-image" style="margin: 30px;" @click="triggerTransitionNativeViewDynamic"></native-view>
+
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+	import { ItemType } from '@/components/enum-data/enum-data-types'
+
+	const transform = ref('scale(0.6) translate(-50%, -50%)')
+	const textTransform = ref('scale(0.6) translate(-50%, -50%)')
+	const imageTransform = ref('scale(0.6) translate(-50%, -50%)')
+
+	const open = () => {
+		if ('scale(0.6) translate(-50%, -50%)' == transform.value) {
+			transform.value = 'scale(1) translate(-50%, -50%)'
+		} else {
+			transform.value = 'scale(0.6) translate(-50%, -50%)'
+		}
+		uni.getElementById('v')?.style.setProperty('transform', transform.value)
+	}
+
+	const openText = () => {
+		if ('scale(0.6) translate(-50%, -50%)' == textTransform.value) {
+			textTransform.value = 'scale(1) translate(-50%, -50%)'
+		} else {
+			textTransform.value = 'scale(0.6) translate(-50%, -50%)'
+		}
+		uni.getElementById('textTransform')?.style.setProperty('transform', textTransform.value)
+	}
+
+	const openImage = () => {
+		if ('scale(0.6) translate(-50%, -50%)' == imageTransform.value) {
+			imageTransform.value = 'scale(1) translate(-50%, -50%)'
+		} else {
+			imageTransform.value = 'scale(0.6) translate(-50%, -50%)'
+		}
+		uni.getElementById('imageTransform')?.style.setProperty('transform', imageTransform.value)
+	}
+
+	const data = reactive({
+		transitionTransform: 'transform',
+		transitionTransformActual: '',
+		transitionTransformActualText: '',
+		transitionTransformActualImage: '',
+		transitionTransformActualFlat: '',
+		transitionTransformActualTextFlat: '',
+		transitionTransformActualImageFlat: ''
+	})
+	const viewRefDynamic = ref(null as UniElement | null)
+	const textRefDynamic = ref(null as UniTextElement | null)
+	const imageRefDynamic = ref(null as UniImageElement | null)
+	const viewRefDynamicFlat = ref(null as UniElement | null)
+	const textRefDynamicFlat = ref(null as UniTextElement | null)
+	const imageRefDynamicFlat = ref(null as UniImageElement | null)
+	const scrollViewRefDynamic = ref(null as UniElement | null)
+	const nativeViewRefDynamic = ref(null as UniElement | null)
+	const isRotatedDynamic = ref(false)
+	const isRotatedDynamicText = ref(false)
+	const isRotatedDynamicImage = ref(false)
+	const isRotatedDynamicScrollView = ref(false)
+	const isRotatedDynamicNativeView = ref(false)
+	const isOpacityDynamic = ref(false)
+	const isOpacityDynamicText = ref(false)
+	const isOpacityDynamicImage = ref(false)
+
+	const transitionTransformEnum: ItemType[] = [
+		{ value: 0, name: '' },
+		{ value: 1, name: 'transform' },
+		{ value: 2, name: 'opacity' },
+		{ value: 3, name: 'transform, opacity' },
+		{ value: 4, name: 'all' },
+		{ value: 5, name: 'none' }
+	]
+
+	const getPropertyValues = () => {
+		data.transitionTransformActual = viewRefDynamic.value?.style.getPropertyValue('transition-property') ?? ''
+		data.transitionTransformActualFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transition-property') ?? ''
+		data.transitionTransformActualText = textRefDynamic.value?.style.getPropertyValue('transition-property') ?? ''
+		data.transitionTransformActualTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-property') ?? ''
+		data.transitionTransformActualImage = imageRefDynamic.value?.style.getPropertyValue('transition-property') ?? ''
+		data.transitionTransformActualImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-property') ?? ''
+	}
+
+	const changeTransitionTransform = (value: string) => {
+		data.transitionTransform = value
+		viewRefDynamic.value?.style.setProperty('transition-property', value)
+		viewRefDynamic.value?.style.setProperty('transition-duration', '1s')
+		viewRefDynamicFlat.value?.style.setProperty('transition-property', value)
+		viewRefDynamicFlat.value?.style.setProperty('transition-duration', '1s')
+		textRefDynamic.value?.style.setProperty('transition-property', value)
+		textRefDynamic.value?.style.setProperty('transition-duration', '1s')
+		textRefDynamicFlat.value?.style.setProperty('transition-property', value)
+		textRefDynamicFlat.value?.style.setProperty('transition-duration', '1s')
+		imageRefDynamic.value?.style.setProperty('transition-property', value)
+		imageRefDynamic.value?.style.setProperty('transition-duration', '1s')
+		imageRefDynamicFlat.value?.style.setProperty('transition-property', value)
+		imageRefDynamicFlat.value?.style.setProperty('transition-duration', '1s')
+		scrollViewRefDynamic.value?.style.setProperty('transition-property', value)
+		scrollViewRefDynamic.value?.style.setProperty('transition-duration', '1s')
+
+		// 重置所有状态，确保初始值正确
+		resetAllStates()
+		// 设置初始值
+		setInitialValues()
+
+		// 使用 nextTick 确保样式已应用后再获取值
+		nextTick(() => {
+			getPropertyValues()
+		})
+	}
+
+	const resetAllStates = () => {
+		isRotatedDynamic.value = false
+		isRotatedDynamicText.value = false
+		isRotatedDynamicImage.value = false
+		isRotatedDynamicScrollView.value = false
+		isRotatedDynamicNativeView.value = false
+		isOpacityDynamic.value = false
+		isOpacityDynamicText.value = false
+		isOpacityDynamicImage.value = false
+	}
+
+	const setInitialValues = () => {
+		// view 元素初始值
+		if (viewRefDynamic.value != null) {
+			viewRefDynamic.value.style.setProperty('transform', 'rotate(0deg)')
+			viewRefDynamic.value.style.setProperty('opacity', '1')
+		}
+		// view 元素初始值 - 拍平版本
+		if (viewRefDynamicFlat.value != null) {
+			viewRefDynamicFlat.value.style.setProperty('transform', 'rotate(0deg)')
+			viewRefDynamicFlat.value.style.setProperty('opacity', '1')
+		}
+		// text 元素初始值
+		if (textRefDynamic.value != null) {
+			textRefDynamic.value.style.setProperty('transform', 'rotate(0deg)')
+			textRefDynamic.value.style.setProperty('opacity', '1')
+		}
+		// text 元素初始值 - 拍平版本
+		if (textRefDynamicFlat.value != null) {
+			textRefDynamicFlat.value.style.setProperty('transform', 'rotate(0deg)')
+			textRefDynamicFlat.value.style.setProperty('opacity', '1')
+		}
+		// image 元素初始值
+		if (imageRefDynamic.value != null) {
+			imageRefDynamic.value.style.setProperty('transform', 'rotate(0deg)')
+			imageRefDynamic.value.style.setProperty('opacity', '1')
+		}
+		// image 元素初始值 - 拍平版本
+		if (imageRefDynamicFlat.value != null) {
+			imageRefDynamicFlat.value.style.setProperty('transform', 'rotate(0deg)')
+			imageRefDynamicFlat.value.style.setProperty('opacity', '1')
+		}
+		// scroll-view 元素初始值
+		if (scrollViewRefDynamic.value != null) {
+			scrollViewRefDynamic.value.style.setProperty('transform', 'rotate(0deg)')
+		}
+		if (nativeViewRefDynamic.value != null) {
+			nativeViewRefDynamic.value.style.setProperty('transform', 'rotate(0deg)')
+		}
+	}
+
+	const radioChangeTransitionTransform = (index: number) => {
+		const selectedItem = transitionTransformEnum.find((item): boolean => item.value === index)
+		if (selectedItem != null) {
+			changeTransitionTransform(selectedItem.name)
+		}
+	}
+
+	const inputChangeTransitionTransform = (value: string) => {
+		changeTransitionTransform(value)
+	}
+
+	const triggerTransitionDynamic = () => {
+		const property = data.transitionTransform
+		if (property.includes('transform') || property === 'all') {
+			isRotatedDynamic.value = !isRotatedDynamic.value
+			const transform = isRotatedDynamic.value ? 'rotate(45deg)' : 'rotate(0deg)'
+			viewRefDynamic.value?.style.setProperty('transform', transform)
+			viewRefDynamicFlat.value?.style.setProperty('transform', transform)
+		}
+		if (property.includes('opacity') || property === 'all') {
+			isOpacityDynamic.value = !isOpacityDynamic.value
+			const opacity = isOpacityDynamic.value ? '0.5' : '1'
+			viewRefDynamic.value?.style.setProperty('opacity', opacity)
+			viewRefDynamicFlat.value?.style.setProperty('opacity', opacity)
+		}
+	}
+
+	const triggerTransitionTextDynamic = () => {
+		const property = data.transitionTransform
+		if (property.includes('transform') || property === 'all') {
+			isRotatedDynamicText.value = !isRotatedDynamicText.value
+			const transform = isRotatedDynamicText.value ? 'rotate(45deg)' : 'rotate(0deg)'
+			textRefDynamic.value?.style.setProperty('transform', transform)
+			textRefDynamicFlat.value?.style.setProperty('transform', transform)
+		}
+		if (property.includes('opacity') || property === 'all') {
+			isOpacityDynamicText.value = !isOpacityDynamicText.value
+			const opacity = isOpacityDynamicText.value ? '0.5' : '1'
+			textRefDynamic.value?.style.setProperty('opacity', opacity)
+			textRefDynamicFlat.value?.style.setProperty('opacity', opacity)
+		}
+	}
+
+	const triggerTransitionImageDynamic = () => {
+		const property = data.transitionTransform
+		if (property.includes('transform') || property === 'all') {
+			isRotatedDynamicImage.value = !isRotatedDynamicImage.value
+			const transform = isRotatedDynamicImage.value ? 'rotate(45deg)' : 'rotate(0deg)'
+			imageRefDynamic.value?.style.setProperty('transform', transform)
+			imageRefDynamicFlat.value?.style.setProperty('transform', transform)
+		}
+		if (property.includes('opacity') || property === 'all') {
+			isOpacityDynamicImage.value = !isOpacityDynamicImage.value
+			const opacity = isOpacityDynamicImage.value ? '0.5' : '1'
+			imageRefDynamic.value?.style.setProperty('opacity', opacity)
+			imageRefDynamicFlat.value?.style.setProperty('opacity', opacity)
+		}
+	}
+
+	const triggerTransitionScrollViewDynamic = () => {
+		const property = data.transitionTransform
+		if (property.includes('transform') || property === 'all') {
+			isRotatedDynamicScrollView.value = !isRotatedDynamicScrollView.value
+			const transform = isRotatedDynamicScrollView.value ? 'rotate(45deg)' : 'rotate(0deg)'
+			scrollViewRefDynamic.value?.style.setProperty('transform', transform)
+		}
+	}
+
+	const triggerTransitionNativeViewDynamic = () => {
+		const property = data.transitionTransform
+		if (property.includes('transform') || property === 'all') {
+			isRotatedDynamicNativeView.value = !isRotatedDynamicNativeView.value
+			const transform = isRotatedDynamicNativeView.value ? 'rotate(45deg)' : 'rotate(0deg)'
+			nativeViewRefDynamic.value?.style.setProperty('transform', transform)
+		}
+	}
+
+	onReady(() => {
+		// 设置初始的 transition-property 和 transition-duration
+		if (viewRefDynamic.value != null) {
+			viewRefDynamic.value.style.setProperty('transition-property', data.transitionTransform)
+			viewRefDynamic.value.style.setProperty('transition-duration', '1s')
+		}
+		if (viewRefDynamicFlat.value != null) {
+			viewRefDynamicFlat.value.style.setProperty('transition-property', data.transitionTransform)
+			viewRefDynamicFlat.value.style.setProperty('transition-duration', '1s')
+		}
+		if (textRefDynamic.value != null) {
+			textRefDynamic.value.style.setProperty('transition-property', data.transitionTransform)
+			textRefDynamic.value.style.setProperty('transition-duration', '1s')
+		}
+		if (textRefDynamicFlat.value != null) {
+			textRefDynamicFlat.value.style.setProperty('transition-property', data.transitionTransform)
+			textRefDynamicFlat.value.style.setProperty('transition-duration', '1s')
+		}
+		if (imageRefDynamic.value != null) {
+			imageRefDynamic.value.style.setProperty('transition-property', data.transitionTransform)
+			imageRefDynamic.value.style.setProperty('transition-duration', '1s')
+		}
+		if (imageRefDynamicFlat.value != null) {
+			imageRefDynamicFlat.value.style.setProperty('transition-property', data.transitionTransform)
+			imageRefDynamicFlat.value.style.setProperty('transition-duration', '1s')
+		}
+		if (scrollViewRefDynamic.value != null) {
+			scrollViewRefDynamic.value.style.setProperty('transition-property', data.transitionTransform)
+			scrollViewRefDynamic.value.style.setProperty('transition-duration', '1s')
+		}
+		if (nativeViewRefDynamic.value != null) {
+			nativeViewRefDynamic.value.style.setProperty('transition-property', data.transitionTransform)
+			nativeViewRefDynamic.value.style.setProperty('transition-duration', '1s')
+		}
+		// 设置初始值
+		setInitialValues()
+		getPropertyValues()
+	})
+
+	defineExpose({
+	  open,
+	  data
+	})
+
+</script>
+
+<style>
+	.popup {
+		position: fixed;
+		left: 50%;
+		top: 80%;
+		width: 200px;
+		height: 200px;
+		background: red;
+
+		transition-duration: 300ms;
+		transition-property: transform, opacity;
+		transition-timing-function: ease;
+		overflow: visible;
+		transform-origin: left top;
+		transform: scale(0.6) translate(-50%, -50%);
+
+	}
+
+	.test {
+		position: fixed;
+		left: 50%;
+		top: 80%;
+		width: 200px;
+		height: 200px;
+		background: rgba(0, 0, 0, 0.5);
+	}
+
+	.text-popup {
+		position: relative;
+		left: 50%;
+		width: 200px;
+		height: 70px;
+		padding: 10px;
+		font-size: 16px;
+		background: red;
+		text-align: center;
+		transition-duration: 300ms;
+		transition-property: transform, opacity;
+		transition-timing-function: ease;
+		transform-origin: left top;
+		transform: scale(0.6) translate(-50%, -50%);
+	}
+
+	.image-popup {
+		position: relative;
+		left: 40%;
+		width: 200px;
+		height: 200px;
+		z-index: 10;
+		transition-duration: 300ms;
+		transition-property: transform, opacity;
+		transition-timing-function: ease;
+		transform-origin: left top;
+		transform: scale(0.6) translate(-50%, -50%);
+	}
+
+	.text-container {
+		width: 400px;
+		height: 200px;
+		margin-left: 20px;
+	}
+
+	.image-container {
+		width: 400px;
+		height: 260px;
+		margin-left: 20px;
+		overflow: visible;
+	}
+
+  .tip{
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 100px;
+  }
+
+  .common-text {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+    font-size: 12px;
+    color: white;
+  }
+
+  .common-image {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    background-color: gray;
+    overflow: visible;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+
+</style>

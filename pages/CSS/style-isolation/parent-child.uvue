@@ -1,0 +1,29 @@
+<template>
+  <view class="child-box">
+    <text class="child-text">{{ text }}</text>
+  </view>
+</template>
+
+<script setup lang="uts">
+  defineProps({
+    text: {
+      type: String,
+      default: '子组件'
+    }
+  })
+</script>
+
+<style>
+  .child-box {
+    background-color: #E3F2FD;
+    padding: 10px;
+    border-radius: 6px;
+    border: 2px solid #2196F3;
+    margin: 5px;
+  }
+
+  .child-text {
+    color: #1565C0;
+    font-size: 13px;
+  }
+</style>

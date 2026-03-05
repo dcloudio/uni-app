@@ -1,0 +1,119 @@
+<template>
+  <page-head title="share-element"></page-head>
+  <view class="main">
+    <swiper circular="true">
+      <swiper-item>
+        <share-element class="share-element" share-key="left" :shuttle-on-pop="shuttleOnPopType"
+          :transition-on-gesture="transitionOnGesture" :shuttle-on-push="shuttleOnPushType"  :easing-function="easingFunctionType" @tap="openPage()">
+          <image style="width: 100px;height: 150px;"
+            src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-1.jpg">
+          </image>
+        </share-element>
+      </swiper-item>
+    </swiper>
+  </view>
+  <button type="primary" @click="openPage" class="button">
+    打开share-element页面
+  </button>
+
+</template>
+<script setup lang="uts">
+  
+
+  type ShareElementOpenAnimationType =
+    'auto' |
+    'none' |
+    'slide-in-right' |
+    'slide-in-left' |
+    'slide-in-top' |
+    'slide-in-bottom' |
+    'fade-in' |
+    'pop-in' |
+    'zoom-out' |
+    'zoom-fade-out'
+
+  type ShareElementEasingFunctionType =
+    'ease' |
+    'ease-in' |
+    'ease-out' |
+    'ease-in-out' |
+    'linear'
+
+  type ShuttleOnType =
+    'from' |
+    'to'
+
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const transitionOnGesture = ref(true)
+  const shuttleOnPopType = ref('to' as ShuttleOnType)
+  const shuttleOnPushType = ref('to' as ShuttleOnType)
+  const shuttleOnTypeList = ref([
+    'from',
+    'to'
+  ])
+  const openAnimationType = ref('slide-in-right' as ShareElementOpenAnimationType)
+  const openAnimationTypeList = ref([
+    'auto',
+    'none',
+    'slide-in-right',
+    'slide-in-left',
+    'slide-in-top',
+    'slide-in-bottom',
+    'fade-in',
+    'pop-in',
+    'zoom-out',
+    'zoom-fade-out'
+  ])
+  const easingFunctionType = ref('ease' as ShareElementEasingFunctionType)
+  const easingFunctionTypeList = ref([
+    'ease',
+    'ease-in',
+    'ease-out',
+    'ease-in-out',
+    'linear'
+  ])
+
+  function openPage() {
+    uni.navigateTo({
+      animationType: openAnimationType.value,
+      url: "/pages/component/share-element/share-element-to?shuttleOnPush=" + shuttleOnPushType.value + "&transitionOnGesture=" + transitionOnGesture.value
+    })
+  }
+</script>
+
+<style>
+  .ml-10 {
+    margin-left: 10px;
+  }
+
+  .choose-property-title {
+    font-weight: bold;
+  }
+
+  .choose-property-type-radio-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .bottomWrap {
+    width: 100%;
+    bottom: 0px;
+    height: 80px;
+    position: fixed;
+  }
+
+  .bottom {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: #007aff;
+  }
+
+  .main {
+    padding: 5px 0;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

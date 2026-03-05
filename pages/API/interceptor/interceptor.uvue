@@ -1,0 +1,143 @@
+<template>
+  <view style="flex: 1">
+    <button @click="addInterceptor">添加路由拦截器</button>
+    <button @click="removeInterceptor">移除路由拦截器</button>
+    <text>点击下方按钮{{ msg }}</text>
+    <button @click="navigateTo">navigatorTo API跳转到测试页面</button>
+    <button @click="preventNavigateTo">拦截器阻止 navigatorTo 执行</button>
+    <!-- #ifndef MP -->
+    <navigator url="./page1">
+      <button class="navigatorButton">navigator组件跳转到测试页面</button>
+    </navigator>
+    <!-- #endif -->
+    <button @click="addSwitchTabInterceptor">添加switchTab拦截器</button>
+    <button @click="removeSwitchTabInterceptor">移除switchTab拦截器</button>
+    <button @click="switchTab">switchTab API</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const navigateToInterceptor = {
+    invoke: function (options : NavigateToOptions) {
+      console.log('拦截 navigateTo 接口传入参数为：', options)
+      const url = './page2'
+      uni.showToast({
+        title: `重定向到页面:${url}`
+      })
+      options.url = url
+    },
+    success: function (res : NavigateToSuccess) {
+      console.log('拦截 navigateTo 接口 success 返回参数为：', res)
+    },
+    fail: function (err : NavigateToFail) {
+      console.log('拦截 navigateTo 接口 fail 返回参数为：', err)
+    },
+    complete: function (res : NavigateToComplete) {
+      console.log('拦截 navigateTo 接口 complete 返回参数为：', res)
+    }
+  } as AddInterceptorOptions
+
+  const switchTabInterceptor = {
+    invoke: function (options : SwitchTabOptions) {
+      console.log('拦截 switchTab 接口传入参数为：', options)
+      options.url = '/pages/tabBar/API'
+    },
+    success: function (res : SwitchTabSuccess) {
+      console.log('拦截 switchTab 接口 success 返回参数为：', res)
+    },
+    fail: function (err : SwitchTabFail) {
+      console.log('拦截 switchTab 接口 fail 返回参数为：', err)
+    },
+    complete: function (res : SwitchTabComplete) {
+      console.log('拦截 switchTab 接口 complete 返回参数为：', res)
+    }
+  } as AddInterceptorOptions
+
+  const msg = ref("会跳转到测试页面1")
+
+  const addInterceptor = () => {
+    uni.addInterceptor('navigateTo', navigateToInterceptor)
+    uni.showToast({
+      title: '页面跳转/切换tabbar已拦截'
+    })
+    msg.value = "，路由被劫持到测试页面2"
+  }
+
+  const removeInterceptor = () => {
+    uni.removeInterceptor('navigateTo', navigateToInterceptor)
+    uni.showToast({
+      title: '拦截器已移除'
+    })
+    msg.value = "会跳转到测试页面1"
+  }
+
+  const addSwitchTabInterceptor = () => {
+    uni.addInterceptor('switchTab', switchTabInterceptor)
+  }
+
+  const removeSwitchTabInterceptor = () => {
+    uni.removeInterceptor('switchTab', switchTabInterceptor)
+  }
+
+  const navigateTo = () => {
+    uni.navigateTo({
+      url: './page1',
+      success(res) {
+        console.log('res:', res)
+      },
+      fail(err) {
+        console.error('err:', err)
+      },
+      complete(res) {
+        console.log('res:', res)
+      }
+    })
+  }
+
+   const preventNavigateTo = () => {
+      const preventNavigateToInterceptor = {
+        invoke: function (options : NavigateToOptions) {
+            console.log('通过 return false 方式阻止 navigateTo 执行，传入参数为：', options)
+            uni.showToast({
+              title: '拦截器已阻止跳转'
+            })
+            return false
+          }
+      } as AddInterceptorOptions
+
+      uni.addInterceptor('navigateTo',preventNavigateToInterceptor)
+      navigateTo()
+      uni.removeInterceptor('navigateTo',preventNavigateToInterceptor)
+    }
+
+  const switchTab = () => {
+    uni.switchTab({
+      url: '/pages/tabBar/component',
+      success(res) {
+        console.log('res:', res)
+      },
+      fail(err) {
+        console.error('err:', err)
+      },
+      complete(res) {
+        console.log('res:', res)
+      }
+    })
+  }
+
+  onUnload(() => {
+    // 移除 navigateTo 所有拦截器
+    uni.removeInterceptor('navigateTo')
+    uni.removeInterceptor('switchTab')
+  })
+
+  defineExpose({
+    addInterceptor,
+    removeInterceptor,
+    addSwitchTabInterceptor,
+    removeSwitchTabInterceptor,
+    navigateTo,
+    switchTab,
+    preventNavigateTo
+  })
+</script>

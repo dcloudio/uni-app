@@ -1,0 +1,300 @@
+<template>
+  <view class="swiper-list">
+    <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
+      <view class="flex-row">
+        <text :ref="setSwiperTabRef" class="swiper-tabs-item"
+          :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''" v-for="(item, index) in swiperList" :key="index"
+          @click="onTabClick(index)">
+          {{item.title}}
+        </text>
+      </view>
+      <view ref="indicator" class="swiper-tabs-indicator"></view>
+    </scroll-view>
+
+    <swiper ref="swiper" class="swiper-view" :current="swiperIndex" @transition="onSwiperTransition"
+      @animationfinish="onSwiperAnimationfinish">
+      <swiper-item class="swiper-item" v-for="(_, index) in swiperList" :key="index">
+        <text class="uni-title">显示当前value</text>
+        <slider :value="50" :show-value="true" />
+
+        <text class="uni-title">设置步进:step=10跳动</text>
+        <slider :value="60" :step="10" />
+
+        <text class="uni-title">浮点步进:step=0.01跳动</text>
+        <slider :value="0.5" :min="0" :max="1" :step="0.01" :show-value="true" />
+
+        <text class="uni-title">设置最小/最大值</text>
+        <slider :value="100" :min="50" :max="200" :show-value="true" />
+
+        <text class="uni-title">不同颜色和大小的滑块</text>
+        <slider id="slider-custom-color-and-size" :value="sliderValue" :backgroundColor="sliderBackgroundColor"
+          :activeColor="sliderActiveColor" :activeBackgroundColor="sliderActiveColor" :blockColor="sliderBlockColor"
+          :foreColor="sliderBlockColor" :block-size="sliderBlockSize" track-active-class="track-active-class" track-class="track-class" thumb-class="thumb-class"/>
+      </swiper-item>
+    </swiper>
+  </view>
+</template>
+
+<script setup lang="uts">
+  type SwiperTabsItem = {
+    x : number,
+    w : number
+  }
+
+  type SwiperViewItem = {
+    title : string,
+  }
+
+  /**
+   * 根据权重在两个值之间执行线性插值.
+   * @constructor
+   * @param {number} value1 - 第一个值，该值应为下限.
+   * @param {number} value2 - 第二个值，该值应为上限.
+   * @param {number} amount - 应介于 0 和 1 之间，指示内插的权重.
+   * @returns {number} 内插值
+   */
+  function lerpNumber(value1 : number, value2 : number, amount : number) : number {
+    return (value1 + (value2 - value1) * amount)
+  }
+
+  const swiperList = ref([] as SwiperViewItem[])
+  const swiperIndex = ref(0)
+  const tabScroll = ref<UniElement | null>(null)
+  const indicator = ref<UniElement | null>(null)
+  const swiper = ref<UniElement | null>(null)
+  const animationFinishIndex = ref(0)
+  const swiperWidth = ref(0)
+  const swiperTabsRect = ref([] as SwiperTabsItem[])
+  const swiperTabRefs = ref<UniElement[]>([])
+  const sliderValue = ref(50)
+  const sliderBlockSize = ref(20)
+  const sliderBackgroundColor = ref("#000000")
+  const sliderActiveColor = ref("#FFCC33")
+  const sliderBlockColor = ref("#8A6DE9")
+
+  // Function to set tab refs in v-for
+  function setSwiperTabRef(el : UniElement | null) {
+    if (el != null) {
+      swiperTabRefs.value.push(el)
+    }
+  }
+
+  /**
+   * 更新页签指示线的位置和宽度.
+   * @constructor
+   * @param {number} current_index - 当前索引，该值应介于 0 和 最大数量之间.
+   * @param {number} move_to_index - 目标索引，该值应介于 0 和 最大数量之间.
+   * @param {number} percentage - 偏移百分比，应介于 0 和 1 之间，用于计算在移动过程中的线性值.
+   */
+  function updateTabIndicator(current_index : number, move_to_index : number, percentage : number) {
+    // Check if indices are valid
+    if (current_index < 0 || current_index >= swiperTabsRect.value.length ||
+        move_to_index < 0 || move_to_index >= swiperTabsRect.value.length) {
+      return
+    }
+
+    const current_size = swiperTabsRect.value[current_index]
+    const move_to_size = swiperTabsRect.value[move_to_index]
+
+    // 计算指示线 位置 和 宽度 在移动过程中的线性值
+    const indicator_line_x = lerpNumber(current_size.x, move_to_size.x, percentage)
+    const indicator_line_w = lerpNumber(current_size.w, move_to_size.w, percentage)
+
+    // 通过 transform 更新指示线，避免重排版
+    // #ifdef APP
+    const x = indicator_line_x + indicator_line_w / 2
+    indicator.value?.style?.setProperty('transform', `translateX(${x}px) scaleX(${indicator_line_w})`)
+    // #endif
+    // #ifdef WEB || MP
+    // TODO chrome windows系统 transform scaleX渲染bug
+    const x = indicator_line_x
+    indicator.value?.style?.setProperty('width', `${indicator_line_w}px`)
+    indicator.value?.style?.setProperty('transform', `translateX(${x}px)`)
+    // #endif
+
+    // 滚动到水平中心位置
+    const scroll_x = x - swiperWidth.value / 2
+    // app 平台后续支持 scrollTo()
+    // #ifndef MP-WEIXIN
+    if (tabScroll.value != null) {
+      tabScroll.value!.scrollLeft = scroll_x
+    }
+    // #endif
+    // #ifdef MP-WEIXIN
+    if (tabScroll.value != null) {
+      tabScroll.value!.scrollTo({
+        left: scroll_x
+      })
+    }
+    // #endif
+  }
+
+  /**
+   * 设置当前 swiper 选中的索引值.
+   * @constructor
+   * @param {number} index - 当前索引，该值应介于 0 和 最大数量之间.
+   * @param {boolean} updateIndicator - 是否更新指示线.
+   */
+  function setSwiperIndex(index : number, updateIndicator : boolean) {
+    if (swiperIndex.value === index) {
+      return
+    }
+
+    swiperIndex.value = index
+
+    if (updateIndicator) {
+      updateTabIndicator(index, index, 1)
+    }
+  }
+
+  /**
+   * 每个页签的点击事件，点击后设置当前 swiper.
+   * @constructor
+   * @param {number} index - 当前索引，该值应介于 0 和 最大数量之间.
+   */
+  function onTabClick(index : number) {
+    setSwiperIndex(index, false)
+  }
+  function onSwiperTransition(e : SwiperTransitionEvent) {
+    // 微信 skyline 每项完成触发 Animationfinish，偏移值重置
+    // 微信 webview 全部完成触发 Animationfinish，偏移值累加
+    // 在滑动到下一个项的过程中，再次反向滑动，偏移值递减
+    // uni-app-x 和 微信 webview 行为一致
+
+    const offset_x = e.detail.dx
+
+    // 计算当前索引并重置差异
+    const current_offset_x = offset_x % swiperWidth.value
+    const current_offset_i = offset_x / swiperWidth.value
+    const current_index = animationFinishIndex.value + parseInt(current_offset_i + '')
+
+    // 计算目标索引及边界检查
+    let move_to_index = current_index
+    if (current_offset_x > 0 && move_to_index < swiperList.value.length - 1) {
+      move_to_index += 1
+    } else if (current_offset_x < 0 && move_to_index > 0) {
+      move_to_index -= 1
+    }
+
+    // 计算偏移百分比
+    const percentage = Math.abs(current_offset_x) / swiperWidth.value
+
+    // 通知更新指示线
+    if (current_index != move_to_index) {
+      updateTabIndicator(current_index, move_to_index, percentage)
+    }
+  }
+  /**
+   * Swiper滑动动画结束事件.
+   */
+  function onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
+    setSwiperIndex(e.detail.current, true)
+
+    // 记录上次的索引位置
+    animationFinishIndex.value = e.detail.current
+  }
+  /**
+   * 缓存所有页签的左边距和宽度，用于计算指示线在移动过程中的线性变化.
+   */
+  async function cacheTabItemsSize() {
+    swiperTabsRect.value.length = 0;
+    const tabs = swiperTabRefs.value
+    for (let i = 0; i < tabs.length; i++) {
+      const element = tabs[i];
+      // #ifdef MP
+      const rect = await element.getBoundingClientRectAsync()!
+      const x = rect.left
+      const w = rect.width
+      // #endif
+      // #ifndef MP
+      const x = element.offsetLeft
+      const w = element.offsetWidth
+      // #endif
+      swiperTabsRect.value.push({
+        x,
+        w
+      } as SwiperTabsItem)
+    }
+  }
+
+  onBeforeUpdate(() => {
+    // Clear refs array before update to prevent duplicates
+    swiperTabRefs.value = []
+  })
+
+  onLoad(() => {
+    // 初始化 5 个页签，宽度依次递增，用于演示在滑动 swiper 过程中指示线宽度的线性变化
+    for (let i = 0; i < 3; i++) {
+      const space = " ".repeat(i)
+      swiperList.value.push({
+        title: "Tab " + space + i
+      } as SwiperViewItem)
+    }
+  })
+  onReady(() => {
+    if (swiper.value != null) {
+      swiper.value!.getBoundingClientRectAsync()!.then((res : DOMRect) : Promise<void> => {
+        swiperWidth.value = res.width
+        return cacheTabItemsSize()
+      }).then(() => {
+        if (swiperTabsRect.value.length > 0) {
+          updateTabIndicator(swiperIndex.value, swiperIndex.value, 1)
+        }
+      });
+    }
+  })
+</script>
+
+<style>
+  .flex-row {
+    flex-direction: row;
+    align-self: flex-start;
+  }
+
+  .swiper-list {
+    flex: 1;
+  }
+
+  .swiper-tabs {
+    background-color: #ffffff;
+  }
+
+  .swiper-tabs-item {
+    color: #555;
+    font-size: 16px;
+    padding: 12px 25px;
+    white-space: nowrap;
+  }
+
+  .swiper-tabs-item-active {
+    color: #007AFF;
+  }
+
+  .swiper-tabs-indicator {
+    width: 1px;
+    height: 2px;
+    background-color: #007AFF;
+  }
+
+  .swiper-view {
+    flex: 1;
+  }
+
+  .swiper-item {
+    flex: 1;
+    padding: 15px;
+  }
+
+  .track-class {
+    background-color: #000000;
+  }
+  .track-active-class {
+    background-color: #FFCC33;
+  }
+  .thumb-class {
+    width: 20px;
+    height: 20px;
+    background-color: #8A6DE9;
+    border-radius: 10px;
+  }
+</style>

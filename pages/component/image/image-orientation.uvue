@@ -1,0 +1,29 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <view style="align-items: center;">
+      <text>原图是横向且orientation=90°的jpg图片，预期显示为竖向</text>
+      <image style="width: 100px;height: 200px;" :src="src1" @error="error1"></image>
+      <text>原图是横向且orientation=90°的heic图片（需要支持heic的平台方有效），预期显示为竖向</text>
+      <image style="width: 100px;height: 200px;" :src="src2" @error="error2"></image>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  const src1 = ref('/static/test-image/orientation-90.jpg');
+  const src2 = ref('/static/test-image/orientation-90.heic');
+  function error1() {
+    src1.value = '/static/dislike.png';
+  }
+  function error2() {
+    src2.value = '/static/dislike.png';
+  }
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,30 @@
+image: node:18
+
+stages:
+  - review
+
+variables:
+  GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
+  DEEPSEEK_API_KEY: $DEEPSEEK_API_KEY
+  NPM_CONFIG_CACHE: "$CI_PROJECT_DIR/.npm"
+  NPM_CONFIG_REGISTRY: https://registry.npmmirror.com
+  GIT_STRATEGY: fetch
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .npm/
+    - code-review/node_modules/
+  policy: pull-push
+
+before_script:
+  - cd code-review
+  - npm ci --cache .npm --prefer-offline
+
+code_review:
+  stage: review
+  script:
+    - node index.js
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "main" && $CI_COMMIT_BRANCH != "master"

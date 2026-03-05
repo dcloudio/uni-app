@@ -1,0 +1,136 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view>
+      <page-head :title="data.title"></page-head>
+      <view class="uni-common-mt">
+        <view class="uni-list">
+          <view class="uni-list-cell" v-for="(item, _) in data.items" style="align-items: center">
+            <view class="uni-pd">
+              <view class="uni-label" style="width: 180px">{{
+                item.label
+              }}</view>
+            </view>
+            <view class="uni-list-cell-db">
+              <text class="uni-list-cell-db-text">{{ item.value == '' ? '未获取' : item.value }}</text>
+            </view>
+          </view>
+        </view>
+        <view class="uni-padding-wrap">
+          <view class="uni-btn-v">
+            <button type="primary" @tap="getSystemInfoSync">
+              同步获取设备系统信息
+            </button>
+            <button type="primary" @tap="getSystemInfo" style="margin-top: 20px;">
+              异步获取设备系统信息
+            </button>
+          </view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+  type Item = {
+    label : string,
+    value : string,
+  }
+
+  type DataType = {
+    title: string;
+    items: Item[];
+    screenHeightAtReady: number;
+    jest_result: boolean;
+  }
+
+  let globalScreenHeight = 0
+  try {
+    globalScreenHeight = uni.getWindowInfo().screenHeight
+  } catch (e) {
+    // 兼容本地测试
+    console.error(e)
+  }
+
+  const data = reactive({
+    title: 'getSystemInfo',
+    items: [] as Item[],
+    screenHeightAtReady: 0,
+    jest_result: false,
+  } as DataType)
+
+  onReady(() => {
+    data.screenHeightAtReady = uni.getSystemInfoSync().screenHeight
+    console.log(`全局获取屏幕高度: ${globalScreenHeight}  onReady内获取屏幕高度: ${data.screenHeightAtReady}`);
+  })
+
+  const getSystemInfo = () => {
+    uni.getSystemInfo({
+      success: (res) => {
+        data.items = [] as Item[];
+        const res_str = JSON.stringify(res);
+        const res_obj = JSON.parseObject(res_str);
+        const res_map = res_obj!.toMap();
+        let keys = [] as string[]
+        res_map.forEach((_, key) => {
+          keys.push(key);
+        });
+        keys.sort().forEach(key => {
+          const value = res[key];
+          if (value != null) {
+            const item = {
+              label: key,
+              value: "" + ((typeof value == "object") ? JSON.stringify(value) : value)
+            } as Item;
+            data.items.push(item);
+          }
+        });
+      },
+    })
+  }
+
+  const getSystemInfoSync = () => {
+    data.items = [] as Item[];
+    const res = uni.getSystemInfoSync()
+    const res_str = JSON.stringify(res);
+    const res_obj = JSON.parseObject(res_str);
+    const res_map = res_obj!.toMap();
+    let keys = [] as string[]
+    res_map.forEach((_, key) => {
+      keys.push(key);
+    });
+    keys.sort().forEach(key => {
+      const value = res[key];
+      if (value != null) {
+        const item = {
+          label: key,
+          value: "" + ((typeof value == "object") ? JSON.stringify(value) : value)
+        } as Item;
+        data.items.push(item);
+      }
+    });
+  }
+
+  //自动化测试例专用
+  const jest_getSystemInfo = () : GetSystemInfoResult => {
+    return uni.getSystemInfoSync();
+  }
+
+  const jest_getScreenHeight_at_different_stages = () => {
+    data.jest_result = (globalScreenHeight == data.screenHeightAtReady)
+  }
+
+  defineExpose({
+    data,
+    jest_getSystemInfo,
+    jest_getScreenHeight_at_different_stages
+  })
+</script>
+
+<style>
+  .uni-pd {
+    padding-left: 15px;
+  }
+</style>

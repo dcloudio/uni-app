@@ -1,0 +1,97 @@
+{
+	"id": "uni-usercapturescreen",
+	"displayName": "uni-usercapturescreen",
+	"version": "1.0.6",
+	"description": "用户主动截屏事件监听",
+	"keywords": [
+        "截屏"
+    ],
+	"repository": "",
+	"engines": {
+		"HBuilderX": "^3.7.7"
+	},
+	"dcloudext": {
+		"type": "uts",
+		"sale": {
+			"regular": {
+				"price": "0.00"
+			},
+			"sourcecode": {
+				"price": "0.00"
+			}
+		},
+		"contact": {
+			"qq": ""
+		},
+		"declaration": {
+			"ads": "无",
+			"data": "插件不采集任何数据",
+			"permissions": "无"
+		},
+		"npmurl": ""
+	},
+	"uni_modules": {
+		"uni-ext-api":{
+			"uni": {
+				"onUserCaptureScreen": {
+          "web": false
+        },
+				"offUserCaptureScreen": {
+          "web": false
+        },
+				"setUserCaptureScreen": {
+          "web": false,
+          "mp-weixin": false
+        }
+			}
+		},
+		"dependencies": [],
+		"encrypt": [],
+		"platforms": {
+			"cloud": {
+				"tcb": "y",
+                "aliyun": "y",
+                "alipay": "n"
+			},
+			"client": {
+				"Vue": {
+					"vue2": "y",
+					"vue3": "y"
+				},
+				"App": {
+                    "app-android": "y",
+                    "app-ios": "y",
+                    "app-harmony": "y"
+                },
+				"H5-mobile": {
+					"Safari": "n",
+					"Android Browser": "n",
+					"微信浏览器(Android)": "n",
+					"QQ浏览器(Android)": "n"
+				},
+				"H5-pc": {
+					"Chrome": "n",
+					"IE": "n",
+					"Edge": "n",
+					"Firefox": "n",
+					"Safari": "n"
+				},
+				"小程序": {
+					"微信": "y",
+					"阿里": "n",
+					"百度": "n",
+					"字节跳动": "n",
+					"QQ": "n",
+					"钉钉": "n",
+					"快手": "n",
+					"飞书": "n",
+					"京东": "n"
+				},
+				"快应用": {
+					"华为": "n",
+					"联盟": "n"
+				}
+			}
+		}
+	}
+}

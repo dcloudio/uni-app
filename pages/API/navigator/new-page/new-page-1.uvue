@@ -1,0 +1,60 @@
+<template>
+  <page-head title="new-page-1" />
+  <share-element share-key="test-share-element-key">
+    <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
+  </share-element>
+  <view class="uni-padding-wrap">
+    <text>onLoad 接收到参数</text>
+    <text>data: {{ data.data }}</text>
+    <button @tap="navigateBackWithDelta2" class="uni-btn">
+      回退到上上层页面
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  
+  import { state } from '@/store/index.uts'
+
+  type DataType = {
+    data: string,
+  }
+
+  const checked = ref(false)
+  const data = reactive({
+    data: '',
+  } as DataType)
+
+  function getLifeCycleNum() : number {
+    return state.lifeCycleNum
+  }
+
+  function navigateBackWithDelta2() {
+    uni.navigateBack({
+      delta: 2,
+      success() {
+        console.log('回退上上层页面成功')
+      },
+      fail(error) {
+        console.warn(`回退上上层页面失败: ${error.errMsg}`)
+      },
+    })
+  }
+
+  function navigateToOnLoadWithType(type : string) {
+    uni.navigateTo({
+      url: `/pages/API/navigator/new-page/onLoad?type=${type}`,
+    })
+  }
+
+  onLoad((options : OnLoadOptions) => {
+    if (options['data'] != null) {
+      data.data = options['data']!
+    }
+  })
+
+  defineExpose({
+    data,
+    navigateToOnLoadWithType
+  })
+</script>

@@ -1,0 +1,108 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;" enable-back-to-top="true">
+  <!-- #endif -->
+    <view class="uni-container" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+      <view v-if="!hasLeftWin" class="uni-header-logo">
+        <image class="uni-header-image" src="/static/cssIndex.png"></image>
+      </view>
+      <view v-if="!hasLeftWin" class="uni-text-box">
+        <text class="hello-text">uni-app x App平台支持的CSS，文档详见：</text>
+        <u-link class="hello-text" :href="'https://doc.dcloud.net.cn/uni-app-x/css/'" :text="'https://doc.dcloud.net.cn/uni-app-x/css/'"
+          :inWhiteList="true"></u-link>
+      </view>
+      <uni-collapse>
+        <uni-collapse-item ref="categoryRef" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
+          class="uni-panel">
+          <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
+            <view v-if="childMenuItem.items.length==0" class="uni-navigate-item pl"
+              hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
+              <text class="uni-navigate-text" :class="{
+                  'left-win-active': leftWinActive === childMenuItem.path && hasLeftWin,
+                }">{{ childMenuItem.style["navigationBarTitleText"] }}</text>
+              <image :src="arrowRightIcon" class="uni-icon-size"></image>
+            </view>
+            <uni-collapse v-else style="width: 100%;border-top: 1px solid #f0f0f0;">
+              <uni-collapse-item :title="childMenuItem.name" class="uni-panel"
+                style="margin-bottom: 0;">
+                <view class="uni-navigate-item pl" hover-class="is--active"
+                  v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem.path"
+                  @click="goPage(`/${grandChildMenuItem.path}`)">
+                  <text class="uni-navigate-text" :class="{
+                      'left-win-active':
+                        leftWinActive === grandChildMenuItem.path && hasLeftWin,
+                    }">{{ grandChildMenuItem.style["navigationBarTitleText"] }}</text>
+                  <image :src="arrowRightIcon" class="uni-icon-size"></image>
+                </view>
+              </uni-collapse-item>
+            </uni-collapse>
+          </template>
+        </uni-collapse-item>
+      </uni-collapse>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  defineOptions({
+    styleIsolation: 'app'
+  })
+
+  const activeIndex = inject<Ref<number>>('tabBarCurrentIndex', ref(0))
+
+  const instance = getCurrentInstance()!.proxy!
+
+  import { generateMenu, MenuItem } from './generateMenu.uts'
+  const menuData = generateMenu('pages/CSS')
+  import { state } from '@/store/index.uts'
+
+  // Template refs
+  const categoryRef = ref<ComponentPublicInstance[] | null>(null)
+
+  const menu = ref(menuData as MenuItem[])
+  const arrowRightIcon = ref('/static/icons/arrow-right.png')
+
+  const hasLeftWin = computed((): boolean => {
+    return !state.noMatchLeftWindow
+  })
+
+  const leftWinActive = computed((): string => {
+    return state.leftWinActive.slice(1)
+  })
+
+  const isDarkMode = computed((): boolean => {
+    return state.isDarkMode
+  })
+
+  function goPage(url : string) {
+    if (hasLeftWin.value) {
+      uni.reLaunch({ url })
+    } else {
+      uni.navigateTo({ url })
+    }
+  }
+
+  // #ifdef WEB
+  watch(() => (instance as any).$route, (newRoute: any) => {
+    if (newRoute && newRoute.matched.length) {
+      const activeCategoryIndex = menu.value.findIndex(menuItem => menuItem?.items.some(item => leftWinActive.value !== "" && leftWinActive.value === item?.path))
+      if (activeCategoryIndex > -1) {
+        nextTick(() => {
+          const categoryRefs = categoryRef.value
+          if (categoryRefs != null && categoryRefs[activeCategoryIndex] != null) {
+            categoryRefs[activeCategoryIndex].$callMethod('openCollapse', true)
+          }
+        })
+      }
+    }
+  }, { immediate: true })
+  // #endif
+</script>
+
+<style>
+  .pl{
+    padding-left: 18px
+  }
+</style>

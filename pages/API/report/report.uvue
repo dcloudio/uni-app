@@ -1,0 +1,199 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head title="report"></page-head>
+    <view class="tips">
+      <view class="tips-title">调用信息：</view>
+      <view class="tips-content">{{msg.value}}</view>
+    </view>
+    <view class="page">
+
+      <button class="normal-button" type="default" @click="handleAppLaunch">
+        模拟应用启动
+      </button>
+      <button class="normal-button" type="default" @click="handleAppHide">
+        模拟应用切入后台
+      </button>
+      <button class="normal-button" type="default" @click="handleAppShow">
+        模拟应用切入前台
+      </button>
+      <button class="normal-button" type="default" @click="handleAppError">
+        模拟应用错误
+      </button>
+      <button class="normal-button" type="default" @click="handleTitle">
+        模拟自定义title
+      </button>
+      <button class="normal-button" type="default" @click="handleEvent">
+        模拟自定义事件
+      </button>
+      <text class="instructions">
+        当前页面调用API均为模拟，请查看文档，在特定场景下使用以上 API。请在main.uts中设置统计debug配置为true，并点击按钮查控制台输出。
+      </text>
+    </view>
+
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  type MsgType = {
+    value: string
+  }
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const msg = reactive({ value: '点击按钮，测试上报' } as MsgType)
+
+  onLoad(() => {
+    uni.report({
+      name: '自定义上报-report页面打开',
+      options: '1'
+    })
+  })
+
+  onUnmounted(() => {
+    uni.report({
+      name: '自定义上报-report页面关闭',
+      options: '1'
+    })
+  })
+
+  const handleAppLaunch = () => {
+    const options = uni.getLaunchOptionsSync()
+    uni.report({
+      name: 'uni-app-launch',
+      options: options,
+      success: (res) => {
+        msg.value = 'onLaunch --> ' + res.errMsg
+        console.log(res);
+      }, fail: (err) => {
+        msg.value = 'onLaunch --> ' + err.errMsg
+        console.log(err);
+      }
+    })
+  }
+
+  const handleAppHide = () => {
+    uni.report({
+      name: 'uni-app-hide',
+      success: (res) => {
+        msg.value = 'onAppHide --> ' + res.errMsg
+        console.log(res);
+      }, fail: (err) => {
+        msg.value = 'onAppHide --> ' + err.errMsg
+        console.log(err);
+      }
+    })
+  }
+
+  const handleAppShow = () => {
+    // const options = uni.getLaunchOptionsSync()
+    uni.report({
+      name: 'uni-app-show',
+      success: (res) => {
+        msg.value = 'onAppShow --> ' + res.errMsg
+        console.log(res);
+      }, fail: (err) => {
+        msg.value = 'onAppShow --> ' + err.errMsg
+        console.log(err);
+      }
+    })
+  }
+
+  const handleAppError = () => {
+    const errmsg = '测试错误'
+    uni.report({
+      name: 'uni-app-error',
+      options: errmsg,
+      success: (res) => {
+        msg.value = 'onAppError --> ' + res.errMsg
+        console.log(res);
+      }, fail: (err) => {
+        msg.value = 'onAppError --> ' + err.errMsg
+        console.log(err);
+      }
+    })
+  }
+
+  const handleEvent = () => {
+    // 此处name为用户自定义
+    uni.report({
+      name: 'custom-event',
+      options: {
+        title: '自定义事件',
+        total: 1
+      },
+      success: (res) => {
+        msg.value = '自定义事件 --> ' + res.errMsg
+        console.log(res);
+      }, fail: (err) => {
+        msg.value = '自定义事件 --> ' + err.errMsg
+        console.log(err);
+      }
+    })
+  }
+
+  const handleTitle = () => {
+    // 此处name为用户自定义
+    uni.report({
+      name: 'title',
+      options: '自定义title测试上报',
+      success: (res) => {
+        msg.value = '自定义title --> ' + res.errMsg
+        console.log(res);
+      }, fail: (err) => {
+        msg.value = '自定义title --> ' + err.errMsg
+        console.log(err);
+      }
+    })
+  }
+
+  defineExpose({
+    msg,
+    handleAppLaunch,
+    handleAppHide,
+    handleAppShow,
+    handleAppError,
+    handleEvent,
+    handleTitle
+  })
+</script>
+
+<style>
+  .page {
+    padding: 15px;
+  }
+
+  .tips {
+    margin: 15px;
+    padding: 15px;
+    background-color: #f5f5f5;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .tips-title {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .tips-content {
+    font-size: 14px;
+    color: #999;
+  }
+
+  .normal-button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .instructions {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: #eee;
+    font-size: 12px;
+    color: #999;
+  }
+</style>

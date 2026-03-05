@@ -1,0 +1,56 @@
+<template>
+  <view style="flex-grow: 1;">
+    <view>
+      <text>圆角 : 各边之间 不同width && 不同颜色 && 不同圆角</text>
+      <view style="width: 250px;height: 250px;background-color: gray;justify-content: center;align-items: center;">
+        <view class="border-circle"></view>
+      </view>
+    </view>
+
+    <view>
+      <text>直角 : 各边之间 不同width && 不同颜色 </text>
+      <view style="width: 250px;height: 250px;background-color: gray;justify-content: center;align-items: center;">
+        <view class="border-rect"></view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+
+</script>
+
+<style>
+  .common {
+    width: 250px;
+    height: 250px;
+    background-color: gray;
+  }
+
+  .border-circle {
+    width: 125px;
+    height: 125px;
+    background-color: #00dd00;
+    border-width: 10px;
+    border-style: solid;
+    border-color: #000000;
+    border-bottom-width: 20px;
+    border-bottom-color: #ff0000;
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 15px;
+    border-radius: 5px;
+    border-right-color: #FFDC02;
+  }
+
+  .border-rect {
+    width: 125px;
+    height: 125px;
+    border-style: solid;
+    background-color: #00dd00;
+    border-width: 10px;
+    border-color: #000000;
+    border-bottom-width: 20px;
+    border-bottom-color: #ff0000;
+    border-right-color: #FFDC02;
+  }
+</style>

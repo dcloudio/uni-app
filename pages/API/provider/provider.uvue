@@ -1,0 +1,115 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view class="page">
+      <page-head :title="data.title"></page-head>
+      <view class="service-item" v-for="(item, index) in data.serviceList" :key="index">
+        <text class="service-name">{{item.name}}:</text>
+        <view class="provider-list">
+          <text class="provider-item" v-for="(item2, index2) in item.provider" :key="index2">
+            {{item2}}
+            {{item.providerObj.length > 0 ? ':' + JSON.stringify(item.providerObj[index2]) : '' }}
+          </text>
+        </view>
+      </view>
+      <button class="btn-get-provider" type="primary" @click="getProvider">getProviderSync</button>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  type ProviderItem = {
+    service : string,
+    name : string,
+    provider : string[],
+    providerObj : UniProvider[]
+  }
+
+  type DataType = {
+    title: string;
+    flag: boolean;
+    serviceList: ProviderItem[];
+    providerIds: string[];
+    providerObjects: string[];
+  }
+
+  const data = reactive({
+    title: 'provider',
+    flag: false,
+    serviceList: [
+      { service: "payment", name: "支付", provider: [], providerObj: [] },
+      { service: "location", name: "定位", provider: [], providerObj: [] },
+      // #ifdef APP-HARMONY
+      { service: "oauth", name: "登录", provider: [], providerObj: [] },
+      // #endif
+      // #ifdef APP-HARMONY
+      { service: "share", name: "分享", provider: [], providerObj: [] }
+      // #endif
+    ],
+    //自动化测试使用
+    providerIds: [],
+    providerObjects: [],
+  } as DataType)
+
+  const updateProvider = (service : string, provider : string[] | null, uniProvider : UniProvider[]) => {
+    //这里需要从新从serviceList 获取item，不能直接用forEach 里面的item，目前存在bug,后续会解决这个问题
+    const item : ProviderItem | null = data.serviceList.find((item : ProviderItem) : boolean => {
+      return item.service == service
+    });
+
+    if (item != null && provider != null) {
+      item.provider = provider
+      item.providerObj = uniProvider
+      item.providerObj.forEach((obj) => {
+        data.providerObjects.push(obj.description)
+      })
+    }
+  }
+
+  const getProvider = () => {
+    data.providerObjects = []
+    data.serviceList.forEach((item : ProviderItem) => {
+      var provider = uni.getProviderSync({
+        service: item.service,
+      } as GetProviderSyncOptions)
+      provider.providerIds.forEach((value) => {
+        data.providerIds.push(value)
+      })
+      updateProvider(item.service, provider.providerIds, provider.providerObjects);
+    })
+  }
+
+  defineExpose({
+    data,
+    getProvider
+  })
+</script>
+
+<style>
+  .page {
+    padding: 15px;
+  }
+
+  .service-item {
+    margin-top: 10px;
+  }
+
+  .service-name {
+    font-weight: bold;
+  }
+
+  .provider-list {
+    margin-left: 32px;
+  }
+
+  .provider-item {
+    line-height: 1.5;
+  }
+
+  .btn-get-provider {
+    margin-top: 30px;
+  }
+</style>

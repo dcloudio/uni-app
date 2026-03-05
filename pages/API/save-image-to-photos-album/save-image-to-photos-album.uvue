@@ -1,0 +1,67 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap">
+      <image class="image" src="/static/test-image/logo.png"></image>
+      <button class="margin-top-10" type="primary" @click="saveImage">将图片保存到手机相册</button>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  const title = ref("saveImageToPhotosAlbum")
+
+  type TestStateType = {
+    success : boolean
+  }
+
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const testState = reactive({
+    success: false
+  } as TestStateType)
+
+  const saveImage = () => {
+    uni.saveImageToPhotosAlbum({
+      filePath: "/static/test-image/logo.png",
+      success: (res) => {
+        console.log("saveImageToPhotosAlbum success", JSON.stringify(res));
+        uni.showToast({
+          position: "center",
+          icon: "none",
+          title: "图片保存成功，请到手机相册查看"
+        });
+        testState.success = true;
+      },
+      fail: (err) => {
+        uni.showModal({
+          title: "保存图片到相册失败",
+          content: JSON.stringify(err),
+          showCancel: false
+        });
+        testState.success = false;
+      }
+    })
+  }
+
+  defineExpose({
+    testState,
+    saveImage
+  })
+
+</script>
+
+<style>
+  .margin-top-10 {
+    margin-top: 10px;
+  }
+
+  .image {
+    width: 196px;
+    height: 196px;
+    align-self: center;
+  }
+</style>

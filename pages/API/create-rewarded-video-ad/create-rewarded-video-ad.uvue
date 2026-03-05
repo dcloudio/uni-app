@@ -1,0 +1,79 @@
+<template>
+  <page-head title="激励视频广告"></page-head>
+  <button :type="btnType" style="margin: 10px;" :disabled="btnDisable" @click="showAd()">{{btnText}}</button>
+  <view v-for="(item,index) in errorDetails">{{item}}</view>
+</template>
+
+<script setup lang="uts">
+  const errorDetails = ref([] as string[])
+  const btnText = ref("")
+  const btnType = ref("primary")
+  const btnDisable = ref(false)
+  const rewardAd = ref(null as RewardedVideoAd | null)
+  const isAdLoadSuccess = ref(false)
+
+  type LoadAdType = () => void
+  let loadAd: LoadAdType = () => {}
+  loadAd = () => {
+    if (btnDisable.value)
+      return
+    btnDisable.value = true
+    btnText.value = "正在加载广告"
+    btnType.value = "primary"
+    if (rewardAd.value == null) {
+      rewardAd.value = uni.createRewardedVideoAd({
+        adpid: "1507000689" //此处为测试广告位，实际开发中请在uni-ad后台申请自己的广告位后替换
+      })
+      rewardAd.value!.onError((res) => {
+        errorDetails.value.length = 0;
+        btnType.value = "warn"
+        btnDisable.value = false
+        btnText.value = res.errMsg;
+        const errors = (res.cause as UniAggregateError|null)?.errors;
+        if(errors != null && errors.length > 0) {
+          for(var a = 0;a<errors.length;a++) {
+            var msg = JSON.stringify(errors[a]);
+            errorDetails.value.push(msg);
+          }
+        }
+      })
+      rewardAd.value!.onLoad((_) => {
+        errorDetails.value.length = 0;
+        btnType.value = "primary"
+        btnText.value = "广告加载成功，点击观看"
+        btnDisable.value = false
+        isAdLoadSuccess.value = true
+      })
+      rewardAd.value!.onClose((e) => {
+        // 测试广告位无法通过服务器回调。实际开发中，使用自己的广告位后，需参考uni-ad文档编写服务器回调的代码，在服务端发放奖励
+        isAdLoadSuccess.value = false
+        uni.showToast({
+          title: "激励视频" + (e.isEnded ? "" : "未") + "播放完毕",
+          position: "bottom"
+        })
+        loadAd()
+      })
+    }
+    rewardAd.value!.load().catch(()=>{})
+  }
+
+  const showAd = () => {
+    if (isAdLoadSuccess.value) {
+      rewardAd.value!.show().catch(()=>{})
+    } else {
+      loadAd()
+    }
+  }
+
+  onReady(() => {
+    loadAd()
+  })
+
+  onPageHide(() => {
+    console.log("Page Hide");
+  })
+</script>
+
+<style>
+
+</style>

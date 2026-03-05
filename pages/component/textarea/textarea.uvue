@@ -1,0 +1,399 @@
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  type DataType = {
+    value2: string;
+    adjust_position_boolean: boolean;
+    show_confirm_bar_boolean: boolean;
+    fixed_boolean: boolean;
+    auto_height_boolean: boolean;
+    confirm_hold_boolean: boolean;
+    focus_boolean: boolean;
+    auto_focus_boolean: boolean;
+    default_value: string;
+    inputmode_enum: ItemType[];
+    confirm_type_list: ItemType[];
+    cursor_color: string;
+    cursor: number;
+    inputmode_enum_current: number;
+    confirm_type_current: number;
+    placeholder_value: string;
+    defaultModel: string;
+    textareaMaxLengthValue: string;
+    isSelectionFocus: boolean;
+    selectionStart: number;
+    selectionEnd: number;
+    hold_keyboard: boolean;
+    adjust_position: boolean;
+    disabled: boolean;
+    jest_result: boolean;
+    isAutoTest: boolean;
+    changeValue: string;
+    textareaRect: DOMRect | null;
+  }
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    value2: '第一行\n第二行\n第三行\n第四行\n第五行\n第六行\n第七行\n第八行\n第九行\n第十行\n十一行',
+    adjust_position_boolean: false,
+    show_confirm_bar_boolean: false,
+    fixed_boolean: false,
+    auto_height_boolean: false,
+    confirm_hold_boolean: false,
+    focus_boolean: true,
+    auto_focus_boolean: false,
+    default_value: "1\n2\n3\n4\n5\n6",
+    inputmode_enum: [{ "value": 1, "name": "text" }, { "value": 2, "name": "decimal" }, { "value": 3, "name": "numeric" }, { "value": 4, "name": "tel" }, { "value": 5, "name": "search" }, { "value": 6, "name": "email" }, { "value": 7, "name": "url" }, { "value": 0, "name": "none" }],
+    confirm_type_list: [{ "value": 0, "name": "return" }, { "value": 1, "name": "done" }, { "value": 2, "name": "send" }, { "value": 3, "name": "search" }, { "value": 4, "name": "next" }, { "value": 5, "name": "go" }],
+    cursor_color: "#3393E2",
+    cursor: 0,
+    inputmode_enum_current: 0,
+    confirm_type_current: 0,
+    placeholder_value: "请输入",
+    defaultModel: '123',
+    textareaMaxLengthValue: "",
+    isSelectionFocus: false,
+    selectionStart: -1,
+    selectionEnd: -1,
+    hold_keyboard: false,
+    adjust_position: false,
+    disabled: false,
+    jest_result: false,
+    isAutoTest: false,
+    changeValue: "",
+    textareaRect: null
+  } as DataType)
+
+  // #ifdef APP
+  onReady(() => {
+    const textarea = uni.getElementById("uni-textarea")
+    data.textareaRect = textarea?.getBoundingClientRect()
+    // 加上导航栏及状态栏高度
+    data.textareaRect!.y += uni.getSystemInfoSync().safeArea.top + 44
+  })
+  // #endif
+
+  const textarea_click = () => { console.log("组件被点击时触发") }
+  const textarea_touchstart = () => { console.log("手指触摸动作开始") }
+  const textarea_touchmove = () => { console.log("手指触摸后移动") }
+  const textarea_touchcancel = () => { console.log("手指触摸动作被打断，如来电提醒，弹窗") }
+  const textarea_touchend = () => { console.log("手指触摸动作结束") }
+  const textarea_tap = () => { console.log("手指触摸后马上离开") }
+  const textarea_longpress = () => { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") }
+  const textarea_confirm = () => { console.log("点击完成时， 触发 confirm 事件，event.detail = {value: value}") }
+
+  const textarea_input = (e: UniInputEvent) => {
+    console.log("当键盘输入时，触发 input 事件，event.detail = {value, cursor}， @input 处理函数的返回值并不会反映到 textarea 上")
+    // #ifdef WEB
+    data.jest_result = e.detail.value == '11\n2\n3\n4\n5\n6'
+    // #endif
+    // #ifdef APP
+    data.jest_result = e.detail.value == '1\n2\n3\n4\n5\n61'
+    // #endif
+  }
+
+  const textarea_linechange = () => { console.log("输入框行数变化时调用，event.detail = {height: 0, height: 0, lineCount: 0}") }
+  const textarea_blur = () => { console.log("输入框失去焦点时触发，event.detail = {value, cursor}") }
+  const textarea_keyboardheightchange = () => { console.log("键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration}") }
+
+  const textarea_focus = (event: UniTextareaFocusEvent) => {
+    data.jest_result = event.detail.height >= 0
+  }
+
+  const textarea_change = (event: UniInputChangeEvent) => {
+    console.log("textarea_change", event.detail.value);
+    data.changeValue = event.detail.value
+  }
+
+  const change_adjust_position_boolean = (checked: boolean) => { data.adjust_position_boolean = checked }
+  const change_show_confirm_bar_boolean = (checked: boolean) => { data.show_confirm_bar_boolean = checked }
+  const change_fixed_boolean = (checked: boolean) => { data.fixed_boolean = checked }
+  const change_auto_height_boolean = (checked: boolean) => { data.auto_height_boolean = checked }
+  const change_confirm_hold_boolean = (checked: boolean) => { data.confirm_hold_boolean = checked }
+  const change_focus_boolean = (checked: boolean) => { data.focus_boolean = checked }
+  const change_auto_focus_boolean = (checked: boolean) => { data.auto_focus_boolean = checked }
+
+  const change_cursor_color_boolean = (checked: boolean) => {
+    if (checked) {
+      data.cursor_color = "transparent"
+    } else {
+      data.cursor_color = "#3393E2"
+    }
+  }
+
+  const radio_change_inputmode_enum = (checked: number) => { data.inputmode_enum_current = checked }
+  const radio_change_confirm_type = (checked: number) => { data.confirm_type_current = checked }
+
+  const setSelection = (selectionStart: number, selectionEnd: number) => {
+    data.isSelectionFocus = true;
+    data.selectionStart = selectionStart;
+    data.selectionEnd = selectionEnd;
+  }
+
+  const onSelectionBlurChange = () => {
+    data.isSelectionFocus = false;
+    data.selectionEnd = 0;
+  }
+
+  const changeHoldKeyboard = (event: UniSwitchChangeEvent) => {
+    const checked = event.detail.value;
+    data.hold_keyboard = checked;
+  }
+
+  const changeAdjustPosition = (event: UniSwitchChangeEvent) => {
+    const checked = event.detail.value;
+    data.adjust_position = checked;
+  }
+
+  const change_disabled_boolean = (checked: boolean) => {
+    data.disabled = checked
+  }
+
+  const getBoundingClientRectForTest = (): DOMRect | null => {
+    return uni.getElementById('test-width')?.getBoundingClientRect();
+  }
+
+  defineExpose({
+    data,
+    radio_change_inputmode_enum,
+    getBoundingClientRectForTest
+  })
+</script>
+
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view class="main">
+      <textarea :value="data.default_value" id="uni-textarea" class="uni-textarea" :auto-focus="true" :focus="data.focus_boolean"
+        :confirm-hold="data.confirm_hold_boolean" :auto-height="data.auto_height_boolean" :fixed="data.fixed_boolean"
+        :show-confirm-bar="data.show_confirm_bar_boolean" :adjust-position="data.adjust_position_boolean"
+        :cursor-color="data.cursor_color" :cursor="data.cursor" :placeholder="data.placeholder_value"
+        :inputmode="data.inputmode_enum[data.inputmode_enum_current].name"
+        :confirm-type="data.confirm_type_list[data.confirm_type_current].name" :disabled="data.disabled" @click="textarea_click"
+        @touchstart="textarea_touchstart" @touchmove="textarea_touchmove" @touchcancel="textarea_touchcancel"
+        @touchend="textarea_touchend" @tap="textarea_tap" @longpress="textarea_longpress" @confirm="textarea_confirm"
+        @input="textarea_input" @linechange="textarea_linechange" @blur="textarea_blur"
+        @keyboardheightchange="textarea_keyboardheightchange" @focus="textarea_focus" @change="textarea_change"
+        style="padding: 10px; border: 1px solid #666;height: 200px" />
+    </view>
+    <view style="margin-bottom: 40px;">
+      <boolean-data :defaultValue="false" title="键盘弹起时，是否自动上推页面（限非 Web 平台）"
+        @change="change_adjust_position_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="是否自动增高，设置auto-height时，style.height不生效"
+        @change="change_auto_height_boolean"></boolean-data>
+      <boolean-data :defaultValue="data.focus_boolean" title="获取焦点" @change="change_focus_boolean"></boolean-data>
+      <boolean-data :defaultValue="true" title="首次自动获取焦点" @change="change_auto_focus_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="改变光标颜色为透明" @change="change_cursor_color_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="设置禁用输入框"
+        @change="change_disabled_boolean"></boolean-data>
+      <enum-data :items="data.confirm_type_list" title="confirm-type，设置键盘右下角按钮。"
+        @change="radio_change_confirm_type"></enum-data>
+      <boolean-data :defaultValue="false" title="点击软键盘右下角按钮时是否保持键盘不收起(confirm-type为return时必然不收起)"
+        @change="change_confirm_hold_boolean"></boolean-data>
+      <enum-data :items="data.inputmode_enum" title="input-mode，控制软键盘类型。（仅限 Web 平台符合条件的高版本浏览器或webview）。"
+        @change="radio_change_inputmode_enum"></enum-data>
+      <boolean-data :defaultValue="false" title="是否显示键盘上方带有“完成”按钮那一栏（仅限小程序平台）"
+        @change="change_show_confirm_bar_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true（仅限小程序平台）"
+        @change="change_fixed_boolean"></boolean-data>
+
+
+      <view class="title-wrap">
+        <view>maxlength 输入最大长度为10</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea id="textarea-instance-maxlength" class="textarea-instance" :value="data.textareaMaxLengthValue"
+          :maxlength="10" />
+      </view>
+
+      <view class="title-wrap">
+        <view>cursor-spacing、placeholder-class、placeholder-style例子(harmony 不支持设置 placeholder backgroundColor)</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea id="textarea-height-exception" class="textarea-instance" placeholder="底部textarea测试键盘遮挡"
+          placeholder-class="placeholder" placeholder-style="background-color:red" :cursor-spacing="300" />
+      </view>
+      <view class="title-wrap">
+        <view @click="setSelection(2, 5)">设置输入框聚焦时光标的起始位置和结束位置（点击生效）</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea id="textarea-instance-2" class="textarea-instance" value="Hello UniApp X Textarea TestCase" :focus="data.isSelectionFocus"
+          :selection-start="data.selectionStart" :selection-end="data.selectionEnd" @blur="onSelectionBlurChange" />
+      </view>
+
+      <view class="title-wrap">
+        <view>设置hold-keyboard</view>
+        <switch style="margin-left: 10px;" @change="changeHoldKeyboard" :checked="data.hold_keyboard"></switch>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" :hold-keyboard="data.hold_keyboard" />
+      </view>
+      <view class="title-wrap">
+        <view>同时存在 v-model 和 value</view>
+      </view>
+      <!-- harmony 不符合预期因为 switch 组件存在时，textarea 非预期 update 导致 -->
+      <view class="textarea-wrap">
+          <textarea id="both-model-value" class="textarea-instance" v-model='data.defaultModel' value='456'></textarea>
+      </view>
+
+      <view class="title-wrap">
+        <view>设置adjust-position</view>
+        <switch style="margin-left: 10px;" @change="changeAdjustPosition" :checked="data.adjust_position"></switch>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" :adjust-position="data.adjust_position" />
+      </view>
+      <view v-if="data.isAutoTest" class="textarea-wrap">
+        <textarea id="test-width" class="test-width" value="123456" placeholder="" />
+      </view>
+      <view class="title-wrap">
+        <view>设置line-height</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="line-height: 1.2em;" value="设置line-height为1.2em" ></textarea>
+      </view>
+      <view class="title-wrap">
+        <view>设置min-height</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="min-height: 100px;" :value="data.default_value"></textarea>
+      </view>
+      <view class="title-wrap">
+        <view>设置max-height</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="max-height: 50px;" :value="data.default_value"></textarea>
+      </view>
+      <view class="title-wrap">
+        <view>设置min-height与auto-height</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="min-height: 100px;" auto-height="true" :value="data.default_value"></textarea>
+      </view>
+      <view class="title-wrap">
+        <view>设置max-height与auto-height</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="max-height: 50px;" auto-height="true" :value="data.default_value"></textarea>
+      </view>
+      <view class="title-wrap">
+        <view>同时设置value与text-align</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="height: 50px;text-align: right;" value="同时设置value与text-align"></textarea>
+      </view>
+      <view class="title-wrap">
+        <view>scroll-view嵌套textarea滚动</view>
+      </view>
+      <scroll-view  style="height: 150px;" direction="vertical">
+      	<textarea class="textarea-instance" :adjust-position="false" :auto-height="true" :value="data.value2" />
+      </scroll-view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="height: 60px;padding: 20px;" value="style padding:20px"></textarea>
+      </view>
+      <view class="title-wrap">
+        <view>注册confirm事件，点击换行效果</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" @confirm="()=>{}"></textarea>
+      </view>
+
+      <view class="title-wrap">
+        <text>style 设置 font-size:20px</text>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="height: 60px;font-size:20px" placeholder="placeholder" />
+      </view>
+      <view style="padding-left: 10px;flex-direction: column;">
+        <text>style 设置 font-size:20px</text>
+        <text>placeholder-class 设置 30px</text>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="height: 60px;font-size:20px" placeholder-class="placeholder-class" placeholder="placeholder" />
+      </view>
+      <view style="padding-left: 10px;flex-direction: column;">
+        <text>style 设置 font-size:20px</text>
+        <text>placeholder-class 设置 30px</text>
+        <text>placeholder-style 设置 40px</text>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="height: 60px;font-size:20px" placeholder-class="placeholder-class" placeholder-style="font-size:40px" placeholder="placeholder" />
+      </view>
+
+      <text class="uni-title-text">textarea样式大合集</text>
+      <view class="textarea-wrap">
+        <textarea class="textarea-all-styles" value="样式效果：文本颜色深蓝色、字号16px、字重400、行高1.5、文本居左对齐；外边距10px、内边距10px；圆角8px；浅蓝色渐变背景、蓝色边框、透明度70%、阴影效果。" />
+      </view>
+
+      <navigator url="/pages/component/textarea/textarea-performance" style="margin: 10px;">
+        <button type="primary">
+          textarea 性能测试
+        </button>
+      </navigator>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<style>
+  .main {
+    min-height: 100px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .test-width {
+    width: 100px;
+    height: 100px;
+    background-color: aqua;
+  }
+
+  .textarea-wrap {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .title-wrap {
+    flex-direction: row;
+    align-items: center;
+    margin-left: 10px;
+  }
+
+  .textarea-instance {
+    flex: 1;
+    border: 1px solid #666;
+    margin: 10px;
+  }
+
+  .placeholder {
+    background-color: yellow;
+  }
+  .placeholder-class{
+    font-size: 30px;
+  }
+
+  .textarea-all-styles {
+    color: #0008a7;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: left;
+    width: 90%;
+    height: 150px;
+    min-width: 200px;
+    min-height: 100px;
+    max-height: 300px;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #e3f2fd;
+    background-image: linear-gradient(to right, #e3f2fd, #a9d5fa);
+    border: 1px solid #007aff;
+    opacity: 0.7;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+</style>

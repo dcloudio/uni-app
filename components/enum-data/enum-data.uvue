@@ -1,0 +1,79 @@
+<script setup lang="uts">
+import { ItemType } from './enum-data-types'
+import { state } from '@/store/index.uts'
+// 样式隔离配置，app: 受全局样式影响
+defineOptions({
+  styleIsolation: 'app'
+})
+const emit = defineEmits(['change'])
+const props = defineProps({
+  title: {
+    type: String,
+    default: ''
+  },
+  items: {
+    type: Array as PropType<Array<ItemType>>,
+    required: true
+  },
+  // 用于控制单选项的显示模式，为true时紧凑横排显示，自动换行。默认false，垂直列表布局，每个选项占一行
+  compact: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const isDarkMode = computed(() => state.isDarkMode)
+const current = ref(0)
+
+// @ts-ignore
+function _change(e : RadioGroupChangeEvent) {
+  const selected = props.items.find((item : ItemType) : boolean => {
+    return item.value.toString() == e.detail.value
+  })
+  if (selected != null) {
+    emit('change', selected.value)
+    uni.showToast({
+      icon: 'none',
+      title: '当前选中:' + selected.name,
+    })
+  }
+}
+</script>
+
+<template>
+  <view class="uni-padding-wrap" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+    <view class="uni-title uni-common-mt">
+      <text class="uni-title-text"> {{title}} </text>
+    </view>
+  </view>
+  <view class="uni-list uni-common-pl" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+    <radio-group @change="_change" :class="[{'compact-container': compact}]">
+      <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.name"
+        :class="[{'compact-item': compact, 'uni-list-cell-line': !compact && index < items.length - 1}]"
+         :value="item.value + ''" :checked="item.checked" :color="isDarkMode ? '#a8a8b7' : '#007AFF'">
+        <text class="radio-text">{{ item.name }}</text>
+      </radio>
+    </radio-group>
+  </view>
+</template>
+
+<style>
+.radio-text {
+  color: var(--text-color, #333333);
+}
+
+/* 紧凑横排模式 */
+.compact-container {
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.compact-item {
+  margin: 6px;
+  padding: 4px 10px !important;
+  border-radius: 4px;
+  background-color: var(--background-color, #f5f5f5);
+  border: 1px solid var(--border-color, #e0e0e0);
+}
+</style>

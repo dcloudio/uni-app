@@ -1,0 +1,12 @@
+{
+  "pages": [
+    {
+      "path": "uni_modules/uni-openLocation/pages/openLocation/openLocation",
+      "style": {
+        "navigationBarTitleText": " ",
+        "navigationStyle": "custom",
+        "disableSwipeBack": false
+      }
+    }
+  ]
+}

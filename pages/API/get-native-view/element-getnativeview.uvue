@@ -1,0 +1,123 @@
+<template>
+  <view id="view" style="flex: 1;">
+    <input id="input" value="input" class="input" />
+    <textarea id="textarea" value="textarea" class="textarea" />
+    <web-view id="webview" src="/hybrid/html/local.html" class="web-view"></web-view>
+    // 注意：iOS平台真机运行时需要安装 Xcode 开发工具具备 UTS 开发环境，或提交自定基座打包后 checkNativeView 相关方法才会生效
+    <button class="button" type="primary" @click="checkViewNativeView">检测view标签原生View</button>
+    <button class="button" type="primary" @click="checkInputNativeView">检测input标签原生View</button>
+    <button class="button" type="primary" @click="checkTextareaNativeView">检测textarea标签原生View</button>
+    <button class="button" type="primary" @click="checkWebViewNativeView">检测webview标签原生View</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import { checkWebViewNativeView as checkWebView, checkInputNativeView as checkInput, checkTextareaNativeView as checkTextarea, checkViewNativeView as checkView } from '@/uni_modules/uts-get-native-view';
+
+  function showTip(title : string) {
+    console.log("title===" + title)
+    uni.showToast({
+      title: title,
+      icon: "none"
+    })
+  }
+
+  function checkViewNativeView() : boolean {
+    var viewName = "ViewGroup"
+    // #ifdef APP-IOS
+    viewName = "UIView"
+    // #endif
+    const msg = "检测view组件对应原生" + viewName
+    if (checkView("view")) {
+      showTip(msg + "成功")
+      return true
+    }
+    showTip(msg + "失败")
+    return false
+  }
+
+  function checkInputNativeView() : boolean {
+    var viewName = "AppCompatEditText"
+    // #ifdef APP-IOS
+    viewName = "UITextField"
+    // #endif
+    const msg = "检测input组件对应原生" + viewName
+    if (checkInput("input")) {
+      showTip(msg + "成功")
+      return true
+    }
+    showTip(msg + "失败")
+    return false
+  }
+
+  function checkTextareaNativeView() : boolean {
+    var viewName = "AppCompatEditText"
+    // #ifdef APP-IOS
+    viewName = "UITextView"
+    // #endif
+    const msg = "检测textarea组件对应原生" + viewName
+    if (checkTextarea("textarea")) {
+      showTip(msg + "成功")
+      return true
+    }
+    showTip(msg + "失败")
+    return false
+  }
+
+  function checkWebViewNativeView() : boolean {
+    var viewName = "WebView"
+    // #ifdef APP-IOS
+    viewName = "WKWebView"
+    // #endif
+    const msg = "检测webview组件对应原生" + viewName
+    if (checkWebView("webview")) {
+      showTip(msg + "成功")
+      return true
+    }
+    showTip(msg + "失败")
+    return false
+  }
+
+  defineExpose({
+    checkViewNativeView,
+    checkInputNativeView,
+    checkTextareaNativeView,
+    checkWebViewNativeView
+  })
+</script>
+
+<style>
+  .input {
+    width: 300px;
+    height: 40px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    margin: 20px auto;
+  }
+
+  .textarea {
+    width: 300px;
+    height: 80px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    margin: 20px auto;
+  }
+
+  .web-view {
+    width: 300px;
+    height: 120px;
+    margin: 20px auto;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+  }
+
+  .button {
+    margin: 10px 20px;
+  }
+</style>

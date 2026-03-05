@@ -1,0 +1,72 @@
+<template>
+  <view style="flex-direction: column;background-color: #f5f5f5;">
+    <!-- #ifndef MP -->
+    <fps />
+    <!-- #endif -->
+
+    <!-- 控制按钮 -->
+    <view style="padding: 2px;background-color: #ffffff;flex-direction: row;flex-wrap: wrap;align-items: center;">
+      <button @click="toggleDisabled" :type="sharedDisabled ? 'primary' : 'default'" size="mini" style="margin: 2px;">{{ sharedDisabled ? '启用' : '禁用' }}</button>
+      <button @click="togglePlain" :type="sharedPlain ? 'primary' : 'default'" size="mini" style="margin: 2px;">{{ sharedPlain ? '实心' : '镂空' }}</button>
+      <button @click="cycleType" size="mini" style="margin: 2px;">type: {{ sharedType }}</button>
+      <button @click="cycleSize" size="mini" style="margin: 2px;">size: {{ sharedSize }}</button>
+    </view>
+
+    <!-- 100个button组件 -->
+    <view style="flex-direction: row;flex-wrap: wrap;padding: 5px;">
+      <view v-for="index in 100" :key="index" style="width: 15%;margin: 4rpx;align-items: center;">
+        <button
+          :disabled="sharedDisabled"
+          :plain="sharedPlain"
+          :type="sharedType"
+          :size="sharedSize"
+          @click="onButtonClick(index)"
+          style="width: 100%;"
+        >
+          {{ index }}
+        </button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const sharedDisabled = ref(false)
+  const sharedPlain = ref(false)
+  const sharedType = ref('default')
+  const sharedSize = ref('mini')
+
+  function toggleDisabled() {
+    sharedDisabled.value = !sharedDisabled.value
+    console.log('disabled:', sharedDisabled.value)
+  }
+
+  function togglePlain() {
+    sharedPlain.value = !sharedPlain.value
+    console.log('plain:', sharedPlain.value)
+  }
+
+  const types = ['default', 'primary', 'warn']
+  let typeIndex = 0
+  const sizes = ['mini', 'default']
+  let sizeIndex = 0
+
+  function cycleType() {
+    typeIndex = (typeIndex + 1) % types.length
+    sharedType.value = types[typeIndex]
+    console.log('type:', sharedType.value)
+  }
+
+  function cycleSize() {
+    sizeIndex = (sizeIndex + 1) % sizes.length
+    sharedSize.value = sizes[sizeIndex]
+    console.log('size:', sharedSize.value)
+  }
+
+  function onButtonClick(index : number) {
+    console.log('button clicked:', index - 1)
+  }
+</script>
+
+<style>
+</style>

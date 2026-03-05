@@ -1,0 +1,146 @@
+<template>
+  <scroll-view style="flex:1" type="nested" direction="vertical" refresher-enabled="true" refresher-default-style="none"
+    bounces="false" :refresher-triggered="data.refresherTriggered" @refresherpulling="onRefresherpulling"
+    @refresherrefresh="onRefresherrefresh" @refresherrestore="onRefreshrestore" @scrollend="scrollEnd">
+    <nested-scroll-header>
+      <swiper ref="header" indicator-dots="true" circular="true">
+        <swiper-item v-for="i in 3" :item-id="i">
+          <image src="/static/shuijiao.jpg" style="width:100% ;height: 240px;"></image>
+        </swiper-item>
+      </swiper>
+    </nested-scroll-header>
+    <nested-scroll-body>
+      <view style="flex:1">
+        <view style="flex-direction: row;">
+          <text style="padding: 12px 15px;">nested-scroll-body</text>
+        </view>
+        <swiper style="flex: 1;">
+          <swiper-item style="flex: 1;" v-for="item in data.swiperList">
+            <!-- 嵌套滚动仅可能关闭bounces效果 会影响嵌套滚动不连贯 -->
+            <list-view bounces="false" id="body-list" :scroll-top="data.scrollTop" style="flex:1" :key="item.type"
+              associative-container="nested-scroll-view" :refresher-enabled="false">
+              <list-item v-for="key in data.scrollData" :key="key">
+                <view class="scroll-item">
+                  <text class="scroll-item-title">{{key}}</text>
+                </view>
+              </list-item>
+            </list-view>
+          </swiper-item>
+        </swiper>
+      </view>
+      <!-- dom2 nested-scroll-body 没有限制节点数量 临时注释 -->
+      <!-- <text>不会渲染，因为 nested-scroll-body 只会渲染第一个子节点</text> -->
+    </nested-scroll-body>
+    <!-- 支持自定义样式下拉刷新slot组件 -->
+    <refresh-box slot="refresher" :state="state"></refresh-box>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+  import refreshBox from '../../template/custom-refresher/refresh-box/refresh-box.uvue';
+
+  type DataType = {
+    scrollData: Array<string>;
+    swiperList: UTSJSONObject[];
+    scrollTop: number;
+    refresherTriggered: boolean;
+    pullingDistance: number;
+    resetting: boolean;
+    testScrollTop: number;
+  }
+
+  const data = reactive({
+    scrollData: [] as Array<string>,
+    swiperList: [] as UTSJSONObject[],
+    scrollTop: 0,
+    refresherTriggered: false,
+    pullingDistance: 0,
+    resetting: false,
+    testScrollTop: 0
+  } as DataType)
+
+  const state = computed((): number => {
+    if (data.resetting) {
+      return 3;
+    }
+    if (data.refresherTriggered) {
+      return 2
+    }
+    if (data.pullingDistance > 45) {
+      return 1
+    } else {
+      return 0;
+    }
+  })
+
+  const onRefresherpulling = (e: RefresherEvent) => {
+    data.pullingDistance = e.detail.dy;
+  }
+
+  const onRefresherrefresh = () => {
+    data.refresherTriggered = true
+    setTimeout(() => {
+      data.refresherTriggered = false
+      data.resetting = true;
+    }, 1500)
+  }
+
+  const onRefreshrestore = () => {
+    data.pullingDistance = 0
+    data.resetting = false;
+  }
+
+  const testBodyScrollBy = (y: number) => {
+    data.scrollTop = y
+  }
+
+  const scrollEnd = (e: UniScrollEvent) => {
+    data.testScrollTop = e.detail.scrollTop
+    console.log('testScrollTop:', data.testScrollTop)
+  }
+
+  onLoad(() => {
+    setTimeout(() => {
+      data.swiperList = [
+        { type: 'list1'},
+        { type: 'list2'},
+        { type: 'list3'}
+      ];
+      let lists: Array<string> = []
+      for (let i = 0; i < 30; i++) {
+        lists.push("item---" + i)
+      }
+      data.scrollData = lists
+    }, 500)
+  })
+
+  defineExpose({
+    data,
+    testBodyScrollBy
+  })
+</script>
+
+<style>
+  .scroll-item {
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 6px;
+    background-color: #fff;
+    border-radius: 4px;
+  }
+
+  .scroll-item-title {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    color: #555;
+  }
+
+  .scroll-header-tiem {
+    height: 200px;
+    background-color: #66ccff;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

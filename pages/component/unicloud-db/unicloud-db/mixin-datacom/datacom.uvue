@@ -1,0 +1,66 @@
+<template>
+  <view>
+    <view v-if="mixinDatacomLoading">Loading...</view>
+    <view v-else-if="mixinDatacomError">
+      请求错误：{{mixinDatacomError}}
+    </view>
+    <view v-else="mixinDatacomResData.length>0">
+      <!-- 需要自行处理数据及相关UI展现 -->
+      <!-- {{mixinDatacomResData}} -->
+      <scroll-view class="list-view">
+        <view class="list-item" v-for="(item, _) in mixinDatacomResData">
+          <text>{{item}}</text>
+        </view>
+      </scroll-view>
+    </view>
+    <view v-if="!mixinDatacomLoading && mixinDatacomResData.length==0">
+      无数据
+    </view>
+  </view>
+</template>
+
+<script lang="uts">
+  export default {
+    mixins: [uniCloud.mixinDatacom],
+    data() {
+      return {
+      }
+    },
+    created() {
+      this.load()
+    },
+    methods: {
+      load() {
+        if (this.mixinDatacomLoading == true) {
+          return
+        }
+        this.mixinDatacomLoading = true
+
+        this.mixinDatacomGet(null).then((res : UniCloudDBGetResult) => {
+          const data = res.data
+          // const count = res.count
+          this.mixinDatacomResData = data
+        }).catch((err : any | null) => {
+          this.mixinDatacomError = err as UniCloudError
+        }).finally(() => {
+          this.mixinDatacomLoading = false
+        })
+      },
+      // 当组件属性发生变化时
+      onMixinDatacomPropsChange(needReset : boolean, changed : Array<string>) {
+        console.log(needReset, changed);
+        // needReset=true 需要重置已加载数据和分页信息，例如 collection，orderby
+        // changed，变化的属性名，类型为 Array，例如 ['collection', 'orderby']
+        // if (needReset) {
+        //   // 清空已加载的数据
+        //   this.mixinDatacomResData = []
+
+        //   // 重置分页数据，如果没有分页不需要处理
+        //   this.mixinDatacomPage.size = this.pageSize // 重置分页大小
+        //   this.mixinDatacomPage.current = 0 // 重置当前分页
+        //   this.mixinDatacomPage.count = 0 // 重置数据总数
+        // }
+      }
+    }
+  }
+</script>

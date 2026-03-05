@@ -1,0 +1,45 @@
+<template>
+  <view style="flex: 1;">
+    <button id="test-btn" @click="scrollTo()">滚动</button>
+    <scroll-view id="scroll" style="flex: 1;" direction="vertical" @scrollend="onScrollEnd">
+      <view style="border: dashed 10px black; height: 3000px;"></view>
+    </scroll-view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  
+type DataType = {
+  scrollEndTriggeredTimes: number,
+  scrollTop: number,
+}
+
+// 使用reactive包装数据，便于自动化测试获取
+const data = reactive({
+  scrollEndTriggeredTimes: 0,
+  scrollTop: 0,
+} as DataType)
+
+function scrollTo() {
+  const scroll = uni.getElementById('scroll') as UniScrollViewElement
+  scroll.scrollTop = data.scrollTop
+  data.scrollTop += 20
+}
+
+function onScrollEnd() {
+  console.log('scrollEnd触发了')
+  data.scrollEndTriggeredTimes++
+}
+
+onLoad(() => {
+
+})
+
+defineExpose({
+  data,
+  scrollTo
+})
+</script>
+
+<style>
+</style>

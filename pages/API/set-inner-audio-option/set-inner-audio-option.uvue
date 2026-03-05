@@ -1,0 +1,166 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head title="setInnerAudioOption"></page-head>
+    <text class="labelText">是否允许与其他音频同时播放</text>
+    <radio-group class="uni-flex radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'mixWithOther')">
+      <radio value="1" :checked="true">是</radio>
+      <radio value="0" class="radioItem">否</radio>
+    </radio-group>
+
+    <text class="labelText">是否允许扬声器播放</text>
+    <radio-group class="uni-flex radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'speakerOn')">
+      <radio value="1" :checked="true">是</radio>
+      <radio value="0" class="radioItem">否</radio>
+    </radio-group>
+
+<!-- #ifdef APP-IOS -->
+    <text class="labelText">（仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音</text>
+    <radio-group class="uni-flex radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'obeyMuteSwitch')">
+      <radio value="1" :checked="true">是</radio>
+      <radio value="0" class="radioItem">否</radio>
+    </radio-group>
+<!-- #endif -->
+
+    <view class="buttonContainer">
+      <button @click="playBackgroundMusic" type="primary" class="radioGroup">播放背景音频</button>
+      <button @click="pauseBackgroundMusic" type="primary" class="radioGroup">暂停背景音频</button>
+      <button @click="stopBackgroundMusic" type="primary" class="radioGroup">停止背景音频</button>
+
+      <button @click="playInnerMusic" type="primary" class="radioGroup">播放音频</button>
+      <button @click="pauseInnerMusic" type="primary" class="radioGroup">暂停音频</button>
+      <button @click="stopInnerMusic" type="primary" class="radioGroup">停止音频</button>
+    </view>
+    <view style="padding: 16px 8px;">
+      <text>1. uni.setInnerAudioOption需要与uni.createInnerAudioContext搭配才会生效 \n </text>
+      <text>2. 设置mixWithOther为true时，会暂停其他App的音频和背景音频 \n</text>
+      <text>3. speakerOn参数：Android不支持在播放音频的过程中切换为扬声器播放，iOS支持播放状态时动态切换 \n</text>
+      <text>4. obeyMuteSwitch参数：仅支持iOS</text>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  type DataType = {
+    isBackgroundAudioPaused: boolean,
+    mixWithOther: boolean,
+    speakerOn: boolean,
+    obeyMuteSwitch: boolean,
+  }
+
+  // 使用reactive包装数据，便于自动化测试获取
+  const data = reactive({
+    isBackgroundAudioPaused: false,
+    mixWithOther: true,
+    speakerOn: true,
+    obeyMuteSwitch: true,
+  } as DataType)
+
+  const backgroundManager = ref<BackgroundAudioManager | null>(null)
+  const innerAudio = ref<InnerAudioContext | null>(null)
+
+  onUnload(() => {
+    backgroundManager.value?.stop()
+    innerAudio.value?.stop()
+    innerAudio.value?.destroy()
+  })
+
+  function playBackgroundMusic() {
+    if (backgroundManager.value == null) {
+      backgroundManager.value = uni.getBackgroundAudioManager()
+      backgroundManager.value.onPause(() => {
+        data.isBackgroundAudioPaused = true
+      })
+    } else {
+      backgroundManager.value!.stop()
+    }
+    backgroundManager.value!.src = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
+    backgroundManager.value!.coverImgUrl = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/music-a.png';
+    backgroundManager.value!.play()
+  }
+
+  function pauseBackgroundMusic() {
+    backgroundManager.value?.pause()
+  }
+
+  function stopBackgroundMusic() {
+    backgroundManager.value?.stop()
+  }
+
+  function playInnerMusic() {
+    if (innerAudio.value == null)
+      innerAudio.value = uni.createInnerAudioContext()
+    else {
+      innerAudio.value!.stop()
+    }
+    innerAudio.value!.src = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
+    innerAudio.value!.play()
+  }
+
+  function pauseInnerMusic() {
+    innerAudio.value?.pause()
+  }
+
+  function stopInnerMusic() {
+    innerAudio.value?.stop()
+  }
+
+  function handleRadioChange(event : UniRadioGroupChangeEvent, propertyName : 'mixWithOther' | 'speakerOn' | 'obeyMuteSwitch') {
+    const value = event.detail.value == "1"
+
+    // 使用 switch 语句，意图更明确
+    switch (propertyName) {
+      case 'mixWithOther':
+        data.mixWithOther = value;
+        break;
+      case 'speakerOn':
+        data.speakerOn = value;
+        break;
+      case 'obeyMuteSwitch':
+        data.obeyMuteSwitch = value;
+        break;
+    }
+
+    uni.setInnerAudioOption({
+      mixWithOther: data.mixWithOther,
+      speakerOn: data.speakerOn,
+      obeyMuteSwitch: data.obeyMuteSwitch
+    })
+  }
+
+  function testInnerAudioOption() {
+    uni.setInnerAudioOption({
+      mixWithOther: false
+    })
+  }
+
+  defineExpose({
+    data,
+    playBackgroundMusic,
+    testInnerAudioOption,
+    playInnerMusic
+  })
+
+
+</script>
+
+<style>
+.labelText {
+  margin-left: 8px
+}
+
+.radioGroup {
+  margin: 8px
+}
+
+.radioItem {
+  margin-left: 16px
+}
+
+.buttonContainer {
+  padding: 8px 8px;
+}
+</style>

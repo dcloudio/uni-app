@@ -1,0 +1,104 @@
+<template>
+	<view class="uni-padding-wrap">
+		<page-head :title="title"></page-head>
+    <view class="item-box">
+      <text>当前应用隐私授权状态:</text>
+      <text>{{ appPrivacy }}</text>
+    </view>
+    <!-- #ifdef MP-WEIXIN -->
+    <view class="item-box">
+      <text>隐私授权协议的名称:</text>
+      <text>{{ privacyContractName }}</text>
+    </view>
+    <!-- #endif -->
+    <view>
+      <button class="privacy-button" type="primary" @tap="getPrivacySetting">
+        获取隐私协议授权状态
+      </button>
+      <button class="privacy-button" type="primary" open-type="agreePrivacyAuthorization">
+        同意隐私协议专用按钮
+      </button>
+      <!-- #ifdef APP -->
+      <button class="privacy-button" type="primary" @tap="resetPrivacyAuthorization">
+        重置隐私协议授权状态
+      </button>
+      <button class="privacy-button" @tap="openPrivacyDialog">
+        显示隐私政策弹框
+      </button>
+      <!-- #endif -->
+    </view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	const title = ref('隐私信息授权')
+	const appPrivacy = ref('未获取')
+	const privacyContractName = ref("")
+	const listenId = ref(0)
+
+	const getPrivacySetting = () => {
+		uni.getPrivacySetting({
+			success: (res) => {
+				appPrivacy.value = res.needAuthorization ? "未同意" : "已同意"
+				// #ifdef MP-WEIXIN
+				privacyContractName.value = res.privacyContractName
+				// #endif
+			}
+		})
+	}
+
+	const resetPrivacyAuthorization = () => {
+		uni.resetPrivacyAuthorization()
+	}
+
+	const openPrivacyDialog = () => {
+		uni.openDialogPage({
+			url: '/pages/component/button/privacy',
+		})
+	}
+
+	onReady(() => {
+		// #ifdef APP
+		//添加 隐私协议监听
+		const id = uni.onPrivacyAuthorizationChange((res) => {
+			appPrivacy.value = res.needAuthorization ? "未同意" : "已同意"
+			const privacyState = "监听到隐私协议状态已变更为 " + appPrivacy.value;
+			uni.showToast({
+				"position": "bottom",
+				"title": privacyState
+			})
+		})
+		listenId.value = id;
+		uni.showToast({
+			"position": "bottom",
+			"title": "开启监听隐私协议状态"
+		})
+		// #endif
+	})
+
+	onUnload(() => {
+		// #ifdef APP
+		//注销监听
+		uni.offPrivacyAuthorizationChange(listenId.value)
+		listenId.value = 0;
+		uni.showToast({
+			"position": "bottom",
+			"title": "已停止监听隐私协议状态"
+		})
+		// #endif
+	})
+
+</script>
+
+<style>
+.item-box {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+.privacy-button{
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+</style>

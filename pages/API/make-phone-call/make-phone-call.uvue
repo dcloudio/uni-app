@@ -1,0 +1,60 @@
+<template>
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-hello-text uni-center">请在下方输入电话号码</view>
+      <input class="input uni-common-mt" type="number" name="input" @input="bindInput" />
+      <view class="uni-btn-v uni-common-mt">
+        <button @tap="makePhoneCall" type="primary" :disabled="data.disabled">拨打</button>
+      </view>
+    </view>
+  </view>
+</template>
+<script setup lang="uts">
+  type DataType = {
+    disabled: boolean;
+    inputValue: string;
+  }
+
+  const title = ref('makePhoneCall')
+  const data = reactive({
+    disabled: true,
+    inputValue: ''
+  } as DataType)
+
+  const bindInput = (e : UniInputEvent) => {
+    data.inputValue = e.detail.value
+    if (data.inputValue.length > 0) {
+      data.disabled = false
+    } else {
+      data.disabled = true
+    }
+  }
+
+  const makePhoneCall = () => {
+    uni.makePhoneCall({
+      phoneNumber: data.inputValue,
+      success: () => {
+        console.log("成功拨打电话")
+      },
+      fail: (err) => {
+        console.log(err.errCode)
+        uni.showToast({
+          title: '错误码：' + err.errCode.toString(),
+          icon: "error"
+        })
+      }
+    })
+  }
+
+</script>
+
+<style>
+  .input {
+    height: 60px;
+    line-height: 60px;
+    font-size: 39px;
+    border-bottom: 1px solid #E2E2E2;
+    text-align: center;
+  }
+</style>

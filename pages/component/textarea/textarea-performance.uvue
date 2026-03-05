@@ -1,0 +1,97 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="page-container">
+      <!-- #ifndef MP -->
+      <fps />
+      <!-- #endif -->
+      <!-- 控制按钮区域 -->
+      <view class="control-panel padding-2 flex-row flex-wrap">
+        <button @click="clearValue" size="mini" class="ml-2">清空内容</button>
+        <button
+          @click="toggleDisabled"
+          :type="sharedDisabled ? 'primary' : 'default'"
+          size="mini"
+          class="ml-2"
+        >
+          {{ sharedDisabled ? "启用" : "禁用" }}输入
+        </button>
+        <text class="current-value"
+          >值: {{ sharedValue == "" ? "(空)" : sharedValue }}</text
+        >
+      </view>
+
+      <!-- 100个textarea组件 -->
+      <view class="padding-2 flex-row flex-wrap">
+        <template v-for="index in 100" :key="index">
+          <textarea
+            :value="sharedValue"
+            :placeholder="index.toString()"
+            :disabled="sharedDisabled"
+            @input="onInput"
+            class="item padding-2"
+          />
+        </template>
+      </view>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  const sharedValue = ref('')
+  const sharedDisabled = ref(false)
+
+  function onInput(e : UniInputEvent) {
+    sharedValue.value = e.detail.value
+    console.log('textarea value changed:', e.detail.value)
+  }
+
+  function clearValue() {
+    sharedValue.value = ''
+    console.log('value cleared')
+  }
+
+  function toggleDisabled() {
+    sharedDisabled.value = !sharedDisabled.value
+    console.log('disabled:', sharedDisabled.value)
+  }
+</script>
+
+<style>
+.ml-2 {
+  margin-left: 2px;
+}
+.padding-2 {
+  padding: 2px;
+}
+.flex-row {
+  flex-direction: row;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.page-container {
+  background-color: #f5f5f5;
+}
+.control-panel {
+  background-color: #ffffff;
+  align-items: center;
+}
+.current-value {
+  font-size: 11px;
+  color: #666;
+  margin-left: 5px;
+}
+.item {
+  width: 15%;
+  margin: 1px;
+  border: 1px solid #ddd;
+  font-size: 9px;
+  border-radius: 2px;
+  background-color: #fff;
+  height: 30px;
+}
+</style>

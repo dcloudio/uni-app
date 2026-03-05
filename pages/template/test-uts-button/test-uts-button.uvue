@@ -1,0 +1,12 @@
+<template>
+  <view>
+    <uts-button>uts button</uts-button>
+  </view>
+</template>
+
+<script setup lang="uts">
+</script>
+
+<style>
+
+</style>

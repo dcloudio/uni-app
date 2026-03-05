@@ -1,0 +1,396 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="background-color: #EEE;">
+      <page-head :title="title"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-title">
+          <text class="uni-title-text">text相关属性示例</text>
+        </view>
+
+        <view class="uni-title">
+          <text class="uni-subtitle-text">根据宽度自动折行</text>
+        </view>
+        <view class="text-box">
+          <text>{{ multiLineText }}</text>
+        </view>
+        <text class="uni-subtitle-text">根据宽度自动折行，拍平测试</text>
+        <view class="text-box">
+          <text flatten>{{ multiLineText }}</text>
+        </view>
+
+        <view class="uni-title">
+          <text class="uni-subtitle-text">\\n换行</text>
+        </view>
+        <view class="text-box">
+          <text>\n 换行</text>
+          <text>\\n 换行</text>
+          <text>\\\n 换行</text>
+          <text>\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
+          <text>\n\n连续换行\n\n连续换行\n\n连续换行</text>
+        </view>
+
+        <text class="uni-subtitle-text">\\n换行，拍平测试</text>
+        <view class="text-box">
+          <text flatten>\n 换行</text>
+          <text flatten>\\n 换行</text>
+          <text flatten>\\\n 换行</text>
+          <text flatten>\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
+          <text flatten>\n\n连续换行\n\n连续换行\n\n连续换行</text>
+        </view>
+
+        <view class="uni-title">
+          <text class="uni-subtitle-text">selectable属性（鸿蒙蒸汽暂不支持）</text>
+        </view>
+        <view class="text-box">
+          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
+          <text :selectable="true">{{ singleLineText }}</text>
+          <!-- #endif -->
+          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <text>{{ singleLineText }}</text>
+          <!-- #endif -->
+        </view>
+
+        <view class="uni-title">
+          <text class="uni-subtitle-text">space属性（鸿蒙蒸汽不支持，推荐改用css white-space）</text>
+          <text class="uni-subtitle-text">依次为nbsp ensp emsp效果</text>
+        </view>
+        <view class="text-box">
+          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
+          <text space="nbsp">{{ singleLineText }}</text>
+          <text space="ensp">{{ singleLineText }}</text>
+          <text space="emsp">{{ singleLineText }}</text>
+          <!-- #endif -->
+          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <text>{{ singleLineText }}</text>
+          <text>{{ singleLineText }}</text>
+          <text>{{ singleLineText }}</text>
+          <!-- #endif -->
+        </view>
+
+        <view class="uni-title">
+          <text class="uni-subtitle-text">decode属性（鸿蒙蒸汽暂不支持）</text>
+          <text class="uni-subtitle-text">依次为lt gt amp apos nbsp ensp emsp效果</text>
+        </view>
+        <view class="text-box">
+          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
+          <text :decode="true">{{ decodeStr }}</text>
+          <text :decode="true">uni-app&nbsp;x，终极跨平台方案</text>
+          <text :decode="true">uni-app&ensp;x，终极跨平台方案</text>
+          <text :decode="true">uni-app&emsp;x，终极跨平台方案</text>
+          <!-- #endif -->
+          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <text>{{ decodeStr }}</text>
+          <text>uni-app&nbsp;x，终极跨平台方案</text>
+          <text>uni-app&ensp;x，终极跨平台方案</text>
+          <text>uni-app&emsp;x，终极跨平台方案</text>
+          <!-- #endif -->
+        </view>
+
+        <view class="uni-title">
+          <text class="uni-subtitle-text">嵌套1</text>
+        </view>
+        <view class="text-box">
+          <text @tap="nestedText1Tap">一级节点黑色
+            <text style="color: red;background-color: yellow;" @tap="nestedText2Tap">二级节点红色且背景色黄色
+              <text style="text-decoration-line:underline;color:blue;" @tap="nestedText3Tap">App三级节点不继承二级的颜色</text>
+            </text>
+            <text style="font-size: 50px">二级节点大字体</text>
+          </text>
+        </view>
+        <text class="uni-subtitle-text">嵌套1，拍平测试</text>
+        <view class="text-box">
+          <text flatten @tap="nestedText1Tap">一级节点黑色
+            <text style="color: red;background-color: yellow;" @tap="nestedText2Tap">二级节点红色且背景色黄色
+              <text style="text-decoration-line:underline;color:blue;" @tap="nestedText3Tap">App三级节点不继承二级的颜色</text>
+            </text>
+            <text style="font-size: 50px">二级节点大字体</text>
+          </text>
+        </view>
+
+        <text class="uni-subtitle-text">动态text嵌套</text>
+        <text>
+          <text v-for="n in textArr" :key="n">{{ n }}</text>
+        </text>
+
+        <view class="uni-title">
+          <text class="uni-subtitle-text">空嵌套测试</text>
+        </view>
+        <view class="text-box">
+          <text>
+            <text>
+              文字应居中显示<text></text>
+            </text>
+          </text>
+        </view>
+        <text class="uni-subtitle-text">空嵌套测试（根拍平）</text>
+        <view class="text-box">
+          <text flatten>
+            <text>
+              文字应居中显示<text></text>
+            </text>
+          </text>
+        </view>
+
+        <view class="uni-title">
+          <text class="uni-subtitle-text">含换行符的多行文本(3行)，但不自动换行，可横向滚动</text>
+        </view>
+        <scroll-view class="text-container" direction="horizontal">
+          <text style="white-space: nowrap;align-self: flex-start;">HBuilderX，轻巧、极速，极客编辑器；\nuni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。\nuts是一门类ts的、跨平台的、新语言。</text>
+        </scroll-view>
+
+        <text class="uni-subtitle-text">含换行符的多行文本(3行)，但不自动换行，可横向滚动【拍平测试】</text>
+        <scroll-view class="text-container" direction="horizontal">
+          <text flatten style="white-space: nowrap;align-self: flex-start;">HBuilderX，轻巧、极速，极客编辑器；\nuni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。\nuts是一门类ts的、跨平台的、新语言。</text>
+        </scroll-view>
+
+        <!-- #ifdef APP -->
+        <view class="uni-title">
+          <text class="uni-subtitle-text">点击事件测试</text>
+        </view>
+        <view class="text-box" style="flex-direction: row;">
+          <text class="text-icon" style="background-color: aqua;" @tap="iconTap">{{String.fromCharCode(parseInt('E650',16))}}</text>
+          <text class="text-icon" style="background-color: yellow;" @tap="iconTap2">{{String.fromCharCode(parseInt('EA08',16))}}</text>
+        </view>
+        <!-- #endif -->
+
+        <!-- #ifdef VUE3-VAPOR -->
+        <view class="uni-title">
+          <text class="uni-title-text">hover-class 测试</text>
+        </view>
+        <text id="text-hover-parent" class="text-hover-main"
+          :hover-class="hoverData.hover_class ? 'is-parent-hover' : 'none'"
+          :class="isDarkMode ? 'theme-dark' : 'theme-light'"
+          :hover-start-time="hoverData.start_time"
+          :hover-stay-time="hoverData.stay_time"
+        >
+          点击测试 hover-class
+        </text>
+
+        <view class="uni-common-mb">
+          <boolean-data :defaultValue="false" title="是否指定按下去的样式类" @change="change_hover_class_boolean"></boolean-data>
+
+          <enum-data :items="hoverData.start_time_enum" title="按住后多久出现点击态" @change="radio_change_start_time_enum"></enum-data>
+          <enum-data :items="hoverData.stay_time_enum" title="手指松开后点击态保留时间" @change="radio_change_stay_time_enum"></enum-data>
+        </view>
+        <!-- #endif -->
+
+        <view v-if="data.autoTest">
+          <view class="uni-row">
+            <text id="empty-text"></text>
+          </view>
+          <view class="uni-row">
+            <text id="empty-text2">{{data.emptyText}}</text>
+          </view>
+          <view class="uni-row">
+            <text id="empty-text3" style="width: 100px;height: 100px;">{{data.emptyText}}</text>
+          </view>
+          <text>一级节点文本
+            <text>二级节点文本
+              <text id="nested-text">{{data.nestedText}}</text>
+            </text>
+          </text>
+          <text id="height-text" style="height: 50px;">{{data.heightText}}</text>
+          <text style="position: fixed;" id="nested-text2" @tap="nestedText1TapForTest">1
+            <text @tap="nestedText2TapForTest">2
+              <text>3</text>
+            </text>
+          </text>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { state } from '@/store/index.uts'
+
+const decodeStr = ref('&lt; &gt; &amp; &apos;')
+const title = ref('text-props')
+const multiLineText = ref('HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言；HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言')
+const singleLineText = ref('uni-app x，终极跨平台方案')
+const textArr= ref(["嵌套 text 1 ","嵌套 text 2 ","嵌套 text 3 "])
+
+  // #ifdef VUE3-VAPOR
+  type HoverDataType = {
+    hover_class: boolean;
+    start_time: number;
+    stay_time: number;
+    start_time_enum: ItemType[];
+    stay_time_enum: ItemType[];
+  }
+
+  // 使用reactive解决ref数据在自动化测试中无法访问
+  const hoverData = reactive({
+    hover_class: false,
+    start_time: 50,
+    stay_time: 400,
+    start_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 1000, "name": "1000毫秒" }],
+    stay_time_enum: [{ "value": 600, "name": "600毫秒" }, { "value": 1000, "name": "1000毫秒" }]
+  } as HoverDataType)
+
+  const isDarkMode = computed((): boolean => {
+    return state.isDarkMode
+  })
+
+  const change_hover_class_boolean = (checked: boolean) => {
+    hoverData.hover_class = checked
+  }
+
+  const radio_change_start_time_enum = (time: number) => {
+    hoverData.start_time = time
+  }
+
+  const radio_change_stay_time_enum = (time: number) => {
+    hoverData.stay_time = time
+  }
+  // #endif
+
+type DataType = {
+  autoTest: boolean,
+  nestedText: string,
+  emptyText: string,
+  heightText: string,
+  isNestedText1TapTriggered: boolean,
+  isNestedText2TapTriggered: boolean,
+}
+
+// 自动化测试
+const data = reactive({
+  autoTest: false,
+  nestedText: '三级节点文本',
+  emptyText: '空文本',
+  heightText: '设置高度文本',
+  isNestedText1TapTriggered: false,
+  isNestedText2TapTriggered: false,
+} as DataType)
+
+function nestedText1Tap() {
+  uni.showModal({
+    title: '点击了',
+    content: '一级节点黑色',
+    showCancel: false
+  });
+}
+
+function nestedText2Tap(e : UniPointerEvent) {
+  e.stopPropagation();
+  uni.showModal({
+    title: '点击了',
+    content: '二级节点红色且背景色黄色',
+    showCancel: false
+  });
+}
+
+function nestedText3Tap(e : UniPointerEvent) {
+  e.stopPropagation();
+  uni.showModal({
+    title: '点击了',
+    content: 'App三级节点不继承二级的颜色',
+    showCancel: false
+  });
+}
+
+function iconTap() {
+  uni.showModal({
+    title: '点击了',
+    content: '字体图标1',
+    showCancel: false
+  });
+}
+
+function iconTap2() {
+  uni.showModal({
+    title: '点击了',
+    content: '字体图标2',
+    showCancel: false
+  });
+}
+
+// 自动化测试
+function setNestedText() {
+  data.nestedText = "修改三级节点文本";
+}
+
+function setEmptyText() {
+  data.emptyText = "";
+}
+
+function setHeightText() {
+  data.heightText = "修改设置高度文本";
+}
+
+function getBoundingClientRectForTest() : DOMRect | null {
+  return uni.getElementById('nested-text2')?.getBoundingClientRect();
+}
+
+function nestedText1TapForTest() {
+  data.isNestedText1TapTriggered = true;
+}
+
+function nestedText2TapForTest() {
+  data.isNestedText2TapTriggered = true;
+}
+
+defineExpose({
+  data,
+  setNestedText,
+  setEmptyText,
+  setHeightText,
+  getBoundingClientRectForTest,
+  nestedText1TapForTest,
+  nestedText2TapForTest
+})
+</script>
+
+<style>
+  .text-box {
+    margin-bottom: 20px;
+    padding: 20px 0;
+    background-color: #ffffff;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .text-container {
+    width: 100%;
+    background-color: #ffffff;
+    padding: 10px;
+  }
+
+  .text {
+    font-size: 15px;
+    color: #353535;
+    line-height: 27px;
+    text-align: center;
+  }
+
+  .text-icon {
+    font-family: uni-icon;
+    font-size: 100px;
+  }
+
+  /* #ifdef VUE3-VAPOR && APP-HARMONY */
+  .harmony-unsupported-tip {
+    font-size: 12px;
+    color: #999999;
+    margin-top: 10px;
+    text-align: center;
+  }
+  /* #endif */
+
+  .text-hover-main {
+    padding: 5px 0;
+    flex-direction: row;
+    justify-content: center;
+    background-color: #ffffff;
+  }
+
+  .is-parent-hover {
+    background-color: #aa0000;
+  }
+</style>

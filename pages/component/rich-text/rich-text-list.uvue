@@ -1,0 +1,20 @@
+<template>
+	<view style="flex: 1;">
+		<list-view style="flex: 1;">
+			<list-item v-for="index in 5" :key="index" type=1 :name="index">
+				<rich-text :nodes="text"></rich-text>
+				<text style="height: 150px;">{{ index }}</text>
+			</list-item>
+		</list-view>
+	</view>
+</template>
+
+<script setup lang="uts">
+
+
+const text = ref("<h2>uni-app x，终极跨平台方案</h2>")
+</script>
+
+<style>
+
+</style>

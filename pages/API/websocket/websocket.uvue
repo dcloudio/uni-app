@@ -1,0 +1,191 @@
+<template>
+  <page-head title="websocket通讯示例"></page-head>
+  <view class="uni-padding-wrap">
+    <view class="uni-btn-v">
+      <text class="websocket-msg">{{ showMsg }}</text>
+      <button class="uni-btn-v" type="primary" @click="connect">
+        连接websocket服务
+      </button>
+      <button class="uni-btn-v" v-show="connected" type="primary" @click="send">
+        发送一条消息
+      </button>
+      <button class="uni-btn-v" type="primary" @click="close">
+        断开websocket服务
+      </button>
+      <text class="websocket-tips">发送消息后会收到一条服务器返回的消息（与发送的消息内容一致）</text>
+      <text
+        class="websocket-tips">web端和小程序端uni-push功能、app-android端和app-ios端的web-view组件日志回显、app-harmony端的日志回显会占用一个socket链接，此时使用全局的socket
+        api会引发混乱。应使用socketTask操作websocket链接。</text>
+      <text class="websocket-tips">小程序端日志回显功能也会占用一个socket链接，如果不希望使用此功能可以在HBuilderX控制台关闭日志回显。</text>
+      <button class="uni-btn-v" type="primary" @click="goSocketTask">
+        跳转 socketTask 示例
+      </button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const connected = ref(false)
+  const connecting = ref(false)
+  const msg = ref('')
+  const roomId = ref('')
+  const platform = ref('')
+
+  const showMsg = computed(() : string => {
+    if (connected.value) {
+      if (msg.value.length > 0) {
+        return '收到消息：' + msg.value
+      } else {
+        return '等待接收消息'
+      }
+    } else {
+      return '尚未连接'
+    }
+  })
+
+  onLoad(() => {
+    platform.value = uni.getDeviceInfo().platform as string
+  })
+
+  onUnload(() => {
+    uni.closeSocket({
+      code: 1000,
+      reason: 'close reason from client',
+      success: (res : any) => {
+        console.log('uni.closeSocket success', res)
+      },
+      fail: (err : any) => {
+        console.log('uni.closeSocket fail', err)
+      },
+    } as CloseSocketOptions)
+    uni.hideLoading()
+  })
+
+  const connect = () => {
+    if (connected.value || connecting.value) {
+      uni.showModal({
+        content: '正在连接或者已经连接，请勿重复连接',
+        showCancel: false,
+      })
+      return
+    }
+    connecting.value = true
+    uni.showLoading({
+      title: '连接中...',
+    })
+    uni.connectSocket({
+      url: 'wss://websocket.dcloud.net.cn',
+      header:{
+        "test":"uniapp x"
+      },
+      protocols: null,
+      success: (res : any) => {
+        // 这里是接口调用成功的回调，不是连接成功的回调，请注意
+        console.log('uni.connectSocket success', res)
+      },
+      fail: (err : any) => {
+        // 这里是接口调用失败的回调，不是连接失败的回调，请注意
+        console.log('uni.connectSocket fail', err)
+      },
+    })
+    uni.onSocketOpen((res) => {
+      connecting.value = false
+      connected.value = true
+      uni.hideLoading()
+
+      uni.showToast({
+        icon: 'none',
+        title: '连接成功',
+      })
+      console.log('onOpen', res)
+    })
+    uni.onSocketError((err) => {
+      connecting.value = false
+      connected.value = false
+      uni.hideLoading()
+
+      uni.showModal({
+        content: '连接失败，可能是websocket服务不可用，请稍后再试',
+        showCancel: false,
+      })
+      console.log('onError', err)
+    })
+    uni.onSocketMessage((res) => {
+      if (res.data instanceof ArrayBuffer) {
+        var int8 = new Int8Array(res.data)
+        msg.value = int8.toString()
+        console.log('onMessage', res)
+      } else {
+        msg.value = res.data as string
+        console.log('onMessage', res)
+      }
+    })
+    uni.onSocketClose((res) => {
+      connected.value = false
+      msg.value = ''
+      console.log('onClose', res)
+    })
+  }
+
+  const send = () => {
+    uni.sendSocketMessage({
+      data:
+        'from ' +
+        platform.value +
+        ' : ' +
+        parseInt((Math.random() * 10000).toString()).toString(),
+      success: (res : any) => {
+        console.log(res)
+      },
+      fail: (err : any) => {
+        console.log(err)
+      },
+    } as SendSocketMessageOptions)
+  }
+
+  const close = () => {
+    uni.closeSocket({
+      code: 1000,
+      reason: 'close reason from client',
+      success: (res : any) => {
+        console.log('uni.closeSocket success', res)
+      },
+      fail: (err : any) => {
+        console.log('uni.closeSocket fail', err)
+      },
+    } as CloseSocketOptions)
+  }
+
+  const goSocketTask = () => {
+    uni.navigateTo({
+      url: '/pages/API/websocket/socketTask',
+    })
+  }
+
+</script>
+
+<style>
+  .uni-btn-v {
+    padding: 5px 0;
+  }
+
+  .uni-btn-v {
+    margin: 10px 0;
+  }
+
+  .websocket-msg {
+    padding: 40px 0px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 40px;
+    color: #666666;
+  }
+
+  .websocket-tips {
+    padding: 10px 0px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 24px;
+    color: #666666;
+  }
+</style>

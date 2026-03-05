@@ -1,0 +1,245 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view style="padding: 15px;">
+      <page-intro content="本页演示元素属性与样式读写：getAttribute 获取元素 id（小程序端支持 style）、getPropertyValue 获取样式值（如背景色）、setProperty 设置样式；含自定义组件子元素的 getBoundingClientRectAsync、scroll-view 的 scrollTo、以及获取 scale 变换后 view 的尺寸信息。"></page-intro>
+      <view id="box" ref="boxRef">
+        <text class="uni-title-text">元素的id：{{ data.attrId }}</text>
+        <!-- #ifndef APP -->
+        <text class="uni-title-text">元素的style：{{ data.attrStyle }}</text>
+        <!-- #endif -->
+        <text class="uni-title-text">元素的背景色样式值：{{ data.propertyValue }}</text>
+        <text class="uni-subtitle-text">小程序端：getAttribute 获取元素的属性值，目前仅支持id、style</text>
+        <text class="uni-subtitle-text">App端：getAttribute 不支持获取 class、style 属性</text>
+      </view>
+      <button @click="getAttributeId">getAttribute获取元素的id</button>
+      <button @click="setStyle">setProperty设置背景色</button>
+      <!-- #ifndef APP -->
+      <button @click="getAttributeStyle">getAttribute获取元素的style</button>
+      <!-- #endif -->
+      <button @click="getPropertyValue">getPropertyValue获取背景色值</button>
+
+      <child id="child" ref="childRef"></child>
+      <button @click="getBoundingClientRectAsyncChild">获取自定义组件child元素信息</button>
+      <view class="rect-info" v-if="data.rectInfo">
+        <view class="node-info-item">
+          <text class="node-info-item-k">x: </text>
+          <text class="node-info-item-v">{{data.rectInfo.x}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">y: </text>
+          <text class="node-info-item-v">{{data.rectInfo.y}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">width: </text>
+          <text class="node-info-item-v">{{data.rectInfo.width}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">height: </text>
+          <text class="node-info-item-v">{{data.rectInfo.height}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">left: </text>
+          <text class="node-info-item-v">{{data.rectInfo.left}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">top: </text>
+          <text class="node-info-item-v">{{data.rectInfo.top}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">right: </text>
+          <text class="node-info-item-v">{{data.rectInfo.right}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">bottom: </text>
+          <text class="node-info-item-v">{{data.rectInfo.bottom}}</text>
+        </view>
+      </view>
+      <scroll-view ref="scrollViewRef" class="scroll-view_H" direction="horizontal">
+        <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
+        <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
+        <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
+      </scroll-view>
+      <!-- #ifndef WEB -->
+      <button @click="scrollTo">scrollTo设置left滚动200px</button>
+      <!-- #endif -->
+
+      <view id="scaledView" style="transform: scale(2);background-color: green;width: 50px;height: 50px;margin-top: 45px;margin-left: 25px;"></view>
+
+      <button type="default" @click="handleGetScaledViewSize" style="margin-top: 30px;">获取scale后的view尺寸信息</button>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+
+  import child from './child.uvue'
+
+  type DomRectType = {
+    x : number,
+    y : number,
+    left : number,
+    top : number,
+    right : number,
+    bottom : number,
+    width : number,
+    height : number,
+  }
+
+  type DataType = {
+    attrId: string,
+    attrStyle: string,
+    propertyValue: string,
+    rectInfo: DomRectType,
+    scaledViewWidth: number,
+    scaledViewHeight: number
+  }
+
+  const boxRef = ref<UniElement | null>(null)
+  const scrollViewRef = ref<UniScrollViewElement | null>(null)
+  const data = reactive({
+    attrId: "",
+    attrStyle: "",
+    propertyValue: "",
+    rectInfo: {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 0,
+    },
+    scaledViewWidth: 0,
+    scaledViewHeight: 0
+  } as DataType)
+
+  function getBoundingClientRectAsyncChild(){
+    const childEl = uni.getElementById('child')!
+    childEl.getBoundingClientRectAsync()!.then((rect : DOMRect) => {
+      console.log('rect: ',rect);
+      data.rectInfo = {
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height,
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+      } as DomRectType
+    })
+  }
+
+  function getAttributeId() {
+    if (boxRef.value != null) {
+      data.attrId = boxRef.value!.getAttribute('id') ?? ""
+    }
+  }
+
+  function setStyle() {
+    if (boxRef.value != null) {
+      boxRef.value!.style.setProperty("background-color", "#FFF000")
+    }
+  }
+
+  function getPropertyValue() {
+    if (boxRef.value != null) {
+      data.propertyValue = boxRef.value!.style.getPropertyValue("background-color")
+    }
+  }
+
+  function getAttributeStyle() {
+    if (boxRef.value != null) {
+      data.attrStyle = boxRef.value!.getAttribute('style')?? ""
+    }
+  }
+
+  function scrollTo() {
+    if (scrollViewRef.value != null) {
+      // #ifdef MP-WEIXIN
+      scrollViewRef.value!.scrollTo({
+        left: 200
+      })
+      // #endif
+      // #ifndef MP-WEIXIN
+      scrollViewRef.value!.scrollTo(200,0)
+      // #endif
+    }
+  }
+
+  //scrollView元素获取class中的margin-top属性值 仅自动化测试使用
+  function getScrollViewStyleMarginTop() : string {
+    if (scrollViewRef.value != null) {
+      return scrollViewRef.value.style.getPropertyValue("margin-top")
+    }
+    return ""
+  }
+
+  const handleGetScaledViewSize = () => {
+    const element = uni.getElementById("scaledView")
+    if (element != null) {
+      const rect = element.getBoundingClientRect()
+      data.scaledViewWidth = rect.width
+      data.scaledViewHeight = rect.height
+      console.log("scaledView size : ", data.scaledViewWidth, data.scaledViewHeight);
+    }
+  }
+
+  onReady(() => {
+    // Refs are already assigned via template
+  })
+
+  defineExpose({
+    data,
+    getAttributeId,
+    setStyle,
+    getAttributeStyle,
+    getPropertyValue,
+    getBoundingClientRectAsyncChild,
+    scrollTo,
+    handleGetScaledViewSize,
+    getScrollViewStyleMarginTop
+  })
+
+</script>
+<style>
+  .scroll-view_H {
+    width: 100%;
+    flex-direction: row;
+    margin-top:15px;
+  }
+  .scroll-view-item_H {
+    width: 100%;
+    height: 150px;
+    justify-content: center;
+    align-items: center;
+  }
+  .text {
+    font-size: 18px;
+    color: #ffffff;
+  }
+
+  .rect-info {
+    margin-top: 15px;
+    padding: 10px;
+    flex-direction: column;
+  }
+
+  .node-info-item {
+    flex-direction: row;
+  }
+
+  .node-info-item-k {
+    width: 72px;
+    line-height: 2;
+  }
+
+  .node-info-item-v {
+    font-weight: bold;
+    line-height: 2;
+  }
+</style>

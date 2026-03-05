@@ -1,0 +1,27 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <button type="primary" style="margin: 20px;" @tap="go">跳转系统授权管理页</button>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  const go = () => {
+    uni.openAppAuthorizeSetting({
+      success (res) {
+        console.log(res)
+      }
+    })
+  }
+
+  defineExpose({
+    go
+  })
+</script>
+
+<style>
+
+</style>
