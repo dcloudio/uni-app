@@ -1,0 +1,167 @@
+export const API_SHOW_TAB_BAR_RED_DOT = 'showTabBarRedDot'
+export const API_HIDE_TAB_BAR_RED_DOT = 'hideTabBarRedDot'
+export const API_SET_TAB_BAR_BADGE = 'setTabBarBadge'
+export const API_REMOVE_TAB_BAR_BADGE = 'removeTabBarBadge'
+export const API_SET_TAB_BAR_ITEM = 'setTabBarItem'
+export const API_SET_TAB_BAR_STYLE = 'setTabBarStyle'
+export const API_SHOW_TAB_BAR = 'showTabBar'
+export const API_HIDE_TAB_BAR = 'hideTabBar'
+export const API_ON_TAB_BAR_MID_BUTTON_TAP = 'onTabBarMidButtonTap'
+
+export const ShowTabBarRedDotApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'index',
+        {
+            type: 'number',
+            required: true
+        }
+    ]
+])
+
+export const HideTabBarRedDotApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'index',
+        {
+            type: 'number',
+            required: true
+        }
+    ]
+])
+
+export const SetTabBarBadgeApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'index',
+        {
+            type: 'number',
+            required: true
+        }
+    ],
+    [
+        'text',
+        {
+            type: 'string',
+            required: true
+        }
+    ]
+])
+
+export const RemoveTabBarBadgeApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'index',
+        {
+            type: 'number',
+            required: true
+        }
+    ]
+])
+
+export const SetTabBarItemApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'index',
+        {
+            type: 'number',
+            required: true
+        }
+    ],
+    [
+        'text',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'iconPath',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'selectedIconPath',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'pagePath',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'visible',
+        {
+            type: 'boolean',
+            required: false
+        }
+    ],
+    [
+        'iconfont',
+        {
+            type: 'object',
+            required: false
+        }
+    ],
+    [
+        'visible',
+        {
+            type: 'boolean',
+            required: false
+        }
+    ]
+])
+
+export const SetTabBarStyleApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'color',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'selectedColor',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'backgroundColor',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'backgroundImage',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'backgroundRepeat',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'borderStyle',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'borderColor',
+        {
+            type: 'string',
+            required: false
+        }
+    ]
+])

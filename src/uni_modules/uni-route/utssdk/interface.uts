@@ -1,0 +1,2731 @@
+/**
+ * 路由错误码
+ * - 4: 框架内部异常
+ */
+export type RouteErrorCode = 4
+
+/**
+ *
+ * @tutorial http://uniapp.dcloud.io/api/router.html#event-channel
+ */
+export type EventChannel = {}
+export type NavigateToSuccess = AsyncApiSuccessResult
+type NavigateToSuccessCallback = (result: NavigateToSuccess) => void
+export interface NavigateToFail extends IUniError {
+    errCode: RouteErrorCode
+}
+type NavigateToFailCallback = (result: NavigateToFail) => void
+export type NavigateToComplete = AsyncApiResult
+type NavigateToCompleteCallback = (result: NavigateToComplete) => void
+export type NavigateToOptions = {
+    /**
+     * 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    url: string | string.PageURIString
+    /**
+     * 窗口显示的动画类型
+     *
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "4.18"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.25"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *  }
+     * }
+     */
+    animationType?:
+    /**
+     * 自动选择动画效果
+     *
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "4.61",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'auto' |
+    /**
+     * 无动画效果
+     *
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "4.23",
+     *       "unixVer": "4.61",
+     *       "unixvVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'none' |
+    /**
+     * 从右侧横向滑动效果
+     *
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'slide-in-right' |
+    /**
+     * 从左侧横向滑动效果
+     *
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'slide-in-left' |
+    /**
+     * 从上侧竖向滑动效果
+     *
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'slide-in-top' |
+    /**
+     * 从下侧竖向滑动效果
+     *
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'slide-in-bottom' |
+    /**
+     * 从完全透明到不透明逐渐显示
+     *
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'fade-in' |
+    /**
+     * 在屏幕中间从小到大逐渐放大显示
+     *
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'zoom-out' |
+    /**
+     * 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画
+     *
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'zoom-fade-out' |
+    /**
+     * 从右侧平移出栈动画效果
+     *
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "5.0.0",
+     *       "uniVer": "x",
+     *       "unixVer": "4.61",
+     *       "unixvVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'pop-in' | null
+    /**
+     * 窗口显示动画的持续时间，单位为 ms
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "x"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "x",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *  }
+     * }
+     */
+    animationDuration?: number | null
+    /**
+     * 页面间通信接口，用于监听被打开页面发送到当前页面的数据
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "x"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    events?: any | null
+    /**
+     * 接口调用成功的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    success?: NavigateToSuccessCallback | null
+    /**
+     * 接口调用失败的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    fail?: NavigateToFailCallback | null
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    complete?: NavigateToCompleteCallback | null
+}
+export type RedirectToSuccess = AsyncApiSuccessResult
+type RedirectToSuccessCallback = (result: RedirectToSuccess) => void
+export interface RedirectToFail extends IUniError {
+    errCode: RouteErrorCode
+}
+type RedirectToFailCallback = (result: RedirectToFail) => void
+export type RedirectToComplete = AsyncApiResult
+type RedirectToCompleteCallback = (result: RedirectToComplete) => void
+export type RedirectToOptions = {
+    /**
+     * 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    url: string | string.PageURIString
+    /**
+     * 接口调用成功的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    success?: RedirectToSuccessCallback | null
+    /**
+     * 接口调用失败的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    fail?: RedirectToFailCallback | null
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    complete?: RedirectToCompleteCallback | null
+}
+export type ReLaunchSuccess = AsyncApiSuccessResult
+type ReLaunchSuccessCallback = (result: ReLaunchSuccess) => void
+export interface ReLaunchFail extends IUniError {
+    errCode: RouteErrorCode
+}
+type ReLaunchFailCallback = (result: ReLaunchFail) => void
+export type ReLaunchComplete = AsyncApiResult
+type ReLaunchCompleteCallback = (result: ReLaunchComplete) => void
+export type ReLaunchOptions = {
+    /**
+     * 需要跳转的应用内页面路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'，如果跳转的页面路径是 tabBar 页面则不能带参数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    url: string | string.PageURIString
+    /**
+     * 接口调用成功的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    success?: ReLaunchSuccessCallback | null
+    /**
+     * 接口调用失败的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    fail?: ReLaunchFailCallback | null
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    complete?: ReLaunchCompleteCallback | null
+}
+export type SwitchTabSuccess = AsyncApiSuccessResult
+export type SwitchTabSuccessCallback = (result: SwitchTabSuccess) => void
+
+export interface SwitchTabFail extends IUniError {
+    errCode: RouteErrorCode
+}
+
+export type SwitchTabFailCallback = (result: SwitchTabFail) => void
+export type SwitchTabComplete = AsyncApiResult
+export type SwitchTabCompleteCallback = (result: SwitchTabComplete) => void
+export type SwitchTabOptions = {
+    /**
+     * 需要跳转的 tabBar 页面的路径，路径后不能带参数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    url: string | string.PageURIString
+    /**
+     * 接口调用成功的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    success?: SwitchTabSuccessCallback | null
+    /**
+     * 接口调用失败的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    fail?: SwitchTabFailCallback | null
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    complete?: SwitchTabCompleteCallback | null
+}
+export type NavigateBackSuccess = AsyncApiSuccessResult
+type NavigateBackSuccessCallback = (result: NavigateBackSuccess) => void
+export interface NavigateBackFail extends IUniError {
+    errCode: RouteErrorCode
+}
+type NavigateBackFailCallback = (result: NavigateBackFail) => void
+export type NavigateBackComplete = AsyncApiResult
+type NavigateBackCompleteCallback = (result: NavigateBackComplete) => void
+export type NavigateBackOptions = {
+    /**
+     * 返回的页面数，如果 delta 大于现有页面数，则返回到首页
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    delta?: number | null
+    /**
+     * 窗口关闭的动画类型
+     *
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "4.18"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.25"
+     *      }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *  }
+     * }
+     */
+    animationType?:
+    /**
+     * 自动选择动画效果
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "4.61",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'auto' |
+    /**
+     * 无动画效果
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "4.23",
+     *       "unixVer": "4.61",
+     *       "unixvVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'none' |
+    /**
+     * 横向向右侧滑出屏幕动画
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'slide-out-right' |
+    /**
+     * 横向向左侧滑出屏幕动画
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'slide-out-left' |
+    /**
+     * 竖向向上侧滑出屏幕动画
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'slide-out-top' |
+    /**
+     * 竖向向下侧滑出屏幕动画
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'slide-out-bottom' |
+    /**
+     * 从不透明到透明逐渐隐藏动画
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'fade-out' |
+    /**
+     * 从大逐渐缩小关闭动画
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'zoom-in' |
+    /**
+     * 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'zoom-fade-in' |
+    /**
+     * 从右侧平移出栈动画效果
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "5.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.18"
+     *     },
+     *     "ios": {
+     *       "osVer": "12.0",
+     *       "uniVer": "√",
+     *       "unixVer": "4.25"
+     *     },
+     *     "harmony": {
+     *       "osVer": "3.0",
+     *       "uniVer": "4.23",
+     *       "unixVer": "4.61",
+     *       "unixvVer": "5.0"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    'pop-out' | null
+    /**
+     * 窗口关闭动画的持续时间，单位为 ms
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "x"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *  }
+     * }
+     */
+    animationDuration?: number | null
+    /**
+     * 接口调用成功的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "x"
+     *      }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    success?: NavigateBackSuccessCallback | null
+    /**
+     * 接口调用失败的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    fail?: NavigateBackFailCallback | null
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    complete?: NavigateBackCompleteCallback | null
+}
+
+export interface Uni {
+    /**
+     * 保留当前页面，跳转到应用内的某个页面
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/router.html#navigateto
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#navigateto
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#navigateto
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    navigateTo(options: NavigateToOptions): Promise<NavigateToSuccess> | null
+    /**
+     * 关闭当前页面，跳转到应用内的某个页面
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/router.html#redirectto
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#redirectto
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#redirectto
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    redirectTo(options: RedirectToOptions): Promise<RedirectToSuccess> | null
+    /**
+     * 关闭所有页面，打开到应用内的某个页面
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/router.html#relaunch
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#relaunch
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#relaunch
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    reLaunch(options: ReLaunchOptions): Promise<ReLaunchSuccess> | null
+    /**
+     * 跳转到 tabBar 页面，并关闭其他所有非 tabBar 页面
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/router.html#switchtab
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#switchtab
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#switchtab
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    switchTab(options: SwitchTabOptions): Promise<SwitchTabSuccess> | null
+    /**
+     * 关闭当前页面，返回上一页面或多级页面
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/router.html#navigateback
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#navigateback
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#navigateback
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "12.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.11"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    navigateBack(
+        options?: NavigateBackOptions | null,
+    ): Promise<NavigateBackSuccess> | null
+}

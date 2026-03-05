@@ -1,0 +1,112 @@
+
+import { UniEventSource, ConnectEventSource, ConnectEventSourceOptions, UniMessageEvent, ConnectEventSourceCallback, ConnectEventSourceErrorCallback } from '../interface.uts';
+import OkHttpClient from 'okhttp3.OkHttpClient'
+import Request from 'okhttp3.Request'
+import Response from 'okhttp3.Response'
+import EventSource from 'okhttp3.sse.EventSource'
+import EventSourceListener from 'okhttp3.sse.EventSourceListener'
+import EventSources from 'okhttp3.sse.EventSources'
+import TimeUnit from 'java.util.concurrent.TimeUnit'
+import CookieInterceptor from 'io.dcloud.uniapp.common.cookie.CookieInterceptor'
+
+
+export const connectEventSource : ConnectEventSource = function (options : ConnectEventSourceOptions) : UniEventSource {
+	return new UniEventSourceImpl(options.url,options.header)
+}
+class MessageEventHandler {
+	constructor() {
+
+	}
+	public message : ConnectEventSourceCallback | null = null
+	public error : ConnectEventSourceErrorCallback | null = null
+	public open : ConnectEventSourceCallback | null = null
+	public close : ConnectEventSourceCallback | null = null
+}
+class UniEventSourceImpl implements UniEventSource {
+	private connectUrl : string | null = null
+	private headers : UTSJSONObject | null = null
+	private messageEventHandler : MessageEventHandler = new MessageEventHandler()
+	private eventSource : EventSource | null = null
+	constructor(url : string,headers?:UTSJSONObject) {
+		this.connectUrl = url
+		this.headers = headers
+		this.connect()
+	}
+
+	override onMessage(callback : ConnectEventSourceCallback) : void {
+		this.messageEventHandler.message = callback
+	}
+	override  onError(callback : ConnectEventSourceErrorCallback) : void {
+		this.messageEventHandler.error = callback
+	}
+	override onOpen(callback : ConnectEventSourceCallback) : void {
+		this.messageEventHandler.open = callback
+	}
+	override close() : void {
+		this.eventSource?.cancel()
+	}
+	private connect() {
+		// 创建 OkHttpClient 实例
+		let client = OkHttpClient.Builder()
+			.readTimeout(0, TimeUnit.MILLISECONDS) // 不设置超时时间，适配长连接
+            .addInterceptor(new CookieInterceptor())
+			.build()
+
+		// 创建 Request
+		let ua = UTSAndroid.getWebViewInfo(UTSAndroid.getAppContext()!)["ua"].toString();
+		let requestBuilder = Request.Builder()
+			.url(this.connectUrl!)
+			.header("User-Agent", ua)
+			if(this.headers != null){
+				this.headers!.toMap().forEach((value,key)=>{
+					requestBuilder.header(key.toString(),value.toString())
+				})
+			}
+			
+		let request=requestBuilder.build()
+		let listener : EventSourceListenerImpl = new EventSourceListenerImpl(this.messageEventHandler)
+		this.eventSource = EventSources.createFactory(client).newEventSource(request, listener)
+	}
+}
+class EventSourceListenerImpl implements EventSourceListener {
+	private msHander : MessageEventHandler | null = null
+
+	constructor(handler : MessageEventHandler) {
+		this.msHander = handler
+	}
+	override onOpen(eventSource : EventSource, response : Response) {
+		const event = new UniMessageEvent()
+		event.type = 'open'
+		this.msHander?.open?.(event)
+	}
+	override  onEvent(eventSource : EventSource, id : string | null, type : string | null, data : String) {
+		let tempType = ''
+		if (type != null) {
+			tempType = type
+		}
+
+		let event = new UniMessageEvent()
+		event.type = tempType
+		event.data = data
+		event.lastEventId = id
+		this.msHander?.message?.(event)
+	}
+
+	override  onClosed(eventSource : EventSource) {
+		const event = new UniMessageEvent()
+		event.type = 'close'
+		this.msHander?.close?.(event)
+	}
+
+	override  onFailure(eventSource : EventSource, t : Throwable | null, response : Response | null) {
+		if (response != null && !response.isSuccessful()) {
+			let error = new UniError()
+			error.errCode = response.code()
+			if (t != null && t.message != null) {
+				let msg = t.message
+				error.errMsg = msg!
+			}
+			this.msHander?.error?.(error)
+		}
+	}
+}

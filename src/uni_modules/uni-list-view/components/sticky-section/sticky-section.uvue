@@ -1,0 +1,62 @@
+<template>
+  <view
+    class="uni-sticky-section"
+    :list-view-id="listViewId"
+    change:list-view-id="recycleListSectionCpp.setListViewId"
+    :section-id="sectionId"
+    change:section-id="recycleListSectionCpp.setSectionId"
+    :list="keyList as string[]"
+    change:list="recycleListSectionCpp.updateList"
+    :ref="recycleListSectionCpp.setElement"
+  >
+    <view class="placeholder" :ref="recycleListSectionCpp.setPlaceholderElement"></view>
+    <slot></slot>
+  </view>
+</template>
+<script module="recycleListSectionCpp" lang="cpp" class-name="RecycleListSection" src="../../cppsdk/recycle_list.h"
+  namespace="recycle_list"></script>
+<script setup>
+import { generateUniqueId } from '../../common/utils'
+import { UniStickySectionElement } from '../../common/element'
+
+defineOptions({
+  name: 'sticky-section',
+  rootElement: {
+      class: UniStickySectionElement,
+  },
+})
+
+const props = defineProps({
+  sectionId: {
+    type: [String, Number],
+    required: false,
+    default: '',
+  },
+})
+const listViewId = inject<number>('__uni_recycle_view_id', 0)
+
+const keyList = shallowRef<string[]>([])
+const renderRange = ref<[number, number]>([0, 0])
+const sectionId = generateUniqueId()
+
+provide('__uni_recycle_section_id', sectionId)
+
+function updateList(newList: string[]) {
+  keyList.value = newList
+}
+
+function updateRenderInfo(renderRangeStart: number, renderRangeLength: number) {
+  renderRange.value = [renderRangeStart, renderRangeLength]
+}
+
+defineExpose({
+  updateList,
+  updateRenderInfo,
+  renderRange,
+})
+</script>
+<style>
+.placeholder {
+    width: 1px;
+}
+</style>

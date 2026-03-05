@@ -1,0 +1,43 @@
+import { WorkerOnErrorCallbackResultErrorCode, WorkerOnErrorCallbackResult } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const CreateWorkerUniErrorSubject = 'uni-createWorker';
+
+export const WORKER_RUN_FAILED = 5000501;
+export const WORKER_SERIALIZATION_FAILED = 5000502;
+export const WORKER_INSTANCE_IS_NOT_RUNNING = 5000503;
+export const WORKER_CALL_NOT_SUPPORTED = 5000504;
+export const WORKER_INIT_FAILED = 5000505;
+export const WORKER_PATH_INVALID = 5000506;
+
+export const WORKER_THREAD_FAILED = 5000510; //非主线程调用worker api
+export const WORKER_INVALID = 5000511; //worker线程无效
+
+/**
+ * 错误码
+ * @UniError
+ */
+export const CreateWorkerUniErrorMap: Map<WorkerOnErrorCallbackResultErrorCode, string> = new Map([
+	[WORKER_RUN_FAILED, 'worker run failed.'],
+	[WORKER_SERIALIZATION_FAILED, 'worker serialization failed.'],
+	[WORKER_INSTANCE_IS_NOT_RUNNING, 'The Worker instance is not running.'],
+	[WORKER_CALL_NOT_SUPPORTED, 'The called API is not supported in the worker thread.'],
+	[WORKER_INIT_FAILED, 'Worker initialization failed.'],
+	[WORKER_PATH_INVALID, 'The worker file path is invalid.'],
+	[WORKER_THREAD_FAILED, 'An error occurred when a non-main thread called the worker api.'],
+	[WORKER_INVALID, 'The worker thread is invalid.'],
+]);
+export class WorkerOnErrorCallbackResultImpl extends UniError implements WorkerOnErrorCallbackResult {
+	// #ifdef APP-HARMONY
+	override errCode: WorkerOnErrorCallbackResultErrorCode
+	// #endif
+	constructor(errCode: WorkerOnErrorCallbackResultErrorCode, message: string | null = null) {
+		super();
+		this.errSubject = CreateWorkerUniErrorSubject;
+		this.errCode = errCode;
+		const errMsg = CreateWorkerUniErrorMap.get(errCode) ?? "";
+		this.errMsg = message ? `${errMsg} reason:${message}` : errMsg;
+	}
+}

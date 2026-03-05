@@ -98,12 +98,58 @@
 		 *            "uniVer": "3.7.7",
 		 *            "unixVer": "4.11"
 		 *   	  },
-			 *    "harmony": {
-			 *      "osVer": "3.0",
-			 *      "uniVer": "4.25",
-			 *      "unixVer": "x"
-			 *    }
-		 *    }
+		 *      "harmony": {
+		 *        "osVer": "3.0",
+		 *        "uniVer": "4.25",
+		 *        "unixVer": "4.61"
+		 *      }
+		 *    },
+		 *		"mp": {
+		 *			"weixin": {
+		 *				"hostVer": "1.4.0",
+		 *				"uniVer": "3.6.5",
+		 *				"unixVer": "4.11"
+		 *			},
+		 *			"alipay": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"baidu": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"toutiao": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"lark": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"qq": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"kuaishou": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"jd": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			}
+		 *		},
+		 *		"web": {
+		 *			"uniVer": "x",
+		 *			"unixVer": "x"
+		 *		}
 		 * }
 		 * @uniVersion 3.7.7
 		 * @uniVueVersion 2,3  //支持的vue版本
@@ -127,12 +173,58 @@
 		 *            "uniVer": "3.7.7",
 		 *            "unixVer": "4.11"
 		 *   	  },
-			 *    "harmony": {
-			 *      "osVer": "3.0",
-			 *      "uniVer": "4.25",,
-			 *      "unixVer": "x"
-			 *    }
-		 *    }
+		 *      "harmony": {
+		 *        "osVer": "3.0",
+		 *        "uniVer": "4.25",
+		 *        "unixVer": "4.61"
+		 *      }
+		 *    },
+		 *		"mp": {
+		 *			"weixin": {
+		 *				"hostVer": "1.4.0",
+		 *				"uniVer": "3.6.5",
+		 *				"unixVer": "4.11"
+		 *			},
+		 *			"alipay": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"baidu": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"toutiao": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"lark": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"qq": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"kuaishou": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"jd": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			}
+		 *		},
+		 *		"web": {
+		 *			"uniVer": "x",
+		 *			"unixVer": "x"
+		 *		}
 		 * }
 		 * @uniVersion 3.7.7
 		 * @uniVueVersion 2,3  //支持的vue版本
@@ -156,12 +248,58 @@
 		 *            "uniVer": "3.7.7",
 		 *            "unixVer": "4.11"
 		 *   	  },
-			 *    "harmony": {
-			 *      "osVer": "3.0",
-			 *      "uniVer": "4.25",
-			 *      "unixVer": "x"
-			 *    }
-		 *    }
+		 *      "harmony": {
+		 *        "osVer": "3.0",
+		 *        "uniVer": "4.25",
+		 *        "unixVer": "4.61"
+		 *      }
+		 *    },
+		 *		"mp": {
+		 *			"weixin": {
+		 *				"hostVer": "1.4.0",
+		 *				"uniVer": "3.6.5",
+		 *				"unixVer": "4.11"
+		 *			},
+		 *			"alipay": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"baidu": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"toutiao": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"lark": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"qq": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"kuaishou": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			},
+		 *			"jd": {
+		 *				"hostVer": "x",
+		 *				"uniVer": "x",
+		 *				"unixVer": "x"
+		 *			}
+		 *		},
+		 *		"web": {
+		 *			"uniVer": "x",
+		 *			"unixVer": "x"
+		 *		}
 		 * }
 		 * @uniVersion 3.7.7
 		 * @uniVueVersion 2,3  //支持的vue版本

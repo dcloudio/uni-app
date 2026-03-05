@@ -1,0 +1,6 @@
+framework module DCloudMediaPicker {
+  umbrella header "DCloudMediaPicker.h"
+  export *
+
+  module * { export * }
+}

@@ -1,0 +1,34 @@
+import { UIDevice, UIApplication, UIInterfaceOrientation, UIScreen } from 'UIKit';
+import { NSLocale, URL, FileManager } from 'Foundation';
+import { DispatchSemaphore, DispatchQueue } from 'Dispatch';
+
+
+
+export class DeviceUtil {
+
+	public static isPad(): boolean {
+		return UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad
+	}
+
+	public static getOSVersion(): string {
+		return UIDevice.current.systemVersion;
+	}
+
+	public static getLan(): string {
+		let currentLanguage = NSLocale.preferredLanguages[0];
+		return currentLanguage == null ? "" : currentLanguage
+	}
+
+	public static getOrientation(): string {
+		let orientation = "portrait";
+		const orient = UIApplication.shared.statusBarOrientation;
+		if (orient == UIInterfaceOrientation.landscapeLeft || orient == UIInterfaceOrientation.landscapeRight) {
+			orientation = "landscape";
+		}
+		return orientation;
+	}
+
+	public static hasRootPrivilege(): boolean {
+		return UTSiOS.isRoot()
+	}
+}

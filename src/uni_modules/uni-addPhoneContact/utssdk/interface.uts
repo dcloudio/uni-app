@@ -1,0 +1,226 @@
+export interface Uni {
+    /**
+     * 手机通讯录联系人和联系方式的增加
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/add-phone-contact.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/add-phone-contact.html
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/contact.html
+     *
+     * @uniPlatform {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "x"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "x"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.25",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   },
+     *  "mp":{
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    addPhoneContact(options: AddPhoneContactOptions): void;
+}
+
+export type AddPhoneContact = (options: AddPhoneContactOptions) => void;
+export type AddPhoneContactSuccess = {};
+export type AddPhoneContactSuccessCallback = (result: AddPhoneContactSuccess) => void;
+export type AddPhoneContactFail = UniError;
+export type AddPhoneContactFailCallback = (result: AddPhoneContactFail) => void;
+export type AddPhoneContactComplete = any;
+export type AddPhoneContactCompleteCallback = (result: AddPhoneContactComplete) => void;
+export type AddPhoneContactOptions = {
+    /**
+     * 头像本地文件路径
+     */
+    photoFilePath?: string | null,
+    /**
+     * 昵称
+     */
+    nickName?: string | null,
+    /**
+     * 姓氏
+     */
+    lastName?: string | null,
+    /**
+     * 中间名
+     */
+    middleName?: string | null,
+    /**
+     * 名字
+     */
+    firstName?: string | null,
+    /**
+     * 备注
+     */
+    remark?: string | null,
+    /**
+     * 手机号
+     */
+    mobilePhoneNumber?: string | null,
+    /**
+     * 微信号
+     */
+    weChatNumber?: string | null,
+    /**
+     * 联系地址国家
+     */
+    addressCountry?: string | null,
+    /**
+     * 联系地址省份
+     */
+    addressState?: string | null,
+    /**
+     * 联系地址城市
+     */
+    addressCity?: string | null,
+    /**
+     * 联系地址街道
+     */
+    addressStreet?: string | null,
+    /**
+     * 联系地址邮政编码
+     */
+    addressPostalCode?: string | null,
+    /**
+     * 公司
+     */
+    organization?: string | null,
+    /**
+     * 职位
+     */
+    title?: string | null,
+    /**
+     * 工作传真
+     */
+    workFaxNumber?: string | null,
+    /**
+     * 工作电话
+     */
+    workPhoneNumber?: string | null,
+    /**
+     * 公司电话
+     */
+    hostNumber?: string | null,
+    /**
+     * 电子邮件
+     */
+    email?: string | null,
+    /**
+     * 网站
+     */
+    url?: string | null,
+    /**
+     * 工作地址国家
+     */
+    workAddressCountry?: string | null,
+    /**
+     * 工作地址省份
+     */
+    workAddressState?: string | null,
+    /**
+     * 工作地址城市
+     */
+    workAddressCity?: string | null,
+    /**
+     * 工作地址街道
+     */
+    workAddressStreet?: string | null,
+    /**
+     * 工作地址邮政编码
+     */
+    workAddressPostalCode?: string | null,
+    /**
+     * 住宅传真
+     */
+    homeFaxNumber?: string | null,
+    /**
+     * 住宅电话
+     */
+    homePhoneNumber?: string | null,
+    /**
+     * 住宅地址国家
+     */
+    homeAddressCountry?: string | null,
+    /**
+     * 住宅地址省份
+     */
+    homeAddressState?: string | null,
+    /**
+     * 住宅地址城市
+     */
+    homeAddressCity?: string | null,
+    /**
+     * 住宅地址街道
+     */
+    homeAddressStreet?: string | null,
+    /**
+     * 住宅地址邮政编码
+     */
+    homeAddressPostalCode?: string | null,
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: AddPhoneContactSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: AddPhoneContactFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: AddPhoneContactCompleteCallback | null
+};

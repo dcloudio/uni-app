@@ -1,0 +1,21 @@
+import { Emitter } from '@dcloudio/uni-runtime'
+import { $Off, $On, $Once } from '../interface.uts'
+
+const emitter = new Emitter()
+
+export const $on = defineSyncApi<$On>('$on', (eventName, callback): number => {
+    // TODO EventStopHandler
+    return emitter.on(eventName, callback)
+})
+
+export const $off = defineSyncApi<$Off>('$off', (eventName, callback) => {
+    emitter.off(eventName, callback)
+})
+
+export const $once = defineSyncApi<$Once>('$once', (eventName, callback): number => {
+    return emitter.once(eventName, callback)
+})
+
+export function $emit(eventName: string, ...args: Array<any | null>): void {
+    emitter.emit(eventName, ...args)
+}

@@ -1,0 +1,56 @@
+import {
+    ShowLoading,
+    ShowLoadingOptions,
+    ShowLoadingSuccess,
+    HideLoading
+} from '../interface.uts';
+import {
+    API_SHOW_LOADING,
+    ShowLoadingApiOptions,
+    ShowLoadingProtocol,
+    API_HIDE_LOADING
+} from '../protocol.uts';
+import {
+    ShowLoadingOptions as ShowLoadingOptionsNative,
+    showLoading as showLoadingNative,
+    hideLoading as hideLoadingNative
+} from './loading-native.ets'
+
+export {
+    ShowLoadingOptions,
+    ShowLoadingSuccess
+}
+
+interface IShowLoadingOptions {
+    title: string,
+    mask: boolean
+}
+interface IHideLoadingOptions { }
+interface IHideLoadingSuccess { }
+
+const loadingIds: number[] = []
+
+export const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(
+    API_SHOW_LOADING,
+    async function (options: ShowLoadingOptions, exec: ApiExecutor<ShowLoadingSuccess>) {
+        const window = UTSHarmony.getCurrentWindow();
+        const uiContext = window.getUIContext()
+        showLoadingNative(uiContext, {
+            title: options.title,
+            mask: options.mask
+        } as ShowLoadingOptionsNative)
+        exec.resolve({} as ShowLoadingSuccess)
+    },
+    ShowLoadingProtocol,
+    ShowLoadingApiOptions
+) as ShowLoading
+
+export const hideLoading: HideLoading = defineAsyncApi<IHideLoadingOptions, IHideLoadingSuccess>(
+    API_HIDE_LOADING,
+    function (options: IHideLoadingOptions, exec: ApiExecutor<IHideLoadingSuccess>) {
+        const window = UTSHarmony.getCurrentWindow();
+        const uiContext = window.getUIContext()
+        hideLoadingNative(uiContext)
+        exec.resolve({} as IHideLoadingSuccess)
+    },
+) as HideLoading

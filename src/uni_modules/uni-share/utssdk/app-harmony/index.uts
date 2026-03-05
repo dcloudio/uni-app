@@ -1,0 +1,56 @@
+import { ShareOptions, ShareSuccess, ShareProvider, Share, UniShareProvider } from "../interface.uts";
+import { API_SHARE, ShareApiOptions, ShareApiProtocol } from "../protocol.uts";
+
+const SERVICE = 'share'
+const DEFAULT_PROVIDER : ShareProvider = 'weixin'
+
+export const share : Share = defineAsyncApi<ShareOptions, ShareSuccess>(
+  API_SHARE,
+  function (args : ShareOptions, executor : ApiExecutor<ShareSuccess>) {
+    const provider = getUniProvider<UniShareProvider>(SERVICE, args.provider ?? DEFAULT_PROVIDER)
+    if (!provider) {
+      executor.reject('Provider not found.')
+      return
+    }
+    provider.share({
+      type: args.type,
+      title: args.title,
+      scene: args.scene,
+      summary: args.summary,
+      href: args.href,
+      imageUrl: args.imageUrl,
+      mediaUrl: args.mediaUrl,
+      miniProgram: args.miniProgram,
+      openCustomerServiceChat: args.openCustomerServiceChat,
+      corpid: args.corpid,
+      customerUrl: args.customerUrl,
+      success(res) {
+        executor.resolve(res)
+      },
+      fail(err) {
+        executor.reject(err.errMsg, err as ApiError)
+      }
+    } as ShareOptions)
+  },
+  ShareApiProtocol,
+  ShareApiOptions
+) as Share
+
+export {
+    IShareFail,
+    Share,
+    ShareComplete,
+    ShareCompleteCallback,
+    ShareErrorCode,
+    ShareFail,
+    ShareFailCallback,
+    ShareMiniProgramShareOptions,
+    ShareMiniProgramShareType,
+    ShareOptions,
+    ShareProvider,
+    ShareScene,
+    ShareSuccess,
+    ShareSuccessCallback,
+    ShareType,
+    UniShareProvider
+} from '../interface.uts'

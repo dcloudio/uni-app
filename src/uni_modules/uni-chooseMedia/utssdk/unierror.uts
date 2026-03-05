@@ -1,0 +1,44 @@
+import { IChooseMediaError, ChooseMediaErrorCode } from "./interface.uts";
+
+/**
+ * 错误主题
+ */
+export const UniError_ChooseMedia = "uni-chooseMedia"
+/**
+ * 错误码
+ * @UniError
+ */
+export const ChooseMediaUniErrors : Map<number, string> = new Map([
+	/**
+	 * 用户取消
+	 */
+	[1101001, 'user cancel'],
+	/**
+	 * 未获取权限
+	 */
+	[1101005, "No Permission"],
+	/**
+	 * 保存异常
+	 */
+	[1101006, "save error"],
+	/**
+	 * 拍照或录像失败
+	 */
+	[1101008, 'camera error'],
+	/**
+	 * 其他错误
+	 */
+	[1101010, "unexpect error"]
+]);
+
+export class ChooseMediaErrorImpl extends UniError implements IChooseMediaError {
+	// #ifdef APP-ANDROID || APP-HARMONY
+	override errCode : ChooseMediaErrorCode
+	// #endif
+	constructor(errCode : ChooseMediaErrorCode, uniErrorSubject : string = 'uni-chooseMedia') {
+		super()
+		this.errSubject = uniErrorSubject
+		this.errCode = errCode
+		this.errMsg = ChooseMediaUniErrors.get(errCode) ?? "";
+	}
+}

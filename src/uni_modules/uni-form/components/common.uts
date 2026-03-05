@@ -1,0 +1,10 @@
+export const FORM_KEY = 'UNI_FORM_CTX'
+export const LABEL_KEY = 'UNI_LABEL_CTX'
+export const RADIO_GROUP_KEY = 'UNI_RADIO_GROUP_CTX'
+export const CHECKBOX_GROUP_KEY = 'UNI_CHECKBOX_GROUP_CTX'
+export const PICKER_VIEW_KEY = 'UNI_PICKER_VIEW_CTX'
+
+export function buildPointerEvent(event: UniPointerEvent) {
+  const { type, x, y, clientX, clientY, pageX, pageY, screenX, screenY } = event
+  return new UniPointerEvent(type, x, y, clientX, clientY, pageX, pageY, screenX, screenY)
+}

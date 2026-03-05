@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="uniappx_webview_safety_warning">safety warning</string>
+    <string name="uniappx_webview_certificate_continue">there is a problem with this sites security certificate. Do you want to continue?</string>
+    <string name="uniappx_webview_choose_an_action">Choose an action</string>
+    <string name="uniappx_webview_no_camera_permission">no camera permission, please go to system settings to enable it</string>
+    <string name="uniappx_webview_no_location_permission">no location permission, please go to system settings to enable it</string>
+</resources>

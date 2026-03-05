@@ -1,0 +1,197 @@
+import {
+  ShowToastOptions,
+  ShowModalOptions,
+  ShowActionSheetOptions,
+  ShowLoadingOptions
+} from './interface.uts'
+
+// #region showToast
+export const API_SHOW_TOAST = 'showToast'
+
+export const ShowToastProtocol = new Map<string, ProtocolOptions>([
+  [
+    'title',
+    {
+      type: 'string',
+      required: true
+    }
+  ],
+  [
+    'duration',
+    {
+      type: 'number'
+    }
+  ]
+])
+
+export const ShowToastApiOptions: ApiOptions<ShowToastOptions> = {
+  formatArgs: new Map<string, Function | string | number>([
+    [
+      "title",
+      ""
+    ],
+    [
+      "duration",
+      1500
+    ]
+  ])
+}
+// #endregion
+
+// #region hideToast
+export const API_HIDE_TOAST = 'hideToast'
+// #endregion
+
+// #region showModal
+const PRIMARY_COLOR = '#007aff'
+export const API_SHOW_MODAL = 'showModal'
+export const ShowModalProtocol = new Map<string, ProtocolOptions>([
+  [
+    "title",
+    {
+      type: "string"
+    }
+  ],
+  [
+    "content",
+    {
+      type: "string"
+    }
+  ],
+  [
+    "showCancel",
+    {
+      type: "boolean",
+    }
+  ],
+  [
+    "cancelText",
+    {
+      type: "string",
+    }
+  ],
+  [
+    "cancelColor",
+    {
+      type: "string",
+    }
+  ],
+  [
+    "confirmText",
+    {
+      type: "string",
+    }
+  ],
+  [
+    "confirmColor",
+    {
+      type: "string",
+    }
+  ]
+])
+
+export const ShowModalApiOptions: ApiOptions<ShowModalOptions> = {
+  formatArgs: new Map<string, Function | string | boolean>([
+    [
+      "title",
+      ""
+    ],
+    [
+      "content",
+      ""
+    ],
+    [
+      "placeholderText",
+      ""
+    ],
+    [
+      "showCancel",
+      true
+    ],
+    [
+      "editable",
+      false
+    ],
+    [
+      "cancelColor",
+      "#000000"
+    ],
+    [
+      "confirmColor",
+      PRIMARY_COLOR
+    ]
+  ])
+}
+
+// #endregion
+
+// #region showActionSheet
+export const API_SHOW_ACTION_SHEET = 'showActionSheet'
+export const ShowActionSheetProtocol = new Map<string, ProtocolOptions>([
+  [
+    "title",
+    {
+      type: "string"
+    }
+  ],
+  [
+    "itemList",
+    {
+      type: "array",
+      required: true
+    }
+  ],
+  [
+    "itemColor",
+    {
+      type: "string"
+    }
+  ]
+])
+export const ShowActionSheetApiOptions: ApiOptions<ShowActionSheetOptions> = {
+  formatArgs: new Map<string, string>([
+    [
+      "itemColor",
+      "#000000"
+    ]
+  ])
+}
+
+// #endregion
+
+
+// #region showLoading
+export const API_SHOW_LOADING = 'showLoading'
+
+export const ShowLoadingProtocol = new Map<string, ProtocolOptions>([
+  [
+    'title',
+    {
+      type: 'string'
+    }
+  ],
+  [
+    'mask',
+    {
+      type: 'boolean'
+    }
+  ]
+])
+
+export const ShowLoadingApiOptions: ApiOptions<ShowLoadingOptions> = {
+  formatArgs: new Map<string, Function | string | boolean>([
+    [
+      "title",
+      ""
+    ],
+    [
+      "mask",
+      false
+    ]
+  ])
+}
+// #endregion
+
+// #region hideLoading
+export const API_HIDE_LOADING = 'hideLoading'
+// #endregion

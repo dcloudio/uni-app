@@ -1,0 +1,429 @@
+import {
+	RequestOptions,
+	RequestTask,
+	UploadTask,
+	UploadFileOptions,
+	OnProgressUpdateResult,
+	UploadFileProgressUpdateCallback,
+	OnProgressDownloadResult,
+	DownloadTask,
+	DownloadFileOptions,
+	DownloadFileProgressUpdateCallback,
+	RequestTaskOnHeadersReceivedCallback,
+	RequestTaskOnHeadersReceivedListenerResult,
+	RequestTaskOnChunkReceivedCallback,
+	RequestTaskOnChunkReceivedListenerResult
+}
+	from '../../interface.uts';
+import { UTSiOS } from "DCloudUTSFoundation";
+import { NSNumber, URLSessionDataDelegate, URL, CharacterSet, URLSession, URLSessionConfiguration, OperationQueue, URLSessionTask, URLResponse, URLSessionDataTask, URLAuthenticationChallengeSender, URLAuthenticationChallenge, URLCredential, URLSessionTaskMetrics, Data, HTTPURLResponse, NSError, URLRequest, ComparisonResult, NSURLRequest } from 'Foundation';
+import { UploadController } from './upload/UploadController.uts';
+import { DownloadController } from './download/DownloadController.uts';
+import { Int } from 'Swift';
+import { NetworkUtil } from './utils/NetworkUtil.uts';
+
+class NetworkRequestListener {
+	@UTSiOS.keyword("weak")
+	public task: AnyObject | null = null;
+
+	public onStart() : void { }
+
+	public onHeadersReceived(statusCode : number, headers : Map<string, any>) : void { }
+
+	public onDataReceived(data : Data) : void { }
+
+	public onFinished(response : HTTPURLResponse) : void { }
+
+	public onFail(error : NSError) : void { }
+}
+
+class NetworkUploadFileListener {
+	@UTSiOS.keyword("weak")
+	public task: AnyObject | null = null;
+	public progressListeners : Array<UploadFileProgressUpdateCallback> = new Array<UploadFileProgressUpdateCallback>();
+	public onProgress(progressUpdate : OnProgressUpdateResult) : void { };
+	public onDataReceived(data : Data) : void { };
+	public onFinished(response : HTTPURLResponse) : void { };
+	public onFail(error : NSError) : void { };
+}
+
+class NetworkDownloadFileListener {
+	@UTSiOS.keyword("weak")
+	public task: AnyObject | null = null;
+	public options : DownloadFileOptions | null = null;
+	public progressListeners : Array<DownloadFileProgressUpdateCallback> = new Array<DownloadFileProgressUpdateCallback>();
+	public onProgress(progressUpdate : OnProgressDownloadResult) : void { };
+	public onFinished(response : HTTPURLResponse, filePath : string) : void { };
+	public onFail(error : NSError) : void { };
+}
+
+
+class NetworkRequestTaskImpl implements RequestTask {
+	public headersReceivedListeners = new Map<number, RequestTaskOnHeadersReceivedCallback>()
+	public chunkReceivedListeners = new Map<number, RequestTaskOnChunkReceivedCallback>()
+
+	private requestTaskOnHeadersReceivedCallbackCount: number = 0
+	private requestTaskOnChunkReceivedCallbackCount: number = 0
+	private semaphore = DispatchSemaphore(value = 1)
+
+	private task : URLSessionDataTask | null = null;
+	constructor(task : URLSessionDataTask | null) {
+		this.task = task;
+		super();
+	}
+
+	public abort() {
+		this.task?.cancel()
+		UTSiOS.destroyInstance(this)
+	}
+
+	public onHeadersReceived(listener: RequestTaskOnHeadersReceivedCallback): number {
+		this.semaphore.wait()
+		this.requestTaskOnHeadersReceivedCallbackCount += 1
+		this.semaphore.signal()
+		this.headersReceivedListeners.set(this.requestTaskOnHeadersReceivedCallbackCount, listener)
+		return this.requestTaskOnHeadersReceivedCallbackCount
+	}
+
+	public offHeadersReceived(listener ?: number | RequestTaskOnHeadersReceivedCallback | null): void {
+		if (listener != null && typeof listener! == "number") {
+			const id  = listener as number
+			this.headersReceivedListeners.delete(id)
+		} else {
+			this.headersReceivedListeners.clear()
+		}
+	}
+
+	public onChunkReceived(listener: RequestTaskOnChunkReceivedCallback): number {
+		this.semaphore.wait()
+		this.requestTaskOnChunkReceivedCallbackCount += 1
+		this.semaphore.signal()
+		this.chunkReceivedListeners.set(this.requestTaskOnChunkReceivedCallbackCount, listener)
+		return this.requestTaskOnChunkReceivedCallbackCount
+	}
+
+	public offChunkReceived(listener ?: number | RequestTaskOnChunkReceivedCallback | null): void {
+		if (listener != null && typeof listener! == "number") {
+			const id  = listener as number
+			this.chunkReceivedListeners.delete(id)
+		} else {
+			this.chunkReceivedListeners.clear()
+		}
+	}
+}
+
+class NetworkManager implements URLSessionDataDelegate {
+	private static instance : NetworkManager | null = null;
+	private enableChunked: boolean = false;
+	private enableQuic: boolean = false;
+	private lastQuicState: boolean | null  = null;
+	private session : URLSession | null = null;
+
+	private taskMap : Map<URLSessionTask, NetworkRequestListener> = new Map<URLSessionDataTask, NetworkRequestListener>();
+
+	public static getInstance() : NetworkManager {
+		if (this.instance == null) {
+			this.instance = new NetworkManager();
+		}
+		return this.instance!;
+	}
+
+
+	public request<T>(param : RequestOptions<T>, listener : NetworkRequestListener) : RequestTask {
+		let currentQuicState = param.enableQuic ?? false
+		this.enableQuic = currentQuicState
+		this.lastQuicState = currentQuicState
+
+		let request = this.createRequest(param);
+		this.enableChunked = param.enableChunked ?? false
+		if (request == null) {
+			let error = new NSError(domain = "invalid URL", code = 600009);
+			listener.onFail(error);
+			let task = new NetworkRequestTaskImpl(null);
+			listener.task = task;
+			return task;
+		}
+
+		if (this.session == null) {
+
+			let urlSessionConfig = URLSessionConfiguration.default;
+			if (this.enableQuic) {
+				urlSessionConfig.requestCachePolicy = NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData
+				urlSessionConfig.waitsForConnectivity = true
+				urlSessionConfig.httpShouldSetCookies = false
+			}
+
+			this.session = new URLSession(configuration = urlSessionConfig, delegate = this, delegateQueue = OperationQueue.current);
+		}
+		let task = this.session?.dataTask(with = request!);
+		task?.resume();
+		if (task != null) {
+			this.taskMap.set(task!, listener);
+		}
+		let requestTask = new NetworkRequestTaskImpl(task);
+		listener.task = requestTask;
+		return requestTask;
+	}
+
+	public uploadFile(options : UploadFileOptions, listener : NetworkUploadFileListener) : UploadTask {
+		return UploadController.getInstance().uploadFile(options, listener);
+	}
+
+	public downloadFile(options : DownloadFileOptions, listener : NetworkDownloadFileListener) : DownloadTask {
+		return DownloadController.getInstance().downloadFile(options, listener);
+	}
+
+
+	public createRequest<T>(param : RequestOptions<T>) : URLRequest | null {
+		const encodeUrl = NetworkUtil.percentEscapedString(param.url)
+		let url = new URL(string = encodeUrl);
+		if (url == null) {
+			return null
+		}
+
+
+		let timeout = param.timeout == null ? 120000 : param.timeout;
+		let timeoutInterval = new Double(timeout!) / 1000;
+		let request = new URLRequest(url = url!, cachePolicy = URLRequest.CachePolicy.useProtocolCachePolicy, timeoutInterval = timeoutInterval);
+		request.httpShouldHandleCookies = true;
+		let method = param.method;
+		if (method == null || method!.trimmingCharacters(in = CharacterSet.whitespacesAndNewlines).count == 0) {
+			method = "GET";
+		}
+		request.httpMethod = method!;
+
+		let ua = UTSiOS.getUserAgent();
+		request.setValue(ua, forHTTPHeaderField = "User-Agent");
+
+		if (param.header == null) {
+			param.header = {}
+		}
+
+
+		let headers = param.header?.toMap();
+		let hasContentType = false;
+		if (headers != null) {
+			for (entry in headers!) {
+				let key = entry.key;
+				let value = entry.value;
+				if (key.caseInsensitiveCompare("Content-Type") == ComparisonResult.orderedSame) {
+					hasContentType = true;
+				}
+				let valueStr = "";
+				if (value instanceof UTSJSONObject) {
+					valueStr = JSON.stringify(value) ?? ""
+				} else if (value instanceof Map<string, any>) {
+					valueStr = JSON.stringify(new UTSJSONObject(value)) ?? ""
+				} else {
+					valueStr = `${value}`
+				}
+				request.setValue(valueStr, forHTTPHeaderField = key);
+			}
+		}
+
+		if (!hasContentType) {
+			if ("GET" != method) {
+				request.setValue("application/json", forHTTPHeaderField = "Content-Type");
+			}
+		}
+		if ("GET" == method) {
+			const data = param.data;
+			if (data != null) {
+				let json : UTSJSONObject | null = null;
+				if (typeof (data) == 'string') {
+					json = JSON.parseObject(data as string);
+				} else if (data instanceof UTSJSONObject) {
+					json = data as UTSJSONObject;
+				} else if (data instanceof Map<string, any>) {
+					json = new UTSJSONObject(data!)
+				}
+				if (json != null) {
+					let urlWithQuery = this.stringifyQuery(encodeUrl, json!)
+					let url = new URL(string = urlWithQuery);
+					request.url = url;
+				}
+			}
+		} else if (param.data != null) {
+			let bodyData : Data | null = null;
+			if (typeof (param.data) == 'string') {
+				bodyData = (param.data as string).data(using = String.Encoding.utf8);
+			} else if (param.data instanceof Map<string, any>) {
+				let body : string | null = "";
+				const contentType = request.value(forHTTPHeaderField = "Content-Type")
+				const data = new UTSJSONObject(param.data!);
+				if (contentType != null) {
+					if (contentType!.indexOf("application/x-www-form-urlencoded") == 0) {
+						const map : Map<string, any | null> = data.toMap();
+						const bodyArray = new Array<string>();
+						map.forEach((value, key) => {
+							bodyArray.push(key + "=" + `${value ?? "null"}`);
+						})
+						body = bodyArray.join("&");
+					} else {
+						body = JSON.stringify(data);
+					}
+					bodyData = body?.data(using = String.Encoding.utf8);
+				}
+			} else if (param.data instanceof ArrayBuffer) {
+				const arrayBuffer = param.data as ArrayBuffer
+				bodyData = arrayBuffer.toData()
+			} else if (param.data instanceof UTSJSONObject) {
+				let body : string | null = "";
+				const contentType = request.value(forHTTPHeaderField = "Content-Type")
+				if (contentType != null) {
+					if (contentType!.indexOf("application/x-www-form-urlencoded") == 0) {
+						const data = param.data as UTSJSONObject;
+						const map : Map<string, any | null> = data.toMap();
+						const bodyArray = new Array<string>();
+						map.forEach((value, key) => {
+							bodyArray.push(key + "=" + `${value ?? "null"}`);
+						})
+						body = bodyArray.join("&");
+					} else {
+						body = JSON.stringify(param.data);
+					}
+					bodyData = body?.data(using = String.Encoding.utf8);
+				}
+			}
+			if (bodyData == null) {
+				return null;
+			}
+
+			request.httpBody = bodyData;
+		}
+
+		if (UTSiOS.available("iOS 15.0, *")) {
+			request.assumesHTTP3Capable = this.enableQuic
+		}
+		return request;
+	}
+
+	/**
+	 * data拼接到url上
+	 */
+	private stringifyQuery(url : string, data : UTSJSONObject) : string {
+		let newUrl = url;
+		//http:xxx/xxx?a=b&c=d#123
+		let str = url.split('#')
+		let hash = ''
+		if (str.length > 1) {
+			hash = str[1] //123
+		}
+		str = str[0].split('?')
+		let query = ''
+		if (str.length > 1) {
+			query = str[1] //a=b&c=d
+		}
+		newUrl = str[0]   // http:xxx/xxx
+		const pairs = query.split('&')
+		const queryMap = new Map<string, string>();
+		pairs.forEach((item : string, index : number) => {
+			const temp = item.split('=')
+			if (temp.length > 1) {
+				queryMap[temp[0]] = temp[1]
+			}
+		});
+		const dataMap : Map<string, any | null> = data.toMap();
+		dataMap.forEach((value, key) => {
+			if (value == null) {
+				value = "";
+			}
+			let encodeKey = encodeURIComponent(key)!
+			if (value instanceof UTSJSONObject || value instanceof Array<any | null>) {
+				queryMap[encodeKey] = encodeURIComponent(JSON.stringify(value)!)!
+			} else if (value instanceof Map<string, any>) {
+				queryMap[encodeKey] = encodeURIComponent(JSON.stringify(new UTSJSONObject(value))!)!
+			} else {
+				queryMap[encodeKey] = encodeURIComponent(`${value!}`)!;
+			}
+		})
+		let queryStr = "";
+		queryMap.forEach((value, key) => {
+			queryStr += key + "=" + value + "&"
+		});
+
+		queryStr = queryStr.slice(0, -1);
+		if (queryStr.length > 0) {
+			newUrl += "?" + queryStr;
+		}
+		if (hash.length > 0) {
+			newUrl += "#" + hash;
+		}
+		return newUrl;
+	}
+
+	private percentEscapedString(str : string) : string {
+		//如果url已经有部分经过encode，那么需要先decode再encode。
+		return str.removingPercentEncoding?.addingPercentEncoding(withAllowedCharacters = CharacterSet.urlQueryAllowed) ?? str
+	}
+
+
+	//mark --- URLSessionDataDelegate
+
+	urlSession(session : URLSession, @argumentLabel("") task : URLSessionTask, @argumentLabel("didSendBodyData") bytesSent : Int64, @argumentLabel("") totalBytesSent : Int64, @argumentLabel("") totalBytesExpectedToSend : Int64) {
+		//todo 原生的onDataSent貌似没实现 ，考虑删掉这个回调。
+	}
+	urlSession(session : URLSession, @argumentLabel("") dataTask : URLSessionDataTask, @argumentLabel("didReceive") response : URLResponse, @argumentLabel("") @escaping completionHandler : (dis : URLSession.ResponseDisposition) => void) {
+		// response开始的时候的header回调
+		let listener = this.taskMap.get(dataTask);
+		if (listener != null) {
+			let httpResponse : HTTPURLResponse = response as HTTPURLResponse;
+			let statusCode = new NSNumber(value = httpResponse.statusCode);
+			listener?.onHeadersReceived(statusCode, httpResponse.allHeaderFields as Map<string, any>);
+
+			const headers = NetworkUtil.convertHeaders(httpResponse.allHeaderFields as Map<string, any>)
+			if (listener!.task != null && listener!.task instanceof NetworkRequestTaskImpl) {
+				const task = listener!.task! as NetworkRequestTaskImpl
+				task.headersReceivedListeners.forEach((value : RequestTaskOnHeadersReceivedCallback, key : number) => {
+					const result: RequestTaskOnHeadersReceivedListenerResult = {
+						cookies: NetworkUtil.parseCookie(headers),
+						header: headers,
+						statusCode: statusCode
+					}
+					value(result)
+				})
+			}
+		}
+
+		completionHandler(URLSession.ResponseDisposition.allow);
+	}
+
+	urlSession(session : URLSession, @argumentLabel("") dataTask : URLSessionDataTask, @argumentLabel("didReceive") data : Data) {
+		let listener = this.taskMap.get(dataTask);
+		listener?.onDataReceived(data);
+		if (this.enableChunked && listener != null) {
+		    if (listener!.task != null && listener!.task instanceof NetworkRequestTaskImpl) {
+				const task = listener!.task! as NetworkRequestTaskImpl
+				task.chunkReceivedListeners.forEach((value : RequestTaskOnChunkReceivedCallback, key : number) => {
+					const result : RequestTaskOnChunkReceivedListenerResult = {
+						data: ArrayBuffer.fromData(data)
+					}
+					value(result)
+				})
+			}
+		}
+	}
+
+	urlSession(session : URLSession, @argumentLabel("") task : URLSessionTask, @argumentLabel("didCompleteWithError") error : NSError | null) {
+		let listener = this.taskMap.get(task);
+
+		if (error != null) {
+			listener?.onFail(error as NSError);
+		} else {
+			listener?.onFinished(task.response as HTTPURLResponse);
+		}
+		this.taskMap.delete(task);
+	}
+	//todo 暂时证书验证先不实现。
+	// urlSession( session: URLSession, @argumentLabel("didReceive") challenge: URLAuthenticationChallenge, @escaping completionHandler:(dis:URLSession.AuthChallengeDisposition, credentiual:URLCredential)=>void) {
+	// 	 console.log("didReceivechallenge");
+	// }
+}
+
+
+export {
+	NetworkManager,
+	NetworkRequestListener,
+	NetworkUploadFileListener,
+	NetworkDownloadFileListener
+}

@@ -1,0 +1,63 @@
+import {
+    GetDeviceInfo,
+    GetDeviceInfoResult,
+} from '../interface.uts'
+import {
+    API_GET_DEVICE_INFO,
+} from '../protocol.uts'
+import {
+    getDeviceId
+} from '@dcloudio/uni-runtime'
+import I18n from '@ohos.i18n'
+import deviceInfo from '@ohos.deviceInfo';
+
+function parseDeviceType(deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'unknown' | 'car' | 'vr' | 'appliance' {
+    switch (deviceType) {
+        case 'phone':
+            return 'phone'
+        case 'wearable':
+            return 'watch'
+        case 'tablet':
+            return 'pad'
+        case '2in1':
+            return 'pc'
+        case 'tv':
+            return 'tv'
+        case 'car':
+            return 'car'
+        case 'smartVision':
+            return 'vr'
+        default:
+            return 'unknown'
+    }
+}
+
+export const getDeviceInfo: GetDeviceInfo = defineSyncApi<GetDeviceInfoResult>(
+    API_GET_DEVICE_INFO,
+    (): GetDeviceInfoResult => {
+        return {
+            deviceBrand: deviceInfo.brand.toLowerCase(),
+            deviceId: getDeviceId(),
+            deviceModel: deviceInfo.productModel,
+            deviceOrientation: 'portrait', // 暂未找到同步获取方法，可能需要监听窗口变化
+            devicePixelRatio: vp2px(1),
+            deviceType: parseDeviceType(deviceInfo.deviceType),
+            osLanguage: I18n.System.getSystemLanguage(),
+            osTheme: UTSHarmony.getOsTheme() as string,
+            osVersion: deviceInfo.majorVersion + '.' + deviceInfo.seniorVersion + '.' + deviceInfo.featureVersion + '.' + deviceInfo.buildVersion,
+            osName: 'harmonyos',
+            platform: 'harmonyos',
+            romName: deviceInfo.distributionOSName || 'HarmonyOS NEXT', // TODO 应为deviceInfo.distributionOSName，但实际上是空字符串，待确认
+            romVersion: deviceInfo.distributionOSVersion,
+            system: deviceInfo.osFullName,
+            osHarmonySDKAPIVersion: deviceInfo.sdkApiVersion,
+            osHarmonyDisplayVersion: deviceInfo.displayVersion,
+        } as GetDeviceInfoResult
+    }
+) as GetDeviceInfo
+
+export {
+    GetDeviceInfo,
+    GetDeviceInfoOptions,
+    GetDeviceInfoResult
+} from '../interface.uts';

@@ -1,0 +1,8 @@
+{
+	"dependencies": [
+		"com.github.bumptech.glide:glide:4.9.0",
+		"androidx.recyclerview:recyclerview:1.0.0",
+		"androidx.appcompat:appcompat:1.6.1",
+		"androidx.activity:activity-ktx:1.9.2"
+	]
+}

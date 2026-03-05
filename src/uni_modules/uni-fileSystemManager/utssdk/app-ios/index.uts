@@ -1,0 +1,1145 @@
+import {
+	FileSystemManager,
+	GetFileSystemManager,
+	ReadFileOptions,
+	ReadFileSuccessResult,
+	WriteFileOptions,
+	UnLinkOptions,
+	FileManagerSuccessResult,
+	MkDirOptions,
+	RmDirOptions,
+	ReadDirOptions,
+	ReadDirSuccessResult,
+	AccessOptions,
+	RenameOptions,
+	CopyFileOptions,
+	GetFileInfoOptions,
+	GetFileInfoSuccessResult,
+	StatOptions,
+	StatSuccessResult,
+	FileStats,
+	Stats,
+	AppendFileOptions,
+	SaveFileSuccessResult,
+	SaveFileOptions,
+	RemoveSavedFileOptions,
+	UnzipFileOptions,
+	GetSavedFileListOptions,
+	GetSavedFileListResult,
+	TruncateFileOptions,
+	ReadCompressedFileOptions,
+	OpenFileOptions,
+	OpenFileSyncOptions,
+	OpenFileSuccessResult,
+	WriteOptions,
+	CloseOptions,
+	CloseSyncOptions,
+	FStatOptions,
+	FStatSyncOptions,
+	FStatSuccessResult,
+	FTruncateFileOptions,
+	FTruncateFileSyncOptions,
+	ReadZipEntryOptions,
+	EntriesResult,
+	WriteResult,
+	WriteSyncOptions,
+	ReadResult,
+	ReadOption,
+	ReadSyncOption,
+	ReadSuccessCallbackResult,
+	ReadCompressedFileResult,
+	ZipFileItem
+} from "../interface.uts"
+import { UniJsSwiftApiWrapper, UTSiOS } from 'DCloudUniappRuntime'
+import { Int32 } from 'Swift';
+import { DispatchSemaphore, DispatchTime, DispatchGroup } from 'Dispatch'
+import { FileSystemManagerFailImpl } from '../unierror';
+
+export const getFileSystemManager : GetFileSystemManager = function () : FileSystemManager {
+	let fileManager = new InnerFileSystemManager()
+	return fileManager
+};
+
+class UniFileSystemManagerStats implements Stats {
+	mode : NSNumber = 0
+	size : NSNumber = 0
+	lastAccessedTime : NSNumber = 0
+	lastModifiedTime : NSNumber = 0
+	mIsFile : boolean = false
+
+	isDirectory() : boolean {
+		return (UInt16(truncating = mode) & S_IFMT) == S_IFDIR
+	}
+
+	isFile() : boolean {
+		return (UInt16(truncating = mode) & S_IFMT) == S_IFDIR
+	}
+
+}
+
+
+
+class InnerFileSystemManager implements FileSystemManager {
+	readFile(options : ReadFileOptions) {
+		UniFileSystemManager.readFile(encoding = options.encoding, path = options.filePath, completionHandler = (data ?: any, error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+
+			} else if (data != null) {
+				if (options.encoding == null) {
+					let buffer = data! as ArrayBuffer
+					const result : ReadFileSuccessResult = {
+						data: buffer
+					}
+
+					UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+						options.success?.(result)
+						options.complete?.(result)
+					})
+				} else {
+					const string = data! as string
+					const result : ReadFileSuccessResult = {
+						data: string
+					}
+					UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+						options.success?.(result)
+						options.complete?.(result)
+					})
+				}
+			}
+		})
+	}
+
+	readFileSync(filePath : string, encoding ?: string) : Any {
+		var result : Any = ""
+		let semaphore = DispatchSemaphore(value = 0)
+
+		UniFileSystemManager.readFile(encoding = encoding, path = filePath, completionHandler = (data ?: any, error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.getErrorMessage("readFileSync", error!.errorCode, error!.description)
+				console.log(err)
+			} else if (data != null) {
+				result = data!
+			}
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (UTSiOS.instanceof(result, String.self)) {
+			return result as string
+		} else if (UTSiOS.instanceof(result, ArrayBuffer.self)) {
+			return result as ArrayBuffer
+		}
+
+		return ""
+	}
+
+	writeFile(options : WriteFileOptions) {
+		UniFileSystemManager.writeFile(encoding = options.encoding, path = options.filePath, data = options.data, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			if (error != null && success == false) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (success) {
+				const result : FileManagerSuccessResult = {
+					errMsg: "writeFile:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	writeFileSync(filePath : string, data : Any, encoding ?: string) {
+		let semaphore = DispatchSemaphore(value = 0)
+		let successTmp : boolean = false
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.writeFile(encoding = encoding, path = filePath, data = data, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			successTmp = success
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null && !successTmp) {
+			let err = this.getErrorMessage("writeFileSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (successTmp) {
+			console.log("writeFileSync:ok")
+		}
+	}
+
+	unlink(options : UnLinkOptions) {
+		UniFileSystemManager.removeFile(filePath = options.filePath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			if (error != null && success == false) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (success) {
+				const result : FileManagerSuccessResult = {
+					errMsg: "unlink:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	unlinkSync(filePath : string) {
+		let semaphore = DispatchSemaphore(value = 0)
+		let successTmp : boolean = false
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.removeFile(filePath = filePath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			successTmp = success
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null && !successTmp) {
+			let err = this.getErrorMessage("unlinkSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (successTmp) {
+			console.log("unlinkSync:ok")
+		}
+	}
+
+	mkdir(options : MkDirOptions) {
+		UniFileSystemManager.createDirectory(path = options.dirPath, recursive = options.recursive, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			if (error != null && success == false) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (success) {
+				const result : FileManagerSuccessResult = {
+					errMsg: "mkdir:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	mkdirSync(dirPath : string, recursive : boolean) {
+		let semaphore = DispatchSemaphore(value = 0)
+		let successTmp : boolean = false
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.createDirectory(path = dirPath, recursive = recursive, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			successTmp = success
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null && !successTmp) {
+			let err = this.getErrorMessage("mkdirSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (successTmp) {
+			console.log("mkdirSync:ok")
+		}
+	}
+
+	rmdir(options : RmDirOptions) {
+		UniFileSystemManager.removeDirectory(filePath = options.dirPath, recursive = options.recursive, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			if (error != null && success == false) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (success) {
+				const result : FileManagerSuccessResult = {
+					errMsg: "rmdir:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	rmdirSync(dirPath : string, recursive : boolean) {
+		let semaphore = DispatchSemaphore(value = 0)
+		let successTmp : boolean = false
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.removeDirectory(filePath = dirPath, recursive = recursive, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			successTmp = success
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null && !successTmp) {
+			let err = this.getErrorMessage("rmdirSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (successTmp) {
+			console.log("rmdirSync:ok")
+		}
+	}
+
+	readdir(options : ReadDirOptions) {
+		UniFileSystemManager.readDirectoryList(options.dirPath, completionHandler = (list ?: string[], error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (list != null) {
+				const result : ReadDirSuccessResult = {
+					files: list!,
+					errMsg: "readdir:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	readdirSync(dirPath : string) : string[] | null {
+		let files : string[] | null = null
+
+		let group = DispatchGroup()
+		group.enter()
+		UniFileSystemManager.readDirectoryList(dirPath, completionHandler = (list ?: string[], error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.getErrorMessage("readdirSync", error!.errorCode, error!.description)
+				console.log(err)
+			}
+
+			if (list != null) {
+				files = list
+			}
+			group.leave()
+		})
+
+		group.wait()
+
+		return files
+	}
+
+	access(options : AccessOptions) {
+		if (UniFileSystemManager.isExist(options.path)) {
+			const result : FileManagerSuccessResult = {
+				errMsg: "access:ok"
+			}
+			UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				options.success?.(result)
+				options.complete?.(result)
+			})
+		} else {
+			let err = this.failedAction(1300002)
+			UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				options.fail?.(err)
+				options.complete?.(err)
+			})
+		}
+	}
+
+	accessSync(path : string) {
+		if (UniFileSystemManager.isExist(path)) {
+			console.log("access:ok")
+		} else {
+			let error = this.failedAction(1300002)
+			let err = this.getErrorMessage("accessSync", 1300002, error.errMsg)
+			console.log(err)
+		}
+	}
+
+	rename(options : RenameOptions) {
+		UniFileSystemManager.rename(oldPath = options.oldPath, newPath = options.newPath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			if (error != null && success == false) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (success) {
+				const result : FileManagerSuccessResult = {
+					errMsg: "rename:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	renameSync(oldPath : string, newPath : string) {
+		let semaphore = DispatchSemaphore(value = 0)
+		let successTmp : boolean = false
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.rename(oldPath = oldPath, newPath = newPath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			successTmp = success
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null && !successTmp) {
+			let err = this.getErrorMessage("renameSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (successTmp) {
+			console.log("renameSync:ok")
+		}
+	}
+
+	copyFile(options : CopyFileOptions) {
+		UniFileSystemManager.copyFile(srcPath = options.srcPath, destPath = options.destPath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			if (error != null && success == false) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (success) {
+				const result : FileManagerSuccessResult = {
+					errMsg: "copyFile:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	copyFileSync(srcPath : string, destPath : string) {
+		let semaphore = DispatchSemaphore(value = 0)
+		let successTmp : boolean = false
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.copyFile(srcPath = srcPath, destPath = destPath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			successTmp = success
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null && !successTmp) {
+			let err = this.getErrorMessage("copyFileSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (successTmp) {
+			console.log("copyFileSync:ok")
+		}
+	}
+
+	getFileInfo(options : GetFileInfoOptions) {
+		UniFileSystemManager.getFileInfo(filePath = options.filePath, digestAlgorithm = options.digestAlgorithm, completionHandler = (result ?: GetFileInfoSuccessResult, error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (result != null) {
+				const res : GetFileInfoSuccessResult = {
+					digest: result!.digest as string,
+					size: result!.size as number,
+					errMsg: "getFileInfo:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(res)
+					options.complete?.(res)
+				})
+			}
+		})
+	}
+
+	stat(options : StatOptions) {
+		UniFileSystemManager.getStat(filePath = options.path, recursive = options.recursive, completionHandler = (fileStatsArray ?: FileStats[], error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (fileStatsArray != null) {
+				let tempArray : Array<any> = []
+				fileStatsArray!.forEach(function (e : FileStats) {
+					const fileStats : FileStats = {
+						path: e.path,
+						stats: e.stats
+					}
+					tempArray.push(fileStats)
+				})
+
+
+				const res : StatSuccessResult = {
+					errMsg: "stat:ok",
+					stats: tempArray
+				}
+
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(res)
+					options.complete?.(res)
+				})
+			}
+		})
+	}
+
+	statSync(path : string, recursive : Bool) : Array<Map<string, any>> {
+		var array : Array<Map<string, any>> = []
+		let group = DispatchGroup()
+		group.enter()
+
+		UniFileSystemManager.getStat(filePath = path, recursive = recursive, completionHandler = (fileStatsArray ?: FileStats[], error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.getErrorMessage("statSync", error!.errorCode, error!.description)
+				console.log(err)
+			}
+
+			if (fileStatsArray != null) {
+				fileStatsArray!.forEach(function (e : FileStats) {
+					const map : Map<string, any> = new Map();
+					if (e.path != null) {
+						map.set('path', e.path!);
+					}
+					if (e.stats != null) {
+						map.set('stats', e.stats!);
+					}
+					array.push(map)
+				})
+			}
+
+			group.leave()
+		})
+
+		group.wait()
+
+		return array
+	}
+
+	appendFile(options : AppendFileOptions) {
+		UniFileSystemManager.appendFile(encoding = options.encoding, path = options.filePath, data = options.data, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			if (error != null && success == false) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (success) {
+				const result : FileManagerSuccessResult = {
+					errMsg: "appendFile:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	appendFileSync(filePath : string, data : Any, encoding ?: string) {
+		let semaphore = DispatchSemaphore(value = 0)
+		let successTmp : boolean = false
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.appendFile(encoding = encoding, path = filePath, data = data, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			successTmp = success
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null && !successTmp) {
+			let err = this.getErrorMessage("appendFileSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (successTmp) {
+			console.log("appendFileSync:ok")
+		}
+	}
+
+	saveFile(options : SaveFileOptions) {
+		UniFileSystemManager.saveFile(tempFilePath = options.tempFilePath, filePath = options.filePath, completionHandler = (path ?: string, error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (path != null) {
+				const result : SaveFileSuccessResult = {
+					savedFilePath: path!
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	saveFileSync(tempFilePath : string, filePath ?: string) : string {
+		let semaphore = DispatchSemaphore(value = 0)
+		let result = ""
+
+		UniFileSystemManager.saveFile(tempFilePath = tempFilePath, filePath = filePath, completionHandler = (path ?: string, error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.getErrorMessage("saveFileSync", error!.errorCode, error!.description)
+				console.log(err)
+			} else if (path != null) {
+				result = path!
+			}
+
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+		return result
+	}
+
+	removeSavedFile(options : RemoveSavedFileOptions) {
+		UniFileSystemManager.removeSavedFile(filePath = options.filePath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			if (error != null && success == false) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (success) {
+				const result : FileManagerSuccessResult = {
+					errMsg: "removeSavedFile:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	unzip(options : UnzipFileOptions) {
+		UniFileSystemManager.unzip(zipFilePath = options.zipFilePath, targetPath = options.targetPath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			if (error != null && success == false) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (success) {
+				const result : FileManagerSuccessResult = {
+					errMsg: "unzip:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	getSavedFileList(options : GetSavedFileListOptions) {
+		UniFileSystemManager.getSavedFileList(completionHandler = (list ?: string[], error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (list != null) {
+				const result : GetSavedFileListResult = {
+					fileList: list
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	truncate(options : TruncateFileOptions) {
+		UniFileSystemManager.truncate(filePath = options.filePath, length = options.length, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			if (error != null && success == false) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (success) {
+				const result : FileManagerSuccessResult = {
+					errMsg: "truncate:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	truncateSync(filePath : string, length ?: NSNumber) {
+		let semaphore = DispatchSemaphore(value = 0)
+		let successTmp : boolean = false
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.truncate(filePath = filePath, length = length, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			successTmp = success
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null && !successTmp) {
+			let err = this.getErrorMessage("truncateSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (successTmp) {
+			console.log("truncateSync:ok")
+		}
+	}
+
+	readCompressedFile(options : ReadCompressedFileOptions) {
+		UniFileSystemManager.readCompressedFile(filePath = options.filePath, compressionAlgorithm = options.compressionAlgorithm, completionHandler = (dataString ?: string, error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (dataString != null) {
+				const result : ReadCompressedFileResult = {
+					data: dataString
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	readCompressedFileSync(filePath : string, compressionAlgorithm : string) : string {
+		let semaphore = DispatchSemaphore(value = 0)
+		let stringTmp : string | null = null
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.readCompressedFile(filePath = filePath, compressionAlgorithm = compressionAlgorithm, completionHandler = (dataString ?: string, error ?: UniFileSystemManagerError) : void => {
+			stringTmp = dataString
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null) {
+			let err = this.getErrorMessage("readCompressedFileSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (stringTmp != null) {
+			return stringTmp!
+		}
+		return "-1"
+	}
+
+	open(options : OpenFileOptions) {
+		UniFileSystemManager.open(filePath = options.filePath, flag = options.flag, completionHandler = (fd ?: Int32, error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (fd != null) {
+				const result : OpenFileSuccessResult = {
+					fd: fd!.toString(),
+					errMsg: "open:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	openSync(options : OpenFileSyncOptions) : string {
+		let semaphore = DispatchSemaphore(value = 0)
+		let fdTmp : Int32 | null = null
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.open(filePath = options.filePath, flag = options.flag, completionHandler = (fd ?: Int32, error ?: UniFileSystemManagerError) : void => {
+			fdTmp = fd
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null) {
+			let err = this.getErrorMessage("openSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (fdTmp != null) {
+			return fdTmp!.toString()
+		}
+		return "-1"
+	}
+
+	close(options : CloseOptions) {
+		UniFileSystemManager.close(fd = options.fd, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			if (error != null && success == false) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (success) {
+				const result : FileManagerSuccessResult = {
+					errMsg: "close:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	closeSync(options : CloseSyncOptions) {
+		let semaphore = DispatchSemaphore(value = 0)
+		let successTmp : boolean = false
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.close(fd = options.fd, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			successTmp = success
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null && !successTmp) {
+			let err = this.getErrorMessage("closeSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (successTmp) {
+			console.log("closeSync:ok")
+		}
+	}
+
+	fstat(options : FStatOptions) {
+		UniFileSystemManager.fstat(fd = options.fd, completionHandler = (stats ?: Stats, error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (stats != null) {
+				const result : FStatSuccessResult = {
+					stats: stats!
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	fstatSync(options : FStatSyncOptions) : Stats {
+		let semaphore = DispatchSemaphore(value = 0)
+		let statsTmp : Stats | null = null
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.fstat(fd = options.fd, completionHandler = (stats ?: Stats, error ?: UniFileSystemManagerError) : void => {
+			statsTmp = stats
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null) {
+			let err = this.getErrorMessage("fstatSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (statsTmp != null) {
+			return statsTmp!
+		}
+		return new UniFileSystemManagerStats()
+	}
+
+	ftruncate(options : FTruncateFileOptions) {
+		UniFileSystemManager.ftruncate(fd = options.fd, length = options.length, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			if (error != null && success == false) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (success) {
+				const result : FileManagerSuccessResult = {
+					errMsg: "ftruncate:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	ftruncateSync(options : FTruncateFileSyncOptions) {
+		let semaphore = DispatchSemaphore(value = 0)
+		let successTmp : boolean = false
+		let errorTmp : UniFileSystemManagerError | null = null
+
+		UniFileSystemManager.ftruncate(fd = options.fd, length = options.length, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
+			successTmp = success
+			errorTmp = error
+			semaphore.signal()
+		})
+
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null && !successTmp) {
+			let err = this.getErrorMessage("ftruncateSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (successTmp) {
+			console.log("ftruncateSync:ok")
+		}
+	}
+
+	readZipEntry(options : ReadZipEntryOptions) {
+		UniFileSystemManager.readZipEntry(filePath = options.filePath, encoding = options.encoding, entries = options.entries, completionHandler = (dict ?: Dictionary<string, ZipFileItem>, error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (dict != null) {
+				let map : Map<string, ZipFileItem> = new Map()
+				dict!.forEach(function (e) {
+					map.set(e.key, e.value)
+				})
+
+				const result : EntriesResult = {
+					entries: map,
+					result: map,
+					errMsg: "readZipEntry:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	write(options : WriteOptions) {
+		UniFileSystemManager.write(fd = options.fd, data = options.data, offset = options.offset, length = options.length, position = options.position, completionHandler = (bytesWritten ?: Int32, error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			}
+
+			if (bytesWritten != null) {
+				const result : WriteResult = {
+					bytesWritten: Number.from(bytesWritten!),
+					errMsg: "write:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					options.success?.(result)
+					options.complete?.(result)
+				})
+			}
+		})
+	}
+
+	writeSync(options : WriteSyncOptions) : WriteResult {
+		let bytesWritten = innerWriteSync(options)
+		if (bytesWritten != null) {
+			const result : WriteResult = {
+				bytesWritten: bytesWritten,
+				errMsg: "write:ok"
+			}
+			return result
+		} else {
+			const result : WriteResult = {
+				bytesWritten: 0,
+				errMsg: "write: failed"
+			}
+			return result
+		}
+	}
+
+	read(option : ReadOption) {
+		UniFileSystemManager.read(arrayBuffer = option.arrayBuffer, fd = option.fd, offset = option.offset, length = option.length, position = option.position, completionHandler = (bytesRead ?: Int32, error ?: UniFileSystemManagerError) : void => {
+			if (error != null) {
+				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					option.fail?.(err)
+					option.complete?.(err)
+				})
+			}
+
+			if (bytesRead != null) {
+				const result : ReadSuccessCallbackResult = {
+					arrayBuffer: option.arrayBuffer,
+					bytesRead: bytesRead,
+					errMsg: "read:ok"
+				}
+				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					option.success?.(result)
+					option.complete?.(result)
+				})
+			}
+		})
+	}
+
+	readSync(option : ReadSyncOption) : ReadResult {
+		let bytesRead = innerReadSync(option)
+		if (bytesRead != null) {
+			const result : ReadResult = {
+				arrayBuffer: option.arrayBuffer,
+				bytesRead: bytesRead
+			}
+			return result
+		} else {
+			const result : ReadResult = {
+				arrayBuffer: option.arrayBuffer,
+				bytesRead: 0
+			}
+			return result
+		}
+	}
+
+	innerReadSync(options : ReadSyncOption) : NSNumber | null {
+		let semaphore = DispatchSemaphore(value = 0)
+		let bytesReadTmp : Int32 | null = null
+		let errorTmp : UniFileSystemManagerError | null = null
+		let bytesRead : NSNumber = 0
+
+		UniFileSystemManager.read(arrayBuffer = options.arrayBuffer, fd = options.fd, offset = options.offset, length = options.length, position = options.position, completionHandler = (bytesRead ?: Int32, error ?: UniFileSystemManagerError) : void => {
+			bytesReadTmp = bytesRead
+			errorTmp = error
+			semaphore.signal()
+		})
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null) {
+			let err = this.getErrorMessage("readSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (bytesReadTmp != null) {
+			bytesRead = NSNumber(bytesReadTmp!)
+			return bytesRead
+		}
+
+		return null
+	}
+
+	innerWriteSync(options : WriteSyncOptions) : NSNumber | null {
+		let semaphore = DispatchSemaphore(value = 0)
+		let bytesWrittenTmp : Int32 | null = null
+		let errorTmp : UniFileSystemManagerError | null = null
+		let bytesWritten : NSNumber = 0
+
+		UniFileSystemManager.write(fd = options.fd, data = options.data, offset = options.offset, length = options.length, position = options.position, completionHandler = (bytesWritten ?: Int32, error ?: UniFileSystemManagerError) : void => {
+			bytesWrittenTmp = bytesWritten
+			errorTmp = error
+			semaphore.signal()
+		})
+		semaphore.wait(timeout = DispatchTime.distantFuture)
+
+		if (errorTmp != null) {
+			let err = this.getErrorMessage("writeSync", errorTmp!.errorCode, errorTmp!.description)
+			console.log(err)
+		} else if (bytesWrittenTmp != null) {
+			bytesWritten = NSNumber(bytesWrittenTmp!)
+			return bytesWritten
+		}
+
+		return null
+	}
+
+
+	getErrorMessage(name : string, errorCode : NSNumber, description : string) : string {
+		return name + " failed: " + "errorCode = " + errorCode.stringValue + "，errMsg = " + description
+	}
+
+	failedAction(errorCode : NSNumber, errMsg : string | null = null) : FileSystemManagerFailImpl {
+		let failImpl = new FileSystemManagerFailImpl(errorCode)
+		if (errMsg != null) {
+			failImpl.errMsg += ("(" + errMsg! + ")")
+		}
+		return failImpl
+	}
+}

@@ -1,0 +1,5 @@
+{
+	"dependencies": [
+		"com.alipay.sdk:alipaysdk-android:15.8.38"
+	]
+}

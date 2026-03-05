@@ -1,0 +1,603 @@
+export type LoadFontFaceOptionDesc = {
+    style: string | null
+    weight: string | null
+    variant: string | null
+}
+/**
+ * 错误码
+ */
+export type LoadFontFaceErrCode =
+    /**
+     * 框架内部异常
+     */
+    4 |
+    /**
+     * page is not ready
+     */
+    99 |
+    /**
+     * 参数错误
+     */
+    101 |
+    /**
+     * family is null
+     */
+    100001 |
+    /**
+     * source is null
+     */
+    100002 |
+    /**
+     * local font not found
+     */
+    200001 |
+    /**
+     * same source task is loading
+     */
+    300001 |
+    /**
+     * download fail
+     */
+    300002;
+
+export interface LoadFontFaceFail extends IUniError {
+    errCode: LoadFontFaceErrCode
+}
+export type LoadFontFaceOptions = {
+    /**
+     * 是否全局生效微信小程序 '2.10.0'起支持全局生效。需在 app.uvue 中调用。
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "10.0",
+     *          "uniVer": "√",
+     *          "unixVer": "x"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": ">=2.10.0",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    global?: boolean
+    /**
+     * 定义的字体名称
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "10.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.10"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    family: string
+    /**
+     * 字体资源的地址, App-Android 平台不支持 woff、woff2 格式字体文件
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "10.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.10"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    source: string.FontURIString
+    /**
+     * 可选的字体描述符
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *      },
+     *      "ios": {
+     *          "osVer": "10.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.10"
+     *      },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    desc?: LoadFontFaceOptionDesc
+    /**
+     * 接口调用成功的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "10.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.10"
+     *      }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    success?: LoadFontFaceSuccessCallback
+    /**
+     * 接口调用失败的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "10.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.10"
+     *      }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    fail?: LoadFontFaceFailCallback
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "10.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.10"
+     *      }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    complete?: LoadFontFaceCompleteCallback
+}
+
+export type LoadFontFaceSuccess = AsyncApiSuccessResult
+export type LoadFontFaceSuccessCallback = (result: LoadFontFaceSuccess) => void
+
+export type LoadFontFaceFailCallback = (error: LoadFontFaceFail) => void
+
+export type LoadFontFaceComplete = AsyncApiResult
+export type LoadFontFaceCompleteCallback = (res: LoadFontFaceComplete) => void
+export type LoadFontFace = (options: LoadFontFaceOptions) => Promise<LoadFontFaceSuccess> | null
+
+export interface Uni {
+    /**
+     * 动态加载网络字体
+     *
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/load-font-face.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/load-font-face.html
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/font.html#loadfontface
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "√"
+     *      },
+     *      "ios": {
+     *          "osVer": "10.0",
+     *          "uniVer": "√",
+     *          "unixVer": "4.10"
+     *      },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    loadFontFace(options: LoadFontFaceOptions): Promise<LoadFontFaceSuccess> | null
+}

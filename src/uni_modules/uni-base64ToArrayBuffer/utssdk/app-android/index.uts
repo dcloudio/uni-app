@@ -1,0 +1,9 @@
+import { Base64ToArrayBuffer } from "../interface.uts"
+import Base64 from "android.util.Base64"
+import ByteBuffer from "java.nio.ByteBuffer"
+export const base64ToArrayBuffer : Base64ToArrayBuffer = function (base64 : string) : ArrayBuffer {
+	// 解码 Base64 字符串为字节数组
+	const bytes = Base64.decode(base64, Base64.NO_WRAP)
+	// 将字节数组包装为 ByteBuffer
+	return ArrayBuffer.fromByteBuffer(ByteBuffer.wrap(bytes))
+}

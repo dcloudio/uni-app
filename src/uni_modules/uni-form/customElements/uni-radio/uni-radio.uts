@@ -1,0 +1,209 @@
+import { UniRadioGroupElement } from '../uni-radio-group/uni-radio-group'
+
+export class UniRadioElement extends UniFormControlElement<string> implements UniCustomElement {
+  static get observedAttributes() : Array<string> {
+    return [
+      'checked',
+      'value',
+      'background-Color',
+      'active-Background-Color',
+      'border-Color',
+      'active-Border-Color',
+      'fore-Color',
+      'color',
+      'icon-Color'
+    ];
+  }
+
+  private radioView! : UniElement
+  private radioText! : UniTextElement
+  private _initialChecked = false
+  private _initialCheckedFlag = false
+  private _checked = false
+
+  constructor() {
+    super();
+
+    this.style.setProperty('flexDirection', 'row')
+    this.style.setProperty('alignItems', 'center')
+
+    const radioView = this.uniPage.createElement('view')
+    const radioViewStyle = radioView.style
+    radioViewStyle.setProperty('alignItems', 'center')
+    radioViewStyle.setProperty('justifyContent', 'center')
+    radioViewStyle.setProperty('borderStyle', 'solid')
+    radioViewStyle.setProperty('borderWidth', '1px')
+    radioViewStyle.setProperty('borderColor', '#e9e9ea')
+    radioViewStyle.setProperty('borderRadius', '12px')
+    radioViewStyle.setProperty('width', '24px')
+    radioViewStyle.setProperty('height', '24px')
+    radioViewStyle.setProperty('marginRight', '5px')
+
+    const radioText = this.uniPage.createElement('text') as UniTextElement
+    radioText.setAttribute('value', '\uEA08')
+    const radioTextStyle = radioText.style
+    radioTextStyle.setProperty('fontFamily', 'uni-icon')
+    radioTextStyle.setProperty('fontSize', '16px')
+    radioTextStyle.setProperty('color', this.foreColor)
+
+    this.radioView = radioView
+    this.radioText = radioText
+
+    this.addEventListener('click', (e: UniPointerEvent) => {
+      "[weak self]"
+      e.stopPropagation()
+      if (this.disabled) {
+        return
+      }
+      if (this.checked) {
+        return
+      }
+      this.checked = true
+      this.dispatchGroup()
+    })
+
+    this.updateCheckedStyle(false)
+  }
+
+  // form
+  override get name() : string {
+    return this.getAttributeValue('name', '')
+  }
+  override set name(value : string) {
+    this.setAttribute('name', value)
+  }
+
+  override get value() : string {
+    return this.getAttributeValue('value', '')
+  }
+  override set value(value: string) {
+    this.setAttribute('value', value)
+  }
+
+  override reset() {
+    this.checked = this._initialChecked
+  }
+
+  connectedCallback() {
+    if (this.children.length == 0) {
+      this.appendChild(this.radioView)
+    } else {
+      this.insertBefore(this.radioView, this.firstChild)
+    }
+  }
+
+  disconnectedCallback() {
+    this.removeChild(this.radioView)
+  }
+
+  attributeChangedCallback(name : string, oldValue : any | null, newValue : any | null) {
+    switch (name) {
+      case 'checked':
+        const value = (typeof newValue == 'string' || newValue == true) ? true : false
+        if (!this._initialCheckedFlag) {
+          this._initialCheckedFlag = true
+          this._initialChecked = value
+        }
+        this.checked = value
+        break;
+      case 'fore-color':
+      case 'icon-color':
+        this.radioText.style.setProperty('color', this.foreColor)
+        break;
+      case 'background-color':
+      case 'active-background-color':
+      case 'border-color':
+      case 'active-border-color':
+      case 'color':
+        this.updateCheckedStyle(this.checked)
+        break;
+    }
+  }
+
+  get checked() : boolean {
+    return this._checked
+  }
+
+  set checked(value : boolean) {
+    if (value == this._checked) {
+      return
+    }
+    this._checked = value
+    this.updateCheckedStyle(value)
+    this.updateCheckedStatus(value)
+  }
+
+  get disabled() : boolean {
+    return this.getAttribute('disabled') == 'true' ? true : false
+  }
+
+  get foreColor() : string {
+    return this.getAttributeValue('foreColor', this.iconColor)
+  }
+
+  get backgroundColor() : string {
+    return this.getAttributeValue('backgroundColor', '#ffffff')
+  }
+
+  get activeBackgroundColor() : string {
+    return this.getAttributeValue('activeBackgroundColor', this.color)
+  }
+
+  get borderColor() : string {
+    return this.getAttributeValue('borderColor', '#d1d1d1')
+  }
+
+  get activeBorderColor() : string {
+    return this.getAttributeValue('activeBorderColor', this.activeBackgroundColor)
+  }
+
+  get color() : string {
+    return this.getAttributeValue('color', '#007AFF')
+  }
+
+  get iconColor() : string {
+    return this.getAttributeValue('iconColor', '#fff')
+  }
+
+  private getAttributeValue(key : string, defaultValue : string) : string {
+    const value = this.getAttribute(key)
+    if (value != null && value!.length > 0) {
+      return value!
+    }
+    return defaultValue
+  }
+
+  private updateCheckedStyle(checked : boolean) {
+    const backgroundColor = checked ? this.activeBackgroundColor : this.backgroundColor
+    const borderColor = checked ? this.activeBorderColor : this.borderColor
+    this.radioView.style.setProperty('backgroundColor', backgroundColor)
+    this.radioView.style.setProperty('borderColor', borderColor)
+  }
+
+  private updateCheckedStatus(checked : boolean) {
+    if (checked) {
+      // TODO 不延时圆角异常
+      setTimeout(() => {
+        this.radioView.appendChild(this.radioText)
+      }, 1)
+    } else {
+      this.radioView.removeChild(this.radioText)
+    }
+  }
+
+  private dispatchGroup() {
+    let group = this.parentElement
+    let maxRecursiveDeep = 32
+    while (group != null && maxRecursiveDeep > 0) {
+      maxRecursiveDeep--
+      if (group instanceof UniRadioGroupElement) {
+        break
+      }
+      group = group!.parentElement
+    }
+
+    if (group != null) {
+      (group as UniRadioGroupElement)._radioChange(this, this.value)
+    }
+  }
+}

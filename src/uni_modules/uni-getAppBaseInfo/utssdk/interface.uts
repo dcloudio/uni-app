@@ -1,0 +1,2220 @@
+export type GetAppBaseInfoOptions = {
+    /**
+     * @description 过滤字段的字符串数组，假如要获取指定字段，传入此数组。
+     */
+    filter: Array<string>
+};
+
+export type GetAppBaseInfoResult = {
+    /**
+     * manifest.json 中应用appid，即DCloud appid。
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+     */
+    appId?: string,
+
+    /**
+     * `manifest.json` 中应用名称。
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+     */
+    appName?: string,
+
+    /**
+     * `manifest.json` 中应用版本名称，如果离线打包注意修改修改index.kt中UniAppConfig类型中的版本名称[文档](https://doc.dcloud.net.cn/uni-app-x/native/use/android.html#%E6%8B%B7%E8%B4%9Dkt%E6%96%87%E4%BB%B6)。
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+     */
+    appVersion?: string,
+
+    /**
+     * `manifest.json` 中应用版本号，如果离线打包注意修改修改index.kt中UniAppConfig类型中的版本号[文档](https://doc.dcloud.net.cn/uni-app-x/native/use/android.html#%E6%8B%B7%E8%B4%9Dkt%E6%96%87%E4%BB%B6)。
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+     */
+    appVersionCode?: string,
+
+    /**
+     * 应用设置的语言en、zh-Hans、zh-Hant、fr、es
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+     */
+    appLanguage?: string,
+    /**
+     * 应用设置的语言
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+     */
+    language?: string,
+
+    /**
+     * 引擎版本号。已废弃，仅为了向下兼容保留
+     * @deprecated 已废弃，仅为了向下兼容保留
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    version?: string,
+
+    /**
+     * 应用资源（wgt）的版本名称。
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x",
+            "unixUtsPlugin": "x"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    appWgtVersion?: string,
+
+    /**
+     * 小程序宿主语言
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x",
+            "unixUtsPlugin": "x"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    hostLanguage?: string,
+
+    /**
+     * App、小程序宿主版本。
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x",
+            "unixUtsPlugin": "x"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    hostVersion?: string,
+    /**
+     * 小程序宿主名称
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x",
+            "unixUtsPlugin": "x"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    hostName?: string,
+    /**
+     * 小程序宿主包名
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x",
+            "unixUtsPlugin": "x"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    hostPackageName?: string,
+
+    /**
+     * uni小程序SDK版本、小程序客户端基础库版本
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x",
+            "unixUtsPlugin": "x"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    hostSDKVersion?: string,
+
+    /**
+     * 系统当前主题，取值为light或dark。微信小程序全局配置"darkmode":true时才能获取，否则为 undefined （不支持小游戏）
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "x",
+            "unixUtsPlugin": "x"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+     */
+    hostTheme?: string,
+
+    /**
+     * 是否uni-app x
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "4.18"
+        }
+      }
+     */
+    isUniAppX?: boolean,
+
+    /**
+     * uni 编译器版本
+     * @deprecated 已废弃，仅为了向下兼容保留
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    uniCompileVersion?: string,
+
+    /**
+     * uni 编译器版本
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.0"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "4.18"
+        }
+      }
+     */
+    uniCompilerVersion?: string,
+
+    /**
+     * uni-app 运行平台。
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+     */
+    uniPlatform?: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei',
+
+    /**
+     * uni 运行时版本
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "4.18"
+        }
+      }
+     */
+    uniRuntimeVersion?: string,
+
+    /**
+     * uni 编译器版本号
+     * @deprecated 已废弃，仅为了向下兼容保留
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    uniCompileVersionCode?: number,
+
+    /**
+     * uni 编译器版本号
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.0"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "4.18"
+        }
+      }
+     */
+    uniCompilerVersionCode?: number,
+
+    /**
+     * uni 运行时版本号
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "4.0"
+        }
+      }
+     */
+    uniRuntimeVersionCode?: number,
+
+    /**
+     * Android的包名
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "3.97",
+            "unixVer": "3.97"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "x",
+            "unixUtsPlugin": "x"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    packageName?: string,
+
+
+    /**
+     * 鸿蒙的包名
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "x",
+            "unixUtsPlugin": "x"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.61",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    bundleName?: string,
+
+    /**
+     * iOS的bundleId
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    bundleId?: string,
+
+    /**
+     * Android: 应用签名证书的SHA1值（全部为小写，中间不包含“:”）。
+     * iOS: 应用签名证书中绑定的Bundle ID（AppleID）的md5值（全部为小写）。
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "3.97",
+            "unixVer": "3.97"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    signature?: string,
+
+    /**
+     * 当前App的主题
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.18"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.18",
+            "unixUtsPlugin": "4.18"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    appTheme?: 'light' | 'dark' | 'auto' | null,
+
+    /**
+     * 当前应用分发的渠道
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.28"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.31",
+            "unixUtsPlugin": "4.31"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    channel?: string,
+}
+
+/**
+ * @param{GetAppBaseInfoOptions} [options=包含所有字段的过滤对象]  过滤的字段对象, 不传参数默认为获取全部字段。
+ */
+export type GetAppBaseInfo = (options?: GetAppBaseInfoOptions | null) => GetAppBaseInfoResult;
+
+
+export interface Uni {
+    /**
+     * GetAppBaseInfo(Object object)
+     * @description
+     * 获取app基本信息
+     * @param {GetAppBaseInfoOptions} options [options=包含所有字段的过滤对象]  过滤的字段对象, 不传参数默认为获取全部字段。
+     * @return {object}
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-app-base-info.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-app-base-info.html
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/getAppBaseInfo.html
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.6",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.6",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "osVer": "3.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixvVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+     * @example
+      ```typescript
+      uni.getAppBaseInfo({
+        filter:[]
+      })
+      ```
+     */
+    getAppBaseInfo(options?: GetAppBaseInfoOptions | null): GetAppBaseInfoResult;
+}

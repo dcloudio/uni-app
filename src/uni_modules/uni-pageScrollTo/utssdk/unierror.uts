@@ -1,0 +1,9 @@
+import { PageScrollToErrorCode, PageScrollToFail } from './interface.uts'
+
+export class PageScrollToFailImpl extends UniError implements PageScrollToFail {
+    override errCode: PageScrollToErrorCode
+    constructor(errMsg: string = '', errCode: PageScrollToErrorCode = 4) {
+        super(errMsg)
+        this.errCode = errCode
+    }
+}

@@ -1,0 +1,25 @@
+import { DeviceUtil } from './device/DeviceUtil.uts';
+
+import { GetSystemSetting, GetSystemSettingResult } from '../interface.uts'
+import Exception from 'java.lang.Exception';
+
+export const getSystemSetting : GetSystemSetting = () : GetSystemSettingResult => {
+	let context = UTSAndroid.getAppContext();
+	let result : GetSystemSettingResult = {
+		deviceOrientation : DeviceUtil.deviceOrientation(context!),
+		locationEnabled : DeviceUtil.locationEnable(context!),
+	};
+	try {
+		let blueToothEnable = DeviceUtil.blueToothEnable(context!);
+		result.bluetoothEnabled = blueToothEnable;
+	} catch (e : Exception) {
+		result.bluetoothError = "Missing permissions required by BluetoothAdapter.isEnabled: android.permission.BLUETOOTH";
+	}
+
+	try {
+		result.wifiEnabled = DeviceUtil.wifiEnable(context!);
+	} catch (e : Exception) {
+		result.wifiError = "Missing permissions required by WifiManager.isWifiEnabled: android.permission.ACCESS_WIFI_STATE";
+	}
+	return result;
+}

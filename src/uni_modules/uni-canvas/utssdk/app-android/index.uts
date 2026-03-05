@@ -1,0 +1,69 @@
+import {
+    CanvasContext,
+    CanvasContextToBlobCallback,
+    CreateCanvasContextAsyncOptions,
+    RequestAnimationFrameCallback
+} from '../interface.uts'
+
+class CanvasContextImpl implements CanvasContext {
+  _element: UniCanvasElement
+
+  constructor(element: UniCanvasElement) {
+    this._element = element
+  }
+
+  getContext(type: string): CanvasRenderingContext2D | null {
+    return this._element.getContext(type)
+  }
+
+  // #ifdef WEB
+  toBlob(callback: CanvasContextToBlobCallback, type: string = null, quality: number = null) {
+    this._element.toBlob(callback, type, quality)
+  }
+  // #endif
+
+  toDataURL(): string {
+    return this._element.toDataURL()
+  }
+
+  toDataURL(type: string): string {
+    return this._element.toDataURL(type)
+  }
+
+  toDataURL(type: string, encoderOptions: any): string {
+    return this._element.toDataURL(type, encoderOptions)
+  }
+
+  createImage(): Image {
+    return new Image()
+  }
+
+  createPath2D(): Path2D {
+    return new Path2D()
+  }
+
+  requestAnimationFrame(callback: RequestAnimationFrameCallback): number {
+    return io.dcloud.uniapp.runtime.requestAnimationFrame(callback)
+  }
+
+  cancelAnimationFrame(taskId: number) {
+    io.dcloud.uniapp.runtime.cancelAnimationFrame(taskId)
+  }
+}
+
+export const createCanvasContextAsync =
+  function (options: CreateCanvasContextAsyncOptions) {
+    const currentPage: ComponentPublicInstance = options.component ?? (getCurrentPages()[getCurrentPages().length - 1]).vm as ComponentPublicInstance
+    currentPage.createSelectorQuery().select('#' + options.id).fields({
+      node: true
+    } as NodeField, (ret) => {
+      const node = (ret as NodeInfo).node
+      if (node != null) {
+        options.success?.(new CanvasContextImpl(node as UniCanvasElement))
+      } else {
+        const uniError = new UniError('uni-createCanvasContextAsync', -1, 'canvas id invalid.')
+        options.fail?.(uniError)
+      }
+      options.complete?.()
+    }).exec()
+  }

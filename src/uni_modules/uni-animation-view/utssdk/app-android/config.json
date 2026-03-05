@@ -1,0 +1,8 @@
+{
+	"dependencies": [
+		"com.airbnb.android:lottie:5.2.0",
+		"androidx.appcompat:appcompat:1.0.0"
+	],
+	"minSdkVersion": "21"
+}
+

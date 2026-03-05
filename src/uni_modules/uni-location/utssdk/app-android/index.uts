@@ -1,0 +1,320 @@
+import { UniLocationProvider, GetLocation, GetLocationOptions, StartLocationUpdate, StartLocationUpdateOptions, StopLocationUpdate, StopLocationUpdateOptions, OnLocationChange, OnLocationChangeCallback, OffLocationChange, OnLocationChangeResult, StartLocationUpdateBackground, StartLocationUpdateBackgroundOptions, OnLocationChangeError, OnLocationChangeErrorCallback, OffLocationChangeError, StartLocationUpdateBackgroundSuccess, IGetLocationFail, StartLocationUpdateSuccess } from "../interface.uts"
+import { GetLocationFailImpl } from "../unierror.uts"
+import Bitmap from "android.graphics.Bitmap";
+import BitmapFactory from "android.graphics.BitmapFactory";
+import Build from "android.os.Build";
+
+export { getLocationErrorCode, GetLocationFailImpl } from '../unierror.uts'
+export { GetLocationFail } from '../interface.uts'
+import Notification from "android.app.Notification"
+import NotificationManager from "android.app.NotificationManager";
+import NotificationChannel from "android.app.NotificationChannel";
+import Locale from "java.util.Locale"
+import Map from 'kotlin.collections.Map';
+import R from 'io.dcloud.uni.getlocation.R';
+import LocationManager from 'android.location.LocationManager';
+import Context from "android.content.Context"
+
+
+const locationChangeCallback : HashMap<number, OnLocationChangeCallback> = new HashMap()
+let locationChangeIndex = 0
+
+let locationProvider : UniLocationProvider | null = null
+
+let selectedProvider : string | null = null
+/**
+ * 对外的函数接口
+ */
+export const getLocation : GetLocation = function (options : GetLocationOptions) {
+	if(!isLocationEnabled()) {
+		const err = new GetLocationFailImpl(1505608);
+		options.fail?.(err)
+		options.complete?.(err)
+		return
+	}
+	let providerName = 'system'
+	if (options.provider != null) {
+		providerName = options.provider!
+	} else {
+		//定位 API 需要特殊逻辑处理 type 和 provider 的特殊逻辑，没有设置 provider 时需根据 type 自动选择支持 type 的provider。
+		if (options.type == 'wgs84') {//默认使用系统定位
+			providerName = 'system'
+		} else if (options.type == 'gcj02') {//默认使用腾讯定位
+			providerName = 'tencent'
+		}
+	}
+	const provider = UTSAndroid.getProvider<UniLocationProvider>("location", providerName)
+	if (provider != null) {
+		provider!.getLocation(options)
+	} else {
+		const err = new GetLocationFailImpl(1505604);
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+}
+
+export const startLocationUpdate : StartLocationUpdate = function (options : StartLocationUpdateOptions) {
+	if(!isLocationEnabled()) {
+		const err = new GetLocationFailImpl(1505608);
+		options.fail?.(err)
+		options.complete?.(err)
+		return
+	}
+	let providerName = 'system'
+	if (options.provider != null) {
+		providerName = options.provider!
+	} else {
+		//定位 API 需要特殊逻辑处理 type 和 provider 的特殊逻辑，没有设置 provider 时需根据 type 自动选择支持 type 的provider。
+		if (options.type == 'wgs84') {//默认使用系统定位
+			providerName = 'system'
+		} else if (options.type == 'gcj02') {//默认使用腾讯定位
+			providerName = 'tencent'
+		}
+	}
+	if (selectedProvider != null) {
+		if (selectedProvider! == providerName) {
+			options.success?.({})
+			options.complete?.({})
+		} else {
+			const err = new GetLocationFailImpl(1505608);
+			options.fail?.(err)
+			options.complete?.(err)
+		}
+		return
+	}
+	locationProvider = UTSAndroid.getProvider<UniLocationProvider>("location", providerName)
+	// 主动注册回调
+	if (locationProvider != null) {
+		let permissionNeed = ["android.permission.ACCESS_FINE_LOCATION"]
+		UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight : boolean, _ : string[]) {
+			selectedProvider = providerName
+			locationProvider!.onLocationChange(registerLocationChange)
+			locationProvider!.onLocationChangeError(registerLocationChangeError)
+			locationProvider!.startLocationUpdate({
+					provider:options.provider,
+					type:options.type,
+					success:(e:StartLocationUpdateSuccess)=>{
+						selectedProvider = providerName
+						options?.success?.(e)
+					},
+					fail:(e:IGetLocationFail)=>{
+						selectedProvider = null
+						options?.fail?.(e)
+					},
+					complete:options.complete
+				})
+		}, function (_ : boolean, p : string[]) {
+			selectedProvider = null
+			let err = new GetLocationFailImpl(1505004);
+			options.fail?.(err)
+			options.complete?.(err)
+		})
+	} else {
+		selectedProvider = null
+		const err = new GetLocationFailImpl(1505604);
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+}
+
+export const stopLocationUpdate : StopLocationUpdate = function (options : StopLocationUpdateOptions) {
+	selectedProvider = null;
+	locationProvider?.stopLocationUpdate(options)
+	options.success?.({})
+	options.complete?.({})
+}
+
+export const startLocationUpdateBackground : StartLocationUpdateBackground = function (options : StartLocationUpdateBackgroundOptions) {
+	if(!isLocationEnabled()) {
+		const err = new GetLocationFailImpl(1505608);
+		options.fail?.(err)
+		options.complete?.(err)
+		return
+	}
+	let providerName = 'system'
+	if (options.provider != null) {
+		providerName = options.provider!
+	} else {
+		//定位 API 需要特殊逻辑处理 type 和 provider 的特殊逻辑，没有设置 provider 时需根据 type 自动选择支持 type 的provider。
+		if (options.type == 'wgs84') {//默认使用系统定位
+			providerName = 'system'
+		} else if (options.type == 'gcj02') {//默认使用腾讯定位
+			providerName = 'tencent'
+		}
+	}
+
+	if (selectedProvider != null) {
+		if (selectedProvider! == providerName) {
+			options.success?.({})
+			options.complete?.({})
+		} else {
+			const err = new GetLocationFailImpl(1505608);
+			options.fail?.(err)
+			options.complete?.(err)
+		}
+		return
+	}
+	locationProvider = UTSAndroid.getProvider<UniLocationProvider>("location", providerName)
+	// 主动注册回调
+	if (locationProvider != null) {
+		let permissionNeed = ["android.permission.ACCESS_FINE_LOCATION"];
+		if (Build.VERSION.SDK_INT >= 29) {
+			permissionNeed.push("android.permission.ACCESS_BACKGROUND_LOCATION");
+		}
+		UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight : boolean, _ : string[]) {
+			if (allRight) {
+				
+				let setMethod = locationProvider!.javaClass.getDeclaredMethod("setNotification", Class.forName("android.app.Notification"))
+				setMethod.setAccessible(true)
+				setMethod.invoke(locationProvider, getBackgroundLocationNotification())
+				locationProvider!.onLocationChange(registerLocationChange)
+				locationProvider!.onLocationChangeError(registerLocationChangeError)
+				locationProvider!.startLocationUpdateBackground({
+					provider:options.provider,
+					type:options.type,
+					success:(e:StartLocationUpdateBackgroundSuccess)=>{
+						selectedProvider = providerName
+						options?.success?.(e)
+					},
+					fail:(e:IGetLocationFail)=>{
+						selectedProvider = null
+						options?.fail?.(e)
+					},
+					complete:options.complete
+				})
+			} else {
+				selectedProvider = null
+				let err = new GetLocationFailImpl(1505004);
+				options.fail?.(err)
+				options.complete?.(err)
+			}
+		}, function (_ : boolean, grantedList : string[]) {
+			if (grantedList.length == 0) {
+				selectedProvider = null
+				let err = new GetLocationFailImpl(1505004);
+				options.fail?.(err)
+				options.complete?.(err)
+			}
+		});
+	} else {
+		selectedProvider = null
+		const err = new GetLocationFailImpl(1505604);
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+}
+
+function isLocationEnabled() : boolean {
+	var locationManager = UTSAndroid.getUniActivity()!.getSystemService(Context.LOCATION_SERVICE) as LocationManager;
+	return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+		locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+}
+
+function getBackgroundLocationNotification() : Notification | null {
+	let context = UTSAndroid.getUniActivity()!
+	var builder : Notification.Builder | null = null
+	if (Build.VERSION.SDK_INT >= 26) {
+		let notificationManager = UTSAndroid.getUniActivity()?.getSystemService("notification") as NotificationManager | null
+		if (notificationManager == null) {
+			return null
+		}
+		let channelId = "uni_app_uni_startLocationUpdateBackground_channel"
+		let channel = new NotificationChannel(channelId, UTSAndroid.getUniActivity()!.getString(R.string.uni_app_uni_location_notification_channel_name), 3)
+		channel.enableLights(true)
+		channel.setShowBadge(true)
+		notificationManager!.createNotificationChannel(channel)
+		builder = new Notification.Builder(UTSAndroid.getUniActivity()!, channelId)
+	} else {
+		builder = new Notification.Builder(UTSAndroid.getUniActivity()!)
+	}
+	var packageManager = UTSAndroid.getUniActivity()!.getPackageManager()
+	var appName = ""
+	try {
+		var applicationInfo = packageManager.getApplicationInfo(UTSAndroid.getUniActivity()!.getPackageName(), 0);
+		appName = packageManager.getApplicationLabel(applicationInfo).toString()
+	} catch (e) {
+
+	}
+
+	builder!.setContentTitle(UTSAndroid.getUniActivity()!.getString(R.string.uni_app_uni_location_notification_content_title).format(Locale.ENGLISH, appName))
+		.setContentText(UTSAndroid.getUniActivity()!.getString(R.string.uni_app_uni_location_notification_content_text)).setWhen(System.currentTimeMillis())
+	const id_small = context.getResources().getIdentifier("push_small", "drawable", context.getPackageName())
+	if (id_small <= 0) {
+		builder.setSmallIcon(context.getApplicationInfo().icon); //设置图标
+	} else {
+		builder.setSmallIcon(id_small); //设置图标
+	}
+	const id = context.getResources().getIdentifier("push", "drawable", context.getPackageName())
+
+	let largeBitmap : Bitmap | null = null;
+	if (id <= 0) {
+		largeBitmap = BitmapFactory.decodeResource(context.getResources(), context.getApplicationInfo().icon);
+	} else {
+		largeBitmap = BitmapFactory.decodeResource(context.getResources(), id);
+	}
+	if (null != largeBitmap) {
+		builder.setLargeIcon(largeBitmap);
+	}
+	return builder!.build()
+}
+
+export const onLocationChange : OnLocationChange = function (callback : OnLocationChangeCallback) : number {
+	locationChangeIndex++;
+	locationChangeCallback[locationChangeIndex] = callback
+	return locationChangeIndex
+}
+
+export const offLocationChange : OffLocationChange = function (id ?: number | OnLocationChangeCallback | null) {
+	if (id == null) {
+		locationChangeCallback.clear()
+		return
+	} else {
+		if (typeof id == "number") {
+			locationChangeCallback.remove(id)
+		} else if (typeof id == "function") {
+			locationChangeCallback.forEach((p : Map.Entry<number, OnLocationChangeCallback>) => {
+				if (p.value == id) {
+					locationChangeCallback.remove(p.key)
+					return
+				}
+			})
+		}
+	}
+}
+
+let locationChangeErrorIndex = 0
+const locationChangeErrorCallback : HashMap<number, OnLocationChangeErrorCallback> = new HashMap()
+export const onLocationChangeError : OnLocationChangeError = function (listener : OnLocationChangeErrorCallback) : number {
+	locationChangeErrorIndex++;
+	locationChangeErrorCallback[locationChangeErrorIndex] = listener
+	return locationChangeErrorIndex
+}
+
+export const offLocationChangeError : OffLocationChangeError = function (listener ?: number | OnLocationChangeErrorCallback | null) {
+	if (listener != null) {
+		// if(listener! instanceof OnLocationChangeErrorCallback) {} 
+		if (typeof listener == "number") {
+			locationChangeErrorCallback.remove(listener)
+		} else if (typeof listener == "function") {
+			locationChangeErrorCallback.forEach((p : Map.Entry<number, OnLocationChangeErrorCallback>) => {
+				if (p.value == listener) {
+					locationChangeErrorCallback.remove(p.key)
+					return
+				}
+			})
+		}
+	} else {
+		locationChangeErrorCallback.clear()
+	}
+}
+const registerLocationChange = function (e : OnLocationChangeResult) {
+	locationChangeCallback.values.forEach((item : OnLocationChangeCallback) => {
+		item(e)
+	})
+}
+
+const registerLocationChangeError = function (e : IGetLocationFail) {
+	locationChangeErrorCallback.values.forEach((item : OnLocationChangeErrorCallback) => {
+		item(e)
+	})
+}

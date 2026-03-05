@@ -1,0 +1,75 @@
+import {
+    ANIMATION_DURATION,
+    ANIMATION_TYPE,
+    getCurrentPage,
+    Page,
+    isSystemDialogPage,
+    isTabPage,
+} from '@dcloudio/uni-runtime'
+import {
+    DEFAULT_ANIMATION_DURATION,
+    DEFAULT_ANIMATION_OUT,
+} from '../constants.uts'
+import { CloseDialogPageOptions } from '../interface.uts'
+import { CloseDialogPageSuccessImpl, CloseDialogPageFailImpl } from '../unierror.uts'
+
+export const closeDialogPage = (options: CloseDialogPageOptions | null) => {
+    if (options?.animationType === 'pop-out') {
+        options.animationType = 'none'
+    }
+    const closeOptions = new Map<string, any | null>([
+        [
+            ANIMATION_TYPE,
+            options?.animationType ?? DEFAULT_ANIMATION_OUT,
+        ],
+        [
+            ANIMATION_DURATION,
+            options?.animationDuration ?? DEFAULT_ANIMATION_DURATION,
+        ],
+    ])
+    if (options?.dialogPage === null) {
+        const currentPage = getCurrentPage()
+        if (currentPage === null) {
+            if (options !== null) {
+                const failRes = new CloseDialogPageFailImpl('currentPage is null')
+                options.fail?.(failRes)
+                options.complete?.(failRes)
+            }
+        } else {
+            const dialogPages = currentPage.getDialogPages()
+            for (let i = dialogPages.length - 1;i >= 0;i--) {
+                (dialogPages[i].$vm as Page).$close(closeOptions)
+            }
+            if (options !== null) {
+                const successRes = new CloseDialogPageSuccessImpl()
+                options.success?.(successRes)
+                options.complete?.(successRes)
+            }
+        }
+    } else {
+        const dialogPage = options?.dialogPage!
+        const currentPages = getCurrentPages()
+        const parentPage = dialogPage.getParentPage()
+        if (isSystemDialogPage(dialogPage)) {
+            (dialogPage.$vm as Page).$close(closeOptions)
+            return
+        }
+        if ((dialogPage.$vm as Page).$dialogOptions === null ||
+            parentPage == null ||
+            (!isTabPage(parentPage!.vm!) && currentPages.indexOf(parentPage) === -1) ||
+            parentPage!.getDialogPages().indexOf(dialogPage) === -1) {
+            if (options !== null) {
+                const errRes = new CloseDialogPageFailImpl('dialogPage is not a valid page')
+                options.fail?.(errRes)
+                options.complete?.(errRes)
+            }
+        } else {
+            (dialogPage.$vm as Page).$close(closeOptions)
+            if (options !== null) {
+                const successRes = new CloseDialogPageSuccessImpl()
+                options.success?.(successRes)
+                options.complete?.(successRes)
+            }
+        }
+    }
+}

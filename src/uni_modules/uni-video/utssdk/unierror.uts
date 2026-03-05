@@ -1,0 +1,28 @@
+import { VideoErrorCode, VideoError } from './interface.uts';
+
+/**
+ * 统一错误主题（模块）名称
+ */
+export const VideoUniErrorSubject = 'uni-video';
+
+/**
+ * 统一错误描述信息
+ */
+export const VideoUniErrors : Map<VideoErrorCode, string> = new Map([
+	[100001, 'network error'],
+	[200001, 'internal error'],
+	[300001, 'sdk error']
+]);
+
+/**
+ * 错误实现
+ */
+export class VideoErrorImpl extends UniError implements VideoError {
+	constructor(errCode : VideoErrorCode, cause : SourceError | null = null) {
+		super();
+		this.errSubject = VideoUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = VideoUniErrors[errCode] ?? "";
+		this.cause = cause;
+	}
+}

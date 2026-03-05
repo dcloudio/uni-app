@@ -1,0 +1,50 @@
+export interface CallBack {
+  success?: Function | null,
+  fail?: Function | null,
+  complete?: Function | null
+}
+
+export class FileCallback {
+  successFn?: Function
+  failFn?: Function
+  completeFn?: Function
+  constructor(callback: CallBack = {}) {
+    if (typeof callback.success === 'function') this.successFn = callback.success
+    if (typeof callback.fail === 'function') this.failFn = callback.fail
+    if (typeof callback.complete === 'function') this.completeFn = callback.complete
+  }
+
+  success(...args: any[]) {
+    if (this.successFn) {
+      try {
+        this.successFn(...args)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    if (this.completeFn) {
+      try {
+        this.completeFn(...args)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+  }
+
+  fail(...args: any[]) {
+    if (this.failFn) {
+      try {
+        this.failFn(...args)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    if (this.completeFn) {
+      try {
+        this.completeFn(...args)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+framework module DCUniVideo {
+  umbrella header "DCUniVideo.h"
+  export *
+
+  module * { export * }
+}
+
+module DCUniVideo.Swift {
+  header "DCUniVideo-Swift.h"
+  requires objc
+}

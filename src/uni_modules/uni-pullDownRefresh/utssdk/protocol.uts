@@ -1,0 +1,2 @@
+export const API_START_PULL_DOWN_REFRESH = 'startPullDownRefresh'
+export const API_STOP_PULL_DOWN_REFRESH = 'stopPullDownRefresh'

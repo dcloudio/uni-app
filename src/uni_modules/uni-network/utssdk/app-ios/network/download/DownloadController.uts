@@ -1,0 +1,284 @@
+import { DownloadFileOptions, DownloadTask, DownloadFileProgressUpdateCallback, OnProgressDownloadResult } from '../../../interface.uts';
+import { NetworkDownloadFileListener } from '../NetworkManager.uts';
+import { UUID, Data, URL, URLResourceKey, URLSessionDataTask, URLSessionTask, URLSession, URLSessionConfiguration, OperationQueue, URLSessionDataDelegate, URLSessionDownloadTask, NSError, URLSessionDownloadDelegate, URLRequest, FileManager, NSString, NSTemporaryDirectory, NSHomeDirectory, CharacterSet, HTTPURLResponse } from 'Foundation';
+import { } from 'CommonCrypto';
+import { Int, UnsafeBufferPointer, UnsafeRawBufferPointer } from 'Swift';
+import { ObjCBool } from "ObjectiveC";
+import { NetworkUtil } from '../utils/NetworkUtil.uts';
+
+class NetworkDownloadTaskImpl implements DownloadTask {
+	private task : URLSessionDownloadTask | null = null;
+	private listener : NetworkDownloadFileListener | null = null;
+	constructor(task : URLSessionDownloadTask | null, listener : NetworkDownloadFileListener) {
+		this.task = task;
+		this.listener = listener;
+		super();
+	}
+
+	public abort() {
+		this.task?.cancel()
+		UTSiOS.destroyInstance(this)
+	}
+
+	public onProgressUpdate(option : DownloadFileProgressUpdateCallback) {
+		const kListener = this.listener;
+		if (kListener != null) {
+			kListener!.progressListeners.add(option);
+		}
+	}
+}
+
+
+
+export class DownloadController implements URLSessionDownloadDelegate {
+	private static instance : DownloadController | null = null
+
+	private session : URLSession | null = null;
+
+	private taskMap : Map<URLSessionTask, NetworkDownloadFileListener> = new Map<URLSessionTask, NetworkDownloadFileListener>();
+
+	public static getInstance() : DownloadController {
+		if (this.instance == null) {
+			this.instance = new DownloadController();
+		}
+		return this.instance!;
+	}
+
+	public downloadFile(options : DownloadFileOptions, listener : NetworkDownloadFileListener) : DownloadTask {
+		let request = this.createDownloadRequest(options, listener);
+		if (request == null) {
+			const task = new NetworkDownloadTaskImpl(null, listener)
+			listener.task = task;
+			return task;
+		}
+
+		if (this.session == null) {
+			let urlSessionConfig = URLSessionConfiguration.default;
+
+			this.session = new URLSession(configuration = urlSessionConfig, delegate = this, delegateQueue = OperationQueue.current);
+		}
+
+		let task = this.session?.downloadTask(with = request!);
+		task?.resume();
+
+		if (task != null) {
+			this.taskMap.set(task!, listener);
+		}
+		let requestTask = new NetworkDownloadTaskImpl(task, listener);
+		listener.task = requestTask
+		return requestTask;
+	}
+
+	private createDownloadRequest(options : DownloadFileOptions, listener : NetworkDownloadFileListener) : URLRequest | null {
+		const encodeUrl = NetworkUtil.percentEscapedString(options.url)
+		let url = new URL(string = encodeUrl);
+		if (url == null) {
+			let error = new NSError(domain = "invalid URL", code = 600009);
+			listener.onFail(error);
+			return null
+		}
+
+		let timeout = options.timeout == null ? 120000 : options.timeout;
+		let timeoutInterval = new Double(timeout!) / 1000;
+		let request = new URLRequest(url = url!, cachePolicy = URLRequest.CachePolicy.useProtocolCachePolicy, timeoutInterval = timeoutInterval);
+		request.httpShouldHandleCookies = true;
+		request.httpMethod = "GET";
+
+		let ua = UTSiOS.getUserAgent();
+		request.setValue(ua, forHTTPHeaderField = "User-Agent");
+
+		let headers = options.header?.toMap();
+		if (headers != null) {
+			for (entry in headers!) {
+				let key = entry.key;
+				let value = entry.value;
+				let valueStr = "";
+				if (value instanceof UTSJSONObject) {
+					valueStr = JSON.stringify(value) ?? ""
+				} else if (value instanceof Map<string, any>) {
+					valueStr = JSON.stringify(new UTSJSONObject(value)) ?? ""
+				} else {
+					valueStr = `${value}`
+				}
+				request.setValue(valueStr, forHTTPHeaderField = key);
+			}
+		}
+		return request;
+	}
+    
+
+	private convertToMD5(param : string) : string {
+		const strData = param.data(using = String.Encoding.utf8)!
+		let digest = new Array<UInt8>(repeating = 0, count = new Int(CC_MD5_DIGEST_LENGTH))
+		strData.withUnsafeBytes((body : UnsafeRawBufferPointer) => {
+			CC_MD5(body.baseAddress, new UInt32(strData.count), UTSiOS.getPointer(digest))
+		})
+		let md5String = ""
+		digest.forEach((byte : UInt8) => {
+			md5String += new String(format = "%02x", new UInt8(byte))
+		})
+
+		return md5String
+	}
+
+
+	private isSandBoxPath(path : string) : boolean {
+		return path.startsWith(NSHomeDirectory())
+	}
+
+	private getTempPath() : string {
+		let cacheDirectory = FileManager.default.urls(for = FileManager.SearchPathDirectory.cachesDirectory, in = FileManager.SearchPathDomainMask.userDomainMask).first!
+		return cacheDirectory.path
+	}
+
+	private getRealPath() : string {
+		return this.getTempPath() + "/uni-download/"
+	}
+
+
+	private getTargetPath(options : DownloadFileOptions | null, fileName : string, listener : NetworkDownloadFileListener | null) : string | null {
+		let targetPath = ""
+		let specifyPath = options?.filePath ?? ""
+		if (specifyPath.startsWith("unifile://")) {
+			specifyPath = UTSiOS.getResourceAbsolutePath(specifyPath, null);
+		}
+		let hasFileName = false;
+		if (specifyPath != "") {
+			const pos = specifyPath.lastIndexOf("/")
+			if (pos == specifyPath.length - 1) {
+				//如果filePath是目录
+				if (this.isSandBoxPath(specifyPath)) {
+					targetPath = specifyPath
+				} else {
+					targetPath = this.getTempPath() + "/" + specifyPath
+				}
+			} else {
+				let path = "";
+				if (this.isSandBoxPath(specifyPath)) {
+					path = specifyPath;
+				} else {
+					path = this.getTempPath() + "/" + specifyPath
+				}
+				let fileManager = FileManager.default
+				var isDirectory : ObjCBool = false
+				if (fileManager.fileExists(atPath = path, isDirectory = UTSiOS.getPointer(isDirectory))) {
+					if (isDirectory.boolValue) {
+						let error = new NSError(domain = "The target file path is already a directory file, and file creation failed.", code = 602001);
+						listener?.onFail(error);
+						return null
+					}
+				}
+				targetPath = path
+				hasFileName = true
+			}
+		} else {
+			targetPath = this.getRealPath()
+		}
+		if (!hasFileName) {
+			targetPath += fileName
+		}
+		let fileManager = FileManager.default
+		if (fileManager.fileExists(atPath = targetPath)) {
+			const index = targetPath.lastIndexOf(".");
+			let tFileName = targetPath;
+			let tFileType = "";
+			if (index >= 0) {
+				tFileName = targetPath.substring(0, index as Int)
+				tFileType = targetPath.substring(index as Int)
+			}
+
+			var number = 1
+			while (fileManager.fileExists(atPath = targetPath)) {
+				targetPath = tFileName + `(${number})` + tFileType;
+				number++
+			}
+		}
+
+		return targetPath
+	}
+
+	private getFileName(fileName : string, url : URL | null) : string {
+		var suggestedFilename = fileName
+
+		if (suggestedFilename != "") {
+			let cString = suggestedFilename.cString(using = String.Encoding.isoLatin1)
+			if (cString != null) {
+				suggestedFilename = new String(cString = cString!, encoding = String.Encoding.utf8) ?? suggestedFilename
+			}
+
+			let cleanUri = suggestedFilename.removingPercentEncoding
+			if (cleanUri != null && cleanUri!.length > 0) {
+				suggestedFilename = cleanUri!
+			}
+
+			suggestedFilename = suggestedFilename.replacingOccurrences(of = "/", with = "")
+			suggestedFilename = suggestedFilename.replacingOccurrences(of = "\\", with = "")
+		} else {
+			if (url == null) {
+				suggestedFilename = ""
+			} else {
+				suggestedFilename = this.convertToMD5(url!.absoluteString)
+			}
+		}
+
+		if (suggestedFilename.length > 255) {
+			let extensionType = (suggestedFilename as NSString).pathExtension
+			suggestedFilename = this.convertToMD5((suggestedFilename as NSString).deletingPathExtension)
+			if (extensionType != "") {
+				suggestedFilename = (suggestedFilename as NSString).appendingPathExtension(extensionType) ?? suggestedFilename
+			}
+		}
+
+		return suggestedFilename
+	}
+
+
+	//mark --- URLSessionDownloadDelegate
+
+	urlSession(session : URLSession, @argumentLabel("") downloadTask : URLSessionDownloadTask, @argumentLabel("didWriteData") bytesWritten : Int64, @argumentLabel("") totalBytesWritten : Int64, @argumentLabel("") totalBytesExpectedToWrite : Int64) {
+		let listener = this.taskMap.get(downloadTask);
+		const progress = (Number.from(totalBytesWritten) / totalBytesExpectedToWrite) * 100
+		const progressUpdate : OnProgressDownloadResult = {
+			progress: progress.toInt(),
+			totalBytesWritten: totalBytesWritten,
+			totalBytesExpectedToWrite: totalBytesExpectedToWrite
+		}
+		listener?.onProgress(progressUpdate)
+	}
+
+	urlSession(session : URLSession, @argumentLabel("") downloadTask : URLSessionDownloadTask, @argumentLabel("didFinishDownloadingTo") location : URL) {
+		let listener = this.taskMap.get(downloadTask);
+		let suggestedFilename = downloadTask.response?.suggestedFilename
+		const statusCode = (downloadTask.response as HTTPURLResponse).statusCode
+		if (statusCode - 200 < 100 && statusCode - 200 >= 0) {
+			const fileName = this.getFileName(suggestedFilename ?? "", downloadTask.response?.url)
+			let destPath = this.getTargetPath(listener?.options, fileName, listener);
+			if (destPath != null) {
+				let fileManager = FileManager.default
+				try {
+					let directoryPath = (destPath as NSString).deletingLastPathComponent
+					if (!fileManager.fileExists(atPath = directoryPath)) {
+						UTSiOS.try(fileManager.createDirectory(atPath = directoryPath, withIntermediateDirectories = true, attributes = null), "?")
+					}
+					UTSiOS.try(fileManager.moveItem(atPath = location.path, toPath = destPath!), "?")
+					listener?.onFinished(downloadTask.response as HTTPURLResponse, destPath!);
+				} catch {
+					let error = new NSError(domain = "file move fail", code = 602001);
+					listener?.onFail(error);
+				}
+			}
+		} else {
+			let error = new NSError(domain = "request fail", code = statusCode);
+			listener?.onFail(error);
+		}
+		this.taskMap.delete(downloadTask);
+	}
+
+	urlSession(session : URLSession, @argumentLabel("") task : URLSessionTask, @argumentLabel("didCompleteWithError") error : NSError | null) {
+		if (error != null) {
+			let listener = this.taskMap.get(task);
+			listener?.onFail(error as NSError);
+			this.taskMap.delete(task);
+		}
+	}
+}

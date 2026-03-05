@@ -1,0 +1,93 @@
+// #ifndef UNI-APP-X
+import { UIPopoverArrowDirection , UIDevice , UIUserInterfaceIdiom, CGRect, UIInterfaceOrientationMask } from "UIKit"
+import { UTSiOS } from "DCloudUTSFoundation"
+import { DispatchQueue } from 'Dispatch';
+import { ShowActionSheetOptions, ShowActionSheetSuccess, ShowActionSheetFail } from '../interface.uts'
+import { PromptErrorImpl } from "../unierror.uts"
+// // #ifdef UNI-APP-X
+// import { UniSDKEngine } from "DCloudUniappRuntime"
+// // #endif
+
+
+export function actionSheet(options : ShowActionSheetOptions) {
+	const itemList = options.itemList!
+	if (itemList.length < 1) {
+		let res = new PromptErrorImpl(1001, "showActionSheet:fail parameter error: parameter.itemList should have at least 1 item");
+		options.fail?.(res)
+		options.complete?.(res)
+		return
+	}
+	
+	/**
+	 * 元素个数不能超过6个
+	 */
+	if(options.itemList.count > 6){
+		let res = new PromptErrorImpl(1001, "showActionSheet:fail parameter error: itemList should not be large than 6");
+		options.fail?.(res)
+		options.complete?.(res)
+		return ;
+	}
+
+	// uts方法默认会在子线程中执行，涉及 UI 操作必须在主线程中运行，通过 DispatchQueue.main.async 方法可将代码在主线程中运行
+	DispatchQueue.main.async(execute = () : void => {
+		// 初始化actionSheet的实例
+		
+		let supportedInterfaceOrientations : UIInterfaceOrientationMask | null = null
+		// // #ifdef UNI-APP-X
+		// supportedInterfaceOrientations = UniSDKEngine.shared.getAppManager()?.getCurrentApp()?.appConfig.supportedInterfaceOrientations
+		// // #endif
+		
+		let actionSheet = DCActionSheetController.init(noticeTitle = options.title ?? "", supportedInterfaceOrientations = supportedInterfaceOrientations)
+		 
+		// 创建普通按钮
+		itemList.forEach((item : string, index : number) => {
+			
+			let action = DCAlertAction.init(title = item, style = DCAlertActionStyle.defaultStyle, handler = (action: DCAlertAction): void => {
+				// 点击按钮的回调方法
+				const res: ShowActionSheetSuccess = {
+					tapIndex: index,
+				}
+				options.success?.(res)
+				options.complete?.(res)   
+			})
+		
+			if (options.itemColor != null) {
+				const color = UTSiOS.colorWithString(options.itemColor!)
+				action.titleColor = color
+			}
+			actionSheet.addAction(action)
+		})
+		let cancelAction = DCAlertAction.init(title = "取消", style = DCAlertActionStyle.cancelStyle, handler = (action: DCAlertAction): void => {
+				// 点击按钮的回调方法
+				let res = new PromptErrorImpl(1, "showActionSheet:fail cancel");
+				options.fail?.(res)
+				options.complete?.(res)
+		})
+		if (options.itemColor != null) {
+			const color = UTSiOS.colorWithString(options.itemColor!)
+			cancelAction.titleColor = color
+		}
+		actionSheet.addAction(cancelAction)
+		
+		// 判断是否设置popover
+		const isPad = UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad
+		if (options.popover != null && isPad == true) {
+			let popoverController = actionSheet.popoverPresentationController
+			if (popoverController != null) {
+				let sourceView = UTSiOS.getCurrentViewController().view
+				if (sourceView != null) {
+					let sourceRect = CGRect(x = options.popover!.left.toDouble(), y = options.popover!.top.toDouble(), width = options.popover!.width.toDouble(), height = options.popover!.height.toDouble())
+					if (options.popover!.height == -1) {
+						sourceRect = CGRect(x = sourceView!.bounds.midX, y = sourceView!.bounds.maxY, width = 1.0, height = 1.0)
+					}
+					popoverController!.sourceView = sourceView
+					popoverController!.sourceRect = sourceRect
+					popoverController!.permittedArrowDirections = UIPopoverArrowDirection.any
+				}
+			}
+		}
+		actionSheet.show()
+	})
+}
+
+// #endif

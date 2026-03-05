@@ -1,0 +1,322 @@
+import { UTSiOS, UniJsSwiftApiWrapper } from "DCloudUTSFoundation";
+import { CGRect } from 'CoreFoundation';
+import { WKWebView } from 'WebKit'
+import { TakeSnapshotSuccess, TakeSnapshotFail, TakeSnapshotOptions } from 'DCloudUniappRuntime'
+
+import {
+	CreateWebViewContext,
+	CreateWebviewContext,
+	WebViewContext,
+	WebviewContext,
+	UniWebViewElementLoadDataOptions,
+	UniWebViewContextLoadDataOptions,
+	WebViewStyles
+} from '../interface'
+import { NSNumber } from 'Foundation';
+
+export interface UniWebViewElement extends JSExport, UniElement {
+	back() : void;
+	forward() : void;
+	reload() : void;
+	stop() : void;
+	evalJS(js : string) : void;
+	getContentHeight() : number;
+	loadData(options : any) : void;
+}
+
+
+class UniWebViewElementImpl extends UniElementImpl implements UniWebViewElement {
+
+	override tagName : string = 'WEB-VIEW'
+	override nodeName : string = 'WEB-VIEW'
+	private nativeWebview : InnerWebView | null = null;
+
+	@UTSiOS.keyword("fileprivate")
+	setWebView(nativeWebview : InnerWebView | null) {
+		this.nativeWebview = nativeWebview
+		if (this.nativeWebview != null) {
+			this.nativeWebview!.domNode = this
+		}
+	}
+
+	override getIOSView() : UIView | null {
+		const nativeElement = this.firstChild as UniNativeViewElement
+		if (nativeElement == null) {
+			return null
+		} else {
+			return nativeElement.getIOSView()
+		}
+	}
+
+	back() {
+		this.nativeWebview?.back()
+	}
+
+	forward() {
+		this.nativeWebview?.forward()
+	}
+
+	reload() {
+		this.nativeWebview?.reloadWebView()
+	}
+
+	stop() {
+		this.nativeWebview?.stop()
+	}
+
+	evalJS(js : string) {
+		this.nativeWebview?.evalJS(js)
+	}
+
+	getContentHeight() : number {
+		return this.nativeWebview?.getContentHeight() ?? 0
+	}
+
+	loadData(options : any) {
+		let data : string = ""
+		let baseURL : string | null = ""
+		let encoding : string | null = ""
+		if (options instanceof Map<string, any>) {
+			let option = options as Map<string, any>
+			if (typeof option["data"] == "string") {
+				data = option["data"] as string
+			}
+			if (typeof option["baseURL"] == "string") {
+				baseURL = option["baseURL"] as string
+			}
+			if (typeof option["encoding"] == "string") {
+				encoding = option["encoding"] as string
+			}
+		} else if (options instanceof UniWebViewElementLoadDataOptions) {
+			let option = options as UniWebViewElementLoadDataOptions
+			data = option.data
+			baseURL = option.baseURL
+			encoding = option.encoding
+		}
+
+		let option : UniWebViewContextLoadDataOptions = {
+			data: data,
+			baseURL: baseURL,
+			encoding: encoding
+		}
+		this.nativeWebview?.loadData(option)
+	}
+
+	override takeSnapshot(options : TakeSnapshotOptions) {
+		if (UTSiOS.instanceof(this.getIOSView(), WKWebView.self)) {
+			const webview = this.getIOSView() as WKWebView
+			webview.inner__takeSnapShotPath(backgroundColor = this.component?.view.backgroundColor, completion = (path : string | null) : void => {
+				if (path != null) {
+					UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+						const takeSnapshotSuccess : TakeSnapshotSuccess = {
+							tempFilePath: path!
+						}
+						options.success?.(takeSnapshotSuccess)
+						options.complete?.(takeSnapshotSuccess)
+					})
+				} else {
+					UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+						const takeSnapshotFail : TakeSnapshotFail = {
+							errMsg: 'Snapshot failed'
+						}
+						options.fail?.(takeSnapshotFail)
+						options.complete?.(takeSnapshotFail)
+					})
+				}
+			})
+		}
+	}
+}
+
+export class NativeWebView {
+	element : UniNativeViewElement;
+	webView : InnerWebView | null = null;
+
+	constructor(element : UniNativeViewElement) {
+		//接收传递过来的UniNativeViewElement
+		this.element = element;
+		super.init()
+		this.bindView();
+		(this.element.parentElement as UniWebViewElementImpl).setWebView(this.webView);
+	}
+
+	bindView() {
+		this.webView = new InnerWebView()
+		if (this.webView != null) {
+			this.element.bindIOSView(this.webView!)
+		}
+		this.addCallback()
+	}
+
+	addCallback() {
+		this.setOnLoadingCallback()
+		this.setOnLoadedCallback()
+		this.setOnLoadCallback()
+		this.setOnErrorCallback()
+		this.setOnMessageCallback()
+		this.setOnDownloadCallback()
+		this.setOnContentHeightChangeCallback()
+		this.setOnDidTerminateCallback()
+		this.setOnServiceMessageCallback()
+	}
+
+	setOnLoadingCallback() {
+		this.webView?.setOnLoadingCallback((event : UniNativeViewEvent) : void => {
+			this.element.dispatchEvent('loading', event)
+		})
+	}
+
+	setOnLoadedCallback() {
+		this.webView?.setOnLoadedCallback((event : UniNativeViewEvent) : void => {
+			this.element.dispatchEvent('loaded', event)
+		})
+	}
+
+	setOnLoadCallback() {
+		this.webView?.setOnLoadCallback((event : UniNativeViewEvent) : void => {
+			this.element.dispatchEvent('load', event)
+		})
+	}
+
+	setOnErrorCallback() {
+		this.webView?.setOnErrorCallback((event : UniNativeViewEvent) : void => {
+			this.element.dispatchEvent('error', event)
+		})
+	}
+
+	setOnMessageCallback() {
+		this.webView?.setOnMessageCallback((event : UniNativeViewEvent) : void => {
+			this.element.dispatchEvent('message', event)
+		})
+	}
+
+	setOnDownloadCallback() {
+		this.webView?.setOnDownloadCallback((event : UniNativeViewEvent) : void => {
+			this.element.dispatchEvent('download', event)
+		})
+	}
+
+	setOnContentHeightChangeCallback() {
+		this.webView?.setOnContentHeightChangeCallback((event : UniNativeViewEvent) : void => {
+			this.element.dispatchEvent('contentheightchange', event)
+		})
+	}
+
+	setOnDidTerminateCallback() {
+		this.webView?.setOnDidTerminateCallback((event : UniNativeViewEvent) : void => {
+			this.element.dispatchEvent('didterminate', event)
+		})
+	}
+
+	setOnServiceMessageCallback() {
+		this.webView?.setOnServiceMessageCallback((event : UniNativeViewEvent) : void => {
+			this.element.dispatchEvent('onWebViewServiceMessage', event)	
+		})
+	}
+
+	setSrc(src : string | null) {
+		this.webView?.setSrc(src)
+	}
+
+	setWebViewStyles(wvStyles : WebViewStyles | null) {
+		let showProgress : boolean = true
+		let progressColor : string = "#00FF00"
+		if (wvStyles?.progress != null && typeof wvStyles?.progress! == "boolean") {
+			showProgress = wvStyles as Bool
+		} else if (wvStyles?.progress instanceof Map<string, any>) {
+			let progress = wvStyles?.progress! as Map<string, any>
+			if (typeof progress["color"] == "string") {
+				const colorHex = progress["color"] as string
+				progressColor = colorHex ?? "#00FF00"
+			}
+		}
+		this.webView?.setWebViewStyles(isShow = showProgress, color = UTSiOS.colorWithString(progressColor))
+	}
+
+	setHorizontalScrollBarAccess(horizontalScrollBarAccess : boolean) {
+		this.webView?.setHorizontalScrollBarAccess(horizontalScrollBarAccess)
+	}
+
+	setVerticalScrollBarAccess(verticalScrollBarAccess : boolean) {
+		this.webView?.setVerticalScrollBarAccess(verticalScrollBarAccess)
+	}
+
+	setBounces(bounces : boolean) {
+		this.webView?.setBounces(bounces)
+	}
+
+	setDisableUserSelectMenu(disableUserSelectMenu : boolean) {
+		this.webView?.setDisableUserSelectMenu(disableUserSelectMenu)
+	}
+
+	destroy() {
+		UTSiOS.destroyInstance(this)
+	}
+}
+
+
+export const createWebViewContext : CreateWebViewContext = function (webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null) : WebViewContext | null {
+	let webviewElement : UniWebViewElement | null = null;
+
+	if (component == null) {
+		webviewElement = uni.getElementById(webviewId) as UniWebViewElement | null
+	} else {
+		webviewElement = component?.$el(webviewId) as UniWebViewElement | null
+	}
+
+	if (webviewElement == null) return null
+
+	return new WebViewContextImpl(webviewElement!)
+}
+
+export const createWebviewContext : CreateWebviewContext = function (webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null) : WebviewContext | null {
+	let webviewElement : UniWebViewElement | null = null;
+
+	if (component == null) {
+		webviewElement = uni.getElementById(webviewId) as UniWebViewElement | null
+	} else {
+		webviewElement = component?.$el(webviewId) as UniWebViewElement | null
+	}
+
+	if (webviewElement == null) return null
+
+	return new WebViewContextImpl(webviewElement!)
+}
+
+class WebViewContextImpl implements WebViewContext {
+
+	@UTSiOS.keyword("weak")
+	private webviewElement : UniWebViewElement | null = null;
+
+	constructor(webviewElement : UniWebViewElement) {
+		this.webviewElement = webviewElement;
+	}
+
+	back() {
+		this.webviewElement?.back();
+	}
+
+	forward() {
+		this.webviewElement?.forward();
+	}
+
+	reload() {
+		this.webviewElement?.reload();
+	}
+
+	stop() {
+		this.webviewElement?.stop();
+	}
+
+	evalJS(js : string) {
+		this.webviewElement?.evalJS(js);
+	}
+
+	getContentHeight() : number {
+		return this.webviewElement?.getContentHeight() ?? 0;
+	}
+
+	loadData(options : any) {
+		this.webviewElement?.loadData(options)
+	}
+}

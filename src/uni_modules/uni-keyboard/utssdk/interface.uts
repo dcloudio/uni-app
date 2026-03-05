@@ -1,0 +1,234 @@
+/**
+ * uni.hideKeyboard成功回调参数
+ */
+export type HideKeyboardSuccess = {}
+
+export type HideKeyboardFail = {}
+/**
+ * uni.hideKeyboard成功回调函数定义
+ */
+export type HideKeyboardSuccessCallback = (res : HideKeyboardSuccess) => void
+/**
+ * uni.hideKeyboard失败回调函数定义
+ */
+export type HideKeyboardFailCallback = (res : HideKeyboardFail) => void
+/**
+ * uni.hideKeyboard完成回调函数定义
+ */
+export type HideKeyboardCompleteCallback = (res : any) => void
+
+/**
+ * uni.hideKeyboard参数定义
+ */
+export type HideKeyboardOptions = {
+	/**
+	 * 接口调用成功的回调函数
+	 */
+	success ?: HideKeyboardSuccessCallback | null,
+	/**
+	 * 接口调用失败的回调函数
+	 */
+	fail ?: HideKeyboardFailCallback | null,
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 */
+	complete ?: HideKeyboardCompleteCallback | null
+}
+
+/**
+ * uni.onKeyboardHeightChange参数定义
+ */
+export type OnKeyboardHeightChangeCallback = (res : OnKeyboardHeightChangeCallbackResult) => void
+
+export type OnKeyboardHeightChangeCallbackResult = {
+	/**
+	 * 键盘高度
+	 */
+	height : number
+}
+
+// export type GetSelectedTextRangeOptions = {
+// 	/**
+// 	 * 接口调用成功的回调函数
+// 	 */
+// 	success ?: GetSelectedTextRangeSuccessCallback | null,
+// 	/**
+// 	 * 接口调用失败的回调函数
+// 	 */
+// 	fail ?: GetSelectedTextRangeFailCallback | null,
+// 	/**
+// 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+// 	 */
+// 	complete ?: GetSelectedTextRangeCompleteCallback | null
+// }
+
+// export type GetSelectedTextRangeSuccessCallback = (res : GetSelectedTextRangeSuccess) => void
+
+// export type GetSelectedTextRangeFailCallback = (res : GetSelectedTextRangeFail) => void
+
+// export type GetSelectedTextRangeCompleteCallback = (res : any) => void
+
+// export type GetSelectedTextRangeSuccess = {
+// 	/**
+// 	 * 输入框光标起始位置
+// 	 * @uniPlatform {
+// 	 *    "app": {
+// 	 *      "ios": {
+// 	*        "osVer": "12.0",
+// 	*        "uniVer": "√",
+// 	*        "unixVer": "4.61"
+// 	*      }
+// 	 *  }
+// 	 * }
+// 	 */
+// 	start : number,
+// 	/**
+// 	 * 输入框光标结束位置
+// 	 * @uniPlatform {
+// 	 *    "app": {
+// 	 *      "ios": {
+// 	*        "osVer": "12.0",
+// 	*        "uniVer": "√",
+// 	*        "unixVer": "4.61"
+// 	*      }
+// 	 *  }
+// 	 * }
+// 	 */
+// 	end : number
+// }
+
+// export type GetSelectedTextRangeFail = {
+
+// }
+
+export interface Uni {
+	/**
+	 * 隐藏键盘
+	 *
+	* @tutorial_uni_app https://uniapp.dcloud.net.cn/api/key.html#hidekeyboard
+	* @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#hidekeyboard
+	* @tutorial https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#hidekeyboard
+	 * @uniPlatform {
+	 *    "app": {
+	 *      "android": {
+	*        "osVer": "5.0",
+	*        "uniVer": "√",
+	*        "unixVer": "4.71"
+	*      },
+	 *      "ios": {
+	*        "osVer": "12.0",
+	*        "uniVer": "√",
+	*        "unixVer": "4.71"
+	*      },
+	 *      "harmony": {
+	 *        "osVer": "3.0",
+	 *        "uniVer": "4.23",
+	 *        "unixVer": "4.61",
+	 *        "unixvVer": "5.0"
+	 *      }
+	 *  },
+	 *  "mp": {
+	 *    "weixin": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    }
+	 *  },
+	 *  "web": {
+	 *    "uniVer": "√",
+	 *    "unixVer": "4.0"
+	 *  }
+	 * }
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 */
+	hideKeyboard(options ?: HideKeyboardOptions | null) : void;
+
+	/**
+	 * 监听键盘高度变化事件
+	* @tutorial_uni_app https://uniapp.dcloud.net.cn/api/key.html#onkeyboardheightchange
+	* @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#onkeyboardheightchange
+	* @tutorial https://uniapp.dcloud.net.cn/api/key.html#onkeyboardheightchange
+	 * @uniPlatform {
+	 *    "app": {
+	 *      "android": {
+	*        "osVer": "5.0",
+	*        "uniVer": "√",
+	*        "unixVer": "4.71"
+	*      },
+	 *      "ios": {
+	*        "osVer": "12.0",
+	*        "uniVer": "√",
+	*        "unixVer": "4.71"
+	*      }
+	 *  }
+	 * }
+	 */
+	onKeyboardHeightChange(callback: OnKeyboardHeightChangeCallback): number
+
+	/**
+	 * 移除键盘高度变化事件的监听函数
+	* @tutorial_uni_app https://uniapp.dcloud.net.cn/api/key.html#offkeyboardheightchange
+	* @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#offkeyboardheightchange
+	* @tutorial https://uniapp.dcloud.net.cn/api/key.html#offkeyboardheightchange
+	 * @uniPlatform {
+	 *    "app": {
+	 *      "android": {
+	*        "osVer": "5.0",
+	*        "uniVer": "√",
+	*        "unixVer": "4.71"
+	*      },
+	 *      "ios": {
+	*        "osVer": "12.0",
+	*        "uniVer": "√",
+	*        "unixVer": "4.71"
+	*      }
+	 *  }
+	 * }
+	 */
+	offKeyboardHeightChange(id ?: number | null): void
+
+	// getSelectedTextRange(options : GetSelectedTextRangeOptions): void
+}
+
+export type HideKeyboard = (options ?: HideKeyboardOptions | null) => void;
+
+export type OnKeyboardHeightChange = (callback: OnKeyboardHeightChangeCallback) => number;
+
+export type OffKeyboardHeightChange = (id ?: number | null) => void;
+
+// export type GetSelectedTextRange = (options : GetSelectedTextRangeOptions) => void;

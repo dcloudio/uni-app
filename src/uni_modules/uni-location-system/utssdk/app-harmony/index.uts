@@ -1,0 +1,146 @@
+import { UniLocationSystemProvider } from '../interface.uts'
+import { startLocationUpdate, startLocationUpdateBackground, stopLocationUpdate, onLocationChange, onLocationChangeError } from './locationChange.uts'
+import { BusinessError } from '@kit.BasicServicesKit';
+import geoLocationManager from '@ohos.geoLocationManager'
+import abilityAccessCtrl from '@ohos.abilityAccessCtrl'
+import type common from '@ohos.app.ability.common'
+import mapCommon from '@hms.core.map.mapCommon'
+import map from '@hms.core.map.map'
+
+const defaultErrorCode: number = 1505602
+const errorCodeMap: Map<string, number> = new Map([
+    ['3301000', 1505602],
+    ['3301100', 1505003],
+    ['PERMISSION_ERROR', 1505004],
+    ['COORDS_TYPE_ERROR', 1505601],
+    ['default', 1505602],
+    ['3301300', 1505603],
+])
+
+type Permission =
+    | 'ohos.permission.APPROXIMATELY_LOCATION'
+    | 'ohos.permission.LOCATION'
+    | 'ohos.permission.LOCATION_IN_BACKGROUND'
+
+async function requestPermission(permissions: Permission[]): Promise<boolean> {
+    const context = getContext() as common.UIAbilityContext
+    const atManager: abilityAccessCtrl.AtManager =
+        abilityAccessCtrl.createAtManager()
+    const permissionRequestResult = await atManager.requestPermissionsFromUser(
+        context,
+        permissions,
+    )
+    const isGranted = permissionRequestResult.authResults.every(
+        item => item === 0,
+    )
+    return isGranted
+}
+
+async function _getLocation(options: GetLocationOptions): Promise<string | GetLocationSuccess> {
+    const permissions = ['ohos.permission.APPROXIMATELY_LOCATION'] as Permission[]
+    const enableHighAccuracy = options.isHighAccuracy
+    const type = options.type
+    const geocode = options.geocode
+    if (enableHighAccuracy) {
+        permissions.push('ohos.permission.LOCATION')
+    }
+    const isGranted: boolean = await requestPermission(permissions)
+    if (!isGranted) {
+        return 'PERMISSION_ERROR'
+    }
+    const currentLocationRequest: geoLocationManager.CurrentLocationRequest = {
+        priority: enableHighAccuracy
+            ? geoLocationManager.LocationRequestPriority.ACCURACY
+            : geoLocationManager.LocationRequestPriority.FIRST_FIX,
+        scenario: geoLocationManager.LocationRequestScenario.UNSET,
+    }
+    if (options.highAccuracyExpireTime) {
+        currentLocationRequest.timeoutMs = options.highAccuracyExpireTime
+    }
+    const location: geoLocationManager.Location = await geoLocationManager.getCurrentLocation(
+        currentLocationRequest,
+    )
+    const locationResult: GetLocationSuccess = {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        speed: location.speed,
+        accuracy: location.accuracy,
+        altitude: location.altitude,
+        verticalAccuracy: location.altitudeAccuracy || 0,
+        horizontalAccuracy: location.directionAccuracy || 0,
+        address: null,
+    }
+    if (geocode) {
+        const addresses: geoLocationManager.GeoAddress[] = await geoLocationManager.getAddressesFromLocation(
+            {
+                latitude: location.latitude,
+                longitude: location.longitude,
+            } as geoLocationManager.Location,
+        )
+        locationResult.address = addresses[0]?.placeName || null
+    }
+    if (type === 'gcj02') {
+        const gcj02Posion: mapCommon.LatLng = await map.convertCoordinate(
+            mapCommon.CoordinateType.WGS84,
+            mapCommon.CoordinateType.GCJ02,
+            {
+                latitude: location.latitude,
+                longitude: location.longitude,
+            } as mapCommon.LatLng,
+        )
+        locationResult.latitude = gcj02Posion.latitude
+        locationResult.longitude = gcj02Posion.longitude
+    }
+    return locationResult
+}
+
+export class UniLocationSystemProviderImpl implements UniLocationSystemProvider {
+    id: string = "system"
+    description: string = "系统定位"
+    constructor() { }
+    getLocation(options: GetLocationOptions) {
+        _getLocation(options).then((locationOrErrCode: string | GetLocationSuccess) => {
+            if (typeof locationOrErrCode === 'string') {
+                options.fail?.({
+                    errCode: errorCodeMap.get(locationOrErrCode) ?? defaultErrorCode
+                } as GetLocationFail)
+                return
+            }
+            options.success?.(locationOrErrCode as GetLocationSuccess)
+        }, (err: BusinessError) => {
+            options.fail?.({
+                errCode: errorCodeMap.get(err.code + '') ?? defaultErrorCode
+            } as GetLocationFail)
+        }).catch(() => { })
+    }
+    startLocationUpdate(options: StartLocationUpdateOptions) {
+        startLocationUpdate(options)
+            .then(() => {
+                options.success?.({} as StartLocationUpdateSuccess)
+            })
+            .catch((err: GetLocationFail) => {
+                options.fail?.(err)
+            })
+    }
+    startLocationUpdateBackground(options: StartLocationUpdateBackgroundOptions) {
+        startLocationUpdateBackground(options)
+            .then(() => {
+                options.success?.({} as StartLocationUpdateBackgroundSuccess)
+            })
+            .catch((err: GetLocationFail) => {
+                options.fail?.(err)
+            })
+    }
+    stopLocationUpdate(options: StopLocationUpdateOptions) {
+        stopLocationUpdate()
+        options.success?.({} as StopLocationUpdateSuccess)
+    }
+    onLocationChange(callback: OnLocationChangeCallback) {
+        onLocationChange(callback)
+        return -1
+    }
+    onLocationChangeError(callback: OnLocationChangeErrorCallback) {
+        onLocationChangeError(callback)
+        return -1
+    }
+}

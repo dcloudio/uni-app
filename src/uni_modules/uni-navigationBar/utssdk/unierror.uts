@@ -1,0 +1,34 @@
+import {
+    SetNavigationBarColorErrorCode,
+    SetNavigationBarColorFail,
+    SetNavigationBarTitleErrorCode,
+    SetNavigationBarTitleFail,
+} from './interface.uts'
+
+export class SetNavigationBarColorFailImpl
+    extends UniError
+    implements SetNavigationBarColorFail
+{
+    errCode: SetNavigationBarColorErrorCode
+    constructor(
+        errMsg: string = '',
+        errCode: SetNavigationBarColorErrorCode = 4,
+    ) {
+        super(errMsg)
+        this.errCode = errCode
+    }
+}
+
+export class SetNavigationBarTitleFailImpl
+    extends UniError
+    implements SetNavigationBarTitleFail
+{
+    errCode: SetNavigationBarTitleErrorCode
+    constructor(
+        errMsg: string = '',
+        errCode: SetNavigationBarTitleErrorCode = 4,
+    ) {
+        super(errMsg)
+        this.errCode = errCode
+    }
+}

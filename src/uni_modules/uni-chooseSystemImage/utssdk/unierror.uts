@@ -1,0 +1,25 @@
+import { ImageErrorCode, ChooseSystemImageError } from "./interface.uts"
+export const ImageUniErrors : Map<number, string> = new Map([
+	/**
+	 * 用户取消
+	 */
+	[2101001, 'user cancel'],
+	[2101002, 'fail parameter error'],
+	[2101005, "No Permission"],
+	/**
+	 * 其他错误
+	 */
+	[2101010, "unexpect error:"]
+]);
+
+export class ImageErrorImpl extends UniError implements ChooseSystemImageError {
+	// #ifdef APP-ANDROID
+	override errCode : ImageErrorCode
+	// #endif
+	constructor(errCode : ImageErrorCode, uniErrorSubject : string) {
+		super()
+		this.errSubject = uniErrorSubject
+		this.errCode = errCode
+		this.errMsg = ImageUniErrors.get(errCode) ?? "";
+	}
+}

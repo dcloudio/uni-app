@@ -1,0 +1,11 @@
+{
+	"frameworks": [
+		"CoreGraphics.framework",
+		"WebKit.framework",
+		"Security.framework"
+	],
+	"deploymentTarget": "12.0",
+	"thirdSDKs": [
+		"weixin"
+	]
+}

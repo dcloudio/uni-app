@@ -1,0 +1,43 @@
+import {
+    NavigateBackFail,
+    NavigateToFail,
+    ReLaunchFail,
+    RedirectToFail,
+    RouteErrorCode,
+    SwitchTabFail,
+} from './interface.uts'
+
+export class NavigateBackFailImpl extends UniError implements NavigateBackFail {
+    override errCode: RouteErrorCode
+    constructor(errMsg: string = '', errCode: RouteErrorCode = 4) {
+        super('uni-navigateBack', errCode, errMsg)
+    }
+}
+
+export class NavigateToFailImpl extends UniError implements NavigateToFail {
+    override errCode: RouteErrorCode
+    constructor(errMsg: string = '', errCode: RouteErrorCode = 4) {
+        super('uni-navigateTo', errCode, errMsg)
+    }
+}
+
+export class RedirectToFailImpl extends UniError implements RedirectToFail {
+    override errCode: RouteErrorCode
+    constructor(errMsg: string = '', errCode: RouteErrorCode = 4) {
+        super('uni-redirectTo', errCode, errMsg)
+    }
+}
+
+export class ReLaunchFailImpl extends UniError implements ReLaunchFail {
+    override errCode: RouteErrorCode
+    constructor(errMsg: string = '', errCode: RouteErrorCode = 4) {
+        super('uni-reLaunch', errCode, errMsg)
+    }
+}
+
+export class SwitchTabFailImpl extends UniError implements SwitchTabFail {
+    override errCode: RouteErrorCode
+    constructor(errMsg: string = '', errCode: RouteErrorCode = 4) {
+        super('uni-switchTab', errCode, errMsg)
+    }
+}

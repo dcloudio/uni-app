@@ -1,0 +1,28 @@
+import { InnerAudioContext, CreateInnerAudioContext, SetInnerAudioOption, SetInnerAudioOptionOptions,SetInnerAudioOptionSuccess } from "../interface.uts"
+import AudioPlayer from "uts.sdk.modules.uniCreateInnerAudioContext.AudioPlayer";
+import AudioFocusHelper from "uts.sdk.modules.uniCreateInnerAudioContext.AudioFocusHelper";
+export { CreateInnerAudioContextFailImpl } from '../unierror.uts'
+
+export const createInnerAudioContext : CreateInnerAudioContext = function () : InnerAudioContext {
+	let player = new AudioPlayer()
+	return player
+}
+
+export const setInnerAudioOption : SetInnerAudioOption = function (options : SetInnerAudioOptionOptions) {
+	var mixWithOther = true
+	if (options.mixWithOther == null) {
+		mixWithOther = true
+	} else {
+		mixWithOther = options.mixWithOther!
+	}
+	var speakerOn = true
+	if(options.speakerOn == null) {
+		speakerOn = true
+	} else {
+		speakerOn = options.speakerOn!
+	}
+	AudioFocusHelper.getInstance(UTSAndroid.getAppContext()!).mixWithOther = mixWithOther
+	AudioFocusHelper.getInstance(UTSAndroid.getAppContext()!).speakerOn = speakerOn
+	options?.success?.({})
+	options?.complete?.({})
+}

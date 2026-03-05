@@ -1,0 +1,53 @@
+import { CreateWebviewContext, WebviewContext, UniWebviewContextLoadDataOptions } from '../interface.uts';
+
+export const createWebviewContext : CreateWebviewContext = function (webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null) : WebviewContext | null {
+	let webviewElement : UniElement | null = null;
+	if (component == null) {
+		const pages = getCurrentPages();
+		if (pages.length > 0) {
+			webviewElement = pages[pages.length - 1].vm!.$el?.parentNode?.querySelector('#' + webviewId);
+		}
+	} else {
+		webviewElement = component.$el?.parentNode?.querySelector('#' + webviewId);
+	}
+	if (webviewElement == null) return null;
+	return new WebviewContextImpl(webviewElement as UniWebViewElement);
+}
+
+class WebviewContextImpl implements WebviewContext {
+
+	private webviewElement : UniWebViewElement | null = null;
+
+	constructor(webviewElement : UniWebViewElement) {
+		this.webviewElement = webviewElement;
+	}
+
+	override back() {
+		this.webviewElement?.back();
+	}
+
+	override forward() {
+		this.webviewElement?.forward();
+	}
+
+	override reload() {
+		this.webviewElement?.reload();
+	}
+
+	override stop() {
+		this.webviewElement?.stop();
+	}
+
+	override evalJS(js : string) {
+		this.webviewElement?.evalJS(js);
+	}
+
+	override loadData(options : UniWebviewContextLoadDataOptions) {
+		this.webviewElement?.loadData({
+			data: options.data,
+			baseURL: options.baseURL,
+			mimeType: options.mimeType,
+			encoding: options.encoding
+		} as UniWebViewElementLoadDataOptions);
+	}
+}

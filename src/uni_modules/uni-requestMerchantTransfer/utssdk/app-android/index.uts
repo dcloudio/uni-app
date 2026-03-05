@@ -1,0 +1,59 @@
+
+import { RequestMerchantTransfer, RequestMerchantTransferOptions, RequestMerchantTransferGeneralCallbackResult } from '../interface.uts';
+import WXAPIFactory from 'com.tencent.mm.opensdk.openapi.WXAPIFactory'
+import URLEncoder from 'java.net.URLEncoder'
+import StandardCharsets from 'java.nio.charset.StandardCharsets'
+import WXOpenBusinessView from 'com.tencent.mm.opensdk.modelbiz.WXOpenBusinessView'
+import Build from 'com.tencent.mm.opensdk.constants.Build'
+export const requestMerchantTransfer : RequestMerchantTransfer = function (options : RequestMerchantTransferOptions) {
+	var appId = options.appId
+	var api = WXAPIFactory.createWXAPI(UTSAndroid.getAppContext(), appId, false)
+	var wxSdkVersion = api.wxAppSupportAPI
+	if (wxSdkVersion >= Build.OPEN_BUSINESS_VIEW_SDK_INT) {
+		var req = WXOpenBusinessView.Req()
+		req.businessType = "requestMerchantTransfer"
+
+		// 通过 URL 编码处理参数，确保特殊字符不会影响请求
+		var query = ""
+		query += 'mchId=' + encodeParams(options.mchId) + '&'
+		query += 'package=' + encodeParams(options.package) + '&'
+		if (appId != null) {
+			query += 'appId=' + encodeParams(options.appId) + '&'
+		}
+		if (options.openId != null) {
+			query += 'openId=' + encodeParams(options.openId) + '&'
+		}
+		if (options.subAppId != null) {
+			query += 'subAppId=' + encodeParams(options.subAppId) + '&'
+		}
+		if (options.subMchId != null) {
+			query += 'subMchId=' + encodeParams(options.subMchId) + '&'
+		}
+		query = query.substring(0, query.length - 1)
+		req.query = query
+		// 发送请求并检查返回值
+		var ret = api.sendReq(req)
+		if (ret) {
+			var result : RequestMerchantTransferGeneralCallbackResult = {
+				errMsg: 'ok'
+			}
+			options.success?.(result)
+			options.complete?.(result)
+		}else{
+			var result : RequestMerchantTransferGeneralCallbackResult = {
+				errMsg: 'fail'
+			}
+			options.fail?.(result)
+			options.complete?.(result)
+		}
+	} else {
+		var result : RequestMerchantTransferGeneralCallbackResult = {
+			errMsg: '当前微信版本过低，请升级微信以使用该功能'
+		}
+		options.fail?.(result)
+		options.complete?.(result)
+	}
+}
+function encodeParams(params : string | null) : string | null {
+	return URLEncoder.encode(params, StandardCharsets.UTF_8.toString())
+}

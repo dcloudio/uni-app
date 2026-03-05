@@ -1,0 +1,429 @@
+/**
+ * uni.scanCode成功回调参数
+ */
+export type ScanCodeSuccess = {
+    result: string,
+    scanType: string
+}
+
+export type ScanCodeFail = {}
+/**
+ * uni.scanCode成功回调函数定义
+ */
+export type ScanCodeSuccessCallback = (res: ScanCodeSuccess) => void
+/**
+ * uni.scanCode失败回调函数定义
+ */
+export type ScanCodeFailCallback = (res: ScanCodeFail) => void
+/**
+ * uni.scanCode完成回调函数定义
+ */
+export type ScanCodeCompleteCallback = (res: any) => void
+
+export type ScanCodeSupportedTypes =
+	/**
+	 * @uniPlatform
+	  {
+	    "app": {
+	      "android": {
+	        "osVer": "5.0",
+	        "uniVer": "√",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.71"
+	      },
+	      "ios": {
+	        "osVer": "12.0",
+	        "uniVer": "√",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.71",
+	        "unixUtsPlugin": "4.71"
+	      },
+	      "harmony": {
+	        "osVer": "3.0",
+	        "uniVer": "4.23",
+	        "unixVer": "4.61",
+	        "unixvVer": "5.0"
+	      }
+	    },
+	    "mp": {
+	      "weixin": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "4.41"
+	      },
+	      "alipay": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "baidu": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "toutiao": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "lark": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "qq": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "kuaishou": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "jd": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      }
+	    }
+	    "web": {
+	      "uniVer": "x",
+	      "unixVer": "x"
+	    }
+	  }
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 */
+	'barCode' |
+	/**
+	 * @uniPlatform
+	  {
+	    "app": {
+	      "android": {
+	        "osVer": "5.0",
+	        "uniVer": "√",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.71"
+	      },
+	      "ios": {
+	        "osVer": "12.0",
+	        "uniVer": "√",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.71",
+	        "unixUtsPlugin": "4.71"
+	      },
+	      "harmony": {
+	        "osVer": "3.0",
+	        "uniVer": "4.23",
+	        "unixVer": "4.61",
+	        "unixvVer": "5.0"
+	      }
+	    },
+	    "mp": {
+	      "weixin": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "4.41"
+	      },
+	      "alipay": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "baidu": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "toutiao": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "lark": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "qq": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "kuaishou": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "jd": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      }
+	    }
+	    "web": {
+	      "uniVer": "x",
+	      "unixVer": "x"
+	    }
+	  }
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 */
+	'qrCode' |
+	/**
+	 * @uniPlatform
+	  {
+	    "app": {
+	      "android": {
+	        "osVer": "5.0",
+	        "uniVer": "√",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.71"
+	      },
+	      "ios": {
+	        "osVer": "12.0",
+	        "uniVer": "√",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.71",
+	        "unixUtsPlugin": "4.71"
+	      },
+	      "harmony": {
+	        "osVer": "3.0",
+	        "uniVer": "4.23",
+	        "unixVer": "4.61",
+	        "unixvVer": "5.0"
+	      }
+	    },
+	    "mp": {
+	      "weixin": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "4.41"
+	      },
+	      "alipay": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "baidu": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "toutiao": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "lark": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "qq": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "kuaishou": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "jd": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      }
+	    }
+	    "web": {
+	      "uniVer": "x",
+	      "unixVer": "x"
+	    }
+	  }
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 */
+	'datamatrix' |
+	/**
+	 * @uniPlatform
+	  {
+	    "app": {
+	      "android": {
+	        "osVer": "5.0",
+	        "uniVer": "√",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.71"
+	      },
+	      "ios": {
+	        "osVer": "12.0",
+	        "uniVer": "√",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.71",
+	        "unixUtsPlugin": "4.71"
+	      },
+	      "harmony": {
+	        "osVer": "3.0",
+	        "uniVer": "4.23",
+	        "unixVer": "4.61",
+	        "unixvVer": "5.0"
+	      }
+	    },
+	    "mp": {
+	      "weixin": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "4.41"
+	      },
+	      "alipay": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "baidu": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "toutiao": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "lark": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "qq": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "kuaishou": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      },
+	      "jd": {
+	        "hostVer": "√",
+	        "uniVer": "√",
+	        "unixVer": "x"
+	      }
+	    }
+	    "web": {
+	      "uniVer": "x",
+	      "unixVer": "x"
+	    }
+	  }
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 */
+	'pdf417'
+
+/**
+ * uni.scanCode参数定义
+ */
+export type ScanCodeOptions = {
+    /**
+     * 是否只能从相机扫码，不允许从相册选择图片
+     */
+    onlyFromCamera?: boolean | null,
+    /**
+     * 扫码类型
+     */
+    scanType?: ScanCodeSupportedTypes[] | null,
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: ScanCodeSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: ScanCodeFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: ScanCodeCompleteCallback | null
+}
+
+
+export interface Uni {
+  /**
+   * 扫码（包括一维码和二维码）
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/scan-code.html
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/scan-code.html
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/barcode.html#scancode
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.71"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.71",
+          "unixUtsPlugin": "4.71"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      }
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   * @uniVueVersion 2,3  //支持的vue版本
+   */
+  scanCode(options?: ScanCodeOptions | null): void;
+}
+
+export type ScanCode = (options?: ScanCodeOptions | null) => void;

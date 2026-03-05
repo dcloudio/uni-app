@@ -1,0 +1,190 @@
+import { ChooseMedia, ChooseMediaOptions, ChooseMediaSuccess, ChooseMediaTempFile } from '../interface.uts';
+import { ChooseMediaApiOptions, ChooseMediaApiProtocol, API_CHOOSE_MEDIA } from '../protocol.uts';
+import { _chooseMedia, __ChooseMediaOptions, getMediaAssetInfo } from './media.uts'
+import { ChooseMediaErrorImpl } from '../unierror.uts'
+import { cameraPicker, camera } from '@kit.CameraKit'
+import photoAccessHelper from '@ohos.file.photoAccessHelper';
+import { uni } from '@dcloudio/uni-runtime'
+
+interface ChooseMediaShowActionSheetOptionsSuccessOptions {
+  tapIndex: number
+}
+
+interface ChooseMediaShowActionSheetOptionsFailOptions {
+  errMsg: string
+}
+
+interface ChooseMediaShowActionSheetOptions {
+  itemList: string[]
+  success?: (e: ChooseMediaShowActionSheetOptionsSuccessOptions) => void | null
+  fail?: (e: ChooseMediaShowActionSheetOptionsFailOptions) => void | null
+};
+
+
+type CameraPosition = 'back' | 'front'
+type UNI_MEDIA_TYPE = 'image' | 'video' | 'mix'
+
+function getHMCameraPosition(cameraType: CameraPosition): camera.CameraPosition {
+  switch (cameraType) {
+    case 'back':
+      return camera.CameraPosition.CAMERA_POSITION_BACK
+    case 'front':
+      return camera.CameraPosition.CAMERA_POSITION_FRONT
+    default:
+      return camera.CameraPosition.CAMERA_POSITION_BACK
+  }
+}
+
+
+function getCameraPickerMediaTypes(UniMediaTypes: UNI_MEDIA_TYPE[]): cameraPicker.PickerMediaType[] {
+  let mediaTypes: Array<cameraPicker.PickerMediaType> = []
+  if (UniMediaTypes.includes('mix')) {
+    mediaTypes.push(cameraPicker.PickerMediaType.PHOTO, cameraPicker.PickerMediaType.VIDEO)
+  } else {
+    if (UniMediaTypes.includes('image')) {
+      mediaTypes.push(cameraPicker.PickerMediaType.PHOTO)
+    }
+    if (UniMediaTypes.includes('video')) {
+      mediaTypes.push(cameraPicker.PickerMediaType.VIDEO)
+    }
+  }
+  return mediaTypes
+}
+
+const _takeCamera = async (args: ChooseMediaOptions, executor: ApiExecutor<ChooseMediaSuccess>) => {
+  try {
+    let pickerProfile: cameraPicker.PickerProfile = {
+      cameraPosition: getHMCameraPosition(args?.camera ?? 'back'),
+      videoDuration: args?.maxDuration ?? 10
+    };
+    const mediaTypes = getCameraPickerMediaTypes((args.mediaType ?? []) as UNI_MEDIA_TYPE[])
+    const res = await cameraPicker.pick(UTSHarmony.getUIAbilityContext()!, mediaTypes, pickerProfile)
+    if (!res) {
+      const err = new ChooseMediaErrorImpl(1101010)
+      executor.reject(err.message, err as ApiError);
+    } else if (res.resultCode === -1) {
+      const err = new ChooseMediaErrorImpl(1101001)
+      executor.reject(err.message, err as ApiError);
+    } else {
+      const assetInfo = await getMediaAssetInfo(res.resultUri)
+      const isVideo = assetInfo.fileType === 'video'
+      let tempFile: ChooseMediaTempFile = {
+        fileType: assetInfo.fileType,
+        tempFilePath: res.resultUri,
+        size: !isVideo ? assetInfo.byteSize : assetInfo.size,
+        byteSize: null,
+        thumbTempFilePath: null,
+        duration: null,
+        height: null,
+        width: null
+      }
+      if (isVideo) {
+        tempFile.thumbTempFilePath = assetInfo.thumbTempFilePath!
+        tempFile.byteSize = assetInfo.byteSize!
+        tempFile.duration = assetInfo.duration!
+        tempFile.height = assetInfo.height!
+        tempFile.width = assetInfo.width!
+      }
+      executor.resolve({
+        type: 'mix',
+        tempFiles: [tempFile]
+      } as ChooseMediaSuccess)
+    }
+  } catch (error) {
+    const err = new ChooseMediaErrorImpl(1101008)
+    executor.reject(err.message, err as ApiError);
+  }
+}
+
+const __chooseMedia = async (args: ChooseMediaOptions, mimeType: photoAccessHelper.PhotoViewMIMETypes, executor: ApiExecutor<ChooseMediaSuccess>) => {
+  if (args.sourceType?.length === 1 && args.sourceType[0] === 'camera') {
+    _takeCamera(args, executor)
+  } else {
+    _chooseMedia({
+      mimeType,
+      sourceType: ["album"],
+      count: args.count!
+      // isOriginalSupported: true,
+    } as __ChooseMediaOptions)
+      .then(res => {
+        executor.resolve({
+          type: mimeType === photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE ? 'image' : mimeType === photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE ? 'video' : 'mix',
+          tempFiles: res.tempFiles.map((tempFile): ChooseMediaTempFile => {
+            if (tempFile.fileType === 'image') {
+              return {
+                fileType: tempFile.fileType,
+                tempFilePath: tempFile.tempFilePath,
+                size: tempFile.size
+              } as ChooseMediaTempFile
+            }
+            return {
+              thumbTempFilePath: tempFile.thumbTempFilePath,
+              tempFilePath: tempFile.tempFilePath,
+              duration: tempFile.duration,
+              size: tempFile.size,
+              height: tempFile.height,
+              width: tempFile.width,
+              fileType: tempFile.fileType,
+            } as ChooseMediaTempFile
+          })
+        } as ChooseMediaSuccess)
+      })
+      .catch((err: Error) => {
+        executor.reject(err.message)
+      })
+  }
+}
+
+export const chooseMedia: ChooseMedia = defineAsyncApi<ChooseMediaOptions, ChooseMediaSuccess>(
+  API_CHOOSE_MEDIA,
+  async (args: ChooseMediaOptions, executor: ApiExecutor<ChooseMediaSuccess>) => {
+    if (args.mediaType?.length === 1 && args.mediaType[0] === 'image') {
+      __chooseMedia(args, photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE, executor)
+      return
+    }
+
+    if (args.mediaType?.length === 1 && args.mediaType[0] === 'video') {
+      __chooseMedia(args, photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE, executor)
+      return
+    }
+
+    if (args.sourceType?.length === 1 && args.sourceType[0] === 'camera') {
+      _takeCamera(args, executor)
+    } else {
+      uni.showActionSheet({
+        itemList: ['拍摄', '从相册选择'],
+        success: (e) => {
+          if (e.tapIndex === 0) {
+            _takeCamera(args, executor)
+          } else if (e.tapIndex === 1) {
+            __chooseMedia(args, photoAccessHelper.PhotoViewMIMETypes.IMAGE_VIDEO_TYPE, executor)
+          }
+        },
+        fail: (e) => {
+          if (e.errMsg.includes('cancel')) {
+            executor.reject('cancel')
+          } else {
+            executor.reject(e.errMsg)
+          }
+        }
+      } as ChooseMediaShowActionSheetOptions)
+    }
+  },
+  ChooseMediaApiProtocol,
+  ChooseMediaApiOptions
+) as ChooseMedia
+
+export {
+  ChooseMedia,
+  ChooseMediaCompleteCallback,
+  ChooseMediaErrorCode,
+  ChooseMediaFail,
+  ChooseMediaFailCallback,
+  ChooseMediaFileType,
+  ChooseMediaOptions,
+  ChooseMediaPageOrientation,
+  ChooseMediaSuccess,
+  ChooseMediaSuccessCallback,
+  ChooseMediaTempFile,
+  IChooseMediaError
+} from '../interface.uts'

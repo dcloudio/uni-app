@@ -1,0 +1,9 @@
+import { SetTabBarErrorCode, SetTabBarFail } from './interface.uts'
+
+export class SetTabBarFailImpl extends UniError implements SetTabBarFail {
+    override errCode: SetTabBarErrorCode
+    constructor(errMsg: string, errCode: SetTabBarErrorCode = 100) {
+        super(errMsg)
+        this.errCode = errCode
+    }
+}

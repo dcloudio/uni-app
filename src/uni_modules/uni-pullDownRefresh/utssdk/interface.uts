@@ -1,0 +1,191 @@
+/**
+ * 下拉刷新错误码
+ * - 4: 框架内部异常
+ */
+export type PullDownRefreshErrorCode = 4
+
+export interface StartPullDownRefreshFail extends IUniError {
+    errCode: PullDownRefreshErrorCode
+}
+
+export type StartPullDownRefreshOptions = {
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: StartPullDownRefreshSuccessCallback
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: StartPullDownRefreshFailCallback
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: StartPullDownRefreshCompleteCallback
+}
+export type StartPullDownRefreshSuccess = AsyncApiSuccessResult
+export type StartPullDownRefreshSuccessCallback = (
+    result: StartPullDownRefreshSuccess,
+) => void
+export type StartPullDownRefreshFailCallback = (
+    result: StartPullDownRefreshFail,
+) => void
+export type StartPullDownRefreshComplete = AsyncApiResult
+export type StartPullDownRefreshCompleteCallback = (
+    result: StartPullDownRefreshComplete,
+) => void
+export type StartPullDownRefresh = (options: StartPullDownRefreshOptions) => void
+
+export type StopPullDownRefresh = () => void
+
+export interface Uni {
+    /**
+     * 开始下拉刷新
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/pulldown.html#startpulldownrefresh
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/pull-down-refresh.html#startpulldownrefresh
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/pull-down-refresh.html#startpulldownrefresh
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "3.91"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    startPullDownRefresh(
+        options?: StartPullDownRefreshOptions | null,
+    ): Promise<StartPullDownRefreshSuccess> | null
+    /**
+     * 停止当前页面下拉刷新
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/pulldown.html#stoppulldownrefresh
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/pull-down-refresh.html#stoppulldownrefresh
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/pull-down-refresh.html#stoppulldownrefresh
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "3.91"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    stopPullDownRefresh(): void
+}

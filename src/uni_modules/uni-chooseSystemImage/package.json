@@ -1,0 +1,85 @@
+{
+  "id": "uni-chooseSystemImage",
+  "displayName": "uni-chooseSystemMedia",
+  "version": "1.1.1",
+  "description": "从手机相册中选择图片或视频，解决google play新政策禁止添加媒体权限的问题",
+  "keywords": [
+    "google",
+    "上架",
+    "图片选择"
+],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^4.29"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "本插件不会采集任何隐私信息，获取权限仅是为了兼容android12及以下版本的系统。",
+      "permissions": "<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />"
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "y",
+        "aliyun": "y",
+        "alipay": "y"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "n",
+          "vue3": "n"
+        },
+        "App": {
+            "app-android": "u",
+            "app-ios": "n",
+            "app-harmony": "n"
+        },
+        "H5-mobile": {
+          "Safari": "n",
+          "Android Browser": "n",
+          "微信浏览器(Android)": "n",
+          "QQ浏览器(Android)": "n"
+        },
+        "H5-pc": {
+          "Chrome": "n",
+          "IE": "n",
+          "Edge": "n",
+          "Firefox": "n",
+          "Safari": "n"
+        },
+        "小程序": {
+          "微信": "n",
+          "阿里": "n",
+          "百度": "n",
+          "字节跳动": "n",
+          "QQ": "n",
+          "钉钉": "n",
+          "快手": "n",
+          "飞书": "n",
+          "京东": "n"
+        },
+        "快应用": {
+          "华为": "n",
+          "联盟": "n"
+        }
+      }
+    }
+  }
+}

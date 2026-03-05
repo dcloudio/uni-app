@@ -1,0 +1,27 @@
+import { AppThemeErrorCode, IAppThemeFail } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const AppThemeUniErrorSubject = 'uni-theme';
+
+/**
+ * 错误码
+ * @UniError
+ */
+export const AppThemeUniErrors : Map<AppThemeErrorCode, string> = new Map([
+	[702001, 'invalid parameter'],
+	[2002000, 'unknown error']
+]);
+
+export class AppThemeFailImpl extends UniError implements IAppThemeFail {
+	// ifdef APP-HARMONY
+	override errCode: AppThemeErrorCode;
+	// endif
+	constructor(errCode : AppThemeErrorCode) {
+		super();
+		this.errSubject = AppThemeUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = AppThemeUniErrors.get(errCode) ?? "";
+	}
+}

@@ -1,0 +1,320 @@
+
+import Gravity from 'android.view.Gravity';
+import Toast from "android.widget.Toast";
+import { WaitingView } from "./WaitingView.uts"
+import { ShowToastOptions, ShowLoadingOptions, ShowToastSuccess, ShowLoadingSuccess } from '../interface.uts'
+import { PromptErrorImpl } from "../unierror.uts"
+import WeakReference from 'java.lang.ref.WeakReference';
+
+// #ifdef UNI-APP-X
+import getCurrentPages from 'io.dcloud.uniapp.framework.getCurrentPages';
+import onReady from 'io.dcloud.uniapp.framework.onReady';
+import onUnload from 'io.dcloud.uniapp.framework.onUnload';
+// #endif
+
+
+type ToastStyle = {
+	title : string,
+	icon ?: string,
+	image ?: string,
+	mask ?: boolean,
+	duration ?: number,
+	position ?: string,
+	style ?: string,
+	success ?: (res : UTSJSONObject) => void,
+	fail ?: (res : UTSJSONObject) => void,
+	complete ?: (res : UTSJSONObject) => void
+}
+
+let timeout : number | null = null
+let toast : WaitingView | null = null
+let toastType : string | null = null
+
+export function showToastImpl(style : ShowToastOptions) {
+	makeToast(style, 'toast', 'showToast')
+	
+}
+
+export function hideToastImpl() {
+	closeToast("toast")
+}
+
+export function showLoadingImpl(option : ShowLoadingOptions) {
+	// #ifndef UNI-APP-X
+	makeLoading(option, 'loading', 'showLoading')
+	// #endif
+}
+
+export function hideLoadingImpl() {
+	// #ifndef UNI-APP-X
+	closeToast("loading")
+	// #endif
+}
+
+
+// 全局存储
+// #ifdef UNI-APP-X
+const onReadyToast = new Map<ComponentPublicInstance,UTSJSONObject>()
+// #endif
+
+function closeToast(type : string | null) {
+	if (type != null && type !== toastType) {
+		return
+	}
+	// #ifdef UNI-APP-X
+	let pages = getCurrentPages();
+	if (pages.length > 0) {
+		let page = pages[pages.length - 1].vm!;
+		onReadyToast.remove(page)
+	}
+	// #endif
+	if (timeout != null && (timeout as number) > 0) {
+		clearTimeout(timeout as number)
+		timeout = null
+	}
+	if (toast != null) {
+		(toast as WaitingView).close()
+		toast = null
+	}
+	if (toast != null) {
+		(toast as WaitingView).close()
+		toast = null
+	}
+	if (androidToastCache?.get() != null) {
+		let cacheInstance = androidToastCache!.get()
+		cacheInstance!.cancel()
+		cacheInstance = null
+	}
+	toastType = null
+}
+
+function makeLoading(style : ShowLoadingOptions, type : string, errMsg : string) {
+	// 关闭之前的展示框
+	closeToast(null)
+	if (style.title == null) {
+		// 没有title 打回报错信息即可
+		let res = new PromptErrorImpl(1001, "showLoading:title is null");
+		style.fail?.(res)
+		style.complete?.(res)
+
+	} else {
+		toastType = type
+
+		let options = {};
+		let icon = "success"
+
+		options = {
+			name: style.title,
+			modal: style.mask,
+			back: 'transmit',
+			padding: '10',
+			size: '16' // 固定字体大小
+		}
+
+		options["width"] = "140"
+		options["height"] = "112"
+
+		
+		
+		// #ifndef UNI-APP-X
+			/**
+			 * uni-app
+			 */
+			const alert = new WaitingView(UTSAndroid.getTopPageActivity(), options,UTSAndroid.getTopPageView())
+			toast = alert
+			alert?.showWaiting();
+			
+			UTSAndroid.onAppActivityDestroy(function(){
+				toast?.close()
+				toast = null
+			})
+			
+		// #endif
+		// #ifdef UNI-APP-X
+			/**
+			 * uni-app x
+			 * 需要特殊处理生命周期 
+			 */
+			const pages = getCurrentPages();
+			if (pages.length > 0) {
+				const page = pages[pages.length - 1].vm!
+				const instance = page.$
+				if (page.$isReady) {
+					const alert = new WaitingView(UTSAndroid.getTopPageActivity(), options,UTSAndroid.getTopPageView())
+					toast = alert
+			        alert?.showWaiting();
+			    } else {
+					onReadyToast.set(page,options)
+			        onReady(() => {
+						if(onReadyToast.containsKey(page)){
+							options = onReadyToast.get(page) as UTSJSONObject;
+							
+							const alert = new WaitingView(UTSAndroid.getTopPageActivity(), options,UTSAndroid.getTopPageView())
+							toast = alert
+							alert?.showWaiting();
+							
+							onReadyToast.remove(page)
+						}
+			        }, instance)
+			    }
+			    
+				onUnload(() => {
+					toast?.close()
+					toast = null
+				}, instance)
+			}
+		// #endif
+		
+		
+		const res : ShowLoadingSuccess = {
+		}
+		style.success?.(res)
+		style.complete?.(res)
+	}
+}
+
+
+let androidToastCache:WeakReference<Toast>| null = null
+
+function makeToast(style : ShowToastOptions, type : string, errMsg : string) {
+	closeToast(null)
+	if (style.title == null || style.title.length == 0) {
+		let res = new PromptErrorImpl(1001, "showLoading:title is null");
+		style.fail?.(res)
+		style.complete?.(res)
+
+	} else {
+		
+		toastType = type
+		if (["top", "center", "bottom"].indexOf(style.position) >= 0) {
+			let androidToast = Toast.makeText(UTSAndroid.getAppContext(), style.title, Toast.LENGTH_SHORT);
+			switch (style.position) {
+				case "top": {
+					// 修复bottom/top 与 前端api位置不一致的问题
+					androidToast!.setGravity(Gravity.TOP, androidToast!.getXOffset(), androidToast!.getYOffset())
+					break
+				}
+				case "center": {
+					androidToast!.setGravity(Gravity.CENTER, 0, 0)
+					break
+				}
+				case "bottom": {
+					androidToast!.setGravity(Gravity.BOTTOM, androidToast!.getXOffset(), androidToast!.getYOffset())
+					break
+				}
+			}
+			androidToast!.show()
+			androidToastCache = new WeakReference(androidToast)
+			const res : ShowToastSuccess = {
+			}
+			
+			style.success?.(res)
+			style.complete?.(res)
+		} else {
+			let options = {};
+			let icon = style.icon
+			if (icon == null || ["success", "loading", "error", "none"].indexOf(icon) < 0) {
+				icon = "success"
+			}
+			options = {
+				name: style.title,
+				modal: style.mask,
+				back: 'transmit',
+				padding: '10',
+				size: '16' // 固定字体大小
+			}
+			if ((style.image == null || style.image == '') && icon == "none") {
+				options["loading"] = {
+					display: "none"
+				}
+			} else {
+				options["width"] = "140"
+				options["height"] = "112"
+			}
+			if (style.image != null && style.image != '') {
+				options["loading"] = {
+					display: "block",
+					height: "55",
+					icon: style.image
+				}
+			} else {
+				if (['success', 'error'].indexOf(icon) >= 0) {
+					options["loading"] = {
+						display: 'block',
+						height: '36',
+						icon: icon == "success" ? "successIcon" : "errorIcon"
+					}
+				}
+			}
+
+			
+			
+			// #ifndef UNI-APP-X
+				/**
+				 * uni-app
+				 */
+				const alert = new WaitingView(UTSAndroid.getTopPageActivity(), options,UTSAndroid.getTopPageView())
+				toast = alert
+				alert?.showWaiting();
+				
+				UTSAndroid.onAppActivityDestroy(function(){
+					toast?.close()
+					toast = null
+				})
+				
+			// #endif
+			// #ifdef UNI-APP-X
+				/**
+				 * uni-app x
+				 * 需要特殊处理生命周期 
+				 */
+				const pages = getCurrentPages();
+				if (pages.length > 0) {
+					const page = pages[pages.length - 1].vm!
+				    const instance = page.$
+				    if (page.$isReady) {
+						const alert = new WaitingView(UTSAndroid.getTopPageActivity(), options,UTSAndroid.getTopPageView())
+						toast = alert
+				        alert?.showWaiting();
+				    } else {
+						onReadyToast.set(page,options)
+				        onReady(() => {
+							if(onReadyToast.containsKey(page)){
+								options = onReadyToast.get(page) as UTSJSONObject;
+								 
+								const alert = new WaitingView(UTSAndroid.getTopPageActivity(), options,UTSAndroid.getTopPageView())
+								toast = alert
+								alert?.showWaiting();
+							
+								onReadyToast.remove(page)
+							}
+				        }, instance)
+				    }
+				    
+					onUnload(() => {
+						toast?.close()
+						toast = null
+					}, instance)
+				}
+			// #endif
+			
+			
+			let duration : number | null = style.duration
+			if (duration == null || duration <= 0) {
+				duration = 1500
+			}
+			if (type !== "loading") {
+				timeout = setTimeout(() => {
+					toast?.close()
+				}, duration)
+			}
+			
+			const res : ShowToastSuccess = {
+			}
+			
+			style.success?.(res)
+			style.complete?.(res)
+		}
+	}
+}
+

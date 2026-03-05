@@ -1,0 +1,1936 @@
+import { fileUri } from '@kit.CoreFileKit';
+import fs, { ListFileOptions, type WriteOptions as OHWriteOptions, ReadOptions, type ReadTextOptions } from '@ohos.file.fs'
+import zlib from '@ohos.zlib';
+import { BusinessError } from '@ohos.base';
+import Hash from '@ohos.file.hash';
+import { getEnv, getRealPath as runtimeGetRealPath, } from '@dcloudio/uni-runtime'
+import { GET_FILE_SYSTEM_MANAGER } from '../protocol.uts';
+import { AccessOptions, AppendFileOptions, CloseOptions, CloseSyncOptions, CopyFileOptions, EntriesResult, FStatOptions, FStatSuccessResult, FStatSyncOptions, FTruncateFileOptions, FTruncateFileSyncOptions, FileManagerSuccessResult, FileStats, FileSystemManager, GetFileInfoOptions, GetFileInfoSuccessResult, GetSavedFileListOptions, GetSavedFileListResult, IFileSystemManagerFail, MkDirOptions, OpenFileOptions, OpenFileSuccessResult, OpenFileSyncOptions, ReadCompressedFileOptions, ReadDirOptions, ReadDirSuccessResult, ReadFileOptions, ReadFileSuccessResult, ReadOption, ReadResult, ReadSuccessCallbackResult, ReadSyncOption, ReadZipEntryOptions, RemoveSavedFileOptions, RenameOptions, RmDirOptions, SaveFileOptions, SaveFileSuccessResult, StatOptions, StatSuccessResult, Stats, TruncateFileOptions, UnLinkOptions, UnzipFileOptions, WriteFileOptions, WriteOptions, WriteResult, WriteSyncOptions, ZipFileItem } from '../interface.uts';
+import { CallBack, FileCallback } from './callback.uts';
+import { CheckFdErr, CustomValidReturn, DataType, ModeReflect, checkDataType, checkEncoding, checkFd, checkPath, checkPathExistence, checkPathExistenceSync, checkPathSync, getApiError, getFileTypeMode, getFsPath, getNoSuchFileOrDirectoryError, getOpenMode, getParameterError, getSavedDir, getSavedFilePath, isFileUri, isString, modeReflect, obtainUpperPath, ohosReadText, transformErrorCode, getAlreadyExistsError, getIsDirectoryError, getDirectoryNotEmpty, savedFileList, calculateAllPaths, CACHE_PATH, USER_DATA_PATH, TEMP_PATH, SANDBOX_PATH, normalizeFilePath } from './utils.uts';
+import { FileSystemManagerFailImpl } from "../unierror.uts"
+import buffer from '@ohos.buffer';
+
+const DEFAULT_ENCODING = 'utf-8'
+const ENCODING_SUPPORT = ["ascii", "base64", "utf-8"]
+const DIGEST_ALGORITHM_VALUES = ["md5", "sha1"]
+const DEFAULT_POSITION = 0
+const DEFAULT_LENGTH = 0
+const DEFAULT_FLAG = 'r'
+const DEFAULT_OFFSET = 0
+type _FLAG = "a" | "ax" | "a+" | "ax+" | "r" | "r+" | "w" | "wx" | "w+" | "wx+"
+const FLAG = [
+  'a', //	打开文件用于追加。 如果文件不存在，则创建该文件
+  'ax', //	类似于 'a'，但如果路径存在，则失败
+  'a+', //	打开文件用于读取和追加。 如果文件不存在，则创建该文件
+  'ax+', //	类似于 'a+'，但如果路径存在，则失败
+  'as', //	打开文件用于追加（在同步模式中）。 如果文件不存在，则创建该文件
+  'as+', //	打开文件用于读取和追加（在同步模式中）。 如果文件不存在，则创建该文件
+  'r', //	打开文件用于读取。 如果文件不存在，则会发生异常
+  'r+', //	打开文件用于读取和写入。 如果文件不存在，则会发生异常
+  'w', //	打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件
+  'wx', //	类似于 'w'，但如果路径存在，则失败
+  'w+', //	打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件
+  'wx+', //	类似于 'w+'，但如果路径存在，则失败
+]
+
+function useGetRealPath(filepath: string): string {
+  if (filepath.startsWith('/data/storage/')) return filepath
+  // 将uri转换成对应的沙箱路径path
+  if (filepath.startsWith('file://') && !filepath.startsWith('file:///')) {
+    return new fileUri.FileUri(filepath).path
+  }
+  return (runtimeGetRealPath(filepath) as string).replace(/^file:\/\/\//, '/')
+}
+
+class StatsImpl implements Stats {
+  stat: fs.Stat | null = null
+  mode: number = -1;
+  size: number = -1;
+  lastAccessedTime: number = -1;
+  lastModifiedTime: number = -1;
+  mIsFile: boolean = false;
+
+  constructor(stat: fs.Stat, mode: number) {
+    this.stat = stat
+    this.mode = mode
+    this.size = stat.size
+    this.lastAccessedTime = stat.atime
+    this.lastModifiedTime = stat.mtime
+    this.mIsFile = stat.isFile()
+  }
+
+  isDirectory(): boolean {
+    if (this.stat == null) {
+      return false
+    }
+    return this.stat.isDirectory()
+  }
+  isFile(): boolean {
+    if (this.stat == null) {
+      return false
+    }
+    return this.stat.isFile()
+  }
+
+}
+class FileSystemManagerImpl implements FileSystemManager {
+  readFile(options: ReadFileOptions): void {
+    const errMsg = `readFile:fail`
+    let { filePath, encoding, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    filePath = useGetRealPath(filePath)
+    const checkRes = checkPathExistence('readFile', 'filePath', filePath)
+
+    if (!checkRes.isValid) {
+      cb.fail(getParameterError((checkRes as CustomValidReturn).err.errMsg))
+      return
+    }
+    const stat = fs.statSync(filePath)
+    if (stat.isDirectory()) {
+      cb.fail(getApiError(1300021, errMsg))
+      return
+    }
+
+    const lengthOfFile = stat.size
+
+    /**
+    * 未传入encoding 则用read以ArrayBuffer的格式读取数据
+    * 传入了endcoding 则用readText以string的格式读取数据
+    */
+    if (encoding == undefined || encoding === 'base64' || encoding === 'ascii') {
+      let sizeOfNewArrayBuffer = lengthOfFile
+
+      const file = fs.openSync(filePath, fs.OpenMode.READ_ONLY)
+      const buf = new ArrayBuffer(sizeOfNewArrayBuffer)
+      fs.read(file.fd, buf)
+        .then((readLen) => {
+          if (encoding === 'base64' || encoding === 'ascii') {
+            cb.success({
+              data: buffer.from(buf).toString(encoding)
+            } as ReadFileSuccessResult)
+          } else {
+            cb.success({
+              data: buf
+            } as ReadFileSuccessResult)
+          }
+        })
+        .catch((err: BusinessError) => {
+          cb.fail(new FileSystemManagerFailImpl(transformErrorCode(err.code)) as ApiError)
+        })
+        .finally(() => {
+          fs.closeSync(file)
+        })
+    } else {
+      const res = checkEncoding('readFile', encoding)
+      if (!res.isValid) {
+        cb.fail(getParameterError(res.errMsg))
+        return
+      }
+
+      ohosReadText(filePath, { encoding } as ReadTextOptions, cb)
+    }
+  }
+  readFileSync(filePath: string, encoding?: string): string | ArrayBuffer {
+    const errMsg = `readFileSync:fail`
+    filePath = useGetRealPath(filePath)
+    const res1 = checkPathExistenceSync('readFileSync', 'filePath', filePath)
+    if (!res1.isValid) {
+      throw new Error((res1 as CustomValidReturn).err?.errMsg)
+    }
+    // 判断filePath是文件还是目录
+    const stat = fs.statSync(filePath)
+    if (stat.isDirectory()) {
+      throw new Error(getApiError(1300021, errMsg).errMsg)
+    }
+
+    const lengthOfFile = stat.size
+    /**
+      * 未传入encoding 则用read以ArrayBuffer的格式读取数据
+      * 传入了endcoding 则用readText以string的格式读取数据
+      */
+    if (encoding == undefined || encoding === 'base64' || encoding === 'ascii') {
+      let sizeOfNewArrayBuffer = lengthOfFile
+      const file = fs.openSync(filePath, fs.OpenMode.READ_ONLY)
+      const buf = new ArrayBuffer(sizeOfNewArrayBuffer)
+      try {
+        fs.readSync(file.fd, buf)
+      } catch (err) {
+        console.error(err)
+      }
+      fs.closeSync(file)
+      if (encoding === 'base64' || encoding === 'ascii') {
+        return buffer.from(buf).toString(encoding)
+      }
+      return buf
+    } else {
+      const res2 = checkEncoding('readFileSync', encoding)
+      if (!res2.isValid) {
+        throw new Error(res2.errMsg)
+      }
+      // 支持输入utf8 或 utf-8
+      if ((encoding as string) === 'utf8') {
+        encoding = 'utf-8'
+      }
+
+      try {
+        const str = fs.readTextSync(filePath, { encoding } as ReadTextOptions)
+        return str as string
+      } catch (err) {
+        throw new Error(`readFileSync: ${(err as BusinessError).message}`)
+      }
+    }
+  }
+  writeFile(options: WriteFileOptions): void {
+    const errMsg = `writeFile:fail`
+    let { filePath, data, encoding = DEFAULT_ENCODING, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+
+    filePath = useGetRealPath(filePath)
+    if (!checkDataType(filePath, true, 'string')) {
+      cb.fail(getParameterError(`${errMsg} filePath`) as ApiError)
+      return
+    }
+
+    if (!(checkDataType((data as (string | ArrayBuffer)), true, 'string') || checkDataType((data as (string | ArrayBuffer)), true, 'arraybuffer'))) {
+      throw new Error(getParameterError(`${errMsg} data`).errMsg)
+    }
+
+    if (!ENCODING_SUPPORT.includes(encoding)) {
+      cb.fail(getParameterError(`${errMsg} encoding`))
+      return
+    }
+
+    let file: fs.File | null = null
+    try {
+      // 判断filePath是文件还是目录
+      const stat = fs.statSync(filePath)
+      if (stat.isDirectory()) {
+        cb.fail(getIsDirectoryError(errMsg))
+        return
+      }
+    } catch (error) {
+      try {
+        // fs.OpenMode.TRUNC 会将文件内容清空，覆盖写入
+        file = fs.openSync(filePath, fs.OpenMode.CREATE | fs.OpenMode.WRITE_ONLY | fs.OpenMode.TRUNC)
+      } catch (error) {
+        cb.fail(getApiError((error as BusinessError).code, errMsg))
+        return
+      }
+    }
+
+    let _write: Promise<number> | null = null
+    if (file == null) {
+      // fs.OpenMode.TRUNC 会将文件内容清空，覆盖写入
+      file = fs.openSync(filePath, fs.OpenMode.WRITE_ONLY | fs.OpenMode.TRUNC)
+    }
+
+    switch (encoding) {
+      case 'ascii':
+      case 'base64':
+        if (data instanceof ArrayBuffer) {
+          _write = fs.write(file.fd, buffer.alloc(data.byteLength, buffer.from(data), encoding).buffer)
+        } else {
+          _write = fs.write(file.fd, buffer.from((data as string), encoding).buffer)
+        }
+        break
+      case 'utf-8':
+        const writeOptions: OHWriteOptions = {
+          encoding
+        }
+        _write = fs.write(file.fd, data as (string | ArrayBuffer), writeOptions)
+        break
+      default:
+        cb.fail(getParameterError(`${errMsg} encoding`))
+        return
+    }
+    _write?.then(_ => {
+      cb.success({ errMsg: 'writeFile:ok' } as FileManagerSuccessResult)
+    }).catch((err: BusinessError) => {
+      cb.fail(getApiError(err.code, errMsg))
+    }).finally(() => {
+      fs.closeSync(file)
+    })
+  }
+  writeFileSync(filePath: string, data: string | ArrayBuffer, encoding: string = DEFAULT_ENCODING): void {
+    const errMsg = `writeFileSync:fail`
+
+    filePath = useGetRealPath(filePath)
+    if (!checkDataType(filePath, true, 'string')) {
+      throw new Error(getParameterError(`${errMsg} filePath`).errMsg)
+    }
+
+    if (!(checkDataType((data as (string | ArrayBuffer)), true, 'string') || checkDataType((data as (string | ArrayBuffer)), true, 'arraybuffer'))) {
+      throw new Error(getParameterError(`${errMsg} data`).errMsg)
+    }
+
+    if (!ENCODING_SUPPORT.includes(encoding)) {
+      throw new Error(getParameterError(`${errMsg} encoding`).errMsg)
+    }
+
+    let file: fs.File | null = null
+    try {
+      // 判断filePath是文件还是目录
+      const stat = fs.statSync(filePath)
+      if (stat.isDirectory()) {
+        throw new Error(`${errMsg} illegal operation on a directory, open: ${filePath}`)
+      }
+    } catch (error) {
+      try {
+        // fs.OpenMode.TRUNC 会将文件内容清空，覆盖写入
+        file = fs.openSync(filePath, fs.OpenMode.CREATE | fs.OpenMode.WRITE_ONLY | fs.OpenMode.TRUNC)
+      } catch (error) {
+        throw new Error(getApiError((error as BusinessError).code, errMsg).errMsg)
+      }
+    }
+
+    if (file == null) {
+      // fs.OpenMode.TRUNC 会将文件内容清空，覆盖写入
+      file = fs.openSync(filePath, fs.OpenMode.WRITE_ONLY | fs.OpenMode.TRUNC)
+    }
+
+    try {
+      switch (encoding) {
+        case 'ascii':
+        case 'base64':
+          if (data instanceof ArrayBuffer) {
+            fs.writeSync(file.fd, buffer.alloc(data.byteLength, buffer.from(data), encoding).buffer)
+          } else {
+            fs.writeSync(file.fd, buffer.from((data as string), encoding).buffer)
+          }
+          break
+        case 'utf-8':
+          const writeOptions: OHWriteOptions = {
+            encoding
+          }
+          fs.writeSync(file.fd, data as (string | ArrayBuffer), writeOptions)
+          break
+        default:
+          throw new Error(getParameterError(`${errMsg} encoding`).errMsg)
+      }
+      fs.closeSync(file)
+    } catch (err) {
+      fs.closeSync(file)
+      throw new Error(`${errMsg} ${(err as BusinessError).message}`)
+    }
+  }
+  read(option: ReadOption): void {
+    const errMsg = 'read:fail'
+    let { fd: inFd, arrayBuffer, offset, length, position, success, fail, complete } = option
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    let fd: number = -1
+
+    if (!checkDataType(inFd, true, 'string') || inFd === '' || isNaN(Number(inFd))) {
+      cb.fail(getParameterError(`${errMsg} fd`))
+      return
+    } else {
+      fd = Number(inFd)
+    }
+
+    if (!checkDataType(arrayBuffer, true, 'arraybuffer')) {
+      cb.fail(getParameterError(`${errMsg} arrayBuffer`))
+      return
+    }
+
+    // offset、length、position为负数时，微信不报错也读不出内容,但鸿蒙接口会crash
+    if (!checkDataType(offset, false, 'number') || offset! < 0) {
+      offset = Number(offset) // 转换非number类型的数据，转换结果：true = 1, false = 0, '12' = 12, null = 0
+      if (isNaN(offset) || offset < 0) {
+        offset = DEFAULT_OFFSET // 其他类型如object、undefined, 设为默认值
+      }
+    }
+
+    if (!checkDataType(length, false, 'number') || length! < 0) {
+      length = Number(length)
+      if (isNaN(length) || length < 0) {
+        length = DEFAULT_LENGTH
+      }
+    }
+
+    const allowedSize = arrayBuffer.byteLength - offset! // ArrayBuffer中允许读取的最大容量
+    if (allowedSize < length!) {
+      cb.fail({ errMsg: `${errMsg} RangeError [ERR_OUT_OF_RANGE]: The value length is out of range. It must be <= ${allowedSize}. Received ${length}` } as ApiError)
+      return
+    }
+
+    if (!checkDataType(position, false, 'number') || position! < 0) {
+      position = DEFAULT_POSITION // 非number类型，设为默认值
+    }
+
+    /*
+     * 参数说明：
+     * 【微信中】
+     * offset: number类型,缓冲区中的写入偏移量，默认0
+     * length: number类型,要从文件中读取的字节数，默认0
+     * position: number类型,文件读取的起始位置，如不传或传 null，则会从当前文件指针的位置读取。
+     *           如果 position 是正整数，则文件指针位置会保持不变并从 position 读取文件
+     * 【鸿蒙中】
+     * offset: number类型,期望读取文件的位置。默认从当前位置开始读。
+     * length: number类型，期望读取数据的长度。默认缓冲区长度。
+     */
+    const arrayBufferOffset = offset! // 缓冲区要求写入的偏移量
+    const newBuffer = arrayBuffer.slice(arrayBufferOffset) // 临时申请一块新的空间
+    fs.read(fd, newBuffer, { offset: position, length } as ReadOptions)
+      .then((readLen) => {
+        const viewNewBuffer = new Uint8Array(newBuffer)
+        const viewArrayBuffer = new Uint8Array(arrayBuffer)
+        viewArrayBuffer.set(viewNewBuffer, arrayBufferOffset)
+
+        cb.success({
+          bytesRead: readLen,
+          arrayBuffer: arrayBuffer,
+          errMsg: 'read:ok'
+        } as ReadSuccessCallbackResult)
+      })
+      .catch((err: BusinessError) => {
+        cb.fail({ errCode: 1300201, errMsg: `${errMsg} with error message: ${err.message},error code: ${err.code}` } as ApiError)
+      })
+  }
+  readSync(option: ReadSyncOption): ReadResult {
+    const errMsg = 'readSync:fail'
+    let { fd: inFd, arrayBuffer, offset, length, position } = option
+    let fd: number = -1
+    if (!checkDataType(inFd, true, 'string') || inFd === '' || isNaN(Number(inFd))) {
+      throw new Error(`${errMsg} invalid fd`)
+    } else {
+      fd = Number(inFd)
+    }
+
+    if (!checkDataType(arrayBuffer, true, 'arraybuffer')) {
+      throw new Error(`${errMsg} invalid arrayBuffer`)
+    }
+
+
+    if (!checkDataType(offset, false, 'number') || offset! < 0) {
+      offset = Number(offset) // 转换非number类型的数据，转换结果：true = 1, false = 0, '12' = 12, null = 0
+      if (isNaN(offset) || offset < 0) {
+        offset = DEFAULT_OFFSET // 其他类型如object、undefined, 设为默认值
+      }
+    }
+
+    if (!checkDataType(length, false, 'number') || length! < 0) {
+      length = Number(length)
+      if (isNaN(length) || length < 0) {
+        length = DEFAULT_LENGTH
+      }
+    }
+
+    const allowedSize = arrayBuffer.byteLength - offset! // ArrayBuffer中允许读取的最大容量
+    if (allowedSize < length!) {
+      throw new Error(`${errMsg} RangeError [ERR_OUT_OF_RANGE]: The value length is out of range. It must be <= ${allowedSize}. Received ${length}`)
+    }
+
+    if (!checkDataType(position, false, 'number') || position! < 0) {
+      position = DEFAULT_POSITION // 非number类型，设为默认值
+    }
+
+    /*
+    * 参数说明：
+    * [微信中]
+    * offset: number类型,缓冲区中的写入偏移量，默认0
+    * length: number类型,要从文件中读取的字节数，默认0
+    * position: number类型,文件读取的起始位置，如不传或传 null，则会从当前文件指针的位置读取。
+    *           如果 position 是正整数，则文件指针位置会保持不变并从 position 读取文件
+    * [鸿蒙中]
+    * offset: number类型,期望读取文件的位置。默认从当前位置开始读。
+    * length: number类型，期望读取数据的长度。默认缓冲区长度。
+    */
+    try {
+      const arrayBufferOffset = offset! // 缓冲区要求写入的偏移量
+      let newBuffer = arrayBuffer.slice(arrayBufferOffset) // 临时申请一块新的空间
+      const len = fs.readSync(fd, newBuffer, { offset: position, length } as ReadOptions)
+      const viewNewBuffer = new Uint8Array(newBuffer) // 创建视图用于操纵数据，在入参arrayBuffer的偏移量为offsetArrayBuffer的位置写入数据
+      let viewArrayBuffer = new Uint8Array(arrayBuffer)
+      viewArrayBuffer.set(viewNewBuffer, arrayBufferOffset)
+
+      return { bytesRead: len, arrayBuffer: arrayBuffer } as ReadResult
+    } catch (err) {
+      throw new Error(`${errMsg} ${(err as BusinessError).message}`)
+    }
+  }
+  unlink(options: UnLinkOptions): void {
+    const errMsg = 'unlink:fail'
+    let { filePath, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    filePath = useGetRealPath(filePath)
+    const res = checkPathExistence('unlink', 'filePath', filePath)
+    if (!res.isValid) {
+      cb.fail((res as CustomValidReturn).err)
+      return
+    }
+
+    // 判断filePath是文件还是目录
+    const stat = fs.statSync(filePath)
+    if (stat.isDirectory()) {
+      cb.fail(getIsDirectoryError(`${errMsg} ${filePath}`))
+      return
+    }
+
+    fs.unlink(filePath).then(() => {
+      cb.success({ errMsg: 'unlink:ok' } as FileManagerSuccessResult)
+    }).catch((err: BusinessError) => {
+      cb.fail({ errCode: 1300201, errMsg: `${errMsg} with error message: ${err.message}, error code: ${err.code}` } as ApiError)
+    })
+  }
+  unlinkSync(filePath: string): void {
+    const errMsg = 'unlinkSync:fail'
+    filePath = useGetRealPath(filePath)
+    const res = checkPathExistenceSync('unlinkSync', 'filePath', filePath)
+    if (!res.isValid) {
+      throw new Error((res as CustomValidReturn).err?.errMsg)
+    }
+
+    if (fs.statSync(filePath).isDirectory()) {
+      throw new Error(`${errMsg} illegal operation on a directory, unlink: ${filePath}`)
+    }
+
+    try {
+      fs.unlinkSync(filePath)
+    } catch (err) {
+      throw new Error(`${errMsg} ${(err as BusinessError).message}`)
+    }
+  }
+  mkdir(options: MkDirOptions): void {
+    const errMsg = `mkdir:fail`
+    let { dirPath, recursive, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    // 将非boolean类型的入参转换为boolean类型
+    if (!checkDataType(recursive, false, 'boolean')) {
+      recursive = Boolean(recursive)
+    }
+
+    dirPath = useGetRealPath(dirPath)
+    const checkRes = checkPath('mkdir', 'dirPath', dirPath)
+    if (!checkRes.isValid) {
+      cb.fail((checkRes as CustomValidReturn).err)
+      return
+    }
+
+    // 检查目录是否已经存在
+    if (fs.accessSync(dirPath)) {
+      cb.fail(getAlreadyExistsError(errMsg))
+      return
+    }
+
+    const getSubPath = obtainUpperPath(dirPath)
+    if (!recursive && !fs.accessSync(getSubPath.upperPath)) {
+      cb.fail(getNoSuchFileOrDirectoryError(errMsg))
+      return
+    }
+
+    fs.mkdir(dirPath, recursive)
+      .then(() => {
+        cb.success({ errMsg: 'mkdir:ok' } as FileManagerSuccessResult)
+      })
+      .catch((err: BusinessError) => {
+        cb.fail(getApiError(err.code, errMsg))
+      })
+  }
+  mkdirSync(dirPath: string, recursive: boolean): void {
+    const errMsg = `mkdirSync:fail`
+    // 将非boolean类型的入参转换为boolean类型
+    if (!checkDataType(recursive, false, 'boolean')) {
+      recursive = Boolean(recursive)
+    }
+
+    dirPath = useGetRealPath(dirPath)
+    const res = checkPathSync('mkdirSync', 'dirPath', dirPath)
+    if (!res.isValid) {
+      throw new Error((res as CustomValidReturn).err?.errMsg)
+    }
+
+    // 检查目录是否已经存在
+    if (fs.accessSync(dirPath)) {
+      throw new Error(`${errMsg} dirPath already exists: ${dirPath}`)
+    }
+
+    // recursive为false且上级目录不存在
+    if (!recursive && !fs.accessSync(obtainUpperPath(dirPath).upperPath)) {
+      throw new Error(`${errMsg} recursive is false and upper path does not exist`)
+    }
+
+    try {
+      fs.mkdirSync(dirPath, recursive)
+    } catch (error) {
+      throw new Error(getApiError((error as BusinessError).code, errMsg).errMsg)
+    }
+  }
+  rmdir(options: RmDirOptions): void {
+    const errMsg = 'rmdir:fail'
+    let { dirPath, recursive, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+
+    // 将非boolean类型的入参转换为boolean类型
+    if (!checkDataType(recursive, false, 'boolean')) {
+      recursive = Boolean(recursive)
+    }
+
+    let deleteDir = true
+    if (!dirPath.endsWith('/')) {
+      dirPath = dirPath + '/'
+    }
+    if ([CACHE_PATH, USER_DATA_PATH, TEMP_PATH, SANDBOX_PATH].includes(dirPath)) {
+      deleteDir = false
+    }
+
+    dirPath = useGetRealPath(dirPath)
+    const res = checkPathExistence('rmdir', 'dirPath', dirPath)
+    if (!res.isValid) {
+      cb.fail((res as CustomValidReturn).err)
+      return
+    }
+
+    if (!fs.statSync(dirPath).isDirectory()) {
+      cb.fail(getNoSuchFileOrDirectoryError(`${errMsg} ${dirPath}`))
+      return
+    }
+
+    // recursive为false时，判断该目录下是否有文件
+    if (!recursive) {
+      let filenames = fs.listFileSync(dirPath)
+      if (filenames.length) {
+        cb.fail(getDirectoryNotEmpty(errMsg))
+        return
+      }
+    }
+    fs.rmdir(dirPath).then(() => {
+      if (!deleteDir) {
+        fs.mkdirSync(dirPath, true)
+      }
+      cb.success({ errMsg: 'rmdir:ok' } as FileManagerSuccessResult)
+    }).catch((err: BusinessError) => {
+      cb.fail(getApiError((err as BusinessError).code, errMsg))
+    })
+  }
+  rmdirSync(dirPath: string, recursive: boolean): void {
+    const errMsg = 'rmdirSync:fail'
+    // 将非boolean类型的入参转换为boolean类型
+    if (!checkDataType(recursive, false, 'boolean')) {
+      recursive = Boolean(recursive)
+    }
+
+    let deleteDir = true
+    if (!dirPath.endsWith('/')) {
+      dirPath = dirPath + '/'
+    }
+    if ([CACHE_PATH, USER_DATA_PATH, TEMP_PATH, SANDBOX_PATH].includes(dirPath)) {
+      deleteDir = false
+    }
+
+    dirPath = useGetRealPath(dirPath)
+    const res = checkPathExistenceSync('rmdirSync', 'dirPath', dirPath)
+    if (!res.isValid) {
+      throw new Error((res as CustomValidReturn).err?.errMsg)
+    }
+
+    // 判断路径是否存在，且不能是文件
+    if (!fs.statSync(dirPath).isDirectory()) {
+      throw new Error(`${errMsg} no such directory, open: ${dirPath}`)
+    }
+
+    // recursive为false时 且该路径下仍有其他文件
+    if (!recursive && (fs.listFileSync(dirPath).length > 0)) {
+      throw new Error(`${errMsg} directory not empty`)
+    }
+
+    try {
+      fs.rmdirSync(dirPath)
+      if (!deleteDir) {
+        fs.mkdirSync(dirPath, true)
+      }
+    } catch (err) {
+      throw new Error(getApiError((err as BusinessError).code, errMsg).errMsg)
+    }
+  }
+  readdir(options: ReadDirOptions): void {
+    const errMsg = 'readdir:fail'
+    let { dirPath, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    dirPath = useGetRealPath(dirPath)
+    const checkRes = checkPathExistence('readdir', 'dirPath', dirPath)
+    if (!checkRes.isValid) {
+      cb.fail((checkRes as CustomValidReturn).err)
+      return
+    }
+
+    const stat = fs.statSync(dirPath)
+    if (stat.isFile()) {
+      cb.fail(getNoSuchFileOrDirectoryError(`${errMsg} ${dirPath}`))
+      return
+    }
+
+    fs.listFile(dirPath)
+      .then((files) => {
+        cb.success({
+          files,
+          errMsg: 'readdir:ok'
+        } as ReadDirSuccessResult)
+      })
+      .catch((err: BusinessError) => {
+        cb.fail({ errCode: 1300201, errMsg: `${errMsg} with error message: ${err.message}, error code: ${err.code}` } as ApiError)
+      })
+  }
+  readdirSync(dirPath: string): string[] | null {
+    const errMsg = 'readdirSync:fail'
+    dirPath = useGetRealPath(dirPath)
+    const res = checkPathExistenceSync('readdirSync', 'dirPath', dirPath)
+    if (!res.isValid) {
+      throw new Error((res as CustomValidReturn).err?.errMsg)
+    }
+
+    if (fs.statSync(dirPath).isFile()) {
+      throw new Error(`${errMsg} not a directory: ${dirPath}`)
+    }
+
+    try {
+      return fs.listFileSync(dirPath)
+    } catch (err) {
+      throw new Error(getApiError((err as BusinessError).code, errMsg).errMsg)
+    }
+  }
+  access(options: AccessOptions): void {
+    const errMsg = 'access:fail'
+    let { path, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    if (!checkDataType(path, true, 'string')) {
+      cb.fail(getParameterError(`${errMsg} path`))
+      return
+    }
+    path = useGetRealPath(path)
+    fs.access(path).then(res => {
+      if (res) {
+        cb.success({ errMsg: 'access:ok' } as FileManagerSuccessResult)
+      } else {
+        cb.fail(getNoSuchFileOrDirectoryError(errMsg))
+      }
+    }, (err: BusinessError) => {
+      cb.fail({
+        errCode: err.code,
+        errMsg: getApiError(err.code, errMsg).errMsg
+      } as ApiError)
+    })
+  }
+  accessSync(path: string): void {
+    const errMsg = 'accessSync:fail'
+    if (!checkDataType(path, true, 'string')) {
+      throw new Error(`${errMsg} path must be a string`)
+    }
+    path = useGetRealPath(path)
+    const res = fs.accessSync(path)
+    if (!res) {
+      throw new Error(`${errMsg} No such file or directory`)
+    }
+  }
+  rename(options: RenameOptions): void {
+    const errMsg = 'rename:fail'
+    let { oldPath, newPath, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    oldPath = useGetRealPath(oldPath)
+    newPath = useGetRealPath(newPath)
+    const checkRes1 = checkPathExistence('rename', 'oldPath', oldPath)
+    if (!checkRes1.isValid) {
+      cb.fail((checkRes1 as CustomValidReturn).err)
+      return
+    }
+
+    const checkRes2 = checkPath('rename', 'newPath', newPath)
+    if (!checkRes2.isValid) {
+      cb.fail((checkRes2 as CustomValidReturn).err)
+      return
+    }
+
+    const ifAccessNewPath = fs.accessSync(newPath)
+    if (!ifAccessNewPath) {
+      const getUpperPath = obtainUpperPath(newPath)
+      if (!fs.accessSync(getUpperPath.upperPath)) {
+        cb.fail(getNoSuchFileOrDirectoryError(errMsg))
+        return
+      }
+    }
+
+    if (ifAccessNewPath && (oldPath !== newPath)) {
+      cb.fail(getAlreadyExistsError(errMsg))
+      return
+    }
+
+    fs.rename(oldPath, newPath).then(() => {
+      cb.success({ errMsg: 'rename:ok' } as FileManagerSuccessResult)
+    }).catch((err: BusinessError) => {
+      cb.fail({ errCode: 1300201, errMsg: getApiError((err as BusinessError).code, errMsg).errMsg } as ApiError)
+    })
+  }
+  renameSync(oldPath: string, newPath: string): void {
+    const errMsg = 'renameSync:fail'
+    oldPath = useGetRealPath(oldPath)
+    newPath = useGetRealPath(newPath)
+    // 差异：微信的'' 代指根目录，鸿蒙是不支持访问根目录的
+    const res1 = checkPathExistenceSync('renameSync', 'oldPath', oldPath)
+    if (!res1.isValid) {
+      throw new Error((res1 as CustomValidReturn).err?.errMsg)
+    }
+
+    const res2 = checkPathSync('renameSync', 'newPath', newPath)
+    if (!res2.isValid) {
+      throw new Error((res2 as CustomValidReturn).err?.errMsg)
+    }
+
+    // 若新路径不存在且上级目录也不存在
+    const ifAccessNewPath = fs.accessSync(newPath)
+    if (!ifAccessNewPath && !fs.accessSync(obtainUpperPath(newPath).upperPath)) {
+      throw new Error(`${errMsg} No such file or directory, open: ${newPath}`)
+    }
+
+    // 判断newPath是否存在 若存在且oldPath不等于newPath 则报错
+    if (ifAccessNewPath && (oldPath !== newPath)) {
+      throw new Error(errMsg)
+    }
+
+    try {
+      fs.renameSync(oldPath, newPath)
+    } catch (err) {
+      throw new Error(getApiError((err as BusinessError).code, errMsg).errMsg)
+    }
+  }
+  copyFile(options: CopyFileOptions): void {
+    const errMsg = 'copyFile:fail'
+    let { srcPath, destPath, success, fail, complete } = options
+    srcPath = useGetRealPath(srcPath)
+    destPath = useGetRealPath(destPath)
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    const checkResOfSrcPath = checkPathExistence('copyFile', 'srcPath', srcPath)
+    if (!checkResOfSrcPath.isValid) {
+      cb.fail((checkResOfSrcPath as CustomValidReturn).err)
+      return
+    }
+
+    const checkResOfDestPath = checkPath('copyFile', 'destPath', destPath)
+    if (!checkResOfDestPath.isValid) {
+      cb.fail((checkResOfDestPath as CustomValidReturn).err)
+      return
+    }
+
+    // 判断srcPath是否为一个目录
+    if (fs.statSync(srcPath).isDirectory()) {
+      cb.fail(getIsDirectoryError(`${errMsg} ${srcPath}`))
+      return
+    }
+
+    // destPath 可以是 xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path才是目录
+    if (destPath.endsWith('/')) {
+      destPath = destPath.slice(0, -1)
+    }
+
+    let canAccessDestPath = false
+    // 如果访问不到 accessSync会抛出异常
+    try { canAccessDestPath = fs.accessSync(destPath) } catch (error) { }
+
+    // 判断 destPath 路径是否存在
+    if (!canAccessDestPath) {
+      const getUpperPath = obtainUpperPath(destPath)
+
+      let canAccess = false
+      // 如果访问不到 accessSync会抛出异常
+      try { canAccess = fs.accessSync(getUpperPath.upperPath) } catch (error) { }
+      if (!canAccess) {
+        fs.mkdirSync(getUpperPath.upperPath, true)
+      }
+    } else {
+      const destPathStat = fs.statSync(destPath)
+      // 路径存在且为目录。
+      if (destPathStat.isDirectory()) {
+        // 路径存在且为目录，且已存在，报错 1300021
+        cb.fail(getApiError(1300021, errMsg) as IFileSystemManagerFail)
+        return
+      }
+      // 如果是文件，则覆盖
+      /* else {
+        // 路径存在且为文件，源路径必须与目标路径相同
+        if (destPathStat.isFile() && (srcPath !== destPath)) {
+          cb.fail(getAlreadyExistsError(errMsg))
+          return
+        }
+      } */
+    }
+
+    fs.copyFile(srcPath, destPath)
+      .then(() => {
+        cb.success({ errMsg: 'copyFile:ok' } as FileManagerSuccessResult)
+      })
+      .catch((err: BusinessError) => {
+        cb.fail(getApiError((err as BusinessError).code, errMsg))
+      })
+  }
+  copyFileSync(srcPath: string, destPath: string): void {
+    const errMsg = 'copyFileSync:fail'
+    srcPath = useGetRealPath(srcPath)
+    destPath = useGetRealPath(destPath)
+    const checkResSrc = checkPathExistenceSync('copyFileSync', 'srcPath', srcPath)
+    if (!checkResSrc.isValid) {
+      throw new Error((checkResSrc as CustomValidReturn).err?.errMsg)
+    }
+
+    const checkResDest = checkPathSync('copyFileSync', 'destPath', destPath)
+    if (!checkResDest.isValid) {
+      throw new Error((checkResDest as CustomValidReturn).err?.errMsg)
+    }
+
+    if (fs.statSync(srcPath).isDirectory()) {
+      throw new Error((getApiError(1301003, errMsg) as IFileSystemManagerFail).errMsg)
+    }
+
+    // destPath 可以是 xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path才是目录
+    if (destPath.endsWith('/')) {
+      destPath = destPath.slice(0, -1)
+    }
+
+    let canAccessDestPath = false
+    // 如果访问不到 accessSync会抛出异常
+    try { canAccessDestPath = fs.accessSync(destPath) } catch (error) { }
+
+    // 判断destPath路径是否存在
+    if (!canAccessDestPath) {
+      const getUpperPath = obtainUpperPath(destPath)
+      let canAccess = false
+      // 如果访问不到 accessSync会抛出异常
+      try { canAccess = fs.accessSync(getUpperPath.upperPath) } catch (error) { }
+      if (!canAccess) {
+        fs.mkdirSync(getUpperPath.upperPath, true)
+      }
+    } else {
+      // 判断存在的路径是目录还是文件
+      const destPathStat = fs.statSync(destPath)
+      // 路径存在且为目录，且已存在，报错 1300021
+      if (destPathStat.isDirectory()) {
+        // 如果是目录，且已存在，则报错
+        throw new Error((getApiError(1300021, errMsg) as IFileSystemManagerFail).errMsg)
+      }
+      // 如果是文件，则覆盖
+      /* else {
+        // 判断destPath是否等于srcPath, 若不等，则报错
+        if (destPathStat.isFile() && (srcPath !== destPath)) {
+          throw new Error(getAlreadyExistsError(errMsg).errMsg)
+        }
+      } */
+    }
+
+    try {
+      fs.copyFileSync(srcPath, destPath)
+    } catch (err) {
+      throw new Error(`${errMsg} ${(err as BusinessError).message}`)
+    }
+  }
+  getFileInfo(options: GetFileInfoOptions): void {
+    const errMsg = 'getFileInfo:fail'
+    let { filePath, success, fail, complete } = options
+    let digestAlgorithm: string = options.digestAlgorithm ?? 'md5'
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    filePath = useGetRealPath(filePath)
+    const checkResOfFilePath = checkPathExistence('getFileInfo', 'filePath', filePath)
+    if (!checkResOfFilePath.isValid) {
+      cb.fail((checkResOfFilePath as CustomValidReturn).err)
+      return
+    }
+
+    if (!DIGEST_ALGORITHM_VALUES.includes(digestAlgorithm)) {
+      cb.fail(getParameterError(`${errMsg} digestAlgorithm`))
+      return
+    }
+    try {
+      const fd = fs.openSync(filePath, fs.OpenMode.READ_ONLY).fd
+      const stat = isFileUri(filePath) ? fs.statSync(fd) : fs.statSync(filePath)
+
+      Hash.hash(filePath, digestAlgorithm, (err, hash) => {
+        if (err) {
+          cb.fail(getApiError((err as BusinessError).code, errMsg))
+        } else {
+          cb.success({
+            errMsg: 'getFileInfo:ok',
+            size: stat.size,
+            digest: hash.toLocaleLowerCase()
+          } as GetFileInfoSuccessResult)
+        }
+      })
+    } catch (err) {
+      cb.fail(getApiError((err as BusinessError).code, errMsg))
+    }
+  }
+  stat(options: StatOptions): void {
+    const errMsg = 'stat:fail'
+    let { path, recursive, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    path = useGetRealPath(path)
+    const res = checkPathExistence('stat', 'path', path)
+    if (!res.isValid) {
+      cb.fail((res as CustomValidReturn).err)
+      return
+    }
+
+    // 将非boolean类型的入参转换为boolean类型
+    if (!checkDataType(recursive, false, 'boolean')) {
+      recursive = Boolean(recursive)
+    }
+
+    try {
+      const stat = fs.statSync(path)
+      const isFile = stat.isFile()
+      if (isFile) recursive = false
+
+      const combinationMode = getFileTypeMode(stat) | stat.mode
+
+      const fileStats = {
+        path: isFile ? '' : '/',
+        stats: new StatsImpl(stat, combinationMode),
+      } as FileStats
+
+      if (recursive) {
+        fs.listFile(path, { recursion: true } as ListFileOptions).then((filePaths): Promise<FileStats>[] => {
+          return calculateAllPaths(filePaths).map(filePath => fs.stat(`${path}${filePath}`).then((stat): FileStats => {
+            const combinationMode = getFileTypeMode(stat) | stat.mode
+            return {
+              path: filePath,
+              stats: new StatsImpl(stat, combinationMode),
+            } as FileStats
+          }))
+        }).then((fileStates) => {
+          Promise.all(fileStates).then((_fileStats) => {
+            cb.success({
+              stats: [fileStats].concat(_fileStats) as FileStats[],
+              errMsg: 'stat:ok'
+            } as StatSuccessResult)
+          })
+        }).catch((err: BusinessError) => {
+          cb.fail({ errCode: 1300201, errMsg: `${errMsg} with error message: ${err.message}, error code: ${err.code}` } as ApiError)
+        })
+        return
+      }
+
+      cb.success({
+        stats: [fileStats] as FileStats[],
+        errMsg: 'stat:ok'
+      } as StatSuccessResult)
+    } catch (err) {
+      cb.fail({ errCode: 1300201, errMsg: `${errMsg} with error message: ${(err as BusinessError).message}, error code: ${(err as BusinessError).code}` } as ApiError)
+    }
+  }
+  // @ts-ignore
+  statSync(path: string, recursive: boolean): FileStats[] {
+    const errMsg = 'statSync:fail'
+
+    path = useGetRealPath(path)
+    const res = checkPathExistenceSync('statSync', 'path', path)
+    if (!res.isValid) {
+      throw new Error((res as CustomValidReturn).err?.errMsg)
+    }
+
+    // 将非boolean类型的入参转换为boolean类型
+    if (!checkDataType(recursive, false, 'boolean')) {
+      recursive = Boolean(recursive)
+    }
+
+    try {
+      const stat = fs.statSync(path)
+      const isFile = stat.isFile()
+      if (isFile) recursive = false
+      const combinationMode = getFileTypeMode(stat) | stat.mode
+
+      const fileStats = {
+        path: isFile ? '' : '/',
+        stats: new StatsImpl(stat, combinationMode),
+      } as FileStats
+
+      if (recursive) {
+        const filePaths = fs.listFileSync(path, { recursion: true } as ListFileOptions)
+        const _fileStats = calculateAllPaths(filePaths).map(filePath => {
+          const stat = fs.statSync(`${path}${filePath}`)
+          const combinationMode = getFileTypeMode(stat) | stat.mode
+          return {
+            path: filePath,
+            stats: new StatsImpl(stat, combinationMode),
+          } as FileStats
+        })
+        return [fileStats].concat(_fileStats) as FileStats[]
+      }
+
+      return [fileStats] as FileStats[]
+    } catch (err) {
+      throw new Error(getApiError((err as BusinessError).code, errMsg).errMsg)
+    }
+  }
+  appendFile(options: AppendFileOptions): void {
+    const errMsg = 'appendFile:fail'
+    let { filePath, data, encoding = DEFAULT_ENCODING, success, fail, complete } = options
+    filePath = useGetRealPath(filePath)
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    if (!checkDataType(filePath, true, 'string')) {
+      cb.fail(getParameterError(`${errMsg} filePath`))
+      return
+    }
+    if (!checkDataType(data, true, 'string') && !checkDataType(data, true, 'arraybuffer')) {
+      cb.fail(getParameterError(`${errMsg} data`))
+      return
+    }
+
+    const res = fs.accessSync(filePath)
+    if (!res) {
+      cb.fail(getNoSuchFileOrDirectoryError(errMsg))
+      return
+    }
+
+    const writeOptions: OHWriteOptions = {}
+    if (checkDataType(data, true, 'string')) writeOptions.encoding = encoding
+
+    const file = fs.openSync(filePath, fs.OpenMode.READ_WRITE | fs.OpenMode.APPEND)
+    fs.write(file.fd, data as (string | ArrayBuffer), writeOptions)
+      .then(_ => {
+        cb.success({ errMsg: 'appendFile:ok' } as FileManagerSuccessResult)
+      }).catch((err: BusinessError) => {
+        cb.fail(getApiError(err.code, errMsg))
+      }).finally(() => {
+        fs.closeSync(file)
+      })
+  }
+  // 当数据是string类型时有效，表示数据的编码方式，默认 ‘utf-8’。当前仅支持 ‘utf-8’
+  appendFileSync(filePath: string, data: string | ArrayBuffer, encoding: string = DEFAULT_ENCODING): void {
+    const errMsg = 'appendFileSync:fail'
+    filePath = useGetRealPath(filePath)
+    if (!checkDataType(filePath, true, 'string')) {
+      throw new Error(`${errMsg} parameter error: parameter.filePath should be String`)
+    }
+    if (!checkDataType(data, true, 'string') && !checkDataType(data, true, 'arraybuffer')) {
+      throw new Error(`${errMsg} parameter error: parameter.data should be String/ArrayBuffer`)
+    }
+
+    const res = fs.accessSync(filePath)
+    if (!res) {
+      throw new Error(`${errMsg} No such file or directory, open "${filePath}"`)
+    }
+
+    const writeOptions: OHWriteOptions = {}
+    if (checkDataType(data, true, 'string')) writeOptions.encoding = encoding
+
+    const file = fs.openSync(filePath, fs.OpenMode.READ_WRITE | fs.OpenMode.APPEND)
+    fs.writeSync(file.fd, data as (string | ArrayBuffer), writeOptions)
+  }
+  saveFile(options: SaveFileOptions): void {
+    const errMsg = 'saveFile:fail'
+    let { filePath, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+
+    const tempFilePath = useGetRealPath(options.tempFilePath) as string;
+
+    if (!fs.accessSync(tempFilePath)) {
+      cb.fail(getNoSuchFileOrDirectoryError(`${errMsg} ${tempFilePath}`))
+      return
+    }
+
+    if (filePath != null && filePath.endsWith('/')) {
+      filePath = filePath.slice(0, -1)
+    }
+    const savedPath = filePath ? useGetRealPath(filePath) : getSavedDir()
+    const savedFilePath = getSavedFilePath(tempFilePath, savedPath, !filePath)
+
+    let canAccessDestPath = false
+    // 如果访问不到 accessSync会抛出异常
+    try { canAccessDestPath = fs.accessSync(savedFilePath) } catch (error) { }
+    // 判断destPath路径是否存在
+    if (!canAccessDestPath) {
+      const getUpperPath = obtainUpperPath(savedFilePath)
+      let canAccess = false
+      // 如果访问不到 accessSync会抛出异常
+      try { canAccess = fs.accessSync(getUpperPath.upperPath) } catch (error) { }
+      if (!canAccess) {
+        fs.mkdirSync(getUpperPath.upperPath, true)
+      }
+    } else {
+      const destPathStat = fs.statSync(savedFilePath)
+      // 路径存在且为目录。如 xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path才是目录
+      if (destPathStat.isDirectory()) {
+        // 如果是目录，且已存在，则报错
+        cb.fail(getApiError(1301003, errMsg) as IFileSystemManagerFail)
+        return
+      }
+    }
+
+    function operateSuccess() {
+      cb.success({
+        // #ifdef UNI-APP-X
+        savedFilePath: normalizeFilePath(savedFilePath),
+        // #endif
+        // #ifndef UNI-APP-X
+        // @ts-expect-error
+        savedFilePath,
+        // #endif
+      } as SaveFileSuccessResult)
+    }
+
+    fs.rename(tempFilePath, savedFilePath)
+      .then(operateSuccess)
+      .catch((err: Error) => {
+        // 兼容用户从相册选择图片时，保存图片失败的问题，无法移动文件
+        if ((err as BusinessError).code === 13900016) {
+          this.copyFile({
+            srcPath: tempFilePath,
+            destPath: savedFilePath,
+            success: operateSuccess,
+            fail: cb.fail,
+            complete: null
+          } as CopyFileOptions)
+        } else {
+          cb.fail(getApiError((err as BusinessError).code, errMsg))
+        }
+      })
+  }
+  saveFileSync(inTempFilePath: string, filePath: string | null): string {
+    const errMsg = 'saveFileSync:fail'
+    const tempFilePath = useGetRealPath(inTempFilePath) as string;
+
+    if (!fs.accessSync(tempFilePath)) {
+      throw new Error(`${errMsg} No such file or directory. tempFilePath: ${tempFilePath}`)
+    }
+    if (filePath != null && filePath.endsWith('/')) {
+      filePath = filePath.slice(0, -1)
+    }
+    const savedPath = filePath ? useGetRealPath(filePath) : getSavedDir()
+    const savedFilePath = getSavedFilePath(tempFilePath, savedPath, !filePath)
+
+    let canAccessDestPath = false
+    // 如果访问不到 accessSync会抛出异常
+    try { canAccessDestPath = fs.accessSync(savedFilePath) } catch (error) { }
+    // 判断destPath路径是否存在
+    if (!canAccessDestPath) {
+      const getUpperPath = obtainUpperPath(savedFilePath)
+      let canAccess = false
+      // 如果访问不到 accessSync会抛出异常
+      try { canAccess = fs.accessSync(getUpperPath.upperPath) } catch (error) { }
+      if (!canAccess) {
+        fs.mkdirSync(getUpperPath.upperPath, true)
+      }
+    } else {
+      const destPathStat = fs.statSync(savedFilePath)
+      // 路径存在且为目录。如 xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path才是目录
+      if (destPathStat.isDirectory()) {
+        // 如果是目录，且已存在，则报错
+        throw new Error(getApiError(1301003, errMsg).errMsg)
+      }
+    }
+
+    try {
+      fs.renameSync(tempFilePath, savedFilePath)
+      // #ifdef UNI-APP-X
+      return normalizeFilePath(savedFilePath)
+      // #endif
+      // #ifndef UNI-APP-X
+      return savedFilePath
+      // #endif
+    } catch (error) {
+      // 兼容用户从相册选择图片时，保存图片失败的问题，无法移动文件
+      if ((error as BusinessError).code === 13900016) {
+        this.copyFileSync(tempFilePath, savedFilePath)
+        // #ifdef UNI-APP-X
+        return normalizeFilePath(savedFilePath)
+        // #endif
+        // #ifndef UNI-APP-X
+        return savedFilePath
+        // #endif
+      } else {
+        throw new Error((error as Error).message)
+      }
+    }
+  }
+  removeSavedFile(options: RemoveSavedFileOptions): void {
+    const errMsg = 'removeSavedFile:fail'
+    const { filePath, success, fail, complete } = options
+    const savedFilePath = getFsPath(filePath);
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    if (!fs.accessSync(savedFilePath)) {
+      cb.fail(getAlreadyExistsError(errMsg))
+      return
+    }
+    fs.unlink(savedFilePath, (err) => {
+      if (err) {
+        cb.fail(getApiError(err.code, 'removeSavedFile:fail'))
+      } else {
+        cb.success({ errMsg: 'removeSavedFile:ok' } as FileManagerSuccessResult)
+      }
+    })
+  }
+  getSavedFileList(options: GetSavedFileListOptions): void {
+    const errMsg = 'getSavedFileList:fail'
+    const { success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    const savedPath = getSavedDir()
+    if (!fs.accessSync(savedPath)) {
+      cb.success({
+        fileList: Array.from(savedFileList.values())
+      } as GetSavedFileListResult)
+      return
+    }
+    fs.listFile(savedPath, {} as ListFileOptions, (err, fileList) => {
+      if (err) {
+        cb.fail(getApiError(err.code, errMsg))
+      } else {
+        cb.success({
+          fileList: fileList.map((filePath: string) => {
+            const fullPath = savedPath + '/' + filePath
+            const stat = fs.statSync(fullPath)
+            if (!stat.isFile()) {
+              return null
+            }
+            // #ifdef UNI-APP-X
+            return normalizeFilePath(fullPath)
+            // #endif
+            // #ifndef UNI-APP-X
+            return fullPath
+            // #endif
+          })
+            .concat(Array.from(savedFileList.values()))
+            .filter((item) => !!item)
+        } as GetSavedFileListResult)
+      }
+    })
+  }
+  truncate(options: TruncateFileOptions): void {
+    const errMsg = 'truncate:fail'
+    let { filePath, length, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    if (!checkDataType(filePath, true, 'string')) {
+      cb.fail(getParameterError(`${errMsg} filePath`))
+      return;
+    }
+    filePath = useGetRealPath(filePath)
+    const res = fs.accessSync(filePath)
+    if (!res) {
+      cb.fail(getNoSuchFileOrDirectoryError(`${errMsg} ${filePath}`))
+      return
+    }
+
+    // 判断srcPath是否为一个目录
+    const fileStat = fs.statSync(filePath)
+    if (fileStat.isDirectory()) {
+      cb.fail(getIsDirectoryError(`${errMsg} ${filePath}`))
+      return
+    }
+
+    if (!checkDataType(length, false, 'number') || length! < 0) {
+      length = 0
+    }
+
+    const file = fs.openSync(filePath, fs.OpenMode.READ_WRITE)
+    fs.truncate(file.fd, length).then(() => {
+      cb.success({ errMsg: 'truncate:ok' } as FileManagerSuccessResult)
+    }).catch((err: BusinessError) => {
+      cb.fail(getApiError(err.code, errMsg))
+    })
+  }
+  truncateSync(filePath: string, length?: number): void {
+    const errMsg = 'truncateSync:fail'
+
+    filePath = useGetRealPath(filePath)
+    if (!checkDataType(filePath, true, 'string')) {
+      throw new Error(`${errMsg} parameter error: parameter.filePath should be String`)
+    }
+
+    const res = fs.accessSync(filePath)
+    if (!res) {
+      throw new Error(`${errMsg} No such file or directory, open "${filePath}"`)
+    }
+
+    // 判断srcPath是否为一个目录
+    const fileStat = fs.statSync(filePath)
+    if (fileStat.isDirectory()) {
+      throw new Error(`${errMsg} illegal operation on a directory, open: ${filePath}`)
+    }
+
+    if (!checkDataType(length, false, 'number') || length! < 0) {
+      length = 0
+    }
+
+    const file = fs.openSync(filePath, fs.OpenMode.READ_WRITE)
+    try {
+      fs.truncateSync(file.fd, length!)
+    } catch (error) {
+      throw new Error(getApiError((error as BusinessError).code, errMsg).errMsg)
+    }
+  }
+  open(options: OpenFileOptions): void {
+    const errMsg = 'open:fail'
+    let { filePath, flag, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    filePath = useGetRealPath(filePath)
+    if (!checkDataType(filePath, true, 'string')) {
+      cb.fail(getParameterError(`${errMsg} filePath`))
+      return
+    }
+    if (!FLAG.includes(flag)) {
+      flag = DEFAULT_FLAG
+    }
+
+    if (Object.keys(modeReflect).includes(flag)) {
+      if (fs.accessSync(filePath)) {
+        cb.fail(getAlreadyExistsError(errMsg))
+        return
+      } else {
+        flag = modeReflect[flag as keyof ModeReflect] as _FLAG
+      }
+    }
+
+    fs.open(filePath, getOpenMode(flag)!, (err, file) => {
+      if (err) {
+        cb.fail(getApiError(err.code, errMsg))
+      } else {
+        cb.success({
+          fd: file.fd.toString(),
+          errMsg: 'open:ok'
+        } as OpenFileSuccessResult)
+      }
+    })
+  }
+  openSync(options: OpenFileSyncOptions): string {
+    let { filePath, flag } = options
+    filePath = useGetRealPath(filePath)
+    if (!checkDataType(filePath, true, 'string')) {
+      throw new Error('openSync:fail parameter error: parameter.filePath should be String')
+    }
+    if (!FLAG.includes(flag)) {
+      flag = DEFAULT_FLAG
+    }
+
+    if (Object.keys(modeReflect).includes(flag)) {
+      if (fs.accessSync(filePath)) {
+        throw new Error('openSync:fail EXIST: file already exists')
+      } else {
+        flag = modeReflect[flag as keyof ModeReflect] as _FLAG
+      }
+    }
+
+    const file = fs.openSync(filePath, getOpenMode(flag)!)
+    return file.fd.toString()
+  }
+  write(options: WriteOptions): void {
+    const errMsg = 'write:fail'
+    let { fd: inFd, data, offset, length, position, encoding = 'utf-8', success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    let fd: number = -1
+    const writeOptions: OHWriteOptions = {}
+
+    if (!checkDataType(inFd, true, 'string') || inFd === '' || isNaN(Number(inFd))) {
+      cb.fail(getParameterError(`${errMsg} fd`))
+      return
+    } else {
+      fd = Number(inFd)
+    }
+
+    if (!checkDataType((data as DataType), true, 'arraybuffer') && !checkDataType((data as DataType), true, 'string')) {
+      cb.fail(getParameterError(`${errMsg} data`))
+      return
+    }
+
+    // data的类型为ArrayBuffer
+    if (checkDataType((data as DataType), true, 'arraybuffer')) {
+      const sizeOfArrayBuffer = (data as ArrayBuffer).byteLength as number
+      if (!checkDataType(offset, false, 'number') || offset! < 0 || !offset) {
+        offset = DEFAULT_OFFSET       // 非number类型、小于0、undefined、null
+      }
+
+      if (offset > sizeOfArrayBuffer) {
+        cb.fail({ errCode: 1300201, errMsg: `write:fail RangeError [ERR_OUT_OF_RANGE]: The value of offset is out of range. It must be <= ${sizeOfArrayBuffer}. Received ${offset}` } as ApiError)
+        return
+      }
+
+      if (!checkDataType(length, false, 'number') || length! < 0 || !length) {
+        length = sizeOfArrayBuffer - offset      // length为非法输入时，将其的值设为sizeOfArrayBuffer - offset
+      }
+
+      if (length > sizeOfArrayBuffer - offset) {
+        cb.fail({ errCode: 1300201, errMsg: `write:fail RangeError [ERR_OUT_OF_RANGE]: The value of length is out of range. It must be <= ${sizeOfArrayBuffer - offset}. Received ${length}` } as ApiError)
+        return
+      }
+
+      const uint8ArrayTemp = new Uint8Array(data as ArrayBuffer)
+      const slicedArray = uint8ArrayTemp.slice(offset)  // 截取offset位置后的内容
+      data = slicedArray.buffer
+    }
+
+    // data的类型为string
+    if (checkDataType((data as DataType), true, 'string')) {
+      const res = checkEncoding('write', encoding)
+      if (!res.isValid) {
+        cb.fail(getParameterError(res.errMsg))
+        return
+      }
+      writeOptions.encoding = encoding as string
+      // 微信中，当data的类型为string时，length的设定值无效，默认写入data的全部内容
+      // 而鸿蒙接口中，无论data的类型为arraybuffer还是string，都会使用用户传入的length值
+      length = buffer.byteLength(data as string)
+    }
+
+    if (!checkDataType(position, false, 'number') || position! < 0 || !position) {
+      position = DEFAULT_POSITION     // position为number类型外的非法值时，将其设为0
+    }
+
+    writeOptions.offset = position
+    writeOptions.length = length!
+
+    let _write: Promise<number> | null = null
+
+    switch (encoding) {
+      case 'ascii':
+      case 'base64':
+        if (data instanceof ArrayBuffer) {
+          _write = fs.write(fd, buffer.alloc(data.byteLength, buffer.from(data), encoding).buffer, writeOptions)
+        } else {
+          _write = fs.write(fd, buffer.from((data as string), encoding).buffer, writeOptions)
+        }
+        break
+      case 'utf-8':
+        writeOptions.encoding = encoding
+        _write = fs.write(fd, data as (string | ArrayBuffer), writeOptions)
+        break
+    }
+    _write!.then(bytesWritten => {
+      cb.success({ bytesWritten, errMsg: 'writeFile:ok' } as WriteResult)
+    }).catch((err: BusinessError) => {
+      cb.fail(getApiError(err.code, errMsg))
+    }).finally(() => {
+      fs.closeSync(fd)
+    })
+  }
+  writeSync(options: WriteSyncOptions): WriteResult {
+    const errMsg = 'writeSync:fail'
+    let { fd: inFd, data, offset, length, position, encoding = 'utf-8' } = options
+    let fd: number = -1
+    const writeOptions: OHWriteOptions = {}
+
+    if (!checkDataType(inFd, true, 'string') || inFd === '' || isNaN(Number(inFd))) {
+      throw new Error('writeSync:fail invalid fd')
+    } else {
+      fd = Number(inFd)
+    }
+
+    if (!checkDataType((data as DataType), true, 'arraybuffer') && !checkDataType((data as DataType), true, 'string')) {
+      throw new Error('writeSync:fail data must be a string or ArrayBuffer')
+    }
+
+    // data的类型为ArrayBuffer
+    if (checkDataType((data as DataType), true, 'arraybuffer')) {
+      const sizeOfArrayBuffer = (data as ArrayBuffer).byteLength as number
+      if (!checkDataType(offset, false, 'number') || offset! < 0 || !offset) {
+        offset = DEFAULT_OFFSET       // 非number类型、小于0、undefined、null
+      }
+
+      if (offset > sizeOfArrayBuffer) {
+        throw new Error(`write:fail RangeError [ERR_OUT_OF_RANGE]: The value of offset is out of range. It must be <= ${sizeOfArrayBuffer}. Received ${offset}`)
+      }
+
+      if (!checkDataType(length, false, 'number') || length! < 0 || !length) {
+        length = sizeOfArrayBuffer - offset      // length为非法输入时，将其的值设为sizeOfArrayBuffer - offset
+      }
+
+      if (length > sizeOfArrayBuffer - offset) {
+        throw new Error(`write:fail RangeError [ERR_OUT_OF_RANGE]: The value of length is out of range. It must be <= ${sizeOfArrayBuffer - offset}. Received ${length}`)
+      }
+
+      const uint8ArrayTemp = new Uint8Array(data as ArrayBuffer)
+      const slicedArray = uint8ArrayTemp.slice(offset)  // 截取offset位置后的内容
+      data = slicedArray.buffer
+    }
+
+    // data的类型为string
+    if (checkDataType((data as DataType), true, 'string')) {
+      const res = checkEncoding('write', encoding)
+      if (!res.isValid) {
+        throw new Error(res.errMsg)
+      }
+      writeOptions.encoding = encoding as string
+      // 微信中，当data的类型为string时，length的设定值无效，默认写入data的全部内容
+      // 而鸿蒙接口中，无论data的类型为arraybuffer还是string，都会使用用户传入的length值
+      length = buffer.byteLength(data as string)
+    }
+
+    if (!checkDataType(position, false, 'number') || position! < 0 || !position) {
+      position = DEFAULT_POSITION     // position为number类型外的非法值时，将其设为0
+    }
+
+    writeOptions.offset = position
+    writeOptions.length = length!
+    let writeLen: number = 0
+    try {
+      switch (encoding) {
+        case 'ascii':
+        case 'base64':
+          if (data instanceof ArrayBuffer) {
+            writeLen = fs.writeSync(fd, buffer.alloc(data.byteLength, buffer.from(data), encoding).buffer, writeOptions)
+          } else {
+            writeLen = fs.writeSync(fd, buffer.from((data as string), encoding).buffer, writeOptions)
+          }
+          break
+        case 'utf-8':
+          writeOptions.encoding = encoding
+          writeLen = fs.writeSync(fd, data as (string | ArrayBuffer), writeOptions)
+          break
+        default:
+          throw new Error(getParameterError(`${errMsg} encoding`).errMsg)
+      }
+      return { bytesWritten: writeLen, errMsg: 'write:ok' } as WriteResult
+    } catch (err) {
+      fs.closeSync(fd)
+      throw new Error(`${errMsg} ${(err as BusinessError).message}`)
+    }
+  }
+  close(options: CloseOptions): void {
+    const errMsg = 'close:fail'
+    let { fd: inFd, success, fail, complete } = options
+
+    let fd: number = -1
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+
+    const res = checkFd('fstat', inFd)
+    if (!res.isValid) {
+      cb.fail((res as CheckFdErr).err)
+      return
+    }
+
+    fd = res.fd
+    if (isNaN(fd)) {
+      cb.fail(getParameterError(`${errMsg} invalid fd`))
+      return
+    }
+
+    fs.close(fd, err => {
+      if (err) {
+        cb.fail(getParameterError(`${errMsg} bad file descriptor`))
+      } else {
+        cb.success({ errMsg: 'close:ok' } as FileManagerSuccessResult)
+      }
+    })
+  }
+  closeSync(options: CloseSyncOptions): void {
+    const errMsg = 'closeSync:fail'
+
+    let { fd: inFd } = options
+    let fd: number = -1
+    if (inFd === '' || !checkDataType(inFd, true, 'string')) {
+      throw new Error(`${errMsg} invalid fd`)
+    }
+
+    fd = Number(inFd)
+    if (isNaN(fd)) {
+      throw new Error(`${errMsg} bad file descriptor`)
+    }
+    fs.closeSync(fd)
+  }
+  fstat(options: FStatOptions): void {
+    const errMsg = 'fstat:fail'
+    let { fd: inFd, success, fail, complete } = options
+    let fd: number = -1
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    const res = checkFd('fstat', inFd)
+    if (!res.isValid) {
+      cb.fail((res as CheckFdErr).err)
+      return
+    } else {
+      fd = res.fd
+    }
+
+    fs.stat(fd, (err, stat) => {
+      if (err) {
+        cb.fail(getApiError(err.code, errMsg))
+      } else {
+        const combinationMode = getFileTypeMode(stat) | stat.mode
+
+        cb.success({ stats: new StatsImpl(stat, combinationMode) } as FStatSuccessResult)
+      }
+    })
+  }
+  fstatSync(options: FStatSyncOptions): Stats {
+    const errMsg = 'fstatSync:fail'
+    let fd: number = -1
+    const res = checkFd('fstatSync', options.fd)
+    if (!res.isValid) {
+      throw new Error((res as CheckFdErr).err?.errMsg)
+    } else {
+      fd = res.fd
+    }
+
+    try {
+      const stat = fs.statSync(fd)
+      const combinationMode = getFileTypeMode(stat) | stat.mode
+      return new StatsImpl(stat, combinationMode)
+    } catch (err) {
+      throw new Error(getApiError((err as BusinessError).code, errMsg).errMsg)
+    }
+  }
+  ftruncate(options: FTruncateFileOptions): void {
+    const errMsg = 'ftruncate:fail'
+    let { fd: inFd, length, success, fail, complete } = options
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+    let fd: number = -1
+
+    const res = checkFd('ftruncate', inFd)
+    if (!res.isValid) {
+      cb.fail((res as CheckFdErr).err)
+      return
+    } else {
+      fd = res.fd
+    }
+
+    if (!checkDataType(length, true, 'number') || length < 0) {
+      length = DEFAULT_LENGTH // 非number类型 设为默认值DEFAULT_LENGTH ，DEFAULT_LENGTH=0
+    }
+
+    fs.truncate(fd, length).then(() => {
+      cb.success({ errMsg: 'ftruncate:ok' } as FileManagerSuccessResult)
+    }).catch((err: BusinessError) => {
+      cb.fail(getApiError((err as BusinessError).code, errMsg))
+    })
+  }
+  ftruncateSync(options: FTruncateFileSyncOptions): void {
+    const errMsg = 'ftruncateSync:fail'
+    let { fd: inFd, length } = options
+    const res = checkFd('ftruncateSync', inFd)
+    let fd: number = -1
+
+    if (!res.isValid) {
+      throw new Error((res as CheckFdErr).err?.errMsg)
+    } else {
+      fd = res.fd
+    }
+
+    if (!checkDataType(length, true, 'number') || length < 0) {
+      length = DEFAULT_LENGTH // 非number类型 设为默认值DEFAULT_LENGTH ，DEFAULT_LENGTH=0
+    }
+
+    try {
+      fs.truncateSync(fd, length)
+    } catch (err) {
+      throw new Error(getApiError((err as BusinessError).code, errMsg).errMsg)
+    }
+  }
+  unzip(options: UnzipFileOptions): void {
+    const errMsg = 'unzip:fail'
+    let { zipFilePath, targetPath, success, fail, complete } = options
+    zipFilePath = useGetRealPath(zipFilePath)
+    targetPath = useGetRealPath(targetPath)
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+
+    if (!checkDataType(zipFilePath, true, 'string')) {
+      cb.fail(getParameterError(`${errMsg} zipFilePath`))
+      return
+    }
+
+    if (!checkDataType(targetPath, true, 'string')) {
+      cb.fail(getParameterError(`${errMsg} targetPath`))
+      return
+    }
+
+    const res = fs.accessSync(zipFilePath)
+    if (!res) {
+      cb.fail(getNoSuchFileOrDirectoryError(errMsg))
+      return
+    }
+
+    const targetStat = fs.statSync(targetPath)
+    if (!targetStat.isDirectory()) {
+      cb.fail(getApiError(1300016, errMsg))
+      return
+    }
+
+    zlib.decompressFile(zipFilePath, targetPath).then(() => {
+      cb.success({ errMsg: 'unzip:ok' } as FileManagerSuccessResult)
+    }).catch((err: BusinessError) => {
+      cb.fail(getApiError((err as BusinessError).code, errMsg))
+    })
+  }
+  readZipEntry(options: ReadZipEntryOptions): void {
+    const errMsg = 'readZipEntry:fail'
+    const okMsg = 'readZipEntry:ok'
+    let { filePath, encoding, entries, success, fail, complete } = options
+    filePath = useGetRealPath(filePath)
+    const cb = new FileCallback({ success, fail, complete } as CallBack)
+
+    let isAll = false
+    let encodeArrayBuffer = false
+
+    if (!checkDataType(filePath, true, 'string')) {
+      cb.fail(getParameterError(`${errMsg} filePath`))
+      return
+    }
+
+    if (entries != null) {
+      if (!Array.isArray(entries)) {
+        cb.fail(getParameterError(`${errMsg} entries`))
+        return
+      } else {
+        if (entries.length === 0) {
+          cb.fail(getParameterError(`${errMsg} entries`))
+          return
+        }
+      }
+    } else {
+      isAll = true
+      if (encoding == null) {
+        encodeArrayBuffer = true
+      } else if (isString(encoding)) {
+        // 支持输入utf8 或 utf-8
+        if ((encoding as string) === 'utf8') {
+          encoding = 'utf-8'
+        }
+      }
+    }
+
+    if (isString(encoding) && !ENCODING_SUPPORT.includes(encoding as string)) {
+      cb.fail(getParameterError(`${errMsg} encoding`))
+      return
+    }
+
+    const res = fs.accessSync(filePath)
+    if (!res) {
+      cb.fail(getNoSuchFileOrDirectoryError(errMsg))
+      return
+    }
+
+    const targetPath = `${getEnv().TEMP_PATH}/unzip/${Date.now().toString()}`
+    fs.mkdir(targetPath, true).then(() => {
+      this.unzip({
+        zipFilePath: filePath,
+        targetPath,
+        success: () => {
+          const entriesResult: Map<string, ZipFileItem> = new Map()
+          const readFileSync = (file: string, fullPath: string, encoding?: string) => {
+            const data = this.readFileSync(fullPath) as ArrayBuffer
+            if (encodeArrayBuffer) {
+              // 使用 ArrayBuffer 格式读取
+              entriesResult.set(file, {
+                data,
+                errMsg: okMsg
+              } as ZipFileItem)
+            } else {
+              // 使用指定编码格式读取
+              entriesResult.set(file, {
+                data: buffer.from(data).toString(encoding as string),
+                errMsg: okMsg
+              } as ZipFileItem)
+            }
+          }
+          try {
+            if (isAll) {
+              // 读取目录下所有文件
+              const files = fs.listFileSync(targetPath)
+              for (const file of files) {
+                const fullPath = `${targetPath}/${file}`
+                if (fs.statSync(fullPath).isFile()) {
+                  readFileSync(file, fullPath, encoding as string)
+                }
+              }
+            } else {
+              // 处理指定的 entries
+              for (const entry of entries!) {
+                const entryPath = entry.path
+                const fullPath = `${targetPath}/${entryPath}`
+
+                // 检查文件是否存在
+                if (!fs.accessSync(fullPath) || !fs.statSync(fullPath).isFile()) {
+                  continue // 跳过不存在或不是文件的条目
+                }
+
+                readFileSync(entryPath, fullPath, entry.encoding as string)
+              }
+            }
+
+            cb.success({ entries: entriesResult, result: entriesResult, errMsg: okMsg } as EntriesResult)
+          } catch (err) {
+            cb.fail({ errMsg: `${errMsg} ${(err as Error).message}` } as FileManagerSuccessResult)
+          }
+        },
+        fail: cb.fail,
+        complete: null
+      } as UnzipFileOptions)
+    }).catch((err: BusinessError) => {
+      cb.fail(getApiError((err as BusinessError).code, errMsg))
+    })
+  }
+  readCompressedFile(options: ReadCompressedFileOptions): void {
+    throw new Error('Method not implemented.');
+  }
+  readCompressedFileSync(filePath: string, compressionAlgorithm: string): string {
+    throw new Error('Method not implemented.');
+  }
+}
+
+export const getFileSystemManager = defineSyncApi<FileSystemManager>(GET_FILE_SYSTEM_MANAGER, () => {
+  return new FileSystemManagerImpl()
+});
+
+export {
+  AccessOptions,
+  AppendFileOptions,
+  CloseOptions,
+  CloseSyncOptions,
+  CopyFileOptions,
+  EntriesResult,
+  EntryItem,
+  FStatOptions,
+  FStatSuccessCallback,
+  FStatSuccessResult,
+  FStatSyncOptions,
+  FTruncateFileOptions,
+  FTruncateFileSyncOptions,
+  FileManagerCompleteCallback,
+  FileManagerFailCallback,
+  FileManagerSuccessCallback,
+  FileManagerSuccessResult,
+  FileStats,
+  FileSystemManager,
+  FileSystemManagerErrorCode,
+  FileSystemManagerFail,
+  GetFileInfoOptions,
+  GetFileInfoSuccessCallback,
+  GetFileInfoSuccessResult,
+  GetFileSystemManager,
+  GetSavedFileListCallback,
+  GetSavedFileListOptions,
+  GetSavedFileListResult,
+  IFileSystemManagerFail,
+  MkDirOptions,
+  MkDirSuccessCallback,
+  OpenFileOptions,
+  OpenFileSuccessCallback,
+  OpenFileSuccessResult,
+  OpenFileSyncOptions,
+  ReadCompressedFileCallback,
+  ReadCompressedFileOptions,
+  ReadCompressedFileResult,
+  ReadDirOptions,
+  ReadDirSuccessCallback,
+  ReadDirSuccessResult,
+  ReadFileOptions,
+  ReadFileSuccessCallback,
+  ReadFileSuccessResult,
+  ReadOption,
+  ReadResult,
+  ReadSuccessCallback,
+  ReadSuccessCallbackResult,
+  ReadSyncOption,
+  ReadZipEntryCallback,
+  ReadZipEntryOptions,
+  RemoveSavedFileOptions,
+  RenameOptions,
+  RmDirOptions,
+  SaveFileOptions,
+  SaveFileSuccessCallback,
+  SaveFileSuccessResult,
+  StatOptions,
+  StatSuccessCallback,
+  StatSuccessResult,
+  Stats,
+  TruncateFileOptions,
+  UnLinkOptions,
+  UnLinkSuccessCallback,
+  UnzipFileOptions,
+  WriteCallback,
+  WriteFileOptions,
+  WriteOptions,
+  WriteResult,
+  WriteSyncOptions,
+  ZipFileItem
+} from '../interface.uts';

@@ -1,0 +1,11 @@
+{
+	"deploymentTarget": "12",
+	"frameworks": [
+		"AVFoundation.framework",
+		"CoreImage.framework"
+	],
+	"dependencies-pods": [{
+		"name": "GoogleMLKit/BarcodeScanning",
+		"version": "6.0.0"
+	}]
+}

@@ -1,0 +1,61 @@
+import { StartSoterAuthenticationOptions, CheckIsSoterEnrolledInDeviceOptions, SoterAuthMode } from './interface.uts';
+export const API_START_SOTER_AUTHENTICATION = 'startSoterAuthentication'
+
+export const StartSoterAuthenticationApiOptions: ApiOptions<StartSoterAuthenticationOptions> = {
+  formatArgs: new Map<string, ((value: string) => string | undefined)>([
+    ['requestAuthModes', function (value: string) {
+      if (!value.includes('fingerPrint') && !value.includes('facial')) {
+        return 'requestAuthModes 填写错误'
+      }
+      return undefined
+    }]
+  ])
+}
+
+export const StartSoterAuthenticationApiProtocols = new Map<string, ProtocolOptions>([
+  [
+    'requestAuthModes',
+    {
+      type: 'array',
+      required: true
+    }
+  ],
+  [
+    'challenge',
+    {
+      type: 'string',
+      required: true
+    }
+  ],
+  [
+    'authContent',
+    {
+      type: 'string'
+    }
+  ]
+])
+
+
+export const API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE = 'checkIsSoterEnrolledInDevice'
+export const checkAuthModes: SoterAuthMode[] = ['fingerPrint', 'facial', 'speech']
+export const CheckIsSoterEnrolledInDeviceApiOptions: ApiOptions<CheckIsSoterEnrolledInDeviceOptions> = {
+  formatArgs: new Map<string, ((value: string) => string | undefined)>([
+    ['checkAuthMode', function (value: string) {
+      if (!checkAuthModes.includes(value as SoterAuthMode)) {
+        return 'checkAuthMode 填写错误'
+      }
+      return undefined
+    }]
+  ])
+}
+
+export const CheckIsSoterEnrolledInDeviceProtocols = new Map<string, ProtocolOptions>([
+  [
+    'checkAuthMode',
+    {
+      type: 'string'
+    }
+  ]
+])
+
+export const API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION = 'checkIsSupportSoterAuthentication'

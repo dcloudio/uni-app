@@ -1,0 +1,99 @@
+import {
+  ChooseMediaOptions
+} from './interface.uts'
+
+// #region chooseMedia
+export const API_CHOOSE_MEDIA = 'chooseMedia';
+export const ChooseMediaApiProtocol = new Map<string, ProtocolOptions>([
+  [
+    'count',
+    {
+      type: 'number',
+      required: false
+    }
+  ],
+  [
+    'mediaType',
+    {
+      type: 'array',
+      required: false
+    }
+  ],
+  [
+    'sourceType',
+    {
+      type: 'array',
+      required: false
+    }
+  ],
+  [
+    'maxDuration',
+    {
+      type: 'number',
+      required: false
+    }
+  ],
+  [
+    'camera',
+    {
+      type: 'string',
+      required: false
+    }
+  ]
+])
+export const ChooseMediaApiOptions: ApiOptions<ChooseMediaOptions> = {
+  formatArgs: new Map<string, Function>([
+    [
+      'count',
+      function (count: number, params: ChooseMediaOptions) {
+        if (count == null) {
+          params.count = 9
+        }
+        if (params.count != null && params.count > 9) {
+          params.count = 9
+        }
+      }
+    ],
+    [
+      'mediaType',
+      function (mediaType: string[], params: ChooseMediaOptions) {
+        if (mediaType == null) {
+          params.mediaType = ['image', 'video']
+        }
+      }
+    ],
+    [
+      'sourceType',
+      function (sourceType: string[], params: ChooseMediaOptions) {
+        if (sourceType == null) {
+          params.sourceType = ['album', 'camera']
+        }
+      }
+    ],
+    /* [
+      'sizeType',
+      function (sizeType: string[], params: ChooseMediaOptions) {
+        if (sizeType == null) {
+          params.sizeType = ['original', 'compressed']
+        }
+      }
+    ], */
+    [
+      'maxDuration',
+      function (maxDuration: number, params: ChooseMediaOptions) {
+        if (maxDuration == null) {
+          params.maxDuration = 10
+        }
+      }
+    ],
+    [
+      'camera',
+      function (camera: string, params: ChooseMediaOptions) {
+        if (camera == null) {
+          params.camera = 'back'
+        }
+      }
+    ]
+  ])
+}
+// #endregion

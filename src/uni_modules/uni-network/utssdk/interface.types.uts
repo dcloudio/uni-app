@@ -1,0 +1,205 @@
+
+export type RequestDataOptions =
+	/**
+	 * @description json对象
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "9.0",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        }
+	 *    }
+	 * }
+	 */
+	Object
+	/**
+	 * @description 字符串
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "9.0",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        }
+	 *    }
+	 * }
+	 */
+	| String
+	/**
+	 * @description ArrayBuffer
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "x",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "x"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "x",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "x"
+	 *        }
+	 *    }
+	 * }
+	 */
+	| ArrayBuffer;
+
+
+
+export type RequestMethod =
+	/**
+	 * @description GET
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "9.0",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        }
+	 *    }
+	 * }
+	 */
+	GET
+	/**
+	 * @description POST
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "9.0",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        }
+	 *    }
+	 * }
+	 */
+	| POST
+	/**
+	 * @description PUT
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "9.0",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        }
+	 *    }
+	 * }
+	 */
+	| PUT
+	/**
+	 * @description DELETE
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "9.0",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        }
+	 *    }
+	 * }
+	 */
+	| DELETE
+	/**
+	 * @description CONNECT
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "9.0",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        }
+	 *    }
+	 * }
+	 */
+	| CONNECT
+	/**
+	 * @description HEAD
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "9.0",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        }
+	 *    }
+	 * }
+	 */
+	| HEAD
+	/**
+	 * @description OPTIONS
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "9.0",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        }
+	 *    }
+	 * }
+	 */
+	| OPTIONS
+	/**
+	 * @description TRACE
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "9.0",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "3.9+"
+	 *        }
+	 *    }
+	 * }
+	 */
+	| TRACE;
+	

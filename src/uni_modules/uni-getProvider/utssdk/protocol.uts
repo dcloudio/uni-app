@@ -1,0 +1,2 @@
+export const API_GET_PROVIDER = 'getProvider';
+export const API_GET_PROVIDER_SYNC = 'getProviderSync';

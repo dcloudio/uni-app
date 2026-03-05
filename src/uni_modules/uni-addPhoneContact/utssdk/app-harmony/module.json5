@@ -1,0 +1,20 @@
+{
+  "module": {
+    "name": "uni_modules__uni_addphonecontact",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet",
+      "2in1"
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.WRITE_CONTACTS",
+        "reason": "$string:permission_write_contacts",
+        "usedScene": {
+          "when": "inuse"
+        }
+      }
+    ]
+  }
+}

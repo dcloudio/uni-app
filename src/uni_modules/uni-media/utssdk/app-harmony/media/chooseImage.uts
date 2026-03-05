@@ -1,0 +1,112 @@
+import photoAccessHelper from '@ohos.file.photoAccessHelper'
+import { uni } from '@dcloudio/uni-runtime'
+import { _chooseMedia, _ChooseMediaOptions } from './media.uts'
+import {
+    ChooseImageOptions,
+    ChooseImageSuccess,
+    ChooseImage,
+    ChooseImageTempFile
+} from '../../interface.uts'
+import {
+    API_CHOOSE_IMAGE,
+    ChooseImageApiOptions,
+    ChooseImageApiProtocol,
+} from '../../protocol.uts'
+import {
+    MediaUniErrors
+} from '../../unierror.uts'
+import { takePhoto } from './camera.uts'
+
+const errSubject = 'uni-chooseImage'
+interface ChooseImageShowActionSheetOptionsSuccessOptions {
+    tapIndex: number
+}
+
+interface ChooseImageShowActionSheetOptionsFailOptions {
+    errMsg: string
+}
+
+interface ChooseImageShowActionSheetOptions {
+    itemList: string[]
+    success?: (e: ChooseImageShowActionSheetOptionsSuccessOptions) => void | null
+    fail?: (e: ChooseImageShowActionSheetOptionsFailOptions) => void | null
+};
+
+const _chooseImage = (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>) => {
+    _chooseMedia({
+        mimeType: photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE,
+        sourceType: ["album"],
+        isOriginalSupported: options.sizeType ? options.sizeType.includes('original') && options.sizeType.includes('compressed') : true,
+        original: options.sizeType ? options.sizeType.length === 1 && options.sizeType[0] === 'original' : false,
+        count: options.count!,
+    } as _ChooseMediaOptions)
+        .then((chooseMediaRes) => {
+            const tempFiles = chooseMediaRes.tempFiles
+            if (tempFiles.length === 0) {
+                const errCode = 1101001
+                const errMsg = MediaUniErrors.get(1101001) as string
+                res.reject(errMsg, {
+                    errCode
+                } as ApiError);
+                return;
+            }
+            res.resolve({
+                errMsg: '',
+                errSubject,
+                tempFilePaths: chooseMediaRes.tempFiles.map((file) => file.tempFilePath),
+                tempFiles: chooseMediaRes.tempFiles.map((file) => {
+                    return {
+                        path: file.tempFilePath,
+                        size: file.size,
+                    } as ChooseImageTempFile
+                }),
+            } as ChooseImageSuccess)
+        }, (err: Error) => {
+            res.reject(err.message)
+        })
+}
+
+const _takePhoto = (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>) => {
+    takePhoto(errSubject).then(photo => {
+        res.resolve({
+            errMsg: '',
+            errSubject,
+            tempFilePaths: photo.tempFiles.map((file) => file.tempFilePath),
+            tempFiles: photo.tempFiles.map((tempFile): ChooseImageTempFile => ({ path: tempFile.tempFilePath, size: tempFile.size } as ChooseImageTempFile))
+        } as ChooseImageSuccess)
+    }).catch((err: Error) => {
+        res.reject(err.message, err as ApiError)
+    })
+}
+
+export const chooseImage: ChooseImage =
+    defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(
+        API_CHOOSE_IMAGE,
+        async function (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>) {
+            if (options.sourceType?.length === 1 && options.sourceType[0] === 'camera') {
+                _takePhoto(options, res)
+            } else if (options.sourceType?.length === 1 && options.sourceType[0] === 'album') {
+                _chooseImage(options, res)
+            } else {
+                uni.showActionSheet({
+                    itemList: ['拍摄', '从相册选择'],
+                    success: (e) => {
+                        if (e.tapIndex === 0) {
+                            _takePhoto(options, res)
+                        } else if (e.tapIndex === 1) {
+                            _chooseImage(options, res)
+                        }
+                    },
+                    fail: (e) => {
+                        if (e.errMsg.includes('cancel')) {
+                            res.reject('cancel')
+                        } else {
+                            res.reject()
+                        }
+                    }
+                } as ChooseImageShowActionSheetOptions)
+            }
+        },
+        ChooseImageApiProtocol,
+        ChooseImageApiOptions
+    ) as ChooseImage

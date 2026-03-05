@@ -1,0 +1,61 @@
+import { ShowLoadingOptions,ShowLoading,HideLoading} from "../interface.uts"
+import { ShowToastOptions,ShowToast,HideToast} from "../interface.uts"
+import { ShowActionSheetOptions,ShowActionSheet} from "../interface.uts"
+import { ShowModalOptions,ShowModal} from "../interface.uts"
+
+import * as ToastModule from "./showToast.uts"
+// #ifndef UNI-APP-X
+import * as ModalModule from "./showModal.uts"
+// #endif
+// #ifndef UNI-APP-X
+import * as ActionSheetModule from "./showActionSheet.uts"
+// #endif
+
+
+
+export const showToast : ShowToast = function (options : ShowToastOptions) {
+	
+	// 指定在ui线程执行
+	UTSAndroid.dispatchAsync('main',function(res){
+		ToastModule.showToastImpl(options)
+	},null)
+	
+}
+
+export const hideToast : HideToast = function () {
+	UTSAndroid.dispatchAsync('main',function(res){
+		ToastModule.hideToastImpl()
+	},null)
+
+}
+// #ifndef UNI-APP-X
+export const showLoading : ShowLoading = function (options : ShowLoadingOptions) {
+	UTSAndroid.dispatchAsync('main',function(res){
+		ToastModule.showLoadingImpl(options)
+	},null)
+}
+
+export const hideLoading : HideLoading = function () {
+	UTSAndroid.dispatchAsync('main',function(res){
+		ToastModule.hideLoadingImpl()
+	},null)
+}
+// #endif
+// #ifndef UNI-APP-X
+export const showModal : ShowModal = function (options : ShowModalOptions) {
+	UTSAndroid.dispatchAsync('main',function(res){
+		ModalModule.showModalImpl(options)
+	},null)
+}
+// #endif
+
+// #ifndef UNI-APP-X
+export const showActionSheet : ShowActionSheet = function (options : ShowActionSheetOptions) {
+	UTSAndroid.dispatchAsync('main',function(res){
+		ActionSheetModule.actionSheetImpl(options)
+	},null)
+}
+
+// #endif
+
+

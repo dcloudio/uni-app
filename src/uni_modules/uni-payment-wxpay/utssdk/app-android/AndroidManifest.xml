@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+	package="uts.sdk.modules.uniPaymentWxpay">
+	<queries>
+		<package android:name="com.tencent.mm" />
+	</queries>
+	<application>
+		<activity
+		    android:name="uts.sdk.modules.DCloudUniPaymentWxpay.WXPayEntryActivity"
+		    android:exported="true"
+		    android:taskAffinity="${applicationId}"
+		    android:launchMode="singleTask">
+		</activity>
+		
+		<activity-alias
+		    android:name="${applicationId}.wxapi.WXPayEntryActivity"
+		    android:exported="true"
+		    android:targetActivity="uts.sdk.modules.DCloudUniPaymentWxpay.WXPayEntryActivity">
+		</activity-alias>
+	</application>
+</manifest>

@@ -1,0 +1,38 @@
+export type ChooseSystemImageSuccessResult = {
+	filePaths : Array<string>
+}
+export type ImageErrorCode = 2101001 | 2101010 | 2101002
+export interface ChooseSystemImageError extends IUniError {
+	errCode : ImageErrorCode
+};
+export type ChooseSystemImageSuccessCallback = (result : ChooseSystemImageSuccessResult) => void
+export type ChooseSystemImageFailResult = ChooseSystemImageError
+export type ChooseSystemImageFailCallback = (result : ChooseSystemImageFailResult) => void
+export type ChooseSystemImageCompleteCallback = (callback : any) => void
+
+export type ChooseSystemImageOptions = {
+	count : number,
+	success ?: ChooseSystemImageSuccessCallback | null,
+	fail ?: ChooseSystemImageFailCallback | null,
+	complete ?: ChooseSystemImageCompleteCallback | null
+}
+
+export type ChooseSystemImage = (options : ChooseSystemImageOptions) => void
+
+export type ChooseSystemMediaSuccessResult = {
+	filePaths : Array<string>
+}
+export type ChooseSystemMediaSuccessCallback = (result : ChooseSystemMediaSuccessResult) => void
+export type ChooseSystemMediaFailResult = ChooseSystemImageError
+export type ChooseSystemMediaFailCallback = (result : ChooseSystemMediaFailResult) => void
+export type ChooseSystemMediaCompleteCallback = (callback : any) => void
+export type ChooseSystemMediaOptions = {
+	count : number,
+	mediaType ?: Array<string> | null,
+	pageOrientation ?: string | null,
+	success ?: ChooseSystemMediaSuccessCallback | null,
+	fail ?: ChooseSystemMediaFailCallback | null,
+	complete ?: ChooseSystemMediaCompleteCallback | null
+}
+
+export type ChooseSystemMedia = (options : ChooseSystemMediaOptions) => void

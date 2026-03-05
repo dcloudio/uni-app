@@ -1,0 +1,57 @@
+import { RecorderManagerErrorCode, IRecorderManagerFail } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const RecorderManagerUniErrorSubject = 'uni-recorder';
+
+/**
+ * 错误码
+ * @UniError
+ */
+export const RecorderManagerUniErrors : Map<RecorderManagerErrorCode, string> = new Map([
+	/**
+	 * 没有麦克风权限
+	 */
+	[1107601, 'No microphone permissions.'],
+	/**
+	 * 不支持该采样率
+	 */
+	[1107602, 'This sample rate is not supported.'],
+	/**
+	 * 采样率是和编码码率不匹配
+	 */
+	[1107603, 'The sample rate does not match the encoding bitrate.'],
+	/**
+	 * 启动失败
+	 */
+	[1107604, 'Failed to start.'],
+	/**
+	 * 不支持该音频格式
+	 */
+	[1107605, 'This audio format is not supported.'],
+	/**
+	 * 其他错误
+	 */
+	[1107606, 'Other errors.'],
+	/**
+	 * 被打断
+	 */
+	[1107607, 'Audio interrupted.'],
+	/**
+	 * 正在录音中，请稍后再试
+	 */
+	[1107608, 'Audio is recording.']
+]);
+
+export class RecorderManagerFailImpl extends UniError implements IRecorderManagerFail {
+	// #ifdef APP-HARMONY
+		override errCode: RecorderManagerErrorCode
+	// #endif
+	constructor(errCode : RecorderManagerErrorCode, errMsg: string = '') {
+		super();
+		this.errSubject = RecorderManagerUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = errMsg != "" ? errMsg : (RecorderManagerUniErrors.get(errCode) ?? errMsg);
+	}
+}

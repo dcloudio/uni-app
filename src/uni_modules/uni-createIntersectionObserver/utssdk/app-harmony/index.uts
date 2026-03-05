@@ -1,0 +1,134 @@
+import {
+  resolveComponentInstance,
+  extend,
+  isFunction,
+  getCurrentPageVm,
+  getPageIdByVm,
+  addIntersectionObserver,
+  removeIntersectionObserver,
+} from '@dcloudio/uni-runtime'
+import { CreateIntersectionObserver, CreateIntersectionObserverOptions, ObserveCallback, IntersectionObserver } from '../interface.uts'
+
+export { CreateIntersectionObserver, CreateIntersectionObserverOptions, ObserveCallback, IntersectionObserver }
+
+interface AddIntersectionObserverArgs {
+  reqId: number
+  component: ComponentPublicInstance
+  options: ServiceIntersectionObserverOptions
+  callback: ObserveCallback
+}
+
+interface RemoveIntersectionObserverArgs {
+  reqId: number
+  component: ComponentPublicInstance
+}
+
+interface RequestComponentObserverOptions {
+  selector?: string
+  rootMargin?: string
+  relativeToSelector?: string
+}
+
+interface ServiceIntersectionObserverOptions extends CreateIntersectionObserverOptions, RequestComponentObserverOptions { }
+
+interface Margins {
+  /** 节点布局区域的下边界 */
+  bottom?: number,
+  /** 节点布局区域的左边界 */
+  left?: number,
+  /** 节点布局区域的右边界 */
+  right?: number,
+  /** 节点布局区域的上边界 */
+  top?: number
+}
+
+const defaultOptions = {
+  thresholds: [0],
+  initialRatio: 0,
+  observeAll: false,
+} as CreateIntersectionObserverOptions
+
+let reqComponentObserverId = 1
+
+function normalizeRootMargin(margins: Margins | null = {}) {
+  if (!margins) margins = {}
+  const top = Number(margins.top) || 0
+  const right = Number(margins.right) || 0
+  const bottom = Number(margins.bottom) || 0
+  const left = Number(margins.left) || 0
+  return `${top}px ${right}px ${bottom}px ${left}px`
+}
+class ServiceIntersectionObserver {
+  private _reqId?: number
+  private _pageId: number
+  private _component: ComponentPublicInstance
+  private _options: ServiceIntersectionObserverOptions
+  constructor(
+    component: ComponentPublicInstance,
+    options?: CreateIntersectionObserverOptions
+  ) {
+    this._pageId = getPageIdByVm(component)!
+    this._component = component
+    if (options) {
+      if (typeof options.thresholds === 'undefined') options.thresholds = defaultOptions.thresholds
+      if (typeof options.initialRatio === 'undefined') options.initialRatio = defaultOptions.initialRatio
+      if (typeof options.observeAll === 'undefined') options.observeAll = defaultOptions.observeAll
+    }
+    this._options = (options ?? defaultOptions) as ServiceIntersectionObserverOptions
+  }
+
+  relativeTo(selector: string, margins?: Margins) {
+    this._options.relativeToSelector = selector
+    this._options.rootMargin = normalizeRootMargin(margins)
+    return this
+  }
+
+  relativeToViewport(margins?: Margins) {
+    this._options.relativeToSelector = undefined
+    this._options.rootMargin = normalizeRootMargin(margins)
+    return this
+  }
+
+  observe(
+    selector: string,
+    callback: ObserveCallback
+  ) {
+    if (!isFunction(callback)) {
+      return
+    }
+    this._options.selector = selector
+    this._reqId = reqComponentObserverId++
+    addIntersectionObserver(
+      {
+        reqId: this._reqId,
+        component: this._component,
+        options: this._options,
+        callback,
+      } as AddIntersectionObserverArgs,
+      this._pageId
+    )
+  }
+
+  disconnect() {
+    this._reqId &&
+      removeIntersectionObserver(
+        { reqId: this._reqId, component: this._component } as RemoveIntersectionObserverArgs,
+        this._pageId
+      )
+  }
+}
+export const createIntersectionObserver = defineSyncApi<IntersectionObserver>(
+  'createIntersectionObserver',
+  (context: ComponentPublicInstance | null, options?: CreateIntersectionObserverOptions) => {
+    let _options: ComponentPublicInstance | CreateIntersectionObserverOptions | null = options
+    context = resolveComponentInstance(context)
+    if (context && !getPageIdByVm(context)) {
+      _options = context
+      context = null
+    }
+    if (context) {
+      return new ServiceIntersectionObserver(context as ComponentPublicInstance, _options as CreateIntersectionObserverOptions)
+    }
+    return new ServiceIntersectionObserver(getCurrentPageVm()!, _options as CreateIntersectionObserverOptions)
+  }
+) as CreateIntersectionObserver

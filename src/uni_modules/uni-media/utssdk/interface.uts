@@ -1,0 +1,5683 @@
+export type MediaOrientation =
+    | 'up'
+    | 'down'
+    | 'left'
+    | 'right'
+    | 'up-mirrored'
+    | 'down-mirrored'
+    | 'left-mirrored'
+    | 'right-mirrored'
+
+/**
+ * 错误码
+ */
+export type MediaErrorCode =
+    /**
+     * 用户取消
+     */
+    1101001 |
+    /**
+     * urls至少包含一张图片地址
+     */
+    1101002 |
+    /**
+     * 文件不存在
+     */
+    1101003 |
+    /**
+     * 图片加载失败
+     */
+    1101004 |
+    /**
+     * 未获取权限
+     */
+    1101005 |
+    /**
+     * 图片或视频保存失败
+     */
+    1101006 |
+    /**
+     * 图片裁剪失败
+     */
+    1101007 |
+    /**
+     * 拍照或录像失败
+     */
+    1101008 |
+    /**
+     * 图片压缩失败
+     */
+    1101009 |
+    /**
+     * 其他错误
+     */
+    1101010;
+
+/**
+ * 图片或视频操作失败的错误回调
+ */
+export interface IMediaError extends IUniError {
+    errCode: MediaErrorCode
+};
+
+export type ChooseImageTempFile = {
+    /**
+     * 本地文件路径
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+     *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    path: string,
+    /**
+     * 本地文件大小，单位：B
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    size: number,
+    /**
+     * 包含扩展名的文件名称，仅H5支持
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "x",
+	 *			"unixVer": "x"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "x",
+	 *			"unixVer": "x"
+	 *		}
+	 *	}
+	 * }
+     */
+    name?: string | null,
+    /**
+     * 文件类型，仅H5支持
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "x",
+	 *			"unixVer": "x"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "x",
+	 *			"unixVer": "x"
+	 *		}
+	 *	}
+	 * }
+     */
+    type?: string | null
+}
+export type ChooseImageSuccess = {
+    /**
+     * 调用API的名称
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    errSubject: string,
+    /**
+     * 描述信息
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    errMsg: string,
+    /**
+     * 图片的本地文件路径列表
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    tempFilePaths: Array<string>,
+    /**
+     * 图片的本地文件列表
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    tempFiles: ChooseImageTempFile[]
+}
+
+export type ChooseImageFail = IMediaError;
+export type ChooseImageSuccessCallback = (callback: ChooseImageSuccess) => void
+export type ChooseImageFailCallback = (callback: ChooseImageFail) => void
+export type ChooseImageCompleteCallback = (callback: any) => void
+
+export type ChooseImageCropOptions = {
+    /**
+     * 裁剪的宽度，单位为px，用于计算裁剪宽高比。
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    width: number;
+    /**
+     * 裁剪的高度，单位为px，用于计算裁剪宽高比。
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    height: number;
+    /**
+     * 取值范围为1-100，数值越小，质量越低（仅对jpg格式有效）。默认值为80。
+     * @defaultValue 80
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    quality?: (number) | null;
+    /**
+     * 是否将width和height作为裁剪保存图片真实的像素值。默认值为true。注：设置为false时在裁剪编辑界面显示图片的像素值，设置为true时不显示。
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    resize?: (boolean) | null;
+}
+
+export type ChooseImagePageOrientation =
+    /**
+     * 自动
+     */
+    "auto" |
+    /**
+     * 竖屏显示
+     */
+    "portrait" |
+    /**
+     * 横屏显示
+     */
+    "landscape"
+
+export type ChooseImageAlbumMode =
+    /**
+     * 自定义媒体选择器
+     */
+    "custom" |
+    /**
+     * 系统媒体选择器
+     */
+    "system"
+
+export type ChooseImageOptions = {
+    /**
+     * 屏幕方向。默认为page.json中的pageOrientation。
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "4.33",
+     *			"unixVer": "4.33"
+     *		},
+     *		"ios": {
+     *			"osVer": "10.0",
+     *			"uniVer": "4.33",
+     *			"unixVer": "4.33"
+     *		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *	"web": {
+     *		"uniVer": "x",
+     *		"unixVer": "x"
+     *	}
+     * }
+     */
+    pageOrientation?: ChooseImagePageOrientation | null,
+    /**
+     * 图片选择模式
+     * @default "custom"
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "4.33",
+     *			"unixVer": "4.33"
+     *		},
+     *		"ios": {
+     *			"osVer": "10.0",
+     *			"uniVer": "x",
+     *			"unixVer": "x"
+     *		},
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "x",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "x",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "x",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "x",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "x",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "x",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "x",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "x",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *	"web": {
+     *		"uniVer": "x",
+     *		"unixVer": "x"
+     *	}
+     * }
+     */
+    albumMode?: ChooseImageAlbumMode | null,
+    /**
+     * 最多可以选择的图片张数，app端不限制，微信小程序最多可支持20个。
+     * @defaultValue 9
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    count?: (number) | null,
+    /**
+     * original 原图，compressed 压缩图，默认二者都有
+     * @defaultValue ['original','compressed']
+     * @uniPlatform {
+     * "app":{
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "3.9"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.11"
+     *		},
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    sizeType?: (string[]) | null,
+    /**
+     * album 从相册选图，camera 使用相机，默认二者都有
+     * @defaultValue ['album','camera']
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    sourceType?: (string[]) | null,
+    /**
+     * 根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。仅H5支持
+     * @uniPlatform {
+     *	"app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "x",
+     *			"unixVer": "x"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "x",
+     *			"unixVer": "x"
+     *		},
+     *   "harmony": {
+     *        "osVer": "x",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *      }
+     * 	 },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     * "web": {
+     *		"uniVer": "2.9.9",
+     *		"unixVer": "4.0"
+     * 	}
+     * }
+     */
+    extension?: (string[]) | null,
+    /**
+     * 图像裁剪参数，设置后 sizeType 失效。
+     * @uniPlatform {
+     * "app":{
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "3.9"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.11"
+     *		},
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     * },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    crop?: (ChooseImageCropOptions) | null,
+    /**
+     * 成功则返回图片的本地文件路径列表 tempFilePaths
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    success?: (ChooseImageSuccessCallback) | null,
+    /**
+     * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    fail?: (ChooseImageFailCallback) | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    complete?: (ChooseImageCompleteCallback) | null
+}
+
+export type ChooseImage = (options: ChooseImageOptions) => void
+
+// #ifdef !UNI-APP-X && APP-HARMONY
+
+export type PreviewImageSuccess = {
+    /**
+     * 调用API的名称
+     */
+    errSubject: string,
+    /**
+     * 描述信息
+     */
+    errMsg: string
+}
+
+export type LongPressActionsSuccessResult = {
+	/**
+	 * 接口调用失败的回调函数
+	 */
+	tapIndex : number,
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 */
+	index : number
+};
+
+export type LongPressActionsFailResult = IMediaError
+export type LongPressActionsOptions = {
+	/**
+	 * 按钮的文字数组
+	 */
+	itemList : string[],
+	/**
+	 * 按钮的文字颜色，字符串格式，默认为"#000000"
+	 */
+	itemColor : string | null,
+	/**
+	 * 接口调用成功的回调函数
+	 */
+	success : ((result : LongPressActionsSuccessResult) => void) | null,
+	/**
+	 * 接口调用失败的回调函数
+	 */
+	fail : ((result : LongPressActionsFailResult) => void) | null,
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 */
+	complete : ((result : any) => void) | null
+};
+
+
+export type PreviewImageFail = IMediaError;
+export type PreviewImageSuccessCallback = (callback: PreviewImageSuccess) => void
+export type PreviewImageFailCallback = (callback: PreviewImageFail) => void
+export type PreviewImageCompleteCallback = ChooseImageCompleteCallback
+
+export type PreviewImageOptions = {
+    /**
+     * current 为当前显示图片的链接/索引值，不填或填写的值无效则为 urls 的第一张。
+	 * @uniPlatform {
+	   *	 "app": {
+	   *		"android": {
+	   *			"osVer": "5.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "3.9"
+	   *		},
+	   *		"ios": {
+	   *			"osVer": "10.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "4.11"
+	   *		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.23",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	   *	},
+     *	"web": {
+     *		"uniVer": "√",
+     *		"unixVer": "√"
+     *	}
+	   *}
+     */
+    current?: any | null,
+    /**
+     * 需要预览的图片链接列表
+	 * @uniPlatform {
+	   *	 "app": {
+	   *		"android": {
+	   *			"osVer": "5.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "3.9"
+	   *		},
+	   *		"ios": {
+	   *			"osVer": "10.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "4.11"
+	   *		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.23",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	   *	},
+     *	"web": {
+     *		"uniVer": "√",
+     *		"unixVer": "√"
+     *	}
+	   *}
+     */
+    urls: Array<string.ImageURIString>,
+    /**
+     * 是否显示长按菜单
+     *
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "x"
+     *		},
+     *		"ios": {
+     *			"osVer": "10.0",
+     *			"uniVer": "√",
+     *			"unixVer": "x"
+     *		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "4.23",
+   *      "unixVer": "4.61",
+   *      "unixvVer": "5.0"
+   *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *	"web": {
+     *		"uniVer": "√",
+     *		"unixVer": "x"
+     *	}
+     * }
+     */
+    showmenu?: boolean | null,
+    /**
+     * 图片指示器样式
+     *
+     * @uniPlatform {
+     *	 "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "√",
+         *			"unixVer": "3.9"
+         *		},
+         *		"ios": {
+         *			"osVer": "10.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.11"
+         *		},
+   *    "harmony": {
+   *      "osVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+     *	},
+     *	"web": {
+     *		"uniVer": "√",
+     *		"unixVer": "x"
+     *	}
+     * }
+     */
+    indicator?:
+    /**
+     * 底部圆点指示器
+     */
+    'default' |
+    /**
+     * 顶部数字指示器
+     */
+    'number' |
+    /**
+     * 不显示指示器
+     */
+    'none' |
+    null,
+    /**
+     * 是否可循环预览
+     * @uniPlatform {
+           *	 "app": {
+                 *		"android": {
+                 *			"osVer": "5.0",
+                 *			"uniVer": "√",
+                 *			"unixVer": "3.9"
+                 *		},
+                 *		"ios": {
+                 *			"osVer": "10.0",
+                 *			"uniVer": "√",
+                 *			"unixVer": "4.11"
+                 *		},
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+           *	},
+         *	"web": {
+         *		"uniVer": "√",
+         *		"unixVer": "x"
+         *	}
+           * }
+     */
+    loop?: boolean | null,
+    /**
+     * 长按图片显示操作菜单。
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.51"
+     *		},
+     *     "ios": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.71"
+     *		},
+   *    "harmony": {
+   *      "osVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+     *	},
+     *    "web": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  }
+     * }
+     */
+    longPressActions ?: LongPressActionsOptions | null,
+    /**
+     * 接口调用成功的回调函数
+	 * @uniPlatform {
+	   *	 "app": {
+	   *		"android": {
+	   *			"osVer": "5.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "3.9"
+	   *		},
+	   *		"ios": {
+	   *			"osVer": "10.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "4.11"
+	   *		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.23",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	   *	},
+     *	"web": {
+     *		"uniVer": "√",
+     *		"unixVer": "√"
+     *	}
+	   *}
+     */
+    success?: (PreviewImageSuccessCallback) | null,
+    /**
+     * 接口调用失败的回调函数
+	 *
+	 * @uniPlatform {
+	   *	 "app": {
+	   *		"android": {
+	   *			"osVer": "5.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "3.9"
+	   *		},
+	   *		"ios": {
+	   *			"osVer": "10.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "4.11"
+	   *		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.23",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	   *	},
+     *	"web": {
+     *		"uniVer": "√",
+     *		"unixVer": "√"
+     *	}
+	   *}
+     */
+    fail?: (PreviewImageFailCallback) | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 *
+	 * @uniPlatform {
+	   *	 "app": {
+	   *		"android": {
+	   *			"osVer": "5.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "3.9"
+	   *		},
+	   *		"ios": {
+	   *			"osVer": "10.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "4.11"
+	   *		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.23",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	   *	},
+     *	"web": {
+     *		"uniVer": "√",
+     *		"unixVer": "√"
+     *	}
+	   *}
+     */
+    complete?: (PreviewImageCompleteCallback) | null
+};
+
+export type PreviewImage = (options: PreviewImageOptions) => void;
+
+export type ClosePreviewImage = (options: ClosePreviewImageOptions) => void;
+export type ClosePreviewImageSuccess = {
+    /**
+     * 错误信息
+     */
+    errMsg: string
+};
+
+export type ClosePreviewImageFail = IMediaError;
+export type ClosePreviewImageSuccessCallback = (callback: ClosePreviewImageSuccess) => void
+export type ClosePreviewImageFailCallback = (callback: ClosePreviewImageFail) => void
+export type ClosePreviewImageCompleteCallback = ChooseImageCompleteCallback
+
+export type ClosePreviewImageOptions = {
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: (ClosePreviewImageSuccessCallback) | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: (ClosePreviewImageFailCallback) | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: (ClosePreviewImageCompleteCallback) | null
+};
+// #endif
+export type GetImageInfo = (options: GetImageInfoOptions) => void;
+export type GetImageInfoSuccess = {
+    /**
+     * 图片宽度，单位px
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    width: number,
+    /**
+     * 图片高度，单位px
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    height: number,
+    /**
+     * 返回图片的本地路径
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    path: string,
+    /**
+     * 返回图片的方向
+     * @uniPlatform {
+	*	 "app": {
+	*		"android": {
+	*			"osVer": "5.0",
+	*			"uniVer": "√",
+	*			"unixVer": "4.18"
+	*		},
+	*		"ios": {
+	*			"osVer": "12.0",
+	*			"uniVer": "√",
+	*			"unixVer": "4.25"
+	*		}
+	*	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    orientation?: MediaOrientation,
+    /**
+     * 返回图片的格式
+     * @uniPlatform {
+	*	 "app": {
+	*		"android": {
+	*			"osVer": "5.0",
+	*			"uniVer": "√",
+	*			"unixVer": "4.18"
+	*		},
+	*		"ios": {
+	*			"osVer": "12.0",
+	*			"uniVer": "√",
+	*			"unixVer": "4.25"
+	*		}
+	*	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    type: string | null
+};
+
+export type GetImageInfoFail = IMediaError;
+export type GetImageInfoSuccessCallback = (callback: GetImageInfoSuccess) => void
+export type GetImageInfoFailCallback = (callback: GetImageInfoFail) => void
+export type GetImageInfoCompleteCallback = ChooseImageCompleteCallback
+
+export type GetImageInfoOptions = {
+    /**
+     * 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    src: string.ImageURIString,
+    /**
+     * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    success?: (GetImageInfoSuccessCallback) | null,
+    /**
+     * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    fail?: (GetImageInfoFailCallback) | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    complete?: (GetImageInfoCompleteCallback) | null
+};
+
+export type SaveImageToPhotosAlbum = (options: SaveImageToPhotosAlbumOptions) => void;
+
+export type SaveImageToPhotosAlbumSuccess = {
+    /**
+     * 保存到相册的图片路径
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    path: string
+};
+
+export type SaveImageToPhotosAlbumFail = IMediaError;
+export type SaveImageToPhotosAlbumSuccessCallback = (callback: SaveImageToPhotosAlbumSuccess) => void
+export type SaveImageToPhotosAlbumFailCallback = (callback: SaveImageToPhotosAlbumFail) => void
+export type SaveImageToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback
+
+export type SaveImageToPhotosAlbumOptions = {
+    /**
+     * 图片文件路径，可以是临时文件路径也可以是永久文件路径，不支持网络图片路径
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    filePath: string.ImageURIString,
+    /**
+     * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    success?: (SaveImageToPhotosAlbumSuccessCallback) | null,
+    /**
+     * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    fail?: (SaveImageToPhotosAlbumFailCallback) | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.11"
+	 *		}
+	 *	}
+	 * }
+     */
+    complete?: (SaveImageToPhotosAlbumCompleteCallback) | null
+};
+export type CompressImage = (options: CompressImageOptions) => void;
+export type CompressImageSuccess = {
+    /**
+     * 压缩后图片的临时文件路径
+     */
+    tempFilePath: string
+};
+
+export type CompressImageFail = IMediaError;
+export type CompressImageSuccessCallback = (callback: CompressImageSuccess) => void
+export type CompressImageFailCallback = (callback: CompressImageFail) => void
+export type CompressImageCompleteCallback = ChooseImageCompleteCallback
+
+export type CompressImageOptions = {
+    /**
+     * 图片路径，图片的路径，可以是相对路径、临时文件路径、存储文件路径
+	   * @uniPlatform {
+	   *	 "app": {
+	   *		"android": {
+	   *			"osVer": "5.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "4.18"
+	   *		},
+	   *		"ios": {
+	   *			"osVer": "12.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "4.25"
+	   *		},
+     *    "harmony":{
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.31",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+	   *	}
+	   * }
+     */
+    src: string.ImageURIString,
+    /**
+     * 压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效）
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		},
+     *    "harmony":{
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.31",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+	 *	}
+	 * }
+     */
+    quality?: number | null,
+    /**
+     * 旋转度数，范围0～360
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		},
+     *    "harmony":{
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.31",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+	 *	}
+	 * }
+     */
+    rotate?: number | null,
+    /**
+     * 缩放图片的宽度
+     * @deprecated 已废弃
+     */
+    width?: string | null,
+    /**
+     * 缩放图片的高度
+     * @deprecated 已废弃
+     */
+    height?: string | null,
+    /**
+     * 压缩后图片的高度，单位为px，若不填写则默认以compressedWidth为准等比缩放
+	   * @uniPlatform {
+	   *	 "app": {
+	   *		"android": {
+	   *			"osVer": "5.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "4.18"
+	   *		},
+	   *		"ios": {
+	   *			"osVer": "12.0",
+	   *			"uniVer": "√",
+	   *			"unixVer": "4.25"
+	   *		},
+     *    "harmony":{
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.31",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+	   *	}
+	   * }
+     */
+    compressedHeight?: number | null,
+    /**
+     * 压缩后图片的宽度，单位为px，若不填写则默认以compressedHeight为准等比缩放。
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		},
+     *    "harmony":{
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.31",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+	 *	}
+	 * }
+     */
+    compressedWidth?: number | null,
+    /**
+     * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		},
+     *    "harmony":{
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.31",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+	 *	}
+	 * }
+     */
+    success?: (CompressImageSuccessCallback) | null,
+    /**
+     * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		},
+     *    "harmony":{
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.31",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+	 *	}
+	 * }
+     */
+    fail?: (CompressImageFailCallback) | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		},
+     *    "harmony":{
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.31",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+	 *	}
+	 * }
+     */
+    complete?: (CompressImageCompleteCallback) | null
+};
+
+export type ChooseVideoSuccess = {
+    /**
+     * 选定视频的临时文件路径
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    tempFilePath: string,
+    /**
+     * 选定视频的时间长度
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    duration: number,
+    /**
+     * 选定视频的数据量大小
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    size: number,
+    /**
+     * 返回选定视频的长
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    height: number,
+    /**
+     * 返回选定视频的宽
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    width: number
+};
+
+export type ChooseVideoFail = IMediaError;
+export type ChooseVideoSuccessCallback = (callback: ChooseVideoSuccess) => void
+export type ChooseVideoFailCallback = (callback: ChooseVideoFail) => void
+export type ChooseVideoCompleteCallback = ChooseImageCompleteCallback
+export type ChooseVideoPageOrientation = ChooseImagePageOrientation
+export type ChooseVideoAlbumMode = ChooseImageAlbumMode
+export type ChooseVideoOptions = {
+    /**
+     * 屏幕方向。默认为page.json中的pageOrientation。
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "4.33",
+     *			"unixVer": "4.33"
+     *		},
+     *		"ios": {
+     *			"osVer": "10.0",
+     *			"uniVer": "4.33",
+     *			"unixVer": "4.33"
+     *		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *	"web": {
+     *		"uniVer": "x",
+     *		"unixVer": "x"
+     *	}
+     * }
+     */
+    pageOrientation?: ChooseVideoPageOrientation | null,
+    /**
+         * 视频选择模式
+		 * @deprecated 已废弃，仅为了向下兼容保留
+         * @default "custom"
+         * @uniPlatform {
+         *	 "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "4.33",
+         *			"unixVer": "4.33"
+         *		},
+         *		"ios": {
+         *			"osVer": "10.0",
+         *			"uniVer": "x",
+         *			"unixVer": "x"
+         *		},
+    *    "harmony": {
+    *      "osVer": "5.0.0",
+    *      "uniVer": "x",
+    *      "unixVer": "x"
+    *    }
+         *	},
+         *	"web": {
+         *		"uniVer": "x",
+         *		"unixVer": "x"
+         *	}
+         * }
+         */
+    albumMode?: ChooseVideoAlbumMode | null,
+    /**
+     * album 从相册选视频，camera 使用相机拍摄，默认为：['album', 'camera']
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    sourceType?: (string[]) | null,
+    /**
+     * 是否压缩所选的视频源文件，默认值为true，需要压缩
+	 * @deprecated 已废弃，仅为了向下兼容保留
+     * @default true
+     * @uniPlatform {
+     * "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.18"
+         *		},
+         *		"ios": {
+         *			"osVer": "10.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.18"
+         *		},
+   *    "harmony": {
+   *      "osVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+   *  "web": {
+   *    "uniVer": "x",
+   *    "unixVer": "x"
+   *  }
+     * }
+     */
+    compressed?: boolean | null,
+    /**
+     * 拍摄视频最长拍摄时间，单位秒。最长支持 60 秒
+     * @uniPlatform {
+     * "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.18"
+         *		},
+         *		"ios": {
+         *			"osVer": "12.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.18"
+         *		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "4.25",
+   *      "unixVer": "4.61",
+   *      "unixvVer": "5.0"
+   *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    maxDuration?: number | null,
+    /**
+     * 摄像切换
+     *
+     * @uniPlatform {
+     * "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.18"
+         *		},
+         *		"ios": {
+         *			"osVer": "12.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.18"
+         *		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "4.25",
+   *      "unixVer": "4.61",
+   *      "unixvVer": "5.0"
+   *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    camera?:
+    /**
+     * 前置摄像头
+     */
+    'front' |
+    /**
+     * 后置摄像头
+     */
+    'back' | null,
+    /**
+     * 根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "x"
+     *		},
+     *		"ios": {
+     *			"osVer": "10.0",
+     *			"uniVer": "√",
+     *			"unixVer": "x"
+     *		},
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *	 },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  }
+     * }
+     */
+    extension?: (string[]) | null,
+    /**
+     * 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    success?: (ChooseVideoSuccessCallback) | null,
+    /**
+     * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    fail?: (ChooseVideoFailCallback) | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    complete?: (ChooseVideoCompleteCallback) | null
+};
+
+export type ChooseVideo = (options: ChooseVideoOptions) => void;
+
+export type GetVideoInfoSuccess = {
+    /**
+     * 画面方向
+     * @uniPlatform {
+     * "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.18"
+         *		},
+         *		"ios": {
+         *			"osVer": "12.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.25"
+         *		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "4.23",
+   *      "unixVer": "4.61",
+   *      "unixvVer": "5.0"
+   *    }
+     * },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    orientation?: MediaOrientation,
+    /**
+     * 视频格式
+     * @uniPlatform {
+     * "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.18"
+         *		},
+         *		"ios": {
+         *			"osVer": "12.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.25"
+         *		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "4.23",
+   *      "unixVer": "4.61",
+   *      "unixvVer": "5.0"
+   *    }
+     * },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    type: string | null,
+    /**
+     * 视频长度
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    duration: number,
+    /**
+     * 视频大小，单位 kB
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    size: number,
+    /**
+     * 视频的长，单位 px
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    height: number,
+    /**
+     * 视频的宽，单位 px
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    width: number,
+    /**
+     * 视频帧率
+     * @uniPlatform {
+     * "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.18"
+         *		},
+         *		"ios": {
+         *			"osVer": "12.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.25"
+         *		},
+   *    "harmony": {
+   *      "osVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+     * },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    fps: number | null,
+    /**
+     * 视频码率，单位 kbps
+     * @uniPlatform {
+     * "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.18"
+         *		},
+         *		"ios": {
+         *			"osVer": "12.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.25"
+         *		},
+   *    "harmony": {
+   *      "osVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+     * },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    bitrate: number | null,
+	/**
+	 * 视频缩略图临时文件路径
+	 * @uniPlatform {
+	  *	 "app": {
+	  *		"android": {
+	  *			"osVer": "5.0",
+	  *			"uniVer": "x",
+	  *			"unixVer": "4.61"
+	  *		},
+	  *		"ios": {
+	  *			"osVer": "12.0",
+	  *			"uniVer": "x",
+	  *			"unixVer": "4.61"
+	  *		},
+	*    "harmony": {
+	*      "osVer": "5.0.0",
+	*      "uniVer": "x",
+	*      "unixVer": "x"
+	*    }
+	  *	},
+	 *  "mp": {
+	 *    "weixin": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    }
+	 *  },
+	  *	"web": {
+	  *		"uniVer": "x",
+	  *		"unixVer": "x"
+	  *	}
+	  * }
+		 */
+		thumbTempFilePath ?: string | null,
+
+		/**
+			 * 视频文件的字节大小
+			 * @uniPlatform {
+		  *	 "app": {
+		  *		"android": {
+		  *			"osVer": "5.0",
+		  *			"uniVer": "x",
+		  *			"unixVer": "4.61"
+		  *		},
+		  *		"ios": {
+		  *			"osVer": "12.0",
+		  *			"uniVer": "x",
+		  *			"unixVer": "4.61"
+		  *		},
+		*    "harmony": {
+		*      "osVer": "5.0.0",
+		*      "uniVer": "x",
+		*      "unixVer": "x"
+		*    }
+		  *	},
+		 *  "mp": {
+		 *    "weixin": {
+		 *        "hostVer": "√",
+		 *        "uniVer": "√",
+		 *        "unixVer": "4.41"
+		 *    },
+		 *    "alipay": {
+		 *        "hostVer": "√",
+		 *        "uniVer": "√",
+		 *        "unixVer": "x"
+		 *    },
+		 *    "baidu": {
+		 *        "hostVer": "√",
+		 *        "uniVer": "√",
+		 *        "unixVer": "x"
+		 *    },
+		 *    "toutiao": {
+		 *        "hostVer": "√",
+		 *        "uniVer": "√",
+		 *        "unixVer": "x"
+		 *    },
+		 *    "lark": {
+		 *        "hostVer": "√",
+		 *        "uniVer": "√",
+		 *        "unixVer": "x"
+		 *    },
+		 *    "qq": {
+		 *        "hostVer": "√",
+		 *        "uniVer": "√",
+		 *        "unixVer": "x"
+		 *    },
+		 *    "kuaishou": {
+		 *        "hostVer": "√",
+		 *        "uniVer": "√",
+		 *        "unixVer": "x"
+		 *    },
+		 *    "jd": {
+		 *        "hostVer": "√",
+		 *        "uniVer": "√",
+		 *        "unixVer": "x"
+		 *    }
+		 *  },
+		  *	"web": {
+		  *		"uniVer": "x",
+		  *		"unixVer": "x"
+		  *	}
+		  * }
+			 */
+		byteSize?:number|null
+};
+
+export type GetVideoInfoFail = IMediaError;
+export type GetVideoInfoSuccessCallback = (callback: GetVideoInfoSuccess) => void
+export type GetVideoInfoFailCallback = (callback: GetVideoInfoFail) => void
+export type GetVideoInfoCompleteCallback = ChooseImageCompleteCallback
+
+export type GetVideoInfoOptions = {
+    /**
+     * 视频文件路径，可以是临时文件路径也可以是永久文件路径
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    src: string.VideoURIString,
+    /**
+     * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    success?: (GetVideoInfoSuccessCallback) | null,
+    /**
+     * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    fail?: (GetVideoInfoFailCallback) | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    complete?: (GetVideoInfoCompleteCallback) | null
+};
+
+export type GetVideoInfo = (options: GetVideoInfoOptions) => void;
+
+export type SaveVideoToPhotosAlbumSuccess = {};
+
+export type SaveVideoToPhotosAlbumFail = IMediaError;
+export type SaveVideoToPhotosAlbumSuccessCallback = (callback: SaveVideoToPhotosAlbumSuccess) => void
+export type SaveVideoToPhotosAlbumFailCallback = (callback: SaveVideoToPhotosAlbumFail) => void
+export type SaveVideoToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback
+
+export type SaveVideoToPhotosAlbumOptions = {
+    /**
+     * 视频文件路径，可以是临时文件路径也可以是永久文件路径
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    filePath: string.VideoURIString,
+    /**
+     * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    success?: (SaveVideoToPhotosAlbumSuccessCallback) | null,
+    /**
+     * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    fail?: (SaveVideoToPhotosAlbumFailCallback) | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		}
+	 *	}
+	 * }
+     */
+    complete?: (SaveVideoToPhotosAlbumCompleteCallback) | null
+};
+
+export type SaveVideoToPhotosAlbum = (options: SaveVideoToPhotosAlbumOptions) => void;
+
+export type CompressVideoSuccess = {
+    /**
+     * 压缩后的临时文件地址
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    tempFilePath: string,
+    /**
+     * 压缩后的大小，单位 kB
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    size: number,
+
+	/**
+		 * 视频文件的字节大小
+		 *      * @uniPlatform {
+	  *	 "app": {
+	  *		"android": {
+	  *			"osVer": "5.0",
+	  *			"uniVer": "x",
+	  *			"unixVer": "4.61"
+	  *		},
+	  *		"ios": {
+	  *			"osVer": "12.0",
+	  *			"uniVer": "x",
+	  *			"unixVer": "4.61"
+	  *		},
+	*    "harmony": {
+	*      "osVer": "5.0.0",
+	*      "uniVer": "x",
+	*      "unixVer": "x"
+	*    }
+	  *	},
+	 *  "mp": {
+	 *    "weixin": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    }
+	 *  },
+	  *	"web": {
+	  *		"uniVer": "x",
+	  *		"unixVer": "x"
+	  *	}
+	  * }
+		 */
+	byteSize?:number|null
+};
+
+export type CompressVideoFail = IMediaError;
+export type CompressVideoSuccessCallback = (callback: CompressVideoSuccess) => void
+export type CompressVideoFailCallback = (callback: CompressVideoFail) => void
+export type CompressVideoCompleteCallback = ChooseImageCompleteCallback
+
+export type CompressVideoOptions = {
+    /**
+     * 视频文件路径，可以是临时文件路径也可以是永久文件路径
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    src: string.VideoURIString,
+    /**
+     * 压缩质量
+     *
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    quality?: string | null,
+    /**
+     * 码率，单位 kbps
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "x"
+     *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+     *	 },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  }
+     * }
+     */
+    bitrate?: number | null,
+    /**
+     * 帧率
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "x"
+     *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+     *	 },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  }
+     * }
+     */
+    fps?: number | null,
+    /**
+     * 相对于原视频的分辨率比例，取值范围(0, 1]
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    resolution?: number | null,
+    /**
+     * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    success?: (CompressVideoSuccessCallback) | null,
+    /**
+     * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    fail?: (CompressVideoFailCallback) | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.18"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "12.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.25"
+	 *		}
+	 *	}
+	 * }
+     */
+    complete?: (CompressVideoCompleteCallback) | null
+};
+
+export type CompressVideo = (options: CompressVideoOptions) => void;
+
+export type ChooseFile = (options: ChooseFileOptions) => void;
+export type ChooseFileSuccess = {
+    /**
+     * 文件的本地文件路径列表, Android平台不支持
+		 @uniPlatform {
+		 		  "app": {
+		 				"android": {
+		 					"osVer": "5.0",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"ios": {
+		 					"osVer": "12.0",
+		 					"uniVer": "x",
+		 					"unixVer": "4.61"
+		 				},
+		 				"harmony": {
+		 					"osVer": "5.0.0",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				}
+		 		  },
+		 		  "web": {
+		 				"uniVer": "x",
+		 				"unixVer": "4.0"
+		 		  },
+		 		  "mp": {
+		 				"weixin": {
+		 					"hostVer": "√",
+		 					"uniVer": "√",
+		 					"unixVer": "4.41"
+		 				},
+		 				"alipay": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"baidu": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"toutiao": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"lark": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"qq": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"kuaishou": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"jd": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				}
+		 		  }
+		 }
+     */
+    tempFilePaths: string[],
+    /**
+     * 文件的本地文件列表，每一项是一个 File 对象
+		 @uniPlatform {
+		 		  "app": {
+		 				"android": {
+		 					"osVer": "5.0",
+		 					"uniVer": "4.51",
+		 					"unixVer": "4.51"
+		 				},
+		 				"ios": {
+		 					"osVer": "12.0",
+		 					"uniVer": "x",
+		 					"unixVer": "4.61"
+		 				},
+		 				"harmony": {
+		 					"osVer": "5.0.0",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				}
+		 		  },
+		 		  "web": {
+		 				"uniVer": "x",
+		 				"unixVer": "4.0"
+		 		  },
+		 		  "mp": {
+		 				"weixin": {
+		 					"hostVer": "√",
+		 					"uniVer": "√",
+		 					"unixVer": "4.41"
+		 				},
+		 				"alipay": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"baidu": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"toutiao": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"lark": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"qq": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"kuaishou": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"jd": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				}
+		 		  }
+		 }
+     */
+    tempFiles: ChooseFileTempFile[],
+};
+export type ChooseFileTempFile = {
+	/** 选择的文件名称
+	 @uniPlatform {
+		  "app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.51",
+					"unixVer": "4.51"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "x",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "5.0.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+		  },
+		  "web": {
+				"uniVer": "x",
+				"unixVer": "4.0"
+		  },
+		  "mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.41"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+		  }
+	 }
+	*/
+	name : string
+	/** 文件路径
+	 @uniPlatform {
+		  "app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.51",
+					"unixVer": "4.51"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "x",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "5.0.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+		  },
+		  "web": {
+				"uniVer": "x",
+				"unixVer": "4.0"
+		  },
+		  "mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.41"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+		  }
+	 }
+	*/
+	path : string
+	/** 文件大小，单位 B
+	 @uniPlatform {
+		  "app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.51",
+					"unixVer": "4.51"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "x",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "5.0.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+		  },
+		  "web": {
+				"uniVer": "x",
+				"unixVer": "4.0"
+		  },
+		  "mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.41"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+		  }
+	 }
+	*/
+	size : number
+	/** 选择的文件类型
+	 * 可选值：
+	 * - 'video': 选择了视频文件;
+	 * - 'image': 选择了图片文件;
+	 * - 'audio': 选择了音频文件;
+	 * - 'file': 选择了除图片和视频的文件; */
+	type :
+	/** 视频类型
+	 @uniPlatform {
+		  "app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.51",
+					"unixVer": "4.51"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "x",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "5.0.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+		  },
+		  "web": {
+				"uniVer": "x",
+				"unixVer": "4.0"
+		  },
+		  "mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.41"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+		  }
+	 }
+	*/
+	'video' |
+	/** 图片类型
+	 @uniPlatform {
+		  "app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.51",
+					"unixVer": "4.51"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "x",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "5.0.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+		  },
+		  "web": {
+				"uniVer": "x",
+				"unixVer": "4.0"
+		  },
+		  "mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.41"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+		  }
+	 }
+	*/
+	'image' |
+	/** 音频类型
+	 @uniPlatform {
+			 "app": {
+					 "android": {
+						 "osVer": "5.0",
+						 "uniVer": "4.51",
+						 "unixVer": "4.51"
+					 },
+					 "ios": {
+						 "osVer": "12.0",
+						 "uniVer": "x",
+						 "unixVer": "4.61"
+					 },
+					 "harmony": {
+						 "osVer": "5.0.0",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 }
+			 },
+			 "web": {
+					 "uniVer": "x",
+					 "unixVer": "4.0"
+			 },
+			 "mp": {
+					 "weixin": {
+						 "hostVer": "√",
+						 "uniVer": "√",
+						 "unixVer": "4.41"
+					 },
+					 "alipay": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 },
+					 "baidu": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 },
+					 "toutiao": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 },
+					 "lark": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 },
+					 "qq": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 },
+					 "kuaishou": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 },
+					 "jd": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 }
+			 }
+	 }
+	*/
+	'audio' |
+	/** 除图片和音视频类型的文件
+	 @uniPlatform {
+			"app": {
+				  "android": {
+					  "osVer": "5.0",
+					  "uniVer": "4.51",
+					  "unixVer": "4.51"
+				  },
+				  "ios": {
+					  "osVer": "12.0",
+					  "uniVer": "x",
+					  "unixVer": "4.61"
+				  },
+				  "harmony": {
+					  "osVer": "5.0.0",
+					  "uniVer": "x",
+					  "unixVer": "x"
+				  }
+			},
+			"web": {
+				  "uniVer": "x",
+				  "unixVer": "4.0"
+			},
+			"mp": {
+				  "weixin": {
+					  "hostVer": "√",
+					  "uniVer": "√",
+					  "unixVer": "4.41"
+				  },
+				  "alipay": {
+					  "hostVer": "x",
+					  "uniVer": "x",
+					  "unixVer": "x"
+				  },
+				  "baidu": {
+					  "hostVer": "x",
+					  "uniVer": "x",
+					  "unixVer": "x"
+				  },
+				  "toutiao": {
+					  "hostVer": "x",
+					  "uniVer": "x",
+					  "unixVer": "x"
+				  },
+				  "lark": {
+					  "hostVer": "x",
+					  "uniVer": "x",
+					  "unixVer": "x"
+				  },
+				  "qq": {
+					  "hostVer": "x",
+					  "uniVer": "x",
+					  "unixVer": "x"
+				  },
+				  "kuaishou": {
+					  "hostVer": "x",
+					  "uniVer": "x",
+					  "unixVer": "x"
+				  },
+				  "jd": {
+					  "hostVer": "x",
+					  "uniVer": "x",
+					  "unixVer": "x"
+				  }
+			}
+	 }
+	*/
+	'file'
+}
+export type ChooseFileSuccessCallback = (result: ChooseFileSuccess) => void;
+export type ChooseFileFail = IMediaError;
+export type ChooseFileFailCallback = (result: ChooseFileFail) => void;
+export type ChooseFileComplete = any;
+export type ChooseFileCompleteCallback = (result: ChooseFileComplete) => void;
+export type ChooseFileOptions = {
+	/**
+	 * 最多可以选择的文件数，默认100,注意Android中count只会决定是否是单选/多选，如果count>1 是多选效果，等于1为单选效果,
+	 @uniPlatform {
+		  "app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.51",
+					"unixVer": "4.51"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "x",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "5.0.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+		  },
+		  "web": {
+				"uniVer": "x",
+				"unixVer": "4.0"
+		  },
+		  "mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.41"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+		  }
+	 }
+	 */
+    count?: number | null,
+    /**
+     * 选择文件的类型，默认all，可选
+     * - image: 选择图片文件
+     * - video: 选择视频文件
+		 * - audio: 选择音频文件
+     * - all: 默认值，选择本地文件，包含图片和视频
+		 @uniPlatform {
+		 		  "app": {
+		 				"android": {
+		 					"osVer": "5.0",
+		 					"uniVer": "4.51",
+		 					"unixVer": "4.51"
+		 				},
+		 				"ios": {
+		 					"osVer": "12.0",
+		 					"uniVer": "x",
+		 					"unixVer": "4.61"
+		 				},
+		 				"harmony": {
+		 					"osVer": "5.0.0",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				}
+		 		  },
+		 		  "web": {
+		 				"uniVer": "x",
+		 				"unixVer": "4.0"
+		 		  },
+		 		  "mp": {
+		 				"weixin": {
+		 					"hostVer": "√",
+		 					"uniVer": "√",
+		 					"unixVer": "4.41"
+		 				},
+		 				"alipay": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"baidu": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"toutiao": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"lark": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"qq": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"kuaishou": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"jd": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				}
+		 		  }
+		 }
+     */
+		type ?:
+		/** 图片类型
+		 @uniPlatform {
+				"app": {
+						"android": {
+							"osVer": "5.0",
+							"uniVer": "4.51",
+							"unixVer": "4.51"
+						},
+						"ios": {
+							"osVer": "12.0",
+							"uniVer": "x",
+							"unixVer": "4.61"
+						},
+						"harmony": {
+							"osVer": "5.0.0",
+							"uniVer": "x",
+							"unixVer": "x"
+						}
+				},
+				"web": {
+						"uniVer": "x",
+						"unixVer": "4.0"
+				},
+				"mp": {
+						"weixin": {
+							"hostVer": "√",
+							"uniVer": "√",
+							"unixVer": "4.41"
+						},
+						"alipay": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"baidu": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"toutiao": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"lark": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"qq": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"kuaishou": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"jd": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						}
+				}
+		 }
+		*/
+		'image' |
+		/** 视频类型
+		 @uniPlatform {
+				 "app": {
+						 "android": {
+							 "osVer": "5.0",
+							 "uniVer": "4.51",
+							 "unixVer": "4.51"
+						 },
+						 "ios": {
+							 "osVer": "12.0",
+							 "uniVer": "x",
+							 "unixVer": "4.61"
+						 },
+						 "harmony": {
+							 "osVer": "5.0.0",
+							 "uniVer": "x",
+							 "unixVer": "x"
+						 }
+				 },
+				 "web": {
+						 "uniVer": "x",
+						 "unixVer": "4.0"
+				 },
+				 "mp": {
+						 "weixin": {
+							 "hostVer": "√",
+							 "uniVer": "√",
+							 "unixVer": "4.41"
+						 },
+						 "alipay": {
+							 "hostVer": "x",
+							 "uniVer": "x",
+							 "unixVer": "x"
+						 },
+						 "baidu": {
+							 "hostVer": "x",
+							 "uniVer": "x",
+							 "unixVer": "x"
+						 },
+						 "toutiao": {
+							 "hostVer": "x",
+							 "uniVer": "x",
+							 "unixVer": "x"
+						 },
+						 "lark": {
+							 "hostVer": "x",
+							 "uniVer": "x",
+							 "unixVer": "x"
+						 },
+						 "qq": {
+							 "hostVer": "x",
+							 "uniVer": "x",
+							 "unixVer": "x"
+						 },
+						 "kuaishou": {
+							 "hostVer": "x",
+							 "uniVer": "x",
+							 "unixVer": "x"
+						 },
+						 "jd": {
+							 "hostVer": "x",
+							 "uniVer": "x",
+							 "unixVer": "x"
+						 }
+				 }
+		 }
+		*/
+		'video' |
+		/** 音频类型
+		 @uniPlatform {
+					"app": {
+						"android": {
+							"osVer": "5.0",
+							"uniVer": "4.51",
+							"unixVer": "4.51"
+						},
+						"ios": {
+							"osVer": "12.0",
+							"uniVer": "x",
+							"unixVer": "4.61"
+						},
+						"harmony": {
+							"osVer": "5.0.0",
+							"uniVer": "x",
+							"unixVer": "x"
+						}
+					},
+					"web": {
+						"uniVer": "x",
+						"unixVer": "4.0"
+					},
+					"mp": {
+						"weixin": {
+							"hostVer": "√",
+							"uniVer": "√",
+							"unixVer": "4.41"
+						},
+						"alipay": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"baidu": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"toutiao": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"lark": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"qq": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"kuaishou": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"jd": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						}
+					}
+		 }
+		*/
+		'audio' |
+		/*** 默认值，选择本地文件，包含图片和视频
+		 @uniPlatform {
+				 "app": {
+					 "android": {
+						 "osVer": "5.0",
+						 "uniVer": "4.51",
+						 "unixVer": "4.51"
+					 },
+					 "ios": {
+						 "osVer": "12.0",
+						 "uniVer": "x",
+						 "unixVer": "4.61"
+					 },
+					 "harmony": {
+						 "osVer": "5.0.0",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 }
+				 },
+				 "web": {
+					 "uniVer": "x",
+					 "unixVer": "4.0"
+				 },
+				 "mp": {
+					 "weixin": {
+						 "hostVer": "√",
+						 "uniVer": "√",
+						 "unixVer": "4.41"
+					 },
+					 "alipay": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 },
+					 "baidu": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 },
+					 "toutiao": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 },
+					 "lark": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 },
+					 "qq": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 },
+					 "kuaishou": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 },
+					 "jd": {
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
+					 }
+				 }
+		 }
+		*/
+		'all' | null,
+		/**
+		* 选择文件的后缀名，暂只支持.zip、.png等，不支持application/msword等值, App平台不支持
+		 @uniPlatform {
+					"app": {
+						"android": {
+							"osVer": "5.0",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"ios": {
+							"osVer": "12.0",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"harmony": {
+							"osVer": "5.0.0",
+							"uniVer": "x",
+							"unixVer": "x"
+						}
+					},
+					"web": {
+						"uniVer": "x",
+						"unixVer": "4.0"
+					},
+					"mp": {
+						"weixin": {
+							"hostVer": "√",
+							"uniVer": "√",
+							"unixVer": "4.41"
+						},
+						"alipay": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"baidu": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"toutiao": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"lark": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"qq": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"kuaishou": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						},
+						"jd": {
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
+						}
+					}
+		 }
+		*/
+    extension?: (string[]) | null,
+    /**
+     * original 原图，compressed 压缩图，默认二者都有, App平台不支持
+		 @uniPlatform {
+			 "app": {
+			 	"android": {
+			 		"osVer": "5.0",
+			 		"uniVer": "x",
+			 		"unixVer": "x"
+			 	},
+			 	"ios": {
+			 		"osVer": "12.0",
+			 		"uniVer": "x",
+			 		"unixVer": "x"
+			 	},
+			 	"harmony": {
+			 		"osVer": "5.0.0",
+			 		"uniVer": "x",
+			 		"unixVer": "x"
+			 	}
+			 },
+			 "web": {
+			 	"uniVer": "x",
+			 	"unixVer": "4.0"
+			 },
+			 "mp": {
+			 	"weixin": {
+			 		"hostVer": "√",
+			 		"uniVer": "√",
+			 		"unixVer": "4.41"
+			 	},
+			 	"alipay": {
+			 		"hostVer": "x",
+			 		"uniVer": "x",
+			 		"unixVer": "x"
+			 	},
+			 	"baidu": {
+			 		"hostVer": "x",
+			 		"uniVer": "x",
+			 		"unixVer": "x"
+			 	},
+			 	"toutiao": {
+			 		"hostVer": "x",
+			 		"uniVer": "x",
+			 		"unixVer": "x"
+			 	},
+			 	"lark": {
+			 		"hostVer": "x",
+			 		"uniVer": "x",
+			 		"unixVer": "x"
+			 	},
+			 	"qq": {
+			 		"hostVer": "x",
+			 		"uniVer": "x",
+			 		"unixVer": "x"
+			 	},
+			 	"kuaishou": {
+			 		"hostVer": "x",
+			 		"uniVer": "x",
+			 		"unixVer": "x"
+			 	},
+			 	"jd": {
+			 		"hostVer": "x",
+			 		"uniVer": "x",
+			 		"unixVer": "x"
+			 	}
+			 }
+		 }
+     */
+    sizeType?: any | null,
+    /**
+     * album 从相册选图，camera 使用相机，默认二者都有, App平台不支持
+		 @uniPlatform {
+		 		"app": {
+		 			"android": {
+		 				"osVer": "5.0",
+		 				"uniVer": "x",
+		 				"unixVer": "x"
+		 			},
+		 			"ios": {
+		 				"osVer": "12.0",
+		 				"uniVer": "x",
+		 				"unixVer": "x"
+		 			},
+		 			"harmony": {
+		 				"osVer": "5.0.0",
+		 				"uniVer": "x",
+		 				"unixVer": "x"
+		 			}
+		 		},
+		 		"web": {
+		 			"uniVer": "x",
+		 			"unixVer": "4.0"
+		 		},
+		 		"mp": {
+		 			"weixin": {
+		 				"hostVer": "√",
+		 				"uniVer": "√",
+		 				"unixVer": "4.41"
+		 			},
+		 			"alipay": {
+		 				"hostVer": "x",
+		 				"uniVer": "x",
+		 				"unixVer": "x"
+		 			},
+		 			"baidu": {
+		 				"hostVer": "x",
+		 				"uniVer": "x",
+		 				"unixVer": "x"
+		 			},
+		 			"toutiao": {
+		 				"hostVer": "x",
+		 				"uniVer": "x",
+		 				"unixVer": "x"
+		 			},
+		 			"lark": {
+		 				"hostVer": "x",
+		 				"uniVer": "x",
+		 				"unixVer": "x"
+		 			},
+		 			"qq": {
+		 				"hostVer": "x",
+		 				"uniVer": "x",
+		 				"unixVer": "x"
+		 			},
+		 			"kuaishou": {
+		 				"hostVer": "x",
+		 				"uniVer": "x",
+		 				"unixVer": "x"
+		 			},
+		 			"jd": {
+		 				"hostVer": "x",
+		 				"uniVer": "x",
+		 				"unixVer": "x"
+		 			}
+		 		}
+		 }
+     */
+    sourceType?: (string[]) | null,
+    /**
+     * 成功则返回图片的本地文件路径列表 tempFilePaths、tempFiles
+			@uniPlatform {
+				"app": {
+					"android": {
+						"osVer": "5.0",
+						"uniVer": "4.51",
+						"unixVer": "4.51"
+					},
+					"ios": {
+						"osVer": "12.0",
+						"uniVer": "x",
+						"unixVer": "4.61"
+					},
+					"harmony": {
+						"osVer": "5.0.0",
+						"uniVer": "x",
+						"unixVer": "x"
+					}
+				},
+				"web": {
+					"uniVer": "x",
+					"unixVer": "4.0"
+				},
+				"mp": {
+					"weixin": {
+						"hostVer": "√",
+						"uniVer": "√",
+						"unixVer": "4.41"
+					},
+					"alipay": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					},
+					"baidu": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					},
+					"toutiao": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					},
+					"lark": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					},
+					"qq": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					},
+					"kuaishou": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					},
+					"jd": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					}
+				}
+			}
+     */
+    success?: ChooseFileSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+		 @uniPlatform {
+				"app": {
+					"android": {
+						"osVer": "5.0",
+						"uniVer": "4.51",
+						"unixVer": "4.51"
+					},
+					"ios": {
+						"osVer": "12.0",
+						"uniVer": "x",
+						"unixVer": "4.61"
+					},
+					"harmony": {
+						"osVer": "5.0.0",
+						"uniVer": "x",
+						"unixVer": "x"
+					}
+				},
+				"web": {
+					"uniVer": "x",
+					"unixVer": "4.0"
+				},
+				"mp": {
+					"weixin": {
+						"hostVer": "√",
+						"uniVer": "√",
+						"unixVer": "4.41"
+					},
+					"alipay": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					},
+					"baidu": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					},
+					"toutiao": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					},
+					"lark": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					},
+					"qq": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					},
+					"kuaishou": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					},
+					"jd": {
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
+					}
+				}
+		 }
+     */
+    fail?: ChooseFileFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+		 @uniPlatform {
+		 		  "app": {
+		 				"android": {
+		 					"osVer": "5.0",
+		 					"uniVer": "4.51",
+		 					"unixVer": "4.51"
+		 				},
+		 				"ios": {
+		 					"osVer": "12.0",
+		 					"uniVer": "x",
+		 					"unixVer": "4.61"
+		 				},
+		 				"harmony": {
+		 					"osVer": "5.0.0",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				}
+		 		  },
+		 		  "web": {
+		 				"uniVer": "x",
+		 				"unixVer": "4.0"
+		 		  },
+		 		  "mp": {
+		 				"weixin": {
+		 					"hostVer": "√",
+		 					"uniVer": "√",
+		 					"unixVer": "4.41"
+		 				},
+		 				"alipay": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"baidu": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"toutiao": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"lark": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"qq": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"kuaishou": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				},
+		 				"jd": {
+		 					"hostVer": "x",
+		 					"uniVer": "x",
+		 					"unixVer": "x"
+		 				}
+		 		  }
+		 }
+     */
+    complete?: ChooseFileCompleteCallback | null
+};
+
+export interface Uni {
+    /**
+     * 从本地相册选择图片或使用相机拍照
+     * @description 从本地相册选择图片或使用相机拍照
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "3.9+"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.11"
+     *		},
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *	},
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  },
+     * "mp": {
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    }
+   *  }
+     * }
+     * @uniVueVersion 2,3
+     * @example
+     * ```typescript
+     * uni.chooseImage({
+     *	count:3,
+     *	success(e){
+     *		console.log(JSON.stringify(e))
+     * 	}
+     * })
+     * ```
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/image.html#chooseimage
+     * @autotest {
+       generated:false
+     }
+     */
+    chooseImage(options: ChooseImageOptions): void;
+	// #ifndef UNI-APP-X && !APP-HARMONY
+    /**
+     * 预览图片
+     * @description 预览图片
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "3.9+"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.11"
+     *		},
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *	},
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  },
+     * "mp": {
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+     * }
+     * @uniVueVersion 2,3
+     * @example
+     * ```typescript
+     * uni.previewImage({
+     *	urls:['/static/a.jpg','/static/b.jpg'],
+     *	success(e){
+     *		console.log(JSON.stringify(e))
+     * 	}
+     * })
+     * ```
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/image.html#unipreviewimageobject
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html
+     * @autotest {
+       generated:false
+     }
+     */
+    previewImage(options: PreviewImageOptions): void;
+    /**
+     * 关闭图片预览
+     * @description 关闭图片预览
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "3.9+"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.11"
+     *		},
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     * @uniVueVersion 2,3
+     * @example
+     * ```typescript
+     * uni.closePreviewImage({
+     *	success(e){
+     *		console.log(JSON.stringify(e))
+     * 	}
+     * })
+     * ```
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/image.html#closepreviewimage
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html#closepreviewimage
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html#closepreviewimage
+     * @autotest {
+       generated:false
+     }
+     */
+    closePreviewImage(options: ClosePreviewImageOptions): void;
+	// #endif
+    /**
+     * 获取图片信息
+     * @description 获取图片信息
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.18"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.25"
+     *		},
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     * @uniVueVersion 2,3
+     * @example
+     * ```typescript
+     * uni.getImageInfo({
+     *	src:'/static/a.jpg',
+     *	success(e){
+     *		console.log(JSON.stringify(e))
+     * 	},
+     * })
+     * ```
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/image.html#getimageinfo
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-image-info.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-image-info.html
+     * @autotest {
+       generated:false,
+       case:[
+         {
+           input:[{"src":"/static/a.jpg"}]
+         }
+       ]
+     }
+     */
+    getImageInfo(options: GetImageInfoOptions): void;
+    /**
+     * 保存图片到系统相册
+     * @description 保存图片到系统相册
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "3.9+"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.11"
+     *		},
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     * @uniVueVersion 2,3
+     * @example
+     * ```typescript
+     * uni.saveImageToPhotosAlbum({
+     *	filePath:'/static/a.jpg',
+     *	success(e){
+     *		console.log(JSON.stringify(e))
+     * 	},
+     * })
+     * ```
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/image.html#saveimagetophotosalbum
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/save-image-to-photos-album.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/save-image-to-photos-album.html
+     * @autotest {
+       generated:false,
+       case:[
+         {
+           input:[{"filePath":"/static/a.jpg"}]
+         }
+       ]
+     }
+     */
+    saveImageToPhotosAlbum(options: SaveImageToPhotosAlbumOptions): void;
+    /**
+     * 压缩图片
+     * @description 压缩图片
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.18"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.25"
+     *		},
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.31",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     * @uniVueVersion 2,3
+     * @example
+     * ```typescript
+     * uni.compressImage({
+     *	src:'/static/a.jpg',
+     * 	quality:80,
+     *	success(e){
+     *		console.log(JSON.stringify(e))
+     * 	},
+     * })
+     * ```
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/image.html#compressimage
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/compress-image.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/compress-image.html
+     * @autotest {
+       generated:false,
+       case:[
+         {
+           input:[{"src":"/static/d.jpg"},{"rotate","30"}]
+         }
+       ]
+     }
+     */
+    compressImage(options: CompressImageOptions): void;
+    /**
+     * 拍摄视频或从手机相册中选视频，返回视频的临时文件路径。
+     * @description 拍摄视频或从手机相册中选视频，返回视频的临时文件路径。
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.18"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.18"
+     *		},
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     * @uniVueVersion 2,3
+     * @example
+     * ```typescript
+     * uni.chooseVideo({
+     *	success(e){
+     *		console.log(JSON.stringify(e))
+     * 	},
+     * })
+     * ```
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/video.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/choose-video.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/choose-video.html
+     *
+     */
+    chooseVideo(options: ChooseVideoOptions): void;
+    /**
+     * 获取视频详细信息
+     * @description 获取视频详细信息
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.18"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.25"
+     *		},
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     * @uniVueVersion 2,3
+     * @example
+     * ```typescript
+     * uni.GetVideoInfo({
+     *  src:"/static/a.mp4",
+     *	success(e){
+     *		console.log(JSON.stringify(e))
+     * 	},
+     * })
+     * ```
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/video.html#getvideoinfo
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-video-info.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-video-info.html
+     *
+     */
+    getVideoInfo(options: GetVideoInfoOptions): void;
+    /**
+     * 保存视频到系统相册
+     * @description 保存视频到系统相册
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.18"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.18"
+     *		},
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     * @uniVueVersion 2,3
+     * @example
+     * ```typescript
+     * uni.saveVideoToPhotosAlbum({
+     *  filePath:"/static/a.mp4",
+     *	success(e){
+     *		console.log(JSON.stringify(e))
+     * 	},
+     * })
+     * ```
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/video.html#savevideotophotosalbum
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/save-video-to-photos-album.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/save-video-to-photos-album.html
+     *
+     */
+    saveVideoToPhotosAlbum(options: SaveVideoToPhotosAlbumOptions): void;
+    /**
+     * 压缩视频
+     * @description 压缩视频
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "5.0",
+     *			"uniVer": "3,1.10",
+     *			"unixVer": "4.18"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "√",
+     *			"unixVer": "4.25"
+     *		},
+     *    "harmony": {
+     *      "osVer": "3,0",
+     *      "uniVer": "4.31",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     * @uniVueVersion 2,3
+     * @example
+     * ```typescript
+     * uni.compressVideo({
+     *  src:"/static/a.mp4",
+     *  quality:"low",
+     *	success(e){
+     *		console.log(JSON.stringify(e))
+     * 	},
+     * })
+     * ```
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/video.html#compressvideo
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/compress-video.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/compress-video.html
+     *
+     */
+    compressVideo(options: CompressVideoOptions): void;
+    /**
+     * 从本地选择文件
+     *
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/choose-file.html#choosefile
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/choose-file.html#choosefile
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/file.html#choosefile
+     * @uniPlatform {
+     *	 "app": {
+     *		"android": {
+     *			"osVer": "x",
+     *			"uniVer": "x",
+     *			"unixVer": "4.51"
+     *		},
+     *		"ios": {
+     *			"osVer": "12.0",
+     *			"uniVer": "x",
+     *			"unixVer": "4.61"
+     *		},
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.31",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *	},
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+   *  "web": {
+   *    "uniVer": "2.9.9",
+   *    "unixVer": "4.0"
+   *  }
+     * }
+     */
+    chooseFile(options: ChooseFileOptions): void;
+}

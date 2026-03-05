@@ -1,0 +1,6 @@
+{
+	"frameworks": [
+		"MediaPlayer.framework"
+	],
+	"deploymentTarget": "12.0"
+}

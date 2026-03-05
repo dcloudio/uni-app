@@ -1,0 +1,72 @@
+import { CreateWebviewContext, WebviewContext, UniWebviewContextLoadDataOptions } from '../interface.uts';
+
+export const createWebviewContext: CreateWebviewContext = function (webviewId: string.WebviewIdString, component?: ComponentPublicInstance | null): WebviewContext | null {
+  let webviewElement: UniWebViewElement | null = null;
+  let element: any | null = null;
+  if (component == null) {
+    // @ts-ignore
+    const pages = globalThis.getCurrentPages() as UniPageImpl[];
+    if (pages.length > 0) {
+      const page = (pages[pages.length - 1])
+      if (!page) {
+        throw new Error(`getCurrentPages is empty`)
+      }
+      // @ts-ignore
+      element = ((page.vm as ESObject).$el as UniElement)?.parentNode?.querySelector('#' + webviewId) as UniWebViewElement;
+
+      if (element == null) {
+        const dialogPages = page.getDialogPages() as UniPageImpl[];
+        const topDialogPage = dialogPages[dialogPages.length - 1];
+        element = ((topDialogPage.vm as ESObject).$el as UniElement)?.parentNode?.querySelector('#' + webviewId) as UniWebViewElement;
+      }
+    }
+  } else {
+    element = (component.$el as UniElement)?.parentNode?.querySelector('#' + webviewId) as UniWebViewElement;
+  }
+  if (element != null && (element instanceof UniWebViewElementImpl)) {
+    webviewElement = (element as UniWebViewElement)
+  }
+  if (webviewElement == null) {
+    return null
+  }
+  return new WebviewContextImpl(webviewElement!)
+}
+
+class WebviewContextImpl implements WebviewContext {
+  private webviewElement: UniWebViewElement | null = null;
+
+  constructor(webviewElement: UniWebViewElement) {
+    this.webviewElement = webviewElement;
+  }
+
+  back() {
+    this.webviewElement?.back();
+  }
+
+  forward() {
+    this.webviewElement?.forward();
+  }
+
+  reload() {
+    this.webviewElement?.reload();
+  }
+
+  stop() {
+    this.webviewElement?.stop();
+  }
+
+  evalJS(js: string) {
+    this.webviewElement?.evalJS(js);
+  }
+
+  loadData(options: UniWebviewContextLoadDataOptions) {
+    this.webviewElement?.loadData(options);
+  }
+
+}
+
+export {
+  CreateWebviewContext,
+  UniWebviewContextLoadDataOptions,
+  WebviewContext
+} from '../interface.uts';

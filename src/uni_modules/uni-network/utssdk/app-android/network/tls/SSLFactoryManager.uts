@@ -1,0 +1,65 @@
+import SSLSocketFactory from 'javax.net.ssl.SSLSocketFactory';
+import { SSLConfig } from './SSLConfig.uts'
+import SSLContext from 'javax.net.ssl.SSLContext';
+import KeyStore from 'java.security.KeyStore';
+import KeyManagerFactory from 'javax.net.ssl.KeyManagerFactory';
+import CertificateFactory from 'java.security.cert.CertificateFactory';
+import TextUtils from 'android.text.TextUtils';
+
+
+class SSLFactoryManager {
+	private static instance?: SSLFactoryManager = null;
+
+	private cacheSSLFactory: Map<SSLConfig, SSLSocketFactory> = new Map<SSLConfig, SSLSocketFactory>();
+
+	public static getInstance(): SSLFactoryManager {
+		if (this.instance == null) {
+			this.instance = SSLFactoryManager();
+		}
+		return this.instance!;
+	}
+
+	public getSSLSocketFactory(sslConfig: SSLConfig): SSLSocketFactory | null {
+		if (sslConfig == null) {
+			return null;
+		}
+		
+		
+		if (this.cacheSSLFactory.has(sslConfig)){
+			let sslFactory = this.cacheSSLFactory.get(sslConfig);
+			if (sslConfig != null){
+				return sslFactory;
+			}
+		}
+		
+		
+		try{
+			let sslContext = SSLContext.getInstance('TLS');
+			let keyStore = KeyStore.getInstance('PKCS12');
+			let keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+			
+			if (!TextUtils.isEmpty(sslConfig.getKeystore()) && !TextUtils.isEmpty(sslConfig.getStorePass())){
+				//todo 1. 这里需要解析keystore 
+				//     2. 如果是文件需要转换一下路径，然后读出来。
+				// resolve ： 原生层会提供bundleurl和运行模式的接口。
+				
+			}else{
+				keyManagerFactory = null;
+			}
+			
+			let certificateFactory = CertificateFactory.getInstance('X.509');
+			let caKeyStore = KeyStore.getInstance('PKCS12');
+			
+			
+			
+		}catch(e : Exception){
+			
+		}
+		
+		return null;
+	}
+}
+
+export {
+	SSLFactoryManager
+}

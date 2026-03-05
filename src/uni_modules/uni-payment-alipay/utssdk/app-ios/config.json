@@ -1,0 +1,37 @@
+{
+	"frameworks": [
+		"libc++.tbd",
+		"libz.tbd",
+		"SystemConfiguration.framework",
+		"CoreTelephony.framework",
+		"QuartzCore.framework",
+		"CoreText.framework",
+		"CoreGraphics.framework",
+		"UIKit.framework",
+		"Foundation.framework",
+		"CFNetwork.framework",
+		"CoreMotion.framework"
+	],
+	"deploymentTarget": "12.0",
+	"parameters": {
+		"universalLink": {
+			"des": "请填写能唤起当前应用的Universal Links路径（https开头，以“/”结尾，建议带path，比如“https://your_domain/app/”），在实际调用SDK时，会校验Universal Links是否匹配"
+		}
+	},
+	"plists": {
+		"CFBundleURLTypes": [{
+			"CFBundleTypeRole": "Editor",
+			"CFBundleURLName": "Alipay",
+			"CFBundleURLSchemes": [
+				"alipay{$_dcloud_appid_md5}"
+			]
+		}],
+		"LSApplicationQueriesSchemes": [
+			"alipay",
+			"safepay"
+		],
+		"Alipay": {
+			"universalLink": "{$universalLink}"
+		}
+	}
+}

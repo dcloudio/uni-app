@@ -1,7 +1,7 @@
 {
   "id": "uni-stat",
   "displayName": "uni统计 for uni-app x",
-  "version": "1.0.16",
+  "version": "1.1.0",
   "description": "uni统计的uni-app x 版本",
   "keywords": [
     "uni-stat",
@@ -106,7 +106,10 @@
                 "extVersion": "",
                 "minVersion": "12"
             },
-            "harmony": "x"
+            "harmony": {
+                "extVersion": "1.0.15",
+                "minVersion": ""
+            }
           },
           "mp": {
             "weixin": {

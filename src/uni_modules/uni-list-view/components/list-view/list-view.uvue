@@ -1,0 +1,140 @@
+<template>
+  <scroll-view :ref="recycleListCpp.setElement" :scroll-top="props.scrollTop" :show-scrollbar="props.showScrollbar"
+    :scroll-with-animation="props.scrollWithAnimation" :type="props.type" :bounces="props.bounces"
+    :upper-threshold="props.upperThreshold" :lower-threshold="props.lowerThreshold" :scroll-left="props.scrollLeft"
+    :scroll-into-view="props.scrollIntoView" :refresher-enabled="props.refresherEnabled"
+    :refresher-threshold="props.refresherThreshold" :refresher-max-drag-distance="props.refresherMaxDragDistance"
+    :refresher-background="props.refresherBackground" :refresher-triggered="props.refresherTriggered"
+    :custom-nested-scroll="props.customNestedScroll" :nested-scroll-child="props.nestedScrollChild" 
+    :associative-container="props.associativeContainer" :enable-back-to-top="props.enableBackToTop" :refresher-default-style="props.refresherDefaultStyle"
+    :list-view-id="listViewId" change:list-view-id="recycleListCpp.setListViewId"
+    :list="keyList as string[]" change:list="recycleListCpp.updateList">
+    <view :ref="recycleListCpp.setListHeaderElement">
+      <slot name="header"></slot>
+    </view>
+    <view>
+      <view class="placeholder" :ref="recycleListCpp.setPlaceholderElement"></view>
+      <slot></slot>
+    </view>
+    <view>
+      <slot name="footer"></slot>
+    </view>
+    <slot name="refresher"></slot>
+  </scroll-view>
+</template>
+<script module="recycleListCpp" lang="cpp" class-name="RecycleList" src="../../cppsdk/recycle_list.h"
+  namespace="recycle_list"></script>
+<script setup>
+  import { generateUniqueId } from '../../common/utils'
+  import { UniListViewElement } from '../../common/element'
+
+  defineOptions({
+    name: 'list-view',
+    rootElement: {
+        class: UniListViewElement
+    }
+  })
+
+  /**
+   * 不支持如下属性
+   * - direction
+   */
+  const props = defineProps({
+    associativeContainer: {
+      type: String,
+      default: ''
+    },
+    enableBackToTop: {
+      type: [Boolean, String],
+      default: true
+    },
+    bounces: {
+      type: [Boolean, String],
+      default: true
+    },
+    upperThreshold: {
+      type: Number,
+      default: 50
+    },
+    lowerThreshold: {
+      type: Number,
+      default: 50
+    },
+    scrollTop: {
+      type: Number,
+      default: 0
+    },
+    scrollLeft: {
+      type: Number,
+      default: 0
+    },
+    scrollIntoView: {
+      type: String,
+      default: ''
+    },
+    scrollWithAnimation: {
+      type: [Boolean, String],
+      default: false
+    },
+    refresherEnabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    refresherThreshold: {
+      type: Number,
+      default: 45
+    },
+    refresherMaxDragDistance: {
+      type: Number
+    },
+    refresherDefaultStyle: {
+      type: String,
+      default: 'black'
+    },
+    refresherBackground: {
+      type: String,
+      default: 'transparent'
+    },
+    refresherTriggered: {
+      type: [Boolean, String],
+      default: false
+    },
+    showScrollbar: {
+      type: [Boolean, String],
+      default: true
+    },
+    customNestedScroll: {
+      type: [Boolean, String],
+      default: false
+    },
+    nestedScrollChild: {
+      type: String,
+      default: ''
+    }
+  })
+  const listViewId = generateUniqueId();
+  provide('__uni_recycle_view_id', listViewId);
+  provide('__uni_recycle_state_map', new Map<string, Map<string, unknown>>());
+
+  const keyList = shallowRef<string[]>([])
+  function updateList(newList : string[]) {
+    keyList.value = newList
+  }
+
+  const renderRange = ref<[number, number]>([0, 0]);
+  
+  function updateRenderInfo(renderRangeStart: number, renderRangeEnd: number) {
+    renderRange.value = [renderRangeStart, renderRangeEnd];
+  }
+
+  defineExpose({
+    renderRange,
+    updateList,
+    updateRenderInfo
+  });
+</script>
+<style>
+  .placeholder {
+    width: 1px;
+  }
+</style>

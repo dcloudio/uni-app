@@ -1,0 +1,23 @@
+import { ExitOptions, Exit, ExitSuccess} from "../interface.uts"
+import { ExitFailImpl} from "../unierror.uts"
+import { UTSiOS } from "DCloudUTSFoundation";
+
+
+/**
+ * 实现uni.exit
+ */
+export const exit : Exit = function (options: ExitOptions | null) {
+	
+	const result = UTSiOS.exit();
+	if(result){
+		let ret : ExitSuccess ={
+			errMsg: "exit:ok"
+		}
+		options?.success?.(ret)
+		options?.complete?.(ret)
+	}else{
+		let error = new ExitFailImpl(12003);
+		options?.fail?.(error)
+		options?.complete?.(error)
+	}
+}

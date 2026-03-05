@@ -1,0 +1,140 @@
+import {
+    chooseImage
+} from './media/chooseImage.uts'
+import {
+    chooseVideo
+} from './media/chooseVideo.uts'
+import {
+    getImageInfo
+} from './media/getImageInfo.uts'
+import {
+    getVideoInfo
+} from './media/getVideoInfo.uts'
+import {
+    previewImage,
+    closePreviewImage
+} from './media/previewImage.uts'
+import {
+    saveImageToPhotosAlbum,
+    saveVideoToPhotosAlbum
+} from './media/saveMedia.uts'
+import { compressImage } from './media/compressImage.uts';
+import { chooseFile } from './media/chooseFile.uts';
+import { compressVideo } from './media/compressVideo.uts';
+
+export {
+    CompressVideo,
+    CompressVideoOptions,
+    CompressVideoSuccess,
+    ChooseFileOptions,
+    ChooseFileSuccess,
+    ChooseFile,
+    ChooseImageOptions,
+    ChooseImageSuccess,
+    ChooseImage,
+    ChooseVideoOptions,
+    ChooseVideoSuccess,
+    ChooseVideo,
+    GetImageInfoOptions,
+    GetImageInfoSuccess,
+    GetImageInfo,
+    GetVideoInfoOptions,
+    GetVideoInfoSuccess,
+    GetVideoInfo,
+    // #ifdef !UNI-APP-X && APP-HARMONY
+    PreviewImageOptions,
+    PreviewImageSuccess,
+    PreviewImage,
+    ClosePreviewImageOptions,
+    ClosePreviewImageSuccess,
+    ClosePreviewImage,
+    PreviewImageCompleteCallback,
+    PreviewImageFail,
+    PreviewImageFailCallback,
+    PreviewImageSuccessCallback,
+    ClosePreviewImageCompleteCallback,
+    ClosePreviewImageFail,
+    ClosePreviewImageFailCallback,
+    ClosePreviewImageSuccessCallback,
+    // #endif
+    SaveImageToPhotosAlbumOptions,
+    SaveVideoToPhotosAlbumOptions,
+    SaveImageToPhotosAlbumSuccess,
+    SaveVideoToPhotosAlbumSuccess,
+    SaveImageToPhotosAlbum,
+    SaveVideoToPhotosAlbum,
+    CompressImageOptions,
+    CompressImageSuccess,
+    CompressImage,
+    ChooseFileComplete,
+    ChooseFileCompleteCallback,
+    ChooseFileFail,
+    ChooseFileFailCallback,
+    ChooseFileSuccessCallback,
+    ChooseFileTempFile,
+    ChooseImageAlbumMode,
+    ChooseImageCompleteCallback,
+    ChooseImageCropOptions,
+    ChooseImageFail,
+    ChooseImageFailCallback,
+    ChooseImagePageOrientation,
+    ChooseImageSuccessCallback,
+    ChooseImageTempFile,
+    ChooseVideoAlbumMode,
+    ChooseVideoCompleteCallback,
+    ChooseVideoFail,
+    ChooseVideoFailCallback,
+    ChooseVideoPageOrientation,
+    ChooseVideoSuccessCallback,
+    CompressImageCompleteCallback,
+    CompressImageFail,
+    CompressImageFailCallback,
+    CompressImageSuccessCallback,
+    CompressVideoCompleteCallback,
+    CompressVideoFail,
+    CompressVideoFailCallback,
+    CompressVideoSuccessCallback,
+    GetImageInfoCompleteCallback,
+    GetImageInfoFail,
+    GetImageInfoFailCallback,
+    GetImageInfoSuccessCallback,
+    GetVideoInfoCompleteCallback,
+    GetVideoInfoFail,
+    GetVideoInfoFailCallback,
+    GetVideoInfoSuccessCallback,
+    SaveImageToPhotosAlbumCompleteCallback,
+    SaveImageToPhotosAlbumFail,
+    SaveImageToPhotosAlbumFailCallback,
+    SaveImageToPhotosAlbumSuccessCallback,
+    SaveVideoToPhotosAlbumCompleteCallback,
+    SaveVideoToPhotosAlbumFail,
+    SaveVideoToPhotosAlbumFailCallback,
+    SaveVideoToPhotosAlbumSuccessCallback,
+} from '../interface.uts'
+
+export {
+    chooseImage,
+    chooseVideo,
+    getImageInfo,
+    getVideoInfo,
+    // #ifdef !UNI-APP-X && APP-HARMONY
+    previewImage,
+    closePreviewImage,
+    // #endif
+    saveImageToPhotosAlbum,
+    saveVideoToPhotosAlbum,
+    compressImage,
+    chooseFile,
+    compressVideo
+}
+
+export {
+    IMediaError,
+    // #ifdef !UNI-APP-X && APP-HARMONY
+    LongPressActionsFailResult,
+    LongPressActionsOptions,
+    LongPressActionsSuccessResult,
+    // #endif
+    MediaErrorCode,
+    MediaOrientation,
+} from '../interface.uts'

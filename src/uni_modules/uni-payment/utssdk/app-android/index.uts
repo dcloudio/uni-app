@@ -1,0 +1,14 @@
+import { UniPaymentProvider, RequestPaymentOptions, RequestPayment, RequestPaymentSuccessCallback } from "../interface.uts";
+import { RequestPaymentFailImpl } from '../unierror.uts'
+
+export const requestPayment : RequestPayment = function (options : RequestPaymentOptions) {
+	//获取provider实例，hx自动生成，其中UniPaymentProvider为在interface中定义的接口
+	const provider = UTSAndroid.getProvider<UniPaymentProvider>("payment", options.provider)
+	if (provider != null) {
+		provider.requestPayment(options)
+	} else {
+		let err = new RequestPaymentFailImpl(700605);
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+};

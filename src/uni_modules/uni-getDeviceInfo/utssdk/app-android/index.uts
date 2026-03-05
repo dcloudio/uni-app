@@ -1,0 +1,111 @@
+import Build from 'android.os.Build';
+import { DeviceUtil } from './device/DeviceUtil.uts';
+
+import { GetDeviceInfo, GetDeviceInfoOptions, GetDeviceInfoResult } from '../interface.uts'
+
+
+export const getDeviceInfo : GetDeviceInfo = (config : GetDeviceInfoOptions | null) : GetDeviceInfoResult => {
+	let filter : Array<string> = [];
+	if (config != null && config.filter != null) {
+		filter = config.filter;
+	}
+
+	if (config == null || filter.length == 0) {
+		const defaultFilter = [
+			"brand",
+			"deviceBrand",
+			"deviceId",
+			"model",
+			"deviceModel",
+			"deviceType",
+			"deviceOrientation",
+			"devicePixelRatio",
+			"system",
+			"platform",
+			"isRoot",
+			"isSimulator",
+			"isUSBDebugging",
+			"osName",
+			"osVersion",
+			"osLanguage",
+			"osTheme",
+			"osAndroidAPILevel",
+			"romName",
+			"romVersion"
+		];
+		filter = defaultFilter;
+	}
+	return getBaseInfo(filter);
+}
+
+function getBaseInfo(filterArray : Array<string>) : GetDeviceInfoResult {
+	const activity = UTSAndroid.getUniActivity()!;
+	let result : GetDeviceInfoResult = {};
+	if (filterArray.indexOf("brand") != -1) {
+		result.brand = Build.MANUFACTURER;
+	}
+	if (filterArray.indexOf("deviceBrand") != -1) {
+		result.deviceBrand = Build.MANUFACTURER;
+	}
+	if (filterArray.indexOf("model") != -1) {
+		result.model = Build.MODEL;
+	}
+	if (filterArray.indexOf("deviceModel") != -1) {
+		result.deviceModel = Build.MODEL;
+	}
+	if (filterArray.indexOf("deviceType") != -1) {
+		result.deviceType = DeviceUtil.getSystemUIModeType(activity);
+	}
+	if (filterArray.indexOf("deviceOrientation") != -1) {
+		result.deviceOrientation = DeviceUtil.getOrientation(activity);
+	}
+	if (filterArray.indexOf("deviceId") != -1) {
+		result.deviceId = DeviceUtil.getDeviceID(activity);
+	}
+	if (filterArray.indexOf("devicePixelRatio") != -1) {
+		result.devicePixelRatio = DeviceUtil.getScaledDensity(activity);
+	}
+	if (filterArray.indexOf("system") != -1) {
+		result.system = "Android " + Build.VERSION.RELEASE;
+	}
+	if (filterArray.indexOf("platform") != -1) {
+		result.platform = "android";
+	}
+	if (filterArray.indexOf("isRoot") != -1) {
+		result.isRoot = DeviceUtil.hasRootPrivilege();
+	}
+	if (filterArray.indexOf("isSimulator") != -1) {
+		result.isSimulator = DeviceUtil.isSimulator(activity, false);
+	}
+	if (filterArray.indexOf("isUSBDebugging") != -1) {
+		result.isUSBDebugging = DeviceUtil.listeningForADB();
+	}
+	
+	if (filterArray.indexOf("osName") != -1) {
+		result.osName = "android";
+	}
+	if (filterArray.indexOf("osVersion") != -1) {
+		result.osVersion = Build.VERSION.RELEASE;
+	}
+	if (filterArray.indexOf("osLanguage") != -1) {
+		result.osLanguage = UTSAndroid.getLanguageInfo(activity)["osLanguage"].toString();
+	}
+	if (filterArray.indexOf("osTheme") != -1) {
+		result.osTheme = UTSAndroid.getOsTheme();
+	}
+	if (filterArray.indexOf("osAndroidAPILevel") != -1) {
+		result.osAndroidAPILevel = Build.VERSION.SDK_INT;
+	}
+	if (filterArray.indexOf("romName") != -1) {
+		result.romName = DeviceUtil.getRomName();
+	}
+	if (filterArray.indexOf("romVersion") != -1) {
+		result.romVersion = DeviceUtil.getRomVersion();
+	}
+	return result;
+}
+
+export function isSimulator(): boolean {
+	const activity = UTSAndroid.getUniActivity()!;
+	return DeviceUtil.isSimulator(activity, false)
+}

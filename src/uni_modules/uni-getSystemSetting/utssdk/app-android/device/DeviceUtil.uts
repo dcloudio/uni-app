@@ -1,0 +1,60 @@
+import WifiManager from 'android.net.wifi.WifiManager';
+import Configuration from 'android.content.res.Configuration';
+import Context from 'android.content.Context';
+import LocationManager from 'android.location.LocationManager';
+import BluetoothManager from 'android.bluetooth.BluetoothManager';
+import PackageManager from 'android.content.pm.PackageManager';
+import Manifest from 'android.Manifest';
+import Build from 'android.os.Build';
+import Settings from 'android.provider.Settings';
+export class DeviceUtil{
+	/**
+	 * 设备蓝牙是否开启
+	 * @param context .
+	 * @return .
+	 * @throws Exception 如果没开启蓝牙权限就有异常
+	 */
+	public static blueToothEnable(context: Context): boolean {
+		if (Build.VERSION.SDK_INT >= 23 && context.checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_DENIED) {
+			throw new Exception();
+		}
+		let bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager;
+		let defaultAdapter = bluetoothManager.getAdapter();
+		return defaultAdapter.isEnabled();
+	}
+	
+	
+	
+	public static locationEnable(context: Context): boolean {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+			let locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager;
+			if (locationManager == null) {
+				return false;
+			}
+			return locationManager.isLocationEnabled();
+		}else{
+			const mode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE,
+                Settings.Secure.LOCATION_MODE_OFF);
+			return (mode != Settings.Secure.LOCATION_MODE_OFF);
+		}
+	}
+	
+	public static wifiEnable(context: Context): boolean {
+		let wifiManager = context.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager;
+		let wifiState = wifiManager.getWifiState();
+		return wifiState == WifiManager.WIFI_STATE_ENABLED;
+	}
+	
+	
+	public static deviceOrientation(context: Context): string {
+		let configuration = context.getResources().getConfiguration();
+		let orientation = configuration.orientation;
+	
+		if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+			return "portrait";
+		} else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+			return "landscape";
+		}
+		return "";
+	}
+}

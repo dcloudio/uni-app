@@ -1,0 +1,113 @@
+import { getEnv } from '@dcloudio/uni-runtime';
+import { fileIo } from '@kit.CoreFileKit';
+import { RecorderManagerOnStopResult, RecorderManagerErrorCode, IRecorderManagerFail } from '../interface.uts';
+
+export type RecorderState = 'pause' | 'resume' | 'start' | 'stop' | 'error' | 'frameRecorded' | 'interruptionBegin' | 'interruptionEnd'
+
+type ErrorCb = (result: IRecorderManagerFail) => void
+interface Callbacks {
+  pause?: Function | null
+  resume?: Function | null
+  start?: Function | null
+  stop?: Function | null
+  error?: ErrorCb | null
+  frameRecorded?: Function | null
+  interruptionBegin?: Function | null
+  interruptionEnd?: Function | null
+}
+
+const callbacks: Callbacks = {
+  pause: null,
+  resume: null,
+  start: null,
+  stop: null,
+  error: null,
+  frameRecorded: null,
+  interruptionBegin: null,
+  interruptionEnd: null
+}
+
+export function setRecordStateCallback(state: RecorderState, cb: Function | ErrorCb | null = null) {
+  switch (state) {
+    case 'pause':
+      callbacks.pause = cb
+      break
+    case 'resume':
+      callbacks.resume = cb
+      break
+    case 'start':
+      callbacks.start = cb
+      break
+    case 'stop':
+      callbacks.stop = cb
+      break
+    case 'error':
+      callbacks.error = cb as ErrorCb
+      break
+    case 'frameRecorded':
+      callbacks.frameRecorded = cb
+      break
+    case 'interruptionBegin':
+      callbacks.interruptionBegin = cb
+      break
+    case 'interruptionEnd':
+      callbacks.interruptionEnd = cb
+      break
+  }
+}
+export function deleteRecordStateCallback(state: RecorderState) {
+  setRecordStateCallback(state)
+}
+
+export interface StateChangeRes extends RecorderManagerOnStopResult {
+  errMsg?: string
+  frameBuffer?: ArrayBuffer
+  isLastFrame?: boolean
+  doNotAskAgain?: boolean
+}
+
+export function onRecorderStateChange(state: RecorderState, res?: StateChangeRes | IRecorderManagerFail): void {
+  switch (state) {
+    case 'pause':
+      return callbacks.pause?.(res)
+    case 'resume':
+      return callbacks.resume?.(res)
+    case 'start':
+      return callbacks.start?.(res)
+    case 'stop':
+      return callbacks.stop?.(res)
+    case 'error':
+      return callbacks.error?.(res as IRecorderManagerFail)
+    case 'frameRecorded':
+      return callbacks.frameRecorded?.(res)
+    case 'interruptionBegin':
+      return callbacks.interruptionBegin?.(res)
+    case 'interruptionEnd':
+      return callbacks.interruptionEnd?.(res)
+  }
+}
+
+export function createFile(supportFormats: string[], format: string, defaultExt: string) {
+  const TEMP_PATH = getEnv().TEMP_PATH as string
+  const filePath = `${TEMP_PATH}/uni-recorder/`
+  if (!fileIo.accessSync(filePath)) {
+    fileIo.mkdirSync(filePath, true)
+  }
+  const fileName = `${Date.now()}.${supportFormats.includes(format ?? '') ? format?.toLocaleLowerCase() : defaultExt}`
+  const file: fileIo.File = fileIo.openSync(`${filePath}${fileName}`, fileIo.OpenMode.READ_WRITE | fileIo.OpenMode.CREATE);
+  return file
+}
+
+export function transformErrorCode(errCode: number): RecorderManagerErrorCode {
+  switch (errCode) {
+    case 201:
+      return 1107601
+    case 401:
+      return 1107606
+    case 5400106:
+      return 1107605
+    case 5400107:
+      return 1107607
+  }
+  return errCode as RecorderManagerErrorCode
+}

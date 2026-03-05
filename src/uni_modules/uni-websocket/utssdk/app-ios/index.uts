@@ -1,0 +1,31 @@
+import { ConnectSocket, ConnectSocketOptions, SocketTask, SendSocketMessage, SendSocketMessageOptions, CloseSocket, CloseSocketOptions, OnSocketOpen, OnSocketOpenCallback, OnSocketError, OnSocketErrorCallback, OnSocketMessage, OnSocketMessageCallback, OnSocketClose, OnSocketCloseCallback } from "../interface";
+import { WebSocketManager } from "./websocket/WebSocketManager"
+
+
+export const connectSocket : ConnectSocket = (options : ConnectSocketOptions) : SocketTask => {
+	return WebSocketManager.getInstance().connectSocket(options);
+}
+
+export const sendSocketMessage : SendSocketMessage = (options : SendSocketMessageOptions) : void => {
+	return WebSocketManager.getInstance().sendSocketMessage(options);
+}
+
+export const closeSocket : CloseSocket = (options : CloseSocketOptions) : void => {
+	return WebSocketManager.getInstance().closeSocket(options);
+}
+
+export function onSocketOpen(@escaping callback : OnSocketOpenCallback) : void {
+	return WebSocketManager.getInstance().onSocketOpen(callback);
+}
+
+export function onSocketMessage(@escaping callback : OnSocketMessageCallback) : void {
+	return WebSocketManager.getInstance().onSocketMessage(callback);
+}
+
+export function onSocketClose(@escaping callback : OnSocketCloseCallback) : void {
+	return WebSocketManager.getInstance().onSocketClose(callback);
+}
+
+export function onSocketError(@escaping callback : OnSocketErrorCallback) : void {
+	return WebSocketManager.getInstance().onSocketError(callback);
+}

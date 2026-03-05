@@ -1,0 +1,164 @@
+import {
+	UniLocationProvider,
+	GetLocation,
+	GetLocationOptions,
+	GetLocationFailImpl,
+	StartLocationUpdateOptions,
+	StartLocationUpdate,
+	StopLocationUpdate,
+	StopLocationUpdateOptions,
+	OnLocationChange,
+	OnLocationChangeCallback,
+	OffLocationChange,
+	OnLocationChangeResult,
+	StartLocationUpdateBackgroundOptions,
+	StartLocationUpdateBackground,
+	OffLocationChangeError,
+	OnLocationChangeError,
+	OnLocationChangeErrorCallback
+} from "../interface.uts"
+import { UTSiOS } from "DCloudUTSFoundation";
+
+
+
+const locationChangeCallback : Map<number, OnLocationChangeCallback> = new Map()
+let locationChangeIndex = 0
+let locationProvider : UniLocationProvider | null = null
+let selectedProvider : string | null = null
+
+export const getLocation : GetLocation = function (options : GetLocationOptions) {
+	let providerName = 'system'
+	if (options.provider != null) {
+		providerName = options.provider!
+	} else {
+		if (options.type == 'wgs84') {//默认使用系统定位
+			providerName = 'system'
+		} else if (options.type == 'gcj02') {//默认使用腾讯定位
+			providerName = 'tencent'
+		}
+	}
+	const provider = UTSiOS.getProvider<UniLocationProvider>("location", providerName, UniLocationProvider.self)
+	if (provider != null) {
+		provider!.getLocation(options)
+	} else {
+		const err = new GetLocationFailImpl(1505604);
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+}
+
+
+export const startLocationUpdate : StartLocationUpdate = function (options : StartLocationUpdateOptions) {
+	let providerName = 'system'
+	if (options.provider != null) {
+		providerName = options.provider!
+	} else {
+		if (options.type == 'wgs84') {//默认使用系统定位
+			providerName = 'system'
+		} else if (options.type == 'gcj02') {//默认使用腾讯定位
+			providerName = 'tencent'
+		}
+	}
+
+	if (selectedProvider != null && selectedProvider! != providerName) {
+		const err = new GetLocationFailImpl(1505608)
+		options.fail?.(err)
+		options.complete?.(err)
+		return
+	}
+	selectedProvider = providerName
+
+	locationProvider = UTSiOS.getProvider<UniLocationProvider>("location", providerName, UniLocationProvider.self)
+	if (locationProvider != null) {
+		locationProvider!.onLocationChange(registerLocationChange)
+		locationProvider!.onLocationChangeError(registerLocationChangeError)
+		locationProvider!.startLocationUpdate(options)
+	} else {
+		const err = new GetLocationFailImpl(1505604)
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+}
+
+export const stopLocationUpdate : StopLocationUpdate = function (options : StopLocationUpdateOptions) {
+	selectedProvider = null;
+	locationProvider?.stopLocationUpdate(options)
+	options.success?.({})
+	options.complete?.({})
+}
+
+export const onLocationChange : OnLocationChange = function (listener : OnLocationChangeCallback) : number {
+	locationChangeIndex++
+	locationChangeCallback[locationChangeIndex] = listener
+	return locationChangeIndex
+}
+
+export const offLocationChange : OffLocationChange = function (listener ?: number | OnLocationChangeCallback | null) {
+	if (listener != null && typeof listener! == "number") {
+		const id = listener as number
+		locationChangeCallback.delete(id)
+	} else {
+		locationChangeCallback.clear()
+	}
+}
+
+export const startLocationUpdateBackground : StartLocationUpdateBackground = function (options : StartLocationUpdateBackgroundOptions) {
+	let providerName = 'system'
+	if (options.provider != null) {
+		providerName = options.provider!
+	} else {
+		if (options.type == 'wgs84') {//默认使用系统定位
+			providerName = 'system'
+		} else if (options.type == 'gcj02') {//默认使用腾讯定位
+			providerName = 'tencent'
+		}
+	}
+
+	if (selectedProvider != null && selectedProvider! != providerName) {
+		const err = new GetLocationFailImpl(1505608)
+		options.fail?.(err)
+		options.complete?.(err)
+		return
+	}
+	selectedProvider = providerName
+
+	locationProvider = UTSiOS.getProvider<UniLocationProvider>("location", providerName, UniLocationProvider.self)
+	if (locationProvider != null) {
+		locationProvider!.onLocationChange(registerLocationChange)
+		locationProvider!.onLocationChangeError(registerLocationChangeError)
+		locationProvider!.startLocationUpdateBackground(options)
+	} else {
+		const err = new GetLocationFailImpl(1505604)
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+}
+
+let locationChangeErrorIndex = 0
+const locationChangeErrorCallback : Map<number, OnLocationChangeErrorCallback> = new Map()
+export const onLocationChangeError : OnLocationChangeError = function (listener : OnLocationChangeErrorCallback) : number {
+	locationChangeErrorIndex++;
+	locationChangeErrorCallback[locationChangeErrorIndex] = listener
+	return locationChangeErrorIndex
+}
+
+export const offLocationChangeError : OffLocationChangeError = function (listener ?: number | OnLocationChangeErrorCallback | null) {
+	if (listener != null && typeof listener! == "number") {
+		const id = listener as number
+		locationChangeErrorCallback.delete(id)
+	} else {
+		locationChangeErrorCallback.clear()
+	}
+}
+
+const registerLocationChange = function (e : OnLocationChangeResult) {
+	locationChangeCallback.forEach((value : OnLocationChangeCallback, key : number) => {
+		value(e)
+	})
+}
+
+const registerLocationChangeError = function (e : UniError) {
+	locationChangeErrorCallback.forEach((value : OnLocationChangeErrorCallback, key : number) => {
+		value(e)
+	})
+}

@@ -1,0 +1,89 @@
+import {
+	OpenDocumentSuccess,
+	OpenDocumentOptions,
+	OpenDocument
+} from '../interface.uts'
+
+import { OpenDocumentErrorImpl } from '../unierror.uts'
+
+import { QLPreviewController, QLPreviewControllerDataSource, QLPreviewItem, QLPreviewControllerDelegate } from 'QuickLook'
+import { FileManager, URL } from 'Foundation'
+import { Int } from 'Swift';
+
+
+export const openDocument : OpenDocument = function (options ?: OpenDocumentOptions | null) {
+	if (options != null) {
+		DocumentPreviewer.shared.presentDocument(options!)
+	}
+}
+
+class UniPreviewItem implements QLPreviewItem {
+	previewItemURL ?: URL
+	constructor(url : URL) {
+		this.previewItemURL = url
+	}
+}
+
+class DocumentPreviewer implements QLPreviewControllerDataSource, QLPreviewControllerDelegate {
+	static shared = new DocumentPreviewer()
+	private options ?: OpenDocumentOptions
+	private fileUrl ?: URL = null
+	private innerPreviewController ?: QLPreviewController
+
+	presentDocument(options : OpenDocumentOptions) {
+		DocumentPreviewer.shared.options = options
+		let filPath: string = options.filePath
+		if (filPath.startsWith('http') == false) {
+			filPath = UTSiOS.convert2AbsFullPath(filPath)
+		}
+		let tmpUrl = new URL(fileURLWithPath = filPath)
+		this.fileUrl = tmpUrl
+		if (tmpUrl.isFileURL == false) {
+			const err = new OpenDocumentErrorImpl(1300601);
+			DocumentPreviewer.shared.options?.fail?.(err)
+			DocumentPreviewer.shared.options?.complete?.(err)
+			return
+		}
+
+		const isExist = FileManager.default.fileExists(atPath = tmpUrl.path)
+		if (isExist == false) {
+			const err = new OpenDocumentErrorImpl(1300602);
+			DocumentPreviewer.shared.options?.fail?.(err)
+			DocumentPreviewer.shared.options?.complete?.(err)
+			return
+		}
+
+		this.innerPreviewController = new QLPreviewController()
+		this.innerPreviewController!.dataSource = this
+		this.innerPreviewController!.delegate = this
+
+		if (this.innerPreviewController != null) {
+			UTSiOS.getCurrentViewController().present(this.innerPreviewController!, animated = false, completion = () : void => {
+				this.innerPreviewController = null
+			})
+		}
+
+		const res = new OpenDocumentSuccess();
+		DocumentPreviewer.shared.options?.success?.(res)
+		DocumentPreviewer.shared.options?.complete?.(res)
+	}
+
+	numberOfPreviewItems(@argumentLabel("in") controller : QLPreviewController) : Int {
+		return DocumentPreviewer.shared.fileUrl != null ? 1 : 0
+	}
+
+	previewController(controller : QLPreviewController, @argumentLabel("") previewItemAt : Int) : QLPreviewItem {
+		return new UniPreviewItem(DocumentPreviewer.shared.fileUrl!)
+	}
+
+	previewControllerDidDismiss(controller : QLPreviewController) {
+		DispatchQueue.main.asyncAfter(deadline = DispatchTime.now() + 0.01, execute = () : void => {
+			if (this.innerPreviewController != null) {
+				UTSiOS.getCurrentViewController().present(this.innerPreviewController!, animated = false, completion = () : void => {
+					this.innerPreviewController = null
+				})
+			}
+		})
+	}
+
+}

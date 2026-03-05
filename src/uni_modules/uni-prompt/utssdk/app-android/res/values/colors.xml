@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!--primary color-->
+    <color name="uni_app_uni_prompt_white">#FFFFFF</color>
+    <color name="uni_app_uni_prompt_light_gray">#efefef</color>
+	
+	<color name="uni_app_uni_prompt_light_bg">#DEDEDE</color>
+	<color name="uni_app_uni_prompt_light_bg_main">#FFFFFF</color>
+	
+	<color name="uni_app_uni_prompt_night_bg">#1C1C1C</color>
+	<color name="uni_app_uni_prompt_night_bg_main">#272727</color>
+	
+	
+	<!--title-->
+	<color name="uni_app_uni_prompt_dialog_title_text">#000000</color>
+	<color name="uni_app_uni_prompt_dialog_title_text_night">#CFCFCF</color>
+	
+	<!--sub title-->
+	<color name="uni_app_uni_prompt_dialog_sub_text">#747474</color>
+	<color name="uni_app_uni_prompt_dialog_sub_text_night">#909090</color>
+	
+	<!--input background-->
+	<color name="uni_app_uni_prompt_dialog_edit_text_bg">#F6F6F6</color>
+	<color name="uni_app_uni_prompt_dialog_edit_text_bg_night">#3d3d3d</color>
+	
+	<!--input text color-->
+	<color name="uni_app_uni_prompt_dialog_edit_text_color">#000000</color>
+	<color name="uni_app_uni_prompt_dialog_edit_text_color_night">#CFCFCF</color>
+	<!--input test hint-->
+	<color name="uni_app_uni_prompt_dialog_edit_text_hint">#808080</color>
+	<color name="uni_app_uni_prompt_dialog_edit_text_hint_night">#CFCFCF</color>
+	<!--row line-->
+	<color name="uni_app_uni_prompt_night_bg_hair_line">#E0E0E0</color>
+	<color name="uni_app_uni_prompt_night_bg_hair_line_night">#303030</color>
+	<!--column line-->
+	<color name="uni_app_uni_prompt_night_bg_split">#E3E3E3</color>
+	<color name="uni_app_uni_prompt_night_bg_split_night">#303030</color>
+	<!--sure button text-->
+	<color name="uni_app_uni_prompt_button_sure_text_color">#4A5E86</color>
+	<color name="uni_app_uni_prompt_button_sure_text_color_night">#7388a2</color>
+	<!--cancel button text-->
+	<color name="uni_app_uni_prompt_button_cancel_text_color">#000000</color>
+	<color name="uni_app_uni_prompt_button_cancel_text_color_night">#a5a5a5</color>
+
+
+</resources>

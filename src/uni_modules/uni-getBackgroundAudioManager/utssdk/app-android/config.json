@@ -1,0 +1,11 @@
+{
+	"dependencies": [
+		"com.google.android.exoplayer:exoplayer-core:2.18.5",
+		"com.google.android.exoplayer:exoplayer-hls:2.18.5",
+		"com.google.android.exoplayer:exoplayer-rtsp:2.18.5",
+		"com.google.android.exoplayer:exoplayer-dash:2.18.5",
+		"com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.5",
+		"androidx.media:media:1.4.3",
+		"com.github.bumptech.glide:glide:4.9.0"
+	]
+}

@@ -1,0 +1,91 @@
+import {
+  CanvasContext,
+  CreateCanvasContextAsync,
+  CreateCanvasContextAsyncOptions,
+  RequestAnimationFrameCallback,
+  CreateCanvasContextAsyncSuccessCallback,
+  CreateCanvasContextAsyncFailCallback,
+  CreateCanvasContextAsyncCompleteCallback,
+} from '../interface.uts'
+
+import {
+  UniNativeCanvas,
+  UniCanvasElement,
+  UniCanvasRenderingContext2D,
+} from "./canvas.uts"
+
+class UniCanvasContext implements CanvasContext {
+  _element : UniCanvasElement
+  _context : UniCanvasRenderingContext2D
+
+  constructor(element : UniCanvasElement) {
+    this._element = element
+    this._context = this._element.getContext('2d')!
+  }
+
+  getContext(type : string) : UniCanvasRenderingContext2D | null {
+    return this._element.getContext(type)
+  }
+
+  toDataURL() : string;
+  toDataURL(type : string) : string;
+  toDataURL(type ?: string, encoderOptions ?: any) : string {
+    return this._element.toDataURL(type, encoderOptions)
+  }
+
+  createImage() : Image {
+    return new Image()
+  }
+
+  createPath2D() : Path2D {
+    return new Path2D()
+  }
+
+  requestAnimationFrame(callback : RequestAnimationFrameCallback) : number {
+    return requestAnimationFrame(callback)
+  }
+
+  cancelAnimationFrame(taskId : number) {
+    cancelAnimationFrame(taskId)
+  }
+}
+
+export const createCanvasContextAsync : CreateCanvasContextAsync =
+  function (options : CreateCanvasContextAsyncOptions) {
+    // TODO
+    nextTick(() => {
+      let element: ESObject = uni.getElementById(options.id)
+      if (element) {
+        const canvasElement = element as unknown as UniCanvasElement
+        options.success?.(new UniCanvasContext(canvasElement))
+      } else {
+        const uniError = new UniError('uni-createCanvasContextAsync', -1, 'canvas id invalid.')
+        options.fail?.(uniError)
+      }
+      options.complete?.()
+    })
+    // uni.createSelectorQuery().in(options.component).select('#' + options.id).fields({
+    //     node: true
+    // } as NodeField, (ret: any) => {
+    //     const node = (ret as NodeInfo).node as UniCanvasElement
+    //     if (node != null) {
+    //         options.success?.(new UniCanvasContext(node))
+    //     } else {
+    //         const uniError = new UniError('uni-createCanvasContextAsync', -1, 'canvas id invalid.')
+    //         options.fail?.(uniError)
+    //     }
+    //     options.complete?.()
+    // }).exec()
+  }
+
+export {
+  UniNativeCanvas,
+  UniCanvasElement,
+  CanvasContext,
+  CreateCanvasContextAsync,
+  CreateCanvasContextAsyncOptions,
+  RequestAnimationFrameCallback,
+  CreateCanvasContextAsyncSuccessCallback,
+  CreateCanvasContextAsyncFailCallback,
+  CreateCanvasContextAsyncCompleteCallback,
+}

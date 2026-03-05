@@ -1,0 +1,20 @@
+
+
+/**
+ * 弱引用的包装类
+ */
+export class WeakRef<T extends Any>{
+	
+	@UTSiOS.keyword("weak")
+	private value: T | null = null
+	
+	constructor(value: T | null){
+		this.value = value;
+	}
+	
+	
+	public get(): T | null{
+		return this.value
+	}
+}
+

@@ -1,0 +1,49 @@
+import { image } from '@kit.ImageKit';
+
+/**
+ * packing 二分方式循环压缩
+ * @param sourcePixelMap：原始待压缩图片的PixelMap对象
+ * @param maxCompressedImageByte：指定图片的压缩目标大小，单位 byte
+ * @returns ArrayBuffer：返回最终压缩后的图片 ArrayBuffer
+ */
+export async function compressedImage(sourcePixelMap: image.PixelMap, maxCompressedImageByte: number, imageQuality: number = 0): Promise<ArrayBuffer> {
+  let compressedImageData: ArrayBuffer = new ArrayBuffer(0)
+  const packingArray: number[] = [];
+  const DICHOTOMY_ACCURACY = 2;
+  for (let i = 0; i <= 100; i += DICHOTOMY_ACCURACY) {
+    packingArray.push(i);
+  }
+  let left = 0;
+  let right = packingArray.length - 1;
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    imageQuality = packingArray[mid];
+    compressedImageData = await packing(sourcePixelMap, imageQuality);
+    if (compressedImageData.byteLength <= maxCompressedImageByte) {
+      left = mid + 1;
+      if (mid === packingArray.length - 1) {
+        break;
+      }
+      const compressedImageData2 = await packing(sourcePixelMap, packingArray[mid + 1]);
+      if (compressedImageData2.byteLength > maxCompressedImageByte) {
+        break;
+      }
+    } else {
+      right = mid - 1;
+    }
+  }
+  return compressedImageData;
+}
+
+/**
+ * packing压缩
+ * @param sourcePixelMap：原始待压缩图片的PixelMap
+ * @param imageQuality：图片质量参数
+ * @returns data：返回压缩后的图片数据
+ */
+async function packing(sourcePixelMap: image.PixelMap, imageQuality: number): Promise<ArrayBuffer> {
+  const imagePackerApi = image.createImagePacker();
+  const packOpts: image.PackingOption = { format: "image/jpeg", quality: imageQuality };
+  const data: ArrayBuffer = await imagePackerApi.packing(sourcePixelMap, packOpts);
+  return data;
+}

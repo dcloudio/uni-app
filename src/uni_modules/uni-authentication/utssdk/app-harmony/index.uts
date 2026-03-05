@@ -1,0 +1,275 @@
+import { BusinessError } from '@kit.BasicServicesKit';
+import { userAuth } from '@kit.UserAuthenticationKit';
+import { promptAction } from '@kit.ArkUI';
+import {
+    StartSoterAuthentication, StartSoterAuthenticationOptions, StartSoterAuthenticationSuccess, SoterAuthMode,
+    CheckIsSupportSoterAuthentication, CheckIsSupportSoterAuthenticationOptions, CheckIsSupportSoterAuthenticationSuccess,
+    CheckIsSoterEnrolledInDevice, CheckIsSoterEnrolledInDeviceOptions, CheckIsSoterEnrolledInDeviceSuccess
+} from '../interface.uts';
+import {
+    API_START_SOTER_AUTHENTICATION, StartSoterAuthenticationApiOptions, StartSoterAuthenticationApiProtocols,
+    API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE, CheckIsSoterEnrolledInDeviceApiOptions, CheckIsSoterEnrolledInDeviceProtocols,
+    API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION
+} from '../protocol.uts';
+
+function getErrorMessage(code: number): string {
+    switch (code) {
+        case 201:
+            return "权限认证失败";
+        case 401:
+            return "参数不正确。可能的一个原因: 强制参数未指定";
+        case userAuth.UserAuthResultCode.FAIL:
+            return "认证失败";
+        case userAuth.UserAuthResultCode.GENERAL_ERROR:
+            return "操作通用错误";
+        case userAuth.UserAuthResultCode.CANCELED:
+            return "操作取消";
+        case userAuth.UserAuthResultCode.TIMEOUT:
+            return "操作超时";
+        case userAuth.UserAuthResultCode.TYPE_NOT_SUPPORT:
+            return "不支持的认证类型";
+        case userAuth.UserAuthResultCode.TRUST_LEVEL_NOT_SUPPORT:
+            return "不支持的认证等级";
+        case userAuth.UserAuthResultCode.BUSY:
+            return "忙碌状态";
+        case userAuth.UserAuthResultCode.LOCKED:
+            return "认证器已锁定";
+        case userAuth.UserAuthResultCode.NOT_ENROLLED:
+            return "用户未录入认证信息";
+        case userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET:
+            return "切换到自定义身份验证过程";
+        case 12500013:
+            return "系统锁屏密码过期";
+        default:
+            return '';
+    }
+}
+
+function getUniErrMsg(code: number): number {
+    switch (code) {
+        case 201:
+            return 90002;
+        case 401:
+            return 90004;
+        case userAuth.UserAuthResultCode.FAIL:
+            return 90009;
+        case userAuth.UserAuthResultCode.GENERAL_ERROR:
+            return 90007;
+        case userAuth.UserAuthResultCode.CANCELED:
+            return 90008;
+        case userAuth.UserAuthResultCode.TIMEOUT:
+            return 90007;
+        case userAuth.UserAuthResultCode.TYPE_NOT_SUPPORT:
+            return 90003;
+        case userAuth.UserAuthResultCode.TRUST_LEVEL_NOT_SUPPORT:
+            return 90003;
+        case userAuth.UserAuthResultCode.BUSY:
+            return 90010;
+        case userAuth.UserAuthResultCode.LOCKED:
+            return 90010;
+        case userAuth.UserAuthResultCode.NOT_ENROLLED:
+            return 90011;
+        case userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET:
+            return userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET;
+        case 12500013:
+            return 12500013;
+        default:
+            return -1;
+    }
+}
+
+function toUint8Arr(str: string) {
+    const buffer: number[] = [];
+    for (let i of str) {
+        const _code: number = i.charCodeAt(0);
+        if (_code < 0x80) {
+            buffer.push(_code);
+        } else if (_code < 0x800) {
+            buffer.push(0xc0 + (_code >> 6));
+            buffer.push(0x80 + (_code & 0x3f));
+        } else if (_code < 0x10000) {
+            buffer.push(0xe0 + (_code >> 12));
+            buffer.push(0x80 + (_code >> 6 & 0x3f));
+            buffer.push(0x80 + (_code & 0x3f));
+        }
+    }
+    return Uint8Array.from(buffer);
+}
+
+export const startSoterAuthentication: StartSoterAuthentication = defineAsyncApi<StartSoterAuthenticationOptions, StartSoterAuthenticationSuccess>(
+    API_START_SOTER_AUTHENTICATION,
+    (args: StartSoterAuthenticationOptions, executor: ApiExecutor<StartSoterAuthenticationSuccess>) => {
+        const authType: userAuth.UserAuthType[] = []
+        args.requestAuthModes.forEach((item) => {
+            if (item === 'fingerPrint') {
+                authType.push(userAuth.UserAuthType.FINGERPRINT)
+            } else if (item === 'facial') {
+                authType.push(userAuth.UserAuthType.FACE)
+            }
+        })
+
+        // uni的字符串challenge转换成鸿蒙的数组challenge
+        const challengeArr = toUint8Arr(args.challenge ?? '')
+        const authContent = args.authContent ?? ''
+        try {
+            const auth = userAuth.getUserAuthInstance(
+                {
+                    challenge: challengeArr,
+                    authType,
+                    authTrustLevel: userAuth.AuthTrustLevel.ATL1
+                } as userAuth.AuthParam,
+                {
+                    title: authContent
+                } as userAuth.WidgetParam
+            );
+
+            auth.on("result", {
+                onResult: (result: userAuth.UserAuthResult) => {
+                    if (result.result === userAuth.UserAuthResultCode.SUCCESS) {
+                        executor.resolve({
+                            errCode: 0,
+                            authMode: result.authType === userAuth.UserAuthType.FINGERPRINT ? 'fingerPrint' : 'facial'
+                        } as StartSoterAuthenticationSuccess);
+                    } else {
+                        const errMsg = getErrorMessage(result.result)
+                        const errCode = getUniErrMsg(result.result)
+                        executor.reject(errMsg, { errCode } as ApiError);
+                    }
+                }
+            } as userAuth.IAuthCallback);
+
+            if (authContent) {
+                promptAction.showToast({
+                    message: authContent
+                } as promptAction.ShowToastOptions)
+            }
+            auth.start();
+        } catch (error) {
+            const code = (error as BusinessError).code
+            executor.reject(getErrorMessage(code), { errCode: getUniErrMsg(code) } as ApiError);
+        }
+    },
+    StartSoterAuthenticationApiProtocols,
+    StartSoterAuthenticationApiOptions
+) as StartSoterAuthentication
+
+function fingerPrintAvailable() {
+    try {
+        userAuth.getAvailableStatus(userAuth.UserAuthType.FINGERPRINT, userAuth.AuthTrustLevel.ATL1);
+        return true
+    } catch (error) {
+        if ([userAuth.UserAuthResultCode.NOT_ENROLLED, userAuth.UserAuthResultCode.PIN_EXPIRED].includes((error as BusinessError).code)) {
+            return true
+        }
+        return false
+    }
+}
+
+function faceAvailable() {
+    try {
+        userAuth.getAvailableStatus(userAuth.UserAuthType.FACE, userAuth.AuthTrustLevel.ATL1);
+        return true
+    } catch (error) {
+        if ([userAuth.UserAuthResultCode.NOT_ENROLLED, userAuth.UserAuthResultCode.PIN_EXPIRED].includes((error as BusinessError).code)) {
+            return true
+        }
+        return false
+    }
+}
+
+const PERMISSIONS = ['ohos.permission.ACCESS_BIOMETRIC']
+export const checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication = defineAsyncApi<CheckIsSupportSoterAuthenticationOptions, CheckIsSupportSoterAuthenticationSuccess>(
+    API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION,
+    (args: CheckIsSupportSoterAuthenticationOptions, executor: ApiExecutor<CheckIsSupportSoterAuthenticationSuccess>) => {
+        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean) => {
+            if (allRight) {
+                try {
+                    const supportMode: SoterAuthMode[] = []
+                    if (fingerPrintAvailable()) supportMode.push('fingerPrint')
+                    if (faceAvailable()) supportMode.push('facial')
+                    executor.resolve({ supportMode, errMsg: '' } as CheckIsSupportSoterAuthenticationSuccess)
+                } catch (error) {
+                    const code = (error as BusinessError).code
+                    executor.reject(getErrorMessage(code), { errCode: getUniErrMsg(code) } as ApiError);
+                }
+            } else {
+                executor.reject(getErrorMessage(201))
+            }
+        }, () => {
+            executor.reject(getErrorMessage(201))
+        })
+    }
+) as CheckIsSupportSoterAuthentication
+
+
+
+function getFingerPrintEnrolledState() {
+    userAuth.getEnrolledState(userAuth.UserAuthType.FINGERPRINT);
+    return true
+}
+
+function getFaceEnrolledState() {
+    userAuth.getEnrolledState(userAuth.UserAuthType.FACE);
+    return true
+}
+
+function harmonyCheckIsSoterEnrolledInDevice(checkAuthMode: SoterAuthMode): boolean {
+    if (checkAuthMode === 'fingerPrint') {
+        return getFingerPrintEnrolledState()
+    } else if (checkAuthMode === 'facial') {
+        return getFaceEnrolledState()
+    }
+    return false
+}
+export const checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice = defineAsyncApi<CheckIsSoterEnrolledInDeviceOptions, CheckIsSoterEnrolledInDeviceSuccess>(
+    API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE,
+    (args: CheckIsSoterEnrolledInDeviceOptions, executor: ApiExecutor<CheckIsSoterEnrolledInDeviceSuccess>) => {
+        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean) => {
+            if (allRight) {
+                try {
+                    const isEnrolled = harmonyCheckIsSoterEnrolledInDevice(args.checkAuthMode)
+                    executor.resolve({
+                        isEnrolled,
+                        errMsg: ''
+                    } as CheckIsSoterEnrolledInDeviceSuccess)
+                } catch (error) {
+                    const code = (error as BusinessError).code
+                    executor.reject(getErrorMessage(code), { errCode: getUniErrMsg(code) } as ApiError);
+                }
+            } else {
+                executor.reject(getErrorMessage(201))
+            }
+        }, () => {
+            executor.reject(getErrorMessage(201))
+        })
+    },
+    CheckIsSoterEnrolledInDeviceProtocols,
+    CheckIsSoterEnrolledInDeviceApiOptions
+) as CheckIsSoterEnrolledInDevice
+export {
+    CheckIsSoterEnrolledInDevice,
+    CheckIsSoterEnrolledInDeviceComplete,
+    CheckIsSoterEnrolledInDeviceCompleteCallback,
+    CheckIsSoterEnrolledInDeviceFail,
+    CheckIsSoterEnrolledInDeviceFailCallback,
+    CheckIsSoterEnrolledInDeviceOptions,
+    CheckIsSoterEnrolledInDeviceSuccess,
+    CheckIsSoterEnrolledInDeviceSuccessCallback,
+    CheckIsSupportSoterAuthentication,
+    CheckIsSupportSoterAuthenticationComplete,
+    CheckIsSupportSoterAuthenticationCompleteCallback,
+    CheckIsSupportSoterAuthenticationFail,
+    CheckIsSupportSoterAuthenticationFailCallback,
+    CheckIsSupportSoterAuthenticationOptions,
+    CheckIsSupportSoterAuthenticationSuccess,
+    CheckIsSupportSoterAuthenticationSuccessCallback,
+    SoterAuthMode,
+    StartSoterAuthentication,
+    StartSoterAuthenticationComplete,
+    StartSoterAuthenticationCompleteCallback,
+    StartSoterAuthenticationFail,
+    StartSoterAuthenticationFailCallback,
+    StartSoterAuthenticationOptions,
+    StartSoterAuthenticationSuccess,
+    StartSoterAuthenticationSuccessCallback
+} from '../interface.uts';

@@ -1,0 +1,191 @@
+type UniSwitchChangeEventDetail = {
+  value : boolean
+}
+
+export class UniSwitchChangeEvent extends UniCustomEvent<UniSwitchChangeEventDetail> {
+  constructor(value : boolean) {
+    super('change', { value } as UniSwitchChangeEventDetail)
+  }
+}
+
+export class UniSwitchElement extends UniFormControlElement<boolean> implements UniCustomElement {
+  static get observedAttributes() : Array<string> {
+    return [
+      'checked',
+      'disabled',
+      'value',
+      'background-color',
+      'active-background-color',
+      'fore-color',
+      'active-fore-color',
+      'color'
+    ];
+  }
+
+  private switchThumb! : UniElement
+  private _initialChecked = false
+  private _initialCheckedFlag = false
+  private _checked = false
+
+  constructor() {
+    super()
+
+    const switchTrackStyle = this.style
+    switchTrackStyle.setProperty('borderStyle', 'solid')
+    switchTrackStyle.setProperty('borderWidth', '2px')
+    switchTrackStyle.setProperty('borderRadius', '16px')
+    switchTrackStyle.setProperty('width', '52px')
+    switchTrackStyle.setProperty('height', '32px')
+    switchTrackStyle.setProperty('transitionDuration', '0.1s')
+    switchTrackStyle.setProperty('transitionProperty', 'backgroundColor')
+
+    const switchThumb = this.uniPage.createElement('view')
+    const switchThumbStyle = switchThumb.style
+    switchThumbStyle.setProperty('width', '28px')
+    switchThumbStyle.setProperty('height', '28px')
+    switchThumbStyle.setProperty('borderRadius', '14px')
+
+    this.switchThumb = switchThumb
+
+    this.addEventListener('click', (e: UniPointerEvent) => {
+      "[weak self]"
+      e.stopPropagation()
+      if (this.disabled) {
+        return
+      }
+      this.checked = !this.checked
+      this.dispatchEvent(new UniSwitchChangeEvent(this.checked))
+    })
+  }
+
+  // form
+  override get name() : string {
+    return this.getAttributeValue('name', '')
+  }
+  override set name(value : string) {
+    this.setAttribute('name', value)
+  }
+
+  override get value() : boolean {
+    return this._checked
+  }
+  override set value(value: boolean) {
+    this._checked = value
+  }
+
+  override reset() {
+    this.checked = this._initialChecked
+  }
+
+  connectedCallback() {
+    // TODO 需要先设置 transform 否者会有动画效果
+    this.updateCheckStatus()
+    this.updateCheckStatusColor()
+    this.switchThumb.style.setProperty('transitionDuration', '0.3s')
+    this.switchThumb.style.setProperty('transitionProperty', 'transform')
+    this.appendChild(this.switchThumb)
+  }
+
+  disconnectedCallback() {
+    this.removeChild(this.switchThumb)
+  }
+
+  attributeChangedCallback(name : string, oldValue : any | null, newValue : any | null) {
+    switch (name) {
+      case 'checked':
+        const value = (typeof newValue == 'string' || newValue == true) ? true : false
+        if (!this._initialCheckedFlag) {
+          this._initialCheckedFlag = true
+          this._initialChecked = value
+        }
+        this.checked = value
+        break;
+      case 'disabled':
+      case 'background-color':
+      case 'active-background-color':
+      case 'fore-color':
+      case 'active-fore-color':
+      case 'color':
+        if (this.isConnected) {
+          this.updateCheckStatusColor()
+        }
+        break;
+    }
+  }
+
+  get disabled() : boolean {
+    return this.getAttribute('disabled') == 'true' ? true : false
+  }
+
+  get checked() : boolean {
+    return this._checked
+  }
+
+  set checked(value : boolean) {
+    this._checked = value
+    if (this.isConnected) {
+      this.updateCheckStatus()
+      this.updateCheckStatusColor()
+    }
+  }
+
+  get backgroundColor() : string {
+    return this.getAttributeValue('backgroundColor', '#e9e9ea')
+  }
+
+  get activeBackgroundColor() : string {
+    return this.getAttributeValue('activeBackgroundColor', this.color)
+  }
+
+  get foreColor() : string {
+    return this.getAttributeValue('foreColor', '#fff')
+  }
+
+  get activeForeColor() : string {
+    return this.getAttributeValue('activeForeColor', '#fff')
+  }
+
+  get color() : string {
+    return this.getAttributeValue('color', '#007aff')
+  }
+
+  updateCheckStatus() {
+    if (this.checked) {
+      this.switchThumb.style.setProperty('transform', 'translateX(20px)')
+    } else {
+      this.switchThumb.style.setProperty('transform', 'translateX(0px)')
+    }
+  }
+
+  updateCheckStatusColor() {
+    if (this.disabled) {
+      this.style.setProperty('opacity', '0.7')
+    } else {
+      this.style.setProperty('opacity', '1')
+    }
+
+    if (this.checked) {
+      // track
+      this.style.setProperty('backgroundColor', this.activeBackgroundColor)
+      this.style.setProperty('borderColor', this.activeBackgroundColor)
+
+      // thumb
+      this.switchThumb.style.setProperty('backgroundColor', this.activeForeColor)
+    } else {
+      // track
+      this.style.setProperty('backgroundColor', this.backgroundColor)
+      this.style.setProperty('borderColor', this.backgroundColor)
+
+      // thumb
+      this.switchThumb.style.setProperty('backgroundColor', this.foreColor)
+    }
+  }
+
+  private getAttributeValue(key : string, defaultValue : string) : string {
+    const value = this.getAttribute(key)
+    if (value != null && value!.length > 0) {
+      return value!
+    }
+    return defaultValue
+  }
+}

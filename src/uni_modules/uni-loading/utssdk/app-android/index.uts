@@ -1,0 +1,128 @@
+import ProgressBar from 'android.widget.ProgressBar';
+
+import { Color, PorterDuff } from "android.graphics"
+import { AnimatedVectorDrawable, Animatable } from "android.graphics.drawable"
+import { ContextCompat } from "androidx.core.content"
+import { R } from "io.dcloud.uts.uniLoading"
+import LinearLayout from 'android.widget.LinearLayout';
+import PageNode from "io.dcloud.uniapp.dom.node.PageNode";
+import INodeData from "io.dcloud.uniapp.interfaces.INodeData";
+
+
+export class UniLoadingElement extends UniViewElementImpl {
+
+	constructor(data : INodeData, pageNode : PageNode) {
+		super(data, pageNode);
+	}
+
+}
+
+export class NativeLoading {
+	$element : UniNativeViewElement;
+
+	constructor(element : UniNativeViewElement) {
+		//接收传递过来的UniNativeViewElement
+		this.$element = element;
+		this.bindView();
+	}
+
+	currentAnimatedVectorDrawable : AnimatedVectorDrawable | null = null
+
+	// 默认颜色
+	newColor : Int = Color.BLACK
+	// 样式
+	customBorder : string = 'normal'
+	// 图像
+	drawableId : Int = R.drawable.animated_ring_loading_normal_linear
+
+	// 容器组件
+	pbContainer : LinearLayout | null = null;
+	// 动画组件
+	progressBarView : ProgressBar | null = null;
+	mPaused : boolean = false
+
+	layoutParams : LinearLayout.LayoutParams = new LinearLayout.LayoutParams(
+		LinearLayout.LayoutParams.MATCH_PARENT,
+		LinearLayout.LayoutParams.MATCH_PARENT
+	)
+
+	bindView() {
+		//UniNativeViewEvent 绑定 安卓原生view
+		this.pbContainer = new LinearLayout(this.$element.getAndroidActivity()!)
+		this.progressBarView = new ProgressBar(this.$element.getAndroidActivity()!)
+		this.pbContainer!.addView(this.progressBarView, this.layoutParams)
+		this.$element.bindAndroidView(this.pbContainer!);
+	}
+
+	updatePaused(paused : boolean) {
+		if (this.progressBarView == null) {
+			return
+		}
+		if (this.progressBarView!.getIndeterminateDrawable() == null) {
+			return
+		}
+
+		let mutatedDrawable = this.progressBarView!.getIndeterminateDrawable()! as Animatable
+		if (paused) {
+			// android 以stop 替代 pause
+			mutatedDrawable.stop()
+		} else {
+			mutatedDrawable.start()
+		}
+		this.mPaused = paused
+	}
+
+	updateStyle(color : string | null, border : string | null) {
+		if (color != null) {
+			this.newColor = UTSAndroid.convertToNativeColor(color, Color.BLACK)
+		} else {
+			this.newColor = Color.BLACK
+		}
+		/**
+		 * thick / medium 
+		 * 忽略大小写
+		 */
+		if ("thick".equals(border, true)) {
+			this.customBorder = "bold"
+		} else {
+			this.customBorder = "normal"
+		}
+		this.updateUI()
+	}
+
+
+	@UTSAndroid.Suppress("DEPRECATION")
+	updateUI() {
+		/**
+		 * 默认值
+		 */
+		let newDrawableId = this.drawableId
+		if ("bold" == this.customBorder) {
+			newDrawableId = R.drawable.animated_ring_loading_bold_linear
+		} else {
+			// normal
+			newDrawableId = R.drawable.animated_ring_loading_normal_linear
+		}
+
+		this.progressBarView!.setIndeterminate(true)
+		this.currentAnimatedVectorDrawable = ContextCompat.getDrawable(this.$element.getAndroidActivity()!, newDrawableId)!.mutate() as AnimatedVectorDrawable
+
+		if (this.currentAnimatedVectorDrawable!.bounds == null || this.currentAnimatedVectorDrawable!.bounds!.width() < 1 || this.currentAnimatedVectorDrawable!.bounds!.height() < 1) {
+			// view 被分离回收的情况下，会导致bounds 为 缺省值，此时用 progressbar 的宽高 兜底
+			this.currentAnimatedVectorDrawable!.setBounds(0, 0, this.progressBarView!.width, this.progressBarView!.height)
+		}
+		this.progressBarView!.setIndeterminateDrawable(this.currentAnimatedVectorDrawable)
+		this.currentAnimatedVectorDrawable!.setColorFilter(this.newColor, PorterDuff.Mode.SRC_IN)
+		this.currentAnimatedVectorDrawable!.start()
+		// 这里20ms延迟模拟的是Android原生的post操作
+		setTimeout(function () {
+			this.updatePaused(this.mPaused)
+		}, 20)
+	}
+
+	destroy() {
+		//数据回收
+		this.pbContainer = null
+		this.progressBarView = null
+	}
+}

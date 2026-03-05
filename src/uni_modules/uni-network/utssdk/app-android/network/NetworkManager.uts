@@ -1,0 +1,1044 @@
+import { RequestOptions, RequestTask, UploadTask, UploadFileOptions, OnProgressUpdateResult, UploadFileProgressUpdateCallback, OnProgressDownloadResult, DownloadTask, DownloadFileOptions, DownloadFileProgressUpdateCallback, RequestTaskOnHeadersReceivedCallback, RequestTaskOnHeadersReceivedListenerResult, RequestTaskOnChunkReceivedCallback, RequestTaskOnChunkReceivedListenerResult } from '../../interface.uts'
+import OkHttpClient from 'okhttp3.OkHttpClient';
+import Protocol from 'okhttp3.Protocol';
+import TimeUnit from 'java.util.concurrent.TimeUnit';
+import Collections from 'java.util.Collections';
+import { OKDns } from './OKDns.uts';
+import Uri from 'android.net.Uri';
+import ConnectionPool from 'okhttp3.ConnectionPool';
+import Request from 'okhttp3.Request';
+import Call from 'okhttp3.Call';
+import Response from 'okhttp3.Response';
+import Headers from 'okhttp3.Headers';
+import Callback from 'okhttp3.Callback';
+import ExecutorService from 'java.util.concurrent.ExecutorService';
+import Executors from 'java.util.concurrent.Executors';
+import RequestBody from 'okhttp3.RequestBody';
+import MediaType from 'okhttp3.MediaType';
+import Dispatcher from 'okhttp3.Dispatcher';
+import IOException from 'java.io.IOException';
+import List from 'java.util.List';
+import InputStream from 'java.io.InputStream';
+import ByteArrayOutputStream from 'java.io.ByteArrayOutputStream';
+import BufferedReader from 'java.io.BufferedReader';
+import InputStreamReader from 'java.io.InputStreamReader';
+import OkHostnameVerifier from 'okhttp3.internal.tls.OkHostnameVerifier';
+import { SSLFactoryManager } from './tls/SSLFactoryManager.uts';
+import { SSLConfig } from './tls/SSLConfig.uts';
+import { CookieInterceptor } from './interceptor/CookieInterceptor.uts'
+import MultipartBody from 'okhttp3.MultipartBody';
+import JSONObject from 'com.alibaba.fastjson.JSONObject';
+import { UploadController } from './upload/UploadController.uts';
+import ArrayList from 'java.util.ArrayList';
+import { DownloadController } from './download/DownloadController.uts';
+import { NetworkUtil } from './utils/NetworkUtil.uts';
+import ByteBuffer from 'java.nio.ByteBuffer';
+import BufferedSink from 'okio.BufferedSink';
+import ForwardingSink from 'okio.ForwardingSink';
+import Sink from 'okio.Sink';
+import Buffer from 'okio.Buffer';
+import Okio from 'okio.Okio';
+import Source from 'okio.Source';
+import SocketTimeoutException from "java.net.SocketTimeoutException";
+import ReentrantLock from 'java.util.concurrent.locks.ReentrantLock';
+import Looper from "android.os.Looper";
+import Handler from 'android.os.Handler';
+// #ifdef UNI-APP-X
+import {CronetHelper} from 'io.dcloud.uniapp.common.network';
+// #endif
+
+class NetworkRequestListener {
+	public onStart() : void { }
+
+	public onProgress(progress : number) : void { }
+
+	public onComplete(option : UTSJSONObject) : void { }
+
+	public onHeadersReceived(statusCode : number, headers : MutableMap<String, MutableList<String>>) : void { }
+}
+
+interface NetworkUploadFileListener {
+	progressListeners : ArrayList<UploadFileProgressUpdateCallback>;
+	onProgress(progressUpdate : OnProgressUpdateResult) : void;
+	onComplete(option : UTSJSONObject) : void;
+}
+
+interface NetworkDownloadFileListener {
+	progressListeners : ArrayList<DownloadFileProgressUpdateCallback>;
+	onProgress(progressUpdate : OnProgressDownloadResult) : void;
+	onComplete(option : UTSJSONObject) : void;
+}
+
+
+class NetworkRequestTaskImpl implements RequestTask {
+	private call : Call | null = null;
+	private headersReceivedListenerId : number = 0
+	private chunkReceivedListenerId : number = 0
+	public headersReceivedListeners : Map<number, RequestTaskOnHeadersReceivedCallback> = new Map<number, RequestTaskOnHeadersReceivedCallback>()
+	public chunkReceivedListeners : Map<number, RequestTaskOnChunkReceivedCallback> = new Map<number, RequestTaskOnChunkReceivedCallback>()
+	constructor(call : Call | null) {
+		this.call = call;
+	}
+
+	public abort() {
+		if (this.call != null) {
+			this.call?.cancel();
+		}
+	}
+
+	public onHeadersReceived(listener : RequestTaskOnHeadersReceivedCallback) : number {
+		this.headersReceivedListenerId++;
+		this.headersReceivedListeners[this.headersReceivedListenerId] = listener
+		return this.headersReceivedListenerId
+	}
+
+	public offHeadersReceived(id : number | RequestTaskOnHeadersReceivedCallback | null) : void {
+		if (id != null) {
+			if (typeof id == "function") {
+				let findKey = -1;
+				this.headersReceivedListeners.forEach((value: RequestTaskOnHeadersReceivedCallback, key: number) => {
+					if (id == value) {
+						findKey = key
+					}
+				})
+				if (findKey != -1) {
+					this.headersReceivedListeners.delete(findKey)
+				}
+			} else {
+				this.headersReceivedListeners.delete(id!! as number)
+			}
+		} else {
+			this.headersReceivedListeners = new Map<number, RequestTaskOnHeadersReceivedCallback>();
+		}
+	}
+
+	public onChunkReceived(listener : RequestTaskOnChunkReceivedCallback) : number {
+		this.chunkReceivedListenerId++;
+		this.chunkReceivedListeners[this.chunkReceivedListenerId] = listener
+		return this.chunkReceivedListenerId
+	}
+
+	public offChunkReceived(id : number | RequestTaskOnChunkReceivedCallback | null) : void {
+		if (id != null) {
+			if (typeof id == "function") {
+				let findKey = -1;
+				this.chunkReceivedListeners.forEach((value: RequestTaskOnChunkReceivedCallback, key: number) => {
+					if (id == value) {
+						findKey = key
+					}
+				})
+				this.chunkReceivedListeners.delete(findKey)
+			} else {
+				this.chunkReceivedListeners.delete(id!! as number)
+			}
+		} else {
+			this.chunkReceivedListeners = new Map<number, RequestTaskOnChunkReceivedCallback>();
+		}
+	}
+}
+
+class RunnableTask extends Runnable {
+	private callback : () => void | null;
+	private looper : Looper | null = null;
+	constructor(looper : Looper | null, callback : () => void) {
+		super();
+		this.looper = looper;
+		this.callback = callback
+	}
+
+	override run() {
+		this.callback?.()
+	}
+
+	public execute() {
+		if (this.looper == null) {
+			this.run();
+		} else {
+			new Handler(this.looper!!).post(this);
+		}
+	}
+}
+
+
+class NetworkManager {
+
+	private static instance : NetworkManager | null = null;
+
+	private static connectPool : ConnectionPool | null = null;
+
+	/**
+	 * request的线程池
+	 */
+	private requestExecutorService : ExecutorService | null = null;
+
+	public static getInstance() : NetworkManager {
+		if (this.instance == null) {
+			this.instance = new NetworkManager();
+		}
+		return this.instance!;
+	}
+
+
+
+	public request<T>(param : RequestOptions<T>, listener : NetworkRequestListener) : RequestTask {
+		if (param.data != null) {
+			const isValidateData = param.data instanceof UTSJSONObject || typeof (param.data) == 'string' || param.data instanceof ArrayBuffer
+			if (!isValidateData) {
+				let option = {};
+				option['statusCode'] = '-1';
+				option['errorCode'] = '600008';
+				option['errorMsg'] = "the data parameter type is invalid";
+				option['cause'] = new Exception("he data parameter type is invalid");
+				if (listener != null) {
+					listener.onComplete(option);
+				}
+				return new NetworkRequestTaskImpl(null);
+			}
+		}
+		if (listener != null) {
+			listener.onStart();
+		}
+		let client = this.createRequestClient(param!);
+		let request = this.createRequest(param!, listener!);
+		if (request == null) {
+			return new NetworkRequestTaskImpl(null);
+		}
+		let call : Call = client.newCall(request);
+
+		let task = new NetworkRequestTaskImpl(call);
+		call.enqueue(new SimpleCallback(listener, task, param.enableChunked ?? false, Looper.myLooper()));
+
+		return task;
+	}
+
+	public createRequestClient<T>(param : RequestOptions<T>) : OkHttpClient {
+		let clientBuilder = OkHttpClient.Builder();
+		const timeout : Long = param.timeout != null ? param.timeout!.toLong() : 60000;
+		clientBuilder.connectTimeout(timeout, TimeUnit.MILLISECONDS);
+		clientBuilder.readTimeout(timeout, TimeUnit.MILLISECONDS);
+		clientBuilder.writeTimeout(timeout, TimeUnit.MILLISECONDS);
+		clientBuilder.protocols(Collections.singletonList(Protocol.HTTP_1_1));
+
+		clientBuilder.addInterceptor(new CookieInterceptor());
+
+
+
+		if (param.firstIpv4 != null) {
+			let firstIpv4 = param.firstIpv4!;
+			if (firstIpv4) {
+				let okDns = new OKDns();
+				clientBuilder.dns(okDns);
+			}
+		}
+		// let requestHost = Uri.parse(param.url).getHost();
+
+		//todo tls暂时搁置
+		//todo 把call保存起来， 存储到task里面，等待调用。
+		// let tlsOption: UTSJSONObject = param.tls;
+		// if (tlsOption != null) {
+		// 	let sslConfig = new SSLConfig();
+		// 	sslConfig.setKeystore(tlsOption['keystore']);
+		// 	sslConfig.setStorePass(tlsOption['storePass']);
+		// 	let caArray:JSONArray = tlsOption['ca'];
+		// 	let caParam:Array<string> = null;
+		// 	if (caArray != null){
+		// 		caParam = caArray.toArray(emptyArray<String>());
+		// 	}
+		// 	sslConfig.setCa(caParam);
+
+		// 	clientBuilder.sslSocketFactory(SSLFactoryManager.getInstance().getSSLSocketFactory(sslConfig));
+		// 	clientBuilder.hostnameVerifier(OkHostnameVerifier.INSTANCE);
+		// }
+
+		if (NetworkManager.connectPool == null) {
+			NetworkManager.connectPool = new ConnectionPool();
+		}
+
+		clientBuilder.connectionPool(NetworkManager.connectPool);
+
+		if (this.requestExecutorService == null) {
+			this.requestExecutorService = Executors.newFixedThreadPool(10);
+		}
+
+		clientBuilder.dispatcher(new Dispatcher(this.requestExecutorService));
+		
+		
+		const enableQuic = param.enableQuic ?? false
+		if(enableQuic) {
+			// #ifdef UNI-APP-X
+			CronetHelper.supportCronet(clientBuilder)
+			// #endif
+		}
+
+		return clientBuilder.build();
+	}
+
+	public createRequest<T>(param : RequestOptions<T>, listener : NetworkRequestListener) : Request | null {
+
+		let requestBilder = new Request.Builder();
+		try {
+			requestBilder.url(param.url);
+		} catch (e : Exception) {
+			let option = {};
+			option['statusCode'] = '-1';
+			option['errorCode'] = '600009';
+			option['errorMsg'] = "invalid URL";
+			option['cause'] = e;
+			if (listener != null) {
+				listener.onComplete(option);
+			}
+			return null;
+		}
+
+		if (param.header == null) {
+			param.header = {}
+		}
+
+		let contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+		let hasContentType = false;
+		let hasUAHeader = false;
+		let headers = param.header!.toJSONObject() as JSONObject;
+		for (key in headers.keys) {
+			if (key.equals("Accept-Encoding", true)) {
+			    let value = "" + headers[key];
+			    if (value.toLowerCase().includes("gzip")) {
+			        continue;
+			    }
+			}
+			if (key.equals("Content-Type", true)) {
+				contentType = "" + headers![key]!;
+				hasContentType = true;
+			}
+			if(!hasUAHeader && key.equals("User-Agent", true)){
+				hasUAHeader = true
+			}
+			requestBilder.header(key, "" + headers[key]);
+		}
+
+		if (!hasContentType) {
+			if (!"GET".equals(param.method)) {
+				contentType = "application/json";
+			}
+		}
+		
+		if (!hasUAHeader) {
+			let ua = UTSAndroid.getWebViewInfo(UTSAndroid.getAppContext()!)["ua"].toString();
+			requestBilder.header("User-Agent", ua);
+		}
+		
+
+		if ("POST".equals(param.method) || "PUT".equals(param.method) || "PATCH".equals(param.method) || "DELETE".equals(param.method)) {
+			if (param.data != null && listener != null) {
+				listener.onProgress(0);
+			}
+
+			let body : any = "";
+			if (param.data != null) {
+				if (typeof (param.data) == 'string') {
+					body = param.data as string;
+				} else if (param.data instanceof ArrayBuffer) {
+					try {
+						body = (param.data as ArrayBuffer).toByteBuffer().array()
+					} catch (e : Exception) {
+						let option = {};
+						option['statusCode'] = '-1';
+						option['errorCode'] = '602001';
+						option['errorMsg'] = "request system error";
+						option['cause'] = e;
+						if (listener != null) {
+							listener.onComplete(option);
+						}
+						return null;
+					}
+
+				} else if (param.data instanceof UTSJSONObject) {
+					if (contentType.indexOf("application/x-www-form-urlencoded") == 0) {
+						const data = param.data as UTSJSONObject;
+						const map : Map<string, any | null> = data.toMap();
+						const bodyArray = new Array<string>();
+						map.forEach((value, key) => {
+							bodyArray.push(key + "=" + value);
+						})
+						body = bodyArray.join("&");
+					} else {
+						body = JSON.stringify(param.data);
+					}
+				}
+			}
+			if (body instanceof ByteArray) {
+				let requestBody = RequestBody.create(MediaType.parse(contentType), body as ByteArray);
+				requestBilder.method(param.method, requestBody);
+			} else {
+				let requestBody = RequestBody.create(MediaType.parse(contentType), body as string);
+				requestBilder.method(param.method, requestBody);
+			}
+
+			if (listener != null) {
+				listener.onProgress(100);
+			}
+		} else if ("HEAD".equals(param.method)) {
+			requestBilder.head();
+		} else if ("OPTIONS".equals(param.method)) {
+			requestBilder.method(param.method, null);
+		} else if (param.method == null || "GET".equals(param.method)) {
+			const data = param.data;
+			if (data != null) {
+				let json : UTSJSONObject | null = null;
+				if (typeof (data) == 'string') {
+					json = JSON.parseObject(data as string);
+				} else if (data instanceof UTSJSONObject) {
+					json = data;
+				}
+				if (json != null) {
+					let url = param.url;
+					try {
+						requestBilder.url(this.stringifyQuery(url, json));
+					} catch (e : Exception) {
+						let option = {};
+						option['statusCode'] = '-1';
+						option['errorCode'] = '600009';
+						option['errorMsg'] = "invalid URL";
+						option['cause'] = e;
+						if (listener != null) {
+							listener.onComplete(option);
+						}
+						return null;
+					}
+				}
+			}
+		}
+
+
+		return requestBilder.build();
+	}
+
+	/**
+	 * data拼接到url上
+	 */
+	private stringifyQuery(url : string, data : UTSJSONObject) : string {
+		let newUrl = url;
+		//http:xxx/xxx?a=b&c=d#123
+		let str = url.split('#')
+		let hash = ''
+		if (str.length > 1) {
+			hash = str[1] //123
+		}
+		str = str[0].split('?')
+		let query = ''
+		if (str.length > 1) {
+			query = str[1] //a=b&c=d
+		}
+		newUrl = str[0]   // http:xxx/xxx
+		const pairs = query.split('&')
+		const queryMap = new Map<string, string>();
+		pairs.forEach((item, _) => {
+			const temp = item.split('=')
+			if (temp.length > 1) {
+				queryMap[temp[0]] = temp[1]
+			}
+		});
+		const dataMap : Map<string, any | null> = data.toMap();
+		dataMap.forEach((value, key) => {
+			if (value == null) {
+				value = "";
+			}
+			let encodeKey = encodeURIComponent(key)!
+			if (value instanceof UTSJSONObject || value instanceof Array<any | null>) {
+				queryMap[encodeKey] = encodeURIComponent(JSON.stringify(value))!
+			} else {
+				queryMap[encodeKey] = encodeURIComponent("" + value)!;
+			}
+		})
+		let queryStr = "";
+		queryMap.forEach((value, key) => {
+			queryStr += key + "=" + value + "&"
+		});
+		queryStr = queryStr.slice(0, -1);
+		if (queryStr.length > 0) {
+			newUrl += "?" + queryStr;
+		}
+		if (hash.length > 0) {
+			newUrl += "#" + hash;
+		}
+		return newUrl;
+	}
+
+
+	public uploadFile(options : UploadFileOptions, listener : NetworkUploadFileListener) : UploadTask {
+		return UploadController.getInstance().uploadFile(options, listener);
+	}
+
+	public downloadFile(options : DownloadFileOptions, listener : NetworkDownloadFileListener) : DownloadTask {
+		return DownloadController.getInstance().downloadFile(options, listener);
+	}
+
+
+}
+
+// 共享数据结构（移到方法外部）
+class SharedStreamBuffer {
+	public buffer = new ByteArrayOutputStream();
+	public isStreamEnded = false;
+	public totalBytesRead = 0;
+	public hasNewData = false;
+}
+
+class SimpleCallback implements Callback {
+	constructor(private listener : NetworkRequestListener, private requestTask : NetworkRequestTaskImpl, private enableChunked : boolean, private looper : Looper | null) { 
+		
+	}
+
+	override onResponse(call : Call, response : Response) : void {
+		let headers : Headers = response.headers();
+		let headerMap = headers.toMultimap();
+		let code = response.code();
+		let option = {};
+		option["statusCode"] = code + "";
+
+		let pListener = this.listener;
+		if (pListener != null) {
+			pListener.onHeadersReceived(code, headerMap);
+		}
+
+		const pHeaderReceivedListener = this.requestTask.headersReceivedListeners;
+		if (pHeaderReceivedListener.size > 0) {
+			const headers = NetworkUtil.convertHeaders(headerMap);
+			pHeaderReceivedListener.forEach((callbackfn : RequestTaskOnHeadersReceivedCallback, key : number) => {
+				const result : RequestTaskOnHeadersReceivedListenerResult = {
+					cookies: NetworkUtil.parseCookie(headers),
+					header: headers,
+					statusCode: code
+				};
+				callbackfn(result);
+			});
+		}
+
+		let rawStream = response.body()!.byteStream()!;
+		const enableChunked = this.enableChunked && response.header("Transfer-Encoding") == "chunked";
+
+		try {
+			if (response.isSuccessful()) {
+				if (enableChunked) {
+					option['originalData'] = this.processStreamWithOkio(this.requestTask, rawStream, this.listener);
+				} else {
+					option['originalData'] = this.readInputStreamAsBytes(rawStream, this.listener);
+				}
+			} else {
+				option['errorMsg'] = this.readInputStream(rawStream, this.listener);
+			}
+
+			if (pListener != null) {
+				pListener.onComplete(option);
+			}
+		} finally {
+			try {
+				rawStream.close();
+			} catch (e : Exception) {
+				// 忽略关闭时的异常
+			}
+		}
+	}
+	override onFailure(call : Call, e : IOException) : void {
+		let pListener = this.listener;
+		let option = {};
+		option['statusCode'] = '-1';
+		option['errorCode'] = '602001';
+		option['errorMsg'] = e.message;
+		option['cause'] = e;
+		if (pListener != null) {
+			pListener.onComplete(option);
+		}
+	}
+
+
+	private readInputStreamAsBytes(inputSteam ?: InputStream, listener ?: NetworkRequestListener) : ByteArray | null {
+		if (inputSteam == null) {
+			return null;
+		}
+		let buffer = new ByteArrayOutputStream();
+
+		let readCount = 0;
+		let data = new ByteArray(2048);
+
+		do {
+			let len = inputSteam.read(data, 0, data.size);
+			if (len == -1) {
+				break;
+			}
+			buffer.write(data, 0, len);
+			readCount += len;
+			if (listener != null) {
+				listener.onProgress(readCount);
+			}
+
+		} while (true);
+
+		buffer.flush();
+		return buffer.toByteArray();
+	}
+
+	private readInputStream(inputSteam ?: InputStream, listener ?: NetworkRequestListener) : string | null {
+		if (inputSteam == null) {
+			return null;
+		}
+
+		let builder = new StringBuilder();
+		let localBufferedReader = new BufferedReader(new InputStreamReader(inputSteam));
+		let data = new CharArray(2048);
+		do {
+			let len = localBufferedReader.read(data);
+			if (len == -1) {
+				break;
+			}
+			builder.append(data, 0, len);
+			if (listener != null) {
+				listener.onProgress(builder.length);
+			}
+		} while (true);
+		localBufferedReader.close();
+
+		return builder.toString();
+	}
+
+
+
+	// 使用生产者-消费者模式处理数据流
+	private processStreamWithOkio(requestTask : NetworkRequestTaskImpl, inputStream ?: InputStream, listener ?: NetworkRequestListener) : ByteArray | null {
+		if (inputStream == null) return null;
+
+		const CHECK_INTERVAL : Long = 100; // 消费者检查间隔(ms)
+		let outputBuffer = new ByteArrayOutputStream();
+
+		let sharedBuffer = new SharedStreamBuffer();
+		let lock = new ReentrantLock();
+		let producerThread : Thread | null = null;
+
+		try {
+			// 创建并启动生产者线程
+			producerThread = new Thread(() => {
+				try {
+					let source = Okio.source(inputStream);
+					let bufferedSource = Okio.buffer(source);
+
+					while (!Thread.interrupted()) {
+						// 检查流是否已结束
+						if (bufferedSource.exhausted()) {
+							lock.lock();
+							try {
+								sharedBuffer.isStreamEnded = true;
+							} finally {
+								lock.unlock();
+							}
+							break;
+						}
+
+						// 读取数据
+						let tempBuffer = new ByteArray(8192);
+						let bytesRead = bufferedSource.read(tempBuffer);
+
+						if (bytesRead <= 0) {
+							lock.lock();
+							try {
+								sharedBuffer.isStreamEnded = true;
+							} finally {
+								lock.unlock();
+							}
+							break;
+						}
+
+						// 写入共享缓冲区
+						lock.lock();
+						try {
+							sharedBuffer.buffer.write(tempBuffer, 0, bytesRead.toInt());
+							sharedBuffer.totalBytesRead += bytesRead;
+							sharedBuffer.hasNewData = true;
+						} finally {
+							lock.unlock();
+						}
+					}
+				} catch (e : Exception) {
+					lock.lock();
+					try {
+						sharedBuffer.isStreamEnded = true;
+					} finally {
+						lock.unlock();
+					}
+				}
+			});
+
+			producerThread.start();
+
+			// 主线程作为消费者
+			while (true) {
+				Thread.sleep(CHECK_INTERVAL);
+
+				let shouldExit = false;
+				let bufferData : ByteArray | null = null;
+				let currentTotal = 0;
+
+				lock.lock();
+				try {
+					// 处理新数据
+					if (sharedBuffer.hasNewData) {
+						bufferData = sharedBuffer.buffer.toByteArray();
+						currentTotal = sharedBuffer.totalBytesRead;
+						sharedBuffer.buffer.reset();
+						sharedBuffer.hasNewData = false;
+					}
+
+					// 检查是否结束
+					if (sharedBuffer.isStreamEnded && !sharedBuffer.hasNewData) {
+						shouldExit = true;
+					}
+				} finally {
+					lock.unlock();
+				}
+
+				// 处理数据（在锁外，提高性能）
+				if (bufferData != null && bufferData.size > 0) {
+					// 写入输出缓冲区
+					outputBuffer.write(bufferData, 0, bufferData.size);
+
+					// 触发事件
+					if (requestTask.chunkReceivedListeners.size > 0) {
+						let arrayBuffer = ArrayBuffer.fromByteBuffer(ByteBuffer.wrap(bufferData));
+						new RunnableTask(this.looper, () => {
+							requestTask.chunkReceivedListeners.forEach((chunkListener : RequestTaskOnChunkReceivedCallback, key : number) => {
+								chunkListener({ data: arrayBuffer });
+							});
+						}).execute();
+					}
+
+					// 更新进度
+					if (listener != null) {
+						listener.onProgress(currentTotal);
+					}
+				}
+
+				if (shouldExit) break;
+			}
+
+			outputBuffer.flush();
+			return outputBuffer.toByteArray();
+		} catch (e : Exception) {
+			return null;
+		} finally {
+			// 清理资源
+			if (producerThread != null) {
+				producerThread.interrupt();
+				try { producerThread.join(1000); } catch (e : InterruptedException) { }
+			}
+			try { 
+				// 关闭共享缓冲区
+				if (sharedBuffer != null && sharedBuffer.buffer != null) {
+					sharedBuffer.buffer.close();
+				}
+				
+				// 关闭输出缓冲区
+				if (outputBuffer != null) {
+					outputBuffer.close(); 
+				}
+			} catch (e : Exception) { }
+		}
+	}
+
+
+	private processChunkedResponse(requestTask : NetworkRequestTaskImpl, inputStream ?: InputStream, listener ?: NetworkRequestListener) : ByteArray | null {
+		if (inputStream == null) {
+			return null;
+		}
+
+		let outputBuffer = new ByteArrayOutputStream();
+		let lineBuffer = new ByteArrayOutputStream();
+		let buffer = new ByteArray(10);
+		let totalBytesRead = 0;
+		let prevByte : Int = -1;
+		let pendingLines = new Array<ByteArray>();
+		let lastChunkFirstPartFound = false;
+		let lastChunkFirstPart : ByteArray | null = null;
+		let bytesRead = 0;
+
+		try {
+			do {
+				bytesRead = inputStream.read(buffer);
+				if (bytesRead == -1) break;
+
+				outputBuffer.write(buffer, 0, bytesRead);
+				totalBytesRead += bytesRead;
+
+				if (listener != null) {
+					listener.onProgress(totalBytesRead);
+				}
+
+				if (requestTask.chunkReceivedListeners.size > 0) {
+					for (let i = 0; i < bytesRead; i++) {
+						let currentByte = (buffer[i.toInt()] & 0xFF).toInt();
+						lineBuffer.write(currentByte);
+
+						if (prevByte == 13 && currentByte == 10) { // \r\n
+							let lineData = lineBuffer.toByteArray();
+
+							if (this.isZeroChunk(lineData) && !lastChunkFirstPartFound) {
+								lastChunkFirstPartFound = true;
+								lastChunkFirstPart = new ByteArray(lineData.size);
+								System.arraycopy(lineData, 0, lastChunkFirstPart, 0, lineData.size);
+							} else if (lastChunkFirstPartFound) {
+								// 无论是哪种情况，都先处理pendingLines中的数据，此时pendingLines元素只有0或1个
+								this.processPendingLines(requestTask, pendingLines);
+								pendingLines = new Array<ByteArray>();
+
+								if (this.isEmptyLine(lineData)) {
+									// 处理最后chunk
+									this.sendCombinedData(requestTask, lastChunkFirstPart!, lineData);
+								} else {
+									// 误判，将lastChunkFirstPart作为普通行处理
+									let lineCopy = new ByteArray(lineData.size);
+									System.arraycopy(lineData, 0, lineCopy, 0, lineData.size);
+
+									// 直接处理这对行（lastChunkFirstPart和当前行）
+									this.processLinePair(requestTask, [lastChunkFirstPart!, lineCopy]);
+								}
+								lastChunkFirstPartFound = false;
+								lastChunkFirstPart = null;
+							} else {
+								let lineCopy = new ByteArray(lineData.size);
+								System.arraycopy(lineData, 0, lineCopy, 0, lineData.size);
+								pendingLines.push(lineCopy);
+
+								if (pendingLines.length == 2) {
+									this.processLinePair(requestTask, pendingLines);
+									pendingLines = new Array<ByteArray>();
+								}
+							}
+
+							lineBuffer.reset();
+						}
+
+						prevByte = currentByte;
+					}
+				}
+			} while (bytesRead != -1);
+
+			// 先处理剩余的待处理行
+			this.processPendingLines(requestTask, pendingLines);
+
+			// 再处理可能剩余的最后chunk第一部分
+			if (lastChunkFirstPartFound && lastChunkFirstPart != null) {
+				this.sendData(requestTask, lastChunkFirstPart!!);
+			}
+
+			// 处理最后一个可能不完整的行
+			if (requestTask.chunkReceivedListeners.size > 0 && lineBuffer.size() > 0) {
+				this.sendData(requestTask, lineBuffer.toByteArray());
+			}
+
+			outputBuffer.flush();
+			return outputBuffer.toByteArray();
+		} catch (e : Exception) {
+			return null;
+		} finally {
+			try {
+				if (outputBuffer != null) {
+					outputBuffer.close();
+				}
+				if (lineBuffer != null) {
+					lineBuffer.close();
+				}
+			} catch (e : Exception) {
+				// 忽略关闭时的异常
+			}
+		}
+	}
+
+	// 辅助方法：验证一对行是否符合chunk格式（size行和data行）
+	private isValidChunk(sizeLine : ByteArray, dataLine : ByteArray) : boolean {
+		// 检查size行是否是十六进制
+		if (!this.isHexadecimalLine(sizeLine)) {
+			return false;
+		}
+
+		// 解析size行的十六进制值
+		let chunkSize = this.parseHexSize(sizeLine);
+		if (chunkSize < 0) {
+			return false; // 无法解析为有效的十六进制数
+		}
+
+		// 检查data行的长度是否与chunk size匹配
+		// 注意：data行包含\r\n，所以实际数据长度是总长度减2
+		let dataLength = dataLine.size - 2;
+
+		// 允许一定的误差，因为有些服务器可能会在chunk data后添加额外的信息
+		// 或者有些chunk可能包含扩展（如chunk-extension）
+		return Math.abs(dataLength - chunkSize) <= 2;
+	}
+
+	// 辅助方法：解析十六进制的chunk size
+	private parseHexSize(lineData : ByteArray) : Int {
+		if (lineData.size <= 2) {
+			return -1; // 太短，不可能是有效的chunk size行
+		}
+
+		// 跳过最后的\r\n
+		let endIndex = lineData.size - 2;
+
+		// 将十六进制字符转换为字符串
+		let hexString = new StringBuilder();
+		for (let i : Int = 0; i < endIndex; i++) {
+			// 检查是否遇到分号（chunk-extension的开始）
+			if (lineData[i].toInt() == 59) { // 59是分号';'的ASCII码
+				break; // 遇到分号就停止解析，因为后面是chunk-extension
+			}
+			hexString.append(String.fromCharCode(lineData[i].toInt()));
+		}
+
+		// 如果没有有效的十六进制字符
+		if (hexString.length == 0) {
+			return -1;
+		}
+
+		try {
+			// 将十六进制字符串转换为整数
+			return Integer.parseInt(hexString.toString().trim(), 16);
+		} catch (e : Exception) {
+			return -1; // 解析失败
+		}
+	}
+
+	// 辅助方法：检查一行数据是否可能是十六进制的chunk size
+	private isHexadecimalLine(lineData : ByteArray) : boolean {
+		if (lineData.size <= 2) {
+			return false; // 太短，不可能是有效的chunk size行
+		}
+
+		// 跳过最后的\r\n
+		let endIndex = lineData.size - 2;
+
+		// 如果没有有效字符
+		if (endIndex <= 0) {
+			return false;
+		}
+
+		// 检查每个字符是否是十六进制字符，直到遇到分号或空格
+		let hasValidHexChar = false;
+		for (let i : Int = 0; i < endIndex; i++) {
+			let c = lineData[i].toInt();
+
+			// 如果遇到分号或空格，表示chunk-extension的开始
+			if (c == 59 || c == 32) { // 59是分号';'，32是空格' '的ASCII码
+				break;
+			}
+
+			let isHexChar = (c >= 48 && c <= 57) || // 0-9
+				(c >= 65 && c <= 70) || // A-F
+				(c >= 97 && c <= 102);  // a-f
+
+			if (!isHexChar) {
+				return false;
+			}
+
+			hasValidHexChar = true;
+		}
+
+		return hasValidHexChar;
+	}
+
+	// 辅助方法：检查是否是0大小chunk（0\r\n）
+	private isZeroChunk(lineData : ByteArray) : boolean {
+		// 0大小chunk的格式为：0\r\n 或 0;extension\r\n
+		if (lineData.size < 3) {
+			return false; // 至少需要3个字节：0\r\n
+		}
+
+		// 检查第一个字节是否是'0'
+		if (lineData[0].toInt() != 48) { // 48是'0'的ASCII码
+			return false;
+		}
+
+		// 检查第二个字节是否是分号（chunk-extension）或\r
+		let secondByte = lineData[1].toInt();
+		if (secondByte != 59 && secondByte != 13) { // 59是';'，13是\r的ASCII码
+			return false;
+		}
+
+		// 如果第二个字节是\r，检查第三个字节是否是\n
+		if (secondByte == 13 && lineData.size >= 3) {
+			return lineData[2].toInt() == 10; // 10是\n的ASCII码
+		}
+
+		// 如果第二个字节是分号，查找\r\n
+		if (secondByte == 59) {
+			for (let i : Int = 2; i < lineData.size - 1; i++) {
+				if (lineData[i].toInt() == 13 && lineData[i + 1].toInt() == 10) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	// 辅助方法：检查是否是空行（\r\n）
+	private isEmptyLine(lineData : ByteArray) : boolean {
+		return lineData.size == 2 && lineData[0].toInt() == 13 && lineData[1].toInt() == 10;
+	}
+
+	// 发送单个数据块
+	private sendData(requestTask : NetworkRequestTaskImpl, data : ByteArray) : void {
+		let arrayBuffer = ArrayBuffer.fromByteBuffer(ByteBuffer.wrap(data));
+
+		requestTask.chunkReceivedListeners.forEach((chunkListener : RequestTaskOnChunkReceivedCallback, key : number) => {
+			const result : RequestTaskOnChunkReceivedListenerResult = {
+				data: arrayBuffer
+			};
+			chunkListener(result);
+		});
+	}
+
+	// 发送组合的数据块
+	private sendCombinedData(requestTask : NetworkRequestTaskImpl, data1 : ByteArray, data2 : ByteArray) : void {
+		let combinedBuffer = new ByteArrayOutputStream();
+		try {
+			combinedBuffer.write(data1, 0, data1.size);
+			combinedBuffer.write(data2, 0, data2.size);
+
+			let combinedData = combinedBuffer.toByteArray();
+			this.sendData(requestTask, combinedData);
+		} finally {
+			try {
+				if (combinedBuffer != null) {
+					combinedBuffer.close();
+				}
+			} catch (e : Exception) {
+				// 忽略关闭时的异常
+			}
+		}
+	}
+
+	// 处理待处理行列表
+	private processPendingLines(requestTask : NetworkRequestTaskImpl, pendingLines : Array<ByteArray>) : void {
+		if (pendingLines.length == 0) return;
+
+		for (let i = 0; i < pendingLines.length; i++) {
+			this.sendData(requestTask, pendingLines[i]);
+		}
+	}
+
+	// 处理一对行
+	private processLinePair(requestTask : NetworkRequestTaskImpl, pendingLines : Array<ByteArray>) : void {
+		if (pendingLines.length != 2) return;
+
+		if (this.isValidChunk(pendingLines[0], pendingLines[1])) {
+			this.sendCombinedData(requestTask, pendingLines[0], pendingLines[1]);
+		} else {
+			this.processPendingLines(requestTask, pendingLines);
+		}
+	}
+}
+
+
+export {
+	NetworkManager,
+	NetworkRequestListener,
+	NetworkUploadFileListener,
+	NetworkDownloadFileListener
+}

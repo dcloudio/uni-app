@@ -1,0 +1,7 @@
+{
+	"dependencies": [
+		"com.github.bumptech.glide:glide:4.9.0",
+		"androidx.annotation:annotation:1.1.0",
+		"androidx.core:core:1.1.0"
+	]
+}

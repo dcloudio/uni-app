@@ -1,0 +1,80 @@
+
+
+
+class StatusCode {
+	public static statusCodeMap : Map<string, string> | null = null;
+
+	private static initStatusCodeMap() {
+		let map = new Map<string, string>();
+		this.statusCodeMap = map;
+		map.set('100', "Continue");
+		map.set('101', "Switching Protocol");
+		map.set('200', "OK");
+		map.set('201', "Created");
+		map.set('202', "Accepted");
+		map.set('203', "Non-Authoritative Information");
+		map.set('204', "No Content");
+		map.set('205', "Reset Content");
+		map.set('206', "Partial Content");
+		map.set('300', "Multiple Choice");
+		map.set('301', "Moved Permanently");
+		map.set('302', "Found");
+		map.set('303', "See Other");
+		map.set('304', "Not Modified");
+		map.set('305', "Use Proxy");
+		map.set('306', "unused");
+		map.set('307', "Temporary Redirect");
+		map.set('308', "Permanent Redirect");
+		map.set('400', "Bad Request");
+		map.set('401', "Unauthorized");
+		map.set('402', "Payment Required");
+		map.set('403', "Forbidden");
+		map.set('404', "Not Found");
+		map.set('405', "Method Not Allowed");
+		map.set('406', "Not Acceptable");
+		map.set('407', "Proxy Authentication Required");
+		map.set('408', "Request Timeout");
+		map.set('409', "Conflict");
+		map.set('410', "Gone");
+		map.set('411', "Length Required");
+		map.set('412', "Precondition Failed");
+		map.set('413', "Payload Too Large");
+		map.set('414', "URI Too Long");
+		map.set('415', "Unsupported Media Type");
+		map.set('416', "Requested Range Not Satisfiable");
+		map.set('417', "Expectation Failed");
+		map.set('418', "I'm a teapot");
+		map.set('421', "Misdirected Request");
+		map.set('426', "Upgrade Required");
+		map.set('428', "Precondition Required");
+		map.set('429', "Too Many Requests");
+		map.set('431', "Request Header Fields Too Large");
+		map.set('500', "Internal Server Error");
+		map.set('501', "Not Implemented");
+		map.set('502', "Bad Gateway");
+		map.set('503', "Service Unavailable");
+		map.set('504', "Gateway Timeout");
+		map.set('505', "HTTP Version Not Supported");
+		map.set('506', "Variant Also Negotiates");
+		map.set('507', "Variant Also Negotiates");
+		map.set('511', "Network Authentication Required");
+	}
+
+	public static getStatus(code : string) : string {
+		let map = this.statusCodeMap;
+		if (map == null) {
+			this.initStatusCodeMap();
+		}
+		let tmp = this.statusCodeMap!;
+		if (!(tmp.has(code))) {
+			return 'unknown status';
+		} else {
+			return tmp.get(code)! as string;
+		}
+	}
+}
+
+
+export {
+	StatusCode
+}

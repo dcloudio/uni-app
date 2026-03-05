@@ -1,0 +1,234 @@
+import geoLocationManager from '@ohos.geoLocationManager'
+import abilityAccessCtrl from '@ohos.abilityAccessCtrl'
+import type common from '@ohos.app.ability.common'
+import mapCommon from '@hms.core.map.mapCommon'
+import map from '@hms.core.map.map'
+import { BusinessError } from '@ohos.base'
+import bundleManager from '@ohos.bundle.bundleManager'
+import Want from '@ohos.app.ability.Want'
+import { getCurrentMP, UniMP, getAbilityContext } from '@dcloudio/uni-runtime'
+
+const ErrorCodeMap = new Map<string | number, LocationErrorCode>([
+  [3301000, 1505602],
+  [3301100, 1505003],
+  ['PERMISSION_ERROR', 1505004],
+  ['COORDS_TYPE_ERROR', 1505601],
+  ['default', 1505602],
+])
+
+export function createError(harmonyCode: string | number): IGetLocationFail {
+  const errCode = ErrorCodeMap.get(harmonyCode) || ErrorCodeMap.get('default')
+  if (typeof errCode === 'number') {
+    return {
+      errCode: errCode
+    } as IGetLocationFail
+  }
+  return {
+    errCode: 1505602
+  } as IGetLocationFail
+}
+
+type Permission =
+  | 'ohos.permission.APPROXIMATELY_LOCATION'
+  | 'ohos.permission.LOCATION'
+  | 'ohos.permission.LOCATION_IN_BACKGROUND'
+
+async function requestPermission(permissions: Permission[]): Promise<boolean> {
+  const context = getContext() as common.UIAbilityContext
+  const atManager: abilityAccessCtrl.AtManager =
+    abilityAccessCtrl.createAtManager()
+  const permissionRequestResult = await atManager.requestPermissionsFromUser(
+    context,
+    permissions,
+  )
+  const isGranted = permissionRequestResult.authResults.every(
+    item => item === 0,
+  )
+  return isGranted
+}
+
+export interface PositionOptions {
+  enableHighAccuracy?: boolean
+  coordsType?: StartLocationUpdateOptionsType | null
+  background?: boolean | null
+  timeout?: number
+}
+
+type PositionWatchStore = Record<number, ((location: geoLocationManager.Location) => void) | undefined>
+
+const watchId = 0
+const PositionWatchStores: Record<string, PositionWatchStore | undefined> = {}
+
+function getCurrentPositionWatchStore(): PositionWatchStore {
+  const currentMP = getCurrentMP()
+  if (!currentMP) {
+    return {}
+  }
+  const id = currentMP.appId
+  if (!PositionWatchStores[id]) {
+    PositionWatchStores[id] = {} as PositionWatchStore
+  }
+  return PositionWatchStores[id]!
+}
+
+const MPBeforeCloseRecord = new WeakMap<UniMP, () => void>()
+
+function onMPBeforeClose(currentMP: UniMP) {
+  if (!currentMP) {
+    return
+  }
+  const id = currentMP.appId
+  clearWatch(Number(watchId))
+  PositionWatchStores[id] = undefined
+}
+
+export function checkBackgroundPermission(): boolean {
+  const bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION)
+  const tokenId = bundleInfo.appInfo.accessTokenId
+  const atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager()
+  const grantStatus = atManager.checkAccessTokenSync(tokenId, 'ohos.permission.LOCATION_IN_BACKGROUND')
+  const isGranted = grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED
+  if (!isGranted) {
+    const context = getAbilityContext()
+    if (!context) { return false }
+    // TODO 国际化
+    uni.showModal({
+      title: '提示',
+      content: '需要允许应用在后台获取位置信息方可继续，点击确认前往设置。',
+      success: (res) => {
+        if (res.confirm) {
+          const want: Want = {
+            bundleName: 'com.huawei.hmos.settings',
+            abilityName: 'com.huawei.hmos.settings.MainAbility',
+            uri: 'application_info_entry',
+            parameters: {
+              pushParams: bundleManager.getBundleInfoForSelfSync(
+                bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT,
+              ).name,
+            },
+          } as Want
+          context.startAbility(want)
+        }
+      }
+    })
+  }
+  return isGranted
+}
+
+export function watchPosition(
+  successCB: (result: GetLocationSuccess) => void,
+  errorCB?: (result: IGetLocationFail) => void,
+  options: PositionOptions = {},
+): number {
+  let currentWatchId = watchId + 1
+  const {
+    enableHighAccuracy = false,
+    coordsType = 'wgs84',
+    background = false,
+  } = options
+  if (coordsType !== 'wgs84' && coordsType !== 'gcj02') {
+    setTimeout(() => errorCB?.(createError('COORDS_TYPE_ERROR')), 1)
+    return -1
+  }
+  function locationChangeHandler(location: geoLocationManager.Location) {
+    if (coordsType === 'gcj02') {
+      map.convertCoordinate(
+        mapCommon.CoordinateType.WGS84,
+        mapCommon.CoordinateType.GCJ02,
+        {
+          latitude: location.latitude,
+          longitude: location.longitude,
+        } as mapCommon.LatLng,
+      ).then(
+        (gcj02Location: mapCommon.LatLng) => {
+          successCB({
+            latitude: gcj02Location.latitude,
+            longitude: gcj02Location.longitude,
+            altitude: location.altitude,
+            accuracy: location.accuracy,
+            speed: location.speed,
+            verticalAccuracy: location.altitudeAccuracy ?? 0,
+            horizontalAccuracy: 0
+          } as GetLocationSuccess)
+        },
+        (err: BusinessError) => {
+          errorCB?.(createError(err.code))
+        },
+      )
+      return
+    }
+    successCB({
+      latitude: location.latitude,
+      longitude: location.longitude,
+      altitude: location.altitude,
+      accuracy: location.accuracy,
+      speed: location.speed,
+      verticalAccuracy: location.altitudeAccuracy ?? 0,
+      horizontalAccuracy: 0
+    } as GetLocationSuccess)
+  }
+  const permission: Permission[] = ['ohos.permission.APPROXIMATELY_LOCATION']
+  if (enableHighAccuracy) {
+    permission.push('ohos.permission.LOCATION')
+  }
+  /**
+   * 由于安全隐私要求，应用不能通过弹窗的形式被授予后台位置权限，应用如果需要使用后台位置权限，需要引导用户到设置界面手动授予。
+   * 申请流程：
+   *
+   * 通过弹窗申请前台位置权限。存在两种允许情况：
+   *
+   * 申请前台模糊位置权限：ohos.permission.APPROXIMATELY_LOCATION。
+   * 申请前台精确位置权限：ohos.permission.APPROXIMATELY_LOCATION和ohos.permission.LOCATION。
+   * 当用户点击弹窗授予前台位置权限后，应用通过弹窗、提示窗等形式告知用户前往设置界面授予后台位置权限，该权限不支持申请。
+   *
+   * 用户在设置界面中的选择“始终允许”应用访问位置信息权限，完成手动授予。
+   *
+   * 设置路径：
+   *
+   * 路径一：设置 > 隐私和安全 > 位置信息 > 具体应用
+   * 路径二：设置 > 应用和元服务 > 某个应用
+   */
+  // if (background) {
+  //   permission.push('ohos.permission.LOCATION_IN_BACKGROUND')
+  // }
+  const currentMP = getCurrentMP()!
+  requestPermission(permission).then(async (isGranted: boolean) => {
+    if (background) {
+      isGranted = checkBackgroundPermission()
+    }
+    if (!isGranted) {
+      errorCB?.(createError('PERMISSION_ERROR'))
+    }
+    getCurrentPositionWatchStore()[currentWatchId] = locationChangeHandler
+    try {
+      if (!MPBeforeCloseRecord.has(currentMP)) {
+        const mpBeforeCloseHandler = (): void => onMPBeforeClose(currentMP)
+        MPBeforeCloseRecord.set(currentMP, mpBeforeCloseHandler)
+        currentMP.on('beforeClose', mpBeforeCloseHandler)
+      }
+      geoLocationManager.on(
+        'locationChange',
+        {
+          interval: 1,
+          locationScenario:
+            geoLocationManager.PowerConsumptionScenario
+              .HIGH_POWER_CONSUMPTION,
+        } as geoLocationManager.LocationRequest,
+        locationChangeHandler,
+      )
+    } catch (err) {
+      errorCB?.(createError('default'))
+    }
+  })
+  return currentWatchId
+}
+
+export function clearWatch(watchId: number): void {
+  const positionWatchStore = getCurrentPositionWatchStore()
+  const locationChangeHandler = positionWatchStore[watchId]
+  if (!locationChangeHandler) {
+    return
+  }
+  geoLocationManager.off('locationChange', locationChangeHandler)
+  positionWatchStore[watchId] = undefined
+}

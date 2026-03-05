@@ -1,0 +1,315 @@
+import {
+    RequestMethod,
+    RequestOptions,
+    UploadFileOptions,
+    DownloadFileOptions,
+    Certificate,
+    ConfigMTLSOptions,
+    PrefetchDNSOptions,
+} from './interface.uts'
+
+// request
+export const API_REQUEST = 'request';
+export const RequestApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'url',
+        {
+            type: 'string',
+            required: true
+        }
+    ],
+    [
+        'header',
+        {
+            type: 'object',
+            required: false
+        }
+    ],
+    [
+        'method',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'dataType',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'responseType',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'timeout',
+        {
+            type: 'number',
+            required: false
+        }
+    ],
+    [
+        'sslVerify',
+        {
+            type: 'boolean',
+            required: false
+        }
+    ],
+    [
+        'withCredentials',
+        {
+            type: 'boolean',
+            required: false
+        }
+    ],
+    [
+        'firstIpv4',
+        {
+            type: 'boolean',
+            required: false
+        }
+    ],[
+        'enableQuic',
+        {
+            type: 'boolean',
+            required: false
+        }
+    ],
+])
+export const RequestApiOptions: ApiOptions<RequestOptions<any>> = {
+    formatArgs: new Map<string, Function>([
+        [
+            'url',
+            function (url: string, params: RequestOptions<any>) {
+                if (url == null) {
+                    throw new Error('url is required')
+                }
+            }
+        ],
+        [
+            'method',
+            function (method: string, params: RequestOptions<any>) {
+                params.method = (method || 'GET').toUpperCase() as RequestMethod
+            }
+        ],
+        [
+            'dataType',
+            function (dataType: string, params: RequestOptions<any>) {
+                if (dataType == null) {
+                    params.dataType = 'json'
+                }
+            }
+        ],
+        [
+            'responseType',
+            function (responseType: string, params: RequestOptions<any>) {
+                if (responseType == null) {
+                    params.responseType = 'text'
+                }
+            }
+        ],
+        [
+            'timeout',
+            function (timeout: number, params: RequestOptions<any>) {
+                if (timeout == null) {
+                    params.timeout = 60000
+                }
+            }
+        ],
+        [
+            'sslVerify',
+            function (sslVerify: boolean, params: RequestOptions<any>) {
+                if (sslVerify == null) {
+                    params.sslVerify = true
+                }
+            }
+        ],
+        [
+            'withCredentials',
+            function (withCredentials: boolean, params: RequestOptions<any>) {
+                if (withCredentials == null) {
+                    params.withCredentials = false
+                }
+            }
+        ],
+        [
+            'firstIpv4',
+            function (firstIpv4: boolean, params: RequestOptions<any>) {
+                if (firstIpv4 == null) {
+                    params.firstIpv4 = false
+                }
+            }
+        ],[
+            'enableQuic',
+            function (enableQuic: boolean, params: RequestOptions<any>) {
+                if (enableQuic == null) {
+                    params.enableQuic = false
+                }
+            }
+        ],
+    ]),
+}
+
+// downloadFile
+export const API_DOWNLOAD_FILE = 'downloadFile';
+export const DownloadFileApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'url',
+        {
+            type: 'string',
+            required: true
+        }
+    ],
+    [
+        'header',
+        {
+            type: 'object',
+            required: false
+        }
+    ],
+    [
+        'timeout',
+        {
+            type: 'number',
+            required: false
+        }
+    ],
+])
+export const DownloadFileApiOptions: ApiOptions<DownloadFileOptions> = {
+    formatArgs: new Map<string, Function>([
+        [
+            'url',
+            function (url: string, params: DownloadFileOptions) {
+                if (url == null) {
+                    throw new Error('url is required')
+                }
+            }
+        ],
+    ]),
+}
+
+// uploadFile
+export const API_UPLOAD_FILE = 'uploadFile';
+export const UploadFileApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'url',
+        {
+            type: 'string',
+            required: true
+        }
+    ],
+    [
+        'filePath',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'name',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'header',
+        {
+            type: 'object',
+            required: false
+        }
+    ],
+    [
+        'formData',
+        {
+            type: 'object',
+            required: false
+        }
+    ],
+    [
+        'timeout',
+        {
+            type: 'number',
+            required: false
+        }
+    ],
+])
+export const UploadFileApiOptions: ApiOptions<UploadFileOptions> = {
+    formatArgs: new Map<string, Function>([
+        [
+            'url',
+            function (url: string, params: UploadFileOptions) {
+                if (url == null) {
+                    throw new Error('url is required')
+                }
+            }
+        ],
+        [
+            'name',
+            function (name: string, params: UploadFileOptions) {
+                if (name == null) {
+                    params.name = 'file'
+                }
+            }
+        ],
+    ]),
+}
+
+// #region configMTLS
+export const API_CONFIG_MTLS = 'configMTLS'
+export const ConfigMTLSApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'certificates',
+        {
+            type: 'array',
+            required: true,
+        }
+    ]
+])
+export const ConfigMTLSApiOptions: ApiOptions<ConfigMTLSOptions> = {
+    formatArgs: new Map<string, Function>(
+        [
+            [
+                'certificates',
+                function (certificates?: Certificate[]): string | undefined {
+                    if (!certificates || certificates.some((item) => typeof item.host !== 'string')) {
+                        return '参数 certificates 配置错误，请确认后重试'
+                    }
+                    return undefined
+                }
+            ]
+        ]
+    )
+}
+// #endregion
+
+export const API_PREFETCH_DNS = 'prefetchDNS'
+export const PrefetchDNSApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'domain',
+        {
+            type: 'string',
+            required: true,
+        }
+    ]
+])
+export const PrefetchDNSApiOptions: ApiOptions<PrefetchDNSOptions> = {
+    formatArgs: new Map<string, Function>(
+        [
+            [
+                'domain',
+                function (domain?: string): string | undefined {
+                    if (!domain) {
+                        return '参数 domain 不能为空'
+                    }
+                    return undefined
+                }
+            ]
+        ]
+    )
+}

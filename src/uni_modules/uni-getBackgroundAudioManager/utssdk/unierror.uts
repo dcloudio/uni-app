@@ -1,0 +1,47 @@
+import { CreateBackgroundAudioErrorCode, ICreateBackgroundAudioFail } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+
+export const CreateBackgroundAudioUniErrorSubject = 'uni-getBackgroundAudioManager';
+
+/**
+ * 错误码
+ * @UniError
+ */
+export const CreateBackgroundAudioUniErrors : Map<CreateBackgroundAudioErrorCode, string> = new Map([
+	/**
+	 * 系统错误
+	 */
+	[1107601, 'system error.'],
+	/**
+	 * 网络错误
+	 */
+	[1107602, 'network error.'],
+	/**
+	 * 文件错误
+	 */
+	[1107603, 'file error.'],
+	/**
+	 * 格式错误
+	 */
+	[1107604, 'format error.'],
+	/**
+	 * 未知错误
+	 */
+	[1107605, 'unknown error.'],
+	/**
+	 * 播放路径不能为空
+	 */
+	[1107609, 'empty src.'],
+]);
+
+export class CreateBackgroundAudioFailImpl extends UniError implements ICreateBackgroundAudioFail {
+	constructor(errCode : CreateBackgroundAudioErrorCode) {
+		super();
+		this.errSubject = CreateBackgroundAudioUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = CreateBackgroundAudioUniErrors[errCode] ?? "";
+	}
+}

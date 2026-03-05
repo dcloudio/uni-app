@@ -1,0 +1,7 @@
+{
+	"frameworks": [
+		"CoreTelephony.framework",
+		"SystemConfiguration.framework"
+	],
+	"deploymentTarget": "12.0"
+}

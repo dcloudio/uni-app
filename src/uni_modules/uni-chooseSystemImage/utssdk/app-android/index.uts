@@ -1,0 +1,265 @@
+/* 引入 interface.uts 文件中定义的变量 */
+import { ChooseSystemImage, ChooseSystemImageOptions, ChooseSystemImageSuccessResult, ChooseSystemMedia, ChooseSystemMediaOptions, ChooseSystemMediaSuccessResult, ChooseSystemVideo, ChooseSystemVideoOptions, ChooseSystemVideoSuccessResult } from '../interface.uts';
+import AppCompatActivity from 'androidx.appcompat.app.AppCompatActivity';
+import ActivityResultCallback from 'androidx.activity.result.ActivityResultCallback';
+import List from 'kotlin.collections.List';
+import Uri from 'android.net.Uri';
+import ActivityResultContracts from 'androidx.activity.result.contract.ActivityResultContracts';
+import ActivityResultLauncher from 'androidx.activity.result.ActivityResultLauncher';
+import PickVisualMediaRequest from "androidx.activity.result.PickVisualMediaRequest";
+import Builder from "androidx.activity.result.PickVisualMediaRequest.Builder";
+import Context from 'com.alibaba.fastjson.parser.deserializer.ASMDeserializerFactory.Context';
+import MediaStore from 'android.provider.MediaStore';
+import Activity from "android.app.Activity"
+import Intent from 'android.content.Intent';
+import ChooseSystemImageActivity from "uts.sdk.modules.uniChooseSystemImage.ChooseSystemImageActivity"
+
+/* 引入 unierror.uts 文件中定义的变量 */
+import { ImageErrorImpl } from '../unierror';
+import ChooseVideoOptions from 'uts.sdk.modules.DCloudUniMedia.ChooseVideoOptions';
+import BitmapFactory from 'android.graphics.BitmapFactory';
+import File from 'java.io.File';
+import FileInputStream from 'java.io.FileInputStream';
+import FileOutputStream from 'java.io.FileOutputStream';
+import InputStream from 'java.io.InputStream';
+import Build from 'android.os.Build';
+import Parcelable from 'android.os.Parcelable';
+import Media from 'uts.sdk.modules.uniChooseSystemImage.Media';
+
+var resultCallback : ((requestCode : Int, resultCode : Int, data ?: Intent) => void) | null = null
+
+export const chooseSystemImage : ChooseSystemImage = function (option : ChooseSystemImageOptions) {
+	if (option.count <= 0) {
+		var error = new ImageErrorImpl(2101002, "uni-chooseSystemImage")
+		option.fail?.(error)
+		option.complete?.(error)
+		return
+	}
+	if (Build.VERSION.SDK_INT > 32 || UTSAndroid.getUniActivity()!.applicationInfo.targetSdkVersion >= 33) {
+		__chooseSystemImage(option)
+	} else {
+		UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, [android.Manifest.permission.READ_EXTERNAL_STORAGE], (a : boolean, b : string[]) => {
+			__chooseSystemImage(option)
+		}, (a : boolean, b : string[]) => {
+			var error = new ImageErrorImpl(2101005, "uni-chooseSystemImage")
+			option.fail?.(error)
+			option.complete?.(error)
+		})
+	}
+}
+
+export const chooseSystemMedia : ChooseSystemMedia = function (option : ChooseSystemMediaOptions) {
+	if (option.count <= 0) {
+		var error = new ImageErrorImpl(2101002, "uni-chooseSystemMedia")
+		option.fail?.(error)
+		option.complete?.(error)
+		return
+	}
+	if (option.count > 100) {
+		option.count = 100
+	}
+	if (Build.VERSION.SDK_INT > 32 || UTSAndroid.getUniActivity()!.applicationInfo.targetSdkVersion >= 33) {
+		__chooseSystemMedia(option)
+	} else {
+		UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, [android.Manifest.permission.READ_EXTERNAL_STORAGE], (a : boolean, b : string[]) => {
+			__chooseSystemMedia(option)
+		}, (a : boolean, b : string[]) => {
+			var error = new ImageErrorImpl(2101005, "uni-chooseSystemMedia")
+			option.fail?.(error)
+			option.complete?.(error)
+		})
+	}
+}
+
+function __chooseSystemMedia(option : ChooseSystemMediaOptions) {
+	try {
+		resultCallback = (requestCode : Int, resultCode : Int, data : Intent | null) => {
+			UTSAndroid.offAppActivityResult(resultCallback!)
+			if (10086 == requestCode && resultCode == -1) {
+				if (data != null) {
+					var result = data!.getParcelableArrayExtra("paths")
+					if (result != null && result!.size > 0) {
+						var paths : Array<string> = []
+						result.forEach((p : Parcelable) => {
+							if (p instanceof Media)
+								if (UTSAndroid.isUniAppX()) {
+									paths.push("file://" + (p.path!))
+								} else {
+									if (p.type == 1) {
+										paths.push("file://" + copyResource(p.path!))
+									} else {
+										paths.push("file://" + (p.path!))
+									}
+								}
+						})
+						var success : ChooseSystemMediaSuccessResult = {
+							filePaths: paths
+						}
+						option.success?.(success)
+						option.complete?.(success)
+					} else {
+						var error = new ImageErrorImpl(2101001, "uni-chooseSystemMedia")
+						option.fail?.(error)
+						option.complete?.(error)
+					}
+				} else {
+					var error = new ImageErrorImpl(2101001, "uni-chooseSystemMedia")
+					option.fail?.(error)
+					option.complete?.(error)
+				}
+			} else {
+				var error = new ImageErrorImpl(2101001, "uni-chooseSystemMedia")
+				option.fail?.(error)
+				option.complete?.(error)
+			}
+		}
+		UTSAndroid.onAppActivityResult(resultCallback!)
+		var intent = new Intent(UTSAndroid.getUniActivity()!, Class.forName("uts.sdk.modules.uniChooseSystemImage.ChooseSystemImageActivity"))
+		intent.putExtra("count", option.count)
+		if (option.mediaType != null) {
+			if (option.mediaType!.indexOf("mix") >= 0) {
+				intent.putExtra("type", 3)
+			} else if (option.mediaType!.indexOf("image") >= 0) {
+				intent.putExtra("type", 1)
+			} else if (option.mediaType!.indexOf("video") >= 0) {
+				intent.putExtra("type", 2)
+			} else {
+				intent.putExtra("type", 1)
+			}
+		}
+		switch (option.pageOrientation) {
+			case "auto": {
+				intent.putExtra("page_orientation", 2)
+				break
+			}
+			case "portrait": {
+				intent.putExtra("page_orientation", 1)
+				break
+			}
+			case "landscape": {
+				intent.putExtra("page_orientation", 0)
+				break
+			}
+			default: {
+				intent.putExtra("page_orientation", 1)
+				break
+			}
+		}
+		UTSAndroid.getUniActivity()!.startActivityForResult(intent, 10086)
+	} catch (e) {
+		var error = new ImageErrorImpl(2101010, "uni-chooseSystemMedia")
+		option.fail?.(error)
+		option.complete?.(error)
+	}
+
+}
+
+function __chooseSystemImage(option : ChooseSystemImageOptions) {
+	try {
+		resultCallback = (requestCode : Int, resultCode : Int, data : Intent | null) => {
+			UTSAndroid.offAppActivityResult(resultCallback!)
+			if (10086 == requestCode && resultCode == -1) {
+				if (data != null) {
+					var result = data!.getParcelableArrayExtra("paths")
+					if (result != null && result!.size > 0) {
+						var paths : Array<string> = []
+						result.forEach((p : Parcelable) => {
+							if (p instanceof Media)
+								if (UTSAndroid.isUniAppX()) {
+									paths.push("file://" + (p.path!))
+								} else {
+									if (p.type == 1) {
+										paths.push("file://" + copyResource(p.path!))
+									} else {
+										paths.push("file://" + (p.path!))
+									}
+								}
+						})
+						var success : ChooseSystemImageSuccessResult = {
+							filePaths: paths
+						}
+						option.success?.(success)
+						option.complete?.(success)
+					} else {
+						var error = new ImageErrorImpl(2101001, "uni-chooseSystemImage")
+						option.fail?.(error)
+						option.complete?.(error)
+					}
+				} else {
+					var error = new ImageErrorImpl(2101001, "uni-chooseSystemImage")
+					option.fail?.(error)
+					option.complete?.(error)
+				}
+			} else {
+				var error = new ImageErrorImpl(2101001, "uni-chooseSystemImage")
+				option.fail?.(error)
+				option.complete?.(error)
+			}
+		}
+		UTSAndroid.onAppActivityResult(resultCallback!)
+		var intent = new Intent(UTSAndroid.getUniActivity()!, Class.forName("uts.sdk.modules.uniChooseSystemImage.ChooseSystemImageActivity"))
+		intent.putExtra("count", option.count)
+		intent.putExtra("type", 1)
+		UTSAndroid.getUniActivity()!.startActivityForResult(intent, 10086)
+	} catch (e) {
+		var error = new ImageErrorImpl(2101010, "uni-chooseSystemImage")
+		option.fail?.(error)
+		option.complete?.(error)
+	}
+}
+
+var CACHEPATH = UTSAndroid.getAppCachePath()
+function copyResource(url : string) : string {
+	var path : String = CACHEPATH!
+	if (CACHEPATH?.endsWith("/") == true) {
+		path = CACHEPATH + "uni-getSystemMedia/"
+	} else {
+		path = CACHEPATH + "/uni-getSystemMedia/"
+	}
+	path = path + new File(url).getName()
+	copyFile(url, path)
+	return path
+}
+
+function copyFile(fromFilePath : string, toFilePath : string) : boolean {
+	var fis : InputStream | null = null
+	try {
+		let fromFile = new File(fromFilePath)
+		if (!fromFile.exists()) {
+			return false;
+		}
+		if (!fromFile.isFile()) {
+			return false
+		}
+		if (!fromFile.canRead()) {
+			return false;
+		}
+		fis = new FileInputStream(fromFile);
+		if (fis == null) {
+			return false
+		}
+	} catch (e) {
+		return false;
+	}
+	let toFile = new File(toFilePath)
+	if (!toFile.getParentFile().exists()) {
+		toFile.getParentFile().mkdirs()
+	}
+	if (!toFile.exists()) {
+		toFile.createNewFile()
+	}
+	try {
+		let fos = new FileOutputStream(toFile)
+		let byteArrays = ByteArray(1024)
+		var c = fis!!.read(byteArrays)
+		while (c > 0) {
+			fos.write(byteArrays, 0, c)
+			c = fis!!.read(byteArrays)
+		}
+		fis!!.close()
+		fos.close()
+		return true
+	} catch (e) {
+		return false;
+	}
+}

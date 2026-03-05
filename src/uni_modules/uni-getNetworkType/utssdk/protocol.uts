@@ -1,0 +1,3 @@
+export const API_GET_NETWORK_TYPE = 'getNetworkType'
+export const API_ON_NETWORK_STATUS_CHANGE = 'onNetworkStatusChange'
+export const API_OFF_NETWORK_STATUS_CHANGE = 'offNetworkStatusChange'

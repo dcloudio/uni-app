@@ -1,0 +1,30 @@
+import { OpenAppAuthorizeSettingOptions, OpenAppAuthorizeSetting, OpenAppAuthorizeSettingSuccess, OpenAppAuthorizeSettingFail, OpenAppAuthorizeSettingComplete } from "../interface.uts";
+import { UTSiOS } from "DCloudUTSFoundation";
+import { UIApplication } from 'UIKit';
+
+export const openAppAuthorizeSetting: OpenAppAuthorizeSetting = function(settingOptions: OpenAppAuthorizeSettingOptions) {
+	const url = URL(string = UIApplication.openSettingsURLString)!
+	if (UIApplication.shared.canOpenURL(url)){
+		let op = new Map<UIApplication.OpenExternalURLOptionsKey, any>()
+		if (UTSiOS.available("iOS 10, *")) {
+		  UIApplication.shared.open(url,options=op,completionHandler=(result: Boolean):void => {
+			if(result){
+				const success : OpenAppAuthorizeSettingSuccess = { errMsg:"" }
+				const complete : OpenAppAuthorizeSettingComplete = { errMsg:"" }
+				settingOptions.success?.(success);
+				settingOptions.complete?.(complete);
+			}else{
+				const fail : OpenAppAuthorizeSettingFail = { errMsg: "unknown error"};
+				const complete : OpenAppAuthorizeSettingComplete = { errMsg: "unknown error"}
+				settingOptions.fail?.(fail);
+				settingOptions.complete?.(complete);
+			}
+		  })
+		}
+	}else{
+		const fail : OpenAppAuthorizeSettingFail = { errMsg: "unknown error" };
+		const complete : OpenAppAuthorizeSettingComplete = { errMsg: "unknown error" }
+		settingOptions.fail?.(fail);
+		settingOptions.complete?.(complete);
+	}
+}

@@ -1,0 +1,6 @@
+// #ifdef WEB
+// vapor 临时处理
+class UniVueElement extends HTMLElement { }
+// #endif
+
+export class UniSwiperElement extends UniVueElement {}

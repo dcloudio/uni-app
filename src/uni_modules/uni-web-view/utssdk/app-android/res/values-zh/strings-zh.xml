@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="uniappx_webview_safety_warning">安全警告</string>
+    <string name="uniappx_webview_certificate_continue">此站点安全证书存在问题,是否继续?</string>
+    <string name="uniappx_webview_choose_an_action">选择操作</string>
+    <string name="uniappx_webview_no_camera_permission">无相机权限，请前往系统设置中开启</string>
+    <string name="uniappx_webview_no_location_permission">无位置权限，请前往系统设置中开启</string>
+</resources>

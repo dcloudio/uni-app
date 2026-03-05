@@ -34,8 +34,6 @@ export const uniStat = definePlugin({
 		// 未关联服务空间
 		if (Stat.no_space && (options.enable == null || options.enable == true)) return
 		stat_instance.init(options)
-		/* #ifndef VUE3-VAPOR */
 		app.mixin(lifecycle)
-		/* #endif */
 	}
 })

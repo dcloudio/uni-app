@@ -1,0 +1,14 @@
+//
+//  AlipaySDK.modulemap
+//  AlipaySDK
+//
+//  Created by mingsheng on 2023/11/14.
+//  Copyright © 2023 Alipay. All rights reserved.
+//
+
+framework module AlipaySDK {
+    umbrella header "AlipaySDKModule.h"
+
+    export *
+    module * { export * }
+}

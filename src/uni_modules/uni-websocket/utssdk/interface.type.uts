@@ -1,0 +1,38 @@
+
+export type SocketDataOptions =
+	/**
+	 * @description 字符串
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "x",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "x"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "x",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "x"
+	 *        }
+	 *    }
+	 * }
+	 */
+	String
+	/**
+	 * @description ArrayBuffer
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "x",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "x"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "x",
+	 *  		  "uniVer": "√",
+	 * 			  "unixVer": "x"
+	 *        }
+	 *    }
+	 * }
+	 */
+	| ArrayBuffer;

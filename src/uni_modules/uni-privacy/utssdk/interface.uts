@@ -1,0 +1,568 @@
+export interface Uni {
+
+  /**
+   * 开启监听隐私协议状态改变
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/privacy.html#onprivacyauthorizationchange
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/privacy.html#onprivacyauthorizationchange
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31"
+        },
+        "harmony": {
+          "osVer": "5.0",
+          "uniVer": "x",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   * @example
+    ```typescript
+    const id = uni.onPrivacyAuthorizationChange((res) => {
+
+    })
+    ```
+   */
+  onPrivacyAuthorizationChange(callback: OnPrivacyAuthorizationChangeCallback): number
+
+  /**
+   * 取消监听隐私协议状态改变
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/privacy.html#offprivacyauthorizationchange
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/privacy.html#offprivacyauthorizationchange
+   * @param {number} id 开启监听隐私协议状态改变返回的id
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31"
+        },
+        "harmony": {
+          "osVer": "5.0",
+          "uniVer": "x",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   * @example
+    ```typescript
+    uni.offPrivacyAuthorizationChange(id)
+    ```
+   */
+  offPrivacyAuthorizationChange(id: number): void
+
+  /**
+   * 获取隐私协议状态
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/privacy.html#getprivacysetting
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/privacy.html#getprivacysetting
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31"
+        },
+        "harmony": {
+          "osVer": "5.0",
+          "uniVer": "x",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   * @example
+    ```typescript
+    uni.getPrivacySetting({
+      success: (res) => {
+        console.log('success')
+      },
+      fail: (err) => {
+        console.log(err)
+      },
+      complete: (res) => {
+        console.log('complete')
+      }
+    })
+    ```
+   */
+  getPrivacySetting(options: GetPrivacySettingOptions): void
+
+  /**
+   * 重置隐私协议状态为未同意
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/privacy.html#resetprivacyauthorization
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/privacy.html#resetprivacyauthorization
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31"
+        },
+        "harmony": {
+          "osVer": "5.0",
+          "uniVer": "x",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   * @example
+    ```typescript
+    uni.resetPrivacyAuthorization()
+    ```
+   */
+  resetPrivacyAuthorization(): void
+}
+
+export type OnPrivacyAuthorizationChange = (callback: OnPrivacyAuthorizationChangeCallback) => number
+
+export type OffPrivacyAuthorizationChange = (id: number) => void
+
+export type OnPrivacyAuthorizationChangeCallback = (res: PrivacyChangeResult) => void
+
+export type PrivacyChangeResult = {
+  /**
+   * 是否需要用户授权隐私协议(用户之前同意过返回false，没同意过则返回true)
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31"
+        },
+        "harmony": {
+          "osVer": "5.0",
+          "uniVer": "x",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   */
+  needAuthorization: boolean
+}
+
+export type GetPrivacySetting = (options: GetPrivacySettingOptions) => void
+
+export type GetPrivacySettingSuccessCallback = (result: GetPrivacySettingSuccessResult) => void;
+export type GetPrivacySettingFailCallback = (result: any) => void;
+export type GetPrivacySettingCompleteCallback = (result: any) => void;
+export type ResetPrivacyAuthorization = () => void
+
+export type GetPrivacySettingSuccessResult = {
+  /**
+   * 是否需要用户授权隐私协议(用户之前同意过返回false，没同意过则返回true)
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31"
+        },
+        "harmony": {
+          "osVer": "5.0",
+          "uniVer": "x",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   */
+  needAuthorization: boolean
+}
+
+export type GetPrivacySettingOptions = {
+  /**
+   * 接口调用成功的回调函数
+   * @defaultValue null
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31"
+        },
+        "harmony": {
+          "osVer": "5.0",
+          "uniVer": "x",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   */
+  success?: GetPrivacySettingSuccessCallback
+
+  /**
+   * 接口调用失败的回调函数
+   * @defaultValue null
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31"
+        },
+        "harmony": {
+          "osVer": "5.0",
+          "uniVer": "x",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   */
+  fail?: GetPrivacySettingFailCallback
+
+  /**
+   * 接口调用结束的回调函数（调用成功、失败都会执行）
+   * @defaultValue null
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "4.31",
+          "uniUtsPlugin": "4.31",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31"
+        },
+        "harmony": {
+          "osVer": "5.0",
+          "uniVer": "x",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   */
+  complete?: GetPrivacySettingCompleteCallback
+}

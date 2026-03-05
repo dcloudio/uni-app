@@ -1,0 +1,38 @@
+import {
+	InnerAudioContext,
+	CreateInnerAudioContext,
+	SetInnerAudioOption,
+	SetInnerAudioOptionOptions,
+	
+} from "../interface.uts"
+export { CreateInnerAudioContextFailImpl } from '../unierror.uts'
+
+export const createInnerAudioContext : CreateInnerAudioContext = function () : InnerAudioContext {
+
+	let player = new UniAudioPlayer()
+	return player
+}
+
+
+export const setInnerAudioOption : SetInnerAudioOption = function (options : SetInnerAudioOptionOptions) {
+	if (options.mixWithOther == null) {
+		UniAudioPlayer.mixWithOther = true
+	} else {
+		UniAudioPlayer.mixWithOther = options.mixWithOther
+	}
+	
+	if (options.speakerOn == null) {
+		UniAudioPlayer.speakerOn = true
+	} else {
+		UniAudioPlayer.speakerOn = options.speakerOn
+	}
+	
+	if (options.obeyMuteSwitch == null) {
+		UniAudioPlayer.obeyMuteSwitch = true
+	} else {
+		UniAudioPlayer.obeyMuteSwitch = options.obeyMuteSwitch
+	}
+	
+	options.success?.({})
+	options.complete?.({})
+}

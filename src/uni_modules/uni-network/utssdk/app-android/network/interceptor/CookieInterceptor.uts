@@ -1,0 +1,82 @@
+import Interceptor from 'okhttp3.Interceptor';
+import Response from 'okhttp3.Response';
+import CookieHandler from 'java.net.CookieHandler';
+import TreeMap from 'java.util.TreeMap';
+import Headers from 'okhttp3.Headers';
+import Request from 'okhttp3.Request';
+class CookieInterceptor implements Interceptor {
+
+	override intercept(chain : Interceptor.Chain) : Response {
+		let request = chain.request()
+		let headerCookie = request.header("cookie")
+		let uri = request.url().uri()
+		let cookieHandler = CookieHandler.getDefault()
+		if (headerCookie == null) {
+			let requestBuilder = request.newBuilder()
+			try {
+				let currentHeaders = this.toMap(request.headers())
+				let localCookie = cookieHandler.get(uri, currentHeaders)
+				this.addCookies(requestBuilder, localCookie)
+			} catch (e : Exception) {
+			}
+			request = requestBuilder.build()
+		}
+
+		let response = chain.proceed(request)
+
+		try {
+			cookieHandler.put(uri, this.toMap(response.headers()))
+		} catch (e : Exception) {
+		}
+
+		return response
+	}
+
+	private toMap(headers : Headers) : MutableMap<String, MutableList<String>> {
+		let result : MutableMap<String, MutableList<String>> = new TreeMap(String.CASE_INSENSITIVE_ORDER)
+		let size = headers.size()
+		for (let i:Int = 0; i < size; i++) {
+			let name = headers.name(i)
+			let values = result[name]
+			if (values == null) {
+				values = arrayListOf()
+				result[name] = values
+			}
+			values.add(headers.value(i))
+		}
+		return result
+	}
+
+	private addCookies(builder : Request.Builder, localCookie : MutableMap<String, MutableList<String>>) : void {
+
+		let totalList = mutableListOf<String>()
+		let flagList = mutableListOf<String>()
+		for (key in localCookie.keys) {
+			if (flagList.size == 2) {
+				break
+			}
+			if ("cookie".equals(key, true) || "cookie2".equals(key, true)) {
+				flagList.add(key)
+				let cookieList = localCookie[key]
+				if (!cookieList.isNullOrEmpty()) {
+					totalList.addAll(cookieList)
+				}
+			}
+		}
+		let headerStr = new StringBuilder()
+		for (let str in totalList) {
+			headerStr.append(str)
+			headerStr.append("; ")
+		}
+		if (headerStr.toString().endsWith("; ")) {
+			headerStr.deleteRange(headerStr.length - 2, headerStr.length - 1)
+		}
+		if (!headerStr.toString().isEmpty()){
+			builder.addHeader("Cookie", headerStr.toString())
+		}
+	}
+}
+
+export {
+	CookieInterceptor
+}

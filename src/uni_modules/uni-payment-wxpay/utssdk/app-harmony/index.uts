@@ -1,0 +1,130 @@
+import * as wxopensdk from '@tencent/wechat_open_sdk';
+import { PayReq } from '@tencent/wechat_open_sdk';
+import { AbilityConstant, common, Want } from '@kit.AbilityKit';
+
+interface UniPaymentWxpayProvider extends UniPaymentProvider {
+    isWeChatInstalled: boolean;
+}
+
+type OnWXReq = (req: wxopensdk.BaseReq) => void;
+type OnWXResp = (resp: wxopensdk.BaseResp) => void;
+
+const wxDefaultErrorCode: number = 700000
+const wxErrorCodeMap: Map<number, number> = new Map([
+    [
+        -1,
+        701100
+    ],
+    [
+        -2,
+        700601
+    ]
+])
+
+class WXApiEventHandlerImpl implements wxopensdk.WXApiEventHandler {
+    private onReqCallbacks: Map<OnWXReq, OnWXReq> = new Map();
+    private onRespCallbacks: Map<OnWXResp, OnWXResp> = new Map();
+
+    registerOnWXReqCallback(on: OnWXReq) {
+        this.onReqCallbacks.set(on, on);
+    }
+
+    unregisterOnWXReqCallback(on: OnWXReq) {
+        this.onReqCallbacks.delete(on);
+    }
+
+    registerOnWXRespCallback(on: OnWXResp) {
+        this.onRespCallbacks.set(on, on);
+    }
+
+    unregisterOnWXRespCallback(on: OnWXResp) {
+        this.onRespCallbacks.delete(on);
+    }
+
+    onReq(req: wxopensdk.BaseReq): void {
+        this.onReqCallbacks.forEach((on) => {
+            on(req);
+        });
+    }
+
+    onResp(resp: wxopensdk.BaseResp): void {
+        this.onRespCallbacks.forEach((on) => {
+            on(resp);
+        });
+    }
+}
+
+let WXApi = wxopensdk.WXAPIFactory.createWXAPI('');
+const WXEventHandler = new WXApiEventHandlerImpl();
+UTSHarmony.onAppAbilityNewWant((want: Want, _launchParam: AbilityConstant.LaunchParam): void => {
+    WXApi.handleWant(want, WXEventHandler);
+});
+
+class UniPaymentWxpayProviderImpl implements UniPaymentWxpayProvider {
+    id: string = "wxpay";
+    description: string = "微信支付";
+    isWeChatInstalled: boolean = false;
+    onWXResp: OnWXResp = (resp: wxopensdk.BaseResp) => {
+
+    }
+
+    constructor() {
+      try{
+        this.isWeChatInstalled = WXApi.isWXAppInstalled()
+      } catch{ }
+    }
+
+    requestPayment(options: RequestPaymentOptions) {
+        let params = options.orderInfo;
+        if (typeof params === 'string') {
+            try {
+                params = JSON.parse(params) ?? '';
+            } catch (error) {}
+        }
+        let req = new PayReq();
+        req.appId = params['appid'];
+        req.partnerId = params['partnerid'];
+        req.prepayId = params['prepayid'];
+        req.nonceStr = params['noncestr'];
+        req.timeStamp = params['timestamp'] + "";
+        req.packageValue = params['package'];
+        req.sign = params['sign'];
+        WXApi = wxopensdk.WXAPIFactory.createWXAPI(req.appId);
+        const finished = WXApi.sendReq(getContext() as common.UIAbilityContext, req);
+        const successHandle = () => {
+            const onWXResp : OnWXResp = (resp: wxopensdk.BaseResp) => {
+                if (resp.errCode === wxopensdk.ErrCode.ERR_OK) {
+                    options.success?.({} as RequestPaymentSuccess);
+                } else {
+                    options.fail?.({
+                        errCode: wxErrorCodeMap.get(resp.errCode) || wxDefaultErrorCode
+                    } as RequestPaymentFail);
+                }
+                WXEventHandler.unregisterOnWXRespCallback(onWXResp)
+            };
+            WXEventHandler.registerOnWXRespCallback(onWXResp);
+        };
+        const failHandle = () => {
+            options.fail?.({
+                errCode: 700000
+            } as RequestPaymentFail);
+        };
+        if (typeof finished == "boolean") {
+            if (finished) {
+              successHandle();
+            } else {
+              failHandle();
+            }
+        } else {
+            finished.then((res: boolean) => {
+              if (res) {
+                successHandle();
+              } else {
+                failHandle();
+              }
+            })
+        }
+    }
+}
+
+export { UniPaymentWxpayProviderImpl as UniPaymentWxpayProviderImpl };

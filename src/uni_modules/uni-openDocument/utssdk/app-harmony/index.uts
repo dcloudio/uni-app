@@ -1,0 +1,116 @@
+import {
+    API_OPEN_DOCUMENT
+} from '../protocol.uts'
+import {
+    OpenDocumentSuccess,
+    OpenDocumentOptions,
+    OpenDocument
+} from '../interface.uts'
+import fileUri from '@ohos.file.fileuri';
+import Want from '@ohos.app.ability.Want';
+import wantConstant from '@ohos.app.ability.wantConstant';
+import common from '@ohos.app.ability.common';
+import uniformTypeDescriptor from '@ohos.data.uniformTypeDescriptor'
+import fs from '@ohos.file.fs';
+import {
+    getEnv,
+} from '@dcloudio/uni-runtime'
+
+function getContentType(filePath: string, fileType?: string | null): string | void {
+    const extension = fileType || filePath.split('.').pop();
+    if (!extension) {
+        return;
+    }
+    const typeId = uniformTypeDescriptor.getUniformDataTypeByFilenameExtension('.' + extension)
+    const typeObj = uniformTypeDescriptor.getTypeDescriptor(typeId)
+    const mimeTypes = typeObj.mimeTypes
+    return mimeTypes[0]
+}
+
+function fileExists(filePath: string): boolean {
+    try {
+        fs.statSync(filePath)
+        return true
+    } catch (error) {
+        return false
+    }
+}
+
+class ErrorWithCode extends Error {
+    code: number
+    constructor(message: string, code: number) {
+        super(message)
+        this.name = 'ErrorWithCode'
+        this.code = code
+    }
+}
+
+async function _openDocument(options: OpenDocumentOptions): Promise<OpenDocumentSuccess> {
+    const filePath = options.filePath
+    let realPath = UTSHarmony.convert2AbsFullPath(filePath)
+    let fileContentType: string | undefined = undefined
+    if (options.fileType) {
+        fileContentType = (getContentType(filePath, options.fileType) || undefined) as string | undefined;
+        if (!fileContentType) {
+            throw new ErrorWithCode('file type not supported', 1300603);
+        }
+    }
+    if (realPath.indexOf('/') === 0) {
+        if (!fileExists(realPath)) {
+            throw new ErrorWithCode('file not exists', 1300602);
+        }
+    }
+    const fileName = filePath.split('/').pop()
+    const resourceDir = getContext().resourceDir
+    if (realPath.indexOf(resourceDir + '/') > -1) {
+
+        const saveMediaCachePath = getEnv().TEMP_PATH + '/openDocumentCache'
+        if (!fileExists(saveMediaCachePath)) {
+            fs.mkdirSync(saveMediaCachePath, true)
+        }
+        const cachedFileName = saveMediaCachePath + '/' + fileName
+        const srcFile = await fs.open(realPath, fs.OpenMode.READ_ONLY)
+        if (fileExists(cachedFileName)) {
+            await fs.unlink(cachedFileName)
+        }
+        const destFile = await fs.open(saveMediaCachePath + '/' + fileName, fs.OpenMode.WRITE_ONLY | fs.OpenMode.CREATE)
+        await fs.copyFile(srcFile.fd, destFile.fd)
+        await fs.close(srcFile)
+        await fs.close(destFile)
+        realPath = cachedFileName
+    }
+    const uri = fileUri.getUriFromPath(realPath);
+    const want: Want = {
+        flags: wantConstant.Flags.FLAG_AUTH_WRITE_URI_PERMISSION | wantConstant.Flags.FLAG_AUTH_READ_URI_PERMISSION | wantConstant.Flags.FLAG_AUTH_PERSISTABLE_URI_PERMISSION,
+        action: 'ohos.want.action.viewData', // wantConstant.Action.ACTION_VIEW 不可用，可用的wantConstant引用方式'@ohos.ability.wantConstant'已废弃
+        uri: uri,
+        type: fileContentType // 以打开zip为例，下载了应用商店8个解压缩应用，传入此参数仅能调起两个，不传可以调起4个。鸿蒙内置浏览器也是调起4个
+    }
+    const abilityContext = UTSHarmony.getUIAbilityContext() as common.UIAbilityContext
+    await abilityContext.startAbility(want)
+    return {} as OpenDocumentSuccess
+}
+
+export const openDocument: OpenDocument = defineAsyncApi<OpenDocumentOptions, OpenDocumentSuccess>(
+    API_OPEN_DOCUMENT,
+    function (options: OpenDocumentOptions, exec: ApiExecutor<OpenDocumentSuccess>) {
+        _openDocument(options).then(() => {
+            exec.resolve({} as OpenDocumentSuccess)
+        }, (err: Error) => {
+            exec.reject(err.message, { errCode: err instanceof ErrorWithCode ? err.code : 1300604 } as ApiError);
+        })
+    }
+) as OpenDocument
+
+export {
+    IOpenDocumentError,
+    OpenDocument,
+    OpenDocumentCompleteCallback,
+    OpenDocumentErrorCode,
+    OpenDocumentFail,
+    OpenDocumentFailCallback,
+    OpenDocumentOptions,
+    OpenDocumentSuccess,
+    OpenDocumentSuccessCallback,
+    OpenDocumentSupportedTypes
+} from '../interface.uts'

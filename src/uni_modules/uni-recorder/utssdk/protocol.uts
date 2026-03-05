@@ -1,0 +1,1 @@
+export const API_GET_RECORDER_MANAGER = 'getRecorderManager'

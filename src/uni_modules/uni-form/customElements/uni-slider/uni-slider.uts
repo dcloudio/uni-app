@@ -1,0 +1,453 @@
+const SLIDER_TRACK_HEIGHT = 2
+const SLIDER_THUMB_SHADOW = 4
+const SLIDER_VALUE_LEFT = 3
+const SLIDER_VALUE_WIDTH = 34
+const SLIDER_VALUE_FONT_SIZE = 14
+const SLIDER_BLOCK_SIZE_MIN_VALUE = 12
+const SLIDER_BLOCK_SIZE_MAX_VALUE = 28
+const SCALED_TOUCH_SLOP = 4
+
+type UniSliderChangeEventDetail = {
+  value : number
+}
+
+export class UniSliderChangeEvent extends UniCustomEvent<UniSliderChangeEventDetail> {
+  constructor(type : string, value : number) {
+    super(type, { value } as UniSliderChangeEventDetail)
+  }
+}
+
+export class UniSliderElement extends UniFormControlElement<number> implements UniCustomElement {
+  static get observedAttributes() : Array<string> {
+    return [
+      'min',
+      'max',
+      'step',
+      'value',
+      'show-value',
+      'active-background-color',
+      'background-color',
+      'block-size',
+      'fore-color',
+      'selected-color',
+      'block-color',
+      'active-color',
+      'color'
+    ]
+  }
+
+  // touch
+  private _sliderTrackWidth : number = 0
+  private _sliderWidth : number = 0
+  private _sliderOffsetX : number = 0
+  private _touchStartFlag = false
+  private _touchDownX : number = 0
+  private _touchDownY : number = 0
+  private _activeStatus : number = 0
+  private _uniResizeObserver! : UniResizeObserver
+  // drawing
+  private _drawingContext! : DrawableContext
+
+  // properties
+  private _min : number = 0
+  private _max : number = 100
+  private _step : number = 1
+  private _value : number = 0
+  private _showValue = false
+  private _initialValue = 0
+  private _initialValueFlag = false
+
+  constructor() {
+    super()
+
+    this.style.setProperty('marginTop', '1px')
+    this.style.setProperty('marginBottom', '1px')
+
+    this._drawingContext = this.getDrawableContext()!
+
+    this._updateSliderHeight()
+
+    this.addEventListener('touchstart', (e : UniTouchEvent) => {
+      this._onTouchStart(e)
+    });
+    this.addEventListener('touchmove', (e : UniTouchEvent) => {
+      this._onTouchMove(e)
+    });
+    this.addEventListener('touchend', (e : UniTouchEvent) => {
+      this._onTouchEnd(e)
+    });
+
+    this._uniResizeObserver = new UniResizeObserver(
+      (_ : Array<UniResizeObserverEntry>) => {
+        this._onResize()
+      }
+    )
+  }
+
+  // form
+  override get name() : string {
+    return this.getAttributeValue('name', '')
+  }
+  override set name(value : string) {
+    this.setAttribute('name', value)
+  }
+
+  override get value() : number {
+    return this._value
+  }
+
+  override set value(value : number) {
+    this._value = value
+    this._onRender()
+  }
+
+  override reset() {
+    this.value = this._initialValue
+  }
+
+  connectedCallback() {
+    this.getBoundingClientRectAsync()?.then((_ : DOMRect) => {
+      // TODO 在 scroll 中概率不正常
+      setTimeout(() => {
+        this._onResize()
+      }, 34)
+    })
+    this._uniResizeObserver!.observe(this)
+  }
+
+  disconnectedCallback() {
+    this._uniResizeObserver.disconnect()
+  }
+
+  attributeChangedCallback(name : string, oldValue : any | null, newValue : any | null) {
+    switch (name) {
+      case 'min':
+        this._min = newValue as number
+        break;
+      case 'max':
+        this._max = newValue as number
+        break;
+      case 'step':
+        this._step = newValue as number
+        break;
+      case 'value':
+        this._value = newValue as number
+        if (!this._initialValueFlag) {
+          this._initialValueFlag = true
+          this._initialValue = this._value
+        }
+        break;
+      case 'block-size':
+        this._updateSliderHeight()
+        break;
+      case 'show-value':
+        this._showValue = (typeof newValue == 'string' || newValue == true) ? true : false
+        break;
+    }
+
+    if (name == 'block-size' || name == 'show-value') {
+      this._onResize()
+    } else {
+      this._onRender()
+    }
+  }
+
+  private _onTouchStart(e : UniTouchEvent) {
+    if (this.disabled) {
+      return
+    }
+    if (e.changedTouches.length !== 1 || this._touchStartFlag) {
+      return
+    }
+
+    this._activeStatus = 0
+    this._touchDownX = e.changedTouches[0].pageX
+    this._touchDownY = e.changedTouches[0].pageY
+    // touch in value area
+    if (this._pointInValueArea(e.changedTouches[0].pageX)) {
+      e.preventDefault()
+      return
+    }
+    this._touchStartFlag = true
+  }
+
+  private _onTouchMove(e : UniTouchEvent) {
+    if (this.disabled) {
+      return
+    }
+    if (e.changedTouches.length !== 1 || !this._touchStartFlag) {
+      return
+    }
+
+    const x = e.changedTouches[0].pageX
+    const y = e.changedTouches[0].pageY
+    if (this._activeStatus === 2) {
+      return
+    }
+
+    const deltaX = Math.abs(this._touchDownX - x)
+    const deltaY = Math.abs(this._touchDownY - y)
+
+    if (this._activeStatus !== 1) {
+      if (deltaX <= SCALED_TOUCH_SLOP && deltaY >= SCALED_TOUCH_SLOP) {
+        this._activeStatus = 2
+        return
+      }
+      if (deltaX >= SCALED_TOUCH_SLOP && deltaY <= SCALED_TOUCH_SLOP) {
+        this._activeStatus = 1
+      }
+    }
+
+    if (this._activeStatus !== 1) {
+      return
+    }
+
+    e.preventDefault()
+
+    this._onTrackInputChange(x)
+
+    this.dispatchEvent(new UniSliderChangeEvent('changing', this._value))
+  }
+
+  private _onTouchEnd(e : UniTouchEvent) {
+    if (this.disabled) {
+      return
+    }
+    if (!this._touchStartFlag) {
+      return
+    }
+
+    this._touchStartFlag = false
+    this._touchDownX = 0
+    this._touchDownY = 0
+
+    if (this._activeStatus === 2) {
+      return
+    }
+
+    this._onTrackInputChange(e.changedTouches[0].pageX)
+
+    this.dispatchEvent(new UniSliderChangeEvent('change', this._value))
+  }
+
+  // private _pointInThumbArea(x: number): boolean {
+  //   const value_width = this._sliderTrackWidth * this._getValuePercentage()
+  //   const thumb_x = this._sliderOffsetX + value_width
+  //   if (x > thumb_x && x < thumb_x + this.internalBlockSize) {
+  //     return true
+  //   }
+  //   return false
+  // }
+
+  private _pointInValueArea(x : number) : boolean {
+    return (x > this._sliderOffsetX + this._sliderTrackWidth + this.internalBlockSize / 2)
+  }
+
+  private _onTrackInputChange(x : number) {
+    let px = x - this._sliderOffsetX
+    if (px < 0) {
+      px = 0
+    }
+    if (px > this._sliderTrackWidth) {
+      px = this._sliderTrackWidth
+    }
+
+    const percentage = px / this._sliderTrackWidth
+    let value = this.min + (this.max - this.min) * percentage
+    if (percentage > 0 && percentage < 1) {
+      value -= value % this.step
+    }
+
+    if (Number.isInteger(this.step)) {
+      // TODO
+      this._value = parseInt(value + '')
+    } else {
+      const step_pair = this.step.toString().split('.')
+      this._value = parseFloat(
+        value.toFixed(step_pair[1].length)
+      )
+      // TODO
+      const value_pair = this._value.toString().split('.')
+      if (value_pair.length > 1 && parseInt(value_pair[1]) == 0) {
+        this._value = parseInt(value_pair[0])
+      }
+    }
+
+    this._onRender()
+  }
+
+  private _onResize() {
+    this._onLayout()
+    this._onRender()
+  }
+
+  private _onLayout() {
+    this._sliderWidth = this.offsetWidth
+    this._sliderOffsetX = this.getBoundingClientRect().x + this.internalBlockSize / 2
+    this._sliderTrackWidth = this._sliderWidth - this.internalBlockSize
+    if (this.showValue) {
+      this._sliderTrackWidth -= SLIDER_VALUE_WIDTH
+    }
+  }
+
+  private _onRender() {
+    const drawContext = this._drawingContext!
+
+    drawContext.reset()
+
+    const radius = this.internalBlockSize / 2
+    const center_y = SLIDER_THUMB_SHADOW + radius
+    const value_width = this._sliderTrackWidth * this._getValuePercentage()
+    const thumb_center_x = value_width + radius
+
+    // track background
+    const line_bg_x = thumb_center_x + radius
+    const line_bg_w = this._sliderTrackWidth - line_bg_x + this.internalBlockSize
+    if (line_bg_w > 0) {
+      drawContext.fillStyle = this.backgroundColor
+      drawContext.fillRect(
+        line_bg_x,
+        center_y,
+        line_bg_w,
+        SLIDER_TRACK_HEIGHT
+      )
+    }
+
+    // track foreground
+    if (thumb_center_x > radius) {
+      const activeBackgroundColor =
+        this.activeBackgroundColor.length > 0
+          ? this.activeBackgroundColor
+          : this.activeColor
+      drawContext.fillStyle = activeBackgroundColor
+      drawContext.fillRect(0, center_y, value_width, SLIDER_TRACK_HEIGHT)
+    }
+
+    // thumb
+    const foreColor = this.foreColor.length > 0 ? this.foreColor : this.blockColor
+    drawContext.fillStyle = foreColor
+    drawContext.arc(thumb_center_x, center_y, radius, 0, 2 * Math.PI)
+    drawContext.fill()
+
+    // thumb shadow
+    drawContext.lineWidth = 1
+    for (let i = 0; i < SLIDER_THUMB_SHADOW; i++) {
+      drawContext.strokeStyle = `rgba(100,100,100,0.0${4 - i})`
+      drawContext.beginPath()
+      drawContext.arc(thumb_center_x, center_y, radius + i, 0, 2 * Math.PI)
+      drawContext.stroke()
+    }
+
+    // value
+    if (this.showValue) {
+      drawContext.font = SLIDER_VALUE_FONT_SIZE + 'px'
+      drawContext.fillStyle = this.valueColor
+      drawContext.fillText(
+        this._value.toString(),
+        this._sliderTrackWidth + this.internalBlockSize + SLIDER_VALUE_LEFT,
+        center_y + SLIDER_VALUE_FONT_SIZE / 2 - 1
+      )
+    }
+
+    drawContext.update()
+  }
+
+  private _getValuePercentage() : number {
+    let value = this._value
+    if (value < this.min) {
+      value = this.min
+    }
+    if (value > this.max) {
+      value = this.max
+    }
+    if (this.max <= this.min) {
+      return 0
+    }
+    return (value - this.min) / (this.max - this.min)
+  }
+
+  private _updateSliderHeight() {
+    const height = this.internalBlockSize + SLIDER_THUMB_SHADOW * 2
+    this.style.setProperty('height', height + 'px')
+  }
+
+  private get internalBlockSize() : number {
+    return Math.min(Math.max(this.blockSize, SLIDER_BLOCK_SIZE_MIN_VALUE), SLIDER_BLOCK_SIZE_MAX_VALUE)
+  }
+
+  get disabled() : boolean {
+    return this.getAttribute('disabled') == 'true' ? true : false
+  }
+
+  get min() : number {
+    return this._min
+  }
+
+  set min(value : number) {
+    this._min = value
+  }
+
+  get max() : number {
+    return this._max
+  }
+
+  set max(value : number) {
+    this._max = value
+  }
+
+  get step() : number {
+    return this._step
+  }
+
+  set step(value : number) {
+    this._step = value
+  }
+
+  get showValue() : boolean {
+    return this._showValue
+  }
+
+  set showValue(value : boolean) {
+    this._showValue = value
+  }
+
+  get blockSize() : number {
+    const value = this.getAttribute('blockSize')
+    if (value != null && value!.length > 0) {
+      return parseInt(value!)
+    }
+    return SLIDER_BLOCK_SIZE_MAX_VALUE
+  }
+
+  get backgroundColor() : string {
+    return this.getAttributeValue('backgroundColor', '#e9e9e9')
+  }
+
+  get activeBackgroundColor() : string {
+    return this.getAttributeValue('activeBackgroundColor', this.activeColor)
+  }
+
+  get activeColor() : string {
+    return this.getAttributeValue('activeColor', '#007aff')
+  }
+
+  get foreColor() : string {
+    return this.getAttributeValue('foreColor', this.blockColor)
+  }
+
+  get blockColor() : string {
+    return this.getAttributeValue('blockColor', '#ffffff')
+  }
+
+  get valueColor() : string {
+    return this.getAttributeValue('valueColor', '#888888')
+  }
+
+  private getAttributeValue(key : string, defaultValue : string) : string {
+    const value = this.getAttribute(key)
+    if (value != null && value!.length > 0) {
+      return value!
+    }
+    return defaultValue
+  }
+}

@@ -1,0 +1,310 @@
+import { UTSiOS } from "DCloudUniappRuntime";
+import { UIActivityViewController, UIActivity, UIImage } from "UIKit";
+import { URL, Data, FileManager, URLResourceKey } from "Foundation";
+import { UTType } from "UniformTypeIdentifiers";
+
+import { DispatchGroup, DispatchQueue } from "Dispatch"
+import {
+	ShareWithSystem,
+	ShareWithSystemOptions,
+	ShareWithSystemSuccess
+} from "../interface.uts";
+import { ShareWithSystemFailImpl } from '../unierror.uts';
+
+export const shareWithSystem : ShareWithSystem = function (options : ShareWithSystemOptions) {
+
+	ShareManager.options = options
+
+	if (options.href == null
+		&& options.imageUrl == null
+		&& options.imagePaths == null
+		&& options.summary == null
+		&& options.videoPaths == null
+		&& options.audioPaths == null
+		&& options.filePaths == null) {
+			
+		ShareManager.failedAction(1310601, null)
+		return
+	}
+
+	let items : Array<any> = []
+
+	if (options.summary != null) {
+		items.push(options.summary!)
+	}
+
+	const dispatchGroup = DispatchGroup()
+
+	if (options.imageUrl != null) {
+		dispatchGroup.enter()
+		UTSiOS.loadImage(options.imageUrl!, (image ?: UIImage, data ?: Data) : void => {
+			if (image != null && ShareManager.getValidPath(options.imageUrl!) != null) {
+				items.push(ShareManager.getValidPath(options.imageUrl!)!)
+				dispatchGroup.leave()
+			} else {
+				const errMsg = "Invalid imageUrl: " + options.imageUrl!
+				ShareManager.failedAction(1310603, errMsg)
+			}
+
+		})
+	}
+
+	if (options.imagePaths != null && options.imagePaths!.count > 0) {
+		let temp = "Invalid imagePaths: "
+		let list : string[] = Array()
+		let index = 0
+		options.imagePaths!.forEach((value, key) => {
+			dispatchGroup.enter()
+			UTSiOS.loadImage(value, (image : UIImage | null, data : Data | null) : void => {
+				index += 1
+				if (image != null && ShareManager.getValidPath(value) != null) {
+					items.push(ShareManager.getValidPath(value)!)
+				} else {
+					list.add(value)
+					ShareManager.tempBreak = true
+				}
+				if (index == options.imagePaths!.count && ShareManager.tempBreak) {
+					temp = temp + list.toString()
+					ShareManager.failedAction(1310603, temp)
+				}
+				dispatchGroup.leave()
+			})
+		})
+	}
+
+	if (options.href != null) {
+		if (ShareManager.isValidHref(options.href!)) {
+			const url = URL(string = options.href!)
+			items.push(url!)
+		} else {
+			const errMsg = "Invalid href: " + options.href!
+			ShareManager.failedAction(1310604, errMsg)
+			return
+		}
+	}
+
+	if (options.videoPaths != null && options.videoPaths!.count > 0) {
+		let temp = "Invalid videoPaths: "
+		let list : string[] = Array()
+		let tempBreak = false
+
+		options.videoPaths!.forEach((value, key) => {
+			if (ShareManager.isValidVideoFile(value) && ShareManager.getValidPath(value) != null) {
+				items.push(ShareManager.getValidPath(value)!)
+			} else {
+				list.add(value)
+				tempBreak = true
+			}
+		})
+		if (tempBreak) {
+			temp = temp + list.toString()
+			ShareManager.failedAction(1310605, temp)
+			return
+		}
+	}
+
+	if (options.audioPaths != null && options.audioPaths!.count > 0) {
+		let temp = "Invalid audioPaths: "
+		let list : string[] = Array()
+		let tempBreak = false
+
+		options.audioPaths!.forEach((value, key) => {
+			if (ShareManager.isValidAudioFile(value) && ShareManager.getValidPath(value) != null) {
+				items.push(ShareManager.getValidPath(value)!)
+			} else {
+				list.add(value)
+				tempBreak = true
+			}
+		})
+		if (tempBreak) {
+			temp = temp + list.toString()
+			ShareManager.failedAction(1310607, temp)
+			return
+		}
+	}
+
+	if (options.filePaths != null && options.filePaths!.count > 0) {
+		let temp = "Invalid filePaths: "
+		let list : string[] = Array()
+		let tempBreak = false
+		options.filePaths!.forEach((value, key) => {
+			if (ShareManager.isValidPath(value) && ShareManager.getValidPath(value) != null) {
+				items.push(ShareManager.getValidPath(value)!)
+			} else {
+				list.add(value)
+				tempBreak = true
+			}
+		})
+		if (tempBreak) {
+			temp = temp + list.toString()
+			ShareManager.failedAction(1310606, temp)
+			return
+		}
+	}
+
+	dispatchGroup.notify(queue = DispatchQueue.main, execute = () : void => {
+		if (ShareManager.tempBreak) {
+			ShareManager.tempBreak = false
+			return
+		}
+
+		const activityVC = UIActivityViewController(activityItems = items, applicationActivities = null)
+
+		let completionWithItemsHandler : UIActivityViewController.CompletionWithItemsHandler = (activityType ?: UIActivity.ActivityType, completed : boolean, returnedItems ?: any[], activityError ?: NSError) : void => {
+			if (activityError != null) {
+				ShareManager.failedAction(1310602, activityError!.localizedDescription)
+			} else if (completed == true) {
+				ShareManager.successAction()
+			} else {
+				ShareManager.failedAction(1310600, null)
+			}
+		}
+		activityVC.completionWithItemsHandler = completionWithItemsHandler
+		
+		const isPad = UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad
+		if (isPad) {
+			let popoverController = activityVC.popoverPresentationController
+			if (popoverController != null) {
+				let sourceView = UTSiOS.getCurrentViewController().view
+				if (sourceView != null) {
+					let sourceRect = CGRect(x = sourceView!.bounds.midX, y = sourceView!.bounds.midY, width = 0.0, height = 0.0)	
+					popoverController!.sourceView = sourceView
+					popoverController!.sourceRect = sourceRect
+					popoverController!.permittedArrowDirections = UIPopoverArrowDirection.any
+				}
+			}
+		} 
+		
+		if (UIApplication.shared.keyWindow?.rootViewController != null) {
+			UIApplication.shared.keyWindow?.rootViewController?.present(activityVC, animated = true)
+		} else {
+			UTSiOS.getCurrentViewController().present(activityVC, animated = true)
+		}
+	})
+}
+
+class ShareManager {
+	static options : ShareWithSystemOptions | null
+	static tempBreak = false
+
+	static failedAction(errCode : number, errMsg ?: string | null) {
+		let err = new ShareWithSystemFailImpl(errCode, errMsg);
+		this.options?.fail?.(err)
+		this.options?.complete?.(err)
+	}
+
+	static successAction() {
+		let success = new ShareWithSystemSuccess()
+		this.options?.success?.(success)
+		this.options?.complete?.(success)
+	}
+
+	static isValidHref(href ?: string) : boolean {
+		if (href == null) {
+			return false
+		}
+		const url = URL(string = href!)
+		if (url == null || url?.scheme == null || url?.host == null) {
+			return false
+		}
+
+		if (["http", "https"].contains(url?.scheme?.lowercased())) {
+			return true
+		}
+		return false
+	}
+
+	static isValidPath(path : string) : boolean {
+		let temp = path
+		if (path.startsWith("file://")) {
+			temp = path.substring(7)
+		} else if (path.startsWith("/var/") == false) {
+			temp = UTSiOS.getResourcePath(path);
+		}
+		const url = URL(fileURLWithPath = temp)
+		if (FileManager.default.fileExists(atPath = url.path)) {
+			return true
+		}
+		return false
+	}
+
+	static getValidPath(path : string) : URL | null {
+		let temp = path
+		if (path.startsWith("file://")) {
+			temp = path.substring(7)
+		} else if (path.startsWith("/var/") == false) {
+			temp = UTSiOS.getResourcePath(path);
+		}
+		const url = URL(fileURLWithPath = temp)
+		if (FileManager.default.fileExists(atPath = url.path)) {
+			return url
+		}
+		return null
+	}
+
+	static isValidVideoFile(path : string) : boolean {
+		if (ShareManager.isValidPath(path)) {
+			const url = ShareManager.getValidPath(path)
+			if (url == null) {
+				return false
+			}
+			if (UTSiOS.available("iOS 14.0, *")) {
+				try {
+					const fileType = UTSiOS.try(url?.resourceValues(forKeys = [URLResourceKey.contentTypeKey]).contentType)
+
+					if (fileType != null) {
+						if (fileType!.conforms(to = UTType.movie) || fileType!.conforms(to = UTType.video)) {
+							return true
+						}
+					}
+				} catch (e) {
+					console.error(e)
+				}
+			} else {
+				const fileExtension = url?.pathExtension.lowercased()
+
+				const mediaExtensions : Array<String> = [
+					// Video formats
+					"mp4", "mov", "avi", "mkv", "flv", "webm", "3gp", "3g2", "wmv", "mpg", "mpeg", "m4v", "f4v", "f4p", "f4a", "f4b",
+					"ts", "mts", "m2ts", "vob", "rm", "rmvb", "asf", "swf", "divx", "xvid", "dv", "ogv", "ogm", "mxf", "roq", "nsv"
+				]
+
+				return mediaExtensions.contains(fileExtension ?? "")
+			}
+		}
+		return false
+	}
+
+	static isValidAudioFile(path : string) : boolean {
+		if (ShareManager.isValidPath(path)) {
+			const url = ShareManager.getValidPath(path)
+			if (url == null) {
+				return false
+			}
+			if (UTSiOS.available("iOS 14.0, *")) {
+				try {
+					const fileType = UTSiOS.try(url?.resourceValues(forKeys = [URLResourceKey.contentTypeKey]).contentType)
+
+					if (fileType != null) {
+						if (fileType!.conforms(to = UTType.movie) || fileType!.conforms(to = UTType.audio)) {
+							return true
+						}
+					}
+				} catch (e) {
+					console.error(e)
+				}
+			} else {
+				const fileExtension = url?.pathExtension.lowercased()
+
+				const mediaExtensions : Array<String> = [
+					// Audio formats
+					"mp3", "aac", "wav", "flac", "alac", "wma", "m4a", "ogg", "opus", "amr", "aiff", "aif", "aifc", "pcm", "au",
+					"ac3", "eac3", "caf", "dts", "mka"
+				]
+
+				return mediaExtensions.contains(fileExtension ?? "")
+			}
+		}
+		return false
+	}
+}

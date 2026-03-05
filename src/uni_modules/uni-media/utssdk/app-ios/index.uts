@@ -1,0 +1,309 @@
+import {
+	ChooseImageOptions, ChooseImage,
+	SaveImageToPhotosAlbum, SaveImageToPhotosAlbumOptions, SaveImageToPhotosAlbumSuccess,
+	GetImageInfo, GetImageInfoOptions, GetImageInfoSuccess,
+	CompressImage, CompressImageOptions,
+	ChooseVideo, ChooseVideoOptions,
+	SaveVideoToPhotosAlbum, SaveVideoToPhotosAlbumOptions, SaveVideoToPhotosAlbumSuccess,
+	GetVideoInfo, GetVideoInfoOptions,
+	CompressVideo, CompressVideoOptions,
+	ChooseFile, ChooseFileOptions, ChooseFileTempFile, ChooseFileSuccess
+} from "../interface.uts";
+import {
+	UniError_ChooseImage, UniError_SaveImageToPhotosAlbum,
+	UniError_GetImageInfo, UniError_CompressImage,
+	MediaErrorImpl,
+	UniError_ChooseVideo, UniError_SaveVideoToPhotosAlbum,
+	UniError_GetVideoInfo, UniError_CompressVideo,
+	UniError_ChooseFile
+} from "../unierror.uts"
+import { uniChooseImage, uniChooseVideo } from "./utils/chooseUtils.uts";
+import { requestAlbumPermission, requestCameraPermission, requestMicrophonePermission } from "./utils/requestPermission.uts";
+import { isNetUrl, getImageOrientation, getImageFormat, saveImage } from "./utils/handleImageUtils.uts";
+import { DCUniMediaPicker } from "./utils/mediaPicker.uts";
+import { UTSiOS } from "DCloudUTSFoundation";
+import { URL, Data, FileAttributeKey } from 'Foundation';
+import { UIImage } from 'UIKit';
+import { AVURLAsset, AVMediaType } from 'AVFoundation';
+import { UniJsSwiftApiWrapper } from 'DCloudUniappRuntime'
+import { PHPhotoLibrary } from "Photos";
+let mediaPicker : DCUniMediaPicker = new DCUniMediaPicker();
+
+export const chooseFile : ChooseFile = function (option : ChooseFileOptions) {
+	UniChooseFileManager.shared.chooseFile(count = option.count, type = option.type, extension = option.extension, sizeType = option.sizeType, sourceType = option.sourceType, completionHandler = (res ?: ChooseFileSuccess, errorCode ?: NSNumber) : void => {
+		if (errorCode != null) {
+			let err = new MediaErrorImpl(errorCode!, UniError_ChooseFile);
+
+			UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				option.fail?.(err)
+				option.complete?.(err)
+			})
+
+		} else if (res != null && res!.tempFiles != null) {
+			let tempFiles = new Array<ChooseFileTempFile>()
+			res!.tempFiles!.forEach((value, key) => {
+				let tempFile = new ChooseFileTempFile()
+				tempFile.name = value.name
+				tempFile.path = value.path
+				tempFile.size = value.size
+				tempFile.type = value.type
+				tempFiles.push(tempFile)
+			})
+
+			const result : ChooseFileSuccess = {
+				tempFilePaths: res!.tempFilePaths,
+				tempFiles: tempFiles
+			}
+
+			UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				option.success?.(result)
+				option.complete?.(result)
+			})
+		}
+	})
+}
+
+export const chooseImage : ChooseImage = function (option : ChooseImageOptions) {
+	uniChooseImage(option, function (count : number, index : number) {
+		if (index == 0) {
+			requestCameraPermission(function (status : number) {
+				if (status == 1) {
+					mediaPicker.chooseImageWithCamera(option)
+				} else {
+					let error = new MediaErrorImpl(1101005, UniError_ChooseImage);
+					option.fail?.(error)
+					option.complete?.(error)
+				}
+			})
+
+		} else if (index == 1) {
+			requestAlbumPermission("readWrite", function (status : number) {
+				if (status == 1) {
+					mediaPicker.chooseImageWithAlbum(option, count)
+				} else {
+					let error = new MediaErrorImpl(1101005, UniError_ChooseImage);
+					option.fail?.(error)
+					option.complete?.(error)
+				}
+			})
+		}
+	});
+}
+
+export const chooseVideo : ChooseVideo = function (option : ChooseVideoOptions) {
+	uniChooseVideo(option, (index : number) => {
+		if (index == 0) {
+			requestCameraPermission(function (status : number) {
+				if (status == 1) {
+					requestMicrophonePermission(function (status : number) {
+						if (status == 1) {
+							mediaPicker.chooseVideoWithCamera(option)
+						} else {
+							let error = new MediaErrorImpl(1101005, UniError_ChooseVideo);
+							option.fail?.(error)
+							option.complete?.(error)
+						}
+					})
+
+				} else {
+					let error = new MediaErrorImpl(1101005, UniError_ChooseVideo);
+					option.fail?.(error)
+					option.complete?.(error)
+				}
+			})
+
+		} else if (index == 1) {
+			requestAlbumPermission("readWrite", function (status : number) {
+				if (status == 1) {
+					mediaPicker.chooseVideoWithAlbum(option)
+				} else {
+					let error = new MediaErrorImpl(1101005, UniError_ChooseVideo);
+					option.fail?.(error)
+					option.complete?.(error)
+				}
+			})
+		}
+	})
+}
+
+// export const previewImage : PreviewImage = function (options : PreviewImageOptions) {
+// 	if (options.urls.length > 0) {
+// 		mediaPicker.preview(options);
+// 	} else {
+// 		let error = new MediaErrorImpl(1101002, UniError_PreviewImage);
+// 		options.fail?.(error)
+// 		options.complete?.(error)
+// 	}
+// }
+// export const closePreviewImage : ClosePreviewImage = function (options : ClosePreviewImageOptions) {
+// 	mediaPicker.closePreview();
+// 	let callback : ClosePreviewImageSuccess = {
+// 		errMsg: "ok"
+// 	}
+// 	options.success?.(callback)
+// 	options.complete?.(callback)
+// }
+
+export const saveImageToPhotosAlbum : SaveImageToPhotosAlbum = function (options : SaveImageToPhotosAlbumOptions) {
+	const path = UTSiOS.getResourceAbsolutePath(options.filePath, null)
+	let url = new URL(string = path)
+	if (url == null) {
+		let error = new MediaErrorImpl(1101003, UniError_SaveImageToPhotosAlbum);
+		options.fail?.(error)
+		options.complete?.(error)
+		return
+	}
+	requestAlbumPermission("addOnly", function (status : number) {
+		if (status == 1) {
+			try {
+				UTSiOS.try(PHPhotoLibrary.shared().performChangesAndWait(() : void => {
+					PHAssetCreationRequest.creationRequestForAssetFromImage(atFileURL = url!)
+				}))
+				let success : SaveImageToPhotosAlbumSuccess = {
+					"path": path
+				}
+				options.success?.(success)
+				options.complete?.(success)
+			} catch (e) {
+				let error = new MediaErrorImpl(1101006, UniError_SaveImageToPhotosAlbum);
+				options.fail?.(error)
+				options.complete?.(error)
+			}
+		} else {
+			let error = new MediaErrorImpl(1101005, UniError_SaveImageToPhotosAlbum);
+			options.fail?.(error)
+			options.complete?.(error)
+		}
+	})
+}
+
+export const saveVideoToPhotosAlbum : SaveVideoToPhotosAlbum = function (options : SaveVideoToPhotosAlbumOptions) {
+	const path = UTSiOS.getResourceAbsolutePath(options.filePath, null)
+	let url = new URL(string = path)
+	if (url == null) {
+		let error = new MediaErrorImpl(1101003, UniError_SaveVideoToPhotosAlbum);
+		options.fail?.(error)
+		options.complete?.(error)
+		return
+	}
+	requestAlbumPermission("addOnly", function (status : number) {
+		if (status == 1) {
+			try {
+				UTSiOS.try(PHPhotoLibrary.shared().performChangesAndWait(() : void => {
+					PHAssetCreationRequest.creationRequestForAssetFromVideo(atFileURL = url!)
+				}))
+				let success : SaveVideoToPhotosAlbumSuccess = {}
+				options.success?.(success)
+				options.complete?.(success)
+			} catch (e) {
+				let error = new MediaErrorImpl(1101006, UniError_SaveVideoToPhotosAlbum);
+				options.fail?.(error)
+				options.complete?.(error)
+			}
+		} else {
+			let error = new MediaErrorImpl(1101005, UniError_SaveVideoToPhotosAlbum);
+			options.fail?.(error)
+			options.complete?.(error)
+		}
+	})
+}
+
+export const getImageInfo : GetImageInfo = function (options : GetImageInfoOptions) {
+	if (options.src.length > 0) {
+		if (isNetUrl(options.src)) {
+			UTSiOS.loadImage(options.src, (image, data) => {
+				if (image != null) {
+					let imageData : Data | null = null;
+					if (data != null) {
+						imageData = data;
+					} else {
+						imageData = image!.jpegData(compressionQuality = 1.0);
+					}
+					const type = getImageFormat(imageData!);
+					const path = saveImage(imageData!, type);
+					if (path.count > 0) {
+						DispatchQueue.main.async(execute = () : void => {
+							let successCallback : GetImageInfoSuccess = {
+								"width": image!.size.width,
+								"height": image!.size.height,
+								"path": "file://" + path,
+								"orientation": getImageOrientation(image!),
+								"type": type
+							}
+							options.success?.(successCallback)
+							options.complete?.(successCallback)
+						})
+						return;
+					}
+				}
+				DispatchQueue.main.async(execute = () : void => {
+					let failCallback = new MediaErrorImpl(1101004, UniError_GetImageInfo);
+					options.fail?.(failCallback)
+					options.complete?.(failCallback)
+				})
+			});
+		} else {
+			const path = UTSiOS.getResourceAbsolutePath(options.src, null)
+			const url = new URL(fileURLWithPath = path);
+			let imageData : Data | null = null;
+			try {
+				imageData = UTSiOS.try(Data(contentsOf = url))
+			} catch (e) {
+				// console.log(e)
+			}
+
+			if (imageData != null) {
+				const image = new UIImage(data = imageData!);
+				if (image != null) {
+					let successCallback : GetImageInfoSuccess = {
+						"width": image!.size.width,
+						"height": image!.size.height,
+						"path": "file://" + path,
+						"orientation": getImageOrientation(image!),
+						"type": getImageFormat(imageData!)
+					}
+					options.success?.(successCallback)
+					options.complete?.(successCallback)
+					return;
+				}
+			}
+			let failCallback = new MediaErrorImpl(1101004, UniError_GetImageInfo);
+			options.fail?.(failCallback)
+			options.complete?.(failCallback)
+		}
+	} else {
+		let failCallback = new MediaErrorImpl(1101003, UniError_GetImageInfo);
+		options.fail?.(failCallback)
+		options.complete?.(failCallback)
+	}
+}
+
+export const getVideoInfo : GetVideoInfo = function (options : GetVideoInfoOptions) {
+	if (options.src.length > 0) {
+		mediaPicker.getVideoInfo(options);
+	} else {
+		let error = new MediaErrorImpl(1101003, UniError_GetVideoInfo);
+		options.fail?.(error)
+		options.complete?.(error)
+	}
+}
+
+export const compressImage : CompressImage = function (options : CompressImageOptions) {
+	if (options.src.length > 0) {
+		mediaPicker.compressImage(options);
+	} else {
+		let error = new MediaErrorImpl(1101003, UniError_CompressImage);
+		options.fail?.(error)
+		options.complete?.(error)
+	}
+}
+
+export const compressVideo : CompressVideo = function (options : CompressVideoOptions) {
+	if (options.src.length > 0) {
+		mediaPicker.compressVideo(options);
+	} else {
+		let error = new MediaErrorImpl(1101003, UniError_CompressVideo);
+		options.fail?.(error)
+		options.complete?.(error)
+	}
+}

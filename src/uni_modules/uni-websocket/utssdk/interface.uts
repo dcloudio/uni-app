@@ -1,0 +1,1939 @@
+export interface Uni {
+  /**
+    * 创建一个 WebSocket 连接。
+    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#connectsocket
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#connectsocket
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#connectsocket
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+        uni.connectSocket({
+            url: "ws://192.168.12.106:8080/ws",
+            complete: (e) => {
+              console.log("socket :", e);
+            }
+          });
+     ```
+    */
+  connectSocket(options: ConnectSocketOptions): SocketTask;
+
+  /**
+    * @description
+    * 监听WebSocket连接打开事件。
+    * @deprecated 已废弃，使用 SocketTask 的 onOpen 替换。
+    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#onsocketopen
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketopen
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketopen
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+      uni.onSocketOpen(function (res) {
+        console.log('WebSocket连接已打开！');
+      });
+     ```
+    */
+  onSocketOpen(options: OnSocketOpenCallback): void;
+
+  /**
+    * 监听WebSocket错误。
+    * @deprecated 已废弃，使用 SocketTask 的 onError 替换。
+    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#onsocketerror
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketerror
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketerror
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+      uni.onSocketError(function (res) {
+        console.log('WebSocket连接打开失败，请检查！');
+      });
+     ```
+    */
+  onSocketError(callback: OnSocketErrorCallback): void;
+
+  /**
+    * 通过 WebSocket 连接发送数据，需要先 uni.connectSocket，并在 uni.onSocketOpen 回调之后才能发送。
+    * @deprecated 已废弃，使用 SocketTask 的 send 替换。
+    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#sendsocketmessage
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#sendsocketmessage
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#sendsocketmessage
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+      uni.sendSocketMessage({
+        data: msg
+      });
+     ```
+    */
+  sendSocketMessage(options: SendSocketMessageOptions): void;
+
+  /**
+    * 监听WebSocket接受到服务器的消息事件。
+    * @deprecated 已废弃，使用 SocketTask 的 onMessage 替换。
+    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#onsocketmessage
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketmessage
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketmessage
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+      uni.onSocketMessage(function (res) {
+        console.log('收到服务器内容：' + res.data);
+      });
+     ```
+    */
+  onSocketMessage(callback: OnSocketMessageCallback): void;
+
+  /**
+    * 关闭 WebSocket 连接。
+    * @deprecated 已废弃，使用 SocketTask 的 close 替换。
+    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#closesocket
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#closesocket
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#closesocket
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+      uni.closeSocket();
+     ```
+    */
+  closeSocket(options: CloseSocketOptions): void;
+
+  /**
+    * 监听WebSocket关闭。
+    * @deprecated 已废弃，使用 SocketTask 的 onClose 替换。
+    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#onsocketclose
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketclose
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketclose
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+      uni.onSocketClose(function (res) {
+        console.log('WebSocket 已关闭！');
+      });
+     ```
+    */
+  onSocketClose(callback: OnSocketCloseCallback): void;
+}
+
+export type ConnectSocket = (options: ConnectSocketOptions) => SocketTask;
+export type ConnectSocketSuccess = {
+    errMsg: string
+};
+type ConnectSocketSuccessCallback = (result: ConnectSocketSuccess) => void;
+/**
+ * 错误码
+ * - 600009 URL格式不合法
+ */
+export type ConnectSocketErrorCode = 600009;
+
+/**
+ * 连接调用失败的错误回调参数
+ */
+export interface ConnectSocketFail extends IUniError {
+    errCode: ConnectSocketErrorCode;
+};
+
+type ConnectSocketFailCallback = (result: ConnectSocketFail) => void;
+type ConnectSocketComplete = any;
+type ConnectSocketCompleteCallback = (result: ConnectSocketComplete) => void;
+export type ConnectSocketOptions = {
+  /**
+   * 开发者服务器接口地址
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      }
+    }
+   */
+  url: string,
+
+  /**
+   * HTTP 请求 Header，header 中不能设置 Referer
+   * @defaultValue null
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      }
+    }
+   */
+  header?: UTSJSONObject | null,
+
+  /**
+   * 子协议数组
+   * @defaultValue null
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      }
+    }
+   */
+  protocols?: (string[]) | null,
+
+  /**
+   * 接口调用成功的回调函数
+   * @defaultValue null
+   */
+  success?: ConnectSocketSuccessCallback | null,
+
+  /**
+   * 接口调用失败的回调函数
+   * @defaultValue null
+   */
+  fail?: ConnectSocketFailCallback | null,
+
+  /**
+   * 接口调用结束的回调函数（调用成功、失败都会执行）
+   * @defaultValue null
+   */
+  complete?: ConnectSocketCompleteCallback | null
+};
+
+export type GeneralCallbackResult = {
+    /**
+     * 错误信息
+     */
+    errMsg: string
+};
+
+/**
+ * 错误码
+ */
+export type SendSocketMessageErrorCode =
+    /**
+     * 发送数据超限，发送队列不能超过16M大小。
+     */
+    10001 |
+    /**
+     * websocket未连接
+     */
+    10002 |
+    /**
+     * websocket系统错误
+     */
+    602001;
+
+/**
+ * 发送失败的错误回调参数
+ */
+export interface SendSocketMessageFail extends IUniError {
+    errCode: SendSocketMessageErrorCode;
+};
+export type SendSocketMessageOptions = {
+  /**
+   * 需要发送的内容, app平台从 4.61 版本开始支持ArrayBuffer
+   * @type string | ArrayBuffer
+   * @type {SocketDataOptions}
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      }
+    }
+   */
+  data: any,
+
+  /**
+   * 接口调用成功的回调函数
+   * @defaultValue null
+   */
+  success?: ((result: GeneralCallbackResult) => void) | null,
+
+  /**
+   * 接口调用失败的回调函数
+   * @defaultValue null
+   */
+  fail?: ((result: SendSocketMessageFail) => void) | null,
+
+  /**
+   * 接口调用结束的回调函数（调用成功、失败都会执行）
+   * @defaultValue null
+   */
+  complete?: ((result: any) => void) | null
+};
+
+export type CloseSocketOptions = {
+  /**
+   * 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭）
+   * @defaultValue 1000
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      }
+    }
+   */
+  code?: number | null,
+
+  /**
+   * 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符）
+   * @defaultValue ""
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      }
+    }
+   */
+  reason?: string | null,
+
+  /**
+   * 接口调用成功的回调函数
+   * @defaultValue null
+   */
+  success?: ((result: GeneralCallbackResult) => void) | null,
+
+  /**
+   * 接口调用失败的回调函数
+   * @defaultValue null
+   */
+  fail?: ((result: GeneralCallbackResult) => void) | null,
+
+  /**
+   * 接口调用结束的回调函数（调用成功、失败都会执行）
+   * @defaultValue null
+   */
+  complete?: ((result: GeneralCallbackResult) => void) | null
+};
+
+export type OnSocketOpenCallbackResult = {
+  /**
+   * 连接成功的 HTTP 响应 Header
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      }
+    }
+   */
+  header: any
+};
+
+export type OnSocketMessageCallbackResult = {
+  /**
+   * 服务器返回的消息, app平台从 4.61 版本开始支持ArrayBuffer
+   * @type {SocketDataOptions}
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      }
+    }
+   */
+  data: any
+};
+
+export interface SocketTask {
+  /**
+    * 通过 WebSocket 连接发送数据
+    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/socket-task.html#sockettask-send
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#send
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#send
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+      task.send({data:"halo"});
+     ```
+    */
+  send(options: SendSocketMessageOptions): void;
+
+  /**
+    * 关闭 WebSocket 连接
+    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/socket-task.html#sockettask-close
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#close
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#close
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+      task.close();
+     ```
+    */
+  close(options: CloseSocketOptions): void;
+
+  /**
+    * 监听 WebSocket 连接打开事件
+    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/socket-task.html#sockettask-onopen
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onopen
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onopen
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+      task.onOpen((res) => {})
+     ```
+    */
+  onOpen(callback: (result: OnSocketOpenCallbackResult) => void): void;
+
+  /**
+    * 监听 WebSocket 连接关闭事件
+    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/socket-task.html#sockettask-onclose
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onclose
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onclose
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+      task.onClose((res) => {
+      })
+     ```
+    */
+  onClose(callback: (result: any) => void): void;
+
+  /**
+    * onError()
+    * @description
+    * 监听 WebSocket 错误
+    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/socket-task.html#sockettask-onerror
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onerror
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onerror
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+      task.onError((res) => {
+      })
+     ```
+    */
+  onError(callback: (result: GeneralCallbackResult) => void): void;
+
+  /**
+    * 监听 WebSocket 接受到服务器的消息事件
+    *  @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/socket-task.html#sockettask-onmessage
+    *  @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onmessage
+    *  @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onmessage
+    * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+    * @example
+     ```typescript
+      task.onMessage((res) => {
+      })
+     ```
+    */
+  onMessage(callback: (result: OnSocketMessageCallbackResult) => void): void;
+};
+export type OnSocketOpenCallback = (result: OnSocketOpenCallbackResult) => void;
+
+export type OnSocketOpen = (options: OnSocketOpenCallback) => void;
+export type OnSocketErrorCallbackResult = {
+    /**
+     * 错误信息
+     */
+    errMsg: string
+};
+export type OnSocketErrorCallback = (result: OnSocketErrorCallbackResult) => void;
+
+export type OnSocketError = (callback: OnSocketErrorCallback) => void;
+
+export type SendSocketMessage = (options: SendSocketMessageOptions) => void;
+export type OnSocketMessageCallback = (result: OnSocketMessageCallbackResult) => void;
+
+export type OnSocketMessage = (callback: OnSocketMessageCallback) => void;
+
+export type CloseSocket = (options: CloseSocketOptions) => void;
+export type OnSocketCloseCallbackResult = {
+  /**
+   * 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      }
+    }
+   */
+  code: number,
+
+  /**
+   * 一个可读的字符串，表示连接被关闭的原因。
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "4.4",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      }
+    }
+   */
+  reason: string
+};
+export type OnSocketCloseCallback = (result: OnSocketCloseCallbackResult) => void;
+
+export type OnSocketClose = (callback: OnSocketCloseCallback) => void;

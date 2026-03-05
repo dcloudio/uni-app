@@ -1,0 +1,11 @@
+export const API_BASE64_TO_ARRAY_BUFFER = 'base64ToArrayBuffer'
+export const Base64ToArrayBufferProtocol = new Map<string, ProtocolOptions>([
+  [
+    'base64',
+    {
+      type: 'string',
+      required: true,
+    }
+  ]
+
+])

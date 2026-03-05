@@ -1,0 +1,89 @@
+import { util } from '@kit.ArkTS'
+import { fileIo } from '@kit.CoreFileKit'
+import { http } from '@kit.NetworkKit'
+import { bundleManager } from '@kit.AbilityKit'
+import { image } from '@kit.ImageKit'
+import { ShareWeixinErrorCode, SHARE_WEIXIN_UNI_ERROR_CODES } from '../unierror.uts'
+import { BusinessError } from '@kit.BasicServicesKit';
+import { getRealPath } from "@dcloudio/uni-runtime";
+
+class Helper {
+
+  public static getBase64(array : ArrayBuffer) : string {
+    let base64Helper = new util.Base64Helper()
+    return base64Helper.encodeToStringSync(new Uint8Array(array))
+  }
+
+  public static getLocalFile(path : string) : ArrayBuffer {
+    try {
+      let file = fileIo.openSync(path, fileIo.OpenMode.READ_ONLY)
+      let statInfo = fileIo.statSync(file.fd)
+      let array = new ArrayBuffer(statInfo.size)
+      fileIo.readSync(file.fd, array)
+      fileIo.closeSync(file)
+      return array
+    } catch (err) {
+      throw Helper.getError(ShareWeixinErrorCode.LOAD_LOCAL_FILEPATH_ERROR, (err as BusinessError).message)
+    }
+  }
+
+  public static downloadImage(url : string) : Promise<ArrayBuffer> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let httpRequest = http.createHttp();
+        let data = await httpRequest.request(url, { method: http.RequestMethod.GET } as http.HttpRequestOptions)
+        resolve(data.result as ArrayBuffer);
+      } catch (err) {
+        reject(Helper.getError(ShareWeixinErrorCode.DOWNLOAD_IMAGE_ERROR, (err as BusinessError).message))
+      }
+    })
+  }
+
+  public static async getImageBuffer(imageUrl : string) : Promise<ArrayBuffer> {
+    const imageRealPath = getRealPath(imageUrl);
+    const isNetworkImage = /^(http|https):\/\//.test(imageRealPath);
+    return isNetworkImage ? await Helper.downloadImage(imageRealPath) : Helper.getLocalFile(imageRealPath)
+  }
+
+  public static getMetadata(data : string) : string | undefined {
+    const bundleFlags = bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_METADATA |
+      bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION;
+    const bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleFlags);
+    if (!bundleInfo || !bundleInfo.appInfo.metadataArray) {
+      return undefined;
+    }
+    for (const item of bundleInfo.appInfo.metadataArray) {
+      if (item.metadata) {
+        return item.metadata.find(meta => meta.name === data)?.value
+      }
+    }
+    return undefined;
+  }
+
+  public static thumbImage(arrayBuffer : ArrayBuffer) : Promise<ArrayBuffer> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const thumbPixel = image.createImageSource(arrayBuffer).createPixelMapSync()
+        const imageBuffer = await image.createImagePacker().packToData(thumbPixel, { format: "image/png", quality: 100 } as image.PackingOption)
+        resolve(imageBuffer);
+      } catch (err) {
+        reject(Helper.getError(ShareWeixinErrorCode.GET_THUMB_IMAGE_ERROR, (err as BusinessError).message))
+      }
+    })
+  }
+
+  public static len(str : string) : number {
+    const encoder = new util.TextEncoder()
+    return encoder.encode(str).byteLength
+  }
+
+  public static getError(code : ShareWeixinErrorCode, message ?: string) : Error {
+    const _message = SHARE_WEIXIN_UNI_ERROR_CODES.get(code)!
+    message = message ? (_message + ', ' + message) : _message
+    return { code, message } as BusinessError
+  }
+}
+
+export {
+  Helper
+}

@@ -1,0 +1,105 @@
+import {
+    API_SCAN_CODE
+} from '../protocol.uts'
+import {
+    ScanCodeFail,
+    ScanCodeSuccess,
+    ScanCodeOptions,
+    ScanCode
+} from '../interface.uts'
+import { scanCore, scanBarcode } from '@kit.ScanKit';
+
+export {
+    ScanCodeFail,
+    ScanCodeSuccess,
+    ScanCodeOptions,
+}
+
+const isScanCoreSupported = canIUse('SystemCapability.Multimedia.Scan.Core');
+
+type UniScanOptionsTypes = 'barCode' | 'qrCode' | 'datamatrix' | 'pdf417'
+type UniScanResultTypes = "QR_CODE" | "AZTEC" | "CODABAR" | "CODE_39" | "CODE_93" | "CODE_128" | "DATA_MATRIX" | "EAN_8" | "EAN_13" | "ITF" | "MAXICODE" | "PDF_417" | "RSS_14" | "RSS_EXPANDED" | "UPC_A" | "UPC_E" | "UPC_EAN_EXTENSION" | "WX_CODE" | "CODE_25"
+
+const HarmonyScanTypeMap = isScanCoreSupported ? new Map<UniScanOptionsTypes, scanCore.ScanType[]>([
+    ['barCode', [scanCore.ScanType.ONE_D_CODE]],
+    ['qrCode', [scanCore.ScanType.TWO_D_CODE]],
+    ['datamatrix', [scanCore.ScanType.DATAMATRIX_CODE]],
+    ['pdf417', [scanCore.ScanType.PDF417_CODE]]
+]) : new Map<UniScanOptionsTypes, scanCore.ScanType[]>([])
+type HarmonyScanResultTypes = scanCore.ScanType.AZTEC_CODE |
+    scanCore.ScanType.CODABAR_CODE |
+    scanCore.ScanType.CODE128_CODE |
+    scanCore.ScanType.CODE39_CODE |
+    scanCore.ScanType.CODE93_CODE |
+    scanCore.ScanType.DATAMATRIX_CODE |
+    scanCore.ScanType.EAN13_CODE |
+    scanCore.ScanType.EAN8_CODE |
+    scanCore.ScanType.ITF14_CODE |
+    scanCore.ScanType.MULTIFUNCTIONAL_CODE |
+    scanCore.ScanType.PDF417_CODE |
+    scanCore.ScanType.QR_CODE |
+    scanCore.ScanType.UPC_A_CODE |
+    scanCore.ScanType.UPC_E_CODE
+
+const UniScanTypeMap = isScanCoreSupported ? new Map<HarmonyScanResultTypes, UniScanResultTypes>([
+    [scanCore.ScanType.AZTEC_CODE, 'AZTEC'],
+    [scanCore.ScanType.CODABAR_CODE, 'CODABAR'],
+    [scanCore.ScanType.CODE128_CODE, 'CODE_128'],
+    [scanCore.ScanType.CODE39_CODE, 'CODE_39'],
+    [scanCore.ScanType.CODE93_CODE, 'CODE_93'],
+    [scanCore.ScanType.DATAMATRIX_CODE, 'DATA_MATRIX'],
+    [scanCore.ScanType.EAN13_CODE, 'EAN_13'],
+    [scanCore.ScanType.EAN8_CODE, 'EAN_8'],
+    [scanCore.ScanType.ITF14_CODE, 'ITF'],
+    [scanCore.ScanType.PDF417_CODE, 'PDF_417'],
+    [scanCore.ScanType.QR_CODE, 'QR_CODE'],
+    [scanCore.ScanType.UPC_A_CODE, 'UPC_A'],
+    [scanCore.ScanType.UPC_E_CODE, 'UPC_E'],
+]) : new Map<HarmonyScanResultTypes, UniScanResultTypes>([])
+
+export const scanCode: ScanCode = defineAsyncApi<ScanCodeOptions, ScanCodeSuccess>(
+    API_SCAN_CODE,
+    function (options: ScanCodeOptions, exec: ApiExecutor<ScanCodeSuccess>) {
+        if (!isScanCoreSupported) {
+            exec.reject('not support');
+            return
+        }
+        let scanTypes: scanCore.ScanType[] = [];
+        if (options.scanType && Array.isArray(options.scanType) && options.scanType.length > 0) {
+            for (let i = 0; i < options.scanType.length; i++) {
+                const uniScanType = options.scanType[i];
+                const harmonyScanTypes = HarmonyScanTypeMap.get(uniScanType);
+                if (!harmonyScanTypes) {
+                    continue;
+                }
+                scanTypes = scanTypes.concat(harmonyScanTypes);
+            }
+        }
+        if (scanTypes.length === 0) {
+            scanTypes = [scanCore.ScanType.ALL];
+        }
+        const scanOptions: scanBarcode.ScanOptions = {
+            scanTypes,
+            enableMultiMode: true,
+            enableAlbum: !options.onlyFromCamera
+        };
+        scanBarcode.startScanForResult(UTSHarmony.getUIAbilityContext()!, scanOptions, (err, data) => {
+            if (err) {
+                exec.reject(err.message);
+                return;
+            }
+            exec.resolve({
+                result: data.originalValue,
+                scanType: UniScanTypeMap.get(data.scanType as HarmonyScanResultTypes) || '',
+            } as ScanCodeSuccess)
+        })
+    }
+) as ScanCode
+
+export {
+    ScanCode,
+    ScanCodeCompleteCallback,
+    ScanCodeFailCallback,
+    ScanCodeSuccessCallback,
+    ScanCodeSupportedTypes
+} from '../interface.uts'

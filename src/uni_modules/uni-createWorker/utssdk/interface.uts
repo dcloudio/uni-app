@@ -1,0 +1,158 @@
+export type WorkerOnErrorCallbackResultErrorCode =
+/**
+ * worker 运行错误
+ */
+5000501 |
+/**
+ * worker 序列化失败
+ */
+5000502 |
+/**
+ * worker 实例未运行
+ */
+5000503 |
+/**
+ * worker 线程中不支持调用的API。
+ */
+5000504 |
+/**
+ * worker 线程初始化失败
+ */
+5000505 |
+/**
+ * worker 文件路径无效
+ */
+5000506 |
+/**
+ * 非主线程调用worker API
+ */
+5000510 |
+/**
+ * worker 线程无效
+ */
+5000511
+
+export interface WorkerOnErrorCallbackResult extends IUniError {
+  errCode: WorkerOnErrorCallbackResultErrorCode
+};
+//监听消息Callback
+export type WorkerOnMessageCallback = (message: any) => void;
+//Worker错误callback
+export type WorkerOnErrorCallback = (result: WorkerOnErrorCallbackResult) => void;
+//发送消息扩展参数
+export type WorkerPostMessageOptions = {
+  /**
+   * 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false
+   * 仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable
+   *
+	 * @uniPlatform {
+	 *  "app": {
+	 *    "android": {
+	 *      "osVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+   *    "ios": {
+   *      "osVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "x",
+   *      "unixVer": "4.81",
+   *      "unixvVer": "5.0"
+   *    }
+	 *  },
+   * "web": {
+   *    "uniVer": "x",
+   *    "unixVer": "x"
+   *  }
+	 * }
+   */
+  harmonySendable?: boolean
+  /**
+   * 可转移对象数组，默认值为空数组
+   * 仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects
+   *
+	 * @uniPlatform {
+	 *  "app": {
+	 *    "android": {
+	 *      "osVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+   *    "ios": {
+   *      "osVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "x",
+   *      "unixVer": "4.81",
+   *      "unixvVer": "5.0"
+   *    }
+	 *  },
+   * "web": {
+   *    "uniVer": "x",
+   *    "unixVer": "4.81"
+   *  }
+	 * }
+   */
+  transfer?: any[]
+}
+//Worker对象
+export interface Worker {
+  /**
+   * 监听主线程/Worker 线程向当前线程发送的消息的事件。
+   */
+  onMessage(callback: WorkerOnMessageCallback): void;
+  /**
+   * 监听 Worker 线程错误事件。当 Worker 线程中发生脚本错误时会触发此事件。
+   */
+  onError(callback: WorkerOnErrorCallback): void;
+  /**
+   * 向主线程/Worker 线程发送的消息。
+   */
+  postMessage(message: any, options?: WorkerPostMessageOptions | null): void;
+  /**
+   * 结束当前 Worker 线程。仅限在主线程 worker 对象上调用。
+   */
+  terminate(): void;
+}
+export type CreateWorker = (url: string) => Worker
+export interface Uni {
+  /**
+   * 创建一个Worker对象
+   * @param url Worker脚本的URL
+   *
+	 * @uniPlatform {
+	 *  "app": {
+	 *    "android": {
+	 *      "osVer": "5.0",
+	 *      "uniVer": "x",
+	 *      "unixVer": "4.81",
+	 * 		"unixUtsPlugin": "4.81"
+	 *    },
+   *    "ios": {
+   *      "osVer": "12.0",
+   *      "uniVer": "x",
+   *      "unixVer": "x",
+   * 	  "unixUtsPlugin": "4.81"
+   *    },
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "x",
+   *      "unixVer": "4.81",
+   *      "unixUtsPlugin": "4.81"
+   *    }
+	 *  },
+   * "web": {
+   *    "uniVer": "x",
+   *    "unixVer": "4.81"
+   *  }
+	 * }
+   */
+  createWorker: CreateWorker
+}

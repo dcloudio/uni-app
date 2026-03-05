@@ -1,0 +1,64 @@
+// #ifndef UNI-APP-X
+import {
+    getOSRuntime,
+    onNativePageReady,
+} from '@dcloudio/uni-runtime'
+// #endif
+import {
+    PreviewImageOptions,
+    PreviewImageSuccess,
+    PreviewImage,
+    ClosePreviewImageOptions,
+    ClosePreviewImageSuccess,
+    ClosePreviewImage
+} from '../../interface.uts'
+import {
+    API_PREVIEW_IMAGE,
+    PreviewImageApiOptions,
+    PreviewImageApiProtocol,
+    API_CLOSE_PREVIEW_IMAGE
+} from '../../protocol.uts'
+import {
+    getRealPath
+} from '@dcloudio/uni-runtime'
+
+interface IPreviewImageOptions {
+    urls: string[]
+    current: string
+    showmenu: boolean
+}
+
+export const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(
+    API_PREVIEW_IMAGE,
+    function (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>) {
+        const currentUrl = typeof options.current === 'number' ? options.urls[options.current ?? 0] : options.current as string
+        onNativePageReady().then((nativePage: Object) => {
+            getOSRuntime().previewImage(
+                {
+                    urls: options.urls.map(url => getRealPath(url) as string),
+                    current: getRealPath(currentUrl || ''),
+                    showmenu: options.showmenu === false ? false : true,
+                } as IPreviewImageOptions,
+                nativePage
+            )
+            exec.resolve({
+                errSubject: 'uni-previewImage',
+                errMsg: ''
+            } as PreviewImageSuccess)
+        })
+    },
+    PreviewImageApiProtocol,
+    PreviewImageApiOptions
+) as PreviewImage
+
+export const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(
+    API_CLOSE_PREVIEW_IMAGE,
+    function (options: ClosePreviewImageOptions, exec: ApiExecutor<ClosePreviewImageSuccess>) {
+        onNativePageReady().then((nativePage: Object) => {
+            getOSRuntime().closePreviewImage()
+            exec.resolve({
+                errMsg: ''
+            } as ClosePreviewImageSuccess)
+        })
+    }
+) as ClosePreviewImage

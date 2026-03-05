@@ -1,0 +1,24 @@
+import { Alipay } from './Alipay.uts'
+import { UniPaymentAlipayProvider } from '../interface.uts'
+export class UniPaymentAlipayProviderImpl implements UniPaymentAlipayProvider, io.dcloud.uts.json.IJsonStringify{
+	override id : String = "alipay"
+	override description : String = "支付宝"
+	override isAppExist : boolean | null = null
+	
+	constructor(){}
+
+	override requestPayment(options : RequestPaymentOptions) {
+		new Alipay().requestPayment(options)
+	}
+	
+	/*
+	 * @internal
+	 */
+	override toJSON() : any | null {
+		let jsonRet = new UTSJSONObject()
+		jsonRet.set("id", this.id)
+		jsonRet.set("description", this.description)
+		jsonRet.set("isAppExist",this.isAppExist)
+		return jsonRet
+	}
+}

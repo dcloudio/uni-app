@@ -1,0 +1,122 @@
+import { initAndroidScanner, AndroidScanner, AndroidFrameScannerOptions, AndroidScannerListener, AndroidPhotoScannerOptions, BarcodeInformation as BridgeBarcodeInformation, ScreenShot as BridgeScreenShot } from '@/uni_modules/uni-camera';
+import Application from 'android.app.Application';
+import { Scanner } from "uts.sdk.modules.uniBarcodeScanning"
+import { ScreenShot, BarcodeInformation } from "uts.sdk.modules.uniBarcodeScanning.Scanner"
+
+let cachedPixelRatio : number = 0.0;
+
+function getPixelRatio() : number {
+	if (cachedPixelRatio > 0) {
+		return cachedPixelRatio;
+	}
+
+	const context = UTSAndroid.getAppContext();
+	if (context != null) {
+		cachedPixelRatio = context.getResources().getDisplayMetrics().density as number;
+		return cachedPixelRatio;
+	}
+
+	return 1.0;
+}
+
+class AndroidScannerImpl implements AndroidScanner {
+	override processScanBarCode(options : AndroidFrameScannerOptions) {
+		const imageProxy = options.imageProxy
+		const scanType = options.scanType
+		const autoZoom = options.autoZoom
+		const width = options.width
+		const height = options.height
+		const listener = options.androidScannerListenner
+
+		const context = UTSAndroid.getAppContext();
+		const ratio = getPixelRatio();
+
+		Scanner.processScanBarCode(context!, imageProxy, scanType, autoZoom, width.toInt(), height.toInt(), new (class implements Scanner.ScannerCallback {
+			override onScanSuccess(barcodeInformation : MutableList<BarcodeInformation>, screenShot : ScreenShot | null) : void {
+				const bridgeBarcodeInformation : BridgeBarcodeInformation[] = []
+				for (let information of barcodeInformation) {
+					const area = information.scanArea
+					const scanArea = [] as number[]
+					scanArea.push(area[0] / ratio)
+					scanArea.push(area[1] / ratio)
+					scanArea.push(area[2] / ratio)
+					scanArea.push(area[3] / ratio)
+
+					const bridgeInfomation : BridgeBarcodeInformation = {
+						result: information.result,
+						scanType: information.scanType,
+						charset: information.charset,
+						rawData: information.rawData,
+						scanArea: scanArea
+					}
+					bridgeBarcodeInformation.push(bridgeInfomation)
+				}
+
+				let bridgeScreenShot : BridgeScreenShot | null = null
+				if (screenShot != null) {
+					bridgeScreenShot = {
+						bitmap: screenShot.bitmap,
+					} as BridgeScreenShot
+				}
+
+				listener?.onScanSuccess(bridgeBarcodeInformation, bridgeScreenShot)
+			}
+			override onScanFailure(error : String) : void {
+				listener?.onScanFailure(error)
+			}
+			override needZoom() : void {
+				listener?.needZoom()
+			}
+			override onLight(light : Boolean) : void {
+				listener?.onLight(light as boolean)
+			}
+		}))
+	}
+
+	override processScanBarCodeWithPhoto(options : AndroidPhotoScannerOptions) {
+		const scanType = options.scanType
+		const filePath = options.filePath
+		const listener = options.androidScannerListenner
+		const context = UTSAndroid.getAppContext();
+		const ratio = getPixelRatio();
+		Scanner.processScanBarCode(context!, filePath, scanType, new (class implements Scanner.ScannerCallback {
+			override onScanSuccess(barcodeInformation : MutableList<BarcodeInformation>, screenShot : ScreenShot | null) : void {
+				const bridgeBarcodeInformation : BridgeBarcodeInformation[] = []
+				for (let information of barcodeInformation) {
+					const area = information.scanArea
+					const scanArea = [] as number[]
+					scanArea.push(area[0] / ratio)
+					scanArea.push(area[1] / ratio)
+					scanArea.push(area[2] / ratio)
+					scanArea.push(area[3] / ratio)
+
+					const bridgeInfomation : BridgeBarcodeInformation = {
+						result: information.result,
+						scanType: information.scanType,
+						charset: information.charset,
+						rawData: information.rawData,
+						scanArea: scanArea
+					}
+					bridgeBarcodeInformation.push(bridgeInfomation)
+				}
+
+				listener?.onScanSuccess(bridgeBarcodeInformation, null)
+			}
+			override onScanFailure(error : String) : void {
+				listener?.onScanFailure(error)
+			}
+			override needZoom() : void {
+			}
+			override onLight(light : Boolean) : void {
+			}
+		}))
+	}
+}
+
+
+export class AppHookProxy implements UTSAndroidHookProxy {
+	override onCreate(application : Application) {
+		const androidScanner = new AndroidScannerImpl()
+		initAndroidScanner(androidScanner)
+	}
+}

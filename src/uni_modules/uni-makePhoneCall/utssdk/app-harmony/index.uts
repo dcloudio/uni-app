@@ -1,0 +1,54 @@
+import { BusinessError } from '@kit.BasicServicesKit'
+import call from '@ohos.telephony.call'
+import { MakePhoneCall, MakePhoneCallOptions, MakePhoneCallSuccess, MakePhoneCallErrorCode } from '../interface.uts';
+import { API_MAKE_PHONE_CALL, MakePhoneCallProtocol } from '../protocol.uts';
+import { MakePhoneCallErrorImpl } from '../unierror.uts'
+import { isValidPhoneRules } from '../phoneRuleValidation.uts'
+
+function transformErrorCode(code: number): MakePhoneCallErrorCode {
+    switch (code) {
+        case 401:
+        case 8300001:
+            return 1500602
+        case 8300003:
+            return 1500603
+    }
+    return 1500603
+}
+
+export const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(
+    API_MAKE_PHONE_CALL,
+    (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>) => {
+        const { phoneNumber } = options
+        if (!isValidPhoneRules(phoneNumber)) {
+            const err = new MakePhoneCallErrorImpl(1500602)
+            res.reject(err.errMsg, err as ApiError)
+            return
+        }
+        try {
+            call.makeCall(phoneNumber)
+                .then(res.resolve)
+                .catch((err: BusinessError<void>) => {
+                    const error = new MakePhoneCallErrorImpl(transformErrorCode(err.code))
+                    res.reject(error.errMsg, error as ApiError)
+                })
+        } catch (e) {
+            const error = new MakePhoneCallErrorImpl(transformErrorCode((e as BusinessError).code))
+            res.reject(error.errMsg, error as ApiError)
+        }
+    },
+    MakePhoneCallProtocol
+) as MakePhoneCall
+
+export {
+    IMakePhoneCallError,
+    MakePhoneCall,
+    MakePhoneCallComplete,
+    MakePhoneCallCompleteCallback,
+    MakePhoneCallErrorCode,
+    MakePhoneCallFail,
+    MakePhoneCallFailCallback,
+    MakePhoneCallOptions,
+    MakePhoneCallSuccess,
+    MakePhoneCallSuccessCallback
+} from '../interface.uts'

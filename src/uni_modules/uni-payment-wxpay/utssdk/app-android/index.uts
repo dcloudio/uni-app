@@ -1,0 +1,48 @@
+import { Wxpay } from "./src/Wxpay";
+import PackageManager from 'android.content.pm.PackageManager';
+export * from './src/WXPayEntryActivity.uts'
+import { UniPaymentWxpayProvider } from '../interface.uts'
+import bool from 'android.R.bool';
+
+export class UniPaymentWxpayProviderImpl implements UniPaymentWxpayProvider, io.dcloud.uts.json.IJsonStringify {
+	override id : String = "wxpay"
+	override description : String = "微信支付"
+	/**
+	 * @deprecated
+	 */
+	// override isAppExist : boolean | null = null
+	// override isWeChatInstalled : boolean 
+
+	override get isAppExist() : boolean | null {
+		return Wxpay.isInstalled()
+	}
+
+	override get isWeChatInstalled() : boolean {
+		return Wxpay.isInstalled()
+	}
+
+	override set isAppExist(value ?: boolean) {
+		this.isAppExist = value
+	}
+
+	override set isWeChatInstalled(value : boolean) {
+		this.isWeChatInstalled = value
+	}
+
+	override requestPayment(options : RequestPaymentOptions) {
+		new Wxpay().requestPayment(options)
+	}
+	constructor() {
+	}
+	/*
+	 * @internal
+	 */
+	override toJSON() : any | null {
+		let jsonRet = new UTSJSONObject()
+		jsonRet.set("id", this.id)
+		jsonRet.set("description", this.description)
+		jsonRet.set("isAppExist", this.isAppExist)
+		jsonRet.set("isWeChatInstalled", this.isWeChatInstalled)
+		return jsonRet
+	}
+}

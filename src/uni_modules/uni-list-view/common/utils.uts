@@ -1,0 +1,10 @@
+let idCounter = 0;
+export function generateUniqueId() {
+    idCounter += 1;
+    return idCounter;
+}
+
+const camelizeRE = /-(\w)/g
+export function camelize(str: string): string {
+    return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
+}

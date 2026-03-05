@@ -1,0 +1,335 @@
+import LayoutInflater from 'android.view.LayoutInflater';
+import R from 'io.dcloud.uts.prompt.R';
+import ViewGroup from 'android.view.ViewGroup';
+import LinearLayout from 'android.widget.LinearLayout';
+import Activity from 'android.app.Activity';
+import TextView from 'android.widget.TextView';
+import PopupWindow from 'android.widget.PopupWindow';
+import Build from 'android.os.Build';
+import Gravity from 'android.view.Gravity';
+import Color from 'android.graphics.Color';
+import Handler from 'android.os.Handler';
+import Looper from 'android.os.Looper';
+import string from 'android.R.string';
+import View from 'android.view.View';
+import MotionEvent from 'android.view.MotionEvent';
+import JSONObject from 'com.alibaba.fastjson.JSONObject';
+import ProgressBar from 'android.widget.ProgressBar';
+import BitmapFactory from 'android.graphics.BitmapFactory';
+import bool from 'android.R.bool';
+import Bitmap from 'android.graphics.Bitmap';
+import ImageView from 'android.widget.ImageView';
+import FileInputStream from 'java.io.FileInputStream';
+import File from 'java.io.File';
+import ByteArrayOutputStream from 'java.io.ByteArrayOutputStream';
+import InputStream from 'java.io.InputStream';
+import AssetManager from 'android.content.res.AssetManager'
+import array from 'android.R.array';
+import Dialog from 'android.app.Dialog';
+
+
+export class WaitingView{
+
+	private context?: Activity
+	private style: JSONObject
+
+	private waitingView: ViewGroup
+	private waitingRootView: LinearLayout
+	private textView: TextView
+	private mProgressBar: ProgressBar
+	private seaparatorView: View
+	private mImageView: ImageView
+
+	private height: Int = -2
+	private width: Int = -2
+	private mask: boolean = false
+	private title: string = ""
+
+	screenWidth: Int
+	ScreenHeight: Int
+	density: number = 0
+
+	// json数据
+	private padding: Int = 0
+	private textSize: Int = 0
+
+
+	private loadingdDisplay = ""
+	private loadingHeight = 0
+	private LoadingIcon: string = ""
+	private mBitmap: Bitmap | null = null;
+	
+	
+	private mpopWindow?: PopupWindow = null
+	
+	private currentHandler: Handler
+	
+		//{"back":"transmit","height":"112px","loading":{"display":"block","height":"55px","icon":"__uniapperror.png","jSONArray":false},"padding":"10px","size":"16px","width":"140px"}
+
+	private hostView:View|null = null
+	
+	constructor(context?: Activity, style: UTSJSONObject,view?:View) {
+		
+		this.context = context;
+		this.style = style.toJSONObject() as JSONObject
+		this.screenWidth = context?.getResources()?.getDisplayMetrics()!.widthPixels
+		this.ScreenHeight = context?.getResources()?.getDisplayMetrics()!.heightPixels
+		this.density = context?.getResources()?.getDisplayMetrics()!.density
+		this.waitingView = LayoutInflater.from(context).inflate(R.layout.uni_app_uni_prompt_loadingview, null, false) as ViewGroup
+		this.waitingRootView = this.waitingView.findViewById<LinearLayout>(R.id.dcloud_pd_root)
+		this.mProgressBar = this.waitingView.findViewById<ProgressBar>(R.id.dcloud_pb_loading)
+		this.textView = this.waitingView.findViewById<TextView>(R.id.dcloud_tv_loading)
+		this.seaparatorView = this.waitingView.findViewById<View>(R.id.dcloud_view_seaparator)
+		this.mImageView = this.waitingView.findViewById<ImageView>(R.id.dcloud_iv_loading)
+		this.hostView = view
+		this.textView.setMaxLines(2)
+
+		this.handlerArguments()
+
+		let llp = (this.waitingRootView).getLayoutParams() as LinearLayout.LayoutParams
+		llp.width = this.width > 0 ? (this.width * this.density).toInt() : this.width
+		llp.height = -2
+		this.waitingRootView.setLayoutParams(llp)
+
+		this.currentHandler = new Handler(Looper.getMainLooper())
+		this.initView()
+		this.makeBitmap()
+		
+	}
+
+	handlerArguments() {
+		if (this.style["height"] != null) {
+			this.height = parseInt(this.style["height"] as string).toInt()
+		}
+		if (this.style["width"] != null) {
+			this.width = parseInt(this.style["width"] as string).toInt()
+		}
+		if (this.style["modal"] != null) {
+			this.mask = this.style["modal"] as boolean
+		}
+		this.title = this.style.get("name") as string
+		if (this.style["loading"] != null) {
+			let loading = this.style["loading"] as JSONObject
+			this.loadingdDisplay = loading["display"] as string
+			if (loading["icon"] != null) {
+				this.LoadingIcon = loading["icon"] as string
+			}
+			if (loading["height"] != null) {
+				this.loadingHeight = parseInt(loading["height"] as string).toInt()
+			}
+		}
+		if ("block" == this.loadingdDisplay) {
+			this.waitingRootView.setOrientation(LinearLayout.VERTICAL)
+		} else if ("inline" == this.loadingdDisplay) {
+			this.waitingRootView.setOrientation(LinearLayout.HORIZONTAL)
+		} else if ("none" == this.loadingdDisplay) {
+			this.seaparatorView.setVisibility(View.GONE)
+			this.mProgressBar.setVisibility(View.GONE)
+		}
+	}
+
+	initView() {
+		// 初始化默认参数
+		this.textView.setTextColor(Color.WHITE)
+		this.textView.setGravity(Gravity.CENTER)
+		this.textView.setText(this.title)
+		this.textView.setTextSize(0, (16 * this.density).toFloat())
+		
+		if(this.title.length < 1){
+			// 没有文本需要展示
+			this.textView.setVisibility(View.GONE)
+			this.waitingRootView.setPadding((10 * this.density).toInt(), (40 * this.density).toInt(), (10 * this.density).toInt(), (30 * this.density).toInt())
+		}else{
+			// 既有loading,也有文本
+			this.waitingRootView.setPadding((10 * this.density).toInt(), (20 * this.density).toInt(), (10 * this.density).toInt(), (20 * this.density).toInt())
+		}
+
+		let drawable = this.context?.getDrawable(R.drawable.uni_app_uni_prompt_circle_white_progress)!
+		if (this.loadingHeight > 0) {
+			this.mProgressBar.setLayoutParams(new LinearLayout.LayoutParams((this.loadingHeight * this.density).toInt(), (this.loadingHeight * this.density).toInt()))
+		} else {
+			let height = (drawable.getIntrinsicHeight() * 0.3).toInt()
+			this.mProgressBar.setLayoutParams(new LinearLayout.LayoutParams(height, height))
+		}
+
+		this.mProgressBar.setIndeterminateDrawable(drawable)
+		this.waitingRootView.setFocusable(true)
+		this.waitingRootView.setAlpha(0.9.toFloat())
+	}
+
+
+	/**
+	 * 决定是否要透传点击事件
+	 */
+	passThrough(ev: MotionEvent): Boolean{
+		if(this.context == null){
+		    return false
+		}
+		return this.context!.dispatchTouchEvent(ev)
+	}
+	
+	
+	showWaiting() {
+		if(this.context != null && !this.context!.isFinishing()){
+			if(this.hostView == null){
+				/**
+				 * add since 2024-12-09
+				 * 如果hostview = null 阻止弹出
+				 */
+				return
+			}
+			let width = -2;
+			let height = -2
+			if (Build.VERSION.SDK_INT >= 23 && this.mask) {
+				this.mask = false
+				width = -1
+				height = -1
+			}
+			let mpop = new PopupWindow(this.waitingView, width.toInt(), height.toInt(), this.mask)
+			this.mpopWindow = mpop
+			mpop.showAtLocation(this.hostView!, Gravity.CENTER, 0, 0)
+			mpop.setOutsideTouchable(true)
+			mpop.setOnDismissListener(new WaitingDismissListener())
+			mpop.setTouchInterceptor(new TouchInterceptorListener(this.mask))
+		}
+	}
+
+	close() {
+		if (this.mpopWindow != null && (this.mpopWindow as PopupWindow).isShowing()) {
+			this.currentHandler.post(new MainThreadRunnable((this.mpopWindow as PopupWindow)))
+		}
+		if (this.mBitmap != null) {
+			this.mBitmap = null;
+		}
+	}
+
+	makeBitmap() {
+		if (this.LoadingIcon != null) {
+			// let mBitmap: Bitmap | null = null;
+			let imageBytes: ByteArray | null = null
+			if (this.LoadingIcon == "successIcon") {
+				imageBytes = this.inputStreamToArray(this.context?.getResources()!!.getAssets().open("uni-uts/uni-prompt/uni_app_toast_success.png"))
+			} else if (this.LoadingIcon == "errorIcon") {
+				imageBytes = this.inputStreamToArray(this.context?.getResources()!!.getAssets().open("uni-uts/uni-prompt/uni_app_toast_error.png"))
+			} else if (this.LoadingIcon.length > 0) {
+				let path: string = ""
+				if (this.LoadingIcon.startsWith("file://")) {
+					path = this.LoadingIcon.replace("file://", "")
+				} else {
+					path = UTSAndroid.getResourcePath(this.LoadingIcon)
+				}
+				if (path != null && path.length > 0) {
+					
+					if(path.startsWith("/android_asset/")){
+						// uni-app x 云打包模式下，返回的资源为asset风格，需要进行特殊处理
+						let assetImagePath = path.slice(15)
+						imageBytes = this.inputStreamToArray(this.context?.getResources()!!.getAssets().open(assetImagePath))
+					}else{
+						try {
+							let fis: FileInputStream = new FileInputStream(new File(path));
+							imageBytes = this.inputStreamToArray(fis);
+							fis.close()
+						} catch (e: Throwable) {
+						}
+					}
+					
+				}
+			} else {
+				return
+			}
+			if (imageBytes == null || imageBytes.size == 0) {
+				return
+			}
+			let option = new BitmapFactory.Options()
+			option.inJustDecodeBounds = true
+			BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size, option)
+			let width = option.outWidth
+			let height = option.outHeight
+
+			option.inSampleSize = this.getBestScale(height)
+			option.inJustDecodeBounds = false;
+			this.mBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size, option)
+
+			this.mProgressBar.setVisibility(View.GONE)
+			this.mImageView.setVisibility(View.VISIBLE)
+			this.mImageView.setImageBitmap(this.mBitmap)
+
+			if (width % height != 0) {
+				return
+			}
+
+			var lp: ViewGroup.LayoutParams = this.mImageView.getLayoutParams()
+			if (lp != null) {
+				if (this.loadingHeight > 0) {
+					lp.height = (this.loadingHeight * this.density).toInt()
+					lp.width = (this.loadingHeight * this.density).toInt()
+				} else {
+					lp.width = this.mBitmap!!.getHeight()
+					lp.height = this.mBitmap!!.getHeight()
+				}
+				this.mImageView.setLayoutParams(lp)
+			}
+		}
+	}
+
+	getBestScale(height: Int): Int {
+		let sampleSize: Int = 1;
+		let maxEdge = Math.min(this.screenWidth, this.ScreenHeight) - 10 * 2 * this.density
+		if (maxEdge > 0 && height > maxEdge) {
+			sampleSize = (height / maxEdge).toInt()
+		}
+		return sampleSize
+	}
+
+	inputStreamToArray(inputStream: InputStream): ByteArray | null {
+		try {
+			let bos: ByteArrayOutputStream = new ByteArrayOutputStream()
+			let bytes: ByteArray = new ByteArray(1024)
+
+			do {
+				let length = inputStream.read(bytes)
+				if (length != -1) {
+					bos.write(bytes, 0, length)
+				} else {
+					break
+				}
+			} while (true)
+			bos.close()
+			inputStream.close()
+			return bos.toByteArray()
+		} catch (e: Throwable) {
+			return null;
+		}
+	}
+}
+
+class MainThreadRunnable implements Runnable {
+
+	pop: PopupWindow
+
+	constructor(pop: PopupWindow) {
+		this.pop = pop
+	}
+
+	override run() {
+		this.pop.dismiss()
+	}
+}
+
+class WaitingDismissListener implements PopupWindow.OnDismissListener {
+	override onDismiss() {
+	}
+}
+
+class TouchInterceptorListener implements View.OnTouchListener {
+
+	interceptor: boolean
+
+	constructor(interceptor: boolean) {
+		this.interceptor = interceptor
+	}
+
+	override onTouch(v: View, event: MotionEvent): boolean {
+		return this.interceptor
+	}
+}

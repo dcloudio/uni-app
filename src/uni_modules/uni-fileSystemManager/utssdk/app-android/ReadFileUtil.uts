@@ -1,0 +1,492 @@
+import File from 'java.io.File'
+import ParcelFileDescriptor from 'android.os.ParcelFileDescriptor'
+import { FileManagerSuccessResult, OpenFileOptions, OpenFileSuccessResult, OpenFileSyncOptions, ReadFileOptions, ReadFileSuccessResult, ReadOption, ReadResult, ReadSuccessCallbackResult, ReadSyncOption, WriteFileOptions } from '../interface';
+import { UniErrorSubject, FileSystemManagerFailImpl, FileSystemManagerUniErrors, FileSystemManagerUniErrorSubject } from '../unierror';
+import RandomAccessFile from 'java.io.RandomAccessFile'
+import FileChannel from 'java.nio.channels.FileChannel'
+import Base64 from "android.util.Base64"
+import MessageDigest from 'java.security.MessageDigest';
+import Charsets from "kotlin.text.Charsets"
+import Option from 'android.app.VoiceInteractor.PickOptionRequest.Option';
+import FileDescriptor from 'java.io.FileDescriptor';
+import ByteBuffer from 'java.nio.ByteBuffer';
+import { isSandyBoxPath } from './FileManagerUtil.uts'
+import FileOutputStream from 'java.io.FileOutputStream';
+import FileInputStream from 'java.io.FileInputStream';
+import ArrayList from 'java.util.ArrayList';
+import InputStream from 'java.io.InputStream';
+import Uri from 'android.net.Uri'
+import Base64OutputStream from 'android.util.Base64OutputStream'
+import ByteArrayOutputStream from 'java.io.ByteArrayOutputStream'
+import InputStreamReader from 'java.io.InputStreamReader'
+import Context from 'android.content.Context'
+import Charset from 'java.nio.charset.Charset'
+import OutputStream from 'java.io.OutputStream';
+
+export class ReadFileUtil {
+	private readContentUriWithEncoding(
+		context : Context,
+		contentUri : Uri,
+		charset : Charset = Charsets.UTF_8
+	) : string {
+		var inputStream : InputStream | null = null
+		var reader : InputStreamReader | null = null
+		try {
+			inputStream = context.contentResolver.openInputStream(contentUri)
+			if (inputStream != null) {
+				reader = new InputStreamReader(inputStream, charset)
+				return reader.readText()
+			}
+		} catch (e : Exception) {
+			e.printStackTrace()
+		} finally {
+			// 关闭资源
+			try {
+				reader?.close()
+			} catch (e : Exception) {
+				e.printStackTrace()
+			}
+			try {
+				inputStream?.close()
+			} catch (e : Exception) {
+				e.printStackTrace()
+			}
+		}
+		return ''
+	}
+
+
+	private readContentUriAsBase64(context : Context, contentUri : Uri) : string {
+		var inputStream : InputStream | null = null
+		var base64OutputStream : Base64OutputStream | null = null
+		var outputStream : ByteArrayOutputStream | null
+
+		try {
+			inputStream = context.contentResolver.openInputStream(contentUri)
+			if (inputStream != null) {
+				outputStream = new ByteArrayOutputStream()
+				base64OutputStream = new Base64OutputStream(outputStream, Base64.DEFAULT)
+
+				var buffer = new ByteArray(1024) // 每次读取 1KB
+				var bytesRead : Int
+				while (true) {
+					bytesRead = inputStream.read(buffer)
+					if (bytesRead == -1) break
+					base64OutputStream.write(buffer, 0, bytesRead)
+				}
+
+				base64OutputStream.close() // 关闭流并完成编码
+				return Base64.encodeToString(outputStream.toByteArray(), Base64.NO_WRAP)
+			}
+		} catch (e : Exception) {
+			e.printStackTrace()
+		} finally {
+			// 关闭资源
+			try {
+				base64OutputStream?.close()
+			} catch (e : Exception) {
+				e.printStackTrace()
+			}
+			try {
+				inputStream?.close()
+			} catch (e : Exception) {
+				e.printStackTrace()
+			}
+		}
+		return ""
+	}
+
+	public readContentUriAsByteArray(context : Context, contentUri : Uri) : ByteArray | null {
+		var inputStream : InputStream | null = null
+		let outputStream = new ByteArrayOutputStream()
+
+		try {
+			// 打开 InputStream
+			inputStream = context.contentResolver.openInputStream(contentUri)
+			if (inputStream != null) {
+				let buffer = new ByteArray(1024) // 每次读取 1KB
+				var bytesRead : Int
+				while (true) {
+					bytesRead = inputStream.read(buffer)
+					if (bytesRead == -1) break
+					outputStream.write(buffer, 0, bytesRead)
+				}
+				return outputStream.toByteArray()
+			}
+		} catch (e : Exception) {
+			e.printStackTrace()
+		} finally {
+			// 关闭资源
+			try {
+				inputStream?.close()
+			} catch (e : Exception) {
+				e.printStackTrace()
+			}
+		}
+		return null
+	}
+	
+	public readContentUriAsInputStream(context : Context, contentUri : Uri) : InputStream | null {
+		try {
+			return context.contentResolver.openInputStream(contentUri)
+		} catch (e : Exception) {
+			e.printStackTrace()
+		}
+		return null
+	}
+	
+	public readAndroidAssetsAsInputStream(context : Context, assetsPath : String) : InputStream | null {
+		try {
+			assetsPath = assetsPath.substring("/android_asset/".length)
+			return context.getResources().getAssets().open(assetsPath);
+		} catch (e:Exception) {
+		}
+		return null;
+	}
+	
+	public readFile(options : ReadFileOptions) {
+
+		// 判断type 是否合法
+
+		if (options.encoding == null) {
+
+		} else if (options.encoding?.toLowerCase() != 'base64' && options.encoding?.toLowerCase() != 'utf-8' && options.encoding?.toLowerCase() != 'ascii') {
+			let err = new FileSystemManagerFailImpl(1200002);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		}
+
+		let that = this
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		/**
+		 * 执行真正的加载行为，为了避免阻塞分发到 io任务序列
+		 */
+		UTSAndroid.getDispatcher('io').async(function (_) {
+
+			let filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
+
+			if (filePath.startsWith("/android_asset/")) {
+				// 用户访问的是asset 路径，此时不是释放模式
+
+				let exceptionInfo : Exception | null = null
+				let byteArray = new ByteArray(0)
+				try {
+					let assetName = filePath.substring("/android_asset/".length)
+					let assetStream = UTSAndroid.getAppContext()!.getResources().getAssets().open(assetName);
+					let byteLen = assetStream.available();
+					byteArray = new ByteArray(byteLen)
+					assetStream.read(byteArray);
+				} catch (e : Exception) {
+					exceptionInfo = e
+				}
+
+				if (exceptionInfo != null) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300201);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				}
+
+				let ret : ReadFileSuccessResult = {
+					data: ""
+				}
+				if (options.encoding?.toLowerCase() == 'base64') {
+					// base64
+					let base64Content = Base64.encodeToString(byteArray, Base64.NO_WRAP)
+					ret.data = base64Content
+				} else if (options.encoding?.toLowerCase() == "ascii") {
+					// ascii
+
+					let text = new String(byteArray, Charsets.US_ASCII)
+					ret.data = text
+				} else if (options.encoding == null) {
+					// 如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容    
+					ret.data = that.readBuffer(byteArray)
+				} else {
+					// utf-8 兜底
+					let text = new String(byteArray, Charsets.UTF_8)
+					ret.data = text
+				}
+
+				currentDispatcher.async(function (_) {
+					options.success?.(ret)
+					options.complete?.(ret)
+				})
+
+			} else if (filePath.startsWith("content://")) {
+				let ret : ReadFileSuccessResult = {
+					data: ""
+				}
+				if (options.encoding?.toLowerCase() == 'base64') {
+					// base64
+					ret.data = this.readContentUriAsBase64(UTSAndroid.getAppContext()!, Uri.parse(filePath))
+				} else if (options.encoding?.toLowerCase() == "ascii") {
+					// ascii
+					ret.data = this.readContentUriWithEncoding(UTSAndroid.getAppContext()!, Uri.parse(filePath), Charsets.US_ASCII)
+				} else if (options.encoding == null) {
+					let byteArray = this.readContentUriAsByteArray(UTSAndroid.getAppContext()!, Uri.parse(filePath))
+					if (byteArray != null) {
+						ret.data = that.readBuffer(byteArray)
+					}
+				} else {
+					// utf-8 兜底
+					ret.data = this.readContentUriWithEncoding(UTSAndroid.getAppContext()!, Uri.parse(filePath), Charsets.UTF_8)
+				}
+
+				currentDispatcher.async(function (_) {
+					options.success?.(ret)
+					options.complete?.(ret)
+				})
+			} else {
+
+				let isSandyBox = isSandyBoxPath(filePath, true)
+				console.log('readfileutil', filePath, isSandyBox)
+				if (!isSandyBox) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300013);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				}
+
+				let targetFile = new File(filePath)
+				if (!targetFile.exists()) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300002);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				}
+
+				if (targetFile.isDirectory()) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1301003);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				}
+
+				/**
+				 * 文件超过100M，会超过应用内存
+				 */
+				if (targetFile.length() > 100 * 1024 * 1024) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300202);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				}
+
+				let ret : ReadFileSuccessResult = {
+					data: ""
+				}
+				if (options.encoding?.toLowerCase() == 'base64') {
+					// base64
+					let byteArray = targetFile.readBytes()
+					let base64Content = Base64.encodeToString(byteArray, Base64.NO_WRAP)
+					ret.data = base64Content
+
+				} else if (options.encoding?.toLowerCase() == "ascii") {
+					// ascii
+					let text = targetFile.readText(Charsets.US_ASCII)
+					ret.data = text
+				} else if (options.encoding == null) {
+					let byteArray = targetFile.readBytes()
+					ret.data = that.readBuffer(byteArray)
+				} else {
+					// utf-8 兜底
+					let text = targetFile.readText(Charsets.UTF_8)
+					ret.data = text
+				}
+
+				currentDispatcher.async(function (_) {
+					options.success?.(ret)
+					options.complete?.(ret)
+				})
+			}
+
+
+		}, null)
+
+	}
+
+	public readFileSync(filePath : string, encoding : string | null = null) : any {
+		let msgPrefix = "readFileSync:fail "
+		// 判断type 是否合法
+		let tempEncoding = encoding
+		if (tempEncoding == null) {
+			tempEncoding = "arraybuffer"
+		}
+		if (tempEncoding.toLowerCase() != 'arraybuffer' && tempEncoding.toLowerCase() != 'base64' && tempEncoding.toLowerCase() != 'utf-8' && tempEncoding.toLowerCase() != 'ascii') {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1200002, msgPrefix + FileSystemManagerUniErrors.get(1200002)!)
+		}
+		let tempFilePath = UTSAndroid.convert2AbsFullPath(filePath)
+		if (tempFilePath.startsWith("/android_asset/")) {
+			let byteArray : ByteArray
+			try {
+				let assetName = tempFilePath.substring("/android_asset/".length)
+				let assetStream = UTSAndroid.getAppContext()!.getResources().getAssets().open(assetName);
+				let byteLen = assetStream.available();
+				byteArray = new ByteArray(byteLen)
+				assetStream.read(byteArray);
+			} catch (e : Exception) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)! + ":" + filePath)
+			}
+
+			if (tempEncoding.toLowerCase() == 'base64') {
+				// base64
+				let base64Content = Base64.encodeToString(byteArray, Base64.NO_WRAP)
+				return base64Content
+			} else if (tempEncoding.toLowerCase() == "ascii") {
+				// ascii
+				let text = new String(byteArray, Charsets.US_ASCII)
+				return text
+			} else if (tempEncoding.toLowerCase() == "arraybuffer") {
+				return this.readBuffer(byteArray)
+			} else {
+				// utf-8 兜底
+				let text = new String(byteArray, Charsets.UTF_8)
+				return text
+			}
+
+		} else if (tempFilePath.startsWith("content://")) {
+			if (tempEncoding.toLowerCase() == 'base64') {
+				// base64
+				return this.readContentUriAsBase64(UTSAndroid.getAppContext()!, Uri.parse(tempFilePath))
+			} else if (tempEncoding.toLowerCase() == "ascii") {
+				// ascii
+				return this.readContentUriWithEncoding(UTSAndroid.getAppContext()!, Uri.parse(tempFilePath), Charsets.US_ASCII)
+			} else if (tempEncoding.toLowerCase() == "arraybuffer") {
+				let byteArray = this.readContentUriAsByteArray(UTSAndroid.getAppContext()!, Uri.parse(tempFilePath))
+				if (byteArray != null) {
+					return this.readBuffer(byteArray)
+				} else {
+					throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)! + ":" + tempFilePath)
+				}
+			} else {
+				// utf-8 兜底
+				return this.readContentUriWithEncoding(UTSAndroid.getAppContext()!, Uri.parse(filePath), Charsets.UTF_8)
+			}
+		} else {
+
+			let isSandyBox = isSandyBoxPath(tempFilePath, true)
+			if (!isSandyBox) {
+				return "1300013"
+			}
+
+			let targetFile = new File(tempFilePath)
+			if (!targetFile.exists()) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)! + ":" + filePath);
+			}
+
+			if (targetFile.isDirectory()) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1301003, msgPrefix + FileSystemManagerUniErrors.get(1301003)! + ":" + filePath);
+			}
+
+			/**
+			 * 文件超过100M，会超过应用内存
+			 */
+			if (targetFile.length() > 100 * 1024 * 1024) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300202, msgPrefix + FileSystemManagerUniErrors.get(1300202)! + ":" + filePath);
+			}
+
+			if (tempEncoding.toLowerCase() == 'base64') {
+				// base64
+				let byteArray = targetFile.readBytes()
+				let base64Content = Base64.encodeToString(byteArray, Base64.NO_WRAP)
+				return base64Content
+
+			} else if (tempEncoding.toLowerCase() == "ascii") {
+				// ascii
+				let text = targetFile.readText(Charsets.US_ASCII)
+				return text
+			} else if (tempEncoding.toLowerCase() == "arraybuffer") {
+				return this.readBuffer(targetFile.readBytes())
+			} else {
+				// utf-8 兜底
+				let text = targetFile.readText(Charsets.UTF_8)
+				return text
+			}
+		}
+	}
+
+	private readBuffer(byteArray : ByteArray) : ArrayBuffer {
+		let arrayBuffer = new ArrayBuffer(byteArray.size)
+		let uint8 = new Uint8Array(arrayBuffer)
+		for (let i : Int = 0; i < byteArray.size; i++) {
+			uint8[i] = byteArray.get(i)
+		}
+		return arrayBuffer
+	}
+
+	private readBufferByCondition(buffer : ArrayBuffer, offset ?: number, position ?: number, length ?: number, fileChannel : FileChannel) : number {
+		if (position == null) {
+			position = 0
+		}
+		if (offset == null) {
+			offset = 0
+		}
+		if (length == null) {
+			length = 0
+		}
+		fileChannel.position(position.toLong())
+		let byteBuffer = buffer.toByteBuffer()
+		byteBuffer.rewind()
+		byteBuffer.position(offset.toInt())
+		let tempByteBuffer = ByteBuffer.allocate(length.toInt())
+		let bytesRead = fileChannel.read(tempByteBuffer)
+		tempByteBuffer.rewind()
+		byteBuffer.put(tempByteBuffer)
+		return bytesRead
+	}
+
+	public read(option : ReadOption) {
+		let currentDispatcher = UTSAndroid.getDispatcher()
+		let that = this
+		UTSAndroid.getDispatcher('io').async(function (_) {
+			let fd = ParcelFileDescriptor.fromFd(option.fd.toInt())
+			if (fd == null) {
+				let err = new FileSystemManagerFailImpl(1300009);
+				option.fail?.(err)
+				option.complete?.(err)
+				return
+			}
+			let intStream = new FileInputStream(fd.getFileDescriptor())
+			let fileChannel = intStream.getChannel()
+			//创建ByteBuffer并写入数据
+			let bytesRead = that.readBufferByCondition(option.arrayBuffer, option.offset, option.position, option.length, fileChannel)
+			let ret : ReadSuccessCallbackResult = {
+				arrayBuffer: option.arrayBuffer,
+				bytesRead: bytesRead,
+				errMsg: 'read:ok'
+			}
+			currentDispatcher.async(function (_) {
+				option.success?.(ret)
+				option.complete?.(ret)
+			})
+		}, null)
+	}
+	public readSync(option : ReadSyncOption) : ReadResult {
+		let msgPrefix = "readSync:fail "
+		let fd = ParcelFileDescriptor.fromFd(option.fd.toInt())
+		if (fd == null) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300009, msgPrefix + FileSystemManagerUniErrors.get(1300009)!)
+		}
+		let intStream = new FileInputStream(fd.getFileDescriptor())
+		let fileChannel = intStream.getChannel()
+		//创建ByteBuffer并写入数据
+		let bytesRead = this.readBufferByCondition(option.arrayBuffer, option.offset, option.position, option.length, fileChannel)
+		let ret : ReadResult = {
+			arrayBuffer: option.arrayBuffer,
+			bytesRead: bytesRead
+		}
+		return ret
+	}
+}

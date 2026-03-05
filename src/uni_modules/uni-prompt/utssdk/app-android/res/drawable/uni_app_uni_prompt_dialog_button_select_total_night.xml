@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/uni_app_uni_prompt_shape_btn_bg_select_total_night" />
+    <item android:state_focused="true" android:drawable="@drawable/uni_app_uni_prompt_shape_btn_bg_select_total_night" />
+    <item android:drawable="@drawable/uni_app_uni_prompt_shape_btn_bg_normal_total_night"/>
+</selector>

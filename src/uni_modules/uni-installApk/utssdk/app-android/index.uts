@@ -1,0 +1,98 @@
+import { InstallApkOptions, InstallApkSuccess } from "../interface.uts"
+import { InstallApkFailImpl } from "../unierror.uts"
+import Intent from 'android.content.Intent';
+import Build from 'android.os.Build';
+import File from 'java.io.File';
+import FileProvider from 'androidx.core.content.FileProvider';
+import Context from 'android.content.Context';
+import Uri from 'android.net.Uri';
+import FileOutputStream from 'java.io.FileOutputStream';
+import IOException from 'java.io.IOException';
+
+export function installApk(options : InstallApkOptions) : void {
+  const context = UTSAndroid.getAppContext() as Context
+  var filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
+  var apkFile : File | null = null;
+  if (filePath.startsWith("/android_asset/")) {
+    filePath = filePath.replace("/android_asset/", "")
+    apkFile = copyAssetFileToPrivateDir(context, filePath)
+  } else {
+    apkFile = new File(filePath)
+  }
+
+  if (apkFile != null && !apkFile.exists() && !apkFile.isFile()) {
+    let error = new InstallApkFailImpl(1300002);
+    options.fail?.(error)
+    options.complete?.(error)
+    return
+  }
+  const intent = new Intent()
+  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+  intent.setAction(Intent.ACTION_VIEW)
+
+  if (Build.VERSION.SDK_INT >= 24) {
+    const authority = context.getPackageName() + ".dc.fileprovider"
+    const apkUri = FileProvider.getUriForFile(context, authority, apkFile!!)
+    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+  } else {
+    intent.setDataAndType(Uri.fromFile(apkFile!!), "application/vnd.android.package-archive");
+  }
+
+  context.startActivity(intent)
+  const success : InstallApkSuccess = {
+    errMsg: "success"
+  }
+  options.success?.(success)
+  options.complete?.(success)
+}
+
+
+function copyAssetFileToPrivateDir(context : Context, fileName : string) : File | null {
+  try {
+    const destPath = context.getCacheDir().getPath() + "/apks/" + fileName
+    const outFile = new File(destPath)
+    const parentFile = outFile.getParentFile()
+    if (parentFile != null) {
+      if (!parentFile.exists()) {
+        parentFile.mkdirs()
+      }
+    }
+    if (!outFile.exists()) {
+      outFile.createNewFile()
+    }
+    const inputStream = context.getAssets().open(fileName)
+    const outputStream = new FileOutputStream(outFile)
+    let buffer = new ByteArray(1024);
+    do {
+      let len = inputStream.read(buffer);
+      if (len == -1) {
+        break;
+      }
+      outputStream.write(buffer, 0, len)
+    } while (true)
+
+    inputStream.close()
+    outputStream.close()
+	
+	
+	if (Build.VERSION.SDK_INT < 24) {
+		changePermissionRecursive(new File(context.getCacheDir().getPath() + "/apks/"))
+	}
+	
+    return outFile
+  } catch (e : Exception) {
+    e.printStackTrace()
+  }
+
+  return null
+}
+
+function changePermissionRecursive(file: File){
+	const cmd = "chmod -R 777 " + file.getAbsolutePath()
+	const runtime = Runtime.getRuntime()
+	try {
+		runtime.exec(cmd)
+	} catch (e: IOException) {
+	}
+}

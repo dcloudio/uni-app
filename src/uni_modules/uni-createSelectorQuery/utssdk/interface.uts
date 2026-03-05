@@ -1,0 +1,549 @@
+export type CreateSelectorQuery = () => SelectorQuery
+
+export type SelectorQueryNodeInfoCallback = (result: any) => void
+
+export type NodeInfo = {
+    /**
+     * 节点的ID
+     */
+    id: string | null
+    /**
+     * 节点的dataset
+     */
+    dataset: any | null
+    /**
+     * 节点的左边界坐标
+     */
+    left: number | null
+    /**
+     * 节点的右边界坐标
+     */
+    right: number | null
+    /**
+     * 节点的上边界坐标
+     */
+    top: number | null
+    /**
+     * 节点的下边界坐标
+     */
+    bottom: number | null
+    /**
+     * 节点的宽度
+     */
+    width: number | null
+    /**
+     * 节点的高度
+     */
+    height: number | null
+    /**
+     * 节点的水平滚动位置
+     */
+    scrollLeft: number | null
+    /**
+     * 节点的垂直滚动位置
+     */
+    scrollTop: number | null
+    /**
+     * 节点的内容高度
+     */
+    scrollHeight: number | null
+    /**
+     * 节点的内容宽度
+     */
+    scrollWidth: number | null
+    /**
+     * 元素 UniElement
+     */
+    node: any | null
+    /**
+     * 节点对应的 Context 对象
+     * @type MapContext | CanvasContext | VideoContext | EditorContext
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *      },
+     *      "ios": {
+     *          "osVer": "10.0",
+     *          "uniVer": "√",
+     *          "unixVer": "x"
+     *      }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    context: any | null
+}
+
+export type NodeField = {
+    /**
+     * 是否返回节点 id
+     * @type boolean
+     */
+    id?: boolean | null
+    /**
+     * 是否返回节点 dataset
+     * @type boolean
+     */
+    dataset?: boolean | null
+    /**
+     * 是否返回节点布局位置（left right top bottom）
+     * @type boolean
+     */
+    rect?: boolean | null
+    /**
+     * 是否返回节点尺寸（width height）
+     * @type boolean
+     */
+    size?: boolean | null
+    /**
+     * 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport
+     * @type boolean
+     */
+    scrollOffset?: boolean | null
+    /**
+     * 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取）
+     */
+    properties?: string[] | null
+    /**
+     * 指定样式名列表，返回节点对应样式名的当前值
+     */
+    computedStyle?: string[] | null
+    /**
+     * 是否返回节点对应的 Context 对象
+     * @type boolean
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *        "osVer": "5.0",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *      },
+     *      "ios": {
+     *          "osVer": "10.0",
+     *          "uniVer": "√",
+     *          "unixVer": "x"
+     *      }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.0"
+     *  }
+     * }
+     */
+    context?: boolean | null
+    /**
+     * 是否返回节点对应的 Node 实例
+     */
+    node?: boolean | null;
+}
+
+export interface NodesRef {
+    /**
+     * 添加节点的布局位置的查询请求，相对于显示区域，以像素为单位
+     */
+    boundingClientRect(
+        callback: SelectorQueryNodeInfoCallback | null,
+    ): SelectorQuery
+
+    boundingClientRect(): SelectorQuery
+
+    /**
+     * 添加节点的滚动位置查询请求，以像素为单位
+     */
+    scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery
+
+    /**
+     * 获取节点的相关信息，需要获取的字段在fields中指定
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.25"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.25"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    fields(
+        fields: NodeField,
+        callback: SelectorQueryNodeInfoCallback | null,
+    ): SelectorQuery
+
+    /**
+     * 添加节点的 Context 对象查询请求
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "10.0",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    context(callback: SelectorQueryNodeInfoCallback): SelectorQuery
+
+    /**
+     * 获取 Node 节点实例。目前支持 Canvas 的获取。
+     * 获取节点的相关信息，需要获取的字段在fields中指定
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.25"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.25"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    node(callback: (result: any) => void): SelectorQuery
+}
+
+export interface SelectorQuery {
+    /**
+     * 将选择器的选取范围更改为自定义组件component内
+     */
+    in(component: any | null): SelectorQuery
+
+    /**
+     * 在当前页面下选择第一个匹配选择器selector的节点
+     */
+    select(selector: string): NodesRef
+
+    /**
+     * 在当前页面下选择匹配选择器selector的所有节点
+     */
+    selectAll(selector: string): NodesRef
+
+    /**
+     * 选择显示区域
+     */
+    selectViewport(): NodesRef
+
+    /**
+     * 执行所有的请求
+     */
+    exec(callback: (result: Array<any>) => void | null): NodesRef | null
+
+    exec(): NodesRef | null
+}
+
+export interface Uni {
+    /**
+     * 返回一个SelectorQuery对象实例
+     *
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/nodes-info.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/nodes-info.html
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/nodes-info.html#createselectorquery
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "3.91"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "√"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "√"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "√"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "√"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "√"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "√"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "√"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    createSelectorQuery(): SelectorQuery
+}

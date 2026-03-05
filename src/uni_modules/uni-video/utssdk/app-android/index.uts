@@ -1,0 +1,70 @@
+import { CreateVideoContext, VideoContext, RequestFullScreenOptions, Danmu } from '../interface.uts';
+import { UniVideoTimeUpdateEvent, UniVideoTimeUpdateEventDetail, UniVideoFullScreenChangeEvent, UniVideoFullScreenChangeEventDetail, UniVideoErrorEvent, UniVideoProgressEvent, UniVideoProgressEventDetail, UniVideoFullScreenClickEvent, UniVideoFullScreenClickEventDetail, UniVideoControlsToggleEvent, UniVideoControlsToggleEventDetail } from '../interface.uts';
+import { UniVideoElement } from './index.vue';
+
+export const createVideoContext : CreateVideoContext = function (videoId : string.VideoIdString, component ?: ComponentPublicInstance | null) : VideoContext | null {
+	let videoElement : UniElement | null = null;
+	if (component == null) {
+		const pages = getCurrentPages();
+		if (pages.length > 0) {
+			videoElement = pages[pages.length - 1].vm!.$el?.parentNode?.querySelector('#' + videoId);
+		}
+	} else {
+		videoElement = component.$el?.parentNode?.querySelector('#' + videoId);
+	}
+	if (videoElement == null) return null;
+	return new VideoContextImpl(videoElement as UniVideoElement);
+}
+
+class VideoContextImpl implements VideoContext {
+
+	private videoElement : UniVideoElement;
+
+	constructor(videoElement : UniVideoElement) {
+		this.videoElement = videoElement;
+	}
+
+	play() {
+		this.videoElement.play();
+	}
+
+	pause() {
+		this.videoElement.pause();
+	}
+
+	seek(position : number) {
+		this.videoElement.seek(position);
+	}
+
+	stop() {
+		this.videoElement.stop();
+	}
+
+	sendDanmu(danmu : Danmu) {
+		this.videoElement.sendDanmu(danmu);
+	}
+
+	playbackRate(rate : number) {
+		this.videoElement.playbackRate(rate);
+	}
+
+	requestFullScreen(direction ?: RequestFullScreenOptions | null) {
+		this.videoElement.requestFullScreen(direction);
+	}
+
+	exitFullScreen() {
+		this.videoElement.exitFullScreen();
+	}
+}
+
+export type VideoTimeUpdateEvent = UniVideoTimeUpdateEvent
+export type VideoTimeUpdateEventDetail = UniVideoTimeUpdateEventDetail
+export type VideoFullScreenChangeEvent = UniVideoFullScreenChangeEvent
+export type VideoFullScreenChangeEventDetail = UniVideoFullScreenChangeEventDetail
+export type VideoErrorEvent = UniVideoErrorEvent
+export type VideoProgressEvent = UniVideoProgressEvent
+export type VideoProgressEventDetail = UniVideoProgressEventDetail
+export type VideoFullScreenClickEvent = UniVideoFullScreenClickEvent
+export type VideoFullScreenClickEventDetail = UniVideoFullScreenClickEventDetail
+export type VideoControlsToggleEvent = UniVideoControlsToggleEvent
+export type VideoControlsToggleEventDetail = UniVideoControlsToggleEventDetail

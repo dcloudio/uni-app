@@ -1,0 +1,50 @@
+import { AddPhoneContactOptions } from './interface.uts';
+export const API_ADD_PHONE_CONTACT = 'addPhoneContact'
+
+export const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {
+  formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
+    ['firstName', function (firstName: string) {
+      if (!firstName) {
+        return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty;'
+      }
+      return undefined
+    }]
+  ])
+}
+
+
+export const AddPhoneContactApiProtocol = new Map<string, ProtocolOptions>([
+  ['firstName', { type: 'string', required: true }],
+  ['photoFilePath', { type: 'string' }],
+  ['nickName', { type: 'string' }],
+  ['lastName', { type: 'string' }],
+  ['middleName', { type: 'string' }],
+  ['remark', { type: 'string' }],
+  ['mobilePhoneNumber', { type: 'string' }],
+  ['weChatNumber', { type: 'string' }],
+  ['addressCountry', { type: 'string' }],
+  ['addressState', { type: 'string' }],
+  ['addressCity', { type: 'string' }],
+  ['addressStreet', { type: 'string' }],
+  ['addressPostalCode', { type: 'string' }],
+  ['organization', { type: 'string' }],
+  ['title', { type: 'string' }],
+  ['workFaxNumber', { type: 'string' }],
+  ['workPhoneNumber', { type: 'string' }],
+  ['hostNumber', { type: 'string' }],
+  ['email', { type: 'string' }],
+  ['url', { type: 'string' }],
+  ['workAddressCountry', { type: 'string' }],
+  ['workAddressState', { type: 'string' }],
+  ['workAddressCity', { type: 'string' }],
+  ['workAddressStreet', { type: 'string' }],
+  ['workAddressPostalCode', { type: 'string' }],
+  ['homeFaxNumber', { type: 'string' }],
+  ['homePhoneNumber', { type: 'string' }],
+  ['homeAddressCountry', { type: 'string' }],
+  ['homeAddressState', { type: 'string' }],
+  ['homeAddressCity', { type: 'string' }],
+  ['homeAddressStreet', { type: 'string' }],
+  ['homeAddressPostalCode', { type: 'string' }]
+]
+);

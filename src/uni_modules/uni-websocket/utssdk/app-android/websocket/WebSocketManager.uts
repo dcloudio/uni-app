@@ -1,0 +1,288 @@
+import { ConnectSocket, ConnectSocketOptions, SocketTask, SendSocketMessageOptions, CloseSocketOptions, OnSocketOpenCallbackResult, GeneralCallbackResult, OnSocketMessageCallbackResult, OnSocketOpenCallback, OnSocketMessageCallback, OnSocketCloseCallback, OnSocketErrorCallback, OnSocketCloseCallbackResult, OnSocketErrorCallbackResult, ConnectSocketSuccess } from "../../interface";
+import { WebsockerClient } from "./WebsockerClient"
+import { SendSocketMessageFailImpl } from "../../unierror.uts";
+class SimpleSocketTask implements SocketTask {
+
+	private client : WebsockerClient | null = null;
+
+	private openCallbacks : Array<(result : OnSocketOpenCallbackResult) => void> = [];
+	private closeCallbacks : Array<(result : any) => void> = [];
+	private errorCallbacks : Array<(result : GeneralCallbackResult) => void> = [];
+	private messageCallbacks : Array<(result : OnSocketMessageCallbackResult) => void> = [];
+	constructor(client : WebsockerClient) {
+		this.client = client;
+	}
+
+	public dispatchOpen(options : OnSocketOpenCallbackResult) {
+		for (let i = 0; i < this.openCallbacks.length; i++) {
+			const callback = this.openCallbacks[i];
+			callback(options);
+		}
+	}
+
+	public dispatchClose(options : any) {
+		for (let i = 0; i < this.closeCallbacks.length; i++) {
+			const callback = this.closeCallbacks[i];
+			callback(options);
+		}
+	}
+
+	public dispatchError(options : GeneralCallbackResult) {
+		for (let i = 0; i < this.errorCallbacks.length; i++) {
+			const callback = this.errorCallbacks[i];
+			callback(options);
+		}
+	}
+
+	public dispatchMessage(options : OnSocketMessageCallbackResult) {
+		for (let i = 0; i < this.messageCallbacks.length; i++) {
+			const callback = this.messageCallbacks[i];
+			callback(options);
+		}
+	}
+	/**
+	 * 通过 WebSocket 连接发送数据
+	 */
+	send(options : SendSocketMessageOptions) : void {
+		if (this.client == null) {
+			const fail = options.fail;
+			const complete = options.complete;
+			let result = new SendSocketMessageFailImpl(10002);
+			fail?.(result);
+			complete?.(result);
+			return
+		}
+		this.client?.send(options)
+	}
+	/**
+	 * 关闭 WebSocket 连接
+	 */
+	close(options : CloseSocketOptions) : void {
+		if (this.client == null) {
+			const fail = options.fail;
+			const complete = options.complete;
+			let result : GeneralCallbackResult = {
+				errMsg: "closeSocket:fail WebSocket is not connected"
+			}
+			fail?.(result);
+			complete?.(result);
+			return
+		}
+		this.client?.close(options)
+	}
+	/**
+	 * 监听 WebSocket 连接打开事件
+	 */
+	onOpen(callback : (result : OnSocketOpenCallbackResult) => void) : void {
+		this.openCallbacks.push(callback);
+	}
+	/**
+	 * 监听 WebSocket 连接关闭事件
+	 */
+	onClose(callback : (result : any) => void) : void {
+		this.closeCallbacks.push(callback);
+	}
+	/**
+	 * 监听 WebSocket 错误
+	 */
+	onError(callback : (result : GeneralCallbackResult) => void) : void {
+		this.errorCallbacks.push(callback);
+	}
+	/**
+	 * 监听WebSocket接受到服务器的消息事件
+	 */
+	onMessage(callback : (result : OnSocketMessageCallbackResult) => void) : void {
+		this.messageCallbacks.push(callback);
+	}
+}
+
+export interface WebSocketManagerListener {
+	onOpen(client : WebsockerClient, header : any) : void;
+
+	onMessage(client : WebsockerClient, data : any) : void;
+
+	onClose(client : WebsockerClient, code : number, reason : string) : void;
+
+	onError(client : WebsockerClient, msg : string) : void;
+}
+
+export class WebSocketManager implements WebSocketManagerListener {
+	private static instance : WebSocketManager | null = null;
+
+	// 数组存储sockettask , 当uni.开头调用的时候,只作用于0元素.  这个task数组,当error或者close的时候 ,会删除.
+	private socketTasks : SocketTask[] = [];
+
+	/**
+	 * client与task的绑定关系, 用于通过client查找task.
+	 */
+	private taskMap : Map<WebsockerClient, SocketTask> = new Map<WebsockerClient, SocketTask>();
+
+	private openCallback : OnSocketOpenCallback | null = null;
+
+	private messageCallback : OnSocketMessageCallback | null = null;
+
+	private closeCallback : OnSocketCloseCallback | null = null;
+
+	private errorCallback : OnSocketErrorCallback | null = null;
+
+
+	public static getInstance() : WebSocketManager {
+		if (this.instance == null) {
+			this.instance = new WebSocketManager();
+		}
+		return this.instance!;
+	}
+
+
+	public connectSocket(options : ConnectSocketOptions) : SocketTask {
+		const webscoketClient = new WebsockerClient(options, this);
+		let task = new SimpleSocketTask(webscoketClient);
+		this.taskMap.set(webscoketClient, task);
+		this.socketTasks.push(task);
+		const success = options.success;
+		const complete = options.complete;
+		let result : ConnectSocketSuccess = {
+			errMsg: "connectSocket:ok"
+		}
+		success?.(result)
+		complete?.(result)
+		webscoketClient.connect();
+		return task;
+	}
+
+	public sendSocketMessage(options : SendSocketMessageOptions) : void {
+		if (this.socketTasks.length > 0) {
+			const task = this.socketTasks[0];
+			task.send(options);
+		} else {
+			const fail = options.fail;
+			const complete = options.complete;
+			let result = new SendSocketMessageFailImpl(10002);
+			fail?.(result);
+			complete?.(result);
+		}
+	}
+
+	public closeSocket(options : CloseSocketOptions) : void {
+		if (this.socketTasks.length > 0) {
+			const task = this.socketTasks[0];
+			task.close(options);
+		} else {
+			const fail = options.fail;
+			const complete = options.complete;
+			let result : GeneralCallbackResult = {
+				errMsg: "closeSocket:fail WebSocket is not connected"
+			}
+			fail?.(result);
+			complete?.(result);
+		}
+	}
+
+
+	public onSocketOpen(callback : OnSocketOpenCallback) : void {
+		this.openCallback = callback;
+	}
+
+	public onSocketError(callback : OnSocketErrorCallback) : void {
+		this.errorCallback = callback;
+	}
+
+	public onSocketClose(callback : OnSocketCloseCallback) : void {
+		this.closeCallback = callback;
+	}
+
+	public onSocketMessage(callback : OnSocketMessageCallback) : void {
+		this.messageCallback = callback;
+	}
+
+	getTaskWithClient(client : WebsockerClient) : SocketTask | null {
+		return this.taskMap.get(client);
+	}
+
+
+	onOpen(client : WebsockerClient, header : any) : void {
+		const task = this.getTaskWithClient(client);
+		if (task == null) {
+			return
+		}
+		let result : OnSocketOpenCallbackResult = {
+			header: header
+		}
+
+		const openCallback = this.openCallback;
+		if (this.socketTasks.length > 0 && task === this.socketTasks[0] && openCallback != null) {
+			openCallback(result);
+		}
+
+		const simpleTask = task as SimpleSocketTask;
+		simpleTask.dispatchOpen(result);
+	}
+
+	onMessage(client : WebsockerClient, data : any) : void {
+		const task = this.getTaskWithClient(client);
+		if (task == null) {
+			return
+		}
+		let result : OnSocketMessageCallbackResult = {
+			data: data
+		}
+
+		const messageCallback = this.messageCallback;
+		if (this.socketTasks.length > 0 && task === this.socketTasks[0] && messageCallback != null) {
+			messageCallback(result);
+		}
+
+		const simpleTask = task as SimpleSocketTask;
+		simpleTask.dispatchMessage(result);
+	}
+
+	onClose(client : WebsockerClient, code : number, reason : string) : void {
+		const task = this.getTaskWithClient(client);
+		if (task == null) {
+			return
+		}
+		let result : OnSocketCloseCallbackResult = {
+			code: code,
+			reason: reason
+		}
+
+		const closeCallback = this.closeCallback;
+		if (this.socketTasks.length > 0 && task === this.socketTasks[0] && closeCallback != null) {
+			closeCallback(result);
+		}
+
+		const index = this.socketTasks.indexOf(task);
+		this.socketTasks.splice(index, 1)
+
+		const simpleTask = task as SimpleSocketTask;
+		simpleTask.dispatchClose(result);
+
+		this.taskMap.delete(client);
+	}
+
+	onError(client : WebsockerClient, msg : string) : void {
+		const task = this.getTaskWithClient(client);
+		if (task == null) {
+			return
+		}
+		const errorCallback = this.errorCallback;
+		if (this.socketTasks.length > 0 && task === this.socketTasks[0] && errorCallback != null) {
+			let result : OnSocketErrorCallbackResult = {
+				errMsg: msg
+			}
+			errorCallback(result);
+		}
+
+		const index = this.socketTasks.indexOf(task);
+		this.socketTasks.splice(index, 1)
+
+		let result : GeneralCallbackResult = {
+			errMsg: msg
+		}
+
+		const simpleTask = task as SimpleSocketTask;
+		simpleTask.dispatchError(result);
+
+		this.taskMap.delete(client);
+	}
+}

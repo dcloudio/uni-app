@@ -1,0 +1,67 @@
+import { GetClipboardData, GetClipboardDataOptions, GetClipboardDataSuccess, SetClipboardData, SetClipboardDataOptions } from "../interface.uts"
+import { ClipBoardErrorImpl } from "../unierror.uts"
+import ClipData from "android.content.ClipData"
+import ClipboardManager from "android.content.ClipboardManager"
+import Context from "android.content.Context"
+import View from 'android.view.View';
+
+export const setClipboardData : SetClipboardData = (options : SetClipboardDataOptions) => {
+	let	clipboardManager = UTSAndroid.getUniActivity()?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager | null
+	if (clipboardManager != null) {
+		let clipData = ClipData.newPlainText(options.data, options.data)
+		clipboardManager!.setPrimaryClip(clipData)
+		options.success?.({})
+		options.complete?.({})
+	} else {
+		var fail = ClipBoardErrorImpl(102)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	}
+
+}
+
+export const getClipboardData : GetClipboardData = (options : GetClipboardDataOptions) => {
+	var activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		var fail = ClipBoardErrorImpl(102)
+		options.fail?.(fail)
+		options.complete?.(fail)
+		return
+	}
+	let	clipboardManager = activity!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager | null
+	if (clipboardManager != null) {
+		var rootView = activity!.findViewById<View>(android.R.id.content);
+		var runnable = new ClipboardRunnable(clipboardManager!, options)
+		if (rootView != null) {
+			rootView.post(runnable)
+		} else {
+			runnable.run()
+		}
+	} else {
+		var fail = ClipBoardErrorImpl(102)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	}
+}
+
+class ClipboardRunnable implements Runnable {
+
+	clipboardManager : ClipboardManager
+	options : GetClipboardDataOptions
+
+	constructor(clipboardManager : ClipboardManager, options : GetClipboardDataOptions) {
+		this.clipboardManager = clipboardManager
+		this.options = options
+	}
+	override run() : void {
+		var text = ""
+		if (this.clipboardManager!.hasPrimaryClip()) {
+			text = this.clipboardManager!.getPrimaryClip()!.getItemAt(0).text.toString();
+		}
+		var success : GetClipboardDataSuccess = {
+			data: text
+		}
+		this.options.success?.(success)
+		this.options.complete?.(success)
+	}
+}

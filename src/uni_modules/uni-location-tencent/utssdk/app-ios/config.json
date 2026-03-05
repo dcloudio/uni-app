@@ -1,0 +1,9 @@
+{
+	"frameworks": [
+		"libz.1.2.5.tbd"
+	],
+	"thirdSDKs": [
+		"tencent-location"
+	]
+}
+

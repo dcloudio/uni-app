@@ -1,0 +1,148 @@
+import { CompressImage, CompressImageOptions, CompressImageSuccess } from '../../interface.uts';
+import { API_COMPRESS_IMAGE, CompressImageApiOptions, CompressImageApiProtocol } from '../../protocol.uts';
+import { compressedImage } from './compressImageUtil.uts';
+import { image } from '@kit.ImageKit';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { fileIo } from '@kit.CoreFileKit';
+import { getEnv } from '@dcloudio/uni-runtime';
+
+export interface _CompressImageSuccess {
+    size: number,
+    tempFilePath: string
+}
+
+function getFileName(path: string) {
+    const array = path.split('/')
+    return array[array.length - 1]
+}
+
+let id: number = 0
+
+const SUPPORTED_COMPRESSION_EXTENSIONS_JPEG = ['jpg', 'jpe', 'jpeg', 'png'];
+
+export function _compressImage(args: CompressImageOptions): Promise<_CompressImageSuccess> {
+    const imageName = getFileName(args.src)
+    const imageExt = imageName.split('.').slice(-1)[0];
+
+    if (!SUPPORTED_COMPRESSION_EXTENSIONS_JPEG.concat(['webp', 'heif']).includes(imageExt)) {
+        const fd = fileIo.openSync(args.src, fileIo.OpenMode.READ_ONLY).fd
+        const size = fileIo.statSync(fd).size
+        fileIo.closeSync(fd)
+        return Promise.resolve({
+            size,
+            tempFilePath: args.src
+        } as _CompressImageSuccess)
+    }
+
+    const imagePacker: image.ImagePacker = image.createImagePacker();
+    const file2 = fileIo.openSync(args.src, fileIo.OpenMode.READ_ONLY);
+
+    if (!file2) {
+        throw new Error('open file failed')
+    }
+
+    const imageSource: image.ImageSource = image.createImageSource(file2.fd);
+    const originalImageSize: number = fileIo.statSync(file2.fd).size
+
+    if (imageSource == null) {
+        throw new Error('create image source failed')
+    }
+
+    let decodingOptions: image.DecodingOptions = { editable: true, desiredPixelFormat: image.PixelMapFormat.RGBA_8888 };
+    if (args.rotate != null) {
+        decodingOptions.rotate = args.rotate
+    }
+    let compressedWidth = args.compressedWidth
+    let compressedHeight = args.compressedHeight
+    if (compressedHeight != null || compressedWidth != null) {
+        const imageInfo = imageSource.getImageInfoSync()
+        if (typeof compressedWidth === 'number' && compressedHeight == null) {
+            compressedHeight = imageInfo.size.height * (compressedWidth / imageInfo.size.width)
+        }
+        if (typeof compressedHeight === 'number' && compressedWidth == null) {
+            compressedWidth = imageInfo.size.width * (compressedHeight / imageInfo.size.height)
+        }
+
+        decodingOptions.desiredSize = {
+            height: compressedHeight!,
+            width: compressedWidth!
+        }
+    }
+    // const pixelMap = imageSource.createPixelMapSync(decodingOptions);
+    return imageSource.createPixelMap(decodingOptions).then((pixelMap): Promise<_CompressImageSuccess> => {
+        let format: string = ''
+        // 'image/png' 压缩后大小变大，且不会随着 quality 变化而变化
+        if (SUPPORTED_COMPRESSION_EXTENSIONS_JPEG.includes(imageExt)) {
+            format = 'image/jpeg'
+        }
+        if (imageExt === 'webp') format = 'image/webp'
+        if (imageExt === 'heif') format = 'image/heif'
+
+        if (!format.length) {
+            console.error('error image format')
+            const fd = fileIo.openSync(args.src, fileIo.OpenMode.READ_ONLY).fd
+            const size = fileIo.statSync(fd).size
+            fileIo.closeSync(fd)
+            return Promise.resolve({
+                size,
+                tempFilePath: args.src
+            } as _CompressImageSuccess)
+        }
+        const packOptions: image.PackingOption = {
+            format,
+            quality: args.quality ?? 80
+        }
+
+        const tempFileName = `${Date.now()}_${id++}.${imageExt}`
+        const tempDirPath = `${getEnv().CACHE_PATH}/uni-media`
+        if (!fileIo.accessSync(tempDirPath)) {
+            fileIo.mkdirSync(tempDirPath, true)
+        }
+
+        const tempFilePath: string = `${tempDirPath}/${tempFileName}`
+        const file = fileIo.openSync(tempFilePath, fileIo.OpenMode.CREATE | fileIo.OpenMode.READ_WRITE);
+
+        return imagePacker.packToFile(pixelMap, file.fd, packOptions)
+            .then((): Promise<_CompressImageSuccess> => {
+                const size = fileIo.statSync(file.fd).size
+                if (size > originalImageSize) {
+                    return compressedImage(pixelMap, originalImageSize, packOptions.quality)
+                        .then((buffer): _CompressImageSuccess => {
+                            const file = fileIo.openSync(tempFilePath, fileIo.OpenMode.READ_WRITE | fileIo.OpenMode.TRUNC);
+                            fileIo.writeSync(file.fd, buffer)
+                            const size = fileIo.statSync(file.fd).size
+                            fileIo.closeSync(file.fd)
+                            return {
+                                size,
+                                tempFilePath
+                            } as _CompressImageSuccess
+                        })
+                }
+                return Promise.resolve({
+                    size,
+                    tempFilePath
+                } as _CompressImageSuccess)
+            })
+            .finally(() => {
+                fileIo.closeSync(file.fd)
+                imagePacker.release()
+            })
+    })
+}
+
+export const compressImage: CompressImage = defineAsyncApi<CompressImageOptions, CompressImageSuccess>(
+    API_COMPRESS_IMAGE,
+    (args: CompressImageOptions, executor: ApiExecutor<CompressImageSuccess>) => {
+        try {
+            _compressImage(args).then((res) => {
+                executor.resolve({
+                    tempFilePath: res.tempFilePath
+                } as CompressImageSuccess)
+            })
+        } catch (error) {
+            executor.reject((error as BusinessError).message)
+        }
+    },
+    CompressImageApiProtocol,
+    CompressImageApiOptions
+) as CompressImage

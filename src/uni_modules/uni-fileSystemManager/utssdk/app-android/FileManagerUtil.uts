@@ -1,0 +1,100 @@
+import Build from 'android.os.Build'
+import Environment from 'android.os.Environment'
+import bool from 'android.R.bool';
+export function isSandyBoxPath(inputPath : string, onlyRead : boolean) : boolean {
+	//处理非沙盒目录时 需要校验一下MANAGE_EXTERNAL_STORAGE权限 如果授权则可任意操作
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+		if (Environment.isExternalStorageManager()) {
+			console.log('Environment.isExternalStorageManager()')
+			return true
+		}
+	}
+
+	/**
+	 * 第一条规则，判断是否操作的是应用资源目录。开发者具备该目录下读取的权限操作
+	 */
+	let appResRoot = UTSAndroid.convert2AbsFullPath(uni.env.APP_RESOURCE_PATH)
+	if (inputPath.startsWith(appResRoot)) {
+		// 路径是应用资源目录
+		if (onlyRead) {
+			// 并且是读取操作，返回
+			return true
+		} else {
+			// 不是读取
+			return false
+		}
+	}
+	/**
+	 * 第二条规则，是否属于应用根目录 SANDBOX_PATH
+	 */
+	let sandyBoxRoot = UTSAndroid.convert2AbsFullPath(uni.env.SANDBOX_PATH)
+	if (inputPath.startsWith(sandyBoxRoot)) {
+		// 是否是应用根目录
+		return true
+	}
+
+	/**
+	 * 第三条规则，是否属于应用内置根目录 ANDROID_INTERNAL_SANDBOX_PATH
+	 */
+	let innerSandyBoxRoot = UTSAndroid.convert2AbsFullPath(uni.env.ANDROID_INTERNAL_SANDBOX_PATH)
+	if (inputPath.startsWith(innerSandyBoxRoot)) {
+		// 是否是应用根目录
+		return true
+	}
+
+
+	return false
+}
+
+var sandboxPath : string | null = null
+var sandboxPathCache : string | null = null
+var sandboxPathUsr : string | null = null
+var innerSandboxPath : string | null = null
+
+/**
+ * 将绝对路径转换成沙盒路径
+ */
+export function convertRealPathToUniPath(realPath : string) : string {
+	if (sandboxPath == null) {
+		sandboxPath = UTSAndroid.convert2AbsFullPath(uni.env.SANDBOX_PATH)
+	}
+	if (sandboxPathCache == null) {
+		sandboxPathCache = UTSAndroid.convert2AbsFullPath(uni.env.CACHE_PATH)
+	}
+	if (sandboxPathUsr == null) {
+		sandboxPathUsr = UTSAndroid.convert2AbsFullPath(uni.env.USER_DATA_PATH)
+	}
+	if (innerSandboxPath == null) {
+		innerSandboxPath = UTSAndroid.convert2AbsFullPath(uni.env.ANDROID_INTERNAL_SANDBOX_PATH)
+	}
+	if (realPath.startsWith(sandboxPathCache!)) {
+		realPath = realPath.replace(sandboxPathCache!, uni.env.CACHE_PATH)
+	} else if (realPath.startsWith(sandboxPathUsr!)) {
+		realPath = realPath.replace(sandboxPathUsr!, uni.env.USER_DATA_PATH)
+	} else if (realPath.startsWith(sandboxPath!)) {
+		realPath = realPath.replace(sandboxPath!, uni.env.SANDBOX_PATH)
+	} else if (realPath.startsWith(innerSandboxPath!)) {
+		realPath = realPath.replace(innerSandboxPath!, uni.env.ANDROID_INTERNAL_SANDBOX_PATH)
+	}
+	return realPath
+}
+
+export function isUniSystemPath(path : string) : boolean {
+	if (sandboxPath == null) {
+		sandboxPath = UTSAndroid.convert2AbsFullPath(uni.env.SANDBOX_PATH)
+	}
+	if (sandboxPathCache == null) {
+		sandboxPathCache = UTSAndroid.convert2AbsFullPath(uni.env.CACHE_PATH)
+	}
+	if (sandboxPathUsr == null) {
+		sandboxPathUsr = UTSAndroid.convert2AbsFullPath(uni.env.USER_DATA_PATH)
+	}
+	if (innerSandboxPath == null) {
+		innerSandboxPath = UTSAndroid.convert2AbsFullPath(uni.env.ANDROID_INTERNAL_SANDBOX_PATH)
+	}
+	if (path == sandboxPath || path == sandboxPathCache || path == sandboxPathUsr || path == innerSandboxPath) {
+		return true
+	} else {
+		return false
+	}
+}

@@ -1,0 +1,31 @@
+export const API_LOGIN = 'login'
+export const LoginApiProtocol = new Map<string, ProtocolOptions>([
+  [
+    'provider',
+    {
+      type: 'string'
+    }
+  ],
+  [
+    'timeout',
+    {
+      type: 'number'
+    }
+  ]
+])
+
+export const API_GET_USER_INFO = 'getUserInfo'
+export const GetUserInfoApiProtocol = new Map<string, ProtocolOptions>([
+  [
+    'provider',
+    {
+      type: 'string'
+    }
+  ],
+  [
+    'timeout',
+    {
+      type: 'number'
+    }
+  ]
+])

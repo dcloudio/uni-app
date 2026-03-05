@@ -1,0 +1,59 @@
+
+import { RequestPermissionListener, RequestPermissionListenerRequestCallback, RequestPermissionListenerConfirmCallback, RequestPermissionListenerCompleteCallback, CreateRequestPermissionListener } from '../interface.uts';
+
+export const createRequestPermissionListener : CreateRequestPermissionListener = function () : RequestPermissionListener {
+	return new AndroidPermissionRequestManager()
+}
+
+class AndroidPermissionRequestManager implements RequestPermissionListener {
+
+	requestCallback : RequestPermissionListenerRequestCallback | null = null
+	confirmCallback : RequestPermissionListenerConfirmCallback | null = null
+	completeCallback : RequestPermissionListenerCompleteCallback | null = null
+
+	onRequest(callback : RequestPermissionListenerRequestCallback) {
+		if (this.requestCallback == null) {
+			this.requestCallback = callback
+		} else {
+			UTSAndroid.offPermissionRequest(this.requestCallback!)
+			this.requestCallback = callback
+		}
+		UTSAndroid.onPermissionRequest(this.requestCallback!)
+	}
+
+	onConfirm(callback : RequestPermissionListenerConfirmCallback) {
+		if (this.confirmCallback == null) {
+			this.confirmCallback = callback
+		} else {
+			UTSAndroid.offPermissionConfirm(this.confirmCallback!)
+			this.confirmCallback = callback
+		}
+		UTSAndroid.onPermissionConfirm(this.confirmCallback!)
+	}
+
+	onComplete(callback : RequestPermissionListenerCompleteCallback) {
+		if (this.completeCallback == null) {
+			this.completeCallback = callback
+		} else {
+			UTSAndroid.offPermissionComplete(this.completeCallback!)
+			this.completeCallback = callback
+		}
+		UTSAndroid.onPermissionComplete(this.completeCallback!)
+	}
+
+	stop() {
+		if (this.completeCallback != null) {
+			UTSAndroid.offPermissionComplete(this.completeCallback!)
+			this.completeCallback = null
+		}
+		if (this.confirmCallback != null) {
+			UTSAndroid.offPermissionConfirm(this.confirmCallback!)
+			this.confirmCallback = null
+		}
+		if (this.requestCallback != null) {
+			UTSAndroid.offPermissionRequest(this.requestCallback!)
+			this.requestCallback = null
+		}
+	}
+
+}

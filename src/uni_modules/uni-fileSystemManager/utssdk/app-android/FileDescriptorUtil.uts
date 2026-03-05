@@ -1,0 +1,334 @@
+import File from 'java.io.File'
+import ParcelFileDescriptor from 'android.os.ParcelFileDescriptor'
+import { OpenFileOptions, OpenFileSuccessResult, OpenFileSyncOptions } from '../interface';
+import { UniErrorSubject,FileSystemManagerFailImpl,FileSystemManagerUniErrors } from '../unierror';
+
+export class FileDescriptorUtil {
+	public openMap : Map<string, File> = new Map()
+
+	public open(options : OpenFileOptions, file : File) {
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+
+			try {
+				switch (options.flag) {
+					case 'a': //	打开文件用于追加。 如果文件不存在，则创建该文件
+						{
+							let ret: OpenFileSuccessResult = {
+								fd: this.open_a(file),
+								errMsg: 'open:ok'
+							}
+							currentDispatcher.async(function (_) {
+								options.success?.(ret)
+								options.complete?.(ret)
+							}, null)
+
+							this.openMap.set(ret.fd, file)
+							return
+						}
+					case 'ax': //类似于 'a'，但如果路径存在，则失败
+						{
+							if (file.exists()) {
+								let err = new FileSystemManagerFailImpl(1301005);
+								options.fail?.(err)
+								options.complete?.(err)
+							} else {
+								if (file.parentFile?.exists() == false) {
+									let err = new FileSystemManagerFailImpl(1300002);
+									options.fail?.(err)
+									options.complete?.(err)
+									return
+								}
+								file.createNewFile()
+								let ret :OpenFileSuccessResult = {
+									fd: this.open_a(file),
+									errMsg: 'open:ok'
+								}
+								currentDispatcher.async(function (_) {
+									options.success?.(ret)
+									options.complete?.(ret)
+								}, null)
+								this.openMap.set(ret.fd, file)
+							}
+							return
+						}
+					case 'a+': //打开文件用于读取和追加。 如果文件不存在，则创建该文件
+						{
+							let ret = {
+								fd: this.open_ax(file),
+								errMsg: 'open:ok'
+							} as OpenFileSuccessResult
+							currentDispatcher.async(function (_) {
+								options.success?.(ret)
+								options.complete?.(ret)
+							}, null)
+							this.openMap.set(ret.fd, file)
+
+							return
+						}
+					case 'ax+': //类似于 'a+'，但如果路径存在，则失败
+						{
+							if (file.exists()) {
+								let err = new FileSystemManagerFailImpl(1301005);
+								options.fail?.(err)
+								options.complete?.(err)
+							} else {
+								let ret = {
+									fd: this.open_ax(file),
+									errMsg: 'open:ok'
+								} as OpenFileSuccessResult
+								currentDispatcher.async(function (_) {
+									options.success?.(ret)
+									options.complete?.(ret)
+								}, null)
+								this.openMap.set(ret.fd, file)
+							}
+							return
+						}
+					case 'r': //打开文件用于读取。 如果文件不存在，则会发生异常
+						{
+							if (!file.exists()) {
+								let err = new FileSystemManagerFailImpl(1300002);
+								options.fail?.(err)
+								options.complete?.(err)
+							} else {
+								let mode = ParcelFileDescriptor.MODE_READ_ONLY
+								let pfd = ParcelFileDescriptor.open(file, mode);
+								let ret = {
+									fd: pfd.getFd().toString(),
+									errMsg: 'open:ok'
+								} as OpenFileSuccessResult
+								currentDispatcher.async(function (_) {
+									options.success?.(ret)
+									options.complete?.(ret)
+								}, null)
+								this.openMap.set(ret.fd, file)
+							}
+							return
+						}
+					case 'r+': //打开文件用于读取和写入。 如果文件不存在，则会发生异常
+						{
+							if (!file.exists()) {
+								let err = new FileSystemManagerFailImpl(1300002);
+								options.fail?.(err)
+								options.complete?.(err)
+							} else {
+								let mode = ParcelFileDescriptor.MODE_READ_WRITE
+								let pfd = ParcelFileDescriptor.open(file, mode);
+								let ret = {
+									fd: pfd.getFd().toString(),
+									errMsg: 'open:ok'
+								} as OpenFileSuccessResult
+								currentDispatcher.async(function (_) {
+									options.success?.(ret)
+									options.complete?.(ret)
+								}, null)
+								this.openMap.set(ret.fd, file)
+							}
+							return
+						}
+					case 'w'://打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件
+						{
+							let ret = {
+								fd: this.open_w(file),
+								errMsg: 'open:ok'
+							} as OpenFileSuccessResult
+							currentDispatcher.async(function (_) {
+								options.success?.(ret)
+								options.complete?.(ret)
+							}, null)
+							this.openMap.set(ret.fd, file)
+							return
+						}
+					case 'wx'://类似于 'w'，但如果路径存在，则失败
+						{
+							if (file.exists()) {
+								let err = new FileSystemManagerFailImpl(1301005);
+								options.fail?.(err)
+								options.complete?.(err)
+							} else {
+								let ret = {
+									fd: this.open_w(file),
+									errMsg: 'open:ok'
+								} as OpenFileSuccessResult
+								currentDispatcher.async(function (_) {
+									options.success?.(ret)
+									options.complete?.(ret)
+								}, null)
+								this.openMap.set(ret.fd, file)
+							}
+							return
+						}
+					case 'w+': //打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件
+						{
+							let mode = ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_READ_WRITE | ParcelFileDescriptor.MODE_TRUNCATE
+							let pfd = ParcelFileDescriptor.open(file, mode);
+							let ret = {
+								fd: pfd.getFd().toString(),
+								errMsg: 'open:ok'
+							} as OpenFileSuccessResult
+							currentDispatcher.async(function (_) {
+								options.success?.(ret)
+								options.complete?.(ret)
+							}, null)
+							this.openMap.set(ret.fd, file)
+							return
+						}
+					case 'wx+': //	类似于 'w+'，但如果路径存在，则失败
+						{
+							if (file.exists()) {
+								let err = new FileSystemManagerFailImpl(1301005);
+								options.fail?.(err)
+								options.complete?.(err)
+							} else {
+								let mode = ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_READ_WRITE | ParcelFileDescriptor.MODE_TRUNCATE
+								let pfd = ParcelFileDescriptor.open(file, mode);
+								let ret = {
+									fd: pfd.getFd().toString(),
+									errMsg: 'open:ok'
+								} as OpenFileSuccessResult
+								currentDispatcher.async(function (_) {
+									options.success?.(ret)
+									options.complete?.(ret)
+								}, null)
+								this.openMap.set(ret.fd, file)
+							}
+							return
+						}
+				}
+			} catch (e) {
+				let err = new FileSystemManagerFailImpl(1300201);
+				options.fail?.(err)
+				options.complete?.(err)
+			}
+		})
+	}
+
+	public openSync(options : OpenFileSyncOptions, file : File) : string {
+		let msgPrefix = "openSync:fail "
+		switch (options.flag) {
+			case 'a': //	打开文件用于追加。 如果文件不存在，则创建该文件
+				{
+					let fd = this.open_a(file)
+					this.openMap.set(fd, file)
+					return fd
+				}
+			case 'ax': //类似于 'a'，但如果路径存在，则失败
+				{
+					if (file.exists()) {
+						throw new Error(`${msgPrefix}${FileSystemManagerUniErrors[1301005]}`)
+					} else {
+						if (file.parentFile?.exists() == false) {
+							throw new Error(`${msgPrefix}${FileSystemManagerUniErrors[1300002]}`)
+						} else {
+							file.createNewFile()
+							let fd = this.open_a(file)
+							this.openMap.set(fd, file)
+							return fd
+						}
+					}
+
+				}
+			case 'a+': //打开文件用于读取和追加。 如果文件不存在，则创建该文件
+				{
+					let fd = this.open_ax(file)
+					this.openMap.set(fd, file)
+					return fd
+				}
+			case 'ax+': //类似于 'a+'，但如果路径存在，则失败
+				{
+					if (file.exists()) {
+						throw new Error(`${msgPrefix}${FileSystemManagerUniErrors[1301005]}`)
+					} else {
+						let fd = this.open_ax(file)
+						this.openMap.set(fd, file)
+						return fd
+					}
+				}
+			case 'r': //打开文件用于读取。 如果文件不存在，则会发生异常
+				{
+					if (!file.exists()) {
+						throw new Error(`${msgPrefix}${FileSystemManagerUniErrors[1300002]}`)
+					} else {
+						let mode = ParcelFileDescriptor.MODE_READ_ONLY
+						let pfd = ParcelFileDescriptor.open(file, mode);
+						let fd = pfd.getFd().toString()
+						this.openMap.set(fd, file)
+						return fd
+					}
+
+				}
+			case 'r+': //打开文件用于读取和写入。 如果文件不存在，则会发生异常
+				{
+					if (!file.exists()) {
+						throw new Error(`${msgPrefix}${FileSystemManagerUniErrors[1300002]}`)
+					} else {
+						let mode = ParcelFileDescriptor.MODE_READ_WRITE
+						let pfd = ParcelFileDescriptor.open(file, mode);
+						let fd = pfd.getFd().toString()
+						this.openMap.set(fd, file)
+						return fd
+					}
+
+				}
+			case 'w'://打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件
+				{
+					let fd = this.open_w(file)
+					this.openMap.set(fd, file)
+					return fd
+				}
+			case 'wx'://类似于 'w'，但如果路径存在，则失败
+				{
+					if (file.exists()) {
+						throw new Error(`${msgPrefix}${FileSystemManagerUniErrors[1301005]}`)
+					} else {
+						let fd = this.open_w(file)
+						this.openMap.set(fd, file)
+						return fd
+					}
+
+				}
+			case 'w+': //打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件
+				{
+					let mode = ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_READ_WRITE | ParcelFileDescriptor.MODE_TRUNCATE
+					let pfd = ParcelFileDescriptor.open(file, mode);
+					let fd = pfd.getFd().toString()
+					this.openMap.set(fd, file)
+					return fd
+				}
+			case 'wx+': //	类似于 'w+'，但如果路径存在，则失败
+				{
+					if (file.exists()) {
+						throw new Error(`${msgPrefix}${FileSystemManagerUniErrors[1301005]}`)
+					} else {
+						let mode = ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_READ_WRITE | ParcelFileDescriptor.MODE_TRUNCATE
+						let pfd = ParcelFileDescriptor.open(file, mode);
+						let fd = pfd.getFd().toString()
+						this.openMap.set(fd, file)
+						return fd
+					}
+				}
+		}
+		return ""
+	}
+	open_a(file : File) : string {
+		try {
+			let mode = ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_WRITE_ONLY | ParcelFileDescriptor.MODE_APPEND
+			let pfd = ParcelFileDescriptor.open(file, mode);
+			return pfd.getFd().toString()
+		} catch (e : Exception) {
+			console.log(e)
+		}
+		return ""
+	}
+	open_ax(file : File) : string {
+		let mode = ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_APPEND | ParcelFileDescriptor.MODE_READ_WRITE
+		let pfd = ParcelFileDescriptor.open(file, mode);
+		return pfd.getFd().toString()
+	}
+	open_w(file : File) : string {
+		let mode = ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_WRITE_ONLY | ParcelFileDescriptor.MODE_TRUNCATE
+		let pfd = ParcelFileDescriptor.open(file, mode);
+		return pfd.getFd().toString()
+	}
+}

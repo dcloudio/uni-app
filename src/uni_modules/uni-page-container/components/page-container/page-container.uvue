@@ -1,0 +1,525 @@
+<template>
+    <view v-if="overlay && showPageContainer" class="uni-page-container-overlay"
+        :style="[overlayStyleMap, overlayStyle]" @click="onClickOverlay" 
+        <!-- #ifndef APP-ANDROID -->
+        @touchmove.prevent.stop
+        <!-- #endif -->
+        >
+    </view>
+    <view v-if="showPageContainer" class="uni-page-container-popup" :class="popupClasses"
+        :style="[innerStyleMap, customStyle]" @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd"
+        @touchcancel="onTouchCancel">
+        <slot />
+    </view>
+</template>
+
+<script setup lang="uts">
+    import { UniPageContainerElement } from './global.uts'
+
+    defineOptions({
+        name: 'page-container',
+        rootElement: {
+            class: UniPageContainerElement
+        }
+    })
+
+    type PageContainerPosition = 'top' | 'bottom' | 'left' | 'right' | 'center';
+
+    interface PageContainerProps {
+        /**
+         * 是否显示容器组件
+         * @uniPlatform {
+         *   "app": {
+         *     "harmony": {
+         *       "unixvVer": "5.02"
+         *     }
+         *   }
+         * }
+         */
+        show : boolean;
+        /**
+         * 动画时长，单位毫秒
+         * @uniPlatform {
+         *   "app": {
+         *     "harmony": {
+         *       "unixvVer": "5.02"
+         *     }
+         *   }
+         * }
+         */
+        duration : number;
+        /**
+         * z-index 层级
+         * @uniPlatform {
+         *   "app": {
+         *     "harmony": {
+         *       "unixvVer": "5.02"
+         *     }
+         *   }
+         * }
+         */
+        zIndex : number;
+        /**
+         * 是否显示遮罩层
+         * @uniPlatform {
+         *   "app": {
+         *     "harmony": {
+         *       "unixvVer": "5.02"
+         *     }
+         *   }
+         * }
+         */
+        overlay : boolean;
+        /**
+         * 是否显示圆角
+         * @uniPlatform {
+         *   "app": {
+         *     "harmony": {
+         *       "unixvVer": "5.02"
+         *     }
+         *   }
+         * }
+         */
+        round : boolean;
+        /**
+         * 弹出位置
+         * @uniPlatform {
+         *   "app": {
+         *     "harmony": {
+         *       "unixvVer": "5.02"
+         *     }
+         *   }
+         * }
+         */ 
+        position : PageContainerPosition;
+        /**
+         * 自定义弹出层样式
+         * @uniPlatform {
+         *   "app": {
+         *     "harmony": {
+         *       "unixvVer": "5.02"
+         *     }
+         *   }
+         * }
+         */
+        customStyle : string;
+        /**
+         * 自定义遮罩层样式
+         * @uniPlatform {
+         *   "app": {
+         *     "harmony": {
+         *       "unixvVer": "5.02"
+         *     }
+         *   }
+         * }
+         */
+        overlayStyle : string;
+        /**
+         * 是否在下滑一段距离后关闭
+         * @uniPlatform {
+         *   "app": {
+         *     "harmony": {
+         *       "unixvVer": "5.02"
+         *     }
+         *   }
+         * }
+         */
+        closeOnSlideDown : boolean;
+    }
+
+    const props = withDefaults(defineProps<PageContainerProps>(), {
+        show: false,
+        duration: 300,
+        zIndex: 100,
+        overlay: true,
+        round: false,
+        position: 'bottom',
+        customStyle: '',
+        overlayStyle: '',
+        closeOnSlideDown: false,
+    })
+
+    const emits = defineEmits<{
+        beforeenter : []
+        enter : []
+        afterenter : []
+        beforeleave : []
+        leave : []
+        afterleave : []
+        clickoverlay : [event: UniPointerEvent]
+    }>()
+
+    const showPageContainer = ref(false)
+    const isAnimating = ref(false)
+    const transitionTimer = ref<number | null>(null)
+    const isEntered = ref(false)
+
+    // 触摸相关状态（用于滑动关闭）
+    let touchStartX = 0
+    let touchStartY = 0
+    let touchStartTime = 0
+    let isDragging = false
+    const MAX_SLIDER_DISTANCE = 100
+    const MIN_SLIDER_VELOCITY = 0.3
+    const translateValue = ref<number>(0)
+
+    const overlayStyleMap = computed(() => {
+        const styleMap = new Map<string, string>([
+            ['z-index', props.zIndex],
+            ['transition-duration', props.duration + 'ms'],
+        ])
+        if (isEntered.value) {
+            styleMap.set('opacity', '1').set('pointer-events', 'auto')
+        }
+        return styleMap
+    })
+
+    const innerStyleMap = computed(() => {
+        const styleMap = new Map<string, string>([
+            ['z-index', props.zIndex + 1],
+            ['transition-duration', props.duration + 'ms'],
+        ])
+        // 滑动拖动时的 transform
+        if (translateValue.value != 0 && isDragging) {
+            let transformValue = ''
+            switch (props.position) {
+                case 'bottom':
+                case 'top':
+                    transformValue = `translateY(${translateValue.value}px)`
+                    break
+                case 'left':
+                case 'right':
+                    transformValue = `translateX(${translateValue.value}px)`
+                    break
+            }
+            if (transformValue != '') {
+                styleMap.set('transform', transformValue)
+                styleMap.set('transition', 'none')
+            }
+        } else if (translateValue.value != 0 && !isDragging) {
+            // 回弹动画
+            styleMap.set('transition', `transform ${props.duration}ms ease`)
+        }
+        return styleMap
+    })
+
+    const popupClasses = computed(() => {
+        const classes : string[] = []
+        if (props.position != null) {
+            classes.push(`uni-page-container-popup-${props.position}`)
+        }
+        if (props.round) {
+            classes.push('uni-page-container-popup-round')
+        }
+        // 始终添加 enter 类，拖动时通过 style 覆盖 transform
+        if (isEntered.value) {
+            classes.push('uni-page-container-popup-enter')
+        }
+        return classes
+    })
+
+    function clearTransitionTimer() {
+        if (transitionTimer.value != null) {
+            clearTimeout(transitionTimer.value as number)
+            transitionTimer.value = null
+        }
+    }
+
+    // 动画结束处理
+    function onAnimationEnd(type : 'enter' | 'leave') {
+        isAnimating.value = false
+
+        clearTransitionTimer()
+
+        if (type == 'enter') {
+            emits('afterenter')
+        } else if (type == 'leave') {
+            showPageContainer.value = false
+            emits('afterleave')
+        }
+    }
+
+    // 监听动画结束
+    function listenTransitionEnd(type : 'enter' | 'leave') {
+        // 清除之前的定时器
+        clearTransitionTimer()
+
+        // 使用 setTimeout 作为兜底方案
+        transitionTimer.value = setTimeout(() => {
+            onAnimationEnd(type)
+        }, props.duration)
+    }
+
+    function resetDragState() {
+        isDragging = false
+        translateValue.value = 0
+    }
+
+    function openContainer() {
+        emits('beforeenter')
+        showPageContainer.value = true
+        isEntered.value = false
+        // 重置拖动状态
+        resetDragState()
+        nextTick(() => {
+            emits('enter')
+            isAnimating.value = true
+            // 使用双重 requestAnimationFrame 避免 duration 失效
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    isEntered.value = true
+                    listenTransitionEnd('enter')
+                })
+            })
+        })
+    }
+
+    function closeContainer() {
+        if (isAnimating.value) {
+            return
+        }
+        emits('beforeleave')
+        isAnimating.value = true
+        nextTick(() => {
+            isEntered.value = false
+            emits('leave')
+            // 监听动画结束
+            listenTransitionEnd('leave')
+        })
+    }
+
+    watch(() : boolean => props.show, (newVal : boolean) => {
+        if (newVal && !showPageContainer.value) {
+            openContainer()
+        } else if (!newVal && showPageContainer.value) {
+            closeContainer()
+        }
+    })
+
+    function onClickOverlay(event : UniPointerEvent) {
+        if (isAnimating.value) {
+            return
+        }
+        emits('clickoverlay', event)
+        nextTick(() => {
+            closeContainer()
+        })
+    }
+
+    function onTouchStart(e : UniTouchEvent) {
+        if (!props.closeOnSlideDown) {
+            return
+        }
+
+        if (e.touches.length > 0) {
+            const { clientX, clientY } = e.touches[0]
+            touchStartX = clientX
+            touchStartY = clientY
+            touchStartTime = Date.now()
+            isDragging = false
+        }
+    }
+
+    function onTouchMove(e : UniTouchEvent) {
+        // 如果不是滑动关闭模式，阻止事件冒泡（防止滚动穿透），但允许容器内部滚动
+        if (!props.closeOnSlideDown) {
+            // #ifdef WEB
+            e.preventDefault()
+            // #endif
+            e.stopPropagation()
+            return
+        }
+
+        if (e.touches.length > 0) {
+            const { clientX, clientY } = e.touches[0]
+            const deltaX = clientX - touchStartX
+            const deltaY = clientY - touchStartY
+            let shouldDrag = false
+            let dragValue = 0
+
+            // 根据不同的 position 判断滑动方向
+            switch (props.position) {
+                case 'bottom':
+                    // 底部弹出：向下滑动关闭
+                    if (deltaY > 0) {
+                        shouldDrag = true
+                        dragValue = deltaY
+                    }
+                    break
+                case 'top':
+                    // 顶部弹出：向上滑动关闭
+                    if (deltaY < 0) {
+                        shouldDrag = true
+                        dragValue = deltaY
+                    }
+                    break
+                case 'left':
+                    // 左侧弹出：向左滑动关闭
+                    if (deltaX < 0) {
+                        shouldDrag = true
+                        dragValue = deltaX
+                    }
+                    break
+                case 'right':
+                    // 右侧弹出：向右滑动关闭
+                    if (deltaX > 0) {
+                        shouldDrag = true
+                        dragValue = deltaX
+                    }
+                    break
+            }
+
+            if (shouldDrag) {
+                isDragging = true
+                translateValue.value = dragValue
+
+                // 阻止默认滚动行为
+                e.preventDefault()
+                e.stopPropagation()
+            }
+        }
+    }
+
+    function onTouchEnd() {
+        if (!props.closeOnSlideDown) {
+            return
+        }
+
+        if (isDragging) {
+            const deltaTime = Date.now() - touchStartTime
+            const velocity = Math.abs(translateValue.value) / deltaTime
+
+            // 判断是否应该关闭：拖动距离超过 100px 或拖动速度较快
+            if (Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY) {
+                // 先重置拖动状态，避免触发回弹逻辑
+                resetDragState()
+                closeContainer()
+            } else {
+                // 回弹
+                resetDragState()
+            }
+        }
+    }
+
+    function onTouchCancel() {
+        if (!props.closeOnSlideDown) {
+            return
+        }
+
+        // touchcancel 时重置拖动状态并回弹
+        if (isDragging) {
+            resetDragState()
+        }
+    }
+
+    onBackPress(() => {
+        if (showPageContainer.value) {
+            closeContainer()
+            return true
+        }
+        return false
+    })
+
+    onMounted(() => {
+        if (props.show) {
+            openContainer()
+        }
+    })
+
+    // 组件卸载前清理
+    onBeforeUnmount(() => {
+        clearTransitionTimer()
+    })
+</script>
+
+<style>
+    .uni-page-container-popup {
+        background-color: #fff;
+        box-sizing: border-box;
+        overflow: hidden;
+        position: fixed;
+        transition-property: transform, opacity;
+        transition-timing-function: ease;
+    }
+
+    .uni-page-container-overlay {
+        background-color: rgba(0, 0, 0, 0.7);
+        height: 100%;
+        left: 0;
+        position: fixed;
+        top: 0;
+        transition-property: opacity;
+        transition-timing-function: ease;
+        width: 100%;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .uni-page-container-popup-right {
+        right: 0;
+        top: 0;
+        height: 100%;
+        width: 80%;
+        transform: translateX(100%);
+    }
+
+    .uni-page-container-popup-right.uni-page-container-popup-enter {
+        transform: translateX(0);
+    }
+
+    .uni-page-container-popup-left {
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 80%;
+        transform: translateX(-100%);
+    }
+
+    .uni-page-container-popup-left.uni-page-container-popup-enter {
+        transform: translateX(0);
+    }
+
+    .uni-page-container-popup-bottom {
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        transform: translateY(100%);
+    }
+
+    .uni-page-container-popup-bottom.uni-page-container-popup-enter {
+        transform: translateY(0);
+    }
+
+    .uni-page-container-popup-bottom.uni-page-container-popup-round {
+        border-radius: 20px 20px 0 0;
+    }
+
+    .uni-page-container-popup-top {
+        left: 0;
+        top: 0;
+        width: 100%;
+        transform: translateY(-100%);
+    }
+
+    .uni-page-container-popup-top.uni-page-container-popup-enter {
+        transform: translateY(0);
+    }
+
+    .uni-page-container-popup-top.uni-page-container-popup-round {
+        border-radius: 0 0 20px 20px;
+    }
+
+    .uni-page-container-popup-center {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.9);
+        transition-property: opacity, transform;
+        transition-timing-function: ease;
+        opacity: 0;
+    }
+
+    .uni-page-container-popup-center.uni-page-container-popup-enter {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+</style>

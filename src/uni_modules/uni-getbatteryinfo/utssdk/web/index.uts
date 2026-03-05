@@ -1,7 +1,7 @@
 import { GetBatteryInfo, GetBatteryInfoOptions, GetBatteryInfoSuccess } from '../interface.uts'
-export const getBatteryInfo: GetBatteryInfo = function (options: GetBatteryInfoOptions) {
-	if ((navigator as any).getBattery) {
-		(navigator as any).getBattery().then(battery => {
+export const getBatteryInfo : GetBatteryInfo = function (options : GetBatteryInfoOptions) {
+	if (navigator.getBattery) {
+		navigator.getBattery().then(battery => {
 			const res = {
 				errCode: 0,
 				errSubject: "uni-getBatteryInfo",

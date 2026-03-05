@@ -1,0 +1,31 @@
+import { GetSystemSetting, GetSystemSettingResult } from '../interface.uts'
+import { UTSiOS } from "DCloudUTSFoundation";
+
+export const getSystemSetting : GetSystemSetting = () : GetSystemSettingResult => {
+	let setting : Map<string, any> = UTSiOS.getSystemSetting();
+	let result : GetSystemSettingResult = {
+		deviceOrientation: "portrait",
+		locationEnabled : false
+	};
+	if (setting.has("bluetoothEnabled")) {
+		result.bluetoothEnabled = setting.get("bluetoothEnabled") as boolean;
+	}
+
+	if (setting.has("bluetoothError")) {
+		result.bluetoothError = setting.get("bluetoothError") as string;
+	}
+
+	if (setting.has("locationEnabled")) {
+		result.locationEnabled = setting.get("locationEnabled") as boolean;
+	}
+
+	if (setting.has("wifiEnabled")) {
+		result.wifiEnabled = setting.get("wifiEnabled") as boolean;
+	}
+
+	if (setting.has("deviceOrientation")) {
+		result.deviceOrientation = setting.get("deviceOrientation") as string;
+	}
+
+	return result;
+}

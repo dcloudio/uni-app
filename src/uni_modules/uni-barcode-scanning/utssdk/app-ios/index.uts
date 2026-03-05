@@ -1,0 +1,128 @@
+import { initIosScanner,  BarcodeInformation, IosScreenShot, IosFrameScannerOptions, IosScanner, IosPhotoScannerOptions } from '@/uni_modules/uni-camera';
+import "CoreMedia"
+import "CoreImage"
+import "UIKit"
+import "AVFoundation"
+import "Foundation"
+
+class FrameScannerCallback implements ScannerCallback {
+
+	constructor(private options : IosFrameScannerOptions) { }
+
+	@UTSiOS.keyword("internal")
+	onScanSuccess(@argumentLabel("_") barcodeInformation : IosBarcodeInformation[], @argumentLabel("_") screenShot : ScreenShot | null) {
+		const bridgeBarcodeInformation : BarcodeInformation[] = []
+		for (let information of barcodeInformation) {
+			const area = information.scanArea
+			const scanArea = [] as number[]
+			scanArea.push(Number.from(area[0]))
+			scanArea.push(Number.from(area[1]))
+			scanArea.push(Number.from(area[2]))
+			scanArea.push(Number.from(area[3]))
+
+			const bridgeInfomation : BarcodeInformation = {
+				result: information.result,
+				scanType: information.scanType,
+				charset: information.charset,
+				rawData: information.rawData,
+				scanArea: scanArea
+			}
+			bridgeBarcodeInformation.push(bridgeInfomation)
+		}
+
+		let bridgeScreenShot : IosScreenShot | null = null
+		if (screenShot != null && screenShot!.image != null) {
+			bridgeScreenShot = {
+				image: screenShot!.image,
+			} as IosScreenShot
+		}
+
+		const listener = this.options.iosScannerListenner
+		listener?.onScanSuccess(bridgeBarcodeInformation, bridgeScreenShot)
+	}
+	@UTSiOS.keyword("internal")
+	onScanFailure(@argumentLabel("_") error : string) {
+		const listener = this.options.iosScannerListenner
+		listener?.onScanFailure(error)
+	}
+	@UTSiOS.keyword("internal")
+	needZoom() {
+		const listener = this.options.iosScannerListenner
+		listener?.needZoom()
+	}
+	@UTSiOS.keyword("internal")
+	onLight(@argumentLabel("_") light : boolean) {
+		const listener = this.options.iosScannerListenner
+		listener?.onLight(light as boolean)
+	}
+}
+
+
+class PhotoScannerCallback implements ScannerCallback {
+	constructor(private options : IosPhotoScannerOptions) { }
+
+	@UTSiOS.keyword("internal")
+	onScanSuccess(@argumentLabel("_") barcodeInformation : IosBarcodeInformation[], @argumentLabel("_") screenShot : ScreenShot | null) {
+		const bridgeBarcodeInformation : BarcodeInformation[] = []
+		for (let information of barcodeInformation) {
+			const area = information.scanArea
+			const scanArea = [] as number[]
+			scanArea.push(Number.from(area[0]))
+			scanArea.push(Number.from(area[1]))
+			scanArea.push(Number.from(area[2]))
+			scanArea.push(Number.from(area[3]))
+
+			const bridgeInfomation : BarcodeInformation = {
+				result: information.result,
+				scanType: information.scanType,
+				charset: information.charset,
+				rawData: information.rawData,
+				scanArea: scanArea
+			}
+			bridgeBarcodeInformation.push(bridgeInfomation)
+		}
+		const listener = this.options.iosScannerListenner
+		listener?.onScanSuccess(bridgeBarcodeInformation, null)
+	}
+	@UTSiOS.keyword("internal")
+	onScanFailure(@argumentLabel("_") error : string) {
+		const listener = this.options.iosScannerListenner
+		listener?.onScanFailure(error)
+	}
+	@UTSiOS.keyword("internal")
+	needZoom() {
+	}
+	@UTSiOS.keyword("internal")
+	onLight(@argumentLabel("_") light : boolean) {
+	}
+}
+
+
+export class IosScannerImpl implements IosScanner {
+
+	processScanBarCode(options : IosFrameScannerOptions) {
+		const sampleBuffer = options.sampleBuffer
+		const scanType = options.scanType
+		const autoZoom = options.autoZoom
+		const width = options.width
+		const height = options.height
+		Scanner.processScanBarCode(sampleBuffer!, scanType!, autoZoom, width!.toInt(), height!.toInt(), new FrameScannerCallback(options), "back")
+	}
+
+	processScanBarCodeWithPhoto(options : IosPhotoScannerOptions) {
+		const scanType = options.scanType
+		const filePath = options.filePath
+		DispatchQueue.global(qos= DispatchQoS.QoSClass.background).async(execute = ()=>{
+			Scanner.processScanBarCode(filePath!, scanType!, new PhotoScannerCallback(options))	
+		})
+	}
+}
+
+
+export class AppHookProxy implements UTSiOSHookProxy {
+	applicationDidFinishLaunchingWithOptions(application : UIApplication | null, launchOptions : Map<UIApplication.LaunchOptionsKey, any> | null) : boolean {
+		const androidScanner = new IosScannerImpl()
+		initIosScanner(androidScanner)
+		return true
+	}
+}

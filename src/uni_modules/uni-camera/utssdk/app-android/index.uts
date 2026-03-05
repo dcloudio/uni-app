@@ -1,0 +1,554 @@
+import PageNode from "io.dcloud.uniapp.dom.node.PageNode"
+import INodeData from "io.dcloud.uniapp.interfaces.INodeData"
+import View from "android.view.View"
+import { CameraImpl, CameraManager } from "uts.sdk.modules.uniCamera"
+import AppCompatActivity from "androidx.appcompat.app.AppCompatActivity"
+import { AndroidScanner, AndroidScannerListener, AndroidFrameScannerOptions, BarcodeInformation, CameraContext, CameraContextCameraFrameListener, CameraContextCameraFrameListenerStartOptions, CameraContextCameraFrameListenerStopOptions, CameraContextFail, CameraContextOnCameraFrame, CameraContextSetZoomOptions, CameraContextStartRecordOptions, CameraContextStartRecordTimeoutResult, CameraContextStopRecordOptions, CameraContextStopRecordResult, CameraContextTakePhotoOptions, CameraContextTakePhotoResult, CreateCameraContext, ScreenShot } from "../interface.uts"
+import ByteBuffer from 'java.nio.ByteBuffer'
+import CompressVideoSuccess from "uts.sdk.modules.DCloudUniMedia.CompressVideoSuccess"
+import { CameraContextFailImpl, getErrcode } from "../unierror.uts"
+import ImageProxy from "androidx.camera.core.ImageProxy";
+import { getCurrentPage } from "@dcloudio/uni-runtime";
+
+let androidScanner: AndroidScanner | null = null
+
+export function initAndroidScanner(scanner: AndroidScanner): void {
+	androidScanner = scanner
+}
+
+export function getAndroidScanner(): AndroidScanner | null {
+	return androidScanner
+}
+
+export class UniCameraElement
+	extends UniViewElementImpl
+	implements UniBuiltInComponent {
+
+	cameraImpl: CameraImpl | null = null
+
+	constructor(data: INodeData, pageNode: PageNode) {
+		super(data, pageNode);
+	}
+
+	override get tagName(): string {
+		return "camera";
+	}
+
+	override get nodeName(): string {
+		return this.tagName;
+	}
+
+	setCamera(cameraImpl: CameraImpl) {
+		this.cameraImpl = cameraImpl
+	}
+
+	override getAndroidView<T extends View>(): T | null {
+		const nativeElement = this.firstChild as UniNativeViewElement
+		if (nativeElement == null) {
+			return null
+		} else {
+			return nativeElement.getAndroidView() as T | null
+		}
+	}
+
+	setZoom(zoom: number) {
+		this.cameraImpl?.setZoom(zoom.toFloat())
+	}
+
+	getCurrentZoom(): number {
+		return this.cameraImpl?.getCurrentZoom() ?? 1
+	}
+
+	setFrameCallback(callback: (frame: CameraContextOnCameraFrame) => void) {
+		this.cameraImpl?.setFrameCallback(new (class implements ICallBack {
+			override callback(type: string, param: any | null) {
+				const map = param as LinkedHashMap<string, any>
+				const width = map["width"] as Int
+				const height = map["height"] as Int
+				const buffer = map["buffer"] as ByteBuffer
+				const arrayBuffer = ArrayBuffer.fromByteBuffer(buffer)
+				const frame = {
+					width: Number.from(width),
+					height: Number.from(height),
+					data: arrayBuffer
+				} as CameraContextOnCameraFrame
+				callback(frame)
+			}
+		}));
+	}
+
+	startOnFrame() {
+		this.cameraImpl?.startOnFrame()
+	}
+
+	stopOnFrame() {
+		this.cameraImpl?.stopOnFrame()
+	}
+
+	takePhoto(options: CameraContextTakePhotoOptions) {
+		const quality = options.quality
+		const selfieMirror = options.selfieMirror
+		this.cameraImpl?.takePhoto(quality ?? "normal", selfieMirror ?? false, new (class implements ICallBack {
+			override callback(type: string, param: any | null) {
+				const result = {
+					tempImagePath: param as string
+				} as CameraContextTakePhotoResult
+				options.success?.(result)
+				options.complete?.(result)
+			}
+		}), new (class implements ICallBack {
+			override callback(type: string, param: any | null) {
+				const cause = param as string
+				const failResult = new CameraContextFailImpl(getErrcode(2003003))
+				failResult.cause = new SourceError(cause);
+				options.fail?.(failResult)
+				options.complete?.(failResult)
+			}
+		}))
+	}
+
+	startRecord(options: CameraContextStartRecordOptions): void {
+		this.requestRecordAudioPermission(() => {
+			this.__startRecord(options)
+		})
+	}
+
+	private __startRecord(options: CameraContextStartRecordOptions): void {
+		const timeout = options.timeout ?? 30
+		const selfieMirror = options.selfieMirror ?? true
+		this.cameraImpl?.startRecord(timeout.toInt(), selfieMirror, new (class implements ICallBack {
+			override callback(type: string, param: any | null) {
+				if (param instanceof LinkedHashMap<string, any>) {
+					const map = param as LinkedHashMap<string, any>
+					const tempThumbPath = map["tempThumbPath"] as string
+					const tempVideoPath = map["tempVideoPath"] as string
+					const result = {
+						tempThumbPath: tempThumbPath,
+						tempVideoPath: tempVideoPath
+					} as CameraContextStartRecordTimeoutResult
+					options.timeoutCallback?.(result)
+				} else if (typeof (param) == 'string') {
+					options.timeoutCallback?.(param as string)
+				}
+			}
+		}), new (class implements ICallBack {
+			override callback(type: string, param: any | null) {
+				const result = "start record success"
+				options.success?.(result)
+				options.complete?.(result)
+			}
+		}), new (class implements ICallBack {
+			override callback(type: string, param: any | null) {
+				if (param != null) {
+					const cause = param as string
+					let errCode = 2003100;
+					if (cause == "video path is empty") {
+						errCode = 2003007;
+					} else if (cause == "recording failed") {
+						errCode = 2003008;
+					}
+					const failResult = new CameraContextFailImpl(getErrcode(errCode))
+					failResult.cause = new SourceError(cause);
+					options.fail?.(failResult)
+					options.complete?.(failResult)
+				}
+			}
+		}))
+	}
+
+	stopRecord(options: CameraContextStopRecordOptions): void {
+		const compressed = options.compressed ?? false
+		this.cameraImpl?.stopRecord(0, new (class implements ICallBack {
+			override callback(type: string, param: any | null) {
+				const map = param as LinkedHashMap<string, any>
+				const tempThumbPath = map["tempThumbPath"] as string
+				var tempVideoPath = map["tempVideoPath"] as string
+				if (compressed) {
+					uni.compressVideo({
+						src: tempVideoPath,
+						quality: "high",
+						success: (res: CompressVideoSuccess) => {
+							tempVideoPath = res.tempFilePath
+							const result = {
+								tempThumbPath: tempThumbPath,
+								tempVideoPath: tempVideoPath
+							} as CameraContextStopRecordResult
+							options.success?.(result)
+							options.complete?.(result)
+						},
+						fail: (err: IMediaError) => {
+							const failResult = new CameraContextFailImpl(getErrcode(2003101))
+							options.fail?.(failResult)
+							options.complete?.(failResult)
+						}
+					} as CompressVideoOptions)
+				} else {
+					const result = {
+						tempThumbPath: tempThumbPath,
+						tempVideoPath: tempVideoPath
+					} as CameraContextStopRecordResult
+					options.success?.(result)
+					options.complete?.(result)
+				}
+			}
+		}), new (class implements ICallBack {
+			override callback(type: string, param: any | null) {
+				const cause = param as string
+				let errCode = 2003100;
+				if (cause == "video path is empty") {
+					errCode = 2003007;
+				} else if (cause == "recording failed") {
+					errCode = 2003008;
+				}
+				const failResult = new CameraContextFailImpl(getErrcode(errCode))
+				failResult.cause = new SourceError(cause);
+				options.fail?.(failResult)
+				options.complete?.(failResult)
+			}
+		}))
+
+	}
+
+	requestRecordAudioPermission(callback: () => void) {
+		const context = UTSAndroid.getUniActivity()!
+		if (UTSAndroid.checkSystemPermissionGranted(context, ["android.permission.RECORD_AUDIO"])) {
+			callback()
+		} else {
+			UTSAndroid.requestSystemPermission(context, ["android.permission.RECORD_AUDIO"],
+				(allRight: boolean, _: string[]) => {
+					if (allRight) {
+						callback()
+					}
+				},
+				(p0: boolean, p1: string[]) => {
+					callback()
+				})
+		}
+	}
+
+	startAnalysis(callback: (imageProxy: ImageProxy) => void): void {
+		this.cameraImpl?.startAnalysis(new (class implements ICallBack {
+			override callback(type: string, param: any | null) {
+				const imageProxy = param as ImageProxy
+				callback(imageProxy)
+			}
+		}))
+	}
+
+	stopAnalysis(): void {
+		this.cameraImpl?.stopAnalysis()
+	}
+}
+
+export class UTSAcvitiyLifeCycleCallback extends UniActivityLifeCycleCallback {
+	private cameraInstance: CameraInstance | null = null
+	constructor(cameraInstance: CameraInstance) {
+		super()
+		this.cameraInstance = cameraInstance;
+	}
+
+	override onResume(params: UniActivityParams) {
+		//如果后面页面也使用了相机，放回到当前页面，那就要恢复一下当前的相机实例
+		//现在要是恢复 就得存储数据, 而数据已经存储到了相机示例内，所以直接打开就行了。
+		// this.cameraInstance?.resume()
+	}
+	
+	override onPause(params: UniActivityParams) {
+		// this.cameraInstance?.pause()
+	}
+
+}
+
+
+export class CameraInstance {
+	$element: UniNativeViewElement;
+	private cameraImpl: CameraImpl | null = null
+	private acvitiyLifeCycleCallback: UTSAcvitiyLifeCycleCallback | null = null;
+	private permissionDenied = false;
+
+	constructor(element: UniNativeViewElement) {
+		this.$element = element;
+	}
+
+	start(position: string) {
+		const activity = this.$element.getAndroidActivity() as AppCompatActivity
+		if (activity == null) {
+			return
+		}
+		this.cameraImpl = CameraManager.getCameraImpl(activity, this.$element)
+		this.acvitiyLifeCycleCallback = new UTSAcvitiyLifeCycleCallback(this);
+		const pages = getCurrentPages()
+		const page = pages[pages.length - 1]
+		UTSAndroid.onActivityCallback(this.acvitiyLifeCycleCallback!, page.route);
+		(this.$element.parentElement as UniCameraElement).setCamera(this.cameraImpl!);
+		const previewView = this.cameraImpl?.getCameraPreviewView(position ?? "medium")
+
+		if (previewView == null) {
+			this.destory()
+			return
+		}
+		this.$element.bindAndroidView(previewView);
+		this.requestCameraPermission(() => {
+			this.cameraImpl?.startCamera()
+			this.registerStopCallback()
+			this.registerInitDoneCallback()
+		})
+	}
+
+	resume() {
+		this.requestCameraPermission(() => {
+			this.cameraImpl?.startCamera()
+			
+			setTimeout(()=> {
+				const cameraImpl = this.cameraImpl
+				if (cameraImpl == null) {
+					return
+				}
+				CameraManager.setCurrentCameraImpl(this.$element, cameraImpl)
+				CameraManager.restoreConfig(this.$element)
+			}, 100)
+		})
+	}
+
+	requestCameraPermission(callback: () => void) {
+		const context = UTSAndroid.getUniActivity()!
+		if (UTSAndroid.checkSystemPermissionGranted(context, ["android.permission.CAMERA"])) {
+			callback()
+		} else {
+			if (this.permissionDenied) {
+				return
+			}
+			const element = this.$element
+			UTSAndroid.requestSystemPermission(context, ["android.permission.CAMERA"],
+				(allRight: boolean, _: string[]) => {
+					if (allRight) {
+						callback()
+					}
+				},
+				(p0: boolean, p1: string[]) => {
+					const event = new UniNativeViewEvent("error", { "error": "permission denied" } as UTSJSONObject)
+					element.dispatchEvent("error", event)
+					this.permissionDenied = true;
+				})
+		}
+	}
+	
+	stop() {
+		CameraManager.saveConfig(this.$element)
+		this.cameraImpl?.stopAnalysis()
+	}
+
+	destory() {
+		UTSAndroid.offActivityCallback(this.acvitiyLifeCycleCallback!)
+        CameraManager.clearConfig(this.$element)
+		if(this.$element.uniPage?.getParentPage() != null) {
+			//dialogpage时，自己处理
+			this.cameraImpl?.stopCamera()
+		}
+		this.cameraImpl = null
+	}
+
+	switchCamera(position: string) {
+		this.cameraImpl?.switchCamera(position)
+	}
+
+	setFlash(flash: string) {
+		this.cameraImpl?.setFlash(flash)
+	}
+
+	setFrameSize(size: string) {
+		this.cameraImpl?.setFrameSize(size)
+	}
+	
+	setPhotoResolution(resolution: string) {
+		this.cameraImpl?.setPhotoResolution(resolution)
+	}
+
+	setScanCode(on: boolean) {
+		if (on) {
+			const element = this.$element
+			this.cameraImpl?.startAnalysis(new (class implements ICallBack {
+				override callback(type: string, param: any | null) {
+					const imageProxy = param as ImageProxy
+					const options: AndroidFrameScannerOptions = {
+						imageProxy: imageProxy,
+						scanType: [] as string[],
+						autoZoom: false,
+						width: -1,
+						height: -1,
+						androidScannerListenner: new (class implements AndroidScannerListener {
+							override onScanSuccess(barcodeInformation: Array<BarcodeInformation>, screenShot: ScreenShot | null) {
+								if (barcodeInformation.length == 0) {
+									return
+								}
+								const barcode = barcodeInformation[0]
+								const result = barcode.result
+								const scanType = barcode.scanType
+								const charset = barcode.charset
+								const rawData = barcode.rawData
+								const scanArea = barcode.scanArea
+								const event = new UniNativeViewEvent("scancode_success", { result, scanType, charset, rawData, scanArea } as UTSJSONObject)
+								element.dispatchEvent("scancode", event)
+							}
+
+							override onScanFailure(error: string) {
+								const event = new UniNativeViewEvent("scancode_fail", { error } as UTSJSONObject)
+								element.dispatchEvent("scancode", event)
+							}
+
+							override needZoom(): void {
+
+							}
+
+							override onLight(light: boolean): void {
+
+							}
+						})
+					}
+					getAndroidScanner()?.processScanBarCode(options)
+				}
+			}))
+		} else {
+			this.cameraImpl?.stopAnalysis()
+		}
+	}
+
+	registerStopCallback() {
+		const element = this.$element
+		this.cameraImpl?.setStopCallBack(new (class implements ICallBack {
+			override callback(type: string, param: any | null) {
+				const error = param as string
+				const event = new UniNativeViewEvent(type, { "error": error } as UTSJSONObject)
+				element.dispatchEvent("stop", event)
+			}
+		}));
+	}
+
+	registerInitDoneCallback() {
+		const element = this.$element
+		this.cameraImpl?.setInitDoneCallBack(new (class implements ICallBack {
+			override callback(type: string, param: any | null) {
+				const maxZoom = param as number
+				const event = new UniNativeViewEvent(type, { "maxzoom": maxZoom } as UTSJSONObject)
+				element.dispatchEvent("initdone", event)
+			}
+		}));
+	}
+}
+
+
+export const createCameraContext: CreateCameraContext = function (): CameraContext | null {
+	// const pages = getCurrentPages();
+	let currentPage = getCurrentPage()
+	// if (pages.length > 0) {
+		// currentPage = pages[pages.length - 1]
+		// const dialogPages = currentPage?.getDialogPages()
+		// if (dialogPages != null && dialogPages!.length > 0) {
+		// 	currentPage = dialogPages![dialogPages!.length - 1]
+		// }
+	// }
+
+	if (currentPage == null) {
+		return null
+	}
+	
+	let nativeCamera: UniElement | null = null
+	const dialogPages = currentPage.$systemDialogPages
+	if (dialogPages != null && dialogPages.length > 0) {
+		const len = dialogPages.length.toInt()
+		for (let i: Int = len - 1;i >= 0;i--) {
+		  const page = dialogPages[i]
+		  const element = page?.getElementById("mnative-camera")
+		  if (element != null) {
+			  nativeCamera = element
+			  break
+		  }
+		}
+	}
+	
+	if (nativeCamera == null) {
+		nativeCamera = currentPage?.$el?.getPage()?.getElementById?.invoke("mnative-camera")	
+	}
+	
+	if (nativeCamera == null) {
+		return null
+	}
+
+	if (!(nativeCamera instanceof IUniNativeElement)) {
+		return null
+	}
+
+	const cameraElement = nativeCamera?.parentElement as UniCameraElement
+	if (cameraElement == null) {
+		return null
+	}
+	return new CameraContextImpl(cameraElement!)
+}
+
+class CameraContextCameraFrameListenerImpl implements CameraContextCameraFrameListener {
+
+	constructor(private element: UniCameraElement, private callback: (frame: CameraContextOnCameraFrame) => void) {
+		element.setFrameCallback(callback)
+	}
+
+	/**
+	 * 开始监听帧数据
+	 */
+	start(options: CameraContextCameraFrameListenerStartOptions): void {
+		this.element.startOnFrame()
+		const result = "start on camera frame"
+		options.success?.(result)
+		options.complete?.(result)
+	}
+	/**
+	 * 停止监听帧数据
+	 */
+	stop(options: CameraContextCameraFrameListenerStopOptions): void {
+		this.element.stopOnFrame()
+		const result = "stop on camera frame"
+		options.success?.(result)
+		options.complete?.(result)
+	}
+}
+
+
+class CameraContextImpl implements CameraContext {
+	constructor(private element: UniCameraElement) {
+	}
+
+	onCameraFrame(callback: (frame: CameraContextOnCameraFrame) => void): CameraContextCameraFrameListener | null {
+		const listener = new CameraContextCameraFrameListenerImpl(this.element, callback)
+		return listener
+	}
+
+	onAndroidCameraOriginalFrame(callback: (imageProxy: ImageProxy) => void): void {
+		this.element.startAnalysis(callback)
+	}
+
+	offAndroidCameraOriginalFrame() {
+		this.element.stopAnalysis()
+	}
+
+	setZoom(options: CameraContextSetZoomOptions): void {
+		this.element.setZoom(options.zoom)
+		const result = "setZoom success"
+		options.success?.(result)
+		options.complete?.(result)
+	}
+
+	getCurrentZoom(): number {
+		return this.element.getCurrentZoom()
+	}
+
+	takePhoto(options: CameraContextTakePhotoOptions): void {
+		this.element.takePhoto(options)
+	}
+
+	startRecord(options: CameraContextStartRecordOptions): void {
+		this.element.startRecord(options)
+	}
+
+	stopRecord(options: CameraContextStopRecordOptions): void {
+		this.element.stopRecord(options)
+	}
+}

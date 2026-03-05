@@ -1,0 +1,106 @@
+
+import { UTSiOS } from "DCloudUTSFoundation";
+import { DeviceUtil } from './device/DeviceUtil.uts';
+
+import { GetDeviceInfo, GetDeviceInfoOptions, GetDeviceInfoResult } from '../interface.uts'
+import { UIScreen , UIDevice ,UIApplication } from 'UIKit';
+
+export function isSimulator(): boolean {
+	return UTSiOS.isSimulator()
+}
+
+export const getDeviceInfo : GetDeviceInfo = (config : GetDeviceInfoOptions | null) : GetDeviceInfoResult => {
+	let filter : Array<string> = [];
+	if (config != null && config?.filter != null) {
+		let temp = config?.filter;
+		filter = temp!;
+	}
+
+	if (config == null || filter.length == 0) {
+		const defaultFilter = [
+			"brand",
+			"deviceBrand",
+			"deviceId",
+			"model",
+			"deviceModel",
+			"deviceType",
+			"deviceOrientation",
+			"devicePixelRatio",
+			"system",
+			"platform",
+			"isRoot",
+			"isSimulator",
+			"osName",
+			"osVersion",
+			"osLanguage",
+			"osTheme",
+			"romName",
+			"romVersion"
+		];
+		filter = defaultFilter;
+	}
+	return getBaseInfo(filter);
+}
+
+
+function getBaseInfo(filterArray : Array<string>) : GetDeviceInfoResult {
+	const osVersion = DeviceUtil.getOSVersion();
+	let result : GetDeviceInfoResult = {};
+	if (filterArray.indexOf("brand") != -1) {
+		result.brand = "apple";
+	}
+	if (filterArray.indexOf("deviceBrand") != -1) {
+		result.deviceBrand = "apple";
+	}
+	if (filterArray.indexOf("deviceId") != -1) {
+		result.deviceId = UTSiOS.getDeviceId();
+	}
+	if (filterArray.indexOf("model") != -1) {
+		result.model = UTSiOS.getModel();
+	}
+	if (filterArray.indexOf("deviceModel") != -1) {
+		result.deviceModel = UTSiOS.getModel();
+	}
+	if (filterArray.indexOf("deviceType") != -1) {
+		result.deviceType = DeviceUtil.isPad() ? "pad" : "phone";
+	}
+	if (filterArray.indexOf("deviceOrientation") != -1) {
+		result.deviceOrientation = DeviceUtil.getOrientation();
+	}
+	if (filterArray.indexOf("devicePixelRatio") != -1) {
+		result.devicePixelRatio = Number.from(UIScreen.main.scale);
+	}
+	if (filterArray.indexOf("system") != -1) {
+		result.system = String(format = "iOS %@", osVersion);
+	}
+	if (filterArray.indexOf("platform") != -1) {
+		result.platform = "ios";
+	}
+	if (filterArray.indexOf("isRoot") != -1) {
+		result.isRoot = DeviceUtil.hasRootPrivilege();
+	}
+	if (filterArray.indexOf("isSimulator") != -1) {
+		result.isSimulator = UTSiOS.isSimulator();
+	}
+	
+	if (filterArray.indexOf("osName") != -1) {
+		result.osName = "ios";
+	}
+	if (filterArray.indexOf("osVersion") != -1) {
+		result.osVersion = UIDevice.current.systemVersion;
+	}
+	if (filterArray.indexOf("osLanguage") != -1) {
+		result.osLanguage = UTSiOS.getOsLanguage();
+	}
+	if (filterArray.indexOf("osTheme") != -1) {
+		result.osTheme = UTSiOS.getOsTheme();
+	}
+	if (filterArray.indexOf("romName") != -1) {
+		result.romName = "ios"
+	}
+	if (filterArray.indexOf("romVersion") != -1) {
+		result.romVersion = UIDevice.current.systemVersion;
+	}
+
+	return result;
+}

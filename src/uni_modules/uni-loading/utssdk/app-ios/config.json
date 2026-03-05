@@ -1,0 +1,8 @@
+{
+  "deploymentTarget": "12.0",
+	"components": [{
+		"name": "loading",
+		"class": "UTSSDKModulesDCloudUniLoadingLoadingComponent",
+		"delegateClass": "UniLoadingComponentRegister"
+	}]
+}

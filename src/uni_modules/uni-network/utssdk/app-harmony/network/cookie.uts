@@ -1,0 +1,56 @@
+import webview from '@ohos.web.webview';
+
+// 鸿蒙非secure cookie无法保存
+// function replaceHttpWithHttps(url: string): string {
+//     return url.replace(/^http:/, 'https:');
+// }
+
+export function getCookie(url: string): Promise<string> {
+    return webview.WebCookieManager.fetchCookie(url);
+}
+
+export function getCookieSync(url: string): string {
+    return webview.WebCookieManager.fetchCookieSync(url);
+}
+
+export function setCookie(url: string, cookies: string[]): Promise<void> {
+    return Promise.all(cookies.map(cookie => webview.WebCookieManager.configCookie(url, cookie))).then(() => {
+        return webview.WebCookieManager.saveCookieAsync();
+    });
+}
+
+export function setCookieSync(url: string, cookies: string[]): void {
+    cookies.forEach(cookie => {
+        // 不知道什么版本鸿蒙修复了非secure cookie无法保存的问题
+        try {
+            webview.WebCookieManager.configCookieSync(url, cookie);
+        } catch (error) { }
+        // let hasSecure = false;
+        // let hasSameSite = false;
+        // let savedCookie = cookie.split(';').map(cookieItem => {
+        //     const pair = cookieItem.split('=').map(item => item.trim())
+        //     const keyLower = pair[0].toLowerCase();
+        //     if (keyLower === 'secure') {
+        //         hasSecure = true;
+        //         return cookieItem;
+        //     }
+        //     if (keyLower === 'samesite') {
+        //         hasSameSite = true;
+        //         return 'samesite=none';
+        //     }
+        //     return cookieItem
+        // }).join(';');
+        // if (!hasSecure) {
+        //     savedCookie += '; secure';
+        // }
+        // if (!hasSameSite) {
+        //     savedCookie += '; samesite=none';
+        // }
+        // try {
+        //     // https://baidu.com/ 会返回一条 Set-Cookie: __bsi=; max-age=3600; domain=m.baidu.com; path=/（无重定向） m.baidu.com与baidu.com不一致configCookieSync会抛出错误导致崩溃
+        //     webview.WebCookieManager.configCookieSync(replaceHttpWithHttps(url), savedCookie);
+        // } catch (error) { }
+    });
+    webview.WebCookieManager.saveCookieAsync();
+}
+

@@ -1,0 +1,36 @@
+
+import { ScanCodeSuccess, ScanCodeOptions, ScanCodeFail } from '../interface.uts'
+
+export function scanCode(options: ScanCodeOptions | null): void {
+    const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
+    const baseEventName = `uni_scan_code_${uuid}`
+    const successEventName = `${baseEventName}_success`
+    const failEventName = `${baseEventName}_fail`
+    const onlyFromCamera = options?.onlyFromCamera ?? false
+
+    uni.$on(successEventName, (result: UTSJSONObject) => {
+        const successResult: ScanCodeSuccess = {
+            result: result["result"] as string,
+            scanType: result["scanType"] as string,
+        }
+        options?.success?.(successResult)
+		options?.complete?.(successResult)
+    })
+
+    uni.$on(failEventName, (result: UTSJSONObject) => {
+		// const errMsg = result["errMsg"] as string
+		const failResult: ScanCodeFail = {}
+		options?.fail?.(failResult)
+		options?.complete?.(failResult)
+    })
+
+    uni.openDialogPage({
+        triggerParentHide: true,
+		animationType: "zoom-fade-out",
+        url: `/uni_modules/uni-scanCode/pages/scanCode/scanCode?successEventName=${successEventName}&failEventName=${failEventName}&onlyFromCamera=${onlyFromCamera}`,
+        fail(err) {
+            uni.$off(successEventName);
+            uni.$off(failEventName);
+        }
+    })
+}

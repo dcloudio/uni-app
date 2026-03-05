@@ -1,0 +1,53 @@
+import { getRealPath } from '@dcloudio/uni-runtime';
+import { API_LOAD_FONT_FACE, ApiLoadFontFaceProtocol } from '../protocol.uts';
+import { LoadFontFace, LoadFontFaceOptions, LoadFontFaceSuccess } from '../interface.uts';
+
+function getFontSrc(source: string): string {
+  if (source.startsWith(`url("`) || source.startsWith(`url('`)) {
+    source = getRealPath(source.substring(5, source.length - 2)) as string
+  } else if (source.startsWith('url(')) {
+    source = getRealPath(source.substring(4, source.length - 1)) as string
+  } else {
+    source = getRealPath(source) as string
+  }
+  return source
+}
+
+interface MockUniNativeAppImpl {
+    loadFontFace: (options: ESObject) => void;
+}
+
+export const loadFontFace: LoadFontFace = defineAsyncApi<LoadFontFaceOptions, LoadFontFaceSuccess>(
+  API_LOAD_FONT_FACE,
+  (options: LoadFontFaceOptions, exec: ApiExecutor<LoadFontFaceSuccess>) => {
+    const src = getFontSrc(options.source)
+
+    const loadFontFaceOptions: ESObject = {
+      family: options.family,
+      source: src,
+      success: () => {
+        exec.resolve();
+      },
+      fail: (err: ApiError) => {
+        exec.reject('', err);
+      }
+    }
+
+    const app = globalThis.getUniApp() as MockUniNativeAppImpl
+    app.loadFontFace(loadFontFaceOptions)
+  },
+  ApiLoadFontFaceProtocol
+) as LoadFontFace
+
+export {
+    LoadFontFace,
+    LoadFontFaceComplete,
+    LoadFontFaceCompleteCallback,
+    LoadFontFaceErrCode,
+    LoadFontFaceFail,
+    LoadFontFaceFailCallback,
+    LoadFontFaceOptionDesc,
+    LoadFontFaceOptions,
+    LoadFontFaceSuccess,
+    LoadFontFaceSuccessCallback
+} from '../interface.uts';

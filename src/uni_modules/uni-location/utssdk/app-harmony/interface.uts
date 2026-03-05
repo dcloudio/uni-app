@@ -1,0 +1,16 @@
+import {
+    GetLocationOptions,
+    OnLocationChangeCallback,
+    OnLocationChangeErrorCallback,
+    StartLocationUpdateOptions,
+    StartLocationUpdateBackgroundOptions,
+    StopLocationUpdateOptions
+} from '../interface.uts'
+export interface UniLocationProvider extends UniProvider {
+    getLocation(options: GetLocationOptions): void;
+    startLocationUpdate(options: StartLocationUpdateOptions): void
+    stopLocationUpdate(options: StopLocationUpdateOptions): void
+    onLocationChange(listener: OnLocationChangeCallback): number
+    startLocationUpdateBackground(options: StartLocationUpdateBackgroundOptions): void
+    onLocationChangeError(listener: OnLocationChangeErrorCallback): number
+}

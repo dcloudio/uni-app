@@ -1,0 +1,61 @@
+import {ConnectSocketFail, SendSocketMessageFail ,ConnectSocketErrorCode, SendSocketMessageErrorCode} from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const UniWebsocketErrorSubject = 'uni-websocket';
+/**
+ * 错误码
+ * @UniError
+ */
+export const ConnectUniErrors : Map<ConnectSocketErrorCode, string> = new Map([
+	/**
+	 * URL 格式不合法
+	 */
+	[600009, 'invalid URL'],
+]);
+
+
+/**
+ * 错误码
+ * @UniError
+ */
+export const SendMessageUniErrors : Map<SendSocketMessageErrorCode, string> = new Map([
+	/**
+	 * 发送数据超限，发送队列不能超过16M大小。
+	 */
+	[10001, 'The queue memory exceeds 16 MiB and the connection will be closed'],
+	/**
+	 * websocket未连接
+	 */
+	[10002, 'webSocket is not connected'],
+	/**
+	 * request系统错误
+	 */
+	[602001, 'websocket system error']
+]);
+
+
+export class ConnectSocketFailImpl extends UniError implements ConnectSocketFail {
+// #ifdef APP-ANDROID
+	override errCode: ConnectSocketErrorCode
+// #endif
+	constructor(errCode : ConnectSocketErrorCode) {
+		super();
+		this.errSubject = UniWebsocketErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = ConnectUniErrors[errCode] ?? ""
+	}
+}
+
+export class SendSocketMessageFailImpl extends UniError implements SendSocketMessageFail {
+// #ifdef APP-ANDROID
+	override errCode: SendSocketMessageErrorCode
+// #endif
+	constructor(errCode : SendSocketMessageErrorCode) {
+		super();
+		this.errSubject = UniWebsocketErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = SendMessageUniErrors[errCode] ?? ""
+	}
+}

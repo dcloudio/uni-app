@@ -1,0 +1,190 @@
+import {
+    API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
+    SaveImageToPhotosAlbumApiProtocol,
+    API_SAVE_VIDEO_TO_PHOTOS_ALBUM,
+    SaveVideoToPhotosAlbumApiProtocol,
+} from '../../protocol.uts'
+import {
+    SaveImageToPhotosAlbumOptions,
+    SaveVideoToPhotosAlbumOptions,
+    SaveImageToPhotosAlbumSuccess,
+    SaveVideoToPhotosAlbumSuccess,
+    SaveImageToPhotosAlbum,
+    SaveVideoToPhotosAlbum,
+} from '../../interface.uts'
+import {
+    MediaUniErrors
+} from '../../unierror.uts'
+import {
+    getEnv,
+    getResourceStr,
+} from '@dcloudio/uni-runtime'
+import fs from '@ohos.file.fs';
+import photoAccessHelper from '@ohos.file.photoAccessHelper'
+import common from '@ohos.app.ability.common';
+import fileUri from '@ohos.file.fileuri';
+
+async function saveResource(src: Resource, dest: string) {
+    const context = UTSHarmony.getUIAbilityContext() as common.UIAbilityContext
+    const resourceManager = context.resourceManager
+    const srcPath: string = src.params?.[0] as string
+    const destFile = fs.openSync(dest, fs.OpenMode.WRITE_ONLY)
+    const content = await resourceManager.getRawFileContent(srcPath)
+    await fs.write(destFile.fd, content.buffer as ArrayBuffer)
+    await fs.close(destFile)
+}
+
+async function saveUri(src: string, dest: string) {
+    const srcFile = fs.openSync(src, fs.OpenMode.READ_ONLY)
+    const destFile = fs.openSync(dest, fs.OpenMode.WRITE_ONLY)
+    await fs.copyFile(srcFile.fd, destFile.fd)
+    await fs.close(srcFile)
+    await fs.close(destFile)
+}
+
+/**
+ * MediaLibrary.storeMediaAsset保存媒体资源接口已废弃，推荐使用PhotoViewPicker.save方法替代
+ * PhotoViewPicker.save方法无需申请权限，但是会弹窗供用户选择保存位置
+ * phAccessHelper.applyChanges需要申请ohos.permission.WRITE_IMAGEVIDEO权限
+ * 相关文档：
+ * - [MediaLibrary.storeMediaAsset](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-medialibrary-0000001774281638)
+ * - [PhotoViewPicker.save](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-file-picker-0000001774121766#ZH-CN_TOPIC_0000001857916013__save-1)
+ */
+
+interface ISaveMediaError {
+    code: number
+    message: string
+}
+
+function fileExists(filePath: string): boolean {
+    try {
+        fs.statSync(filePath)
+        return true
+    } catch (error) {
+        return false
+    }
+}
+
+async function saveMediaToAlbum(fromUri: string, type: 'image' | 'video'): Promise<string | ISaveMediaError> {
+    const realPath = getResourceStr(fromUri) as string | Resource
+    const context = UTSHarmony.getUIAbilityContext() as common.UIAbilityContext
+    let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4')
+    const isResource = typeof realPath !== 'string'
+    if (isResource) {
+        // Resource类型
+        if (typeof realPath.params?.[0] === 'string') {
+            fileName = realPath.params?.[0].split('/').pop() || fileName
+        }
+    } else {
+        fileName = realPath.split('/').pop() || fileName
+    }
+
+    const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(context);
+
+    const fileNameParts = fileName.split('.')
+    const title = fileNameParts[0]
+    const fileNameExtension = fileNameParts.pop()!
+    const photoCreationConfigs: Array<photoAccessHelper.PhotoCreationConfig> = [
+        {
+            title, // 鸿蒙文档上说可选，但实际不可选，另外其中也不可包含`.`
+            fileNameExtension,
+            photoType: type === 'image' ? photoAccessHelper.PhotoType.IMAGE : photoAccessHelper.PhotoType.VIDEO,
+        }
+    ];
+    let showUri = ''
+    if (isResource) {
+        showUri = fromUri
+    } else if (realPath.startsWith('file:///data')) {
+        showUri = fileUri.getUriFromPath(realPath.slice(7))
+    } else if (realPath.startsWith('file://')) {
+        showUri = realPath
+    } else {
+        showUri = fileUri.getUriFromPath(realPath)
+    }
+
+    // 已知resfile下的文件无法预览，但是能保存成功。增加保存到沙箱的步骤使预览图能显示。https://issuereporter.developer.huawei.com/detail/250228115246024/comment
+    const resourceDir = getContext().resourceDir
+    if (showUri.indexOf(resourceDir + '/') > -1) {
+        const saveMediaCachePath = getEnv().TEMP_PATH + '/saveMediaCache'
+        if (!fileExists(saveMediaCachePath)) {
+            fs.mkdirSync(saveMediaCachePath, true)
+        }
+        const cachedFileName = saveMediaCachePath + '/' + fileName
+        const srcFile = await fs.open(showUri, fs.OpenMode.READ_ONLY)
+        if (fileExists(cachedFileName)) {
+            await fs.unlink(cachedFileName)
+        }
+        const destFile = await fs.open(saveMediaCachePath + '/' + fileName, fs.OpenMode.WRITE_ONLY | fs.OpenMode.CREATE)
+        await fs.copyFile(srcFile.fd, destFile.fd)
+        await fs.close(srcFile)
+        await fs.close(destFile)
+        showUri = fileUri.getUriFromPath(cachedFileName)
+    }
+    const desFileUris: Array<string> = await phAccessHelper.showAssetsCreationDialog([
+        showUri
+    ], photoCreationConfigs);
+    if (!desFileUris || desFileUris.length === 0) {
+        return {
+            code: 1101001,
+            message: MediaUniErrors.get(1101001) as string,
+        } as ISaveMediaError
+    }
+    const destUri = desFileUris[0]
+    if (!destUri.startsWith('file://')) {
+        return {
+            code: 1101006,
+            message: MediaUniErrors.get(1101006) as string + ', code: ' + destUri,
+        } as ISaveMediaError
+    }
+    if (isResource) {
+        await saveResource(realPath as Resource, destUri)
+    } else {
+        await saveUri(realPath as string, destUri)
+    }
+    return destUri
+}
+
+export const saveImageToPhotosAlbum: SaveImageToPhotosAlbum =
+    defineAsyncApi<SaveImageToPhotosAlbumOptions, SaveImageToPhotosAlbumSuccess>(
+        API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
+        function (options: SaveImageToPhotosAlbumOptions, res: ApiExecutor<SaveImageToPhotosAlbumSuccess>) {
+            saveMediaToAlbum(options.filePath, 'image')
+                .then((uri) => {
+                    if (typeof uri === 'object') {
+                        const err = uri as ISaveMediaError
+                        res.reject(err.message, {
+                            errCode: err.code
+                        } as ApiError)
+                        return
+                    }
+                    res.resolve({
+                        path: uri,
+                    } as SaveImageToPhotosAlbumSuccess)
+                }, (err: Error) => {
+                    res.reject(err.message)
+                })
+        },
+        SaveImageToPhotosAlbumApiProtocol
+    ) as SaveImageToPhotosAlbum
+
+export const saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum =
+    defineAsyncApi<SaveVideoToPhotosAlbumOptions, SaveVideoToPhotosAlbumSuccess>(
+        API_SAVE_VIDEO_TO_PHOTOS_ALBUM,
+        function (options: SaveVideoToPhotosAlbumOptions, res: ApiExecutor<SaveVideoToPhotosAlbumSuccess>) {
+            saveMediaToAlbum(options.filePath, 'video')
+                .then((uri) => {
+                    if (typeof uri === 'object') {
+                        const err = uri as ISaveMediaError
+                        res.reject(err.message, {
+                            errCode: err.code
+                        } as ApiError)
+                        return
+                    }
+                    res.resolve({
+                    } as SaveVideoToPhotosAlbumSuccess)
+                }, (err: Error) => {
+                    res.reject(err.message)
+                })
+        },
+        SaveVideoToPhotosAlbumApiProtocol
+    ) as SaveVideoToPhotosAlbum

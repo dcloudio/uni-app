@@ -1,0 +1,1 @@
+export const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';

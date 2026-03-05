@@ -1,0 +1,217 @@
+import {
+    getTabBar,
+} from '@dcloudio/uni-runtime'
+import {
+    HideTabBarOptions,
+    HideTabBarRedDotOptions,
+    HideTabBarRedDotSuccess,
+    HideTabBarSuccess,
+    RemoveTabBarBadgeOptions,
+    RemoveTabBarBadgeSuccess,
+    SetTabBarBadgeOptions,
+    SetTabBarBadgeSuccess,
+    SetTabBarItemOptions,
+    SetTabBarItemSuccess,
+    SetTabBarStyleOptions,
+    SetTabBarStyleSuccess,
+    ShowTabBarOptions,
+    ShowTabBarRedDotOptions,
+    ShowTabBarRedDotSuccess,
+    ShowTabBarSuccess,
+    SetTabBarBadge,
+    RemoveTabBarBadge,
+    SetTabBarItem,
+    SetTabBarStyle,
+    ShowTabBar,
+    HideTabBar,
+    ShowTabBarRedDot,
+    HideTabBarRedDot,
+} from '../interface.uts'
+import {
+    API_SHOW_TAB_BAR_RED_DOT,
+    API_HIDE_TAB_BAR_RED_DOT,
+    API_SET_TAB_BAR_BADGE,
+    API_REMOVE_TAB_BAR_BADGE,
+    API_SET_TAB_BAR_ITEM,
+    API_SET_TAB_BAR_STYLE,
+    API_SHOW_TAB_BAR,
+    API_HIDE_TAB_BAR,
+    ShowTabBarRedDotApiProtocol,
+    HideTabBarRedDotApiProtocol,
+    SetTabBarBadgeApiProtocol,
+    RemoveTabBarBadgeApiProtocol,
+    SetTabBarItemApiProtocol,
+    SetTabBarStyleApiProtocol
+} from '../protocol.uts'
+
+export {
+    HideTabBarOptions,
+    HideTabBarRedDotOptions,
+    HideTabBarRedDotSuccess,
+    HideTabBarSuccess,
+    RemoveTabBarBadgeOptions,
+    RemoveTabBarBadgeSuccess,
+    SetTabBarBadgeOptions,
+    SetTabBarBadgeSuccess,
+    SetTabBarItemOptions,
+    SetTabBarItemSuccess,
+    SetTabBarStyleOptions,
+    SetTabBarStyleSuccess,
+    ShowTabBarOptions,
+    ShowTabBarRedDotOptions,
+    ShowTabBarRedDotSuccess,
+    ShowTabBarSuccess,
+    SetTabBarBadge,
+    RemoveTabBarBadge,
+    SetTabBarItem,
+    SetTabBarStyle,
+    ShowTabBar,
+    HideTabBar,
+    ShowTabBarRedDot,
+    HideTabBarRedDot,
+}
+
+interface ITabBar {
+    setTabBarBadge: (options: SetTabBarBadgeOptions) => void
+    removeTabBarBadge: (options: RemoveTabBarBadgeOptions) => void
+    setTabBarItem: (options: SetTabBarItemOptions) => void
+    setTabBarStyle: (options: SetTabBarStyleOptions) => void
+    hideTabBar: () => void
+    showTabBar: () => void
+    showTabBarRedDot: (options: ShowTabBarRedDotOptions) => void
+    hideTabBarRedDot: (options: HideTabBarRedDotOptions) => void
+}
+
+export const setTabBarBadge = defineAsyncApi<
+    SetTabBarBadgeOptions,
+    SetTabBarBadgeSuccess
+>(
+    API_SET_TAB_BAR_BADGE,
+    (options: SetTabBarBadgeOptions, exec: ApiExecutor<SetTabBarBadgeSuccess>) => {
+        const tabBar = getTabBar() as ITabBar
+        if (tabBar === null) {
+            exec.reject('tabBar is not exist')
+            return
+        }
+        tabBar!.setTabBarBadge(options)
+        exec.resolve()
+    },
+    SetTabBarBadgeApiProtocol
+)
+
+export const removeTabBarBadge = defineAsyncApi<
+    RemoveTabBarBadgeOptions,
+    RemoveTabBarBadgeSuccess
+>(
+    API_REMOVE_TAB_BAR_BADGE,
+    (options: RemoveTabBarBadgeOptions, exec: ApiExecutor<RemoveTabBarBadgeSuccess>) => {
+        const tabBar = getTabBar() as ITabBar
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist')
+            return
+        }
+        tabBar!.removeTabBarBadge(options)
+        exec.resolve()
+    },
+    RemoveTabBarBadgeApiProtocol
+)
+
+export const setTabBarItem = defineAsyncApi<
+    SetTabBarItemOptions,
+    SetTabBarItemSuccess
+>(
+    API_SET_TAB_BAR_ITEM,
+    (options: SetTabBarItemOptions, res: ApiExecutor<SetTabBarItemSuccess>) => {
+        const tabBar = getTabBar() as ITabBar
+        if (tabBar == null) {
+            res.reject('tabBar is not exist')
+            return
+        }
+        tabBar!.setTabBarItem(options)
+        res.resolve()
+    },
+    SetTabBarItemApiProtocol
+)
+
+export const setTabBarStyle = defineAsyncApi<
+    SetTabBarStyleOptions,
+    SetTabBarStyleSuccess
+>(
+    API_SET_TAB_BAR_STYLE,
+    (options: SetTabBarStyleOptions, exec: ApiExecutor<SetTabBarStyleSuccess>) => {
+        const tabBar = getTabBar() as ITabBar
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist')
+            return
+        }
+        tabBar!.setTabBarStyle(options)
+        exec.resolve()
+    },
+    SetTabBarStyleApiProtocol
+)
+
+export const hideTabBar = defineAsyncApi<
+    HideTabBarOptions,
+    HideTabBarSuccess
+>(
+    API_HIDE_TAB_BAR,
+    (options: HideTabBarOptions | null, exec: ApiExecutor<HideTabBarSuccess>) => {
+        const tabBar = getTabBar() as ITabBar
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist')
+            return
+        }
+        tabBar!.hideTabBar()
+        exec.resolve()
+    }
+)
+
+export const showTabBar = defineAsyncApi<
+    ShowTabBarOptions,
+    ShowTabBarSuccess
+>(
+    API_SHOW_TAB_BAR,
+    (options: ShowTabBarOptions, exec: ApiExecutor<ShowTabBarSuccess>) => {
+        const tabBar = getTabBar() as ITabBar
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist')
+            return
+        }
+        tabBar!.showTabBar()
+        exec.resolve()
+    }
+)
+
+export const showTabBarRedDot = defineAsyncApi<
+    ShowTabBarRedDotOptions,
+    ShowTabBarRedDotSuccess
+>(
+    API_SHOW_TAB_BAR_RED_DOT,
+    (options: ShowTabBarRedDotOptions, exec: ApiExecutor<ShowTabBarRedDotSuccess>) => {
+        const tabBar = getTabBar() as ITabBar
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist')
+            return
+        }
+        tabBar!.showTabBarRedDot(options)
+        exec.resolve()
+    },
+    ShowTabBarRedDotApiProtocol
+)
+
+export const hideTabBarRedDot = defineAsyncApi<
+    HideTabBarRedDotOptions,
+    HideTabBarRedDotSuccess
+>(
+    API_HIDE_TAB_BAR_RED_DOT,
+    (options: HideTabBarRedDotOptions, exec: ApiExecutor<HideTabBarRedDotSuccess>) => {
+        const tabBar = getTabBar() as ITabBar
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist')
+            return
+        }
+        tabBar!.hideTabBarRedDot(options)
+        exec.resolve()
+    },
+    HideTabBarRedDotApiProtocol
+)

@@ -1,0 +1,7 @@
+import { GetBackgroundAudioManager, BackgroundAudioManager } from "../interface.uts"
+export { CreateBackgroundAudioFailImpl } from '../unierror.uts'
+
+export const getBackgroundAudioManager : GetBackgroundAudioManager = function () : BackgroundAudioManager {
+	let player = BackgroundAudioPlayer.getInstance()
+	return player
+}

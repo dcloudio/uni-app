@@ -1,0 +1,330 @@
+import View from "android.view.View";
+import Uri from "android.net.Uri";
+import WebView from "android.webkit.WebView";
+import PageNode from "io.dcloud.uniapp.dom.node.PageNode";
+import INodeData from "io.dcloud.uniapp.interfaces.INodeData";
+
+import { CreateWebViewContext, CreateWebviewContext, WebViewContext, WebviewContext, UniWebViewContextLoadDataOptions, UniWebViewElementLoadDataOptions, WebViewStyles, WebViewProgressStyles } from '../interface.uts';
+export { WebViewStyles }
+
+export class UniWebViewElement extends UniViewElementImpl {
+
+	private nativeWebView : NativeWebView | null = null;
+
+	constructor(data : INodeData, pageNode : PageNode) {
+		super(data, pageNode);
+	}
+
+	override get tagName() : string {
+		return "WEB-VIEW";
+	}
+
+	override get nodeName() : string {
+		return this.tagName;
+	}
+
+	setNativeWebView(nativeWebView : NativeWebView | null) {
+		this.nativeWebView = nativeWebView;
+	}
+
+	back() {
+		this.nativeWebView?.back();
+	}
+
+	forward() {
+		this.nativeWebView?.forward();
+	}
+
+	reload() {
+		this.nativeWebView?.reload();
+	}
+
+	stop() {
+		this.nativeWebView?.stop();
+	}
+
+	evalJS(js : string) {
+		this.nativeWebView?.evalJS(js);
+	}
+
+	getContentHeight() : number {
+		return this.nativeWebView?.getContentHeight() ?? 0;
+	}
+
+	loadData(options : UniWebViewElementLoadDataOptions) {
+		this.nativeWebView?.loadData(options);
+	}
+
+	enableWholeDraw() {
+		WebView.enableSlowWholeDocumentDraw();
+	}
+
+	override getAndroidView<T extends View>() : T | null {
+		const nativeElement = this.firstChild as UniNativeViewElement | null;
+		if (nativeElement == null) {
+			return null;
+		} else {
+			return this.nativeWebView?.webViewImpl?.getAndroidWebView() as T | null;
+		}
+	}
+}
+
+export class NativeWebView {
+	webViewImpl : NativeWebViewImpl | null = null;
+
+	constructor(element : UniNativeViewElement) {
+		this.webViewImpl = new NativeWebViewImpl(element.getAndroidActivity()!);
+		element.bindAndroidView(this.webViewImpl!);
+		(element.parentElement as UniWebViewElement | null)?.setNativeWebView(this);
+        let bodyElement : UniElement = element;
+        while (bodyElement.parentElement != null && bodyElement.tagName != 'BODY') {
+            bodyElement = bodyElement.parentElement;
+        }
+        this.webViewImpl!.mRenderContainer = bodyElement.getAndroidView();
+		this.webViewImpl?.setEventCallback(new (class implements EventCallback {
+			override onError(errCode : number, errMsg : string, fullUrl : string) {
+				let url = fullUrl;
+				if (!fullUrl.startsWith("file://")) {
+					const uri = Uri.parse(fullUrl);
+					url = `${uri.scheme}://${uri.authority}`;
+				}
+				const event = new UniNativeViewEvent("error", { errSubject: '', errCode, errMsg, url, fullUrl, src: fullUrl });
+				element.dispatchEvent("error", event);
+			}
+			override onLoading(url : string) {
+				const event = new UniNativeViewEvent("loading", { url, src: url });
+				element.dispatchEvent("loading", event);
+			}
+			override onLoad(url : string) {
+				const event = new UniNativeViewEvent("load", { url, src: url });
+				element.dispatchEvent("load", event);
+
+				const _event = new UniNativeViewEvent("loaded", { url, src: url });
+				element.dispatchEvent("loaded", _event);
+			}
+			override onDownload(url : string, userAgent : string, contentDisposition : string, mimetype : string, contentLength : number) {
+				const event = new UniNativeViewEvent("download", { url, userAgent, contentDisposition, mimetype, contentLength });
+				element.dispatchEvent("download", event);
+			}
+			override onMessage(params : string, type : number) {
+				switch (type) {
+					case NativeWebViewImpl.POST_MESSAGE:
+						const data = JSON.parseObject(params)?.getJSON('data') ?? {};
+						const event = new UniNativeViewEvent("message", { data: Array.of(data) });
+						element.dispatchEvent("message", event);
+						break;
+
+					case NativeWebViewImpl.POST_MESSAGE_TO_SERVICE:
+						const service = JSON.parseObject(params);
+						const name = service?.getString('args.data.name');
+						const url = service?.getString('args.data.arg.url') ?? '';
+						switch (name) {
+							case "navigateTo":
+								uni.navigateTo({ url });
+								break;
+							case "redirectTo":
+								uni.redirectTo({ url });
+								break;
+							case "switchTab":
+								uni.switchTab({ url });
+								break;
+							case "reLaunch":
+								uni.reLaunch({ url });
+								break;
+							case "navigateBack":
+								const delta = service?.getNumber('args.data.arg.delta') ?? 1;
+								uni.navigateBack({ delta });
+								break;
+							default:
+								break;
+						}
+						break;
+				}
+			}
+			override onContentHeightChange(height : number) {
+				const event = new UniNativeViewEvent("contentheightchange", { height });
+				element.dispatchEvent("contentheightchange", event);
+			}
+			override onConsoleMessage(message : string, lineNumber : number, sourceId : string) {
+				if (!sourceId.startsWith('file://')) return;
+				if (sourceId.includes('/hybrid')) {
+					console.log(`${message} at ${sourceId.slice(sourceId.indexOf('hybrid'))}:${lineNumber}`);
+				} else if (sourceId.includes('/static')) {
+					console.log(`${message} at ${sourceId.slice(sourceId.indexOf('static'))}:${lineNumber}`);
+				}
+			}
+		}));
+	}
+
+	setSrc(src : string | null) {
+		if (src != null) {
+			this.webViewImpl?.loadUrl(src);
+		}
+	}
+
+	setWebViewStyles(styles : any) {
+		if (styles instanceof WebViewStyles) {
+			const progress = styles.progress;
+			if (progress instanceof WebViewProgressStyles) {
+				this.webViewImpl?.setProgressStyle(true, progress.color);
+			} else if (typeof progress == 'boolean') {
+				this.webViewImpl?.setProgressStyle(progress as boolean);
+			}
+		} else if (styles instanceof UTSJSONObject) {
+            const progress = styles.get('progress');
+            if (progress instanceof UTSJSONObject) {
+            	this.webViewImpl?.setProgressStyle(true, progress.getString('color'));
+            } else if (typeof progress == 'boolean') {
+            	this.webViewImpl?.setProgressStyle(progress as boolean);
+            }
+        }
+	}
+
+	setHorizontalScrollBarAccess(access : boolean) {
+		this.webViewImpl?.setHorizontalScrollBarAccess(access);
+	}
+
+	setVerticalScrollBarAccess(access : boolean) {
+		this.webViewImpl?.setVerticalScrollBarAccess(access);
+	}
+
+	setBounces(enable : boolean) {
+		this.webViewImpl?.enableBounces(enable);
+	}
+
+	setNestedScroll(type : string) {
+		this.webViewImpl?.setNestedScroll(type);
+	}
+
+	setDarkMode(enable : boolean) {
+		this.webViewImpl?.enableDarkMode(enable);
+	}
+
+	setDisableUserSelectMenu(disable : boolean) {
+		this.webViewImpl?.disableUserSelectMenu(disable);
+	}
+
+	back() {
+		this.webViewImpl?.back();
+	}
+
+	forward() {
+		this.webViewImpl?.forward();
+	}
+
+	reload() {
+		this.webViewImpl?.reload();
+	}
+
+	stop() {
+		this.webViewImpl?.stop();
+	}
+
+	evalJS(js : string) {
+		this.webViewImpl?.evalJS(js);
+	}
+
+	loadData(options : UniWebViewElementLoadDataOptions) {
+		this.webViewImpl?.loadData(options);
+	}
+
+	getContentHeight() : number {
+		return this.webViewImpl?.getContentHeight() ?? 0;
+	}
+
+	destroy() {
+		this.webViewImpl?.destroy();
+	}
+}
+
+class WebViewContextImpl implements WebViewContext {
+
+	private webviewElement ?: UniWebViewElement | null = null;
+
+	constructor(webviewElement : UniWebViewElement) {
+		this.webviewElement = webviewElement;
+	}
+
+	back() {
+		this.webviewElement?.back();
+	}
+
+	forward() {
+		this.webviewElement?.forward();
+	}
+
+	reload() {
+		this.webviewElement?.reload();
+	}
+
+	stop() {
+		this.webviewElement?.stop();
+	}
+
+	evalJS(js : string) {
+		this.webviewElement?.evalJS(js);
+	}
+
+	getContentHeight() : number {
+		return this.webviewElement?.getContentHeight() ?? 0;
+	}
+
+	loadData(options : UniWebViewContextLoadDataOptions) {
+		this.webviewElement?.loadData({
+			data: options.data,
+			baseURL: options.baseURL,
+			mimeType: options.mimeType,
+			encoding: options.encoding
+		} as UniWebViewElementLoadDataOptions);
+	}
+}
+
+export const createWebViewContext : CreateWebViewContext = function (webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null) : WebViewContext | null {
+	let webviewElement : UniElement | null = null;
+	if (component == null) {
+		const pages = getCurrentPages();
+		if (pages.length > 0) {
+			const currentPage = pages[pages.length - 1];
+			webviewElement = currentPage.vm!.$el?.parentNode?.querySelector('#' + webviewId);
+			if (webviewElement == null) {
+				const dialogPages = currentPage.getDialogPages();
+				if (dialogPages.length > 0) {
+					const currentPageDialogPage = dialogPages[dialogPages.length - 1];
+					webviewElement = currentPageDialogPage.vm!.$el?.parentNode?.querySelector('#' + webviewId);
+				}
+			}
+		}
+	} else {
+		webviewElement = component.$el?.parentNode?.querySelector('#' + webviewId);
+	}
+	if (webviewElement == null) {
+		return null;
+	} else {
+		return new WebViewContextImpl(webviewElement as UniWebViewElement);
+	}
+}
+
+export const createWebviewContext : CreateWebviewContext = function (webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null) : WebviewContext | null {
+	let webviewElement : UniElement | null = null;
+	if (component == null) {
+		const pages = getCurrentPages();
+		if (pages.length > 0) {
+			const currentPage = pages[pages.length - 1];
+			webviewElement = currentPage.vm!.$el?.parentNode?.querySelector('#' + webviewId);
+			if (webviewElement == null) {
+				const dialogPages = currentPage.getDialogPages();
+				if (dialogPages.length > 0) {
+					const currentPageDialogPage = dialogPages[dialogPages.length - 1];
+					webviewElement = currentPageDialogPage.vm!.$el?.parentNode?.querySelector('#' + webviewId);
+				}
+			}
+		}
+	} else {
+		webviewElement = component.$el?.parentNode?.querySelector('#' + webviewId);
+	}
+	if (webviewElement == null) {
+		return null;
+	} else {
+		return new WebViewContextImpl(webviewElement as UniWebViewElement);
+	}
+}

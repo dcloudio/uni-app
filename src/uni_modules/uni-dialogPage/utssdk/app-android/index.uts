@@ -1,0 +1,13 @@
+export * from './openDialogPage.uts'
+export * from './closeDialogPage.uts'
+
+export {
+    OpenDialogPageOptions,
+    OpenDialogPageSuccess,
+    OpenDialogPageFail,
+    OpenDialogPageComplete,
+    CloseDialogPageOptions,
+    CloseDialogPageSuccess,
+    CloseDialogPageFail,
+    CloseDialogPageComplete,
+} from '../interface.uts'

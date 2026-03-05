@@ -1,0 +1,279 @@
+import { WriteFileOptions, ReadFileOptions, MkDirOptions, RmDirOptions, UnLinkOptions, ReadDirOptions, AccessOptions, RenameOptions, GetFileInfoOptions, CopyFileOptions, StatOptions } from "../interface.uts"
+import { ReadFileSuccessResult, FileManagerSuccessResult, ReadDirSuccessResult, GetFileInfoSuccessResult, StatSuccessResult, FileStats, Stats } from "../interface.uts"
+import { GetFileSystemManager, FileSystemManager } from "../interface.uts"
+import { FileSystemManagerFailImpl, FileSystemManagerUniErrorSubject, FileSystemManagerUniErrors } from "../unierror.uts"
+
+class InnerStats implements Stats {
+	/**
+		 * 文件的类型和存取的权限，对应 POSIX stat.st_mode
+		 * 注意android中，文件类型只包含是否是目录与文件，
+		 * 另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，
+		 * 这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限
+		 */
+	mode : number = 0;
+	/**
+	 * 文件大小，单位：B，对应 POSIX stat.st_size
+	 */
+	size : number = 0;
+	/**
+	 * 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime
+	 * 注意：android中由于系统限制无法获取该数据
+	 */
+	lastAccessedTime : number = 0;
+	/**
+	 * 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime
+	 */
+	lastModifiedTime : number = 0;
+	/**
+	 * @internal
+	 */
+	mIsFile : boolean = false;
+	
+	constructor() {
+	}
+	/**
+	 * 判断当前文件是否一个目录
+	 */
+	isDirectory() : boolean {
+		return !this.mIsFile
+	}
+	/**
+	 * 判断当前文件是否一个普通文件
+	 */
+	isFile() : boolean {
+		return this.mIsFile
+	}
+}
+
+function wrapFileStats(nativeStats) : FileStats {
+	let stats = new InnerStats()
+	stats.mIsFile = nativeStats.isFile
+	stats.mode = nativeStats.mode
+	stats.size = nativeStats.size
+	stats.lastAccessedTime = nativeStats.lastAccessedTime
+	stats.lastModifiedTime = nativeStats.lastModifiedTime
+	return new FileStats({ path: nativeStats.path, stats: stats })
+}
+
+function wrapStatsArgument(nativeStats) : FileStats {
+	// if ( nativeStats.length == 1 ){
+	// 	return wrapFileStats(nativeStats[0])
+	// }
+	return nativeStats.map( item => {
+		return wrapFileStats(item)
+	})
+}
+
+class JsFileSystemManager implements FileSystemManager {
+	public stat(options : StatOptions) {
+		nativeFileManager.stat(options.path,
+			options.recursive,
+			function (res) {
+				var ret = new StatSuccessResult({ stats: wrapStatsArgument(res), "errMsg": "stat:ok" });
+				options.success?.(ret)
+				options.complete?.(ret)
+			},
+			function (code) {
+				let err = new FileSystemManagerFailImpl(code)
+				options.fail?.(err)
+				options.complete?.(err)
+			})
+	}
+
+	public getFileInfo(options : GetFileInfoOptions) {
+		if(options.digestAlgorithm == null || options.digestAlgorithm == undefined){
+			options.digestAlgorithm = "md5"
+		} else if (options.digestAlgorithm!.toLowerCase() != 'md5' && options.digestAlgorithm!.toLowerCase() != 'sha1') {
+			let err = new FileSystemManagerFailImpl(1300022);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		}
+		
+		nativeFileManager.getFileInfo(options.filePath,
+			options.digestAlgorithm,
+			function (res) {
+				var ret = new GetFileInfoSuccessResult({ size: res.size, digest: res.digest, errMsg: "getFileInfo:ok" });
+				options.success?.(ret)
+				options.complete?.(ret)
+			},
+			function (code) {
+				let err = new FileSystemManagerFailImpl(code);
+				options.fail?.(err)
+				options.complete?.(err)
+			})
+	}
+
+	// public copyFileSync(srcPath:string,destPath:string):number{
+	// 	return 0
+	// }
+
+	public copyFile(options : CopyFileOptions) {
+		nativeFileManager.copyFile(options.srcPath,
+			options.destPath,
+			function (res) {
+				var ret = new FileManagerSuccessResult({ "errMsg": "copyFile:ok" });
+				options.success?.(ret)
+				options.complete?.(ret)
+			},
+			function (code) {
+				let err = new FileSystemManagerFailImpl(code);
+				options.fail?.(err)
+				options.complete?.(err)
+			})
+	}
+
+	// public renameSync(oldPath:string,newPath:string):number{
+	// 	return 0
+	// }
+
+	public rename(options : RenameOptions) {
+		nativeFileManager.rename(options.oldPath,
+			options.newPath,
+			function (res) {
+				var ret = new FileManagerSuccessResult({ "errMsg": "rename:ok" });
+				options.success?.(ret)
+				options.complete?.(ret)
+			},
+			function (code) {
+				let err = new FileSystemManagerFailImpl(code);
+				options.fail?.(err)
+				options.complete?.(err)
+			})
+	}
+
+	// public accessSync(path: string):number{
+	// 	return 0
+	// }
+
+	public access(options : AccessOptions) {
+		nativeFileManager.access(options.path,
+			function (res) {
+				var ret = new FileManagerSuccessResult({ "errMsg": "access:ok" });
+				options.success?.(ret)
+				options.complete?.(ret)
+			},
+			function (code) {
+				let err = new FileSystemManagerFailImpl(code);
+				options.fail?.(err)
+				options.complete?.(err)
+			})
+	}
+
+	// readdirSync(dirPath: string): string[]|null{
+	// 	return null
+	// }
+
+	public readdir(options : ReadDirOptions) {
+		nativeFileManager.readdir(options.dirPath,
+			function (res) {
+				var ret = new ReadDirSuccessResult(res);
+				options.success?.(ret)
+				options.complete?.(ret)
+			},
+			function (code) {
+				let err = new FileSystemManagerFailImpl(code);
+				options.fail?.(err)
+				options.complete?.(err)
+			})
+	}
+
+	// public rmdirSync(dirPath: string,recursive:boolean): number {
+	// 	return 0
+	// }
+
+	// public mkdirSync(dirPath: string,recursive:boolean): number {
+	// 	return 0
+	// }
+
+	public rmdir(options : RmDirOptions) {
+		nativeFileManager.rmdir(options.dirPath,
+			options.recursive,
+			function (res) {
+				var ret = new FileManagerSuccessResult({ "errMsg": "rmdir:ok" });
+				options.success?.(ret)
+				options.complete?.(ret)
+			},
+			function (code) {
+				let err = new FileSystemManagerFailImpl(code);
+				options.fail?.(err)
+				options.complete?.(err)
+			})
+	}
+
+	public mkdir(options : MkDirOptions) {
+		nativeFileManager.mkdir(options.dirPath,
+			options.recursive,
+			function (res) {
+				var ret = new FileManagerSuccessResult({ "errMsg": "mkdir:ok" });
+				options.success?.(ret)
+				options.complete?.(ret)
+			},
+			function (code) {
+				let err = new FileSystemManagerFailImpl(code);
+				options.fail?.(err)
+				options.complete?.(err)
+			})
+	}
+
+	// unlinkSync(filePath: string): number {
+	// 	return 0
+	// }
+
+	public unlink(options : UnLinkOptions) {
+		nativeFileManager.unlink(
+			options.filePath,
+			function (res) {
+				var ret = new FileManagerSuccessResult({ "errMsg": "unlink:ok" });
+				options.success?.(ret)
+				options.complete?.(ret)
+			},
+			function (code) {
+				let err = new FileSystemManagerFailImpl(code);
+				options.fail?.(err)
+				options.complete?.(err)
+			})
+	}
+
+	// public readFileSync(filePath: string,encoding:string): string|null{
+	// }
+
+	public readFile(options : ReadFileOptions) {
+		nativeFileManager.readFile(options.encoding,
+			options.filePath,
+			function (res) {
+				var ret = new ReadFileSuccessResult(res);
+				options.success?.(ret)
+				options.complete?.(ret)
+			},
+			function (code) {
+				let err = new FileSystemManagerFailImpl(code);
+				options.fail?.(err)
+				options.complete?.(err)
+			})
+	}
+
+	// public writeFileSync(filePath: string,data:string): number{
+	// 	return 0
+	// }
+
+	public writeFile(options : WriteFileOptions) {
+		nativeFileManager.writeFile(options.filePath,
+			options.encoding,
+			options.data,
+			function () {
+				var ret = new FileManagerSuccessResult({ "errMsg": "writeFile:ok" });
+				options.success?.(ret)
+				options.complete?.(ret)
+			},
+			function (code) {
+				let err = new FileSystemManagerFailImpl(code);
+				options.fail?.(err)
+				options.complete?.(err)
+			})
+	}
+}
+
+export const getFileSystemManager : GetFileSystemManager = function () : FileSystemManager {
+	return new JsFileSystemManager()
+};

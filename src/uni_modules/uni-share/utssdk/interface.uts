@@ -1,0 +1,557 @@
+export interface Uni {
+    /**
+     * 分享
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/plugins/share.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/share.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/share.html
+     * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "x",
+	 *            "uniVer": "x",
+	 *            "unixVer": "x"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "x",
+	 *            "uniVer": "x",
+	 *            "unixVer": "x"
+	 *        },
+	 *        "harmony": {
+	 *            "osVer": "5.0.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.81",
+	 *            "unixvVer": "5.0"
+	 *        }
+	 *    },
+	 *    "web": {
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    }
+	 * }
+     */
+    share: Share;
+}
+
+
+export interface IShareFail extends IUniError {
+  errCode: ShareErrorCode
+};
+/**
+ * 错误码
+ */
+export type ShareErrorCode =
+  /**
+   * 未找到微信APPID,请确认 manifest.json 中配置信息是否正确
+   * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "ios": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0.0",
+    *            "uniVer": "4.76",
+    *            "unixVer": "4.81",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    * }
+   */
+  4000500 |
+  /**
+   * 该场景字段当前不支持
+   * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "ios": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0.0",
+    *            "uniVer": "4.76",
+    *            "unixVer": "4.81",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    * }
+   */
+  4000501 |
+  /**
+   * 该场景字段未匹配到
+   * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "ios": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0.0",
+    *            "uniVer": "4.76",
+    *            "unixVer": "4.81",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    * }
+   */
+  4000502 |
+  /**
+   * 分享类型不匹配，请确认类型是否正确
+   * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "ios": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0.0",
+    *            "uniVer": "4.76",
+    *            "unixVer": "4.81",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    * }
+   */
+  4000503 |
+  /**
+   * 参数填写错误
+   * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "ios": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0.0",
+    *            "uniVer": "4.76",
+    *            "unixVer": "4.81",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    * }
+   */
+  4000504 |
+  /**
+   * 请求微信接口失败
+   * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "ios": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0.0",
+    *            "uniVer": "4.76",
+    *            "unixVer": "4.81",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    * }
+   */
+  4000505 |
+  /**
+   * 暂不支持该类型的分享
+   * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "ios": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0.0",
+    *            "uniVer": "4.76",
+    *            "unixVer": "4.81",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    * }
+   */
+  4000506 |
+  /**
+   * 图片下载失败
+   * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "ios": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0.0",
+    *            "uniVer": "4.76",
+    *            "unixVer": "4.81",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    * }
+   */
+  4000507 |
+  /**
+   * 加载本地文件失败
+   * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "ios": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0.0",
+    *            "uniVer": "4.76",
+    *            "unixVer": "4.81",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    * }
+   */
+  4000508 |
+  /**
+   * 获取缩略图失败
+   * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "ios": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0.0",
+    *            "uniVer": "4.76",
+    *            "unixVer": "4.81",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    * }
+   */
+  4000509 |
+  /**
+   * 微信可能未安装
+   * @uniPlatform {
+    *    "app": {
+    *        "android": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "ios": {
+    *            "osVer": "x",
+    *            "uniVer": "x",
+    *            "unixVer": "x"
+    *        },
+    *        "harmony": {
+    *            "osVer": "5.0.0",
+    *            "uniVer": "4.87",
+    *            "unixVer": "4.87",
+    *            "unixvVer": "5.0"
+    *        }
+    *    },
+    *    "web": {
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    * }
+   */
+  4000510;
+
+export type Share = (options: ShareOptions) => void;
+export type ShareMiniProgramShareType =
+/**
+ * 正式版
+ */
+0 |
+/**
+ * 测试版
+ */
+1 |
+/**
+ * 体验版
+ */
+2
+export type ShareMiniProgramShareOptions = {
+    /**
+     * 微信小程序原始id
+     */
+    id?: string | null,
+    /**
+     * 点击链接进入的页面
+     */
+    path?: string | null,
+    /**
+     * 微信小程序版本类型，默认为0。
+     * @defaultValue 0
+     */
+    type?: ShareMiniProgramShareType | null,
+    /**
+     * 兼容低版本的网页链接
+     */
+    webUrl?: string | null
+};
+export type ShareSuccess = {};
+export type ShareSuccessCallback = (result: ShareSuccess) => void;
+export type ShareFail = IShareFail;
+export type ShareFailCallback = (result: ShareFail) => void;
+export type ShareComplete = any;
+export type ShareCompleteCallback = (result: ShareComplete) => void;
+export type ShareProvider = 'weixin'
+export type ShareType =
+/**
+ * 图文
+ */
+0 |
+/**
+ * 纯文字
+ */
+1 |
+/**
+ * 纯图片
+ */
+2 |
+/**
+ * 音乐（HarmonyOS 暂不支持）
+ */
+3 |
+/**
+ * 视频
+ */
+4 |
+/**
+ * 小程序
+ */
+5;
+export type ShareScene =
+/**
+ * 分享到聊天界面
+ */
+'WXSceneSession' |
+/**
+ * 分享到朋友圈
+ */
+'WXSceneTimeline' |
+/**
+ * 分享微信收藏（HarmonyOS 暂不支持）
+ */
+'WXSceneFavorite';
+export type ShareOptions = {
+    /**
+     * 分享服务提供商，通过uni.getProvider获取，如果不设置则默认 weixin
+     * @defaultValue weixin
+     */
+    provider?: ShareProvider | null,
+    /**
+     * 分享类型。默认图文0
+     * @defaultValue 0
+     */
+    type?: ShareType | null,
+    /**
+     * 标题
+     */
+    title?: string | null,
+    /**
+     * 场景
+     */
+    scene?: ShareScene | null,
+    /**
+     * 摘要
+     */
+    summary?: string | null,
+    /**
+     * 跳转链接
+     */
+    href?: string | null,
+    /**
+     * 图片地址
+     */
+    imageUrl?: string | null,
+    /**
+     * 音视频地址
+     */
+    mediaUrl?: string | null,
+    /**
+     * 分享小程序
+     */
+    miniProgram?: ShareMiniProgramShareOptions | null,
+    /**
+     * 是否启用拉起客服功能，为 true 时除 `corpid`、`customerUrl` 外其他参数无效
+     * @defaultValue false
+     * @uniPlatform {
+     *  "app": {
+     *   "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *       "osVer": "x",
+     *       "uniVer": "x",
+     *       "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0 (12)",
+     *      "uniVer": "5.0",
+     *      "unixVer": "5.0"
+     *    }
+     *  }
+     * }
+     */
+    openCustomerServiceChat?: boolean | null,
+    /**
+     * 客服ID，`openCustomerServiceChat` 为 true 时必填
+     *
+     * @uniPlatform {
+     *  "app": {
+     *   "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *       "osVer": "x",
+     *       "uniVer": "x",
+     *       "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0 (12)",
+     *      "uniVer": "5.0",
+     *      "unixVer": "5.0"
+     *    }
+     *  }
+     * }
+     */
+    corpid?: string | null,
+    /**
+     * 客服的页面路径，`openCustomerServiceChat` 为 true 时必填
+     *
+     * @uniPlatform {
+     *  "app": {
+     *   "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *       "osVer": "x",
+     *       "uniVer": "x",
+     *       "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0 (12)",
+     *      "uniVer": "5.0",
+     *      "unixVer": "5.0"
+     *    }
+     *  }
+     * }
+     */
+    customerUrl?: string | null,
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: ShareSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: ShareFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: ShareCompleteCallback | null
+};
+export interface UniShareProvider extends UniProvider {
+  share(options: ShareOptions): void;
+}

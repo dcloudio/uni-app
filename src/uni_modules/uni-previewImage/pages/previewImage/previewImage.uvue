@@ -1,0 +1,221 @@
+<template>
+	<!-- #ifdef APP-HARMONY -->
+	<view id="previewSwiper" style="flex: 1;">
+	<!-- #endif -->
+		<swiper style="flex: 1;background-color: black;" :indicator-dots="false" :circular="loop" :current="current"
+			@change="onPreviewImageChanged" @animationfinish="onPreviewImageFinish" :disable-touch="disableTouch">
+			<swiper-item v-if="urls != null" v-for="(item,index) in urls">
+				<uniPreviewImageItem v-if="shouldRender(index)" :index="index" :src="item" :longPressAction="longPressAction" :tips="tips"
+					:reset="index == resetCurrent">
+				</uniPreviewImageItem>
+			</swiper-item>
+		</swiper>
+		<view v-if="indicator == 'number'" class="uni-preview-image-number-indicator-layout">
+			<text class="uni-preview-image-number-indicator">{{numberIndicator}}</text>
+		</view>
+		<view class="uni-preview-image-default-indicator-layout" v-if="indicator == 'default'"
+			v-show="urls!=null">
+			<view v-for="i in urls!.length" class="uni-preview-image-default-indicator"
+				:class="((indicatorIndex+1) == i) ?'uni-preview-image-default-indicator-active' : 'uni-preview-image-default-indicator-default'">
+			</view>
+		</view>
+	<!-- #ifdef APP-HARMONY -->
+	</view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="uts">
+	import uniPreviewImageItem from "../../components/uni-previewImageItem/uni-previewImageItem.uvue"
+	const urls = ref<Array<string> | null>(null)
+	const current = ref(0)
+	// 用于控制 reset 逻辑的滞后索引，只在动画结束时更新
+	const resetCurrent = ref(0)
+	const loop = ref(false)
+	// #ifdef APP-IOS
+	const disableTouch = ref(false)
+	// #endif
+	// #ifndef APP-IOS
+	const disableTouch = ref(false)
+	// #endif
+	const numberIndicator = ref("")
+	const indicatorIndex = ref(0)
+	const indicator = ref("number")
+	const longPressAction = ref<LongPressActionsOptions | null>(null)
+	const tips = ref<UTSJSONObject | null>(null)
+
+	const pageInstance = getCurrentInstance()!.proxy!
+	const uniPageInstance = pageInstance.$page
+	onUnload(() => {
+		uni.$off("__UNIPREVIEWIMAGE")
+		uni.$off("__UNIPREVIEWIMAGECLOSE")
+		uni.$off("__UNIPREVIEWLONGPRESS")
+		uni.$off("__CLOSEPREVIEWIMAGE")
+	})
+	const __onPreviewLoadCallback = (result : UTSJSONObject) => {
+		urls.value = result["urls"] as Array<string> | null
+		if (result["current"] != null) {
+			var c = result["current"]
+			if ((typeof c == "number")) {
+				var d : number = c as number
+				if (d < 0 || d > urls.value!.length)
+					d = 0
+				current.value = d
+			} else if (typeof c == 'string') {
+				var index = urls.value!.indexOf(c as string)
+				if (index < 0) {
+					index = 0
+				}
+				current.value = index
+			}
+			indicatorIndex.value = current.value
+			// 初始化时同步 resetCurrent
+			resetCurrent.value = current.value
+		}
+		if (result["indicator"] != null) {
+			indicator.value = result["indicator"] as string
+		}
+		if (result["longPressActions"] != null) {
+			longPressAction.value = {
+				itemList: (result["longPressActions"] as UTSJSONObject)["itemList"] as string[],
+				itemColor: (result["longPressActions"] as UTSJSONObject)["itemColor"] as string | null,
+			} as LongPressActionsOptions
+		}
+		if (result["loop"] != null) {
+			loop.value = result["loop"]! as boolean
+		}
+		numberIndicator.value = (current.value + 1) + " / " + urls.value!.length
+	}
+	const onPreviewImageChanged = (e : UniSwiperChangeEvent) => {
+		numberIndicator.value = (e.detail.current + 1) + " / " + urls.value?.length
+		indicatorIndex.value = e.detail.current
+		// 实时更新 current 以保证 shouldRender 能够及时响应滑动，避免黑屏
+		current.value = e.detail.current
+	}
+	function onPreviewImageFinish(e : UniSwiperAnimationFinishEvent) {
+		current.value = e.detail.current
+		// 只有在动画结束时才更新 resetCurrent，确保 reset 逻辑的正确执行时机（如复原放大状态）
+		resetCurrent.value = e.detail.current
+	}
+	const shouldRender = (index : number) : boolean => {
+		const len = urls.value?.length
+		if (len == null) {
+			return false
+		}
+		if (len <= 3) {
+			return true
+		}
+		
+		const c = current.value
+		// current 已经是实时的了，直接判断范围即可
+		if (index == c) return true
+
+		if (loop.value) {
+			const prev = c == 0 ? len - 1 : c - 1
+			const next = c == len - 1 ? 0 : c + 1
+			// 额外的缓冲区，防止快速滑动
+			const prev2 = prev == 0 ? len - 1 : prev - 1
+			const next2 = next == len - 1 ? 0 : next + 1
+			
+			if (index == prev || index == next || index == prev2 || index == next2) {
+				return true
+			}
+		} else {
+			// 前后各预渲染2张
+			if (Math.abs(index - c) <= 2) {
+				return true
+			}
+		}
+		return false
+	}
+	const setDisableTouch = (isDisable : any) => {
+		// disableTouch = isDisable as boolean
+	}
+	const closePreviewPage = () => {
+		// 鸿蒙不支持animationType，单独添加一个fade-out的动画
+		// #ifdef APP-HARMONY
+		var swiper = uniPageInstance.getElementById("previewSwiper")
+		swiper?.style.setProperty("transition-duration", "300ms")
+		swiper?.style.setProperty("transition-property", "opacity");
+		swiper?.style.setProperty("opacity", "0")
+		setTimeout(function() {
+			uni.closeDialogPage({
+				dialogPage: uniPageInstance,
+				animationType: "none"
+			})
+		}, 300);
+		// #endif
+		// #ifndef APP-HARMONY
+		uni.closeDialogPage({
+			dialogPage: uniPageInstance,
+			animationType: "fade-out"
+		})
+		// #endif
+	}
+	onLoad(() => {
+		// 传参
+		uni.$once("__onPreviewLoadCallback", __onPreviewLoadCallback)
+		uni.$emit("__onPreviewLoad", null)
+		uni.$on("__UNIPREVIEWIMAGE", setDisableTouch)
+		uni.$on("__UNIPREVIEWIMAGECLOSE", closePreviewPage)
+		uni.$on("__CLOSEPREVIEWIMAGE", () => {
+			closePreviewPage()
+		})
+	})
+	onBackPress((options : OnBackPressOptions) : boolean | null => {
+		// #ifdef APP-ANDROID
+		// 解决安卓点击返回键没有动画的问题
+		closePreviewPage()
+		return true
+		// #endif
+		// #ifndef APP-ANDROID
+		return false
+		// #endif
+	})
+</script>
+<style>
+	.uni-preview-image-default-indicator {
+		width: 9px;
+		height: 9px;
+		border-style: solid;
+		border-radius: 9px;
+		margin: 2px 3px;
+		border-width: .1px;
+		border-color: #AAAAAA;
+	}
+
+	.uni-preview-image-default-indicator-default {
+		background-color: #AAAAAA;
+	}
+
+	.uni-preview-image-default-indicator-active {
+		background-color: #ffffff;
+	}
+
+	.uni-preview-image-default-indicator-layout {
+		bottom: var(--uni-safe-area-inset-bottom);
+		margin-bottom: 8px;
+		flex-direction: row;
+		position: absolute;
+		left: 0px;
+		right: 0px;
+		justify-content: center;
+	}
+
+	.uni-preview-image-number-indicator-layout {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: var(--uni-safe-area-inset-top);
+		margin-top: 8px;
+	}
+
+	.uni-preview-image-number-indicator {
+		color: white;
+		font-size: 16px;
+		margin: auto;
+		padding: 8px 20px;
+		background-color: rgba(0, 0, 0, .3);
+		line-height: 1;
+		border-radius: 32px;
+	}
+</style>

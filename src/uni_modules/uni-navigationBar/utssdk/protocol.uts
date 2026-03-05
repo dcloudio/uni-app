@@ -1,0 +1,39 @@
+// #region setNavigationBarColor
+const FRONT_COLORS = ['#ffffff', '#000000']
+export const API_SET_NAVIGATION_BAR_COLOR = 'setNavigationBarColor';
+export const SetNavigationBarColorProtocol = new Map<string, ProtocolOptions>([
+  [
+    'frontColor',
+    {
+      type: 'string',
+      required: true,
+      validator(frontColor: any) {
+        if (FRONT_COLORS.indexOf(frontColor as string) === -1) {
+          return `invalid frontColor "${frontColor}"`
+        }
+        return
+      }
+    }
+  ],
+  [
+    'backgroundColor',
+    {
+      type: 'string',
+      required: true
+    }
+  ]
+])
+// #endregion
+
+// #region setNavigationBarTitle
+export const API_SET_NAVIGATION_BAR_TITLE = 'setNavigationBarTitle';
+export const SetNavigationBarTitleProtocol = new Map<string, ProtocolOptions>([
+  [
+    'title',
+    {
+      type: 'string',
+      required: true
+    }
+  ]
+])
+// #endregion

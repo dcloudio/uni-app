@@ -1,0 +1,312 @@
+import { WebSocketManagerListener } from "./WebSocketManager";
+import { ConnectSocketOptions, SendSocketMessageOptions, CloseSocketOptions, GeneralCallbackResult } from "../../interface";
+import { ConnectSocketFailImpl, SendSocketMessageFailImpl } from "../../unierror.uts";
+import OkHttpClient from 'okhttp3.OkHttpClient';
+import TimeUnit from 'java.util.concurrent.TimeUnit';
+import ConnectionPool from 'okhttp3.ConnectionPool';
+import Request from 'okhttp3.Request';
+import WebSocketListener from 'okhttp3.WebSocketListener';
+import WebSocket from 'okhttp3.WebSocket';
+import Response from 'okhttp3.Response';
+import Okio from 'okio.Okio';
+import ByteString from 'okio.ByteString';
+import Base64 from 'android.util.Base64';
+import JSONObject from 'com.alibaba.fastjson.JSONObject';
+import Handler from 'android.os.Handler';
+import Looper from 'android.os.Looper';
+
+export class WebsockerClient {
+	private listener : WebSocketManagerListener | null = null;
+	private options : ConnectSocketOptions | null = null;
+
+	private static connectPool : ConnectionPool | null = null;
+
+	private websocketDelegate : WebsocketDelegate = new WebsocketDelegate();
+	constructor(options : ConnectSocketOptions, listener : WebSocketManagerListener) {
+		this.options = options;
+		this.listener = listener;
+	}
+
+
+	public connect() {
+		const kParam = this.options;
+		if (kParam != null) {
+			const httpClient = this.createHttpClient();
+
+			const request = this.createRequest(kParam);
+
+			if (request == null) {
+				return
+			}
+
+			// 临时解决方案 , 连接时延迟100ms , 等到js层注册了onOpen后再连接.
+			setTimeout(() => {
+				httpClient.newWebSocket(request, new SimpleWebsocketListener(this.listener!, this.websocketDelegate, this))
+			}, 100);
+
+		}
+	}
+
+	public send(options : SendSocketMessageOptions) {
+		const success = options.success;
+		const fail = options.fail;
+		const complete = options.complete;
+		if (this.websocketDelegate.websocket == null) {
+			let result = new SendSocketMessageFailImpl(10002);
+			fail?.(result);
+			complete?.(result);
+			return
+		}
+		let isSuccess = false;
+		try {
+			let sendResult:boolean | null
+            if(options.data instanceof ArrayBuffer){
+				sendResult = this.websocketDelegate.websocket?.send(ByteString.of(options.data.toByteBuffer()));
+			}else{
+				sendResult = this.websocketDelegate.websocket?.send(options.data as string);
+			}
+			
+			if(sendResult != null && !sendResult){
+				let result = new SendSocketMessageFailImpl(10001);
+				fail?.(result);
+				complete?.(result);
+				this.listener?.onError(this, "The queue memory exceeds 16 MiB and the connection will be closed");
+				return
+			}
+			isSuccess = true;
+		} catch (e : Exception) {
+			let result = new SendSocketMessageFailImpl(602001);
+			const utsError = new UTSError(e.message ?? "")
+			result.cause = utsError
+			fail?.(result);
+			complete?.(result);
+			this.listener?.onError(this, e.message ?? "");
+		}
+		
+		if(isSuccess){
+			let result : GeneralCallbackResult = {
+				errMsg: "sendSocketMessage:ok"
+			}
+			success?.(result);
+			complete?.(result);
+		}
+	}
+
+	public close(options : CloseSocketOptions) {
+		const success = options.success;
+		const fail = options.fail;
+		const complete = options.complete;
+		if (this.websocketDelegate.websocket == null) {
+			let result : GeneralCallbackResult = {
+				errMsg: "closeSocket:fail WebSocket is not connected"
+			}
+			fail?.(result);
+			complete?.(result);
+			return
+		}
+		let isSuccess = false;
+		try {
+			var code : Int = 1000;
+			if (options.code != null) {
+				code = options.code as Int
+			}
+			this.websocketDelegate.websocket?.close(code, options.reason ?? "");
+			isSuccess = true;
+		} catch (e : Exception) {
+			let result : GeneralCallbackResult = {
+				errMsg: e.message ?? ""
+			}
+			fail?.(result);
+			complete?.(result);
+			this.listener?.onError(this, e.message ?? "");
+		}
+		if(isSuccess){
+			let result : GeneralCallbackResult = {
+				errMsg: "closeSocket:ok"
+			}
+			success?.(result);
+			complete?.(result);
+		}
+	}
+
+	private createHttpClient() : OkHttpClient {
+		let clientBuilder = OkHttpClient.Builder();
+		clientBuilder.readTimeout(24, TimeUnit.HOURS);
+		clientBuilder.writeTimeout(24, TimeUnit.HOURS);
+
+
+		if (WebsockerClient.connectPool == null) {
+			WebsockerClient.connectPool = new ConnectionPool();
+		}
+		clientBuilder.connectionPool(WebsockerClient.connectPool);
+
+		return clientBuilder.build();
+	}
+
+	private createRequest(options : ConnectSocketOptions) : Request | null {
+		let requestBilder = new Request.Builder();
+		try {
+			requestBilder.url(options.url);
+		} catch (e : Exception) {
+			let option = new ConnectSocketFailImpl(600009);
+			const listener = options.fail;
+			if (listener != null) {
+				listener(option);
+			}
+			return null;
+		}
+
+
+		const protocols = options.protocols;
+		if (protocols != null) {
+			let protocolsStr = protocols.join(",");
+			requestBilder.addHeader("Sec-WebSocket-Protocol", protocolsStr)
+		}
+
+		const header = options.header;
+		let hasOrigin = false;
+
+		if (header != null) {
+			let map = header.toMap();
+			if (map != null) {
+				for (key in map.keys) {
+					if (key.equals("Origin", true)) {
+						hasOrigin = true;
+					}
+					requestBilder.addHeader(key, "" + map[key]);
+				}
+			}
+		}
+
+		if (!hasOrigin) {
+			requestBilder.addHeader("Origin", "http://localhost");        // 测试时，有服务器检测Origin导致403，∴加上该句
+		}
+
+		return requestBilder.build();
+	}
+
+
+}
+
+class WebsocketDelegate {
+	websocket : WebSocket | null = null;
+}
+
+class RunnableTask extends Runnable {
+	private callback : (() => void) | null;
+	private looper : Looper | null = null;
+	constructor(looper : Looper | null, callback : () => void) {
+		super();
+		this.looper = looper;
+		this.callback = callback
+	}
+
+	override run() {
+		this.callback?.()
+	}
+
+	public execute() {
+		if (this.looper == null) {
+			this.run();
+		} else {
+			new Handler(this.looper!!).post(this);
+		}
+	}
+}
+
+
+
+
+class SimpleWebsocketListener extends WebSocketListener {
+	private listener : WebSocketManagerListener | null = null;
+	private websocketDelegate : WebsocketDelegate | null = null;
+	private client : WebsockerClient | null = null;
+	private looper : Looper | null = null;
+	constructor(listener : WebSocketManagerListener, delegate : WebsocketDelegate, client : WebsockerClient) {
+		super();
+		this.listener = listener;
+		this.websocketDelegate = delegate;
+		this.client = client;
+		this.looper = Looper.myLooper();
+	}
+
+	override onOpen(webSocket : WebSocket, response : Response) : void {
+		new RunnableTask(this.looper, () => {
+			const delegate = this.websocketDelegate;
+			if (delegate != null) {
+				delegate.websocket = webSocket;
+			}
+			const client = this.client;
+			if (client != null) {
+				const wsHeaders = response.headers();
+				const headers = new Map<string, string>();
+				for (key in wsHeaders.names()) {
+					headers.set(key, wsHeaders.values(key).toString())
+				}
+				this.listener?.onOpen(client, headers);
+			}
+		}).execute();
+	}
+
+	override onMessage(webSocket : WebSocket, bytes : ByteString) : void {
+		new RunnableTask(this.looper, () => {
+			const client = this.client;
+			if (client != null) {
+				this.listener?.onMessage(client, ArrayBuffer.fromByteBuffer(bytes.asByteBuffer()));
+			}
+		}).execute();
+	}
+	override onMessage(webSocket : WebSocket, text : string) : void {
+		new RunnableTask(this.looper, () => {
+			const client = this.client;
+			if (client != null) {
+				this.listener?.onMessage(client, text);
+			}
+		}).execute();
+	}
+	override onClosing(webSocket : WebSocket, code : Int, reason : string) : void {
+		new RunnableTask(this.looper, () => {
+			const delegate = this.websocketDelegate;
+			if (delegate != null) {
+				delegate.websocket = null;
+			}
+			const client = this.client;
+			if (client != null) {
+				this.listener?.onClose(client, code, reason);
+			}
+		}).execute();
+
+	}
+
+	override onClosed(webSocket : WebSocket, code : Int, reason : string) : void {
+		new RunnableTask(this.looper, () => {
+			const delegate = this.websocketDelegate;
+			if (delegate != null) {
+				delegate.websocket = null;
+			}
+			const client = this.client;
+			if (client != null) {
+				this.listener?.onClose(client, code, reason);
+			}
+		}).execute();
+
+	}
+
+	override onFailure(webSocket : WebSocket, t : Throwable, response : Response | null) : void {
+		new RunnableTask(this.looper, () => {
+			const delegate = this.websocketDelegate;
+			if (delegate != null) {
+				delegate.websocket = null;
+			}
+			const client = this.client;
+			if (client != null) {
+				if (t.javaClass.simpleName == "EOFException") {
+					this.listener?.onClose(client, 1000, "CLOSE_NORMAL");
+				} else {
+					this.listener?.onError(client, t.message ?? "");
+				}
+			}
+		}).execute();
+	}
+
+}

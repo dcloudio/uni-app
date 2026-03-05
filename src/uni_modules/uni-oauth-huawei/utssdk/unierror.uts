@@ -1,0 +1,23 @@
+export const OauthHuaweiUniErrors : Map<OauthErrorCode, string> = new Map([
+  [1001502040, '登录请求可能被跨站攻击']
+]);
+
+
+export const OauthHuaweiUniErrorSubject = 'uni-oauth-huawei';
+
+export class OauthHuaweiFailImpl extends UniError implements IOauthFail {
+	// #ifdef APP-HARMONY
+	override errCode : OauthErrorCode
+	// #endif
+	constructor(errCode : OauthErrorCode, errMsg ?: string | null) {
+		super();
+		this.errSubject = OauthHuaweiUniErrorSubject;
+		this.errCode = errCode;
+		const error = OauthHuaweiUniErrors.get(errCode) ?? "";
+		if (errMsg != null) {
+			this.errMsg = error + ", the reason: " + errMsg;
+		} else {
+			this.errMsg = error;
+		}
+	}
+}

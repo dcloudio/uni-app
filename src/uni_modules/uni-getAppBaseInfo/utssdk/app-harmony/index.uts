@@ -1,0 +1,60 @@
+import {
+    GetAppBaseInfo,
+    GetAppBaseInfoResult,
+} from '../interface.uts'
+import {
+    API_GET_APP_BASE_INFO,
+} from '../protocol.uts'
+import I18n from '@ohos.i18n'
+import bundleManager from '@ohos.bundle.bundleManager'
+function getBundleInfoOnce() {
+    let bundleInfo: bundleManager.BundleInfo | null = null
+    return (): bundleManager.BundleInfo => {
+        if (bundleInfo) {
+            return bundleInfo
+        }
+        bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT)
+        return bundleInfo
+    }
+}
+
+const getBundleInfo = getBundleInfoOnce()
+
+interface IAppBaseInfoAppVersion {
+    name: string
+    code: string
+}
+
+export const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(
+    API_GET_APP_BASE_INFO,
+    (): GetAppBaseInfoResult => {
+        const appVersion = UTSHarmony.getAppVersion() as IAppBaseInfoAppVersion
+        const appLanguage = I18n.System.getAppPreferredLanguage()
+        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion() as string
+        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion()
+        return {
+            appId: UTSHarmony.getAppId() as string,
+            appLanguage,
+            appName: UTSHarmony.getAppName() as string,
+            appTheme: UTSHarmony.getAppTheme() as string,
+            appVersion: appVersion.name,
+            appVersionCode: appVersion.code,
+            appWgtVersion: appVersion.name,
+            hostLanguage: I18n.System.getSystemLanguage(),
+            isUniAppX: UTSHarmony.isUniAppX() as boolean,
+            packageName: getBundleInfo().name,
+            bundleName: getBundleInfo().name,
+            uniCompilerVersion: uniCompilerVersion,
+            uniCompilerVersionCode: parseFloat(uniCompilerVersion),
+            uniRuntimeVersion: uniRuntimeVersion,
+            uniRuntimeVersionCode: parseFloat(uniRuntimeVersion),
+            uniPlatform: 'app'
+        } as GetAppBaseInfoResult
+    }
+) as GetAppBaseInfo
+
+export {
+  GetAppBaseInfo,
+  GetAppBaseInfoOptions,
+  GetAppBaseInfoResult
+} from '../interface.uts';

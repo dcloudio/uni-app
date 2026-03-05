@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>NSCameraUsageDescription</key>
+		<string>APP需要您的同意，才能使用摄像头，以便于相机拍摄</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>APP需要您的同意，才能访问相册，以便于保存图像</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>APP需要您的同意，才能访问相册，以便于图像选取</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>APP需要您的同意，才能使用麦克风，以便于录制音频</string>
+	</dict>
+</plist>

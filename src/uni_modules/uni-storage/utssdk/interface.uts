@@ -1,0 +1,1030 @@
+/**
+ * uni.setStorage成功回调参数
+ */
+export type SetStorageSuccess = {
+
+}
+
+/**
+ * uni.setStorage成功回调函数定义
+ */
+export type SetStorageSuccessCallback = (res: SetStorageSuccess) => void
+/**
+ * uni.setStorage失败回调函数定义
+ */
+export type SetStorageFailCallback = (res: UniError) => void
+/**
+ * uni.setStorage完成回调函数定义
+ */
+export type SetStorageCompleteCallback = (res: any) => void
+/**
+ * uni.setStorage参数定义
+ */
+export type SetStorageOptions = {
+    /**
+     * 本地存储中的指定的 key
+     */
+    key: string,
+    /**
+     * 需要存储的内容，只支持能通过 JSON.stringify 序列化的对象
+     */
+    data: any,
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: SetStorageSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: SetStorageFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: SetStorageCompleteCallback | null
+}
+
+export type SetStorage = (options: SetStorageOptions) => void
+
+export type SetStorageSync = (key: string, data: any) => void
+
+
+/**
+ * uni.getStorage成功回调参数
+ */
+export type GetStorageSuccess = {
+    /**
+     * key 对应的内容
+     */
+    data: any | null
+}
+
+/**
+ * uni.getStorage成功回调函数定义
+ */
+export type GetStorageSuccessCallback = (res: GetStorageSuccess) => void
+/**
+ * uni.getStorage失败回调函数定义
+ */
+export type GetStorageFailCallback = (res: UniError) => void
+/**
+ * uni.getStorage完成回调函数定义
+ */
+export type GetStorageCompleteCallback = (res: any) => void
+/**
+ * uni.getStorage参数定义
+ */
+export type GetStorageOptions = {
+    /**
+     * 本地存储中的指定的 key
+     */
+    key: string,
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: GetStorageSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: GetStorageFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: GetStorageCompleteCallback | null
+}
+
+
+export type GetStorage = (options: GetStorageOptions) => void
+
+
+export type GetStorageSync = (key: string) => any | null
+
+
+/**
+ * uni.getStorageInfo成功回调参数
+ */
+export type GetStorageInfoSuccess = {
+    /**
+     * 当前 storage 中所有的 key
+     */
+    keys: Array<string>,
+    /**
+     * 当前占用的空间大小, 单位：kb
+     */
+    currentSize: number,
+    /**
+     * 限制的空间大小, 单位：kb
+     */
+    limitSize: number,
+}
+
+/**
+ * uni.getStorageInfo成功回调函数定义
+ */
+export type GetStorageInfoSuccessCallback = (res: GetStorageInfoSuccess) => void
+/**
+ * uni.getStorageInfo失败回调函数定义
+ */
+export type GetStorageInfoFailCallback = (res: UniError) => void
+/**
+ * uni.getStorageInfo完成回调函数定义
+ */
+export type GetStorageInfoCompleteCallback = (res: any) => void
+/**
+ * uni.getStorageInfo参数定义
+ */
+export type GetStorageInfoOptions = {
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: GetStorageInfoSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: GetStorageInfoFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: GetStorageInfoCompleteCallback | null
+}
+
+
+export type GetStorageInfo = (options: GetStorageInfoOptions) => void
+
+export type GetStorageInfoSync = () => GetStorageInfoSuccess
+
+/**
+ * uni.removeStorage成功回调参数
+ */
+export type RemoveStorageSuccess = {
+}
+
+/**
+ * uni.removeStorage成功回调函数定义
+ */
+export type RemoveStorageSuccessCallback = (res: RemoveStorageSuccess) => void
+/**
+ * uni.removeStorage失败回调函数定义
+ */
+export type RemoveStorageFailCallback = (res: UniError) => void
+/**
+ * uni.removeStorage完成回调函数定义
+ */
+export type RemoveStorageCompleteCallback = (res: any) => void
+/**
+ * uni.removeStorage参数定义
+ */
+export type RemoveStorageOptions = {
+    /**
+     * 本地存储中的指定的 key
+     */
+    key: string,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: RemoveStorageSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: RemoveStorageFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: RemoveStorageCompleteCallback | null
+}
+
+
+export type RemoveStorage = (options: RemoveStorageOptions) => void
+
+
+export type RemoveStorageSync = (key: string) => void
+
+/**
+ * uni.clearStorage 成功返回数据结构
+ */
+export type ClearStorageSuccess = {
+
+}
+
+/**
+ * uni.clearStorage 成功回调函数定义
+ */
+export type ClearStorageSuccessCallback = (res: ClearStorageSuccess) => void
+/**
+ * uni.clearStorage 失败回调函数定义
+ */
+export type ClearStorageFailCallback = (res: UniError) => void
+/**
+ * uni.clearStorage 完成回调函数定义
+ */
+export type ClearStorageCompleteCallback = (res: any) => void
+
+/**
+ * uni.removeStorage参数定义
+ */
+export type ClearStorageOptions = {
+    /**
+     * 接口调用的回调函数
+     */
+    success?: ClearStorageSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: ClearStorageFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: ClearStorageCompleteCallback | null
+}
+
+export type ClearStorage = (option?: ClearStorageOptions | null) => void
+
+
+export type ClearStorageSync = () => void
+
+export interface Uni {
+    /**
+     * uni.setStorage函数定义
+     * 将数据存储在本地storage存储中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个异步接口。
+     *
+     * @param {SetStorageOptions} options
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#setstorage
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#setstorage
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#setstorage
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "4.11"
+     *   	  },
+       *    "harmony": {
+       *      "osVer": "3.0",
+       *      "uniVer": "4.23",
+       *      "unixVer": "4.61",
+       *      "unixvVer": "5.0"
+       *    }
+     *    },
+      *  "mp": {
+      *    "weixin": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "4.41"
+      *    },
+      *    "alipay": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "baidu": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "toutiao": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "lark": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "qq": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "kuaishou": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "jd": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    }
+      *  },
+     *    "web": {
+     *        "uniVer": "√",
+     *        "unixVer": "4.0"
+     *    }
+     * }
+     * @uniVersion 2.0.3
+     * @uniVueVersion 2,3  //支持的vue版本
+     */
+    setStorage(options: SetStorageOptions): void,
+    /**
+     * uni.setStorageSync函数定义
+     * 将 data 存储在本地storage存储中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个同步接口。
+     *
+     * @param {string} key  本地storage存储中的指定的 key
+     * @param {any} data  需要存储的内容，只支持能通过 JSON.stringify 序列化的对象
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#setstoragesync
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#setstoragesync
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#setstoragesync
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "4.11"
+     *   	  },
+       *    "harmony": {
+       *      "osVer": "3.0",
+       *      "uniVer": "4.23",
+       *      "unixVer": "4.61",
+       *      "unixvVer": "5.0"
+       *    }
+     *    },
+      *  "mp": {
+      *    "weixin": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "4.41"
+      *    },
+      *    "alipay": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "baidu": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "toutiao": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "lark": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "qq": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "kuaishou": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "jd": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    }
+      *  },
+     *    "web": {
+     *        "uniVer": "√",
+     *        "unixVer": "4.0"
+     *    }
+     * }
+     * @uniVersion 2.0.3
+     * @uniVueVersion 2,3  //支持的vue版本
+     */
+    setStorageSync(key: string, data: any): void,
+    /**
+     * uni.getStorage函数定义
+     * 从本地存储中异步获取指定 key 对应的内容。
+     *
+     * @param {GetStorageOptions} options
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#getstorage
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstorage
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstorage
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "4.11"
+     *   	  },
+       *    "harmony": {
+       *      "osVer": "3.0",
+       *      "uniVer": "4.23",
+       *      "unixVer": "4.61",
+       *      "unixvVer": "5.0"
+       *    }
+     *    },
+      *  "mp": {
+      *    "weixin": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "4.41"
+      *    },
+      *    "alipay": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "baidu": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "toutiao": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "lark": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "qq": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "kuaishou": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "jd": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    }
+      *  },
+     *    "web": {
+     *        "uniVer": "√",
+     *        "unixVer": "4.0"
+     *    }
+     * }
+     * @uniVersion 2.0.3
+     * @uniVueVersion 2,3  //支持的vue版本
+     */
+    getStorage(options: GetStorageOptions): void,
+    /**
+     * uni.getStorageSync函数定义
+     * 从本地存储中同步获取指定 key 对应的内容。
+     *
+     * @param {string} key  本地存储中的指定的 key
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#getstoragesync
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstoragesync
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstoragesync
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "4.11"
+     *   	  },
+       *    "harmony": {
+       *      "osVer": "3.0",
+       *      "uniVer": "4.23",
+       *      "unixVer": "4.61",
+       *      "unixvVer": "5.0"
+       *    }
+     *    },
+      *  "mp": {
+      *    "weixin": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "4.41"
+      *    },
+      *    "alipay": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "baidu": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "toutiao": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "lark": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "qq": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "kuaishou": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "jd": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    }
+      *  },
+     *    "web": {
+     *        "uniVer": "√",
+     *        "unixVer": "4.0"
+     *    }
+     * }
+     * @uniVersion 2.0.3
+     * @uniVueVersion 2,3  //支持的vue版本
+     */
+    getStorageSync(key: string): any | null,
+    /**
+     * uni.getStorageInfo函数定义
+     * 异步获取当前 storage 的相关信息。
+     *
+     * @param {GetStorageInfoOptions} options
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#getstorageinfo
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstorageinfo
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstorageinfo
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "4.11"
+     *   	  },
+       *    "harmony": {
+       *      "osVer": "3.0",
+       *      "uniVer": "4.23",
+       *      "unixVer": "4.61",
+       *      "unixvVer": "5.0"
+       *    }
+     *    },
+      *  "mp": {
+      *    "weixin": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "4.41"
+      *    },
+      *    "alipay": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "baidu": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "toutiao": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "lark": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "qq": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "kuaishou": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "jd": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    }
+      *  },
+     *    "web": {
+     *        "uniVer": "√",
+     *        "unixVer": "4.0"
+     *    }
+     * }
+     * @uniVersion 2.0.3
+     * @uniVueVersion 2,3  //支持的vue版本
+     */
+    getStorageInfo(options: GetStorageInfoOptions): void,
+    /**
+     * uni.getStorageInfoSync函数定义
+     * 同步获取当前 storage 的相关信息。
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#getstorageinfosync
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstorageinfosync
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstorageinfosync
+     *
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "4.11"
+     *   	  },
+       *    "harmony": {
+       *      "osVer": "3.0",
+       *      "uniVer": "4.23",
+       *      "unixVer": "4.61",
+       *      "unixvVer": "5.0"
+       *    }
+     *    },
+      *  "mp": {
+      *    "weixin": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "4.41"
+      *    },
+      *    "alipay": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "baidu": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "toutiao": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "lark": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "qq": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "kuaishou": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "jd": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    }
+      *  },
+     *    "web": {
+     *        "uniVer": "√",
+     *        "unixVer": "4.0"
+     *    }
+     * }
+     * @uniVersion 2.0.3
+     * @uniVueVersion 2,3  //支持的vue版本
+     */
+    getStorageInfoSync(): GetStorageInfoSuccess,
+    /**
+     * uni.removeStorage函数定义
+     * 从本地存储中异步移除指定 key。
+     *
+     * @param {RemoveStorageOptions} options
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#removestorage
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#removestorage
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#removestorage
+     *
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "4.11"
+     *   	  },
+       *    "harmony": {
+       *      "osVer": "3.0",
+       *      "uniVer": "4.23",
+       *      "unixVer": "4.61",
+       *      "unixvVer": "5.0"
+       *    }
+     *    },
+      *  "mp": {
+      *    "weixin": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "4.41"
+      *    },
+      *    "alipay": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "baidu": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "toutiao": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "lark": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "qq": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "kuaishou": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "jd": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    }
+      *  },
+     *    "web": {
+     *        "uniVer": "√",
+     *        "unixVer": "4.0"
+     *    }
+     * }
+     * @uniVersion 2.0.3
+     * @uniVueVersion 2,3  //支持的vue版本
+     */
+    removeStorage(options: RemoveStorageOptions): void,
+    /**
+     * uni.removeStorageSync函数定义
+     * 从本地存储中同步移除指定 key。
+     *
+     * @param {string} key  本地存储中的指定的 key
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#removestoragesync
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#removestoragesync
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#removestoragesync
+     *
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "4.11"
+     *   	  },
+       *    "harmony": {
+       *      "osVer": "3.0",
+       *      "uniVer": "4.23",
+       *      "unixVer": "4.61",
+       *      "unixvVer": "5.0"
+       *    }
+     *    },
+      *  "mp": {
+      *    "weixin": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "4.41"
+      *    },
+      *    "alipay": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "baidu": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "toutiao": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "lark": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "qq": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "kuaishou": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "jd": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    }
+      *  },
+     *    "web": {
+     *        "uniVer": "√",
+     *        "unixVer": "4.0"
+     *    }
+     * }
+     * @uniVersion 2.0.3
+     * @uniVueVersion 2,3  //支持的vue版本
+     */
+    removeStorageSync(key: string): void,
+    /**
+     * uni.clearStorage函数定义
+     * 清除本地数据存储。
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#clearstorage
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#clearstorage
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#clearstorage
+     *
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "4.11"
+     *   	  },
+       *    "harmony": {
+       *      "osVer": "3.0",
+       *      "uniVer": "4.23",
+       *      "unixVer": "4.61",
+       *      "unixvVer": "5.0"
+       *    }
+     *    },
+      *  "mp": {
+      *    "weixin": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "4.41"
+      *    },
+      *    "alipay": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "baidu": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "toutiao": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "lark": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "qq": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "kuaishou": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "jd": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    }
+      *  },
+     *    "web": {
+     *        "uniVer": "√",
+     *        "unixVer": "4.0"
+     *    }
+     * }
+     * @uniVersion 2.0.3
+     * @uniVueVersion 2,3  //支持的vue版本
+     */
+    clearStorage(option?: ClearStorageOptions | null): void,
+    /**
+     * uni.clearStorageSync函数定义
+     * 清除本地数据存储。
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#clearstoragesync
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#clearstoragesync
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#clearstoragesync
+     *
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "2.0.3",
+     *            "unixVer": "4.11"
+     *   	  },
+       *    "harmony": {
+       *      "osVer": "3.0",
+       *      "uniVer": "4.23",
+       *      "unixVer": "4.61",
+       *      "unixvVer": "5.0"
+       *    }
+     *    },
+      *  "mp": {
+      *    "weixin": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "4.41"
+      *    },
+      *    "alipay": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "baidu": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "toutiao": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "lark": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "qq": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "kuaishou": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    },
+      *    "jd": {
+      *        "hostVer": "√",
+      *        "uniVer": "√",
+      *        "unixVer": "x"
+      *    }
+      *  },
+     *    "web": {
+     *        "uniVer": "√",
+     *        "unixVer": "4.0"
+     *    }
+     * }
+     * @uniVersion 2.0.3
+     * @uniVueVersion 2,3  //支持的vue版本
+     */
+    clearStorageSync(): void
+}

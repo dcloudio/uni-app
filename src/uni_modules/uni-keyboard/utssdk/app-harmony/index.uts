@@ -1,0 +1,35 @@
+import {
+    API_HIDE_KEYBOARD
+} from '../protocol.uts'
+import {
+    HideKeyboardOptions,
+    HideKeyboardSuccess,
+    HideKeyboardFail,
+    HideKeyboard
+} from '../interface.uts'
+import inputMethod from '@ohos.inputMethod';
+
+export const hideKeyboard: HideKeyboard = defineAsyncApi<HideKeyboardOptions, HideKeyboardSuccess>(
+    API_HIDE_KEYBOARD,
+    function (options: HideKeyboardOptions, exec: ApiExecutor<HideKeyboardSuccess>) {
+        inputMethod.getController().hideTextInput().then(() => {
+            exec.resolve()
+        }, (err: Error) => {
+            exec.reject(err.message)
+        })
+    }
+) as HideKeyboard
+
+export {
+    HideKeyboard,
+    HideKeyboardCompleteCallback,
+    HideKeyboardFail,
+    HideKeyboardFailCallback,
+    HideKeyboardOptions,
+    HideKeyboardSuccess,
+    HideKeyboardSuccessCallback,
+    OffKeyboardHeightChange,
+    OnKeyboardHeightChange,
+    OnKeyboardHeightChangeCallback,
+    OnKeyboardHeightChangeCallbackResult
+} from '../interface.uts';

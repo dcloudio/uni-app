@@ -1,0 +1,9 @@
+Third party libraries
+***************************
+
+THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
+
+AndroidX WebKit (https://developer.android.com/jetpack/androidx/releases/webkit)
+  Copyright: Copyright (c) The Android Open Source Project
+  License: Apache License 2.0, full text can be found at https://github.com/androidx/androidx/blob/androidx-main/LICENSE.txt
+

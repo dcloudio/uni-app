@@ -1,0 +1,174 @@
+import {
+	CTRadioAccessTechnologyNR,
+	CTRadioAccessTechnologyNRNSA,
+	CTTelephonyNetworkInfo
+} from 'CoreTelephony';
+import {
+	SCNetworkReachability,
+	SCNetworkReachabilityCreateWithAddress,
+	SCNetworkReachabilityFlags,
+	SCNetworkReachabilityGetFlags
+} from 'SystemConfiguration';
+
+import {
+	OnNetworkStatusChangeCallback,
+	OnNetworkStatusChangeCallbackResult,
+	OnNetworkStatusChange,
+	OffNetworkStatusChange,
+	GetNetworkTypeOptions,
+	GetNetworkType,
+	GetNetworkTypeSuccess
+} from '../interface.uts'
+
+
+export const getNetworkType : GetNetworkType = function (options : GetNetworkTypeOptions) {
+	const networkType = getInternalNetworkType()
+	const result : GetNetworkTypeSuccess = {
+		networkType: networkType
+	}
+	options.success?.(result);
+	options.complete?.(result);
+}
+
+const onNetworkStatusChangeCallbacks : Map<number, OnNetworkStatusChangeCallback> = new Map()
+let semaphore = DispatchSemaphore(value = 1)
+let onNetworkStatusChangeIndex : number = 0
+
+export const onNetworkStatusChange : OnNetworkStatusChange = function (listener : OnNetworkStatusChangeCallback) : number {
+	semaphore.wait()
+	onNetworkStatusChangeIndex++
+	semaphore.signal()
+	onNetworkStatusChangeCallbacks[onNetworkStatusChangeIndex] = listener
+
+	getNetworkType({
+		success: (res : GetNetworkTypeSuccess) => {
+			let result : OnNetworkStatusChangeCallbackResult = {
+				isConnected: res.networkType != 'none',
+				networkType: res.networkType
+			}
+			onNetworkStatusChangeCallbacks.forEach((value : OnNetworkStatusChangeCallback, key : number) => {
+				value(result)
+			})
+		},
+		fail: (err : UniError) => {
+			let result : OnNetworkStatusChangeCallbackResult = {
+				isConnected: false,
+				networkType: 'unknown'
+			}
+			onNetworkStatusChangeCallbacks.forEach((value : OnNetworkStatusChangeCallback, key : number) => {
+				value(result)
+			})
+		}
+	})
+
+
+	UniNetWorkManager.shared.startNetworkTypeMonitoring()
+	UniNetWorkManager.shared.startNetworkPermissionMonitoring()
+	UniNetWorkManager.shared.onNetworkPermissionChange((permission : boolean) : void => {
+		let res : OnNetworkStatusChangeCallbackResult = {
+			isConnected: permission && UniNetWorkManager.shared.isNetworkAvailable,
+			networkType: permission ? UniNetWorkManager.shared.currentNetworkType.description() : UniNetConnectionType.unknown.description()
+		}
+		onNetworkStatusChangeCallbacks.forEach((value : OnNetworkStatusChangeCallback, key : number) => {
+			value(res)
+		})
+	})
+
+	UniNetWorkManager.shared.onNetworkTypeChanged = (oldType : UniNetConnectionType, newType : UniNetConnectionType) => {
+		let res : OnNetworkStatusChangeCallbackResult = {
+			isConnected: UniNetWorkManager.shared.isNetworkAvailable,
+			networkType: newType.description()
+		}
+		onNetworkStatusChangeCallbacks.forEach((value : OnNetworkStatusChangeCallback, key : number) => {
+			value(res)
+		})
+	}
+
+	return onNetworkStatusChangeIndex
+}
+
+export const offNetworkStatusChange : OffNetworkStatusChange = function (listener ?: number | OnNetworkStatusChangeCallback | null) {
+	if (listener != null && typeof listener! == "number") {
+		const id = listener as number
+		onNetworkStatusChangeCallbacks.delete(id)
+	} else {
+		onNetworkStatusChangeCallbacks.clear()
+	}
+	UniNetWorkManager.shared.stopNetworkTypeMonitoring()
+	UniNetWorkManager.shared.stopNetworkPermissionMonitoring()
+	UniNetWorkManager.shared.clearNetworkHistory()
+	UniNetWorkManager.shared.clearAllCallbacks()
+}
+
+
+function getInternalNetworkType() : string {
+	let zeroAddress = sockaddr_in()
+	zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue = zeroAddress))
+	zeroAddress.sin_family = sa_family_t(AF_INET)
+
+	let defaultRouteReachability = withUnsafePointer(to = UTSiOS.getPointer(zeroAddress), (body) : SCNetworkReachability | null => {
+		return body.withMemoryRebound(to = sockaddr.self, capacity = 1 as Int, (body) : SCNetworkReachability | null => {
+			return SCNetworkReachabilityCreateWithAddress(null, body)
+		})
+	})
+	if (defaultRouteReachability == null) {
+		return "unknown"
+	}
+
+	var flags : SCNetworkReachabilityFlags = []
+	if (!SCNetworkReachabilityGetFlags(defaultRouteReachability!, UTSiOS.getPointer(flags))) {
+		return "unknown"
+	}
+
+	let isReachable = flags.contains(SCNetworkReachabilityFlags.reachable)
+	let needsConnection = flags.contains(SCNetworkReachabilityFlags.connectionRequired)
+	let canConnectionAutomatically = (flags.contains(SCNetworkReachabilityFlags.connectionOnDemand) || flags.contains(SCNetworkReachabilityFlags.connectionOnTraffic))
+	let canConnectWithoutUserInteraction = (canConnectionAutomatically && !flags.contains(SCNetworkReachabilityFlags.interventionRequired))
+	let isNetworkReachable = (isReachable && (!needsConnection || canConnectWithoutUserInteraction))
+
+	var status = "unknown"
+	// 使用
+	if (!isNetworkReachable) {
+		status = "none"
+	} else if (flags.contains(SCNetworkReachabilityFlags.isWWAN)) {
+		let networkInfo = new CTTelephonyNetworkInfo()
+		let carrierType = networkInfo.serviceCurrentRadioAccessTechnology
+		let carrierTypeName = carrierType?.first?.value
+
+		if (carrierTypeName == null) {
+			status = "unknown"
+		} else {
+
+			let typeStrings2G = [CTRadioAccessTechnologyEdge,
+				CTRadioAccessTechnologyGPRS,
+				CTRadioAccessTechnologyCDMA1x]
+
+			let typeStrings3G = [CTRadioAccessTechnologyHSDPA,
+				CTRadioAccessTechnologyWCDMA,
+				CTRadioAccessTechnologyHSUPA,
+				CTRadioAccessTechnologyCDMAEVDORev0,
+				CTRadioAccessTechnologyCDMAEVDORevA,
+				CTRadioAccessTechnologyCDMAEVDORevB,
+				CTRadioAccessTechnologyeHRPD]
+
+			let typeStrings4G = [CTRadioAccessTechnologyLTE]
+
+			if (typeStrings2G.indexOf(carrierTypeName!) != -1) {
+				status = "2g"
+			} else if (typeStrings3G.indexOf(carrierTypeName!) != -1) {
+				status = "3g"
+			} else if (typeStrings4G.indexOf(carrierTypeName!) != -1) {
+				status = "4g"
+			} else {
+				if (UTSiOS.available("iOS 14.1, *")) {
+					if (carrierTypeName != CTRadioAccessTechnologyNRNSA || carrierTypeName != CTRadioAccessTechnologyNR) {
+						status = "5g"
+					}
+				}
+			}
+		}
+	} else {
+		status = "wifi"
+	}
+	return status
+}

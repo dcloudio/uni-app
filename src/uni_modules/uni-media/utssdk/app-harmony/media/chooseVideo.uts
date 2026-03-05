@@ -1,0 +1,111 @@
+import photoAccessHelper from '@ohos.file.photoAccessHelper'
+import { uni } from '@dcloudio/uni-runtime'
+import { _chooseMedia, _ChooseMediaOptions } from './media.uts'
+import {
+    ChooseVideoOptions,
+    ChooseVideoSuccess,
+    ChooseVideo
+} from '../../interface.uts'
+import {
+    API_CHOOSE_VIDEO,
+    ChooseVideoApiProtocol,
+    ChooseVideoApiOptions,
+} from '../../protocol.uts'
+import {
+    MediaUniErrors
+} from '../../unierror.uts'
+import { CameraPosition, takeVideo, TakeVideoOptions } from './camera.uts'
+
+interface ChooseVideoShowActionSheetOptionsSuccessOptions {
+    tapIndex: number
+}
+
+interface ChooseVideoShowActionSheetOptionsFailOptions {
+    errMsg: string
+}
+
+interface ChooseVideoShowActionSheetOptions {
+    itemList: string[]
+    success?: (e: ChooseVideoShowActionSheetOptionsSuccessOptions) => void | null
+    fail?: (e: ChooseVideoShowActionSheetOptionsFailOptions) => void | null
+};
+
+const errSubject = 'uni-chooseVideo'
+const _chooseVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>) => {
+    _chooseMedia({
+        mimeType: photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE,
+        sourceType: ["album"],
+        isOriginalSupported: options.compressed === true,
+        original: options.compressed === false
+    } as _ChooseMediaOptions)
+        .then((chooseMediaRes) => {
+            const file = chooseMediaRes.tempFiles[0]
+            if (!file) {
+                const errCode = 1101001
+                const errMsg = MediaUniErrors.get(1101001) as string
+                res.reject(errMsg, {
+                    errCode,
+                } as ApiError);
+                return;
+            }
+            res.resolve({
+                tempFilePath: file.tempFilePath,
+                duration: file.duration,
+                size: file.size,
+                width: file.width,
+                height: file.height,
+            } as ChooseVideoSuccess)
+        }, (err: Error) => {
+            res.reject(err.message)
+        })
+}
+
+const _takeVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>) => {
+    const takeVideoOptions: TakeVideoOptions = {
+        cameraType: options.camera! as CameraPosition,
+        videoDuration: options.maxDuration!,
+    }
+    takeVideo(errSubject, takeVideoOptions).then(video => {
+        res.resolve({
+            tempFilePath: video.path,
+            duration: video.duration,
+            size: video.size,
+            width: video.width,
+            height: video.height,
+        } as ChooseVideoSuccess)
+    }).catch((err: Error) => {
+        res.reject(err.message, err as ApiError);
+    })
+}
+
+export const chooseVideo: ChooseVideo =
+    defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(
+        API_CHOOSE_VIDEO,
+        async function (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>) {
+            if (options.sourceType?.length === 1 && options.sourceType[0] === 'camera') {
+                _takeVideo(options, res)
+            } else if (options.sourceType?.length === 1 && options.sourceType[0] === 'album') {
+                _chooseVideo(options, res)
+            } else {
+                uni.showActionSheet({
+                    itemList: ['拍摄', '从相册选择'],
+                    success: (e) => {
+                        if (e.tapIndex === 0) {
+                            _takeVideo(options, res)
+                        } else if (e.tapIndex === 1) {
+                            _chooseVideo(options, res)
+                        }
+                    },
+                    fail: (e) => {
+                        if (e.errMsg.includes('cancel')) {
+                            res.reject('cancel')
+                        } else {
+                            res.reject()
+                        }
+                    }
+                } as ChooseVideoShowActionSheetOptions)
+            }
+        },
+        ChooseVideoApiProtocol,
+        ChooseVideoApiOptions
+    ) as ChooseVideo

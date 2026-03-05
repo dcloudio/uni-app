@@ -1,0 +1,50 @@
+import {
+    ShareWithSystem,
+    ShareWithSystemOptions,
+    ShareWithSystemSuccess,
+	ShareWithSystemFail,
+} from "../interface.uts";
+import { ShareWithSystemFailImpl } from '../unierror.uts';
+
+export const shareWithSystem : ShareWithSystem = function (options : ShareWithSystemOptions) {
+	
+	ShareManager.options = options
+	
+	if (options.href == null
+		&& options.imageUrl == null
+		&& options.imagePaths == null
+		&& options.summary == null
+		&& options.videoPaths == null
+		&& options.audioPaths == null
+		&& options.filePaths == null) {
+		ShareManager.failedAction(1310601, null)
+		return
+	}
+	
+	UniShareWithSystem.sendWithSystem(UTSAndroid.getTopPageActivity()!,options.type, options.summary, 
+	options.href, options.imageUrl, options.imagePaths,options.videoPaths,options.filePaths,options.audioPaths,
+		function () {
+			options.success?.(new ShareWithSystemSuccess())
+		},
+		function (code:number,err:string) {
+			ShareManager.failedAction(code, err)
+		},
+		function () {
+			options.complete?.(new Any())
+		})
+}
+class ShareManager {
+	static options : ShareWithSystemOptions | null= null
+
+	static failedAction(errCode : number, errMsg ?: string | null) {
+		let err = new ShareWithSystemFailImpl(errCode, errMsg);
+		this.options?.fail?.(err)
+		this.options?.complete?.(err)
+	}
+
+	static successAction() {
+		let success = new ShareWithSystemSuccess()
+		this.options?.success?.(success)
+		this.options?.complete?.(success)
+	}
+}

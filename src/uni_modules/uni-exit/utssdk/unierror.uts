@@ -1,0 +1,44 @@
+import { ExitErrorCode, IExitError } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const ExitUniErrorSubject = 'uni-exit';
+
+
+/**
+ * 错误码
+ * @UniError
+ */
+export const ExitUniErrors:Map<number, string> = new Map([
+	
+  /**
+   * 系统不支持
+   */
+  [12001, 'system not support'],
+  /**
+   * 未知错误
+   */
+  [12002, 'unknown error'],
+  /**
+   * iOS平台，仅在uni-app x SDK模式中支持应用退出
+   */
+  [12003, 'app exit is supported only in uni-app x SDK mode']
+]);
+
+/**
+ * ExitFail的实现
+ */
+export class ExitFailImpl extends UniError implements IExitError {
+// #ifdef APP-ANDROID
+  override errCode: ExitErrorCode
+// #endif
+  constructor (
+    errCode: ExitErrorCode
+  ) {
+    super()
+    this.errSubject = ExitUniErrorSubject
+    this.errCode = errCode
+    this.errMsg = ExitUniErrors[errCode] ?? ''
+  }
+}

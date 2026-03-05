@@ -1,0 +1,5 @@
+import { GetElementById } from '../interface.uts'
+
+export const getElementById : GetElementById = function (id : string) : UniElement | null {
+	return DCUniGetElementById.getElementById(id)
+}

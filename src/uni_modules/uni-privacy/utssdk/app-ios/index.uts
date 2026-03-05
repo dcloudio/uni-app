@@ -1,0 +1,37 @@
+import {
+	GetPrivacySetting, GetPrivacySettingOptions, GetPrivacySettingSuccessResult, OnPrivacyAuthorizationChange, PrivacyChangeResult, OnPrivacyAuthorizationChangeCallback, OffPrivacyAuthorizationChange, ResetPrivacyAuthorization
+} from "../interface.uts";
+import { UTSiOS } from "DCloudUTSFoundation";
+
+export const getPrivacySetting : GetPrivacySetting = function (options : GetPrivacySettingOptions) {
+
+	let isAgree : boolean = UTSiOS.isPrivacyAgree()
+	let result : GetPrivacySettingSuccessResult = {
+		needAuthorization: !isAgree
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+export const resetPrivacyAuthorization : ResetPrivacyAuthorization = function () {
+	UTSiOS.setPrivacyAgree(false)
+}
+
+/**
+ * 监听隐私变化
+*/
+export const onPrivacyAuthorizationChange : OnPrivacyAuthorizationChange = function (callback : OnPrivacyAuthorizationChangeCallback) : number {
+	return UTSiOS.onPrivacyAgreeChange((isAgree : boolean) : void => {
+		let result : PrivacyChangeResult = {
+			needAuthorization: !isAgree
+		}
+		callback(result)
+	})
+}
+
+/**
+ * 取消监听隐私变化
+*/
+export const offPrivacyAuthorizationChange : OffPrivacyAuthorizationChange = function (id : number) : void {
+	UTSiOS.offPrivacyAgreeChange(id)
+}

@@ -1,0 +1,823 @@
+/**
+ * uni.openDocument成功回调参数
+ */
+export type OpenDocumentSuccess = {}
+
+export type OpenDocumentFail = IOpenDocumentError;
+
+export type OpenDocumentErrorCode =
+	/**
+	 * 路径无效
+	 * @uniPlatform {
+	 * 	"app": {
+	 * 		"android": {
+	 * 			"osVer": "5.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71"
+	 * 		},
+	 * 		"ios": {
+	 * 			"osVer": "12.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71",
+	 * 			"unixUtsPlugin": "4.71"
+	 * 		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.71",
+	 *      "unixVer": "4.71",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 * 	},
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "x"
+	 *   },
+	 *  "mp":{
+	 *    "weixin": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 * }
+	 */
+	1300601 |
+	/**
+	 * 文件不存在
+	 * @uniPlatform {
+	 * 	"app": {
+	 * 		"android": {
+	 * 			"osVer": "5.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71"
+	 * 		},
+	 * 		"ios": {
+	 * 			"osVer": "12.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71",
+	 * 			"unixUtsPlugin": "4.71"
+	 * 		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.71",
+	 *      "unixVer": "4.71",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 * 	},
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "x"
+	 *   },
+	 *  "mp":{
+	 *    "weixin": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 * }
+	 */
+	1300602 |
+	/**
+	 * 不支持该文件类型
+	 * @uniPlatform {
+	 * 	"app": {
+	 * 		"android": {
+	 * 			"osVer": "5.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71"
+	 * 		},
+	 * 		"ios": {
+	 * 			"osVer": "12.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71",
+	 * 			"unixUtsPlugin": "4.71"
+	 * 		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.71",
+	 *      "unixVer": "4.71",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 * 	},
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "x"
+	 *   },
+	 *  "mp":{
+	 *    "weixin": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 * }
+	 */
+	1300603 |
+	/**
+	 * 其他未知错误
+	 * @uniPlatform {
+	 * 	"app": {
+	 * 		"android": {
+	 * 			"osVer": "5.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71"
+	 * 		},
+	 * 		"ios": {
+	 * 			"osVer": "12.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71",
+	 * 			"unixUtsPlugin": "4.71"
+	 * 		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.71",
+	 *      "unixVer": "4.71",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 * 	},
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "x"
+	 *   },
+	 *  "mp":{
+	 *    "weixin": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 * }
+	 */
+	1300604 ;
+
+export interface IOpenDocumentError extends IUniError {
+	/**
+	* 错误码
+	* @uniPlatform {
+	* 	"app": {
+	* 		"android": {
+	* 			"osVer": "5.0",
+	* 			"uniVer": "x",
+	* 			"unixVer": "4.71"
+	* 		},
+	* 		"ios": {
+	* 			"osVer": "12.0",
+	* 			"uniVer": "x",
+	* 			"unixVer": "4.71",
+	* 			"unixUtsPlugin": "4.71"
+	* 		},
+	*    "harmony": {
+	*      "osVer": "5.0.0",
+	*      "uniVer": "4.31",
+	*      "unixVer": "4.61",
+	*      "unixvVer": "5.0"
+	*    }
+	* 	},
+	*   "web": {
+	*     "uniVer": "x",
+	*     "unixVer": "x"
+	*   },
+	*  "mp":{
+	*    "weixin": {
+	*      "hostVer": "√",
+	*      "uniVer": "√",
+	*      "unixVer": "4.41"
+	*    },
+	*    "alipay": {
+	*      "hostVer": "x",
+	*      "uniVer": "x",
+	*      "unixVer": "x"
+	*    },
+	*    "baidu": {
+	*      "hostVer": "√",
+	*      "uniVer": "√",
+	*      "unixVer": "x"
+	*    },
+	*    "toutiao": {
+	*      "hostVer": "x",
+	*      "uniVer": "x",
+	*      "unixVer": "x"
+	*    },
+	*    "lark": {
+	*      "hostVer": "x",
+	*      "uniVer": "x",
+	*      "unixVer": "x"
+	*    },
+	*    "qq": {
+	*      "hostVer": "√",
+	*      "uniVer": "√",
+	*      "unixVer": "x"
+	*    },
+	*    "kuaishou": {
+	*      "hostVer": "√",
+	*      "uniVer": "√",
+	*      "unixVer": "x"
+	*    },
+	*    "jd": {
+	*      "hostVer": "x",
+	*      "uniVer": "x",
+	*      "unixVer": "x"
+	*    }
+	*  }
+	* }
+	*/
+	errCode : OpenDocumentErrorCode;
+}
+
+/**
+ * uni.openDocument成功回调函数定义
+ */
+export type OpenDocumentSuccessCallback = (res : OpenDocumentSuccess) => void
+/**
+ * uni.openDocument失败回调函数定义
+ */
+export type OpenDocumentFailCallback = (res : OpenDocumentFail) => void
+/**
+ * uni.openDocument完成回调函数定义
+ */
+export type OpenDocumentCompleteCallback = (res : any) => void
+
+export type OpenDocumentSupportedTypes = string
+
+/**
+ * uni.openDocument参数定义
+ */
+export type OpenDocumentOptions = {
+	/**
+	 * 文件路径，仅支持本地路径
+	 * @uniPlatform {
+	 * 	"app": {
+	 * 		"android": {
+	 * 			"osVer": "5.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71"
+	 * 		},
+	 * 		"ios": {
+	 * 			"osVer": "12.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71",
+	 * 			"unixUtsPlugin": "4.71"
+	 * 		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.31",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 * 	},
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "x"
+	 *   },
+	 *  "mp":{
+	 *    "weixin": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 * }
+	 */
+	filePath : string,
+	/**
+	 * 文件类型，指定文件类型打开文件，微信小程序仅支持类型：doc, xls, ppt, pdf, docx, xlsx, pptx，App端由系统打开，原则上可以打开任意文件；
+	 * @uniPlatform {
+	 * 	"app": {
+	 * 		"android": {
+	 * 			"osVer": "5.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71"
+	 * 		},
+	 * 		"ios": {
+	 * 			"osVer": "12.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71",
+	 * 			"unixUtsPlugin": "4.71"
+	 * 		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.31",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 * 	},
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "x"
+	 *   },
+	 *  "mp":{
+	 *    "weixin": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 * }
+	 */
+	fileType ?: OpenDocumentSupportedTypes | null,
+	/**
+	 * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 * 	"app": {
+	 * 		"android": {
+	 * 			"osVer": "5.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71"
+	 * 		},
+	 * 		"ios": {
+	 * 			"osVer": "12.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71",
+	 * 			"unixUtsPlugin": "4.71"
+	 * 		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.31",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 * 	},
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "x"
+	 *   },
+	 *  "mp":{
+	 *    "weixin": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 * }
+	 */
+	success ?: OpenDocumentSuccessCallback | null,
+	/**
+	 * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 * 	"app": {
+	 * 		"android": {
+	 * 			"osVer": "5.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71"
+	 * 		},
+	 * 		"ios": {
+	 * 			"osVer": "12.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71",
+	 * 			"unixUtsPlugin": "4.71"
+	 * 		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.31",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 * 	},
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "x"
+	 *   },
+	 *  "mp":{
+	 *    "weixin": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 * }
+	 */
+	fail ?: OpenDocumentFailCallback | null,
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 * 	"app": {
+	 * 		"android": {
+	 * 			"osVer": "5.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71"
+	 * 		},
+	 * 		"ios": {
+	 * 			"osVer": "12.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71",
+	 * 			"unixUtsPlugin": "4.71"
+	 * 		},
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.31",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 * 	},
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "x"
+	 *   },
+	 *  "mp":{
+	 *    "weixin": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 * }
+	 */
+	complete ?: OpenDocumentCompleteCallback | null
+}
+
+
+export interface Uni {
+	/**
+	 * 打开文档
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/open-document.html
+	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/open-document.html
+	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/file/file.html#opendocument
+	 * @uniPlatform {
+	 * 	"app": {
+	 * 		"android": {
+	 * 			"osVer": "5.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71"
+	 * 		},
+	 * 		"ios": {
+	 * 			"osVer": "12.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.71",
+	 * 			"unixUtsPlugin": "4.71"
+	 * 		},
+	 *      "harmony": {
+	 *        	"osVer": "5.0.0",
+	 *      	"uniVer": "4.31",
+	 *      	"unixVer": "4.61",
+	 *      	"unixvVer": "5.0"
+	 *    	}
+	 * 	},
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "x"
+	 *   },
+	 *  "mp":{
+	 *    "weixin": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 * }
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 */
+	openDocument(options ?: OpenDocumentOptions | null) : void;
+}
+
+export type OpenDocument = (options ?: OpenDocumentOptions | null) => void;

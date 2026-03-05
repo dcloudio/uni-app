@@ -1,0 +1,12 @@
+{
+	"deploymentTarget": "12",
+	"frameworks": [
+		"AVFoundation.framework",
+		"CoreImage.framework"
+	],
+	"components": [{
+		"name": "camera",
+		"class": "UTSSDKModulesDCloudUniCameraComponent",
+		"delegateClass": "UniCameraComponentRegister"
+	}]
+}

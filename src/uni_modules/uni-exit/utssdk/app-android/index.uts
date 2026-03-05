@@ -1,0 +1,15 @@
+import { ExitOptions, ExitSuccess, Exit } from "../interface.uts"
+
+
+/**
+ * 实现uni.exit
+ */
+export const exit : Exit = function (options: ExitOptions | null) {
+	let ret : ExitSuccess ={
+		errMsg: "exit:ok"
+	}
+	options?.success?.(ret)
+	options?.complete?.(ret)
+	UTSAndroid.exit()
+}
+

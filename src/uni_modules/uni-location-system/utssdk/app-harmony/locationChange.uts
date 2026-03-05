@@ -1,0 +1,85 @@
+import { checkBackgroundPermission, watchPosition as geolocationWatchPosition, clearWatch as geolocationClearWatch, PositionOptions as GeolocationPositionOptions, createError } from './geolocation.uts'
+
+let _onLocationChange: OnLocationChangeCallback | null = null
+let _onLocationChangeError: OnLocationChangeErrorCallback | null = null
+
+export const onLocationChange = (callback: OnLocationChangeCallback) => {
+  _onLocationChange = callback
+}
+export const onLocationChangeError = (callback: OnLocationChangeErrorCallback) => {
+  _onLocationChangeError = callback
+}
+
+let started = false
+let watchId: number = 0
+
+export function startLocationUpdate(options: StartLocationUpdateOptions): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const watch = () => {
+      const id = geolocationWatchPosition(
+        (res) => {
+          started = true
+          _onLocationChange?.(res)
+        },
+        (err) => {
+          if (!started) {
+            reject(err)
+            started = true
+          }
+          _onLocationChangeError?.(err as IGetLocationFail)
+        },
+        {
+          coordsType: options.type,
+          enableHighAccuracy: true,
+        } as GeolocationPositionOptions
+      )
+      return id === -1 ? watchId : id
+    }
+    watchId = watchId || watch()
+    setTimeout(resolve, 100)
+  })
+}
+
+export function startLocationUpdateBackground(options: StartLocationUpdateBackgroundOptions): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (watchId) {
+      if (checkBackgroundPermission()) {
+        resolve()
+      } else {
+        reject(createError('PERMISSION_ERROR'))
+      }
+    } else {
+      const watch = () => {
+        const id = geolocationWatchPosition(
+          (res) => {
+            started = true
+            _onLocationChange?.(res)
+          },
+          (err) => {
+            if (!started) {
+              reject(err)
+              started = true
+            }
+            _onLocationChangeError?.(err as IGetLocationFail)
+          },
+          {
+            coordsType: options.type,
+            enableHighAccuracy: true,
+            background: true,
+          } as GeolocationPositionOptions
+        )
+        return id === -1 ? watchId : id
+      }
+      watchId = watchId || watch()
+      setTimeout(resolve, 100)
+    }
+  })
+}
+
+export function stopLocationUpdate() {
+  if (watchId) {
+    geolocationClearWatch(watchId)
+    started = false
+    watchId = 0
+  }
+}

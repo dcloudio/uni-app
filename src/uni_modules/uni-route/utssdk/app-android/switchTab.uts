@@ -1,0 +1,58 @@
+import {
+    ANIMATION_TYPE,
+    SWITCH_TAB,
+    SwitchTabPage,
+    __uniConfig,
+    changeTabBarIndex,
+    entryPageState,
+    getTabBarIndex,
+    isTabPage,
+    parseUrl,
+    switchTabPagesBeforeEntryPages,
+} from '@dcloudio/uni-runtime'
+import { SwitchTabOptions, SwitchTabSuccess } from '../interface.uts'
+
+import { SwitchTabFailImpl } from '../unierror.uts'
+
+export const switchTab = defineAsyncApi<SwitchTabOptions, SwitchTabSuccess>(
+    SWITCH_TAB,
+    (options: SwitchTabOptions, res: ApiExecutor) => {
+        if (!entryPageState.handledBeforeEntryPageRoutes) {
+            switchTabPagesBeforeEntryPages.push({ options } as SwitchTabPage)
+            return
+        }
+        const url = options.url
+        const info = parseUrl(url as string)
+        const path = info.path
+        const query = info.query
+        let selected: number = getTabBarIndex(path)
+        if (selected == -1) {
+            res.reject(new SwitchTabFailImpl(`page ${path} is not tab page`))
+            return
+        }
+        const pages = getCurrentPages()
+        setTimeout(() => {
+            changeTabBarIndex(selected, path, query)
+            for (let index = pages.length - 1; index >= 0; index--) {
+                const page = pages[index]
+                if (isTabPage(page.vm!)) {
+                    break
+                }
+                page.vm!.$close(
+                    new Map<string, any | null>([[ANIMATION_TYPE, 'none']]),
+                )
+            }
+            res.resolve(null)
+        }, 0)
+    },
+    [
+        new ApiProtocol<SwitchTabOptions>(
+            (options: SwitchTabOptions): UniError | null => {
+                if (options.url.length == 0) {
+                    return new SwitchTabFailImpl('Missing required args: "url"')
+                }
+                return null
+            },
+        ),
+    ],
+)

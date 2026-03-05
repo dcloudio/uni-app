@@ -1,0 +1,77 @@
+import { UTSiOS } from "DCloudUTSFoundation";
+import { CGRect, CGFloat } from 'CoreFoundation';
+
+export class NativeLoading {
+	element : UniNativeViewElement;
+	spinnerView : SpinnerView | null = null;
+	color : string | null = null
+	strokeWidth : string | null = null
+	animationTimingFunction : string | null = null
+
+	constructor(element : UniNativeViewElement) {
+		//接收传递过来的UniNativeViewElement
+		this.element = element;
+		super.init()
+		this.bindView();
+		(this.element.parentElement as UniLoadingElement).setLoadingView(this.spinnerView);
+	}
+
+	bindView() {
+		this.spinnerView = new SpinnerView(frame = CGRect.zero)
+		if (this.spinnerView != null) {
+			this.element.bindIOSView(this.spinnerView!)
+		}
+	}
+	
+	
+	updateIosSpinner(iosSpinner : boolean) {
+		const iosSpinnerValue: boolean = iosSpinner ?? false
+		this.spinnerView?.updateIosSpinnerProp(iosSpinnerValue)
+	}
+	
+	updatePaused(paused : boolean) {
+		const pausedValue: boolean = paused ?? false
+		this.spinnerView?.updatePausedProp(pausedValue)
+	}
+
+	updateStyle(color ?: string, strokeWidth ?: string, animationTimingFunction ?: string) {
+		this.color = color
+		this.strokeWidth = strokeWidth
+		this.animationTimingFunction = animationTimingFunction
+
+		this.updateUI()
+	}
+
+	updateUI() {
+		let color = UTSiOS.colorWithString(this.color ?? "black")
+
+		if (this.strokeWidth == null ) {
+			this.strokeWidth = "medium"
+		}
+		
+		this.spinnerView?.setAppearance(strokeColor = color, strokeWidth = this.strokeWidth!, animationTimingFunction = this.animationTimingFunction)
+	}
+
+	destroy() {
+		UTSiOS.destroyInstance(this)
+	}
+}
+
+export class UniLoadingElement extends UniElementImpl {
+
+	private nativeView : SpinnerView | null = null;
+
+	@UTSiOS.keyword("fileprivate")
+	setLoadingView(nativeView : SpinnerView | null) {
+		this.nativeView = nativeView
+	}
+
+	override getIOSView() : UIView | null {
+		const nativeElement = this.firstChild as UniNativeViewElement
+		if (nativeElement == null) {
+			return null
+		} else {
+			return nativeElement.getIOSView()
+		}
+	}
+}

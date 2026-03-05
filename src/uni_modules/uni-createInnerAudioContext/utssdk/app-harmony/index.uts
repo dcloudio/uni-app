@@ -1,0 +1,384 @@
+import { media } from '@kit.MediaKit';
+import { audio, } from '@kit.AudioKit';
+import { BusinessError } from '@ohos.base';
+import deviceInfo from '@ohos.deviceInfo';
+import { getRealPath } from '@dcloudio/uni-runtime'
+
+import { InnerAudioContext, CreateInnerAudioContext, type ICreateInnerAudioContextFail, SetInnerAudioOption, SetInnerAudioOptionOptions, SetInnerAudioOptionSuccess } from '../interface.uts';
+import { API_CREATE_INNER_AUDIO_CONTEXT, API_SET_INNER_AUDIO_OPTION, SetInnerAudioOptionOptionsOptions, SetInnerAudioOptionProtocol } from '../protocol.uts';
+import { getFdFromUriOrSandBoxPath, isFileUri, isSandboxPath, AudioPlayerCallback, AudioPlayerError } from './utils.uts';
+
+const AUDIOS: Record<string, InnerAudioContext | undefined> = {}
+const AUDIO_PLAYERS: Record<string, media.AudioPlayer | undefined> = {}
+
+const LOG = (msg: string): void => console.log(`[createInnerAudioContext]: ${msg}`)
+
+class STATE_TYPE {
+  // 音频播放空闲
+  static IDLE: string = 'idle'
+  // 音频正在播放
+  static PLAYING: string = 'playing'
+  // 音频暂停播放
+  static PAUSED: string = 'paused'
+  // 音频停止播放
+  static STOPPED: string = 'stopped'
+  // 错误状态
+  static ERROR: string = 'error'
+}
+
+class AudioPlayer implements InnerAudioContext {
+  __v_skip: boolean = true
+  private audioPlayerCallback: AudioPlayerCallback = new AudioPlayerCallback()
+
+  private _volume: number = 1
+  private _src: string = ''
+  private _autoplay: boolean = false
+  private _startTime: number = 0
+  private _buffered: number = 0
+  private _title: string = ''
+  private audioId: string = ''
+  private _playbackRate: number = 1;
+  private _dataloaded: boolean = false;
+
+  readonly obeyMuteSwitch: boolean = false;
+
+  constructor(audioId: string) {
+    this.audioId = audioId
+    this.init()
+  }
+
+  init() {
+    AUDIO_PLAYERS[this.audioId]?.on('dataLoad', () => {
+      this._dataloaded = true
+      this.audioPlayerCallback.canPlay()
+    });
+
+    AUDIO_PLAYERS[this.audioId]?.on('play', () => {
+      this.audioPlayerCallback.play()
+    });
+
+    AUDIO_PLAYERS[this.audioId]?.on('pause', () => {
+      this.audioPlayerCallback.pause()
+    });
+
+    AUDIO_PLAYERS[this.audioId]?.on('finish', () => {
+      this.audioPlayerCallback.ended()
+    });
+
+    AUDIO_PLAYERS[this.audioId]?.on('timeUpdate', res => {
+      this.audioPlayerCallback.timeUpdate(res / 1000)
+    });
+
+    AUDIO_PLAYERS[this.audioId]?.on('error', (err) => {
+      this.audioPlayerCallback.error(new AudioPlayerError(err.message, err.code))
+    });
+    AUDIO_PLAYERS[this.audioId]?.on('bufferingUpdate', (infoType, value) => {
+      switch (infoType) {
+        // 开始缓冲，播放器会暂停播放
+        case media.BufferingInfoType.BUFFERING_START:
+          this.audioPlayerCallback.waiting()
+          break;
+        // 缓冲结束，播放器会恢复播放
+        case media.BufferingInfoType.BUFFERING_END:
+          // 确保 dataLoad 前不重复触发
+          if (this._dataloaded) {
+            this.audioPlayerCallback.canPlay()
+          }
+          break;
+        // 表示缓冲百分比。可参考该事件感知缓冲进度
+        case media.BufferingInfoType.BUFFERING_PERCENT:
+          break;
+        // 表示已缓冲数据预估可播放时长，单位为毫秒（ms）。缓冲区中的数据变化量大于500ms，上报一次。可参考该事件做进度条
+        case media.BufferingInfoType.CACHED_DURATION:
+          this._buffered = value;
+          break;
+      }
+    });
+    AUDIO_PLAYERS[this.audioId]?.on('audioInterrupt', (InterruptEvent) => {
+      // console.info('[AdvancedAPI]  audioInterrupt:' + JSON.stringify(InterruptEvent));
+      if (AUDIO_PLAYERS[this.audioId] && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_PAUSE) {
+        AUDIO_PLAYERS[this.audioId]!.pause();
+      }
+    });
+  }
+  get duration() {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer) { return 0 }
+    return audioPlayer.duration / 1000;
+  }
+  get currentTime() {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer) { return 0 }
+    return audioPlayer.currentTime / 1000;
+  }
+  get paused() {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer) { return false }
+    return audioPlayer.state === STATE_TYPE.PAUSED
+  }
+  get loop() {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer) { return false }
+    return audioPlayer.loop;
+  }
+  set loop(value) {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (audioPlayer) {
+      audioPlayer.loop = value;
+    }
+  }
+  get volume() {
+    return this._volume;
+  }
+  set volume(value) {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (audioPlayer) {
+      this._volume = value;
+      audioPlayer.setVolume(value);
+    }
+  }
+  get src() {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer) { return '' }
+    return audioPlayer.src;
+  }
+  set src(value) {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (typeof value !== 'string') {
+      this.audioPlayerCallback.error(new AudioPlayerError(`set src: ${value} is not string`, 10004))
+      return;
+    }
+    if (!audioPlayer) {
+      this.audioPlayerCallback.error(new AudioPlayerError(`player is not exist`, 10001))
+      return;
+    }
+    value = getRealPath(value)
+    if (value.startsWith('/')) {
+      value = `file://${value}`;
+    }
+    if (!value || !(value.startsWith('http:') || value.startsWith('https:') || isFileUri(value) || isSandboxPath(value))) {
+      LOG(`set src: ${value} is invalid`);
+      return;
+    }
+    let path: string = '';
+    if (value.startsWith('http:') || value.startsWith('https:')) {
+      path = value;
+    }
+    else if (isFileUri(value) || isSandboxPath(value)) {
+      try {
+        const fd = getFdFromUriOrSandBoxPath(value);
+        path = `fd://${fd}`;
+      }
+      catch (error) {
+        console.error(`${JSON.stringify(error)}`);
+      }
+    }
+    if (audioPlayer.src && path !== audioPlayer.src) {
+      audioPlayer.reset();
+    }
+    AUDIO_PLAYERS[this.audioId]!.src = path;
+    this._src = value;
+    if (this._autoplay) {
+      audioPlayer.play();
+      if (this._startTime) {
+        audioPlayer.seek(this._startTime);
+      }
+    }
+  }
+  get startTime() {
+    return this._startTime / 1000;
+  }
+  set startTime(time: number) {
+    this._startTime = time * 1000;
+  }
+  get autoplay() {
+    return this._autoplay;
+  }
+  set autoplay(flag) {
+    this._autoplay = flag;
+  }
+  get buffered() {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer) return 0
+    return this._buffered / 1000
+  }
+  set playbackRate(rate: number) {
+    this.audioPlayerCallback.error(new AudioPlayerError('HarmonyOS Next Audio setting playbackRate is not supported.', -1))
+  }
+  get playbackRate() {
+    return this._playbackRate
+  }
+  play() {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer) {
+      return;
+    }
+    const state = audioPlayer.state ?? '';
+    if (![STATE_TYPE.PAUSED, STATE_TYPE.STOPPED, STATE_TYPE.IDLE].includes(state)) {
+      return;
+    }
+    if (this._src && audioPlayer.src === '') {
+      this.src = this._src;
+    }
+    audioPlayer.play();
+  }
+  pause() {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer) { return; }
+
+    const state = audioPlayer.state;
+
+    if (STATE_TYPE.PLAYING !== state) { return; }
+    audioPlayer.pause();
+  }
+  stop() {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer) { return; }
+    if (![STATE_TYPE.PAUSED, STATE_TYPE.PLAYING].includes(audioPlayer.state)) { return; }
+
+    audioPlayer.stop();
+    audioPlayer.reset()
+    audioPlayer.src = this.src
+    this.audioPlayerCallback.stop();
+  }
+  seek(position: number) {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer) { return; }
+    const state = audioPlayer.state;
+    if (![STATE_TYPE.PAUSED, STATE_TYPE.PLAYING, STATE_TYPE.IDLE].includes(state)) {
+      return;
+    }
+    this.audioPlayerCallback.seeking()
+    audioPlayer.seek(position * 1000);
+    this.audioPlayerCallback.seeked()
+  }
+  destroy() {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer) { return; }
+
+    audioPlayer.release();
+    AUDIO_PLAYERS[this.audioId] = undefined
+    AUDIOS[this.audioId] = undefined
+  }
+  onCanplay(callback: (result: any) => void): void {
+    this.audioPlayerCallback.onCanplay(callback)
+  }
+  onPlay(callback: (result: any) => void): void {
+    this.audioPlayerCallback.onPlay(callback)
+  }
+  onPause(callback: (result: any) => void): void {
+    this.audioPlayerCallback.onPause(callback)
+  }
+  onStop(callback: (result: any) => void): void {
+    this.audioPlayerCallback.onStop(callback)
+  }
+  onEnded(callback: (result: any) => void): void {
+    this.audioPlayerCallback.onEnded(callback)
+  }
+  onTimeUpdate(callback: (result: any) => void): void {
+    this.audioPlayerCallback.onTimeUpdate(callback)
+  }
+  onError(callback: (result: ICreateInnerAudioContextFail) => void): void {
+    this.audioPlayerCallback.onError(callback)
+  }
+  onWaiting(callback: (result: any) => void): void {
+    this.audioPlayerCallback.onWaiting(callback)
+  }
+  onSeeking(callback: (result: any) => void): void {
+    this.audioPlayerCallback.onSeeking(callback)
+  }
+  onSeeked(callback: (result: any) => void): void {
+    this.audioPlayerCallback.onSeeked(callback)
+  }
+  offCanplay(callback: (result: any) => void): void {
+    this.audioPlayerCallback.offCanplay(callback)
+  }
+  offPlay(callback: (result: any) => void): void {
+    this.audioPlayerCallback.offPlay(callback)
+  }
+  offPause(callback: (result: any) => void): void {
+    this.audioPlayerCallback.offPause(callback)
+  }
+  offStop(callback: (result: any) => void): void {
+    this.audioPlayerCallback.offStop(callback)
+  }
+  offEnded(callback: (result: any) => void): void {
+    this.audioPlayerCallback.offEnded(callback)
+  }
+  offTimeUpdate(callback: (result: any) => void): void {
+    this.audioPlayerCallback.offTimeUpdate(callback)
+  }
+  offError(callback: (result: ICreateInnerAudioContextFail) => void): void {
+    this.audioPlayerCallback.offError(callback)
+  }
+  offWaiting(callback: (result: any) => void): void {
+    this.audioPlayerCallback.offWaiting(callback)
+  }
+  offSeeking(callback: (result: any) => void): void {
+    this.audioPlayerCallback.offSeeking(callback)
+  }
+  offSeeked(callback: (result: any) => void): void {
+    this.audioPlayerCallback.offSeeked(callback)
+  }
+}
+
+function createAudioInstance() {
+  const audioId = `${Date.now()}${Math.random()}`
+  // NOTE 避免被 vue Proxy 污染
+  AUDIO_PLAYERS[audioId] = media.createAudioPlayer()
+  AUDIOS[audioId] = new AudioPlayer(audioId)
+  return audioId
+}
+
+export const createInnerAudioContext: CreateInnerAudioContext =
+  defineSyncApi<InnerAudioContext>(
+    API_CREATE_INNER_AUDIO_CONTEXT,
+    () => {
+      const audioId = createAudioInstance()
+      return AUDIOS[audioId]
+    }
+  ) as CreateInnerAudioContext
+
+export const setInnerAudioOption: SetInnerAudioOption =
+  defineAsyncApi<SetInnerAudioOptionOptions, SetInnerAudioOptionSuccess>(
+    API_SET_INNER_AUDIO_OPTION,
+    async (options: SetInnerAudioOptionOptions, res: ApiExecutor<SetInnerAudioOptionSuccess>) => {
+      try {
+        let { speakerOn = true, mixWithOther = true } = options
+        const audioManager = audio.getAudioManager();
+        const sessionManager = audioManager.getSessionManager()
+        if (deviceInfo.sdkApiVersion >= 20) {
+          if (speakerOn) {
+            await (sessionManager as ESObject).setDefaultOutputDevice(audio.DeviceType.SPEAKER)
+            // speakerOn 为 true 时，客户端会忽略 mixWithOther 参数的内容，强制与其它音频互斥。与微信相同
+            mixWithOther = false
+          } else {
+            await (sessionManager as ESObject).setDefaultOutputDevice(audio.DeviceType.EARPIECE)
+          }
+        }
+        await sessionManager.activateAudioSession({
+          concurrencyMode: mixWithOther ? audio.AudioConcurrencyMode.CONCURRENCY_MIX_WITH_OTHERS : audio.AudioConcurrencyMode.CONCURRENCY_PAUSE_OTHERS
+        } as audio.AudioSessionStrategy)
+        res.resolve({} as SetInnerAudioOptionSuccess)
+      } catch (error) {
+        res.reject((error as BusinessError).message, { errCode: (error as BusinessError).code } as ApiError)
+      }
+    },
+    SetInnerAudioOptionProtocol,
+    SetInnerAudioOptionOptionsOptions
+  ) as SetInnerAudioOption;
+
+export {
+  CreateInnerAudioContext,
+  CreateInnerAudioContextErrorCode,
+  ICreateInnerAudioContextFail,
+  InnerAudioContext,
+  SetInnerAudioOption,
+  SetInnerAudioOptionComplete,
+  SetInnerAudioOptionCompleteCallback,
+  SetInnerAudioOptionFail,
+  SetInnerAudioOptionFailCallback,
+  SetInnerAudioOptionOptions,
+  SetInnerAudioOptionSuccess,
+  SetInnerAudioOptionSuccessCallback
+} from '../interface.uts';

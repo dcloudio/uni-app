@@ -1,0 +1,1221 @@
+export type SetTabBarBadgeSuccess = AsyncApiSuccessResult
+export type SetTabBarBadgeSuccessCallback = (
+    result: SetTabBarBadgeSuccess,
+) => void
+/**
+ * 错误码
+ */
+export type SetTabBarErrorCode =
+    /**
+     * TabBar 不存在
+     */
+    100 |
+    /**
+     * 参数错误
+     */
+    200;
+
+export interface SetTabBarFail extends IUniError {
+    errCode: SetTabBarErrorCode
+}
+export type SetTabBarBadgeFail = SetTabBarFail
+export type SetTabBarBadgeFailCallback = (result: SetTabBarBadgeFail) => void
+export type SetTabBarBadgeComplete = AsyncApiResult
+export type SetTabBarBadgeCompleteCallback = (
+    result: SetTabBarBadgeComplete,
+) => void
+export type SetTabBarBadgeOptions = {
+    /**
+     * tabBar的哪一项，从左边算起，索引从0开始
+     */
+    index: number
+    /**
+     * 显示的文本，不超过 3 个半角字符
+     */
+    text: string
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: SetTabBarBadgeSuccessCallback
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: SetTabBarBadgeFailCallback
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: SetTabBarBadgeCompleteCallback
+}
+
+export type RemoveTabBarBadgeSuccess = AsyncApiSuccessResult
+export type RemoveTabBarBadgeSuccessCallback = (
+    result: RemoveTabBarBadgeSuccess,
+) => void
+export type RemoveTabBarBadgeFail = SetTabBarFail
+export type RemoveTabBarBadgeFailCallback = (
+    result: RemoveTabBarBadgeFail,
+) => void
+export type RemoveTabBarBadgeComplete = AsyncApiResult
+export type RemoveTabBarBadgeCompleteCallback = (
+    result: RemoveTabBarBadgeComplete,
+) => void
+export type RemoveTabBarBadgeOptions = {
+    /**
+     * tabBar的哪一项，从左边算起，索引从0开始
+     */
+    index: number
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: RemoveTabBarBadgeSuccessCallback
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: RemoveTabBarBadgeFailCallback
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: RemoveTabBarBadgeCompleteCallback
+}
+
+export type SetTabBarItemSuccess = AsyncApiSuccessResult
+export type SetTabBarItemSuccessCallback = (
+    result: SetTabBarItemSuccess,
+) => void
+export type SetTabBarItemFail = SetTabBarFail
+export type SetTabBarItemFailCallback = (result: SetTabBarItemFail) => void
+export type SetTabBarItemComplete = AsyncApiResult
+export type SetTabBarItemCompleteCallback = (
+    result: SetTabBarItemComplete,
+) => void
+export type SetTabBarItemIconFontOptions = {
+    /**
+     * 字库 Unicode 码
+     */
+    text: string
+    /**
+     * 选中后字库 Unicode 码
+     */
+    selectedText: string
+    /**
+     * 字体图标字号(px)
+     */
+    fontSize?: string
+    /**
+     * 字体图标颜色
+     */
+    color?: string
+    /**
+     * 字体图标选中颜色
+     */
+    selectedColor?: string
+}
+export type SetTabBarItemOptions = {
+    /**
+     * tabBar 的哪一项，从左边算起，索引从0开始
+     */
+    index: number
+    /**
+     * tab 上按钮文字
+     */
+    text?: string
+    /**
+     * 图片路径
+     */
+    iconPath?: string
+    /**
+     * 选中时的图片路径
+     */
+    selectedIconPath?: string
+    /**
+     * 页面绝对路径
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "√"
+     *  }
+     * }
+     */
+    pagePath?: string
+    /**
+     * 字体图标，优先级高于 iconPath
+     */
+    iconfont?: SetTabBarItemIconFontOptions
+    /**
+     * tab 是否显示
+     */
+    visible?: boolean
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: SetTabBarItemSuccessCallback
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: SetTabBarItemFailCallback
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: SetTabBarItemCompleteCallback
+}
+
+export type MidButtonIconFont = {
+    /**
+     * 字库 Unicode 码
+     */
+    text?: string
+    /**
+     * 选中后字库 Unicode 码
+     */
+    selectedText?: string
+    /**
+     * 字体图标字号(px)
+     */
+    fontSize?: string
+    /**
+     * 字体图标颜色
+     */
+    color?: string
+    /**
+     * 字体图标选中颜色
+     */
+    selectedColor?: string
+}
+
+export type MidButtonOptions = {
+    /**
+     * 中间按钮的宽度，tabBar 其它项为减去此宽度后平分，默认值为与其它项平分宽度。默认 80px
+     */
+    width?: string
+    /**
+     * 中间按钮的高度，可以大于 tabBar 高度，达到中间凸起的效果。默认 50px
+     */
+    height?: string
+    /**
+     * 中间按钮的文字
+     */
+    text?: string
+    /**
+     * 中间按钮的图片路径
+     */
+    iconPath?: string
+    /**
+     * 图片宽度（高度等比例缩放）。默认 24px
+     */
+    iconWidth?: string
+    /**
+     * 中间按钮的背景图片路径
+     */
+    backgroundImage?: string
+    /**
+     * 字体图标，优先级高于 iconPath
+     */
+    iconfont?: MidButtonIconFont
+}
+
+export type SetTabBarStyleSuccess = AsyncApiSuccessResult
+export type SetTabBarStyleSuccessCallback = (
+    result: SetTabBarStyleSuccess,
+) => void
+export type SetTabBarStyleFail = SetTabBarFail
+export type SetTabBarStyleFailCallback = (result: SetTabBarStyleFail) => void
+export type SetTabBarStyleComplete = AsyncApiResult
+export type SetTabBarStyleCompleteCallback = (
+    result: SetTabBarStyleComplete,
+) => void
+export type SetTabBarStyleOptions = {
+    /**
+     * tab 上的文字默认颜色
+     */
+    color?: string | string.ColorString
+    /**
+     * tab 上的文字选中时的颜色
+     */
+    selectedColor?: string | string.ColorString
+    /**
+     * tab 的背景色
+     */
+    backgroundColor?: string | string.ColorString
+    /**
+     * 图片背景
+     */
+    backgroundImage?: string
+    /**
+     * 背景图平铺方式
+     */
+    backgroundRepeat?:
+    /**
+    * 背景图片在垂直方向和水平方向平铺
+    */
+    'repeat' |
+    /**
+    * 背景图片在水平方向平铺，垂直方向拉伸
+    */
+    'repeat-x' |
+    /**
+    * 背景图片在垂直方向平铺，水平方向拉伸
+    */
+    'repeat-y' |
+    /**
+    * 背景图片在垂直方向和水平方向都拉伸
+    */
+    'no-repeat'
+
+    /**
+     * tabbar上边框的颜色（优先级高于 borderStyle）
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbarstyle
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.23"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "x"
+     *    }
+     *  },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "4.23"
+     *  }
+     * }
+     */
+    borderColor?: string | string.ColorString
+    /**
+     * tabbar上边框的颜色
+     */
+    borderStyle?: 'black' | 'white'
+    /**
+     * tabbar 中间按钮 仅在 list 项为偶数时有效
+     * @internal
+     */
+    midButton?: MidButtonOptions
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: SetTabBarStyleSuccessCallback
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: SetTabBarStyleFailCallback
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: SetTabBarStyleCompleteCallback
+}
+
+export type HideTabBarSuccess = AsyncApiSuccessResult
+export type HideTabBarSuccessCallback = (result: HideTabBarSuccess) => void
+export type HideTabBarFail = SetTabBarFail
+export type HideTabBarFailCallback = (result: HideTabBarFail) => void
+export type HideTabBarComplete = AsyncApiResult
+export type HideTabBarCompleteCallback = (result: HideTabBarComplete) => void
+export type HideTabBarOptions = {
+    /**
+     * 是否需要动画效果
+     */
+    animation?: boolean
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: HideTabBarSuccessCallback
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: HideTabBarFailCallback
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: HideTabBarCompleteCallback
+}
+
+export type ShowTabBarSuccess = AsyncApiSuccessResult
+export type ShowTabBarSuccessCallback = (result: ShowTabBarSuccess) => void
+export type ShowTabBarFail = SetTabBarFail
+export type ShowTabBarFailCallback = (result: ShowTabBarFail) => void
+export type ShowTabBarComplete = AsyncApiResult
+export type ShowTabBarCompleteCallback = (result: ShowTabBarComplete) => void
+export type ShowTabBarOptions = {
+    /**
+     * 是否需要动画效果
+     */
+    animation?: boolean
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: ShowTabBarSuccessCallback
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: ShowTabBarFailCallback
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: ShowTabBarCompleteCallback
+}
+
+export type ShowTabBarRedDotSuccess = AsyncApiSuccessResult
+export type ShowTabBarRedDotSuccessCallback = (
+    result: ShowTabBarRedDotSuccess,
+) => void
+export type ShowTabBarRedDotFail = SetTabBarFail
+export type ShowTabBarRedDotFailCallback = (
+    result: ShowTabBarRedDotFail,
+) => void
+export type ShowTabBarRedDotComplete = AsyncApiResult
+export type ShowTabBarRedDotCompleteCallback = (
+    result: ShowTabBarRedDotComplete,
+) => void
+export type ShowTabBarRedDotOptions = {
+    /**
+     * tabBar的哪一项，从左边算起，索引从0开始
+     */
+    index: number
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: ShowTabBarRedDotSuccessCallback
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: ShowTabBarRedDotFailCallback
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: ShowTabBarRedDotCompleteCallback
+}
+
+export type HideTabBarRedDotSuccess = AsyncApiSuccessResult
+export type HideTabBarRedDotSuccessCallback = (
+    result: HideTabBarRedDotSuccess,
+) => void
+export type HideTabBarRedDotFail = SetTabBarFail
+export type HideTabBarRedDotFailCallback = (
+    result: HideTabBarRedDotFail,
+) => void
+export type HideTabBarRedDotComplete = AsyncApiResult
+export type HideTabBarRedDotCompleteCallback = (
+    result: HideTabBarRedDotComplete,
+) => void
+export type HideTabBarRedDotOptions = {
+    /**
+     * tabBar的哪一项，从左边算起，索引从0开始
+     */
+    index: number
+    /**
+     * 接口调用成功的回调函数
+     */
+    success?: HideTabBarRedDotSuccessCallback
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: HideTabBarRedDotFailCallback
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: HideTabBarRedDotCompleteCallback
+}
+
+export type OnTabBarMidButtonTapCallback = () => void
+
+
+export type SetTabBarBadge = (options: SetTabBarBadgeOptions) => void
+export type RemoveTabBarBadge = (options: RemoveTabBarBadgeOptions) => void
+export type SetTabBarItem = (options: SetTabBarItemOptions) => void
+export type SetTabBarStyle = (options: SetTabBarStyleOptions) => void
+export type ShowTabBar = (options?: ShowTabBarOptions | null) => void
+export type HideTabBar = (options?: HideTabBarOptions | null) => void
+export type ShowTabBarRedDot = (options: ShowTabBarRedDotOptions) => void
+export type HideTabBarRedDot = (options: HideTabBarRedDotOptions) => void
+
+export interface Uni {
+    /**
+     * 为 tabBar 某一项的右上角添加文本
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#settabbarbadge
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbarbadge
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbarbadge
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "3.91"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    setTabBarBadge(
+        options: SetTabBarBadgeOptions,
+    ): Promise<SetTabBarBadgeSuccess> | null
+    /**
+     * 移除 tabBar 某一项右上角的文本
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#removetabbarbadge
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#removetabbarbadge
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#removetabbarbadge
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "3.91"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    removeTabBarBadge(
+        options: RemoveTabBarBadgeOptions,
+    ): Promise<RemoveTabBarBadgeSuccess> | null
+    /**
+     * 动态设置 tabBar 某一项的内容
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#settabbaritem
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbaritem
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbaritem
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "3.91"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    setTabBarItem(
+        options: SetTabBarItemOptions,
+    ): Promise<SetTabBarItemSuccess> | null
+    /**
+     * 动态设置 tabBar 的整体样式
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#settabbarstyle
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbarstyle
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbarstyle
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "3.91"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    setTabBarStyle(
+        options: SetTabBarStyleOptions,
+    ): Promise<SetTabBarStyleSuccess> | null
+    /**
+     * 隐藏 tabBar
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#hidetabbar
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#hidetabbar
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#hidetabbar
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "3.91"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    hideTabBar(
+        options?: HideTabBarOptions | null,
+    ): Promise<HideTabBarSuccess> | null
+    /**
+     * 显示 tabBar
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#showtabbar
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#showtabbar
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#showtabbar
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "3.91"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    showTabBar(
+        options?: ShowTabBarOptions | null,
+    ): Promise<ShowTabBarSuccess> | null
+    /**
+     * 显示 tabBar 某一项的右上角的红点
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#showtabbarreddot
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#showtabbarreddot
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#showtabbarreddot
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "3.91"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    showTabBarRedDot(
+        options: ShowTabBarRedDotOptions,
+    ): Promise<ShowTabBarRedDotSuccess> | null
+    /**
+     * 隐藏 tabBar 某一项的右上角的红点
+     *
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#hidetabbarreddot
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#hidetabbarreddot
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#hidetabbarreddot
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "3.91"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    hideTabBarRedDot(
+        options: HideTabBarRedDotOptions,
+    ): Promise<HideTabBarRedDotSuccess> | null
+    /**
+     * 监听中间按钮的点击事件
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#ontabbarmidbuttontap
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/on-tab-bar-mid-button-tap.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/on-tab-bar-mid-button-tap.html
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
+     */
+    onTabBarMidButtonTap(options: OnTabBarMidButtonTapCallback): void
+}

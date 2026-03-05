@@ -1,0 +1,8 @@
+export function isValidPhoneRules(input: string): boolean {
+  const cleaned = input.trim();
+
+  // 仅允许字符：0-9 + * # , ;
+  const validDialPattern = /^[0-9+\*#;,]+$/;
+
+  return validDialPattern.test(cleaned);
+}

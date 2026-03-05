@@ -1,0 +1,96 @@
+import { RequestErrorCode, RequestFail, UploadFileFail, DownloadFileFail } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const UniNetWorkErrorSubject = 'uni-request';
+/**
+ * 错误码
+ * @UniError
+ */
+const NetWorkUniErrors : Map<RequestErrorCode, string> = new Map([
+
+	/**
+	 * 接口超时
+	 */
+	[5, 'time out'],
+	/**
+	 * 服务端系统错误
+	 */
+	[1000, 'server system error'],
+	/**
+	 * json数据解析错误
+	 */
+	[100001, 'invalid json'],
+	/**
+	 * 错误信息json解析失败
+	 */
+	[100002, 'error message invalid json'],
+	/**
+	 * json解析类型转换失败
+	 */
+	[100003, 'json parsing type conversion failed'],
+	/**
+	 * 网络中断
+	 */
+	[600003, 'network interrupted error'],
+	/**
+	 * data参数类型不合法
+	 */
+	[600008, 'the data parameter type is invalid'],
+	/**
+	 * URL 格式不合法
+	 */
+	[600009, 'invalid URL'],
+	/**
+	 * request系统错误
+	 */
+	[602001, 'request system error']
+]);
+
+// #ifdef APP-IOS
+@UTSiOS.keyword("fileprivate")
+// #endif
+export function getErrcode(errCode : number) : RequestErrorCode {
+	const res = NetWorkUniErrors[errCode];
+	return res == null ? 602001 : errCode;
+}
+
+
+export class RequestFailImpl extends UniError implements RequestFail {
+// #ifdef APP-ANDROID
+	override errCode: RequestErrorCode
+// #endif
+	constructor(errCode : RequestErrorCode) {
+		super();
+		this.errSubject = UniNetWorkErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = NetWorkUniErrors[errCode] ?? "";
+	}
+}
+
+
+export class UploadFileFailImpl extends UniError implements UploadFileFail {
+// #ifdef APP-ANDROID
+	override errCode: RequestErrorCode
+// #endif
+	constructor(errCode : RequestErrorCode) {
+		super();
+		this.errSubject = "uni-uploadFile";
+		this.errCode = errCode;
+		this.errMsg = NetWorkUniErrors[errCode] ?? "";
+	}
+}
+
+
+export class DownloadFileFailImpl extends UniError implements DownloadFileFail {
+// #ifdef APP-ANDROID
+	override errCode: RequestErrorCode
+// #endif
+	constructor(errCode : RequestErrorCode) {
+		super();
+		this.errSubject = "uni-downloadFile";
+		this.errCode = errCode;
+		this.errMsg = NetWorkUniErrors[errCode] ?? "";
+	}
+}

@@ -1,0 +1,234 @@
+// 高德地图 UTS 插件 - Android 平台实现
+import UniElement from "io.dcloud.uniapp.runtime.UniElement";
+import PageNode from "io.dcloud.uniapp.dom.node.PageNode"
+import INodeData from "io.dcloud.uniapp.interfaces.INodeData"
+import View from 'android.view.View';
+import type { AmapMarker, AmapAnchor, AmapMapMarkerCallout, AmapMapMarkerLabel } from "../interface";
+import { MarkerModel } from "uts.sdk.modules.uniMapAmap.marker";
+
+// 重新导出类型，供外部使用（不在这里导出，直接从 interface.uts 导入）
+
+// IInternalMap 和 ICallBack 在 IInternalMap.kt 中定义，UTS 会自动从同包中解析
+// AmapMapImpl 在 AmapMapImpl.kt 中定义，同样会自动解析
+
+export class UniMapElement
+	extends UniViewElementImpl
+	implements UniBuiltInComponent {
+	// IInternalMap 在 IInternalMap.kt 中定义，UTS 会自动解析
+	private internalMap : IInternalMap | null = null;
+
+	constructor(data : INodeData, pageNode : PageNode) {
+		super(data, pageNode);
+	}
+
+	override get tagName() : string {
+		return "MAP";
+	}
+
+	override get nodeName() : string {
+		return this.tagName;
+	}
+
+	setMap(map : IInternalMap | null) {
+		this.internalMap = map
+	}
+	
+	override getAndroidView<T extends View>(): T | null {
+		const nativeElement = this.firstChild as UniNativeViewElement
+		if (nativeElement == null){
+			return null
+		} else {
+			return nativeElement.getAndroidView() as T | null
+		}
+	}
+}
+
+// 暂时注释掉 UTSAcvitiyLifeCycleCallback，先让地图显示功能跑起来
+/*
+export class UTSAcvitiyLifeCycleCallback extends UniActivityLifeCycleCallback {
+	internalMap : any | null = null;
+	constructor(map : any | null) {
+		super()
+		this.internalMap = map;
+	}
+	override onStart(params : UniActivityParams) {
+		if (this.internalMap != null) {
+			// @ts-ignore - UTS 会自动从同包中解析 Kotlin 接口方法
+			this.internalMap.onStart();
+		}
+	}
+	override onResume(params : UniActivityParams) {
+		if (this.internalMap != null) {
+			// @ts-ignore
+			this.internalMap.onResume();
+		}
+	}
+	override onPause(params : UniActivityParams) {
+		if (this.internalMap != null) {
+			// @ts-ignore
+			this.internalMap.onPause();
+		}
+	}
+	override onStop(params : UniActivityParams) {
+		if (this.internalMap != null) {
+			// @ts-ignore
+			this.internalMap.onStop();
+		}
+	}
+	override onDestroy(params : UniActivityParams) {
+		if (this.internalMap != null) {
+			// @ts-ignore
+			this.internalMap.onDestroy();
+		}
+	}
+}
+*/
+
+export class AmapMap {
+	$element : UniNativeViewElement;
+	internalMap = new AmapMapImpl();
+	// acvitiyLifeCycleCallback : UTSAcvitiyLifeCycleCallback | null = null;
+
+	constructor(element : UniNativeViewElement) {
+		this.$element = element;
+		// 延迟初始化 internalMap，避免编译时解析问题
+		this.start();
+	}
+
+	start() {
+		// 创建 AmapMapImpl 实例
+		if (this.internalMap == null) {
+			// UTS 会自动从同包中解析 Kotlin 类
+			this.internalMap = new AmapMapImpl()
+		}
+		(this.$element.parentElement as UniMapElement).setMap(this.internalMap)
+		// 使用非空断言，因为上面已经检查过 null
+		let mapView = this.internalMap!!.getMap(this.$element.getAndroidActivity()!!);
+		this.$element.bindAndroidView(mapView);
+		this.internalMap!!.onStart();
+		this.internalMap!!.onResume();
+		// 暂时注释掉生命周期回调
+		// this.acvitiyLifeCycleCallback = new UTSAcvitiyLifeCycleCallback(this.internalMap);
+		// const pages = getCurrentPages()
+		// const page = pages[pages.length - 1]
+		// UTSAndroid.onActivityCallback(this.acvitiyLifeCycleCallback!, page.route)
+	}
+
+	destroy() {
+		if (this.internalMap != null) {
+			// 使用局部变量避免智能转换问题
+			const map = this.internalMap!!
+			map.onPause();
+			map.onStop();
+			map.onDestroy();
+		}
+	}
+
+	// 设置中心点
+	setCenter(latitude: number, longitude: number, animate: boolean = true) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setCenter(latitude.toDouble(), longitude.toDouble(), animate)
+		}
+	}
+
+	// 设置缩放级别
+	setScale(scale: number, animate: boolean = true) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setScale(scale.toInt(), animate)
+		}
+	}
+	
+	setMinScale(zoom : number) {
+		this.internalMap.setMinScale(zoom.toInt());
+	}
+	
+	setMaxScale(zoom : number) {
+		this.internalMap.setMaxScale(zoom.toInt());
+	}
+
+	// 获取缩放级别
+	getScale(): number {
+		if (this.internalMap != null) {
+			// Kotlin Int 可以直接转换为 TypeScript number
+			return this.internalMap!!.getScale() as number
+		}
+		return 16
+	}
+
+	// 设置主题
+	setTheme(theme: string) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setTheme(theme)
+		}
+	}
+	
+	//设置图层样式
+	setLayerStyle(id : string) {
+		this.internalMap.setLayerStyle(id);
+	}
+	
+	// 显示定位点
+	setShowLocation(show : boolean) {
+		this.requestLocationPermission(() => {
+			if (this.internalMap != null) {
+				this.internalMap!!.setShowLocation(show);
+			}
+		})
+	}
+	
+	// 请求定位权限
+	requestLocationPermission(callback : () => void) {
+		const context = UTSAndroid.getUniActivity()!
+		if (UTSAndroid.checkSystemPermissionGranted(context, ["android.permission.ACCESS_FINE_LOCATION"])) {
+			callback()
+		} else {
+			UTSAndroid.requestSystemPermission(context, ["android.permission.ACCESS_FINE_LOCATION"],
+				(allRight : boolean, _ : string[]) => {
+					if (allRight) {
+						callback()
+					}
+				},
+				(p0 : boolean, p1 : string[]) => {
+					// 权限被拒绝
+				})
+		}
+	}
+	
+	// 设置标记点
+	setMarkers(markers : Array<AmapMarker>) {
+		if (this.internalMap == null) {
+			return
+		}
+		const markerList : Array<MarkerModel> = [];
+		markers.forEach((value : AmapMarker) => {
+			const markerModel = new MarkerModel(
+				value.id.toInt(), 
+				value.latitude.toDouble(), 
+				value.longitude.toDouble(), 
+				UTSAndroid.convert2AbsFullPath(value.iconPath)
+			)
+			markerModel.title = value.title
+			markerModel.rotate = value.rotate?.toDouble() ?? 0.0.toDouble()
+			markerModel.alpha = value.alpha?.toFloat() ?? 1.0.toFloat()
+			const density = UTSAndroid.getAppContext()!.resources.displayMetrics.density
+			if (value.width != null) {
+				markerModel.width = value.width!.toDouble() * density
+			}
+			if (value.height != null) {
+				markerModel.height = value.height!.toDouble() * density
+			}
+			markerModel.ariaLabel = value.ariaLabel
+			const anchor = new FloatArray(2)
+			anchor[0] = 0.5.toFloat()
+			anchor[1] = 1.0.toFloat()
+			if (value.anchor != null) {
+				anchor[0] = value.anchor!.x.toFloat()
+				anchor[1] = value.anchor!.y.toFloat()
+			}
+			markerModel.anchor = anchor
+			markerList.push(markerModel)
+		})
+		this.internalMap!!.setMarkers(markerList)
+	}
+}
+

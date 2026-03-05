@@ -1,0 +1,22 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-module-flags: -target x86_64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name websocket
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import Foundation
+import Starscream
+import Swift
+import _Concurrency
+import _StringProcessing
+@_exported import websocket
+@objc @_inheritsConvenienceInitializers open class WebSocketListener : ObjectiveC.NSObject, Starscream.WebSocketDelegate {
+  open func onOpen(_ websocket: Starscream.WebSocketClient, _ headers: [Swift.String : Swift.String])
+  open func onMessage(_ websocket: Starscream.WebSocketClient, _ data: Foundation.Data)
+  open func onMessage(_ websocket: Starscream.WebSocketClient, _ text: Swift.String)
+  open func onClosed(_ websocket: Starscream.WebSocketClient, _ code: Swift.Int, _ reason: Swift.String)
+  open func onFailure(_ websocket: Starscream.WebSocketClient, _ err: Swift.Error?)
+  open func onPeerClosed(_ websocket: Starscream.WebSocketClient)
+  open func onCancelled(_ websocket: Starscream.WebSocketClient)
+  public func didReceive(event: Starscream.WebSocketEvent, client: Starscream.WebSocketClient)
+  @objc override dynamic public init()
+  @objc deinit
+}

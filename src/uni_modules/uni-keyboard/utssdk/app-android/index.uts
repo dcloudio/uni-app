@@ -1,0 +1,166 @@
+import { HideKeyboard, HideKeyboardOptions, HideKeyboardSuccess, OffKeyboardHeightChange, OnKeyboardHeightChange, OnKeyboardHeightChangeCallback, OnKeyboardHeightChangeCallbackResult } from "../interface.uts"
+import InputMethodManager from 'android.view.inputmethod.InputMethodManager';
+import ViewTreeObserver from "android.view.ViewTreeObserver";
+import Rect from 'android.graphics.Rect';
+import View from 'android.view.View';
+import Activity from 'android.app.Activity';
+import Context from 'android.content.Context';
+import EditText from 'android.widget.EditText';
+import ViewCompat from 'androidx.core.view.ViewCompat';
+import WindowInsetsCompat from 'androidx.core.view.WindowInsetsCompat';
+
+let inputManager : InputMethodManager | null = null
+
+let index = 0
+
+let keyBoardChangeListeerMaps : HashMap<number, OnKeyboardHeightChangeCallback> = new HashMap()
+
+var listener : OnKeyBoardChangedListener | null = null
+
+export const hideKeyboard : HideKeyboard = (options ?: HideKeyboardOptions | null) => {
+	var activity : Activity = UTSAndroid.getUniActivity()!;
+	if (inputManager == null) {
+		inputManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+	}
+	let focusView = activity.getCurrentFocus()
+	if (focusView != null) {
+		focusView!.postDelayed(class implements Runnable {
+			override run() {
+				let result = inputManager!.hideSoftInputFromWindow(focusView!.getWindowToken(), 0)
+				if (result) {
+					focusView!.clearFocus()
+				}
+			}
+		}, 16)
+	}
+	var success : HideKeyboardSuccess = {}
+	options?.success?.(success)
+	options?.complete?.(success)
+}
+
+export const onKeyboardHeightChange : OnKeyboardHeightChange = function (callback : OnKeyboardHeightChangeCallback) : number {
+	if (listener == null) {
+		listener = new OnKeyBoardChangedListener(keyBoardChangeListeerMaps)
+	}
+	index++;
+	keyBoardChangeListeerMaps[index] = callback
+	listener!.watch()
+	return index;
+}
+
+export const offKeyboardHeightChange : OffKeyboardHeightChange = function (id : number | null) {
+	if (id == null) {
+		keyBoardChangeListeerMaps.clear()
+		listener?.unwatch()
+	} else {
+		keyBoardChangeListeerMaps.remove(id)
+		if (keyBoardChangeListeerMaps.isEmpty()) {
+			listener?.unwatch()
+		}
+	}
+}
+
+// export const getSelectedTextRange : GetSelectedTextRange = (options : GetSelectedTextRangeOptions) => {
+// 	var activity : Activity = UTSAndroid.getUniActivity()!;
+// 	if (inputManager == null) {
+// 		inputManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+// 	}
+// 	let focusView = activity.getCurrentFocus()
+// 	if (focusView != null && focusView instanceof EditText) {
+// 		focusView!.post(class implements Runnable {
+// 			override run() : void {
+// 				let edit = (focusView as EditText);
+// 				edit.getSelectionStart()
+// 				let success : GetSelectedTextRangeSuccess = {
+// 					start: edit.selectionStart,
+// 					end: edit.selectionEnd
+// 				}
+// 				options?.success?.(success)
+// 				options?.complete?.(success)
+// 			}
+// 		})
+// 	} else {
+
+// 	}
+// }
+
+// 通过监听activity的创建，确保当前页面被遮盖之后，仍然可以触发监听事件
+class OnKeyBoardChangedListener extends UniActivityLifeCycleCallback implements ViewTreeObserver.OnGlobalLayoutListener {
+	decorView : View | null = null
+	activity : Activity | null = null
+	mSystemBarHeight = 0
+
+	// 记录上一次的键盘高度，防止重复触发相同值
+	lastKeyboardHeight = 0
+	keyBoardChangeListeerMaps : HashMap<number, OnKeyboardHeightChangeCallback>
+	constructor(keyBoardChangeListeerMaps : HashMap<number, OnKeyboardHeightChangeCallback>) {
+		super();
+		this.keyBoardChangeListeerMaps = keyBoardChangeListeerMaps
+	}
+	watch() {
+		UTSAndroid.onActivityCallback(this)
+		this.watchKeyBoardChanged()
+	}
+
+	override onResume(_params : UniActivityParams) {
+		if (this.activity != UTSAndroid.getUniActivity()) {
+			this.decorView?.getViewTreeObserver()?.removeOnGlobalLayoutListener(this)
+			this.watchKeyBoardChanged()
+		}
+	}
+
+	watchKeyBoardChanged() {
+		this.activity = UTSAndroid.getUniActivity()!
+		this.decorView = this.activity!.getWindow().getDecorView()
+		this.decorView!.getViewTreeObserver().addOnGlobalLayoutListener(this)
+	}
+
+	unwatch() {
+		UTSAndroid.offActivityCallback(this)
+		this.decorView?.getViewTreeObserver()?.removeOnGlobalLayoutListener(this)
+		this.decorView = null
+		this.activity = null
+	}
+
+	getRootView() : View | null {
+		return UTSAndroid.getUniActivity()?.findViewById<View>(android.R.id.content);
+	}
+
+	getSystenBarHeight() : number {
+		if (this.decorView != null) {
+			var windowInsert = ViewCompat.getRootWindowInsets(this.decorView!)
+			if (windowInsert != null) {
+				var inset = windowInsert!.getInsets(WindowInsetsCompat.Type.systemBars())
+				this.mSystemBarHeight = inset.bottom + inset.top
+			}
+		}
+		if (this.mSystemBarHeight < 0) {
+			this.mSystemBarHeight = 0
+		}
+		return this.mSystemBarHeight
+	}
+	override onGlobalLayout() {
+		var rootView = this.getRootView()
+		if (rootView != null) {
+			var rect = Rect()
+			rootView!.getWindowVisibleDisplayFrame(rect)
+			let fullHeight = rootView!.getRootView().getHeight()
+			let diffHeight = fullHeight - rect.height() - this.getSystenBarHeight();
+			let height = UTSAndroid.devicePX2px(diffHeight)
+			if (this.lastKeyboardHeight == height) {
+				return
+			}
+			var exceedHeight = fullHeight / 5
+			this.lastKeyboardHeight = height
+			if (diffHeight > exceedHeight) {
+				this.keyBoardChangeListeerMaps.values.forEach((callback : OnKeyboardHeightChangeCallback) => {
+					callback({ height: height } as OnKeyboardHeightChangeCallbackResult)
+				})
+			} else {
+				this.keyBoardChangeListeerMaps.values.forEach((callback : OnKeyboardHeightChangeCallback) => {
+					callback({ height: height } as OnKeyboardHeightChangeCallbackResult)
+				})
+			}
+		}
+	}
+}

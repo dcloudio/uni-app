@@ -1,0 +1,457 @@
+export type WebViewProgressStyles = {
+	color : string.ColorString
+}
+
+export type WebViewStyles = {
+	progress : WebViewProgressStyles | boolean
+}
+
+export type UniWebviewContextLoadDataOptions = {
+	/**
+	 * 要加载的内容，编码后的字符串
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.71"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.71"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.71",
+	 *      "unixVer": "4.71",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	data : string,
+	/**
+	 * 页面的基础 URL
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.71"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.71"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.71",
+	 *      "unixVer": "4.71",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	baseURL ?: string | null,
+	/**
+	 * 加载的页面内容类型，默认值为 "text/html"
+	 * @defaultValue 'text/html'
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.71"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.71"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.71",
+	 *      "unixVer": "4.71",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	mimeType ?: string | null,
+	/**
+	 * 页面内容的编码类型，默认值为 "utf-8"
+	 * @defaultValue 'utf-8'
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.71"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.71"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.71",
+	 *      "unixVer": "4.71",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	encoding ?: string | null
+}
+
+export type UniWebViewContextLoadDataOptions = UniWebviewContextLoadDataOptions
+
+export type UniWebViewElementLoadDataOptions = {
+	/**
+	 * 要加载的内容，编码后的字符串
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.65"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.65"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.65",
+	 *      "unixVer": "4.65",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	data : string,
+	/**
+	 * 页面的基础 URL
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.65"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.65"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.65",
+	 *      "unixVer": "4.65",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	baseURL ?: string | null,
+	/**
+	 * 加载的页面内容类型，默认值为 "text/html"
+	 * @defaultValue 'text/html'
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.65"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.65"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.65",
+	 *      "unixVer": "4.65",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	mimeType ?: string | null,
+	/**
+	 * 页面内容的编码类型，默认值为 "utf-8"
+	 * @defaultValue 'utf-8'
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.65"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.65"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.65",
+	 *      "unixVer": "4.65",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	encoding ?: string | null
+}
+
+
+export interface WebviewContext {
+	/**
+	 * 前进到 web-view 组件网页加载历史的下一页，如果不存在下一页则没有任何效果
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "3.9.0"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.11"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.61",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	forward() : void
+	/**
+	 * 后退到 web-view 组件网页加载历史的上一页，如果不存在上一页则没有任何效果
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "3.9.0"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.11"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.61",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	back() : void
+	/**
+	 * 重新加载 web-view 组件当前页面
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "3.9.0"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.11"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.61",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	reload() : void
+	/**
+	 * 停止加载 web-view 组件当前网页，该方法不能阻止已经加载的 html 文档，但是能够阻止未完成的图片及延迟加载的资源
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "3.9.0"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.11"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.61",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	stop() : void
+	/**
+	 * 在网页中执行指定的js脚本，在 uvue 页面中可通过此方法向 web-view 组件加载的页面发送数据
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "3.9.0"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.11"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.61",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	evalJS(js : string) : void
+	/**
+	 * 获取webview内容高度
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.63"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.63"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.63",
+	 *      "unixVer": "4.63",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	getContentHeight() : number
+	/**
+	 * 在 web-view 组件中加载页面内容
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.71"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.71"
+	 *     },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.71",
+	 *      "unixVer": "4.63",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *   }
+	 * }
+	 */
+	// #ifdef APP-IOS
+	loadData(options : any) : void
+	// #endif
+
+	// #ifndef APP-IOS
+	loadData(options : UniWebViewContextLoadDataOptions) : void
+	// #endif
+
+}
+
+// #ifdef APP-IOS || APP-HARMONY
+export interface WebViewContext extends WebviewContext {
+
+}
+// #endif
+// #ifdef APP-ANDROID
+export type WebViewContext = WebviewContext
+// #endif
+
+export type CreateWebviewContext = (webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null) => WebviewContext | null;
+
+export type CreateWebViewContext = (webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null) => WebViewContext | null;
+
+export interface Uni {
+	/**
+	 * 创建 web-view 上下文 WebViewContext 对象。
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "3.9.0"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.11"
+	 *     },
+	 *     "harmony": {
+	 *       "osVer": "5.0.0",
+	 *       "uniVer": "4.61",
+	 *       "unixVer": "4.61",
+	 *       "unixvVer": "5.0"
+	 *     }
+	 *   }
+	 * }
+	 */
+	createWebViewContext : CreateWebViewContext,
+	/**
+	 * @deprecated 已废弃，仅为了向下兼容保留，建议使用`createWebViewContext`。
+	 * 创建 web-view 上下文 WebviewContext 对象。
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "5.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "3.9.0"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.11"
+	 *     },
+	 *     "harmony": {
+	 *       "osVer": "5.0.0",
+	 *       "uniVer": "4.61",
+	 *       "unixVer": "4.61",
+	 *       "unixvVer": "5.0"
+	 *     }
+	 *   }
+	 * }
+	 */
+	createWebviewContext : CreateWebviewContext
+}

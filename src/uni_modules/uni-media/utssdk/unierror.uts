@@ -1,0 +1,73 @@
+import { IMediaError, MediaErrorCode } from "./interface.uts";
+
+/**
+ * 错误主题
+ */
+export const UniError_PreviewImage = 'uni-previewImage';
+export const UniError_GetImageInfo = "uni-getImageInfo"
+export const UniError_SaveImageToPhotosAlbum = "uni-saveImageToPhotosAlbum"
+export const UniError_SaveVideoToPhotosAlbum = "uni-saveVideoToPhotosAlbum"
+export const UniError_ChooseImage = "uni-chooseImage"
+export const UniError_ChooseVideo = "uni-chooseVideo"
+export const UniError_CompressImage = "uni-compressImage"
+export const UniError_CompressVideo = "uni-compressVideo"
+export const UniError_GetVideoInfo = "uni-getVideoInfo"
+export const UniError_ChooseFile = "uni-chooseFile"
+/**
+ * 错误码
+ * @UniError
+ */
+export const MediaUniErrors : Map<number, string> = new Map([
+	/**
+	 * 用户取消
+	 */
+	[1101001, 'user cancel'],
+	/**
+	 * urls至少包含一张图片地址
+	 */
+	[1101002, 'fail parameter error: parameter.urls should have at least 1 item'],
+	/**
+	 * 文件不存在
+	 */
+	[1101003, "file not find"],
+	/**
+	 * 图片加载失败
+	 */
+	[1101004, "Failed to load resource"],
+	/**
+	 * 未获取权限
+	 */
+	[1101005, "No Permission"],
+	/**
+	 * 保存异常
+	 */
+	[1101006, "save error"],
+	/**
+	 * 图片裁剪失败
+	 */
+	[1101007, "crop error"],
+	/**
+	 * 拍照或录像失败
+	 */
+	[1101008, 'camera error'],
+	/**
+	 * 图片压缩失败
+	 */
+	[1101009, "image output failed"],
+	/**
+	 * 其他错误
+	 */
+	[1101010, "unexpect error:"]
+]);
+
+export class MediaErrorImpl extends UniError implements IMediaError {
+	// #ifdef APP-ANDROID || APP-HARMONY
+	override errCode : MediaErrorCode
+	// #endif
+	constructor(errCode : MediaErrorCode, uniErrorSubject : string) {
+		super()
+		this.errSubject = uniErrorSubject
+		this.errCode = errCode
+		this.errMsg = MediaUniErrors.get(errCode) ?? "";
+	}
+}

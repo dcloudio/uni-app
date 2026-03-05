@@ -1,0 +1,181 @@
+<template>
+  <scroll-view :ref="recycleWaterflowCpp.setElement" :scroll-top="props.scrollTop" :show-scrollbar="props.showScrollbar"
+    :scroll-with-animation="props.scrollWithAnimation" :type="props.type" :bounces="props.bounces"
+    :upper-threshold="props.upperThreshold" :lower-threshold="props.lowerThreshold" :scroll-left="props.scrollLeft"
+    :scroll-into-view="props.scrollIntoView" :refresher-enabled="props.refresherEnabled"
+    :refresher-threshold="props.refresherThreshold" :refresher-max-drag-distance="props.refresherMaxDragDistance"
+    :refresher-background="props.refresherBackground" :refresher-triggered="props.refresherTriggered"
+    :custom-nested-scroll="props.customNestedScroll" :nested-scroll-child="props.nestedScrollChild"
+    :associative-container="props.associativeContainer" :enable-back-to-top="props.enableBackToTop" :refresher-default-style="props.refresherDefaultStyle"
+    :waterflow-id="waterflowId" change:waterflow-id="recycleWaterflowCpp.setWaterflowId"
+    :list="keyList as string[]" change:list="recycleWaterflowCpp.updateList"
+    :cross-axis-count="realCrossAxisCount" :main-axis-gap="realMainAxisGap" :cross-axis-gap="realCrossAxisGap"
+    :max-cross-axis-extent="realMaxCrossAxisExtent"
+    change:cross-axis-count="recycleWaterflowCpp.setCrossAxisCount"
+    change:main-axis-gap="recycleWaterflowCpp.setMainAxisGap"
+    change:cross-axis-gap="recycleWaterflowCpp.setCrossAxisGap"
+    change:max-cross-axis-extent="recycleWaterflowCpp.setMaxCrossAxisExtent"
+  >
+    <slot></slot>
+    <view class="placeholder" :ref="recycleWaterflowCpp.setPlaceholderElement"></view>
+    <slot name="refresher"></slot>
+    <slot name="load-more"></slot>
+  </scroll-view>
+</template>
+<script module="recycleWaterflowCpp" lang="cpp" class-name="RecycleWaterflow" src="../../cppsdk/recycle_waterflow.h"
+  namespace="recycle_waterflow"></script>
+<script setup>
+  import { generateWaterflowId } from '../../common/utils'
+  import { UniWaterflowElement } from '../../common/element'
+
+  defineOptions({
+    name: 'waterflow',
+    rootElement: {
+        class: UniWaterflowElement
+    }
+  })
+
+  /**
+   * 不支持如下属性
+   * - direction
+   */
+  const props = defineProps({
+    crossAxisCount: {
+      type: [Number, String],
+      default: 2
+    },
+    mainAxisGap: {
+      type: [Number, String],
+      default: 0
+    },
+    crossAxisGap: {
+      type: [Number, String],
+      default: 0
+    },
+    maxCrossAxisExtent: {
+      type: [Number, String],
+      default: 0
+    },
+    associativeContainer: {
+      type: String,
+      default: ''
+    },
+    enableBackToTop: {
+      type: [Boolean, String],
+      default: true
+    },
+    bounces: {
+      type: [Boolean, String],
+      default: true
+    },
+    upperThreshold: {
+      type: Number,
+      default: 50
+    },
+    lowerThreshold: {
+      type: Number,
+      default: 50
+    },
+    scrollTop: {
+      type: Number,
+      default: 0
+    },
+    scrollLeft: {
+      type: Number,
+      default: 0
+    },
+    scrollIntoView: {
+      type: String,
+      default: ''
+    },
+    scrollWithAnimation: {
+      type: [Boolean, String],
+      default: false
+    },
+    refresherEnabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    refresherThreshold: {
+      type: Number,
+      default: 45
+    },
+    refresherMaxDragDistance: {
+      type: Number
+    },
+    refresherDefaultStyle: {
+      type: String,
+      default: 'black'
+    },
+    refresherBackground: {
+      type: String,
+      default: 'transparent'
+    },
+    refresherTriggered: {
+      type: [Boolean, String],
+      default: false
+    },
+    showScrollbar: {
+      type: [Boolean, String],
+      default: true
+    },
+    customNestedScroll: {
+      type: [Boolean, String],
+      default: false
+    },
+    nestedScrollChild: {
+      type: String,
+      default: ''
+    }
+  })
+
+  const realCrossAxisCount = computed(() => {
+    if (props.maxCrossAxisExtent !== 0 && props.maxCrossAxisExtent !== '0') {
+      return 0;
+    }
+    return parseInt(props.crossAxisCount);
+  })
+  const realMainAxisGap = computed(() => {
+    if(typeof props.mainAxisGap === 'string') {
+      return parseFloat(props.mainAxisGap);
+    }
+    return props.mainAxisGap;
+  })
+  const realCrossAxisGap = computed(() => {
+    if(typeof props.crossAxisGap === 'string') {
+      return parseFloat(props.crossAxisGap);
+    }
+    return props.crossAxisGap;
+  })
+  const realMaxCrossAxisExtent = computed(() => {
+    if(typeof props.maxCrossAxisExtent === 'string') {
+      return parseFloat(props.maxCrossAxisExtent);
+    }
+    return props.maxCrossAxisExtent;
+  })
+
+  const waterflowId = generateWaterflowId();
+  provide('__uni_recycle_view_id', waterflowId);
+  provide('__uni_recycle_state_map', new Map<string, Map<string, unknown>>());
+
+  const keyList = shallowRef<string[]>([])
+  function updateList(newList : string[]) {
+    keyList.value = newList
+  }
+
+  const renderRange = ref<[number, number]>([0, 0]);
+  function updateRenderInfo(renderRangeStart: number, renderRangeEnd: number) {
+    renderRange.value = [renderRangeStart, renderRangeEnd];
+  }
+
+  defineExpose({
+    renderRange,
+    updateList,
+    updateRenderInfo
+  });
+</script>
+<style>
+  .placeholder {
+    width: 1px;
+  }
+</style>

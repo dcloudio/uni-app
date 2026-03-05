@@ -1,0 +1,89 @@
+
+import { UniEventSource, ConnectEventSource, ConnectEventSourceOptions, UniMessageEvent, ConnectEventSourceCallback, ConnectEventSourceErrorCallback } from '../interface.uts';
+import { URL, NSNumber } from 'Foundation';
+
+export const connectEventSource : ConnectEventSource = function (options : ConnectEventSourceOptions) : UniEventSource {
+	return new UniEventSourceImpl(options.url, options.header)
+}
+
+class MessageEventHandler {
+	constructor() {
+
+	}
+	public message : ConnectEventSourceCallback | null = null
+	public error : ConnectEventSourceErrorCallback | null = null
+	public open : ConnectEventSourceCallback | null = null
+	public close : ConnectEventSourceCallback | null = null
+}
+
+class UniEventSourceImpl implements UniEventSource {
+	private connectUrl : string
+	private headers : UTSJSONObject | null = null
+	private messageEventHandler : MessageEventHandler = new MessageEventHandler()
+	private eventSource : EventSource | null = null
+	constructor(url : string, headers ?: UTSJSONObject) {
+		this.connectUrl = url
+		super.init()
+		this.headers = headers
+		let tmpUrl = URL(string = this.connectUrl)
+		const map = new Map<string, string>()
+		if (tmpUrl != null) {
+			this.eventSource = new EventSource(url = tmpUrl!, headers = this.headers?.toMap() ?? map)
+			this.connect()
+			this.eventAction()
+		}
+	}
+
+	onMessage(callback : ConnectEventSourceCallback) : void {
+		this.messageEventHandler.message = callback
+	}
+	onError(callback : ConnectEventSourceErrorCallback) : void {
+		this.messageEventHandler.error = callback
+	}
+	onOpen(callback : ConnectEventSourceCallback) : void {
+		this.messageEventHandler.open = callback
+	}
+	close() : void {
+		this.eventSource?.disconnect()
+		this.messageEventHandler.close?.(this.constructorEvent('close'))
+	}
+	private connect() {
+		this.eventSource?.connect()
+	}
+
+	private eventAction() {
+
+		this.eventSource?.onOpen(() : void => {
+			this.messageEventHandler.open?.(this.constructorEvent('open'))
+		})
+
+		this.eventSource?.onComplete((errCode ?: Int, reconnect ?: boolean, error ?: NSError) : void => {
+			if (this.eventSource?.readyState != EventSourceState.closed) {
+				let err = new UniError()
+				err.errCode = NSNumber(errCode ?? 0)
+				if (error != null) {
+					err.errMsg = error!.localizedDescription
+				}
+				this.messageEventHandler.error?.(err)
+			}
+		})
+
+		this.eventSource?.onMessage((id ?: string, event ?: string, data ?: string) : void => {
+			let tempType = ''
+			if (event != null) {
+				tempType = event!
+			}
+			let ev = this.constructorEvent(tempType)
+			ev.data = data
+			ev.lastEventId = id
+			this.messageEventHandler.message?.(ev)
+		})
+		
+	}
+	
+	private constructorEvent(type: string) : UniMessageEvent {
+		let event = new UniMessageEvent()
+		event.type = type
+		return event
+	}
+}

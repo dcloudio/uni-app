@@ -1,0 +1,64 @@
+import { ShareWithSystemErrorCode, IShareWithSystemFail } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const ShareWithSystemUniErrorSubject = 'uni-shareWithSystem';
+/**
+ * 错误码
+ * @UniError
+ */
+export const ShareWithSystemUniErrors : Map<ShareWithSystemErrorCode, string> = new Map([
+	/**
+	 * 取消分享。
+	 */
+	[1310600, 'Cancel share'],
+	/**
+	 * 分享内容不可以为空。
+	 */
+	[1310601, 'Shared content can not be empty'],
+	/**
+	 * 分享失败的其他错误。
+	 */
+	[1310602, 'Failed to share'],
+	/**
+	 * 图片路径加载失败。
+	 */
+	[1310603, 'Failed to load image paths'],
+	/**
+	 * herf 格式无效。
+	 */
+	[1310604, 'Invalid herf'],
+	/**
+	 * Video 路径无效。
+	 */
+	[1310605, 'Invalid video paths'],
+	/**
+	 * file 文件不存在。
+	 */
+	[1310606, 'Invalid file paths'],
+	/**
+	 * Audio 路径无效。
+	 */
+	[1310607, 'Invalid audio paths']
+	
+]);
+
+export class ShareWithSystemFailImpl extends UniError implements IShareWithSystemFail {
+	constructor(errCode : ShareWithSystemErrorCode, errMsg : string | null) {
+		super();
+		this.errSubject = ShareWithSystemUniErrorSubject;
+		this.errCode = errCode;
+		const error = ShareWithSystemUniErrors.get(errCode) ?? ""
+		if (errMsg != null) {
+			// #ifdef APP-IOS
+			this.errMsg = error + ", the reason: " + errMsg!;
+			// #endif
+			// #ifdef APP-ANDROID
+			this.errMsg = error + ", the reason: " + errMsg;
+			// #endif
+		} else {
+			this.errMsg = error;
+		}
+	}
+}

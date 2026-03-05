@@ -1,0 +1,481 @@
+import Base64 from "android.util.Base64"
+import MessageDigest from 'java.security.MessageDigest';
+import FileInputStream from 'java.io.FileInputStream';
+import Charsets from "kotlin.text.Charsets"
+import File from 'java.io.File'
+import ParcelFileDescriptor from 'android.os.ParcelFileDescriptor'
+import { AppendFileOptions, FileManagerSuccessResult, OpenFileOptions, OpenFileSuccessResult, OpenFileSyncOptions, ReadOption, WriteFileOptions, WriteOptions, WriteResult, WriteSyncOptions } from '../interface';
+import { UniErrorSubject, FileSystemManagerFailImpl, FileSystemManagerUniErrors, FileSystemManagerUniErrorSubject } from '../unierror';
+import RandomAccessFile from 'java.io.RandomAccessFile'
+import FileChannel from 'java.nio.channels.FileChannel'
+import { isSandyBoxPath } from './FileManagerUtil.uts'
+import ByteBuffer from 'java.nio.ByteBuffer';
+import FileOutputStream from 'java.io.FileOutputStream';
+
+
+export class WriteFileUtil {
+	public writeFile(options : WriteFileOptions) {
+		if (options.encoding == null) {
+			options.encoding = 'utf-8'
+		}
+		if (options.encoding.toString().toLowerCase() != 'base64' && options.encoding.toString().toLowerCase() != 'utf-8' && options.encoding.toString().toLowerCase() != 'ascii') {
+			let err = new FileSystemManagerFailImpl(1200002);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		}
+
+		// 判断type 是否合法
+		let filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
+
+		let isSandyBox = isSandyBoxPath(filePath, false)
+		if (!isSandyBox) {
+			let err = new FileSystemManagerFailImpl(1300013);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		}
+
+		let nextFile = new File(filePath)
+
+		if (nextFile.exists() && nextFile.isDirectory()) {
+			// 出错了，目标文件已存在，并且是个目录
+			let err = new FileSystemManagerFailImpl(1301003);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		}
+
+		let that = this
+		let currentDispatcher = UTSAndroid.getDispatcher()
+		UTSAndroid.getDispatcher('io').async(function (_) {
+
+			/**
+			 * 如果上一级目录不存在，创建之
+			 */
+			if (!nextFile.parentFile!.exists()) {
+				nextFile.parentFile!.mkdirs()
+			}
+
+			if (!nextFile.exists()) {
+				nextFile.createNewFile()
+			} else {
+				nextFile.delete()
+				nextFile.createNewFile()
+			}
+			// 写入文本，根据不同的编码内容写入不同的数据
+			if (options.data instanceof ArrayBuffer) {
+				// 打开文件通道
+				var arrayBuffer = options.data as ArrayBuffer
+				that.writeBuffer(arrayBuffer, filePath)
+			} else {
+				if (options.encoding.toString().toLowerCase() == 'ascii') {
+					// 与微信保持一致，以UTF-16 BE首字节为ascii
+					let charArray = options.data.toString().toCharArray()
+					let charNum = charArray.size
+					let byteArray = ByteArray(charNum)
+					let index = 0;
+					for (; index < charNum; index++) {
+						let perByte = charArray[index.toInt()].toChar().code.toByte()
+						byteArray.set(index.toInt(), perByte)
+					}
+					nextFile.writeBytes(byteArray)
+				} else if (options.encoding.toString().toLowerCase() == 'base64') {
+					// base64
+					nextFile.writeBytes(Base64.decode(options.data.toString(), Base64.NO_WRAP))
+				} else {
+					// utf-8 兜底
+					nextFile.writeText(options.data.toString(), Charsets.UTF_8)
+				}
+
+			}
+
+
+			let ret : FileManagerSuccessResult = {
+				errMsg: "writeFile:ok"
+			}
+			currentDispatcher.async(function (_) {
+				options.success?.(ret)
+				options.complete?.(ret)
+			})
+		}, null)
+	}
+
+	public writeFileSync(filePath : string, data : any, encoding : string | null = null) : void {
+		let msgPrefix = "writeFileSync:fail "
+		let tempEncoding = 'utf-8'
+		if (encoding != null) {
+			tempEncoding = encoding
+		}
+		if (tempEncoding.toLowerCase() != 'base64' && tempEncoding.toLowerCase() != 'utf-8' && tempEncoding.toLowerCase() != 'ascii') {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1200002, msgPrefix + FileSystemManagerUniErrors.get(1200002)!)
+		}
+
+		// 判断type 是否合法
+		let tempFilePath = UTSAndroid.convert2AbsFullPath(filePath)
+		let isSandyBox = isSandyBoxPath(tempFilePath, false)
+		if (!isSandyBox) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+		}
+		let nextFile = new File(tempFilePath)
+
+		if (nextFile.exists() && nextFile.isDirectory()) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1301003, msgPrefix + FileSystemManagerUniErrors.get(1301003)!)
+		}
+		/**
+		 * 如果上一级目录不存在，创建之
+		 */
+		if (!nextFile.parentFile!.exists()) {
+			nextFile.parentFile!.mkdirs()
+		}
+
+		if (!nextFile.exists()) {
+			nextFile.createNewFile()
+		} else {
+			nextFile.delete()
+			nextFile.createNewFile()
+		}
+
+		if (data instanceof ArrayBuffer) {
+			// 打开文件通道
+			var arrayBuffer = data as ArrayBuffer
+			this.writeBuffer(arrayBuffer, tempFilePath)
+		} else {
+			// 写入文本，根据不同的编码内容写入不同的数据
+			if (tempEncoding.toLowerCase() == 'ascii') {
+				// 与微信保持一致，以UTF-16 BE首字节为ascii
+				let charArray = data.toString().toCharArray()
+				let charNum = charArray.size
+				let byteArray = new ByteArray(charNum)
+				let index = 0;
+				for (; index < charNum; index++) {
+
+					let perByte = charArray[index.toInt()].toChar().code.toByte()
+					byteArray.set(index.toInt(), perByte)
+				}
+				nextFile.writeBytes(byteArray)
+			} else if (tempEncoding.toLowerCase() == 'base64') {
+				// base64
+				nextFile.writeBytes(Base64.decode(data.toString(), Base64.NO_WRAP))
+			} else {
+				// utf-8 兜底
+				nextFile.writeText(data.toString(), Charsets.UTF_8)
+			}
+		}
+
+	}
+
+	private writeBuffer(arrayBuffer : ArrayBuffer, filePath : string) {
+		var fileChannel : FileChannel | null = null
+		try {
+			// 打开文件通道
+			var raf = new RandomAccessFile(filePath, "rw")
+
+			fileChannel = raf.channel
+
+			// 确保 ByteBuffer 的位置是0
+			var byteBuffer = arrayBuffer.toByteBuffer() as ByteBuffer
+			byteBuffer.rewind()
+			// var float=byteBuffer.asFloatBuffer()
+			// var length:number =Number.from(float.capacity())
+			// for (let i = 0; i <length; i++) {
+			// 	console.log('writeBuffer',float.get(i.toInt()))
+			// }
+
+			// 将 ByteBuffer 数据写入文件
+			fileChannel.write(byteBuffer)
+		} finally {
+			// 关闭文件通道
+			try {
+				if (fileChannel != null) {
+					fileChannel.close()
+				}
+
+			} catch (e : Exception) {
+				// 处理关闭文件通道时的异常
+				e.printStackTrace()
+			}
+		}
+	}
+
+	private writeBufferByCondition(buffer : ArrayBuffer, offset ?: number, position ?: number, length ?: number, fileChannel : FileChannel) : number {
+		let defaultOffset : number = 0
+		if (offset != null) {
+			defaultOffset = offset
+		}
+		let defaultLength : number = buffer.byteLength
+		if (length != null && length < defaultLength - defaultOffset) {
+			defaultLength = length
+		}
+
+		let defaultPosition : number = 0
+		if (position != null) {
+			defaultPosition = position
+		}
+		let end : number = defaultLength
+		if (length != null && length + defaultOffset < defaultLength) {
+			end = length + defaultOffset
+		}
+		console.log('writeBufferByCondition', defaultOffset, end)
+		buffer = buffer.slice(defaultOffset.toInt(), end.toInt())
+		let byteBuffer = buffer.toByteBuffer() as ByteBuffer
+		byteBuffer.rewind()
+		let byteLength = fileChannel.write(byteBuffer, defaultPosition.toLong())
+		return byteLength
+	}
+
+	public write(options : WriteOptions) {
+		if (options.encoding == null) {
+			options.encoding = 'utf-8'
+		}
+		if (options.encoding?.toLowerCase() != 'base64' && options.encoding?.toLowerCase() != 'utf-8' && options.encoding?.toLowerCase() != 'ascii') {
+			let err = new FileSystemManagerFailImpl(1200002);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		}
+		let that = this
+		let currentDispatcher = UTSAndroid.getDispatcher()
+		UTSAndroid.getDispatcher('io').async(function (_) {
+
+			let fd = ParcelFileDescriptor.fromFd(options.fd.toInt())
+			if (fd == null) {
+				let err = new FileSystemManagerFailImpl(1300009);
+				options.fail?.(err)
+				options.complete?.(err)
+				return
+			}
+			let outStream = new FileOutputStream(fd.getFileDescriptor())
+			let fileChannel = outStream.getChannel()
+			//创建ByteBuffer并写入数据
+			let byteLength : number = 0
+			if (options.data instanceof ArrayBuffer) {
+				let buffer = options.data as ArrayBuffer
+				byteLength = that.writeBufferByCondition(buffer, options.offset, options.position, options.length, fileChannel)
+			} else {
+				let buffer:ByteBuffer;
+				// 写入文本，根据不同的编码内容写入不同的数据
+				if (options.encoding?.toLowerCase() == 'ascii') {
+					// 与微信保持一致，以UTF-16 BE首字节为ascii
+					let charArray = options.data.toString().toCharArray()
+					let charNum = charArray.size
+					let byteArray = new ByteArray(charNum)
+					let index = 0;
+					for (; index < charNum; index++) {
+						let perByte = charArray[index.toInt()].toChar().code.toByte()
+						byteArray.set(index.toInt(), perByte)
+					}
+					buffer = ByteBuffer.wrap(byteArray)
+				} else if (options.encoding?.toLowerCase() == 'base64') {
+					// base64
+					buffer = ByteBuffer.wrap(Base64.decode(options.data.toString(), Base64.NO_WRAP))
+				} else {
+					// utf-8 兜底
+					buffer = ByteBuffer.wrap(options.data.toString().toByteArray())
+				}
+
+				// buffer.flip()
+				while (buffer.hasRemaining()) {
+					byteLength+=fileChannel.write(buffer, 0)
+				}
+
+				fileChannel.close()
+				outStream.close()
+			}
+
+			let ret : WriteResult = {
+				bytesWritten: byteLength,
+				errMsg: 'write:ok'
+			}
+			currentDispatcher.async(function (_) {
+				options.success?.(ret)
+				options.complete?.(ret)
+			})
+		}, null)
+	}
+
+	public writeSync(options : WriteSyncOptions) : WriteResult {
+		let msgPrefix = "writeSync:fail "
+		if (options.encoding == null) {
+			options.encoding = 'utf-8'
+		}
+		if (options.encoding.toString().toLowerCase() != 'base64' && options.encoding.toString().toLowerCase() != 'utf-8' && options.encoding.toString().toLowerCase() != 'ascii') {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1200002, msgPrefix + FileSystemManagerUniErrors.get(1200002)!)
+		}
+		let fd = ParcelFileDescriptor.fromFd(options.fd.toInt())
+		if (fd == null) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300009, msgPrefix + FileSystemManagerUniErrors.get(1300009)!)
+		}
+		let byteLength : number = 0
+		try {
+			let outStream = new FileOutputStream(fd.getFileDescriptor())
+			let fileChannel = outStream.getChannel()
+			//创建ByteBuffer并写入数据
+			if (options.data instanceof ArrayBuffer) {
+				let buffer = options.data as ArrayBuffer
+				byteLength = this.writeBufferByCondition(buffer, options.offset, options.position, options.length, fileChannel)
+			} else {
+				let buffer:ByteBuffer;
+				// 写入文本，根据不同的编码内容写入不同的数据
+				if (options.encoding.toString().toLowerCase() == 'ascii') {
+					// 与微信保持一致，以UTF-16 BE首字节为ascii
+					let charArray = options.data.toString().toCharArray()
+					let charNum = charArray.size
+					let byteArray = ByteArray(charNum)
+					let index = 0;
+					for (; index < charNum; index++) {
+						let perByte = charArray[index.toInt()].toChar().code.toByte()
+						byteArray.set(index.toInt(), perByte)
+					}
+					buffer = ByteBuffer.wrap(byteArray)
+				} else if (options.encoding.toString().toLowerCase() == 'base64') {
+					// base64
+					buffer = ByteBuffer.wrap(Base64.decode(options.data.toString(), Base64.NO_WRAP))
+				} else {
+					// utf-8 兜底
+					buffer = ByteBuffer.wrap(options.data.toString().toByteArray())
+				}
+				// buffer.flip()
+				while (buffer.hasRemaining()) {
+					byteLength+=fileChannel.write(buffer, 0)
+				}
+				fileChannel.close()
+				outStream.close()
+			}
+		} catch (e) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+		}
+		let ret : WriteResult = {
+			bytesWritten: byteLength,
+			errMsg: 'write:ok'
+		}
+		return ret
+	}
+	public appendFileSync(filePath : string, data : any, encoding : string | null = null) {
+		let msgPrefix = "appendFileSync:fail "
+		let tempEncoding = encoding
+		if (tempEncoding == null) {
+			tempEncoding = 'utf-8'
+		}
+		if (tempEncoding.toLowerCase() != 'base64' && tempEncoding.toLowerCase() != 'utf-8' && tempEncoding.toLowerCase() != 'ascii') {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1200002, msgPrefix + FileSystemManagerUniErrors.get(1200002)!)
+		}
+		// 判断type 是否合法
+		let tempFilePath = UTSAndroid.convert2AbsFullPath(filePath)
+		let isSandyBox = isSandyBoxPath(tempFilePath, false)
+		if (!isSandyBox) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+		}
+		let nextFile = new File(tempFilePath)
+		if (!nextFile.exists()) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+		} else if (nextFile.isDirectory()) {
+			// 出错了，目标文件已存在，并且是个目录
+			throw new UniError(FileSystemManagerUniErrorSubject, 1301003, msgPrefix + FileSystemManagerUniErrors.get(1301003)!)
+		}
+
+		//创建ByteBuffer并写入数据
+		if (data instanceof ArrayBuffer) {
+			let buffer = data as ArrayBuffer
+			nextFile.appendBytes(buffer.toByteBuffer().array())
+		} else {
+			// 写入文本，根据不同的编码内容写入不同的数据
+			if (tempEncoding.toLowerCase() == 'ascii') {
+				// 与微信保持一致，以UTF-16 BE首字节为ascii
+				let charArray = data.toString().toCharArray()
+				let charNum = charArray.size
+				let byteArray = ByteArray(charNum)
+				let index = 0;
+				for (; index < charNum; index++) {
+					let perByte = charArray[index.toInt()].toChar().code.toByte()
+					byteArray.set(index.toInt(), perByte)
+				}
+				nextFile.appendBytes(byteArray)
+			} else if (tempEncoding.toLowerCase() == 'base64') {
+				// base64
+				nextFile.appendBytes(Base64.decode(data.toString(), Base64.NO_WRAP))
+			} else {
+				// utf-8 兜底
+				nextFile.appendText(data.toString(), Charsets.UTF_8)
+			}
+		}
+	}
+
+	public appendFile(options : AppendFileOptions) {
+		if (options.encoding == null) {
+			options.encoding = 'utf-8'
+		}
+
+		if (options.encoding.toString().toLowerCase() != 'base64' && options.encoding.toString().toLowerCase() != 'utf-8' && options.encoding.toString().toLowerCase() != 'ascii') {
+			let err = new FileSystemManagerFailImpl(1200002);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		}
+
+		// 判断type 是否合法
+		let filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
+
+		let isSandyBox = isSandyBoxPath(filePath, false)
+		if (!isSandyBox) {
+			let err = new FileSystemManagerFailImpl(1300013);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		}
+
+		let nextFile = new File(filePath)
+
+
+		if (!nextFile.exists()) {
+			let err = new FileSystemManagerFailImpl(1300002);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		} else if (nextFile.isDirectory()) {
+			// 出错了，目标文件已存在，并且是个目录
+			let err = new FileSystemManagerFailImpl(1301003);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		}
+
+		let that = this
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+			//创建ByteBuffer并写入数据
+			if (options.data instanceof ArrayBuffer) {
+				let buffer = options.data as ArrayBuffer
+				nextFile.appendBytes(buffer.toByteBuffer().array())
+			} else {
+				// 写入文本，根据不同的编码内容写入不同的数据
+				if (options.encoding?.toString().toLowerCase() == 'ascii') {
+					// 与微信保持一致，以UTF-16 BE首字节为ascii
+					let charArray = options.data.toString().toCharArray()
+					let charNum = charArray.size
+					let byteArray = ByteArray(charNum)
+					let index = 0;
+					for (; index < charNum; index++) {
+						let perByte = charArray[index.toInt()].toChar().code.toByte()
+						byteArray.set(index.toInt(), perByte)
+					}
+					nextFile.appendBytes(byteArray)
+				} else if (options.encoding?.toString().toLowerCase() == 'base64') {
+					// base64
+					nextFile.appendBytes(Base64.decode(options.data.toString(), Base64.NO_WRAP))
+				} else {
+					// utf-8 兜底
+					nextFile.appendText(options.data.toString(), Charsets.UTF_8)
+				}
+			}
+
+			let ret : FileManagerSuccessResult = {
+				errMsg: "appendFile:ok"
+			}
+			currentDispatcher.async(function (_) {
+				options.success?.(ret)
+				options.complete?.(ret)
+			}, null)
+		}, null)
+	}
+}

@@ -1,0 +1,89 @@
+export const LabelStopPropagation = 'label-stopPropagation'
+
+const interactiveTags = ['CHECKBOX', 'RADIO', 'SWITCH', 'BUTTON']
+
+export class UniLabelElement extends UniViewElementImpl implements UniCustomElement {
+
+	private labelEvent : UniPointerEvent | null = null;
+
+	constructor() {
+		super()
+
+		this.addEventListener('click', (event : UniPointerEvent) => {
+			if (this.disabled) {
+				return
+			}
+			if (this.isInteractiveChild(event.target as UniElement)) {
+				event.stopPropagation()
+			} else if (this.for != '') {
+				const elementById = this.uniPage.getElementById(this.for)
+				if (elementById != null) {
+					(elementById as UniElement).dispatchEvent('click', event)
+				}
+			} else {
+				this.labelEvent = event
+				this.dispatchToInteractiveChild(this)
+			}
+		})
+	}
+
+	get disabled() : boolean {
+		return this.getAttribute('disabled') == 'true' ? true : false
+	}
+
+	get for() : string {
+		return this.getAttributeValue(this, 'for', '')
+	}
+
+	private getAttributeValue(element : UniElement, key : string, defaultValue : string) : string {
+		const value = element.getAttribute(key)
+		if (value != null && value!.length > 0) {
+			return value!
+		}
+		return defaultValue
+	}
+
+	private isInteractiveChild(element : UniElement | null) : boolean {
+		const tag = element?.tagName
+		if (tag == '') return false
+
+		if (interactiveTags.includes(tag as string)) return true
+
+		if (element != null) {
+			return this.getAttributeValue((element as UniElement), LabelStopPropagation, '') == LabelStopPropagation
+		}
+		return false
+	}
+
+	private dispatchToInteractiveChild(element : UniElement) : boolean {
+		const tag = element.tagName
+
+		if (interactiveTags.includes(tag as string) && this.labelEvent != null) {
+			const event = this.labelEvent
+			const pointerEvent = new UniPointerEvent(
+				event.type, event.x, event.y,
+				event.clientX, event.clientY,
+				event.pageX, event.pageY,
+				event.screenX, event.screenY
+			);
+			element.dispatchEvent('click', pointerEvent)
+			return true
+		}
+
+		for (const child of element.children) {
+			if (this.dispatchToInteractiveChild(child)) {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	connectedCallback() { }
+
+	disconnectedCallback() { }
+
+	adoptedCallback() { }
+
+	attributeChangedCallback(name : string, oldValue : any | null, newValue : any | null) { }
+}

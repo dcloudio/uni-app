@@ -1,0 +1,6599 @@
+
+export type ReadFileSuccessResult = {
+    /**
+     * 读取的内容，类型为 String 或 ArrayBuffer，在4.31以前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer
+      @uniPlatform {
+         "app": {
+             "android": {
+                 "osVer": "5.0",
+                 "uniVer": "√",
+                 "unixVer": "4.31"
+             },
+             "ios": {
+                 "osVer": "12.0",
+                 "uniVer": "x",
+                 "unixVer": "4.11"
+             },
+         "harmony": {
+           "osVer": "3.0",
+           "uniVer": "4.51",
+           "unixVer": "4.61",
+           "unixvVer": "5.0"
+         }
+         },
+       "mp": {
+         "weixin": {
+             "hostVer": "√",
+             "uniVer": "√",
+             "unixVer": "4.41"
+         },
+         "alipay": {
+             "hostVer": "√",
+             "uniVer": "√",
+             "unixVer": "x"
+         },
+         "baidu": {
+             "hostVer": "√",
+             "uniVer": "√",
+             "unixVer": "x"
+         },
+         "toutiao": {
+             "hostVer": "√",
+             "uniVer": "√",
+             "unixVer": "x"
+         },
+         "lark": {
+             "hostVer": "√",
+             "uniVer": "√",
+             "unixVer": "x"
+         },
+         "qq": {
+             "hostVer": "√",
+             "uniVer": "√",
+             "unixVer": "x"
+         },
+         "kuaishou": {
+             "hostVer": "√",
+             "uniVer": "√",
+             "unixVer": "x"
+         },
+         "jd": {
+             "hostVer": "√",
+             "uniVer": "√",
+             "unixVer": "x"
+         }
+       },
+         "web": {
+             "uniVer": "x",
+             "unixVer": "x"
+         }
+      }
+     */
+    data: string | ArrayBuffer
+}
+
+export type OpenFileSuccessResult = {
+   /**
+    * 文件描述符
+    */
+    fd: string
+	/**
+	 * @deprecated 已废弃
+	 * @internal
+	 */
+    errMsg: string
+}
+
+
+/**
+ *  通用的正确返回结果
+ */
+export type FileManagerSuccessResult = {
+	/**
+	 * @deprecated 已废弃
+	 * @internal
+	 */
+	errMsg: string,
+}
+/**
+ * 通用的正确返回结果回调
+ */
+export type FileManagerSuccessCallback = (res: FileManagerSuccessResult) => void
+/**
+ * 通用的错误返回结果回调
+ */
+export type FileManagerFailCallback = (res: FileSystemManagerFail) => void
+/**
+ * 通用的结束返回结果回调
+ */
+export type FileManagerCompleteCallback = (res: any) => void
+
+
+
+export type ReadFileSuccessCallback = (res: ReadFileSuccessResult) => void
+
+
+
+export type ReadFileOptions = {
+    /**
+     * base64 / utf-8 / ascii,指定读取文件的字符编码，(iOS平台4.61及以后、Android平台4.31及以后)如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容
+     */
+    encoding?:
+	/**
+	 * ascii 字符编码
+	 */
+	"ascii" |
+	/**
+	 * base64 字符编码
+	 */
+	"base64" |
+	/**
+	 * utf-8 字符编码，默认值
+	 */
+	"utf-8",
+    /**
+     * 文件路径，支持相对地址和绝对地址，app-android平台支持代码包文件目录
+     */
+    filePath: string.URIString,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: ReadFileSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type WriteFileOptions = {
+    /**
+     * 文件路径，只支持绝对地址
+     */
+    filePath: string.URIString,
+    /**
+     * 指定写入文件的字符编码,
+     * 支持:ascii base64 utf-8，默认值是 utf-8，仅在 data 类型是 String 时有效
+     */
+    encoding?:
+	/**
+	 * ascii 编码格式
+	 */
+	"ascii" |
+	/**
+	 * base64 编码格式
+	 */
+	"base64" |
+	/**
+	 * utf-8 编码格式，默认值
+	 */
+	"utf-8",
+    /**
+     * 写入的内容，类型为 String 或 ArrayBuffer，之前类型是string，iOS平台4.61及以后、Android平台4.31及以后支持ArrayBuffer类型
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *        },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    data: string | ArrayBuffer,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: FileManagerSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type AppendFileOptions = {
+    /**
+     * 要追加内容的文件路径 (本地路径)
+     */
+    filePath: string.URIString,
+    /**
+     * 指定写入文件的字符编码
+     * 支持:ascii base64 utf-8
+     * 只在 data 类型是 String 时有效
+     */
+    encoding?:
+	/**
+	 * ascii字符编码
+	 */
+	"ascii" |
+	/**
+	 * base64字符编码
+	 */
+	"base64" |
+	/**
+	 * utf-8字符编码，默认值
+	 */
+	"utf-8",
+    /**
+     * 要追加的文本或二进制数据，类型为 String 或 ArrayBuffer，以前类型是string，iOS平台4.61、Android平台4.31及以后支持arraybuffer
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.51",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    data: string | ArrayBuffer,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: FileManagerSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+
+export type OpenFileSuccessCallback = (res: OpenFileSuccessResult) => void
+
+export type OpenFileOptions = {
+    /**
+     * 要追加内容的文件路径 (本地路径)
+     */
+    filePath: string.URIString,
+    /**
+     * 文件系统标志，默认值: 'r'
+     */
+    flag:
+    /**
+     * 打开文件用于追加。 如果文件不存在，则创建该文件
+     */
+    "a" |
+    /**
+     * 类似于 'a'，但如果路径存在，则失败
+     */
+    "ax" |
+    /**
+     * 打开文件用于读取和追加。 如果文件不存在，则创建该文件
+     */
+    "a+" |
+    /**
+     * 类似于 'a+'，但如果路径存在，则失败
+     */
+    "ax+" |
+    /**
+     * 打开文件用于读取。 如果文件不存在，则会发生异常
+     */
+    "r" |
+    /**
+     * 打开文件用于读取和写入。 如果文件不存在，则会发生异常
+     */
+    "r+" |
+    /**
+     * 打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件
+     */
+    "w" |
+    /**
+     * 类似于 'w'，但如果路径存在，则失败
+     */
+    "wx" |
+    /**
+     * 打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件
+     */
+    "w+" |
+    /**
+     * 类似于 'w+'，但如果路径存在，则失败
+     */
+    "wx+",
+    /**
+     * 接口调用的回调函数
+     */
+    success?: OpenFileSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type OpenFileSyncOptions = {
+    /**
+     * 要追加内容的文件路径 (本地路径)
+     */
+    filePath: string.URIString,
+    /**
+     * 文件系统标志，默认值: 'r'
+     */
+    flag:
+	/**
+	 * 打开文件用于追加。 如果文件不存在，则创建该文件
+	 */
+	"a" |
+	/**
+	 * 类似于 'a'，但如果路径存在，则失败
+	 */
+	"ax" |
+	/**
+	 * 打开文件用于读取和追加。 如果文件不存在，则创建该文件
+	 */
+	"a+" |
+	/**
+	 * 类似于 'a+'，但如果路径存在，则失败
+	 */
+	"ax+" |
+	/**
+	 * 打开文件用于读取。 如果文件不存在，则会发生异常
+	 */
+	"r" |
+	/**
+	 * 打开文件用于读取和写入。 如果文件不存在，则会发生异常
+	 */
+	"r+" |
+	/**
+	 * 打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件
+	 */
+	"w" |
+	/**
+	 * 类似于 'w'，但如果路径存在，则失败
+	 */
+	"wx" |
+	/**
+	 * 打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件
+	 */
+	"w+" |
+	/**
+	 * 类似于 'w+'，但如果路径存在，则失败
+	 */
+	"wx+",
+}
+
+export type UnLinkSuccessCallback = (res: FileManagerSuccessResult) => void
+
+export type UnLinkOptions = {
+    /**
+     * 文件路径，只支持绝对地址
+     */
+    filePath: string.URIString,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: UnLinkSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type MkDirSuccessCallback = (res: FileManagerSuccessResult) => void
+
+export type MkDirOptions = {
+    /**
+     * 创建的目录路径 (本地路径)
+     */
+    dirPath: string.URIString,
+    /**
+     *是否在递归创建该目录的上级目录后再创建该目录。如果对应的上级目录已经存在，则不创建该上级目录。如 dirPath 为 a/b/c/d 且 recursive 为 true，将创建 a 目录，再在 a 目录下创建 b 目录，以此类推直至创建 a/b/c 目录下的 d 目录。
+     */
+    recursive: boolean,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: MkDirSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+
+
+
+
+
+export type RmDirOptions = {
+    /**
+     * 要删除的目录路径 (本地路径)
+	 * 删除特殊目录，只删除子，保留本身
+	 * - uni.env.SANDBOX_PATH
+	 * - uni.env.CACHE_PATH
+	 * - uni.env.USER_DATA_PATH
+	 * - uni.env.ANDROID_INTERNAL_SANDBOX_PATH
+	 * 其他创建的目录可以删除子和本身
+     */
+    dirPath: string.URIString,
+    /**
+     *是否递归删除目录。如果为 true，则删除该目录和该目录下的所有子目录以及文件。
+     */
+    recursive: boolean,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: MkDirSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+
+export type ReadDirSuccessResult = {
+    files: string[],
+	/**
+	 * @deprecated 已废弃
+	 * @internal
+	 */
+    errMsg: string
+}
+
+export type ReadDirSuccessCallback = (res: ReadDirSuccessResult) => void
+
+
+export type ReadDirOptions = {
+    /**
+     * 要读取的目录路径 (本地路径)
+     */
+    dirPath: string.URIString,
+
+    /**
+     * 接口调用的回调函数
+     */
+    success?: ReadDirSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+
+
+
+export type AccessOptions = {
+    /**
+     * 要判断是否存在的文件/目录路径 (本地路径)
+     */
+    path: string.URIString,
+
+    /**
+     * 接口调用的回调函数
+     */
+    success?: FileManagerSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type RenameOptions = {
+    /**
+     * 源文件路径，支持本地路径
+     */
+    oldPath: string.URIString,
+    /**
+     * 新文件路径，支持本地路径
+     */
+    newPath: string.URIString,
+
+    /**
+     * 接口调用的回调函数
+     */
+    success?: FileManagerSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type CopyFileOptions = {
+    /**
+     * 源文件路径，支持本地路径
+     */
+    srcPath: string.URIString,
+    /**
+     * 新文件路径，支持本地路径
+	 * - 传入错误路径：比如无权限的路径，返回 error
+	 * - 传入文件路径：如果上一级目录存在，保存到传入的路径，如存在则覆盖；如果上一级目录不存在，上上级目录也不存在，则先递归创建再保存
+	 * -传入destPath是目录路径且已存在，则返回错误码1300021
+	 * -传入destPath是文件路径且已存在，则覆盖写入
+	 * - 判断传入路径尾部是否带斜线，如xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path是目录
+     */
+    destPath: string.URIString,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: FileManagerSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type SaveFileOptions = {
+    /**
+     * 临时存储文件路径 (本地路径)
+     */
+    tempFilePath: string.URIString,
+    /**
+     * - 传入nil：默认保存到 uni.env.CACHE_PATH/uni-store/ 目录
+     * - 传入错误路径：比如无权限的路径，返回 error
+     * - 传入文件路径：如果上一级目录存在，保存到传入的路径，如存在则覆盖；如果上一级目录不存在，上上级目录也不存在，则先递归创建再保存
+     * - 传入filePath是目录路径且已存在，则返回错误码1300021
+     * - 传入filePath是文件路径且已存在，则覆盖写入
+     * - 判断传入路径尾部是否带斜线，如xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path是目录
+     */
+    filePath?: string.URIString | null,
+
+    /**
+     * 接口调用的回调函数
+     */
+    success?: SaveFileSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数，成功保存后删除临时文件
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+
+export type SaveFileSuccessCallback = (res: SaveFileSuccessResult) => void
+
+export type SaveFileSuccessResult = {
+    /**
+     * 存储后的文件路径 (本地路径)。自 `4.71` 起，返回 `unifile://` 协议的路径
+	 * 参数filePath=nil, savedFilePath= unifile://cache/uni-store/xxx
+	 * 否则savedFilePath= unifile://cache/xxx/unifile://usr/xxx/unifile://sandbox/xxx
+     */
+    savedFilePath: string,
+}
+
+export type GetFileInfoSuccessResult = {
+	/**
+	 * 按照传入的 digestAlgorithm 计算得出的的文件摘要
+	 */
+    digest: string,
+	/**
+	 * 文件大小，以字节为单位
+	 */
+    size: number,
+	/**
+	 * @deprecated 已废弃
+	 * @internal
+	 */
+    errMsg: string
+}
+
+export type GetFileInfoSuccessCallback = (res: GetFileInfoSuccessResult) => void
+
+export type GetFileInfoOptions = {
+    /**
+     * 要读取的文件路径 (本地路径)
+     */
+    filePath: string.URIString,
+    /**
+     * 计算文件摘要的算法
+     */
+    digestAlgorithm?:
+	/**
+	 * md5 算法
+	 */
+	"md5" |
+	/**
+	 * sha1 算法
+	 */
+	"sha1" | null,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: GetFileInfoSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+// #ifdef APP-IOS
+export interface Stats extends JSExport {
+    /**
+     * 文件的类型和存取的权限，对应 POSIX stat.st_mode
+     * 注意android中，文件类型只包含是否是目录与文件，
+     * 另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，
+     * 这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限
+     */
+    mode: number;
+    /**
+     * 文件大小，单位：B，对应 POSIX stat.st_size
+     */
+    size: number;
+    /**
+     * 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime
+     * 注意：android中由于系统限制无法获取该数据
+     */
+    lastAccessedTime: number;
+    /**
+     * 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime
+     */
+    lastModifiedTime: number;
+    /**
+     * @internal
+     */
+    mIsFile: boolean;
+	/**
+	 * 判断当前文件是否一个目录
+	 * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *         },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+	 */
+	isDirectory(): boolean;
+	/**
+	 * 判断当前文件是否一个普通文件
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "5.0",
+	 *            "uniVer": "x",
+	 *            "unixVer": "4.31"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "x",
+	 *            "unixVer": "4.11"
+	 *         },
+	 *        "harmony": {
+	 *          "osVer": "3.0",
+	 *          "uniVer": "4.51",
+	 *          "unixVer": "4.61",
+	 *          "unixvVer": "5.0"
+	 *        }
+	 *    },
+	 *  "mp": {
+	 *    "weixin": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    }
+	 *  },
+	 *  "web": {
+	 *    "uniVer": "x",
+	 *    "unixVer": "x"
+	 *  }
+	 * }
+	 */
+	isFile(): boolean;
+}
+// #endif
+
+// #ifndef APP-IOS
+export interface Stats {
+    /**
+     * 文件的类型和存取的权限，对应 POSIX stat.st_mode
+     * 注意android中，文件类型只包含是否是目录与文件，
+     * 另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，
+     * 这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限
+     */
+    mode: number;
+    /**
+     * 文件大小，单位：B，对应 POSIX stat.st_size
+     */
+    size: number;
+    /**
+     * 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime
+     * 注意：android中由于系统限制无法获取该数据
+     */
+    lastAccessedTime: number;
+    /**
+     * 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime
+     */
+    lastModifiedTime: number;
+    /**
+     * @internal
+     */
+    mIsFile: boolean;
+	/**
+	 * 判断当前文件是否一个目录
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "5.0",
+	 *            "uniVer": "x",
+	 *            "unixVer": "4.31"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "x",
+	 *            "unixVer": "4.11"
+	 *         },
+	 *        "harmony": {
+	 *          "osVer": "3.0",
+	 *          "uniVer": "4.51",
+	 *          "unixVer": "4.61",
+	 *          "unixvVer": "5.0"
+	 *        }
+	 *    },
+	 *  "mp": {
+	 *    "weixin": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    }
+	 *  },
+	 *  "web": {
+	 *    "uniVer": "x",
+	 *    "unixVer": "x"
+	 *  }
+	 * }
+	 */
+	isDirectory(): boolean;
+	/**
+	 * 判断当前文件是否一个普通文件
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "5.0",
+	 *            "uniVer": "x",
+	 *            "unixVer": "4.31"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "x",
+	 *            "unixVer": "4.11"
+	 *         },
+	 *        "harmony": {
+	 *          "osVer": "3.0",
+	 *          "uniVer": "4.51",
+	 *          "unixVer": "4.61",
+	 *          "unixvVer": "5.0"
+	 *        }
+	 *    },
+	 *  "mp": {
+	 *    "weixin": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    }
+	 *  },
+	 *  "web": {
+	 *    "uniVer": "x",
+	 *    "unixVer": "x"
+	 *  }
+	 * }
+	 */
+	isFile(): boolean;
+}
+// #endif
+
+export type FileStats = {
+	/**
+	 * 文件/目录路径（相对于传入路径）
+	 */
+    path: string,
+	/**
+	 * Stats 对象，即描述文件状态的对象
+	 */
+    stats: Stats,
+}
+
+export type StatSuccessResult = {
+	/**
+	 * @deprecated 已废弃
+	 * @internal
+	 */
+    errMsg: string,
+   /**
+    * 微信小程序规则：当 recursive 为 false 时，res.stats 是一个 Stats 对象。当 recursive 为 true 且 path 是一个目录的路径时，res.stats 是一个 Array，数组的每一项是一个对象，每个对象包含 path 和 stats
+	* uniapp-x规则为避免返回值是联合类型，均返回数组，具体优化如下：
+	* -—— 当 path = 文件路径，返回数组，仅包含本身stats，返回 stats.path= ""
+	* -—— 当 path = 目录路径 && recursive = false，返回数组，仅包含本身stats，返回 stats.path= "/"
+	* -—— 当 path = 目录路径 && recursive = true，返回数组，包含本身stats和其递归子文件stats和目录文件stats
+    */
+    stats: FileStats[]
+}
+
+
+export type StatSuccessCallback = (res: StatSuccessResult) => void
+
+
+export type StatOptions = {
+    /**
+     * 文件/目录路径 (本地路径)
+     */
+    path: string.URIString,
+    /**
+     * 是否递归获取目录下的每个文件的 Stats 信息
+     */
+    recursive: boolean,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: StatSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+
+export type UnzipFileOptions = {
+    /**
+     * 源文件路径，支持本地路径, 只可以是 zip 压缩文件
+     */
+    zipFilePath: string,
+    /**
+     * 目标目录路径, 支持本地路径
+     */
+    targetPath: string,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: FileManagerSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type GetSavedFileListResult = {
+	/**
+	 * 文件数组。自 `4.71` 起，返回 `unifile://` 协议的路径
+	 * 返回 `unifile://cache/uni-store/` (uni.env.CACHE_PATH/uni-store/) 目录中的文件列表
+	 */
+    fileList: string[]
+}
+
+export type GetSavedFileListCallback = (res: GetSavedFileListResult) => void
+
+export type GetSavedFileListOptions = {
+    /**
+     * 接口调用的回调函数
+     */
+    success?: GetSavedFileListCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+
+
+export type TruncateFileOptions = {
+    /**
+     * 要截断的文件路径 (本地路径)
+     */
+    filePath: string.URIString,
+    /**
+     * 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；
+     * 如果 length 大于文件长度，不做处理
+     */
+    length: number,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: FileManagerSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+
+export type ReadCompressedFileResult = {
+    data: string
+}
+
+export type ReadCompressedFileCallback = (res: ReadCompressedFileResult) => void
+export type ReadCompressedFileOptions = {
+    /**
+     * 要读取的文件的路径 (本地用户文件或代码包文件)，app-android平台支持代码包文件目录
+     */
+    filePath: string.URIString,
+    /**
+     * 文件压缩类型，目前仅支持 'br'。
+     */
+    compressionAlgorithm: "br",
+    /**
+     * 接口调用的回调函数
+     */
+    success?: ReadCompressedFileCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+
+export type RemoveSavedFileOptions = {
+    /**
+     * 需要删除的文件路径 (本地路径)
+     */
+    filePath: string.URIString,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: FileManagerSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type WriteResult = {
+    /**
+     * 实际被写入到文件中的字节数（注意，被写入的字节数不一定与被写入的字符串字符数相同）
+     */
+    bytesWritten: number,
+	/**
+	 * @deprecated 已废弃
+	 * @internal
+	 */
+    errMsg: string
+}
+
+export type WriteCallback = (res: WriteResult) => void
+export type WriteOptions = {
+    /**
+     * 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得
+     */
+    fd: string,
+    /**
+     * 写入的内容，类型为 String 或 ArrayBuffer，以前类型是string，iOS平台4.61、Android平台4.31及以后支持ArrayBuffer
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "4.61",
+     *            "unixVer": "4.61"
+     *        },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    data: string | ArrayBuffer,
+    /**
+     * Android平台4.31及以后版本新增，只在 data 类型是 ArrayBuffer 时有效，决定 ArrayBuffer 中要被写入的部位，即 ArrayBuffer 中的索引，默认0
+     * @defaultValue 0
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *        },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    offset?: number,
+    /**
+     * Android平台4.31及以后版本新增，只在 data 类型是 ArrayBuffer 时有效，指定要写入的字节数，默认为 ArrayBuffer 从0开始偏移 offset 个字节后剩余的字节数
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "4.61",
+     *            "unixVer": "4.61"
+     *        },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    length?: number,
+    /**
+     * Andorid平台4.31及以后版本新增，指定文件开头的偏移量，即数据要被写入的位置。当 position 不传或者传入非 Number 类型的值时，数据会被写入当前指针所在位置。
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    position?: number
+    /**
+     * 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8
+     * 支持:ascii base64 utf-8
+     */
+    encoding?:
+	/**
+	 * ascii 字符编码
+	 */
+	"ascii" |
+	/**
+	 * base64 字符编码
+	 */
+	"base64" |
+	/**
+	 * utf-8 字符编码，默认值
+	 */
+	"utf-8",
+    /**
+     * 接口调用的回调函数
+     */
+    success?: WriteCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+export type WriteSyncOptions = {
+    /**
+     * 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得
+     */
+    fd: string,
+    /**
+     * 写入的内容，类型为 String 或 ArrayBuffer，以前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer类型
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *        },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+	 *    "web": {
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    }
+	 * }
+	 */
+	data : string | ArrayBuffer,
+	/**
+	 * 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8
+	 * 支持:ascii base64 utf-8
+	 */
+	encoding ?:
+	/**
+	 * ascii 字符编码
+	 */
+	"ascii" |
+	/**
+	 * base64 字符编码
+	 */
+	"base64" |
+	/**
+	 * utf-8 字符编码，默认值
+	 */
+	"utf-8",
+    /** 只在 data 类型是 ArrayBuffer 时有效，指定要写入的字节数，默认为 arrayBuffer 从0开始偏移 offset 个字节后剩余的字节数 ，4.31及以后版本新增
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    length?: number
+    /** 只在 data 类型是 ArrayBuffer 时有效，决定 arrayBuffe 中要被写入的部位，即 arrayBuffer 中的索引，默认0，4.31及以后版本新增
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    offset?: number
+    /** 指定文件开头的偏移量，即数据要被写入的位置。当 position 不传或者传入非 Number 类型的值时，数据会被写入当前指针所在位置。4.31及以后版本新增
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    position?: number
+}
+
+export type CloseOptions = {
+    /**
+     * 需要被关闭的文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得
+     */
+    fd: string,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: FileManagerSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type CloseSyncOptions = {
+    /**
+     * 需要被关闭的文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得
+     */
+    fd: string,
+}
+
+
+export type FStatSuccessResult = {
+    /**
+     * Stats 对象，包含了文件的状态信息
+     */
+    stats: Stats
+}
+
+
+export type FStatSuccessCallback = (res: FStatSuccessResult) => void
+
+
+export type FStatOptions = {
+    /**
+     * 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得
+     */
+    fd: string,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: FStatSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type FStatSyncOptions = {
+    /**
+     * 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得
+     */
+    fd: string
+}
+
+export type FTruncateFileOptions = {
+    /**
+     * 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得
+     */
+    fd: string,
+    /**
+     * 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；
+     * 如果 length 大于文件长度，不做处理
+     */
+    length: number,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: FileManagerSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type FTruncateFileSyncOptions = {
+    /**
+     * 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得
+     */
+    fd: string,
+    /**
+     * 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；
+     * 如果 length 大于文件长度，不做处理
+     */
+    length: number,
+}
+
+
+export type EntryItem = {
+    /** 压缩包内文件路径 */
+    path: string
+    /**
+     * 指定写入文件的字符编码
+     * 支持:ascii base64 utf-8;4.31及以后版本如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容
+     */
+    encoding?:
+	/**
+	 * ascii 字符编码
+	 */
+	"ascii" |
+	/**
+	 * base64 字符编码
+	 */
+	"base64" |
+	/**
+	 * utf-8 字符编码，默认值
+	 */
+	"utf-8" | null,
+    // /** 指定文件的长度，如果不指定，则读到文件末尾。有效范围：[1, fileLength]。单位：byte */
+    // length ?: number
+    // /** 从文件指定位置开始读，如果不指定，则从文件头开始读。读取的范围应该是左闭右开区间 [position, position+length)。有效范围：[0, fileLength - 1]。单位：byte */
+    // position ?: number
+}
+export type EntriesResult = {
+    /** 文件路径 */
+    entries: Map<string, ZipFileItem>,
+    /**
+     * @deprecated 已废弃，使用 entries
+     */
+    result: Map<string, ZipFileItem>
+	/**
+	 * @deprecated 已废弃
+	 * @internal
+	 */
+    errMsg: string
+}
+export type ZipFileItem = {
+    /**	文件内容，Android平台4.31及以后版本支持ArrayBuffer */
+    data?:  string | ArrayBuffer | null,
+    /**
+     * @deprecated 已废弃
+     * @internal
+     */
+    errMsg: string
+}
+export type ReadZipEntryCallback = (res: EntriesResult) => void
+export type ReadZipEntryOptions = {
+    /**
+     * 要读取的压缩包的路径 (本地路径)，app-android平台支持代码包文件目录
+     */
+    filePath: string.URIString,
+    /**
+    *统一指定读取文件的字符编码，只在 entries 值为"all"时有效。
+    *4.31及以后版本如果 entries 值为 null 且不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容
+     */
+    encoding?:
+	 /**
+	  * ascii 字符编码
+	  */
+	 "ascii" |
+	 /**
+	  * base64 字符编码
+	  */
+	 "base64" |
+	 /**
+	  * utf-8 字符编码，默认值
+	  */
+	 "utf-8"| null,
+    /** 要读取的压缩包内的文件列表（当不传入时表示读取压缩包内所有文件） */
+    entries?: EntryItem[] | null,
+    /**
+     * 接口调用的回调函数
+     */
+    success?: ReadZipEntryCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     */
+    fail?: FileManagerFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
+    complete?: FileManagerCompleteCallback | null
+}
+
+export type ReadSuccessCallbackResult = {
+    /** 被写入的缓存区的对象，即接口入参的 arrayBuffer
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "5.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.31"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "x",
+	 *            "unixVer": "4.61"
+	 *        },
+	 *    "harmony": {
+	 *      "osVer": "5.0.0",
+	 *      "uniVer": "4.41",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *    },
+	 *  "mp": {
+	 *    "weixin": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    }
+	 *  },
+	 *    "web": {
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    }
+	 * }
+     */
+    arrayBuffer: ArrayBuffer
+    /** 实际读取的字节数
+	* @uniPlatform {
+	*    "app": {
+	*        "android": {
+	*            "osVer": "5.0",
+	*            "uniVer": "√",
+	*            "unixVer": "4.31"
+	*        },
+	*        "ios": {
+	*            "osVer": "12.0",
+	*            "uniVer": "x",
+	*            "unixVer": "4.61"
+	*        },
+	*    "harmony": {
+	*      "osVer": "5.0.0",
+	*      "uniVer": "4.41",
+	*      "unixVer": "4.61",
+	*      "unixvVer": "5.0"
+	*    }
+	*    },
+	*  "mp": {
+	*    "weixin": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "4.41"
+	*    },
+	*    "alipay": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "baidu": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "toutiao": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "lark": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "qq": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "kuaishou": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "jd": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    }
+	*  },
+	*    "web": {
+	*        "uniVer": "x",
+	*        "unixVer": "x"
+	*    }
+	* }
+	*/
+    bytesRead: number
+	/**
+	 * @deprecated 已废弃
+	 * @internal
+	 */
+    errMsg: string
+}
+/** 接口调用成功的回调函数 */
+export type ReadSuccessCallback = (result: ReadSuccessCallbackResult) => void
+export type ReadOption = {
+    /** 数据写入的缓冲区，必须是 ArrayBuffer 实例 */
+    arrayBuffer: ArrayBuffer
+    /**  文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得*/
+    fd: string
+    /** 要从文件中读取的字节数，默认0 */
+    length?: number
+    /** 缓冲区中的写入偏移量，默认0 */
+    offset?: number
+    /** 文件读取的起始位置，如不传或传 null，则会从当前文件指针的位置读取。如果 position 是正整数，则文件指针位置会保持不变并从 position 读取文件。 */
+    position?: number
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    complete?: FileManagerCompleteCallback
+    /** 接口调用失败的回调函数 */
+    fail?: FileManagerFailCallback
+    /** 接口调用成功的回调函数 */
+    success?: ReadSuccessCallback
+}
+
+export type ReadSyncOption = {
+    /**
+     * 数据写入的缓冲区，必须是 ArrayBuffer 实例
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    arrayBuffer: ArrayBuffer
+    /** 文件描述符。fd 通过 [FileSystemManager.open](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.open.html) 或 [FileSystemManager.openSync](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.openSync.html) 接口获得 */
+    fd: string
+    /** 要从文件中读取的字节数，默认0 */
+    length?: number
+    /** 缓冲区中的写入偏移量，默认0 */
+    offset?: number
+    /** 文件读取的起始位置，如不传或传 null，则会从当前文件指针的位置读取。如果 position 是正整数，则文件指针位置会保持不变并从 position 读取文件。 */
+    position?: number
+}
+export type ReadResult = {
+    /**
+     * 被写入的缓存区的对象，即接口入参的 arrayBuffer
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    arrayBuffer: ArrayBuffer
+    /** 实际读取的字节数
+	* @uniPlatform {
+	*    "app": {
+	*        "android": {
+	*            "osVer": "5.0",
+	*            "uniVer": "x",
+	*            "unixVer": "4.31"
+	*        },
+	*        "ios": {
+	*            "osVer": "12.0",
+	*            "uniVer": "x",
+	*            "unixVer": "4.61"
+	*   	  },
+	*        "harmony": {
+	*          "osVer": "3.0",
+	*          "uniVer": "4.51",
+	*          "unixVer": "4.61",
+	*          "unixvVer": "5.0"
+	*        }
+	*    },
+	*  "mp": {
+	*    "weixin": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "4.41"
+	*    },
+	*    "alipay": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "baidu": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "toutiao": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "lark": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "qq": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "kuaishou": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "jd": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    }
+	*  },
+	*  "web": {
+	*    "uniVer": "x",
+	*    "unixVer": "x"
+	*  }
+	* }
+	*/
+    bytesRead: number
+}
+export interface FileSystemManager {
+    /**
+     * 判断文件/目录是否存在
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    access(options: AccessOptions): void;
+    /**
+     * FileSystemManager.access 的同步版本
+     * @param path 要判断是否存在的文件/目录路径 (本地路径)
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    accessSync(path: string): void;
+    /**
+     * 在文件结尾追加内容
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    appendFile(options: AppendFileOptions): void;
+    /**
+     * FileSystemManager.appendFile 的同步版本
+     * @param filePath 要追加内容的文件路径 (本地路径)
+     * @param data 要追加的文本或二进制数据,类型为 String 或 ArrayBuffer，Android平台4.31、iOS平台4.61之前前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer
+     * @param encoding 指定写入文件的字符编码支持:ascii base64 utf-8,只在 data 类型是 String 时有效
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    appendFileSync(filePath: string, data: string | ArrayBuffer, encoding?: string): void;
+    /**
+     * 关闭文件
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    close(options: CloseOptions): void;
+    /**
+     * 同步关闭文件
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    closeSync(options: CloseSyncOptions): void;
+    /**
+     * 复制文件
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    copyFile(options: CopyFileOptions): void;
+    /**
+     * FileSystemManager.copyFile 的同步版本
+     * @param srcPath 源文件路径，支持本地路径
+     * @param destPath 新文件路径，支持本地路径
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    copyFileSync(srcPath: string, destPath: string): void;
+    /**
+     * 获取文件的状态信息
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    fstat(options: FStatOptions): void;
+    /**
+     * 同步获取文件的状态信息
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    fstatSync(options: FStatSyncOptions): Stats;
+    /**
+     * 对文件内容进行截断操作
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    ftruncate(options: FTruncateFileOptions): void;
+    /**
+     * 同步对文件内容进行截断操作
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    ftruncateSync(options: FTruncateFileSyncOptions): void;
+    /**
+     * 获取该本地临时文件 或 本地缓存文件 信息
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    getFileInfo(options: GetFileInfoOptions): void;
+    /**
+     * 获取该已保存的本地缓存文件列表
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    getSavedFileList(options: GetSavedFileListOptions): void;
+    /**
+     * 创建目录
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *   	  },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    mkdir(options: MkDirOptions): void;
+    /**
+     * FileSystemManager.mkdir 的同步版本
+     * @param dirPath 创建的目录路径 (本地路径)
+     * @param recursive 是否在递归创建该目录的上级目录后再创建该目录。如果对应的上级目录已经存在，则不创建该上级目录。如 dirPath 为 a/b/c/d 且 recursive 为 true，将创建 a 目录，再在 a 目录下创建 b 目录，以此类推直至创建 a/b/c 目录下的 d 目录。
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    mkdirSync(dirPath: string, recursive: boolean): void;
+    /**
+     * 打开文件，返回文件描述符
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    open(options: OpenFileOptions): void;
+    /**
+     * 同步打开文件，返回文件描述符
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    openSync(options: OpenFileSyncOptions): string;
+    /**
+     * 读取本地文件内容
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    readFile(options: ReadFileOptions): void;
+    /**
+     * FileSystemManager.readFile 的同步版本参数
+     * @param filePath 文件路径，支持相对地址和绝对地址，app-android平台支持代码包文件目录
+     * @param encoding base64 / utf-8,指定读取文件的字符编码，(iOS平台4.61及以后、Android平台4.31及以后)如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容
+     * @returns data文件内容, iOS平台4.61及以后、Android平台4.31及以后支持ArrayBuffer
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    readFileSync(filePath: string, encoding?: string): string | ArrayBuffer;
+    /**
+     * 读文件
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    read(option: ReadOption): void;
+    /**
+     * 读文件
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.31"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    readSync(option: ReadSyncOption): ReadResult;
+    /**
+     * 读取目录内文件列表
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    readdir(options: ReadDirOptions): void;
+    /**
+     * FileSystemManager.readdir 的同步版本
+     * @param dirPath 要读取的目录路径 (本地路径)
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    readdirSync(dirPath: string): string[] | null;
+    /**
+     * 读取压缩包内的文件
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    readZipEntry(options: ReadZipEntryOptions): void;
+    /**
+     * 删除目录
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    rmdir(options: RmDirOptions): void;
+    /**
+     * FileSystemManager.rmdir 的同步版本
+     * @param dirPath 要删除的目录路径 (本地路径)
+     * @param recursive 是否递归删除目录。如果为 true，则删除该目录和该目录下的所有子目录以及文件。
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    rmdirSync(dirPath: string, recursive: boolean): void;
+    /**
+     * 重命名文件。可以把文件从 oldPath 移动到 newPath
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    rename(options: RenameOptions): void;
+    /**
+     * FileSystemManager.rename 的同步版本
+     * @param oldPath 源文件路径，支持本地路径
+     * @param newPath 新文件路径，支持本地路径
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    renameSync(oldPath: string, newPath: string): void;
+    /**
+     * 删除该小程序下已保存的本地缓存文件
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    removeSavedFile(options: RemoveSavedFileOptions): void;
+    /**
+     * 读取指定压缩类型的本地文件内容
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    readCompressedFile(options: ReadCompressedFileOptions): void;
+    /**
+     * 同步读取指定压缩类型的本地文件内容
+     * @param filePath 要读取的文件的路径 (本地用户文件或代码包文件)，app-android平台支持代码包文件目录
+     * @param compressionAlgorithm 文件压缩类型，目前仅支持 'br'。
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *            "osVer": "x",
+     *            "uniVer": "4.51",
+     *            "unixVer": "4.61",
+     *            "unixvVer": "5.0"
+     *   	  }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    readCompressedFileSync(filePath: string, compressionAlgorithm: string): string
+    /**
+     * 保存临时文件到本地。此接口会移动临时文件，因此调用成功后，tempFilePath 将不可用。
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    saveFile(options: SaveFileOptions): void;
+    /**
+     * FileSystemManager.saveFile 的同步版本。自 `4.71` 起，返回 `unifile://` 协议的路径
+     * @param tempFilePath 临时存储文件路径 (本地路径)
+     * @param filePath 要存储的文件路径 (本地路径)，文件已经存在时会直接覆盖
+     *
+     * 传入不存在的路径\
+     * - App 端自动创建并保存
+     * - 微信小程序会报错
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    saveFileSync(tempFilePath: string, filePath: string | null): string;
+    /**
+     * 获取文件 Stats 对象
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    stat(options: StatOptions): void;
+    /**
+     * FileSystemManager.stat 的同步版本
+     * @param path 文件/目录路径 (本地路径)
+     * @param recursive 是否递归获取目录下的每个文件的 Stats 信息
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+	// #ifdef APP-IOS
+	statSync(path : string, recursive : boolean) : Array<Map<string, any>>;
+	// #endif
+	// #ifndef APP-IOS
+	statSync(path : string, recursive : boolean) : FileStats[];
+	// #endif
+    /**
+     * 对文件内容进行截断操作
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    truncate(options: TruncateFileOptions): void;
+    /**
+     * 对文件内容进行截断操作 (truncate 的同步版本)
+     * @param filePath 要截断的文件路径 (本地路径)
+     * @param length 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；如果 length 大于文件长度，不做处理
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    truncateSync(filePath: string, length?: number): void;
+    /**
+     * 删除文件
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    unlink(options: UnLinkOptions): void;
+    /**
+     * FileSystemManager.unlink 的同步版本
+     * @param filePath 文件路径，只支持绝对地址
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    unlinkSync(filePath: string): void;
+    /**
+     * 解压文件
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *        "harmony": {
+     *          "osVer": "3.0",
+     *          "uniVer": "4.51",
+     *          "unixVer": "4.61",
+     *          "unixvVer": "5.0"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    unzip(options: UnzipFileOptions): void;
+    /**
+     * 写文件
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *   	  },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    writeFile(options: WriteFileOptions): void;
+    /**
+     * FileSystemManager.writeFile 的同步版本
+     * @param filePath 文件路径，只支持绝对地址
+     * @param data 要写入的文本或二进制数据,Android平台4.31、iOS平台4.61及以后版本支持ArrayBuffer
+     * @param encoding 指定写入文件的字符编码,支持:ascii base64 utf-8, 默认值是utf-8, 仅在 data 类型是 String 时有效
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.51",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    writeFileSync(filePath: string, data: string | ArrayBuffer, encoding?: string): void;
+    /**
+     * 写入文件
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    write(options: WriteOptions): void;
+    /**
+     * 同步写入文件
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.13"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.61"
+     *   	  },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    writeSync(options: WriteSyncOptions): WriteResult;
+}
+
+
+export type GetFileSystemManager = () => FileSystemManager;
+
+
+export interface Uni {
+    /**
+     * 获取文件管理器
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-file-system-manager.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-file-system-manager.html
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/file/getFileSystemManager.html#getfilesystemmanager
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "3.9.0"
+     *        },
+     *        "ios": {
+     *            "osVer": "12.0",
+     *            "uniVer": "x",
+     *            "unixVer": "4.11"
+     *   	  },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "4.45",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     * @uniVueVersion 2,3  //支持的vue版本
+     */
+    getFileSystemManager(): FileSystemManager
+}
+
+/**
+ * 错误码
+ */
+export type FileSystemManagerErrorCode =
+    /**
+     * 类型错误。仅支持 base64 / utf-8 / ascii
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "√"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1200002 |
+    /**
+     * 未找到文件
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "√"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300002 |
+    /**
+     * 无权限
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "√"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300013 |
+    /**
+     * 是目录
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "√"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300021 |
+    /**
+     * 参数无效
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "√"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300022 |
+    /**
+     * 目录非空
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "√"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300066 |
+    /**
+     * 对目录的非法操作
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "√"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1301003 |
+    /**
+     * 文件已存在
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "√"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1301005 |
+    /**
+     * 系统错误
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "√"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.11"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300201 |
+    /**
+     * 超出文件存储限制的最大尺寸
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "√"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300202 |
+    /**
+     * brotli解压失败
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.13"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1301111 |
+    /**
+     * 标志无效
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.13"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1302003 |
+    /**
+     * 文件描述符错误
+	 * @uniPlatform {
+	 *  "app": {
+	 *    "android": {
+	 *      "osVer": "5.0",
+	 *      "uniVer": "x",
+	 *      "unixVer": "4.13"
+	 *    },
+	 *    "ios": {
+	 *      "osVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "4.61"
+	 *    },
+	 *    "harmony": {
+	 *      "osVer": "3.0",
+	 *      "uniVer": "4.41",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *  },
+	 *  "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "x"
+	 *  },
+	 *  "mp": {
+	 *    weixin": {
+	 *      "hostVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 * }
+     */
+    1300009 |
+    /**
+     * 重试
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300010 |
+    /**
+     * 错误的地址
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300011 |
+    /**
+     * 操作阻塞
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300012 |
+    /**
+     * 未知错误
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300015 |
+    /**
+     * 网络不可达
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300014 |
+    /**
+     * 不是文件夹
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300016 |
+    /**
+     * 文本文件繁忙
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300017 |
+    /**
+     * 文件太大
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300018 |
+    /**
+     * 只读文件系统
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300019 |
+    /**
+     * 文件名称太长
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300020 |
+    /**
+     * 过多符号链接
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.41",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    1300033;
+
+export type FileSystemManagerFail = IFileSystemManagerFail;
+export interface IFileSystemManagerFail extends IUniError {
+    errCode: FileSystemManagerErrorCode
+};

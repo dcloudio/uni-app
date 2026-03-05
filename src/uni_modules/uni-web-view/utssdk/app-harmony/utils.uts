@@ -1,0 +1,112 @@
+import { image } from '@kit.ImageKit';
+import { FrameCallback } from '@kit.ArkUI';
+
+export class CustomFrameCallback extends FrameCallback {
+  cb : () => void
+
+  constructor(cb : () => void) {
+    super()
+    this.cb = cb
+  }
+
+  override onIdle() {
+    this.cb()
+  }
+}
+
+export async function getSnapshotArea(pixelMap : PixelMap, scrollYOffsets : number[], width : number, height : number) : Promise<image.PositionArea> {
+  // Gets the number of bytes per line of image pixels.
+  const stride = pixelMap.getBytesNumberPerRow();
+  // Get the total number of bytes of image pixels.
+  const bytesNumber = pixelMap.getPixelBytesNumber();
+  const buffer : ArrayBuffer = new ArrayBuffer(bytesNumber);
+
+  const len = scrollYOffsets.length;
+  // 非第一屏时才需要裁剪
+  if (len >= 2) {
+    // 本地滚动距离
+    const realScrollHeight = scrollYOffsets[len - 1] - scrollYOffsets[len - 2];
+    if (height - realScrollHeight > 0) {
+      const cropRegion : image.Region = {
+        x: 0,
+        y: vp2px(height - realScrollHeight),
+        size: {
+          height: vp2px(realScrollHeight),
+          width: vp2px(width)
+        }
+      };
+      if (cropRegion.size.height == 0) {
+        // 如果裁剪高度为0，直接返回空区域
+        return {
+          pixels: buffer,
+          offset: 0,
+          stride: stride,
+          region: {
+            size: {
+              width: 0,
+              height: 0
+            },
+            x: 0,
+            y: 0
+          }
+        };
+      }
+      // Crop roll area
+      await pixelMap.crop(cropRegion);
+    }
+  }
+
+  const imgInfo = pixelMap.getImageInfoSync();
+  // Region size, read based on region. PositionArea represents the data within the specified area of the image.
+  const area : image.PositionArea = {
+    pixels: buffer,
+    offset: 0,
+    stride: stride,
+    region: {
+      size: {
+        width: imgInfo.size.width,
+        height: imgInfo.size.height
+      },
+      x: 0,
+      y: 0
+    }
+  }
+  // Write data to a specified area
+  pixelMap.readPixelsSync(area);
+  return area;
+}
+
+export async function mergeImage(areaArray : image.PositionArea[], lastOffsetY : number, listWidth : number,
+  listHeight : number) : Promise<PixelMap> {
+  // Create a long screenshot PixelMap
+  const opts : image.InitializationOptions = {
+    editable: true,
+    pixelFormat: 4,
+    size: {
+      width: vp2px(listWidth),
+      height: Math.round(vp2px(lastOffsetY + listHeight))
+    }
+  };
+  const longPixelMap = image.createPixelMapSync(opts);
+  let imgPosition : number = 0;
+
+  for (let i = 0; i < areaArray.length; i++) {
+    const readArea = areaArray[i];
+    const area : image.PositionArea = {
+      pixels: readArea.pixels,
+      offset: 0,
+      stride: readArea.stride,
+      region: {
+        size: {
+          width: readArea.region.size.width,
+          height: readArea.region.size.height
+        },
+        x: 0,
+        y: imgPosition
+      }
+    }
+    imgPosition += readArea.region.size.height;
+    longPixelMap.writePixelsSync(area);
+  }
+  return longPixelMap;
+}

@@ -1,0 +1,5 @@
+<resources>
+    <string name="uni_app_uni_location_notification_channel_name">Ongoing background location tracking</string>
+    <string name="uni_app_uni_location_notification_content_title">%s is using your</string>
+    <string name="uni_app_uni_location_notification_content_text">Location</string>
+</resources>

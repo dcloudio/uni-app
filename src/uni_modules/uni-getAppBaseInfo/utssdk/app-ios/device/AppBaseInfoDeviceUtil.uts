@@ -1,0 +1,123 @@
+import { UTSiOS } from "DCloudUTSFoundation";
+import { Bundle, FileManager } from 'Foundation';
+import { } from 'CommonCrypto';
+import { UnsafeBufferPointer, UnsafeRawBufferPointer } from 'Swift';
+
+export class AppBaseInfoDeviceUtil {
+
+	public static getAppID() : string {
+		return UTSiOS.getAppId();
+	}
+
+	public static getAppName() : string {
+		return UTSiOS.getAppName();
+	}
+
+	public static getHostName() : string {
+		return UTSiOS.getHostName();
+	}
+
+	public static getHostTheme() : string {
+		return UTSiOS.getHostTheme();
+	}
+
+	public static getHostLanguage() : string {
+		return UTSiOS.getHostLanguage();
+	}
+
+	public static getHostVersion() : string {
+		return UTSiOS.getHostVersion();
+	}
+
+	public static getHostPackageName() : string {
+		return UTSiOS.getHostPackageName();
+	}
+
+	public static getAppVersion() : string {
+		return UTSiOS.getAppVersion();
+	}
+
+	public static getAppVersionCode() : string {
+		return UTSiOS.getAppVersionCode();
+	}
+
+	public static getAppWgtVersion() : string {
+		return UTSiOS.getAppWgtVersion();
+	}
+
+	public static getOsLanguage() : string {
+		return UTSiOS.getOsLanguage();
+	}
+
+	public static getOsLanguageNormal() : string {
+		const LOCALE_ZH_HANS = 'zh-Hans'
+		const LOCALE_ZH_HANT = 'zh-Hant'
+		let locale = UTSiOS.getOsLanguage();
+		if (locale.indexOf('zh') == 0) {
+			if (locale.indexOf('-hans') > -1) {
+				return LOCALE_ZH_HANS;
+			}
+			if (locale.indexOf('-hant') > -1) {
+				return LOCALE_ZH_HANT;
+			}
+			if (locale.includes("-tw") || locale.includes("-hk") || locale.includes("-mo") || locale.includes("-cht")) {
+				return LOCALE_ZH_HANT;
+			}
+
+			return LOCALE_ZH_HANS;
+		} else {
+			return locale;
+		}
+	}
+
+	public static getAppInnerVersion() : string {
+		return UTSiOS.getInnerVersion();
+	}
+
+	public static getBundleId() : string {
+		return Bundle.main.bundleIdentifier!
+	}
+
+	public static getSignature() : string {
+		let bundleId = AppBaseInfoDeviceUtil.getBundleId()
+		const embeddedPath = Bundle.main.path(forResource = "embedded", ofType = "mobileprovision")
+		if (embeddedPath != null) {
+			if (FileManager.default.fileExists(atPath = embeddedPath!)) {
+				const embeddedProvisioning : string | null = UTSiOS.try(new String(contentsOfFile = embeddedPath!, encoding = String.Encoding.ascii), "?")
+				const embeddedProvisioningLines = embeddedProvisioning?.split("\n")
+				let target = ""
+				embeddedProvisioningLines?.forEach((line : string, index : number) => {
+					if (line.indexOf("application-identifier") != -1) {
+						if (index + 1 < embeddedProvisioningLines!.length) {
+							target = embeddedProvisioningLines![index + 1]
+						}
+					}
+				})
+				const leftStr = "<string>"
+				const rightStr = "</string>"
+				if (target != "") {
+					const start = target.indexOf(leftStr) + leftStr.length;
+					const end = target.indexOf(rightStr)
+					const fullIdentifier = target.slice(start, end)
+					const idStart = fullIdentifier.indexOf(".") + 1
+					const id = fullIdentifier.slice(idStart)
+					if(id.length > 0){
+						bundleId = id
+					}
+				}
+			}
+		}
+		
+		const strData = bundleId.data(using = String.Encoding.utf8)!
+		let digest = new Array<UInt8>(repeating = 0, count = new Int(CC_MD5_DIGEST_LENGTH))
+		strData.withUnsafeBytes((body : UnsafeRawBufferPointer) => {
+			CC_MD5(body.baseAddress, new UInt32(strData.count), UTSiOS.getPointer(digest))
+		})
+		let md5String = ""
+		digest.forEach((byte : UInt8) => {
+			md5String += new String(format = "%02x", new UInt8(byte))
+		})
+
+		return md5String
+	}
+}

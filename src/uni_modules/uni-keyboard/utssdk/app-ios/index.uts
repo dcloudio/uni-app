@@ -1,0 +1,44 @@
+import {
+	HideKeyboard, HideKeyboardOptions, HideKeyboardSuccess,
+	OnKeyboardHeightChange, OnKeyboardHeightChangeCallback, OnKeyboardHeightChangeCallbackResult,
+	OffKeyboardHeightChange
+} from "../interface.uts";
+import { UTSiOS } from "DCloudUTSFoundation";
+
+export const hideKeyboard: HideKeyboard = function (options ?: HideKeyboardOptions) {
+	UTSiOS.hideKeyboard()
+	const success : HideKeyboardSuccess = {}
+	options?.success?.(success)
+	options?.complete?.(success)
+}
+
+export const onKeyboardHeightChange: OnKeyboardHeightChange = function (callback : OnKeyboardHeightChangeCallback): number {
+	return UTSiOS.onKeyboardHeightChange((height : number) : void => {
+		let result : OnKeyboardHeightChangeCallbackResult = {
+			height: height
+		}
+		callback(result)
+	})
+}
+
+export const offKeyboardHeightChange: OffKeyboardHeightChange = function (id ?: number) {
+	UTSiOS.offKeyboardHeightChange(id)
+}
+
+// export const getSelectedTextRange: GetSelectedTextRange = function (options : GetSelectedTextRangeOptions) {
+// 	UTSiOS.getSelectedTextRange((start: number | null,end: number | null) : void => {
+// 		if(start != null && end != null){
+// 			const success : GetSelectedTextRangeSuccess = {
+// 				start: start!,
+// 				end: end!
+// 			}
+// 			options.success?.(success)
+// 			options.complete?.(success)
+// 		}else{
+// 			const fail : GetSelectedTextRangeFail = {}
+// 			options.fail?.(fail)
+// 			options.complete?.(fail)
+// 		}
+// 	})
+	
+// }

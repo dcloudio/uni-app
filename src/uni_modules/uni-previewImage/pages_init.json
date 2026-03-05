@@ -1,0 +1,9 @@
+{
+	"pages": [{
+		"path": "uni_modules/uni-previewImage/pages/previewImage/previewImage",
+		"style": {
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "white"
+		}
+	}]
+}

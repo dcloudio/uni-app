@@ -1,0 +1,781 @@
+import OHWindow from '@ohos.window'
+import { audio } from '@kit.AudioKit';
+import { font } from '@kit.ArkUI'
+// @ts-ignore
+import { getCurrentMP, getRealPath } from "@dcloudio/uni-runtime";
+import { buildVideo, AVVolumePanelOptions } from "./builder.ets";
+import { CreateVideoContext, VideoContext, RequestFullScreenOptions, Danmu } from '../interface.uts';
+import { UniVideoTimeUpdateEvent, UniVideoTimeUpdateEventDetail, UniVideoFullScreenChangeEvent, UniVideoFullScreenChangeEventDetail, UniVideoErrorEvent, UniVideoProgressEvent, UniVideoProgressEventDetail, UniVideoFullScreenClickEvent, UniVideoFullScreenClickEventDetail, UniVideoControlsToggleEvent, UniVideoControlsToggleEventDetail } from '../interface.uts';
+
+const FONT_REGISTRATION_DELAY_MS = 40
+
+UTSHarmony.onAppAbilityWindowStageCreate((window) => {
+  setTimeout(async () => {
+    const mainWindow = await window.getMainWindow()
+    mainWindow.getUIContext().getFont().registerFont({
+      familyName: 'uni-video-icon',
+      familySrc: $rawfile('uni-video/uni-video-icon.ttf')
+    } as font.FontOptions);
+  }, FONT_REGISTRATION_DELAY_MS);
+});
+
+export { AVVolumePanelOptions }
+
+export interface BuilderVideoOptions extends VideoOptions { }
+
+export interface VideoEvent {
+  onPlay ?: () => void;
+  onPause ?: () => void;
+  onEnded ?: () => void;
+  onStop ?: () => void;
+  onError ?: () => void;
+  onPrepared ?: (event : OnPreparedEvent) => void;
+  onSeeking ?: (event : OnSeekingEvent) => void;
+  onSeeked ?: (event : OnSeekedEvent) => void;
+  onTimeUpdate ?: (event : OnUpdateEvent) => void;
+  onFullscreenChange ?: (event : OnFullscreenChange) => void;
+}
+
+export type ObjectFit = 'contain' | 'fill' | 'cover';
+
+export interface BuilderVideoParams {
+  options : BuilderVideoOptions
+  event ?: VideoEvent
+  objectFit ?: ObjectFit | ImageFit;
+  muted ?: boolean;
+  autoplay ?: boolean;
+  loop ?: boolean;
+  controls ?: boolean;
+  eventSeed : number;
+  volumeOptions ?: AVVolumePanelOptions;
+}
+
+export interface OnPreparedEvent {
+  duration : number
+}
+
+export interface OnSeekingEvent {
+  time : number
+}
+
+export interface OnSeekedEvent {
+  time : number
+}
+
+export interface OnUpdateEvent {
+  time : number
+}
+
+export interface OnFullscreenChange {
+  fullscreen : boolean
+}
+
+const formatVideoOptions = (options : VideoOptions) : VideoOptions => {
+  if (typeof options.src === 'string') {
+    options.src = getRealPath(options.src) as string
+    // NOTE getRealPath 现在会返回一个绝对路径：/data/xxx
+    if (options.src?.startsWith('/')) {
+      options.src = 'file://' + options.src
+    }
+  }
+  return options
+}
+
+class BindVideoController {
+  private videoElement : UniVideoElement | null = null
+  controller : VideoController = new VideoController()
+
+  setVideoElement(videoElement : UniVideoElement) {
+    this.videoElement = videoElement
+  }
+
+  play() {
+    this.controller.start()
+  }
+
+  pause() {
+    this.controller.pause()
+  }
+
+  stop() {
+    this.seek(0)
+    this.pause()
+    // this.controller.stop()
+  }
+
+  reset() {
+    this.controller.reset()
+  }
+
+  seek(position : number) {
+    this.controller.setCurrentTime(position, SeekMode.Accurate)
+  }
+
+  requestFullscreen(options ?: RequestFullScreenOptions | null) {
+    this.videoElement?.requestFullScreen(options)
+  }
+
+  exitFullscreen() {
+    this.videoElement?.exitFullScreen();
+  }
+
+  dispose() {
+    this.videoElement = null
+  }
+}
+
+export class Video {
+  private bindVideoController ?: BindVideoController
+  private harmonyBuilderNode : ComponentContent | null = null
+  private params : BuilderVideoParams
+  private _currentMP = getCurrentMP()
+  private pendingPlayAfterPrepared = false
+  private prepared = false
+  private readyToSetNextSrc = true;
+  private srcQueue: string[] = []
+  private originalSrc: string = ''
+  fullscreening : boolean = false
+
+  constructor(element : UniNativeViewElement, params : BuilderVideoParams) {
+    const videoEvent : VideoEvent = {};
+    let triggerPlayEvent = true
+    videoEvent.onTimeUpdate = (event) => {
+      uni.$emit(`__UNIVIDEO_ON_TIME_UPDATE_${params.eventSeed}`, event.time)
+    };
+    videoEvent.onPlay = () => {
+      // #ifdef VUE3-VAPOR
+      this.params.volumeOptions!.show = true
+      this.updateParams()
+      // #endif
+      triggerPlayEvent ? uni.$emit(`__UNIVIDEO_ON_PLAY_${params.eventSeed}`) : (triggerPlayEvent = true)
+    };
+    videoEvent.onPause = () => {
+      if (this.fullscreening) {
+        // 全屏时脱离文档流会暂停播放
+        triggerPlayEvent = false
+        this.fullscreening = false
+        this.play()
+      } else {
+        // #ifdef VUE3-VAPOR
+        this.params.volumeOptions!.show = false
+        this.updateParams()
+        // #endif
+        uni.$emit(`__UNIVIDEO_ON_PAUSE_${params.eventSeed}`)
+      }
+    };
+    videoEvent.onError = () => {
+      this.readyToSetNextSrc = true;
+      this.flushSrcQueue();
+        // #ifdef VUE3-VAPOR
+      this.params.volumeOptions!.show = false
+      this.updateParams()
+        // #endif
+      uni.$emit(`__UNIVIDEO_ON_ERROR_${params.eventSeed}`)
+    };
+    videoEvent.onEnded = () => {
+        // #ifdef VUE3-VAPOR
+      this.params.volumeOptions!.show = false
+      this.updateParams()
+        // #endif
+      uni.$emit(`__UNIVIDEO_ON_ENDED_${params.eventSeed}`)
+    };
+    videoEvent.onPrepared = (event) => {
+      this.prepared = true
+      this.readyToSetNextSrc = true;
+      this.flushSrcQueue();
+      uni.$emit(`__UNIVIDEO_ON_PREPARED_${params.eventSeed}`, event.duration)
+      if (this.pendingPlayAfterPrepared) {
+        this.pendingPlayAfterPrepared = false
+        this.play()
+      }
+    };
+
+    params.event = videoEvent
+    const bindVideoController = new BindVideoController()
+    const videoElement = element.parentElement?.parentElement
+    if (videoElement) {
+      (videoElement as unknown as UniVideoElement).setVideo(this)
+      bindVideoController.setVideoElement((videoElement as unknown as UniVideoElement))
+    }
+    this.bindVideoController = bindVideoController
+    params.options.controller = bindVideoController.controller
+
+    if (params.objectFit) {
+      params.objectFit = this.getObjectFit(params.objectFit as ObjectFit)
+    }
+    this.params = params
+
+    if (typeof this.params.options.src === 'string') {
+      this.originalSrc = this.params.options.src
+    }
+
+    formatVideoOptions(this.params.options)
+
+    this.params.volumeOptions = {
+      show: false
+    } as AVVolumePanelOptions
+
+    element.bindHarmonyWrappedBuilder(wrapBuilder<[BuilderVideoParams]>(buildVideo), this.params);
+    element.bindHarmonyController(this.bindVideoController)
+    if (typeof element['getHarmonyComponentContent'] === 'function') {
+      // @ts-ignore
+      this.harmonyBuilderNode = (element as ESObject).getHarmonyComponentContent() as ComponentContent;
+    } else {
+      this.harmonyBuilderNode = element.getHarmonyBuilderNode()
+    }
+
+    this._currentMP.window?.on('windowStatusChange', this.windowStatusChange)
+  }
+
+  private windowStatusChange = () => {
+    uni.$emit(`__UNIVIDEO_ON_WINDOW_STATUS_CHANGE_${this.params?.eventSeed}`);
+  }
+
+  private updateParams() {
+    formatVideoOptions(this.params.options)
+    this.harmonyBuilderNode?.update(this.params)
+  }
+
+  private getObjectFit(objectFit : ObjectFit) : ImageFit {
+    switch (objectFit) {
+      case 'contain':
+        return ImageFit.Contain;
+      case 'fill':
+        return ImageFit.Fill;
+      case 'cover':
+        return ImageFit.Cover;
+      default:
+        return ImageFit.Contain
+    }
+  }
+
+  private formatPlaybackRate(rate : number) : number {
+    // NOTE 鸿蒙仅支持 0.75，1.0，1.25，1.75，2.0
+    const validValues = [0.75, 1.0, 1.25, 1.75, 2.0];
+    let closest = validValues[0];
+    let closestDiff = Math.abs(rate - closest);
+
+    for (let i = 1; i < validValues.length; i++) {
+      let diff = Math.abs(rate - validValues[i]);
+      if (diff < closestDiff) {
+        closest = validValues[i];
+        closestDiff = diff;
+      }
+    }
+    return closest;
+  }
+
+  private flushSrcQueue() {
+    if (this.srcQueue.length > 0) {
+      const src = this.srcQueue[this.srcQueue.length - 1]
+      this.srcQueue.length = 0
+      this.src = src
+    }
+  }
+
+  private resetVideoState() {
+    this.pendingPlayAfterPrepared = false;
+    this.readyToSetNextSrc = true;
+    this.srcQueue = [];
+    this.params.volumeOptions!.show = false
+  }
+
+  private setSrc(src: string) {
+    if (!this.readyToSetNextSrc) {
+      this.srcQueue.push(src)
+      return
+    }
+    this.originalSrc = this.params.options.src = src
+    this.prepared = false
+    this.pendingPlayAfterPrepared = false
+    this.readyToSetNextSrc = false;
+    this.updateParams()
+  }
+
+  dispose() {
+    this.bindVideoController?.dispose()
+    this.bindVideoController = undefined
+    this.harmonyBuilderNode?.dispose()
+    this.harmonyBuilderNode = null
+    if (this.params.event) {
+      this.params.event.onTimeUpdate = undefined
+      this.params.event.onPlay = undefined
+      this.params.event.onPause = undefined
+      this.params.event.onError = undefined
+      this.params.event.onEnded = undefined
+      this.params.event.onPrepared = undefined
+      this.params.event = undefined
+    }
+    this._currentMP.window?.off('windowStatusChange', this.windowStatusChange)
+  }
+
+  destroy() {
+    this.dispose()
+  }
+
+  set src(src : string) {
+    if (src === this.originalSrc) {
+      this.resetVideoState()
+      this.params.options.src = ''
+      this.updateParams()
+      setTimeout(() => {
+        this.setSrc(src)
+      }, 100)
+      return
+    }
+    this.setSrc(src)
+  }
+
+  set poster(poster : string) {
+    this.params.options.previewUri = poster;
+    this.updateParams()
+  }
+
+  set objectFit(objectFit : ObjectFit) {
+    this.params.objectFit = this.getObjectFit(objectFit);
+    this.updateParams()
+  }
+
+  set autoplay(autoplay : boolean) {
+    this.params.autoplay = autoplay
+    this.updateParams()
+  }
+
+  set loop(loop : boolean) {
+    this.params.loop = loop
+    this.updateParams()
+  }
+
+  set playbackRate(playbackRate : string | number) {
+    this.params.options.currentProgressRate = this.formatPlaybackRate(typeof playbackRate === 'number' ? playbackRate : parseFloat(playbackRate))
+    this.updateParams()
+  }
+
+  set muted(muted : boolean) {
+    this.params.muted = muted
+    this.updateParams()
+  }
+
+  set controls(controls : boolean) {
+    this.params.controls = controls
+    this.updateParams()
+  }
+
+  displayTheFirstFrame() {
+    this.bindVideoController?.controller.setCurrentTime(1, SeekMode.PreviousKeyframe);
+  }
+
+  play() {
+    if (!this.prepared) {
+      this.pendingPlayAfterPrepared = true
+      return
+    }
+    this.bindVideoController?.play()
+  }
+
+  pause() {
+    this.pendingPlayAfterPrepared = false;
+    this.bindVideoController?.pause()
+  }
+
+  stop() {
+    this.resetVideoState()
+    this.bindVideoController?.stop()
+  }
+
+  reset() {
+    this.resetVideoState()
+    this.bindVideoController?.reset()
+  }
+
+  seek(time : number) {
+    this.bindVideoController?.seek(time)
+  }
+
+  requestFullscreen(options ?: RequestFullScreenOptions | null) {
+    this.bindVideoController?.requestFullscreen(options)
+  }
+
+  exitFullscreen() {
+    this.bindVideoController?.exitFullscreen()
+  }
+
+  sendDanmu(danmu : Danmu) {
+    uni.$emit(`__UNIVIDEO_SEND_DANMU_${this.params.eventSeed}`, new UTSJSONObject({
+      text: danmu.text,
+      color: danmu.color,
+      time: danmu.time
+    }))
+  }
+
+  setVolume(options: AVVolumePanelOptions) {
+    if (this.params.volumeOptions == null) {
+      this.params.volumeOptions = { show: false }
+    }
+    if (options.show != null) {
+      this.params.volumeOptions.show = options.show
+    }
+    if (options.volumeLevel != null) {
+      this.params.volumeOptions.volumeLevel = options.volumeLevel
+    }
+    this.params.volumeOptions.positionX = options.positionX
+    this.params.volumeOptions.positionY = options.positionY
+    this.updateParams()
+  }
+}
+
+interface IUniVideoElement extends UniElement {
+  play() : void
+  pause() : void
+  seek(position : number) : void
+  stop() : void
+  sendDanmu(danmu : Danmu) : void
+  playbackRate(rate : number) : void
+  requestFullScreen(options ?: RequestFullScreenOptions | null) : void
+  exitFullScreen() : void
+}
+
+export class UniVideoElement extends UniViewElementImpl implements IUniVideoElement {
+  override tagName : string = 'VIDEO'
+  override nodeName : string = 'VIDEO'
+
+  private video : Video | null = null
+  private lastNavigationStyle : string = ''
+
+  // @ts-ignore dispose
+  override dispose() {
+    this.video?.dispose()
+    this.video = null
+    // #ifndef VUE3-VAPOR
+    // @ts-ignore dispose
+    super.dispose()
+    // #endif
+  }
+
+  override getHarmonyController() : VideoController | null {
+    const videoNativeElement = this.firstChild?.firstChild as UniNativeViewElement
+    if (videoNativeElement) {
+      return (videoNativeElement.getHarmonyController<BindVideoController>() as BindVideoController).controller
+    }
+    return null
+  }
+
+  setVideo(video : Video) {
+    this.video = video
+  }
+
+  getVideo() {
+    return this.video
+  }
+
+  play() {
+    this.video?.play()
+  }
+
+  pause() {
+    this.video?.pause()
+  }
+
+  seek(position : number) {
+    this.video?.seek(position)
+  }
+
+  stop() {
+    this.video?.stop()
+  }
+
+  sendDanmu(danmu : Danmu) {
+    this.video?.sendDanmu(danmu)
+  }
+
+  playbackRate(rate : number) {
+    this.video && (this.video.playbackRate = rate)
+  }
+
+  // @ts-ignore ESObject
+  requestFullScreen(options ?: ESObject | null) {
+    // @ts-ignore ESObject
+    let requestFullscreenOptions : ESObject = options ?? {};
+    if (options?.direction === 0) {
+      requestFullscreenOptions = {
+        orientation: 'portrait'
+      };
+    }
+    if (options?.direction === 90) {
+      requestFullscreenOptions = {
+        orientation: 'landscape-primary'
+      };
+    }
+    if (options?.direction === -90) {
+      requestFullscreenOptions = {
+        orientation: 'landscape-secondary'
+      };
+    }
+
+    // #ifdef VUE3-VAPOR
+    let originSuccess = options?.success as Function | null;
+    requestFullscreenOptions.success = (res: ESObject)=>{
+        originSuccess && originSuccess(res);
+    };
+    let originComplete = options?.complete as Function | null;
+    requestFullscreenOptions.complete = (res: ESObject)=>{
+      // success 回调太快，导致 video pause 还没有触发，此处保底延时设置 fullscreening 状态
+      setTimeout(() => {
+        this.video && (this.video.fullscreening = false);
+      }, 1000)
+      originComplete && originComplete(res);
+    };
+    this.video && (this.video.fullscreening = true);
+    // #endif
+
+    this.requestFullscreen(requestFullscreenOptions);
+  }
+
+  exitFullScreen() {
+    this.page.exitFullscreen();
+  }
+
+  // #ifdef VUE3-VAPOR
+  override _exitFullscreen() {
+    this.video && (this.video.fullscreening = true);
+    return super._exitFullscreen();
+  }
+  // #endif
+
+  // #ifndef VUE3-VAPOR
+  // @ts-ignore ESObject
+  override requestFullscreen(options ?: ESObject | undefined) : void {
+    // @ts-ignore getNativePage
+    const nativePage : ESObject = (this.uniPage as ESObject).getNativePage()
+    if (this.uniPage.fullscreenElement) {
+      options?.fail?.()
+      // @ts-ignore UniViewElement
+      this.callFullscreenerrorCallbacks('The current page already has a fullscreen element.')
+      return
+    }
+    // @ts-ignore UniElement
+    if (this.isFullscreen) return
+    // @ts-ignore UniElement
+    this.isFullscreen = true
+    this.video && (this.video.fullscreening = true);
+    this.lastNavigationStyle = this.uniPage.getPageStyle().get('navigationStyle') ?? ''
+    // @ts-ignore UniViewElement
+    this.resolveIsFullscreenFrameNode(options)
+      .then(() => {
+        nativePage.fullscreenElement = this
+        this.uniPage.setPageStyle(new UTSJSONObject({
+          navigationStyle: 'custom'
+        }))
+        // @ts-ignore UniElement
+        this.checkPosition(true)
+        options?.success?.()
+        // @ts-ignore UniViewElement
+        this.callFullscreenchangeCallbacks()
+      })
+      .catch(() => {
+        nativePage.setPageOrientation(this.uniPage.getPageStyle().toMap())
+        // @ts-ignore UniViewElement
+        this.requestFullscreenError()
+        this.uniPage.setPageStyle(new UTSJSONObject({
+          navigationStyle: this.lastNavigationStyle
+        }))
+        this.video && (this.video.fullscreening = false);
+        options?.fail?.()
+        // @ts-ignore UniViewElement
+        this.callFullscreenerrorCallbacks()
+      })
+
+    options?.complete?.()
+  }
+
+  // @ts-ignore
+  override _exitFullscreen() {
+    // @ts-ignore
+    if (!this.isFullscreen) {
+      return
+    }
+    // @ts-ignore
+    this.isFullscreen = false
+    this.video && (this.video.fullscreening = true);
+    // @ts-ignore nativePage
+    this.page?.setPageStyle(new UTSJSONObject({
+      navigationStyle: this.lastNavigationStyle
+    }))
+    // @ts-ignore UniViewElement
+    this.exitFullscreenResetStyle()
+    // @ts-ignore UniViewElement
+    this.callFullscreenchangeCallbacks()
+  }
+  // #endif
+}
+
+// @ts-ignore defineSyncApi
+export const createVideoContext : CreateVideoContext = defineSyncApi<VideoContext | null>(
+  'createVideoContext',
+  // @ts-ignore ComponentPublicInstance
+  (videoId : string, component ?: ComponentPublicInstance | null) => {
+    let videoElement : UniVideoElement | null | undefined = null;
+    if (component == null) {
+      // @ts-ignore
+      const pages = getCurrentPages() as UniPage[];
+      if (pages.length > 0) {
+        const page = (pages[pages.length - 1])
+        if (!page) {
+          console.error(`getCurrentPages is empty`)
+          return null
+        }
+        // @ts-ignore ESObject
+        videoElement = ((page.vm as ESObject).$el as UniElement)?.parentElement?.querySelector('#' + videoId) as (UniVideoElement | null);
+        if (videoElement == null) {
+          const dialogPages = page.getDialogPages() as UniPage[];
+          if (dialogPages.length > 0) {
+            const topDialogPage = dialogPages[dialogPages.length - 1];
+            if (!topDialogPage) {
+              console.error(`getDialogPages is empty`)
+              return null
+            }
+            // @ts-ignore ESObject
+            videoElement = ((topDialogPage.vm as ESObject).$el as UniElement)?.parentElement?.querySelector('#' + videoId) as (UniVideoElement | null);
+          }
+        }
+      }
+    } else {
+      videoElement = (component.$el as UniElement)?.parentElement?.querySelector('#' + videoId) as (UniVideoElement | null);
+    }
+    if (videoElement == null) return null;
+    return new VideoContextImpl(videoElement.getVideo());
+  }
+) as CreateVideoContext
+
+
+class VideoContextImpl implements VideoContext {
+
+  private video ?: Video | null = null;
+
+  constructor(video ?: Video | null) {
+    this.video = video;
+  }
+
+  play() {
+    this.video?.play()
+  }
+
+  pause() {
+    this.video?.pause()
+  }
+
+  seek(position : number) {
+    this.video?.seek(position)
+  }
+
+  stop() {
+    this.video?.stop()
+  }
+
+  sendDanmu(danmu : Danmu) {
+    this.video?.sendDanmu(danmu)
+  }
+
+  playbackRate(rate : number) {
+    this.video && (this.video.playbackRate = rate)
+  }
+
+  requestFullScreen(options ?: RequestFullScreenOptions | null) {
+    this.video?.requestFullscreen(options);
+  }
+
+  exitFullScreen() {
+    this.video?.exitFullscreen();
+  }
+}
+
+export class AudioManager {
+  offVolumeChange : () => void = () => { }
+  currentVolume : number = 0
+  maxVolume : number = 1
+  minVolume : number = 0
+
+  constructor(mediaVolumeChange : (volume : number) => void) {
+    const VolumeMEDIA = audio.AudioVolumeType.MEDIA
+    let audioManager = audio.getAudioManager();
+    let audioVolumeManager : audio.AudioVolumeManager = audioManager.getVolumeManager();
+
+    const volumeChange = (volumeEvent : audio.VolumeEvent) => {
+      if (volumeEvent.volumeType === VolumeMEDIA) {
+        mediaVolumeChange(volumeEvent.volume)
+      }
+    }
+
+    audioVolumeManager.on('volumeChange', volumeChange);
+
+    const audioVolumeGroupManager = audioVolumeManager.getVolumeGroupManagerSync(audio.DEFAULT_VOLUME_GROUP_ID);
+    this.currentVolume = audioVolumeGroupManager.getVolumeSync(VolumeMEDIA)
+    this.minVolume = audioVolumeGroupManager.getMinVolumeSync(VolumeMEDIA)
+    this.maxVolume = audioVolumeGroupManager.getMaxVolumeSync(VolumeMEDIA)
+
+    this.offVolumeChange = () => {
+      // @ts-ignore
+      audioVolumeManager.off('volumeChange', volumeChange)
+    }
+  }
+}
+
+export class Brightness {
+  private window ?: OHWindow.Window
+
+  constructor() {
+    const currentMP = getCurrentMP();
+    this.window = currentMP.window
+  }
+
+  getBrightness() {
+    const brightness = this.window?.getWindowProperties().brightness ?? 0
+    return brightness === -1 ? 0.3 : brightness;
+  }
+
+  setBrightness(brightness : number) {
+    if (this.window) {
+      return this.window.setWindowBrightness(brightness);
+    } else {
+      return Promise.reject('window is not defined');
+    }
+  }
+}
+
+export {
+  VideoContext,
+  Danmu,
+  RequestFullScreenOptions,
+  CreateVideoContext,
+
+  UniVideoFullScreenDirection,
+  VideoError,
+  VideoErrorCode,
+  UniVideoEvent
+} from '../interface'
+
+export {
+  UniVideoTimeUpdateEvent,
+  UniVideoTimeUpdateEventDetail,
+  UniVideoFullScreenChangeEvent,
+  UniVideoFullScreenChangeEventDetail,
+  UniVideoErrorEvent,
+  UniVideoProgressEvent,
+  UniVideoProgressEventDetail,
+  UniVideoFullScreenClickEvent,
+  UniVideoFullScreenClickEventDetail,
+  UniVideoControlsToggleEvent,
+  UniVideoControlsToggleEventDetail,
+  // 向下兼容
+  UniVideoTimeUpdateEvent as VideoTimeUpdateEvent,
+  UniVideoTimeUpdateEventDetail as VideoTimeUpdateEventDetail,
+  UniVideoFullScreenChangeEvent as VideoFullScreenChangeEvent,
+  UniVideoFullScreenChangeEventDetail as VideoFullScreenChangeEventDetail,
+  UniVideoErrorEvent as VideoErrorEvent,
+  UniVideoProgressEvent as VideoProgressEvent,
+  UniVideoProgressEventDetail as VideoProgressEventDetail,
+  UniVideoFullScreenClickEvent as VideoFullScreenClickEvent,
+  UniVideoFullScreenClickEventDetail as VideoFullScreenClickEventDetail,
+  UniVideoControlsToggleEvent as VideoControlsToggleEvent,
+  UniVideoControlsToggleEventDetail as VideoControlsToggleEventDetail
+}

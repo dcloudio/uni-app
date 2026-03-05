@@ -1,0 +1,39 @@
+import { LoadFontFaceOptions } from './interface.uts'
+
+export const API_LOAD_FONT_FACE = 'loadFontFace'
+
+export const ApiLoadFontFaceProtocol = new Map<string, ProtocolOptions>([
+  [
+    'family',
+    {
+      type: 'string',
+      required: true,
+    }
+  ],
+  [
+    'source',
+    {
+      type: 'string',
+      required: true,
+    }
+  ],
+  [
+    'desc',
+    {
+      type: 'object',
+    }
+  ]
+])
+
+/* export const ApiLoadFontFaceOptions: ApiOptions<LoadFontFaceOptions> = {
+  formatArgs: new Map<string, ((source: string) => string | undefined)>([
+    [
+      'source', function (source: string) {
+        if (!/(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font).+)/.test(source)) {
+          return 'loadFontFace:fail source is invalid'
+        }
+        return undefined
+      }
+    ]
+  ])
+}*/

@@ -1,0 +1,254 @@
+import { UIReturnKeyType, UIKeyboardType, UITextField, UITextFieldDelegate } from 'UIKit';
+import { NotificationCenter } from 'Foundation'; 
+
+export class NativeInputView implements UITextFieldDelegate {
+
+	element : UniNativeViewElement;
+	textField : UniInputView | null = null;
+	maxLength: number = -1;
+	beginEditValue: string = ""
+
+	constructor(element : UniNativeViewElement) {
+		// 接收组件传递过来的UniNativeViewElement
+		this.element = element;
+		super.init()
+		this.bindView();
+	}
+
+	// element 绑定原生view
+	bindView() {
+		// 初始化原生 textField
+		this.textField = new UniInputView()
+		this.textField!.textColor = UIColor.black;
+		// 设置delegate对象
+		this.textField!.delegate = this;
+		// UniNativeViewElement 绑定原生 view
+		this.element.bindIOSView(this.textField!);
+		// 监听通知
+		this.addObserver()
+	}
+
+	destroy() {
+		// 移除通知监听
+	    NotificationCenter.default.removeObserver(this, name= UITextField.textDidChangeNotification, object= null)
+		// 释放 UTS 实例对象，避免内存泄露
+		UTSiOS.destroyInstance(this)
+		
+	}   
+	
+	// 监听通知
+	addObserver() {
+		if (this.textField == null) { return }
+		NotificationCenter.default.addObserver(this, selector= #selector(textFieldDidChange), name= UITextField.textDidChangeNotification, object= null)
+	}
+	
+	// 处理输入变动通知
+	@objc textFieldDidChange(notification: NSNotification) {
+		if (this.textField == null) {
+			return;
+		}
+		let range = this.textField!.markedTextRange
+		if (range != null) {
+			let newText = this.textField!.text(in = range!)
+			if (newText != null && newText!.count > 0) {
+				return
+			}      
+		}
+		if (this.maxLength >= 0) {  
+			let toBeString: string = this.textField!.text ?? ""
+			if (toBeString.count > this.maxLength) {
+				this.textField!.text =  String(toBeString.prefix(this.maxLength.intValue))
+			}
+		}
+		// 发送 inputEvent
+		let beginning = this.textField!.beginningOfDocument
+		let selectedRange = this.textField!.selectedTextRange
+		let selectionStart = selectedRange?.start
+		let cursor = this.textField!.offset(from = beginning, to = selectionStart ?? beginning)
+		
+		//构建自定义 UniNativeViewEvent 对象
+		let event = new UniNativeViewEvent("input", {
+			'value': this.textField!.text ?? '',
+			'cursor': cursor
+		})
+		//触发自定义事件
+		this.element.dispatchEvent(event)
+	}
+	
+	// UITextFieldDelegate 相关
+	textFieldDidBeginEditing(textField: UITextField) {
+	    this.beginEditValue = textField.text ?? ""
+	}
+	
+	textFieldDidEndEditing(textField: UITextField) {
+		//触发blur事件
+		let event = new UniNativeViewEvent("blur", {
+			'value': this.textField!.text ?? '',
+			'cursor': 0
+		})
+		this.element.dispatchEvent(event)
+		
+		// 触发change事件
+		if (this.beginEditValue != textField.text) {
+			let event = new UniNativeViewEvent("change", {
+				'value': this.textField!.text ?? '',
+			})
+			this.element.dispatchEvent(event)
+		}
+		this.beginEditValue = '';
+	}
+	
+	textFieldShouldReturn(textField: UITextField): boolean {
+		let event = new UniNativeViewEvent("confirm", {
+			'value': this.textField!.text ?? '',
+		})
+		this.element.dispatchEvent(event)
+		// TODO: 键盘收起逻辑
+		return true
+	}
+	
+	// input 初始内容
+	updateValue(value: string) {
+		if (this.textField == null) return
+		this.textField!.text = value
+	}
+	
+	// 更新input 是否禁用
+	updateDisabled(value: boolean) {
+		if (this.textField == null) return
+		this.textField!.isEnabled = !value
+	}
+	
+	// 更新input 的类型
+	updateType(value: string) {
+		if (this.textField == null) return
+		
+		// 根据类型设置键盘类型
+		switch (value) {
+			case "number":
+				this.textField!.keyboardType = UIKeyboardType.numberPad
+				break
+			case "digit":
+				this.textField!.keyboardType = UIKeyboardType.numberPad
+				break
+			case "tel":
+				this.textField!.keyboardType = UIKeyboardType.phonePad
+				break
+			case "email":
+				this.textField!.keyboardType = UIKeyboardType.emailAddress
+				break
+			case "url":
+				this.textField!.keyboardType = UIKeyboardType.URL
+				break
+			default:
+				this.textField!.keyboardType = UIKeyboardType.default
+		}
+	}
+	
+	// 更新input 是否是密码类型
+	updatePassword(value: boolean) {
+		if (this.textField == null) return
+		this.textField!.isSecureTextEntry = value
+	}
+	
+	// 更新input 最大输入长度，0和正数为合法值，非法值的时候不限制最大长度
+	updateMaxLength(value: number) {
+		this.maxLength = value
+	}
+	
+	// 更新input 光标与键盘的距离，单位 px 。取 input 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离
+	updateCursorSpacing(value: number) {
+		// 这个属性在 iOS 中需要通过调整视图位置来实现
+		// 通常在键盘弹起时处理，这里暂时保存值
+		// TODO: 需要监听键盘事件来实现
+	}
+	
+	// 更新input 光标颜色
+	updateCursorColor(value: string) {
+		if (this.textField == null || value == "") return
+		
+		// 解析颜色字符串并设置 tintColor
+		// 支持 #RRGGBB 格式
+		this.textField!.tintColor = UTSiOS.colorWithString(value)
+	}
+	
+	// 更新input 自动获取焦点，与focus属性对比，此属性只会首次生效。
+	updateAutoFocus(value: boolean) {
+		if (value && this.textField != null) {
+			this.textField!.becomeFirstResponder()
+		}
+	}
+	
+	// 更新input 获取焦点
+	updateFocus(value: boolean) {
+		if (this.textField == null) return
+		
+		if (value) {
+			this.textField!.becomeFirstResponder()
+		} else {
+			this.textField!.resignFirstResponder()
+		}
+	}
+	
+	// 更新input 键盘右下角按钮的文字，仅在 type为text 时生效。
+	updateConfirmType(value: string) {
+		if (this.textField == null) return  
+		
+		// 设置键盘返回键类型
+		switch (value) {
+			case "send":
+				this.textField!.returnKeyType = UIReturnKeyType.send
+				break
+			case "search":
+				this.textField!.returnKeyType = UIReturnKeyType.search
+				break
+			case "next":
+				this.textField!.returnKeyType = UIReturnKeyType.next
+				break
+			case "go":
+				this.textField!.returnKeyType = UIReturnKeyType.go
+				break
+			case "done":
+				this.textField!.returnKeyType = UIReturnKeyType.done
+				break
+			default:
+				this.textField!.returnKeyType = UIReturnKeyType.default
+		}
+	}
+	
+	// 更新input 点击键盘右下角按钮时是否保持键盘不收起
+	updateConfirmHold(value: boolean) {
+		// 这个需要在 UITextFieldDelegate 的 shouldReturn 方法中处理
+		// 这里暂时保存值供后续使用
+		// TODO: 需要实现 delegate
+	}
+	
+	// 更新input focus时的光标位置
+	updateCursor(value: number) {
+		if (this.textField == null) return
+	}
+	
+	// 更新input 光标起始位置，自动聚集时有效，需与selection-end搭配使用
+	updateSelectionStart(value: number) {
+		// 需要配合 selectionEnd 一起设置选中范围
+		// TODO: 需要保存这个值，在 selectionEnd 设置时一起应用
+	}
+	
+	// 更新input 光标结束位置，自动聚集时有效，需与selection-satrt搭配使用
+	updateSelectionEnd(value: number) {
+		// 需要配合 selectionStart 一起设置选中范围  
+		// TODO: 需要保存这个值，与 selectionStart 一起应用
+	}
+	
+	// 更新input 键盘弹起时，是否自动上推页面
+	updateAdjustPosition(value: boolean) {
+		// iOS 系统默认会自动调整，如果需要禁用，需要监听键盘通知
+		// TODO: 需要实现键盘通知监听
+	}
+	
+	// 更新input focus时，点击页面的时候不收起键盘
+	updateHoldKeyboard(value: boolean) {
+		// 这个需要在视图层级处理触摸事件
+		// TODO: 需要实现触摸事件处理
+	}
+}

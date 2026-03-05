@@ -1,0 +1,302 @@
+// import { UTSiOSHookProxy } from "DCloudUniappRuntime";
+import {
+	RequestVirtualPaymentSuccess,
+	AppleIAPRestoreSuccess,
+	AppleIAPFinishTransactionSuccess,
+	AppleIAPUnfinishedTransactionSuccess,
+	RequestVirtualPayment,
+	RequestVirtualPaymentOptions,
+	AppleIAPTransactionOptions,
+	AppleIAPRestoreOptions,
+	AppleIAPFinishTransactionOptions,
+	AppleIAPUnfinishedTransactionOptions,
+	GetVirtualPaymentManager,
+	VirtualPaymentManager
+} from "../interface.uts";
+import {
+	AppleIAPUnfinishedTransactionFailImpl,
+	AppleIAPRestoreFailImpl,
+	AppleIAPFinishTransactionFailImpl,
+	RequestVirtualPaymentFailImpl,
+	getAppleIAPRestoreErrcode,
+	getAppleIAPFinishTransactionErrcode,
+	getRequestVirtualPaymentErrcode,
+	getAppleIAPUnfinishedTransactionErrcode
+} from '../unierror.uts';
+import { UTSiOS } from "DCloudUTSFoundation"
+
+export const requestVirtualPayment : RequestVirtualPayment = function (options : RequestVirtualPaymentOptions) {
+	IapManager.share.requestVirtualPayment(options)
+};
+ 
+export const getVirtualPaymentManager : GetVirtualPaymentManager = function () : VirtualPaymentManager {
+	if (IapManager.share.virtualPaymentManager != null) {
+		return IapManager.share.virtualPaymentManager!
+	}
+
+	IapManager.share.virtualPaymentManager = new VirtualPaymentManagerImpl()
+	return new VirtualPaymentManagerImpl()
+}
+
+class VirtualPaymentManagerImpl implements VirtualPaymentManager {
+
+	restoreTransactions(options : AppleIAPRestoreOptions) {
+		IapManager.share.restoreTransactions(options)
+	}
+
+	getUnfinishedTransactions(options : AppleIAPUnfinishedTransactionOptions) {
+		IapManager.share.getUnfinishedTransactions(options)
+	}
+
+	finishTransaction(options : AppleIAPFinishTransactionOptions) {
+		IapManager.share.finishTransaction(options)
+	}
+}
+
+class IapManager {
+	static share = new IapManager()
+
+	@UTSiOS.keyword("fileprivate")
+	virtualPaymentManager ?: VirtualPaymentManagerImpl
+
+	@UTSiOS.keyword("fileprivate")
+	restoreTransactions(options : AppleIAPRestoreOptions) {
+		if (UTSiOS.available("iOS 15.0, *")) {
+			UniStoreKit.shared.restorePurchase(success = (res : UniPurchase[]) : void => {
+				let tempArray : Array<any> = []
+				res.forEach(function (e : UniPurchase) {
+				
+					const transaction : AppleIAPTransactionOptions = {
+						productId: e.productId,
+						appAccountToken: e.appAccountToken,
+						quantity: e.transaction.purchasedQuantity,
+						transactionDate: e.purchaseDate,
+						originalTransactionDate: e.originalPurchaseDate,
+						transactionIdentifier: e.id,
+						originalTransactionIdentifier: e.originalID,
+						jsonRepresentation: e.jsonRepresentationBase64String
+					}
+
+					tempArray.push(transaction)
+				})
+
+				this.restoreTransactionsSuccessAction(tempArray, options)
+			}, failure = (error : UniStoreKitError) : void => {
+
+				switch (error) {
+					case UniStoreKitError.user_cancelled:
+						this.restoreTransactionsFailedAction(700601, options)
+						break;
+					case UniStoreKitError.network_error:
+						this.restoreTransactionsFailedAction(700602, options)
+						break;
+					case UniStoreKitError.verification_failed:
+						this.restoreTransactionsFailedAction(700000, options)
+						break;
+					case UniStoreKitError.system_error:
+						this.restoreTransactionsFailedAction(700600, options)
+						break;
+					case UniStoreKitError.unknown_error:
+						this.restoreTransactionsFailedAction(700600, options)
+						break;
+					case UniStoreKitError.purchase_not_allowed:
+						break;
+					case UniStoreKitError.promotion_info_invalid:
+						break;
+					case UniStoreKitError.product_not_available:
+						break;
+				}
+			})
+
+		} else {
+			this.restoreTransactionsFailedAction(700800, options)
+		}
+	}
+
+	private restoreTransactionsFailedAction(errCode : number, options : AppleIAPRestoreOptions) {
+		let err = new AppleIAPRestoreFailImpl(getAppleIAPRestoreErrcode(errCode));
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+
+	private restoreTransactionsSuccessAction(transactions : Array<any>, options : AppleIAPRestoreOptions) {
+
+		const response : AppleIAPRestoreSuccess = {
+			transactions: transactions
+		}
+		options.success?.(response)
+		options.complete?.(response)
+	}
+	@UTSiOS.keyword("fileprivate")
+	getUnfinishedTransactions(options : AppleIAPUnfinishedTransactionOptions) {
+		if (UTSiOS.available("iOS 15.0, *")) {
+			UniStoreKit.shared.getUnfinishedTransactions(completion = (res : UniPurchase[]) : void => {
+
+				let tempArray : Array<any> = []
+				res.forEach(function (e : UniPurchase) {
+					
+					const transaction : AppleIAPTransactionOptions = {
+						productId: e.productId,
+						appAccountToken: e.appAccountToken,
+						quantity: e.transaction.purchasedQuantity,
+						transactionDate: e.purchaseDate,
+						originalTransactionDate: e.originalPurchaseDate,
+						transactionIdentifier: e.id,
+						originalTransactionIdentifier: e.originalID,
+						jsonRepresentation: e.jsonRepresentationBase64String
+					}
+
+					tempArray.push(transaction)
+				})
+
+				this.getUnfinishedTransactionsSuccessAction(tempArray, options)
+			})
+		} else {
+			this.getUnfinishedTransactionsFailedAction(700800, options)
+		}
+	}
+
+	private getUnfinishedTransactionsFailedAction(errCode : number, options : AppleIAPUnfinishedTransactionOptions) {
+		let err = new AppleIAPUnfinishedTransactionFailImpl(getAppleIAPUnfinishedTransactionErrcode(errCode));
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+
+	private getUnfinishedTransactionsSuccessAction(transactions : Array<any>, options : AppleIAPUnfinishedTransactionOptions) {
+
+		const response : AppleIAPUnfinishedTransactionSuccess = {
+			transactions: transactions
+		}
+		options.success?.(response)
+		options.complete?.(response)
+	}
+	@UTSiOS.keyword("fileprivate")
+	finishTransaction(options : AppleIAPFinishTransactionOptions) {
+		if (UTSiOS.available("iOS 15.0, *")) {
+			const productId = options.transaction.productId
+			const transactionId = options.transaction.transactionIdentifier
+			const originalTransactionId = options.transaction.originalTransactionIdentifier
+			const jsonRepresentation = options.transaction.jsonRepresentation
+
+			const purchaseKey = productId! + transactionId! + originalTransactionId! + jsonRepresentation!
+			if (UniStoreKit.shared.cacheTransactionsMap.has(purchaseKey)) {
+				const temp = UniStoreKit.shared.cacheTransactionsMap.get(purchaseKey)
+				temp?.finish(completion = () : void => {
+					this.finishTransactionSuccessAction(options)
+				})
+			} else {
+				this.finishTransactionFailedAction(700600, options)
+			}
+		} else {
+			this.finishTransactionFailedAction(700800, options)
+		}
+	}
+
+	private finishTransactionFailedAction(errCode : number, options : AppleIAPFinishTransactionOptions) {
+		let err = new AppleIAPFinishTransactionFailImpl(getAppleIAPFinishTransactionErrcode(errCode));
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+
+	private finishTransactionSuccessAction(options : AppleIAPFinishTransactionOptions) {
+		const response : AppleIAPFinishTransactionSuccess = {
+			state: true
+		}
+		options.success?.(response)
+		options.complete?.(response)
+	}
+
+	@UTSiOS.keyword("fileprivate")
+	requestVirtualPayment(options : RequestVirtualPaymentOptions) {
+		if (UTSiOS.available("iOS 15.0, *")) {
+			if (options.apple == null) {
+				// console.log("缺少支付参数")
+				this.requestVirtualPaymentFailedAction(700607, options)
+				return
+			}
+
+			const iapOptions = options.apple!
+
+			let purchaseOption = new UniPurchaseOption()
+			if (iapOptions.appAccountToken != null) {
+				purchaseOption.appAccountToken = iapOptions.appAccountToken!
+			}
+
+			purchaseOption.quantity = iapOptions.quantity.toInt()
+
+			//促销信息
+			if (iapOptions.promotionalOffer != null) {
+				const promotionalOffer = new UniPromotionalOffer()
+				promotionalOffer.offerID = iapOptions.promotionalOffer!.offerIdentifier
+				promotionalOffer.keyID = iapOptions.promotionalOffer!.keyIdentifier
+				promotionalOffer.nonce = iapOptions.promotionalOffer!.nonce
+				promotionalOffer.signature = iapOptions.promotionalOffer!.signature
+				promotionalOffer.timestamp = iapOptions.promotionalOffer!.timestamp.toInt()
+				purchaseOption.promotionalOffer = promotionalOffer
+			}
+
+			UniStoreKit.shared.buyProduct(identifier = iapOptions.productId, purchaseOption = purchaseOption, success = (res : UniPurchase) : void => {
+
+				const transaction : AppleIAPTransactionOptions = {
+					productId: res.productId,
+					appAccountToken: res.appAccountToken,
+					quantity: res.transaction.purchasedQuantity,
+					transactionDate: res.purchaseDate,
+					originalTransactionDate: res.originalPurchaseDate,
+					transactionIdentifier: res.id,
+					originalTransactionIdentifier: res.originalID,
+					jsonRepresentation: res.jsonRepresentationBase64String
+				}
+
+				this.requestVirtualPaymentSuccessAction(transaction, options)
+
+			}, failure = (error : UniStoreKitError) : void => {
+
+				switch (error) {
+					case UniStoreKitError.purchase_not_allowed:
+						this.requestVirtualPaymentFailedAction(700604, options)
+						break;
+					case UniStoreKitError.promotion_info_invalid:
+						this.requestVirtualPaymentFailedAction(700606, options)
+						break;
+					case UniStoreKitError.product_not_available:
+						this.requestVirtualPaymentFailedAction(700605, options)
+						break;
+					case UniStoreKitError.user_cancelled:
+						this.requestVirtualPaymentFailedAction(700601, options)
+						break;
+					case UniStoreKitError.verification_failed:
+						this.requestVirtualPaymentFailedAction(700000, options)
+						break;
+					case UniStoreKitError.unknown_error:
+						this.requestVirtualPaymentFailedAction(700000, options)
+						break;
+					case UniStoreKitError.network_error:
+						this.requestVirtualPaymentFailedAction(700602, options)
+						break;
+					case UniStoreKitError.system_error:
+						this.requestVirtualPaymentFailedAction(700000, options)
+						break;
+				}
+			})
+
+		} else {
+			this.requestVirtualPaymentFailedAction(700800, options)
+		}
+	}
+
+	private requestVirtualPaymentFailedAction(errCode : number, options : RequestVirtualPaymentOptions) {
+		let err = new RequestVirtualPaymentFailImpl(getRequestVirtualPaymentErrcode(errCode));
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+
+	private requestVirtualPaymentSuccessAction(transaction : AppleIAPTransactionOptions, options : RequestVirtualPaymentOptions) {
+		const response : RequestVirtualPaymentSuccess = {
+			apple: transaction
+		}
+
+		options.success?.(response)
+		options.complete?.(response)
+	}
+}

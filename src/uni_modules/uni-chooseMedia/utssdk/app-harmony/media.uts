@@ -1,0 +1,588 @@
+import photoAccessHelper from '@ohos.file.photoAccessHelper'
+import fs from '@ohos.file.fs'
+import image from '@ohos.multimedia.image'
+import uri from '@ohos.uri'
+import uniformTypeDescriptor from '@ohos.data.uniformTypeDescriptor'
+import dataSharePredicates from '@ohos.data.dataSharePredicates'
+import { getAbilityContext, getEnv } from '@dcloudio/uni-runtime'
+
+type _MediaOrientation =
+    | 'up'
+    | 'down'
+    | 'left'
+    | 'right'
+    | 'up-mirrored'
+    | 'down-mirrored'
+    | 'left-mirrored'
+    | 'right-mirrored'
+
+type _GetVideoInfoSuccess = {
+    /**
+     * 画面方向
+     * @uniPlatform {
+     * "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "√",
+         *			"unixVer": "3.9"
+         *		},
+         *		"ios": {
+         *			"osVer": "10.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.11"
+         *		},
+   *    "harmony": {
+   *      "osVer": "3.0",
+   *      "uniVer": "4.23",
+   *      "unixVer": "4.61",
+   *      "unixvVer": "5.0"
+   *    }
+     * },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    orientation?: _MediaOrientation,
+    /**
+     * 视频格式
+     * @uniPlatform {
+     * "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "√",
+         *			"unixVer": "3.9"
+         *		},
+         *		"ios": {
+         *			"osVer": "10.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.11"
+         *		},
+   *    "harmony": {
+   *      "osVer": "3.0",
+   *      "uniVer": "4.23",
+   *      "unixVer": "4.61",
+   *      "unixvVer": "5.0"
+   *    }
+     * },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    type: string | null,
+    /**
+     * 视频长度
+     */
+    duration: number,
+    /**
+     * 视频大小，单位 kB
+     */
+    size: number,
+    /**
+     * 视频的长，单位 px
+     */
+    height: number,
+    /**
+     * 视频的宽，单位 px
+     */
+    width: number,
+    /**
+     * 视频帧率
+     * @uniPlatform {
+     * "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "√",
+         *			"unixVer": "3.9"
+         *		},
+         *		"ios": {
+         *			"osVer": "10.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.11"
+         *		},
+   *    "harmony": {
+   *      "osVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+     * },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    fps: number | null,
+    /**
+     * 视频码率，单位 kbps
+     * @uniPlatform {
+     * "app": {
+         *		"android": {
+         *			"osVer": "5.0",
+         *			"uniVer": "√",
+         *			"unixVer": "3.9"
+         *		},
+         *		"ios": {
+         *			"osVer": "10.0",
+         *			"uniVer": "√",
+         *			"unixVer": "4.11"
+         *		},
+   *    "harmony": {
+   *      "osVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+     * },
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    bitrate: number | null
+    /**
+     * 视频缩略图临时文件路径
+     */
+    thumbTempFilePath?: string | null
+};
+
+type _GetImageInfoSuccess = {
+    /**
+     * 图片宽度，单位px
+     */
+    width: number,
+    /**
+     * 图片高度，单位px
+     */
+    height: number,
+    /**
+     * 返回图片的本地路径
+     */
+    path: string,
+    /**
+     * 返回图片的方向
+     * @uniPlatform {
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    orientation?: _MediaOrientation,
+    /**
+     * 返回图片的格式
+     * @uniPlatform {
+    *  "mp": {
+    *    "weixin": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "4.41"
+    *    },
+    *    "alipay": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "baidu": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "toutiao": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "lark": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "qq": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "kuaishou": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    },
+    *    "jd": {
+    *        "hostVer": "√",
+    *        "uniVer": "√",
+    *        "unixVer": "x"
+    *    }
+    *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    type: string | null
+};
+
+interface AssetInfo {
+    fileType: 'video' | 'image'
+    size: number
+    byteSize: number
+    width?: number
+    height?: number
+    duration?: number
+    thumbTempFilePath?: string
+}
+
+interface _MediaFile extends AssetInfo {
+    tempFilePath: string
+}
+let id: number = 0
+async function getVideoThumbnail(videoUri: string, pixelMap: image.PixelMap) {
+    const imagePacker: image.ImagePacker = image.createImagePacker();
+    const uriInstance = new uri.URI(videoUri);
+    const tempFileName = `${uriInstance.getLastSegment().split('.').shift()}_thumbnail_${id++}.jpg`
+    const tempDirPath = `${getEnv().CACHE_PATH}/uni-media`
+
+    if (!fs.accessSync(tempDirPath)) {
+        fs.mkdirSync(tempDirPath, true);
+    }
+
+    const tempFilePath: string = `${tempDirPath}/${tempFileName}`
+    const file = fs.openSync(tempFilePath, fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE);
+
+    if (!fs.accessSync(tempDirPath)) { fs.mkdirSync(tempDirPath, true) }
+    await imagePacker.packToFile(pixelMap, file.fd, { format: 'image/jpeg', quality: 80 } as image.PackingOption)
+
+    await fs.close(file)
+    await pixelMap.release();
+    return tempFilePath
+}
+
+export interface __ChooseMediaOptions {
+    mimeType:
+    | photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE
+    | photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE
+    | photoAccessHelper.PhotoViewMIMETypes.IMAGE_VIDEO_TYPE
+    count?: number
+    sourceType?: ('album' | 'camera')[]
+    isOriginalSupported?: boolean
+}
+
+export interface _chooseMediaSuccessCallbackResult {
+    tempFiles: _MediaFile[]
+}
+
+export async function getMediaAssetInfo(uri: string): Promise<AssetInfo> {
+    const accessHelper = await photoAccessHelper.getPhotoAccessHelper(getAbilityContext()!)
+    const predicates = new dataSharePredicates.DataSharePredicates()
+    predicates.equalTo('uri', uri);
+    const fetchResult: photoAccessHelper.FetchResult<photoAccessHelper.PhotoAsset> = await accessHelper.getAssets({
+        fetchColumns: [
+            photoAccessHelper.PhotoKeys.URI,
+            photoAccessHelper.PhotoKeys.PHOTO_TYPE,
+            photoAccessHelper.PhotoKeys.WIDTH,
+            photoAccessHelper.PhotoKeys.HEIGHT,
+            photoAccessHelper.PhotoKeys.SIZE,
+            photoAccessHelper.PhotoKeys.DURATION,
+            photoAccessHelper.PhotoKeys.ORIENTATION
+        ],
+        predicates,
+    } as photoAccessHelper.FetchOptions)
+    const asset: photoAccessHelper.PhotoAsset = await fetchResult.getFirstObject();
+
+    const photoType = asset.photoType
+    const byteSize = asset.get(photoAccessHelper.PhotoKeys.SIZE) as number
+    let width = asset.get(photoAccessHelper.PhotoKeys.WIDTH) as number
+    let height = asset.get(photoAccessHelper.PhotoKeys.HEIGHT) as number
+    const durationMs = asset.get(photoAccessHelper.PhotoKeys.DURATION) as number
+    const orientation = asset.get(photoAccessHelper.PhotoKeys.ORIENTATION) as number | null
+    let thumbTempFilePath = ''
+
+    // 根据 orientation 调整 width 和 height（竖屏情况：90 或 270 度时需要交换）
+    if (orientation != null && (orientation === 90 || orientation === 270)) {
+        const temp = width
+        width = height
+        height = temp
+    }
+
+    const maximumFractionDigits = 3
+    const multiplier = Math.pow(10, maximumFractionDigits) // 10^3 = 1000
+
+    // duration 从毫秒转换为秒，保留最多 3 位小数（与 iOS 平台保持一致）
+    const duration = durationMs != null ? Math.round((durationMs / 1000) * multiplier) / multiplier : undefined
+
+    // size 保留最多 3 位小数（与 iOS 和 Android 平台保持一致）
+    const size = Math.round((byteSize / 1024) * multiplier) / multiplier
+    if (photoType === photoAccessHelper.PhotoType.VIDEO) {
+        const thumbnailPixelMap = await asset.getThumbnail({ width, height } as image.Size);
+        try {
+            thumbTempFilePath = await getVideoThumbnail(uri, thumbnailPixelMap)
+        } catch (error) { }
+    }
+
+    fetchResult.close()
+    await accessHelper.release()
+    return {
+        fileType: photoType === photoAccessHelper.PhotoType.VIDEO ? 'video' : 'image',
+        size,
+        byteSize,
+        width,
+        height,
+        duration,
+        thumbTempFilePath
+    } as AssetInfo
+}
+
+/**
+ *
+ * 注意
+ * - 使用系统picker，无需申请权限
+ *
+ * 差异项记录
+ * - 鸿蒙的PhotoViewPicker可以选择视频、图片。PhotoViewPicker不支持sizeType参数、maxDuration参数。
+ * - PhotoViewPicker进行媒体文件选择时相机按钮无法屏蔽，因此不支持sourceType参数。
+ *
+ * 关键文档参考：
+ * - [用户文件uri介绍](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/user-file-uri-intro-0000001821000049)
+ * - [系统能力使用说明](https://developer.huawei.com/consumer/cn/doc/harmonyos-references-V5/syscap-0000001774120846-V5)
+ * - [requestPermissions标签](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/module-configuration-file-0000001820879553-V5#ZH-CN_TOPIC_0000001881258481__requestpermissions%E6%A0%87%E7%AD%BE)
+ * - [向用户申请授权](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/request-user-authorization-0000001774279718-V5)
+ * - [应用/服务签名](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-signing-0000001587684945#section9786111152213)，ohos.permission.READ_IMAGEVIDEO权限需要自助签名方可使用
+ * - [AVMetadataExtractor](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-media-0000001821001557#ZH-CN_TOPIC_0000001811157018__avmetadataextractor11)
+ */
+
+export async function _chooseMedia(
+    options: __ChooseMediaOptions
+): Promise<_chooseMediaSuccessCallbackResult> {
+    const photoSelectOptions = new photoAccessHelper.PhotoSelectOptions()
+    const mimeType = options.mimeType
+    photoSelectOptions.MIMEType = mimeType
+    if (mimeType === photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE) {
+        photoSelectOptions.maxSelectNumber = 1
+    } else {
+        // chooseMedia支持count
+        photoSelectOptions.maxSelectNumber = options.count || 9
+    }
+    photoSelectOptions.isOriginalSupported = options.isOriginalSupported
+    // 仅支持移除相机选项
+    photoSelectOptions.isPhotoTakingSupported = !(options.sourceType && !options.sourceType.includes('camera'))
+    const photoPicker = new photoAccessHelper.PhotoViewPicker()
+    const photoSelectResult = await photoPicker.select(photoSelectOptions)
+
+    const uris = photoSelectResult.photoUris
+
+    const tempFiles: _MediaFile[] = []
+    const createMediaFile: Promise<void>[] = []
+
+    uris.forEach((uri) => {
+        createMediaFile.push(new Promise(async (resolve) => {
+            const assetInfo = await getMediaAssetInfo(uri)
+            if (assetInfo.fileType === 'video') {
+                tempFiles.push({
+                    fileType: assetInfo.fileType,
+                    tempFilePath: uri,
+                    size: assetInfo.size,
+                    byteSize: assetInfo.byteSize,
+                    duration: assetInfo.duration,
+                    width: assetInfo.width,
+                    height: assetInfo.height,
+                    thumbTempFilePath: assetInfo.thumbTempFilePath,
+                } as _MediaFile)
+            } else if (assetInfo.fileType === 'image') {
+                tempFiles.push({
+                    fileType: assetInfo.fileType,
+                    tempFilePath: uri,
+                    size: assetInfo.byteSize,
+                } as _MediaFile)
+            }
+
+            resolve()
+        }))
+    })
+
+    await Promise.all(createMediaFile)
+
+    return {
+        tempFiles,
+    } as _chooseMediaSuccessCallbackResult
+}
+
+export function getMimeTypeFromExtension(extension: string): string | null {
+    const typeId = uniformTypeDescriptor.getUniformDataTypeByFilenameExtension(
+        '.' + extension,
+    )
+    const typeObj = uniformTypeDescriptor.getTypeDescriptor(typeId)
+    const mimeTypes = typeObj.mimeTypes
+    return mimeTypes[0] || null
+}

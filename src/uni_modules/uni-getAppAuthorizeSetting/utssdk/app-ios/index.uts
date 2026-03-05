@@ -1,0 +1,55 @@
+import { GetAppAuthorizeSetting, GetAppAuthorizeSettingResult } from "../interface.uts";
+import { UTSiOS } from "DCloudUTSFoundation";
+export const getAppAuthorizeSetting : GetAppAuthorizeSetting = function () : GetAppAuthorizeSettingResult {
+	let setting : Map<string, any> = UTSiOS.getAppAuthorizeSetting();
+
+	let result : GetAppAuthorizeSettingResult = {
+		cameraAuthorized: "",
+		locationAuthorized: "",
+		locationAccuracy: null,
+		microphoneAuthorized: "",
+		notificationAuthorized: "",
+		albumAuthorized: "",
+		bluetoothAuthorized: "",
+		locationReducedAccuracy: false,
+		notificationAlertAuthorized: null,
+		notificationBadgeAuthorized: null,
+		notificationSoundAuthorized: null,
+		phoneCalendarAuthorized: null
+	}
+	if (setting.has("cameraAuthorized")) {
+		result.cameraAuthorized = setting.get("cameraAuthorized") as string;
+	}
+	if (setting.has("locationAuthorized")) {
+		result.locationAuthorized = setting.get("locationAuthorized") as string;
+	}
+	if (setting.has("locationAccuracy")) {
+		result.locationAccuracy = setting.get("locationAccuracy") as string;
+	}
+	if (setting.has("microphoneAuthorized")) {
+		result.microphoneAuthorized = setting.get("microphoneAuthorized") as string;
+	}
+	if (setting.has("notificationAuthorized")) {
+		result.notificationAuthorized = setting.get("notificationAuthorized") as string;
+	}
+	if (setting.has("albumAuthorized")) {
+		result.albumAuthorized = setting.get("albumAuthorized") as string;
+	}
+	if (setting.has("bluetoothAuthorized")) {
+		result.bluetoothAuthorized = setting.get("bluetoothAuthorized") as string;
+	}
+	if (setting.has("locationReducedAccuracy")) {
+		result.locationReducedAccuracy = setting.get("locationReducedAccuracy") as boolean;
+	}
+	if (setting.has("notificationAlertAuthorized")) {
+		result.notificationAlertAuthorized = setting.get("notificationAlertAuthorized") as string;
+	}
+	if (setting.has("notificationBadgeAuthorized")) {
+		result.notificationBadgeAuthorized = setting.get("notificationBadgeAuthorized") as string;
+	}
+	if (setting.has("notificationSoundAuthorized")) {
+		result.notificationSoundAuthorized = setting.get("notificationSoundAuthorized") as string;
+	}
+
+	return result
+}

@@ -1,0 +1,1215 @@
+// #ifdef APP-ANDROID
+import ImageProxy from "androidx.camera.core.ImageProxy";
+// import ByteBuffer from 'java.nio.ByteBuffer'
+import Bitmap from 'android.graphics.Bitmap';
+import Context from 'android.content.Context';
+// #endif
+
+// #ifdef APP-IOS
+import "CoreMedia"
+import "CoreImage"
+import "UIKit"
+import "AVFoundation"
+// #endif
+
+export type CameraErrorCode =
+	/**
+	 * 相机权限未授权
+	 */
+	2003002 |
+	/**
+	 * 拍照失败
+	 */
+	2003003 |
+	/**
+	 * 相机不可用
+	 */
+	2003004 |
+	/**
+	 * 相机正在使用中
+	 */
+	2003005 |
+	/**
+	 * 相机初始化失败
+	 */
+	2003006 |
+	/**
+	 * 录制的视频地址不存在
+	 */
+	2003007 |
+	/**
+	 * 录制失败
+	 */
+	2003008 |
+	/**
+	 * app进入后台，摄像头终止
+	 */
+	2003009 |
+	/**
+	 * 相机内部错误
+	 */
+	2003100 |
+	/**
+	 * 录制视频的视频压缩失败
+	 */
+	2003101;
+
+
+/**
+ * CameraContext API调用失败
+ */
+export interface CameraContextFail extends IUniError {
+	errCode : CameraErrorCode
+};
+
+export type CameraContextCameraFrameListenerStartOptions = {
+	/**
+	 * 接口调用成功的回调函数
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	success ?: ((result : any) => void) | null;
+	/**
+	 * 接口调用失败的回调函数
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	fail ?: ((result : any) => void) | null;
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	complete ?: ((result : any) => void) | null;
+}
+
+export type CameraContextCameraFrameListenerStopOptions = {
+	/**
+	 * 接口调用成功的回调函数
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	success ?: ((result : any) => void) | null;
+	/**
+	 * 接口调用失败的回调函数
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	fail ?: ((result : any) => void) | null;
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	complete ?: ((result : any) => void) | null;
+}
+
+export interface CameraContextCameraFrameListener {
+	/**
+	 * 开始监听帧数据
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	start(options : CameraContextCameraFrameListenerStartOptions) : void;
+	/**
+	 * 停止监听帧数据
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	stop(options : CameraContextCameraFrameListenerStopOptions) : void;
+}
+
+export type CameraContextOnCameraFrame = {
+	/**
+	 * 图像数据矩形的宽度
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	width ?: number | null;
+	/**
+	 * 图像数据矩形的高度
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	height ?: number | null;
+	/**
+	 * 图像像素点数据，一维数组，每四项表示一个像素点的 rgba
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	data ?: ArrayBuffer | null
+}
+
+export type CameraContextSetZoomOptions = {
+	/**
+	 * 缩放级别，范围[1, maxZoom]。zoom 可取小数，精确到小数后一位。maxZoom 可在 initdone 返回值中获取。
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	zoom : number;
+	/**
+	 * 接口调用成功的回调函数
+	 *
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	success ?: ((result : any) => void) | null;
+	/**
+	 * 接口调用失败的回调函数
+	 *
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	fail ?: ((result : any) => void) | null;
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	complete ?: ((result : any) => void) | null;
+}
+
+export type CameraContextTakePhotoResult = {
+	/**
+	 * 照片文件的临时路径 (本地路径)，安卓是jpg图片格式，ios是png。
+	 * 照片会存放到uni-media目录下[文件系统](https://doc.dcloud.net.cn/uni-app-x/api/file-system-spec.html)
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	tempImagePath ?: string | null
+}
+
+export type CameraContextTakePhotoOptions = {
+	/**
+	 * 成像质量
+	 *
+	 * @defaultValue 'normal'
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	quality ?: "high" | "normal" | "low" | "original" | null;
+	/**
+	 * 前置摄像头拍照时是否开启镜像
+	 *
+	 * @defaultValue true
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	selfieMirror?: boolean | null;
+
+	/**
+	 * 接口调用成功的回调函数
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	success ?: ((result : CameraContextTakePhotoResult) => void) | null;
+	/**
+	 * 接口调用失败的回调函数
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	fail ?: ((error : CameraContextFail) => void) | null;
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	complete ?: ((result : any) => void) | null;
+}
+
+export type CameraContextStartRecordTimeoutResult = {
+	/**
+	 * 封面图片文件的临时路径 (本地路径)
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	tempThumbPath ?: string | null;
+	/**
+	 * 视频的文件的临时路径 (本地路径)
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	tempVideoPath ?: string | null;
+}
+
+
+export type CameraContextStartRecordOptions = {
+	/**
+	 * 超过录制时长上限时会结束录像并触发此回调，录像异常退出时也会触发此回调
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	timeoutCallback ?: ((result: any) => void) | null;
+	/**
+	 * 录制时长上限，单位为秒
+	 * @defaultValue 30
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	timeout ?: number | null;
+	/**
+	 * 前置摄像头录制视频时是否开启镜像
+	 * @defaultValue true
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	selfieMirror ?: boolean | null;
+	/**
+	 * 接口调用成功的回调函数
+	 *
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	success ?: ((result : any) => void) | null;
+	/**
+	 * 接口调用失败的回调函数
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	fail ?: ((error : CameraContextFail) => void) | null;
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	complete ?: ((result : any) => void) | null;
+}
+
+export type CameraContextStopRecordResult = {
+	/**
+	 * 封面图片文件的临时路径 (本地路径)
+	 * 图片会以jpg格式存放到uni-media目录下[文件系统](https://doc.dcloud.net.cn/uni-app-x/api/file-system-spec.html)
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	tempThumbPath ?: string | null;
+	/**
+	 * 视频的文件的临时路径 (本地路径)
+	 * 视频将以mp4格式存放到uni-media目录下[文件系统](https://doc.dcloud.net.cn/uni-app-x/api/file-system-spec.html)
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	tempVideoPath ?: string | null;
+}
+
+export type CameraContextStopRecordOptions = {
+	/**
+	 * 启动视频压缩，压缩效果同chooseVideo
+	 *
+	 * @defaultValue false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	compressed ?: boolean | null;
+	/**
+	 * 接口调用成功的回调函数
+	 *
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	success ?: ((result : CameraContextStopRecordResult) => void) | null;
+	/**
+	 * 接口调用失败的回调函数
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	fail ?: ((error : CameraContextFail) => void) | null;
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	complete ?: ((result : any) => void) | null;
+}
+
+export interface CameraContext {
+	/**
+	 * 获取 Camera 实时帧数据
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	onCameraFrame(callback : (frame : CameraContextOnCameraFrame) => void) : CameraContextCameraFrameListener | null;
+
+
+	// #ifdef APP-ANDROID
+	/**
+	 * 获取Android平台的原始帧数据，**获取到了ImageProxy使用后一定要close，否则App会触发崩溃**
+	 */
+	onAndroidCameraOriginalFrame(callback: (imageProxy: ImageProxy) => void): void;
+
+	/**
+	 * 停止获取Android平台的原始帧数据
+	 */
+	offAndroidCameraOriginalFrame();
+	// #endif
+
+	// #ifdef APP-IOS
+	/**
+	 * 获取ios平台的原始帧数据
+	 */
+	onIosCameraOriginalFrame(callback: (sampleBuffer: CMSampleBuffer) => void): void;
+
+	/**
+	 * 停止获取Android平台的原始帧数据
+	 */
+	offIosCameraOriginalFrame(): void;
+	// #endif
+
+	/**
+	 * 获取当前缩放级别
+	 */
+	getCurrentZoom() : number;
+
+	/**
+	 * 设置缩放级别
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	setZoom(options : CameraContextSetZoomOptions) : void;
+	/**
+	 * 拍摄照片
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	takePhoto(options : CameraContextTakePhotoOptions) : void;
+	/**
+	 * 开始录像
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	startRecord(options: CameraContextStartRecordOptions): void;
+	/**
+	 * 结束录像
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	stopRecord(options: CameraContextStopRecordOptions) : void;
+}
+
+export type CreateCameraContext = () => CameraContext | null;
+
+export type BarcodeInformation = {
+	result: string,
+	scanType: string,
+	charset: string,
+	rawData: string,
+	scanArea: Array<number>
+}
+
+// #ifdef APP-ANDROID
+export type ScreenShot = {
+	bitmap: Bitmap,
+}
+
+export interface AndroidScannerListener {
+	onScanSuccess(barcodeInformation: Array<BarcodeInformation>, screenShot: ScreenShot | null): void;
+	onScanFailure(error: string): void;
+	needZoom(): void;
+	onLight(light: boolean):void;
+}
+
+export type AndroidFrameScannerOptions = {
+	imageProxy: ImageProxy,
+	scanType : Array<string>,
+	autoZoom: boolean,
+	width: number,
+	height: number,
+	androidScannerListenner : AndroidScannerListener | null
+}
+
+export type AndroidPhotoScannerOptions = {
+	context: Context,
+	filePath: string,
+	scanType : Array<string>,
+	androidScannerListenner : AndroidScannerListener | null
+}
+
+export interface AndroidScanner {
+	processScanBarCode(options: AndroidFrameScannerOptions):void;
+	processScanBarCodeWithPhoto(options: AndroidPhotoScannerOptions):void;
+}
+
+export type initAndroidScanner = (scanner: AndroidScanner) => void
+
+export type getAndroidScanner = () => AndroidScanner | null
+// #endif
+
+
+// #ifdef APP-IOS
+export type IosScreenShot = {
+	image: UIImage,
+}
+
+export interface IosScannerListener {
+	onScanSuccess(barcodeInformation: Array<BarcodeInformation>, screenShot: IosScreenShot | null): void;
+	onScanFailure(error: string): void;
+	needZoom(): void;
+	onLight(light: boolean):void;
+}
+
+export type IosFrameScannerOptions = {
+	sampleBuffer: CMSampleBuffer,
+	scanType : Array<string>,
+	autoZoom: boolean,
+	width: number,
+	height: number,
+	iosScannerListenner : IosScannerListener | null
+}
+
+export type IosPhotoScannerOptions = {
+	filePath: string,
+	scanType : Array<string>,
+	iosScannerListenner : IosScannerListener | null
+}
+
+export interface IosScanner {
+	processScanBarCode(options: IosFrameScannerOptions):void;
+	processScanBarCodeWithPhoto(options: IosPhotoScannerOptions):void;
+}
+
+// export type initIosScanner = (scanner: IosScanner) => void
+
+// export type getIosScanner = () => IosScanner | null
+
+// #endif
+
+
+export interface Uni {
+	/**
+	 * 创建 camera 上下文 CameraContext 对象。
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     },
+   *     "harmony": {
+	 *       "osVer": "x",
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   },
+	 * }
+	 */
+	createCameraContext: CreateCameraContext
+}

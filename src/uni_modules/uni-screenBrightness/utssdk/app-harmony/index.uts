@@ -1,0 +1,119 @@
+import { SetScreenBrightness, SetScreenBrightnessOptions, SetScreenBrightnessSuccess, GetScreenBrightness, GetScreenBrightnessOptions, GetScreenBrightnessSuccess, SetKeepScreenOn, SetKeepScreenOnOptions, SetKeepScreenOnSuccess } from "../interface.uts"
+import { API_SET_SCREEN_BRIGHTNESS, SetScreenBrightnessApiOptions, SetScreenBrightnessApiProtocol, API_GET_SCREEN_BRIGHTNESS, API_SET_KEEP_SECREEN_ON } from "../protocol.uts"
+import harmonyWindow from '@ohos.window'
+import { BusinessError } from '@kit.BasicServicesKit';
+
+export const setScreenBrightness : SetScreenBrightness = defineAsyncApi<SetScreenBrightnessOptions, SetScreenBrightnessSuccess>(
+	API_SET_SCREEN_BRIGHTNESS,
+	(options : SetScreenBrightnessOptions, res : ApiExecutor<SetScreenBrightnessSuccess>) => {
+		const windowStage : harmonyWindow.WindowStage = UTSHarmony.getWindowStage() as harmonyWindow.WindowStage
+		windowStage.getMainWindow((err : BusinessError, window) => {
+			const errCode : number = err.code;
+			if (errCode) {
+				res.reject(`setScreenBrightness:fail. code: ${err.code}, message: ${err.message}`);
+				return;
+			}
+			let brightness : number = options.value;
+			try {
+				window.setWindowBrightness(brightness, (err : BusinessError) => {
+					const errCode : number = err.code;
+					if (errCode) {
+						res.reject(`setScreenBrightness:fail. code: ${err.code}, message: ${err.message}`);
+						return;
+					}
+					res.resolve()
+				});
+			} catch (exception) {
+				res.reject(`setScreenBrightness:fail. code: ${exception.code}, message: ${exception.message}`);
+			}
+		});
+	},
+	SetScreenBrightnessApiProtocol,
+	SetScreenBrightnessApiOptions
+) as SetScreenBrightness
+
+
+function formatOutputForDotNumber(num : number, n : number) : number {
+	if (isNaN(num)) {
+		return -1; // 处理无效输入
+	}
+	const factor = Math.pow(10, n);
+	const rounded = Math.round(num * factor) / factor;
+	return rounded;
+}
+
+export const getScreenBrightness : GetScreenBrightness = defineAsyncApi<GetScreenBrightnessOptions, GetScreenBrightnessSuccess>(
+	API_GET_SCREEN_BRIGHTNESS,
+	(_ : GetScreenBrightnessOptions, res : ApiExecutor<GetScreenBrightnessSuccess>) => {
+		const windowStage : harmonyWindow.WindowStage = UTSHarmony.getWindowStage() as harmonyWindow.WindowStage
+		windowStage.getMainWindow((err : BusinessError, window) => {
+			const errCode : number = err.code;
+			if (errCode) {
+				res.reject(`setScreenBrightness:fail. code: ${err.code}, message: ${err.message}`);
+				return;
+			}
+			try {
+				let brightness = window.getWindowProperties().brightness
+				res.resolve({
+					value: formatOutputForDotNumber(brightness, 2)
+				} as GetScreenBrightnessSuccess)
+			} catch (exception) {
+				res.reject(`setScreenBrightness:fail. code: ${exception.code}, message: ${exception.message}`);
+			}
+		});
+	}
+) as GetScreenBrightness
+
+
+export const setKeepScreenOn : SetKeepScreenOn = defineAsyncApi<SetKeepScreenOnOptions, SetKeepScreenOnSuccess>(
+	API_SET_KEEP_SECREEN_ON,
+	(option : SetKeepScreenOnOptions, res : ApiExecutor<SetKeepScreenOnSuccess>) => {
+		const windowStage : harmonyWindow.WindowStage = UTSHarmony.getWindowStage() as harmonyWindow.WindowStage
+		windowStage.getMainWindow((err : BusinessError, window) => {
+			const errCode : number = err.code;
+			if (errCode) {
+				res.reject(`setKeepScreenOn:fail. code: ${err.code}, message: ${err.message}`);
+				return;
+			}
+			try {
+				window.setWindowKeepScreenOn(Boolean(option.keepScreenOn), (err : BusinessError) => {
+					const errCode : number = err.code;
+					if (errCode) {
+						res.reject(`setKeepScreenOn:fail. code: ${err.code}, message: ${err.message}`);
+						return;
+					}
+					res.resolve()
+				});
+			} catch (exception) {
+				res.reject(`setScreenBrightness:fail. code: ${exception.code}, message: ${exception.message}`);
+			}
+		});
+	}
+) as SetKeepScreenOn
+
+export {
+    GetScreenBrightness,
+    GetScreenBrightnessComplete,
+    GetScreenBrightnessCompleteCallback,
+    GetScreenBrightnessFail,
+    GetScreenBrightnessFailCallback,
+    GetScreenBrightnessOptions,
+    GetScreenBrightnessSuccess,
+    GetScreenBrightnessSuccessCallback,
+    SetKeepScreenOn,
+    SetKeepScreenOnComplete,
+    SetKeepScreenOnCompleteCallback,
+    SetKeepScreenOnFail,
+    SetKeepScreenOnFailCallback,
+    SetKeepScreenOnOptions,
+    SetKeepScreenOnSuccess,
+    SetKeepScreenOnSuccessCallback,
+    SetScreenBrightness,
+    SetScreenBrightnessComplete,
+    SetScreenBrightnessCompleteCallback,
+    SetScreenBrightnessFail,
+    SetScreenBrightnessFailCallback,
+    SetScreenBrightnessOptions,
+    SetScreenBrightnessSuccess,
+    SetScreenBrightnessSuccessCallback
+} from "../interface.uts"

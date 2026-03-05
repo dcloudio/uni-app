@@ -1,0 +1,21 @@
+import {
+	GetClipboardData, GetClipboardDataOptions, GetClipboardDataSuccess,
+	SetClipboardData, SetClipboardDataOptions, SetClipboardDataSuccess
+} from '../interface.uts'
+
+export const getClipboardData : GetClipboardData = function (options : GetClipboardDataOptions) {
+	const pasteboard = UIPasteboard.general
+	const result : GetClipboardDataSuccess = {
+		data: pasteboard.string ?? ""
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+export const setClipboardData : SetClipboardData = function (options : SetClipboardDataOptions) {
+	UIPasteboard.general.string = options.data
+	const result : SetClipboardDataSuccess = {
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}

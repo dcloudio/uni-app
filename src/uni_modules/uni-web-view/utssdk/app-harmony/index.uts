@@ -1,0 +1,751 @@
+import { webview } from '@kit.ArkWeb';
+import { image } from '@kit.ImageKit';
+import { componentSnapshot, FrameCallback } from '@kit.ArkUI';
+import { fileIo as fs } from '@kit.CoreFileKit';
+import { BusinessError } from '@kit.BasicServicesKit'
+// @ts-ignore
+import { uni, getCurrentMP } from "@dcloudio/uni-runtime";
+import { buildWeb, TitleUpdateEvent, PostMessageToServiceEvent, LoadEvent, MessageEvent, LoadingEvent, DownloadEvent, ErrorEvent } from "./builder.ets";
+import { CreateWebViewContext, WebViewContext, CreateWebviewContext, WebviewContext, UniWebViewContextLoadDataOptions, UniWebViewElementLoadDataOptions, WebViewStyles, WebViewProgressStyles, UniWebviewContextLoadDataOptions } from '../interface.uts';
+import { createDownloadDelegate } from './webview.ets';
+import { CustomFrameCallback, getSnapshotArea, mergeImage } from './utils.uts'
+
+class BindWebViewController {
+  private controllerAttachedInvokers: Array<() => void> = []
+  isControllerAttached: boolean = false
+  isPageEnd: boolean = false
+  controller: webview.WebviewController = new webview.WebviewController()
+
+  constructor() {
+  }
+  // @ts-ignore
+  private invokeController(methodName: string, ...args: ESObject[]): ESObject {
+    if (this.isControllerAttached) {
+      return this.controller[methodName](...args)
+    } else {
+      this.controllerAttachedInvokers.push(() => {
+        this.controller[methodName](...args)
+      })
+    }
+  }
+
+  onControllerAttached() {
+    if (!this.isControllerAttached) {
+      this.isControllerAttached = true
+      this.controllerAttachedInvokers.forEach(cb => cb())
+      this.controllerAttachedInvokers = []
+    }
+  }
+
+  onPageEnd() {
+    if (!this.isPageEnd) {
+      this.isPageEnd = true
+    }
+  }
+
+  back() {
+    this.invokeController('backward')
+  }
+
+  forward() {
+    this.invokeController('forward')
+  }
+
+  reload() {
+    this.invokeController('refresh')
+  }
+
+  stop() {
+    this.invokeController('stop')
+  }
+
+  evalJS(js: string) {
+    this.invokeController('runJavaScript', js)
+  }
+
+  getContentHeight(): number {
+    return this.controller.getPageHeight()
+  }
+
+  canBack(): boolean {
+    return this.controller.accessBackward()
+  }
+
+  canForward(): boolean {
+    return this.controller.accessForward()
+  }
+
+  /**
+   * @tutorial https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-webview#loaddata
+   *
+   * 若加载本地图片，可以给baseUrl或historyUrl任一参数赋值空格，详情请参考示例代码。
+   * 加载本地图片场景，baseUrl和historyUrl不能同时为空，否则图片无法成功加载。
+   * 若html中的富文本中带有注入#等特殊字符，建议将baseUrl和historyUrl两个参数的值设置为"空格"。
+   * data数据必须使用base64编码或将内容中的任何#字符编码为%23。否则#将被视为内容的结尾而剩余的文本将被用作文档片段标识符。
+   */
+  loadData(options: UniWebViewElementLoadDataOptions) {
+    let data = options.data
+    if (options.encoding?.toLowerCase() !== 'base64') {
+      data = data.replace(/#/g, '%23')
+    }
+    this.invokeController('loadData',
+      data,
+      options.mimeType ?? "text/html",
+      options.encoding ?? "UTF-8",
+      options.baseURL ?? ''
+    )
+  }
+}
+
+interface BuilderWebViewParams {
+  id?: string
+  src?: string
+  horizontalScrollBarAccess: boolean
+  verticalScrollBarAccess: boolean
+  bounces: boolean
+  disableUserSelectMenu: boolean
+  controller?: webview.WebviewController
+  delegate?: webview.WebDownloadDelegate
+
+  onMessage?: (event: MessageEvent) => void
+  onTitleUpdate?: (event: TitleUpdateEvent) => void
+  onPostMessageToService?: (event: PostMessageToServiceEvent) => void
+  onContentHeightChange?: (contentHeight: number) => void
+  onLoad?: (event: LoadEvent) => void
+  onLoading?: (event: LoadingEvent) => void
+  onDownload?: (event: DownloadEvent) => void
+  onError?: (event: ErrorEvent) => void
+  onControllerAttached?: () => void
+  handleAreaChange?: (oldValue: Area, newValue: Area) => void
+  handleScroll?: (event: OnScrollEvent) => void
+}
+
+// #ifdef VUE3-VAPOR
+interface BuilderWebViewEvents {
+  onMessage?: (customEvent: UniNativeViewEvent) => void
+  onLoad?: (customEvent: UniNativeViewEvent) => void
+  onLoading?: (customEvent: UniNativeViewEvent) => void
+  onDownload?: (customEvent: UniNativeViewEvent) => void
+  onContentheightchange?: (customEvent: UniNativeViewEvent) => void
+  onError?: (customEvent: UniNativeViewEvent) => void
+}
+
+function capitalizeFirstLetter(str: string) {
+  // 处理空字符串或非字符串类型的边界情况
+  if (!str) return '';
+
+  const firstLetter = str.charAt(0).toUpperCase();
+  const restOfString = str.slice(1);
+
+  return firstLetter + restOfString;
+}
+// #endif
+
+export class NativeWebView {
+  __v_skip: boolean = true
+  private webviewElement: UniWebViewElement | undefined
+  private element: UniNativeViewElement
+  private params: BuilderWebViewParams = {
+    src: '',
+    horizontalScrollBarAccess: true,
+    verticalScrollBarAccess: true,
+    bounces: true,
+    disableUserSelectMenu: false,
+  }
+  // #ifdef VUE3-VAPOR
+  private events: BuilderWebViewEvents = {}
+  // #endif
+  private webComponentContent: ComponentContent
+  private lastPageHeight: number = 0
+  id = `web_view_id_${Date.now()}_${Math.floor(Math.random() * 1000000)}`
+  bindWebViewController: BindWebViewController = new BindWebViewController()
+
+  // #ifdef VUE3-VAPOR
+  constructor(element: UniNativeViewElement, events: BuilderWebViewEvents = {}) {
+    this.events = events
+    // #endif
+    // #ifndef VUE3-VAPOR
+    constructor(element: UniNativeViewElement, params ?: BuilderWebViewParams) {
+      if (params) this.params = params
+      // #endif
+      this.element = element
+      this.initParams()
+      this.element.bindHarmonyWrappedBuilder(wrapBuilder<[BuilderWebViewParams]>(buildWeb), this.params);
+      this.element.bindHarmonyController(this.bindWebViewController)
+      if (typeof this.element['getHarmonyComponentContent'] === 'function') {
+        // @ts-ignore
+        this.webComponentContent = (this.element as ESObject).getHarmonyComponentContent() as ComponentContent;
+      } else {
+        this.webComponentContent = this.element.getHarmonyBuilderNode()
+      }
+      if (this.element.parentElement) {
+        this.webviewElement = this.element.parentElement as unknown as UniWebViewElement
+        this.webviewElement.setNativeWebView(this)
+      }
+    }
+
+  private dispatchEvent(type: string, event: UniNativeViewEvent) {
+    // #ifdef VUE3-VAPOR
+    (this.events as ESObject)[`on${capitalizeFirstLetter(type)}`]?.(event)
+    // #endif
+    // #ifndef VUE3-VAPOR
+    this.element.dispatchEvent(type, event)
+    // #endif
+  }
+
+  private initParams() {
+    this.params.id = this.id
+    this.params.delegate = createDownloadDelegate()
+    this.params.controller = this.bindWebViewController.controller
+    this.params.onMessage = (event: MessageEvent) => {
+      const detail = new UTSJSONObject()
+      detail.set('data', event.detail.data)
+      this.dispatchEvent('message', new UniNativeViewEvent("message", detail))
+    }
+    // TODO 暂不支持
+    this.params.onTitleUpdate = (event: TitleUpdateEvent) => { }
+    this.params.onPostMessageToService = (event: PostMessageToServiceEvent) => {
+      const detail = event.detail
+      const name = detail.args.data.name
+      const arg: ESObject = detail.args.data.arg
+      switch (name) {
+        case 'navigateTo':
+          uni.navigateTo({
+            url: encodeURI(arg.url)
+          })
+          break;
+        case 'navigateBack':
+          const delta = parseInt(arg.delta)
+          uni.navigateBack({
+            delta: !isNaN(delta) ? delta : 1
+          })
+          break;
+        case 'switchTab':
+          uni.switchTab({
+            url: encodeURI(arg.url)
+          })
+          break;
+        case 'reLaunch':
+          uni.reLaunch({
+            url: encodeURI(arg.url)
+          })
+          break;
+        case 'redirectTo':
+          uni.redirectTo({
+            url: encodeURI(arg.url)
+          })
+          break;
+      }
+    }
+    this.params.onContentHeightChange = (contentHeight: number) => {
+      this.lastPageHeight = contentHeight
+      const detail = new UTSJSONObject()
+      detail.set('height', contentHeight)
+      this.dispatchEvent('contentheightchange', new UniNativeViewEvent("contentheightchange", detail))
+    }
+    this.params.onLoad = (event: LoadEvent) => {
+      this.bindWebViewController.onPageEnd()
+      const detail = new UTSJSONObject()
+      detail.set('url', event.detail.url)
+      detail.set('src', event.detail.src)
+      this.dispatchEvent('load', new UniNativeViewEvent("load", detail))
+    }
+    this.params.onLoading = (event: LoadingEvent) => {
+      const detail = new UTSJSONObject()
+      detail.set('url', event.detail.url)
+      detail.set('src', event.detail.src)
+      this.dispatchEvent('loading', new UniNativeViewEvent("loading", detail))
+    }
+    this.params.onDownload = (event: DownloadEvent) => {
+      const detail = new UTSJSONObject()
+      detail.set('url', event.detail.url)
+      detail.set('userAgent', event.detail.userAgent)
+      detail.set('contentDisposition', event.detail.contentDisposition)
+      detail.set('mimetype', event.detail.mimetype)
+      detail.set('contentLength', event.detail.contentLength)
+      this.dispatchEvent('download', new UniNativeViewEvent("download", detail))
+    }
+    this.params.onError = (event: ErrorEvent) => {
+      const detail = new UTSJSONObject()
+      detail.set('errSubject', event.detail.errSubject)
+      detail.set('errCode', event.detail.errCode)
+      detail.set('errMsg', event.detail.errMsg)
+      detail.set('url', event.detail.url)
+      detail.set('fullUrl', event.detail.fullUrl)
+      detail.set('src', event.detail.src)
+      this.dispatchEvent('error', new UniNativeViewEvent("error", detail))
+    }
+    this.params.onControllerAttached = () => {
+      this.bindWebViewController.onControllerAttached()
+    }
+    // 支持 webview 截长图
+    this.params.handleAreaChange = (_: Area, newValue: Area) => {
+      if (this.webviewElement) {
+        this.webviewElement.widthByAreaChange = newValue.width as number
+        this.webviewElement.heightByAreaChange = newValue.height as number
+      }
+    }
+    this.params.handleScroll = (event) => {
+      if (this.webviewElement) {
+        this.webviewElement.curOffsetY = event.yOffset
+      }
+    }
+  }
+
+  setSrc(src?: string) {
+    if (this.params.src !== src) {
+      this.params.src = src ?? ''
+      this.updateParams()
+    }
+  }
+
+  // TODO 鸿蒙不支持
+  setWebViewStyles(webViewStyles?: WebViewStyles) { }
+
+  setHorizontalScrollBarAccess(access: boolean) {
+    if (this.params.horizontalScrollBarAccess !== access) {
+      this.params.horizontalScrollBarAccess = access
+      this.updateParams()
+    }
+  }
+
+  setVerticalScrollBarAccess(access: boolean) {
+    if (this.params.verticalScrollBarAccess !== access) {
+      this.params.verticalScrollBarAccess = access
+      this.updateParams()
+    }
+  }
+
+  setBounces(bounces: boolean) {
+    if (this.params.bounces !== bounces) {
+      this.params.bounces = bounces
+      this.updateParams()
+    }
+  }
+
+  setDisableUserSelectMenu(disableUserSelectMenu: boolean) {
+    if (this.params.disableUserSelectMenu !== disableUserSelectMenu) {
+      this.params.disableUserSelectMenu = disableUserSelectMenu
+      this.updateParams()
+    }
+  }
+
+  private updateParams() {
+    this.webComponentContent.update(this.params)
+  }
+
+  back() {
+    this.bindWebViewController.back()
+  }
+
+  forward() {
+    this.bindWebViewController.forward()
+  }
+
+  reload() {
+    this.bindWebViewController.reload()
+  }
+
+  stop() {
+    this.bindWebViewController.stop()
+  }
+
+  evalJS(js: string) {
+    this.bindWebViewController.evalJS(js)
+  }
+
+  getContentHeight(): number {
+    const pageHeight = this.bindWebViewController.getContentHeight()
+    if (this.lastPageHeight === 0 && this.lastPageHeight !== pageHeight) {
+      return pageHeight
+    }
+    return this.lastPageHeight
+  }
+
+  loadData(options: UniWebViewElementLoadDataOptions) {
+    this.bindWebViewController.loadData(options)
+  }
+
+  destroy() {
+    // @ts-ignore 移除 delegate 监听，传 undefined 为 ets 合法语法
+    this.params.delegate?.onBeforeDownload(undefined)
+    // @ts-ignore
+    this.params.delegate?.onDownloadUpdated(undefined)
+    // @ts-ignore
+    this.params.delegate?.onDownloadFinish(undefined)
+    // @ts-ignore
+    this.params.delegate?.onDownloadFailed(undefined)
+    this.webComponentContent.dispose()
+  }
+}
+
+interface IUniWebViewElement extends UniElement {
+  back(): void
+  forward(): void
+  reload(): void
+  stop(): void
+  evalJS(js: string): void
+  getContentHeight(): number
+  loadData(options: UniWebViewElementLoadDataOptions): void
+}
+interface TakeSnapshotSuccess {
+  /**
+   * 截图保存的临时文件路径
+   */
+  tempFilePath: string
+}
+
+interface TakeSnapshotFail {
+  errMsg: string;
+}
+interface TakeSnapshotOptions {
+  type?: string;
+  format?: string;
+  // @ts-ignore
+  success?: (res: TakeSnapshotSuccess) => void;
+  // @ts-ignore
+  fail?: (err: TakeSnapshotFail) => void;
+  // @ts-ignore
+  complete?: (res: ESObject) => void;
+}
+
+export class UniWebViewElement extends UniViewElementImpl implements IUniWebViewElement {
+  override tagName: string = 'WEB-VIEW'
+  override nodeName: string = 'WEB-VIEW'
+
+  private uiContext: UIContext | null = null
+  private nativeWebview: NativeWebView | null = null
+  private nativeWebviewAttachedInvokers: Array<() => void> = []
+  private isNativeWebviewAttached: boolean = false
+  private lastScrollHeight: number = 0
+  widthByAreaChange: number = 0
+  heightByAreaChange: number = 0
+  curOffsetY: number = 0
+
+  override getHarmonyController(): webview.WebviewController | null {
+    return this.nativeWebview?.bindWebViewController?.controller ?? null
+  }
+
+  setNativeWebView(nativeWebview: NativeWebView) {
+    this.nativeWebview = nativeWebview
+    if (!this.isNativeWebviewAttached) {
+      this.isNativeWebviewAttached = true
+      this.nativeWebviewAttachedInvokers.forEach(cb => cb())
+      this.nativeWebviewAttachedInvokers = []
+    }
+  }
+
+  private invokeNativeWebview(fn: () => void) {
+    if (this.isNativeWebviewAttached && this.nativeWebview != null) {
+      fn()
+    } else {
+      this.nativeWebviewAttachedInvokers.push(fn)
+    }
+  }
+
+  getNativeWebview(): NativeWebView | null {
+    return this.nativeWebview
+  }
+
+  back() {
+    this.invokeNativeWebview(() => {
+      this.nativeWebview?.back()
+    })
+  }
+
+  forward() {
+    this.invokeNativeWebview(() => {
+      this.nativeWebview?.forward()
+    })
+  }
+
+  reload() {
+    this.invokeNativeWebview(() => {
+      this.nativeWebview?.reload()
+    })
+  }
+
+  stop() {
+    this.invokeNativeWebview(() => {
+      this.nativeWebview?.stop()
+    })
+  }
+
+  evalJS(js: string) {
+    this.invokeNativeWebview(() => {
+      this.nativeWebview?.evalJS(js)
+    })
+  }
+
+  getContentHeight(): number {
+    return this.nativeWebview?.getContentHeight() ?? 0
+  }
+
+  loadData(options: UniWebViewElementLoadDataOptions) {
+    this.invokeNativeWebview(() => {
+      this.nativeWebview?.loadData(options)
+    })
+  }
+
+  private awaitOnIdle(): Promise<void> {
+    return new Promise((resolve) => {
+      const context = this.getUIContext()
+      if (context) {
+        context.postDelayedFrameCallback(new CustomFrameCallback(resolve as () => void) as FrameCallback, 50)
+      } else {
+        setTimeout(resolve, 100)
+      }
+    })
+  }
+
+  private getUIContext(): UIContext | null {
+    if (this.uiContext) return this.uiContext
+    const mainWindow = getCurrentMP().window
+    if (!mainWindow) return null
+    const uiContext = mainWindow.getUIContext()
+    if (!uiContext) return null
+    this.uiContext = uiContext
+    return this.uiContext
+  }
+
+  private async webViewScrollSnapshot(): Promise<PixelMap> {
+    return new Promise(async (resolve, reject) => {
+      this.lastScrollHeight = 0
+      const controller: webview.WebviewController = this.getHarmonyController() as webview.WebviewController;
+      const originOffsetY: number = this.curOffsetY
+      const componentWidth: number = this.widthByAreaChange
+      const componentHeight: number = this.heightByAreaChange
+      const scrollHeight: number = componentHeight * 0.7
+      const areaArray: image.PositionArea[] = [];
+      const scrollYOffsets: number[] = [];
+      // 滚动到顶部, 以便截图
+      controller.scrollTo(0, 0);
+
+      await this.awaitOnIdle()
+
+      this.webViewSnapCurrentScreen(scrollYOffsets, componentWidth, componentHeight, scrollHeight,
+        areaArray, controller).then(async (pixelMap: PixelMap) => {
+          // 截图后恢复滚动位置
+          controller.scrollTo(0, originOffsetY);
+          await this.awaitOnIdle()
+          resolve(pixelMap);
+        }).catch((e: BusinessError) => {
+          reject(e);
+        });
+    }) as Promise<PixelMap>
+  }
+
+  private async webViewSnapCurrentScreen(
+    scrollYOffsets: number[],
+    componentWidth: number,
+    componentHeight: number,
+    scrollHeight: number,
+    areaArray: image.PositionArea[],
+    controller: webview.WebviewController
+  ): Promise<PixelMap> {
+    const componentId = this.nativeWebview?.id
+    const curOffsetY: number = this.curOffsetY;
+    scrollYOffsets.push(curOffsetY);
+
+    await this.awaitOnIdle()
+    const pixelMap: PixelMap = await componentSnapshot.get(componentId)!;
+
+    // 获取当前这一屏中需要的像素数据
+    const area: image.PositionArea = await getSnapshotArea(pixelMap, scrollYOffsets, componentWidth, componentHeight);
+    areaArray.push(area);
+
+    const totalScrollHeight = curOffsetY + componentHeight
+    // 如果没有滚动到底部，继续滚动截图
+    if (Math.ceil(totalScrollHeight) < controller.getPageHeight() && this.lastScrollHeight !== totalScrollHeight) {
+      this.lastScrollHeight = totalScrollHeight
+      controller.scrollByWithResult(0, scrollHeight);
+      await this.awaitOnIdle()
+      return await this.webViewSnapCurrentScreen(scrollYOffsets, componentWidth, componentHeight, scrollHeight, areaArray, controller);
+    } else {
+      // 滚动结束，合并所有截图
+      return await mergeImage(areaArray, scrollYOffsets[scrollYOffsets.length - 1], componentWidth, componentHeight);
+    }
+  }
+
+  private pixelMapToImgPath(context: Context, format: string, pixelMap: image.PixelMap): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const fileDir = context.tempDir
+      const folderName = 'uni-snapshot'
+      const isDirExist = fs.accessSync(`${fileDir}/${folderName}`, fs.AccessModeType.WRITE)
+      if (!isDirExist) {
+        fs.mkdirSync(`${fileDir}/${folderName}`, true)
+      }
+      const file = fs.openSync(`${fileDir}/${folderName}/${Date.now()}.${format}`, fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE);
+      const imagePackerApi = image.createImagePacker();
+      const packOpts: image.PackingOption = { format: `image/${format}`, quality: 100 };
+      imagePackerApi.packToFile(pixelMap, file.fd, packOpts, (err) => {
+        pixelMap.release();
+        if (err) {
+          reject({ message: 'pixelMapToImgPath fail' } as BusinessError)
+        } else {
+          resolve(file.path)
+        }
+      });
+    })
+  }
+
+  override takeSnapshot(options: TakeSnapshotOptions) {
+    const DEFAULT_TYPE = 'file'
+    const DEFAULT_FORMAT = 'png'
+    let type = options.type! // 暂只支持 file
+    let format = options.format! // 暂只支持 png
+    if (type !== DEFAULT_TYPE) {
+      type = DEFAULT_TYPE
+    }
+    if (format !== DEFAULT_FORMAT) {
+      format = DEFAULT_FORMAT
+    }
+    const controller = this.getHarmonyController()
+    if (controller) {
+      try {
+        this.webViewScrollSnapshot()
+          .then((imagePixelMap: PixelMap) => {
+            if (type === DEFAULT_TYPE && imagePixelMap) {
+              this.pixelMapToImgPath(getContext(), format, imagePixelMap)
+                .then((tempFilePath: string) => {
+                  const res: TakeSnapshotSuccess = { tempFilePath }
+                  options.success?.(res);
+                  options.complete?.(res);
+                })
+                .catch((error: BusinessError) => {
+                  const err: TakeSnapshotFail = { errMsg: `UniElement takeSnapshot fail: ${error.message}` }
+                  options.fail?.(err);
+                  options.complete?.(err);
+                })
+                .finally(() => {
+                  imagePixelMap.release()
+                })
+            }
+          })
+          .catch((error: BusinessError | number) => {
+            const err: TakeSnapshotFail = { errMsg: `UniElement takeSnapshot fail: ${typeof error === 'number' ? error : error.message}` }
+            options.fail?.(err);
+            options.complete?.(err);
+          })
+      } catch (err) {
+        if (err) {
+          const takeSnapshotFail: TakeSnapshotFail = {
+            errMsg: (err as BusinessError).message
+          }
+          options?.fail?.(takeSnapshotFail)
+          options?.complete?.(takeSnapshotFail)
+          return
+        }
+      }
+    }
+  }
+
+  // @ts-ignore 鸿蒙上 UniElementImpl 实现了 dispose
+  override dispose() {
+    this.nativeWebview?.destroy()
+    this.nativeWebview = null
+    // #ifndef VUE3-VAPOR
+    // @ts-ignore 鸿蒙上实现了 dispose
+    super.dispose()
+    // #endif
+  }
+}
+
+const getWebViewContext = (id: string, component?: ComponentPublicInstance | null): WebViewContext | null => {
+  let webViewElement: UniWebViewElement | null | undefined = null;
+  if (component == null) {
+    // @ts-ignore
+    const pages = getCurrentPages() as UniPage[];
+    if (pages.length > 0) {
+      const page = (pages[pages.length - 1])
+      if (!page) {
+        console.error(`getCurrentPages is empty`)
+        return null
+      }
+      // @ts-ignore
+      webViewElement = ((page.vm as ESObject).$el as UniElement)?.parentElement?.querySelector('#' + id) as UniWebViewElement;
+      if (webViewElement == null) {
+        const dialogPages = page.getDialogPages() as UniPage[];
+        if (dialogPages.length > 0) {
+          const topDialogPage = dialogPages[dialogPages.length - 1];
+          if (!topDialogPage) {
+            console.error(`getDialogPages is empty`)
+            return null
+          }
+          webViewElement = ((topDialogPage.vm as ESObject).$el as UniElement)?.parentElement?.querySelector('#' + id) as unknown as UniWebViewElement;
+        }
+      }
+    }
+  } else {
+    webViewElement = (component.$el as UniElement)?.parentElement?.querySelector('#' + id) as unknown as UniWebViewElement;
+  }
+  if (webViewElement == null) return null;
+  return new WebViewContextImpl(webViewElement.getNativeWebview());
+}
+
+// @ts-ignore
+export const createWebViewContext: CreateWebViewContext = defineSyncApi<WebViewContext | null>(
+  'createWebViewContext',
+  // @ts-ignore
+  (id: string, component?: ComponentPublicInstance | null) => {
+    return getWebViewContext(id, component)
+  }
+) as CreateWebViewContext
+// @ts-ignore
+export const createWebviewContext: CreateWebviewContext = defineSyncApi<WebviewContext | null>(
+  'createWebviewContext',
+  // @ts-ignore
+  (id: string, component?: ComponentPublicInstance | null) => {
+    return getWebViewContext(id, component) as WebviewContext | null
+  }
+) as CreateWebviewContext
+
+class WebViewContextImpl implements WebViewContext {
+
+  private nativeWebview?: NativeWebView | null = null;
+
+  constructor(nativeWebview?: NativeWebView | null) {
+    this.nativeWebview = nativeWebview;
+  }
+
+  back() {
+    this.nativeWebview?.back()
+  }
+
+  forward() {
+    this.nativeWebview?.forward()
+  }
+
+  reload() {
+    this.nativeWebview?.reload()
+
+  }
+
+  stop() {
+    this.nativeWebview?.stop()
+  }
+
+  evalJS(js: string) {
+    this.nativeWebview?.evalJS(js)
+  }
+
+  getContentHeight(): number {
+    return this.nativeWebview?.getContentHeight() ?? 0
+  }
+
+  loadData(options: UniWebViewContextLoadDataOptions) {
+    this.nativeWebview?.loadData(options as UniWebViewElementLoadDataOptions)
+  }
+}
+
+export {
+  CreateWebViewContext,
+  CreateWebviewContext,
+  UniWebviewContextLoadDataOptions,
+  UniWebViewContextLoadDataOptions,
+  UniWebViewElementLoadDataOptions,
+  WebViewProgressStyles,
+  WebViewStyles,
+  WebViewContext,
+  WebviewContext,
+}

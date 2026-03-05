@@ -1,0 +1,255 @@
+import http from '@ohos.net.http'
+import buffer from '@ohos.buffer';
+import fs from '@ohos.file.fs'
+import {
+    getRealPath,
+    Emitter,
+    getCurrentMP,
+} from '@dcloudio/uni-runtime'
+import {
+    UploadTask as UniUploadTask,
+    UploadFileOptions as UniUploadFileOptions,
+    UploadFileSuccess as UniUploadFileSuccess,
+    OnProgressUpdateResult,
+    UploadFile
+} from '../../interface.uts'
+import {
+    API_UPLOAD_FILE,
+    UploadFileApiOptions,
+    UploadFileApiProtocol,
+} from '../../protocol.uts'
+import {
+    lookupContentTypeWithUri
+} from './mime.uts'
+import {
+    getClientCertificate,
+    parseUrl,
+} from './utils.uts'
+import {
+    getCookieSync,
+    setCookieSync
+} from './cookie.uts'
+
+interface IUniUploadFileEmitter {
+    on: (eventName: string, callback: Function) => void
+    once: (eventName: string, callback: Function) => void
+    off: (eventName: string, callback?: Function | null) => void
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void
+}
+
+interface IUploadTask {
+    abort: Function
+    onHeadersReceived: Function
+    offHeadersReceived: Function
+    onProgressUpdate: Function
+    offProgressUpdate: Function
+}
+
+class UploadTask implements UniUploadTask {
+    __v_skip: boolean = true
+    private _uploadTask: IUploadTask
+    constructor(uploadTask: IUploadTask) {
+        this._uploadTask = uploadTask
+    }
+
+    abort() {
+        this._uploadTask.abort()
+    }
+
+    onProgressUpdate(callback: Function) {
+        this._uploadTask.onProgressUpdate(callback)
+    }
+
+    offProgressUpdate(callback?: Function) {
+        this._uploadTask.offProgressUpdate(callback)
+    }
+
+    onHeadersReceived(callback: Function) {
+        this._uploadTask.onHeadersReceived(callback)
+    }
+
+    offHeadersReceived(callback?: Function) {
+        this._uploadTask.offHeadersReceived(callback)
+    }
+}
+
+function readFile(filePath: string): ArrayBuffer {
+    const readFilePath = getRealPath(filePath) as string
+    const file = fs.openSync(readFilePath, fs.OpenMode.READ_ONLY)
+    const stat = fs.statSync(file.fd)
+    const data = new ArrayBuffer(stat.size)
+    fs.readSync(file.fd, data)
+    fs.closeSync(file.fd)
+    return data
+}
+
+export const uploadFile = defineTaskApi<UniUploadFileOptions, UniUploadFileSuccess, UniUploadTask>(
+    API_UPLOAD_FILE,
+    (args: UniUploadFileOptions, exec: ApiExecutor<UniUploadFileSuccess>) => {
+        let { url, timeout, header, formData, files, filePath, name } = args
+        header = header || {} as ESObject
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
+
+        // header
+        const headers = {} as Record<string, Object>
+        if (header) {
+            const headerRecord = header as Object as Record<string, string>
+            const headerKeys = Object.keys(headerRecord)
+            for (let i = 0; i < headerKeys.length; i++) {
+                const name = headerKeys[i]
+                headers[name.toLowerCase()] = headerRecord[name]
+            }
+        }
+        headers['Content-Type'] = 'multipart/form-data'
+
+        const multiFormDataList = [] as Array<http.MultiFormData>
+        if (formData) {
+            const formDataRecord = formData as Object as Record<string, Object>
+            const formDataKeys = Object.keys(formDataRecord)
+            for (let i = 0; i < formDataKeys.length; i++) {
+                const name = formDataKeys[i]
+                multiFormDataList.push({
+                    name,
+                    contentType: 'text/plain',
+                    data: String(formDataRecord[name]),
+                } as http.MultiFormData)
+            }
+        }
+        try {
+            if (files && files.length) {
+                for (let i = 0; i < files.length; i++) {
+                    const { name, uri } = files[i]
+                    multiFormDataList.push({
+                        name: name || 'file', // 鸿蒙的request.uploadFile接口不能为每个文件设置name
+                        contentType: lookupContentTypeWithUri(uri) || 'application/octet-stream',
+                        remoteFileName: uri.split('/').pop() || 'no-name',
+                        /**
+                         * TODO 未联系鸿蒙确认
+                         * chooseImage返回"file://media/Photo/1/xxxx"，此uri可以被fs相关接口读取，但是上传时使用会报错
+                         * 使用"file://media/Photo/1/xxxx"、"file:///media/Photo/1/xxxx"、"/media/Photo/1/xxxx"、"media/Photo/1/xxxx"、格式都会报错
+                         * 错误信息：Failed to open/read local data from file/application
+                         */
+                        // filePath: getRealPath(uri!),
+                        // TODO 调整为异步读取
+                        data: readFile(uri!)
+                    } as http.MultiFormData)
+                }
+            } else if (filePath) {
+                multiFormDataList.push({
+                    name: name || 'file',
+                    contentType: lookupContentTypeWithUri(filePath!) || 'application/octet-stream',
+                    remoteFileName: filePath.split('/').pop() || 'no-name',
+                    data: readFile(filePath!)
+                } as http.MultiFormData)
+            }
+        } catch (error) {
+            exec.reject((error as Error).message)
+            return new UploadTask({
+                abort: () => { },
+                onHeadersReceived: (callback: Function) => { },
+                offHeadersReceived: (callback: Function) => { },
+                onProgressUpdate: (callback: Function) => { },
+                offProgressUpdate: (callback: Function) => { },
+            } as IUploadTask)
+        }
+
+        const httpRequest = http.createHttp()
+        const mp = getCurrentMP()
+        const userAgent = mp.userAgent.fullUserAgent
+        if (userAgent && !headers['User-Agent'] && !headers['user-agent']) {
+            headers['User-Agent'] = userAgent
+        }
+        const emitter = new Emitter() as IUniUploadFileEmitter
+        const uploadTask: IUploadTask = {
+            abort() {
+                emitter.off('headersReceive')
+                emitter.off('progress')
+                httpRequest.destroy()
+            },
+            onHeadersReceived(callback: Function) {
+                emitter.on('headersReceive', callback)
+            },
+            offHeadersReceived(callback?: Function) {
+                emitter.off('headersReceive', callback)
+            },
+            onProgressUpdate(callback: Function) {
+                emitter.on('progress', callback)
+            },
+            offProgressUpdate(callback?: Function) {
+                emitter.off('progress', callback)
+            },
+        }
+
+        function destroy() {
+            emitter.off('headersReceive')
+            emitter.off('progress')
+            httpRequest.destroy()
+        }
+        mp.on('beforeClose', destroy)
+
+        let lastUrl = url
+        httpRequest.on('headersReceive', (headers: Object) => {
+            const realHeaders = headers as Record<string, string | string[]>
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie']
+            if (setCookieHeader) {
+                setCookieSync(lastUrl, setCookieHeader as string[])
+            }
+            const location = realHeaders['location'] || realHeaders['Location']
+            if (location) {
+                lastUrl = location as string
+            }
+            // TODO headersReceive存在bug，暂不支持回调给用户。注意重定向时会多次触发，但是只需要给用户回调最后一次
+            // emitter.emit('headersReceive', header);
+        })
+        httpRequest.on('dataSendProgress', ({ sendSize, totalSize }) => {
+            emitter.emit('progress', {
+                progress: Math.floor((sendSize / totalSize) * 100),
+                totalBytesSent: sendSize,
+                totalBytesExpectedToSend: totalSize,
+            } as OnProgressUpdateResult)
+        })
+
+        const bufs = [] as buffer.Buffer[]
+        httpRequest.on('dataReceive', (data) => {
+            bufs.push(buffer.from(data))
+        })
+        httpRequest.requestInStream(
+            parseUrl(url),
+            {
+                header: headers,
+                method: http.RequestMethod.POST,
+                connectTimeout: timeout ? timeout : undefined, // 不支持仅设置一个timeout
+                readTimeout: timeout ? timeout : undefined,
+                multiFormDataList,
+                expectDataType: http.HttpDataType.STRING,
+                clientCert: getClientCertificate(url)
+            } as http.HttpRequestOptions,
+            (err, statusCode) => {
+                if (err) {
+                    /**
+                     * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
+                     * {"code":2300023,"message":"Failed writing received data to disk/application"}
+                     */
+                    exec.reject(err.message)
+                } else {
+                    const responseData = buffer.concat(bufs)
+                    exec.resolve({
+                        data: responseData.toString('utf8'),
+                        statusCode,
+                    } as UniUploadFileSuccess)
+                }
+                httpRequest.off('headersReceive')
+                httpRequest.off('dataReceive')
+                uploadTask.offHeadersReceived()
+                uploadTask.offProgressUpdate()
+                httpRequest.destroy() // 调用完毕后必须调用destroy方法
+                mp.off('beforeClose', destroy)
+            }
+        )
+        return new UploadTask(uploadTask)
+    },
+    UploadFileApiProtocol,
+    UploadFileApiOptions
+) as UploadFile

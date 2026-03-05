@@ -1,0 +1,618 @@
+import { BuilderNode, UIContext, KeyboardAvoidMode, window } from "@kit.ArkUI";
+import { UniTextareaOptions, TextareaBuilder } from './textarea.ets'
+import { getCurrentMP, toUniNativeColor } from "@dcloudio/uni-runtime";
+
+const CONFIRM_TYPES = new Map<string, EnterKeyType>([
+	['return', EnterKeyType.NEW_LINE],
+	['send', EnterKeyType.Send],
+	['search', EnterKeyType.Search],
+	['next', EnterKeyType.Next],
+	['go', EnterKeyType.Go],
+	['done', EnterKeyType.Done],
+])
+
+interface SelectionData {
+	start: number,
+	end: number
+}
+
+type InputEventDetail = {
+	value: string
+	cursor: number
+}
+class UniInputEventEvent extends UniCustomEvent<InputEventDetail> {
+	constructor(detail: InputEventDetail) {
+		super('input', {
+			detail
+		} as UniCustomEventOptions<InputEventDetail>)
+	}
+}
+type FocusEventDetail = {
+	height: number
+	value: string
+}
+class UniFocusEventEvent extends UniCustomEvent<FocusEventDetail> {
+	constructor(detail: FocusEventDetail) {
+		super('focus', {
+			detail
+		} as UniCustomEventOptions<FocusEventDetail>)
+	}
+}
+type BlurEventDetail = InputEventDetail
+class UniBlurEventEvent extends UniCustomEvent<BlurEventDetail> {
+	constructor(detail: BlurEventDetail) {
+		super('blur', {
+			detail
+		} as UniCustomEventOptions<BlurEventDetail>)
+	}
+}
+type KeyboardHeightChangeEventDetail = {
+	height: number
+	duration: number
+}
+class UniKeyboardHeightChangeEventEvent extends UniCustomEvent<KeyboardHeightChangeEventDetail> {
+	constructor(detail: KeyboardHeightChangeEventDetail) {
+		super('keyboardheightchange', {
+			detail
+		} as UniCustomEventOptions<KeyboardHeightChangeEventDetail>)
+	}
+}
+type ChangeEventDetail = {
+	value: string
+}
+class UniChangeEventEvent extends UniCustomEvent<ChangeEventDetail> {
+	constructor(detail: ChangeEventDetail) {
+		super('change', {
+			detail
+		} as UniCustomEventOptions<ChangeEventDetail>)
+	}
+}
+type ConfirmEventDetail = ChangeEventDetail
+class UniConfirmEventEvent extends UniCustomEvent<ConfirmEventDetail> {
+	constructor(detail: ConfirmEventDetail) {
+		super('confirm', {
+			detail
+		} as UniCustomEventOptions<ConfirmEventDetail>)
+	}
+}
+
+type LineChangeEventDetail = {
+	lineCount: number
+	height: number
+}
+
+type InputEvent = (e: ESObject) => void
+
+function translateColor(color: string): string {
+	// 处理 color 值，将 #0099ccff 调整为 #ff0099cc 适配 arkUI
+	if (color.startsWith('#') && color.length == 9) {
+		return `${color.substring(0, 1)}${color.substring(color.length - 2)}${color.substring(1, color.length - 2)}`
+	}
+	return color
+}
+
+export class NativeTextareaView {
+	private element: UniNativeViewElement;
+	private harmonyBuilderNode: BuilderNode<[UniTextareaOptions]> | null = null
+	private uiContext: UIContext | null = null
+	private controller = new TextAreaController()
+	private value = ''
+	private params: UniTextareaOptions = {
+		key: '',
+		value: '',
+		placeholder: '',
+		controller: this.controller,
+		confirmHold: false,
+		autoHeight: false,
+		textAreaHeight: 150,
+		handleMountedFocus: this.handleMountedFocus.bind(this),
+		dispatchInput: this.dispatchInput.bind(this),
+		handleFocus: this.handleFocus.bind(this),
+		handleBlur: this.handleBlur.bind(this),
+		dispatchConfirm: this.dispatchConfirm.bind(this),
+	}
+	private cursor = 0
+	private autoFocus = false
+	private isFocusing = false
+	private needFocusWhenMounted = false
+	protected selection: SelectionData = { start: -1, end: -1 }
+	private holdKeyboard = false
+	private autoHeight = false
+	private adjustPosition = false
+	private mounted = false
+	private inputEvent: InputEvent | null = null
+	private focusEvent: InputEvent | null = null
+	private blurEvent: InputEvent | null = null
+	private keyboardHeightChangeEvent: InputEvent | null = null
+	private changeEvent: InputEvent | null = null
+	private lineChangeEvent: InputEvent | null = null
+	private confirmEvent: InputEvent | null = null
+	private currentWindow: window.Window | null = null
+	private keyboardHeight = 0
+	private textRectHeight: number = 0
+	private lineCount: number = 0
+	private keyboardAnimationDuration: number = 350
+	private preTextValue: string = ''
+	private triggerFocusTimer: number | null = null
+	private updateSelectionTimer: number | null = null
+	private updateCursorTimer: number | null = null
+	private dispatchBlurTimer: number | null = null
+	private defaultFontSize: number = 14
+
+	constructor(element: UniNativeViewElement) {
+		this.element = element;
+		this.bindView()
+		this.params.key = `${element.getNodeId()}`
+		this.updateParams()
+	}
+
+	private bindView() {
+		this.element.bindHarmonyWrappedBuilder(wrapBuilder<[UniTextareaOptions]>(TextareaBuilder), {});
+		this.harmonyBuilderNode = (this.element as ESObject).getHarmonyComponentContent()
+	}
+
+	private updateParams() {
+		this.harmonyBuilderNode?.update(this.params)
+	}
+
+	updateValue(value: string) {
+		this.params.value = value
+		this.updateParams()
+	}
+
+	updateDisabled(value: boolean) {
+		this.params.enabled = !value
+		this.updateParams()
+	}
+
+	updateMaxLength(value: number) {
+		this.params.maxLength = value
+		this.updateParams()
+	}
+
+	updateCursorSpacing(value: number) {
+		// harmony 不支持
+	}
+
+	updateCursorColor(value: string) {
+		this.params.caretColor = toUniNativeColor(value, this.params.caretColor)
+		this.updateParams()
+	}
+
+	updateAutoHeight(value: boolean) {
+		this.autoHeight = value
+		this.updateParams()
+	}
+
+	updateAutoFocus(value: boolean) {
+		this.autoFocus = value
+	}
+
+	updateColor(value: string) {
+		if (value == null) return
+
+		const _value = translateColor(value)
+		if (this.params.color != _value) {
+			this.params.color = _value
+			this.updateParams()
+		}
+	}
+	// TODO: 以下暂时仅支持 px
+	updateFontSize(value: string) {
+		if (value?.endsWith('px')) {
+			const _value = `${parseInt(value)}vp`
+			if (this.params.fontSize == _value) return
+
+			this.params.fontSize = _value
+			this.updateParams()
+		}
+	}
+	updateLineHeight(value?: string) {
+		if (value == null) return
+
+		let newLineHeight = this.params.lineHeight
+		if (value?.endsWith('px')) {
+			newLineHeight = `${parseInt(value)}vp`
+		} else if (!isNaN(Number(value)) || value.endsWith('em')) {
+			newLineHeight = `${parseFloat(value) * (this.params.fontSize == null ? this.defaultFontSize : parseInt(this.params.fontSize))}vp`
+		}
+
+		if (this.params.lineHeight != newLineHeight) {
+			this.params.lineHeight = newLineHeight
+			this.updateParams()
+		}
+	}
+	updateLetterSpacing(value: string) {
+		if (value?.endsWith('px')) {
+			const newValue = `${parseInt(value)}vp`
+			if (this.params.letterSpacing != newValue) {
+				this.params.letterSpacing = newValue
+				this.updateParams()
+			}
+		}
+	}
+	updateFontWeight(value: string) {
+		let newValue = FontWeight.Normal
+		switch (value) {
+			case 'bold':
+			case '700':
+			case '800':
+			case '900':
+				newValue = FontWeight.Bold
+				break;
+			case 'lighter':
+				newValue = FontWeight.Lighter
+				break;
+			case 'bolder':
+				newValue = FontWeight.Bolder
+				break;
+		}
+		if (this.params.fontWeight != newValue) {
+			this.params.fontWeight = newValue
+			this.updateParams()
+		}
+	}
+	updateFontStyle(value: string) {
+		let newValue = FontStyle.Normal
+		if (value == 'italic') {
+			newValue = FontStyle.Italic
+		}
+		if (this.params.fontStyle != newValue) {
+			this.params.fontStyle = newValue
+			this.updateParams()
+		}
+	}
+	updateFontFamily(value: string) {
+		if (this.params.fontFamily != value) {
+			this.params.fontFamily = value
+			this.updateParams()
+		}
+	}
+	updateTextAlign(value: string) {
+		let newValue = TextAlign.Start
+		switch (value) {
+			case 'right':
+				newValue = TextAlign.End
+				break;
+			case 'center':
+				newValue = TextAlign.Center
+				break;
+		}
+		if (this.params.textAlign != newValue) {
+			this.params.textAlign = newValue
+			this.updateParams()
+		}
+	}
+
+	handleMountedFocus() {
+		this.mounted = true
+		this.calcHeight()
+		window.getLastWindow(getContext(this.harmonyBuilderNode)).then(currentWindow => {
+			this.currentWindow = currentWindow
+			currentWindow.on('keyboardHeightChange', this.dispatchKeyboardHeightChange.bind(this))
+		})
+		if (this.needFocusWhenMounted || this.autoFocus) {
+			this.triggerFocus()
+		}
+	}
+
+	calcHeight() {
+		// 如果 minHeight < this.defaultHeight 时，不能设置 auto, 否则高度会自适应为内容高度
+		let textAreaComponentHeight: number = this.params.textAreaHeight
+		// TODO: 需要获取父元素的最大最小高度和 padding 信息
+		// 保证高度不小于最小高度
+		// if (this.textAreaMinHeight > textAreaComponentHeight) {
+		//   textAreaComponentHeight = this.textAreaMinHeight
+		//   // 保证高度不大于最大高度
+		// } else if (this.textAreaMaxHeight >= 0 && this.textAreaMaxHeight < textAreaComponentHeight) {
+		//   textAreaComponentHeight = this.textAreaMaxHeight
+		// } else if (this.autoHeight) {
+		//   // 如果 minHeight < this.defaultHeight 时，不能设置 auto, 否则高度自适应内容高度了
+		//   // TODO: 这会导致如果 auto-height:true, 当内容高度首次大于 minHeight 时，才会修改为 auto，本次修改会有内容闪烁问题（textarea 默认行为超出高度向上滚动文字，再设置 auto 文字回归滚动前位置）
+		//   if (this.textAreaMinHeight >= 0 && this.textAreaMinHeight < textAreaComponentHeight) {
+		//     textAreaComponentHeight = this.textAreaMinHeight
+		//   } else {
+		//     textAreaComponentHeight = 'auto'
+		//   }
+		// }
+
+		if (this.autoHeight) {
+			const textRect = this.controller.getTextContentRect()
+			this.textRectHeight = px2vp(textRect.height)
+			textAreaComponentHeight = this.textRectHeight
+		}
+		this.params.textAreaHeight = textAreaComponentHeight
+		this.updateParams()
+		// TODO: 设置高度后，需要通知 uni-textarea-wrapper 更新高度
+	}
+
+	updateFocus(value: boolean) {
+		if (value && !this.isFocusing) {
+			if (!this.mounted) {
+				this.needFocusWhenMounted = true
+				return
+			}
+			this.triggerFocus()
+		} else {
+			if (this.isFocusing) {
+				this.triggerBlur()
+			}
+		}
+	}
+
+	getUIContext() {
+		if (this.uiContext) return this.uiContext
+		const mainWindow = getCurrentMP().window
+		if (!mainWindow) return
+		const uiContext = mainWindow.getUIContext()
+		if (!uiContext) return
+		this.uiContext = uiContext
+		return this.uiContext
+	}
+
+	triggerFocus() {
+		this.preTextValue = this.value
+		if (!this.mounted) {
+			this.needFocusWhenMounted = true
+			return
+		}
+
+		const uiContext = this.getUIContext()
+		if (!uiContext) return
+
+		this.isFocusing = true
+		uiContext.getFocusController().requestFocus(this.params.key)
+		if (this.updateSelectionTimer != null) {
+			clearTimeout(this.updateSelectionTimer)
+		}
+		// 需要在聚焦完成后再设置 selection
+		this.updateSelectionTimer = setTimeout(() => {
+			if (this.selection.end !== -1 && this.selection.end >= this.selection.start) {
+				this.controller.setTextSelection(this.selection.start, this.selection.end)
+			} else if (this.params.value!.length > 0) {
+				this.controller.caretPosition(this.params.value!.length)
+				this.updateParams()
+			}
+		}, 0)
+	}
+	triggerBlur() {
+		try {
+			const uiContext = this.getUIContext()
+			if (!uiContext) return
+
+			uiContext.getFocusController().clearFocus()
+			this.dispatchBlur(this.value, this.cursor)
+		} catch (e) {
+			console.error(e.message)
+		}
+	}
+
+	updateConfirmType(value: string) {
+		const type = CONFIRM_TYPES.get(value)
+		if (type !== null) {
+			this.params.enterKeyType = type
+			this.updateParams()
+		}
+	}
+
+	updateConfirmHold(value: boolean) {
+		this.params.confirmHold = value
+		this.updateParams()
+	}
+
+	updateCursor(value: number) {
+		if (this.updateCursorTimer != null) {
+			clearTimeout(this.updateCursorTimer)
+		}
+		// 需要等 textarea 聚焦后再设置才生效
+		this.updateCursorTimer = setTimeout(() => {
+			this.controller.caretPosition(value)
+		}, 0)
+	}
+
+	updateSelectionStart(value: number) {
+		this.selection.start = value
+	}
+
+	updateSelectionEnd(value: number) {
+		this.selection.end = value
+	}
+
+	updateAdjustPosition(value: boolean) {
+		this.adjustPosition = value
+	}
+
+	updateHoldKeyboard(value: boolean) {
+		this.holdKeyboard = value
+	}
+
+	handleFocus() {
+		this.isFocusing = true
+		this.preTextValue = this.value
+
+		this.dispatchFocus(this.keyboardHeight, this.value)
+		const uiContext = this.getUIContext()
+		if (!uiContext) return
+
+		uiContext.setKeyboardAvoidMode(KeyboardAvoidMode.NONE)
+	}
+
+	handleBlur() {
+		if (!this.isFocusing) return
+
+		const uiContext = this.getUIContext()
+		if (!uiContext) return
+
+		uiContext.setKeyboardAvoidMode(KeyboardAvoidMode.OFFSET)
+		this.dispatchBlur(this.value, this.cursor)
+	}
+
+	updateInputEvent(event: InputEvent) {
+		this.inputEvent = event
+	}
+	dispatchInput(value: string, cursor?: number | null) {
+		this.value = value
+		this.params.value = value
+		this.calcHeight()
+		if (cursor != null) {
+			this.cursor = cursor
+		}
+		if (!this.isFocusing) return
+		this.updateLineCount()
+		this.inputEvent?.(new UniInputEventEvent({ value, cursor } as InputEventDetail))
+	}
+
+	updateFocusEvent(event: InputEvent) {
+		this.focusEvent = event
+	}
+	dispatchFocus(height: number, value: string) {
+		this.focusEvent?.(new UniFocusEventEvent({ height, value } as FocusEventDetail))
+	}
+
+	updateBlurEvent(event: InputEvent) {
+		this.blurEvent = event
+	}
+	dispatchBlur(value: string, cursor: number) {
+		this.dispatchChange()
+
+		this.blurEvent?.(new UniBlurEventEvent({ value, cursor } as BlurEventDetail))
+		if (this.dispatchBlurTimer != null) {
+			clearTimeout(this.dispatchBlurTimer)
+		}
+		// keyboardHeightChange 事件依赖 isFocusing 状态，故等待键盘收起动画完成后再修改状态
+		this.dispatchBlurTimer = setTimeout(() => {
+			this.isFocusing = false
+		}, this.keyboardAnimationDuration)
+	}
+
+	updateKeyboardHeightChangeEvent(event: InputEvent) {
+		this.keyboardHeightChangeEvent = event
+	}
+	dispatchKeyboardHeightChange(height: number) {
+		if (!this.isFocusing) return
+
+		const _height = px2vp(height)
+		this.keyboardHeight = _height
+		this.keyboardHeightChangeEvent?.(new UniKeyboardHeightChangeEventEvent({ height: _height, duration: 0 } as KeyboardHeightChangeEventDetail))
+	}
+
+	updateChangeEvent(event: InputEvent) {
+		this.changeEvent = event
+	}
+	dispatchChange() {
+		if (this.value !== this.preTextValue) {
+			this.changeEvent?.(new UniChangeEventEvent({ value: this.value } as ChangeEventDetail))
+		}
+	}
+
+	updateLineChangeEvent(event: InputEvent) {
+		this.lineChangeEvent = event
+	}
+	dispatchLineChange() {
+		const textRect = this.controller.getTextContentRect()
+		this.textRectHeight = px2vp(textRect.height)
+		this.lineChangeEvent?.(new UniCustomEvent('linechange', new UniCustomEventOptions<LineChangeEventDetail>({ lineCount: this.lineCount, height: this.textRectHeight } as LineChangeEventDetail)))
+	}
+	updateLineCount() {
+		const newLineCount = this.controller.getTextContentLineCount()
+		if (this.lineCount !== newLineCount) {
+			this.lineCount = newLineCount
+			this.dispatchLineChange()
+		}
+	}
+
+	updateConfirmEvent(event: InputEvent) {
+		this.confirmEvent = event
+	}
+	dispatchConfirm(value: string) {
+		this.confirmEvent?.(new UniConfirmEventEvent({ value } as ConfirmEventDetail))
+	}
+
+	handlePageTouchEndFocus() {
+		if (!this.holdKeyboard && this.isFocusing) {
+			this.getUIContext()?.getFocusController().clearFocus()
+		}
+	}
+
+	destroy() {
+		if (this.triggerFocusTimer != null) {
+			clearTimeout(this.triggerFocusTimer)
+		}
+		if (this.updateSelectionTimer != null) {
+			clearTimeout(this.updateSelectionTimer)
+		}
+		if (this.updateCursorTimer != null) {
+			clearTimeout(this.updateCursorTimer)
+		}
+		if (this.dispatchBlurTimer != null) {
+			clearTimeout(this.dispatchBlurTimer)
+		}
+
+		this.harmonyBuilderNode = null
+		this.uiContext = null
+		this.inputEvent = null
+		this.focusEvent = null
+		this.blurEvent = null
+		this.keyboardHeightChangeEvent = null
+		this.changeEvent = null
+		this.confirmEvent = null
+		this.currentWindow = null
+	}
+}
+
+export class UniTextareaElement extends UniVueElement {
+	override tagName: string = 'TEXTAREA'
+	override nodeName: string = 'TEXTAREA'
+
+	_value: string = ''
+	onValueChange: (value: string) => void = () => {}
+
+	updateValue(value: string) {
+		if (this._value === value) {
+			return
+		}
+		this._value = value
+	}
+
+	get value() {
+		return this._value
+	}
+
+	set value(value: string) {
+		if (this._value === value) {
+			return
+		}
+		this._value = value
+		this.onValueChange(value)
+	}
+
+	getAttribute(key: string): string | null {
+		if (key == 'value') {
+			return this._value
+		}
+		return super.getAttribute(key)
+	}
+
+	getAnyAttribute(key: string): any {
+		if (key == 'value') {
+			return this._value
+		}
+		return super.getAnyAttribute(key)
+	}
+
+	setAttribute(key: string, value: string) {
+		if (key == 'value') {
+			this.value = value
+			return
+		}
+		super.setAttribute(key, value)
+	}
+
+	setAnyAttribute(key: string, value: any) {
+		if (key == 'value') {
+			this.value = value as string
+			return
+		}
+		super.setAnyAttribute(key, value)
+	}
+}

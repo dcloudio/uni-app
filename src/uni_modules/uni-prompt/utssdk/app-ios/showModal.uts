@@ -1,0 +1,79 @@
+// #ifndef UNI-APP-X
+import { UTSiOS } from "DCloudUTSFoundation"
+import { DispatchQueue } from 'Dispatch';
+import { ShowModalOptions, ShowModalSuccess, ShowModalFail } from '../interface.uts'
+
+export function toShowModal(options: ShowModalOptions) {
+	// 参数解析
+	const title = options.title == null ? "" : options.title!
+	const message = options.content == null ? "" : options.content!
+	const showCancel = options.showCancel == null ? true : (options.showCancel != false)
+	const cancelText = options.cancelText == null ? "取消" : options.cancelText!
+	const confirmText = options.confirmText == null ? "确定" : options.confirmText!
+	const canEidt = options.editable == null ? false : (options.editable != false)
+	const placeholderText = options.placeholderText == null ? "" : options.placeholderText!
+
+	// uts方法默认会在子线程中执行，涉及 UI 操作必须在主线程中运行，通过 DispatchQueue.main.async 方法可将代码在主线程中运行
+	DispatchQueue.main.async(execute = (): void => {
+
+		// 初始化 DCAlertView 实例对象 alert
+		const style: DCAlertViewControllerStyle = canEidt ? DCAlertViewControllerStyle.textViewAlert : DCAlertViewControllerStyle.alert
+		const alert = DCAlertView.init(title, message, style, placeholderText)
+		
+		// 取消按钮及其回调
+		if (showCancel) {
+			const cancelAction = DCAlertAction.init(title = cancelText, style = DCAlertActionStyle.cancelStyle, handler = (action: DCAlertAction): void => {
+				// 获取输入框中的内容
+				let inputText = ""
+				if (canEidt == true) {
+					inputText = alert.textView?.text ?? ""
+				}
+				// 点击按钮的回调方法
+				const res: ShowModalSuccess = {
+					confirm: false,
+					cancel: true,
+					content: inputText
+				}
+				options.success?.(res)
+				options.complete?.(res)
+			})
+			// 自定义取消按钮颜色
+			if (options.cancelColor != null && options.cancelColor != '') {
+				const color = UTSiOS.colorWithString(options.cancelColor!)
+				cancelAction.titleColor = color
+			}
+			// 添加action
+			alert.addAction(cancelAction)
+		}
+		
+		// 确定按钮及其回调
+		const okAction = DCAlertAction.init(title = confirmText, style = DCAlertActionStyle.preferredStyle, handler = (action: DCAlertAction): void => {
+			// 获取输入框中的内容
+			let inputText = ""
+			if (canEidt == true) {
+				inputText = alert.textView?.text ?? ""
+			}
+			
+			// 点击按钮的回调方法
+			const res: ShowModalSuccess = {
+				confirm: true,
+				cancel: false,
+				content: inputText
+			}
+			options.success?.(res)
+			options.complete?.(res)
+		})
+		// 自定义确定按钮颜色
+		if (options.confirmColor != null && options.confirmColor != '') {
+			const color = UTSiOS.colorWithString(options.confirmColor!)
+			okAction.titleColor = color
+		}
+		// 添加action
+		alert.addAction(okAction)
+		
+		// 弹出alert
+		alert.show()
+	})
+}
+
+// #endif

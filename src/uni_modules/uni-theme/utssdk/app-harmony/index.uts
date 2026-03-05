@@ -1,0 +1,103 @@
+import {
+	OnOsThemeChange,
+	OnOsThemeChangeCallback,
+	OffOsThemeChange,
+	SetAppTheme,
+	SetAppThemeOptions,
+	SetAppThemeSuccessResult,
+	OnAppThemeChangeCallback,
+	OnAppThemeChange,
+	OffAppThemeChange,
+	OsThemeChangeResult,
+	AppThemeChangeResult,
+	OnHostThemeChange,
+	OnHostThemeChangeCallback,
+	OnHostThemeChangeCallbackResult,
+	OffHostThemeChange,
+	AppThemeFail
+} from "../interface.uts";
+import { AppThemeFailImpl } from '../unierror.uts';
+import { SetAppThemeApiProtocol, API_SET_APP_THEME } from '../protocol.uts';
+
+export const onOsThemeChange: OnOsThemeChange = function (callback: OnOsThemeChangeCallback): number {
+	return UTSHarmony.onOsThemeChange(function (res: OsThemeChangeResult) {
+		let result = {
+			osTheme: res.osTheme
+		} as OsThemeChangeResult
+		callback(result)
+	})
+}
+
+export const offOsThemeChange: OffOsThemeChange = function (id: number) {
+	UTSHarmony.offOsThemeChange(id)
+}
+
+export const setAppTheme: SetAppTheme = defineAsyncApi<SetAppThemeOptions, SetAppThemeSuccessResult>(
+	API_SET_APP_THEME,
+	(options: SetAppThemeOptions, exec: ApiExecutor<SetAppThemeSuccessResult>) => {
+		if (['auto', 'dark', 'light'].includes(options.theme)) {
+			UTSHarmony.setAppTheme(options.theme)
+			let result = {
+				theme: options.theme
+			} as SetAppThemeSuccessResult
+			exec.resolve(result)
+		} else {
+			let error = new AppThemeFailImpl(702001)
+			exec.reject(error.message, error as ApiError)
+		}
+	},
+	SetAppThemeApiProtocol
+) as SetAppTheme
+
+export const onAppThemeChange: OnAppThemeChange = function (callback: OnAppThemeChangeCallback): number {
+	return UTSHarmony.onAppThemeChange(function (res: AppThemeChangeResult) {
+		let result = {
+			appTheme: res.appTheme
+		} as AppThemeChangeResult
+		callback(result)
+	})
+}
+
+export const offAppThemeChange: OffAppThemeChange = function (id: number) {
+	UTSHarmony.offAppThemeChange(id)
+}
+
+
+export const onHostThemeChange: OnHostThemeChange = function (callback: OnHostThemeChangeCallback): number {
+	return UTSHarmony.onOsThemeChange(function (res: OsThemeChangeResult) {
+		const osTheme = res.osTheme
+		let result = {
+			hostTheme: osTheme === "dark" ? "dark" : "light"
+		} as OnHostThemeChangeCallbackResult
+		callback(result)
+	})
+}
+
+export const offHostThemeChange: OffHostThemeChange = function (id: number) {
+	UTSHarmony.offOsThemeChange(id)
+}
+
+export {
+    AppThemeChangeResult,
+    AppThemeErrorCode,
+    AppThemeFail,
+    IAppThemeFail,
+    OffAppThemeChange,
+    OffHostThemeChange,
+    OffOsThemeChange,
+    OnAppThemeChange,
+    OnAppThemeChangeCallback,
+    OnHostThemeChange,
+    OnHostThemeChangeCallback,
+    OnHostThemeChangeCallbackResult,
+    OnOsThemeChange,
+    OnOsThemeChangeCallback,
+    OnThemeChangeCallbackResult,
+    OsThemeChangeResult,
+    SetAppTheme,
+    SetAppThemeCompleteCallback,
+    SetAppThemeFailCallback,
+    SetAppThemeOptions,
+    SetAppThemeSuccessCallback,
+    SetAppThemeSuccessResult
+} from '../interface.uts'

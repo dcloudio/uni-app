@@ -1,0 +1,44 @@
+import PayTask from 'com.alipay.sdk.app.PayTask';
+import string from 'android.R.string';
+const defaultErrorCode : number = 700000
+const errorCodeMap : Map<number, number> = new Map([
+	[8000, 700600],
+	[4000, 701100],
+	[5000, 701110],
+	[6001, 700601],
+	[6002, 700602],
+	[6004, 700603],
+	[6007, 700607],
+	[4001, 700608]
+])
+export class Alipay {
+	public requestPayment(options : RequestPaymentOptions) {
+		UTSAndroid.getDispatcher("io").async(function (_) {
+			let alipay = new PayTask(UTSAndroid.getTopPageActivity());
+			let result = alipay.payV2(options.orderInfo, true);
+			UTSAndroid.getDispatcher("main").async(function (_) {
+				console.log(result)
+				let resultStatus : string | null = result.get("resultStatus")
+				if (resultStatus == null) {
+					resultStatus = '' + defaultErrorCode
+				}
+				if (resultStatus == "9000") {
+					let res : RequestPaymentSuccess = {
+						data: result
+					}
+					options.success?.(res)
+					options.complete?.(res)
+				} else {
+					let code = errorCodeMap[resultStatus.toInt()];
+					if (code == null) {
+						code = defaultErrorCode
+					}
+					let err = new RequestPaymentFailImpl(code.toInt());
+					options.fail?.(err)
+					options.complete?.(err)
+				}
+			}, null)
+		}, null)
+
+	}
+};

@@ -1,0 +1,15 @@
+
+export type UniRichTextItemClickEventDetail = {
+  src : string | null
+  href : string | null
+}
+
+export class UniRichTextItemClickEvent extends UniCustomEvent<UniRichTextItemClickEventDetail> {
+  constructor(type : string, detail : UniRichTextItemClickEventDetail) {
+  	super(type, detail)
+  }
+}
+
+// #ifdef APP-ANDROID
+export type RichTextItemClickEvent = UniRichTextItemClickEvent;
+// #endif

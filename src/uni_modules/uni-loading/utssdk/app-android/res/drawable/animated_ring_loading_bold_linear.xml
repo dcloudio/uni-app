@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ring_loading_vector_bold">
+
+    <target
+        android:name="rotationGroup"
+        android:animation="@animator/ring_rotation_linear" />
+
+</animated-vector>

@@ -1,0 +1,165 @@
+{
+    "id": "uni-tabBar",
+    "displayName": "uni-tabBar",
+    "version": "1.0.0",
+    "description": "uni-tabBar",
+    "keywords": [
+        "uni-tabBar"
+    ],
+    "repository": "",
+    "engines": {
+        "HBuilderX": "^3.6.8"
+    },
+    "dcloudext": {
+        "type": "uts",
+        "sale": {
+            "regular": {
+                "price": "0.00"
+            },
+            "sourcecode": {
+                "price": "0.00"
+            }
+        },
+        "contact": {
+            "qq": ""
+        },
+        "declaration": {
+            "ads": "",
+            "data": "",
+            "permissions": ""
+        },
+        "npmurl": ""
+    },
+    "uni_modules": {
+        "uni-ext-api": {
+            "uni": {
+                "showTabBarRedDot": {
+                    "name": "showTabBarRedDot",
+                    "app": {
+                        "js": false,
+                        "kotlin": false,
+                        "swift": false,
+                        "arkts": false
+                    }
+                },
+                "hideTabBarRedDot": {
+                    "name": "hideTabBarRedDot",
+                    "app": {
+                        "js": false,
+                        "kotlin": false,
+                        "swift": false,
+                        "arkts": false
+                    }
+                },
+                "setTabBarBadge": {
+                    "name": "setTabBarBadge",
+                    "app": {
+                        "js": false,
+                        "kotlin": false,
+                        "swift": false,
+                        "arkts": false
+                    }
+                },
+                "removeTabBarBadge": {
+                    "name": "removeTabBarBadge",
+                    "app": {
+                        "js": false,
+                        "kotlin": false,
+                        "swift": false,
+                        "arkts": false
+                    }
+                },
+                "setTabBarItem": {
+                    "name": "setTabBarItem",
+                    "app": {
+                        "js": false,
+                        "kotlin": false,
+                        "swift": false,
+                        "arkts": false
+                    }
+                },
+                "setTabBarStyle": {
+                    "name": "setTabBarStyle",
+                    "app": {
+                        "js": false,
+                        "kotlin": false,
+                        "swift": false,
+                        "arkts": false
+                    }
+                },
+                "showTabBar": {
+                    "name": "showTabBar",
+                    "app": {
+                        "js": false,
+                        "kotlin": false,
+                        "swift": false,
+                        "arkts": false
+                    }
+                },
+                "hideTabBar": {
+                    "name": "hideTabBar",
+                    "app": {
+                        "js": false,
+                        "kotlin": false,
+                        "swift": false,
+                        "arkts": false
+                    }
+                },
+                "onTabBarMidButtonTap": {
+                    "name": "onTabBarMidButtonTap",
+                    "app": {
+                        "js": false,
+                        "kotlin": false,
+                        "swift": false,
+                        "arkts": false
+                    }
+                }
+            }
+        },
+        "encrypt": [],
+        "platforms": {
+            "cloud": {
+                "tcb": "u",
+                "aliyun": "u"
+            },
+            "client": {
+                "Vue": {
+                    "vue2": "u",
+                    "vue3": "u"
+                },
+                "App": {
+                    "app-android": "u",
+                    "app-ios": "u"
+                },
+                "H5-mobile": {
+                    "Safari": "u",
+                    "Android Browser": "u",
+                    "微信浏览器(Android)": "u",
+                    "QQ浏览器(Android)": "u"
+                },
+                "H5-pc": {
+                    "Chrome": "u",
+                    "IE": "u",
+                    "Edge": "u",
+                    "Firefox": "u",
+                    "Safari": "u"
+                },
+                "小程序": {
+                    "微信": "u",
+                    "阿里": "u",
+                    "百度": "u",
+                    "字节跳动": "u",
+                    "QQ": "u",
+                    "钉钉": "u",
+                    "快手": "u",
+                    "飞书": "u",
+                    "京东": "u"
+                },
+                "快应用": {
+                    "华为": "u",
+                    "联盟": "u"
+                }
+            }
+        }
+    }
+}

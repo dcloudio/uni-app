@@ -1,0 +1,47 @@
+import { camelize } from './utils.uts'
+
+export class UniFlowItemElement extends UniVueElement { }
+
+// 在使用了rootElement功能的情况下，为确保scroll-view相关事件能还原，需要继承自UniScrollViewElementImpl，UniVueElement相关功能自行拷贝到此类中
+export class UniWaterflowElement extends UniScrollViewElementImpl {
+    get vm() {
+        return UniVueElement.findVmByElement(this)
+    }
+
+    hasAttribute(key: string): boolean {
+        const vm = this.vm
+        if (vm) {
+            const name = camelize(key.trim())
+            if (!name) {
+                return false
+            }
+            const props = vm.$props
+            if (name in props) {
+                return true
+            }
+        }
+        return super.hasAttribute(key)
+    }
+
+    getAttribute(key: string): string | null {
+        if (!this.hasAttribute(key)) {
+            return null
+        }
+        return "" + this.getAnyAttribute(key)
+    }
+
+    getAnyAttribute(key: string): any {
+        const vm = this.vm
+        if (vm) {
+            const name = camelize(key.trim())
+            if (!name) {
+                return undefined
+            }
+            const props = vm.$props
+            if (name in props) {
+                return props[name]
+            }
+        }
+        return super.getAnyAttribute(key)
+    }
+}

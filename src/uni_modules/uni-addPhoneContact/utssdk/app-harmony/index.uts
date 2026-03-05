@@ -1,0 +1,198 @@
+import { AddPhoneContact, AddPhoneContactOptions, AddPhoneContactSuccess } from '../interface.uts';
+import { API_ADD_PHONE_CONTACT, AddPhoneContactApiOptions, AddPhoneContactApiProtocol } from '../protocol.uts';
+import { contact } from '@kit.ContactsKit';
+import { BusinessError } from '@kit.BasicServicesKit';
+
+export const addPhoneContact: AddPhoneContact = defineAsyncApi<AddPhoneContactOptions, AddPhoneContactSuccess>(
+    API_ADD_PHONE_CONTACT,
+    (args: AddPhoneContactOptions, executor: ApiExecutor<AddPhoneContactSuccess>) => {
+        UTSHarmony.requestSystemPermission(['ohos.permission.WRITE_CONTACTS'], (allRight: boolean) => {
+            if (allRight) {
+                const {
+                    photoFilePath,
+                    nickName = '',
+                    lastName = '',
+                    middleName = '',
+                    firstName = '',
+                    remark = '',
+                    mobilePhoneNumber = '',
+                    weChatNumber,
+                    addressCountry = '',
+                    addressState = '',
+                    addressCity = '',
+                    addressStreet = '',
+                    addressPostalCode = '',
+                    organization = '',
+                    url = '',
+                    workPhoneNumber = '',
+                    workFaxNumber = '',
+                    hostNumber = '',
+                    email = '',
+                    title = '',
+                    workAddressCountry = '',
+                    workAddressState = '',
+                    workAddressCity = '',
+                    workAddressStreet = '',
+                    workAddressPostalCode,
+                    homeFaxNumber = '',
+                    homePhoneNumber = '',
+                    homeAddressCountry = '',
+                    homeAddressState = '',
+                    homeAddressCity = '',
+                    homeAddressStreet = '',
+                    homeAddressPostalCode = ''
+                } = args
+
+                const contactInfo: contact.Contact = {
+                    name: {
+                        givenName: firstName!,
+                        fullName: lastName! + middleName! + firstName!
+                    }
+                }
+
+                if (nickName) {
+                    contactInfo.nickName = {
+                        nickName: nickName!
+                    } as contact.NickName
+                }
+
+                if (lastName) {
+                    contactInfo.name!.familyName = lastName
+                }
+
+                if (middleName) {
+                    contactInfo.name!.middleName = middleName
+                }
+
+                if (email) {
+                    contactInfo.emails = [{
+                        email: email!,
+                        displayName: '邮箱'
+                    } as contact.Email]
+                }
+
+                if (photoFilePath) {
+                    contactInfo.portrait = { uri: photoFilePath } as contact.Portrait
+                }
+
+                if (url) {
+                    contactInfo.websites = [{ website: url } as contact.Website]
+                }
+
+                if (remark) {
+                    contactInfo.note = { noteContent: remark } as contact.Note
+                }
+
+                if (organization) {
+                    contactInfo.organization = {
+                        name: organization,
+                        title: title!
+                    } as contact.Organization
+                }
+
+                const phoneNumbers: contact.PhoneNumber[] = []
+                // 如果 homePhoneNumber 不为空，则添加到数组
+                if (homePhoneNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: homePhoneNumber!,
+                        labelId: contact.PhoneNumber.NUM_HOME
+                    } as contact.PhoneNumber);
+                }
+                // 如果 mobilePhoneNumber 不为空，则添加到数组
+                if (mobilePhoneNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: mobilePhoneNumber!,
+                        labelId: contact.PhoneNumber.NUM_MOBILE
+                    } as contact.PhoneNumber);
+                }
+                // 如果 homeFaxNumber 不为空，则添加到数组
+                if (homeFaxNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: homeFaxNumber!,
+                        labelId: contact.PhoneNumber.NUM_FAX_HOME
+                    } as contact.PhoneNumber);
+                }
+                // 如果 workFaxNumber 不为空，则添加到数组
+                if (workFaxNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: workFaxNumber!,
+                        labelId: contact.PhoneNumber.NUM_FAX_WORK
+                    } as contact.PhoneNumber);
+                }
+                // 如果 workPhoneNumber 不为空，则添加到数组
+                if (workPhoneNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: workPhoneNumber!,
+                        labelId: contact.PhoneNumber.NUM_WORK
+                    } as contact.PhoneNumber);
+                }
+                // 如果 hostNumber 不为空，则添加到数组
+                if (hostNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: hostNumber!,
+                        labelId: contact.PhoneNumber.NUM_COMPANY_MAIN
+                    } as contact.PhoneNumber);
+                }
+                if (phoneNumbers.length) contactInfo.phoneNumbers = phoneNumbers
+
+                const postalAddresses: contact.PostalAddress[] = []
+                // 如果 homeAddress 相关字段至少有一个不为空，则添加到数组
+                if (homeAddressCity || homeAddressCountry || homeAddressPostalCode || homeAddressStreet) {
+                    postalAddresses.push({
+                        city: homeAddressCity!,
+                        country: homeAddressCountry!,
+                        postcode: homeAddressPostalCode!,
+                        street: homeAddressStreet!,
+                        postalAddress: `${homeAddressCountry!}${homeAddressState!}${homeAddressCity!}${homeAddressStreet!}`,
+                        labelId: contact.PostalAddress.ADDR_HOME
+                    } as contact.PostalAddress);
+                }
+                // 如果 workAddress 相关字段至少有一个不为空，则添加到数组
+                if (workAddressCity || workAddressCountry || workAddressPostalCode || workAddressStreet) {
+                    postalAddresses.push({
+                        city: workAddressCity!,
+                        country: workAddressCountry!,
+                        postcode: workAddressPostalCode!,
+                        street: workAddressStreet!,
+                        postalAddress: `${workAddressCountry!}${workAddressState!}${workAddressCity!}${workAddressStreet!}`,
+                        labelId: contact.PostalAddress.ADDR_WORK
+                    } as contact.PostalAddress);
+                }
+                // 如果 address 相关字段至少有一个不为空，则添加到数组
+                if (addressCity || addressCountry || addressPostalCode || addressStreet) {
+                    postalAddresses.push({
+                        city: addressCity!,
+                        country: addressCountry!,
+                        postcode: addressPostalCode!,
+                        street: addressStreet!,
+                        postalAddress: `${addressCountry!}${addressState!}${addressCity!}${addressStreet!}`,
+                        labelId: contact.PostalAddress.CUSTOM_LABEL
+                    } as contact.PostalAddress);
+                }
+                if (postalAddresses.length) contactInfo.postalAddresses = postalAddresses
+
+                contact.addContact(UTSHarmony.getUIAbilityContext()!, contactInfo)
+                    .then((contactId) => {
+                        executor.resolve(contactId)
+                    })
+                    .catch((err: BusinessError) => {
+                        executor.reject(err.message)
+                    })
+            } else {
+                executor.reject('Permission denied')
+            }
+        }, () => executor.reject('Permission denied'))
+    },
+    AddPhoneContactApiProtocol,
+    AddPhoneContactApiOptions
+) as AddPhoneContact
+export {
+    AddPhoneContact,
+    AddPhoneContactComplete,
+    AddPhoneContactCompleteCallback,
+    AddPhoneContactFail,
+    AddPhoneContactFailCallback,
+    AddPhoneContactOptions,
+    AddPhoneContactSuccess,
+    AddPhoneContactSuccessCallback
+} from '../interface.uts';

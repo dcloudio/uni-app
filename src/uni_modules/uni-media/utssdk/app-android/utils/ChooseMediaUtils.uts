@@ -1,0 +1,500 @@
+import {
+	ChooseImageOptions, ChooseImageSuccess, ChooseImageCropOptions,
+	ChooseVideoOptions, ChooseVideoSuccess, ChooseImageTempFile,
+	GetVideoInfoSuccess,
+	ChooseImagePageOrientation,
+} from "../../interface.uts"
+import {
+	UniError_ChooseImage, UniError_ChooseVideo,
+	MediaErrorImpl,
+} from "../../unierror.uts"
+import { getMediaInfo, getOrientation, getVideoMetadata } from "./MediaUtils.uts"
+import { uniChooseImage, uniChooseVideo } from "./ChooseImageUtils.uts"
+import { getUniActivity } from "io.dcloud.uts.android";
+import Intent from 'android.content.Intent';
+import File from 'java.io.File';
+import MediaStore from 'android.provider.MediaStore';
+import IMGEditActivity from "io.dcloud.uts.gallery.imageedit.IMGEditActivity";
+import Media from "io.dcloud.uts.dmcbig.mediapicker.entity.Media";
+import Uri from 'android.net.Uri';
+import Parcelable from 'android.os.Parcelable';
+import FileProvider from 'androidx.core.content.FileProvider';
+import Build from 'android.os.Build';
+import Manifest from 'android.Manifest';
+import Listener from 'io.dcloud.uts.androidtranscoder.MediaTranscoder.Listener';
+import MediaTranscoder from 'io.dcloud.uts.androidtranscoder.MediaTranscoder';
+import MediaFormatStrategyPresets from 'io.dcloud.uts.androidtranscoder.format.MediaFormatStrategyPresets';
+import CompressUtil from 'io.dcloud.uts.util.CompressUtil';
+import BitmapFactory from 'android.graphics.BitmapFactory';
+import TextUtils from 'android.text.TextUtils';
+import Locale from 'java.util.Locale';
+import Option from 'com.bumptech.glide.load.Option';
+
+const GALLERY_MEDIA_PICKER_RESULT = 1004;
+
+const mediaCachePath = UTSAndroid.getAppCachePath() + "uni-media/"
+const ASSETS_PATH = '/android_asset/'
+
+export function chooseMediaImage(option : ChooseImageOptions) {
+	uniChooseImage(option, function (count : number, compressed : boolean, index : number) {
+		if (option.albumMode == "system" && index != 0) {
+			if (Build.VERSION.SDK_INT > 32 || UTSAndroid.getAppContext()!.applicationInfo.targetSdkVersion >= 33) {
+				openAlbumForImage(option, count, 100)
+			} else {
+				UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, [android.Manifest.permission.READ_EXTERNAL_STORAGE], (a : boolean, b : string[]) => {
+					if (index == 0) {
+						openCameraForImage(option, compressed)
+					} else {
+						openAlbumForImage(option, count, 100)
+					}
+				}, (a : boolean, b : string[]) => {
+					let error = new MediaErrorImpl(1101005, UniError_ChooseImage);
+					option.fail?.(error)
+					option.complete?.(error)
+				})
+			}
+		} else {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				let requestPermissionList : Array<string> = [Manifest.permission.CAMERA]
+				if (index == 1) {
+					requestPermissionList = [Manifest.permission.READ_EXTERNAL_STORAGE]
+					if (getUniActivity()!.getApplicationInfo().targetSdkVersion >= 33) {
+						requestPermissionList = ["android.permission.READ_MEDIA_IMAGES"]
+					}
+				}
+				UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, requestPermissionList, (a : boolean, b : string[]) => {
+					if (index == 0) {
+						openCameraForImage(option, compressed)
+					} else {
+						openAlbumForImage(option, count, 100)
+					}
+				}, (a : boolean, b : string[]) => {
+					// 失败回调
+					let error = new MediaErrorImpl(1101005, UniError_ChooseImage);
+					option.fail?.(error)
+					option.complete?.(error)
+				})
+			} else {
+				if (index == 0) {
+					openCameraForImage(option, compressed)
+				} else if (index == 1) {
+					openAlbumForImage(option, count, 101)
+				}
+			}
+		}
+	})
+}
+
+var cropFunction : ((requestCode : Int, resultCode : Int, data ?: Intent) => void) | null = null
+var takeCameraFunction : ((requestCode : Int, resultCode : Int, data ?: Intent) => void) | null = null
+
+function openCameraForImage(option : ChooseImageOptions, compressed : boolean) {
+	const cameraCode = 22;
+	const IMAGE_CAPTURE_EDIT = 5011;
+	if (cropFunction != null) {
+		UTSAndroid.offAppActivityResult(cropFunction!)
+	}
+	if (takeCameraFunction != null) {
+		UTSAndroid.offAppActivityResult(takeCameraFunction!)
+	}
+	let cameraPath = (mediaCachePath + System.currentTimeMillis() + ".jpg") // .jpg为默认配置
+	try {
+		let picFile = new File(cameraPath);
+		if (!picFile.getParentFile().exists()) {
+			picFile.getParentFile().mkdirs()
+		}
+
+		cropFunction = (requestCode : Int, resultCode : Int, data ?: Intent) => {
+			if (requestCode == IMAGE_CAPTURE_EDIT) {
+				UTSAndroid.offAppActivityResult(cropFunction!)
+				if (resultCode == -1) {
+					let success : ChooseImageSuccess = {
+						"errSubject": "uni-chooseImage",
+						"tempFilePaths": ["file://" + cameraPath],
+						"errMsg": "chooseImage:ok",
+						"tempFiles": [{ "path": "file://" + cameraPath, "size": picFile.length() } as ChooseImageTempFile]
+					}
+					option.success?.(success)
+					option.complete?.(success)
+				} else {
+					let error = new MediaErrorImpl(1101007, UniError_ChooseImage);
+					option.fail?.(error)
+					option.complete?.(error)
+				}
+				cropFunction = null
+			}
+		}
+
+		takeCameraFunction = (requestCode : Int, resultCode : Int, data ?: Intent) => {
+			if (cameraCode == requestCode) {
+				UTSAndroid.offAppActivityResult(takeCameraFunction!)
+				if (resultCode == -1) {
+					if (picFile.exists()) {
+						// 图片裁切， 宽高都存在，且都大于0
+						if (option.crop != null && option.crop!.height != null && option.crop!.width != null && option.crop!.height! > 0 && option.crop!.width > 0) {
+							let media = new Media(cameraPath,
+								"",
+								System.currentTimeMillis(),
+								MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
+								1,
+								/* IMGEditActivity.CAMERA_SCENE, */ -1001,
+								picFile.getParent());
+							let cropIntent = new Intent(getUniActivity(), IMGEditActivity().javaClass)
+							let mUri = Uri.parse("file://" + media.path);
+							cropIntent.putExtra("IMAGE_URI", mUri);
+							cropIntent.putExtra("IMAGE_MEDIA_ID", media.id);
+							cropIntent.putExtra("IMAGE_INDEX", 0); // 传入当前的index，修改结束后方便替换
+							cropIntent.putExtra("IMAGE_CROP", JSON.stringify(option.crop!!));
+							UTSAndroid.onAppActivityResult(cropFunction!)
+							cropIntent.putExtra(/* IMGEditActivity.EXTRA_IMAGE_SAVE_PATH */"IMAGE_SAVE_PATH", media.path);
+							getUniActivity()!!.startActivityForResult(cropIntent, IMAGE_CAPTURE_EDIT.toInt());
+							getUniActivity()!!.overridePendingTransition(0, 0);
+						} else {
+							if (compressed) {
+								cameraPath = CompressUtil.compressImage(cameraPath, cameraPath, false, getUniActivity()!!)
+								picFile = new File(cameraPath)
+							}
+							let success : ChooseImageSuccess = {
+								"errSubject": "uni-chooseImage",
+								"tempFilePaths": ["file://" + cameraPath],
+								"errMsg": "chooseImage:ok",
+								"tempFiles": [{ "path": "file://" + cameraPath, "size": picFile.length() } as ChooseImageTempFile]
+							}
+							option.success?.(success)
+							option.complete?.(success)
+						}
+					} else {
+						let error = new MediaErrorImpl(1101008, UniError_ChooseImage);
+						option.fail?.(error)
+						option.complete?.(error)
+					}
+				} else {
+					let error = new MediaErrorImpl(1101008, UniError_ChooseImage);
+					option.fail?.(error)
+					option.complete?.(error)
+				}
+				takeCameraFunction = null
+			}
+		}
+		UTSAndroid.onAppActivityResult(takeCameraFunction!)
+		let picUri : Uri = FileProvider.getUriForFile(getUniActivity()!, getUniActivity()!.packageName + ".dc.fileprovider", picFile);
+		let intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, picUri);
+		getUniActivity()?.startActivityForResult(intent, cameraCode.toInt())
+	} catch (e : Exception) { }
+}
+
+var albumFunction : ((requestCode : Int, resultCode : Int, data ?: Intent) => void) | null = null
+
+/**
+ * 
+ * option
+ * count
+ * type PICKER_IMAGE = 100 PICKER_VIDEO = 102 PICKER_IMAGE_VIDEO = 101
+ */
+function openAlbumForImage(option : ChooseImageOptions, count : number, type : number) {
+	if (albumFunction != null) {
+		UTSAndroid.offAppActivityResult(albumFunction!)
+	}
+	albumFunction = (requestCode : Int, resultCode : Int, data ?: Intent) => {
+		if (requestCode == GALLERY_MEDIA_PICKER_RESULT) {
+			UTSAndroid.offAppActivityResult(albumFunction!)
+			let picPaths : Array<string> = []
+			let picTempPathJson : Array<ChooseImageTempFile> = []
+			if (data != null) {
+				let selectMediaResult : kotlin.collections.ArrayList<Parcelable> | null = data!!.getParcelableArrayListExtra("select_result");
+				if (selectMediaResult != null) {
+					selectMediaResult.forEach((current) => {
+						var path = (current as Media).path;
+						if (path.startsWith("file://") || path.startsWith("content://")) {
+							picPaths.push(path)
+						} else {
+							path = "file://" + path
+							picPaths.push(path);
+						}
+						try {
+							let tempPathJson : ChooseImageTempFile = { "path": path, "size": getMediaInfo(path) }
+							picTempPathJson.push(tempPathJson)
+						} catch (e) { }
+					})
+				}
+			}
+			if (picPaths.length > 0) {
+				let success : ChooseImageSuccess = {
+					"errSubject": "uni-chooseImage",
+					"tempFilePaths": picPaths,
+					"errMsg": "chooseImage:ok",
+					"tempFiles": picTempPathJson
+				}
+				option.success?.(success)
+				option.complete?.(success)
+			} else {
+				let error = new MediaErrorImpl(1101001, UniError_ChooseImage);
+				option.fail?.(error)
+				option.complete?.(error)
+			}
+			albumFunction = null
+		}
+	}
+	UTSAndroid.onAppActivityResult(albumFunction!)
+	openGalleryActivity(count, type, false, option.sizeType, option.crop, option.pageOrientation, option.albumMode);
+}
+
+export function chooseMediaVideo(options : ChooseVideoOptions) {
+	uniChooseVideo(options, (count : number, compressed : boolean, index : number) => {
+		if (options.albumMode == "system" && index != 0) {
+			if (Build.VERSION.SDK_INT > 32 || UTSAndroid.getUniActivity()!.applicationInfo.targetSdkVersion >= 33) {
+				openAlbumForVideo(options, count, 102, compressed)
+			} else {
+				UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, [android.Manifest.permission.READ_EXTERNAL_STORAGE], (a : boolean, b : string[]) => {
+					if (index == 0) {
+						openCameraForVideo(options, compressed)
+					} else {
+						openAlbumForVideo(options, count, 102, compressed)
+					}
+				}, (a : boolean, b : string[]) => {
+					let error = new MediaErrorImpl(1101005, UniError_ChooseVideo);
+					options.fail?.(error)
+					options.complete?.(error)
+				})
+			}
+		} else {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				let requestPermissionList : Array<string> = [Manifest.permission.CAMERA]
+				if (index == 1) {
+					requestPermissionList = [Manifest.permission.READ_EXTERNAL_STORAGE]
+					if (getUniActivity()!.getApplicationInfo().targetSdkVersion >= 33) {
+						requestPermissionList = ["android.permission.READ_MEDIA_VIDEO"]
+					}
+				}
+				UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, requestPermissionList, (a : boolean, b : string[]) => {
+					if (index == 0) {
+						openCameraForVideo(options, compressed)
+					} else {
+						openAlbumForVideo(options, count, 102, compressed)
+					}
+				}, (a : boolean, b : string[]) => {
+					// 失败回调
+					if (index == 0) {
+						let error = new MediaErrorImpl(1101005, UniError_ChooseVideo);
+						options.fail?.(error)
+						options.complete?.(error)
+					} else {
+						let error = new MediaErrorImpl(1101005, UniError_ChooseVideo);
+						options.fail?.(error)
+						options.complete?.(error)
+					}
+				})
+			} else {
+				if (index == 0) {
+					openCameraForVideo(options, compressed)
+				} else if (index == 1) {
+					openAlbumForVideo(options, count, 102, compressed)
+				}
+			}
+		}
+	})
+}
+
+var takeVideoFunction : ((requestCode : Int, resultCode : Int, data ?: Intent) => void) | null = null
+
+function openCameraForVideo(option : ChooseVideoOptions, compressed : boolean) {
+	const cameraCode = 22;
+
+	if (takeVideoFunction != null) {
+		UTSAndroid.offAppActivityResult(takeVideoFunction!)
+	}
+	let cameraPath = (mediaCachePath + System.currentTimeMillis() + ".mp4") // .mp4为默认配置
+	try {
+		let picFile = new File(cameraPath);
+		if (!picFile.getParentFile().exists()) {
+			picFile.getParentFile().mkdirs()
+		}
+		takeVideoFunction = (requestCode : Int, resultCode : Int, data ?: Intent) => {
+			if (cameraCode == requestCode) {
+				UTSAndroid.offAppActivityResult(takeVideoFunction!)
+				if (resultCode == -1) {
+					if (picFile.exists()) {
+						if (compressed) {
+							let outPath = (mediaCachePath + System.currentTimeMillis() + ".mp4")
+							MediaTranscoder.getInstance().transcodeVideo(cameraPath, outPath, MediaFormatStrategyPresets.createAndroid720pStrategy(2, 1.0), new MediaTranscoderListener(option, cameraPath, outPath))
+						} else {
+							var metadata : GetVideoInfoSuccess | null = null
+							let result = getVideoMetadata(cameraPath, null)
+							if (result instanceof GetVideoInfoSuccess) {
+								metadata = result as GetVideoInfoSuccess
+							}
+							let success : ChooseVideoSuccess = {
+								tempFilePath: "file://" + cameraPath,
+								width: metadata == null ? 0 : metadata!.width,
+								height: metadata == null ? 0 : metadata!.height,
+								size: metadata == null ? 0 : metadata!.size,
+								duration: metadata == null ? 0 : metadata!.duration,
+							}
+							option.success?.(success)
+							option.complete?.(success)
+						}
+					} else {
+						let error = new MediaErrorImpl(1101008, UniError_ChooseVideo);
+						option.fail?.(error)
+						option.complete?.(error)
+					}
+				} else {
+					let error = new MediaErrorImpl(1101008, UniError_ChooseVideo);
+					option.fail?.(error)
+					option.complete?.(error)
+				}
+				takeVideoFunction = null
+			}
+		}
+		UTSAndroid.onAppActivityResult(takeVideoFunction!)
+		let picUri : Uri = FileProvider.getUriForFile(getUniActivity()!, getUniActivity()!.packageName + ".dc.fileprovider", picFile);
+		let intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, picUri);
+		if (option.maxDuration != null && option.maxDuration! > 0) {
+			intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, option.maxDuration!);
+		}
+		if (option.camera != null && option.camera! == "front") {
+			intent.putExtra("android.intent.extras.CAMERA_FACING", 1);//前置摄像
+		} else {
+			intent.putExtra("android.intent.extras.CAMERA_FACING", 0);//后置摄像
+		}
+		getUniActivity()?.startActivityForResult(intent, cameraCode.toInt())
+	} catch (e : Exception) { }
+}
+
+class MediaTranscoderListener implements Listener {
+	option : ChooseVideoOptions
+	inPath : string
+	outPath : string
+	constructor(option : ChooseVideoOptions, inPath : string, outPath : string) {
+		this.option = option
+		this.inPath = inPath
+		this.outPath = outPath
+	}
+	override onTranscodeProgress(progress : Double) {
+
+	}
+
+	override onTranscodeCompleted() {
+		this.deleteInPath()
+		var metadata : GetVideoInfoSuccess | null = null
+		let result = getVideoMetadata(this.outPath, null)
+		if (result instanceof GetVideoInfoSuccess) {
+			metadata = result as GetVideoInfoSuccess
+		}
+		let success : ChooseVideoSuccess = {
+			tempFilePath: "file://" + this.outPath,
+			width: metadata == null ? 0 : metadata!.width,
+			height: metadata == null ? 0 : metadata!.height,
+			size: metadata == null ? 0 : metadata!.size,
+			duration: metadata == null ? 0 : metadata!.duration,
+		}
+		this.option.success?.(success)
+		this.option.complete?.(success)
+	}
+
+	override onTranscodeCanceled() {
+		this.deleteInPath()
+		let error = new MediaErrorImpl(1101004, UniError_ChooseVideo);
+		this.option.fail?.(error)
+		this.option.complete?.(error)
+	}
+
+	override onTranscodeFailed(exception : Exception) {
+		this.deleteInPath()
+		let error = new MediaErrorImpl(1101010, UniError_ChooseVideo);
+		this.option.fail?.(error)
+		this.option.complete?.(error)
+	}
+
+	deleteInPath() {
+		let file = new File(this.inPath)
+		if (file.exists()) {
+			file.delete()
+		}
+	}
+}
+
+var openAlbumFunction : ((requestCode : Int, resultCode : Int, data ?: Intent) => void) | null = null
+
+function openAlbumForVideo(option : ChooseVideoOptions, count : number, type : number, compressed : boolean) {
+	if (openAlbumFunction != null) {
+		UTSAndroid.offAppActivityResult(openAlbumFunction!)
+	}
+	openAlbumFunction = (requestCode : Int, resultCode : Int, data ?: Intent) => {
+		if (requestCode == GALLERY_MEDIA_PICKER_RESULT) {
+			UTSAndroid.offAppActivityResult(openAlbumFunction!)
+			let picPaths = ""
+			if (data != null) {
+				let selectMediaResult : kotlin.collections.ArrayList<Parcelable> | null = data!!.getParcelableArrayListExtra("select_result");
+				if (selectMediaResult != null && selectMediaResult!.size > 0) {
+					picPaths = (selectMediaResult![0] as Media).path
+				}
+			}
+			if (picPaths.isEmpty()) {
+				let error = new MediaErrorImpl(1101001, UniError_ChooseVideo);
+				option.fail?.(error)
+				option.complete?.(error)
+			} else {
+				var metadata : GetVideoInfoSuccess | null = null
+				let result = getVideoMetadata(picPaths, null)
+				if (result instanceof GetVideoInfoSuccess) {
+					metadata = result as GetVideoInfoSuccess
+				}
+				var tPath = ""
+				if (picPaths.startsWith("file://") || picPaths.startsWith("content://")) {
+					tPath = picPaths
+				} else {
+					tPath = "file://" + picPaths
+				}
+				let success : ChooseVideoSuccess = {
+					tempFilePath: tPath,
+					width: metadata == null ? 0 : metadata!.width,
+					height: metadata == null ? 0 : metadata!.height,
+					size: metadata == null ? 0 : metadata!.size,
+					duration: metadata == null ? 0 : metadata!.duration,
+				}
+				option.success?.(success)
+				option.complete?.(success)
+			}
+			openAlbumFunction = null
+		}
+	}
+	UTSAndroid.onAppActivityResult(openAlbumFunction!)
+	openGalleryActivity(count, type, compressed, null, null, option.pageOrientation, option.albumMode);
+}
+
+function openGalleryActivity(count : number, type : number, compressed : boolean, sizeType ?: (string[]) | null, crop ?: ChooseImageCropOptions | null, pageOrientation ?: ChooseImagePageOrientation | null, useSystem : string | null) {
+	let selected : Array<string> = [];// 已选中的图片
+	let maximum = -1;
+	let editable = true; // 是否可编辑，对应editable
+	let doneBtnText = "" // 完成按钮文字可编辑
+	// let compressed = false; // 视频压缩，对应“videoCompress”
+
+	let albumIntent = new Intent()
+	if (useSystem == "system") {
+		albumIntent.setClassName(getUniActivity()!!, "io.dcloud.uts.pick.SystemPickerActivity");
+	} else {
+		albumIntent.setClassName(getUniActivity()!!, "io.dcloud.uts.dmcbig.mediapicker.PickerActivity");
+	}
+	albumIntent.putExtra(/* SELECT_MODE = */"select_mode",/* PICKER_IMAGE_VIDEO = */type)
+	albumIntent.putExtra(/* SINGLE_SELECT = */"single_select", false)
+	albumIntent.putExtra(/* COMPRESSED = */"COMPRESSED", compressed)
+	albumIntent.putExtra(/* MAX_SELECT_COUNT = */"max_select_count", count)
+	// albumIntent.putExtra(/* DEFAULT_SELECTED_LIST = */"default_list",null); // 暂未对非uni的属性进行支持
+	// albumIntent.putExtra(/* SELECTED_MAX_CALLBACK_ID = */"select_max_cb_id","") // 暂未对非uni的属性进行支持
+	// albumIntent.putExtra(/* DONE_BUTTON_TEXT = */"done_button_text","")  // 暂未对非uni的属性进行支持
+	if (sizeType != null) {
+		albumIntent.putExtra(/* PickerConfig.SIZE_TYPE */"size_type", JSON.stringify(sizeType!))
+	}
+	albumIntent.putExtra(/* DOC_PATH = */"doc_path", mediaCachePath)
+	albumIntent.putExtra(/* IMAGE_EDITABLE = */"image_editable", true);
+	if (crop != null && crop!.height != null && crop!.width != null && crop!.height! > 0 && crop!.width > 0) {
+		albumIntent.putExtra(/* IMAGE_CROP = */"image_crop", JSON.stringify(crop))
+		albumIntent.putExtra(/* MAX_SELECT_COUNT = */"max_select_count", 1)  // 编辑模式下只能选中一个
+	}
+	albumIntent.putExtra("page_orientation", getOrientation(pageOrientation))
+	albumIntent.putExtra("copy_privacy_path", !UTSAndroid.isUniAppX())
+	getUniActivity()!!.startActivityForResult(albumIntent, GALLERY_MEDIA_PICKER_RESULT.toInt())
+}

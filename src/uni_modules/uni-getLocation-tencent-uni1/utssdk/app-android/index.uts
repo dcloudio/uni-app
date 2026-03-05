@@ -1,0 +1,234 @@
+import {
+	UTSAndroid
+} from "io.dcloud.uts";
+
+import ActivityCompat from "androidx.core.app.ActivityCompat";
+import Manifest from "android.Manifest";
+import Looper from "android.os.Looper";
+import TencentLocationManager from "com.tencent.map.geolocation.TencentLocationManager";
+import TencentLocationListener from "com.tencent.map.geolocation.TencentLocationListener";
+import TencentLocation from "com.tencent.map.geolocation.TencentLocation";
+import TencentLocationRequest from "com.tencent.map.geolocation.TencentLocationRequest";
+import PackageManager from "android.content.pm.PackageManager";
+import Class from 'java.lang.Class';
+import Exception from 'java.lang.Exception';
+import { GetLocation, GetLocationOptions,GetLocationSuccess } from "../interface.uts"
+import { GetLocationFailImpl } from "../unierror.uts"
+
+export { getLocationErrorCode, GetLocationFailImpl } from '../unierror.uts'
+export { GetLocationFail } from '../interface.uts'
+
+
+/**
+ * 对外的函数接口
+ */
+export const getLocation : GetLocation = function (options : GetLocationOptions) {
+	new UniLocationTencentProviderImpl().getLocation(options)
+}
+
+
+class UniLocationTencentProviderImpl {
+
+	private locationOptions ?: GetLocationOptions = null
+	/**
+	 * 判断当前的基座是否已经集成了sdk, 即是否是自定义基座
+	 */
+	private checkHasIntegration() : boolean {
+
+		let hasIntegration = true
+		try {
+			Class.forName("com.tencent.map.geolocation.TencentLocationListener")
+		} catch (_) {
+			hasIntegration = false;
+		}
+
+		if (!hasIntegration) {
+			return false;
+		}
+
+		return true
+	}
+	private failedAction(errCode : number) {
+		let err = new GetLocationFailImpl(errCode);
+		this.locationOptions?.fail?.(err)
+		this.locationOptions?.complete?.(err)
+		// this.clearWatch()
+	}
+	public getLocation(options : GetLocationOptions) {
+		this.locationOptions = options
+		if (!checkLocationConfig()) {
+			this.failedAction(1505605)
+			return;
+		}
+		TencentLocationManager.setUserAgreePrivacy(true);
+		/**
+		 * 准备权限
+		 */
+		let permissionNeed = ["android.permission.ACCESS_FINE_LOCATION"];
+		UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight : boolean, _ : string[]) {
+			if (allRight) {
+				// 交给目前的location 引擎，真实执行
+				getLocationImpl(options)
+			}
+		}, function (_ : boolean, p : string[]) {
+			console.log("用户拒绝了部分权限:")
+			this.failedAction(1505605)
+		})
+
+	}
+
+	constructor() {
+		// this.isAppExist = this.checkHasIntegration()
+	}
+}
+
+
+/****************************************内部功能实现****************************************************/
+
+
+/**
+ * 定位监听结果包装类
+ */
+class LocationOptionsWapper {
+
+	hostOption : GetLocationOptions;
+
+	constructor(option : GetLocationOptions) {
+		this.hostOption = option
+	}
+
+	onLocationChanged(location : TencentLocation, _error : Int,
+		_reason : string) {
+
+		let ret : GetLocationSuccess = {
+			latitude: location.latitude,
+			longitude: location.longitude,
+			speed: 0,
+			accuracy: location.accuracy,
+			altitude: location.altitude,
+			verticalAccuracy: 0,
+			horizontalAccuracy: location.accuracy,
+			address: location.address
+		}
+
+		this.hostOption.success?.(ret)
+		this.hostOption.complete?.(ret)
+		// 包装数据结构返回
+	}
+
+
+	onStatusUpdate(_name : string, _status : Int, _desc : string) {
+		// 定位状态发生变化
+	}
+};
+
+
+/**
+ * Tencent 定位监听实现类
+ */
+class SingleLocationListener extends TencentLocationListener {
+
+
+	hostOptionWraper : LocationOptionsWapper;
+
+	constructor(option : LocationOptionsWapper) {
+		super();
+		this.hostOptionWraper = option
+	}
+
+	override onLocationChanged(location : TencentLocation, error : Int,
+		reason : string) : void {
+		this.hostOptionWraper.onLocationChanged(location, error, reason);
+	}
+
+	override onStatusUpdate(name : string, status : Int, desc : string) : void {
+		this.hostOptionWraper.onStatusUpdate(name, status, desc);
+	}
+
+}
+/**
+ * 判断当前的基座是否已经集成了sdk, 即是否是自定义基座
+ */
+function checkHasIntegration() : boolean {
+
+	let hasIntegration = true
+	try {
+		let xClass = Class.forName("com.tencent.map.geolocation.TencentLocationListener")
+	} catch (e : Exception) {
+		hasIntegration = false;
+	}
+
+	if (!hasIntegration) {
+		return false;
+	}
+
+	return true
+}
+/**
+ * 检查定位的相关配置是否正确
+ */
+function checkLocationConfig() : boolean {
+
+	let packageName = UTSAndroid.getAppContext()!.getPackageName();
+	let appInfo = UTSAndroid.getAppContext()!.getPackageManager()!.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
+
+	let metaData = appInfo.metaData
+	if (metaData == null) {
+		return false;
+	}
+	let adId = metaData.getString("TencentMapSDK")
+	if (adId == null) {
+		return false;
+	}
+	let splitArray = adId.split("-")
+	let keyCharNum = splitArray.size
+
+	if (keyCharNum > 5) {
+		// 存在超过5个-，说明是符合规则的appkey
+		return true;
+	}
+	// 不符合校验规则，打回
+	return false;
+}
+
+
+/**
+ * 腾讯地图获取定位信息
+ * 参考文档:https://lbs.qq.com/mobile/androidLocationSDK/androidGeoGuide/androidGeoAdapt
+ */
+function getLocationImpl(locationOptions : GetLocationOptions) {
+
+	if (locationOptions.type != null && locationOptions.type!.toUpperCase() != 'GCJ-02' && locationOptions.type!.toUpperCase() != 'GCJ02') {
+		// 腾讯定位只支持GCJ-02，如果不是则报错
+		let ret = new GetLocationFailImpl(1505607);
+		locationOptions.fail?.(ret)
+		locationOptions.complete?.(ret)
+		return
+	}
+
+	let mLocationManager = TencentLocationManager.getInstance(UTSAndroid.getAppContext());
+	// 定位监听器封装
+	let locationOptionWrapper = new LocationOptionsWapper(locationOptions);
+	let mLocationListener = new SingleLocationListener(locationOptionWrapper);
+	// 发起单次请求
+	let locationRequest = TencentLocationRequest.create()
+	// 是否需要逆地理编码
+	if (locationOptions.geocode != null && locationOptions.geocode == true) {
+		locationRequest.setRequestLevel(TencentLocationRequest.REQUEST_LEVEL_NAME);
+	} else {
+		locationRequest.setRequestLevel(TencentLocationRequest.REQUEST_LEVEL_GEO);
+	}
+	// 是否开启了高精度
+	if (locationOptions.isHighAccuracy != null && locationOptions.isHighAccuracy == true) {
+		locationRequest.setAllowGPS(true)
+	}
+	/**
+	 * 高度信息，腾讯没有明确的api设置
+	 */
+	if (locationOptions.altitude != null && locationOptions.altitude == true) {
+		locationRequest.setAllowGPS(true)
+	}
+
+	mLocationManager.requestSingleFreshLocation(locationRequest, mLocationListener, Looper.getMainLooper());
+
+}

@@ -1,0 +1,25 @@
+import { BusinessError } from '@ohos.base';
+import { ConfigMTLS, ConfigMTLSOptions, ConfigMTLSSuccess, Certificate } from '../../interface.uts';
+import { API_CONFIG_MTLS, ConfigMTLSApiOptions, ConfigMTLSApiProtocol } from '../../protocol.uts';
+import { certificates } from './utils.uts';
+
+export const configMTLS: ConfigMTLS = defineAsyncApi<ConfigMTLSOptions, ConfigMTLSSuccess>(
+  API_CONFIG_MTLS,
+  (args: ConfigMTLSOptions, executor: ApiExecutor<ConfigMTLSSuccess>) => {
+    try {
+      args.certificates.forEach((certificate) => {
+        const certHosts = certificates.map(cert => cert.host)
+        const certHostIndex = certHosts.indexOf(certificate.host)
+        if (certHostIndex > -1) {
+          certificates.splice(certHostIndex, 1)
+        }
+        certificates.push(certificate)
+      })
+      executor.resolve()
+    } catch (error) {
+      executor.reject((error as BusinessError).message)
+    }
+  },
+  ConfigMTLSApiProtocol,
+  ConfigMTLSApiOptions
+) as ConfigMTLS

@@ -1,0 +1,163 @@
+import { BusinessError } from '@kit.BasicServicesKit';
+import media from '@ohos.multimedia.media'
+import { fileIo } from '@kit.CoreFileKit';
+import { RecorderManagerStartOptions, IRecorderManagerFail } from '../interface.uts';
+import { createFile, onRecorderStateChange, StateChangeRes, transformErrorCode } from './utils.uts';
+import { RecorderManagerFailImpl } from '../unierror.uts'
+
+export type SupportFormat = 'aac' | 'mp3' | 'm4a' | 'wav'
+
+export const supportFormats: Array<SupportFormat> = ['aac', 'mp3', 'm4a', 'wav']
+
+function getAudioCodec(format: SupportFormat): media.CodecMimeType {
+    switch (format) {
+        case 'aac':
+            return media.CodecMimeType.AUDIO_AAC
+        case 'mp3':
+            return media.CodecMimeType.AUDIO_MP3
+        case 'm4a':
+            return media.CodecMimeType.AUDIO_AAC
+        case 'wav':
+            return media.CodecMimeType.AUDIO_G711MU
+        /* case 'pcm':
+            return media.CodecMimeType.AUDIO_G711MU */
+        default:
+            return media.CodecMimeType.AUDIO_AAC
+    }
+}
+
+function getFileFormat(format: SupportFormat): media.ContainerFormatType {
+    switch (format) {
+        case 'aac':
+            return media.ContainerFormatType.CFT_MPEG_4A
+        case 'mp3':
+            return media.ContainerFormatType.CFT_MP3
+        case 'm4a':
+            return media.ContainerFormatType.CFT_MPEG_4A
+        case 'wav':
+            return media.ContainerFormatType.CFT_WAV
+        /* case 'pcm':
+            return media.ContainerFormatType.CFT_MPEG_4A */
+        default:
+            return media.ContainerFormatType.CFT_MPEG_4A
+    }
+}
+
+const DEFAULT_DURATION = 1000 * 60
+export default class AVRecorder {
+    private avRecorder?: media.AVRecorder
+    private isFirstStart: boolean = true
+
+    constructor() { }
+
+    private onStateChange(file: fileIo.File) {
+        if (this.avRecorder) {
+            this.avRecorder.on('stateChange', async (state, reason) => {
+                switch (state) {
+                    case 'idle':
+                        // 调用rest接口后触发idle状态；create后也在idle状态
+                        this.isFirstStart = true
+                        break
+                    case 'started':
+                        if (this.isFirstStart) {
+                            this.isFirstStart = false
+                            onRecorderStateChange('start')
+                        } else {
+                            if (reason === media.StateChangeReason.BACKGROUND) {
+                                onRecorderStateChange('interruptionEnd')
+                            }
+                            onRecorderStateChange('resume')
+                        }
+                        break
+                    case 'paused':
+                        if (reason === media.StateChangeReason.BACKGROUND) {
+                            onRecorderStateChange('interruptionBegin')
+                        }
+                        onRecorderStateChange('pause')
+                        break
+                    case 'stopped':
+                        onRecorderStateChange('stop', { tempFilePath: file.path } as StateChangeRes)
+                        fileIo.closeSync(file)
+                        break
+                }
+            })
+
+            this.avRecorder.on('error', (err: BusinessError) => {
+                onRecorderStateChange('error', new RecorderManagerFailImpl(transformErrorCode(err.code), err.message) as IRecorderManagerFail)
+            })
+        }
+    }
+    private async release() {
+        if (this.avRecorder !== undefined) {
+            await this.avRecorder.reset();
+            await this.avRecorder.release();
+            this.avRecorder = undefined;
+        }
+    }
+
+    async start(options: RecorderManagerStartOptions): Promise<void> {
+        if (this.avRecorder !== undefined) {
+            await this.release();
+        }
+        // 1.创建录制实例
+        this.avRecorder = await media.createAVRecorder();
+
+        const { sampleRate = 8000, numberOfChannels = 2, encodeBitRate = 48000, duration = DEFAULT_DURATION, format = 'aac' } = options
+
+        const file = createFile(supportFormats, format!, 'aac')
+        this.onStateChange(file);
+
+        const audioProfile: media.AVRecorderProfile = {
+            audioBitrate: format === 'wav' ? 64000 : encodeBitRate!,
+            audioChannels: format === 'wav' ? 1 : numberOfChannels!,
+            audioCodec: getAudioCodec(format! as SupportFormat),
+            audioSampleRate: format === 'wav' ? 8000 : sampleRate!,
+            fileFormat: getFileFormat(format! as SupportFormat),
+        }
+
+        const audioConfig: media.AVRecorderConfig = {
+            audioSourceType: media.AudioSourceType.AUDIO_SOURCE_TYPE_MIC,
+            profile: audioProfile,
+            url: 'fd://' + file.fd // 文件需先由调用者创建，赋予读写权限，将文件fd传给此参数，eg.fd://45
+        }
+
+        return new Promise((resolve, reject) => {
+            UTSHarmony.requestSystemPermission(['ohos.permission.MICROPHONE'], async (allRight: boolean) => {
+                if (allRight) {
+                    await this.avRecorder?.prepare(audioConfig)
+                    await this.avRecorder?.start()
+                    if (duration) {
+                        setTimeout(async () => {
+                            await this.avRecorder?.stop()
+                        }, duration)
+                    }
+                    resolve()
+                } else {
+                    onRecorderStateChange('error', new RecorderManagerFailImpl(1107601) as IRecorderManagerFail)
+                    reject()
+                }
+            }, (doNotAskAgain: boolean) => {
+                onRecorderStateChange('error', new RecorderManagerFailImpl(1107601) as IRecorderManagerFail)
+                reject()
+            })
+        })
+    }
+    async pause(): Promise<void> {
+        if (this.avRecorder !== undefined && this.avRecorder.state === 'started') {
+            // 仅在started状态下调用pause为合理状态切换
+            await this.avRecorder.pause();
+        }
+    }
+    async resume(): Promise<void> {
+        if (this.avRecorder !== undefined && this.avRecorder.state === 'paused') { // 仅在paused状态下调用resume为合理状态切换
+            await this.avRecorder.resume();
+        }
+    }
+    async stop(): Promise<void> {
+        if (this.avRecorder !== undefined && (this.avRecorder.state === 'started' || this.avRecorder.state === 'paused')) { // 仅在started或者paused状态下调用stop为合理状态切换
+            await this.avRecorder.stop();
+            await this.release();
+            this.isFirstStart = true
+        }
+    }
+}

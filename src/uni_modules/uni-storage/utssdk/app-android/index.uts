@@ -1,0 +1,359 @@
+import { SetStorage, SetStorageOptions, SetStorageSuccess } from "../interface.uts"
+import { SetStorageSync } from "../interface.uts"
+import { GetStorage, GetStorageOptions, GetStorageSuccess } from "../interface.uts"
+import { GetStorageSync } from "../interface.uts"
+import { GetStorageInfoSuccess, GetStorageInfo, GetStorageInfoOptions } from "../interface.uts"
+import { GetStorageInfoSync } from "../interface.uts"
+
+import { RemoveStorage, RemoveStorageOptions, RemoveStorageSuccess } from "../interface.uts"
+import { RemoveStorageSync } from "../interface.uts"
+import { ClearStorage, ClearStorageSuccess, ClearStorageOptions } from "../interface.uts"
+import { ClearStorageSync } from "../interface.uts"
+
+// @ts-expect-error
+// #ifdef UNI-APP-X
+import DCStorage from "io.dcloud.common.unix.util.db.DCStorage";
+// #endif
+// #ifndef UNI-APP-X
+import DCStorage from "io.dcloud.common.util.db.DCStorage";
+// #endif
+// @ts-expect-error
+import UTSAndroid from 'io.dcloud.uts.UTSAndroid';
+// @ts-expect-error
+import List from 'java.util.List';
+import {
+  uni_getStorageAsync,
+  uni_getStorageSync,
+  uni_setStorageAsync,
+  uni_setStorageSync
+} from "../uniStorageTool.uts"
+
+
+/**
+ * 设置储存项
+ */
+export const setStorage: SetStorage = function (options: SetStorageOptions) {
+
+  setTimeout(function () {
+
+    let dcStorage = DCStorage.getDCStorage(UTSAndroid.getAppContext());
+    if (dcStorage == null) {
+	  let ret = new UniError("uni-setStorage", -1, "storage not found.") 
+      options.fail?.(ret)
+      options.complete?.(ret)
+      return
+    }
+    /**
+     * 通过公共函数执行设置逻辑
+     */
+    uni_setStorageAsync(options, (itemKey: string, itemData: string) => {
+      dcStorage.performSetItem(UTSAndroid.getAppContext(), UTSAndroid.getAppId(), itemKey, itemData);
+    }, (itemKey: string) => {
+      dcStorage.performRemoveItem(UTSAndroid.getAppContext(), UTSAndroid.getAppId(), itemKey);
+    })
+
+
+  }, 0)
+}
+
+/**
+ * 同步设置储存项
+ */
+export const setStorageSync: SetStorageSync = function (key: string, data: any) {
+
+  let dcStorage = DCStorage.getDCStorage(UTSAndroid.getAppContext());
+
+  if (dcStorage == null) {
+    // 异常了
+    return;
+  }
+  uni_setStorageSync(key, data, (itemKey: string, itemValue: string) => {
+    let dataString = itemValue
+    dcStorage.performSetItem(UTSAndroid.getAppContext(), UTSAndroid.getAppId(), itemKey, dataString);
+  }, (itemKey: string) => {
+    dcStorage.performRemoveItem(UTSAndroid.getAppContext(), UTSAndroid.getAppId(), itemKey);
+  })
+
+
+}
+
+
+/**
+ * 获取储存项
+ */
+function includeKey(key: string): boolean {
+
+  let info = DCStorage.getDCStorage(UTSAndroid.getAppContext()!).performGetAllKeys(UTSAndroid.getAppId())
+  if (info.v != null && info.code == DCStorage.SUCCESS) {
+    //&& info.v instanceof java.util.List
+    // @ts-expect-error
+    let keys = UTSArray.fromNative((info.v as ArrayList<String>));
+    if (keys.indexOf(key) > -1) {
+      return true
+    }
+  }
+  return false;
+}
+
+export const getStorage: GetStorage = function getStorage(options: GetStorageOptions) {
+
+
+  let dcStorage = DCStorage.getDCStorage(UTSAndroid.getAppContext());
+
+  if (dcStorage == null) {
+	let ret = new UniError("uni-setStorage", -1, "storage not found.") 
+    options.fail?.(ret)
+    options.complete?.(ret)
+    return
+  }
+
+  setTimeout(function () {
+
+    uni_getStorageAsync(options, function (itemKey: string): string | null {
+
+      let info = dcStorage.performGetItem(UTSAndroid.getAppId(), itemKey);
+      if (info != null && info.code == DCStorage.SUCCESS && info.v != null) {
+        // 获取成功
+        return info.v as string
+      }
+
+      return null
+    }, function (key: string): boolean {
+      let list: String[] = []
+
+      let info = dcStorage.performGetAllKeys(UTSAndroid.getAppId())
+      if (info.code == DCStorage.SUCCESS && info.v != null) {
+
+        /**
+         * 临时语法支持，foreach 组织数组格式
+         */
+        let arrayKeys: String[] = []
+        ;(info.v as List<string>).forEach((perKey: string) => {
+          arrayKeys.push(perKey)
+        });
+
+        list = arrayKeys
+      }
+
+      if (list != null) {
+        let item = list!.find((value): boolean => {
+          if (typeof value == "string") {
+            return (value as string) == key;
+          }
+          return false;
+        })
+        return (item != null);
+      }
+      return false;
+    })
+
+
+  }, 0)
+}
+
+
+/**
+ * 同步获取储存项
+ */
+export const getStorageSync: GetStorageSync = function (key: string): any | null {
+
+
+  return uni_getStorageSync(key, function (itemKey: string): string | null {
+    let dcStorage = DCStorage.getDCStorage(UTSAndroid.getAppContext());
+
+    if (dcStorage == null) {
+      return "";
+    }
+
+    let info = dcStorage.performGetItem(UTSAndroid.getAppId(), itemKey);
+    if (info != null && info.code == DCStorage.SUCCESS && info.v != null) {
+      // 获取成功
+      return info.v as string
+    }
+    return ""
+  });
+
+
+}
+
+/**
+ * 获取储存信息
+ */
+export const getStorageInfo: GetStorageInfo = function (options: GetStorageInfoOptions) {
+
+  setTimeout(function () {
+
+
+    let dcStorage = DCStorage.getDCStorage(UTSAndroid.getAppContext());
+
+    if (dcStorage == null) {
+	  let ret = new UniError("uni-setStorage", -1, "storage not found.") 
+      options.fail?.(ret)
+      options.complete?.(ret)
+    }
+
+    let ret: GetStorageInfoSuccess = {
+      keys: [],
+      currentSize: 0,
+      limitSize: 10240
+    }
+
+    let info = dcStorage.performGetAllKeys(UTSAndroid.getAppId());
+    if (info.code == DCStorage.SUCCESS && info.v != null) {
+
+      let arrayKeys: string[] = []
+
+        /**
+         * 临时语法支持，foreach 组织数组格式
+         */
+      ;(info.v as List<string>).forEach((perKey: string) => {
+        arrayKeys.push(perKey)
+      });
+
+      /**
+       * 储存的最大值：SQLLite数据库当前允许的最大值
+       * 储存的已用值：SQLLite数据文件当前的大小
+       */
+      try {
+        ret.keys = arrayKeys
+
+        let limitNum = dcStorage.getDBMaxLength(UTSAndroid.getAppId()).toDouble()
+        ret.limitSize = limitNum / 1024
+
+        let currentNum = dcStorage.getDBCurrentLength(UTSAndroid.getAppId()).toDouble()
+        ret.currentSize = currentNum / 1024
+      } catch (e) {
+        //TODO handle the exception
+      }
+
+      // let arrayRet = info.v as Array
+      options.success?.(ret)
+    }
+  }, 0)
+
+}
+
+
+/**
+ * 同步获取储存信息
+ */
+export const getStorageInfoSync: GetStorageInfoSync = function (): GetStorageInfoSuccess {
+
+  // android SQL 单表最大限制为
+  let ret: GetStorageInfoSuccess = {
+    keys: [],
+    currentSize: 0,
+    limitSize: 10240,
+  }
+
+  let dcStorage = DCStorage.getDCStorage(UTSAndroid.getAppContext());
+  if (dcStorage == null) {
+    return ret
+  }
+
+
+  let info = dcStorage.performGetAllKeys(UTSAndroid.getAppId());
+  if (info.code == DCStorage.SUCCESS && info.v != null) {
+
+    /**
+     * 临时语法支持，foreach 组织数组格式
+     */
+    let arrayKeys: string[] = []
+    ;(info.v as List<string>).forEach((perKey: string) => {
+      arrayKeys.push(perKey)
+    });
+
+    ret.keys = arrayKeys
+  }
+
+  /**
+   * 储存的最大值：SQLLite数据库当前允许的最大值
+   * 储存的已用值：SQLLite数据文件当前的大小
+   */
+  try {
+    let limitNum = dcStorage.getDBMaxLength(UTSAndroid.getAppId()).toDouble()
+    ret.limitSize = limitNum / 1024
+
+    let currentNum = dcStorage.getDBCurrentLength(UTSAndroid.getAppId()).toDouble()
+    ret.currentSize = currentNum / 1024
+  } catch (e) {
+    //TODO handle the exception
+  }
+
+
+  return ret
+
+}
+
+/**
+ * 移除指定储存项
+ */
+export const removeStorage: RemoveStorage = function (options: RemoveStorageOptions) {
+
+  setTimeout(function () {
+    let dcStorage = DCStorage.getDCStorage(UTSAndroid.getAppContext());
+    if (dcStorage == null) {
+	  let ret = new UniError("uni-removeStorage", -1, "storage not found.") 
+      options.fail?.(ret)
+      options.complete?.(ret)
+      return;
+    }
+    dcStorage.performRemoveItem(UTSAndroid.getAppContext(), UTSAndroid.getAppId(), options.key);
+    let ret: RemoveStorageSuccess = {}
+    options.success?.(ret)
+    options.complete?.(ret)
+
+  }, 0)
+
+}
+
+/**
+ * 同步移除指定储存项
+ */
+export const removeStorageSync: RemoveStorageSync = function (key: string) {
+
+  let dcStorage = DCStorage.getDCStorage(UTSAndroid.getAppContext());
+  if (dcStorage == null) {
+    return;
+  }
+  dcStorage.performRemoveItem(UTSAndroid.getAppContext(), UTSAndroid.getAppId(), key);
+
+}
+
+/**
+ * 清空储存选项
+ */
+export const clearStorage: ClearStorage = function (option: ClearStorageOptions | null) {
+
+  setTimeout(function () {
+    let dcStorage = DCStorage.getDCStorage(UTSAndroid.getAppContext());
+    if (dcStorage == null) {
+	  let ret = new UniError("uni-clearStorage", -1, "error:storage not found.") 
+      option?.fail?.(ret)
+      option?.complete?.(ret)
+      return;
+    }
+    dcStorage.performClear(UTSAndroid.getAppContext(), UTSAndroid.getAppId());
+
+
+    let ret: ClearStorageSuccess = {}
+    option?.success?.(ret)
+    option?.complete?.(ret)
+  }, 0)
+
+}
+
+/**
+ * 同步清空储存选项
+ */
+export const clearStorageSync: ClearStorageSync = function () {
+
+
+  let dcStorage = DCStorage.getDCStorage(UTSAndroid.getAppContext());
+  if (dcStorage == null) {
+    return;
+  }
+  dcStorage.performClear(UTSAndroid.getAppContext(), UTSAndroid.getAppId());
+
+}
+

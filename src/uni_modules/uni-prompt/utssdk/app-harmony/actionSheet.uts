@@ -1,0 +1,44 @@
+import promptAction from '@ohos.promptAction';
+import { ShowActionSheet, ShowActionSheetOptions, ShowActionSheetSuccess } from '../interface.uts';
+import { ShowActionSheetApiOptions, ShowActionSheetProtocol, API_SHOW_ACTION_SHEET } from '../protocol.uts';
+
+export const showActionSheet: ShowActionSheet = defineAsyncApi<ShowActionSheetOptions, ShowActionSheetSuccess>(
+    API_SHOW_ACTION_SHEET,
+    async function (options: ShowActionSheetOptions, res: ApiExecutor<ShowActionSheetSuccess>) {
+        const actionItemList = options.itemList.filter(Boolean);
+        if (actionItemList.length === 0) {
+            return;
+        }
+        type ActionMenuButtons = [promptAction.Button, promptAction.Button?, promptAction.Button?, promptAction.Button?, promptAction.Button?, promptAction.Button?]
+        const actionMenuButtons: ActionMenuButtons = [
+            {
+                text: actionItemList[0],
+                color: options.itemColor!
+            }
+        ];
+
+        actionItemList.slice(1).forEach(item => {
+            actionMenuButtons.push({
+                text: item,
+                color: options.itemColor!
+            } as promptAction.Button);
+        })
+        const window = UTSHarmony.getCurrentWindow();
+        window.getUIContext().getPromptAction().showActionMenu({
+            title: options.title,
+            buttons: actionMenuButtons,
+        } as promptAction.ActionMenuOptions)
+            .then(showACtionSheetRes => {
+                res.resolve({ tapIndex: showACtionSheetRes.index } as ShowActionSheetSuccess)
+            })
+            .catch((e: Error) => {
+                if (e.message === 'cancel') {
+                    res.reject('cancel')
+                    return;
+                }
+                res.reject(e.message)
+            })
+    },
+    ShowActionSheetProtocol,
+    ShowActionSheetApiOptions
+) as ShowActionSheet

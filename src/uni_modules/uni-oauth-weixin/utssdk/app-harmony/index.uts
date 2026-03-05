@@ -1,0 +1,231 @@
+import * as wxopensdk from '@tencent/wechat_open_sdk';
+import { AuthResp, UniOAuthWeixinProvider, WeixinAccessTokenResp, WeixinUserInfoResp, WeixinAccessTokenErrorResp } from '../interface.uts';
+import { bundleManager, AbilityConstant, Want } from "@kit.AbilityKit";
+import { util } from '@kit.ArkTS';
+import { OauthWeixinFailImpl } from '../unierror.uts';
+
+// 定义回调类型
+type OnWXReq = (req: wxopensdk.BaseReq) => void;
+type OnWXResp = (resp: wxopensdk.SendAuthResp) => void;
+
+// 定义事件处理器类
+class WXApiEventHandlerImpl implements wxopensdk.WXApiEventHandler {
+	private onReqCallbacks: Map<OnWXReq, OnWXReq> = new Map();
+	private onRespCallbacks: Map<OnWXResp, OnWXResp> = new Map();
+
+	registerOnWXReqCallback(on: OnWXReq) {
+		this.onReqCallbacks.set(on, on);
+	}
+
+	unregisterOnWXReqCallback(on: OnWXReq) {
+		this.onReqCallbacks.delete(on);
+	}
+
+	registerOnWXRespCallback(on: OnWXResp) {
+		this.onRespCallbacks.set(on, on);
+	}
+
+	unregisterOnWXRespCallback(on: OnWXResp) {
+		this.onRespCallbacks.delete(on);
+	}
+
+	onReq(req: wxopensdk.BaseReq): void {
+		this.onReqCallbacks.forEach((callback) => callback(req));
+	}
+
+	onResp(resp: wxopensdk.SendAuthResp): void {
+		this.onRespCallbacks.forEach((callback) => callback(resp));
+	}
+}
+
+let handleWeChatCallIfNeed = (want: Want) => { }
+
+UTSHarmony.onAppAbilityCreate((want: Want, launchParam: AbilityConstant.LaunchParam) => {
+	handleWeChatCallIfNeed(want);
+});
+
+UTSHarmony.onAppAbilityNewWant((want: Want, launchParam: AbilityConstant.LaunchParam) => {
+	handleWeChatCallIfNeed(want);
+});
+
+// 定义微信登录实现类
+export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
+	id: string = "weixin";
+	description: string = "微信登录";
+	isWeChatInstalled: boolean = false;
+	private authResultText: AuthResp = {} as AuthResp; // 用于存储授权结果
+	private APP_ID: string = ""; // 从配置中获取 APP_ID
+	private APP_SECRET: string = ""; // 从配置中获取 APP_SECRET
+	private WXEventHandler = new WXApiEventHandlerImpl();
+	private WXApi: wxopensdk.WXApi | null = null
+
+	constructor() {
+		this.APP_ID = this.getMetadata('WX_APPID');
+		this.APP_SECRET = this.getMetadata('WX_APPSECRET');
+		if (this.APP_ID.length) {
+			this.WXApi = wxopensdk.WXAPIFactory.createWXAPI(this.APP_ID);
+			this.isWeChatInstalled = this.WXApi.isWXAppInstalled()
+		}
+	}
+
+	// 从应用配置中获取 APP_ID或APP_SECRET
+	private getMetadata(data: string): string {
+		const bundleInfo = bundleManager.getBundleInfoForSelfSync(
+			bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_METADATA |
+			bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION
+		);
+
+		if (bundleInfo.appInfo.metadataArray) {
+			for (const v of bundleInfo.appInfo.metadataArray) {
+				if (v.metadata) {
+					for (const v2 of v.metadata) {
+						if (v2.name === data) {
+							return v2.value;
+						}
+					}
+				}
+			}
+		}
+		return "";
+	}
+
+	// 登录方法
+	login(options: LoginOptions): void {
+		if (!this.APP_ID || !this.WXApi) {
+			options.fail?.(new OauthWeixinFailImpl(1310500));
+			return;
+		}
+
+		handleWeChatCallIfNeed = (want: Want) => {
+			this.WXApi?.handleWant(want, this.WXEventHandler);
+		}
+
+		const requestState = util.generateRandomUUID() || 'none'; // 随机生成 state
+
+		let req = new wxopensdk.SendAuthReq();
+		req.isOption1 = false;
+		req.nonAutomatic = true;
+		req.scope = 'snsapi_userinfo'; // 根据微信官方文档，此处scope必须设置为'snsapi_userinfo'
+		req.state = requestState as string;
+
+		if (options.scopes && options.scopes !== 'snsapi_userinfo') {
+			console.log('[uni-login weixin]: scope参数只能为snsapi_userinfo，已忽略传入的其他值');
+		}
+
+		let onWXResp: OnWXResp = (resp: wxopensdk.SendAuthResp) => {
+			const responseState = resp.state as string;
+			// 微信拒绝时可能不返回state
+			if (!responseState) {
+				options.fail?.(new OauthWeixinFailImpl(1310509));
+				this.WXEventHandler.unregisterOnWXRespCallback(onWXResp);
+				return;
+			}
+
+			if (requestState !== responseState) {
+				options.fail?.(new OauthWeixinFailImpl(1310508));
+				this.WXEventHandler.unregisterOnWXRespCallback(onWXResp);
+				return;
+			}
+
+			if (resp.errCode === 0) {
+				this.authResultText = resp as AuthResp;
+				options?.success?.(
+					{
+						errMsg: 'login:ok',
+						code: resp.code,
+						authResult: options.onlyAuthorize ? {} : resp,
+					} as ESObject as LoginSuccess
+				);
+
+			} else {
+				options.fail?.(new OauthWeixinFailImpl(1310501));
+			}
+
+			this.WXEventHandler.unregisterOnWXRespCallback(onWXResp);
+		};
+
+		this.WXEventHandler.registerOnWXRespCallback(onWXResp);
+
+		let finished = this.WXApi.sendReq(UTSHarmony.getUIAbilityContext(), req) as Boolean | Promise<Boolean>;
+
+		Promise.resolve(finished).then(finished => {
+			if (!finished) {
+				options.fail?.(new OauthWeixinFailImpl(1310502));
+			}
+		}).catch(() => {
+			options.fail?.(new OauthWeixinFailImpl(1310502));
+		});
+	}
+
+	// 获取用户信息方法
+	getUserInfo(options: GetUserInfoOptions): void {
+		if (!this.authResultText) {
+			options.fail?.(new OauthWeixinFailImpl(1310503));
+			return;
+		}
+
+		const code: string = this.authResultText.code;
+
+		if (!code) {
+			options.fail?.(new OauthWeixinFailImpl(1310504));
+			return;
+		}
+
+		const accessTokenUrl = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${this.APP_ID}&secret=${this.APP_SECRET}&code=${code}&grant_type=authorization_code`;
+
+		uni.request({
+			url: accessTokenUrl,
+			method: 'GET',
+			success: (response) => {
+				if (response.statusCode === 200) {
+					const successData = response.data as WeixinAccessTokenResp
+					const failData = response.data as WeixinAccessTokenErrorResp
+
+					const accessToken: string = successData.access_token;
+					const openid: string = successData.openid;
+
+					if (failData.errmsg) {
+						options.fail?.(new OauthWeixinFailImpl(failData.errcode as OauthErrorCode, failData.errmsg))
+						return;
+					}
+
+					if (!accessToken || !openid) {
+						options.fail?.(new OauthWeixinFailImpl(1310505));
+						return;
+					}
+
+					const userInfoUrl = `https://api.weixin.qq.com/sns/userinfo?access_token=${accessToken}&openid=${openid}`;
+					uni.request({
+						url: userInfoUrl,
+						method: 'GET',
+						success: (userInfoResponse) => {
+							if (userInfoResponse.statusCode === 200) {
+								const userInfoData: WeixinUserInfoResp = userInfoResponse.data as WeixinUserInfoResp;
+								options.success?.({
+									errMsg: 'getUserInfo:ok',
+									userInfo: {
+										nickName: userInfoData.nickname,
+										avatarUrl: userInfoData.headimgurl,
+										openId: openid,
+										// @ts-ignore 1.0 上是 string 微信小程序是 number。按照 1.0 实现
+										gender: userInfoData.sex.toString()
+									}
+								});
+							} else {
+								options.fail?.(new OauthWeixinFailImpl(1310506, `请求失败，状态码: ${userInfoResponse.statusCode}`));
+							}
+						},
+						fail: (error) => {
+							options.fail?.(new OauthWeixinFailImpl(1310507, error.errMsg));
+						}
+					} as RequestOptions<any>);
+				} else {
+					options.fail?.(new OauthWeixinFailImpl(1310507, `请求失败，状态码: ${response.statusCode}`));
+				}
+			},
+			fail: (error) => {
+				options.fail?.(new OauthWeixinFailImpl(1310507, error.errMsg));
+			}
+		} as RequestOptions<any>);
+	}
+}

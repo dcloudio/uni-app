@@ -1,0 +1,284 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.0.2 effective-5.10 (swiftlang-6.0.2.1.2 clang-1600.0.26.4)
+// swift-module-flags: -target arm64-apple-ios12.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name DCUniVideo
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+import AVFAudio
+import AVFoundation
+import CommonCrypto
+@_exported import DCUniVideo
+import Foundation
+import IJKMediaFrameworkWithSSL
+import MediaPlayer
+import Swift
+import UIKit
+import UniDCSVProgressHUD
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+public enum HJDanmakuType : Swift.String {
+  case HJDanmakuTypeLR
+  case HJDanmakuTypeFT
+  case HJDanmakuTypeFB
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@objc open class HJDanmakuModel : ObjectiveC.NSObject {
+  public var time: CoreFoundation.CGFloat
+  final public let danmakuType: DCUniVideo.HJDanmakuType
+  public init(danmakuType: DCUniVideo.HJDanmakuType)
+  @objc deinit
+}
+public enum HJDanmakuMode {
+  case HJDanmakuModeVideo
+  case HJDanmakuModeLive
+  public static func == (a: DCUniVideo.HJDanmakuMode, b: DCUniVideo.HJDanmakuMode) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+open class HJDanmakuConfiguration {
+  public var duration: CoreFoundation.CGFloat
+  public var tolerance: CoreFoundation.CGFloat
+  public var numberOfLines: Swift.Int
+  public var cellHeight: CoreFoundation.CGFloat
+  public var maxShowCount: Swift.Int
+  public init(danmakuMode: DCUniVideo.HJDanmakuMode)
+  @objc deinit
+}
+public protocol ViewPresent {
+  associatedtype View
+  var view: Self.View { get set }
+}
+public protocol UniVideoPlayerProtocol : AnyObject {
+  func getCookieString(_ url: Foundation.URL) -> Swift.String?
+  func getCurrentUA() -> Swift.String
+  func sendEvent(_ name: Swift.String, _ params: [Swift.String : Any]?)
+  func loadImage(_ url: Swift.String, _ complete: @escaping (UIKit.UIImage) -> Swift.Void)
+  func videoPlayerWillEnterFullScreen(_ orientation: UIKit.UIInterfaceOrientation)
+  func videoPlayerWillExitFullScreen(_ orientation: UIKit.UIInterfaceOrientation)
+  func videoPlayerExitFullScreen(_ orientation: UIKit.UIInterfaceOrientation)
+  func videoPlayerEnterFullScreen(_ orientation: UIKit.UIInterfaceOrientation)
+  func lockScreen()
+  func unlockScreen()
+  func setFullScreen(_ yesOrNo: Swift.Bool)
+  func setHomeIndicatorAutoHidden(_ yesOrNo: Swift.Bool)
+  func setTempOrientation(_ temp: UIKit.UIInterfaceOrientationMask)
+  func configSupportOrientation(_ orientation: UIKit.UIInterfaceOrientation) -> Swift.Bool
+  func setDeviceInterfaceOrientation(_ orientation: UIKit.UIInterfaceOrientation)
+  func h5Path2SysPath(_ path: Swift.String, _ basePath: Swift.String?) -> Swift.String
+  func workRootPath() -> Swift.String
+  func videoCacheDir() -> Swift.String
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor @preconcurrency public class UniMonitoredContentView : UIKit.UIView {
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func didAddSubview(_ subview: UIKit.UIView)
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func layoutSubviews()
+  @objc deinit
+}
+final public class UniVideoPlayerViewPresent : DCUniVideo.ViewPresent {
+  public typealias View = DCUniVideo.UniVideoPlayerView
+  final public var view: DCUniVideo.UniVideoPlayerViewPresent.View
+  final public var config: DCUniVideo.UniVideoPlayerConfig
+  weak final public var delegate: (any DCUniVideo.UniVideoPlayerProtocol)? {
+    get
+    set
+  }
+  final public var contentView: DCUniVideo.UniMonitoredContentView {
+    get
+    set
+  }
+  public init(_ config: DCUniVideo.UniVideoPlayerConfig, _ delegate: (any DCUniVideo.UniVideoPlayerProtocol)?, _ frame: CoreFoundation.CGRect = .zero)
+  @objc deinit
+  final public func updateViewFrame(_ rect: CoreFoundation.CGRect)
+}
+extension DCUniVideo.UniVideoPlayerViewPresent {
+  final public func onVideoComponentReused(_ config: DCUniVideo.UniVideoPlayerConfig)
+}
+extension DCUniVideo.UniVideoPlayerViewPresent {
+  final public func play()
+  final public func pause()
+  final public func stop()
+  final public func palybackRate(_ rate: Swift.String)
+  final public func destroy()
+  final public func showStatusBar()
+  final public func hideStatusBar()
+}
+extension DCUniVideo.UniVideoPlayerViewPresent {
+  final public func sendDanmu(_ danmu: [Swift.String : Any])
+  final public func clearDanmu()
+}
+extension DCUniVideo.UniVideoPlayerViewPresent {
+  final public func seek(_ position: Swift.Float)
+}
+public enum UniVideoPlayerDirection : Swift.Int {
+  case normal
+  case left
+  case right
+  case auto
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public enum UniVideoPlayerPlayStrategy : Swift.Int {
+  case common
+  case smooth
+  case m3u8_smooth
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public class UniVideoPlayerConfig : ObjectiveC.NSObject {
+  public init(options: [Swift.AnyHashable : Any]?)
+  public static func direction(_ value: Any) -> DCUniVideo.UniVideoPlayerDirection
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor @preconcurrency public class UniVideoPlayerView : UIKit.UIView {
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func layoutSubviews()
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func didMoveToSuperview()
+  @objc deinit
+}
+extension DCUniVideo.UniVideoPlayerView : UIKit.UIGestureRecognizerDelegate {
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func gestureRecognizer(_ gestureRecognizer: UIKit.UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIKit.UIGestureRecognizer) -> Swift.Bool
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func gestureRecognizer(_ gestureRecognizer: UIKit.UIGestureRecognizer, shouldReceive touch: UIKit.UITouch) -> Swift.Bool
+}
+public enum HJDanmakuCellSelectionStyle {
+  case HJDanmakuCellSelectionStyleNone
+  case HJDanmakuCellSelectionStyleDefault
+  public static func == (a: DCUniVideo.HJDanmakuCellSelectionStyle, b: DCUniVideo.HJDanmakuCellSelectionStyle) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@objc @_Concurrency.MainActor @preconcurrency open class HJDanmakuCell : UIKit.UIView {
+  @_Concurrency.MainActor @preconcurrency public var zIndex: Swift.Int
+  @_Concurrency.MainActor @preconcurrency public var selectionStyle: DCUniVideo.HJDanmakuCellSelectionStyle
+  @_Concurrency.MainActor @preconcurrency public var textLabel: UIKit.UILabel {
+    get
+  }
+  @_Concurrency.MainActor @preconcurrency required public init(reuseIdentifier: Swift.String)
+  @_Concurrency.MainActor @preconcurrency @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor @preconcurrency open func prepareForReuse()
+  @objc deinit
+}
+public struct HJDanmakuTime {
+  public var time: CoreFoundation.CGFloat
+  public var interval: CoreFoundation.CGFloat
+  public func MaxTime() -> CoreFoundation.CGFloat
+}
+public class HJDanmakuAgent {
+  public init(danmakuModel: DCUniVideo.HJDanmakuModel)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class HJDanmakuSource {
+  public func prepareDanmakus(_ danmakus: Swift.Array<DCUniVideo.HJDanmakuModel>, completion: @escaping () -> Swift.Void)
+  @discardableResult
+  public func sendDanmaku(_ danmaku: DCUniVideo.HJDanmakuModel, forceRender force: Swift.Bool) -> DCUniVideo.HJDanmakuAgent?
+  public func sendDanmakus(_ danmakus: Swift.Array<DCUniVideo.HJDanmakuModel>)
+  public func fetchDanmakuAgents(forTime time: DCUniVideo.HJDanmakuTime) -> Swift.Array<DCUniVideo.HJDanmakuAgent>?
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class HJDanmakuVideoSource : DCUniVideo.HJDanmakuSource {
+  override public func prepareDanmakus(_ danmakus: Swift.Array<DCUniVideo.HJDanmakuModel>, completion: @escaping () -> Swift.Void)
+  override public func sendDanmaku(_ danmaku: DCUniVideo.HJDanmakuModel, forceRender force: Swift.Bool) -> DCUniVideo.HJDanmakuAgent?
+  override public func sendDanmakus(_ danmakus: Swift.Array<DCUniVideo.HJDanmakuModel>)
+  override public func fetchDanmakuAgents(forTime time: DCUniVideo.HJDanmakuTime) -> Swift.Array<DCUniVideo.HJDanmakuAgent>?
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class HJDanmakuLiveSource : DCUniVideo.HJDanmakuSource {
+  override public func prepareDanmakus(_ danmakus: Swift.Array<DCUniVideo.HJDanmakuModel>, completion: @escaping () -> Swift.Void)
+  override public func sendDanmaku(_ danmaku: DCUniVideo.HJDanmakuModel, forceRender force: Swift.Bool) -> DCUniVideo.HJDanmakuAgent?
+  override public func sendDanmakus(_ danmakus: Swift.Array<DCUniVideo.HJDanmakuModel>)
+  override public func fetchDanmakuAgents(forTime time: DCUniVideo.HJDanmakuTime) -> Swift.Array<DCUniVideo.HJDanmakuAgent>?
+  @objc deinit
+}
+extension DCUniVideo.UniVideoPlayerViewPresent {
+  final public func setControlValue(_ value: Any?, _ key: Swift.String)
+}
+public protocol HJDanmakuViewDelegate : ObjectiveC.NSObjectProtocol {
+  func prepareCompletedWithDanmakuView(_ danmakuView: DCUniVideo.HJDanmakuView)
+  func danmakuView(_ danmakuView: DCUniVideo.HJDanmakuView, shouldRenderDanmaku danmaku: DCUniVideo.HJDanmakuModel) -> Swift.Bool
+  func danmakuView(_ danmakuView: DCUniVideo.HJDanmakuView, willDisplayCell cell: DCUniVideo.HJDanmakuCell, danmaku: DCUniVideo.HJDanmakuModel)
+  func danmakuView(_ danmakuView: DCUniVideo.HJDanmakuView, didEndDisplayCell cell: DCUniVideo.HJDanmakuCell, danmaku: DCUniVideo.HJDanmakuModel)
+  func danmakuView(_ danmakuView: DCUniVideo.HJDanmakuView, shouldSelectCell cell: DCUniVideo.HJDanmakuCell, danmaku: DCUniVideo.HJDanmakuModel) -> Swift.Bool
+  func danmakuView(_ danmakuView: DCUniVideo.HJDanmakuView, didSelectCell cell: DCUniVideo.HJDanmakuCell, danmaku: DCUniVideo.HJDanmakuModel)
+}
+extension DCUniVideo.HJDanmakuViewDelegate {
+  public func prepareCompleted(_ danmakuView: DCUniVideo.HJDanmakuView)
+  public func danmakuView(_ danmakuView: DCUniVideo.HJDanmakuView, shouldRenderDanmaku danmaku: DCUniVideo.HJDanmakuModel) -> Swift.Bool
+  public func danmakuView(_ danmakuView: DCUniVideo.HJDanmakuView, willDisplayCell cell: DCUniVideo.HJDanmakuCell, danmaku: DCUniVideo.HJDanmakuModel)
+  public func danmakuView(_ danmakuView: DCUniVideo.HJDanmakuView, didEndDisplayCell cell: DCUniVideo.HJDanmakuCell, danmaku: DCUniVideo.HJDanmakuModel)
+  public func danmakuView(_ danmakuView: DCUniVideo.HJDanmakuView, shouldSelectCell cell: DCUniVideo.HJDanmakuCell, danmaku: DCUniVideo.HJDanmakuModel) -> Swift.Bool
+  public func danmakuView(_ danmakuView: DCUniVideo.HJDanmakuView, didSelectCell cell: DCUniVideo.HJDanmakuCell, danmaku: DCUniVideo.HJDanmakuModel)
+}
+public protocol HJDanmakuViewDateSource : ObjectiveC.NSObjectProtocol {
+  func danmakuView(_ danmakuView: DCUniVideo.HJDanmakuView, widthForDanmaku danmaku: DCUniVideo.HJDanmakuModel) -> CoreFoundation.CGFloat
+  func danmakuView(_ danmakuView: DCUniVideo.HJDanmakuView, cellForDanmaku danmaku: DCUniVideo.HJDanmakuModel) -> DCUniVideo.HJDanmakuCell
+  func playTimeWithDanmakuView(_ danmakuView: DCUniVideo.HJDanmakuView) -> CoreFoundation.CGFloat
+  func bufferingWithDanmakuView(_ danmakuView: DCUniVideo.HJDanmakuView) -> Swift.Bool
+}
+extension DCUniVideo.HJDanmakuViewDateSource {
+  public func playTimeWithDanmakuView(_ danmakuView: DCUniVideo.HJDanmakuView) -> CoreFoundation.CGFloat
+  public func bufferingWithDanmakuView(_ danmakuView: DCUniVideo.HJDanmakuView) -> Swift.Bool
+}
+@objc @_Concurrency.MainActor @preconcurrency open class HJDanmakuView : UIKit.UIView {
+  @_Concurrency.MainActor @preconcurrency weak open var dataSource: (any DCUniVideo.HJDanmakuViewDateSource)?
+  @_Concurrency.MainActor @preconcurrency weak open var delegate: (any DCUniVideo.HJDanmakuViewDelegate)?
+  @_Concurrency.MainActor @preconcurrency public var isPrepared: Swift.Bool {
+    get
+  }
+  @_Concurrency.MainActor @preconcurrency public var isPlaying: Swift.Bool {
+    get
+  }
+  @_Concurrency.MainActor @preconcurrency final public let configuration: DCUniVideo.HJDanmakuConfiguration
+  @_Concurrency.MainActor @preconcurrency public init(frame: CoreFoundation.CGRect, configuration: DCUniVideo.HJDanmakuConfiguration)
+  @_Concurrency.MainActor @preconcurrency @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor @preconcurrency public func prepareDanmakus(_ danmakus: Swift.Array<DCUniVideo.HJDanmakuModel>?)
+  @_Concurrency.MainActor @preconcurrency public func play()
+  @_Concurrency.MainActor @preconcurrency public func pause()
+  @_Concurrency.MainActor @preconcurrency public func stop()
+  @_Concurrency.MainActor @preconcurrency public func clearScreen()
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic open func sizeToFit()
+  @_Concurrency.MainActor @preconcurrency public func sendDanmaku(_ danmaku: DCUniVideo.HJDanmakuModel, forceRender force: Swift.Bool)
+  @_Concurrency.MainActor @preconcurrency public func sendDanmakus(_ danmakus: Swift.Array<DCUniVideo.HJDanmakuModel>)
+  @_Concurrency.MainActor @preconcurrency public func danmakuForVisibleCell(_ danmakuCell: DCUniVideo.HJDanmakuCell) -> DCUniVideo.HJDanmakuModel?
+  @_Concurrency.MainActor @preconcurrency public var visibleCells: Swift.Array<DCUniVideo.HJDanmakuCell> {
+    get
+  }
+  @objc deinit
+}
+extension DCUniVideo.HJDanmakuView {
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic open func hitTest(_ point: CoreFoundation.CGPoint, with event: UIKit.UIEvent?) -> UIKit.UIView?
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic open func touchesBegan(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic open func touchesMoved(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic open func touchesEnded(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic open func touchesCancelled(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+}
+extension DCUniVideo.HJDanmakuView {
+  @_Concurrency.MainActor @preconcurrency public func register(_ cellClass: DCUniVideo.HJDanmakuCell.Type, forCellReuseIdentifier identifier: Swift.String)
+  @_Concurrency.MainActor @preconcurrency public func dequeueReusableCell(withIdentifier identifier: Swift.String) -> DCUniVideo.HJDanmakuCell?
+}
+extension DCUniVideo.UniVideoPlayerViewPresent {
+  final public func requestFullScreen(_ direction: DCUniVideo.UniVideoPlayerDirection)
+  final public func exitFullScreenForJS()
+}
+extension DCUniVideo.HJDanmakuType : Swift.Equatable {}
+extension DCUniVideo.HJDanmakuType : Swift.Hashable {}
+extension DCUniVideo.HJDanmakuType : Swift.RawRepresentable {}
+extension DCUniVideo.HJDanmakuMode : Swift.Equatable {}
+extension DCUniVideo.HJDanmakuMode : Swift.Hashable {}
+extension DCUniVideo.UniVideoPlayerDirection : Swift.Equatable {}
+extension DCUniVideo.UniVideoPlayerDirection : Swift.Hashable {}
+extension DCUniVideo.UniVideoPlayerDirection : Swift.RawRepresentable {}
+extension DCUniVideo.UniVideoPlayerPlayStrategy : Swift.Equatable {}
+extension DCUniVideo.UniVideoPlayerPlayStrategy : Swift.Hashable {}
+extension DCUniVideo.UniVideoPlayerPlayStrategy : Swift.RawRepresentable {}
+extension DCUniVideo.HJDanmakuCellSelectionStyle : Swift.Equatable {}
+extension DCUniVideo.HJDanmakuCellSelectionStyle : Swift.Hashable {}

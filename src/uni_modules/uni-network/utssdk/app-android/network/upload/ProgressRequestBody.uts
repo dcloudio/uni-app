@@ -1,0 +1,62 @@
+import RequestBody from 'okhttp3.RequestBody';
+import MediaType from 'okhttp3.MediaType';
+import BufferedSink from 'okio.BufferedSink';
+import ForwardingSink from 'okio.ForwardingSink';
+import Sink from 'okio.Sink';
+import Buffer from 'okio.Buffer';
+import Okio from 'okio.Okio';
+
+export interface UploadProgressListener {
+	onProgress(bytesWritten : number, contentLength : number) : void;
+}
+
+class CountingSink extends ForwardingSink {
+	private listener : UploadProgressListener | null = null;
+	private bytesWritten : number = 0;
+	private total : number = 0;
+	constructor(sink : Sink, total : number, listener : UploadProgressListener) {
+		super(sink)
+		this.listener = listener;
+		this.total = total;
+	}
+
+	override write(source : Buffer, byteCount : Long) {
+		super.write(source, byteCount);
+		this.bytesWritten += byteCount;
+		this.listener?.onProgress(this.bytesWritten, this.total);
+	}
+
+}
+
+
+export class ProgressRequestBody extends RequestBody {
+	private requestBody : RequestBody | null = null;
+	private listener : UploadProgressListener | null = null;
+	constructor(requestBody : RequestBody, listener : UploadProgressListener) {
+		super();
+		this.requestBody = requestBody;
+		this.listener = listener;
+	}
+
+
+	override contentLength() : Long {
+		return this.requestBody?.contentLength() ?? 0;
+	}
+
+	override contentType() : MediaType {
+		const body = this.requestBody;
+		if (body == null) {
+			return MediaType.parse("application/octet-stream")!;
+		} else {
+			return body.contentType()!;
+		}
+	}
+
+	override writeTo(sink : BufferedSink) {
+		const countingSink = new CountingSink(sink, this.contentLength(), this.listener!);
+		const bufferedSink = Okio.buffer(countingSink);
+		this.requestBody?.writeTo(bufferedSink);
+		bufferedSink.flush();
+	}
+
+}

@@ -1,0 +1,39 @@
+import {
+    Rpx2px,
+} from '../interface.uts'
+import {
+    API_RPX2PX
+} from '../protocol.uts'
+import harmonyWindow from '@ohos.window'
+
+export { Rpx2px }
+
+const EPS = 1e-4
+const BASE_DEVICE_WIDTH = 750
+
+export const rpx2px: Rpx2px = defineSyncApi<number>(
+    API_RPX2PX,
+    (number: number): number => {
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony.getWindowStage() as harmonyWindow.WindowStage
+        let windowWidthInVp: number = 384
+        let windowWidthInPx: number = 1344
+        if (windowStage) {
+            const mainWindow: harmonyWindow.Window = windowStage.getMainWindowSync()
+            windowWidthInPx = mainWindow.getWindowProperties().windowRect.width
+            windowWidthInVp = Math.ceil(px2vp(windowWidthInPx))
+        }
+        let result = (number / BASE_DEVICE_WIDTH) * windowWidthInVp
+        if (result < 0) {
+            result = -result
+        }
+        result = Math.floor(result + EPS)
+        if (result == 0) {
+            if (windowWidthInPx == windowWidthInVp) {
+                result = 1
+            } else {
+                result = 0.5
+            }
+        }
+        return number < 0 ? -result : result
+    }
+) as Rpx2px

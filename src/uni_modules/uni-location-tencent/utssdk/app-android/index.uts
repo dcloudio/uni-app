@@ -1,0 +1,265 @@
+import { UTSAndroid } from "io.dcloud.uts";
+import ActivityCompat from "androidx.core.app.ActivityCompat";
+import Manifest from "android.Manifest";
+import Looper from "android.os.Looper";
+import TencentLocationManager from "com.tencent.map.geolocation.TencentLocationManager";
+import TencentLocationListener from "com.tencent.map.geolocation.TencentLocationListener";
+import TencentLocation from "com.tencent.map.geolocation.TencentLocation";
+import TencentLocationRequest from "com.tencent.map.geolocation.TencentLocationRequest";
+import PackageManager from "android.content.pm.PackageManager";
+import Class from 'java.lang.Class';
+import Exception from 'java.lang.Exception';
+import { UniLocationTencentProvider } from '../interface';
+import Build from 'android.os.Build';
+import Notification from "android.app.Notification";
+export class UniLocationTencentProviderImpl implements UniLocationTencentProvider, io.dcloud.uts.json.IJsonStringify, TencentLocationListener {
+	override id : String = 'tencent';
+	override description : String = "腾讯定位";
+	override isAppExist : boolean | null = null;
+	private locationOptions ?: GetLocationOptions = null;
+	private mLocationManager : TencentLocationManager | null = null;
+	private locationUpdateCallback : OnLocationChangeCallback | null = null;
+	private locationUpdateErrorCallback : OnLocationChangeErrorCallback | null = null;
+
+	private failedAction(errCode : number) {
+		let err = new GetLocationFailImpl(errCode);
+		this.locationOptions?.fail?.(err);
+		this.locationOptions?.complete?.(err);
+	}
+	override getLocation(options : GetLocationOptions) {
+		this.locationOptions = options;
+		if (!checkLocationConfig()) {
+			this.failedAction(1505605);
+			return;
+		}
+		TencentLocationManager.setUserAgreePrivacy(true);
+		/**
+		 * 准备权限
+		 */
+		let permissionNeed = ["android.permission.ACCESS_FINE_LOCATION"];
+		UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight : boolean, p : string[]) {
+			if (allRight) {
+				// 交给目前的location 引擎，真实执行
+				getLocationImpl(options);
+			}
+		}, function (a : boolean, _ : string[]) {
+			this.failedAction(1505003);
+		});
+	}
+	override startLocationUpdate(locationOptions : StartLocationUpdateOptions) : void {
+		if (!checkLocationConfig()) {
+			this.failedAction(1505605);
+			return;
+		}
+		TencentLocationManager.setUserAgreePrivacy(true);
+		/**
+		 * 准备权限
+		 */
+		this.isBackgroundLocation = false
+		this.requestLocation(locationOptions);
+	}
+	requestLocation(locationOptions : StartLocationUpdateOptions) {
+		if (locationOptions.type != null && locationOptions.type!.toUpperCase() != 'GCJ-02' && locationOptions.type!.toUpperCase() != 'GCJ02') {
+			// 腾讯定位只支持GCJ-02，如果不是则报错
+			let ret = new GetLocationFailImpl(1505607);
+			locationOptions.fail?.(ret);
+			locationOptions.complete?.(ret);
+			return;
+		}
+		if (this.mLocationManager == null) {
+			this.mLocationManager = TencentLocationManager.getInstance(UTSAndroid.getAppContext());
+		}
+		let locationRequest = TencentLocationRequest.create();
+		locationRequest.setAllowGPS(true);
+		locationRequest.setInterval(2000);
+		if (this.isBackgroundLocation) {
+			this.mLocationManager?.enableForegroundLocation(1001, this.notif)
+		}
+		this.mLocationManager!.requestLocationUpdates(locationRequest, this);
+		locationOptions.success?.({} as StartLocationUpdateSuccess)
+		locationOptions.complete?.({})
+	}
+
+	notif : Notification | null = null
+	setNotification(notif : Notification) {
+		this.notif = notif
+	}
+	override stopLocationUpdate(options : StopLocationUpdateOptions) : void {
+		this.locationUpdateCallback = null;
+		this.locationUpdateErrorCallback = null
+		this.mLocationManager?.removeUpdates(this);
+		this.mLocationManager?.disableForegroundLocation(true);
+	}
+	override onLocationChange(result : OnLocationChangeCallback) : number {
+		this.locationUpdateCallback = result;
+		return 0;
+	}
+	override offLocationChange(id ?: number | OnLocationChangeCallback | null) : void {
+		this.locationUpdateCallback = null;
+	}
+
+	override onLocationChangeError(result : OnLocationChangeErrorCallback) : number {
+		this.locationUpdateErrorCallback = result;
+		return 0;
+	}
+	override offLocationChangeError(id ?: number | OnLocationChangeErrorCallback | null) : void {
+		this.locationUpdateErrorCallback = null;
+	}
+	private isBackgroundLocation = false
+	override startLocationUpdateBackground(options : StartLocationUpdateBackgroundOptions) : void {
+		if (!checkLocationConfig()) {
+			this.failedAction(1505605);
+			return;
+		}
+		TencentLocationManager.setUserAgreePrivacy(true);
+		/**
+		 * 准备权限
+		 */
+		this.isBackgroundLocation = true
+		this.requestLocation({
+			provider: options.provider,
+			type: options.type,
+			success: options.success,
+			fail: options.fail,
+			complete: options.complete
+		} as StartLocationUpdateOptions);
+	}
+	override onLocationChanged(location : TencentLocation, error : Int, reason : string) : void {
+		let ret : GetLocationSuccess = {
+			latitude: location.latitude,
+			longitude: location.longitude,
+			speed: location.speed,
+			accuracy: location.accuracy,
+			altitude: location.altitude,
+			verticalAccuracy: 0,
+			horizontalAccuracy: location.accuracy,
+			address: location.address
+		};
+		this.locationUpdateCallback?.(ret);
+	}
+	override onStatusUpdate(name : string, status : Int, desc : string) : void {
+		if (name == "gps") {
+			if (status == 0) {
+				this.locationUpdateErrorCallback?.(new GetLocationFailImpl(1505003))
+			}
+		}
+	}
+	constructor() {
+	}
+	/*
+	 * @internal
+	 */
+	override toJSON() : any | null {
+		let jsonRet = new UTSJSONObject();
+		jsonRet.set("id", this.id);
+		jsonRet.set("description", this.description);
+		jsonRet.set("isAppExist", this.isAppExist);
+		return jsonRet;
+	}
+}
+/****************************************内部功能实现****************************************************/
+/**
+ * 定位监听结果包装类
+ */
+class LocationOptionsWapper {
+	hostOption : GetLocationOptions;
+	constructor(option : GetLocationOptions) {
+		this.hostOption = option;
+	}
+	onLocationChanged(location : TencentLocation, _error : Int, _reason : string) {
+		let ret : GetLocationSuccess = {
+			latitude: location.latitude,
+			longitude: location.longitude,
+			speed: location.speed,
+			accuracy: location.accuracy,
+			altitude: location.altitude,
+			verticalAccuracy: 0,
+			horizontalAccuracy: location.accuracy,
+			address: location.address
+		};
+		this.hostOption.success?.(ret);
+		this.hostOption.complete?.(ret);
+		// 包装数据结构返回
+	}
+	onStatusUpdate(_name : string, _status : Int, _desc : string) {
+		// 定位状态发生变化
+	}
+}
+;
+/**
+ * Tencent 定位监听实现类
+ */
+class SingleLocationListener extends TencentLocationListener {
+	hostOptionWraper : LocationOptionsWapper;
+	constructor(option : LocationOptionsWapper) {
+		super();
+		this.hostOptionWraper = option;
+	}
+	override onLocationChanged(location : TencentLocation, error : Int, reason : string) : void {
+		this.hostOptionWraper.onLocationChanged(location, error, reason);
+	}
+	override onStatusUpdate(name : string, status : Int, desc : string) : void {
+		this.hostOptionWraper.onStatusUpdate(name, status, desc);
+	}
+}
+/**
+ * 检查定位的相关配置是否正确
+ */
+function checkLocationConfig() : boolean {
+	let packageName = UTSAndroid.getAppContext()!.getPackageName();
+	let appInfo = UTSAndroid.getAppContext()!.getPackageManager()!.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+	let metaData = appInfo.metaData;
+	if (metaData == null) {
+		return false;
+	}
+	let adId = metaData.getString("TencentMapSDK");
+	if (adId == null) {
+		return false;
+	}
+	let splitArray = adId.split("-");
+	let keyCharNum = splitArray.size;
+	if (keyCharNum > 5) {
+		// 存在超过5个-，说明是符合规则的appkey
+		return true;
+	}
+	// 不符合校验规则，打回
+	return false;
+}
+/**
+ * 腾讯地图获取定位信息
+ * 参考文档:https://lbs.qq.com/mobile/androidLocationSDK/androidGeoGuide/androidGeoAdapt
+ */
+function getLocationImpl(locationOptions : GetLocationOptions) {
+	if (locationOptions.type != null && locationOptions.type!.toUpperCase() != 'GCJ-02' && locationOptions.type!.toUpperCase() != 'GCJ02') {
+		// 腾讯定位只支持GCJ-02，如果不是则报错
+		let ret = new GetLocationFailImpl(1505607);
+		locationOptions.fail?.(ret);
+		locationOptions.complete?.(ret);
+		return;
+	}
+	let mLocationManager = TencentLocationManager.getInstance(UTSAndroid.getAppContext());
+	// 定位监听器封装
+	let locationOptionWrapper = new LocationOptionsWapper(locationOptions);
+	let mLocationListener = new SingleLocationListener(locationOptionWrapper);
+	// 发起单次请求
+	let locationRequest = TencentLocationRequest.create();
+	// 是否需要逆地理编码
+	if (locationOptions.geocode != null && locationOptions.geocode == true) {
+		locationRequest.setRequestLevel(TencentLocationRequest.REQUEST_LEVEL_NAME);
+	}
+	else {
+		locationRequest.setRequestLevel(TencentLocationRequest.REQUEST_LEVEL_GEO);
+	}
+	// 是否开启了高精度
+	if (locationOptions.isHighAccuracy != null && locationOptions.isHighAccuracy == true) {
+		locationRequest.setAllowGPS(true);
+	}
+	/**
+	 * 高度信息，腾讯没有明确的api设置
+	 */
+	if (locationOptions.altitude != null && locationOptions.altitude == true) {
+		locationRequest.setAllowGPS(true);
+	}
+	mLocationManager.requestSingleFreshLocation(locationRequest, mLocationListener, Looper.getMainLooper());
+}
+//# sourceMappingURL=index.uts.map

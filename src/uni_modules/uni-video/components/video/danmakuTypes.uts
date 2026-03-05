@@ -1,0 +1,8 @@
+export type DanmakuType = 0 | 1 | 2
+// 0: 滚动（中） 1: 顶部固定 2: 底部固定
+
+export type DanmakuTask = {
+  text : string
+  color ?: string
+  type ?: DanmakuType
+}

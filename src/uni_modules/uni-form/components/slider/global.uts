@@ -1,0 +1,48 @@
+export type UniSliderChangeEventDetail = {
+  value : number
+}
+
+// #ifdef WEB
+class UniCustomEvent<T> {
+  detail : T
+  constructor(type : string, detail : T) {
+    // this.type = type
+    this.detail = detail
+  }
+}
+// #endif
+
+export class UniSliderChangeEvent extends UniCustomEvent<UniSliderChangeEventDetail> {
+  constructor(value : number) {
+    super('change', { value } as UniSliderChangeEventDetail)
+  }
+}
+
+// #ifdef WEB
+// vapor 临时处理 
+class UniVueElement extends HTMLElement { }
+// #endif
+
+// #ifdef MP
+// vapor 临时处理 
+class UniVueElement extends UniElement { }
+// #endif
+
+export class UniSliderElement extends UniVueElement {
+  override tagName : string = 'SLIDER'
+  override nodeName : string = 'SLIDER'
+
+  _value : number = 0
+
+  get value() {
+    return this._value
+  }
+
+  set value(val : number) {
+    if (this._value === val) {
+      return
+    }
+    this._value = val
+    this.vm?.renderVisuals(val)
+  }
+}

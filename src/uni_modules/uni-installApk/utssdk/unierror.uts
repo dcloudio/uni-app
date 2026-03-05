@@ -1,0 +1,25 @@
+import { InstallApkErrorCode, InstallApkFail } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const UniErrorSubject = 'uni-installApk';
+/**
+ * 错误码
+ * @UniError
+ */
+export const UniErrors : Map<InstallApkErrorCode, string> = new Map([
+	/**
+	 * 找不到文件
+	 */
+	[1300002, 'No such file'],
+]);
+
+export class InstallApkFailImpl extends UniError implements InstallApkFail {
+	constructor(errCode : InstallApkErrorCode) {
+		super();
+		this.errSubject = UniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = UniErrors[errCode] ?? "";
+	}
+}

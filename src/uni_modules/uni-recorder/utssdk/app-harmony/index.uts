@@ -1,0 +1,108 @@
+import { API_GET_RECORDER_MANAGER } from '../protocol.uts';
+import { GetRecorderManager, RecorderManager, RecorderManagerOnStopResult, RecorderManagerStartOptions, IRecorderManagerFail } from '../interface.uts';
+import AVRecorder, { supportFormats as avRecorderSupportFormats, SupportFormat } from './AVRecorder.uts';
+import { onRecorderStateChange, setRecordStateCallback, deleteRecordStateCallback } from './utils.uts';
+import { RecorderManagerFailImpl } from '../unierror.uts'
+
+// NOTE 避免被 vue Proxy 污染
+let RECORDER_MANAGER: AVRecorder | null = null
+const DEFAULT_FORMAT = 'aac'
+
+class RecorderManagerImpl implements RecorderManager {
+  __v_skip: boolean = true
+  start(options: RecorderManagerStartOptions | null = null): void {
+    if (options == null) options = {} as RecorderManagerStartOptions
+    if (!options.format) options.format = DEFAULT_FORMAT
+
+    if (avRecorderSupportFormats.includes((options.format ?? '') as SupportFormat)) {
+      RECORDER_MANAGER = new AVRecorder()
+    }
+    if (RECORDER_MANAGER) {
+      RECORDER_MANAGER.start(options)
+    } else {
+      onRecorderStateChange('error', new RecorderManagerFailImpl(1107605))
+    }
+  }
+  pause(): void {
+    if (RECORDER_MANAGER) RECORDER_MANAGER.pause()
+  }
+  resume(): void {
+    if (RECORDER_MANAGER) RECORDER_MANAGER.resume()
+  }
+  async stop() {
+    if (RECORDER_MANAGER) {
+      try {
+        await RECORDER_MANAGER.stop()
+      } catch (error) { }
+      RECORDER_MANAGER = null
+    }
+  }
+  onStart(options: (result: any) => void): void {
+    setRecordStateCallback('start', options)
+  }
+  onPause(options: (result: any) => void): void {
+    setRecordStateCallback('pause', options)
+  }
+  onStop(options: (result: RecorderManagerOnStopResult) => void): void {
+    setRecordStateCallback('stop', options)
+  }
+  onFrameRecorded(options: (result: any) => void): void {
+    setRecordStateCallback('frameRecorded', options)
+  }
+  onError(options: (result: IRecorderManagerFail) => void): void {
+    setRecordStateCallback('error', options)
+  }
+  onResume(options: (result: any) => void): void {
+    setRecordStateCallback('resume', options)
+  }
+  onInterruptionBegin(options: (result: any) => void): void {
+    setRecordStateCallback('interruptionBegin', options)
+  }
+  onInterruptionEnd(options: (result: any) => void): void {
+    setRecordStateCallback('interruptionEnd', options)
+  }
+  offStart(): void {
+    deleteRecordStateCallback('start')
+  }
+  offPause(): void {
+    deleteRecordStateCallback('pause')
+  }
+  offStop(): void {
+    deleteRecordStateCallback('stop')
+  }
+  offFrameRecorded(): void {
+    deleteRecordStateCallback('frameRecorded')
+  }
+  offError(): void {
+    deleteRecordStateCallback('error')
+  }
+  offResume(): void {
+    deleteRecordStateCallback('resume')
+  }
+  offInterruptionBegin(): void {
+    deleteRecordStateCallback('interruptionBegin')
+  }
+  offInterruptionEnd(): void {
+    deleteRecordStateCallback('interruptionEnd')
+  }
+}
+
+let recorderManager: RecorderManager | null = null
+
+export const getRecorderManager: GetRecorderManager = defineSyncApi<RecorderManager>(
+  API_GET_RECORDER_MANAGER,
+  (): RecorderManager => {
+    if (recorderManager) return recorderManager
+    else recorderManager = new RecorderManagerImpl()
+    return recorderManager
+  }
+) as GetRecorderManager
+
+export {
+    GetRecorderManager,
+    IRecorderManagerFail,
+    RecorderManager,
+    RecorderManagerErrorCode,
+    RecorderManagerOnStopResult,
+    RecorderManagerStartOptions
+} from '../interface.uts'

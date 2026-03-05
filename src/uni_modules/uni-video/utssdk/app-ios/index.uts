@@ -1,0 +1,67 @@
+import { CreateVideoContext, VideoContext, RequestFullScreenOptions, Danmu } from "../interface.uts"
+
+export const createVideoContext: CreateVideoContext = function (videoId : string.VideoIdString, component ?: ComponentPublicInstance | null): VideoContext | null {
+	let videoElement: VideoElement | null = null
+	let element: any | null = null;
+	if (component == null) {
+		element = UniSDKEngine.getJSElementById(videoId)
+	} else {       
+		element = component?.$el(videoId)  
+	}
+	if (element != null && (element instanceof VideoElement)) {
+		videoElement = (element as VideoElement)
+	}
+    if (videoElement == null) {
+		return null
+	}
+	return new VideoContextImpl(videoElement!)
+}
+
+ class VideoContextImpl implements VideoContext {
+	@UTSiOS.keyword("weak")
+	private videoElement : VideoElement | null = null;
+
+	constructor(videoElement : VideoElement) {
+		this.videoElement = videoElement;
+	}
+
+	play() {
+		this.videoElement?.play();
+	}
+
+	pause() {
+		this.videoElement?.pause();
+	}
+
+	seek(position : number) {
+		this.videoElement?.seek(position);
+	}
+
+	stop() {
+		this.videoElement?.stop();
+	}
+	sendDanmu(danmu : Danmu) {
+		let str = JSON.stringify(danmu)
+		if (str != null) {
+			let map = JSON.parseObject(str!)?.toMap()
+			if (map != null) {
+				this.videoElement?.sendDanmu(map!)
+			}
+		}
+	}
+
+	playbackRate(rate : number) {
+		this.videoElement?.playbackRate(rate.toString());
+	}
+
+	requestFullScreen(direction : RequestFullScreenOptions | null) {  
+		this.videoElement?.requestFullScreen(direction?.direction ?? 0);
+	}
+
+	exitFullScreen() {
+		this.videoElement?.exitFullScreen();
+	}
+	
+	showStatusBar() { }
+	hideStatusBar() { }
+}

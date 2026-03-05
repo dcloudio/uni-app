@@ -1,0 +1,462 @@
+import {
+    GetImageInfoOptions,
+    ChooseImageOptions,
+    GetVideoInfoOptions,
+    ChooseVideoOptions,
+    PreviewImageOptions,
+    CompressImageOptions,
+    ChooseFileOptions,
+    CompressVideoOptions,
+} from './interface.uts'
+import {
+    getRealPath,
+} from '@dcloudio/uni-runtime'
+
+export function elemsInArray(
+    strArr: string[] | string | undefined,
+    optionalVal: string[]
+) {
+    if (
+        !Array.isArray(strArr) ||
+        strArr.length === 0 ||
+        strArr.find((val) => optionalVal.indexOf(val) === -1)
+    ) {
+        return optionalVal
+    }
+    return strArr
+}
+
+
+// getImageInfo
+export const API_GET_IMAGE_INFO = 'getImageInfo';
+export const GetImageInfoApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'src',
+        {
+            type: 'string',
+            required: true
+        }
+    ]
+])
+
+export const GetImageInfoApiOptions: ApiOptions<GetImageInfoOptions> = {
+    formatArgs: new Map<string, Function>([
+        [
+            'src',
+            function (src: string, params: GetImageInfoOptions) {
+                params.src = getRealPath(src)
+            }
+        ]
+    ])
+}
+
+// chooseImage
+export const API_CHOOSE_IMAGE = 'chooseImage';
+export const ChooseImageApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'count',
+        {
+            type: 'number',
+            required: false
+        }
+    ],
+    [
+        'sizeType',
+        {
+            type: 'array',
+            required: false
+        }
+    ],
+    [
+        'sourceType',
+        {
+            type: 'array',
+            required: false
+        }
+    ],
+    [
+        'extension',
+        {
+            type: 'array',
+            required: false
+        }
+    ]
+])
+
+export const ChooseImageApiOptions: ApiOptions<ChooseImageOptions> = {
+    formatArgs: new Map<string, Function>([
+        [
+            'count',
+            function (count: number, params: ChooseImageOptions) {
+                if (count == null) {
+                    params.count = 9
+                }
+            }
+        ],
+        [
+            'sizeType',
+            function (sizeType: string[], params: ChooseImageOptions) {
+                if (sizeType == null) {
+                    params.sizeType = ['original', 'compressed']
+                }
+            }
+        ],
+        [
+            'sourceType',
+            function (sourceType: string[], params: ChooseImageOptions) {
+                if (sourceType == null) {
+                    params.sourceType = ['album', 'camera']
+                }
+            }
+        ],
+        [
+            'extension',
+            function (extension: string[], params: ChooseImageOptions) {
+                if (extension == null) {
+                    params.extension = ['*']
+                }
+            }
+        ]
+    ])
+}
+
+// getVideoInfo
+export const API_GET_VIDEO_INFO = 'getVideoInfo';
+export const GetVideoInfoApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'src',
+        {
+            type: 'string',
+            required: true
+        }
+    ]
+])
+export const GetVideoInfoApiOptions: ApiOptions<GetVideoInfoOptions> = {
+    formatArgs: new Map<string, Function>([
+        [
+            'src',
+            function (src: string, params: GetVideoInfoOptions) {
+                params.src = getRealPath(src)
+            }
+        ]
+    ])
+}
+
+// chooseVideo
+export const API_CHOOSE_VIDEO = 'chooseVideo';
+export const ChooseVideoApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'sourceType',
+        {
+            type: 'array',
+            required: false
+        }
+    ],
+    [
+        'compressed',
+        {
+            type: 'boolean',
+            required: false
+        }
+    ],
+    [
+        'maxDuration',
+        {
+            type: 'number',
+            required: false
+        }
+    ],
+    [
+        'camera',
+        {
+            type: 'string',
+            required: false
+        }
+    ],
+    [
+        'extension',
+        {
+            type: 'array',
+            required: false
+        }
+
+    ]
+])
+export const ChooseVideoApiOptions: ApiOptions<ChooseVideoOptions> = {
+    formatArgs: new Map<string, Function>([
+        [
+            'sourceType',
+            function (sourceType: string[], params: ChooseVideoOptions) {
+                if (sourceType == null) {
+                    params.sourceType = ['album', 'camera']
+                }
+            }
+        ],
+        [
+            'compressed',
+            function (compressed: boolean, params: ChooseVideoOptions) {
+                if (compressed == null) {
+                    params.compressed = true
+                }
+            }
+        ],
+        [
+            'maxDuration',
+            function (maxDuration: number, params: ChooseVideoOptions) {
+                if (maxDuration == null) {
+                    params.maxDuration = 60
+                }
+            }
+        ],
+        [
+            'camera',
+            function (camera: string, params: ChooseVideoOptions) {
+                if (camera == null) {
+                    params.camera = 'back'
+                }
+            }
+        ],
+        [
+            'extension',
+            function (extension: string[], params: ChooseVideoOptions) {
+                if (extension == null) {
+                    params.extension = ['*']
+                }
+            }
+        ]
+    ])
+}
+
+export const API_PREVIEW_IMAGE = 'previewImage';
+export const PreviewImageApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'urls',
+        {
+            type: 'array',
+            required: true
+        }
+    ],
+    [
+        'current',
+        {
+            type: 'string',
+            required: false
+        }
+    ]
+])
+export const PreviewImageApiOptions: ApiOptions<PreviewImageOptions> = {
+    formatArgs: new Map<string, Function>([
+        [
+            'urls',
+            function (urls: string[], params: PreviewImageOptions) {
+                params.urls = urls.map(url => getRealPath(url) as string)
+            }
+        ]
+    ])
+}
+
+export const API_CLOSE_PREVIEW_IMAGE = 'closePreviewImage';
+
+export const API_SAVE_IMAGE_TO_PHOTOS_ALBUM = 'saveImageToPhotosAlbum';
+export const SaveImageToPhotosAlbumApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'filePath',
+        {
+            type: 'string',
+            required: true
+        }
+    ]
+])
+
+export const API_SAVE_VIDEO_TO_PHOTOS_ALBUM = 'saveVideoToPhotosAlbum';
+export const SaveVideoToPhotosAlbumApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'filePath',
+        {
+            type: 'string',
+            required: true
+        }
+    ]
+])
+
+// #region compressImage
+export const API_COMPRESS_IMAGE = 'compressImage'
+export const CompressImageApiOptions: ApiOptions<CompressImageOptions> = {
+    formatArgs: new Map<string, Function>([
+        [
+            'src',
+            function (src: string, params: CompressImageOptions) {
+                if (src) params.src = getRealPath(src)
+            }
+        ],
+        [
+            'quality',
+            function (quality: number, params: CompressImageOptions) {
+                if (quality == null) {
+                    params.quality = 80
+                }
+            }
+        ]
+    ])
+}
+export const CompressImageApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'src',
+        {
+            type: 'string',
+            required: true
+        }
+    ],
+    [
+        'quality',
+        {
+            type: 'number'
+        }
+    ],
+    [
+        'compressedWidth',
+        {
+            type: 'number'
+        }
+    ],
+    [
+        'compressedHeight',
+        {
+            type: 'number'
+        }
+    ]
+])
+// #endregion
+
+// #region chooseFile
+export const API_CHOOSE_FILE = 'chooseFile'
+const CHOOSE_MEDIA_TYPE: string[] = [
+    'all',
+    'image',
+    'video',
+]
+const CHOOSE_FILE_SOURCE_TYPE: string[] = [
+    'album',
+    'camera'
+]
+
+export const ChooseFileApiOptions: ApiOptions<ChooseFileOptions> = {
+    formatArgs: new Map<string, Function>([
+        [
+            'count',
+            function (count: number, params: ChooseFileOptions) {
+                if (!count || count <= 0) {
+                    params.count = 100
+                }
+                return undefined
+            }
+        ],
+        [
+            'sourceType',
+            function (sourceType: string[] = [], params: ChooseFileOptions) {
+                sourceType = sourceType.filter((type) => CHOOSE_FILE_SOURCE_TYPE.includes(type))
+                if (!sourceType.length) {
+                    params.sourceType = ['album', 'camera']
+                }
+                return undefined
+            }
+        ],
+        [
+            'type',
+            function (type: string = 'all', params: ChooseFileOptions) {
+                if (!CHOOSE_MEDIA_TYPE.includes(type)) {
+                    params.type = 'all'
+                }
+                return undefined
+            }
+        ],
+        [
+            'extension',
+            function (extension: string[], params: ChooseFileOptions): string | undefined {
+                if (extension instanceof Array && extension.length === 0) {
+                    return 'param extension should not be empty.'
+                }
+                if (!extension) params.extension = ['']
+                return undefined
+            }
+        ]
+    ])
+}
+
+export const ChooseFileApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'count',
+        {
+            type: 'number'
+        }
+    ],
+    [
+        'sourceType',
+        {
+            type: 'array'
+        }
+    ],
+    [
+        'type',
+        {
+            'type': 'string'
+        }
+    ],
+    [
+        'extension',
+        {
+            type: 'array'
+        }
+    ]
+])
+// #endregion
+
+// #region compressVideo
+export const API_COMPRESS_VIDEO = 'compressVideo'
+
+export const CompressVideoApiOptions: ApiOptions<CompressVideoOptions> = {
+    formatArgs: new Map<string, Function>([
+        [
+            'src',
+            function (src: string, params: CompressVideoOptions) {
+                if (src) params.src = getRealPath(src)
+            }
+        ]
+    ])
+}
+
+export const CompressVideoApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'src',
+        {
+            type: 'string',
+            required: true
+        }
+    ],
+    [
+        'quality',
+        {
+            type: 'string'
+        }
+    ],
+    [
+        'bitrate',
+        {
+            type: 'number'
+        }
+    ],
+    [
+        'fps',
+        {
+            type: 'number'
+        }
+    ],
+    [
+        'resolution',
+        {
+            type: 'number'
+        }
+    ]
+])
+
+// #endregion

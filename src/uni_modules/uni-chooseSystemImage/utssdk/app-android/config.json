@@ -1,0 +1,7 @@
+{
+	"dependencies": [
+		"androidx.appcompat:appcompat:1.6.1",
+		"androidx.activity:activity-ktx:1.9.2"
+	],
+  "minSdkVersion": "21"
+}

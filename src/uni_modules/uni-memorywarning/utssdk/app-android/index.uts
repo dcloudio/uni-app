@@ -1,0 +1,50 @@
+import { UTSAndroid } from "io.dcloud.uts"
+import { OnMemoryWarning, OffMemoryWarning, MemoryWarningCallback, MemoryWarningCallbackResult } from "../interface.uts"
+
+let listeners: MemoryWarningCallback[] = []
+
+const onAppTrimMemoryListener = (ret: number) => {
+    listeners.forEach(listener => {
+      let res: MemoryWarningCallbackResult = {
+        level:ret
+      }
+      listener(res)
+    })
+}
+
+
+@Suppress("DEPRECATION")
+export const onMemoryWarning : OnMemoryWarning =  function (callback: MemoryWarningCallback) {
+    if (listeners.length == 0) {
+		// 仅首次执行底层的实际监听
+        UTSAndroid.onAppTrimMemory(onAppTrimMemoryListener)
+		UTSAndroid.onAppActivityDestroy(()=>{
+			// listeners 默认是静态常量周期，activity 销毁时，需要手动清空
+			listeners = []
+		})
+    }
+    listeners.push(callback)
+}
+
+
+@Suppress("DEPRECATION")
+export const offMemoryWarning : OffMemoryWarning = function (callback: MemoryWarningCallback | null) {
+	
+	if(callback == null){
+		// 清除全部回调
+		listeners = []
+		UTSAndroid.offAppTrimMemory(null);
+		return
+	}
+	
+	// 清除指定回调
+    const index = listeners.indexOf(callback)
+    if (index > -1) {
+        listeners.splice(index, 1)
+    }
+    if (listeners.length == 0) {
+        // 当用户不再监听时，移除底层实际监听
+        UTSAndroid.offAppTrimMemory(onAppTrimMemoryListener)
+    }
+}
+

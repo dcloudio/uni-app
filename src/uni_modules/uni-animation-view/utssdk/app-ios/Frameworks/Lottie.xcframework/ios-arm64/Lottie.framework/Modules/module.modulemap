@@ -1,0 +1,4 @@
+framework module Lottie {
+  header "Lottie-Swift.h"
+  requires objc
+}

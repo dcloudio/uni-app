@@ -1,0 +1,44 @@
+
+import { MakePhoneCall, MakePhoneCallOptions, MakePhoneCallSuccess } from '../interface.uts';
+import { UIApplication } from "UIKit";
+import { URL } from "Foundation";
+import { isValidPhoneRules } from '../phoneRuleValidation.uts'
+import { MakePhoneCallErrorImpl } from '../unierror.uts';
+
+export const makePhoneCall : MakePhoneCall = function (options : MakePhoneCallOptions) {
+	if (options.phoneNumber.length <= 0 || isValidPhoneRules(options.phoneNumber) == false) {
+		const err = new MakePhoneCallErrorImpl(1500602);
+		options.fail?.(err)
+		options.complete?.(err)
+		return
+	}
+	
+	let phoneString = `tel://` + options.phoneNumber
+	let phoneUrl = URL(string = phoneString)
+
+	if (phoneUrl == null) {
+		const err = new MakePhoneCallErrorImpl(1500602);
+		options.fail?.(err)
+		options.complete?.(err)
+		return
+	}
+
+	if (UIApplication.shared.canOpenURL(phoneUrl!)) {
+		const map = new Map<UIApplication.OpenExternalURLOptionsKey, any>()
+		UIApplication.shared.open(phoneUrl!, options = map, completionHandler = (isSuccessOpen : boolean) : void => {
+			if (isSuccessOpen) {
+				let success = new MakePhoneCallSuccess()
+				options.success?.(success)
+				options.complete?.(success)
+			} else {
+				const err = new MakePhoneCallErrorImpl(1500603);
+				options.fail?.(err)
+				options.complete?.(err)
+			}
+		})
+	} else {
+		const err = new MakePhoneCallErrorImpl(1500601);
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+}

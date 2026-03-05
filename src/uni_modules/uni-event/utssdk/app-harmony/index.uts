@@ -1,0 +1,74 @@
+import {
+    Emitter,
+    getCurrentMP
+} from '@dcloudio/uni-runtime'
+import {
+    $Emit,
+    $Off,
+    $On,
+    $Once,
+} from '../interface.uts'
+import {
+    API_$_EMIT,
+    API_$_OFF,
+    API_$_ON,
+    API_$_ONCE,
+} from '../protocol.uts'
+
+interface IUniEventEmitter {
+    on: (eventName: string, callback: Function) => void
+    once: (eventName: string, callback: Function) => void
+    off: (eventName: string, callback?: Function | null) => void
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void
+}
+
+const emitterStore = new Map<string, IUniEventEmitter>()
+
+function getEmitter(): IUniEventEmitter {
+    const mp = getCurrentMP()
+    const id = mp.appId as string
+    if (emitterStore.has(id)) {
+        return emitterStore.get(id) as IUniEventEmitter
+    }
+    const emitter = new Emitter() as IUniEventEmitter
+    emitterStore.set(id, emitter)
+    mp.on('beforeClose', () => {
+        emitterStore.delete(id)
+    })
+    return emitter
+}
+
+export const $on: $On = defineSyncApi<number>(
+    API_$_ON,
+    (eventName: string, callback: Function) => {
+        return getEmitter().on(eventName, callback)
+    }
+) as $On
+
+export const $once: $Once = defineSyncApi<number>(
+    API_$_ONCE,
+    (eventName: string, callback: Function) => {
+        return getEmitter().once(eventName, callback)
+    }
+) as $Once
+
+export const $off: $Off = defineSyncApi<void>(
+    API_$_OFF,
+    (eventName: string, callback: Function) => {
+        getEmitter().off(eventName, callback)
+    }
+) as $Off
+
+export const $emit: $Emit = defineSyncApi<void>(
+    API_$_EMIT,
+    (eventName: string, ...args: (Object | undefined | null)[]) => {
+        getEmitter().emit(eventName, ...args)
+    }
+) as $Emit
+
+export {
+    $Emit,
+    $Off,
+    $On,
+    $Once
+} from '../interface.uts';

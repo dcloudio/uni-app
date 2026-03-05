@@ -1,0 +1,68 @@
+import {
+    NativeLoadFontFaceFail,
+    NativeLoadFontFaceOptions,
+    appLoadFontFace,
+    getCurrentPage,
+} from '@dcloudio/uni-runtime'
+
+import {
+    LoadFontFaceErrCode,
+    LoadFontFaceOptions,
+    LoadFontFaceSuccess,
+} from '../interface.uts'
+
+import { LoadFontFaceFailImpl } from '../unierror.uts'
+
+export const loadFontFace = defineAsyncApi<LoadFontFaceOptions, LoadFontFaceSuccess>('loadFontFace', (options: LoadFontFaceOptions, res: ApiExecutor) => {
+    options.source = removeUrlWrap(options.source)
+    if (options.global == true) {
+        appLoadFontFace(getLoadFontFaceOptions(options, res))
+    } else {
+        const page = getCurrentPage()
+        if (page === null) {
+            res.reject(new LoadFontFaceFailImpl('page is not ready', 99))
+            return
+        }
+        if (page.$fontFamilySet.has(options.family)) {
+            return
+        }
+        page.$fontFamilySet.add(options.family)
+        appLoadFontFace(getLoadFontFaceOptions(options, res))
+    }
+})
+
+function removeUrlWrap(source: string): string {
+    if (source.startsWith('url(')) {
+        // url("xxx") format("xxx") 时移除 format("xxx")
+        const FormatParts = source.split('format(')
+        if (FormatParts.length > 1) {
+            source = FormatParts[0].trim()
+        }
+        source = source.substring(4, source.length - 1)
+    }
+    if (source.startsWith('"') || source.startsWith("'")) {
+        source = source.substring(1, source.length - 1)
+    }
+    return source
+}
+
+function getLoadFontFaceOptions(
+    options: LoadFontFaceOptions,
+    res: ApiExecutor,
+): NativeLoadFontFaceOptions {
+    return {
+        family: options.family,
+        source: options.source,
+        success: (_: any | null) => {
+            res.resolve(null)
+        },
+        fail: (error: NativeLoadFontFaceFail) => {
+            res.reject(
+                new LoadFontFaceFailImpl(
+                    error.errMsg,
+                    error.errCode as LoadFontFaceErrCode,
+                ),
+            )
+        },
+    } as NativeLoadFontFaceOptions
+}

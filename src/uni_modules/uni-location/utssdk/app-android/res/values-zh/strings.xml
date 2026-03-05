@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="uni_app_uni_location_notification_channel_name">后台持续定位</string>
+    <string name="uni_app_uni_location_notification_content_title">应用%s正在使用你的</string>
+    <string name="uni_app_uni_location_notification_content_text">位置信息</string>
+</resources>

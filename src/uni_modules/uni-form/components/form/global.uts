@@ -1,0 +1,1 @@
+export class UniFormElement extends UniVueElement {}

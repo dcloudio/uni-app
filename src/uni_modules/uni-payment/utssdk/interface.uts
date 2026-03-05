@@ -1,0 +1,859 @@
+import { RequestPaymentFailImpl as RequestPaymentFailImplement } from './unierror.uts'
+
+export type RequestPaymentFailImpl = RequestPaymentFailImplement
+
+// #ifdef APP-IOS
+export interface UniPaymentProvider extends Uni, JSExport { }
+// #endif
+
+// #ifndef APP-IOS
+export interface UniPaymentProvider extends UniProvider {
+	requestPayment(options : RequestPaymentOptions) : void;
+}
+// #endif
+
+export interface Uni {
+	/**
+	 * @description 请求支付
+	 * @param {RequestPaymentOptions} options
+	 * @example
+	 * ```typescript
+	 *	 uni.requestPayment({
+	 *		provider: "alipay",
+	 *		orderInfo: "",
+	 *		success: function (res) {
+	 *			 console.log("支付成功"+JSON.stringify(res))
+	 *		}
+	 *	});
+	 * ```
+	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/plugins/payment.html#requestpayment
+	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/request-payment.html#requestpayment
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/request-payment.html#requestpayment
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "5.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.02"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.18"
+	 *        },
+		 *    "harmony": {
+		 *      "osVer": "3.0",
+		 *      "uniVer": "4.26",
+		 *      "unixVer": "4.61",
+		 *      "unixvVer": "5.0"
+		 *    }
+	 *    },
+		*  "mp": {
+		*    "weixin": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "4.41"
+		*    },
+		*    "alipay": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "baidu": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "toutiao": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "lark": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "qq": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "kuaishou": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "jd": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    }
+		*  },
+	 *    "web": {
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    }
+	 * }
+	 */
+	requestPayment(options: RequestPaymentOptions): void;
+}
+/**
+ * 错误码
+ */
+export type RequestPaymentErrorCode =
+	/**
+	 * 正在处理中，支付结果未知（有可能已经支付成功），请查询商家订单列表中订单的支付状态
+	 * @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.02"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.18"
+		*        },
+		*        "harmony": {
+		*            "osVer": "3.0",
+		*            "uniVer": "4.27",
+		*            "unixVer": "4.61",
+		*            "unixvVer": "5.0"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	700600 |
+	/**
+	 * 订单支付失败。
+		*  @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.02"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.18"
+		*        },
+		*        "harmony": {
+		*            "osVer": "3.0",
+		*            "uniVer": "4.27",
+		*            "unixVer": "4.61",
+		*            "unixvVer": "5.0"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	701100 |
+	/**
+	 * 重复请求。
+		*  @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.02"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.18"
+		*        },
+		*        "harmony": {
+		*            "osVer": "3.0",
+		*            "uniVer": "4.27",
+		*            "unixVer": "4.61",
+		*            "unixvVer": "5.0"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	701110 |
+	/**
+	 * 用户中途取消。
+		*  @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.02"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.18"
+		*        },
+		*        "harmony": {
+		*            "osVer": "3.0",
+		*            "uniVer": "4.27",
+		*            "unixVer": "4.61",
+		*            "unixvVer": "5.0"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	700601 |
+	/**
+	 * 网络连接出错。
+		*  @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.02"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.18"
+		*        },
+		*        "harmony": {
+		*            "osVer": "3.0",
+		*            "uniVer": "4.27",
+		*            "unixVer": "4.61",
+		*            "unixvVer": "5.0"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	700602 |
+	/**
+	 * 支付结果未知（有可能已经支付成功），请查询商家订单列表中订单的支付状态。
+		*  @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.02"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.18"
+		*        },
+		*        "harmony": {
+		*            "osVer": "3.0",
+		*            "uniVer": "4.27",
+		*            "unixVer": "4.61",
+		*            "unixvVer": "5.0"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	700603 |
+	/**
+	 * 其它支付错误。
+		*  @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.02"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.18"
+		*        },
+		*        "harmony": {
+		*            "osVer": "3.0",
+		*            "uniVer": "4.27",
+		*            "unixVer": "4.61",
+		*            "unixvVer": "5.0"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	700000 |
+	/**
+	 * 微信没有安装。
+		*  @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.02"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.18"
+		*        },
+		*        "harmony": {
+		*            "osVer": "3.0",
+		*            "uniVer": "4.27",
+		*            "unixVer": "4.61",
+		*            "unixvVer": "5.0"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	700604 |
+	/**
+	 * 服务供应商获取失败。
+		*  @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.02"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.18"
+		*        },
+		*        "harmony": {
+		*            "osVer": "3.0",
+		*            "uniVer": "4.27",
+		*            "unixVer": "4.61",
+		*            "unixvVer": "5.0"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	700605 |
+	/**
+	 * 支付未完成。
+		*  @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "x",
+		*            "unixVer": "4.31"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "x",
+		*            "unixVer": "4.31"
+		*        },
+		*        "harmony": {
+		*            "osVer": "3.0",
+		*            "uniVer": "4.31",
+		*            "unixVer": "4.61",
+		*            "unixvVer": "5.0"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	700607 |
+	/**
+	 * 服务商返回参数错误。
+		*  @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "x",
+		*            "unixVer": "4.31"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "x",
+		*            "unixVer": "4.31"
+		*        },
+		*        "harmony": {
+		*            "osVer": "3.0",
+		*            "uniVer": "4.31",
+		*            "unixVer": "4.61",
+		*            "unixvVer": "5.0"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	700608 |
+	/**
+	 * 没有配置对应的URL Scheme。
+		*  @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "x",
+		*            "unixVer": "x"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.18"
+		*        },
+		*        "harmony": {
+		*            "osVer": "x",
+		*            "uniVer": "x",
+		*            "unixVer": "x"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	700800 |
+	/**
+	 * 没有配置对应的Universal Link。
+		*  @uniPlatform {
+		*    "app": {
+		*        "android": {
+		*            "osVer": "5.0",
+		*            "uniVer": "x",
+		*            "unixVer": "x"
+		*        },
+		*        "ios": {
+		*            "osVer": "12.0",
+		*            "uniVer": "√",
+		*            "unixVer": "4.18"
+		*        },
+		*        "harmony": {
+		*            "osVer": "x",
+		*            "uniVer": "x",
+		*            "unixVer": "x"
+		*        }
+		*    },
+		*    "web": {
+		*        "uniVer": "x",
+		*        "unixVer": "x"
+		*    }
+		* }
+	 */
+	700801;
+
+
+export type RequestPayment = (options: RequestPaymentOptions) => void;
+export type RequestPaymentSuccess = {
+	/**
+	 * 返回数据
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "5.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.02"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.18"
+	 *        },
+	 *    "harmony": {
+	 *      "osVer": "3.0",
+	 *      "uniVer": "4.25",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *    },
+		*  "mp": {
+		*    "weixin": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "4.41"
+		*    },
+		*    "alipay": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "baidu": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "toutiao": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "lark": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "qq": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "kuaishou": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "jd": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    }
+		*  },
+	 *    "web": {
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    }
+	 * }
+	 */
+	data: object | null
+};
+export type RequestPaymentSuccessCallback = (result: RequestPaymentSuccess) => void;
+export type RequestPaymentFail = IRequestPaymentFail;
+export type RequestPaymentFailCallback = (result: RequestPaymentFail) => void;
+export type RequestPaymentComplete = any
+export interface IRequestPaymentFail extends IUniError {
+	errCode: RequestPaymentErrorCode
+};
+export type RequestPaymentCompleteCallback = (result: RequestPaymentComplete) => void;
+export type RequestPaymentOptions = {
+	/**
+	 * 支付服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持支付宝支付(alipay),微信支付(wxpay)
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "5.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.02"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.18"
+	 *        },
+	 *    "harmony": {
+	 *      "osVer": "3，0",
+	 *      "uniVer": "4.25",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *    },
+	 *    "web": {
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    }
+	 * }
+	 */
+	provider: string,
+	/**
+	 * 订单数据
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "5.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.02"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.18"
+	 *        },
+	 *    "harmony": {
+	 *      "osVer": "3.0",
+	 *      "uniVer": "4.25",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *    },
+		*  "mp": {
+		*    "weixin": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "alipay": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "baidu": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "toutiao": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "lark": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "qq": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "kuaishou": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "jd": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    }
+		*  },
+	 *    "web": {
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    }
+	 * }
+	 */
+	orderInfo: string,
+	/**
+	 * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "5.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.02"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.18"
+	 *        },
+	 *    "harmony": {
+	 *      "osVer": "3，0",
+	 *      "uniVer": "4.25",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *    },
+		*  "mp": {
+		*    "weixin": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "4.41"
+		*    },
+		*    "alipay": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "baidu": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "toutiao": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "lark": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "qq": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "kuaishou": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "jd": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    }
+		*  },
+	 *    "web": {
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    }
+	 * }
+	 */
+	success: RequestPaymentSuccessCallback | null,
+	/**
+	 * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "5.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.02"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.18"
+	 *        },
+	 *    "harmony": {
+	 *      "osVer": "3.0",
+	 *      "uniVer": "4.25",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *    },
+		*  "mp": {
+		*    "weixin": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "4.41"
+		*    },
+		*    "alipay": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "baidu": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "toutiao": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "lark": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "qq": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "kuaishou": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "jd": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    }
+		*  },
+	 *    "web": {
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    }
+	 * }
+	 */
+	fail: RequestPaymentFailCallback | null,
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "5.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.02"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "√",
+	 *            "unixVer": "4.18"
+	 *        },
+	 *    "harmony": {
+	 *      "osVer": "3.0",
+	 *      "uniVer": "4.25",
+	 *      "unixVer": "4.61",
+	 *      "unixvVer": "5.0"
+	 *    }
+	 *    },
+		*  "mp": {
+		*    "weixin": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "4.41"
+		*    },
+		*    "alipay": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "baidu": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "toutiao": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "lark": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "qq": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "kuaishou": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    },
+		*    "jd": {
+		*        "hostVer": "√",
+		*        "uniVer": "√",
+		*        "unixVer": "x"
+		*    }
+		*  },
+	 *    "web": {
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    }
+	 * }
+	 */
+	complete?: RequestPaymentCompleteCallback | null
+};

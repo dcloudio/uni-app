@@ -1,0 +1,428 @@
+import { Request, RequestOptions, RequestSuccess, RequestFail, RequestTask, UploadFileOptions, UploadFile, UploadTask, OnProgressUpdateResult, UploadFileSuccess, UploadFileProgressUpdateCallback, DownloadFileProgressUpdateCallback, DownloadFileOptions, OnProgressDownloadResult, DownloadFile, DownloadFileSuccess } from '../interface';
+import { NetworkManager, NetworkRequestListener, NetworkUploadFileListener, NetworkDownloadFileListener } from './network/NetworkManager.uts'
+import { Data, HTTPURLResponse, NSError, NSNumber, ComparisonResult, RunLoop, Thread, JSONSerialization } from 'Foundation';
+import { StatusCode } from './network/StatusCode.uts';
+import { RequestFailImpl, UploadFileFailImpl, DownloadFileFailImpl, getErrcode } from '../unierror';
+import { NetworkUtil } from './network/utils/NetworkUtil.uts';
+import { CFString } from 'CoreFoundation';
+class SimpleNetworkListener<T> extends NetworkRequestListener {
+	private param : RequestOptions<T> | null = null;
+	private headers : Map<string, any> | null = null;
+	private received : number = 0;
+	private data : Data = new Data();
+	@UTSiOS.keyword("weak")
+	public override task : AnyObject | null = null;
+	constructor(param : RequestOptions<T>) {
+		this.param = param;
+		super();
+	}
+
+	public override onStart() : void {
+	}
+
+	public override onHeadersReceived(statusCode : number, headers : Map<string, any>) : void {
+		this.headers = headers;
+		
+	}
+	public override onDataReceived(data : Data) : void {
+		this.received += Number.from(data.count);
+		this.data.append(data);
+	}
+
+	public override onFinished(response : HTTPURLResponse) : void {
+		try {
+			let headers = response.allHeaderFields as Map<string, any>;
+			let kParam = this.param;
+			let result = {};
+			result['statusCode'] = response.statusCode;
+			result['statusText'] = StatusCode.getStatus(new String(response.statusCode));
+			if (headers != null) {
+				result['header'] = headers;
+			}
+			let strData = this.readStringFromData(this.data, response.textEncodingName);
+
+
+			let type = kParam?.responseType != null ? kParam?.responseType : kParam?.dataType;
+
+			if (type == null && headers != null) {
+
+				for (entry in headers) {
+					let key = entry.key;
+					if (key.caseInsensitiveCompare("Content-Type") == ComparisonResult.orderedSame) {
+						type = headers[key] as string;
+					}
+				}
+			}
+
+
+			result['data'] = this.parseData(this.data, strData, type);
+
+			if (result['data'] == null) {
+				let failResult = new RequestFailImpl(getErrcode(100001));
+				let fail = kParam?.fail;
+				let complete = kParam?.complete;
+				fail?.(failResult);
+				complete?.(failResult);
+				return
+			}
+
+			let tmp = new RequestSuccess<T>({
+				data: result['data']! as T,
+				statusCode: (new NSNumber(value = response.statusCode)),
+				header: result['header'] ?? "",
+				cookies: this.parseCookie(this.headers)
+			})
+			let success = kParam?.success;
+			let complete = kParam?.complete;
+			success?.(tmp);
+			complete?.(tmp);
+		} catch (e) {
+		}
+		if (this.task != null) {
+			UTSiOS.destroyInstance(this.task!);
+		}
+	}
+
+	public override onFail(error : NSError) : void {
+		let kParam = this.param;
+		let code = (error as NSError).code;
+		let errCode = code;
+		let cause = error.localizedDescription;
+		if (code == -1001) {
+			errCode = 5;
+		} else if (code == -1004) {
+			errCode = 1000;
+		} else if (code == -1009) {
+			errCode = 600003;
+		} else {
+			errCode = 602001;
+		}
+
+		let failResult = new RequestFailImpl(getErrcode(Number.from(errCode)));
+		failResult.cause = new SourceError(cause);
+
+		let fail = kParam?.fail;
+		let complete = kParam?.complete;
+		fail?.(failResult);
+		complete?.(failResult);
+		if (this.task != null) {
+			UTSiOS.destroyInstance(this.task!);
+		}
+	}
+
+
+	private readStringFromData(data : Data, type : string | null) : string | null {
+		let result : string | null = null;
+		let finalType = type;
+		if (finalType == null || finalType!.length == 0) {
+			finalType = "utf-8";
+		}
+
+		let cfEncoding = CFStringConvertIANACharSetNameToEncoding(finalType as CFString);
+		if (cfEncoding != kCFStringEncodingInvalidId) {
+			let stringEncoding = CFStringConvertEncodingToNSStringEncoding(cfEncoding);
+			let encode = new String.Encoding(rawValue = stringEncoding);
+			result = new String(data = data, encoding = encode);
+		}
+		return result;
+	}
+
+	private parseData(data : Data | null, dataStr : string | null, parseType : string | null) : any | null {
+		if (T.self == String.self || T.self == Optional<String>.self) {
+			return dataStr
+		} else if (T.self == ArrayBuffer.self || T.self == Optional<ArrayBuffer>.self) {
+			if (data == null) {
+				return data;
+			}
+			return ArrayBuffer.fromData(data!)
+		} else if (`${type(of = T.self)}` == "Any.Protocol" || `${type(of = T.self)}` == "Optional<Any>.Type") {
+			if (parseType != null && parseType!.contains("json")) {
+				if (dataStr == null || dataStr!.length == 0) {
+					return {};
+				}
+
+				return this.tryParseJson(data!, dataStr!);
+			} else if (parseType == 'jsonp') {
+				if (dataStr == null || dataStr!.length == 0) {
+					return {};
+				}
+				let start = dataStr!.indexOf('(');
+				let end = dataStr!.indexOf(')');
+				if (start == 0 || start >= end) {
+					return {};
+				}
+				start += 1;
+				let tmp = dataStr!.slice(start, end);
+				return this.tryParseJson(data!, tmp);
+			} else if (parseType != null && parseType!.toLowerCase() == 'string') {
+				return dataStr
+			} else if (parseType != null && parseType!.toLowerCase() == 'arraybuffer') {
+				if (data == null) {
+					return data;
+				}
+				return ArrayBuffer.fromData(data!)
+			} else {
+				//dataStr如果解码失败是空的时候，还需要继续尝试解码。极端情况，服务器不是utf8的，所以字符解码会出现乱码，所以特殊处理一下非utf8的字符。
+				if (data == null) {
+					return data;
+				}
+
+				let currentStr : string | null = dataStr;
+				//todo 等uts支持swift文件混编的时候，再进行处理。
+				// if (currentStr == null) {
+				// 	let data = cleanUTF8(data);
+				// 	if (data != null) {
+				// 		currentStr = new String(data = data, encoding = String.Encoding.utf8);
+				// 	}
+				// }
+
+				if (currentStr == null) {
+					currentStr = new String(data = data!, encoding = String.Encoding.utf8);
+				}
+				// utf8 如果失败了，就用ascii，虽然几率很小。
+				if (currentStr == null) {
+					currentStr = new String(data = data!, encoding = String.Encoding.ascii);
+				}
+				if (currentStr == null) {
+					return null;
+				}
+				return this.tryParseJson(data!, currentStr!) ?? currentStr;
+			}
+		} else {
+			if (dataStr == null || dataStr!.length == 0) {
+				return null;
+			}
+			return JSON.parse<T>(dataStr!)
+		}
+	}
+
+	/**
+	 * 尝试进行json解析，如果失败了就说明不是json数据
+	 */
+	private tryParseJson(data : Data, jsonStr : string) : any | null {
+		let jsonData : any | null = null;
+		try {
+			const res = UTSiOS.try(JSONSerialization.jsonObject(with = data, options = JSONSerialization.ReadingOptions.allowFragments), "?")
+			if (res != null) {
+				jsonData = JSON.parse(jsonStr)
+			}
+		} catch (e) {
+		}
+		return jsonData;
+	}
+
+	private parseCookie(header : Map<string, any> | null) : string[] {
+		if (header == null) {
+			return []
+		}
+		let cookiesStr = header!.get('Set-Cookie') as string | null
+		if (cookiesStr == null) {
+			cookiesStr = header!.get('set-cookie') as string | null
+		}
+		if (cookiesStr == null) {
+			return []
+		}
+		let cookiesArr = new Array<string>()
+		if (cookiesStr!.charAt(0) == "[" && cookiesStr!.charAt(cookiesStr!.length - 1) == "]") {
+			cookiesStr = cookiesStr!.slice(1, -1)
+		}
+
+		const handleCookiesArr = cookiesStr!.split(';')
+		for (let i = 0; i < handleCookiesArr.length; i++) {
+			if (handleCookiesArr[i].indexOf('Expires=') != -1 || handleCookiesArr[i].indexOf('expires=') != -1) {
+				cookiesArr.push(handleCookiesArr[i].replace(',', ''))
+			} else {
+				cookiesArr.push(handleCookiesArr[i])
+			}
+		}
+		cookiesArr = cookiesArr.join(';').split(',')
+
+		return cookiesArr
+	}
+}
+
+class UploadNetworkListener extends NetworkUploadFileListener {
+	private param : UploadFileOptions | null = null;
+	public override progressListeners : Array<UploadFileProgressUpdateCallback> = [];
+	private data : Data = new Data();
+	@UTSiOS.keyword("weak")
+	public override task : AnyObject | null = null;
+
+	constructor(param : UploadFileOptions) {
+		this.param = param;
+		super();
+	}
+
+	public override onProgress(progressUpdate : OnProgressUpdateResult) {
+		if (this.progressListeners.length != 0) {
+			for (let i = 0; i < this.progressListeners.length; i++) {
+				let listener = this.progressListeners[i];
+				listener(progressUpdate)
+			}
+		}
+	}
+
+	public override onDataReceived(data : Data) : void {
+		this.data.append(data);
+	}
+
+	public override onFinished(response : HTTPURLResponse) : void {
+		try {
+			let kParam = this.param;
+			let strData = this.readStringFromData(this.data, response.textEncodingName);
+			if (strData == null) {
+				strData = new String(data = this.data, encoding = String.Encoding.utf8);
+				// utf8 如果失败了，就用ascii，几率很小。
+				if (strData == null) {
+					strData = new String(data = this.data, encoding = String.Encoding.ascii);
+				}
+			}
+
+			let successResult : UploadFileSuccess = {
+				data: strData ?? "",
+				statusCode: response.statusCode
+			}
+			let success = kParam?.success;
+			let complete = kParam?.complete;
+			success?.(successResult);
+			complete?.(successResult);
+		} catch (e) {
+		}
+		this.progressListeners.splice(0, this.progressListeners.length)
+		if (this.task != null) {
+			UTSiOS.destroyInstance(this.task!);
+		}
+	}
+
+	public override onFail(error : NSError) : void {
+		let kParam = this.param;
+		let code = (error as NSError).code;
+		let errCode = code;
+		let cause = error.localizedDescription;
+		if (code == -1001) {
+			errCode = 5;
+		} else if (code == -1004) {
+			errCode = 1000;
+		} else if (code == -1009) {
+			errCode = 600003;
+		} else {
+			errCode = 602001;
+		}
+
+		let failResult = new UploadFileFailImpl(getErrcode(Number.from(errCode)));
+		failResult.cause = new SourceError(cause);
+		let fail = kParam?.fail;
+		let complete = kParam?.complete;
+		fail?.(failResult);
+		complete?.(failResult);
+		this.progressListeners.splice(0, this.progressListeners.length)
+		if (this.task != null) {
+			UTSiOS.destroyInstance(this.task!);
+		}
+	}
+
+
+	private readStringFromData(data : Data, type : string | null) : string | null {
+		let result : string | null = null;
+		let finalType = type;
+		if (finalType == null || finalType!.length == 0) {
+			finalType = "utf-8";
+		}
+
+		let cfEncoding = CFStringConvertIANACharSetNameToEncoding(finalType as CFString);
+		if (cfEncoding != kCFStringEncodingInvalidId) {
+			let stringEncoding = CFStringConvertEncodingToNSStringEncoding(cfEncoding);
+			let encode = new String.Encoding(rawValue = stringEncoding);
+			result = new String(data = data, encoding = encode);
+		}
+		return result;
+	}
+}
+
+class DownloadNetworkListener extends NetworkDownloadFileListener {
+	public override options : DownloadFileOptions | null = null;
+	public override progressListeners : Array<DownloadFileProgressUpdateCallback> = [];
+	private data : Data = new Data();
+	@UTSiOS.keyword("weak")
+	public override task : AnyObject | null = null;
+
+	constructor(options : DownloadFileOptions) {
+		super();
+		this.options = options;
+	}
+
+	public override onProgress(progressUpdate : OnProgressDownloadResult) {
+		if (this.progressListeners.length != 0) {
+			for (let i = 0; i < this.progressListeners.length; i++) {
+				let listener = this.progressListeners[i];
+				listener(progressUpdate)
+			}
+		}
+	}
+
+	public override onFinished(response : HTTPURLResponse, filePath : string) : void {
+		try {
+			let kParam = this.options;
+			let tmp : DownloadFileSuccess = {
+				tempFilePath: filePath,
+				statusCode: response.statusCode
+			};
+			let success = kParam?.success;
+			let complete = kParam?.complete;
+			success?.(tmp);
+			complete?.(tmp);
+		} catch (e) {
+		}
+		this.progressListeners.splice(0, this.progressListeners.length)
+		if (this.task != null) {
+			UTSiOS.destroyInstance(this.task!);
+		}
+	}
+
+	public override onFail(error : NSError) : void {
+		let kParam = this.options;
+		let code = (error as NSError).code;
+		let errCode = code;
+		let cause = error.localizedDescription;
+		if (code == -1001) {
+			errCode = 5;
+		} else if (code == -1004) {
+			errCode = 1000;
+		} else if (code == -1009) {
+			errCode = 600003;
+		} else {
+			errCode = 602001;
+		}
+
+		let failResult = new DownloadFileFailImpl(getErrcode(Number.from(errCode)));
+		let codeCause = StatusCode.getStatus(new String(code))
+		const sourceError = new SourceError(codeCause == "unknown status" ? cause : codeCause);
+		sourceError.code = Number.from(code);
+		failResult.cause = sourceError;
+		let fail = kParam?.fail;
+		let complete = kParam?.complete;
+		fail?.(failResult);
+		complete?.(failResult);
+		this.progressListeners.splice(0, this.progressListeners.length)
+		if (this.task != null) {
+			UTSiOS.destroyInstance(this.task!);
+		}
+	}
+}
+
+
+// export const request : Request = (options : RequestOptions) : RequestTask => {
+// 	return NetworkManager.getInstance().request(options, new SimpleNetworkListener(options));
+// }
+
+export function request<T>(options : RequestOptions<T>, _t : T.Type) : RequestTask {
+	return NetworkManager.getInstance().request(options, new SimpleNetworkListener<T>(options));
+}
+
+export const uploadFile : UploadFile = (options : UploadFileOptions) : UploadTask => {
+	return NetworkManager.getInstance().uploadFile(options, new UploadNetworkListener(options));
+}
+
+export const downloadFile : DownloadFile = (options : DownloadFileOptions) : DownloadTask => {
+	return NetworkManager.getInstance().downloadFile(options, new DownloadNetworkListener(options));
+}

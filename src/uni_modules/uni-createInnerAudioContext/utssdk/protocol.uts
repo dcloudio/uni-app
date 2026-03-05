@@ -1,0 +1,27 @@
+import { SetInnerAudioOptionOptions } from './interface.uts'
+
+export const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext'
+export const API_SET_INNER_AUDIO_OPTION = 'setInnerAudioOption'
+
+export const SetInnerAudioOptionOptionsOptions: ApiOptions<SetInnerAudioOptionOptions> = {
+  formatArgs: new Map<string, boolean>([
+    ['mixWithOther', true],
+    ['speakerOn', true]
+  ])
+}
+
+export const SetInnerAudioOptionProtocol = new Map<string, ProtocolOptions>([
+  [
+    'mixWithOther',
+    {
+      type: 'boolean'
+    }
+  ],
+  [
+    'speakerOn',
+    {
+      type: 'boolean'
+    }
+
+  ]
+])

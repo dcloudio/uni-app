@@ -1,0 +1,823 @@
+<template>
+  <view style="flex: 1;background-color: black;">
+    <camera
+      id="camera"
+      style="flex: 1"
+      resolution="high"
+      frame-size="large"
+      :flash="flash"
+      @initdone="handleInitDone"
+    ></camera>
+    <view id="laser" class="uni-scan-code-scanner-laser"></view>
+    <text v-if="isShowLight" class="uni-scan-code-light" @click="handleLight">{{
+      "\ue9a1"
+    }}</text>
+    <view
+      v-if="isShowAlbum"
+      class="uni-scan-code-center"
+      style="position: absolute; bottom: var(--uni-safe-area-inset-bottom); right: 20px;margin-bottom: 20px;"
+    >
+      <view
+        class="uni-scan-code-album-wrap uni-scan-code-center"
+        @click="handleChooseAlbum"
+      >
+        <text class="uni-scan-code-album">{{ "\ue9a0" }}</text>
+      </view>
+    </view>
+    <text class="uni-scan-code-close" @click="handleClose">{{ "\uEA14" }}</text>
+
+    <view v-show="isShowSelectionView" class="uni-scan-code-selection-view">
+      <image id="selection-bg" style="width: 100%; height: 100%;"></image>
+      <view class="uni-scan-code-mask"></view>
+
+      <view
+        v-for="marker in markers"
+        class="uni-scan-code-tips"
+        :style="{
+          left: marker.left + Math.max(marker.width - 30, 0) / 2.0 + 'px',
+          top: marker.top + Math.max(marker.height - 30, 0) / 2.0 + 'px',
+          width: '30px',
+          height: '30px',
+          borderRadius: '15px',
+        }"
+        @click="selectMarker(marker)"
+      >
+        <text class="uni-scan-code-tips-text" :style="{ fontSize: '30px' }">{{
+          "\uE9A3"
+        }}</text>
+      </view>
+
+      <text class="uni-scan-code-close" @click="dismissSelectionView">{{
+        cancelText
+      }}</text>
+      <text class="uni-scan-code-desc">{{ scanCodeDescText }}</text>
+    </view>
+
+    <view v-show="isShowImagePreview" class="uni-scan-code-selection-view">
+      <image id="image-preview" style="width: 100%; height: 100%"></image>
+      <view class="uni-scan-code-mask"></view>
+      <text class="uni-scan-code-close" @click="closeImagePreview">{{ "\uEA14" }}</text>
+      <text class="uni-scan-code-desc">{{ imageScanCodeFailDescText }}</text>
+    </view>
+  </view>
+</template>
+
+<script lang="ts">
+import { ScanCodeSupportedTypes } from "@/uni_modules/uni-scanCode";
+
+//测试用导入
+// import camera1 from "../../../uni-camera/components/camera/camera.vue";
+// import {
+//   UniCameraInitDoneEvent,
+//   UniCameraScanCodeEvent,
+// } from "@/uni_modules/uni-camera/components/camera/global.uts";
+
+
+// #ifdef APP-ANDROID
+import ImageProxy from "androidx.camera.core.ImageProxy";
+import Bitmap from "android.graphics.Bitmap";
+import ImageView from "android.widget.ImageView";
+import ByteBuffer from "java.nio.ByteBuffer";
+import Context from "android.content.Context";
+import { DrawHelper } from "uts.sdk.modules.uniScanCode";
+
+// import {
+//   getAndroidScanner,
+//   AndroidFrameScannerOptions,
+//   AndroidScannerListener,
+//   BarcodeInformation,
+//   ScreenShot,
+//   AndroidPhotoScannerOptions,
+//   CameraContextSetZoomOptions,
+// } from "uts.sdk.modules.DCloudUniCamera";
+
+import {
+  // createCameraContext,
+  getAndroidScanner,
+  AndroidFrameScannerOptions,
+  AndroidScannerListener,
+  BarcodeInformation,
+  ScreenShot,
+  AndroidPhotoScannerOptions,
+  CameraContextSetZoomOptions,
+} from "@/uni_modules/uni-camera";
+
+
+// #endif
+
+// #ifdef APP-IOS
+import {
+  CameraContext,
+  // createCameraContext,
+  getIosScanner,
+  IosFrameScannerOptions,
+  IosScannerListener,
+  BarcodeInformation,
+  IosPhotoScannerOptions,
+  CameraContextSetZoomOptions,
+} from "@/uni_modules/uni-camera";
+
+import { utsNativeProcessScanBarCode, utsNativeProcessScanBarCodeWithPhoto, setScanCodeSelectionShowStatus } from "@/uni_modules/uni-scanCode";
+
+// #endif
+
+type Marker = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  information?: BarcodeInformation;
+};
+
+const doubleClickThreshold = 300; // 双击的时间间隔阈值（毫秒）
+let lastClickTime = 0; // 上一次点击的时间戳
+export default {
+  data() {
+    return {
+      successEventName: "",
+      failEventName: "",
+      scanType: [] as ScanCodeSupportedTypes[],
+      maxZoom: 1,
+      currentZoom: 1,
+      isShowSelectionView: false,
+      isShowLight: false,
+      isShowAlbum: false,
+      markers: [] as Marker[],
+      animation: null as UniAnimation | null,
+      flash: "off",
+      language: "zh-Hans",
+      i18nCancelText: {
+        en: "Cancel",
+        es: "Cancelar",
+        fr: "Annuler",
+        "zh-Hans": "取消",
+        "zh-Hant": "取消",
+      },
+      i18nScanCodeDescText: {
+        en: [
+          "Multiple QR codes scanned. Select one to open.",
+          "Multiple barcodes scanned. Select one to open.",
+          "Multiple codes scanned. Select one to open.",
+        ],
+        es: [
+          "Hay más de un código disponible. Seleccione unopara abrirlo.",
+          "Hay más de un código disponible. Seleccione unopara abrirlo.",
+          "Hay más de un código disponible. Seleccione unopara abrirlo.",
+        ],
+        fr: [
+          "Plusieurs codes sont disponibles.Sélectionnez-en un pour ouvrir.",
+          "Plusieurs codes sont disponibles.Sélectionnez-en un pour ouvrir.",
+          "Plusieurs codes sont disponibles.Sélectionnez-en un pour ouvrir.",
+        ],
+        "zh-Hans": [
+          "扫描到多个二维码，请选择一个打开",
+          "扫描到多个条码，请选择一个打开",
+          "扫描到多个码，请选择一个打开",
+        ],
+        "zh-Hant": [
+          "掃描到多個 QR Code，請選擇一個開啟。",
+          "掃描到多個碼，請選擇一個開啟。",
+          "掃描到多個碼，請選擇一個開啟。",
+        ],
+      },
+      i18nImageScanCodeFailDescText: {
+        en: "No valid barcode/QR code detected",
+        es: "No se detectó ningún código de barras/QR válido",
+        fr: "Aucun code-barres/QR code valide détecté",
+        "zh-Hans": "未识别到一维/二维码",
+        "zh-Hant": "未識別到一維/二維碼",
+      },
+      isShowImagePreview: false,
+    };
+  },
+  // components: {
+  //   camera1,
+  // },
+  onLoad(options: UTSJSONObject) {
+    this.initPageOptions(options);
+    const systemInfo = uni.getSystemInfoSync();
+    const osLanguage = systemInfo.osLanguage;
+    const appLanguage = systemInfo.appLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
+  },
+  onReady() {
+	this.laserAnimation()
+  },
+  watch: {
+	 // #ifdef APP-IOS
+	 isShowSelectionView: {
+	 		  handler(value, oldValue) {
+	 			  setScanCodeSelectionShowStatus(value as boolean)
+	 		  }
+	 }
+	 // #endif
+  },
+  computed: {
+    cancelText(): string {
+      if (this.language.startsWith("en")) {
+        return this.i18nCancelText["en"] as string;
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nCancelText["es"] as string;
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nCancelText["fr"] as string;
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nCancelText["zh-Hans"] as string;
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nCancelText["zh-Hant"] as string;
+      }
+      return "取消";
+    },
+    scanCodeDescText(): string {
+      let type = 0;
+      let qrCodeCOunt = 0;
+      let barCodeCount = 0;
+      this.markers.forEach((marker) => {
+        const barcode = marker.information;
+        if (barcode != null) {
+          const scanType = barcode.scanType;
+          if (this.isQRcode(scanType)) {
+            qrCodeCOunt++;
+          } else if (this.isBarCode(scanType)) {
+            barCodeCount++;
+          }
+        }
+      });
+
+      if (qrCodeCOunt > 0 && barCodeCount > 0) {
+        type = 2;
+      } else if (qrCodeCOunt > 0) {
+        type = 0;
+      } else if (barCodeCount > 0) {
+        type = 1;
+      } else {
+        return (
+          this.i18nScanCodeDescText["zh-Hans"] as Array<string>
+        )[2] as string;
+      }
+
+      if (this.language.startsWith("en")) {
+        return (this.i18nScanCodeDescText["en"] as Array<string>)[
+          type
+        ] as string;
+      }
+      if (this.language.startsWith("es")) {
+        return (this.i18nScanCodeDescText["es"] as Array<string>)[
+          type
+        ] as string;
+      }
+      if (this.language.startsWith("fr")) {
+        return (this.i18nScanCodeDescText["fr"] as Array<string>)[
+          type
+        ] as string;
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return (this.i18nScanCodeDescText["zh-Hans"] as Array<string>)[
+          type
+        ] as string;
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return (this.i18nScanCodeDescText["zh-Hant"] as Array<string>)[
+          type
+        ] as string;
+      }
+      return (
+        this.i18nScanCodeDescText["zh-Hans"] as Array<string>
+      )[2] as string;
+    },
+    imageScanCodeFailDescText(): string {
+      if (this.language.startsWith("en")) {
+        return this.i18nImageScanCodeFailDescText["en"] as string;
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nImageScanCodeFailDescText["es"] as string;
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nImageScanCodeFailDescText["fr"] as string;
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nImageScanCodeFailDescText["zh-Hans"] as string;
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nImageScanCodeFailDescText["zh-Hant"] as string;
+      }
+      return this.i18nImageScanCodeFailDescText["zh-Hans"] as string;
+    },
+  },
+  onUnload() {
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  onBackPress(options : OnBackPressOptions) : boolean | null {
+	uni.closeDialogPage({
+	  dialogPage: this.$page,
+	  animationType: "none"
+	});
+    return true
+  },
+  methods: {
+    isQRcode(format: string): boolean {
+      return (
+        format == "QR_CODE" ||
+        format == "AZTEC" ||
+        format == "DATA_MATRIX" ||
+        format == "PDF_417"
+      );
+    },
+    isBarCode(format: string): boolean {
+      return (
+        format == "CODABAR" ||
+        format == "CODE_39" ||
+        format == "CODE_93" ||
+        format == "CODE_128" ||
+        format == "EAN_8" ||
+        format == "EAN_13" ||
+        format == "ITF" ||
+        format == "UPC_A" ||
+        format == "UPC_E"
+      );
+    },
+    initPageOptions(options: UTSJSONObject) {
+      this.successEventName = options["successEventName"]! as string;
+      this.failEventName = options["failEventName"]! as string;
+      this.isShowAlbum = (options["onlyFromCamera"]! as string) != "true";
+    },
+    handleInitDone(event: UniCameraInitDoneEvent) {
+      this.maxZoom = event.detail.maxZoom ?? 1;
+      setTimeout(() => {
+		  this.__startAnalysis();
+	  }, 300)
+      this.__bindDoubleClickListener();
+    },
+	
+	laserAnimation() {
+		const laser = this.$page.getElementById("laser");
+		const screenHeight = this.$page.height;
+		const beginPosition = screenHeight * 0.2;
+		const endPosition = screenHeight * 0.8;
+		this.animation = laser?.animate(
+		  [
+		    { top: `${beginPosition}px`, opacity: "1.0" },
+		    { top: `${endPosition}px`, opacity: "0.5" },
+		  ],
+		  {
+		    duration: 2500,
+		    iterations: Infinity,
+		  }
+		);
+	},
+	
+    handleChooseAlbum() {
+      const that = this;
+      uni.chooseImage({
+        sourceType: ["album"],
+		sizeType: ["original"],
+        count: 1,
+        albumMode: "system",
+        success: (result: ChooseImageSuccess) => {
+          const filePath = result.tempFilePaths[0];
+		  // #ifdef APP-ANDROID
+          const context = UTSAndroid.getAppContext()!!;
+          const options: AndroidPhotoScannerOptions = {
+            context,
+            filePath,
+            scanType: this.scanType,
+            androidScannerListenner: new (class
+              implements AndroidScannerListener
+            {
+              override onScanSuccess(
+                barcodeInformation: Array<BarcodeInformation>,
+                screenShot: ScreenShot | null
+              ) {
+                if (barcodeInformation.length == 0) {
+                  return;
+                }
+                const barcode = barcodeInformation[0];
+                const result = barcode.result;
+                const scanType = barcode.scanType;
+                const charset = barcode.charset;
+                const rawData = barcode.rawData;
+                const scanArea = barcode.scanArea;
+
+                uni.$emit(that.successEventName, {
+                  result: result,
+                  scanType: scanType,
+                  charset: charset,
+                  rawData: rawData,
+                  scanArea: scanArea,
+                });
+                that.animation?.cancel();
+                uni.closeDialogPage({
+                  dialogPage: that.$page,
+				  animationType: "none"
+                });
+              }
+
+              override onScanFailure(error: string) {
+                if (error == "no barcode found") {
+                  const context = uni.createCameraContext();
+                  context?.offAndroidCameraOriginalFrame();
+                  that.isShowImagePreview = true;
+                  const element = that.$page.getElementById("image-preview");
+                  element?.setAttribute("src", filePath);
+                } else {
+                  uni.$emit(that.failEventName, {
+                    errMsg: error,
+                  });
+                  that.animation?.cancel();
+                  uni.closeDialogPage({
+                    dialogPage: that.$page,
+					animationType: "none"
+                  });
+                }
+              }
+
+              override needZoom(): void {}
+
+              override onLight(light: boolean): void {}
+            }),
+          };
+
+          getAndroidScanner()?.processScanBarCodeWithPhoto(options);
+		  // #endif
+		  
+		  // #ifdef APP-IOS
+		  utsNativeProcessScanBarCodeWithPhoto(filePath, this.scanType, (barcodeInformationMap : Array<Map<string, any>>) => {
+			  if (barcodeInformationMap.length == 0) {
+			  	return;
+			  }
+			  const barcode = barcodeInformationMap[0];
+			  uni.$emit(this.successEventName, new UTSJSONObject(barcode));
+			  this.animation?.cancel();
+			  uni.closeDialogPage({
+			  	dialogPage: this.$page,
+				animationType: "none"
+			  });
+		  }, (error: string) => {
+			  if (error == "no barcode found") {
+			  	const context = uni.createCameraContext();
+			  	context?.offIosCameraOriginalFrame();
+			  	that.isShowImagePreview = true;
+			  	const element = that.$page.getElementById("image-preview");
+			  	element?.setAttribute("src", filePath);
+			  } else {
+			  	uni.$emit(that.failEventName, {
+			  		errMsg: error,
+			  	});
+			  	this.animation?.cancel();
+			  	uni.closeDialogPage({
+			  		dialogPage: this.$page,
+					animationType: "none"
+			  	});
+			  }
+		  })
+		  // #endif
+        },
+      });
+	  
+    },
+    handleClose() {
+      this.animation?.cancel();
+      uni.closeDialogPage({
+        dialogPage: this.$page,
+		animationType: "none"
+      });
+    },
+    handleLight() {
+      this.flash = this.flash == "off" ? "torch" : "off";
+    },
+    __bindDoubleClickListener() {
+      const element = this.$page.getElementById("camera");
+      const that = this;
+      element?.addEventListener("click", (event: MouseEvent) => {
+        const currentTime = Date.now();
+        if (currentTime - lastClickTime <= doubleClickThreshold) {
+          const context = uni.createCameraContext();
+          const targetZoom = Math.min(that.currentZoom * 1.2, that.maxZoom);
+          context?.setZoom({
+            zoom: targetZoom,
+            success: (result: any) => {
+              that.currentZoom = targetZoom;
+            },
+          } as CameraContextSetZoomOptions);
+          lastClickTime = 0;
+        } else {
+          lastClickTime = currentTime;
+        }
+      });
+    },
+    __startAnalysis() {
+      // #ifdef APP-ANDROID
+      const context = uni.createCameraContext();
+      this.currentZoom = context?.getCurrentZoom() ?? 1;
+      const ratio = uni.getWindowInfo().pixelRatio;
+      const width = this.$page.width * ratio;
+      const height = this.$page.height * ratio;
+      context?.onAndroidCameraOriginalFrame((imageProxy: ImageProxy) => {
+        const that = this;
+        const options: AndroidFrameScannerOptions = {
+          imageProxy: imageProxy,
+          scanType: this.scanType,
+          autoZoom: true,
+          width: width.toInt(),
+          height: height.toInt(),
+          androidScannerListenner: new (class
+            implements AndroidScannerListener
+          {
+            override onScanSuccess(
+              barcodeInformation: Array<BarcodeInformation>,
+              screenShot: ScreenShot | null
+            ) {
+              if (
+                barcodeInformation.length > 1 &&
+                screenShot != null &&
+                !that.isShowSelectionView
+              ) {
+                context?.offAndroidCameraOriginalFrame();
+                that.showSelectionViewFromVideoFrame(
+                  barcodeInformation,
+                  screenShot
+                );
+              } else {
+                if (barcodeInformation.length == 0) {
+                  return;
+                }
+                const barcode = barcodeInformation[0];
+                const result = barcode.result;
+                const scanType = barcode.scanType;
+                const charset = barcode.charset;
+                const rawData = barcode.rawData;
+                const scanArea = barcode.scanArea;
+
+                uni.$emit(that.successEventName, {
+                  result: result,
+                  scanType: scanType,
+                  charset: charset,
+                  rawData: rawData,
+                  scanArea: scanArea,
+                });
+                that.animation?.cancel();
+                uni.closeDialogPage({
+                  dialogPage: that.$page,
+				  animationType: "none"
+                });
+              }
+            }
+
+            override onScanFailure(error: string) {}
+
+            override needZoom(): void {
+              const targetZoom = Math.min(that.currentZoom * 1.2, that.maxZoom);
+              context.setZoom({
+                zoom: targetZoom,
+                success: (result: any) => {
+                  that.currentZoom = targetZoom;
+                },
+              } as CameraContextSetZoomOptions);
+            }
+
+            override onLight(light: boolean): void {
+              if (that.flash == "torch") {
+                return;
+              }
+              that.isShowLight = light;
+            }
+          }),
+        };
+        getAndroidScanner()?.processScanBarCode(options);
+      });
+      // #endif
+	  
+	  // #ifdef APP-IOS
+	  if (this.isShowSelectionView) {
+	    return;
+	  }
+	  const width = this.$page.width;
+	  const height = this.$page.height;
+	  const element = this.$page.getElementById("selection-bg");
+	  utsNativeProcessScanBarCode(this.scanType, width, height, element, (show: boolean) => {
+		  this.isShowSelectionView = show;
+	  }, (barcodeInformationMap: Array<Map<string, any>>) => {
+		  const barcodeInformation: BarcodeInformation[] = []
+		  barcodeInformationMap.forEach((value: Map<string, any>) => {
+			  const barcode: BarcodeInformation = {
+				  result: value["result"],
+				  scanType: value["scanType"],
+				  charset: value["charset"],
+				  rawData: value["rawData"],
+				  scanArea: value["scanArea"]
+			  }
+			  barcodeInformation.push(barcode)
+		  })
+		  if (barcodeInformation.length != 0) {
+		    this.attachTipsView(barcodeInformation);
+		  }
+	  }, (barcodeInformation: Array<Map<string, any>>) => {
+		  const barcode = barcodeInformation[0];
+		  uni.$emit(this.successEventName, new UTSJSONObject(barcode));
+		  this.animation?.cancel();
+		  uni.closeDialogPage({
+		    dialogPage: this.$page,
+			animationType: "none"
+		  });
+	  }, () => {
+		  const targetZoom = Math.min(this.currentZoom * 1.2, this.maxZoom);
+		  context.setZoom({
+		    zoom: targetZoom,
+		    success: (result: any) => {
+		      this.currentZoom = targetZoom;
+		    },
+		  } as CameraContextSetZoomOptions);
+	  }, (light : boolean) => {
+		  if (this.flash == "torch") {
+		    return;
+		  }
+		  this.isShowLight = light;
+	  })
+	  // #endif
+	  
+    },
+    // #ifdef APP-ANDROID
+    showSelectionViewFromVideoFrame(
+      barcodeInformation: Array<BarcodeInformation>,
+      screenShot: ScreenShot
+    ) {
+      if (this.isShowSelectionView) {
+        return;
+      }
+      this.isShowSelectionView = true;
+      this.drawBgImage(screenShot);
+      if (barcodeInformation.length != 0) {
+        this.attachTipsView(barcodeInformation);
+      }
+    },
+
+    drawBgImage(screenShot: ScreenShot) {
+      const nativeView = this.$page
+        .getElementById("selection-bg")
+        ?.getAndroidView();
+      if (nativeView != null && nativeView instanceof ImageView) {
+        const bitmap = screenShot.bitmap;
+        DrawHelper.drawImageWithBitmap(nativeView, bitmap);
+      }
+    },
+    // #endif
+	
+	attachTipsView(barcodeInformation: Array<BarcodeInformation>) {
+	  const markers = [] as Marker[];
+	  barcodeInformation.forEach((information) => {
+	    const scanArea = information.scanArea;
+	    if (scanArea.length == 4) {
+	      const left = scanArea[0];
+	      const top = scanArea[1];
+	      const width = scanArea[2];
+	      const height = scanArea[3];
+	      const marker: Marker = {
+	        left: left,
+	        top: top,
+	        width: width,
+	        height: height,
+	        information: information,
+	      };
+	      markers.push(marker);
+	    }
+	  });
+	  this.markers = markers;
+	},
+	selectMarker(marker: Marker) {
+	  const barcode = marker.information;
+	  if (barcode != null) {
+	    const result = barcode.result;
+	    const scanType = barcode.scanType;
+	    const charset = barcode.charset;
+	    const rawData = barcode.rawData;
+	    const scanArea = barcode.scanArea;
+	
+	    uni.$emit(this.successEventName, {
+	      result: result,
+	      scanType: scanType,
+	      charset: charset,
+	      rawData: rawData,
+	      scanArea: scanArea,
+	    });
+	    this.animation?.cancel();
+	    uni.closeDialogPage({
+	      dialogPage: this.$page,
+		  animationType: "none"
+	    });
+	  }
+	},
+	dismissSelectionView() {
+	  this.markers = [] as Marker[];
+	  this.isShowSelectionView = false;
+	  this.__startAnalysis();
+	},
+	closeImagePreview() {
+	  this.isShowImagePreview = false;
+	  this.__startAnalysis();
+	},
+  },
+};
+</script>
+
+<style>
+@font-face {
+  font-family: "UniScanCodeFontFamily";
+  src: url("data:font/ttf;base64,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")
+    format("truetype");
+}
+
+.uni-scan-code-light {
+  font-family: "UniScanCodeFontFamily";
+  color: white;
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  font-size: 35px;
+  transform: translateX(-50%);
+}
+
+.uni-scan-code-scanner-laser {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 80%;
+  height: 5px;
+  opacity: 1;
+  background-image: linear-gradient(to bottom, transparent, green);
+}
+
+.uni-scan-code-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.uni-scan-code-album-wrap {
+  background-color: rgba(106, 122, 122, 0.2);
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+}
+
+.uni-scan-code-album {
+  font-family: "UniScanCodeFontFamily";
+  font-size: 20px;
+  color: white;
+}
+
+.uni-scan-code-close {
+  font-family: "uni-icon";
+  color: white;
+  position: absolute;
+  top: var(--uni-safe-area-inset-top);
+  left: 25px;
+  margin-top: 5px;
+}
+
+.uni-scan-code-selection-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.uni-scan-code-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.uni-scan-code-tips {
+  position: absolute;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+}
+
+.uni-scan-code-tips-text {
+  font-family: "UniScanCodeFontFamily";
+  color: green;
+}
+
+.uni-scan-code-desc {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #c3c5c6;
+  font-size: 14px;
+  background: linear-gradient(to right, rgba(150, 150, 150, 0.3) , rgba(180, 180, 180, 0.3));
+}
+</style>

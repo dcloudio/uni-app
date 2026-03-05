@@ -1,0 +1,37 @@
+import { GetPrivacySetting, GetPrivacySettingOptions, GetPrivacySettingSuccessResult, OffPrivacyAuthorizationChange, OnPrivacyAuthorizationChange, OnPrivacyAuthorizationChangeCallback, PrivacyChangeResult, ResetPrivacyAuthorization } from "../interface";
+import HashMap from 'java.util.HashMap';
+
+export const getPrivacySetting : GetPrivacySetting = function (option : GetPrivacySettingOptions) {
+	var successCallback : GetPrivacySettingSuccessResult = { "needAuthorization": !UTSAndroid.isPrivacyAgree() }
+	option.success?.(successCallback)
+	option.complete?.(successCallback)
+}
+
+export const resetPrivacyAuthorization : ResetPrivacyAuthorization = () => {
+	UTSAndroid.resetPrivacyAgree()
+}
+
+const privacyCallbacks : HashMap<number, OnPrivacyAuthorizationChangeCallback> = new HashMap<number, OnPrivacyAuthorizationChangeCallback>()
+var id = 0;
+
+const privacyAuthorizationChangeFunction = (option : PrivacyOption) => {
+	privacyCallbacks.values.forEach((entry : OnPrivacyAuthorizationChangeCallback) => {
+		entry({ "needAuthorization": !option.isAgree } as PrivacyChangeResult)
+	})
+}
+
+export const onPrivacyAuthorizationChange : OnPrivacyAuthorizationChange = function (callback : OnPrivacyAuthorizationChangeCallback) : number {
+	if (privacyCallbacks.isEmpty()) {
+		UTSAndroid.onPrivacyAgreeChange(privacyAuthorizationChangeFunction)
+	}
+	id = id + 1;
+	privacyCallbacks.put(id, callback)
+	return id;
+}
+
+export const offPrivacyAuthorizationChange : OffPrivacyAuthorizationChange = (id : number) => {
+	privacyCallbacks.remove(id);
+	if (privacyCallbacks.isEmpty()) {
+		UTSAndroid.offPrivacyAgreeChange(privacyAuthorizationChangeFunction)
+	}
+}

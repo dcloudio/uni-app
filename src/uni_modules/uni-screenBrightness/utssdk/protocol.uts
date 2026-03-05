@@ -1,0 +1,32 @@
+import { SetScreenBrightnessOptions } from './interface.uts';
+export const API_SET_SCREEN_BRIGHTNESS = 'setScreenBrightness'
+export const API_GET_SCREEN_BRIGHTNESS = 'getScreenBrightness'
+export const API_SET_KEEP_SECREEN_ON = 'setKeepScreenOn'
+
+export const SetScreenBrightnessApiOptions : ApiOptions<SetScreenBrightnessOptions> = {
+	formatArgs: new Map<string, Function>([
+		[
+			'value',
+			function (value : number, params : SetScreenBrightnessOptions) {
+				if (value < 0) {
+					params.value = 0
+				}
+				if (value > 1) {
+					params.value = 1
+				}
+			}
+		],
+	])
+}
+
+
+export const SetScreenBrightnessApiProtocol = new Map<string, ProtocolOptions>([
+	[
+		'value',
+		{
+			type: 'number',
+			required: true,
+		}
+	],
+]
+);

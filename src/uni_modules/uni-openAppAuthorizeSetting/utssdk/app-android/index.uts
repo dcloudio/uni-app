@@ -1,0 +1,36 @@
+import { OpenAppAuthorizeSettingOptions, OpenAppAuthorizeSetting, OpenAppAuthorizeSettingSuccess, OpenAppAuthorizeSettingFail, OpenAppAuthorizeSettingComplete } from "../interface.uts";
+import Intent from 'android.content.Intent';
+import Settings from 'android.provider.Settings';
+import Uri from 'android.net.Uri';
+
+export const openAppAuthorizeSetting: OpenAppAuthorizeSetting = function(options: OpenAppAuthorizeSettingOptions) {
+	let isSuccess = false;
+	try{
+		const context = UTSAndroid.getUniActivity()!!;
+		const intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+		const uri = Uri.fromParts("package", context.getPackageName(), null);
+		intent.setData(uri);
+		context.startActivity(intent);
+		isSuccess = true
+	}catch(e){
+		let result : OpenAppAuthorizeSettingFail = {
+			errMsg: e.message ?? ""
+		};
+		const completeResult : OpenAppAuthorizeSettingComplete = {
+			errMsg: e.message ?? ""
+		}
+		options?.fail?.(result);
+		options?.complete?.(completeResult);
+	}
+	
+	if(isSuccess){
+		let result : OpenAppAuthorizeSettingSuccess = {
+			errMsg:""
+		}
+		const completeResult : OpenAppAuthorizeSettingComplete = {
+			errMsg:""
+		}
+		options?.success?.(result);
+		options?.complete?.(completeResult);
+	}
+};

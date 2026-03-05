@@ -1,0 +1,18 @@
+// #ifdef VUE3-VAPOR
+export class UniPageContainerElement extends UniVueElement {}
+// #endif
+
+// #ifdef !VUE3-VAPOR && (APP-IOS || APP-HARMONY)
+export class UniPageContainerElement extends UniElementImpl {}
+// #endif
+
+// #ifdef !VUE3-VAPOR && APP-ANDROID
+import PageNode from "io.dcloud.uniapp.dom.node.PageNode";
+import INodeData from "io.dcloud.uniapp.interfaces.INodeData";
+
+export class UniPageContainerElement extends UniViewElementImpl {
+	constructor(data : INodeData, pageNode : PageNode) {
+		super(data, pageNode);
+	}
+}
+// #endif

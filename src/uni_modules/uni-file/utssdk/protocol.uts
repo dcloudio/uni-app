@@ -1,0 +1,52 @@
+export const API_SAVE_FILE = 'saveFile'
+export const API_GET_FILE_INFO = 'getFileInfo'
+export const API_GET_SAVED_FILE_INFO = 'getSavedFileInfo'
+export const API_GET_SAVED_FILE_LIST = 'getSavedFileList'
+export const API_REMOVE_SAVED_FILE = 'removeSavedFile'
+
+export const SaveFileApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'tempFilePath',
+        {
+            type: 'string',
+            required: true
+        }
+    ]
+])
+
+export const GetFileInfoApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'filePath',
+        {
+            type: 'string',
+            required: true
+        }
+    ],
+    [
+        'digestAlgorithm',
+        {
+            type: 'string',
+            required: false
+        }
+    ]
+])
+
+export const GetSavedFileInfoApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'filePath',
+        {
+            type: 'string',
+            required: true
+        }
+    ]
+])
+
+export const RemoveSavedFileApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'filePath',
+        {
+            type: 'string',
+            required: true
+        }
+    ]
+])

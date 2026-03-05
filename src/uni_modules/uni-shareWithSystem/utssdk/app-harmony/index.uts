@@ -1,0 +1,205 @@
+import common from '@ohos.app.ability.common';
+import { uniformTypeDescriptor } from '@kit.ArkData';
+import { systemShare } from '@kit.ShareKit';
+import fileUri from '@ohos.file.fileuri';
+import {
+    ShareWithSystem,
+    ShareWithSystemOptions,
+    ShareWithSystemSuccess,
+    ShareWithSystemErrorCode,
+} from "../interface.uts";
+import {
+    API_SHARE_WITH_SYSTEM
+} from '../protocol.uts'
+import {
+    getEnv
+} from '@dcloudio/uni-runtime'
+import fs from '@ohos.file.fs';
+import { ShareWithSystemUniErrors } from '../unierror.uts'
+
+/**
+ * resfile下的文件无法分享
+ */
+
+function fileExists(filePath: string): boolean {
+    try {
+        fs.statSync(filePath)
+        return true
+    } catch (error) {
+        return false
+    }
+}
+
+class UniShareWithSystemErrorWithCode extends Error {
+    code: ShareWithSystemErrorCode
+    constructor(code: ShareWithSystemErrorCode) {
+        super(ShareWithSystemUniErrors.get(code) ?? "")
+        this.code = code
+    }
+}
+
+/**
+ * 将应用资源文件保存到沙箱，并返回保存后的uri
+ * @param filePath 
+ */
+async function processShareFile(filePath: string): Promise<string> {
+    filePath = UTSHarmony.getResourcePath(filePath)
+    const resourceDir = getContext().resourceDir
+    if (filePath.indexOf(resourceDir + '/') === -1) {
+        return filePath.startsWith('/') ? fileUri.getUriFromPath(filePath) : filePath
+    }
+    const fileName = filePath.split('/').pop()
+    const systemShareCachePath = getEnv().TEMP_PATH + '/systemShareCache'
+    if (!fileExists(systemShareCachePath)) {
+        fs.mkdirSync(systemShareCachePath, true)
+    }
+    const cachedFileName = systemShareCachePath + '/' + fileName
+    const srcFile = await fs.open(filePath, fs.OpenMode.READ_ONLY)
+    if (fileExists(cachedFileName)) {
+        // 鸿蒙系统分享内会显示文件名称，此处不可对文件重命名。目前的实现方案会有文件互相覆盖的问题，后续需要优化
+        await fs.unlink(cachedFileName)
+    }
+    const destFile = await fs.open(systemShareCachePath + '/' + fileName, fs.OpenMode.WRITE_ONLY | fs.OpenMode.CREATE)
+    await fs.copyFile(srcFile.fd, destFile.fd)
+    await fs.close(srcFile)
+    await fs.close(destFile)
+    filePath = fileUri.getUriFromPath(cachedFileName)
+    return filePath
+}
+
+async function _shareWithSystem(args: ShareWithSystemOptions): Promise<void> {
+    const href = args.href
+    const imageUrl = args.imageUrl
+    const summary = args.summary
+    const audioPaths = args.audioPaths
+    const filePaths = args.filePaths
+    const imagePaths = args.imagePaths
+    const videoPaths = args.videoPaths
+    const shareRecords: systemShare.SharedRecord[] = []
+    if (href) {
+        shareRecords.push({
+            utd: uniformTypeDescriptor.UniformDataType.HYPERLINK,
+            content: href
+        } as systemShare.SharedRecord)
+    }
+    if (imageUrl) {
+        try {
+            shareRecords.push({
+                utd: uniformTypeDescriptor.UniformDataType.IMAGE,
+                uri: await processShareFile(imageUrl)
+            } as systemShare.SharedRecord)
+        } catch (error) {
+            throw new UniShareWithSystemErrorWithCode(1310603)
+        }
+    }
+    if (imagePaths) {
+        for (let i = 0; i < imagePaths.length; i++) {
+            const imagePath = imagePaths[i];
+            try {
+                shareRecords.push({
+                    utd: uniformTypeDescriptor.UniformDataType.IMAGE,
+                    uri: await processShareFile(imagePath)
+                } as systemShare.SharedRecord)
+            } catch (error) {
+                throw new UniShareWithSystemErrorWithCode(1310603)
+            }
+        }
+    }
+    if (videoPaths) {
+        for (let i = 0; i < videoPaths.length; i++) {
+            const videoPath = videoPaths[i];
+            try {
+                shareRecords.push({
+                    utd: uniformTypeDescriptor.UniformDataType.VIDEO,
+                    uri: await processShareFile(videoPath)
+                } as systemShare.SharedRecord)
+            } catch (error) {
+                throw new UniShareWithSystemErrorWithCode(1310605)
+            }
+        }
+    }
+    if (audioPaths) {
+        for (let i = 0; i < audioPaths.length; i++) {
+            const audioPath = audioPaths[i];
+            try {
+                shareRecords.push({
+                    utd: uniformTypeDescriptor.UniformDataType.AUDIO,
+                    uri: await processShareFile(audioPath)
+                } as systemShare.SharedRecord)
+            } catch (error) {
+                throw new UniShareWithSystemErrorWithCode(1310607)
+            }
+        }
+    }
+    if (filePaths) {
+        for (let i = 0; i < filePaths.length; i++) {
+            const filePath = filePaths[i];
+            try {
+                shareRecords.push({
+                    utd: uniformTypeDescriptor.UniformDataType.FILE,
+                    uri: await processShareFile(filePath)
+                } as systemShare.SharedRecord)
+            } catch (error) {
+                throw new UniShareWithSystemErrorWithCode(1310606)
+            }
+        }
+    }
+    if (summary) {
+        shareRecords.push({
+            utd: uniformTypeDescriptor.UniformDataType.TEXT,
+            content: summary
+        } as systemShare.SharedRecord)
+    }
+    if (shareRecords.length === 0) {
+        throw new UniShareWithSystemErrorWithCode(1310601)
+    }
+    const shareData = new systemShare.SharedData(shareRecords[0])
+    for (let index = 1; index < shareRecords.length; index++) {
+        shareData.addRecord(shareRecords[index])
+    }
+    const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
+    shareController.show(UTSHarmony.getUIAbilityContext() as common.UIAbilityContext, {
+        selectionMode: systemShare.SelectionMode.BATCH,
+        previewMode: systemShare.SharePreviewMode.DETAIL,
+    } as systemShare.ShareControllerOptions)
+    return new Promise((resolve) => {
+        const onDismiss = () => {
+            shareController.off('dismiss', onDismiss)
+            resolve()
+        }
+        shareController.on('dismiss', onDismiss)
+    })
+}
+
+const shareWithSystem = defineAsyncApi<ShareWithSystemOptions, ShareWithSystemSuccess>(
+    API_SHARE_WITH_SYSTEM,
+    (args: ShareWithSystemOptions, exec: ApiExecutor<ShareWithSystemSuccess>) => {
+        _shareWithSystem(args).then(() => {
+            exec.resolve({} as ShareWithSystemSuccess)
+        }, (err: Error) => {
+            if (err instanceof UniShareWithSystemErrorWithCode) {
+                exec.reject(err.message, {
+                    errCode: err.code
+                } as ApiError)
+                return
+            }
+            exec.reject(err.message)
+        })
+    }
+) as ShareWithSystem
+
+export {
+    shareWithSystem
+}
+
+export {
+    IShareWithSystemFail,
+    ShareWithSystem,
+    ShareWithSystemCallback,
+    ShareWithSystemErrorCode,
+    ShareWithSystemFail,
+    ShareWithSystemFailCallback,
+    ShareWithSystemOptions,
+    ShareWithSystemSuccess,
+    ShareWithSystemSuccessCallback
+} from '../interface.uts'

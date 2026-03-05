@@ -1,0 +1,153 @@
+import { fileIo } from '@kit.CoreFileKit';
+
+export function isFileUri(path: string) {
+    return path && typeof (path) === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
+}
+
+export function isSandboxPath(path: string) {
+    return path && typeof (path) === 'string' && path.startsWith('/data/storage/');
+}
+
+export function getFdFromUriOrSandBoxPath(uri: string) {
+    try {
+        const file = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY);
+        return file.fd;
+    } catch (error) {
+        console.info(`[AdvancedAPI] Can not get file from uri: ${uri} `);
+    }
+    throw new Error('file is not exist')
+}
+
+function callCallbacks(callbacks: Function[], ...args: any[]) {
+    callbacks.forEach(cb => {
+        typeof cb === 'function' && cb(...args)
+    })
+}
+
+function remoteCallback(callbacks: Function[], callback: Function) {
+    const index = callbacks.indexOf(callback)
+    if (index > -1) {
+        callbacks.splice(index, 1)
+    }
+}
+
+export class AudioPlayerError {
+    errMsg: string
+    errCode: number
+    constructor(errMsg: string, errCode: number) {
+        this.errMsg = errMsg
+        this.errCode = errCode
+    }
+}
+
+export class AudioPlayerCallback {
+    onCanplayCallbacks: Function[] = []
+    onPlayCallbacks: Function[] = []
+    onPauseCallbacks: Function[] = []
+    onStopCallbacks: Function[] = []
+    onEndedCallbacks: Function[] = []
+    onTimeUpdateCallbacks: Function[] = []
+    onErrorCallbacks: Function[] = []
+    onWaitingCallbacks: Function[] = []
+    onSeekingCallbacks: Function[] = []
+    onSeekedCallbacks: Function[] = []
+
+    constructor() { }
+
+    canPlay() {
+        callCallbacks(this.onCanplayCallbacks)
+    }
+    onCanplay(callback: Function) {
+        this.onCanplayCallbacks.push(callback)
+    }
+    offCanplay(callback: Function) {
+        remoteCallback(this.onCanplayCallbacks, callback)
+    }
+    play() {
+        callCallbacks(this.onPlayCallbacks)
+    }
+    onPlay(callback: Function) {
+        this.onPlayCallbacks.push(callback)
+    }
+    offPlay(callback: Function) {
+        remoteCallback(this.onPlayCallbacks, callback)
+    }
+    pause() {
+        callCallbacks(this.onPauseCallbacks)
+    }
+    onPause(callback: Function) {
+        this.onPauseCallbacks.push(callback)
+    }
+    offPause(callback: Function) {
+        remoteCallback(this.onPauseCallbacks, callback)
+    }
+    stop() {
+        callCallbacks(this.onStopCallbacks)
+    }
+    onStop(callback: Function) {
+        this.onStopCallbacks.push(callback)
+    }
+    offStop(callback: Function) {
+        remoteCallback(this.onStopCallbacks, callback)
+    }
+    ended() {
+        callCallbacks(this.onEndedCallbacks)
+    }
+    onEnded(callback: Function) {
+        this.onEndedCallbacks.push(callback)
+    }
+    offEnded(callback: Function) {
+        remoteCallback(this.onEndedCallbacks, callback)
+    }
+    timeUpdate(time: number) {
+        callCallbacks(this.onTimeUpdateCallbacks, time)
+    }
+    onTimeUpdate(callback: Function) {
+        this.onTimeUpdateCallbacks.push(callback)
+    }
+    offTimeUpdate(callback: Function) {
+        remoteCallback(this.onTimeUpdateCallbacks, callback)
+    }
+    error(res: AudioPlayerError) {
+        callCallbacks(this.onErrorCallbacks, res)
+    }
+    onError(callback: Function) {
+        this.onErrorCallbacks.push(callback)
+    }
+    offError(callback: Function) {
+        remoteCallback(this.onErrorCallbacks, callback)
+    }
+    onPrev(callback: Function) {
+        console.info('ios only');
+    }
+    onNext(callback: Function) {
+        console.info('ios only');
+    }
+    waiting() {
+        callCallbacks(this.onWaitingCallbacks)
+    }
+    onWaiting(callback: Function) {
+        this.onWaitingCallbacks.push(callback)
+    }
+    offWaiting(callback: Function) {
+        remoteCallback(this.onWaitingCallbacks, callback)
+    }
+    seeking() {
+        callCallbacks(this.onSeekingCallbacks)
+    }
+    onSeeking(callback: Function) {
+        this.onSeekingCallbacks.push(callback)
+    }
+    offSeeking(callback: Function) {
+        remoteCallback(this.onSeekingCallbacks, callback)
+    }
+    seeked() {
+        callCallbacks(this.onSeekedCallbacks)
+    }
+    onSeeked(callback: Function) {
+        this.onSeekedCallbacks.push(callback)
+    }
+    offSeeked(callback: Function) {
+        remoteCallback(this.onSeekedCallbacks, callback)
+    }
+}

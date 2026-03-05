@@ -1,0 +1,33 @@
+import { Rpx2px } from '../interface.uts'
+
+const EPS = 1e-4
+const BASE_DEVICE_WIDTH = 750
+
+let windowWidth = 0
+let pixelRatio = 1
+
+export const rpx2px : Rpx2px = (number : number) : number => {
+  if (number == 0) {
+    return 0
+  }
+
+  if (windowWidth == 0) {
+    const windowInfo = uni.getWindowInfo()
+    windowWidth = windowInfo.windowWidth
+    pixelRatio = windowInfo.pixelRatio
+  }
+
+  let result = (number / BASE_DEVICE_WIDTH) * windowWidth
+  if (result < 0) {
+    result = -result
+  }
+  result = Math.floor(result + EPS)
+  if (result == 0) {
+    if (pixelRatio == 1) {
+      result = 1
+    } else {
+      result = 0.5
+    }
+  }
+  return number < 0 ? -result : result
+}

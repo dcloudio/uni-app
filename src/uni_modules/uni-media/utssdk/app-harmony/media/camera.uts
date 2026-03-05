@@ -1,0 +1,100 @@
+import { fileIo as fs } from '@kit.CoreFileKit';
+import { _getVideoInfo, _getImageInfo } from './media.uts'
+import { cameraPicker } from '@kit.CameraKit'
+import { camera } from '@kit.CameraKit'
+import { MediaOrientation } from '../../interface.uts'
+import { MediaErrorImpl } from '../../unierror.uts'
+
+export type CameraPosition = 'back' | 'front'
+
+export function getHMCameraPosition(cameraType: CameraPosition): camera.CameraPosition {
+    switch (cameraType) {
+        case 'back':
+            return camera.CameraPosition.CAMERA_POSITION_BACK
+        case 'front':
+            return camera.CameraPosition.CAMERA_POSITION_FRONT
+        default:
+            return camera.CameraPosition.CAMERA_POSITION_BACK
+    }
+}
+
+interface TempFiles {
+    tempFilePath: string
+    size: number
+}
+
+interface TakePhotoRes {
+    tempFiles: TempFiles[]
+}
+
+export const takePhoto = async (errSubject: string, cameraType: CameraPosition = 'back') => {
+    let pickerProfile: cameraPicker.PickerProfile = {
+        cameraPosition: getHMCameraPosition(cameraType)
+    };
+
+    const res = await cameraPicker.pick(UTSHarmony.getUIAbilityContext()!, [cameraPicker.PickerMediaType.PHOTO], pickerProfile)
+
+    if (!res) {
+        const err = new MediaErrorImpl(1101010, errSubject)
+        return Promise.reject(err)
+    }
+    if (res.resultCode === -1) {
+        const err = new MediaErrorImpl(1101001, errSubject)
+        return Promise.reject(err)
+    }
+
+    const file = fs.openSync(res.resultUri, fs.OpenMode.READ_ONLY)
+    const stat = fs.statSync(file.fd)
+    return {
+        tempFiles: [{
+            tempFilePath: res.resultUri,
+            size: stat.size
+        }]
+    } as TakePhotoRes
+}
+
+export interface TakeVideoOptions {
+    cameraType?: CameraPosition
+    videoDuration?: number
+}
+
+interface TakeVideoRes {
+    path: string
+    duration: number
+    size: number
+    height: number
+    width: number
+    orientation: MediaOrientation
+    type: string
+}
+
+export const takeVideo = async (errSubject: string, args?: TakeVideoOptions) => {
+    let pickerProfile: cameraPicker.PickerProfile = {
+        cameraPosition: getHMCameraPosition(args?.cameraType ?? 'back'),
+        videoDuration: args?.videoDuration
+    };
+
+    const res = await cameraPicker.pick(UTSHarmony.getUIAbilityContext()!, [cameraPicker.PickerMediaType.VIDEO], pickerProfile)
+
+    if (!res) {
+        const err = new MediaErrorImpl(1101010, errSubject)
+        return Promise.reject(err)
+    }
+    if (res.resultCode === -1) {
+        const err = new MediaErrorImpl(1101001, errSubject)
+        return Promise.reject(err)
+    }
+
+    return _getVideoInfo(res.resultUri)
+        .then((getVideInfoRes) => {
+            return {
+                path: res.resultUri,
+                size: getVideInfoRes.size,
+                duration: getVideInfoRes.duration!,
+                width: getVideInfoRes.width!,
+                height: getVideInfoRes.height!,
+                type: getVideInfoRes.type!,
+                orientation: getVideInfoRes.orientation!,
+            } as TakeVideoRes
+        })
+}

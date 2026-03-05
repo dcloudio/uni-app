@@ -1,0 +1,9 @@
+Third party libraries
+***************************
+
+THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
+
+OkHttp (https://square.github.io/okhttp/)
+  Copyright: Copyright 2019 Square, Inc.
+  License: Apache License 2.0, full text can be found at https://github.com/square/okhttp/blob/master/LICENSE.txt
+

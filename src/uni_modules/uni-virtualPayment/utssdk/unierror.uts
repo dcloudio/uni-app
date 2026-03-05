@@ -1,0 +1,175 @@
+import { RequestVirtualPaymentErrorCode, IRequestVirtualPaymentFail, AppleIAPRestoreErrorCode, IAppleIAPRestoreFail, AppleIAPFinishTransactionFailErrorCode, IAppleIAPFinishTransactionFail, IAppleIAPUnfinishedTransactionFail, AppleIAPUnfinishedTransactionErrorCode } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const RequestVirtualPaymentUniErrorSubject = 'uni-RequestVirtualPayment';
+/**
+ * 错误码
+ * @UniError
+ */
+const RequestVirtualPaymentUniErrors : Map<RequestVirtualPaymentErrorCode, string> = new Map([
+	/**
+	 * 正在处理中，支付结果未知（有可能已经支付成功），请查询商家订单列表中订单的支付状态。
+	 */
+	[700600, 'The payment result is unknown (it may have been successfully paid). Please check the payment status of the order in the merchant order list.'],
+	/**
+	 * 订单支付失败。
+	 */
+	[701100, 'Order payment failure.'],
+	/**
+	 * 用户中途取消。
+	 */
+	[700601, 'The user canceled midway.'],
+	/**
+	 * 网络连接出错。
+	 */
+	[700602, 'Network connection error.'],
+	/**
+	 * 不允许App内购买项目, 请授权应用内购买权限。
+	 */
+	[700604, 'Client is not allowed to make the payment.'],
+	/**
+	 * 产品无效
+	 */
+	[700605, 'The purchase identifier was invalid.'],
+	/**
+	 * 促销信息错误
+	 */
+	[700606, 'The purchase identifier was invalid.'],
+	/**
+	 * 缺少支付参数
+	 */
+	[700607, 'The purchase params was invalid.'],
+	/**
+	 * 内购只支持iOS15以上的版本。
+	 */
+	[700800, 'The in-app purchase only supports iOS15 or later.'],
+	/**
+	 * 其他错误。
+	 */
+	[700000, 'Other payment errors.'],
+
+]);
+
+export function getRequestVirtualPaymentErrcode(errCode : number) : RequestVirtualPaymentErrorCode {
+	const res = RequestVirtualPaymentUniErrors[errCode];
+	return res == null ? 700000 : errCode;
+}
+
+export class RequestVirtualPaymentFailImpl extends UniError implements IRequestVirtualPaymentFail {
+	constructor(errCode : RequestVirtualPaymentErrorCode) {
+		super();
+		this.errSubject = RequestVirtualPaymentUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = RequestVirtualPaymentUniErrors[errCode] ?? "";
+	}
+}
+
+
+/**
+ * restore错误主题
+ */
+export const AppleIAPRestoreUniErrorSubject = 'uni-AppleIAPRestore';
+/**
+ * 错误码
+ * @UniError
+ */
+const AppleIAPRestoreUniErrors : Map<AppleIAPRestoreErrorCode, string> = new Map([
+	/**
+	 * apple restore 请求失败。
+	 */
+	[700600, 'failed to request apple server.'],
+	/**
+	 * 用户中途取消。
+	 */
+	[700601, 'The user canceled midway.'],
+	/**
+	 * 网络连接出错。
+	 */
+	[700602, 'Network connection error.'],
+	/**
+	 * 只支持iOS15以上的版本。
+	 */
+	[700800, 'This IAP api only supports iOS15 or later.'],
+
+]);
+
+
+export function getAppleIAPRestoreErrcode(errCode : number) : AppleIAPRestoreErrorCode {
+	const res = AppleIAPRestoreUniErrors[errCode];
+	return res == null ? 700600 : errCode;
+}
+
+export class AppleIAPRestoreFailImpl extends UniError implements IAppleIAPRestoreFail {
+	constructor(errCode : AppleIAPRestoreErrorCode) {
+		super();
+		this.errSubject = AppleIAPRestoreUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = AppleIAPRestoreUniErrors[errCode] ?? "";
+	}
+}
+
+/**
+ * getUnfinishedTransactions错误主题
+ */
+export const AppleIAPUnfinishedTransactionUniErrorSubject = 'uni-AppleIAPUnfinishedTransaction';
+/**
+ * 错误码
+ * @UniError
+ */
+const AppleIAPUnfinishedTransactionUniErrors : Map<AppleIAPUnfinishedTransactionErrorCode, string> = new Map([
+	/**
+	 * 只支持iOS15以上的版本。
+	 */
+	[700800, 'This IAP api only supports iOS15 or later.'],
+]);
+
+export function getAppleIAPUnfinishedTransactionErrcode(errCode : number) : AppleIAPUnfinishedTransactionErrorCode {
+	const res = AppleIAPUnfinishedTransactionUniErrors[errCode];
+	return res == null ? 700600 : errCode;
+}
+
+export class AppleIAPUnfinishedTransactionFailImpl extends UniError implements IAppleIAPUnfinishedTransactionFail {
+	constructor(errCode : AppleIAPUnfinishedTransactionErrorCode) {
+		super();
+		this.errSubject = AppleIAPUnfinishedTransactionUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = AppleIAPUnfinishedTransactionUniErrors[errCode] ?? "";
+	}
+}
+
+
+/**
+ * finishedTransaction错误主题
+ */
+export const AppleIAPFinishTransactionUniErrorSubject = 'uni-AppleIAPFinishTransaction';
+/**
+ * 错误码
+ * @UniError
+ */
+const AppleIAPFinishTransactionUniErrors : Map<AppleIAPFinishTransactionFailErrorCode, string> = new Map([
+	/**
+	 * 没有该交易。
+	 */
+	[700600, 'failed to no transaction.'],
+	/**
+	 * 只支持iOS15以上的版本。
+	 */
+	[700800, 'This IAP api only supports iOS15 or later.'],
+]);
+
+
+export function getAppleIAPFinishTransactionErrcode(errCode : number) : AppleIAPFinishTransactionFailErrorCode {
+	const res = AppleIAPFinishTransactionUniErrors[errCode];
+	return res == null ? 700600 : errCode;
+}
+
+export class AppleIAPFinishTransactionFailImpl extends UniError implements IAppleIAPFinishTransactionFail {
+	constructor(errCode : AppleIAPFinishTransactionFailErrorCode) {
+		super();
+		this.errSubject = AppleIAPFinishTransactionUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = AppleIAPFinishTransactionUniErrors[errCode] ?? "";
+	}
+}

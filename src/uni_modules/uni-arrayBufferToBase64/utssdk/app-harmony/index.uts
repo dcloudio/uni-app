@@ -1,0 +1,15 @@
+import buffer from '@ohos.buffer';
+import { ArrayBufferToBase64 } from '../interface.uts';
+import { ArrayBufferToBase64Protocol, API_ARRAY_BUFFER_TO_BASE64 } from '../protocol.uts';
+
+export const arrayBufferToBase64: ArrayBufferToBase64 = defineSyncApi<string>(
+  API_ARRAY_BUFFER_TO_BASE64,
+  (arrayBuffer: ArrayBuffer): string => {
+    return buffer.from(arrayBuffer).toString('base64')
+  },
+  ArrayBufferToBase64Protocol
+) as ArrayBufferToBase64
+
+export {
+  ArrayBufferToBase64
+} from '../interface.uts';

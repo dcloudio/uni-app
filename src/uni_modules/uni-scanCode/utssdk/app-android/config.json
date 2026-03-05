@@ -1,0 +1,7 @@
+{
+  "minSdkVersion": "21",
+  "dependencies": [
+  	"androidx.camera:camera-core:1.4.1",
+  	"androidx.appcompat:appcompat:1.7.0"
+  ]
+}

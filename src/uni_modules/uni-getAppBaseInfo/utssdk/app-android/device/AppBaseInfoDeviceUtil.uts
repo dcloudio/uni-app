@@ -1,0 +1,122 @@
+
+import PackageManager from 'android.content.pm.PackageManager';
+import Context from 'android.content.Context';
+import PackageInfo from 'android.content.pm.PackageInfo';
+import UiModeManager from 'android.app.UiModeManager';
+import Activity from 'android.app.Activity';
+import Signature from 'android.content.pm.Signature';
+import Exception from 'java.lang.Exception';
+import MessageDigest from 'java.security.MessageDigest';
+export class AppBaseInfoDeviceUtil {
+
+	public static getAppID() : string {
+		return UTSAndroid.getAppId();
+	}
+
+	public static getAppName(context : Context) : string {
+		let packageManager = context.getPackageManager();
+		return packageManager.getApplicationLabel(context.getApplicationInfo()).toString()
+	}
+
+	public static getPackageName(context : Context) : string {
+		return context.getPackageName();
+	}
+
+	public static getAppVersionName() : string {
+		return UTSAndroid.getAppVersion()["name"].toString();
+	}
+
+	public static getAppVersionCode() : string {
+		return UTSAndroid.getAppVersion()["code"].toString();
+	}
+
+	public static getHostVersion(context : Context) : string {
+		let packageManager = context.getPackageManager();
+		let applicationInfo = packageManager.getPackageInfo(context.getPackageName(), PackageManager.GET_ACTIVITIES);
+		return applicationInfo.versionName ?? "";
+	}
+
+	public static getHostCode(context : Context) : string {
+		let packageManager = context.getPackageManager();
+		let applicationInfo = packageManager.getPackageInfo(context.getPackageName(), PackageManager.GET_ACTIVITIES);
+		return applicationInfo.versionCode + "";
+	}
+
+	public static isSystemNightMode(activity : Activity) : boolean {
+		let uiModeManager = activity.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager;
+		return uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES;
+	}
+
+	public static getOsLanguage(context : Context) : string {
+		return UTSAndroid.getLanguageInfo(context)["osLanguage"].toString();
+	}
+
+	public static getOsLanguageNormal(context : Context) : string {
+		const LOCALE_ZH_HANS = 'zh-Hans'
+		const LOCALE_ZH_HANT = 'zh-Hant'
+		let locale = UTSAndroid.getLanguageInfo(context)["appLanguage"].toString();
+		if (locale.indexOf('zh') === 0) {
+			if (locale.indexOf('-hans') > -1) {
+				return LOCALE_ZH_HANS;
+			}
+			if (locale.indexOf('-hant') > -1) {
+				return LOCALE_ZH_HANT;
+			}
+			if (locale.includes("-tw") || locale.includes("-hk") || locale.includes("-mo") || locale.includes("-cht")) {
+				return LOCALE_ZH_HANT;
+			}
+
+			return LOCALE_ZH_HANS;
+		} else {
+			return locale;
+		}
+	}
+
+	public static getAppInnerVersion() : string {
+		return UTSAndroid.getInnerVersion();
+	}
+
+	public static getAppSignatureSHA1(context : Context) : string {
+		try {
+			const packageManager = context.getPackageManager();
+			const info = packageManager.getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES) as PackageInfo;
+			let result = "";
+			info.signatures?.forEach((value) => {
+				result = AppBaseInfoDeviceUtil.getSignatureString(value, "SHA1")
+			})
+			return result
+		} catch (e : Exception) {
+			return ""
+		}
+	}
+	
+	public static getChannel(context: Context): string{
+		try {
+			const packageManager = context.getPackageManager();
+			const info = packageManager.getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA)
+			const bundle = info.metaData
+			return bundle.getString("DCLOUD_CHANNEL") ?? ""
+		} catch (e : Exception) {
+			return ""
+		}
+	}
+	
+	private static getSignatureString(sign: Signature, type : string):string {
+		const hexBytes = sign.toByteArray();
+		let fingerPrint = "error!";
+		try{
+			const digest = MessageDigest.getInstance(type);
+			if(digest != null){
+				const digestBytes = digest.digest(hexBytes);
+				const sb = new StringBuffer()
+				digestBytes.forEach((digestByte)=>{
+					sb.append((Integer.toHexString(((digestByte & 0xFF) | 0x100).toInt())).substring(1, 3));
+				})
+				fingerPrint = sb.toString();
+			}
+			
+		}catch(e : Exception){
+		}
+		return fingerPrint;
+	}
+}

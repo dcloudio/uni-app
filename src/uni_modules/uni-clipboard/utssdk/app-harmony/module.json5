@@ -1,0 +1,20 @@
+{
+  "module": {
+    "name": "uni_modules__uni_clipboard",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet",
+      "2in1"
+    ],
+    "requestPermissions": [
+       {
+        "name": "ohos.permission.READ_PASTEBOARD",
+        "reason": "$string:permission_read_pasteboard",
+        "usedScene": {
+          "when": "inuse"
+        }
+      }
+    ]
+  }
+}

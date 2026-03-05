@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>允许使用定位权限吗</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>允许一直使用定位权限</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>允许仅在app运行期间使用定位权限</string>
+		<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+		<dict>
+			<key>PurposeKey</key>
+			<string>这里需要您临时授权高精度定位权限,一次临时授权时效仅app一个周期内, 每次硬启动都需要临时授权</string>
+		</dict>
+	</dict>
+</plist>

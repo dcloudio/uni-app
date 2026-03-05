@@ -1,0 +1,114 @@
+import { UTSiOS } from "DCloudUTSFoundation"
+import { UIScreen, UIImage } from 'UIKit'
+import { ShowToastOptions, ShowLoadingOptions, ShowToastSuccess, ShowToastFail, ShowLoadingSuccess, ShowLoadingFail } from '../interface.uts'
+import { PromptErrorImpl } from "../unierror.uts"
+
+/* 显示toast */
+export function toShowToast(options : ShowToastOptions) {
+	if (options.title == null || options.title.length == 0) {
+		let res = new PromptErrorImpl(1001, "showLoading:title is null");
+		options.fail?.(res)
+		options.complete?.(res)
+	} else {
+		//duration
+		let duration = 2.5
+		if (options.duration != null) {
+			duration = options.duration! / 1000
+		}
+		//mask
+		let mask = MCToast.MCToastRespond.default
+		if (options.mask == true) {
+			mask = MCToast.MCToastRespond.noRespond
+		}
+		MCToastConfig.shared.background.size = CGSize.init(width = 135, height = 120);
+		//position
+		if (options.position != null) {
+			const interval = Float(UIScreen.main.bounds.height * 0.25)
+			let centerPoint = 0.0 //正下 负上 
+			if (options.position == "top") {
+				centerPoint = 0 - interval
+			} else if (options.position == "center") {
+				centerPoint = 0.0
+			} else {
+				centerPoint = Number(interval)
+			}
+			MCToast.mc_text(options.title, offset = CGFloat(centerPoint.toFloat()), duration = CGFloat(duration.toFloat()), respond = mask)
+		} else {
+			let successImage = new UIImage(named = "uni_uts_toast_success.png")
+			let failureImage = new UIImage(named = "uni_uts_toast_error.png")
+			const bundleUrl = Bundle.main.url(forResource = "uni-prompt", withExtension = "bundle")
+			if (bundleUrl != null) {
+				const bundle = Bundle(url = bundleUrl!)
+				if (bundle != null) {
+					const success_img = new UIImage(named = "uni_uts_toast_success.png", in = bundle!, compatibleWith = null)
+					if (success_img != null) {
+						successImage = success_img
+					}
+					
+					const failure_img = new UIImage(named = "uni_uts_toast_error.png", in = bundle!, compatibleWith = null)
+					if (failure_img != null) {
+						failureImage = failure_img
+					}
+				}
+			}
+			MCToastConfig.shared.icon.successImage = successImage
+			MCToastConfig.shared.icon.failureImage = failureImage
+
+			if (options.image != null) {
+				const imagePath = UTSiOS.getResourcePath(options.image!)
+				const image = new UIImage(contentsOfFile = imagePath)
+				MCToast.showStatus(MCToast.MCToastType.success, text = options.title, iconImage = image, duration = CGFloat(duration.toFloat()), respond = mask)
+
+			} else if (options.icon != null) {
+				if (options.icon == "success") {
+					MCToast.mc_success(options.title, duration = CGFloat(duration.toFloat()), respond = mask)
+				} else if (options.icon == "error") {
+					MCToast.mc_failure(options.title, duration = CGFloat(duration.toFloat()), respond = mask)
+				} else if (options.icon == "loading") {
+					MCToast.mc_loading(text = options.title, duration = CGFloat(duration.toFloat()), respond = mask)
+				} else {
+					MCToast.mc_text(options.title, offset = 0, duration = CGFloat(duration.toFloat()), respond = mask)
+				}
+			} else {
+				MCToast.mc_success(options.title, duration = CGFloat(duration.toFloat()), respond = mask)
+			}
+		}
+		const res : ShowToastSuccess = {
+		}
+		options.success?.(res)
+		options.complete?.(res)
+	}
+
+}
+
+/* 隐藏toast */
+export function toHideToast() {
+	MCToast.mc_remove()
+}
+
+// #ifndef UNI-APP-X
+/* 显示loading + text */
+export function toShowLoading(options : ShowLoadingOptions) {
+
+	let mask = MCToast.MCToastRespond.default
+	if (options.mask == true) {
+		mask = MCToast.MCToastRespond.noRespond
+	}
+	// config
+	MCToastConfig.shared.background.size = CGSize.init(width = 135, height = 120);
+	// show loading
+	MCToast.mc_loading(text = options.title, respond = mask)
+	// callback
+	const res : ShowLoadingSuccess = {
+	}
+	options.success?.(res)
+	options.complete?.(res)
+
+}
+
+/* 隐藏loading */
+export function toHideLoading() {
+	MCToast.mc_remove()
+}
+
+// #endif

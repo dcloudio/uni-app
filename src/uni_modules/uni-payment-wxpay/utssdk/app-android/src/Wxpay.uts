@@ -1,0 +1,66 @@
+import IWXAPI from 'com.tencent.mm.opensdk.openapi.IWXAPI';
+import WXAPIFactory from 'com.tencent.mm.opensdk.openapi.WXAPIFactory';
+import PayReq from 'com.tencent.mm.opensdk.modelpay.PayReq';
+import BaseReq from 'com.tencent.mm.opensdk.modelbase.BaseReq';
+const defaultErrorCode : number = 700000
+export class Wxpay {
+	public static mOptions : RequestPaymentOptions = {
+		orderInfo: "",
+		provider: ""
+	} as RequestPaymentOptions
+	public requestPayment(options : RequestPaymentOptions) {
+		if (!Wxpay.isInstalled()) {
+			let err = new RequestPaymentFailImpl(700604);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		}
+
+		mOptions = options
+		let params = JSON.parse(options.orderInfo) as UTSJSONObject
+		let appId = params.getString("appid")
+		let partnerId = params.getString("partnerid")
+		let prepayId = params.getString("prepayid")
+		let packageV = params.getString("package")
+		let nonceStr = params.getString("noncestr")
+		let timeStamp = params.getNumber("timestamp")
+		let sign = params.getString("sign")
+		let wxApi = WXAPIFactory.createWXAPI(UTSAndroid.getTopPageActivity(), appId, false)
+		let request = new PayReq();
+		if (appId != null) {
+			wxApi.registerApp(appId)
+			request.appId = appId
+		}
+		if (partnerId != null) {
+			request.partnerId = partnerId
+		}
+		if (prepayId != null) {
+			request.prepayId = prepayId
+		}
+		if (packageV != null) {
+			request.packageValue = packageV
+		}
+		if (nonceStr != null) {
+			request.nonceStr = nonceStr
+		}
+		if (timeStamp != null) {
+			request.timeStamp = "" + timeStamp
+		}
+		if (sign != null) {
+			request.sign = sign
+		}
+		let res = wxApi.sendReq(request);
+		if (!res) {
+			let err = new RequestPaymentFailImpl(defaultErrorCode.toInt());
+			options.fail?.(err)
+			options.complete?.(err)
+		}
+	}
+	/**
+	 * 微信app是否安装
+	 */
+	static isInstalled() : boolean {
+		let api = WXAPIFactory.createWXAPI(UTSAndroid.getTopPageActivity(), '');
+		return api!.isWXAppInstalled()
+	}
+};

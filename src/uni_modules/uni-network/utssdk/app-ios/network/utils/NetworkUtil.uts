@@ -1,0 +1,177 @@
+import { URL, CharacterSet } from 'Foundation';
+import { Int } from 'Swift';
+
+export class NetworkUtil {
+    public static convertHeaders(headers: Map<string, any> | null): UTSJSONObject {
+		
+		let simpleHeaders = new UTSJSONObject()
+        if (headers != null) {
+			headers!.forEach((value: any | null, key: string) => {
+				if (value == null) {
+					simpleHeaders.set(key, '')
+				} else {
+					simpleHeaders.set(key, value)
+				}
+			})
+        }
+        return simpleHeaders;
+    }
+
+    public static parseCookie(header : UTSJSONObject | null) : string[] {
+		if (header == null) {
+			return []
+		}
+		let cookiesStr = header!.getString('Set-Cookie') as string | null
+		if (cookiesStr == null) {
+			cookiesStr = header!.getString('set-cookie') as string | null
+		}
+		if (cookiesStr == null) {
+			return []
+		}
+		let cookiesArr = new Array<string>()
+		if (cookiesStr!.charAt(0) == "[" && cookiesStr!.charAt(cookiesStr!.length - 1) == "]") {
+			cookiesStr = cookiesStr!.slice(1, -1)
+		}
+
+		const handleCookiesArr = cookiesStr!.split(';')
+		for (let i = 0; i < handleCookiesArr.length; i++) {
+			if (handleCookiesArr[i].indexOf('Expires=') != -1 || handleCookiesArr[i].indexOf('expires=') != -1) {
+				cookiesArr.push(handleCookiesArr[i].replace(',', ''))
+			} else {
+				cookiesArr.push(handleCookiesArr[i])
+			}
+		}
+		cookiesArr = cookiesArr.join(';').split(',')
+
+		return cookiesArr
+	}
+	
+	
+	public static percentEscapedString(urlString : string) : string {
+	    const queryStart = urlString.indexOf("?");
+	    let pathPart = urlString;
+	    let queryPart = "";
+	
+	    if (queryStart >= 0) {
+	        pathPart = urlString.substring(0, queryStart as Int);
+	        queryPart = urlString.substring(queryStart as Int); // 包含 "?"
+	    }
+	
+	    let encodedPath = this.encodeURLPath(pathPart);
+	
+	    let encodedQuery = "";
+	    if (queryPart.length > 0) {
+	        encodedQuery = this.encodeURLQuery(queryPart);
+	    }
+	
+	    return encodedPath + encodedQuery;
+	}
+	
+	private static encodeURLPath(pathString : string) : string {
+	    const schemeEnd = pathString.indexOf("://");
+	    if (schemeEnd < 0) {
+	        return this.safePercentEncode(pathString, CharacterSet.urlPathAllowed);
+	    }
+	
+	    let pathStart = pathString.indexOf("/", schemeEnd + 3);
+	    if (pathStart < 0) {
+	        return pathString;
+	    }
+	
+	    let schemeAndHost = pathString.substring(0, pathStart as Int);
+	    let pathOnly = pathString.substring(pathStart as Int);
+	
+	    let encodedPathOnly = this.safePercentEncode(pathOnly, CharacterSet.urlPathAllowed);
+	
+	    return schemeAndHost + encodedPathOnly;
+	}
+	
+	private static encodeURLQuery(queryString : string) : string {
+	    if (!queryString.startsWith("?")) {
+	        return queryString;
+	    }
+	
+	    let queryWithoutMark = queryString.substring(1);
+	
+	    let pairs = queryWithoutMark.components(separatedBy = "&");
+	    var encodedPairs : Array<string> = [];
+	
+	    for (pair in pairs) {
+	        let keyValue = pair.components(separatedBy = "=");
+	        if (keyValue.count == 2) {
+	            // 对key和value分别进行安全编码
+	            let key = this.safePercentEncode(keyValue[0], CharacterSet.urlQueryAllowed);
+	            let value = this.safePercentEncode(keyValue[1], CharacterSet.urlQueryAllowed);
+	            encodedPairs.append(key + "=" + value);
+	        } else if (keyValue.count == 1) {
+	            // 只有key没有value的参数（如 ?flag）
+	            encodedPairs.append(this.safePercentEncode(pair, CharacterSet.urlQueryAllowed));
+	        } else {
+	            // 包含多个"="的情况（如 value中包含=），只分割第一个=
+	            let key = keyValue[0];
+	            let value = keyValue.suffix(from = 1).joined(separator = "=");
+	            let encodedKey = this.safePercentEncode(key, CharacterSet.urlQueryAllowed);
+	            let encodedValue = this.safePercentEncode(value, CharacterSet.urlQueryAllowed);
+	            encodedPairs.append(encodedKey + "=" + encodedValue);
+	        }
+	    }
+	
+	    return "?" + encodedPairs.joined(separator = "&");
+	}
+	
+	private static safePercentEncode(str : string, allowedCharacters : CharacterSet) : string {
+	    // 分段处理：保留已编码的 %XX 序列，只对未编码段批量编码
+	    // 性能优化：用 range 记录待编码区域，避免字符串拼接
+	    let result = "";
+	    let pendingStart = -1;  // 待编码段的起始位置，-1 表示无待编码段
+	    let i = 0;
+
+	    while (i < str.length) {
+	        // 检查是否是已编码的序列（%后跟两个十六进制字符）
+	        if (str.charAt(i) == "%" && i + 2 < str.length) {
+	            let hex1 = str.charAt(i + 1);
+	            let hex2 = str.charAt(i + 2);
+
+	            if (this.isHexChar(hex1) && this.isHexChar(hex2)) {
+	                // 先处理之前的待编码段
+	                if (pendingStart >= 0) {
+	                    let pending = str.substring(pendingStart, i);
+	                    let encoded = pending.addingPercentEncoding(withAllowedCharacters = allowedCharacters);
+	                    result += encoded ?? pending;
+	                    pendingStart = -1;
+	                }
+	                // 已编码的序列，保持原样
+	                result += str.substring(i, i + 3);
+	                i += 3;
+	                continue;
+	            }
+	        }
+
+	        // 记录待编码段的起始位置
+	        if (pendingStart < 0) {
+	            pendingStart = i;
+	        }
+	        i += 1;
+	    }
+
+	    // 处理最后剩余的待编码段
+	    if (pendingStart >= 0) {
+	        let pending = str.substring(pendingStart as Int);
+	        let encoded = pending.addingPercentEncoding(withAllowedCharacters = allowedCharacters);
+	        result += encoded ?? pending;
+	    }
+
+	    return result;
+	}
+
+	private static isHexChar(char : string) : boolean {
+	    if (char.length != 1) {
+	        return false;
+	    }
+	    let code = char.charCodeAt(0);
+	    return (code >= 48 && code <= 57) ||  // 0-9
+	           (code >= 65 && code <= 70) ||  // A-F
+	           (code >= 97 && code <= 102);   // a-f
+	}
+}
+

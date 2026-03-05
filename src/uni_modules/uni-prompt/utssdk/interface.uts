@@ -1,0 +1,2600 @@
+/**
+ * 错误码
+ */
+export type PromptErrorCode =
+  /**
+   * 撤销
+   */
+  1 |
+  /**
+   * 请求参数非法
+   */
+  1001
+
+export interface IPromptError extends IUniError {
+  errCode: PromptErrorCode
+};
+
+/**
+ * uni.showToast成功回调参数
+ */
+export type ShowToastSuccess = {
+}
+
+/**
+ * uni.showToast失败回调参数
+ */
+export type ShowToastFail = IPromptError;
+
+/**
+ * uni.showToast成功回调函数定义
+ */
+export type ShowToastSuccessCallback = (res: ShowToastSuccess) => void
+/**
+ * uni.showToast失败回调函数定义
+ */
+export type ShowToastFailCallback = (res: ShowToastFail) => void
+/**
+ * uni.showToast完成回调函数定义
+ */
+export type ShowToastCompleteCallback = (res: any) => void
+
+/**
+ * icon值说明
+ */
+export type Icon =
+  /**
+   * 显示成功图标
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  "success" |
+  /**
+   * 显示错误图标
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  "error" |
+  /**
+   * 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "x",
+          "unixVer": "x"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "x",
+          "unixVer": "x",
+          "unixUtsPlugin": "x"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   */
+  "fail" |
+  /**
+   * 显示异常图标，此时title文本无长度显示，支付宝小程序生效
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "x"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "x",
+          "unixUtsPlugin": "x"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   */
+  "exception" |
+  /**
+   * 显示加载图标
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  "loading" |
+  /**
+   * 不显示图标
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  "none";
+
+/**
+ * position值说明。纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。
+ */
+export type ShowToastPosition =
+  /**
+   * 居上显示
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   */
+  "top" |
+  /**
+   * 居中显示
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   */
+  "center" |
+  /**
+   * 居底显示
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   */
+  "bottom";
+
+/**
+ * uni.showToast参数定义
+ */
+export type ShowToastOptions = {
+  /**
+   * 提示的内容，长度与 icon 取值有关。
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  title: string,
+  /**
+   * 图标
+   * @defaultValue "success"
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "x"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  icon?: Icon | null,
+  /**
+   * 自定义图标的本地路径（app端暂不支持gif）
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  image?: string.ImageURIString | null,
+  /**
+   * 是否显示透明蒙层，防止触摸穿透
+   * @defaultValue false
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  mask?: boolean | null,
+  /**
+   * 提示的延迟时间，单位毫秒
+   * @defaultValue 1500
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  duration?: number | null,
+  /**
+   * 纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "x"
+      }
+    }
+   */
+  position?: ShowToastPosition | null,
+  /**
+   * 接口调用成功的回调函数
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  success?: ShowToastSuccessCallback | null,
+  /**
+   * 接口调用失败的回调函数
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  fail?: ShowToastFailCallback | null,
+  /**
+   * 接口调用结束的回调函数（调用成功、失败都会执行）
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  complete?: ShowToastCompleteCallback | null
+}
+
+/**
+ * uni.showToast函数定义
+ * 弹出toast
+ *
+ * @param {ShowToastOptions} options
+ * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showtoast
+ * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showtoast
+ * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showtoast
+ * @uniPlatform
+  {
+    "app": {
+      "android": {
+        "osVer": "5.0",
+        "uniVer": "√",
+        "uniUtsPlugin": "3.91",
+        "unixVer": "3.91"
+      },
+      "ios": {
+        "osVer": "12.0",
+        "uniVer": "√",
+        "uniUtsPlugin": "4.11",
+        "unixVer": "4.11",
+        "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+        "osVer": "3.0",
+        "uniVer": "4.23",
+        "unixVer": "4.61",
+        "unixvVer": "5.0"
+      }
+    },
+    "mp": {
+      "weixin": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "4.41"
+      },
+      "alipay": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "baidu": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "toutiao": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "lark": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "qq": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "kuaishou": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "jd": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      }
+    },
+    "web": {
+      "uniVer": "√",
+      "unixVer": "4.0"
+    }
+  }
+ */
+export type ShowToast = (options: ShowToastOptions) => void
+
+/**
+ * uni.hideToast函数定义
+ * 隐藏toast
+ *
+ * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#hidetoast
+ * @tutorial_uni_app https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hidetoast
+ * @uniPlatform
+  {
+    "app": {
+      "android": {
+        "osVer": "5.0",
+        "uniVer": "√",
+        "uniUtsPlugin": "3.91",
+        "unixVer": "3.91"
+      },
+      "ios": {
+        "osVer": "12.0",
+        "uniVer": "√",
+        "uniUtsPlugin": "4.11",
+        "unixVer": "4.11",
+        "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+        "osVer": "3.0",
+        "uniVer": "4.83",
+        "unixVer": "4.83",
+        "unixvVer": "5.0"
+      }
+    },
+    "mp": {
+      "weixin": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "4.41"
+      },
+      "alipay": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "baidu": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "toutiao": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "lark": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "qq": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "kuaishou": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "jd": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      }
+    },
+    "web": {
+      "uniVer": "√",
+      "unixVer": "4.0"
+    }
+  }
+ */
+export type HideToast = () => void
+
+// #ifdef !UNI-APP-X
+/**
+ * uni.showLoading成功回调参数
+ */
+export type ShowLoadingSuccess = {
+}
+
+/**
+ * uni.showLoading失败回调参数
+ */
+export type ShowLoadingFail = IPromptError;
+
+/**
+ * uni.showLoading成功回调函数定义
+ */
+export type ShowLoadingSuccessCallback = (res: ShowLoadingSuccess) => void
+/**
+ * uni.showLoading失败回调函数定义
+ */
+export type ShowLoadingFailCallback = (res: ShowLoadingFail) => void
+/**
+ * uni.showLoading完成回调函数定义
+ */
+export type ShowLoadingCompleteCallback = (res: any) => void
+
+/**
+ * uni.showLoading参数定义
+ */
+export type ShowLoadingOptions = {
+  /**
+   * 提示的内容，长度与 icon 取值有关。
+   */
+  title: string,
+  /**
+   * 是否显示透明蒙层，防止触摸穿透，默认：false
+   */
+  mask?: boolean | null,
+  /**
+   * 接口调用成功的回调函数
+   */
+  success?: ShowLoadingSuccessCallback | null,
+  /**
+   * 接口调用失败的回调函数
+   */
+  fail?: ShowLoadingFailCallback | null,
+  /**
+   * 接口调用结束的回调函数（调用成功、失败都会执行）
+   */
+  complete?: ShowLoadingCompleteCallback | null
+}
+
+/**
+ * uni.showLoading函数定义
+ * 弹出loading
+ *
+ * @param {ShowLoadingOptions} options
+ * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showloading
+ * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showloading
+ * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showloading
+ * @uniPlatform
+  {
+    "app": {
+      "android": {
+        "osVer": "5.0",
+        "uniVer": "√",
+        "uniUtsPlugin": "3.91",
+        "unixVer": "3.91"
+      },
+      "ios": {
+        "osVer": "12.0",
+        "uniVer": "√",
+        "uniUtsPlugin": "4.11",
+        "unixVer": "4.11",
+        "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+        "osVer": "3.0",
+        "uniVer": "4.23",
+        "unixVer": "4.61",
+        "unixvVer": "5.0"
+      }
+    },
+    "mp": {
+      "weixin": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "4.41"
+      },
+      "alipay": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "baidu": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "toutiao": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "lark": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "qq": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "kuaishou": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "jd": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      }
+    },
+    "web": {
+      "uniVer": "√",
+      "unixVer": "4.0"
+    }
+  }
+ */
+export type ShowLoading = (options: ShowLoadingOptions) => void
+
+/**
+ * uni.hideLoading函数定义
+ * 隐藏loading
+ * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#hideloading
+ * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hideloading
+ * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hideloading
+ * @uniPlatform
+  {
+    "app": {
+      "android": {
+        "osVer": "5.0",
+        "uniVer": "√",
+        "uniUtsPlugin": "3.91",
+        "unixVer": "3.91"
+      },
+      "ios": {
+        "osVer": "12.0",
+        "uniVer": "√",
+        "uniUtsPlugin": "4.11",
+        "unixVer": "4.11",
+        "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+        "osVer": "3.0",
+        "uniVer": "4.23",
+        "unixVer": "4.61",
+        "unixvVer": "5.0"
+      }
+    },
+    "mp": {
+      "weixin": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "4.41"
+      },
+      "alipay": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "baidu": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "toutiao": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "lark": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "qq": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "kuaishou": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "jd": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      }
+    },
+    "web": {
+      "uniVer": "√",
+      "unixVer": "4.0"
+    }
+  }
+ */
+export type HideLoading = () => void
+
+/**
+ * uni.showModal 成功回调参数
+ */
+export type ShowModalSuccess = {
+  /**
+   * 为 true 时，表示用户点击了确定按钮
+   */
+  confirm: boolean,
+  /**
+   * 为 true 时，表示用户点击了取消（用于 Android 系统区分点击蒙层关闭还是点击取消按钮关闭）
+   */
+  cancel: boolean,
+  /**
+   * editable 为 true 时，用户输入的文本
+   */
+  content: string | null
+}
+
+/**
+ * uni.showModal失败回调参数
+ */
+export type ShowModalFail = IPromptError;
+
+/**
+ * uni.showModal成功回调函数定义
+ */
+export type ShowModalSuccessCallback = (res: ShowModalSuccess) => void
+/**
+ * uni.showModal失败回调函数定义
+ */
+export type ShowModalFailCallback = (res: ShowModalFail) => void
+/**
+ * uni.showModal完成回调函数定义
+ */
+export type ShowModalCompleteCallback = (res: any) => void
+/**
+ * uni.showModal 参数定义
+ */
+export type ShowModalOptions = {
+  /**
+   * 提示的标题
+   */
+  title?: string | null,
+  /**
+   * 提示的内容
+   */
+  content?: string | null,
+  /**
+   * @default true
+   * 是否显示取消按钮，默认为 true
+   */
+  showCancel?: boolean | null,
+  /**
+   * 取消按钮的文字，默认为"取消"
+   */
+  cancelText?: string | null,
+  /**
+   * 取消按钮的文字颜色，默认为"#000000"
+   */
+  cancelColor?: string.ColorString | null,
+  /**
+   * 确定按钮的文字，默认为"确定"
+   */
+  confirmText?: string | null,
+  /**
+   * 确定按钮的文字颜色
+   */
+  confirmColor?: string.ColorString | null,
+  /**
+   * @default false
+   * 是否显示输入框
+   */
+  editable?: boolean | null,
+  /**
+   * 显示输入框时的提示文本
+   */
+  placeholderText?: string | null,
+  /**
+   * 接口调用成功的回调函数
+   */
+  success?: ShowModalSuccessCallback | null,
+  /**
+   * 接口调用失败的回调函数
+   */
+  fail?: ShowModalFailCallback | null,
+  /**
+   * 接口调用结束的回调函数（调用成功、失败都会执行）
+   */
+  complete?: ShowModalCompleteCallback | null
+}
+
+/**
+ * uni.showModal 函数定义
+ *
+ * 弹出modal
+ *
+ * @param {ShowModalOptions} options
+ * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showmodal
+ * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showmodal
+ * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showmodal
+ * @uniPlatform
+  {
+    "app": {
+      "android": {
+        "osVer": "5.0",
+        "uniVer": "√",
+        "uniUtsPlugin": "x",
+        "unixVer": "3.91"
+      },
+      "ios": {
+        "osVer": "12.0",
+        "uniVer": "√",
+        "uniUtsPlugin": "x",
+        "unixVer": "4.11",
+        "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+        "osVer": "3.0",
+        "uniVer": "4.23",
+        "unixVer": "4.61",
+        "unixvVer": "5.0"
+      }
+    },
+    "mp": {
+      "weixin": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "4.41"
+      },
+      "alipay": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "baidu": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "toutiao": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "lark": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "qq": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "kuaishou": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "jd": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      }
+    },
+    "web": {
+      "uniVer": "√",
+      "unixVer": "4.0"
+    }
+  }
+ */
+export type ShowModal = (options: ShowModalOptions) => void
+// #endif
+
+// #ifdef !UNI-APP-X
+/**
+ * uni.ShowActionSheet成功回调参数
+ */
+export type ShowActionSheetSuccess = {
+  /**
+   * 用户点击的按钮，从上到下的顺序，从0开始
+   */
+  tapIndex: number,
+}
+
+export type Popover = {
+  /**
+   * 指示区域坐标，使用原生 navigationBar 时一般需要加上 navigationBar 的高度
+   */
+  top: number,
+  /**
+   * 指示区域坐标
+   */
+  left: number,
+  /**
+   * 指示区域宽度
+   */
+  width: number,
+  /**
+   * 指示区域高度
+   */
+  height: number
+}
+
+/**
+ * uni.ShowActionSheet失败回调参数
+ */
+export type ShowActionSheetFail = IPromptError;
+
+/**
+ * uni.showActionSheet成功回调函数定义
+ */
+export type ShowActionSheetSuccessCallback = (res: ShowActionSheetSuccess) => void
+/**
+ * uni.showActionSheet成功回调函数定义
+ */
+export type ShowActionSheetFailCallback = (res: ShowActionSheetFail) => void
+/**
+ * uni.showActionSheet成功回调函数定义
+ */
+export type ShowActionSheetCompleteCallback = (res: any) => void
+
+/**
+ * uni.showActionSheet函数参数定义
+ */
+export type ShowActionSheetOptions = {
+  /**
+   * 菜单标题
+   */
+  title?: string | null,
+  /**
+   * 警示文案（同菜单标题, app无效）
+   */
+  alertText?: string | null,
+  /**
+   * 按钮的文字数组
+   */
+  itemList: string[],
+  /**
+   * 按钮的文字颜色，字符串格式（iOS默认为系统控件颜色）
+   */
+  itemColor?: string.ColorString | null,
+  /**
+   * 大屏设备弹出原生选择按钮框的指示区域，默认居中显示
+   */
+  popover?: Popover | null,
+  /**
+   * 接口调用成功的回调函数
+   */
+  success?: ShowActionSheetSuccessCallback | null,
+  /**
+   * 接口调用失败的回调函数
+   */
+  fail?: ShowActionSheetFailCallback | null,
+  /**
+   * 接口调用结束的回调函数（调用成功、失败都会执行）
+   */
+  complete?: ShowActionSheetCompleteCallback | null
+}
+
+/**
+ * uni.showActionSheet函数定义
+ *
+ * 弹出actionSheet
+ *
+ * @param {ShowActionSheetOptions} options
+ * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showactionsheet
+ * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showactionsheet
+ * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showactionsheet
+ * @uniPlatform
+  {
+    "app": {
+      "android": {
+        "osVer": "5.0",
+        "uniVer": "√",
+        "uniUtsPlugin": "x",
+        "unixVer": "3.91"
+      },
+      "ios": {
+        "osVer": "12.0",
+        "uniVer": "√",
+        "uniUtsPlugin": "x",
+        "unixVer": "4.11",
+        "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+        "osVer": "3.0",
+        "uniVer": "4.23",
+        "unixVer": "4.61",
+        "unixvVer": "5.0"
+      }
+    },
+    "mp": {
+      "weixin": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "4.41"
+      },
+      "alipay": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "baidu": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "toutiao": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "lark": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "qq": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "kuaishou": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      },
+      "jd": {
+        "hostVer": "√",
+        "uniVer": "√",
+        "unixVer": "x"
+      }
+    },
+    "web": {
+      "uniVer": "√",
+      "unixVer": "4.0"
+    }
+  }
+ */
+export type ShowActionSheet = (options: ShowActionSheetOptions) => void
+// #endif
+
+
+export interface Uni {
+  /**
+   * @description 显示消息提示框
+   * @example
+    ```typescript
+    uni.showToast({
+      title: '标题',
+      duration: 2000
+    });
+    ```
+   * @remark
+   * - showLoading 和 showToast 同时只能显示一个
+   * - showToast 应与 hideToast 配对使用
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showtoast
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showtoast
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showtoast
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  showToast(options: ShowToastOptions): void,
+
+  /**
+   * @description 隐藏消息提示框。
+   * @example
+    ```typescript
+    uni.hideToast();
+    ```
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#hidetoast
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hidetoast
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hidetoast
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  hideToast(): void,
+// #ifndef UNI-APP-X
+  /**
+   * @description 显示 loading 提示框, 需主动调用 uni.hideLoading 才能关闭提示框。
+   * @example
+    ```typescript
+    uni.showLoading({
+      title: '加载中'
+    });
+    ```
+   * @remark
+   * - showLoading 和 showToast 同时只能显示一个
+   * - showToast 应与 hideToast 配对使用
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showloading
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showloading
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showloading
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  showLoading(options: ShowLoadingOptions): void,
+
+  /**
+   * @description 隐藏 loading 提示框。
+   * @example
+    ```typescript
+    uni.showLoading({
+      title: '加载中'
+    });
+
+    setTimeout(function () {
+      uni.hideLoading();
+    }, 2000);
+    ```
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#hideloading
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hideloading
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hideloading
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "3.91",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "4.11",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  hideLoading(): void,
+
+  /**
+   * @description 显示模态弹窗，可以只有一个确定按钮，也可以同时有确定和取消按钮。类似于一个API整合了 html 中：alert、confirm。
+   * @example
+    ```typescript
+    uni.showModal({
+      title: '提示',
+      content: '这是一个模态弹窗',
+      success: function (res) {
+        if (res.confirm) {
+          console.log('用户点击确定');
+        } else if (res.cancel) {
+          console.log('用户点击取消');
+        }
+      }
+    });
+    ```
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showmodal
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showmodal
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showmodal
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "x",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  showModal(options: ShowModalOptions): void,
+	// #endif
+  // #ifndef UNI-APP-X
+  /**
+   * @description 从底部向上弹出操作菜单
+   * @example
+    ```typescript
+    uni.showActionSheet({
+      itemList: ['A', 'B', 'C'],
+      success: function (res) {
+        console.log('选中了第' + (res.tapIndex + 1) + '个按钮');
+      },
+      fail: function (res) {
+        console.log(res.errMsg);
+      }
+    });
+    ```
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showactionsheet
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showactionsheet
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showactionsheet
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "x",
+          "unixVer": "3.91"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "√",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "3.0",
+          "uniVer": "4.23",
+          "unixVer": "4.61",
+          "unixvVer": "5.0"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.41"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "√",
+        "unixVer": "4.0"
+      }
+    }
+   */
+  showActionSheet(options: ShowActionSheetOptions): void
+  // #endif
+}

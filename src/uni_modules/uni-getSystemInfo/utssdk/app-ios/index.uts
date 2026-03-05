@@ -1,0 +1,151 @@
+import { GetSystemInfoOptions, GetSystemInfo, GetSystemInfoResult, SafeArea, SafeAreaInsets, GetSystemInfoSync, GetWindowInfo, GetWindowInfoResult } from "../interface.uts";
+import { UTSiOS } from "DCloudUTSFoundation";
+import { UIScreen , UIDevice ,UIApplication } from 'UIKit';
+export const getSystemInfo : GetSystemInfo = function (options : GetSystemInfoOptions) {
+	const result = getSystemInfoSync();
+	const success = options.success;
+	const complete = options.complete;
+	success?.(result);
+	complete?.(result);
+}
+
+export const getSystemInfoSync : GetSystemInfoSync = function () : GetSystemInfoResult {
+	const windowInfo : GetWindowInfoResult = getWindowInfoResult()
+	
+	const deviceType = UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad ? "pad" : "phone"
+	
+	const osVersion = UIDevice.current.systemVersion
+	
+	let deviceOrientation = 'portrait'
+	const orient = UIApplication.shared.statusBarOrientation;
+	if (orient == UIInterfaceOrientation.landscapeLeft || orient == UIInterfaceOrientation.landscapeRight) {
+	    deviceOrientation = "landscape";
+	 }
+	
+	const result : GetSystemInfoResult = {
+		SDKVersion: "",
+		appId: UTSiOS.getAppId(),
+		appLanguage: UTSiOS.getOsLanguage(),
+		appName: UTSiOS.getAppName(),
+		appVersion: UTSiOS.getAppVersion(),
+		appVersionCode: UTSiOS.getAppVersionCode(),
+		appWgtVersion: UTSiOS.getAppWgtVersion(),
+		brand: "apple",
+		browserName: "wkwebview",
+		browserVersion: osVersion,
+		deviceId: UTSiOS.getDeviceId(),
+		deviceBrand: "apple",
+		deviceModel: UTSiOS.getModel(),
+		deviceType: deviceType,
+		devicePixelRatio: Number.from(UIScreen.main.scale),
+		deviceOrientation: deviceOrientation,
+		language: UTSiOS.getOsLanguage(),
+		model: UTSiOS.getModel(),
+		osName: 'ios',
+		osVersion: osVersion,
+		osLanguage: UTSiOS.getOsLanguage(),
+		osTheme: UTSiOS.getOsTheme(),
+		pixelRatio: windowInfo.pixelRatio,
+		platform: 'ios',
+		screenWidth: windowInfo.screenWidth,
+		screenHeight: windowInfo.screenHeight,
+		statusBarHeight: windowInfo.statusBarHeight,
+		system: String(format = "iOS %@", osVersion),
+		ua: UTSiOS.getUserAgent(),
+		uniCompileVersion: UTSiOS.getCompileVersion(),
+		uniCompilerVersion: UTSiOS.getCompileVersion(),
+		uniPlatform: "app",
+		uniRuntimeVersion: UTSiOS.getRuntimeVersion(),
+		uniCompileVersionCode: systemInfoConvertVersionCode(UTSiOS.getCompileVersion()),
+		uniCompilerVersionCode: systemInfoConvertVersionCode(UTSiOS.getCompileVersion()),
+		uniRuntimeVersionCode: systemInfoConvertVersionCode(UTSiOS.getRuntimeVersion()),
+		version: UTSiOS.getInnerVersion(),
+		romName: "ios",
+		romVersion: osVersion,
+		windowWidth: windowInfo.windowWidth,
+		windowHeight: windowInfo.windowHeight,
+		windowTop: windowInfo.windowTop,
+		windowBottom: windowInfo.windowBottom,
+		safeAreaInsets: windowInfo.safeAreaInsets,
+		safeArea: windowInfo.safeArea,
+		appTheme: UTSiOS.getAppTheme(),
+	};
+	return result;
+}
+
+const systemInfoConvertVersionCode = function(version: string): number {
+	if (version.length > 0){
+		const components = version.components(separatedBy= '.')
+		var resultString = ""
+		for (let i = 0; i < components.length; i++) {
+		    resultString = (i == 0) ? (resultString + components[i] + '.') : (resultString + components[i])
+		}
+		return parseFloat(resultString)
+	}
+	return 0
+}
+
+function getWindowInfoResult() : GetWindowInfoResult {
+	let insets : Map<string, any> = UTSiOS.getSafeAreaInsets()
+	let window : Map<string, any> = UTSiOS.getWindowInfo()
+	
+	const windowWidth = window.get("windowWidth") as number
+	const windowHeight = window.get("windowHeight") as number
+	const windowTop = window.get("windowTop") as number
+	const windowBottom = window.get("windowBottom") as number
+	
+	
+	const screenWidth = Number.from(UIScreen.main.bounds.width)
+	const screenHeight = Number.from(UIScreen.main.bounds.height)
+	
+	const insetLeft = insets.get("left") as number
+	const insetRight = insets.get("right") as number
+	const insetTop = insets.get("top") as number
+	const insetBottom = insets.get("bottom") as number
+	
+	const safeAreaInsets : SafeAreaInsets = {
+		left: insetLeft,
+		top: insetTop,
+		right: insetRight,
+		bottom: insetBottom
+	}
+	
+	const safeAreaLeft = insetLeft
+	const safeAreaRight = screenWidth - insetRight
+	const safeAreaTop = insetTop
+	const safeAreaBottom = screenHeight - insetBottom
+	const safeAreaWidth = screenWidth - insetLeft - insetRight
+	const safeAreaHeight = screenHeight - insetTop - insetBottom
+	
+	const safeArea : SafeArea = {
+		left: safeAreaLeft,
+		top: safeAreaTop,
+		right: safeAreaRight,
+		bottom: safeAreaBottom,
+		width: safeAreaWidth,
+		height: safeAreaHeight
+	}
+
+	const screenTop = 0;
+	
+	const result : GetWindowInfoResult = {
+		pixelRatio: Number.from(UIScreen.main.scale),
+		screenWidth: screenWidth,
+		screenHeight: screenHeight,
+		windowWidth: windowWidth,
+		windowHeight: windowHeight,
+		statusBarHeight: UTSiOS.getStatusBarHeight(),
+		windowTop: windowTop,
+		windowBottom: windowBottom,
+		safeArea: safeArea,
+		safeAreaInsets: safeAreaInsets,
+		screenTop: screenTop
+	};
+	
+	return result;
+}
+
+export const getWindowInfo: GetWindowInfo = function(): GetWindowInfoResult {
+	
+	return getWindowInfoResult();
+}

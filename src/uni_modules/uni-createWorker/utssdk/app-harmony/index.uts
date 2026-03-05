@@ -1,0 +1,151 @@
+import { ThreadWorkerGlobalScope, worker, ErrorEvent } from '@kit.ArkTS';
+import { Worker, WorkerOnMessageCallback, WorkerOnErrorCallback, WorkerPostMessageOptions, CreateWorker, WorkerOnErrorCallbackResult, WorkerOnErrorCallbackResultErrorCode } from '../interface.uts';
+import { CREATE_WORKER, CreateWorkerApiProtocol } from '../protocol.uts';
+import { WorkerOnErrorCallbackResultImpl, WORKER_CALL_NOT_SUPPORTED, WORKER_INIT_FAILED, WORKER_INSTANCE_IS_NOT_RUNNING, WORKER_PATH_INVALID, WORKER_RUN_FAILED, WORKER_SERIALIZATION_FAILED } from '../unierror.uts';
+import { BusinessError } from '@ohos.base';
+import { EventHub } from '@dcloudio/uni-runtime';
+import { deviceInfo } from '@kit.BasicServicesKit';
+
+export { CreateWorker, Worker, WorkerOnMessageCallback, WorkerOnErrorCallback, WorkerPostMessageOptions, WorkerOnErrorCallbackResult, WorkerOnErrorCallbackResultErrorCode }
+
+function transformErrorCode(code: number): number {
+    switch (code) {
+        case 10200004:
+            return WORKER_INSTANCE_IS_NOT_RUNNING
+        case 10200005:
+            return WORKER_CALL_NOT_SUPPORTED
+        case 10200003:
+            return WORKER_INIT_FAILED
+        case 10200007:
+            return WORKER_PATH_INVALID
+        default:
+            break;
+    }
+    return WORKER_RUN_FAILED; // Default error code
+}
+
+function getNormalizedPath(url: string): string {
+    return url.startsWith('/') ? url.slice(1) : url;
+}
+
+export const __UNI_THREAD_WORKER_ALREADY__ = '__UNI_THREAD_WORKER_ALREADY__';
+
+export const createWorker: CreateWorker = defineSyncApi<Worker>(CREATE_WORKER, (url: string): Worker => {
+    try {
+        const threadWorker = new worker.ThreadWorker(`entry/ets/${getNormalizedPath(url)}`);
+        // TODO: 如果子线程太早的调用 postMessage，比如在 entry 中调用，会导致主线程无法接收到消息
+        threadWorker.postMessage(__UNI_THREAD_WORKER_ALREADY__)
+
+        const ThreadWorkerEventHub = new EventHub();
+        threadWorker.onmessage = (event) => {
+            ThreadWorkerEventHub.emit('message', event.data);
+        }
+        threadWorker.onmessageerror = (error) => {
+            ThreadWorkerEventHub.emit('error', new WorkerOnErrorCallbackResultImpl(WORKER_SERIALIZATION_FAILED, error?.data))
+        }
+        /**
+         * https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/worker-introduction#onallerrors接口与onerror接口之间的行为差异
+         */
+        if (deviceInfo.sdkApiVersion >= 18) {
+            (threadWorker as ESObject).onAllErrors = (error: ErrorEvent) => {
+                ThreadWorkerEventHub.emit('error', new WorkerOnErrorCallbackResultImpl(WORKER_RUN_FAILED, `${error.message} in ${error.filename}(${error.lineno}:${error.colno})`));
+            }
+        } else {
+            // onerror 触发后，会销毁 worker 实例
+            threadWorker.onerror = (error) => {
+                ThreadWorkerEventHub.emit('error', new WorkerOnErrorCallbackResultImpl(WORKER_RUN_FAILED, `${error.message} in ${error.filename}(${error.lineno}:${error.colno})`));
+            }
+        }
+
+        class WorkerImpl implements Worker {
+            __v_skip: boolean = true
+            _threadWorker: worker.ThreadWorker;
+
+            constructor() {
+                this._threadWorker = threadWorker;
+            }
+
+            onMessage(callback: WorkerOnMessageCallback): void {
+                ThreadWorkerEventHub.on('message', callback);
+            }
+            onError(callback: WorkerOnErrorCallback): void {
+                ThreadWorkerEventHub.on('error', callback);
+            }
+            postMessage(message: Object, options: WorkerPostMessageOptions | null = null): void {
+                if (message instanceof UTSJSONObject) {
+                    message = globalThis.JSON.parse(globalThis.JSON.stringify(message))
+                }
+                if (options?.harmonySendable) {
+                    if (options?.transfer && options.transfer.length > 0) {
+                        this._threadWorker?.postMessageWithSharedSendable(message, options.transfer as ArrayBuffer[]);
+                    } else {
+                        this._threadWorker?.postMessageWithSharedSendable(message);
+                    }
+                    return;
+                }
+                else if (options?.transfer && options.transfer.length > 0) {
+                    this._threadWorker?.postMessage(message, options.transfer as ArrayBuffer[]);
+                } else {
+                    this._threadWorker?.postMessage(message);
+                }
+            }
+            terminate(): void {
+                this._threadWorker.removeAllListener()
+                this._threadWorker.terminate()
+                ThreadWorkerEventHub.dispose()
+            }
+        }
+
+        return new WorkerImpl()
+    } catch (error) {
+        const errorCode = transformErrorCode((error as BusinessError).code);
+        throw new WorkerOnErrorCallbackResultImpl(errorCode as WorkerOnErrorCallbackResultErrorCode, (error as BusinessError).message);
+    }
+}, CreateWorkerApiProtocol) as CreateWorker
+
+export class WorkerTaskImpl {
+    private threadWorkerAlready: boolean = false;
+    private messageQueue: Array<[Object, WorkerPostMessageOptions | null]> = [];
+    workerPort: ThreadWorkerGlobalScope = worker.workerPort;
+
+    constructor() {
+        this.workerPort.onmessage = (e) => {
+            if (e.data === '__UNI_THREAD_WORKER_ALREADY__' && !this.threadWorkerAlready) {
+                this.threadWorkerAlready = true;
+                // 处理消息队列中的消息
+                for (const [message, options] of this.messageQueue) {
+                    this.postMessage(message, options);
+                }
+                this.messageQueue = []; // 清空消息队列
+                return
+            }
+            this.onMessage(e.data);
+        }
+    }
+
+    entry(): void { }
+
+    onMessage(message: Object): void { }
+
+    postMessage(message: Object, options: WorkerPostMessageOptions | null = null): void {
+        if (message instanceof UTSJSONObject) {
+            message = globalThis.JSON.parse(globalThis.JSON.stringify(message))
+        }
+        if (!this.threadWorkerAlready) {
+            this.messageQueue.push([message, options]);
+            return;
+        }
+        if (options?.harmonySendable) {
+            if (options?.transfer && options.transfer.length > 0) {
+                this.workerPort?.postMessageWithSharedSendable(message, options.transfer as ArrayBuffer[]);
+            } else {
+                this.workerPort?.postMessageWithSharedSendable(message);
+            }
+            return
+        } else if (options?.transfer && options.transfer.length > 0) {
+            this.workerPort?.postMessage(message, options.transfer as ArrayBuffer[]);
+        } else {
+            this.workerPort?.postMessage(message);
+        }
+    }
+}

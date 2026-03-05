@@ -1,0 +1,14 @@
+import { IPromptError, PromptErrorCode } from "./interface.uts";
+
+
+export class PromptErrorImpl extends UniError implements IPromptError {
+	// #ifdef APP-ANDROID
+	override errCode : PromptErrorCode
+	// #endif
+	constructor(errCode : PromptErrorCode,errMsg: string) {
+		super()
+		this.errSubject = "uni-prompt"
+		this.errCode = errCode
+		this.errMsg = errMsg;
+	}
+}

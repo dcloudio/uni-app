@@ -1,0 +1,258 @@
+import { UploadFileOptions, UploadTask, UploadFileProgressUpdateCallback, UploadFileOptionFiles, OnProgressUpdateResult } from '../../../interface.uts';
+import { NetworkUploadFileListener } from '../NetworkManager.uts'
+import { CharacterSet, HTTPURLResponse, UUID, Data, URL, URLResourceKey, URLSessionDataTask, URLSessionTask, URLSession, URLSessionConfiguration, OperationQueue, URLSessionDataDelegate, URLSessionUploadTask, NSError , NSMutableData , NSMutableSet , URLRequest} from 'Foundation';
+import { UTTypeCreatePreferredIdentifierForTag, UTTypeCopyPreferredTagWithClass, kUTTagClassFilenameExtension, kUTTagClassMIMEType } from 'MobileCoreServices';
+import { CFString } from 'CoreFoundation';
+import { NetworkUtil } from '../utils/NetworkUtil.uts';
+
+class NetworkUploadTaskImpl implements UploadTask {
+	private task : URLSessionDataTask | null = null;
+	private listener : NetworkUploadFileListener | null = null;
+	constructor(task : URLSessionDataTask | null, listener : NetworkUploadFileListener) {
+		this.task = task;
+		this.listener = listener;
+		super();
+	}
+
+	public abort() {
+		this.task?.cancel()
+		UTSiOS.destroyInstance(this)
+	}
+
+	public onProgressUpdate(option : UploadFileProgressUpdateCallback) {
+		const kListener = this.listener;
+		if (kListener != null) {
+			kListener!.progressListeners.add(option);
+		}
+	}
+}
+
+class UploadController implements URLSessionDataDelegate {
+	private static instance : UploadController | null = null
+
+	private session : URLSession | null = null;
+
+	private taskMap : Map<URLSessionTask, NetworkUploadFileListener> = new Map<URLSessionTask, NetworkUploadFileListener>();
+
+	public static getInstance() : UploadController {
+		if (this.instance == null) {
+			this.instance = new UploadController();
+		}
+		return this.instance!;
+	}
+
+
+	public uploadFile(options : UploadFileOptions, listener : NetworkUploadFileListener) : UploadTask {
+		let boundary = `----${new UUID().uuidString}`
+		let request = this.createRequest(options, listener, boundary);
+		if (request == null) {
+			const task = new NetworkUploadTaskImpl(null, listener)
+			listener.task = task
+			return task;
+		}
+
+		if (this.session == null) {
+			let urlSessionConfig = URLSessionConfiguration.default;
+
+			this.session = new URLSession(configuration = urlSessionConfig, delegate = this, delegateQueue = OperationQueue.current);
+		}
+
+		const bodyData = this.createBody(boundary, options, listener);
+		if (bodyData == null) {
+			const task = new NetworkUploadTaskImpl(null, listener);
+			listener.task = task
+			return task
+		}
+		let task = this.session?.uploadTask(with = request!, from = bodyData!);
+		task?.resume();
+		if (task != null) {
+			this.taskMap.set(task!, listener);
+		}
+		let requestTask = new NetworkUploadTaskImpl(task, listener);
+		listener.task = requestTask
+		return requestTask;
+	}
+
+
+	private createRequest(param : UploadFileOptions, listener : NetworkUploadFileListener, boundary : string) : URLRequest | null {
+		const encodeUrl = NetworkUtil.percentEscapedString(param.url)
+		let url = new URL(string = encodeUrl);
+		if (url == null) {
+			let error = new NSError(domain = "invalid URL", code = 600009);
+			listener.onFail(error);
+			return null
+		}
+
+		let timeout = param.timeout == null ? 120000 : param.timeout;
+		let timeoutInterval = new Double(timeout!) / 1000;
+		let request = new URLRequest(url = url!, cachePolicy = URLRequest.CachePolicy.useProtocolCachePolicy, timeoutInterval = timeoutInterval);
+		request.httpShouldHandleCookies = true;
+
+		request.httpMethod = "POST";
+
+		request.setValue(`multipart/form-data; boundary=${boundary}`, forHTTPHeaderField = "Content-Type");
+
+		let ua = UTSiOS.getUserAgent();
+		request.setValue(ua, forHTTPHeaderField = "User-Agent");
+		
+		
+		let headers = param.header?.toMap();
+		if (headers != null) {
+			for (entry in headers!) {
+				let key = entry.key;
+				let value = entry.value;
+				let valueStr = "";
+				if (value instanceof UTSJSONObject) {
+					valueStr = JSON.stringify(value) ?? ""
+				}else if(value instanceof Map<string, any>){
+					valueStr = JSON.stringify(new UTSJSONObject(value)) ?? ""
+				}else{
+					valueStr = `${value}`
+				}
+				request.setValue(valueStr, forHTTPHeaderField = key);
+			}
+		}
+		return request;
+	}
+
+	private createBody(boundary : string, options : UploadFileOptions, listener : NetworkUploadFileListener) : Data | null {
+		let body = new NSMutableData();
+		let formData = options.formData?.toMap();
+		if (formData != null) {
+			for (entry in formData!) {
+				const key = entry.key;
+				const value = entry.value;
+				if (value != null && typeof (key) == 'string') {
+					if (value instanceof UTSJSONObject) {
+						let valueStr = JSON.stringify(value)
+						if (valueStr != null) {
+							this.fillTextPart(body, boundary, key, valueStr as string)
+						}
+					}else if(value instanceof Map<string, any>){
+						let valueStr = JSON.stringify(new UTSJSONObject(value))
+						if (valueStr != null) {
+							this.fillTextPart(body, boundary, key, valueStr as string)
+						}
+					}else{
+						this.fillTextPart(body, boundary, key, `${value}`)
+					}
+				} else {
+					continue;
+				}
+			}
+		}
+
+		const tempFiles = options.files;
+		const filePath = options.filePath;
+		if (tempFiles != null && tempFiles!.length > 0) {
+			const files : UploadFileOptionFiles[] = tempFiles!;
+			for (let i = 0; i < files.length; i++) {
+				const item = files[i]
+				const filePath = item.uri;
+				const name = item.name ?? "file";
+				if (!this.fillFilePart(body, boundary, name, filePath!, listener)) {
+					return null;
+				}
+			}
+		} else if(filePath != null) {
+			const name = options.name ?? "file";
+			if (!this.fillFilePart(body, boundary, name, filePath!, listener)) {
+				return null
+			}
+		}
+		
+		if(formData == null && filePath == null && (tempFiles == null || (tempFiles != null && tempFiles?.length == 0))) {
+			let error = new NSError(domain = "At least one of the parameters filePath, files, or formData", code = 602001);
+			listener.onFail(error);
+			return null;
+		}
+		
+
+		body.append(`--${boundary}--\r\n`.data(using = String.Encoding.utf8)!)
+
+		return body.copy() as Data;
+	}
+	
+
+	private fillTextPart(body : NSMutableData, boundary : string, key : string, value : string) {
+		body.append(`--${boundary}\r\n`.data(using = String.Encoding.utf8)!)
+		body.append(`Content-Disposition: form-data; name=\"${key}\"\r\n`.data(using = String.Encoding.utf8)!)
+		body.append("\r\n".data(using = String.Encoding.utf8)!)
+		body.append(value.data(using = String.Encoding.utf8)!)
+		body.append("\r\n".data(using = String.Encoding.utf8)!)
+	}
+
+	private fillFilePart(body : NSMutableData, boundary : string, name : string, filePath : string, listener : NetworkUploadFileListener) : boolean {
+		const absolutePath = new URL(fileURLWithPath = UTSiOS.getResourceAbsolutePath(filePath, null))
+		const fileData = UTSiOS.try(new Data(contentsOf = absolutePath), "?")
+		if (fileData == null) {
+			let error = new NSError(domain = "Illegal file", code = -1);
+			listener.onFail(error)
+			return false
+		}
+		const mimeType = this.getMimeType(absolutePath)
+		const fileName = absolutePath.lastPathComponent
+
+		const keys = new Swift.Set([URLResourceKey.fileSizeKey])
+		const resourceValue = UTSiOS.try(absolutePath.resourceValues(forKeys = keys), "?")
+		const fileSize = resourceValue?.fileSize
+		body.append(`--${boundary}\r\n`.data(using = String.Encoding.utf8)!)
+		body.append(`Content-Disposition: form-data; name=\"${name}\"; filename=\"${fileName}\"\r\n`.data(using = String.Encoding.utf8)!)
+		body.append(`Content-Type: ${mimeType}\r\n`.data(using = String.Encoding.utf8)!)
+		if (fileSize != null) {
+			body.append(`Content-Length: ${fileSize!}\r\n`.data(using = String.Encoding.utf8)!)
+		}
+		body.append("\r\n".data(using = String.Encoding.utf8)!)
+		body.append(fileData!)
+		body.append("\r\n".data(using = String.Encoding.utf8)!)
+		return true
+	}
+
+
+	private getMimeType(url : URL) : string {
+		let pathExtension = url.pathExtension
+
+		const uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as CFString, null)?.takeRetainedValue()
+		if (uti != null) {
+			let mimetype = UTTypeCopyPreferredTagWithClass(uti!, kUTTagClassMIMEType)?.takeRetainedValue()
+			if (mimetype != null) {
+				return mimetype as string;
+			}
+		}
+		return "application/octet-stream"
+	}
+
+	//mark --- URLSessionDataDelegate
+	urlSession(session : URLSession, @argumentLabel("") task : URLSessionTask, @argumentLabel("didSendBodyData") bytesSent : Int64, @argumentLabel("") totalBytesSent : Int64, @argumentLabel("") totalBytesExpectedToSend : Int64) {
+		
+		let listener = this.taskMap.get(task);
+		const progress = (Number.from(totalBytesSent) / totalBytesExpectedToSend) * 100
+		const progressUpdate : OnProgressUpdateResult = {
+			progress: progress.toInt(),
+			totalBytesSent: totalBytesSent,
+			totalBytesExpectedToSend: totalBytesExpectedToSend
+		}
+		listener?.onProgress(progressUpdate)
+	}
+
+	urlSession(session : URLSession, @argumentLabel("") dataTask : URLSessionDataTask, @argumentLabel("didReceive") data : Data) {
+		let listener = this.taskMap.get(dataTask);
+		listener?.onDataReceived(data);
+	}
+
+	urlSession(session : URLSession, @argumentLabel("") task : URLSessionTask, @argumentLabel("didCompleteWithError") error : NSError | null) {
+		let listener = this.taskMap.get(task);
+
+		if (error != null) {
+			listener?.onFail(error as NSError);
+		} else {
+			listener?.onFinished(task.response as HTTPURLResponse);
+		}
+		this.taskMap.delete(task);
+	}
+}
+
+
+export {
+	UploadController
+}

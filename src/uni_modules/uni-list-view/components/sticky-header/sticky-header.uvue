@@ -1,0 +1,28 @@
+<template>
+  <view
+    class="uni-sticky-header"
+    :list-view-id="listViewId"
+    change:list-view-id="recycleListHeaderCpp.setListViewId"
+    :section-id="sectionId"
+    change:section-id="recycleListHeaderCpp.setSectionId"
+    :ref="recycleListHeaderCpp.setElement"
+    style="position: absolute; width: 100%; z-index: 1;"
+  >
+    <slot></slot>
+  </view>
+</template>
+<script module="recycleListHeaderCpp" lang="cpp" class-name="RecycleListHeader" src="../../cppsdk/recycle_list.h"
+  namespace="recycle_list"></script>
+<script setup>
+import { UniStickyHeaderElement } from '../../common/element'
+defineOptions({
+  name: 'sticky-header',
+  rootElement: {
+      class: UniStickyHeaderElement,
+  },
+})
+
+const listViewId = inject<number>('__uni_recycle_view_id', 0)
+const sectionId = inject<number>('__uni_recycle_section_id', 0)
+</script>
+<style></style>

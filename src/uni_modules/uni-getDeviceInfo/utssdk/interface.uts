@@ -1,0 +1,1774 @@
+export type GetDeviceInfoOptions = {
+    /**
+     * @description 过滤字段的字符串数组，假如要获取指定字段，传入此数组。
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "3.9+"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     * 	}
+     * }
+     */
+    filter: Array<string>
+}
+
+export type GetDeviceInfoResult = {
+    /**
+     * 设备品牌
+     * @deprecated 已废弃，仅为了向下兼容保留
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.11"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    brand?: string
+    /**
+     * 设备品牌
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.11"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    deviceBrand?: string,
+    /**
+     * 设备 id 。由 uni-app 框架生成并存储，清空 Storage 会导致改变
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.11"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "√",
+     *     "unixVer": "4.0"
+     *   }
+     * }
+     */
+    deviceId?: string,
+    /**
+     * 设备型号
+     * @deprecated 已废弃，仅为了向下兼容保留
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.11"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "√",
+     *     "unixVer": "4.0"
+     *   }
+     * }
+     */
+    model?: string,
+    /**
+     * 设备型号
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.11"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "√",
+     *     "unixVer": "4.0"
+     *   }
+     * }
+     */
+    deviceModel?: string,
+    /**
+     * 设备类型phone、pad、pc
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.11"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "√",
+     *     "unixVer": "4.0"
+     *   }
+     * }
+     */
+    deviceType?: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance',
+    /**
+     * 设备方向 竖屏 portrait、横屏 landscape
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.11"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "√",
+     *     "unixVer": "4.0"
+     *   }
+     * }
+     */
+    deviceOrientation?: string,
+    /**
+     * 设备像素比
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.11"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "√",
+     *     "unixVer": "4.0"
+     *   }
+     * }
+     */
+    devicePixelRatio?: number,
+    /**
+     * 操作系统及版本
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.11"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "√",
+     *     "unixVer": "4.0"
+     *   }
+     * }
+     */
+    system?: string,
+    /**
+     * 客户端平台
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.11"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "√",
+     *     "unixVer": "4.0"
+     *   }
+     * }
+     */
+    platform?: 'ios' | 'android' | 'harmonyos' | 'mac' | 'windows' | 'linux',
+    /**
+     * 是否root。iOS 为是否越狱
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.11"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    isRoot?: boolean,
+    /**
+     * 是否是模拟器
+	 *
+	 * @deprecated 已废弃，由于合规问题在4.51版本后不会采集传感器信息，会影响准确度，建议使用`isSimulator()`代替。
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.11"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    isSimulator?: boolean,
+    /**
+     * adb是否开启
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "√"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "x",
+     * 			"uniVer": "x",
+     * 			"unixVer": "x"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    isUSBDebugging?: boolean,
+    /**
+     * 系统名称
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "4.18"
+     *   }
+     * }
+     */
+    osName?: 'ios' | 'android' | 'harmonyos' | 'macos' | 'windows' | 'linux' | null,
+    /**
+     * 操作系统版本。如 ios 版本，andriod 版本
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "4.18"
+     *   }
+     * }
+     */
+    osVersion?: string | null,
+    /**
+     * 操作系统语言
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+       * 	},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    osLanguage?: string | null,
+    /**
+     * 操作系统主题
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    osTheme?: 'light' | 'dark' | null,
+    /**
+     * Android 系统API库的版本。
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "x",
+       *     "uniVer": "x",
+       *     "unixVer": "x"
+       *   },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+       * },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    osAndroidAPILevel?: number | null,
+    /**
+     * 鸿蒙系统软件API版本
+     *
+     * @uniPlatform
+     * {
+     *    "app": {
+     *      "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "√"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "√",
+     *      "uniVer": "4.61",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    osHarmonySDKAPIVersion?: number | null,
+    /**
+     * 产品版本，关于本机信息内的软件版本
+     *
+     * @uniPlatform
+     * {
+     *    "app": {
+     *      "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "√"
+     *    },
+     *    "ios": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "harmony": {
+     *      "osVer": "√",
+     *      "uniVer": "4.61",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    osHarmonyDisplayVersion?: string | null,
+    /**
+     * rom 名称。Android 部分机型获取不到值。iOS 恒为 `ios`
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    romName?: string | null,
+    /**
+     * rom 版本号。Android 部分机型获取不到值。iOS 为操作系统版本号（同 `osVersion`）。
+     *
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "x",
+     * 			"unixVer": "4.18"
+     * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "x"
+     *   }
+     * }
+     */
+    romVersion?: string | null,
+}
+
+
+/**
+ * @param [options=包含所有字段的过滤对象] 过滤的字段对象, 不传参数默认为获取全部字段。
+ */
+export type GetDeviceInfo = (options?: GetDeviceInfoOptions | null) => GetDeviceInfoResult;
+
+
+export interface Uni {
+    /**
+      * GetDeviceInfo(Object object)
+      * @description
+      * 获取设备信息
+      * @param {GetDeviceInfoOptions} options [options=包含所有字段的过滤对象] 过滤的字段对象, 不传参数默认为获取全部字段。
+      * @return {object}
+      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-device-info.html
+      * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-device-info.html
+      * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/getDeviceInfo.html
+      * @uniPlatform
+      * {
+      * 	"app": {
+      * 		"android": {
+      * 			"osVer": "5.0",
+      * 			"uniVer": "√",
+      * 			"unixVer": "3.9+"
+      * 		},
+      * 		"ios": {
+      * 			"osVer": "12.0",
+      * 			"uniVer": "√",
+      * 			"unixVer": "4.11"
+      * 		},
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+      * 	},
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+    *   "web": {
+    *     "uniVer": "√",
+    *     "unixVer": "4.0"
+    *   }
+      * }
+    * @example
+       ```typescript
+        uni.getDeviceInfo({
+          filter:[]
+        })
+       ```
+      */
+    getDeviceInfo(options?: GetDeviceInfoOptions | null): GetDeviceInfoResult;
+
+	/**
+	 * 判断当前是否是模拟器，Android设备上会采集传感器信息。
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/is-simulator.html
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/is-simulator.html
+	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/tutorial/app-sec-api.html#issimulator
+	 * @uniPlatform
+	 * {
+	 * 	"app": {
+	 * 		"android": {
+	 * 			"osVer": "5.0",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.51"
+	 * 		},
+	 * 		"ios": {
+	 * 			"osVer": "x",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "4.51"
+	 * 		},
+	 *    "harmony": {
+	 *      "osVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 * 	},
+	 *  "mp": {
+	 *    "weixin": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "alipay": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "x",
+	 *        "unixVer": "x"
+	 *    }
+	 *  },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "x"
+	 *   }
+	 * }
+	 */
+	isSimulator(): boolean;
+
+}

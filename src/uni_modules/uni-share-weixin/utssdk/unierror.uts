@@ -1,0 +1,61 @@
+export enum ShareWeixinErrorCode {
+
+  APP_ID_NOT_FOUND = 4000500,
+
+  SCENE_NOT_SUPPORT = 4000501,
+
+  SCENE_NOT_FOUND = 4000502,
+
+  TYPE_NOT_FOUND = 4000503,
+
+  PARAMETERS_INVALID = 4000504,
+
+  SEND_REQUEST_FAILED = 4000505,
+
+  TYPE_NOT_SUPPORT = 4000506,
+
+  DOWNLOAD_IMAGE_ERROR = 4000507,
+
+  LOAD_LOCAL_FILEPATH_ERROR = 4000508,
+
+  GET_THUMB_IMAGE_ERROR = 4000509,
+
+  WEI_XIN_APP_MAYBE_NOT_INSTALL = 4000510
+}
+
+export const SHARE_WEIXIN_UNI_ERROR_CODES : Map<ShareErrorCode, string> = new Map([
+
+  [ShareWeixinErrorCode.APP_ID_NOT_FOUND, '未找到微信APPID,请确认 manifest.json 中配置信息是否正确'],
+
+  [ShareWeixinErrorCode.SCENE_NOT_SUPPORT, '该场景字段当前不支持'],
+
+  [ShareWeixinErrorCode.SCENE_NOT_FOUND, '该场景字段未匹配到'],
+
+  [ShareWeixinErrorCode.TYPE_NOT_FOUND, '分享类型不匹配，请确认类型是否正确'],
+
+  [ShareWeixinErrorCode.PARAMETERS_INVALID, '参数填写错误'],
+
+  [ShareWeixinErrorCode.SEND_REQUEST_FAILED, '请求微信接口失败'],
+
+  [ShareWeixinErrorCode.TYPE_NOT_SUPPORT, '暂不支持该类型的分享'],
+
+  [ShareWeixinErrorCode.DOWNLOAD_IMAGE_ERROR, '图片下载失败'],
+
+  [ShareWeixinErrorCode.LOAD_LOCAL_FILEPATH_ERROR, '加载本地文件失败'],
+
+  [ShareWeixinErrorCode.GET_THUMB_IMAGE_ERROR, '获取缩略图失败'],
+
+  [ShareWeixinErrorCode.WEI_XIN_APP_MAYBE_NOT_INSTALL, '微信可能未安装']
+]);
+
+export class ShareWeixinError extends UniError implements IShareFail {
+  // #ifdef APP-ANDROID || APP-HARMONY
+  override errCode : ShareErrorCode
+  // #endif
+  constructor(errCode : ShareErrorCode, message : string) {
+    super()
+    this.errSubject = 'uni-share-weixin'
+    this.errCode = errCode
+    this.errMsg = message
+  }
+}

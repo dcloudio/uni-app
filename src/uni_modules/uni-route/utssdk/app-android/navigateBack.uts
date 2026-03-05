@@ -1,0 +1,109 @@
+import {
+    ANIMATION_DURATION,
+    ANIMATION_TYPE,
+    NAVIGATE_BACK,
+    ON_LAST_PAGE_BACK_PRESS,
+    ON_SHOW,
+    Page,
+    REDIRECT_TO,
+    invokeAfterRouteHooks,
+    invokeBeforeRouteHooks,
+    invokeCurrentAppHook,
+    invokeCurrentPageHook,
+    invokePageOnBackPress,
+    isTabPage,
+} from '@dcloudio/uni-runtime'
+import { NavigateBackOptions, NavigateBackSuccess } from '../interface.uts'
+import {
+    DEFAULT_ANIMATION_DURATION,
+    DEFAULT_ANIMATION_NAVIGATE_BACK,
+    DEFAULT_ANIMATION_OUT,
+} from '../constants.uts'
+import { NavigateBackFailImpl } from '../unierror.uts'
+import { isDirectPage, reLaunchEntryPage } from './direct.uts'
+
+export const navigateBack = defineAsyncApi<
+    NavigateBackOptions | null,
+    NavigateBackSuccess
+>(NAVIGATE_BACK, (options: NavigateBackOptions | null, res: ApiExecutor) => {
+    _navigateBack(NAVIGATE_BACK, options, res)
+})
+
+export const _navigateBack = (
+    from: string,
+    options: NavigateBackOptions | null,
+    res: ApiExecutor | null,
+) => {
+    const pages = getCurrentPages()
+    if (pages.length == 0) {
+        if (res !== null) {
+            res.reject(new NavigateBackFailImpl(`getCurrentPage is empty`))
+        }
+        return
+    }
+    const currentPage = pages[pages.length - 1]
+    let onBackPressRes = invokePageOnBackPress(currentPage.vm!, from)
+    if (onBackPressRes !== true) {
+        const dialogPages = currentPage.getDialogPages()
+        if (dialogPages.length > 0) {
+            const dialogPage = dialogPages[dialogPages.length - 1]
+            onBackPressRes = invokePageOnBackPress(dialogPage.$vm as Page, from)
+        }
+    }
+    if (onBackPressRes == true) {
+        if (res !== null) {
+            res.resolve(null)
+        }
+        return
+    }
+    invokeBeforeRouteHooks(NAVIGATE_BACK)
+    if (isDirectPage(currentPage.vm!)) {
+        reLaunchEntryPage()
+    } else if (isTabPage(currentPage.vm!) || pages.length == 1) {
+        quit()
+    } else {
+        if (options?.delta !== null && options?.delta! > 1) {
+            const length = pages.length
+            options!.delta = Math.min(options!.delta!, length - 1)
+            // 中间页隐藏
+            const deltaPages = pages.splice(
+                length - options!.delta!,
+                options!.delta! - 1,
+            )
+            deltaPages.reverse()
+            deltaPages.forEach(deltaPage => {
+                deltaPage.vm!.$close(
+                    new Map<string, any | null>([[ANIMATION_TYPE, 'none']]),
+                )
+            })
+        }
+        let animationType = options?.animationType ?? DEFAULT_ANIMATION_NAVIGATE_BACK
+        let animationDuration = options?.animationDuration ?? DEFAULT_ANIMATION_DURATION
+        if (currentPage.vm!.openType == REDIRECT_TO) {
+            // 如果是 redirectTo 跳转的，需要指定 back 动画
+            animationType = DEFAULT_ANIMATION_OUT
+            animationDuration = DEFAULT_ANIMATION_DURATION
+        }
+        currentPage.vm!.$close(
+            new Map<string, any | null>([
+                [
+                    ANIMATION_TYPE,
+                    animationType,
+                ],
+                [
+                    ANIMATION_DURATION,
+                    animationDuration,
+                ],
+            ]),
+        )
+        invokeCurrentPageHook(ON_SHOW)
+        invokeAfterRouteHooks(NAVIGATE_BACK)
+    }
+    if (res !== null) {
+        res.resolve(null)
+    }
+}
+
+function quit() {
+    invokeCurrentAppHook(ON_LAST_PAGE_BACK_PRESS)
+}

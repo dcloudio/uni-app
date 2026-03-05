@@ -1,0 +1,28 @@
+export const DEFAULT_ANIMATION_IN = 'pop-in'
+export const DEFAULT_ANIMATION_OUT = 'pop-out'
+export const DEFAULT_ANIMATION_DURATION = 300
+export const DEFAULT_ANIMATION_NAVIGATE_BACK = 'auto'
+
+export const ANIMATION_IN = [
+    'slide-in-right',
+    'slide-in-left',
+    'slide-in-top',
+    'slide-in-bottom',
+    'fade-in',
+    'zoom-out',
+    // 'zoom-fade-out',
+    'pop-in',
+    'none',
+]
+
+export const ANIMATION_OUT = [
+    'slide-out-right',
+    'slide-out-left',
+    'slide-out-top',
+    'slide-out-bottom',
+    'fade-out',
+    'zoom-in',
+    // 'zoom-fade-in',
+    'pop-out',
+    'none',
+]

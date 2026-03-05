@@ -1,0 +1,89 @@
+import {
+  Login, LoginOptions, LoginSuccess, GetUserInfo, GetUserInfoOptions, GetUserInfoSuccess, UniOAuthProvider
+} from '../interface.uts';
+import { API_LOGIN, LoginApiProtocol, API_GET_USER_INFO, GetUserInfoApiProtocol } from '../protocol.uts';
+
+const SERVICE = 'oauth'
+const PROVIDER = 'huawei'
+
+export const login: Login = defineAsyncApi<LoginOptions, LoginSuccess>(
+  API_LOGIN,
+  function (args: LoginOptions, executor: ApiExecutor<LoginSuccess>) {
+    const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER)
+    if (!provider) {
+      executor.reject('Provider not found.')
+      return
+    }
+    provider.login({
+      provider: args.provider,
+      scopes: args.scopes,
+      timeout: args.timeout,
+      onlyAuthorize: args.onlyAuthorize,
+      success(res) {
+        executor.resolve(res)
+      },
+      fail(err) {
+        executor.reject(err.errMsg)
+      }
+    } as LoginOptions)
+  },
+  LoginApiProtocol
+) as Login
+
+export const getUserInfo: GetUserInfo = defineAsyncApi<GetUserInfoOptions, GetUserInfoSuccess>(
+  API_GET_USER_INFO,
+  function (args: GetUserInfoOptions, executor: ApiExecutor<GetUserInfoSuccess>) {
+    const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER)
+    if (!provider) {
+      executor.reject('Provider not found.')
+      return
+    }
+    provider.getUserInfo({
+      provider: args.provider,
+      withCredentials: args.withCredentials,
+      timeout: args.timeout,
+      lang: args.lang,
+      success(res) {
+        executor.resolve(res)
+      },
+      fail(err) {
+        executor.reject(err.errMsg)
+      }
+    } as GetUserInfoOptions)
+  },
+  GetUserInfoApiProtocol
+) as GetUserInfo
+
+export {
+    AppleLoginAppleInfo,
+    GetUserInfo,
+    GetUserInfoComplete,
+    GetUserInfoCompleteCallback,
+    GetUserInfoFail,
+    GetUserInfoFailCallback,
+    GetUserInfoOptions,
+    GetUserInfoSuccess,
+    GetUserInfoSuccessCallback,
+    IOauthFail,
+    Login,
+    LoginComplete,
+    LoginCompleteCallback,
+    LoginFail,
+    LoginFailCallback,
+    LoginOptions,
+    LoginSuccess,
+    LoginSuccessCallback,
+    OauthErrorCode,
+    UniOAuthProvider,
+    UniVerifyButtonListItem,
+    UniVerifyButtonsStyles,
+    UniverifyAuthButtonStyles,
+    UniverifyIconStyles,
+    UniverifyOtherButtonStyles,
+    UniverifyPhoneNumStyles,
+    UniverifyPrivacyItemStyles,
+    UniverifyPrivacyTermsStyles,
+    UniverifySloganStyles,
+    UniverifyStyle,
+    UserInfo
+} from '../interface.uts'

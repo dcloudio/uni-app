@@ -1,0 +1,397 @@
+import { UniPickerViewElement } from '../uni-picker-view/uni-picker-view'
+
+export function camelize(str: string): string {
+    // 正则在跨端中表现不佳，改为循环处理
+    const parts = str.split('-')
+    // 如果没有连字符，直接返回
+    if (parts.length == 1) {
+      return str
+    }
+    
+    let result = parts[0]
+    for (let i = 1; i < parts.length; i++) {
+      const part = parts[i]
+      if (part.length > 0) {
+        // 首字母大写并拼接
+        result += part.charAt(0).toUpperCase() + part.slice(1)
+      }
+    }
+    return result
+}
+
+export class UniPickerViewColumnElement extends UniFormControlElement<number> implements UniCustomElement {
+  static get observedAttributes() : Array<string> {
+    return ['value']
+  }
+
+  private status = 0
+  private scrollView! : UniElement
+  private contentView! : UniElement
+  private indicatorView! : UniElement
+  private maskViewTop! : UniElement
+  private maskViewBottom! : UniElement
+  private _indicatorHeight = 50
+  private _selectedIndex = 0
+  private _initialValue = 0
+  private _initialValueFlag = false
+  private _skipScrollChangeEventOnce = false
+  private _isAdjusting = false
+  private _lastMaskTopStyle = new Map<string, string>()
+  private _lastMaskBottomStyle = new Map<string, string>()
+  private _lastIndicatorStyle = new Map<string, string>()
+
+  private basicMaskTopStyle = new Map<string, string>([
+    ['pointerEvents', 'none'],
+    ['position', 'absolute'],
+    ['height', '40%'],
+    ['left', '0px'],
+    ['top', '0px'],
+    ['right', '0px'],
+    ['backgroundImage', 'linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.6))']
+  ])
+
+  private basicMaskBottomStyle = new Map<string, string>([
+    ['pointerEvents', 'none'],
+    ['position', 'absolute'],
+    ['height', '40%'],
+    ['left', '0px'],
+    ['right', '0px'],
+    ['bottom', '0px'],
+    ['backgroundImage', 'linear-gradient(to top, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.6))']
+  ])
+
+  private basicIndicatorStyle = new Map<string, string>([
+    ['pointerEvents', 'none'],
+    ['boxSizing', 'content-box'],
+    ['height', '50px'],
+    ['left', '0px'],
+    ['right', '0px'],
+    ['top', '0px'],
+    ['bottom', '0px'],
+    ['marginTop', 'auto'],
+    ['marginBottom', 'auto'],
+    ['border', '1px solid #e5e5e5'], // 适当冗余
+    ['borderStyle', 'solid'],
+    ['borderLeftWidth', '0px'],
+    ['borderTopWidth', '1px'],
+    ['borderRightWidth', '0px'],
+    ['borderBottomWidth', '1px'],
+    ['borderColor', '#e5e5e5']
+  ])
+
+  constructor() {
+    super()
+
+    this.style.setProperty('flexGrow', '1')
+    this.style.setProperty('position', 'relative')
+
+    const scrollView = this.uniPage.createElement('scroll-view')
+    scrollView.setAnyAttribute('showScrollbar', false)
+    const scrollStyle = scrollView.style
+    scrollStyle.setProperty('flexDirection', 'column')
+    scrollStyle.setProperty('position', 'absolute')
+    scrollStyle.setProperty('top', '0px')
+    scrollStyle.setProperty('left', '0px')
+    scrollStyle.setProperty('right', '0px')
+    scrollStyle.setProperty('bottom', '0px')
+
+    const contentView = this.uniPage.createElement('view')
+    scrollView.appendChild(contentView)
+
+    const indicatorView = this.uniPage.createElement('view')
+    const indicatorStyle = indicatorView.style
+    // initIndicatorStyle
+    this.basicIndicatorStyle.forEach((value, key) => {
+      indicatorStyle.setProperty(key, value)
+    })
+
+    const maskViewTop = this.uniPage.createElement('view')
+    const maskViewTopStyle = maskViewTop.style
+
+    // initMaskViewTopStyle
+    this.basicMaskTopStyle.forEach((value, key) => {
+      maskViewTopStyle.setProperty(key, value)
+    })
+
+    const maskViewBottom = this.uniPage.createElement('view')
+    const maskViewBottomStyle = maskViewBottom.style
+    // initMaskViewBottomStyle
+    this.basicMaskBottomStyle.forEach((value, key) => {
+      maskViewBottomStyle.setProperty(key, value)
+    })
+
+    this.scrollView = scrollView
+    this.contentView = contentView
+
+    this.maskViewTop = maskViewTop
+    this.indicatorView = indicatorView
+    this.maskViewBottom = maskViewBottom
+
+    ;(scrollView as UniElementImpl).addEventListener('scrollend', (e : UniScrollEvent) => {
+      "[weak self]"
+      if (this._indicatorHeight == 0) {
+        return
+      }
+      this._scrollTopSnap(e.detail.scrollTop as number)
+    })
+    this.addEventListener('touchstart', (_ : UniTouchEvent) => {
+      "[weak self]"
+      this._skipScrollChangeEventOnce = false
+    })
+
+    this.addEventListener('click', (e : UniPointerEvent) => {
+      "[weak self]"
+      const offsetY = this.getBoundingClientRect().top
+      const offsetTop = e.clientY - offsetY - maskViewTop.offsetHeight
+      const targetIndex = parseInt((scrollView.scrollTop + offsetTop) / this._indicatorHeight + '')
+
+      this._setIndex(targetIndex)
+      this._scrollTopIndex(this._selectedIndex)
+    })
+  }
+
+  override get value() : number {
+    return this._selectedIndex
+  }
+
+  override set value(value : number) {
+    this._setIndex(value)
+
+    this._skipScrollChangeEventOnce = true
+
+    if (this.isConnected) {
+      this._scrollTopIndex(value)
+    }
+  }
+
+  override reset() {
+    this.value = this._initialValue
+  }
+
+  connectedCallback() {
+    this.initialize()
+    this.getBoundingClientRectAsync()?.then((_ : DOMRect) => {
+      this._onLayout()
+      this.scrollView.setAnyAttribute('scroll-with-animation', true)
+    })
+  }
+
+  disconnectedCallback() {
+    super.removeChild(this.maskViewTop)
+    super.removeChild(this.indicatorView)
+    super.removeChild(this.maskViewBottom)
+    super.removeChild(this.scrollView)
+  }
+
+  attributeChangedCallback(name : string, oldValue : any | null, newValue : any | null) {
+    switch (name) {
+      case 'value':
+        const selectedIndex = newValue as number
+        if (!this._initialValueFlag) {
+          this._initialValueFlag = true
+          this._initialValue = selectedIndex
+        }
+        this.value = selectedIndex
+        break;
+    }
+  }
+
+  override appendChild(child : UniElement) : void {
+    this.initialize()
+    if (this.status === 2) {
+      return this.contentView.appendChild(child)
+    } else {
+      return super.appendChild(child)
+    }
+  }
+
+  override insertBefore(child : UniElement, anchor ?: UniElement | null) : UniElement | null {
+    this.initialize()
+    if (this.status === 2) {
+      return this.contentView.insertBefore(child, anchor)
+    } else {
+      return super.insertBefore(child, anchor)
+    }
+  }
+
+  override removeChild(child : UniElement) : UniElement | null {
+    return this.contentView.removeChild(child)
+  }
+
+  initialize() {
+    // 与 Web 标准一致，不允许在 constructor 中添加 children
+    if (this.status !== 0) {
+      return
+    }
+    this.status = 1
+
+    this.appendChild(this.indicatorView)
+    this.appendChild(this.scrollView)
+    this.appendChild(this.maskViewTop)
+    this.appendChild(this.maskViewBottom)
+
+    this.status = 2
+  }
+
+  get disabled() : boolean {
+    return this.getAttribute('disabled') == 'true' ? true : false
+  }
+
+  resize() {
+    this._onLayout()
+  }
+
+  private diffStyle(styles : Map<string, string>, lastStyles : Map<string, string>, basicStyles : Map<string, string>) : Map<string, string> {
+    const diffedStyles = new Map<string, string>()
+    if (lastStyles.size > 0) {
+      // 识别移除样式，removeProperty 展示效果不对，兼容驼峰属性命名
+      lastStyles.forEach((value, key) => {
+        if (!styles.has(key)) {
+          if (basicStyles.has(key)) {
+            diffedStyles.set(key, basicStyles.get(key) as string)
+          } else if (basicStyles.has(camelize(key))) {
+            diffedStyles.set(key, basicStyles.get(camelize(key)) as string)
+          } else {
+            diffedStyles.set(key, '')
+          }
+        }
+      })
+    }
+
+    styles.forEach((value, key) => {
+      diffedStyles.set(key, value)
+    })
+    return diffedStyles
+  }
+
+  setIndicatorStyle(styles : Map<string, string>) : void {
+    const diffedStyles = this.diffStyle(styles, this._lastIndicatorStyle, this.basicIndicatorStyle);
+    this._lastIndicatorStyle.clear()
+    diffedStyles.forEach((value, key) => {
+      this.indicatorView.style.setProperty(key, value)
+      if (value != '') {
+        this._lastIndicatorStyle.set(key, value)
+      }
+    })
+    this.getBoundingClientRectAsync()?.then((_ : DOMRect) => {
+      this._onLayout()
+    })
+  }
+
+  setMaskTopStyle(styles : Map<string, string>) : void {
+    const diffedStyles = this.diffStyle(styles, this._lastMaskTopStyle, this.basicMaskTopStyle)
+    this._lastMaskTopStyle.clear()
+    diffedStyles.forEach((value, key) => {
+      this.maskViewTop.style.setProperty(key, value)
+      // 置空视为属性移除，无需缓存
+      if (value != '') {
+        this._lastMaskTopStyle.set(key, value)
+      }
+    })
+    this._onLayout()
+  }
+
+  setMaskBottomStyle(styles : Map<string, string>) : void {
+    const diffedStyles = this.diffStyle(styles, this._lastMaskBottomStyle, this.basicMaskBottomStyle)
+    this._lastMaskBottomStyle.clear()
+    diffedStyles.forEach((value, key) => {
+      this.maskViewBottom.style.setProperty(key, value)
+      // 置空视为属性移除，无需缓存
+      if (value != '') {
+        this._lastMaskBottomStyle.set(key, value)
+      }
+    })
+    this._onLayout()
+  }
+
+  _setIndex(value : number) {
+    if (value < 0) {
+      value = 0
+    }
+
+    if (value == this._selectedIndex) {
+      return
+    }
+
+    this._selectedIndex = value
+  }
+
+  private _onLayout() {
+    if (!this.isConnected) {
+      return
+    }
+
+    const indicatorHeight = this._getIndicatorClientHeight()
+    const contentPaddingPixel = (this.offsetHeight - indicatorHeight) / 2 + 'px'
+
+    this.maskViewTop.style.setProperty('height', contentPaddingPixel)
+    this.maskViewBottom.style.setProperty('height', contentPaddingPixel)
+
+    this.contentView.style.setProperty('paddingTop', contentPaddingPixel)
+    this.contentView.style.setProperty('paddingBottom', contentPaddingPixel)
+
+    this._indicatorHeight = indicatorHeight
+    if (this._indicatorHeight <= 0) {
+      this._indicatorHeight = 50
+    }
+
+    this._scrollTopIndex(this.value)
+  }
+
+  private _getIndicatorClientHeight() : number {
+    const borderTopWidth = this.indicatorView.style.getPropertyValue('borderTopWidth')
+    const borderBottomWidth = this.indicatorView.style.getPropertyValue('borderBottomWidth')
+    const indicatorBorderTop = borderTopWidth.length > 0 ? parseFloat(borderTopWidth) : 0
+    const indicatorBorderBottom = borderBottomWidth.length > 0 ? parseFloat(borderBottomWidth) : 0
+    const indicatorClientHeight = this.indicatorView.offsetHeight - indicatorBorderTop - indicatorBorderBottom
+    return indicatorClientHeight
+  }
+
+  private _scrollTopSnap(y : number) {
+    if (this._isAdjusting) return;
+
+    const index = Math.round(y / this._indicatorHeight);
+    const targetY = index * this._indicatorHeight;
+    const epsilon = 0.1;
+    if (Math.abs(y - targetY) > epsilon) {
+      this._isAdjusting = true;
+      this._scrollTopIndex(index);
+      setTimeout(() => {
+        this._isAdjusting = false;
+      }, 0);
+    }
+
+    const changed = this._selectedIndex != index
+
+    this._selectedIndex = index
+
+    if (this._skipScrollChangeEventOnce) {
+      this._skipScrollChangeEventOnce = false
+      return
+    }
+
+    if (changed) {
+      this._dispatchUniPickerView()
+    }
+  }
+
+  private _scrollTopIndex(index : number) {
+    this.scrollView.scrollTo(0, index * this._indicatorHeight)
+  }
+
+  private _dispatchUniPickerView() {
+    let pickerView = this.parentElement
+    let maxRecursiveDeep = 32
+    while (pickerView != null && maxRecursiveDeep > 0) {
+      maxRecursiveDeep--
+      if (pickerView instanceof UniPickerViewElement) {
+        break
+      }
+      pickerView = pickerView!.parentElement
+    }
+
+    if (pickerView != null) {
+      (pickerView as UniPickerViewElement)._columnChange()
+    }
+  }
+}

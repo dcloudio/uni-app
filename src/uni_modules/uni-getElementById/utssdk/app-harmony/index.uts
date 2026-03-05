@@ -1,0 +1,21 @@
+import { GetElementById } from '../interface.uts'
+
+export const getElementById: GetElementById = defineSyncApi<UniElement | null>(
+    'getElementById',
+    (id: string.IDString | string): UniElement | null => {
+        const pages = globalThis.getCurrentPages() as UniPageImpl[];
+        if (pages.length == 0) {
+            return null;
+        }
+        const page = pages[pages.length - 1];
+        if (!page) {
+            console.warn('page is null');
+            return null;
+        }
+        return page.getElementById(id);
+    },
+)
+
+export {
+    GetElementById
+} from '../interface.uts';

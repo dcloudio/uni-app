@@ -1,0 +1,300 @@
+// #ifndef UNI-APP-X
+import Dialog from 'android.app.Dialog';
+import Context from 'android.content.Context';
+import R from 'io.dcloud.uts.prompt.R';
+import TextView from 'android.widget.TextView';
+import EditText from 'android.widget.EditText';
+import View from 'android.view.View';
+import Color from 'android.graphics.Color';
+
+
+import { ShowModalOptions,ShowModalSuccess,ShowModalFail} from '../interface.uts'
+import TextUtils from 'android.text.TextUtils';
+
+// // #ifdef UNI-APP-X
+// import getCurrentPages from 'io.dcloud.uniapp.framework.getCurrentPages';
+// import onReady from 'io.dcloud.uniapp.framework.onReady';
+// import onUnload from 'io.dcloud.uniapp.framework.onUnload';
+// // #endif
+
+
+class UTSDialog extends Dialog implements View.OnClickListener {
+	
+	tv_title:TextView
+	tv_content:TextView
+	et_content:EditText
+	tvCancelAction:TextView
+	tvSureAction:TextView
+	view_split_line_v:View
+
+	constructor(context:Context){
+		super(context);
+		
+		if(UTSAndroid.getAppDarkMode()){
+			this.setContentView(R.layout.uni_app_uni_prompt_modal_dialog_night);
+		}else{
+			this.setContentView(R.layout.uni_app_uni_prompt_modal_dialog);
+		}
+		
+		this.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent);
+		
+		this.tv_title = this.findViewById<TextView>(R.id.tv_title)
+		this.tv_content = this.findViewById<TextView>(R.id.tv_content)
+		this.et_content = this.findViewById<EditText>(R.id.et_content)
+		this.tvCancelAction= this.findViewById<TextView>(R.id.tvCancelAction)
+		this.tvSureAction= this.findViewById<TextView>(R.id.tvSureAction)
+		this.view_split_line_v = findViewById(R.id.view_split_line_v)
+		
+	}
+	
+	hostStyle:ShowModalOptions|null = null
+	
+	override dismiss():void {
+		/**
+		 * 对齐微信，dismiss中的调用都是 cancel
+		 */
+		const res: ShowModalSuccess = {
+			confirm: false,
+			cancel: true,
+		}
+		// 为了确保complete只调用一次，执行后手动置空
+		this.hostStyle?.complete?.(res)
+		if(this.hostStyle != null){
+			this.hostStyle!.complete = null
+		}
+		
+		super.dismiss()
+		
+	}
+	
+	initStyle(style:ShowModalOptions){
+		this.hostStyle = style
+		this.setCanceledOnTouchOutside(false)
+		
+		if(style.showCancel != null && style.showCancel == true){
+			this.tvCancelAction.setVisibility(View.VISIBLE)
+			this.view_split_line_v.setVisibility(View.VISIBLE)
+			this.tvSureAction.setVisibility(View.VISIBLE)
+			
+			if(UTSAndroid.getAppDarkMode()){
+				this.tvSureAction.setBackgroundResource(R.drawable.uni_app_uni_prompt_dialog_button_select_right_night)
+			}else{
+				this.tvSureAction.setBackgroundResource(R.drawable.uni_app_uni_prompt_dialog_button_select_right)
+			}
+		}else{
+			this.tvCancelAction.setVisibility(View.GONE)
+			this.view_split_line_v.setVisibility(View.GONE)
+			this.tvSureAction.setVisibility(View.VISIBLE)
+			
+			if(UTSAndroid.getAppDarkMode()){
+				this.tvSureAction.setBackgroundResource(R.drawable.uni_app_uni_prompt_dialog_button_select_total_night)
+			}else{
+				this.tvSureAction.setBackgroundResource(R.drawable.uni_app_uni_prompt_dialog_button_select_total)
+			}
+			
+		}
+		
+		if(style.editable != null && style.editable == true){
+			// 编辑模式
+			this.et_content.setVisibility(View.VISIBLE)
+			this.tv_content.setVisibility(View.GONE)
+			
+			if(!TextUtils.isEmpty(style.content)){
+				
+				this.et_content.setFocusable(true);
+				this.et_content.setFocusableInTouchMode(true);
+				this.et_content.requestFocus();
+				this.et_content.setText(style.content)
+				this.et_content.setSelection(this.et_content.getText().length);
+			}
+			
+			if(style.placeholderText != null){
+				this.et_content.setHint(style.placeholderText)
+			}
+			
+			if(!TextUtils.isEmpty(style.title)){
+				this.tv_title.setVisibility(View.VISIBLE)
+				this.tv_title.setText(style.title)
+			}else{
+				this.tv_title.setVisibility(View.GONE)
+			}
+		
+		}else{
+			// 非编辑模式
+			this.et_content.setVisibility(View.GONE)
+			
+			
+			if(!TextUtils.isEmpty(style.title)){
+				// title 不为空
+				this.tv_title.setVisibility(View.VISIBLE)
+				this.tv_title.setText(style.title)
+			}else{
+				this.tv_title.setVisibility(View.GONE)
+			}
+			
+			if(!TextUtils.isEmpty(style.content)){
+				// content 不为空
+				this.tv_content.setVisibility(View.VISIBLE)
+				this.tv_content.setText(style.content)
+				if(TextUtils.isEmpty(style.title)){
+					// 如果此时title 为空，需要修改文本颜色
+					if(UTSAndroid.getAppDarkMode()){
+						this.tv_content.setTextColor(UTSAndroid.getAppContext()!.getResources().getColor(R.color.uni_app_uni_prompt_dialog_title_text_night))
+					}else{
+						this.tv_content.setTextColor(UTSAndroid.getAppContext()!.getResources().getColor(R.color.uni_app_uni_prompt_dialog_title_text))
+					}
+				}
+			}else{
+				// 判断title 是否为空，如果不为空，则将title填充到content，并且修改文本颜色
+				if(!TextUtils.isEmpty(style.title)){
+					this.tv_title.setVisibility(View.GONE)
+					this.tv_content.setVisibility(View.VISIBLE)
+					this.tv_content.setText(style.title)
+					if(UTSAndroid.getAppDarkMode()){
+						this.tv_content.setTextColor(UTSAndroid.getAppContext()!.getResources().getColor(R.color.uni_app_uni_prompt_dialog_title_text_night))
+					}else{
+						this.tv_content.setTextColor(UTSAndroid.getAppContext()!.getResources().getColor(R.color.uni_app_uni_prompt_dialog_title_text))
+					}
+				}else{
+					this.tv_content.setVisibility(View.GONE)
+				}
+			}
+			
+			
+		}
+		
+		if(style.cancelText != null){
+			this.tvCancelAction.setText(style.cancelText)
+		}
+		if(style.cancelColor != null){
+			try{
+				this.tvCancelAction.setTextColor(Color.parseColor(style.cancelColor))
+			}catch(e){
+				// 传入的格式异常，捕获
+			}
+			
+		}
+		
+		if(style.confirmText != null){
+			this.tvSureAction.setText(style.confirmText)
+		}
+		if(style.confirmColor != null){
+			try{
+				this.tvSureAction.setTextColor(Color.parseColor(style.confirmColor))
+			}catch(e){
+				// 传入的格式异常，捕获
+			}
+		}
+		
+		this.tvCancelAction.setOnClickListener(this)
+		this.tvSureAction.setOnClickListener(this)
+		
+	}
+	
+	override onClick(view: View) {
+		
+		const res: ShowModalSuccess = {
+			confirm: true,
+			cancel: false,
+		}
+		
+		if(view.getId() == R.id.tvCancelAction){
+			// 取消
+			res.confirm = false
+			res.cancel = true
+		}else if(view.getId() == R.id.tvSureAction){
+			// 确定
+			let inputContent = this.et_content.getEditableText().toString()
+			if(TextUtils.isEmpty(inputContent)){
+				res.content = null
+			}
+			res.content = inputContent
+		}
+		
+		this.hostStyle?.success?.(res)
+		// 为了确保complete只调用一次，执行后手动置空
+		this.hostStyle?.complete?.(res)
+		if(this.hostStyle != null){
+			this.hostStyle!.complete = null
+		}
+		this.dismiss()
+	}
+}
+
+let utsDialog:UTSDialog|null = null
+/**
+ * 弹出对话框的功能入口
+ */
+export function showModalImpl(style:ShowModalOptions){
+	if(utsDialog != null){
+		utsDialog?.dismiss()
+		utsDialog = null
+	}
+	
+	
+	
+	// #ifndef UNI-APP-X
+		/**
+		 * uni-app
+		 */
+		if(UTSAndroid.getTopPageActivity() == null){
+			return 
+		}
+		if(UTSAndroid.getTopPageActivity()!.isFinishing()){
+			return 
+		}
+		utsDialog = new UTSDialog(UTSAndroid.getTopPageActivity()!);
+		utsDialog?.initStyle(style)
+		utsDialog?.show();
+		
+		UTSAndroid.onAppActivityDestroy(function(){
+			utsDialog?.dismiss()
+			utsDialog = null
+		})
+	// #endif
+	
+	// // #ifdef UNI-APP-X
+	// 	/**
+	// 	 * uni-app x
+	// 	 * 需要特殊处理生命周期 
+	// 	 */
+	// 	const pages = getCurrentPages();
+	// 	if (pages.length > 0) {
+	// 		const page = pages[pages.length - 1].vm!
+	// 		const instance = page.$
+	// 		if (page.$isReady) {
+	// 			if(UTSAndroid.getTopPageActivity() == null){
+	// 				return 
+	// 			}
+	// 			if(UTSAndroid.getTopPageActivity()!.isFinishing()){
+	// 				return 
+	// 			}
+	// 			utsDialog = new UTSDialog(UTSAndroid.getTopPageActivity()!);
+	// 			utsDialog?.initStyle(style)
+	// 	        utsDialog?.show();
+	// 	    } else {
+	// 	        onReady(() => {
+	// 				if(UTSAndroid.getTopPageActivity() == null){
+	// 					return 
+	// 				}
+	// 				if(UTSAndroid.getTopPageActivity()!.isFinishing()){
+	// 					return 
+	// 				}
+	// 				utsDialog = new UTSDialog(UTSAndroid.getTopPageActivity()!);
+	// 				utsDialog?.initStyle(style)
+	// 	            utsDialog?.show();
+	// 	        }, instance)
+	// 	    }
+		    
+	// 		onUnload(() => {
+	// 			utsDialog?.dismiss()
+	// 			utsDialog = null
+	// 		}, instance)
+			
+		    
+	// 	}
+	// // #endif
+	
+}
+
+// #endif

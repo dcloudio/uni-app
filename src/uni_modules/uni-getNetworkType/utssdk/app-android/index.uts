@@ -1,0 +1,234 @@
+import { GetNetworkTypeOptions, GetNetworkType, GetNetworkTypeSuccess, OnNetworkStatusChange, OnNetworkStatusChangeCallback, OffNetworkStatusChange, OnNetworkStatusChangeCallbackResult } from "../interface.uts";
+import Context from 'android.content.Context';
+import ConnectivityManager from 'android.net.ConnectivityManager';
+import TelephonyManager from 'android.telephony.TelephonyManager';
+import Build from 'android.os.Build';
+import Network from "android.net.Network";
+import NetworkCapabilities from "android.net.NetworkCapabilities";
+import NetworkRequest from 'android.net.NetworkRequest';
+import NetworkInfo from "android.net.NetworkInfo";
+
+export { OnNetworkStatusChangeCallback, OnNetworkStatusChangeCallbackResult } from '../interface.uts'
+
+export const getNetworkType : GetNetworkType = function (options : GetNetworkTypeOptions) {
+	const appContext = UTSAndroid.getAppContext()!!;
+	const connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager;
+	if (connectivityManager != null) {
+		if (Build.VERSION.SDK_INT >= 23) {
+			const permissions = ["android.permission.ACCESS_NETWORK_STATE"];
+			const activityContext = UTSAndroid.getUniActivity();
+			if (activityContext == null) {
+				const result : GetNetworkTypeSuccess = {
+					networkType: "none"
+				}
+				options?.success?.(result);
+				options?.complete?.(result);
+				return
+			}
+			if (!UTSAndroid.checkSystemPermissionGranted(activityContext!!, permissions)) {
+				const result : GetNetworkTypeSuccess = {
+					networkType: "none"
+				}
+				options?.success?.(result);
+				options?.complete?.(result);
+				return
+			}
+		}
+		const activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		const result : GetNetworkTypeSuccess = {
+			networkType: getRealNetworkType(activeNetworkInfo)
+		}
+		options?.success?.(result);
+		options?.complete?.(result);
+	} else {
+		const result : GetNetworkTypeSuccess = {
+			networkType: "none"
+		}
+		options?.success?.(result);
+		options?.complete?.(result);
+	}
+};
+
+function getRealNetworkType(activeNetworkInfo : NetworkInfo | null) : string {
+	if (activeNetworkInfo != null) {
+		if (activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+			return "wifi"
+		} else if (activeNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+			const subtype = activeNetworkInfo.getSubtype();
+			return getRealTypeById(subtype)
+		} else {
+			return "unknown"
+		}
+	} else {
+		return "none"
+	}
+}
+
+function getRealTypeById(subtype : number) : string {
+	let type = "unknown";
+	switch (subtype) {
+		case TelephonyManager.NETWORK_TYPE_CDMA:
+		case TelephonyManager.NETWORK_TYPE_EDGE:
+		case TelephonyManager.NETWORK_TYPE_GPRS:
+		case 7://电信2g 努比亚
+			type = "2g";
+			break;
+		case TelephonyManager.NETWORK_TYPE_EVDO_0:
+		case TelephonyManager.NETWORK_TYPE_EVDO_A:
+		case 12://level9以上支持 TelephonyManager.NETWORK_TYPE_EVDO_B = 12
+		case 14://电信 努比亚
+			//3G 电信
+			type = "3g";
+			break;
+		case TelephonyManager.NETWORK_TYPE_HSDPA:
+		case TelephonyManager.NETWORK_TYPE_UMTS:
+			//3G 联通
+			type = "3g";
+			break;
+		case 17:
+		case 18:
+			//3G 移动(目前华为系统切换到3g时候为此值)
+			type = "3g";
+			break;
+		case 13: //level11 以上支持TelephonyManager.NETWORK_TYPE_LTE = 13
+		case 11: //level8以上支持TelephonyManager.NETWORK_TYPE_IDEN=11
+		case TelephonyManager.NETWORK_TYPE_HSUPA:
+		case TelephonyManager.NETWORK_TYPE_HSPA:
+		case 15://stype == TelephonyManager.NETWORK_TYPE_HSPAP
+			type = "4g";
+			break;
+		case TelephonyManager.NETWORK_TYPE_NR: {
+			type = "5g";
+			break;
+		}
+		default:
+			break;
+	}
+	return type
+}
+
+var networkCallback : UniNetworkCallback | null = null
+var callbackIndex : number = 0
+var StatusChangeCallbacks : Map<number, OnNetworkStatusChangeCallback> = new Map()
+export const onNetworkStatusChange : OnNetworkStatusChange = function (listener : OnNetworkStatusChangeCallback) : number {
+	var context = UTSAndroid.getUniActivity()!
+	if (Build.VERSION.SDK_INT >= 23) {
+		const permissions = ["android.permission.ACCESS_NETWORK_STATE"];
+		if (!UTSAndroid.checkSystemPermissionGranted(context, permissions)) {
+			listener({ isConnected: false, networkType: "unknown" } as OnNetworkStatusChangeCallbackResult)
+			return callbackIndex;
+		}
+	}
+	callbackIndex++;
+	if (networkCallback == null) {
+		var cManager = UTSAndroid.getAppContext()!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+		networkCallback = new UniNetworkCallback(cManager, StatusChangeCallbacks)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+			cManager.registerDefaultNetworkCallback(networkCallback!)
+		} else {
+			var request = new NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).addTransportType(NetworkCapabilities.TRANSPORT_WIFI).addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR).build()
+			cManager.registerNetworkCallback(request, networkCallback!)
+		}
+	}
+	StatusChangeCallbacks.set(callbackIndex, listener)
+	return callbackIndex;
+}
+
+export const offNetworkStatusChange : OffNetworkStatusChange = function (listener ?: number | OnNetworkStatusChangeCallback | null) {
+	if (listener == null) {
+		StatusChangeCallbacks.clear()
+		unregisterNetworkChange()
+		return
+	} else {
+		if (typeof listener == "number") {
+			StatusChangeCallbacks.delete(listener)
+			unregisterNetworkChange()
+		} else if (typeof listener == "function") {
+			StatusChangeCallbacks.forEach((value : OnNetworkStatusChangeCallback, key : number, map : Map<number, OnNetworkStatusChangeCallback>) => {
+				if (listener == value) {
+					StatusChangeCallbacks.delete(key)
+					unregisterNetworkChange()
+				}
+				return
+			})
+		}
+	}
+}
+
+function unregisterNetworkChange() {
+	if (StatusChangeCallbacks.size == 0) {
+		networkCallback?.unregister()
+		networkCallback = null
+	}
+}
+
+class UniNetworkCallback extends ConnectivityManager.NetworkCallback {
+
+	manager : ConnectivityManager
+	telephonyManager : TelephonyManager
+	callbacks : Map<number, OnNetworkStatusChangeCallback>
+	isConnect = false
+	networkType = "unknown"
+	constructor(manager : ConnectivityManager, callbacks : Map<number, OnNetworkStatusChangeCallback>) {
+		super();
+		this.manager = manager
+		this.callbacks = callbacks
+		this.telephonyManager = UTSAndroid.getAppContext()!.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+	}
+
+	unregister() {
+		this.manager.unregisterNetworkCallback(this)
+	}
+
+	getDetailedNetworkType(network : Network) : string {
+		var activeNetworkInfo = this.manager.getActiveNetworkInfo();
+		if (activeNetworkInfo != null) {
+			if (activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+				return "wifi"
+			} else if (activeNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+				var type = 0 //unknown
+				if (Build.VERSION.SDK_INT >= 24) {
+					type = this.telephonyManager.dataNetworkType
+				} else {
+					type = this.telephonyManager.networkType
+				}
+				var currentType = getRealTypeById(type)
+				return currentType
+			} else {
+				return "unknown"
+			}
+		} else {
+			return "unknown"
+		}
+	}
+
+	override onAvailable(param0 : Network) {
+		this.isConnect = true
+		this.networkType = getRealNetworkType(this.manager.getActiveNetworkInfo())
+		this.triggerCallback()
+	}
+	override onCapabilitiesChanged(param0 : Network, param1 : NetworkCapabilities) {
+
+		var currentType = getRealNetworkType(this.manager.getActiveNetworkInfo())
+		if (this.networkType != currentType) {
+			this.networkType = currentType
+			this.triggerCallback()
+		}
+	}
+	override onLost(param0 : Network) {
+		this.isConnect = false
+		var info = this.manager.getActiveNetworkInfo();
+		this.networkType = "none"
+		this.triggerCallback()
+	}
+
+	triggerCallback() {
+		var callback : OnNetworkStatusChangeCallbackResult = {
+			isConnected: this.isConnect,
+			networkType: this.networkType
+		}
+		this.callbacks.forEach((value : OnNetworkStatusChangeCallback) => {
+			value(callback)
+		})
+	}
+}

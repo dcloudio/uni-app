@@ -1,0 +1,46 @@
+import { connection } from '@ohos.net.connection'
+import { BusinessError } from '@ohos.base'
+
+import {
+    PrefetchDNS,
+    PrefetchDNSNetAddress,
+    PrefetchDNSOptions,
+    PrefetchDNSSuccess,
+} from '../../interface.uts'
+import {
+    API_PREFETCH_DNS,
+    PrefetchDNSApiOptions,
+    PrefetchDNSApiProtocol,
+} from '../../protocol.uts'
+
+const netFamilyMap: Map<number, string> = new Map([
+    [1, 'IPv4'],
+    [2, 'IPv6'],
+])
+
+export const prefetchDNS: PrefetchDNS = defineAsyncApi<PrefetchDNSOptions, PrefetchDNSSuccess>(
+    API_PREFETCH_DNS,
+    (args: PrefetchDNSOptions, executor: ApiExecutor<PrefetchDNSSuccess>) => {
+        const { domain } = args
+
+        connection.getAddressesByName(domain, (err: BusinessError, data: connection.NetAddress[]) => {
+            if (err) {
+                executor.reject((err as BusinessError).message, { errCode: err.code } as ApiError)
+                return
+            }
+
+            const netAddresses: PrefetchDNSNetAddress[] = data.map((item) => {
+                return {
+                    address: item.address,
+                    family: netFamilyMap.get(item.family!) ?? 'unknown',
+                    port: item.port,
+                } as PrefetchDNSNetAddress
+            })
+
+            executor.resolve(netAddresses as PrefetchDNSNetAddress[])
+        })
+
+    },
+    PrefetchDNSApiProtocol,
+    PrefetchDNSApiOptions,
+) as PrefetchDNS

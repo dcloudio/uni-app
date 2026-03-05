@@ -1,0 +1,1 @@
+export const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager'

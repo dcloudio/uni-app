@@ -1,0 +1,1661 @@
+import { RequestVirtualPaymentFailImpl as RequestVirtualPaymentFailImplement } from './unierror.uts'
+
+export type RequestVirtualPaymentFailImpl = RequestVirtualPaymentFailImplement
+export interface Uni {
+    /**
+     * @description 请求支付
+     * @param {RequestVirtualPaymentOptions} options
+     * @example
+     * ```typescript
+     *	 uni.requestVirtualPayment({
+     *		provider: "alipay",
+     *		orderInfo: "",
+     *		success: function (res) {
+     *			 console.log("支付成功"+JSON.stringify(res))
+     *		}
+     *	});
+     * ```
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/virtual-payment.html#requestvirtualpayment
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/plugins/virtualPayment.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/virtual-payment.html#requestvirtualpayment
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    requestVirtualPayment(options: RequestVirtualPaymentOptions): void;
+
+    /**
+    * @description 获取各平台虚拟支付的管理类，用于操作各平台专有的API。
+    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/virtual-payment.html#getvirtualpaymentmanager
+    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/virtual-payment.html#getvirtualpaymentmanager
+    * @uniPlatform {
+    *  "app": {
+    *    "android": {
+    *      "osVer": "5.0",
+    *      "uniVer": "x",
+    *      "unixVer": "x"
+    *    },
+    *    "ios": {
+    *      "osVer": "15.0",
+    *      "uniVer": "√",
+    *      "unixVer": "4.25"
+    *    },
+    *    "harmony": {
+    *      "osVer": "x",
+    *      "uniVer": "x",
+    *      "unixVer": "x"
+    *    }
+    *  },
+    *  "web": {
+    *    "uniVer": "x",
+    *    "unixVer": "x"
+    *  }
+    * }
+    * @return {VirtualPaymentManager} virtual-payment的管理类
+    */
+    getVirtualPaymentManager(): GetVirtualPaymentManager;
+}
+
+export type GetVirtualPaymentManager = () => VirtualPaymentManager;
+
+export interface VirtualPaymentManager {
+    /**
+     * @description 恢复苹果服务器已支付的交易列表
+     * @param {AppleIAPRestoreOptions} options
+     * @example
+     * ```typescript
+     *	 restoreTransactions({
+     *		success: function (res) {
+     *			 console.log("恢复成功"+JSON.stringify(res))
+     *		}
+     *	});
+     * ```
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/virtual-payment.html#restoretransactions
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/virtual-payment.html#restoretransactions
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    restoreTransactions(options: AppleIAPRestoreOptions): void;
+
+    /**
+     * @description 获取苹果服务器已支付且未关闭的交易列表
+     * @param {AppleIAPUnfinishedTransactionOptions} options
+     * @example
+     * ```typescript
+     *	 getUnfinishedTransactions({
+     *		success: function (res) {
+     *			 console.log("获取成功"+JSON.stringify(res))
+     *		}
+     *	});
+     * ```
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/virtual-payment.html#getunfinishedtransactions
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/virtual-payment.html#getunfinishedtransactions
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    getUnfinishedTransactions(options: AppleIAPUnfinishedTransactionOptions): void;
+    /**
+     * @description 关闭苹果服务器订单
+     * @param {AppleIAPFinishTransactionOptions} options
+     * @example
+     * ```typescript
+     *	 finishTransaction({
+     *		success: function (res) {
+     *			 console.log("关单成功"+JSON.stringify(res))
+     *		}
+     *	});
+     * ```
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/virtual-payment.html#finishtransaction
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/virtual-payment.html#finishtransaction
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    finishTransaction(options: AppleIAPFinishTransactionOptions): void;
+};
+
+
+/**
+ * 错误码
+ */
+export type RequestVirtualPaymentErrorCode =
+    /**
+     * 正在处理中，支付结果未知
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700600 |
+    /**
+     * 用户中途取消。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700601 |
+    /**
+     * 网络连接出错。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700602 |
+    /**
+     * 不允许App内购买项目, 请授权应用内购买权限。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700604 |
+    /**
+     * 产品无效。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700605 |
+    /**
+     * 促销信息错误。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700606 |
+    /**
+     * 缺少支付参数。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700607 |
+    /**
+     * 只支持iOS15以上的版本。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700800 |
+    /**
+     * 其他未知错误。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700000;
+
+
+export type RequestVirtualPayment = (options: RequestVirtualPaymentOptions) => void;
+
+export type AppleIAPPromotionalOffer = {
+    /**
+     * 促销id
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    offerIdentifier: string,
+    /**
+     * 密钥
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    keyIdentifier: string,
+    /**
+     * 唯一id (必须小写 24小时有效)
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    nonce: string,
+    /**
+     * 签名
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    signature: string,
+    /**
+     * 创建证书的时间戳(毫秒 24小时有效)
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    timestamp: number
+}
+
+export type AppleIAPTransactionOptions = {
+    /**
+     * 产品id，和苹果开发者中心配置的一样
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    productId: string,
+    /**
+     * 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    appAccountToken?: string | null,
+    /**
+     * 购买数量
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    quantity: number,
+    /**
+     * 交易日期，示例 2022-01-01 08:00:00
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    transactionDate: Date,
+    /**
+     * 交易唯一标识
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    transactionIdentifier: string,
+    /**
+     * 原始交易日期，示例 2022-01-01 08:00:00
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    originalTransactionDate: Date,
+    /**
+     * 原始交易唯一标识
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    originalTransactionIdentifier: string,
+    /**
+     * 支付票据
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    jsonRepresentation: string,
+}
+export type GoolgeIapSuccessOptions = {
+
+}
+export type HuaweiIapSuccessOptions = {
+
+}
+export type WeixinIapSuccessOptions = {
+
+}
+
+export type RequestVirtualPaymentSuccess = {
+    /**
+     * 支付成功返回结果
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    apple?: AppleIAPTransactionOptions | null,
+    // google ?: GoolgeIapSuccessOptions | null,
+    // huawei ?: HuaweiIapSuccessOptions | null,
+    // weixin ?: WeixinIapSuccessOptions | null,
+};
+export type RequestVirtualPaymentSuccessCallback = (result: RequestVirtualPaymentSuccess) => void;
+export type RequestVirtualPaymentFail = IRequestVirtualPaymentFail;
+export type RequestVirtualPaymentFailCallback = (result: RequestVirtualPaymentFail) => void;
+export interface IRequestVirtualPaymentFail extends IUniError {
+    /**
+     * 错误码
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    errCode: RequestVirtualPaymentErrorCode
+};
+export type RequestVirtualPaymentComplete = any
+export type RequestVirtualPaymentCompleteCallback = (result: RequestVirtualPaymentComplete) => void;
+
+export type AppleIAPOptions = {
+    /**
+     * 产品id，在苹果开发者中心配置
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    productId: string,
+    /**
+     * 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    appAccountToken?: string | null,
+    /**
+     * 购买数量，默认是1，最小值是1，最大值是10
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    quantity: number,
+    /**
+     * 促销优惠参数说明
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    promotionalOffer?: AppleIAPPromotionalOffer | null
+};
+export type GoogleIapOptions = {
+
+};
+export type HuaweiIapOptions = {
+
+};
+export type WeixinIapOptions = {
+
+};
+export type RequestVirtualPaymentOptions = {
+    /**
+     * 苹果IAP的参数
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    apple?: AppleIAPOptions | null,
+    // /**
+    //  * Google IAP的参数
+    //  */
+    // google ?: GoogleIapOptions | null,
+    // /**
+    //  * 华为 IAP的参数
+    //  */
+    // huawei ?: HuaweiIapOptions | null,
+    // /**
+    //  * 微信虚拟支付的参数
+    //  */
+    // weixin ?: WeixinIapOptions | null,
+    /**
+     * 接口调用成功的回调函数
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    success?: RequestVirtualPaymentSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    fail?: RequestVirtualPaymentFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    complete?: RequestVirtualPaymentCompleteCallback | null
+};
+
+
+//restoreTransactions
+export type RestoreTransactions = (options: AppleIAPRestoreOptions) => void;
+export type AppleIAPRestoreSuccess = {
+    /**
+     * 返回的交易列表
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    transactions?: AppleIAPTransactionOptions[] | null
+};
+export type AppleIAPRestoreSuccessCallback = (result: AppleIAPRestoreSuccess) => void;
+export type AppleIAPRestoreFail = IAppleIAPRestoreFail;
+export type AppleIAPRestoreFailCallback = (result: AppleIAPRestoreFail) => void;
+export interface IAppleIAPRestoreFail extends IUniError {
+    /**
+     * 错误码
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    errCode: AppleIAPRestoreErrorCode
+};
+export type AppleIAPRestoreComplete = any
+export type AppleIAPRestoreCompleteCallback = (result: AppleIAPRestoreComplete) => void;
+/**
+ * 错误码
+ */
+export type AppleIAPRestoreErrorCode =
+    /**
+     * apple restore 请求失败。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700600 |
+    /**
+     * 用户中途取消。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700601 |
+    /**
+     * 网络连接出错。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700602 |
+    /**
+     * 只支持iOS15以上的版本。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700800;
+
+
+export type AppleIAPRestoreOptions = {
+    /**
+     * 接口调用成功的回调函数
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    success?: AppleIAPRestoreSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    fail?: AppleIAPRestoreFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    complete?: AppleIAPRestoreCompleteCallback | null
+};
+
+
+
+//getUnfinishedTransactions
+export type GetUnfinishedTransactions = (options: AppleIAPUnfinishedTransactionOptions) => void;
+export type AppleIAPUnfinishedTransactionSuccess = {
+    /**
+     * 返回的交易列表
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    transactions?: AppleIAPTransactionOptions[] | null
+};
+export type AppleIAPUnfinishedTransactionSuccessCallback = (result: AppleIAPUnfinishedTransactionSuccess) => void;
+export type AppleIAPUnfinishedTransactionFail = IAppleIAPUnfinishedTransactionFail;
+export type AppleIAPUnfinishedTransactionFailCallback = (result: AppleIAPUnfinishedTransactionFail) => void;
+export interface IAppleIAPUnfinishedTransactionFail extends IUniError {
+    /**
+     * 错误码
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    errCode: AppleIAPUnfinishedTransactionErrorCode
+};
+export type AppleIAPUnfinishedTransactionComplete = any
+export type AppleIAPUnfinishedTransactionCompleteCallback = (result: AppleIAPUnfinishedTransactionComplete) => void;
+/**
+ * 错误码
+ * - 700800  只支持iOS15以上的版本。
+ */
+export type AppleIAPUnfinishedTransactionErrorCode = 700800;
+
+export type AppleIAPUnfinishedTransactionOptions = {
+    /**
+     * 接口调用成功的回调函数
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    success?: AppleIAPUnfinishedTransactionSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    fail?: AppleIAPUnfinishedTransactionFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    complete?: AppleIAPUnfinishedTransactionCompleteCallback | null
+};
+
+
+
+//finishTransaction 相关定义
+export type FinishTransaction = (options: AppleIAPFinishTransactionOptions) => void;
+export type AppleIAPFinishTransactionSuccess = {
+    /**
+     * 关单状态
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    state?: boolean | null
+};
+export type AppleIAPFinishTransactionSuccessCallback = (result: AppleIAPFinishTransactionSuccess) => void;
+export type AppleIAPFinishTransactionFail = IAppleIAPFinishTransactionFail;
+export type AppleIAPFinishTransactionFailCallback = (result: AppleIAPFinishTransactionFail) => void;
+export interface IAppleIAPFinishTransactionFail extends IUniError {
+    /**
+     * 错误码
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    errCode: AppleIAPFinishTransactionFailErrorCode
+};
+export type AppleIAPFinishTransactionComplete = any
+export type AppleIAPFinishTransactionCompleteCallback = (result: AppleIAPFinishTransactionComplete) => void;
+/**
+ * 错误码
+ */
+export type AppleIAPFinishTransactionFailErrorCode =
+    /**
+     * 没有该交易。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700600 |
+    /**
+     * 只支持iOS15以上的版本。
+        * @uniPlatform {
+        *    "app": {
+        *        "android": {
+        *            "osVer": "5.0",
+        *            "uniVer": "x",
+        *            "unixVer": "x"
+        *        },
+        *        "ios": {
+        *            "osVer": "15.0",
+        *            "uniVer": "√",
+        *            "unixVer": "4.25"
+        *        }
+        *    },
+        *    "web": {
+        *        "uniVer": "x",
+        *        "unixVer": "x"
+        *    }
+        * }
+     */
+    700800;
+
+
+export type AppleIAPFinishTransactionOptions = {
+    /**
+     * 交易对象
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    transaction: AppleIAPTransactionOptions
+    /**
+     * 接口调用成功的回调函数
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    success?: AppleIAPFinishTransactionSuccessCallback | null,
+    /**
+     * 接口调用失败的回调函数
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    fail?: AppleIAPFinishTransactionFailCallback | null,
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *    "app": {
+     *        "android": {
+     *            "osVer": "5.0",
+     *            "uniVer": "x",
+     *            "unixVer": "x"
+     *        },
+     *        "ios": {
+     *            "osVer": "15.0",
+     *            "uniVer": "√",
+     *            "unixVer": "4.25"
+     *        }
+     *    },
+     *    "web": {
+     *        "uniVer": "x",
+     *        "unixVer": "x"
+     *    }
+     * }
+     */
+    complete?: AppleIAPFinishTransactionCompleteCallback | null
+};

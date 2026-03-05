@@ -1,39 +1,39 @@
 export type GetBatteryInfoSuccess = {
-	errMsg: string,
-	/**
-	* 设备电量，范围1 - 100
-	*/
-	level: number,
-	/**
-	* 是否正在充电中
-	*/
-	isCharging: boolean
+  errMsg: string,
+  /**
+  * 设备电量，范围1 - 100
+  */
+  level: number,
+  /**
+  * 是否正在充电中
+  */
+  isCharging: boolean
 }
 
 export type GetBatteryInfoOptions = {
-	/**
-		* 接口调用结束的回调函数（调用成功、失败都会执行）
-		*/
-	success?: (res: GetBatteryInfoSuccess) => void
-	/**
-		* 接口调用失败的回调函数
-		*/
-	fail?: (res: UniError) => void
-	/**
-		* 接口调用成功的回调
-		*/
-	complete?: (res: any) => void
+  /**
+    * 接口调用成功的回调
+    */
+  success?: (res: GetBatteryInfoSuccess) => void
+  /**
+    * 接口调用失败的回调函数
+    */
+  fail?: (res: UniError) => void
+  /**
+    * 接口调用结束的回调函数（调用成功、失败都会执行）
+    */
+  complete?: (res: any) => void
 }
 
 export type GetBatteryInfoResult = {
-	/**
-	* 设备电量，范围1 - 100
-	*/
-	level: number,
-	/**
-	* 是否正在充电中
-	*/
-	isCharging: boolean
+  /**
+  * 设备电量，范围1 - 100
+  */
+  level: number,
+  /**
+  * 是否正在充电中
+  */
+  isCharging: boolean
 }
 
 /**
@@ -45,7 +45,7 @@ export type GetBatteryInfoErrorCode = 1001 | 1002;
  * GetBatteryInfo 的错误回调参数
  */
 export interface GetBatteryInfoFail extends IUniError {
-	errCode: GetBatteryInfoErrorCode
+  errCode: GetBatteryInfoErrorCode
 };
 
 /**
@@ -65,83 +65,178 @@ export type GetBatteryInfo = (options: GetBatteryInfoOptions) => void
 
 export type GetBatteryInfoSync = () => GetBatteryInfoResult
 
-interface Uni {
+export interface Uni {
 
-	/**
-	 * 获取电池电量信息
-	 *
-	 * @example
-	 * ```typescript
-	 * uni.getBatteryInfo({
-	 *		success(res) {
-	 *			console.log(res);
-	 *		}
-	 * })
-	 * ```
-	 * @remark
-	 * - 该接口需要同步调用
-	 * @uniPlatform {
-	 *    "app": {
-	 *        "android": {
-	 *            "osVer": "4.4.4",
-	 *            "uniVer": "3.6.11",
-	 *            "unixVer": "3.9.0"
-	 *        },
-	 *        "ios": {
-	 *            "osVer": "12.0",
-	 *            "uniVer": "3.6.11",
-	 *            "unixVer": "4.11"
-	 *        },
-		 *    "harmony": {
-		 *      "osVer": "3.0",
-		 *      "uniVer": "4.23",
-		 *      "unixVer": "x"
-		 *    }
-	 *    },
-	 *    "web": {
-	 *      "uniVer": "3.6.11",
-	 *      "unixVer": "4.0"
-	 *    }
-	 * }
-	 * @uniVueVersion 2,3  //支持的vue版本
-	 *
-	 */
-	getBatteryInfo(options: GetBatteryInfoOptions): void,
-	/**
-	 * 同步获取电池电量信息
-	 *
-	 * @example
-	 * ```typescript
-	 * uni.getBatteryInfo()
-	 * ```
-	 * @remark
-	 * - 该接口需要同步调用
-	 * @uniPlatform {
-	 *    "app": {
-	 *        "android": {
-	 *            "osVer": "4.4.4",
-	 *            "uniVer": "3.6.11",
-	 *            "unixVer": "3.9.0"
-	 *        },
-	 *        "ios": {
-	 *            "osVer": "12.0",
-	 *            "uniVer": "3.6.11",
-	 *            "unixVer": "4.11"
-	 *        },
-		 *    "harmony": {
-		 *      "osVer": "3.0",
-		 *      "uniVer": "4.23",
-		 *      "unixVer": "x"
-		 *    }
-	 *    },
-	 *    "web": {
-	 *      "uniVer": "3.6.11",
-	 *      "unixVer": "4.0"
-	 *    }
-	 * }
-	 * @uniVueVersion 2,3  //支持的vue版本
-	 *
-	 */
-	getBatteryInfoSync(): GetBatteryInfoResult
+  /**
+   * 获取电池电量信息
+   *
+   * @example
+   * ```typescript
+   * uni.getBatteryInfo({
+   *		success(res) {
+   *			console.log(res);
+   *		}
+   * })
+   * ```
+   * @remark
+   * - 该接口需要同步调用
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "3.6.11",
+          "uniUtsPlugin": "x",
+          "unixVer": "3.9",
+          "unixUtsPlugin": "3.9"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "3.6.11",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "4.23",
+          "unixVer": "x"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.35"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "3.6.11",
+        "unixVer": "4.0"
+      }
+    }
+   * @uniVueVersion 2,3  //支持的vue版本
+   *
+   */
+  getBatteryInfo(options: GetBatteryInfoOptions): void,
+
+  /**
+   * 同步获取电池电量信息
+   *
+   * @example
+   * ```typescript
+   * let batteryInfo = uni.getBatteryInfoSync()
+   * ```
+   * @remark
+   * - 该接口需要同步调用
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "osVer": "5.0",
+          "uniVer": "3.6.11",
+          "uniUtsPlugin": "x",
+          "unixVer": "3.9",
+          "unixUtsPlugin": "3.9"
+        },
+        "ios": {
+          "osVer": "12.0",
+          "uniVer": "3.6.11",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.11",
+          "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "4.23",
+          "unixVer": "x"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "4.35"
+        },
+        "alipay": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "√",
+          "uniVer": "√",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "3.6.11",
+        "unixVer": "4.0"
+      }
+    }
+   * @uniVueVersion 2,3  //支持的vue版本
+   *
+   */
+  getBatteryInfoSync(): GetBatteryInfoResult
 
 }

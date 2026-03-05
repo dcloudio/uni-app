@@ -1,0 +1,47 @@
+import { GetProvider, GetProviderOptions, GetProviderSuccess, GetProviderFailImpl, GetProviderSync, GetProviderSyncSuccess, GetProviderSyncOptions } from '../interface.uts'
+const SupportedProviderServiceList = ['oauth', 'share', 'payment', 'push', 'location']
+export const getProvider : GetProvider = (options : GetProviderOptions) : void => {
+	if (!SupportedProviderServiceList.includes(options.service)) {
+		if (options.fail != null) {
+			const err = new GetProviderFailImpl(110600);
+			options.fail?.(err)
+			options.complete?.(err)
+		}
+	} else {
+		const providers = UTSAndroid.getProviders(options.service)
+		// TODO
+		// const providers: any[] = []
+		if (options.success != null) {
+			const result = {
+				service: options.service,
+				provider: providers.map((provider) : string => {
+					return provider.id
+				}),
+				providers
+			} as GetProviderSuccess;
+			options.success?.(result);
+		}
+	}
+
+	options.complete?.({});
+}
+export const getProviderSync : GetProviderSync = (options : GetProviderSyncOptions) : GetProviderSyncSuccess => {
+	if (!SupportedProviderServiceList.includes(options.service)) {
+		const result = {
+			service: options.service,
+			providerIds: [],
+			providerObjects: []
+		} as GetProviderSyncSuccess;
+		return result
+	} else {
+		const providers = UTSAndroid.getProviders(options.service)
+		const result = {
+			service: options.service,
+			providerIds: providers.map((provider) : string => {
+				return provider.id
+			}),
+			providerObjects: providers
+		} as GetProviderSyncSuccess;
+		return result
+	}
+}

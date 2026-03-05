@@ -1,0 +1,11 @@
+import { ArrayBufferToBase64 } from "../interface.uts"
+import Base64 from "android.util.Base64"
+export const arrayBufferToBase64 : ArrayBufferToBase64 = function (arrayBuffer : ArrayBuffer) : string {
+	// 将 ByteBuffer 转换为字节数组
+	const byteBuffer = arrayBuffer.toByteBuffer()
+	byteBuffer.position(0)
+	const bytes = new ByteArray(byteBuffer.remaining())
+	byteBuffer.get(bytes) // 读取内容到字节数组
+	// 使用 Base64 编码
+	return Base64.encodeToString(bytes, Base64.NO_WRAP)
+}

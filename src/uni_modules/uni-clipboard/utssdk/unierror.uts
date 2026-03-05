@@ -1,0 +1,20 @@
+import { ClipBoardErrorCode, IClipBoardError } from "./interface";
+
+export const ClipBoardUniErrors : Map<number, string> = new Map([
+	/**
+	 * 没有权限或权限被拒
+	 */
+	[102, 'no permission']
+]);
+
+export class ClipBoardErrorImpl extends UniError implements IClipBoardError {
+	// #ifdef APP-ANDROID
+	override errCode : ClipBoardErrorCode
+	// #endif
+	constructor(code : ClipBoardErrorCode) {
+		super();
+		this.errCode = code
+		this.errMsg = ""
+		this.errSubject = "uni-clipboard"
+	}
+}

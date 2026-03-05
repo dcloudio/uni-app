@@ -1,0 +1,19 @@
+{
+	"frameworks": [
+		"AssetsLibrary.framework",
+		"Photos.framework",
+		"PhotosUI.framework",
+		"AVFoundation.framework",
+		"CoreServices.framework",
+		"CoreFoundation.framework",
+		"CoreGraphics.framework",
+		"CoreImage.framework",
+		"GLKit.framework",
+		"MetalKit.framework",
+		"MobileCoreServices.framework",
+		"QuartzCore.framework",
+		"ImageIO.framework",
+		"MediaPlayer.framework",
+		"CoreText.framework"
+	]
+}

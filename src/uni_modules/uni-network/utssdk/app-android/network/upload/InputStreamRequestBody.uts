@@ -1,0 +1,47 @@
+import RequestBody from 'okhttp3.RequestBody';
+import MediaType from 'okhttp3.MediaType';
+import InputStream from 'java.io.InputStream';
+import BufferedSink from 'okio.BufferedSink';
+import Source from 'okio.Source';
+import Okio from 'okio.Okio';
+import Util from 'okhttp3.internal.Util';
+
+
+
+export class InputStreamRequestBody extends RequestBody {
+	private mediaType : MediaType | null = null;
+	private length : Long = -1;
+	private inputStream : InputStream | null = null;
+
+	constructor(mediaType : MediaType, length : Long, inputStream : InputStream) {
+		super()
+		this.mediaType = mediaType;
+		this.length = length;
+		this.inputStream = inputStream;
+	}
+
+
+	override contentLength() : Long {
+		return this.length;
+	}
+
+	override contentType() : MediaType {
+		const type = this.mediaType;
+		if (type == null) {
+			return MediaType.parse("application/octet-stream")!;
+		} else {
+			return type;
+		}
+	}
+
+	override writeTo(sink : BufferedSink) {
+		let source : Source | null = null;
+		try {
+			source = Okio.source(this.inputStream);
+			sink.writeAll(source);
+		} catch (e) {
+		}
+		Util.closeQuietly(source);
+	}
+
+}

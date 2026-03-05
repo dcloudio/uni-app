@@ -1,0 +1,214 @@
+import { UniPickerViewColumnElement } from '../uni-picker-view-column/uni-picker-view-column'
+
+type UniPickerViewChangeEventDetail = {
+  value : number[]
+}
+
+export class UniPickerViewChangeEvent extends UniCustomEvent<UniPickerViewChangeEventDetail> {
+  constructor(value : number[]) {
+    super('change', { value } as UniPickerViewChangeEventDetail)
+  }
+}
+
+export class UniPickerViewElement extends UniFormControlElement<number[]> implements UniCustomElement {
+  static get observedAttributes() : Array<string> {
+    return ['value', 'indicator-style', 'indicatorStyle', 'mask-class', 'mask-top-style', 'mask-bottom-style']
+  }
+
+  private _value = new Array<number>()
+
+  private _uniResizeObserver! : UniResizeObserver
+
+  constructor() {
+    super()
+
+    this.style.setProperty('flexDirection', 'row')
+
+    this._uniResizeObserver = new UniResizeObserver(
+      (_ : Array<UniResizeObserverEntry>) => {
+        "[weak self]"
+        this._onResize()
+      }
+    )
+  }
+
+  // form
+  override get name() : string {
+    return this.getAttribute('name') ?? ''
+  }
+  override set name(value : string) {
+    this.setAttribute('name', value)
+  }
+
+  public override get value() : number[] {
+    let returnValue = new Array<number>()
+    this.findChildren(this).forEach((item : UniPickerViewColumnElement) => {
+      returnValue.push(item.value)
+    })
+    return returnValue
+  }
+
+  public override set value(value : number[]) {
+    // 如果新值和旧值完全相同，直接返回，避免重复设置。鸿蒙中表现为重置数据触发两次 set value
+    if (this._value.length == value.length) {
+      let isSame = true
+      for (let i = 0; i < value.length; i++) {
+        if (this._value[i] !== value[i]) {
+          isSame = false
+          break
+        }
+      }
+      if (isSame) {
+        return
+      }
+    }
+    
+    const controls : UniPickerViewColumnElement[] = this.findChildren(this)
+    const minIndex = Math.min(controls.length as number, value.length as number)
+    for (let i = 0; i < minIndex; i++) {
+      const changed = controls[i].value != value[i]
+      controls[i].setAnyAttribute('value', value[i])
+      if (changed) {
+        this._columnChange()
+      }
+    }
+    this._value = value
+  }
+
+  override reset() {
+    this.findChildren(this).forEach((item : UniPickerViewColumnElement) => {
+      item.reset()
+    })
+  }
+
+  connectedCallback() {
+    this._uniResizeObserver!.observe(this)
+  }
+
+  disconnectedCallback() {
+    this._uniResizeObserver.disconnect()
+  }
+
+  attributeChangedCallback(name : string, oldValue : any | null, newValue : any | null) {
+    if (newValue == null) {
+      return
+    }
+
+    switch (name) {
+      case 'value':
+        this.value = newValue as Array<number>
+        break;
+      case 'indicator-style':
+      case 'indicatorStyle': // TODO 鸿蒙有bug只能使用驼峰
+        this._setIndicatorStyle(newValue)
+        break;
+      case 'mask-top-style':
+        this._setMaskTopStyle(newValue)
+        break;
+      case 'mask-bottom-style':
+        this._setMaskBottomStyle(newValue)
+        break;
+    }
+  }
+
+  override insertBefore(child : UniElement, anchor ?: UniElement | null) : UniElement | null {
+    if (this._value.length > this.children.length) {
+      if (child instanceof UniPickerViewColumnElement) {
+        (child as UniPickerViewColumnElement).setAnyAttribute('value', this._value[this.children.length])
+      }
+    }
+    return super.insertBefore(child, anchor)
+  }
+
+  // friend by uni-picker-view-column
+  _columnChange() {
+    this.dispatchEvent(new UniPickerViewChangeEvent(this.value))
+  }
+
+  private _onResize() {
+    this.children.forEach((item : UniElement) => {
+      if (item instanceof UniPickerViewColumnElement) {
+        (item as UniPickerViewColumnElement).resize()
+      }
+    })
+  }
+
+  private _setIndicatorStyle(value : any) {
+    const styleMap = this._fixStyleToMap(value)
+    this.children.forEach((item : UniElement) => {
+      if (item instanceof UniPickerViewColumnElement) {
+        (item as UniPickerViewColumnElement).setIndicatorStyle(styleMap)
+      }
+    })
+    styleMap.clear()
+  }
+
+  private _setMaskTopStyle(value : any) {
+    const styleMap = this._fixStyleToMap(value)
+    this.children.forEach((item : UniElement) => {
+      if (item instanceof UniPickerViewColumnElement) {
+        (item as UniPickerViewColumnElement).setMaskTopStyle(styleMap)
+      }
+    })
+    styleMap.clear()
+  }
+
+  private _setMaskBottomStyle(value : any) {
+    const styleMap = this._fixStyleToMap(value)
+    this.children.forEach((item : UniElement) => {
+      if (item instanceof UniPickerViewColumnElement) {
+        (item as UniPickerViewColumnElement).setMaskBottomStyle(styleMap)
+      }
+    })
+    styleMap.clear()
+  }
+
+  private _fixStyleToMap(value : any) : Map<string, string> {
+    if (value instanceof Map<string, string>) {
+      return value as Map<string, string>
+    }
+
+    if (typeof value == 'string') {
+      const styleMap = new Map<string, string>()
+      if (value.length == 0) {
+        return styleMap
+      }
+      const styles = value.split(';')
+      for (let i = 0; i < styles.length; i++) {
+        const pair = styles[i].split(':')
+        if (pair.length == 2) {
+          styleMap.set(pair[0].trim(), pair[1].trim())
+        }
+      }
+      return styleMap
+    }
+
+    // #ifdef APP-HARMONY
+    if (typeof value == 'object') {
+      const styleMap = new Map<string, string>()
+      const valueObject = value as object
+      Object.keys(valueObject).forEach((key : string) => {
+        styleMap.set(key, valueObject[key])
+      });
+      return styleMap
+    }
+    // #endif
+
+    return new Map<string, string>()
+  }
+
+  private findChildren(el : UniElement) : UniPickerViewColumnElement[] {
+    const controls : UniPickerViewColumnElement[] = []
+    el.children.forEach((item : UniElement) => {
+      if (item instanceof UniPickerViewColumnElement) {
+        controls.push(item as UniPickerViewColumnElement)
+      } else {
+        // controls.push(...this.findChildren(item))
+        this.findChildren(item).forEach((item : UniPickerViewColumnElement) => {
+          controls.push(item)
+        })
+      }
+    })
+    return controls
+  }
+}

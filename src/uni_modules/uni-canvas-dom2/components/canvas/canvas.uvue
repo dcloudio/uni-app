@@ -1,0 +1,46 @@
+<template>
+  <native-view class="uni-canvas" @init="onNativeViewInit"></native-view>
+</template>
+
+<script setup lang="uts">
+  import { UniNativeCanvas, UniCanvasElement } from "@/uni_modules/uni-canvas-dom2";
+
+  // #ifndef APP-IOS
+  defineOptions({
+    name: 'canvas',
+    // @ts-ignore
+    rootElement: {
+      name: 'uni-canvas-element',
+      class: UniCanvasElement,
+    }
+  });
+  // #endif
+
+  let canvasView : UniNativeCanvas | null = null
+
+  interface CanvasProps {
+    width ?: number;
+    height ?: number;
+  }
+  const props = withDefaults(defineProps<CanvasProps>(), {
+    width: 0,
+    height: 0,
+  });
+
+  function onNativeViewInit(e : UniNativeViewInitEvent) {
+    canvasView = new UniNativeCanvas(e.detail.element);
+  }
+
+  onUnmounted(() => {
+    // iOS平台需要主动释放 uts 实例
+    // canvasView?.destroy()
+  })
+</script>
+
+<style>
+  .uni-canvas {
+    width: 300px;
+    height: 150px;
+    overflow: hidden;
+  }
+</style>

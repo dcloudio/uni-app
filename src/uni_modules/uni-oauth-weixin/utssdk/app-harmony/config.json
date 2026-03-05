@@ -1,0 +1,5 @@
+{
+	"dependencies": {
+		"@tencent/wechat_open_sdk": "^1.0.15"
+	}
+}

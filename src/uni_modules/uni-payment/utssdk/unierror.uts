@@ -1,0 +1,79 @@
+import { RequestPaymentErrorCode, IRequestPaymentFail } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const RequestPaymentUniErrorSubject = 'uni-requestPayment';
+/**
+ * 错误码
+ * @UniError
+ */
+export const RequestPaymentUniErrors : Map<RequestPaymentErrorCode, string> = new Map([
+	/**
+	 * 正在处理中，支付结果未知（有可能已经支付成功），请查询商家订单列表中订单的支付状态。
+	 */
+	[700600, 'The payment result is unknown (it may have been successfully paid). Please check the payment status of the order in the merchant order list.'],
+	/**
+	 * 订单支付失败。
+	 */
+	[701100, 'Order payment failure.'],
+	/**
+	 * 重复请求。
+	 */
+	[701110, 'Repeat the request.'],
+	/**
+	 * 用户中途取消。
+	 */
+	[700601, 'The user canceled midway.'],
+	/**
+	 * 网络连接出错。
+	 */
+	[700602, 'Network connection error.'],
+	/**
+	 * 支付结果未知（有可能已经支付成功），请查询商家订单列表中订单的支付状态。
+	 */
+	[700603, 'Payment result unknown (may have been successfully paid), please check the payment status of the order in the merchant order list.'],
+	/**
+	 * 支付未完成，支付宝支付6007错误。
+	 */
+	[700607, 'Payment not completed.'],
+	/**
+	 * 参数错误，支付宝支付4001错误。
+	 */
+	[700608, 'Parameter error.'],
+	
+	/**
+	 * 其它支付错误。
+	 */
+	[700000, 'Other payment errors.'],
+	/**
+	 * 微信没有安装
+	 */
+	[700604, 'Wechat is not installed.'],
+	/**
+	 * provider初始化失败
+	 */
+	[700605, 'Failed to get provider.'],
+	/**
+	 * iOS 没有配置对应的URL Scheme
+	 */
+	[700800, 'URL Scheme is not configured.'],
+	/**
+	 * iOS 没有配置对应的Universal Link
+	 */
+	[700801, 'Universal Link is not configured.']
+]);
+
+export class RequestPaymentFailImpl extends UniError implements IRequestPaymentFail {
+    // #ifdef APP-HARMONY
+    override errCode: RequestPaymentErrorCode
+    // #endif
+	constructor(errCode : RequestPaymentErrorCode) {
+		super();
+		this.errSubject = RequestPaymentUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = RequestPaymentUniErrors.get(errCode) ?? "";
+	}
+}
+
+

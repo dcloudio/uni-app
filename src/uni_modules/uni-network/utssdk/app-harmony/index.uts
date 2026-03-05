@@ -1,0 +1,76 @@
+import {
+    request
+} from './network/request.uts'
+import {
+    uploadFile
+} from './network/uploadFile.uts'
+import {
+    downloadFile
+} from './network/downloadFile.uts'
+import {
+    configMTLS
+} from './network/configMTLS.uts'
+// import {
+//     prefetchDNS
+// } from './network/prefetchDNS.uts'
+
+export {
+    RequestTask,
+    RequestOptions,
+    RequestSuccess,
+    RequestFail,
+    Request,
+    UploadTask,
+    UploadFileOptions,
+    UploadFileSuccess,
+    OnProgressUpdateResult,
+    UploadFile,
+    DownloadTask,
+    DownloadFileOptions,
+    DownloadFileSuccess,
+    OnProgressDownloadResult,
+    DownloadFile,
+    ConfigMTLSOptions,
+    ConfigMTLSSuccess,
+    ConfigMTLS,
+    UploadFileCompleteCallback,
+    UploadFileFail,
+    UploadFileFailCallback,
+    UploadFileOptionFiles,
+    UploadFileProgressUpdateCallback,
+    UploadFileSuccessCallback,
+    DownloadFileProgressUpdateCallback,
+    DownloadFileComplete,
+    DownloadFileCompleteCallback,
+    DownloadFileFail,
+    DownloadFileFailCallback,
+    DownloadFileSuccessCallback,
+    RequestCompleteCallback,
+    RequestErrorCode,
+    RequestFailCallback,
+    RequestMethod,
+    RequestSuccessCallback,
+    ConfigMTLSComplete,
+    ConfigMTLSCompleteCallback,
+    ConfigMTLSFail,
+    ConfigMTLSFailCallback,
+    ConfigMTLSSuccessCallback,
+    Certificate,
+    RequestTaskOnChunkReceivedCallback,
+    RequestTaskOnChunkReceivedListenerResult,
+    RequestTaskOnHeadersReceivedCallback,
+    RequestTaskOnHeadersReceivedListenerResult,
+    // PrefetchDNS,
+    // PrefetchDNSOptions,
+    // PrefetchDNSNetAddress,
+    // PrefetchDNSSuccess,
+    // PrefetchDNSFail
+} from '../interface.uts'
+
+export {
+    request,
+    uploadFile,
+    downloadFile,
+    configMTLS,
+    // prefetchDNS
+}

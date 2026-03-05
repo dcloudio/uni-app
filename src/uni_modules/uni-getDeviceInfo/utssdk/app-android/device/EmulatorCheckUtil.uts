@@ -1,0 +1,396 @@
+import Context from "android.content.Context";
+import Locale from "java.util.Locale";
+import File from "java.io.File";
+import SensorManager from "android.hardware.SensorManager";
+import Sensor from "android.hardware.Sensor";
+import PackageManager from 'android.content.pm.PackageManager';
+class CheckResult {
+	public result: Int;
+	public value: string | null;
+
+	constructor(result: Int, value: string | null) {
+		this.result = result;
+		this.value = value;
+	}
+}
+
+export class EmulatorCheckUtil {
+	private static INSTANCE: EmulatorCheckUtil | null = null;
+
+	public static readonly RESULT_MAYBE_EMULATOR:Int = 0; //可能是模拟器
+	public static readonly RESULT_EMULATOR:Int = 1; //模拟器
+	public static readonly RESULT_UNKNOWN:Int = 2; //可能是真机
+
+	private static known_pkgNames =[
+		"sdcard/Android/data/com.bluestacks.home", //蓝叠
+		"sdcard/Android/data/com.bluestacks.settings", //蓝叠
+		"sdcard/Android/data/com.microvirt.guide", //逍遥
+		"sdcard/Android/data/com.microvirt.launcher2" //逍遥
+	];
+
+	public static getSingleInstance(): EmulatorCheckUtil {
+		if (EmulatorCheckUtil.INSTANCE == null) {
+			EmulatorCheckUtil.INSTANCE = new EmulatorCheckUtil();
+		}
+		return EmulatorCheckUtil.INSTANCE!;
+	}
+
+	public emulatorCheck(context: Context, sampleSensor: boolean): boolean {
+		if (context == null) {
+			throw new IllegalArgumentException("context must not be null");
+		}
+
+		let suspectCount = 0;
+
+		//检测硬件名称
+		let hardwareResult = this.checkFeaturesByHardware();
+		switch (hardwareResult.result) {
+			case EmulatorCheckUtil.RESULT_MAYBE_EMULATOR:
+				++suspectCount;
+				break;
+			case EmulatorCheckUtil.RESULT_EMULATOR:
+				return true;
+		}
+
+		//通过pkgName检测
+		let blueStacksResult = this.checkPkgNameForEmulator();
+		switch (blueStacksResult.result) {
+			case EmulatorCheckUtil.RESULT_MAYBE_EMULATOR:
+				++suspectCount;
+				break;
+			case EmulatorCheckUtil.RESULT_EMULATOR:
+				return true;
+		}
+
+		//检测渠道
+		let flavorResult = this.checkFeaturesByFlavor();
+		switch (flavorResult.result) {
+			case EmulatorCheckUtil.RESULT_MAYBE_EMULATOR:
+				++suspectCount;
+				break;
+			case EmulatorCheckUtil.RESULT_EMULATOR:
+				return true;
+		}
+
+		//检测设备型号
+		let modelResult = this.checkFeaturesByModel();
+		switch (modelResult.result) {
+			case EmulatorCheckUtil.RESULT_MAYBE_EMULATOR:
+				++suspectCount;
+				break;
+			case EmulatorCheckUtil.RESULT_EMULATOR:
+				return true;
+		}
+
+		//检测硬件制造商
+		let manufacturerResult = this.checkFeaturesByManufacturer();
+		switch (manufacturerResult.result) {
+			case EmulatorCheckUtil.RESULT_MAYBE_EMULATOR:
+				++suspectCount;
+				break;
+			case EmulatorCheckUtil.RESULT_EMULATOR:
+				return true;
+		}
+
+		//检测主板名称
+		let boardResult = this.checkFeaturesByBoard();
+		switch (boardResult.result) {
+			case EmulatorCheckUtil.RESULT_MAYBE_EMULATOR:
+				++suspectCount;
+				break;
+			case EmulatorCheckUtil.RESULT_EMULATOR:
+				return true;
+		}
+
+		//检测主板平台
+		let platformResult = this.checkFeaturesByPlatform();
+		switch (platformResult.result) {
+			case EmulatorCheckUtil.RESULT_MAYBE_EMULATOR:
+				++suspectCount;
+				break;
+			case EmulatorCheckUtil.RESULT_EMULATOR:
+				return true;
+		}
+
+		//检测基带信息
+		let baseBandResult = this.checkFeaturesByBaseBand();
+		switch (baseBandResult.result) {
+			case EmulatorCheckUtil.RESULT_MAYBE_EMULATOR:
+				suspectCount += 2; //模拟器基带信息为null的情况概率相当大
+				break;
+			case EmulatorCheckUtil.RESULT_EMULATOR:
+				return true;
+		}
+
+		//检测已安装第三方应用数量
+		/*int userAppNumber = getUserAppNumber();
+			if (userAppNumber <= 5) ++suspectCount;*/
+
+		//检测是否支持闪光灯
+		let supportCameraFlash = this.supportCameraFlash(context);
+		if (!supportCameraFlash) ++suspectCount;
+
+		//检测是否支持蓝牙
+		let supportBluetooth = this.supportBluetooth(context);
+		if (!supportBluetooth) ++suspectCount;
+
+
+		if(sampleSensor){
+			//检测传感器数量
+			let sensorNumber = this.getSensorNumber(context);
+			if (sensorNumber <= 7) ++suspectCount;
+			
+			//检测光线传感器
+			let hasLightSensor = this.hasLightSensor(context);
+			if (!hasLightSensor) ++suspectCount;
+		}
+
+		//检测进程组信息
+		/*CheckResult cgroupResult = checkFeaturesByCgroup();
+			if (cgroupResult.result == RESULT_MAYBE_EMULATOR) ++suspectCount;*/
+
+		//嫌疑值大于3，认为是模拟器
+		return suspectCount > 3;
+	}
+
+	private getProperty(propName: string): string | null {
+		let value: string | null = null;
+		let roSecureObj: any | null = null;
+		try {
+			const method = Class.forName("android.os.SystemProperties").getMethod(
+				"get",
+				Class.forName("java.lang.String")
+			);
+			roSecureObj = method.invoke(null, propName);
+			if (roSecureObj != null) {
+				value = roSecureObj as string;
+			}
+		} catch (e: Exception) {
+		}
+		return value;
+	}
+
+	/**
+	 * 特征参数-硬件名称
+	 *
+	 * @return 0表示可能是模拟器，1表示模拟器，2表示可能是真机
+	 */
+	private checkFeaturesByHardware(): CheckResult {
+		let hardware = this.getProperty("ro.hardware");
+		if (null == hardware) {
+			return new CheckResult(EmulatorCheckUtil.RESULT_MAYBE_EMULATOR, null);
+		}
+		let result: Int | null;
+		let tempValue = hardware.lowercase(Locale.ENGLISH);
+		switch (tempValue) {
+			case "ttvm": //天天模拟器
+			case "nox": //夜神模拟器
+			case "cancro": //网易MUMU模拟器
+			case "intel": //逍遥模拟器
+			case "vbox":
+			case "vbox86": //腾讯手游助手
+			case "android_x86": //雷电模拟器
+				result = EmulatorCheckUtil.RESULT_EMULATOR;
+				break;
+			default:
+				result = EmulatorCheckUtil.RESULT_UNKNOWN;
+				break;
+		}
+		return new CheckResult(result, hardware);
+	}
+
+	/**
+	 * 特征参数-渠道
+	 *
+	 * @return 0表示可能是模拟器，1表示模拟器，2表示可能是真机
+	 */
+	private checkFeaturesByFlavor(): CheckResult {
+		let flavor = this.getProperty("ro.build.flavor");
+		if (null == flavor) {
+			return new CheckResult(EmulatorCheckUtil.RESULT_MAYBE_EMULATOR, null);
+		}
+		let result: Int | null;
+		let tempValue = flavor.lowercase(Locale.ENGLISH);
+		if (tempValue.includes("vbox")) {
+			result = EmulatorCheckUtil.RESULT_EMULATOR;
+		} else if (tempValue.includes("sdk_gphone")) {
+			result = EmulatorCheckUtil.RESULT_EMULATOR;
+		} else {
+			result = EmulatorCheckUtil.RESULT_UNKNOWN;
+		}
+		return new CheckResult(result, flavor);
+	}
+
+	private checkPkgNameForEmulator(): CheckResult {
+		let result = EmulatorCheckUtil.RESULT_UNKNOWN;
+		let accordSize = 0;
+		for (let i = 0; i < EmulatorCheckUtil.known_pkgNames.length; i++) {
+			let file_name = EmulatorCheckUtil.known_pkgNames[i];
+			let qemu_file = new File(file_name);
+			if (qemu_file.exists()) {
+				accordSize++;
+			} else {
+				result = EmulatorCheckUtil.RESULT_MAYBE_EMULATOR;
+			}
+			if (accordSize > 2) {
+				break;
+			}
+		}
+		switch (accordSize) {
+			case 1: {
+				result = EmulatorCheckUtil.RESULT_MAYBE_EMULATOR;
+				break;
+			}
+			case 2: {
+				result = EmulatorCheckUtil.RESULT_EMULATOR;
+				break;
+			}
+		}
+		return new CheckResult(result, "PkgName");
+	}
+
+	/**
+	 * 特征参数-设备型号
+	 *
+	 * @return 0表示可能是模拟器，1表示模拟器，2表示可能是真机
+	 */
+	private checkFeaturesByModel(): CheckResult {
+		let model = this.getProperty("ro.product.model");
+		if (null == model) {
+			return new CheckResult(EmulatorCheckUtil.RESULT_MAYBE_EMULATOR, null);
+		}
+		let result: Int | null;
+		let tempValue = model.lowercase(Locale.ENGLISH);
+		if (tempValue.includes("google_sdk")) {
+			result = EmulatorCheckUtil.RESULT_EMULATOR;
+		} else if (tempValue.includes("emulator")) {
+			result = EmulatorCheckUtil.RESULT_EMULATOR;
+		} else if (tempValue.includes("android sdk built for x86")) {
+			result = EmulatorCheckUtil.RESULT_EMULATOR;
+		} else {
+			result = EmulatorCheckUtil.RESULT_UNKNOWN;
+		}
+		return new CheckResult(result, model);
+	}
+
+	/**
+	 * 特征参数-硬件制造商
+	 *
+	 * @return 0表示可能是模拟器，1表示模拟器，2表示可能是真机
+	 */
+	private checkFeaturesByManufacturer(): CheckResult {
+		let manufacturer = this.getProperty("ro.product.manufacturer");
+		if (null == manufacturer)
+			return new CheckResult(EmulatorCheckUtil.RESULT_MAYBE_EMULATOR, null);
+		let result: Int | null;
+		let tempValue = manufacturer.lowercase(Locale.ENGLISH);
+		if (tempValue.includes("genymotion")) {
+			result = EmulatorCheckUtil.RESULT_EMULATOR;
+		} else if (tempValue.includes("netease")) {
+			result = EmulatorCheckUtil.RESULT_EMULATOR; //网易MUMU模拟器
+		} else {
+			result = EmulatorCheckUtil.RESULT_UNKNOWN;
+		}
+		return new CheckResult(result, manufacturer);
+	}
+
+	/**
+	 * 特征参数-主板名称
+	 *
+	 * @return 0表示可能是模拟器，1表示模拟器，2表示可能是真机
+	 */
+	private checkFeaturesByBoard(): CheckResult {
+		let board = this.getProperty("ro.product.board");
+		if (null == board) {
+			return new CheckResult(EmulatorCheckUtil.RESULT_MAYBE_EMULATOR, null);
+		}
+		let result: Int | null;
+		let tempValue = board.lowercase(Locale.ENGLISH);
+		if (tempValue.includes("android")) {
+			result = EmulatorCheckUtil.RESULT_EMULATOR;
+		} else if (tempValue.includes("goldfish")) {
+			result = EmulatorCheckUtil.RESULT_EMULATOR;
+		} else {
+			result = EmulatorCheckUtil.RESULT_UNKNOWN;
+		}
+		return new CheckResult(result, board);
+	}
+
+	/**
+	 * 特征参数-主板平台
+	 *
+	 * @return 0表示可能是模拟器，1表示模拟器，2表示可能是真机
+	 */
+	private checkFeaturesByPlatform(): CheckResult {
+		let platform = this.getProperty("ro.board.platform");
+		if (null == platform)
+			return new CheckResult(EmulatorCheckUtil.RESULT_MAYBE_EMULATOR, null);
+		let result: Int | null;
+		let tempValue = platform.lowercase(Locale.ENGLISH);
+		if (tempValue.includes("android")) {
+			result = EmulatorCheckUtil.RESULT_EMULATOR;
+		} else {
+			result = EmulatorCheckUtil.RESULT_UNKNOWN;
+		}
+		return new CheckResult(result, platform);
+	}
+
+	/**
+	 * 特征参数-基带信息
+	 *
+	 * @return 0表示可能是模拟器，1表示模拟器，2表示可能是真机
+	 */
+	private checkFeaturesByBaseBand(): CheckResult {
+		let baseBandVersion = this.getProperty("gsm.version.baseband");
+		if (null == baseBandVersion) {
+			return new CheckResult(EmulatorCheckUtil.RESULT_MAYBE_EMULATOR, null);
+		}
+		let result: Int | null;
+		if (baseBandVersion.includes("1.0.0.0")) {
+			result = EmulatorCheckUtil.RESULT_EMULATOR;
+		} else {
+			result = EmulatorCheckUtil.RESULT_UNKNOWN;
+		}
+		return new CheckResult(result, baseBandVersion);
+	}
+
+	/**
+	 * 获取传感器数量
+	 */
+	private getSensorNumber(context: Context): Int {
+		let sm = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager;
+		return sm.getSensorList(Sensor.TYPE_ALL).size;
+	}
+
+	/**
+	 * 是否支持闪光灯
+	 */
+	private supportCameraFlash(context: Context): boolean {
+		return context
+			.getPackageManager()
+			.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+	}
+
+	/**
+	 * 是否支持蓝牙
+	 */
+	private supportBluetooth(context: Context): boolean {
+		return context
+			.getPackageManager()
+			.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
+	}
+
+	/**
+	 * 判断是否存在光传感器来判断是否为模拟器
+	 * 部分真机也不存在温度和压力传感器。其余传感器模拟器也存在。
+	 *
+	 * @return false为模拟器
+	 */
+	private hasLightSensor(context: Context): boolean {
+		let sensorManager = context.getSystemService(
+			Context.SENSOR_SERVICE
+		) as SensorManager;
+		let sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT); //光线传感器
+		return null != sensor;
+	}
+}

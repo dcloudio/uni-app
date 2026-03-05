@@ -1,0 +1,225 @@
+import {
+  getCurrentPageVm,
+  getPageIdByVm,
+  isFunction,
+  requestComponentInfo,
+  resolveComponentInstance
+} from '@dcloudio/uni-runtime'
+
+import {
+  CreateSelectorQuery,
+  NodeField,
+  NodesRef,
+  SelectorQuery,
+  SelectorQueryNodeInfoCallback
+} from '../interface.uts'
+
+export {
+    CreateSelectorQuery,
+    NodeField,
+    NodesRef,
+    SelectorQuery,
+    SelectorQueryNodeInfoCallback
+}
+
+/* const ContextClasss = {
+  canvas: CanvasContext,
+  map: MapContext,
+  video: VideoContext,
+  editor: EditorContext,
+} */
+
+/* function convertContext(result: SelectorQueryNodeInfo | null) {
+  if (result && result.contextInfo) {
+    const { id, type, page } = (result as SelectorQueryNodeInfo).contextInfo!
+    const ContextClass = (ContextClasss as any)[type] as CanvasContext
+    result.context = new ContextClass(id, page)
+    delete result.contextInfo
+  }
+} */
+
+interface SelectorQueryRequest {
+  component: ComponentPublicInstance | undefined | null
+  selector: string
+  single: boolean
+  fields: NodeField
+}
+
+class NodesRefImpl implements NodesRef {
+  private _selectorQuery: SelectorQueryImpl
+  private _component: ComponentPublicInstance | null | undefined
+  private _selector: string
+  private _single: boolean
+  constructor(
+    selectorQuery: SelectorQueryImpl,
+    component: ComponentPublicInstance | null | undefined,
+    selector: string,
+    single: boolean
+  ) {
+    this._selectorQuery = selectorQuery
+    this._component = component
+    this._selector = selector
+    this._single = single
+  }
+
+  boundingClientRect(
+    callback?: SelectorQueryNodeInfoCallback | null
+  ): SelectorQuery {
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        id: true,
+        dataset: true,
+        rect: true,
+        size: true,
+      } as NodeField,
+      callback
+    )
+    return this._selectorQuery
+  }
+
+  fields(fields: NodeField, callback: SelectorQueryNodeInfoCallback): SelectorQuery {
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      fields,
+      callback
+    )
+    return this._selectorQuery
+  }
+
+  scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery {
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        id: true,
+        dataset: true,
+        scrollOffset: true,
+      } as NodeField,
+      callback
+    )
+    return this._selectorQuery
+  }
+
+  context(callback: SelectorQueryNodeInfoCallback): SelectorQuery {
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        context: true,
+      } as NodeField,
+      callback
+    )
+    return this._selectorQuery
+  }
+
+  node(callback: (result: any) => void): SelectorQuery {
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        node: true,
+      } as NodeField,
+      callback
+    )
+    return this._selectorQuery
+  }
+}
+
+class SelectorQueryImpl implements SelectorQuery {
+  private _page: ComponentPublicInstance
+  private _queue: Array<SelectorQueryRequest>
+  private _component?: ComponentPublicInstance = undefined
+  private _queueCb: Array<SelectorQueryNodeInfoCallback>
+  private _nodesRef?: NodesRef
+  constructor(page: ComponentPublicInstance) {
+    this._page = page
+    this._queue = []
+    this._queueCb = []
+  }
+
+  exec(callback?: (result: Array<any>) => void | null): NodesRef | null {
+    requestComponentInfo(
+      this._page,
+      this._queue,
+      (res: Array<any>) => {
+        const queueCbs = this._queueCb
+        res.forEach((result: any, index: number) => {
+          // TODO convertContext
+          /* if (isArray(result)) {
+            result.forEach(convertContext)
+          } else {
+            convertContext(result)
+          } */
+          const queueCb = queueCbs[index]
+          if (isFunction(queueCb)) {
+            queueCb(result)
+          }
+        })
+        if (isFunction(callback)) {
+          callback!(res)
+        }
+      }
+    )
+    // TODO
+    return this._nodesRef as NodesRef
+  }
+
+  in(component?: ComponentPublicInstance | ComponentInternalInstance): SelectorQuery {
+    this._component = resolveComponentInstance(component)
+    return this
+  }
+
+  select(selector: string): NodesRef {
+    return this._nodesRef = new NodesRefImpl(
+      this,
+      this._component,
+      selector,
+      true
+    ) as NodesRef
+  }
+
+  selectAll(selector: string): NodesRef {
+    return this._nodesRef = new NodesRefImpl(
+      this,
+      this._component,
+      selector,
+      false
+    ) as NodesRef
+  }
+
+  selectViewport(): NodesRef {
+    return this._nodesRef = new NodesRefImpl(this, null, '', true) as NodesRef
+  }
+
+  _push(
+    selector: string,
+    component: ComponentPublicInstance | undefined | null,
+    single: boolean,
+    fields: NodeField,
+    callback?: SelectorQueryNodeInfoCallback | null
+  ) {
+    this._queue.push({
+      component,
+      selector,
+      single,
+      fields,
+    } as SelectorQueryRequest)
+    callback && this._queueCb.push(callback)
+  }
+}
+
+export const createSelectorQuery = defineSyncApi<SelectorQuery>('createSelectorQuery', (context?: ComponentInternalInstance | ComponentPublicInstance) => {
+  context = resolveComponentInstance(context)
+  if (context && !getPageIdByVm(context)) {
+    context = null
+  }
+  return new SelectorQueryImpl(context || getCurrentPageVm()!) as SelectorQuery
+}) as CreateSelectorQuery

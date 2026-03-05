@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="300dp"
+	android:layout_height="wrap_content"
+	android:paddingTop="30dp"
+	android:background="@drawable/uni_app_uni_prompt_dialog_bg_rounded"
+	android:orientation="vertical">
+
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:orientation="vertical"
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:id="@+id/tv_title"
+			android:textSize="16sp"
+			android:textStyle="bold"
+			android:textColor="@color/uni_app_uni_prompt_dialog_title_text"
+			android:layout_marginLeft="30dp"
+			android:layout_marginRight="30dp"
+			android:layout_marginBottom="20dp"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:ellipsize="end"
+			android:maxLines="2"
+			android:gravity="center"
+			/>
+
+		<TextView
+			android:id="@+id/tv_content"
+			android:layout_marginLeft="30dp"
+			android:layout_marginRight="30dp"
+			android:layout_marginBottom="30dp"
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:textColor="@color/uni_app_uni_prompt_dialog_sub_text"
+			android:gravity="center"
+			android:textSize="16sp"
+			/>
+
+		<EditText
+			android:id="@+id/et_content"
+			android:layout_marginTop="10dp"
+			android:layout_marginLeft="30dp"
+			android:layout_marginRight="30dp"
+			android:layout_marginBottom="30dp"
+			android:layout_height="wrap_content"
+			android:minLines="1"
+			android:maxLines="2"
+			android:padding="6dp"
+			android:visibility="gone"
+			android:background="@color/uni_app_uni_prompt_dialog_edit_text_bg"
+			android:layout_width="match_parent"
+			android:textColor="@color/uni_app_uni_prompt_dialog_edit_text_color"
+			android:textColorHint="@color/uni_app_uni_prompt_dialog_edit_text_hint"
+			android:gravity="left|center_vertical"
+			android:textSize="16sp"
+			/>
+			
+	</LinearLayout>
+
+	<View
+		android:id="@+id/view_split_line_h"
+		android:layout_below="@+id/tv_content"
+		android:layout_width="match_parent"
+		android:background="@color/uni_app_uni_prompt_night_bg_hair_line"
+		android:layout_height="0.5dp"/>
+
+	<LinearLayout
+		android:id="@+id/line_cancel"
+		android:layout_width="match_parent"
+		android:layout_below="@+id/view_split_line_h"
+		android:layout_height="50dp"
+		android:orientation="horizontal">
+
+		<TextView
+			android:id="@+id/tvCancelAction"
+			android:layout_width="0dp"
+			android:layout_height="50dp"
+			android:gravity="center"
+			android:layout_weight="1"
+			android:text="@string/uni_app_uni_prompt_model_cancel"
+			android:clickable="true"
+			android:background="@drawable/uni_app_uni_prompt_dialog_button_select_left"
+			android:textColor="@color/uni_app_uni_prompt_button_cancel_text_color"
+			android:textStyle="bold"
+			android:textSize="16sp" />
+
+		<View
+			android:id="@+id/view_split_line_v"
+			android:layout_width="0.5dp"
+			android:background="@color/uni_app_uni_prompt_night_bg_split"
+			android:layout_height="match_parent"/>
+
+		<TextView
+			android:id="@+id/tvSureAction"
+			android:layout_width="0dp"
+			android:layout_height="50dp"
+			android:layout_weight="1"
+			android:gravity="center"
+			android:text="@string/uni_app_uni_prompt_model_sure"
+			android:clickable="true"
+			android:background="@drawable/uni_app_uni_prompt_dialog_button_select_right"
+			android:textColor="@color/uni_app_uni_prompt_button_sure_text_color"
+			android:textStyle="bold"
+			android:textSize="16sp" />
+
+	</LinearLayout>
+
+</LinearLayout >
+

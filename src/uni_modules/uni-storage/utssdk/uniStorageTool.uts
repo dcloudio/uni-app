@@ -1,0 +1,197 @@
+import { SetStorageOptions, SetStorageSuccess, GetStorageOptions, GetStorageSuccess } from "./interface.uts"
+
+
+const STORAGE_DATA_TYPE = '__TYPE'
+const STORAGE_KEYS = 'uni-storage-keys'
+
+/**
+ * add since 2023-09-04 过滤原生数据类型对齐 web typeOf 用于兼容旧数据
+ */
+function filterNativeType(src:string):string{
+	if(src == "Double" || src == "Float" || src == "Long" || src == "Int" || src == "Short" || src == "Byte" || src == "UByte" || src == "UShort" || src == "UInt" || src == "ULong"){
+		return "number"
+	}
+	
+	return src
+}
+
+
+function parseValue(value: any): any | null {
+	const types = ['object', 'string', 'number', 'boolean', 'undefined']
+	const object = typeof value == 'string' ? JSON.parse(value as string) : value
+	if (object == null) {
+		return null
+	} else {
+		const type = typeof object
+		if (types.indexOf(type) >= 0) {
+			// @ts-expect-error   
+			if (object instanceof UTSJSONObject || object instanceof Map<string,any>) { 
+				// @ts-expect-error   
+				const map = (object instanceof UTSJSONObject) ? (object as UTSJSONObject).toMap() : (object as Map<string,any>) 
+				if (map.size  == 2 && map.has('data')  && map.has('type')) {
+					let dataType:string = ""
+					if(map.get("type") ==  null){
+						dataType = ""
+					}else{
+						dataType = map.get("type") as string
+					}
+					if (filterNativeType(typeof map.get('data')) == dataType && dataType != 'string') {
+						return map.get('data')
+					}else if (typeof map.get('data') == dataType && dataType == 'string') {
+						const regex = /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/    
+						// @ts-expect-error
+						if (type == 'object' && regex.test(map.get('data') as string)) {
+							let dateStr = map.get('data') as string
+							return new Date(dateStr)
+						}
+						return map.get('data')
+					}
+				} else if (map.size >= 1){
+					return ''
+				}
+			}
+		}
+		return null
+	}
+}
+
+function praseGetStorage(type: string, value: string): any | null {
+	let data: any | null = value
+	if (type != 'string' || (type == "string" && value == '{"type":"undefined"}')) {
+		// 兼容H5和V3初期历史格式
+		let object = JSON.parse(value)
+		
+		if (object == null) {
+			return data
+		}
+		
+		const result = parseValue(object)
+		if (result != null) {
+			data = result
+		} else if (type != null && type != ""){
+			// 兼容App端历史格式
+			data = object
+			if (typeof object == 'string') {
+				object = JSON.parse(object as string)
+				const objectType = typeof object
+				if (objectType == 'number' && type == 'date') {
+					let dateNum = object as number
+					data = new Date(dateNum)
+				} else if (objectType == (['null', 'array'].indexOf(type) < 0 ? type : 'object')) {
+					data = object
+				}
+			}
+		}
+	}
+	return data
+}
+
+function uni_setStorageSync(key: string, data: any, saveItemHandler: (key: string, data: string) => void, removeItemHandler: (key: string) => void) {
+	let type = filterNativeType(typeof data)
+	let value: string | null = null
+	 value = (type == 'string') ? (data as string) : JSON.stringify({type: type, data: data})
+	if (type == 'string' && parseValue(data) != null) {
+		saveItemHandler(key + STORAGE_DATA_TYPE, type)
+	} else{
+		removeItemHandler(key + STORAGE_DATA_TYPE)
+	}
+	
+	if(value ==  null){
+		value = ""
+	}
+	
+	saveItemHandler(key, value!)
+}
+
+function uni_setStorageAsync(options: SetStorageOptions, saveItemAsyncHandler: (key: string, data: string) => void, removeItemAsyncHandler: (key: string) => void) {
+	const type = filterNativeType(typeof options.data)
+	let value: string | null = null
+	value = (type == 'string') ? (options.data as string) : JSON.stringify({type: type, data: options.data})
+	if (value == null) {
+		let fail = new UniError("uni-storage", -1, "data can not be stringify")
+		options.fail?.(fail) 
+		options.complete?.(fail)
+	} else{
+		if (type == 'string' && parseValue(options.data) != null) {
+			saveItemAsyncHandler(options.key + STORAGE_DATA_TYPE, type)
+		} else{
+			removeItemAsyncHandler(options.key + STORAGE_DATA_TYPE)
+		}
+		if(value == null){
+			value = ""
+		}
+		saveItemAsyncHandler(options.key, value!)
+		let success: SetStorageSuccess = {
+		}
+		options.success?.(success)
+		options.complete?.(success)  
+	}
+
+}
+
+function uni_getStorageSync(key: string, getItemHandler: ((key: string) => string | null)): any | null {
+	let value = getItemHandler(key)
+	let typeOrigin = getItemHandler(key + STORAGE_DATA_TYPE)
+	if(typeOrigin == null){
+		typeOrigin = ""
+	}
+	
+	const type = typeOrigin!.toLowerCase()
+	if (typeof value != "string") {
+		return ''
+	}
+	if(value == null){
+		value = ""
+	}
+	return praseGetStorage(type, value!)
+}
+
+function uni_getStorageAsync(options: GetStorageOptions, getItemAsyncHandler: ((key: string) => string | null), includesKey: (key: string) => boolean) {
+	let ret = includesKey(options.key);
+	if (!ret) {
+		let fail = new UniError("uni-storage", -2, "getStorage:fail data not found")
+		options.fail?.(fail);
+		options.complete?.(fail);
+		return;
+	}
+	let value = getItemAsyncHandler(options.key)
+	if(value == null){
+		value = ""
+	}
+	let typeOrigin = getItemAsyncHandler(options.key + STORAGE_DATA_TYPE)
+	if(typeOrigin == null){
+		typeOrigin = ""
+	}
+	const type = typeOrigin!.toLowerCase()
+	
+	if (typeof value != "string") {
+		let success: GetStorageSuccess = {
+			data: ""
+		}
+		options.success?.(success)
+		options.complete?.(success)
+	}else {
+		const data = praseGetStorage(type, value!)
+		let success: GetStorageSuccess = {
+			data: data
+		}
+		options.success?.(success)
+		options.complete?.(success)
+	}
+}
+
+export {
+	STORAGE_DATA_TYPE,
+	STORAGE_KEYS,
+	uni_setStorageSync,
+	uni_setStorageAsync,
+	uni_getStorageSync,
+	uni_getStorageAsync,
+}
+
+
+
+
+
+
+

@@ -1,0 +1,439 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-module-flags: -target arm64-apple-ios12.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name Starscream
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import CommonCrypto
+import Foundation
+import Network
+@_exported import Starscream
+import Swift
+import _Concurrency
+import _StringProcessing
+import zlib
+public protocol CompressionHandler {
+  func load(headers: [Swift.String : Swift.String])
+  func decompress(data: Foundation.Data, isFinal: Swift.Bool) -> Foundation.Data?
+  func compress(data: Foundation.Data) -> Foundation.Data?
+}
+public protocol EngineDelegate : AnyObject {
+  func didReceive(event: Starscream.WebSocketEvent)
+}
+public protocol Engine {
+  func register(delegate: Starscream.EngineDelegate)
+  func start(request: Foundation.URLRequest)
+  func stop(closeCode: Swift.UInt16)
+  func forceStop()
+  func write(data: Foundation.Data, opcode: Starscream.FrameOpCode, completion: (() -> ())?)
+  func write(string: Swift.String, completion: (() -> ())?)
+}
+public class FoundationHTTPHandler : Starscream.HTTPHandler {
+  public init()
+  public func convert(request: Foundation.URLRequest) -> Foundation.Data
+  public func parse(data: Foundation.Data) -> Swift.Int
+  public func register(delegate: Starscream.HTTPHandlerDelegate)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class FoundationHTTPServerHandler : Starscream.HTTPServerHandler {
+  public func register(delegate: Starscream.HTTPServerDelegate)
+  public func createResponse(headers: [Swift.String : Swift.String]) -> Foundation.Data
+  public func parse(data: Foundation.Data)
+  @objc deinit
+}
+public enum FoundationSecurityError : Swift.Error {
+  case invalidRequest
+  public static func == (a: Starscream.FoundationSecurityError, b: Starscream.FoundationSecurityError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public class FoundationSecurity {
+  public init(allowSelfSigned: Swift.Bool = false)
+  @objc deinit
+}
+extension Starscream.FoundationSecurity : Starscream.CertificatePinning {
+  public func evaluateTrust(trust: Security.SecTrust, domain: Swift.String?, completion: ((Starscream.PinningState) -> ()))
+}
+extension Starscream.FoundationSecurity : Starscream.HeaderValidator {
+  public func validate(headers: [Swift.String : Swift.String], key: Swift.String) -> Swift.Error?
+}
+public enum FoundationTransportError : Swift.Error {
+  case invalidRequest
+  case invalidOutputStream
+  case timeout
+  public static func == (a: Starscream.FoundationTransportError, b: Starscream.FoundationTransportError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@objc public class FoundationTransport : ObjectiveC.NSObject, Starscream.Transport, Foundation.StreamDelegate {
+  public var usingTLS: Swift.Bool {
+    get
+  }
+  public init(streamConfiguration: ((Foundation.InputStream, Foundation.OutputStream) -> Swift.Void)? = nil)
+  @objc deinit
+  public func connect(url: Foundation.URL, timeout: Swift.Double = 10, certificatePinning: Starscream.CertificatePinning? = nil)
+  public func disconnect()
+  public func register(delegate: Starscream.TransportEventClient)
+  public func write(data: Foundation.Data, completion: @escaping ((Swift.Error?) -> ()))
+  @objc open func stream(_ aStream: Foundation.Stream, handle eventCode: Foundation.Stream.Event)
+}
+public protocol FrameCollectorDelegate : AnyObject {
+  func didForm(event: Starscream.FrameCollector.Event)
+  func decompress(data: Foundation.Data, isFinal: Swift.Bool) -> Foundation.Data?
+}
+@_hasMissingDesignatedInitializers public class FrameCollector {
+  public enum Event {
+    case text(Swift.String)
+    case binary(Foundation.Data)
+    case pong(Foundation.Data?)
+    case ping(Foundation.Data?)
+    case error(Swift.Error)
+    case closed(Swift.String, Swift.UInt16)
+  }
+  public func add(frame: Starscream.Frame)
+  @objc deinit
+}
+public enum CloseCode : Swift.UInt16 {
+  case normal
+  case goingAway
+  case protocolError
+  case protocolUnhandledType
+  case noStatusReceived
+  case encoding
+  case policyViolated
+  case messageTooBig
+  public init?(rawValue: Swift.UInt16)
+  public typealias RawValue = Swift.UInt16
+  public var rawValue: Swift.UInt16 {
+    get
+  }
+}
+public enum FrameOpCode : Swift.UInt8 {
+  case continueFrame
+  case textFrame
+  case binaryFrame
+  case connectionClose
+  case ping
+  case pong
+  case unknown
+  public init?(rawValue: Swift.UInt8)
+  public typealias RawValue = Swift.UInt8
+  public var rawValue: Swift.UInt8 {
+    get
+  }
+}
+public struct Frame {
+}
+public enum FrameEvent {
+  case frame(Starscream.Frame)
+  case error(Swift.Error)
+}
+public protocol FramerEventClient : AnyObject {
+  func frameProcessed(event: Starscream.FrameEvent)
+}
+public protocol Framer {
+  func add(data: Foundation.Data)
+  func register(delegate: Starscream.FramerEventClient)
+  func createWriteFrame(opcode: Starscream.FrameOpCode, payload: Foundation.Data, isCompressed: Swift.Bool) -> Foundation.Data
+  func updateCompression(supports: Swift.Bool)
+  func supportsCompression() -> Swift.Bool
+}
+public class WSFramer : Starscream.Framer {
+  public var compressionEnabled: Swift.Bool
+  public init(isServer: Swift.Bool = false)
+  public func updateCompression(supports: Swift.Bool)
+  public func supportsCompression() -> Swift.Bool
+  public func add(data: Foundation.Data)
+  public func register(delegate: Starscream.FramerEventClient)
+  public func createWriteFrame(opcode: Starscream.FrameOpCode, payload: Foundation.Data, isCompressed: Swift.Bool) -> Foundation.Data
+  @objc deinit
+}
+public protocol MyWSArrayType {
+}
+extension Swift.UInt8 : Starscream.MyWSArrayType {
+}
+extension Swift.Array where Element : Starscream.MyWSArrayType, Element : Swift.UnsignedInteger {
+  public func readUint16(offset: Swift.Int) -> Swift.UInt16
+  public func readUint64(offset: Swift.Int) -> Swift.UInt64
+  public func unmaskData(maskStart: Swift.Int, offset: Swift.Int, length: Swift.Int) -> Foundation.Data
+}
+public func writeUint16(_ buffer: inout [Swift.UInt8], offset: Swift.Int, value: Swift.UInt16)
+public func writeUint32(_ buffer: inout [Swift.UInt8], offset: Swift.Int, value: Swift.UInt32)
+public func writeUint64(_ buffer: inout [Swift.UInt8], offset: Swift.Int, value: Swift.UInt64)
+public enum HTTPUpgradeError : Swift.Error {
+  case notAnUpgrade(Swift.Int, [Swift.String : Swift.String])
+  case invalidData
+}
+public struct HTTPWSHeader {
+  public static func createUpgrade(request: Foundation.URLRequest, supportsCompression: Swift.Bool, secKeyValue: Swift.String) -> Foundation.URLRequest
+  public static func generateWebSocketKey() -> Swift.String
+}
+public enum HTTPEvent {
+  case success([Swift.String : Swift.String])
+  case failure(Swift.Error)
+}
+public protocol HTTPHandlerDelegate : AnyObject {
+  func didReceiveHTTP(event: Starscream.HTTPEvent)
+}
+public protocol HTTPHandler {
+  func register(delegate: Starscream.HTTPHandlerDelegate)
+  func convert(request: Foundation.URLRequest) -> Foundation.Data
+  func parse(data: Foundation.Data) -> Swift.Int
+}
+public protocol HTTPServerDelegate : AnyObject {
+  func didReceive(event: Starscream.HTTPEvent)
+}
+public protocol HTTPServerHandler {
+  func register(delegate: Starscream.HTTPServerDelegate)
+  func parse(data: Foundation.Data)
+  func createResponse(headers: [Swift.String : Swift.String]) -> Foundation.Data
+}
+public struct URLParts {
+}
+extension Foundation.URL {
+  public var isTLSScheme: Swift.Bool {
+    get
+  }
+  public func getParts() -> Starscream.URLParts?
+}
+@objc @_inheritsConvenienceInitializers @available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
+public class NativeEngine : ObjectiveC.NSObject, Starscream.Engine, Foundation.URLSessionDataDelegate, Foundation.URLSessionWebSocketDelegate {
+  public func register(delegate: Starscream.EngineDelegate)
+  public func start(request: Foundation.URLRequest)
+  public func stop(closeCode: Swift.UInt16)
+  public func forceStop()
+  public func write(string: Swift.String, completion: (() -> ())?)
+  public func write(data: Foundation.Data, opcode: Starscream.FrameOpCode, completion: (() -> ())?)
+  @objc public func urlSession(_ session: Foundation.URLSession, webSocketTask: Foundation.URLSessionWebSocketTask, didOpenWithProtocol protocol: Swift.String?)
+  @objc public func urlSession(_ session: Foundation.URLSession, webSocketTask: Foundation.URLSessionWebSocketTask, didCloseWith closeCode: Foundation.URLSessionWebSocketTask.CloseCode, reason: Foundation.Data?)
+  @objc public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didCompleteWithError error: Swift.Error?)
+  @objc override dynamic public init()
+  @objc deinit
+}
+public enum SecurityErrorCode : Swift.UInt16 {
+  case acceptFailed
+  case pinningFailed
+  public init?(rawValue: Swift.UInt16)
+  public typealias RawValue = Swift.UInt16
+  public var rawValue: Swift.UInt16 {
+    get
+  }
+}
+public enum PinningState {
+  case success
+  case failed(CoreFoundation.CFError?)
+}
+public protocol CertificatePinning : AnyObject {
+  func evaluateTrust(trust: Security.SecTrust, domain: Swift.String?, completion: ((Starscream.PinningState) -> ()))
+}
+public protocol HeaderValidator : AnyObject {
+  func validate(headers: [Swift.String : Swift.String], key: Swift.String) -> Swift.Error?
+}
+public enum ConnectionEvent {
+  case connected([Swift.String : Swift.String])
+  case disconnected(Swift.String, Swift.UInt16)
+  case text(Swift.String)
+  case binary(Foundation.Data)
+  case pong(Foundation.Data?)
+  case ping(Foundation.Data?)
+  case error(Swift.Error)
+}
+public protocol Connection {
+  func write(data: Foundation.Data, opcode: Starscream.FrameOpCode)
+}
+public protocol ConnectionDelegate : AnyObject {
+  func didReceive(event: Starscream.ServerEvent)
+}
+public enum ServerEvent {
+  case connected(Starscream.Connection, [Swift.String : Swift.String])
+  case disconnected(Starscream.Connection, Swift.String, Swift.UInt16)
+  case text(Starscream.Connection, Swift.String)
+  case binary(Starscream.Connection, Foundation.Data)
+  case pong(Starscream.Connection, Foundation.Data?)
+  case ping(Starscream.Connection, Foundation.Data?)
+}
+public protocol Server {
+  func start(address: Swift.String, port: Swift.UInt16) -> Swift.Error?
+}
+public class StringHTTPHandler : Starscream.HTTPHandler {
+  public init()
+  public func convert(request: Foundation.URLRequest) -> Foundation.Data
+  public func parse(data: Foundation.Data) -> Swift.Int
+  public func register(delegate: Starscream.HTTPHandlerDelegate)
+  @objc deinit
+}
+public enum TCPTransportError : Swift.Error {
+  case invalidRequest
+  public static func == (a: Starscream.TCPTransportError, b: Starscream.TCPTransportError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@available(macOS 10.14, iOS 12.0, watchOS 5.0, tvOS 12.0, *)
+public class TCPTransport : Starscream.Transport {
+  @objc deinit
+  public var usingTLS: Swift.Bool {
+    get
+  }
+  public init(connection: Network.NWConnection)
+  public init()
+  public func connect(url: Foundation.URL, timeout: Swift.Double = 10, certificatePinning: Starscream.CertificatePinning? = nil)
+  public func disconnect()
+  public func register(delegate: Starscream.TransportEventClient)
+  public func write(data: Foundation.Data, completion: @escaping ((Swift.Error?) -> ()))
+}
+public enum ConnectionState {
+  case connected
+  case waiting
+  case cancelled
+  case failed(Swift.Error?)
+  case viability(Swift.Bool)
+  case shouldReconnect(Swift.Bool)
+  case receive(Foundation.Data)
+  case peerClosed
+}
+public protocol TransportEventClient : AnyObject {
+  func connectionChanged(state: Starscream.ConnectionState)
+}
+public protocol Transport : AnyObject {
+  func register(delegate: Starscream.TransportEventClient)
+  func connect(url: Foundation.URL, timeout: Swift.Double, certificatePinning: Starscream.CertificatePinning?)
+  func disconnect()
+  func write(data: Foundation.Data, completion: @escaping ((Swift.Error?) -> ()))
+  var usingTLS: Swift.Bool { get }
+}
+public enum ErrorType : Swift.Error {
+  case compressionError
+  case securityError
+  case protocolError
+  case serverError
+  public static func == (a: Starscream.ErrorType, b: Starscream.ErrorType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct WSError : Swift.Error {
+  public let type: Starscream.ErrorType
+  public let message: Swift.String
+  public let code: Swift.UInt16
+  public init(type: Starscream.ErrorType, message: Swift.String, code: Swift.UInt16)
+}
+public protocol WebSocketClient : AnyObject {
+  func connect()
+  func disconnect(closeCode: Swift.UInt16)
+  func write(string: Swift.String, completion: (() -> ())?)
+  func write(stringData: Foundation.Data, completion: (() -> ())?)
+  func write(data: Foundation.Data, completion: (() -> ())?)
+  func write(ping: Foundation.Data, completion: (() -> ())?)
+  func write(pong: Foundation.Data, completion: (() -> ())?)
+}
+extension Starscream.WebSocketClient {
+  public func write(string: Swift.String)
+  public func write(data: Foundation.Data)
+  public func write(ping: Foundation.Data)
+  public func write(pong: Foundation.Data)
+  public func disconnect()
+}
+public enum WebSocketEvent {
+  case connected([Swift.String : Swift.String])
+  case disconnected(Swift.String, Swift.UInt16)
+  case text(Swift.String)
+  case binary(Foundation.Data)
+  case pong(Foundation.Data?)
+  case ping(Foundation.Data?)
+  case error(Swift.Error?)
+  case viabilityChanged(Swift.Bool)
+  case reconnectSuggested(Swift.Bool)
+  case cancelled
+  case peerClosed
+}
+public protocol WebSocketDelegate : AnyObject {
+  func didReceive(event: Starscream.WebSocketEvent, client: Starscream.WebSocketClient)
+}
+open class WebSocket : Starscream.WebSocketClient, Starscream.EngineDelegate {
+  weak public var delegate: Starscream.WebSocketDelegate?
+  public var onEvent: ((Starscream.WebSocketEvent) -> Swift.Void)?
+  public var request: Foundation.URLRequest
+  public var callbackQueue: Dispatch.DispatchQueue
+  public var respondToPingWithPong: Swift.Bool {
+    get
+    set
+  }
+  public init(request: Foundation.URLRequest, engine: Starscream.Engine)
+  convenience public init(request: Foundation.URLRequest, certPinner: Starscream.CertificatePinning? = FoundationSecurity(), compressionHandler: Starscream.CompressionHandler? = nil, useCustomEngine: Swift.Bool = true)
+  public func connect()
+  public func disconnect(closeCode: Swift.UInt16 = CloseCode.normal.rawValue)
+  public func forceDisconnect()
+  public func write(data: Foundation.Data, completion: (() -> ())?)
+  public func write(string: Swift.String, completion: (() -> ())?)
+  public func write(stringData: Foundation.Data, completion: (() -> ())?)
+  public func write(ping: Foundation.Data, completion: (() -> ())?)
+  public func write(pong: Foundation.Data, completion: (() -> ())?)
+  public func didReceive(event: Starscream.WebSocketEvent)
+  @objc deinit
+}
+@available(macOS 10.14, iOS 12.0, watchOS 5.0, tvOS 12.0, *)
+@available(watchOS, unavailable)
+public class WebSocketServer : Starscream.Server, Starscream.ConnectionDelegate {
+  public var onEvent: ((Starscream.ServerEvent) -> Swift.Void)?
+  public init()
+  public func start(address: Swift.String, port: Swift.UInt16) -> Swift.Error?
+  public func didReceive(event: Starscream.ServerEvent)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @available(macOS 10.14, iOS 12.0, watchOS 5.0, tvOS 12.0, *)
+public class ServerConnection : Starscream.Connection, Starscream.HTTPServerDelegate, Starscream.FramerEventClient, Starscream.FrameCollectorDelegate, Starscream.TransportEventClient {
+  public var onEvent: ((Starscream.ConnectionEvent) -> Swift.Void)?
+  weak public var delegate: Starscream.ConnectionDelegate?
+  public func write(data: Foundation.Data, opcode: Starscream.FrameOpCode)
+  public func connectionChanged(state: Starscream.ConnectionState)
+  public func didReceive(event: Starscream.HTTPEvent)
+  public func frameProcessed(event: Starscream.FrameEvent)
+  public func didForm(event: Starscream.FrameCollector.Event)
+  public func decompress(data: Foundation.Data, isFinal: Swift.Bool) -> Foundation.Data?
+  @objc deinit
+}
+public class WSCompression : Starscream.CompressionHandler {
+  public init()
+  public func load(headers: [Swift.String : Swift.String])
+  public func decompress(data: Foundation.Data, isFinal: Swift.Bool) -> Foundation.Data?
+  public func compress(data: Foundation.Data) -> Foundation.Data?
+  @objc deinit
+}
+public class WSEngine : Starscream.Engine, Starscream.TransportEventClient, Starscream.FramerEventClient, Starscream.FrameCollectorDelegate, Starscream.HTTPHandlerDelegate {
+  public var respondToPingWithPong: Swift.Bool
+  public init(transport: Starscream.Transport, certPinner: Starscream.CertificatePinning? = nil, headerValidator: Starscream.HeaderValidator = FoundationSecurity(), httpHandler: Starscream.HTTPHandler = FoundationHTTPHandler(), framer: Starscream.Framer = WSFramer(), compressionHandler: Starscream.CompressionHandler? = nil)
+  public func register(delegate: Starscream.EngineDelegate)
+  public func start(request: Foundation.URLRequest)
+  public func stop(closeCode: Swift.UInt16 = CloseCode.normal.rawValue)
+  public func forceStop()
+  public func write(string: Swift.String, completion: (() -> ())?)
+  public func write(data: Foundation.Data, opcode: Starscream.FrameOpCode, completion: (() -> ())?)
+  public func connectionChanged(state: Starscream.ConnectionState)
+  public func didReceiveHTTP(event: Starscream.HTTPEvent)
+  public func frameProcessed(event: Starscream.FrameEvent)
+  public func decompress(data: Foundation.Data, isFinal: Swift.Bool) -> Foundation.Data?
+  public func didForm(event: Starscream.FrameCollector.Event)
+  @objc deinit
+}
+extension Starscream.FoundationSecurityError : Swift.Equatable {}
+extension Starscream.FoundationSecurityError : Swift.Hashable {}
+extension Starscream.FoundationTransportError : Swift.Equatable {}
+extension Starscream.FoundationTransportError : Swift.Hashable {}
+extension Starscream.CloseCode : Swift.Equatable {}
+extension Starscream.CloseCode : Swift.Hashable {}
+extension Starscream.CloseCode : Swift.RawRepresentable {}
+extension Starscream.FrameOpCode : Swift.Equatable {}
+extension Starscream.FrameOpCode : Swift.Hashable {}
+extension Starscream.FrameOpCode : Swift.RawRepresentable {}
+extension Starscream.SecurityErrorCode : Swift.Equatable {}
+extension Starscream.SecurityErrorCode : Swift.Hashable {}
+extension Starscream.SecurityErrorCode : Swift.RawRepresentable {}
+extension Starscream.TCPTransportError : Swift.Equatable {}
+extension Starscream.TCPTransportError : Swift.Hashable {}
+extension Starscream.ErrorType : Swift.Equatable {}
+extension Starscream.ErrorType : Swift.Hashable {}

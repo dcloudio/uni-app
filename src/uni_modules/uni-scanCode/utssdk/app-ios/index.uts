@@ -1,0 +1,193 @@
+
+import { ScanCodeSuccess, ScanCodeOptions, ScanCodeFail, ScanCodeSupportedTypes } from '../interface.uts'
+import { UIImage, UIImageView, UIView } from 'UIKit';
+import {
+	CameraContext,
+	createCameraContext,
+	getIosScanner,
+	IosFrameScannerOptions,
+	IosScannerListener,
+	BarcodeInformation,
+	IosScreenShot,
+	IosPhotoScannerOptions,
+	CameraContextSetZoomOptions
+} from "@/uni_modules/uni-camera";
+import { CMSampleBuffer } from "CoreMedia";
+import { JSExport } from 'JavaScriptCore';
+import { CGFloat } from 'CoreFoundation';
+
+export function scanCode(options : ScanCodeOptions | null) : void {
+	const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
+	const baseEventName = `uni_scan_code_${uuid}`
+	const successEventName = `${baseEventName}_success`
+	const failEventName = `${baseEventName}_fail`
+	const onlyFromCamera = options?.onlyFromCamera ?? false
+
+	uni.$on(successEventName, (result : UTSJSONObject) => {
+		const successResult : ScanCodeSuccess = {
+			result: result["result"] as string,
+			scanType: result["scanType"] as string,
+		}
+		options?.success?.(successResult)
+		options?.complete?.(successResult)
+	})
+
+	uni.$on(failEventName, (result : UTSJSONObject) => {
+		// const errMsg = result["errMsg"] as string
+		const failResult : ScanCodeFail = {}
+		options?.fail?.(failResult)
+		options?.complete?.(failResult)
+	})
+
+	uni.openDialogPage({
+		triggerParentHide: true,
+		animationType: "zoom-fade-out",
+		url: `/uni_modules/uni-scanCode/pages/scanCode/scanCode?successEventName=${successEventName}&failEventName=${failEventName}&onlyFromCamera=${onlyFromCamera}`,
+		fail(err) {
+			uni.$off(successEventName);
+			uni.$off(failEventName);
+		}
+	})
+}
+
+
+function drawImage(element : UniElement, image : UIImage) : void {
+	const view = element.getIOSView()
+	if (view != null && view instanceof UIImageView) {
+		setTimeout(function () {
+			const imageView = view! as UIImageView
+			imageView.image = image
+		}, 100);
+	}
+}
+
+
+class IosScannerFrameListenerImpl implements IosScannerListener {
+	constructor(
+		private successCallback : (barcodeInformation : Array<BarcodeInformation>, screenShot : IosScreenShot | null) => void,
+		private zoomCallback : () => void,
+		private lightCallback : (light : boolean) => void
+	) {
+
+	}
+
+	onScanSuccess(barcodeInformation : Array<BarcodeInformation>, screenShot : IosScreenShot | null) : void {
+		this.successCallback(barcodeInformation, screenShot)
+	}
+	onScanFailure(error : string) : void {
+	}
+	needZoom() : void {
+		this.zoomCallback()
+	}
+	onLight(light : boolean) : void {
+		this.lightCallback(light)
+	}
+}
+
+class IosScannerPhotoListenerImpl implements IosScannerListener {
+	constructor(
+		private successCallback : (barcodeInformation : Array<BarcodeInformation>, screenShot : IosScreenShot | null) => void,
+		private failCallback : (error : string) => void,
+	) {
+	}
+
+	onScanSuccess(barcodeInformation : Array<BarcodeInformation>, screenShot : IosScreenShot | null) : void {
+		this.successCallback(barcodeInformation, screenShot)
+	}
+	onScanFailure(error : string) : void {
+		this.failCallback(error)
+	}
+	needZoom() : void {
+	}
+	onLight(light : boolean) : void {
+	}
+}
+
+
+let scanCodeSelectionShowStatus : boolean = false
+
+export function setScanCodeSelectionShowStatus(show : boolean) {
+	scanCodeSelectionShowStatus = show
+}
+
+
+@UTSJS.keepAlive
+export function utsNativeProcessScanBarCode(scanType : ScanCodeSupportedTypes[], width : number, height : number, element : UniElement,
+	showSelectViewCallback : (show : boolean) => void,
+	attachTipViewCallback : (barcodeInformation : Array<Map<string, any>>) => void, singleBarSuccessCallback : (barcodeInformation : Array<Map<string, any>>) => void,
+	zoomCallback : () => void, lightCallback : (light : boolean) => void) {
+	const context = createCameraContext();
+	context?.onIosCameraOriginalFrame((sampleBuffer : CMSampleBuffer) => {
+		const options : IosFrameScannerOptions = {
+			sampleBuffer: sampleBuffer,
+			scanType: scanType,
+			autoZoom: true,
+			width: width,
+			height: height,
+			iosScannerListenner:
+				new IosScannerFrameListenerImpl((barcodeInformation : Array<BarcodeInformation>, screenShot : IosScreenShot | null) => {
+					const data : Map<string, any>[] = []
+					barcodeInformation.forEach((value : BarcodeInformation) => {
+						const item : Map<string, any> = new Map()
+						item["result"] = value.result
+						item["scanType"] = value.scanType
+						item["charset"] = value.charset
+						item["rawData"] = value.rawData
+						item["scanArea"] = value.scanArea
+						data.push(item)
+					})
+
+					if (
+						barcodeInformation.length > 1 &&
+						screenShot != null &&
+						!scanCodeSelectionShowStatus
+					) {
+						context?.offIosCameraOriginalFrame();
+						showSelectViewCallback(true)
+						drawImage(element, screenShot!.image)
+						attachTipViewCallback(data)
+					} else {
+						if (barcodeInformation.length == 0) {
+							return;
+						}
+						singleBarSuccessCallback(data)
+					}
+				},
+					() => {
+						zoomCallback()
+					},
+					(light : boolean) => {
+						lightCallback(light)
+					}
+				),
+		};
+		getIosScanner()?.processScanBarCode(options);
+	});
+}
+
+
+export function utsNativeProcessScanBarCodeWithPhoto(filePath : string, scanType : ScanCodeSupportedTypes[],
+	singleBarSuccessCallback : (barcodeInformation : Array<Map<string, any>>) => void, failCallback : (error : string) => void) {
+	const options : IosPhotoScannerOptions = {
+		filePath,
+		scanType: scanType,
+		iosScannerListenner: new IosScannerPhotoListenerImpl((barcodeInformation : Array<BarcodeInformation>, screenShot : IosScreenShot | null) => {
+			const data : Map<string, any>[] = []
+			barcodeInformation.forEach((value : BarcodeInformation) => {
+				const item : Map<string, any> = new Map()
+				item["result"] = value.result
+				item["scanType"] = value.scanType
+				item["charset"] = value.charset
+				item["rawData"] = value.rawData
+				item["scanArea"] = value.scanArea
+				data.push(item)
+			})
+			singleBarSuccessCallback(data)
+		},
+			(error : string) => {
+				failCallback(error)
+			}
+		),
+	};
+	getIosScanner()?.processScanBarCodeWithPhoto(options);
+}

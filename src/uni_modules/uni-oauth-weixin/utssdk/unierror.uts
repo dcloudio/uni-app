@@ -1,0 +1,78 @@
+/**
+ * 微信登录错误码与错误消息的映射
+ */
+export const OauthWeixinUniErrors : Map<OauthErrorCode, string> = new Map([
+  /**
+   * 未找到微信 APPID
+   */
+  [1310500, '未找到微信APPID,请确认 manifest.json 中配置信息是否正确'],
+  /**
+   * APPID、appIdentifier、bundleId不匹配
+   */
+  [1310501, 'APPID、appIdentifier、bundleId不匹配，请重新确认'],
+  /**
+   * 微信可能未安装
+   */
+  [1310502, '微信可能未安装'],
+  /**
+   * 未获取到授权凭证
+   */
+  [1310503, '未获取到授权凭证'],
+  /**
+   * 未获取到授权 code
+   */
+  [1310504, '未获取到授权 code，请先登录'],
+  /**
+   * 授权凭证或OpenID无效
+   */
+  [1310505, '授权凭证或OpenID无效'],
+  /**
+   * 获取用户信息失败
+   */
+  [1310506, '获取用户信息失败'],
+  /**
+   * 微信 API 请求失败
+   */
+  [1310507, '微信 API 请求失败'],
+  /**
+   * 微信登录state验证失败
+   */
+  [1310508, '微信登录state验证失败'],
+  /**
+   * 用户取消登录
+   */
+  [1310509, '用户取消登录'],
+  /**
+   * 超时时间必须为正整数
+   */
+  [1310510, '超时时间必须为正整数'],
+  /**
+   * 获取用户信息请求超时
+   */
+  [1310511, '获取用户信息请求超时'],
+]);
+
+/**
+ * 微信登录错误主题
+ */
+export const OauthWeixinUniErrorSubject = 'uni-oauth-weixin';
+
+/**
+ * 微信登录失败错误类
+ */
+export class OauthWeixinFailImpl extends UniError implements IOauthFail {
+	// #ifdef APP-HARMONY
+	override errCode : OauthErrorCode
+	// #endif
+	constructor(errCode : OauthErrorCode, errMsg : string | null = null) {
+		super();
+		this.errSubject = OauthWeixinUniErrorSubject;
+		this.errCode = errCode;
+		const error = OauthWeixinUniErrors.get(errCode) ?? "";
+		if (errMsg != null) {
+			this.errMsg = `${error.length ? `${error}, the reason: ` : ''}${errMsg}`;
+		} else {
+			this.errMsg = error;
+		}
+	}
+}

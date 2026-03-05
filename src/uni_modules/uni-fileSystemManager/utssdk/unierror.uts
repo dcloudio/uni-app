@@ -1,0 +1,46 @@
+import { FileSystemManagerErrorCode,IFileSystemManagerFail } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const FileSystemManagerUniErrorSubject = 'uni-fileSystemManager';
+
+/**
+ * 错误码
+ * @UniError
+ */
+export const FileSystemManagerUniErrors : Map<FileSystemManagerErrorCode, string> = new Map([
+	[1200002, 'Type error. only support base64 / utf-8'],
+	[1300002, 'No such file or directory'],
+	[1300013, 'Permission denied'],
+	[1300021, 'Is a directory'],
+	[1300022, 'Invalid argument'],
+	[1300066, 'Directory not empty'],
+	[1301003, 'Illegal operation on a directory'],
+	[1301005, 'File already exists'],
+	[1300201, 'System error'],
+	[1300202, 'The maximum size of the file storage limit is exceeded'],
+	[1301111, 'Brotli decompress fail'],
+	[1302003, 'Invalid flag'],
+	[1300009, 'Bad file descriptor'],
+	[1300010, 'Try again'],
+	[1300011, 'Bad address'],
+	[1300012, 'Operation would block'],
+	[1300014, 'Network is unreachable'],
+	[1300015, 'Unknown error'],
+	[1300016, 'Not a directory'],
+	[1300017, 'Text file busy'],
+	[1300018, 'File too large'],
+	[1300019, 'Read-only file system'],
+	[1300020, 'File name too long'],
+	[1300033, 'Too many symbolic links encountered']
+]);
+export class FileSystemManagerFailImpl extends UniError implements IFileSystemManagerFail {
+	override errCode: FileSystemManagerErrorCode
+	constructor(errCode : FileSystemManagerErrorCode) {
+		super();
+		this.errSubject = FileSystemManagerUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = FileSystemManagerUniErrors.get(errCode) ?? "";
+	}
+}

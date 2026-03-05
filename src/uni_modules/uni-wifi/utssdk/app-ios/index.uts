@@ -1,0 +1,268 @@
+import { CLLocationManager, CLAuthorizationStatus, CLLocationManagerDelegate } from 'CoreLocation'
+import { CaptiveNetwork, kCNNetworkInfoKeySSID, kCNNetworkInfoKeyBSSID } from 'SystemConfiguration.CaptiveNetwork';
+import { NSArray, NSDictionary } from 'Foundation';
+import { CFString } from 'CoreFoundation';
+import { UIDevice } from 'UIKit';
+import { UniWifiResultCallbackWithPartialInfo, UniGetWifiListCallback, UniWifiResultCallback, WifiOption, WifiConnectOption, GetConnectedWifiOptions, UniWifiInfo, UniWifiResult, UniWifiCallback, StartWifi, StopWifi, GetWifiList, OnGetWifiList, OffGetWifiList, GetConnectedWifi, ConnectWifi, OnWifiConnected, OnWifiConnectedWithPartialInfo, OffWifiConnected, OffWifiConnectedWithPartialInfo, SetWifiList } from "../interface.uts"
+import { WifiFailImpl, getErrcode } from '../unierror';
+
+/*
+ * 系统定位权限获取类
+ */
+class LocationPromiseService implements CLLocationManagerDelegate  {
+	static promiseCompletionHandler: ((res: boolean)=>void)[] = []
+
+	manager?: CLLocationManager
+
+	constructor(manager?: CLLocationManager) {
+		this.manager = manager
+	}
+
+	initlizeManager(): boolean {
+		if (this.manager == null) {
+			this.manager = new CLLocationManager()
+			this.manager!.delegate = this
+		}
+		return true
+	}
+
+	locationManager(manager: CLLocationManager, @argumentLabel("didChangeAuthorization") status: CLAuthorizationStatus) {
+		if (status == CLAuthorizationStatus.authorizedAlways || status == CLAuthorizationStatus.authorizedWhenInUse) {
+			LocationPromiseService.promiseCompletionHandler.forEach((handler): void => {
+				handler(true)
+			})
+		} else if (status == CLAuthorizationStatus.notDetermined) {
+			manager.requestWhenInUseAuthorization()
+		} else if (status == CLAuthorizationStatus.denied) {
+			LocationPromiseService.promiseCompletionHandler.forEach((handler): void => {
+				handler(false)
+			})
+		}
+	}
+	requestPromise(@escaping completion: (res: boolean)=>void) {
+		let status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
+		if (status == CLAuthorizationStatus.notDetermined) {
+			if (this.initlizeManager() == true) {
+				this.manager!.requestWhenInUseAuthorization()
+				LocationPromiseService.promiseCompletionHandler.push(completion)
+			}
+		} else if (status == CLAuthorizationStatus.authorizedAlways || status == CLAuthorizationStatus.authorizedWhenInUse) {
+			completion(true)
+		} else if (status == CLAuthorizationStatus.denied) {
+			if (CLLocationManager.locationServicesEnabled() == false && this.initlizeManager() == true) {
+				this.manager!.requestWhenInUseAuthorization()
+				LocationPromiseService.promiseCompletionHandler.push(completion)
+			}
+		}
+	}
+}
+
+const locationPromiseService: LocationPromiseService = new LocationPromiseService(null)
+
+/*
+ * 获取系统定位权限
+ */
+function requestLocationPromise(@escaping completion: (res: boolean)=>void) {
+	locationPromiseService.requestPromise(completion)
+}
+
+/*
+ * 获取当前连接的wifi信息（通过定位权限）
+ */
+function fetchConnectedWifiWithLocationPromise(option: GetConnectedWifiOptions) {
+	let arr = CNCopySupportedInterfaces()
+	let wifiInfo: UniWifiInfo = {
+		BSSID: "",
+		SSID: "",
+		secure: false,
+		signalStrength: 0,
+		frequency: 0
+	}
+
+	if (arr != null) {
+		let list = arr! as NSArray
+		let index: Int = 0
+		while (index < list.count) {
+			let item = list[index]
+			let interfaceName = item as string
+			let dic = CNCopyCurrentNetworkInfo(interfaceName as CFString)
+			if (dic != null) {
+				let dict = dic! as NSDictionary
+				let SSID = dict[kCNNetworkInfoKeySSID as string]
+				let BSSID = dict[kCNNetworkInfoKeyBSSID as string]
+
+				if (SSID != null && BSSID != null) {
+					let ssid = SSID! as string
+					let bssid = BSSID! as string
+					wifiInfo.SSID = ssid
+					wifiInfo.BSSID = bssid
+					wifiInfo.secure = false
+					wifiInfo.signalStrength = 0
+					wifiInfo.frequency = 0
+					break;
+				}
+			}
+			index++
+		}
+
+		if (wifiInfo.BSSID!.length > 0 && wifiInfo.SSID.length > 0) {
+			let res: UniWifiResult = {
+				errSubject: "uni-getConnectedWifi",
+				errCode: 0,
+				errMsg: "getConnectedWifi:ok",
+				wifi: wifiInfo,
+			}
+			option.success?.(res)
+			option.complete?.(res)
+		}else {
+      let err = new WifiFailImpl(getErrcode(12010));
+			option.fail?.(err)
+			option.complete?.(err)
+		}
+	}else {
+    let err = new WifiFailImpl(getErrcode(12010));
+		option.fail?.(err)
+		option.complete?.(err)
+	}
+}
+
+
+
+/*
+ * 保存全局数据信息
+ */
+class UniWiFiModuleGloabInfo {
+	static alreadyStartWifi: boolean = false
+}
+
+/* =================================== 对外暴露的接口 ==============================================*/
+
+
+
+/*
+ * 初始化wifi模块
+ */
+export const startWifi: StartWifi = function (option: WifiOption) {
+	UniWiFiModuleGloabInfo.alreadyStartWifi = true
+	let res: UniWifiResult = {
+		errSubject: "uni-startWifi",
+		errCode: 0,
+		errMsg: "startWifi:ok",
+		wifi: null
+	}
+	option.success?.(res)
+	option.complete?.(res)
+}
+
+/*
+ * 停止wifi模块
+ */
+export const stopWifi: StopWifi = function (option: WifiOption) {
+	UniWiFiModuleGloabInfo.alreadyStartWifi = false
+	LocationPromiseService.promiseCompletionHandler = []
+	let res: UniWifiResult = {
+		errSubject: "uni-stopWifi",
+		errCode: 0,
+		errMsg: "stopWifi:ok",
+		wifi: null
+	}
+	option.success?.(res)
+	option.complete?.(res)
+}
+
+/*
+ * 获取wifi列表, 在调用之前需要引导用户跳转到系统设置-WIFI设置页面，系统搜索周边wifi后app才能接收到回调
+ */
+export const getWifiList: GetWifiList = function (option: WifiOption) {
+  let err = new WifiFailImpl(getErrcode(12001));
+	option.fail?.(err)
+	option.complete?.(err)
+}
+
+/* 获取wifi列表的回调
+ * note: 请在getWifiList方法的回调里调用该方法
+ */
+export const onGetWifiList: OnGetWifiList = function (callback: UniGetWifiListCallback) {
+
+}
+
+/*
+ *	注销获取wifi列表的回调
+ */
+export const offGetWifiList: OffGetWifiList = function (callback: UniWifiCallback) {
+
+}
+
+
+/*
+ * 获取当前连接的wifi信息
+ */
+export const getConnectedWifi: GetConnectedWifi = function (option: GetConnectedWifiOptions) {
+	if (UniWiFiModuleGloabInfo.alreadyStartWifi == false) {
+    let err = new WifiFailImpl(getErrcode(12000));
+		option.fail?.(err)
+		option.complete?.(err)
+	} else{
+		if (UIDevice.current.systemVersion >= "13.0") {
+			requestLocationPromise((success) => {
+				if (success == true) {
+					fetchConnectedWifiWithLocationPromise(option)
+				}else {
+          let err = new WifiFailImpl(getErrcode(12007));
+					option.fail?.(err)
+					option.complete?.(err)
+				}
+			})
+		} else{
+			fetchConnectedWifiWithLocationPromise(option)
+		}
+	}
+}
+
+/*
+ * 连接wifi
+ */
+export const connectWifi: ConnectWifi = function (option: WifiConnectOption) {
+
+  let err = new WifiFailImpl(getErrcode(12001));
+	option.fail?.(err)
+	option.complete?.(err)
+}
+
+
+/*
+ * 连上wifi事件的监听函数
+ */
+export const onWifiConnected: OnWifiConnected = function (callback: UniWifiResultCallback) {
+
+}
+
+/*
+ * 连上wifi事件的监听函数， wifiInfo仅包含ssid
+ */
+export const onWifiConnectedWithPartialInfo: OnWifiConnectedWithPartialInfo = function (callback: UniWifiResultCallbackWithPartialInfo) {
+
+}
+
+/*
+ *	移除连接上wifi的事件的监听函数，不传此参数则移除所有监听函数。
+ */
+export const offWifiConnected: OffWifiConnected = function (callback: UniWifiCallback | null) {
+
+}
+
+/*
+ *	移除连接上wifi的事件的监听函数，不传此参数则移除所有监听函数。
+ */
+export const offWifiConnectedWithPartialInfo: OffWifiConnectedWithPartialInfo = function (callback: UniWifiResultCallbackWithPartialInfo | null) {
+
+}
+
+/*
+ * 设置 wifiList 中 AP 的相关信息。在 onGetWifiList 回调后调用，iOS特有接口。
+ */
+export const setWifiList: SetWifiList = function (option: WifiOption) {
+  let err = new WifiFailImpl(getErrcode(12001));
+	option.fail?.(err)
+	option.complete?.(err)
+}

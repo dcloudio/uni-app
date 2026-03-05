@@ -1,0 +1,12 @@
+import { Base64ToArrayBuffer } from "../interface.uts"
+import { Data } from 'Foundation';
+
+export const base64ToArrayBuffer : Base64ToArrayBuffer = function (base64 : string) : ArrayBuffer {
+	let data = new Data(base64Encoded = base64);
+	if (data != null) {
+		return ArrayBuffer.fromData(data!)
+	}else {
+		let buffer = new ArrayBuffer(base64.length)
+		return buffer
+	}
+}

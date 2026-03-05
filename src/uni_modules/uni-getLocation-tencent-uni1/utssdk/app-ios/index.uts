@@ -1,0 +1,334 @@
+import {
+	CLLocationManager,
+	CLAuthorizationStatus,
+	kCLLocationAccuracyBest,
+	kCLLocationAccuracyHundredMeters,
+	kCLLocationAccuracyKilometer
+} from "CoreLocation"
+
+import {
+	TencentLBSLocationManager,
+	TencentLBSLocation,
+	TencentLBSRequestLevel,
+	TencentLBSLocationManagerDelegate,
+	TencentLBSAccuracyAuthorization,
+	TencentLBSLocationCoordinateType
+} from "TencentLBS" assert { type: "implementationOnly" };
+
+import {
+	GetLocation,
+	GetLocationOptions,
+	GetLocationSuccess,
+	GetLocationFailImpl
+} from "../interface.uts"
+
+import { NSError, Bundle } from "Foundation"
+
+/**
+ * 对外的函数接口
+ */
+export const getLocation : GetLocation = function (options : GetLocationOptions) {
+	LBSLocation.share.getLocationImpl(options)
+}
+
+/**
+ * 定位 LBSLocation 类，封装定位相关方法
+ */
+@UTSiOS.keyword("fileprivate")
+class LBSLocation implements TencentLBSLocationManagerDelegate {
+
+	static share = new LBSLocation()
+
+	// 定义 locationManager 属性，类型为 TencentLBSLocationManager
+	private locationManager! : TencentLBSLocationManager
+
+	private locationOptions ?: GetLocationOptions
+
+	private requestLevel = TencentLBSRequestLevel.geo
+
+	private hasRequestLocationSuccess : boolean = false
+
+
+	// 初始化 locationManager 方法
+	private configLocationManager() {
+
+		if (this.locationManager == null) {
+			// 调用API前需要设置同意用户隐私协议
+			TencentLBSLocationManager.setUserAgreePrivacy(true)
+			// 初始化 locationManager 实例对象
+			this.locationManager = new TencentLBSLocationManager()
+			// 从 info.plist 中读取 apiKey
+			const apiKey = Bundle.main.infoDictionary?.["TencentLBSAPIKey"]
+			// infoDictionary 获取的值类型为 any？
+			if (apiKey != null) {
+				// 如果 apiKey 为 null 返回 false
+				// console.log("apiKey 未配置")
+				// 设置 apiKey （因为 apiKey 是 any？类型，需要转成 string 类型赋值）
+				this.locationManager.apiKey = apiKey! as string;
+			}
+			this.locationManager.delegate = this
+		}
+	}
+
+	// 请求定位权限
+	private requestLocationWithAuthorization() {
+		const status = this.getAuthorizationStatus()
+		// 如果未获取过定位权限，则发起权限请求
+		if (status == CLAuthorizationStatus.notDetermined) {
+			this.locationManager.requestWhenInUseAuthorization()
+		} else if (status == CLAuthorizationStatus.denied || status == CLAuthorizationStatus.restricted) {
+			this.failedAction(1505004)
+		} else if (status == CLAuthorizationStatus.authorizedAlways || status == CLAuthorizationStatus.authorizedWhenInUse) {
+			this.getLocation()
+		}
+	}
+
+	private getAuthorizationStatus() : CLAuthorizationStatus {
+		return this.locationManager.authorizationStatus
+	}
+
+	// 获取单次位置信息
+	getLocationImpl(options : GetLocationOptions) {
+		this.configLocationManager()
+		this.locationOptions = options
+
+		DispatchQueue.main.async(execute = () : void => {
+			if (CLLocationManager.locationServicesEnabled() == false) {
+				this.failedAction(1505003)
+				return
+			}
+		})
+
+		if (options.highAccuracyExpireTime == null) {
+			this.locationOptions!.highAccuracyExpireTime = 3000
+		}
+
+		if (options.type == null) {
+			this.locationOptions!.type = 'gcj02'
+		}
+
+		if (options.type != "gcj02") {
+			// 腾讯定位只支持GCJ-02，如果不是则报错
+			this.failedAction(1505607)
+			return
+		}
+
+		const apiKey = Bundle.main.infoDictionary?.["TencentLBSAPIKey"]
+		// infoDictionary 获取的值类型为 any？
+		if (apiKey == null) {
+			this.failedAction(1505605)
+			return
+		}
+
+		//腾讯sdk可以返回wgs84坐标系，Android不可以，所以和Android保持一致
+		// if (options.type == "gcj02") {
+		// 	this.locationManager.coordinateType = TencentLBSLocationCoordinateType.GCJ02
+		// } else if (options.type == "wgs84") {
+		// 	this.locationManager.coordinateType = TencentLBSLocationCoordinateType.WGS84
+		// }
+
+		// 是否需要返回逆地理编码
+		if (options.geocode) {
+			this.requestLevel = TencentLBSRequestLevel.name
+		}
+
+		this.requestLocationWithAuthorization()
+	}
+
+	private getLocation() {
+		if (UTSiOS.available("iOS 14.0, *")) {
+			/**
+			 * Note：iOS14.0+ 版本适配
+			 * 1. isHighAccuracy = true ----->   accuracyAuthorization == .fullAccuracy && desiredAccuracy = kCLLocationAccuracyBest
+			 * 2. altitude = true    ----->   accuracyAuthorization == .fullAccuracy (只有用户打开了高精度定位，才会返回海拔信息)
+			 *   所以说，isHighAccuracy依赖于altitude， isHighAccuracy = true 的时候，一定altitude = true
+			 */
+			if (this.locationOptions?.isHighAccuracy != null && this.locationOptions?.isHighAccuracy == true && this.locationManager.accuracyAuthorization == TencentLBSAccuracyAuthorization.reducedAccuracy) {
+				this.requestTemporaryFullAccuracyAuthorization()
+			} else {
+				if (this.locationOptions?.isHighAccuracy != null && this.locationOptions?.isHighAccuracy == true) {
+					this.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+				} else {
+					this.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+				}
+
+				this.requestLocation()
+			}
+		} else {
+			/**
+			 * Note：iOS14.0- 版本适配
+			 * 1. isHighAccuracy 和 altitude， isHighAccuracy的优先级高一点；
+			 *
+			 * 2. altitude = true   ---->  desiredAccuracy = kCLLocationAccuracyNearestTenMeters || kCLLocationAccuracyHundredMeters || kCLLocationAccuracyBest
+			 *    isHighAccuracy = true  ---->    desiredAccuracy = kCLLocationAccuracyBest
+			 *
+			 * 3. isHighAccuracy = false，altitude = true  ----> desiredAccuracy = kCLLocationAccuracyNearestTenMeters || kCLLocationAccuracyHundredMeters
+			 *    isHighAccuracy = false，altitude = false   ----> desiredAccuracy = kCLLocationAccuracyKilometer
+			 *
+			 * 4. 所以当isHighAccuracy = true的时候，altitude 一定是true，即使用户设置了false， 也是无效的；
+			 */
+			//
+
+			if (this.locationOptions?.isHighAccuracy != null && this.locationOptions?.isHighAccuracy == true) {
+				this.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+			} else {
+				if (this.locationOptions?.altitude != null && this.locationOptions?.altitude == true) {
+					this.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+				} else {
+					this.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+				}
+			}
+
+			this.requestLocation()
+		}
+	}
+
+	private getAddress(location : TencentLBSLocation | null) : string | null {
+		// 判断 address 是否有值
+		var address : string | null = null
+		if (this.locationOptions?.geocode != null && this.locationOptions?.geocode == true) {
+			const nation = location?.nation ?? ''
+			const province = location?.province ?? ''
+			const city = location?.city ?? ''
+			const district = location?.district ?? ''
+			const street = location?.street ?? ''
+			const name = location?.name ?? ''
+
+			if (city == province) {
+				address = nation + province + district + street + name
+			} else {
+				address = nation + province + city + district + street + name
+			}
+
+			if (address == name) {
+				address = (location?.address ?? '') + name
+			}
+		}
+		return address
+	}
+
+	private requestLocation() {
+		this.hasRequestLocationSuccess = false
+
+		// 请求单次定位信息
+		this.locationManager.requestLocation(with = this.requestLevel, locationTimeout = 10, completionBlock = (location ?: TencentLBSLocation, err ?: NSError) : void => {
+
+			if (location == null) {
+				this.failedAction(1505602)
+				return
+			}
+
+			let altitude = 0.0
+			if (this.locationOptions?.altitude != null && this.locationOptions?.altitude == true) {
+				altitude = Number(location!.location.altitude)
+			}
+
+			let response : GetLocationSuccess = {
+				latitude: Number(location!.location.coordinate.latitude),
+				longitude: Number(location!.location.coordinate.longitude),
+				speed: Number(location!.location.speed),
+				altitude: altitude,
+				accuracy: Number(location!.location.horizontalAccuracy),
+				verticalAccuracy: Number(location!.location.verticalAccuracy),
+				horizontalAccuracy: Number(location!.location.horizontalAccuracy),
+				address: this.getAddress(location)
+			}
+
+			this.successAction(response)
+		})
+
+
+		//如果用户isHighAccuracy = true， 下列逻辑是在highAccuracyExpireTime时间范围内如果没有返回数据，则返回 errorCode：1505600 超时
+		if (this.locationOptions?.isHighAccuracy != null && this.locationOptions?.isHighAccuracy == true) {
+			const timeoutMill : Int = this.locationOptions?.highAccuracyExpireTime?.toInt() ?? 3000
+			setTimeout(function () {
+				this.clearWatch()
+				if (!this.hasRequestLocationSuccess) {
+					this.failedAction(1505600)
+				}
+			}, timeoutMill);
+		}
+	}
+
+	//在iOS14.0+上请求临时的高精度权限
+	private requestTemporaryFullAccuracyAuthorization() {
+		if (UTSiOS.available("iOS 14.0, *")) {
+			this.locationManager.requestTemporaryFullAccuracyAuthorization(withPurposeKey = "PurposeKey", completion = (err ?: NSError) : void => {
+				if (this.locationManager.accuracyAuthorization == TencentLBSAccuracyAuthorization.reducedAccuracy) {
+					this.failedAction(1505800)
+				}
+			})
+		}
+	}
+
+	// failed action
+	private failedAction(errCode : number) {
+		let err = new GetLocationFailImpl(errCode);
+		this.locationOptions?.fail?.(err)
+		this.locationOptions?.complete?.(err)
+		this.clearWatch()
+	}
+
+	// success action
+	private successAction(response : GetLocationSuccess) {
+		this.locationOptions?.success?.(response)
+		this.locationOptions?.complete?.(response)
+		this.hasRequestLocationSuccess = true
+		this.clearWatch()
+	}
+
+	// 清除监听
+	private clearWatch() {
+		this.locationManager.stopUpdatingLocation()
+	}
+
+
+	tencentLBSDidChangeAuthorization(manager : TencentLBSLocationManager) {
+		DispatchQueue.main.async(execute = () : void => {
+			if (CLLocationManager.locationServicesEnabled() == false) {
+				this.failedAction(1505003)
+				return
+			}
+		})
+		const status = this.getAuthorizationStatus()
+		if (status == CLAuthorizationStatus.denied || status == CLAuthorizationStatus.restricted) {
+			this.failedAction(1505004)
+		} else if (status == CLAuthorizationStatus.authorizedAlways || status == CLAuthorizationStatus.authorizedWhenInUse) {
+			this.getLocation()
+		}
+	}
+
+	// 实现定位出错的 delegate 方法
+
+	tencentLBSLocationManager(manager : TencentLBSLocationManager, @argumentLabel("didFailWithError") error : NSError) {
+		this.failedAction(1505602)
+	}
+
+	// // 实现位置更新的 delegate 方法
+	// tencentLBSLocationManager(manager : TencentLBSLocationManager, @argumentLabel("didUpdate") location : TencentLBSLocation) {
+	// 	// 判断 address 是否有值
+	// 	var address : string | null = null
+	// 	if (location.address != null) {
+	// 		address = location.address!
+	// 	}
+
+	// 	let altitude = 0.0
+	// 	if (this.locationOptions?.altitude != null && this.locationOptions?.altitude == true) {
+	// 		altitude = Number(location.location.altitude)
+	// 	}
+
+	// 	let response : GetLocationSuccess = {
+	// 		latitude: Number(location.location.coordinate.latitude),
+	// 		longitude: Number(location.location.coordinate.longitude),
+	// 		speed: Number(location.location.speed),
+	// 		altitude: altitude,
+	// 		accuracy: Number(location.location.horizontalAccuracy),
+	// 		verticalAccuracy: Number(location.location.verticalAccuracy),
+	// 		horizontalAccuracy: Number(location.location.horizontalAccuracy),
+	// 		address: address
+	// 	}
+
+	// 	this.successAction(response)
+	// }
+
+}

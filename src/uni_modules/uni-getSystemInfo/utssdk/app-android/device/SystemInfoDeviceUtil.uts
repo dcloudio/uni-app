@@ -1,0 +1,378 @@
+import Activity from 'android.app.Activity';
+import Configuration from 'android.content.res.Configuration';
+import Context from 'android.content.Context';
+import UiModeManager from 'android.app.UiModeManager';
+import WindowManager from 'android.view.WindowManager';
+import DisplayMetrics from 'android.util.DisplayMetrics';
+import Build from 'android.os.Build';
+import File from 'java.io.File';
+
+import TextUtils from 'android.text.TextUtils';
+
+import BufferedReader from 'java.io.BufferedReader';
+import InputStreamReader from 'java.io.InputStreamReader';
+
+// #ifdef UNI-APP-X
+import ViewCompat from 'androidx.core.view.ViewCompat';
+import WindowInsetsCompat from 'androidx.core.view.WindowInsetsCompat';
+import Settings from 'android.provider.Settings';
+// #endif
+
+
+export class DeviceUtil {
+
+	private static customOS : string | null = null
+	private static customOSVersion : string | null = null
+
+	private static readonly rootRelatedDirs = [
+		"/su", "/su/bin/su", "/sbin/su",
+		"/data/local/xbin/su", "/data/local/bin/su", "/data/local/su",
+		"/system/xbin/su",
+		"/system/bin/su", "/system/sd/xbin/su", "/system/bin/failsafe/su",
+		"/system/bin/cufsdosck", "/system/xbin/cufsdosck", "/system/bin/cufsmgr",
+		"/system/xbin/cufsmgr", "/system/bin/cufaevdd", "/system/xbin/cufaevdd",
+		"/system/bin/conbb", "/system/xbin/conbb"];
+
+
+	/**
+		* HarmonyOS 系统输出的
+		* 格式：2.0.0
+		*/
+	private static KEY_HARMONYOS_VERSION_NAME = "hw_sc.build.platform.version";
+
+	/**
+	 * EMUI系统输出的
+	 * 格式：EmotionUI_8.0.0
+	 */
+	private static KEY_EMUI_VERSION_NAME = "ro.build.version.emui";
+
+	/**
+	 * MagicUI系统输出的
+	 * 格式：3.1.0
+	 */
+	private static KEY_MAGICUI_VERSION = "ro.build.version.magic";
+
+	/**
+	 * MIUI系统输出的
+	 * 格式：V12
+	 */
+	private static KEY_MIUI_VERSION_NAME = "ro.miui.ui.version.name";
+
+	/**
+	 * OPPO手机ColorOS系统输出的
+	 * 格式：9
+	 */
+	private static KEY_COLOROS_VERSION_NAME = "ro.build.version.opporom";
+
+	/**
+	 * VIVO手机系统输出的
+	 * name格式：funtouch
+	 * version格式： 9
+	 */
+	private static KEY_VIVO_VERSION_NAME = "ro.vivo.os.name";
+	private static KEY_VIVO_VERSION = "ro.vivo.os.version";
+
+	/**
+	 * OonPlus手机系统输出的
+	 * 格式：Hydrogen OS 11.0.7.10.KB05
+	 */
+	private static KEY_ONEPLUS_VERSION_NAME = "ro.rom.version";
+
+	/**
+	 * 魅族手机系统输出的
+	 */
+	private static KEY_FLYME_VERSION_NAME = "ro.build.display.id";
+
+	/**
+	 * nubia手机系统输出的
+	 */
+	private static KEY_NUBIA_VERSION_NAME = "ro.build.nubia.rom.name";
+	private static KEY_NUBIA_VERSION_CODE = "ro.build.nubia.rom.code";
+
+
+
+	public static getOrientation(activity : Activity) : string {
+		const activityOrientation = activity.getResources().getConfiguration().orientation;
+		let outOrientation = "portrait";
+		if (activityOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+			outOrientation = "landscape";
+		}
+		return outOrientation;
+	}
+	
+	public static getAppVersionCode():number{
+		const activity = UTSAndroid.getUniActivity()!!;
+		const packageInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
+		return packageInfo.versionCode;
+	}
+
+	/**
+	 * 获取屏幕像素比
+	 */
+	public static getScaledDensity(activity : Activity) : number {
+		const windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager;
+		const displayMetrics = new DisplayMetrics();
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			windowManager.getDefaultDisplay().getRealMetrics(displayMetrics);
+		} else {
+			windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+		}
+		return displayMetrics.scaledDensity;
+	}
+
+	public static getScreenWidth() : number {
+		return UTSAndroid.getScreenInfo()["screenWidth"] as Int;
+	}
+
+	public static getScreenHeight() : number {
+		return UTSAndroid.getScreenInfo()["screenHeight"] as Int;
+	}
+	
+	public static getStatusBarHeight():number {
+		return UTSAndroid.getStatusBarHeight();
+	}
+	
+	public static getRomName():string{
+		DeviceUtil.setCustomInfo(Build.MANUFACTURER);
+		return DeviceUtil.customOS ?? "";
+	}
+	public static getRomVersion():string{
+		DeviceUtil.setCustomInfo(Build.MANUFACTURER);
+		return DeviceUtil.customOSVersion ?? "";
+	}
+
+	public static getSystemUIModeType(activity : Activity) : string {
+
+		let uiModeManager = activity.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager;
+		let modeType = "unknown";
+
+		switch (uiModeManager.getCurrentModeType()) {
+			case Configuration.UI_MODE_TYPE_TELEVISION:
+				modeType = "tv";
+				break;
+			case Configuration.UI_MODE_TYPE_WATCH:
+				modeType = "watch";
+				break;
+			case Configuration.UI_MODE_TYPE_NORMAL:
+				if (DeviceUtil.isTablet(activity)) {
+					modeType = "pad";
+				} else {
+					modeType = "phone";
+				}
+				break;
+			case Configuration.UI_MODE_TYPE_DESK:
+				modeType = "pc";
+				break;
+			case Configuration.UI_MODE_TYPE_UNDEFINED:
+				modeType = "undefined";
+				break;
+			case Configuration.UI_MODE_TYPE_CAR:
+				modeType = "car";
+				break;
+			case Configuration.UI_MODE_TYPE_VR_HEADSET:
+				modeType = "vr";
+				break;
+			case Configuration.UI_MODE_TYPE_APPLIANCE:
+				modeType = "appliance";
+				break;
+		}
+
+		return modeType;
+	}
+
+
+	public static getOsLanguageNormal(context : Context) : string {
+		const LOCALE_ZH_HANS = 'zh-Hans'
+		const LOCALE_ZH_HANT = 'zh-Hant'
+		let locale = UTSAndroid.getLanguageInfo(context)["osLanguage"].toString();
+		const lowerLocale = locale.toLowerCase()
+		if (lowerLocale.indexOf('zh') === 0) {
+			if (lowerLocale.indexOf('-hans') > -1) {
+				return LOCALE_ZH_HANS;
+			}
+			if (lowerLocale.indexOf('-hant') > -1) {
+				return LOCALE_ZH_HANT;
+			}
+			if (lowerLocale.includes("-tw") || lowerLocale.includes("-hk") || lowerLocale.includes("-mo") || lowerLocale.includes("-cht")) {
+				return LOCALE_ZH_HANT;
+			}
+
+			return LOCALE_ZH_HANS;
+		} else {
+			return locale;
+		}
+	}
+
+	/**
+	 * 是否为平板 不是太准确
+	 */
+	public static isTablet(activity : Activity) : boolean {
+		return (activity.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+	}
+
+
+
+	private static setCustomInfo(phoneBrand : string) {
+		try {
+			switch (DeviceUtil.deleteSpaceAndToUpperCase(phoneBrand)) {
+				case "HUAWEI":
+					if (DeviceUtil.isHarmonyOS()) {
+						DeviceUtil.customOSVersion = DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_HARMONYOS_VERSION_NAME);
+						DeviceUtil.customOS = "HarmonyOS";
+					} else {
+						DeviceUtil.customOS = "EMUI";
+						DeviceUtil.customOSVersion = DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_EMUI_VERSION_NAME);;
+					}
+					break;
+				case "HONOR":
+					if (DeviceUtil.isHarmonyOS()) {
+						DeviceUtil.customOS = "HarmonyOS";
+						if (!TextUtils.isEmpty(DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_HARMONYOS_VERSION_NAME))) {
+							DeviceUtil.customOSVersion = DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_HARMONYOS_VERSION_NAME);;
+						} else {
+							DeviceUtil.customOSVersion = "";
+						}
+					} else if (!TextUtils.isEmpty(DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_MAGICUI_VERSION))) {
+						DeviceUtil.customOS = "MagicUI";
+						DeviceUtil.customOSVersion = DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_MAGICUI_VERSION);
+					} else {
+						//格式：EmotionUI_8.0.0
+						DeviceUtil.customOS = "EMUI";
+						DeviceUtil.customOSVersion = DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_EMUI_VERSION_NAME);
+					}
+					break;
+				case "XIAOMI":
+				case "REDMI":
+					//格式：MIUIV12
+					DeviceUtil.customOS = "MIUI";
+					DeviceUtil.customOSVersion = DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_MIUI_VERSION_NAME);
+					break;
+				case "REALME":
+				case "OPPO":
+					//格式：ColorOSV2.1
+					DeviceUtil.customOS = "ColorOS";
+					DeviceUtil.customOSVersion = DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_COLOROS_VERSION_NAME);
+					break;
+				case "VIVO":
+					//格式：Funtouch9
+					DeviceUtil.customOS = "Funtouch";
+					DeviceUtil.customOSVersion = DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_VIVO_VERSION);
+					break;
+				case "ONEPLUS":
+					//格式：Hydrogen OS 11.0.7.10.KB05
+					DeviceUtil.customOS = "HydrogenOS";
+					DeviceUtil.customOSVersion = DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_ONEPLUS_VERSION_NAME);
+					break;
+				case "MEIZU":
+					//格式:Flyme 6.3.5.1G
+					DeviceUtil.customOS = "Flyme";
+					DeviceUtil.customOSVersion = DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_FLYME_VERSION_NAME);
+					break;
+				case "NUBIA":
+					//格式:nubiaUIV3.0
+					DeviceUtil.customOS = DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_NUBIA_VERSION_NAME);
+					DeviceUtil.customOSVersion = DeviceUtil.getSystemPropertyValue(DeviceUtil.KEY_NUBIA_VERSION_CODE);
+					break;
+				default:
+					DeviceUtil.customOS = "Android";
+					DeviceUtil.customOSVersion = Build.VERSION.RELEASE;
+					break;
+			}
+		} catch (e : Exception) {
+		}
+	}
+
+
+
+	/**
+		* 判断是否是华为鸿蒙系统，能否识别荣耀鸿蒙未知
+		*
+		* @return
+		*/
+	private static isHarmonyOS() : boolean {
+		try {
+			let classType = Class.forName("com.huawei.system.BuildEx");
+			let getMethod = classType.getMethod("getOsBrand");
+			let value = getMethod.invoke(classType) as string;
+			return !TextUtils.isEmpty(value);
+		} catch (e : Exception) {
+			return false;
+		}
+	}
+
+
+
+
+
+
+	/**
+		 * 删除字符串中的空格并全部转成大写
+		 * @param str
+		 * @return
+		 */
+	public static deleteSpaceAndToUpperCase(str : string | null) : string {
+		if (TextUtils.isEmpty(str)) {
+			return "";
+		}
+		return str!.replace(" ", "").toUpperCase();
+	}
+
+	private static getSystemPropertyValue(propName : string) : string | null {
+		let value : string | null = null;
+		let roSecureObj : any | null;
+		try {
+			// Class.forName("java.lang.String")
+			const method = Class.forName("android.os.SystemProperties").getMethod("get", Class.forName("java.lang.String"));
+			roSecureObj = method.invoke(null, propName);
+			if (roSecureObj != null) {
+				value = roSecureObj as string;
+			}
+		} catch (e : Exception) {
+		}
+		return value;
+	}
+
+	public static getNavigationBarHeight(activity : Activity) : number {
+		let result = 0;
+		const resourceId = activity.resources.getIdentifier("navigation_bar_height", "dimen", "android");
+		if (resourceId > 0) {
+			result = Math.round(activity.resources.getDimensionPixelSize(resourceId) / DeviceUtil.getScaledDensity(activity));
+		}
+		return result;
+	}
+	
+	public static isInMultiWindowMode(activity : Activity) : boolean {
+		if (Build.BRAND.equals("OPPO", true)) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+				const windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager;
+				const currentMetrics = windowManager.getCurrentWindowMetrics();
+				const displayMetrics = new DisplayMetrics();
+				windowManager.getDefaultDisplay().getRealMetrics(displayMetrics);
+				return currentMetrics.getBounds().width() != displayMetrics.widthPixels || currentMetrics.getBounds().height() != displayMetrics.heightPixels;
+			}
+			return false;
+		} else {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+				return activity.isInMultiWindowMode();
+			}
+			return false;
+		}
+	}
+	
+	/**
+	 * 当前应用分屏状态
+	 * top表示分屏处于顶部
+	 * other表示分屏处于底部或左右两侧
+	 */
+	public static getSplitScreenPosition(activity : Activity) : string {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+			const windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager;
+			const currentMetrics = windowManager.getCurrentWindowMetrics();
+			const displayMetrics = new DisplayMetrics();
+			windowManager.getDefaultDisplay().getRealMetrics(displayMetrics);
+			return currentMetrics.getBounds().top == 0 && currentMetrics.getBounds().left == 0 && currentMetrics.getBounds().right == displayMetrics.widthPixels ? 'top' : 'other';
+		}
+		return 'other';
+	}
+}

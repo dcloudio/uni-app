@@ -16,7 +16,7 @@ export { TransparentActivity } from './TransparentActivity.uts';
 
 const DOWNLOAD_PROGRESS_NOTIFICATION_ID : Int = 7890
 const DC_DOWNLOAD_CHANNEL_ID = "下载文件"
-const DC_DOWNLOAD_CHANNEL_NAME = "应用升级更新"
+const DC_DOWNLOAD_CHANNEL_NAME = "用于显示现在进度的渠道"
 
 
 let notificationBuilder : Notification.Builder | null = null

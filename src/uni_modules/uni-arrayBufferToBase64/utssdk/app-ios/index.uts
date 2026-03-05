@@ -1,0 +1,8 @@
+import { ArrayBufferToBase64 } from "../interface.uts"
+
+export const arrayBufferToBase64 : ArrayBufferToBase64 = function (arrayBuffer : ArrayBuffer) : string {
+	// 将 ArrayBuffer 转成 Data
+	const data = arrayBuffer.toData()
+	// 将 Data 转成 base64 字符串
+	return data.base64EncodedString()
+}  

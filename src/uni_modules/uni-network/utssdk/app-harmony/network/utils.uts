@@ -1,0 +1,62 @@
+import harmonyUrl from '@ohos.url'
+import { http } from '@kit.NetworkKit'
+import { Certificate } from '../../interface.uts'
+import { getRealPath } from '@dcloudio/uni-runtime'
+/**
+ * 鸿蒙url内包含中文时处理有问题
+ * 例如 /code/version/11?subject=中文测试 在部分服务器上会收到 /code/version/11?subject=éå¾·ä¸æ³
+ * 如下看起来很怪异的代码仅仅是为了绕过此Bug，待鸿蒙修复后可删除
+ */
+
+function needsEncoding(str: string) {
+    const decoded = decodeURIComponent(str);
+    if (decoded !== str) {
+        if (encodeURIComponent(decoded) === str) {
+            return false;
+        }
+    }
+    return encodeURIComponent(decoded) !== decoded;
+}
+
+export function parseUrl(url: string) {
+    try {
+        const urlObj = harmonyUrl.URL.parseURL(url);
+        urlObj.params.forEach((value, key) => {
+            if (needsEncoding(value)) {
+                urlObj.params.set(key, value);
+            }
+        })
+        return urlObj.toString()
+    } catch (error) {
+        return url
+    }
+}
+
+export const certificates: Certificate[] = []
+
+function getCertType(certPath: string): http.CertType {
+    const certExt = certPath.split('.').pop()
+    switch (certExt) {
+        case 'p12':
+            return http.CertType.P12
+        case 'pem':
+            return http.CertType.PEM
+        default:
+            return http.CertType.PEM
+    }
+}
+
+export function getClientCertificate(url: string): http.ClientCert | undefined {
+    if (certificates.length === 0) return undefined
+    const urlObj = harmonyUrl.URL.parseURL(url);
+    const cert = certificates.find((certificate) => certificate.host === urlObj.host)
+    if (cert) {
+        return {
+            certType: getCertType(cert.client!),
+            certPath: getRealPath(cert.client!),
+            keyPath: cert.keyPath ?? '',
+            keyPassword: cert.clientPassword
+        } as http.ClientCert
+    }
+    return undefined
+}

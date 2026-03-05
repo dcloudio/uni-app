@@ -1,0 +1,138 @@
+import { UIImage } from 'UIKit';
+import { URL , Data , FileManager, Date } from 'Foundation';
+import { UInt8 , Range } from 'Swift';
+import { UTSiOS } from "DCloudUTSFoundation";
+
+export function isNetUrl(urlStr : string) : boolean {
+	const url = new URL(string= urlStr);
+	if (url?.scheme?.lowercased() == "http" || url?.scheme?.lowercased() == "https"){
+		return true;
+	}
+	return false;
+}
+
+export function getImageOrientation(image: UIImage) : string {
+	let orientationStr = "up";
+	const orientation = image.imageOrientation;
+	switch (orientation) {
+		case UIImage.Orientation.up:
+			orientationStr = "up";
+			break;
+		case UIImage.Orientation.down:
+			orientationStr = "down";
+			break;
+		case UIImage.Orientation.left:
+			orientationStr = "left";
+			break;
+		case UIImage.Orientation.right:
+			orientationStr = "right";
+			break;
+		case UIImage.Orientation.upMirrored:
+			orientationStr = "up-mirrored";
+			break;
+		case UIImage.Orientation.downMirrored:
+			orientationStr = "down-mirrored";
+			break;
+		case UIImage.Orientation.leftMirrored:
+			orientationStr = "left-mirrored";
+			break;
+		case UIImage.Orientation.rightMirrored:
+			orientationStr = "right-mirrored";
+			break;
+		default:
+			orientationStr = "up";
+			break;
+	}
+	return orientationStr;
+}
+
+export function getImageFormat(imageData: Data) : string{
+	if (imageData.count < 16){
+		return "unknown";
+	}
+	let value = [UInt8](repeating=0, count=1)
+	imageData.copyBytes(to = UTSiOS.getPointer(value), count = 1);
+	
+	switch (value[0]) {
+		case 0x4D:
+			return "TIFF";
+		case 0x49:
+			return "TIFF";
+		case 0x89:
+			return "PNG";
+		case 0xFF:
+			return "JPEG";
+		case 0x47:
+			return "GIF";
+		case 0x52:
+			if (imageData.count >= 12){
+				let range = new Range(NSMakeRange(0,12));
+				const subData = imageData.subdata(in= range!);
+				let infoString = new String(data= subData,encoding= String.Encoding.ascii);
+				if (infoString != null){
+					if (infoString!.hasPrefix('RIFF') && infoString!.hasSuffix("WEBP")){
+						return "WEBP";
+					}
+				}
+				
+			}
+			break;
+		case 0x00:
+			if (imageData.count >= 12){
+				let range = new Range(NSMakeRange(4,8));
+				const subData = imageData.subdata(in= range!);
+				let infoString = new String(data= subData,encoding= String.Encoding.ascii);
+				if (infoString != null){
+					if (infoString!.hasPrefix('ftypheic') || infoString!.hasSuffix("ftypheix") || infoString!.hasSuffix("ftyphevc") || infoString!.hasSuffix("ftyphevx")){
+						return "HEIC"
+					}
+				}
+			}
+			break;
+		default:
+			break;
+	}
+	return "unknown";
+}
+
+export function isExistFilePath(path: string) : boolean{
+	return FileManager.default.fileExists(atPath= path);
+}
+
+export function createFilePath(fileName: string) : string{
+	const mediaCachePath = UTSiOS.getMediaCacheDir() + "/"
+	let isCreateSuccess = true;
+	if (isExistFilePath(mediaCachePath) == false) {
+		try {
+		  UTSiOS.try(FileManager.default.createDirectory(atPath = mediaCachePath, withIntermediateDirectories = true, attributes = null))
+		  isCreateSuccess = true;
+		} catch (e) {
+		  isCreateSuccess = false;
+		  // console.log(e)
+		}
+	}
+	return isCreateSuccess == true ? mediaCachePath + fileName : "";
+}
+
+export function saveImage(imageData: Data,type: string) : string{
+	let suffix : string = ".jpeg";
+	if (type != "unknown"){
+		suffix = "." + type.lowercased();
+	}
+	
+	const currentTime = Int(Date().timeIntervalSince1970)
+	const fileName = currentTime.toString() + suffix;
+	const path = createFilePath(fileName);
+	if (path.length == 0){
+		return "";
+	}
+	const fileUrl = new URL(fileURLWithPath= path)
+	let isWriteSuccess = false;
+	try {
+		UTSiOS.try(imageData.write(to= fileUrl))
+		isWriteSuccess = true;
+	} catch (e) {
+		// console.log(e)
+	}
+	return isWriteSuccess == true ? path : "";
+}

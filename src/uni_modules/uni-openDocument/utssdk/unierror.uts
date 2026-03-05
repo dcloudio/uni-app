@@ -1,0 +1,25 @@
+import { OpenDocumentErrorCode, IOpenDocumentError } from './interface.uts';
+
+/**
+ * 错误主题
+ */
+export const OpenDocumentUniErrorSubject = 'uni-openDocument';
+
+export const OpenDocumentUniErrors : Map<number, string> = new Map([
+	[1300601, 'Invalid file path'],
+	[1300602, 'File not exist'],
+	[1300603, 'Not support this filetype'],
+	[1300604, 'Unkowned error']
+]);
+
+export class OpenDocumentErrorImpl extends UniError implements IOpenDocumentError {
+	// #ifdef APP-ANDROID || APP-HARMONY
+	override errCode : OpenDocumentErrorCode;
+	// #endif
+	constructor(code : OpenDocumentErrorCode) {
+		super();
+		this.errSubject = OpenDocumentUniErrorSubject;
+		this.errCode = code;
+		this.errMsg = OpenDocumentUniErrors[code] ?? '';
+	}
+}

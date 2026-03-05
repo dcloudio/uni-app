@@ -1,0 +1,213 @@
+import {
+    getTabBar,
+    getTabBarBorderStyle,
+    isString,
+} from '@dcloudio/uni-runtime'
+import {
+    HideTabBarOptions,
+    HideTabBarRedDotOptions,
+    HideTabBarRedDotSuccess,
+    HideTabBarSuccess,
+    RemoveTabBarBadgeOptions,
+    RemoveTabBarBadgeSuccess,
+    SetTabBarBadgeOptions,
+    SetTabBarBadgeSuccess,
+    SetTabBarItemOptions,
+    SetTabBarItemSuccess,
+    SetTabBarStyleOptions,
+    SetTabBarStyleSuccess,
+    ShowTabBarOptions,
+    ShowTabBarRedDotOptions,
+    ShowTabBarRedDotSuccess,
+    ShowTabBarSuccess,
+} from '../interface.uts'
+import { SetTabBarFailImpl } from '../unierror.uts'
+
+export const setTabBarBadge = defineAsyncApi<
+    SetTabBarBadgeOptions,
+    SetTabBarBadgeSuccess
+>('setTabBarBadge', (options: SetTabBarBadgeOptions, res: ApiExecutor) => {
+    const tabBar = getTabBar()
+    if (tabBar === null) {
+        res.reject(new SetTabBarFailImpl('tabBar is not exist'))
+        return
+    }
+    tabBar!.setTabBarBadge(
+        new Map<string, any | null>([
+            ['index', options.index],
+            ['text', options.text],
+        ]),
+    )
+    res.resolve(null)
+})
+
+export const removeTabBarBadge = defineAsyncApi<
+    RemoveTabBarBadgeOptions,
+    RemoveTabBarBadgeSuccess
+>(
+    'removeTabBarBadge',
+    (options: RemoveTabBarBadgeOptions, res: ApiExecutor) => {
+        const tabBar = getTabBar()
+        if (tabBar === null) {
+            res.reject(new SetTabBarFailImpl('tabBar is not exist'))
+            return
+        }
+        tabBar!.removeTabBarBadge(
+            new Map<string, any | null>([['index', options.index]]),
+        )
+        res.resolve(null)
+    },
+)
+
+export const setTabBarItem = defineAsyncApi<
+    SetTabBarItemOptions,
+    SetTabBarItemSuccess
+>('setTabBarItem', (options: SetTabBarItemOptions, res: ApiExecutor) => {
+    const tabBar = getTabBar()
+    if (tabBar === null) {
+        res.reject(new SetTabBarFailImpl('tabBar is not exist'))
+        return
+    }
+    const item = new Map<string, any>([
+        ['index', options.index],
+        ['text', options.text],
+        ['iconPath', options.iconPath],
+        ['selectedIconPath', options.selectedIconPath],
+        ['pagePath', options.pagePath],
+        ['visible', options.visible],
+    ])
+    if (options.iconfont !== null) {
+        const iconfontOptions = options.iconfont!
+        const iconfont: Map<string, any> = new Map<string, any>([
+            ['text', iconfontOptions.text],
+            ['selectedText', iconfontOptions.selectedText],
+            ['fontSize', iconfontOptions.fontSize],
+            ['color', iconfontOptions.color],
+            ['selectedColor', iconfontOptions.selectedColor],
+        ])
+        item.set('iconfont', iconfont)
+    }
+    tabBar!.setTabBarItem(item as Map<string, any | null>)
+    res.resolve(null)
+})
+
+export const setTabBarStyle = defineAsyncApi<
+    SetTabBarStyleOptions,
+    SetTabBarStyleSuccess
+>('setTabBarStyle', (options: SetTabBarStyleOptions, res: ApiExecutor) => {
+    const tabBar = getTabBar()
+    if (tabBar === null) {
+        res.reject(new SetTabBarFailImpl('tabBar is not exist'))
+        return
+    }
+    const style = new Map<string, any | null>([
+        ['color', options.color],
+        ['selectedColor', options.selectedColor],
+        ['backgroundColor', options.backgroundColor],
+        ['backgroundImage', options.backgroundImage],
+        ['backgroundRepeat', options.backgroundRepeat],
+    ])
+    if (isString(options.borderColor)) {
+        style.set(
+            'borderStyle', options.borderColor as string,
+        )
+    } else if (isString(options.borderStyle)) {
+        style.set(
+            'borderStyle',
+            getTabBarBorderStyle(options.borderStyle as string),
+        )
+    }
+    if (options.midButton !== null) {
+        const midButtonOptions = options.midButton!
+        const midButton: Map<string, any> = new Map<string, any>([
+            ['width', midButtonOptions.width],
+            ['height', midButtonOptions.height],
+            ['iconPath', midButtonOptions.iconPath],
+            ['text', midButtonOptions.text],
+            ['iconPath', midButtonOptions.iconPath],
+            ['iconWidth', midButtonOptions.iconWidth],
+            ['backgroundImage', midButtonOptions.backgroundImage],
+        ])
+        if (midButtonOptions.iconfont !== null) {
+            const iconfontOptions = midButtonOptions.iconfont!
+            const iconfont: Map<string, any> = new Map<string, any>([
+                ['text', iconfontOptions.text],
+                ['selectedText', iconfontOptions.selectedText],
+                ['fontSize', iconfontOptions.fontSize],
+                ['color', iconfontOptions.color],
+                ['selectedColor', iconfontOptions.selectedColor],
+            ])
+            midButton.set('iconfont', iconfont)
+        }
+        style.set('midButton', midButton)
+    }
+    tabBar!.setTabBarStyle(style)
+    res.resolve(null)
+})
+
+export const hideTabBar = defineAsyncApi<
+    HideTabBarOptions | null,
+    HideTabBarSuccess
+>('hideTabBar', (options: HideTabBarOptions | null, res: ApiExecutor) => {
+    const tabBar = getTabBar()
+    if (tabBar === null) {
+        res.reject(new SetTabBarFailImpl('tabBar is not exist'))
+        return
+    }
+    tabBar!.hideTabBar(
+        new Map<string, any | null>([['animation', options?.animation]]),
+    )
+    res.resolve(null)
+})
+
+export const showTabBar = defineAsyncApi<
+    ShowTabBarOptions | null,
+    ShowTabBarSuccess
+>('showTabBar', (options: ShowTabBarOptions | null, res: ApiExecutor) => {
+    const tabBar = getTabBar()
+    if (tabBar === null) {
+        res.reject(new SetTabBarFailImpl('tabBar is not exist'))
+        return
+    }
+    tabBar!.showTabBar(
+        new Map<string, any | null>([['animation', options?.animation]]),
+    )
+    res.resolve(null)
+})
+
+export const showTabBarRedDot = defineAsyncApi<
+    ShowTabBarRedDotOptions,
+    ShowTabBarRedDotSuccess
+>('showTabBarRedDot', (options: ShowTabBarRedDotOptions, res: ApiExecutor) => {
+    const tabBar = getTabBar()
+    if (tabBar === null) {
+        res.reject(new SetTabBarFailImpl('tabBar is not exist'))
+        return
+    }
+    tabBar!.showTabBarRedDot(
+        new Map<string, any | null>([['index', options.index]]),
+    )
+    res.resolve(null)
+})
+
+export const hideTabBarRedDot = defineAsyncApi<
+    HideTabBarRedDotOptions,
+    HideTabBarRedDotSuccess
+>('hideTabBarRedDot', (options: HideTabBarRedDotOptions, res: ApiExecutor) => {
+    const tabBar = getTabBar()
+    if (tabBar === null) {
+        res.reject(new SetTabBarFailImpl('tabBar is not exist'))
+        return
+    }
+    tabBar!.hideTabBarRedDot(
+        new Map<string, any | null>([['index', options.index]]),
+    )
+    res.resolve(null)
+})
+
+export const onTabBarMidButtonTap = defineOnApi(
+    'onTabBarMidButtonTap',
+    function () {
+        // noop
+    },
+)

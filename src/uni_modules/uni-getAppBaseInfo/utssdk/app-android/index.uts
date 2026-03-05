@@ -1,0 +1,180 @@
+import { AppBaseInfoDeviceUtil } from './device/AppBaseInfoDeviceUtil.uts';
+
+import {
+	GetAppBaseInfoOptions,
+	GetAppBaseInfo,
+	GetAppBaseInfoResult
+} from '../interface.uts'
+
+
+
+export const getAppBaseInfo : GetAppBaseInfo = (config : GetAppBaseInfoOptions | null) : GetAppBaseInfoResult => {
+	let filter : Array<string> = [];
+	if (config != null && config.filter != null) {
+		filter = config.filter;
+	}
+
+	if (config == null || filter.length == 0) {
+		const defaultFilter = [
+			"appId",
+			"appName",
+			"appVersion",
+			"appVersionCode",
+			"appLanguage",
+			"language",
+			"version",
+			"appWgtVersion",
+			"hostLanguage",
+			"hostVersion",
+			"hostName",
+			"hostPackageName",
+			"hostSDKVersion",
+			"hostTheme",
+			"isUniAppX",
+			"uniCompileVersion",
+			"uniCompilerVersion",
+			"uniPlatform",
+			"uniRuntimeVersion",
+			"uniCompileVersionCode",
+			"uniCompilerVersionCode",
+			"uniRuntimeVersionCode",
+			"packageName",
+			"signature",
+			"appTheme",
+			"channel"
+		];
+		filter = defaultFilter;
+	}
+	return getBaseInfo(filter);
+}
+
+function getBaseInfo(filterArray : Array<string>) : GetAppBaseInfoResult {
+	const activity = UTSAndroid.getUniActivity()!;
+	let result : GetAppBaseInfoResult = {};
+	if (filterArray.indexOf("appId") != -1) {
+		result.appId = AppBaseInfoDeviceUtil.getAppID();
+	}
+	if (filterArray.indexOf("appName") != -1) {
+		result.appName = UTSAndroid.getAppName();
+	}
+	if (UTSAndroid.isUniMp()) {
+		if (filterArray.indexOf("hostPackageName") != -1) {
+			result.hostPackageName = AppBaseInfoDeviceUtil.getPackageName(activity);
+		}
+		if (filterArray.indexOf("hostVersion") != -1) {
+			result.hostVersion = AppBaseInfoDeviceUtil.getHostVersion(activity);
+		}
+		if (filterArray.indexOf("hostName") != -1) {
+			result.hostName = AppBaseInfoDeviceUtil.getAppName(activity);
+		}
+		if (filterArray.indexOf("hostTheme") != -1) {
+			result.hostTheme = AppBaseInfoDeviceUtil.isSystemNightMode(activity) ? "dark" : "light";
+		}
+		if (filterArray.indexOf("hostLanguage") != -1) {
+			result.hostLanguage = AppBaseInfoDeviceUtil.getOsLanguage(activity);
+		}
+		if (filterArray.indexOf("appVersion") != -1) {
+			result.appVersion = AppBaseInfoDeviceUtil.getAppVersionName();
+		}
+		if (filterArray.indexOf("appVersionCode") != -1) {
+			result.appVersionCode = AppBaseInfoDeviceUtil.getAppVersionCode();
+		}
+	} else {
+		if (filterArray.indexOf("appVersion") != -1) {
+			result.appVersion = UTSAndroid.getAppVersion()["name"].toString();
+		}
+		if (filterArray.indexOf("appVersionCode") != -1) {
+			result.appVersionCode = UTSAndroid.getAppVersion()["code"].toString();
+		}
+	}
+	if (filterArray.indexOf("appLanguage") != -1) {
+		result.appLanguage = AppBaseInfoDeviceUtil.getOsLanguageNormal(activity);
+	}
+	if (filterArray.indexOf("language") != -1) {
+		result.language = AppBaseInfoDeviceUtil.getOsLanguage(activity);
+	}
+	if (filterArray.indexOf("version") != -1) {
+		result.version = AppBaseInfoDeviceUtil.getAppInnerVersion();
+	}
+	if (filterArray.indexOf("appWgtVersion") != -1) {
+		result.appWgtVersion = AppBaseInfoDeviceUtil.getAppVersionName();
+	}
+	if (filterArray.indexOf("isUniAppX") != -1) {
+		result.isUniAppX = UTSAndroid.isUniAppX();
+	}
+	
+	if (filterArray.indexOf("uniCompileVersion") != -1) {
+		result.uniCompileVersion = UTSAndroid.getUniCompileVersion();
+	}
+	if (filterArray.indexOf("uniCompilerVersion") != -1) {
+		result.uniCompilerVersion = UTSAndroid.getUniCompileVersion();
+	}
+	
+	
+	if (filterArray.indexOf("uniPlatform") != -1) {
+		result.uniPlatform = "app";
+	}
+	
+	if (filterArray.indexOf("uniRuntimeVersion") != -1) {
+		result.uniRuntimeVersion = UTSAndroid.getUniRuntimeVersion();
+	}
+	
+	if (filterArray.indexOf("uniCompileVersionCode") != -1) {
+		result.uniCompileVersionCode = convertVersionCode(UTSAndroid.getUniCompileVersion());
+	}
+	if (filterArray.indexOf("uniCompilerVersionCode") != -1) {
+		result.uniCompilerVersionCode = convertVersionCode(UTSAndroid.getUniCompileVersion());
+	}
+	
+	if (filterArray.indexOf("uniRuntimeVersionCode") != -1) {
+		result.uniRuntimeVersionCode = convertVersionCode(UTSAndroid.getUniRuntimeVersion());
+	}
+	
+	if (filterArray.indexOf("packageName") != -1) {
+		result.packageName =  AppBaseInfoDeviceUtil.getPackageName(activity);
+	}
+	
+	if (filterArray.indexOf("signature") != -1) {
+		result.signature = AppBaseInfoDeviceUtil.getAppSignatureSHA1(activity);
+	}
+	
+	if (filterArray.indexOf("appTheme") != -1) {
+		result.appTheme = UTSAndroid.getAppTheme();
+	}
+	
+	if (filterArray.indexOf("channel") != -1) {
+		result.channel = AppBaseInfoDeviceUtil.getChannel(activity);
+	}
+
+	return result;
+}
+
+const convertVersionCode = function(version: string): number {
+	let str = "";
+	let radixLength = 2;
+	let findDot = false;
+	const dotChar = ".".get(0);
+	for (let i = 0; i < version.length; i++) {
+		const char = version.get(i);
+		if(findDot){
+			if(char.isDigit()){
+				str += char;
+			}
+			radixLength --;
+			if(radixLength == 0){
+				break;
+			}
+		}else{
+			if(char.isDigit()){
+				str += char;
+			}else{
+				if(char == dotChar){
+					findDot = true;
+					str += char;
+				}
+			}
+		}
+	}
+	
+	return parseFloat(str);
+}

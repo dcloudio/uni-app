@@ -1,0 +1,55 @@
+import { UniVideoTimeUpdateEvent, UniVideoTimeUpdateEventDetail, UniVideoFullScreenChangeEvent, UniVideoFullScreenChangeEventDetail, UniVideoErrorEvent, VideoError, UniVideoProgressEvent, UniVideoProgressEventDetail, UniVideoFullScreenClickEvent, UniVideoFullScreenClickEventDetail, UniVideoControlsToggleEvent, UniVideoControlsToggleEventDetail } from '../interface.uts';
+
+/**
+ * timeupdate 事件实现
+ */
+export class UniVideoTimeUpdateEventImpl extends UniCustomEvent<UniVideoTimeUpdateEventDetail> implements UniVideoTimeUpdateEvent {
+	constructor(detail : UniVideoTimeUpdateEventDetail) {
+		super("timeupdate", detail);
+	}
+}
+
+/**
+ * fullscreenchange 事件实现
+ */
+export class UniVideoFullScreenChangeEventImpl extends UniCustomEvent<UniVideoFullScreenChangeEventDetail> implements UniVideoFullScreenChangeEvent {
+	constructor(detail : UniVideoFullScreenChangeEventDetail) {
+		super("fullscreenchange", detail);
+	}
+}
+
+/**
+ * error 事件实现
+ */
+export class UniVideoErrorEventImpl extends UniCustomEvent<VideoError> implements UniVideoErrorEvent {
+	constructor(detail : VideoError) {
+		super("error", detail);
+	}
+}
+
+/**
+ * progress 事件实现
+ */
+export class UniVideoProgressEventImpl extends UniCustomEvent<UniVideoProgressEventDetail> implements UniVideoProgressEvent {
+	constructor(detail : UniVideoProgressEventDetail) {
+		super("progress", detail);
+	}
+}
+
+/**
+ * fullscreenclick 事件实现
+ */
+export class UniVideoFullScreenClickEventImpl extends UniCustomEvent<UniVideoFullScreenClickEventDetail> implements UniVideoFullScreenClickEvent {
+	constructor(detail : UniVideoFullScreenClickEventDetail) {
+		super("fullscreenclick", detail);
+	}
+}
+
+/**
+ * controlstoggle 事件实现
+ */
+export class UniVideoControlsToggleEventImpl extends UniCustomEvent<UniVideoControlsToggleEventDetail> implements UniVideoControlsToggleEvent {
+	constructor(detail : UniVideoControlsToggleEventDetail) {
+		super("controlstoggle", detail);
+	}
+}

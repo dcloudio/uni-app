@@ -1,0 +1,37 @@
+import { ProviderErrorCode, IGetProviderFail } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+
+export const ProviderUniErrorSubject = 'uni-Provider';
+
+/**
+ * 错误码
+ * @UniError
+ */
+export const ProviderUniErrors : Map<ProviderErrorCode, string> = new Map([
+	/**
+	 * 服务类型参数无效。
+	 */
+	[110600, 'Parameter service invalid.'],
+]);
+
+
+export function getProviderErrorCode(errCode : number) : ProviderErrorCode {
+	const res = ProviderUniErrors[errCode];
+	return res == null ? 110600 : errCode;
+}
+
+
+export class GetProviderFailImpl extends UniError implements IGetProviderFail {
+    // #ifdef APP-HARMONY
+    override errCode: ProviderErrorCode
+    // #endif
+	constructor(errCode : ProviderErrorCode) {
+		super();
+		this.errSubject = ProviderUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = ProviderUniErrors[errCode] ?? "";
+	}
+}

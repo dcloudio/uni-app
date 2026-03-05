@@ -1,0 +1,8 @@
+{
+  "deploymentTarget": "12.0",
+	"components": [{
+		"name": "webview",
+		"class": "UTSSDKModulesDCloudUniWebWebComponent",
+		"delegateClass": "UniWebComponentRegister"
+	}]
+}

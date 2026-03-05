@@ -1,0 +1,47 @@
+<template>
+  <view
+    :waterflow-id="waterflowId"
+    change:waterflow-id="recycleFlowItemCpp.setWaterflowId"
+    :item-key="'' + props.itemKey"
+    change:item-key="recycleFlowItemCpp.updateKey"
+    :ref="recycleFlowItemCpp.setElement"
+    class="uni-flow-item"
+    style="position: absolute; width: 0px;"
+  >
+    <slot></slot>
+  </view>
+</template>
+<script module="recycleFlowItemCpp" lang="cpp" class-name="RecycleFlowItem" src="../../cppsdk/recycle_waterflow.h" namespace="recycle_waterflow"></script>
+<script setup>
+import { UniFlowItemElement } from '../../common/element'
+
+defineOptions({
+  name: 'flow-item',
+  rootElement: {
+    class: UniFlowItemElement
+  }
+})
+
+const props = defineProps({
+  itemKey: {
+    type: [String, Number],
+    required: true,
+  },
+  itemHeight: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
+});
+const waterflowId = inject<number>("__uni_recycle_view_id", 0);
+const itemKeyRef = computed(() => '' + props.itemKey);
+provide('__uni_recycle_state_key_ref', itemKeyRef);
+
+const recycleHooks = new Map<string, () => void>();
+provide('__uni_recycle_hooks', recycleHooks);
+
+defineExpose({
+  recycleHooks
+});
+</script>
+<style></style>

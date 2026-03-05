@@ -1,0 +1,15 @@
+import {
+    PullDownRefreshErrorCode,
+    StartPullDownRefreshFail,
+} from './interface.uts'
+
+export class StartPullDownRefreshFailImpl
+    extends UniError
+    implements StartPullDownRefreshFail
+{
+    errCode: PullDownRefreshErrorCode
+    constructor(errMsg: string = '', errCode: PullDownRefreshErrorCode) {
+        super(errMsg)
+        this.errCode = errCode
+    }
+}

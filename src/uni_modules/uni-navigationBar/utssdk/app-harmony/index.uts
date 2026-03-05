@@ -1,0 +1,172 @@
+import { navigator } from '@dcloudio/uni-runtime';
+import { HideNavigationBarLoading, HideNavigationBarLoadingOptions, HideNavigationBarLoadingSuccess, SetNavigationBarColor, SetNavigationBarColorOptions, SetNavigationBarColorSuccess, SetNavigationBarTitle, SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess, ShowNavigationBarLoading, ShowNavigationBarLoadingOptions, ShowNavigationBarLoadingSuccess } from '../interface.uts';
+import { API_SET_NAVIGATION_BAR_COLOR, API_SET_NAVIGATION_BAR_TITLE, SetNavigationBarColorProtocol, SetNavigationBarTitleProtocol } from '../protocol.uts';
+
+interface TitleNView {
+  titleText: string;
+  autoBackButton?: boolean
+  loading?: boolean
+}
+interface BackButton {
+  color?: string
+}
+interface PlusWebviewWebviewTitleNViewStyles {
+  backgroundColor?: string
+  titleColor?: string,
+  titleNView?: TitleNView
+  backButton?: BackButton
+}
+interface Webview {
+  getStyle: () => PlusWebviewWebviewTitleNViewStyles | null;
+  setStyle: (style: PlusWebviewWebviewTitleNViewStyles) => void;
+};
+interface $page {
+  statusBarStyle: 'dark' | 'light'
+}
+interface Page {
+  $getAppWebview: () => Webview | null;
+  $page: $page
+}
+
+const getWebview = (page: Page): Webview | null => {
+  const webview = page.$getAppWebview()
+  return webview
+
+}
+
+export const setNavigationBarColor: SetNavigationBarColor =
+  defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(
+    API_SET_NAVIGATION_BAR_COLOR,
+    (options: SetNavigationBarColorOptions, executor: ApiExecutor<SetNavigationBarColorSuccess>): void => {
+      const { frontColor, backgroundColor } = options
+      const pages = globalThis.getCurrentPages() as UniPageImpl[]
+      const page = (pages[pages.length - 1])
+      if (!page) {
+        executor.reject(`getCurrentPages is empty`)
+        return
+      }
+
+      const statusBarStyle = frontColor === '#000000' ? 'dark' : 'light'
+      try { navigator.setStatusBarStyle(statusBarStyle) } catch (error) { }
+
+      const appPage: ESObject = (page.vm as ESObject).$nativePage
+
+      appPage!.updateStyle(
+        new Map<string, any | null>([
+          [
+            'navigationBarTextStyle',
+            frontColor == '#000000' ? 'black' : 'white',
+          ],
+          ['navigationBarBackgroundColor', backgroundColor],
+        ])
+      )
+      executor.resolve()
+    },
+    SetNavigationBarColorProtocol
+  ) as SetNavigationBarColor
+
+// NOTE x 和 非 x 都不使用
+export const setNavigationBarTitle: SetNavigationBarTitle =
+  defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(
+    API_SET_NAVIGATION_BAR_TITLE,
+    (args: SetNavigationBarTitleOptions, executor: ApiExecutor<SetNavigationBarTitleSuccess>): void => {
+      const pages = globalThis.getCurrentPages() as Page[]
+      const page = (pages[pages.length - 1])
+      if (!page) {
+        executor.reject(`getCurrentPages is empty`)
+        return
+      }
+
+      const webview = getWebview(page)
+      if (webview) {
+        const style = webview.getStyle()
+        if (style && style.titleNView) {
+          webview.setStyle({
+            titleNView: {
+              titleText: args.title,
+            } as TitleNView,
+          } as PlusWebviewWebviewTitleNViewStyles)
+        }
+        executor.resolve()
+      } else {
+        executor.reject()
+      }
+    },
+    SetNavigationBarTitleProtocol
+  ) as SetNavigationBarTitle
+
+export const showNavigationBarLoading: ShowNavigationBarLoading =
+  defineAsyncApi<ShowNavigationBarLoadingOptions, ShowNavigationBarLoadingSuccess>(
+    API_SET_NAVIGATION_BAR_TITLE,
+    (options: ShowNavigationBarLoadingOptions, executor: ApiExecutor<ShowNavigationBarLoadingSuccess>): void => {
+      const pages = globalThis.getCurrentPages() as UniPageImpl[]
+      const page = (pages[pages.length - 1])
+      if (!page) {
+        executor.reject(`getCurrentPages is empty`)
+        return
+      }
+
+      const appPage: ESObject = (page.vm as ESObject).$nativePage
+
+      appPage!.updateStyle(
+        new Map<string, any | null>([
+          ['navigationBarLoading', true]
+        ])
+      )
+      executor.resolve()
+    }
+  ) as ShowNavigationBarLoading
+
+export const hideNavigationBarLoading: HideNavigationBarLoading =
+  defineAsyncApi<HideNavigationBarLoadingOptions, HideNavigationBarLoadingSuccess>(
+    API_SET_NAVIGATION_BAR_TITLE,
+    (args: HideNavigationBarLoadingOptions, executor: ApiExecutor<HideNavigationBarLoadingSuccess>): void => {
+      const pages = globalThis.getCurrentPages() as UniPageImpl[]
+      const page = (pages[pages.length - 1])
+      if (!page) {
+        return executor.reject(`getCurrentPages is empty`)
+      }
+
+      const appPage: ESObject = (page.vm as ESObject).$nativePage
+
+      appPage!.updateStyle(
+        new Map<string, any | null>([
+          ['navigationBarLoading', false]
+        ])
+      )
+      executor.resolve()
+    }
+  ) as HideNavigationBarLoading
+
+export {
+    HideNavigationBarLoading,
+    HideNavigationBarLoadingFail,
+    HideNavigationBarLoadingFailCallback,
+    HideNavigationBarLoadingOptions,
+    HideNavigationBarLoadingSuccess,
+    HideNavigationBarLoadingSuccessCallback,
+    SetNavigationBarColor,
+    SetNavigationBarColorComplete,
+    SetNavigationBarColorCompleteCallback,
+    SetNavigationBarColorErrorCode,
+    SetNavigationBarColorFail,
+    SetNavigationBarColorFailCallback,
+    SetNavigationBarColorOptions,
+    SetNavigationBarColorSuccess,
+    SetNavigationBarColorSuccessCallback,
+    SetNavigationBarTitle,
+    SetNavigationBarTitleComplete,
+    SetNavigationBarTitleCompleteCallback,
+    SetNavigationBarTitleErrorCode,
+    SetNavigationBarTitleFail,
+    SetNavigationBarTitleFailCallback,
+    SetNavigationBarTitleOptions,
+    SetNavigationBarTitleSuccess,
+    SetNavigationBarTitleSuccessCallback,
+    ShowNavigationBarLoading,
+    ShowNavigationBarLoadingFail,
+    ShowNavigationBarLoadingFailCallback,
+    ShowNavigationBarLoadingOptions,
+    ShowNavigationBarLoadingSuccess,
+    ShowNavigationBarLoadingSuccessCallback
+} from '../interface.uts'

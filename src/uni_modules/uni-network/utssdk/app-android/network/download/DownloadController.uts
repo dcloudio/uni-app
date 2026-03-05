@@ -1,0 +1,505 @@
+import { DownloadFileOptions, DownloadTask, DownloadFileProgressUpdateCallback, OnProgressDownloadResult } from '../../../interface.uts';
+import { NetworkDownloadFileListener } from '../NetworkManager.uts'
+import OkHttpClient from 'okhttp3.OkHttpClient';
+import TimeUnit from 'java.util.concurrent.TimeUnit';
+import ExecutorService from 'java.util.concurrent.ExecutorService';
+import Executors from 'java.util.concurrent.Executors';
+import Dispatcher from 'okhttp3.Dispatcher';
+import Callback from 'okhttp3.Callback';
+import Response from 'okhttp3.Response';
+import Request from 'okhttp3.Request';
+import Call from 'okhttp3.Call';
+import IOException from 'java.io.IOException';
+import ResponseBody from 'okhttp3.ResponseBody';
+import File from 'java.io.File';
+import BufferedSink from 'okio.BufferedSink';
+import BufferedSource from 'okio.BufferedSource';
+import Okio from 'okio.Okio';
+import TextUtils from 'android.text.TextUtils';
+import StringTokenizer from 'java.util.StringTokenizer';
+import MimeTypeMap from 'android.webkit.MimeTypeMap';
+import URLDecoder from 'java.net.URLDecoder';
+import CookieManager from 'android.webkit.CookieManager';
+import KotlinArray from 'kotlin.Array';
+import Context from 'android.content.Context';
+import Environment from 'android.os.Environment';
+import { CookieInterceptor } from '../interceptor/CookieInterceptor.uts'
+
+class NetworkDownloadTaskImpl implements DownloadTask {
+	private call : Call | null = null;
+	private listener : NetworkDownloadFileListener | null = null;
+	constructor(call : Call | null, listener : NetworkDownloadFileListener) {
+		this.call = call;
+		this.listener = listener;
+	}
+
+	public abort() {
+		if (this.call != null) {
+			this.call?.cancel();
+		}
+	}
+
+	public onProgressUpdate(option : DownloadFileProgressUpdateCallback) {
+		const kListener = this.listener;
+		if (kListener != null) {
+			kListener.progressListeners.add(option);
+		}
+	}
+}
+
+
+
+export class DownloadController {
+	private static instance : DownloadController | null = null
+
+	/**
+	 * 上传的线程池
+	 */
+	private downloadExecutorService : ExecutorService | null = null;
+
+	public static getInstance() : DownloadController {
+		if (this.instance == null) {
+			this.instance = new DownloadController();
+		}
+		return this.instance!;
+	}
+
+	public downloadFile(options : DownloadFileOptions, listener : NetworkDownloadFileListener) : DownloadTask {
+		const client = this.createDownloadClient(options);
+		let request = this.createDownloadRequest(options, listener);
+		if (request == null) {
+			return new NetworkDownloadTaskImpl(null, listener);
+		}
+		let call : Call = client.newCall(request);
+		call.enqueue(new SimpleDownloadCallback(listener, options.filePath ?? ""));
+
+		let task = new NetworkDownloadTaskImpl(call, listener);
+
+		return task;
+	}
+
+
+
+	private createDownloadClient(option : DownloadFileOptions) : OkHttpClient {
+
+		let clientBuilder = OkHttpClient.Builder();
+		const timeout : Long = option.timeout != null ? option.timeout!.toLong() : 120000;
+		clientBuilder.connectTimeout(timeout, TimeUnit.MILLISECONDS);
+		clientBuilder.readTimeout(timeout, TimeUnit.MILLISECONDS);
+		clientBuilder.writeTimeout(timeout, TimeUnit.MILLISECONDS);
+		clientBuilder.addInterceptor(new CookieInterceptor());
+
+		if (this.downloadExecutorService == null) {
+			this.downloadExecutorService = Executors.newFixedThreadPool(10);
+		}
+
+		clientBuilder.dispatcher(new Dispatcher(this.downloadExecutorService));
+
+		return clientBuilder.build();
+	}
+
+	private createDownloadRequest(options : DownloadFileOptions, listener : NetworkDownloadFileListener) : Request | null {
+		let requestBilder = new Request.Builder();
+		try {
+			requestBilder.url(options.url);
+		} catch (exception : Exception) {
+			let option: UTSJSONObject = {};
+			option['statusCode'] = '-1';
+			option['errorCode'] = '-1';
+			option['errorMsg'] = "invalid URL";
+			let cause = exception.cause.toString();
+			option['cause'] = new SourceError(cause);
+			if (listener != null) {
+				listener.onComplete(option);
+			}
+			return null;
+		}
+
+		const headers = options.header?.toMap();
+		let hasUAHeader = false;
+		if (headers != null) {
+			for (entry in headers) {
+				const key = entry.key;
+				const value = entry.value;
+				if(!hasUAHeader && key.equals("User-Agent", true)){
+					hasUAHeader = true
+				}
+
+				if (value != null) {
+					requestBilder.addHeader(key, "" + value);
+				} else {
+					continue;
+				}
+			}
+		}
+		if (!hasUAHeader) {
+			let ua = UTSAndroid.getWebViewInfo(UTSAndroid.getAppContext()!)["ua"].toString();
+			requestBilder.header("User-Agent", ua);
+		}
+
+		return requestBilder.build();
+	}
+
+}
+
+class SimpleDownloadCallback implements Callback {
+	private downloadFilePath = "/uni-download/";
+	private listener : NetworkDownloadFileListener | null = null;
+	private specifyPath = "";
+	constructor(listener : NetworkDownloadFileListener, specifyPath : string) {
+		this.listener = listener;
+		if(specifyPath.startsWith("unifile://")){
+			this.specifyPath = UTSAndroid.convert2AbsFullPath(specifyPath);
+		}else{
+			this.specifyPath = specifyPath
+		}
+	}
+
+
+	override onFailure(call : Call, exception : IOException) {
+		let option: UTSJSONObject = {};
+		option['statusCode'] = '-1';
+		option['errorCode'] = '-1';
+		option['errorMsg'] = exception.message;
+		let cause = exception.cause.toString();
+		option['cause'] = new SourceError(cause);
+		this.listener?.onComplete(option);
+	}
+	override onResponse(call : Call, response : Response) {
+		if (response.isSuccessful()) {
+			const source = response.body()?.source()
+			if (source != null) {
+				const tempFile = this.getTempFile()
+				let tempSink : BufferedSink | null = null;
+				let tempSource : BufferedSource | null = null;
+				let targetSink : BufferedSink | null = null;
+				try {
+					tempSink = Okio.buffer(Okio.sink(tempFile));
+					let totalBytesRead : Long = 0;
+					const contentLength = response.body()!!.contentLength();
+					const bufferSize : Int = 8 * 1024;
+					const buffer = ByteArray(bufferSize);
+
+
+					do {
+						let bytesRead = source.read(buffer);
+						if (bytesRead == -1) {
+							break;
+						}
+
+
+						tempSink.write(buffer, 0, bytesRead)
+						totalBytesRead += bytesRead.toLong();
+						const progress = (totalBytesRead.toFloat() / contentLength) * 100
+						let downloadProgressUpdate : OnProgressDownloadResult = {
+							progress: progress,
+							totalBytesWritten: totalBytesRead,
+							totalBytesExpectedToWrite: contentLength
+						}
+						this.listener?.onProgress(downloadProgressUpdate);
+
+					} while (true)
+
+					tempSink.flush()
+
+					tempSource = Okio.buffer(Okio.source(tempFile));
+					let targetFile = this.getFile(response)
+					targetSink = Okio.buffer(Okio.sink(targetFile));
+					targetSink.writeAll(tempSource);
+					targetSink.flush();
+
+					let option = {};
+					option['statusCode'] = response.code() + "";
+					if (targetFile.exists()) {
+						option['tempFilePath'] = targetFile.getPath();
+					}
+					this.listener?.onComplete(option);
+				} catch (e: Exception){
+					let option: UTSJSONObject = {};
+					const code = "-1"
+					const errorMsg = e.message
+					option['statusCode'] = code;
+					option['errorCode'] = code;
+					option['errorMsg'] = errorMsg;
+					const sourceError = new SourceError(errorMsg ?? "");
+					option['cause'] = sourceError;
+					this.listener?.onComplete(option);
+				} finally {
+					tempSink?.close()
+					targetSink?.close()
+					tempSource?.close()
+					source?.close()
+					tempFile.delete()
+				}
+			}
+
+		} else {
+			let option: UTSJSONObject = {};
+			const code = response.code() + "";
+			const errorMsg = response.body()?.string();
+			option['statusCode'] = code;
+			option['errorCode'] = code;
+			option['errorMsg'] = errorMsg;
+			const sourceError = new SourceError(errorMsg ?? "");
+			sourceError.code = response.code();
+			option['cause'] = sourceError;
+			this.listener?.onComplete(option);
+		}
+	}
+
+	getTempFile() : File {
+		return new File(UTSAndroid.getAppContext()!.getExternalCacheDir(), "temp_" + System.currentTimeMillis())
+	}
+
+
+	getRealPath() : string {
+		var path = UTSAndroid.getAppTempPath() ?? "";
+		return path + this.downloadFilePath;
+	}
+
+	getFile(response : Response) : File {
+		let targetPath = "";
+		if (this.specifyPath != "") {
+			const sourcePath = UTSAndroid.convert2AbsFullPath("/");
+			const sourceFileDir = new File(sourcePath);
+			if (this.isDescendant(sourceFileDir, new File(this.specifyPath))) {
+				let option = {};
+				option['statusCode'] = '-1';
+				option['errorCode'] = '602001';
+				option['errorMsg'] = "This path is not supported";
+				option['cause'] = null;
+				this.listener?.onComplete(option);
+
+				return new File("")
+			}
+
+			const pos = this.specifyPath.lastIndexOf("/")
+			if (pos == this.specifyPath.length - 1) {
+				//如果filePath是目录
+				if (this.isAbsolute(this.specifyPath)) {
+					targetPath = this.specifyPath;
+				} else {
+					targetPath = UTSAndroid.getAppTempPath()!! + "/" + this.specifyPath
+				}
+			} else {
+				let path = "";
+				if (this.isAbsolute(this.specifyPath)) {
+					path = this.specifyPath;
+				} else {
+					path = UTSAndroid.getAppTempPath()!! + "/" + this.specifyPath;
+				}
+
+				let file = new File(path)
+				const parentFile = file.getParentFile()
+				if (parentFile != null) {
+					if (!parentFile.exists()) {
+						parentFile.mkdirs()
+					}
+				}
+				if (file.exists() && file.isDirectory()) {
+					let option = {};
+					option['statusCode'] = '-1';
+					option['errorCode'] = '602001';
+					option['errorMsg'] = "The target file path is already a directory file, and file creation failed.";
+					option['cause'] = null;
+					this.listener?.onComplete(option);
+				}
+				
+				if (file.exists()) {
+					const index = path.lastIndexOf(".");
+					let tFileName = path;
+					let tFileType = "";
+					if (index >= 0) {
+						tFileName = path.substring(0, index)
+						tFileType = path.substring(index)
+					}
+				
+					var number = 1
+					while (new File(path).exists()) {
+						path = tFileName + "(" + number + ")" + tFileType;
+						number++
+					}
+					file = new File(path)
+				}
+
+				if (!file.exists()) {
+					try {
+						file.createNewFile()
+					} catch (exception : Exception) {
+						let option = {};
+						option['statusCode'] = '-1';
+						option['errorCode'] = '602001';
+						option['errorMsg'] = exception.message;
+						let cause = exception.cause.toString();
+						option['cause'] = new SourceError(cause);
+						this.listener?.onComplete(option);
+					}
+				}
+				return file
+			}
+		} else {
+			targetPath = this.getRealPath();
+		}
+
+
+		let fileName = "";
+		let remoteFileName = response.header("content-disposition");
+		if (!TextUtils.isEmpty(remoteFileName)) {
+			// form-data; name="file"; filename="xxx.pdf"
+			const segments : KotlinArray<String | null> | null = this.stringSplit(remoteFileName, ";")
+			if (segments != null) {
+				for (let i : Int = 0; i < segments.size; i++) {
+					const segment = segments[i];
+					if (segment != null) {
+						if (segment.contains("filename")) {
+							const pair = this.stringSplit(segment.trim(), "=") //目前认为只存在一个键值对
+							if (pair != null && pair.size > 1) {
+								let key = pair[0];
+								let value = pair[1];
+								const reg = new RegExp("^\"|\"$","g")
+								if (key != null) {
+									key = key.replace(reg, "");
+								}
+								if (value != null) {
+									value = value.replace(reg, "");
+								}
+
+								if (!TextUtils.isEmpty(key) && !TextUtils.isEmpty(value) && key!.equals("filename", true)) {
+									if (value != null) {
+										fileName = value;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (TextUtils.isEmpty(fileName)) {
+			let path = response.request().url().encodedPath()
+			let pos = path.lastIndexOf('/')
+			if (pos >= 0) {
+				path = path.substring(pos + 1)
+				if (path.indexOf('.') >= 0 || path.length > 0) { //存在类型后缀或者没有文件格式后缀的情况，取最后LastPathComponent的名称当做文件名。
+					if (path.contains("?")) {
+						path = path.substring(0, path.indexOf("?"))
+					}
+					fileName = path
+				}
+			}
+		}
+
+		if (TextUtils.isEmpty(fileName)) {
+			fileName = System.currentTimeMillis().toString()
+			const contentType = response.header("content-type")
+			let type = MimeTypeMap.getSingleton().getExtensionFromMimeType(contentType);
+			if (type != null) {
+				fileName += "." + type;
+			}
+		}
+
+		fileName = URLDecoder.decode(fileName, "UTF-8")
+		fileName = fileName.replace(File.separator.toRegex(), "")
+		if (fileName.contains("?")) {
+			fileName = fileName.replace("\\?".toRegex(), "0")
+		}
+		if (fileName.length > 80) {
+			const subFileName : String = fileName.substring(0, 80)
+			fileName = subFileName + System.currentTimeMillis()
+		}
+
+		
+		if (new File(targetPath + fileName).exists()) {
+			const index = fileName.lastIndexOf(".");
+			let tFileName = fileName;
+			let tFileType = "";
+			if (index >= 0) {
+				tFileName = fileName.substring(0, index)
+				tFileType = fileName.substring(index)
+				
+				//fileName是 .xxx的情况
+				if(tFileName == ""){
+					tFileName = tFileType
+					tFileType = ""
+				}
+			} else {
+				tFileName = fileName
+			}
+			var number = 1
+			while (new File(targetPath + fileName).exists()) {
+				fileName = tFileName + "(" + number + ")" + tFileType;	
+				number++
+			}
+		}
+		
+		targetPath += fileName
+
+		const file = new File(targetPath)
+		const parentFile = file.getParentFile()
+		if (parentFile != null) {
+			if (!parentFile.exists()) {
+				parentFile.mkdirs()
+			}
+		}
+		if (!file.exists()) {
+			try {
+				file.createNewFile()
+			} catch (exception : Exception) {
+				let option: UTSJSONObject = {};
+				option['statusCode'] = '-1';
+				option['errorCode'] = '602001';
+				option['errorMsg'] = exception.message;
+				let cause = exception.cause.toString();
+				option['cause'] = new SourceError(cause);
+				this.listener?.onComplete(option);
+			}
+		}
+		return file
+	}
+
+	isAbsolute(path : string) : boolean {
+		const context = UTSAndroid.getAppContext()!! as Context;
+		if (path.startsWith(context.getFilesDir().getParent())) {
+			return true;
+		}
+
+		const exPath = context.getExternalFilesDir(null)?.getParent();
+		if (exPath != null && path.startsWith(exPath)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * 判断两个文件的上下级关系
+	 */
+	isDescendant(parent : File, child : File) : boolean {
+		//有可能开发者传入的是/sdcard  或者/storage/emulated/ 这样的文件路径, 所以要用软连接的实际文件路径进行对比.
+		if (child.getCanonicalPath() == parent.getCanonicalPath()) {
+			return true;
+		}
+		let parentFile = child.getParentFile();
+
+		if (parentFile == null) {
+			return false;
+		}
+		return this.isDescendant(parent, parentFile);
+	}
+
+
+	stringSplit(str : String | null, delim : String | null) : KotlinArray<String | null> | null {
+		if (!TextUtils.isEmpty(str) && !TextUtils.isEmpty(delim)) {
+			const stringTokenizer = new StringTokenizer(str, delim, false);
+			const result = arrayOfNulls<String>(stringTokenizer.countTokens())
+			var index : Int = 0
+			while (stringTokenizer.hasMoreElements()) {
+				result[index] = stringTokenizer.nextToken().trim()
+				index += 1
+			}
+			return result
+		}
+		return null
+	}
+}

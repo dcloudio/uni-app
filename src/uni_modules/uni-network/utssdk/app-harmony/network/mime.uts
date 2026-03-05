@@ -1,0 +1,17 @@
+export function lookupExt(contentType: string): string | undefined {
+    const rawContentType = contentType.split(';')[0].trim().toLowerCase()
+    return (UTSHarmony.getExtensionFromMimeType(rawContentType) as string | null) || undefined
+}
+
+export function lookupContentTypeWithUri(uri: string): string | undefined {
+    const uriArr = uri.split('.')
+    if (uriArr.length <= 1) {
+        return undefined
+    }
+    const ext = uriArr.pop() as string
+    return (UTSHarmony.getMimeTypeFromExtension(ext) as string | null) || undefined
+}
+
+export function lookupContentType(ext: string): string | undefined {
+    return (UTSHarmony.getMimeTypeFromExtension(ext) as string | null) || undefined
+}

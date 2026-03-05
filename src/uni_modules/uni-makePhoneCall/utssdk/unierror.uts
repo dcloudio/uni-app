@@ -1,0 +1,19 @@
+import { MakePhoneCallErrorCode, IMakePhoneCallError } from './interface.uts';
+
+export const MakePhoneCallUniErrors : Map<number, string> = new Map([
+	[1500601, 'not support'],
+	[1500602, 'invalid number'],
+	[1500603, 'internal error']
+]);
+
+export class MakePhoneCallErrorImpl extends UniError implements IMakePhoneCallError {
+	// #ifdef APP-ANDROID || APP-HARMONY
+	override errCode : MakePhoneCallErrorCode;
+	// #endif
+	constructor(code : MakePhoneCallErrorCode) {
+		super();
+		this.errSubject = 'uni-makePhoneCall';
+		this.errCode = code;
+		this.errMsg = MakePhoneCallUniErrors.get(code) ?? '';
+	}
+}

@@ -1,0 +1,46 @@
+import { BusinessError } from '@kit.BasicServicesKit';
+import { access } from '@kit.ConnectivityKit';
+import { geoLocationManager } from '@kit.LocationKit';
+import { wifiManager } from '@kit.ConnectivityKit';
+import { display } from '@kit.ArkUI';
+
+import { GetSystemSetting, GetSystemSettingResult } from '../interface.uts';
+
+export const getSystemSetting: GetSystemSetting = defineSyncApi<GetSystemSettingResult>(
+  'getSystemSetting',
+  (): GetSystemSettingResult => {
+    const defaultDisplay = display.getDefaultDisplaySync()
+
+    const res: GetSystemSettingResult = {
+      bluetoothEnabled: false,
+      bluetoothError: null,
+      locationEnabled: false,
+      wifiEnabled: false,
+      wifiError: null,
+      deviceOrientation: (defaultDisplay.orientation === display.Orientation.PORTRAIT || defaultDisplay.orientation === display.Orientation.PORTRAIT_INVERTED) ? 'portrait' : 'landscape'
+    }
+
+    try {
+      if (access.getState() === access.BluetoothState.STATE_ON) res.bluetoothEnabled = true
+    } catch (err) {
+      res.bluetoothError = (err as BusinessError).message
+    }
+
+    try {
+      res.locationEnabled = geoLocationManager.isLocationEnabled();
+    } catch (err) { }
+
+    try {
+      res.wifiEnabled = wifiManager.isWifiActive();
+    } catch (err) {
+      res.wifiError = (err as BusinessError).message
+    }
+
+    return res
+  }
+) as GetSystemSetting
+
+export {
+  GetSystemSetting,
+  GetSystemSettingResult
+} from '../interface.uts';

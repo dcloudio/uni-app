@@ -1,0 +1,271 @@
+import {
+    Emitter,
+    getCurrentMP
+} from '@dcloudio/uni-runtime'
+import {
+    GetLocation,
+    GetLocationOptions,
+    GetLocationSuccess,
+    IGetLocationFail,
+    GetLocationFail,
+    OnLocationChangeCallback,
+    OnLocationChangeErrorCallback,
+    StartLocationUpdateOptions,
+    StartLocationUpdateSuccess,
+    StartLocationUpdateBackgroundOptions,
+    StartLocationUpdateBackgroundSuccess,
+    StartLocationUpdate,
+    StartLocationUpdateBackground,
+    StopLocationUpdate,
+    StopLocationUpdateOptions,
+    StopLocationUpdateSuccess,
+    OnLocationChangeResult,
+    LocationErrorCode,
+    StartLocationUpdateOptionsType,
+} from '../interface.uts'
+import {
+    UniLocationProvider
+} from './interface.uts'
+import {
+    LocationUniErrors,
+    GetLocationFailImpl
+} from '../unierror.uts'
+import {
+    API_GET_LOCATION,
+    API_START_LOCATION_UPDATE,
+    StartLocationUpdateApiOptions,
+    StartLocationUpdateApiProtocol,
+    API_ON_LOCATION_CHANGE,
+    API_OFF_LOCATION_CHANGE,
+    API_ON_LOCATION_CHANGE_ERROR,
+    API_OFF_LOCATION_CHANGE_ERROR,
+    API_START_LOCATION_UPDATE_BACKGROUND,
+    API_STOP_LOCATION_UPDATE
+} from '../protocol.uts'
+
+// region Emitter
+interface ILocationEventEmitter<T = Object> {
+    on: (eventName: string, callback: Function) => void
+    once: (eventName: string, callback: Function) => void
+    off: (eventName: string, callback?: Function | null) => void
+    emit: (eventName: string, ...args: (T | undefined | null)[]) => void
+}
+
+const emitterStore = new Map<string, ILocationEventEmitter<Object>>()
+
+function getEmitter<T extends Object>(): ILocationEventEmitter<T> {
+    const mp = getCurrentMP()
+    const id = mp.appId as string
+    if (emitterStore.has(id)) {
+        return emitterStore.get(id) as ILocationEventEmitter<T>
+    }
+    const emitter = new Emitter() as ILocationEventEmitter<Object>
+    emitterStore.set(id, emitter)
+    mp.on('beforeClose', () => {
+        emitterStore.delete(id)
+    })
+    return emitter as ILocationEventEmitter<T>
+}
+
+const OnLocationChangeCallbacks: OnLocationChangeCallback[] = []
+const OnLocationChangeErrorCallbacks: OnLocationChangeErrorCallback[] = []
+
+function removeCallback(name: string, callbacks: (OnLocationChangeErrorCallback | OnLocationChangeCallback)[], callback?: number | OnLocationChangeCallback | OnLocationChangeErrorCallback | null) {
+    if (callback == null) {
+        getEmitter().off(name)
+        callbacks.length = 0
+    } else if (typeof callback === 'number') {
+        const index = callbacks.findIndex(
+            (cb) => cb === callbacks[callback]
+        )
+        if (index !== -1) {
+            getEmitter().off(name, callbacks[index])
+            callbacks.splice(index, 1)
+        }
+    } else {
+        getEmitter().off(name, callback)
+        const index = callbacks.indexOf(callback)
+        if (index !== -1) {
+            callbacks.splice(index, 1)
+        }
+    }
+}
+
+export const onLocationChange = defineSyncApi<number>(
+    API_ON_LOCATION_CHANGE,
+    (callback: OnLocationChangeCallback) => {
+        getEmitter().on(API_ON_LOCATION_CHANGE, callback)
+        return OnLocationChangeCallbacks.push(callback)
+    }
+)
+export const offLocationChange = defineSyncApi<void>(
+    API_OFF_LOCATION_CHANGE,
+    (callback?: number | OnLocationChangeCallback | null) => {
+        removeCallback(API_ON_LOCATION_CHANGE, OnLocationChangeCallbacks, callback)
+    }
+)
+
+export const onLocationChangeError = defineSyncApi<number>(
+    API_ON_LOCATION_CHANGE_ERROR,
+    (callback: OnLocationChangeErrorCallback) => {
+        getEmitter().on(API_ON_LOCATION_CHANGE_ERROR, callback)
+        return OnLocationChangeErrorCallbacks.push(callback)
+    }
+)
+export const offLocationChangeError = defineSyncApi<void>(
+    API_OFF_LOCATION_CHANGE_ERROR,
+    (callback?: number | OnLocationChangeErrorCallback | null) => {
+        removeCallback(API_ON_LOCATION_CHANGE_ERROR, OnLocationChangeErrorCallbacks, callback)
+    }
+)
+
+const _onLocationChange: OnLocationChangeCallback = (res: GetLocationSuccess): void => {
+    getEmitter<GetLocationSuccess>().emit(API_ON_LOCATION_CHANGE, res)
+}
+
+// @ts-expect-error
+const _onLocationChangeError: OnLocationChangeErrorCallback = (err: IGetLocationFail) => {
+    err = new GetLocationFailImpl(err.errCode)
+    err.errMsg = `onLocationChange:fail ${err.errMsg}`
+    getEmitter<IGetLocationFail>().emit(API_ON_LOCATION_CHANGE_ERROR, err)
+}
+// endregion Emitter
+
+let locationProvider: UniLocationProvider | null = null
+export const getLocation: GetLocation = defineAsyncApi<GetLocationOptions, GetLocationSuccess>(
+    API_GET_LOCATION,
+    (options: GetLocationOptions, exec: ApiExecutor<GetLocationSuccess>): void => {
+        const realProvider = options.provider || 'system'
+        locationProvider = getUniProvider<UniLocationProvider>('location', realProvider)
+        if (!locationProvider) {
+            const errMsg = LocationUniErrors.get(1505604) ?? ""
+            exec.reject(errMsg, {
+                errCode: 1505604
+            } as ApiError)
+            return
+        }
+        locationProvider.getLocation({
+            type: options.type,
+            altitude: options.altitude,
+            geocode: options.geocode,
+            isHighAccuracy: options.isHighAccuracy,
+            highAccuracyExpireTime: options.highAccuracyExpireTime,
+            success: (result: GetLocationSuccess) => {
+                exec.resolve(result)
+            },
+            fail: (error: IGetLocationFail) => {
+                error = new GetLocationFailImpl(error.errCode)
+                const errMsg = `getLocation:fail ${error.errMsg}`
+                exec.reject(errMsg, {
+                    errCode: error.errCode
+                } as ApiError)
+            }
+        } as GetLocationOptions)
+    }
+) as GetLocation
+
+export const startLocationUpdate: StartLocationUpdate = defineAsyncApi<StartLocationUpdateOptions, StartLocationUpdateSuccess>(
+    API_START_LOCATION_UPDATE,
+    (options, { resolve, reject }) => {
+        const realProvider = options.provider || 'system'
+        locationProvider = getUniProvider<UniLocationProvider>('location', realProvider)
+        if (!locationProvider) {
+            const errMsg = LocationUniErrors.get(1505604) ?? ""
+            reject(errMsg, {
+                errCode: 1505604
+            } as ApiError)
+            return
+        }
+        locationProvider.startLocationUpdate({
+            type: options.type,
+            success: (result: StartLocationUpdateSuccess) => {
+                locationProvider?.onLocationChange(_onLocationChange)
+                locationProvider?.onLocationChangeError(_onLocationChangeError)
+                resolve(result)
+            },
+            fail: (error: IGetLocationFail) => {
+                error = new GetLocationFailImpl(error.errCode)
+                const errMsg = `startLocationUpdate:fail ${error.errMsg}`
+                reject(errMsg, error as ApiError)
+            }
+        } as StartLocationUpdateOptions)
+    },
+    StartLocationUpdateApiProtocol,
+    StartLocationUpdateApiOptions
+) as StartLocationUpdate
+
+export const startLocationUpdateBackground: StartLocationUpdateBackground = defineAsyncApi<StartLocationUpdateBackgroundOptions, StartLocationUpdateBackgroundSuccess>(
+    API_START_LOCATION_UPDATE_BACKGROUND,
+    (options, { resolve, reject }) => {
+        const realProvider = options.provider || 'system'
+        locationProvider = getUniProvider<UniLocationProvider>('location', realProvider)
+        if (!locationProvider) {
+            const errMsg = LocationUniErrors.get(1505604) ?? ""
+            reject(errMsg, {
+                errCode: 1505604
+            } as ApiError)
+            return
+        }
+        locationProvider.startLocationUpdateBackground({
+            type: options.type,
+            success: (result: StartLocationUpdateBackgroundSuccess) => {
+                locationProvider?.onLocationChange(_onLocationChange)
+                locationProvider?.onLocationChangeError(_onLocationChangeError)
+                resolve(result)
+            },
+            fail: (error: IGetLocationFail) => {
+                error = new GetLocationFailImpl(error.errCode)
+                const errMsg = `startLocationUpdateBackground:fail ${error.errMsg}`
+                reject(errMsg, error as ApiError)
+            }
+        } as StartLocationUpdateBackgroundOptions)
+    }
+) as StartLocationUpdateBackground
+
+export const stopLocationUpdate: StopLocationUpdate = defineAsyncApi<StopLocationUpdateOptions, StopLocationUpdateSuccess>(
+    API_STOP_LOCATION_UPDATE,
+    (_, { resolve, reject }) => {
+        locationProvider?.stopLocationUpdate({
+            success: (result: StopLocationUpdateSuccess) => {
+                resolve(result)
+            },
+            fail: (error: IGetLocationFail) => {
+                error = new GetLocationFailImpl(error.errCode)
+                const errMsg = `stopLocationUpdate:fail ${error.errMsg}`
+                reject(errMsg, error as ApiError)
+            }
+        } as StopLocationUpdateOptions)
+    }
+) as StopLocationUpdate
+
+export {
+    UniLocationProvider
+}
+
+export {
+    GetLocation,
+    GetLocationFail,
+    GetLocationFailImpl,
+    GetLocationOptions,
+    GetLocationSuccess,
+    IGetLocationFail,
+    LocationErrorCode,
+    OffLocationChange,
+    OffLocationChangeError,
+    OnLocationChange,
+    OnLocationChangeCallback,
+    OnLocationChangeError,
+    OnLocationChangeErrorCallback,
+    OnLocationChangeResult,
+    StartLocationUpdate,
+    StartLocationUpdateBackground,
+    StartLocationUpdateBackgroundOptions,
+    StartLocationUpdateBackgroundOptionsType,
+    StartLocationUpdateBackgroundSuccess,
+    StartLocationUpdateOptions,
+    StartLocationUpdateOptionsType,
+    StartLocationUpdateSuccess,
+    StopLocationUpdate,
+    StopLocationUpdateOptions,
+    StopLocationUpdateSuccess,
+} from '../interface.uts'

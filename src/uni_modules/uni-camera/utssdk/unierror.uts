@@ -1,0 +1,37 @@
+import { CameraErrorCode, CameraContextFail } from "./interface.uts";
+
+export const UniCameraErrorSubject = 'uni-camera'
+
+const CameraErrorCodes: Map<CameraErrorCode, string> = new Map([
+    [2003002, "permission denied"],
+    [2003003, "take photo failed"],
+    [2003004, "camera is disabled"],
+    [2003005, "camera is in use"],
+    [2003006, "camera fatal error"],
+    [2003007, "video path is empty"],
+    [2003008, "recording failed"],
+    [2003009, "the application enters the background"],
+    [2003100, "system error"],
+    [2003101, "compress video fail"]
+])
+
+// #ifdef APP-IOS
+@UTSiOS.keyword("fileprivate")
+// #endif
+export function getErrcode(errCode : number) : CameraErrorCode {
+	const res = CameraErrorCodes[errCode];
+	return res == null ? 2003100 : errCode;
+}
+
+export class CameraContextFailImpl extends UniError implements CameraContextFail {
+    // #ifdef APP-ANDROID
+        override errCode: CameraErrorCode
+    // #endif
+        constructor(errCode : CameraErrorCode) {
+            super();
+            this.errSubject = UniCameraErrorSubject;
+            this.errCode = errCode;
+            this.errMsg = CameraErrorCodes[errCode] ?? "";
+        }
+    }
+    

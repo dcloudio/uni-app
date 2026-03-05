@@ -1,0 +1,245 @@
+import { onNativePageReady, EventHub } from '@dcloudio/uni-runtime';
+import radio from '@ohos.telephony.radio'
+import { GetNetworkType, GetNetworkTypeOptions, GetNetworkTypeSuccess, OnNetworkStatusChange, OffNetworkStatusChange, OnNetworkStatusChangeCallbackResult } from '../interface.uts';
+import { API_GET_NETWORK_TYPE } from '../protocol.uts';
+import { BusinessError } from '@kit.BasicServicesKit';
+import connection from '@ohos.net.connection'
+
+const NetworkStatusChangeEventHub = new EventHub();
+
+const PERMISSIONS = ['ohos.permission.GET_NETWORK_INFO']
+
+enum NetworkinfoType {
+    // 网络连接状态未知
+    UNKNOW = 0,
+    // 未连接网络
+    NONE = 1,
+    // 有线网络
+    ETHERNET = 2,
+    // 无线WIFI网络
+    WIFI = 3,
+
+    "2G" = 4,
+    "3G" = 5,
+    "4G" = 6,
+    "5G" = 7,
+}
+
+function signalType(resultObj: radio.NetworkType): NetworkinfoType {
+    switch (resultObj) {
+        case radio.NetworkType.NETWORK_TYPE_GSM:
+        case radio.NetworkType.NETWORK_TYPE_CDMA:
+            return NetworkinfoType['2G']
+        case radio.NetworkType.NETWORK_TYPE_WCDMA:
+        case radio.NetworkType.NETWORK_TYPE_TDSCDMA:
+            return NetworkinfoType['3G']
+        case radio.NetworkType.NETWORK_TYPE_LTE:
+            return NetworkinfoType['4G']
+        case radio.NetworkType.NETWORK_TYPE_NR:
+            return NetworkinfoType['5G']
+        case radio.NetworkType.NETWORK_TYPE_UNKNOWN:
+            return NetworkinfoType.UNKNOW
+        default:
+            return NetworkinfoType.NONE
+    }
+}
+
+function networkGetType() {
+    return new Promise<number>((resolve, reject) => {
+        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean) => {
+            if (allRight) {
+                try {
+                    radio.getPrimarySlotId()
+                        .then((slotId: number) => radio.getSignalInformationSync(slotId))
+                        .then((signalInformation: Array<radio.SignalInformation>) => {
+                            const data = signalInformation[0]
+                            if (data && data.signalType) {
+                                resolve(signalType(data.signalType))
+                            } else {
+                                resolve(NetworkinfoType.NONE)
+                            }
+                        })
+                } catch (error) {
+                    reject(error as BusinessError)
+                }
+            } else {
+                reject(new Error('permission denied'))
+            }
+        }, () => reject(new Error('permission denied, possibly not configured or not authorized')))
+    })
+}
+
+// 构造单例对象
+class GlobalContext {
+    public netList: connection.NetHandle[] = [];
+    public netHandle: connection.NetHandle | null = null;
+    private constructor() { }
+    private static instance: GlobalContext;
+
+    public static getContext(): GlobalContext {
+        if (!GlobalContext.instance) {
+            GlobalContext.instance = new GlobalContext();
+        }
+        return GlobalContext.instance;
+    }
+}
+
+function getCurrentType() {
+    return new Promise<number>((resolve, reject) => {
+        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean) => {
+            if (allRight) {
+                try {
+                    // 调用getDefaultNet方法，获取默认的数据网络(NetHandle)
+                    connection.getDefaultNet()
+                        .then((data: connection.NetHandle) => {
+                            if (data) {
+                                GlobalContext.getContext().netHandle = data;
+                                // 获取netHandle对应网络的能力信息。能力信息包含了网络类型、网络具体能力等网络信息
+                                connection.getNetCapabilities(GlobalContext.getContext().netHandle!).then((data: connection.NetCapabilities) => {
+                                    // 获取网络类型(bearerTypes)
+                                    const bearerTypes: Set<number> = new Set(data.bearerTypes);
+                                    const bearerTypesNum = Array.from(bearerTypes.values());
+                                    for (const item of bearerTypesNum) {
+                                        if (item == connection.NetBearType.BEARER_CELLULAR) {
+                                            // 蜂窝网
+                                            networkGetType().then(resolve).catch(reject)
+                                        } else if (item == connection.NetBearType.BEARER_WIFI) {
+                                            // Wi-Fi网络
+                                            resolve(NetworkinfoType.WIFI)
+                                        } else if (item == connection.NetBearType.BEARER_ETHERNET) {
+                                            // 以太网网络
+                                            resolve(NetworkinfoType.ETHERNET)
+                                        } else {
+                                            resolve(NetworkinfoType.UNKNOW)
+                                        }
+                                    }
+                                }).catch((err: BusinessError) => {
+                                    reject(err)
+                                })
+                            }
+                        })
+                        .catch((err: BusinessError) => {
+                            reject(err);
+                        });
+                } catch (error) {
+                    reject(error)
+                }
+            } else {
+                reject(new Error('permission denied'))
+            }
+        }, () => reject(new Error('permission denied, possibly not configured or not authorized')))
+    })
+}
+
+class Network {
+    static netConnection: connection.NetConnection | null = null
+
+    constructor() {
+        Network.netConnection = connection.createNetConnection()
+    }
+
+    static ohoSubscribe() {
+        if (!Network.netConnection) {
+            Network.netConnection = connection.createNetConnection()
+        }
+
+        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean) => {
+            if (allRight && Network.netConnection) {
+                Network.netConnection.register((err: BusinessError) => { })
+                Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo) => {
+                    const NetBearType = capability?.netCap?.bearerTypes[0]
+                    let networkType = ''
+                    switch (NetBearType) {
+                        case connection.NetBearType.BEARER_CELLULAR:
+                            getCurrentType().then((type: number) => {
+                                invokeOnNetworkStatusChange(NetworkinfoType[type])
+                            }).catch(() => {
+                                invokeOnNetworkStatusChange(NetworkinfoType[1])
+                            })
+                            return
+                        case connection.NetBearType.BEARER_WIFI:
+                            networkType = NetworkinfoType[3]
+                            break
+                        case connection.NetBearType.BEARER_ETHERNET:
+                            networkType = NetworkinfoType[2]
+                            break
+                        /* case connection.NetBearType.BEARER_VPN:
+                          networkType = 'vpn'
+                          break */
+                        default:
+                            networkType = NetworkinfoType[1]
+                    }
+                    invokeOnNetworkStatusChange(networkType)
+                })
+                Network.netConnection.on('netLost', (netLost: connection.NetHandle) => {
+                    invokeOnNetworkStatusChange(NetworkinfoType[1])
+                })
+            }
+        })
+    }
+}
+
+new Network()
+
+onNativePageReady().then(() => {
+    Network.ohoSubscribe()
+})
+
+export const getNetworkType: GetNetworkType = defineAsyncApi<GetNetworkTypeOptions, GetNetworkTypeSuccess>(
+    API_GET_NETWORK_TYPE,
+    (options: GetNetworkTypeOptions, res: ApiExecutor<GetNetworkTypeSuccess>) => {
+        getCurrentType().then((type: number) => {
+            res.resolve({
+                networkType: NetworkinfoType[type].toLocaleLowerCase()
+            } as GetNetworkTypeSuccess)
+        }).catch((err: BusinessError) => {
+            // NOTE 在 pad 上无网络
+            if (err.code === 2100001) {
+                res.resolve({
+                    networkType: NetworkinfoType[1].toLocaleLowerCase()
+                } as GetNetworkTypeSuccess)
+            } else {
+                res.reject(err.message)
+            }
+        })
+    }
+) as GetNetworkType
+
+function invokeOnNetworkStatusChange(networkType: string) {
+    NetworkStatusChangeEventHub.emit(
+        'networkStatusChange',
+        {
+            isConnected: networkType !== NetworkinfoType[1],
+            networkType: networkType.toLocaleLowerCase(),
+        } as OnNetworkStatusChangeCallbackResult
+    )
+}
+
+export const onNetworkStatusChange: OnNetworkStatusChange = defineSyncApi<number>(
+    'onNetworkStatusChange',
+    (callback: Function): number => {
+        return NetworkStatusChangeEventHub.on('networkStatusChange', callback)
+    }
+) as OnNetworkStatusChange
+
+export const offNetworkStatusChange: OffNetworkStatusChange = defineSyncApi<void>(
+    'offNetworkStatusChange',
+    (callback: number | Function | null): void => {
+        return NetworkStatusChangeEventHub.off('networkStatusChange', callback)
+    }
+) as OffNetworkStatusChange
+
+export {
+    GetNetworkType,
+    GetNetworkTypeComplete,
+    GetNetworkTypeCompleteCallback,
+    GetNetworkTypeFail,
+    GetNetworkTypeFailCallback,
+    GetNetworkTypeOptions,
+    GetNetworkTypeSuccess,
+    GetNetworkTypeSuccessCallback,
+    OffNetworkStatusChange,
+    OnNetworkStatusChange,
+    OnNetworkStatusChangeCallback,
+    OnNetworkStatusChangeCallbackResult
+} from '../interface.uts';

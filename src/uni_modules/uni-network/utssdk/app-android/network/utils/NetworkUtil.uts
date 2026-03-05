@@ -1,0 +1,61 @@
+
+
+export class NetworkUtil {
+    public static convertHeaders(headers: MutableMap<String, MutableList<String>>): UTSJSONObject {
+        let simpleHeaders = {};
+        if (headers != null) {
+            let it = headers.iterator();
+            while (it.hasNext()) {
+                let entry = it.next();
+                let key = entry.key;
+                let value = entry.value;
+
+                let tmpKey = '_';
+                if (key == null) {
+                    key = tmpKey;
+                }
+
+                if (value.size == 0) {
+                    continue;
+                } else if (value.size == 1) {
+                    simpleHeaders[key] = value.get(0);
+                } else {
+                    simpleHeaders[key] = value.toString();
+                }
+            }
+        }
+        return simpleHeaders;
+    }
+
+    public static parseCookie(header: UTSJSONObject | null): string[] {
+        if (header == null) {
+            return []
+        }
+        let cookiesStr = header.getString('Set-Cookie')
+        if (cookiesStr == null) {
+            cookiesStr = header.getString('set-cookie')
+        }
+        if (cookiesStr == null) {
+            return []
+        }
+        let cookiesArr = new Array<string>()
+        if (cookiesStr.charAt(0) == "[" && cookiesStr.charAt(cookiesStr.length - 1) == "]") {
+            cookiesStr = cookiesStr.slice(1, -1)
+        }
+
+        const handleCookiesArr = cookiesStr.split(';')
+        for (let i = 0; i < handleCookiesArr.length; i++) {
+            if (handleCookiesArr[i].indexOf('Expires=') != -1 || handleCookiesArr[i].indexOf('expires=') != -1) {
+                cookiesArr.push(handleCookiesArr[i].replace(',', ''))
+            } else {
+                cookiesArr.push(handleCookiesArr[i])
+            }
+        }
+        cookiesArr = cookiesArr.join(';').split(',')
+
+        return cookiesArr
+    }
+
+
+}
+

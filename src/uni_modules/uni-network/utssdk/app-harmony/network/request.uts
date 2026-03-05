@@ -1,0 +1,478 @@
+import http from '@ohos.net.http'
+import buffer from '@ohos.buffer';
+import { BusinessError } from '@ohos.base'
+import {
+    Emitter,
+    getCurrentMP,
+} from '@dcloudio/uni-runtime'
+import {
+    RequestTask as UniRequestTask,
+    RequestOptions as UniRequestOptions,
+    RequestSuccess as UniRequestSuccess,
+    Request,
+    RequestTaskOnChunkReceivedCallback,
+    RequestTaskOnChunkReceivedListenerResult,
+    RequestTaskOnHeadersReceivedCallback,
+    RequestTaskOnHeadersReceivedListenerResult,
+} from '../../interface.uts'
+import {
+    API_REQUEST,
+    RequestApiOptions,
+    RequestApiProtocol,
+} from '../../protocol.uts'
+import {
+    getClientCertificate,
+    parseUrl,
+} from './utils.uts'
+import {
+    getCookieSync,
+    setCookieSync,
+} from './cookie.uts'
+
+interface IUniRequestEmitter {
+    on: (eventName: string, callback: Function) => void
+    once: (eventName: string, callback: Function) => void
+    off: (eventName: string, callback?: Function | null) => void
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void
+}
+
+interface IRequestTask {
+    abort: Function
+    onChunkReceived: (listener: RequestTaskOnChunkReceivedCallback) => void
+    offChunkReceived: (listener?: RequestTaskOnChunkReceivedCallback | null) => void
+    onHeadersReceived: (listener: RequestTaskOnHeadersReceivedCallback) => void
+    offHeadersReceived: (listener?: RequestTaskOnHeadersReceivedCallback | null) => void
+}
+
+class RequestTask implements UniRequestTask {
+    __v_skip: boolean = true
+    private _requestTask: IRequestTask
+    private _requestOnChunkReceiveCallbackId: number = 0
+    private _requestOnChunkReceiveCallbacks: Map<number, RequestTaskOnChunkReceivedCallback> = new Map()
+    private _requestOnHeadersReceiveCallbackId: number = 0
+    private _requestOnHeadersReceiveCallbacks: Map<number, RequestTaskOnHeadersReceivedCallback> = new Map()
+
+    constructor(requestTask: IRequestTask) {
+        this._requestTask = requestTask
+    }
+    abort() {
+        this._requestTask.abort()
+    }
+    onChunkReceived(callback: RequestTaskOnChunkReceivedCallback) {
+        this._requestTask.onChunkReceived(callback)
+        this._requestOnChunkReceiveCallbackId++
+        this._requestOnChunkReceiveCallbacks.set(this._requestOnChunkReceiveCallbackId, callback)
+        return this._requestOnChunkReceiveCallbackId
+    }
+    offChunkReceived(callbackId?: RequestTaskOnChunkReceivedCallback | number | null) {
+        if (callbackId === undefined || callbackId === null) {
+            this._requestTask.offChunkReceived()
+            this._requestOnChunkReceiveCallbacks.clear()
+            return
+        }
+        if (typeof callbackId === 'function') {
+            this._requestOnChunkReceiveCallbacks.forEach((callback, id) => {
+                if (callback === callbackId) {
+                    this._requestOnChunkReceiveCallbacks.delete(id)
+                    this._requestTask.offChunkReceived(callback)
+                    return
+                }
+            })
+            return
+        }
+        const callback = this._requestOnChunkReceiveCallbacks.get(callbackId)
+        if (!callback) {
+            return
+        }
+        this._requestOnChunkReceiveCallbacks.delete(callbackId)
+        this._requestTask.offChunkReceived(callback)
+    }
+    onHeadersReceived(callback: RequestTaskOnHeadersReceivedCallback) {
+        this._requestTask.onHeadersReceived(callback)
+        this._requestOnHeadersReceiveCallbackId++
+        this._requestOnHeadersReceiveCallbacks.set(this._requestOnHeadersReceiveCallbackId, callback)
+        return this._requestOnHeadersReceiveCallbackId
+    }
+    offHeadersReceived(callbackId?: RequestTaskOnHeadersReceivedCallback | number | null) {
+        if (callbackId === undefined || callbackId === null) {
+            this._requestTask.offHeadersReceived()
+            this._requestOnHeadersReceiveCallbacks.clear()
+            return
+        }
+        if (typeof callbackId === 'function') {
+            this._requestOnHeadersReceiveCallbacks.forEach((callback, id) => {
+                if (callback === callbackId) {
+                    this._requestOnHeadersReceiveCallbacks.delete(id)
+                    this._requestTask.offHeadersReceived(callback)
+                    return
+                }
+            })
+            return
+        }
+        const callback = this._requestOnHeadersReceiveCallbacks.get(callbackId)
+        if (!callback) {
+            return
+        }
+        this._requestOnHeadersReceiveCallbacks.delete(callbackId)
+        this._requestTask.offHeadersReceived(callback)
+    }
+}
+
+
+/**
+  * data拼接到url上
+  */
+const stringifyQuery = (url: string, data: UTSJSONObject): string => {
+    let newUrl = url;
+    //http:xxx/xxx?a=b&c=d#123
+    let str = url.split('#')
+    let hash = ''
+    if (str.length > 1) {
+        hash = str[1] //123
+    }
+    str = str[0].split('?')
+    let query = ''
+    if (str.length > 1) {
+        query = str[1] //a=b&c=d
+    }
+    newUrl = str[0]   // http:xxx/xxx
+
+    // 使用UTSJSONObject替代Map
+    const queryObj = {} as UTSJSONObject;
+
+    // 解析现有的查询参数
+    if (query.length > 0) {
+        const pairs = query.split('&')
+        pairs.forEach((item, _) => {
+            const temp = item.split('=')
+            if (temp.length > 1) {
+                queryObj[temp[0]] = temp[1]
+            }
+        });
+    }
+
+    // 将data中的数据添加到查询参数中，直接遍历UTSJSONObject的属性
+    const dataKeys = Object.keys(data);
+    dataKeys.forEach((key) => {
+        let value: object = data[key];
+        let encodeKey = encodeURIComponent(key)!
+        if (value instanceof UTSJSONObject || value instanceof Array) {
+            queryObj[encodeKey] = encodeURIComponent(JSON.stringify(value))!
+        } else {
+            queryObj[encodeKey] = encodeURIComponent("" + value)!;
+        }
+    })
+
+    // 构建查询字符串
+    let queryStr = "";
+    const queryKeys = Object.keys(queryObj);
+    queryKeys.forEach((key, index) => {
+        if (index > 0) {
+            queryStr += "&";
+        }
+        queryStr += key + "=" + queryObj[key];
+    });
+
+    // 重新构建URL
+    if (queryStr.length > 0) {
+        newUrl += "?" + queryStr;
+    }
+    if (hash.length > 0) {
+        newUrl += "#" + hash;
+    }
+    return newUrl;
+}
+
+/**
+ * http.request有5MB响应体大小限制
+ * rcp.Session.fetch无响应体大小限制，但是headers、cookies处理不够完善，另外rcp需要从@hms引用，不是openharmony标准库
+ * 为突破http.request的限制，现在使用http.requestInStream
+ */
+
+export const request = defineTaskApi<UniRequestOptions<Object>, UniRequestSuccess<Object>, UniRequestTask>(
+    API_REQUEST,
+    (args: UniRequestOptions<Object>, exec: ApiExecutor<UniRequestSuccess<Object>>) => {
+        let { header, method, dataType, timeout, url, responseType, enableQuic } = args
+        let data: ESObject = args.data
+        header = header || {} as ESObject
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
+
+        let contentType = ''
+
+        // header
+        const headers = {} as Record<string, Object>
+        const headerRecord = header as Object as Record<string, string>
+        const headerKeys = Object.keys(headerRecord)
+        for (let i = 0; i < headerKeys.length; i++) {
+            const name = headerKeys[i];
+            if (name.toLowerCase() === 'content-type') {
+                contentType = headerRecord[name] as string
+            }
+            headers[name.toLowerCase()] = headerRecord[name]
+        }
+
+        if (!contentType && method === 'POST') {
+            headers['Content-Type'] = 'application/json'
+            contentType = 'application/json'
+        }
+
+        // url data
+        if (method === 'GET' && data && typeof data === 'object') {
+            url = stringifyQuery(url, data)
+            data = null
+        } else if (
+            method !== 'GET' &&
+            contentType &&
+            contentType.indexOf('application/json') === 0 &&
+            data &&
+            typeof data !== 'string'
+        ) {
+            data = JSON.stringify(data)
+        } else if (
+            method !== 'GET' &&
+            contentType &&
+            contentType.indexOf('application/x-www-form-urlencoded') === 0 &&
+            data &&
+            typeof data === 'object'
+        ) {
+            const dataRecord = data as Record<string, Object>
+            data = Object.keys(dataRecord)
+                .map((key) => {
+                    return (
+                        encodeURIComponent(key) +
+                        '=' +
+                        encodeURIComponent(dataRecord[key] as number | string | boolean)
+                    )
+                })
+                .join('&')
+        }
+
+        const httpRequest = http.createHttp()
+        const mp = getCurrentMP()
+        const userAgent = mp.userAgent.fullUserAgent
+        if (userAgent && headers && !headers!['User-Agent'] && !headers!['user-agent']) {
+            headers!['User-Agent'] = userAgent
+        }
+        const emitter = new Emitter() as IUniRequestEmitter
+        const requestTask: IRequestTask = {
+            abort() {
+                emitter.off('headersReceive')
+                httpRequest.destroy()
+                exec.reject('request:fail abort');
+            },
+            onHeadersReceived(callback: RequestTaskOnHeadersReceivedCallback) {
+                emitter.on('headersReceive', callback)
+            },
+            offHeadersReceived(callback?: RequestTaskOnHeadersReceivedCallback | null) {
+                emitter.off('headersReceive', callback || undefined)
+            },
+            onChunkReceived(callback: RequestTaskOnChunkReceivedCallback) {
+                emitter.on('dataReceive', callback)
+            },
+            offChunkReceived(callback?: RequestTaskOnChunkReceivedCallback | null) {
+                emitter.off('dataReceive', callback || undefined)
+            },
+        }
+        const realRequestTask = new RequestTask(requestTask)
+
+        function destroy() {
+            emitter.off('headersReceive')
+            httpRequest.destroy()
+        }
+        mp.on('beforeClose', destroy)
+
+        let latestHeaders: Object | null = null
+        let lastUrl = url
+        httpRequest.on('headersReceive', (headers: Object) => {
+            latestHeaders = headers
+            const realHeaders = headers as Record<string, string | string[]>
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie']
+            const location = realHeaders['location'] || realHeaders['Location']
+            if (location) {
+                lastUrl = location as string
+            }
+            if (setCookieHeader) {
+                try {
+                    setCookieSync(lastUrl, setCookieHeader as string[])
+                } catch (error) {
+                    console.error('setCookieSync error:', error)
+                    console.log('setCookieSync error url:', lastUrl)
+                    console.log('setCookieSync error setCookieHeader:', JSON.stringify(setCookieHeader))
+                }
+            }
+            // TODO headersReceive存在bug，暂不支持回调给用户。
+            // emitter.emit('headersReceive', headers);
+        })
+
+        let headersReceiveTriggered = false
+        const bufs = [] as buffer.Buffer[]
+        httpRequest.on('dataReceive', (data) => {
+            if (!headersReceiveTriggered) {
+                headersReceiveTriggered = true
+                // 注意重定向时会多次触发，但是只需要给用户回调最后一次headers
+                const headers = {} as UTSJSONObject
+                const realHeaders = latestHeaders as Record<string, string | string[]>
+                let cookies = [] as string[]
+                // 有用户反馈部分情况下headers会为null，无法复现，增加判断逻辑容错
+                if (realHeaders) {
+                    const keys = Object.keys(realHeaders)
+                    for (let i = 0; i < keys.length; i++) {
+                        const key = keys[i]
+                        if (key === 'set-cookie' || key === 'Set-Cookie') {
+                            const setCookieHeader = realHeaders[key] as string[];
+                            // TODO 待确认为什么鸿蒙会返回重复的Set-Cookie，不合常理。使用 https://httpbin.org/cookies/set/nnn/123 这个接口测试
+                            for (let i = setCookieHeader.length - 1; i >= 0; i--) {
+                                const cookie = setCookieHeader[i]
+                                if (setCookieHeader.indexOf(cookie) !== i) {
+                                    setCookieHeader.splice(i, 1)
+                                }
+                            }
+                            cookies = setCookieHeader as string[];
+                            headers[key] = Array.isArray(setCookieHeader) ? setCookieHeader.join(',') : setCookieHeader;
+                        } else {
+                            headers[key] = realHeaders[key];
+                        }
+                    }
+                }
+                emitter.emit('headersReceive', {
+                    header: headers,
+                    // 鸿蒙不支持在headersReceive时机获取到状态码
+                    statusCode: NaN,
+                    cookies: cookies,
+                } as RequestTaskOnHeadersReceivedListenerResult);
+            }
+            bufs.push(buffer.from(data))
+            if (args.enableChunked) {
+                emitter.emit('dataReceive', {
+                    data: data
+                } as RequestTaskOnChunkReceivedListenerResult)
+            }
+        })
+
+        httpRequest.requestInStream(
+            parseUrl(url),
+            {
+                header: headers,
+                method: (method || 'GET').toUpperCase() as http.RequestMethod, // 仅OPTIONS不支持
+                extraData: data || undefined, // 传空字符串会报错
+                connectTimeout: timeout ? timeout : undefined, // 不支持仅设置一个timeout
+                readTimeout: timeout ? timeout : undefined,
+                clientCert: getClientCertificate(url),
+                usingProtocol: enableQuic != null && enableQuic ? http.HttpProtocol.HTTP3 : undefined
+            } as http.HttpRequestOptions,
+            (err: BusinessError, statusCode) => {
+                if (err) {
+                    /**
+                     * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
+                     * {"code":2300023,"message":"Failed writing received data to disk/application"}
+                     *
+                     * reject方法第二个参数可以传errCode，reject(err.message, { errCode: -1 })
+                     */
+                    const businessError = err as BusinessError
+                    const harmonyErrorCode = businessError.code
+                    let uniErrorCode = 602001 // 默认为 request system error
+
+                    // 映射 HarmonyOS 错误码到 uni-app 错误码
+                    // 参考: https://developer.huawei.com/consumer/cn/doc/harmonyos-references-V5/js-apis-http-V5#errorcode
+                    if (harmonyErrorCode === 2300028) {
+                        // Timeout was reached
+                        uniErrorCode = 5
+                    } else if (harmonyErrorCode === 2300006) {
+                        // Couldn't resolve host
+                        uniErrorCode = 600009
+                    } else if (harmonyErrorCode === 2300007 || harmonyErrorCode === 2300047) {
+                        // Couldn't connect to server / Host is unreachable
+                        uniErrorCode = 1000
+                    } else if (harmonyErrorCode === 2300003) {
+                        // URL malformed
+                        uniErrorCode = 600009
+                    } else if (harmonyErrorCode === 2300999) {
+                        // Unknown Other Error
+                        uniErrorCode = 600003
+                    }
+
+                    exec.reject(businessError.message, { errCode: uniErrorCode } as ApiError)
+                } else {
+                    // HEAD 请求不会触发 dataReceive，需要在这里补发 headersReceive 事件
+                    if (!headersReceiveTriggered && latestHeaders) {
+                        const headers = {} as UTSJSONObject
+                        const realHeaders = latestHeaders as Record<string, string | string[]>
+                        let cookies = [] as string[]
+                        if (realHeaders) {
+                            const keys = Object.keys(realHeaders)
+                            for (let i = 0; i < keys.length; i++) {
+                                const key = keys[i]
+                                if (key === 'set-cookie' || key === 'Set-Cookie') {
+                                    const setCookieHeader = realHeaders[key] as string[];
+                                    for (let j = setCookieHeader.length - 1; j >= 0; j--) {
+                                        const cookie = setCookieHeader[j]
+                                        if (setCookieHeader.indexOf(cookie) !== j) {
+                                            setCookieHeader.splice(j, 1)
+                                        }
+                                    }
+                                    cookies = setCookieHeader as string[];
+                                    headers[key] = Array.isArray(setCookieHeader) ? setCookieHeader.join(',') : setCookieHeader;
+                                } else {
+                                    headers[key] = realHeaders[key];
+                                }
+                            }
+                        }
+                        emitter.emit('headersReceive', {
+                            header: headers,
+                            statusCode: statusCode,
+                            cookies: cookies,
+                        } as RequestTaskOnHeadersReceivedListenerResult);
+                    }
+                    const responseData = buffer.concat(bufs)
+                    let data: ArrayBuffer | string | object = ''
+                    if (responseType === 'arraybuffer') {
+                        data = responseData.buffer
+                    } else {
+                        data = responseData.toString('utf8')
+                        // 接口报错可能返回空内容，跳过 json 解析 #25391
+                        if (data && dataType === 'json') {
+                            try {
+                                // #ifdef UNI-APP-X
+                                data = globalThis.UTS.JSON.parse(data) || data;
+                                // #endif
+                                // #ifndef UNI-APP-X
+                                data = globalThis.JSON.parse(data as string);
+                                // #endif
+                            } catch (e) {
+                                // 与微信保持一致，不抛出异常
+                            }
+                        }
+                    }
+                    const headers = latestHeaders as Record<string, string | string[]>
+                    // 有用户反馈部分情况下headers会为null，无法复现，增加判断逻辑容错
+                    const oldCookies = headers ? (headers['Set-Cookie'] || headers['set-cookie'] || []) as string[] : [] as string[]
+                    let newCookies = oldCookies.join(',')
+                    if (newCookies) {
+                        if (headers['Set-Cookie']) {
+                            headers['Set-Cookie'] = newCookies
+                        } else {
+                            headers['set-cookie'] = newCookies
+                        }
+                    }
+                    exec.resolve({
+                        data,
+                        statusCode,
+                        header: latestHeaders!,
+                        cookies: oldCookies,
+                    } as UniRequestSuccess<Object>)
+                }
+                httpRequest.off('headersReceive')
+                httpRequest.off('dataReceive')
+                realRequestTask.offChunkReceived()
+                realRequestTask.offHeadersReceived()
+                httpRequest.destroy() // 调用完毕后必须调用destroy方法
+                mp.off('beforeClose', destroy)
+            }
+        )
+        return realRequestTask
+    },
+    RequestApiProtocol,
+    RequestApiOptions
+) as Request<Object>

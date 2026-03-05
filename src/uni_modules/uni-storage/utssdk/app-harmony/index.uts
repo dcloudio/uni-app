@@ -1,0 +1,243 @@
+import dataPreferences from '@ohos.data.preferences';
+import common from '@ohos.app.ability.common';
+import {
+    SetStorage,
+    SetStorageSync,
+    SetStorageOptions,
+    SetStorageSuccess,
+    GetStorage,
+    GetStorageSync,
+    GetStorageOptions,
+    GetStorageSuccess,
+    GetStorageInfo,
+    GetStorageInfoSync,
+    GetStorageInfoOptions,
+    GetStorageInfoSuccess,
+    RemoveStorage,
+    RemoveStorageSync,
+    RemoveStorageOptions,
+    RemoveStorageSuccess,
+    ClearStorage,
+    ClearStorageSync,
+    ClearStorageOptions,
+    ClearStorageSuccess,
+} from "../interface.uts";
+import {
+    API_GET_STORAGE,
+    API_GET_STORAGE_SYNC,
+    API_SET_STORAGE,
+    API_SET_STORAGE_SYNC,
+    API_REMOVE_STORAGE,
+    API_REMOVE_STORAGE_SYNC,
+    API_CLEAR_STORAGE,
+    API_CLEAR_STORAGE_SYNC,
+    API_GET_STORAGE_INFO,
+    API_GET_STORAGE_INFO_SYNC,
+} from '../protocol.uts'
+import {
+    getCurrentMP
+} from '@dcloudio/uni-runtime'
+
+function parseStorageValue(value: string): any {
+    try {
+        // #ifdef UNI-APP-X
+        const valueObj: ESObject = globalThis.UTS.JSON.parse(value);
+        return valueObj ? valueObj.data : value;
+        // #endif
+        // #ifndef UNI-APP-X
+        return globalThis.JSON.parse(value).data;
+        // #endif
+    } catch (e) {
+        return value;
+    }
+}
+
+function stringifyStorageValue(value: any): string {
+    return JSON.stringify({ type: typeof value, data: value } as ESObject);
+}
+
+// TODO 回收Preference
+const stores = new Map<string, dataPreferences.Preferences>()
+function createStore(): dataPreferences.Preferences {
+    const id = getCurrentMP().appId
+    if (stores.has(id)) {
+        return stores.get(id)!
+    }
+    const store = dataPreferences.getPreferencesSync(UTSHarmony.getUIAbilityContext() as common.UIAbilityContext, {
+        name: `storage.${id}`
+    } as dataPreferences.Options)
+    stores.set(id, store)
+    return store
+}
+
+const getStorageSync = defineSyncApi<Object>(
+    API_GET_STORAGE_SYNC,
+    (key: string) => {
+        const storeValue = createStore().getSync(key, '')
+        if (!storeValue) {
+            return ''
+        }
+        return parseStorageValue(storeValue as string)
+    }
+) as GetStorageSync
+
+const getStorage = defineAsyncApi<GetStorageOptions, GetStorageSuccess>(
+    API_GET_STORAGE,
+    (args: GetStorageOptions, exec: ApiExecutor<GetStorageSuccess>) => {
+        createStore().get(args.key, '').then((storeValue) => {
+            if (!storeValue) {
+                return exec.reject('data not found')
+            }
+            let value: Object
+            try {
+                value = parseStorageValue(storeValue as string)
+            } catch (error) {
+                exec.reject('data parse error')
+                return
+            }
+            exec.resolve({
+                data: value
+            } as GetStorageSuccess)
+        })
+    }
+) as GetStorage
+
+const setStorageSync = defineSyncApi<void>(
+    API_SET_STORAGE_SYNC,
+    (key: string, value: any) => {
+        createStore().putSync(key, stringifyStorageValue(value))
+        createStore().flush()
+    }
+) as SetStorageSync
+
+const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(
+    API_SET_STORAGE,
+    (args: SetStorageOptions, exec: ApiExecutor<SetStorageSuccess>) => {
+        try {
+            createStore().put(args.key, stringifyStorageValue(args.data)).then(() => {
+                createStore().flush()
+                exec.resolve({} as ESObject)
+            }, (error: Error) => {
+                exec.reject(error.message)
+            })
+        } catch (error) {
+            exec.reject((error as Error).message)
+        }
+    }
+) as SetStorage
+
+const removeStorageSync = defineSyncApi<void>(
+    API_REMOVE_STORAGE_SYNC,
+    (key: string) => {
+        createStore().deleteSync(key)
+        createStore().flush()
+    }
+) as RemoveStorageSync
+
+const removeStorage = defineAsyncApi<RemoveStorageOptions, RemoveStorageSuccess>(
+    API_REMOVE_STORAGE,
+    (args: RemoveStorageOptions, exec: ApiExecutor<RemoveStorageSuccess>) => {
+        createStore().delete(args.key).then(() => {
+            createStore().flush()
+            exec.resolve({} as ESObject)
+        }, (error: Error) => {
+            exec.reject(error.message)
+        })
+    }
+) as RemoveStorage
+
+const clearStorageSync = defineSyncApi<void>(
+    API_CLEAR_STORAGE_SYNC,
+    () => {
+        createStore().clearSync()
+        createStore().flush()
+    }
+) as ClearStorageSync
+
+const clearStorage = defineAsyncApi<ClearStorageOptions, ClearStorageSuccess>(
+    API_CLEAR_STORAGE,
+    (args: ClearStorageOptions, exec: ApiExecutor<ClearStorageSuccess>) => {
+        createStore().clear().then(() => {
+            createStore().flush()
+            exec.resolve({} as ESObject)
+        }, (error: Error) => {
+            exec.reject(error.message)
+        })
+    }
+) as ClearStorage
+
+const getStorageInfoSync = defineSyncApi<GetStorageInfoSuccess>(
+    API_GET_STORAGE_INFO_SYNC,
+    () => {
+        const allData = createStore().getAllSync()
+        return {
+            keys: Object.keys(allData),
+            currentSize: 0,
+            limitSize: 0
+        } as GetStorageInfoSuccess
+    }
+) as GetStorageInfoSync
+
+const getStorageInfo = defineAsyncApi<GetStorageInfoOptions, GetStorageInfoSuccess>(
+    API_GET_STORAGE_INFO,
+    (args: GetStorageInfoOptions, exec: ApiExecutor<GetStorageInfoSuccess>) => {
+        createStore().getAll().then((allData) => {
+            exec.resolve({
+                keys: Object.keys(allData),
+                currentSize: 0,
+                limitSize: 0
+            } as GetStorageInfoSuccess)
+        })
+    }
+) as GetStorageInfo
+
+export {
+    getStorageSync,
+    getStorage,
+    setStorageSync,
+    setStorage,
+    removeStorageSync,
+    removeStorage,
+    clearStorageSync,
+    clearStorage,
+    getStorageInfoSync,
+    getStorageInfo,
+}
+
+export {
+    ClearStorage,
+    ClearStorageCompleteCallback,
+    ClearStorageFailCallback,
+    ClearStorageOptions,
+    ClearStorageSuccess,
+    ClearStorageSuccessCallback,
+    ClearStorageSync,
+    GetStorage,
+    GetStorageCompleteCallback,
+    GetStorageFailCallback,
+    GetStorageInfo,
+    GetStorageInfoCompleteCallback,
+    GetStorageInfoFailCallback,
+    GetStorageInfoOptions,
+    GetStorageInfoSuccess,
+    GetStorageInfoSuccessCallback,
+    GetStorageInfoSync,
+    GetStorageOptions,
+    GetStorageSuccess,
+    GetStorageSuccessCallback,
+    GetStorageSync,
+    RemoveStorage,
+    RemoveStorageCompleteCallback,
+    RemoveStorageFailCallback,
+    RemoveStorageOptions,
+    RemoveStorageSuccess,
+    RemoveStorageSuccessCallback,
+    RemoveStorageSync,
+    SetStorage,
+    SetStorageCompleteCallback,
+    SetStorageFailCallback,
+    SetStorageOptions,
+    SetStorageSuccess,
+    SetStorageSuccessCallback,
+    SetStorageSync
+} from '../interface.uts'

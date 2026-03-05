@@ -1,0 +1,32 @@
+import Dns from 'okhttp3.Dns';
+import UnknownHostException from 'java.net.UnknownHostException';
+import InetAddress from 'java.net.InetAddress';
+import Inet4Address from 'java.net.Inet4Address';
+
+export class OKDns implements Dns {
+
+	public override lookup(hostName: string): kotlin.collections.MutableList<InetAddress> {
+		if (hostName == null) {
+			throw UnknownHostException("hostname == null");
+		} else {
+			try {
+				let inetAddressesList: Array<InetAddress> = [];
+				let inetAddresses = InetAddress.getAllByName(hostName);
+				for (inetAddress in inetAddresses) {
+					if (inetAddress instanceof Inet4Address) {
+						inetAddressesList.unshift(inetAddress)
+					} else {
+						inetAddressesList.push(inetAddress);
+					}
+				}
+				return inetAddressesList;
+			} catch (e: Exception) {
+				let unknownHostException = new UnknownHostException("error");
+				unknownHostException.initCause(e);
+				throw unknownHostException;
+			}
+
+		}
+	}
+}
+

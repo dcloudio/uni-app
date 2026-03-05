@@ -1,0 +1,53 @@
+import Context from 'android.content.Context';
+import AccessibilityManager from 'android.view.accessibility.AccessibilityManager';
+import TextUtils from 'android.text.TextUtils';
+import Settings from 'android.provider.Settings';
+import ArrayList from 'java.util.ArrayList';
+import AccessibilityServiceInfo from 'android.accessibilityservice.AccessibilityServiceInfo';
+
+import { GetAccessibilityInfo } from '../interface.uts'
+
+
+export const getAccessibilityInfo: GetAccessibilityInfo = (): UTSJSONObject => {
+	let activity = UTSAndroid.getUniActivity();
+	let service = activity!!.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+	let serviceList = service.getInstalledAccessibilityServiceList();
+	let services = new Array<UTSJSONObject>()
+	for (let i:Int = 0; i < serviceList.size as Int; i++) {
+		if (isAccessibilitySettingsOn(activity!, serviceList.get(i).id)) {
+			const tmp = serviceList.get(i) as AccessibilityServiceInfo;
+			let info = {
+				id: tmp.getId(),
+				packageNames: tmp.packageNames
+			}
+			services.add(info);
+		}
+	}
+
+
+	let result = {
+		enabled: service.isEnabled(),
+		services: services
+	};
+
+	return result;
+}
+
+function isAccessibilitySettingsOn(context: Context, service: string): boolean {
+	let split: Char = ":".get(0);
+	let mStringColonSplitter = new TextUtils.SimpleStringSplitter(split);
+	let settingValue = Settings.Secure.getString(
+		context.getApplicationContext().getContentResolver(),
+		Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+	);
+	if (settingValue != null) {
+		mStringColonSplitter.setString(settingValue);
+		while (mStringColonSplitter.hasNext()) {
+			var accessibilityService = mStringColonSplitter.next() as string;
+			if (accessibilityService == service) {
+				return true;
+			}
+		}
+	}
+	return false;
+}

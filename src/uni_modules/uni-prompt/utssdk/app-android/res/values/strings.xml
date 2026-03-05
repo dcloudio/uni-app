@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>    
+	<string name="uni_app_uni_prompt_placement">Configuration</string>
+	<string name="uni_app_uni_prompt_cancel">Cancel</string>
+	<string name="uni_app_uni_prompt_model_sure">OK</string>
+	<string name="uni_app_uni_prompt_model_cancel">Cancel</string>
+</resources>

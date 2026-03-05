@@ -1,0 +1,79 @@
+export interface Uni {
+    /**
+     * 将 ArrayBuffer 对象转成 Base64 字符串
+     *
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/base64.html#arraybuffertobase64
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/base64.html#arraybuffertobase64
+     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/arrayBufferToBase64.html
+     *
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "√",
+     *      "unixVer": "4.51"
+     *    },
+     *    "ios": {
+     *      "osVer": "5.0",
+     *      "uniVer": "4.61",
+     *      "unixVer": "4.61"
+     *    },
+     *    "harmony": {
+     *      "osVer": "3.0",
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "5.0"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  },
+     *  "mp":{
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    arrayBufferToBase64(arrayBuffer: ArrayBuffer): string;
+}
+
+export type ArrayBufferToBase64 = (arrayBuffer: ArrayBuffer) => string;

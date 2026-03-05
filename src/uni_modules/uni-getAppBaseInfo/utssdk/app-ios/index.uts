@@ -1,0 +1,143 @@
+import { AppBaseInfoDeviceUtil } from './device/AppBaseInfoDeviceUtil.uts';
+import { UTSiOS } from "DCloudUTSFoundation";
+import {
+	GetAppBaseInfoOptions,
+	GetAppBaseInfo,
+	GetAppBaseInfoResult
+} from '../interface.uts'
+
+export const getAppBaseInfo : GetAppBaseInfo = (config : GetAppBaseInfoOptions | null) : GetAppBaseInfoResult => {
+	let filter : Array<string> = [];
+	if (config != null && config!.filter != null) {
+		filter = config!.filter;
+	}
+
+	if (config == null || filter.length == 0) {
+		const defaultFilter = [
+			"appId",
+			"appName",
+			"appVersion",
+			"appVersionCode",
+			"appLanguage",
+			"language",
+			"version",
+			"appWgtVersion",
+			"hostLanguage",
+			"hostVersion",
+			"hostName",
+			"hostPackageName",
+			"hostSDKVersion",
+			"hostTheme",
+			"bundleId",
+			"signature",
+			"isUniAppX",
+			"uniCompilerVersion",
+			"uniPlatform",
+			"uniRuntimeVersion",
+			"uniCompilerVersionCode",
+			"uniRuntimeVersionCode",
+			"appTheme",
+			"channel",
+		];
+		filter = defaultFilter;
+	}
+	return getBaseInfo(filter);
+}
+
+function getBaseInfo(filterArray : Array<string>) : GetAppBaseInfoResult {
+	let result : GetAppBaseInfoResult = {};
+	if (filterArray.indexOf("appId") != -1) {
+		result.appId = AppBaseInfoDeviceUtil.getAppID();
+	}
+	if (filterArray.indexOf("appName") != -1) {
+		result.appName = AppBaseInfoDeviceUtil.getAppName();
+	}
+	if (UTSiOS.isUniMp()) {
+		if (filterArray.indexOf("hostPackageName") != -1) {
+			result.hostPackageName = AppBaseInfoDeviceUtil.getHostPackageName();
+		}
+		if (filterArray.indexOf("hostVersion") != -1) {
+			result.hostVersion = AppBaseInfoDeviceUtil.getHostVersion();
+		}
+		if (filterArray.indexOf("hostName") != -1) {
+			result.hostName = AppBaseInfoDeviceUtil.getHostName();
+		}
+		if (filterArray.indexOf("hostTheme") != -1) {
+			result.hostTheme = AppBaseInfoDeviceUtil.getHostTheme();
+		}
+		if (filterArray.indexOf("hostLanguage") != -1) {
+			result.hostLanguage = AppBaseInfoDeviceUtil.getHostLanguage();
+		}
+	}
+	
+	if (filterArray.indexOf("appVersion") != -1) {
+		result.appVersion = AppBaseInfoDeviceUtil.getAppVersion();
+	}
+	if (filterArray.indexOf("appVersionCode") != -1) {
+		result.appVersionCode = AppBaseInfoDeviceUtil.getAppVersionCode();
+	}
+	
+	if (filterArray.indexOf("appLanguage") != -1) {
+		result.appLanguage = AppBaseInfoDeviceUtil.getOsLanguageNormal();
+	}
+	if (filterArray.indexOf("language") != -1) {
+		result.language = AppBaseInfoDeviceUtil.getOsLanguage();
+	}
+	if (filterArray.indexOf("version") != -1) {
+		result.version = AppBaseInfoDeviceUtil.getAppInnerVersion();
+	}
+	if (filterArray.indexOf("appWgtVersion") != -1) {
+		result.appWgtVersion = AppBaseInfoDeviceUtil.getAppVersion();
+	}
+	if (filterArray.indexOf("bundleId") != -1) {
+		result.bundleId = AppBaseInfoDeviceUtil.getBundleId();
+	}
+	if (filterArray.indexOf("signature") != -1) {
+		result.signature = AppBaseInfoDeviceUtil.getSignature();
+	}
+	if (filterArray.indexOf("isUniAppX") != -1) {
+		result.isUniAppX = UTSiOS.isUniAppX();
+	}
+	
+	if (filterArray.indexOf("uniCompilerVersion") != -1) {
+		result.uniCompilerVersion = UTSiOS.getCompileVersion();
+	}
+	
+	if (filterArray.indexOf("uniPlatform") != -1) {
+		result.uniPlatform = "app";
+	}
+	
+	if (filterArray.indexOf("uniRuntimeVersion") != -1) {
+		result.uniRuntimeVersion = UTSiOS.getRuntimeVersion();
+	}
+	
+	if (filterArray.indexOf("uniCompilerVersionCode") != -1) {
+		result.uniCompilerVersionCode = AppBaseInfoConvertVersionCode(UTSiOS.getCompileVersion());
+	}
+	
+	if (filterArray.indexOf("uniRuntimeVersionCode") != -1) {
+		result.uniRuntimeVersionCode = AppBaseInfoConvertVersionCode(UTSiOS.getRuntimeVersion());
+	}
+	
+	if (filterArray.indexOf("appTheme") != -1) {
+		result.appTheme = UTSiOS.getAppTheme();
+	}
+	
+	if (filterArray.indexOf("channel") != -1) {
+		result.channel = UTSiOS.getChannel();
+	}
+
+	return result;
+}
+
+const AppBaseInfoConvertVersionCode = function(version: string): number {
+	if (version.length > 0){
+		const components = version.components(separatedBy= '.')
+		var resultString = ""
+		for (let i = 0; i < components.length; i++) {
+		    resultString = (i == 0) ? (resultString + components[i] + '.') : (resultString + components[i])
+		}
+		return parseFloat(resultString)
+	}
+	return 0
+}

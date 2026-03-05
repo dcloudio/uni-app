@@ -1,0 +1,203 @@
+import { UniCheckboxGroupElement } from '../uni-checkbox-group/uni-checkbox-group'
+
+export class UniCheckboxElement extends UniFormControlElement<string> implements UniCustomElement {
+  static get observedAttributes() : Array<string> {
+    return [
+      'name',
+      'checked',
+      'value',
+      'background-color',
+      'active-background-color',
+      'border-color',
+      'active-border-color',
+      'fore-color',
+      'color',
+      'icon-color'
+    ];
+  }
+
+  private checkboxView! : UniElement
+  private checkboxText! : UniTextElement
+  private _initialChecked = false
+  private _initialCheckedFlag = false
+  private _checked = false
+
+  constructor() {
+    super()
+
+    this.style.setProperty('flexDirection', 'row')
+    this.style.setProperty('alignItems', 'center')
+
+    const checkboxView = this.uniPage.createElement('view')
+    const checkboxViewStyle = checkboxView.style
+    checkboxViewStyle.setProperty('alignItems', 'center')
+    checkboxViewStyle.setProperty('justifyContent', 'center')
+    checkboxViewStyle.setProperty('borderStyle', 'solid')
+    checkboxViewStyle.setProperty('borderWidth', '1px')
+    checkboxViewStyle.setProperty('borderRadius', '3px')
+    checkboxViewStyle.setProperty('width', '22px')
+    checkboxViewStyle.setProperty('height', '22px')
+    checkboxViewStyle.setProperty('marginRight', '5px')
+
+    const checkboxText = this.uniPage.createElement('text') as UniTextElement
+    checkboxText.setAttribute('value', '\uEA08')
+    const checkboxTextStyle = checkboxText.style
+    checkboxTextStyle.setProperty('fontFamily', 'uni-icon')
+    checkboxTextStyle.setProperty('fontSize', '16px')
+    checkboxTextStyle.setProperty('color', this.foreColor)
+
+    this.checkboxView = checkboxView
+    this.checkboxText = checkboxText
+
+    this.addEventListener('click', (e: UniPointerEvent) => {
+      "[weak self]"
+      e.stopPropagation()
+      if (this.disabled) {
+        return
+      }
+      this.checked = !this.checked
+      this.dispatchGroup()
+    })
+
+    this.updateCheckedStyle(false)
+  }
+
+  // form
+  public override get name() : string {
+    return this.getAttributeValue('name', '')
+  }
+  public override set name(value : string) {
+    this.setAttribute('name', value)
+  }
+
+  public override get value() : string {
+    return this.getAttributeValue('value', '')
+  }
+  public override set value(value: string) {
+    this.setAttribute('value', value)
+  }
+
+  public override reset() {
+    this.checked = this._initialChecked
+  }
+
+  connectedCallback() {
+    if (this.children.length == 0) {
+      this.appendChild(this.checkboxView)
+    } else {
+      this.insertBefore(this.checkboxView, this.firstChild)
+    }
+  }
+
+  disconnectedCallback() {
+    this.removeChild(this.checkboxView)
+  }
+
+  attributeChangedCallback(name : string, oldValue : any | null, newValue : any | null) {
+    switch (name) {
+      case 'checked':
+        const value = (typeof newValue == 'string' || newValue == true) ? true : false
+        if (!this._initialCheckedFlag) {
+          this._initialCheckedFlag = true
+          this._initialChecked = value
+        }
+        this.checked = value
+        break;
+      case 'fore-color':
+      case 'icon-color':
+      case 'color':
+        this.checkboxText.style.setProperty('color', this.foreColor)
+        break;
+      case 'background-color':
+      case 'active-background-color':
+      case 'border-color':
+      case 'active-border-color':
+        this.updateCheckedStyle(this.checked)
+        break;
+    }
+  }
+
+  get checked() : boolean {
+    return this._checked
+  }
+
+  set checked(value : boolean) {
+    if (value == this._checked) {
+      return
+    }
+    this._checked = value
+    this.updateCheckedStyle(value)
+    this.updateCheckedStatus(value)
+  }
+
+  get disabled() : boolean {
+    return this.getAttribute('disabled') == 'true' ? true : false
+  }
+
+  get foreColor() : string {
+    return this.getAttributeValue('foreColor', this.iconColor)
+  }
+
+  get backgroundColor() : string {
+    return this.getAttributeValue('backgroundColor', '#ffffff')
+  }
+
+  get activeBackgroundColor() : string {
+    return this.getAttributeValue('activeBackgroundColor', '#ffffff')
+  }
+
+  get borderColor() : string {
+    return this.getAttributeValue('borderColor', '#d1d1d1')
+  }
+
+  get activeBorderColor() : string {
+    return this.getAttributeValue('activeBorderColor', '#d1d1d1')
+  }
+
+  get iconColor() : string {
+    return this.getAttributeValue('iconColor', this.color)
+  }
+
+  get color() : string {
+    return this.getAttributeValue('color', '#007aff')
+  }
+
+  private getAttributeValue(key : string, defaultValue : string) : string {
+    const value = this.getAttribute(key)
+    if (value != null && value!.length > 0) {
+      return value!
+    }
+    return defaultValue
+  }
+
+  private updateCheckedStyle(checked : boolean) {
+    const backgroundColor = checked ? this.activeBackgroundColor : this.backgroundColor
+    const borderColor = checked ? this.activeBorderColor : this.borderColor
+    this.checkboxView.style.setProperty('backgroundColor', backgroundColor)
+    this.checkboxView.style.setProperty('borderColor', borderColor)
+  }
+
+  private updateCheckedStatus(checked : boolean) {
+    if (checked) {
+      this.checkboxView.appendChild(this.checkboxText)
+    } else {
+      this.checkboxView.removeChild(this.checkboxText)
+    }
+  }
+
+  private dispatchGroup() {
+    let group = this.parentElement
+    let maxRecursiveDeep = 32
+    while (group != null && maxRecursiveDeep > 0) {
+      maxRecursiveDeep--
+      if (group instanceof UniCheckboxGroupElement) {
+        break
+      }
+      group = group!.parentElement
+    }
+
+    if (group != null) {
+      (group as UniCheckboxGroupElement)._checkboxChange()
+    }
+  }
+}

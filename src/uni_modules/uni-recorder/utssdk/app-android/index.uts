@@ -1,0 +1,197 @@
+import { API_GET_RECORDER_MANAGER } from '../protocol.uts';
+import { GetRecorderManager, RecorderManager, RecorderManagerOnStopResult, RecorderManagerStartOptions, IRecorderManagerFail } from '../interface.uts';
+import { createFile } from './utils.uts';
+export { RecorderManagerFailImpl } from "../unierror.uts"
+import LogSelfV2 from "io.dcloud.uts.log.LogSelfV2";
+import { RecorderManagerFailImpl, RecorderManagerUniErrors } from '../unierror.uts';
+
+// NOTE 避免被 vue Proxy 污染
+const DEFAULT_DURATION = 1000 * 60
+const MAX_DURATION = DEFAULT_DURATION * 10
+const DEFAULT_FORMAT = 'aac'
+
+
+class RecorderManagerImpl implements RecorderManager, AudioRecorder.RecordingListener {
+	manager : AudioRecorder
+	constructor() {
+		this.manager = new AudioRecorder()
+	}
+	override start(options : RecorderManagerStartOptions) : void {
+		UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, ["android.permission.RECORD_AUDIO"], (allRight : boolean, grantedList : Array<string>) => {
+			this.innerStart(options)
+		}, (allRight : boolean, grantedList : Array<string>) => {
+			this.onRecordingError(1107601, "")
+		})
+	}
+	innerStart(options : RecorderManagerStartOptions) : void {
+		if (options == null) options = {} as RecorderManagerStartOptions
+		if (options.format == null) options.format = DEFAULT_FORMAT
+
+		if (options.duration == null) {
+			options.duration = DEFAULT_DURATION
+		}
+		if (options.duration! > MAX_DURATION) {
+			options.duration = MAX_DURATION
+		} else if (options.duration! < 0) {
+			options.duration = DEFAULT_DURATION
+		}
+		if(options.sampleRate == null) {
+			options.sampleRate = 8000
+		}
+		if(options.numberOfChannels == null) {
+			options.numberOfChannels = 2
+		}
+		if(options.encodeBitRate == null) {
+			options.encodeBitRate = 48000
+		}
+		this.manager.setAudioParams(options.sampleRate!.toInt(), options.numberOfChannels!.toInt(), options.encodeBitRate!.toInt())
+		this.manager.setSaveToFile(true)
+		var format = AudioRecorder.RecordingFormat.AAC
+		switch (options.format) {
+			case 'aac': {
+				format = AudioRecorder.RecordingFormat.AAC
+				break
+			}
+			case 'mp3': {
+				format = AudioRecorder.RecordingFormat.MP3
+				break
+			}
+			case 'pcm': {
+				format = AudioRecorder.RecordingFormat.PCM
+				break
+			}
+			case 'wav': {
+				format = AudioRecorder.RecordingFormat.WAV
+				break
+			}
+			default: {
+				format = AudioRecorder.RecordingFormat.AAC
+				break
+			}
+		}
+		this.manager.setRecordingListener(this)
+		this.manager.setMaxRecordingDuration(options.duration!.toLong())
+		this.manager.startRecording(format, createFile(options.format! as string))
+	}
+	override pause() : void {
+		this.manager.pauseRecording()
+	}
+	override resume() : void {
+		this.manager.resumeRecording()
+	}
+	override stop() {
+		this.manager.stopRecording()
+	}
+
+	startCallback : ((result : any) => void) | null = null
+	override onStart(options : (result : any) => void) : void {
+		this.startCallback = options
+	}
+	override offStart() : void {
+		this.startCallback == null
+	}
+	
+	pauseCallback : ((result : any) => void) | null = null
+	override onPause(options : (result : any) => void) : void {
+		this.pauseCallback = options
+	}
+	
+	override offPause() : void {
+		this.pauseCallback = null
+	}
+	stopCallback : ((result : RecorderManagerOnStopResult) => void) | null = null
+	override onStop(options : (result : RecorderManagerOnStopResult) => void) : void {
+		this.stopCallback = options
+	}
+	
+	override offStop() : void {
+		this.stopCallback = null
+	}
+	
+	override onFrameRecorded(options : (result : any) => void) : void {
+		// setRecordStateCallback('frameRecorded', options)
+	}
+	
+	override offFrameRecorded() : void {
+		// setRecordStateCallback('frameRecorded', options)
+	}
+	errorCallback : ((result : IRecorderManagerFail) => void) | null = null
+	override onError(options : (result : IRecorderManagerFail) => void) : void {
+		this.errorCallback = options
+	}
+	override offError() : void {
+		this.errorCallback = null
+	}
+	resumeCallback : ((result : any) => void) | null = null
+	override  onResume(options : (result : any) => void) : void {
+		this.resumeCallback = options
+	}
+	override  offResume() : void {
+		this.resumeCallback = null
+	}
+	beginCallback : ((result : any) => void) | null = null
+	override onInterruptionBegin(options : (result : any) => void) : void {
+		this.beginCallback = options
+	}
+	
+	override offInterruptionBegin() : void {
+		this.beginCallback = null
+	}
+	endCallback : ((result : any) => void) | null = null
+	override onInterruptionEnd(options : (result : any) => void) : void {
+		this.endCallback = options
+	}
+	
+	override offInterruptionEnd() : void {
+		this.endCallback = null
+	}
+
+	override onRecordingStarted() {
+		this.startCallback?.("")
+	}
+	override onRecordingStopped() {
+		this.stopCallback?.(new RecorderManagerOnStopResultCallback(this.manager.getFilePath()!))
+	}
+	override onRecordingPaused() {
+		this.pauseCallback?.("")
+	}
+	override onRecordingResumed() {
+		this.resumeCallback?.("")
+	}
+	override onRecordingError(errorCode : Int, errorMessage : String) {
+		var error : IRecorderManagerFail
+		if ([1107601, 1107602, 1107603, 1107604, 1107605, 1107606, 1107607, 1107608].indexOf(errorCode) >= 0) {
+			error = new RecorderManagerFailImpl(errorCode, RecorderManagerUniErrors[errorCode]!)
+		} else {
+			error = new RecorderManagerFailImpl(1107606, RecorderManagerUniErrors[1107606]!)
+		}
+		this.errorCallback?.(error)
+	}
+}
+
+class RecorderManagerOnStopResultCallback implements RecorderManagerOnStopResult, IJSONStringify, LogSelfV2 {
+	override tempFilePath : string = ""
+
+	constructor(filePath : string) {
+		this.tempFilePath = filePath
+	}
+
+	override  toJSON() : Any {
+		var result : UTSJSONObject = new UTSJSONObject()
+		result.set("tempFilePath", this.tempFilePath)
+		return result
+	}
+
+	override  toLogMap() : Map<String, Any> {
+		var map : Map<String, Any> = new Map<String, Any>()
+		map.set("tempFilePath", this.tempFilePath)
+		return map
+	}
+}
+
+var recordManager : RecorderManagerImpl | null = null
+export const getRecorderManager : GetRecorderManager = function () : RecorderManager {
+	if (recordManager == null)
+		recordManager = new RecorderManagerImpl()
+	return recordManager!
+}

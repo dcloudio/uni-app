@@ -1,0 +1,31 @@
+import { getCurrentPage } from '@dcloudio/uni-runtime'
+import {
+    StartPullDownRefreshOptions,
+    StartPullDownRefreshSuccess,
+    StopPullDownRefresh,
+} from '../interface.uts'
+import { StartPullDownRefreshFailImpl } from '../unierror.uts'
+
+export const startPullDownRefresh = defineAsyncApi<
+    StartPullDownRefreshOptions | null,
+    StartPullDownRefreshSuccess
+>('startPullDownRefresh', (_, res) => {
+    const page = getCurrentPage()
+    if (page === null) {
+        res.reject(new StartPullDownRefreshFailImpl('page is not ready', 4))
+        return
+    }
+    const nativePage = page!.$nativePage!
+    nativePage.startPullDownRefresh()
+    res.resolve(null)
+})
+
+export const stopPullDownRefresh = defineSyncApi<StopPullDownRefresh>(
+    'stopPullDownRefresh',
+    () => {
+        const page = getCurrentPage()
+        if (page !== null) {
+            page!.$nativePage!.stopPullDownRefresh()
+        }
+    },
+)

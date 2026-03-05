@@ -1,0 +1,138 @@
+import { ChooseFile, ChooseFileTempFile, ChooseFileOptions, ChooseFileSuccess, ChooseImageOptions, ChooseImageSuccess, ChooseVideoOptions, ChooseVideoSuccess, IMediaError } from '../../interface.uts';
+import { API_CHOOSE_FILE, ChooseFileApiOptions, ChooseFileApiProtocol } from '../../protocol.uts';
+import { chooseImage } from './chooseImage.uts';
+import { chooseVideo } from './chooseVideo.uts';
+import { getMimeTypeFromExtension } from './media.uts';
+
+import { BusinessError } from '@kit.BasicServicesKit';
+import { picker, fileIo } from '@kit.CoreFileKit';
+
+const IMAGES: string[] = [
+    "jpg",
+    "jpe",
+    "pbm",
+    "pgm",
+    "pnm",
+    "ppm",
+    "psd",
+    "pic",
+    "rgb",
+    "svg",
+    "svgz",
+    "tif",
+    "xif",
+    "wbmp",
+    "wdp",
+    "xbm",
+    "ico"
+]
+const VIDEOS: string[] = [
+    "3g2",
+    "3gp",
+    "avi",
+    "f4v",
+    "flv",
+    "jpgm",
+    "jpgv",
+    "m1v",
+    "m2v",
+    "mpe",
+    "mpg",
+    "mpg4",
+    "m4v",
+    "mkv",
+    "mov",
+    "qt",
+    "movie",
+    "mp4v",
+    "ogv",
+    "smv",
+    "wm",
+    "wmv",
+    "wmx",
+    "wvx"
+]
+
+function getFile(url: string) {
+    const file = fileIo.openSync(url, fileIo.OpenMode.READ_ONLY)
+    const size = fileIo.statSync(file.fd).size
+    const ext = file.name.split('.').pop()!
+    return {
+        path: url,
+        name: file.name,
+        size,
+        type: getMimeTypeFromExtension(ext) ?? ext
+    } as ChooseFileTempFile
+}
+
+export const chooseFile: ChooseFile = defineAsyncApi<ChooseFileOptions, ChooseFileSuccess>(
+    API_CHOOSE_FILE,
+    (args: ChooseFileOptions, executor: ApiExecutor<ChooseFileSuccess>) => {
+        if (['image', 'video'].includes(args.type ?? '')) {
+            if (args.type === 'image') {
+                chooseImage({
+                    sourceType: args.sourceType,
+                    success(res: ChooseImageSuccess) {
+                        executor.resolve({
+                            tempFilePaths: res.tempFilePaths,
+                            tempFiles: res.tempFilePaths.map((url): ChooseFileTempFile => getFile(url))
+                        } as ChooseFileSuccess)
+                    },
+                    fail(err: IMediaError) {
+                        executor.reject(err.errMsg, { errCode: err.errCode } as ApiError)
+                    }
+                } as ChooseImageOptions)
+            }
+            if (args.type === 'video') {
+                chooseVideo({
+                    sourceType: args.sourceType,
+                    success(res: ChooseVideoSuccess) {
+                        executor.resolve({
+                            tempFilePaths: [res.tempFilePath],
+                            tempFiles: [getFile(res.tempFilePath)]
+                        } as ChooseFileSuccess)
+                    },
+                    fail(err: IMediaError) {
+                        executor.reject(err.errMsg, { errCode: err.errCode } as ApiError)
+                    }
+                } as ChooseVideoOptions)
+            }
+        } else {
+            try {
+                let documentSelectOptions = new picker.DocumentSelectOptions();
+                let documentPicker = new picker.DocumentViewPicker(UTSHarmony.getUIAbilityContext()!);
+
+                documentSelectOptions.selectMode = picker.DocumentSelectMode.FILE
+                if (args.count) documentSelectOptions.maxSelectNumber = args.count;
+                if (args.extension) documentSelectOptions.fileSuffixFilters = args.extension
+                if (args.type === 'image') {
+                    documentSelectOptions.fileSuffixFilters = documentSelectOptions.fileSuffixFilters?.concat(IMAGES)
+                }
+                if (args.type === 'video') {
+                    documentSelectOptions.fileSuffixFilters = documentSelectOptions.fileSuffixFilters?.concat(VIDEOS)
+                }
+
+                documentPicker.select(documentSelectOptions)
+                    .then((documentSelectResult: Array<string>) => {
+                        let tempFiles = documentSelectResult.map((url): ChooseFileTempFile => getFile(url))
+                        if (tempFiles.length !== 0) {
+                            executor.resolve({
+                                tempFilePaths: documentSelectResult,
+                                tempFiles
+                            } as ChooseFileSuccess)
+                        } else {
+                            executor.reject('cancel')
+                        }
+                    })
+                    .catch((err: BusinessError) => {
+                        executor.reject(err.message, { errCode: err.code } as ApiError)
+                    });
+            } catch (error) {
+                let err: BusinessError = error as BusinessError;
+                executor.reject(err.message, { errCode: err.code } as ApiError)
+            }
+        }
+    },
+    ChooseFileApiProtocol,
+    ChooseFileApiOptions
+) as ChooseFile

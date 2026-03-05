@@ -1,0 +1,49 @@
+import { getCurrentPage } from '@dcloudio/uni-runtime'
+
+import { PageScrollToOptions, PageScrollToSuccess } from '../interface.uts'
+import { PageScrollToFailImpl } from '../unierror.uts'
+function queryElementTop(
+    component: ComponentPublicInstance,
+    selector: string,
+): number | null {
+    let scrollNode = component.$el?.querySelector(selector)
+    if (scrollNode != null) {
+        return scrollNode.getBoundingClientRect().top
+    }
+    return null
+}
+
+export const pageScrollTo = defineAsyncApi<
+    PageScrollToOptions,
+    PageScrollToSuccess
+>('pageScrollTo', (options: PageScrollToOptions, res: ApiExecutor) => {
+    const currentPage = getCurrentPage()
+    const scrollViewNode = currentPage?.$el
+    if (scrollViewNode == null || scrollViewNode.tagName != 'SCROLL-VIEW') {
+        res.reject(new PageScrollToFailImpl('selector invalid'))
+        return
+    }
+
+    let top = options.scrollTop
+    if (options.selector != null) {
+        top = queryElementTop(currentPage!, options.selector!)
+        if (top != null) {
+            const currentScrollTop = scrollViewNode.getAnyAttribute(
+                'scrollTop',
+            ) as number
+            top += currentScrollTop
+        }
+    }
+
+    if (top == null || top < 0) {
+        res.reject(new PageScrollToFailImpl('top or selector invalid'))
+        return
+    }
+
+    if (options.offsetTop != null) {
+        top += options.offsetTop!
+    }
+
+    scrollViewNode.setAnyAttribute('scrollTop', top)
+    res.resolve(null)
+})

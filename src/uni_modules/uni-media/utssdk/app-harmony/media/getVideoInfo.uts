@@ -1,0 +1,34 @@
+import { _getVideoInfo } from './media.uts'
+import {
+    GetVideoInfoOptions,
+    GetVideoInfoSuccess,
+    GetVideoInfo
+} from '../../interface.uts'
+import {
+    API_GET_VIDEO_INFO,
+    GetVideoInfoApiOptions,
+    GetVideoInfoApiProtocol,
+} from '../../protocol.uts'
+
+
+export const getVideoInfo: GetVideoInfo =
+    defineAsyncApi<GetVideoInfoOptions, GetVideoInfoSuccess>(
+        API_GET_VIDEO_INFO,
+        function (options: GetVideoInfoOptions, res: ApiExecutor<GetVideoInfoSuccess>) {
+            _getVideoInfo(options.src, 'KB')
+                .then((getVideInfoRes) => {
+                    res.resolve({
+                        size: getVideInfoRes.size,
+                        duration: getVideInfoRes.duration!,
+                        width: getVideInfoRes.width!,
+                        height: getVideInfoRes.height!,
+                        type: getVideInfoRes.type!,
+                        orientation: getVideInfoRes.orientation!,
+                    } as GetVideoInfoSuccess)
+                }, (err: Error) => {
+                    res.reject(err.message)
+                })
+        },
+        GetVideoInfoApiProtocol,
+        GetVideoInfoApiOptions
+    ) as GetVideoInfo

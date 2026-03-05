@@ -1,0 +1,2142 @@
+import { WriteFileOptions, ReadFileOptions, MkDirOptions, RmDirOptions, TruncateFileOptions, UnLinkOptions, ReadDirOptions, AccessOptions, RenameOptions, GetFileInfoOptions, CopyFileOptions, StatOptions, AppendFileOptions, OpenFileOptions, OpenFileSuccessCallback, OpenFileSuccessResult, SaveFileOptions, UnzipFileOptions, GetSavedFileListOptions, ReadCompressedFileOptions, ReadCompressedFileResult, RemoveSavedFileOptions, WriteOptions, WriteResult, OpenFileSyncOptions, WriteSyncOptions, CloseOptions, CloseSyncOptions, FStatOptions, FStatSuccessResult, FTruncateFileOptions, FTruncateFileSyncOptions, FStatSyncOptions, ReadZipEntryOptions, ZipFileItem, ReadZipEntryCallback, EntriesResult, ReadOption, ReadSyncOption, ReadResult } from "../interface.uts"
+import { ReadFileSuccessResult, FileManagerSuccessResult, ReadDirSuccessResult, AccessSuccessResult, SaveFileSuccessResult, GetFileInfoSuccessResult, StatSuccessResult, FileStats, Stats, GetSavedFileListResult } from "../interface.uts"
+import { GetFileSystemManager, FileSystemManager } from "../interface.uts"
+import { FileSystemManagerFailImpl, FileSystemManagerUniErrorSubject, FileSystemManagerUniErrors, UniErrors } from "../unierror.uts"
+import { FileDescriptorUtil } from "./FileDescriptorUtil"
+import { WriteFileUtil } from "./WriteFileUtil"
+import { ReadFileUtil } from "./ReadFileUtil"
+import File from "java.io.File"
+import Base64 from "android.util.Base64"
+import MessageDigest from 'java.security.MessageDigest';
+import FileInputStream from 'java.io.FileInputStream';
+import Charsets from "kotlin.text.Charsets"
+import FileOutputStream from 'java.io.FileOutputStream';
+import ZipInputStream from 'java.util.zip.ZipInputStream';
+import BufferedInputStream from 'java.io.BufferedInputStream';
+import BrotliInputStream from 'org.brotli.dec.BrotliInputStream'
+import ParcelFileDescriptor from 'android.os.ParcelFileDescriptor';
+import InputStream from 'java.io.InputStream';
+import Uri from 'android.net.Uri'
+import { convertRealPathToUniPath, isSandyBoxPath, isUniSystemPath } from './FileManagerUtil.uts'
+
+const FILE_SYSTEM_MANAGER_SAVE_PATH = "uni-store/"
+
+class AndroidStats implements Stats, io.dcloud.uts.log.LogSelf, io.dcloud.uts.json.IJsonStringify {
+	/**
+		 * 文件的类型和存取的权限，对应 POSIX stat.st_mode
+		 * 注意android中，文件类型只包含是否是目录与文件，
+		 * 另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，
+		 * 这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限
+		 */
+	mode : number = 0;
+	/**
+	 * 文件大小，单位：B，对应 POSIX stat.st_size
+	 */
+	size : number = 0;
+	/**
+	 * 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime
+	 * 注意：android中由于系统限制无法获取该数据
+	 */
+	lastAccessedTime : number = 0;
+	/**
+	 * 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime
+	 */
+	lastModifiedTime : number = 0;
+	/**
+	 * @internal
+	 */
+	mIsFile : boolean = false;
+
+	constructor() {
+	}
+	/**
+	 * 判断当前文件是否一个目录
+	 */
+	isDirectory() : boolean {
+		return !this.mIsFile
+	}
+	/**
+	 * 判断当前文件是否一个普通文件
+	 */
+	isFile() : boolean {
+		return this.mIsFile
+	}
+	/**
+	 * @internal
+	 */
+	override toLog() : any | null {
+		return this.toJSON()
+	}
+	/**
+	 * @internal
+	 */
+	override toJSON() : any | null {
+		let jsonRet = new UTSJSONObject()
+		jsonRet.set("mode", this.mode)
+		jsonRet.set("size", this.size)
+		jsonRet.set("lastAccessedTime", this.lastAccessedTime)
+		jsonRet.set("lastModifiedTime", this.lastModifiedTime)
+		return jsonRet
+	}
+
+}
+class AndroidFileSystemManager implements FileSystemManager {
+	private fileDesUtil : FileDescriptorUtil = new FileDescriptorUtil()
+	private writeFileUtil : WriteFileUtil = new WriteFileUtil()
+	private readFileUtil : ReadFileUtil = new ReadFileUtil()
+
+	private static manager : AndroidFileSystemManager = new AndroidFileSystemManager()
+	private constructor() { }
+	public static getManager() : AndroidFileSystemManager {
+		return this.manager;
+	}
+	public stat(options : StatOptions) {
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+
+			currentDispatcher.async(function (_) {
+
+				let filePath = UTSAndroid.convert2AbsFullPath(options.path)
+
+				let isSandyBox = isSandyBoxPath(filePath, true)
+				if (!isSandyBox) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300013);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+
+				let targetFile = new File(filePath)
+
+				if (!targetFile.exists()) {
+					/**
+					 * 文件不存在
+					 */
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300002);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+
+				if (options.recursive == true && targetFile.isDirectory()) {
+					// 如果当前是目录，并且设置 则需要遍历所有子目录
+					let res : Array<FileStats> = []
+					/**
+					 * 与文件不同的是，需要迭代下属的文件
+					 */
+					targetFile.walk()
+						.onEnter(function (file : File) : boolean {
+							if (file.isDirectory()) {
+								return true
+							}
+							return false
+						})
+						.iterator()
+						.forEach( (file : File)=> {
+							let perFileStats : FileStats = {
+								path: this.replacePath(file.getPath(),targetFile.path),
+								stats: wrapStats(file)
+							}
+							res.add(perFileStats)
+						})
+
+
+					let success : StatSuccessResult = {
+						errMsg: "stat:ok",
+						stats: res
+					}
+					options.success?.(success)
+					options.complete?.(success)
+
+
+				} else {
+					// 默认是false,只读取当前一个文件
+					let mode = 0
+					let filesize = 0;
+					let realPath = ""
+					if(targetFile.isDirectory()) {
+						realPath = "/"
+					}
+					let rootFileStats : FileStats = {
+						path: realPath,
+						stats: wrapStats(targetFile)
+					}
+					let res : Array<FileStats> = [rootFileStats]
+					let success : StatSuccessResult = {
+						errMsg: "stat:ok",
+						stats: res
+					}
+					//new StatSuccessResult("stat:ok", res)
+					options.success?.(success)
+					options.complete?.(success)
+				}
+
+
+			}, null)
+		}, null)
+	}
+	
+	private replacePath(path:string,absolutePath:string):string {
+		if(path.startsWith(absolutePath)) {
+			path = path.replace(absolutePath,"")
+			if(!path.startsWith("/")) {
+				path = "/"+path
+			}
+		}
+		return path
+	}
+
+	public statSync(path : string, recursive : boolean) : FileStats[] {
+		let msgPrefix = "statSync:fail "
+		let filePath = UTSAndroid.convert2AbsFullPath(path)
+		let tempRecursive = recursive
+		let isSandyBox = isSandyBoxPath(filePath, true)
+		if (!isSandyBox) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+		}
+		let targetFile = new File(filePath)
+		if (!targetFile.exists()) {
+			/**
+			 * 文件不存在
+			 */
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!);
+		}
+		if (tempRecursive == true && targetFile.isDirectory()) {
+			// 如果当前是目录，并且设置 则需要遍历所有子目录
+			let res : Array<FileStats> = []
+			/**
+			 * 与文件不同的是，需要迭代下属的文件
+			 */
+			targetFile.walk()
+				.onEnter(function (file : File) : boolean {
+					if (file.isDirectory()) {
+						return true
+					}
+					return false
+				})
+				.iterator()
+				.forEach(function (file : File) {
+					let perFileStats : FileStats = {
+						path: this.replacePath(file.getPath(),targetFile.path),
+						stats: wrapStats(file)
+					}
+					res.add(perFileStats)
+				})
+			return res
+		} else {
+			// 默认是false,只读取当前一个文件
+			let mode = 0
+			let filesize = 0;
+			let realPath = ""
+			if(targetFile.isDirectory()) {
+				realPath = "/"
+			}
+			let rootFileStats : FileStats = {
+				path: realPath,
+				stats: wrapStats(targetFile)
+			}
+			return [rootFileStats]
+		}
+	}
+
+	public getFileInfo(options : GetFileInfoOptions) {
+
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+
+			let filePath = UTSAndroid.convert2AbsFullPath(options.filePath)	
+			var fis : InputStream | null = null
+			if(filePath.startsWith("content://")) {
+				fis = this.readFileUtil.readContentUriAsInputStream(UTSAndroid.getAppContext()!,Uri.parse(filePath))
+			} else if(filePath.startsWith("/android_asset/")) {
+				fis = this.readFileUtil.readAndroidAssetsAsInputStream(UTSAndroid.getAppContext()!,filePath)
+			} else {
+			let isSandyBox = isSandyBoxPath(filePath, true)
+			if (!isSandyBox) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300013);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+
+			let targetFile = new File(filePath)
+
+			if (!targetFile.exists()) {
+				/**
+				 * 文件不存在
+				 */
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300002);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+
+			if (targetFile.isDirectory()) {
+				/**
+				 * 文件是个目录
+				 */
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300021);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+			// 使用缓冲区读取文件内容
+			 fis = new FileInputStream(targetFile)
+			}
+			if (fis == null) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300002);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+			if (options.digestAlgorithm == null) {
+				options.digestAlgorithm = "md5"
+			}
+			if (options.digestAlgorithm!.toLowerCase() != 'md5' && options.digestAlgorithm!.toLowerCase() != 'sha1') {
+				/**
+				 * invalid digestAlgorithm
+				 */
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300022);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+			let fileLen =  fis!.available()
+			let md5Digest = MessageDigest.getInstance(options.digestAlgorithm!)
+			let buffer = new ByteArray(8192)
+			let len = 0
+			while (len != -1) {
+				len = fis!.read(buffer)
+				if (len != -1) {
+					md5Digest.update(buffer, 0, len.toInt())
+				}
+			}
+			fis!.close();
+			let digestByte = md5Digest.digest();
+			// byte to string
+			let strHexString = new StringBuffer();
+			//  byte buffer
+			for (let i = 0; i < digestByte.size; i++) {
+				// 取0xff部分
+				let hex = Integer.toHexString(0xff & digestByte[i.toInt()].toInt());
+				if (hex.length == 1) {
+					strHexString.append('0');
+				}
+				strHexString.append(hex);
+			}
+			// 得到返回結果
+			let sign = strHexString.toString();
+
+			currentDispatcher.async(function (_) {
+				let success : GetFileInfoSuccessResult = {
+					digest: sign,
+					size: fileLen,
+					errMsg: "getFileInfo:ok"
+				}
+				options.success?.(success)
+				options.complete?.(success)
+			}, null)
+		}, null)
+		
+	}
+
+
+	public copyFileSync(srcPath : string, destPath : string) : void {
+		// 检查来源文件
+		let msgPrefix = "copyFileSync:fail "
+		let filePath = UTSAndroid.convert2AbsFullPath(srcPath)
+		if (filePath.startsWith("/android_asset/")) {
+			// 用户访问的是asset 路径，此时不是释放模式
+			// let byteArray : ByteArray
+			let assetStream:InputStream|null = null
+			try {
+				let assetName = filePath.substring("/android_asset/".length)
+				assetStream = UTSAndroid.getAppContext()!.getResources().getAssets().open(assetName);
+				// let byteLen = assetStream.available();
+				// byteArray = new ByteArray(byteLen)
+				// assetStream.read(byteArray);
+			} catch (e) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!);
+			}
+			if(assetStream == null) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!);
+			}
+			// 检查目标文件
+			let newFilePath = UTSAndroid.convert2AbsFullPath(destPath)
+			let isSandyBox = isSandyBoxPath(newFilePath, false)
+			if (!isSandyBox) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!);
+			}
+			let newFile = new File(newFilePath)
+			if(newFile.exists() && newFile.isDirectory) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300021, msgPrefix + FileSystemManagerUniErrors.get(1300021)!)
+			}
+			if (newFile.getParentFile() != null && !newFile.getParentFile()!.exists()) {
+				newFile.parentFile?.mkdirs()
+				/**
+				 * 父文件不存在
+				 */
+				// throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+			}
+			// newFile.writeBytes(byteArray)
+			var ops = newFile.outputStream()
+			assetStream.copyTo(ops)
+			try{
+				assetStream.close()
+				ops.close()
+			}catch(e:Exception) {}
+			if (!newFile.exists()) {
+				// 调用系统api 失败
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+			}
+
+		} else if (srcPath.startsWith("content://")) {
+			// 检查目标文件
+			let newFilePath = UTSAndroid.convert2AbsFullPath(destPath)
+			let isSandyBox = isSandyBoxPath(newFilePath, false)
+			if (!isSandyBox) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+			}
+			let newFile = new File(newFilePath)
+			if(newFile.exists() && newFile.isDirectory) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300021, msgPrefix + FileSystemManagerUniErrors.get(1300021)!)
+			}
+			if (newFile.getParentFile() != null && !newFile.getParentFile()!.exists()) {
+				/**
+				 * 父文件不存在
+				 */
+				// throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+				newFile.parentFile?.mkdirs()
+			}
+			
+			let byteArray = this.readFileUtil.readContentUriAsInputStream(UTSAndroid.getAppContext()!, Uri.parse(filePath))
+			if (byteArray == null) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+			} else {
+				var ops = newFile.outputStream()
+				byteArray.copyTo(ops)
+				try{
+					byteArray.close()
+					ops.close()
+				}catch(e:Exception) {}
+			}
+		} else {
+			let isSandyBox = isSandyBoxPath(filePath, true)
+			if (!isSandyBox) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+			}
+			let targetFile = new File(filePath)
+			if (!targetFile.exists()) {
+				/**
+				 * 文件不存在
+				 */
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+			}
+			// 检查目标文件
+			let newFilePath = UTSAndroid.convert2AbsFullPath(destPath)
+			isSandyBox = isSandyBoxPath(newFilePath, false)
+			if (!isSandyBox) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+			}
+			let newFile = new File(newFilePath)
+			if(newFile.exists() && newFile.isDirectory) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300021, msgPrefix + FileSystemManagerUniErrors.get(1300021)!)
+			}
+			if (newFile.getParentFile() != null && !newFile.getParentFile()!.exists()) {
+				/**
+				 * 父文件不存在
+				 */
+				// throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+				newFile.parentFile?.mkdirs()
+			}
+
+			let copyRetFile = targetFile.copyTo(newFile, true)
+			if (!copyRetFile.exists()) {
+				// 调用系统api 失败
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+			}
+		}
+	}
+
+
+	public copyFile(options : CopyFileOptions) {
+
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+
+			// 检查来源文件
+			let filePath = UTSAndroid.convert2AbsFullPath(options.srcPath)
+			if (filePath.startsWith("/android_asset/")) {
+				// 用户访问的是asset 路径，此时不是释放模式
+
+				let exceptionInfo : Exception | null = null
+				let assetStream : InputStream|null = null
+				try {
+					let assetName = filePath.substring("/android_asset/".length)
+					assetStream = UTSAndroid.getAppContext()!.getResources().getAssets().open(assetName);
+					// let byteLen = assetStream.available();
+					// byteArray = new ByteArray(byteLen)
+					// assetStream.read(byteArray);
+				} catch (e : Exception) {
+					exceptionInfo = e
+				}
+
+				if (exceptionInfo != null || assetStream == null) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300201);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+
+
+				// 检查目标文件
+				let newFilePath = UTSAndroid.convert2AbsFullPath(options.destPath)
+				let isSandyBox = isSandyBoxPath(newFilePath, false)
+				if (!isSandyBox) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300013);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				let newFile = new File(newFilePath)
+				if(newFile.exists() && newFile.isDirectory) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300021);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				if (newFile.getParentFile() != null && !newFile.getParentFile()!.exists()) {
+					/**
+					 * 父文件不存在
+					 */
+					// currentDispatcher.async(function (_) {
+					// 	let err = new FileSystemManagerFailImpl(1300002);
+					// 	options.fail?.(err)
+					// 	options.complete?.(err)
+					// }, null)
+					// return
+					newFile.parentFile?.mkdirs()
+				}
+				// newFile.writeBytes(byteArray)
+				var ops = newFile.outputStream()
+				assetStream.copyTo(ops)
+				try{
+					assetStream.close()
+					ops.close()
+				}catch(e:Exception) {}
+				if (!newFile.exists()) {
+					// 调用系统api 失败
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300201);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+
+				currentDispatcher.async(function (_) {
+					let success : FileManagerSuccessResult = {
+						errMsg: "copyFile:ok"
+					}
+					options.success?.(success)
+					options.complete?.(success)
+				}, null)
+
+			} else if (filePath.startsWith("content://")) {
+				// 检查目标文件
+				let newFilePath = UTSAndroid.convert2AbsFullPath(options.destPath)
+				let isSandyBox = isSandyBoxPath(newFilePath, false)
+				if (!isSandyBox) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300013);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				let newFile = new File(newFilePath)
+				if(newFile.exists() && newFile.isDirectory) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300021);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				if (newFile.getParentFile() != null && !newFile.getParentFile()!.exists()) {
+					/**
+					 * 父文件不存在
+					 */
+					// currentDispatcher.async(function (_) {
+					// 	let err = new FileSystemManagerFailImpl(1300002);
+					// 	options.fail?.(err)
+					// 	options.complete?.(err)
+					// })
+					// return
+					newFile.parentFile?.mkdirs()
+				}
+
+				let byteArray = this.readFileUtil.readContentUriAsInputStream(UTSAndroid.getAppContext()!, Uri.parse(filePath))
+				if (byteArray == null) {
+					// 调用系统api 失败
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300201);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				} else {
+					var ops = newFile.outputStream()
+					byteArray.copyTo(ops)
+					try{
+						byteArray.close()
+						ops.close()
+					}catch(e:Exception) {}
+				}
+				currentDispatcher.async(function (_) {
+					let success : FileManagerSuccessResult = {
+						errMsg: "copyFile:ok"
+					}
+					options.success?.(success)
+					options.complete?.(success)
+				})
+			} else {
+				let isSandyBox = isSandyBoxPath(filePath, true)
+				if (!isSandyBox) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300013);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				let targetFile = new File(filePath)
+				if (!targetFile.exists()) {
+					/**
+					 * 文件不存在
+					 */
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300002);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				// 检查目标文件
+				let newFilePath = UTSAndroid.convert2AbsFullPath(options.destPath)
+				isSandyBox = isSandyBoxPath(newFilePath, false)
+				if (!isSandyBox) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300013);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				let newFile = new File(newFilePath)
+				if(newFile.exists() && newFile.isDirectory) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300021);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				if (newFile.getParentFile() != null && !newFile.getParentFile()!.exists()) {
+					/**
+					 * 父文件不存在
+					 */
+					// currentDispatcher.async(function (_) {
+					// 	let err = new FileSystemManagerFailImpl(1300002);
+					// 	options.fail?.(err)
+					// 	options.complete?.(err)
+					// })
+					// return
+					newFile.parentFile?.mkdirs()
+				}
+
+				let copyRetFile = targetFile.copyTo(newFile, true)
+				if (!copyRetFile.exists()) {
+					// 调用系统api 失败
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300201);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				}
+
+				currentDispatcher.async(function (_) {
+					let success : FileManagerSuccessResult = {
+						errMsg: "copyFile:ok"
+					}
+					options.success?.(success)
+					options.complete?.(success)
+				})
+			}
+
+		}, null)
+
+	}
+
+
+	public renameSync(oldPath : string, newPath : string) : void {
+		let msgPrefix = "renameSync:fail "
+		let filePath = UTSAndroid.convert2AbsFullPath(oldPath)
+		let isSandyBox = isSandyBoxPath(filePath, false)
+		if (!isSandyBox) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1301003)!);
+		}
+
+		let targetFile = new File(filePath)
+		if (!targetFile.exists()) {
+			/**
+			 * 文件不存在
+			 */
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+		}
+		let newFilePath = UTSAndroid.convert2AbsFullPath(newPath)
+		isSandyBox = isSandyBoxPath(newFilePath, false)
+		if (!isSandyBox) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+		}
+		let newFile = new File(newFilePath)
+
+		if (newFile.getParentFile() == null || !newFile.getParentFile()!.exists()) {
+			/**
+			 * 父文件不存在
+			 */
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+		}
+
+
+		let renameRet = targetFile.renameTo(newFile)
+		if (!renameRet) {
+			// 调用系统api 失败
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+		}
+	}
+
+	public rename(options : RenameOptions) {
+
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+
+			let filePath = UTSAndroid.convert2AbsFullPath(options.oldPath)
+			let isSandyBox = isSandyBoxPath(filePath, false)
+			if (!isSandyBox) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300013);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+			let targetFile = new File(filePath)
+			if (!targetFile.exists()) {
+				/**
+				 * 文件不存在
+				 */
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300002);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+			let newFilePath = UTSAndroid.convert2AbsFullPath(options.newPath)
+			isSandyBox = isSandyBoxPath(newFilePath, false)
+			if (!isSandyBox) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300013);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+			let newFile = new File(newFilePath)
+
+			if (newFile.getParentFile() == null || !newFile.getParentFile()!.exists()) {
+				/**
+				 * 父文件不存在
+				 */
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300002);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+
+			let renameRet = targetFile.renameTo(newFile)
+			if (!renameRet) {
+				// 调用系统api 失败
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300201);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+			currentDispatcher.async(function (_) {
+				let success : FileManagerSuccessResult = {
+					errMsg: "rename:ok"
+				}
+				options.success?.(success)
+				options.complete?.(success)
+			})
+		}, null)
+
+	}
+
+	public accessSync(path : string) : void {
+		let msgPrefix = "accessSync:fail "
+		let filePath = UTSAndroid.convert2AbsFullPath(path)
+		let targetFile = new File(filePath)
+		let isSandyBox = isSandyBoxPath(filePath, true)
+		if (!isSandyBox) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+		}
+
+		if (!targetFile.exists()) {
+			/**
+			 * 文件不存在，或者不是文件夹，异常
+			 */
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+		}
+	}
+
+	public access(options : AccessOptions) {
+
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+
+			let filePath = UTSAndroid.convert2AbsFullPath(options.path)
+			let targetFile = new File(filePath)
+
+			let isSandyBox = isSandyBoxPath(filePath, true)
+			if (!isSandyBox) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300013);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+			if (!targetFile.exists()) {
+				/**
+				 * 文件不存在，或者不是文件夹，异常
+				 */
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300002);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+			currentDispatcher.async(function (_) {
+				// 成功
+				let success : FileManagerSuccessResult = {
+					errMsg: "access:ok"
+				}
+				options.success?.(success)
+				options.complete?.(success)
+			})
+		}, null)
+
+
+
+	}
+
+	readdirSync(dirPath : string) : string[] | null {
+		let msgPrefix = "readdirSync:fail "
+		let filePath = UTSAndroid.convert2AbsFullPath(dirPath)
+		if (filePath.startsWith("/android_asset/")) {
+			let result : Array<string> | null = null
+			try {
+				result = this.readAssetsPath(filePath.replace("/android_asset/", ""))
+			} catch (e) { 
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+			}
+			if(result == null) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+			}
+			return UTSArray.fromNative(result!)
+		} else {
+			let isSandyBox = isSandyBoxPath(filePath, true)
+			if (!isSandyBox) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+			}
+
+			let targetFile = new File(filePath)
+			if (!targetFile.exists() || !targetFile.isDirectory()) {
+				/**
+				 * 文件不存在，或者不是文件夹，异常
+				 */
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+			}
+			return UTSArray.fromNative(targetFile.list()!)
+		}
+	}
+
+	public readdir(options : ReadDirOptions) {
+
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+			let filePath = UTSAndroid.convert2AbsFullPath(options.dirPath)
+			if (filePath.startsWith("/android_asset/")) {
+				try {
+					let result = this.readAssetsPath(filePath.replace("/android_asset/", ""))
+					currentDispatcher.async(function (_) {
+						if (result == null) {
+							let err = new FileSystemManagerFailImpl(1300002);
+							options.fail?.(err)
+							options.complete?.(err)
+						} else {
+							let success : ReadDirSuccessResult = {
+								files: UTSArray.fromNative(result!),
+								errMsg: "readdir:ok"
+							}
+							options.success?.(success)
+							options.complete?.(success)
+						}
+					})
+				} catch (e) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300201);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				}
+			} else {
+				let isSandyBox = isSandyBoxPath(filePath, true)
+				if (!isSandyBox) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300013);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				}
+
+				let targetFile = new File(filePath)
+				if (!targetFile.exists() || !targetFile.isDirectory()) {
+					/**
+					 * 文件不存在，或者不是文件夹，异常
+					 */
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300002);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				}
+
+				let success : ReadDirSuccessResult = {
+					files: UTSArray.fromNative(targetFile.list()!),
+					errMsg: "readdir:ok"
+				}
+				currentDispatcher.async(function (_) {
+					options.success?.(success)
+					options.complete?.(success)
+				})
+			}
+		}, null)
+	}
+	
+	private readAssetsPath(path:string) :Array<string>|null{
+		let assets = UTSAndroid.getAppContext()!.getAssets()
+		let result : kotlin.Array<string> | null = assets.list(path)
+		if (result != null) {
+			// assets无法直接判断文件夹是否存在，所以当获取结果是空数组时，判断父中是否存在这个文件夹，存在说明真的是空文件夹，否则是文件夹不存在，报错
+			if (result.size == 0) {
+				if (path.endsWith("/")) {
+					path = path.substring(0, path.lastIndexOf("/"))
+				}
+				let lastSlashIndex = path.lastIndexOf("/")
+				let folderName: string
+				let parentPath: string
+				if (lastSlashIndex != -1) {
+					folderName = path.substring(lastSlashIndex + 1)
+					parentPath = path.substring(0, lastSlashIndex)
+				} else {
+					// 路径中没有斜杠，说明是根目录下的文件/夹
+					folderName = path
+					parentPath = "" 
+				}
+				if (assets.list(parentPath)?.contains(folderName) == false) {
+					return null;
+				}
+			}
+			return UTSArray.fromNative(result!)
+		}
+		return null
+	}
+
+	public rmdirSync(dirPath : string, recursive : boolean) : void {
+		let msgPrefix = "rmdirSync:fail "
+		let filePath = UTSAndroid.convert2AbsFullPath(dirPath)
+		let targetFile = new File(filePath)
+		let isSandyBox = isSandyBoxPath(filePath, false)
+		if (!isSandyBox) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+		}
+		
+		if(!targetFile.exists()) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+		}
+		
+		if (!targetFile.isDirectory()) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300016, msgPrefix + FileSystemManagerUniErrors.get(1300016)!)
+		}
+
+
+		if (!recursive) {
+			// 没有设置递归，则需要检查是否保存子目录
+			let childList = targetFile.list()
+			if (childList != null && childList.size > 0) {
+				// 存在子目录
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300066, msgPrefix + FileSystemManagerUniErrors.get(1300066)!)
+			}
+		} else {
+			let delRet = targetFile.deleteRecursively()
+			if(isUniSystemPath(filePath)) {
+				targetFile.mkdirs()
+			}
+			if (!delRet) {
+				// 调用系统api 失败
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+			}
+		}
+	}
+
+	public mkdirSync(dirPath : string, recursive : boolean) : void {
+		let msgPrefix = "mkdirSync:fail "
+		if (dirPath.isEmpty()) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300066, msgPrefix + FileSystemManagerUniErrors.get(1300066)!)
+		}
+		let filePath = UTSAndroid.convert2AbsFullPath(dirPath)
+		let isSandyBox = isSandyBoxPath(filePath, false)
+		if (!isSandyBox) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+		}
+		let targetFile = new File(filePath)
+		if (targetFile.exists()) {
+			/**
+			 * 文件已经存在，则无法继续创建
+			 */
+			throw new UniError(FileSystemManagerUniErrorSubject, 1301005, msgPrefix + FileSystemManagerUniErrors.get(1301005)!)
+		}
+
+		if (!recursive) {
+			//  没有设置递归创建
+			if (targetFile.getParentFile() == null || !targetFile.getParentFile()!.exists()) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+			} else {
+				// 父文件夹存在，则继续创建
+				let mkRet = targetFile.mkdir()
+				if (!mkRet) {
+					// 调用系统api 失败
+					throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+				}
+			}
+		} else {
+			// 设置了递归
+			let mkRet = targetFile.mkdirs()
+			if (!mkRet) {
+				// 调用系统api 失败
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+			}
+		}
+	}
+
+	public rmdir(options : RmDirOptions) {
+
+		let filePath = UTSAndroid.convert2AbsFullPath(options.dirPath)
+		let targetFile = new File(filePath)
+
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+
+			let isSandyBox = isSandyBoxPath(filePath, false)
+			if (!isSandyBox) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300013);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+			
+			if(!targetFile.exists()) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300002);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+			if (!targetFile.isDirectory()) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300016);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+
+			if (!options.recursive) {
+				// 没有设置递归，则需要检查是否保存子目录
+				let childList = targetFile.list()
+				if (childList != null && childList.size > 0) {
+					// 存在子目录
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300066);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+
+					return
+				}
+			} else {
+				let delRet = targetFile.deleteRecursively()
+				if(isUniSystemPath(filePath)) {
+					targetFile.mkdirs()
+				}
+				if (!delRet) {
+					// 调用系统api 失败
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300201);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				}
+			}
+
+			let success : FileManagerSuccessResult = {
+				errMsg: "rmdir:ok"
+			}
+			// 删除成功
+			currentDispatcher.async(function (_) {
+				options.success?.(success)
+				options.complete?.(success)
+			})
+		}, null)
+
+
+
+	}
+
+	public mkdir(options : MkDirOptions) {
+
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+
+			if (options.dirPath.isEmpty()) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300066);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+			let filePath = UTSAndroid.convert2AbsFullPath(options.dirPath)
+			let isSandyBox = isSandyBoxPath(filePath, false)
+			if (!isSandyBox) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300013);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+			let targetFile = new File(filePath)
+			if (targetFile.exists()) {
+				/**
+				 * 文件已经存在，则无法继续创建
+				 */
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1301005);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+			if (!options.recursive) {
+				//  没有设置递归创建
+				if (targetFile.getParentFile() == null || !targetFile.getParentFile()!.exists()) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300002);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				} else {
+					// 父文件夹存在，则继续创建
+					let mkRet = targetFile.mkdir()
+					if (!mkRet) {
+						// 调用系统api 失败
+						currentDispatcher.async(function (_) {
+							let err = new FileSystemManagerFailImpl(1300201);
+							options.fail?.(err)
+							options.complete?.(err)
+						})
+
+						return
+					}
+				}
+			} else {
+				// 设置了递归
+				let mkRet = targetFile.mkdirs()
+				if (!mkRet) {
+					// 调用系统api 失败
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300201);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				}
+			}
+
+
+			currentDispatcher.async(function (_) {
+				let success : FileManagerSuccessResult = {
+					errMsg: "mkdir:ok"
+				}
+				// 删除成功
+				options.success?.(success)
+				options.complete?.(success)
+			})
+		}, null)
+
+
+
+	}
+
+	unlinkSync(filePath : string) : void {
+		let msgPrefix = "unlinkSync:fail "
+		let temFilePath = UTSAndroid.convert2AbsFullPath(filePath)
+		let isSandyBox = isSandyBoxPath(temFilePath, false)
+		if (!isSandyBox) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+		}
+
+		let targetFile = new File(temFilePath)
+		if (!targetFile.exists()) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+		}
+
+		// 文件存在，则进行删除操作
+		let delRet = targetFile.delete()
+		if (!delRet) {
+			// 调用系统api 删除失败
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+		}
+	}
+
+	public unlink(options : UnLinkOptions) {
+
+		/**
+		 * 遗留问题，无法知道是否属于沙盒路径
+		 */
+		let filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
+
+
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+
+			let isSandyBox = isSandyBoxPath(filePath, false)
+			if (!isSandyBox) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300013);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+			let targetFile = new File(filePath)
+			if (!targetFile.exists()) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300002);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+			// 文件存在，则进行删除操作
+			let delRet = targetFile.delete()
+			if (!delRet) {
+				// 调用系统api 删除失败
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300201);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+				return
+			}
+
+			currentDispatcher.async(function (_) {
+				let success : FileManagerSuccessResult = {
+					errMsg: "unlink:ok"
+				}
+				// 删除成功
+				options.success?.(success)
+				options.complete?.(success)
+			})
+		}, null)
+
+
+
+	}
+
+	public readFileSync(filePath : string, encoding ?: string) : any {
+		return this.readFileUtil.readFileSync(filePath, encoding)
+	}
+
+	public readFile(options : ReadFileOptions) {
+		this.readFileUtil.readFile(options)
+	}
+
+	public writeFileSync(filePath : string, data : string | ArrayBuffer, encoding ?: string) : void {
+		this.writeFileUtil.writeFileSync(filePath, data, encoding)
+	}
+
+
+	public writeFile(options : WriteFileOptions) {
+		this.writeFileUtil.writeFile(options)
+	}
+
+	public appendFileSync(filePath : string, data : string | ArrayBuffer, encoding ?: string) {
+		this.writeFileUtil.appendFileSync(filePath, data, encoding)
+	}
+	// public appendFileSync(filePath : string, data : any) {
+	// 	this.writeFileUtil.appendFileSync(filePath, data)
+	// }
+
+	public appendFile(options : AppendFileOptions) {
+		this.writeFileUtil.appendFile(options)
+	}
+	public open(options : OpenFileOptions) {
+		let optFlag = options.flag.toLowerCase()
+		if (optFlag != 'a'
+			&& optFlag != 'ax'
+			&& optFlag != 'a+'
+			&& optFlag != 'ax+'
+			&& optFlag != "r"
+			&& optFlag != 'r+'
+			&& optFlag != 'w'
+			&& optFlag != 'wx'
+			&& optFlag != 'w+'
+			&& optFlag != 'wx'
+			&& optFlag != 'wx+') {
+			let err = new FileSystemManagerFailImpl(1302003);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		}
+
+		let filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
+
+		let isSandyBox = isSandyBoxPath(filePath, true)
+		if (!isSandyBox) {
+			let err = new FileSystemManagerFailImpl(1300013);
+			options.fail?.(err)
+			options.complete?.(err)
+			return
+		}
+
+		this.fileDesUtil.open(options, new File(filePath))
+
+	}
+	public openSync(options : OpenFileSyncOptions) : string {
+		let msgPrefix = "openSync:fail "
+		let optFlag = options.flag.toLowerCase()
+		if (optFlag != 'a'
+			&& optFlag != 'ax'
+			&& optFlag != 'a+'
+			&& optFlag != 'ax+'
+			&& optFlag != "r"
+			&& optFlag != 'r+'
+			&& optFlag != 'w'
+			&& optFlag != 'wx'
+			&& optFlag != 'w+'
+			&& optFlag != 'wx'
+			&& optFlag != 'wx+') {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1302003, msgPrefix + FileSystemManagerUniErrors.get(1302003)!)
+		}
+
+		let filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
+
+		let isSandyBox = isSandyBoxPath(filePath, true)
+		if (!isSandyBox) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+		}
+		return this.fileDesUtil.openSync(options, new File(filePath))
+	}
+
+	public saveFile(options : SaveFileOptions) {
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+			// 检查来源文件
+			let tempFilePath = UTSAndroid.convert2AbsFullPath(options.tempFilePath)
+			let isSandyBox = isSandyBoxPath(tempFilePath, true)
+
+			if (!isSandyBox) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300013);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+			let targetFile = new File(tempFilePath)
+			if (!targetFile.exists()) {
+				/**
+				 * 文件不存在
+				 */
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300002);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+
+			if (options.filePath == null) {
+				options.filePath = uni.env.CACHE_PATH +FILE_SYSTEM_MANAGER_SAVE_PATH +targetFile.getName()
+			}
+			// 检查目标文件
+			let newFilePath = UTSAndroid.convert2AbsFullPath(options.filePath!)
+			isSandyBox = isSandyBoxPath(newFilePath, false)
+			if (!isSandyBox) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300013);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+			let newFile = new File(newFilePath)
+			if (newFile.getParentFile() != null && !newFile.getParentFile()!.exists()) {
+				newFile.getParentFile()?.mkdirs()
+			}
+			if(newFile.exists() && newFile.isDirectory()) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300021);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+
+			let copyRetFile = targetFile.copyTo(newFile, true)
+			if (!copyRetFile.exists()) {
+				// 调用系统api 失败
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300201);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+			targetFile.delete()
+			let ret : SaveFileSuccessResult = {
+				savedFilePath: convertRealPathToUniPath(newFile.getPath())
+			}
+
+			currentDispatcher.async(function (_) {
+				options.success?.(ret)
+				options.complete?.(ret)
+			}, null)
+
+		}, null)
+	}
+	public saveFileSync(tempFilePath : string, filePath : string | null) : string {
+		let msgPrefix = "saveFileSync:fail "
+		// 检查来源文件
+		let tfPath = UTSAndroid.convert2AbsFullPath(tempFilePath)
+		let isSandyBox = isSandyBoxPath(tfPath, true)
+
+		if (!isSandyBox) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+		}
+		let targetFile = new File(tfPath)
+		if (!targetFile.exists()) {
+			/**
+			 * 文件不存在
+			 */
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+		}
+		let fp = filePath
+		if (fp == null) {
+			fp = uni.env.CACHE_PATH +FILE_SYSTEM_MANAGER_SAVE_PATH +targetFile.getName()
+		}
+		// 检查目标文件
+		let newFilePath = UTSAndroid.convert2AbsFullPath(fp)
+		isSandyBox = isSandyBoxPath(newFilePath, false)
+		if (!isSandyBox) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300013, msgPrefix + FileSystemManagerUniErrors.get(1300013)!)
+		}
+		let newFile = new File(newFilePath)
+		if (newFile.getParentFile() != null && !newFile.getParentFile()!.exists()) {
+			newFile.getParentFile()!.mkdirs()
+		}
+		
+		if(newFile.exists() && newFile.isDirectory()) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300021, msgPrefix + FileSystemManagerUniErrors.get(1300021)!) 
+		}
+
+		let copyRetFile = targetFile.copyTo(newFile, true)
+		if (!copyRetFile.exists()) {
+			// 调用系统api 失败
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+		}
+		targetFile.delete()
+		return convertRealPathToUniPath(newFilePath)
+	}
+	public unzip(options : UnzipFileOptions) {
+		let msgPrefix = "unzip:fail "
+		// 检查来源文件
+		let zipFilePath = UTSAndroid.convert2AbsFullPath(options.zipFilePath)
+
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+			let is : InputStream;
+			let targetPath = UTSAndroid.convert2AbsFullPath(options.targetPath)
+			if (zipFilePath.startsWith("/android_asset/")) {
+				try {
+					let assetName = zipFilePath.substring("/android_asset/".length)
+					is = UTSAndroid.getAppContext()!.getResources().getAssets().open(assetName);
+				} catch (e : Exception) {
+					/**
+					 * 文件不存在
+					 */
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300002);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+			} else {
+				let isSandyBox = isSandyBoxPath(zipFilePath, true)
+				if (!isSandyBox) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300013);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				let zipFile = new File(zipFilePath)
+				if (!zipFile.exists()) {
+					/**
+					 * 文件不存在
+					 */
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300002);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+
+				isSandyBox = isSandyBoxPath(targetPath, true)
+				let targetFile = new File(targetPath)
+				if (!isSandyBox) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300013);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+
+				}
+				if (!targetFile.exists() || !targetFile.isDirectory()) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300002);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				is = new FileInputStream(zipFile);
+			}
+
+			try {
+				let zis = new ZipInputStream(new BufferedInputStream(is));
+				let buffer = new ByteArray(1024)
+				let count : number = 0;
+				let ze = zis.getNextEntry()
+				while (ze != null) {
+					// ze 是每个条目，我们需要获取对应的文件名
+					let filename = ze.getName();
+
+					// 若是文件夹，直接创建
+					if (ze.isDirectory()) {
+						let fmd = new File(targetPath + "/" + filename);
+						fmd.mkdirs();
+						ze = zis.getNextEntry()
+						continue;
+					}
+					if (filename.startsWith("__MACOSX")) {//mac os上压缩的zip会产生该文件夹
+						ze = zis.getNextEntry()
+						continue;
+					}
+					// // 否则我们将文件提取出来
+					let fdm = new File(targetPath + "/" + filename)
+					if(fdm.parentFile != null) {
+						fdm.parentFile!.mkdirs()
+					}
+					let fout = new FileOutputStream(fdm);
+					// 将压缩文件内容写入到这个文件中
+					let count = zis.read(buffer)
+					while (count != -1) {
+						fout.write(buffer, 0, count);
+						count = zis.read(buffer)
+					}
+					fout.close();
+					zis.closeEntry();
+					ze = zis.getNextEntry()
+				}
+
+				zis.close();
+				let ret : FileManagerSuccessResult = {
+					errMsg: "unzip:ok"
+				}
+				currentDispatcher.async(function (_) {
+					options.success?.(ret)
+					options.complete?.(ret)
+				}, null)
+			} catch (e : Exception) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300201);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+		}, null)
+
+	}
+
+	public getSavedFileList(options : GetSavedFileListOptions) {
+
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+			let filePath = UTSAndroid.convert2AbsFullPath(uni.env.CACHE_PATH+FILE_SYSTEM_MANAGER_SAVE_PATH)
+
+			let targetFile = new File(filePath)
+			if (!targetFile.exists() || !targetFile.isDirectory()) {
+				/**
+				 * 文件不存在，或者不是文件夹，异常
+				 */
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300002);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+			let res : Array<string> = []
+			targetFile.walk()
+				.onEnter(function (file : File) : boolean {
+					if (file.isDirectory()) {
+						return true
+					}
+					return false
+				})
+				.iterator()
+				.forEach(function (file : File) {
+					if (!file.isDirectory()) {
+						res.add(convertRealPathToUniPath(file.getPath()))
+					}
+				})
+
+			let success : GetSavedFileListResult = {
+				fileList: UTSArray.fromNative(res)
+			}
+			currentDispatcher.async(function (_) {
+				options.success?.(success)
+				options.complete?.(success)
+			}, null)
+		}, null)
+	}
+	public truncate(options : TruncateFileOptions) {
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		let that = this
+		UTSAndroid.getDispatcher('io').async(function (_) {
+			let filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
+
+			let targetFile = new File(filePath)
+			if (!targetFile.exists() || targetFile.isDirectory()) {
+				/**
+				 * 文件不存在，或者是文件夹，异常
+				 */
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300002);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+
+			let content = targetFile.readText()
+			that.truncatedBytes(content,options.length,targetFile)
+            
+			let success : FileManagerSuccessResult = {
+				errMsg: "truncateFile:ok"
+			}
+			currentDispatcher.async(function (_) {
+				options.success?.(success)
+				options.complete?.(success)
+			}, null)
+		}, null)
+	}
+	
+	private truncatedBytes(content : string, lenght : number,targetFile:File) {
+		let byteArray = content.toByteArray(Charsets.UTF_8)
+		if (byteArray.size > lenght) {
+			let truncatedBytes = byteArray.copyOfRange(0, lenght.toInt())
+			targetFile.writeText(truncatedBytes.toString(Charsets.UTF_8))
+		}
+	}
+
+	truncateSync(filePath : string, length ?: number) {
+		let msgPrefix = 'truncateSync:fail '
+		let tempLength = length
+		if (tempLength == null) {
+			tempLength = 0
+		}
+		let tempFilePath = UTSAndroid.convert2AbsFullPath(filePath)
+
+		let targetFile = new File(tempFilePath)
+		if (!targetFile.exists() || targetFile.isDirectory()) {
+			/**
+			 * 文件不存在，或者是文件夹，异常
+			 */
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+		}
+
+		let content = targetFile.readText()
+		this.truncatedBytes(content,tempLength,targetFile)
+	}
+
+	readCompressedFile(options : ReadCompressedFileOptions) {
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+			let success : ReadCompressedFileResult = {
+				data: ""
+			}
+			let is : InputStream
+			let filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
+			if (filePath.startsWith("/android_asset/")) {
+				try {
+					let assetName = filePath.substring("/android_asset/".length)
+					is = UTSAndroid.getAppContext()!.getResources().getAssets().open(assetName);
+
+				} catch (e : Exception) {
+					/**
+					 * 文件不存在，或者是文件夹，异常
+					 */
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300002);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+			} else {
+				let targetFile = new File(filePath)
+				if (!targetFile.exists() || targetFile.isDirectory()) {
+					/**
+					 * 文件不存在，或者是文件夹，异常
+					 */
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300002);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				if (options.compressionAlgorithm != 'br') {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1301111);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				is = new FileInputStream(targetFile)
+
+			}
+			try {
+				let brInput = new BrotliInputStream(is)
+				success.data = new String(brInput.readBytes())
+				brInput.close()
+			} catch (e : Exception) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300201);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+			currentDispatcher.async(function (_) {
+				options.success?.(success)
+				options.complete?.(success)
+			}, null)
+		}, null)
+	}
+
+	readCompressedFileSync(filePath : string, compressionAlgorithm : string) : string {
+		let msgPrefix = "readCompressedFileSync:fail "
+		let tempFilePath = UTSAndroid.convert2AbsFullPath(filePath)
+		let is : InputStream
+		if (tempFilePath.startsWith("/android_asset/")) {
+			try {
+				let assetName = tempFilePath.substring("/android_asset/".length)
+				is = UTSAndroid.getAppContext()!.getResources().getAssets().open(assetName);
+
+			} catch (e : Exception) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+			}
+		} else {
+			let targetFile = new File(tempFilePath)
+			if (!targetFile.exists() || targetFile.isDirectory()) {
+				/**
+				 * 文件不存在，或者是文件夹，异常
+				 */
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300002, msgPrefix + FileSystemManagerUniErrors.get(1300002)!)
+			}
+			if (compressionAlgorithm != 'br') {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1301111, msgPrefix + FileSystemManagerUniErrors.get(1301111)!)
+			}
+			is = new FileInputStream(targetFile)
+		}
+		let data : string
+
+		try {
+			let brInput = new BrotliInputStream(is)
+			data = new String(brInput.readBytes())
+			brInput.close()
+		} catch (e : Exception) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+		}
+		return data
+	}
+
+	removeSavedFile(options : RemoveSavedFileOptions) {
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+			let filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
+
+			let targetFile = new File(filePath)
+			if (!targetFile.exists() || targetFile.isDirectory()) {
+				/**
+				 * 文件不存在，或者是文件夹，异常
+				 */
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300002);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+			targetFile.delete()
+			currentDispatcher.async(function (_) {
+				let success : FileManagerSuccessResult = {
+					errMsg: "removeSavedFile:ok"
+				}
+				options.success?.(success)
+				options.complete?.(success)
+			}, null)
+		}, null)
+	}
+
+	public write(options : WriteOptions) {
+		this.writeFileUtil.write(options)
+	}
+
+	public writeSync(options : WriteSyncOptions) : WriteResult {
+		return this.writeFileUtil.writeSync(options)
+	}
+	public read(option : ReadOption) : void {
+		this.readFileUtil.read(option)
+	}
+
+
+	public readSync(option : ReadSyncOption) : ReadResult {
+		return this.readFileUtil.readSync(option)
+	}
+
+	public close(options : CloseOptions) {
+		let fd = ParcelFileDescriptor.fromFd(options.fd.toInt())
+		UTSAndroid.getDispatcher('io').async(function (_) {
+			try {
+				fd.close()
+				let success : FileManagerSuccessResult = {
+					errMsg: "close:ok",
+				}
+				if (this.fileDesUtil.openMap.has(options.fd)) {
+					this.fileDesUtil.openMap.delete(options.fd)
+				}
+
+				options.success?.(success)
+				options.complete?.(success)
+			} catch (e) {
+				let err = new FileSystemManagerFailImpl(1300009);
+				options.fail?.(err)
+				options.complete?.(err)
+			}
+		})
+	}
+	public closeSync(options : CloseSyncOptions) {
+		let msgPrefix = "closeSync:fail "
+		let fd = ParcelFileDescriptor.fromFd(options.fd.toInt())
+		try {
+			fd.close()
+			if (this.fileDesUtil.openMap.has(options.fd)) {
+				this.fileDesUtil.openMap.delete(options.fd)
+			}
+		} catch (e) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300009, msgPrefix + FileSystemManagerUniErrors.get(1300009)!)
+		}
+	}
+	public fstat(options : FStatOptions) {
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		UTSAndroid.getDispatcher('io').async(function (_) {
+			currentDispatcher.async(function (_) {
+				if (!this.fileDesUtil.openMap.has(options.fd)) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300009);
+						options.fail?.(err)
+						options.complete?.(err)
+					}, null)
+					return
+				}
+				let success : FStatSuccessResult = {
+					stats: wrapStats(this.fileDesUtil.openMap.get(options.fd)!)
+				}
+				options.success?.(success)
+				options.complete?.(success)
+			}, null)
+		}, null)
+	}
+	public fstatSync(options : FStatSyncOptions) : Stats {
+		let msgPrefix = "ftruncateSync:fail "
+		if (!this.fileDesUtil.openMap.has(options.fd)) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300009, msgPrefix + FileSystemManagerUniErrors.get(1300009)!)
+		}
+		return wrapStats(this.fileDesUtil.openMap.get(options.fd)!)
+	}
+	public ftruncate(options : FTruncateFileOptions) {
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		let that = this
+		UTSAndroid.getDispatcher('io').async(function (_) {
+			if (!this.fileDesUtil.openMap.has(options.fd)) {
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300009);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
+				return
+			}
+			let targetFile = this.fileDesUtil.openMap.get(options.fd)
+			let content = targetFile!.readText()
+			if (content.length > options.length) {
+				let truncatedContent = content.substring(0, options.length)
+				targetFile.writeText(truncatedContent)
+			}
+            that.truncatedBytes(content,options.length,targetFile)
+			let success : FileManagerSuccessResult = {
+				errMsg: "ftruncate:ok"
+			}
+			currentDispatcher.async(function (_) {
+				options.success?.(success)
+				options.complete?.(success)
+			}, null)
+		}, null)
+	}
+	public ftruncateSync(options : FTruncateFileSyncOptions) {
+		let msgPrefix = "ftruncateSync:fail "
+		if (!this.fileDesUtil.openMap.has(options.fd)) {
+			throw new UniError(FileSystemManagerUniErrorSubject, 1300009, msgPrefix + FileSystemManagerUniErrors.get(1300009)!)
+		}
+		let targetFile = this.fileDesUtil.openMap.get(options.fd)
+		let content = targetFile!.readText()
+		this.truncatedBytes(content,options.length,targetFile)
+	}
+
+	public readZipEntry(options : ReadZipEntryOptions) {
+		let targetPath = uni.env.CACHE_PATH + "/" + Base64.encodeToString(options.filePath.toByteArray(), Base64.NO_WRAP)
+		targetPath = UTSAndroid.convert2AbsFullPath(targetPath)
+		let file : File = new File(targetPath)
+		if (!file.exists()) {
+			file.mkdirs()
+		}
+
+		let target = this
+		let zipOptions : UnzipFileOptions = {//todo 需要去掉
+			zipFilePath: options.filePath,
+			targetPath: targetPath,
+			success: (_) => {
+				let currentDispatcher = UTSAndroid.getDispatcher("main")
+				UTSAndroid.getDispatcher('io').async(function (_) {
+					let targetFile = new File(targetPath)
+					let resultMap : Map<string, ZipFileItem> = new Map()
+					let filterEntries = options.entries
+
+					filterEntries?.forEach((item) => {
+						let fileItem = new File(targetPath + "/" + item.path)
+						if (!fileItem.exists() || fileItem.isDirectory()) {
+							let zipFileItem : ZipFileItem = {
+								errMsg: 'no such file'
+							}
+							resultMap.set(item.path, zipFileItem)
+						}
+					})
+
+					targetFile.walk()
+						.onEnter(function (file : File) : boolean {
+							if (file.isDirectory()) {
+								return true
+							}
+							return false
+						})
+						.iterator()
+						.forEach(function (file : File) {
+							if (options.entries == null) {
+
+								if (!file.isDirectory()) {
+									let data : any | null
+									data = target.readFileSync(file.getPath(), options.encoding)
+									let zipFileItem : ZipFileItem = {
+										data: data,
+										errMsg: 'readZipEntry:ok'
+									}
+									resultMap.set(file.getPath().substring(targetPath.length + 1), zipFileItem)
+								}
+							} else {
+								if (!file.isDirectory()) {
+									filterEntries?.forEach((item) => {
+										let entryPath = targetPath + "/" + item.path
+										if (entryPath == file.getPath()) {
+											let data = target.readFileSync(file.getPath(), item.encoding)
+											let zipFileItem : ZipFileItem = {
+												data: data,
+												errMsg: 'readZipEntry:ok'
+											}
+											resultMap.set(item.path, zipFileItem)
+										}
+									})
+
+								}
+
+							}
+
+						})
+
+					let success : EntriesResult = {
+						result: resultMap,
+						entries:resultMap,
+						errMsg: 'readZipEntry:ok'
+					}
+					currentDispatcher.async(function (_) {
+						options.success?.(success)
+						options.complete?.(success)
+					}, null)
+					targetFile.delete()
+				})
+			},
+			fail: (res) => {
+				let err = new FileSystemManagerFailImpl(res.errCode);
+				options.fail?.(err)
+				options.complete?.(err)
+			}
+		}
+		this.unzip(zipOptions)
+	}
+}
+export const getFileSystemManager : GetFileSystemManager = function () : FileSystemManager {
+	return AndroidFileSystemManager.getManager()
+};
+
+
+
+function wrapStats(sourceFile : File) : Stats {
+	let stats = new AndroidStats()
+	stats.mIsFile = sourceFile.isFile()
+	stats.lastModifiedTime = sourceFile.lastModified()/1000
+	stats.mode = getFileMode(sourceFile)
+	if (sourceFile.isFile()) {
+		stats.size = sourceFile.length()
+	}
+	return stats
+}
+
+function getFileMode(sourceFile : File) : number {
+	let res = "0"
+	if (sourceFile.isFile()) {
+		res += "10"
+	} else if (sourceFile.isDirectory()) {
+		res += "04"
+	}
+	//let file=new File("")
+	// S_IRUSR (00400)：所有者读权限。
+	// S_IWUSR (00200)：所有者写权限。
+	// S_IXUSR (00100)：所有者执行权限。
+	//S_IRWXU (00700)：所有者的权限。100644
+
+	let permission = 7
+	if (sourceFile.canRead() && sourceFile.canWrite() && sourceFile.canExecute()) {
+		permission = 7
+	} else {
+		if (!sourceFile.canRead()) {
+			permission = permission - 4
+		}
+		if (!sourceFile.canWrite()) {
+			permission = permission - 2
+		}
+		if (!sourceFile.canExecute()) {
+			permission = permission - 1
+		}
+	}
+	res += "0" + permission + "00"
+	return Integer.parseInt(res, 8)
+}

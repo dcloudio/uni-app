@@ -1,0 +1,336 @@
+import * as wxopensdk from '@tencent/wechat_open_sdk';
+import { getRealPath, getAbilityContext } from '@dcloudio/uni-runtime';
+import { Helper } from './helper.uts';
+import { UniShareWeixinProvider } from '../interface.uts';
+import { ShareWeixinErrorCode, ShareWeixinError } from '../unierror.uts';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { fileUri } from '@kit.CoreFileKit';
+
+type OnWXReq = (req: wxopensdk.BaseReq) => void;
+type OnWXResp = (resp: wxopensdk.BaseResp) => void;
+
+interface ShareTextOptions {
+  scene: number
+  text: string
+  title: string | undefined
+  description: string | undefined
+}
+
+interface ShareImageOptions {
+  scene: number
+  imageUrl: string
+  imageData: string | undefined
+  title: string | undefined
+  description: string | undefined
+}
+
+interface ShareVideoOptions {
+  scene: number
+  videoUrl: string
+  thumbData: ArrayBuffer | undefined
+  title: string | undefined
+  description: string | undefined
+}
+
+interface ShareWebpageOptions {
+  scene: number
+  webpageUrl: string
+  thumbData: ArrayBuffer | undefined
+  title: string | undefined
+  description: string | undefined
+}
+
+interface ShareMiniProgramOptions {
+  scene: number
+  id: string
+  path: string | undefined
+  miniprogramType: wxopensdk.WXMiniProgramType | undefined
+  thumbData: ArrayBuffer | undefined
+  title: string | undefined
+  description: string | undefined
+}
+
+export { OnWXReq, OnWXResp, UniShareWeixinProviderImpl };
+
+// 不支持 WXSceneFavorite
+const SCENES: Map<string, number> = new Map([
+  ["WXSceneSession", wxopensdk.SendMessageToWXReq.WXSceneSession],
+  ["WXSceneTimeline", wxopensdk.SendMessageToWXReq.WXSceneTimeline]
+])
+
+const WX_APPID = 'WX_APPID'
+const DEFAULT_SCENE = 'WXSceneSession';
+const TITLE_MAX_BYTES = 512;
+const SUMMARY_MAX_BYTES = 1024;
+
+enum ShareType {
+  WEBPAGE = 0,
+  TEXT = 1,
+  IMAGE = 2,
+  MUSIC = 3,
+  VIDEO = 4,
+  MINI_PROGRAM = 5
+}
+
+class UniShareWeixinProviderImpl implements UniShareWeixinProvider {
+
+  id: string = "weixin";
+  description: string = "微信分享";
+  isWeChatInstalled: boolean = false;
+  private APP_ID: string | undefined;
+  private WXApi: wxopensdk.WXApi | undefined;
+
+  constructor() {
+    this.APP_ID = Helper.getMetadata(WX_APPID);
+    if (this.APP_ID) {
+      this.WXApi = wxopensdk.WXAPIFactory.createWXAPI(this.APP_ID);
+      this.isWeChatInstalled = this.WXApi.isWXAppInstalled()
+    }
+  }
+
+  shareVideo(options: ShareVideoOptions): void {
+    const videoObject = new wxopensdk.WXVideoObject();
+    videoObject.videoUrl = options.videoUrl;
+    const mediaMessage = new wxopensdk.WXMediaMessage();
+    mediaMessage.title = options.title;
+    mediaMessage.description = options.description;
+    mediaMessage.mediaObject = videoObject;
+    this.sendShareRequest(options.scene, mediaMessage);
+  }
+
+  shareMiniProgram(options: ShareMiniProgramOptions): void {
+    const miniProgramObject = new wxopensdk.WXMiniProgramObject();
+    miniProgramObject.userName = options.id;
+    miniProgramObject.path = options.path;
+    miniProgramObject.miniprogramType = options.miniprogramType
+    const mediaMessage = new wxopensdk.WXMediaMessage();
+    mediaMessage.mediaObject = miniProgramObject;
+    mediaMessage.title = options.title;
+    mediaMessage.description = options.description;
+    if (options.thumbData) {
+      mediaMessage.thumbData = new Uint8Array(options.thumbData);
+    }
+    this.sendShareRequest(options.scene, mediaMessage);
+  }
+
+  shareWebpage(options: ShareWebpageOptions): void {
+    const webpageObject = new wxopensdk.WXWebpageObject();
+    webpageObject.webpageUrl = options.webpageUrl;
+    const mediaMessage = new wxopensdk.WXMediaMessage();
+    mediaMessage.mediaObject = webpageObject
+    mediaMessage.title = options.title;
+    mediaMessage.description = options.description;
+    if (options.thumbData) {
+      mediaMessage.thumbData = new Uint8Array(options.thumbData);
+    }
+    this.sendShareRequest(options.scene, mediaMessage);
+  }
+
+  shareImage(options: ShareImageOptions): void {
+    const imageObject = new wxopensdk.WXImageObject();
+    if (typeof options.imageData !== 'undefined') {
+      imageObject.imageData = options.imageData;
+    } else {
+      imageObject.uri = options.imageUrl;
+    }
+    const mediaMessage = new wxopensdk.WXMediaMessage();
+    mediaMessage.title = options.title;
+    mediaMessage.description = options.description;
+    mediaMessage.mediaObject = imageObject;
+    this.sendShareRequest(options.scene, mediaMessage);
+  }
+
+  shareText(options: ShareTextOptions): void {
+    const textObject = new wxopensdk.WXTextObject();
+    textObject.text = options.text;
+    const mediaMessage = new wxopensdk.WXMediaMessage();
+    mediaMessage.title = options.title;
+    mediaMessage.description = options.description;
+    mediaMessage.mediaObject = textObject;
+    this.sendShareRequest(options.scene, mediaMessage);
+  }
+
+  openCustomerServiceChat(options: ShareOptions): void {
+      const req = new wxopensdk.OpenCustomerServiceChatReq()
+      req.corpId = options.corpid ?? undefined
+      req.url = options.customerUrl ?? undefined
+      this.handleSendReqResult(this.WXApi?.sendReq(getAbilityContext()!, req))
+  }
+
+  async share(options: ShareOptions) {
+    try {
+      if (!this.APP_ID) {
+        throw Helper.getError(ShareWeixinErrorCode.APP_ID_NOT_FOUND)
+      }
+
+      if (options.openCustomerServiceChat) {
+          this.openCustomerServiceChat(options)
+          return
+      }
+
+      if (options.scene && !SCENES.has(options.scene)) {
+        throw Helper.getError(ShareWeixinErrorCode.SCENE_NOT_SUPPORT)
+      }
+
+      if (options.title && Helper.len(options.title) > TITLE_MAX_BYTES) {
+        // 不能超过512字节
+        throw Helper.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, `title字段不能超过 ${TITLE_MAX_BYTES} 个字节`)
+      }
+
+      if (options.summary && Helper.len(options.summary) > SUMMARY_MAX_BYTES) {
+        // 不能超过1kb
+        throw Helper.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, `title字段不能超过 ${SUMMARY_MAX_BYTES} 个字节`)
+      }
+
+      // 默认分享到聊天
+      options.scene = options.scene ?? DEFAULT_SCENE
+
+      switch (options.type) {
+        case ShareType.WEBPAGE:
+          await this.handleWebpageShare(options);
+          break;
+        case ShareType.TEXT:
+          this.handleTextShare(options);
+          break;
+        case ShareType.IMAGE:
+          await this.handleImageShare(options);
+          break;
+        case ShareType.MUSIC:
+          this.handleMusicShare(options);
+          break;
+        case ShareType.VIDEO:
+          await this.handleVideoShare(options);
+          break;
+        case ShareType.MINI_PROGRAM:
+          await this.handleMiniProgramShare(options);
+          break;
+        default:
+          throw Helper.getError(ShareWeixinErrorCode.TYPE_NOT_FOUND)
+      }
+      options?.success?.({} as ShareSuccess)
+    } catch (error) {
+      // 错误处理
+      const err = error as BusinessError
+      const uniErr = new ShareWeixinError(err.code as ShareErrorCode, err.message)
+
+      options?.fail?.(uniErr)
+    }
+  }
+
+  private async createThumbData(imageUrl: string | undefined): Promise<ArrayBuffer | undefined> {
+    if (!imageUrl) {
+      return undefined;
+    }
+    const imageData = await Helper.getImageBuffer(imageUrl);
+    return imageData;
+  }
+
+  private async handleWebpageShare(options: ShareOptions): Promise<void> {
+    if (!options.href) {
+      throw Helper.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "分享的网页地址不能为空")
+    }
+    let thumbData: ArrayBuffer | undefined = undefined
+    if (options.imageUrl) {
+      thumbData = await this.createThumbData(options.imageUrl)
+    }
+    this.shareWebpage({
+      scene: SCENES.get(options.scene!)!,
+      webpageUrl: options.href!,
+      thumbData: thumbData,
+      title: options.title,
+      description: options.summary
+    } as ShareWebpageOptions)
+  }
+
+  private handleTextShare(options: ShareOptions): void {
+    if (!options.summary) {
+      throw Helper.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "分享的内容不能为空")
+    }
+    this.shareText({
+      scene: SCENES.get(options.scene!)!,
+      text: options.summary!,
+      title: options.title,
+      description: options.summary
+    } as ShareTextOptions);
+  }
+
+  private async handleImageShare(options: ShareOptions): Promise<void> {
+    if (!options.imageUrl) {
+      throw Helper.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "图片地址不能为空")
+    }
+    const imageUrl = getRealPath(options.imageUrl!);
+    let imageData: string | undefined = Helper.getBase64(await Helper.getImageBuffer(imageUrl))
+
+    // 微信图片分享限制： imageData 不能超过 100k，微信 uri 限制 jpeg/png 实测 webp 格式也正常 [微信 sdk 文档](https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Share_and_Favorites/ohos.html)
+    if (typeof imageData === 'string' && imageData.length > 100 * 1024) {
+      // throw Helper.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "图片大小不能大于100kb")
+      imageData = undefined
+    }
+    const imageUri = fileUri.getUriFromPath(options.imageUrl);
+    this.shareImage({
+      scene: SCENES.get(options.scene!)!,
+      imageData: imageData,
+      imageUrl: imageUri,
+      title: options.title,
+      description: options.summary
+    } as ShareImageOptions)
+  }
+
+  private async handleMusicShare(options: ShareOptions): Promise<void> {
+    throw Helper.getError(ShareWeixinErrorCode.TYPE_NOT_SUPPORT)
+  }
+
+  private async handleVideoShare(options: ShareOptions): Promise<void> {
+    if (!options.mediaUrl) {
+      throw Helper.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "分享的视频地址不能为空")
+    }
+    let thumbData: ArrayBuffer | undefined
+    if (options.imageUrl) {
+      thumbData = await this.createThumbData(options.imageUrl)
+    }
+    this.shareVideo({
+      scene: SCENES.get(options.scene!)!,
+      videoUrl: options.mediaUrl!,
+      thumbData: thumbData,
+      title: options.title,
+      description: options.summary
+    } as ShareVideoOptions);
+  }
+
+  private async handleMiniProgramShare(options: ShareOptions): Promise<void> {
+    if (!options.miniProgram || !options.miniProgram.id) {
+      throw Helper.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "需要填写小程序的原始ID")
+    }
+    const miniProgram = options.miniProgram!
+    let thumbData: ArrayBuffer | undefined
+    if (options.imageUrl) {
+      thumbData = await this.createThumbData(options.imageUrl)
+    }
+    this.shareMiniProgram({
+      scene: SCENES.get(options.scene!)!,
+      id: miniProgram.id,
+      path: miniProgram.path,
+      miniprogramType: miniProgram.type ?? wxopensdk.WXMiniProgramType.RELEASE,
+      thumbData: thumbData,
+      title: options.title,
+      description: options.summary
+    } as ShareMiniProgramOptions)
+  }
+
+  private sendShareRequest(scene: number, mediaMessage: wxopensdk.WXMediaMessage): void {
+    const req = new wxopensdk.SendMessageToWXReq();
+    req.scene = scene;
+    req.message = mediaMessage;
+    this.handleSendReqResult(this.WXApi?.sendReq(getAbilityContext()!, req))
+  }
+
+  private handleSendReqResult(sendReqResult?: wxopensdk.SendReqResultWrap) {
+    Promise.resolve(sendReqResult).then((value)=>{
+        if (!value) {
+            throw Helper.getError(ShareWeixinErrorCode.WEI_XIN_APP_MAYBE_NOT_INSTALL);
+        }
+    }).catch((err: BusinessError) => {
+        throw Helper.getError(ShareWeixinErrorCode.SEND_REQUEST_FAILED, err.message);
+    })
+  }
+}

@@ -1,0 +1,4 @@
+export const API_$_ON = '$on'
+export const API_$_ONCE = '$once'
+export const API_$_OFF = '$off'
+export const API_$_EMIT = '$emit'

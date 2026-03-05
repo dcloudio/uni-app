@@ -1,0 +1,6 @@
+{
+	"frameworks": [
+		"StoreKit.framework"
+	],
+	"deploymentTarget": "12.0"
+}

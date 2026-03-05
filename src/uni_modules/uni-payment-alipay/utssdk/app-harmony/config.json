@@ -1,0 +1,5 @@
+{
+    "dependencies": {
+        "@cashier_alipay/cashiersdk": "15.8.24"
+    }
+}

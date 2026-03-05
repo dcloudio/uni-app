@@ -1,0 +1,47 @@
+import { CreateInnerAudioContextErrorCode, ICreateInnerAudioContextFail } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+
+export const CreateInnerAudioUniErrorSubject = 'uni-createInnerAudioContext';
+
+/**
+ * 错误码
+ * @UniError
+ */
+export const CreateInnerAudioContextUniErrors : Map<CreateInnerAudioContextErrorCode, string> = new Map([
+	/**
+	 * 系统错误
+	 */
+	[1107601, 'system error.'],
+	/**
+	 * 网络错误
+	 */
+	[1107602, 'network error.'],
+	/**
+	 * 文件错误
+	 */
+	[1107603, 'file error.'],
+	/**
+	 * 格式错误
+	 */
+	[1107604, 'format error.'],
+	/**
+	 * 未知错误
+	 */
+	[1107605, 'unknown error.'],
+	/**
+	 * 播放路径不能为空
+	 */
+	[1107609, 'empty src.'],
+]);
+
+export class CreateInnerAudioContextFailImpl extends UniError implements ICreateInnerAudioContextFail {
+	constructor(errCode : CreateInnerAudioContextErrorCode) {
+		super();
+		this.errSubject = CreateInnerAudioUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = CreateInnerAudioContextUniErrors[errCode] ?? "";
+	}
+}

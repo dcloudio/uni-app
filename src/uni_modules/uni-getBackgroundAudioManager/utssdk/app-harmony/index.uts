@@ -1,0 +1,571 @@
+import { media } from '@kit.MediaKit';
+import { audio } from '@kit.AudioKit';
+import { avSession } from '@kit.AVSessionKit';
+import { wantAgent } from '@kit.AbilityKit';
+import { uri } from '@kit.ArkTS';
+import { backgroundTaskManager } from '@kit.BackgroundTasksKit';
+import { getRealPath } from '@dcloudio/uni-runtime'
+
+import { BackgroundAudioManager, GetBackgroundAudioManager } from '../interface.uts';
+import { API_GET_BACKGROUND_AUDIO_MANAGER } from '../protocol.uts';
+import { getFdFromUriOrSandBoxPath, isFileUri, isSandboxPath, AudioPlayerCallback, AudioPlayerError } from './utils.uts';
+import { BusinessError } from '@ohos.base';
+import { ICreateBackgroundAudioFail } from '../interface.uts';
+
+interface TempAbilityInfo {
+    bundleName: string
+    name: string
+}
+const audioPlayerCallback = new AudioPlayerCallback()
+
+let id: number = 0
+class AVSession {
+    session: avSession.AVSession | null = null
+    // sessionController: avSession.AVSessionController | null = null
+    metadata: avSession.AVMetadata = {
+        assetId: '',
+        skipIntervals: avSession.SkipIntervals.SECONDS_10
+    }
+    playbackState: avSession.AVPlaybackState = {
+        state: avSession.PlaybackState.PLAYBACK_STATE_INITIAL,
+        position: { elapsedTime: 0, updateTime: (new Date()).getTime() },
+        bufferedTime: 1000,
+        isFavorite: false,
+    }
+    createSessionPromise: Promise<avSession.AVSession> | null = null
+
+    constructor() { }
+
+    async init() {
+        if (this.session) return this.session
+        this.metadata.assetId = `${id++}`
+        this.createSessionPromise = avSession.createAVSession(UTSHarmony.getUIAbilityContext()!, `backgroundAudioPlayer_${id}`, 'audio')
+        this.session = await this.createSessionPromise
+        this.createSessionPromise = null
+        // this.sessionController = await this.session!.getController()
+        this.setAVMetadata();
+        this.setAVPlaybackState();
+        return this.session!
+    }
+
+    async setAVMetadata() {
+        if (!this.session) {
+            await this.createSessionPromise
+        }
+        this.session?.setAVMetadata(this.metadata)
+    }
+
+    async setAVPlaybackState() {
+        if (!this.session) {
+            await this.createSessionPromise
+        }
+        this.session?.setAVPlaybackState(this.playbackState);
+    }
+
+    async destroy() {
+        if (this.session) {
+            this.session.off('play');
+            this.session.off('pause');
+            this.session.off('stop');
+            this.session.off('playNext');
+            this.session.off('playPrevious');
+            this.session.off('seek');
+            return this.session.deactivate()
+        }
+        this.session = null
+    }
+}
+
+function startBackgroundTask() {
+    const abilityInfo = UTSHarmony.getUIAbilityContext()!.abilityInfo as TempAbilityInfo
+    const wantAgentInfo: wantAgent.WantAgentInfo = {
+        wants: [
+            {
+                bundleName: abilityInfo.bundleName,
+                abilityName: abilityInfo.name
+            }
+        ],
+        operationType: wantAgent.OperationType.START_ABILITY,
+        requestCode: 0,
+        wantAgentFlags: [wantAgent.WantAgentFlags.UPDATE_PRESENT_FLAG]
+    };
+    // use WantAgent to notify
+    return wantAgent.getWantAgent(wantAgentInfo).then((wantAgentObj) => {
+        return backgroundTaskManager.startBackgroundRunning(UTSHarmony.getUIAbilityContext()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
+    }).catch((err: BusinessError) => {
+        // audioPlayerCallback.error(new AudioPlayerError(err.message, err.code));
+    });
+}
+async function stopBackgroundTask() {
+    return backgroundTaskManager.stopBackgroundRunning(UTSHarmony.getUIAbilityContext()!).then(() => {
+        // console.debug('[getBackgroundAudioManager]  stop operation succeeded');
+    }).catch((err: BusinessError) => {
+        // audioPlayerCallback.error(new AudioPlayerError(err.message, err.code));
+    });
+}
+
+async function START_BACKGROUND() {
+    await startBackgroundTask();
+}
+
+async function STOP_BACKGROUND() {
+    await stopBackgroundTask();
+}
+
+const LOG = (msg: string): void => console.log(`[getBackgroundAudioManager]: ${msg}`)
+
+class STATE_TYPE {
+    // 音频播放空闲
+    static IDLE: string = 'idle'
+    // 音频正在播放
+    static PLAYING: string = 'playing'
+    // 音频暂停播放
+    static PAUSED: string = 'paused'
+    // 音频停止播放
+    static STOPPED: string = 'stopped'
+    // 错误状态
+    static ERROR: string = 'error'
+}
+
+class BGAManagerImpl implements BackgroundAudioManager {
+    __v_skip: boolean = true
+    static audioPlayer?: media.AudioPlayer
+    static avSession?: AVSession
+
+    private _src: string = ''
+    private _startTime: number = 0
+    private _buffered: number = 0
+    private _title: string = ''
+    private _epname: string = ''
+    private _singer: string = ''
+    private _coverImgUrl: string = ''
+    private _webUrl: string = ''
+    private _protocol: string = ''
+    private _playbackRate: number = 1
+    private _dataloaded: boolean = false;
+    private isPlaying: boolean = false
+    private avSessionIsActive: boolean = false
+
+    readonly obeyMuteSwitch: boolean = false
+
+    private _onDataLoad: Function = () => { };
+    private _onPlay: Function = () => { };
+    private _onPause: Function = () => { };
+    private _onEnded: Function = () => { };
+    private _onTimeUpdate: (positionMS: number) => void = (positionMS: number) => { };
+    private _onError: Function = () => { };
+    private _onBufferingUpdate: Function = () => { };
+    private avSessionDestroyPromise: Promise<void> | null = null;
+    private _cache: boolean = false;
+
+    constructor() {
+        this.init()
+        this.createAVSession();
+    }
+
+    private async createAVSession() {
+        const _audioPlayer = BGAManagerImpl.audioPlayer;
+        BGAManagerImpl.avSession = new AVSession();
+        const _avSession = BGAManagerImpl.avSession;
+        this._onDataLoad = async () => {
+            _avSession.metadata.duration = _audioPlayer!.duration
+            _avSession.setAVMetadata();
+        };
+        this._onPlay = async () => {
+            _avSession.playbackState.state = avSession.PlaybackState.PLAYBACK_STATE_PLAY;
+            _avSession.setAVPlaybackState();
+        };
+        this._onPause = () => {
+            _avSession.playbackState.state = avSession.PlaybackState.PLAYBACK_STATE_PAUSE;
+            _avSession.setAVPlaybackState();
+        };
+        this._onEnded = () => {
+            _avSession.playbackState.state = avSession.PlaybackState.PLAYBACK_STATE_COMPLETED;
+            _avSession.setAVPlaybackState();
+        };
+        this._onTimeUpdate = (positionMS: number) => {
+            _avSession.playbackState.position = {
+                elapsedTime: positionMS,
+                updateTime: new Date().getTime()
+            } as avSession.PlaybackPosition;
+            _avSession?.setAVPlaybackState();
+        };
+        this._onError = () => {
+            _avSession.playbackState.state = avSession.PlaybackState.PLAYBACK_STATE_ERROR;
+            _avSession.setAVPlaybackState();
+        };
+        this._onBufferingUpdate = () => {
+            _avSession.playbackState.state = avSession.PlaybackState.PLAYBACK_STATE_BUFFERING;
+            _avSession.setAVPlaybackState();
+        };
+    }
+    private async avSessionInit() {
+        const _avSession = BGAManagerImpl.avSession;
+        if (!_avSession) return
+        if (_avSession.session == null) {
+            await _avSession.init()
+        }
+        if (this.avSessionDestroyPromise != null) {
+            await this.avSessionDestroyPromise
+        }
+        if (this.avSessionIsActive) return
+        this.avSessionDestroyPromise = null
+        _avSession.session?.on('play', () => this.play());
+        _avSession.session?.on('pause', () => this.pause());
+        _avSession.session?.on('stop', () => this.stop());
+        _avSession.session?.on('playNext', () => audioPlayerCallback.next());
+        _avSession.session?.on('playPrevious', () => audioPlayerCallback.prev());
+        _avSession.session?.on('seek', (position) => {
+            this.seek(position / 1000);
+        });
+        await _avSession.session?.activate();
+        this.avSessionIsActive = true
+        return _avSession.session;
+    }
+
+    init() {
+        BGAManagerImpl.audioPlayer = media.createAudioPlayer();
+
+        const _audioPlayer = BGAManagerImpl.audioPlayer
+        _audioPlayer.on('dataLoad', () => {
+            this._dataloaded = true
+            this._onDataLoad()
+            audioPlayerCallback.canPlay()
+        });
+        _audioPlayer.on('play', () => {
+            this.isPlaying = true;
+            this._onPlay()
+            audioPlayerCallback.play()
+        });
+        _audioPlayer.on('pause', () => {
+            this.isPlaying = false;
+            this._onPause()
+            audioPlayerCallback.pause()
+        });
+        _audioPlayer.on('stop', () => {
+            this.isPlaying = false;
+        });
+        _audioPlayer.on('finish', () => {
+            this.isPlaying = false;
+            // 先设定 avSessionDestroyPromise 再触发 onEned 事件，用户会在回调里重新设置播放
+            if (BGAManagerImpl.avSession) {
+                this.avSessionDestroyPromise = BGAManagerImpl.avSession.destroy().then(() => {
+                    this.avSessionIsActive = false
+                })
+            }
+            this._onEnded()
+            STOP_BACKGROUND()
+            audioPlayerCallback.ended()
+        });
+        _audioPlayer.on('timeUpdate', res => {
+            this._onTimeUpdate(res)
+            audioPlayerCallback.timeUpdate(res / 1000)
+        });
+        _audioPlayer.on('error', (err) => {
+            this.isPlaying = false;
+            this._onError()
+            audioPlayerCallback.error(new AudioPlayerError(err.message, err.code))
+        });
+        _audioPlayer.on('bufferingUpdate', (infoType, value) => {
+            switch (infoType) {
+                // 开始缓冲，播放器会暂停播放
+                case media.BufferingInfoType.BUFFERING_START:
+                    this._onBufferingUpdate()
+                    audioPlayerCallback.waiting()
+                    break;
+                // 缓冲结束，播放器会恢复播放
+                case media.BufferingInfoType.BUFFERING_END:
+                    // 确保 dataLoad 前不重复触发
+                    if (this._dataloaded) {
+                        this._onPlay()
+                        audioPlayerCallback.canPlay()
+                    }
+                    break;
+                // 表示缓冲百分比。可参考该事件感知缓冲进度
+                case media.BufferingInfoType.BUFFERING_PERCENT:
+                    break;
+                // 表示已缓冲数据预估可播放时长，单位为毫秒（ms）。缓冲区中的数据变化量大于500ms，上报一次。可参考该事件做进度条
+                case media.BufferingInfoType.CACHED_DURATION:
+                    this._buffered = value;
+                    break;
+            }
+        });
+        _audioPlayer.on('audioInterrupt', (InterruptEvent) => {
+            if (_audioPlayer && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_PAUSE) {
+                this.isPlaying = false;
+                _audioPlayer.pause();
+            }
+            if (_audioPlayer && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_RESUME) {
+                this.isPlaying = true;
+                _audioPlayer.play();
+            }
+        });
+    }
+    get duration() {
+        if (!BGAManagerImpl.audioPlayer) { return 0 }
+        return BGAManagerImpl.audioPlayer.duration / 1000;
+    }
+    get currentTime() {
+        return (BGAManagerImpl.audioPlayer?.currentTime ?? 0) / 1000;
+    }
+    get paused() {
+        if (!BGAManagerImpl.audioPlayer) { return false }
+        return BGAManagerImpl.audioPlayer.state === STATE_TYPE.PAUSED
+    }
+    get src() {
+        if (!BGAManagerImpl.audioPlayer) { return '' }
+        return BGAManagerImpl.audioPlayer.src;
+    }
+    set src(value) {
+        if (typeof (value) !== 'string') {
+            audioPlayerCallback.error(new AudioPlayerError(`set src: ${value} is not string`, 10004))
+            return;
+        }
+        if (!BGAManagerImpl.audioPlayer) {
+            audioPlayerCallback.error(new AudioPlayerError(`player is not exist`, 10001))
+            return;
+        }
+        value = getRealPath(value)
+        if (value.startsWith('/')) {
+            value = `file://${value}`;
+        }
+        if (!value || !(value.startsWith('http:') || value.startsWith('https:') || isFileUri(value) || isSandboxPath(value))) {
+            LOG(`set src: ${value} is invalid`);
+            return;
+        }
+        let path: string = '';
+        if (value.startsWith('http:') || value.startsWith('https:')) {
+            path = value;
+        } else if (isFileUri(value) || isSandboxPath(value)) {
+            try {
+                const fd = getFdFromUriOrSandBoxPath(value);
+                path = `fd://${fd}`;
+            }
+            catch (err) {
+                audioPlayerCallback.error(new AudioPlayerError((err as BusinessError).message, (err as BusinessError).code))
+            }
+        }
+        if (BGAManagerImpl.audioPlayer.src) {
+            BGAManagerImpl.audioPlayer.reset();
+        }
+        BGAManagerImpl.audioPlayer.src = path;
+        this._src = value;
+        if (this._startTime) {
+            this.seek(this._startTime);
+        }
+        if (BGAManagerImpl.avSession) {
+            if (this.title.length === 0) {
+                BGAManagerImpl.avSession.metadata.title = new uri.URI(value).getLastSegment()
+            }
+            BGAManagerImpl.avSession.metadata.description = value
+        }
+        this.play()
+    }
+    get startTime() {
+        return this._startTime
+    }
+    set startTime(time: number) {
+        this._startTime = time
+    }
+    get title() {
+        return this._title;
+    }
+    set title(titleName: string) {
+        this._title = titleName;
+        BGAManagerImpl.avSession!.metadata.title = titleName
+    }
+    get buffered() {
+        if (!BGAManagerImpl.audioPlayer) return 0
+        media.PlaybackInfoKey.BUFFER_DURATION
+        return this._buffered / 1000;
+    }
+    get epname() {
+        return this._epname;
+    }
+    set epname(epName: string) {
+        this._epname = epName;
+        BGAManagerImpl.avSession!.metadata.album = epName
+    }
+    get singer() {
+        return this._singer;
+    }
+    set singer(singerName: string) {
+        this._singer = singerName;
+        BGAManagerImpl.avSession!.metadata.artist = singerName
+    }
+    get coverImgUrl() {
+        return this._coverImgUrl;
+    }
+    set coverImgUrl(url: string) {
+        this._coverImgUrl = url;
+        BGAManagerImpl.avSession!.metadata.mediaImage = url
+    }
+    get webUrl() {
+        return this._webUrl;
+    }
+    set webUrl(url: string) {
+        this._webUrl = url;
+    }
+    get protocol() {
+        return this._protocol;
+    }
+    set protocol(protocolType: string) {
+        this._protocol = protocolType;
+    }
+    set playbackRate(rate: number) {
+        audioPlayerCallback.error(new AudioPlayerError('HarmonyOS Audio setting playbackRate is not supported.', -1))
+    }
+    get playbackRate() {
+        return this._playbackRate
+    }
+    set cache(value: boolean) {
+        this._cache = value
+    }
+    get cache() {
+        return this._cache
+    }
+    async play() {
+        if (!BGAManagerImpl.audioPlayer) {
+            return;
+        }
+        const state = BGAManagerImpl.audioPlayer.state;
+        if (this.isPlaying || ![STATE_TYPE.PAUSED, STATE_TYPE.STOPPED, STATE_TYPE.IDLE].includes(state)) {
+            return;
+        }
+        this.isPlaying = true;
+        if (this._src && BGAManagerImpl.audioPlayer.src === '') {
+            this.src = this._src;
+        }
+        await this.avSessionInit()
+        BGAManagerImpl.audioPlayer.play();
+        START_BACKGROUND()
+    }
+    pause() {
+        if (!BGAManagerImpl.audioPlayer) { return; }
+        this.isPlaying = false;
+        const state = BGAManagerImpl.audioPlayer.state;
+
+        if (STATE_TYPE.PLAYING !== state) { return; }
+        BGAManagerImpl.audioPlayer.pause();
+    }
+    stop() {
+        if (!BGAManagerImpl.audioPlayer) { return; }
+        if (![STATE_TYPE.PAUSED, STATE_TYPE.PLAYING].includes(BGAManagerImpl.audioPlayer.state)) { return; }
+        this.isPlaying = false;
+        BGAManagerImpl.audioPlayer.seek(0)
+        BGAManagerImpl.audioPlayer.stop();
+        STOP_BACKGROUND();
+        audioPlayerCallback.stop();
+        BGAManagerImpl.audioPlayer.reset();
+        //reset() 置空 src，确保 stop 后还可以继续执行 play #24202
+        BGAManagerImpl.audioPlayer.src = '';
+        if (BGAManagerImpl.avSession) {
+            BGAManagerImpl.avSession.playbackState.state = avSession.PlaybackState.PLAYBACK_STATE_STOP;
+            BGAManagerImpl.avSession.setAVPlaybackState()
+            this.avSessionDestroyPromise = BGAManagerImpl.avSession.destroy().then(() => {
+                this.avSessionIsActive = false
+            })
+        }
+    }
+    seek(position: number) {
+        if (!BGAManagerImpl.audioPlayer) { return; }
+        const state = BGAManagerImpl.audioPlayer.state;
+        if (![STATE_TYPE.PAUSED, STATE_TYPE.PLAYING, STATE_TYPE.IDLE].includes(state)) {
+            return;
+        }
+        audioPlayerCallback.seeking()
+        const positionMS = position * 1000;
+        BGAManagerImpl.audioPlayer.seek(positionMS);
+        audioPlayerCallback.seeked()
+    }
+    onCanplay(callback: (result: any) => void): void {
+        audioPlayerCallback.onCanplay(callback)
+    }
+    onPlay(callback: (result: any) => void): void {
+        audioPlayerCallback.onPlay(callback)
+    }
+    onPause(callback: (result: any) => void): void {
+        audioPlayerCallback.onPause(callback)
+    }
+    onStop(callback: (result: any) => void): void {
+        audioPlayerCallback.onStop(callback)
+    }
+    onEnded(callback: (result: any) => void): void {
+        audioPlayerCallback.onEnded(callback)
+    }
+    onTimeUpdate(callback: (result: any) => void): void {
+        audioPlayerCallback.onTimeUpdate(callback)
+    }
+    onError(callback: (result: ICreateBackgroundAudioFail) => void): void {
+        audioPlayerCallback.onError(callback)
+    }
+    onWaiting(callback: (result: any) => void): void {
+        audioPlayerCallback.onWaiting(callback)
+    }
+    onPrev(callback: (result: any) => void): void {
+        audioPlayerCallback.onPrev(callback)
+    }
+    onNext(callback: (result: any) => void): void {
+        audioPlayerCallback.onNext(callback)
+    }
+    onSeeking(callback: (result: any) => void): void {
+        audioPlayerCallback.onSeeking(callback)
+    }
+    onSeeked(callback: (result: any) => void): void {
+        audioPlayerCallback.onSeeked(callback)
+    }
+    offCanplay(): void {
+        audioPlayerCallback.onCanplayCallbacks = []
+    }
+    offPlay(): void {
+        audioPlayerCallback.onPlayCallbacks = []
+    }
+    offPause(): void {
+        audioPlayerCallback.onPauseCallbacks = []
+    }
+    offStop(): void {
+        audioPlayerCallback.onStopCallbacks = []
+    }
+    offEnded(): void {
+        audioPlayerCallback.onEndedCallbacks = []
+    }
+    offTimeUpdate(): void {
+        audioPlayerCallback.onTimeUpdateCallbacks = []
+    }
+    offError(): void {
+        audioPlayerCallback.onErrorCallbacks = []
+    }
+    offWaiting(): void {
+        audioPlayerCallback.onWaitingCallbacks = []
+    }
+    offPrev(): void {
+        audioPlayerCallback.onPrevCallbacks = []
+    }
+    offNext(): void {
+        audioPlayerCallback.onNextCallbacks = []
+    }
+    offSeeking(): void {
+        audioPlayerCallback.onSeekingCallbacks = []
+    }
+    offSeeked(): void {
+        audioPlayerCallback.onSeekedCallbacks = []
+    }
+}
+
+let backgroundAudioManager: BackgroundAudioManager | null = null
+
+export const getBackgroundAudioManager: GetBackgroundAudioManager =
+    defineSyncApi<BackgroundAudioManager>(
+        API_GET_BACKGROUND_AUDIO_MANAGER,
+        () => {
+            if (!backgroundAudioManager) backgroundAudioManager = new BGAManagerImpl()
+            return backgroundAudioManager
+        }
+    ) as GetBackgroundAudioManager
+
+export {
+    BackgroundAudioManager,
+    CreateBackgroundAudioErrorCode,
+    GetBackgroundAudioManager,
+    ICreateBackgroundAudioFail
+} from '../interface.uts';

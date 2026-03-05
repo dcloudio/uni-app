@@ -1,0 +1,128 @@
+import { OpenDocument, OpenDocumentOptions } from '../interface.uts';
+import { OpenDocumentErrorImpl } from '../unierror.uts';
+
+import MimeTypeMap from 'android.webkit.MimeTypeMap';
+import Uri from 'android.net.Uri';
+import Intent from 'android.content.Intent';
+import Build from 'android.os.Build';
+import Application from 'android.app.Application';
+import Activity from 'android.app.Activity';
+import FileProvider from 'androidx.core.content.FileProvider';
+import File from 'java.io.File';
+import InputStream from 'java.io.InputStream';
+
+export class UniOpenDocumentHookProxy implements UTSAndroidHookProxy {
+	override onCreate(application : Application) {
+		UTSAndroid.getDispatcher('io').async((_) => {
+			const cacheDir = new File(application.getExternalCacheDir()?.getAbsolutePath() + '/uni-document/');
+			if (cacheDir.exists() && cacheDir.isDirectory()) {
+				const files = cacheDir.listFiles();
+				if (files != null) {
+					for (file of files) {
+						file.delete();
+					}
+				}
+			}
+		}, null);
+	}
+}
+
+export const openDocument : OpenDocument = function (options : OpenDocumentOptions | null) {
+	if (options == null) return;
+	const activity = UTSAndroid.getUniActivity();
+	if (activity != null) {
+		const path = UTSAndroid.convert2AbsFullPath(options.filePath);
+		if (!isValidFile(activity, options, path)) {
+			return;
+		}
+		let uri : Uri;
+		if (path.startsWith('content://')) {
+			uri = Uri.parse(path);
+		} else {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+				uri = FileProvider.getUriForFile(activity, activity.getPackageName() + '.dc.fileprovider', new File(path));
+			} else {
+				uri = Uri.parse(path);
+			}
+		}
+		const intent = new Intent();
+		intent.setAction(Intent.ACTION_VIEW);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		if (options.fileType != null) {
+			const mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(options.fileType);
+			intent.setDataAndType(uri, mimeType);
+		} else {
+			intent.setData(uri);
+		}
+		try {
+			activity.startActivity(intent);
+		} catch (e : Exception) {
+			const error = new OpenDocumentErrorImpl(1300603);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+		options.success?.({});
+		options.complete?.({});
+	} else {
+		const error = new OpenDocumentErrorImpl(1300604);
+		options.fail?.(error);
+		options.complete?.(error);
+	}
+}
+
+function isValidFile(activity : Activity, options : OpenDocumentOptions, path : string) : boolean {
+	let is : InputStream | null = null;
+	if (path.startsWith('/android_asset')) {
+		try {
+			is = activity.getAssets().open(path.slice('/android_asset/'.length));
+		} catch (e : Exception) {
+			const error = new OpenDocumentErrorImpl(1300602);
+			options.fail?.(error);
+			options.complete?.(error);
+			return false;
+		} finally {
+			is?.close();
+		}
+		const destDirPath = activity.getExternalCacheDir()?.getAbsolutePath() + '/uni-document/';
+		const destDir = new File(destDirPath);
+		if (!destDir.exists()) {
+			destDir.mkdirs();
+		}
+		const splits = options.filePath.split('/');
+		path = destDirPath + splits[splits.length - 1];
+		const destFile = new File(path);
+		if (!destFile.exists()) {
+			try {
+				destFile.createNewFile();
+				uni.getFileSystemManager().copyFileSync(options.filePath, path);
+			} catch (e : Exception) {
+				const error = new OpenDocumentErrorImpl(1300604);
+				options.fail?.(error);
+				options.complete?.(error);
+				return false;
+			}
+		}
+	} else if (path.startsWith('content://')) {
+		try {
+			is = activity.getContentResolver().openInputStream(Uri.parse(path));
+		} catch (e : Exception) {
+			const error = new OpenDocumentErrorImpl(1300602);
+			options.fail?.(error);
+			options.complete?.(error);
+			return false;
+		} finally {
+			is?.close();
+		}
+	} else {
+		const file = new File(path);
+		if (!file.exists()) {
+			const error = new OpenDocumentErrorImpl(1300602);
+			options.fail?.(error);
+			options.complete?.(error);
+			return false;
+		}
+	}
+	return true;
+}

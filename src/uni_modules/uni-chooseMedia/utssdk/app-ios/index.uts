@@ -1,0 +1,520 @@
+import { ChooseMedia, ChooseMediaOptions, ChooseMediaTempFile, ChooseMediaSuccess } from "../interface.uts";
+import { ChooseMediaErrorImpl, UniError_ChooseMedia } from "../unierror.uts";
+import { AVCaptureDevice, AVMediaType, AVURLAsset, AVAssetExportPresetPassthrough } from "AVFoundation";
+import { UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIImagePickerController, UIViewController, UIImage, UIModalPresentationStyle } from "UIKit";
+import { PHPickerViewControllerDelegate, PHPickerViewController, PHPickerConfiguration, PHPickerFilter, PHPickerResult } from "PhotosUI";
+import { UTSiOS } from "DCloudUTSFoundation";
+import { URL, FileManager, FileAttributeKey, NumberFormatter, NSNumber, NSItemProvider } from 'Foundation';
+import { CGSize } from 'CoreFoundation';
+import { CMTime } from 'CoreMedia';
+import { UTType } from "UniformTypeIdentifiers";
+
+let imagePickerManager : ChooseMediaImagePickerManager | null = null;
+
+export const chooseMedia : ChooseMedia = function (options : ChooseMediaOptions) {
+	chooseMediaWithSourceType(options, function (index : number) {
+		if (index == 0) {
+			chooseMediaRequestCameraPermission(function (status : number) {
+				const mediaType : Array<string> = (options.mediaType != null && options.mediaType!.length > 0) ? options.mediaType! : ["image", "video"];
+				if (status == 1) {
+					if (mediaType.indexOf("video") >= 0) {
+						chooseMediaRequestMicrophonePermission(function (status : number) {
+							if (status == 1) {
+								chooseMediaWithCamera(options);
+							} else {
+								const error = new ChooseMediaErrorImpl(1101005, UniError_ChooseMedia);
+								options.fail?.(error)
+								options.complete?.(error)
+							}
+						})
+					} else {
+						chooseMediaWithCamera(options);
+					}
+				} else {
+					const error = new ChooseMediaErrorImpl(1101005, UniError_ChooseMedia);
+					options.fail?.(error)
+					options.complete?.(error)
+				}
+			})
+		} else if (index == 1) {
+			imagePickerManager = new ChooseMediaImagePickerManager(options);
+			imagePickerManager!.chooseMediaWithAlbum();
+		}
+	})
+}
+
+function chooseMediaWithCamera(options : ChooseMediaOptions) {
+	imagePickerManager = new ChooseMediaImagePickerManager(options);
+	imagePickerManager!.chooseMediaWithCamera()
+}
+
+function chooseMediaRequestCameraPermission(completion : (status : number) => void) {
+	const cameraAuthorized = AVCaptureDevice.authorizationStatus(for = AVMediaType.video)
+	if (cameraAuthorized == AVAuthorizationStatus.authorized) {
+		completion(1)
+	} else if (cameraAuthorized == AVAuthorizationStatus.notDetermined) {
+		AVCaptureDevice.requestAccess(for = AVMediaType.video, completionHandler = (result : Bool) : void => {
+			if (result) {
+				completion(1)
+			} else {
+				completion(0)
+			}
+		})
+	} else {
+		completion(0)
+	}
+}
+
+function chooseMediaRequestMicrophonePermission(completion : (status : number) => void) {
+	const authorized = AVCaptureDevice.authorizationStatus(for = AVMediaType.audio)
+	if (authorized == AVAuthorizationStatus.authorized) {
+		completion(1)
+	} else if (authorized == AVAuthorizationStatus.notDetermined) {
+		AVCaptureDevice.requestAccess(for = AVMediaType.audio, completionHandler = (result : Bool) : void => {
+			if (result) {
+				completion(1)
+			} else {
+				completion(0)
+			}
+		})
+	} else {
+		completion(0)
+	}
+}
+
+function chooseMediaWithSourceType(options : ChooseMediaOptions, chooseSourceCallback : (index : number) => void) {
+	const sourceType : Array<string> = (options.sourceType != null && options.sourceType!.length > 0) ? options.sourceType! : ["album", "camera"];
+	if (sourceType.length == 1) {
+		if (sourceType.indexOf("camera") >= 0) {
+			chooseSourceCallback(0)
+		} else if (sourceType.indexOf("album") >= 0) {
+			chooseSourceCallback(1)
+		}
+	} else if (sourceType.length == 2) {
+		uni.showActionSheet({
+			itemList: ["拍摄", "从相册选择"],
+			success: (e) => {
+				chooseSourceCallback(e.tapIndex)
+			},
+			fail: (e) => {
+				const error = new ChooseMediaErrorImpl(1101001, UniError_ChooseMedia);
+				options.fail?.(error)
+				options.complete?.(error)
+			}
+		})
+	}
+}
+
+class ChooseMediaUtil {
+	//创建沙盒路径
+	static createFilePath(fileName : string) : string {
+		const mediaCachePath = UTSiOS.getMediaCacheDir() + "/"
+		let isCreateSuccess = true;
+		if (FileManager.default.fileExists(atPath = mediaCachePath) == false) {
+			try {
+				UTSiOS.try(FileManager.default.createDirectory(atPath = mediaCachePath, withIntermediateDirectories = true, attributes = null))
+				isCreateSuccess = true;
+			} catch (e) {
+				isCreateSuccess = false;
+			}
+		}
+		return isCreateSuccess == true ? mediaCachePath + fileName : "";
+	}
+	//保存图片到沙盒
+	static saveImage(image : UIImage, path : string) : boolean {
+		const imageData = image.jpegData(compressionQuality = 1.0);
+		let isSuccess = false;
+		if (imageData != null) {
+			const fileUrl = new URL(fileURLWithPath = path)
+			try {
+				UTSiOS.try(imageData!.write(to = fileUrl))
+				isSuccess = true;
+			} catch (e) {
+			}
+
+		}
+		return isSuccess;
+	}
+	//获取视频首桢图片
+	static getFristFrameWithVideo(url : URL) : UIImage | null {
+		const asset = new AVURLAsset(url = url);
+		let imageGenerator = new AVAssetImageGenerator(asset = asset);
+		imageGenerator.appliesPreferredTrackTransform = true;
+		let image : UIImage | null = null;
+		try {
+			const cgImage : CGImage | null = UTSiOS.try(imageGenerator.copyCGImage(at = CMTime.zero, actualTime = null));
+			if (cgImage != null) {
+				image = new UIImage(cgImage = cgImage!);
+			}
+		} catch (e) {
+
+		}
+		return image;
+	}
+	//获取视频大小、时长等信息
+	static getVideoInfo(url : URL) : Map<string, any> {
+		const asset = new AVURLAsset(url = url);
+		const track = asset.tracks(withMediaType = AVMediaType.video).first;
+		let width : number = 0;
+		let height : number = 0;
+		let duration : number = 0;
+		if (track != null) {
+			// 获取视频的宽度和高度
+			const videoSize : CGSize = track!.naturalSize;
+			width = new NSNumber(value = videoSize.width);
+			height = new NSNumber(value = videoSize.height);
+			// 获取视频时长并转换为秒
+			const seconds = CMTimeGetSeconds(asset.duration);
+			const formatter = new NumberFormatter()
+			formatter.numberStyle = NumberFormatter.Style.decimal // 设置数值格式为十进制
+			formatter.maximumFractionDigits = 3
+			let durationString = formatter.string(from= new NSNumber(value= seconds));
+			const number = formatter.number(from = durationString ?? "")
+			if (number != null) {
+				duration = number!
+			}
+		}
+		const videoInfo = new Map<string, any>()
+		videoInfo.set('width', width);
+		videoInfo.set('height', height);
+		videoInfo.set('duration', duration);
+		return videoInfo;
+	}
+
+	static getTempFileWithImage(image : UIImage) : ChooseMediaTempFile | null {
+		const currentTime = `${Date.now()}${Math.floor(Math.random() * 10000)}`;
+		const fileName = currentTime.toString() + ".jpg";
+		const tempFilePath = ChooseMediaUtil.createFilePath(fileName);
+		const isSaveSuc : boolean = ChooseMediaUtil.saveImage(image, tempFilePath);
+		if (isSaveSuc) {
+			const fileType = 'image';
+			if (image.cgImage != null) {
+				const bytesPerRow = image.cgImage!.bytesPerRow;
+				const height = image.cgImage!.height;
+				const bytes = bytesPerRow * height;
+				const fileUrl = new URL(fileURLWithPath = tempFilePath);
+				const mediaTempFile : ChooseMediaTempFile = {
+					tempFilePath: fileUrl.absoluteString,
+					fileType: fileType,
+					size: Number.from(bytes)
+				}
+				return mediaTempFile;
+			}
+		}
+		return null;
+	}
+
+	static getTempFileWithVideo(mediaUrl : URL) : ChooseMediaTempFile | null {
+		const currentTime = `${Date.now()}${Math.floor(Math.random() * 10000)}`;
+		const fileName = currentTime.toString() + ".mp4";
+		const tempFilePath = ChooseMediaUtil.createFilePath(fileName);
+		const fileUrl : URL = new URL(fileURLWithPath = tempFilePath);
+		let byteSize : number = 0;
+		try {
+			UTSiOS.try(FileManager.default.copyItem(at = mediaUrl, to = fileUrl));
+			const fileAttributes = UTSiOS.try(FileManager.default.attributesOfItem(atPath = tempFilePath));
+			byteSize = fileAttributes[FileAttributeKey.size] as number;
+		} catch (e) {
+
+		}
+		const exist = FileManager.default.fileExists(atPath = tempFilePath);
+		if (exist) {
+			const formatter = new NumberFormatter()
+			formatter.numberStyle = NumberFormatter.Style.decimal // 设置数值格式为十进制
+			formatter.maximumFractionDigits = 3
+			const size : number = byteSize / 1024.0;
+			let sizeString = formatter.string(from= size);
+			const sizeKb = formatter.number(from = sizeString ?? "") ?? 0;
+			
+			const videoInfo = ChooseMediaUtil.getVideoInfo(fileUrl);
+			const coverImage = ChooseMediaUtil.getFristFrameWithVideo(fileUrl);
+			let thumbTempFilePath = "";
+			if (coverImage != null) {
+				const fileName = currentTime.toString() + ".jpg";
+				const coverImageFilePath = ChooseMediaUtil.createFilePath(fileName);
+				const isSaveSuc : boolean = ChooseMediaUtil.saveImage(coverImage!, coverImageFilePath);
+				if (isSaveSuc) {
+					const coverImageFileUrl = new URL(fileURLWithPath = coverImageFilePath);
+					thumbTempFilePath = coverImageFileUrl.absoluteString;
+				}
+			}
+			const fileType = 'video';
+			const mediaTempFile : ChooseMediaTempFile = {
+				tempFilePath: fileUrl.absoluteString,
+				fileType: fileType,
+				size: sizeKb,
+				byteSize: byteSize,
+				duration: videoInfo.get("duration"),
+				width: videoInfo.get('width'),
+				height: videoInfo.get('height'),
+				thumbTempFilePath: thumbTempFilePath
+			}
+			return mediaTempFile;
+		}
+		return null;
+	}
+}
+
+
+class ChooseMediaImagePickerManager implements UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+	private options : ChooseMediaOptions;
+
+	@UTSiOS.available("iOS 14.0, *")
+	private static phPickerManager : ChooseMediaPHPickerManager | null = null;
+	constructor(options : ChooseMediaOptions) {
+		this.options = options;
+	}
+
+	chooseMediaWithCamera() {
+		if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera)) {
+			const cameraDevice : UIImagePickerController.CameraDevice = (this.options.camera != null && this.options.camera == "front") ? UIImagePickerController.CameraDevice.front : UIImagePickerController.CameraDevice.rear;
+			if (UIImagePickerController.isCameraDeviceAvailable(cameraDevice)) {
+				DispatchQueue.main.async(execute = () : void => {
+					const pickerController = new UIImagePickerController();
+					pickerController.delegate = this;
+					pickerController.sourceType = UIImagePickerController.SourceType.camera;
+					pickerController.mediaTypes = this.getMediaTypes(this.options.mediaType);
+					
+					pickerController.cameraDevice = cameraDevice;
+					let duration : number = 10;
+					if(this.options.maxDuration != null && this.options.maxDuration! > 0){
+						if(this.options.maxDuration! > 30){
+							duration = 30;
+						}else if(this.options.maxDuration! < 3){
+							duration = 3;
+						}else{
+							duration = this.options.maxDuration!;
+						}
+					}
+					pickerController.videoMaximumDuration = duration.toDouble();
+					UTSiOS.getCurrentViewController().present(pickerController, animated = true, completion = null);
+				})
+				return;
+			}
+		}
+		const error = new ChooseMediaErrorImpl(1101008, UniError_ChooseMedia);
+		this.options.fail?.(error)
+		this.options.complete?.(error)
+	}
+	chooseMediaWithAlbum() {
+		if (UTSiOS.available("iOS 14.0, *")) {
+			ChooseMediaImagePickerManager.phPickerManager = new ChooseMediaPHPickerManager(this.options);
+			ChooseMediaImagePickerManager.phPickerManager!.chooseMediaWithAlbum();
+		} else {
+			DispatchQueue.main.async(execute = () : void => {
+				const pickerController = new UIImagePickerController();
+				pickerController.delegate = this;
+				pickerController.sourceType = UIImagePickerController.SourceType.photoLibrary;
+				pickerController.mediaTypes = this.getMediaTypes(this.options.mediaType);
+				pickerController.videoExportPreset = AVAssetExportPresetPassthrough;
+				UTSiOS.getCurrentViewController().present(pickerController, animated = true, completion = null);
+			});
+		}
+	}
+
+
+	getMediaTypes(types : string[] | null) : string[] {
+		const mediaType : Array<string> = (types != null && types!.length > 0) ? types! : ["image", "video"];
+		let results : string[] = []
+		if (mediaType.includes('image')) {
+			results.push("public.image")
+		}
+		if (mediaType.includes('video')) {
+			results.push("public.movie")
+		}
+		return results
+	}
+
+	dismiss(picker : UIImagePickerController) {
+		picker.dismiss(animated = true, completion = null);
+		picker.delegate = null;
+	}
+
+	imagePickerController(picker : UIImagePickerController, @argumentLabel('didFinishPickingMediaWithInfo') info : Map<UIImagePickerController.InfoKey, any>) {
+		const mediaType : string = info[UIImagePickerController.InfoKey.mediaType] as string;
+		if (mediaType == "public.image") {
+			// const imageUrl : URL | null = info[UIImagePickerController.InfoKey.imageURL] as URL | null;
+			let originalImage : UIImage = info[UIImagePickerController.InfoKey.originalImage] as UIImage;
+			// const mediaTempFile : ChooseMediaTempFile | null = imageUrl != null ? ChooseMediaUtil.getTempFileWithImageUrl(originalImage,imageUrl!) : ChooseMediaUtil.getTempFileWithImage(originalImage);
+			const mediaTempFile : ChooseMediaTempFile | null = ChooseMediaUtil.getTempFileWithImage(originalImage);
+			if (mediaTempFile != null) {
+				const tempFiles : ChooseMediaTempFile[] = [mediaTempFile];
+				DispatchQueue.main.async(execute = () : void => {
+					this.dismiss(picker);
+					const success : ChooseMediaSuccess = {
+						tempFiles: tempFiles,
+						type: "image"
+					}
+					this.options.success?.(success)
+					this.options.complete?.(success)
+				});
+				return;
+			}
+			DispatchQueue.main.async(execute = () : void => {
+				this.dismiss(picker);
+				const error = new ChooseMediaErrorImpl(1101006, UniError_ChooseMedia);
+				this.options.fail?.(error)
+				this.options.complete?.(error)
+			});
+
+		} else if (mediaType == "public.movie") {
+			const mediaUrl : URL = info[UIImagePickerController.InfoKey.mediaURL] as URL;
+			const mediaTempFile : ChooseMediaTempFile | null = ChooseMediaUtil.getTempFileWithVideo(mediaUrl);
+			if (mediaTempFile != null) {
+				const tempFiles : ChooseMediaTempFile[] = [mediaTempFile];
+				DispatchQueue.main.async(execute = () : void => {
+					this.dismiss(picker);
+					const success : ChooseMediaSuccess = {
+						tempFiles: tempFiles,
+						type: "video"
+					}
+					this.options.success?.(success)
+					this.options.complete?.(success)
+				});
+				return;
+			}
+			DispatchQueue.main.async(execute = () : void => {
+				this.dismiss(picker);
+				const error = new ChooseMediaErrorImpl(1101006, UniError_ChooseMedia);
+				this.options.fail?.(error)
+				this.options.complete?.(error)
+			});
+		}
+
+	}
+	imagePickerControllerDidCancel(picker : UIImagePickerController) {
+		DispatchQueue.main.async(execute = () : void => {
+			this.dismiss(picker);
+			const error = new ChooseMediaErrorImpl(1101001, UniError_ChooseMedia);
+			this.options.fail?.(error)
+			this.options.complete?.(error)
+		});
+	}
+}
+@UTSiOS.available("iOS 14.0, *")
+class ChooseMediaPHPickerManager implements PHPickerViewControllerDelegate,UIAdaptivePresentationControllerDelegate {
+	private options : ChooseMediaOptions;
+	constructor(options : ChooseMediaOptions) {
+		this.options = options;
+	}
+	chooseMediaWithAlbum() {
+		DispatchQueue.main.async(execute = () : void => {
+			const configuration = new PHPickerConfiguration()
+			if (this.options.count != null) {
+				configuration.selectionLimit = this.options.count!.intValue;
+			} else {
+				configuration.selectionLimit = 9;
+			}
+			const filter : PHPickerFilter | null = this.getMediaTypes(this.options.mediaType);
+			if (filter != null) {
+				configuration.filter = filter!;
+			}
+			const pickerController = new PHPickerViewController(configuration = configuration);
+			pickerController.delegate = this;
+			if(pickerController.presentationController != null){
+				pickerController.presentationController!.delegate = this;
+			}
+			UTSiOS.getCurrentViewController().present(pickerController, animated = true, completion = null);
+		});
+	}
+
+	getMediaTypes(types : string[] | null) : PHPickerFilter | null {
+		const mediaType : Array<string> = (types != null && types!.length > 0) ? types! : ["image", "video"];
+		if (mediaType.includes('image') == true && mediaType.includes('video') == false) {
+			return PHPickerFilter.images;
+		} else if (mediaType.includes('image') == false && mediaType.includes('video') == true) {
+			return PHPickerFilter.videos;
+		}
+		return null
+	}
+
+	getFileType(types : string[]) : string {
+		if (types.includes("image") && types.includes("video")) {
+			return "mix";
+		} else if (types.includes("image") && types.includes("video") == false) {
+			return "image";
+		} else if (types.includes("video") && types.includes("image") == false) {
+			return "video";
+		}
+		return "mix";
+	}
+
+	picker(picker : PHPickerViewController, @argumentLabel('didFinishPicking') results : [PHPickerResult]) {
+		if (results.length > 0) {
+			let tempFiles : ChooseMediaTempFile[] = [];
+			let group = new DispatchGroup();
+			let types : string[] = [];
+			for (var i = 0; i < results.length; i++) {
+				group.enter()
+				const result : PHPickerResult = results[i] as PHPickerResult;
+				const itemProvider : NSItemProvider = result.itemProvider;
+				if (itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier)) {
+					//图片
+					if (itemProvider.canLoadObject(ofClass = UIImage.self)) {
+						itemProvider.loadObject(ofClass = UIImage.self, completionHandler = (object, error) => {
+							if ((object instanceof UIImage) && error == null) {
+								const mediaTempFile : ChooseMediaTempFile | null = ChooseMediaUtil.getTempFileWithImage(object as UIImage);
+								if (mediaTempFile != null) {
+									if (types.includes("image") == false) {
+										types.push("image");
+									}
+									tempFiles.push(mediaTempFile!);
+								}
+							}
+							group.leave();
+						});
+					} else {
+						group.leave();
+					}
+				} else if (itemProvider.hasItemConformingToTypeIdentifier(UTType.movie.identifier)) {
+					//视频
+					itemProvider.loadFileRepresentation(forTypeIdentifier = UTType.movie.identifier, completionHandler = (url, error)=>{
+						if(url != null){
+							const mediaTempFile : ChooseMediaTempFile | null = ChooseMediaUtil.getTempFileWithVideo(url!);
+							if (mediaTempFile != null) {
+								if (types.includes("video") == false) {
+									types.push("video");
+								}
+								tempFiles.push(mediaTempFile!);
+							}
+						}
+						group.leave();
+					});
+				} else {
+					group.leave();
+				}
+			}
+
+			group.notify(queue = DispatchQueue.main, execute = () => {
+				this.dismiss(picker);
+				const success : ChooseMediaSuccess = {
+					tempFiles: tempFiles,
+					type: this.getFileType(types)
+				}
+				this.options.success?.(success)
+				this.options.complete?.(success)
+			});
+
+		} else {
+			DispatchQueue.main.async(execute = () : void => {
+				this.dismiss(picker);
+				const error = new ChooseMediaErrorImpl(1101001, UniError_ChooseMedia);
+				this.options.fail?.(error)
+				this.options.complete?.(error)
+			});
+		}
+	}
+
+	dismiss(picker : PHPickerViewController) {
+		picker.dismiss(animated = true, completion = null);
+		picker.delegate = null;
+	}
+	
+	presentationControllerDidDismiss(presentationController: UIPresentationController){
+		DispatchQueue.main.async(execute = () : void => {
+			const error = new ChooseMediaErrorImpl(1101001, UniError_ChooseMedia);
+			this.options.fail?.(error)
+			this.options.complete?.(error)
+		});
+	}
+}

@@ -1,0 +1,7 @@
+import { GetRecorderManager, RecorderManager } from "../interface.uts"
+export { RecorderManagerFailImpl } from '../unierror.uts'
+
+export const getRecorderManager : GetRecorderManager = function () : RecorderManager {
+	let recorderManager = new UniAudioRecorderManager.shared
+	return recorderManager
+}

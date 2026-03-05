@@ -1,0 +1,98 @@
+import { ChooseFileOptions, ChooseFileTempFile,ChooseFileSuccess } from "../../interface.uts"
+import Intent from 'android.content.Intent';
+import Uri from 'android.net.Uri';
+import OpenableColumns from 'android.provider.OpenableColumns';
+import File from 'java.io.File';
+const REQUEST_CODE : Int = 10
+let resultCallBack : ((requestCode : Int, resultCode : Int, data ?: Intent) => void) | null = null
+
+function getFilePathEntry(uri : Uri) : ChooseFileTempFile {
+	let filePathEntry : ChooseFileTempFile = {
+		type: getFileTypeFromUri(uri),
+		size: 0,
+		path: uri.toString(),
+		name: ''
+	}
+	const context = UTSAndroid.getAppContext();
+	let cursor = context!.getContentResolver().query(uri, null, null, null, null);
+	if (cursor != null && cursor.moveToFirst()) {
+		filePathEntry.name = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+		const fileSize = cursor.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE));
+		filePathEntry.size = Number.from(fileSize)
+		cursor.close();
+	} else if ("file".equals(uri.getScheme())) {
+		filePathEntry.name = uri.getLastPathSegment() ?? '';
+		const file = new File(uri.getPath() ?? '');
+		const fileSize = file.length();
+		filePathEntry.size = Number.from(fileSize)
+	}
+	return filePathEntry
+}
+function getFileTypeFromUri(uri : Uri) : string {
+	const context = UTSAndroid.getAppContext();
+	let fileType = 'file'
+	let mimeType = context!.getContentResolver().getType(uri);
+	if (mimeType != null) {
+		if (mimeType.startsWith("video")) {
+			fileType = "video";
+		} else if (mimeType.startsWith("image")) {
+			fileType = "image";
+		} else if(mimeType.startsWith('audio')){
+			fileType = "audio";
+		}
+	}
+	return fileType;
+}
+export function chooseFileUtil(options : ChooseFileOptions) {
+	if (resultCallBack != null) {
+		UTSAndroid.offAppActivityResult(resultCallBack!)
+	}
+	const type = options.type ?? 'all'
+	const intent = new Intent(Intent.ACTION_GET_CONTENT);
+	if (type.equals("all") || type.equals("file")) {
+		intent.setType("*/*");
+	} else if (type.equals("video")) {
+		intent.setType("video/*");
+	} else if (type.equals("image")) {
+		intent.setType("image/*");
+	} else if (type.equals("audio")) {
+		intent.setType("audio/*");
+	}
+	intent.addCategory(Intent.CATEGORY_OPENABLE);
+	intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, options.count == 1 ? false : true);
+
+	resultCallBack = (requestCode : Int, resultCode : Int, data ?: Intent) => {
+		if (requestCode == REQUEST_CODE) {
+			UTSAndroid.offAppActivityResult(resultCallBack!);
+			if (resultCode == -1 && data != null) {
+				const resData = data.getClipData();
+				const chooseFileTempFile : ChooseFileTempFile[] = []
+
+				if (resData != null) {
+					for (let i = 0; i < resData.getItemCount(); i++) {
+						const uri = resData.getItemAt(i.toInt()).getUri();
+						chooseFileTempFile.push(getFilePathEntry(uri))
+					}
+				} else {
+					// 单选
+					const uri = data.getData();
+					if(uri!=null){
+						chooseFileTempFile.push(getFilePathEntry(uri))
+					}
+				}
+				options.success?.({
+					tempFiles:chooseFileTempFile,
+					tempFilePaths:[]
+				} as ChooseFileSuccess)
+				options.complete?.({
+					tempFiles:chooseFileTempFile,
+					tempFilePaths:[]
+				} as ChooseFileSuccess)
+			}
+			resultCallBack = null
+		}
+	}
+
+	UTSAndroid.onAppActivityResult(resultCallBack!)
+	UTSAndroid.getUniActivity()!.startActivityForResult(Intent.createChooser(intent, "选择文件"), REQUEST_CODE)
+}

@@ -1,0 +1,176 @@
+{
+  "id": "UTS-Storage",
+  "displayName": "UTS-Storage",
+  "version": "1.0.0",
+  "description": "UTS-Storage",
+  "keywords": [
+    "UTS-Storage"
+],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^3.6.8"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "",
+      "data": "",
+      "permissions": ""
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "uni-ext-api": {
+      "uni": {
+        "setStorage": {
+          "name": "setStorage",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          }
+        },
+        "setStorageSync": {
+          "name": "setStorageSync",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          }
+        },
+        "getStorage": {
+          "name": "getStorage",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+              "arkts": true
+          }
+        },
+        "getStorageSync": {
+          "name": "getStorageSync",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+              "arkts": true
+          }
+        },
+        "getStorageInfo": {
+          "name": "getStorageInfo",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+              "arkts": true
+          }
+        },
+        "getStorageInfoSync": {
+          "name": "getStorageInfoSync",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+              "arkts": true
+          }
+        },
+        "removeStorage": {
+          "name": "removeStorage",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+              "arkts": true
+          }
+        },
+        "removeStorageSync": {
+          "name": "removeStorageSync",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+              "arkts": true
+          }
+        },
+        "clearStorage": {
+          "name": "clearStorage",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+              "arkts": true
+          }
+        },
+        "clearStorageSync": {
+          "name": "clearStorageSync",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+              "arkts": true
+          }
+        }
+      }
+    },
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "u",
+        "aliyun": "u"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "u",
+          "vue3": "u"
+        },
+        "App": {
+          "app-android": "u",
+          "app-ios": "u"
+        },
+        "H5-mobile": {
+          "Safari": "u",
+          "Android Browser": "u",
+          "微信浏览器(Android)": "u",
+          "QQ浏览器(Android)": "u"
+        },
+        "H5-pc": {
+          "Chrome": "u",
+          "IE": "u",
+          "Edge": "u",
+          "Firefox": "u",
+          "Safari": "u"
+        },
+        "小程序": {
+          "微信": "u",
+          "阿里": "u",
+          "百度": "u",
+          "字节跳动": "u",
+          "QQ": "u",
+          "钉钉": "u",
+          "快手": "u",
+          "飞书": "u",
+          "京东": "u"
+        },
+        "快应用": {
+          "华为": "u",
+          "联盟": "u"
+        }
+      }
+    },
+    "treeShaking": false
+  }
+}

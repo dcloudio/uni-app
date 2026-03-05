@@ -1,0 +1,34 @@
+import { MakePhoneCall, MakePhoneCallOptions } from '../interface.uts';
+import { MakePhoneCallErrorImpl } from '../unierror.uts';
+import { isValidPhoneRules } from '../phoneRuleValidation.uts';
+
+import Uri from 'android.net.Uri';
+import Intent from 'android.content.Intent';
+import PackageManager from 'android.content.pm.PackageManager';
+
+export const makePhoneCall : MakePhoneCall = function (options : MakePhoneCallOptions) {
+	const activity = UTSAndroid.getUniActivity();
+	if (activity == null) {
+		const error = new MakePhoneCallErrorImpl(1500603);
+		options.fail?.(error);
+		options.complete?.(error);
+		return;
+	}
+	if (!activity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+		const error = new MakePhoneCallErrorImpl(1500601);
+		options.fail?.(error);
+		options.complete?.(error);
+		return;
+	}
+	if (!isValidPhoneRules(options.phoneNumber)) {
+		const error = new MakePhoneCallErrorImpl(1500602);
+		options.fail?.(error);
+		options.complete?.(error);
+		return;
+	}
+	const uri = Uri.parse('tel:' + options.phoneNumber);
+	const intent = new Intent(Intent.ACTION_DIAL, uri);
+	activity.startActivity(intent);
+	options.success?.({});
+	options.complete?.({});
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" 
+  package="io.dcloud.uni.getNetworkType">
+  <!--permissions-->
+  <!-- 访问网络状态 -->
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+</manifest>

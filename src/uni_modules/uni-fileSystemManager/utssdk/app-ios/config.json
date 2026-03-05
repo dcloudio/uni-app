@@ -1,0 +1,9 @@
+{
+	"deploymentTarget": "12.0",
+	"dependencies-pods": [
+		{
+			"name": "ZIPFoundation",
+			"version": "~> 0.9"
+		}
+	]
+}

@@ -1,0 +1,37 @@
+import { extApiInterceptors } from '@dcloudio/uni-runtime'
+import {
+    AddInterceptor,
+    AddInterceptorOptions,
+    RemoveInterceptor,
+    RemoveInterceptorOptions,
+} from '../interface.uts'
+
+export const addInterceptor: AddInterceptor = function (
+    name: string,
+    interceptor: AddInterceptorOptions,
+) {
+    let currentInterceptors = extApiInterceptors.get(name)
+    if (currentInterceptors === null) {
+        currentInterceptors = []
+        extApiInterceptors.set(name, currentInterceptors)
+    }
+    currentInterceptors!.push(interceptor)
+}
+
+export const removeInterceptor: RemoveInterceptor = function (
+    name: string,
+    interceptor: RemoveInterceptorOptions | null,
+) {
+    const currentInterceptors = extApiInterceptors.get(name)
+    if (currentInterceptors === null) {
+        return
+    }
+    if (interceptor === null) {
+        extApiInterceptors.delete(name)
+        return
+    }
+    const index = currentInterceptors!.indexOf(interceptor)
+    if (index !== -1) {
+        currentInterceptors!.splice(index, 1)
+    }
+}

@@ -1,0 +1,199 @@
+export type GetPerformance = () => Performance
+
+export type PerformanceObserverCallback = (
+    entries: PerformanceObserverEntryList,
+) => void
+
+export type PerformanceEntry = {
+    /**
+     * 指标类型
+     * @type string
+     */
+    entryType: string
+    /**
+     * 指标名称
+     * @type string
+     */
+    name: string
+    /**
+     * 耗时 ms。仅对于表示阶段的指标有效。
+     * @type number
+     */
+    duration: number
+    /**
+     * 开始时间，不同指标的具体含义会有差异。
+     * @type number
+     */
+    startTime: number
+    /**
+     * 页面路径。仅 render 和 navigation 类型指标有效。
+     * @type string
+     */
+    path: string | null
+    /**
+     * 页面跳转来源页面路径。仅 route 指标有效。
+     * @type string
+     */
+    referrerPath: string | null
+    /**
+     * path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。
+     * @type number
+     */
+    pageId: number | null
+    /**
+     * referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。
+     * @type number
+     */
+    referrerPageId: number | null
+    /**
+     * 路由真正响应开始时间。仅 navigation 类型指标有效。
+     * @type number
+     */
+    navigationStart: number | null
+    /**
+     * 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。
+     * @type string
+     */
+    navigationType: string | null
+    /**
+     * 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。
+     * @type number
+     */
+    initDataRecvTime: number | null
+    /**
+     * 渲染层执行渲染结束时间。仅 firstRender 指标有效。
+     * @type number
+     */
+    viewLayerRenderEndTime: number | null
+}
+
+export type PerformanceObserverOptions = {
+    buffered?: boolean
+    entryTypes?: string[]
+    type?: string
+}
+
+export interface PerformanceObserver {
+    /**
+     * 开始监听
+     */
+    observe(options: PerformanceObserverOptions): void
+    /**
+     * 停止监听
+     */
+    disconnect(): void
+}
+
+export interface PerformanceObserverEntryList {
+    /**
+     * 该方法返回当前列表中的所有性能数据
+     */
+    getEntries(): PerformanceEntry[]
+    /**
+     * 获取当前列表中所有类型为 [entryType] 的性能数据
+     */
+    getEntriesByType(entryType: string): PerformanceEntry[]
+    /**
+     * 获取当前列表中所有名称为 [name] 且类型为 [entryType] 的性能数据
+     */
+    getEntriesByName(name: string, entryType: string): PerformanceEntry[]
+}
+
+export interface Performance {
+    /**
+     * 创建全局性能事件监听器
+     */
+    createObserver(callback: PerformanceObserverCallback): PerformanceObserver
+    /**
+     * 该方法返回当前缓冲区中的所有性能数据
+     */
+    getEntries(): PerformanceEntry[]
+    /**
+     * 获取当前缓冲区中所有类型为 [entryType] 的性能数据
+     */
+    getEntriesByType(entryType: string): PerformanceEntry[]
+    /**
+     * 获取当前缓冲区中所有名称为 [name] 且类型为 [entryType] 的性能数据
+     */
+    getEntriesByName(name: string, entryType: string): PerformanceEntry[]
+    /**
+     * 设置缓冲区大小，默认缓冲 30 条性能数据
+     */
+    setBufferSize(size: number): void
+}
+
+export interface Uni {
+    /**
+     * 返回一个Performance对象实例
+     *
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-performance.html
+     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-performance.html
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "osVer": "5.0",
+     *      "uniVer": "x",
+     *      "unixVer": "3.91"
+     *    },
+     *    "ios": {
+     *      "osVer": "12.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.25"
+     *    },
+     *    "harmony": {
+     *      "osVer": "5.0.0",
+     *      "uniVer": "x",
+     *      "unixVer": "4.61",
+     *      "unixvVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "lark": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "qq": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    },
+     *    "jd": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    getPerformance: () => Performance
+}

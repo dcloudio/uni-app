@@ -1,0 +1,489 @@
+type ButtonSize = 'default' | 'mini'
+type ButtonType = 'default' | 'primary' | 'warn'
+type FormType = 'submit' | 'reset'
+// type OpenType = 'agreePrivacyAuthorization'
+
+export class UniButtonElement extends UniViewElementImpl implements UniCustomElement {
+  static get observedAttributes() : Array<string> {
+    return ['disabled', 'size', 'type', 'plain']
+  }
+
+  private borderView : UniElement
+  private buttonText : UniTextElementImpl
+
+  private disableView : UniElement | null = null
+
+  constructor() {
+    super()
+
+    const buttonViewStyle = this.style
+    buttonViewStyle.setProperty('position', 'relative')
+    buttonViewStyle.setProperty('border-radius', '5px')
+    buttonViewStyle.setProperty('padding-left', '14px')
+    buttonViewStyle.setProperty('padding-right', '14px')
+
+    const borderView = this.uniPage.createElement('view')
+    const borderViewStyle = borderView.style
+    borderViewStyle.setProperty('position', 'absolute')
+    borderViewStyle.setProperty('border-style', 'solid')
+    borderViewStyle.setProperty('border-width', '0.5px')
+    borderViewStyle.setProperty('border-color', 'rgba(0,0,0,0.2)')
+    borderViewStyle.setProperty('border-radius', '5px')
+    borderViewStyle.setProperty('left', '0')
+    borderViewStyle.setProperty('top', '0')
+    borderViewStyle.setProperty('width', '100%')
+    borderViewStyle.setProperty('height', '100%')
+    // borderViewStyle.setProperty('left', '-50%')
+    // borderViewStyle.setProperty('top', '-50%')
+    // borderViewStyle.setProperty('width', '200%')
+    // borderViewStyle.setProperty('height', '200%')
+    // borderViewStyle.setProperty('transform', 'scale(0.5)')
+
+    const buttonText = this.uniPage.createElement('text') as UniTextElementImpl
+    buttonText.style.setProperty('fontSize', '18px')
+    buttonText.style.setProperty('textAlign', 'center')
+
+    this.borderView = borderView
+    this.buttonText = buttonText
+
+    this.addEventListener('click', (e: UniPointerEvent) => {
+      "[weak self]"
+      if (this.disabled) {
+        // TODO 暂不支持同级监听拦截
+        e.stopPropagation()
+        return
+      }
+      this.checkFormAndSubmitOrReset()
+      this.checkOpenType()
+    })
+
+    this.setHoverClass('')
+  }
+
+  connectedCallback() {
+    super.appendChild(this.borderView)
+    super.appendChild(this.buttonText)
+    this.setSizeStyle(this.size as ButtonSize)
+    this.setTypeStyle(this.type as ButtonType)
+    // TODO
+    this.style.setProperty('color', this.getForegroundColor(this.type as ButtonType))
+
+    if (this.disabled) {
+      this.appendDisabledView()
+    }
+  }
+
+  disconnectedCallback() {
+    this.buttonText.remove()
+    this.borderView.remove()
+    this.removeDisabledView()
+  }
+
+  attributeChangedCallback(name : string, oldValue : any | null, newValue : any | null) {
+    switch (name) {
+      case 'disabled':
+        this.setTypeStyle(this.type as ButtonType)
+        if (this.isConnected) {
+          const disabledValue = (typeof newValue == 'string' || newValue == true) ? true : false
+          if (disabledValue) {
+            this.appendDisabledView()
+          } else {
+            this.removeDisabledView()
+          }
+        }
+        break;
+      case 'size':
+        this.setSizeStyle(newValue as ButtonSize)
+        break;
+      case 'type':
+        this.setTypeStyle(newValue as ButtonType)
+        break;
+      case 'plain':
+        if (this.plain) {
+          this.style.setProperty('border-style', 'solid')
+          this.style.setProperty('border-width', '1px')
+          this.borderView.style.setProperty('display', 'none')
+        }
+        this.setTypeStyle(this.type as ButtonType)
+        break;
+      case 'value':
+        this.updateInnerText(this)
+        break;
+    }
+  }
+
+  override appendChild(child : UniElement) : void {
+    this.updateInnerText(child)
+  }
+
+  override setAnyAttribute(key : string, value : Object) : void {
+    if (key == 'hoverClass' && !(value instanceof Map)) {
+      this.setHoverClass(value as string)
+      return
+    }
+    super.setAnyAttribute(key, value)
+  }
+
+  // TODO
+  override parseStyle(key : string, value : Object) : boolean {
+    if (key == 'color') {
+      if (this.plain) {
+        this.buttonText.style.setProperty('color', this.getForegroundColor(this.type as ButtonType))
+      }
+      return this.buttonText.parseStyle(key, value)
+    }
+    return super.parseStyle(key, value)
+  }
+
+  override updateStyle(style : Map<string, string>) : void {
+    super.updateStyle(style)
+
+    style.forEach((value, key) => {
+      switch (key) {
+        case 'backgroundColor':
+          break;
+        case 'borderTopLeftRadius':
+        case 'borderTopRightRadius':
+        case 'borderBottomRightRadius':
+        case 'borderBottomLeftRadius':
+        case 'borderLeftWidth':
+        case 'borderTopWidth':
+        case 'borderRightWidth':
+        case 'borderBottomWidth':
+        case 'borderTopStyle':
+        case 'borderRightStyle':
+        case 'borderLeftStyle':
+        case 'borderBottomStyle':
+        case 'borderLeftColor':
+        case 'borderTopColor':
+        case 'borderRightColor':
+        case 'borderBottomColor':
+          this.style.setProperty(key, value)
+          this.borderView.style.setProperty('display', 'none')
+          break;
+        case 'color':
+        case 'textAlign':
+        case 'fontSize':
+        case 'fontWeight':
+        case 'lineHeight':
+          this.buttonText.style.setProperty(key, value)
+          break;
+        default:
+          break;
+      }
+    })
+  }
+
+  // TODO 因不支持同级监听拦截, 暂时通过子覆盖方式拦截
+  private appendDisabledView() {
+    if (this.disableView == null) {
+      this.disableView = this.uniPage.createElement('view')
+      const disableViewStyle = this.disableView!.style
+      disableViewStyle.setProperty('position', 'absolute')
+      disableViewStyle.setProperty('left', '0')
+      disableViewStyle.setProperty('top', '0')
+      disableViewStyle.setProperty('width', '100%')
+      disableViewStyle.setProperty('height', '100%')
+      this.disableView!.addEventListener('click', (e: UniPointerEvent) => {
+        "[weak self]"
+        e.stopPropagation()
+      })
+    }
+    super.appendChild(this.disableView!)
+  }
+
+  private removeDisabledView() {
+    if (this.disableView != null) {
+      this.disableView.remove()
+    }
+  }
+
+  get disabled() : boolean {
+    return this.getAttribute('disabled') == 'true' ? true : false
+  }
+
+  get size() : string {
+    return this.getAttributeValue('size', 'default')
+  }
+
+  get type() : string {
+    return this.getAttributeValue('type', 'default')
+  }
+
+  get plain() : boolean {
+    return this.getAttribute('plain') == 'true' ? true : false
+  }
+
+  private getAttributeValue(key : string, defaultValue : string) : string {
+    const value = this.getAttribute(key)
+    if (value && value.length) {
+      return value
+    }
+    return defaultValue
+  }
+
+  private updateInnerText(child : UniElement) {
+    this.buttonText.setAttribute('value', child.getAttribute('value') ?? "")
+  }
+
+  private setSizeStyle(size : ButtonSize) {
+    switch (size) {
+      case 'default':
+        this.buttonText.style.setProperty('fontSize', '18px')
+        this.buttonText.style.setProperty('lineHeight', '2.55555556')
+        break;
+      case 'mini':
+        this.buttonText.style.setProperty('fontSize', '13px')
+        this.buttonText.style.setProperty('lineHeight', '2.3')
+        break;
+    }
+  }
+
+  private setTypeStyle(type : ButtonType) {
+    // background-color
+    this.style.setProperty('background-color', this.getBackgroundColor(type))
+
+    // text-color
+    this.buttonText.style.setProperty('color', this.getForegroundColor(type))
+
+    if (this.plain) {
+      this.style.setProperty('border-color', this.getBorderColor(type))
+    }
+  }
+
+  private setHoverClass(value : string) {
+    if (this.disabled) {
+      return
+    }
+
+    const buttonType = this.type as ButtonType
+
+    const style = new Map<string, string>()
+    if (typeof value === 'string' && value == 'none') {
+      style.set('backgroundColor', this.getBackgroundColor(buttonType))
+    } else {
+      style.set('backgroundColor', this.getBackgroundHoverColor(buttonType))
+    }
+
+    if (this.plain) {
+      // TODO
+      style.set('color', this.getForegroundHoverColor(buttonType))
+      style.set('borderColor', this.getBorderHoverColor(buttonType))
+
+      this.buttonText.style.setProperty('color', this.getForegroundColor(buttonType))
+    }
+
+    this.setAnyAttribute('hoverClass', style)
+  }
+
+  private getBackgroundColor(type : ButtonType) : string {
+    // disabled
+    if (this.disabled) {
+      // plain
+      if (this.plain) {
+        return 'rgba(0,0,0,0.2)'
+      }
+
+      if (type == 'primary') {
+        return 'rgba(0,122,255,0.6)'
+      } else if (type == 'warn') {
+        return '#ec8b89'
+      } else {
+        return '#f7f7f7'
+      }
+    }
+
+    // plain
+    if (this.plain) {
+      return 'transparent'
+    }
+
+    // normal
+    if (type == 'primary') {
+      return '#007aff'
+    } else if (type == 'warn') {
+      return '#e64340'
+    } else {
+      return '#f7f7f7'
+    }
+  }
+
+  private getBackgroundHoverColor(type : ButtonType) : string {
+    // plain
+    if (this.plain) {
+      return 'transparent'
+    }
+
+    // normal
+    if (type == 'primary') {
+      return '#0062cc'
+    } else if (type == 'warn') {
+      return '#ce3c39'
+    } else {
+      return '#dedede'
+    }
+  }
+
+  private getBorderColor(type : ButtonType) : string {
+    // disabled
+    if (this.disabled) {
+      if (type == 'primary') {
+        return 'rgba(0,0,0,0.2)'
+      } else if (type == 'warn') {
+        return 'rgba(0,0,0,0.2)'
+      } else {
+        return 'rgba(0,0,0,0.3)'
+      }
+    }
+
+    // plain
+    if (this.plain) {
+      if (type == 'primary') {
+        return '#007aff'
+      } else if (type == 'warn') {
+        return '#e64340'
+      } else {
+        return '#353535'
+      }
+    }
+
+    // normal
+    if (type == 'primary') {
+      return 'rgba(0,0,0,0.2)'
+    } else if (type == 'warn') {
+      return 'rgba(0,0,0,0.2)'
+    } else {
+      return 'rgba(0,0,0,0.2)'
+    }
+  }
+
+  private getBorderHoverColor(type : ButtonType) : string {
+    // disabled
+    if (this.disabled) {
+      if (type == 'primary') {
+        return 'rgba(0,0,0,0.2)'
+      } else if (type == 'warn') {
+        return 'rgba(0,0,0,0.2)'
+      } else {
+        return 'rgba(0,0,0,0.3)'
+      }
+    }
+
+    // plain
+    if (this.plain) {
+      if (type == 'primary') {
+        return 'rgba(0, 122, 255, 0.6)'
+      } else if (type == 'warn') {
+        return 'rgba(230, 67, 64, 0.6)'
+      } else {
+        return 'rgba(53,53,53,0.6)'
+      }
+    }
+
+    // normal
+    if (type == 'primary') {
+      return 'rgba(0,0,0,0.2)'
+    } else if (type == 'warn') {
+      return 'rgba(0,0,0,0.2)'
+    } else {
+      return 'rgba(0,0,0,0.2)'
+    }
+  }
+
+  private getForegroundColor(type : ButtonType) : string {
+    // disabled
+    if (this.disabled) {
+      return 'rgba(0,0,0,0.3)'
+    }
+
+    // plain
+    if (this.plain) {
+      if (type == 'primary') {
+        return '#007aff'
+      } else if (type == 'warn') {
+        return '#e64340'
+      } else {
+        return '#353535'
+      }
+    }
+
+    // normal
+    if (type == 'primary') {
+      return '#fff'
+    } else if (type == 'warn') {
+      return '#fff'
+    } else {
+      return '#000'
+    }
+  }
+
+  private getForegroundHoverColor(type : ButtonType) : string {
+    // disabled
+    if (this.disabled) {
+      return 'rgba(0,0,0,0.3)'
+    }
+
+    // plain
+    if (this.plain) {
+      if (type == 'primary') {
+        return 'rgba(0, 122, 255, 0.6)'
+      } else if (type == 'warn') {
+        return 'rgba(230, 67, 64, 0.6)'
+      } else {
+        return 'rgba(53,53,53,0.6)'
+      }
+    }
+
+    // normal
+    if (type == 'primary') {
+      return '#fff'
+    } else if (type == 'warn') {
+      return '#fff'
+    } else {
+      return '#000'
+    }
+  }
+
+  private checkFormAndSubmitOrReset() {
+    const formType = this.getAttribute('form-type') as FormType
+    if (formType != 'submit' && formType != 'reset') {
+      return
+    }
+
+    let formElement = this.parentElement
+    let maxRecursiveDeep = 256
+    while (formElement && maxRecursiveDeep > 0) {
+      maxRecursiveDeep--
+      if (formElement.tagName == 'FORM') {
+        break
+      }
+      formElement = formElement.parentElement
+    }
+
+    if (formElement) {
+      const uniFormControl = formElement as any as IUniForm
+      if (formType == 'submit') {
+        uniFormControl.submit()
+      } else if (formType == 'reset') {
+        uniFormControl.reset()
+      }
+    }
+  }
+
+  private checkOpenType() {
+    const type = this.getAttribute('openType')
+    switch (type) {
+      case "agreePrivacyAuthorization":
+        // #ifdef APP-ANDROID
+        UTSAndroid.setPrivacyAgree(true)
+        // #endif
+        // #ifdef APP-IOS
+        UTSiOS.setPrivacyAgree(true)
+        // #endif
+        // #ifdef APP-HARMONY
+        UTSHarmony.setPrivacyAgree(true)
+        // #endif
+        break;
+    }
+  }
+}

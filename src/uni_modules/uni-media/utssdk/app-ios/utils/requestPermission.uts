@@ -1,0 +1,79 @@
+import { AVCaptureDevice, AVMediaType } from "AVFoundation";
+import { PHPhotoLibrary, PhotosTypes, PHAccessLevel } from "Photos";
+import { UTSiOS } from "DCloudUTSFoundation";
+
+export function requestMicrophonePermission(completion : (status : number) => void) {
+	let authorized = AVCaptureDevice.authorizationStatus(for= AVMediaType.audio)
+	if (authorized == AVAuthorizationStatus.authorized) {
+		completion(1)
+	} else if (authorized == AVAuthorizationStatus.notDetermined) {
+		AVCaptureDevice.requestAccess(for=AVMediaType.audio, completionHandler = (result : Bool) : void => {
+			if (result) {
+				completion(1)
+			} else {
+				completion(0)
+			}
+		})
+	} else {
+		completion(0)
+	}
+}
+
+export function requestCameraPermission(completion : (status : number) => void) {
+	let cameraAuthorized = AVCaptureDevice.authorizationStatus(for=AVMediaType.video)
+	
+	if (cameraAuthorized == AVAuthorizationStatus.authorized) {
+		completion(1)
+	} else if (cameraAuthorized == AVAuthorizationStatus.notDetermined) {
+		AVCaptureDevice.requestAccess(for=AVMediaType.video, completionHandler = (result : Bool) : void => {
+			if (result) {
+				completion(1)
+			} else {
+				completion(0)
+			}
+		})
+	} else {
+		completion(0)
+	}
+}
+
+export function requestAlbumPermission(level : string, completion : (status : number) => void) {
+	let albumAuthorized = PHAuthorizationStatus.notDetermined
+	if (UTSiOS.available("iOS 14, *")) {
+		const level: PHAccessLevel = PHAccessLevel.readWrite
+		albumAuthorized = PHPhotoLibrary.authorizationStatus(for=level)
+	}else{
+		albumAuthorized = PHPhotoLibrary.authorizationStatus()
+	}
+	
+	if (UTSiOS.available("iOS 14, *")) {
+		if (albumAuthorized == PHAuthorizationStatus.authorized || albumAuthorized == PHAuthorizationStatus.limited) {
+			completion(1)
+			return;
+		}
+	}
+	if (albumAuthorized == PHAuthorizationStatus.authorized) {
+		completion(1)
+	} else if (albumAuthorized == PHAuthorizationStatus.notDetermined) {
+		if (UTSiOS.available("iOS 14, *")) {
+			const accessLevel = (level == "readWrite") ? PHAccessLevel.readWrite : PHAccessLevel.addOnly
+			PHPhotoLibrary.requestAuthorization(for=accessLevel, handler = (result : PHAuthorizationStatus) : void => {
+				if (result == PHAuthorizationStatus.authorized || result == PHAuthorizationStatus.limited) {
+					completion(1)
+				} else {
+					completion(0)
+				}
+			})
+		} else {
+			PHPhotoLibrary.requestAuthorization((result : PHAuthorizationStatus) : void => {
+				if (result == PHAuthorizationStatus.authorized) {
+					completion(1)
+				} else {
+					completion(0)
+				}
+			})
+		}
+	} else {
+		completion(0)
+	}
+}

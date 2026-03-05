@@ -1,0 +1,41 @@
+import { CompressorResponseCode, CompressorResponse, VideoCompressor, CompressQuality } from '@ohos/videocompressor';
+import { CompressVideo, CompressVideoOptions, CompressVideoSuccess } from '../../interface.uts';
+import { API_COMPRESS_VIDEO, CompressVideoApiOptions, CompressVideoApiProtocol } from '../../protocol.uts';
+import { _getVideoInfo } from './media.uts';
+
+// https://gitee.com/openharmony-sig/ohos_videocompressor
+
+function getQuality(quality?: string) {
+    switch (quality) {
+        case "low":
+            return CompressQuality.COMPRESS_QUALITY_LOW
+        case 'medium':
+            return CompressQuality.COMPRESS_QUALITY_MEDIUM
+    }
+    return CompressQuality.COMPRESS_QUALITY_HIGH
+}
+
+export const compressVideo: CompressVideo = defineAsyncApi<CompressVideoOptions, CompressVideoSuccess>(
+    API_COMPRESS_VIDEO,
+    async (args: CompressVideoOptions, executor: ApiExecutor<CompressVideoSuccess>) => {
+        let videoCompressor = new VideoCompressor();
+        videoCompressor.compressVideo(UTSHarmony.getUIAbilityContext()!, args.src, getQuality(args.quality!))
+            .then((data: CompressorResponse): void => {
+                if (data.code == CompressorResponseCode.SUCCESS) {
+                    _getVideoInfo(data.outputPath, 'KB').then(res => {
+                        executor.resolve({
+                            tempFilePath: data.outputPath,
+                            size: res.size
+                        } as CompressVideoSuccess)
+                    })
+                } else {
+                    executor.reject(data.message, { errCode: data.code } as ApiError)
+                }
+            })
+            .catch((err: Error) => {
+                executor.reject(err.message)
+            })
+    },
+    CompressVideoApiProtocol,
+    CompressVideoApiOptions
+) as CompressVideo

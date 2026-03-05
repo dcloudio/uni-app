@@ -1,0 +1,48 @@
+import Arrays from 'java.util.Arrays';
+import KotlinArray from 'kotlin.Array'
+
+class SSLConfig {
+
+	private keystore ?: string = null;
+	private storePass ?: string = null;
+	private ca ?: KotlinArray<String> = null;
+
+	public getKeystore() : string | null {
+		return this.keystore;
+	}
+
+	public setKeystore(ks : string) {
+		if (ks == null) {
+			ks = "";
+		}
+		this.keystore = ks;
+	}
+
+	public getStorePass() : string | null {
+		return this.storePass;
+	}
+
+	public setStorePass(sp : string) {
+		if (sp == null) {
+			sp = "";
+		}
+		this.storePass = sp;
+	}
+
+
+	public getCa() : KotlinArray<String> | null {
+		return this.ca;
+	}
+
+	public setCa(ca : KotlinArray<String>) {
+		if (ca == null) {
+			ca = emptyArray();
+		}
+		this.ca = ca;
+	}
+}
+
+
+export {
+	SSLConfig
+}

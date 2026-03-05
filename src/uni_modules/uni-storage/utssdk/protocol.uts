@@ -1,0 +1,11 @@
+export const API_GET_STORAGE = 'getStorage'
+export const API_GET_STORAGE_SYNC = 'getStorageSync'
+export const API_SET_STORAGE = 'setStorage'
+export const API_SET_STORAGE_SYNC = 'setStorageSync'
+export const API_REMOVE_STORAGE = 'removeStorage'
+export const API_REMOVE_STORAGE_SYNC = 'removeStorageSync'
+export const API_CLEAR_STORAGE = 'clearStorage'
+export const API_CLEAR_STORAGE_SYNC = 'clearStorageSync'
+export const API_GET_STORAGE_INFO = 'getStorageInfo'
+export const API_GET_STORAGE_INFO_SYNC = 'getStorageInfoSync'
+

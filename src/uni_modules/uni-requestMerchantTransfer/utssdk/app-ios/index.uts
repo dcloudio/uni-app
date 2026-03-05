@@ -1,0 +1,183 @@
+import { UIApplication } from "UIKit";
+import { URL, NSUserActivity, Bundle, URLComponents, URLQueryItem, Script } from "Foundation";
+import { RequestMerchantTransfer, RequestMerchantTransferOptions, RequestMerchantTransferGeneralCallbackResult } from '../interface.uts';
+
+export const requestMerchantTransfer : RequestMerchantTransfer = function (options : RequestMerchantTransferOptions) {
+	WxpayManager.requestMerchantTransfer(options)
+}
+
+export class WxpayManagerHookProxy implements UTSiOSHookProxy {
+	// 应用正常启动时 (不包括已在后台转到前台的情况)的回调函数。
+	applicationDidFinishLaunchingWithOptions(application : UIApplication | null, launchOptions : Map<UIApplication.LaunchOptionsKey, any> | null = null) : boolean {
+		WxpayManager.registerApp()
+		return false
+	}
+
+	// 通过 url scheme 方式唤起 app 时的回调函数。
+	applicationOpenURLOptions(app : UIApplication | null, url : URL, options : Map<UIApplication.OpenURLOptionsKey, any> | null = null) : boolean {
+		WxpayManager.handleOpen(url)
+		return true
+	}
+
+	// 当应用程序接收到与用户活动相关的数据时调用此方法，例如，当用户使用 Universal Link 唤起应用时。
+	applicationContinueUserActivityRestorationHandler(application : UIApplication | null, userActivity : NSUserActivity | null, restorationHandler : ((res : [any] | null) => void) | null = null) : boolean {
+		WxpayManager.handleOpenUniversalLink(userActivity)
+		return true
+	}
+}
+
+class WxpayManager implements WXApiDelegate {
+	private static shared = new WxpayManager()
+	private static options ?: RequestMerchantTransferOptions
+
+	@UTSiOS.keyword("fileprivate")
+	static registerApp() {
+		const scheme = WxpayManager.getApplicationScheme()
+		const universalLink = WxpayManager.getApplicationUniversalLink()
+		if (scheme != null && scheme != "" && universalLink != null && universalLink != "") {
+			WXApi.registerApp(scheme!, universalLink = universalLink!)
+		}
+	}
+
+	@UTSiOS.keyword("fileprivate")
+	static handleOpen(url : URL) {
+		WXApi.handleOpen(url, delegate = shared)
+	}
+
+	@UTSiOS.keyword("fileprivate")
+	static handleOpenUniversalLink(userActivity : NSUserActivity | null) {
+		if (userActivity != null) {
+			WXApi.handleOpenUniversalLink(userActivity!, delegate = shared)
+		}
+	}
+
+	private static getApplicationScheme() : string | null {
+		let scheme : string | null = null
+		const infoDictionary = Bundle.main.infoDictionary
+		if (infoDictionary != null) {
+			const wechat = infoDictionary!['WeChat'] as Map<string, any> | null
+			if (wechat != null) {
+				scheme = wechat!['appid'] as string | null
+			}
+		}
+		
+		return scheme
+	}
+
+	private static getApplicationUniversalLink() : string | null {
+		let universalLink : string | null = null
+		const infoDictionary = Bundle.main.infoDictionary
+		if (infoDictionary != null) {
+			const wechat = infoDictionary!['WeChat'] as Map<string, any> | null
+			if (wechat != null) {
+				universalLink = wechat!['universalLink'] as string | null
+			}
+		}
+		return universalLink
+	}
+
+	//@brief 检查微信是否已被用户安装
+	@UTSiOS.keyword("fileprivate")
+	static isWXAppInstalled() : boolean {
+		const url = URL(string = "weixin://")!
+		if (UIApplication.shared.canOpenURL(url)) {
+			return true
+		}
+		return false
+	}
+
+	static buildQueryString(parameters : Map<string, string>) : string | null {
+		let components = URLComponents()
+		let queryItems : [URLQueryItem] = []
+		parameters.forEach((value, key) => {
+			queryItems.append(URLQueryItem(name = key, value = value))
+		})
+		components.queryItems = queryItems
+		return components.percentEncodedQuery
+	}
+
+	static requestMerchantTransfer(options : RequestMerchantTransferOptions) {
+		WxpayManager.options = options
+		if (WxpayManager.isWXAppInstalled() == false) {
+			var res : RequestMerchantTransferGeneralCallbackResult = {
+				errMsg: '微信没有安装'
+			}
+			options.fail?.(res)
+			options.complete?.(res)
+		}
+
+		if (WxpayManager.getApplicationScheme() == null || WxpayManager.getApplicationScheme() == "") {
+			var res : RequestMerchantTransferGeneralCallbackResult = {
+				errMsg: '没有配置对应的URL Scheme'
+			}
+			options.fail?.(res)
+			options.complete?.(res)
+			return
+		}
+
+		if (WxpayManager.getApplicationUniversalLink() == null || WxpayManager.getApplicationUniversalLink() == "") {
+			var res : RequestMerchantTransferGeneralCallbackResult = {
+				errMsg: '没有配置对应的Universal Link'
+			}
+			options.fail?.(res)
+			options.complete?.(res)
+			return
+		}
+
+		if (WxpayManager.options != null) {
+			const parameters = new Map<string, string>()
+			parameters.set('mchId', options.mchId)
+			parameters.set('package', options.package)
+			if (options.appId != null) {
+				parameters.set('appId', options.appId!)
+			}
+			if (options.openId != null) {
+				parameters.set('openId', options.openId!)
+			}
+			if (options.subAppId != null) {
+				parameters.set('subAppId', options.subAppId!)
+			}
+			if (options.subMchId != null) {
+				parameters.set('subMchId', options.subMchId!)
+			}
+
+			let reg = new WXOpenBusinessViewReq();
+			reg.businessType = "requestMerchantTransfer"
+
+			let query = WxpayManager.buildQueryString(parameters) ?? ""
+			reg.query = query
+
+			//函数调用后，会切换到微信的界面。第三方应用程序等待微信返回onResp。微信在异步处理完成后一定会调onResp
+			WXApi.send(reg)
+		}
+	}
+
+	//@brief 发送一个sendReq后，收到微信的回应
+	onResp(resp : BaseResp) {
+		if (resp instanceof WXOpenBusinessViewResp) {
+			let resp = resp as WXOpenBusinessViewResp
+			
+			if (resp.extMsg?.includes("cancel") == true) {
+				var res : RequestMerchantTransferGeneralCallbackResult = {
+					errMsg: '用户取消'
+				}
+				WxpayManager.options?.fail?.(res)
+				WxpayManager.options?.complete?.(res)
+			}
+			if (resp.extMsg?.includes("fail") == true) {
+				var res : RequestMerchantTransferGeneralCallbackResult = {
+					errMsg: '展示页面失败'
+				}
+				WxpayManager.options?.fail?.(res)
+				WxpayManager.options?.complete?.(res)
+			}
+			if (resp.extMsg?.includes("success") == true) {
+				var res : RequestMerchantTransferGeneralCallbackResult = {
+					errMsg: '确认收款'
+				}
+				WxpayManager.options?.success?.(res)
+				WxpayManager.options?.complete?.(res)
+			}
+		}
+	}
+}

@@ -1,0 +1,21 @@
+import { RecorderManagerOnStopResult } from '../interface.uts';
+import File from 'java.io.File';
+export type RecorderState = 'pause' | 'resume' | 'start' | 'stop' | 'error' | 'frameRecorded' | 'interruptionBegin' | 'interruptionEnd'
+
+export interface StateChangeRes extends RecorderManagerOnStopResult {
+	errMsg ?: string
+	frameBuffer ?: ArrayBuffer
+	isLastFrame ?: boolean
+}
+
+export function onRecorderStateChange(state : RecorderState, res ?: StateChangeRes) : void {
+}
+export function createFile( format : string) : string {
+	let cacheDir = new File(UTSAndroid.getAppCachePath(), "uni-recorder/")
+	if (!cacheDir.exists()) {
+	    cacheDir.mkdirs()
+	}
+	const fileName = `${Date.now()}.${format.toLocaleLowerCase()}`
+	return cacheDir.path+'/'+fileName
+}
+export const supportFormats = ['aac']

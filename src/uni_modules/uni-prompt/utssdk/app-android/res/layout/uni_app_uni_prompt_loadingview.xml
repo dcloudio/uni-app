@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/dcloud_pd_root"
+        android:layout_width="wrap_content"
+        android:background="@drawable/uni_app_uni_prompt_loading_bg"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/dcloud_pb_loading"
+            android:layout_width="wrap_content"
+            android:minWidth="3dp"
+            android:minHeight="3dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:indeterminateDuration="1000"/>
+
+        <ImageView
+            android:id="@+id/dcloud_iv_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/dcloud_view_seaparator"
+            android:layout_width="10dp"
+            android:layout_height="10dp"/>
+
+        <TextView
+            android:id="@+id/dcloud_tv_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

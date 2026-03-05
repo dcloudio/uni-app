@@ -1,0 +1,6 @@
+<resources>
+	<string name="uni_app_uni_prompt_placement">Configuration</string>
+    <string name="uni_app_uni_prompt_cancel">取消</string>
+    <string name="uni_app_uni_prompt_model_sure">确定</string>
+    <string name="uni_app_uni_prompt_model_cancel">取消</string>
+</resources>

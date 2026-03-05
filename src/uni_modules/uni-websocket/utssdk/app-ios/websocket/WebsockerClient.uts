@@ -1,0 +1,242 @@
+import { WebSocketManagerListener } from "./WebSocketManager";
+import { ConnectSocketOptions, SendSocketMessageOptions, CloseSocketOptions, GeneralCallbackResult } from "../../interface";
+import { ConnectSocketFailImpl, SendSocketMessageFailImpl } from "../../unierror.uts";
+
+import { WebSocketListener } from "websocket" assert { type: "implementationOnly" };
+import { WebSocket, WebSocketClient } from "Starscream" assert { type: "implementationOnly" };
+import { URLRequest, URL, RunLoop, Data, NSError, Thread } from 'Foundation';
+import { Dictionary } from 'Swift';
+import { DispatchQueue } from 'Dispatch';
+
+export class WebsockerClient {
+  private listener : WebSocketManagerListener | null = null;
+  private options : ConnectSocketOptions | null = null;
+  private websocketDelegate : WebsocketDelegate = new WebsocketDelegate();
+  private websocketListener : SimpleWebsocketListener | null = null;
+  private websocket : WebSocket | null = null;
+
+  constructor(options : ConnectSocketOptions, listener : WebSocketManagerListener) {
+    this.options = options;
+    this.listener = listener;
+  }
+
+
+  public connect() {
+    const kParam = this.options;
+    if (kParam != null) {
+      const request = this.createRequest(kParam!);
+      if (request == null) {
+        return
+      }
+      this.websocket = new WebSocket(request = request!);
+      this.websocket!.callbackQueue = new DispatchQueue(label = "io.dcloud.websocket")
+      this.websocketListener = new SimpleWebsocketListener(this.listener!, this.websocketDelegate, this)
+      this.websocket!.delegate = this.websocketListener
+      // 临时解决方案 , 连接时延迟100ms , 等到js层注册了onOpen后再连接.
+      setTimeout(() => {
+        this.websocket!.connect()
+      }, 100);
+    }
+  }
+
+  public send(options : SendSocketMessageOptions) {
+    const success = options.success;
+    const fail = options.fail;
+    const complete = options.complete;
+    if (this.websocketDelegate.websocket == null) {
+      let result = new SendSocketMessageFailImpl(10002);
+      fail?.(result);
+      complete?.(result);
+      return
+    }
+    if (options.data instanceof ArrayBuffer) {
+      const arrayBuffer = options.data as ArrayBuffer
+      this.websocketDelegate.websocket?.write(data = arrayBuffer.toData())
+    } else {
+      this.websocketDelegate.websocket?.write(string = options.data as string)
+    }
+
+    let result : GeneralCallbackResult = {
+      errMsg: "sendSocketMessage:ok"
+    }
+    success?.(result);
+    complete?.(result);
+  }
+
+  public close(options : CloseSocketOptions) {
+    const success = options.success;
+    const fail = options.fail;
+    const complete = options.complete;
+    if (this.websocketDelegate.websocket == null) {
+      let result : GeneralCallbackResult = {
+        errMsg: "closeSocket:fail WebSocket is not connected"
+      }
+      fail?.(result);
+      complete?.(result);
+      return
+    }
+    var code : UInt16 = 1000;
+    if (options.code != null) {
+      code = options.code!.toUInt16()
+    }
+    this.websocketDelegate.websocket?.disconnect(closeCode = code)
+    let result : GeneralCallbackResult = {
+      errMsg: "closeSocket:ok"
+    }
+    success?.(result);
+    complete?.(result);
+  }
+
+  private createRequest(options : ConnectSocketOptions) : URLRequest | null {
+    let request : URLRequest | null = null;
+    let url = new URL(string = options.url)
+    if (url == null) {
+      let option = new ConnectSocketFailImpl(600009);
+      const listener = options.fail;
+      listener?.(option);
+      return null;
+    } else {
+      request = new URLRequest(url = url!)
+    }
+
+    const protocols = options.protocols;
+    if (protocols != null) {
+      let protocolsStr = protocols!.join(",");
+      request?.addValue(protocolsStr, forHTTPHeaderField = "Sec-WebSocket-Protocol");
+    }
+
+    const header = options.header;
+    let hasOrigin = false;
+
+    if (header != null) {
+      let map = header!.toMap();
+      if (map != null) {
+        for (entry in map) {
+		  let key = entry.key;
+		  let value = entry.value;
+          if (key.caseInsensitiveCompare("Origin") == ComparisonResult.orderedSame) {
+            hasOrigin = true;
+          }
+          request?.addValue(`${value}`, forHTTPHeaderField = key)
+        }
+      }
+    }
+
+    if (!hasOrigin) {
+      request?.addValue("http://localhost", forHTTPHeaderField = "Origin") // 测试时，有服务器检测Origin导致403，∴加上该句
+    }
+
+    return request
+  }
+}
+
+class WebsocketDelegate {
+  @UTSiOS.keyword("fileprivate")
+  websocket : WebSocketClient | null = null;
+}
+
+class RunnableTask {
+  private callback : (() => void) | null;
+  private looper : RunLoop | null = null;
+  constructor(looper : RunLoop | null, callback : () => void) {
+    this.looper = looper;
+    this.callback = callback
+  }
+
+  public execute() {
+    if (this.looper == null || this.looper!.currentMode == null) {
+      this.callback?.();
+    } else {
+      this.looper?.perform(inModes = [RunLoop.Mode.common], block = () => {
+        this.callback?.();
+      })
+    }
+  }
+}
+
+
+
+
+@UTSiOS.keyword("private")
+class SimpleWebsocketListener extends WebSocketListener {
+  private listener : WebSocketManagerListener | null = null;
+  private websocketDelegate : WebsocketDelegate | null = null;
+  private client : WebsockerClient | null = null;
+  @UTSiOS.keyword("weak")
+  private looper : RunLoop | null = null;
+  constructor(listener : WebSocketManagerListener, delegate : WebsocketDelegate, client : WebsockerClient) {
+    super();
+    this.listener = listener;
+    this.websocketDelegate = delegate;
+    this.client = client;
+    this.looper = RunLoop.current;
+  }
+
+  override onOpen(webSocket : WebSocketClient, headers : Map<string, string>) : void {
+    new RunnableTask(this.looper, () => {
+      const delegate = this.websocketDelegate;
+      if (delegate != null) {
+        delegate!.websocket = webSocket;
+      }
+      const client = this.client;
+      if (client != null) {
+        this.listener?.onOpen(client!, headers);
+      }
+    }).execute();
+  }
+
+  override onMessage(webSocket : WebSocketClient, data : Data) : void {
+    new RunnableTask(this.looper, () => {
+      // let base64Str = data.base64EncodedString()
+      // let object : UTSJSONObject = {};
+      // object["@type"] = "binary"
+      // object["base64"] = base64Str
+      const client = this.client;
+      if (client != null) {
+        this.listener?.onMessage(client!, ArrayBuffer.fromData(data));
+      }
+    }).execute();
+  }
+  override onMessage(webSocket : WebSocketClient, text : string) : void {
+    new RunnableTask(this.looper, () => {
+      const client = this.client;
+      if (client != null) {
+        this.listener?.onMessage(client!, text);
+      }
+    }).execute();
+  }
+
+  override onClosed(webSocket : WebSocketClient, code : Int, reason : string) : void {
+    new RunnableTask(this.looper, () => {
+      const delegate = this.websocketDelegate;
+      if (delegate != null) {
+        delegate!.websocket = null;
+      }
+      const client = this.client;
+      if (client != null) {
+        this.listener?.onClose(client!, Number.from(code), reason);
+      }
+    }).execute();
+  }
+
+  override onPeerClosed(webSocket : WebSocketClient) {
+    this.onClosed(webSocket, 1000, "CLOSE_NORMAL")
+  }
+
+  override onCancelled(webSocket : WebSocketClient) {
+    this.onClosed(webSocket, 1000, "")
+  }
+
+  override onFailure(webSocket : WebSocketClient, err : NSError | null) : void {
+    new RunnableTask(this.looper, () => {
+      const delegate = this.websocketDelegate;
+      if (delegate != null) {
+        delegate!.websocket = null;
+      }
+      const client = this.client;
+      if (client != null) {
+        this.listener?.onError(client!, err.debugDescription);
+      }
+    }).execute();
+  }
+}

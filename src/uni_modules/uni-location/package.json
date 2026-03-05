@@ -1,0 +1,162 @@
+{
+    "id": "uni-location",
+    "displayName": "uni-location",
+    "version": "1.0.0",
+    "description": "uni-location",
+    "keywords": [
+        "uni-location"
+    ],
+    "repository": "",
+    "engines": {
+        "HBuilderX": "^3.6.8"
+    },
+    "dcloudext": {
+        "type": "uts",
+        "sale": {
+            "regular": {
+                "price": "0.00"
+            },
+            "sourcecode": {
+                "price": "0.00"
+            }
+        },
+        "contact": {
+            "qq": ""
+        },
+        "declaration": {
+            "ads": "",
+            "data": "",
+            "permissions": ""
+        },
+        "npmurl": ""
+    },
+    "uni_modules": {
+        "uni-ext-api": {
+            "provider": {
+                "service": "location"
+            },
+            "uni": {
+                "getLocation": {
+                    "name": "getLocation",
+                    "app": {
+                        "js": false,
+                        "kotlin": true,
+                        "swift": true,
+                        "arkts": true
+                    }
+                },
+				"startLocationUpdate": {
+				    "name": "startLocationUpdate",
+				    "app": {
+				        "js": false,
+				        "kotlin": true,
+				        "swift": true,
+				        "arkts": true
+				    }
+				},
+				"stopLocationUpdate": {
+				    "name": "stopLocationUpdate",
+				    "app": {
+				        "js": false,
+				        "kotlin": true,
+				        "swift": true,
+				        "arkts": true
+				    }
+				},
+				"onLocationChange": {
+				    "name": "onLocationChange",
+				    "app": {
+				        "js": false,
+				        "kotlin": true,
+				        "swift": true,
+				        "arkts": true
+				    }
+				},
+				"offLocationChange": {
+				    "name": "offLocationChange",
+				    "app": {
+				        "js": false,
+				        "kotlin": true,
+				        "swift": true,
+				        "arkts": true
+				    }
+				},
+				"startLocationUpdateBackground": {
+				    "name": "startLocationUpdateBackground",
+				    "app": {
+				        "js": false,
+				        "kotlin": true,
+				        "swift": true,
+				        "arkts": true
+				    }
+				},
+				"onLocationChangeError": {
+				    "name": "onLocationChangeError",
+				    "app": {
+				        "js": false,
+				        "kotlin": true,
+				        "swift": true,
+				        "arkts": true
+				    }
+				},
+				"offLocationChangeError": {
+				    "name": "offLocationChangeError",
+				    "app": {
+				        "js": false,
+				        "kotlin": true,
+				        "swift": true,
+				        "arkts": true
+				    }
+				}
+            }
+        },
+        "dependencies": [
+            "app-ios:permission-location"
+        ],
+        "encrypt": [],
+        "platforms": {
+            "cloud": {
+                "tcb": "u",
+                "aliyun": "u"
+            },
+            "client": {
+                "Vue": {
+                    "vue2": "u",
+                    "vue3": "u"
+                },
+                "App": {
+                    "app-android": "u",
+                    "app-ios": "u"
+                },
+                "H5-mobile": {
+                    "Safari": "u",
+                    "Android Browser": "u",
+                    "微信浏览器(Android)": "u",
+                    "QQ浏览器(Android)": "u"
+                },
+                "H5-pc": {
+                    "Chrome": "u",
+                    "IE": "u",
+                    "Edge": "u",
+                    "Firefox": "u",
+                    "Safari": "u"
+                },
+                "小程序": {
+                    "微信": "u",
+                    "阿里": "u",
+                    "百度": "u",
+                    "字节跳动": "u",
+                    "QQ": "u",
+                    "钉钉": "u",
+                    "快手": "u",
+                    "飞书": "u",
+                    "京东": "u"
+                },
+                "快应用": {
+                    "华为": "u",
+                    "联盟": "u"
+                }
+            }
+        }
+    }
+}

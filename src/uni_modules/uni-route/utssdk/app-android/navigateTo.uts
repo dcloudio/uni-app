@@ -1,0 +1,61 @@
+import {
+    ANIMATION_DURATION,
+    ANIMATION_TYPE,
+    NAVIGATE_TO,
+    NavigateToPage,
+    ON_HIDE,
+    entryPageState,
+    invokeCurrentPageHook,
+    navigate,
+    navigateToPagesBeforeEntryPages,
+    normalizeRouteOptions
+} from '@dcloudio/uni-runtime'
+import {
+    DEFAULT_ANIMATION_DURATION,
+    DEFAULT_ANIMATION_IN,
+} from '../constants.uts'
+import { NavigateToOptions, NavigateToSuccess } from '../interface.uts'
+import { NavigateToFailImpl } from '../unierror.uts'
+
+export const navigateTo = defineAsyncApi<NavigateToOptions, NavigateToSuccess>(
+    NAVIGATE_TO,
+    (options: NavigateToOptions, res: ApiExecutor) => {
+        if (!entryPageState.handledBeforeEntryPageRoutes) {
+            navigateToPagesBeforeEntryPages.push({ options } as NavigateToPage)
+            return
+        }
+        const navigationStart = Date.now()
+        // TODO 一系列前置判断
+        const normalizeRouteOptionsResult = normalizeRouteOptions(
+            NAVIGATE_TO,
+            options.url as string,
+        )
+        if (normalizeRouteOptionsResult.errMsg.length > 0) {
+            res.reject(
+                new NavigateToFailImpl(normalizeRouteOptionsResult.errMsg),
+            )
+            return
+        }
+        options.url = normalizeRouteOptionsResult.url
+        invokeCurrentPageHook(ON_HIDE)
+        setTimeout(() => {
+            navigate(
+                options.url as string,
+                new Map<string, any | null>([
+                    [
+                        ANIMATION_TYPE,
+                        options.animationType ?? DEFAULT_ANIMATION_IN,
+                    ],
+                    [
+                        ANIMATION_DURATION,
+                        options.animationDuration ?? DEFAULT_ANIMATION_DURATION,
+                    ],
+                ]),
+                NAVIGATE_TO,
+                null,
+                navigationStart,
+            )
+            res.resolve(null)
+        }, 0)
+    },
+)

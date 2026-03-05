@@ -1,0 +1,51 @@
+import { GetPrivacySetting, GetPrivacySettingOptions, GetPrivacySettingSuccessResult, OffPrivacyAuthorizationChange, OnPrivacyAuthorizationChange, OnPrivacyAuthorizationChangeCallback, PrivacyChangeResult, ResetPrivacyAuthorization } from "../interface";
+
+let callbackId = 0
+const privacyCallbacks = new Map<number, OnPrivacyAuthorizationChangeCallback>()
+const privacyAuthorizationChangeFunction = (agree : boolean) => {
+  privacyCallbacks.forEach((entry : OnPrivacyAuthorizationChangeCallback) => {
+    entry({ 'needAuthorization': !agree } as PrivacyChangeResult)
+  })
+}
+
+export const getPrivacySetting : GetPrivacySetting = (option : GetPrivacySettingOptions) => {
+  const successCallback : GetPrivacySettingSuccessResult = { 'needAuthorization': !UTSHarmony.getPrivacyAgree() }
+  option.success?.(successCallback)
+  option.complete?.(successCallback)
+}
+
+export const resetPrivacyAuthorization : ResetPrivacyAuthorization = () => {
+  UTSHarmony.resetPrivacyAgree()
+}
+
+export const onPrivacyAuthorizationChange : OnPrivacyAuthorizationChange = (callback : OnPrivacyAuthorizationChangeCallback) : number => {
+  if (privacyCallbacks.size == 0) {
+    UTSHarmony.onPrivacyAgreeChange(privacyAuthorizationChangeFunction)
+  }
+
+  callbackId++
+  privacyCallbacks.set(callbackId, callback)
+  return callbackId
+}
+
+export const offPrivacyAuthorizationChange : OffPrivacyAuthorizationChange = (id : number) => {
+  privacyCallbacks.delete(id)
+
+  if (privacyCallbacks.size == 0) {
+    UTSHarmony.offPrivacyAgreeChange(privacyAuthorizationChangeFunction)
+  }
+}
+
+export {
+    GetPrivacySetting,
+    GetPrivacySettingCompleteCallback,
+    GetPrivacySettingFailCallback,
+    GetPrivacySettingOptions,
+    GetPrivacySettingSuccessCallback,
+    GetPrivacySettingSuccessResult,
+    OffPrivacyAuthorizationChange,
+    OnPrivacyAuthorizationChange,
+    OnPrivacyAuthorizationChangeCallback,
+    PrivacyChangeResult,
+    ResetPrivacyAuthorization
+} from "../interface.uts";

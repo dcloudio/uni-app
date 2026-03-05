@@ -1,0 +1,90 @@
+import { UniRadioElement } from '../uni-radio/uni-radio'
+
+type UniRadioGroupChangeEventDetail = {
+  value : string
+}
+
+export class UniRadioGroupChangeEvent extends UniCustomEvent<UniRadioGroupChangeEventDetail> {
+  constructor(value : string) {
+    super('change', { value } as UniRadioGroupChangeEventDetail)
+  }
+}
+
+export class UniRadioGroupElement extends UniFormControlElement<string> implements UniCustomElement {
+  static get observedAttributes() : Array<string> {
+    return []
+  }
+
+  constructor() {
+    super()
+  }
+
+  override get name() : string {
+    return this.getAttributeValue('name', '')
+  }
+  override set name(value : string) {
+    this.setAttribute('name', value)
+  }
+
+  override get value() : string {
+    let returnValue = ''
+    this.findChildren(this).forEach((item : UniRadioElement) => {
+      if (item.checked) {
+        returnValue = item.value
+      }
+    })
+    return returnValue
+  }
+
+  override set value(value : string) {
+    this.findChildren(this).forEach((item : UniRadioElement) => {
+      if (item.value == value) {
+        item.checked = true
+      }
+    })
+  }
+
+  override reset() {
+    this.findChildren(this).forEach((item : UniRadioElement) => {
+      item.reset()
+    })
+  }
+
+  // TODO 鸿蒙Bug 当所有属性可选时必须实现一个
+  attributeChangedCallback(name : string, oldValue : any | null, newValue : any | null) {
+  }
+
+  private getAttributeValue(key : string, defaultValue : string) : string {
+    const value = this.getAttribute(key)
+    if (value != null && value!.length > 0) {
+      return value!
+    }
+    return defaultValue
+  }
+
+  // friend by UniRadioElement
+  _radioChange(el : UniRadioElement, value : string) {
+    this.findChildren(this).forEach((item : UniRadioElement) => {
+      if (item != el) {
+        item.checked = false
+      }
+    })
+
+    this.dispatchEvent(new UniRadioGroupChangeEvent(value))
+  }
+
+  private findChildren(el : UniElement) : UniRadioElement[] {
+    const controls : UniRadioElement[] = []
+    el.children.forEach((item : UniElement) => {
+      if (item instanceof UniRadioElement) {
+        controls.push(item as UniRadioElement)
+      } else {
+        // controls.push(...this.findChildren(item));
+        this.findChildren(item).forEach((item : UniRadioElement) => {
+          controls.push(item as UniRadioElement)
+        })
+      }
+    })
+    return controls
+  }
+}

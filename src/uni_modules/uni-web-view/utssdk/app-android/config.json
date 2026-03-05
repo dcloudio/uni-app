@@ -1,0 +1,7 @@
+{
+	"minSdkVersion": "21",
+	"dependencies": [
+		"androidx.webkit:webkit:1.6.0",
+		"androidx.appcompat:appcompat:1.1.0"
+	]
+}

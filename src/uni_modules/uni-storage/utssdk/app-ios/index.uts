@@ -1,0 +1,192 @@
+import { SetStorageSuccess, SetStorageOptions, SetStorage, SetStorageSync, GetStorageSuccess, GetStorageOptions, GetStorage, GetStorageSync, GetStorageInfoSuccess, GetStorageInfoOptions, GetStorageInfo, GetStorageInfoSync, RemoveStorageSuccess, RemoveStorageOptions, RemoveStorage, RemoveStorageSync, ClearStorage, ClearStorageSync, ClearStorageOptions, ClearStorageSuccess} from "../interface.uts"
+import { Storage, StorageManager } from "storage"  assert { type: "implementationOnly" };
+import { UTSiOS, dc_storage_aes_key, dc_storage_path_component, dc_storage_old_path_component } from "DCloudUTSFoundation";
+import { NSDictionary, URL, FileManager, PropertyListSerialization, NSData, NSKeyedUnarchiver } from 'Foundation';
+import { uni_getStorageAsync, uni_getStorageSync, uni_setStorageAsync, uni_setStorageSync } from "../uniStorageTool.uts"
+
+
+class StorageTool {
+	protected static storage: Storage | null
+	
+	private static migrateStorage(storage: Storage) {
+		 let dataPath = UTSiOS.getDataPath()
+		 const oldPath = new URL(fileURLWithPath = dataPath).appendingPathComponent(dc_storage_old_path_component).absoluteString
+		 let content: any | null = null
+		 
+		 if (FileManager.default.fileExists(atPath = oldPath)) {
+		 	let data = FileManager.default.contents(atPath = oldPath)
+			if (data != null) {
+				content = PropertyListSerialization.propertyListFromData(data!, mutabilityOption = [PropertyListSerialization.MutabilityOptions.mutableContainersAndLeaves], format = null, errorDescription = null)
+			}
+			try {
+				UTSiOS.try(FileManager.default.removeItem(atPath = oldPath))
+			} catch (e) {
+				// console.log(e)
+			}
+		 } else{
+			const path = new URL(fileURLWithPath = dataPath).appendingPathComponent(dc_storage_path_component).absoluteString
+			let inputData = NSData.init(contentsOfFile = path)
+			if ( inputData != null ) {
+				let input  = inputData! as Data
+				let data = UTSiOS.dc_AESDecrypt(data = input, key = dc_storage_aes_key)
+				if (data != null) {
+					content = NSKeyedUnarchiver.unarchiveObject(with = data!)
+				}
+			} 
+			try {
+				UTSiOS.try(FileManager.default.removeItem(atPath = path))
+			} catch (e) {
+				// console.log(e)
+			}
+		 }
+		 if (content != null ) {
+		 	let contentDic = UTSiOS.convertDictionary(content!)
+		 	if (contentDic.isEmpty == false) {
+				 let dic = new NSDictionary(dictionary = contentDic)
+				let i = 0
+				while (i  < dic.allKeys.length){
+					let key = dic.allKeys[i]
+					if (key != null && typeof key == "string") {
+						let value = dic.value(forKey = key as string)
+						if (value != null && typeof value == "string") {
+							storage.setItem(key as string, value = value as string, callback = null)
+						}
+					}
+					i++
+				}
+		 	}
+		 }
+	}
+	
+	@UTSiOS.keyword("fileprivate")
+	static getStorage(): Storage {
+		if (this.storage != null) {
+			return this.storage!
+		} 
+		const domain: string = UTSiOS.getAppId()
+		let storage: Storage | null = null
+	    storage = StorageManager.storage(withDomain = domain)
+		if (this.storage == null) {
+			storage = StorageManager.activeStorage(withDomain = domain)
+			const path = UTSiOS.getDataPath()
+			storage!.rootPath = path
+			this.migrateStorage(storage!)
+		} 
+		this.storage = storage
+		return storage!  
+	}
+	
+}  
+
+
+
+export const setStorage: SetStorage = function (options: SetStorageOptions) {
+	setTimeout(() => {
+		uni_setStorageAsync(options, (itemKey: string, itemData: string) => {
+			StorageTool.getStorage().setItemPersistent(itemKey, value = itemData, callback = null)
+		}, (itemKey: string) => {
+			StorageTool.getStorage().removeItem(itemKey, callback = null)
+		})  
+	}, 0)
+}
+
+export const setStorageSync: SetStorageSync = function (key: string, data: any) {
+	uni_setStorageSync(key, data, (itemKey: string, itemValue: string) => {
+		StorageTool.getStorage().setItemPersistent(itemKey, value = itemValue, callback = null)
+	}, (itemKey: string) => {
+		StorageTool.getStorage().removeItem(itemKey, callback = null)
+	})
+}
+
+function getItemAsync(itemKey: string): string | null {
+	return StorageTool.getStorage().getItem(itemKey, callback = null)
+}
+
+function includeKey(key: string): boolean {
+	let storage = StorageTool.getStorage()
+	let list = storage.getAllKeys()
+	if (list != null) {
+		let item = list!.find((value): boolean => {
+			if (typeof value == "string") {  
+				return (value as string) == key;
+			}
+			return false;
+		})
+		return (item != null);
+	} 
+	return false;
+}
+
+export const getStorage: GetStorage = function (options: GetStorageOptions) {
+	setTimeout(() => {
+		uni_getStorageAsync(options, getItemAsync, includeKey)
+	}, 0);
+}
+
+export const getStorageSync: GetStorageSync = function (key: string): any {
+	return uni_getStorageSync(key, getItemAsync)
+}
+
+export const getStorageInfo: GetStorageInfo = function (options: GetStorageInfoOptions) {
+	setTimeout(() => {
+		const storage = StorageTool.getStorage()
+		const allKeys = storage.getAllKeys()
+		const length = storage.length()
+		const limitSize = 1.7976931348623157e+308
+		
+		const success: GetStorageInfoSuccess = {
+			keys: allKeys,
+			currentSize: length,
+			limitSize: limitSize
+		}
+		options.success?.(success)
+		options.complete?.(success)
+	}, 0);
+}
+
+export const getStorageInfoSync: GetStorageInfoSync = function () : GetStorageInfoSuccess {
+	const storage = StorageTool.getStorage()
+	const allKeys = storage.getAllKeys()
+	const length = storage.length()
+	const limitSize = 1.7976931348623157e+308
+	
+	const success: GetStorageInfoSuccess = {
+		keys: allKeys,
+		currentSize: length,
+		limitSize: limitSize
+	}
+	return success
+}
+
+export const removeStorage: RemoveStorage = function (options: RemoveStorageOptions) {
+	setTimeout(() => {
+		StorageTool.getStorage().removeItem(options.key, callback = null)
+		let success: RemoveStorageSuccess = {	
+		}
+		options.success?.(success)
+		options.complete?.(success)
+	}, 0);
+
+}
+
+export const removeStorageSync: RemoveStorageSync = function (key: string) {
+	StorageTool.getStorage().removeItem(key, callback = null)
+}
+
+export const clearStorage: ClearStorage = function (option: ClearStorageOptions | null) {
+	setTimeout(() => {
+		StorageTool.getStorage().clear()
+		let success: ClearStorageSuccess = {
+		}
+		if (option != null) {
+			option!.success?.(success)
+			option!.complete?.(success)
+		}
+	}, 0);
+	
+}
+
+export const clearStorageSync: ClearStorageSync = function () {
+	StorageTool.getStorage().clear()
+}
+

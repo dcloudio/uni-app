@@ -1,0 +1,78 @@
+import { LocationErrorCode, IGetLocationFail } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+
+export const LocationUniErrorSubject = 'uni-location';
+
+/**
+ * 错误码
+ * @UniError
+ */
+export const LocationUniErrors : Map<LocationErrorCode, string> = new Map([
+	/**
+	 * 系统定位未开启，请在系统设置中开启系统定位 
+	 */
+	[1505003, 'maybe not turn on the system location permission.'],
+	/**
+	 * 缺失权限
+	 */
+	[1505004, 'maybe not obtain GPS Permission.'],
+	/**
+	 * 超时
+	 */
+	[1505600, 'location fail: timeout'],
+	/**
+	 * 不支持的定位类型
+	 */
+	[1505601, 'system location support wgs84 only.'],
+	/**
+	 * 定位捕获失败
+	 */
+	[1505602, 'location fail: request error'],
+	/**
+	 * 逆地理编码捕获失败
+	 */
+	[1505603, 'The system failed to retrieve geocode for the location.'],
+	/**
+	 * provider初始化失败
+	 */
+	[1505604, 'Failed to get provider.'],
+	/**
+	 * 不支持逆地理编码
+	 */
+	[1505700, 'system location not support geocode.'],
+	/**
+	 * 没有找到具体的定位引擎（GPS_PROVIDER，NETWORK_PROVIDER，PASSIVE_PROVIDER等），请定位开关是否已打开
+	 */
+	[1505701, 'Provider is not find,Please ensure that the device location function is turned on'],
+	/**
+	 * 缺失高精度权限授权 
+	 */
+	[1505800, 'Unauthorized access to high-accuracy location services.'],
+	/**
+	 * 未通过配置预校验，通常是api key 配置错误 
+	 */
+	[1505605, 'The Tencent api key is misconfigured.'], 
+	/**
+	 * 腾讯定位只支持GCJ-02
+	 */
+	[1505607, 'GCJ-02 support only.'] 
+]);
+
+
+export function getLocationErrorCode(errCode : number) : LocationErrorCode {
+	const res = LocationUniErrors[errCode];
+	return res == null ? 1505021 : errCode;
+}
+
+
+export class GetLocationFailImpl extends UniError implements IGetLocationFail {
+	constructor(errCode : LocationErrorCode) {
+		super();
+		this.errSubject = LocationUniErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = LocationUniErrors[errCode] ?? "";
+	}
+}

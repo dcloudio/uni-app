@@ -1,0 +1,7 @@
+{
+	"dependencies": [
+		"androidx.recyclerview:recyclerview:1.0.0",
+		"androidx.appcompat:appcompat:1.0.0"
+	]
+}
+

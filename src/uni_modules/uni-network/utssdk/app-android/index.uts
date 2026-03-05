@@ -1,0 +1,498 @@
+import { RequestOptions, RequestSuccess, RequestTask, UploadFileOptions, UploadFile, UploadTask, OnProgressUpdateResult, UploadFileSuccess, UploadFileProgressUpdateCallback, DownloadFile, DownloadTask, DownloadFileOptions, OnProgressDownloadResult, DownloadFileProgressUpdateCallback, DownloadFileSuccess } from '../interface'
+import { RequestFailImpl, UploadFileFailImpl, DownloadFileFailImpl, getErrcode } from '../unierror';
+import { NetworkManager, NetworkRequestListener, NetworkUploadFileListener, NetworkDownloadFileListener } from './network/NetworkManager.uts'
+import Pattern from 'java.util.regex.Pattern';
+import Locale from 'java.util.Locale';
+import TextUtils from 'android.text.TextUtils';
+import { StatusCode } from './network/StatusCode.uts'
+import Key from 'kotlinx.coroutines.CoroutineExceptionHandler.Key';
+import JSONObject from 'com.alibaba.fastjson.JSONObject';
+import ArrayList from 'java.util.ArrayList';
+import ProgressListener from 'android.os.RecoverySystem.ProgressListener';
+import Handler from 'android.os.Handler';
+import Looper from 'android.os.Looper';
+import Class from 'java.lang.Class';
+import Type from 'java.lang.reflect.Type';
+import Gson from "io.dcloud.uts.gson.Gson";
+import ByteBuffer from 'java.nio.ByteBuffer';
+import { NetworkUtil } from './network/utils/NetworkUtil.uts';
+
+let charsetPattern = Pattern.compile('charset=([a-z0-9-]+)')
+
+class RunnableTask extends Runnable {
+	private callback : () => void | null;
+	private looper : Looper | null = null;
+	constructor(looper : Looper | null, callback : () => void) {
+		super();
+		this.looper = looper;
+		this.callback = callback
+	}
+
+	override run() {
+		this.callback?.()
+	}
+
+	public execute() {
+		if (this.looper == null) {
+			this.run();
+		} else {
+			new Handler(this.looper!!).post(this);
+		}
+	}
+}
+
+
+class RequestNetworkListener<T> extends NetworkRequestListener {
+	private param : RequestOptions<T> | null = null;
+	private headers : UTSJSONObject = {};
+	private looper : Looper | null = null;
+	private type : Type | null = null;
+	private clzName : string | null = null;
+	constructor(param : RequestOptions<T>, type : Type, clzName : string) {
+		super();
+		this.param = param;
+		this.type = type;
+		this.clzName = clzName;
+		this.looper = Looper.myLooper();
+	}
+	override onStart() : void {
+	}
+
+	override onHeadersReceived(statusCode : number, headers : MutableMap<String, MutableList<String>>) : void {
+		let simpleHeaders = {};
+		if (headers != null) {
+			let it = headers.iterator();
+			while (it.hasNext()) {
+				let entry = it.next();
+				let key = entry.key;
+				let value = entry.value;
+
+				let tmpKey = '_';
+				if (key == null) {
+					key = tmpKey;
+				}
+
+				if (value.size == 0) {
+					continue;
+				} else if (value.size == 1) {
+					simpleHeaders[key] = value.get(0);
+				} else {
+					simpleHeaders[key] = value.toString();
+				}
+			}
+		}
+		this.headers = simpleHeaders;
+	}
+
+	override onProgress(progress : number) : void {
+	}
+
+	override onComplete(option : UTSJSONObject) : void {
+		let kParam = this.param;
+		let result = {};
+		if (kParam != null) {
+			if (option == null || '-1' == option['statusCode']) {
+				if (this.headers != null) {
+					result['header'] = this.headers;
+				}
+				let exception = option['cause']! as Exception;
+				const originalErrMsg = option['errorMsg']! as string;
+				let cause = exception.cause.toString();
+				if (exception.cause == null) {
+					cause = originalErrMsg
+				}
+				let errMsg = originalErrMsg
+				let errCode = (option['errorCode']! as string).toInt();
+				if (errMsg.indexOf("timeout") != -1) {
+					errCode = 5;
+					errMsg = "time out";
+				} else if (cause.contains("Connection refused")) {
+					errCode = 1000;
+				} else if (cause.contains("Network is unreachable")) {
+					errCode = 600003;
+				} else if (cause.contains("invalid URL")) {
+					errCode = 600009;
+				}
+
+
+				let failResult = new RequestFailImpl(getErrcode(errCode));
+				failResult.cause = new SourceError(cause);
+				new RunnableTask(this.looper, () => {
+					if (kParam != null) {
+						let fail = kParam.fail;
+						if (fail != null) {
+							fail(failResult);
+						}
+						let complete = kParam.complete;
+						if (complete != null) {
+							complete(failResult);
+						}
+					}
+				}).execute();
+			} else {
+				result['statusCode'] = option['statusCode'];
+				if (option['originalData'] == null) {
+					if ("java.lang.Object".equals(this.clzName, true)) {
+						let errMsg = option['errorMsg'];
+						if (errMsg != null) {
+							let errMsgJson = JSON.parse((option['errorMsg']! as string));
+							if (errMsgJson != null) {
+								result['data'] = errMsgJson;
+							} else {
+								result['data'] = errMsg;
+							}
+						} else {
+							result['data'] = "error";
+						}
+					} else if ("java.lang.String".equals(this.clzName, true)) {
+						result['data'] = option['errorMsg'] ?? "error";
+					} else if ("io.dcloud.uts.ArrayBuffer".equals(this.clzName, true)) {
+						let textDecoder : TextEncoder = new TextEncoder()
+						let error : string = (option['errorMsg'] ?? "error") as string
+						let uint8Array = textDecoder.encode(error)
+						result['data'] = uint8Array.buffer
+					} else {
+						let errMsg = option['errorMsg'];
+						if (errMsg != null) {
+							let errMsgJson = JSON.parse<T>(errMsg as string, this.type);
+							if (errMsgJson != null) {
+								result['data'] = errMsgJson;
+							} else {
+								let failResult = new RequestFailImpl(getErrcode(100002));
+								failResult.data = errMsg
+								failResult.cause = new SourceError("Error message parsing failed")
+								new RunnableTask(this.looper, () => {
+									if (kParam != null) {
+										let fail = kParam.fail;
+										if (fail != null) {
+											fail(failResult);
+										}
+										let complete = kParam.complete;
+										if (complete != null) {
+											complete(failResult);
+										}
+									}
+								}).execute();
+								return;
+							}
+						}
+					}
+				} else {
+					let charset = "";
+					let headers = this.headers.toJSONObject() as JSONObject;
+					if (headers != null) {
+						for (key in headers.keys) {
+							if (key.equals("Content-Type", true)) {
+								charset = headers[key] as string;
+							}
+						}
+					}
+					let data : any | null;
+					if ("io.dcloud.uts.ArrayBuffer".equals(this.clzName, true)) {
+						let by = option['originalData'] as ByteArray
+						data = ArrayBuffer.fromByteBuffer(ByteBuffer.wrap(by))
+					} else {
+						let strData = this.readAsString(option['originalData'] as ByteArray, charset);
+
+						let type = kParam.responseType != null ? kParam.responseType : kParam.dataType;
+						if (type == null) {
+							type = charset;
+						}
+						if (kParam.method == "HEAD") {
+							type = "";
+						}
+
+						data = this.parseData(strData, type);
+						if (data == null) {
+							let failResult = new RequestFailImpl(getErrcode(100001));
+							if (!("java.lang.Object".equals(this.clzName, true) || "java.lang.String".equals(this.clzName, true))) {
+								failResult = new RequestFailImpl(getErrcode(100003));
+							}
+
+							new RunnableTask(this.looper, () => {
+								if (kParam != null) {
+									let fail = kParam.fail;
+									if (fail != null) {
+										fail(failResult);
+									}
+									let complete = kParam.complete;
+									if (complete != null) {
+										complete(failResult);
+									}
+								}
+							}).execute();
+							return;
+						}
+
+					}
+					result['data'] = data;
+				}
+				result['statusText'] = StatusCode.getStatus(option['statusCode'] as string);
+				if (this.headers != null) {
+					result['header'] = this.headers;
+				}
+
+				let tmp : RequestSuccess<T> = {
+					data: result['data'] as T,
+					statusCode: (result['statusCode'] as string).toInt(),
+					header: result['header']!,
+					cookies: NetworkUtil.parseCookie(this.headers)
+				};
+				new RunnableTask(this.looper, () => {
+					if (kParam != null) {
+						let success = kParam.success;
+						if (success != null) {
+							success(tmp);
+						}
+						let complete = kParam.complete;
+						if (complete != null) {
+							complete(tmp);
+						}
+					}
+				}).execute();
+			}
+		}
+	}
+
+	private readAsString(byteArray : ByteArray, type : string) : string {
+		let charsetType = "utf-8";
+
+		if (type != null) {
+			let matcher = charsetPattern.matcher(type.lowercase(Locale.ENGLISH));
+			if (matcher.find()) {
+				charsetType = matcher.group(1);
+			}
+		}
+
+		try {
+			return new String(byteArray, charset(charsetType));
+		} catch (e : Exception) {
+			return new String(byteArray);
+		}
+	}
+
+	private parseData(data : string, type : string) : any | null {
+		if ("java.lang.Object".equals(this.clzName, true)) {
+			if (type.indexOf("json") != -1) {
+				return JSON.parse(data);
+			} else if (type == 'jsonp') {
+				if (TextUtils.isEmpty(data)) {
+					return {};
+				}
+				let start = data.indexOf('(') + 1;
+				let end = data.indexOf(')');
+				if (start == 0 || start >= end) {
+					return {};
+				}
+				let tmp = data.substring(start, end);
+				return JSON.parse(tmp);
+			} else {
+				let jsonData : any | null = null;
+				try {
+					const gson = new Gson();
+					jsonData = gson.fromJson<any>(data, this.type);
+				} catch (e) {
+				}
+				return jsonData ?? data;
+			}
+		} else if ("java.lang.String".equals(this.clzName, true)) {
+			return data;
+		} else {
+			return JSON.parse<T>(data, this.type);
+		}
+	}
+
+	private parseCookie(header : UTSJSONObject | null) : string[] {
+		if (header == null) {
+			return []
+		}
+		let cookiesStr = header.getString('Set-Cookie')
+		if (cookiesStr == null) {
+			cookiesStr = header.getString('set-cookie')
+		}
+		if (cookiesStr == null) {
+			return []
+		}
+		let cookiesArr = new Array<string>()
+		if (cookiesStr.charAt(0) == "[" && cookiesStr.charAt(cookiesStr.length - 1) == "]") {
+			cookiesStr = cookiesStr.slice(1, -1)
+		}
+
+		const handleCookiesArr = cookiesStr.split(';')
+		for (let i = 0; i < handleCookiesArr.length; i++) {
+			if (handleCookiesArr[i].indexOf('Expires=') != -1 || handleCookiesArr[i].indexOf('expires=') != -1) {
+				cookiesArr.push(handleCookiesArr[i].replace(',', ''))
+			} else {
+				cookiesArr.push(handleCookiesArr[i])
+			}
+		}
+		cookiesArr = cookiesArr.join(';').split(',')
+
+		return cookiesArr
+	}
+
+}
+
+
+class UploadNetworkListener implements NetworkUploadFileListener {
+	private param : UploadFileOptions | null = null;
+	public progressListeners = new ArrayList<UploadFileProgressUpdateCallback>();
+	private looper : Looper | null = null;
+	constructor(param : UploadFileOptions) {
+		this.param = param;
+		this.looper = Looper.myLooper();
+	}
+
+	onProgress(progressUpdate : OnProgressUpdateResult) {
+		if (this.progressListeners.size != 0) {
+			new RunnableTask(this.looper, () => {
+				for (let i : Int = 0; i < this.progressListeners.size; i++) {
+					let listener = this.progressListeners.get(i);
+					listener(progressUpdate);
+				}
+			}).execute();
+		}
+	}
+
+	onComplete(option : UTSJSONObject) {
+		let kParam = this.param;
+		if (kParam != null) {
+			const errorMsg = option["errorMsg"];
+			if (errorMsg != null) {
+				let errCode = (option['errorCode']! as string).toInt();
+				let failResult = new UploadFileFailImpl(getErrcode(errCode));
+				let cause = option['cause'];
+				if (cause != null) {
+					failResult.cause = cause as SourceError;
+				}
+
+				new RunnableTask(this.looper, () => {
+					if (kParam != null) {
+						let fail = kParam.fail;
+						if (fail != null) {
+							fail(failResult);
+						}
+						let complete = kParam.complete;
+						if (complete != null) {
+							complete(failResult);
+						}
+					}
+				}).execute();
+
+			} else {
+				let kData = option["data"];
+				let data = "";
+				if (kData != null) {
+					data = kData as string;
+				}
+				let statusCode = (option['statusCode']! as string).toInt();
+				let successResult : UploadFileSuccess = {
+					data: data,
+					statusCode: statusCode
+				}
+				new RunnableTask(this.looper, () => {
+					if (kParam != null) {
+						let success = kParam.success;
+						if (success != null) {
+							success(successResult);
+						}
+						let complete = kParam.complete;
+						if (complete != null) {
+							complete(successResult);
+						}
+					}
+				}).execute();
+			}
+		}
+
+	}
+}
+class DownloadNetworkListener implements NetworkDownloadFileListener {
+	private param : DownloadFileOptions | null = null;
+	public progressListeners = new ArrayList<DownloadFileProgressUpdateCallback>();
+	private looper : Looper | null = null;
+	constructor(param : DownloadFileOptions) {
+		this.param = param;
+		this.looper = Looper.myLooper();
+	}
+
+	onProgress(progressUpdate : OnProgressDownloadResult) {
+		if (this.progressListeners.size != 0) {
+			new RunnableTask(this.looper, () => {
+				for (let i : Int = 0; i < this.progressListeners.size; i++) {
+					let listener = this.progressListeners.get(i);
+					listener(progressUpdate);
+				}
+			}).execute();
+		}
+	}
+	onComplete(option : UTSJSONObject) {
+		let kParam = this.param;
+		if (kParam != null) {
+			let errMsg = option['errorMsg'];
+			if (errMsg != null) {
+				let errCode = (option['errorCode']! as string).toInt();
+				let failResult = new DownloadFileFailImpl(getErrcode(errCode));
+				failResult.errMsg = errMsg as string;
+				let cause = option['cause'];
+				if (cause != null) {
+					failResult.cause = cause as SourceError;
+				}
+
+				new RunnableTask(this.looper, () => {
+					if (kParam != null) {
+						let fail = kParam.fail;
+						if (fail != null) {
+							fail(failResult);
+						}
+						let complete = kParam.complete;
+						if (complete != null) {
+							complete(failResult);
+						}
+					}
+				}).execute();
+			} else {
+				let kTempFilePath = option["tempFilePath"];
+				let tempFilePath = "";
+				if (kTempFilePath != null) {
+					tempFilePath = kTempFilePath as string;
+				}
+				let statusCode = (option['statusCode']! as string).toInt();
+				let successResult : DownloadFileSuccess = {
+					tempFilePath: tempFilePath,
+					statusCode: statusCode
+				}
+
+				new RunnableTask(this.looper, () => {
+					if (kParam != null) {
+						let success = kParam.success;
+						if (success != null) {
+							success(successResult);
+						}
+						let complete = kParam.complete;
+						if (complete != null) {
+							complete(successResult);
+						}
+					}
+				}).execute();
+			}
+		}
+	}
+}
+
+
+@UTSAndroid.keyword("inline")
+@UTSAndroid.keyword('reified')
+export function request<T>(options : RequestOptions<T>) : RequestTask {
+	const type = UTSAndroid.getGenericType<T>();
+	const clzName = UTSAndroid.getGenericClassName<T>();
+	return NetworkManager.getInstance().request<T>(options, new RequestNetworkListener<T>(options, type, clzName));
+}
+
+export const uploadFile : UploadFile = (options : UploadFileOptions) : UploadTask => {
+	return NetworkManager.getInstance().uploadFile(options, new UploadNetworkListener(options));
+}
+
+export const downloadFile : DownloadFile = (options : DownloadFileOptions) : DownloadTask => {
+	return NetworkManager.getInstance().downloadFile(options, new DownloadNetworkListener(options));
+}

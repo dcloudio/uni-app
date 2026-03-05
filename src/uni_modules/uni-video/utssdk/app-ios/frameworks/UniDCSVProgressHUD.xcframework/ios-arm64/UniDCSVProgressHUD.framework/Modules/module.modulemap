@@ -1,0 +1,6 @@
+framework module UniDCSVProgressHUD {
+  umbrella header "UniDCSVProgressHUD.h"
+  export *
+
+  module * { export * }
+}

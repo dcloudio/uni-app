@@ -1,0 +1,713 @@
+export interface Uni {
+	/**
+		商家转账用户确认模式下，拉起页面请求用户确认收款
+		@tutorial https://doc.dcloud.net.cn/uni-app-x/api/request-merchant-transfer.html
+		@tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/request-merchant-transfer.html
+		@tutorial_uni_app https://uniapp.dcloud.net.cn/api/plugins/request-merchant-transfer.html
+		@uniPlatform {
+			"app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "3.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			},
+			"web": {
+				"uniVer": "x",
+				"unixVer": "x"
+			},
+			"mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.41"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			}
+		}
+	*/
+	requestMerchantTransfer(options : RequestMerchantTransferOptions) : void;
+}
+
+export type RequestMerchantTransfer = (options : RequestMerchantTransferOptions) => void;
+export type RequestMerchantTransferOptions = {
+	/**
+		商户号
+		@uniPlatform {
+			"app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "3.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			},
+			"web": {
+				"uniVer": "x",
+				"unixVer": "x"
+			},
+			"mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.61"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			}
+		}
+	*/
+	mchId : string
+	/**
+		商家转账付款单跳转收款页 pkg 信息,商家转账付款单受理成功时返回给商户
+		@uniPlatform {
+			"app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "3.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			},
+			"web": {
+				"uniVer": "x",
+				"unixVer": "x"
+			},
+			"mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.61"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			}
+		}
+	*/
+	package : string
+	/**
+		商户 appId（微信平台appid），普通模式下必填，服务商模式下，appId 和 subAppId 二选一填写
+		@uniPlatform {
+			"app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "3.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			},
+			"web": {
+				"uniVer": "x",
+				"unixVer": "x"
+			},
+			"mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.61"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			}
+		}
+	*/
+	appId ?: string | null
+	/**
+		收款用户 openId， 对应传入的商户 appId 下，某用户的 openId
+		@uniPlatform {
+			"app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "3.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			},
+			"web": {
+				"uniVer": "x",
+				"unixVer": "x"
+			},
+			"mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.61"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			}
+		}
+	*/
+	openId ?: string | null
+	/**
+		子商户 appId（微信平台子appid)，服务商模式下，appId 和 subAppId 二选一填写
+		@uniPlatform {
+			"app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "3.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			},
+			"web": {
+				"uniVer": "x",
+				"unixVer": "x"
+			},
+			"mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.61"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			}
+		}
+	*/
+	subAppId ?: string | null
+	/**
+		子商户号，服务商模式下必填
+		@uniPlatform {
+			"app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "3.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			},
+			"web": {
+				"uniVer": "x",
+				"unixVer": "x"
+			},
+			"mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.61"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			}
+		}
+	*/
+	subMchId ?: string | null
+	/**
+		接口调用成功的回调函数
+		@uniPlatform {
+			"app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "3.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			},
+			"web": {
+				"uniVer": "x",
+				"unixVer": "x"
+			},
+			"mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.61"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			}
+		}
+	*/
+	success ?: RequestMerchantTransferSuccessCallback | null
+	/**
+		接口调用失败的回调函数
+		@uniPlatform {
+			"app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "3.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			},
+			"web": {
+				"uniVer": "x",
+				"unixVer": "x"
+			},
+			"mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.61"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			}
+		}
+	*/
+	fail ?: RequestMerchantTransferFailCallback | null
+	/**
+		接口调用结束的回调函数（调用成功、失败都会执行）
+		@uniPlatform {
+			"app": {
+				"android": {
+					"osVer": "5.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"ios": {
+					"osVer": "12.0",
+					"uniVer": "4.61",
+					"unixVer": "4.61"
+				},
+				"harmony": {
+					"osVer": "3.0",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			},
+			"web": {
+				"uniVer": "x",
+				"unixVer": "x"
+			},
+			"mp": {
+				"weixin": {
+					"hostVer": "√",
+					"uniVer": "√",
+					"unixVer": "4.61"
+				},
+				"alipay": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"baidu": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"toutiao": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"lark": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"qq": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"kuaishou": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				},
+				"jd": {
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
+				}
+			}
+		}
+	*/
+	complete ?: RequestMerchantTransferCompleteCallback | null
+}
+export type RequestMerchantTransferCompleteCallback = (
+	res : RequestMerchantTransferGeneralCallbackResult
+) => void
+/** 接口调用失败的回调函数 */
+export type RequestMerchantTransferFailCallback = (
+	res : RequestMerchantTransferGeneralCallbackResult
+) => void
+/** 接口调用成功的回调函数 */
+export type RequestMerchantTransferSuccessCallback = (
+	res : RequestMerchantTransferGeneralCallbackResult
+) => void
+export type RequestMerchantTransferGeneralCallbackResult = {
+	errMsg : string
+}

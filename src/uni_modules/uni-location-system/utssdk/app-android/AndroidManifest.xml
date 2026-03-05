@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+	package="io.dcloud.uni.getlocation.system">
+	<!--permissions-->
+	<!-- 通过GPS得到精确位置 -->
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<!-- 通过网络得到粗略位置 -->
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<!-- 访问网络，某些位置信息需要从网络服务器获取 -->
+	<uses-permission android:name="android.permission.INTERNET" />
+	<!-- 前台service权限 -->
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<!-- 后台定位权限 -->
+	<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+	<application>
+		<service android:name="uts.sdk.modules.DcloudUniGetBackgroundLocation.UniSystemLocationService" android:enabled="true" android:exported="false"></service>
+	</application>
+</manifest>

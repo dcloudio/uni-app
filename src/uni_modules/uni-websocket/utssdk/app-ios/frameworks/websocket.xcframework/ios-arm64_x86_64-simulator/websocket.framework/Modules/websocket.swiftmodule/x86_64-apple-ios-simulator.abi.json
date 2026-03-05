@@ -1,0 +1,412 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "TopLevel",
+    "printedName": "TopLevel",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "websocket",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Starscream",
+        "printedName": "Starscream",
+        "declKind": "Import",
+        "moduleName": "websocket"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "WebSocketListener",
+        "printedName": "WebSocketListener",
+        "children": [
+          {
+            "kind": "Function",
+            "name": "onOpen",
+            "printedName": "onOpen(_:_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "WebSocketClient",
+                "printedName": "Starscream.WebSocketClient",
+                "usr": "s:10Starscream15WebSocketClientP"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Dictionary",
+                "printedName": "[Swift.String : Swift.String]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:SD"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:9websocket17WebSocketListenerC6onOpenyy10Starscream0bC6Client_p_SDyS2SGtF",
+            "mangledName": "$s9websocket17WebSocketListenerC6onOpenyy10Starscream0bC6Client_p_SDyS2SGtF",
+            "moduleName": "websocket",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onMessage",
+            "printedName": "onMessage(_:_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "WebSocketClient",
+                "printedName": "Starscream.WebSocketClient",
+                "usr": "s:10Starscream15WebSocketClientP"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:9websocket17WebSocketListenerC9onMessageyy10Starscream0bC6Client_p_10Foundation4DataVtF",
+            "mangledName": "$s9websocket17WebSocketListenerC9onMessageyy10Starscream0bC6Client_p_10Foundation4DataVtF",
+            "moduleName": "websocket",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onMessage",
+            "printedName": "onMessage(_:_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "WebSocketClient",
+                "printedName": "Starscream.WebSocketClient",
+                "usr": "s:10Starscream15WebSocketClientP"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:9websocket17WebSocketListenerC9onMessageyy10Starscream0bC6Client_p_SStF",
+            "mangledName": "$s9websocket17WebSocketListenerC9onMessageyy10Starscream0bC6Client_p_SStF",
+            "moduleName": "websocket",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onClosed",
+            "printedName": "onClosed(_:_:_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "WebSocketClient",
+                "printedName": "Starscream.WebSocketClient",
+                "usr": "s:10Starscream15WebSocketClientP"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:9websocket17WebSocketListenerC8onClosedyy10Starscream0bC6Client_p_SiSStF",
+            "mangledName": "$s9websocket17WebSocketListenerC8onClosedyy10Starscream0bC6Client_p_SiSStF",
+            "moduleName": "websocket",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onFailure",
+            "printedName": "onFailure(_:_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "WebSocketClient",
+                "printedName": "Starscream.WebSocketClient",
+                "usr": "s:10Starscream15WebSocketClientP"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.Error?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Error",
+                    "printedName": "Swift.Error",
+                    "usr": "s:s5ErrorP"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:9websocket17WebSocketListenerC9onFailureyy10Starscream0bC6Client_p_s5Error_pSgtF",
+            "mangledName": "$s9websocket17WebSocketListenerC9onFailureyy10Starscream0bC6Client_p_s5Error_pSgtF",
+            "moduleName": "websocket",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onPeerClosed",
+            "printedName": "onPeerClosed(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "WebSocketClient",
+                "printedName": "Starscream.WebSocketClient",
+                "usr": "s:10Starscream15WebSocketClientP"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:9websocket17WebSocketListenerC12onPeerClosedyy10Starscream0bC6Client_pF",
+            "mangledName": "$s9websocket17WebSocketListenerC12onPeerClosedyy10Starscream0bC6Client_pF",
+            "moduleName": "websocket",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onCancelled",
+            "printedName": "onCancelled(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "WebSocketClient",
+                "printedName": "Starscream.WebSocketClient",
+                "usr": "s:10Starscream15WebSocketClientP"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:9websocket17WebSocketListenerC11onCancelledyy10Starscream0bC6Client_pF",
+            "mangledName": "$s9websocket17WebSocketListenerC11onCancelledyy10Starscream0bC6Client_pF",
+            "moduleName": "websocket",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "didReceive",
+            "printedName": "didReceive(event:client:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "WebSocketEvent",
+                "printedName": "Starscream.WebSocketEvent",
+                "usr": "s:10Starscream14WebSocketEventO"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "WebSocketClient",
+                "printedName": "Starscream.WebSocketClient",
+                "usr": "s:10Starscream15WebSocketClientP"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:9websocket17WebSocketListenerC10didReceive5event6clienty10Starscream0bC5EventO_AG0bC6Client_ptF",
+            "mangledName": "$s9websocket17WebSocketListenerC10didReceive5event6clienty10Starscream0bC5EventO_AG0bC6Client_ptF",
+            "moduleName": "websocket",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "WebSocketListener",
+                "printedName": "websocket.WebSocketListener",
+                "usr": "c:@M@websocket@objc(cs)WebSocketListener"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@websocket@objc(cs)WebSocketListener(im)init",
+            "mangledName": "$s9websocket17WebSocketListenerCACycfc",
+            "moduleName": "websocket",
+            "overriding": true,
+            "implicit": true,
+            "objc_name": "init",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override"
+            ],
+            "init_kind": "Designated"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:@M@websocket@objc(cs)WebSocketListener",
+        "mangledName": "$s9websocket17WebSocketListenerC",
+        "moduleName": "websocket",
+        "isOpen": true,
+        "declAttributes": [
+          "AccessControl",
+          "ObjC"
+        ],
+        "superclassUsr": "c:objc(cs)NSObject",
+        "inheritsConvenienceInitializers": true,
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "WebSocketDelegate",
+            "printedName": "WebSocketDelegate",
+            "usr": "s:10Starscream17WebSocketDelegateP",
+            "mangledName": "$s10Starscream17WebSocketDelegateP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          }
+        ]
+      }
+    ],
+    "json_format_version": 8
+  },
+  "ConstValues": []
+}

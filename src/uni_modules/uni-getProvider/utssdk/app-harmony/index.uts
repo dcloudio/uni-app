@@ -1,0 +1,69 @@
+import {
+    GetProvider,
+    GetProviderOptions,
+    GetProviderSuccess,
+    GetProviderSync,
+    GetProviderSyncOptions,
+    GetProviderSyncSuccess
+} from '../interface.uts'
+import {
+    API_GET_PROVIDER,
+    API_GET_PROVIDER_SYNC
+} from '../protocol.uts'
+
+const SupportedProviderServiceList = ['oauth', 'share', 'payment', 'push', 'location']
+
+function _getProviderSync(options: GetProviderOptions) {
+    if (!SupportedProviderServiceList.includes(options.service)) {
+        return 'Parameter service invalid.'
+    }
+    const providers = getUniProviders(options.service)
+    const providerIds = providers.map((provider): string => {
+        return provider.id
+    })
+    const result: GetProviderSuccess = {
+        service: options.service,
+        provider: providerIds,
+        providers
+    };
+    return result
+}
+
+export const getProvider: GetProvider = defineAsyncApi<GetProviderOptions, GetProviderSuccess>(
+    API_GET_PROVIDER,
+    (options: GetProviderOptions, exec: ApiExecutor<GetProviderSuccess>): void => {
+        const res = _getProviderSync(options)
+        if (typeof res === 'string') exec.reject(res)
+        else exec.resolve(res)
+    }
+) as GetProvider
+
+export const getProviderSync: GetProviderSync = defineSyncApi<GetProviderSyncSuccess>(
+    API_GET_PROVIDER_SYNC,
+    (options: GetProviderSyncOptions): GetProviderSyncSuccess => {
+        const res = _getProviderSync(options as GetProviderOptions)
+        if (typeof res === 'string') throw new Error(res)
+        return {
+            service: res.service,
+            providerIds: res.provider,
+            providerObjects: res.providers
+        } as GetProviderSyncSuccess
+    }
+) as GetProviderSync
+
+export {
+    GetProvider,
+    GetProviderComplete,
+    GetProviderCompleteCallback,
+    GetProviderFail,
+    GetProviderFailCallback,
+    GetProviderFailImpl,
+    GetProviderOptions,
+    GetProviderSuccess,
+    GetProviderSuccessCallback,
+    GetProviderSync,
+    GetProviderSyncOptions,
+    GetProviderSyncSuccess,
+    IGetProviderFail,
+    ProviderErrorCode
+} from '../interface.uts'

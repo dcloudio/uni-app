@@ -1,0 +1,47 @@
+import {
+    ConnectSocketOptions
+} from './interface.uts'
+
+export const API_CONNECT_SOCKET = 'connectSocket';
+export const ConnectSocketApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'url',
+        {
+            type: 'string',
+            required: true
+        }
+    ],
+    [
+        'header',
+        {
+            type: 'object',
+            required: false
+        }
+    ],
+    [
+        'protocols',
+        {
+            type: 'string[]',
+            required: false
+        }
+    ],
+]);
+export const ConnectSocketApiOptions: ApiOptions<ConnectSocketOptions> = {
+    formatArgs: new Map<string, Function>([
+        [
+            'url',
+            function (url: string, params: ConnectSocketOptions) {
+                if (url == null) {
+                    throw new Error('url is required')
+                }
+            }
+        ]
+    ]),
+}
+
+export const API_ON_SOCKET_OPEN = 'onSocketOpen';
+export const API_ON_SOCKET_ERROR = 'onSocketError';
+export const API_SEND_SOCKET_MESSAGE = 'sendSocketMessage';
+export const API_ON_SOCKET_MESSAGE = 'onSocketMessage';
+export const API_CLOSE_SOCKET = 'closeSocket';
+export const API_ON_SOCKET_CLOSE = 'onSocketClose';

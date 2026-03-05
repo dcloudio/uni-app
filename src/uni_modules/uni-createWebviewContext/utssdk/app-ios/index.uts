@@ -1,0 +1,58 @@
+import { CreateWebviewContext, WebviewContext, UniWebviewContextLoadDataOptions } from '../interface.uts';
+import { UniWebViewElementLoadDataOptions } from 'DCloudUniappRuntime'
+
+export const createWebviewContext : CreateWebviewContext = function (webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null) : WebviewContext | null {
+	let webviewElement: UniWebViewElement | null = null;
+	let element: any | null = null;   
+	if (component == null) {
+		element = UniSDKEngine.getJSElementById(webviewId)
+	} else {       
+		element = component?.$el(webviewId)  
+	}
+	if (element != null && (element instanceof UniWebViewElement)) {
+		webviewElement = (element as UniWebViewElement)
+	}
+	if (webviewElement == null) {
+		return null
+	}
+	return new WebviewContextImpl(webviewElement!)
+}
+
+class WebviewContextImpl implements WebviewContext {
+	
+	@UTSiOS.keyword("weak")
+	private webviewElement : UniWebViewElement | null = null;
+
+	constructor(webviewElement : UniWebViewElement) {
+		this.webviewElement = webviewElement;
+	}
+
+	back() {
+		this.webviewElement?.back();
+	}
+
+	forward() {
+		this.webviewElement?.forward();
+	}
+
+	reload() {
+		this.webviewElement?.reload();
+	}
+
+	stop() {
+		this.webviewElement?.stop();
+	}
+
+	evalJS(js : string) {
+		this.webviewElement?.evalJS(js);
+	}
+	
+	loadData(options: UniWebviewContextLoadDataOptions) {
+		let option: UniWebViewElementLoadDataOptions = {
+			data: options.data,
+			baseURL: options.baseURL,  
+			encoding: options.encoding
+		}
+		this.webviewElement?.loadData(option)
+	}
+}

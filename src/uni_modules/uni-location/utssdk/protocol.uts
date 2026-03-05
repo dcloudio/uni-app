@@ -1,0 +1,39 @@
+import { StartLocationUpdateOptions, StartLocationUpdateOptionsType } from './interface.uts';
+
+export const API_GET_LOCATION = 'getLocation';
+export const API_ON_LOCATION_CHANGE = 'onLocationChange';
+export const API_OFF_LOCATION_CHANGE = 'offLocationChange';
+export const API_ON_LOCATION_CHANGE_ERROR = 'onLocationChangeError';
+export const API_OFF_LOCATION_CHANGE_ERROR = 'offLocationChangeError';
+export const API_START_LOCATION_UPDATE_BACKGROUND = 'startLocationUpdateBackground';
+export const API_STOP_LOCATION_UPDATE = 'stopLocationUpdate';
+
+// #region startLocationUpdate
+export const API_START_LOCATION_UPDATE = 'startLocationUpdate';
+const coordTypes: StartLocationUpdateOptionsType[] = ['wgs84', 'gcj02']
+
+export const StartLocationUpdateApiProtocol = new Map<string, ProtocolOptions>([
+  [
+    'type',
+    {
+      type: 'string'
+    }
+  ]
+])
+
+export const StartLocationUpdateApiOptions: ApiOptions<StartLocationUpdateOptions> = {
+  formatArgs: new Map<string, Function>([
+    [
+      'type',
+      function (value: StartLocationUpdateOptionsType, params: StartLocationUpdateOptions) {
+        value = (value || '').toLowerCase() as StartLocationUpdateOptionsType
+        if (coordTypes.indexOf(value) === -1) {
+          params.type = coordTypes[1]
+        } else {
+          params.type = value
+        }
+      }
+    ]
+  ])
+}
+// #endregion

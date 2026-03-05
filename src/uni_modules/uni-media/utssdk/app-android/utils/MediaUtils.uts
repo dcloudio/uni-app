@@ -1,0 +1,340 @@
+import {
+	ChooseImagePageOrientation,
+	GetVideoInfoSuccess,
+} from "../../interface.uts"
+import {
+	UniError_GetVideoInfo,
+	MediaErrorImpl
+} from "../../unierror.uts"
+
+import File from 'java.io.File';
+import MediaMetadataRetriever from 'android.media.MediaMetadataRetriever';
+import BigDecimal from 'java.math.BigDecimal';
+import MediaExtractor from 'android.media.MediaExtractor';
+import MediaFormat from 'android.media.MediaFormat';
+import TextUtils from 'android.text.TextUtils';
+import FileOutputStream from 'java.io.FileOutputStream';
+import FileInputStream from 'java.io.FileInputStream';
+import InputStream from 'java.io.InputStream';
+import UniConfig from 'io.dcloud.uniapp.framework.UniConfig';
+import Cursor from 'android.database.Cursor';
+import OpenableColumns from 'android.provider.OpenableColumns';
+import Uri from 'android.net.Uri';
+import Bitmap from 'android.graphics.Bitmap';
+import OutputStream from 'java.io.OutputStream';
+import BitmapFactory from 'android.graphics.BitmapFactory';
+import DecimalFormat from 'java.text.DecimalFormat';
+
+const ASSETS_PATH = '/android_asset/'
+
+export function getVideoMetadata(src : string, filePath : string | null) : any {
+	let videoInfo : GetVideoInfoSuccess = {
+		duration: 0,
+		size: 0,
+		height: 0,
+		width: 0
+	}
+	var path = src
+	var videoFile = new File(src)
+	if (!videoFile.exists()) {
+		path = UTSAndroid.convert2AbsFullPath(src)
+	}
+	if (path.startsWith("/android_asset/")) {
+		var mediaCachePath = UTSAndroid.getAppCachePath() + "uni-media/_" + System.currentTimeMillis()
+		if (copyFile(path, mediaCachePath)) {
+			path = mediaCachePath
+		} else {
+			let error = new MediaErrorImpl(1101010, UniError_GetVideoInfo);
+			return error
+		}
+	}
+	if (!videoFile.exists()) {
+		videoFile = new File(path)
+	}
+	if (!videoFile.exists() && !src.startsWith("content://")) {
+		let error = new MediaErrorImpl(1101003, UniError_GetVideoInfo);
+		return error
+	}
+	var byteSize = getMediaInfo(path)
+	videoInfo.byteSize = byteSize
+	videoInfo.size = formatNumber(byteSize / 1024.0);
+	try {
+		let retriever = new MediaMetadataRetriever()
+		if (path.startsWith("content://")) {
+			retriever.setDataSource(UTSAndroid.getAppContext()!, Uri.parse(path))
+		} else {
+			retriever.setDataSource(path)
+		}
+		var firstFrameBitmap =
+			saveBitmapToLocalPath(retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC), filePath)
+		if (!firstFrameBitmap) {
+			filePath = ""
+		}
+		let durationStr : string | null = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+		let width : number | null = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toFloat()
+		let height : number | null = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toFloat()
+		let rotation : string | null = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
+		if ("90" == rotation || "270" == rotation) {
+			videoInfo.width = height != null ? height! : 0
+			videoInfo.height = width != null ? width : 0
+		} else {
+			videoInfo.width = width != null ? width : 0
+			videoInfo.height = height != null ? height : 0
+		}
+		switch (rotation) {
+			case "90":
+				rotation = "right";
+				break;
+			case "270":
+				rotation = "left";
+				break;
+			case "180":
+				rotation = "down";
+				break;
+			default:
+				rotation = "up";
+				break;
+		}
+		var duration : number = 0
+		if (durationStr != null) {
+			try {
+				duration = durationStr.toFloat()
+			} catch (e) {
+			}
+		}
+		let big : BigDecimal = BigDecimal.valueOf(formatNumber(duration / 1000.0).toDouble()).setScale(2, BigDecimal.ROUND_HALF_UP)
+		videoInfo.duration = big.toFloat()
+		videoInfo.orientation = rotation!
+		let mimeType : string | null = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
+		videoInfo.type = mimeType
+		let bitrateStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
+		var bitrate : number | null = null
+		try {
+			if (bitrateStr != null) {
+				bitrate = (bitrateStr.toFloat() / 1000).toInt()
+			}
+		} catch (e) { }
+		videoInfo.bitrate = bitrate
+		var fpsNum : number | null = null
+		let fps : string | null = retriever.extractMetadata(32);
+		if (TextUtils.isEmpty(fps)) {
+			let extractor = new MediaExtractor()
+			extractor.setDataSource(UTSAndroid.getAppContext()!, Uri.parse(path), null)
+			let trackCount = extractor.getTrackCount();
+			for (var i = 0; i < trackCount; i++) {
+				let mediaFormat = extractor.getTrackFormat(i.toInt());
+				let mimeType = mediaFormat.getString(MediaFormat.KEY_MIME);
+				if (!TextUtils.isEmpty(mimeType) && mimeType!!.startsWith("video/")) {
+					let frame = mediaFormat.getInteger(MediaFormat.KEY_FRAME_RATE);
+					fpsNum = frame
+				}
+			}
+		} else {
+			try { fpsNum = Math.round(((fps!!).toFloat() / (duration)) * 1000) } catch (e) { } // 沿用1.0设计，向上取整
+		}
+		videoInfo.fps = fpsNum
+		return videoInfo
+	} catch (e) {
+		let error = new MediaErrorImpl(1101010, UniError_GetVideoInfo);
+		return error
+	}
+}
+
+function saveBitmapToLocalPath(bitmap : Bitmap | null, filePath ?: string | null) : boolean {
+	if (TextUtils.isEmpty(filePath)) {
+		return false
+	}
+	var file = new File(filePath)
+	if (!file.parentFile.exists()) {
+		file.parentFile.mkdirs()
+	}
+	if (!file.exists()) {
+		file.createNewFile()
+	}
+	if (bitmap == null) {
+		return false
+	}
+	var os : OutputStream | null = null
+	try {
+		os = new FileOutputStream(file)
+		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os)
+	} catch (e) {
+		return false
+	} finally {
+		os?.close()
+	}
+	return true
+}
+
+
+export function copyFile(fromFilePath : string, toFilePath : string) : boolean {
+	var fis : InputStream | null = null
+	try {
+		if (fromFilePath.startsWith(ASSETS_PATH)) {
+			fis = UTSAndroid.getAppContext()!.getAssets().open(fromFilePath.replace(ASSETS_PATH, ""));
+		} else if (fromFilePath.startsWith("content://")) {
+			fis = UTSAndroid.getAppContext()!.getContentResolver().openInputStream(Uri.parse(fromFilePath))
+		} else {
+			let fromFile = new File(fromFilePath)
+			if (!fromFile.exists()) {
+				return false;
+			}
+			if (!fromFile.isFile()) {
+				return false
+			}
+			if (!fromFile.canRead()) {
+				return false;
+			}
+			fis = new FileInputStream(fromFile);
+		}
+		if (fis == null) {
+			return false
+		}
+	} catch (e) {
+		return false;
+	}
+	let toFile = new File(toFilePath)
+	if (!toFile.getParentFile().exists()) {
+		toFile.getParentFile().mkdirs()
+	}
+	if (!toFile.exists()) {
+		toFile.createNewFile()
+	}
+	try {
+		let fos = new FileOutputStream(toFile)
+		let byteArrays = ByteArray(1024)
+		var c = fis!!.read(byteArrays)
+		while (c > 0) {
+			fos.write(byteArrays, 0, c)
+			c = fis!!.read(byteArrays)
+		}
+		fis!!.close()
+		fos.close()
+		return true
+	} catch (e) {
+		return false;
+	}
+}
+
+/**
+ * 0 LANDSCAPE
+ * 1 PORTRAIT
+ * 2 USER/AUTO
+ */
+export function getOrientation(pageOrientation ?: ChooseImagePageOrientation | null) : number {
+	if (pageOrientation == null) {
+		var __uniConfig = getGlobalConfig()
+		if (__uniConfig != null) {
+			var styles = __uniConfig.globalStyle
+			if (styles['pageOrientation'] != null) {
+				pageOrientation = styles['pageOrientation']!.toString()
+			} else {
+				return 1
+			}
+		} else {
+			return 1
+		}
+	}
+	switch (pageOrientation!) {
+		case "auto": {
+			return 2
+		}
+		case "portrait": {
+			return 1
+		}
+		case "landscape": {
+			return 6
+		}
+		default: {
+			return 1
+		}
+	}
+}
+
+function getGlobalConfig() : UniConfig | null {
+	try {
+		var config = Class.forName("io.dcloud.uniapp.framework.IndexKt")
+		if (config != null) {
+			var cc = config.getDeclaredField("__uniConfig")
+			cc.setAccessible(true)
+			return cc.get(null) as UniConfig
+		} else {
+			return null
+		}
+	} catch (e) {
+		return null
+	}
+}
+
+export function getMediaInfo(path : string) : Long {
+	if (path.startsWith("content://")) {
+		var returnCursor : Cursor | null = null
+		var length : Long = 0
+		try {
+			returnCursor = UTSAndroid.getAppContext()!.getContentResolver().query(Uri.parse(path), null, null, null, null);
+			if (returnCursor != null && returnCursor.moveToFirst()) {
+				var index = returnCursor.getColumnIndex(OpenableColumns.SIZE)
+				if (!returnCursor.isNull(index)) {
+					length = returnCursor.getLong(index)
+				}
+			} else { return 0 }
+		} catch (e) {
+		} finally {
+			if (returnCursor != null) {
+				returnCursor.close()
+			}
+		}
+		return length
+	} else if (path.startsWith(ASSETS_PATH)) {
+		try {
+			var stream = UTSAndroid.getAppContext()!.assets.open(path.replace(ASSETS_PATH, ""))
+			var size = stream?.available()
+			stream?.close()
+			return size!.toLong()
+		} catch (e) {
+		}
+	} else {
+		var file = new File(path)
+		if (file.exists()) {
+			return file.length()
+		} else {
+			if (path.startsWith("file://")) {
+				file = new File(path.replace("file://", ""))
+				if (file.exists())
+					return file.length()
+				else
+					return 0
+			}
+		}
+	}
+	return 0
+}
+
+export function getFileName(path : string, rename : boolean = false) : string {
+	var fileName = path.substring(path.lastIndexOf("/") + 1)
+	if (path.startsWith("content://")) {
+		var type : string | null = UTSAndroid.getAppContext()!.getContentResolver().getType(Uri.parse(path))
+		if (!TextUtils.isEmpty(type)) {
+			var ext = type!.split("/")
+			if (ext != null && ext.length > 1) {
+				fileName = fileName +"_"+ (rename ? System.currentTimeMillis().toString() : "") + "." + ext[1]
+				return fileName
+			}
+		}
+	}
+	if (rename) {
+		var lastPointIndex = fileName.lastIndexOf(".")
+		if (lastPointIndex != -1) {
+			fileName = fileName.substring(0, lastPointIndex) +"_"+ System.currentTimeMillis().toString() + fileName.substring(lastPointIndex, fileName.length)
+		} else {
+			fileName = fileName +"_"+ System.currentTimeMillis().toString()
+		}
+	}
+	return fileName
+}
+
+export function formatNumber(input:number):number {
+	let bd = DecimalFormat("#.###")
+	bd.setDecimalSeparatorAlwaysShown(false)
+	return bd.format(input).toFloat()
+}

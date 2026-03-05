@@ -1,0 +1,50 @@
+import {
+    ANIMATION_TYPE,
+    REDIRECT_TO,
+    RedirectToPage,
+    entryPageState,
+    getCurrentPage,
+    navigate,
+    normalizeRouteOptions,
+    redirectToPagesBeforeEntryPages,
+    removePage,
+} from '@dcloudio/uni-runtime'
+import { RedirectToOptions, RedirectToSuccess } from '../interface.uts'
+import { RedirectToFailImpl } from '../unierror.uts'
+
+export const redirectTo = defineAsyncApi<RedirectToOptions, RedirectToSuccess>(
+    REDIRECT_TO,
+    (options: RedirectToOptions, res: ApiExecutor) => {
+        if (!entryPageState.handledBeforeEntryPageRoutes) {
+            redirectToPagesBeforeEntryPages.push({ options } as RedirectToPage)
+            return
+        }
+        const navigationStart = Date.now()
+        const normalizeRouteOptionsResult = normalizeRouteOptions(
+            REDIRECT_TO,
+            options.url as string,
+        )
+        if (normalizeRouteOptionsResult.errMsg.length > 0) {
+            res.reject(
+                new RedirectToFailImpl(normalizeRouteOptionsResult.errMsg),
+            )
+            return
+        }
+        options.url = normalizeRouteOptionsResult.url
+        const currentPage = getCurrentPage()
+        setTimeout(() => {
+            navigate(
+                options.url as string,
+                new Map<string, any | null>([[ANIMATION_TYPE, 'none']]),
+                REDIRECT_TO,
+                () => {
+                    if (currentPage !== null) {
+                        removePage(currentPage!)
+                    }
+                },
+                navigationStart
+            )
+            res.resolve(null)
+        }, 0)
+    },
+)

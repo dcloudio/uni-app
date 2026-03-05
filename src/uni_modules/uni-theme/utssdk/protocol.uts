@@ -1,0 +1,10 @@
+export const API_SET_APP_THEME = 'setAppTheme'
+export const SetAppThemeApiProtocol = new Map<string, ProtocolOptions>([
+    [
+        'theme',
+        {
+            type: 'string',
+            required: true
+        }
+    ]
+])

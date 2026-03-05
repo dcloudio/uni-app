@@ -1,0 +1,513 @@
+import { CameraContext, CameraContextCameraFrameListener, CameraContextCameraFrameListenerStartOptions, CameraContextCameraFrameListenerStopOptions, CameraContextOnCameraFrame, CameraContextSetZoomOptions, CameraContextStartRecordOptions, CameraContextStartRecordTimeoutResult, CameraContextStopRecordOptions, CameraContextStopRecordResult, CameraContextTakePhotoOptions, CameraContextTakePhotoResult, CreateCameraContext, BarcodeInformation, IosFrameScannerOptions, IosPhotoScannerOptions, IosScanner, IosScannerListener, IosScreenShot, initIosScanner } from "../interface.uts"
+import { Data } from 'Foundation';
+import "CoreMedia"
+import "CoreImage"
+import "UIKit"
+import "AVFoundation"
+import { CameraContextFailImpl, getErrcode } from "../unierror.uts"
+
+
+export class TypeTest {
+	 a: IosScannerListener | null = null
+	 b:IosFrameScannerOptions | null = null
+	 c:IosPhotoScannerOptions | null = null
+	 d: IosScanner | null = null
+	 e: BarcodeInformation | null = null
+	 f: IosScreenShot | null = null
+	constructor(){}
+}
+
+let iosScanner: IosScanner | null = null
+
+export function initIosScanner(scanner: IosScanner): void {
+	iosScanner = scanner
+}
+
+export function getIosScanner(): IosScanner | null {
+	return iosScanner
+}
+
+
+export interface UniCameraElement extends JSExport {
+	// setCamera(cameraImpl : CameraImpl): void;
+	setZoom(zoom: number): void;
+	getCurrentZoom(): number;
+	setFrameCallback(callback: (frame: CameraContextOnCameraFrame) => void): void;
+	startOnFrame(): void;
+	stopOnFrame(): void;
+	takePhoto(options: CameraContextTakePhotoOptions): void;
+	startRecord(options: CameraContextStartRecordOptions): void;
+	stopRecord(options: CameraContextStopRecordOptions): void;
+	startAnalysis(callback: (sampleBuffer: CMSampleBuffer) => void): void;
+	stopAnalysis(): void;
+}
+
+class UniCameraElementImpl extends UniElementImpl implements UniCameraElement {
+
+	private cameraImpl: CameraImpl | null = null
+
+	@UTSiOS.keyword("fileprivate")
+	setCamera(cameraImpl: CameraImpl) {
+		this.cameraImpl = cameraImpl
+	}
+
+	override getIOSView(): UIView | null {
+		const nativeElement = this.firstChild as UniNativeViewElement
+		if (nativeElement == null) {
+			return null
+		} else {
+			return nativeElement.getIOSView()
+		}
+	}
+
+	setZoom(zoom: number): void {
+		this.cameraImpl?.setZoom(zoom.toFloat())
+	}
+	
+	getCurrentZoom(): number {
+		const kZoom = this.cameraImpl?.getCurrentZoom() ?? 1
+		return Number.from(kZoom)
+	}
+	
+	setFrameCallback(callback: (frame: CameraContextOnCameraFrame) => void): void {
+		this.cameraImpl?.setFrameCallback((type: string, param: any | null): void => {
+			const map = param as Map<string, any>
+			const width = map["width"] as Int
+			const height = map["height"] as Int
+			const buffer = map["buffer"] as Data
+			const arrayBuffer = ArrayBuffer.fromData(buffer)
+			const frame = {
+				width: Number.from(width),
+				height: Number.from(height),
+				data: arrayBuffer
+			} as CameraContextOnCameraFrame
+			callback(frame)
+		})
+
+	}
+	startOnFrame(): void {
+		this.cameraImpl?.startOnFrame()
+	}
+	stopOnFrame(): void {
+		this.cameraImpl?.stopOnFrame()
+	}
+	takePhoto(options: CameraContextTakePhotoOptions): void {
+		const quality = options.quality
+		const selfieMirror = options.selfieMirror
+		this.cameraImpl?.takePhoto(
+			quality ?? "normal",
+			selfieMirror ?? false,
+			(type: string, param: any | null): void => {
+				const result = {
+					tempImagePath: param as string
+				} as CameraContextTakePhotoResult
+				options.success?.(result)
+				options.complete?.(result)
+
+			},
+			(type: string, param: any | null): void => {
+				const cause = param as string
+				const failResult = new CameraContextFailImpl(getErrcode(2003003))
+				failResult.cause = new SourceError(cause);
+				options.fail?.(failResult)
+				options.complete?.(failResult)
+			})
+	}
+	startRecord(options: CameraContextStartRecordOptions): void {
+		const timeout = options.timeout ?? 30
+		const selfieMirror = options.selfieMirror ?? true
+		this.cameraImpl?.startRecord(
+			timeout.toInt(),
+			selfieMirror,
+			(type: string, param: any | null): void => {
+				if (param instanceof Map<string, any>) {
+					const map = param as Map<string, any>
+					const tempThumbPath = map["tempThumbPath"] as string
+					const tempVideoPath = map["tempVideoPath"] as string
+					const result = {
+						tempThumbPath: tempThumbPath,
+						tempVideoPath: tempVideoPath
+					} as CameraContextStartRecordTimeoutResult
+					options.timeoutCallback?.(result)
+				} else if (typeof (param) == 'string') {
+					options.timeoutCallback?.(param as string)
+				}
+			},
+			(type: string, param: any | null): void => {
+				const result = "start record success"
+				options.success?.(result)
+				options.complete?.(result)
+			},
+			(type: string, param: any | null): void => {
+				if (param != null) {
+					const cause = param as string
+					let errCode = 2003100;
+					if(cause == "video path is empty") {
+						errCode = 2003007;
+					} else if (cause == "recording failed") {
+						errCode = 2003008;
+					}
+					const failResult = new CameraContextFailImpl(getErrcode(errCode))
+					failResult.cause = new SourceError(cause);
+					options.fail?.(failResult)
+					options.complete?.(failResult)
+				}
+			})
+	}
+	stopRecord(options: CameraContextStopRecordOptions): void {
+		const compressed = options.compressed ?? false
+		this.cameraImpl?.stopRecord(
+			0,
+			(type: string, param: any | null): void => {
+				const map = param as Map<string, any>
+				const tempThumbPath = map["tempThumbPath"] as string
+				var tempVideoPath = map["tempVideoPath"] as string
+				if (compressed) {
+					uni.compressVideo({
+						src: tempVideoPath,
+						quality: "high",
+						success: (res: CompressVideoSuccess) => {
+							tempVideoPath = res.tempFilePath
+							const result = {
+								tempThumbPath: tempThumbPath,
+								tempVideoPath: tempVideoPath
+							} as CameraContextStopRecordResult
+							options.success?.(result)
+							options.complete?.(result)
+						},
+						fail: (err: IMediaError) => {
+							const failResult = new CameraContextFailImpl(getErrcode(2003101))
+							options.fail?.(failResult)
+							options.complete?.(failResult)
+						}
+					} as CompressVideoOptions)
+				} else {
+					const result = {
+						tempThumbPath: tempThumbPath,
+						tempVideoPath: tempVideoPath
+					} as CameraContextStopRecordResult
+					options.success?.(result)
+					options.complete?.(result)
+				}
+			},
+			(type: string, param: any | null): void => {
+				const cause = param as string
+				let errCode = 2003100;
+				if(cause == "video path is empty") {
+					errCode = 2003007;
+				} else if (cause == "recording failed") {
+					errCode = 2003008;
+				}
+				const failResult = new CameraContextFailImpl(getErrcode(errCode))
+				failResult.cause = new SourceError(cause);
+				options.fail?.(failResult)
+				options.complete?.(failResult)
+			})
+	}
+	
+	startAnalysis(callback: (sampleBuffer: CMSampleBuffer) => void) : void {
+		this.cameraImpl?.startAnalysis((type: string, param: any | null) => {
+			if (param != null) {
+				const sampleBuffer = param as CMSampleBuffer
+				callback(sampleBuffer)
+			}
+		})
+	}
+	
+	stopAnalysis(): void {
+		this.cameraImpl?.stopAnalysis()
+	}
+}
+
+class IosScannerListenerImpl implements IosScannerListener {
+	constructor(private element: UniNativeViewElement) {
+	}
+
+	onScanSuccess(barcodeInformation: Array<BarcodeInformation>, screenShot: IosScreenShot | null): void {
+		if (barcodeInformation.length == 0) {
+			return
+		}
+		const barcode = barcodeInformation[0]
+		const result = barcode.result
+		const scanType = barcode.scanType
+		const charset = barcode.charset
+		const rawData = barcode.rawData
+		const scanArea = barcode.scanArea
+		const event = new UniNativeViewEvent("scancode_success", { result, scanType, charset, rawData, scanArea } as UTSJSONObject)
+		this.element.dispatchEvent("scancode", event)
+	}
+	onScanFailure(error: string): void{
+		const event = new UniNativeViewEvent("scancode_fail", { error } as UTSJSONObject)
+		element.dispatchEvent("scancode", event)
+	}
+	needZoom(): void{
+
+	}
+	onLight(light: boolean):void{
+
+	}
+}
+
+export class CameraInstance {
+	$element: UniNativeViewElement;
+	private cameraImpl: CameraImpl | null = null
+	private isReleased = false
+	private isStopped = false
+
+	constructor(element: UniNativeViewElement) {
+		this.$element = element;
+	}
+
+	start(position: string) {
+		// 如果已释放，不允许重新启动
+		if (this.isReleased) {
+			return;
+		}
+		
+		// 如果只是停止状态，可以恢复
+		if (this.isStopped && this.cameraImpl != null) {
+			this.resume();
+			return;
+		}
+		
+		this.cameraImpl = new CameraImpl();
+		(this.$element.parentElement as UniCameraElementImpl).setCamera(this.cameraImpl!);
+		const previewView = this.cameraImpl?.getCameraPreviewView(position ?? "medium")
+		if (previewView == null) {
+			this.destory()
+			return
+		}
+		this.$element.bindIOSView(previewView!)
+		this.registerStopCallback()
+		this.registerInitDoneCallback()
+		this.registerErrorCallback()
+		
+		this.isStopped = false;
+		this.isReleased = false;
+	}
+
+	/**
+	 * 暂停相机捕获会话，但保留所有设置
+	 * 适用于应用进入后台或页面暂时不可见时调用
+	 */
+	stop() {
+		if (this.cameraImpl != null && !this.isStopped) {
+			this.cameraImpl?.stopCamera();
+			this.isStopped = true;
+		}
+	}
+	
+	/**
+	 * 恢复之前停止的相机捕获会话
+	 * 适用于应用回到前台或页面重新可见时调用
+	 */
+	resume() {
+		if (this.cameraImpl != null && this.isStopped) {
+			this.cameraImpl?.resumeCamera();
+			this.isStopped = false;
+		}
+	}
+	
+
+	destory() {
+		// 调用release方法完全释放资源
+		if (this.cameraImpl != null) {
+			this.cameraImpl?.releaseCamera();
+			this.cameraImpl = null;
+			this.isReleased = true;
+			this.isStopped = true;
+		}
+	}
+
+	switchCamera(position: string) {
+		if (this.isReleased || this.isStopped) return;
+		this.cameraImpl?.switchCamera(position = position)
+	}
+
+	setFlash(flash: string) {
+		if (this.isReleased || this.isStopped) return;
+		this.cameraImpl?.setFlash(flash = flash)
+	}
+
+	setFrameSize(size: string) {
+		if (this.isReleased || this.isStopped) return;
+		this.cameraImpl?.setFrameSize(size = size)
+	}
+	
+	setPhotoResolution(resolution: string) {
+	}
+
+	setScanCode(on: boolean) {
+		if (this.isReleased || this.isStopped) return;
+		
+		if (on) {
+			const element = this.$element
+			this.cameraImpl?.startAnalysis((type: string, param: any | null) => {
+				const sampleBuffer = param as CMSampleBuffer;
+				const options: IosFrameScannerOptions = {
+					sampleBuffer: sampleBuffer,
+					scanType: [] as string[],
+					autoZoom: false,
+					width: -1,
+					height: -1,
+					iosScannerListenner: new IosScannerListenerImpl(element)
+				}
+				getIosScanner()?.processScanBarCode(options)
+			})
+		} else {
+			this.cameraImpl?.stopAnalysis()
+		}
+	}
+
+	registerStopCallback() {
+		if (this.isReleased) return;
+		
+		const element = this.$element
+		this.cameraImpl?.setStopCallBack(callback = (type: string, param: any | null): void => {
+			const error = param as string
+			const event = new UniNativeViewEvent(type, { "error": error } as UTSJSONObject)
+			element.dispatchEvent("stop", event)
+		})
+	}
+
+	registerInitDoneCallback() {
+		if (this.isReleased) return;
+		
+		const element = this.$element
+		this.cameraImpl?.setInitDoneCallBack(callback = (type: string, param: any | null): void => {
+			const maxZoom = param as number
+			const event = new UniNativeViewEvent(type, { "maxzoom": maxZoom } as UTSJSONObject)
+			element.dispatchEvent("initdone", event)
+		})
+	}
+	
+	registerErrorCallback() {
+		if (this.isReleased) return;
+		
+		const element = this.$element
+		this.cameraImpl?.setErrorCallBack(callback = (type: string, param: any | null): void => {
+			const error = param as string
+			const event = new UniNativeViewEvent(type, { "error": error } as UTSJSONObject)
+			element.dispatchEvent("error", event)
+		})
+	}
+}
+
+
+
+export const createCameraContext: CreateCameraContext =  () : CameraContext | null => {
+	const pages = getCurrentPages();
+	let currentPage: UniPage | null = null
+	if (pages.length > 0) {
+		currentPage = pages[pages.length - 1]
+		// const dialogPages = currentPage?.getDialogPages()
+		// if (dialogPages != null && dialogPages!.length > 0) {
+		// 	currentPage = dialogPages![dialogPages!.length - 1]
+		// }
+	}
+
+	if (currentPage == null) {
+		return null
+	}
+	
+	let nativeCamera: UniElement | null = null
+	const dialogPages = currentPage?.getDialogPages('systemDialog')
+	if (dialogPages != null && dialogPages!.length > 0) {
+		const len = dialogPages!.length
+		for (let i = len - 1;i >= 0;i--) {
+		  const page = dialogPages![i]
+		  const element = page.getElementById("mnative-camera")
+		  if (element != null) {
+			  nativeCamera = element
+			  break
+		  }
+		}
+	}
+	
+	
+	if (nativeCamera == null) {
+		nativeCamera = currentPage?.getElementById("mnative-camera")
+	}
+	
+	if (nativeCamera == null) {
+		return null
+	}
+
+	if (!(nativeCamera instanceof UniNativeViewElement)) {
+		return null
+	}
+
+	const cameraElement = nativeCamera?.parentElement as UniCameraElement
+	if (cameraElement == null) {
+		return null
+	}
+	return new CameraContextImpl(cameraElement)
+}
+
+class CameraContextCameraFrameListenerImpl implements CameraContextCameraFrameListener {
+	constructor(private element: UniCameraElement, private callback: (frame: CameraContextOnCameraFrame) => void) {
+		element.setFrameCallback(callback)
+	}
+
+	/**
+	 * 开始监听帧数据
+	 */
+	start(options: CameraContextCameraFrameListenerStartOptions): void {
+		this.element.startOnFrame()
+		const result = "start on camera frame"
+		options.success?.(result)
+		options.complete?.(result)
+	}
+	/**
+	 * 停止监听帧数据
+	 */
+	stop(options: CameraContextCameraFrameListenerStopOptions): void {
+		this.element.stopOnFrame()
+		const result = "stop on camera frame"
+		options.success?.(result)
+		options.complete?.(result)
+	}
+}
+
+
+class CameraContextImpl implements CameraContext {
+	constructor(private element: UniCameraElement) {
+	}
+
+	onCameraFrame(callback: (frame: CameraContextOnCameraFrame) => void): CameraContextCameraFrameListener | null {
+		const listener = new CameraContextCameraFrameListenerImpl(this.element, callback)
+		return listener
+	}
+
+	setZoom(options: CameraContextSetZoomOptions): void {
+		this.element.setZoom(options.zoom)
+		const result = "setZoom success"
+		options.success?.(result)
+		options.complete?.(result)
+	}
+
+	takePhoto(options: CameraContextTakePhotoOptions): void {
+		this.element.takePhoto(options)
+	}
+
+	startRecord(options: CameraContextStartRecordOptions): void {
+		this.element.startRecord(options)
+	}
+
+	stopRecord(options: CameraContextStopRecordOptions): void {
+		this.element.stopRecord(options)
+	}
+	
+	onIosCameraOriginalFrame(callback: (sampleBuffer: CMSampleBuffer) => void): void {
+		this.element.startAnalysis(callback)
+	}
+	
+	offIosCameraOriginalFrame() : void {
+		this.element.stopAnalysis()
+	}
+	
+	getCurrentZoom() : number {
+		return this.element.getCurrentZoom()
+	}
+
+}

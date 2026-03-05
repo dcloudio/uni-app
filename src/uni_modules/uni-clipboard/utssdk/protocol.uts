@@ -1,0 +1,26 @@
+import { SetClipboardDataOptions } from './interface.uts';
+
+export const API_GET_CLIPBOARD_DATA = 'getClipboardData'
+export const API_SET_CLIPBOARD_DATA = 'setClipboardData'
+export const SetClipboardDataApiOptions: ApiOptions<SetClipboardDataOptions> = {
+  formatArgs: new Map<string, boolean>([
+    ['showToast', true]
+  ])
+}
+
+export const SetClipboardDataProtocol = new Map<string, ProtocolOptions>([
+  [
+    'data',
+    {
+      type: 'string',
+      required: true,
+    }
+  ],
+  [
+    'showToast',
+    {
+      type: 'boolean'
+    }
+
+  ]
+])

@@ -1,0 +1,216 @@
+import { UTSiOSHookProxy } from "DCloudUniappRuntime";
+import { UIApplication } from "UIKit";
+import { URL, NSUserActivity } from "Foundation";
+import { UniPaymentWxpayProvider } from "../interface.uts"
+
+
+const wxDefaultErrorCode : number = 700000
+
+const wxErrorCodeMap : Map<number, number> = new Map([
+	[-1, 701100],
+	[-2, 700601]
+])
+
+export class UniPaymentWxpayProviderImpl implements UniPaymentWxpayProvider {
+
+	id : string = "wxpay"
+
+	override description : string = "微信支付"
+
+
+	get isAppExist() : boolean {
+		return Wxpay.share.isWXAppInstalled()
+	}
+
+	set isAppExist(newValue: boolean) {
+
+	}
+
+	requestPayment(options : RequestPaymentOptions) {
+		Wxpay.requestPayment(options)
+	}
+
+	checkAppExist() {
+		this.isAppExist = Wxpay.share.isWXAppInstalled()
+		this.isWeChatInstalled = Wxpay.share.isWXAppInstalled()
+	}
+
+	get isWeChatInstalled() : boolean {
+		return Wxpay.share.isWXAppInstalled()
+	}
+
+	set isWeChatInstalled(newValue: boolean) {
+
+	}
+	
+	toJSON() : Map<string, any> {
+		const dict = new Map<string, any>()
+		dict.set('id', this.id)
+		dict.set('description', this.description)
+		dict.set('isAppExist', this.isAppExist)
+		dict.set('isWeChatInstalled', this.isWeChatInstalled)
+		return dict
+	}
+	
+	constructor() {
+		
+	}
+}
+
+export class WxpayHookProxy implements UTSiOSHookProxy {
+	// 应用正常启动时 (不包括已在后台转到前台的情况)的回调函数。
+	applicationDidFinishLaunchingWithOptions(application : UIApplication | null, launchOptions : Map<UIApplication.LaunchOptionsKey, any> | null = null) : boolean {
+		Wxpay.share.registerApp()
+		return false
+	}
+
+	// 通过 url scheme 方式唤起 app 时的回调函数。
+	applicationOpenURLOptions(app : UIApplication | null, url : URL, options : Map<UIApplication.OpenURLOptionsKey, any> | null = null) : boolean {
+		Wxpay.share.handleOpen(url)
+		return true
+	}
+
+	// 当应用程序接收到与用户活动相关的数据时调用此方法，例如，当用户使用 Universal Link 唤起应用时。
+	applicationContinueUserActivityRestorationHandler(application : UIApplication | null, userActivity : NSUserActivity | null, restorationHandler : ((res : [any] | null) => void) | null = null) : boolean {
+		Wxpay.share.handleOpenUniversalLink(userActivity)
+		return true
+	}
+}
+
+export class Wxpay implements WXApiDelegate {
+	static share = new Wxpay()
+
+	private options ?: RequestPaymentOptions
+
+	@UTSiOS.keyword("fileprivate")
+	registerApp() {
+		const scheme = Wxpay.share.getApplicationScheme()
+		const universalLink = Wxpay.share.getApplicationUniversalLink()
+		if (scheme != null && universalLink != null && scheme != "" && universalLink != "") {
+			WXApi.registerApp(scheme!, universalLink = universalLink!)
+		}
+	}
+
+	@UTSiOS.keyword("fileprivate")
+	handleOpen(url : URL) {
+		WXApi.handleOpen(url, delegate = this)
+	}
+
+	@UTSiOS.keyword("fileprivate")
+	handleOpenUniversalLink(userActivity : NSUserActivity | null) {
+		if (userActivity != null) {
+			WXApi.handleOpenUniversalLink(userActivity!, delegate = this)
+		}
+	}
+
+	private getApplicationScheme() : string | null {
+		let scheme : string | null = null
+		const infoDictionary = Bundle.main.infoDictionary
+		if (infoDictionary != null) {
+			const wechat = infoDictionary!['WeChat'] as Map<string, any> | null
+			if (wechat != null) {
+				scheme = wechat!['appid'] as string | null
+			}
+		}
+
+		return scheme
+	}
+
+	private getApplicationUniversalLink() : string | null {
+		let universalLink : string | null = null
+		const infoDictionary = Bundle.main.infoDictionary
+		if (infoDictionary != null) {
+			const wechat = infoDictionary!['WeChat'] as Map<string, any> | null
+			if (wechat != null) {
+				universalLink = wechat!['universalLink'] as string | null
+			}
+		}
+		return universalLink
+	}
+
+	//@brief 检查微信是否已被用户安装
+	@UTSiOS.keyword("fileprivate")
+	isWXAppInstalled() : boolean {
+		return WXApi.isWXAppInstalled()
+	}
+
+	//@brief 发送一个sendReq后，收到微信的回应
+	onResp(resp : BaseResp) {
+		if (resp instanceof PayResp) {
+			if (resp.errCode == 0) {
+				let res : RequestPaymentSuccess = {
+					data: resp
+				}
+				this.options?.success?.(res)
+				this.options?.complete?.(res)
+			} else {
+				const errCode = resp.errCode as number
+				let code = wxErrorCodeMap[errCode];
+				if (code == null) {
+					code = wxDefaultErrorCode
+				}
+				let err = new RequestPaymentFailImpl(code!);
+				this.options?.fail?.(err)
+				this.options?.complete?.(err)
+			}
+		}
+	}
+
+	static requestPayment(options : RequestPaymentOptions) {
+		Wxpay.share.options = options
+
+		if (Wxpay.share.isWXAppInstalled() == false) {
+			let err = new RequestPaymentFailImpl(700604);
+			Wxpay.share.options?.fail?.(err)
+			Wxpay.share.options?.complete?.(err)
+			return
+		}
+
+		if (Wxpay.share.getApplicationScheme() == null || Wxpay.share.getApplicationScheme() == "") {
+			let err = new RequestPaymentFailImpl(700800);
+			Wxpay.share.options?.fail?.(err)
+			Wxpay.share.options?.complete?.(err)
+			return
+		}
+
+		if (Wxpay.share.getApplicationUniversalLink() == null || Wxpay.share.getApplicationUniversalLink() == "") {
+			let err = new RequestPaymentFailImpl(700801);
+			Wxpay.share.options?.fail?.(err)
+			Wxpay.share.options?.complete?.(err)
+			return
+		}
+
+		if (Wxpay.share.options != null) {
+			const params = JSON.parse(Wxpay.share.options!.orderInfo) as UTSJSONObject
+			const partnerId = params.getString("partnerid")
+			const prepayId = params.getString("prepayid")
+			const packageV = params.getString("package")
+			const nonceStr = params.getString("noncestr")
+			const timeStamp = params.getNumber("timestamp")
+			const sign = params.getString("sign")
+
+			let request = new PayReq();
+			if (partnerId != null) {
+				request.partnerId = partnerId!
+			}
+			if (prepayId != null) {
+				request.prepayId = prepayId!
+			}
+			if (packageV != null) {
+				request.package = packageV!
+			}
+			if (nonceStr != null) {
+				request.nonceStr = nonceStr!
+			}
+			if (timeStamp != null) {
+				request.timeStamp = timeStamp!.toUInt32()
+			}
+			if (sign != null) {
+				request.sign = sign!
+			}
+
+			//函数调用后，会切换到微信的界面。第三方应用程序等待微信返回onResp。微信在异步处理完成后一定会调用onResp
+			WXApi.send(request);
+		}
+	}
+}

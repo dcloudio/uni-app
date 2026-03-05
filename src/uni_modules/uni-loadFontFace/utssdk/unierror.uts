@@ -1,0 +1,9 @@
+import { LoadFontFaceErrCode } from './interface.uts'
+
+export class LoadFontFaceFailImpl extends UniError implements LoadFontFaceFail {
+    override errCode: LoadFontFaceErrCode
+    constructor(errMsg: string = '', errCode: LoadFontFaceErrCode) {
+        super(errMsg)
+        this.errCode = errCode
+    }
+}

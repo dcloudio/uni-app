@@ -1,0 +1,33 @@
+import { UniPaymentHuaweiProvider } from '../interface.uts'
+import { BusinessError } from '@kit.BasicServicesKit';
+import { paymentService } from '@kit.PaymentKit';
+import {
+    getAbilityContext,
+} from '@dcloudio/uni-runtime'
+const defaultErrorCode: number = 700000
+const errorCodeMap: Map<number, number> = new Map([
+    [401, 700000],
+    [1001930000, 700601],
+    [1001930001, 700000],
+    [1001930002, 700600],
+    [1001930010, 701110],
+    [1001930011, 700602],
+])
+
+export class UniPaymentHuaweiProviderImpl implements UniPaymentHuaweiProvider {
+    id: string = "huawei"
+    description: string = "华为"
+    constructor() { }
+    requestPayment(options: RequestPaymentOptions) {
+        paymentService.requestPayment(getAbilityContext()!, options.orderInfo)
+            .then(() => {
+                options.success?.({
+                    data: null
+                } as RequestPaymentSuccess)
+            }, (error: BusinessError) => {
+                options.fail?.({
+                    errCode: errorCodeMap.get(error.code) ?? defaultErrorCode
+                } as RequestPaymentFail)
+            })
+    }
+}

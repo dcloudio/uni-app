@@ -1,0 +1,72 @@
+import { ChooseImageOptions, ChooseVideoOptions } from "../../interface.uts"
+import {
+	UniError_ChooseImage, UniError_ChooseVideo, MediaErrorImpl
+} from "../../unierror.uts"
+export const CODE_CAMERA_ERROR = 11;
+export const CODE_GALLERY_ERROR = 12;
+export const CODE_GET_IMAGE_INFO_CODE = 13
+
+export function uniChooseImage(options : ChooseImageOptions, onSourceTypeSelect : (count : number, compressed : boolean, index : number) => void) {
+	let count = options.count != null ? (options.count! <= 0 ? 9 : options.count) : 9
+	// 默认为 false
+	let compressed = false;
+	if ((options.sizeType) != null) {
+		compressed = options.sizeType!.indexOf("original") < 0
+	}
+	/* source type 乱传如何处理 */
+	let sourceType : Array<string> = (options.sourceType != null && options.sourceType!.length > 0) ? options.sourceType! : ["album", "camera"];
+	let itemList = ["拍摄", "从相册选择"]
+	if (sourceType.length == 1) {
+		if (sourceType.indexOf("album") >= 0) {
+			onSourceTypeSelect(count!, compressed, 1)
+		} else if (sourceType.indexOf("camera") >= 0) {
+			onSourceTypeSelect(count!, compressed, 0)
+		}
+		return
+	}
+	if (sourceType.length == 2) {
+		uni.showActionSheet({
+			itemList: itemList,
+			success: (e) => {
+				onSourceTypeSelect(count!, compressed, e.tapIndex!)
+			},
+			fail: (e) => {
+				let error = new MediaErrorImpl(1101001, UniError_ChooseImage);
+				options.fail?.(error)
+				options.complete?.(error)
+			}
+		})
+	}
+}
+
+export function uniChooseVideo(options : ChooseVideoOptions, onSourceTypeSelect : (count : number, compressed : boolean, index : number) => void) {
+	let count = 1
+	// 默认为 false
+	let compressed = options.compressed != null ? options.compressed! : true;
+
+	/* source type 乱传如何处理 */
+	let sourceType : Array<string> = (options.sourceType != null && options.sourceType!.length > 0) ? options.sourceType! : ["album", "camera"];
+	let itemList = ["拍摄", "从相册选择"]
+	if (sourceType.length == 1) {
+		if (sourceType.indexOf("album") >= 0) {
+			onSourceTypeSelect(count!, compressed, 1)
+		} else if (sourceType.indexOf("camera") >= 0) {
+			onSourceTypeSelect(count!, compressed, 0)
+		}
+		return
+	}
+
+	if (sourceType.length == 2) {
+		uni.showActionSheet({
+			itemList: itemList,
+			success: (e) => {
+				onSourceTypeSelect(count!, compressed, e.tapIndex!)
+			},
+			fail: (e) => {
+				let error = new MediaErrorImpl(1101001, UniError_ChooseVideo);
+				options.fail?.(error)
+				options.complete?.(error)
+			}
+		})
+	}
+}
