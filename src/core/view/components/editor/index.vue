@@ -70,7 +70,7 @@ export default {
       if (this.quillReady) {
         const quill = this.quill
         quill.enable(!value)
-        if (!value) {
+        if (value) {
           quill.blur()
         }
       }
