@@ -234,17 +234,6 @@ export declare function createSharedDataIf(condition: () => any, b1: () => void,
 type ItemOf<S> = S extends readonly (infer T)[] ? T : S extends Reactive<readonly (infer T)[]> ? T : S extends Set<infer T> ? T : S extends Map<infer K, infer V> ? [K, V] : S extends string ? string : S extends number ? number : S extends Record<any, infer V> ? V : S extends Iterable<infer T> ? T : any;
 type KeyOf<S> = S extends Record<any, any> ? string : number;
 type IndexOfKey<K> = K extends string ? number : undefined;
-declare class SharedDataForItem {
-  sharedData: UniSharedData;
-  key: any;
-  itemRef: ShallowRef<any>;
-  keyRef: ShallowRef<any> | undefined;
-  indexRef: ShallowRef<number | undefined> | undefined;
-  scope: EffectScope$1 | undefined;
-  type: any;
-  nodes: VaporSharedDataComponentInstance | null;
-  constructor(sharedData: UniSharedData, nodes: VaporSharedDataComponentInstance | null, scope: EffectScope$1 | undefined, item: ShallowRef<any>, key: ShallowRef<any> | undefined, index: ShallowRef<number | undefined> | undefined, renderKey: any, type?: any);
-}
 export declare const createSharedDataFor: <S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => VaporSharedDataComponentInstance | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number, setup?: (_: {
   createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void) => void;
@@ -254,9 +243,7 @@ export declare function getSharedDataDefaultValue(val: any, defaultVal: any): an
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateRecycleFor.d.ts
 export declare const preCreateSharedDataRecycleFor: <Source>(src: () => Source, getKey?: (item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) => (() => Source);
-declare class RecycleContext {
-  cachedSharedData: Map<any, SharedDataForItem[]>;
-}
+declare class RecycleContext {}
 export declare function createRecycleContext(): RecycleContext;
 export declare const createSharedDataRecycleFor: <S extends UniSharedData, Source>(recycleContext: RecycleContext, sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => VaporSharedDataComponentInstance | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getType?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number, setup?: (_: {
   createSelector: (source: () => any) => (cb: () => void) => void;
