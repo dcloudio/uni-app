@@ -2472,11 +2472,13 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
 	let template = "";
 	template += `<${tag}`;
 	if (scopeId) template += ` ${scopeId}`;
-	if (isDom2 && singleRoot) {
-		template += ` gen-flag-flatten=""`;
-		const rootElementTagName = context.options.rootElementTagName;
-		if (rootElementTagName || context.options.genVueId) template += ` gen-vue-id=""`;
-		if (rootElementTagName) template += ` custom-tag-name="${rootElementTagName}"`;
+	if (isDom2) {
+		if (context.effectiveParent === context.root) template += ` gen-vue-id=""`;
+		if (singleRoot) {
+			template += ` gen-flag-flatten=""`;
+			const rootElementTagName = context.options.rootElementTagName;
+			if (rootElementTagName) template += ` custom-tag-name="${rootElementTagName}"`;
+		}
 	}
 	const dynamicProps = [];
 	if (propsResult[0]) {

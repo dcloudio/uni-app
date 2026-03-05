@@ -9291,7 +9291,7 @@ function useQuill(props2, rootRef, trigger) {
     (value) => {
       if (quillReady) {
         quill.enable(!value);
-        if (!value) {
+        if (value) {
           quill.blur();
         }
       }

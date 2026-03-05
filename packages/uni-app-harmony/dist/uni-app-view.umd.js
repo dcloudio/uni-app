@@ -15153,7 +15153,7 @@
     watch(() => props2.readOnly, (value) => {
       if (quillReady) {
         quill.enable(!value);
-        if (!value) {
+        if (value) {
           quill.blur();
         }
       }
