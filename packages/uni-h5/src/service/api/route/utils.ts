@@ -1,5 +1,7 @@
-import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
+import { EventChannel, ON_PAGE_NOT_FOUND, parseUrl } from '@dcloudio/uni-shared'
 import { type Router, isNavigationFailure } from 'vue-router'
+import type { ComponentPublicInstance } from 'vue'
+import { invokeHook } from '@dcloudio/uni-core'
 import {
   createPageState,
   entryPageState,
@@ -48,6 +50,20 @@ export function navigate(
     }).then((failure) => {
       if (isNavigationFailure(failure)) {
         return reject(failure.message)
+      }
+      if (router.currentRoute.value.matched.length === 0) {
+        invokeHook(
+          (__X__ ? (getApp() as any).vm : getApp()) as ComponentPublicInstance,
+          ON_PAGE_NOT_FOUND,
+          {
+            notFound: true,
+            openType: type,
+            path,
+            query,
+            scene: 1001,
+          }
+        )
+        return reject(`page '${path}' is not found`)
       }
       if (type === 'switchTab') {
         router.currentRoute.value.meta.tabBarText = tabBarText
