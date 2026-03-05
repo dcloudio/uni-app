@@ -5861,7 +5861,7 @@ function normalizeExternalClasses(classes) {
 }
 function normalizeInheritAttrsValue(instance, key, value) {
   if (__X_STYLE_ISOLATION__) {
-    if (key === "class") {
+    if (key == "class" || key == "hover-class" || key == "placeholder-class") {
       return toExternalClasses(value).join(" ");
     }
   }
@@ -9590,6 +9590,9 @@ function parseClassStyles(el) {
 }
 function parseClassList(classList, instance) {
   var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  if (__X_STYLE_ISOLATION__ && el) {
+    return parseClassListWithCtx(classList, instance, el).styles;
+  }
   return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), null, el).styles;
 }
 function parseStyleSheet(_ref23) {
@@ -10184,7 +10187,7 @@ function transformAttr(el, key, value, instance) {
   if (opts) {
     var camelized = camelize(key);
     if (opts["class"].indexOf(camelized) > -1) {
-      var classStyle = parseClassList([value], instance, el);
+      var classStyle = parseClassList(Array.isArray(value) ? value : [value], instance, el);
       if (el.tagName === "BUTTON") {
         if (value === "none" || value == "button-hover" && classStyle.size == 0) {
           return [camelized, value];
@@ -10370,7 +10373,7 @@ var patchProp = (el, key, prevValue, nextValue, namespace, prevChildren, parentC
     el.setAnyAttribute("modelValue", nextValue);
     el.setAnyAttribute("value", nextValue);
   } else {
-    patchAttr(el, key, nextValue, parentComponent);
+    patchAttr(el, key, nextValue, hostInstance !== null ? hostInstance : parentComponent);
   }
 };
 function useCssModule() {
