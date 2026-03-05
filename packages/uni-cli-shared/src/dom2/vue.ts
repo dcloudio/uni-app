@@ -28,7 +28,6 @@ export function initVueTemplateCompilerExtraOptions(descriptor: SFCDescriptor) {
     relativeFilename,
     helper,
     scriptCppBlocks: (descriptor as any).scriptCppBlocks,
-    genVueId: !!process.env.UNI_AUTOMATOR_WS_ENDPOINT,
     disableStaticStyle,
     onVueTemplateCompileLog(type: 'warn' | 'error', error: CompilerError) {
       return onVueTemplateCompileLog(
