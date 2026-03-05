@@ -1,0 +1,5 @@
+export default definePlugin({
+  install(app: VueApp, a ?: boolean | null) {
+    app.provide("plugin3", "通过 definePlugin + 对象字面量方式创建的 plugin");
+  },
+});

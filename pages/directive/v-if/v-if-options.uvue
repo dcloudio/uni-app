@@ -1,0 +1,41 @@
+<template>
+  <view class="page">
+    <view class="mb-10 flex justify-between flex-row">
+      <text>v-if</text>
+      <text id="v-if-show" v-if="show">show</text>
+    </view>
+    <button id="switch-v-if-btn" @click="show = !show">switch v-if</button>
+
+    <view class="mt-10 mb-10 flex justify-between flex-row">
+      <text>num:</text>
+      <text id="num">{{ num }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>v-if v-else-if v-else</text>
+      <text id="num-v-if" v-if="num == 1">v-if num = 1</text>
+      <text id="num-v-else-if" v-else-if="num == 2">v-else-if num = 2</text>
+      <text id="num-v-else" v-else>v-else</text>
+    </view>
+    <button id="change-num-btn" @click="changeNum">change num</button>
+  </view>
+</template>
+
+<script lang="uts">
+export default {
+  data() {
+    return {
+      show: true,
+      num: 1
+    }
+  },
+  methods: {
+    changeNum() {
+      if(this.num<3) {
+        this.num++
+      } else {
+        this.num = 1
+      }
+    },
+  }
+}
+</script>

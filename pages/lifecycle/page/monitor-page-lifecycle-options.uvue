@@ -1,0 +1,23 @@
+<script lang="uts">
+export default {
+	setup() {
+		// #ifdef APP-ANDROID
+		onAppHide(() => {
+			console.log('组件监听应用生命周期 => onAppHide')
+		})
+		onAppShow((onShowOptions: OnShowOptions) => {
+			console.log('组件监听应用生命周期 => onAppShow => onShowOptions', onShowOptions)
+		})
+		// #endif
+
+		onPageShow(() => {
+			console.log('组件监听页面生命周期 => onPageShow')
+		})
+		onPageHide(() => {
+			console.log('组件监听页面生命周期 => onPageHide')
+		})
+	}
+}
+</script>
+
+<template>组件监听页面、应用生命周期（选项式 API）</template>

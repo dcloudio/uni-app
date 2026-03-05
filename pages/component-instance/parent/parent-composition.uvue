@@ -1,0 +1,28 @@
+<template>
+  <view class="page">
+    <child ref="childRef" />
+  </view>
+</template>
+
+<script setup lang="uts">
+  import Child from './child-composition.uvue'
+
+  const childRef = ref<ComponentPublicInstance | null>(null)
+  const str = ref('parent str')
+  const num = ref(1)
+
+  const getNum = () : number => { return num.value }
+
+  const instance = getCurrentInstance()!.proxy!
+
+  const callMethodByChild = () : number => {
+    const childComponent = instance.$refs['childRef'] as ComponentPublicInstance
+    return childComponent.$parent!.$callMethod('getNum') as number
+  }
+
+  defineExpose({
+    str,
+    getNum,
+    callMethodByChild
+  })
+</script>

@@ -1,0 +1,29 @@
+<template>
+  <view class="child">
+    <view class="flex-row">
+      子组件:
+      <text class="child-msg">{{ msg }}</text>
+    </view>
+    <grand-child></grand-child>
+  </view>
+</template>
+
+<script>
+import grandChild from './grandChild.uvue'
+import { state } from '@/store/index.uts'
+export default {
+  components: {
+    grandChild
+  },
+  computed: {
+    msg(): number {
+      return state.componentMsg
+    }
+  }
+}
+</script>
+<style>
+.child {
+  margin-top: 10px;
+}
+</style>

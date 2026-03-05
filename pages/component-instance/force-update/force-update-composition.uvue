@@ -1,0 +1,19 @@
+<template>
+  <view class="page">
+    <view class="split-title">$forceUpdate</view>
+    <text class="mt-10 time">Date.now(): {{ Date.now() }}</text>
+    <button class="mt-10 trigger-force-update-btn" type="primary" @click="triggerForceUpdate">trigger $forceUpdate</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const instance = getCurrentInstance()
+
+const triggerForceUpdate = () => {
+  instance?.proxy?.$forceUpdate()
+}
+
+defineExpose({
+  triggerForceUpdate
+})
+</script>

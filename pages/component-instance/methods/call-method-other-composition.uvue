@@ -1,0 +1,87 @@
+<template>
+  <view>
+    <component1 ref="componentRef"></component1>
+  </view>
+</template>
+
+<script setup lang="uts">
+// 非easycom组件需import引用组件 componentRef-composition.uvue
+import component1 from './component1-composition.uvue'
+
+const componentRef = ref<ComponentPublicInstance | null>(null)
+
+const callMethod1 = () => {
+  // 通过 $callMethod 调用组件的 foo1 方法
+  componentRef.value?.$callMethod('foo1')
+}
+
+const callMethod2 = () => {
+  // 通过 $callMethod 调用组件的 foo2 方法并传递 1个参数
+  componentRef.value?.$callMethod('foo2', Date.now())
+}
+
+const callMethod3 = () => {
+  // 通过 $callMethod 调用组件的 foo3 方法并传递 2个参数
+  componentRef.value?.$callMethod('foo3', Date.now(), Date.now())
+}
+
+const callMethod4 = () => {
+  // 通过 $callMethod 调用组件的 foo4 方法并传递 callback
+  componentRef.value?.$callMethod('foo4', () => {
+    console.log('callback')
+  })
+}
+
+const callMethod5 = () => {
+  // 通过 $callMethod 调用组件的 foo5 方法并接收返回值
+  // 注意： 返回值可能为 null，当前例子一定不为空，所以加了 !
+  const result = componentRef.value?.$callMethod('foo5', 'string1') as string
+  console.log(result) // string1
+}
+
+const callMethodTest = (text: string): string | null => {
+  const result = componentRef.value?.$callMethod('foo5', text) as string
+  return result
+}
+
+function callMethodFooWithDefaultParameter(): any | null{
+  return componentRef.value?.$callMethod('fooWithDefaultParameter', 10)
+}
+
+function callMethodFooWithRestParameter(): any | null{
+  return componentRef.value?.$callMethod('fooWithRestParameter', "test", 10, 11)
+}
+
+const delay = (): Promise<string> =>
+  new Promise((resolve, _) => {
+    setTimeout(() => {
+      resolve('')
+    }, 1000)
+  })
+
+const call = async (): Promise<void> => {
+  callMethod1()
+  await delay()
+  callMethod2()
+  await delay()
+  callMethod3()
+  await delay()
+  callMethod4()
+  await delay()
+  callMethod5()
+  await delay()
+  callMethodFooWithDefaultParameter()
+  await delay()
+  callMethodFooWithRestParameter()  
+}
+
+onReady(() => {
+  call()
+})
+
+defineExpose({
+  callMethodTest,
+  callMethodFooWithDefaultParameter,
+  callMethodFooWithRestParameter
+})
+</script>

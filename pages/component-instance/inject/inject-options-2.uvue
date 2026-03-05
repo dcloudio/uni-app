@@ -1,0 +1,86 @@
+<template>
+  <view>
+    <text class="mt-10 bold">component for inject 2</text>
+    <text class="mt-10 provide-page-title"
+      >providePageTitle: {{ providePageTitle }}</text
+    >
+    <text class="mt-10 provide-page-str">providePageStr: {{ providePageStr }}</text>
+    <text class="mt-10 provide-page-num">providePageNum: {{ providePageNum }}</text>
+    <text class="mt-10 provide-page-bool">providePageBool: {{ providePageBool }}</text>
+    <text class="mt-10 provide-page-object-title"
+      >providePageObject.title: {{ providePageObject['title'] }}</text
+    >
+    <text class="mt-10 provide-page-object-content"
+      >providePageObject.content: {{ providePageObject['content'] }}</text
+    >
+    <text class="mt-10 provide-page-arr">providePageArr: {{ JSON.stringify(providePageArr) }}</text>
+    <text class="mt-10 provide-page-map">providePageMap: {{ JSON.stringify(providePageMapObj) }}</text>
+    <text class="mt-10 provide-page-set">providePageSet: {{ JSON.stringify(providePageSetArr) }}</text>
+  </view>
+</template>
+
+<script lang="uts">
+export default {
+  inject: {
+    providePageTitle: {
+      type: String,
+      default: 'default provide page title'
+    },
+    providePageStr: {
+      type: String,
+      default: 'default provide page str'
+    },
+    providePageNum: {
+      type: Number,
+      default: 0
+    },
+    providePageBool: {
+      type: Boolean,
+      default: false
+    },
+    providePageObject: {
+      type: UTSJSONObject,
+      default: (): UTSJSONObject => {
+        return {
+          title: 'default provide page object title',
+          content: 'default provide page object content'
+        }
+      }
+    },
+    providePageArr: {
+      type: Array as PropType<String[]>,
+      default: (): String[] => {
+        return ['default provide page arr']
+      }
+    },
+    providePageMap: {
+      type: Object as PropType<Map<string, string>>,
+      default: (): Map<string, string> => {
+        return new Map<string, string>([['key', 'default provide page map']])
+      }
+    },
+    providePageSet: {
+      type: Object as PropType<Set<string>>,
+      default: (): Set<string> => {
+        return new Set<string>(['default provide page set'])
+      }
+    },
+  },
+	computed: {
+		providePageMapObj(): UTSJSONObject {
+			const obj: UTSJSONObject = {}
+			this.providePageMap.forEach((value, key) => {
+				obj[key] = value
+			})
+			return obj
+		},
+		providePageSetArr(): string[] {
+			const arr: string[] = []
+			this.providePageSet.forEach((value) => {
+				arr.push(value)
+			})
+			return arr
+		}
+	}
+}
+</script>

@@ -1,0 +1,56 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReactive(count):</text>
+      <text id="is-reactive-count">{{ isReactiveCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReactive(count):</text>
+      <text id="is-reactive-count">{{ isReactiveCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReactive(refCount):</text>
+      <text id="is-reactive-ref-count">{{ isReactiveRefCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReactive(reactiveCount):</text>
+      <text id="is-reactive-reactive-count">{{ isReactiveReactiveCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReactive(readonlyCount):</text>
+      <text id="is-reactive-readonly-count">{{ isReactiveReadonlyCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReactive(shallowReactiveCount):</text>
+      <text id="is-reactive-shallow-reactive-count">{{
+        isReactiveShallowReactiveCount
+      }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReactive(shallowReadonlyCount):</text>
+      <text id="is-reactive-shallow-readonly-count">{{
+        isReactiveShallowReadonlyCount
+      }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+const count = 0;
+const isReactiveCount = isReactive(count);
+
+const refCount = ref(0);
+const isReactiveRefCount = isReactive(refCount);
+
+const reactiveCount = reactive({ count: 0 });
+const isReactiveReactiveCount = isReactive(reactiveCount);
+
+const readonlyCount = readonly({ count: 0 });
+const isReactiveReadonlyCount = isReactive(readonlyCount);
+
+const shallowReactiveCount = shallowReactive({ count: 0 });
+const isReactiveShallowReactiveCount = isReactive(shallowReactiveCount);
+
+const shallowReadonlyCount = shallowReadonly({ count: 0 });
+const isReactiveShallowReadonlyCount = isReactive(shallowReadonlyCount);
+</script>

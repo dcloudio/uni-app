@@ -1,0 +1,49 @@
+<script lang="uts">
+import CompForHFunction from '@/components/CompForHFunction.uvue'
+import CompForHFunctionWithSlot from '@/components/CompForHFunctionWithSlot.uvue'
+import Foo from './Foo.uvue'
+// 故意外部声明为UTSJSONObject
+const msgProps = { class: 'mt-10 msg', style: { color: 'blue' } }
+export default {
+  data() {
+    return {
+      msg: 'default msg',
+      list: ['a','b']
+    }
+  },
+  render() : VNode {
+    const textList: VNode[] = []
+    this.list.forEach((item) => {
+      textList.push(h('text', { class: 'text-item' }, item))
+    })
+    return h('view', { class: 'page' }, [
+      h(CompForHFunctionWithSlot, {}, () : VNode[] => [h('text', { class: 'comp-slot' }, 'component slot')]),
+      h(CompForHFunction, { msg: this.msg }),
+      h('text', msgProps, this.msg),
+      h(Foo, null, {
+          header: (): VNode[] => [h('text', { id: "header" }, 'header')],
+          footer: (): VNode[] => [h('text', { id: "footer" }, 'footer')]
+      }),
+      h('view', null, textList),
+      h(
+        'button',
+        {
+          class: 'mt-10 btn',
+          type: 'primary',
+          onClick: () => {
+            this.msg = 'new msg'
+            this.list.push('c')
+          }
+        },
+        'click'
+      )
+    ])
+  }
+}
+</script>
+
+<style>
+.btn {
+  color: red;
+}
+</style>

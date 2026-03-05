@@ -1,0 +1,42 @@
+<template>
+	<view class="p-10">
+		<text>测试页面作为组件引入</text>
+		<PagePropsOptions from="page" :number='10' :boolean='true' :object='{c: 10, d: 20}' :array='[4,5,6]' />
+		<PagePropsComposition from="page" :number='10' :boolean='true' :object='{c: 10, d: 20}' :array='[4,5,6]' />
+		<button id='go-options-page' class="mt-10" @click="navigateToPage('/pages/component-instance/props/page-props-options?from=page-navigateTo')">goOptionsPage</button>
+		<button id="go-composition-page" class="mt-10" @click="navigateToPage('/pages/component-instance/props/page-props-composition?from=page-navigateTo')">goCompositionPage</button>
+	</view>
+</template>
+
+<script>
+	import { setLifeCycleNum, state } from '@/store/index.uts'
+	import PagePropsOptions from './page-props-options'
+	import PagePropsComposition from './page-props-composition'
+	
+	export default {
+		components: {
+			PagePropsOptions,
+			PagePropsComposition
+		},
+		data() {
+			return {
+				title: 'index'
+			}
+		},
+		methods: {
+			navigateToPage(url: string){
+				uni.navigateTo({
+					url
+				})
+			},
+			// 自动化测试
+			setLifeCycleNum(num : number) {
+				setLifeCycleNum(num)
+			},
+			// 自动化测试
+			getLifeCycleNum() : number {
+				return state.lifeCycleNum
+			}
+		}
+	}
+</script>

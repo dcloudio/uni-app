@@ -1,0 +1,25 @@
+<template>
+  <view class='mt-10'>
+    <text class="mb-10 bold">withDefaults</text>
+    <view class="mb-10 flex flex-row justify-between">
+      <text>msg</text>
+      <text id="prop-msg">{{ props.msg }}</text>
+    </view>
+    <view class="mb-10 flex flex-row justify-between">
+      <text>labels</text>
+      <text id="prop-labels">{{ JSON.stringify(props.labels) }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+interface CustomProps {
+  msg: string
+  labels : string[]
+}
+
+const props = withDefaults(defineProps<CustomProps>(), {
+  msg: 'hello',
+  labels: ():string[] => ['a', 'b']
+})
+</script>

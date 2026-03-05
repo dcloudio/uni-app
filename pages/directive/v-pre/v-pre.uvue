@@ -1,0 +1,6 @@
+<template>
+  <view class="page">
+    <text class="bold mb-10">v-pre 跳过该元素及其所有子元素的编译</text>
+    <text class="mb-10 v-pre-text" v-pre>{{ this will not be compiled }}</text>
+  </view>
+</template>

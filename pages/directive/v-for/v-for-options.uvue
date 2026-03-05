@@ -1,0 +1,156 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="page">
+      <text class="bold mb-10">v-for number</text>
+      <view class="mb-10" v-for="item in 3" :key="item">
+        <text :id="`number-${item}`">{{ item }}</text>
+      </view>
+      
+      <view class="mb-10" v-for="item in utsNumber" :key="item">
+        <text :id="`uts-number-${item}`">{{ item }}</text>
+      </view>
+
+      <view class="bold mb-10">v-for object</view>
+      <view
+        v-for="(value, key) in object"
+        :key="key"
+        class="mb-10 flex justify-between flex-row">
+        <text :id="key">{{ key }}</text>
+        <text :id="value">{{ value }}</text>
+      </view>
+
+      <view class="bold mb-10">v-for & v-if list items</view>
+      <view
+        id="v-for-v-if-list-items"
+        v-for="item in listItems"
+        :key="item.name">
+        <template v-if="item.show">
+          <view class="mb-10 flex justify-between flex-row">
+            <text :id="item.name">{{ item.name }}</text>
+            <text @click="item.count++" :id="`v-if-${item.name}-count`">{{
+              item.count
+            }}</text>
+          </view>
+          <template v-for="child in item.items">
+            <view
+              v-if="child.show"
+              :key="child.name"
+              class="mb-10 flex justify-between flex-row">
+              <text :id="child.name">{{ child.name }}</text>
+              <text @click="child.count++" :id="`v-if-${child.name}-count`">{{
+                child.count
+              }}</text>
+            </view>
+          </template>
+        </template>
+      </view>
+
+      <view class="bold mb-10">v-for & v-show list items</view>
+      <view
+        id="v-for-v-show-list-items"
+        v-for="item in listItems"
+        v-show="item.show"
+        :key="item.name">
+        <view class="mb-10 flex justify-between flex-row">
+          <text :id="item.name">{{ item.name }}</text>
+          <text @click="item.count++" :id="`v-show-${item.name}-count`">{{
+            item.count
+          }}</text>
+        </view>
+        <view
+          v-for="child in item.items"
+          v-show="child.show"
+          :key="child.name"
+          class="mb-10 flex justify-between flex-row">
+          <text :id="child.name">{{ child.name }}</text>
+          <text @click="child.count++" :id="`v-show-${child.name}-count`">{{
+            child.count
+          }}</text>
+        </view>
+      </view>
+
+      <view
+        class="mb-10 flex justify-between flex-row"
+        v-for="item in mapList"
+        :key="item[0]">
+        <text>{{ item[0] }}</text>
+        <text :id="item[0]">{{ item[1] }}</text>
+      </view>
+
+      <view class="mb-10" v-for="(item, index) in setList" :key="index">
+        <text :id="`set-value-${index + 1}`">{{ item }}</text>
+      </view>
+
+      <view class="bold mb-10">v-for UTSJSONObject</view>
+      <view
+        v-for="(value, key) in utsJSONObject"
+        :key="key"
+        class="mb-10 flex justify-between flex-row">
+        <text :id="key">{{ key }}</text>
+        <text :id="value">{{ value }}</text>
+      </view>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+type VForObject = {
+  key1 : string
+  key2 : string
+  key3 : string
+}
+
+type ListItem = {
+  name: string
+  count : number
+  show: boolean
+  items?: ListItem[]
+}
+
+// TODO: v-for map set deep array 动态增加删除
+export default {
+  data() {
+    return {
+      object: { key1: 'value1', key2: 'value2', key3: 'value3' } as VForObject,
+      listItems: [
+        { name: '1',
+          count: 0,
+          show: true,
+          items:[
+            { name: '1-1', count: 0, show: false },
+            { name: '1-2', count: 0, show: true },
+          ]
+        },
+        { name: '2',
+          count: 0,
+          show: true,
+          items:[
+            { name: '2-1', count: 0, show: true },
+            { name: '2-2', count: 0, show: false },
+          ]
+        },
+        { name: '3',
+          count: 0,
+          show: false,
+          items:[
+            { name: '3-1', count: 0, show: true },
+            { name: '3-2', count: 0, show: true },
+          ]
+        },
+      ] as ListItem[],
+      mapList: new Map<string, string>([
+        ['map-key-1', 'map value 1'],
+        ['map-key-2', 'map value 2'],
+        ['map-key-3', 'map value 3'],
+      ]),
+      setList: new Set<string>(['set value 1', 'set value 2', 'set value 3']),
+      utsJSONObject: { utsKey1: 'UTSJSONObject-value1', utsKey2: 'UTSJSONObject-value2', utsKey3: 'UTSJSONObject-value3' },
+      utsNumber: JSON.parse("3") as number
+    }
+  }
+}
+</script>

@@ -1,0 +1,11 @@
+<script lang="uts">
+  export default {
+    setup() {
+      const CompForAppComponent = resolveComponent('CompForAppComponent')
+
+      return ():VNode => {
+        return h(CompForAppComponent)
+      }
+    }
+  }
+</script>

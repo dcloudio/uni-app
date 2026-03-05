@@ -1,0 +1,9 @@
+<template>
+  <view class="page">
+    <text>{{ arr[1] }}</text>
+  </view>
+</template>
+
+<script setup lang="uts">
+const arr = [0]
+</script>

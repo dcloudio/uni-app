@@ -1,0 +1,25 @@
+<template>
+  <view class="page">
+    <!-- #ifdef APP-ANDROID -->
+    <!-- TODO: ios & web 不支持 a b 互相引用 -->
+    <child-a :limit="5" />
+    <!-- #endif -->
+    <child-c :limit="5" />
+  </view>
+</template>
+
+<script lang='uts'>
+  // #ifdef APP-ANDROID
+  import ChildA from './childA-options.uvue'
+  // #endif
+  import childC from './childC-options.uvue'
+
+  export default {
+    components: {
+      // #ifdef APP-ANDROID
+      ChildA,
+      // #endif
+      childC
+    }
+  }
+</script>

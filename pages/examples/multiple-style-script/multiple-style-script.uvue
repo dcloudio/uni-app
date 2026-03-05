@@ -1,0 +1,49 @@
+<template>
+  <view class="page">
+    <view class="mb-10 flex flex-row justify-between">
+      <text>msg: </text>
+      <text id="msg">{{ msg }}</text>
+    </view>
+    <!-- #ifndef APP-ANDROID -->
+    <view class="mb-10 flex flex-row justify-between">
+      <text>num: </text>
+      <text id="num">{{ num }}</text>
+    </view>
+    <!-- #endif -->
+    <view class="mb-10">
+      <text class="text-red">text red</text>
+    </view>
+    <view class="mb-10">
+      <text class="text-green">text green</text>
+    </view>
+    <view class="mb-10">
+      <text class="font-bold">font bold</text>
+    </view>
+  </view>
+</template>
+
+<script lang="uts">
+export default {
+  data(){
+    return {
+      msg: 'Hello World'
+    }
+  }
+}
+</script>
+<!-- #ifndef APP-ANDROID -->
+<script setup lang="uts">
+const num = ref(0)
+</script>
+<!-- #endif -->
+
+<style>
+.text-green {
+  color: green;
+}
+</style>
+<style>
+.font-bold {
+  font-weight: bold;
+}
+</style>

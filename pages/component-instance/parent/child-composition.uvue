@@ -1,0 +1,35 @@
+<template>
+  <view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>parent str: </text>
+      <text id="parent-str">{{ parentStr }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>parent num: </text>
+      <text id="parent-num">{{ parentNum }}</text>
+    </view>
+    <button @click="triggerParentFn" id="trigger-parent-fn">
+      调用父组件方法
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const parentStr = ref('')
+  const parentNum = ref(0)
+
+  const instance = getCurrentInstance()!.proxy!
+
+  onMounted(() => {
+    // #ifdef APP-ANDROID
+    parentStr.value = (instance.$parent!.$exposed['str'] as Ref<string>).value
+    // #endif
+    // #ifndef APP-ANDROID
+    parentStr.value = instance.$parent!['str'] as string
+    // #endif
+  })
+
+  const triggerParentFn = () => {
+    parentNum.value = instance.$parent!.$callMethod('callMethodByChild') as number
+  }
+</script>

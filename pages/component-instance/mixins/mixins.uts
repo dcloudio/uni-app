@@ -1,0 +1,123 @@
+import MixinComp1 from './components/MixinComp1.uvue'
+import ChildMixinComp1 from './components/ChildMixinComp1.uvue'
+import MixinCompForMixin from './components/MixinCompForMixin.uvue'
+import MixinCompForChildMixin from './components/MixinCompForChildMixin.uvue'
+
+const childMixin = defineMixin({
+  components: { ChildMixinComp1, MixinComp: MixinCompForChildMixin },
+  props: {
+    childMixinProp1: {
+      type: String,
+      default: '通过 defineMixin 定义非全局 child mixin props'
+    },
+    namesakeChildMixinProp: {
+      type: String,
+      default: '通过 defineMixin 定义非全局同名 child mixin props'
+    }
+  },
+  data() {
+    return {
+      childMixinDataMsg1: '通过 defineMixin 定义非全局 child mixin data',
+      namesakeChildMixinDataMsg: '通过 defineMixin 定义非全局同名 mixin data',
+      childMixinOnloadMsg1: '',
+      childMixinOnloadTime1: 0,
+      childMixinWatchMsg1: ''
+    }
+  },
+  computed: {
+    childMixinComputed1(): string {
+      const res = `通过 defineMixin 定义非全局 child mixin computed, 更新后的 childMixinOnloadMsg1: ${this.childMixinOnloadMsg1}`
+      console.log(res)
+      return res
+    },
+    namesakeChildMixinComputed(): string {
+      const res = '通过 defineMixin 定义非全局同名 child computed'
+      console.log(res)
+      return res
+    }
+  },
+  watch: {
+    globalMixinOnloadMsg1(newVal: string) {
+      this.childMixinWatchMsg1 = `通过 defineMixin 定义非全局 child mixin watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+      console.log(this.childMixinWatchMsg1)
+    },
+  },
+  onLoad() {
+    this.childMixinOnloadTime1 = Date.now()
+    const res = '通过 defineMixin 定义非全局 child mixin onLoad'
+    console.log(res)
+    this.childMixinOnloadMsg1 = res
+  },
+  methods: {
+    childMixinMethod1(): string {
+      const res = '通过 defineMixin 定义非全局 child mixin method'
+      console.log(res)
+      return res
+    },
+    namesakeChildMixinMethod(): string {
+      const res = '通过 defineMixin 定义非全局同名 child mixin method'
+      console.log(res)
+      return res
+    },
+  }
+})
+
+export const pageMixin = defineMixin({
+  mixins: [childMixin],
+  components: { MixinComp1, MixinComp: MixinCompForMixin },
+  props: {
+    mixinProp1: {
+      type: String,
+      default: '通过 defineMixin 定义非全局 mixin props'
+    },
+    namesakeMixinProp: {
+      type: String,
+      default: '通过 defineMixin 定义非全局同名 mixin props'
+    }
+  },
+  data() {
+    return {
+      mixinDataMsg1: '通过 defineMixin 定义非全局 mixin data',
+      namesakeMixinDataMsg: '通过 defineMixin 定义非全局同名 mixin data',
+      mixinOnloadMsg1: '',
+      mixinOnloadTime1: 0,
+      mixinWatchMsg1: ''
+    }
+  },
+  computed: {
+    mixinComputed1(): string {
+      const res = `通过 defineMixin 定义非全局 mixin computed, 更新后的 mixinOnloadMsg1: ${this.mixinOnloadMsg1}`
+      console.log(res)
+      return res
+    },
+    namesakeMixinComputed(): string {
+      const res = '通过 defineMixin 定义非全局同名 mixin computed'
+      console.log(res)
+      return res
+    }
+  },
+  watch: {
+    globalMixinOnloadMsg1(newVal: string) {
+      this.mixinWatchMsg1 = `通过 defineMixin 定义非全局 mixin watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+      console.log(this.mixinWatchMsg1)
+    },
+  },
+  onLoad() {
+    this.mixinOnloadTime1 = Date.now()
+    const res = '通过 defineMixin 定义非全局 mixin onLoad'
+    console.log(res)
+    this.mixinOnloadMsg1 = res
+  },
+  methods: {
+    mixinMethod1(): string {
+      const res = '通过 defineMixin 定义非全局 mixin method'
+      console.log(res)
+      return res
+    },
+    namesakeMixinMethod(): string {
+      const res = '通过 defineMixin 定义非全局同名 mixin method'
+      console.log(res)
+      return res
+    }
+  }
+})

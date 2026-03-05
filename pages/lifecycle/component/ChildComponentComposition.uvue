@@ -1,0 +1,107 @@
+<template>
+  title: {{ title }}
+  <button class="component-lifecycle-btn mt-10" @click="updateTitle">
+    updateTitle
+  </button>
+</template>
+
+<script setup lang='uts'>
+import { state, setLifeCycleNum } from '@/store/index.uts'
+
+const title = ref('component for composition API lifecycle test')
+
+const emit = defineEmits<{
+  (e : 'updateIsScroll', val : boolean) : void
+}>()
+
+onLoad((_ : OnLoadOptions) => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 100)
+})
+onPageShow(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 10)
+})
+onReady(() => {
+  // 自动化测试
+  // TODO: onReady 未触发
+  setLifeCycleNum(state.lifeCycleNum + 10)
+})
+
+onPullDownRefresh(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 10)
+})
+onPageScroll((_) => {
+  // 自动化测试
+  emit('updateIsScroll', true)
+})
+onReachBottom(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 10)
+})
+onBackPress((_ : OnBackPressOptions) : boolean | null => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum - 10)
+  return null
+})
+onPageHide(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum - 10)
+})
+onUnload(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum - 100)
+})
+
+onBeforeMount(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 1)
+  console.log('component for lifecycle test onBeforeMount')
+})
+
+onMounted(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 1)
+  console.log('component for lifecycle test mounted')
+})
+
+onBeforeUpdate(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 1)
+  console.log('component for lifecycle test beforeUpdate')
+})
+
+onUpdated(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 1)
+  console.log('component for lifecycle test updated')
+})
+
+onBeforeUnmount(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum - 1)
+  console.log('component for lifecycle test beforeUnmount')
+})
+
+onUnmounted(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum - 1)
+  console.log('component for lifecycle test unmounted')
+})
+
+onActivated(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 1)
+  console.log('component for lifecycle test onActivated')
+})
+onDeactivated(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum - 1)
+  console.log('component for lifecycle test onDeactivated')
+})
+
+const updateTitle = () => {
+  title.value = 'component for lifecycle test updated'
+}
+</script>

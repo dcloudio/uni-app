@@ -1,0 +1,28 @@
+<template>
+  <view class="page">
+    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value />
+    <props-with-defaults />
+    <!-- #ifdef APP-ANDROID -->
+    <reference-types :list="[1,2,3]" />
+    <!-- #endif -->
+    <!-- #ifndef APP-ANDROID -->
+    <reference-types :list="['a','b','c']" />
+    <!-- #endif -->
+  </view>
+</template>
+
+<script setup lang="uts">
+  import ArrayLiteral from './array-literal-composition.uvue'
+  import ObjectType from "./object-type-composition.uvue";
+  import SameNamePropDefaultValue from "./same-name-prop-default-value-composition.uvue";
+  import PropsWithDefaults from "./props-with-defaults.uvue";
+  import ReferenceTypes from './reference-types-composition.uvue'
+
+  const str = 'str'
+  const num = 10
+  const bool = true
+  const obj = { age: 18 }
+  const arr = ['a', 'b', 'c']
+</script>

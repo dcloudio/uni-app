@@ -1,0 +1,21 @@
+<template>
+  <view>
+    <text class="mt-10">this is component Foo for setup function</text>
+    <slot></slot>
+    <view class="flex justify-between flex-row mt-10">
+      <text>hasDefaultSlot:</text>
+      <text id="has-default-slot">{{ hasDefaultSlot }}</text>
+    </view>
+  </view>
+</template>
+
+<script lang="uts">
+export default {
+	setup(_, context) {
+		const hasDefaultSlot = context.slots['default'] !== null
+		return {
+			hasDefaultSlot
+		}
+	}
+}
+</script>

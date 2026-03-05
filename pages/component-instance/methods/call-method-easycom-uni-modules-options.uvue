@@ -1,0 +1,137 @@
+<template>
+  <view>
+    <call-easy-method-uni-modules ref="callEasyMethod1"></call-easy-method-uni-modules>
+
+    <!-- #ifdef APP-IOS || APP-ANDROID || APP-HARMONY -->
+    <!-- 在兼容组件中 ios 返回非普通对象数据，比如 Map 数据时候会被 jscore 统一处理为 object，和安卓产生了差异 -->
+    <!-- 测试用例用来验证返回数据特殊，安卓和其他平台无此限制 -->
+    <view>---</view>
+    <test-props id="btn1" :numList="numList" :objList='objList' @buttonclick='onButtonClick'
+      @numListChange='numListChange' @objListChange='objListChange'
+      style="width: 80px;height: 30px;background-color: lightblue"></test-props>
+    <view style="flex-direction: row ;">
+      <text>isNumListValid: </text>
+      <text id='isNumListValid'>{{isNumListValid}}</text>
+    </view>
+    <view style="flex-direction: row ;">
+      <text>isObjListValid: </text>
+      <text id='isObjListValid'>{{isObjListValid}}</text>
+    </view>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script lang="uts">
+  import { testInOtherFile } from './call-method-easycom-uni-modules'
+
+  const delay = () : Promise<string> =>
+    new Promise((resolve, _) => {
+      setTimeout(() => {
+        resolve('')
+      }, 1000)
+    })
+
+  export default {
+    data() {
+      return {
+        callEasyMethod1: null as CallEasyMethodUniModulesComponentPublicInstance | null,
+        isWatched: false,
+        changeTimes: 0,
+        numList: [1] as number[], // 传递 props
+        objList: [] as any[],
+        isNumListValid: false,
+        isObjListValid: false
+      }
+    },
+    onReady() {
+      // 通过组件 ref 属性获取组件实例, 组件标签名首字母大写，驼峰+ComponentPublicInstance
+      this.callEasyMethod1 = this.$refs['callEasyMethod1'] as CallEasyMethodUniModulesComponentPublicInstance
+
+      this.call()
+    },
+    methods: {
+      async call() : Promise<void> {
+        this.callMethod1()
+        await delay()
+        this.callMethod2()
+        await delay()
+        this.callMethod3()
+        await delay()
+        this.callMethod4()
+        await delay()
+        this.callMethod5()
+
+      },
+      callMethod1() {
+        // 调用组件的 foo1 方法
+        this.callEasyMethod1?.foo1?.()
+      },
+      callMethod2() {
+        // 调用组件的 foo2 方法并传递 1个参数
+        this.callEasyMethod1?.foo2?.(Date.now())
+      },
+      callMethod3() {
+        // 调用组件的 foo3 方法并传递 2个参数
+        this.callEasyMethod1?.foo3?.(Date.now(), Date.now())
+      },
+      callMethod4() {
+        // 调用组件的 foo4 方法并传递 callback
+        this.callEasyMethod1?.foo4?.(() => {
+          console.log('callback')
+        })
+      },
+      callMethod5() {
+        // 注意： 返回值可能为 null，当前例子一定不为空，所以加了 !
+        const result = this.callEasyMethod1?.foo5?.('string5') as string
+        console.log(result) // string1
+      },
+      callMethodTest(text : string) : string | null {
+        const result = this.callEasyMethod1?.foo5?.(text) as string
+        return result
+      },
+      callMethodInOtherFile(text : string) : string {
+        return testInOtherFile(this.callEasyMethod1!, text)
+      },
+
+      // #ifdef APP-ANDROID
+      numListChange(res : Map<string, Map<string, any>>) {
+        const value = res['detail']!['value'] as number[]
+        const isArray = Array.isArray(value)
+        const isLengthGt0 = value.length > 0
+        this.isNumListValid = isArray && isLengthGt0
+      },
+      // #endif
+      // #ifdef APP-IOS || APP-HARMONY
+      numListChange(res : any) {
+        const value = res['detail']!['value'] as number[]
+        const isArray = Array.isArray(value)
+        const isLengthGt0 = value.length > 0
+        this.isNumListValid = isArray && isLengthGt0
+      },
+      // #endif
+
+      // #ifdef APP-ANDROID
+      objListChange(res : Map<string, Map<string, any>>) {
+        const value = res['detail']!['value'] as number[]
+        const isArray = Array.isArray(value)
+        const isLengthGt0 = value.length > 0
+        this.isObjListValid = isArray && isLengthGt0
+      },
+      // #endif
+      // #ifdef APP-IOS || APP-HARMONY
+      objListChange(res : any) {
+        const value = res['detail']!['value'] as number[]
+        const isArray = Array.isArray(value)
+        const isLengthGt0 = value.length > 0
+        this.isObjListValid = isArray && isLengthGt0
+      },
+      // #endif
+      onButtonClick() {
+        // 改变 props: 观察 props 返回值为非响应式值
+        console.log('button click');
+        this.numList = [3, 2, 1]
+        this.objList = [{ id: '3' }, { id: '4' }]
+      }
+    }
+  }
+</script>

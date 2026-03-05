@@ -1,0 +1,57 @@
+<template>
+  <view class="page">
+    <template v-if="dataInfo.isShow">
+      <text id="title">{{ title }}</text>
+    </template>
+    <template v-else>
+      <text>隐藏标题时显示</text>
+    </template>
+    <button id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</button>
+    <template v-for="(item, index) in list" :key="index">
+      <text :class="'item'">{{ index + 1 }}.{{ item.name }}</text>
+    </template>
+    <button @click="goMapStyle">跳转绑定 Map 类型 style 页面</button>
+  </view>
+</template>
+
+<script lang='uts'>
+type DataInfo = {
+  isShow: boolean
+}
+type objType = {
+  name : string
+}
+export default {
+  data() {
+    return {
+      title: "hello",
+      dataInfo: {
+        isShow: false,
+      } as DataInfo,
+      list: [{
+        name: 'foo1'
+      },
+      {
+        name: 'foo2'
+      }
+      ] as objType[]
+    }
+  },
+  methods: {
+    handleShow() {
+      this.dataInfo.isShow = !this.dataInfo.isShow
+    },
+    goMapStyle() {
+      uni.navigateTo({ url: '/pages/built-in/special-elements/template/template-map-style-options' })
+    }
+  }
+}
+</script>
+
+<style>
+.item {
+  margin: 15px;
+  padding: 4px 8px;
+  border: #eee solid 1px;
+}
+</style>

@@ -1,0 +1,34 @@
+<template>
+  <view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>parent str: </text>
+      <text id="parent-str">{{ parentStr }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>parent num: </text>
+      <text id="parent-num">{{ parentNum }}</text>
+    </view>
+    <button @click="triggerParentFn" id="trigger-parent-fn">
+      调用父组件方法
+    </button>
+  </view>
+</template>
+
+<script lang="uts">
+  export default {
+    data() {
+      return {
+        parentStr: '',
+        parentNum: 0
+      }
+    },
+    mounted() {
+      this.parentStr = this.$parent!.$data['str'] as string
+    },
+    methods: {
+      triggerParentFn() {
+        this.parentNum = this.$parent!.$callMethod('callMethodByChild') as number
+      }
+    }
+  }
+</script>

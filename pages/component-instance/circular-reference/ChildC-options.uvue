@@ -1,0 +1,21 @@
+<template>
+  <view class="child-c">
+    <view class="flex justify-between flex-row mb-10">
+      <text>child C limit:</text>
+      <text>{{limit}}</text>
+    </view>
+    <child-c-options v-if="limit>1" :limit="limit-1" />
+  </view>
+</template>
+
+<script lang='uts'>
+  export default {
+    name: "ChildCOptions",
+    props: {
+      limit: {
+        type: Number,
+        default: 0
+      }
+    }
+  }
+</script>

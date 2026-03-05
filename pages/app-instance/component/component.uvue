@@ -1,0 +1,5 @@
+<template>
+  <view class="page">
+    <CompForAppComponent class="component-for-app-component" />
+  </view>
+</template>

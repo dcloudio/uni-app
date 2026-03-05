@@ -1,0 +1,32 @@
+<template>
+  <view class="page">
+    <define-expose-foo ref="fooRef" />
+    <view class="flex justify-between flex-row mt-10">
+      <text>str from component Foo: </text>
+      <text id="foo-str">{{ fooStr }}</text>
+    </view>
+    <view class="flex justify-between flex-row mt-10">
+      <text>num from component Foo: </text>
+    <text id="foo-num">{{ fooNum }}</text>
+    </view>
+    <button class="increment-btn mt-10" @click="increment">
+      trigger Foo increment
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const fooRef = ref<DefineExposeFooComponentPublicInstance | null>(null)
+const fooStr = ref('')
+const fooNum = ref<number>(0)
+
+onMounted(() => {
+  fooStr.value = fooRef.value!.str
+  fooNum.value = fooRef.value!.num
+})
+
+const increment = () => {
+  fooRef.value!.increment()
+  fooNum.value = fooRef.value!.num
+}
+</script>

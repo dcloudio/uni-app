@@ -1,0 +1,60 @@
+<template>
+  <view :key="pageKey" class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>state.count:</text>
+      <text id="state-count">{{ state.count }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>state.nested.count:</text>
+      <text id="state-nested-count">{{ state.nested.count }}</text>
+    </view>
+    <button
+      id="increment-state-count-btn"
+      class="mb-10"
+      @click="incrementStateCount">
+      increment state.count
+    </button>
+    <button
+      id="increment-state-nested-count-btn"
+      class="mb-10"
+      @click="incrementStateNestedCount">
+      increment state.nested.count
+    </button>
+    <button id="update-page-render-btn" @click="updatePageRender">
+      update page render
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+let pageKey = ref<number>(0)
+
+type StateNested = {
+  count : number
+}
+type State = {
+  count : number,
+  nested : StateNested
+}
+// 可通过泛型指定类型
+const state = shallowReadonly<State>({
+  count: 0,
+  nested: {
+    count: 0
+  }
+})
+
+// #ifdef APP
+const incrementStateCount = () => {
+  state.count++
+}
+
+const incrementStateNestedCount = () => {
+  state.nested.count++
+}
+// #endif
+
+const updatePageRender = () => {
+  pageKey.value = Date.now()
+}
+</script>

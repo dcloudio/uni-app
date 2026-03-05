@@ -1,0 +1,36 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>hasCurrentScope:</text>
+      <text id="has-current-scope">{{ hasCurrentScope }}</text>
+    </view>
+    <button id="create-scope-btn" class="mt-10" @click="createScope">
+      create scope
+    </button>
+    <button id="stop-scope-btn" class="mt-10" @click="stopScope">
+      stop scope
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const hasCurrentScope = ref(false)
+
+let scope = null as EffectScope | null
+
+const createScope = () => {
+  scope = effectScope();
+  (scope as EffectScope).run(() => {
+    hasCurrentScope.value = getCurrentScope() != null
+    onScopeDispose(() => {
+      hasCurrentScope.value = getCurrentScope() != null
+    })
+  })
+}
+
+const stopScope = () => {
+  if (scope !== null) {
+    (scope as EffectScope).stop()
+  }
+}
+</script>

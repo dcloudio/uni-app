@@ -1,0 +1,10 @@
+<template>
+    <Son v-model="value"></Son>
+</template>
+
+<script setup>
+    import Son from "./Son.uvue"
+    const value = defineModel<string>("modelValue")
+</script>
+
+<style></style>

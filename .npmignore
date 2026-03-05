@@ -1,0 +1,6 @@
+env.js
+node_modules/
+.project
+unpackage/
+.DS_Store
+.hbuilderx/

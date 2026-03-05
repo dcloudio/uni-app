@@ -1,0 +1,3 @@
+export default definePlugin((app: VueApp, a ?: boolean | null, b : boolean | null) => {
+  app.provide("plugin4", "通过 definePlugin + 函数方式创建的 plugin");
+});

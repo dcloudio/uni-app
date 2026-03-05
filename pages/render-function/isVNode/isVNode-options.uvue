@@ -1,0 +1,28 @@
+<template>
+  <view class="page">
+    <view class="mb-10 flex flex-row justify-between">
+      <text>isVNode VNode:</text>
+      <text id="is-vnode-vnode">{{ isVNodeVNode }}</text>
+    </view>
+    <view class="mb-10 flex flex-row justify-between">
+      <text>isVNode string:</text>
+      <text id="is-vnode-string">{{ isVNodeString }}</text>
+    </view>
+  </view>
+</template>
+
+<script lang="uts">
+  export default {
+    data() {
+      return {
+        isVNodeVNode: false,
+        isVNodeString: false
+      }
+    },
+    onLoad() {
+      const vnode = h('text', {}, 'Hello World')
+      this.isVNodeVNode = isVNode(vnode)
+      this.isVNodeString = isVNode('abc')
+    }
+  }
+</script>

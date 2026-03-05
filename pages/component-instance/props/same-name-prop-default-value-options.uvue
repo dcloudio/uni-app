@@ -1,0 +1,22 @@
+<template>
+  <view>
+    <text class="mb-10 bold">same name prop with default value</text>
+    <view class="flex justify-between flex-row">
+      <text>arr: </text>
+      <text id="same-name-prop-default-value-arr">{{ JSON.stringify(arr) }}</text>
+    </view>
+  </view>
+</template>
+
+<script lang="uts">
+  export default {
+    props: {
+      arr: {
+        type: Array as PropType<number[]>,
+        default: () : Array<number> => {
+          return [1, 2, 3]
+        }
+      }
+    }
+  }
+</script>

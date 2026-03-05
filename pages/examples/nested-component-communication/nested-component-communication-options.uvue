@@ -1,0 +1,30 @@
+<template>
+  <view class="page">
+    <view class="flex-row">
+      父组件:
+      <text class="parent-msg">{{ msg }}</text>
+    </view>
+    <button class="parent-btn" @click="change">父组件改变数据</button>
+    <child></child>
+  </view>
+</template>
+
+<script>
+import child from './components/child.uvue'
+import { setComponentMsg, state } from '@/store/index.uts'
+export default {
+  components: {
+    child
+  },
+  computed: {
+    msg(): number {
+      return state.componentMsg
+    }
+  },
+  methods: {
+    change() {
+      setComponentMsg(state.componentMsg + 1)
+    }
+  }
+}
+</script>

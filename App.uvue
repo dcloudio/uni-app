@@ -1,0 +1,116 @@
+<script lang="uts">
+  import { state, setLifeCycleNum, setAppLaunchPath, setAppShowPath } from './store/index.uts'
+
+  // #ifdef APP-ANDROID || APP-HARMONY
+  let firstBackTime = 0
+  // #endif
+  export default {
+    // #ifndef APP-ANDROID
+    mixins: [
+      {
+        data() {
+          return {
+            appMixinDataMsg: 'App.uvue mixin data msg'
+          }
+        }
+      }],
+    // #endif
+    onLaunch: function (options) {
+      console.log(options)
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum + 1000)
+      setAppLaunchPath(options.path)
+      console.log('App Launch')
+    },
+    onShow: function (options) {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum + 100)
+      setAppShowPath(options.path)
+      if(this.globalPropertiesStr === 'default string'){
+        setLifeCycleNum(state.lifeCycleNum + 10)
+      }
+      console.log('App Show')
+    },
+    onHide: function () {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum - 100)
+      console.log('App Hide')
+    },
+    // #ifdef APP-ANDROID || APP-HARMONY
+    onLastPageBackPress: function () {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum - 1000)
+      console.log('App LastPageBackPress')
+      if (firstBackTime == 0) {
+        uni.showToast({
+          title: '再按一次退出应用',
+          position: 'bottom',
+        })
+        firstBackTime = Date.now()
+        setTimeout(() => {
+          firstBackTime = 0
+        }, 2000)
+      } else if (Date.now() - firstBackTime < 2000) {
+        firstBackTime = Date.now()
+        uni.exit()
+      }
+    },
+    onExit() {
+      console.log('App Exit')
+    },
+    // #endif
+    onError: function(err: any) {
+      console.log('App Error', err)
+      setLifeCycleNum(state.lifeCycleNum + 100)
+    },
+    methods: {
+      checkLaunchPath() : boolean {
+        const HOME_PATH = 'pages/index/index'
+        if (state.appLaunchPath != HOME_PATH) {
+          return false
+        }
+        if (state.appShowPath != HOME_PATH) {
+          return false
+        }
+        return true
+      },
+      // #ifndef APP-ANDROID
+      checkAppMixin() : boolean {
+        if(this.globalMixinDataMsg1 != '通过 defineMixin 定义全局 mixin data') {
+          return false
+        }
+        if(this.appMixinDataMsg != 'App.uvue mixin data msg') {
+          return false
+        }
+        return true
+      }
+      // #endif
+    }
+  }
+</script>
+
+<style>
+  @import './styles/common.css';
+
+  .list-item-text {
+    line-height: 36px;
+  }
+
+  .split-title {
+    margin: 20px 0 5px;
+    padding: 5px 0;
+    border-bottom: 1px solid #dfdfdf;
+  }
+
+  .btn-view {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #dfdfdf;
+    border-radius: 3px;
+  }
+</style>
+<style>
+.text-red{
+  color: red;
+}
+</style>

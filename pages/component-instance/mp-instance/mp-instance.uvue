@@ -1,0 +1,25 @@
+<template>
+  <view>
+    renderer: <text id="mp-renderer">{{mpRenderer}}</text>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        mpRenderer: ''
+      }
+    },
+    onLoad() {
+      this.mpRenderer = this.$scope.renderer
+    },
+    methods: {
+      
+    }
+  }
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,211 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="page">
+      <text class="bold">props:</text>
+      <text class="mt-10 namesake-mixin-prop">{{ namesakeMixinProp }}</text>
+      <text class="mt-10 namesake-child-mixin-prop">{{ namesakeChildMixinProp }}</text>
+
+      <text class="bold mt-10">data:</text>
+      <text class="mt-10 namesake-mixin-data-msg">{{ namesakeMixinDataMsg }}</text>
+      <text class="mt-10 namesake-child-mixin-data-msg">{{ namesakeChildMixinDataMsg }}</text>
+
+      <text class="bold mt-10">computed:</text>
+      <text class="mt-10 namesake-mixin-computed">{{ namesakeMixinComputed }}</text>
+      <text class="mt-10 namesake-child-mixin-computed">{{ namesakeChildMixinComputed }}</text>
+
+      <text class="mt-10 bold">method:</text>
+      <text class="mt-10 namesake-mixin-method">{{ namesakeMixinMethod() }}</text>
+      <text class="mt-10 namesake-child-mixin-method">{{ namesakeChildMixinMethod() }}</text>
+
+      <text class="mt-10 bold">mixin component:</text>
+      <GlobalMixinComp1 />
+      <GlobalChildMixinComp1 />
+      <GlobalMixinComp2 />
+      <GlobalChildMixinComp2 />
+      <MixinComp1 />
+      <ChildMixinComp1 />
+      <MixinComp2 />
+      <ChildMixinComp2 />
+      <MixinComp />
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+import MixinComp2 from './components/MixinComp2.uvue'
+import ChildMixinComp2 from './components/ChildMixinComp2.uvue'
+import CompForPage from './components/CompForPage.uvue'
+import { pageMixin } from './mixins'
+
+export default {
+  components: {
+    MixinComp: CompForPage
+  },
+  mixins: [
+    pageMixin,
+    {
+      mixins: [{
+        components: {ChildMixinComp2},
+        props: {
+          childMixinProp2: {
+            type: String,
+            default: '通过字面量定义非全局 child mixin props'
+          },
+          namesakeChildMixinProp: {
+            type: String,
+            default: '通过字面量定义非全局同名 child mixin props'
+          }
+        },
+        data() {
+          return {
+            childMixinDataMsg2: '通过字面量定义非全局 child mixin data',
+            namesakeChildMixinDataMsg: '通过字面量定义非全局同名 child mixin data',
+            childMixinOnLoadMsg2: '',
+            childMixinWatchMsg2: ''
+          }
+        },
+        computed: {
+          childMixinComputed2(): string {
+            const res = `通过字面量定义非全局 child mixin computed, 更新后的 childMixinOnLoadMsg2: ${this.childMixinOnLoadMsg2}`
+            console.log(res)
+            return res
+          },
+          namesakeChildMixinComputed(): string {
+            const res = '通过字面量定义非全局同名 child mixin computed'
+            console.log(res)
+            return res
+          }
+        },
+        watch: {
+          globalMixinOnloadMsg1(newVal: string) {
+            this.childMixinWatchMsg2 = `通过字面量定义非全局 child mixin watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+            console.log(this.childMixinWatchMsg2)
+          },
+        },
+        onLoad() {
+          const res = '通过字面量定义非全局 child mixin onLoad'
+          console.log(res)
+          this.childMixinOnLoadMsg2 = res
+        },
+        methods: {
+          childMixinMethod2(): string {
+            const res = '通过字面量定义非全局 child mixin method'
+            console.log(res)
+            return res
+          },
+          namesakeChildMixinMethod(): string {
+            const res = '通过字面量定义非全局同名 child mixin method'
+            console.log(res)
+            return res
+          },
+        },
+      }],
+      components: {MixinComp2},
+      props: {
+        mixinProp2: {
+          type: String,
+          default: '通过字面量定义非全局 mixin props'
+        },
+        namesakeMixinProp: {
+          type: String,
+          default: '通过字面量定义非全局同名 mixin props'
+        }
+      },
+      data() {
+        return {
+          mixinDataMsg2: '通过字面量定义非全局 mixin data',
+          namesakeMixinDataMsg: '通过字面量定义非全局同名 mixin data',
+          mixinOnloadMsg2: '',
+          mixinWatchMsg2: ''
+        }
+      },
+      computed: {
+        mixinComputed2(): string {
+          const res = `通过字面量定义非全局 mixin computed, 更新后的 mixinOnloadMsg2: ${this.mixinOnloadMsg2}`
+          console.log(res)
+          return res
+        },
+        namesakeMixinComputed(): string {
+          const res = '通过字面量定义非全局同名 mixin computed'
+          console.log(res)
+          return res
+        }
+      },
+      watch: {
+        globalMixinOnloadMsg1(newVal: string) {
+          this.mixinWatchMsg2 = `通过 defineMixin 定义非全局 child mixin watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+          console.log(this.mixinWatchMsg2)
+        },
+      },
+      onLoad() {
+        const res = '通过字面量定义非全局 mixin onLoad'
+        console.log(res)
+        this.mixinOnloadMsg2 = res
+      },
+      methods: {
+        mixinMethod2(): string {
+          const res = '通过字面量定义非全局 mixin method'
+          console.log(res)
+          return res
+        },
+        namesakeMixinMethod(): string {
+          const res = '通过字面量定义非全局同名 mixin method'
+          console.log(res)
+          return res
+        }
+      },
+    },
+  ],
+  props: {
+    namesakeMixinProp: {
+      type: String,
+      default: '页面内的同名 props'
+    },
+    namesakeChildMixinProp: {
+      type: String,
+      default: '页面内的同名 child props'
+    },
+  },
+  data(){
+    return {
+      namesakeMixinDataMsg: '页面内的同名 data',
+      namesakeChildMixinDataMsg: '页面内的同名 child data',
+      mixinWatchMsg: ''
+    }
+  },
+  watch: {
+    globalMixinOnloadMsg1(newVal: string) {
+      this.mixinWatchMsg = `页面内部定义的 watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+      console.log(this.mixinWatchMsg)
+    },
+  },
+  computed: {
+    namesakeMixinComputed(): string {
+      const res = '页面内的同名 computed'
+      console.log(res)
+      return res
+    },
+    namesakeChildMixinComputed(): string {
+      const res = '页面内的同名 child computed'
+      console.log(res)
+      return res
+    }
+  },
+  methods: {
+    namesakeMixinMethod(): string {
+      const res = '页面内的同名 method'
+      console.log(res)
+      return res
+    },
+    namesakeChildMixinMethod(): string {
+      const res = '页面内的同名 child method'
+      console.log(res)
+      return res
+    },
+  }
+}
+</script>

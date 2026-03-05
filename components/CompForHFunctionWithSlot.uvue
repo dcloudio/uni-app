@@ -1,0 +1,6 @@
+<template>
+  <view>
+    <text class="mt-10 bold component-for-h-function">component for h() with slot</text>
+    <slot />
+  </view>
+</template>

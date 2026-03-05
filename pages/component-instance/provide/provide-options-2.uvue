@@ -1,0 +1,42 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="page">
+      <text>provide page 2</text>
+      <ComponentForInject />
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+import ComponentForInject from '../inject/inject-options-2.uvue'
+
+export default {
+  components: {
+    ComponentForInject
+  },
+  data(){
+    return {
+      title: '函数方式定义 provide page title'
+    }
+  },
+  provide(){
+    return {
+      providePageTitle: this.title,
+      providePageStr: '函数方式定义 provide page str',
+      providePageNum: 2,
+      providePageBool: true,
+      providePageObject: {
+        title: '函数方式定义 provide page object title',
+        content: '函数方式定义 provide page object content'
+      },
+      providePageArr: ['函数方式定义 provide page arr'],
+      providePageMap: new Map<string, string>([['key', '函数方式定义 provide page map']]),
+      providePageSet: new Set<string>(['函数方式定义 provide page set']),
+    }
+  }
+}
+</script>

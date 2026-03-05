@@ -1,0 +1,38 @@
+<template>
+  <view class="page">
+    <text class="mb-10">component lifecycle 选项式 API</text>
+    <keep-alive>
+      <component :is="aliveComponent" />
+    </keep-alive>
+    <button id="toggle-alive-component-btn" class="mt-10" @click="toggleAliveComponent">toggle alive component</button>
+    <button class="mt-10" @click="navigateToHome">navigateTo home</button>
+  </view>
+</template>
+
+<script lang='uts'>
+import ChildComponent from './ChildComponentOptions.uvue'
+import { state } from '@/store/index.uts'
+
+export default {
+  components: { ChildComponent },
+  data(){
+    return {
+      aliveComponent: ChildComponent as any | null,
+    }
+  },
+  methods: {
+    // 自动化测试
+    getLifeCycleNum(): number {
+      return state.lifeCycleNum
+    },
+    toggleAliveComponent(){
+      this.aliveComponent = this.aliveComponent == null ? ChildComponent : null
+    },
+    navigateToHome() {
+      uni.navigateTo({
+        url: '/pages/index/index'
+      })
+    }
+  },
+}
+</script>

@@ -1,0 +1,26 @@
+<template>
+  <view class="page">
+    <view class="mb-10 flex justify-between flex-row">
+      <text>root str in parent component: </text>
+      <text id="root-str-parent">{{ rootStr }}</text>
+    </view>
+    <child />
+  </view>
+</template>
+
+<script lang="uts">
+import Child from './child-options.uvue'
+
+export default {
+  components: {Child},
+  data () {
+    return {
+      str: 'root component str',
+      rootStr: ''
+    }
+  },
+  onReady() {
+    this.rootStr = this.$root!.$data['str'] as string
+  }
+}
+</script>

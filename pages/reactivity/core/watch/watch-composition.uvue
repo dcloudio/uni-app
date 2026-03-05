@@ -1,0 +1,188 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1; padding-bottom: 20px">
+    <!-- #endif -->
+    <view class="page">
+      <view class="flex justify-between flex-row mb-10">
+        <text>count:</text>
+        <text id="count" ref="countRef">{{ count }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch count result:</text>
+        <text id="watch-count-res">{{ watchCountRes }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>watch count track number:</text>
+        <text id="watch-count-track-num">{{ watchCountTrackNum }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch count cleanup number:</text>
+        <text id="watch-count-cleanup-res">{{ watchCountCleanupRes }}</text>
+      </view>
+
+      <button class="increment-btn mb-10" @click="increment">increment</button>
+      <button class="stop-watch-count-btn mb-10" @click="triggerStopWatchCount">
+        stop watch count
+      </button>
+
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.str:</text>
+        <text id="obj-str" ref="objStrRef">{{ obj.str }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>watch obj.str trigger number:</text>
+        <text id="watch-obj-str-trigger-num">{{ watchObjStrTriggerNum }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.num:</text>
+        <text id="obj-num">{{ obj.num }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.bool:</text>
+        <text id="obj-bool" ref="objBoolRef">{{ obj.bool }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.arr:</text>
+        <text id="obj-arr" ref="objArrRef">{{ JSON.stringify(obj.arr) }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch obj result:</text>
+        <text id="watch-obj-res">{{ watchObjRes }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch obj.str result:</text>
+        <text id="watch-obj-str-res">{{ watchObjStrRes }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch obj.bool result:</text>
+        <text id="watch-obj-bool-res">{{ watchObjBoolRes }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch obj.arr result:</text>
+        <text id="watch-obj-arr-res">{{ watchObjArrRes }}</text>
+      </view>
+
+      <button class="update-obj-btn mb-10" @click="updateObj">
+        update obj
+      </button>
+
+      <view class="flex justify-between mb-10">
+        <text>watch count and obj.num result:</text>
+        <text id="watch-count-obj-num-res">{{ watchCountAndObjNumRes }}</text>
+      </view>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+type Obj = {
+  num : number,
+  str : string,
+  bool : boolean,
+  arr : number[]
+}
+
+const countRef = ref<UniTextElement | null>(null)
+const count = ref(0)
+const watchCountRes = ref('')
+const watchCountCleanupRes = ref('')
+const watchCountTrackNum = ref(0)
+
+const stopWatchCount = watch(count, (count : number, prevCount : number, onCleanup : OnCleanup) => {
+  // #ifdef APP
+  watchCountRes.value = `count: ${count}, prevCount: ${prevCount}, count ref text (flush sync): ${countRef.value!.value}`
+  // #endif
+  // #ifdef WEB
+  watchCountRes.value = `count: ${count}, prevCount: ${prevCount}, count ref text (flush sync): ${(countRef.value!.childNodes[0] as HTMLElement).innerText}`
+  // #endif
+  const cancel = () => {
+    watchCountCleanupRes.value = `watch count cleanup: ${count}`
+  }
+  onCleanup(cancel)
+}, {
+  // 侦听器在响应式依赖改变时立即触发
+  flush: 'sync',
+  // 响应属性或引用作为依赖项被跟踪时调用
+  onTrack(event : DebuggerEvent) {
+    if (event.type === 'get') {
+      watchCountTrackNum.value++
+    }
+  }
+  // TODO: vue>3.4.15 开始 监听函数、onTrack、onTrigger 同时存在修改响应式数据时,会报错 Maximum call stack size exceeded
+  // 所以将 onTrack 与 onTrigger 调整到两个 watch 里
+})
+
+const triggerStopWatchCount = () => stopWatchCount()
+
+const increment = () => {
+  count.value++
+}
+
+const obj = reactive({
+  num: 0,
+  str: 'num: 0',
+  bool: false,
+  arr: [0]
+} as Obj)
+
+// immediate: true 第一次触发, 旧值应该是 undefined, 现在 app 是初始值
+const watchObjRes = ref('')
+watch(obj, (obj : Obj, prevObj ?: Obj) => {
+  watchObjRes.value = `obj: ${JSON.stringify(obj)}, prevObj: ${JSON.stringify(prevObj)}`
+}, { immediate: true })
+
+const objStrRef = ref<UniTextElement | null>(null)
+const watchObjStrRes = ref('')
+const watchObjStrTriggerNum = ref(0)
+watch(() : string => obj.str, (str : string, prevStr : string) => {
+  // #ifdef APP
+  watchObjStrRes.value = `str: ${str}, prevStr: ${prevStr}, obj.str ref text (flush pre): ${objStrRef.value!.value}`
+  // #endif
+  // #ifdef WEB
+  watchObjStrRes.value = `str: ${str}, prevStr: ${prevStr}, obj.str ref text (flush pre): ${(objStrRef.value!.childNodes[0] as HTMLElement).innerText}`
+  // #endif
+}, {
+  // 侦听器在组件渲染之前触发
+  flush: 'pre',
+  // 侦听器回调被依赖项的变更触发时调用
+  onTrigger(event : DebuggerEvent) {
+    if (event.type === 'set') {
+      watchObjStrTriggerNum.value++
+    }
+  }
+})
+
+const objBoolRef = ref<UniTextElement | null>(null)
+const watchObjBoolRes = ref('')
+watch(() : boolean => obj.bool, (bool : boolean, prevBool : boolean) => {
+  // #ifdef APP
+  watchObjBoolRes.value = `bool: ${bool}, prevBool: ${prevBool}, obj.bool ref text (flush post): ${objBoolRef.value!.value}`
+  // #endif
+  // #ifdef WEB
+  watchObjBoolRes.value = `bool: ${bool}, prevBool: ${prevBool}, obj.bool ref text (flush post): ${(objBoolRef.value!.childNodes[0] as HTMLElement).innerText}`
+  // #endif
+}, {
+  // 侦听器延迟到组件渲染之后触发
+  flush: 'post'
+})
+
+
+const watchObjArrRes = ref('')
+watch(() : number[] => obj.arr, (arr : number[], prevArr : number[]) => {
+  watchObjArrRes.value = `arr: ${JSON.stringify(arr)}, prevArr: ${JSON.stringify(prevArr)}`
+}, { deep: true })
+
+const watchCountAndObjNumRes = ref('')
+watch([count, () : number => obj.num], (state : number[], preState : number[]) => {
+  watchCountAndObjNumRes.value = `state: ${JSON.stringify(state)}, preState: ${JSON.stringify(preState)}`
+})
+
+const updateObj = () => {
+  obj.num++
+  obj.str = `num: ${obj.num}`
+  obj.bool = !obj.bool
+  obj.arr.push(obj.num)
+}
+</script>

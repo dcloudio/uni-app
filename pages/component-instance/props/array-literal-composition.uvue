@@ -1,0 +1,35 @@
+<template>
+  <view>
+    <text class="mb-10 bold">array literal</text>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>str: </text>
+      <text id="array-literal-str">{{ str }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>num: </text>
+      <text id="array-literal-num">{{ num }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>bool: </text>
+      <text id="array-literal-bool">{{ bool }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>obj: </text>
+      <text id="array-literal-obj">{{ JSON.stringify(obj) }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>arr: </text>
+      <text id="array-literal-arr">{{ JSON.stringify(arr) }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+const props = defineProps(['str', 'num', 'bool', 'obj', 'arr'])
+
+console.log('props.str: ',props.str);
+console.log('props.num: ',props.num);
+console.log('props.obj: ',props.obj);
+console.log('props.bool: ',props.bool);
+console.log('props.arr: ',props.arr);
+</script>

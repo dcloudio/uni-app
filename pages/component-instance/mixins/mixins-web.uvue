@@ -1,0 +1,72 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="page">
+      <text id="mixin-prop" class="mb-10">mixinProp: {{mixinProp}}</text>
+      <text id="mixin-data-msg" class="mb-10">mixinDataMsg: {{mixinDataMsg}}</text>
+      <text id="mixin-onload-msg" class="mb-10">mixinOnloadMsg: {{mixinOnloadMsg}}</text>
+      <text id="mixin-computed" class="mb-10">mixinComputed: {{mixinComputed}}</text>
+
+      <Comp1 title="title" @globalMixinEmit1="(arg: string) => handleMixinEmitter('globalMixinEmit1', arg)"
+        @globalChildMixinEmit1="(arg: string) => handleMixinEmitter('globalChildMixinEmit1', arg)"
+        @globalMixinEmit2="(arg: string) => handleMixinEmitter('globalMixinEmit2', arg)"
+        @globalChildMixinEmit2="(arg: string) => handleMixinEmitter('globalChildMixinEmit2', arg)"
+        @mixinEmit="(arg: string) => handleMixinEmitter('mixinEmit', arg)"
+        @childMixinEmit="(arg: string) => handleMixinEmitter('childMixinEmit', arg)" />
+      <text v-if="handleMixinEmitterMsg" class="mt-10 handle-mixin-emitter-msg">
+        handleMixinEmitterMsg: {{ handleMixinEmitterMsg }}
+      </text>
+      <Comp2 class='comp2' title="title" />
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+  import Comp1 from './components/Comp1.uvue'
+  import Comp2 from './components/Comp2.uvue'
+  export default {
+    components: {
+      Comp1,
+      Comp2,
+    },
+    mixins: [defineMixin({
+      props: {
+        mixinProp: {
+          type: String,
+          default: '通过字面量定义非全局 mixin props'
+        }
+      },
+      data() {
+        return {
+          handleMixinEmitterMsg: '',
+          mixinDataMsg: '通过字面量定义非全局 mixin data',
+          mixinOnloadMsg: ''
+        }
+      },
+      computed: {
+        mixinComputed(): string {
+          const res = `通过字面量定义非全局 mixin computed, 更新后的 mixinOnloadMsg: ${this.mixinOnloadMsg}`
+          console.log(res)
+          return res
+        }
+      },
+      onLoad() {
+        this.mixinOnloadMsg = 'mixin onLoad msg in onLoad'
+      },
+      methods: {
+        mixinMethod(): string {
+          const res = '通过字面量定义非全局 mixin method'
+          console.log(res)
+          return res
+        },
+        handleMixinEmitter(emit: string, arg: string) {
+          this.handleMixinEmitterMsg = `触发 ${emit}, 参数为 ${arg}`
+          console.log(this.handleMixinEmitterMsg)
+        }
+      },
+    })]
+  }
+</script>

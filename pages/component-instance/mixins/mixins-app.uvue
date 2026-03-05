@@ -1,0 +1,266 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="page">
+      <button type="primary" @click="goMixinPageNamesake">go mixin page namesake</button>
+      <text class="mt-10 bold">props:</text>
+      <text class="mt-10 global-mixin-prop-1">{{ globalMixinProp1 }}</text>
+      <text class="mt-10 global-child-mixin-prop-1">{{ globalChildMixinProp1 }}</text>
+      <text class="mt-10 global-mixin-prop-2">{{ globalMixinProp2 }}</text>
+      <text class="mt-10 global-child-mixin-prop-2">{{ globalChildMixinProp2 }}</text>
+      <text class="mt-10 mixin-prop-1">{{ mixinProp1 }}</text>
+      <text class="mt-10 child-mixin-prop-1">{{ childMixinProp1 }}</text>
+      <text class="mt-10 mixin-prop-2">{{ mixinProp2 }}</text>
+      <text class="mt-10 child-mixin-prop-2">{{ childMixinProp2 }}</text>
+      <text class="mt-10 namesake-mixin-prop">{{ namesakeMixinProp }}</text>
+      <text class="mt-10 namesake-child-mixin-prop">{{ namesakeChildMixinProp }}</text>
+
+      <text class="bold mt-10">data:</text>
+      <text class="mt-10 global-mixin-data-msg-1">{{ globalMixinDataMsg1 }}</text>
+      <text class="mt-10 global-child-mixin-data-msg-1">{{ globalChildMixinDataMsg1 }}</text>
+      <text class="mt-10 global-mixin-data-msg-2">{{ globalMixinDataMsg2 }}</text>
+      <text class="mt-10 global-child-mixin-data-msg-2">{{ globalChildMixinDataMsg2 }}</text>
+      <text class="mt-10 mixin-data-msg-1">{{ mixinDataMsg1 }}</text>
+      <text class="mt-10 child-mixin-data-msg-1">{{ childMixinDataMsg1 }}</text>
+      <text class="mt-10 mixin-data-msg-2">{{ mixinDataMsg2 }}</text>
+      <text class="mt-10 child-mixin-data-msg-2">{{ childMixinDataMsg2 }}</text>
+      <text class="mt-10 namesake-mixin-data-msg">{{ namesakeMixinDataMsg }}</text>
+      <text class="mt-10 namesake-child-mixin-data-msg">{{ namesakeChildMixinDataMsg }}</text>
+
+      <text class="bold mt-10">computed:</text>
+      <text class="mt-10 global-mixin-computed-1">{{ globalMixinComputed1 }}</text>
+      <text class="mt-10 global-child-mixin-computed-1">{{ globalChildMixinComputed1 }}</text>
+      <text class="mt-10 global-mixin-computed-2">{{ globalMixinComputed2 }}</text>
+      <text class="mt-10 global-child-mixin-computed-2">{{ globalChildMixinComputed2 }}</text>
+      <text class="mt-10 mixin-computed-1">{{ mixinComputed1 }}</text>
+      <text class="mt-10 child-mixin-computed-1">{{ childMixinComputed1 }}</text>
+      <text class="mt-10 mixin-computed-2">{{ mixinComputed2 }}</text>
+      <text class="mt-10 child-mixin-computed-2">{{ childMixinComputed2 }}</text>
+      <text class="mt-10 namesake-mixin-computed">{{ namesakeMixinComputed }}</text>
+      <text class="mt-10 namesake-child-mixin-computed">{{ namesakeChildMixinComputed }}</text>
+
+      <text class="bold mt-10">watch:</text>
+      <text class="mt-10 global-mixin-watch-1">{{ globalMixinWatchMsg1 }}</text>
+      <text class="mt-10 global-child-mixin-watch-1">{{ globalChildMixinWatchMsg1 }}</text>
+      <text class="mt-10 global-mixin-watch-2">{{ globalMixinWatchMsg2 }}</text>
+      <text class="mt-10 global-child-mixin-watch-2">{{ globalChildMixinWatchMsg2 }}</text>
+      <text class="mt-10 mixin-watch-1">{{ mixinWatchMsg1 }}</text>
+      <text class="mt-10 child-mixin-watch-1">{{ childMixinWatchMsg1 }}</text>
+      <text class="mt-10 mixin-watch-2">{{ mixinWatchMsg2 }}</text>
+      <text class="mt-10 child-mixin-watch-2">{{ childMixinWatchMsg2 }}</text>
+      <text class="mt-10 mixin-watch">{{ mixinWatchMsg }}</text>
+
+      <text class="bold mt-10">lifecycle:</text>
+      <text class="mt-10">{{ globalMixinOnloadMsg1 }}</text>
+      <text class="mt-10">{{ globalMixinOnloadMsg2 }}</text>
+      <text class="mt-10">{{ globalChildMixinOnloadMsg1 }}</text>
+      <text class="mt-10">{{ globalChildMixinOnloadMsg2 }}</text>
+      <text class="mt-10">{{ mixinOnloadMsg1 }}</text>
+      <text class="mt-10">{{ mixinOnloadMsg2 }}</text>
+      <text class="mt-10">{{ childMixinOnloadMsg1 }}</text>
+      <text class="mt-10">{{ childMixinOnloadMsg2 }}</text>
+      <text class="mt-10">{{ onloadMsg }}</text>
+
+      <text class="mt-10 bold">method:</text>
+      <text class="mt-10 global-mixin-method-1">{{ globalMixinMethod1() }}</text>
+      <text class="mt-10 global-child-mixin-method-1">{{ globalChildMixinMethod1() }}</text>
+      <text class="mt-10 global-mixin-method-2">{{ globalMixinMethod2() }}</text>
+      <text class="mt-10 global-child-mixin-method-2">{{ globalChildMixinMethod2() }}</text>
+      <text class="mt-10 mixin-method-1">{{ mixinMethod1() }}</text>
+      <text class="mt-10 child-mixin-method-1">{{ childMixinMethod1() }}</text>
+      <text class="mt-10 mixin-method-2">{{ mixinMethod2() }}</text>
+      <text class="mt-10 child-mixin-method-2">{{ childMixinMethod2() }}</text>
+      <text class="mt-10 namesake-mixin-method">{{ namesakeMixinMethod() }}</text>
+      <text class="mt-10 namesake-child-mixin-method">{{ namesakeChildMixinMethod() }}</text>
+
+      <text class="mt-10 bold">component:</text>
+      <Comp1
+        title="title"
+        @globalMixinEmit1="(arg: string) => handleMixinEmitter('globalMixinEmit1', arg)"
+        @globalChildMixinEmit1="(arg: string) => handleMixinEmitter('globalChildMixinEmit1', arg)"
+        @globalMixinEmit2="(arg: string) => handleMixinEmitter('globalMixinEmit2', arg)"
+        @globalChildMixinEmit2="(arg: string) => handleMixinEmitter('globalChildMixinEmit2', arg)"
+        @mixinEmit="(arg: string) => handleMixinEmitter('mixinEmit', arg)"
+        @childMixinEmit="(arg: string) => handleMixinEmitter('childMixinEmit', arg)" />
+      <text v-if="handleMixinEmitterMsg" class="mt-10 handle-mixin-emitter-msg"
+        >handleMixinEmitterMsg: {{ handleMixinEmitterMsg }}</text
+      >
+      <Comp2 class='comp2' title="title" />
+      <text class="mt-10 bold">mixin component:</text>
+      <GlobalMixinComp1 />
+      <GlobalChildMixinComp1 />
+      <GlobalMixinComp2 />
+      <GlobalChildMixinComp2 />
+      <MixinComp1 />
+      <ChildMixinComp1 />
+      <MixinComp2 />
+      <ChildMixinComp2 />
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+import Comp1 from './components/Comp1.uvue'
+import Comp2 from './components/Comp2.uvue'
+import MixinComp2 from './components/MixinComp2.uvue'
+import ChildMixinComp2 from './components/ChildMixinComp2.uvue'
+import { pageMixin } from './mixins'
+
+export default {
+  components: {
+    Comp1,
+    Comp2,
+  },
+  mixins: [
+    pageMixin,
+    {
+      mixins: [{
+        components: {ChildMixinComp2},
+        props: {
+          childMixinProp2: {
+            type: String,
+            default: '通过字面量定义非全局 child mixin props'
+          },
+          namesakeChildMixinProp: {
+            type: String,
+            default: '通过字面量定义非全局同名 child mixin props'
+          }
+        },
+        data() {
+          return {
+            childMixinDataMsg2: '通过字面量定义非全局 child mixin data',
+            namesakeChildMixinDataMsg: '通过字面量定义非全局同名 child mixin data',
+            childMixinOnloadMsg2: '',
+            childMixinOnloadTime2: 0,
+            childMixinWatchMsg2: ''
+          }
+        },
+        computed: {
+          childMixinComputed2(): string {
+            const res = `通过字面量定义非全局 child mixin computed, 更新后的 childMixinOnloadMsg2: ${this.childMixinOnloadMsg2}`
+            console.log(res)
+            return res
+          },
+          namesakeChildMixinComputed(): string {
+            const res = '通过字面量定义非全局同名 child mixin computed'
+            console.log(res)
+            return res
+          }
+        },
+        watch: {
+          globalMixinOnloadMsg1(newVal: string) {
+            this.childMixinWatchMsg2 = `通过字面量定义非全局 child mixin watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+            console.log(this.childMixinWatchMsg2)
+          },
+        },
+        onLoad() {
+          this.childMixinOnloadTime2 = Date.now()
+          const res = '通过字面量定义非全局 child mixin onLoad'
+          console.log(res)
+          this.childMixinOnloadMsg2 = res
+        },
+        methods: {
+          childMixinMethod2(): string {
+            const res = '通过字面量定义非全局 child mixin method'
+            console.log(res)
+            return res
+          },
+          namesakeChildMixinMethod(): string {
+            const res = '通过字面量定义非全局同名 child mixin method'
+            console.log(res)
+            return res
+          },
+        },
+      }],
+      components: {MixinComp2},
+      props: {
+        mixinProp2: {
+          type: String,
+          default: '通过字面量定义非全局 mixin props'
+        },
+        namesakeMixinProp: {
+          type: String,
+          default: '通过字面量定义非全局同名 mixin props'
+        }
+      },
+      data() {
+        return {
+          mixinDataMsg2: '通过字面量定义非全局 mixin data',
+          namesakeMixinDataMsg: '通过字面量定义非全局同名 mixin data',
+          mixinOnloadMsg2: '',
+          mixinOnloadTime2: 0,
+          mixinWatchMsg2: ''
+        }
+      },
+      computed: {
+        mixinComputed2(): string {
+          const res = `通过字面量定义非全局 mixin computed, 更新后的 mixinOnloadMsg2: ${this.mixinOnloadMsg2}`
+          console.log(res)
+          return res
+        },
+        namesakeMixinComputed(): string {
+          const res = '通过字面量定义非全局同名 mixin computed'
+          console.log(res)
+          return res
+        }
+      },
+      watch: {
+        globalMixinOnloadMsg1(newVal: string) {
+          this.mixinWatchMsg2 = `通过字面量定义非全局 mixin watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+          console.log(this.mixinWatchMsg2)
+        },
+      },
+      onLoad() {
+        this.mixinOnloadTime2 = Date.now()
+        const res = '通过字面量定义非全局 mixin onLoad'
+        console.log(res)
+        this.mixinOnloadMsg2 = res
+      },
+      methods: {
+        mixinMethod2(): string {
+          const res = '通过字面量定义非全局 mixin method'
+          console.log(res)
+          return res
+        },
+        namesakeMixinMethod(): string {
+          const res = '通过字面量定义非全局同名 mixin method'
+          console.log(res)
+          return res
+        }
+      },
+    },
+  ],
+  data(){
+    return {
+      handleMixinEmitterMsg: '',
+      mixinWatchMsg: '',
+      mixinOnloadTime: 0,
+      onloadMsg: ''
+    }
+  },
+  watch: {
+    globalMixinOnloadMsg1(newVal: string) {
+      this.mixinWatchMsg = `页面内部定义的 watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+      console.log(this.mixinWatchMsg)
+    },
+  },
+  onLoad(){
+    this.mixinOnloadTime = Date.now()
+    const res = '页面内的 onLoad'
+    console.log(res)
+    this.onloadMsg = res
+  },
+  methods: {
+    goMixinPageNamesake(){
+      uni.navigateTo({url: './mixins-app-page-namesake'})
+    },
+    handleMixinEmitter(emit: string, arg: string){
+      this.handleMixinEmitterMsg = `触发 ${emit}, 参数为 ${arg}`
+      console.log(this.handleMixinEmitterMsg)
+    }
+  }
+}
+</script>

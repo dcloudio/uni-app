@@ -1,0 +1,68 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="page">
+      <text class="bold mb-10">include "Counter,Message"</text>
+      <KeepAlive include="Counter,Message">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <text class="bold mt-10 mb-10">include "/Counter|Message/"</text>
+      <KeepAlive :include="/Counter|Message/">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <text class="bold mt-10 mb-10">include "['Counter', 'Message']"</text>
+      <KeepAlive :include="['Counter', 'Message']">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <text class="bold mt-10 mb-10">exclude "ShouldExclude"</text>
+      <KeepAlive exclude="ShouldExclude">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <text class="bold mt-10 mb-10">max 2</text>
+      <KeepAlive :max="2">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <button class="mt-10 show-counter" @click="changeComponent('Counter')">show Counter</button>
+      <button class="mt-10 show-message" @click="changeComponent('Message')">show Message</button>
+      <button class="mt-10 show-should-exclude" @click="changeComponent('ShouldExclude')">show ShouldExclude</button>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+import Counter from '@/components/keep-alive/Counter.uvue'
+import Message from '@/components/keep-alive/Message.uvue'
+import ShouldExclude from '@/components/keep-alive/ShouldExclude.uvue'
+export default {
+  components: {
+    Counter,
+    Message,
+    ShouldExclude
+  },
+  data() {
+    return {
+      currentComponent: 'ShouldExclude'
+    }
+  },
+  methods: {
+    changeComponent(componentName: string) {
+      this.currentComponent = componentName
+    }
+  }
+}
+</script>
+
+<style>
+.hr {
+  margin-top: 30rpx;
+  border-bottom: 1px solid #ccc;
+}
+</style>

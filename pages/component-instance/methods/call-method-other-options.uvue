@@ -1,0 +1,90 @@
+<template>
+  <view>
+    <component1 ref="component1"></component1>
+  </view>
+</template>
+
+<script>
+// 非easycom组件需import引用组件 component1.uvue
+import component1 from './component1.uvue'
+
+const delay = (): Promise<string> =>
+  new Promise((resolve, _) => {
+    setTimeout(() => {
+      resolve('')
+    }, 1000)
+  })
+
+export default {
+  components: {
+    component1
+  },
+  data() {
+    return {
+      component1: null as ComponentPublicInstance | null
+    }
+  },
+  onReady() {
+    // 通过组件 ref 属性获取组件实例
+    this.component1 = this.$refs['component1'] as ComponentPublicInstance;
+    this.call()
+  },
+  methods: {
+    async call(): Promise<void> {
+      this.callMethod1()
+      await delay()
+      this.callMethod2()
+      await delay()
+      this.callMethod3()
+      await delay()
+      this.callMethod4()
+      await delay()
+      this.callMethod5()
+      await delay()
+      // callMethod时，不支持默认参数，必须主动传入
+      this.callMethodFooWithDefaultParameter()
+      await delay()
+      this.callMethodFooWithGenericParameter()
+      await delay()
+      this.callMethodFooWithRestParameter()
+    },
+    callMethod1() {
+      // 通过 $callMethod 调用组件的 foo1 方法
+      this.component1?.$callMethod('foo1');
+    },
+    callMethod2() {
+      // 通过 $callMethod 调用组件的 foo2 方法并传递 1个参数
+      this.component1?.$callMethod('foo2', Date.now());
+    },
+    callMethod3() {
+      // 通过 $callMethod 调用组件的 foo3 方法并传递 2个参数
+      this.component1?.$callMethod('foo3', Date.now(), Date.now());
+    },
+    callMethod4() {
+      // 通过 $callMethod 调用组件的 foo4 方法并传递 callback
+      this.component1?.$callMethod('foo4', () => {
+        console.log('callback')
+      });
+    },
+    callMethod5() {
+      // 通过 $callMethod 调用组件的 foo5 方法并接收返回值
+      // 注意： 返回值可能为 null，当前例子一定不为空，所以加了 !
+      const result = this.component1?.$callMethod('foo5', 'string1') as string;
+      console.log(result); // string1
+    },
+    callMethodTest(text: string): string | null {
+      const result = this.component1?.$callMethod('foo5', text) as string;
+      return result;
+    },
+    callMethodFooWithDefaultParameter(): any | null{
+      return this.component1?.$callMethod('fooWithDefaultParameter', 10)
+    },
+    callMethodFooWithGenericParameter(): any | null{
+      return this.component1?.$callMethod('fooWithGenericParameter', 10)
+    },
+    callMethodFooWithRestParameter(): any | null{
+      return this.component1?.$callMethod('fooWithRestParameter', "test", 10, 11)
+    }
+  }
+}
+</script>

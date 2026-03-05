@@ -1,0 +1,23 @@
+<template>
+  <view>
+    <slot name="header"></slot>
+    <slot name="footer"></slot>
+    <slot></slot>
+  </view>
+</template>
+
+<script setup lang="uts">
+const slots = useSlots()
+
+const hasSlots = (): boolean => {
+  const header = slots['header']
+  const footer = slots['footer']
+  const def = slots['default']
+
+  return header !== null && footer !== null && def !== null
+}
+
+defineExpose({
+  hasSlots
+})
+</script>

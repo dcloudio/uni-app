@@ -1,0 +1,24 @@
+<template>
+  <view class="container">
+    <view>
+      <slot name="header" msg="Here might be a page title"></slot>
+    </view>
+    <view>
+      <slot msg="A paragraph for the main content."></slot>
+    </view>
+    <view>
+      <slot name="footer" msg="Here's some contact info"></slot>
+    </view>
+  </view>
+</template>
+
+<script lang="uts">
+export default {
+  name: 'child',
+  slots: Object as SlotsType<{
+    header: { msg: string }
+    default: { msg: string }
+    footer: { msg: string }
+  }>
+}
+</script>

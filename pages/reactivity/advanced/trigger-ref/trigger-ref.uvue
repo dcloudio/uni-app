@@ -1,0 +1,34 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>state.count:</text>
+      <text id="state-count">{{ state.count }}</text>
+    </view>
+    <button
+      id="increment-state-count-btn"
+      class="mb-10"
+      @click="incrementStateCount">
+      increment state.count
+    </button>
+    <button id="trigger-ref-state-btn" @click="triggerRefState">
+      trigger state
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+type State = {
+  count: number
+}
+const state = shallowRef({
+  count: 0
+} as State)
+
+const incrementStateCount = () => {
+  state.value.count++
+}
+
+const triggerRefState = () => {
+  triggerRef(state)
+}
+</script>

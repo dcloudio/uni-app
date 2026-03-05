@@ -1,0 +1,15 @@
+<template>
+  <view class="page">
+    <inject-comp />
+  </view>
+</template>
+
+<script setup lang="uts">
+import InjectComp from '../inject/inject-composition.uvue';
+
+provide('msg', 'hello');
+provide('num', 0);
+provide('obj', { a: 1 });
+provide('arr', [1, 2, 3]);
+provide('fn', () : string => 'hello');
+</script>

@@ -1,0 +1,73 @@
+<template>
+  title: {{ title }}
+  <button class="component-lifecycle-btn mt-10" @click="updateTitle">
+    updateTitle
+  </button>
+</template>
+
+<script lang='uts'>
+  import { state, setLifeCycleNum } from '@/store/index.uts';
+  export default {
+    name: 'OptionsAPIComponentLifecycle',
+    data() {
+      return {
+        title: 'component for options API lifecycle test',
+      };
+    },
+    beforeCreate() {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum + 1);
+      console.log('component for lifecycle test beforeCreate');
+    },
+    created() {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum + 1);
+      console.log('component for lifecycle test created');
+    },
+    beforeMount() {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum + 1);
+      console.log('component for lifecycle test beforeMount');
+    },
+    mounted() {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum + 1);
+      console.log('component for lifecycle test mounted');
+    },
+    beforeUpdate() {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum + 1);
+      console.log('component for lifecycle test beforeUpdate');
+    },
+    updated() {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum + 1);
+      console.log('component for lifecycle test updated');
+    },
+    beforeUnmount() {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum - 1);
+      console.log('component for lifecycle test beforeUnmount');
+    },
+    unmounted() {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum - 1);
+      console.log('component for lifecycle test unmounted');
+    },
+    activated() {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum + 1);
+      console.log('component for lifecycle test activated');
+    },
+    deactivated() {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum - 1);
+      console.log('component for lifecycle test deactivated');
+    },
+    methods: {
+      updateTitle() {
+        this.title = 'component for lifecycle test updated';
+      },
+    },
+  };
+</script>

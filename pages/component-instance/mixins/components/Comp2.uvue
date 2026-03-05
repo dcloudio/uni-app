@@ -1,0 +1,72 @@
+<template>
+  <view class="mt-10" ref="mixin-comp-root">
+    <text class="bold">Comp2: inheritAttrs: true</text>
+    <text class="mt-10" style="color:#ccc;">rootElementTitle should not be null</text>
+    <text class="mt-10 root-element-title-2">rootElementTitle: {{ rootElementTitle }}</text>
+    <text class="mt-10">{{ namesakeMixinProp }}</text>
+    <text class="mt-10">{{ namesakeMixinDataMsg }}</text>
+    <text class="mt-10">{{ namesakeMixinComputed }}</text>
+    <text class="mt-10 mixin-watch-msg">{{ mixinWatchMsg }}</text>
+    <text class="mt-10">{{ namesakeMixinMethod() }}</text>
+    <button class="mt-10" @click="changeGlobalMixinOnloadMsg1">
+      change globalMixinOnloadMsg1
+    </button>
+    <MixinComp />
+  </view>
+</template>
+
+<script lang="uts">
+  import CompForComp from './CompForComp.uvue'
+
+  export default {
+    mixins: [{
+      inheritAttrs: true,
+    }],
+    components: { MixinComp: CompForComp },
+    props: {
+      namesakeMixinProp: {
+        type: String,
+        default: '组件内部的同名 props'
+      }
+    },
+    data() {
+      return {
+        namesakeMixinDataMsg: '组件内部的同名 data',
+        mixinWatchMsg: '',
+        rootElementTitle: '' as string | null
+      }
+    },
+    computed: {
+      namesakeMixinComputed() : string {
+        const res = '组件内部的同名 computed'
+        console.log(res)
+        return res
+      }
+    },
+    mounted() {
+      const rootElement = this.$refs['mixin-comp-root'] as UniElement
+      this.rootElementTitle = rootElement.getAttribute('title')
+    },
+    watch: {
+      globalMixinOnloadMsg1(newVal : string) {
+        this.mixinWatchMsg = `组件内部定义的 watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+        console.log(this.mixinWatchMsg)
+      },
+    },
+    methods: {
+      namesakeMixinMethod() : string {
+        const res = '组件内部的同名 method'
+        console.log(res)
+        return res
+      },
+      changeGlobalMixinOnloadMsg1() {
+        // #ifdef WEB
+        (this.globalMixinOnloadMsg1 as string) = 'new globalMixinOnloadMsg1 changed in comp2'
+        // #endif
+        // #ifndef WEB
+        this.globalMixinOnloadMsg1 = 'new globalMixinOnloadMsg1 changed in comp2'
+        // #endif
+      }
+    }
+  }
+</script>

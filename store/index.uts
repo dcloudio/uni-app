@@ -1,0 +1,43 @@
+export type State = {
+  lifeCycleNum: number
+  componentMsg: number,
+  appLaunchPath: string
+  appShowPath: string,
+	// 状态栏高度
+	statusBarHeight : number,
+	// 设备像素比
+	devicePixelRatio : number
+}
+export const state = reactive({
+  lifeCycleNum: 0,
+  componentMsg: 0,
+  appLaunchPath: '',
+  appShowPath: '',
+	statusBarHeight: 0, 
+	devicePixelRatio: 1
+} as State)
+
+export const setLifeCycleNum = (num: number) => {
+  state.lifeCycleNum = num
+}
+
+export const setComponentMsg = (msg: number) => {
+  state.componentMsg = msg
+}
+
+export const setAppLaunchPath = (path: string) => {
+  state.appLaunchPath = path
+}
+
+export const setAppShowPath = (path: string) => {
+  state.appShowPath = path
+}
+
+export const setStatusBarHeight = (height : number) => {
+  state.statusBarHeight = height
+}
+
+export const setDevicePixelRatio = (devicePixelRatio : number) => {
+  state.devicePixelRatio = devicePixelRatio
+}
+

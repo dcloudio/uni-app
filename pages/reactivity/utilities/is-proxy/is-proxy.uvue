@@ -1,0 +1,52 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>isProxy(count):</text>
+      <text id="is-proxy-count">{{ isProxyCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isProxy(refCount):</text>
+      <text id="is-proxy-ref-count">{{ isProxyRefCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isProxy(reactiveCount):</text>
+      <text id="is-proxy-reactive-count">{{ isProxyReactiveCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isProxy(readonlyCount):</text>
+      <text id="is-proxy-readonly-count">{{ isProxyReadonlyCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isProxy(shallowReactiveCount):</text>
+      <text id="is-proxy-shallow-reactive-count">{{
+        isProxyShallowReactiveCount
+      }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isProxy(shallowReadonlyCount):</text>
+      <text id="is-proxy-shallow-readonly-count">{{
+        isProxyShallowReadonlyCount
+      }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+const count = 0;
+const isProxyCount = isProxy(count);
+
+const refCount = ref(0);
+const isProxyRefCount = isProxy(refCount);
+
+const reactiveCount = reactive({ count: 0 });
+const isProxyReactiveCount = isProxy(reactiveCount);
+
+const readonlyCount = readonly({ count: 0 });
+const isProxyReadonlyCount = isProxy(readonlyCount);
+
+const shallowReactiveCount = shallowReactive({ count: 0 });
+const isProxyShallowReactiveCount = isProxy(shallowReactiveCount);
+
+const shallowReadonlyCount = shallowReadonly({ count: 0 });
+const isProxyShallowReadonlyCount = isProxy(shallowReadonlyCount);
+</script>

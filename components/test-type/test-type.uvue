@@ -1,0 +1,20 @@
+<template>
+	<view>
+		test-type
+	</view>
+</template>
+
+<script>
+	export default {
+		name:"test-type",
+		data() {
+			return {
+				
+			};
+		}
+	}
+</script>
+
+<style>
+
+</style>

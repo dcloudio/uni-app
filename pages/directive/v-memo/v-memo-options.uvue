@@ -1,0 +1,53 @@
+<template>
+  <view class="page">
+    <view class="flex flex-row justify-between mb-10" v-memo="[]">
+      <text>msg will never change:</text>
+      <text id="v-memo-never-change-msg">{{ msg }}</text>
+    </view>
+    <view class="flex flex-row justify-between mb-10">
+      <text>msg:</text>
+      <text id="msg">{{ msg }}</text>
+    </view>
+    <view class="flex flex-row justify-between mb-10" v-memo="[num]">
+      <text>msg will change when num chang:</text>
+      <text id="v-memo-num-change-msg">{{ msg }}</text>
+    </view>
+    <view class="flex flex-row justify-between mb-10">
+      <text>num:</text>
+      <text id="num">{{ num }}</text>
+    </view>
+    <button
+      id="change-message-btn"
+      class="mb-10"
+      type="primary"
+      @click="changeMessage">
+      change message
+    </button>
+    <button
+      id="increment-num-btn"
+      class="mb-10"
+      type="primary"
+      @click="incrementNum">
+      increment num
+    </button>
+  </view>
+</template>
+
+<script lang="uts">
+export default {
+  data() {
+    return {
+      msg: 'hello world',
+      num: 0
+    }
+  },
+  methods: {
+    changeMessage() {
+      this.msg = 'msg changed'
+    },
+    incrementNum(){
+      this.num++
+    }
+  }
+}
+</script>

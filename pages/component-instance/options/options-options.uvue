@@ -1,0 +1,51 @@
+<template>
+  <view class="page">
+    <view class="mb-10 flex justify-between flex-row">
+      <text>component name: </text>
+      <text id="component-name">{{ dataInfo.name }}</text>
+    </view>
+    <!-- #ifndef APP-ANDROID -->
+    <view class="mb-10 flex justify-between flex-row">
+      <text>custom key: </text>
+      <text id="custom-key">{{ dataInfo.customKey }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>mixin data str: </text>
+      <text id="mixin-data-str">{{ dataInfo.mixinDataStr }}</text>
+    </view>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script lang="uts">
+import mixins from "./mixins.uts"
+
+type DataInfo = {
+  name: string
+  customKey: string
+  mixinDataStr: string
+}
+
+export default {
+  mixins: [mixins],
+  name: "$options",
+  _customKey: "custom key",
+  data() {
+    return {
+      dataInfo: {
+        name: "",
+        customKey: "",
+        mixinDataStr: "",
+      } as DataInfo
+    }
+  },
+  mounted() {
+    this.dataInfo.name = this.$options.name!
+    // #ifndef APP-ANDROID
+    this.dataInfo.customKey = this.$options._customKey
+    // @ts-ignore
+    this.dataInfo.mixinDataStr = this.$options.data({})['str']
+    // #endif
+  },
+}
+</script>

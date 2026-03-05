@@ -1,0 +1,174 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1" :bounces="false">
+    <!-- #endif -->
+    <view class="page container">
+      <text>page lifecycle 组合式 API</text>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onLoad 触发：</text>
+        <text>{{ isOnloadTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onPageShow 触发：</text>
+        <text>{{ isOnPageShowTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onReady 触发：</text>
+        <text>{{ isOnReadyTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onPullDownRefresh 触发：</text>
+        <text>{{ isOnPullDownRefreshTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onReachBottom 触发：</text>
+        <text>{{ isOnReachBottomTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onBackPress 触发：</text>
+        <text>{{ isOnBackPressTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onPageHide 触发：</text>
+        <text>{{ isOnPageHideTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onResize 触发：</text>
+        <text>{{ isOnResizeTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <MonitorPageLifecycleComposition />
+      </view>
+      <button class="mt-10" @click="scrollToBottom">scrollToBottom</button>
+      <button class="mt-10" @click="pullDownRefresh">
+        trigger pullDownRefresh
+      </button>
+      <button class="mt-10" @click="goOnBackPress">
+        跳转 onBackPress 示例
+      </button>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+import { state, setLifeCycleNum } from '@/store/index.uts'
+import MonitorPageLifecycleComposition from './monitor-page-lifecycle-composition.uvue'
+
+const isOnloadTriggered = ref(false)
+const isOnPageShowTriggered = ref(false)
+const isOnReadyTriggered = ref(false)
+const isOnPullDownRefreshTriggered = ref(false)
+const isOnPageScrollTriggered = ref(false)
+const isOnReachBottomTriggered = ref(false)
+const isOnBackPressTriggered = ref(false)
+const isOnPageHideTriggered = ref(false)
+const isOnResizeTriggered = ref(false)
+
+type DataInfo = {
+  isScrolled : boolean
+}
+const dataInfo = reactive({
+  isScrolled: false,
+} as DataInfo)
+
+onLoad((options : OnLoadOptions) => {
+  console.log('onLoad', options)
+  isOnloadTriggered.value = true
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 100)
+})
+onPageShow(() => {
+  isOnPageShowTriggered.value = true
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 10)
+})
+onReady(() => {
+  isOnReadyTriggered.value = true
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 10)
+})
+onPullDownRefresh(() => {
+  isOnPullDownRefreshTriggered.value = true
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 10)
+})
+onPageScroll((e: OnPageScrollOptions) => {
+  console.log('onPageScroll', e)
+  isOnPageScrollTriggered.value = true
+  // 自动化测试
+  dataInfo.isScrolled = true
+})
+onReachBottom(() => {
+  isOnReachBottomTriggered.value = true
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 10)
+})
+onBackPress((options : OnBackPressOptions) : boolean | null => {
+  console.log('onBackPress', options)
+  isOnBackPressTriggered.value = true
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum - 10)
+  return null
+})
+onPageHide(() => {
+  isOnPageHideTriggered.value = true
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum - 10)
+})
+onUnload(() => {
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum - 100)
+})
+onResize((options: OnResizeOptions) => {
+  console.log('onBackPress', options)
+  isOnResizeTriggered.value = true
+  // 自动化测试
+  setLifeCycleNum(state.lifeCycleNum + 10)
+})
+
+// 自动化测试
+const pageGetLifeCycleNum = () : number => {
+  return state.lifeCycleNum
+}
+// 自动化测试
+const pageSetLifeCycleNum = (num : number) => {
+  setLifeCycleNum(num)
+}
+
+// 自动化测试
+const pullDownRefresh = () => {
+  uni.startPullDownRefresh({
+    success() {
+      setTimeout(() => {
+        uni.stopPullDownRefresh()
+      }, 1500)
+    },
+  })
+}
+
+const scrollToBottom = () => {
+  uni.pageScrollTo({
+    scrollTop: 2000,
+  })
+}
+
+const goOnBackPress = () => {
+  uni.navigateTo({url: '/pages/lifecycle/page/onBackPress/on-back-press-composition'})
+}
+
+defineExpose({
+  dataInfo,
+  pageGetLifeCycleNum,
+  pageSetLifeCycleNum,
+  pullDownRefresh,
+  scrollToBottom,
+})
+</script>
+
+<style>
+.container {
+  height: 1200px;
+}
+</style>

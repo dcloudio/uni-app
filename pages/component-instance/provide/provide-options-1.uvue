@@ -1,0 +1,53 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="page">
+      <text>provide page</text>
+      <button class="mt-10" @click="goProvidePage2">
+        跳转函数方式定义 provide 示例
+      </button>
+      <ComponentForInject />
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+import ComponentForInject from '../inject/inject-options-1.uvue'
+
+export default {
+  components: {
+    ComponentForInject
+  },
+  data(){
+    return {
+      title: '字面量方式定义 provide page title',
+      obj: {
+        title: 'data obj.title',
+        content: 'data obj.content'
+      },
+    }
+  },
+  provide: {
+    providePageStr: '字面量方式定义 provide page str',
+    providePageNum: 1,
+    providePageBool: true,
+    providePageObject: {
+      title: '字面量方式定义 provide page object title',
+      content: '字面量方式定义 provide page object content'
+    },
+    providePageArr: ['字面量方式定义 provide page arr'],
+    providePageMap: new Map<string, string>([['key', '字面量方式定义 provide page map']]),
+    providePageSet: new Set<string>(['字面量方式定义 provide page set']),
+  },
+  methods: {
+    goProvidePage2(){
+      uni.navigateTo({
+        url: '/pages/component-instance/provide/provide-options-2'
+      })
+    }
+  },
+}
+</script>

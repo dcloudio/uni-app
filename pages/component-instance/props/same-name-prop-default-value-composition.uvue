@@ -1,0 +1,24 @@
+<template>
+  <view>
+    <text class="mb-10 bold">same name prop with default value</text>
+    <view class="flex justify-between flex-row">
+      <text>arr: </text>
+      <text id="same-name-prop-default-value-arr">{{
+        JSON.stringify(arr)
+      }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+import type { PropType } from 'vue'
+
+defineProps({
+  arr: {
+    type: Array as PropType<number[]>,
+    default: () : Array<number> => {
+      return [1, 2, 3]
+    }
+  }
+})
+</script>

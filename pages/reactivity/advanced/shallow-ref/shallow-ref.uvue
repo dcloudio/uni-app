@@ -1,0 +1,33 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>state.count:</text>
+      <text id="state-count">{{ state.count }}</text>
+    </view>
+    <button
+      id="increment-state-count-btn"
+      class="mb-10"
+      @click="incrementStateCount">
+      increment state.count
+    </button>
+    <button id="update-state-btn" @click="updateState">update state</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+type State = {
+  count: number
+}
+// 可通过泛型指定类型
+const state = shallowRef<State>({
+  count: 0
+})
+
+const incrementStateCount = () => {
+  state.value.count++
+}
+
+const updateState = () => {
+  state.value = { count: state.value.count } as State
+}
+</script>

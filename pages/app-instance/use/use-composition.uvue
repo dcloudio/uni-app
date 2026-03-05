@@ -1,0 +1,9 @@
+<template>
+  <view class="page">
+    <CompForAppUse class="component-for-app-use" />
+  </view>
+</template>
+
+<script setup lang="uts">
+import CompForAppUse from '@/components/CompForAppUse.uvue'
+</script>

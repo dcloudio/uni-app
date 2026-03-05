@@ -1,0 +1,139 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+    <!-- #endif -->
+    <view class="uni-padding-wrap">
+      <text class="mt-10"
+        >globalProperties string: {{ globalPropertiesStr }}</text
+      >
+      <text class="mt-10"
+        >globalProperties number: {{ globalPropertiesNum }}</text
+      >
+      <text class="mt-10"
+        >globalProperties boolean: {{ globalPropertiesBool }}</text
+      >
+      <text class="mt-10"
+        >globalProperties object: {{ globalPropertiesObj }}</text
+      >
+      <text class="mt-10"
+        >globalProperties null: {{ globalPropertiesNull }}</text
+      >
+      <text class="mt-10"
+        >globalProperties array: {{ globalPropertiesArr }}</text
+      >
+      <text class="mt-10"
+        >globalProperties set: {{ globalPropertiesSet }}</text
+      >
+      <text class="mt-10"
+        >globalProperties map: {{ globalPropertiesMap }}</text
+      >
+      <text class="mt-10"
+        >globalProperties reactiveObj.str:
+        {{ globalPropertiesReactiveObj['str'] }}</text
+      >
+      <text class="mt-10"
+        >globalProperties reactiveObj.num:
+        {{ globalPropertiesReactiveObj['num'] }}</text
+      >
+      <text class="mt-10"
+        >globalProperties reactiveObj.boolean:
+        {{ globalPropertiesReactiveObj['bool'] }}</text
+      >
+      <text class="mt-10"
+        >globalProperties fun 返回值: {{ globalPropertiesFn() }}</text
+      >
+      <button @click="updateGlobalProperties" class="mt-10">
+        update globalProperties
+      </button>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+type MyGlobalProperties = {
+	str : string;
+	num : number;
+	bool : boolean;
+	obj : UTSJSONObject;
+	null : string | null;
+	arr : number[];
+	set : string[];
+	map : UTSJSONObject;
+	reactiveObj : UTSJSONObject;
+  globalPropertiesFnRes: string;
+}
+
+const myGlobalProperties = reactive<MyGlobalProperties>({
+	str: '',
+	num: 0,
+	bool: false,
+	obj: {},
+	null: null,
+	arr: [] as number[],
+	set: [] as string[],
+	map: {},
+	reactiveObj: {
+		str: '',
+		num: 0,
+		bool: false,
+	},
+  globalPropertiesFnRes: '',
+} as MyGlobalProperties)
+
+const instance = getCurrentInstance()!.proxy!
+const getGlobalProperties = () => {
+	myGlobalProperties.str = instance.globalPropertiesStr
+	myGlobalProperties.num = instance.globalPropertiesNum
+	myGlobalProperties.bool = instance.globalPropertiesBool
+	myGlobalProperties.obj = instance.globalPropertiesObj
+	myGlobalProperties.null = instance.globalPropertiesNull
+	myGlobalProperties.arr = instance.globalPropertiesArr
+	myGlobalProperties.set = []
+	instance.globalPropertiesSet.forEach(item => {
+		myGlobalProperties.set.push(item)
+	})
+	myGlobalProperties.map = {}
+	instance.globalPropertiesMap.forEach((value: number, key: string) => {
+		myGlobalProperties.map[key] = value
+	})
+	myGlobalProperties.reactiveObj = instance.globalPropertiesReactiveObj
+	myGlobalProperties.globalPropertiesFnRes = instance.globalPropertiesFn()
+}
+
+setTimeout(() => {
+  // 等待 globalProperties-options resetGlobalProperties 完成
+	getGlobalProperties()
+}, 1000)
+
+const updateGlobalProperties = () => {
+	instance.globalPropertiesStr = 'new string'
+	instance.globalPropertiesNum = 100
+	instance.globalPropertiesBool = true
+	instance.globalPropertiesObj = {
+		str: 'new globalProperties obj string',
+		num: 100,
+		bool: true,
+	}
+	instance.globalPropertiesNull = 'not null'
+	instance.globalPropertiesArr = [1, 2, 3]
+	instance.globalPropertiesSet = new Set(['a', 'b', 'c'])
+	instance.globalPropertiesMap = new Map([['a', 1], ['b', 2], ['c', 3]])
+	instance.globalPropertiesReactiveObj['str'] = 'new reactive string'
+	instance.globalPropertiesReactiveObj['num'] = 200
+	instance.globalPropertiesReactiveObj['bool'] = true
+	getGlobalProperties()
+}
+
+defineExpose({
+  myGlobalProperties,
+  updateGlobalProperties
+})
+</script>
+
+<style>
+.uni-padding-wrap {
+  padding: 10px 10px 40px 10px;
+}
+</style>

@@ -1,0 +1,52 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReadonly(count):</text>
+      <text id="is-readonly-count">{{ isReadonlyCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReadonly(refCount):</text>
+      <text id="is-readonly-ref-count">{{ isReadonlyRefCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReadonly(reactiveCount):</text>
+      <text id="is-readonly-reactive-count">{{ isReadonlyReactiveCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReadonly(readonlyCount):</text>
+      <text id="is-readonly-readonly-count">{{ isReadonlyReadonlyCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReadonly(shallowReactiveCount):</text>
+      <text id="is-readonly-shallow-reactive-count">{{
+        isReadonlyShallowReactiveCount
+      }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isReadonly(shallowReadonlyCount):</text>
+      <text id="is-readonly-shallow-readonly-count">{{
+        isReadonlyShallowReadonlyCount
+      }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang='uts'>
+  const count = 0;
+  const isReadonlyCount = isReadonly(count);
+
+  const refCount = ref(0);
+  const isReadonlyRefCount = isReadonly(refCount);
+
+  const reactiveCount = reactive({ count: 0 });
+  const isReadonlyReactiveCount = isReadonly(reactiveCount);
+
+  const readonlyCount = readonly({ count: 0 });
+  const isReadonlyReadonlyCount = isReadonly(readonlyCount);
+
+  const shallowReactiveCount = shallowReactive({ count: 0 });
+  const isReadonlyShallowReactiveCount = isReadonly(shallowReactiveCount);
+
+  const shallowReadonlyCount = shallowReadonly({ count: 0 });
+  const isReadonlyShallowReadonlyCount = isReadonly(shallowReadonlyCount);
+</script>

@@ -1,0 +1,60 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>count:</text>
+      <text id="count">{{ count }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isRef count:</text>
+      <text id="is-ref-count">{{ isRefCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>ref count:</text>
+      <text id="ref-count">{{ refCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>isRef ref count:</text>
+      <text id="is-ref-ref-count">{{ isRefRefCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>obj.num:</text>
+      <text id="obj-num">{{ obj.num }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>toRef(obj, "num"):</text>
+      <text id="to-ref-obj-num">{{ objNum }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>toRef(() => obj.num):</text>
+      <text id="to-ref-fn-obj-num">{{ readonlyObjNum }}</text>
+    </view>
+
+    <button class="mt-10" id="increment-btn" @click="increment">
+      increment obj.num
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const count = 0;
+const isRefCount = isRef(count);
+const refCount = toRef<number>(count);
+const isRefRefCount = isRef(refCount);
+
+type Obj = {
+  num : number
+}
+const obj = reactive({
+  num: 0
+} as Obj)
+
+const objNum = toRef<number>(obj, 'num')
+
+const readonlyObjNum = toRef<number>(() : number => obj.num)
+
+const increment = () => {
+  obj.num++;
+  objNum.value++;
+  readonlyObjNum.value++;
+}
+</script>

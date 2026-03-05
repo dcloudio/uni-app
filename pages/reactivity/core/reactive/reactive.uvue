@@ -1,0 +1,207 @@
+<template>
+	<scroll-view direction="vertical" style="flex: 1;">
+		<view class="flex justify-between flex-row mb-10">
+			<text>count:</text>
+			<text id="count">{{ count }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>obj.str:</text>
+			<text id="obj-str">{{ obj['str'] }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>obj.num:</text>
+			<text id="obj-num">{{ obj['num'] }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>obj.arr:</text>
+			<text id="obj-arr">{{ JSON.stringify(obj['arr']) }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>count1:</text>
+			<text id="count1">{{ count1 }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>obj1.a.b.c:</text>
+			<text id="obj1-a-b-c">{{ obj1.getString('a.b.c') }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>arr1(spread):</text>
+			<text id="arr1">{{ JSON.stringify(arr1) }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>arr2ForEachEffectCount:</text>
+			<text id="arr2">{{ arr2ForEachEffectCount }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>arr3(reverse):</text>
+			<text id="arr3">{{ JSON.stringify(arr3) }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>arr4(sort):</text>
+			<text id="arr4">{{ JSON.stringify(computedArr4) }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>arr5:</text>
+			<text id="arr5">{{ JSON.stringify(arr5Result) }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>map2ForEachEffectCount:</text>
+			<text id="map2">{{ map2ForEachEffectCount }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>map3ForOfEffectCount:</text>
+			<text id="map3">{{ map3ForOfEffectCount }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>set2ForEachEffectCount:</text>
+			<text id="set2">{{ set2ForEachEffectCount }}</text>
+		</view>
+		<view class="flex justify-between flex-row mb-10">
+			<text>set3ForOfEffectCount:</text>
+			<text id="set3">{{ set3ForOfEffectCount }}</text>
+		</view>
+		<button class='mb-10' id="update-count-btn" @click="updateCount">update count</button>
+		<button class='mb-10' id="update-obj-str-btn" @click="updateObjStr">update obj.str</button>
+		<button class='mb-10' id="update-obj-num-btn" @click="updateObjNum">update obj.num</button>
+		<button class='mb-10' id="update-obj-arr-btn" @click="updateObjArr">update obj.arr</button>
+		<button class='mb-10' id="update-obj1-a-b-c-btn" @click="updateObj1_A_B_C">update obj1.a.b.c</button>
+		<button class='mb-10' id="update-arr1-btn" @click="updateArr1(false)">update arr1 without reactive</button>
+		<button class='mb-10' id="update-arr1-reactive-btn" @click="updateArr1(true)">update arr1 with reactive</button>
+		<button class='mb-10' id="update-arr2-forEach-effect-btn" @click="updateArr2()">update arr2</button>
+		<button class='mb-10' id="update-arr4-btn" @click="updateArr4()">update arr4</button>
+		<button class='mb-10' id="update-map2-forEach-effect-btn" @click="updateMap2()">update map2 for each</button>
+		<button class='mb-10' id="update-map3-forOf-effect-btn" @click="updateMap3()">update map3 for of</button>
+		<button class='mb-10' id="update-set2-forEach-effect-btn" @click="updateSet2()">update set2 for each</button>
+		<button class='mb-10' id="update-set3-forOf-effect-btn" @click="updateSet3()">update set3 for of</button>
+	</scroll-view>
+</template>
+
+<script setup lang="uts">
+	const count = ref(0)
+
+	// TODO: 待支持后补充泛型示例
+	const obj = reactive({
+		str: 'default str',
+		num: count,
+		arr: ['a', 'b', 'c']
+	})
+
+	const updateObjStr = () => {
+		obj['str'] = 'new str';
+	}
+
+	const updateObjNum = () => {
+		obj['num'] = (obj['num'] as number) + 1
+	}
+
+	const updateCount = () => {
+		count.value++
+	}
+
+	const updateObjArr = () => {
+		(obj['arr'] as string[]).push('d')
+	}
+
+	const obj1 = reactive({
+		a: { b: { c: 'c' } }
+	})
+
+	const count1 = ref(0)
+	watchEffect(() => {
+		count1.value++
+		// 测试getString等keyPath触发依赖收集
+		obj1.getString("a.b.c")
+	})
+	function updateObj1_A_B_C() {
+		((obj1["a"] as UTSJSONObject)["b"] as UTSJSONObject)["c"] = "c1-" + Date.now()
+	}
+	const arr1 = ref<number[]>([])
+	function test(...args : number[]) {
+		arr1.value = args
+	}
+	function updateArr1(isReactive : boolean) {
+		if (isReactive) {
+			test(...reactive([4, 5, 6]))
+		} else {
+			test(...[1, 2, 3])
+		}
+	}
+
+	const arr2 = reactive<number[]>([1])
+	const arr2ForEachEffectCount = ref(0)
+	watchEffect(() => {
+		arr2ForEachEffectCount.value++
+		arr2.forEach((item) => {
+			console.log('arr2', item)
+		})
+	})
+	function updateArr2() {
+		arr2.push(Date.now())
+	}
+
+	const arr3 = reactive([1, 2, 3, 4, 5]).reverse()
+
+	const arr4 = reactive<number[]>([5, 3, 4, 1, 2])
+	const computedArr4 = computed(() => arr4.sort())
+	function updateArr4() {
+		arr4.push(arr4.length + 1)
+		console.log(arr4)
+	}
+
+	const arr5 = reactive<UTSJSONObject[]>([{ id: 1 }, { id: 2 }])
+	const arr5FirstObj = arr5[0]
+	const arr5FirstRawObj = toRaw<UTSJSONObject>(arr5[0])
+	const arr5Result = {
+		includes: [arr5.includes(arr5FirstObj), arr5.includes(arr5FirstRawObj)],
+		indexOf: [arr5.indexOf(arr5FirstObj), arr5.indexOf(arr5FirstRawObj)],
+		lastIndexOf: [arr5.lastIndexOf(arr5FirstObj), arr5.lastIndexOf(arr5FirstRawObj)],
+	}
+
+	const map2 = reactive(new Map<string, number>([["a", 1]]))
+	const map2ForEachEffectCount = ref(0)
+	watchEffect(() => {
+		map2ForEachEffectCount.value++
+		map2.forEach((item : number) => {
+			console.log('map2', item)
+		})
+	})
+	function updateMap2() {
+		map2.set("c-" + Date.now(), Date.now())
+	}
+
+	const map3 = reactive(new Map<string, number>([["a", 1]]))
+	const map3ForOfEffectCount = ref(0)
+	watchEffect(() => {
+		map3ForOfEffectCount.value++
+		for (const item of map3) {
+			console.log("map3", item)
+		}
+	})
+	function updateMap3() {
+		map3.set("c-" + Date.now(), Date.now())
+	}
+
+	const set2 = reactive(new Set<number>([1]))
+	const set2ForEachEffectCount = ref(0)
+	watchEffect(() => {
+		set2ForEachEffectCount.value++
+		set2.forEach((item : number) => {
+			console.log('set2', item)
+		})
+	})
+	function updateSet2() {
+		set2.add(Date.now())
+	}
+
+	const set3 = reactive(new Set<number>([1]))
+	const set3ForOfEffectCount = ref(0)
+	watchEffect(() => {
+		set3ForOfEffectCount.value++
+		for (const item of set3) {
+			console.log("set3", item)
+		}
+	})
+	function updateSet3() {
+		set3.add(Date.now())
+	}
+</script>

@@ -1,0 +1,9 @@
+<template>
+    <text id="son-input">{{value}}</text>
+</template>
+
+<script setup>
+    const value = defineModel<string>("modelValue")
+</script>
+
+<style></style>

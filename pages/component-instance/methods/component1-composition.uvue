@@ -1,0 +1,56 @@
+<template>
+  <view>{{ result }}</view>
+</template>
+
+<script setup lang="uts">
+const result = ref<string>('')
+
+const foo1 = () => {
+  result.value = 'foo1'
+}
+
+const foo2 = (date1: number) => {
+  result.value = 'foo2=' + date1
+}
+
+const foo3 = (date1: number, date2: number) => {
+  result.value = 'foo3=' + date1 + ' ' + date2
+}
+
+const foo4 = (callback: () => void) => {
+  callback()
+}
+
+const foo5 = (text: string): string => {
+  result.value = text
+  return text
+}
+
+function fooWithDefaultParameter(n = 1): number {
+  result.value = "fooWithDefaultParameter=" + n
+  return n
+}
+
+function fooWithGenericParameter<T>(n: T): T{
+  result.value = "fooWithGeneric=" + n
+  return n
+}
+
+function fooWithRestParameter(name: string, ...n: number[]): string {
+  const res = JSON.stringify([name, ...n])
+  result.value = "fooWithRestParameter=" + res
+  return res
+}
+
+defineExpose({
+  foo1,
+  foo2,
+  foo3,
+  foo4,
+  foo5,
+  fooWithDefaultParameter: fooWithDefaultParameter,
+  // 不支持导出泛型函数
+  // fooWithGenericParameter: fooWithGenericParameter,
+  fooWithRestParameter: fooWithRestParameter
+})
+</script>

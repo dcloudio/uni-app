@@ -1,0 +1,17 @@
+<template>
+  <view>
+    <text class="mt-10 bold">component for app.use</text>
+    <text class="mt-10 plugin1">plugin1: {{ plugin1 }}</text>
+    <text class="mt-10 plugin2">plugin2: {{ plugin2 }}</text>
+    <text class="mt-10 plugin3">plugin3: {{ plugin3 }}</text>
+    <text class="mt-10 plugin4">plugin4: {{ plugin4 }}</text>
+    <CompForPlugin1 />
+    <CompForPlugin2 />
+  </view>
+</template>
+
+<script lang="uts">
+export default {
+  inject: ['plugin3', 'plugin4'],
+}
+</script>

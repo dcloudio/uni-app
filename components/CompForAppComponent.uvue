@@ -1,0 +1,3 @@
+<template>
+  <text class="mt-10 bold">component for app.component</text>
+</template>

@@ -1,0 +1,25 @@
+<template>
+  <view>
+    <text class="mb-10 bold">reference types</text>
+    <text id="reference-type-list">{{ JSON.stringify(list) }}</text>
+  </view>
+</template>
+<script lang="uts">
+  export default {
+    props: {
+      list: {
+        // #ifdef APP-ANDROID
+        type: Array as PropType<number[]>,
+        default: [] as number[]
+        // #endif
+        // #ifndef APP-ANDROID
+        type: Array as PropType<string[]>,
+        default: [] as string[]
+        // #endif
+      }
+    },
+    onReady() {
+      console.log('reference types props', this.$props)
+    }
+  }
+</script>

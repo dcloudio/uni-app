@@ -1,0 +1,44 @@
+<template>
+	<view class="mt-10">
+		<text>this is Render Function component</text>
+	</view>
+</template>
+
+<script lang='uts'>
+	export default {
+		props: {
+			str: {
+				type: String,
+			},
+			count: {
+				type: Number,
+			},
+			obj: {
+				type: UTSJSONObject,
+			}
+		},
+		emits: ['compUpdateObj'],
+		setup(props, context) {
+			const compUpdateObj = () => {
+				context.emit('compUpdateObj')
+			}
+			// TODO: 待支持 expose 后补充示例
+			// const compCount = ref(0)
+			// const compIncrement = () => {
+			// 	compCount.value++
+			// }
+			// context.expose({compCount, compIncrement})
+			return () : VNode => h('view', { class: 'mt-10' }, [
+				h('text', { class: 'mt-10' }, 'this is render function component text with h function'),
+				// h('text', { class: 'mt-10' }, `compCount: ${compCount.value}`),
+				h('text', { id: 'props-str', class: 'mt-10' }, `props.str: ${props.str}`),
+				h('text', { id: 'props-count', class: 'mt-10' }, `props.count: ${props.count}`),
+				h('text', { id: 'props-obj-str', class: 'mt-10' }, `props.obj['str']: ${props.obj!['str']}`),
+				h('text', { id: 'props-obj-num', class: 'mt-10' }, `props.obj['num']: ${props.obj!['num']}`),
+				h('text', { id: 'props-obj-bool', class: 'mt-10' }, `props.obj['bool']: ${props.obj!['bool']}`),
+				h('button', { id: 'comp-update-obj-btn', class: 'mt-10', onClick: compUpdateObj }, 'comp update obj'),
+				h('text', { id: 'context-attrs-is-show', class: 'mt-10' }, `context.attrs.isShow: ${context.attrs['isShow']}`),
+			])
+		}
+	}
+</script>

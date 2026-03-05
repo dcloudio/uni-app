@@ -1,0 +1,31 @@
+<template>
+  <view class="page">
+    <view class="mb-10 flex justify-between flex-row">
+      <text>root str in parent component: </text>
+      <text id="root-str-parent">{{ rootStr }}</text>
+    </view>
+    <Child />
+  </view>
+</template>
+
+<script setup lang="uts">
+  import Child from './child-composition.uvue'
+
+  const str = ref('root component str')
+  const rootStr = ref('')
+
+  onReady(() => {
+    const instance = getCurrentInstance()!.proxy!
+    // TODO: 确认 android 与 ios 的差异， ios 与标准 vue 相同
+    // #ifdef APP-ANDROID
+    rootStr.value = (instance.$root!.$exposed['str'] as Ref<string>).value as string
+    // #endif
+    // #ifndef APP-ANDROID
+    rootStr.value = instance.$root!['str'] as string
+    // #endif
+  })
+
+  defineExpose({
+    str
+  })
+</script>

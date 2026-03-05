@@ -1,0 +1,83 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>count:</text>
+      <text id="count">{{ count }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>str:</text>
+      <text id="str">{{ str }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>bool:</text>
+      <text id="bool">{{ bool }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>arr:</text>
+      <text id="arr">{{ JSON.stringify(arr) }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>counter.count:</text>
+      <text id="counter-count">{{ counter.count }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>counters.length:</text>
+      <text id="counters-count">{{ counters.length }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>issue15557:</text>
+      <text id="issue-15557">{{ issue15557?.['a'] }}</text>
+    </view>
+    <button class='mb-10' id="change-count-btn" @click="changeCount">change count</button>
+    <button class='mb-10' id='change-str-btn' @click='changeStr'>change str</button>
+    <button class='mb-10' id='change-bool-btn' @click='changeBool'>change bool</button>
+    <button class='mb-10' id='change-arr-btn' @click='changeArr'>change arr</button>
+    <button class='mb-10' id='change-counter-btn' @click='changeCounter'>change counter</button>
+    <button class='mb-10' id='change-counters-btn' @click='changeCounters'>change counters</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  // 基础数据类型可自动推导类型
+  const count = ref(0)
+  const str = ref('default str')
+  const bool = ref(false)
+
+  // 可通过泛型指定类型
+  const arr = ref<number[]>([1, 2, 3])
+  type Counter = {
+    count : number
+  }
+  // 可通过泛型指定类型
+  const counter = ref<Counter>({
+    count: 0
+  })
+  
+  const counters = ref<Counter[]>([])
+
+  const changeCount = () => {
+    count.value++
+  }
+  const changeStr = () => {
+    str.value = 'new str'
+  }
+  const changeBool = () => {
+    bool.value = !bool.value
+  }
+  const changeArr = () => {
+    arr.value.push(arr.value.length + 1)
+  }
+  const changeCounter = () => {
+    counter.value.count++
+  }
+  const changeCounters = () => {
+    counters.value.push({ count: 0 })
+  }
+  
+  // issue/15557
+  const issue15557 = ref<UTSJSONObject | null>(null)
+  issue15557.value = {
+    a: 1
+  }
+  issue15557.value!.set('a', 2)
+</script>

@@ -1,0 +1,17 @@
+<template>
+  <view>
+    <button @click="click" class="call-parent-btn">调用父组件事件</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const emit = defineEmits(['callback'])
+
+const click = () => {
+  emit('callback', `${Date.now()}`)
+}
+
+defineExpose({
+  click
+})
+</script>

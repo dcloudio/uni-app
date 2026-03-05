@@ -1,0 +1,33 @@
+<template>
+  <view class="page">
+    <button id="trigger-error" @click="triggerError">trigger error</button>
+    <button class='mt-10' id="trigger-timeout-error" @click="triggerTimeoutError">trigger timeout error</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import { state } from '@/store/index.uts'
+
+  onReady(() => {
+    throw new Error('error in error composition page onReady')
+  })
+  const triggerError = () => {
+    throw new Error('trigger error in throw error composition page')
+  }
+  const triggerTimeoutError = () => {
+    setTimeout(() => {
+      throw new Error('setTimeout trigger error in throw error composition page')
+    }, 10)
+  }
+
+  // 自动化测试
+  const setLifeCycleNum = (num: number) : number => {
+    state.lifeCycleNum = num
+  }
+  const getLifeCycleNum = () : number => {
+    return state.lifeCycleNum
+  }
+  defineExpose({
+    getLifeCycleNum
+  })
+</script>

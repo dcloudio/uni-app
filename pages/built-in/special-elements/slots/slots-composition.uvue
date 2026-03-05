@@ -1,0 +1,19 @@
+<template>
+  <view class="content">
+    <child>
+      <template v-slot:header="slotProps">
+        <view class="header">{{ slotProps.msg }}</view>
+      </template>
+      <template v-slot:default="{ msg }">
+        <view class="main">{{ msg }}</view>
+      </template>
+      <template #footer="{ msg: text }">
+        <view class="footer">{{ text }}</view>
+      </template>
+    </child>
+  </view>
+</template>
+
+<script setup lang="uts">
+import child from './child-composition.uvue'
+</script>

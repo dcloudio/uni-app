@@ -1,0 +1,20 @@
+<template>
+  <view class="child-b">
+    <view class="flex justify-between flex-row mb-10">
+      <text>child B limit:</text>
+      <text>{{ limit }}</text>
+    </view>
+    <child-a v-if="limit > 1" :limit="limit - 1" />
+  </view>
+</template>
+
+<script setup lang="uts">
+  import ChildA from './childA-composition.uvue'
+
+  defineProps({
+    limit: {
+      type: Number,
+      default: 0
+    }
+  })
+</script>

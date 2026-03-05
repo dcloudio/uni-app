@@ -1,0 +1,19 @@
+<template>
+    <view>{{result}}</view>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                result: ''
+            }
+        },
+        methods: {
+            foo() : string {
+                this.result = "custom foo"
+                return this.result
+            }
+        }
+    }
+</script>

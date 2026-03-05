@@ -1,0 +1,7 @@
+export default defineMixin({
+  data() {
+    return {
+      str: 'str in mixin data',
+    }
+  }
+})

@@ -1,0 +1,39 @@
+<template>
+  <view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>props title:</text>
+      <text id="foo-props-title">{{ title }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>props num:</text>
+      <text id="foo-props-num">{{ num }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>props obj['name']:</text>
+      <text id="foo-props-obj-name">{{ obj.name }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import { FooPropsObj } from './type.uts'
+
+  defineProps({
+    title: {
+      type: String,
+      default: ''
+    },
+    num: {
+      type: Number,
+      default: 0
+    },
+    checked: {
+      type: Boolean,
+      default: false
+    },
+    obj: {
+      type: Object as PropType<FooPropsObj>,
+      default: {name: 'default name'} as FooPropsObj
+    }
+  })
+</script>

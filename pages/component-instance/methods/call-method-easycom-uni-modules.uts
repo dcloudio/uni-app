@@ -1,0 +1,3 @@
+export function testInOtherFile(instance: CallEasyMethodUniModulesComponentPublicInstance, text: string) : string {
+  return instance.foo5(text) as string;
+}

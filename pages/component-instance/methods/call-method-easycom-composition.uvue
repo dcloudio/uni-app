@@ -1,0 +1,131 @@
+<template>
+  <view>
+    <call-easy-method ref="callEasyMethod1"></call-easy-method>
+    <custom-call-easy-method ref="customCallEasyMethod1"></custom-call-easy-method>
+    <test-getter-setter-composition ref="getterAndSetterComposition"></test-getter-setter-composition>
+    <test-getter-setter-options ref="getterAndSetterOptions"></test-getter-setter-options>
+    <view>
+        <text>getter-setter: <text id="getterAndSetter">{{JSON.stringify(getterAndSetterResult)}}</text></text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+const callEasyMethod1 = ref<CallEasyMethodComponentPublicInstance | null>(null)
+const customCallEasyMethod1 = ref<CustomCallEasyMethodComponentPublicInstance | null>(null)
+
+const callMethod = () => {
+  // 调用组件的 foo 方法
+  customCallEasyMethod1.value?.foo?.()
+}
+
+const callMethod1 = () => {
+  // 调用组件的 foo1 方法
+  callEasyMethod1.value?.foo1?.()
+}
+
+const callMethod2 = () => {
+  // 调用组件的 foo2 方法并传递 1个参数
+  callEasyMethod1.value?.foo2?.(Date.now())
+}
+
+const callMethod3 = () => {
+  // 调用组件的 foo3 方法并传递 2个参数
+  callEasyMethod1.value?.foo3?.(Date.now(), Date.now())
+}
+
+const callMethod4 = () => {
+  // 调用组件的 foo4 方法并传递 callback
+  callEasyMethod1.value?.foo4?.(() => {
+    console.log('callback')
+  })
+}
+
+const callMethod5 = () => {
+  // 注意： 返回值可能为 null，当前例子一定不为空，所以加了 !
+  const result = callEasyMethod1.value?.foo5?.('string1') as string
+  console.log(result) // string1
+}
+
+const callMethodTest = (text: string): string | null => {
+  const result = callEasyMethod1.value?.foo5?.(text) as string
+  return result
+}
+
+const callCustomMethodTest = (): string | null => {
+  const result = customCallEasyMethod1.value?.foo?.() as string
+  return result
+}
+
+const getterAndSetterComposition = ref<TestGetterSetterCompositionComponentPublicInstance | null>(null)
+const getterAndSetterOptions = ref<TestGetterSetterOptionsComponentPublicInstance | null>(null)
+const getterAndSetterResult = ref<number[]>([])
+
+const callGetterAndSetterCompositionGetCount = (): number => {
+    return getterAndSetterComposition.value!.getCount()
+}
+const callGetterAndSetterCompositionGetCountWithCallMethod = (): number => {
+    return getterAndSetterComposition.value!.$callMethod('getCount') as number
+}
+const callGetterAndSetterOptionsGetCount = (): number => {
+    return getterAndSetterOptions.value!.getCount()
+}
+const callGetterAndSetterOptionsGetCountWithCallMethod = (): number => {
+    return getterAndSetterOptions.value!.$callMethod('getCount') as number
+}
+const callGetterAndSetterCompositionSetCount = (count: number) => {
+    getterAndSetterComposition.value!.setCount(count)
+}
+const callGetterAndSetterCompositionSetCountWithCallMethod = (count: number) => {
+    getterAndSetterComposition.value!.$callMethod('setCount', count)
+}
+const callGetterAndSetterOptionsSetCount = (count: number) => {
+    getterAndSetterOptions.value!.setCount(count)
+}
+const callGetterAndSetterOptionsSetCountWithCallMethod = (count: number) => {
+    getterAndSetterOptions.value!.$callMethod('setCount', count)
+}
+
+const callGetterAndSetter = (): number[] => {
+    const result: number[] = []
+    callGetterAndSetterCompositionSetCount(1)
+    result.push(callGetterAndSetterCompositionGetCount())
+    callGetterAndSetterCompositionSetCountWithCallMethod(2)
+    result.push(callGetterAndSetterCompositionGetCountWithCallMethod())
+    callGetterAndSetterOptionsSetCount(3)
+    result.push(callGetterAndSetterOptionsGetCount())
+    callGetterAndSetterOptionsSetCountWithCallMethod(4)
+    result.push(callGetterAndSetterOptionsGetCountWithCallMethod())
+    getterAndSetterResult.value = result
+    return result
+}
+const delay = (): Promise<string> =>
+  new Promise((resolve, _) => {
+    setTimeout(() => {
+      resolve('')
+    }, 1000)
+  })
+
+const call = async (): Promise<void> => {
+  callGetterAndSetter()
+  callMethod()
+  callMethod1()
+  await delay()
+  callMethod2()
+  await delay()
+  callMethod3()
+  await delay()
+  callMethod4()
+  await delay()
+  callMethod5()
+}
+
+onReady(() => {
+  call()
+})
+
+defineExpose({
+  callMethodTest,
+  callCustomMethodTest
+})
+</script>

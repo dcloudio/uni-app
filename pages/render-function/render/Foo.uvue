@@ -1,0 +1,6 @@
+<template>
+    <view>
+        <slot name="header"></slot>
+        <slot name="footer"></slot>
+    </view>
+</template>

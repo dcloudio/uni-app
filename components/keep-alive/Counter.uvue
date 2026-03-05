@@ -1,0 +1,39 @@
+<template>
+	<view>
+		<text class="counter-text">count: {{ count }}</text>
+		<button class="mt-10 counter-btn" @click="increment">+</button>
+		<text class="mt-10" id="activated-num">activated num: {{ activatedNum }}</text>
+		<text class="mt-10" id="deactivated-num">deactivated num: {{ deactivatedNum }}</text>
+	</view>
+</template>
+
+<script lang="uts">
+	export default {
+		name: 'Counter',
+		data() {
+			return {
+				count: 0,
+				activatedNum: 0,
+				deactivatedNum: 0,
+			}
+		},
+		activated() { this.activatedNum++ },
+		deactivated() { this.deactivatedNum++ },
+		methods: {
+			increment() {
+				console.log('this.count: ',this.count);
+				this.count++
+			}
+		}
+	}
+</script>
+
+<style>
+	.counter-btn {
+		height: 40px;
+		line-height: 40px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		text-align: center;
+	}
+</style>

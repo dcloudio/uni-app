@@ -1,0 +1,13 @@
+<template>
+  <text class="mt-10 child-mixin-component-2">{{ title }}</text>
+</template>
+
+<script lang="uts">
+export default {
+  data(){
+    return {
+      title: 'child mixin component 2'
+    }
+  }
+}
+</script>

@@ -1,0 +1,86 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <view class="page container">
+      <text class="mb-10">component lifecycle 组合式 API</text>
+      <keep-alive>
+        <component :is="aliveComponent"  @updateIsScroll="updateIsScroll" />
+      </keep-alive>
+      <button class="mt-10" @click="scrollToBottom">scrollToBottom</button>
+      <button id="toggle-alive-component-btn" class="mt-10" @click="toggleAliveComponent">toggle alive component</button>
+      <button class="mt-10" @click="navigateToHome">navigateTo home</button>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang='uts'>
+  import ChildComponent from './ChildComponentComposition.uvue'
+  import { state, setLifeCycleNum } from '@/store/index.uts'
+
+  const aliveComponent = shallowRef<any | null>(ChildComponent)
+
+  const isScrolled = ref(false)
+
+  // 自动化测试
+  const pageGetLifeCycleNum = () : number => {
+    return state.lifeCycleNum
+  }
+
+  // 自动化测试
+  const pageSetLifeCycleNum = (num : number) => {
+    setLifeCycleNum(num)
+  }
+
+  // 自动化测试
+  const pullDownRefresh = () => {
+    uni.startPullDownRefresh({
+      success() {
+        setTimeout(() => {
+          uni.stopPullDownRefresh()
+        }, 1500)
+      },
+    })
+  }
+
+  const scrollToBottom = () => {
+    uni.pageScrollTo({
+      scrollTop: 3000,
+    })
+  }
+  
+  const toggleAliveComponent = () => {
+    aliveComponent.value = aliveComponent.value == null ? ChildComponent : null
+  }
+
+  const updateIsScroll = (val : boolean) => {
+    isScrolled.value = val
+  }
+
+  // 自动化测试
+  const getIsScrolled = () : boolean => {
+    return isScrolled.value
+  }
+  
+  const navigateToHome = () => {
+    uni.navigateTo({
+      url: '/pages/index/index'
+    })
+  }
+
+  defineExpose({
+    pageGetLifeCycleNum,
+    pageSetLifeCycleNum,
+    pullDownRefresh,
+    scrollToBottom,
+    getIsScrolled
+  })
+</script>
+
+<style>
+  .container {
+    height: 1200px;
+  }
+</style>

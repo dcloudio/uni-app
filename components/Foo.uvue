@@ -1,0 +1,3 @@
+<template>
+	<text class="component-foo">this is component Foo</text>
+</template>

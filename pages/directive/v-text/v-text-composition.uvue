@@ -1,0 +1,17 @@
+<template>
+  <view class="page">
+    <view class="flex flex-row justify-between mb-10">
+      <text>v-txt for text:</text>
+      <text id="v-text-text" v-text="vTextForText"></text>
+    </view>
+    <view class="flex flex-row justify-between mb-10">
+      <text>v-txt for view:</text>
+      <view id="v-text-view" v-text="vTextForView"></view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+const vTextForText = ref('v-text for text')
+const vTextForView = ref('v-text for view')
+</script>

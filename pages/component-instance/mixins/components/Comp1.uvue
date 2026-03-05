@@ -1,0 +1,61 @@
+<template>
+  <view class="mt-10" ref="mixin-comp-root">
+    <text class="bold">Comp1: inheritAttrs: false</text>
+    <text class="mt-10" style="color:#ccc;"
+      >rootElementTitle should be null</text
+    >
+    <text class="mt-10 root-element-title-1">rootElementTitle: {{ rootElementTitle }}</text>
+    <!-- #ifdef APP -->
+    <text class="mt-10 bold">trigger emitter:</text>
+    <button class="mt-10 global-mixin-emit-1" @click="triggerEmitter('globalMixinEmit1')">
+      trigger globalMixinEmit1
+    </button>
+    <button
+      class="mt-10 global-child-mixin-emit-1"
+      @click="triggerEmitter('globalChildMixinEmit1')">
+      trigger globalChildMixinEmit1
+    </button>
+    <button class="mt-10 global-mixin-emit-2" @click="triggerEmitter('globalMixinEmit2')">
+      trigger globalMixinEmit2
+    </button>
+    <button
+      class="mt-10 global-child-mixin-emit-2"
+      @click="triggerEmitter('globalChildMixinEmit2')">
+      trigger globalChildMixinEmit2
+    </button>
+    <button class="mt-10 mixin-emit" @click="triggerEmitter('mixinEmit')">
+      trigger mixinEmit
+    </button>
+    <button class="mt-10 child-mixin-emit" @click="triggerEmitter('childMixinEmit')">
+      trigger childMixinEmit
+    </button>
+    <MixinComp />
+    <!-- #endif -->
+  </view>
+</template>
+
+<script lang="uts">
+export default {
+  mixins:[{
+    mixins: [{
+      emits: ['childMixinEmit']
+    }],
+    inheritAttrs: false,
+    emits:['mixinEmit']
+  }],
+  data(){
+    return {
+      rootElementTitle: '' as string | null
+    }
+  },
+  mounted(){
+    const rootElement = this.$refs['mixin-comp-root'] as UniElement
+    this.rootElementTitle = JSON.stringify(rootElement.getAttribute('title'))
+  },
+  methods: {
+    triggerEmitter(emit: string){
+      this.$emit(emit, emit)
+    },
+  }
+}
+</script>

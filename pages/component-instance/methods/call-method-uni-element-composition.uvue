@@ -1,0 +1,23 @@
+<template>
+  <view>
+    <slider :show-value="true" ref="sliderRef"></slider>
+  </view>
+</template>
+
+<script setup lang="uts">
+const sliderRef = ref<UniSliderElement | null>(null)
+
+onReady(() => {
+  sliderRef.value!.value = 80
+})
+
+const callMethodTest = (text: string): string | null => {
+  sliderRef.value?.setAttribute('str', text)
+  const result = sliderRef.value?.getAttribute('str') as string
+  return result
+}
+
+defineExpose({
+  callMethodTest
+})
+</script>
