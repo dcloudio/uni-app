@@ -1,0 +1,10 @@
+export function testArrayBufferToBase64():number{
+    // fs读取一个文件
+    const fsManager = uni.getFileSystemManager()
+    const filePath : string.URIString = UTSAndroid.getResourcePath("static/logo.png")
+    const fileArrayBuffer = fsManager.readFileSync(filePath, null) as ArrayBuffer
+    let dataV = fileArrayBuffer.slice(0, 1280)
+    let tempV = new Uint8Array(dataV)
+    const base64Ret = uni.arrayBufferToBase64(tempV.buffer! as ArrayBuffer)
+    return base64Ret.length
+}

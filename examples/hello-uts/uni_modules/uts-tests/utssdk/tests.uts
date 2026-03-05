@@ -1,0 +1,62 @@
+import { Matchers, NumberMatchers } from './Matchers.uts'
+
+export const describes = new Map<string, Result>()
+// #ifndef APP-IOS
+export class Result implements IJSONStringify {
+    total = 0
+    passed: string[] = []
+    failed: string[] = []
+
+    toJSON(): any | null {
+        let jsonRet = {
+            'total': this.total,
+            'passed': this.passed,
+            'failed': this.failed,
+        }
+        return jsonRet
+    }
+}
+// #endif
+
+// #ifdef APP-IOS
+export class Result {
+    total = 0
+    passed: string[] = []
+    failed: string[] = []
+}
+// #endif
+
+
+let result: Result = new Result()
+
+export function describe(name: string, fn: () => void): Result {
+    result = new Result()
+    describes.set(name, result)
+    fn()
+    return result
+}
+
+export function test(name: string, fn: () => void) {
+    try {
+        fn()
+        // console.log('push....', name)
+        result.passed.push(name)
+        // console.log('push....', result.passed.length)
+    } catch (e) {
+        if (e instanceof Error) {
+            result.failed.push(`${name}:\n${(e as Error).message}`)
+        } else {
+            result.failed.push(`${name}:\n${e}`)
+        }
+
+    }
+    result.total++
+}
+
+export function expect<T>(value: T): Matchers<T> {
+    return new Matchers(value);
+}
+
+export function expectNumber(value: number): NumberMatchers {
+    return new NumberMatchers(value);
+}

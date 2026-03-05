@@ -1,0 +1,39 @@
+<template>
+	<div>
+    <text>宽：{{width}}，高：{{height}}</text>
+		<button @tap="getSystemInfoClick">getSystemInfo测试</button>
+	</div>
+</template>
+
+<script>
+	export default {
+    data:{
+      width:"",
+      height:""
+    },
+		onLoad() {
+		  console.log("onload")
+		},
+    methods:{
+      getSystemInfoClick:function(){
+        
+        console.log("getSystemInfoClick")
+          try {
+            let systemInfo = uni.getSystemInfoSync()
+            this.height = systemInfo.screenHeight
+            this.width = systemInfo.screenWidth
+            
+            console.log("globalScreenHeight",this.height,"globalScreenWidth",this.width)
+          } catch (e) {
+            // 兼容本地测试
+            console.error(e)
+          }
+
+      }
+    }
+	}
+</script>
+
+<style>
+
+</style>

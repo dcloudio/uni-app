@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" 
+  package="io.dcloud.uni_modules.uts_nativepage">
+   <!--创建前台服务权限-->
+   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application>
+    <service
+        android:name="uts.sdk.modules.utsNativepage.CustomAccessibilityService"
+        android:enabled="true"
+        android:exported="true"
+        android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+        <intent-filter>
+            <action android:name="android.accessibilityservice.AccessibilityService"/>
+        </intent-filter>
+        <meta-data
+            android:name="android.accessibilityservice"
+            android:resource="@xml/custom_accessibility_service_config" />
+    </service>
+    
+	   <service android:name="uts.sdk.modules.utsNativepage.ForeService"  android:exported="true"/>
+     <activity android:name="uts.sdk.modules.utsNativepage.DemoActivity" android:exported="true">
+        <intent-filter>
+            <action android:name="uts.sdk.modules.demo" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+     </activity>
+	   <!--桌面widget组件注册-->
+	   <receiver
+		   android:name="uts.sdk.modules.utsNativepage.DoAppWidget"
+		   android:exported="false">
+		   <intent-filter>
+			   <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+		   </intent-filter>
+
+		   <meta-data
+			   android:name="android.appwidget.provider"
+			   android:resource="@xml/do_app_widget_info" />
+	   </receiver>
+    </application>
+</manifest>

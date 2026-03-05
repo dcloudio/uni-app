@@ -1,0 +1,12 @@
+import { UTSiOS } from "DCloudUTSFoundation"
+import "ToastSwiftFramework"
+import { DispatchQueue } from 'Dispatch';
+
+export function showToast():boolean{
+	// uts方法默认会在子线程中执行，涉及 UI 操作必须在主线程中运行，通过 DispatchQueue.main.async 方法可将代码在主线程中运行
+	DispatchQueue.main.async(execute=():void => {
+		// 在当前显示的控制器view上显示 toast 弹窗
+		UTSiOS.getCurrentViewController().view.makeToast("这是一条提示信息")
+	})
+	return true
+}

@@ -1,0 +1,652 @@
+import { describe, test, expect, expectNumber, Result } from './tests.uts'
+
+export function testMath(): Result {
+  return describe("Math", () => {
+    test('E', () => {
+      // #TEST Math.E
+      function getNapier(): number {
+        return Math.E
+      }
+      console.log(getNapier());
+      // expected output: 2.718281828459045
+      // #END
+
+      // expect(getNapier()).toEqual(2.718281828459045);
+    })
+    test('LN10', () => {
+      // #TEST Math.LN10
+      function getNatLog10(): number {
+        return Math.LN10;
+      }
+      console.log(getNatLog10());
+      // expected output: 2.302585092994046
+      // #END
+
+      expect(getNatLog10()).toEqual(2.302585092994046);
+    })
+    test('LN2', () => {
+      // #TEST Math.LN2
+      function getNatLog2(): number {
+        return Math.LN2;
+      }
+      console.log(getNatLog2());
+      // expected output: 0.6931471805599453
+      // #END
+      expect(getNatLog2()).toEqual(0.6931471805599453);
+    })
+    test('LOG10E', () => {
+      // #TEST Math.LOG10E
+      function getLog10e(): number {
+        return Math.LOG10E;
+      }
+      console.log(getLog10e());
+      // expected output: 0.4342944819032518
+      // #END
+      expect(getLog10e()).toEqual(0.4342944819032518);
+    })
+    test('LOG2E', () => {
+      // #TEST Math.LOG2E
+      function getLog2e(): number {
+        return Math.LOG2E;
+      }
+      console.log(getLog2e());
+      // expected output: 1.4426950408889634
+      // #END
+      expect(getLog2e()).toEqual(1.4426950408889634);
+    })
+    test('PI', () => {
+      // #TEST Math.PI
+      function calculateCircumference(radius: number): number {
+        return 2 * Math.PI * radius;
+      }
+      console.log(calculateCircumference(1));
+      // expected output: 6.283185307179586
+      // #END
+      expect(calculateCircumference(1)).toEqual(6.283185307179586);
+    })
+
+    test('SQRT1_2', () => {
+      // #TEST Math.SQRT1_2
+      function getRoot1_2(): number {
+        return Math.SQRT1_2;
+      }
+      console.log(getRoot1_2());
+      // expected output: 0.7071067811865476
+      // #END
+      expect(getRoot1_2()).toEqual(0.7071067811865476);
+    })
+
+    test('SQRT2', () => {
+      // #TEST Math.SQRT2
+      function getRoot2(): number {
+        return Math.SQRT2;
+      }
+      console.log(getRoot2());
+      // expected output: 1.4142135623730951
+      // #END
+      expect(getRoot2()).toEqual(1.4142135623730951);
+    })
+
+
+    test('abs', () => {
+      // #TEST Math.abs
+      function difference(a: number, b: number): number {
+        return Math.abs(a - b);
+      }
+
+      console.log(difference(3, 5));
+      // expected output: 2
+
+      console.log(difference(5, 3));
+      // expected output: 2
+
+      console.log(difference(1.23456, 7.89012));
+      // expected output: 6.6555599999999995
+      // #END
+      expect(difference(3, 5)).toEqual(2);
+      expect(difference(5, 3)).toEqual(2);
+      expect(difference(1.23456, 7.89012)).toEqual(6.6555599999999995);
+
+      let utsNumber1 = JSON.parse("-160")! as number
+      expect(Math.abs(utsNumber1)).toEqual(160);
+
+      let utsNumber2 = Math.abs(0) - 0.123456
+      expect(Math.abs(utsNumber2)).toEqual(0.123456);
+
+
+    })
+
+    test('acos', () => {
+      // #TEST Math.acos
+      console.log(Math.acos(-1));
+      // expected output: 3.141592653589793
+      // #ifdef APP-ANDROID
+      console.log(Math.acos(NaN));
+      // #endif
+      // expected output: NaN
+
+      console.log(Math.acos(0));
+      // expected output: 1.5707963267948966
+
+      console.log(Math.acos(1));
+      // expected output: 0
+      // #END
+      // 解决精度问题
+      // expect(Math.acos(-1)).toEqual(3.141592653589793);
+      expect(Math.acos(0)).toEqual(1.5707963267948966);
+      expect(Math.acos(1)).toEqual(0);
+    })
+
+    test('acosh', () => {
+      // #TEST Math.acosh 
+      console.log(Math.acosh(1));
+      // expected output: 0
+      // #ifdef APP-ANDROID
+      console.log(Math.acosh(NaN));
+      // #endif
+      // expected output: NaN
+
+      console.log(Math.acosh(2));
+      // expected output: 1.3169578969248166
+
+      console.log(Math.acosh(2.5));
+      // expected output: 1.566799236972411
+      // #END
+      // 解决精度问题
+      expect(Math.acosh(1)).toEqual(0);
+      expectNumber(Math.acosh(2)).toEqualDouble(1.3169578969248166);
+      expectNumber(Math.acosh(2.5)).toEqualDouble(1.566799236972411);
+    })
+
+    test('asin', () => {
+      // #TEST Math.asin
+      // #ifdef APP-ANDROID
+      console.log(Math.asin(NaN));
+      // #endif
+      // expected output: NaN
+
+      console.log(Math.asin(-1));
+      // expected output: -1.5707963267948966
+
+      console.log(Math.asin(0));
+      // expected output: 0
+
+      console.log(Math.asin(0.5));
+      // expected output: 0.5235987755982989
+
+      console.log(Math.asin(1));
+      // expected output: 1.5707963267948966
+      // #END
+      // 解决精度问题
+      expect(Math.asin(-1)).toEqual(-1.5707963267948966);
+      // expect(Math.asin(0.5)).toEqual(0.5235987755982989);
+      expect(Math.asin(0)).toEqual(0);
+      expect(Math.asin(1)).toEqual(1.5707963267948966);
+    })
+
+    test('asinh', () => {
+      // #TEST Math.asinh
+      // #ifdef APP-ANDROID
+      console.log(Math.asinh(NaN));
+      // #endif
+      // expected output: NaN
+
+      console.log(Math.asinh(1));
+      // expected output: 0.881373587019543
+
+      console.log(Math.asinh(0));
+      // expected output: 0
+
+      console.log(Math.asinh(-1));
+      // expected output: -0.881373587019543
+
+      console.log(Math.asinh(2));
+      // expected output: 1.4436354751788103
+      // #END
+      // 解决精度问题
+      expectNumber(Math.asinh(1)).toEqualDouble(0.881373587019543);
+      expectNumber(Math.asinh(0)).toEqualDouble(0);
+      expectNumber(Math.asinh(-1)).toEqualDouble(-0.881373587019543);
+      expectNumber(Math.asinh(2)).toEqualDouble(1.4436354751788103);
+    })
+
+    test('atan', () => {
+      // #TEST Math.atan
+      // #ifdef APP-ANDROID
+      console.log(Math.atan(NaN));
+      // #endif
+      // expected output: NaN
+
+      console.log(Math.atan(1));
+      // expected output: 0.7853981633974483
+
+      console.log(Math.atan(0));
+      // expected output: 0
+      // #END
+      // 解决精度问题
+      expect(Math.atan(1)).toEqual(0.7853981633974483);
+      expect(Math.atan(0)).toEqual(0);
+    })
+
+    test('atan2', () => {
+      // #TEST Math.atan2
+      console.log(Math.atan2(90, 15));
+      // expected output: 1.4056476493802699
+
+      console.log(Math.atan2(15, 90));
+      // expected output: 0.16514867741462683
+      // #END
+      expect(Math.atan2(90, 15)).toEqual(1.4056476493802699);
+      expectNumber(Math.atan2(15, 90)).toEqualDouble(0.16514867741462683);
+    })
+
+    test('atanh', () => {
+      // #TEST Math.atanh
+      // #ifdef APP-ANDROID
+      console.log(Math.atanh(NaN));
+      // #endif
+      // expected output: NaN
+
+      console.log(Math.atanh(0));
+      // expected output: 0
+      // #END
+      // 解决精度问题
+      expect(Math.atanh(0)).toEqual(0);
+      // expect(Math.atanh(0.5)).toEqual(0.5493061443340548);
+    })
+
+    test('cbrt', () => {
+      // expect(Math.cbrt(-1)).toEqual(-1);
+      // expect(Math.cbrt(0)).toEqual(0);
+      // expect(Math.cbrt(1)).toEqual(1);
+      // expect(Math.cbrt(2)).toEqual(1.2599210498948732);
+    })
+    test('ceil', () => {
+      // #TEST Math.ceil
+      console.log(Math.ceil(0.95));
+      // expected output: 1
+      // #ifdef APP-ANDROID
+      console.log(Math.ceil(NaN));
+      // #endif
+      // expected output: NaN
+
+      console.log(Math.ceil(4));
+      // expected output: 4
+
+      console.log(Math.ceil(7.004));
+      // expected output: 8
+
+      console.log(Math.ceil(-7.004));
+      // expected output: -7
+
+      console.log(Math.ceil(37110233000.223));
+      // expected output: 37110233001
+
+      console.log(Math.ceil(-37110233000.223));
+      // expected output: -37110233000
+      // #END
+      expect(Math.ceil(0.95)).toEqual(1);
+      expect(Math.ceil(4)).toEqual(4);
+      expect(Math.ceil(7.004)).toEqual(8);
+      expect(Math.ceil(-7.004)).toEqual(-7);
+      expect(Math.ceil(37110233000.223)).toEqual(37110233001);
+      expect(Math.ceil(-37110233000.223)).toEqual(-37110233000);
+    })
+
+    test('clz32', () => {
+      // #TEST Math.clz32
+      console.log(Math.clz32(1000));
+      // expected output: 22
+      // #END
+
+      expect(Math.clz32(NaN)).toEqual(32);
+      expect(Math.clz32(1)).toEqual(31);
+      expect(Math.clz32(1000)).toEqual(22);
+      expect(Math.clz32(0)).toEqual(32);
+      expect(Math.clz32(3.5)).toEqual(30);
+    })
+    test('cos', () => {
+      // #TEST Math.cos
+      console.log(Math.cos(0));
+      // expected output: 1.0
+
+      console.log(Math.cos(1));
+      // expected output: 0.5403023058681398
+      // #END
+      // 解决精度问题
+      expect(Math.cos(0)).toEqual(1.0);
+      expect(Math.cos(1)).toEqual(0.5403023058681398);
+    })
+
+    test('cosh', () => {
+      // #TEST Math.cosh
+      console.log(Math.cosh(0));
+      // expected output: 1.0
+
+      console.log(Math.cosh(1));
+      // expected output: 1.5430806348152437
+
+      console.log(Math.cosh(-1));
+      // expected output: 1.5430806348152437
+      // #END
+      // 解决精度问题
+      expect(Math.cosh(0)).toEqual(1.0);
+      expectNumber(Math.cosh(1)).toEqualDouble(1.5430806348152437);
+      expectNumber(Math.cosh(-1)).toEqualDouble(1.5430806348152437);
+    })
+
+    test('exp', () => {
+      // #TEST Math.exp
+      console.log(Math.exp(-1));
+      // expected output: 0.36787944117144233
+
+      console.log(Math.exp(0));
+      // expected output: 1.0
+
+      console.log(Math.exp(1));
+      // expected output: 2.718281828459045
+      // #END
+      // 解决精度问题
+      expectNumber(Math.exp(-1)).toEqualDouble(0.36787944117144233);
+      expect(Math.exp(0)).toEqual(1.0);
+      // expectNumber(Math.exp(1)).toEqualDouble(2.718281828459045);
+    })
+
+    test('expm1', () => {
+      // #TEST Math.expm1
+      console.log(Math.expm1(1));
+      // expected output: 1.718281828459045
+
+      console.log(Math.expm1(-38));
+      // expected output: -1
+      // #END
+      expectNumber(Math.expm1(1)).toEqualDouble(1.718281828459045);
+      expectNumber(Math.expm1(-38)).toEqualDouble(-1);
+    })
+
+    test('floor', () => {
+      // #TEST Math.floor
+      console.log(Math.floor(5.95));
+      // expected output: 5
+
+      console.log(Math.floor(5.05));
+      // expected output: 5
+
+      console.log(Math.floor(5));
+      // expected output: 5
+
+      console.log(Math.floor(-5.05));
+      // expected output: -6
+
+      console.log(Math.floor(37110233000.223));
+      // expected output: 37110233000
+
+      console.log(Math.floor(-37110233000.223));
+      // expected output: -37110233001
+      // #END
+      // 解决精度问题
+      expect(Math.floor(5.95)).toEqual(5);
+      expect(Math.floor(5.05)).toEqual(5);
+      expect(Math.floor(5)).toEqual(5);
+      expect(Math.floor(-5.05)).toEqual(-6);
+      expect(Math.floor(37110233000.223)).toEqual(37110233000);
+      expect(Math.floor(-37110233000.223)).toEqual(-37110233001);
+    })
+
+    test('fround', () => {
+      // #TEST Math.fround
+      // #ifdef APP-ANDROID
+      console.log(Math.fround(NaN));
+      // #endif
+      // expected output: NaN
+
+      console.log(Math.fround(1.5));
+      // expected output: 1.5
+
+      console.log(Math.fround(1.337));
+      // expected output: 1.3370000123977661
+      // #END
+      // 解决精度问题
+      expect(Math.fround(NaN)).toEqual(NaN);
+      expect(Math.fround(1.5)).toEqual(1.5);
+      expectNumber(Math.fround(1.337)).toEqualDouble(1.3370000123977661);
+    })
+
+    // test('hypot', () => {
+    // expect(Math.hypot(3, 4)).toEqual(5);
+    // expect(Math.hypot(5, 12)).toEqual(13);
+    // expect(Math.hypot(3, 4, 5)).toEqual(7.0710678118654755);
+    // expect(Math.hypot(-5)).toEqual(5);
+    // })
+    // test('imul', () => {
+    //     expect(Math.imul(3, 4)).toEqual(12);
+    //     expect(Math.imul(-5, 12)).toEqual(-60);
+    // })
+    test('log', () => {
+      // #TEST Math.log
+      console.log(Math.log(1));
+      // expected output: 0.0
+
+      console.log(Math.log(10));
+      // expected output: 2.302585092994046
+      // #END
+      // 解决精度问题
+      expect(Math.log(1)).toEqual(0.0);
+      expect(Math.log(10)).toEqual(2.302585092994046);
+    })
+
+    test('log10', () => {
+      // #TEST Math.log10
+      console.log(Math.log10(10));
+      // expected output: 1
+
+      console.log(Math.log10(100));
+      // expected output: 2
+
+      console.log(Math.log10(1));
+      // expected output: 0
+      // #END
+
+      // 解决精度问题
+      expect(Math.log10(10)).toEqual(1.0);
+      expect(Math.log10(100)).toEqual(2.0);
+      expect(Math.log10(1)).toEqual(0.0);
+    })
+    test('log1p', () => {
+      // #TEST Math.log1p
+      console.log(Math.log1p(Math.E - 1));
+      // expected output: 1.0
+
+      console.log(Math.log1p(0));
+      // expected output: 0.0
+      // 解决精度问题
+      // #END
+      expect(Math.log1p(Math.E - 1)).toEqual(1.0);
+      expect(Math.log1p(0)).toEqual(0.0);
+    })
+
+    test('log2', () => {
+      // #TEST Math.log2
+      console.log(Math.log2(2));
+      // expected output: 1.0
+
+      console.log(Math.log2(1024));
+      // expected output: 10.0
+
+      console.log(Math.log2(1));
+      // expected output: 0.0
+      // 解决精度问题
+      // #END
+      expect(Math.log2(2)).toEqual(1.0);
+      expect(Math.log2(1024)).toEqual(10.0);
+      expect(Math.log2(1)).toEqual(0.0);
+    })
+
+    test('max', () => {
+      // #TEST Math.max
+      console.log(Math.max(1, 3, 2));
+      // expected output: 3
+
+      console.log(Math.max(-1, -3, -2));
+      // expected output: -1
+      // #END
+      expect(Math.max(1, 3, 2)).toEqual(3);
+      expect(Math.max(-1, -3, -2)).toEqual(-1);
+    })
+
+    test('min', () => {
+      // #TEST Math.min
+      console.log(Math.min(2, 3, 1));
+      // expected output: 1
+
+      console.log(Math.min(-2, -3, -1));
+      // expected output: -3
+      // #END
+      expect(Math.min(2, 3, 1)).toEqual(1);
+      expect(Math.min(-2, -3, -1)).toEqual(-3);
+    })
+
+    test('pow', () => {
+      // #TEST Math.pow
+      console.log(Math.pow(7, 3));
+      // expected output: 343
+
+      console.log(Math.pow(4, 0.5));
+      // expected output: 2
+      // #END
+      expectNumber(Math.pow(7, 3)).toEqualDouble(343);
+      expectNumber(Math.pow(4, 0.5)).toEqualDouble(2);
+    })
+
+    test('random', () => {
+      // #TEST Math.random
+      function getRandomInt(max: number): number {
+        return Math.floor(Math.random() * max);
+      }
+
+      console.log(getRandomInt(getRandomInt(1)));
+      // expected output: 0
+      // #END
+      expect(getRandomInt(getRandomInt(1))).toEqual(0);
+    })
+
+    test('sign', () => {
+      // #TEST Math.sign
+      console.log(Math.sign(3));
+      // expected output: 1
+
+      console.log(Math.sign(-3));
+      // expected output: -1
+
+      console.log(Math.sign(0));
+      // expected output: 0
+      // #END
+      expect(Math.sign(3)).toEqual(1);
+      expect(Math.sign(-3)).toEqual(-1);
+      expect(Math.sign(0)).toEqual(0);
+    })
+    test('sin', () => {
+      // #TEST Math.sin
+      console.log(Math.sin(0));
+      // expected output: 0.0
+
+      console.log(Math.sin(1));
+      // expected output: 0.8414709848078965
+      // #END
+      // 解决精度问题
+      expect(Math.sin(0)).toEqual(0.0);
+      expect(Math.sin(1)).toEqual(0.8414709848078965);
+    })
+
+    test('sinh', () => {
+      // #TEST Math.sinh
+      console.log(Math.sinh(0));
+      // expected output: 0.0
+
+      console.log(Math.sinh(1));
+      // expected output: 1.1752011936438014
+      // #END
+      // 解决精度问题
+      expect(Math.sinh(0)).toEqual(0.0);
+      expect(Math.sinh(1)).toEqual(1.1752011936438014);
+    })
+
+    test('sqrt', () => {
+      // #TEST Math.sqrt
+      function calcHypotenuse(a: number, b: number): number {
+        return (Math.sqrt((a * a) + (b * b)));
+      }
+      console.log(calcHypotenuse(3, 4));
+      // expected output: 5.0
+
+      console.log(calcHypotenuse(5, 12));
+      // expected output: 13.0
+
+      console.log(calcHypotenuse(0, 0));
+      // expected output: 0.0
+      // #END
+      // 解决精度问题
+      expect(calcHypotenuse(3, 4)).toEqual(5.0);
+      expect(calcHypotenuse(5, 12)).toEqual(13.0);
+      expect(calcHypotenuse(0, 0)).toEqual(0.0);
+    })
+
+    test('tan', () => {
+      // #TEST Math.tan
+      console.log(Math.tan(0));
+      // expected output: 0.0
+
+      console.log(Math.tan(1));
+      // expected output: 1.5574077246549023
+      // #END
+      // 解决精度问题
+      expect(Math.tan(0)).toEqual(0.0);
+      // expect(Math.tan(1)).toEqual(1.5574077246549023);
+    })
+
+    test('tanh', () => {
+      // #TEST Math.tanh
+      console.log(Math.tanh(-1));
+      // expected output: -0.7615941559557649
+
+      console.log(Math.tanh(0));
+      // expected output: 0.0
+
+      console.log(Math.tanh(1));
+      // expected output: 0.7615941559557649
+      // #END
+      // 解决精度问题
+      expect(Math.tanh(-1)).toEqual(-0.7615941559557649);
+      expect(Math.tanh(0)).toEqual(0.0);
+      expect(Math.tanh(1)).toEqual(0.7615941559557649);
+    })
+
+    test('trunc', () => {
+      // #TEST Math.trunc
+      console.log(Math.trunc(13.37));
+      // expected output: 13
+
+      console.log(Math.trunc(42.84));
+      // expected output: 42
+
+      console.log(Math.trunc(0.123));
+      // expected output: 0
+      // #END
+      // 解决精度问题
+      expect(Math.trunc(13.37)).toEqual(13);
+      expect(Math.trunc(42.84)).toEqual(42);
+      expect(Math.trunc(0.123)).toEqual(0);
+    })
+
+    test('round', () => {
+      // #TEST Math.round
+      expect(Math.round(0.9)).toEqual(1);
+      expect(Math.round(5.95)).toEqual(6);
+      expect(Math.round(-5.05)).toEqual(-5);
+      expect(Math.round(37110233000.223)).toEqual(37110233000);
+      expect(Math.round(-37110233000.223)).toEqual(-37110233000);
+      // #END
+    })
+
+  })
+}

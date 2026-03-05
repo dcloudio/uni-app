@@ -1,0 +1,26 @@
+import { describe, test, expect, Result } from './tests.uts'
+
+class TestStaticMethodClass {
+  static setup = () : boolean => {
+    // 测试静态方法内的class继承
+    class A { }
+    class B extends A {
+      bool : boolean = true
+      // #ifdef APP-ANDROID
+      constructor() {
+        super()
+      }   
+      // #endif
+
+    }
+    return new B().bool
+  }
+}
+
+export function testClass() : Result {
+  return describe("Class", () => {
+    test('Class static method', () => {
+      expect(TestStaticMethodClass.setup()).toEqual(true)
+    })
+  })
+}

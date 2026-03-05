@@ -1,0 +1,170 @@
+<template>
+  <!-- #ifdef APP-IOS -->
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+  	<button @click="testCurrentVC">获取当前UIViewController</button>
+  	<view class="result" :style="resultStyle(currentVCResult.passed)"> 测试结果 -- {{formatResult(currentVCResult.passed)}}</view>
+  	<button @click="testKeyWindow">获取当前app的keyWindow</button>
+  	<view class="result" :style="resultStyle(keyWindowResult.passed)"> 测试结果 -- {{formatResult(keyWindowResult.passed)}}</view>
+  	<button @click="testColorConvert">将字符串色值转换为UIColor</button>
+  	<view class="result">
+  		<p v-for="item in colorConvertResult" :style="resultStyle(item.passed)"> {{item.key}}: {{item.value}} -- {{formatResult(item.passed)}}</p>
+  	</view>
+  	<button @click="testResourcePath">资源路径转换</button>
+  	<view class="result" :style="resultStyle(resourcePathResult.passed)"> {{resourcePathResult.key}}: {{resourcePathResult.value}} -- {{formatResult(resourcePathResult.passed)}}</view>
+  	<button @click="testDeviceInfo">获取设备信息</button>
+  	<view class="result">
+  		<p v-for="item in deviceInfoResult" :style="resultStyle(item.passed)"> {{item.key}}: {{item.value}} -- {{formatResult(item.passed)}}</p>
+  	</view>
+  	<button @click="testAppInfo">获取App信息相关api</button>
+  	<view class="result">
+  		<p v-for="item in appInfoResult" :style="resultStyle(item.passed)"> {{item.key}}: {{item.value}} -- {{formatResult(item.passed)}}</p>
+  	</view>
+  	<button @click="testSystemSetting">获取系统设置</button>
+  	<view class="result" :style="resultStyle(systemSettingResult.passed)"> {{systemSettingResult.key}}: {{systemSettingResult.value}} -- {{formatResult(systemSettingResult.passed)}}</view>
+  	<button @click="testTypeof">typeof</button>
+  	<view class="result">
+  		<p v-for="item in typeofResult" :style="resultStyle(item.passed)"> {{item.key}}: {{item.value}} -- {{formatResult(item.passed)}}</p>
+  	</view>
+  	<button @click="testDataConvert">数据转换</button>
+  	<view class="result">
+  		<p v-for="item in dataConvertResult" :style="resultStyle(item.passed)"> {{item.key}}: {{item.value}} -- {{formatResult(item.passed)}}</p>
+  	</view>
+  	<button @click="testAll">test all</button>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+  <!-- #endif -->
+</template>
+
+<script>
+  <!-- #ifdef APP-IOS -->
+  import {
+    getCurrentVCTest,
+    getKeyWindowTest,
+    colorWithStringTest,
+    getResourcePathTest,
+    getDeviceInfoTest,
+    getAppInfoTest,
+    getSystemSettingTest,
+    tepeofTest,   
+    dataConvertTest,
+  } from "@/uni_modules/uts-platform-api"
+  
+  
+  	export default {
+  		data() {
+  			return {
+  				title: "UTSiOS test",
+  				currentVCResult: {},
+  				keyWindowResult: {},
+  				colorConvertResult: [],
+  				resourcePathResult: {},
+  				deviceInfoResult: [],
+  				appInfoResult: [],
+  				systemSettingResult: {},
+  				typeofResult: [],
+  				dataConvertResult: []
+  			}
+  		},
+  		
+  		methods: {
+  			
+  			formatResult(res) {
+  				if (res == null) {
+  					return "";
+  				}
+  				return res ? "测试通过": "测试失败"
+  			},
+  			
+  			resultStyle(res) {
+  				
+  				if (res == null) {
+  					return {
+  						color: "#333333"
+  					}
+  				}
+  				let color =  res ? "#00ff00" : "#ff0000";
+  				return {
+  					color: color
+  				}
+  			},
+  			
+  			testCurrentVC() {
+  				this.currentVCResult = getCurrentVCTest();
+  			},
+  			
+  			testKeyWindow() {
+  				this.keyWindowResult = getKeyWindowTest();
+  			},
+  			
+  			testColorConvert() {
+  				let array = colorWithStringTest();
+  				this.colorConvertResult = array.map((value) => {
+  					return JSON.parse(value)
+  				})
+  			},
+  			
+  			testResourcePath() {
+  				this.resourcePathResult = getResourcePathTest("/static/logo.png");
+  			},
+  			
+  			testDeviceInfo() {
+  				let array = getDeviceInfoTest();
+  				this.deviceInfoResult = array.map((value) => {
+  					return JSON.parse(value)
+  				})
+  			},
+  			
+  			testAppInfo() {
+  				let array = getAppInfoTest();
+  				this.appInfoResult = array.map((value) => {
+  					return JSON.parse(value)
+  				})
+  			}, 
+  			
+  			testSystemSetting() {
+  				this.systemSettingResult = getSystemSettingTest();
+  			},
+  			
+  			testTypeof() {
+  				let array = tepeofTest();
+  				this.typeofResult = array.map((value) => {
+  					return JSON.parse(value)
+  				})
+  			},
+  			
+  			testDataConvert() {
+  				let array = dataConvertTest();
+  				this.dataConvertResult = array.map((value) => {
+  					return JSON.parse(value)
+  				})
+  			},
+  			
+  			testAll() {
+  				this.testCurrentVC();
+  				this.testKeyWindow();
+  				this.testColorConvert();
+  				this.testResourcePath();
+  				this.testDeviceInfo();
+  				this.testAppInfo();
+  				this.testSystemSetting();
+  				this.testTypeof();
+  				this.testDataConvert();
+  			}
+  		}
+  	}
+  <!-- #endif -->
+</script>
+
+<style>
+  
+  .result {
+  	text-align: left;
+  	padding-left: 20px;
+  	padding-right: 20px;
+  	max-width: 750rpx;
+  	overflow: visible;
+  }
+</style>

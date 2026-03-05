@@ -1,0 +1,20 @@
+import { describe, test, expect, Result } from './tests.uts'
+// #ifdef APP-HARMONY
+import { NativeCode } from './app-harmony/arktsCode.ets'
+// #endif
+
+export function testNativeCode(): Result {
+  return describe("mix-native-code-work", () => {
+    test('getStrFromNativeCode', () => {
+      // #ifdef APP-ANDROID
+      expect(NativeCode.getNativeStr()).toEqual("android-code");
+      // #endif
+      // #ifdef APP-IOS
+      expect(NativeCode.getNativeStr()).toEqual("iOS-code");
+      // #endif
+      // #ifdef APP-HARMONY
+      expect(NativeCode.getNativeStr()).toEqual("harmonyos-code");
+      // #endif
+    })
+  })
+}

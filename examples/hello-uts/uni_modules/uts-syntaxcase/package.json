@@ -1,0 +1,9 @@
+{
+  "name": "test-uts",
+  "id": "test-uts",
+  "version": "0.0.1",
+  "description": "UTS示例插件",
+  "uni_modules": {
+    "type": "uts"
+  }
+}

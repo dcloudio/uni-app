@@ -1,0 +1,535 @@
+import Color from "android.graphics.Color";
+import TextView from "android.widget.TextView";
+import FrameLayout from "android.widget.FrameLayout";
+import ViewGroup from "android.view.ViewGroup";
+import Gravity from "android.view.Gravity";
+import Runnable from 'java.lang.Runnable';
+import MediaPlayer from 'android.media.MediaPlayer';
+import Intent from 'android.content.Intent';
+
+import logo from "../../static/logo.png";
+import PackageManager from "android.content.pm.PackageManager";
+import MediaStore from "android.provider.MediaStore";
+import ActivityCompat from "androidx.core.app.ActivityCompat";
+import Manifest from "android.Manifest";
+import Activity from "android.app.Activity";
+import Bitmap from "android.graphics.Bitmap";
+import FileOutputStream from "java.io.FileOutputStream";
+
+
+import Toast from 'android.widget.Toast';
+import AlertDialog from 'android.app.AlertDialog';
+import DialogInterface from 'android.content.DialogInterface';
+import EditText from 'android.widget.EditText';
+
+
+import array from 'android.R.array';
+import File from 'java.io.File';
+
+
+/**
+ * 定时任务参数封装
+ */
+export type TimerOptions = {
+	/**
+	 * 定时任务开始的回调
+	 * @res 回调参数
+	 */
+	start : (res : string) => void;
+	/**
+	* 定时任务执行的回调
+	* @res 回调参数
+	*/
+	work : (res : string) => void;
+};
+
+export type TimerResult = {
+	name : string;
+	taskId ?: number;
+};
+
+/**
+ * 执行延时任务
+ */
+export function doTimerTask(opts : TimerOptions): TimerResult {
+	opts.start('doTimerTask start');
+	setTimeout(function () {
+		opts.work("doTimerTask work");
+	}, 2000);
+
+  const result: TimerResult = { 
+    name: "doTimerTask" 
+  }
+
+	return result
+}
+
+/**
+ * 执行周期任务
+ */
+export function doIntervalTask(opts : TimerOptions): TimerResult {
+
+	let taskRet = setInterval(function () {
+		opts.work("doIntervalTask work");
+	}, 2000);
+	opts.start('doIntervalTask start');
+
+  const result: TimerResult = { 
+    name: "doIntervalTask",
+    taskId: taskRet
+  }
+
+	return result
+}
+
+/**
+ * 清除周期任务
+ */
+export function clearIntervalTask(taskId : number): TimerResult {
+
+	clearInterval(taskId);
+
+  const result: TimerResult = { 
+    name: "clearIntervalTask" 
+  }
+
+	return result
+}
+
+
+/**
+ * 实现一个添加view的 Runnable类
+ * 用法说明：https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB
+ */
+class AddUIRunnable implements Runnable {
+
+	override run() : void {
+
+		let textView = new TextView(UTSAndroid.getUniActivity())
+		textView.setText("HELLO WORLD");
+		textView.textSize = 30.0.toFloat();
+		textView.setBackgroundColor(Color.RED)
+		textView.setTag("helloText")
+		textView.setGravity(Gravity.CENTER)
+    
+		let decorView = UTSAndroid.getUniActivity()!.getWindow().getDecorView();
+
+		let frameContent = decorView.findViewById<FrameLayout>(android.R.id.content)
+		let layoutParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+		layoutParam.topMargin = 200;
+
+		frameContent.addView(textView, layoutParam)
+
+	}
+};
+
+/**
+ * 实现一个移除view的 Runnable类
+ * 用法说明：https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB
+ */
+class RemoveUIRunnable implements Runnable {
+
+	override run() : void {
+
+		let decorView = UTSAndroid.getUniActivity()!.getWindow().getDecorView();
+		let frameContent = decorView.findViewById<FrameLayout>(android.R.id.content)
+
+		let targetTV = frameContent.findViewWithTag<TextView>("helloText")
+		frameContent.removeView(targetTV)
+
+	}
+};
+
+/**
+ * 实现添加view实例至decorview
+ * 
+ */
+export function addViewToDecorView() {
+	let uiRunable = new AddUIRunnable();
+	UTSAndroid.getUniActivity()!.runOnUiThread(uiRunable)
+
+}
+/**
+ * 实现从decorview上移除指定view
+ */
+export function removeViewToDecorView() {
+	var uiRunable = new RemoveUIRunnable();
+	UTSAndroid.getUniActivity()!.runOnUiThread(uiRunable)
+}
+
+
+
+/**
+ * 引用资源路径
+ */
+export function getMetaConfig() : string {
+	//
+	let packageName = UTSAndroid.getAppContext()!.getPackageName();
+	let appInfo = UTSAndroid.getAppContext()!.getPackageManager()!.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
+
+	let metaData = appInfo.metaData
+	if (metaData == null) {
+		return "";
+	}
+	let adId = metaData.getString("DCLOUD_READ_PHONE_STATE")
+	if (adId == null) {
+		// 没有数据，说明是自定义基座，则读取自定义基座的配置
+		let customMetaId = metaData.getString("UTS_CUSTOM_LAUNCHER_META")
+		if (customMetaId == null) {
+			return ""
+		}
+		return "自定义基座[UTS_CUSTOM_LAUNCHER_META]:" + customMetaId;
+	}
+	// 标准基座
+	return "标准基座[DCLOUD_READ_PHONE_STATE]:" + adId;
+}
+
+
+
+/**
+ * 引用资源路径
+ */
+export function getLogoPath() : string {
+	return logo;
+}
+
+/**
+ * 音频播放器对象
+ */
+let globalPlayer : MediaPlayer | null = null;
+/**
+ * 播放asset资源中的音频
+ */
+export function playAssetAudio() {
+
+	let assetManager = UTSAndroid.getAppContext()!.getAssets();
+	let afd = assetManager.openFd("free.mp3");
+
+	if (globalPlayer == null) {
+		globalPlayer = new MediaPlayer();
+		globalPlayer!.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+		globalPlayer!.prepare();
+		globalPlayer!.start();
+	}
+
+}
+
+
+/**
+ * 停止播放asset资源中的音频
+ */
+export function stopAssetAudio() {
+
+	if (globalPlayer != null) {
+		globalPlayer!.stop();
+		globalPlayer = null;
+	}
+
+}
+
+@UTSAndroid.Suppress("DEPRECATION")
+export function goOtherActivity(imageDone : (event : string) => void) : boolean {
+
+	// 检查相关权限是否已经具备
+	if (ActivityCompat.checkSelfPermission(UTSAndroid.getUniActivity()!, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+		// 不具备权限，申请权限，并且告知用户监听失败
+		ActivityCompat.requestPermissions(UTSAndroid.getUniActivity()!, arrayOf(Manifest.permission.CAMERA), 1002)
+
+		return false;
+	}
+
+  
+	UTSAndroid.onAppActivityResult((requestCode : Int, resultCode : Int, data ?: Intent) => {
+		let eventName = "onAppActivityResult  -  requestCode:" + requestCode + " -resultCode:" + resultCode + " -data:" + JSON.stringify(data);
+		console.log(eventName);
+		if ((requestCode == 1001) && (resultCode == Activity.RESULT_OK)) {
+			if (data != null) {
+				let bundle = data.getExtras();
+        
+				let mImageBitmap = bundle!.get("data") as Bitmap;
+				let bitmapPath = UTSAndroid.getUniActivity()!.getExternalCacheDir()!.getPath() + "/photo.png"
+				console.log(bitmapPath);
+				try {
+					mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(bitmapPath))
+				} catch (e) {
+				}
+				imageDone(bitmapPath);
+
+			}
+		}
+	});
+
+	let takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+	//resolveActivity 返回可处理 Intent 的第一个 Activity 组件
+	if (takePictureIntent.resolveActivity(UTSAndroid.getUniActivity()!.getPackageManager()) != null) {
+		UTSAndroid.getUniActivity()!.startActivityForResult(takePictureIntent, 1001);
+	}
+
+	return true;
+
+}
+
+
+/**
+ * 初始化应用生命周期监听
+ * 
+ */
+export function initAppLifecycle(onLifecycleChange : (event : string) => void) {
+
+
+	/**
+	 * application 内存不足的回调函数
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onapptrimmemory
+	 */
+	UTSAndroid.onAppTrimMemory((level : Number) => {
+		let eventName = "onAppTrimMemory - " + level;
+		onLifecycleChange(eventName);
+		console.log(eventName);
+	});
+
+	/**
+	 * application 状态改变的回调函数
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onAppConfigChange
+	 */
+	UTSAndroid.onAppConfigChange((ret : UTSJSONObject) => {
+		let eventName = "onAppConfigChange - " + JSON.stringify(ret);
+		onLifecycleChange(eventName);
+		console.log(eventName);
+	});
+
+
+	/**
+	 * activity 销毁生命周期回调
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivitydestroy
+	 */
+	UTSAndroid.onAppActivityDestroy(() => {
+		let eventName = "onAppActivityDestroy";
+		onLifecycleChange(eventName);
+		console.log(eventName);
+	});
+
+
+	/**
+	 * activity 失去焦点生命周期回调
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivitypause
+	 */
+	UTSAndroid.onAppActivityPause(() => {
+		let eventName = "onAppActivityPause";
+		onLifecycleChange(eventName);
+		console.log(eventName);
+	});
+	/**
+	 * activity 得到焦点的周期回调
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivityresume
+	 */
+	UTSAndroid.onAppActivityResume(() => {
+		let eventName = "onAppActivityResume";
+		onLifecycleChange(eventName);
+		console.log(eventName);
+	});
+	/**
+	 * activity 回退物理按键事件回调
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivityback
+	 */
+	UTSAndroid.onAppActivityBack(() => {
+		let eventName = "onAppActivityBack";
+		onLifecycleChange(eventName);
+		console.log(eventName);
+	});
+
+}
+
+
+/**
+ * 取消注册生命周期函数
+ */
+export function unRegLifecycle() {
+
+
+	/**
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onapptrimmemory
+	 */
+	UTSAndroid.offAppTrimMemory();
+
+	/**
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onAppConfigChange
+	 */
+	UTSAndroid.offAppConfigChange();
+
+	/**
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivitydestroy
+	 */
+	UTSAndroid.offAppActivityDestroy();
+
+	/**
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivitypause
+	 */
+	UTSAndroid.offAppActivityPause();
+
+	/**
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivityresume
+	 */
+	UTSAndroid.offAppActivityResume();
+	/**
+	 * activity 回退物理按键事件回调
+	 */
+	UTSAndroid.offAppActivityBack();
+
+}
+
+/**
+ * add since 2023-06-19 
+ * 新增传参测试用例
+ */
+export function inputArray(input : Array<string>) : boolean {
+
+	let inputStr = JSON.stringify(input)
+
+	if ('["a","b","c"]' == inputStr) {
+		return true
+	}
+	return false
+
+}
+
+export type ParamOptions = {
+	title : string,
+	array : Array<string>
+}
+
+export function inputParam(option : ParamOptions) : boolean {
+	let inputStr = JSON.stringify(option)
+	console.log(inputStr)
+	if ('{"array":["1","2","3"],"title":"hello"}' == inputStr) {
+		return true
+	}
+	return false
+}
+
+export function returnArray() : Array<string> {
+	return ['1', '2', '3']
+}
+
+export function returnParam() : ParamOptions {
+
+	let ret : ParamOptions = {
+		title: "returnParam",
+		array: ['1', '2', '3']
+	}
+	return ret
+
+}
+
+export type ParamCallback = (res : ParamOptions) => void
+export type ArrayCallback = (res : Array<string>) => void
+
+export function callbackArray(callback : ArrayCallback) {
+	callback(['8', '8', '8'])
+}
+
+
+export function callbackParam(callback : ParamCallback) {
+	let ret : ParamOptions = {
+		title: "callbackParam",
+		array: ['4', '5', '6']
+	}
+	callback(ret)
+}
+
+
+/**
+ * 
+ */
+export function quitApp(){
+	UTSAndroid.exit()
+}
+
+export class User {  
+
+    private name : string;  
+    private age : Int;  
+
+    constructor(hostP : string, port : Int) {  
+        this.name = hostP;  
+        this.age = port;  
+    }  
+	
+	describeSelf():string{
+		let text = "name = " + this.name + ";age = " + this.age
+		return text
+	}
+}
+
+
+export function arrayConvert():boolean{
+	
+	// kotlin.collections.List 转换 Array
+	let kotlinList = mutableListOf("hello","world")
+	let utsArr1 = Array.fromNative(kotlinList) 
+	
+	if(utsArr1[0] != "hello"){
+		return false
+	}
+	
+	// kotlin.Array 转换 Array
+	let kotlinArray = arrayOf("hello","world")
+	let utsArr2 = Array.fromNative(kotlinArray)
+	
+	if(utsArr2[0] != "hello"){
+		return false
+	}
+	
+	let b1 = byteArrayOf(-1,2,0,3,4,5)
+	let c1 = Array.fromNative(b1)
+  
+	if(c1[0] != (-1 as Number).toByte()){
+		return false
+	}
+	
+	
+	let b2 = longArrayOf(-1,2,0,3,4,5)
+	let c2 = Array.fromNative(b2)
+	if(c2[0] != (-1 as Number).toLong()){
+		return false
+	}
+	
+	let b3 = shortArrayOf(-1,2,0,3,4,5)
+	let c3 = Array.fromNative(b3)
+	if(c3[0] != (-1 as Number).toShort()){
+		return false
+	}
+	
+	let b4 = intArrayOf(-1,2,0,3,4,5)
+	let c4 = Array.fromNative(b4)
+	if(c4[0] != (-1 as Number).toInt()){
+		return false
+	}
+	
+	return true
+}
+
+
+export function openFileWithProvider(){
+	let file = new File(UTSAndroid.getResourcePath("static/logo.png"))
+  const uri = UTSAndroid.getFileProviderUri(file)
+	console.log("uri",uri.toString())
+	const intent = new Intent(Intent.ACTION_VIEW, uri)
+  // 添加权限标志 
+	intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) 
+	const context = UTSAndroid.getUniActivity()!;
+	context.startActivity(intent);
+}
+
+
+export class DefaultParamTest {
+	static execute(msg : String = "123") : string {
+    return msg
+	}
+	execute2(msg : String = "456") : string {
+    return msg
+	}
+}
+
+export function defaultParamFunc(msg : string = "789"):string {
+	return msg
+}

@@ -1,0 +1,200 @@
+import { describe, test, expect, Result } from './tests.uts'
+
+
+// class TestSuper implements UTSKeyIterable {
+// 	r1: string = ""
+// 	r2: Int = 1
+// 	r3: boolean = false
+	
+// 	ignoredKeys(): string[] {
+// 		return ["r1"]
+// 	}
+// }
+
+
+class TestChild implements UTSValueIterable<any | null> {
+	a: string = ""
+	b: number = 1
+	c: boolean = false
+	
+	holderArray: (any | null)[] = [11, 22, null, 33, 44, null];
+	
+	
+	ignoredKeys(): string[] {
+		// var result = [ignoredKeys()]
+		// result.push("holderArray")
+		return ["holderArray"]
+	}
+	
+	valueIterator(): UTSIterator<any | null> {
+		let holderIndex = 0;
+		let obj: UTSIterator<any | null> = {
+			next: (): UTSIteratorResult<any | null> => {
+        const done = holderIndex == this.holderArray.length
+        return {
+          done,
+          value: done ? null : this.holderArray[holderIndex++],
+        } as UTSIteratorResult<any | null>
+			}
+		}
+		return obj
+	}
+}
+
+	class TestClass implements UTSValueIterable<any | null> {
+		
+		holderArray: (any | null)[] = [null,  null]
+    
+		valueIterator(): UTSIterator<any | null> {
+			let holderIndex = 0;
+      let arr = this.holderArray.filter((value) => {
+        return value != null
+      })
+			let obj: UTSIterator<any | null> = {
+      
+				next:() : UTSIteratorResult<any | null> => {
+          const done = holderIndex == arr.length
+          return {
+            done,
+            value: done ? null : arr[holderIndex++],
+          } as UTSIteratorResult<any | null>
+				}
+			}
+			return obj
+		}
+		
+	}
+	
+	
+	
+	class TestClass2 implements UTSValueIterable<any | null> {
+		
+		holderArray: (any | null)[] = [11, 22, null, 33, 44, null]
+    
+		valueIterator(): UTSIterator<any | null> {
+			let holderIndex = 0;
+      let arr = this.holderArray.filter((value) => { 
+        return value != null
+      })
+      
+			let obj: UTSIterator<any | null> = {
+        
+				next: () : UTSIteratorResult<any | null> => {
+          const done = holderIndex == arr.length
+          return {
+            done,
+            value: done ? null : arr[holderIndex++],
+          } as UTSIteratorResult<any | null>
+				}
+			}
+			return obj
+		}
+		
+	}
+	
+	
+	
+	class TestClass3 implements UTSValueIterable<any | null> {
+		
+		holderArray: (any | null)[] = [11, 22, null, 33, 44, null]
+		
+		valueIterator(): UTSIterator<any | null> {
+			let holderIndex = 0;
+			let obj: UTSIterator<any | null> = {
+
+				next: () : UTSIteratorResult<any | null> => {
+          const done = holderIndex == this.holderArray.length
+            return {
+              done,
+              value: done ? null : this.holderArray[holderIndex++],
+            } as UTSIteratorResult<any | null>
+				}
+			}
+			return obj
+		}
+		
+	}
+  
+  
+
+
+export function testIterator(): Result {
+    return describe("Iterator", () => {
+        // test('for...in', () => {
+        //     let test = new TestChild()
+        //     let result: string[] = []
+        //     for (let item in test) {
+        //       result.push(item)
+        //     }
+        //     expect(result).toEqual(["a", "b", "c"])
+        // })
+		
+        test('for...of', () => {
+          // test Array
+            let arr = ["a", "b", "c", "d"]
+            let result1: string[] = []
+            for (let item of arr) {
+              result1.push(item)
+            }
+            expect(result1).toEqual(["a", "b", "c", "d"])
+            
+            // test Map
+            let dic = new Map<string, any>()
+            dic.set("a", 1)
+            dic.set("b", 2)
+            dic.set("c", 3)
+            //let result2: [any] = []
+             let result2: Array<any> = []
+            for (let item of dic) {
+              result2.push(item)
+            }
+            // #ifdef APP-ANDROID
+            expect(result2).toEqual(
+              [["a", 1], ["b", 2], ["c", 3]]
+            )
+            // #endif
+
+            // test Set
+            let set = new Set<any>()
+            set.add("a")
+            set.add("b")
+            set.add("c")
+            var result3: any[] = []
+            for (let item of set) {
+              result3.push(item)
+            }
+            expect(result3).toEqual(["a", "b", "c"])
+            
+            // test Class for UTSValueIterable
+            let test = new TestChild()
+            let result4: (any | null)[] = []
+            for (let item of test) {   
+              result4.push(item)
+            }
+            expect(result4).toEqual([11, 22, null, 33, 44, null])
+            
+            
+            let test221 = new TestClass()
+            let forofRet:Array<any|null> = []
+            for (let item of test221) {
+              forofRet.push(item)
+            }
+            expect(forofRet).toEqual([])
+            
+            let test222 = new TestClass2()
+            let forofRet2:Array<any|null> = []
+            for (let item of test222) {
+              forofRet2.push(item)
+            }
+            expect(forofRet2).toEqual([11, 22, 33, 44])
+            
+            let test223 = new TestClass3()  
+            let forofRet3:Array<any|null> = []
+            for (let item of test223) {
+              forofRet3.push(item)
+            }
+            expect(forofRet3).toEqual([11, 22, null, 33, 44, null])
+            
+        })
+    })
+}

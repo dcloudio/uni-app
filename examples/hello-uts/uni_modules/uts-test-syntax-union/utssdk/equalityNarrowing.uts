@@ -1,0 +1,26 @@
+function test(x: string | number, y: string | boolean) {
+    // #ifdef APP-ANDROID || APP-IOS
+    if (x == y) {
+        // We can now call any 'string' method on 'x' or 'y'.
+        return x.toUpperCase() + y.toLowerCase();
+    }
+    // #endif
+      
+    // #ifndef APP-ANDROID || APP-IOS
+    if (x === y) {
+        // We can now call any 'string' method on 'x' or 'y'.
+        return x.toUpperCase() + y.toLowerCase();
+    }
+    // #endif
+    return JSON.stringify([x, y]);
+}
+
+export function testEqualityNarrowing() {
+    return [
+        test("hello", "world"),
+        test("hello", "hello"),
+        test("hello", true),
+        test(1, "hello"),
+        test(1, true),
+    ];
+}

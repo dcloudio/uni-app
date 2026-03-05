@@ -1,0 +1,61 @@
+import { NotificationCenter} from 'Foundation';
+import { UIApplication } from "UIKit"
+import { OnUserCaptureScreen, OffUserCaptureScreen, UserCaptureScreenCallback, OnUserCaptureScreenResult } from "../interface.uts"
+
+/**
+ * 定义监听截屏事件工具类
+ */
+class CaptureScreenTool {
+	static listener: UserCaptureScreenCallback | null;
+	
+	// 监听截屏
+	static listenCaptureScreen(callback: UserCaptureScreenCallback | null) {
+		this.listener = callback
+		
+		// 注册监听截屏事件及回调方法
+		// target-action 回调方法需要通过 Selector("方法名") 构建
+		const method = Selector("userDidTakeScreenshot")
+		NotificationCenter.default.addObserver(this, selector = method, name = UIApplication.userDidTakeScreenshotNotification, object = null)
+	}
+	
+	// 捕获截屏回调的方法
+	// target-action 的方法前需要添加 @objc 前缀
+	@objc static userDidTakeScreenshot() {
+		// 回调
+		const res: OnUserCaptureScreenResult = {
+			errCode: 0,
+			errSubject: "uni-usercapturescreen",
+			errMsg: "onUserCaptureScreen:ok",
+			image: null
+		}
+		this.listener?.(res)
+	}
+	
+	// 移除监听事件
+	static removeListen(callback: UserCaptureScreenCallback | null) {
+		this.listener = null
+		NotificationCenter.default.removeObserver(this)
+		const res: OnUserCaptureScreenResult = {
+			errCode: 0,
+			errSubject: "uni-usercapturescreen",
+			errMsg: "offUserCaptureScreen:ok",
+			image: null
+		}
+		callback?.(res)
+	}
+}
+
+/**
+	* 开启截图监听
+	*/
+export const onUserCaptureScreen : OnUserCaptureScreen = function (callback : UserCaptureScreenCallback | null) {
+	CaptureScreenTool.listenCaptureScreen(callback)
+}
+
+/**
+	* 关闭截屏监听
+	*/
+export const offUserCaptureScreen : OffUserCaptureScreen = function (callback : UserCaptureScreenCallback | null) {
+	CaptureScreenTool.removeListen(callback)
+}
+

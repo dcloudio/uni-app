@@ -1,0 +1,10 @@
+export function testAssignments() {
+    const result: (number | string)[] = [];
+    let x: number | string = Math.random() < 0.5 ? 10 : "hello world!";
+    result.push(x);
+    x = 1;
+    result.push(x.toFixed(2));
+    x = "goodbye!";
+    result.push(x.length);
+    return result;
+}

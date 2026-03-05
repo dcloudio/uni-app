@@ -1,0 +1,62 @@
+
+export class Matchers<T> {
+    private actual: T
+    constructor(actual: T) {
+        this.actual = actual
+    }
+    toEqual(expected: T) {
+        if (JSON.stringify(expected) == JSON.stringify(this.actual)) {
+            return
+        }
+        // #ifndef APP-IOS || APP-HARMONY
+        throw new Error(format(expected, this.actual))
+        // #endif
+        // #ifdef APP-HARMONY
+        throw new Error(format(expected as any, this.actual as any))
+        // #endif
+        // #ifdef APP-IOS
+        NSException(name = NSExceptionName.internalInconsistencyException, reason = format(expected, this.actual)).raise()
+        // #endif
+    }
+	
+	toEqualNumber(expected: T) {
+		// #ifndef APP-IOS
+			if (expected == this.actual) {
+				return
+			}
+		// #endif
+		// #ifdef APP-IOS
+			this.toEqual(expected)
+		// #endif
+	}
+}
+/**
+ * 数值对比器
+ */
+export class NumberMatchers {
+	
+    private actual: number
+    constructor(actual: number) {
+        this.actual = actual
+    }
+	/**
+	 * 用于浮点数对比,只比较小数点后5位，web/app 浮点储存位数不同
+	 */
+	toEqualDouble(expected:number) {
+		
+		let absDiff = Math.abs(this.actual - expected)
+	    if (absDiff < 0.00001) {
+	        return
+	    }
+	    // #ifndef APP-IOS
+	    throw new Error(format(expected, this.actual))
+	    // #endif
+	}
+	
+
+}
+
+
+function format(expected: any | null, actual: any | null): string {
+    return `expected:<${expected}> but was:<${actual}>`
+}

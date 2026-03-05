@@ -1,0 +1,63 @@
+import { UIAlertController , UIAlertAction , UITextField } from "UIKit"
+import { UTSiOS } from "DCloudUTSFoundation"
+import { DispatchQueue } from 'Dispatch';
+
+export function showAlert(title: string|null, message: string|null, result: (index: Number) => void) {	
+	// uts方法默认会在子线程中执行，涉及 UI 操作必须在主线程中运行，通过 DispatchQueue.main.async 方法可将代码在主线程中运行
+	DispatchQueue.main.async(execute=():void => {
+		
+		// 初始化 UIAlertController 实例对象 alert
+		let alert = new UIAlertController(title=title,message=message,preferredStyle=UIAlertController.Style.alert)
+		
+		// 创建 UIAlertAction 按钮
+		let okAction = new UIAlertAction(title="确认", style=UIAlertAction.Style.default, handler=(action: UIAlertAction):void => {
+			// 点击按钮的回调方法
+			result(0)
+		})
+		
+		// 创建 UIAlertAction 按钮
+		let cancelAction = new UIAlertAction(title="取消", style=UIAlertAction.Style.cancel, handler=(action: UIAlertAction):void => {
+			// 点击按钮的回调方法
+			result(1)
+		})
+		
+		// 将 UIAlertAction 添加到 alert 上
+		alert.addAction(okAction)
+		alert.addAction(cancelAction)
+		
+		// 打开 alert 弹窗
+		UTSiOS.getCurrentViewController().present(alert, animated= true)
+	})
+}
+
+export function showPrompt(title: string|null, message: string|null,placeholder: string|null, result: (content: string)=>void) {
+	// uts方法默认会在子线程中执行，涉及 UI 操作必须在主线程中运行，通过 DispatchQueue.main.async 方法可将代码在主线程中运行
+	DispatchQueue.main.async(execute=():void => {
+		
+		// 初始化 UIAlertController 实例对象 alert
+		let alert = new UIAlertController(title=title,message=message,preferredStyle=UIAlertController.Style.alert)
+		
+		// 在 alert 上添加输入框
+		alert.addTextField(configurationHandler=(tf: UITextField):void => {
+			// 添加成功的回调
+			// 设置输入框的 placeholder
+			tf.placeholder = placeholder
+		})
+		
+		// 创建 UIAlertAction 按钮
+		let okAction = new UIAlertAction(title="确认", style=UIAlertAction.Style.default, handler=(action: UIAlertAction):void => {
+			// 点击按钮的回调方法
+			// 获取输入框中的内容
+			let tf = alert.textFields?.[0]
+			if (tf != null) {
+				result(tf!.text != null ? tf!.text! : "没有输入任何内容")
+			}
+		})
+		
+		// 将 UIAlertAction 添加到 alert 上
+		alert.addAction(okAction)
+		
+		// 打开 alert 弹窗
+		UTSiOS.getCurrentViewController().present(alert, animated= true)
+	})
+}

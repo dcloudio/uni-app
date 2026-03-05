@@ -1,0 +1,32 @@
+import { describe, test, expect, Result } from './tests.uts'
+
+export function testDecoder() : Result {
+  return describe("TextDecoder", () => {
+    test('decoder', () => {
+      // #TEST TextDecoder.decode
+      var utf8decoder = new TextDecoder(); // default 'utf-8' or 'utf8'
+
+      var u8arr = Uint8Array.of(240, 160, 174, 183);
+      var i8arr = Int8Array.of(-16, -96, -82, -73);
+
+      expect(utf8decoder.decode(u8arr)).toEqual('𠮷')
+      expect(utf8decoder.decode(i8arr)).toEqual('𠮷')
+
+      utf8decoder = new TextDecoder("gbk"); // default 'utf-8' or 'utf8'
+      expect(utf8decoder.decode(u8arr)).toEqual('馉');
+      expect(utf8decoder.decode(i8arr)).toEqual('馉')
+
+      // #ifndef APP-IOS
+      utf8decoder = new TextDecoder("utf-8");
+      var arraybuffer = new ArrayBuffer(4)
+      var dataView = new DataView(arraybuffer)
+      dataView.setInt8(0, -16)
+      dataView.setInt8(1, -96)
+      dataView.setInt8(2, -82)
+      dataView.setInt8(3, -73)
+      expect(utf8decoder.decode(dataView)).toEqual('𠮷');
+      // #endif
+      // #END
+    })
+  })
+}

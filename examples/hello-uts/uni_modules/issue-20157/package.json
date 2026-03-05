@@ -1,0 +1,97 @@
+{
+	"id": "issue-20157",
+	"displayName": "issue-20157",
+	"version": "1.0.0",
+	"description": "issue-20157",
+	"keywords": [
+        "issue-20157"
+    ],
+	"repository": "",
+	"engines": {
+		"HBuilderX": "^3.6.8",
+		"uni-app": "^3.1.0",
+		"uni-app-x": "^3.1.0"
+	},
+	"dcloudext": {
+		"type": "uts",
+		"sale": {
+			"regular": {
+				"price": "0.00"
+			},
+			"sourcecode": {
+				"price": "0.00"
+			}
+		},
+		"contact": {
+			"qq": ""
+		},
+		"declaration": {
+			"ads": "",
+			"data": "",
+			"permissions": ""
+		},
+		"npmurl": "",
+		"darkmode": "-",
+		"i18n": "-",
+		"widescreen": "-"
+	},
+	"uni_modules": {
+		"dependencies": [],
+		"encrypt": [],
+		"platforms": {
+			"cloud": {
+				"tcb": "-",
+				"aliyun": "-",
+				"alipay": "-"
+			},
+			"client": {
+				"uni-app": {
+					"vue": {
+						"vue2": "-",
+						"vue3": "-"
+					},
+					"web": {
+						"safari": "-",
+						"chrome": "-"
+					},
+					"app": {
+						"vue": "-",
+						"nvue": "-",
+						"android": "-",
+						"ios": "-",
+						"harmony": "-"
+					},
+					"mp": {
+						"weixin": "-",
+						"alipay": "-",
+						"toutiao": "-",
+						"baidu": "-",
+						"kuaishou": "-",
+						"jd": "-",
+						"harmony": "-",
+						"qq": "-",
+						"lark": "-"
+					},
+					"quickapp": {
+						"huawei": "-",
+						"union": "-"
+					}
+				},
+				"uni-app-x": {
+					"web": {
+						"safari": "-",
+						"chrome": "-"
+					},
+					"app": {
+						"android": "-",
+						"ios": "-",
+						"harmony": "-"
+					},
+					"mp": {
+						"weixin": "-"
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,9 @@
+import { testa } from "@/uni_modules/uts-test-a";
+
+export function testb() {
+	const res = testa()
+  if (res == 'a1') {
+    	console.log("uts-test-a pulgin testa function be called");
+  }
+	console.log("uts-test-b plugin testb function be called");                                  
+} 

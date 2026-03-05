@@ -1,0 +1,890 @@
+import { describe, test, expect, Result } from './tests.uts'
+import { TDataView } from './TDataView.uts'
+import { TFloat32Array } from './TFloat32Array.uts'
+import { TFloat64Array } from './TFloat64Array.uts'
+import { TInt8Array } from './TInt8Array.uts'
+import { TInt16Array } from './TInt16Array.uts'
+import { TInt32Array } from './TInt32Array.uts'
+import { TUint8Array } from './TUInt8Array.uts'
+import { TUint8ClampedArray } from './TUInt8ClampedArray.uts'
+import { TUint16Array } from './TUint16Array.uts'
+import { TUint32Array } from './TUint32Array.uts'
+// #ifdef APP-ANDROID
+import ByteBuffer from 'java.nio.ByteBuffer';
+// #endif
+
+const tDataView = new TDataView();
+const float32 = new TFloat32Array();
+const float64 = new TFloat64Array()
+const int8 = new TInt8Array()
+const int32 = new TInt32Array()
+const uint8 = new TUint8Array()
+const uint8Clamped = new TUint8ClampedArray()
+const uint16 = new TUint16Array()
+const uint32 = new TUint32Array()
+const int16 = new TInt16Array()
+
+export function testArrayBuffer() : Result {
+  return describe("ArrayBuffer", () => {
+    test('arraybuffer_isview', () => {
+      // #TEST ArrayBuffer.isView
+      var arrayBuffer = new ArrayBuffer(16)
+      var float64 = new Float64Array(arrayBuffer);
+      var isView = ArrayBuffer.isView(float64)
+      console.log(isView)//true
+
+      var a = 1
+      var isViewA = ArrayBuffer.isView(a)
+      console.log(isViewA)//false
+      // #END
+      expect(isView).toEqual(true);
+
+      expect(isViewA).toEqual(false);
+    })
+    // #ifdef  APP-ANDROID
+    test('arraybuffer_toByteBuffer', () => {
+      // #TEST ArrayBuffer.fromByteBuffer,ArrayBuffer.toByteBuffer
+      var byteBuffer = ByteBuffer.allocate(100)
+      byteBuffer.put(1)
+      byteBuffer.put(2)
+      var buffer = ArrayBuffer.fromByteBuffer(byteBuffer)
+      console.log('arraybuffer_toByteBuffer', buffer)
+      var int8 = new Int8Array(buffer)
+      console.log(int8[0])//1
+      console.log(int8[1])//2
+
+      byteBuffer = buffer.toByteBuffer()
+      console.log('arraybuffer_toByteBuffer', byteBuffer)
+
+      byteBuffer.rewind()
+      console.log(byteBuffer[0])//1
+      console.log(byteBuffer[1])//2
+      // #END
+      expect(int8[0]).toEqual(1);
+      expect(int8[1]).toEqual(2);
+      expect(byteBuffer[0]).toEqual(1);
+      expect(byteBuffer[1]).toEqual(2);
+    })
+    // #endif
+    
+    // #ifdef  APP-IOS
+    test('arraybuffer_toData', () => {
+      // #TEST ArrayBuffer.fromData,ArrayBuffer.toData
+      let str = 'hello world';
+      let data = str.data(using = String.Encoding.utf8)!
+      let arrayBuffer = ArrayBuffer.fromData(data)
+      let uint8Array = new Uint8Array(arrayBuffer)
+      console.log(uint8Array)
+      
+      let td = arrayBuffer.toData()
+      let content = new String(decoding = td, as = UTF8.self)
+      console.log(content)
+      // #END
+      expect(uint8Array.toString()).toEqual('104,101,108,108,111,32,119,111,114,108,100');
+      expect(content).toEqual('hello world');
+    })
+    // #endif
+
+
+    //dataview start
+    test('dataview_constructor', () => {
+      tDataView.setConstructor()
+    })
+    test('dataview_setInt8', () => {
+      tDataView.setInt8()
+    })
+    test('dataview_setFloat32', () => {
+      tDataView.setFloat32()
+    })
+    test('dataview_setFloat64', () => {
+      tDataView.setFloat64()
+    })
+    test('dataview_setInt16', () => {
+      tDataView.setInt16()
+    })
+    test('dataview_setInt32', () => {
+      tDataView.setInt32()
+    })
+    test('dataview_setUint16', () => {
+      tDataView.setUint16()
+    })
+    test('dataview_setUint32', () => {
+      tDataView.setUint32()
+    })
+    test('dataview_setUint8', () => {
+      tDataView.setUint8()
+    })
+    test('doTestDataViewBigEndian', () => {
+      tDataView.doTestDataViewBigEndian()
+    })
+    test('doTestDataViewLittleEndian', () => {
+      tDataView.doTestDataViewLittleEndian()
+    })
+    test('doTestTypedArrayBigEndian', () => {
+      tDataView.doTestTypedArrayBigEndian()
+    })
+    test('doTestTypedArrayLittleEndian', () => {
+      tDataView.doTestTypedArrayLittleEndian()
+    })
+    test('doTestDataViewFloats', () => {
+      tDataView.doTestDataViewFloats()
+    })
+    //dataview end
+    //typedarray start
+    test('typedarray_testConstructor', () => {
+      var arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+      var int32 = new Int32Array(arr);
+      expect(int32.toString()).toEqual("1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16");
+
+      var buffer = new ArrayBuffer(64);
+
+      int32 = new Int32Array(buffer);
+      expect(int32.byteLength).toEqual(64);
+
+      var length = 1024;
+      var arrUnit8 = new Uint8Array(length);
+      for (var i = 0; i < length; i++) {
+        arrUnit8[i] = i;
+      }
+      var uint8 = new Uint8Array(arrUnit8);
+      expect(uint8.byteLength).toEqual(1024);
+
+      length = 1024;
+      uint8 = new Uint8Array(length);
+      for (var i = 0; i < length; i++) {
+        uint8[i] = i;
+      }
+
+      var float64 = new Float64Array(uint8);
+      expect(float64.length).toEqual(1024);
+
+      int32 = new Int32Array(16);
+      expect(int32.length).toEqual(16);
+    })
+    test('typedarray_from_different_type', () => {
+      const length = 16;
+
+
+      const dest_arrays = [
+        new Uint8Array(length),
+        new Int8Array(length),
+        new Uint16Array(length),
+        new Int16Array(length),
+        new Uint32Array(length),
+        new Int32Array(length),
+        new Float32Array(length),
+        new Float64Array(length),
+        new Uint8ClampedArray(length)
+      ];
+
+      let uint8_array = new Uint8Array(length);
+      let int32_array = new Int32Array(length);
+      let float32_array = new Float32Array(length);
+      let float64_array = new Float64Array(length);
+      for (let i = 0; i < length; i++) {
+        uint8_array[i] = i;
+        int32_array[i] = i;
+        float32_array[i] = i;
+        float64_array[i] = i;
+      }
+      for (let i = 0; i < dest_arrays.length; i++) {
+        var typed_dest = dest_arrays[i]
+        typed_dest.set(uint8_array)
+        expect(typed_dest.length).toEqual(16)
+        typed_dest.set(int32_array)
+        expect(typed_dest.length).toEqual(16)
+        typed_dest.set(float32_array)
+        expect(typed_dest.length).toEqual(16)
+        typed_dest.set(float64_array)
+        expect(typed_dest.length).toEqual(16)
+      }
+    })
+    //typedarray end
+    //float32array start
+    test('float32_testConstructor', () => {
+      float32.testConstructor()
+    })
+    test('float32_testSet', () => {
+      float32.testSet()
+    })
+    test('float32_testSome', () => {
+      float32.testSome()
+    })
+    test('float32_testFrom', () => {
+      float32.from()
+    })
+    test('float32_testCopyWith', () => {
+      float32.testCopyWith()
+    })
+    test('float32_testEvery', () => {
+      float32.testEvery()
+    })
+    test('float32_testFill', () => {
+      float32.testFill()
+    })
+    test('float32_testFilter', () => {
+      float32.testFilter()
+    })
+    test('float32_find', () => {
+      float32.find()
+    })
+    test('float32_findIndex', () => {
+      float32.findIndex()
+    })
+    test('float32_foreach', () => {
+      float32.foreach()
+    })
+    test('float32_iterator', () => {
+      float32.iterator()
+    })
+    test('float32_includes', () => {
+      float32.includes()
+    })
+    test('float32_indexOf', () => {
+      float32.indexOf()
+    })
+    test('float32_join', () => {
+      float32.join()
+    })
+    test('float32_keys', () => {
+      float32.keys()
+    })
+    test('float32_map', () => {
+      float32.map()
+    })
+    test('float32_reduce', () => {
+      float32.reduce()
+    })
+    test('float32_reduceRight', () => {
+      float32.reduceRight()
+    })
+    test('float32_reverse', () => {
+      float32.reverse()
+    })
+    test('float32_slice', () => {
+      float32.slice()
+    })
+    test('float32_sort', () => {
+      float32.sort()
+    })
+    test('float32_subarray', () => {
+      float32.subarray()
+    })
+    test('float32_values', () => {
+      float32.values()
+    })
+    test('float32_arrayBufferSlice', () => {
+      float32.arrayBufferSlice()
+    })
+    //float32array end
+    //float64array start
+    test('float64_testConstructor', () => {
+      float64.testConstructor()
+    })
+    test('float64_testSet', () => {
+      float64.testSet()
+    })
+    test('float64_testCopyWith', () => {
+      float64.testCopyWith()
+    })
+    test('float64_testEvery', () => {
+      float64.testEvery()
+    })
+    test('float64_testFill', () => {
+      float64.testFill()
+    })
+    test('float64_testFilter', () => {
+      float64.testFilter()
+    })
+    test('float64_find', () => {
+      float64.find()
+    })
+    test('float64_findIndex', () => {
+      float64.findIndex()
+    })
+    test('float64_foreach', () => {
+      float64.foreach()
+    })
+    test('float64_iterator', () => {
+      float64.iterator()
+    })
+    test('float64_includes', () => {
+      float64.includes()
+    })
+    test('float64_indexOf', () => {
+      float64.indexOf()
+    })
+    test('float64_join', () => {
+      float64.join()
+    })
+    test('float64_keys', () => {
+      float64.keys()
+    })
+    test('float64_map', () => {
+      float64.map()
+    })
+    test('float64_reduce', () => {
+      float64.reduce()
+    })
+    test('float64_reduceRight', () => {
+      float64.reduceRight()
+    })
+    test('float64_reverse', () => {
+      float64.reverse()
+    })
+    test('float64_slice', () => {
+      float64.slice()
+    })
+    test('float64_sort', () => {
+      float64.sort()
+    })
+    test('float64_subarray', () => {
+      float64.subarray()
+    })
+    test('float64_values', () => {
+      float64.values()
+    })
+    test('float64_arrayBufferSlice', () => {
+      float64.arrayBufferSlice()
+    })
+    test('float64_testSome', () => {
+      float64.testSome()
+    })
+
+    //float64 end
+    //int8 start
+    test('int8_testConstructor', () => {
+      int8.testConstructor()
+    })
+    test('int8_testSet', () => {
+      int8.testSet()
+    })
+    test('int8_testCopyWith', () => {
+      int8.testCopyWith()
+    })
+    test('int8_testEvery', () => {
+      int8.testEvery()
+    })
+    test('int8_testFill', () => {
+      int8.testFill()
+    })
+    test('int8_testFilter', () => {
+      int8.testFilter()
+    })
+    test('int8_find', () => {
+      int8.find()
+    })
+    test('int8_findIndex', () => {
+      int8.findIndex()
+    })
+    test('int8_foreach', () => {
+      int8.foreach()
+    })
+    test('int8_iterator', () => {
+      int8.iterator()
+    })
+    test('int8_includes', () => {
+      int8.includes()
+    })
+    test('int8_indexOf', () => {
+      int8.indexOf()
+    })
+    test('int8_join', () => {
+      int8.join()
+    })
+    test('int8_keys', () => {
+      int8.keys()
+    })
+    test('int8_map', () => {
+      int8.map()
+    })
+    test('int8_reduce', () => {
+      int8.reduce()
+    })
+    test('int8_reduceRight', () => {
+      int8.reduceRight()
+    })
+    test('int8_reverse', () => {
+      int8.reverse()
+    })
+    test('int8_slice', () => {
+      int8.slice()
+    })
+    test('int8_sort', () => {
+      int8.sort()
+    })
+    test('int8_subarray', () => {
+      int8.subarray()
+    })
+    test('int8_values', () => {
+      int8.values()
+    })
+    test('int8_arrayBufferSlice', () => {
+      int8.arrayBufferSlice()
+    })
+    test('int8_testSome', () => {
+      int8.testSome()
+    })
+
+    // //int8 end
+
+    // //int16 start
+    test('int16_testConstructor', () => {
+      int16.testConstructor()
+    })
+    test('int16_testSet', () => {
+      int16.testSet()
+    })
+    test('int16_testCopyWith', () => {
+      int16.testCopyWith()
+    })
+    test('int16_testEvery', () => {
+      int16.testEvery()
+    })
+    test('int16_testFill', () => {
+      int16.testFill()
+    })
+    test('int16_testFilter', () => {
+      int16.testFilter()
+    })
+    test('int16_find', () => {
+      int16.find()
+    })
+    test('int16_findIndex', () => {
+      int16.findIndex()
+    })
+    test('int16_foreach', () => {
+      int16.foreach()
+    })
+    test('int16_iterator', () => {
+      int16.iterator()
+    })
+    test('int16_includes', () => {
+      int16.includes()
+    })
+    test('int16_indexOf', () => {
+      int16.indexOf()
+    })
+    test('int16_join', () => {
+      int16.join()
+    })
+    test('int16_keys', () => {
+      int16.keys()
+    })
+    test('int16_map', () => {
+      int16.map()
+    })
+    test('int16_reduce', () => {
+      int16.reduce()
+    })
+    test('int16_reduceRight', () => {
+      int16.reduceRight()
+    })
+    test('int16_reverse', () => {
+      int16.reverse()
+    })
+    test('int16_slice', () => {
+      int16.slice()
+    })
+    test('int16_sort', () => {
+      int16.sort()
+    })
+    test('int16_subarray', () => {
+      int16.subarray()
+    })
+    test('int16_values', () => {
+      int16.values()
+    })
+    test('int16_arrayBufferSlice', () => {
+      int16.arrayBufferSlice()
+    })
+    test('int16_testSome', () => {
+      int16.testSome()
+    })
+
+    //int16  end
+
+    //int32 start
+    test('int32_testConstructor', () => {
+      int32.testConstructor()
+    })
+    test('int32_testSet', () => {
+      int32.testSet()
+    })
+    test('int32_testCopyWith', () => {
+      int32.testCopyWith()
+    })
+    test('int32_testEvery', () => {
+      int32.testEvery()
+    })
+    test('int32_testFill', () => {
+      int32.testFill()
+    })
+    test('int32_testFilter', () => {
+      int32.testFilter()
+    })
+    test('int32_find', () => {
+      int32.find()
+    })
+    test('int32_findIndex', () => {
+      int32.findIndex()
+    })
+    test('int32_foreach', () => {
+      int32.foreach()
+    })
+    test('int32_iterator', () => {
+      int32.iterator()
+    })
+    test('int32_includes', () => {
+      int32.includes()
+    })
+    test('int32_indexOf', () => {
+      int32.indexOf()
+    })
+    test('int32_join', () => {
+      int32.join()
+    })
+    test('int32_keys', () => {
+      int32.keys()
+    })
+    test('int32_map', () => {
+      int32.map()
+    })
+    test('int32_reduce', () => {
+      int32.reduce()
+    })
+    test('int32_reduceRight', () => {
+      int32.reduceRight()
+    })
+    test('int32_reverse', () => {
+      int32.reverse()
+    })
+    test('int32_slice', () => {
+      int32.slice()
+    })
+    test('int32_sort', () => {
+      int32.sort()
+    })
+    test('int32_subarray', () => {
+      int32.subarray()
+    })
+    test('int32_values', () => {
+      int32.values()
+    })
+    test('int32_arrayBufferSlice', () => {
+      int32.arrayBufferSlice()
+    })
+    test('int32_testSome', () => {
+      int32.testSome()
+    })
+
+    //int32  end
+
+    //uint8 start
+    test('uint8_testConstructor', () => {
+      uint8.testConstructor()
+    })
+    test('uint8_from', () => {
+      uint8.from()
+    })
+    test('uint8_testSet', () => {
+      uint8.testSet()
+    })
+    test('uint8_testCopyWith', () => {
+      uint8.testCopyWith()
+    })
+    test('uint8_testEvery', () => {
+      uint8.testEvery()
+    })
+    test('uint8_testFill', () => {
+      uint8.testFill()
+    })
+    test('uint8_testFilter', () => {
+      uint8.testFilter()
+    })
+    test('uint8_find', () => {
+      uint8.find()
+    })
+    test('uint8_findIndex', () => {
+      uint8.findIndex()
+    })
+    test('uint8_foreach', () => {
+      uint8.foreach()
+    })
+    test('uint8_iterator', () => {
+      uint8.iterator()
+    })
+    test('uint8_includes', () => {
+      uint8.includes()
+    })
+    test('uint8_indexOf', () => {
+      uint8.indexOf()
+    })
+    test('uint8_join', () => {
+      uint8.join()
+    })
+    test('uint8_keys', () => {
+      uint8.keys()
+    })
+    test('uint8_map', () => {
+      uint8.map()
+    })
+    test('uint8_reduce', () => {
+      uint8.reduce()
+    })
+    test('uint8_reduceRight', () => {
+      uint8.reduceRight()
+    })
+    test('uint8_reverse', () => {
+      uint8.reverse()
+    })
+    test('uint8_slice', () => {
+      uint8.slice()
+    })
+    test('uint8_sort', () => {
+      uint8.sort()
+    })
+    test('uint8_subarray', () => {
+      uint8.subarray()
+    })
+    test('uint8_values', () => {
+      uint8.values()
+    })
+    test('uint8_arrayBufferSlice', () => {
+      uint8.arrayBufferSlice()
+    })
+    test('uint8_testSome', () => {
+      uint8.testSome()
+    })
+
+    //uint8  end
+
+    //uint8Clamped start
+    test('uint8Clamped_testConstructor', () => {
+      uint8Clamped.testConstructor()
+    })
+    test('uint8Clamped_testSet', () => {
+      uint8Clamped.testSet()
+    })
+    test('uint8Clamped_testCopyWith', () => {
+      uint8Clamped.testCopyWith()
+    })
+    test('uint8Clamped_testEvery', () => {
+      uint8Clamped.testEvery()
+    })
+    test('uint8Clamped_testFill', () => {
+      uint8Clamped.testFill()
+    })
+    test('uint8Clamped_testFilter', () => {
+      uint8Clamped.testFilter()
+    })
+    test('uint8Clamped_find', () => {
+      uint8Clamped.find()
+    })
+    test('uint8Clamped_findIndex', () => {
+      uint8Clamped.findIndex()
+    })
+    test('uint8Clamped_foreach', () => {
+      uint8Clamped.foreach()
+    })
+    test('uint8Clamped_iterator', () => {
+      uint8Clamped.iterator()
+    })
+    test('uint8Clamped_includes', () => {
+      uint8Clamped.includes()
+    })
+    test('uint8Clamped_indexOf', () => {
+      uint8Clamped.indexOf()
+    })
+    test('uint8Clamped_join', () => {
+      uint8Clamped.join()
+    })
+    test('uint8Clamped_keys', () => {
+      uint8Clamped.keys()
+    })
+    test('uint8Clamped_map', () => {
+      uint8Clamped.map()
+    })
+    test('uint8Clamped_reduce', () => {
+      uint8Clamped.reduce()
+    })
+    test('uint8Clamped_reduceRight', () => {
+      uint8Clamped.reduceRight()
+    })
+    test('uint8Clamped_reverse', () => {
+      uint8Clamped.reverse()
+    })
+    test('uint8Clamped_slice', () => {
+      uint8Clamped.slice()
+    })
+    test('uint8Clamped_sort', () => {
+      uint8Clamped.sort()
+    })
+    test('uint8Clamped_subarray', () => {
+      uint8Clamped.subarray()
+    })
+    test('uint8Clamped_values', () => {
+      uint8Clamped.values()
+    })
+    test('uint8Clamped_arrayBufferSlice', () => {
+      uint8Clamped.arrayBufferSlice()
+    })
+    test('uint8Clamped_testSome', () => {
+      uint8Clamped.testSome()
+    })
+
+    //uint8Clamped  end
+
+    //uint16 start
+    test('uint16_testConstructor', () => {
+      uint16.testConstructor()
+    })
+    test('uint16_testSet', () => {
+      uint16.testSet()
+    })
+    test('uint16_testCopyWith', () => {
+      uint16.testCopyWith()
+    })
+    test('uint16_testEvery', () => {
+      uint16.testEvery()
+    })
+    test('uint16_testFill', () => {
+      uint16.testFill()
+    })
+    test('uint16_testFilter', () => {
+      uint16.testFilter()
+    })
+    test('uint16_find', () => {
+      uint16.find()
+    })
+    test('uint16_findIndex', () => {
+      uint16.findIndex()
+    })
+    test('uint16_foreach', () => {
+      uint16.foreach()
+    })
+    test('uint16_iterator', () => {
+      uint16.iterator()
+    })
+    test('uint16_includes', () => {
+      uint16.includes()
+    })
+    test('uint16_indexOf', () => {
+      uint16.indexOf()
+    })
+    test('uint16_join', () => {
+      uint16.join()
+    })
+    test('uint16_keys', () => {
+      uint16.keys()
+    })
+    test('uint16_map', () => {
+      uint16.map()
+    })
+    test('uint16_reduce', () => {
+      uint16.reduce()
+    })
+    test('uint16_reduceRight', () => {
+      uint16.reduceRight()
+    })
+    test('uint16_reverse', () => {
+      uint16.reverse()
+    })
+    test('uint16_slice', () => {
+      uint16.slice()
+    })
+    test('uint16_sort', () => {
+      uint16.sort()
+    })
+    test('uint16_subarray', () => {
+      uint16.subarray()
+    })
+    test('uint16_values', () => {
+      uint16.values()
+    })
+    test('uint16_arrayBufferSlice', () => {
+      uint16.arrayBufferSlice()
+    })
+    test('uint16_testSome', () => {
+      uint16.testSome()
+    })
+
+    //uint16  end
+
+    //uint32 start
+    test('uint32_testConstructor', () => {
+      uint32.testConstructor()
+    })
+    test('uint32_testSet', () => {
+      uint32.testSet()
+    })
+    test('uint32_testCopyWith', () => {
+      uint32.testCopyWith()
+    })
+    test('uint32_testEvery', () => {
+      uint32.testEvery()
+    })
+    test('uint32_testFill', () => {
+      uint32.testFill()
+    })
+    test('uint32_testFilter', () => {
+      uint32.testFilter()
+    })
+    test('uint32_find', () => {
+      uint32.find()
+    })
+    test('uint32_findIndex', () => {
+      uint32.findIndex()
+    })
+    test('uint32_foreach', () => {
+      uint32.foreach()
+    })
+    test('uint32_iterator', () => {
+      uint32.iterator()
+    })
+    test('uint32_includes', () => {
+      uint32.includes()
+    })
+    test('uint32_indexOf', () => {
+      uint32.indexOf()
+    })
+    test('uint32_join', () => {
+      uint32.join()
+    })
+    test('uint32_keys', () => {
+      uint32.keys()
+    })
+    test('uint32_map', () => {
+      uint32.map()
+    })
+    test('uint32_reduce', () => {
+      uint32.reduce()
+    })
+    test('uint32_reduceRight', () => {
+      uint32.reduceRight()
+    })
+    test('uint32_reverse', () => {
+      uint32.reverse()
+    })
+    test('uint32_slice', () => {
+      uint32.slice()
+    })
+    test('uint32_sort', () => {
+      uint32.sort()
+    })
+    test('uint32_subarray', () => {
+      uint32.subarray()
+    })
+    test('uint32_values', () => {
+      uint32.values()
+    })
+    test('uint32_arrayBufferSlice', () => {
+      uint32.arrayBufferSlice()
+    })
+    test('uint32_testSome', () => {
+      uint32.testSome()
+    })
+
+    //uint32  end
+  })
+}

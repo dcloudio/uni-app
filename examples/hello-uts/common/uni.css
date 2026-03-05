@@ -1,0 +1,159 @@
+.uni-padding-wrap {
+    padding: 0 30rpx;
+}
+
+.uni-title {
+    padding: 20rpx 0;
+}
+
+.uni-title-text {
+    font-size: 30rpx;
+    font-weight: bold;
+}
+
+.uni-subtitle-text {
+    margin-top: 10rpx;
+    font-size: 24rpx;
+    color: #888;
+    font-weight: bold;
+}
+
+.uni-common-mb {
+    margin-bottom: 30rpx;
+}
+
+.uni-common-pb {
+    padding-bottom: 30rpx;
+}
+
+.uni-common-pl {
+    padding-left: 30rpx;
+}
+
+.uni-common-mt {
+    margin-top: 30rpx;
+}
+
+.uni-hello-text {
+    color: #7A7E83;
+    line-height: 22px;
+}
+
+.uni-list {
+    background-color: #FFFFFF;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #c8c7cc;
+}
+
+.uni-list-cell {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.uni-list-cell-line {
+    border-bottom: 1px solid #c8c7cc;
+}
+
+.uni-list-cell-hover {
+    background-color: #eee;
+}
+
+.uni-list-cell-pd {
+    padding: 22rpx 30rpx 22rpx 0;
+}
+
+.uni-list-cell-left {
+    padding: 0 30rpx 0 20rpx;
+}
+
+.uni-list-cell-db,
+.uni-list-cell-right {
+    flex: 1;
+}
+
+.uni-label {
+    width: 210rpx;
+    font-size: 28rpx;
+    /* word-wrap: break-word;
+    word-break: break-all;
+    text-indent:20rpx; */
+}
+
+.uni-input {
+    height: 50rpx;
+    padding: 15rpx 25rpx;
+    line-height: 50rpx;
+    font-size: 28rpx;
+    background: #FFF;
+    flex: 1;
+    box-sizing: content-box;
+}
+
+.uni-flex {
+    /* #ifdef H5 */
+    display: flex;
+    /* #endif */
+    flex-direction: row;
+}
+
+.uni-flex-item {
+    flex: 1;
+}
+
+.uni-row {
+    flex-direction: row;
+}
+
+.uni-column {
+    flex-direction: column;
+}
+
+/* 背景色 */
+.uni-bg-red {
+    background: #F76260;
+    color: #FFF;
+}
+
+.uni-bg-green {
+    background: #09BB07;
+    color: #FFF;
+}
+
+.uni-bg-blue {
+    background: #007AFF;
+    color: #FFF;
+}
+
+.uni-btn-v {
+    padding: 10rpx 0;
+}
+
+.uni-btn {
+    margin-top: 20rpx;
+}
+
+.uni-link {
+    color: #576B95;
+    font-size: 26rpx;
+}
+
+.uni-center {
+    flex-direction: row;
+    justify-content: center;
+}
+
+/* textarea */
+.uni-textarea-box {
+    background: #ffffff;
+}
+
+.uni-textarea {
+    padding: 18rpx;
+    line-height: 1.6;
+    font-size: 28rpx;
+}

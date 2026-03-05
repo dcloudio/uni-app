@@ -1,0 +1,5 @@
+export function addViewToDecorView() { }
+export function removeViewToDecorView() { }
+export function initAppLifecycle() { }
+export function getLogoPath() {}
+export function playAssetAudio(){}

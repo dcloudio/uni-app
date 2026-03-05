@@ -1,0 +1,19 @@
+import { describe, test, expect, Result } from './tests.uts'
+
+export function testBoolean(): Result {
+    return describe("Boolean", () => {
+        test('toString', () => {
+            const a = true;
+            expect(a.toString()).toEqual("true");
+			expect(true.toString()).toEqual("true");
+			expect(false.toString()).toEqual("false");
+        })
+		
+		test('valueOf', () => {
+		    const a = true;
+		    expect(a.valueOf()).toEqual(true);
+			expect(true.valueOf()).toEqual(true);
+			expect(false.valueOf()).toEqual(false);
+		})
+    })
+}

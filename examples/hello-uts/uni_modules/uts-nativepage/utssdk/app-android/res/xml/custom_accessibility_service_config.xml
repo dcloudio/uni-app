@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<accessibility-service
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/demo_service_name"
+    android:accessibilityEventTypes="typeNotificationStateChanged|typeWindowStateChanged"
+    android:packageNames="io.dcloud.uniappx,io.dcloud.HBuilder"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:notificationTimeout="100"
+    android:accessibilityFlags="flagDefault"
+    android:canRetrieveWindowContent="true"/>

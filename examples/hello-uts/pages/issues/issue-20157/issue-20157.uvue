@@ -1,0 +1,32 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  import { A } from '@/uni_modules/issue-20157'
+  const a = {
+    a: 'ab',
+    b: 12
+  } as A
+  export default {
+    data() {
+      return {
+        a: a.a,
+        b: a.b
+      }
+    },
+    methods: {
+      
+    }
+  }
+</script>
+
+<style>
+
+</style>

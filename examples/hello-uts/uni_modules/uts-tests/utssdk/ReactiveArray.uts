@@ -1,0 +1,348 @@
+import { describe, test, expect, Result } from './tests.uts'
+import { UTSReactiveArray } from 'io.dcloud.uts.vue.reactivity'
+export function testReactiveArray() : Result {
+    return describe("Array", () => {
+        test('length', () => {
+            const arr : string[] = new UTSReactiveArray(['shoes', 'shirts', 'socks', 'sweaters']);
+            expect(arr.length).toEqual(4);
+            expect(arr[0]).toEqual('shoes');
+            expect(arr[1]).toEqual('shirts');
+            // expect(arr[4]).toEqual(null);
+            const numbers: number[] = new UTSReactiveArray([1, 2, 3, 4, 5]);
+            if (numbers.length > 3) {
+              numbers.length = 3;
+            }
+            expect(numbers.length).toEqual(3);
+            expect(numbers).toEqual([1, 2, 3]);
+            expect(new UTSReactiveArray([] as number[]).length).toEqual(0);
+
+            // 1. web: 最大长度 2^32-1
+            // 超出边界报错: RangeError: Invalid array length
+            // 2. kotlin: 最大长度 2^31-1
+            // 超出边界报错: Error: targetMethod error::java.lang.OutOfMemoryError: Failed to allocate a 420546432 byte allocation with 6291456 free bytes and 300MB until OOM, target footprint 295113520, growth limit 603979776
+            // 3. swift: 最大长度和内存有关
+            // 超出边界没有返回信息
+        })
+        test("concat", () => {
+            expect(new UTSReactiveArray(['a', 'b', 'c']).concat(['d', 'e', 'f'])).toEqual(["a", "b", "c", "d", "e", "f"]);
+            expect(new UTSReactiveArray([1, 2, 3]).concat([4, 5, 6])).toEqual([1, 2, 3, 4, 5, 6]);
+            expect(new UTSReactiveArray(['']).concat([''])).toEqual(["", ""]);
+            const num1 : number[] = new UTSReactiveArray([1, 2, 3]);
+            const num2 : number[] = new UTSReactiveArray([4, 5, 6]);
+            const num3 : number[] = new UTSReactiveArray([7, 8, 9]);
+            const numbers = num1.concat(num2, num3);
+            expect(numbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        })
+        test("copyWithin", () => {
+            const arr : string[] = new UTSReactiveArray(['a', 'b', 'c', 'd', 'e']);
+            expect(arr.copyWithin(0, 3, 4)).toEqual(["d", "b", "c", "d", "e"]);
+            expect(arr.copyWithin(1, 3)).toEqual(["d", "d", "e", "d", "e"]);
+            const arr2 : number[] = new UTSReactiveArray([1, 2, 3, 4, 5]);
+            expect(arr2.copyWithin(-2)).toEqual([1, 2, 3, 1, 2]);
+            expect(arr2.copyWithin(-2, -3, -1)).toEqual([1, 2, 3, 3, 1]);
+        })
+        test("every", () => {
+            const isBelowThreshold = (currentValue : number) : boolean => currentValue < 40;
+            const array1 : number[] = new UTSReactiveArray([1, 30, 39, 29, 10, 13]);
+            const array2 : number[] = new UTSReactiveArray([1, 30, 39, 29, 10, 13, 41]);
+            expect(array1.every(isBelowThreshold)).toEqual(true);
+            expect(array2.every(isBelowThreshold)).toEqual(false);
+            const array3 : number[] = new UTSReactiveArray([1, 2, 3]);
+            array3.every((element : number, index : number, array : number[]) : boolean => {
+                expect(array[index]).toEqual(element);
+                return true;
+            })
+        })
+        test("fill", () => {
+            const array1 : number[] = new UTSReactiveArray([1, 2, 3, 4]);
+            expect(array1.fill(0, 2, 4)).toEqual([1, 2, 0, 0]);
+            expect(array1.fill(5, 1)).toEqual([1, 5, 5, 5]);
+            expect(array1.fill(6)).toEqual([6, 6, 6, 6]);
+            const array2 : number[] = new UTSReactiveArray([1, 2, 3])
+            expect(array2.fill(4)).toEqual([4, 4, 4]);
+            const array3 : number[] = new UTSReactiveArray([0, 0])
+            expect(array3.fill(1, null)).toEqual([1, 1]);
+            expect(array3.fill(1, 0, 1.5)).toEqual([1, 1]);
+        })
+        test("filter", () => {
+            const words : string[] = new UTSReactiveArray(['spray', 'limit', 'elite', 'exuberant', 'destruction', 'present']);
+            const result = words.filter((word : string) : boolean => word.length > 6);
+            expect(result).toEqual(["exuberant", "destruction", "present"]);
+            const array1 : number[] = new UTSReactiveArray([-3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+            const isPrime = array1.filter((num : number) : boolean => {
+                for (let i = 2; num > i; i++) {
+                    // swift里，基础类型暂不支持!==,===对比
+                    if (num % i == 0) {
+                        return false;
+                    }
+                }
+                return num > 1;
+            })
+            expect(isPrime).toEqual([2, 3, 5, 7, 11, 13]);
+            const array2 : number[] = new UTSReactiveArray([1, 2, 3]);
+            array2.filter((element : number, index : number, array : number[]) : boolean => {
+                expect(array[index]).toEqual(element);
+                return true;
+            })
+        })
+        test("find", () => {
+            const array1 : number[] = new UTSReactiveArray([5, 12, 8, 130, 44]);
+            const found1 = array1.find((element : number) : boolean => element > 10);
+            expect(found1).toEqual(12);
+            const found2 = array1.find((element : number) : boolean => element < 5);
+            expect(found2).toEqual(null);
+            const array2 : number[] = new UTSReactiveArray([1, 2, 3]);
+            array2.find((element : number, index : number, array : number[]) : boolean => {
+                expect(array[index]).toEqual(element);
+                return true;
+            })
+        })
+        test("findIndex", () => {
+            const array1 : number[] = new UTSReactiveArray([5, 12, 8, 130, 44]);
+            const isLargeNumber = (element : number) : boolean => element > 13;
+            expect(array1.findIndex(isLargeNumber)).toEqual(3);
+            const array2 : number[] = new UTSReactiveArray([10, 11, 12]);
+            expect(array2.findIndex(isLargeNumber)).toEqual(-1);
+            const array3 : number[] = new UTSReactiveArray([1, 2, 3]);
+            array3.findIndex((element : number, index : number, array : number[]) : boolean => {
+                expect(array[index]).toEqual(element);
+                return true;
+            })
+        })
+        test("flat", () => {
+            const arr1 : any[] = new UTSReactiveArray([0, 1, 2, [3, 4]]);
+            expect(arr1.flat()).toEqual([0, 1, 2, 3, 4]);
+            const arr2 : any[] = new UTSReactiveArray([0, 1, 2, [[[3, 4]]]]);
+            expect(arr2.flat(2)).toEqual([0, 1, 2, [3, 4]]);
+            const arr3 : any[] = new UTSReactiveArray([1, 2, [3, 4, [5, 6]]]);
+            expect(arr3.flat(2)).toEqual([1, 2, 3, 4, 5, 6]);
+        })
+        test("forEach", () => {
+            const array1 : string[] = new UTSReactiveArray(['a', 'b', 'c']);
+            array1.forEach((element : string, index : number) => {
+                expect(array1[index]).toEqual(element)
+            });
+
+            const items : string[] = new UTSReactiveArray(['item1', 'item2', 'item3']);
+            const copyItems : string[] = new UTSReactiveArray([]);
+            items.forEach((item : string) => {
+                copyItems.push(item);
+            });
+            expect(copyItems).toEqual(items)
+        })
+        test("includes", () => {
+            const array1 : number[] = new UTSReactiveArray([1, 2, 3]);
+            expect(array1.includes(2)).toEqual(true);
+            const pets : string[] = new UTSReactiveArray(['cat', 'dog', 'bat']);
+            expect(pets.includes('cat')).toEqual(true);
+            expect(pets.includes('at')).toEqual(false);
+            const array2 : string[] = new UTSReactiveArray(['a', 'b', 'c']);
+            expect(array2.includes('c', 3)).toEqual(false);
+            expect(array2.includes('c', 100)).toEqual(false);
+        })
+        test("indexOf", () => {
+            const beasts : string[] = new UTSReactiveArray(['ant', 'bison', 'camel', 'duck', 'bison']);
+            expect(beasts.indexOf('bison')).toEqual(1);
+            expect(beasts.indexOf('bison', 2)).toEqual(4);
+            expect(beasts.indexOf('giraffe')).toEqual(-1);
+
+            const indices : number[] = new UTSReactiveArray([]);
+            const array : string[] = new UTSReactiveArray(['a', 'b', 'a', 'c', 'a', 'd']);
+            const element = 'a';
+            let idx = array.indexOf(element);
+            // swift里，基础类型暂不支持!==,===对比
+            while (idx != -1) {
+                indices.push(idx);
+                idx = array.indexOf(element, idx + 1);
+            }
+            expect(indices).toEqual([0, 2, 4]);
+        })
+        test("join", () => {
+            const elements : string[] = new UTSReactiveArray(['Fire', 'Air', 'Water']);
+            expect(elements.join()).toEqual("Fire,Air,Water");
+            expect(elements.join('')).toEqual("FireAirWater");
+            expect(elements.join('-')).toEqual("Fire-Air-Water");
+        })
+        test("lastIndexOf", () => {
+            const animals : string[] = new UTSReactiveArray(['Dodo', 'Tiger', 'Penguin', 'Dodo']);
+            expect(animals.lastIndexOf('Dodo')).toEqual(3);
+            expect(animals.lastIndexOf('Tiger')).toEqual(1);
+            const array : number[] = new UTSReactiveArray([2, 5, 9, 2]);
+            let index = array.lastIndexOf(2);
+            expect(index).toEqual(3);
+            index = array.lastIndexOf(7);
+            expect(index).toEqual(-1);
+            index = array.lastIndexOf(2, 3);
+            expect(index).toEqual(3);
+            index = array.lastIndexOf(2, 2);
+            expect(index).toEqual(0);
+        })
+        test("map", () => {
+            const array1 : number[] = new UTSReactiveArray([1, 4, 9, 16]);
+            const map1 = array1.map((x : number) : number => x * 2);
+            expect(map1).toEqual([2, 8, 18, 32]);
+
+            const numbers : number[] = new UTSReactiveArray([1, 4, 9]);
+            const roots = numbers.map((num : number) : number => num + 1);
+            expect(numbers).toEqual([1, 4, 9]);
+            expect(roots).toEqual([2, 5, 10]);
+
+            const array2 : number[] = new UTSReactiveArray([1, 2, 3]);
+            array2.map((element : number, index : number, array : number[]) => {
+                expect(array[index]).toEqual(element);
+            })
+        })
+        test("pop", () => {
+            const plants : string[] = new UTSReactiveArray(['broccoli', 'cauliflower', 'cabbage', 'kale', 'tomato']);
+            expect(plants.pop()).toEqual("tomato");
+            expect(plants).toEqual(["broccoli", "cauliflower", "cabbage", "kale"]);
+            plants.pop();
+            expect(plants).toEqual(["broccoli", "cauliflower", "cabbage"]);
+        })
+        test("push", () => {
+            const animals : string[] = new UTSReactiveArray(['pigs', 'goats', 'sheep']);
+            const count = animals.push('cows');
+            expect(count).toEqual(4);
+            expect(animals).toEqual(['pigs', 'goats', 'sheep', 'cows']);
+            animals.push('chickens', 'cats', 'dogs');
+            expect(animals).toEqual(["pigs", "goats", "sheep", "cows", "chickens", "cats", "dogs"]);
+        })
+        test("reduce", () => {
+            const array1 : number[] = new UTSReactiveArray([1, 2, 3, 4]);
+            const initialValue : number = 0;
+            const sumWithInitial = array1.reduce(
+                (previousValue : number, currentValue : number) : number => previousValue + currentValue,
+                initialValue
+            );
+            expect(sumWithInitial).toEqual(10);
+        })
+        test("shift", () => {
+            const array1 : number[] = new UTSReactiveArray([1, 2, 3]);
+            const firstElement = array1.shift();
+            expect(firstElement).toEqual(1);
+            expect(array1).toEqual([2, 3]);
+        })
+        test("slice", () => {
+            const animals : string[] = new UTSReactiveArray(['ant', 'bison', 'camel', 'duck', 'elephant']);
+            expect(animals.slice(2)).toEqual(["camel", "duck", "elephant"]);
+            expect(animals.slice(2, 4)).toEqual(["camel", "duck"]);
+            expect(animals.slice(1, 5)).toEqual(["bison", "camel", "duck", "elephant"]);
+            expect(animals.slice(-2)).toEqual(["duck", "elephant"]);
+            expect(animals.slice(2, -1)).toEqual(["camel", "duck"]);
+            expect(animals.slice()).toEqual(["ant", "bison", "camel", "duck", "elephant"]);
+        })
+        test("some", () => {
+            const array : number[] = new UTSReactiveArray([1, 2, 3, 4, 5]);
+            const even = (element : number) : boolean => element % 2 == 0;
+            expect(array.some(even)).toEqual(true);
+            const isBiggerThan10 = (element : number) : boolean => element > 10;
+            expect([2, 5, 8, 1, 4].some(isBiggerThan10)).toEqual(false);
+            expect([12, 5, 8, 1, 4].some(isBiggerThan10)).toEqual(true);
+        })
+        test("splice", () => {
+            const months : string[] = new UTSReactiveArray(['Jan', 'March', 'April', 'June']);
+            months.splice(1, 0, 'Feb');
+            expect(months).toEqual(["Jan", "Feb", "March", "April", "June"]);
+            months.splice(4, 1, 'May');
+            expect(months).toEqual(["Jan", "Feb", "March", "April", "May"]);
+        })
+        test('sort', () => {
+            const months : string[] = new UTSReactiveArray(['March', 'Jan', 'Feb', 'Dec']);
+            months.sort();
+            expect(months).toEqual(["Dec", "Feb", "Jan", "March"]);
+
+            const array1 : number[] = new UTSReactiveArray([1, 30, 4, 21, 100000]);
+            array1.sort();
+            expect(array1).toEqual([1, 100000, 21, 30, 4]);
+
+            const array2 : number[] = new UTSReactiveArray([5, 1, 4, 2, 3]);
+            array2.sort((a : number, b : number) : number => a - b);
+            expect(array2).toEqual([1, 2, 3, 4, 5]);
+
+            const array3 : any[] = new UTSReactiveArray([5, "banana", 4, "apple", 3, "cherry", 2, "date", 1]);
+            array3.sort();
+            expect(array3).toEqual([1, 2, 3, 4, 5, "apple", "banana", "cherry", "date"]);
+
+            const array4 : UTSJSONObject[] = new UTSReactiveArray([
+                { name: "John", age: 24 },
+                { name: "Sarah", age: 19 },
+                { name: "Bob", age: 27 },
+                { name: "Alice", age: 21 }
+            ]);
+            // 先强转类型，解决编译报错
+            array4.sort((a, b) : number => (a['age'] as number) - (b['age'] as number));
+            expect(array4).toEqual([{ name: "Sarah", age: 19 }, { name: "Alice", age: 21 }, { name: "John", age: 24 }, { name: "Bob", age: 27 }]);
+        })
+        test("unshift", () => {
+            const array1 : number[] = new UTSReactiveArray([1, 2, 3]);
+            expect(array1.unshift(4, 5)).toEqual(5);
+            expect(array1).toEqual([4, 5, 1, 2, 3]);
+        })
+
+        test('reverse', () => {
+            // const array1: string[] = ['one', 'two', 'three'];
+            // const reversed1: string[] = array1.reverse();
+            // expect(reversed1).toEqual(["three", "two", "one"]);
+            // expect(array1).toEqual(["three", "·two", "one"]);
+
+            // const array2 = [1, 2, 3, 4, 5];
+            // const reversed2 = array2.reverse();
+            // expect(reversed2).toEqual([5, 4, 3, 2, 1]);
+            // expect(array2).toEqual([5, 4, 3, 2, 1]);
+        })
+        test("reduceRight", () => {
+            const array1 : number[][] = new UTSReactiveArray([[0, 1], [2, 3], [4, 5]]);
+            const result1 = array1.reduceRight((accumulator : number[], currentValue : number[]) : number[] => accumulator.concat(currentValue));
+            expect(result1).toEqual([4, 5, 2, 3, 0, 1]);
+
+            const array2 : number[] = new UTSReactiveArray([1, 2, 3, 4]);
+            const result2 = array2.reduceRight((acc : number, cur : number, index : number, array : number[]) : number => {
+                expect(array[index]).toEqual(cur);
+                return acc + cur;
+            });
+            expect(result2).toEqual(10);
+
+            const result3 = array2.reduceRight((acc : number, cur : number) : number => acc + cur, 5);
+            expect(result3).toEqual(15);
+        })
+        test("flatMap", () => {
+            const arr : number[] = new UTSReactiveArray([1, 2, 3]);
+            const result = arr.flatMap((x : number) : number[] => [x, x * 2]);
+            expect(result).toEqual([1, 2, 2, 4, 3, 6]);
+
+            const arr1 : number[] = new UTSReactiveArray([1, 2, 3, 4]);
+            const result1 = arr1.flatMap((num : number, index : number, array : number[]) : number[] => {
+                expect(array[index]).toEqual(num);
+                if (num % 2 == 0) {
+                    return [num * 2];
+                }
+                return [];
+            });
+            expect(result1).toEqual([4, 8]);
+        })
+        test("entries", () => {
+            // const array1 = ['a', 'b', 'c'];
+            // const iterator1 = array1.entries();
+            // expect(iterator1.next().value).toEqual([0, "a"]);
+            // expect(iterator1.next().value).toEqual([1, "b"]);
+            // expect(iterator1.next().value).toEqual([2, "c"]);
+            // expect(iterator1.next().done).toEqual(true);
+
+            // const array2: any[] = [1, 2, 'hello', true, { name: 'john', age: 30 }, [4, 5]];
+            // let count = 0;
+            // for (const [index, element] of array2.entries()) {
+            //     count++;
+            //     expect(element).toEqual(array2[index]);
+            // }
+            // expect(count).toEqual(array2.length);
+        })
+        test("keys", () => {
+            // const array1 = ['a', 'b', 'c'];
+            // const iterator1 = array1.keys();
+            // expect(iterator1.next().value).toEqual(0);
+            // expect(iterator1.next().value).toEqual(1);
+            // expect(iterator1.next().value).toEqual(2);
+            // expect(iterator1.next().done).toEqual(true);
+        })
+    })
+}

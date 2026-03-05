@@ -1,0 +1,89 @@
+<template>
+	<view>
+		<page-head title="监听系统截屏" accordion></page-head>
+
+        <button @click="testScreenShotListen">监听截屏事件</button>
+        <button @click="testScreenShotOff">关闭截屏监听</button>
+			
+		<image :src="screenImage" mode="aspectFit" style="margin-top:10px"></image>
+			
+	</view>
+</template>
+
+<script>
+	import {
+		onUserCaptureScreen,
+		offUserCaptureScreen
+	} from "@/uni_modules/uts-screenshot-listener";
+	
+	export default {
+		data() {
+			return {
+				screenImage:""
+			}
+		},
+	
+		methods: {
+
+			testScreenShotListen() {
+				var that = this;
+				onUserCaptureScreen(function(res) {
+						console.log(res);
+						
+						if (uni.getSystemInfoSync().platform == "android") {
+							// 除android 之外的平台，不需要判断返回状态码
+							if(res.errCode == -1){
+								// 启动失败
+								return ;
+							}else if(res.errCode == 0){
+								uni.showToast({
+									icon:"none",
+									title:'截屏监听已开启'
+								})
+							}else {
+								uni.showToast({
+									icon:"none",
+									title:'捕获截屏事件'
+								})
+								if (res.image != null) {
+                                    that.screenImage = res.image!
+                                }
+							}
+						}else{
+							// 除android 之外的平台，不需要判断返回状态码
+							uni.showToast({
+								icon:"none",
+								title:'捕获截屏事件'
+							})
+						}
+						
+					});
+					
+					if (uni.getSystemInfoSync().platform != "android") {
+						// 除android 之外的平台，直接提示监听已开启
+						uni.showToast({
+							icon:"none",
+							title:'截屏监听已开启'
+						})
+					}
+				
+			},
+			testScreenShotOff() {
+				var that = this;
+				offUserCaptureScreen(function(res) {
+						console.log(res);
+				});
+				// 提示已经开始监听,注意观察
+				uni.showToast({
+					icon:"none",
+					title:'截屏监听已关闭'
+				})
+			},
+	
+	
+		}
+	}
+</script>
+
+<style>
+</style>

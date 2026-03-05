@@ -1,0 +1,296 @@
+<template>
+    <view class="uni-container">
+        <page-head :title="title"></page-head>
+
+        <view class="uni-panel" v-for="(item, index) in list" :key="index">
+            <view class="uni-panel-h" :class="item.open ? 'uni-panel-h-on' : ''" @click="triggerCollapse(index)">
+                <text class="uni-panel-text">{{item.name}}</text>
+                <image :src="item.pages.length > 0 ? item.open ? arrowUpIcon : arrowDownIcon : arrowRightIcon"
+                    class="uni-icon"></image>
+            </view>
+            <view class="uni-panel-c" v-if="item.open">
+                <view class="uni-navigate-item" v-for="(page,key) in item.pages" :key="key" @click="goDetailPage(page)" hover-class="uni-navigate-item-active">
+                    <text class="uni-navigate-text">{{page.name}}</text>
+                    <image :src="arrowRightIcon" class="uni-icon" v-if="page.url"></image>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+<script lang="ts">
+    
+    
+    import { getBatteryInfo, GetBatteryInfoOptions,GetBatteryInfoSuccess } from "@/uni_modules/uts-getbatteryinfo";
+    // #ifdef APP-ANDROID
+    import { gotoDemoActivity,sayHelloFromJar,sayHelloFromSO } from "@/uni_modules/uts-nativepage";
+     import {
+       UTSAcvitiyLifeCycleCallback,
+       UTSAcvitiyKeyEventCallback,
+       UTSActivityWindowCallback,
+       UTSActivityCallback,
+       UTSActivityComponentCallback,
+       onCallbackChange
+     } from '@/uni_modules/uts-syntaxcase'
+    
+    
+     import File from 'java.io.File';
+     import Intent from 'android.content.Intent';
+     import PictureInPictureParams from 'android.app.PictureInPictureParams'
+     import Rational from 'android.util.Rational'
+     
+    // #endif
+    type Page = {
+        name : string,
+        url ?: string
+        function ?: string
+    }
+    type ListItem = {
+        name : string,
+        open : boolean,
+        pages : Page[],
+    }
+    export default {
+        unmounted() {
+          // #ifdef APP-ANDROID
+          this.unRegActivityCallback()
+          // #endif
+        },
+        data() {
+            return {
+                title: '系统API示例',
+
+                list: [{
+                        name: "设备相关",
+                        open: false,
+                        pages: [
+                          {
+                            name: "获取电池电量",
+                            function: "testGetBatteryCapacity"
+                          },
+                          {
+                            name: "进入画中画模式",
+                            function: "testPictureInPicture"
+                          }
+                        // #ifdef APP-ANDROID
+                        ,
+                        {
+                            name: "注册activity 回调方法",
+                            function: "testActivityCallback"
+                        },
+                         // #endif
+                        ] as Page[]
+                    },
+                    {
+                        name: "系统事件",
+                        open: false,
+                        pages: [{
+                            name: "监听系统截屏",
+                            url: "SystemAPI/ScreenListen/screenlisten"
+                        }] as Page[]
+                    },
+                    {
+                        name: "Alert系统弹窗",
+                        open: false,
+                        pages: [{
+                            name: "Alert弹窗",
+                            url: "SystemAPI/Alert/alert"
+                        }] as Page[]
+                    },
+                    {
+                        name: "android平台",
+                        open: false,
+                        pages: [{
+                            name: "自定义activity(需自定义基座)",
+                            function: "testGotoDemoActivity"
+                        },{
+                            name: "调用jar中的方法",
+                            function: "testNativeJar"
+                        },{
+                            name: "调用so中的方法",
+                            function: "testNativeSO"
+                        }] as Page[]
+                    }
+                ] as ListItem[],
+                arrowUpIcon: '/static/icons/arrow-up.png',
+                arrowDownIcon: '/static/icons/arrow-down.png',
+                arrowRightIcon: '/static/icons/arrow-right.png',
+                callback: [] as Any[],
+                cbText: '',
+            }
+        },
+        methods: {
+            triggerCollapse(index: number) {
+                for (var i = 0; i < this.list.length; ++i) {
+                    if (index == i) {
+                        this.list[i].open = !this.list[i].open;
+                    } else {
+                        this.list[i].open = false;
+                    }
+                }
+            },
+            goDetailPage(e: Page) {
+                if (e.function != null) {
+                    const funName = e.function
+                    switch (funName) {
+                        case 'testGetBatteryCapacity':
+                            this.testGetBatteryCapacity()
+                            break
+                        case 'testPictureInPicture':
+                            this.testPictureInPicture()
+                            break
+                        case 'testActivityCallback':
+                            // #ifdef APP-ANDROID
+                            this.testActivityCallback()
+                            // #endif
+                            break
+                        case 'testGotoDemoActivity':
+                            this.testGotoDemoActivity()
+                            break
+                        case 'testNativeJar':
+                            this.testNativeJar()
+                            break
+                        case 'testNativeSO':
+                            this.testNativeSO()
+                            break
+                    }
+                    return
+                }
+                uni.navigateTo({
+                    url: `/pages/${e.url}`
+                })
+            },
+            testPictureInPicture() {
+                /**
+                 * 画中画模式监听
+                 */
+                let permissionNeed = ["android.permission.APP_OPS_STR_PICTURE_IN_PICTURE"]
+                UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight : boolean, _ : string[]) {
+                }, function (_1 : boolean, _2 : string[]) {
+                	//用户拒绝了部分权限
+                	console.log("fail",_1,_2)
+                })
+                const params = new PictureInPictureParams.Builder()
+                                    .setAspectRatio(new Rational(16, 9))
+                                    .setSourceRectHint(null)
+                                    .setAutoEnterEnabled(true)
+                                    .build()
+                					
+                UTSAndroid.getUniActivity()!.setPictureInPictureParams(params)
+                UTSAndroid.getUniActivity()!.enterPictureInPictureMode(params)
+                
+            },
+            testGetBatteryCapacity() {
+                getBatteryInfo({
+                    success(res:GetBatteryInfoSuccess) {
+                        uni.showToast({
+                            title: "当前电量：" + res.level + '%',
+                            icon: 'none'
+                        });
+                    }
+                } as GetBatteryInfoOptions)
+            },
+            
+            
+            // #ifdef APP-ANDROID
+            testActivityCallback(){
+              this.activityCallback()
+            },
+            activityCallback() {
+              uni.showToast({
+                  title: "注册成功，请尝试切换到其他app，在切换回来",
+                  icon: 'none'
+              });
+              var that = this
+              onCallbackChange(function (eventLog : string) {
+                // 展示捕捉到的声明周期日志
+                let nextLine = that.cbText + eventLog
+                that.cbText = nextLine
+                let nextLineFlag = that.cbText + '\n'
+                that.cbText = nextLineFlag
+                console.log(that.cbText)
+                uni.showToast({
+                    title: "activity 回调方法：" +eventLog,
+                    icon: 'none'
+                });
+              })
+              let index = getCurrentPages().length - 1
+              let page = getCurrentPages()[index]
+              this.callback.push(new UTSAcvitiyLifeCycleCallback())
+              this.callback.push(new UTSActivityWindowCallback())
+              this.callback.push(new UTSAcvitiyKeyEventCallback())
+              this.callback.push(new UTSActivityCallback(), page.route)
+              this.callback.push(new UTSActivityComponentCallback())
+              this.callback.forEach((value) => {
+                if (value instanceof UTSAcvitiyLifeCycleCallback) {
+                  UTSAndroid.onActivityCallback(value,'tabBar')
+                }
+                if (value instanceof UTSActivityWindowCallback) {
+                  UTSAndroid.onActivityCallback(value)
+                }
+                if (value instanceof UTSAcvitiyKeyEventCallback) {
+                  UTSAndroid.onActivityCallback(value)
+                }
+                if (value instanceof UTSActivityCallback) {
+                  UTSAndroid.onActivityCallback(value)
+                }
+                if (value instanceof UTSActivityComponentCallback) {
+                  UTSAndroid.onActivityCallback(value)
+                }
+            
+              })
+            },
+            unRegActivityCallback() {
+              this.callback.forEach((value) => {
+            
+                if (value instanceof UTSAcvitiyLifeCycleCallback) {
+                  UTSAndroid.offActivityCallback(value)
+                }
+                if (value instanceof UTSActivityWindowCallback) {
+                  UTSAndroid.offActivityCallback(value)
+                }
+                if (value instanceof UTSAcvitiyKeyEventCallback) {
+                  UTSAndroid.offActivityCallback(value)
+                }
+                if (value instanceof UTSActivityCallback) {
+                  UTSAndroid.offActivityCallback(value)
+                }
+                if (value instanceof UTSActivityComponentCallback) {
+                  UTSAndroid.offActivityCallback(value)
+                }
+              })
+            },
+            // #endif
+            
+            testNativeJar() {
+                let ret = sayHelloFromJar();
+                uni.showToast({
+                    icon: 'none',
+                    title: '来自jar中的返回值:' + ret
+                })
+            },
+            
+            testNativeSO() {
+                let ret = sayHelloFromSO();
+                uni.showToast({
+                    icon: 'none',
+                    title: '来自so中的返回值:' + ret
+                })
+            },
+            
+            testGotoDemoActivity() {
+                let ret = gotoDemoActivity();
+                if (!ret) {
+                    uni.showToast({
+                        icon: 'none',
+                        title: '需要在自定义基座中运行'
+                    })
+                }
+            }
+        }
+    }
+</script>
+
+<style>
+    @import '@/common/uni-uvue.css';
+
+</style>

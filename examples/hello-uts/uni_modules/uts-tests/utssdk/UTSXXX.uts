@@ -1,0 +1,52 @@
+import { describe, test, expect, Result } from './tests.uts'
+
+// #ifdef APP-HARMONY
+let tempDir = ''
+UTSHarmony.onAppAbilityCreate(() => {
+  const context = UTSHarmony.getUIAbilityContext()
+  tempDir = context?.getApplicationContext?.()?.tempDir || ''
+})
+// #endif
+
+
+export function testUTSXXX() : Result {
+  return describe("KeyWord", () => {
+
+    test('UTSAndroid_setPrivacyAgree', () => {
+        // #ifdef APP-ANDROID
+        UTSAndroid.setPrivacyAgree(true)
+        let agreeRet = UTSAndroid.isPrivacyAgree()
+        expect(agreeRet).toEqual(agreeRet);
+        setTimeout(function(){
+        	UTSAndroid.setPrivacyAgree(false)
+        	let agreeRet2 = UTSAndroid.isPrivacyAgree()
+          expect(agreeRet2).toEqual(false);
+        },1000)
+        // #endif
+    })
+
+    // #ifdef APP-HARMONY
+    test('UTSHarmony_getUIAbilityContext', () => {
+      expect(tempDir.length > 0).toEqual(true)
+    })
+    // #endif
+    test('UTSAndroid_getKotlinClass', () => {
+        // #ifdef APP-ANDROID
+        let date1 = UTSAndroid.getKotlinClass(new Date()).simpleName
+        expect(date1).toEqual("Date");
+				let strRet1 = UTSAndroid.getKotlinClass("").isInstance("aaa")
+        expect(strRet1).toEqual(true);
+				let strRet2 = UTSAndroid.getKotlinClass("").isInstance(false)
+				expect(strRet2).toEqual(false);
+        // #endif
+    })
+
+
+    // #ifdef APP-HARMONY
+    test('UTSHarmony_getUIAbilityContext', () => {
+      expect(tempDir.length > 0).toEqual(true)
+    })
+    // #endif
+
+  })
+}

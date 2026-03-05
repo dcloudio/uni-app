@@ -1,0 +1,317 @@
+import { describe, test, expect, Result } from './tests.uts'
+// #ifdef APP-ANDROID
+@UTSAndroid.Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS")
+// #endif
+export function testForLoop(): Result {
+  return describe('ForLoop', () => {
+    test('syntax', () => {
+      const result: number[] = []
+      for (let i = 0; i < 5; i++) {
+        result.push(i)
+      }
+      expect(result).toEqual([0, 1, 2, 3, 4])
+
+      const result1: number[] = []
+      for (let i = 4; i >= 0; i--) {
+        result1.push(i)
+      }
+      expect(result1).toEqual([4, 3, 2, 1, 0])
+
+      const result2: number[] = []
+      let limit = 3
+      for (let i = 0; i < limit; i++) {
+        result2.push(i)
+        if (i === 2) {
+          limit = 5
+        }
+      }
+      expect(result2).toEqual([0, 1, 2, 3, 4])
+
+      const result3: number[] = []
+      const condition = true
+      for (let i = 0; condition; i++) {
+        if (i === 5) {
+          break
+        }
+        result3.push(i)
+      }
+      expect(result3).toEqual([0, 1, 2, 3, 4])
+
+      const result4: number[] = []
+      let i = 0
+      const fnCondition = (): boolean => i < 5
+      for (; fnCondition(); i++) {
+        result4.push(i)
+      }
+      expect(result4).toEqual([0, 1, 2, 3, 4])
+
+      const result5: number[] = []
+      let counter = 0
+      for (;;) {
+        result5.push(counter)
+        counter++
+        if (counter === 5) {
+          break
+        }
+      }
+      expect(result5).toEqual([0, 1, 2, 3, 4])
+
+      // let result6 = 0
+      // for (; result6 < 5; result6++);
+      // expect(result6).toEqual(5)
+    })
+
+    test('break and continue', () => {
+      const result: number[] = []
+      for (let i = 0; i < 5; i++) {
+        if (i === 2) {
+          continue
+        }
+        if (i === 4) {
+          break
+        }
+        result.push(i)
+      }
+      expect(result).toEqual([0, 1, 3])
+
+      const result1: number[] = []
+      for (let i = 1; i <= 5; i++) {
+        result1.push(i)
+        if (i === 3) {
+          break
+        }
+        for (let j = 1; j <= 3; j++) {
+          result1.push(j)
+          if (j === 2) {
+            continue
+          }
+        }
+      }
+      expect(result1).toEqual([1, 1, 2, 3, 2, 1, 2, 3, 3])
+
+      const result2: string[] = []
+      for (let i = 1; i <= 3; i++) {
+        if (i === 2) {
+          continue
+        }
+        for (let j = 1; j <= 3; j++) {
+          if (j === 2) {
+            break
+          }
+          for (let k = 1; k <= 3; k++) {
+            if (k === 2) {
+              continue
+            }
+            for (let l = 1; l <= 3; l++) {
+              if (l === 2) {
+                continue
+              }
+              result2.push(`${i}${j}${k}${l}`)
+              if (i === 3 && j === 3 && k === 3 && l === 3) {
+                break
+              }
+            }
+            if (i === 3 && j === 3 && k === 3) {
+              break
+            }
+          }
+        }
+      }
+      expect(result2).toEqual([
+        '1111',
+        '1113',
+        '1131',
+        '1133',
+        '3111',
+        '3113',
+        '3131',
+        '3133'
+      ])
+
+      // const result3 : string[] = []
+      // for (let i = 1; i <= 3; i++) {
+      //   if (i === 2) {
+      //     result3.push(`i=${i} (Continue)`)
+      //     continue
+      //   }
+      //   for (let j = 1; j <= 2; j++) {
+      //     if (j === 1) {
+      //       result3.push(`i=${i}, j=${j}`)
+      //     } else {
+      //       result3.push(`i=${i}, j=${j} (Continue)`)
+      //       continue
+      //     }
+      //     TODO 多个表达式
+      //     for (let k = 1, l = 3; k <= 3 && l >= 1; k++, l--) {
+      //       if (k === 2) {
+      //         result3.push(`i=${i}, j=${j}, k=${k} (Continue)`)
+      //         continue
+      //       }
+      //       if (l === 2) {
+      //         result3.push(`i=${i}, j=${j}, k=${k}, l=${l} (Break)`)
+      //         break
+      //       }
+      //       result3.push(`i=${i}, j=${j}, k=${k}, l=${l}`)
+      //     }
+      //   }
+      // }
+      // expect(result3).toEqual([
+      //   "i=1, j=1",
+      //   "i=1, j=1, k=1, l=3",
+      //   "i=1, j=1, k=2 (Continue)",
+      //   "i=1, j=1, k=3, l=1",
+      //   "i=1, j=2 (Continue)",
+      //   "i=2 (Continue)",
+      //   "i=3, j=1",
+      //   "i=3, j=1, k=1, l=3",
+      //   "i=3, j=1, k=2 (Continue)",
+      //   "i=3, j=1, k=3, l=1",
+      //   "i=3, j=2 (Continue)"
+      // ])
+
+      const result4: string[] = []
+      for (let a = 1; a <= 2; a++) {
+        for (let b = 1; b <= 3; b++) {
+          for (let c = 1; c <= 2; c++) {
+            if (a === 2 && b === 2 && c === 1) {
+              result4.push(`a=${a}, b=${b}, c=${c} (Break)`)
+              break
+            } else {
+              result4.push(`a=${a}, b=${b}, c=${c}`)
+            }
+            for (let d = 1; d <= 3; d++) {
+              if (d === 2) {
+                result4.push(`a=${a}, b=${b}, c=${c}, d=${d} (Continue)`)
+                continue
+              }
+              for (let e = 1; e <= 2; e++) {
+                if (e === 2) {
+                  result4.push(
+                    `a=${a}, b=${b}, c=${c}, d=${d}, e=${e} (Continue)`
+                  )
+                  continue
+                }
+                for (let f = 1; f <= 3; f++) {
+                  if (f === 2) {
+                    result4.push(
+                      `a=${a}, b=${b}, c=${c}, d=${d}, e=${e}, f=${f} (Continue)`
+                    )
+                    continue
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      expect(result4).toEqual([
+        'a=1, b=1, c=1',
+        'a=1, b=1, c=1, d=1, e=1, f=2 (Continue)',
+        'a=1, b=1, c=1, d=1, e=2 (Continue)',
+        'a=1, b=1, c=1, d=2 (Continue)',
+        'a=1, b=1, c=1, d=3, e=1, f=2 (Continue)',
+        'a=1, b=1, c=1, d=3, e=2 (Continue)',
+        'a=1, b=1, c=2',
+        'a=1, b=1, c=2, d=1, e=1, f=2 (Continue)',
+        'a=1, b=1, c=2, d=1, e=2 (Continue)',
+        'a=1, b=1, c=2, d=2 (Continue)',
+        'a=1, b=1, c=2, d=3, e=1, f=2 (Continue)',
+        'a=1, b=1, c=2, d=3, e=2 (Continue)',
+        'a=1, b=2, c=1',
+        'a=1, b=2, c=1, d=1, e=1, f=2 (Continue)',
+        'a=1, b=2, c=1, d=1, e=2 (Continue)',
+        'a=1, b=2, c=1, d=2 (Continue)',
+        'a=1, b=2, c=1, d=3, e=1, f=2 (Continue)',
+        'a=1, b=2, c=1, d=3, e=2 (Continue)',
+        'a=1, b=2, c=2',
+        'a=1, b=2, c=2, d=1, e=1, f=2 (Continue)',
+        'a=1, b=2, c=2, d=1, e=2 (Continue)',
+        'a=1, b=2, c=2, d=2 (Continue)',
+        'a=1, b=2, c=2, d=3, e=1, f=2 (Continue)',
+        'a=1, b=2, c=2, d=3, e=2 (Continue)',
+        'a=1, b=3, c=1',
+        'a=1, b=3, c=1, d=1, e=1, f=2 (Continue)',
+        'a=1, b=3, c=1, d=1, e=2 (Continue)',
+        'a=1, b=3, c=1, d=2 (Continue)',
+        'a=1, b=3, c=1, d=3, e=1, f=2 (Continue)',
+        'a=1, b=3, c=1, d=3, e=2 (Continue)',
+        'a=1, b=3, c=2',
+        'a=1, b=3, c=2, d=1, e=1, f=2 (Continue)',
+        'a=1, b=3, c=2, d=1, e=2 (Continue)',
+        'a=1, b=3, c=2, d=2 (Continue)',
+        'a=1, b=3, c=2, d=3, e=1, f=2 (Continue)',
+        'a=1, b=3, c=2, d=3, e=2 (Continue)',
+        'a=2, b=1, c=1',
+        'a=2, b=1, c=1, d=1, e=1, f=2 (Continue)',
+        'a=2, b=1, c=1, d=1, e=2 (Continue)',
+        'a=2, b=1, c=1, d=2 (Continue)',
+        'a=2, b=1, c=1, d=3, e=1, f=2 (Continue)',
+        'a=2, b=1, c=1, d=3, e=2 (Continue)',
+        'a=2, b=1, c=2',
+        'a=2, b=1, c=2, d=1, e=1, f=2 (Continue)',
+        'a=2, b=1, c=2, d=1, e=2 (Continue)',
+        'a=2, b=1, c=2, d=2 (Continue)',
+        'a=2, b=1, c=2, d=3, e=1, f=2 (Continue)',
+        'a=2, b=1, c=2, d=3, e=2 (Continue)',
+        'a=2, b=2, c=1 (Break)',
+        'a=2, b=3, c=1',
+        'a=2, b=3, c=1, d=1, e=1, f=2 (Continue)',
+        'a=2, b=3, c=1, d=1, e=2 (Continue)',
+        'a=2, b=3, c=1, d=2 (Continue)',
+        'a=2, b=3, c=1, d=3, e=1, f=2 (Continue)',
+        'a=2, b=3, c=1, d=3, e=2 (Continue)',
+        'a=2, b=3, c=2',
+        'a=2, b=3, c=2, d=1, e=1, f=2 (Continue)',
+        'a=2, b=3, c=2, d=1, e=2 (Continue)',
+        'a=2, b=3, c=2, d=2 (Continue)',
+        'a=2, b=3, c=2, d=3, e=1, f=2 (Continue)',
+        'a=2, b=3, c=2, d=3, e=2 (Continue)'
+      ])
+
+      const result5: string[] = []
+      for (let i = 1; i <= 5; i++) {
+        let str = `${i}: `
+        if (i % 2 === 0) {
+          str += 'EVEN'
+        } else {
+          str += 'ODD'
+        }
+        if (i === 3) {
+          result5.push(str + ' (Loop Break)')
+          break
+        }
+        for (let j = 1; j <= 3; j++) {
+          if (j === 2) {
+            str += ' (Inner Continue)'
+            continue
+          }
+          str += ` - ${j}`
+          result5.push(str)
+        }
+        result5.push(str + ' (End of Outer)')
+      }
+      // expect(result5).toEqual([
+      //   '1: ODD - 1',
+      //   '1: ODD - 1 (Inner Continue) - 3',
+      //   '1: ODD - 1 (Inner Continue) - 3 (End of Outer)',
+      //   '2: EVEN - 1',
+      //   '2: EVEN - 1 (Inner Continue) - 3',
+      //   '2: EVEN - 1 (Inner Continue) - 3 (End of Outer)',
+      //   '3: ODD (Loop Break)'
+      // ])
+      
+      const tokens = ["heading", "paragraph"];
+      for (let i = 0; i < tokens.length; i++) {
+          const token = tokens[i];
+          switch (token) {
+              case "heading":
+                  continue;
+              case "paragraph":
+                  continue;
+              default:
+                  break;
+          }
+      }
+    })
+  })
+}

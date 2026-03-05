@@ -1,0 +1,933 @@
+import { describe, test, expect, Result } from './tests.uts'
+
+
+
+export function testArray(): Result {
+  return describe("Array", () => {
+
+    test('constructor', () => {
+      // 构造器测试
+      // #TEST Array.Constructor
+      let a1 = [1, 2, 3]
+      let a2 = [1, '2', 3]
+      console.log(a1) //[1, 2, 3]
+      console.log(a2) // [1, '2', 3]
+      // #END
+      expect(a1).toEqual([1, 2, 3]);
+      expect(a2).toEqual([1, '2', 3]);
+      let a3 = new Array(1, 2, 3);
+
+      // swift 中字面量创建数组，仅支持同一类型的元素
+      // #ifndef APP-IOS
+      expect(a3).toEqual(new Array(1, 2, 3));
+      let a4 = new Array<any>(1, '2', 3);
+      expect(a4).toEqual(new Array<any>(1, '2', 3));
+      let a5 = Array(1, 2, 3);
+      expect(a5).toEqual(Array(1, 2, 3));
+      let a6 = Array<any>(1, '2', '3')
+      expect(a6).toEqual(Array<any>(1, '2', '3'));
+      // #endif
+
+    })
+
+    test('equals', () => {
+      // 构造器测试
+      let a1 = [1, 2, 3]
+      let a2 = [1, 2, 3]
+      let equalsRet = (a1 == a2)
+      console.log(equalsRet)
+      // #ifndef APP-IOS
+      expect(equalsRet).toEqual(false);
+      // #endif
+      // #ifdef APP-IOS
+      expect(equalsRet).toEqual(true);
+      // #endif
+
+
+    })
+
+    test('convert-native', () => {
+      // #TEST Array.toKotlinList
+      // #ifdef APP-ANDROID
+      let utsArray = ["1", 2, 3.0]
+      let javaArray = utsArray.toTypedArray();
+      let kotlinArray = utsArray.toKotlinList()
+
+      let convertArrayFromJava = Array.fromNative(javaArray);
+      let convertArrayFromKotlin = Array.fromNative(kotlinArray);
+      console.log(convertArrayFromJava[0] == convertArrayFromKotlin[0])//true
+
+      console.log(convertArrayFromJava[0])//"1"
+      // #END
+      expect(convertArrayFromJava[0] == convertArrayFromKotlin[0]).toEqual(true);
+      expect(convertArrayFromJava[0]).toEqual("1");
+      // #endif
+
+    })
+
+    test('length', () => {
+      // #TEST Array.length
+      const arr = ['shoes', 'shirts', 'socks', 'sweaters'];
+      console.log(arr.length)//4
+      console.log(arr[1])//'shoes'
+      console.log(arr[1])//'shirts'
+      // #END
+      // expect(arr[4]).toEqual(null);
+      const numbers: number[] = [1, 2, 3, 4, 5];
+      if (numbers.length > 3) {
+        numbers.length = 3;
+      }
+      expect(numbers.length).toEqual(3);
+      expect(numbers).toEqual([1, 2, 3]);
+      expect([].length).toEqual(0);
+
+      // 1. web: 最大长度 2^32-1
+      // 超出边界报错: RangeError: Invalid array length
+      // 2. kotlin: 最大长度 2^31-1
+      // 超出边界报错: Error: targetMethod error::java.lang.OutOfMemoryError: Failed to allocate a 420546432 byte allocation with 6291456 free bytes and 300MB until OOM, target footprint 295113520, growth limit 603979776
+      // 3. swift: 最大长度和内存有关
+      // 超出边界没有返回信息
+    })
+    test("concat", () => {
+      // #TEST Array.concat,Array.concat_1
+      let ret = ['a', 'b', 'c'].concat(['d', 'e', 'f'])
+      console.log(ret) //["a", "b", "c", "d", "e", "f"]
+      let ret1 = [1, 2, 3].concat([4, 5, 6])
+      console.log(ret1)//[1, 2, 3, 4, 5, 6]
+      let ret2 = [''].concat([''])//
+      console.log(ret2)//["", ""]
+
+      const num1 = [1, 2, 3];
+      const num2 = [4, 5, 6];
+      const num3 = [7, 8, 9];
+      const numbers = num1.concat(num2, num3);
+      console.log(numbers)//[1, 2, 3, 4, 5, 6, 7, 8, 9]
+      // #END
+
+      expect(numbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      expect(ret).toEqual(["a", "b", "c", "d", "e", "f"]);
+      expect(ret1).toEqual([1, 2, 3, 4, 5, 6]);
+      expect(ret2).toEqual(["", ""]);
+
+    })
+    test("copyWithin", () => {
+      // #TEST Array.copyWithin
+      const arr = ['a', 'b', 'c', 'd', 'e'];
+      let ret1 = arr.copyWithin(0, 3, 4)
+      console.log(ret1)//["d", "b", "c", "d", "e"]
+      // #END
+      expect(ret1).toEqual(["d", "b", "c", "d", "e"]);
+      expect(arr.copyWithin(1, 3)).toEqual(["d", "d", "e", "d", "e"]);
+      const arr2 = [1, 2, 3, 4, 5];
+      expect(arr2.copyWithin(-2)).toEqual([1, 2, 3, 1, 2]);
+      expect(arr2.copyWithin(-2, -3, -1)).toEqual([1, 2, 3, 3, 1]);
+    })
+    test("every", () => {
+      // #TEST Array.every,Array.every_1,Array.every_2,Array.every_3
+      const isBelowThreshold = (currentValue: number): boolean => currentValue < 40;
+      const array1: number[] = [1, 30, 39, 29, 10, 13];
+      console.log(array1.every(isBelowThreshold));// true
+
+      const array2: number[] = [1, 30, 39, 29, 10, 13, 41];
+      console.log(array2.every(isBelowThreshold));// false
+
+      const array3: number[] = [1, 2, 3];
+      array3.every((element: number, index: number, array: number[]): boolean => {
+        console.log(array[index])//1=>2->3
+        return true;
+      })
+
+      // #END
+      array3.every((element: number, index: number, array: number[]): boolean => {
+        expect(array[index]).toEqual(element);
+        return true;
+      })
+      expect(array1.every(isBelowThreshold)).toEqual(true);
+      expect(array2.every(isBelowThreshold)).toEqual(false);
+    })
+    test("fill", () => {
+      // #TEST Array.fill
+      const array1: number[] = [1, 2, 3, 4];
+      let ret1 = array1.fill(0, 2, 4)
+      console.log(ret1); //[1, 2, 0, 0]
+      // #END
+      expect(ret1).toEqual([1, 2, 0, 0]);
+      expect(array1.fill(5, 1)).toEqual([1, 5, 5, 5]);
+      expect(array1.fill(6)).toEqual([6, 6, 6, 6]);
+      const array2: number[] = [1, 2, 3]
+      expect(array2.fill(4)).toEqual([4, 4, 4]);
+      const array3: number[] = [0, 0]
+      expect(array3.fill(1, null)).toEqual([1, 1]);
+      expect(array3.fill(1, 0, 1.5)).toEqual([1, 1]);
+    })
+    test("filter", () => {
+      // #TEST Array.filter,Array.filter_1,Array.filter_2,Array.filter_3
+      const words: string[] = ['spray', 'limit', 'elite', 'exuberant', 'destruction', 'present'];
+      const result = words.filter((word: string): boolean => word.length > 6);
+      console.log(result);// ["exuberant", "destruction", "present"]
+
+      const array1: number[] = [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+      const isPrime = array1.filter((num: number): boolean => {
+        for (let i = 2; num > i; i++) {
+          // swift里，基础类型暂不支持!==,===对比
+          if (num % i == 0) {
+            return false;
+          }
+        }
+        return num > 1;
+      })
+      console.log(isPrime)//[2, 3, 5, 7, 11, 13]
+
+      const array2: number[] = [1, 2, 3];
+      array2.filter((element: number, index: number, array: number[]): boolean => {
+        console.log(array[index])//1=>2=>3
+        return true;
+      })
+      // #END
+      array2.filter((element: number, index: number, array: number[]): boolean => {
+        expect(array[index]).toEqual(element);
+        return true;
+      })
+      expect(result).toEqual(["exuberant", "destruction", "present"]);
+      expect(isPrime).toEqual([2, 3, 5, 7, 11, 13]);
+    })
+    test("find", () => {
+      // #TEST Array.find_2
+      const array1: number[] = [5, 12, 8, 130, 44];
+      const found1 = array1.find((element: number): boolean => element > 10);
+      console.log(found1) //12
+      // #END
+      expect(found1).toEqual(12);
+      // #TEST Array.find_1
+      const array3: number[] = [5, 12, 8, 130, 44];
+      const found2 = array3.find((element: number, index: number): boolean => element < 5);
+      console.log(found2) // null
+      // #END
+      expect(found2).toEqual(null);
+      // #TEST Array.find
+      let array2: number[] = [1, 2, 3];
+      array2.find((element: number, index: number, array: number[]): boolean => {
+        console.log(array[index]) //1=>2=>3
+        return true;
+      })
+      // #END
+      array2 = [1, 2, 3];
+      array2.find((element: number, index: number, array: number[]): boolean => {
+        expect(array[index]).toEqual(element);
+        return true;
+      })
+    })
+    test("findIndex", () => {
+      // #TEST Array.findIndex_1,Array.findIndex_2,Array.findIndex
+      const array1: number[] = [5, 12, 8, 130, 44];
+      let isLargeNumber = (element: number, index: number): boolean => element > 13;
+      console.log(isLargeNumber)//3
+
+      const array2: number[] = [10, 11, 12];
+      console.log(array2.findIndex(isLargeNumber))//3
+
+      const array3: number[] = [1, 2, 3];
+      array3.findIndex((element: number, index: number, array: number[]): boolean => {
+        console.log(array[index]) //1=>2=>3
+        return true;
+      })
+      // #END
+      expect(array2.findIndex(isLargeNumber)).toEqual(-1);
+      expect(array1.findIndex(isLargeNumber)).toEqual(3);
+      array3.findIndex((element: number, index: number, array: number[]): boolean => {
+        expect(array[index]).toEqual(element);
+        return true;
+      })
+    })
+    test("flat", () => {
+      const arr1: any[] = [0, 1, 2, [3, 4]];
+      expect(arr1.flat()).toEqual([0, 1, 2, 3, 4]);
+      const arr2: any[] = [0, 1, 2, [[[3, 4]]]];
+      expect(arr2.flat(2)).toEqual([0, 1, 2, [3, 4]]);
+      const arr3: any[] = [1, 2, [3, 4, [5, 6]]];
+      expect(arr3.flat(2)).toEqual([1, 2, 3, 4, 5, 6]);
+    })
+    test("forEach", () => {
+      // #TEST Array.forEach,Array.forEach_1,Array.forEach_2
+      const array1: string[] = ['a', 'b', 'c'];
+      array1.forEach(element => {console.log(element)});
+      // expected output: "a"
+      // expected output: "b"
+      // expected output: "c"
+      const items: string[] = ['item1', 'item2', 'item3'];
+      const copyItems: string[] = [];
+      items.forEach((item: string) => {
+        copyItems.push(item);
+      });
+      console.log(copyItems)//['item1', 'item2', 'item3']
+      // #END
+      array1.forEach((element: string, index: number) => {
+        expect(array1[index]).toEqual(element)
+      });
+      expect(copyItems).toEqual(items)
+    })
+    test("includes", () => {
+      // #TEST Array.includes
+      const array1: number[] = [1, 2, 3];
+      console.log(array1.includes(2))//true
+      // #END
+      expect(array1.includes(2)).toEqual(true);
+      const pets: string[] = ['cat', 'dog', 'bat'];
+      expect(pets.includes('cat')).toEqual(true);
+      expect(pets.includes('at')).toEqual(false);
+      const array2: string[] = ['a', 'b', 'c'];
+      expect(array2.includes('c', 3)).toEqual(false);
+      expect(array2.includes('c', 100)).toEqual(false);
+
+      type P = {
+        x: number
+        y: number
+      }
+
+      // #ifndef APP-IOS
+      const s = JSON.parse<P[]>(JSON.stringify([{ x: 0, y: 0 }])) as P[]
+      s[0].x += 0;
+      const clearList = s.map((v: P, _, _a): number => v.x)
+      expect(clearList.includes(0)).toEqual(true);
+      // #endif
+      // #ifdef APP-IOS
+      const s = JSON.parse<P[]>(JSON.stringify([{ x: 0, y: 0 }])!) as P[]
+      s[0].x += 0;
+      const clearList = s.map((v: P, index: number, _a): number => v.x)
+      expect(clearList.includes(0)).toEqual(true);
+      // #endif
+
+    })
+
+    test("of-1", () => {
+      let a1 = Array.of<any>('foo', 2, 'bar', true)
+      let a2 = Array.of<any>()
+      console.log(a1, a2)
+      type User = {
+        id: number
+        name: string
+      }
+      let u1 = {
+        id: 1001,
+        name: "张三"
+      } as User
+      let a3 = Array.of<any>("aaa", false, u1)
+      expect(a1).toEqual(["foo", 2, "bar", true]);
+      expect(a2).toEqual([]);
+      // #ifdef APP-ANDROID
+      expect(a3).toEqual(["aaa", false, { id: 1001, name: "张三" }]);
+      // #endif
+
+    })
+
+    test("from", () => {
+      // #ifdef APP-ANDROID
+      let a1 = Array.from('foo')
+      let a2 = Array.from<number>([1, 2, 3], function (x: any | null, index: number): number {
+
+        // #ifdef APP
+        return (x as Number).toInt() + (x as Number).toInt()
+        // #endif
+        // #ifndef APP
+        return (x as number) + (x as number)
+        // #endif
+      })
+      // #ifdef APP-ANDROID
+      expect(a1).toEqual(["f", "o", "o"]);
+      // #endif
+      expect(a2).toEqual([2, 4, 6]);
+      let m1 = new Map<string, any>()
+      m1.set("name", "张三")
+      m1.set("age", 123)
+      let a3 = Array.from<Array<any>>(m1)
+      // #ifdef APP-ANDROID
+      expect(a3).toEqual([["name", "张三"], ["age", 123]]);
+      // #endif
+      // #endif
+
+      let s1 = new Set<string>()
+      s1.add("张三")
+      s1.add("李四")
+      let a4 = Array.from<string>(s1)
+      expect(a4).toEqual(["张三", "李四"]);
+
+      // #ifdef APP-ANDROID
+      let content = "€"
+      let encoder = new TextEncoder();
+      let view: Uint8Array = encoder.encode(content);
+      let numberArray: number[] = Array.from(view) as number[]
+      expect(numberArray).toEqual([226,130,172]);
+      let view2: Uint8Array = encoder.encode(content);
+      let numberArray2: number[] = Array.from(view2, function (element: any | null, index: number): any | null {
+        if ("number" == typeof element) {
+          return (element as number) + 1
+        }
+        return element
+      }) as number[]
+      expect(numberArray2).toEqual([227,131, 173]);
+
+      let view3 = [1, 2, 3].toKotlinList().toTypedArray()
+      let numberArray3: number[] = Array.from(view3) as number[]
+      expect(numberArray3).toEqual([1, 2, 3]);
+      let view4 = [4.5, "aaa"].toKotlinList().toTypedArray()
+      let numberArray4 = Array.from(view4, function (element: any | null, index: number): any | null {
+        if ("number" == typeof element) {
+          return (element as number) + 1
+        }
+        return element
+      })
+      expect(numberArray4).toEqual([5.5, "aaa"]);
+
+      // #endif
+    })
+
+    test("fromAsync", () => {
+
+      // #ifdef APP-ANDROID
+      let m1 = new Map<Int, any>([
+        [1, 2],
+        [3, 4],  
+      ])
+      Array.fromAsync<Array<number>>(
+        m1
+      ).then((array) => {
+        expect(array).toEqual([[1, 2], [3, 4]]);
+      });
+      // #endif
+
+      // #ifdef APP-ANDROID 
+      let s1 = new Set([Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)])
+      Array.fromAsync<number>(
+        s1
+      ).then((array: Array<number>) => {
+        expect(array).toEqual([1, 2, 3]);
+      });
+      // #endif
+
+      // #ifdef APP-ANDROID
+      UTSAndroid.getDispatcher("io").async(function (_) {
+
+        let ret2 = new Array<any>()
+        let p = new Promise<number>((resolve, reject) => {
+          setTimeout(() => {
+            reject("xxxxxxxx")
+          }, 1000)
+        })
+
+        let pArray = [p, 1, 2, "3"]
+        const a = Array.fromAsync<any>(pArray)
+        a.then((res) => {
+          ret2 = ret2.concat(res)
+        }).catch((err) => {
+          ret2.clear()
+        })
+
+        const pArray1 = Array.fromAsync("abcdefg");
+
+        pArray1.then((res) => {
+          ret2 = ret2.concat(res)
+        })
+
+        setTimeout(function () {
+          expect(ret2).toEqual(["a", "b", "c", "d", "e", "f", "g"]);
+        }, 200)
+
+        setTimeout(function () {
+          expect(ret2).toEqual([]);
+        }, 2000)
+      }, null)
+      // #endif
+    })
+
+    test("indexOf", () => {
+
+      let raw = {}
+      let arr = new Array<UTSJSONObject>()
+      arr.push({});
+      arr.push({});
+      arr.push(raw);
+      expect(arr.indexOf(raw)).toEqual(2);
+
+      // #TEST Array.indexOf
+      const beasts: string[] = ['ant', 'bison', 'camel', 'duck', 'bison'];
+
+      console.log(beasts.indexOf('bison')); //  1
+
+
+      console.log(beasts.indexOf('bison', 2));// 2
+
+      console.log(beasts.indexOf('giraffe'));// -1
+      // #END
+
+      expect(beasts.indexOf('bison')).toEqual(1);
+      expect(beasts.indexOf('bison', 2)).toEqual(4);
+      expect(beasts.indexOf('giraffe')).toEqual(-1);
+
+      const indices: number[] = [];
+      const array: string[] = ['a', 'b', 'a', 'c', 'a', 'd'];
+      const element = 'a';
+      let idx = array.indexOf(element);
+      // swift里，基础类型暂不支持!==,===对比
+      while (idx != -1) {
+        indices.push(idx);
+        idx = array.indexOf(element, idx + 1);
+      }
+      expect(indices).toEqual([0, 2, 4]);
+    })
+    test("join", () => {
+      // #TEST Array.join
+      const elements: string[] = ['Fire', 'Air', 'Water'];
+      let ret1 = elements.join()//Fire,Air,Water
+      let ret2 = elements.join('') //FireAirWater
+      let ret3 = elements.join('-')//Fire-Air-Water
+      expect(ret1).toEqual("Fire,Air,Water");
+      expect(ret2).toEqual("FireAirWater");
+      expect(ret3).toEqual("Fire-Air-Water");
+      // #END
+    })
+    test("lastIndexOf", () => {
+
+      let raw = {}
+      let arr = new Array<UTSJSONObject>()
+      arr.push({});
+      arr.push({});
+      arr.push(raw);
+      expect(arr.lastIndexOf(raw)).toEqual(2);
+
+      // #TEST Array.lastIndexOf
+      const animals: string[] = ['Dodo', 'Tiger', 'Penguin', 'Dodo'];
+      console.log(animals.lastIndexOf('Dodo'));//3
+      console.log(animals.lastIndexOf('Tiger'));//1
+      // #END
+
+      expect(animals.lastIndexOf('Dodo')).toEqual(3);
+      expect(animals.lastIndexOf('Tiger')).toEqual(1);
+      const array: number[] = [2, 5, 9, 2];
+      let index = array.lastIndexOf(2);
+      expect(index).toEqual(3);
+      index = array.lastIndexOf(7);
+      expect(index).toEqual(-1);
+      index = array.lastIndexOf(2, 3);
+      expect(index).toEqual(3);
+      index = array.lastIndexOf(2, 2);
+      expect(index).toEqual(0);
+
+
+
+
+    })
+    test("map", () => {
+      // #TEST Array.map,Array.map_1,Array.map_2
+      const array1: number[] = [1, 4, 9, 16];
+      const map1 = array1.map((x: number): number => x * 2);
+      console.log(map1);
+      // expected output: Array [2, 8, 18, 32]
+      const numbers: number[] = [1, 4, 9];
+      const roots = numbers.map((num: number): number => num + 1);
+
+
+      const array2: number[] = [1, 2, 3];
+      array2.map((element: number, index: number, array: number[]) => {
+        console.log(array[index]) //1=>2=>3
+      })
+      // #END
+      array2.map((element: number, index: number, array: number[]) => {
+        expect(array[index]).toEqual(element);
+      })
+      expect(map1).toEqual([2, 8, 18, 32]);
+      expect(numbers).toEqual([1, 4, 9]);
+      expect(roots).toEqual([2, 5, 10]);
+    })
+    test("pop", () => {
+      // #TEST Array.pop
+      const plants: string[] = ['broccoli', 'cauliflower', 'cabbage', 'kale', 'tomato'];
+      let ret1 = plants.pop()
+      console.log(ret1)//"tomato"
+      console.log(plants)//["broccoli", "cauliflower", "cabbage", "kale"]
+      // #END
+      expect(ret1).toEqual("tomato");
+      expect(plants).toEqual(["broccoli", "cauliflower", "cabbage", "kale"]);
+      plants.pop();
+      expect(plants).toEqual(["broccoli", "cauliflower", "cabbage"]);
+
+    })
+    test("push", () => {
+      // #TEST Array.push
+      const animals: string[] = ['pigs', 'goats', 'sheep'];
+      const count = animals.push('cows');
+      console.log(count)//4
+      console.log(animals) //['pigs', 'goats', 'sheep', 'cows']
+      // #END
+      expect(count).toEqual(4);
+      expect(animals).toEqual(['pigs', 'goats', 'sheep', 'cows']);
+      animals.push('chickens', 'cats', 'dogs');
+      expect(animals).toEqual(["pigs", "goats", "sheep", "cows", "chickens", "cats", "dogs"]);
+
+    })
+    test("reduce", () => {
+      // #TEST Array.reduce,Array.reduce_1,Array.reduce_2,Array.reduce_3,Array.reduce_4,Array.reduce_5
+      const array1: number[] = [1, 2, 3, 4];
+      const initialValue: number = 0;
+      const sumWithInitial = array1.reduce(
+        (previousValue: number, currentValue: number): number => previousValue + currentValue,
+        initialValue
+      );
+      console.log(sumWithInitial)//10
+      // #END
+      expect(sumWithInitial).toEqual(10);
+    })
+    test("shift", () => {
+      // #TEST Array.shift
+      const array1 = [1, 2, 3];
+
+      const firstElement = array1.shift();
+
+      console.log(array1); // [2, 3]
+
+      console.log(firstElement); //1
+      // #END
+      expect(firstElement).toEqual(1);
+      expect(array1).toEqual([2, 3]);
+    })
+    test("slice", () => {
+      // #TEST Array.slice
+      const animals = ['ant', 'bison', 'camel', 'duck', 'elephant'];
+
+      console.log(animals.slice(2));
+      //  ["camel", "duck", "elephant"]
+
+      console.log(animals.slice(2, 4));
+      //["camel", "duck"]
+
+      console.log(animals.slice(1, 5));
+      //  ["bison", "camel", "duck", "elephant"]
+
+      console.log(animals.slice(-2));
+      // ["duck", "elephant"]
+
+      console.log(animals.slice(2, -1));
+      // ["camel", "duck"]
+
+      console.log(animals.slice());
+      //["ant", "bison", "camel", "duck", "elephant"]
+      // #END
+      expect(animals.slice(2)).toEqual(["camel", "duck", "elephant"]);
+      expect(animals.slice(2, 4)).toEqual(["camel", "duck"]);
+      expect(animals.slice(1, 5)).toEqual(["bison", "camel", "duck", "elephant"]);
+      expect(animals.slice(-2)).toEqual(["duck", "elephant"]);
+      expect(animals.slice(2, -1)).toEqual(["camel", "duck"]);
+      expect(animals.slice()).toEqual(["ant", "bison", "camel", "duck", "elephant"]);
+    })
+    test("some", () => {
+      // #TEST Array.some
+      const array: number[] = [1, 2, 3, 4, 5];
+      const even = (element: number): boolean => element % 2 == 0;
+      console.log(array.some(even));//true
+      // #END
+
+      expect(array.some(even)).toEqual(true);
+      const isBiggerThan10 = (element: number): boolean => element > 10;
+      expect([2, 5, 8, 1, 4].some(isBiggerThan10)).toEqual(false);
+      expect([12, 5, 8, 1, 4].some(isBiggerThan10)).toEqual(true);
+    })
+    test("splice", () => {
+      // #TEST Array.splice
+      const months: string[] = ['Jan', 'March', 'April', 'June'];
+      months.splice(1, 0, 'Feb');
+      console.log(months)//["Jan", "Feb", "March", "April", "June"]
+      // #END
+
+      expect(months).toEqual(["Jan", "Feb", "March", "April", "June"]);
+      months.splice(4, 1, 'May');
+      expect(months).toEqual(["Jan", "Feb", "March", "April", "May"]);
+    })
+    test('sort', () => {
+      // #TEST Array.sort
+      const months = ['March', 'Jan', 'Feb', 'Dec'];
+      months.sort();
+      console.log(months)//["Dec", "Feb", "Jan", "March"]
+      // #END
+      expect(months).toEqual(["Dec", "Feb", "Jan", "March"]);
+
+      const array1 = [1, 30, 4, 21, 100000];
+      array1.sort();
+      expect(array1).toEqual([1, 100000, 21, 30, 4]);
+
+      const array2 = [5, 1, 4, 2, 3];
+      array2.sort((a, b): number => a - b);
+      expect(array2).toEqual([1, 2, 3, 4, 5]);
+
+      // const array3 = [5, "banana", 4, "apple", 3, "cherry", 2, "date", 1];
+      // array3.sort();
+      // expect(array3).toEqual([1, 2, 3, 4, 5, "apple", "banana", "cherry", "date"]);
+
+      const array4 = [
+        { name: "John", age: 24 },
+        { name: "Sarah", age: 19 },
+        { name: "Bob", age: 27 },
+        { name: "Alice", age: 21 }
+      ];
+      // 先强转类型，解决编译报错
+      array4.sort((a, b): number => (a['age'] as number) - (b['age'] as number));
+
+      // #ifndef APP-IOS
+      expect(array4).toEqual([{ name: "Sarah", age: 19 }, { name: "Alice", age: 21 }, { name: "John", age: 24 }, { name: "Bob", age: 27 }]);
+      // #endif
+
+      // #ifdef APP-IOS
+      const arr = array4.map((value: UTSJSONObject): number => { return value["age"] as number })
+      expect(arr).toEqual([19, 21, 24, 27])
+      // #endif
+
+
+
+
+    })
+    test("unshift", () => {
+      // #TEST Array.unshift
+      const array1 = [1, 2, 3];
+      let ret1 = array1.unshift(4, 5)
+      console.log(ret1);
+      //  5
+
+      console.log(array1);
+      // [4, 5, 1, 2, 3]
+      // #END
+      expect(ret1).toEqual(5);
+      expect(array1).toEqual([4, 5, 1, 2, 3]);
+    })
+    test("toString", () => {
+      // #TEST Array.toString
+      const array1: number[] = [1, 2, 3];
+      console.log(array1.toString()) //"1,2,3"
+      // #END
+      expect(array1.toString()).toEqual("1,2,3");
+      const array2 = new Array<string>()
+      array2.push("a")
+      array2.push("b")
+      array2.push("c")
+      expect(array2.toString()).toEqual("a,b,c");
+    })
+    test('reverse', () => {
+      // const array1: string[] = ['one', 'two', 'three'];
+      // const reversed1: string[] = array1.reverse();
+      // expect(reversed1).toEqual(["three", "two", "one"]);
+      // expect(array1).toEqual(["three", "·two", "one"]);
+
+      // const array2 = [1, 2, 3, 4, 5];
+      // const reversed2 = array2.reverse();
+      // expect(reversed2).toEqual([5, 4, 3, 2, 1]);
+      // expect(array2).toEqual([5, 4, 3, 2, 1]);
+    })
+    test("reduceRight", () => {
+      // #TEST Array.reduceRight,Array.reduceRight_1,Array.reduceRight_2,Array.reduceRight_3,Array.reduceRight_4,Array.reduceRight_5,Array.reduceRight_6
+      const array1: number[][] = [[0, 1], [2, 3], [4, 5]];
+      const result1 = array1.reduceRight((accumulator: number[], currentValue: number[]): number[] => accumulator.concat(currentValue));
+      console.log(result1) //[4, 5, 2, 3, 0, 1]
+
+
+      const array2: number[] = [1, 2, 3, 4];
+      let result2 = array2.reduceRight((acc: number, cur: number, index: number, array: number[]): number => {
+        return acc + cur;
+      });
+
+      console.log(result2) //10
+
+
+      const result3 = array2.reduceRight((acc: number, cur: number): number => acc + cur, 5);
+      console.log(result3) //15
+      // #END
+
+      expect(result3).toEqual(15);
+      expect(result1).toEqual([4, 5, 2, 3, 0, 1]);
+      result2 = array2.reduceRight((acc: number, cur: number, index: number, array: number[]): number => {
+        expect(array[index]).toEqual(cur);
+        return acc + cur;
+      });
+      expect(result2).toEqual(10);
+    })
+    test("flatMap", () => {
+      const arr: number[] = [1, 2, 3];
+      const result = arr.flatMap((x: number): number[] => [x, x * 2]);
+      expect(result).toEqual([1, 2, 2, 4, 3, 6]);
+
+      const arr1: number[] = [1, 2, 3, 4];
+      const result1 = arr1.flatMap((num: number, index: number, array: number[]): number[] => {
+        expect(array[index]).toEqual(num);
+        if (num % 2 == 0) {
+          return [num * 2];
+        }
+        return [];
+      });
+      expect(result1).toEqual([4, 8]);
+    })
+    test("entries", () => {
+      // const array1 = ['a', 'b', 'c'];
+      // const iterator1 = array1.entries();
+      // expect(iterator1.next().value).toEqual([0, "a"]);
+      // expect(iterator1.next().value).toEqual([1, "b"]);
+      // expect(iterator1.next().value).toEqual([2, "c"]);
+      // expect(iterator1.next().done).toEqual(true);
+
+      // const array2: any[] = [1, 2, 'hello', true, { name: 'john', age: 30 }, [4, 5]];
+      // let count = 0;
+      // for (const [index, element] of array2.entries()) {
+      //     count++;
+      //     expect(element).toEqual(array2[index]);
+      // }
+      // expect(count).toEqual(array2.length);
+    })
+    test("keys", () => {
+      // const array1 = ['a', 'b', 'c'];
+      // const iterator1 = array1.keys();
+      // expect(iterator1.next().value).toEqual(0);
+      // expect(iterator1.next().value).toEqual(1);
+      // expect(iterator1.next().value).toEqual(2);
+      // expect(iterator1.next().done).toEqual(true);
+    })
+    test("isArray", () => {
+      // #TEST Array.isArray
+
+      console.log(Array.isArray([1, 3, 5]));
+      // Expected output: true
+
+      console.log(Array.isArray('[]'));
+      // Expected output: false
+
+      console.log(Array.isArray(new Array(5)));
+      // Expected output: true
+      // #ifdef APP-ANDROID
+      console.log(Array.isArray(new Int16Array([15, 33])));
+      // #endif
+      // Expected output: false
+      // #END
+    })
+    //示例
+    test("sample", () => {
+      // #TEST Array.sampleCreate
+      const fruits = ['Apple', 'Banana']
+      console.log(fruits.length)
+      // #END
+
+      // #TEST Array.sampleVisit
+      const first = fruits[0]
+      console.log(first)     // Apple
+
+      const last = fruits[fruits.length - 1]
+      console.log(last) // Banana
+      // #END
+
+      // #TEST Array.sampleForEach
+      fruits.forEach(function (item, index: number, array) {
+        console.log(item, index)
+      })
+      // Apple 0
+      // Banana 1
+      // #END
+
+      // #TEST Array.sampleAdd
+      let newLength = fruits.push('Orange')
+      // ["Apple", "Banana", "Orange"]
+      console.log(newLength)//3
+      // #END
+
+      // #TEST Array.samplePop
+      const lastE = fruits.pop() // remove Orange (from the end)
+      // ["Apple", "Banana"]
+      console.log(lastE)
+      // #END
+
+      // #TEST Array.sampleShift
+      const firstE = fruits.shift() // remove Apple from the front
+      console.log(firstE) // ["Banana"]
+      // #END
+
+      // #TEST Array.sampleUnshift
+      newLength = fruits.unshift('Strawberry') // add to the front
+      console.log(newLength) // 2
+      // ["Strawberry", "Banana"]
+      // #END
+
+      // #TEST Array.sampleIndexOf
+      fruits.push('Mango')
+      // ["Strawberry", "Banana", "Mango"]
+      let pos = fruits.indexOf('Banana')
+      // 1
+      // #END
+
+      // #TEST Array.sampleSplice
+      const removedItem = fruits.splice(pos, 1) // this is how to remove an item
+      console.log(removedItem) // ["Banana"]
+
+      // #END
+
+      // #TEST Array.sampleSpliceMul
+      const vegetables = ['Cabbage', 'Turnip', 'Radish', 'Carrot']
+      console.log(vegetables)
+      // ["Cabbage", "Turnip", "Radish", "Carrot"]
+      pos = 1
+      const n = 2
+      const removedItems = vegetables.splice(pos, n)
+      // this is how to remove items, n defines the number of items to be removed,
+      // starting at the index position specified by pos and progressing toward the end of array.
+      console.log(vegetables)
+      // ["Cabbage", "Carrot"] (the original array is changed)
+      console.log(removedItems)
+      // ["Turnip", "Radish"]
+      // #END
+
+      // #TEST Array.sampleSpliceCopy
+      const shallowCopy = fruits.slice() // this is how to make a copy
+      console.log(shallowCopy) // ["Strawberry", "Mango"]
+      // #END
+
+      // #TEST Array.sampleForEachCallback
+      let array = ['a', 'b', 'c'];
+      array.forEach(element => {
+        console.log(element)
+        // array.pop() // 此行为在 Android 平台会造成闪退，在 iOS 平台会输出 'a', 'b', 'c', 而 JS 会输出 'a', 'b'
+      });
+
+      // 如果想让上述行为正常运行，可以用 while 循环实现：
+
+      array = ['a', 'b', 'c'];
+      let index = 0;
+      while (index < array.length) {
+        console.log(array[index]);
+        array.pop();
+        index += 1;
+      }
+      // #END
+
+      // #TEST Array.sampleSort
+      // #ifdef APP-ANDROID
+      let a = [2, 0, 4];
+      a.sort((a, b): number => {
+        // 这里的判断不能省略
+        if (a.compareTo(b) == 0) {
+          return 0
+        }
+        return a - b
+      })
+      // #endif
+
+      // #END
+
+      // #TEST Array.sampleFill
+      let b = new Array<Number>()
+      for (let i = 0; i < 20; i++) {
+        b.push(0)
+      }
+      // #END
+
+      // #TEST Array.sampleFillError
+      // #ifdef APP-ANDROID
+      new Array(20).fill(0)
+      // #endif
+
+      // #END
+
+    })
+
+  })
+}

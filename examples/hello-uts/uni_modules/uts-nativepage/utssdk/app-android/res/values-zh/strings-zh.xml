@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dcloud_ad_error_message_5001">adpid不能为空</string>
+    <string name="dcloud_ad_error_message_5009">当前广告正在请求中，请勿重复点击</string>
+    <string name="dcloud_ad_error_message_5002">无效的广告位标识adpid，请使用正确的adpid。当前广告位为：</string>
+    <string name="dcloud_ad_error_message_5003">未开通广告，请在广告平台申请并确保已审核通过</string>
+    <string name="dcloud_ad_error_message_5004">无广告模块，打包时请配置要使用的广告模块</string>
+    <string name="dcloud_ad_error_message_5005">广告加载失败，请稍后重试</string>
+    <string name="dcloud_ad_error_message_5006">广告没有加载成功就show了</string>
+    <string name="dcloud_ad_error_message_5007">无法获取广告配置数据，请稍后重试</string>
+    <string name="dcloud_ad_notification_pause_download">暂停下载</string>
+    <string name="dcloud_ad_notification_delete_download">删除下载</string>
+    <string name="dcloud_ad_tag_ads">广告</string>
+</resources>

@@ -1,0 +1,54 @@
+class Dog {
+    bark() {
+        return "汪汪!";
+    }
+}
+
+class Cat {
+    meow() {
+        return "喵喵~";
+    }
+}
+
+function handlePet(pet: Dog | Cat) {
+    if (pet instanceof Dog) {
+        return pet.bark();
+    } else if (pet instanceof Cat) {
+        return pet.meow();
+    }
+    return "未知";
+}
+
+function handleDate(date: any | null) {
+    if (date instanceof Date) {
+        return date.toDateString();
+    }
+    return "未知";
+}
+
+function handleMap(map: any | null) {
+    if (map instanceof Map) {
+        return map.get("a") as string | null;
+    }
+    return "未知";
+}
+
+function handleSet(set: any | null) {
+    if (set instanceof Set) {
+        return set.size;
+    }
+    return -1;
+}
+
+export function testInstanceofNarrowing() {
+    return [
+        handlePet(new Dog()),
+        handlePet(new Cat()),
+        handleDate(new Date()),
+        handleDate(null),
+        handleMap(new Map<string, string>()),
+        handleMap(null),
+        handleSet(new Set<string>()),
+        handleSet(null),
+    ];
+}

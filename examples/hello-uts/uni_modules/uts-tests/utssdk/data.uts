@@ -1,0 +1,6 @@
+const mockData = {
+  username:"lucy",
+  age:12
+}
+
+export {mockData}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+	
+	<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="demo text"/>
+	<Button android:layout_width="match_parent" android:layout_height="wrap_content" android:text="开启前台服务(应用包活)" android:id="@+id/btn_start_service_front"/>
+	<Button android:layout_width="match_parent" android:layout_height="wrap_content" android:text="注册屏幕状态广播监听" android:id="@+id/btn_start_screen_listen"/>
+	<Button android:layout_width="match_parent" android:layout_height="wrap_content" android:text="开启异步任务" android:id="@+id/btn_start_thread"/>
+	<Button android:layout_width="match_parent" android:layout_height="wrap_content" android:text="关闭当前activity" android:id="@+id/btn_finish_activity"/>
+	<Button android:layout_width="match_parent" android:layout_height="wrap_content" android:text="打开应用根目录activity" android:id="@+id/btn_start_root_activity"/>
+  <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:text="打开应用首页" android:id="@+id/btn_start_root_page"/>
+	<androidx.recyclerview.widget.RecyclerView
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:id="@+id/recycler_view">
+	
+	</androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>

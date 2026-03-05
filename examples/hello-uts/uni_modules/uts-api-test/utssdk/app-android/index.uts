@@ -1,0 +1,138 @@
+/* 引入 interface.uts 文件中定义的变量 */
+import { GetLog } from '../interface.uts';
+import File from 'java.io.File';
+
+
+export const getLog : GetLog = function (param : Any|null) : string {
+  let allLog = console.getLogV2(param);
+  /**
+   * 移除掉干扰因素，仅返回打印对象本身的序列化结果
+   */
+  if(!allLog.startsWith("---BEGIN:CONSOLE---")){
+	  return ""
+  }
+  if(!allLog.endsWith("---END:CONSOLE---")){
+  	  return ""
+  }
+  let jsonLog = allLog
+  jsonLog = jsonLog.replace("---BEGIN:CONSOLE---", "")
+  jsonLog = jsonLog.replace("---END:CONSOLE---", "")
+  let jsonArrayObj = JSON.parse<Array<UTSJSONObject>>(jsonLog)
+  return jsonArrayObj![0].toJSONString()
+}
+
+type ParamOptions = {
+	title : string,
+	array : Array<string>
+}
+
+class C {
+  name:string = "default"
+  sayBye = function(word:string){
+    console.log("sayBye",word)
+  }
+  sayHello(word:string){
+    console.log("sayHello",word)
+  }
+}
+
+/**
+ * 高频对象测试，主要是系统组件对象
+ */
+export function frequentlyObjectTest():boolean{
+	
+  let typeLogRet = getLog(UTSAndroid.getUniActivity())
+  console.log(typeLogRet)
+  let typeLogObj = JSON.parseObject(typeLogRet)!
+  
+  let typeLogObjPos = typeLogObj.getJSON("__$originalPosition")!
+  if("ParamOptions" != typeLogObjPos['name']){
+    return false
+  }
+  // /**
+  //  * 编译出来的位置信息可能有差异，排除单独验证后，排除掉这个字段
+  //  */
+  // typeLogObj.set("__$originalPosition","")
+  // console.log(typeLogObj.toJSONString())
+  return true
+}
+
+
+export function logObjectTest():string{
+	let ret : ParamOptions = {
+		title: "logObjectTest",
+		array: ['1', '2', '3']
+	}
+  let typeLogRet = getLog(ret)
+  let typeLogObj = JSON.parseObject(typeLogRet)!
+  
+  let typeLogObjPos = typeLogObj.getJSON("__$originalPosition")!
+  if("ParamOptions" != typeLogObjPos['name']){
+    return ""
+  }
+  /**
+   * 编译出来的位置信息可能有差异，排除单独验证后，排除掉这个字段
+   */
+  typeLogObj.set("__$originalPosition","")
+	return typeLogObj.toJSONString()
+}
+
+
+export function logFunctionTest():string{
+	
+	let testFun = function(){
+		console.log("testFun")
+	}
+	return getLog(testFun)
+}
+
+export function logFileTest():string{
+  return getLog(new File("/sdcard/temp/1.txt"))
+}
+
+export function logDateTest():string{
+  return getLog(new Date('1998-08-08'))
+}
+
+export function logUTSJSONObjectTest():string{
+  
+
+  let classLogRet = getLog({a:1})
+  let classLogObj = JSON.parseObject(classLogRet)!
+  
+  let classLogObjPos = classLogObj.getJSON("__$originalPosition")
+  
+  if(classLogObjPos == null){
+    return ""
+  }
+  
+  if("UTSJSONObject" != classLogObjPos['name']){
+    return ""
+  }
+  
+  classLogObj.set("__$originalPosition","")
+  return classLogObj.toJSONString()
+  
+}
+
+export function logClassTest():string{
+  let c = new C()
+  c.name="ccc"
+  
+  let classLogRet = getLog(c)
+  let classLogObj = JSON.parseObject(classLogRet)!
+  
+  let classLogObjPos = classLogObj.getJSON("__$originalPosition")!
+  
+  if("C" != classLogObjPos['name']){
+    return ""
+  }
+  /**
+   * 编译出来的位置信息可能有差异，排除单独验证后，排除掉这个字段
+   */
+  classLogObj.set("__$originalPosition","")
+  return classLogObj.toJSONString()
+}
+
+
+

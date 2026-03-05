@@ -1,0 +1,20 @@
+
+/**
+ * 判断当前的基座是否已经集成了sdk, 即是否是自定义基座
+ */
+export function checkHasLottieIntegration():boolean{
+	
+	let hasIntegration =  true
+	try{
+		let xClass = Class.forName("com.airbnb.lottie.LottieDrawable")
+		console.log(xClass);
+	}catch(e:Exception){
+		hasIntegration = false;
+	}
+	
+	if(!hasIntegration){
+		return false;
+	}
+	
+	return true
+}

@@ -1,0 +1,133 @@
+type Test1Arg = {
+    type: 'json'
+    value: 'test10' | 'test11'
+    value1: string
+  }
+  type Test2Arg = {
+    type: 'ArrayBuffer'
+    value: 'test20' | 'test21'
+    value2: ArrayBuffer
+  }
+  type TestArg = Test1Arg | Test2Arg
+  export function test1(arg: Test1Arg): string
+  export function test1(arg: Test2Arg): ArrayBuffer
+  export function test1(arg: TestArg): string | ArrayBuffer {
+    switch (arg.type) {
+      case 'json':
+        return arg.value1
+      case 'ArrayBuffer':
+        return arg.value2
+      default:
+        return ''
+    }
+  }
+  export function test2(arg: Test1Arg | null): string
+  export function test2(arg: Test2Arg | null): ArrayBuffer
+  export function test2(arg: TestArg | null): string | ArrayBuffer {
+    switch (arg?.type) {
+      case 'json':
+        return arg.value1
+      case 'ArrayBuffer':
+        return arg.value2
+      default:
+        return ''
+    }
+  }
+  export function test3(arg: TestArg): string {
+    return arg['value'] as string
+  }
+  export function test4(arg: Test1Arg | Test2Arg): string {
+    return arg['value'] as string
+  }
+  
+  export function test5(arg: Test1Arg | Test2Arg | null): string | null {
+    if (arg == null) {
+      return null
+    }
+    return arg!['value'] as string
+  }
+  
+  // 事件定义
+  type UserMouseEvent = {
+    type: 'click' | 'mouseover'
+    x: number
+    y: number
+  }
+  
+  type UserKeyboardEvent = {
+    type: 'keydown' | 'keyup'
+    key: string
+  }
+  
+  type UserEvent = UserMouseEvent | UserKeyboardEvent
+  
+  // 类型安全的事件处理
+  function handleEvent(event: UserEvent) {
+    switch (event.type) {
+      case 'click':
+      case 'mouseover':
+        return `点击位置：${event.x}, ${event.y}`
+      case 'keydown':
+      case 'keyup':
+        return `按下按键：${event.key}`
+      default:
+        return '未知事件'
+    }
+  }
+  
+  export function testDiscriminatedUnion(): any[] {
+    const a = test1({ type: 'json', value: 'test10', value1: 'test' })
+    const b = test1({
+      type: 'ArrayBuffer',
+      value: 'test20',
+      value2: new ArrayBuffer(0),
+    })
+    const c = test2({ type: 'json', value: 'test10', value1: 'test' })
+    const d = test2({
+      type: 'ArrayBuffer',
+      value: 'test20',
+      value2: new ArrayBuffer(0),
+    })
+    const e = test3({ type: 'json', value: 'test10', value1: 'test' })
+    const f = test3({
+      type: 'ArrayBuffer',
+      value: 'test20',
+      value2: new ArrayBuffer(0),
+    })
+  
+    const g = test4({ type: 'json', value: 'test10', value1: 'test' })
+    const h = test4({
+      type: 'ArrayBuffer',
+      value: 'test20',
+      value2: new ArrayBuffer(0),
+    })
+    const i = test5({ type: 'json', value: 'test10', value1: 'test' })
+    const j = test5({
+      type: 'ArrayBuffer',
+      value: 'test20',
+      value2: new ArrayBuffer(0),
+    })
+  
+    const k = handleEvent({ type: 'click', x: 1, y: 2 })
+    const m = handleEvent({ type: 'mouseover', x: 1, y: 2 })
+    const n = handleEvent({ type: 'keydown', key: 'a' })
+    const o = handleEvent({ type: 'keyup', key: 'a' })
+  
+    return [
+      [a, a.length],
+      [b, b.byteLength],
+      [c, c.length],
+      [d, d.byteLength],
+      [e, e.length],
+      [f, f.length],
+      [g, g.length],
+      [h, h.length],
+      [i, i?.length],
+      [j, j?.length],
+      [k, k],
+      [m, m],
+      [n, n],
+      [o, o],
+    ]
+  }
+  

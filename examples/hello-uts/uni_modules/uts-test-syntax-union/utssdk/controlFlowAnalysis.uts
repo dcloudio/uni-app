@@ -1,0 +1,12 @@
+function padLeft(padding: number | string, input: string) {
+    if (typeof padding == "number") {
+        return " ".repeat(padding) + input;
+    }
+    return padding + input;
+}
+export function testControlFlowAnalysis() {
+    const result: string[] = [];
+    result.push(padLeft(1, "hello"));
+    result.push(padLeft("1", "hello"));
+    return result;
+}

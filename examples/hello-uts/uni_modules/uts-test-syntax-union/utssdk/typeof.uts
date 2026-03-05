@@ -1,0 +1,69 @@
+// 基础类型保护
+function handlePrimitive(value: string | number | boolean) {
+    if (typeof value == "string") {
+        return value.toUpperCase(); // 这里value被收窄为string类型
+    } else if (typeof value == "number") {
+        return value.toFixed(2); // 这里value被收窄为number类型
+    } else {
+        return value.toString(); // 这里value被收窄为boolean类型
+    }
+}
+
+// null的类型保护
+function handleNullable(value: string | null): string {
+    if (typeof value == "string") {
+        return value!; // value是string类型
+    } else {
+        return "null"; // value是null类型
+    }
+}
+
+// 对象和函数的类型保护
+
+function handleObjectAndFunction(
+    value: UTSJSONObject | (() => string) | string[] | null
+) {
+    if (typeof value == "function") {
+        return "function"; // value是Function类型
+    } else if (Array.isArray(value)) {
+        return value.join(","); // value是string[]类型
+    } else {
+        return JSON.stringify(value)!; // value是object类型
+    }
+}
+
+// 复杂对象的类型保护
+type User = {
+    name: string;
+    age: number;
+};
+
+function handleComplexType(value: User | string | number) {
+    if (typeof value == "object") {
+        return `${value.name} is ${value.age}`; // value是User类型
+    } else if (typeof value == "string") {
+        return value.trim(); // value是string类型
+    } else {
+        return value.toFixed(0); // value是number类型
+    }
+}
+export function testTypeof(): any[] {
+    return [
+        handlePrimitive("hello"), // "HELLO"
+        handlePrimitive(42), // "42.00"
+        
+        handlePrimitive(true), // "true"
+
+        handleNullable("test"), // "test"
+        handleNullable(null), // "null"
+
+        handleObjectAndFunction((): string => "result"), // "function"
+        handleObjectAndFunction(["a", "b"]), // "a,b"
+        handleObjectAndFunction({ x: 1 }), // "{"x":1}"
+
+        handleComplexType({ name: "张三", age: 25 }), // "张三 is 25"
+        handleComplexType("  test  "), // "test"
+        handleComplexType(42), // "42"
+        
+    ];
+}
