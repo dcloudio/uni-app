@@ -1,0 +1,130 @@
+import { describe, test, expect, Result } from './tests.uts'
+// #ifdef APP-ANDROID
+@UTSAndroid.Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER", "ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+// #endif
+export function testSet(): Result {
+  return describe("Set", () => {
+    test('size', () => {
+      // #TEST Set.size
+      const set1 = new Set<any>();
+      const object1 = {};
+      set1.add(42);
+      set1.add('forty two');
+      set1.add('forty two');
+      set1.add(object1);
+      console.log(set1.size);
+      // expected output: 3
+      // #END
+      expect(set1.size).toEqual(3);
+    })
+    test('add', () => {
+      // #TEST Set.add
+      const set1 = new Set<number>();
+      set1.add(42);
+      set1.add(42);
+      set1.add(13);
+      set1.forEach((item) => {
+        console.log(item);
+        // expected output: 42
+        // expected output: 13
+      })
+      // #END
+
+      set1.forEach((item) => {
+        expect(set1.has(item)).toEqual(true);
+      })
+      console.log(set1)
+      let set2 = set1.add(66);
+      console.log(set2)
+    })
+    test('clear', () => {
+      // #TEST Set.clear
+      const set1 = new Set<any>();
+      set1.add(1);
+      set1.add('foo');
+      set1.clear();
+      console.log(set1.size);
+      // expected output: 0
+      // #END
+      expect(set1.size).toEqual(0);
+    })
+    test('delete', () => {
+      // #TEST Set.delete
+      const set1 = new Set<any>();
+      set1.add(10);
+      set1.add(20);
+
+      set1.delete(10);
+      console.log(set1.size) //1
+      // #END
+
+      expect(set1.size).toEqual(1);
+    })
+    test('has', () => {
+      // #TEST Set.has
+      const set1 = new Set<number>([1, 2, 3, 4, 5]);
+      console.log(set1.has(1));
+      // expected output: true
+
+      console.log(set1.has(5));
+      // expected output: true
+
+      console.log(set1.has(6));
+      // expected output: false
+      // #END
+
+      expect(set1.has(1)).toEqual(true);
+      expect(set1.has(5)).toEqual(true);
+      expect(set1.has(6)).toEqual(false);
+    })
+    test('forEach', () => {
+      // #TEST Set.forEach,Set.forEach_1，Set.forEach_2
+      const set1 = new Set<any>(['foo', 'bar'])
+      let logSetElements = (value: any) => {
+        console.log(value);
+        // expected output: foo
+        // expected output: bar
+      }
+      // #END
+      logSetElements = (value: any) => {
+        expect(set1.has(value)).toEqual(true);
+      }
+      set1.forEach(logSetElements);
+    })
+
+    test("entries", () => {
+      // const mySet = new Set<string>();
+      // mySet.add("foo");
+      // mySet.add("bar");
+      // mySet.add("baz");
+      // const setIter = mySet.entries();
+      // expect(setIter.next().value).toEqual(["foo", "foo"]);
+      // expect(setIter.next().value).toEqual(["bar", "bar"]);
+      // expect(setIter.next().value).toEqual(["baz", "baz"]);
+      // expect(setIter.next().done).toEqual(true);
+    })
+    test("keys", () => {
+      // const mySet = new Set<string>();
+      // mySet.add("foo");
+      // mySet.add("bar");
+      // mySet.add("baz");
+      // const setIter = mySet.keys();
+      // expect(setIter.next().value).toEqual("foo");
+      // expect(setIter.next().value).toEqual("bar");
+      // expect(setIter.next().value).toEqual("baz");
+      // expect(setIter.next().done).toEqual(true);
+    })
+
+    test("values", () => {
+      // const mySet = new Set<string>();
+      // mySet.add("foo");
+      // mySet.add("bar");
+      // mySet.add("baz");
+      // const setIter = mySet.values();
+      // expect(setIter.next().value).toEqual("foo");
+      // expect(setIter.next().value).toEqual("bar");
+      // expect(setIter.next().value).toEqual("baz");
+      // expect(setIter.next().done).toEqual(true);
+    })
+  })
+}

@@ -1,0 +1,82 @@
+<template>
+    <div>
+        <button @tap="changeUrl">播放本地动画资源</button>
+		<button @tap="changeServerUrl">播放远程动画资源</button>
+		
+        <button @tap="changeAutoPlay">测试AutoPlay</button>
+        <button @tap="changeLoop">测试Loop</button>
+        <button @tap="changeAction(1)">测试action play</button>
+        <button @tap="changeAction(2)">测试action pause</button>
+        <button @tap="changeAction(3)">测试action stop</button>
+       <uts-animation-view ref="animView" :path="animUrl" :autoplay="autoplay" :loop="loop" :action="action"
+            :hidden="hidden" @bindended="testAnimEnd" @click="lottieClickTest" @longpress="lottieLongpressTest"
+            :style="{width:widthNum+'rpx',height:heightNum+'px',background:yanse}">
+        </uts-animation-view>
+        
+    </div>
+</template>
+
+<script>
+  
+    export default {
+        data() {
+            return {
+                hidden: false,
+                autoplay: false,
+                action: "play",
+                loop: false,
+                yanse: "red",
+                widthNum: 750,
+                heightNum: 200,
+                comShow: true,
+                animUrl: "/static/anim_a.json"
+            }
+        },
+        
+        methods: {
+
+            changeAutoPlay: function() {
+                this.autoplay = !this.autoplay
+            },
+            changeUrl: function() {
+                if (this.animUrl == "/static/anim_a.json") {
+                    this.animUrl = "/static/anim_b.json"
+                } else {
+                    this.animUrl = "/static/anim_a.json"
+                }
+            },
+
+			changeServerUrl: function() {
+                this.animUrl = "https://b.bdstatic.com/miniapp/images/lottie_example_one.json"
+            },
+            changeAction: function(type) {
+                if (type == 1) {
+                    this.action = "play"
+                } else if (type == 2) {
+                    this.action = "pause"
+                } else if (type == 3) {
+                    this.action = "stop"
+                }
+            },
+            changeLoop: function() {
+                this.loop = !this.loop
+            },
+            testAnimEnd: function(res) {
+                console.log("testAnimEnd");
+                console.log(res);
+            },
+
+            changeRepeat: function(res) {
+                this.$refs["animView"].updateRepeatConfig("RESTART");
+            },
+            lottieClickTest: function(res) {
+                console.log("lottieClickTest");
+                console.log(res);
+            },
+            lottieLongpressTest: function(res) {
+                console.log("lottieClickTest");
+                console.log(res);
+            },
+        }
+    }
+</script>

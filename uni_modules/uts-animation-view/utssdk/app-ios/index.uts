@@ -1,0 +1,7 @@
+
+/**
+ * 判断当前的基座是否已经集成了sdk, 即是否是自定义基座
+ */
+export function checkHasLottieIntegration():boolean{	
+	return true
+}

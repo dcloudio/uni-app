@@ -1,0 +1,183 @@
+function test1(
+    arg1: boolean,
+    arg2: boolean | null,
+    arg3: true | null,
+    arg4: false | null,
+    arg5: true | false | null
+) {
+  console.log("arg1",arg1)
+  console.log("arg2",arg2)
+  console.log("arg3",arg3)
+  console.log("arg4",arg4)
+  console.log("arg5",arg5)
+}
+function test2(
+    arg1: string | null,
+    arg2: string | number,
+    arg3: string | number | null
+) {
+  console.log("arg1",arg1)
+  console.log("arg2",arg2)
+  console.log("arg3",arg3)
+}
+type Arg1 = string | null;
+type Arg2 = string | number;
+type Arg3 = string | number | null;
+function test3(
+    arg1: Arg1,
+    arg2: Arg2,
+    arg3: Arg3,
+    arg4: Arg1 | number,
+    arg5: Arg2 | number,
+    arg6: Arg3 | boolean
+) {
+  console.log("arg1",arg1)
+  console.log("arg2",arg2)
+  console.log("arg3",arg3)
+  console.log("arg4",arg4)
+  console.log("arg5",arg5)
+  console.log("arg6",arg6)
+}
+type A = {
+    a: string;
+};
+type B = {
+    b: number;
+};
+type C = A | B;
+function test4(
+    arg1: C | null,
+    arg2: A,
+    arg3: B,
+    arg4: A | B | null,
+    arg5: A | B | C
+) {
+  console.log("arg1",arg1)
+  console.log("arg2",arg2)
+  console.log("arg3",arg3)
+  console.log("arg4",arg4)
+  console.log("arg5",arg5)
+}
+
+function test5(
+    arg1: keyof A,
+    arg2: keyof B,
+    arg4: keyof A | keyof B,
+    arg5: keyof A | keyof B | null
+) {
+  console.log("arg1",arg1)
+  console.log("arg2",arg2)
+  console.log("arg4",arg4)
+  console.log("arg5",arg5)
+}
+
+function test6(
+    arg1: (() => string | number) | null,
+    arg2: () => string | number | null,
+    arg3: (() => string) | ((arg3: string) => number),
+    arg4: (() => string) | ((arg4: number) => number) | null
+) {
+  console.log("arg1",arg1)
+  console.log("arg2",arg2)
+  console.log("arg3",arg3)
+  console.log("arg4",arg4)
+}
+
+interface TestInterface {
+  test1(arg1: A | B): void
+  test2(arg1: A | B | null): void
+  test3(arg1?: A | B): void
+  test4(arg1?: A | B | null): void
+  test5: (arg1: A | B | null) => void
+  test6?: ((arg1: A | B) => void) | null
+  // #ifndef APP-HARMONY
+  test7?: (arg1: A | B) => void
+  // #endif
+}
+
+class TestClass implements TestInterface {
+  test1(arg1: A | B): void {
+    console.log(arg1)
+  }
+  test2(arg1: A | B | null): void {
+    console.log(arg1)
+  }
+  test3(arg1?: A | B): void {
+    console.log(arg1)
+  }
+  test4(arg1?: A | B | null): void {
+    console.log(arg1)
+  }
+  test5 = (arg1: A | B | null): void => {
+    console.log(arg1)
+  }
+  test6: ((arg1: A | B) => void) | null = (arg1: A | B): void => {
+    console.log(arg1)
+  }
+  // #ifndef APP-HARMONY
+  test7: ((arg1: A | B) => void) | null = (arg1: A | B): void => {
+    console.log(arg1)
+  }
+  // #endif
+}
+
+interface TestInterface2 {
+  test1(arg1: A | B): void
+}
+
+class TestClass2 implements TestInterface2 {
+  test1(arg1: any): void {
+    console.log(arg1)
+  }
+}
+
+function test7(test: TestInterface2) {
+  test.test1({ a: 'test' })
+  test.test1({ b: 1 })
+}
+
+export function testParameterUnion() {
+    test1(true, true, true, false, true);
+    // #ifndef APP-IOS
+    // 目前 iOS 不支持可选 Boolean 类型
+    test1(true, null, null, null, null);
+    // #endif
+    test2("test2", "test2", "test2");
+    test2(null, 1, 1);
+    test2(null, 1, null);
+    test3("test3", "test3", "test3", "test3", "test3", "test3");
+    test3(null, 1, 1, null, 1, null);
+    test3(null, 1, null, 1, 1, true);
+    test4({ a: "test" }, { a: "test" }, { b: 1 }, { a: "test" }, { a: "test" });
+    test4({ b: 1 }, { a: "test" }, { b: 1 }, { b: 1 }, { b: 1 });
+    test5("a", "b", "a", "a");
+    test5("a", "b", "a", "b");
+    test5("a", "b", "b", null);
+    test6(
+        () => "test",
+        () => "test",
+        () => "test",
+        () => "test"
+    );
+    test6(
+        null,
+        () => 1,
+        (_: string) => 1,
+        (_: number) => 1
+    );
+    test6(
+        null,
+        () => 1,
+        (_: string) => 1,
+        null
+    );
+    const test = new TestClass()
+    test.test1({ a: 'test' })
+    test.test1({ b: 1 })
+    test.test5(null)
+    test.test5({ a: 'test' })
+    test.test5({ b: 1 })
+    // #ifndef APP-HARMONY
+    test7(new TestClass2())
+    // #endif
+}

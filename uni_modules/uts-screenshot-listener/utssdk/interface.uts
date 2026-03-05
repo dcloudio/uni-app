@@ -1,0 +1,42 @@
+export type OnUserCaptureScreenResult = {
+	/**
+		* 错误码
+		* 0:成功
+		* -1:permission denied
+		*/
+	errCode : number,
+	/**
+		* 调用API的名称
+		*/
+	errSubject : string,
+	/**
+		* 错误的详细信息
+		*/
+	errMsg : string,
+	/**
+		* 截屏文件路径（仅Android返回）
+		*/
+	image : string | null
+}
+
+export type UserCaptureScreenCallback = (res: OnUserCaptureScreenResult) => void
+
+/**
+	* 开启截屏监听 
+	* 
+	* @param {UTSCallback} callback 
+	* @tutorial https://uniapp.dcloud.net.cn/api/system/capture-screen.html#onusercapturescreen
+	* @platforms APP-IOS = ^9.0,APP-ANDROID = ^22
+	* @since 3.6.8
+	*/
+export type OnUserCaptureScreen = (callback : UserCaptureScreenCallback | null) => void
+
+/**
+	* 关闭截屏监听  
+	* 
+	* @param {UTSCallback} callback 
+	* @tutorial https://uniapp.dcloud.net.cn/api/system/capture-screen.html#offusercapturescreen
+	* @platforms APP-IOS = ^9.0,APP-ANDROID = ^22
+	* @since 3.6.8
+	*/
+export type OffUserCaptureScreen = (callback : UserCaptureScreenCallback | null) => void

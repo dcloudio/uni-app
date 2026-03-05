@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dcloud_ad_error_message_5001">"adpid" is null</string>
+    <string name="dcloud_ad_error_message_5009">Ad is requesting</string>
+    <string name="dcloud_ad_error_message_5002">Invalid "adpid",current:</string>
+    <string name="dcloud_ad_error_message_5003">No ads in the current slot,please ensure that the current ad slot is approved</string>
+    <string name="dcloud_ad_error_message_5004">No ads module,please configure the corresponding module when packaging</string>
+    <string name="dcloud_ad_error_message_5005">Ad loading failed,please try again later</string>
+    <string name="dcloud_ad_error_message_5006">Call "load" before calling "show"</string>
+    <string name="dcloud_ad_error_message_5007">Unable to get ad data, please try again later</string>
+    <string name="dcloud_ad_notification_pause_download">Pause</string>
+    <string name="dcloud_ad_notification_delete_download">Delete</string>
+    <string name="dcloud_ad_tag_ads">Ads</string>
+	<string name="app_widget_description">This is an app widget description</string>
+  <string name="demo_service_name">uniappx 测试辅助服务</string>
+</resources>

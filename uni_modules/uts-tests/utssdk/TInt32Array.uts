@@ -1,0 +1,421 @@
+import {
+  describe,
+  test,
+  expect,
+  Result
+} from './tests.uts'
+
+export class TInt32Array {
+  test() {
+
+
+    this.testInt32Array();
+    this.testConstructor();
+    this.testSet();
+    this.testCopyWith();
+    this.testEvery();
+    this.testFill();
+    this.testFilter();
+    this.find();
+    this.findIndex();
+    this.foreach();
+    this.iterator();
+    this.includes();
+    this.indexOf();
+    this.join();
+    this.keys();
+    this.map();
+    this.reduce();
+    this.reduceRight();
+    this.reverse();
+    this.slice();
+    this.sort();
+    this.subarray();
+    this.values();
+    this.arrayBufferSlice();
+
+  }
+
+
+ from() {
+    // #TEST Int32Array.from
+    var array = Int32Array.from([1, 2, 3], (v : number, _ : number) : number => v + v);
+    console.log(array.toString()); // '2,4,6'
+    // #END
+    expect(array.toString()).toEqual('2,4,6');
+  }
+  of() {
+    // #TEST Int32Array.of
+    var array = Int32Array.of(1, 2, 3)
+    console.log(array.toString()); // '1,2,3'
+    // #END
+    expect(array.toString()).toEqual("1,2,3");
+  }
+  testInt32Array() {
+    let int32 = new Int32Array(2);
+    int32[0] = 42;
+    expect(int32[0]).toEqual(42);
+    expect(int32.length).toEqual(2);
+    expect(Int32Array.BYTES_PER_ELEMENT).toEqual(4);
+
+    let x = new Int32Array([21, 31, 3]);
+    expect(x[1]).toEqual(31);
+
+    let y = new Int32Array(x);
+    expect(y[0]).toEqual(21);
+
+    let buffer = new ArrayBuffer(16);
+    let z = new Int32Array(buffer, 2, 4);
+    expect(z.byteOffset).toEqual(2);
+    expect(z.length).toEqual(4);
+  }
+
+  testConstructor() {
+    let buffer = new ArrayBuffer(16);
+    let int32 = new Int32Array(buffer);
+    int32[1] = 42;
+    expect(int32.toString()).toEqual("0,42,0,0");
+  }
+
+  testSet() {
+    // #TEST Int32Array.set
+    let int32 = new Int32Array(8);
+    var array = [1, 2, 3];
+    int32.set(array, 1);
+    console.log(int32.toString()); // "0,1,2,3,0,0,0,0"
+    // #END
+    expect(int32.toString()).toEqual("0,1,2,3,0,0,0,0");
+  }
+
+  testCopyWith() {
+    // #TEST Int32Array.copyWithin
+    console.log("testCopyWith start");
+    let int32 = new Int32Array(8);
+    int32.set([1, 2, 3], 1);
+    console.log(int32.toString()); // "0,1,2,0,0,0,0,0"
+    int32.copyWithin(3, 0, 3);
+    console.log(int32.toString()); // "0,1,2,0,1,2,0,0"
+    // #END
+    expect(int32.toString()).toEqual("0,1,2,0,1,2,0,0");
+  }
+
+  testEvery() {
+    // #TEST Int32Array.every
+    let result = new Int32Array([12, 5, 8, 130, 44]).every((value : number, _ : number, _a : Int32Array) : boolean => value < 40);
+    console.log(result); // false
+    // #END
+    expect(result).toEqual(false);
+  }
+  testFill() {
+    // #TEST Int32Array.fill
+    let int32_t1 = new Int32Array([1, 2, 3]).fill(4);
+    console.log(int32_t1.toString()); // "4,4,4"
+
+    let int32_t2 = new Int32Array([1, 2, 3]).fill(4, 1);
+    console.log(int32_t2.toString()); // "1,4,4"
+
+    let int32_t3 = new Int32Array([1, 2, 3]).fill(4, 1, 2);
+    console.log(int32_t3.toString()); // "1,4,3"
+
+    let int32_t4 = new Int32Array([1, 2, 3]).fill(4, 1, 1);
+    console.log(int32_t4.toString()); // "1,2,3"
+
+    let int32_t5 = new Int32Array([1, 2, 3]).fill(4, -3, -2);
+    console.log(int32_t5.toString()); // "4,2,3"
+    // #END
+
+    expect(int32_t1.toString()).toEqual("4,4,4");
+    expect(int32_t2.toString()).toEqual("1,4,4");
+    expect(int32_t3.toString()).toEqual("1,4,3");
+    expect(int32_t4.toString()).toEqual("1,2,3");
+    expect(int32_t5.toString()).toEqual("4,2,3");
+  }
+
+  testFilter() {
+    // #TEST Int32Array.filter
+    let int32 = new Int32Array([12, 5, 8, 44]).filter((value : number, _ : number, _a : Int32Array) : boolean => value >= 10);
+    console.log(int32.toString()); // "12,44"
+    // #END
+    expect(int32.toString()).toEqual("12,44");
+  }
+
+  find() {
+    // #TEST Int32Array.find
+    let int32 = new Int32Array([4, 5, 8, 12]);
+    let res = int32.find((value : number, _ : number, _a : Int32Array) : boolean => value > 5);
+    console.log(res); // 8
+    // #END
+    expect(res).toEqual(8);
+  }
+  findIndex() {
+    // #TEST Int32Array.findIndex
+    let int32_t1 = new Int32Array([4, 6, 8, 12]);
+    let res1 = int32_t1.findIndex((value : number, _ : number, _a : Int32Array) : boolean => value > 100);
+    console.log(res1); // -1
+
+    let int32_t2 = new Int32Array([4, 6, 7, 120]);
+    let res2 = int32_t2.findIndex((value : number, _ : number, _a : Int32Array) : boolean => value > 100);
+    console.log(res2); // 3
+    // #END
+
+    expect(res1).toEqual(-1);
+    expect(res2).toEqual(3);
+  }
+
+
+  foreach() {
+    // #TEST Int32Array.forEach
+    new Int32Array([0, 1, 2, 3]).forEach((value : number, index : number, _ : Int32Array) => {
+      console.log(`a[${index}] = ${value}`);
+    });
+    // #END
+  }
+
+  iterator() {
+    // #TEST Int32Array.entries
+    let arr = new Int32Array([10, 20, 30, 40, 50]);
+    let entries = arr.entries();
+    let entry = entries.next();
+    // #ifndef APP-IOS
+    console.log(entry.value[1]); // 10
+    // #endif
+    // #ifdef APP-IOS
+    console.log(entry.value![1]); // 10
+    // #endif
+    
+    // #END
+    // #ifndef APP-IOS
+    expect(entry.value[1]).toEqual(10);
+    // #endif
+    // #ifdef APP-IOS
+    expect(entry.value![1]).toEqual(10);
+    // #endif 
+    
+  }
+
+  includes() {
+    // #TEST Int32Array.includes
+    let int32_t1 = new Int32Array([1, 2, 3]);
+    let res1 = int32_t1.includes(2);
+    console.log(res1); // true
+
+    let res2 = int32_t1.includes(4);
+    console.log(res2); // false
+
+    let res3 = int32_t1.includes(3, 3);
+    console.log(res3); // false
+    // #END
+
+    expect(res1).toEqual(true);
+    expect(res2).toEqual(false);
+    expect(res3).toEqual(false);
+  }
+
+
+  indexOf() {
+    // #TEST Int32Array.indexOf
+    let int32_t1 = new Int32Array([2, 5, 9]);
+    let res1 = int32_t1.indexOf(2);
+    console.log(res1); // 0
+
+    let res2 = int32_t1.indexOf(7);
+    console.log(res2); // -1
+
+    let res3 = int32_t1.indexOf(9, 2);
+    console.log(res3); // 2
+
+    let res4 = int32_t1.indexOf(2, -1);
+    console.log(res4); // -1
+
+    let res5 = int32_t1.indexOf(2, -3);
+    console.log(res5); // 0
+    // #END
+
+    expect(res1).toEqual(0);
+    expect(res2).toEqual(-1);
+    expect(res3).toEqual(2);
+    expect(res4).toEqual(-1);
+    expect(res5).toEqual(0);
+  }
+
+
+  join() {
+    // #TEST Int32Array.join
+    let int32_t1 = new Int32Array([1, 2, 3]);
+    let res1 = int32_t1.join();
+    console.log(res1); // "1,2,3"
+
+    let res2 = int32_t1.join(" / ");
+    console.log(res2); // "1 / 2 / 3"
+
+    let res3 = int32_t1.join("");
+    console.log(res3); // "123"
+    // #END
+
+    expect(res1).toEqual("1,2,3");
+    expect(res2).toEqual("1 / 2 / 3");
+    expect(res3).toEqual("123");
+  }
+
+  keys() {
+    // #TEST Int32Array.keys
+    let arr = new Int32Array([10, 20, 30, 40, 50]);
+    let keys = arr.keys();
+    let key = keys.next();
+    console.log(key.value); // 0
+    // #END
+    expect(key.value).toEqual(0);
+  }
+
+  map() {
+    // #TEST Int32Array.map
+    let numbers = new Int32Array([1, 4, 9]);
+    let doubles = numbers.map((value : number, _ : number, _a : Int32Array) : number => value * 2);
+    console.log(numbers.toString()); // "1,4,9"
+    console.log(doubles.toString()); // "2,8,18"
+    // #END
+    expect(numbers.toString()).toEqual("1,4,9");
+    expect(doubles.toString()).toEqual("2,8,18");
+  }
+
+  reduce() {
+    // #TEST Int32Array.reduce
+    let total_t1 = new Int32Array([0, 1, 2, 3]);
+    let res1 = total_t1.reduce((accumulator : number, currentValue : number, _ : number, _a : Int32Array) : number =>
+      accumulator + currentValue
+    );
+    console.log(res1); // 6
+
+    let total_t2 = new Int32Array([0, 1, 2, 3]);
+    let res2 = total_t2.reduce((accumulator : number, currentValue : number, _ : number, _a : Int32Array) : number =>
+      accumulator + currentValue, 8
+    );
+    console.log(res2); // 14
+    // #END
+
+    expect(res1).toEqual(6);
+    expect(res2).toEqual(14);
+  }
+
+  reduceRight() {
+    // #TEST Int32Array.reduceRight
+    let total_t1 = new Int32Array([0, 1, 2, 3]);
+    let res1 = total_t1.reduceRight((accumulator : number, currentValue : number, _ : number, _a : Int32Array) : number =>
+      accumulator + currentValue
+    );
+    console.log(res1); // 6
+
+    let total_t2 = new Int32Array([0, 1, 2, 3]);
+    let res2 = total_t2.reduceRight((accumulator : number, currentValue : number, _ : number, _a : Int32Array) : number =>
+      accumulator + currentValue, 8
+    );
+    console.log(res2); // 14
+    // #END
+
+    expect(res1).toEqual(6);
+    expect(res2).toEqual(14);
+  }
+
+
+  reverse() {
+    // #TEST Int32Array.reverse
+    let int32 = new Int32Array([1, 2, 3]);
+    int32.reverse();
+    console.log(int32.toString()); // "3,2,1"
+    // #END
+    expect(int32.toString()).toEqual("3,2,1");
+  }
+
+  slice() {
+    // #TEST Int32Array.slice
+    let int32_t1 = new Int32Array([1, 2, 3]);
+    let res1 = int32_t1.slice(1);
+    console.log(res1.toString()); // "2,3"
+
+    let res2 = int32_t1.slice(2);
+    console.log(res2.toString()); // "3"
+
+    let res3 = int32_t1.slice(-2);
+    console.log(res3.toString()); // "2,3"
+
+    let res4 = int32_t1.slice(0, 1);
+    console.log(res4.toString()); // "1"
+    // #END
+
+    expect(res1.toString()).toEqual("2,3");
+    expect(res2.toString()).toEqual("3");
+    expect(res3.toString()).toEqual("2,3");
+    expect(res4.toString()).toEqual("1");
+  }
+
+
+  sort() {
+    // #TEST Int32Array.sort
+    let numbers_t1 = new Int32Array([40, 1, 5]);
+    numbers_t1.sort();
+    console.log(numbers_t1.toString()); // "1,5,40"
+
+    let numbers_t2 = new Int32Array([40, 1, 5]);
+    numbers_t2.sort((a, b) : number => a - b);
+    console.log(numbers_t2.toString()); // "1,5,40"
+    // #END
+
+    expect(numbers_t1.toString()).toEqual("1,5,40");
+    expect(numbers_t2.toString()).toEqual("1,5,40");
+  }
+
+
+  subarray() {
+    // #TEST Int32Array.subarray
+    let buffer = new ArrayBuffer(16);
+    let int32 = new Int32Array(buffer);
+    int32.set([1, 2, 3]);
+    console.log(int32.toString()); // "1,2,3,0"
+
+    let sub = int32.subarray(0, 4);
+    console.log(sub.toString()); // "1,2,3,0"
+    // #END
+    expect(sub.toString()).toEqual("1,2,3,0");
+  }
+
+  values() {
+    // #TEST Int32Array.values
+    let arr = new Int32Array([1, 2, 3]);
+    let values = arr.values();
+    let value = values.next().value
+    console.log(value); // 1
+    // #END
+    expect(value).toEqual(1);
+  }
+
+  arrayBufferSlice() {
+    // #TEST ArrayBuffer.slice
+    let buffer = new ArrayBuffer(16);
+    let int32 = new Int32Array(buffer);
+    int32[3] = 42;
+    console.log(int32.toString()); // "0,0,0,42"
+
+    let res = buffer.slice(8);
+    let sliced = new Int32Array(res);
+    console.log(sliced[1]); // 42
+    // #END
+    expect(sliced[1]).toEqual(42);
+  }
+
+  testSome() {
+    // #TEST Int32Array.some
+    const int32 = new Int32Array([-10, 20, -30, 40, -50]);
+    const positives = new Int32Array([10, 20, 30, 40, 50]);
+
+    console.log(int32.some((element : number, index : number, array : Int32Array) : boolean => element < 0)); // true
+
+
+    console.log(positives.some((element : number, index : number, array : Int32Array) : boolean => element < 0)); // false
+    // #END
+    expect(positives.some((element : number, index : number, array : Int32Array) : boolean => element < 0)).toEqual(false);
+    expect(int32.some((element : number, index : number, array : Int32Array) : boolean => element < 0)).toEqual(true);
+
+  }
+
+
+}

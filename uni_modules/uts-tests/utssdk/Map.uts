@@ -1,0 +1,214 @@
+import { describe, test, expect, Result } from './tests.uts'
+
+export function testMap(): Result {
+  return describe("Map", () => {
+    test('size', () => {
+      // #TEST Map.size
+      const map1: Map<string, string> = new Map();
+      map1.set('a', 'alpha');
+      map1.set('b', 'beta');
+      map1.set('g', 'gamma');
+      console.log(map1.size);
+      // expected output: 3
+      // #END
+
+      expect(map1.size).toEqual(3);
+      map1.clear()
+      expect(map1.size).toEqual(0);
+    })
+    test('clear', () => {
+      // #TEST Map.clear
+      const map1 = new Map<string, string>();
+      map1.set('bar', 'baz');
+      map1.set("1", 'foo');
+      map1.clear();
+      console.log(map1.size);
+      // expected output: 0
+      // #END
+
+      expect(map1.size).toEqual(0);
+    })
+    test('delete', () => {
+      // #TEST Map.delete
+      const map1 = new Map<string, string>();
+      map1.set('bar', 'foo');
+      let ret1 = map1.delete('bar')
+      console.log(ret1);
+      // expected result: true
+      // (true indicates successful removal)
+      console.log(map1.has('bar'));
+      // expected result: false
+      // #END
+
+      expect(ret1).toEqual(true);
+      expect(map1.has('bar')).toEqual(false);
+    })
+    test('get', () => {
+      // #TEST Map.get
+      const map1 = new Map<string, string>();
+      map1.set('bar', 'foo');
+      console.log(map1.get('bar'));
+      // expected output: "foo"
+      // #END
+
+      expect(map1.get('bar')).toEqual("foo");
+      // js端输出undefined需要抹平差异
+      expect(map1.get('baz')).toEqual(null);
+    })
+    test('has', () => {
+      // #TEST Map.has
+      const map1 = new Map<string, string>();
+      map1.set('bar', 'foo');
+      console.log(map1.has('bar'));
+      // expected output: true
+
+      console.log(map1.has('baz'));
+      // expected output: false
+      // #END
+
+      expect(map1.has('bar')).toEqual(true);
+      expect(map1.has('baz')).toEqual(false);
+    })
+    test('set', () => {
+      // #TEST Map.set
+      let map1 = new Map<string, string>();
+      map1.set('bar', 'foo');
+      console.log(map1.get('bar'));
+      // expected output: "foo"
+
+      console.log(map1.get('baz'));
+      // expected output: null
+      // #END
+
+      expect(map1.get('bar')).toEqual("foo");
+
+      const map2 = new Map<string, string>();
+      // ios平台不支持any作为key
+      map2.set('bar', 'foo');
+      expect(map2.get('bar')).toEqual('foo');
+      map2.set('bar', 'baz');
+      expect(map2.get('bar')).toEqual('baz');
+      const map3 = new Map<number, number>();
+      map3.set(111, 111);
+      map3.set(222, 222);
+      map3.set(333, 333);
+      expect(map3.get(111)).toEqual(111);
+      expect(map3.get(222)).toEqual(222);
+      expect(map3.get(333)).toEqual(333);
+      // ios不支持链式调用
+      // myMap.set(1, 'foobar').set(2, 'baz');
+      // const map4 = new Map<UTSJSONObject,string>();
+      // key 不支持对象
+      // const key1 = {}, key2 = {};
+      // map4.set(key1, '1')
+      // map4.set(key2, '2')
+      // expect(map4.get(key1)).toEqual('1');
+      // expect(map4.get(key2)).toEqual('2');
+      const map5 = new Map<string, string>([['key1', 'value1'], ['key2', 'value2']]);
+      expect(map5.get('key1')).toEqual('value1');
+      expect(map5.get('key2')).toEqual('value2');
+
+      // #TEST Map.set_1
+      map1 = new Map(); //定义一个map，key为string类型，value也是string类型
+      map1.set('key1', "abc");
+      map1.set('key1', "def");
+      console.log(map1.get('key1')) //返回 def
+      // #END
+
+    })
+    test('forEach', () => {
+      // #TEST Map.forEach,Map.forEach_1,Map.forEach_2
+      const map1 = new Map<string, string>();
+      map1.set('key1', 'value1');
+      map1.set('key2', 'value2');
+      map1.set('key3', 'value3');
+      map1.forEach((value: string, key: string, map: Map<string, string>) => {
+        console.log(key)
+        console.log(value)
+      })
+      // #END
+
+      map1.forEach((value: string, key: string, map: Map<string, string>) => {
+        expect(value).toEqual(map.get(key)!);
+      })
+      map1.forEach((value, key) => {
+        expect(value).toEqual(map1.get(key)!);
+      })
+    })
+
+    test("entries", () => {
+      // const myMap = new Map<string, string>();
+      // myMap.set("0", "foo");
+      // myMap.set("1", "bar");
+      // myMap.set("2", "baz");
+      // const mapIter = myMap.entries();
+      // expect(mapIter.next().value).toEqual(["0", "foo"]);
+      // expect(mapIter.next().value).toEqual(["1", "bar"]);
+      // expect(mapIter.next().value).toEqual(["2", "baz"]);
+      // expect(mapIter.next().done).toEqual(true);
+    })
+    test("keys", () => {
+      // const myMap = new Map<string, string>();
+      // myMap.set("0", "foo");
+      // myMap.set("1", "bar");
+      // myMap.set("2", "baz");
+      // const mapIter = myMap.keys();
+      // expect(mapIter.next().value).toEqual("0");
+      // expect(mapIter.next().value).toEqual("1");
+      // expect(mapIter.next().value).toEqual("2");
+      // expect(mapIter.next().done).toEqual(true);
+    })
+    test("values", () => {
+      // const myMap = new Map<string, string>();
+      // myMap.set("0", "foo");
+      // myMap.set("1", "bar");
+      // myMap.set("2", "baz");
+      // const mapIter = myMap.values();
+      // expect(mapIter.next().value).toEqual("foo");
+      // expect(mapIter.next().value).toEqual("bar");
+      // expect(mapIter.next().value).toEqual("baz");
+      // expect(mapIter.next().done).toEqual(true);
+    })
+
+    test("sample", () => {
+      // #TEST Map.sample_create
+      let map = new Map<string, any>()
+      map.set("name", "zhangsan")
+      map.set("age", 12)
+      //Map(2) {"name":"zhangsan","age":12}
+      console.log(map)
+      // #END
+
+      // #TEST Map.sample_visit
+      let map1 = new Map<string, any>()
+      map1.set("name", "zhangsan")
+      map1.set("age", 12)
+      let nameVal = map1.get('name')
+      //zhangsan
+      console.log(nameVal)
+      // #END
+
+      // #TEST Map.sample_forEach
+      let map2 = new Map<string, any | null>()
+      map2.set("name", "zhangsan")
+      map2.set("age", 12)
+
+      // 遍历函数 1
+      map2.forEach(function (value: any | null) {
+        console.log(value)
+      })
+      // 遍历函数 2
+      map2.forEach(function (value: any | null, key: string) {
+        console.log(key)
+        console.log(value)
+      })
+      // 遍历函数 3
+      map2.forEach(function (value: any | null, key: string, map: Map<string, any | null>) {
+        console.log(value)
+        console.log(key)
+        console.log(map)
+      })
+      // #END
+    })
+  })
+}

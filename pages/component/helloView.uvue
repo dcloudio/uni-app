@@ -1,0 +1,30 @@
+<template>
+	<div>
+    <button @tap="doSth">调用组件的方法</button>
+		<uts-hello-view ref="helloView" buttonText="点击按钮内容" style="width:375px;height: 375px;background-color: aqua;"></uts-hello-view>
+		<uts-hello-container style="flex: 1;background-color: red;">
+			<text style="left: 100px;top: 100px;background-color: green;">文本组件</text>
+			<image src="../../static/logo.png" mode="aspectFit"></image>
+		</uts-hello-container>
+	</div>
+	
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+    }
+  },
+  methods: {
+    // 调用组件内的方法
+    doSth() {
+      // uvue 页面调用方法
+      (this.$refs["helloView"] as UtsHelloViewElement).doSth("param doSomething");
+    }
+  }
+}
+</script>
+
+<style>
+</style>

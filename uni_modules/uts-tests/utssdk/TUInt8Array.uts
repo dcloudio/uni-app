@@ -1,0 +1,407 @@
+import {
+  describe,
+  test,
+  expect,
+  Result
+} from './tests.uts'
+
+export class TUint8Array {
+  test() {
+
+    this.testMAX();
+    this.testConstructor();
+    this.testSet();
+    this.testCopyWith();
+    this.testEvery();
+    this.testFill();
+    this.testFilter();
+    this.find();
+    this.findIndex();
+    this.foreach();
+    this.iterator();
+    this.includes();
+    this.indexOf();
+    this.join();
+    this.keys();
+    this.map();
+    this.reduce();
+    this.reduceRight();
+    this.reverse();
+    this.slice();
+    this.sort();
+    this.subarray();
+    this.values();
+    this.arrayBufferSlice();
+
+  }
+
+  of() {
+    // #TEST Uint8Array.of
+    var array = Uint8Array.of(1, 2, 3)
+    console.log(array.toString()); // '1,2,3'
+    // #END
+    expect(array.toString()).toEqual("1,2,3");
+  }
+  from() {
+    // #TEST Uint8Array.from
+    var s = new Set([1, 2, 3]);
+    var unit8 = Uint8Array.from(s);
+    console.log(unit8.toString()); // '1,2,3'
+    // #END
+    expect(unit8.toString()).toEqual('1,2,3');
+  }
+  testMAX() {
+    let uint8 = new Uint8Array(16);
+    uint8[0] = 255;
+    expect(uint8[0]).toEqual(255);
+  }
+
+  testConstructor() {
+    let buffer = new ArrayBuffer(16);
+    let uint8 = new Uint8Array(buffer);
+    uint8[5] = 42;
+    expect(uint8.toString()).toEqual("0,0,0,0,0,42,0,0,0,0,0,0,0,0,0,0");
+  }
+
+  testSet() {
+    // #TEST Uint8Array.set
+    let uint8 = new Uint8Array(8);
+    var array = [1, 2, 3];
+    uint8.set(array, 1);
+    console.log(uint8.toString()); // "0,1,2,3,0,0,0,0"
+    // #END
+    expect(uint8.toString()).toEqual("0,1,2,3,0,0,0,0");
+  }
+
+  testCopyWith() {
+    // #TEST Uint8Array.copyWithin
+    console.log("testCopyWith 1");
+    let uint8 = new Uint8Array(8);
+    uint8.set([1, 2, 3], 1);
+    uint8.copyWithin(3, 0, 3);
+    console.log(uint8.toString()); // "0,1,2,0,1,2,0,0"
+    // #END
+    expect(uint8.toString()).toEqual("0,1,2,0,1,2,0,0");
+  }
+
+  testEvery() {
+    // #TEST Uint8Array.every
+    let result = new Uint8Array([12, 5, 8, 130, 44]).every((value : number, _ : number, _a : Uint8Array) : boolean =>
+      value < 40);
+    console.log(result); // false
+    // #END
+    expect(result).toEqual(false);
+  }
+
+  testFill() {
+    // #TEST Uint8Array.fill
+    let uint8_t1 = new Uint8Array([1, 2, 3]).fill(4);
+    console.log(uint8_t1.toString()); // "4,4,4"
+
+    let uint8_t2 = new Uint8Array([1, 2, 3]).fill(4, 1);
+    console.log(uint8_t2.toString()); // "1,4,4"
+
+    let uint8_t3 = new Uint8Array([1, 2, 3]).fill(4, 1, 2);
+    console.log(uint8_t3.toString()); // "1,4,3"
+
+    let uint8_t4 = new Uint8Array([1, 2, 3]).fill(4, 1, 1);
+    console.log(uint8_t4.toString()); // "1,2,3"
+
+    let uint8_t5 = new Uint8Array([1, 2, 3]).fill(4, -3, -2);
+    console.log(uint8_t5.toString()); // "4,2,3"
+    // #END
+
+    expect(uint8_t1.toString()).toEqual("4,4,4");
+    expect(uint8_t2.toString()).toEqual("1,4,4");
+    expect(uint8_t3.toString()).toEqual("1,4,3");
+    expect(uint8_t4.toString()).toEqual("1,2,3");
+    expect(uint8_t5.toString()).toEqual("4,2,3");
+  }
+
+
+  testFilter() {
+    // #TEST Uint8Array.filter
+    let uint8 = new Uint8Array([12, 5, 8, 44]).filter((value : number, _ : number, _a : Uint8Array) : boolean => value >= 10);
+    console.log(uint8.toString()); // "12,44"
+    // #END
+    expect(uint8.toString()).toEqual("12,44");
+  }
+
+  find() {
+    // #TEST Uint8Array.find
+    let uint8 = new Uint8Array([4, 5, 8, 12]);
+    let res = uint8.find((value : number, _ : number, _a : Uint8Array) : boolean => value > 5);
+    console.log(res); // 8
+    // #END
+    expect(res).toEqual(8);
+  }
+  findIndex() {
+    // #TEST Uint8Array.findIndex
+    let uint8_t1 = new Uint8Array([4, 6, 8, 12]);
+    let res1 = uint8_t1.findIndex((value : number, _ : number, _a : Uint8Array) : boolean => value > 100);
+    console.log(res1); // -1
+
+    let uint8_t2 = new Uint8Array([4, 6, 7, 120]);
+    let res2 = uint8_t2.findIndex((value : number, _ : number, _a : Uint8Array) : boolean => value > 100);
+    console.log(res2); // 3
+    // #END
+
+    expect(res1).toEqual(-1);
+    expect(res2).toEqual(3);
+  }
+
+
+  foreach() {
+    // #TEST Uint8Array.forEach
+    new Uint8Array([0, 1, 2, 3]).forEach((value : number, index : number, _ : Uint8Array) => {
+      console.log(`a[${index}] = ${value}`);
+    });
+    // #END
+  }
+
+  iterator() {
+    // #TEST Uint8Array.entries
+    let arr = new Uint8Array([10, 20, 30, 40, 50]);
+    let entries = arr.entries();
+    let entry = entries.next().value;
+    // #ifndef APP-IOS
+    console.log(entry[1]); // 10
+    // #endif
+    // #ifdef APP-IOS
+    console.log(entry![1]); // 10
+    // #endif
+    // #END
+    // #ifndef APP-IOS
+    expect(entry[1]).toEqual(10);
+    // #endif
+    // #ifdef APP-IOS
+    expect(entry![1]).toEqual(10);
+    // #endif
+  }
+  includes() {
+    // #TEST Uint8Array.includes
+    let uint8_t1 = new Uint8Array([1, 2, 3]);
+    let res1 = uint8_t1.includes(2);
+    console.log(res1); // true
+
+    let res2 = uint8_t1.includes(4);
+    console.log(res2); // false
+
+    let res3 = uint8_t1.includes(3, 3);
+    console.log(res3); // false
+    // #END
+
+    expect(res1).toEqual(true);
+    expect(res2).toEqual(false);
+    expect(res3).toEqual(false);
+  }
+
+
+  indexOf() {
+    // #TEST Uint8Array.indexOf
+    let uint8_t1 = new Uint8Array([2, 5, 9]);
+    let res1 = uint8_t1.indexOf(2);
+    console.log(res1); // 0
+
+    let res2 = uint8_t1.indexOf(7);
+    console.log(res2); // -1
+
+    let res3 = uint8_t1.indexOf(9, 2);
+    console.log(res3); // 2
+
+    let res4 = uint8_t1.indexOf(2, -1);
+    console.log(res4); // -1
+
+    let res5 = uint8_t1.indexOf(2, -3);
+    console.log(res5); // 0
+    // #END
+
+    expect(res1).toEqual(0);
+    expect(res2).toEqual(-1);
+    expect(res3).toEqual(2);
+    expect(res4).toEqual(-1);
+    expect(res5).toEqual(0);
+  }
+
+
+  join() {
+    // #TEST Uint8Array.join
+    let uint8_t1 = new Uint8Array([1, 2, 3]);
+    let res1 = uint8_t1.join();
+    console.log(res1); // "1,2,3"
+
+    let res2 = uint8_t1.join(" / ");
+    console.log(res2); // "1 / 2 / 3"
+
+    let res3 = uint8_t1.join("");
+    console.log(res3); // "123"
+    // #END
+
+    expect(res1).toEqual("1,2,3");
+    expect(res2).toEqual("1 / 2 / 3");
+    expect(res3).toEqual("123");
+  }
+
+
+  keys() {
+    // #TEST Uint8Array.keys
+    let arr = new Uint8Array([10, 20, 30, 40, 50]);
+    let keys = arr.keys();
+    let value = keys.next().value
+    console.log(value); // 0
+    // #END
+    expect(value).toEqual(0);
+  }
+
+  map() {
+    // #TEST Uint8Array.map
+    let numbers = new Uint8Array([1, 4, 9]);
+    let doubles = numbers.map((value : number, _ : number, _a : Uint8Array) : number => value * 2);
+    console.log(numbers.toString()); // "1,4,9"
+    console.log(doubles.toString()); // "2,8,18"
+    // #END
+    expect(numbers.toString()).toEqual("1,4,9");
+    expect(doubles.toString()).toEqual("2,8,18");
+  }
+  reduce() {
+    // #TEST Uint8Array.reduce
+    let uint8_t1 = new Uint8Array([0, 1, 2, 3]);
+    let res1 = uint8_t1.reduce((accumulator : number, currentValue : number, _ : number, _a : Uint8Array) : number =>
+      accumulator + currentValue);
+    console.log(res1); // 6
+
+    let res2 = uint8_t1.reduce((accumulator : number, currentValue : number, _ : number, _a : Uint8Array) : number =>
+      accumulator + currentValue, 8);
+    console.log(res2); // 14
+    // #END
+
+    expect(res1).toEqual(6);
+    expect(res2).toEqual(14);
+  }
+
+  reduceRight() {
+    // #TEST Uint8Array.reduceRight
+    let uint8_t1 = new Uint8Array([0, 1, 2, 3]);
+    let res1 = uint8_t1.reduceRight((accumulator : number, currentValue : number, _ : number, _a : Uint8Array) : number =>
+      accumulator + currentValue);
+    console.log(res1); // 6
+
+    let res2 = uint8_t1.reduceRight((accumulator : number, currentValue : number, _ : number, _a : Uint8Array) : number =>
+      accumulator + currentValue, 8);
+    console.log(res2); // 14
+    // #END
+
+    expect(res1).toEqual(6);
+    expect(res2).toEqual(14);
+  }
+
+
+  reverse() {
+    // #TEST Uint8Array.reverse
+    let uint8 = new Uint8Array([1, 2, 3]);
+    uint8.reverse();
+    console.log(uint8.toString()); // "3,2,1"
+    // #END
+    expect(uint8.toString()).toEqual("3,2,1");
+  }
+
+  slice() {
+    // #TEST Uint8Array.slice
+    let uint8_t1 = new Uint8Array([1, 2, 3]);
+    let res1 = uint8_t1.slice(1);
+    console.log(res1.toString()); // "2,3"
+
+    let res2 = uint8_t1.slice(2);
+    console.log(res2.toString()); // "3"
+
+    let res3 = uint8_t1.slice(-2);
+    console.log(res3.toString()); // "2,3"
+
+    let res4 = uint8_t1.slice(0, 1);
+    console.log(res4.toString()); // "1"
+    // #END
+
+    expect(res1.toString()).toEqual("2,3");
+    expect(res2.toString()).toEqual("3");
+    expect(res3.toString()).toEqual("2,3");
+    expect(res4.toString()).toEqual("1");
+  }
+
+
+  sort() {
+    // #TEST Uint8Array.sort
+    let numbers_t1 = new Uint8Array([40, 1, 5]);
+    numbers_t1.sort();
+    console.log(numbers_t1.toString()); // "1,5,40"
+
+    let numbers_t2 = new Uint8Array([40, 1, 5]);
+    numbers_t2.sort((a, b) : number => a - b);
+    console.log(numbers_t2.toString()); // "1,5,40"
+    // #END
+
+    expect(numbers_t1.toString()).toEqual("1,5,40");
+    expect(numbers_t2.toString()).toEqual("1,5,40");
+  }
+
+
+  subarray() {
+    // #TEST Uint8Array.subarray
+    let buffer = new ArrayBuffer(16);
+    let uint8_t1 = new Uint8Array(buffer);
+    uint8_t1.set([1, 2, 3]);
+    console.log(uint8_t1.toString()); // "1,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0"
+
+    let sub_t1 = uint8_t1.subarray(0, 4);
+    console.log(sub_t1.toString()); // "1,2,3,0"
+    // #END
+
+    expect(uint8_t1.toString()).toEqual("1,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0");
+    expect(sub_t1.toString()).toEqual("1,2,3,0");
+  }
+
+  values() {
+    // #TEST Uint8Array.values
+    let arr = new Uint8Array([1, 2, 3]);
+    let values = arr.values();
+    let value = values.next().value
+    console.log(value); // 1
+    // #END
+    expect(value).toEqual(1);
+  }
+
+  arrayBufferSlice() {
+    // #TEST ArrayBuffer.slice
+    let buffer = new ArrayBuffer(16);
+    let uint8 = new Uint8Array(buffer);
+    uint8[4] = 42;
+    console.log(uint8.toString()); // "0,0,0,0,42,0,0,0,0,0,0,0,0,0,0,0"
+
+    let res = buffer.slice(4, 12);
+    let sliced = new Uint8Array(res);
+    console.log(sliced[0]); // 42
+    // #END
+    expect(sliced[0]).toEqual(42);
+  }
+
+  testSome() {
+    // #TEST Uint8Array.some
+    const uint8_t1 = new Uint8Array([8, 20, 30, 40, 50]);
+    const positives_t1 = new Uint8Array([10, 20, 30, 40, 50]);
+
+    let res_t1 = uint8_t1.some((element : number, index : number, array : Uint8Array) : boolean =>
+      element < 10
+    );
+    console.log('uint8_t1', res_t1); // true
+
+    let res_t2 = positives_t1.some((element : number, index : number, array : Uint8Array) : boolean =>
+      element < 0
+    );
+    console.log('positives_t1', res_t2); // false
+
+    // #END
+    expect(res_t1).toEqual(true);
+    expect(res_t2).toEqual(false);
+  }
+
+
+}

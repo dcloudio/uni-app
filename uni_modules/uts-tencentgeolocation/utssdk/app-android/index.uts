@@ -1,0 +1,201 @@
+
+import Manifest from "android.Manifest";
+import Looper from "android.os.Looper";
+import TencentLocationManager from "com.tencent.map.geolocation.TencentLocationManager";
+import TencentLocationListener from "com.tencent.map.geolocation.TencentLocationListener";
+import TencentLocation from "com.tencent.map.geolocation.TencentLocation";
+import TencentLocationRequest from "com.tencent.map.geolocation.TencentLocationRequest";
+import PackageManager from "android.content.pm.PackageManager";
+
+
+
+export function requestPremission() {
+	
+	/**
+	 * 同意隐私协议。重要！！
+	 * 说明文档：https://lbs.qq.com/mobile/androidLocationSDK/androidGeoGuide/agreePrivacy
+	 */
+	TencentLocationManager.setUserAgreePrivacy(true);
+	
+	/**
+	 * 准备权限
+	 */
+	let permissionNeed = [Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION];
+	UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight:boolean,_permission:string[]) {
+		console.log("用户同意了权限",allRight)
+	}, function (_result:boolean,_permission:string[]) {
+		console.log("用户拒绝了部分权限:")
+	})
+	
+  // 请求权限
+  return { name: "requestPremission"};
+}
+
+
+/**
+ * 定位请求参数封装
+ */
+type LocationOptions = {
+	geocode:boolean,
+	success: (response:LocationResponse) => void;
+};
+
+/**
+ * 定位返回结果封装
+ */
+type LocationResponse = {
+	name?:string,
+	address?:string,
+	latitude?:number,
+	longitude?:number
+}
+
+
+/**
+ * 定位监听结果包装类
+ */
+class LocationOptionsWapper{
+	
+	hostOption:LocationOptions;
+	
+	constructor(option: LocationOptions){
+		this.hostOption = option
+	}
+	
+	onLocationChanged(location:TencentLocation , _error:Int ,
+								  _reason:string){
+		
+		let response:LocationResponse = {
+			name:location.name,
+			address:location.address,
+			latitude:location.latitude,
+			longitude:location.longitude
+		};
+		this.hostOption.success(response);
+	}
+	
+	
+	onStatusUpdate(_name:string, _status:Int, _desc:string){
+		// 定位状态发生变化
+	}
+};
+
+
+/**
+ * Tencent 定位监听实现类
+ */
+class SingleLocationListener implements TencentLocationListener {
+    
+	
+	hostOptionWraper:LocationOptionsWapper;
+	
+	constructor(option: LocationOptionsWapper){
+		super();
+		this.hostOptionWraper = option
+	}
+	
+	override onLocationChanged(location:TencentLocation , error:Int ,
+								  reason:string ):void{
+									  console.log(error);
+									  console.log(reason);
+		console.log(error);
+		this.hostOptionWraper.onLocationChanged(location,error,reason);
+	}
+
+	override onStatusUpdate(name:string, status:Int, desc:string ):void{
+		console.log(name);
+		this.hostOptionWraper.onStatusUpdate(name,status,desc);
+	}
+	
+}
+/**
+ * 判断当前的基座是否已经集成了sdk, 即是否是自定义基座
+ */
+export function checkHasIntegration():boolean{
+	
+	let hasIntegration =  true
+	try{
+		let xClass = Class.forName("com.tencent.map.geolocation.TencentLocationListener")
+		console.log(xClass);
+	}catch(e:Exception){
+		hasIntegration = false;
+	}
+	
+	if(!hasIntegration){
+		return false;
+	}
+	
+	return true
+}
+/**
+ * 检查定位的相关配置是否正确
+ */
+function checkLocationConfig():boolean{
+	
+	let packageName = UTSAndroid.getAppContext()!.getPackageName();
+	let appInfo = UTSAndroid.getAppContext()!.getPackageManager()!.getApplicationInfo(packageName,PackageManager.GET_META_DATA)
+	
+	let metaData = appInfo.metaData
+	if (metaData == null) {
+		 return false;
+	}
+	let adId = metaData.getString("TencentMapSDK")
+	let splitArray = adId!.split("-")
+	let keyCharNum = splitArray.size
+	
+	if(keyCharNum > 5){
+		// 存在超过5个-，说明是符合规则的appkey
+		return true;
+	}
+	// 不符合校验规则，打回
+	return false;
+}
+
+/**
+ * 腾讯地图获取定位信息
+ * 参考文档:https://lbs.qq.com/mobile/androidLocationSDK/androidGeoGuide/androidGeoAdapt
+ */
+export function getLocation(locationOptions: LocationOptions):boolean {
+	
+   if(!checkLocationConfig()){
+	   /**
+		* 未通过配置预校验，通常是app key 配置错误
+		*/
+		return false
+   }
+  
+  let mLocationManager = TencentLocationManager.getInstance(UTSAndroid.getAppContext());
+  // 定位监听器封装
+  let locationOptionWrapper = new LocationOptionsWapper(locationOptions);
+  let mLocationListener = new SingleLocationListener(locationOptionWrapper);
+  // 发起单次请求
+  let locationRequest = TencentLocationRequest.create()
+  // 是否需要逆地理编码
+  if(locationOptions.geocode){
+	  locationRequest.setRequestLevel(TencentLocationRequest.REQUEST_LEVEL_ADMIN_AREA);
+  }else{
+	  locationRequest.setRequestLevel(TencentLocationRequest.REQUEST_LEVEL_GEO);
+  }
+  
+  console.log("requestSingleFreshLocation");
+  
+  mLocationManager.requestSingleFreshLocation(locationRequest, mLocationListener, Looper.getMainLooper());
+  
+  return true;
+}
+
+/**
+ * 持续监听位置变化
+ */
+@UTSAndroid.Suppress("UNUSED_PARAMETER")
+export function watchPosition(_locationOptions: LocationOptions) {
+	//todo
+}
+
+/**
+ * 关闭监听位置变化
+ */
+@UTSAndroid.Suppress("UNUSED_PARAMETER")
+export function clearWatch() {
+	//todo
+}

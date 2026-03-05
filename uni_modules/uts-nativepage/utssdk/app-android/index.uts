@@ -1,0 +1,510 @@
+import Activity from 'android.app.Activity';
+import BroadcastReceiver from 'android.content.BroadcastReceiver';
+import Notification from 'android.app.Notification';
+import Bundle from 'android.os.Bundle';
+import R from 'io.dcloud.uni_modules.uts_nativepage.R';
+import Intent from 'android.content.Intent';
+import IntentFilter from 'android.content.IntentFilter';
+import NotificationCompat from 'androidx.core.app.NotificationCompat';
+import NotificationManager from 'android.app.NotificationManager';
+import NotificationChannel from 'android.app.NotificationChannel';
+import Context from 'android.content.Context';
+import Button from 'android.widget.Button';
+import OnClickListener from 'android.view.View.OnClickListener';
+import View from 'android.view.View';
+import Build from 'android.os.Build';
+import IBinder from 'android.os.IBinder';
+import Toast from 'android.widget.Toast';
+
+import ShortcutInfoCompat from 'androidx.core.content.pm.ShortcutInfoCompat'
+import ShortcutManagerCompat from 'androidx.core.content.pm.ShortcutManagerCompat'
+import IconCompat from 'androidx.core.graphics.drawable.IconCompat'
+import ActivityLifecycleCallbacks from 'android.app.Application.ActivityLifecycleCallbacks';
+
+import Service from 'android.app.Service';
+import System from 'java.lang.System';
+import Exception from 'java.lang.Exception';
+import RecyclerView from 'androidx.recyclerview.widget.RecyclerView';
+import TextView from 'android.widget.TextView';
+import ViewGroup from 'android.view.ViewGroup';
+import LayoutInflater from 'android.view.LayoutInflater';
+import LinearLayoutManager from 'androidx.recyclerview.widget.LinearLayoutManager';
+export {DoAppWidget} from "./DoAppWidget.uts"
+import Application from 'android.app.Application';
+import Log from 'android.util.Log';
+
+import File from 'java.io.File';
+import Uri from 'android.net.Uri';
+export * from './CustomAccessibilityService.uts'
+import SayHelloTest from 'com.test.sayhello.SayHelloTest'
+
+export function sayHelloFromJar(): string {
+  // 这里的逻辑是为了判断 当前的自定义activity 是否注册了，并以此为条件判断是否是自定义基座
+  let hasXActivityIntegration =  true
+  try{
+  	let packageManager = UTSAndroid.getUniActivity()!.getPackageManager();
+  	let intent = new Intent(UTSAndroid.getUniActivity(),(new DemoActivity()).javaClass);
+  	let resolveInfo = packageManager.queryIntentActivities(intent,0);
+  	console.log(resolveInfo.size)
+  	if(resolveInfo.size == 0){
+  		hasXActivityIntegration = false;
+  	}
+  }catch(e:Exception){
+  	console.log(e);
+  	hasXActivityIntegration = false;
+  }
+  
+  if(!hasXActivityIntegration){
+  	return "需要在自定义基座运行";
+  }
+	return SayHelloTest().say()
+}
+
+
+/**
+ * 调用SO动态库中的方法
+ */
+export function sayHelloFromSO():string {
+  
+  // 这里的逻辑是为了判断 当前的自定义activity 是否注册了，并以此为条件判断是否是自定义基座
+  let hasXActivityIntegration =  true
+  try{
+  	let packageManager = UTSAndroid.getUniActivity()!.getPackageManager();
+  	let intent = new Intent(UTSAndroid.getUniActivity(),(new DemoActivity()).javaClass);
+  	let resolveInfo = packageManager.queryIntentActivities(intent,0);
+  	console.log(resolveInfo.size)
+  	if(resolveInfo.size == 0){
+  		hasXActivityIntegration = false;
+  	}
+  }catch(e:Exception){
+  	console.log(e);
+  	hasXActivityIntegration = false;
+  }
+  
+  if(!hasXActivityIntegration){
+  	return "需要在自定义基座运行";
+  }
+  
+  let nativeLib = new NativeLib()
+  return nativeLib.stringFromJNI()
+}
+
+class MyLifecycleCallbacks implements ActivityLifecycleCallbacks {
+	override onActivityCreated(a: Activity, b: Bundle|null):void {
+		console.log("onActivityCreated",a)
+	}
+  
+  override onActivityStarted(a: Activity):void {
+  	console.log("onActivityStarted",a)
+  }
+  
+  override onActivityResumed(a: Activity):void {
+  	console.log("onActivityResumed",a)
+  }
+  
+  override onActivityPaused(a: Activity):void {
+  	console.log("onActivityPaused",a)
+  }
+  
+  override onActivityStopped(a: Activity):void {
+  	console.log("onActivityStopped",a)
+  }
+  
+  override onActivitySaveInstanceState(a: Activity, b: Bundle):void {
+  	console.log("onActivitySaveInstanceState",a)
+  }
+  
+  override onActivityDestroyed(a: Activity):void {
+  	console.log("onActivityDestroyed",a)
+  }
+  
+}
+  
+
+export class AppHookProxy implements UTSAndroidHookProxy {
+  override onCreate(application: Application) {
+    //当前应用是否 取得用户同意隐私协议
+    Log.d("AppHookProxy", "AppHookProxy--onCreate---")
+    // 初始化快捷方式
+    initShortCut()
+    if(UTSAndroid.isPrivacyAgree()) {
+      //onCreate 初始化三方SDK
+      Log.d("AppHookProxy", "AppHookProxy--onCreate---isPrivacyAgree")
+    }
+    
+    application.registerActivityLifecycleCallbacks(new MyLifecycleCallbacks());
+    
+  }
+}
+
+
+@UTSAndroid.Suppress("DEPRECATION")
+class ForeService extends Service {
+
+	constructor (){
+		super();
+	}
+
+  override onCreate():void {
+    super.onCreate();
+		console.log("onCreate");
+  }
+	
+
+	override onBind(_intent?: Intent): IBinder|null{
+		return null;
+  }
+	
+  override onStartCommand(intent:Intent ,flags:Int ,startId:Int ):Int {
+
+    let mBuilder = new NotificationCompat.Builder(this,"uts-test");
+		
+		// 点击后让通知将消失
+		mBuilder.setAutoCancel(true) 
+	    mBuilder.setContentText("测试")
+	    mBuilder.setContentTitle("测试")
+		//通知产生的时间，会在通知信息里显示
+	    mBuilder.setWhen(System.currentTimeMillis()) 
+	    //设置该通知优先级
+	    mBuilder.setPriority(NotificationManager.IMPORTANCE_DEFAULT) 
+		//ture，设置他为一个正在进行的通知。他们通常是用来表示一个后台任务,用户积极参与(如播放音乐)或以某种方式正在等待,因此占用设备(如一个文件下载,同步操作,主动网络连接)
+	    mBuilder.setOngoing(false) 
+		//向通知添加声音、闪灯和振动效果的最简单、最一致的方式是使用当前的用户默认设置，使用defaults属性，可以组合：
+	    mBuilder.setDefaults(Notification.DEFAULT_ALL) 
+	          
+			   
+	   	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+	          
+			let manager =
+				UTSAndroid.getAppContext()!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+			let channelId = "channelId" + System.currentTimeMillis()
+			let channel = new NotificationChannel(
+				channelId,
+				"appName",
+				NotificationManager.IMPORTANCE_HIGH
+			)
+			manager.createNotificationChannel(channel)
+			mBuilder.setChannelId(channelId)
+		}
+	   				
+	    mBuilder.setContentIntent(null)
+	    this.startForeground(102, mBuilder.build())
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @UTSAndroid.Suppress("DEPRECATION")
+    override onDestroy():void {
+        super.onDestroy();
+        this.stopForeground(true);// 停止前台服务--参数：表示是否移除之前的通知
+    }
+
+
+}
+
+
+
+class ScreenReceiver extends BroadcastReceiver{
+	
+	constructor (){
+		super();
+	}
+	
+   override onReceive(_context: Context, intent: Intent):void {
+        if (Intent.ACTION_SCREEN_OFF == intent.action) {
+            console.log("==屏幕休眠了")
+        }
+        if (Intent.ACTION_SCREEN_ON == intent.action) {
+            console.log("==屏幕唤醒了")
+        }
+    }
+}
+
+
+class StartServiceListener implements OnClickListener{
+	
+    override onClick(v?: View):void{
+		
+      let intent = new Intent(UTSAndroid.getUniActivity(), (new ForeService()).javaClass);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        UTSAndroid.getAppContext()!.startForegroundService(intent);
+      }
+      else{
+        UTSAndroid.getAppContext()!.startService(intent);
+      }
+
+    }
+}
+
+
+class StartBroadcastListener implements OnClickListener{
+	
+    override onClick(v?: View):void{
+		
+		let myReceiver = new ScreenReceiver();
+		let filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_SCREEN_OFF);
+		filter.addAction(Intent.ACTION_SCREEN_ON);
+		UTSAndroid.getUniActivity()!.registerReceiver(myReceiver, filter);
+		
+		// 提示屏幕状态监听已经注册
+		Toast.makeText(UTSAndroid.getAppContext(),"屏幕状态监听已注册，注意观察控制台日志",Toast.LENGTH_LONG).show();
+		
+    }
+}
+
+class StartThreadListener implements OnClickListener{
+	
+    override onClick(v?: View):void{
+		new CustomThread().start()
+		// 提示屏幕状态监听已经注册
+		Toast.makeText(UTSAndroid.getAppContext(),"自定义线程已开启，注意观察控制台输出",Toast.LENGTH_LONG).show();
+		
+    }
+}
+
+
+class ActivityFinishListener implements OnClickListener{
+	
+	host:Activity
+	
+	constructor(activity:Activity){
+		super()
+		this.host = activity
+	}
+	
+    override onClick(v?: View):void{
+		Toast.makeText(UTSAndroid.getAppContext(),"手动关闭当前activity",Toast.LENGTH_LONG).show();
+		this.host.finish()
+		
+    }
+}
+
+class RootActivityStartListener implements OnClickListener{
+	
+	host:Activity
+	
+	constructor(activity:Activity){
+		super()
+		this.host = activity
+	}
+	
+    override onClick(v?: View):void{
+      // 需要开发者替换成自己的包名，并且与AndroidManifest.xml 中保持一致
+      let intent = new Intent("uni.UNI70BE9D0.RootPackageActivity")
+      host.startActivity(intent)
+    }
+}
+
+class RootPageStartListener implements OnClickListener{
+	
+	host:Activity
+	
+	constructor(activity:Activity){
+		super()
+		this.host = activity
+	}
+	
+    override onClick(v?: View):void{
+      let packageName = UTSAndroid.getAppContext()!.getPackageName()
+      console.log("packageName",packageName)
+      console.log("host",this.host)
+      let intent = host.getPackageManager().getLaunchIntentForPackage(packageName)
+      intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+      host.startActivity(intent)
+    }
+}
+
+/**
+ * 自定义异步线程
+ */
+class CustomThread extends Thread{
+	
+	constructor(){
+		super();
+	}
+	
+	override run(){
+		Thread.sleep(1000)
+		console.log("CustomThread = " + Thread.currentThread().getName())
+	}
+}
+
+
+// @ts-ignore
+class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder>{
+	
+	
+	mFruitList: Array<String> = []
+	
+	constructor(param:Array<String>){
+		super()
+		mFruitList = param
+	}
+	
+	ViewHolder = class extends RecyclerView.ViewHolder {
+		
+		fruitName:TextView;
+		constructor(view:View) {
+			super(view);
+			this.fruitName = view.findViewById(R.id.fruit_name) as TextView;
+		}
+	}
+
+    override onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ViewHolder {
+        let view: View =
+            LayoutInflater.from(parent.context).inflate(R.layout.fruit_item, parent, false)
+        return ViewHolder(view)
+    }
+
+    override onBindViewHolder(holder: ViewHolder, position: Int) {
+        let fruit: String = mFruitList[position]
+        holder.fruitName.setText(fruit)
+    }
+
+    override getItemCount(): Int {
+        return mFruitList.size
+    }
+	
+}
+
+@UTSAndroid.Suppress("DEPRECATION")
+class DemoActivity  extends Activity{
+	
+	constructor (){
+		super();
+	}
+  // 自定义 handler
+  CustomHandler = class extends android.os.Handler {
+    constructor (){
+    	super();
+    }
+    override handleMessage(msg: android.os.Message) {
+      super.handleMessage(msg)
+      if(msg.what = 111){
+        console.log("handle message received:111")
+      }
+    }
+  }
+	
+	override onCreate(savedInstanceState?: Bundle):void {
+		super.onCreate(savedInstanceState)
+		this.setContentView(R.layout.demo_activity);
+		
+    new CustomHandler().sendEmptyMessage(111);
+    
+    let btn_start_service_front = this.findViewById<Button>(R.id.btn_start_service_front);
+    btn_start_service_front.setOnClickListener(new StartServiceListener());
+   
+    let btn_start_screen_listen = this.findViewById<Button>(R.id.btn_start_screen_listen);
+    btn_start_screen_listen.setOnClickListener(new StartBroadcastListener());
+   
+    let btn_start_thread = this.findViewById<Button>(R.id.btn_start_thread);
+    btn_start_thread.setOnClickListener(new StartThreadListener());
+   
+    let btn_finish_activity = this.findViewById<Button>(R.id.btn_finish_activity);
+    btn_finish_activity.setOnClickListener(new ActivityFinishListener(this));
+   
+    let btn_start_root_activity = this.findViewById<Button>(R.id.btn_start_root_activity);
+    btn_start_root_activity.setOnClickListener(new RootActivityStartListener(this));
+   
+    let btn_start_root_page = this.findViewById<Button>(R.id.btn_start_root_page);
+    btn_start_root_page.setOnClickListener(new RootPageStartListener(this));
+   
+   
+    let recyclerView = this.findViewById<RecyclerView>(R.id.recycler_view)
+    let layoutManager = new LinearLayoutManager(this);
+    recyclerView.setLayoutManager(layoutManager);
+    let fruitAdapter = new FruitAdapter(utsArrayOf("香蕉","苹果","大鸭梨"));
+    recyclerView.setAdapter(fruitAdapter);
+    
+	}
+	
+}
+
+@UTSAndroid.Suppress("DEPRECATION")
+class IntentRunable implements Runnable{
+	override run(){
+		console.log("IntentRunable = " + Thread.currentThread().getName())
+		let intent = new Intent(UTSAndroid.getUniActivity(),(new DemoActivity()).javaClass);
+		UTSAndroid.getUniActivity()!.startActivity(intent);
+	}
+}
+/**
+ * 给当前应用设置快捷方式
+ * 仅支持 android 7.1 以上版本，自定义基座查看
+ */
+function initShortCut() {
+  
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
+      console.log("桌面快捷方式 仅支持android 7.1 以上版本")
+      return;
+    }
+
+    
+    // #ifdef UNI-APP-X
+      // 注意 id 不能重复
+      let shortcutBuilder = new ShortcutInfoCompat.Builder(UTSAndroid.getAppContext()!, "id1");
+      shortcutBuilder.setShortLabel("官网")
+      shortcutBuilder.setLongLabel("访问官网")
+      shortcutBuilder.setIcon(IconCompat.createWithResource(UTSAndroid.getAppContext()!, R.drawable.icon_short))
+      shortcutBuilder.setIntent(
+            new Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://dcloud.io/")
+            )
+      )
+      let shortcut = shortcutBuilder.build()
+      // 注意 id 不能重复
+      let shortcutBuilder2 = new ShortcutInfoCompat.Builder(UTSAndroid.getAppContext()!, "id2");
+      shortcutBuilder2.setShortLabel("示例界面")
+      shortcutBuilder2.setLongLabel("打开示例界面，最多可以写25个字")
+      shortcutBuilder2.setIcon(IconCompat.createWithResource(UTSAndroid.getAppContext()!, R.drawable.icon_short))
+      shortcutBuilder2.setIntent(
+            new Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("appuniappx://market/111")
+            )
+      )
+      let shortcut2 = shortcutBuilder2.build()
+      ShortcutManagerCompat.setDynamicShortcuts(UTSAndroid.getAppContext()!, [shortcut,shortcut2].toKotlinList())
+    // #endif
+    // #ifndef UNI-APP-X
+      console.log("当前示例仅支持uni-app x环境")
+    // #endif
+
+}
+
+@UTSAndroid.Suppress("DEPRECATION")
+export function gotoDemoActivity():boolean {
+	// 这里的逻辑是为了判断 当前的自定义activity 是否注册了，并以此为条件判断是否是自定义基座
+	let hasXActivityIntegration =  true
+	try{
+		let packageManager = UTSAndroid.getUniActivity()!.getPackageManager();
+		let intent = new Intent(UTSAndroid.getUniActivity(),(new DemoActivity()).javaClass);
+		let resolveInfo = packageManager.queryIntentActivities(intent,0);
+		console.log(resolveInfo.size)
+		if(resolveInfo.size == 0){
+			hasXActivityIntegration = false;
+		}
+	}catch(e:Exception){
+		console.log(e);
+		hasXActivityIntegration = false;
+	}
+	
+	if(!hasXActivityIntegration){
+		return false;
+	}
+	// 跳转到一个新的界面
+	UTSAndroid.getUniActivity()!.runOnUiThread(new IntentRunable())
+	return true;
+ 
+}
+
+
+
+
+

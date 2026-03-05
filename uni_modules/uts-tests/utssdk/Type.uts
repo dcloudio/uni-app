@@ -1,0 +1,93 @@
+import { describe, test, expect, Result } from './tests.uts'
+
+// #ifdef APP-ANDROID
+@UTSAndroid.Suppress("USELESS_IS_CHECK")
+// #endif
+export function testType() : Result {
+  return describe("Type", () => {
+    test("Object literal to type instance", () => {
+      type Person = {
+        age : number
+      }
+      const a : Person = {
+        age: 1
+      }
+      const b = {
+        age: 2
+      } as Person
+
+      expect(a instanceof Person).toEqual(true);
+      expect(b instanceof Person).toEqual(true);
+    })
+    test("Type with any[]", () => {
+      type Person = {
+        age : number,
+        friends : any[]
+      }
+      const a : Person = {
+        age: 1,
+        friends: ['b']
+      }
+      const b = {
+        age: 2,
+        friends: ['a']
+      } as Person
+
+      expect(a instanceof Person).toEqual(true);
+      expect(b instanceof Person).toEqual(true);
+    })
+    test("destructure default value should override null", () => {
+      type Options = {
+        name? : string
+        age ?: number
+        gender ?: number
+      }
+      const options = {
+        name: 'Tom'
+      } as Options
+      const {
+        name = 'testName',
+        age = 20,
+        gender
+      } = options;
+
+      expect(name).toEqual('Tom');
+      expect(age).toEqual(20);
+      expect(gender).toEqual(null);
+    })
+    
+    test("infer element type", () => {
+      type Ta = {
+        id: number
+      }
+      type Tb = {
+        group: number,
+        list: Ta[]
+      }
+      const groups = [] as Tb[]
+      let items = [] as Ta[]
+      groups.push({
+        group: 1,
+        list: items
+      })
+      groups.push({
+        group: 1,
+        list: []
+      } as Tb)
+      items.push({
+        id: 1
+      })
+      items.push({
+        id: 1
+      } as Ta)
+      // #ifndef APP-IOS
+      expect(groups[0].list.length).toEqual(2)
+      // #endif
+      // #ifdef APP-ANDROID
+      expect(groups[0].list.length).toEqual(2)
+      // #endif
+      expect(groups[0] instanceof Tb).toEqual(true)
+      expect(groups[1] instanceof Tb).toEqual(true)
+    })
+  })
+}

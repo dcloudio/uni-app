@@ -1,0 +1,146 @@
+
+
+import { UserCaptureScreenCallback, OnUserCaptureScreenResult } from "../interface.uts"
+
+
+import ActivityCompat from "androidx.core.app.ActivityCompat";
+import Manifest from "android.Manifest";
+import PackageManager from "android.content.pm.PackageManager";
+import Build from "android.os.Build";
+import FileObserver from "android.os.FileObserver";
+import File from "java.io.File";
+import Environment from "android.os.Environment";
+
+
+
+/**
+ * 文件监听器
+ */
+let screenOB: ScreenFileObserver | null = null;
+/**
+ * 记录文件监听器上次监听的时间戳，避免重复监听
+ */
+let lastFileObserverTime: number = 0;
+/**
+ * 图片被捕获的实现
+ */
+let imageChange: UserCaptureScreenCallback | null = null;
+
+
+
+
+/**
+ * android 文件监听实现
+ */
+
+class ScreenFileObserver extends FileObserver {
+
+	/**
+	 * 所有截屏文件的存放目录
+	 */
+	allScreen: File;
+
+	
+	constructor(screenFile: string) {
+		super(new File(screenFile))
+		this.allScreen = new File(screenFile);
+	}
+
+
+	override onEvent(event: Int, path?: string): void {
+		
+		// 只监听文件新增事件
+		if (event == FileObserver.CREATE) {
+			
+			let newPath: string = new File(this.allScreen, path!).getPath();
+			let currentTime = System.currentTimeMillis();
+
+			if ((currentTime - lastFileObserverTime) < 1000) {
+				// 本地截屏行为比上一次超过1000ms,才认为是一个有效的时间
+				return;
+			}
+			
+			lastFileObserverTime = System.currentTimeMillis()
+			
+			const ret: OnUserCaptureScreenResult = {
+				errCode: 0,
+				errSubject: "uni-usercapturescreen",
+				errMsg: "onUserCaptureScreen:ok",
+				image:newPath
+			}
+			imageChange!(ret);
+		}
+	}
+}
+
+
+
+
+/**
+ * 开启截图监听
+ */
+@UTSAndroid.Suppress("DEPRECATION")
+export function onUserCaptureScreen(callback: UserCaptureScreenCallback) {
+	
+	// 检查相关权限是否已经具备
+	if (ActivityCompat.checkSelfPermission(UTSAndroid.getUniActivity()!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+		// 不具备权限，申请权限，并且告知用户监听失败
+		ActivityCompat.requestPermissions(UTSAndroid.getUniActivity()!, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1001)
+		
+		// 因权限缺失导致监听失败
+		const ret: OnUserCaptureScreenResult = {
+			errCode: -1,
+			errSubject: "uni-usercapturescreen",
+			errMsg: "onUserCaptureScreen:fail",
+			image: null
+		}
+		callback(ret);
+		return ;
+	}
+	
+	imageChange = callback;
+
+	let directory_screenshot: File;
+	// 找到设备存放截屏文件的目录
+	let directory_pictures = new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_PICTURES);
+	let directory_dcim = new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DCIM);
+	
+	if (Build.MANUFACTURER.lowercase() == "xiaomi") {
+		directory_screenshot = new File(directory_dcim, "Screenshots");
+	} else {
+		directory_screenshot = new File(directory_pictures, "Screenshots");
+	}
+	
+	if (screenOB != null) {
+		screenOB!.stopWatching()
+	}
+	//开始监听
+	screenOB = new ScreenFileObserver(directory_screenshot.path)
+	screenOB!.startWatching()
+	
+}
+
+
+/**
+ * 关闭截屏监听
+ */
+export function offUserCaptureScreen(success: (res: any) => void) {
+
+	// android 10以上，关闭监听通过移除文件监听器实现
+	if (screenOB != null) {
+		screenOB!.stopWatching()
+		screenOB = null
+	}
+	lastFileObserverTime = 0;
+	
+	success({});
+}
+
+
+
+
+
+
+
+
+

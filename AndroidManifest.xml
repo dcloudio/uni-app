@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" 
+  package="io.dcloud.hellouts">
+    <uses-permission android:name="android.permission.APP_OPS_STR_PICTURE_IN_PICTURE" />
+    <application android:networkSecurityConfig="@xml/custom_network_security_config"
+>
+        <!--meta-data-->
+        <meta-data android:name="TencentMapSDK" android:value="您申请的腾讯定位App Key" />
+        <!--需要替换成开发者自己的包名-->
+        <activity android:name="uni.UNI70BE9D0.RootPackageActivity"
+            android:launchMode="singleTask"
+            android:exported="true">
+            <intent-filter>
+              <!--需要替换成开发者自己的包名-->
+              <action android:name="uni.UNI70BE9D0.RootPackageActivity" />
+              <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <!--meta-data-->  
+        <activity android:name="io.dcloud.uniapp.UniLaunchProxyActivity" android:exported="true">
+            <intent-filter>
+              <action android:name="android.intent.action.VIEW" />
+              <category android:name="android.intent.category.DEFAULT" />
+              <category android:name="android.intent.category.BROWSABLE" />
+              <data android:scheme="appuniappx"/>
+            </intent-filter>
+        </activity>
+        <activity
+        	android:name="io.dcloud.uniapp.UniAppActivity"
+        	android:exported="true"
+        	android:theme="@style/UniAppX.Activity.DefaultTheme"
+        	android:supportsPictureInPicture="true"
+        	android:configChanges="smallestScreenSize|screenLayout|orientation|keyboardHidden|screenSize|mcc|mnc|fontScale|keyboard"
+        	android:windowSoftInputMode="adjustResize"
+        	android:label="@string/app_name">
+        	<intent-filter>
+        		<action android:name="android.intent.action.MAIN" />
+        		<category android:name="android.intent.category.LAUNCHER" />
+        	</intent-filter>
+        </activity>
+    </application>
+</manifest>

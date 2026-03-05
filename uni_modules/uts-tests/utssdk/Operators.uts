@@ -1,0 +1,410 @@
+import { describe, test, expect,expectNumber, Result } from './tests.uts'
+
+// #ifdef APP-ANDROID
+  @UTSAndroid.Suppress("USELESS_ELVIS")
+// #endif
+export function testOperators(): Result {
+    return describe("Operators", () => {
+        test('+', () => {
+            expect('hello ' + 'everyone').toEqual("hello everyone");
+            function add(a: number, b: number): number {
+                return a + b
+            }
+            expect(add(0, 0)).toEqual(0);
+            expect(add(2, 2)).toEqual(4);
+            expect(add(-2, -3)).toEqual(-5);
+            expect(add(100, -100)).toEqual(0);
+            expect(add(100, -0.00001)).toEqual(99.99999);
+            expect(add(100, 0.00001)).toEqual(100.00001);
+            expect(add(123456789, 987654321)).toEqual(1111111110);
+            expect(add(1000000, 2000000)).toEqual(3000000);
+            expect(add(-1000000, -2000000)).toEqual(-3000000);
+            // kotlin 最大值 9223372036854775807，最小值 -9223372036854775808
+            // 超出边界报错 error: The value is out of range‌
+            // swift 最大值 9223372036854775807，最小值 -9223372036854775808
+            // 超出边界报错 error: integer literal 'xxx' overflows when stored into 'Int'
+            // web 最大值 1.7976931348623157e+308，最小值-1.7976931348623157e+308
+            // 超出边界返回 Infinity
+            // todo 统一处理
+            // const max = 9223372036854775807
+            // expect(add(max, max)).toEqual();
+        })
+        test('+=', () => {
+            let a: number = 2;
+            a += 3;
+            expect(a).toEqual(5);
+            let b: string = 'hello';
+            b += ' world';
+            expect(b).toEqual("hello world");
+        })
+        test('=', () => {
+            let x: number = 2;
+            const y: number = 3;
+            expect(x).toEqual(2);
+            x = y + 1;
+            expect(x).toEqual(4);
+            x = x * y
+            expect(x).toEqual(12);
+        })
+        test('&', () => {
+            const a: number = 5;     // 00000000000000000000000000000101
+            const b: number = 3;     // 00000000000000000000000000000011
+            expect(a & b).toEqual(1);  // 00000000000000000000000000000001
+			
+			//expect(16677889900 & 10).toEqual(8);
+			//expect(888999555666 & 23.567).toEqual(18);
+        })
+        test('&=', () => {
+            let a = 5;      // 00000000000000000000000000000101
+            a &= 3;         // 00000000000000000000000000000011
+            expect(a).toEqual(1);  // 00000000000000000000000000000001
+        })
+        test('～', () => {
+            const a: number = 5;     // 00000000000000000000000000000101
+            const b: number = -3;    // 11111111111111111111111111111101
+            expect(~a).toEqual(-6);  // 11111111111111111111111111111010
+            expect(~b).toEqual(2);  // 00000000000000000000000000000010
+			
+        })
+        test('|', () => {
+            const a: number = 5;        // 00000000000000000000000000000101
+            const b: number = 3;        // 00000000000000000000000000000011
+            expect(a | b).toEqual(7);  // 00000000000000000000000000000111
+			//expect(16677889901 | 10).toEqual(-501979281);
+			//expect(888999555661 | 23.567).toEqual(-58674593);
+        })
+        test('|=', () => {
+            let a = 5;      // 00000000000000000000000000000101
+            a |= 3;         // 00000000000000000000000000000011
+            expect(a).toEqual(7);  // 00000000000000000000000000000111
+        })
+        test('^', () => {
+            const a: number = 5;        // 00000000000000000000000000000101
+            const b: number = 3;        // 00000000000000000000000000000011
+            expect(a ^ b).toEqual(6);  // 00000000000000000000000000000110
+			//expect(16677889902 ^ 10).toEqual(-501979292);
+			//expect(888999555662 ^ 23.567).toEqual(-58674599);
+        })
+        test('^=', () => {
+            let a = 5;      // 00000000000000000000000000000101
+            a ^= 3;         // 00000000000000000000000000000011
+            expect(a).toEqual(6);  // 00000000000000000000000000000110
+        })
+        test('--', () => {
+            let x = 3;
+            const y = x--;
+            expect(`x:${x}, y:${y}`).toEqual("x:2, y:3");
+            let a = 3;
+            const b = --a;
+            expect(`a:${a}, b:${b}`).toEqual("a:2, b:2");
+        })
+        test('/', () => {
+            function divide (a: number, b: number): number {
+                return a / b
+            }
+			
+            expect(divide(10, 5)).toEqualNumber(2);
+            expect(divide(-10, -5)).toEqualNumber(2);
+            expect(divide(10, -5)).toEqualNumber(-2);
+            expect(divide(-10, 5)).toEqualNumber(-2);
+            expect(divide(0.1, 0.3)).toEqualNumber(0.33333333333333337);
+            expect(divide(0.3, 0.1)).toEqualNumber(2.9999999999999996);
+            expectNumber(divide(1.5, 0.5)).toEqualDouble(3);
+            expect(divide(3, 2)).toEqualNumber(1.5);
+            // 暂不支持字面量
+            // expect(3 / 2).toEqual(1.5);
+            expect(divide(10, 3)).toEqualNumber(3.3333333333333335);
+            expect(divide(3, 10)).toEqualNumber(0.3);
+            expect(divide(1, 3)).toEqualNumber(0.3333333333333333);
+            expect(divide(1000000, 2000000)).toEqualNumber(0.5);
+            // kotlin java.lang.ArithmeticException: divide by zero
+            // swift 返回 inf
+            // web 返回 Infinity
+            // todo 统一处理
+            // expect(divide(1, 0)).toEqual();
+            expect(divide(16788990011, 5)).toEqualNumber(3357798002.2);
+            expect(divide(16788990015, 5)).toEqualNumber(3357798003);
+            expectNumber(divide(16788990015, 10088990000)).toEqualDouble(1.6640902622561822);
+        
+            let utsNum1 = JSON.parse("0.123456")! as number
+            let utsNum2 = JSON.parse("0.123456")! as number
+            
+            let utsNum3 = utsNum1 / utsNum2
+            expect(utsNum3).toEqualNumber(1);
+            
+            let utsNum4 = 0.030864 / utsNum2
+            expect(utsNum4).toEqualNumber(0.25);
+        
+        })
+        test('/=', () => {
+            let a:number = 3;
+            a /= 2;
+            expect(a).toEqual(1.5);
+        })
+        test('==', () => {
+            expect(1 == 1).toEqual(true);
+            expect('hello' == 'hello').toEqual(true);
+        })
+        test('>', () => {
+            expect(5 > 3).toEqual(true);
+            expect(3 > 3).toEqual(false);
+            expect('ab' > 'aa').toEqual(true);
+        })
+        test('++', () => {
+            let x = 3;
+            const y = x++;
+            expect(`x:${x}, y:${y}`).toEqual("x:4, y:3");
+            let a = 3;
+            const b = ++a;
+            expect(`a:${a}, b:${b}`).toEqual("a:4, b:4");
+        })
+        test('!=', () => {
+            expect(1 != 1).toEqual(false);
+            expect('hello' != 'hello').toEqual(false);
+        })
+        test('<<', () => {
+            const a: number = 5;         // 00000000000000000000000000000101
+            const b: number = 2;         // 00000000000000000000000000000010
+            expect(a << b).toEqual(20);  // 00000000000000000000000000010100
+        })
+        test('<<=', () => {
+            let a = 5; // 00000000000000000000000000000101
+            a <<= 2;   // 00000000000000000000000000010100
+            expect(a).toEqual(20);  // 00000000000000000000000000010100
+        })
+        test('<', () => {
+            expect(5 < 3).toEqual(false);
+            expect(3 < 3).toEqual(false);
+            expect('aa' < 'ab').toEqual(true);
+        })
+        test('<=', () => {
+            expect(5 <= 3).toEqual(false);
+            expect(3 <= 3).toEqual(true);
+            expect('aa' <= 'ab').toEqual(true);
+        })
+        test('&&', () => {
+            const a: number = 3;
+            const b: number = -2;
+            expect(a > 0 && b > 0).toEqual(false);
+        })
+        // test('&&=', () => {
+        // 	let a:Int = 1;
+        // 	let b = 0;
+        // 	a &&= 2;
+        // 	expect(a).toEqual(2);
+        // 	b &&= 2;
+        // 	expect(b).toEqual(0);
+        // })
+        test('!', () => {
+            const a: number = 3;
+            const b: number = -2;
+            expect(!(a > 0 || b > 0)).toEqual(false);
+        })
+        test('??=', () => {
+        	const a = { duration: 50 }
+          a.speed ??= 25
+        	expect(a.speed).toEqual(25);
+        	a.duration ??= 10
+        	expect(a.duration).toEqual(50);
+        })
+        test('||', () => {
+            const a: number = 3;
+            const b: number = -2;
+            expect(a > 0 || b > 0).toEqual(true);
+        })
+        // test('||=', () => {
+        // 	const a = { duration: 50, title: '' };
+        // 	a.duration ||= 10;
+        // 	expect(a.duration).toEqual(50);
+        // 	a.title ||= 'title is empty.';
+        // 	expect(a.title).toEqual("title is empty");
+        // })
+        test('*', () => {
+            function multiply(a: number, b: number): number {
+                return a * b
+            } 
+            expect(multiply(10, 0)).toEqual(0);
+            expect(multiply(-10, 0)).toEqual(0);
+            expect(multiply(10, 1)).toEqual(10);
+            expect(multiply(1, 10)).toEqual(10);
+            expect(multiply(1, -10)).toEqual(-10);
+            expect(multiply(2, 3)).toEqual(6);
+            expect(multiply(0.2, 0.3)).toEqual(0.06);
+            expectNumber(multiply(1.5, 6)).toEqualDouble(9);
+            expectNumber(multiply(1000, 0.001)).toEqualDouble(1);
+            expectNumber(multiply(1000, -0.001)).toEqualDouble(-1);
+            expectNumber(multiply(1000, -0.001)).toEqualDouble(-1);
+            expect(multiply(9999, 9999)).toEqual(99980001);
+            expect(multiply(100000000, 10)).toEqual(1000000000);
+        })
+        test('*=', () => {
+            let a = 2;
+            a *= 3;
+            expect(a).toEqual(6);
+        })
+        
+        test('??', () => {
+        	const foo = null ?? 'default string';
+        	expect(foo).toEqual("default string");
+        	const baz = 0 ?? 42;
+        	expect(baz).toEqual(0);
+        })
+        test('?.', () => {
+          type Cat = {
+            name: string
+          }
+          type Adventurer = {
+            name: string
+            cat?: Cat | null
+            cats ?: Array<Cat> | null
+          }
+        	const adventurer1: Adventurer = {
+        	  name: 'Alice',
+        	  cat: {
+        	    name: 'Dinah'
+        	  },
+            //#ifdef APP-HARMONY
+            // TODO 编译器调整后删除此条件编译
+            cats: null
+            //#endif
+        	}
+        	expect(adventurer1.cat?.name).toEqual("Dinah")
+          // #ifdef APP-ANDROID || APP-IOS
+          const adventurer2: Adventurer = {
+            name: 'Alice'
+          }
+          expect(adventurer2.cat?.name).toEqual(null)
+          // #endif
+          
+          const adventurers: Adventurer[] = [{
+            name: 'Alice',
+            cats: [{
+              name: 'Dinah'
+            }]
+          }]
+          // 跨所有平台的正确写法
+          expect(adventurers[0].cats?.[0].name).toEqual("Dinah")
+          // #ifdef APP-ANDROID
+          // swift 中是不能对非空类型做解包的
+          expect(adventurers[0]?.cats[0]?.name).toEqual("Dinah")
+          // #endif
+        })
+        test('%', () => {
+            expect(13 % 5).toEqual(3);
+            expect(-13 % 5).toEqual(-3);
+            expect(4 % 2).toEqual(0);
+            expect(-4 % 2).toEqual(-0);
+        })
+        test('%=', () => {
+            let a = 3;
+            a %= 2;
+            expect(a).toEqual(1);
+        })
+        test('>>', () => {
+            const a: number = 5;          //  00000000000000000000000000000101
+            const b: number = 2;          //  00000000000000000000000000000010
+            const c: number = -5;         //  11111111111111111111111111111011
+            expect(a >> b).toEqual(1); // 00000000000000000000000000000001
+            expect(c >> b).toEqual(-2); // 11111111111111111111111111111110
+			//expect(16677889900 >> 10).toEqual(-490215);
+			//expect(888999555666 >> 23.567).toEqual(-7);
+            expect(3144134277.518717 >> 0).toEqual(-1150833019)
+        })
+        test('>>=', () => {
+            let a = 5;      //  00000000000000000000000000000101
+            a >>= 2;        //  00000000000000000000000000000001
+            expect(a).toEqual(1);
+            let b = -5;     //  11111111111111111111111111111011
+            b >>= 2;        //  11111111111111111111111111111110
+            expect(b).toEqual(-2);
+        })
+        test('===', () => {
+            // swift里，基础类型暂不支持!==,===对比
+            expect(1 == 1).toEqual(true);
+            expect('hello' == 'hello').toEqual(true);
+        })
+        test('!==', () => {
+            // swift里，基础类型暂不支持!==,===对比
+            expect(1 != 1).toEqual(false);
+            expect('hello' != 'hello').toEqual(false);
+        })
+        test('-', () => {
+            function subtract(a: number, b: number): number {
+                return a - b
+            }
+            expect(subtract(3, 3)).toEqual(0);
+            expect(subtract(5, 3)).toEqual(2);
+            expect(subtract(-5, -3)).toEqual(-2);
+            expect(subtract(-5, 3)).toEqual(-8);
+            expect(subtract(5, -3)).toEqual(8);
+            expect(subtract(5, 0)).toEqual(5);
+            expectNumber(subtract(1.5, 0.5)).toEqualDouble(1);
+            expect(subtract(5.5, 2)).toEqual(3.5);
+            expect(subtract(5.5, 2)).toEqual(3.5);
+            expect(subtract(2.22, 1.11)).toEqual(1.11);
+            expect(subtract(10000000000, 1)).toEqual(9999999999);
+            expect(subtract(-10000000000, 1)).toEqual(-10000000001);
+        })
+        test('-=', () => {
+            let a = 2;
+            a -= 3
+            expect(a).toEqual(-1);
+        })
+        test('>>>', () => {
+            const a: number = 5;          //  00000000000000000000000000000101
+            const b: number = 2;          //  00000000000000000000000000000010
+            const c: number = -5;         //  11111111111111111111111111111011
+            expect(a >>> b).toEqual(1); // 00000000000000000000000000000001
+            // expect(c >>> b).toEqual(1073741822); // 00111111111111111111111111111110
+            const t1l = 3055341859 //这里安卓端默认number就无法正常运算了
+            const t2l = t1l >>> 0
+            expect(t1l).toEqual(3055341859); 
+            expect(t2l).toEqual(3055341859); 
+            const aa = 3144134277.518717
+            const bb = aa | 0
+            // #ifdef APP-ANDROID
+            expect(bb).toEqual(-1150833019); 
+            // #endif
+        })
+        test('>>>=', () => {
+            let a = 5; //  00000000000000000000000000000101
+            a >>>= 2;  //  00000000000000000000000000000001
+            expect(a).toEqual(1);
+            // #ifdef APP-ANDROID
+            let b = -5; // -00000000000000000000000000000101
+            b >>>= 2;   //  00111111111111111111111111111110
+            expect(b).toEqual(1073741822);
+            // #endif
+        })
+        test('in', () => {
+            const a = {a : 1} as UTSJSONObject
+            expect('a' in a).toEqual(true);
+            expect('b' in a).toEqual(false);
+            
+            const a2 = {
+              name:"张三"
+            }
+            a2["age"] = 12
+            expect('age' in a2).toEqual(true);
+            expect('age2' in a2).toEqual(false);
+            
+            
+        })
+        test('float_number_format', () => {
+            let r1 = 1 + -1.1;
+            expect(r1).toEqual(-0.10000000000000009);
+            let r2 = -0.1 * 1.1;
+            expect(r2).toEqual(-0.11000000000000001);
+            let r3 = -0.1 / 1.1;
+            expect(r3).toEqual(-0.09090909090909091);
+            let r4 = 1 % -0.1;
+            expect(r4).toEqual(0.09999999999999995);
+            
+            var inc = Math.PI / 180.0
+            expect(inc).toEqual(0.017453292519943295);
+            inc = Math.abs(11-120)
+            expect(inc).toEqual(109);
+        })
+    })
+}
+    

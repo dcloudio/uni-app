@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.WidgetTest.AppWidget.Container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:theme="@style/Theme.WidgetTest.AppWidgetContainer">
+
+    <TextView
+        android:id="@+id/appwidget_text"
+        style="@style/Widget.WidgetTest.AppWidget.InnerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:text="桌面小组件"
+        android:textSize="10sp"
+        android:textStyle="bold|italic" />
+
+
+    <TextView
+        android:id="@+id/appwidget_text_sub"
+        style="@style/Widget.WidgetTest.AppWidget.InnerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:text="模拟请求内容"
+        android:textSize="10sp"
+        />
+
+
+</LinearLayout>

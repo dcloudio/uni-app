@@ -1,0 +1,175 @@
+import { describe, test, expect, Result } from './tests.uts'
+
+class User {
+  name : string = "";
+  age : number = 0
+}
+
+const passcode = "secret passcode";
+class Parent {
+  private _name : string = ""; // private是私有的，外部不能访问
+  get name() : string { // 读取name会触发此拦截器
+    console.log("start to get parent.name");
+    return this._name;
+  }
+  set name(newName : string) { // 给name赋值会触发此拦截器
+    console.log("start to set parent.name");
+    if (passcode == "secret passcode") { // 校验是否有权修改name的值，这里的条件可以修改以方便测试
+      this._name = newName;
+    } else {
+      console.log("Error: set parent.name fail");
+    }
+  }
+
+  // 静态属性和方法
+  static age : number = 30
+  static run() : string {
+    console.log("this is a static method")
+    return "static method"
+  }
+
+  // readonly
+  readonly address : string = ""
+
+  weight : number = 80
+
+  // constructor
+  constructor(weight : number) {
+    console.log("开始实例化")
+    this.weight = weight
+  }
+
+  // 实例方法
+  eat() : string {
+    console.log("this is parent")
+    return "parent instance method"
+  }
+
+}
+
+class ChildrenTest extends Parent {
+
+  // override constructor(weight: number) {
+  // 	super(weight)
+  // }
+
+  override eat() : string {
+    super.eat()
+    return "children instance method"
+  }
+
+  // swift 中不能重写父类的存储属性，只能重写父类的计算的属性（本质上是重写计算属性的get set方法）
+  // #ifndef APP-IOS
+  override weight = 8
+  // #endif 
+}
+
+// #ifdef APP-IOS
+class TestGeneric<T> {
+  value?: T
+} 
+// #endif
+
+export function testKeyWord() : Result {
+  return describe("KeyWord", () => {
+
+    test('new', () => {
+      let new1 = new User()
+      // expect(JSON.stringify(new1)).toEqual('{"age":0,"name":""}')
+      console.log(JSON.stringify(new1))
+
+      new1.age = 10
+      new1.name = "job"
+      console.log(JSON.stringify(new1))
+      // expect(JSON.stringify(new1)).toEqual('{"age":10,"name":"job"}')
+
+    })
+
+    test('typeof', () => {
+      expect(typeof (null)).toEqual('object')
+      expect(typeof null).toEqual('object')
+      let new1 = new User()
+      expect(typeof (new1)).toEqual('object')
+      //expect(typeof null).toEqual('object')
+      // #ifdef APP-ANDROID || APP-IOS
+      expect(typeof (123456.789)).toEqual('Double')
+      //expect(typeof(789778979798797987979)).toEqual('number')
+      expect(typeof (0.0)).toEqual('Double')
+      // #endif
+
+      expect(typeof (NaN)).toEqual('number')
+      expect(typeof (Infinity)).toEqual('number')
+      expect(typeof ("hello world")).toEqual('string')
+      expect(typeof ([1, 2, 3])).toEqual('object')
+      expect(typeof (new Array<any>())).toEqual('object')
+      expect(typeof (new Set<any>())).toEqual('object')
+      // expect(typeof(new Map<any,any>())).toEqual('object')
+      expect(typeof (new Date())).toEqual('object')
+      expect(typeof ("hello world")).toEqual('string')
+      // 原生对象  
+      // #ifdef APP-ANDROID
+      expect(typeof (UTSAndroid.getUniActivity())).toEqual('object')
+      // #endif
+      
+      let a1:string|null  = ""
+      let a2:string|null  = null
+      expect(typeof (a1)).toEqual('string')
+      expect(typeof (a2)).toEqual('object')
+
+      let b1:number|null  = 11
+      let b2:number|null  = null
+      expect(typeof (b1)).toEqual('number')
+      expect(typeof (b2)).toEqual('object')
+      
+      let c1:any|null  = 11
+      let c2:any|null  = null
+      // #ifdef APP-ANDROID
+       expect(typeof (c1)).toEqual('number')
+      // #endif
+     
+      expect(typeof (c2)).toEqual('object')
+
+
+    })
+
+
+    test('instanceof', () => {
+      let user1 : any = new User()
+      let instanceRet1 = user1 instanceof User
+      expect(instanceRet1).toEqual(true)
+      let instanceRet2 = (typeof user1) == "string"
+      expect(instanceRet2).toEqual(false)
+      let num1 : any = 3.1415926
+      let instanceRet3 = (typeof num1) == "string"
+      expect(instanceRet3).toEqual(false)
+      // #ifdef APP-ANDROID
+      let instanceRet4 = (typeof num1) == "number"
+      expect(instanceRet4).toEqual(true)
+      // #endif
+      
+      // #ifdef APP-IOS
+      let test1: TestGeneric<User> = new TestGeneric<User>()
+      expect(test1 instanceof TestGeneric<unknown>).toEqual(true)
+      // #endif
+
+    })
+
+    test('isArray', () => {
+      let user1 : any = new User()
+      expect(Array.isArray(user1)).toEqual(false)
+      expect(Array.isArray([1, 2, 3])).toEqual(true)
+    })
+
+    test('class', () => {
+      let p = new Parent(20)
+      p.name = "tom" // 会打印"start to set person.name"
+      console.log(p.name); // 先打印"start to get person.name"，然后打印"tom"
+      expect(Parent.age).toEqual(30)
+      expect(Parent.run()).toEqual("static method")
+      expect(p.eat()).toEqual("parent instance method")
+      // let c = new ChildrenTest(0)
+      // expect(c.eat()).toEqual("children instance method")
+    })
+
+  })
+}

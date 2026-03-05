@@ -1,0 +1,1068 @@
+import { describe, test, expect, Result } from './tests.uts'
+
+
+// #ifdef APP-ANDROID
+class RegExpBenchmark0 {
+
+	// 正则表达式定义
+	private re0 = /^ba/;
+	private re1 = /(((\w+):\/\/)([^\/:]*)(:(\d+))?)?([^#?]*)(\?([^#]*))?(#(.*))?/;
+	private re2 = /^\s*|\s*$/g;
+	private re3 = /\bQBZPbageby_cynprubyqre\b/;
+	private re4 = /,/;
+	private re5 = /\bQBZPbageby_cynprubyqre\b/g;
+	private re6 = /^[\s\xa0]+|[\s\xa0]+$/g;
+	private re7 = /(\d*)(\D*)/g;
+	private re8 = /=/;
+	private re9 = /(^|\s)lhv\-h(\s|$)/;
+	private re10 = /\#/g;
+	private re11 = /\./g;
+	private re12 = /'/g;
+	private re13 = /\?[\w\W]*(sevraqvq|punaaryvq|tebhcvq)=([^\&\?#]*)/i;
+	private re14 = /\s+/g;
+	private re15 = /^\s*(\S*(\s+\S+)*)\s*$/;
+	private re16 = /(-[a-z])/i;
+
+	// 测试字符串定义
+	private str0 = 'Zbmvyyn/5.0 (Jvaqbjf; H; Jvaqbjf AG 5.1; ra-HF) NccyrJroXvg/528.9 (XUGZY, yvxr Trpxb) Puebzr/2.0.157.0 Fnsnev/528.9';
+	private str1 = 'Fubpxjnir Synfu 9.0  e115';
+
+
+	private computeInputVariants(str : string, n : number) : string[] {
+		const variants : string[] = [str];
+		for (let i = 1; i < n; i++) {
+			const pos = Math.floor(Math.random() * str.length);
+			const chr = String.fromCharCode(
+				(str.charCodeAt(pos)! + Math.floor(Math.random() * 128)) % 128
+			);
+			variants.add(str.substring(0, pos) + chr + str.substring(pos + 1))
+			// variants[i] = str.substring(0, pos) + chr + str.substring(pos + 1);
+		}
+		return variants;
+	}
+
+	private exec(re : RegExp, str : string) : number {
+		let sum = 0;
+		re.lastIndex = 0;
+		const match = re.exec(str);
+		if (match != null) {
+			for (const group of match) {
+				if (group != null) {
+					sum += group!.length;
+				}
+			}
+		}
+		return sum;
+	}
+
+	private runBlock0() : number {
+		let sum = 0;
+		// 原始runBlock0逻辑实现
+		const s0 = this.computeInputVariants('pyvpx', 6511);
+		const s1 = this.computeInputVariants('uggc://jjj.snprobbx.pbz/ybtva.cuc', 1844);
+		const s2 = this.computeInputVariants('QBZPbageby_cynprubyqre', 739);
+		const s3 = this.computeInputVariants('uggc://jjj.snprobbx.pbz/', 598);
+		const s4 = this.computeInputVariants('uggc://jjj.snprobbx.pbz/fepu.cuc', 454);
+		const s5 = this.computeInputVariants('qqqq, ZZZ q, llll', 352);
+		const s6 = this.computeInputVariants('vachggrkg QBZPbageby_cynprubyqre', 312);
+		const s7 = this.computeInputVariants('/ZlFcnprUbzrcntr/Vaqrk-FvgrUbzr,10000000', 282);
+		const s8 = this.computeInputVariants('vachggrkg', 177);
+		const s9 = this.computeInputVariants('528.9', 170);
+		const s10 = this.computeInputVariants('528', 170);
+		const s11 = this.computeInputVariants('VCPhygher=ra-HF', 156);
+		const s12 = this.computeInputVariants('CersreerqPhygher=ra-HF', 156);
+		const s13 = this.computeInputVariants('xrlcerff', 144);
+		const s14 = this.computeInputVariants('521', 139);
+		const s15 = this.computeInputVariants(this.str0, 139);
+		const s16 = this.computeInputVariants('qvi .so_zrah', 137);
+		const s17 = this.computeInputVariants('qvi.so_zrah', 137);
+		const s18 = this.computeInputVariants('uvqqra_ryrz', 117);
+		const s19 = this.computeInputVariants('sevraqfgre_naba=nvq%3Qn6ss9p85n868ro9s059pn854735956o3%26ers%3Q%26df%3Q%26vpgl%3QHF', 95);
+		const s20 = this.computeInputVariants('uggc://ubzr.zlfcnpr.pbz/vaqrk.psz', 93);
+		const s21 = this.computeInputVariants(this.str1, 92);
+		const s22 = this.computeInputVariants('svefg', 85);
+		const s23 = this.computeInputVariants('uggc://cebsvyr.zlfcnpr.pbz/vaqrk.psz', 85);
+		const s24 = this.computeInputVariants('ynfg', 85);
+		const s25 = this.computeInputVariants('qvfcynl', 85);
+
+		for (let i = 0; i < 525; i++) {
+			sum += this.exec(this.re0, s0[i]);
+		}
+
+		for (let i = 0; i < 1844; i++) {
+			sum += this.exec(this.re0, s0[i + 525]);
+			sum += this.exec(this.re1, s1[i]);
+		}
+
+		for (let i = 0; i < 739; i++) {
+			sum += this.exec(this.re0, s0[i + 2369]);
+			sum += s2[i].replace(this.re2, '').length;
+		}
+
+		for (let i = 0; i < 598; i++) {
+			sum += this.exec(this.re0, s0[i + 3108]);
+			sum += this.exec(this.re1, s3[i]);
+		}
+
+		for (let i = 0; i < 454; i++) {
+			sum += this.exec(this.re0, s0[i + 3706]);
+			sum += this.exec(this.re1, s4[i]);
+		}
+
+		for (let i = 0; i < 352; i++) {
+			sum += this.exec(this.re0, s0[i + 4160]);
+			sum += this.exec(/qqqq|qqq|qq|q|ZZZZ|ZZZ|ZZ|Z|llll|ll|l|uu|u|UU|U|zz|z|ff|f|gg|g|sss|ss|s|mmm|mm|m/g, s5[i]);
+		}
+
+		for (let i = 0; i < 312; i++) {
+			sum += this.exec(this.re0, s0[i + 4512]);
+			sum += this.exec(this.re3, s6[i]);
+		}
+
+		for (let i = 0; i < 282; i++) {
+			sum += this.exec(this.re0, s0[i + 4824]);
+			sum += this.exec(this.re4, s7[i]);
+		}
+
+		for (let i = 0; i < 177; i++) {
+			sum += this.exec(this.re0, s0[i + 5106]);
+			sum += s8[i].replace(this.re5, '').length;
+		}
+
+		for (let i = 0; i < 170; i++) {
+			sum += this.exec(this.re0, s0[i + 5283]);
+			sum += s9[i].replace(this.re6, '').length;
+			sum += this.exec(this.re7, s10[i]);
+		}
+
+		for (let i = 0; i < 156; i++) {
+			sum += this.exec(this.re0, s0[i + 5453]);
+			sum += this.exec(this.re8, s11[i]);
+			sum += this.exec(this.re8, s12[i]);
+		}
+
+		for (let i = 0; i < 144; i++) {
+			sum += this.exec(this.re0, s0[i + 5609]);
+			sum += this.exec(this.re0, s13[i]);
+		}
+
+		for (let i = 0; i < 139; i++) {
+			sum += this.exec(this.re0, s0[i + 5753]);
+			sum += s14[i].replace(this.re6, '').length;
+			sum += this.exec(this.re7, s14[i]);
+			sum += this.exec(this.re9, '');
+			sum += this.exec(/JroXvg\/(\S+)/, s15[i]);
+		}
+
+		for (let i = 0; i < 137; i++) {
+			sum += this.exec(this.re0, s0[i + 5892]);
+			sum += s16[i].replace(this.re10, '').length;
+			sum += s16[i].replace(/\[/g, '').length;
+			sum += s17[i].replace(this.re11, '').length;
+		}
+
+		for (let i = 0; i < 117; i++) {
+			sum += this.exec(this.re0, s0[i + 6029]);
+			sum += s18[i].replace(this.re2, '').length;
+		}
+
+		for (let i = 0; i < 95; i++) {
+			sum += this.exec(this.re0, s0[i + 6146]);
+			sum += this.exec(/(?:^|;)\s*sevraqfgre_ynat=([^;]*)/, s19[i]);
+		}
+
+		for (let i = 0; i < 93; i++) {
+			sum += this.exec(this.re0, s0[i + 6241]);
+			sum += s20[i].replace(this.re12, '').length;
+			sum += this.exec(this.re13, s20[i]);
+		}
+
+		for (let i = 0; i < 92; i++) {
+			sum += this.exec(this.re0, s0[i + 6334]);
+			sum += s21[i].replace(/([a-zA-Z]|\s)+/, '').length;
+		}
+
+		for (let i = 0; i < 85; i++) {
+			sum += this.exec(this.re0, s0[i + 6426]);
+			sum += s22[i].replace(this.re14, '').length;
+			sum += s22[i].replace(this.re15, '').length;
+			sum += s23[i].replace(this.re12, '').length;
+			sum += s24[i].replace(this.re14, '').length;
+			sum += s24[i].replace(this.re15, '').length;
+			sum += this.exec(this.re16, s25[i]);
+			sum += this.exec(this.re13, s23[i]);
+		}
+
+
+		return sum;
+	}
+
+
+	run() : number {
+		let totalSum = 0;
+
+		totalSum += this.runBlock0();
+
+		return totalSum;
+	}
+
+}
+
+
+class RegExpBenchmark1 {
+
+	// 正则表达式定义
+	private re0 = /^ba/;
+	private re1 = /(((\w+):\/\/)([^\/:]*)(:(\d+))?)?([^#?]*)(\?([^#]*))?(#(.*))?/;
+	private re2 = /^\s*|\s*$/g;
+	private re3 = /\bQBZPbageby_cynprubyqre\b/;
+	private re4 = /,/;
+	private re5 = /\bQBZPbageby_cynprubyqre\b/g;
+	private re6 = /^[\s\xa0]+|[\s\xa0]+$/g;
+	private re7 = /(\d*)(\D*)/g;
+	private re8 = /=/;
+	private re9 = /(^|\s)lhv\-h(\s|$)/;
+	private re10 = /\#/g;
+	private re11 = /\./g;
+	private re12 = /'/g;
+	private re13 = /\?[\w\W]*(sevraqvq|punaaryvq|tebhcvq)=([^\&\?#]*)/i;
+	private re14 = /\s+/g;
+	private re15 = /^\s*(\S*(\s+\S+)*)\s*$/;
+	private re16 = /(-[a-z])/i;
+
+	// 测试字符串定义
+	private str0 = 'Zbmvyyn/5.0 (Jvaqbjf; H; Jvaqbjf AG 5.1; ra-HF) NccyrJroXvg/528.9 (XUGZY, yvxr Trpxb) Puebzr/2.0.157.0 Fnsnev/528.9';
+	private str1 = 'Fubpxjnir Synfu 9.0  e115';
+
+	// 正则表达式定义
+	private re17 = /(^|[^\\])\"\\\/Qngr\((-?[0-9]+)\)\\\/\"/g;
+	private str2 = `{"anzr":"","ahzoreSbezng":{"PheeraplQrpvznyQvtvgf":2,"PheeraplQrpvznyFrcnengbe":".","VfErnqBayl":gehr,"PheeraplTebhcFvmrf":[3],"AhzoreTebhcFvmrf":[3],"CrepragTebhcFvmrf":[3],"PheeraplTebhcFrcnengbe":",","PheeraplFlzoby":"\\xa4","AnAFlzoby":"AnA","PheeraplArtngvirCnggrea":0,"AhzoreArtngvirCnggrea":1,"CrepragCbfvgvirCnggrea":0,"CrepragArtngvirCnggrea":0,"ArtngvirVasvavglFlzoby":"-Vasvavgl","ArtngvirFvta":"-","AhzoreQrpvznyQvtvgf":2,"AhzoreQrpvznyFrcnengbe":".","AhzoreTebhcFrcnengbe":",","PheeraplCbfvgvirCnggrea":0,"CbfvgvirVasvavglFlzoby":"Vasvavgl","CbfvgvirFvta":"+","CrepragQrpvznyQvtvgf":2,"CrepragQrpvznyFrcnengbe":".","CrepragTebhcFrcnengbe":",","CrepragFlzoby":"%","CreZvyyrFlzoby":"\u2030","AngvirQvtvgf":["0","1","2","3","4","5","6","7","8","9"],"QvtvgFhofgvghgvba":1},"qngrGvzrSbezng":{"NZQrfvtangbe":"NZ","Pnyraqne":{"ZvaFhccbegrqQngrGvzr":"@-62135568000000@","ZnkFhccbegrqQngrGvzr":"@253402300799999@","NytbevguzGlcr":1,"PnyraqneGlcr":1,"Renf":[1],"GjbQvtvgLrneZnk":2029,"VfErnqBayl":gehr},"QngrFrcnengbe":"/","SvefgQnlBsJrrx":0,"PnyraqneJrrxEhyr":0,"ShyyQngrGvzrCnggrea":"qqqq, qq ZZZZ llll UU:zz:ff","YbatQngrCnggrea":"qqqq, qq ZZZZ llll","YbatGvzrCnggrea":"UU:zz:ff","ZbaguQnlCnggrea":"ZZZZ qq","CZQrfvtangbe":"CZ","ESP1123Cnggrea":"qqq, qq ZZZ llll UU\':\'zz\':\'ff \'TZG\'","FubegQngrCnggrea":"ZZ/qq/llll","FubegGvzrCnggrea":"UU:zz","FbegnoyrQngrGvzrCnggrea":"llll\'-\'ZZ\'-\'qq\'G\'UU\':\'zz\':\'ff","GvzrFrcnengbe":":","HavirefnyFbegnoyrQngrGvzrCnggrea":"llll\'-\'ZZ\'-\'qq UU\':\'zz\':\'ff\'M\'","LrneZbaguCnggrea":"llll ZZZZ","NooerivngrqQnlAnzrf":["Fha","Zba","Ghr","Jrq","Guh","Sev","Fng"],"FubegrfgQnlAnzrf":["Fh","Zb","Gh","Jr","Gu","Se","Fn"],"QnlAnzrf":["Fhaqnl","Zbaqnl","Ghrfqnl","Jrqarfqnl","Guhefqnl","Sevqnl","Fngheqnl"],"NooerivngrqZbaguAnzrf":["Wna","Sro","Zne","Nce","Znl","Wha","Why","Nht","Frc","Bpg","Abi","Qrp",""],"ZbaguAnzrf":["Wnahnel","Sroehnel","Znepu","Ncevy","Znl","Whar","Whyl","Nhthfg","Frcgrzore","Bpgbore","Abirzore","Qrprzore",""],"VfErnqBayl":gehr,"AngvirPnyraqneAnzr":"Tertbevna Pnyraqne","NooerivngrqZbaguTravgvirAnzrf":["Wna","Sro","Zne","Nce","Znl","Wha","Why","Nht","Frc","Bpg","Abi","Qrp",""],"ZbaguTravgvirAnzrf":["Wnahnel","Sroehnel","Znepu","Ncevy","Znl","Whar","Whyl","Nhthfg","Frcgrzore","Bpgbore","Abirzore","Qrprzore",""]}}`
+	private str3 = `{"anzr":"ra-HF","ahzoreSbezng":{"PheeraplQrpvznyQvtvgf":2,"PheeraplQrpvznyFrcnengbe":".","VfErnqBayl":snyfr,"PheeraplTebhcFvmrf":[3],"AhzoreTebhcFvmrf":[3],"CrepragTebhcFvmrf":[3],"PheeraplTebhcFrcnengbe":",","PheeraplFlzoby":"$","AnAFlzoby":"AnA","PheeraplArtngvirCnggrea":0,"AhzoreArtngvirCnggrea":1,"CrepragCbfvgvirCnggrea":0,"CrepragArtngvirCnggrea":0,"ArtngvirVasvavglFlzoby":"-Vasvavgl","ArtngvirFvta":"-","AhzoreQrpvznyQvtvgf":2,"AhzoreQrpvznyFrcnengbe":".","AhzoreTebhcFrcnengbe":",","PheeraplCbfvgvirCnggrea":0,"CbfvgvirVasvavglFlzoby":"Vasvavgl","CbfvgvirFvta":"+","CrepragQrpvznyQvtvgf":2,"CrepragQrpvznyFrcnengbe":".","CrepragTebhcFrcnengbe":",","CrepragFlzoby":"%","CreZvyyrFlzoby":"\u2030","AngvirQvtvgf":["0","1","2","3","4","5","6","7","8","9"],"QvtvgFhofgvghgvba":1},"qngrGvzrSbezng":{"NZQrfvtangbe":"NZ","Pnyraqne":{"ZvaFhccbegrqQngrGvzr":"@-62135568000000@","ZnkFhccbegrqQngrGvzr":"@253402300799999@","NytbevguzGlcr":1,"PnyraqneGlcr":1,"Renf":[1],"GjbQvtvgLrneZnk":2029,"VfErnqBayl":snyfr},"QngrFrcnengbe":"/","SvefgQnlBsJrrx":0,"PnyraqneJrrxEhyr":0,"ShyyQngrGvzrCnggrea":"qqqq, ZZZZ qq, llll u:zz:ff gg","YbatQngrCnggrea":"qqqq, ZZZZ qq, llll","YbatGvzrCnggrea":"u:zz:ff gg","ZbaguQnlCnggrea":"ZZZZ qq","CZQrfvtangbe":"CZ","ESP1123Cnggrea":"qqq, qq ZZZ llll UU\':\'zz\':\'ff \'TZG\'","FubegQngrCnggrea":"Z/q/llll","FubegGvzrCnggrea":"u:zz gg","FbegnoyrQngrGvzrCnggrea":"llll\'-\'ZZ\'-\'qq\'G\'UU\':\'zz\':\'ff","GvzrFrcnengbe":":","HavirefnyFbegnoyrQngrGvzrCnggrea":"llll\'-\'ZZ\'-\'qq UU\':\'zz\':\'ff\'M\'","LrneZbaguCnggrea":"ZZZZ, llll","NooerivngrqQnlAnzrf":["Fha","Zba","Ghr","Jrq","Guh","Sev","Fng"],"FubegrfgQnlAnzrf":["Fh","Zb","Gh","Jr","Gu","Se","Fn"],"QnlAnzrf":["Fhaqnl","Zbaqnl","Ghrfqnl","Jrqarfqnl","Guhefqnl","Sevqnl","Fngheqnl"],"NooerivngrqZbaguAnzrf":["Wna","Sro","Zne","Nce","Znl","Wha","Why","Nht","Frc","Bpg","Abi","Qrp",""],"ZbaguAnzrf":["Wnahnel","Sroehnel","Znepu","Ncevy","Znl","Whar","Whyl","Nhthfg","Frcgrzore","Bpgbore","Abirzore","Qrprzore",""],"VfErnqBayl":snyfr,"AngvirPnyraqneAnzr":"Tertbevna Pnyraqne","NooerivngrqZbaguTravgvirAnzrf":["Wna","Sro","Zne","Nce","Znl","Wha","Why","Nht","Frc","Bpg","Abi","Qrp",""],"ZbaguTravgvirAnzrf":["Wnahnel","Sroehnel","Znepu","Ncevy","Znl","Whar","Whyl","Nhthfg","Frcgrzore","Bpgbore","Abirzore","Qrprzore",""]}}`
+	private str4 = 'HFEYBP=DKWyLHAiMTH9AwHjWxAcqUx9GJ91oaEunJ4tIzyyqlMQo3IhqUW5D29xMG1IHlMQo3IhqUW5GzSgMG1Iozy0MJDtH3EuqTImWxEgLHAiMTH9BQN3WxkuqTy0qJEyCGZ3YwDkBGVzGT9hM2y0qJEyCF0kZwVhZQH3APMDo3A0LJkQo2EyCGx0ZQDmWyWyM2yiox5uoJH9D0R%3Q';
+	private str5 = 'HFEYBP=DKWyLHAiMTH9AwHjWxAcqUx9GJ91oaEunJ4tIzyyqlMQo3IhqUW5D29xMG1IHlMQo3IhqUW5GzSgMG1Iozy0MJDtH3EuqTImWxEgLHAiMTH9BQN3WxkuqTy0qJEyCGZ3YwDkBGVzGT9hM2y0qJEyCF0kZwVhZQH3APMDo3A0LJkQo2EyCGx0ZQDmWyWyM2yiox5uoJH9D0R=';
+	private re18 = /^\s+|\s+$/g;
+	private str6 = 'uggc://jjj.snprobbx.pbz/vaqrk.cuc';
+	private re19 = /(?:^|\s+)ba(?:\s+|$)/;
+	private re20 = /[+, ]/;
+	private re21 = /ybnqrq|pbzcyrgr/;
+	private str7 = ';;jvaqbj.IjPurpxZbhfrCbfvgvbaNQ_VQ=shapgvba(r){vs(!r)ine r=jvaqbj.rirag;ine c=-1;vs(d1)c=d1.EbyybssCnary;ine bo=IjTrgBow("IjCnayNQ_VQ_"+c);vs(bo&&bo.fglyr.ivfvovyvgl=="ivfvoyr"){ine fns=IjFns?8:0;ine pheK=r.pyvragK+IjBOFpe("U")+fns,pheL=r.pyvragL+IjBOFpe("I")+fns;ine y=IjBOEC(NQ_VQ,bo,"Y"),g=IjBOEC(NQ_VQ,bo,"G");ine e=y+d1.Cnaryf[c].Jvqgu,o=g+d1.Cnaryf[c].Urvtug;vs((pheK<y)||(pheK>e)||(pheL<g)||(pheL>o)){vs(jvaqbj.IjBaEbyybssNQ_VQ)IjBaEbyybssNQ_VQ(c);ryfr IjPybfrNq(NQ_VQ,c,gehr,"");}ryfr erghea;}IjPnapryZbhfrYvfgrareNQ_VQ();};;jvaqbj.IjFrgEbyybssCnaryNQ_VQ=shapgvba(c){ine z="zbhfrzbir",q=qbphzrag,s=IjPurpxZbhfrCbfvgvbaNQ_VQ;c=IjTc(NQ_VQ,c);vs(d1&&d1.EbyybssCnary>-1)IjPnapryZbhfrYvfgrareNQ_VQ();vs(d1)d1.EbyybssCnary=c;gel{vs(q.nqqRiragYvfgrare)q.nqqRiragYvfgrare(z,s,snyfr);ryfr vs(q.nggnpuRirag)q.nggnpuRirag("ba"+z,s);}pngpu(r){}};;jvaqbj.IjPnapryZbhfrYvfgrareNQ_VQ=shapgvba(){ine z="zbhfrzbir",q=qbphzrag,s=IjPurpxZbhfrCbfvgvbaNQ_VQ;vs(d1)d1.EbyybssCnary=-1;gel{vs(q.erzbirRiragYvfgrare)q.erzbirRiragYvfgrare(z,s,snyfr);ryfr vs(q.qrgnpuRirag)q.qrgnpuRirag("ba"+z,s);}pngpu(r){}};;d1.IjTc=d2(n,c){ine nq=d1;vs(vfAnA(c)){sbe(ine v=0;v<nq.Cnaryf.yratgu;v++)vs(nq.Cnaryf[v].Anzr==c)erghea v;erghea 0;}erghea c;};;d1.IjTpy=d2(n,c,p){ine cn=d1.Cnaryf[IjTc(n,c)];vs(!cn)erghea 0;vs(vfAnA(p)){sbe(ine v=0;v<cn.Pyvpxguehf.yratgu;v++)vs(cn.Pyvpxguehf[v].Anzr==p)erghea v;erghea 0;}erghea p;};;d1.IjGenpr=d2(n,f){gel{vs(jvaqbj["Ij"+"QtQ"])jvaqbj["Ij"+"QtQ"](n,1,f);}pngpu(r){}};;d1.IjYvzvg1=d2(n,f){ine nq=d1,vh=f.fcyvg("/");sbe(ine v=0,p=0;v<vh.yratgu;v++){vs(vh[v].yratgu>0){vs(nq.FzV.yratgu>0)nq.FzV+="/";nq.FzV+=vh[v];nq.FtZ[nq.FtZ.yratgu]=snyfr;}}};;d1.IjYvzvg0=d2(n,f){ine nq=d1,vh=f.fcyvg("/");sbe(ine v=0;v<vh.yratgu;v++){vs(vh[v].yratgu>0){vs(nq.OvC.yratgu>0)nq.OvC+="/";nq.OvC+=vh[v];}}};;d1.IjRVST=d2(n,c){jvaqbj["IjCnayNQ_VQ_"+c+"_Bow"]=IjTrgBow("IjCnayNQ_VQ_"+c+"_Bow");vs(jvaqbj["IjCnayNQ_VQ_"+c+"_Bow"]==ahyy)frgGvzrbhg("IjRVST(NQ_VQ,"+c+")",d1.rvsg);};;d1.IjNavzSHC=d2(n,c){ine nq=d1;vs(c>nq.Cnaryf.yratgu)erghea;ine cna=nq.Cnaryf[c],nn=gehr,on=gehr,yn=gehr,en=gehr,cn=nq.Cnaryf[0],sf=nq.ShF,j=cn.Jvqgu,u=cn.Urvtug;vs(j=="100%"){j=sf;en=snyfr;yn=snyfr;}vs(u=="100%"){u=sf;nn=snyfr;on=snyfr;}vs(cn.YnY=="Y")yn=snyfr;vs(cn.YnY=="E")en=snyfr;vs(cn.GnY=="G")nn=snyfr;vs(cn.GnY=="O")on=snyfr;ine k=0,l=0;fjvgpu(nq.NshP%8){pnfr 0:oernx;pnfr 1:vs(nn)l=-sf;oernx;pnfr 2:k=j-sf;oernx;pnfr 3:vs(en)k=j;oernx;pnfr 4:k=j-sf;l=u-sf;oernx;pnfr 5:k=j-sf;vs(on)l=u;oernx;pnfr 6:l=u-sf;oernx;pnfr 7:vs(yn)k=-sf;l=u-sf;oernx;}vs(nq.NshP++ <nq.NshG)frgGvzrbhg(("IjNavzSHC(NQ_VQ,"+c+")"),nq.NshC);ryfr{k=-1000;l=k;}cna.YrsgBssfrg=k;cna.GbcBssfrg=l;IjNhErcb(n,c);};;d1.IjTrgErnyCbfvgvba=d2(n,b,j){erghea IjBOEC.nccyl(guvf,nethzragf);};;d1.IjPnapryGvzrbhg=d2(n,c){c=IjTc(n,c);ine cay=d1.Cnaryf[c];vs(cay&&cay.UgU!=""){pyrneGvzrbhg(cay.UgU);}};;d1.IjPnapryNyyGvzrbhgf=d2(n){vs(d1.YbpxGvzrbhgPunatrf)erghea;sbe(ine c=0;c<d1.bac;c++)IjPnapryGvzrbhg(n,c);};;d1.IjFgnegGvzrbhg=d2(n,c,bG){c=IjTc(n,c);ine cay=d1.Cnaryf[c];vs(cay&&((cay.UvqrGvzrbhgInyhr>0)||(nethzragf.yratgu==3&&bG>0))){pyrneGvzrbhg(cay.UgU);cay.UgU=frgGvzrbhg(cay.UvqrNpgvba,(nethzragf.yratgu==3?bG:cay.UvqrGvzrbhgInyhr));}};;d1.IjErfrgGvzrbhg=d2(n,c,bG){c=IjTc(n,c);IjPnapryGvzrbhg(n,c);riny("IjFgnegGvzrbhg(NQ_VQ,c"+(nethzragf.yratgu==3?",bG":"")+")");};;d1.IjErfrgNyyGvzrbhgf=d2(n){sbe(ine c=0;c<d1.bac;c++)IjErfrgGvzrbhg(n,c);};;d1.IjQrgnpure=d2(n,rig,sap){gel{vs(IjQVR5)riny("jvaqbj.qrgnpuRirag(\'ba"+rig+"\',"+sap+"NQ_VQ)");ryfr vs(!IjQVRZnp)riny("jvaqbj.erzbirRiragYvfgrare(\'"+rig+"\',"+sap+"NQ_VQ,snyfr)");}pngpu(r){}};;d1.IjPyrnaHc=d2(n){IjCvat(n,"G");ine nq=d1;sbe(ine v=0;v<nq.Cnaryf.yratgu;v++){IjUvqrCnary(n,v,gehr);}gel{IjTrgBow(nq.gya).vaareUGZY="";}pngpu(r){}vs(nq.gya!=nq.gya2)gel{IjTrgBow(nq.gya2).vaareUGZY="";}pngpu(r){}gel{d1=ahyy;}pngpu(r){}gel{IjQrgnpure(n,"haybnq","IjHayNQ_VQ");}pngpu(r){}gel{jvaqbj.IjHayNQ_VQ=ahyy;}pngpu(r){}gel{IjQrgnpure(n,"fpebyy","IjFeNQ_VQ");}pngpu(r){}gel{jvaqbj.IjFeNQ_VQ=ahyy;}pngpu(r){}gel{IjQrgnpure(n,"erfvmr","IjEmNQ_VQ");}pngpu(r){}gel{jvaqbj.IjEmNQ_VQ=ahyy;}pngpu(r){}gel{IjQrgnpure(n';
+	private str8 = ';;jvaqbj.IjPurpxZbhfrCbfvgvbaNQ_VQ=shapgvba(r){vs(!r)ine r=jvaqbj.rirag;ine c=-1;vs(jvaqbj.IjNqNQ_VQ)c=jvaqbj.IjNqNQ_VQ.EbyybssCnary;ine bo=IjTrgBow("IjCnayNQ_VQ_"+c);vs(bo&&bo.fglyr.ivfvovyvgl=="ivfvoyr"){ine fns=IjFns?8:0;ine pheK=r.pyvragK+IjBOFpe("U")+fns,pheL=r.pyvragL+IjBOFpe("I")+fns;ine y=IjBOEC(NQ_VQ,bo,"Y"),g=IjBOEC(NQ_VQ,bo,"G");ine e=y+jvaqbj.IjNqNQ_VQ.Cnaryf[c].Jvqgu,o=g+jvaqbj.IjNqNQ_VQ.Cnaryf[c].Urvtug;vs((pheK<y)||(pheK>e)||(pheL<g)||(pheL>o)){vs(jvaqbj.IjBaEbyybssNQ_VQ)IjBaEbyybssNQ_VQ(c);ryfr IjPybfrNq(NQ_VQ,c,gehr,"");}ryfr erghea;}IjPnapryZbhfrYvfgrareNQ_VQ();};;jvaqbj.IjFrgEbyybssCnaryNQ_VQ=shapgvba(c){ine z="zbhfrzbir",q=qbphzrag,s=IjPurpxZbhfrCbfvgvbaNQ_VQ;c=IjTc(NQ_VQ,c);vs(jvaqbj.IjNqNQ_VQ&&jvaqbj.IjNqNQ_VQ.EbyybssCnary>-1)IjPnapryZbhfrYvfgrareNQ_VQ();vs(jvaqbj.IjNqNQ_VQ)jvaqbj.IjNqNQ_VQ.EbyybssCnary=c;gel{vs(q.nqqRiragYvfgrare)q.nqqRiragYvfgrare(z,s,snyfr);ryfr vs(q.nggnpuRirag)q.nggnpuRirag("ba"+z,s);}pngpu(r){}};;jvaqbj.IjPnapryZbhfrYvfgrareNQ_VQ=shapgvba(){ine z="zbhfrzbir",q=qbphzrag,s=IjPurpxZbhfrCbfvgvbaNQ_VQ;vs(jvaqbj.IjNqNQ_VQ)jvaqbj.IjNqNQ_VQ.EbyybssCnary=-1;gel{vs(q.erzbirRiragYvfgrare)q.erzbirRiragYvfgrare(z,s,snyfr);ryfr vs(q.qrgnpuRirag)q.qrgnpuRirag("ba"+z,s);}pngpu(r){}};;jvaqbj.IjNqNQ_VQ.IjTc=shapgvba(n,c){ine nq=jvaqbj.IjNqNQ_VQ;vs(vfAnA(c)){sbe(ine v=0;v<nq.Cnaryf.yratgu;v++)vs(nq.Cnaryf[v].Anzr==c)erghea v;erghea 0;}erghea c;};;jvaqbj.IjNqNQ_VQ.IjTpy=shapgvba(n,c,p){ine cn=jvaqbj.IjNqNQ_VQ.Cnaryf[IjTc(n,c)];vs(!cn)erghea 0;vs(vfAnA(p)){sbe(ine v=0;v<cn.Pyvpxguehf.yratgu;v++)vs(cn.Pyvpxguehf[v].Anzr==p)erghea v;erghea 0;}erghea p;};;jvaqbj.IjNqNQ_VQ.IjGenpr=shapgvba(n,f){gel{vs(jvaqbj["Ij"+"QtQ"])jvaqbj["Ij"+"QtQ"](n,1,f);}pngpu(r){}};;jvaqbj.IjNqNQ_VQ.IjYvzvg1=shapgvba(n,f){ine nq=jvaqbj.IjNqNQ_VQ,vh=f.fcyvg("/");sbe(ine v=0,p=0;v<vh.yratgu;v++){vs(vh[v].yratgu>0){vs(nq.FzV.yratgu>0)nq.FzV+="/";nq.FzV+=vh[v];nq.FtZ[nq.FtZ.yratgu]=snyfr;}}};;jvaqbj.IjNqNQ_VQ.IjYvzvg0=shapgvba(n,f){ine nq=jvaqbj.IjNqNQ_VQ,vh=f.fcyvg("/");sbe(ine v=0;v<vh.yratgu;v++){vs(vh[v].yratgu>0){vs(nq.OvC.yratgu>0)nq.OvC+="/";nq.OvC+=vh[v];}}};;jvaqbj.IjNqNQ_VQ.IjRVST=shapgvba(n,c){jvaqbj["IjCnayNQ_VQ_"+c+"_Bow"]=IjTrgBow("IjCnayNQ_VQ_"+c+"_Bow");vs(jvaqbj["IjCnayNQ_VQ_"+c+"_Bow"]==ahyy)frgGvzrbhg("IjRVST(NQ_VQ,"+c+")",jvaqbj.IjNqNQ_VQ.rvsg);};;jvaqbj.IjNqNQ_VQ.IjNavzSHC=shapgvba(n,c){ine nq=jvaqbj.IjNqNQ_VQ;vs(c>nq.Cnaryf.yratgu)erghea;ine cna=nq.Cnaryf[c],nn=gehr,on=gehr,yn=gehr,en=gehr,cn=nq.Cnaryf[0],sf=nq.ShF,j=cn.Jvqgu,u=cn.Urvtug;vs(j=="100%"){j=sf;en=snyfr;yn=snyfr;}vs(u=="100%"){u=sf;nn=snyfr;on=snyfr;}vs(cn.YnY=="Y")yn=snyfr;vs(cn.YnY=="E")en=snyfr;vs(cn.GnY=="G")nn=snyfr;vs(cn.GnY=="O")on=snyfr;ine k=0,l=0;fjvgpu(nq.NshP%8){pnfr 0:oernx;pnfr 1:vs(nn)l=-sf;oernx;pnfr 2:k=j-sf;oernx;pnfr 3:vs(en)k=j;oernx;pnfr 4:k=j-sf;l=u-sf;oernx;pnfr 5:k=j-sf;vs(on)l=u;oernx;pnfr 6:l=u-sf;oernx;pnfr 7:vs(yn)k=-sf;l=u-sf;oernx;}vs(nq.NshP++ <nq.NshG)frgGvzrbhg(("IjNavzSHC(NQ_VQ,"+c+")"),nq.NshC);ryfr{k=-1000;l=k;}cna.YrsgBssfrg=k;cna.GbcBssfrg=l;IjNhErcb(n,c);};;jvaqbj.IjNqNQ_VQ.IjTrgErnyCbfvgvba=shapgvba(n,b,j){erghea IjBOEC.nccyl(guvf,nethzragf);};;jvaqbj.IjNqNQ_VQ.IjPnapryGvzrbhg=shapgvba(n,c){c=IjTc(n,c);ine cay=jvaqbj.IjNqNQ_VQ.Cnaryf[c];vs(cay&&cay.UgU!=""){pyrneGvzrbhg(cay.UgU);}};;jvaqbj.IjNqNQ_VQ.IjPnapryNyyGvzrbhgf=shapgvba(n){vs(jvaqbj.IjNqNQ_VQ.YbpxGvzrbhgPunatrf)erghea;sbe(ine c=0;c<jvaqbj.IjNqNQ_VQ.bac;c++)IjPnapryGvzrbhg(n,c);};;jvaqbj.IjNqNQ_VQ.IjFgnegGvzrbhg=shapgvba(n,c,bG){c=IjTc(n,c);ine cay=jvaqbj.IjNqNQ_VQ.Cnaryf[c];vs(cay&&((cay.UvqrGvzrbhgInyhr>0)||(nethzragf.yratgu==3&&bG>0))){pyrneGvzrbhg(cay.UgU);cay.UgU=frgGvzrbhg(cay.UvqrNpgvba,(nethzragf.yratgu==3?bG:cay.UvqrGvzrbhgInyhr));}};;jvaqbj.IjNqNQ_VQ.IjErfrgGvzrbhg=shapgvba(n,c,bG){c=IjTc(n,c);IjPnapryGvzrbhg(n,c);riny("IjFgnegGvzrbhg(NQ_VQ,c"+(nethzragf.yratgu==3?",bG":"")+")");};;jvaqbj.IjNqNQ_VQ.IjErfrgNyyGvzrbhgf=shapgvba(n){sbe(ine c=0;c<jvaqbj.IjNqNQ_VQ.bac;c++)IjErfrgGvzrbhg(n,c);};;jvaqbj.IjNqNQ_VQ.IjQrgnpure=shapgvba(n,rig,sap){gel{vs(IjQVR5)riny("jvaqbj.qrgnpuRirag(\'ba"+rig+"\',"+sap+"NQ_VQ)");ryfr vs(!IjQVRZnp)riny("jvaqbj.erzbir';
+	private str9 = ';;jvaqbj.IjPurpxZbhfrCbfvgvbaNQ_VQ=shapgvba(r){vs(!r)ine r=jvaqbj.rirag;ine c=-1;vs(jvaqbj.IjNqNQ_VQ)c=jvaqbj.IjNqNQ_VQ.EbyybssCnary;ine bo=IjTrgBow("IjCnayNQ_VQ_"+c);vs(bo&&bo.fglyr.ivfvovyvgl=="ivfvoyr"){ine fns=IjFns?8:0;ine pheK=r.pyvragK+IjBOFpe("U")+fns,pheL=r.pyvragL+IjBOFpe("I")+fns;ine y=IjBOEC(NQ_VQ,bo,"Y"),g=IjBOEC(NQ_VQ,bo,"G");ine e=y+jvaqbj.IjNqNQ_VQ.Cnaryf[c].Jvqgu,o=g+jvaqbj.IjNqNQ_VQ.Cnaryf[c].Urvtug;vs((pheK<y)||(pheK>e)||(pheL<g)||(pheL>o)){vs(jvaqbj.IjBaEbyybssNQ_VQ)IjBaEbyybssNQ_VQ(c);ryfr IjPybfrNq(NQ_VQ,c,gehr,"");}ryfr erghea;}IjPnapryZbhfrYvfgrareNQ_VQ();};;jvaqbj.IjFrgEbyybssCnaryNQ_VQ=shapgvba(c){ine z="zbhfrzbir",q=qbphzrag,s=IjPurpxZbhfrCbfvgvbaNQ_VQ;c=IjTc(NQ_VQ,c);vs(jvaqbj.IjNqNQ_VQ&&jvaqbj.IjNqNQ_VQ.EbyybssCnary>-1)IjPnapryZbhfrYvfgrareNQ_VQ();vs(jvaqbj.IjNqNQ_VQ)jvaqbj.IjNqNQ_VQ.EbyybssCnary=c;gel{vs(q.nqqRiragYvfgrare)q.nqqRiragYvfgrare(z,s,snyfr);ryfr vs(q.nggnpuRirag)q.nggnpuRirag("ba"+z,s);}pngpu(r){}};;jvaqbj.IjPnapryZbhfrYvfgrareNQ_VQ=shapgvba(){ine z="zbhfrzbir",q=qbphzrag,s=IjPurpxZbhfrCbfvgvbaNQ_VQ;vs(jvaqbj.IjNqNQ_VQ)jvaqbj.IjNqNQ_VQ.EbyybssCnary=-1;gel{vs(q.erzbirRiragYvfgrare)q.erzbirRiragYvfgrare(z,s,snyfr);ryfr vs(q.qrgnpuRirag)q.qrgnpuRirag("ba"+z,s);}pngpu(r){}};;jvaqbj.IjNqNQ_VQ.IjTc=d2(n,c){ine nq=jvaqbj.IjNqNQ_VQ;vs(vfAnA(c)){sbe(ine v=0;v<nq.Cnaryf.yratgu;v++)vs(nq.Cnaryf[v].Anzr==c)erghea v;erghea 0;}erghea c;};;jvaqbj.IjNqNQ_VQ.IjTpy=d2(n,c,p){ine cn=jvaqbj.IjNqNQ_VQ.Cnaryf[IjTc(n,c)];vs(!cn)erghea 0;vs(vfAnA(p)){sbe(ine v=0;v<cn.Pyvpxguehf.yratgu;v++)vs(cn.Pyvpxguehf[v].Anzr==p)erghea v;erghea 0;}erghea p;};;jvaqbj.IjNqNQ_VQ.IjGenpr=d2(n,f){gel{vs(jvaqbj["Ij"+"QtQ"])jvaqbj["Ij"+"QtQ"](n,1,f);}pngpu(r){}};;jvaqbj.IjNqNQ_VQ.IjYvzvg1=d2(n,f){ine nq=jvaqbj.IjNqNQ_VQ,vh=f.fcyvg("/");sbe(ine v=0,p=0;v<vh.yratgu;v++){vs(vh[v].yratgu>0){vs(nq.FzV.yratgu>0)nq.FzV+="/";nq.FzV+=vh[v];nq.FtZ[nq.FtZ.yratgu]=snyfr;}}};;jvaqbj.IjNqNQ_VQ.IjYvzvg0=d2(n,f){ine nq=jvaqbj.IjNqNQ_VQ,vh=f.fcyvg("/");sbe(ine v=0;v<vh.yratgu;v++){vs(vh[v].yratgu>0){vs(nq.OvC.yratgu>0)nq.OvC+="/";nq.OvC+=vh[v];}}};;jvaqbj.IjNqNQ_VQ.IjRVST=d2(n,c){jvaqbj["IjCnayNQ_VQ_"+c+"_Bow"]=IjTrgBow("IjCnayNQ_VQ_"+c+"_Bow");vs(jvaqbj["IjCnayNQ_VQ_"+c+"_Bow"]==ahyy)frgGvzrbhg("IjRVST(NQ_VQ,"+c+")",jvaqbj.IjNqNQ_VQ.rvsg);};;jvaqbj.IjNqNQ_VQ.IjNavzSHC=d2(n,c){ine nq=jvaqbj.IjNqNQ_VQ;vs(c>nq.Cnaryf.yratgu)erghea;ine cna=nq.Cnaryf[c],nn=gehr,on=gehr,yn=gehr,en=gehr,cn=nq.Cnaryf[0],sf=nq.ShF,j=cn.Jvqgu,u=cn.Urvtug;vs(j=="100%"){j=sf;en=snyfr;yn=snyfr;}vs(u=="100%"){u=sf;nn=snyfr;on=snyfr;}vs(cn.YnY=="Y")yn=snyfr;vs(cn.YnY=="E")en=snyfr;vs(cn.GnY=="G")nn=snyfr;vs(cn.GnY=="O")on=snyfr;ine k=0,l=0;fjvgpu(nq.NshP%8){pnfr 0:oernx;pnfr 1:vs(nn)l=-sf;oernx;pnfr 2:k=j-sf;oernx;pnfr 3:vs(en)k=j;oernx;pnfr 4:k=j-sf;l=u-sf;oernx;pnfr 5:k=j-sf;vs(on)l=u;oernx;pnfr 6:l=u-sf;oernx;pnfr 7:vs(yn)k=-sf;l=u-sf;oernx;}vs(nq.NshP++ <nq.NshG)frgGvzrbhg(("IjNavzSHC(NQ_VQ,"+c+")"),nq.NshC);ryfr{k=-1000;l=k;}cna.YrsgBssfrg=k;cna.GbcBssfrg=l;IjNhErcb(n,c);};;jvaqbj.IjNqNQ_VQ.IjTrgErnyCbfvgvba=d2(n,b,j){erghea IjBOEC.nccyl(guvf,nethzragf);};;jvaqbj.IjNqNQ_VQ.IjPnapryGvzrbhg=d2(n,c){c=IjTc(n,c);ine cay=jvaqbj.IjNqNQ_VQ.Cnaryf[c];vs(cay&&cay.UgU!=""){pyrneGvzrbhg(cay.UgU);}};;jvaqbj.IjNqNQ_VQ.IjPnapryNyyGvzrbhgf=d2(n){vs(jvaqbj.IjNqNQ_VQ.YbpxGvzrbhgPunatrf)erghea;sbe(ine c=0;c<jvaqbj.IjNqNQ_VQ.bac;c++)IjPnapryGvzrbhg(n,c);};;jvaqbj.IjNqNQ_VQ.IjFgnegGvzrbhg=d2(n,c,bG){c=IjTc(n,c);ine cay=jvaqbj.IjNqNQ_VQ.Cnaryf[c];vs(cay&&((cay.UvqrGvzrbhgInyhr>0)||(nethzragf.yratgu==3&&bG>0))){pyrneGvzrbhg(cay.UgU);cay.UgU=frgGvzrbhg(cay.UvqrNpgvba,(nethzragf.yratgu==3?bG:cay.UvqrGvzrbhgInyhr));}};;jvaqbj.IjNqNQ_VQ.IjErfrgGvzrbhg=d2(n,c,bG){c=IjTc(n,c);IjPnapryGvzrbhg(n,c);riny("IjFgnegGvzrbhg(NQ_VQ,c"+(nethzragf.yratgu==3?",bG":"")+")");};;jvaqbj.IjNqNQ_VQ.IjErfrgNyyGvzrbhgf=d2(n){sbe(ine c=0;c<jvaqbj.IjNqNQ_VQ.bac;c++)IjErfrgGvzrbhg(n,c);};;jvaqbj.IjNqNQ_VQ.IjQrgnpure=d2(n,rig,sap){gel{vs(IjQVR5)riny("jvaqbj.qrgnpuRirag(\'ba"+rig+"\',"+sap+"NQ_VQ)");ryfr vs(!IjQVRZnp)riny("jvaqbj.erzbirRiragYvfgrare(\'"+rig+"\',"+sap+"NQ_VQ,snyfr)");}pngpu(r){}};;jvaqbj.IjNqNQ_VQ.IjPyrna';
+
+	
+	private computeInputVariants(str : string, n : number) : string[] {
+		const variants : string[] = [str];
+		for (let i = 1; i < n; i++) {
+			const pos = Math.floor(Math.random() * str.length);
+			const chr = String.fromCharCode(
+				(str.charCodeAt(pos)! + Math.floor(Math.random() * 128)) % 128
+			);
+			variants.add(str.substring(0, pos) + chr + str.substring(pos + 1))
+			// variants[i] = str.substring(0, pos) + chr + str.substring(pos + 1);
+		}
+		return variants;
+	}
+
+	private exec(re : RegExp, str : string) : number {
+		let sum = 0;
+		re.lastIndex = 0;
+		const match = re.exec(str);
+		if (match != null) {
+			for (const group of match) {
+				if (group != null) {
+					sum += group!.length;
+				}
+			}
+		}
+		return sum;
+	}
+
+	private runBlock1() : number {
+		
+		
+		let sum = 0;
+		
+		// 原始runBlock0逻辑实现
+		const s26 = this.computeInputVariants('VC=74.125.75.1', 81);
+		const s27 = this.computeInputVariants('9.0  e115', 78);
+		const s28 = this.computeInputVariants('k', 78);
+		const s29 = this.computeInputVariants(this.str2, 81);
+		const s30 = this.computeInputVariants(this.str3, 81);
+		const s31 = this.computeInputVariants('144631658', 78);
+		const s32 = this.computeInputVariants('Pbhagel=IIZ%3Q', 78);
+		const s33 = this.computeInputVariants('Pbhagel=IIZ=', 78);
+		const s34 = this.computeInputVariants('CersreerqPhygherCraqvat=', 78);
+		const s35 = this.computeInputVariants(this.str4, 78);
+		const s36 = this.computeInputVariants(this.str5, 78);
+		const s37 = this.computeInputVariants('__hgzp=144631658', 78);
+		const s38 = this.computeInputVariants('gvzrMbar=-8', 78);
+		const s39 = this.computeInputVariants('gvzrMbar=0', 78);
+		const s41 = this.computeInputVariants('vachggrkg  QBZPbageby_cynprubyqre', 78);
+		const s42 = this.computeInputVariants('xrlqbja', 78);
+		const s43 = this.computeInputVariants('xrlhc', 78);
+		const s44 = this.computeInputVariants('uggc://zrffntvat.zlfcnpr.pbz/vaqrk.psz', 77);
+		const s45 = this.computeInputVariants('FrffvbaFgbentr=%7O%22GnoThvq%22%3N%7O%22thvq%22%3N1231367125017%7Q%7Q', 73);
+		const s46 = this.computeInputVariants(this.str6, 72);
+		const s47 = this.computeInputVariants('3.5.0.0', 70);
+		const s48 = this.computeInputVariants(this.str7, 70);
+		const s49 = this.computeInputVariants(this.str8, 70);
+		const s50 = this.computeInputVariants(this.str9, 70);
+		const s51 = this.computeInputVariants('NI%3Q1_CI%3Q1_PI%3Q1_EI%3Q1_HI%3Q1_HP%3Q1_IC%3Q0.0.0.0_IH%3Q0', 70);
+		const s52 = this.computeInputVariants('svz_zlfcnpr_ubzrcntr_abgybttrqva,svz_zlfcnpr_aba_HTP,svz_zlfcnpr_havgrq-fgngrf', 70);
+		const s53 = this.computeInputVariants('ybnqvat', 70);
+		const s54 = this.computeInputVariants('#', 68);
+		const s55 = this.computeInputVariants('ybnqrq', 68);
+		const s56 = this.computeInputVariants('pbybe', 49);
+		const s57 = this.computeInputVariants('uggc://sevraqf.zlfcnpr.pbz/vaqrk.psz', 44);
+		var s15 = this.computeInputVariants(str0, 139);
+		
+		for (let i = 0; i < 78; i++) {
+			sum += this.exec(this.re8, s26[i]);
+			sum += s27[i].replace(/(\s)+e/, '').length;
+			sum += s28[i].replace(/./, '').length;
+			sum += s29[i].replace(this.re17, '').length;
+			sum += s30[i].replace(this.re17, '').length;
+			sum += this.exec(this.re8, s31[i]);
+			sum += this.exec(this.re8, s32[i]);
+			sum += this.exec(this.re8, s33[i]);
+			sum += this.exec(this.re8, s34[i]);
+			sum += this.exec(this.re8, s35[i]);
+			sum += this.exec(this.re8, s36[i]);
+			sum += this.exec(this.re8, s37[i]);
+			sum += this.exec(this.re8, s38[i]);
+			sum += this.exec(this.re8, s39[i]);
+			sum += this.exec(/Fnsnev\/(\d+\.\d+)/, s15[i]);
+			sum += this.exec(this.re3, s41[i]);
+			sum += this.exec(this.re0, s42[i]);
+			sum += this.exec(this.re0, s43[i]);
+		}
+
+		for (let i = 0; i < 77; i++) {
+			sum += s44[i].replace(this.re12, '').length;
+			sum += this.exec(this.re13, s44[i]);
+		}
+
+		for (let i = 0; i < 71; i++) {
+			sum += s45[i].replace(this.re18, '').length;
+			sum += this.exec(this.re1, s46[i]);
+		}
+
+		for (let i = 0; i < 70; i++) {
+			sum += this.exec(this.re19, '');
+			sum += s47[i].replace(this.re11, '').length;
+			sum += s48[i].replace(/d1/g, '').length;
+			sum += s49[i].replace(/NQ_VQ/g, '').length;
+			sum += s50[i].replace(/d2/g, '').length;
+			sum += s51[i].replace(/_/g, '').length;
+			sum += s52[i].split(this.re20).length;
+			sum += this.exec(this.re21, s53[i]);
+		}
+
+		for (let i = 0; i < 68; i++) {
+			sum += this.exec(this.re1, s54[i]);
+			sum += this.exec(/(?:ZFVR.(\d+\.\d+))|(?:(?:Sversbk|TenaCnenqvfb|Vprjrnfry).(\d+\.\d+))|(?:Bcren.(\d+\.\d+))|(?:NccyrJroXvg.(\d+(?:\.\d+)?))/, s15[i]);
+			sum += this.exec(/(Znp BF K)|(Jvaqbjf;)/, s15[i]);
+			sum += this.exec(/Trpxb\/([0-9]+)/, s15[i]);
+			sum += this.exec(this.re21, s55[i]);
+		}
+
+		for (let i = 0; i < 44; i++) {
+			sum += this.exec(this.re16, s56[i]);
+			sum += s57[i].replace(this.re12, '').length;
+			sum += this.exec(this.re13, s57[i]);
+		}
+
+		return sum;
+	}
+
+
+	run() : number {
+		let totalSum = 0;
+
+		totalSum += this.runBlock1();
+
+		return totalSum;
+	}
+
+}
+
+class RegExpBenchmark2 {
+
+	// 正则表达式定义
+	private re0 = /^ba/;
+	private re1 = /(((\w+):\/\/)([^\/:]*)(:(\d+))?)?([^#?]*)(\?([^#]*))?(#(.*))?/;
+	private re2 = /^\s*|\s*$/g;
+	private re3 = /\bQBZPbageby_cynprubyqre\b/;
+	private re4 = /,/;
+	private re5 = /\bQBZPbageby_cynprubyqre\b/g;
+	private re6 = /^[\s\xa0]+|[\s\xa0]+$/g;
+	private re7 = /(\d*)(\D*)/g;
+	private re8 = /=/;
+	private re9 = /(^|\s)lhv\-h(\s|$)/;
+	private re10 = /\#/g;
+	private re11 = /\./g;
+	private re12 = /'/g;
+	private re13 = /\?[\w\W]*(sevraqvq|punaaryvq|tebhcvq)=([^\&\?#]*)/i;
+	private re14 = /\s+/g;
+	private re15 = /^\s*(\S*(\s+\S+)*)\s*$/;
+	private re16 = /(-[a-z])/i;
+
+	// 测试字符串定义
+	private str0 = 'Zbmvyyn/5.0 (Jvaqbjf; H; Jvaqbjf AG 5.1; ra-HF) NccyrJroXvg/528.9 (XUGZY, yvxr Trpxb) Puebzr/2.0.157.0 Fnsnev/528.9';
+	private str1 = 'Fubpxjnir Synfu 9.0  e115';
+
+	// 正则表达式定义
+	private re17 = /(^|[^\\])\"\\\/Qngr\((-?[0-9]+)\)\\\/\"/g;
+	private str2 = `{"anzr":"","ahzoreSbezng":{"PheeraplQrpvznyQvtvgf":2,"PheeraplQrpvznyFrcnengbe":".","VfErnqBayl":gehr,"PheeraplTebhcFvmrf":[3],"AhzoreTebhcFvmrf":[3],"CrepragTebhcFvmrf":[3],"PheeraplTebhcFrcnengbe":",","PheeraplFlzoby":"\\xa4","AnAFlzoby":"AnA","PheeraplArtngvirCnggrea":0,"AhzoreArtngvirCnggrea":1,"CrepragCbfvgvirCnggrea":0,"CrepragArtngvirCnggrea":0,"ArtngvirVasvavglFlzoby":"-Vasvavgl","ArtngvirFvta":"-","AhzoreQrpvznyQvtvgf":2,"AhzoreQrpvznyFrcnengbe":".","AhzoreTebhcFrcnengbe":",","PheeraplCbfvgvirCnggrea":0,"CbfvgvirVasvavglFlzoby":"Vasvavgl","CbfvgvirFvta":"+","CrepragQrpvznyQvtvgf":2,"CrepragQrpvznyFrcnengbe":".","CrepragTebhcFrcnengbe":",","CrepragFlzoby":"%","CreZvyyrFlzoby":"\u2030","AngvirQvtvgf":["0","1","2","3","4","5","6","7","8","9"],"QvtvgFhofgvghgvba":1},"qngrGvzrSbezng":{"NZQrfvtangbe":"NZ","Pnyraqne":{"ZvaFhccbegrqQngrGvzr":"@-62135568000000@","ZnkFhccbegrqQngrGvzr":"@253402300799999@","NytbevguzGlcr":1,"PnyraqneGlcr":1,"Renf":[1],"GjbQvtvgLrneZnk":2029,"VfErnqBayl":gehr},"QngrFrcnengbe":"/","SvefgQnlBsJrrx":0,"PnyraqneJrrxEhyr":0,"ShyyQngrGvzrCnggrea":"qqqq, qq ZZZZ llll UU:zz:ff","YbatQngrCnggrea":"qqqq, qq ZZZZ llll","YbatGvzrCnggrea":"UU:zz:ff","ZbaguQnlCnggrea":"ZZZZ qq","CZQrfvtangbe":"CZ","ESP1123Cnggrea":"qqq, qq ZZZ llll UU\':\'zz\':\'ff \'TZG\'","FubegQngrCnggrea":"ZZ/qq/llll","FubegGvzrCnggrea":"UU:zz","FbegnoyrQngrGvzrCnggrea":"llll\'-\'ZZ\'-\'qq\'G\'UU\':\'zz\':\'ff","GvzrFrcnengbe":":","HavirefnyFbegnoyrQngrGvzrCnggrea":"llll\'-\'ZZ\'-\'qq UU\':\'zz\':\'ff\'M\'","LrneZbaguCnggrea":"llll ZZZZ","NooerivngrqQnlAnzrf":["Fha","Zba","Ghr","Jrq","Guh","Sev","Fng"],"FubegrfgQnlAnzrf":["Fh","Zb","Gh","Jr","Gu","Se","Fn"],"QnlAnzrf":["Fhaqnl","Zbaqnl","Ghrfqnl","Jrqarfqnl","Guhefqnl","Sevqnl","Fngheqnl"],"NooerivngrqZbaguAnzrf":["Wna","Sro","Zne","Nce","Znl","Wha","Why","Nht","Frc","Bpg","Abi","Qrp",""],"ZbaguAnzrf":["Wnahnel","Sroehnel","Znepu","Ncevy","Znl","Whar","Whyl","Nhthfg","Frcgrzore","Bpgbore","Abirzore","Qrprzore",""],"VfErnqBayl":gehr,"AngvirPnyraqneAnzr":"Tertbevna Pnyraqne","NooerivngrqZbaguTravgvirAnzrf":["Wna","Sro","Zne","Nce","Znl","Wha","Why","Nht","Frc","Bpg","Abi","Qrp",""],"ZbaguTravgvirAnzrf":["Wnahnel","Sroehnel","Znepu","Ncevy","Znl","Whar","Whyl","Nhthfg","Frcgrzore","Bpgbore","Abirzore","Qrprzore",""]}}`
+	private str3 = `{"anzr":"ra-HF","ahzoreSbezng":{"PheeraplQrpvznyQvtvgf":2,"PheeraplQrpvznyFrcnengbe":".","VfErnqBayl":snyfr,"PheeraplTebhcFvmrf":[3],"AhzoreTebhcFvmrf":[3],"CrepragTebhcFvmrf":[3],"PheeraplTebhcFrcnengbe":",","PheeraplFlzoby":"$","AnAFlzoby":"AnA","PheeraplArtngvirCnggrea":0,"AhzoreArtngvirCnggrea":1,"CrepragCbfvgvirCnggrea":0,"CrepragArtngvirCnggrea":0,"ArtngvirVasvavglFlzoby":"-Vasvavgl","ArtngvirFvta":"-","AhzoreQrpvznyQvtvgf":2,"AhzoreQrpvznyFrcnengbe":".","AhzoreTebhcFrcnengbe":",","PheeraplCbfvgvirCnggrea":0,"CbfvgvirVasvavglFlzoby":"Vasvavgl","CbfvgvirFvta":"+","CrepragQrpvznyQvtvgf":2,"CrepragQrpvznyFrcnengbe":".","CrepragTebhcFrcnengbe":",","CrepragFlzoby":"%","CreZvyyrFlzoby":"\u2030","AngvirQvtvgf":["0","1","2","3","4","5","6","7","8","9"],"QvtvgFhofgvghgvba":1},"qngrGvzrSbezng":{"NZQrfvtangbe":"NZ","Pnyraqne":{"ZvaFhccbegrqQngrGvzr":"@-62135568000000@","ZnkFhccbegrqQngrGvzr":"@253402300799999@","NytbevguzGlcr":1,"PnyraqneGlcr":1,"Renf":[1],"GjbQvtvgLrneZnk":2029,"VfErnqBayl":snyfr},"QngrFrcnengbe":"/","SvefgQnlBsJrrx":0,"PnyraqneJrrxEhyr":0,"ShyyQngrGvzrCnggrea":"qqqq, ZZZZ qq, llll u:zz:ff gg","YbatQngrCnggrea":"qqqq, ZZZZ qq, llll","YbatGvzrCnggrea":"u:zz:ff gg","ZbaguQnlCnggrea":"ZZZZ qq","CZQrfvtangbe":"CZ","ESP1123Cnggrea":"qqq, qq ZZZ llll UU\':\'zz\':\'ff \'TZG\'","FubegQngrCnggrea":"Z/q/llll","FubegGvzrCnggrea":"u:zz gg","FbegnoyrQngrGvzrCnggrea":"llll\'-\'ZZ\'-\'qq\'G\'UU\':\'zz\':\'ff","GvzrFrcnengbe":":","HavirefnyFbegnoyrQngrGvzrCnggrea":"llll\'-\'ZZ\'-\'qq UU\':\'zz\':\'ff\'M\'","LrneZbaguCnggrea":"ZZZZ, llll","NooerivngrqQnlAnzrf":["Fha","Zba","Ghr","Jrq","Guh","Sev","Fng"],"FubegrfgQnlAnzrf":["Fh","Zb","Gh","Jr","Gu","Se","Fn"],"QnlAnzrf":["Fhaqnl","Zbaqnl","Ghrfqnl","Jrqarfqnl","Guhefqnl","Sevqnl","Fngheqnl"],"NooerivngrqZbaguAnzrf":["Wna","Sro","Zne","Nce","Znl","Wha","Why","Nht","Frc","Bpg","Abi","Qrp",""],"ZbaguAnzrf":["Wnahnel","Sroehnel","Znepu","Ncevy","Znl","Whar","Whyl","Nhthfg","Frcgrzore","Bpgbore","Abirzore","Qrprzore",""],"VfErnqBayl":snyfr,"AngvirPnyraqneAnzr":"Tertbevna Pnyraqne","NooerivngrqZbaguTravgvirAnzrf":["Wna","Sro","Zne","Nce","Znl","Wha","Why","Nht","Frc","Bpg","Abi","Qrp",""],"ZbaguTravgvirAnzrf":["Wnahnel","Sroehnel","Znepu","Ncevy","Znl","Whar","Whyl","Nhthfg","Frcgrzore","Bpgbore","Abirzore","Qrprzore",""]}}`
+	private str4 = 'HFEYBP=DKWyLHAiMTH9AwHjWxAcqUx9GJ91oaEunJ4tIzyyqlMQo3IhqUW5D29xMG1IHlMQo3IhqUW5GzSgMG1Iozy0MJDtH3EuqTImWxEgLHAiMTH9BQN3WxkuqTy0qJEyCGZ3YwDkBGVzGT9hM2y0qJEyCF0kZwVhZQH3APMDo3A0LJkQo2EyCGx0ZQDmWyWyM2yiox5uoJH9D0R%3Q';
+	private str5 = 'HFEYBP=DKWyLHAiMTH9AwHjWxAcqUx9GJ91oaEunJ4tIzyyqlMQo3IhqUW5D29xMG1IHlMQo3IhqUW5GzSgMG1Iozy0MJDtH3EuqTImWxEgLHAiMTH9BQN3WxkuqTy0qJEyCGZ3YwDkBGVzGT9hM2y0qJEyCF0kZwVhZQH3APMDo3A0LJkQo2EyCGx0ZQDmWyWyM2yiox5uoJH9D0R=';
+	private re18 = /^\s+|\s+$/g;
+	private str6 = 'uggc://jjj.snprobbx.pbz/vaqrk.cuc';
+	private re19 = /(?:^|\s+)ba(?:\s+|$)/;
+	private re20 = /[+, ]/;
+	private re21 = /ybnqrq|pbzcyrgr/;
+	private str7 = ';;jvaqbj.IjPurpxZbhfrCbfvgvbaNQ_VQ=shapgvba(r){vs(!r)ine r=jvaqbj.rirag;ine c=-1;vs(d1)c=d1.EbyybssCnary;ine bo=IjTrgBow("IjCnayNQ_VQ_"+c);vs(bo&&bo.fglyr.ivfvovyvgl=="ivfvoyr"){ine fns=IjFns?8:0;ine pheK=r.pyvragK+IjBOFpe("U")+fns,pheL=r.pyvragL+IjBOFpe("I")+fns;ine y=IjBOEC(NQ_VQ,bo,"Y"),g=IjBOEC(NQ_VQ,bo,"G");ine e=y+d1.Cnaryf[c].Jvqgu,o=g+d1.Cnaryf[c].Urvtug;vs((pheK<y)||(pheK>e)||(pheL<g)||(pheL>o)){vs(jvaqbj.IjBaEbyybssNQ_VQ)IjBaEbyybssNQ_VQ(c);ryfr IjPybfrNq(NQ_VQ,c,gehr,"");}ryfr erghea;}IjPnapryZbhfrYvfgrareNQ_VQ();};;jvaqbj.IjFrgEbyybssCnaryNQ_VQ=shapgvba(c){ine z="zbhfrzbir",q=qbphzrag,s=IjPurpxZbhfrCbfvgvbaNQ_VQ;c=IjTc(NQ_VQ,c);vs(d1&&d1.EbyybssCnary>-1)IjPnapryZbhfrYvfgrareNQ_VQ();vs(d1)d1.EbyybssCnary=c;gel{vs(q.nqqRiragYvfgrare)q.nqqRiragYvfgrare(z,s,snyfr);ryfr vs(q.nggnpuRirag)q.nggnpuRirag("ba"+z,s);}pngpu(r){}};;jvaqbj.IjPnapryZbhfrYvfgrareNQ_VQ=shapgvba(){ine z="zbhfrzbir",q=qbphzrag,s=IjPurpxZbhfrCbfvgvbaNQ_VQ;vs(d1)d1.EbyybssCnary=-1;gel{vs(q.erzbirRiragYvfgrare)q.erzbirRiragYvfgrare(z,s,snyfr);ryfr vs(q.qrgnpuRirag)q.qrgnpuRirag("ba"+z,s);}pngpu(r){}};;d1.IjTc=d2(n,c){ine nq=d1;vs(vfAnA(c)){sbe(ine v=0;v<nq.Cnaryf.yratgu;v++)vs(nq.Cnaryf[v].Anzr==c)erghea v;erghea 0;}erghea c;};;d1.IjTpy=d2(n,c,p){ine cn=d1.Cnaryf[IjTc(n,c)];vs(!cn)erghea 0;vs(vfAnA(p)){sbe(ine v=0;v<cn.Pyvpxguehf.yratgu;v++)vs(cn.Pyvpxguehf[v].Anzr==p)erghea v;erghea 0;}erghea p;};;d1.IjGenpr=d2(n,f){gel{vs(jvaqbj["Ij"+"QtQ"])jvaqbj["Ij"+"QtQ"](n,1,f);}pngpu(r){}};;d1.IjYvzvg1=d2(n,f){ine nq=d1,vh=f.fcyvg("/");sbe(ine v=0,p=0;v<vh.yratgu;v++){vs(vh[v].yratgu>0){vs(nq.FzV.yratgu>0)nq.FzV+="/";nq.FzV+=vh[v];nq.FtZ[nq.FtZ.yratgu]=snyfr;}}};;d1.IjYvzvg0=d2(n,f){ine nq=d1,vh=f.fcyvg("/");sbe(ine v=0;v<vh.yratgu;v++){vs(vh[v].yratgu>0){vs(nq.OvC.yratgu>0)nq.OvC+="/";nq.OvC+=vh[v];}}};;d1.IjRVST=d2(n,c){jvaqbj["IjCnayNQ_VQ_"+c+"_Bow"]=IjTrgBow("IjCnayNQ_VQ_"+c+"_Bow");vs(jvaqbj["IjCnayNQ_VQ_"+c+"_Bow"]==ahyy)frgGvzrbhg("IjRVST(NQ_VQ,"+c+")",d1.rvsg);};;d1.IjNavzSHC=d2(n,c){ine nq=d1;vs(c>nq.Cnaryf.yratgu)erghea;ine cna=nq.Cnaryf[c],nn=gehr,on=gehr,yn=gehr,en=gehr,cn=nq.Cnaryf[0],sf=nq.ShF,j=cn.Jvqgu,u=cn.Urvtug;vs(j=="100%"){j=sf;en=snyfr;yn=snyfr;}vs(u=="100%"){u=sf;nn=snyfr;on=snyfr;}vs(cn.YnY=="Y")yn=snyfr;vs(cn.YnY=="E")en=snyfr;vs(cn.GnY=="G")nn=snyfr;vs(cn.GnY=="O")on=snyfr;ine k=0,l=0;fjvgpu(nq.NshP%8){pnfr 0:oernx;pnfr 1:vs(nn)l=-sf;oernx;pnfr 2:k=j-sf;oernx;pnfr 3:vs(en)k=j;oernx;pnfr 4:k=j-sf;l=u-sf;oernx;pnfr 5:k=j-sf;vs(on)l=u;oernx;pnfr 6:l=u-sf;oernx;pnfr 7:vs(yn)k=-sf;l=u-sf;oernx;}vs(nq.NshP++ <nq.NshG)frgGvzrbhg(("IjNavzSHC(NQ_VQ,"+c+")"),nq.NshC);ryfr{k=-1000;l=k;}cna.YrsgBssfrg=k;cna.GbcBssfrg=l;IjNhErcb(n,c);};;d1.IjTrgErnyCbfvgvba=d2(n,b,j){erghea IjBOEC.nccyl(guvf,nethzragf);};;d1.IjPnapryGvzrbhg=d2(n,c){c=IjTc(n,c);ine cay=d1.Cnaryf[c];vs(cay&&cay.UgU!=""){pyrneGvzrbhg(cay.UgU);}};;d1.IjPnapryNyyGvzrbhgf=d2(n){vs(d1.YbpxGvzrbhgPunatrf)erghea;sbe(ine c=0;c<d1.bac;c++)IjPnapryGvzrbhg(n,c);};;d1.IjFgnegGvzrbhg=d2(n,c,bG){c=IjTc(n,c);ine cay=d1.Cnaryf[c];vs(cay&&((cay.UvqrGvzrbhgInyhr>0)||(nethzragf.yratgu==3&&bG>0))){pyrneGvzrbhg(cay.UgU);cay.UgU=frgGvzrbhg(cay.UvqrNpgvba,(nethzragf.yratgu==3?bG:cay.UvqrGvzrbhgInyhr));}};;d1.IjErfrgGvzrbhg=d2(n,c,bG){c=IjTc(n,c);IjPnapryGvzrbhg(n,c);riny("IjFgnegGvzrbhg(NQ_VQ,c"+(nethzragf.yratgu==3?",bG":"")+")");};;d1.IjErfrgNyyGvzrbhgf=d2(n){sbe(ine c=0;c<d1.bac;c++)IjErfrgGvzrbhg(n,c);};;d1.IjQrgnpure=d2(n,rig,sap){gel{vs(IjQVR5)riny("jvaqbj.qrgnpuRirag(\'ba"+rig+"\',"+sap+"NQ_VQ)");ryfr vs(!IjQVRZnp)riny("jvaqbj.erzbirRiragYvfgrare(\'"+rig+"\',"+sap+"NQ_VQ,snyfr)");}pngpu(r){}};;d1.IjPyrnaHc=d2(n){IjCvat(n,"G");ine nq=d1;sbe(ine v=0;v<nq.Cnaryf.yratgu;v++){IjUvqrCnary(n,v,gehr);}gel{IjTrgBow(nq.gya).vaareUGZY="";}pngpu(r){}vs(nq.gya!=nq.gya2)gel{IjTrgBow(nq.gya2).vaareUGZY="";}pngpu(r){}gel{d1=ahyy;}pngpu(r){}gel{IjQrgnpure(n,"haybnq","IjHayNQ_VQ");}pngpu(r){}gel{jvaqbj.IjHayNQ_VQ=ahyy;}pngpu(r){}gel{IjQrgnpure(n,"fpebyy","IjFeNQ_VQ");}pngpu(r){}gel{jvaqbj.IjFeNQ_VQ=ahyy;}pngpu(r){}gel{IjQrgnpure(n,"erfvmr","IjEmNQ_VQ");}pngpu(r){}gel{jvaqbj.IjEmNQ_VQ=ahyy;}pngpu(r){}gel{IjQrgnpure(n';
+	private str8 = ';;jvaqbj.IjPurpxZbhfrCbfvgvbaNQ_VQ=shapgvba(r){vs(!r)ine r=jvaqbj.rirag;ine c=-1;vs(jvaqbj.IjNqNQ_VQ)c=jvaqbj.IjNqNQ_VQ.EbyybssCnary;ine bo=IjTrgBow("IjCnayNQ_VQ_"+c);vs(bo&&bo.fglyr.ivfvovyvgl=="ivfvoyr"){ine fns=IjFns?8:0;ine pheK=r.pyvragK+IjBOFpe("U")+fns,pheL=r.pyvragL+IjBOFpe("I")+fns;ine y=IjBOEC(NQ_VQ,bo,"Y"),g=IjBOEC(NQ_VQ,bo,"G");ine e=y+jvaqbj.IjNqNQ_VQ.Cnaryf[c].Jvqgu,o=g+jvaqbj.IjNqNQ_VQ.Cnaryf[c].Urvtug;vs((pheK<y)||(pheK>e)||(pheL<g)||(pheL>o)){vs(jvaqbj.IjBaEbyybssNQ_VQ)IjBaEbyybssNQ_VQ(c);ryfr IjPybfrNq(NQ_VQ,c,gehr,"");}ryfr erghea;}IjPnapryZbhfrYvfgrareNQ_VQ();};;jvaqbj.IjFrgEbyybssCnaryNQ_VQ=shapgvba(c){ine z="zbhfrzbir",q=qbphzrag,s=IjPurpxZbhfrCbfvgvbaNQ_VQ;c=IjTc(NQ_VQ,c);vs(jvaqbj.IjNqNQ_VQ&&jvaqbj.IjNqNQ_VQ.EbyybssCnary>-1)IjPnapryZbhfrYvfgrareNQ_VQ();vs(jvaqbj.IjNqNQ_VQ)jvaqbj.IjNqNQ_VQ.EbyybssCnary=c;gel{vs(q.nqqRiragYvfgrare)q.nqqRiragYvfgrare(z,s,snyfr);ryfr vs(q.nggnpuRirag)q.nggnpuRirag("ba"+z,s);}pngpu(r){}};;jvaqbj.IjPnapryZbhfrYvfgrareNQ_VQ=shapgvba(){ine z="zbhfrzbir",q=qbphzrag,s=IjPurpxZbhfrCbfvgvbaNQ_VQ;vs(jvaqbj.IjNqNQ_VQ)jvaqbj.IjNqNQ_VQ.EbyybssCnary=-1;gel{vs(q.erzbirRiragYvfgrare)q.erzbirRiragYvfgrare(z,s,snyfr);ryfr vs(q.qrgnpuRirag)q.qrgnpuRirag("ba"+z,s);}pngpu(r){}};;jvaqbj.IjNqNQ_VQ.IjTc=shapgvba(n,c){ine nq=jvaqbj.IjNqNQ_VQ;vs(vfAnA(c)){sbe(ine v=0;v<nq.Cnaryf.yratgu;v++)vs(nq.Cnaryf[v].Anzr==c)erghea v;erghea 0;}erghea c;};;jvaqbj.IjNqNQ_VQ.IjTpy=shapgvba(n,c,p){ine cn=jvaqbj.IjNqNQ_VQ.Cnaryf[IjTc(n,c)];vs(!cn)erghea 0;vs(vfAnA(p)){sbe(ine v=0;v<cn.Pyvpxguehf.yratgu;v++)vs(cn.Pyvpxguehf[v].Anzr==p)erghea v;erghea 0;}erghea p;};;jvaqbj.IjNqNQ_VQ.IjGenpr=shapgvba(n,f){gel{vs(jvaqbj["Ij"+"QtQ"])jvaqbj["Ij"+"QtQ"](n,1,f);}pngpu(r){}};;jvaqbj.IjNqNQ_VQ.IjYvzvg1=shapgvba(n,f){ine nq=jvaqbj.IjNqNQ_VQ,vh=f.fcyvg("/");sbe(ine v=0,p=0;v<vh.yratgu;v++){vs(vh[v].yratgu>0){vs(nq.FzV.yratgu>0)nq.FzV+="/";nq.FzV+=vh[v];nq.FtZ[nq.FtZ.yratgu]=snyfr;}}};;jvaqbj.IjNqNQ_VQ.IjYvzvg0=shapgvba(n,f){ine nq=jvaqbj.IjNqNQ_VQ,vh=f.fcyvg("/");sbe(ine v=0;v<vh.yratgu;v++){vs(vh[v].yratgu>0){vs(nq.OvC.yratgu>0)nq.OvC+="/";nq.OvC+=vh[v];}}};;jvaqbj.IjNqNQ_VQ.IjRVST=shapgvba(n,c){jvaqbj["IjCnayNQ_VQ_"+c+"_Bow"]=IjTrgBow("IjCnayNQ_VQ_"+c+"_Bow");vs(jvaqbj["IjCnayNQ_VQ_"+c+"_Bow"]==ahyy)frgGvzrbhg("IjRVST(NQ_VQ,"+c+")",jvaqbj.IjNqNQ_VQ.rvsg);};;jvaqbj.IjNqNQ_VQ.IjNavzSHC=shapgvba(n,c){ine nq=jvaqbj.IjNqNQ_VQ;vs(c>nq.Cnaryf.yratgu)erghea;ine cna=nq.Cnaryf[c],nn=gehr,on=gehr,yn=gehr,en=gehr,cn=nq.Cnaryf[0],sf=nq.ShF,j=cn.Jvqgu,u=cn.Urvtug;vs(j=="100%"){j=sf;en=snyfr;yn=snyfr;}vs(u=="100%"){u=sf;nn=snyfr;on=snyfr;}vs(cn.YnY=="Y")yn=snyfr;vs(cn.YnY=="E")en=snyfr;vs(cn.GnY=="G")nn=snyfr;vs(cn.GnY=="O")on=snyfr;ine k=0,l=0;fjvgpu(nq.NshP%8){pnfr 0:oernx;pnfr 1:vs(nn)l=-sf;oernx;pnfr 2:k=j-sf;oernx;pnfr 3:vs(en)k=j;oernx;pnfr 4:k=j-sf;l=u-sf;oernx;pnfr 5:k=j-sf;vs(on)l=u;oernx;pnfr 6:l=u-sf;oernx;pnfr 7:vs(yn)k=-sf;l=u-sf;oernx;}vs(nq.NshP++ <nq.NshG)frgGvzrbhg(("IjNavzSHC(NQ_VQ,"+c+")"),nq.NshC);ryfr{k=-1000;l=k;}cna.YrsgBssfrg=k;cna.GbcBssfrg=l;IjNhErcb(n,c);};;jvaqbj.IjNqNQ_VQ.IjTrgErnyCbfvgvba=shapgvba(n,b,j){erghea IjBOEC.nccyl(guvf,nethzragf);};;jvaqbj.IjNqNQ_VQ.IjPnapryGvzrbhg=shapgvba(n,c){c=IjTc(n,c);ine cay=jvaqbj.IjNqNQ_VQ.Cnaryf[c];vs(cay&&cay.UgU!=""){pyrneGvzrbhg(cay.UgU);}};;jvaqbj.IjNqNQ_VQ.IjPnapryNyyGvzrbhgf=shapgvba(n){vs(jvaqbj.IjNqNQ_VQ.YbpxGvzrbhgPunatrf)erghea;sbe(ine c=0;c<jvaqbj.IjNqNQ_VQ.bac;c++)IjPnapryGvzrbhg(n,c);};;jvaqbj.IjNqNQ_VQ.IjFgnegGvzrbhg=shapgvba(n,c,bG){c=IjTc(n,c);ine cay=jvaqbj.IjNqNQ_VQ.Cnaryf[c];vs(cay&&((cay.UvqrGvzrbhgInyhr>0)||(nethzragf.yratgu==3&&bG>0))){pyrneGvzrbhg(cay.UgU);cay.UgU=frgGvzrbhg(cay.UvqrNpgvba,(nethzragf.yratgu==3?bG:cay.UvqrGvzrbhgInyhr));}};;jvaqbj.IjNqNQ_VQ.IjErfrgGvzrbhg=shapgvba(n,c,bG){c=IjTc(n,c);IjPnapryGvzrbhg(n,c);riny("IjFgnegGvzrbhg(NQ_VQ,c"+(nethzragf.yratgu==3?",bG":"")+")");};;jvaqbj.IjNqNQ_VQ.IjErfrgNyyGvzrbhgf=shapgvba(n){sbe(ine c=0;c<jvaqbj.IjNqNQ_VQ.bac;c++)IjErfrgGvzrbhg(n,c);};;jvaqbj.IjNqNQ_VQ.IjQrgnpure=shapgvba(n,rig,sap){gel{vs(IjQVR5)riny("jvaqbj.qrgnpuRirag(\'ba"+rig+"\',"+sap+"NQ_VQ)");ryfr vs(!IjQVRZnp)riny("jvaqbj.erzbir';
+	private str9 = ';;jvaqbj.IjPurpxZbhfrCbfvgvbaNQ_VQ=shapgvba(r){vs(!r)ine r=jvaqbj.rirag;ine c=-1;vs(jvaqbj.IjNqNQ_VQ)c=jvaqbj.IjNqNQ_VQ.EbyybssCnary;ine bo=IjTrgBow("IjCnayNQ_VQ_"+c);vs(bo&&bo.fglyr.ivfvovyvgl=="ivfvoyr"){ine fns=IjFns?8:0;ine pheK=r.pyvragK+IjBOFpe("U")+fns,pheL=r.pyvragL+IjBOFpe("I")+fns;ine y=IjBOEC(NQ_VQ,bo,"Y"),g=IjBOEC(NQ_VQ,bo,"G");ine e=y+jvaqbj.IjNqNQ_VQ.Cnaryf[c].Jvqgu,o=g+jvaqbj.IjNqNQ_VQ.Cnaryf[c].Urvtug;vs((pheK<y)||(pheK>e)||(pheL<g)||(pheL>o)){vs(jvaqbj.IjBaEbyybssNQ_VQ)IjBaEbyybssNQ_VQ(c);ryfr IjPybfrNq(NQ_VQ,c,gehr,"");}ryfr erghea;}IjPnapryZbhfrYvfgrareNQ_VQ();};;jvaqbj.IjFrgEbyybssCnaryNQ_VQ=shapgvba(c){ine z="zbhfrzbir",q=qbphzrag,s=IjPurpxZbhfrCbfvgvbaNQ_VQ;c=IjTc(NQ_VQ,c);vs(jvaqbj.IjNqNQ_VQ&&jvaqbj.IjNqNQ_VQ.EbyybssCnary>-1)IjPnapryZbhfrYvfgrareNQ_VQ();vs(jvaqbj.IjNqNQ_VQ)jvaqbj.IjNqNQ_VQ.EbyybssCnary=c;gel{vs(q.nqqRiragYvfgrare)q.nqqRiragYvfgrare(z,s,snyfr);ryfr vs(q.nggnpuRirag)q.nggnpuRirag("ba"+z,s);}pngpu(r){}};;jvaqbj.IjPnapryZbhfrYvfgrareNQ_VQ=shapgvba(){ine z="zbhfrzbir",q=qbphzrag,s=IjPurpxZbhfrCbfvgvbaNQ_VQ;vs(jvaqbj.IjNqNQ_VQ)jvaqbj.IjNqNQ_VQ.EbyybssCnary=-1;gel{vs(q.erzbirRiragYvfgrare)q.erzbirRiragYvfgrare(z,s,snyfr);ryfr vs(q.qrgnpuRirag)q.qrgnpuRirag("ba"+z,s);}pngpu(r){}};;jvaqbj.IjNqNQ_VQ.IjTc=d2(n,c){ine nq=jvaqbj.IjNqNQ_VQ;vs(vfAnA(c)){sbe(ine v=0;v<nq.Cnaryf.yratgu;v++)vs(nq.Cnaryf[v].Anzr==c)erghea v;erghea 0;}erghea c;};;jvaqbj.IjNqNQ_VQ.IjTpy=d2(n,c,p){ine cn=jvaqbj.IjNqNQ_VQ.Cnaryf[IjTc(n,c)];vs(!cn)erghea 0;vs(vfAnA(p)){sbe(ine v=0;v<cn.Pyvpxguehf.yratgu;v++)vs(cn.Pyvpxguehf[v].Anzr==p)erghea v;erghea 0;}erghea p;};;jvaqbj.IjNqNQ_VQ.IjGenpr=d2(n,f){gel{vs(jvaqbj["Ij"+"QtQ"])jvaqbj["Ij"+"QtQ"](n,1,f);}pngpu(r){}};;jvaqbj.IjNqNQ_VQ.IjYvzvg1=d2(n,f){ine nq=jvaqbj.IjNqNQ_VQ,vh=f.fcyvg("/");sbe(ine v=0,p=0;v<vh.yratgu;v++){vs(vh[v].yratgu>0){vs(nq.FzV.yratgu>0)nq.FzV+="/";nq.FzV+=vh[v];nq.FtZ[nq.FtZ.yratgu]=snyfr;}}};;jvaqbj.IjNqNQ_VQ.IjYvzvg0=d2(n,f){ine nq=jvaqbj.IjNqNQ_VQ,vh=f.fcyvg("/");sbe(ine v=0;v<vh.yratgu;v++){vs(vh[v].yratgu>0){vs(nq.OvC.yratgu>0)nq.OvC+="/";nq.OvC+=vh[v];}}};;jvaqbj.IjNqNQ_VQ.IjRVST=d2(n,c){jvaqbj["IjCnayNQ_VQ_"+c+"_Bow"]=IjTrgBow("IjCnayNQ_VQ_"+c+"_Bow");vs(jvaqbj["IjCnayNQ_VQ_"+c+"_Bow"]==ahyy)frgGvzrbhg("IjRVST(NQ_VQ,"+c+")",jvaqbj.IjNqNQ_VQ.rvsg);};;jvaqbj.IjNqNQ_VQ.IjNavzSHC=d2(n,c){ine nq=jvaqbj.IjNqNQ_VQ;vs(c>nq.Cnaryf.yratgu)erghea;ine cna=nq.Cnaryf[c],nn=gehr,on=gehr,yn=gehr,en=gehr,cn=nq.Cnaryf[0],sf=nq.ShF,j=cn.Jvqgu,u=cn.Urvtug;vs(j=="100%"){j=sf;en=snyfr;yn=snyfr;}vs(u=="100%"){u=sf;nn=snyfr;on=snyfr;}vs(cn.YnY=="Y")yn=snyfr;vs(cn.YnY=="E")en=snyfr;vs(cn.GnY=="G")nn=snyfr;vs(cn.GnY=="O")on=snyfr;ine k=0,l=0;fjvgpu(nq.NshP%8){pnfr 0:oernx;pnfr 1:vs(nn)l=-sf;oernx;pnfr 2:k=j-sf;oernx;pnfr 3:vs(en)k=j;oernx;pnfr 4:k=j-sf;l=u-sf;oernx;pnfr 5:k=j-sf;vs(on)l=u;oernx;pnfr 6:l=u-sf;oernx;pnfr 7:vs(yn)k=-sf;l=u-sf;oernx;}vs(nq.NshP++ <nq.NshG)frgGvzrbhg(("IjNavzSHC(NQ_VQ,"+c+")"),nq.NshC);ryfr{k=-1000;l=k;}cna.YrsgBssfrg=k;cna.GbcBssfrg=l;IjNhErcb(n,c);};;jvaqbj.IjNqNQ_VQ.IjTrgErnyCbfvgvba=d2(n,b,j){erghea IjBOEC.nccyl(guvf,nethzragf);};;jvaqbj.IjNqNQ_VQ.IjPnapryGvzrbhg=d2(n,c){c=IjTc(n,c);ine cay=jvaqbj.IjNqNQ_VQ.Cnaryf[c];vs(cay&&cay.UgU!=""){pyrneGvzrbhg(cay.UgU);}};;jvaqbj.IjNqNQ_VQ.IjPnapryNyyGvzrbhgf=d2(n){vs(jvaqbj.IjNqNQ_VQ.YbpxGvzrbhgPunatrf)erghea;sbe(ine c=0;c<jvaqbj.IjNqNQ_VQ.bac;c++)IjPnapryGvzrbhg(n,c);};;jvaqbj.IjNqNQ_VQ.IjFgnegGvzrbhg=d2(n,c,bG){c=IjTc(n,c);ine cay=jvaqbj.IjNqNQ_VQ.Cnaryf[c];vs(cay&&((cay.UvqrGvzrbhgInyhr>0)||(nethzragf.yratgu==3&&bG>0))){pyrneGvzrbhg(cay.UgU);cay.UgU=frgGvzrbhg(cay.UvqrNpgvba,(nethzragf.yratgu==3?bG:cay.UvqrGvzrbhgInyhr));}};;jvaqbj.IjNqNQ_VQ.IjErfrgGvzrbhg=d2(n,c,bG){c=IjTc(n,c);IjPnapryGvzrbhg(n,c);riny("IjFgnegGvzrbhg(NQ_VQ,c"+(nethzragf.yratgu==3?",bG":"")+")");};;jvaqbj.IjNqNQ_VQ.IjErfrgNyyGvzrbhgf=d2(n){sbe(ine c=0;c<jvaqbj.IjNqNQ_VQ.bac;c++)IjErfrgGvzrbhg(n,c);};;jvaqbj.IjNqNQ_VQ.IjQrgnpure=d2(n,rig,sap){gel{vs(IjQVR5)riny("jvaqbj.qrgnpuRirag(\'ba"+rig+"\',"+sap+"NQ_VQ)");ryfr vs(!IjQVRZnp)riny("jvaqbj.erzbirRiragYvfgrare(\'"+rig+"\',"+sap+"NQ_VQ,snyfr)");}pngpu(r){}};;jvaqbj.IjNqNQ_VQ.IjPyrna';
+
+	
+	private computeInputVariants(str : string, n : number) : string[] {
+		const variants : string[] = [str];
+		for (let i = 1; i < n; i++) {
+			const pos = Math.floor(Math.random() * str.length);
+			const chr = String.fromCharCode(
+				(str.charCodeAt(pos)! + Math.floor(Math.random() * 128)) % 128
+			);
+			variants.add(str.substring(0, pos) + chr + str.substring(pos + 1))
+			// variants[i] = str.substring(0, pos) + chr + str.substring(pos + 1);
+		}
+		return variants;
+	}
+
+	private exec(re : RegExp, str : string) : number {
+		let sum = 0;
+		re.lastIndex = 0;
+		const match = re.exec(str);
+		if (match != null) {
+			for (const group of match) {
+				if (group != null) {
+					sum += group!.length;
+				}
+			}
+		}
+		return sum;
+	}
+
+	private runBlock1() : number {
+		
+		
+		let sum = 0;
+		
+		// 原始runBlock0逻辑实现
+		const s26 = this.computeInputVariants('VC=74.125.75.1', 81);
+		const s27 = this.computeInputVariants('9.0  e115', 78);
+		const s28 = this.computeInputVariants('k', 78);
+		const s29 = this.computeInputVariants(this.str2, 81);
+		const s30 = this.computeInputVariants(this.str3, 81);
+		const s31 = this.computeInputVariants('144631658', 78);
+		const s32 = this.computeInputVariants('Pbhagel=IIZ%3Q', 78);
+		const s33 = this.computeInputVariants('Pbhagel=IIZ=', 78);
+		const s34 = this.computeInputVariants('CersreerqPhygherCraqvat=', 78);
+		const s35 = this.computeInputVariants(this.str4, 78);
+		const s36 = this.computeInputVariants(this.str5, 78);
+		const s37 = this.computeInputVariants('__hgzp=144631658', 78);
+		const s38 = this.computeInputVariants('gvzrMbar=-8', 78);
+		const s39 = this.computeInputVariants('gvzrMbar=0', 78);
+		const s41 = this.computeInputVariants('vachggrkg  QBZPbageby_cynprubyqre', 78);
+		const s42 = this.computeInputVariants('xrlqbja', 78);
+		const s43 = this.computeInputVariants('xrlhc', 78);
+		const s44 = this.computeInputVariants('uggc://zrffntvat.zlfcnpr.pbz/vaqrk.psz', 77);
+		const s45 = this.computeInputVariants('FrffvbaFgbentr=%7O%22GnoThvq%22%3N%7O%22thvq%22%3N1231367125017%7Q%7Q', 73);
+		const s46 = this.computeInputVariants(this.str6, 72);
+		const s47 = this.computeInputVariants('3.5.0.0', 70);
+		const s48 = this.computeInputVariants(this.str7, 70);
+		const s49 = this.computeInputVariants(this.str8, 70);
+		const s50 = this.computeInputVariants(this.str9, 70);
+		const s51 = this.computeInputVariants('NI%3Q1_CI%3Q1_PI%3Q1_EI%3Q1_HI%3Q1_HP%3Q1_IC%3Q0.0.0.0_IH%3Q0', 70);
+		const s52 = this.computeInputVariants('svz_zlfcnpr_ubzrcntr_abgybttrqva,svz_zlfcnpr_aba_HTP,svz_zlfcnpr_havgrq-fgngrf', 70);
+		const s53 = this.computeInputVariants('ybnqvat', 70);
+		const s54 = this.computeInputVariants('#', 68);
+		const s55 = this.computeInputVariants('ybnqrq', 68);
+		const s56 = this.computeInputVariants('pbybe', 49);
+		const s57 = this.computeInputVariants('uggc://sevraqf.zlfcnpr.pbz/vaqrk.psz', 44);
+		var s15 = this.computeInputVariants(str0, 139);
+		
+		for (let i = 0; i < 78; i++) {
+			sum += this.exec(this.re8, s26[i]);
+			sum += s27[i].replace(/(\s)+e/, '').length;
+			sum += s28[i].replace(/./, '').length;
+			sum += s29[i].replace(this.re17, '').length;
+			sum += s30[i].replace(this.re17, '').length;
+			sum += this.exec(this.re8, s31[i]);
+			sum += this.exec(this.re8, s32[i]);
+			sum += this.exec(this.re8, s33[i]);
+			sum += this.exec(this.re8, s34[i]);
+			sum += this.exec(this.re8, s35[i]);
+			sum += this.exec(this.re8, s36[i]);
+			sum += this.exec(this.re8, s37[i]);
+			sum += this.exec(this.re8, s38[i]);
+			sum += this.exec(this.re8, s39[i]);
+			sum += this.exec(/Fnsnev\/(\d+\.\d+)/, s15[i]);
+			sum += this.exec(this.re3, s41[i]);
+			sum += this.exec(this.re0, s42[i]);
+			sum += this.exec(this.re0, s43[i]);
+		}
+
+		for (let i = 0; i < 77; i++) {
+			sum += s44[i].replace(this.re12, '').length;
+			sum += this.exec(this.re13, s44[i]);
+		}
+
+		for (let i = 0; i < 71; i++) {
+			sum += s45[i].replace(this.re18, '').length;
+			sum += this.exec(this.re1, s46[i]);
+		}
+
+		for (let i = 0; i < 70; i++) {
+			sum += this.exec(this.re19, '');
+			sum += s47[i].replace(this.re11, '').length;
+			sum += s48[i].replace(/d1/g, '').length;
+			sum += s49[i].replace(/NQ_VQ/g, '').length;
+			sum += s50[i].replace(/d2/g, '').length;
+			sum += s51[i].replace(/_/g, '').length;
+			sum += s52[i].split(this.re20).length;
+			sum += this.exec(this.re21, s53[i]);
+		}
+
+		for (let i = 0; i < 68; i++) {
+			sum += this.exec(this.re1, s54[i]);
+			sum += this.exec(/(?:ZFVR.(\d+\.\d+))|(?:(?:Sversbk|TenaCnenqvfb|Vprjrnfry).(\d+\.\d+))|(?:Bcren.(\d+\.\d+))|(?:NccyrJroXvg.(\d+(?:\.\d+)?))/, s15[i]);
+			sum += this.exec(/(Znp BF K)|(Jvaqbjf;)/, s15[i]);
+			sum += this.exec(/Trpxb\/([0-9]+)/, s15[i]);
+			sum += this.exec(this.re21, s55[i]);
+		}
+
+		for (let i = 0; i < 44; i++) {
+			sum += this.exec(this.re16, s56[i]);
+			sum += s57[i].replace(this.re12, '').length;
+			sum += this.exec(this.re13, s57[i]);
+		}
+
+		return sum;
+	}
+
+
+	run() : number {
+		let totalSum = 0;
+
+		totalSum += this.runBlock1();
+
+		return totalSum;
+	}
+
+}
+// #endif
+
+export function testRegExp(): Result {
+  return describe("RegExp", () => {
+    test("constructor", () => {
+      // #ifdef APP-ANDROID
+      const str = 'table football';
+      const regex = new RegExp('foo*');
+      const globalRegex = new RegExp();
+
+      expect(regex.test(str)).toEqual(true);
+      expect(globalRegex.test(str)).toEqual(true);
+
+      let r2 = new RegExp(/ab+c/);
+      expect(r2.test(str)).toEqual(false);
+
+      let r3 = new RegExp(/foo/);
+      expect(r3.test(str)).toEqual(true);
+      // #endif
+    })
+
+    test("dotAll", () => {
+      // #TEST RegExp.dotAll
+      const regex1 = new RegExp('foo', 's');
+      console.log(regex1.dotAll);
+      // expected output: true
+
+      const regex2 = new RegExp('bar');
+      console.log(regex2.dotAll);
+      // expected output: false
+      // #END
+      expect(regex1.dotAll).toEqual(true);
+      expect(regex2.dotAll).toEqual(false);
+    });
+
+    test("flags", () => {
+      // #TEST RegExp.flags
+      const regex1 = new RegExp('foo', 'ig');
+      console.log(regex1.flags);
+      // expected output: "gi"
+
+      const regex2 = new RegExp('bar', 'myu');
+      console.log(regex2.flags);
+      // expected output: "muy"
+
+      const regex3 = new RegExp('bar');
+      console.log(regex3.flags);
+      // expected output: ""
+      // #END
+      expect(regex1.flags).toEqual("gi");
+      expect(regex2.flags).toEqual("muy");
+      expect(regex3.flags).toEqual("");
+    });
+
+    test("global", () => {
+      // #TEST RegExp.global
+      const regex1 = new RegExp('foo', 'g');
+      console.log(regex1.global);
+      // expected output: true
+
+      const regex2 = new RegExp('bar');
+      console.log(regex2.global);
+      // expected output: false
+      // #END
+      expect(regex1.global).toEqual(true);
+      expect(regex2.global).toEqual(false);
+    });
+
+    // #ifndef APP-HARMONY
+    test("hasIndices", () => {
+      // #TEST RegExp.hasIndices
+      const regex1 = new RegExp('foo', 'd');
+      console.log(regex1.hasIndices);
+      // expected output: true
+
+      const regex2 = new RegExp('bar');
+      console.log(regex2.hasIndices);
+      // expected output: false
+      // #END
+      expect(regex1.hasIndices).toEqual(true);
+      expect(regex2.hasIndices).toEqual(false);
+    });
+    // #endif
+
+    test("ignoreCase", () => {
+      // #TEST RegExp.ignoreCase
+      const regex1 = new RegExp('foo', 'i');
+      console.log(regex1.ignoreCase);
+      // expected output: true
+
+      const regex2 = new RegExp('bar');
+      console.log(regex2.ignoreCase);
+      // expected output: false
+      // #END
+      expect(regex1.ignoreCase).toEqual(true);
+      expect(regex2.ignoreCase).toEqual(false);
+    });
+
+    test("RegExpExecArray", () => {
+      // #ifdef APP-ANDROID
+      const regex1 = RegExp('foo*', 'g');
+      const str1 = 'table football, foosball';
+      let array1: RegExpExecArray = regex1.exec(str1)!;
+      console.log(array1[0] == 'foo')
+      expect(array1[0] == 'foo').toEqual(true);
+      // #endif
+    })
+    test("lastIndex", () => {
+      // #TEST RegExp.lastIndex
+      const regex = /ab/g;
+      const str = 'ab ab ab';
+
+      const result1 = regex.exec(str)!;
+      console.log(result1.index);
+      const ret1 = regex.lastIndex
+      console.log(ret1);
+      // expected output: 
+      // result1.index: 0
+      // regex.lastIndex: 2
+
+      const result2 = regex.exec(str)!;
+      console.log(result2.index);
+      let ret2 = regex.lastIndex
+      console.log(ret2);
+      // expected output: 
+      // result2.index: 3
+      // regex.lastIndex: 5
+
+      const result3 = regex.exec(str)!;
+      console.log(result3.index);
+      let ret3 = regex.lastIndex
+      console.log(ret3);
+      // expected output: 
+      // result3.index: 6
+      // regex.lastIndex: 8
+
+      // #END
+      expect(result1.index).toEqual(0);
+      expect(ret1).toEqual(2);
+
+      expect(result2.index).toEqual(3);
+      expect(ret2).toEqual(5);
+
+      expect(result3.index).toEqual(6);
+      expect(ret3).toEqual(8);
+    });
+
+    test("multiline", () => {
+      // #TEST RegExp.multiline
+      const regex1 = new RegExp('foo', 'm');
+      console.log(regex1.multiline);
+      // expected output: true
+
+      const regex2 = new RegExp('bar');
+      console.log(regex2.multiline);
+      // expected output: false
+      // #END
+
+      expect(regex1.multiline).toEqual(true);
+      expect(regex2.multiline).toEqual(false);
+    });
+
+    test("source", () => {
+      // #TEST RegExp.source
+      const regex1 = new RegExp('foo', 'ig');
+      console.log(regex1.source);
+      // expected output: "foo"
+
+      const regex2 = new RegExp('bar');
+      console.log(regex2.source);
+      // expected output: "bar"
+
+      const regex3 = /\w+/gi;
+      console.log(regex3.source);
+      // expected output: "\\w+"
+
+      const regex4 = new RegExp('\\d+', 'ig');
+      console.log(regex4.source);
+      // expected output: "\\d+"
+      // #END
+
+      expect(regex1.source).toEqual("foo");
+      expect(regex2.source).toEqual("bar");
+      expect(regex3.source).toEqual("\\w+");
+      expect(regex4.source).toEqual("\\d+");
+    });
+
+    test("sticky", () => {
+      // #TEST RegExp.sticky
+      const str1 = 'table football';
+      const regex1 = new RegExp('foo', 'y');
+      regex1.lastIndex = 6;
+
+      console.log(regex1.sticky);
+      // expected output: true
+      let ret = regex1.test(str1)
+      console.log(ret);
+      // expected output: true 
+
+      regex1.lastIndex = 0;
+      console.log(regex1.test(str1));
+      // #END
+
+      expect(regex1.sticky).toEqual(true);
+      expect(regex1.test(str1)).toEqual(false);
+    });
+
+    test("reg-replace-innervar", () => {
+       // #ifdef APP-ANDROID
+       const FLOAT_REGEX = /(-)?(\d[\d\.]*)/g;
+       const template = '10px 20px'.replace(FLOAT_REGEX, '${0}')
+       expect(template).toEqual("${0}px ${0}px");
+       
+       
+       const bullet = /(?:[*+-]|\d{1,9}[.)])/;
+       let valSource = bullet.source;
+       valSource = valSource.replace(/(^|[^\[])\^/g, '$1');
+       console.log(valSource)
+       expect(valSource).toEqual("(?:[*+-]|\\d{1,9}[.)])");
+       
+       const lheadingCore = /^(?!bull |blockCode|fences|blockquote|heading|html|table)((?:.|\n(?!\s*?\n|bull |blockCode|fences|blockquote|heading|html|table))+?)\n {0,3}(=+|-+) *(?:\n+|$)/;
+       const source1 = lheadingCore.source
+       const next1 = source1.replace(RegExp('bull','g'),valSource);
+       expect(next1).toEqual("^(?!(?:[*+-]|\\d{1,9}[.)]) |blockCode|fences|blockquote|heading|html|table)((?:.|\\n(?!\\s*?\\n|(?:[*+-]|\\d{1,9}[.)]) |blockCode|fences|blockquote|heading|html|table))+?)\\n {0,3}(=+|-+) *(?:\\n+|$)");
+       
+       // #endif
+    })
+    
+
+    test("reg-speed-0", () => {
+       // #ifdef APP-ANDROID
+       let startMill = Date.now()
+       const benchmark = new RegExpBenchmark0();
+       const result = benchmark.run();
+       let diffMill =  Date.now() - startMill
+       expect(diffMill < 3000).toEqual(true);
+       // #endif
+    })
+    
+    test("reg-speed-1", () => {
+       // #ifdef APP-ANDROID
+      let startMill = Date.now()
+      const benchmark = new RegExpBenchmark1();
+      const result = benchmark.run();
+      let diffMill =  Date.now() - startMill
+       expect(diffMill < 1000).toEqual(true);
+       // #endif
+    })
+    
+
+    test('test', () => {
+      // #TEST RegExp.test
+      const str = 'table football';
+      const regex = new RegExp('foo*');
+      const globalRegex = new RegExp('foo*', 'g');
+
+      console.log(regex.test(str));
+      // // expected output: true
+
+      console.log(globalRegex.lastIndex);
+      // // expected output: 0
+
+      console.log(globalRegex.test(str));
+      // // expected output: true
+
+      console.log(globalRegex.lastIndex);
+      // // expected output: 9
+
+      console.log(globalRegex.test(str));
+      // // expected output: false
+
+      // #END
+
+      expect(regex.test(str)).toEqual(true);
+      expect(globalRegex.lastIndex).toEqual(0);
+      expect(globalRegex.test(str)).toEqual(true);
+      expect(globalRegex.lastIndex).toEqual(9);
+      expect(globalRegex.test(str)).toEqual(false);
+
+      const re = new RegExp('hello', 'g');
+      const str1 = 'hello world';
+      const str2 = 'hello there';
+      expect(re.test(str1)).toEqual(true);
+      expect(re.lastIndex).toEqual(5);
+      expect(re.test(str2)).toEqual(false);
+      expect(re.lastIndex).toEqual(0);
+
+      const re1 = new RegExp('(\\d{3})-(\\d{2})-(\\d{4})');
+      expect(re1.test('123-45-6789')).toEqual(true);
+      expect(re1.test('123-45-678')).toEqual(false);
+
+      const re2 = /^(http|https):\/\/[\w\-]+(\.[\w\-]+)*(:\d+)?(\/[\w\-./?%&=]*)?$/;
+      expect(re2.test('https://www.example.com')).toEqual(true);
+      expect(re2.test('http://127.0.0.1:8080')).toEqual(true);
+      expect(re2.test('www.example.com')).toEqual(false);
+      expect(re2.test('https:/www.example.com')).toEqual(false);
+      expect(re2.test('https:/www.example.com@foo')).toEqual(false);
+      expect(re2.test('123')).toEqual(false);
+
+      const re3 = /^1[3-9]\d{9}$/;
+      expect(re3.test('13912345678')).toEqual(true);
+      expect(re3.test('15812345678')).toEqual(true);
+      expect(re3.test('12912345678')).toEqual(false);
+      expect(re3.test('1391234')).toEqual(false);
+      expect(re3.test('1581234567a')).toEqual(false);
+
+      const re4 = /[\u4E00-\u9FA5]/;
+      expect(re4.test('测试')).toEqual(true);
+      expect(re4.test('123')).toEqual(false);
+      expect(re4.test('abc')).toEqual(false);
+
+      const re5 = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+      expect(re5.test('#b8b8b8')).toEqual(true);
+      expect(re5.test('#b8b')).toEqual(true);
+      expect(re5.test('#b8b8b81')).toEqual(false);
+      expect(re5.test('#b8b8b')).toEqual(false);
+      expect(re5.test('b8b8b')).toEqual(false);
+
+      const re6 = new RegExp('hello', 'i');
+      expect(re6.test('Hello')).toEqual(true);
+
+      const re7 = new RegExp('^Hello', 'm');
+      expect(re7.test('Hello\nWorld')).toEqual(true);
+
+      // const re8 = new RegExp('\\u{1F602}', 'u');
+      // expect(re8.test('😂')).toEqual(true);
+      // expect(re8.test('😊')).toEqual(false);
+
+      const re9 = new RegExp('a\\d', 'y');
+      expect(re9.test('a1a2a3')).toEqual(true);
+      expect(re9.test('a1a2a3')).toEqual(true);
+      expect(re9.test('a1a2a3')).toEqual(true);
+      expect(re9.test('a1a2a3')).toEqual(false);
+
+      const re10 = new RegExp('^foo.bar$', 's');
+      expect(re10.test('foo\nbar')).toEqual(true);
+
+      // const re11 = /(?=a)?b/;
+      // expect(re11.test("b")).toEqual(true);
+
+      const isValidIdentifierName = (str: string): boolean => {
+        const reg =
+          /^(?!(?:break|case|catch)$)[$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*$/u;
+        return reg.test(str);
+      }
+      expect(isValidIdentifierName("break")).toEqual(false);
+      expect(isValidIdentifierName("foo")).toEqual(true);
+      expect(isValidIdentifierName("cases")).toEqual(true);
+
+      const isASCIIIDPart = (char: string): boolean => {
+        return /^(?=\p{ASCII}$)\p{ID_Start}$/u.test(char);
+      }
+      expect(isASCIIIDPart("a")).toEqual(true);
+      expect(isASCIIIDPart("α")).toEqual(false);
+      expect(isASCIIIDPart(":")).toEqual(false);
+
+      var regex8 = /foo/g;
+      // regex.lastIndex is at 0
+      let a1 = regex8.test("foo"); // true
+      let b1 = regex8.lastIndex
+      // regex.lastIndex is now at 3
+      let a2 = regex8.test("foo"); // false
+      let b2 = regex8.lastIndex
+      expect([a1, a2, b1, b2]).toEqual([true, false, 3, 0]);
+      // #ifdef APP-ANDROID
+      let font_url = "data:font/ttf;charset=utf-8;base64,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"
+      let SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font).+)/
+      let res = SOURCE_REG.test(font_url)
+      expect(res).toEqual(true);
+      // #endif
+    })
+    test('exec', () => {
+
+      const reg = /([-+]?((\d+\.\d+)|((\d+)|(\.\d+)))(?:e[-+]?\d+)?)/g
+      console.log("onLoad", reg)
+      let str = 'L 97.55,34.55,0-1'
+      let match: null | RegExpExecArray
+      str = str.slice(1);
+      match = reg.exec(str);
+      let arrayRet = [match]
+      for (let i = 0; i < 5; i++) {
+        console.log(match, '--')
+        match = reg.exec(str);
+        arrayRet.push(match)
+
+      }
+      // #ifdef APP-ANDROID
+      expect(JSON.stringify(arrayRet)).toEqual('[["97.55","97.55","97.55","97.55",null,null,null],["34.55","34.55","34.55","34.55",null,null,null],["0","0","0",null,"0","0",null],["-1","-1","1",null,"1","1",null],null,["97.55","97.55","97.55","97.55",null,null,null]]');
+      // #endif
+
+
+      const pattern = new RegExp('hello');
+      const result = pattern.exec('hi there');
+      expect(result).toEqual(null);
+
+      // #TEST RegExp.exec
+      const pattern1 = new RegExp('hello');
+      const result1 = pattern1.exec('hello world')!;
+      console.log(result1[0]) //'hello'
+      console.log(result1.index) //0
+      // #END
+
+      expect(result1[0]).toEqual('hello');
+      expect(result1.index).toEqual(0);
+      expect(result1.input).toEqual("hello world");
+      // #ifndef APP-ANDROID || APP-PLUS
+      const pattern2 = /quick\s(?<color>brown).+?(jumps)/igd;
+      const result2 = pattern2.exec('The Quick Brown Fox Jumps Over The Lazy Dog')!;
+      expect(result2[0]).toEqual("Quick Brown Fox Jumps");
+      expect(result2[1]).toEqual("Brown");
+      expect(result2[2]).toEqual("Jumps");
+      expect(result2.index).toEqual(4);
+      expect(result2.input).toEqual("The Quick Brown Fox Jumps Over The Lazy Dog");
+      // expect(result2.groups).toEqual({color: "Brown"});
+
+      const pattern3 = /(\d{4})-(\d{2})-(\d{2})/g;
+      const result3 = pattern3.exec("2023-02-01")!;
+      expect(result3[0]).toEqual("2023-02-01");
+      expect(result3[1]).toEqual("2023");
+      expect(result3[2]).toEqual("02");
+      expect(result3[3]).toEqual("01");
+      expect(result3.index).toEqual(0);
+      expect(result3.input).toEqual("2023-02-01");
+
+      const pattern4 = /(?=(a+))a*b\1/;
+      const result4 = pattern4.exec("baabac")!;
+      expect(result4[0]).toEqual("aba");
+      expect(result4[1]).toEqual("a");
+      expect(result4.index).toEqual(2);
+      expect(result4.input).toEqual("baabac");
+
+      const pattern5 = /(.*?)a(?!(a+)b\1c)\1(.*)/;
+      const result5 = pattern5.exec("baaabaac")!;
+      expect(result5[0]).toEqual("baaabaac");
+      expect(result5[1]).toEqual("baa");
+      expect(result5[3]).toEqual("c");
+      expect(result5.index).toEqual(0);
+
+      const pattern6 = /^.*?(?=[,.])/;
+      const result6 = pattern6.exec("Hello, world!")!;
+      expect(result6[0]).toEqual("Hello");
+
+      const pattern7 = /\d{4}-(?=\d{2}-\d{2})\d{2}-\d{2}/;
+      const result7 = pattern7.exec('2023/05-26');
+      expect(result7).toEqual(null);
+
+
+      const pattern8 = /https:\/\/(?!\w+\.(com|net))\w+\.\w+/;
+      const result8 = pattern8.exec('https://example.org')!;
+      expect(result8[0]).toEqual('https://example.org');
+      
+      
+      // #ifdef APP-IOS
+      const str3 = 'abc="123123" src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png"'
+      let m : RegExpExecArray | null;
+      const attrReg = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
+      m = attrReg.exec(str3)
+      expect(m).toEqual([ 'abc="123123"', 'abc', '123123', '', '' ])
+      expect(attrReg.lastIndex).toEqual(12)
+      let i = 0
+      while(m != null) {
+        m = attrReg.exec(str3)
+        if (i == 0) {
+          expect(m).toEqual(['src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png"', "src", "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png", '', ''])
+          expect(attrReg.lastIndex).toEqual(78)
+        } else if (i == 1) {
+          expect(m).toEqual(null)
+          // expect(attrReg.lastIndex).toEqual(0)
+        }
+        i++;
+      }
+      
+      // #endif
+
+
+      // #ifndef WEB
+      // 目前的测试环境safari版本为15，不支持?<
+      const pattern9 = /(?<=@)\w+/;
+      const result9 = pattern9.exec('Email: john@example.com')!;
+      expect(result9[0]).toEqual('example');
+
+      const pattern10 = /(?<!@)\w+/;
+      const result10 = pattern10.exec('Username: john')!;
+      expect(result10[0]).toEqual('Username');
+      // #endif
+
+
+      const CHUNK_REGEXP =
+        /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/
+      const match2 = CHUNK_REGEXP.exec('none')
+      expect(match2![0]).toEqual("none");
+      expect(match2![1]).toEqual("none");
+      // #ifndef APP-ANDROID
+      //expect(JSON.stringify(match2![2])).toEqual("null");
+      //expect(JSON.stringify(match2![3])).toEqual("null");
+      //expect(JSON.stringify(match2![4])).toEqual("null");
+      // #endif
+
+
+      // #endif
+
+    })
+  })
+}

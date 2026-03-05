@@ -1,0 +1,424 @@
+import { describe, test, expect, Result } from './tests.uts'
+// #ifdef APP-ANDROID
+@UTSAndroid.Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER", "NAME_SHADOWING")
+// #endif
+export function testPromise(): Result {
+  return describe("Promise", () => {
+    test('constructor', () => {
+      // #TEST Promise.Constructor,Promise.Constructor_1
+      // 常规方式
+      let p = new Promise<number>((resolve, reject) => {
+        let success = true;
+        setTimeout(() => {
+          if (success) {
+            resolve(2024)
+          } else {
+            let error = new Error("something going wrong")
+            reject(error)
+          }
+        }, 10);
+      });
+      p.then((res: number) => {
+        expect(res).toEqual(2024)
+      })
+
+      // 单个函数
+      let p1 = new Promise<any | null>((resolve: (value: any | null) => void) => {
+        setTimeout(function () {
+          resolve(null)
+        }, 10);
+      })
+      p1.then((res: any | null) => {
+        expect(res).toEqual(null)
+      })
+
+      // 指定函数类型
+      let p2 = new Promise((resolve: (value: string) => void, reject: (error: any | null) => void) => {
+        setTimeout(function () {
+          reject(null)
+        }, 10);
+      })
+      p2.then()
+        .catch((error: any | null) => {
+          expect(error).toEqual(null)
+        })
+      // #END
+    })
+
+    test('then', () => {
+      // #TEST Promise.then,Promise.then_1,Promise.then_2,Promise.then_3,Promise.then_4
+      let p = new Promise<string>((reslove, reject) => {
+        setTimeout(function () {
+          reslove("hello world")
+        }, 13);
+      })
+
+      p.then(
+        (res: string): Promise<string> => {
+          expect(res).toEqual("hello world")
+          let p0 = new Promise<string>((reslove, reject) => {
+            var success = true;
+            setTimeout(function () {
+              success = true;
+              if (success) {
+                reslove(res + " 2024")
+              } else {
+                reject("first then p0 reject message")
+              }
+            }, 8);
+          })
+          return p0;
+        },
+        (err: any | null): void => {
+          throw new Error("first then throw error")
+        }
+      )
+        .catch(
+          (err): string => {
+            return "first catch return message"
+          }
+        )
+        .then(
+          (res) => {
+            expect(res).toEqual("hello world 2024")
+          }
+        )
+        .catch(
+          (err) => {
+            console.log(err, "this is seconded catch")
+          }
+        )
+        .finally(() => {
+          expect("finally").toEqual("finally")
+        })
+      // #END
+    })
+
+    test('catch', () => {
+      // #TEST Promise.catch,Promise.catch_1,Promise.catch_2,Promise.catch_3,Promise.catch_4
+
+      let p = Promise.reject()
+      p.then()
+        .catch((res: any | null) => {
+          expect(res).toEqual(null)
+        })
+
+      // catch 指定返回值
+      new Promise<string>((resolve, reject) => {
+        setTimeout(() => {
+          reject("2024")
+        }, 12)
+      })
+        .then()
+        .catch((res: any | null): string => {
+          expect(res!).toEqual("2024")
+          return "hello world"
+        })
+        .then((res) => {
+          expect(res).toEqual("hello world")
+        })
+
+      // catch 返回Promise
+      new Promise<string>((resolve, reject) => {
+        setTimeout(() => {
+          reject("2024")
+        }, 12)
+      })
+        .then()
+        .catch((res: any | null): Promise<number> => {
+          expect(res!).toEqual("2024")
+          let p = new Promise<number>((resolve, reject) => {
+            resolve(1)
+          })
+          return p
+        })
+        .then((res) => {
+          expect(res).toEqual(1)
+        })
+      // #END
+    })
+
+    test('finally', () => {
+      // #TEST Promise.finally
+
+      Promise.resolve(2)
+        .finally(() => {
+          console.log("finally")
+        })
+        .then((res) => {
+          expect(res).toEqual(2)
+        })
+
+      Promise.reject(3)
+        .finally(() => {
+          console.log("finally")
+        })
+        .catch((res) => {
+          expect(res).toEqual(3)
+        })
+
+      Promise.resolve(2)
+        .finally((): number => {
+          console.log("finally")
+          return 88
+        })
+        .then((res) => {
+          expect(res).toEqual(2)
+        })
+
+      Promise.reject(3).finally(() => {
+        throw new Error("99")
+      })
+        .catch((res) => {
+          expect((res as Error).message).toEqual("99");
+        })
+
+      console.log("start");
+      Promise.reject(4).finally((): Promise<number> => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve(20)
+          }, 1000)
+        })
+      })
+        .catch((res) => {
+          expect(res).toEqual(4)
+        })
+      // #END
+    })
+
+    test('resolve', () => {
+      // #TEST Promise.resolve,Promise.resolve_1,Promise.resolve_2
+      // resolve array
+      Promise.resolve([1, 2, 3])
+        .then((res) => {
+          expect(res).toEqual([1, 2, 3])
+        })
+
+      // resolve string
+      Promise.resolve("成功")
+        .then((res) => {
+          expect(res).toEqual("成功");
+        })
+
+      // resolve null
+      Promise.resolve()
+        .then((res) => {
+          // expect(res).toEqual(null);
+        })
+
+      // resolve promise
+      const original = Promise.resolve(33)
+      const cast = Promise.resolve(original)
+      cast.then((res) => {
+        expect(res).toEqual(33);
+      })
+      // 注：此处飘红是编译器误报，实际可以判等
+      expect(original === cast).toEqual(true)
+      // #END
+    })
+
+    test('reject', () => {
+      // #TEST Promise.reject
+
+      // reject array
+      Promise.reject([1, 2, 3])
+        .catch((err) => {
+          expect(err).toEqual([1, 2, 3])
+        })
+
+      // reject error
+      Promise.reject(new Error("this is reject error message"))
+        .catch((err) => {
+          expect((err as Error).message).toEqual("this is reject error message");
+        })
+
+      // reject null
+      Promise.reject()
+        .catch((err) => {
+          expect(err).toEqual(null);
+        })
+
+      // reject promise
+      const original = Promise.reject(33)
+      const cast = Promise.reject(original)
+      cast.catch((err) => {
+        expect((err as Promise<any>) === original).toEqual(true);
+      })
+      expect(original === cast).toEqual(false)
+      // #END
+    })
+
+    test('all', () => {
+      // #TEST Promise.all
+      let p0 = new Promise<string>((resolve, reject) => {
+        setTimeout(function () {
+          resolve("1");
+        }, 10);
+      })
+
+      let p1 = new Promise<string>((resolve, reject) => {
+        setTimeout(function () {
+          resolve("2");
+        }, 10);
+      })
+
+      let p2 = new Promise<string>((resolve, reject) => {
+        setTimeout(function () {
+          resolve("3");
+        }, 10);
+      })
+
+      let p3 = new Promise<string>((resolve, reject) => {
+        setTimeout(function () {
+          let error = new Error("p3 reject reason")
+          reject(error);
+        }, 10);
+      })
+      // resolve
+      Promise.all([p0, p1, p2])
+        .then((res) => {
+          expect(res).toEqual(["1", "2", "3"])
+        })
+
+      // reject
+      Promise.all([p1, p2, p3])
+        .then()
+        .catch((error) => {
+          console.log(error);
+          expect((error as Error).message).toEqual("p3 reject reason");
+        })
+      // #END
+    })
+
+    test('allSettled', () => {
+      // #TEST Promise.allSettled
+      let p0 = new Promise<string | null>((resolve, reject) => {
+        setTimeout(function () {
+          resolve("1");
+        }, 10);
+      })
+
+      let p1 = new Promise<string | null>((resolve, reject) => {
+        setTimeout(function () {
+          resolve(null);
+        }, 10);
+      })
+
+      let p2 = new Promise<string | null>((resolve, reject) => {
+        setTimeout(function () {
+          reject(null)
+        }, 10);
+      })
+
+      let p3 = new Promise<string | null>((resolve, reject) => {
+        setTimeout(function () {
+          let error = new Error("p3 reject reason")
+          reject(error);
+        }, 10);
+      })
+
+      Promise.allSettled([p0, p1, p2, p3])
+        .then((res) => {
+          console.log(res);
+          let statusArr: string[] = []
+          res.forEach((item, index: number) => {
+            statusArr.push(item.status)
+          })
+          expect(statusArr).toEqual(["fulfilled", "fulfilled", "rejected", "rejected"])
+        })
+      // #END
+    })
+
+    test('any', () => {
+      // #TEST Promise.any
+      let p0 = new Promise<string | null>((resolve, reject) => {
+        setTimeout(function () {
+          resolve("1");
+        }, 10);
+      })
+
+      let p1 = new Promise<string | null>((resolve, reject) => {
+        setTimeout(function () {
+          resolve(null);
+        }, 15);
+      })
+
+      let p2 = new Promise<string | null>((resolve, reject) => {
+        setTimeout(function () {
+          reject(null)
+        }, 10);
+      })
+
+      let p3 = new Promise<string | null>((resolve, reject) => {
+        setTimeout(function () {
+          reject("error");
+        }, 12);
+      })
+
+      // test for resolve
+      Promise.any([p0, p1, p2])
+        .then((res) => {
+          console.log(res)
+          expect(res).toEqual("1");
+        })
+
+      // test for reject
+      Promise.any([p2, p3])
+        .then()
+        .catch(
+          (error: any | null) => {
+            console.log("test for promise.any error ==> ", error);
+            // #ifdef APP-IOS
+            expect((error as UTSPromiseAggregateError).name).toEqual("AggregateError");
+            expect((error as UTSPromiseAggregateError).message).toEqual("All promises were rejected");
+            expect((error as UTSPromiseAggregateError).errors).toEqual([null, "error"]);
+            // #endif
+
+            // #ifdef APP-ANDROID
+            expect((error as UTSPromiseAggregateError).name).toEqual("AggregateError");
+            expect((error as UTSPromiseAggregateError).message).toEqual("All promises were rejected");
+            expect((error as UTSPromiseAggregateError).errors).toEqual([null, "error"]);
+            // #endif
+          })
+      // #END
+    })
+
+    test('race', () => {
+      // #TEST Promise.race
+      let p0 = new Promise<string | null>((resolve, reject) => {
+        setTimeout(function () {
+          resolve("fast");
+        }, 10);
+      })
+
+      let p1 = new Promise<string | null>((resolve, reject) => {
+        setTimeout(function () {
+          resolve("slow");
+        }, 15);
+      })
+
+      let p2 = new Promise<string | null>((resolve, reject) => {
+        setTimeout(function () {
+          reject(null)
+        }, 12);
+      })
+
+      // test for resolve
+      Promise.race([p0, p1])
+        .then((res) => {
+          console.log("test for race resolve ===> ", res);
+          expect(res).toEqual("fast");
+        })
+
+      // test for reject 
+      Promise.race([p1, p2])
+        .then()
+        .catch((error) => {
+          console.log("test for race reject ===> ", error);
+          expect(error).toEqual(null);
+        })
+      // #END
+    })
+  })
+}

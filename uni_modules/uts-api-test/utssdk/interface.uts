@@ -1,0 +1,3 @@
+
+/* 同步函数定义 */
+export type GetLog = (logObject :  Any|null) => string

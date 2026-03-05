@@ -1,0 +1,87 @@
+{
+    "id": "hello-uts-alpha",
+    "name": "hello-uts-alpha",
+    "displayName": "hello-uts-alpha",
+    "version": "1.0.56",
+    "description": "UTS插件示例项目",
+    "repository": "https://gitcode.net/dcloud/hello-uts",
+    "keywords": [
+        "uts",
+        "示例工程"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {},
+    "engines": {
+        "HBuilderX": "^3.99"
+    },
+    "dcloudext": {
+        "sale": {
+            "regular": {
+                "price": "0.00"
+            },
+            "sourcecode": {
+                "price": "0.00"
+            }
+        },
+        "contact": {
+            "qq": ""
+        },
+        "declaration": {
+            "ads": "无",
+            "data": "不采集任何数据",
+            "permissions": "- android.permission.INTERNET  \n- android.permission.READ_EXTERNAL_STORAGE  \n- android.permission.WRITE_EXTERNAL_STORAGE  \n- android.permission.ACCESS_FINE_LOCATION  \n- android.permission.ACCESS_COARSE_LOCATION  \n- android.permission.ACCESS_NETWORK_STATE  \n- android.permission.READ_MEDIA_IMAGES  \n- android.permission.READ_MEDIA_VIDEO"
+        },
+        "npmurl": "",
+        "type": "uniapp-template-project"
+    },
+    "uni_modules": {
+        "dependencies": [],
+        "encrypt": [],
+        "platforms": {
+            "cloud": {
+                "tcb": "y",
+                "aliyun": "y"
+            },
+            "client": {
+                "App": {
+                    "app-vue": "y",
+                    "app-nvue": "n",
+                    "app-uvue": "n"
+                },
+                "H5-mobile": {
+                    "Safari": "n",
+                    "Android Browser": "n",
+                    "微信浏览器(Android)": "n",
+                    "QQ浏览器(Android)": "n"
+                },
+                "H5-pc": {
+                    "Chrome": "n",
+                    "IE": "n",
+                    "Edge": "n",
+                    "Firefox": "n",
+                    "Safari": "n"
+                },
+                "小程序": {
+                    "微信": "n",
+                    "阿里": "n",
+                    "百度": "n",
+                    "字节跳动": "n",
+                    "QQ": "n",
+                    "京东": "n",
+                    "钉钉": "n",
+                    "快手": "n",
+                    "飞书": "n"
+                },
+                "快应用": {
+                    "华为": "n",
+                    "联盟": "n"
+                },
+                "Vue": {
+                    "vue2": "y",
+                    "vue3": "y"
+                }
+            }
+        }
+    }
+}

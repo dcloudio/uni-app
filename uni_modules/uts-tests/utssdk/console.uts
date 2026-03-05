@@ -1,0 +1,52 @@
+import { describe, test, expect, expectNumber, Result } from './tests.uts'
+
+// #ifdef APP-ANDROID
+function obtainInnerObject(obj:any | null):UTSJSONObject{
+  let jsonStr = console.getLogV2(obj).slice(19,-17)
+  let a = JSON.parseArray(jsonStr)![0]
+  return a as UTSJSONObject
+}
+// #endif
+
+export function testConsole() : Result {
+  return describe("log", () => {
+    test('log-native-obj', () => {
+      // #ifdef APP-ANDROID
+        expect(obtainInnerObject(0.9).get("type")).toEqual("number");
+        expect(obtainInnerObject(0.9).get("subType")).toEqual("number");
+        expect(obtainInnerObject(0.9).get("value")).toEqual("0.9");
+        
+      // #endif
+      
+      // #ifdef UNI-APP-X && APP-ANDROID
+        let pageInstance = new io.dcloud.uniapp.vue.ComponentInternalInstance()
+        expect(obtainInnerObject(pageInstance).get("className")).toEqual("io.dcloud.uniapp.vue.ComponentInternalInstance");
+        expect(obtainInnerObject(pageInstance).get("type")).toEqual("object");
+        
+        let event1 = new UniNativeViewEvent("000111",{
+        	"name":"zhangsan",
+        	"age":12
+        })
+        let obtainRet = obtainInnerObject(event1)
+        console.log("obtainRet",obtainRet)
+        let aa1 = (obtainInnerObject(obtainRet) as UTSJSONObject).toJSONString()
+        expect(JSON.stringify(event1).length).toEqual(55);
+        expect(aa1.length > 5500).toEqual(true);
+      // #endif
+    })
+    
+    test('console-number-from-JSON-parse', () => {
+      // #ifdef APP-ANDROID
+      
+      let aj2 = JSON.parse('{"a":1}') as UTSJSONObject;
+      
+      expect(obtainInnerObject(aj2['a']).get("type")).toEqual("number");
+      expect(obtainInnerObject(aj2['a']).get("subType")).toEqual("number");
+      
+      // #endif
+      
+    })
+    
+  })
+  
+}

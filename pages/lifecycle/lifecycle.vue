@@ -1,0 +1,79 @@
+
+<template>
+	<view>
+		<page-head :title="title"></page-head>
+		<button @tap="testGoOtherActivity">跳转选择界面</button>
+		<image :src="selectImage" v-if="selectImage"></image>
+		<button @tap="testUnRegLifecycle">取消注册周期函数</button>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-hello-text">
+				1. 当前页面已通过initAppLifecycle函数注册了生命周期监听。
+			</view>
+			<view class="uni-hello-text">
+				2. 手动切换其他APP再返回，可在控制台和界面观察事件日志
+			</view>
+		</view>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="text-box" scroll-y="true">
+				<text>{{text}}</text>
+			</view>
+		</view>
+	</view>
+</template>
+<script>
+	import { initAppLifecycle,unRegLifecycle,goOtherActivity } from '../../uni_modules/uts-advance';
+	export default {
+		data() {
+			return {
+				title: '生命周期监听',
+				text: '',
+				selectImage:""
+			}
+		},
+		onLoad:function(){
+			let that = this;
+			initAppLifecycle(function(eventLog){
+				// 展示捕捉到的声明周期日志
+				that.text = that.text += eventLog;
+				that.text = that.text += '\n';
+			});
+		},
+		methods:{
+			testGoOtherActivity(){
+				var that = this;
+				let ret = goOtherActivity(function(file){
+					// 展示捕捉到的声明周期日志
+					console.log(file);
+					that.selectImage = "file://" + file;
+				});
+				
+				if(!ret){
+					uni.showToast({
+						icon:'none',
+						title:'请授予权限后重试'
+					})
+				}
+			},
+			testUnRegLifecycle(){
+				// 取消注册生命周期
+				unRegLifecycle();
+			}
+		}
+	}
+</script>
+
+<style>
+	.text-box {
+		margin-bottom: 40rpx;
+		padding: 40rpx 0;
+		display: flex;
+		min-height: 300rpx;
+		background-color: #FFFFFF;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		font-size: 30rpx;
+		color: #353535;
+		line-height: 1.8;
+	}
+</style>

@@ -1,0 +1,92 @@
+<template>
+	<button @click="inputArrayTest">传入数组参数</button>
+	<button @click="inputParamTest">传入复杂对象参数</button>
+	<button @click="returnArrayTest">返回数组参数</button>
+	<button @click="returnParamTest">返回复杂对象参数</button>
+	<button @click="callbackArrayTest">异步返回数组</button>
+	<button @click="callbackParamTest">异步返回复杂对象</button>
+</template>
+
+<script>
+	import {
+		inputArray,
+		inputParam,
+		returnArray,
+		returnParam,
+		callbackArray,
+		callbackParam,
+        ParamOptions
+	} from '@/uni_modules/uts-advance'
+
+
+
+	export default {
+		data() {
+			return {}
+		},
+		methods: {
+			
+			inputArrayTest() {
+				let ret = inputArray(['a', 'b', 'c'])
+				if (ret) {
+					uni.showToast({
+						title: '测试通过'
+					})
+				}
+			},
+
+			inputParamTest() {
+				let ret = inputParam({
+					title: "hello",
+					array: ["1", "2", "3"]
+				} as ParamOptions)
+				if (ret) {
+					uni.showToast({
+						title: '测试通过'
+					})
+				}
+			},
+			returnArrayTest() {
+				let ret = returnArray()
+				if ('["1","2","3"]' == JSON.stringify(ret)) {
+					uni.showToast({
+						title: '测试通过'
+					})
+				}
+			},
+			returnParamTest() {
+				let ret = returnParam()
+				if ('{"title":"returnParam","array":["1","2","3"]}' == JSON.stringify(ret)) {
+					uni.showToast({
+						title: '测试通过'
+					})
+				}
+			},
+
+			callbackArrayTest() {
+				callbackArray(function(res) {
+					if ('["8","8","8"]' == JSON.stringify(res)) {
+						uni.showToast({
+							title: '测试通过'
+						})
+					}
+				});
+
+			},
+
+			callbackParamTest() {
+				callbackParam(function(res) {
+					if ('{"title":"callbackParam","array":["4","5","6"]}' == JSON.stringify(res)) {
+						uni.showToast({
+							title: '测试通过'
+						})
+					}
+				});
+			}
+
+		}
+	}
+</script>
+
+<style>
+</style>

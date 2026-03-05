@@ -1,0 +1,37 @@
+
+import XToast from "com.hjq.xtoast.XToast";
+import R from "io.dcloud.uni_modules.uts_toast.R";
+
+
+class UIRunnable implements Runnable {
+
+    override run():void {
+		
+	
+       new XToast<XToast<unknown>>(UTSAndroid.getUniActivity())
+       				.setDuration(1000)
+       				.setContentView(R.layout.window_hint)
+       				.setImageDrawable(android.R.id.icon,  android.R.mipmap.sym_def_app_icon)
+       				.setText(android.R.id.message, "一秒后自动消失")
+       				.show()
+
+    }
+};
+
+export function showToast():boolean{
+	let hasXToastIntegration =  true
+	try{
+		let xToastClass = Class.forName("com.hjq.xtoast.XToast")
+		console.log(xToastClass)
+	}catch(e:Exception){
+		hasXToastIntegration = false;
+	}
+	
+	if(!hasXToastIntegration){
+		return false;
+	}
+
+	let toastRunable = new UIRunnable();
+	UTSAndroid.getUniActivity()!.runOnUiThread(toastRunable)
+	return true
+}

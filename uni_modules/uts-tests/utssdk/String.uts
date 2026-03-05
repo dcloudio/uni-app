@@ -1,0 +1,762 @@
+import { describe, test, expect, Result } from './tests.uts'
+
+export function testString(): Result {
+  return describe("String", () => {
+    test('length', () => {
+      // #TEST String.length
+      const x = "Mozilla";
+      const e = "";
+
+      console.log("Mozilla is " + `${x.length}` + " code units long");
+      /* "Mozilla is 7 code units long" */
+
+      console.log("The empty string is has a length of " + `${e.length}`);
+      /* "The e string is has a length of 0" */
+      // #END
+
+      expect(x.length).toEqual(7);
+      // expect(x[0]).toEqual('M');
+      const empty = "";
+      expect(empty.length).toEqual(0);
+      // const adlam = "𞤲𞥋𞤣𞤫";
+      // expect(adlam.length).toEqual(8);
+      // const formula = "��𝑥∈ℝ,𝑥²��";
+      // expect(formula.length).toEqual(11);
+
+      // 1. web: ��大长度和js引擎有关，在v8中为 2^29 - 24
+      // 超出边界报错: RangeError: Invalid string length
+      // 2. kotlin: ��大长��2^31-1
+      // 超出边界报错:  Error: targetMethod error::java.lang.OutOfMemoryError: char[] of length
+      // 3. swift: ��大长度和内存有关
+      // 超出边界没有返回信息
+      // const length = Math.pow(2, 29) - 24
+      // const str = 'x'.repeat(length);
+      // expect(str.length).toEqual(11);
+    })
+    // #ifndef APP-HARMONY
+    test('at', () => {
+      // #TEST String.at
+      const sentence = 'The quick brown fox jumps over the lazy dog.';
+      let index = 5;
+      console.log(`Using an index of ${index} the character returned is ${sentence.at(index)}`);
+      // expected output: "Using an index of 5 the character returned is u"
+      index = -4;
+      console.log(`Using an index of ${index} the character returned is ${sentence.at(index)}`);
+      // expected output: "Using an index of -4 the character returned is d"
+      // #END
+
+      index = 5;
+      expect(sentence.at(index)).toEqual("u");
+      index = -4;
+      expect(sentence.at(index)).toEqual("d");
+      expect(sentence.at(999)).toEqual(null);
+
+      let invoiceRef = 'myinvoice01';
+      expect(invoiceRef.at(-1)).toEqual("1");
+      invoiceRef = 'myinvoice02';
+      expect(invoiceRef.at(-1)).toEqual("2");
+      expect(invoiceRef.at(-999)).toEqual(null);
+
+      const empty = "";
+      expect(empty.at(0)).toEqual(null);
+    })
+    // #endif
+    test('charAt', () => {
+      // #TEST String.charAt
+      const anyString = "Brave new world";
+      console.log("The character at index 0   is '" + anyString.charAt(0) + "'");
+      // The character at index 0 is 'B'
+      console.log("The character at index 1   is '" + anyString.charAt(1) + "'");
+      // The character at index 1 is 'r'
+      console.log("The character at index 2   is '" + anyString.charAt(2) + "'");
+      // The character at index 2 is 'a'
+      console.log("The character at index 3   is '" + anyString.charAt(3) + "'");
+      // The character at index 3 is 'v'
+      console.log("The character at index 4   is '" + anyString.charAt(4) + "'");
+      // The character at index 4 is 'e'
+      console.log("The character at index 999 is '" + anyString.charAt(999) + "'");
+      // The character at index 999 is ''
+      // #END
+
+
+
+      expect(anyString.charAt(0)).toEqual("B");
+      expect(anyString.charAt(1)).toEqual("r");
+      expect(anyString.charAt(2)).toEqual("a");
+      expect(anyString.charAt(3)).toEqual("v");
+      expect(anyString.charAt(4)).toEqual("e");
+      expect(anyString.charAt(999)).toEqual("");
+      expect(anyString.charAt(-1)).toEqual("");
+      expect(anyString.charAt(-2)).toEqual("");
+      expect(anyString.charAt(-999)).toEqual("");
+
+      const empty = "";
+      expect(empty.charAt(0)).toEqual("");
+    })
+    test('toWellFormed', () => {
+      // #ifdef APP-ANDROID
+      // #TEST String.toWellFormed
+      let ret = "ab\uD800".toWellFormed()
+      console.log(ret) //"ab\uFFFD"
+      // #END
+
+      expect(ret).toEqual("ab\uFFFD");
+      expect("ab\uD800c".toWellFormed()).toEqual("ab\uFFFDc");
+      expect("\uDFFFab".toWellFormed()).toEqual("\uFFFDab");
+      expect("c\uDFFFab".toWellFormed()).toEqual("c\uFFFDab");
+      expect("abc".toWellFormed()).toEqual("abc");
+      expect("ab\uD83D\uDE04c".toWellFormed()).toEqual("ab\uD83D\uDE04c");
+      expect("ab\uD83D\uDE04c".toWellFormed()).toEqual("ab\uD83D\uDE04c");
+      expect("ab\uD83D\uDE04c\uD83D".toWellFormed()).toEqual("ab\uD83D\uDE04c\uFFFD");
+      // #endif
+    })
+    test('isWellFormed', () => {
+      // #ifdef APP-ANDROID
+      // #TEST String.isWellFormed
+      let ret = "ab\uD800".isWellFormed()
+      console.log(ret) //false
+      // #END
+
+      expect(ret).toEqual(false);
+      expect("ab\uD800c".isWellFormed()).toEqual(false);
+      expect("\uDFFFab".isWellFormed()).toEqual(false);
+      expect("c\uDFFFab".isWellFormed()).toEqual(false);
+      expect("abc".isWellFormed()).toEqual(true);
+      expect("ab\uD83D\uDE04c".isWellFormed()).toEqual(true);
+      expect("ab\uD83D\uDE04c".isWellFormed()).toEqual(true);
+      expect("ab\uD83D\uDE04c\uD83D".isWellFormed()).toEqual(false);
+      // #endif
+    })
+    test('charCodeAt', () => {
+      // #TEST String.charCodeAt
+      const sentence = 'The quick brown fox jumps over the lazy dog.';
+      const index = 4;
+      console.log(`The character code ${sentence.charCodeAt(index)} is equal to ${sentence.charAt(index)}`);
+      // expected output: "The character code 113 is equal to q"
+      // #END
+
+      expect(sentence.charCodeAt(index)).toEqual(113);
+
+      expect("ABC".charCodeAt(0)).toEqual(65);
+      expect("ABC".charCodeAt(1)).toEqual(66);
+      expect("ABC".charCodeAt(2)).toEqual(67);
+      expect("ABC".charCodeAt(3)).toEqual(NaN);
+
+      const empty = "";
+      expect(empty.charCodeAt(0)).toEqual(NaN);
+    })
+    test('fromCharCode', () => {
+      // #TEST String.fromCharCode
+      console.log(String.fromCharCode(65, 66, 67));
+      // expected output: "ABC"
+      console.log(String.fromCharCode(0x12014));
+      // expected output: "𝌆a𝌇"
+      // #END
+
+      expect(String.fromCharCode(65, 66, 67)).toEqual("ABC");
+      expect(String.fromCharCode(0x12014)).toEqual("—");
+      expect(String.fromCharCode(0xd834, 0xdf06, 0x61, 0xd834, 0xdf07)).toEqual("𝌆a𝌇");
+    })
+    test('concat', () => {
+      // #TEST String.concat
+      let hello = 'Hello, '
+      let ret1 = hello.concat('Kevin', '. Have a nice day.')
+      console.log(ret1)
+      // Hello, Kevin. Have a nice day.
+      // #END
+
+      expect(ret1).toEqual("Hello, Kevin. Have a nice day.");
+      expect("".concat('abc')).toEqual("abc");
+    })
+    test('endsWith', () => {
+      // #TEST String.endsWith
+      const str1 = 'Cats are the best!';
+      console.log(str1.endsWith('best!'));
+      // expected output: true
+      console.log(str1.endsWith('best', 17));
+      // expected output: true
+      const str2 = 'Is this a question?';
+      console.log(str2.endsWith('question'));
+      // expected output: false
+      // #END
+
+      expect(str1.endsWith('best!')).toEqual(true);
+      expect(str1.endsWith('best', 17)).toEqual(true);
+      expect(str2.endsWith('question')).toEqual(false);
+      expect("".includes("test")).toEqual(false);
+    })
+    test('includes', () => {
+
+      // #TEST String.includes
+      const sentence = 'The quick brown fox jumps over the lazy dog.';
+      const word = 'fox';
+      console.log(sentence.includes(word)) // true
+      // #END
+
+      expect(sentence.includes(word)).toEqual(true);
+
+      expect("Blue Whale".includes("blue")).toEqual(false);
+      expect("Blue Whale".toLowerCase().includes("blue")).toEqual(true);
+
+      expect("".includes("test")).toEqual(false);
+    })
+    test('indexOf', () => {
+      // #TEST String.indexOf
+      const paragraph = 'The quick brown fox jumps over the lazy dog. If the dog barked, was it really lazy?';
+      const searchTerm = 'dog';
+      const indexOfFirst = paragraph.indexOf(searchTerm);
+      console.log(`The index of the first "${searchTerm}" from the beginning is ${indexOfFirst}`);
+      // expected output: "The index of the first "dog" from the beginning is 40"
+
+      console.log(`The index of the 2nd "${searchTerm}" is ${paragraph.indexOf(searchTerm, (indexOfFirst + 1))}`);
+      // expected output: "The index of the 2nd "dog" is 52"
+      // #END
+
+      expect(indexOfFirst).toEqual(40);
+      expect(paragraph.indexOf(searchTerm, (indexOfFirst + 1))).toEqual(52);
+
+      expect('Blue Whale'.indexOf('Blue')).toEqual(0);
+      expect('Blue Whale'.indexOf('Blute')).toEqual(-1);
+      expect('Blue Whale'.indexOf('Whale', 0)).toEqual(5);
+      expect('Blue Whale'.indexOf('Whale', 5)).toEqual(5);
+      expect('Blue Whale'.indexOf('Whale', 7)).toEqual(-1);
+
+      expect("".indexOf("test")).toEqual(-1);
+    })
+
+    test('match', () => {
+      // #TEST String.match
+      const str = 'The quick brown fox jumps over the lazy dog. It barked.';
+      const result = str.match(new RegExp('[A-Z]', 'g'));
+      console.log(result![0])//"T"
+      // #END
+      // expect(result!.length).toEqual(2);
+      expect(result![0]).toEqual("T");
+      expect(result![1]).toEqual("I");
+
+      const result2 = str.match(new RegExp('[A-Z]'));
+      // expect(result2!.length).toEqual(1);
+      expect(result2![0]).toEqual("T");
+
+      // #ifdef APP-ANDROID
+      const gradientString = 'linear-gradient(to right, rgb(255, 0, 0), #00FF00, hsl(120, 100%, 50%))';
+      const pattern = /rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)|#([a-fA-F0-9]{2}){3}|hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)/g;
+      const result3 = gradientString.match(pattern);
+      expect(result3?.length).toEqual(3);
+      expect(result3?.[0]).toEqual("rgb(255, 0, 0)");
+      expect(result3?.[2]).toEqual("hsl(120, 100%, 50%)");
+
+      const pattern2 = /rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)|#([a-fA-F0-9]{2}){3}|hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)/;
+      const result4 = gradientString.match(pattern2);
+      expect(result4?.length).toEqual(8);
+      expect(result4?.[0]).toEqual("rgb(255, 0, 0)");
+      expect(result4?.[1]).toEqual("255");
+      expect(result4?.[2]).toEqual("0");
+
+
+      const url = '';
+      const urlRegex = /^(\w+):\/\/([^\/?#]+)([^?#]*)(\?[^#]*)?(#.*)?$/;
+      const match = url.match(urlRegex);
+      expect(JSON.stringify(match)).toEqual("null");
+      // #endif
+
+    })
+    test('padEnd', () => {
+      // #TEST String.padEnd
+      const str1 = 'Breaded Mushrooms';
+      let ret1 = str1.padEnd(25, '.')
+      console.log(ret1);
+      // expected output: "Breaded Mushrooms........"
+      const str2 = '200';
+      let ret2 = str2.padEnd(5)
+      console.log(ret2);
+      // expected output: "200  "
+      // #END
+
+      expect(str1.padEnd(25, '.')).toEqual("Breaded Mushrooms........");
+      expect(ret2).toEqual("200  ");
+
+      expect('abc'.padEnd(10)).toEqual("abc       ");
+      expect('abc'.padEnd(10, "foo")).toEqual("abcfoofoof");
+      expect('abc'.padEnd(6, "123456")).toEqual("abc123");
+      expect('abc'.padEnd(1)).toEqual("abc");
+    })
+    test('padStart', () => {
+      // #TEST String.padStart
+      const str1 = '5';
+      let ret = str1.padStart(2, '0')
+      console.log(ret);
+      // expected output: "05"
+      // #END
+
+      expect(ret).toEqual("05");
+
+      expect('abc'.padStart(10)).toEqual("       abc");
+      expect('abc'.padStart(10, "foo")).toEqual("foofoofabc");
+      expect('abc'.padStart(6, "123456")).toEqual("123abc");
+      expect('abc'.padStart(8, "0")).toEqual("00000abc");
+      expect('abc'.padStart(1)).toEqual("abc");
+    })
+    test('repeat', () => {
+      const str1 = 'abc';
+      // #TEST String.repeat
+      "abc".repeat(0)      // ""
+      "abc".repeat(1)      // "abc"
+      "abc".repeat(2)      // "abcabc"
+      "abc".repeat(3.5)    // "abcabcabc" 参数 count 将会被自动转换成整数。
+      // #END
+      expect(str1.repeat(0)).toEqual("");
+      expect(str1.repeat(1)).toEqual("abc");
+      expect(str1.repeat(2)).toEqual("abcabc");
+      expect(str1.repeat(3.5)).toEqual("abcabcabc");
+
+      expect("".repeat(1)).toEqual("");
+    })
+    test('replace', () => {
+      // #TEST String.replace
+      const p = 'The quick brown fox jumps over the lazy dog. If the dog reacted, was it really lazy?';
+      let ret1 = p.replace('dog', 'monkey')
+
+      console.log(ret1);
+      // expected output: "The quick brown fox jumps over the lazy monkey. If the dog reacted, was it really lazy?"
+      const regex = /Dog/i;
+      let ret2 = p.replace(regex, 'ferret')
+      console.log(ret2);
+      // expected output: "The quick brown fox jumps over the lazy ferret. If the dog reacted, was it really lazy?"
+      // #END
+
+      expect(ret1).toEqual("The quick brown fox jumps over the lazy monkey. If the dog reacted, was it really lazy?");
+      expect(ret2).toEqual("The quick brown fox jumps over the lazy ferret. If the dog reacted, was it really lazy?");
+      const str = 'abc12345#$*%';
+      const replacer = (match: string, p: string[], offset: number, string: string): string => {
+        // p1 is nondigits, p2 digits, and p3 non-alphanumerics
+        expect(offset).toEqual(0);
+        expect(match).toEqual(str);
+        expect(string).toEqual(str);
+        return p.join(' - ');
+      }
+
+
+      // #TEST String.replace_1
+      // #ifdef APP-ANDROID
+      // 不包含捕捉组的示例
+      let a = "The quick brown fox jumps over the lazy dog. If the dog reacted, was it really lazy?"
+      let b = a.replace(RegExp("fox"), function (match: string, offset: number, string: string): string {
+        console.log("match", match)
+        console.log("offset", offset)
+        console.log("string", string)
+        return "cat"
+      })
+      console.log("b:", b)
+
+      // 包含一个捕获组的示例。注意，目前android仅支持最多五个捕获组
+      let a1 = "The quick brown fox jumps over the lazy dog. If the dog reacted, was it really lazy?"
+      let b1 = a1.replace(RegExp("(fox)"), function (match: string, p1: string | null, offset: number, string: string): string {
+        console.log("match", match)
+        console.log("p1", p1)
+        console.log("offset", offset)
+        console.log("string", string)
+        return "cat"
+      })
+      console.log("b1", b1)
+      // #endif
+
+      // #END
+
+      // const REGEX_FORMAT = /[YMDHhms]o|\[([^\]]+)]|Y{1,4}|M{1,4}|D{1,2}|d{1,4}|H{1,2}|h{1,2}|a{1,2}|A{1,2}|m{1,2}|s{1,2}|Z{1,2}|SSS/g
+      // const formatStr = 'This is a [sample] text with [another] capture group.'
+      // const nextStr = formatStr.replace(REGEX_FORMAT, (match:string, p1: string|null, offset: number, string: string):string =>{
+      // 	console.log('123', p1, match)
+      // 	return p1 ?? match ?? ''
+      // })
+      // expect(nextStr).toEqual('This is a sample text with another capture group.');
+      // var newString = str.replace(/([^\d]*)(\d*)([^\w]*)/, replacer);
+      // expect(newString).toEqual("abc - 12345 - #$*%");
+      // const str1 = 'hello, world';
+      // const newString1 = str1.replace(/world/, (match: string, offset:number):string => `JavaScript (${offset})`);
+      // expect(newString1).toEqual('hello, JavaScript (7)');
+    })
+    test('search', () => {
+      // #TEST String.search
+      const paragraph = 'The quick brown fox jumps over the lazy dog. If the dog barked, was it really lazy?';
+      const regex = /[^\w\s]/g;
+      // #ifdef APP-ANDROID
+      console.log(paragraph.search(regex));
+      // expected output: 43
+      console.log(paragraph[paragraph.search(regex)]);
+      // expected output: "."
+      // #endif
+      // #END
+
+      expect(paragraph.search(regex)).toEqual(43);
+
+      var str = "hey JudE";
+      var re = /[A-Z]/g;
+      var re2 = /[.]/g;
+      expect(str.search(re)).toEqual(4);
+      expect(str.search(re2)).toEqual(-1);
+      expect("".search(re2)).toEqual(-1);
+    })
+    test('slice', () => {
+      // #TEST String.slice
+      const str = 'The quick brown fox jumps over the lazy dog.';
+      let ret = str.slice(31)
+      console.log(ret);
+      // expected output: "the lazy dog."
+      console.log(str.slice(4, 19));
+      // expected output: "quick brown fox"
+      // #END
+
+      expect(ret).toEqual("the lazy dog.");
+
+      let str1 = 'The morning is upon us.', // str1 的长��length ��23��
+        str2 = str1.slice(1, 8),
+        str3 = str1.slice(4, -2),
+        str4 = str1.slice(12),
+        str5 = str1.slice(30),
+        str6 = str1.slice();
+      expect(str2).toEqual("he morn");
+      expect(str3).toEqual("morning is upon u");
+      expect(str4).toEqual("is upon us.");
+      expect(str5).toEqual("");
+      expect(str6).toEqual("The morning is upon us.");
+
+      expect("".slice()).toEqual("");
+
+      expect("abcdefg".slice(-1)).toEqual("g");
+      expect("abcdefg".slice(-1, -2)).toEqual("");
+
+    })
+    test('split', () => {
+      // #TEST String.split
+      const str = 'The quick brown fox jumps over the lazy dog.';
+      const words = str.split(' ');
+      let ret1 = words[3]
+      console.log(ret1);
+      // expected output: "fox"
+      const chars = str.split('');
+      console.log(chars[8]);
+      // expected output: "k"
+      // #END
+
+      expect(ret1).toEqual("fox");
+      expect(chars[8]).toEqual("k");
+
+      var myString = "Hello World. How are you doing?";
+      var splits = myString.split(" ", 3);
+      var splits1 = myString.split(" ", 10);
+      expect(splits).toEqual(["Hello", "World.", "How"]);
+      expect(splits1).toEqual(['Hello', 'World.', 'How', 'are', 'you', 'doing?']);
+
+      expect(''.split('')).toEqual([])
+      expect('abc'.split('b')).toEqual(["a", "c"])
+      expect('abc'.split('d')).toEqual(["abc"])
+
+      var str1 = "Harry Trump ;Fred Barney; Helen Rigby ; Bill Abel ;Chris Hand ";
+      var re1 = /\s*(?:;|$)\s*/;
+      expect(str1.split(re1)).toEqual(["Harry Trump", "Fred Barney", "Helen Rigby", "Bill Abel", "Chris Hand", ""])
+
+      var str2 = "a, b, c, d,    e";
+      var re2 = /,\s*/g;
+      expect(str2.split(re2)).toEqual(["a", "b", "c", "d", "e"]);
+
+      var str3 = "foo-bar_baz(qux-quux)_corge";
+      var re3 = new RegExp("[_-](?![^(]*\\))", "g");
+      expect(str3.split(re3)).toEqual(["foo", "bar", "baz(qux-quux)", "corge"]);
+
+      var str4 = "a, b, {c, d, e}, f, g, h";
+      var re4 = /,(?![^{]*\})/;
+      expect(str4.split(re4)).toEqual(["a", " b", " {c, d, e}", " f", " g", " h"]);
+
+      let a1 = "#d1d1d1".replace(RegExp("\\s*,\\s*", "g"), ",")
+      let a2 = a1.split(RegExp("\\s+", ""));
+      expect(a2).toEqual(["#d1d1d1"]);
+
+      let a3 = "123456a".split(RegExp("\\d+", ""));
+      expect(a3).toEqual(["", "a"]);
+
+      let a4 = "123456a".split(RegExp("\\d+", ""));
+      expect(a4).toEqual(["", "a"]);
+
+      let a5 = "778899	003213".split(RegExp("\\s+", ""));
+      expect(a5).toEqual(["778899", "003213"]);
+
+      const str5 = 'The quick brown fox jumps over the lazy dog.';
+      const chars5 = str5.split('', 2);
+      expect(chars5.length).toEqual(2);
+
+      const str6 = "Hello World. How are you doing?";
+      const chars6 = myString.split("", 3);
+
+      expect(chars6.length).toEqual(3);
+      expect(chars6[2]).toEqual("l");
+      let a6 = "".split("", 2)
+      expect(a6.length).toEqual(0);
+      let a7 = "".split("")
+      expect(a7.length).toEqual(0);
+
+      // #ifdef APP-ANDROID
+      let sp1 = "😄😄".split(RegExp("(?:)", ""));
+      let sp2 = "😄😄".split(RegExp("(?:)", "u"));
+      expect(sp1.length).toEqual(4);
+      expect(sp2.length).toEqual(2);
+      // #endif
+    })
+    test('toLowerCase', () => {
+      // #TEST String.toLowerCase
+      const str1 = '中文简体 zh-CN || zh-Hans';
+      const str2 = 'ALPHABET';
+      console.log('str1'.toLowerCase());
+      // 中文简体 zh-cn || zh-hans
+      console.log(str2.toLowerCase());
+      // "alphabet"
+      // #END
+
+      expect(str1.toLowerCase()).toEqual("中文简体 zh-cn || zh-hans");
+
+      expect(str2.toLowerCase()).toEqual("alphabet");
+    })
+    test('toUpperCase', () => {
+      // #TEST String.toUpperCase
+      const sentence = 'The quick brown fox jumps over the lazy dog.';
+      console.log(sentence.toUpperCase());
+      // expected output: "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG."
+      // #END
+
+      expect(sentence.toUpperCase()).toEqual("THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.");
+    })
+
+    test("lastIndexOf", () => {
+      // #TEST String.lastIndexOf
+      console.log('canal'.lastIndexOf('a'))//3
+      // #END
+      expect('canal'.lastIndexOf('a')).toEqual(3);
+      expect('canal'.lastIndexOf('a', 2)).toEqual(1);
+      expect('canal'.lastIndexOf('a', 0)).toEqual(-1);
+      expect('canal'.lastIndexOf('')).toEqual(5);
+      expect('canal'.lastIndexOf('', 2)).toEqual(2);
+      expect("Blue Whale, Killer Whale".lastIndexOf("Whale")).toEqual(19);
+      expect("Blue Whale, Killer Whale".lastIndexOf("blue")).toEqual(-1);
+    })
+    test("substring", () => {
+      // #TEST String.substr
+      var str1 = "Mozilla";
+      let ret = str1.substring(0, 3)
+      console.log(ret)//"Moz"
+      // #END
+
+      expect(ret).toEqual("Moz");
+      expect(str1.substring(3, 0)).toEqual("Moz");
+      expect(str1.substring(3, -3)).toEqual("Moz");
+
+      var str2 = "hello world";
+      // expect(str2.substring()).toEqual("hello world");
+      expect(str2.substring(6)).toEqual("world");
+      expect(str2.substring(0)).toEqual("hello world");
+      expect(str2.substring(0, 5)).toEqual("hello");
+      expect(str2.substring(6, 11)).toEqual("world");
+      expect(str2.substring(3, 8)).toEqual("lo wo");
+      expect(str2.substring(0, -1)).toEqual("");
+      expect(str2.substring(0, 20)).toEqual("hello world");
+
+      var str3 = "aaa";
+      expect(str3.substring(10, 1)).toEqual("aa");
+    })
+    test("trim", () => {
+      // #TEST String.trim
+      let greeting = '   Hello world!   ';
+      let ret = greeting.trim()
+      console.log(ret) //Hello world!
+      // #END
+      expect(ret).toEqual("Hello world!");
+      const orig: string = '   foo  ';
+      expect(orig.trim()).toEqual("foo");
+      const str = '\t\t\tworld\t\t\t';
+      expect(str.trim()).toEqual('world');
+      const str1 = '\n\n\nhello\n\n\n';
+      expect(str1.trim()).toEqual('hello');
+      const str2 = '';
+      expect(str2.trim()).toEqual('');
+    })
+    test("trimStart", () => {
+      const str = '    Hello World   ';
+      expect(str.trimStart()).toEqual('Hello World   ');
+      const str1 = 'Hello World';
+      expect(str1.trimStart()).toEqual(str1);
+      const str2 = '   \t  \n   ';
+      expect(str2.trimStart()).toEqual('');
+    })
+    test("trimEnd", () => {
+      const str = '    Hello World   ';
+      expect(str.trimEnd()).toEqual('    Hello World');
+      const str1 = 'Hello World';
+      expect(str1.trimEnd()).toEqual(str1);
+      const str2 = '   \t  \n   ';
+      expect(str2.trimEnd()).toEqual('');
+    })
+    test("startsWith", () => {
+      // #TEST String.startsWith
+      const str = 'hello world';
+      console.log(str.startsWith('hello'))//true
+      // #END
+
+      expect(str.startsWith('hello')).toEqual(true);
+      expect(str.startsWith('h')).toEqual(true);
+      expect(str.startsWith('HELLO')).toEqual(false);
+      expect(str.startsWith('o')).toEqual(false);
+
+      const str1: string = "To be, or not to be, that is the question.";
+      expect(str1.startsWith("To be")).toEqual(true);
+      expect(str1.startsWith("not to be")).toEqual(false);
+      expect(str1.startsWith("not to be", 10)).toEqual(true);
+      expect(str1.startsWith("not to be", 8)).toEqual(false);
+    })
+    test("toStringNullTest1", () => {
+      const visibilitylist = {
+        v: 'visible',
+        h: 'hidden',
+        c: 'collapse'
+      }
+      let b: string = `fdsfa${visibilitylist['n']}`
+      // #ifdef APP-ANDROID
+      expect(b).toEqual("fdsfanull");
+      // #endif
+      // TODO: 需要编译器协助调用自定义函数将nil转成null
+      // #ifdef APP-IOS
+      expect(b).toEqual("fdsfanil");
+      // #endif
+
+      let a: Number | null = null
+      let ab: string = `aaa${a}`
+      // #ifdef APP-ANDROID
+      expect(ab).toEqual("aaanull");
+      // #endif
+      // #ifdef APP-IOS
+      expect(ab).toEqual("aaanil");
+      // #endif
+
+      // let c:Any|null = "123"
+      // c = null
+      let ac: string = `ccc${a}`
+      // #ifdef APP-ANDROID
+      expect(ac).toEqual("cccnull");
+      // #endif
+      // #ifdef APP-IOS
+      expect(ac).toEqual("cccnil");
+      // #endif
+
+    })
+    test("matchAll", () => {
+      // const reg = /t(e)(st(\d?))/g;
+      // const str = 'test1test2';
+      // const result = [...str.matchAll(reg)];
+      // expect(result[0]).toEqual(["test1", "e", "st1", "1"]);
+      // expect(result[1]).toEqual(["test2", "e", "st2", "2"]);
+
+      // const reg1 =  /[A-Z]/g;
+      // const str1 = 'The quick brown fox jumps over the lazy dog';
+      // const result1 = [...str1.matchAll(reg1)];
+      // expect(result1[0]).toEqual(["T"]);
+    })
+    test("replaceAll", () => {
+      // const p = 'The quick brown fox jumps over the lazy dog. If the dog reacted, was it really lazy?';
+      // expect(p.replaceAll('dog', 'monkey')).toEqual("The quick brown fox jumps over the lazy monkey. If the monkey reacted, was it really lazy?");
+      // const regex = /Dog/ig;
+      // expect(p.replaceAll(regex, 'ferret')).toEqual( "The quick brown fox jumps over the lazy ferret. If the ferret reacted, was it really lazy?");
+
+      // const reg = /[aeiou]/g;
+      // const str = 'The quick brown fox jumps over the lazy dog';
+      // const result = str.replaceAll(reg, '!');
+      // expect(result).toEqual("Th! q!!ck br!wn f!x j!mps !v!r th! l!zy d!g");
+
+      // const reg1 = /o/g;
+      // const str1 = 'Hello World!';
+      // const result1 = str1.replaceAll(reg1, (match, offset, original) => {
+      //     expect(match).toEqual('o');
+      //     expect(original[offset]).toEqual('o');
+      //     expect(original).toEqual(str1);
+      //     return `x`;
+      // });
+      // expect(result1).toEqual("Hellx Wxrld!");
+    })
+    test("escape character", () => {
+      function getCharCodes(str : string) : number[] {
+        return str.split("").map((char) => char.charCodeAt(0) as number);
+      }
+      const escapeTestMap = new Map<string, number[]>([
+        // 基本字符串测试
+        ['a"a"', [97, 34, 97, 34]],
+        ["a\"a\"'a'", [97, 34, 97, 34, 39, 97, 39]],
+        ["a", [97]],
+        ["数字天堂", [25968, 23383, 22825, 22530]],
+        ["$2.00", [36, 50, 46, 48, 48]],
+        ["$a", [36, 97]],
+        ["\\n", [92, 110]],
+        ["\\d+", [92, 100, 43]],
+        ["\u0041BC", [65, 66, 67]],
+        ['{\n\t    "name": "John"\n}', [123, 10, 9, 32, 32, 32, 32, 34, 110, 97, 109, 101, 34, 58, 32, 34, 74, 111, 104, 110, 34, 10, 125]],
+
+        // \x 格式转义序列
+        ["\x00", [0]],
+        ["\x01", [1]],
+        ["\x0F", [15]],
+        ["\x10", [16]],
+        ["\x1F", [31]],
+        ["\x20", [32]],
+        ["\x7F", [127]],
+        ["\xFF", [255]],
+
+        // \u 格式转义序列
+        ["\u0000", [0]],
+        ["\u0001", [1]],
+        ["\u000F", [15]],
+        ["\u0010", [16]],
+        ["\u001F", [31]],
+        ["\u0020", [32]],
+        ["\u007F", [127]],
+        ["\u00FF", [255]],
+        ["\u2028", [8232]],
+        ["\u2029", [8233]],
+        ["\uFEFF", [65279]],
+
+        // 基本转义字符
+        ["\n", [10]],
+        ["\t", [9]],
+        ["\r", [13]],
+        ["\\", [92]],
+        ['"', [34]],
+        ["'", [39]],
+
+        // 模板字符串中的转义
+        [`\x00 null character`, [0, 32, 110, 117, 108, 108, 32, 99, 104, 97, 114, 97, 99, 116, 101, 114]],
+        [`\x1F unit separator`, [31, 32, 117, 110, 105, 116, 32, 115, 101, 112, 97, 114, 97, 116, 111, 114]],
+        [`\u0000 null character`, [0, 32, 110, 117, 108, 108, 32, 99, 104, 97, 114, 97, 99, 116, 101, 114]],
+        [`\u2028 line separator`, [8232, 32, 108, 105, 110, 101, 32, 115, 101, 112, 97, 114, 97, 116, 111, 114]],
+        [`\n newline in template`, [10, 32, 110, 101, 119, 108, 105, 110, 101, 32, 105, 110, 32, 116, 101, 109, 112, 108, 97, 116, 101]],
+        [`\t tab in template`, [9, 32, 116, 97, 98, 32, 105, 110, 32, 116, 101, 109, 112, 108, 97, 116, 101]],
+        [`\\ backslash in template`, [92, 32, 98, 97, 99, 107, 115, 108, 97, 115, 104, 32, 105, 110, 32, 116, 101, 109, 112, 108, 97, 116, 101]],
+        [`\" quote in template`, [34, 32, 113, 117, 111, 116, 101, 32, 105, 110, 32, 116, 101, 109, 112, 108, 97, 116, 101]],
+
+        // 混合转义
+        ['\x00\u0001\n\t\\"', [0, 1, 10, 9, 92, 34]],
+        [`\x00\u0001\n\t\\"`, [0, 1, 10, 9, 92, 34]],
+
+        // 字符串连接中的转义
+        ["\x41", [65]],
+        ["\u0042", [66]],
+        ["\x43", [67]],
+        [`\x41`, [65]],
+        [`\u0042`, [66]],
+        [`\x43`, [67]],
+
+        // 边界情况
+        ["\x0A\x0D", [10, 13]],
+        ["\u000A\u000D", [10, 13]]
+      ]);
+      escapeTestMap.forEach((value : number[], key : string) => {
+        expect(value).toEqual(getCharCodes(key))
+        console.log(value, getCharCodes(key))
+      })
+    });
+  })
+}

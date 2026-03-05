@@ -1,0 +1,9 @@
+import { Options } from '../interface.uts';
+
+export function testTypeFromAppJs(options : Options) {
+  return options instanceof Options
+}
+
+export {
+  Options
+}

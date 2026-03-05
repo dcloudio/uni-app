@@ -1,0 +1,87 @@
+import AppWidgetProvider from 'android.appwidget.AppWidgetProvider';
+import Context from 'android.content.Context';
+import AppWidgetManager from 'android.appwidget.AppWidgetManager';
+import RemoteViews from 'android.widget.RemoteViews';
+import R from 'io.dcloud.uni_modules.uts_nativepage.R';
+
+export class DoAppWidget extends AppWidgetProvider {
+	
+	constructor(){
+		super()
+		console.log("DoAppWidget")
+	}
+	
+	
+    override onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ):void{
+        console.log("周期更新函数被触发")
+        // There may be multiple widgets active, so update all of them
+        for (appWidgetId in appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
+    }
+
+    override onEnabled(_context: Context):void{
+        // Enter relevant functionality for when the first widget is created
+        console.log("桌面组件被添加")
+    }
+
+    override onDisabled(_context: Context):void{
+        // Enter relevant functionality for when the last widget is disabled
+        console.log("桌面组件被移除")
+    }
+
+}
+
+
+
+
+/**
+ * Dialog ui任务封装
+ */
+class UIRunnable implements Runnable {
+	
+	context: Context;
+	appWidgetManager: AppWidgetManager;
+	appWidgetId: Int;
+	widgetText:string;
+	constructor(contextP:Context,appWidgetManagerP: AppWidgetManager,appWidgetIdP: Int,widgetTextP:string){
+		super();
+		this.context = contextP
+		this.appWidgetManager = appWidgetManagerP
+		this.appWidgetId = appWidgetIdP
+		this.widgetText = widgetTextP;
+	}
+
+
+    override run() {
+		let views = new RemoteViews(this.context.packageName, R.layout.do_app_widget)
+		views.setTextViewText(R.id.appwidget_text_sub, this.widgetText)
+		// Instruct the widget manager to update the widget
+		this.appWidgetManager.updateAppWidget(this.appWidgetId, views)
+
+    }
+};
+
+
+
+ function updateAppWidget(
+    context: Context,
+    appWidgetManager: AppWidgetManager,
+    appWidgetId: Int
+) {
+
+	setTimeout(function(){
+		// 模拟请求网络，这里需要替换成真正的网络请求
+		Thread.sleep(1000)
+		let widgetText = "当前股票价格为：13.25元"
+		let uiRunnable = new UIRunnable(context,appWidgetManager,appWidgetId,widgetText)
+		// 更新UI
+		UTSAndroid.getUniActivity()!.runOnUiThread(uiRunnable)
+		
+	},500);
+
+}

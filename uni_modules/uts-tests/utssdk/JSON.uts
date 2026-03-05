@@ -1,0 +1,579 @@
+import { describe, test, expect, expectNumber, Result } from './tests.uts'
+
+
+
+type UserJSON = {
+  id: string;
+  name: string | null;
+}
+
+type PersonJSON = {
+  /**
+  * @JSON_FIELD "a+b"
+  */
+  a_b: string;
+  /**
+  * @JSON_FIELD "a-b"
+  */
+  a_b_: number;
+  /**
+  * @JSON_FIELD "class"
+  */
+  _class: boolean;
+}
+
+
+function countOccurrences(str: string, substr: string): number {
+
+  let count = 0
+  let position = 0
+
+  while (true) {
+    position = str.indexOf(substr, position)
+    if (position == -1) break
+    count++
+    position += substr.length
+  }
+
+  return count;
+}
+
+// #ifdef APP-ANDROID
+class A1 implements IJSONStringify {
+  override toJSON(): any | null {
+    let jsonRet = {
+      'name': "zhangsan",
+      'age': 12,
+    }
+    return jsonRet
+  }
+}
+
+class A2 implements IJSONStringify {
+  toJSON(): any | null {
+    return 2
+  }
+}
+
+class A3 implements IJSONStringify {
+  toJSON(): any | null {
+    return "json"
+  }
+}
+
+class A4 implements IJSONStringify {
+  toJSON(): any | null {
+    return null
+  }
+}
+
+class A5 implements IJSONStringify {
+  toJSON(): any | null {
+    return new A1()
+  }
+}
+
+class A6 implements IJSONStringify {
+  toJSON(): any | null {
+    return new A5()
+  }
+}
+// #endif
+
+export function testJSON(): Result {
+  return describe("JSON", () => {
+
+    test('custom-stringify', () => {
+      // #ifdef APP-ANDROID
+      expect(JSON.stringify(new A1())!.length).toEqual(28)
+      expect(JSON.stringify(new A2())).toEqual("2")
+      expect(JSON.stringify(new A3())).toEqual('"json"')
+      expect(JSON.stringify(new A4())).toEqual('null')
+      // #endif
+      // #ifdef APP-ANDROID
+      // js引擎toJSON不会归调用
+      expect(JSON.stringify(new A5())!.length).toEqual(28)
+      expect(JSON.stringify(new A6())!.length).toEqual(28)
+      // #endif
+      
+    })
+
+    test('parse', () => {
+      // #TEST JSON.parse_tip,JSON.parse
+      const json = `{"result":true, "count":42}`;
+      const obj = JSON.parse(json) as UTSJSONObject;
+      console.log(obj["count"]);
+      // expected output: 42
+
+      console.log(obj["result"]);
+      // expected output: true
+      // #END
+
+
+      expect(obj["count"]).toEqual(42);
+      expect(obj["result"] as boolean).toEqual(true);
+
+      const json1 = `{
+                "name": "John",
+                "age": 30,
+                "city": "New York"
+              }`;
+      const obj1 = JSON.parse(json1);
+      // expect(obj1).toEqual({
+      //     name: 'John',
+      //     age: 30,
+      //     city: 'New York',
+      // });
+      expect((obj1! as UTSJSONObject).getString('name')).toEqual("John")
+
+      // #TEST JSON.parse_1
+      const json2 = '{"string":"Hello","number":42,"boolean":true,"nullValue":null,"array":[1,2,3],"object":{"nestedKey":"nestedValue"}}';
+      const obj2 = JSON.parse<UTSJSONObject>(json2)!;
+      // #END
+      // expect(obj2).toEqual({
+      //     string: 'Hello',
+      //     number: 42,
+      //     boolean: true,
+      //     nullValue: null,
+      //     array: [1, 2, 3],
+      //     object: {
+      //         nestedKey: 'nestedValue',
+      //     },
+      // });
+      expect(obj2['object']).toEqual({
+        nestedKey: 'nestedValue',
+      })
+      expect(obj2.getString("object.nestedKey")).toEqual('nestedValue')
+
+
+      let json3 = `{"id":"216776999999","name":"小王","grade":1.0,"list":[1,2,3],"address":{"province":"beijing","city":"haidian","streat":"taipingzhuang","other":2},"anyValue":[[null,null]],"obj":{"a":1,"b":false,"c":null},"customClass":{"name":"lisi","age":30},"numList":[1,2,3,null],"list2":[1,2,3,4],"dic":{"1":{"c":[null]}},"dicArr":[{"a":{"c":[null]}},{"b":{"c":1}}]}`
+      let obj3 = JSON.parse(json3)! as UTSJSONObject;
+      let obj3Address: any = obj3.getAny("address")!
+      console.log(obj3Address)
+      expect(obj3Address instanceof UTSJSONObject).toEqual(true)
+      // #ifdef APP-HARMONY
+      // arkts any类型使用受限 https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/typescript-to-arkts-migration-guide#限制使用esobject类型
+      let obj3DicArr: (any | null)[] = obj3.getArray("dicArr")!
+      let obj3DicArrFirst = obj3DicArr[0] as UTSJSONObject
+      let obj3DicArrFirstA: any | null = obj3DicArrFirst['a']
+      // #endif
+      // #ifndef APP-HARMONY
+      let obj3DicArr = obj3.getArray("dicArr")!
+      let obj3DicArrFirst = obj3DicArr[0] as UTSJSONObject
+      let obj3DicArrFirstA = obj3DicArrFirst['a']
+      // #endif
+      console.log(obj3DicArrFirstA instanceof UTSJSONObject)
+      expect(obj3DicArrFirstA instanceof UTSJSONObject).toEqual(true)
+      // 目前仅android 支持，暂不放开
+      // let obj3 = JSON.parse<User>(json1);
+      console.log(obj3)
+
+      // const json3 = '["apple","banana","cherry"]';
+      // const obj3 = JSON.parse(json3)!;
+      // TODO JSON.parse 后数组的类型 无法强转
+      // expect(obj3).toEqual(['apple', 'banana', 'cherry']);
+
+      // const json4 = '[1, "two", true, null, {"key": "value"}, ["nested"]]';
+      // const obj4 = JSON.parse(json4)!;
+      // expect(obj4).toEqual([1, 'two', true, null, { key: 'value' }, ['nested']]);
+
+      // TODO 暂不支持多个参数
+      // const json5 = '{"p": 5}';
+      // const obj5 = JSON.parse(json5, function (k : string, v : number) : number {
+      //     if (k === '') return v;
+      //     return v * 2;
+      // })!;
+      // expect(obj5).toEqual({
+      //     p: 10,
+      // });
+
+
+      expect(JSON.parse('{}')!).toEqual({});
+
+      // TODO 不支持boolean、string，js端需抹平
+      // expect(JSON.parse('true')!).toEqual(true);
+      // expect(JSON.parse('"foo"')!).toEqual("foo");
+      // expect(JSON.parse('null')!).toEqual(null);
+
+      const json4 = '{"data":[{"a":"1"},{"a":2},[{"b":true},{"b":"test"}],[1, 2, 3]]}';
+      const obj4 = JSON.parseObject(json4);
+      expect(obj4?.getString('data[0].a')).toEqual("1")
+      expect(obj4?.getNumber('data[1].a')).toEqual(2)
+      expect(obj4?.getBoolean('data[2][0].b')).toEqual(true)
+      expect(obj4?.getAny('data[1].a')).toEqual(2)
+      expect(obj4?.getJSON('data[2][1]')).toEqual({ "b": "test" })
+      expect(obj4?.getArray('data[3]')).toEqual([1, 2, 3])
+      // #ifdef APP-ANDROID
+      let cc1 = JSON.parse<boolean>("12", true)
+      expect(cc1).toEqual(null)
+
+      let cc2 = JSON.parse('{"a"2}', true)
+      expect(cc2).toEqual(null)
+      // #endif
+
+    })
+    test('parseObject', () => {
+      // #TEST JSON.parseObject
+      const json = `{"result":true, "count":42}`;
+      const obj = JSON.parseObject(json);
+      console.log(obj?.["count"])//42
+      // #END
+
+      expect(obj?.["count"]).toEqual(42);
+      expect(obj?.["result"] as boolean).toEqual(true);
+
+      expect(JSON.parseObject('{}')!).toEqual({});
+      // #TEST JSON.parseObject_1
+      const json1 = `{
+			    "name": "John",
+			    "id": "30"
+			  }`;
+      let obj2 = JSON.parseObject<UserJSON>(json1);
+      console.log(obj2!.id) //30
+      // #END
+      expect(obj2!.id).toEqual("30");
+
+      const json2 = `{
+			    "id": "30"
+			  }`;
+      let obj3 = JSON.parseObject<UserJSON>(json2);
+      expect(obj3!.id).toEqual("30");
+      // #ifndef APP-HARMONY
+      const json3 = `{
+			    "name": "John"
+			  }`;
+      let obj4 = JSON.parseObject<UserJSON>(json3);
+      expect(obj4).toEqual(null);
+      // #endif
+    })
+    test('parseArray', () => {
+      // #TEST JSON.parseArray
+      const json1 = `[1,2,3]`;
+      const array1 = JSON.parseArray(json1);
+      console.log(array1)//[1, 2, 3]
+      // #END
+      expect(array1).toEqual([1, 2, 3]);
+
+      const json2 = `[1,"hello world",3]`;
+      const array2 = JSON.parseArray(json2);
+      expect(array2).toEqual([1, "hello world", 3]);
+
+
+      // #ifdef APP-ANDROID
+      // #TEST JSON.parseArray_1
+      const json3 = `[{"name":"John","id":"30"},{"name":"jack","id":"21"}]`;
+      const array3 = JSON.parseArray<UTSJSONObject>(json3);
+      console.log((array3![0])["name"])//"John"
+      // #END
+      expect((array3![0])["name"]).toEqual("John");
+      // #endif
+    })
+
+    test('merge-test-1', () => {
+      // #ifdef APP-ANDROID
+      const data1 = {
+        name: 'Tom1',
+        age: 21
+      };
+
+      const data2 = {
+        aa: {
+          name: 'Tom2',
+          age: 22,
+          bb: {
+            name: 'Tom3',
+            age: 23
+          }
+        }
+      }
+      const obj = Object.assign(JSON.parse<UTSJSONObject>(JSON.stringify(data2))!, JSON.parse<UTSJSONObject>(JSON.stringify(data1))!) as UTSJSONObject;
+      const innerObj = obj.getJSON("aa.bb")
+      expect(innerObj instanceof UTSJSONObject).toEqual(true);
+      // #endif
+    })
+    test('stringify-with-replacer', () => {
+      // #ifdef APP-ANDROID
+      let a = JSON.stringify({ "x": 111, "y": "aaa" })
+      expect(a).toEqual('{"x":111,"y":"aaa"}');
+      let a1 = JSON.stringify({ "x": 111, "y": "aaa" }, function (key: string, value: any | null): any | null {
+        if (key == "x") {
+          return "x"
+        }
+        return value
+      })
+      expect(a1).toEqual('{"x":"x","y":"aaa"}');
+      let a2 = JSON.stringify({ "x": 111, "y": "aaa" }, function (key: string, value: any | null): any | null {
+        if (key == "x") {
+          return "x"
+        }
+        return value
+      }, 6)
+      expect(a2.length).toEqual(36);
+      let a3 = JSON.stringify({ "x": 111, "y": "aaa" }, function (key: string, value: any | null): any | null {
+        if (key == "x") {
+          return "x"
+        }
+        return value
+      }, 11)
+      expect(a3.length).toEqual(44);
+
+      let a4 = JSON.stringify({ "x": 111, "y": "aaa" }, function (key: string, value: any | null): any | null {
+        if (key == "x") {
+          return "x"
+        }
+        return value
+      }, -11)
+      expect(a4.length).toEqual(19);
+
+      let a5 = JSON.stringify({ "x": 111, "y": "aaa", "z": { "x": 123 } }, ["x", 'z'])
+      expect(a5).toEqual('{"x":111,"z":{"x":123}}');
+
+      let a6 = JSON.stringify({ "x": 111, "y": "aaa", "z": { "x": 123 } }, ["x", 'y', 'z'])
+      expect(a6).toEqual('{"x":111,"y":"aaa","z":{"x":123}}');
+      let a7 = JSON.stringify({ "x": 111, "y": "aaa", "z": { "x": 123 } }, ["x", 'y', 'z'], 8)
+      expect(a7.length).toEqual(91);
+
+      let a8 = JSON.stringify({ "x": 111, "y": "aaa", "z": { "x": 123 } }, ["x", 'y', 'z'], "99999")
+
+      expect(a8.length).toEqual(73);
+      expect(countOccurrences(a8, "99999")).toEqual(6);
+
+      // #endif
+    })
+
+
+
+    test('stringify', () => {
+      // #ifdef APP-ANDROID
+
+      // const obj1 = { name: 'John', age: 30, address: { city: 'New York', country: 'USA' } };
+      // const json1 = JSON.stringify(obj1);
+      // expect(json1).toEqual('{"address":{"country":"USA","city":"New York"},"name":"John","age":30}');
+
+      // #endif
+
+      // #TEST JSON.stringify
+      console.log(JSON.stringify({ x: 5, y: 6 }));
+      // expected output: "{"x":5,"y":6}"
+
+      console.log(JSON.stringify(new Date(2006, 0, 2, 15, 4, 5)));
+      // expected output: ""2006-01-02T15:04:05.000Z""
+      // #END
+
+      const obj2 = ['apple', 'banana', 'cherry'];
+      const json2 = JSON.stringify(obj2);
+      expect(json2).toEqual('["apple","banana","cherry"]');
+
+      // TODO 暂不支持多个参数
+      // const obj3 = { name: 'John', age: '30' };
+      // const replacer = (key : string, value : string) : string => (key === 'name' ? value.toUpperCase() : value);
+      // const json3 = JSON.stringify(obj3, replacer);
+      // expect(json3).toEqual('{"name":"JOHN","age":"30"}');
+
+      // const obj4 = { name: 'John', age: 30 };
+      // const json4 = JSON.stringify(obj4, null, 4);
+      //             expect(json4).toEqual(`{
+      //     "name": "John",
+      //     "age": 30
+      // }`);
+      // expect(JSON.stringify({ x: 5, y: 6 })).toEqual(`{"x":5,"y":6}`);
+      expect(JSON.stringify([3, 'false', false])).toEqual(`[3,"false",false]`);
+      expect(JSON.stringify({})).toEqual('{}');
+      expect(JSON.stringify(1002)).toEqual('1002');
+      expect(JSON.stringify(1002.202)).toEqual('1002.202');
+      expect(JSON.stringify(null)).toEqual('null');
+      // expect(JSON.stringify(100/0.0)).toEqual('null');
+      expect(JSON.stringify(true)).toEqual('true');
+      expect(JSON.stringify(false)).toEqual('false');
+      //console.log(JSON.stringify('foo'))
+      // expect(JSON.stringify('foo')).toEqual('foo'); 
+      // expect(JSON.stringify(Math.PI)).toEqual('3.141592653589793');
+      // expect(JSON.stringify(Math.E)).toEqual('2.718281828459045');
+
+      /**
+       * add since 2023-09-23
+       * 部分出错过的示例场景
+       */
+      // #ifdef APP-ANDROID
+      const arr = [{
+        "$method": "collection",
+        "$param": ["type"] as Array<any>,
+      }, {
+        "$method": "add",
+        "$param": [
+          [{
+            "num": 2,
+            "tag": "default-tag",
+          } as UTSJSONObject, {
+            "num": 3,
+            "tag": "default-tag",
+          } as UTSJSONObject] as Array<UTSJSONObject>,
+        ] as Array<any>,
+      }] as Array<UTSJSONObject>
+      let ret = JSON.stringify({
+        $db: arr
+      })
+      expect(ret).toEqual('{"$db":[{"$method":"collection","$param":["type"]},{"$method":"add","$param":[[{"num":2,"tag":"default-tag"},{"num":3,"tag":"default-tag"}]]}]}')
+
+      // type Msg = {
+      //   id : string,
+      //   method : string,
+      //   params : any
+      // }
+      // type CallUniMethodParams = {	
+      // 	method : string	
+      // 	args : com.alibaba.fastjson.JSONArray
+      // }
+      // const msg = `{"id":"6fd6ca73-c313-48ac-ad30-87ff4eba2be8","method":"App.callUniMethod","params":{"method":"reLaunch","args":[{"url":"/pages/index/index"}]}}`
+      // const jsonRet2 = JSON.parse<Msg>(msg)!
+
+      // const paramsStr = JSON.stringify(jsonRet2.params)
+      // console.log(paramsStr)
+      // expect(paramsStr).toEqual('{"method":"reLaunch","args":[{"url":"/pages/index/index"}]}')
+      // const params = JSON.parse<CallUniMethodParams>(paramsStr)!
+      // expect(JSON.stringify(params)).toEqual('{"method":"reLaunch","args":[{"url":"/pages/index/index"}]}')
+
+
+      // class Stage {
+      //   $m: string
+      //   $p: Array<any>
+      //   constructor() {
+      //     this.$m = 'test'
+      //     this.$p = ['type']
+      //   }
+      // }
+
+      // const obj22 = {
+      //   data: [new Stage()] as Array<any>
+      // } as UTSJSONObject
+      // expect(JSON.stringify(obj22)).toEqual('{"data":[{}]}')
+
+      // #endif
+
+      type A = {
+        inserted: number
+      }
+      const str = '{"inserted": 2}'
+      const obj33 = JSON.parse<A>(str)!
+      console.log('-------------------------');
+      console.log(obj33.inserted);
+      expectNumber(obj33.inserted).toEqualDouble(2.0)
+      expect(JSON.stringify(obj33.inserted)).toEqual("2")
+
+    })
+
+    // #ifndef APP-HARMONY
+    test('invalidField', () => {
+      let str = "{\"a+b\":\"test1\",\"a-b\":2,\"class\":true}"
+      let p = JSON.parseObject<PersonJSON>(str)
+      expect(p?._class).toEqual(true)
+      expect(p?.a_b).toEqual("test1")
+
+
+      let retStr = JSON.stringify(p)
+      console.log(retStr)
+    })
+    // #endif
+
+    test('UTSJSONOject', () => {
+      let t1 = "1"
+      const a = {
+        test() {
+          t1 = "2"
+          console.log("test")
+        }
+      };
+      //console.log(a['test']);
+      (a['test'] as () => void)()
+      //console.log(t1);
+      expect(t1).toEqual("2")
+      //console.log(JSON.stringify(a));
+      // #ifdef APP-HARMONY
+      // arkts any类型使用受限 https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/typescript-to-arkts-migration-guide#限制使用esobject类型
+      const map: Map<string, any | null> = {
+        a: 1
+      }.toMap()
+      // #endif
+      // #ifndef APP-HARMONY
+      // arkts any类型使用受限 https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/typescript-to-arkts-migration-guide#限制使用esobject类型
+      const map = {
+        a: 1
+      }.toMap()
+      // #endif
+      expect(map.get('a')).toEqual(1)
+
+      const json = `{"result":true, "count":42}`;
+      const obj = JSON.parse(json) as UTSJSONObject;
+      let retStr = JSON.stringify(obj)
+      // #ifdef APP-ANDROID
+      expect(retStr).toEqual('{"result":true,"count":42}')
+      // #endif
+    })
+
+    test('parse Map', () => {
+      type A = {
+        num: number,
+      }
+      const map = JSON.parse<Map<string, A>>(`{"a": {"num": 1}}`)
+      // #ifndef APP-IOS || APP-HARMONY
+      expect(map instanceof Map).toEqual(true)
+      // #endif
+      expect(map?.get('a')?.num).toEqual(1)
+    })
+
+    test('parse generic type', () => {
+      // #ifndef APP-ANDROID
+      type A = {
+        num: number,
+      }
+      // #ifdef APP-HARMONY
+      // arkts不允许嵌套function声明，但是可以在function声明内使用箭头函数
+      const test = <T>(json: string): T => {
+        return JSON.parse<T>(json)!
+      }
+      // #endif
+      // #ifndef APP-HARMONY
+      function test<T>(json: string): T {
+        return JSON.parse<T>(json)!
+      }
+      // #endif
+
+      // #ifndef APP-IOS
+      const a = test<A>(`{"num": 1}`)
+      expect(a.num).toEqual(1)
+      // #endif
+      // #endif
+
+    })
+
+    test('parse-type-string', () => {
+      // #ifdef APP-ANDROID
+
+      let bb2 = JSON.parse<string>('{"a":12}')
+      console.log(typeof bb2)
+      let bb3 = JSON.parse<string>('7897987')
+      console.log(typeof bb3)
+      let bb4 = JSON.parse<string>('null')
+      console.log(typeof bb4)
+
+      expect(bb2).toEqual('{"a":12}')
+      expect(typeof bb2).toEqual("string")
+
+      expect(bb3).toEqual('7897987')
+      expect(typeof bb3).toEqual("string")
+
+      expect(bb4).toEqual('null')
+      expect(typeof bb4).toEqual("string")
+
+      // #endif
+
+    })
+    
+    test('parse-nested-array', () => {
+      const obj = JSON.parse('{"arr": [[{"key": "value"}]]}') as UTSJSONObject
+      const arr: UTSJSONObject[][] = obj['arr'] as UTSJSONObject[][]
+      expect(arr[0][0] instanceof UTSJSONObject).toEqual(true)
+    })
+
+  })
+}

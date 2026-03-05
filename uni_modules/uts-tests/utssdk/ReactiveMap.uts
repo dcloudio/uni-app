@@ -1,0 +1,119 @@
+import { describe, test, expect, Result } from './tests.uts'
+import { UTSReactiveMap } from 'io.dcloud.uts.vue.reactivity'
+
+export function testReactiveMap() : Result {
+    return describe("Map", () => {
+        test('size', () => {
+            const map1 : Map<string, string> = new UTSReactiveMap(new Map());
+            map1.set('a', 'alpha');
+            map1.set('b', 'beta');
+            map1.set('g', 'gamma');
+            expect(map1.size).toEqual(3);
+            map1.clear()
+            expect(map1.size).toEqual(0);
+        })
+        test('clear', () => {
+            const map1 = new UTSReactiveMap(new Map<string, string>());
+            map1.set('bar', 'baz');
+            map1.set("1", 'foo');
+            expect(map1.size).toEqual(2);
+            map1.clear();
+            expect(map1.size).toEqual(0);
+        })
+        test('delete', () => {
+            const map1 = new UTSReactiveMap(new Map<string, string>());
+            map1.set('bar', 'foo');
+            expect(map1.delete('bar')).toEqual(true);
+            expect(map1.has('bar')).toEqual(false);
+        })
+        test('get', () => {
+            const map1 = new UTSReactiveMap(new Map<string, string>());
+            map1.set('bar', 'foo');
+            expect(map1.get('bar')).toEqual("foo");
+            // js端输出undefined需要抹平差异
+            expect(map1.get('baz')).toEqual(null);
+        })
+        test('has', () => {
+            const map1 = new UTSReactiveMap(new Map<string, string>());
+            map1.set('bar', 'foo');
+            expect(map1.has('bar')).toEqual(true);
+            expect(map1.has('baz')).toEqual(false);
+        })
+        test('set', () => {
+            const map1 = new UTSReactiveMap(new Map<string, string>());
+            map1.set('bar', 'foo');
+            expect(map1.get('bar')).toEqual("foo");
+
+            const map2 = new UTSReactiveMap(new Map<string, string>());
+            // ios平台不支持any作为key
+            map2.set('bar', 'foo');
+            expect(map2.get('bar')).toEqual('foo');
+            map2.set('bar', 'baz');
+            expect(map2.get('bar')).toEqual('baz');
+            const map3 = new UTSReactiveMap(new Map<number, number>());
+            map3.set(111, 111);
+            map3.set(222, 222);
+            map3.set(333, 333);
+            expect(map3.get(111)).toEqual(111);
+            expect(map3.get(222)).toEqual(222);
+            expect(map3.get(333)).toEqual(333);
+            // ios不支持链式调用
+            // myMap.set(1, 'foobar').set(2, 'baz');
+            const map4 = new UTSReactiveMap(new Map<UTSJSONObject, string>());
+            const key1 = {}, key2 = {};
+            map4.set(key1, '1')
+            map4.set(key2, '2')
+            expect(map4.get(key1)).toEqual('1');
+            expect(map4.get(key2)).toEqual('2');
+            const map5 = new UTSReactiveMap(new Map<string, string>([['key1', 'value1'], ['key2', 'value2']]));
+            expect(map5.get('key1')).toEqual('value1');
+            expect(map5.get('key2')).toEqual('value2');
+        })
+        test('forEach', () => {
+            const map1 = new UTSReactiveMap(new Map<string, string>());
+            map1.set('key1', 'value1');
+            map1.set('key2', 'value2');
+            map1.set('key3', 'value3');
+            map1.forEach((value : string, key : string, map : Map<string, string>) => {
+                expect(value).toEqual(map.get(key)!);
+            })
+            map1.forEach((value, key) => {
+                expect(value).toEqual(map1.get(key)!);
+            })
+        })
+
+        test("entries", () => {
+            // const myMap = new Map<string, string>();
+            // myMap.set("0", "foo");
+            // myMap.set("1", "bar");
+            // myMap.set("2", "baz");
+            // const mapIter = myMap.entries();
+            // expect(mapIter.next().value).toEqual(["0", "foo"]);
+            // expect(mapIter.next().value).toEqual(["1", "bar"]);
+            // expect(mapIter.next().value).toEqual(["2", "baz"]);
+            // expect(mapIter.next().done).toEqual(true);
+        })
+        test("keys", () => {
+            // const myMap = new Map<string, string>();
+            // myMap.set("0", "foo");
+            // myMap.set("1", "bar");
+            // myMap.set("2", "baz");
+            // const mapIter = myMap.keys();
+            // expect(mapIter.next().value).toEqual("0");
+            // expect(mapIter.next().value).toEqual("1");
+            // expect(mapIter.next().value).toEqual("2");
+            // expect(mapIter.next().done).toEqual(true);
+        })
+        test("values", () => {
+            // const myMap = new Map<string, string>();
+            // myMap.set("0", "foo");
+            // myMap.set("1", "bar");
+            // myMap.set("2", "baz");
+            // const mapIter = myMap.values();
+            // expect(mapIter.next().value).toEqual("foo");
+            // expect(mapIter.next().value).toEqual("bar");
+            // expect(mapIter.next().value).toEqual("baz");
+            // expect(mapIter.next().done).toEqual(true);
+        })
+    })
+}

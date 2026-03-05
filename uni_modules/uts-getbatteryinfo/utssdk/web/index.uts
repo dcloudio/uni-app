@@ -1,0 +1,20 @@
+import { GetBatteryInfo, GetBatteryInfoOptions, GetBatteryInfoSuccess } from '../interface.uts'
+export const getBatteryInfo: GetBatteryInfo = function (options: GetBatteryInfoOptions) {
+	if ((navigator as any).getBattery) {
+		(navigator as any).getBattery().then(battery => {
+			const res = {
+				errCode: 0,
+				errSubject: "uni-getBatteryInfo",
+				errMsg: 'getBatteryInfo:ok',
+				level: battery.level * 100,
+				isCharging: battery.charging
+			} as GetBatteryInfoSuccess
+			options.success && options.success(res)
+			options.complete && options.complete(res)
+		})
+	} else {
+		const res = new UniError("uni-getBatteryInfo", 1002, "getBatteryInfo:fail navigator.getBattery is unsupported")
+		options.fail && options.fail(res)
+		options.complete && options.complete(res)
+	}
+}

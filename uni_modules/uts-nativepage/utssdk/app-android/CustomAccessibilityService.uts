@@ -1,0 +1,28 @@
+import AccessibilityService from 'android.accessibilityservice.AccessibilityService'
+import AccessibilityEvent from 'android.view.accessibility.AccessibilityEvent'
+
+
+export class CustomAccessibilityService extends AccessibilityService  {
+
+	constructor (){
+		super();
+	}
+  
+  override onInterrupt():void {
+    console.log("onInterrupt");
+  }
+
+
+  override onAccessibilityEvent(event:AccessibilityEvent ):void {
+    
+    console.log("packagename",event.getPackageName())
+    if("io.dcloud.uniappx" == event.getPackageName()){
+        console.log("辅助服务消息:uniappx 基座打开")
+    }else if("io.dcloud.HBuilder" == event.getPackageName()){
+        console.log("辅助服务消息:HBuilder 基座被打开")
+    }
+  }
+
+
+}
+

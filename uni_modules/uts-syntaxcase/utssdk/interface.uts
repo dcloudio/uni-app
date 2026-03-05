@@ -1,0 +1,31 @@
+export type SyncOptions = {
+    success ?: (res : string) => void
+    fail ?: (res : string) => void
+    complete ?: (res : string) => void
+}
+export interface RequestTask {
+    url : string
+    abort() : RequestTask
+    onCallback(callback : (res : string) => void) : void
+    sync(options : SyncOptions) : string
+}
+
+export type AsyncOptions = {
+  type : string;
+  success : (res : string) => void;
+  fail : (res : string) => void;
+  complete : (res : string) => void;
+};
+
+export type SyntaxResult = {
+  name : string
+};
+
+export type SyncResult = {
+  msg : string
+}
+
+export type TestOptions = {
+  name : string;
+  callback : (res : string) => void;
+};

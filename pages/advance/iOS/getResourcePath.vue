@@ -1,0 +1,37 @@
+<template>
+	<view>
+		<page-head title="资源路径获取示例" accordion></page-head>
+		<button @tap="getResourcePath">获取本地资源路径</button>
+	</view>
+</template>
+<script>
+import { getResourcePath } from '@/uni_modules/uts-advance'
+import { removeExampleImageView } from '@/uni_modules/uts-advance'
+	
+	export default {
+		onUnload() {
+			removeExampleImageView()
+		},
+		methods:{
+			getResourcePath(){
+				getResourcePath("/static/logo.png")
+			}
+		}
+	}
+</script>
+
+<style>
+	.text-box {
+		margin-bottom: 40rpx;
+		padding: 40rpx 0;
+		display: flex;
+		min-height: 300rpx;
+		background-color: #FFFFFF;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		font-size: 30rpx;
+		color: #353535;
+		line-height: 1.8;
+	}
+</style>

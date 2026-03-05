@@ -1,0 +1,591 @@
+import { RequestTask, SyncOptions, AsyncOptions, SyntaxResult, SyncResult, TestOptions } from "./interface.uts";
+import { log } from "./utils.uts";
+
+// #ifdef APP-IOS
+import { UTSPromiseAggregateError, UTSPromiseFulfilledResult, UTSPromiseRejectedResult} from "DCloudUTSFoundation";
+// #endif
+
+/**
+ * 导出一个属性
+ */
+export const MAX = 100;
+
+/**
+ * 导出一个同步方法
+ * @returns
+ */
+export function testSync(msg : string) : SyncResult {
+  console.log("log test");
+  log("log test1");
+
+  const res : SyncResult = {
+    msg: `hello ${msg}`
+  }
+  return res
+  // return {
+  //   msg: `hello ${msg}`,
+  // };
+}
+/**
+ * 导出一个同步方法（触发了数组越界异常）
+ */
+export function testSyncError() {
+  const arr : string[] = [];
+  console.log(arr[1]);
+}
+/**
+ * 导出一个带callback的同步方法
+ * @param opts
+ */
+export function testSyncWithCallback(opts : AsyncOptions) : SyntaxResult {
+  if (opts.type == "success") {
+    opts.success("success");
+  } else {
+    opts.fail("fail");
+  }
+  opts.complete("complete");
+
+  const res : SyntaxResult = {
+    name: "testSyncWithCallback"
+  }
+  return res;
+  // return { name: "testSyncWithCallback" };
+}
+
+
+
+async function testAwaitPromise(res : SyntaxResult) : Promise<SyntaxResult> {
+  return await new Promise(function (resolve : (res : SyntaxResult) => void) {
+    setTimeout(() => {
+      resolve(res)
+    }, 2000)
+  })
+}
+/**
+ * 导出一个异步方法
+ * @returns
+ */
+export async function testAsync(opts : AsyncOptions) : Promise<SyntaxResult> {
+  if (opts.type == "success") {
+    opts.success("success");
+  } else {
+    opts.fail("fail");
+  }
+  opts.complete("complete");
+
+  const res : SyntaxResult = {
+    name: "testAsync"
+  }
+  return await testAwaitPromise(res);
+  // return { name: "testAsync" };
+}
+
+
+export async function testAsyncParam3(id : number, name : string, opts : AsyncOptions) : Promise<SyntaxResult> {
+  console.log("id", id, "name", name)
+  if (opts.type == "success") {
+    opts.success("success");
+  } else {
+    opts.fail("fail");
+  }
+  opts.complete("complete");
+
+  const res : SyntaxResult = {
+    name: "testUtsAsyncMulitParam"
+  }
+  
+  const a = await 1
+  console.log(a, a == 1)
+  const b: string | null = null
+  const ret = await b
+  console.log(ret, ret == null)
+  return await testAwaitPromise(res);
+  // return { name: "testAsync" };
+}
+
+
+export class Test {
+  id : number;
+  name : string;
+  
+  static type : string = "Test";
+  constructor(id : number, options : TestOptions) {
+    this.id = id;
+    this.name = options.name;
+    options.callback("Test.constructor");
+  }
+  static testClassStaticSyncWithCallback(opts : AsyncOptions) : SyntaxResult {
+    return testSyncWithCallback(opts);
+  }
+  static async testClassStaticAsync(opts : AsyncOptions) : Promise<SyntaxResult> {
+    const res = await testAsync(opts);
+    return res;
+  }
+  testClassSyncWithCallback(opts : AsyncOptions) : SyntaxResult {
+    return testSyncWithCallback(opts);
+  }
+  async testClassAsync(opts : AsyncOptions) : Promise<SyntaxResult> {
+    const res = await testAsync(opts);
+    return res;
+  }
+}
+
+// #ifdef APP-IOS
+// #ifdef UNI-APP-X
+
+export function testPromiseStaticMethod() {
+	 let p0 = new Promise<SyntaxResult | null>((resolve, reject) => {
+		 let success = true
+		 setTimeout(() => {
+			 if (success) {
+			 	const res : SyntaxResult = {
+			 	  name: "pomise 0",
+			 	}
+			 	resolve(res);
+			 } else{
+			 	reject(new Error("this is promise 0 reject reasion"))
+			 }
+
+		 }, 1000);
+	 });
+	 
+	 let p1 = new Promise<SyntaxResult  | null>((resolve, reject) => {
+	 		 let success = true
+	 		 setTimeout(() => {
+	 			 if (success) {
+	 			 	resolve(null);
+	 			 } else{
+	 			 	reject(new Error("this is promise 1 reject reasion"))
+	 			 }
+	 
+	 		 }, 2000);
+	 });
+	 
+	 let p2 = new Promise<SyntaxResult | null>((resolve, reject) => {
+	 		 let success = false
+	 		 setTimeout(() => {
+	 			 if (success) {
+	 			 	resolve(null);
+	 			 } else{
+	 			 	// reject(new Error("this is promise 2 reject reasion"))
+					reject(null)
+	 			 }
+	 
+	 		 }, 2500);
+	 });
+	 
+	 // test for any
+	 let pt = Promise.any([p0, p1, p2]);
+	 pt.then( (res) => {
+		 console.log("promise.any test success", res)
+	 })
+	 .catch( (error: any | null) => {
+		 if (error instanceof UTSPromiseAggregateError) {
+		 	let err = error as UTSPromiseAggregateError
+			console.log(err.name, err.message, err.errors);
+		 }else {
+			 console.log(error);
+		 }
+	 })
+	 
+	 // test for allSettled
+	 Promise.allSettled([p0, p1, p2])
+	 .then((res) => {
+		 res.forEach((item, index) => {
+			 if (item instanceof UTSPromiseFulfilledResult<SyntaxResult  | null >) {
+			 	let item0 = item as UTSPromiseFulfilledResult
+				console.log(item0.value, "UTSPromiseFulfilledResult value")
+			 } else if (item instanceof UTSPromiseRejectedResult<SyntaxResult | null>) {
+			 	let item0 = item as UTSPromiseRejectedResult
+			 	console.log(item0.reason, "UTSPromiseRejectedResult reason")
+			 }
+		 })
+	 })
+	 .catch((error:  any | null) => {   
+		 console.log(error, "rejected test for promise.allSettled")
+	 })
+	 
+	 // test for all 
+	 Promise.all([p0, p1, p2])
+	 .then((res)=> {
+		 console.log(res, res.count)
+	 })
+	 .catch( (error: any | null) => {
+		 console.log(error, "rejected test for promise.all")
+	 })
+	 
+	 // test for race
+	 Promise.race([p0, p1, p2])
+	 .then((res) => {
+		 console.log(res, "resolved test for promise.race");
+	 })
+	 .catch((error: any | null) => {
+		 console.log(error, "catch test for promise.race")
+	 })
+}
+
+
+// #endif
+// #endif
+
+export class SetterTest {
+  
+  private _nickName: string = '';
+  
+  get nickName (): string {
+    console.log('get nickName');
+    return this._nickName;
+  }
+  set nickName (value: string) {
+    console.log('set nickName');
+    this._nickName = value;
+  }
+  
+}
+
+class RequestTaskImpl implements RequestTask {
+  url : string
+  constructor(url : string) {
+    this.url = url
+  }
+  abort() : RequestTask {
+    return this
+  }
+  onCallback(callback : (res : string) => void) {
+    callback("onCallback")
+  }
+  sync(options : SyncOptions) : string {
+    options.success?.("success")
+    options.complete?.("success")
+    return "sync"
+  }
+}
+
+export function request(url : string) : RequestTask | null {
+  return new RequestTaskImpl(url)
+}
+
+
+// #ifdef APP-ANDROID
+
+export function callKotlinMethodGetInfo():String {
+	return NativeCode.getPhoneInfo()
+}
+
+export function callJavaMethodGetInfo():String {
+	return new JavaUser("jack",12).toString()
+}
+
+
+@UTSJS.keepAlive
+export function callKotlinCallbackUTS(callback: (res: string) => void) {
+	NativeCode.kotlinCallbackUTS(function(res:string){
+    console.log(res)
+    callback(res)
+  })
+}
+
+export function callKotlinStopCallbackUTS() {
+	NativeCode.kotlinStopMemListenTest()
+}
+
+// #endif
+
+// #ifdef APP-ANDROID
+// #ifdef UNI-APP-X
+
+import KeyEvent from 'android.view.KeyEvent';
+import Configuration from 'android.content.res.Configuration';
+import Bundle from 'android.os.Bundle';
+import Menu from 'android.view.Menu';
+import KeyboardShortcutGroup from 'android.view.KeyboardShortcutGroup';
+import WindowManager from 'android.view.WindowManager';
+import ActionMode from 'android.view.ActionMode';
+// export let onCallBackChange: (event: string) => void = (res) => {};
+
+let callback : (eventLog : string) => void = (_) => { };
+
+export function onCallbackChange(fn : (eventLog : string) => void) {
+  callback = fn
+}
+
+export class UTSAcvitiyLifeCycleCallback extends UniActivityLifeCycleCallback {
+  constructor() {
+    super()
+  }
+  override onCreate(params : UniActivityParams, savedInstanceState : Bundle | null) {
+    console.log('UTSAcvitiyLifeCycle', 'onCreate', savedInstanceState)
+    callback('onCreate')
+  }
+
+  override onResume(params : UniActivityParams) {
+    console.log('UTSAcvitiyLifeCycle', 'onResume', params.activity)
+    callback('onResume')
+  }
+  
+  override onPictureInPictureModeChanged(params : UniActivityParams) {
+    console.log('UTSAcvitiyLifeCycle', 'onPictureInPictureModeChanged', params.result)
+    callback('onPictureInPictureModeChanged')
+  }
+  
+  
+  override onPreResume(params : UniActivityParams) {
+    console.log('UTSAcvitiyLifeCycle', 'onPreResume', params)
+    callback('onPreResume')
+  }
+  override onStart(params : UniActivityParams) {
+    console.log('UTSAcvitiyLifeCycle', 'onStart', params)
+    callback('onStart')
+  }
+  override onPreStart(params : UniActivityParams) {
+    console.log('UTSAcvitiyLifeCycle', 'onPreStart', params)
+    callback('onPreStart')
+  }
+}
+export class UTSAcvitiyKeyEventCallback extends UniActivityKeyEventCallback {
+  constructor() {
+    super()
+  }
+  override onKeyDown(params : UniActivityParams, keyCode : Int, event : KeyEvent | null) {
+    console.log('UTSAcvitiyKeyEvent', 'onKeyDown', params, keyCode, '' + event)
+    params.returnResult = true //设置returnResult为true，表示需要拦截事件，终止事件传递
+    callback('onKeyDown')
+  }
+  override onPreKeyDown(params : UniActivityParams, keyCode : Int, event : KeyEvent | null) {
+    console.log('UTSAcvitiyKeyEvent', 'onPreKeyDown', params, keyCode, '' + event)
+    params.returnResult = true //如果这里设置returnResult为true，表示需要拦截事件，不会再回调onKeyDown
+    callback('onPreKeyDown')
+  }
+  override onKeyLongPress(params : UniActivityParams, keyCode : Int, event : KeyEvent | null) {
+    console.log('UTSAcvitiyKeyEvent', 'onKeyLongPress', params, keyCode, '' + event)
+    callback('onKeyLongPress')
+  }
+  override onPreKeyLongPress(params : UniActivityParams, keyCode : Int, event : KeyEvent | null) {
+    console.log('UTSAcvitiyKeyEvent', 'onPreKeyLongPress', params, keyCode, '' + event)
+    callback('onPreKeyLongPress')
+  }
+}
+
+export class UTSActivityWindowCallback extends UniActivityWindowCallback {
+  constructor() {
+    super()
+  }
+  override dispatchPreKeyEvent(params : UniActivityParams, event : KeyEvent | null) {
+    console.log('UTSActivityWindowCallback', 'dispatchPreKeyEvent', params, '' + event)
+    callback('dispatchPreKeyEvent')
+  }
+  override dispatchKeyEvent(params : UniActivityParams, event : KeyEvent | null) {
+    console.log('UTSActivityWindowCallback', 'dispatchKeyEvent', params, '' + event)
+    callback('dispatchKeyEvent')
+  }
+  override  onWindowAttributesChanged(params : UniActivityParams, attrs : WindowManager.LayoutParams) {
+    console.log('UTSActivityWindowCallback', 'onWindowAttributesChanged', '' + attrs)
+    callback('onWindowAttributesChanged')
+
+  }
+  override onAttachedToWindow(params : UniActivityParams) {
+    console.log('UTSActivityWindowCallback', 'onAttachedToWindow', params)
+    callback('onAttachedToWindow')
+
+  }
+  override onPanelClosed(params : UniActivityParams, featureId : Int, menu : Menu) {
+    console.log('UTSActivityWindowCallback', 'onPanelClosed', featureId, menu)
+    callback('onPanelClosed')
+
+  }
+  override onWindowStartingActionMode(params : UniActivityParams, callback : ActionMode.Callback | null) {
+    console.log('UTSActivityWindowCallback', 'onWindowStartingActionMode', callback)
+    callback('onWindowStartingActionMode')
+  }
+  override onProvideKeyboardShortcuts(params : UniActivityParams, data : MutableList<KeyboardShortcutGroup> | null, menu : Menu | null, deviceId : Int) {
+    console.log('UTSActivityWindowCallback', 'onProvideKeyboardShortcuts', data, menu)
+    callback('onProvideKeyboardShortcuts')
+  }
+  override  onPreWindowAttributesChanged(params : UniActivityParams, attrs : WindowManager.LayoutParams) {
+    console.log('UTSActivityWindowCallback', 'onPreWindowAttributesChanged', attrs)
+    callback('onPreWindowAttributesChanged')
+  }
+  override  onPrePanelClosed(params : UniActivityParams, featureId : Int, menu : Menu) {
+    console.log('UTSActivityWindowCallback', 'onPrePanelClosed', featureId, menu)
+    callback('onPrePanelClosed')
+  }
+}
+
+export class UTSActivityCallback extends UniActivityCallback {
+  constructor() {
+    super()
+  }
+  override onBackPressed(params : UniActivityParams) {
+    console.log('UTSActivityCallback', 'onBackPressed', params)
+    callback('onBackPressed')
+  }
+  override onPreBackPressed(params : UniActivityParams) {
+    console.log('UTSActivityCallback', 'onPreBackPressed', params)
+    callback('onPreBackPressed')
+  }
+
+  override onRequestPermissionsResult(params : UniActivityParams, requestCode : Int, permissions : MutableList<String>, grantResults : IntArray) {
+    console.log('UTSActivityCallback', 'onRequestPermissionsResult', params)
+    callback('onRequestPermissionsResult')
+  }
+
+}
+
+export class UTSActivityComponentCallback extends UniActivityComponentCallback {
+  constructor() {
+    super()
+  }
+  override onConfigurationChanged(params : UniActivityParams, newConfig : Configuration) {
+    console.log('UTSActivityComponentCallback', 'onConfigurationChanged', params, '' + newConfig)
+    callback('onConfigurationChanged')
+  }
+  override onPreConfigurationChanged(params : UniActivityParams, newConfig : Configuration) {
+    console.log('UTSActivityComponentCallback', 'onPreConfigurationChanged', params, '' + newConfig)
+    callback('onPreConfigurationChanged')
+  }
+}
+// #endif
+// #endif
+
+export function Scan(timeMillis : Number = 60000):number {
+	return timeMillis
+}
+
+export function Scan1(timeMillis ?: Number):string {
+
+	if(timeMillis == null){
+		return "null"
+	}
+	return timeMillis!.toString()
+}
+
+export function Scan2(timeMillis ?: Number | null):string {
+
+	if(timeMillis == null){
+		return "null"  
+	}
+	return timeMillis!.toString()
+}
+
+export class myClass {
+	constructor() {
+		
+	}
+	
+	to(name: String):string {
+		console.log(name);
+		return name
+	}
+  
+	to1(name?: String):string {
+		if(name == null){
+			return "null"
+		}
+		return name!
+	}
+}
+
+export class PromiseReturnDemo {
+	
+	recordRet:number = 0
+	
+  constructor() { }
+  test1() : Promise<boolean> {
+	this.recordRet += 1
+	console.log('test1',this.recordRet)
+    return Promise.resolve(true);
+  }
+  test2() : void {
+	this.recordRet += 1
+    console.log('test2',this.recordRet)
+  }
+}
+
+
+// #ifdef APP-IOS
+export type ReadFileOptions = {
+	url: string,
+	success: (res: ArrayBuffer) => void,
+	fail:(code: number) => void
+}
+
+export function testBigArrayBuffer(option: ReadFileOptions) {
+  let absolutePath = UTSiOS.convert2AbsFullPath(option.url)
+	ReadFile.readFile(absolutePath, (res: ArrayBuffer | null, code: number) => {
+		if (code == 0 && res != null) {
+			option.success(res!)  
+		}else {
+			option.fail(code)
+		}
+	})  
+}
+
+export function testArrayBufferParam(p: ArrayBuffer) {
+	let dataView = new DataView(p)
+	console.log(dataView.getInt16(1)) 
+}
+   
+export type CustomArrayOptions = {
+	a: string,
+	b: boolean,
+	c: ArrayBuffer  
+}
+         
+export function testMultyArrayBufferParam(option: CustomArrayOptions) {
+	console.log(option.a)      
+	console.log(option.b)
+	let dataView = new DataView(option.c)
+	console.log(dataView.getInt16(1)) 
+}
+
+
+export type TestArrayBufferResult = {
+	a: string,
+	b: ArrayBuffer
+	c: TestNestedArrayBufferR
+}
+
+export type TestNestedArrayBufferR = {
+	e: string,
+	f: ArrayBuffer
+}
+
+
+export function testMultyReturnBuffer(): TestArrayBufferResult {
+	let buffer = new ArrayBuffer(16)
+	let dataView = new DataView(buffer)
+	dataView.setInt16(1, 420)
+	
+	let brr: TestNestedArrayBufferR = {
+		e: "233333",
+		f: buffer
+	}
+	let ret: TestArrayBufferResult = {
+		a: "11111",
+		b: buffer,
+		c: brr
+	}
+	
+	return ret
+}
+
+export function testReturnedArrayBuffer(): ArrayBuffer {
+	let buffer = new ArrayBuffer(16)
+	let dataView = new DataView(buffer)
+	dataView.setInt16(1, 42)
+	return buffer
+}
+
+// #endif
+
+export class TestStatic {
+  static get test1(): string {
+    return "test1";
+  }
+  static get test2(): string {
+    return "test2";
+  }
+  static set test2(value: string) {
+    console.log(value)
+  }
+}

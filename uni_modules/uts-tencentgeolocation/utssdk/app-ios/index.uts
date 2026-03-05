@@ -1,0 +1,187 @@
+import { CLLocationManager, CLAuthorizationStatus } from "CoreLocation"
+import { TencentLBSLocationManager, TencentLBSLocation, TencentLBSRequestLevel, TencentLBSLocationManagerDelegate } from "TencentLBS"
+import { NSError, Bundle } from "Foundation"
+import { LocationOptions, LocationResponse } from "../interface.uts"
+
+/**
+ * 判断当前是否是自定义基座
+ */
+export function checkHasIntegration():boolean{
+	// todo
+	return true
+}
+
+
+/**
+ * 定位 LBSLocation 类，封装定位相关方法
+ */
+class LBSLocation implements TencentLBSLocationManagerDelegate {
+	
+	// 定义 locationManager 属性，类型为 TencentLBSLocationManager
+	locationManager!: TencentLBSLocationManager
+	
+	locationOptions?: LocationOptions
+	
+	// 初始化 locationManager 方法
+	configLocationManager(): boolean {
+		
+		if (this.locationManager == null) {
+			// 从 info.plist 中读取 apiKey
+			const apiKey = Bundle.main.infoDictionary?.["TencentLBSAPIKey"]
+			// infoDictionary 获取的值类型为 any？
+			if (apiKey == null) { 
+				// 如果 apiKey 为 null 返回 false
+				console.log("apiKey 未配置")
+			    return false
+			}
+			// 调用API前需要设置同意用户隐私协议
+			TencentLBSLocationManager.setUserAgreePrivacy(true)
+			// 初始化 locationManager 实例对象
+			this.locationManager = new TencentLBSLocationManager() 
+			// 设置 apiKey （因为 apiKey 是 any？类型，需要转成 string 类型赋值）
+			this.locationManager.apiKey = apiKey! as string;
+			this.locationManager.delegate = this
+		}
+		
+		return true
+	}
+	
+	// 请求定位权限
+	requestPremission() {
+		if (this.configLocationManager()) {
+			const status = CLLocationManager.authorizationStatus()
+			// 如果未获取过定位权限，则发起权限请求
+			if (status == CLAuthorizationStatus.notDetermined) {
+				this.locationManager.requestWhenInUseAuthorization()
+			}
+		}
+	}
+	
+	// 获取单次位置信息
+	getLocation(locationOptions: LocationOptions): boolean {
+		
+		// 初始化 locationManager 
+		if (!this.configLocationManager()) {
+			// 初始化失败返回 false
+			return false
+		}
+		
+		// 是否需要返回逆地理编码
+		let requestLevel = TencentLBSRequestLevel.geo
+		if (locationOptions.geocode) {
+			requestLevel = TencentLBSRequestLevel.name
+		}
+		
+		// 请求单次定位信息
+		this.locationManager.requestLocation(with = requestLevel, locationTimeout = 10, completionBlock = (location?: TencentLBSLocation, err?: NSError): void => {
+			if (location != null) {
+				
+				// 判断 name、address 是否有值
+				var name = ""
+				var address = ""
+				if (location!.name != null) {
+					name = location!.name!
+				}
+				
+				if (location!.address != null) {
+					address = location!.address!
+				}
+				
+				let response: LocationResponse = {
+					name: name,
+					address: address,
+					latitude: Number(location!.location.coordinate.latitude),
+					longitude: Number(location!.location.coordinate.longitude)
+				}
+				locationOptions.success(response);
+			} else {
+				locationOptions.fail(err!.localizedDescription)
+			}
+		})
+		
+		return true
+	}
+	
+	// 监听位置变化
+	watchPosition(locationOptions: LocationOptions) {
+		// 初始化 locationManager
+		if (!this.configLocationManager()) {
+			return
+		}
+		if (locationOptions.geocode) {
+			this.locationManager.requestLevel = TencentLBSRequestLevel.name
+		} else {
+			this.locationManager.requestLevel = TencentLBSRequestLevel.geo
+		}
+		this.locationOptions = locationOptions
+		this.locationManager.startUpdatingLocation()
+	}
+	
+	// 清除监听
+	clearWatch() {
+		// 初始化 locationManager
+		if (!this.configLocationManager()) {
+			return
+		}
+		this.locationManager.stopUpdatingLocation()
+	}
+	
+	// 实现定位出错的 delegate 方法
+	tencentLBSLocationManager(manager: TencentLBSLocationManager, @argumentLabel("didFailWithError") error: NSError) {
+		this.locationOptions?.fail(error.localizedDescription)
+	}
+	
+	// 实现位置更新的 delegate 方法
+	tencentLBSLocationManager(manager: TencentLBSLocationManager, @argumentLabel("didUpdate") location: TencentLBSLocation) {
+		
+		// 判断 name、address 是否有值
+		var name = ""
+		var address = ""
+		if (location.name != null) {
+			name = location.name!
+		}
+		
+		if (location.address != null) {
+			address = location.address!
+		}
+		
+		let response: LocationResponse = {
+			name: name,
+			address: address,
+			latitude: Number(location.location.coordinate.latitude),
+			longitude: Number(location.location.coordinate.longitude)
+		}
+		this.locationOptions?.success(response)
+	}
+	
+}
+
+const LBSLocationTool: LBSLocation = new LBSLocation()
+
+/**
+ * 请求定位权限方法
+ */
+export function requestPremission() {
+	LBSLocationTool.requestPremission()
+}
+
+/*
+ * 获取位置信息方法（单次定位）
+ */
+export function getLocation(locationOptions: LocationOptions): boolean {
+	return LBSLocationTool.getLocation(locationOptions)
+}
+
+/**
+ * 持续监听位置变化
+ */
+export function watchPosition(locationOptions: LocationOptions) {
+	LBSLocationTool.watchPosition(locationOptions)
+}
+
+/**
+ * 关闭监听位置变化
+ */
+export function clearWatch() {
+	LBSLocationTool.clearWatch()
+}

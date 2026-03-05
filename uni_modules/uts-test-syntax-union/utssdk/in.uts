@@ -1,0 +1,56 @@
+type Fish = { swim: () => void };
+type Bird = { fly: () => void };
+type Human = { swim?: () => void; fly: () => void };
+
+function move(animal: Fish | Bird) {
+    if ("swim" in animal) {
+        return animal.swim();
+    }
+
+    return animal.fly();
+}
+
+function move2(animal: Fish | Bird | Human) {
+    if ("swim" in animal) {
+        if ("fly" in animal) {
+            animal.swim?.();
+        } else {
+            animal.swim();
+        }
+    } else {
+        if ("swim" in animal) {
+            animal.fly();
+        }
+    }
+}
+
+
+class Test {
+    animal: Fish | Bird;
+    animal2: Fish | Bird | null = null;
+    constructor(animal: Fish | Bird) {
+        this.animal = animal;
+    }
+    move() {
+        if ("swim" in this.animal) {
+            this.animal.swim();
+        }
+    }
+    move2() {
+        const animal2 = this.animal2;
+        if (animal2 != null) {
+            if ("swim" in animal2!) {
+                animal2.swim();
+            }
+        }
+    }
+}
+
+export function testIn(): string {
+    move({ swim: () => {} });
+    move({ fly: () => {} });
+    move2({ swim: () => {} });
+    move2({ fly: () => {} });
+    new Test({ swim: () => {} }).move();
+    return "testIn";
+}

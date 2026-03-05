@@ -1,0 +1,103 @@
+import { testArray } from './Array.uts'
+import { testDate } from './Date.uts'
+import { testString } from './String.uts'
+import { testError } from './Error.uts'
+import { testKeyWord } from './KeyWord.uts'
+import { testJSON } from './JSON.uts'
+import { testJSONLarge } from './JSON_large.uts'
+import { testUTSJSONObject } from './UTSJSONObject.uts'
+import { testConsole } from './console.uts'
+import { testNumber } from './Number.uts'
+import { testMap } from './Map.uts'
+import { testSet } from './Set.uts'
+import { testOperators } from './Operators.uts'
+import { testMath } from './Math.uts'
+import { testRegExp } from './RegExp.uts'
+import { testForLoop } from './ForLoop.uts'
+import { testGlobal } from './Global.uts'
+export { Result } from './tests.uts'
+import { testNativeCode } from './NativeCode.uts'
+import { testEncoder } from "./TextEncoder.uts"
+import { testDecoder } from "./TextDecoder.uts"
+import { testPromise } from "./Promise.uts"
+// #ifndef APP-HARMONY
+// 相关测试例有非常多的类型推断错误暂时屏蔽，https://issuereporter.developer.huawei.com/detail/250322170103030/comment
+import { testArrayBuffer } from './ArrayBuffer.uts'
+// for of、for in在鸿蒙平台支持度欠佳，或许应该借助编译器拉齐？
+import { testIterator } from "./iterator.uts"
+import { testType } from './Type.uts'
+// #endif
+import { testUTSXXX } from "./UTSXXX.uts"
+// #ifdef APP-ANDROID
+import { testClass } from "./Class.uts"
+// #endif
+
+// Proxy、Reflect、Weakmap、WeakSet 不支持
+export function runTests(): UTSJSONObject {
+  const ArrayRes = testArray();
+  const DateRes = testDate();
+  const StringRes = testString();
+  const ErrorRes = testError();
+  const NumberRes = testNumber();
+  const MapRes = testMap();
+  const SetRes = testSet();
+  const OperatorsRes = testOperators();
+  const MathRes = testMath();
+  const RegExpRes = testRegExp();
+  const KeyWordRes = testKeyWord();
+  const ForLoopRes = testForLoop();
+  const GlobalRes = testGlobal();
+  const JsonRes = testJSON();
+  const JSONLargeRes = testJSONLarge();
+  const UTSJSONObjectRes = testUTSJSONObject();
+  const consoleRes = testConsole();
+  const NativeCodeRes = testNativeCode();
+  const PromiseRes = testPromise();
+  // #ifdef  APP-ANDROID || WEB || (APP-IOS && UNI-APP-X)
+  const TextEncoderRes = testEncoder();
+  const TextDecoderRes = testDecoder();
+  // #endif
+  // #ifndef APP-HARMONY
+  const ArrayBufferRes = testArrayBuffer();
+  const IteratorRes = testIterator()
+  const TypeRes = testType();
+  // #endif
+  const testUTSXXXRes = testUTSXXX()
+  // #ifdef APP-ANDROID
+  const testClassRes = testClass()
+  // #endif
+  return {
+    Array: ArrayRes,
+    Date: DateRes,
+    String: StringRes,
+    Error: ErrorRes,
+    Number: NumberRes,
+    Map: MapRes,
+    Set: SetRes,
+    Operators: OperatorsRes,
+    Math: MathRes,
+    RegExp: RegExpRes,
+    KeyWord: KeyWordRes,
+    ForLoop: ForLoopRes,
+    Global: GlobalRes,
+    console: consoleRes,
+    Json: JsonRes,
+    JSONLarge: JSONLargeRes,
+    UTSJSONObject: UTSJSONObjectRes,
+    Primise: PromiseRes,
+    // #ifdef  APP-ANDROID || WEB || (APP-IOS && UNI-APP-X)
+    TextEncoder: TextEncoderRes,
+    TextDecoder: TextDecoderRes,
+    // #endif
+    NativeCode: NativeCodeRes,
+    // #ifndef APP-HARMONY
+    ArrayBuffer: ArrayBufferRes,
+    Iterator: IteratorRes,
+    Type: TypeRes,
+    // #endif
+    UTSXXX: testUTSXXXRes,
+    // #ifdef APP-ANDROID
+    Class: testClassRes
+    // #endif
+  }
+}

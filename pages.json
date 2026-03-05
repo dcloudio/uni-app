@@ -1,0 +1,226 @@
+{
+  "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/index/basicTest",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    }
+    // #ifndef WEB || MP || APP-HARMONY
+    ,
+    {
+      "path": "pages/advance/advance",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SystemAPI/SystemAPI",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SystemAPI/Alert/alert",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/component/helloView",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SDKIntegration/SDKIntegration",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SDKIntegration/TencentLocation/TencentLocation",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SDKIntegration/Lottie/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SDKIntegration/Toast/Toast",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    },
+    {
+      "path": "pages/lifecycle/lifecycle",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    },
+    {
+      "path": "pages/resource/resource",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/advance/android/decorview",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/advance/iOS/getResourcePath",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/advance/android/assetaudio",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SystemAPI/ScreenListen/screenlisten",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SyntaxCase/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SyntaxCase/paramTest",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SyntaxCase/consoleTest",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SyntaxCase/MixNativeCode",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SyntaxCase/nvueTest",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SyntaxCase/instanceTest",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    }
+    // #endif
+    // #ifdef APP-ANDROID || APP-IOS
+    , {
+      "path": "pages/SyntaxCase/utsAndroid",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/SyntaxCase/utsiOS",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    }
+    // #endif
+    // #ifdef APP-HARMONY
+    , {
+      "path": "pages/issues/issue-20157/issue-20157",
+      "style": {
+        "navigationBarTitleText": "issue-20157"
+      }
+    }
+    // #endif 
+    // #ifdef APP-ANDROID
+    , {
+      "path": "pages/issues/issue-20232/issue-20232",
+      "style": {
+        "navigationBarTitleText": "issue-20232"
+      }
+    }
+    // #endif 
+  ],
+  // #ifndef WEB || MP || APP-HARMONY
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#007AFF",
+    "borderStyle": "black",
+    "backgroundColor": "#F8F8F8",
+    "list": [{
+        "pagePath": "pages/index/index",
+        "text": "入门"
+      },
+      {
+        "pagePath": "pages/advance/advance",
+        "text": "进阶"
+      },
+      {
+        "pagePath": "pages/SystemAPI/SystemAPI",
+        "text": "系统API"
+      },
+      {
+        "pagePath": "pages/SDKIntegration/SDKIntegration",
+        "text": "三方SDK"
+      }
+    ]
+  },
+  // #endif
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "uniIdRouter": {}
+}

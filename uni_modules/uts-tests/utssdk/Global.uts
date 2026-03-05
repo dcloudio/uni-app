@@ -1,0 +1,152 @@
+import { describe, test, expect, Result } from './tests.uts'
+
+export function testGlobal() : Result {
+  return describe("Global", () => {
+  
+  test('setTimeout', () => {
+    let aCount = 0
+    setTimeout(function () {
+      aCount += 1
+      expect(aCount > 0).toEqual(true);
+    })
+  })
+
+    test('setInterval', () => {
+      // #TEST Global.setInterval
+      // #ifdef APP-ANDROID
+      let aCount = 0
+      let taskId = setInterval(function () {
+        aCount += 1
+      }, 0)
+      setTimeout(function () {
+        clearInterval(taskId)
+        expect(aCount > 10).toEqual(true);
+      }, 200)
+      // #endif
+      // #END
+    })
+
+    test('btoa', () => {
+      // #TEST Global.btoa
+      // #ifdef APP-ANDROID || APP-IOS || WEB
+      expect(btoa("")).toEqual('');
+      expect(btoa("hello world")).toEqual('aGVsbG8gd29ybGQ=');
+      expect(btoa("@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM")).toEqual('QC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTUAtMTIzNDU2Nzg5MHF3ZXJ0eXVpb3Bhc2RmZ2hqa2x6eGN2Ym5tLVFXRVJUWVVJT1BBU0RGR0hKS0xaWENWQk5NQC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTQ==');
+      // #endif
+      // #END
+    })
+
+    test('atob', () => {
+      // #TEST Global.atob
+      // #ifdef APP-ANDROID || APP-IOS || WEB
+      expect(atob("")).toEqual('');
+      expect(atob('aGVsbG8gd29ybGQ=')).toEqual('hello world');
+      expect(atob("QC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTUAtMTIzNDU2Nzg5MHF3ZXJ0eXVpb3Bhc2RmZ2hqa2x6eGN2Ym5tLVFXRVJUWVVJT1BBU0RGR0hKS0xaWENWQk5NQC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTQ==")).toEqual('@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM');
+      // #endif
+      // #END
+    })
+
+    test('parseInt', () => {
+      // #TEST Global.parseInt,Global.isNaN
+      expect(parseInt("123.456")).toEqual(123);
+      expect(parseInt("123")).toEqual(123);
+      expect(parseInt("123", 10)).toEqual(123);
+      expect(parseInt("   123", 10)).toEqual(123);
+      expect(parseInt("077")).toEqual(77);
+      expect(parseInt("1.9")).toEqual(1);
+      expect(parseInt("ff", 16)).toEqual(255);
+      expect(parseInt("0xFF", 0)).toEqual(255);
+      expect(parseInt("0xFF", 16)).toEqual(255);
+      expect(parseInt("0xFF")).toEqual(255);
+      expect(parseInt("0xFF", 10)).toEqual(0);
+      expect(parseInt("0xF", 16)).toEqual(15);
+      expect(parseInt("F", 16)).toEqual(15);
+      expect(parseInt("021", 8)).toEqual(17);
+      expect(parseInt("015", 10)).toEqual(15);
+      expect(parseInt("15,123", 10)).toEqual(15);
+      expect(parseInt("FXX123.99", 16)).toEqual(15);
+      expect(parseInt("1111", 2)).toEqual(15);
+      expect(parseInt("15 * 3", 10)).toEqual(15);
+      expect(parseInt("15e2", 10)).toEqual(15);
+      expect(parseInt("15px", 10)).toEqual(15);
+      expect(parseInt("12", 13)).toEqual(15);
+      expect(parseInt("17", 8)).toEqual(15);
+      expect(isNaN(parseInt("a"))).toEqual(true)
+      expect(parseInt("a", 16)).toEqual(10)
+      expect(isNaN(parseInt("345", 2))).toEqual(true)
+      expect(isNaN(parseInt("hello"))).toEqual(true)
+      expect(parseInt("6.022e23")).toEqual(6)
+      expect(parseInt("9223372036854775807")).toEqualNumber(9.223372036854778e+18)
+      expect(parseInt("9223372036854775807000")).toEqualNumber(9.223372036854777e+21)
+      expect(parseInt("922337203685477580700099999999999999999999999999999999999999999999999999999999999999999")).toEqualNumber(9.223372036854776e+86)
+      expect(parseInt("50") / 100).toEqualNumber(0.5);
+      expect(parseInt("500") / 100).toEqualNumber(5);
+      expect(parseInt("3.0")).toEqual(3);
+      expect(parseInt("3.02")).toEqual(3);
+      // #END
+    })
+
+    test('parseFloat', () => {
+      // #TEST Global.parseFloat
+      expect(parseFloat("11.20")).toEqual(11.2);
+      expect(parseFloat("3.14")).toEqual(3.14);
+      expect(parseFloat("  3.14  ")).toEqual(3.14);
+      expect(parseFloat("314e-2")).toEqual(3.14);
+      expect(parseFloat("0.0314E+2")).toEqual(3.14);
+      expect(parseFloat("3.14some non-digit characters")).toEqual(3.14);
+      expect(parseFloat("100") / 50).toEqualNumber(2);
+      expect(parseFloat("105") / 50).toEqual(2.1);
+      
+      expect(parseFloat("3.0")).toEqual(3);
+      expect(parseFloat("3.02").toString()).toEqual("3.02");
+      // #END
+    })
+
+    test('encodeURI', () => {
+      // #TEST Global.encodeURI
+      expect(encodeURI("你好")).toEqual('%E4%BD%A0%E5%A5%BD')
+      expect(encodeURI("你好+22")).toEqual('%E4%BD%A0%E5%A5%BD+22')
+      expect(encodeURI("你;/=好+22")).toEqual('%E4%BD%A0;/=%E5%A5%BD+22')
+      expect(encodeURI("https://demo.dcloud.net.cn/mock/最新/12")).toEqual('https://demo.dcloud.net.cn/mock/%E6%9C%80%E6%96%B0/12')
+      let a1 = decodeURI(encodeURI("123 456+789")!)
+      expect(a1).toEqual("123 456+789")
+      let a2 = encodeURI("+-123！@#￥%……&*（）——+")!
+      expect(a2).toEqual("+-123%EF%BC%81@#%EF%BF%A5%25%E2%80%A6%E2%80%A6&*%EF%BC%88%EF%BC%89%E2%80%94%E2%80%94+")
+      let a3 = decodeURI(encodeURI("+=&123")!)
+      expect(a3).toEqual("+=&123")
+      let a5 = encodeURI(":/?#[]@!$&'()*+,;=")
+      expect(a5).toEqual(":/?#%5B%5D@!$&'()*+,;=")
+      let b5 = decodeURI(a5!)  
+      expect(b5).toEqual(":/?#[]@!$&'()*+,;=")
+      // #END
+    })
+
+    test('decodeURI', () => {
+      // #TEST Global.decodeURI
+      expect(decodeURI('%E4%BD%A0%E5%A5%BD')).toEqual('你好')
+      expect(decodeURI("%E4%BD%A0%E5%A5%BD+22")).toEqual('你好+22')
+      expect(decodeURI("%E4%BD%A0;/=%E5%A5%BD+22")).toEqual('你;/=好+22')
+      expect(decodeURI("https://demo.dcloud.net.cn/mock/%E6%9C%80%E6%96%B0/12")).toEqual('https://demo.dcloud.net.cn/mock/最新/12')
+      // #END
+    })
+
+    test('encodeURIComponent', () => {
+      // #TEST Global.encodeURIComponent
+      expect(encodeURIComponent("你好")).toEqual('%E4%BD%A0%E5%A5%BD')
+      expect(encodeURIComponent("你好+22")).toEqual('%E4%BD%A0%E5%A5%BD%2B22')
+      expect(encodeURIComponent("你;/=好+22")).toEqual('%E4%BD%A0%3B%2F%3D%E5%A5%BD%2B22')
+      expect(encodeURIComponent("https://demo.dcloud.net.cn/mock/最新/12")).toEqual('https%3A%2F%2Fdemo.dcloud.net.cn%2Fmock%2F%E6%9C%80%E6%96%B0%2F12')
+      // #END
+    })
+
+    test('decodeURIComponent', () => {
+      // #TEST Global.decodeURIComponent
+      expect(decodeURIComponent('%E4%BD%A0%E5%A5%BD')).toEqual('你好')
+      expect(decodeURIComponent('%E4%BD%A0%E5%A5%BD%2B22')).toEqual('你好+22')
+      expect(decodeURIComponent('%E4%BD%A0%3B%2F%3D%E5%A5%BD%2B22')).toEqual('你;/=好+22')
+      expect(decodeURIComponent("https://demo.dcloud.net.cn/mock/%E6%9C%80%E6%96%B0/12")).toEqual('https://demo.dcloud.net.cn/mock/最新/12')
+      // #END
+    })
+
+  })
+}

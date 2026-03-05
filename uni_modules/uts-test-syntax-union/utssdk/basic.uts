@@ -1,0 +1,11 @@
+function test1(): string | number {
+    return "123";
+}
+
+function test2(a: string | number) {
+    return a;
+}
+
+export function testBasic() {
+    test2(test1());
+}

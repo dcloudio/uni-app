@@ -1,0 +1,417 @@
+import { describe, test, expect, Result } from './tests.uts'
+// #ifdef APP-ANDROID
+@UTSAndroid.Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS")
+// #endif
+export function testNumber(): Result {
+  return describe("Number", () => {
+
+    test('toFixed', () => {
+      // #TEST Number.toFixed
+      function financial(x: Number): String {
+        return x.toFixed(2);
+      }
+      console.log(financial(123.456));
+      // expected output: "123.46"
+      console.log(financial(0.004));
+      // expected output: "0.00"
+      // #END
+
+      expect(financial(123.456)).toEqual('123.46');
+      expect(financial(0.004)).toEqual("0.00");
+      expect(financial(0)).toEqual("0.00");
+      expect(financial(1)).toEqual("1.00");
+
+      let num1: number = -1.1 / 0.1
+      let num2: number = -1.1 / 0.1
+      let num3: number = -1.1 / -0.1
+      console.warn(num1)
+      console.warn(num2)
+      console.warn(num3)
+      let obj = { "id": "3be2c600-894c-4231-aa56-82fd989cc961", "result": { "result": [num1, num2, num3] } }
+      console.log(JSON.stringify(obj))
+
+
+
+      expect(123456.789.toFixed(2)).toEqual("123456.79");
+      expect(12345600123.789123.toFixed(2)).toEqual("12345600123.79");
+      expect((-123456.789).toFixed(5)).toEqual("-123456.78900");
+      expect(parseFloat("16688995566.369").toFixed(3)).toEqual("16688995566.369");
+      // #ifdef APP-ANDROID
+      // android 专有数据类型
+      let a1 = 56
+      let a2 = -122
+      expect(a1.toByte().toFixed(2)).toEqual("56.00");
+      expect(a2.toByte().toFixed(2)).toEqual("-122.00");
+
+      expect(a1.toShort().toFixed(5)).toEqual("56.00000");
+      expect(a2.toShort().toFixed(5)).toEqual("-122.00000");
+      // #endif
+      /**
+       * add since 2023-11-21
+       * 发现部分场景在android 6 以下与web有差异，新增以下示例
+       */
+      let r = 2.449999999999999999;
+      let t1 = r.toFixed(1);
+      expect(t1).toEqual("2.5");
+
+      let r2 = 2.4499999999999999;
+      let t2 = r2.toFixed(1);
+      expect(t2).toEqual("2.4");
+
+      let r3 = -9007199254740991;
+      let t3 = r3.toFixed(15);
+      expect(t3).toEqual("-9007199254740991.000000000000000");
+
+    })
+
+    test('isFinite', () => {
+      expect(isFinite(1000 / 1)).toEqual(true);
+      expect(isFinite(910)).toEqual(true);
+      expect(isFinite(0)).toEqual(true);
+      // #ifdef APP-ANDROID
+      let aj2 = JSON.parse('{"a":1}') as UTSJSONObject;
+      let aNumber = aj2['a'] as Number
+      expect(isFinite(aNumber)).toEqual(true);
+      expect(Number.isFinite(aNumber)).toEqual(true);
+      expect(Number.isFinite(11.00)).toEqual(true);
+      expect(Number.isFinite(Double.POSITIVE_INFINITY)).toEqual(false);
+      // #endif
+    })
+
+
+
+    test('number-from-json-parse', () => {
+      type A = {
+        a: number
+      }
+      let aj = JSON.parse<A>('{"a":1}');
+      expect(aj?.a == 1).toEqual(true);
+      expect(aj?.a == 1 as number).toEqual(true);
+      expect(aj?.a == 1.0).toEqual(true);
+      expect(aj?.a == 1.0 as number).toEqual(true);
+      // #ifdef APP-ANDROID
+      expect(numberEquals(aj?.a, 1)).toEqual(true);
+      expect(numberEquals(aj?.a, 1 as number)).toEqual(true);
+      expect(numberEquals(aj?.a, 1.0)).toEqual(true);
+      expect(numberEquals(aj?.a, 1.0 as number)).toEqual(true);
+      let ki: Int = 1;
+      let kd: Double = 1.0;
+      let kf: Float = (1.0).toFloat();
+      expect(aj?.a == ki).toEqual(true);
+      expect(aj?.a == kd).toEqual(true);
+      expect(aj?.a == kf).toEqual(true);
+      expect(aj?.a === ki).toEqual(true);
+      expect(aj?.a === kd).toEqual(true);
+      expect(aj?.a === kf).toEqual(true);
+      // 对比JSON.parse 和 new 得到的对象属性
+      let newA = A(1)
+      expect(aj?.a == newA.a).toEqual(true);
+      expect(aj?.a === newA.a).toEqual(true);
+      newA.a = 1.0
+      expect(aj?.a == newA.a).toEqual(true);
+      expect(aj?.a === newA.a).toEqual(true);
+      newA.a = 1.1
+      expect(aj?.a == newA.a).toEqual(false);
+      expect(aj?.a === newA.a).toEqual(false);
+
+      let a10 = JSON.parse("10")
+      let b10 = JSON.parse("10")
+      let c10 = JSON.parse("10.0")
+      expect(a10 == b10).toEqual(true);
+      expect(a10 == c10).toEqual(true);
+      let aj2 = JSON.parse<A>('{"a":1}');
+      expect(aj?.a == aj2?.a).toEqual(true);
+
+      // #endif
+
+    })
+
+
+    test('isInteger', () => {
+      expect(Number.isInteger(12)).toEqual(true);
+      expect(Number.isInteger(12.01)).toEqual(false);
+      expect(Number.isInteger(-213123112.01)).toEqual(false);
+      expect(Number.isInteger(-213123112)).toEqual(true);
+    })
+
+    test('Unary-Operators', () => {
+      // #ifdef APP-ANDROID
+      let a = JSON.parse("1") as Number
+      a++;
+      expect(JSON.stringify(a)).toEqual("2");
+      expect(UTSAndroid.getJavaClass(a).name).toEqual("java.lang.Double");
+
+      a--;
+      expect(JSON.stringify(a)).toEqual("1");
+      expect(UTSAndroid.getJavaClass(a).name).toEqual("java.lang.Double");
+      a /= 0.5;
+      expect(JSON.stringify(a)).toEqual("2");
+      expect(UTSAndroid.getJavaClass(a).name).toEqual("java.lang.Double");
+      a *= 5;
+      expect(JSON.stringify(a)).toEqual("10");
+      expect(UTSAndroid.getJavaClass(a).name).toEqual("java.lang.Double");
+      a += -1;
+      expect(JSON.stringify(a)).toEqual("9");
+      expect(UTSAndroid.getJavaClass(a).name).toEqual("java.lang.Double");
+      a -= -2;
+      expect(JSON.stringify(a)).toEqual("11");
+      expect(UTSAndroid.getJavaClass(a).name).toEqual("java.lang.Double");
+      let a2 = a % 5
+      expect(JSON.stringify(a2)).toEqual("1");
+      expect(UTSAndroid.getJavaClass(a2).name).toEqual("java.lang.Double");
+
+      let b = 12
+      let c1 = b + a2
+      expect(JSON.stringify(c1)).toEqual("13");
+      expect(UTSAndroid.getJavaClass(c1).name).toEqual("java.lang.Double");
+
+      let c2 = a2 + 2
+      expect(JSON.stringify(c2)).toEqual("3");
+      expect(UTSAndroid.getJavaClass(c2).name).toEqual("java.lang.Double");
+
+      let c3 = 2 + a2
+      expect(JSON.stringify(c3)).toEqual("3");
+      expect(UTSAndroid.getJavaClass(c3).name).toEqual("java.lang.Double");
+      // #endif
+
+
+    })
+
+    test('isNaN', () => {
+      expect(isNaN(0)).toEqual(false);
+      let aj2 = JSON.parse('{"a":1}') as UTSJSONObject;
+      let aNumber = aj2['a'] as number
+      expect(isNaN(aNumber)).toEqual(false);
+      expect(Number.isNaN(aNumber)).toEqual(false);
+      expect(Number.isNaN(11)).toEqual(false);
+      // #ifdef APP-ANDROID
+      expect(Number.isNaN(null)).toEqual(false);
+      // #endif
+
+      expect(Number.isNaN(1 / 0)).toEqual(false);
+    })
+
+    test('toPrecision', () => {
+      // #TEST Number.toPrecision
+      console.log(123.456.toPrecision(4))//123.5
+      // #END
+      expect(123.456.toPrecision(4)).toEqual("123.5");
+      expect(0.004.toPrecision(4)).toEqual("0.004000");
+      // expect(1.23e5.toPrecision(4)).toEqual("1.230e+5");
+    })
+
+    test('toString', () => {
+      // #TEST Number.toString
+      console.log((10).toString())//10
+      // #END
+
+      expect((10).toString()).toEqual("10");
+      expect((17).toString()).toEqual("17");
+      expect((17.2).toString()).toEqual("17.2");
+      expect((6).toString(2)).toEqual("110");
+      expect((254).toString(16)).toEqual("fe");
+      expect((-10).toString(2)).toEqual("-1010");
+      expect((10.22).toString(8)).toEqual("12.16050753412172704");
+      expect((-10.22).toString(8)).toEqual("-12.16050753412172704");
+      expect((123456789987654).toString(16)).toEqual("7048861cc146");
+      expect((-0xff).toString(2)).toEqual("-11111111");
+      const a = 1e38
+
+      expect(a.toString(16).substring(0, 12)).toEqual("4b3b4ca85a86");
+      expect(a.toString(16).length).toEqual(32);
+      expect(a.toString(16).substring(23)).toEqual("000000000");
+
+      expect(a.toString(2).length).toEqual(127);
+      expect(a.toString(2).substring(0, 32)).toEqual("10010110011101101001100101010000");
+      expect(a.toString(2).substring(100)).toEqual("000000000000000000000000000");
+      const b = 1e22
+      const bStr12 = b.toString(12)
+      /**
+       * 移动端： 27373a86ba1a194a65054
+       * 浏览器端:27373a86ba1a195400000
+       */
+      expect(bStr12.length).toEqual(21);
+      expect(bStr12.substring(0, 14)).toEqual("27373a86ba1a19");
+
+      // #ifdef APP-ANDROID
+      expect(0.6.toString()).toEqual("0.6");
+      expect((2709954670497349.5).toString(10)).toEqual("2709954670497349.5");
+      // todo change JSON.stringify to toString
+      expect((JSON.stringify(0.00000000000001))).toEqual("1e-14");
+      expect((JSON.stringify(0.000001))).toEqual("0.000001");
+      expect((JSON.stringify(0.0000001))).toEqual("1e-7");
+      expect((JSON.stringify(100000000000000000000.0))).toEqual("100000000000000000000");
+      expect((JSON.stringify(1000000000000000000000.0))).toEqual("1e+21");
+
+      let a11: number | null = null
+      let b11: Int | null = null
+
+      expect(a11?.toString()).toEqual(null);
+      expect(b11?.toString()).toEqual(null);
+
+
+      // #endif
+    })
+
+    test('valueOf', () => {
+      // #TEST Number.valueOf
+      console.log((10).valueOf()) //10
+      // #END
+      expect((10).valueOf()).toEqual(10);
+      expect((-10.2).valueOf()).toEqual(-10.2);
+      expect((0xf).valueOf()).toEqual(15);
+    })
+
+    // #ifdef APP-ANDROID
+    // 数据转换操作示例
+    test('toX', () => {
+      let num = 10.123
+      expect(num.toInt()).toEqual(10);
+      expect(num.toDouble()).toEqual(10.123);
+    })
+    // #endif
+    test('toInt', () => {
+      // #ifdef APP-ANDROID || APP-IOS
+      // #TEST Number.toInt
+      let a = 12
+      console.log(a.toInt());
+      // expected output: 12
+
+      // Int最大值2147483647,溢出了
+      let b = 2147483648
+      // expected output: -2147483648
+      // #END
+      expect(a.toInt()).toEqual(12);
+      // #endif
+    })
+
+    test('toByte', () => {
+      // #ifdef APP-ANDROID || APP-IOS
+      // #TEST Number.toByte
+      let a = 12
+      // #ifdef APP-ANDROID
+      console.log(a.toByte());
+      // #endif
+      // expected output: 12
+      // #END
+      expect(a.toInt()).toEqual(12);
+      // #endif
+    })
+
+    test('toLong', () => {
+      // #ifdef APP-ANDROID
+      // #TEST Number.toLong
+      let a = 12
+      console.log(a.toLong());
+      // expected output: 12
+      // #END
+      expect(a.toLong()).toEqual(12);
+      // #endif
+    })
+
+    test('from', () => {
+      // #ifdef APP-ANDROID || APP-IOS
+      // #TEST Number.from
+      let a: Int = 12
+      let b = Number.from(a)
+      console.log(b);
+      // expected output: 12
+      // #END
+      expect(b).toEqual(12);
+      // #endif
+    })
+
+    test('numberEquals', () => {
+      let a1 = 10.123
+      let b1 = 10.12300
+      let c1 = 10.12300002
+      expect(a1 == b1).toEqual(true);
+      expect(a1 === b1).toEqual(true);
+      expect(a1 !== 10.123001).toEqual(true);
+      expect(a1 != c1).toEqual(true);
+
+      let a2 = 0
+      let b2 = 0.0
+      expect(a2 == b2).toEqual(true);
+      expect(a2 === b2).toEqual(true);
+
+      let a3 = -1000
+      let b3 = -1000.0
+      expect(a3 == b3).toEqual(true);
+      expect(a3 === b3).toEqual(true);
+
+      let a4 = 123456789123456
+      let b4 = 123456789123456.0
+      expect(a4 == b4).toEqual(true);
+      expect(a4 === b4 * 1.0).toEqual(true);
+
+
+      let a5 = -123456789123456
+      let b5 = -123456789123456.01
+      expect(a5 != b5).toEqual(true);
+      expect(a5 !== b5).toEqual(true);
+
+
+      let a6 = 246.0 / 123 * 1.0
+      let b6 = 2
+      let c6 = 2.0
+      expect(a6 == b6).toEqual(true);
+      expect(b6 === c6).toEqual(true);
+      expect(b6 !== c6 * 1.001).toEqual(true);
+      expect(b6 != c6 * 1.001).toEqual(true);
+
+      let a7 = -10 * 123.2
+      let b7 = - 1232
+      expect(a7 == b7).toEqual(true);
+      expect(a7 != b7 * -1).toEqual(true);
+
+      let a8 = -101 * 123.201
+      expect(a8 == -12443.301).toEqual(true);
+      expect(a8 === -12443.301).toEqual(true);
+      expect(a8 !== -12443.301 * 0.999).toEqual(true);
+      expect(a8 != -12443.301 * 0.999999).toEqual(true);
+
+      let a9 = -0.02 * -123456
+      expect(a9 == 2469.12).toEqual(true);
+      expect(a9 === 2469.12).toEqual(true);
+      expect(a9 != 2469.1201).toEqual(true);
+
+      let a10 = 123456789123456.123456789123456
+      let b10 = 123456789123456.123456789123456000000
+      expect(a10 == b10).toEqual(true);
+      expect(a10 === b10).toEqual(true);
+
+      let num1: any = 1.0
+      let num2 = 1
+      console.log(num1 == num2)
+      let num3: any = 112233
+      let num4 = 112233.0
+      console.log(num3 == num4)
+
+      // #ifdef APP-ANDROID
+      let num5: Any = 112233.0
+      let num6: Any = 112233
+      console.log(num5 == num6)
+      // #endif
+
+      let u11 = {
+        name: "zhangsan",
+        age: 0
+      }
+      u11["age2"] = 0.0
+      // #ifdef APP-HARMONY
+      let a22: number = u11["age2"]
+      // #endif
+      // #ifndef APP-HARMONY
+      let a22 = u11["age2"]
+      // #endif
+      console.log(a22 == 0)
+      console.log(a22 == 0.0)
+      console.log(a22 != 0)
+      console.log(a22 != 0.0)
+
+    })
+
+
+  })
+}

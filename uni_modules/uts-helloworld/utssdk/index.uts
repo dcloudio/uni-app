@@ -1,0 +1,74 @@
+/**
+ * json参数格式定义
+ */
+export type inputJSON = {
+	inputText: string,
+	errCode: number,
+  complete ?: (res: inputJSON)  => void
+}
+/**
+ * json入参格式
+ */
+export type JsonParamOptions = {
+	input: inputJSON;
+	success: (res: inputJSON) => void;
+	fail?: (res: string) => void;
+	complete?: (res: string) => void;
+};
+
+/**
+ * 导出无参的UTS函数
+ * @param opts
+ */
+export function callWithoutParam(success: () => void) {
+	success();
+	return { name: "doSthWithCallback" };
+}
+
+/**
+ * 导出一个字符串入参的UTS函数
+ */
+export function callWithStringParam(input: string, success: (res: string) => void) {
+	success(input);
+	return { name: "doSthWithCallback" };
+}
+
+/**
+ * 导出一个JSON入参的UTS函数
+ */
+export function callWithJSONParam(opts: JsonParamOptions) {
+	opts.input.errCode = 10;
+	opts.success(opts.input);
+  
+  let input = {
+    inputText: '嵌套回调',
+    errCode: 11
+  } as inputJSON;
+  
+  setTimeout(() => {
+    opts.input.complete?.(input);
+  }, 1000)
+	return { name: "doSthWithCallback" };
+}
+
+
+/**
+ * 导出多次回调UTS函数
+ * @param opts
+ */
+export function onCallback(callback: (sth:string) => void) {
+  /**
+   * 模拟多次回调
+   */
+  let count = 1
+  let taskId = -1
+  taskId = setInterval(function() {
+    callback(`第 ${count} 次回调`)
+    count++;
+	console.log("count",count)
+	if(count > 3){
+		clearInterval(taskId)
+	}
+  }, 500);
+	
+}

@@ -1,0 +1,104 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="content">
+      <page-head :title="title"></page-head>
+      <view v-for="(item, index) in resultArray" :key="index" class="result">
+        <view>{{ names[index] }}测试结果：</view>
+        <view> 测试api：{{ item.passed.join(', ') }} </view>
+        <view>总共：{{ item.total }}</view>
+        <view>通过：{{ item.passed.length }}</view>
+        <view>失败：{{ item.failed.length }}</view>
+        <view v-for="(fail, i) in item.failed" :key="i">
+          <text class="failed">{{ fail }}</text>
+        </view>
+      </view>
+      <view class="result">
+        <view> uvue 测试</view>
+        <view>总共：{{ uvueResult.length }}</view>
+        <view>通过：{{ uvueResult.filter(i=>!!i).length }}</view>
+        <view>失败：{{ uvueResult.filter(i=>!i).length }}</view>
+      </view>
+      
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script lang="ts">
+import { testEncoder } from './basicEncoder'
+import { runTests, Result } from '../../uni_modules/uts-tests'
+// #ifdef APP-IOS
+import { testTypeFromAppJs, Options } from '@/uni_modules/uts-ios-tests'
+// #endif
+// #ifdef APP-ANDROID
+// 故意使用 import type 引入一个不存在的类型，测试编译器是否会报错，旧版本不会报错，但android补充了移除type类型的transformer就会报错
+// 目前android已经不再启用移除type类型的transformer
+import type { TestType } from '@/uni_modules/uts-tests'
+// #endif
+import { testSyntaxUnion } from '@/uni_modules/uts-test-syntax-union'
+// #ifdef APP-ANDROID || APP-IOS
+import { testBuildinNative  } from '@/uni_modules/uts-tests-hybrid'
+// #endif
+export default {
+  data() {
+    return {
+      title: 'UTS基础语法',
+      resultArray: [] as Result[],
+      result: {} as UTSJSONObject,
+      uvueResult: [] as boolean[],
+      names: [] as string[],
+    }
+  },
+  onReady() {
+    testSyntaxUnion()
+    // #ifdef APP-ANDROID || APP-IOS
+    testBuildinNative()
+    // #endif
+    this.test()
+  },
+  methods: {
+    test() {
+      const uvueTest = testEncoder().map(i => i.pass)
+      this.uvueResult = uvueTest
+      this.result = runTests()
+      // const resultMap = this.result.toMap()
+      // resultMap.forEach((res, name) => {
+      //   this.names.push(name)
+      //   this.resultArray.push(res as Result)
+      // })
+      const resultMap = this.result
+      for (const key in resultMap) {
+        this.names.push(key)
+        this.resultArray.push(resultMap[key] as Result)
+      }
+    },
+    // #ifdef APP-IOS
+    jest_testTypeFromAppJs() {
+      return testTypeFromAppJs({
+        num: 1
+      } as Options)
+    }
+    // #endif
+  },
+}
+</script>
+<style>
+@import '@/common/uni-uvue.css';
+.content {
+  padding: 32rpx;
+}
+
+.passed {
+  color: green;
+}
+
+.failed {
+  color: red;
+}
+
+.result {
+  margin-bottom: 20rpx;
+}
+</style>

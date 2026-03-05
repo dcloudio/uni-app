@@ -1,0 +1,505 @@
+import MediaStore from "android.provider.MediaStore";
+import Activity from "android.app.Activity";
+import Bitmap from "android.graphics.Bitmap";
+import FileOutputStream from "java.io.FileOutputStream";
+import Intent from 'android.content.Intent';
+
+/**
+ * UTSAndroid.getAppContext 测试示例
+ * https://uniapp.dcloud.net.cn/plugin/uts-for-android.html#_4-1-application-%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9B%B8%E5%85%B3
+ */
+export function getAppContextTest() : boolean {
+	if (UTSAndroid.getAppContext() == null) {
+		console.log("UTSAndroid.getAppContext() error")
+		return false
+	}
+	if (UTSAndroid.getUniActivity() == null) {
+		console.log("UTSAndroid.getUniActivity() error")
+		return false
+	}
+	if (UTSAndroid.getUniActivity()!.getApplicationContext() != UTSAndroid.getAppContext()) {
+		return false
+	}
+	return true
+}
+
+
+export function getJavaClassTest() : boolean {
+	let dispatcherClass = UTSAndroid.getJavaClass(UTSAndroid.getDispatcher())
+  if("io.dcloud.uts.task.UTSTaskDispatcher" == dispatcherClass.name){
+    return true
+  }
+  let applicationClass = UTSAndroid.getJavaClass(UTSAndroid.getAppContext()!)
+  if("io.dcloud.uniapp.UniApplication" == applicationClass.name){
+    return true
+  }
+  /**
+   * 特殊用法：UTSAndroid.getJavaClass(XXX) 可以传入类而不是实例，这样会被编译成 XXX::class.java
+   */
+  let utsAndroidClass = UTSAndroid.getJavaClass(UTSAndroid)
+  if("io.dcloud.uts.UTSAndroid" == utsAndroidClass.name){
+  	return true
+  }
+	return false
+}
+
+
+/**
+ * UTSAndroid.getUniActivity 测试示例
+ * https://uniapp.dcloud.net.cn/plugin/uts-for-android.html#_4-2-1-getuniactivity
+ */
+export function getUniActivityTest() : boolean {
+	if (UTSAndroid.getUniActivity() == null) {
+		return false
+	}
+	return true
+}
+
+
+export function privacyStateTest(callback : (ret : boolean, desc : string) => void) {
+
+	// 先重置用户同意状态
+	UTSAndroid.resetPrivacyAgree()
+	
+	if (UTSAndroid.isPrivacyAgree() == true) {
+		// 重置没有生效
+		callback(false,"resetPrivacyAgree error")
+	}
+	
+	UTSAndroid.setPrivacyAgree(true)
+  UTSAndroid.getDispatcher("io").async(function(_){
+		if (UTSAndroid.isPrivacyAgree() == false) {
+			// 重置没有生效
+			callback(false,"setPrivacyAgree error")
+			console.log("setPrivacyAgree error")
+		}
+		callback(true,"pass")
+	},null)
+  
+	// UTSAndroid.dispatchAsync("io",function(res){
+	// 	if (UTSAndroid.isPrivacyAgree() == false) {
+	// 		// 重置没有生效
+	// 		callback(false,"setPrivacyAgree error")
+	// 		console.log("setPrivacyAgree error")
+	// 	}
+	// 	callback(true,"pass")
+	// },null)
+	
+}
+
+
+export function privacyStateCallBackTest(callback : (ret : boolean, desc : string) => void) {
+  let isAgree : boolean = true
+  const cb = (ret : PrivacyOption) => {
+    console.log('privacyStateCallBackTest->' + ret.isAgree)
+    if (ret.isAgree == isAgree) {
+      callback(true, "pass")
+    } else {
+      callback(false, "callback error")
+    }
+  }
+  // 先重置用户同意状态
+  UTSAndroid.onPrivacyAgreeChange(cb)
+  UTSAndroid.setPrivacyAgree(isAgree)
+  UTSAndroid.offPrivacyAgreeChange(cb)
+  setTimeout(function () {
+    console.log('privacyStateCallBackTest->false')
+
+    UTSAndroid.setPrivacyAgree(false)
+  }, 5000);
+}
+
+/**
+ * UTSAndroid.getAppTempPath 测试示例
+ */
+export function getAppTempPathTest() : boolean {
+	// 1.0 标准基座的情况
+	if (UTSAndroid.getAppCachePath()!.contains("data/io.dcloud.HBuilder/apps/HBuilder/temp")) {
+		return true
+	}
+  // 1.0 自定义基座的情况
+  if (UTSAndroid.getAppCachePath()!.contains("uni.UNI70BE9D0/apps/__UNI__70BE9D0/temp")) {
+  	return true
+  }
+  let cachePath = UTSAndroid.getAppCachePath()!
+	// 2.0的路径
+	if (cachePath.contains("io.dcloud.uniappx/cache")) {
+		return true
+	}
+  // 2.0 自定义基座的情况
+  if (cachePath.contains("uni.UNI70BE9D0/cache")) {
+  	return true
+  }
+	
+	return false
+}
+
+/**
+ * UTSAndroid.typeof 测试示例
+ */
+export function typeofClickTest() : boolean {
+	
+
+	if ((typeof 'hello wrold') != 'string') {
+		return false
+	}
+	
+	if ((typeof 3.1415) != 'Double') {
+		return false
+	}
+	
+	if ((typeof false) != 'boolean') {
+		return false
+	}
+	if ((typeof true) != 'boolean') {
+		return false
+	}
+	if ((typeof new Date()) != 'object') {
+		return false
+	}
+
+	return true
+}
+
+
+/**
+ * 手动跳转用户授权管理界面
+ */
+export function gotoSystemPermissionActivityTest() {
+	/**
+	 * 用户手动授权录音权限
+	 */
+	UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!, utsArrayOf('Manifest.permission.RECORD_AUDIO'))
+}
+
+/**
+ * 跳转系统拍照界面，并触发相关生命周期测试
+ */
+@UTSAndroid.Suppress("DEPRECATION")
+export function gotoCameraTake(imageDone : (event : string) => void) : boolean {
+
+	let permissionNeed = ["android.permission.CAMERA"]
+
+	UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight : boolean, _ : string[]) {
+		if (allRight) {
+			// 交给目前的location 引擎，真实执行
+			UTSAndroid.onAppActivityResult((requestCode : Int, resultCode : Int, data ?: Intent) => {
+
+				if ((requestCode == 1001) && (resultCode == Activity.RESULT_OK)) {
+					if (data != null) {
+						let bundle = data.getExtras();
+						let mImageBitmap = bundle!.get("data") as Bitmap;
+						let bitmapPath = UTSAndroid.getUniActivity()!.getExternalCacheDir()!.getPath() + "/photo.png"
+						console.log(bitmapPath);
+						try {
+							mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(bitmapPath))
+						} catch (e) {
+						}
+						imageDone(bitmapPath);
+					}
+				}
+			});
+
+			let takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			//resolveActivity 返回可处理 Intent 的第一个 Activity 组件
+			if (takePictureIntent.resolveActivity(UTSAndroid.getUniActivity()!.getPackageManager()) != null) {
+				UTSAndroid.getUniActivity()!.startActivityForResult(takePictureIntent, 1001);
+			}
+		} else {
+			//callback(false,"用户拒绝了部分权限")
+		}
+	}, function (_1 : boolean, _2 : string[]) {
+		//callback(false,"用户拒绝了部分权限")
+	},true)
+
+	return true;
+
+}
+
+/**
+ * 初始化生命周期相关
+ */
+export function initAppLifecycle(onLifecycleChange : (event : string) => void) {
+
+	/**
+	 * application 内存不足的回调函数
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onapptrimmemory
+	 */
+	UTSAndroid.onAppTrimMemory((level : Number) => {
+		let eventName = "onAppTrimMemory - " + level;
+		onLifecycleChange(eventName);
+		console.log(eventName);
+	});
+
+	/**
+	 * application 状态改变的回调函数
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onAppConfigChange
+	 */
+	UTSAndroid.onAppConfigChange((ret : UTSJSONObject) => {
+		let eventName = "onAppConfigChange - " + JSON.stringify(ret);
+		onLifecycleChange(eventName);
+		console.log(eventName);
+	});
+
+
+	/**
+	 * activity 销毁生命周期回调
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivitydestroy
+	 */
+	UTSAndroid.onAppActivityDestroy(() => {
+		let eventName = "onAppActivityDestroy";
+		onLifecycleChange(eventName);
+		console.log(eventName);
+	});
+
+
+	/**
+	 * activity 失去焦点生命周期回调
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivitypause
+	 */
+	UTSAndroid.onAppActivityPause(() => {
+		let eventName = "onAppActivityPause";
+		onLifecycleChange(eventName);
+		console.log(eventName);
+	});
+	/**
+	 * activity 得到焦点的周期回调
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivityresume
+	 */
+	UTSAndroid.onAppActivityResume(() => {
+		let eventName = "onAppActivityResume";
+		onLifecycleChange(eventName);
+		console.log(eventName);
+	});
+	/**
+	 * activity 回退物理按键事件回调
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivityback
+	 */
+	UTSAndroid.onAppActivityBack(() => {
+		let eventName = "onAppActivityBack";
+		onLifecycleChange(eventName);
+		console.log(eventName);
+	});
+
+}
+
+
+/**
+ * 取消注册生命周期函数
+ */
+export function unRegLifecycle() {
+
+	/**
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onapptrimmemory
+	 */
+	UTSAndroid.offAppTrimMemory();
+
+	/**
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onAppConfigChange
+	 */
+	UTSAndroid.offAppConfigChange();
+
+	/**
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivitydestroy
+	 */
+	UTSAndroid.offAppActivityDestroy();
+
+	/**
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivitypause
+	 */
+	UTSAndroid.offAppActivityPause();
+
+	/**
+	 * 说明文档:https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#onappactivityresume
+	 */
+	UTSAndroid.offAppActivityResume();
+	/**
+	 * activity 回退物理按键事件回调
+	 */
+	UTSAndroid.offAppActivityBack();
+
+}
+
+
+
+/**
+ * 一组权限，申请流程测试
+ */
+export function arrayPermissionFlowTest(callback : (ret : boolean, desc : string) => void) {
+
+
+	if("io.dcloud.uniappx" != UTSAndroid.getAppContext()?.packageName && "io.dcloud.HBuilder" != UTSAndroid.getAppContext()?.packageName){
+		/**
+		 * 说明是自定义基座，不支持权限测试
+		 */
+		uni.showToast({
+			title:'自定义基座不支持当前测试'
+		})
+		return 
+	}
+	
+	/**
+	 * 同时申请日历和联系人权限
+	 */
+	let permissionNeed = ["android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACCESS_FINE_LOCATION", "android.permission.READ_PHONE_STATE"]
+	
+	if (UTSAndroid.getSystemPermissionDenied(UTSAndroid.getUniActivity()!, permissionNeed).length == 0) {
+		callback(false, "已具备请求权限")
+		return;
+	}
+
+	UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight : boolean, _ : string[]) {
+		if (allRight) {
+			// 交给目前的location 引擎，真实执行
+			// 测试权限api 返回值
+			if (UTSAndroid.getSystemPermissionDenied(UTSAndroid.getUniActivity()!, permissionNeed).length > 0) {
+				// 预期当前基座具备了读写日历的权限
+				callback(false, "权限请求完成,getSystemPermissionDenied 失败")
+				return;
+			}
+			if (!UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, permissionNeed)) {
+				callback(false, "权限请求完成,checkSystemPermissionGranted 失败")
+				return;
+			}
+			callback(true, "")
+		} else {
+			callback(false, "用户拒绝了部分权限")
+		}
+	}, function (_1 : boolean, _2 : string[]) {
+		callback(false, "用户拒绝了部分权限")
+	})
+
+}
+
+
+/**
+ * 获取设备信息
+ */
+export function getDeviceInfoTest():string {
+	let info = ''
+	info += 'isUniMp: '+UTSAndroid.isUniMp() + "\n ";
+	info += 'getAppDarkMode: '+UTSAndroid.getAppDarkMode() + "\n ";
+	info += 'getInnerVersion: '+UTSAndroid.getInnerVersion() + "\n ";
+	info += 'getAppId: '+UTSAndroid.getAppId() + "\n ";
+	info += 'getAppVersion: '+JSON.stringify(UTSAndroid.getAppVersion()) + "\n ";
+	info += 'getAppName: '+UTSAndroid.getAppName() + "\n ";
+	info += 'getOsTheme: '+UTSAndroid.getOsTheme() + "\n ";
+	info += 'isUniAppX: '+UTSAndroid.isUniAppX() + "\n ";
+	
+	return info
+}
+/**
+ * 任务分发测试
+ */
+export function dispatchAsyncTest(callback : (ret : boolean, desc : string) => void) {
+  UTSAndroid.getDispatcher("main").async(function(_){
+		if(Thread.currentThread().name != 'main'){
+			callback(false,"main thread error")
+			return
+		}
+		UTSAndroid.getDispatcher("dom").async(function(_){
+			/**
+			 * dom 参数，只在2.0生效，1.0会自动切换到main线程
+			 */
+			if(Thread.currentThread().name != 'main' && Thread.currentThread().name != 'io_dcloud_uniapp_dom'){
+				callback(false,"dom thread error")
+				return
+			}
+			UTSAndroid.getDispatcher("io").async(function(_){
+				/**
+				 * dom 参数，只在2.0生效，1.0会自动切换到main线程
+				 */
+				if(!Thread.currentThread().name.contains("DefaultDispatcher")){
+					callback(false,"io thread error")
+					return
+				}
+				callback(true,"pass")
+			},null)
+			
+		},null)
+	},null)
+  
+
+}
+
+/**
+ * 路径转换测试
+ */
+export function convert2AbsFullPathTest() : boolean {
+
+	let resourcePath = UTSAndroid.convert2AbsFullPath("static/logo.png")
+	console.log(resourcePath)
+	let resourcePath2 = UTSAndroid.getResourcePath("static/logo.png")
+	console.log(resourcePath2)
+	if (resourcePath != resourcePath2) {
+		console.log("convert2AbsFullPath 与 getResourcePath 结果不一致")
+		return false;
+	}
+
+
+	if("io.dcloud.uniappx" == UTSAndroid.getAppContext()?.packageName || "io.dcloud.HBuilder" == UTSAndroid.getAppContext()?.packageName){
+		/**
+		 * 只有标准基座，校验这个选项
+		 */
+		if (!resourcePath.contains("Android/data/io.dcloud")) {
+			console.log("路径转换结果错误")
+			return false;
+		}
+	}
+	
+	
+
+	let sdcardPath = UTSAndroid.convert2AbsFullPath(resourcePath)
+	console.log(sdcardPath)
+
+	if (resourcePath != sdcardPath) {
+		console.log("绝对路径转换结果错误")
+		return false;
+	}
+
+	return true
+}
+
+
+
+/**
+ * 单个权限，申请流程测试
+ */
+export function singlePermissionFlowTest(callback : (ret : boolean, desc : string) => void) {
+	
+	if("io.dcloud.uniappx" != UTSAndroid.getAppContext()?.packageName && "io.dcloud.HBuilder" != UTSAndroid.getAppContext()?.packageName){
+		/**
+		 * 说明是自定义基座，不支持权限测试
+		 */
+		uni.showToast({
+			title:'自定义基座不支持当前测试'
+		})
+		return 
+	}
+
+	let permissionNeed = ["android.permission.READ_PHONE_STATE"]
+	if (UTSAndroid.getSystemPermissionDenied(UTSAndroid.getUniActivity()!, permissionNeed).length == 0) {
+		callback(false, "已具备权限")
+		return;
+	}
+
+	UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight : boolean, _ : string[]) {
+		if (allRight) {
+			// 测试权限api 返回值
+			if (UTSAndroid.getSystemPermissionDenied(UTSAndroid.getUniActivity()!, permissionNeed).length > 0) {
+				callback(false, "权限请求完成,getSystemPermissionDenied 失败")
+				return;
+			}
+			if (!UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, permissionNeed)) {
+				callback(false, "权限请求完成,checkSystemPermissionGranted 失败")
+				return;
+			}
+			callback(true, "")
+		} else {
+			callback(false, "用户拒绝了部分权限")
+		}
+	}, function (_1 : boolean, _2 : string[]) {
+		callback(false, "用户拒绝了部分权限")
+	})
+
+}

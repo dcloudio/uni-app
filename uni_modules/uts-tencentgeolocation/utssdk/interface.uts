@@ -1,0 +1,18 @@
+/**
+ * 定位请求参数封装
+ */
+export type LocationOptions = {
+	geocode: boolean,
+	success: (response: LocationResponse) => void,
+	fail: (msg: string) => void
+};
+
+/**
+ * 定位返回结果封装
+ */
+export type LocationResponse = {
+	name: string,
+	address: string,
+	latitude: number,
+	longitude: number
+}

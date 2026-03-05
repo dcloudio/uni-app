@@ -1,0 +1,234 @@
+import { UIImageView , UIImage , UIScreen } from 'UIKit';
+import { DispatchQueue } from 'Dispatch';
+
+import { UTSiOS } from "DCloudUTSFoundation";
+
+export function addViewToDecorView() { }
+export function removeViewToDecorView() { }
+export function initAppLifecycle() { }
+export function getLogoPath() {}
+export function playAssetAudio(){}
+
+/**
+ * 定时任务参数封装
+ */
+export type TimerOptions = {
+	/**
+	 * 定时任务开始的回调
+	 * @res 回调参数
+	 */
+	start: (res: string) => void;
+	/**
+	* 定时任务执行的回调
+	* @res 回调参数
+	*/
+	work: (res: string) => void;
+};
+
+export type TimerResult = {
+	name : string;
+	taskId ?: number;
+};
+
+
+/**
+ * 执行延时任务
+ */
+export function doTimerTask(opts:TimerOptions): TimerResult {
+	opts.start('doTimerTask start');
+	setTimeout(function() {
+		opts.work("doTimerTask work");
+	}, 2000);
+  
+  const result: TimerResult = { 
+    name: "doTimerTask" 
+  }
+
+	return result
+}
+
+/**
+ * 执行周期任务
+ */
+export function doIntervalTask(opts:TimerOptions): TimerResult {
+	
+	let taskRet = setInterval(function() {
+		opts.work("doIntervalTask work");
+	}, 2000);
+	opts.start('doIntervalTask start');
+  
+  const result: TimerResult = { 
+    name: "doIntervalTask",
+    taskId: taskRet
+  }
+
+	return result
+}
+
+/**
+ * 清除周期任务
+ */
+export function clearIntervalTask(taskId:number):TimerResult {
+	
+	clearInterval(taskId);
+  const result: TimerResult = { 
+    name: "clearIntervalTask" 
+  }
+
+	return result
+}
+
+/* 
+ * 保存全局数据信息
+ */
+class AdvanceModuleGloabInfo {
+	static imageView?: UIImageView = null
+}
+
+
+/**
+ * 将h5资源路径转成app本地资源路径 
+ */
+export function getResourcePath(path: string) {
+	const imagePath = UTSiOS.getResourcePath(path)
+	console.log(imagePath)
+	
+	if (AdvanceModuleGloabInfo.imageView == null) { 
+		let vc = UTSiOS.getCurrentViewController()
+		// uts方法默认会在子线程中执行，涉及 UI 操作必须在主线程中运行，通过 DispatchQueue.main.async 方法可将代码在主线程中运行
+		DispatchQueue.main.async(execute=():void => {
+			// 创建imageView
+			let imageView = new UIImageView()
+			let image = new UIImage(contentsOfFile = imagePath)
+			imageView.image = image
+			
+			// 添加imageView并设置frame
+			vc.view.addSubview(imageView)
+			let imageSize: CGFloat = 80.0
+			let midx = (UIScreen.main.bounds.size.width - imageSize) / 2
+			let midy = (UIScreen.main.bounds.size.height - imageSize) / 2
+			imageView.frame = CGRect(x = midx, y = midy, width = imageSize, height = imageSize)
+			AdvanceModuleGloabInfo.imageView = imageView
+		})
+	}
+
+}
+
+
+export function removeExampleImageView() {
+	DispatchQueue.main.async(execute=():void => {
+		if (AdvanceModuleGloabInfo.imageView != null) {
+			AdvanceModuleGloabInfo.imageView!.removeFromSuperview()
+			AdvanceModuleGloabInfo.imageView = null
+		}
+	})
+}
+
+/**
+ * add since 2023-06-19 
+ * 新增传参测试用例
+ */
+export function inputArray(input : Array<string>) : boolean {
+
+	let inputStr = JSON.stringify(input)
+
+	if ('["a","b","c"]' == inputStr) {
+		return true
+	}
+	return false
+
+}
+
+export type ParamOptions = {
+	title : string,
+	array : Array<string>
+}
+
+
+export function inputParam(option : ParamOptions) : boolean {
+	console.log(option, "传入的参数")
+	let inputStr = JSON.stringify(option)
+	console.log(inputStr, 'stringify option')
+	if ('{"array":[1,2,3],"title":"hello"}' == inputStr) {
+		return true
+	}
+	return false
+}
+
+export function returnArray() : Array<string> {
+	return ['1', '2', '3']
+}
+
+export function returnParam() : ParamOptions {
+
+	let ret : ParamOptions = {
+		title: "returnParam",
+		array: ['1', '2', '3']
+	}
+	return ret
+
+}
+
+export type ParamCallback = (res : ParamOptions) => void
+export type ArrayCallback = (res : Array<string>) => void
+
+export function callbackArray(callback : ArrayCallback) {
+	callback(['8', '8', '8'])
+}
+
+
+export function callbackParam(callback : ParamCallback) {
+	let ret : ParamOptions = {
+		title: "callbackParam",
+		array: ['4', '5', '6']
+	}
+	callback(ret)   
+}
+
+/**
+ * 打印测试方法
+ */
+export function logStrTest() {
+	console.log("logStrTest 字符串打印测试")
+}
+
+export function logFloatTest() {
+	console.log(3.1415926)
+}
+export function logIntTest() {
+	console.log(2023)
+}
+
+export function logObjectTest(){
+	let ret : ParamOptions = {
+		title: "logObjectTest",
+		array: ['1', '2', '3']
+	}
+	console.log(ret)
+}
+
+
+export function logFunctionTest(){
+	
+	let testFun = function(){
+		console.log("testFun")
+	}
+	console.log(testFun)
+}
+
+
+export class User {  
+
+    private name : string;  
+    private age : Int;  
+
+    constructor(hostP : string, port : Int) {  
+        this.name = hostP;  
+        this.age = port;  
+    }  
+	
+	describeSelf():string{
+		let text = "name = " + this.name + ";age = " + `${this.age}`
+		return text
+	}
+}

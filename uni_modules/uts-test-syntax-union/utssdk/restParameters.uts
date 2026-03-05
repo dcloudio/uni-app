@@ -1,0 +1,79 @@
+type Callback = (...args: number[]) => number;
+
+function sum1(callback: Callback, ...theArgs: number[]) {
+    return callback(...theArgs);
+}
+
+type Callback1<T> = (first: T, ...args: number[]) => T;
+
+function sum2<T>(callback: Callback1<T>, first: T, ...theArgs: number[]) {
+    return callback(first, ...theArgs);
+}
+
+type Test = {
+    callback: Callback;
+};
+
+export const testRestParameters = (): any[] => {
+    // (a, b, c) =>
+    // (spreadArgs) => let a = spreadArgs[0]; let b = spreadArgs[1]; let c = spreadArgs[2];
+    const a = sum1((a, b, c) => a + b + c, 1, 2, 3);
+    const b = sum2((first, a, b, c) => first + a + b + c, "n", 1, 2, 3);
+    const c = sum1((...args) => args.reduce((a, b) => a + b, 0), 1, 2, 3);
+    const d = sum2(
+        (first, ...args) => first + args.reduce((a, b) => a + b, 0),
+        "n",
+        1,
+        2,
+        3
+    );
+    function sum1Callback1(a: number, b: number, c: number) {
+        return a + b + c;
+    }
+    // 暂不支持，如果支持的话，需要把sum1Callback1编译包装成另一个函数
+    // (...do_not_transform_spread)=>sum1Callback1(do_not_transform_spread[0],do_not_transform_spread[1],do_not_transform_spread[2])
+    // 一旦包装的话，对于一些需要on、off的函数，就会出现问题，因为被包装成了一个新函数
+    const e = 1; //sum1(sum1Callback1, 1, 2, 3)
+    function sum2Callback1(first: string, a: number, b: number, c: number) {
+        return first + a + b + c;
+    }
+    // 暂不支持
+    const f = 1; //sum2(sum2Callback1, 'n', 1, 2, 3)
+
+    function sum1Callback2(...args: number[]) {
+        return args.reduce((a, b) => a + b, 0);
+    }
+    // 暂不支持，因为需要编译为::sum1Callback2形式，这个后续统一处理
+    const g = 1; // sum1(sum1Callback2, 1, 2, 3)
+    function sum2Callback2(first: string, ...args: number[]) {
+        return first + args.reduce((a, b) => a + b, 0);
+    }
+    // 暂不支持
+    const h = 1; // sum2(sum2Callback2, 'n', 1, 2, 3)
+
+    const i = (
+        {
+            callback: (a, b, c) => a + b + c,
+        } as Test
+    ).callback(1, 2, 3);
+
+    const j = (
+        {
+            callback: (...args) => args.reduce((a, b) => a + b, 0),
+        } as Test
+    ).callback(1, 2, 3);
+
+    const test: Test = {
+        callback: (a, b, c) => a + b + c,
+    };
+
+    test.callback = (...args) => args.reduce((a, b) => a + b, 0);
+    const k = test.callback(1, 2, 3, 4, 5);
+
+    const testCallback: Callback = (...args: number[]) =>
+        args.reduce((a, b) => a + b, 0);
+
+    const l = testCallback(1, 2, 3, 4, 5);
+
+    return [a, b, c, d, e, f, g, h, i, j, k, l];
+};

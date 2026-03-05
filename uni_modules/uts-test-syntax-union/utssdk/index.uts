@@ -1,0 +1,29 @@
+import { testBasic } from "./basic.uts";
+import { testRestParameters } from "./restParameters.uts";
+import { testDiscriminatedUnion } from "./discriminatedUnion.uts";
+import { testParameterUnion } from "./parameterUnion.uts";
+import { testIn } from "./in.uts";
+import { testTypeof } from "./typeof.uts";
+import { testEqualityNarrowing } from "./equalityNarrowing.uts";
+import { testInstanceofNarrowing } from "./instanceofNarrowing.uts";
+import { testAssignments } from "./assignments.uts";
+import { testControlFlowAnalysis } from "./controlFlowAnalysis.uts";
+
+export function testSyntaxUnion() {
+    testBasic();
+    const result = {
+        testDiscriminatedUnion: testDiscriminatedUnion(),
+        testParameterUnion: testParameterUnion(),
+        testIn: testIn(),
+        testTypeof: testTypeof(),
+        testInstanceofNarrowing: testInstanceofNarrowing(),
+        testAssignments: testAssignments(),
+        testControlFlowAnalysis: testControlFlowAnalysis(),
+    };
+    // #ifndef APP-IOS
+    // iOS 不支持两个Any类型相等比较，所以暂时不提供
+    result["testEqualityNarrowing"] = testEqualityNarrowing();
+    result["testRestParameters"] = testRestParameters();
+    // #endif
+    return result;
+}

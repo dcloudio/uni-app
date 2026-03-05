@@ -1,0 +1,93 @@
+import Toast from 'android.widget.Toast';
+import AlertDialog from 'android.app.AlertDialog';
+import DialogInterface from 'android.content.DialogInterface';
+import EditText from 'android.widget.EditText';
+
+@UTSAndroid.Suppress("UNUSED_PARAMETER")
+export function showAlert(_title : string | null, _message : string | null, _result : (index : Number) => void) {
+	let uiRunable = new DialogUIRunnable(null, _title!, _message!, "", false);
+	UTSAndroid.getUniActivity()!.runOnUiThread(uiRunable)
+}
+
+@UTSAndroid.Suppress("UNUSED_PARAMETER")
+export function showPrompt(_title : string | null, _message : string | null, _placeholder : string | null, success : (content : string) => void) {
+	let uiRunable = new DialogUIRunnable(success, _title!, _message!, _placeholder!, true);
+	UTSAndroid.getUniActivity()!.runOnUiThread(uiRunable)
+}
+
+
+
+/**
+	* 用户输入对话框监听器
+	*/
+class DialogListener implements DialogInterface.OnClickListener {
+
+	inputET : EditText
+	callback : (content : string) => void
+
+	constructor(et : EditText, cb : (content : string) => void) {
+		super();
+		this.callback = cb;
+		this.inputET = et;
+	}
+
+	override onClick(_dialog : DialogInterface, _arg1 : Int) : void {
+		//数据获取
+		let input = this.inputET.getText().toString()
+		this.callback(input);
+		Toast.makeText(UTSAndroid.getUniActivity(), input,
+			Toast.LENGTH_LONG).show();
+
+	}
+}
+
+
+/**
+	* Dialog ui任务封装
+	*/
+class DialogUIRunnable implements Runnable {
+
+	callback ?: (content : string) => void = null
+	title : string
+	message : string
+	placeholder : string
+	needInput : boolean
+
+	constructor(success ?: (content : string) => void, title : string, message : string, placeholder : string, needInput : boolean) {
+		super();
+		if (success != null) {
+			this.callback = success
+		}
+
+		this.title = title
+		this.message = message
+		this.placeholder = placeholder
+		this.needInput = needInput
+	}
+
+	override run() : void {
+
+		if (this.needInput) {
+			let et = new EditText(UTSAndroid.getUniActivity());
+			et.setText(this.placeholder);
+
+			new AlertDialog.Builder(UTSAndroid.getUniActivity())
+				.setTitle(this.title)
+				.setMessage(this.message)
+				.setIcon(android.R.drawable.ic_dialog_info).setView(et)
+				.setPositiveButton("确定", new DialogListener(et, this.callback!))
+				.setNegativeButton("取消", null).show();
+		} else {
+			// new AlertDialog.Builder(UTSAndroid.getUniActivity())
+			// 	.setTitle(this.title)
+			// 	.setMessage(this.message)
+			// 	.setIcon(android.R.drawable.ic_dialog_info)
+			// 	.setNegativeButton("取消", null).show();
+      uni.showModal({
+        title:"测试弹窗"
+      })
+		}
+
+
+	}
+};

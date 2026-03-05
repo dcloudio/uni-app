@@ -1,0 +1,48 @@
+<template>
+	{{ret}}
+	<button @click="instanceCreate">多实例创建测试</button>
+	
+</template>
+
+<script>
+	import {
+		User
+	} from '@/uni_modules/uts-advance'
+
+
+
+	export default {
+		data() {
+			return {
+				ret:'',
+        // 将uts的class实例放进data里，测试响应式包装后是否有问题
+        user1: new User("张三", 20)
+			}
+		},
+		methods: {
+			
+			instanceCreate() {
+				
+				const user2 = new User("李四", 30);  
+				const user3 = new User("王五", 40);  
+        
+        let userText1 = this.user1.describeSelf() 
+        let userText2 = user2.describeSelf()   
+				let userText3 = user3.describeSelf()  
+
+				
+				if(userText1 == userText2 || userText1 == userText3 || userText2 == userText3){
+					this.ret = '测试未通过'
+				}else{
+					this.ret = '测试通过'
+				}
+				
+			}
+
+			
+		}
+	}
+</script>
+
+<style>
+</style>

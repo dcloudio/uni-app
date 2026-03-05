@@ -1,0 +1,27 @@
+import batteryInfo from '@ohos.batteryInfo';
+import { GetBatteryInfo, GetBatteryInfoOptions, GetBatteryInfoSuccess, GetBatteryInfoResult, GetBatteryInfoSync } from '../interface.uts';
+
+export const getBatteryInfoSync : GetBatteryInfoSync = function () : GetBatteryInfoResult {
+  return {
+    level: batteryInfo.batterySOC,
+    isCharging: batteryInfo.chargingStatus === batteryInfo.BatteryChargeState.ENABLE || batteryInfo.chargingStatus === batteryInfo.BatteryChargeState.FULL,
+  };
+}
+
+export const getBatteryInfo : GetBatteryInfo = function (options : GetBatteryInfoOptions) {
+  const batteryInfoResult : GetBatteryInfoSuccess = {
+    errMsg: "getBatteryInfo:ok",
+    level: batteryInfo.batterySOC,
+    isCharging: batteryInfo.chargingStatus === batteryInfo.BatteryChargeState.ENABLE || batteryInfo.chargingStatus === batteryInfo.BatteryChargeState.FULL,
+  }
+  try {
+    options.success && options.success(batteryInfoResult)
+  } catch (e) {
+    console.error(e)
+  }
+  try {
+    options.complete && options.complete(batteryInfoResult)
+  } catch (e) {
+    console.error(e)
+  }
+}

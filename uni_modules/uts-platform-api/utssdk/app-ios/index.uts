@@ -1,0 +1,561 @@
+import { UTSiOS } from "DCloudUTSFoundation";
+import { UIColor } from 'UIKit';
+import { NSNumber } from 'Foundation';
+
+export type UTSiOSTestResult = {
+	key: string,
+	value: string | null,
+	passed: boolean
+}
+
+export type UTSiOSTestCompleteCallback = (res: UTSiOSTestResult[]) => void;
+
+export type UTSiOSTestOptions = {
+	complete: UTSiOSTestCompleteCallback
+}
+
+/* 获取当前控制器 */
+export function getCurrentVCTest(): UTSiOSTestResult {
+	let vc = UTSiOS.getCurrentViewController()
+	let res: UTSiOSTestResult = {
+		key: "",
+		value: "",
+		passed: false
+	}
+	if (vc != null) {
+		res.passed = true;
+	}
+	return res;
+}
+
+/* 获取keyWindow */
+export function getKeyWindowTest(): UTSiOSTestResult {
+	let window = UTSiOS.getKeyWindow()
+	let res: UTSiOSTestResult = {
+		key: "",
+		value: "",
+		passed: false
+	}
+	if (window != null) {
+		res.passed = true;
+	}
+	return res;
+}
+
+/* 颜色转换 */
+export function colorWithStringTest(): string[] {
+	let results: string[] = [];
+	
+	let red0 = UTSiOS.colorWithString("#f00")
+	let res0: UTSiOSTestResult = {
+		key: "#f00",
+		value: "",
+		passed: false
+	}
+	if (red0 != UIColor.black) {
+		res0.passed = true
+	}
+	results.push(JSON.stringify(res0)!)
+	
+	let red1 = UTSiOS.colorWithString("#ff0000")
+	let res1: UTSiOSTestResult = {
+		key: "ff0000",
+		value: "",
+		passed: false
+	}
+	if (red1 != UIColor.black) {
+		res1.passed = true;
+	}
+	results.push(JSON.stringify(res1)!)
+	
+	let red2 = UTSiOS.colorWithString("rgb(255, 0, 0)")
+	let res2: UTSiOSTestResult = {
+		key: "rgb(255, 0, 0)",
+		value: "",
+		passed: false
+	}
+	if (red2 != UIColor.black) {
+		res2.passed = true
+	}
+	results.push(JSON.stringify(res2)!)
+	
+	let red3 = UTSiOS.colorWithString("rgba(255, 0, 0, 0.5)")
+	let res3: UTSiOSTestResult = {
+		key: "rgba(255, 0, 0, 0.5)",
+		value: "",
+		passed: false
+	}
+	if (red3 != UIColor.black) {
+		res3.passed = true
+	}
+	results.push(JSON.stringify(res3)!)
+	
+	return results;
+}
+
+/* 资源路径转换 */
+export function getResourcePathTest(value: string): UTSiOSTestResult {
+	let src = UTSiOS.getResourcePath(value)
+	
+	let res: UTSiOSTestResult = {
+		key: "转换后路径",
+		value: src,
+		passed: false
+	}
+	if (src != null) {
+		res.passed = true;
+	}
+	return res;
+}
+
+/* 是否是模拟器 */
+function isSimulatorTest(): UTSiOSTestResult {
+	let ret = UTSiOS.isSimulator()
+	let res: UTSiOSTestResult = {
+		key: "当前是",
+		value: ret ? "模拟器": "真机",
+		passed: true
+	}
+	return res;
+}
+
+/* 获取deviceId */
+function getDeviceIdTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getDeviceId()
+	let res: UTSiOSTestResult = {
+		key: "deviceId",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* 获取设备型号 */
+function getModelTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getModel()
+	let res: UTSiOSTestResult = {
+		key: "设备型号 model",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* 获取userAgent */
+function getUserAgentTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getUserAgent()
+	let res: UTSiOSTestResult = {
+		key: "userAgent",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+
+/* 获取设备信息 */
+export function getDeviceInfoTest(): string[] {
+	let results: string[] = [];
+	
+	let simaluteRes = isSimulatorTest();
+	let deviceIDRes = getDeviceIdTest();
+	let modeRes = getModelTest();
+	let userSgentRes = getUserAgentTest()
+
+	results.push(JSON.stringify(simaluteRes)!);
+	results.push(JSON.stringify(deviceIDRes)!);
+	results.push(JSON.stringify(modeRes)!);
+	results.push(JSON.stringify(userSgentRes)!);
+	return results;
+}
+
+
+/* 获取当前运行的AppId */
+function getAppIdTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getAppId()
+	let res: UTSiOSTestResult = {
+		key: "AppID",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* 获取当前运行app的dataPath */
+function getDataPathTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getDataPath()
+	let res: UTSiOSTestResult = {
+		key: "dataPath",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+
+/* 是否是unimp */
+function isUniMpTest(): UTSiOSTestResult {
+	let ret = UTSiOS.isUniMp()
+	let res: UTSiOSTestResult = {
+		key: "当前是",
+		value: ret ? "小程序" : "app",
+		passed: true
+	}
+	return res;
+}
+
+/* manifest.json 中应用名称 */
+function getAppNameTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getAppName()
+	let res: UTSiOSTestResult = {
+		key: "appName",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* manifest.json 中应用版本名称 */
+function getAppVersionTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getAppVersion()
+	let res: UTSiOSTestResult = {
+		key: "appVersion",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* manifest.json 中应用版本号 */
+function getAppVersionCodeTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getAppVersionCode()
+	let res: UTSiOSTestResult = {
+		key: "appVersionCode",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* os language */
+function getOsLanguageTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getOsLanguage()
+	let res: UTSiOSTestResult = {
+		key: "osLanguage",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* 应用资源（wgt）的版本名称 */
+function getAppWgtVersionTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getAppWgtVersion()
+	let res: UTSiOSTestResult = {
+		key: "wgtVersion",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* 小程序宿主语言 */
+function getHostLanguageTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getHostLanguage()
+	let res: UTSiOSTestResult = {
+		key: "hostLanguage",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* App、小程序宿主版本 */
+function getHostVersionTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getHostVersion()
+	let res: UTSiOSTestResult = {
+		key: "hostVersion",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* 小程序宿主名称 */
+function getHostNameTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getHostName()
+	let res: UTSiOSTestResult = {
+		key: "hostName",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* 小程序宿主包名 */
+function getHostPackageNameTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getHostPackageName()
+	let res: UTSiOSTestResult = {
+		key: "hostPackageName",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* 系统当前主题，取值为light或dark。微信小程序全局配置"darkmode":true时才能获取，否则为 undefined （不支持小游戏） */
+function getHostThemeTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getHostTheme()
+	let res: UTSiOSTestResult = {
+		key: "hostTheme",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* 引擎版本号 */
+function getInnerVersionTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getInnerVersion()
+	let res: UTSiOSTestResult = {
+		key: "innerVersion",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* 获取App相关信息 */
+export function getAppInfoTest(): string[] {
+	let results: string[] = [];
+	
+	let appIdRes = getAppIdTest();
+	let dataPathRes = getDataPathTest();
+	let uniMpRes = isUniMpTest();
+	let appNameRes = getAppNameTest();
+	let appVersionRes = getAppVersionTest();
+	let appVersionCodeRes = getAppVersionCodeTest();
+	let osLanguageRes = getOsLanguageTest();
+	let wgtVersionRes = getAppWgtVersionTest();
+	let hostLanguageRes = getHostLanguageTest();
+	let hostVersionRes = getHostVersionTest();
+	let hostNameRes = getHostNameTest();
+	let hostPackageRes = getHostPackageNameTest();
+	let hostThemeRes = getHostThemeTest();
+	let innerVersionRes = getInnerVersionTest();
+	
+	results.push(JSON.stringify(appIdRes)!);
+	results.push(JSON.stringify(dataPathRes)!);
+	results.push(JSON.stringify(uniMpRes)!);
+	results.push(JSON.stringify(appNameRes)!);
+	results.push(JSON.stringify(appVersionRes)!);
+	results.push(JSON.stringify(appVersionCodeRes)!);
+	results.push(JSON.stringify(osLanguageRes)!);
+	results.push(JSON.stringify(wgtVersionRes)!);
+	results.push(JSON.stringify(hostLanguageRes)!);
+	results.push(JSON.stringify(hostVersionRes)!);
+	results.push(JSON.stringify(hostNameRes)!);
+	results.push(JSON.stringify(hostPackageRes)!);
+	results.push(JSON.stringify(hostThemeRes)!);
+	results.push(JSON.stringify(innerVersionRes)!);
+	
+	return results;
+}
+
+/* 获取系统设置 */
+export function getSystemSettingTest(): UTSiOSTestResult {
+	let ret = UTSiOS.getSystemSetting()
+	let res: UTSiOSTestResult = {
+		key: "systemSetting",
+		value: JSON.stringify(ret) ?? "",
+		passed: true
+	}
+	return res;
+}
+
+/* 将数据转换为 string */
+function convertStringTest(): UTSiOSTestResult {
+	let ret = UTSiOS.convertString(123)
+	let res: UTSiOSTestResult = {
+		key: "123转成字符串",
+		value: ret,
+		passed: true
+	}
+	return res;
+}
+
+/* 将数据转换为 bool */
+function convertBoolTest(): UTSiOSTestResult {
+	let ret: boolean = UTSiOS.convertBool(1)
+	let res: UTSiOSTestResult = {
+		key: "1转成boolean",
+		value: `${ret}`,
+		passed: true
+	}
+	return res;
+}
+
+/* 将数据转换为 NSNumber */
+function convertNumberTest(): UTSiOSTestResult {
+	let ret: NSNumber | null = UTSiOS.convertNumber(1000)
+	let res: UTSiOSTestResult = {  
+		key: "1000 转成number",
+		value: `${ret?.intValue}`,
+		passed: true
+	}
+	return res;
+}
+
+/* 将数据转换为 Double */
+function convertDoubleTest(): UTSiOSTestResult {
+	let ret = UTSiOS.convertDouble("123.1")
+	let res: UTSiOSTestResult = {
+		key: "字符串123.1转成double",
+		value: `${ret}`,
+		passed: true
+	}
+	return res;
+}
+
+/* 将数据转换为 Float */
+function convertFloatTest(): UTSiOSTestResult {
+	let ret = UTSiOS.convertFloat("123")
+	let res: UTSiOSTestResult = {
+		key: "字符串123转成float",
+		value: `${ret}`,
+		passed: true
+	}
+	return res;
+}
+
+
+/* 将数据转换为 int */
+function convertIntTest(): UTSiOSTestResult {
+	let ret = UTSiOS.convertInt("123.0")
+	let res: UTSiOSTestResult = {
+		key: "123.0转成int",
+		value: `${ret}`,
+		passed: true
+	}
+	return res;
+}
+
+
+/* 将数据转换为 Array */
+function convertArrayTest(): UTSiOSTestResult {
+	let ret = UTSiOS.convertArray([1, "2", "3", "abc"])
+	let res: UTSiOSTestResult = {
+		key: `${JSON.stringify([1, "2", "3", "abc"])}转成数组`,
+		value: `${ret}`,
+		passed: true
+	}
+	return res;
+}
+
+
+/* 将数据转换为 Dictionary */
+function convertDictionaryTest(): UTSiOSTestResult {
+	let map: Map<string, number> = new Map();
+	map.set("no", 1)
+	map.set('age', 10)
+	let ret = UTSiOS.convertDictionary(map)
+	let res: UTSiOSTestResult = {
+		key: `${JSON.stringify(map)}转成dictionary`,
+		value: `${ret}`,
+		passed: true
+	}
+	return res;
+}
+
+/* 数据转换测试 */
+export function dataConvertTest(): string[] {
+	let results: string[] = [];
+	
+	let strRes = convertStringTest();
+	let boolRes = convertBoolTest();
+	let numberRes = convertNumberTest();
+	let doubleRes = convertDoubleTest();
+	let floatRes = convertFloatTest();
+	let intRes = convertIntTest();
+	let arrayRes = convertArrayTest();
+	let dicRes = convertDictionaryTest();
+	
+	results.push(JSON.stringify(strRes)!);
+	results.push(JSON.stringify(boolRes)!);
+	results.push(JSON.stringify(numberRes)!);
+	results.push(JSON.stringify(doubleRes)!);
+	results.push(JSON.stringify(floatRes)!);
+	results.push(JSON.stringify(intRes)!);
+	results.push(JSON.stringify(arrayRes)!);
+	results.push(JSON.stringify(dicRes)!);
+	
+	return results;
+}
+
+export function tepeofTest(): string[] {
+	let results: string[] = [];
+	
+	let str0 = UTSiOS.typeof("uts is cool")
+	let res0: UTSiOSTestResult = {
+		key: "uts is cool类型是",
+		value: str0,
+		passed: false
+	}
+	if (str0 == "string") {
+		res0.passed = true
+	}
+	results.push(JSON.stringify(res0)!)
+	
+	let str1 = UTSiOS.typeof(true)
+	let res1: UTSiOSTestResult = {
+		key: "true类型是",
+		value: str1,
+		passed: false
+	}
+	if (str1 == "boolean") {
+		res1.passed = true
+	}
+	results.push(JSON.stringify(res1)!)
+	
+	let num = 2;
+	let str2 = UTSiOS.typeof(num)
+	let res2: UTSiOSTestResult = {
+		key: "2类型是",
+		value: str2,
+		passed: false
+	}
+	if (str2 == "number") {
+		res2.passed = true
+	}
+	results.push(JSON.stringify(res2)!)
+	
+	let str3 = UTSiOS.typeof(res2)
+	let res3: UTSiOSTestResult = {
+		key: `${JSON.stringify(res2)}类型是`,
+		value: str3,
+		passed: false
+	}
+	if (str3 == "object") {
+		res3.passed = true
+	}
+	results.push(JSON.stringify(res3)!)
+	
+	return results;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

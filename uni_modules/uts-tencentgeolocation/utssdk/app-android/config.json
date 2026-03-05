@@ -1,0 +1,10 @@
+{
+	"abis": [
+	    "arm64-v8a"
+	],
+	"dependencies": [
+		"com.tencent.map.geolocation:TencentLocationSdk-openplatform:7.4.9"
+	],
+	"minSdkVersion": 21
+}
+
