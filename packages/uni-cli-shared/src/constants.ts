@@ -109,4 +109,4 @@ export const JS_STYLE_PLACEHOLDER_STR = JSON.stringify({
   [JS_STYLE_PLACEHOLDER_MARKER]: 0,
 })
 export const JS_STYLE_PLACEHOLDER_RE =
-  /\{\s*"__js_style_placeholder__"\s*:\s*0\s*}/
+  /\{\s*"__js_style_placeholder__"\s*:\s*0\s*}/g
