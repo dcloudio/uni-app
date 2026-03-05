@@ -1,0 +1,100 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="page">
+      <view class="flex justify-between flex-row mt-10">
+        <text>str:</text>
+        <text id="str">{{ str }}</text>
+      </view>
+      <view class="flex justify-between flex-row mt-10">
+        <text>num:</text>
+        <text id="num">{{ num }}</text>
+      </view>
+      <view class="flex justify-between flex-row mt-10">
+        <text>bool:</text>
+        <text id="bool">{{ bool }}</text>
+      </view>
+      <view class="flex justify-between flex-row mt-10">
+        <text>count:</text>
+        <text id="count">{{ count }}</text>
+      </view>
+      <button class="mt-10" id="increment-btn" @click="increment">
+        increment count
+      </button>
+      <view class="flex justify-between flex-row mt-10">
+        <text>obj.str:</text>
+        <text id="obj-str">{{ obj['str'] }}</text>
+      </view>
+      <view class="flex justify-between flex-row mt-10">
+        <text>obj.num:</text>
+        <text id="obj-num">{{ obj['num'] }}</text>
+      </view>
+      <view class="flex justify-between flex-row mt-10">
+        <text>obj.bool:</text>
+        <text id="obj-bool">{{ obj['bool'] }}</text>
+      </view>
+      <button class="mt-10" id="update-obj-btn" @click="updateObj">
+        update obj
+      </button>
+      <!-- #ifdef APP -->
+      <RenderFunction
+        :str="str"
+        :count="count"
+        :obj="obj"
+        @compUpdateObj="compUpdateObj"
+        :isShow="true" />
+      <!-- #endif -->
+      <Foo>
+        <text class="mt-10" id="default-slot-in-foo">default slot in Foo</text>
+      </Foo>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+// #ifdef APP
+import RenderFunction from './RenderFunction.uvue'
+// #endif
+import Foo from './Foo.uvue'
+export default {
+  components: {
+    // #ifdef APP
+    RenderFunction,
+    // #endif
+    Foo
+  },
+  setup() {
+    const count = ref(0)
+    // 函数只能通过声明变量,赋值函数的方式,不支持 function xxx(){}
+    const increment = () => { count.value++ }
+    const obj = reactive({
+      str: 'obj default str',
+      num: 0,
+      bool: false,
+    })
+    const updateObj = () => {
+      obj['str'] = 'obj new str'
+      obj['num'] = 100
+      obj['bool'] = true
+    }
+    const compUpdateObj = () => {
+      obj['str'] = 'obj new str by comp update'
+      obj['num'] = 200
+      obj['bool'] = true
+    }
+    return {
+      str: 'default str',
+      num: 0,
+      bool: false,
+      count,
+      increment,
+      obj,
+      updateObj,
+      compUpdateObj
+    }
+  }
+}
+</script>

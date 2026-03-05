@@ -1,0 +1,12 @@
+<template>
+  <view></view>
+</template>
+
+<script setup lang='uts'>
+  function test(name : string) : string {
+    return name
+  }
+  defineExpose({
+    test
+  })
+</script>

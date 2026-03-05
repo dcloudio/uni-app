@@ -1,0 +1,47 @@
+<template>
+  <view class="container">
+    <component :is="currentComponentStr" />
+    <component :is="currentComponentInstance" />
+    <component :is="myInput" :value="inputValue" id="my-input" />
+    <button @click="changeCurrentComponent">change current component</button>
+  </view>
+</template>
+
+<script lang="uts">
+  import Foo from '../../../../components/Foo.uvue'
+  import Bar from '../../../../components/Bar.uvue'
+  export default {
+    components: {
+      Foo,
+      Bar
+    },
+    data() {
+      return {
+        currentComponentStr: 'Foo',
+        currentComponentInstance: Foo,
+        myInput: 'input',
+        inputValue: 'default value'
+      }
+    },
+    methods: {
+      changeCurrentComponent() {
+        if (this.currentComponentStr === 'Foo') {
+          this.currentComponentStr = 'Bar'
+          this.currentComponentInstance = Bar
+        } else {
+          this.currentComponentStr = 'Foo'
+          this.currentComponentInstance = Foo
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  .item {
+    display: flex;
+    flex-direction: row;
+    margin: 15px;
+    border: #eee solid 1px;
+  }
+</style>

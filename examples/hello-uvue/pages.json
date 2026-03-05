@@ -1,0 +1,958 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "hello uvue"
+      }
+    },
+    {
+      "path": "pages/app-instance/component/component",
+      "style": {
+        "navigationBarTitleText": "app.component"
+      }
+    },
+    {
+      "path": "pages/app-instance/globalProperties/globalProperties-options",
+      "style": {
+        "navigationBarTitleText": "app.globalProperties"
+      }
+    },
+    {
+      "path": "pages/app-instance/globalProperties/globalProperties-composition",
+      "style": {
+        "navigationBarTitleText": "app.globalProperties"
+      }
+    },
+    {
+      "path": "pages/app-instance/use/use-options",
+      "style": {
+        "navigationBarTitleText": "app.use"
+      }
+    },
+    {
+      "path": "pages/app-instance/use/use-composition",
+      "style": {
+        "navigationBarTitleText": "app.use"
+      }
+    },
+    {
+      "path": "pages/component-instance/attrs/attrs-options",
+      "style": {
+        "navigationBarTitleText": "$attrs"
+      }
+    },
+    {
+      "path": "pages/component-instance/attrs/attrs-composition",
+      "style": {
+        "navigationBarTitleText": "useAttrs"
+      }
+    },
+    {
+      "path": "pages/component-instance/data/data-options",
+      "style": {
+        "navigationBarTitleText": "$data"
+      }
+    },
+    {
+      "path": "pages/component-instance/data/data-composition",
+      "style": {
+        "navigationBarTitleText": "data 组合式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/props/props-options",
+      "style": {
+        "navigationBarTitleText": "$props"
+      }
+    },
+    {
+      "path": "pages/component-instance/props/props-composition",
+      "style": {
+        "navigationBarTitleText": "defineProps"
+      }
+    },
+    {
+      "path": "pages/component-instance/el/el-options",
+      "style": {
+        "navigationBarTitleText": "$el 选项式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/el/el-composition",
+      "style": {
+        "navigationBarTitleText": "$el 组合式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/options/options-options",
+      "style": {
+        "navigationBarTitleText": "$options"
+      }
+    },
+    {
+      "path": "pages/component-instance/options/options-composition",
+      "style": {
+        "navigationBarTitleText": "defineOptions"
+      }
+    },
+    {
+      "path": "pages/component-instance/parent/parent-options",
+      "style": {
+        "navigationBarTitleText": "$parent 选项式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/parent/parent-composition",
+      "style": {
+        "navigationBarTitleText": "$parent 组合式 API"
+      }
+    },
+    // #ifndef WEB
+    {
+      "path": "pages/component-instance/root/root-options",
+      "style": {
+        "navigationBarTitleText": "$root 选项式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/root/root-composition",
+      "style": {
+        "navigationBarTitleText": "$root 组合式 API"
+      }
+    },
+    // #endif
+    // #ifndef APP-IOS || MP
+    {
+      "path": "pages/directive/v-html/v-html-options",
+      "style": {
+        "navigationBarTitleText": "v-html 选项式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-html/v-html-composition",
+      "style": {
+        "navigationBarTitleText": "v-html 组合式 API"
+      }
+    },
+    // #endif 
+    {
+      "path": "pages/directive/v-show/v-show-options",
+      "style": {
+        "navigationBarTitleText": "v-show 选项式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-show/v-show-composition",
+      "style": {
+        "navigationBarTitleText": "v-show 组合式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-if/v-if-options",
+      "style": {
+        "navigationBarTitleText": "v-if 选项式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-if/v-if-composition",
+      "style": {
+        "navigationBarTitleText": "v-if 组合式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-for/v-for-options",
+      "style": {
+        "navigationBarTitleText": "v-for 选项式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-for/v-for-composition",
+      "style": {
+        "navigationBarTitleText": "v-for 组合式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-on/v-on-options",
+      "style": {
+        "navigationBarTitleText": "v-on 选项式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-on/v-on-composition",
+      "style": {
+        "navigationBarTitleText": "v-on 组合式 API"
+      }
+    },
+    // #ifndef MP
+    {
+      "path": "pages/directive/v-pre/v-pre",
+      "style": {
+        "navigationBarTitleText": "v-pre"
+      }
+    },
+    {
+      "path": "pages/directive/v-once/v-once-options",
+      "style": {
+        "navigationBarTitleText": "v-once 选项式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-once/v-once-composition",
+      "style": {
+        "navigationBarTitleText": "v-once 组合式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-memo/v-memo-options",
+      "style": {
+        "navigationBarTitleText": "v-memo 选项式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-memo/v-memo-composition",
+      "style": {
+        "navigationBarTitleText": "v-memo 组合式 API"
+      }
+    },
+    // #endif
+    // #ifdef WEB
+    {
+      "path": "pages/directive/v-text/v-text-options",
+      "style": {
+        "navigationBarTitleText": "v-text 选项式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-text/v-text-composition",
+      "style": {
+        "navigationBarTitleText": "v-text 组合式 API"
+      }
+    },
+    // #endif
+    {
+      "path": "pages/directive/v-bind/v-bind-options",
+      "style": {
+        "navigationBarTitleText": "v-bind 选项式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-bind/v-bind-composition",
+      "style": {
+        "navigationBarTitleText": "v-bind 组合式 API"
+      }
+    },
+    {
+      "path": "pages/directive/v-model/v-model-options",
+      "style": {
+        "navigationBarTitleText": "v-model"
+      }
+    },
+    // #ifndef MP
+    {
+      "path": "pages/directive/v-model/v-model-composition",
+      "style": {
+        "navigationBarTitleText": "defineModel"
+      }
+    },
+    // #endif
+    {
+      "path": "pages/directive/v-slot/v-slot-options",
+      "style": {
+        "navigationBarTitleText": "v-slot"
+      }
+    },
+    {
+      "path": "pages/directive/v-slot/v-slot-composition",
+      "style": {
+        "navigationBarTitleText": "defineSlots"
+      }
+    },
+    {
+      "path": "pages/component-instance/slots/slots-options",
+      "style": {
+        "navigationBarTitleText": "$slots"
+      }
+    },
+    {
+      "path": "pages/component-instance/slots/slots-composition",
+      "style": {
+        "navigationBarTitleText": "$slots"
+      }
+    },
+    {
+      "path": "pages/component-instance/refs/refs-options",
+      "style": {
+        "navigationBarTitleText": "$refs 选项式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/refs/refs-composition",
+      "style": {
+        "navigationBarTitleText": "$refs 组合式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/emit-function/emit-function-options",
+      "style": {
+        "navigationBarTitleText": "$emit() 选项式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/emit-function/emit-function-composition",
+      "style": {
+        "navigationBarTitleText": "defineEmits 组合式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/force-update/force-update-options",
+      "style": {
+        "navigationBarTitleText": "$forceUpdate 选项式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/force-update/force-update-composition",
+      "style": {
+        "navigationBarTitleText": "$forceUpdate 组合式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/nextTick/nextTick-options",
+      "style": {
+        "navigationBarTitleText": "$nextTick"
+      }
+    },
+    {
+      "path": "pages/component-instance/nextTick/nextTick-composition",
+      "style": {
+        "navigationBarTitleText": "nextTick"
+      }
+    },
+    {
+      "path": "pages/component-instance/methods/call-method-uni-element-options",
+      "style": {
+        "navigationBarTitleText": "call-method-uni-element 选项式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/methods/call-method-uni-element-composition",
+      "style": {
+        "navigationBarTitleText": "call-method-uni-element 组合式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/methods/call-method-easycom-options",
+      "style": {
+        "navigationBarTitleText": "call-method-easycom 选项式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/methods/call-method-easycom-composition",
+      "style": {
+        "navigationBarTitleText": "call-method-easycom 组合式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/methods/call-method-easycom-uni-modules-options",
+      "style": {
+        "navigationBarTitleText": "call-method-easycom-uni-modules 选项式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/methods/call-method-easycom-uni-modules-composition",
+      "style": {
+        "navigationBarTitleText": "call-method-easycom-uni-modules 组合式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/methods/call-method-other-options",
+      "style": {
+        "navigationBarTitleText": "call-method-other 选项式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/methods/call-method-other-composition",
+      "style": {
+        "navigationBarTitleText": "call-method-other 组合式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/methods/call-method-define-expose",
+      "style": {
+        "navigationBarTitleText": "call-method-define-expose"
+      }
+    },
+    {
+      "path": "pages/component-instance/provide/provide-options-1",
+      "style": {
+        "navigationBarTitleText": "provide 选项式 API 字面量"
+      }
+    },
+    {
+      "path": "pages/component-instance/provide/provide-options-2",
+      "style": {
+        "navigationBarTitleText": "provide 选项式 API 函数"
+      }
+    },
+    {
+      "path": "pages/component-instance/provide/provide-composition",
+      "style": {
+        "navigationBarTitleText": "provide 组合式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/setup-function/setup-function",
+      "style": {
+        "navigationBarTitleText": "setup()"
+      }
+    },
+    {
+      "path": "pages/component-instance/define-expose/define-expose",
+      "style": {
+        "navigationBarTitleText": "defineExpose"
+      }
+    },
+    // #ifndef MP
+    {
+      "path": "pages/component-instance/circular-reference/circular-reference-options",
+      "style": {
+        "navigationBarTitleText": "循环引用 选项式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/circular-reference/circular-reference-composition",
+      "style": {
+        "navigationBarTitleText": "循环引用 组合式 API"
+      }
+    },
+    // #endif
+    // #ifdef APP
+    {
+      "path": "pages/component-instance/mixins/mixins-app",
+      "style": {
+        "navigationBarTitleText": "mixins"
+      }
+    },
+    {
+      "path": "pages/component-instance/mixins/mixins-app-page-namesake",
+      "style": {
+        "navigationBarTitleText": "mixins page namesake"
+      }
+    },
+    // #endif
+    // #ifdef WEB
+    {
+      "path": "pages/component-instance/mixins/mixins-web",
+      "style": {
+        "navigationBarTitleText": "mixins"
+      }
+    },
+    // #endif
+    // #ifdef MP
+    {
+      "path" : "pages/component-instance/mp-instance/mp-instance",
+      "style" : 
+      {
+        "navigationBarTitleText" : "mp-instance"
+      }
+    },
+    // #endif
+    {
+      "path": "pages/reactivity/core/ref/ref",
+      "style": {
+        "navigationBarTitleText": "ref"
+      }
+    },
+    {
+      "path": "pages/reactivity/core/computed/computed-options",
+      "style": {
+        "navigationBarTitleText": "computed 选项式 API"
+      }
+    },
+    {
+      "path": "pages/reactivity/core/computed/computed-composition",
+      "style": {
+        "navigationBarTitleText": "computed 组合式 API"
+      }
+    },
+    {
+      "path": "pages/reactivity/core/reactive/reactive",
+      "style": {
+        "navigationBarTitleText": "reactive"
+      }
+    },
+    {
+      "path": "pages/reactivity/core/readonly/readonly",
+      "style": {
+        "navigationBarTitleText": "readonly"
+      }
+    },
+    {
+      "path": "pages/reactivity/core/watch/watch-options",
+      "style": {
+        "navigationBarTitleText": "watch 选项式 API"
+      }
+    },
+    {
+      "path": "pages/reactivity/core/watch/watch-composition",
+      "style": {
+        "navigationBarTitleText": "watch 组合式 API"
+      }
+    },
+    {
+      "path": "pages/reactivity/core/watch-effect/watch-effect",
+      "style": {
+        "navigationBarTitleText": "watchEffect"
+      }
+    },
+    {
+      "path": "pages/reactivity/core/watch-post-effect/watch-post-effect",
+      "style": {
+        "navigationBarTitleText": "watchPostEffect"
+      }
+    },
+    {
+      "path": "pages/reactivity/core/watch-sync-effect/watch-sync-effect",
+      "style": {
+        "navigationBarTitleText": "watchSyncEffect"
+      }
+    },
+    {
+      "path": "pages/reactivity/utilities/is-proxy/is-proxy",
+      "style": {
+        "navigationBarTitleText": "isProxy"
+      }
+    },
+    {
+      "path": "pages/reactivity/utilities/is-reactive/is-reactive",
+      "style": {
+        "navigationBarTitleText": "isReactive"
+      }
+    },
+    {
+      "path": "pages/reactivity/utilities/is-readonly/is-readonly",
+      "style": {
+        "navigationBarTitleText": "isReadonly"
+      }
+    },
+    {
+      "path": "pages/reactivity/utilities/is-ref/is-ref",
+      "style": {
+        "navigationBarTitleText": "isRef"
+      }
+    },
+    {
+      "path": "pages/reactivity/utilities/un-ref/un-ref",
+      "style": {
+        "navigationBarTitleText": "unRef"
+      }
+    },
+    {
+      "path": "pages/reactivity/utilities/to-ref/to-ref",
+      "style": {
+        "navigationBarTitleText": "toRef"
+      }
+    },
+    {
+      "path": "pages/reactivity/utilities/to-refs/to-refs",
+      "style": {
+        "navigationBarTitleText": "toRefs"
+      }
+    },
+    {
+      "path": "pages/reactivity/utilities/to-value/to-value",
+      "style": {
+        "navigationBarTitleText": "toValue"
+      }
+    },
+    {
+      "path": "pages/reactivity/advanced/shallow-ref/shallow-ref",
+      "style": {
+        "navigationBarTitleText": "shallowRef"
+      }
+    },
+    {
+      "path": "pages/reactivity/advanced/trigger-ref/trigger-ref",
+      "style": {
+        "navigationBarTitleText": "triggerRef"
+      }
+    },
+    {
+      "path": "pages/reactivity/advanced/custom-ref/custom-ref",
+      "style": {
+        "navigationBarTitleText": "customRef"
+      }
+    },
+    {
+      "path": "pages/reactivity/advanced/shallow-reactive/shallow-reactive",
+      "style": {
+        "navigationBarTitleText": "shallowReactive"
+      }
+    },
+    {
+      "path": "pages/reactivity/advanced/shallow-readonly/shallow-readonly",
+      "style": {
+        "navigationBarTitleText": "shallowReadonly"
+      }
+    },
+    {
+      "path": "pages/reactivity/advanced/to-raw/to-raw",
+      "style": {
+        "navigationBarTitleText": "toRaw"
+      }
+    },
+    {
+      "path": "pages/reactivity/advanced/mark-raw/mark-raw",
+      "style": {
+        "navigationBarTitleText": "markRaw"
+      }
+    },
+    {
+      "path": "pages/reactivity/advanced/effect-scope/effect-scope",
+      "style": {
+        "navigationBarTitleText": "effectScope"
+      }
+    },
+    {
+      "path": "pages/reactivity/advanced/get-current-scope/get-current-scope",
+      "style": {
+        "navigationBarTitleText": "getCurrentScope"
+      }
+    },
+    {
+      "path": "pages/reactivity/advanced/on-scope-dispose/on-scope-dispose",
+      "style": {
+        "navigationBarTitleText": "onScopeDispose"
+      }
+    },
+    {
+      "path": "pages/lifecycle/page/page-composition",
+      "style": {
+        "navigationBarTitleText": "page-lifecycle 组合式 API",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/lifecycle/page/page-options",
+      "style": {
+        "navigationBarTitleText": "page-lifecycle 选项式 API",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/lifecycle/page/onBackPress/on-back-press-options",
+      "style": {
+        "navigationBarTitleText": "onBackPress 选项式 API"
+      }
+    },
+    {
+      "path": "pages/lifecycle/page/onBackPress/on-back-press-child-options",
+      "style": {
+        "navigationBarTitleText": "onBackPress 选项式 API"
+      }
+    },
+    {
+      "path": "pages/lifecycle/page/onBackPress/on-back-press-composition",
+      "style": {
+        "navigationBarTitleText": "onBackPress 组合式 API"
+      }
+    },
+    {
+      "path": "pages/lifecycle/page/onBackPress/on-back-press-child-composition",
+      "style": {
+        "navigationBarTitleText": "onBackPress 组合式 API"
+      }
+    },
+    // #ifndef MP
+    {
+      "path": "pages/lifecycle/component/component-options",
+      "style": {
+        "navigationBarTitleText": "component-lifecycle 选项式 API",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/lifecycle/component/component-composition",
+      "style": {
+        "navigationBarTitleText": "component-lifecycle 组合式 API",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/built-in/component/keep-alive/keep-alive-options",
+      "style": {
+        "navigationBarTitleText": "keep-alive 选项式 API"
+      }
+    },
+    {
+      "path": "pages/built-in/component/keep-alive/keep-alive-composition",
+      "style": {
+        "navigationBarTitleText": "keep-alive 组合式 API"
+      }
+    },
+    {
+      "path": "pages/built-in/component/teleport/teleport-options",
+      "style": {
+        "navigationBarTitleText": "teleport 选项式 API",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/built-in/component/teleport/teleport-composition",
+      "style": {
+        "navigationBarTitleText": "teleport 组合式 API",
+        "enablePullDownRefresh": false
+      }
+    },
+    // #endif
+    {
+      "path": "pages/built-in/special-elements/slots/slots-composition",
+      "style": {
+        "navigationBarTitleText": "slots 组合式 API"
+      }
+    },
+    {
+      "path": "pages/built-in/special-elements/slots/slots-options",
+      "style": {
+        "navigationBarTitleText": "slots 选项式 API"
+      }
+    },
+    {
+      "path": "pages/built-in/special-elements/template/template-options",
+      "style": {
+        "navigationBarTitleText": "template 选项式 API"
+      }
+    },
+    {
+      "path": "pages/built-in/special-elements/template/template-composition",
+      "style": {
+        "navigationBarTitleText": "template 组合式 API"
+      }
+    },
+    {
+      "path": "pages/built-in/special-elements/template/template-map-style-options",
+      "style": {
+        "navigationBarTitleText": "template-map-style 选项式 API"
+      }
+    },
+    {
+      "path": "pages/built-in/special-elements/template/template-map-style-composition",
+      "style": {
+        "navigationBarTitleText": "template-map-style 组合式 API"
+      }
+    },
+    // #ifndef MP
+    {
+      "path": "pages/built-in/special-elements/component/component-options",
+      "style": {
+        "navigationBarTitleText": "component 选项式 API"
+      }
+    },
+    {
+      "path": "pages/built-in/special-elements/component/component-composition",
+      "style": {
+        "navigationBarTitleText": "component 组合式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/render/render-options",
+      "style": {
+        "navigationBarTitleText": "render 选项式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/render/render-composition",
+      "style": {
+        "navigationBarTitleText": "render 组合式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/mergeProps/mergeProps-options",
+      "style": {
+        "navigationBarTitleText": "mergeProps 选项式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/mergeProps/mergeProps-composition",
+      "style": {
+        "navigationBarTitleText": "mergeProps 组合式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/cloneVNode/cloneVNode-options",
+      "style": {
+        "navigationBarTitleText": "cloneVNode 选项式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/cloneVNode/cloneVNode-composition",
+      "style": {
+        "navigationBarTitleText": "cloneVNode 组合式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/isVNode/isVNode-options",
+      "style": {
+        "navigationBarTitleText": "isVNode 选项式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/isVNode/isVNode-composition",
+      "style": {
+        "navigationBarTitleText": "isVNode 组合式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/resolveComponent/resolveComponent-options",
+      "style": {
+        "navigationBarTitleText": "resolveComponent 选项式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/resolveComponent/resolveComponent-composition",
+      "style": {
+        "navigationBarTitleText": "resolveComponent 组合式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/withDirectives/withDirectives-options",
+      "style": {
+        "navigationBarTitleText": "withDirectives 选项式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/withDirectives/withDirectives-composition",
+      "style": {
+        "navigationBarTitleText": "withDirectives 组合式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/withModifiers/withModifiers-options",
+      "style": {
+        "navigationBarTitleText": "withModifiers 选项式 API"
+      }
+    },
+    {
+      "path": "pages/render-function/withModifiers/withModifiers-composition",
+      "style": {
+        "navigationBarTitleText": "withModifiers 组合式 API"
+      }
+    },
+    // #endif
+    {
+      "path": "pages/examples/unrecognized-component/unrecognized-component",
+      "style": {
+        "navigationBarTitleText": "unrecognized-component"
+      }
+    },
+    {
+      "path": "pages/examples/nested-component-communication/nested-component-communication-options",
+      "style": {
+        "navigationBarTitleText": "嵌套组件通信 选项式 API"
+      }
+    },
+    {
+      "path": "pages/examples/nested-component-communication/nested-component-communication-composition",
+      "style": {
+        "navigationBarTitleText": "嵌套组件通信 组合式 API"
+      }
+    },
+    {
+      "path": "pages/examples/set-custom-child-component-root-node-class/set-custom-child-component-root-node-class-options",
+      "style": {
+        "navigationBarTitleText": "自定义组件中使用 class 定制另一个自定义组件根节点样式 选项式 API"
+      }
+    },
+    {
+      "path": "pages/examples/set-custom-child-component-root-node-class/set-custom-child-component-root-node-class-composition",
+      "style": {
+        "navigationBarTitleText": "自定义组件中使用 class 定制另一个自定义组件根节点样式 组合式 API"
+      }
+    },
+    {
+      "path": "pages/examples/multiple-style-script/multiple-style-script",
+      "style": {
+        "navigationBarTitleText": "多个 style 和 script"
+      }
+    },
+    {
+      "path": "pages/type/type",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/error/runtime-error/runtime-error-options",
+      "style": {
+        "navigationBarTitleText": "runtime error 选项式 API"
+      }
+    },
+    {
+      "path": "pages/error/runtime-error/runtime-error-composition",
+      "style": {
+        "navigationBarTitleText": "runtime error 组合式 API"
+      }
+    },
+    {
+      "path": "pages/error/throw-error/throw-error-options",
+      "style": {
+        "navigationBarTitleText": "throw error 选项式 API"
+      }
+    },
+    {
+      "path": "pages/error/throw-error/throw-error-composition",
+      "style": {
+        "navigationBarTitleText": "throw error 组合式 API"
+      }
+    },
+    {
+      "path": "pages/component-instance/props/page-props",
+      "style": {
+        "navigationBarTitleText": "页面作为组件引入"
+      }
+    },
+    {
+      "path": "pages/component-instance/props/page-props-options",
+      "style": {
+        "navigationBarTitleText": "页面通过 url props 传参-选项式"
+      }
+    },
+    {
+      "path": "pages/component-instance/props/page-props-composition",
+      "style": {
+        "navigationBarTitleText": "页面通过 url props 传参-组合式"
+      }
+    }
+  ],
+  "globalStyle": {
+    "pageOrientation": "portrait",
+    "navigationBarTitleText": "Hello UVUE",
+    "navigationBarTextStyle": "white",
+    "navigationBarBackgroundColor": "#007AFF",
+    "backgroundColor": "#F8F8F8",
+    "backgroundColorTop": "#F4F5F6",
+    "backgroundColorBottom": "#F4F5F6",
+    "h5": {
+      "maxWidth": 1190,
+      "navigationBarTextStyle": "white",
+      "navigationBarBackgroundColor": "#007AFF"
+    }
+  },
+  "easycom": {
+      "custom": {
+          "custom-(.*)": "@/components/custom-$1.uvue"
+      }
+  },
+  "uniIdRouter": {},
+  "condition": {
+    "current": 0,
+    "list": [
+      {
+        "name": "",
+        "path": "",
+        "query": ""
+      }
+    ]
+  }
+}

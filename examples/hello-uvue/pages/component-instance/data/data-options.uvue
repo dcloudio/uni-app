@@ -1,0 +1,85 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>str: </text>
+      <text id="str">{{ str }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>num: </text>
+      <text id="num">{{ num }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>arr: </text>
+      <text id="arr">{{ arr.join(',') }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>obj.str: </text>
+      <text id="obj-str">{{ obj.str }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>obj.num: </text>
+      <text id="obj-num">{{ obj.num }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>obj.arr: </text>
+      <text id="obj-arr">{{ obj.arr.join(',') }}</text>
+    </view>
+    <view ref='htmlRef' id="idRef" class="flex justify-between flex-row mb-10">
+      <text>data 存储 element不需要被包装</text>
+      <text id="isSameRefText">{{ refElementIsSame }}</text>
+    </view>
+
+    <button @click="updateData">update data</button>
+  </view>
+</template>
+
+<script lang="uts">
+  type Obj = {
+    str : string,
+    num : number,
+    arr : number[]
+  }
+  export default {
+    data() {
+      return {
+        str: 'default str',
+        num: 0,
+        arr: [1, 2, 3],
+        // 特殊类型需要通过 as 指定类型
+        obj: {
+          str: 'default obj.str',
+          num: 10,
+          arr: [4, 5, 6]
+        } as Obj,
+        refElement: null as UniElement | null,
+        refElementIsSame: false
+      }
+    },
+    methods: {
+      refTest() {
+        const queryElementById1 = uni.getElementById('idRef')
+        const queryElementById2 = uni.getElementById('idRef')
+        const htmlRefElement = this.$refs['htmlRef'] as UniElement;
+        this.refElement = htmlRefElement
+        if (queryElementById1 === queryElementById2
+          && queryElementById1 === htmlRefElement
+          && queryElementById1 === this.refElement) {
+          this.refElementIsSame = true
+        }
+      },
+      updateData() {
+        this.str = 'new str'
+        this.num = 1
+        this.arr = [4, 5, 6]
+
+        this.obj.str = 'new obj.str'
+        this.obj.num = 100
+        this.obj.arr = [7, 8, 9]
+
+        this.refTest()
+
+
+      },
+    },
+  }
+</script>

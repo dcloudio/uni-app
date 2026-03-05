@@ -1,0 +1,19 @@
+<template>
+  <view>
+    <text class="mb-10 bold">reference types</text>
+    <text id="reference-type-list">{{ JSON.stringify(list) }}</text>
+  </view>
+</template>
+<script setup lang="uts">
+  import type { ReferenceTypesProps } from './types.uts'
+
+  const props = withDefaults(defineProps<ReferenceTypesProps>(), {
+    // #ifdef APP-ANDROID
+    list: [] as number[]
+    // #endif
+    // #ifndef APP-ANDROID
+    list: [] as string[]
+    // #endif
+  })
+  console.log('reference types props', props)
+</script>

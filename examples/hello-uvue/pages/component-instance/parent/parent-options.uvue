@@ -1,0 +1,30 @@
+<template>
+  <view class="page">
+    <child ref='child' />
+  </view>
+</template>
+
+<script lang='uts'>
+import child from './child-options.uvue'
+
+export default {
+  components: {
+    child
+  },
+  data() {
+    return {
+      str: "parent str",
+      num: 1
+    }
+  },
+  methods: {
+    getNum() : number {
+      return this.num
+    },
+    callMethodByChild(): number {
+      const child = this.$refs['child'] as ComponentPublicInstance
+      return child.$parent!.$callMethod('getNum') as number
+    }
+  }
+}
+</script>

@@ -1,0 +1,34 @@
+<template>
+  <view class="page">
+    <view class="mb-10 flex flex-row justify-between">
+      <text>merged class</text>
+      <text id="merged-class">{{mergedProps['class']}}</text>
+    </view>
+    <button class="mb-10" id="trigger-merged-click" @click="triggerMergedClick">trigger merged onClick</button>
+    <view>
+      <text class="mb-10">prop function result list</text>
+      <text class="click-res" v-for="(item, index) in propFnResList" :key="index">{{item}}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  type PropFn = () => string
+
+  const propA = {
+    class: 'foo',
+    onClick: () : string => 'propA click res'
+  }
+  const propB = {
+    class: { bar: true },
+    onClick: () : string => 'propB click res'
+  }
+  const mergedProps = ref({})
+  const propFnResList = ref<string[]>([])
+
+  mergedProps.value = mergeProps(propA, propB)
+
+  const triggerMergedClick = () => {
+    (mergedProps.value['onClick'] as PropFn[]).forEach(fn => { propFnResList.value.push(fn()) })
+  }
+</script>

@@ -1,0 +1,28 @@
+<template>
+    <text>
+        count: {{count}}
+    </text>
+</template>
+
+<script>
+    export default {
+        name: "test-getter-setter-options",
+        data() {
+            return {
+                count: 0
+            };
+        },
+        methods: {
+            getCount() : number {
+                return this.count
+            },
+            setCount(newCount : number) {
+                this.count = newCount * 2
+            }
+        }
+    }
+</script>
+
+<style>
+
+</style>

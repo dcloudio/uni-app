@@ -1,0 +1,127 @@
+<template>
+	<view class="p-10">
+		<text id="page-props-options-title" class="text">{{title}}</text>
+		<text id="page-props-options-from" class="text">{{from}}</text>
+		<text id="page-props-options-number" class="text">{{number}}</text>
+		<text id="page-props-options-boolean" class="text">{{boolean}}</text>
+		<text id="page-props-options-object" class="text">{{JSON.stringify(object)}}</text>
+		<text id="page-props-options-array" class="text">{{JSON.stringify(array)}}</text>
+	</view>
+</template>
+
+<script>
+	import { setLifeCycleNum, state } from '@/store/index.uts'
+	
+	export default {
+		props: {
+			from: {
+				type: String,
+				default: 'aaa'
+			},
+			number: {
+				type: Number,
+				default: 1,
+				validator(value: number) {
+					return value > 0
+				}
+			},
+			boolean: {
+				type: Boolean,
+				required: true,
+			},
+			object: {
+				type: UTSJSONObject,
+				default: () => {
+					return {
+						a: 1,
+						b: 2
+					}
+				}
+			},
+			array: {
+				type: Array as PropType<number[]>,
+				default: () => {
+					return [1, 2, 3]
+				}
+			}
+		},
+		data() {
+			return {
+				title: 'page-props-options'
+			}
+		},
+		beforeCreate() {
+			console.log('page-props-options beforeCreate')
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 1)
+		},
+		created() {
+			console.log('page-props-options created')
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 1)
+		},
+		beforeMount(){
+			console.log('page-props-options beforeMount')
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 1)
+		},
+		mounted(){
+			console.log('page-props-options mounted')
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 1)
+		},
+		beforeUnmount(){
+			console.log('page-props-options beforeUnmount')
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 1)
+		},
+		unmounted(){
+			console.log('page-props-options unmounted')
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 1)
+		},
+		onLoad(options: OnLoadOptions) {
+			console.log('page-props-options onLoad options', options)
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 10)
+		},
+		onShow() {
+			console.log('page-props-options onShow')
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 10)
+		},
+		onReady() {
+			console.log('page-props-options onReady')
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 10)
+		},
+		onHide() {
+			console.log('page-props-options onHide')
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 10)
+		},
+		onUnload() {
+			console.log('page-props-options onUnload')
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 10)
+		},
+		methods: {
+			// 自动化测试
+			setLifeCycleNum(num: number) {
+				setLifeCycleNum(num)
+			},
+			// 自动化测试
+			getLifeCycleNum(): number {
+				return state.lifeCycleNum
+			}
+		}
+	}
+</script>
+
+<style>
+	.text {
+		font-size: 18px;
+		color: #8f8f94;
+    text-align: center;
+	}
+</style>

@@ -1,0 +1,18 @@
+<template>
+  <view class="page">
+    <child
+      class="child-class"
+      str="str from parent"
+      @childClick="() => {}" />
+  </view>
+</template>
+
+<script lang="uts">
+import child from './child-options.uvue'
+
+export default {
+  components: {
+    child,
+  },
+}
+</script>

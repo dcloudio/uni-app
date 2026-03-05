@@ -1,0 +1,8 @@
+<script setup lang="uts">
+  defineOptions({
+    render() : VNode {
+      const CompForAppComponent = resolveComponent('CompForAppComponent')
+      return h(CompForAppComponent)
+    }
+  })
+</script>

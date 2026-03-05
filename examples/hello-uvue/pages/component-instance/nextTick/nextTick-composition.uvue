@@ -1,0 +1,72 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view class="page">
+      <view class="flex justify-between flex-row mb-10">
+        <text ref="text">title:</text>
+        <text id="page-text">{{ dataInfo.title }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text ref="text">before $nextTick title:</text>
+        <text>{{ dataInfo.beforeNextTickTitle }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text ref="text">after $nextTick title:</text>
+        <text>{{ dataInfo.afterNextTickTitle }}</text>
+      </view>
+      <button id="page-test-next-tick-btn" @click="pageTestNextTick">
+        page test $nextTick
+      </button>
+      <Child id="child-component" />
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import Child from './child-composition.uvue'
+
+  type DataInfo = {
+    title : string
+    beforeNextTickTitle : string
+    afterNextTickTitle : string
+  }
+
+  const dataInfo = reactive({
+    title: 'default title',
+    beforeNextTickTitle: '',
+    afterNextTickTitle: '',
+  } as DataInfo)
+
+  const testNextTick = async () => {
+    const pageText = uni.getElementById('page-text')!
+    dataInfo.title = 'new title'
+
+    // #ifdef APP
+    dataInfo.beforeNextTickTitle = pageText.getAttribute('value')!
+    // #endif
+    // #ifndef APP
+    // @ts-ignore
+    dataInfo.beforeNextTickTitle = pageText.textContent
+    // #endif
+    
+    await nextTick()
+    
+    // #ifdef APP
+    dataInfo.afterNextTickTitle = pageText.getAttribute('value')!
+    // #endif
+    // #ifndef APP
+    // @ts-ignore
+    dataInfo.afterNextTickTitle = pageText.textContent
+    // #endif
+  }
+  const pageTestNextTick = () => {
+    testNextTick()
+  }
+
+  defineExpose({
+    dataInfo
+  })
+</script>

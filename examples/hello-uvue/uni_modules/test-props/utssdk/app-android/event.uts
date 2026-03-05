@@ -1,0 +1,7 @@
+
+import { PropsChangeEvent, PropsChangeEventDetail } from './index.uts'
+export class PropChangeEventImpl extends UniCustomEvent<PropsChangeEventDetail> implements PropsChangeEvent {
+  constructor(detail : PropsChangeEventDetail) {
+    super("propChange", detail);
+  }
+}

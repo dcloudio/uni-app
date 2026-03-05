@@ -1,0 +1,156 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+    <!-- #endif -->
+    <view class="uni-padding-wrap">
+      <text class="mt-10"
+        >globalProperties string: {{ globalPropertiesStr }}</text
+      >
+      <text class="mt-10"
+        >globalProperties number: {{ globalPropertiesNum }}</text
+      >
+      <text class="mt-10"
+        >globalProperties boolean: {{ globalPropertiesBool }}</text
+      >
+      <text class="mt-10"
+        >globalProperties object: {{ globalPropertiesObj }}</text
+      >
+      <text class="mt-10"
+        >globalProperties null: {{ globalPropertiesNull }}</text
+      >
+      <text class="mt-10"
+        >globalProperties array: {{ globalPropertiesArr }}</text
+      >
+      <text class="mt-10"
+        >globalProperties set: {{ globalPropertiesSet }}</text
+      >
+      <text class="mt-10"
+        >globalProperties map: {{ globalPropertiesMap }}</text
+      >
+      <text class="mt-10"
+        >globalProperties reactiveObj.str:
+        {{ globalPropertiesReactiveObj['str'] }}</text
+      >
+      <text class="mt-10"
+        >globalProperties reactiveObj.num:
+        {{ globalPropertiesReactiveObj['num'] }}</text
+      >
+      <text class="mt-10"
+        >globalProperties reactiveObj.boolean:
+        {{ globalPropertiesReactiveObj['bool'] }}</text
+      >
+      <text class="mt-10"
+        >globalProperties fun 返回值: {{ globalPropertiesFn() }}</text
+      >
+      <button @click="updateGlobalProperties" class="mt-10">
+        update globalProperties
+      </button>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+type MyGlobalProperties = {
+	str : string;
+	num : number;
+	bool : boolean;
+	obj : UTSJSONObject;
+	null : string | null;
+	arr : number[];
+	set : string[];
+	map : UTSJSONObject;
+	reactiveObj : UTSJSONObject;
+	globalPropertiesFnRes: string
+}
+export default {
+	data() {
+		return {
+			myGlobalProperties: {
+				str: '',
+				num: 0,
+				bool: false,
+				obj: {},
+				null: null,
+				arr: [],
+				set: [],
+				map: {},
+				reactiveObj: {
+					str: '',
+					num: 0,
+					bool: false,
+				} as UTSJSONObject,
+				globalPropertiesFnRes: '',
+			} as MyGlobalProperties,
+		}
+	},
+	onLoad() {
+		this.getGlobalProperties()
+	},
+	onUnload(){
+		this.resetGlobalProperties()
+	},
+	methods: {
+		getGlobalProperties() {
+			this.myGlobalProperties.str = this.globalPropertiesStr
+			this.myGlobalProperties.num = this.globalPropertiesNum
+			this.myGlobalProperties.bool = this.globalPropertiesBool
+			this.myGlobalProperties.obj = this.globalPropertiesObj
+			this.myGlobalProperties.null = this.globalPropertiesNull
+			this.myGlobalProperties.arr = this.globalPropertiesArr
+			this.myGlobalProperties.set = []
+			this.globalPropertiesSet.forEach(item => {
+				this.myGlobalProperties.set.push(item)
+			})
+			this.myGlobalProperties.map = {}
+			this.globalPropertiesMap.forEach((value: number, key: string) => {
+				this.myGlobalProperties.map[key] = value
+			})
+			this.myGlobalProperties.reactiveObj = this.globalPropertiesReactiveObj
+			this.myGlobalProperties.globalPropertiesFnRes = this.globalPropertiesFn()
+		},
+		resetGlobalProperties() {
+			this.globalPropertiesStr = 'default string'
+			this.globalPropertiesNum = 0
+			this.globalPropertiesBool = false
+			this.globalPropertiesObj = {
+				str: 'default globalProperties obj string',
+				num: 0,
+				bool: false,
+			}
+			this.globalPropertiesNull = null
+			this.globalPropertiesArr = []
+			this.globalPropertiesSet = new Set()
+			this.globalPropertiesMap = new Map()
+			this.globalPropertiesReactiveObj['str'] = 'default reactive string'
+			this.globalPropertiesReactiveObj['num'] = 0
+			this.globalPropertiesReactiveObj['bool'] = false
+		},
+		updateGlobalProperties() {
+			this.globalPropertiesStr = 'new string'
+			this.globalPropertiesNum = 100
+			this.globalPropertiesBool = true
+			this.globalPropertiesObj = {
+				str: 'new globalProperties obj string',
+				num: 100,
+				bool: true,
+			}
+			this.globalPropertiesNull = 'not null'
+			this.globalPropertiesArr = [1, 2, 3]
+			this.globalPropertiesSet = new Set(['a', 'b', 'c'])
+			this.globalPropertiesMap = new Map([['a', 1], ['b', 2], ['c', 3]])
+			this.globalPropertiesReactiveObj['str'] = 'new reactive string'
+			this.globalPropertiesReactiveObj['num'] = 200
+			this.globalPropertiesReactiveObj['bool'] = true
+			this.getGlobalProperties()
+		}
+	},
+}
+</script>
+
+<style>
+.uni-padding-wrap {
+  padding: 10px 10px 40px 10px;
+}
+</style>

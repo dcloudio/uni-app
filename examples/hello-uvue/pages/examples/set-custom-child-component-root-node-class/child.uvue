@@ -1,0 +1,15 @@
+<template>
+  <view>
+    <button class="btn-child bg-orange">button in child page</button>
+  </view>
+</template>
+
+<style>
+.btn-child {
+  width: 300px;
+  color: rgb(83, 156, 234);
+}
+.bg-orange{
+  background-color: rgb(214, 154, 50);
+}
+</style>

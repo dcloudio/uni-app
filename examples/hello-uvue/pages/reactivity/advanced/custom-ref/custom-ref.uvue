@@ -1,0 +1,42 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>state.count:</text>
+      <text id="state-count">{{ state['count'] }}</text>
+    </view>
+    <button class="mb-10 increment-btn" @click="increment">
+      increment state.count
+    </button>
+    <button class="mb-10 trigger-ref-btn" @click="triggerRefState">
+      triggerRef state
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const useCustomRef = (value : UTSJSONObject) : Ref<UTSJSONObject> => {
+  // @ts-ignore
+  return customRef<UTSJSONObject>((track, trigger) => {
+    return {
+      get() : UTSJSONObject {
+        track()
+        return value
+      },
+      set(newValue : UTSJSONObject) {
+        value = newValue
+        trigger()
+      }
+    }
+  })
+}
+
+const state = useCustomRef({ count: 0 })
+
+
+const increment = () => {
+  state.value['count'] = (state.value['count'] as number) + 1
+}
+const triggerRefState = () => {
+  triggerRef(state)
+}
+</script>

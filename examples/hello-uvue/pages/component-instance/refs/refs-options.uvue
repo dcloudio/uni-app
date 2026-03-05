@@ -1,0 +1,63 @@
+<template>
+  <view class="page">
+    <view class="row">
+      <text>NodeRef: </text>
+      <text ref="node">{{ dataInfo.existRef }}</text>
+    </view>
+    <view class="row">
+      <text>childRef:</text>
+      <text>{{ dataInfo.existChildRef }}</text>
+    </view>
+    <view class="row">
+      <text>existTextItems:</text>
+      <text>{{ dataInfo.existTextItems }}</text>
+    </view>
+    <view>
+      <text v-for="item in dataInfo.textItemsExpectNum" ref="textItems" :key="item">{{
+        item
+      }}</text>
+    </view>
+    <child class="mt-10" ref="childRef">ComponentRef</child>
+  </view>
+</template>
+
+<script lang="uts">
+import child from './child-options.uvue'
+
+type DataInfo = {
+  existRef: boolean
+  existChildRef: boolean
+  textItemsExpectNum: number
+  existTextItems: boolean
+}
+export default {
+  components: {
+    child
+  },
+  data() {
+    return {
+      dataInfo: {
+        existRef: false,
+        existChildRef: false,
+        textItemsExpectNum: 3,
+        existTextItems: false
+      } as DataInfo
+    }
+  },
+  onReady() {
+    this.dataInfo.existRef = this.$refs['node'] !== null
+    this.dataInfo.existChildRef = this.$refs['childRef'] !== null
+    const textItems = this.$refs['textItems'] as Array<UniElement>
+    this.dataInfo.existTextItems = textItems.length === this.dataInfo.textItemsExpectNum
+  }
+}
+</script>
+
+<style>
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+</style>

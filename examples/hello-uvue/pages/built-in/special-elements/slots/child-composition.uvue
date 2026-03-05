@@ -1,0 +1,25 @@
+<template>
+  <view class="container">
+    <view>
+      <slot name="header" msg="Here might be a page title"></slot>
+    </view>
+    <view>
+      <slot msg="A paragraph for the main content."></slot>
+    </view>
+    <view>
+      <slot name="footer" msg="Here's some contact info"></slot>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+defineOptions({
+  name: 'child'
+})
+
+defineSlots<{
+  default(props: { msg: string }): any
+  header(props: { msg: string }): any
+  footer(props: { msg: string }): any
+}>()
+</script>

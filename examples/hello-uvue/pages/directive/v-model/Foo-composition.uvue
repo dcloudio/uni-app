@@ -1,0 +1,61 @@
+<template>
+  <view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>v-model in Foo:</text>
+      <text id="model-value-text">{{ modelValue }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>v-model:msg in Foo:</text>
+      <text id="model-msg-text">{{ msg }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>defineModel num:</text>
+      <text id="model-num-text">{{ num }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>defineModel strArr:</text>
+      <text id="model-str-arr-text">{{ JSON.stringify(strArr) }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>defineModel numArr:</text>
+      <text id="model-num-arr-text">{{ JSON.stringify(numArr) }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>defineModel utsObj.value:</text>
+      <text id="model-uts-obj-value-text">{{ utsObjModelValue }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>defineModel typeObj.value:</text>
+      <text id="model-type-obj-value-text">{{ typeObjModelValue }}</text>
+    </view>
+    <button class="mb-10" id="update-value-btn" @click="updateValue">
+      update value
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+// 在被修改时，触发 "update:modelValue" 事件
+const modelValue = defineModel({ type: String })
+
+// 在被修改时，触发 "update:msg" 事件
+const msg = defineModel('msg', { type: String, default: 'default msg' })
+
+const num = defineModel('num', { type: Number, default: 1 })
+
+const strArr = defineModel<string[]>('strArr', { default: () => [] as string[] })
+const numArr = defineModel('numArr', {type: Array as PropType<number[]>, required: true })
+
+const utsObjModelValue = defineModel('utsObjModelValue', { type: String })
+const typeObjModelValue = defineModel('typeObjModelValue', { type: String })
+
+const updateValue = () => {
+  modelValue.value += '1'
+  msg.value += '2'
+  num.value++
+  strArr.value.push(`${strArr.value.length}`)
+  numArr.value.push(numArr.value.length)
+  utsObjModelValue.value += '1'
+  typeObjModelValue.value += '1'
+}
+</script>

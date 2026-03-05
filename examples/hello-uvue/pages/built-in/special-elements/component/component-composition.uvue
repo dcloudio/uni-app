@@ -1,0 +1,40 @@
+<template>
+  <view class="container">
+    <component :is="currentComponentInstance" />
+    <component :is="myInput" :value="inputValue" id="my-input" />
+    <button @click="changeCurrentComponent">change current component</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import Foo from '../../../../components/Foo.uvue'
+  import Bar from '../../../../components/Bar.uvue'
+
+  const currentComponentStr = ref('Foo')
+  const currentComponentInstance = ref(Foo)
+  const myInput = ref('input')
+  const inputValue = ref('default value')
+
+  const changeCurrentComponent = () => {
+    if (currentComponentStr.value === 'Foo') {
+      currentComponentStr.value = 'Bar'
+      currentComponentInstance.value = Bar
+    } else {
+      currentComponentStr.value = 'Foo'
+      currentComponentInstance.value = Foo
+    }
+  }
+
+  defineExpose({
+    changeCurrentComponent
+  })
+</script>
+
+<style>
+  .item {
+    display: flex;
+    flex-direction: row;
+    margin: 15px;
+    border: #eee solid 1px;
+  }
+</style>

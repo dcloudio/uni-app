@@ -1,0 +1,63 @@
+<template>
+  <view class="page">
+    <view class="row">
+      <text>NodeRef: </text>
+      <text ref="nodeRef">{{ dataInfo.existRef }}</text>
+    </view>
+    <view class="row">
+      <text>childRef:</text>
+      <text>{{ dataInfo.existChildRef }}</text>
+    </view>
+    <view class="row">
+      <text>existTextItems:</text>
+      <text>{{ dataInfo.existTextItems }}</text>
+    </view>
+    <view>
+      <text v-for="item in dataInfo.textItemsExpectNum" ref="textItems" :key="item">{{
+        item
+      }}</text>
+    </view>
+    <child class="mt-10" ref="childRef">ComponentRef</child>
+  </view>
+</template>
+
+<script setup lang="uts">
+import Child from './child-composition.uvue'
+
+type DataInfo = {
+  existRef: boolean
+  existChildRef: boolean
+  textItemsExpectNum: number
+  existTextItems: boolean
+}
+
+const dataInfo = reactive<DataInfo>({
+  existRef: false,
+  existChildRef: false,
+  textItemsExpectNum: 3,
+  existTextItems: false
+})
+
+const nodeRef = ref<UniElement | null>(null)
+const childRef = ref<UniElement | null>(null)
+const textItems = ref<UniElement[] | null>(null)
+
+onReady(() => {
+  dataInfo.existRef = nodeRef.value !== null
+  dataInfo.existChildRef = childRef.value !== null
+  dataInfo.existTextItems = textItems.value?.length === dataInfo.textItemsExpectNum
+})
+
+defineExpose({
+  dataInfo
+})
+</script>
+
+<style>
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+</style>

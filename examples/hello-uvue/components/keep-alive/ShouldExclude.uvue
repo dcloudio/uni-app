@@ -1,0 +1,33 @@
+<template>
+	<view>
+		<text>should not be keep-alive</text>
+		<text class="mt-10 should-exclude-text">count: {{ count }}</text>
+		<button class="mt-10 should-exclude-btn" @click="increment">+</button>
+	</view>
+</template>
+
+<script lang="uts">
+	export default {
+		name: 'ShouldExclude',
+		data() {
+			return {
+				count: 0
+			}
+		},
+		methods: {
+			increment() {
+				this.count++
+			}
+		}
+	}
+</script>
+
+<style>
+	.should-exclude-btn{
+		height: 40px;
+		line-height: 40px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		text-align: center;
+	}
+</style>

@@ -1,0 +1,219 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1; padding-bottom: 20px">
+  <!-- #endif -->
+    <view class="page">
+      <view class="flex justify-between flex-row mb-10">
+        <text>count:</text>
+        <text id="count" ref="countRef">{{ count }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch count result:</text>
+        <text id="watch-count-res">{{ watchCountRes }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>watch count track number:</text>
+        <text id="watch-count-track-num">{{ watchCountTrackNum }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch count cleanup number:</text>
+        <text id="watch-count-cleanup-res">{{ watchCountCleanupRes }}</text>
+      </view>
+
+      <button class="increment-btn mb-10" @click="increment">increment</button>
+      <button class="stop-watch-count-btn mb-10" @click="triggerStopWatchCount">
+        stop watch count
+      </button>
+
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.str:</text>
+        <text id="obj-str" ref="objStrRef">{{ obj.str }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>watch obj.str trigger number:</text>
+        <text id="watch-obj-str-trigger-num">{{ watchObjStrTriggerNum }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.num:</text>
+        <text id="obj-num">{{ obj.num }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.bool:</text>
+        <text id="obj-bool" ref="objBoolRef">{{ obj.bool }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.arr:</text>
+        <text id="obj-arr" ref="objArrRef">{{ JSON.stringify(obj.arr) }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch obj result:</text>
+        <text id="watch-obj-res">{{ watchObjRes }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch obj.str result:</text>
+        <text id="watch-obj-str-res">{{ watchObjStrRes }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch obj.bool result:</text>
+        <text id="watch-obj-bool-res">{{ watchObjBoolRes }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch obj.arr result:</text>
+        <text id="watch-obj-arr-res">{{ watchObjArrRes }}</text>
+      </view>
+
+      <button class="update-obj-btn mb-10" @click="updateObj">
+        update obj
+      </button>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+  type Obj = {
+    num : number,
+    str : string,
+    bool : boolean,
+    arr : number[]
+  }
+
+  export default {
+    data() {
+      return {
+        countRef: null as UniTextElement | null,
+        count: 0,
+        watchCountRes: '',
+        watchCountCleanupRes: '',
+        watchCountTrackNum: 0,
+        stopWatchCount: () => { },
+        obj: {
+          num: 0,
+          str: 'num: 0',
+          bool: false,
+          arr: [0]
+        } as Obj,
+        watchObjRes: '',
+        objStrRef: null as UniTextElement | null,
+        watchObjStrRes: '',
+        watchObjStrTriggerNum: 0,
+        objBoolRef: null as UniTextElement | null,
+        watchObjBoolRes: '',
+        watchObjArrRes: '',
+      }
+    },
+    onReady() {
+      // TODO: app-android this.$watch 返回类型不对
+      // watchCountTrackNum 各端表现也不一致
+      const self = this
+      // #ifdef APP
+      this.$watch('count',
+        (count : number, prevCount : number, onCleanup : OnCleanup) => {
+          this.watchCountRes = `count: ${count}, prevCount: ${prevCount}, count ref text (flush sync): ${(this.$refs['countRef'] as UniTextElement).value}`
+          const cancel = () => {
+            this.watchCountCleanupRes = `watch count cleanup: ${count}`
+          }
+          onCleanup(cancel)
+        },
+        {
+          // 侦听器在响应式依赖改变时立即触发
+          flush: 'sync',
+          // 响应属性或引用作为依赖项被跟踪时调用
+          onTrack(event : DebuggerEvent) {
+            if (event.type === 'get') {
+              self.watchCountTrackNum++
+            }
+          }
+          // TODO: vue>3.4.15 开始 监听函数、onTrack、onTrigger 同时存在修改响应式数据时,会报错 Maximum call stack size exceeded
+          // 所以将 onTrack 与 onTrigger 调整到两个 watch 里
+        })
+      // #endif
+      // #ifdef WEB
+      this.stopWatchCount = this.$watch(
+        'count',
+        (count : number, prevCount : number, onCleanup : OnCleanup) => {
+          this.watchCountRes = `count: ${count}, prevCount: ${prevCount}, count ref text (flush sync): ${(this.$refs['countRef'] as UniTextElement).childNodes[0].getAttribute('value')}`
+          const cancel = () => {
+            this.watchCountCleanupRes = `watch count cleanup: ${count}`
+          }
+          onCleanup(cancel)
+        },
+        {
+          // 侦听器在响应式依赖改变时立即触发
+          flush: 'sync',
+          // 响应属性或引用作为依赖项被跟踪时调用
+          onTrack(event : DebuggerEvent) {
+            if (event.type === 'get') {
+              self.watchCountTrackNum++
+            }
+          }
+          // TODO: vue>3.4.15 开始 监听函数、onTrack、onTrigger 同时存在修改响应式数据时,会报错 Maximum call stack size exceeded
+          // 所以将 onTrack 与 onTrigger 调整到两个 watch 里
+        })
+      // #endif
+    },
+    watch: {
+      obj: {
+        handler(obj : Obj, prevObj ?: Obj) {
+          if (prevObj == null) {
+            this.watchObjRes = `obj: {"num":${obj.num},"str":"${obj.str}","bool":${obj.bool},"arr":${JSON.stringify(obj.arr)}}, prevObj: ${JSON.stringify(prevObj)}`
+          } else {
+            // #ifdef WEB
+            this.watchObjRes = `obj: {"num":${obj.num},"str":"${obj.str}","bool":${obj.bool},"arr":${JSON.stringify(obj.arr)}}, prevObj: {"num":${prevObj?.num},"str":"${prevObj?.str}","bool":${prevObj?.bool},"arr":${JSON.stringify(prevObj?.arr)}}`
+            // #endif
+            // #ifndef WEB
+            this.watchObjRes = `obj: {"num":${obj.num},"str":"${obj.str}","bool":${obj.bool},"arr":${JSON.stringify(obj.arr)}}, prevObj: {"num":${prevObj.num},"str":"${prevObj.str}","bool":${prevObj.bool},"arr":${JSON.stringify(prevObj.arr)}}`
+            // #endif
+          }
+        },
+        // immediate: true 第一次触发, 旧值应该是 undefined, 现在 app 是初始值
+        immediate: true,
+        deep: true
+      },
+      'obj.str': function (str : string, prevStr : string) {
+        // #ifdef APP
+        this.watchObjStrRes = `str: ${str}, prevStr: ${prevStr}, obj.str ref text (flush pre): ${(this.$refs['objStrRef'] as UniTextElement).value}`
+        // #endif
+        // #ifdef WEB
+        this.watchObjStrRes = `str: ${str}, prevStr: ${prevStr}, obj.str ref text (flush pre): ${(this.$refs.objStrRef as UniTextElement).childNodes[0].getAttribute('value')}`
+        // #endif
+      },
+      'obj.bool': {
+        handler: function (bool : boolean, prevBool : boolean) {
+          // #ifdef APP
+          this.watchObjBoolRes = `bool: ${bool}, prevBool: ${prevBool}, obj.bool ref text (flush post): ${(this.$refs['objBoolRef'] as UniTextElement).value}`
+          // #endif
+          // #ifdef WEB
+          this.watchObjBoolRes = `bool: ${bool}, prevBool: ${prevBool}, obj.bool ref text (flush post): ${(this.$refs.objBoolRef as UniTextElement).childNodes[0].getAttribute('value')}`
+          // #endif
+        },
+        // 侦听器延迟到组件渲染之后触发
+        flush: 'post',
+        deep: true
+      },
+      'obj.arr': {
+        handler: function (arr : number[], prevArr : number[]) {
+          this.watchObjArrRes = `arr: ${JSON.stringify(arr)}, prevArr: ${JSON.stringify(prevArr)}`
+        },
+        deep: true
+      }
+    },
+    methods: {
+      triggerStopWatchCount() {
+        // #ifdef WEB
+        this.stopWatchCount()
+        // #endif
+      },
+      increment() {
+        this.count++
+      },
+      updateObj() {
+        this.obj.num++
+        this.obj.str = `num: ${this.obj.num}`
+        this.obj.bool = !this.obj.bool
+        this.obj.arr.push(this.obj.num)
+      }
+    }
+  }
+</script>

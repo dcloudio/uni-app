@@ -1,0 +1,20 @@
+<template>
+  <view>
+    <button class="btn-page bg-green">button in parent page</button>
+    <Child />
+  </view>
+</template>
+
+<script setup lang="uts">
+import Child from './child.uvue'
+</script>
+
+<style>
+.btn-page {
+  width: 280px;
+  color: rgb(209, 51, 51);
+}
+.bg-green {
+  background-color: rgb(105, 154, 105);
+}
+</style>

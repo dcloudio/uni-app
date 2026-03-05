@@ -1,0 +1,12 @@
+export type IObjItem = {
+  id : string
+}
+
+export type IPropsChangeEventDetail = {
+  value : number
+}
+
+export interface IPropsChangeEvent extends UniVideoEvent {
+	detail : IPropsChangeEventDetail[]
+}
+

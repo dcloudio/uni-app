@@ -1,0 +1,67 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>count:</text>
+      <text id="count">{{ count }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>computed double count:</text>
+      <text id="double-count">{{ doubleCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>computed triple count:</text>
+      <text id="triple-count">{{ tripleCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>obj.arr:</text>
+      <text id="obj-arr">{{ JSON.stringify(obj.arr) }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>computed obj.arr.length:</text>
+      <text id="obj-arr-len">{{ objArrLen }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+        <text>computed stateText(1):</text>
+        <text id="computed-with-argument">{{ stateText(1) }}</text>
+    </view>
+    <button id="update-btn" @click="update">update</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const count = ref(0)
+
+const doubleCount = computed(() : number => {
+  return count.value * 2
+})
+
+function useTripleCount() {
+    return computed(() => count.value * 3)
+}
+const tripleCount = useTripleCount()
+    
+type Obj = {
+  arr : number[]
+}
+
+const obj = reactive({
+  arr: [1, 2, 3]
+} as Obj)
+
+
+const objArrLen = computed<number>(() : number => {
+  return obj.arr.length
+})
+
+const update = () => {
+  count.value++
+  obj.arr.push(obj.arr.length + 1)
+}
+
+const stateText = computed(() => {
+  return (state: number) => {
+    const stateArr = ['未审核', '审核中', '审核通过']
+    return stateArr[state]
+  }
+})
+</script>

@@ -1,0 +1,13 @@
+
+<template>
+    <view class="page flex justify-between flex-row">
+      <text class="child">root node tagName：</text>
+      <text class="tag-name">{{ el }}</text>
+    </view>
+</template>
+
+<script setup lang='uts'>
+const el = ref('')
+const instance = getCurrentInstance()!.proxy!
+onMounted(() => {el.value = instance.$el?.nodeName ?? ''})
+</script>

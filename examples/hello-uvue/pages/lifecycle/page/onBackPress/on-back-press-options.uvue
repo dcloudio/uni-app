@@ -1,0 +1,30 @@
+<template>
+  <view class="page container">
+    <text>测试 onBackPress 生命周期返回 true</text>
+    <button class='mt-10' @click="goChildPage">跳转子页，测试返回值为 false</button>
+  </view>
+</template>
+
+<script lang='uts'>
+  export default {
+    data() {
+      return {
+        backPressOptions: {
+          from: 'backbutton'
+        } as OnBackPressOptions
+      }
+    },
+    onBackPress(options: OnBackPressOptions): boolean | null {
+      console.log('onBackPress', options)
+      this.backPressOptions = options
+      return true
+    },
+    methods: {
+      goChildPage() {
+        uni.navigateTo({
+          url: '/pages/lifecycle/page/onBackPress/on-back-press-child-options'
+        })
+      }
+    }
+  }
+</script>

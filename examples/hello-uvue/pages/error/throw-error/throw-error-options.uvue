@@ -1,0 +1,34 @@
+<template>
+  <view class="page">
+    <button id="trigger-error" @click="triggerError">trigger error</button>
+    <button class='mt-10' id="trigger-timeout-error" @click="triggerTimeoutError">trigger timeout error</button>
+  </view>
+</template>
+
+<script lang="uts">
+  import { setLifeCycleNum, state } from '@/store/index.uts'
+
+  export default {
+    onReady() {
+      throw new Error('error in error options page onReady')
+    },
+    methods: {
+      triggerError() {
+        throw new Error('trigger error in throw error options page')
+      },
+      triggerTimeoutError() {
+        setTimeout(() => {
+          throw new Error('setTimeout trigger error in throw error options page')
+        }, 10)
+      },
+      // 自动化测试
+      getLifeCycleNum() : number {
+        return state.lifeCycleNum
+      },
+      // 自动化测试
+      setLifeCycleNum(num : number) {
+        setLifeCycleNum(num)
+      }
+    },
+  }
+</script>

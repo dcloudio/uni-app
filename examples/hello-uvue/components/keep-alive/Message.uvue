@@ -1,0 +1,32 @@
+<template>
+	<view>
+		<text class="mt-10 message-text">msg: {{msg}}</text>
+		<text class="mt-10 change-message" @click="changeMessage">change message</text>
+	</view>
+</template>
+
+<script lang="uts">
+	export default {
+		name: 'Message',
+		data() {
+			return {
+				msg: 'default message'
+			}
+		},
+		methods: {
+			changeMessage() {
+				this.msg = 'message changed'
+			}
+		}
+	}
+</script>
+
+<style>
+	.change-message {
+		height: 40px;
+		line-height: 40px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		text-align: center;
+	}
+</style>

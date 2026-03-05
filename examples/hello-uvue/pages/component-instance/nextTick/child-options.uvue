@@ -1,0 +1,111 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view>
+      <view class="flex justify-between mb-10">
+        <text ref="text">title for callback:</text>
+        <text id="child-text-callback">{{ dataInfo.titleForCallback }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text ref="text">before $nextTick callback title:</text>
+        <text>{{ dataInfo.beforeNextTickCallbackTitle }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text ref="text">after $nextTick callback title:</text>
+        <text>{{ dataInfo.afterNextTickCallbackTitle }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text ref="text">title for promise:</text>
+        <text id="child-text-promise">{{ dataInfo.titleForPromise }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text ref="text">before $nextTick promise title:</text>
+        <text>{{ dataInfo.beforeNextTickPromiseTitle }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text ref="text">after $nextTick promise title:</text>
+        <text>{{ dataInfo.afterNextTickPromiseTitle }}</text>
+      </view>
+      <button id="child-test-next-tick-btn" @click="childTestNextTick">child test $nextTick</button>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+  type DataInfo = {
+    titleForCallback : string
+    beforeNextTickCallbackTitle : string
+    afterNextTickCallbackTitle : string
+    titleForPromise : string
+    beforeNextTickPromiseTitle : string
+    afterNextTickPromiseTitle : string
+  }
+
+  export default {
+    data() {
+      return {
+        dataInfo: {
+          titleForCallback: 'default title for callback',
+          beforeNextTickCallbackTitle: '',
+          afterNextTickCallbackTitle: '',
+          titleForPromise: 'default title for promise',
+          beforeNextTickPromiseTitle: '',
+          afterNextTickPromiseTitle: '',
+        } as DataInfo
+      }
+    },
+    methods: {
+      childTestNextTick() {
+        this.nextTickCallback()
+        this.nextTickPromise()
+      },
+      nextTickCallback() {
+        const childText = uni.getElementById('child-text-callback')!
+        this.dataInfo.titleForCallback = 'new title for callback'
+
+        // #ifdef APP
+        this.dataInfo.beforeNextTickCallbackTitle = childText.getAttribute('value')!
+        // #endif
+        // #ifndef APP
+        // @ts-ignore
+        this.dataInfo.beforeNextTickCallbackTitle = childText.textContent
+        // #endif
+        
+        this.$nextTick(() => {
+          // #ifdef APP
+          this.dataInfo.afterNextTickCallbackTitle = childText.getAttribute('value')!
+          // #endif
+          // #ifndef APP
+          // @ts-ignore
+          this.dataInfo.afterNextTickCallbackTitle = childText.textContent
+          // #endif
+        })
+      },
+      nextTickPromise() {
+        const childText = uni.getElementById('child-text-promise')!
+        this.dataInfo.titleForPromise = 'new title for promise'
+
+        // #ifdef APP
+        this.dataInfo.beforeNextTickPromiseTitle = childText.getAttribute('value')!
+        // #endif
+        // #ifndef APP
+        // @ts-ignore
+        this.dataInfo.beforeNextTickPromiseTitle = childText.textContent
+        // #endif
+        
+        this.$nextTick().then(() => {
+          // #ifdef APP
+          this.dataInfo.afterNextTickPromiseTitle = childText.getAttribute('value')!
+          // #endif
+          // #ifndef APP
+          // @ts-ignore
+          this.dataInfo.afterNextTickPromiseTitle = childText.textContent
+          // #endif
+        })
+      }
+    }
+  }
+</script>

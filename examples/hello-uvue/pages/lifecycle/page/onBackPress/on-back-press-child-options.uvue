@@ -1,0 +1,14 @@
+<template>
+  <view class="page container">
+    <text>测试 onBackPress 生命周期返回 false</text>
+  </view>
+</template>
+
+<script lang='uts'>
+  export default {
+    onBackPress(options: OnBackPressOptions): boolean | null {
+      console.log('onBackPress', options)
+      return false
+    }
+  }
+</script>

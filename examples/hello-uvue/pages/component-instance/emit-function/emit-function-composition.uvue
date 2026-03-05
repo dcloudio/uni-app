@@ -1,0 +1,30 @@
+<template>
+  <view class="page">
+    <view class="row">
+      <text>子组件传的参数</text>
+      <text id="value">
+        {{ value }}
+      </text>
+    </view>
+    <child @callback="callback"></child>
+  </view>
+</template>
+
+<script setup lang="uts">
+import child from './child-composition.uvue'
+
+const value = ref('')
+
+const callback = (str: string) => {
+  value.value = str
+}
+</script>
+
+<style>
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+</style>

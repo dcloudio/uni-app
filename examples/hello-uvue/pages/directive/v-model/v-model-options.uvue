@@ -1,0 +1,57 @@
+<template>
+  <view class="page">
+    <view class="mb-10 flex justify-between flex-row">
+      <text>str:</text>
+      <text id="str">{{ str }}</text>
+    </view>
+    <input class="mb-10 input" id="model-str" v-model="str" />
+    <input class="mb-10 input" id="model-num" v-model.number="num" type="text" />
+    <input class="mb-10 input" id="model-str-trim" v-model.trim="strForTrim" />
+    <input class="mb-10 input" id="model-str-lazy" v-model.lazy="str" type="text" />
+    <view class="mb-10 flex justify-between flex-row">
+      <text>typeof num:</text>
+      <text id="typeof-num">{{ typeof num }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>str for trim length:</text>
+      <text id="str-length">{{ strForTrim.length }}</text>
+    </view>
+    <Parent v-model="value"></Parent>
+    <Parent v-model="utsObj['modelValue']"></Parent>
+    <Parent v-model="typeObj.modelValue"></Parent>
+    <Parent v-model="typeObj.modelValue as string"></Parent>
+  </view>
+</template>
+
+<script lang="uts">
+import Parent from './Parent.uvue'
+import { VModelObj } from './types.uts'
+export default {
+  data(){
+    return {
+      str: 'str',
+      num: 1,
+      strForTrim: ' abc ',
+      value: 'nested',
+      utsObj: {
+        modelValue: 'utsObj.value'
+      },
+      typeObj: {
+        modelValue: 'typeObj.value'
+      } as VModelObj
+    }
+  },
+  components: {
+      Parent
+  }
+}
+</script>
+
+<style>
+.input {
+  padding: 0px 10px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+</style>

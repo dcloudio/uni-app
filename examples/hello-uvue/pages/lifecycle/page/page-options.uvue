@@ -1,0 +1,167 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1" :bounces="false">
+    <!-- #endif -->
+    <view class="page container">
+      <text>page lifecycle 选项式 API</text>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onLoad 触发：</text>
+        <text>{{ isOnloadTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onShow 触发：</text>
+        <text>{{ isOnShowTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onReady 触发：</text>
+        <text>{{ isOnReadyTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onPullDownRefresh 触发：</text>
+        <text>{{ isOnPullDownRefreshTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onReachBottom 触发：</text>
+        <text>{{ isOnReachBottomTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onBackPress 触发：</text>
+        <text>{{ isOnBackPressTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onHide 触发：</text>
+        <text>{{ isOnHideTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
+        <text>onResize 触发：</text>
+        <text>{{ isOnResizeTriggered }}</text>
+      </view>
+			<MonitorPageLifecycleOptions />
+      <button class="mt-10" @click="scrollToBottom">scrollToBottom</button>
+      <button class="mt-10" @click="pullDownRefresh">
+        trigger pullDownRefresh
+      </button>
+			<button class="mt-10" @click="goOnBackPress">
+        跳转 onBackPress 示例
+      </button>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+import { state, setLifeCycleNum } from '@/store/index.uts'
+import MonitorPageLifecycleOptions from './monitor-page-lifecycle-options.uvue'
+ type DataInfo = {
+ 	isScrolled: boolean
+ }
+export default {
+	components: { MonitorPageLifecycleOptions },
+	data() {
+		return {
+			isOnloadTriggered: false,
+			isOnShowTriggered: false,
+			isOnReadyTriggered: false,
+			isOnPullDownRefreshTriggered: false,
+			isOnPageScrollTriggered: false,
+			isOnReachBottomTriggered: false,
+			isOnBackPressTriggered: false,
+			isOnHideTriggered: false,
+			isOnResizeTriggered: false,
+			dataInfo: {
+         isScrolled: false,
+       } as DataInfo
+		}
+	},
+	onLoad(options : OnLoadOptions) {
+		console.log('onLoad', options)
+		this.isOnloadTriggered = true
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 100)
+	},
+	onShow() {
+		this.isOnShowTriggered = true
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	},
+	onReady() {
+		this.isOnReadyTriggered = true
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	},
+	onPullDownRefresh() {
+		this.isOnPullDownRefreshTriggered = true
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	},
+	onPageScroll(e: OnPageScrollOptions) {
+		console.log('onPageScroll', e)
+  	this.isOnPageScrollTriggered = true
+		// 自动化测试
+		this.dataInfo.isScrolled = true
+	},
+	onReachBottom() {
+		this.isOnReachBottomTriggered = true
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	},
+	onBackPress(options : OnBackPressOptions) : boolean | null {
+		console.log('onBackPress', options)
+		this.isOnBackPressTriggered = true
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum - 10)
+		return null
+	},
+	onHide() {
+		this.isOnHideTriggered = true
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum - 10)
+	},
+	onUnload() {
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum - 100)
+	},
+	onResize(options: OnResizeOptions) {
+		console.log('onBackPress', options)
+		this.isOnResizeTriggered = true
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	},
+	methods: {
+		// 自动化测试
+		pageGetLifeCycleNum() : number {
+			return state.lifeCycleNum
+		},
+		// 自动化测试
+		pageSetLifeCycleNum(num : number) {
+			setLifeCycleNum(num)
+		},
+		// 自动化测试
+		pullDownRefresh() {
+			uni.startPullDownRefresh({
+				success() {
+					setTimeout(() => {
+						uni.stopPullDownRefresh()
+						// 一秒后立即停止下拉刷新不会触发 onPullDownRefresh，因为下拉动画时间大概需要1.1～1.2秒
+					}, 1500)
+				},
+			})
+		},
+		scrollToBottom() {
+			uni.pageScrollTo({
+				scrollTop: 2000,
+			})
+		},
+		goOnBackPress() {
+			uni.navigateTo({url: '/pages/lifecycle/page/onBackPress/on-back-press-options'})
+		}
+	},
+}
+</script>
+
+<style>
+.container {
+  height: 1200px;
+}
+</style>

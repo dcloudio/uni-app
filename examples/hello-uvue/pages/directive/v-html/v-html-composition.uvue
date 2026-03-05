@@ -1,0 +1,7 @@
+<template>
+  <view v-html="html" />
+</template>
+
+<script setup lang="uts">
+const  html = '<p class="p" style="color: red;">hello world for composition API!</p>'
+</script>

@@ -1,0 +1,318 @@
+import App from './App.uvue'
+import { createSSRApp } from 'vue'
+import CompForAppComponent from '@/components/CompForAppComponent.uvue'
+
+import GlobalMixinComp1 from '@/pages/component-instance/mixins/components/GlobalMixinComp1.uvue';
+import GlobalChildMixinComp1 from '@/pages/component-instance/mixins/components/GlobalChildMixinComp1.uvue';
+import GlobalMixinComp2 from '@/pages/component-instance/mixins/components/GlobalMixinComp2.uvue';
+import GlobalChildMixinComp2 from '@/pages/component-instance/mixins/components/GlobalChildMixinComp2.uvue';
+import MixinCompForGlobalMixin from '@/pages/component-instance/mixins/components/MixinCompForGlobalMixin.uvue';
+import MixinCompForGlobalChildMixin from '@/pages/component-instance/mixins/components/MixinCompForGlobalChildMixin.uvue';
+
+import plugin1 from '@/plugins/plugin1.uts'
+import plugin2 from '@/plugins/plugin2.uts'
+import plugin3 from '@/plugins/plugin3.uts'
+import plugin4 from '@/plugins/plugin4.uts'
+import CompForPlugin from '@/components/CompForPlugin.uvue'
+// #ifdef MP
+import CompForPluginCopy from '@/components/CompForPluginCopy.uvue'
+// #endif
+// 仅引用类型，模板中不使用，也要保证不报错
+let testType1 : TestType1ComponentPublicInstance | null = null
+export function createApp() {
+  const app = createSSRApp(App)
+  console.log(testType1)
+  app.component('CompForAppComponent', CompForAppComponent)
+
+  app.provide('globalProvideMsg', 'global provide message')
+
+  const globalChildMixin = defineMixin({
+    components: { GlobalChildMixinComp1, MixinComp: MixinCompForGlobalChildMixin },
+    props: {
+      globalChildMixinProp1: {
+        type: String,
+        default: '通过 defineMixin 定义全局 child mixin props'
+      },
+      namesakeChildMixinProp: {
+        type: String,
+        default: '通过 defineMixin 定义全局同名 child mixin props'
+      }
+    },
+    data() {
+      return {
+        namesakeChildMixinDataMsg: '通过 defineMixin 定义全局同名 child mixin data',
+        globalChildMixinDataMsg1: '通过 defineMixin 定义全局 child mixin data',
+        globalChildMixinOnloadMsg1: '',
+        globalChildMixinOnloadTime1: 0,
+        globalChildMixinWatchMsg1: '',
+      }
+    },
+    computed: {
+      globalChildMixinComputed1(): string {
+        const res = `通过 defineMixin 定义全局 child mixin computed, 更新后的 globalChildMixinOnloadMsg1: ${this.globalChildMixinOnloadMsg1}`
+        console.log(res)
+        return res
+      },
+      namesakeChildMixinComputed(): string {
+        const res = '通过 defineMixin 定义全局同名 child mixin computed'
+        console.log(res)
+        return res
+      }
+    },
+    watch: {
+      globalMixinOnloadMsg1(newVal: string) {
+        this.globalChildMixinWatchMsg1 = `通过 defineMixin 定义全局 child mixin watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+        console.log(this.globalChildMixinWatchMsg1)
+      },
+    },
+    emits: ['globalChildMixinEmit1'],
+    onLoad() {
+      this.globalChildMixinOnloadTime1 = Date.now()
+      const res = '通过 defineMixin 定义全局 child mixin onLoad'
+      console.log(res)
+      this.globalChildMixinOnloadMsg1 = res
+    },
+    methods: {
+      globalChildMixinMethod1(): string {
+        const res = '通过 defineMixin 定义全局 child mixin method'
+        console.log(res)
+        return res
+      },
+      namesakeChildMixinMethod(): string {
+        const res = '通过 defineMixin 定义全局同名 child mixin method'
+        console.log(res)
+        return res
+      },
+    }
+  })
+  const globalMixin = defineMixin({
+    mixins: [globalChildMixin],
+    components: { GlobalMixinComp1, MixinComp: MixinCompForGlobalMixin },
+    props: {
+      globalMixinProp1: {
+        type: String,
+        default: '通过 defineMixin 定义全局 mixin props'
+      },
+      namesakeMixinProp: {
+        type: String,
+        default: '通过 defineMixin 定义全局同名 mixin props'
+      }
+    },
+    data() {
+      return {
+        globalMixinDataMsg1: '通过 defineMixin 定义全局 mixin data',
+        namesakeMixinDataMsg: '通过 defineMixin 定义全局同名 mixin data',
+        globalMixinOnloadMsg1: '',
+        globalMixinOnloadTime1: 0,
+        globalMixinWatchMsg1: ''
+      }
+    },
+    computed: {
+      globalMixinComputed1(): string {
+        const res = `通过 defineMixin 定义全局 mixin computed, 更新后的 globalMixinOnloadMsg1: ${this.globalMixinOnloadMsg1}`
+        console.log(res)
+        return res
+      },
+      namesakeChildMixinComputed(): string {
+        const res = '通过 defineMixin 定义全局同名 mixin computed'
+        console.log(res)
+        return res
+      }
+    },
+    watch: {
+      globalMixinOnloadMsg1(newVal: string) {
+        this.globalMixinWatchMsg1 = `通过 defineMixin 定义全局 mixin watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+        console.log(this.globalMixinWatchMsg1)
+      },
+    },
+    emits: ['globalMixinEmit1'],
+    onLoad() {
+      this.globalMixinOnloadTime1 = Date.now()
+      const res = '通过 defineMixin 定义全局 mixin onLoad'
+      console.log(res)
+      this.globalMixinOnloadMsg1 = res
+    },
+    methods: {
+      globalMixinMethod1(): string {
+        const res = '通过 defineMixin 定义全局 mixin method'
+        console.log(res)
+        return res
+      },
+      namesakeMixinMethod1(): string {
+        const res = '通过 defineMixin 定义全局同名 mixin method'
+        console.log(res)
+        return res
+      }
+    }
+  })
+  app.mixin({
+    mixins: [{
+      components: { GlobalChildMixinComp2 },
+      props: {
+        globalChildMixinProp2: {
+          type: String,
+          default: '通过字面量定义全局 child mixin props'
+        },
+        namesakeChildMixinProp: {
+          type: String,
+          default: '通过字面量定义全局同名 child mixin props'
+        }
+      },
+      data() {
+        return {
+          namesakeChildMixinDataMsg: '通过字面量定义全局同名 child mixin data',
+          globalChildMixinDataMsg2: '通过字面量定义全局 child mixin data',
+          globalChildMixinOnloadMsg2: '',
+          globalChildMixinOnloadTime2: 0,
+          globalChildMixinWatchMsg2: ''
+        }
+      },
+      computed: {
+        globalChildMixinComputed2(): string {
+          const res = `通过字面量定义全局 child mixin computed, 更新后的 globalChildMixinOnloadMsg2: ${this.globalChildMixinOnloadMsg2}`
+          console.log(res)
+          return res
+        },
+        namesakeChildMixinComputed(): string {
+          const res = '通过定义全局同名 child mixin computed'
+          console.log(res)
+          return res
+        }
+      },
+      watch: {
+        globalMixinOnloadMsg1(newVal: string) {
+          this.globalChildMixinWatchMsg2 = `通过字面量定义全局 child mixin watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+          console.log(this.globalChildMixinWatchMsg2)
+        },
+      },
+      emits: ['globalChildMixinEmit2'],
+      onLoad() {
+        this.globalChildMixinOnloadTime2 = Date.now()
+        const res = '通过字面量定义全局 child mixin onLoad'
+        console.log(res)
+        this.globalChildMixinOnloadMsg2 = res
+      },
+      methods: {
+        globalChildMixinMethod2(): string {
+          const res = '通过字面量定义全局 child mixin method'
+          console.log(res)
+          return res
+        },
+        namesakeChildMixinMethod(): string {
+          const res = '通过字面量定义全局同名 child mixin method'
+          console.log(res)
+          return res
+        },
+      }
+    }],
+    components: { GlobalMixinComp2 },
+    props: {
+      globalMixinProp2: {
+        type: String,
+        default: '通过字面量定义全局 mixin props'
+      },
+      namesakeMixinProp: {
+        type: String,
+        default: '通过字面量定义全局同名 mixin props'
+      }
+    },
+    data() {
+      return {
+        globalMixinDataMsg2: '通过字面量定义全局 mixin data',
+        namesakeMixinDataMsg: '通过字面量定义全局同名 mixin data',
+        globalMixinOnloadMsg2: '',
+        globalMixinOnloadTime2: 0,
+        globalMixinWatchMsg2: ''
+      }
+    },
+    computed: {
+      globalMixinComputed2(): string {
+        const res = `通过字面量定义全局 mixin computed, 更新后的 globalMixinOnloadMsg2: ${this.globalMixinOnloadMsg2}`
+        console.log(res)
+        return res
+      },
+      namesakeChildMixinComputed(): string {
+        const res = '通过字面量定义全局同名 mixin computed'
+        console.log(res)
+        return res
+      }
+    },
+    watch: {
+      globalMixinOnloadMsg1(newVal: string) {
+        this.globalMixinWatchMsg2 = `通过字面量定义全局 mixin watch, 更新后的 globalMixinOnloadMsg1: ${newVal}`
+        console.log(this.globalMixinWatchMsg2)
+
+      },
+    },
+    emits: ['globalMixinEmit2'],
+    onLoad() {
+      this.globalMixinOnloadTime2 = Date.now()
+      const res = '通过字面量定义全局 mixin onLoad'
+      console.log(res)
+      this.globalMixinOnloadMsg2 = res
+    },
+    methods: {
+      globalMixinMethod2(): string {
+        const res = '通过字面量定义全局 mixin method'
+        console.log(res)
+        return res
+      },
+      namesakeMixinMethod(): string {
+        const res = '通过字面量定义全局同名 mixin method'
+        console.log(res)
+        return res
+      }
+    }
+  })
+  app.mixin(globalMixin)
+
+  app.use(plugin1)
+  app.use(plugin2)
+  app.use(plugin3)
+  app.use(plugin4)
+  app.use(function (app: VueApp, componentName: string) {
+    // #ifdef MP
+    /**
+     * 此处调整为处理两个问题
+     * - 小程序不支持动态组件名
+     * - 小程序两个组件名指向同一个文件时只有一个会生效（TODO 这是Bug后续修复）
+     */
+    app.component('CompForPlugin1', CompForPluginCopy)
+    // #endif
+    // #ifndef MP
+    app.component(componentName, CompForPlugin)
+    // #endif
+  }, 'CompForPlugin1')
+
+  app.use({
+    install(app: VueApp, a: string | null, b: string | null) {
+      app.component('CompForPlugin2', CompForPlugin)
+    }
+  }, null, null)
+
+  app.config.globalProperties.globalPropertiesStr = 'default string'
+  app.config.globalProperties.globalPropertiesNum = 0
+  app.config.globalProperties.globalPropertiesBool = false
+  app.config.globalProperties.globalPropertiesObj = {
+    str: 'default globalProperties obj string',
+    num: 0,
+    bool: false,
+  }
+  app.config.globalProperties.globalPropertiesNull = null as string | null
+  app.config.globalProperties.globalPropertiesArr = [] as number[]
+  app.config.globalProperties.globalPropertiesSet = new Set<string>()
+  app.config.globalProperties.globalPropertiesMap = new Map<string, number>()
+  app.config.globalProperties.globalPropertiesReactiveObj = reactive({
+    str: 'default reactive string',
+    num: 0,
+    bool: false,
+  } as UTSJSONObject)
+  app.config.globalProperties.globalPropertiesFn = function (): string {
+    console.log('this.globalPropertiesStr', this.globalPropertiesStr)
+    console.log('this.globalPropertiesNum', this.globalPropertiesNum)
+    return `globalPropertiesStr: ${this.globalPropertiesStr}, globalPropertiesNum: ${this.globalPropertiesNum}`
+  }
+  return {
+    app
+  }
+}

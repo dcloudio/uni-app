@@ -1,0 +1,68 @@
+<template>
+  <view class="page">
+    <text class="bold mb-10">下方按钮点击累加 count</text>
+    <view class="flex justify-between flex-row mb-10">
+      <text>count:</text>
+      <text id="count">{{ count }}</text>
+    </view>
+    <button class="mb-10 btn" @click="handleClick">@click="handleClick" 缩写</button>
+    <button class="mb-10 btn" v-on:click="handleClick">
+      v-on:click="handleClick" 方法处理函数
+    </button>
+    <button class="mb-10 btn" v-on:click="count++">
+      v-on:click="count++" 内联事件
+    </button>
+    <button class="mb-10 btn" v-on:click="handleClick($event as MouseEvent)">
+      v-on:click="handleClick($event as MouseEvent)"
+      内联声明，注意要显式声明$event的类型
+    </button>
+    <!-- #ifndef MP -->
+    <button class="mb-10 btn" v-on:[event]="handleClick">
+      v-on:[event]="handleClick" 动态事件
+    </button>
+    <button class="mb-10 btn" v-on="{ click: handleClick }">
+      v-on="{ click: handleClick }" 对象语法
+    </button>
+    <!-- #endif -->
+    <!-- TODO: ios 不支持 -->
+    <!-- #ifndef APP-IOS || MP || APP-HARMONY -->
+    <button class="mb-10 btn" id="btn-once" @click.once="handleClick">@click once</button>
+    <!-- #endif -->
+    <view @click="handleClick">
+      <button class="mb-10 btn" id="btn-stop" @click.stop="handleClick">@click stop</button>
+    </view>
+    <button class="mb-10" id="btn-prevent" @touchstart.prevent="handleTouchstart" @click="handleClick">@touch prevent</button>
+  </view>
+</template>
+
+<script lang="uts">
+type BtnPreventRect = {
+  value: DOMRect | null
+}
+  
+export default {
+  data() {
+    return {
+      count: 0,
+      event: 'click',
+      btnPreventRect: {
+        value: null as DOMRect | null
+      } as BtnPreventRect
+    }
+  },
+  onReady(){
+    const btnPrevent = uni.getElementById("btn-prevent")
+    this.btnPreventRect.value = btnPrevent?.getBoundingClientRect()
+    this.btnPreventRect.value!.y += uni.getSystemInfoSync().safeArea.top + 44
+  },
+  methods: {
+    handleTouchstart(){
+      console.log('handleTouchstart')
+    },
+    handleClick(e : MouseEvent) {
+      this.count++
+      console.log('handleClick', e)
+    }
+  }
+}
+</script>

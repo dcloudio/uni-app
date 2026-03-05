@@ -1,0 +1,8 @@
+export type FooPropsObj = {
+  name : string
+}
+export type FooProps = {
+  title : string
+  num : number
+  obj : FooPropsObj
+}

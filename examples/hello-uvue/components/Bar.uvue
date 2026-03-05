@@ -1,0 +1,3 @@
+<template>
+	<text class="component-bar">this is component Bar</text>
+</template>

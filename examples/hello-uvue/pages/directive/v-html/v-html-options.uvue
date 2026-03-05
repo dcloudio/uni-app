@@ -1,0 +1,13 @@
+<template>
+  <view v-html="html" />
+</template>
+
+<script lang="uts">
+export default {
+  data() {
+    return {
+      html: '<p class="p" style="color: red;">hello world for options API!</p>'
+    }
+  }
+}
+</script>

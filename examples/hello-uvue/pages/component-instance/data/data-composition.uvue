@@ -1,0 +1,84 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>str: </text>
+      <text id="str">{{ str }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>num: </text>
+      <text id="num">{{ num }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>arr: </text>
+      <text id="arr">{{ arr.join(',') }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>obj.str: </text>
+      <text id="obj-str">{{ obj.str }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>obj.num: </text>
+      <text id="obj-num">{{ obj.num }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>obj.arr: </text>
+      <text id="obj-arr">{{ obj.arr.join(',') }}</text>
+    </view>
+    <view ref='htmlRef' id="idRef" class="flex justify-between flex-row mb-10">
+      <text>data 存储 element不需要被包装</text>
+      <text id="isSameRefText">{{ refElementIsSame }}</text>
+    </view>
+    <button @click="updateData">update data</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  type Obj = {
+    str : string,
+    num : number,
+    arr : number[]
+  }
+
+  const instance = getCurrentInstance()!.proxy!
+
+  const str = ref('default str')
+  const num = ref(0)
+  // 可通过泛型指定类型
+  const arr = ref<number[]>([1, 2, 3])
+  const obj = ref<Obj>({
+    str: 'default obj.str',
+    num: 10,
+    arr: [4, 5, 6]
+  })
+
+  const refElement = ref<UniElement | null>(null)
+  const refElementIsSame = ref(false)
+
+  const refTest = () => {
+    const queryElementById1 = uni.getElementById('idRef')
+    const queryElementById2 = uni.getElementById('idRef')
+    const htmlRefElement = instance.$refs['htmlRef'] as UniElement | null;
+    refElement.value = htmlRefElement
+    if (queryElementById1 === queryElementById2
+      && queryElementById1 === htmlRefElement
+      && queryElementById1 === refElement.value
+    ) {
+      refElementIsSame.value = true
+    }
+  }
+  const updateData = () => {
+    str.value = 'new str'
+    num.value = 1
+    arr.value = [4, 5, 6]
+
+    obj.value.str = 'new obj.str'
+    obj.value.num = 100
+    obj.value.arr = [7, 8, 9]
+
+    refTest()
+  }
+
+  defineExpose({
+    updateData
+  })
+</script>

@@ -1,0 +1,122 @@
+<template>
+<!-- #ifdef APP -->
+<scroll-view style="flex: 1">
+  <!-- #endif -->    
+  <view class="page">
+    <!-- v-bind attribute -->
+    <button id="disabled-btn" class="mb-10" :disabled="true">
+      :disabled true
+    </button>
+    <button id="v-bind-disabled-btn" class="mb-10" v-bind:disabled="false">
+      v-bind:disabled false
+    </button>
+
+    <!-- v-bind style -->
+    <view class="flex justify-between flex-row mb-10">
+      <text>bind object style fontSize:</text>
+      <text id="bind-object-style" :style="{ fontSize: dataInfo.fontSize }">
+        {{ dataInfo.fontSize }}
+      </text>
+    </view>
+    <view id="bind-array-style" class="mb-10 p-10" :style="[dataInfo.backgroundColor, dataInfo.border]">
+      <view>bind arr style</view>
+      <view class="my-10">{{ dataInfo.backgroundColor }}</view>
+      <view>{{ dataInfo.border }}</view>
+    </view>
+    <view class="mb-10 p-10">
+        <text id="bind-raw-object-style" :style="rawObjectStyle">rawObjectStyle</text>
+    </view>
+    <!-- 目前仅android平台在内部重新调用了normalizeStyle，其他端暂时没有，这应该是vue的bug -->
+    <view class="mb-10 p-10">
+        <text id="bind-raw-array-style" :style="rawArrayStyle">rawArrayStyle</text>
+    </view>
+
+    <!-- v-bind props -->
+    <Foo :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
+
+    <!-- v-bind props -->
+    <Foo checked />
+    <!-- #ifndef MP -->
+    <!-- 绑定对象 -->
+    <Foo id="bindObj1" v-bind="{ title: dataInfo.fooProps.title,num: dataInfo.fooProps.num,obj: dataInfo.fooProps.obj }" />
+    <!-- 绑定对象合并-->
+    <Foo id="bindObj2" v-bind="{ title: dataInfo.fooProps.title,num: dataInfo.fooProps.num,obj: dataInfo.fooProps.obj }" title="foo title override" />
+    <!-- 绑定对象合并-->
+    <Foo id="bindObj3" title="foo" v-bind="{ title: dataInfo.fooProps.title,num: dataInfo.fooProps.num,obj: dataInfo.fooProps.obj }" />
+    <!-- 绑定对象合并（UTSJSONObject）-->
+    <Foo id="bindObj4" v-bind="fooProps" title="foo title(json) override" />
+    <!-- 绑定对象合并（UTSJSONObject）-->
+    <Foo id="bindObj5" title="foo" v-bind="fooProps" />
+    <!-- #endif -->
+    <!-- v-bind in style -->
+    <!-- #ifdef WEB -->
+    <view class="mb-10 v-bind-css"></view>
+    <!-- #endif -->
+  </view>
+<!-- #ifdef APP -->
+</scroll-view>
+<!-- #endif -->  
+</template>
+
+<script setup lang="uts">
+  import Foo from './Foo-composition.uvue'
+  import { FooProps, FooPropsObj } from './type.uts'
+
+  type DataInfo = {
+    fontSize : string
+    backgroundColor : string
+    border : string
+    fooProps : FooProps
+    vBindClassBackgroundColor : string,
+    vBindClassRpxHeight : string,
+  }
+
+  const dataInfo = reactive({
+    fontSize: '20px',
+    backgroundColor: 'background-color: green',
+    border: 'border: 2px solid red',
+    fooProps: {
+      title: 'foo title',
+      num: 1,
+      obj: {
+        name: 'foo obj name',
+      } as FooPropsObj
+    },
+    vBindClassBackgroundColor: 'red',
+    vBindClassRpxHeight: '300rpx'
+  } as DataInfo)
+  
+  const fooProps = reactive({
+      title: 'foo title(json)',
+      num: 2,
+  })
+  
+  const rawObjectStyle = {
+      width: '100%',
+      height: '30px',
+      'background-color': 'red'
+  }
+  
+  const rawArrayStyle = [
+      {
+        width: '100%',
+        height: '30px'
+      },
+      {
+        'background-color': 'red'
+      }
+  ]
+
+  defineExpose({
+    dataInfo
+  })
+</script>
+
+<style>
+  /* #ifdef WEB */
+  .v-bind-css {
+    background-color: v-bind(dataInfo.vBindClassBackgroundColor);
+    height: v-bind(dataInfo.vBindClassRpxHeight);
+  }
+  /* #endif */
+</style>

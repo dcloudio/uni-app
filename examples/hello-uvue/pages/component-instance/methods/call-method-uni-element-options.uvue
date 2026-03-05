@@ -1,0 +1,30 @@
+<template>
+  <view>
+    <slider :show-value="true" ref="slider1"></slider>
+  </view>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      slider1: null as UniSliderElement | null
+    }
+  },
+  onReady() {
+    // 通过组件 ref 属性获取组件实例, Uni组件名(驼峰)UniElement
+    this.slider1 = this.$refs['slider1'] as UniSliderElement;
+    this.setValue()
+  },
+  methods: {
+    setValue() {
+      this.slider1!.value = 80
+    },
+    callMethodTest(text: string): string | null {
+      this.slider1?.setAttribute('str', text);
+      const result = this.slider1?.getAttribute('str') as string;
+      return result;
+    },
+  }
+}
+</script>

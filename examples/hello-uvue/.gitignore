@@ -1,0 +1,10 @@
+env.js
+node_modules/
+.project
+unpackage/
+.DS_Store
+.hbuilderx/
+__image_snapshots__/
+testCaseToSnapshotFilePath.json
+harmony-configs
+/code-review/node_modules

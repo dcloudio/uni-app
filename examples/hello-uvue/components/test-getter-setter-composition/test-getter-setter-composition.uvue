@@ -1,0 +1,24 @@
+<template>
+    <text>
+        count: {{count}}
+    </text>
+</template>
+
+<script setup>
+    const count = ref(0)
+    function getCount() : number {
+        return count.value
+    }
+    function setCount(newCount : number) {
+        count.value = newCount * 2
+    }
+    defineExpose({
+        count,
+        getCount,
+        setCount
+    })
+</script>
+
+<style>
+
+</style>

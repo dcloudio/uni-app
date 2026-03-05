@@ -1,0 +1,134 @@
+<template>
+	<view class="p-10">
+		<text id="page-props-composition-title" class="text">{{title}}</text>
+		<text id="page-props-composition-from" class="text">{{from}}</text>
+		<text id="page-props-composition-number" class="text">{{number}}</text>
+		<text id="page-props-composition-boolean" class="text">{{boolean}}</text>
+		<text id="page-props-composition-object" class="text">{{JSON.stringify(object)}}</text>
+		<text id="page-props-composition-array" class="text">{{JSON.stringify(array)}}</text>
+	</view>
+</template>
+
+<script setup>
+	import { setLifeCycleNum, state } from '@/store/index.uts'
+	
+	defineProps({
+		from: {
+			type: String,
+			default: 'bbb'
+		},
+		number: {
+			type: Number,
+			default: 1,
+			validator(value: number) {
+				return value > 0
+			}
+		},
+		boolean: {
+			type: Boolean,
+			required: true,
+		},
+		object: {
+			type: UTSJSONObject,
+			default: () => {
+				return {
+					a: 'a',
+					b: 'b'
+				}
+			}
+		},
+		array: {
+			type: Array as PropType<string[]>,
+			default: () => {
+				return ['a','b','c']
+			}
+		}
+	})
+	
+	onBeforeMount(() => {
+		console.log('page-props-composition onBeforeMount')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 1)
+	})
+	
+	onMounted(() => {
+		console.log('page-props-composition mounted')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 1)
+	})
+	
+	onBeforeUpdate(() => {
+		console.log('page-props-composition beforeUpdate')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 1)
+	})
+	
+	onUpdated(() => {
+		console.log('page-props-composition updated')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 1)
+	})
+	
+	onBeforeUnmount(() => {
+		console.log('page-props-composition beforeUnmount')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 1)
+	})
+	
+	onUnmounted(() => {
+		console.log('page-props-composition unmounted')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 1)
+	})
+	// 组合式 API 且作为组件使用时会触发页面生命周期, 但监听到的是作为组件时所在页面的，而非它自身的
+	onLoad((options: OnLoadOptions) => {
+		console.log('page-props-composition onLoad options', options)
+		// 自动化测试
+		if (options['name'] == 'page-props') {
+			setLifeCycleNum(state.lifeCycleNum + 5)
+		}
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+	onPageShow(() => {
+		console.log('page-props-composition onPageShow')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+	onReady(() => {
+		console.log('page-props-composition onReady')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+	onHide(() => {
+		console.log('page-props-composition onHide')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+	onUnload(() => {
+		console.log('page-props-composition onUnload')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+
+	const title = ref('page-props-composition')
+
+	// 自动化测试
+  const pageSetLifeCycleNum = (num: number) => {
+    state.lifeCycleNum = num
+  }
+  const pageGetLifeCycleNum = () : number => {
+    return state.lifeCycleNum
+  }
+  defineExpose({
+		pageSetLifeCycleNum,
+		pageGetLifeCycleNum
+  })
+</script>
+
+<style>
+	.text {
+		font-size: 18px;
+		color: #8f8f94;
+    text-align: center;
+	}
+</style>

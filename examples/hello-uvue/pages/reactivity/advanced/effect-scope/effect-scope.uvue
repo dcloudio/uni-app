@@ -1,0 +1,51 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>counter:</text>
+      <text id="counter">{{ counter }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>watch counter result:</text>
+      <text id="watch-counter-res">{{ watchCounterRes }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>watchEffect counter result:</text>
+      <text id="watch-effect-counter-res">{{ watchEffectCounterRes }}</text>
+    </view>
+    <button
+      id="increment-counter-btn"
+      class="mt-10"
+      @click="
+        () => {
+          counter++;
+        }
+      ">
+      increment counter
+    </button>
+    <button id="stop-effect-scope-btn" class="mt-10" @click="stopEffectScope">
+      stop effect scope
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const scope = effectScope()
+
+const counter = ref(0)
+
+const watchCounterRes = ref('')
+
+const watchEffectCounterRes = ref('')
+
+scope.run(() => {
+  watch(counter, (newVal : number, oldVal : number) => {
+    watchCounterRes.value = `newVal: ${newVal}, oldVal: ${oldVal}`
+  })
+
+  watchEffect(() => {
+    watchEffectCounterRes.value = `counter: ${counter.value}`
+  })
+})
+
+const stopEffectScope = () => scope.stop()
+</script>

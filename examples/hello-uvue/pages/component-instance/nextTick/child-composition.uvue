@@ -1,0 +1,67 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view>
+      <view class="flex justify-between flex-row mb-10">
+        <text ref="text">title:</text>
+        <text id="child-text">{{ dataInfo.title }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text ref="text">before $nextTick title:</text>
+        <text>{{ dataInfo.beforeNextTickTitle }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text ref="text">after $nextTick title:</text>
+        <text>{{ dataInfo.afterNextTickTitle }}</text>
+      </view>
+      <button id="child-test-next-tick-btn" @click="childTestNextTick">child test nextTick</button>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  type DataInfo = {
+    title : string
+    beforeNextTickTitle : string
+    afterNextTickTitle : string
+  }
+
+  const dataInfo = reactive({
+    title: 'default title',
+    beforeNextTickTitle: '',
+    afterNextTickTitle: '',
+  } as DataInfo)
+
+  const testNextTick = async () => {
+    const childText = uni.getElementById('child-text')!
+    dataInfo.title = 'new title'
+
+    // #ifdef APP
+    dataInfo.beforeNextTickTitle = childText.getAttribute('value')!
+    // #endif
+    // #ifndef APP
+    // @ts-ignore
+    dataInfo.beforeNextTickTitle = childText.textContent
+    // #endif
+    
+    await nextTick()
+    
+    // #ifdef APP
+    dataInfo.afterNextTickTitle = childText.getAttribute('value')!
+    // #endif
+    // #ifndef APP
+    // @ts-ignore
+    dataInfo.afterNextTickTitle = childText.textContent
+    // #endif
+  }
+  const childTestNextTick = () => {
+    testNextTick()
+  }
+
+  defineExpose({
+    dataInfo
+  })
+</script>

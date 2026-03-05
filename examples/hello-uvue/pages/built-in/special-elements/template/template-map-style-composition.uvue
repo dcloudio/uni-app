@@ -1,0 +1,156 @@
+<template>
+  <view class="page">
+    <view :style="[styleW200, styleRounded, styleBorder]" :class="[classPadding10, classBgRed]">
+      <text>width:200px;</text>
+      <text>padding:10px;</text>
+      <text>border-radius:8px;</text>
+      <text>border:1px solid #ccc;</text>
+      <text>background-color: red;</text>
+      <text class="text-white">this text color: #fff;</text>
+    </view>
+    <view :style="[stylePadding10, styleBgGreen, styleMargin10]" :class="[classH200, classRounded, classBorder, classBorderRed]">
+      <text>height:200px;</text>
+      <text>margin:10px;</text>
+      <text>padding:10px;</text>
+      <text>border-radius:8px;</text>
+      <text>border:1px solid #ccc;</text>
+      <text>border-color:red;</text>
+      <text>background-color: green;</text>
+      <text class="text-blue">this text color: blue;</text>
+    </view>
+    <view :style="styleBgBlue" :class="classPadding10">
+      <text>padding:10px;</text>
+      <text>background-color: blue;</text>
+      <text class="text-red">this text color: red;</text>
+    </view>
+    <button class="mt-10" id="btn" @click="toggleIsClassValid">toggle isClassValid</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const styleW200 = ref(new Map<string, string>([['width', '200px']]))
+const styleH200 = ref(new Map<string, string>([['height', '200px']]))
+const stylePadding10 = ref(new Map<string, string>([['padding', '10px']]))
+const styleMargin10 = ref(new Map<string, string>([['margin', '10px']]))
+const styleRounded = ref(new Map<string, string>([['border-radius', '8px']]))
+const styleBorder = ref(new Map<string, string>([['border', '1px solid #ccc']]))
+const styleBorderRed = ref(new Map<string, string>([['border-color', 'red']]))
+const styleBorderBlue = ref(new Map<string, string>([['border-color', 'blue']]))
+const styleBorderGreen = ref(new Map<string, string>([['border-color', 'green']]))
+const styleBgGreen = ref(new Map<string, string>([['background-color', 'green']]))
+const styleBgBlue = ref(new Map<string, string>([['background-color', 'blue']]))
+const styleBgRed = ref(new Map<string, string>([['background-color', 'red']]))
+const styleTextWhite = ref(new Map<string, string>([['color', '#fff']]))
+const styleTextBlack = ref(new Map<string, string>([['color', '#000']]))
+const styleTextRed = ref(new Map<string, string>([['color', 'red']]))
+const styleTextBlue = ref(new Map<string, string>([['color', 'blue']]))
+const styleTextGreen = ref(new Map<string, string>([['color', 'green']]))
+const isClassValid = ref(true)
+const classW200 = ref(new Map<string, boolean>([['w-200', true]]))
+const classH200 = ref(new Map<string, boolean>([['h-200', true]]))
+const classPadding10 = ref(new Map<string, boolean>([['padding-10', true]]))
+const classMargin10 = ref(new Map<string, boolean>([['margin-10', true]]))
+const classRounded = ref(new Map<string, boolean>([['rounded', true]]))
+const classBorder = ref(new Map<string, boolean>([['border', true]]))
+const classBorderRed = ref(new Map<string, boolean>([['border-red', true]]))
+const classBorderBlue = ref(new Map<string, boolean>([['border-blue', true]]))
+const classBorderGreen = ref(new Map<string, boolean>([['border-green', true]]))
+const classBgGreen = ref(new Map<string, boolean>([['bg-green', true]]))
+const classBgBlue = ref(new Map<string, boolean>([['bg-blue', true]]))
+const classBgRed = ref(new Map<string, boolean>([['bg-red', true]]))
+const classTextWhite = ref(new Map<string, boolean>([['text-white', true]]))
+const classTextBlack = ref(new Map<string, boolean>([['text-black', true]]))
+const classTextRed = ref(new Map<string, boolean>([['text-red', true]]))
+const classTextBlue = ref(new Map<string, boolean>([['text-blue', true]]))
+const classTextGreen = ref(new Map<string, boolean>([['text-green', true]]))
+const toggleIsClassValid = () => {
+  isClassValid.value = !isClassValid.value
+  classW200.value = new Map<string, boolean>([['w-200', isClassValid.value]])
+  classH200.value = new Map<string, boolean>([['h-200', isClassValid.value]])
+  classPadding10.value = new Map<string, boolean>([['padding-10', isClassValid.value]])
+  classMargin10.value = new Map<string, boolean>([['margin-10', isClassValid.value]])
+  classRounded.value = new Map<string, boolean>([['rounded', isClassValid.value]])
+  classBorder.value = new Map<string, boolean>([['border', isClassValid.value]])
+  classBorderRed.value = new Map<string, boolean>([['border-red', isClassValid.value]])
+  classBorderBlue.value = new Map<string, boolean>([['border-blue', isClassValid.value]])
+  classBorderGreen.value = new Map<string, boolean>([['border-green', isClassValid.value]])
+  classBgGreen.value = new Map<string, boolean>([['bg-green', isClassValid.value]])
+  classBgBlue.value = new Map<string, boolean>([['bg-blue', isClassValid.value]])
+  classBgRed.value = new Map<string, boolean>([['bg-red', isClassValid.value]])
+  classTextWhite.value = new Map<string, boolean>([['text-white', isClassValid.value]])
+  classTextBlack.value = new Map<string, boolean>([['text-black', isClassValid.value]])
+  classTextRed.value = new Map<string, boolean>([['text-red', isClassValid.value]])
+  classTextBlue.value = new Map<string, boolean>([['text-blue', isClassValid.value]])
+  classTextGreen.value = new Map<string, boolean>([['text-green', isClassValid.value]])
+}
+</script>
+
+<style>
+.w-200 {
+  width: 200px;
+}
+
+.h-200 {
+  height: 200px;
+}
+
+.padding-10 {
+  padding: 10px;
+}
+
+.margin-10 {
+  margin: 10px;
+}
+
+.rounded {
+  border-radius: 8px;
+}
+
+.border {
+  border: 1px solid #ccc;
+}
+
+.border-red {
+  border-color: red;
+}
+
+.border-green {
+  border-color: green;
+}
+
+.border-blue {
+  border-color: blue;
+}
+
+.bg-green {
+  background-color: green;
+}
+
+.bg-red {
+  background-color: red;
+}
+
+.bg-blue {
+  background-color: blue;
+}
+
+.text-white {
+  color: #fff;
+}
+
+.text-black {
+  color: #000;
+}
+
+.text-green {
+  color: green;
+}
+
+.text-red {
+  color: red;
+}
+
+.text-blue {
+  color: blue;
+}
+</style>

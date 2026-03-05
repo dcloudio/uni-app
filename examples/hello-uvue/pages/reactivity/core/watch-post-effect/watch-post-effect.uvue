@@ -1,0 +1,173 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1; padding-bottom: 20px">
+    <!-- #endif -->
+    <view class="page">
+      <view class="flex justify-between flex-row mb-10">
+        <text>count:</text>
+        <text id="count" ref="countRef">{{ count }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch count result:</text>
+        <text id="watch-count-res">{{ watchCountRes }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>watch count track number:</text>
+        <text id="watch-count-track-num">{{ watchCountTrackNum }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch count cleanup number:</text>
+        <text id="watch-count-cleanup-res">{{ watchCountCleanupRes }}</text>
+      </view>
+
+      <button class="increment-btn mb-10" @click="increment">increment</button>
+      <button class="stop-watch-count-btn mb-10" @click="triggerStopWatchCount">
+        stop watch count
+      </button>
+
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.str:</text>
+        <text id="obj-str" ref="objStrRef">{{ obj.str }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>watch obj.str trigger number:</text>
+        <text id="watch-obj-str-trigger-num">{{ watchObjStrTriggerNum }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.num:</text>
+        <text id="obj-num">{{ obj.num }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.bool:</text>
+        <text id="obj-bool" ref="objBoolRef">{{ obj.bool }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.arr:</text>
+        <text id="obj-arr" ref="objArrRef">{{ JSON.stringify(obj.arr) }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch obj result:</text>
+        <text id="watch-obj-res">{{ watchObjRes }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch obj.str result:</text>
+        <text id="watch-obj-str-res">{{ watchObjStrRes }}</text>
+      </view>
+      <view class="flex justify-between mb-10">
+        <text>watch obj.arr result:</text>
+        <text id="watch-obj-arr-res">{{ watchObjArrRes }}</text>
+      </view>
+
+      <button class="update-obj-btn mb-10" @click="updateObj">
+        update obj
+      </button>
+
+      <view class="flex justify-between mb-10">
+        <text>watch count and obj.num result:</text>
+        <text id="watch-count-obj-num-res">{{ watchCountAndObjNumRes }}</text>
+      </view>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang='uts'>
+  type Obj = {
+    num : number,
+    str : string,
+    bool : boolean,
+    arr : number[]
+  }
+
+  const countRef = ref<UniTextElement | null>(null)
+  const count = ref<number>(0)
+  const watchCountRes = ref('')
+  const watchCountCleanupRes = ref('')
+  const watchCountTrackNum = ref(0)
+
+  const stopWatchCount = watchPostEffect((onCleanup : OnCleanup) => {
+    if (countRef.value !== null) {
+      // #ifdef APP
+      watchCountRes.value = `count: ${count.value}, count ref text: ${countRef.value!.value}`
+      // #endif
+      // #ifdef WEB
+      watchCountRes.value = `count: ${count.value}, count ref text: ${(countRef.value!.childNodes[0] as HTMLElement).innerText}`
+      // #endif 
+    } else {
+      watchCountRes.value = `count: ${count.value}, count ref text: `
+    }
+    const cancel = () => {
+      watchCountCleanupRes.value = `watch count cleanup: ${count.value}`
+    }
+    onCleanup(cancel)
+  },
+    {
+      // 响应属性或引用作为依赖项被跟踪时调用
+      onTrack(event : DebuggerEvent) {
+        if (event.type === 'get') {
+          watchCountTrackNum.value++
+        }
+      }
+    },
+  )
+
+  const triggerStopWatchCount = () => stopWatchCount()
+
+  const increment = () => {
+    count.value++
+  }
+
+  const obj = reactive({
+    num: 0,
+    str: 'num: 0',
+    bool: false,
+    arr: [0]
+  } as Obj)
+
+  const watchObjRes = ref('')
+  watchPostEffect(() => {
+    watchObjRes.value = `obj: {"num":${obj.num},"str":"${obj.str}","bool":${obj.bool},"arr":${JSON.stringify(obj.arr)}}`
+  })
+
+  const objStrRef = ref<UniTextElement | null>(null)
+  const watchObjStrRes = ref('')
+  const watchObjStrTriggerNum = ref(0)
+  
+  watchPostEffect(() => {
+    if (objStrRef.value !== null) {
+      // #ifdef APP
+      watchObjStrRes.value = `str: ${obj.str}, obj.str ref text: ${objStrRef.value!.value}`
+      // #endif
+      // #ifdef WEB
+      watchObjStrRes.value = `str: ${obj.str}, obj.str ref text: ${(objStrRef.value!.childNodes[0] as HTMLElement).innerText}`
+      // #endif 
+    } else {
+      watchObjStrRes.value = `str: ${obj.str}, obj.str ref text: `
+    }
+  },{
+    // 侦听器回调被依赖项的变更触发时调用
+    onTrigger(event : DebuggerEvent) {
+      if (event.type === 'set') {
+        watchObjStrTriggerNum.value++
+      }
+    }
+  })
+
+  const watchObjArrRes = ref('')
+  watchPostEffect(() => {
+    watchObjArrRes.value = `arr: ${JSON.stringify(obj.arr)}`
+  })
+
+  const watchCountAndObjNumRes = ref('')
+  watchPostEffect(() => {
+    watchCountAndObjNumRes.value = `count: ${count.value}, obj.num: ${obj.num}`
+  })
+
+  const updateObj = () => {
+    obj.num++
+    obj.str = `num: ${obj.num}`
+    obj.bool = !obj.bool
+    obj.arr.push(obj.num)
+  }
+</script>

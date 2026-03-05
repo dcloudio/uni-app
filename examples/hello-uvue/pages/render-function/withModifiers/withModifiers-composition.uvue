@@ -1,0 +1,32 @@
+<script setup lang="uts">
+  defineOptions({
+    data() {
+      return {
+        parentClickedNum: 0,
+        childClickedNum: 0
+      }
+    },
+    render() : VNode {
+      const instance = getCurrentInstance()!.proxy!
+
+      return h('view', { class: 'page' }, [
+        h('view', {
+          onClick: () => { instance.$data['childClickedNum'] = (instance.$data['parentClickedNum'] as number) + 1 }
+        }, [
+          h('button', {
+            id: 'stop-btn',
+            onClick: withModifiers(() => { instance.$data['childClickedNum'] = (instance.$data['childClickedNum'] as number) + 1 }, ['stop'])
+          }, 'click stop')
+        ]),
+        h('view', { class: 'mt-10 flex flex-row justify-between' }, [
+          h('text', {}, `parentCickedNum:`),
+          h('text', { id: 'parent-num' }, `${instance.$data['parentClickedNum']}`),
+        ]),
+        h('view', { class: 'mt-10 flex flex-row justify-between' }, [
+          h('text', {}, `childClickedNum:`),
+          h('text', { id: 'child-num' }, `${instance.$data['childClickedNum']}`),
+        ])
+      ])
+    }
+  })
+</script>

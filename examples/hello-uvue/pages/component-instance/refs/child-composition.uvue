@@ -1,0 +1,7 @@
+<script setup lang="uts">
+const value = ref<string>('child value')
+</script>
+
+<template>
+  <text>{{ value }}</text>
+</template>

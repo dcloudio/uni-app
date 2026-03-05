@@ -1,0 +1,1286 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view>
+      <uni-collapse>
+        <uni-collapse-item
+          v-for="menu in menus"
+          :key="menu.id"
+          :title="menu.name"
+          class="menu">
+          <view v-for="(page, index) in menu.pages" :key="page.name">
+            <view
+              v-if="page.url"
+              class="page-item"
+              :class="{ 'first-child': index == 0 }"
+              @click="goDetailPage(menu.id, page)">
+              <text
+                :class="{ 'text-disabled': page.enable == false }"
+                class="text"
+                >{{ page.name }}</text
+              >
+            </view>
+            <template v-if="page.children">
+              <uni-collapse style="flex: 1">
+                <uni-collapse-item :title="page.name" class="menu">
+                  <view
+                    v-for="(child, index) in page.children"
+                    :key="`${child.id}-${index}`">
+                    <view
+                      v-if="child.url"
+                      class="page-item"
+                      :class="{ 'first-child': index == 0 }"
+                      @click="goDetailPage(`${menu.id}/${page.id}`, child)">
+                      <text
+                        :class="{ 'text-disabled': child.enable == false }"
+                        class="text"
+                        >{{ child.name }}</text
+                      >
+                    </view>
+                    <template v-else>
+                      <uni-collapse style="flex: 1">
+                        <uni-collapse-item :title="child.name" class="menu">
+                          <view
+                            v-for="(childChild, index) in child.children"
+                            :key="`${childChild.id}-${index}`">
+                            <view
+                              class="page-item"
+                              :class="{ 'first-child': index == 0 }"
+                              @click="
+                                goDetailPage(
+                                  `${menu.id}/${page.id}/${child.id}`,
+                                  childChild
+                                )
+                              ">
+                              <text
+                                :class="{
+                                  'text-disabled': childChild.enable == false,
+                                }"
+                                class="text"
+                                >{{ childChild.name }}</text
+                              >
+                            </view>
+                          </view>
+                        </uni-collapse-item>
+                      </uni-collapse>
+                    </template>
+                  </view>
+                </uni-collapse-item>
+              </uni-collapse>
+            </template>
+          </view>
+        </uni-collapse-item>
+      </uni-collapse>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+import { setLifeCycleNum, state } from '@/store/index.uts'
+
+type Page = {
+  id : string
+  name : string
+  enable ?: boolean
+  url ?: string
+  children ?: Page[]
+}
+
+type Menu = {
+  id : string
+  name : string
+  pages : Page[]
+  url ?: string
+  enable ?: boolean
+}
+
+export default {
+  data() {
+    return {
+      menus: [
+        {
+          id: 'app-instance',
+          name: 'App 实例',
+          pages: [
+            {
+              id: 'component',
+              name: 'component',
+              url: 'component/component'
+            },
+            {
+              id: 'globalProperties',
+              name: 'globalProperties',
+              children: [
+                {
+                  id: 'globalProperties-options',
+                  name: 'globalProperties  选项式 API',
+                  url: 'globalProperties-options'
+                },
+                {
+                  id: 'globalProperties-composition',
+                  name: 'globalProperties 组合式 API',
+                  url: 'globalProperties-composition'
+                }
+              ]
+            },
+            {
+              id: 'use',
+              name: 'use',
+              children: [
+                {
+                  id: 'use-options',
+                  name: 'use 选项式 API',
+                  url: 'use-composition'
+                },
+                {
+                  id: 'use-composition',
+                  name: 'use 组合式 API',
+                  url: 'use-composition'
+                }
+              ]
+            }
+          ] as Page[]
+        },
+        {
+          id: 'component-instance',
+          name: '组件实例',
+          pages: [
+            {
+              id: 'attrs',
+              name: 'attrs',
+              children: [
+                {
+                  id: 'attrs-options',
+                  name: 'attrs 选项式 API',
+                  url: 'attrs-options'
+                },
+                {
+                  id: 'attrs-composition',
+                  name: 'attrs 组合式 API',
+                  url: 'attrs-composition'
+                }
+              ]
+            },
+            {
+              id: 'data',
+              name: 'data',
+              children: [
+                {
+                  id: 'data-options',
+                  name: 'data 选项式 API',
+                  url: 'data-options'
+                },
+                {
+                  id: 'data-composition',
+                  name: 'data 组合式 API',
+                  url: 'data-composition'
+                }
+              ]
+            },
+            {
+              id: 'props',
+              name: 'props',
+              children: [
+                {
+                  id: 'props-options',
+                  name: 'props 选项式 API',
+                  url: 'props-options'
+                },
+                {
+                  id: 'props-composition',
+                  name: 'props 组合式 API',
+                  url: 'props-composition'
+                },
+                {
+                  id: 'page-props',
+                  name: '页面作为组件引入',
+                  url: 'page-props?name=page-props'
+                }
+              ]
+            },
+            {
+              id: 'el',
+              name: '$el',
+              children: [
+                {
+                  id: 'el-options',
+                  name: '$el 选项式 API',
+                  url: 'el-options'
+                },
+                {
+                  id: 'el-composition',
+                  name: '$el 组合式 API',
+                  url: 'el-composition'
+                }
+              ]
+            },
+            {
+              id: 'options',
+              name: '$options',
+              children: [
+                {
+                  id: 'options-options',
+                  name: '$options 选项式 API',
+                  url: 'options-options'
+                },
+                {
+                  id: 'options-composition',
+                  name: '$options 组合式 API',
+                  url: 'options-composition'
+                }
+              ]
+            },
+            {
+              id: 'parent',
+              name: '$parent',
+              children: [
+                {
+                  id: 'parent-options',
+                  name: '$parent 选项式 API',
+                  url: 'parent-options'
+                },
+                {
+                  id: 'parent-composition',
+                  name: '$parent 组合式 API',
+                  url: 'parent-composition'
+                }
+              ]
+            },
+            // #ifdef APP
+            {
+              id: 'root',
+              name: '$root',
+              children: [
+                {
+                  id: 'root-options',
+                  name: '$root 选项式 API',
+                  url: 'root-options'
+                },
+                {
+                  id: 'root-composition',
+                  name: '$root 组合式 API',
+                  url: 'root-composition'
+                }
+              ]
+            },
+            // #endif
+            {
+              id: 'slots',
+              name: '$slots',
+              children: [
+                {
+                  id: 'slots-options',
+                  name: '$slots 选项式 API',
+                  url: 'slots-options'
+                },
+                {
+                  id: 'slots-composition',
+                  name: '$slots 组合式 API',
+                  url: 'slots-composition'
+                }
+              ]
+            },
+            {
+              id: 'refs',
+              name: '$refs',
+              children: [
+                {
+                  id: 'refs-options',
+                  name: '$refs 选项式 API',
+                  url: 'refs-options'
+                },
+                {
+                  id: 'refs-composition',
+                  name: '$refs 组合式 API',
+                  url: 'refs-composition'
+                }
+              ]
+            },
+            {
+              id: 'emit-function',
+              name: '$emit',
+              children: [
+                {
+                  id: 'emit-options',
+                  name: '$emit 选项式 API',
+                  url: 'emit-function-options'
+                },
+                {
+                  id: 'emit-composition',
+                  name: 'defineEmits 组合式 API',
+                  url: 'emit-function-composition'
+                }
+              ]
+            },
+            {
+              id: 'force-update',
+              name: '$force-update',
+              children: [
+                {
+                  id: 'force-update-options',
+                  name: '$forceUpdate 选项式 API',
+                  url: 'force-update-options'
+                },
+                {
+                  id: 'force-update-composition',
+                  name: '$forceUpdate 组合式 API',
+                  url: 'force-update-composition'
+                }
+              ]
+            },
+            {
+              id: 'methods',
+              name: 'methods',
+              children: [
+                {
+                  id: 'call-method-easycom-uni-modules-options',
+                  name: '调用 uni_modules easycom 组件方法 选项式 API',
+                  url: 'call-method-easycom-uni-modules-options'
+                },
+                {
+                  id: 'call-method-easycom-uni-modules-composition',
+                  name: '调用 uni_modules easycom 组件方法 组合式 API',
+                  url: 'call-method-easycom-uni-modules-composition'
+                },
+                {
+                  id: 'call-method-easycom-options',
+                  name: '调用 easycom 组件方法 选项式 API',
+                  url: 'call-method-easycom-options'
+                },
+                {
+                  id: 'call-method-easycom-composition',
+                  name: '调用  easycom 组件方法 组合式 API',
+                  url: 'call-method-easycom-composition'
+                },
+                {
+                  id: 'call-method-uni-element-options',
+                  name: '调用内置组件方法 选项式 API',
+                  url: 'call-method-uni-element-options'
+                },
+                {
+                  id: 'call-method-uni-element-composition',
+                  name: '调用内置组件方法 组合式 API',
+                  url: 'call-method-uni-element-composition'
+                },
+                {
+                  id: 'call-method-other-options',
+                  name: '调用自定义组件方法 选项式 API',
+                  url: 'call-method-other-options'
+                },
+                {
+                  id: 'call-method-other-composition',
+                  name: '调用自定义组件方法 组合式 API',
+                  url: 'call-method-other-composition'
+                },
+                {
+                  id: 'call-method-define-expose',
+                  name: '调用 defineExpose 暴露的方法',
+                  url: 'call-method-define-expose'
+                }
+              ]
+            },
+            {
+              id: 'provide',
+              name: 'provide',
+              children: [
+                {
+                  id: 'provide-options-1',
+                  name: 'provide 选项式 API 字面量方式',
+                  url: 'provide-options-1'
+                },
+                {
+                  id: 'provide-options-2',
+                  name: 'provide 选项式 API 函数方式',
+                  url: 'provide-options-2'
+                },
+                {
+                  id: 'provide-composition',
+                  name: 'provide 组合式 API',
+                  url: 'provide-composition'
+                },
+              ]
+            },
+            {
+              id: 'nextTick',
+              name: 'nextTick',
+              children: [
+                {
+                  id: 'nextTick-options',
+                  name: 'nextTick 选项式 API',
+                  url: 'nextTick-options'
+                },
+                {
+                  id: 'nextTick-composition',
+                  name: 'nextTick 组合式 API',
+                  url: 'nextTick-composition'
+                },
+              ]
+            },
+            {
+              id: 'setup-function',
+              name: 'setup()',
+              url: 'setup-function/setup-function'
+            },
+            {
+              id: 'define-expose',
+              name: 'defineExpose',
+              url: 'define-expose/define-expose'
+            },
+            // #ifndef MP
+            {
+              id: 'circular-reference',
+              name: 'circular reference',
+              children: [
+                {
+                  id: 'circular-reference-options',
+                  name: '循环引用 选项式 API',
+                  url: 'circular-reference-options'
+                },
+                {
+                  id: 'circular-reference-composition',
+                  name: '循环引用 组合式 API',
+                  url: 'circular-reference-composition'
+                },
+              ]
+            },
+            // #endif
+            {
+              id: 'mixins',
+              name: 'mixins',
+              children: [
+                // #ifdef APP
+                {
+                  id: 'mixins-app',
+                  name: 'mixins',
+                  url: 'mixins-app'
+                },
+                {
+                  id: 'mixins-app-page-namesake',
+                  name: 'mixins page namesake',
+                  url: 'mixins-app-page-namesake'
+                },
+                // #endif
+                // #ifdef WEB
+                {
+                  id: 'mixins-web',
+                  name: 'mixins',
+                  url: 'mixins-web'
+                },
+                // #endif
+              ]
+            }
+          ] as Page[]
+        },
+        {
+          id: 'reactivity',
+          name: '响应式',
+          pages: [
+            {
+              id: 'core',
+              name: '核心',
+              children: [
+                {
+                  id: 'ref',
+                  name: 'ref',
+                  url: 'ref/ref'
+                },
+                {
+                  id: 'computed',
+                  name: 'computed',
+                  children: [
+                    {
+                      id: 'computed-options',
+                      name: 'computed 选项式 API',
+                      url: 'computed-options'
+                    },
+                    {
+                      id: 'computed-composition',
+                      name: 'computed 组合式 API',
+                      url: 'computed-composition'
+                    },
+                  ]
+                },
+                {
+                  id: 'reactive',
+                  name: 'reactive',
+                  url: 'reactive/reactive'
+                },
+                {
+                  id: 'readonly',
+                  name: 'readonly',
+                  url: 'readonly/readonly'
+                },
+                {
+                  id: 'watch',
+                  name: 'watch',
+                  children: [
+                    {
+                      id: 'watch-options',
+                      name: 'watch 选项式 API',
+                      url: 'watch-options'
+                    },
+                    {
+                      id: 'watch-composition',
+                      name: 'watch 组合式 API',
+                      url: 'watch-composition'
+                    },
+                  ]
+                },
+                {
+                  id: 'watch-effect',
+                  name: 'watchEffect',
+                  url: 'watch-effect/watch-effect'
+                },
+                {
+                  id: 'watch-post-effect',
+                  name: 'watchPostEffect',
+                  url: 'watch-post-effect/watch-post-effect'
+                },
+                {
+                  id: 'watch-sync-effect',
+                  name: 'watchSyncEffect',
+                  url: 'watch-sync-effect/watch-sync-effect'
+                },
+              ]
+            },
+            {
+              id: 'utilities',
+              name: '工具',
+              children: [
+                {
+                  id: 'is-proxy',
+                  name: 'isProxy',
+                  url: 'is-proxy/is-proxy'
+                },
+                {
+                  id: 'is-reactive',
+                  name: 'isReactive',
+                  url: 'is-reactive/is-reactive'
+                },
+                {
+                  id: 'is-readonly',
+                  name: 'isReadonly',
+                  url: 'is-readonly/is-readonly'
+                },
+                {
+                  id: 'is-ref',
+                  name: 'isRef',
+                  url: 'is-ref/is-ref'
+                },
+                {
+                  id: 'to-ref',
+                  name: 'toRef',
+                  url: 'to-ref/to-ref'
+                },
+                {
+                  id: 'to-refs',
+                  name: 'toRefs',
+                  url: 'to-refs/to-refs',
+                },
+                {
+                  id: 'to-value',
+                  name: 'toValue',
+                  url: 'to-value/to-value',
+                },
+                {
+                  id: 'un-ref',
+                  name: 'unRef',
+                  url: 'un-ref/un-ref'
+                },
+              ]
+            },
+            {
+              id: 'advanced',
+              name: '进阶',
+              children: [
+                {
+                  id: 'custom-ref',
+                  name: 'customRef',
+                  url: 'custom-ref/custom-ref'
+                },
+                {
+                  id: 'effect-scope',
+                  name: 'effectScope',
+                  url: 'effect-scope/effect-scope'
+                },
+                {
+                  id: 'get-current-scope',
+                  name: 'getCurrentScope',
+                  url: 'get-current-scope/get-current-scope'
+                },
+                {
+                  id: 'mark-raw',
+                  name: 'markRaw',
+                  url: 'mark-raw/mark-raw',
+                  enable: false
+                },
+                {
+                  id: 'on-scope-dispose',
+                  name: 'onScopeDispose',
+                  url: 'on-scope-dispose/on-scope-dispose'
+                },
+                {
+                  id: 'shallow-reactive',
+                  name: 'shallowReactive',
+                  url: 'shallow-reactive/shallow-reactive'
+                },
+                {
+                  id: 'shallow-readonly',
+                  name: 'shallowReadonly',
+                  url: 'shallow-readonly/shallow-readonly'
+                },
+                {
+                  id: 'shallow-ref',
+                  name: 'shallowRef',
+                  url: 'shallow-ref/shallow-ref'
+                },
+                {
+                  id: 'to-raw',
+                  name: 'toRaw',
+                  url: 'to-raw/to-raw'
+                },
+                {
+                  id: 'trigger-ref',
+                  name: 'triggerRef',
+                  url: 'trigger-ref/trigger-ref'
+                },
+              ]
+            }
+          ] as Page[]
+        },
+        {
+          id: 'directive',
+          name: '指令',
+          pages: [
+            // #ifndef APP-IOS || MP
+            {
+              id: 'v-html',
+              name: 'v-html',
+              children: [
+                {
+                  id: 'v-html-options',
+                  name: 'v-html 选项式 API',
+                  url: 'v-html-options'
+                },
+                {
+                  id: 'v-html-composition',
+                  name: 'v-html 组合式 API',
+                  url: 'v-html-composition'
+                },
+              ]
+            },
+            // #endif
+            {
+              id: 'v-show',
+              name: 'v-show',
+              children: [
+                {
+                  id: 'v-show-options',
+                  name: 'v-show 选项式 API',
+                  url: 'v-show-options'
+                },
+                {
+                  id: 'v-show-composition',
+                  name: 'v-show 组合式 API',
+                  url: 'v-show-composition'
+                },
+              ]
+            },
+            {
+              id: 'v-if',
+              name: 'v-if',
+              children: [
+                {
+                  id: 'v-if-options',
+                  name: 'v-if 选项式 API',
+                  url: 'v-if-options'
+                },
+                {
+                  id: 'v-if-composition',
+                  name: 'v-if 组合式 API',
+                  url: 'v-if-composition'
+                },
+              ]
+            },
+            {
+              id: 'v-for',
+              name: 'v-for',
+              children: [
+                {
+                  id: 'v-for-options',
+                  name: 'v-for 选项式 API',
+                  url: 'v-for-options'
+                },
+                {
+                  id: 'v-for-composition',
+                  name: 'v-for 组合式 API',
+                  url: 'v-for-composition'
+                },
+              ]
+            },
+            {
+              id: 'v-on',
+              name: 'v-on',
+              children: [
+                {
+                  id: 'v-on-options',
+                  name: 'v-on 选项式 API',
+                  url: 'v-on-options'
+                },
+                {
+                  id: 'v-on-composition',
+                  name: 'v-on 组合式 API',
+                  url: 'v-on-composition'
+                },
+              ]
+            },
+            // #ifndef MP
+            {
+              id: 'v-pre',
+              name: 'v-pre',
+              url: 'v-pre/v-pre'
+            },
+            {
+              id: 'v-once',
+              name: 'v-once',
+              children: [
+                {
+                  id: 'v-once-options',
+                  name: 'v-once 选项式 API',
+                  url: 'v-once-options'
+                },
+                {
+                  id: 'v-once-composition',
+                  name: 'v-once 组合式 API',
+                  url: 'v-once-composition'
+                },
+              ]
+            },
+            {
+              id: 'v-memo',
+              name: 'v-memo',
+              children: [
+                {
+                  id: 'v-memo-options',
+                  name: 'v-memo 选项式 API',
+                  url: 'v-memo-options'
+                },
+                {
+                  id: 'v-memo-composition',
+                  name: 'v-memo 组合式 API',
+                  url: 'v-memo-composition'
+                },
+              ]
+            },
+            // #endif
+            {
+              id: 'v-text',
+              name: 'v-text',
+              children: [
+                {
+                  id: 'v-text-options',
+                  name: 'v-text 选项式 API',
+                  url: 'v-text-options',
+                  // #ifdef APP || MP
+                  enable: false
+                  // #endif
+                },
+                {
+                  id: 'v-text-composition',
+                  name: 'v-text 组合式 API',
+                  url: 'v-text-composition',
+                  // #ifdef APP|| MP
+                  enable: false
+                  // #endif
+                },
+              ]
+            },
+            {
+              id: 'v-bind',
+              name: 'v-bind',
+              children: [
+                {
+                  id: 'v-bind-options',
+                  name: 'v-bind 选项式 API',
+                  url: 'v-bind-options',
+                },
+                {
+                  id: 'v-bind-composition',
+                  name: 'v-bind 组合式 API',
+                  url: 'v-bind-composition',
+                },
+              ]
+            },
+            {
+              id: 'v-model',
+              name: 'v-model',
+              children: [
+                {
+                  id: 'v-model-options',
+                  name: 'v-model',
+                  url: 'v-model-options',
+                },
+                // #ifndef MP
+                {
+                  id: 'v-model-composition',
+                  name: 'defineModel',
+                  url: 'v-model-composition',
+                },
+                // #endif
+              ]
+            },
+            {
+              id: 'v-slot',
+              name: 'v-slot',
+              children: [
+                {
+                  id: 'v-model-options',
+                  name: 'v-slot',
+                  url: 'v-slot-options',
+                },
+                {
+                  id: 'v-slot-composition',
+                  name: 'defineSlots',
+                  url: 'v-slot-composition',
+                },
+              ]
+            },
+          ]
+        },
+        {
+          id: 'lifecycle',
+          name: '生命周期',
+          pages: [
+            {
+              id: 'page',
+              name: '页面生命周期',
+              children: [
+                {
+                  id: 'page-options',
+                  name: '页面生命周期 选项式 API',
+                  url: 'page-options'
+                },
+
+                {
+                  id: 'page-composition',
+                  name: '页面生命周期 组合式 API',
+                  url: 'page-composition'
+                }
+              ]
+            },
+            // #ifndef MP
+            {
+              id: 'component',
+              name: '组件生命周期',
+              children: [
+                {
+                  id: 'component-options',
+                  name: '组件生命周期 选项式 API',
+                  url: 'component-options'
+                },
+
+                {
+                  id: 'component-composition',
+                  name: '组件生命周期 组合式 API',
+                  url: 'component-composition'
+                }
+              ]
+            }
+            // #endif
+          ] as Page[]
+        },
+        {
+          id: 'built-in',
+          name: '内置',
+          pages: [
+            // #ifndef MP
+            {
+              id: 'component',
+              name: '组件',
+              children: [
+                {
+                  id: 'keep-alive',
+                  name: 'keepAlive',
+                  children: [
+                    {
+                      id: 'keep-alive-options',
+                      name: 'keepAlive 选项式 API',
+                      url: 'keep-alive-options'
+                    },
+
+                    {
+                      id: 'keep-alive-composition',
+                      name: 'keepAlive 组合式 API',
+                      url: 'keep-alive-composition'
+                    }
+                  ]
+                },
+                {
+                  id: 'teleport',
+                  name: 'Teleport',
+                  children: [
+                    {
+                      id: 'teleport-options',
+                      name: 'Teleport 选项式 API',
+                      url: 'teleport-options'
+                    },
+
+                    {
+                      id: 'teleport-composition',
+                      name: 'Teleport 组合式 API',
+                      url: 'teleport-composition'
+                    }
+                  ]
+                },
+              ]
+            },
+            // #endif
+            {
+              id: 'special-elements',
+              name: '特殊元素',
+              children: [
+                // #ifndef MP
+                {
+                  id: 'component',
+                  name: 'component',
+                  children: [
+                    {
+                      id: 'component-options',
+                      name: 'component 选项式 API',
+                      url: 'component-options'
+                    },
+
+                    {
+                      id: 'component-composition',
+                      name: 'component 组合式 API',
+                      url: 'component-composition'
+                    }
+                  ]
+                },
+                // #endif
+                {
+                  id: 'slots',
+                  name: 'slot',
+                  children: [
+                    {
+                      id: 'slots-options',
+                      name: 'slots 选项式 API',
+                      url: 'slots-options'
+                    },
+
+                    {
+                      id: 'slots-composition',
+                      name: 'slots 组合式 API',
+                      url: 'slots-composition'
+                    }
+                  ]
+                },
+                {
+                  id: 'template',
+                  name: 'template',
+                  children: [
+                    {
+                      id: 'template-options',
+                      name: 'template 选项式 API',
+                      url: 'template-options'
+                    },
+
+                    {
+                      id: 'template-composition',
+                      name: 'template 组合式 API',
+                      url: 'template-composition'
+                    }
+                  ]
+                }
+              ]
+            },
+          ] as Page[]
+        },
+        // #ifndef MP
+        {
+          id: 'render-function',
+          name: '渲染函数',
+          pages: [
+            {
+              id: 'render',
+              name: 'render & h()',
+              children: [
+                {
+                  id: 'render-options',
+                  name: 'render 选项式 API',
+                  url: 'render-options'
+                },
+                {
+                  id: 'render-composition',
+                  name: 'render 组合式 API',
+                  url: 'render-composition'
+                },
+              ]
+            },
+            {
+              id: 'mergeProps',
+              name: 'mergeProps',
+              children: [
+                {
+                  id: 'mergeProps-options',
+                  name: 'mergeProps 选项式 API',
+                  url: 'mergeProps-options'
+                },
+                {
+                  id: 'mergeProps-composition',
+                  name: 'mergeProps 组合式 API',
+                  url: 'mergeProps-composition'
+                },
+              ]
+            },
+            {
+              id: 'cloneVNode',
+              name: 'cloneVNode',
+              children: [
+                {
+                  id: 'cloneVNode-options',
+                  name: 'cloneVNode 选项式 API',
+                  url: 'cloneVNode-options'
+                },
+                {
+                  id: 'cloneVNode-composition',
+                  name: 'cloneVNode 组合式 API',
+                  // #ifdef APP-IOS
+                  enable: false,
+                  // #endif
+                  url: 'cloneVNode-composition'
+                },
+              ]
+            },
+            {
+              id: 'isVNode',
+              name: 'isVNode',
+              children: [
+                {
+                  id: 'isVNode-options',
+                  name: 'isVNode 选项式 API',
+                  url: 'isVNode-options'
+                },
+                {
+                  id: 'isVNode-composition',
+                  name: 'isVNode 组合式 API',
+                  url: 'isVNode-composition'
+                },
+              ]
+            },
+            {
+              id: 'resolveComponent',
+              name: 'resolveComponent',
+              children: [
+                {
+                  id: 'resolveComponent-options',
+                  name: 'resolveComponent 选项式 API',
+                  url: 'resolveComponent-options'
+                },
+                {
+                  id: 'resolveComponent-composition',
+                  name: 'resolveComponent 组合式 API',
+                  // #ifdef APP-IOS
+                  enable: false,
+                  // #endif
+                  url: 'resolveComponent-composition'
+                },
+              ]
+            },
+            {
+              id: 'withDirectives',
+              name: 'withDirectives',
+              children: [
+                {
+                  id: 'withDirectives-options',
+                  name: 'withDirectives 选项式 API',
+                  url: 'withDirectives-options'
+                },
+                {
+                  id: 'withDirectives-composition',
+                  name: 'withDirectives 组合式 API',
+                  // #ifdef APP-IOS
+                  enable: false,
+                  // #endif
+                  url: 'withDirectives-composition'
+                },
+              ]
+            },
+            {
+              id: 'withModifiers',
+              name: 'withModifiers',
+              children: [
+                {
+                  id: 'withModifiers-options',
+                  name: 'withModifiers 选项式 API',
+                  url: 'withModifiers-options'
+                },
+                {
+                  id: 'withModifiers-composition',
+                  name: 'withModifiers 组合式 API',
+                  // #ifdef APP-IOS
+                  enable: false,
+                  // #endif
+                  url: 'withModifiers-composition'
+                },
+              ]
+            }
+          ] as Page[]
+        },
+        // #endif
+        {
+          id: 'examples',
+          name: '示例',
+          pages: [
+            {
+              id: 'nested-component-communication',
+              name: '嵌套组件通讯',
+              children: [
+                {
+                  id: 'nested-component-communication-options',
+                  name: '选项式',
+                  url: 'nested-component-communication-options'
+                },
+                {
+                  id: 'nested-component-communication-composition',
+                  name: '组合式',
+                  url: 'nested-component-communication-composition'
+                }
+              ]
+            },
+            {
+              id: 'set-custom-child-component-root-node-class',
+              name: '自定义组件中使用 class 定制另一个自定义组件根节点样式',
+              children: [
+                {
+                  id: 'set-custom-child-component-root-node-class-options',
+                  name: '选项式',
+                  url: 'set-custom-child-component-root-node-class-options'
+                },
+                {
+                  id: 'set-custom-child-component-root-node-class-composition',
+                  name: '组合式',
+                  url: 'set-custom-child-component-root-node-class-composition'
+                }
+              ]
+            },
+            {
+              id: 'unrecognized-component',
+              name: 'unrecognized-component',
+              url: 'unrecognized-component/unrecognized-component'
+            },
+            {
+              id: 'multiple-style-script',
+              name: '多个 style 和 script',
+              url: 'multiple-style-script/multiple-style-script'
+            }
+          ] as Page[]
+        },
+        {
+          id: 'error',
+          name: '异常示例',
+          pages: [
+            {
+              id: 'runtime-error',
+              name: '运行时异常',
+              children: [
+                {
+                  id: 'runtime-error-options',
+                  name: '运行时异常 选项式 API',
+                  url: 'runtime-error-options'
+                },
+                {
+                  id: 'runtime-error-composition',
+                  name: '运行时异常 组合式 API',
+                  url: 'runtime-error-composition'
+                },
+              ]
+            },
+            {
+              id: 'throw-error',
+              name: 'throw error',
+              children: [
+                {
+                  id: 'throw-error-options',
+                  name: 'throw error 选项式 API',
+                  url: 'throw-error-options'
+                },
+                {
+                  id: 'throw-error-composition',
+                  name: 'throw error 组合式 API',
+                  url: 'throw-error-composition'
+                },
+              ]
+            }
+          ]
+        }
+      ] as Menu[]
+    }
+  },
+  methods: {
+    goDetailPage(parentUrl : string, page : Page) {
+      if (page.enable == false) {
+        uni.showToast({
+          icon: 'none',
+          title: '暂不支持'
+        })
+        return
+      }
+      uni.navigateTo({
+        url: `/pages/${parentUrl}/${page.url}`
+      })
+    },
+    // 自动化测试
+    setLifeCycleNum(num : number) {
+      setLifeCycleNum(num)
+    },
+    // 自动化测试
+    getLifeCycleNum() : number {
+      return state.lifeCycleNum
+    },
+    // 自动化测试
+    checkLaunchPath() : boolean {
+      const app = getApp()
+      return app.vm!.checkLaunchPath()
+    },
+    // #ifndef APP-ANDROID
+    // 自动化测试
+    checkAppMixin() : boolean {
+      const app = getApp()
+      return app.vm.checkAppMixin()
+    }
+    // #endif
+  }
+}
+</script>
+
+<style lang="scss">
+.menu {
+  border-bottom: 1px solid #dbd9d9;
+
+  &.open {
+    border-bottom: none;
+  }
+}
+
+.page-item {
+  padding: 12px 10px;
+  border-bottom: 1px solid #dbd9d9;
+
+  &.first-child {
+    border-top: 1px solid #dbd9d9;
+  }
+
+  .text {
+    font-size: 14px;
+    color: #333;
+
+    &.text-disabled {
+      color: #999;
+    }
+  }
+}
+</style>

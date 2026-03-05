@@ -1,0 +1,26 @@
+<script setup lang="ts">
+  defineOptions({
+    data() {
+      return {
+        isMounted: false
+      }
+    },
+    render() : VNode {
+      const instance = getCurrentInstance()!.proxy!
+      
+      const customDirective = {
+        mounted(el : UniElement, binding : DirectiveBinding, vnode : VNode, prevVNode: VNode | null) {
+          console.log(el, binding, vnode, prevVNode)
+          instance.$data['isMounted'] = true
+        }
+      } as Directive
+      return h('view', { class: 'page' }, [
+        withDirectives(h('text', 'Hello World'), [[customDirective]]),
+        h('view', { class: 'mt-10 flex flex-row justify-between' }, [
+          h('text', {}, `isMounted:`),
+          h('text', { id: 'is-mounted' }, `${instance.$data['isMounted']}`),
+        ])
+      ])
+    }
+  })
+</script>

@@ -1,0 +1,19 @@
+<template>
+  <view class="page">
+    <SlotComp id="slot-comp">
+      <template v-slot:header>header</template>
+      <template v-slot:default>default</template>
+      <template v-slot:footer>footer</template>
+    </SlotComp>
+  </view>
+</template>
+
+<script lang="uts">
+  import SlotComp from './slot-options.uvue'
+
+  export default {
+    components: {
+      SlotComp
+    }
+  }
+</script>

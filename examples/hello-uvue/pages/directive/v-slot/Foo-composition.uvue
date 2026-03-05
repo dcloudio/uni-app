@@ -1,0 +1,27 @@
+<template>
+  <view>
+    <slot name="header" :msg="msg"></slot>
+    <slot :num="num"></slot>
+    <slot name="num1" :num="num"></slot>
+    <slot name="num2" :num="num"></slot>
+    <slot name="msgTrue" :msg="msg"></slot>
+    <slot name="msgFalse" :msg="msg"></slot>
+    <slot name="footer" :arr="arr"></slot>
+  </view>
+</template>
+
+<script setup lang='uts'>
+  const msg = ref('foo msg')
+  const num = ref<number>(0)
+  const arr = ref<string[]>(['a', 'b', 'c'])
+
+  defineSlots<{
+    header(props : { msg : string }) : any,
+    default(props : { num : number }) : any,
+    num1(props : { num : number }) : any,
+    num2(props : { num : number }) : any,
+    msgTrue(props : { msg : string }) : any,
+    msgFalse(props : { msg : string }) : any,
+    footer(props : { arr : string[] }) : any
+  }>()
+</script>

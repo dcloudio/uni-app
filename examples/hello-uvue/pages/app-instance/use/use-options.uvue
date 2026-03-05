@@ -1,0 +1,15 @@
+<template>
+  <view class="page">
+    <CompForAppUse class="component-for-app-use" />
+  </view>
+</template>
+
+<script lang="uts">
+import CompForAppUse from '@/components/CompForAppUse.uvue'
+
+export default {
+  components: {
+    CompForAppUse
+  }
+}
+</script>

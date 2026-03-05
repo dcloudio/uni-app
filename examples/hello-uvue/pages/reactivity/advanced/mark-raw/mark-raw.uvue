@@ -1,0 +1,5 @@
+<template>
+	<view class="page">
+		markRaw 暂不支持
+	</view>
+</template>

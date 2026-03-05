@@ -1,0 +1,63 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>data.str:</text>
+      <text id="data-str">{{ data.str }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>data.num:</text>
+      <text id="data-num">{{ data.num }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>data.arr:</text>
+      <text id="data-arr">{{ JSON.stringify(data.arr) }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>readonly data.str:</text>
+      <text id="readonly-data-str">{{ readonlyData.str }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>readonly data.num:</text>
+      <text id="readonly-data-num">{{ readonlyData.num }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>readonly data.arr:</text>
+      <text id="readonly-data-arr">{{ JSON.stringify(readonlyData.arr) }}</text>
+    </view>
+
+    <button id="update-data-btn" class="mb-10" @click="updateData">
+      update data
+    </button>
+    <button id="update-readonly-data-btn" @click="updateReadonlyData">
+      update readonly data
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+type Data = {
+  str : string,
+  num : number,
+  arr : string[]
+}
+// 可通过泛型指定类型
+const data = reactive<Data>({
+  str: 'default str',
+  num: 0,
+  arr: ['a', 'b', 'c']
+})
+// 可通过泛型指定类型
+const readonlyData = readonly<Data>(data)
+
+const updateData = () => {
+  data.str = 'new str'
+  data.num++
+  data.arr.push('d')
+}
+
+const updateReadonlyData = () => {
+  readonlyData.str = 'new readonly str'
+  readonlyData.num++
+  readonlyData.arr.push('e')
+}
+</script>

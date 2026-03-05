@@ -1,0 +1,51 @@
+<template>
+  <view class="page">
+    <button id="toggle-btn" @click="toggleShow">toggle show/hide</button>
+    <text>点击上方按钮，切换下方 view 显示/隐藏</text>
+    <text>show default true: {{dataInfo.showDefaultTrue}}</text>
+    <view class="mt-10 default-true" id="v-show-element-default-true" v-show="dataInfo.showDefaultTrue"></view>
+    <text>show default false: {{dataInfo.showDefaultFalse}}</text>
+    <view class="mt-10 default-false" id="v-show-element-default-false" v-show="dataInfo.showDefaultFalse"></view>
+    <Foo v-show="dataInfo.showDefaultFalse" />
+  </view>
+</template>
+
+<script setup lang="uts">
+  import Foo from './Foo.uvue'
+
+  type DataInfo = {
+    showDefaultTrue : boolean
+    showDefaultFalse : boolean
+  }
+
+  const dataInfo = reactive({
+    showDefaultTrue: true,
+    showDefaultFalse: false
+  } as DataInfo)
+
+  const toggleShow = () => {
+    dataInfo.showDefaultTrue = !dataInfo.showDefaultTrue
+    dataInfo.showDefaultFalse = !dataInfo.showDefaultFalse
+  }
+
+  defineExpose({
+    dataInfo
+  })
+</script>
+
+<style>
+  .default-true,
+  .default-false {
+    display: flex;
+    width: 100px;
+    height: 50px;
+  }
+
+  .default-true {
+    background-color: greenyellow;
+  }
+
+  .default-false {
+    background-color: antiquewhite;
+  }
+</style>

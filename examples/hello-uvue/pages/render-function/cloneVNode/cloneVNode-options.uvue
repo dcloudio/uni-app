@@ -1,0 +1,22 @@
+<script lang="uts">
+  export default {
+    render() : VNode {
+      const originalVNode = h('view', { class: 'original' }, [
+        h('text', {}, 'Hello World'),
+      ])
+      const clonedVNode = cloneVNode(originalVNode, { class: 'cloned' })
+
+      return h('view', { class: 'flex flex-col' }, [originalVNode, clonedVNode])
+    }
+  }
+</script>
+
+<style>
+  .original {
+    background-color: #ff0000;
+  }
+
+  .cloned {
+    background-color: #00ff00;
+  }
+</style>

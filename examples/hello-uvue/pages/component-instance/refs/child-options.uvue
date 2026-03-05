@@ -1,0 +1,13 @@
+<script>
+export default {
+  data() {
+    return {
+      value: 'child value'
+    }
+  }
+}
+</script>
+
+<template>
+  <text>{{ value }}</text>
+</template>

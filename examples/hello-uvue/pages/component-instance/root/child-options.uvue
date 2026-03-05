@@ -1,0 +1,20 @@
+<template>
+  <view class="flex justify-between flex-row">
+    <text>root str in parent component: </text>
+    <text id="root-str-child">{{ rootStr }}</text>
+  </view>
+</template>
+
+<script lang="uts">
+export default {
+  data () {
+    return {
+      str: 'child component str',
+      rootStr: ''
+    }
+  },
+  mounted() {
+    this.rootStr = this.$root!.$data['str'] as string
+  }
+}
+</script>

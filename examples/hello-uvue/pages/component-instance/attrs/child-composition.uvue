@@ -1,0 +1,41 @@
+<template>
+  <view>
+    <view class="mb-10 flex flex-row justify-between">
+      <text>hasPropsAttr</text>
+      <text id="has-props-attr">{{ hasPropsAttr }}</text>
+    </view>
+    <view class="mb-10 flex flex-row justify-between">
+      <text>hasEmitsAttr</text>
+      <text id="has-emits-attr">{{ hasEmitsAttr }}</text>
+    </view>
+    <view class="mb-10 flex flex-row justify-between">
+      <text>hasClassAttr</text>
+      <text id="has-class-attr">{{ hasClassAttr }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+defineEmits(['childClick'])
+
+defineProps({
+  str: {
+    type: String,
+    required: true
+  }
+})
+
+const attrs = useAttrs()
+
+const hasPropsAttr = computed(():boolean => {
+  return attrs['val'] != null
+})
+
+const hasEmitsAttr = computed(():boolean => {
+  return attrs['childClick'] != null
+})
+
+const hasClassAttr = computed(():boolean => {
+  return attrs['class'] != null
+})
+</script>

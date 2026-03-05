@@ -1,0 +1,74 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view id="container" class="container">
+      <text class="text">.container 区域</text>
+      <view id="content1" class="content content-1">
+        <text class="text">content1 区域</text>
+      </view>
+      <view id="content2" class="content content-2">
+        <text class="text">content2 区域</text>
+      </view>
+      <teleport v-if="show" to="#content1" :disabled="disabled">
+        <view class="send-content">
+          <text class="send-content-text">内容在.container中，使用teleport在#content1元素中展示</text>
+        </view>
+      </teleport>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      to: 'content1',
+      disabled: false,
+      showingString: '穿梭内容在 body 中',
+      show: false
+    }
+  },
+  onReady() {
+    // 需要等内容挂载后，teleport才生效
+    this.show = true
+  },
+  methods: {
+    changePosition() {
+      this.to = '#content1'
+    }
+  }
+}
+</script>
+
+<style>
+.container {
+  background-color: #f5f5f5;
+  border: 1px #ccc solid;
+  margin: 5px;
+  padding: 10px;
+}
+.text {
+  margin: 5px 0;
+}
+
+.content {
+  height: 120px;
+  border: 1px #ccc solid;
+  margin: 5px;
+  padding: 10px;
+}
+
+.send-content {
+  padding: 5px;
+  background-color: #ff5a5f;
+  height: 50px;
+}
+
+.send-content-text {
+  color: #fff;
+  font-size: 12px;
+}
+</style>

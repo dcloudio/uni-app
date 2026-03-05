@@ -1,0 +1,8 @@
+export type ReferenceTypesProps = {
+	// #ifdef APP-ANDROID
+	list: number[]
+	// #endif
+	// #ifndef APP-ANDROID
+	list: string[]
+	// #endif
+}

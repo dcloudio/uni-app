@@ -1,0 +1,25 @@
+<template>
+  <view class="child-a">
+    <view class="flex justify-between flex-row mb-10">
+      <text>child A limit:</text>
+      <text>{{limit}}</text>
+    </view>
+    <child-b v-if="limit>1" :limit="limit-1" />
+  </view>
+</template>
+
+<script lang='uts'>
+  import ChildB from './childB-options.uvue'
+
+  export default {
+    components: {
+      ChildB
+    },
+    props: {
+      limit: {
+        type: Number,
+        default: 0
+      }
+    }
+  }
+</script>

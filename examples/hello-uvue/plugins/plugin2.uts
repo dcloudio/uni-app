@@ -1,0 +1,3 @@
+export default definePlugin(function (app: VueApp, a : boolean | null) {
+  app.config.globalProperties.plugin2 = '通过函数方式创建的 plugin'
+})

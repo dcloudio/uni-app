@@ -1,0 +1,15 @@
+<template>
+  <view class="page">
+    <text>{{ arr[1] }}</text>
+  </view>
+</template>
+
+<script lang="uts">
+  export default {
+    data(){
+      return {
+        arr: [0]
+      }
+    }
+  }
+</script>
