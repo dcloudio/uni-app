@@ -1,8 +1,0 @@
-{
-  "uniCloud.component.add.success": "Success",
-  "uniCloud.component.update.success": "Success",
-  "uniCloud.component.update.showModal.title": "Tips",
-  "uniCloud.component.update.showModal.content": "是否更新该数据",
-  "uniCloud.component.remove.showModal.title": "Tips",
-  "uniCloud.component.remove.showModal.content": "是否删除该数据"
-}

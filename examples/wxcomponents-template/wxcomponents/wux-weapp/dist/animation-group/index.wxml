@@ -1,3 +1,0 @@
-<view class="wux-class {{ animateCss }}" bindtap="onTap" bindtransitionend="onTransitionEnd" bindanimationend="onAnimationEnd" wx:if="{{ animateStatus !== 'unmounted' }}">
-    <slot></slot>
-</view>
