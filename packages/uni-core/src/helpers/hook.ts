@@ -1,6 +1,10 @@
 import type { ComponentPublicInstance } from 'vue'
 import { isArray, isString, remove } from '@vue/shared'
-import { invokeArrayFns } from '@dcloudio/uni-shared'
+import {
+  ON_BACK_PRESS,
+  invokeArrayFns,
+  invokeArrayFnsUntilTrue,
+} from '@dcloudio/uni-shared'
 import { getCurrentPageVm } from './page'
 import { get$pageByPage } from './util'
 
@@ -58,6 +62,9 @@ export function invokeHook(
   const hooks = (vm.$ as unknown as { [name: string]: Function[] })[
     name as string
   ]
+  if (name === ON_BACK_PRESS) {
+    return hooks && invokeArrayFnsUntilTrue(hooks, args)
+  }
   return hooks && invokeArrayFns(hooks, args)
 }
 
