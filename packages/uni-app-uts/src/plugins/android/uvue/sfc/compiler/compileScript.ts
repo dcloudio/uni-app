@@ -1077,7 +1077,7 @@ __ins.emit(event, ...do_not_transform_spread)
       resolveDefineCode(ctx.options.componentType!)
     )}({${runtimeOptions}\n  ` +
       `${hasAwait ? `async ` : ``}setup(${args}) {${setupCtxCode}
-${setupPreambleLines.length ? `${setupPreambleLines.join('\n  ')}\n` : ''}
+${setupPreambleLines.length ? `${setupPreambleLines.join('\n')}` : ''}
 ${exposeCall}`
   )
 
