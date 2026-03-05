@@ -277,6 +277,9 @@ Partial<UniNodeJSON | UniNodeJSONMinify>?
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
+/** 任一回调函数返回 true 则返回 true，否则返回 false */
+export declare const invokeArrayFnsUntilTrue: (fns: Function[], arg?: any) => boolean;
+
 export declare const invokeCreateErrorHandler: (app: App_2, createErrorHandler: (app: App_2) => App_2['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | null, info: string) => void) | undefined;
 
 export declare function invokeCreateVueAppHook(app: App_2): void;

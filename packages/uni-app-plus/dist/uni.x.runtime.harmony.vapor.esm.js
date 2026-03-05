@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsUntilTrue, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
@@ -83,6 +83,9 @@ function invokeHook(vm, name, args) {
     }
   }
   var hooks = vm.$[name];
+  if (name === ON_BACK_PRESS) {
+    return hooks && invokeArrayFnsUntilTrue(hooks, args);
+  }
   return hooks && invokeArrayFns(hooks, args);
 }
 function normalizeRoute(toRoute) {

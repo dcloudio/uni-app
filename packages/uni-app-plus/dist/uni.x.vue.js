@@ -1,4 +1,4 @@
-import { invokeArrayFns, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { ON_BACK_PRESS, invokeArrayFnsUntilTrue, invokeArrayFns, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { isString, isArray, hasOwn, isFunction } from '@vue/shared';
 import { injectHook, logError } from 'vue';
 
@@ -48,6 +48,9 @@ function invokeHook(vm, name, args) {
         }
     }
     const hooks = vm.$[name];
+    if (name === ON_BACK_PRESS) {
+        return hooks && invokeArrayFnsUntilTrue(hooks, args);
+    }
     return hooks && invokeArrayFns(hooks, args);
 }
 
