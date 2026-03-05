@@ -1,0 +1,43 @@
+<template>
+  <list-view @scrolltolower="onScrollTolower" style="flex:1" show-scrollbar=false>
+    <list-item v-for="index in listcount" :key="index" :type="(index != 0 && index%10 == 6) ? 0:1">
+      <!-- #ifndef MP -->
+      <ad v-if="index != 0 && index%10 == 6" adpid="1111111111" @load="onAdLoad" @error="onAdError" @close="onAdClose"></ad>
+      <!-- #endif -->
+      <!-- #ifdef MP -->
+      <view class="uni-center">微信小程序平台暂不支持测试广告位，需要开通uni-ad后可测试</view>
+      <!-- #endif -->
+      <text v-if="index == 0 || index%10 != 6" style="width: 100%; height: 200px;background-color: aquamarine;margin-top: 10px;">这是一条占位的信息{{index}}</text>
+    </list-item>
+  </list-view>
+</template>
+
+<script setup lang="uts">
+
+
+// Data
+const listcount = ref(10)
+
+// Methods
+function onScrollTolower(event : ScrollToLowerEvent) {
+  setTimeout(() => {
+    listcount.value = listcount.value + 10
+  }, 300)
+}
+
+function onAdLoad() {
+  console.log("广告加载成功")
+  uni.showToast({
+    position: "center",
+    title: "广告加载成功"
+  })
+}
+
+function onAdError(e : UniAdErrorEvent) {
+  console.log("广告加载失败" + (e.detail))
+}
+
+function onAdClose() {
+  console.log("广告关闭了")
+}
+</script>

@@ -1,0 +1,259 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view>
+        <text>flex-wrap: nowrap</text>
+        <view class="demo-box">
+          <view class="common" style="flex-wrap: nowrap">
+            <view class="common-item red"></view>
+            <view class="common-item green"></view>
+            <view class="common-item blue"></view>
+            <view class="common-item red"></view>
+            <view class="common-item green"></view>
+            <view class="common-item blue"></view>
+          </view>
+          <view class="common" style="flex-wrap: nowrap" flatten>
+            <view class="common-item red" flatten></view>
+            <view class="common-item green" flatten></view>
+            <view class="common-item blue" flatten></view>
+            <view class="common-item red" flatten></view>
+            <view class="common-item green" flatten></view>
+            <view class="common-item blue" flatten></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>flex-wrap: wrap</text>
+        <view class="demo-box">
+          <view class="common" style="flex-wrap: wrap">
+            <view class="common-item red"></view>
+            <view class="common-item green"></view>
+            <view class="common-item blue"></view>
+            <view class="common-item red"></view>
+            <view class="common-item green"></view>
+            <view class="common-item blue"></view>
+          </view>
+          <view class="common" style="flex-wrap: wrap" flatten>
+            <view class="common-item red"></view>
+            <view class="common-item green"></view>
+            <view class="common-item blue"></view>
+            <view class="common-item red"></view>
+            <view class="common-item green"></view>
+            <view class="common-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>flex-wrap: wrap-reverse</text>
+        <view class="demo-box">
+          <view class="common" style="flex-wrap: wrap-reverse">
+            <view class="common-item red"></view>
+            <view class="common-item green"></view>
+            <view class="common-item blue"></view>
+            <view class="common-item red"></view>
+            <view class="common-item green"></view>
+            <view class="common-item blue"></view>
+          </view>
+          <view class="common" style="flex-wrap: wrap-reverse" flatten>
+            <view class="common-item red"></view>
+            <view class="common-item green"></view>
+            <view class="common-item blue"></view>
+            <view class="common-item red"></view>
+            <view class="common-item green"></view>
+            <view class="common-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
+      </view>
+      <text class="uni-subtitle-text">flex-wrap: wrap 和 nowrap</text>
+      <view class="demo-box">
+        <scroll-view class="common" style="flex-wrap: wrap;" direction="horizontal">
+          <view class="common-item red"></view>
+          <view class="common-item green"></view>
+          <view class="common-item blue"></view>
+          <view class="common-item red"></view>
+          <view class="common-item green"></view>
+          <view class="common-item blue"></view>
+        </scroll-view>
+        <scroll-view class="common" style="flex-wrap: nowrap;" direction="horizontal">
+          <view class="common-item red"></view>
+          <view class="common-item green"></view>
+          <view class="common-item blue"></view>
+          <view class="common-item red"></view>
+          <view class="common-item green"></view>
+          <view class="common-item blue"></view>
+        </scroll-view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-wrap </text>
+      </view>
+
+      <view class="common-box">
+        <!-- 普通版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">flex-wrap</text>
+          <text class="uni-info">设置值: {{data.flexWrap}}</text>
+          <text class="uni-info">获取值: {{data.flexWrapActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="test-flex-container test-view" :style="{ flexWrap: data.flexWrap }">
+              <view class="common-item red"></view>
+              <view class="common-item green"></view>
+              <view class="common-item blue"></view>
+              <view class="common-item red"></view>
+              <view class="common-item green"></view>
+              <view class="common-item blue"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 拍平版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">拍平</text>
+          <text class="uni-info">设置值: {{data.flexWrap}}</text>
+          <text class="uni-info">获取值: {{data.flexWrapActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ flexWrap: data.flexWrap }" flatten>
+              <view class="common-item red"></view>
+              <view class="common-item green"></view>
+              <view class="common-item blue"></view>
+              <view class="common-item red"></view>
+              <view class="common-item green"></view>
+              <view class="common-item blue"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="flexWrapEnum" title="flex-wrap 枚举值" @change="radioChangeFlexWrap"
+          :compact="true"></enum-data>
+        <input-data :defaultValue="data.flexWrap" title="flex-wrap 自定义值" type="text"
+          @confirm="inputChangeFlexWrap"></input-data>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const flexWrapEnum : ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'nowrap' },
+    { value: 2, name: 'wrap' },
+    { value: 3, name: 'wrap-reverse' }
+  ]
+
+  const data = reactive({
+    flexWrap: 'nowrap',
+    flexWrapActual: '',
+    flexWrapActualFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+
+  const getPropertyValues = () => {
+    data.flexWrapActual = viewRef.value?.style.getPropertyValue('flex-wrap') ?? ''
+    data.flexWrapActualFlat = viewRefFlat.value?.style.getPropertyValue('flex-wrap') ?? ''
+  }
+
+  const changeFlexWrap = (value : string) => {
+    data.flexWrap = value
+    viewRef.value?.style.setProperty('flex-wrap', value)
+    viewRefFlat.value?.style.setProperty('flex-wrap', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeFlexWrap = (index : number) => {
+    const selectedItem = flexWrapEnum.find((item) : boolean => item.value === index)
+    if (selectedItem != null) {
+      changeFlexWrap(selectedItem.name)
+    }
+  }
+
+  const inputChangeFlexWrap = (value : string) => {
+    changeFlexWrap(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeFlexWrap,
+    data
+  })
+</script>
+
+<style>
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .common {
+    flex: 1;
+    margin: 0 10px;
+    height: 150px;
+    background-color: gray;
+    flex-direction: row;
+  }
+
+  .common-box {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .test-box {
+    width: 180px;
+    height: 140px;
+    background-color: gray;
+  }
+
+
+  .test-flex-container {
+    width: 100%;
+    height: 100%;
+    background-color: gray;
+    flex-direction: row;
+  }
+
+  .common-item {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  .red {
+    background-color: red;
+  }
+
+  .green {
+    background-color: green;
+  }
+
+  .blue {
+    background-color: blue;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    text-align: center;
+  }
+</style>

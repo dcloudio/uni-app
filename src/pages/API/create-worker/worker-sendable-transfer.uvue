@@ -1,0 +1,280 @@
+<template>
+  <scroll-view class="container">
+    <view class="status-section">
+      <text class="status-label">Worker状态: </text>
+      <text class="status-text">{{statusText}}</text>
+    </view>
+
+    <view class="button-group">
+      <text class="description-text">操作步骤：1.创建Worker 2.发送数据测试（消息监听已在创建Worker时添加）</text>
+      <button class="btn" type="primary" :disabled="created_boolean" @click="create">UTS插件中创建Worker</button>
+      <button class="btn" @click="destory" :disabled="workerStatus != 'created'">UTS插件中销毁Worker</button>
+    </view>
+
+    <view class="input-section">
+      <button class="btn" type="primary" @click="sendMessage"
+        :disabled="workerStatus != 'created'">通过UTS插件发送到WorkerTask</button>
+    </view>
+
+    <view class="log-section">
+      <text class="section-title">通信日志:</text>
+      <scroll-view class="log-container">
+        <view v-for="(log, index) in logs" :key="index" class="log-item">
+          <text :class="['log-text', log.type]">{{log.message}}</text>
+        </view>
+      </scroll-view>
+      <button @click="clearLogs" class="btn clear-btn">清空日志</button>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+
+  import { UTSWorkerAddListenerOptions, UTSWorkerReceiveEventCallback, UTSWorkerSendWorkerMessageOptions, UTSSendableWorkerImpl } from "@/uni_modules/uts-worker-sendable-transfer";
+
+  const sendableWorker = new UTSSendableWorkerImpl()
+
+  type DataType = {
+    myBufLength: number,
+    sendableNumber: number,
+  }
+
+  const created_boolean = ref(false)
+  const workerStatus = ref('none') // none, created, destroyed
+  const isListening = ref(false)
+  const logs = ref([] as Array<UTSJSONObject>)
+  const myBuf = ref(new ArrayBuffer(8))
+  const data = reactive({
+    myBufLength: -1,
+    sendableNumber: 0,
+  } as DataType)
+
+  onUnload(() => {
+    destory();
+  })
+
+  const statusText = computed(() : string => {
+    switch (workerStatus.value) {
+      case 'none': return '未创建';
+      case 'created': return '已创建';
+      case 'destroyed': return '已销毁';
+      default: return '未知';
+    }
+  })
+
+  // 添加日志方法
+  function addLog(message : string, type : string = 'info') {
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+    const logItem = {
+      message: `[${timeStr}] ${message}`,
+      type: type,
+      time: timeStr
+    } as UTSJSONObject;
+    logs.value.unshift(logItem);
+    // 限制日志数量
+    if (logs.value.length > 50) {
+      logs.value = logs.value.slice(0, 50);
+    }
+  }
+
+  // 创建Worker
+  function create() {
+    sendableWorker.create()
+    workerStatus.value = 'created';
+    addLog('Worker创建成功', 'success');
+    created_boolean.value = true;
+    // 添加消息监听
+    sendableWorker.onMessage({
+      success: (res) => {
+        const result = res.result;
+        // #ifdef APP-HARMONY
+        // 这里经过 worker 修改后，result.a 应该是 666
+        data.sendableNumber = result.a
+        // #endif
+        addLog(`收到WorkerTask返回: ${JSON.stringify(result)}`, 'receive');
+      }
+    });
+  }
+
+  // 向workerTask发送消息
+  function sendMessage() {
+    data.myBufLength = myBuf.value.byteLength
+    addLog(`buf.byteLength in main BEFORE transfer to worker: ${data.myBufLength}`, 'send');
+    sendableWorker.sendMessage({
+      message: '这里是主线程发送的 message',
+      harmonySendable: true,
+      transfer: [myBuf.value]
+    })
+    // NOTE: HarmonyOS 长度不变，web 长度变为 0
+    data.myBufLength = myBuf.value.byteLength
+    addLog(`buf.byteLength in main AFTER transfer to worker: ${data.myBufLength}`, 'send');
+  }
+
+  defineExpose({
+    data,
+    create,
+    sendMessage
+  })
+
+  // 销毁Worker
+  function destory() {
+    sendableWorker.destroy()
+    workerStatus.value = 'destroyed';
+    isListening.value = false;
+    addLog('Worker已销毁', 'warning');
+    created_boolean.value = false;
+  }
+
+  // 清空日志
+  function clearLogs() {
+    logs.value = [];
+  }
+</script>
+
+<style>
+  .container {
+    flex: 1;
+    padding: 10px;
+  }
+
+  .status-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 8px;
+  }
+
+  .status-label {
+    font-size: 16px;
+    color: #666666;
+  }
+
+  .status-text {
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 8px;
+  }
+
+
+  .button-group {
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .input-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+  }
+
+  .input-field {
+    /* #ifdef MP-WEIXIN */
+    height: 3em;
+    /* #endif */
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    font-size: 16px;
+    margin: 10px 0;
+    background-color: #ffffff;
+  }
+
+  .btn {
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .log-section {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 15px;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 10px;
+  }
+
+  .log-container {
+    height: 300px;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #fafafa;
+  }
+
+  .log-item {
+    margin-bottom: 5px;
+  }
+
+  .log-text {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .log-text.info {
+    color: #2196F3;
+  }
+
+  .log-text.success {
+    color: #4CAF50;
+  }
+
+  .log-text.warning {
+    color: #ff9800;
+  }
+
+  .log-text.error {
+    color: #f44336;
+  }
+
+  .log-text.send {
+    color: #9C27B0;
+  }
+
+  .log-text.receive {
+    color: #009688;
+  }
+
+  .clear-btn {
+    background-color: #ff9800;
+    font-size: 12px;
+    padding: 8px 12px;
+    color: #ffffff;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .description-text {
+    font-size: 14px;
+    color: #666666;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .ios-tip-section {
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+  }
+
+  .ios-tip-text {
+    font-size: 14px;
+    color: #856404;
+    line-height: 1.4;
+  }
+</style>

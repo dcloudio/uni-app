@@ -1,0 +1,18 @@
+<template>
+	<view>
+		<button type="primary" @tap="testCallMethod">调用组件方法</button>
+		<native-button id="helloView1" class="native-button" text="自定义组件"></native-button>
+	</view>
+</template>
+
+<script setup lang="uts">
+	import { createNativeButtonContext } from "@/uni_modules/native-button";
+	const title = ref('组件能力封装示例');
+	const ontap = (e : UniNativeViewEvent) => {
+		console.log("ontap----------" + e.type)
+	};
+	const testCallMethod = () => {
+		let context = createNativeButtonContext("helloView1", getCurrentInstance()?.proxy)
+		context?.updateText("test code")
+	};
+</script>

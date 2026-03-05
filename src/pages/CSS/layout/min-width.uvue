@@ -1,0 +1,233 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view>
+        <text>min-width: 250px</text>
+        <view class="common" style="min-width: 250px;">
+          <text>width: 50px</text>
+        </view>
+        <text>拍平</text>
+        <view class="common" style="min-width: 250px;" flatten>
+          <text>width: 50px</text>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
+      </view>
+
+      <view class="demo-box">
+        <scroll-view class="common" style="min-width: 100px; background-color: cyan;">
+          <text class="scroll-view-label">min-width: 100px</text>
+        </scroll-view>
+        <scroll-view class="common" style="min-width: 200px; background-color: cyan;">
+          <text class="scroll-view-label">min-width: 200px</text>
+        </scroll-view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 min-width </text>
+      </view>
+
+      <!-- 普通版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.minWidth}}</text>
+          <text class="uni-info">获取值: {{data.minWidthActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ minWidth: data.minWidth }">
+              <text>view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.minWidth}}</text>
+          <text class="uni-info">获取值: {{data.minWidthActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-dynamic test-text" :style="{ minWidth: data.minWidth }">text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.minWidth}}</text>
+          <text class="uni-info">获取值: {{data.minWidthActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ minWidth: data.minWidth }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.minWidth}}</text>
+          <text class="uni-info">获取值: {{data.minWidthActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ minWidth: data.minWidth }" flatten>
+              <text>view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.minWidth}}</text>
+          <text class="uni-info">获取值: {{data.minWidthActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ minWidth: data.minWidth }" flatten>text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.minWidth}}</text>
+          <text class="uni-info">获取值: {{data.minWidthActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ minWidth: data.minWidth }" flatten src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="minWidthEnum" title="min-width 枚举值" @change="radioChangeMinWidth" :compact="true"></enum-data>
+        <input-data :defaultValue="data.minWidth" title="min-width 自定义值" type="text" @confirm="inputChangeMinWidth"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: min-width: 100px 和 min-width: 200px</text>
+        <view class="demo-box">
+          <native-view class="common" style="min-width: 100px; background-color: cyan;"></native-view>
+          <native-view class="common" style="min-width: 200px; background-color: cyan;"></native-view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const minWidthEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '80px' },
+    { value: 4, name: '120px' },
+    { value: 5, name: '80rpx' },
+  ]
+
+  const data = reactive({
+    minWidth: '100px',
+    minWidthActual: '',
+    minWidthActualText: '',
+    minWidthActualImage: '',
+    minWidthActualFlat: '',
+    minWidthActualTextFlat: '',
+    minWidthActualImageFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const getPropertyValues = () => {
+    data.minWidthActual = viewRef.value?.style.getPropertyValue('min-width') ?? ''
+    data.minWidthActualFlat = viewRefFlat.value?.style.getPropertyValue('min-width') ?? ''
+    data.minWidthActualText = textRef.value?.style.getPropertyValue('min-width') ?? ''
+    data.minWidthActualTextFlat = textRefFlat.value?.style.getPropertyValue('min-width') ?? ''
+    data.minWidthActualImage = imageRef.value?.style.getPropertyValue('min-width') ?? ''
+    data.minWidthActualImageFlat = imageRefFlat.value?.style.getPropertyValue('min-width') ?? ''
+  }
+
+  const changeMinWidth = (value: string) => {
+    data.minWidth = value
+    viewRef.value?.style.setProperty('min-width', value)
+    viewRefFlat.value?.style.setProperty('min-width', value)
+    textRef.value?.style.setProperty('min-width', value)
+    textRefFlat.value?.style.setProperty('min-width', value)
+    imageRef.value?.style.setProperty('min-width', value)
+    imageRefFlat.value?.style.setProperty('min-width', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeMinWidth = (index: number) => {
+    console.log('index',index)
+    const selectedItem = minWidthEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeMinWidth(selectedItem.name)
+    }
+  }
+
+  const inputChangeMinWidth = (value: string) => {
+    changeMinWidth(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeMinWidth,
+    data
+  })
+
+</script>
+
+<style>
+  .common {
+    width: 50px;
+    height: 80px;
+    background-color: cyan;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .common-dynamic{
+    width: 50px;
+    height: 80px;
+    background-color: cyan;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 80px;
+    background-color: gray;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    text-align: center;
+  }
+</style>

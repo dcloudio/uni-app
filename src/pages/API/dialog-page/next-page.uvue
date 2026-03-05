@@ -1,0 +1,123 @@
+<template>
+  <view class='uni-padding-wrap'>
+    <button class="uni-common-mt" @click="openDialog1">open dialog1</button>
+    <button class="uni-common-mt" @click="openDialog2">open dialog2</button>
+    <button class="uni-common-mt" @click="openDialogPage1ToHomePage">open dialog page 1 to home page</button>
+  </view>
+</template>
+
+<script setup lang='uts'>
+  import {
+    state,
+    setLifeCycleNum
+  } from '@/store/index.uts'
+
+  function openDialog1() {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-1?name=dialog1',
+      success(res) {
+        console.log('openDialog1 success', res)
+      },
+      fail(err) {
+        console.log('openDialog1 fail', err)
+      },
+      complete(res) {
+        console.log('openDialog1 complete', res)
+      }
+    })
+  }
+
+  function openDialog2() {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-2',
+      disableEscBack: true,
+      success(res) {
+        console.log('openDialog2 success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('openDialog2 fail', err)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('openDialog2 complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  function closeDialog() {
+    uni.closeDialogPage({
+      success(res) {
+        console.log('closeDialog success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('closeDialog fail', err)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('closeDialog complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  function openDialogPage1ToHomePage() {
+    const pages = getCurrentPages()
+    uni.openDialogPage({
+      parentPage: pages[0],
+      url: '/pages/API/dialog-page/dialog-1?name=dialog1',
+      success(res) {
+        console.log('openDialogPage1ToHomePage success', res)
+        uni.showToast({title: '在首页打开了 dialogPage'})
+      },
+      fail(err) {
+        console.log('openDialogPage1ToHomePage fail', err)
+      },
+      complete(res) {
+        console.log('openDialogPage1ToHomePage complete', res)
+      }
+    })
+  }
+
+  function getLifeCycleNum(): number {
+    return state.lifeCycleNum
+  }
+
+  onLoad(() => {
+    console.log('dialogPage parent onLoad')
+  })
+
+  onPageShow(() => {
+    console.log('dialogPage parent onShow')
+  })
+
+  onReady(() => {
+    console.log('dialogPage parent onReady')
+  })
+
+  onHide(() => {
+    console.log('dialogPage parent onHide')
+  })
+
+  onUnload(() => {
+    console.log('dialogPage parent onUnload')
+  })
+
+  defineExpose({
+    getLifeCycleNum,
+    setLifeCycleNum,
+    openDialog1,
+    openDialog2,
+    closeDialog,
+    openDialogPage1ToHomePage
+  })
+
+</script>

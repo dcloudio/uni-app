@@ -1,0 +1,74 @@
+<template>
+	<view class="container">
+		<!-- 视频组件 -->
+		<video id="myVideo" :src="src" :controls="true" autoplay="false" class="video" @play="onVideoPlay">
+		</video>
+		<!-- 信息流广告 - 覆盖在视频上方 -->
+		<view v-if="adVisible" class="ad-container">
+			<ad adpid="1597617406" style="width: 100%;height: 420rpx;" @load="loadFun" @error="errorFun" @close="closeAd"></ad>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	const src = ref("https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4")
+	let showAd: boolean = false
+	const adVisible = ref(false)
+
+	function onVideoPlay() {
+		if (!showAd) {
+			showAd = true;
+			adVisible.value = true;
+			const videoContext = uni.createVideoContext('myVideo')
+			videoContext!.stop();
+		}
+	}
+
+	function closeAd() {
+		console.log("执行了关闭");
+		adVisible.value = false;
+		const videoContext = uni.createVideoContext('myVideo')
+		videoContext!.play()
+	}
+
+	function loadFun(){
+		console.log("加载成功");
+	}
+
+	function errorFun(e : UniAdErrorEvent){
+		console.log(e.detail);
+	}
+
+	onLoad(() => {
+		// 页面加载逻辑
+	})
+</script>
+
+<style>
+	.container {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.video {
+		width: 100%;
+		height: 420rpx;
+	}
+
+	.ad-container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 420rpx;
+		background-color: rgba(0, 0, 0, 0.7);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 999;
+	}
+</style>

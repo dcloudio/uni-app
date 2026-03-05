@@ -1,0 +1,43 @@
+<template>
+    <view>
+			<view id="subView" class="subView" @click="onClick"></view>
+		</view>
+</template>
+
+<script lang="ts" setup>
+
+    const clickCount = ref(0);
+		const viewEle = ref<UniElement | null>(null);
+
+		function setPointEventAuto() {
+			viewEle.value?.style.setProperty('pointer-events', 'auto')
+		}
+
+		function onClick() {
+			clickCount.value += 1
+			console.log(clickCount.value)
+		}
+
+		function getClickCount() {
+			return clickCount.value
+		}
+
+    onMounted(() => {
+				viewEle.value = uni.getElementById("subView")
+    });
+
+    defineExpose({
+			getClickCount,
+			setPointEventAuto
+    })
+
+</script>
+
+<style>
+	.subView {
+		width: 200px;
+		height: 500px;
+		background-color: red;
+		pointer-events: none;
+	}
+</style>

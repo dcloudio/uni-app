@@ -1,0 +1,14 @@
+<template>
+  <view class="page">
+    <button type="primary">登录</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+</script>
+
+<style>
+  .page {
+    padding: 15px;
+  }
+</style>

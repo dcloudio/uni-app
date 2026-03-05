@@ -1,0 +1,108 @@
+<template>
+  <page-head title="setNavigationBarTitle"></page-head>
+  <view class="uni-padding-wrap uni-common-mt">
+    <button @tap="setNavigationBarNewTitle" class="uni-btn">
+      设置当前页面标题为: {{ newTitle }}
+    </button>
+    <button @tap="setNavigationBarLongTitle" class="uni-btn">
+      设置超长标题
+    </button>
+    <!-- #ifndef VUE3-VAPOR -->
+    <!-- #ifdef APP-HARMONY -->
+    <button @tap="showNavigationBarLoading" class="uni-btn">
+      设置标题 loading
+    </button>
+    <button @tap="hideNavigationBarLoading" class="uni-btn">
+      隐藏标题 loading
+    </button>
+    <!-- #endif -->
+    <!-- #endif -->
+  </view>
+</template>
+
+<script setup lang="uts">
+  import { state, setLifeCycleNum } from '@/store/index.uts'
+
+  const newTitle = ref('new title')
+  const longTitle = ref('long title long title long title long title long title long title long title long title long title long title')
+
+  // 自动化测试
+  const getLifeCycleNum = () : number => {
+    return state.lifeCycleNum
+  }
+
+  // 自动化测试
+  const setLifeCycleNumFunc = (num : number) => {
+    setLifeCycleNum(num)
+  }
+
+  // #ifdef APP-HARMONY
+  const showNavigationBarLoading = () => {
+    uni.showNavigationBarLoading({
+      success: () => {
+        console.log('showNavigationBarLoading success')
+      },
+      fail: () => {
+        console.log('showNavigationBarLoading fail')
+      },
+      complete: () => {
+        console.log('showNavigationBarLoading complete')
+      }
+    })
+  }
+
+  const hideNavigationBarLoading = () => {
+    uni.hideNavigationBarLoading({
+      success: () => {
+        console.log('hideNavigationBarLoading success')
+      },
+      fail: () => {
+        console.log('hideNavigationBarLoading fail')
+      },
+      complete: () => {
+        console.log('hideNavigationBarLoading complete')
+      }
+    })
+  }
+  // #endif
+
+  const setNavigationBarNewTitle = () => {
+    uni.setNavigationBarTitle({
+      title: newTitle.value,
+      success: () => {
+        console.log('setNavigationBarTitle success')
+        setLifeCycleNumFunc(state.lifeCycleNum + 1)
+      },
+      fail: () => {
+        console.log('setNavigationBarTitle fail')
+        setLifeCycleNumFunc(state.lifeCycleNum - 1)
+      },
+      complete: () => {
+        console.log('setNavigationBarTitle complete')
+        setLifeCycleNumFunc(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  const setNavigationBarLongTitle = () => {
+    uni.setNavigationBarTitle({
+      title: longTitle.value,
+      success() {
+        console.log('setNavigationBarTitle success')
+      },
+      fail() {
+        console.log('setNavigationBarTitle fail')
+      },
+      complete() {
+        console.log('setNavigationBarTitle complete')
+      }
+    })
+  }
+
+  defineExpose({
+    getLifeCycleNum,
+    setLifeCycleNum: setLifeCycleNumFunc,
+    setNavigationBarNewTitle,
+    setNavigationBarLongTitle
+  })
+</script>

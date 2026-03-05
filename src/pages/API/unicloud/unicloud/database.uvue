@@ -1,0 +1,356 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-btn-v uni-common-mt">
+          <button type="primary" @click="dbAdd">新增单条数据</button>
+          <button type="primary" @click="dbBatchAdd">新增多条数据</button>
+          <button type="primary" @click="dbUpdate">更新数据</button>
+          <button type="primary" @click="dbGet">where传字符串获取数据</button>
+          <button type="primary" @click="dbGetWithCommand">where传对象获取数据</button>
+          <button type="primary" @click="dbRemove">删除数据</button>
+          <button type="primary" @click="dbLookupInit">初始化联表查询数据</button>
+          <button type="primary" @click="dbLookup">联表查询</button>
+          <button type="primary" @click="dbMultiSend">合并查询查询</button>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+
+  type DataType = {
+    addId: string,
+    batchAddIds: Array<string>,
+    batchAddinserted: number,
+    updateUpdated: number,
+    getData: Array<UTSJSONObject>,
+    getWithCommandData: Array<UTSJSONObject>,
+    removeDeleted: number,
+    lookupData: Array<UTSJSONObject>,
+    multiSendSuccessCount: number,
+    isUniTest: boolean,
+  }
+
+  // Data
+  const title = ref('ClientDB')
+  const data = reactive({
+    addId: '',
+    batchAddIds: [] as Array<string>,
+    batchAddinserted: 0,
+    updateUpdated: 0,
+    getData: [] as Array<UTSJSONObject>,
+    getWithCommandData: [] as Array<UTSJSONObject>,
+    removeDeleted: 0,
+    lookupData: [] as Array<UTSJSONObject>,
+    multiSendSuccessCount: 0,
+    isUniTest: false,
+  } as DataType)
+
+  // Computed
+  const dataTag = computed<string>(() => {
+    return data.isUniTest ? 'default-tag' + Date.now() : 'default-tag'
+  })
+
+  // Functions
+  function notify(content : string, title : string) {
+    if (!data.isUniTest) {
+      uni.showModal({
+        title,
+        content,
+        showCancel: false
+      })
+    } else {
+      console.log(title, content)
+    }
+  }
+
+  async function dbAdd() : Promise<void> {
+    uni.showLoading({
+      title: '加载中...'
+    })
+    const db = uniCloud.databaseForJQL()
+    await db.collection('type')
+      .add({
+        num: 1,
+        tag: dataTag.value,
+        date: new Date()
+      })
+      .then(res => {
+        uni.hideLoading()
+        console.log(res)
+        data.addId = res.id
+        notify(`新增成功，id: ${res.id}`, '提示')
+      })
+      .catch((err : any | null) => {
+        uni.hideLoading()
+        const error = err as UniCloudError
+        notify(error.errMsg, '错误')
+      })
+  }
+
+  async function dbBatchAdd() : Promise<void> {
+    uni.showLoading({
+      title: '加载中...'
+    })
+    const db = uniCloud.databaseForJQL()
+    await db.collection('type')
+      .add([{
+        num: 2,
+        tag: dataTag.value,
+      }, {
+        num: 3,
+        tag: dataTag.value,
+      }])
+      .then((res) => {
+        uni.hideLoading()
+        console.log(res)
+        console.log('JSON.stringify(res.inserted)', JSON.stringify(res.inserted))
+        data.batchAddIds = res.ids
+        data.batchAddinserted = res.inserted
+        notify(`新增成功条数${res.inserted}, id列表: ${res.ids.join(',')}`, '提示')
+      })
+      .catch((err : any | null) => {
+        uni.hideLoading()
+        const error = err as UniCloudError
+        notify(error.errMsg, '错误')
+      })
+  }
+
+  async function dbGet() : Promise<void> {
+    uni.showLoading({
+      title: '加载中...'
+    })
+    const db = uniCloud.databaseForJQL()
+    await db.collection('type')
+      .where(
+        `tag == "${dataTag.value}"`
+      )
+      .field('num, tag')
+      .orderBy('num desc')
+      .skip(1)
+      .limit(2)
+      .get()
+      .then(res => {
+        uni.hideLoading()
+        console.log(res)
+        data.getData = res.data
+        notify(`获取成功，取到了${res.data.length}条数据`, '提示')
+      })
+      .catch((err : any | null) => {
+        uni.hideLoading()
+        const error = err as UniCloudError
+        notify(error.errMsg, '错误')
+      })
+  }
+
+  async function dbGetWithCommand() : Promise<void> {
+    uni.showLoading({
+      title: '加载中...'
+    })
+    const db = uniCloud.databaseForJQL()
+    await db.collection('type')
+      .where({
+        num: db.command.gt(1),
+        tag: dataTag.value
+      })
+      .field('num, tag')
+      .orderBy('num desc')
+      .skip(1)
+      .limit(2)
+      .get()
+      .then(res => {
+        uni.hideLoading()
+        console.log(res)
+        data.getWithCommandData = res.data
+        notify(`获取成功，取到了${res.data.length}条数据`, '提示')
+      })
+      .catch((err : any | null) => {
+        uni.hideLoading()
+        const error = err as UniCloudError
+        notify(error.errMsg, '错误')
+      })
+  }
+
+  async function dbUpdate() : Promise<void> {
+    uni.showLoading({
+      title: '加载中...'
+    })
+    const db = uniCloud.databaseForJQL()
+    await db.collection('type')
+      .where(
+        `tag == "${dataTag.value}"`
+      )
+      .update({
+        num: 4
+      })
+      .then(res => {
+        uni.hideLoading()
+        console.log(res)
+        data.updateUpdated = res.updated
+        notify(`更新成功，更新了${res.updated}条数据`, '提示')
+      })
+      .catch((err : any | null) => {
+        uni.hideLoading()
+        const error = err as UniCloudError
+        notify(error.errMsg, '错误')
+      })
+  }
+
+  async function dbRemove() : Promise<void> {
+    uni.showLoading({
+      title: '加载中...'
+    })
+    const db = uniCloud.databaseForJQL()
+    await db.collection('type')
+      .where(
+        `tag == "${dataTag.value}"`
+      )
+      .remove()
+      .then(res => {
+        uni.hideLoading()
+        console.log(res)
+        data.removeDeleted = res.deleted
+        notify(`删除成功，删掉了${res.deleted}条数据`, '提示')
+      })
+      .catch((err : any | null) => {
+        uni.hideLoading()
+        const error = err as UniCloudError
+        notify(error.errMsg, '错误')
+      })
+  }
+
+  async function dbLookupInit() : Promise<void> {
+    uni.showLoading({
+      title: '加载中...'
+    })
+    const db = uniCloud.databaseForJQL()
+    await db.collection('local')
+      .where(`tag == "${dataTag.value}"`)
+      .remove()
+      .then(() : Promise<UniCloudDBRemoveResult> => {
+        return db.collection('foreign')
+          .where(`tag == "${dataTag.value}"`)
+          .remove()
+      })
+      .then(() : Promise<UniCloudDBBatchAddResult> => {
+        return db.collection('local')
+          .add([{
+            id: "local_1",
+            name: "local_1_name",
+            tag: dataTag.value,
+            foreign_id: "foreign_1"
+          }, {
+            id: "local_2",
+            name: "local_2_name",
+            tag: dataTag.value,
+            foreign_id: "foreign_2"
+          }])
+      })
+      .then(() : Promise<UniCloudDBBatchAddResult> => {
+        return db.collection('foreign')
+          .add([{
+            id: "foreign_1",
+            name: "foreign_1_name",
+            tag: dataTag.value
+          }, {
+            id: "foreign_2",
+            name: "foreign_2_name",
+            tag: dataTag.value
+          }])
+      })
+      .then((_) : void => {
+        uni.hideLoading()
+        notify('数据初始化成功', '提示')
+      })
+      .catch((err : any | null) => {
+        uni.hideLoading()
+        console.error(err)
+        const error = err as UniCloudError
+        notify(error.errMsg, '错误')
+      })
+  }
+
+  async function dbLookup() : Promise<void> {
+    uni.showLoading({
+      title: '加载中...'
+    })
+    const db = uniCloud.databaseForJQL()
+    const local = db.collection('local')
+      .where(`tag == "${dataTag.value}"`)
+      .getTemp()
+    const foreign = db.collection('foreign')
+      .where(`tag == "${dataTag.value}"`)
+      .getTemp()
+    await db.collection(local, foreign)
+      .get()
+      .then(res => {
+        uni.hideLoading()
+        console.log(res)
+        data.lookupData = res.data
+        notify(`联表查询成功，取到了${res.data.length}条数据`, '提示')
+      })
+      .catch((err : any | null) => {
+        uni.hideLoading()
+        const error = err as UniCloudError
+        notify(error.errMsg, '错误')
+      })
+  }
+
+  async function dbMultiSend() : Promise<void> {
+    const db = uniCloud.databaseForJQL()
+    const temp1 = db.collection('type')
+      .where(
+        'tag == "default-tag"'
+      ).getTemp()
+    const temp2 = db.collection('type')
+      .where(
+        'tag == "default-tag"'
+      ).getTemp()
+    await db.multiSend(temp1, temp2)
+      .then<void>(res => {
+        uni.hideLoading()
+        let successCount = 0
+        for (let i = 0; i < res.dataList.length; i++) {
+          const item = res.dataList[i]
+          if (item.errCode == 0) {
+            console.log(`第${i}个请求查询到${item.data!.length}条数据`)
+            successCount++
+          } else {
+            console.error(`第${i}个请求查询失败，错误信息：${item.data!.length}`)
+          }
+        }
+        data.multiSendSuccessCount = successCount
+        notify(`合并查询成功，成功查询的语句条数为：${successCount}`, '提示')
+      })
+      .catch<void>((err : any | null) => {
+        uni.hideLoading()
+        const error = err as UniCloudError
+        console.error(err)
+        notify(error.errMsg, '错误')
+      })
+  }
+
+  defineExpose({
+    data,
+    dbAdd,
+    dbBatchAdd,
+    dbGet,
+    dbGetWithCommand,
+    dbUpdate,
+    dbRemove,
+    dbLookupInit,
+    dbLookup,
+    dbMultiSend
+  })
+</script>
+
+<style>
+</style>

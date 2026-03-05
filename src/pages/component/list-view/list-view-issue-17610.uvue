@@ -1,0 +1,17 @@
+<template>
+	<view class="flex-1">
+		<list-view :scroll-y="true" bounces="true" show-scrollbar="true" class="flex-1">
+			<Child />
+		</list-view>
+	</view>
+</template>
+
+<script setup lang='uts'>
+	import Child from './list-view-issue-17610-comp.uvue'
+</script>
+
+<style>
+	.flex-1{
+		flex: 1;
+	}
+</style>

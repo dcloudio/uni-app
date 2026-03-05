@@ -1,0 +1,304 @@
+<template>
+  <!-- #ifdef APP -->
+  <text>显示简易操作日志(可滚动查看)</text><button size="mini" @click="data.log=''">清空日志</button>
+  <scroll-view style="max-height: 300px;">
+    <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ data.log }}</text>
+  </scroll-view>
+  <view class="uni-list">
+    <text style="margin-bottom: 4px"> 请选择定位服务提供商：</text>
+    <radio-group class="uni-flex uni-row" @change="providerChange" style="flex-wrap: wrap">
+      <radio class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in data.providerList" :key="item.id"
+        :value="item.id" :checked="index === data.currentSelectedProvider">
+        {{ item.name }}
+      </radio>
+    </radio-group>
+  </view>
+
+  <view class="uni-list">
+    <text style="margin-bottom: 4px"> 请选择坐标系：</text>
+    <radio-group class="uni-flex uni-row" @change="typeChange" style="flex-wrap: wrap">
+      <radio class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in types" :key="item.value"
+        :value="item.value" :checked="index === data.currentSelectedType">
+        {{ item.name }}
+      </radio>
+    </radio-group>
+  </view>
+
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <button class="btnstyle" type="primary" @tap="startLocationUpdate" id="startLocationUpdate">点击连续定位</button>
+    <button class="btnstyle" type="primary" @tap="startLocationUpdateBackground"
+      id="startLocationUpdateBackground">后台点击连续定位</button>
+    <button class="btnstyle" type="primary" @tap="stopLocationUpdate" id="stopLocationUpdate">点击关闭定位</button>
+    <button class="btnstyle" type="primary" @tap="onLocationChange" id="onLocationChange">onLocationChange</button>
+    <button class="btnstyle" type="primary" @tap="offLocationChange" id="offLocationChange">offLocationChange</button>
+    <button class="btnstyle" type="primary" @tap="onLocationChangeError"
+      id="onLocationChangeError">onLocationChangeError</button>
+    <button class="btnstyle" type="primary" @tap="offLocationChangeError"
+      id="offLocationChangeError">offLocationChangeError</button>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  type LocationType = 'wgs84' | 'gcj02'
+  export type ItemType = { value : LocationType, name : LocationType }
+  export type LocationItem = { id : string, name : string, provider ?: UniProvider }
+  export type DataType = {
+    log: string
+    logAble: boolean
+    providerList: LocationItem[]
+    currentSelectedProvider: number
+    currentSelectedType: number
+    startSuccess: boolean
+    stopSuccess: boolean
+    errCode: number
+  }
+
+  const data = reactive({
+    log: "",
+    logAble: true,
+    providerList: [],
+    currentSelectedProvider: 0,
+    currentSelectedType: 0,
+    startSuccess: false,
+    stopSuccess: false,
+    errCode: 0
+  } as DataType)
+
+  const types = ref<ItemType[]>([
+    {
+      value: 'wgs84',
+      name: 'wgs84'
+    },
+    {
+      value: 'gcj02',
+      name: 'gcj02'
+    }
+  ])
+
+  const getProvider = () => {
+    // #ifdef APP
+
+    let provider = uni.getProviderSync({
+      service: "location",
+    } as GetProviderSyncOptions)
+    console.log(provider)
+    provider.providerObjects.forEach((value : UniProvider) => {
+      var currentProvider = value
+      data.providerList.push({
+        name: currentProvider.description,
+        id: currentProvider.id,
+        provider: currentProvider
+      } as LocationItem);
+    })
+
+    data.providerList.forEach((value, index) => {
+      if (value.id == "system") {
+        data.currentSelectedProvider = index
+      }
+    })
+    // #endif
+  }
+
+  const providerChange = (e : UniRadioGroupChangeEvent) => {
+    for (let i = 0; i < data.providerList.length; i++) {
+      if (data.providerList[i].id === e.detail.value) {
+        data.currentSelectedProvider = i;
+        break;
+      }
+    }
+
+    if (e.detail.value == "system") {
+      data.currentSelectedType = 0
+    } else if (e.detail.value == "tencent") {
+      data.currentSelectedType = 1
+    }
+  }
+
+  const typeChange = (e : UniRadioGroupChangeEvent) => {
+    for (let i = 0; i < types.value.length; i++) {
+      if (types.value[i].value === e.detail.value) {
+        data.currentSelectedType = i;
+        break;
+      }
+    }
+  }
+
+  const offLocationChangeError = () => {
+    if (data.logAble) {
+      data.log += "关闭offLocationChangeError监听" + '\n\n'
+    }
+    console.log("关闭onLocationChangeError监听")
+    uni.offLocationChangeError(null)
+  }
+
+  const onLocationChangeError = () => {
+    uni.offLocationChangeError(null)
+    if (data.logAble) {
+      data.log += "开启onLocationChangeError监听" + '\n\n'
+    }
+    console.log("开启onLocationChangeError监听")
+    uni.onLocationChangeError((e) => {
+      console.log("onLocationChangeError回调: ", e)
+      if (data.logAble) {
+        data.log += JSON.stringify(e) + '\n\n'
+      }
+    })
+  }
+
+  const onLocationChange = () => {
+    uni.offLocationChange(null)
+    console.log("开启onLocationChange监听")
+    if (data.logAble) {
+      data.log += "开启onLocationChange监听" + '\n\n'
+    }
+    uni.onLocationChange((e) => {
+      console.log("onLocationChange持续监听回调: ", e)
+      if (data.logAble) {
+        data.log += "provider= " + data.providerList[data.currentSelectedProvider].id + '\n' + JSON.stringify(e) + '\n\n'
+      }
+    })
+  }
+
+  const offLocationChange = () => {
+    if (data.logAble) {
+      data.log += "关闭offLocationChange监听" + '\n\n'
+    }
+    console.log("关闭offLocationChange监听")
+    uni.offLocationChange(null)
+  }
+
+  const startLocationUpdate = () => {
+    // #ifdef APP
+    if (data.providerList.length == 0) {
+      uni.showToast({
+        title: '未获取到provider，请确定基座中包含location功能',
+        icon: "error"
+      })
+      console.log("未获取到provider，请确定基座中包含location功能")
+      return
+    }
+    // #endif
+    const currentProvider = data.providerList[data.currentSelectedProvider]
+    // #ifdef WEB
+    if (currentProvider == null) {
+      data.log += `currentSelectedProvider = ${data.currentSelectedProvider} is undefined\n\n`
+      return
+    }
+    // #endif
+    uni.startLocationUpdate({
+      provider: currentProvider.id,
+      type: types.value[data.currentSelectedType].value,
+      success: () => {
+        if (data.logAble) {
+          data.log += "开启startLocationUpdate成功, provider= " + currentProvider.id + '\n\n'
+        }
+        console.log("持续定位启动成功")
+        data.startSuccess = true
+      },
+      fail: (err) => {
+        if (data.logAble) {
+          data.log += "启动startLocationUpdate失败：erroCode=" + err.errCode + '\n\n'
+        }
+
+        console.log("持续定位启动失败")
+        data.startSuccess = false
+        data.errCode = err.errCode
+      }
+
+    })
+  }
+
+  const startLocationUpdateBackground = () => {
+    // #ifdef APP
+    if (data.providerList.length == 0) {
+      uni.showToast({
+        title: '未获取到provider，请确定基座中包含location功能',
+        icon: "error"
+      })
+      console.log("未获取到provider，请确定基座中包含location功能")
+      return
+    }
+    // #endif
+    const currentProvider = data.providerList[data.currentSelectedProvider]
+    // #ifdef WEB
+    if (currentProvider == null) {
+      data.log += `currentSelectedProvider = ${data.currentSelectedProvider} is undefined\n\n`
+      return
+    }
+    // #endif
+    uni.startLocationUpdateBackground({
+      provider: currentProvider.id,
+      type: types.value[data.currentSelectedType].value,
+      success: () => {
+        if (data.logAble) {
+          data.log += "开启startLocationUpdateBackground成功, provider= " + currentProvider.id + '\n\n'
+        }
+        console.log("后台持续定位api启动成功")
+        data.startSuccess = true
+      }, fail: (err) => {
+        if (data.logAble) {
+          data.log += "启动startLocationUpdateBackground失败：erroCode=" + err.errCode + '\n\n'
+        }
+        console.log("后台持续定位启动失败")
+        data.startSuccess = false
+        data.errCode = err.errCode
+      }
+
+    })
+  }
+
+  const stopLocationUpdate = () => {
+    uni.stopLocationUpdate({
+      success: () => {
+        if (data.logAble) {
+          data.log += "成功关闭stopLocationUpdate定位" + '\n\n'
+        }
+        console.log("成功关闭stopLocationUpdate定位")
+        data.stopSuccess = true
+      }
+    })
+  }
+
+  onLoad(() => {
+    // #ifdef APP
+    getProvider()
+    // #endif
+  })
+
+  onUnload(() => {
+    uni.stopLocationUpdate({})
+    uni.offLocationChange(null)
+    uni.offLocationChangeError(null)
+  })
+
+  defineExpose({
+    data,
+    stopLocationUpdate
+  })
+</script>
+
+<style>
+  .uni-list {
+    border-bottom: 0px;
+    background-color: transparent;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  .uni-list-cell {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btnstyle {
+    margin: 4px;
+  }
+</style>

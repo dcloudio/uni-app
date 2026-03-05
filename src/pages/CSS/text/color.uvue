@@ -1,0 +1,148 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view class="demo-box">
+        <view class="box">
+          <text class="common" style="color: rgb(0, 0, 255);">color: rgb(0, 0, 255)</text>
+          <text class="common" style="color: rgba(0, 0, 255, 0.5);">color: rgba(0, 0, 255, 0.5)</text>
+          <text class="common" style="color: #0000ff;">color: #0000ff</text>
+          <text class="common" style="color: #00f;">color: #00f</text>
+          <text class="common" style="color: blue;">color: blue</text>
+        </view>
+        <view class="box">
+          <text class="common" style="color: rgb(0, 0, 255);" flatten>color: rgb(0, 0, 255)</text>
+          <text class="common" style="color: rgba(0, 0, 255, 0.5);" flatten>color: rgba(0, 0, 255, 0.5)</text>
+          <text class="common" style="color: #0000ff;" flatten>color: #0000ff</text>
+          <text class="common" style="color: #00f;" flatten>color: #00f</text>
+          <text class="common" style="color: blue;" flatten>color: blue</text>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 color 测试</text>
+      </view>
+
+      <view class="common-box">
+        <!-- 普通版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">color</text>
+          <text class="uni-info">设置值: {{data.color}}</text>
+          <text class="uni-info">获取值: {{data.colorActual}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common test-text" :style="{ color: data.color }">当前 color: {{data.color}}</text>
+          </view>
+        </view>
+
+        <!-- 拍平版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">测试拍平</text>
+          <text class="uni-info">设置值: {{data.color}}</text>
+          <text class="uni-info">获取值: {{data.colorActualFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common test-text-flatten" :style="{ color: data.color }" flatten>当前 color: {{data.color}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="colorEnum" title="color 枚举值" @change="radioChangeColor" :compact="true"></enum-data>
+        <input-data :defaultValue="data.color" title="color 自定义值" type="text" @confirm="inputChangeColor"></input-data>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const colorEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'green' },
+    { value: 2, name: '#942192' },
+    { value: 3, name: '#000' },
+    { value: 4, name: '#0000ff' },
+    { value: 5, name: 'rgb(0, 255, 0)' },
+    { value: 6, name: 'rgba(0, 255, 0, 0.5)' }
+  ]
+
+  const data = reactive({
+    color: 'cyan',
+    colorActual: '',
+    colorActualFlat: ''
+  })
+  const textRef = ref(null as UniTextElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+
+  const getPropertyValues = () => {
+    data.colorActual = textRef.value?.style.getPropertyValue('color') ?? ''
+    data.colorActualFlat = textRefFlat.value?.style.getPropertyValue('color') ?? ''
+  }
+
+  const changeColor = (value: string) => {
+    data.color = value
+    textRef.value?.style.setProperty('color', value)
+    textRefFlat.value?.style.setProperty('color', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeColor = (index: number) => {
+    const selectedItem = colorEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeColor(selectedItem.name)
+    }
+  }
+
+  const inputChangeColor = (value: string) => {
+    changeColor(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeColor,
+    data
+  })
+</script>
+
+<style>
+  .common {
+    font-size: 16px;
+  }
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+  .box{
+    flex:1;
+    height: 130px;
+    background-color: gray;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .test-box {
+    width: 180px;
+    height: 80px;
+    background-color: gray;
+    justify-content: center;
+    align-items: center;
+  }
+
+</style>

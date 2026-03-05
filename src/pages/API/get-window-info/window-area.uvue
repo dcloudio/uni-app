@@ -1,0 +1,149 @@
+<template>
+  <view style="flex:1;">
+    <view id="statusBar" class="statusBar" v-if="statusBarArea.width > 0 && statusBarArea.height > 0"
+      :style="{'width': statusBarArea.width,'height': statusBarArea.height}">
+    </view>
+    <view id="cutoutArea" class="cutoutArea" v-if="cutoutArea.length > 0" v-for="(item, _) in cutoutArea"
+      :style="{'top': item.top,'left': item.left,'width': item.width,'height': item.height}"></view>
+    <view id="safeArea" class="safeArea"
+      :style="{'top': safeArea.top,'left': safeArea.left,'width': safeArea.width,'height': safeArea.height}"></view>
+    <view id="bottomNavigationIndicator" class="bottomNavigationIndicator"
+      v-if="bottomNavigationIndicatorArea.width > 0 && bottomNavigationIndicatorArea.height > 0"
+      :style="{'width': bottomNavigationIndicatorArea.width,'height': bottomNavigationIndicatorArea.height}"></view>
+    <view style="flex: 1;justify-content: center;align-items: center;">
+      <view v-if="statusBarArea.width > 0 && statusBarArea.height > 0" style="margin: 5px 0;">
+        <text style="color: red;">系统状态栏区域</text>
+      </view>
+      <view v-if="cutoutArea.length > 0" style="margin: 5px 0;">
+        <text style="color: orange;">摄像头区域</text>
+      </view>
+      <view style="margin: 5px 0;">
+        <text style="color: green;">安全区域</text>
+      </view>
+      <view v-if="bottomNavigationIndicatorArea.width > 0 && bottomNavigationIndicatorArea.height > 0"
+        style="margin: 5px 0;">
+        <text style="color: blue;">系统导航栏区域</text>
+      </view>
+      <!-- <view style="flex-direction: row;align-items: center;margin: 5px 0">
+        <text>显示系统状态栏</text>
+        <switch :checked="isStatusBarShow" @change="statusBarChange"></switch>
+      </view>
+      <view style="flex-direction: row;align-items: center;margin: 5px 0">
+        <text>显示系统导航栏</text>
+        <switch :checked="isBottomNavigationIndicatorShow" @change="bottomNavigationIndicatorChange"></switch>
+      </view> -->
+    </view>
+  </view>
+</template>
+
+<script setup>
+  type StatusBarArea = {
+    width : number,
+    height : number
+  }
+
+  type CutoutArea = {
+    top : number,
+    left : number,
+    width : number,
+    height : number
+  }
+
+  type SafeArea = {
+    top : number,
+    left : number,
+    width : number,
+    height : number
+  }
+
+  type BottomNavigationIndicatorArea = {
+    width : number,
+    height : number
+  }
+
+  const statusBarArea = ref({ width: 0, height: 0 } as StatusBarArea);
+  const cutoutArea = ref([] as CutoutArea[]);
+  const safeArea = ref({ top: 0, left: 0, width: 0, height: 0 } as SafeArea);
+  const bottomNavigationIndicatorArea = ref({ width: 0, height: 0 } as BottomNavigationIndicatorArea);
+  const isStatusBarShow = ref(false);
+  const isBottomNavigationIndicatorShow = ref(false);
+
+  const getWindowInfo = () => {
+    const info = uni.getWindowInfo();
+    statusBarArea.value.width = info.windowWidth;
+    statusBarArea.value.height = info.safeAreaInsets.top;
+    cutoutArea.value.length = 0;
+    (info.cutoutArea ?? []).forEach((item) => {
+      cutoutArea.value.push({
+        top: item.top,
+        left: item.left,
+        width: item.right - item.left,
+        height: item.bottom - item.top
+      } as CutoutArea);
+    })
+    safeArea.value.top = info.safeArea.top;
+    safeArea.value.left = info.safeArea.left;
+    safeArea.value.width = info.safeArea.width;
+    safeArea.value.height = info.safeArea.height;
+    bottomNavigationIndicatorArea.value.width = info.windowWidth;
+    bottomNavigationIndicatorArea.value.height = info.safeAreaInsets.bottom;
+  };
+
+  const statusBarChange = (e : UniSwitchChangeEvent) => {
+    const pages = getCurrentPages();
+    pages[pages.length - 1].setPageStyle({
+      'hideStatusBar': !e.detail.value,
+    });
+  };
+
+  const bottomNavigationIndicatorChange = (e : UniSwitchChangeEvent) => {
+    const pages = getCurrentPages();
+    pages[pages.length - 1].setPageStyle({
+      'hideBottomNavigationIndicator': !e.detail.value,
+    });
+  };
+
+  onReady(() => {
+    const pages = getCurrentPages();
+    // #ifndef MP
+    isStatusBarShow.value = !(pages[pages.length - 1].getPageStyle()['hideStatusBar'] as boolean);
+    isBottomNavigationIndicatorShow.value = !(pages[pages.length - 1].getPageStyle()['hideBottomNavigationIndicator'] as boolean);
+    // #endif
+    getWindowInfo();
+  });
+
+  onResize((_ : OnResizeOptions) => {
+    getWindowInfo();
+  });
+</script>
+
+<style>
+  .statusBar {
+    position: absolute;
+    border-style: solid;
+    border-color: red;
+    border-width: 4px;
+  }
+
+  .cutoutArea {
+    position: absolute;
+    border-style: solid;
+    border-color: orange;
+    border-width: 4px;
+  }
+
+  .safeArea {
+    position: absolute;
+    border-style: solid;
+    border-color: green;
+    border-width: 4px;
+  }
+
+  .bottomNavigationIndicator {
+    position: absolute;
+    bottom: 0;
+    border-style: solid;
+    border-color: blue;
+    border-width: 4px;
+  }
+</style>

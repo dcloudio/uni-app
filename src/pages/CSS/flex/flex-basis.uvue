@@ -1,0 +1,325 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view>
+        <text>flex-basis</text>
+        <view class="demo-box">
+          <view class="flex-container">
+            <view class="common" style="flex-basis: 100px">
+              <text>100px</text>
+            </view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="flex-container">
+            <view class="common" style="flex-basis: 100px" flatten>
+              <text>100px</text>
+            </view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
+      </view>
+
+      <view class="demo-box">
+        <view class="flex-container">
+          <scroll-view class="common" style="flex-basis: 50px;">
+            <text class="scroll-view-label">50px</text>
+          </scroll-view>
+          <view class="flex-item green"></view>
+          <view class="flex-item blue"></view>
+        </view>
+        <view class="flex-container">
+          <scroll-view class="common" style="flex-basis: 100px;">
+            <text class="scroll-view-label">100px</text>
+          </scroll-view>
+          <view class="flex-item green"></view>
+          <view class="flex-item blue"></view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-basis </text>
+      </view>
+
+      <!-- 普通版本 -->
+      <view class="test-container">
+        <!-- view 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.flexBasis}}</text>
+          <text class="uni-info">获取值: {{data.flexBasisActual}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <view class="common-image red"></view>
+              <view ref="viewRef" class="common-image green test-view" :style="{ flexBasis: data.flexBasis }">
+                <text class="test-label">view</text>
+              </view>
+              <view class="common-image blue"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- text 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.flexBasis}}</text>
+          <text class="uni-info">获取值: {{data.flexBasisActualText}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <text class="common-text red">红色</text>
+              <text ref="textRef" class="common-text green test-text" :style="{ flexBasis: data.flexBasis }">text</text>
+              <text class="common-text blue">蓝色</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- image 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.flexBasis}}</text>
+          <text class="uni-info">获取值: {{data.flexBasisActualImage}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <image class="common-image red" src="/static/test-image/logo.png"></image>
+              <image ref="imageRef" class="common-image green test-image" :style="{ flexBasis: data.flexBasis }" src="/static/test-image/logo.png"></image>
+              <image class="common-image blue" src="/static/test-image/logo.png"></image>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <!-- view 组件拍平测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.flexBasis}}</text>
+          <text class="uni-info">获取值: {{data.flexBasisActualFlat}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <view class="common-image red"></view>
+              <view ref="viewRefFlat" class="common-image green test-view-flatten" :style="{ flexBasis: data.flexBasis }" flatten>
+                <text class="test-label">view</text>
+              </view>
+              <view class="common-image blue"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- text 组件拍平测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.flexBasis}}</text>
+          <text class="uni-info">获取值: {{data.flexBasisActualTextFlat}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <text class="common-text red">红色</text>
+              <text ref="textRefFlat" class="common-text green test-text-flatten" :style="{ flexBasis: data.flexBasis }" flatten>text</text>
+              <text class="common-text blue">蓝色</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- image 组件拍平测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.flexBasis}}</text>
+          <text class="uni-info">获取值: {{data.flexBasisActualImageFlat}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <image class="common-image red" src="/static/test-image/logo.png"></image>
+              <image ref="imageRefFlat" class="common-image green test-image-flatten" :style="{ flexBasis: data.flexBasis }" flatten src="/static/test-image/logo.png"></image>
+              <image class="common-image blue" src="/static/test-image/logo.png"></image>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="flexBasisEnum" title="flex-basis 枚举值" @change="radioChangeFlexBasis" :compact="true"></enum-data>
+        <input-data :defaultValue="data.flexBasis" title="flex-basis 自定义值" type="text" @confirm="inputChangeFlexBasis"></input-data>
+      </view>
+
+      <text class="uni-title-text">native-view 组件：flex-basis: 50px 和 100px</text>
+      <view class="demo-box uni-common-mb">
+        <view class="flex-container">
+          <native-view class="common" style="flex-basis: 50px;"></native-view>
+          <view class="flex-item green"></view>
+          <view class="flex-item blue"></view>
+        </view>
+        <view class="flex-container">
+          <native-view class="common" style="flex-basis: 100px;"></native-view>
+          <view class="flex-item green"></view>
+          <view class="flex-item blue"></view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const flexBasisEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '50px' },
+    { value: 4, name: '0%' },
+    { value: 5, name: '50%' },
+    { value: 6, name: 'auto' },
+  ]
+
+  const data = reactive({
+    flexBasis: '30px',
+    flexBasisActual: '',
+    flexBasisActualFlat: '',
+    flexBasisActualText: '',
+    flexBasisActualImage: '',
+    flexBasisActualTextFlat: '',
+    flexBasisActualImageFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const getPropertyValues = () => {
+    data.flexBasisActual = viewRef.value?.style.getPropertyValue('flex-basis') ?? ''
+    data.flexBasisActualFlat = viewRefFlat.value?.style.getPropertyValue('flex-basis') ?? ''
+    data.flexBasisActualText = textRef.value?.style.getPropertyValue('flex-basis') ?? ''
+    data.flexBasisActualTextFlat = textRefFlat.value?.style.getPropertyValue('flex-basis') ?? ''
+    data.flexBasisActualImage = imageRef.value?.style.getPropertyValue('flex-basis') ?? ''
+    data.flexBasisActualImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-basis') ?? ''
+  }
+
+  const changeFlexBasis = (value: string) => {
+    data.flexBasis = value
+    viewRef.value?.style.setProperty('flex-basis', value)
+    viewRefFlat.value?.style.setProperty('flex-basis', value)
+    textRef.value?.style.setProperty('flex-basis', value)
+    textRefFlat.value?.style.setProperty('flex-basis', value)
+    imageRef.value?.style.setProperty('flex-basis', value)
+    imageRefFlat.value?.style.setProperty('flex-basis', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeFlexBasis = (index: number) => {
+    const selectedItem = flexBasisEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeFlexBasis(selectedItem.name)
+    }
+  }
+
+  const inputChangeFlexBasis = (value: string) => {
+    changeFlexBasis(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeFlexBasis,
+    data
+  })
+</script>
+
+<style>
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .flex-container {
+    flex: 1;
+    margin: 0 10px;
+    height: 80px;
+    background-color: gray;
+    flex-direction: row;
+  }
+  .flex-item {
+    width: 40px;
+    height: 40px;
+  }
+  .red {
+    background-color: red;
+  }
+  .green {
+    background-color: green;
+  }
+  .blue {
+    background-color: blue;
+  }
+  .common {
+    width: 40px;
+    height: 40px;
+    background-color: red;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .common-text {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+    color: white;
+  }
+
+  .common-image {
+    width: 30px;
+    height: 30px;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 50px;
+    background-color: gray;
+  }
+
+
+  .test-flex-container {
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
+  }
+
+
+  .test-label {
+    font-size: 12px;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    line-height: 50px;
+    text-align: center;
+  }
+</style>

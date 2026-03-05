@@ -1,0 +1,288 @@
+<script setup lang="uts">
+  type ItemType = {
+    value: string
+    name: string
+  }
+
+  type DataType = {
+    items: ItemType[];
+    current: number;
+    eventTest: boolean;
+    value: string;
+    text: string;
+    wrapText: string;
+    disabled: boolean;
+    checked: boolean;
+    color: string;
+    checked_boolean: boolean;
+    disabled_boolean: boolean;
+    color_input: string;
+    backgroundColor_input: string;
+    borderColor_input: string;
+    activeBackgroundColor_input: string;
+    activeBorderColor_input: string;
+    iconColor_input: string;
+  }
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    items: [
+      {
+        value: 'CHN',
+        name: '中国',
+      },
+      {
+        value: 'USA',
+        name: '美国',
+      },
+
+      {
+        value: 'BRA',
+        name: '巴西',
+      },
+      {
+        value: 'JPN',
+        name: '日本',
+      },
+      {
+        value: 'ENG',
+        name: '英国',
+      },
+      {
+        value: 'FRA',
+        name: '法国',
+      },
+    ],
+    current: 0,
+    eventTest: false,
+    value: '',
+    text: '未选中',
+    wrapText: 'uni-app x，终极跨平台方案\nuts，大一统语言',
+    disabled: true,
+    checked: true,
+    color: '#007aff',
+    // 组件属性 autotest
+    checked_boolean: false,
+    disabled_boolean: false,
+    color_input: "#007AFF",
+    backgroundColor_input: "#ffffff",
+    borderColor_input: "#d1d1d1",
+    activeBackgroundColor_input: "#007AFF",
+    activeBorderColor_input: "",
+    iconColor_input: "#ffffff"
+  } as DataType)
+
+  const radioChange = (e: UniRadioGroupChangeEvent) => {
+    // 自动化测试
+    console.log('test: radio event detail', e.target?.tagName, e.type)
+    if ((e.target?.tagName ?? '') == 'RADIO-GROUP' && e.type == 'change') {
+      data.eventTest = true
+    }
+
+    const selected = data.items.find((item): boolean => {
+      return item.value == e.detail.value
+    })
+    uni.showToast({
+      icon: 'none',
+      title: '当前选中:' + selected?.name,
+    })
+  }
+
+  const testChange = (e: UniRadioGroupChangeEvent) => {
+    data.value = e.detail.value
+  }
+
+  const radio_click = () => {
+    console.log("组件被点击时触发")
+  }
+
+  const radio_touchstart = () => {
+    console.log("手指触摸动作开始")
+  }
+
+  const radio_touchmove = () => {
+    console.log("手指触摸后移动")
+  }
+
+  const radio_touchcancel = () => {
+    console.log("手指触摸动作被打断，如来电提醒，弹窗")
+  }
+
+  const radio_touchend = () => {
+    console.log("手指触摸动作结束")
+  }
+
+  const radio_tap = () => {
+    console.log("手指触摸后马上离开")
+  }
+
+  const radio_longpress = () => {
+    console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。")
+  }
+
+  const change_checked_boolean = (checked: boolean) => {
+    data.checked_boolean = checked
+  }
+
+  const change_disabled_boolean = (checked: boolean) => {
+    data.disabled_boolean = checked
+  }
+
+  const confirm_color_input = (value: string) => {
+    data.color_input = value
+  }
+
+  const confirm_backgroundColor_input = (value: string) => {
+    data.backgroundColor_input = value
+  }
+
+  const confirm_borderColor_input = (value: string) => {
+    data.borderColor_input = value
+  }
+
+  const confirm_activeBackgroundColor_input = (value: string) => {
+    data.activeBackgroundColor_input = value
+  }
+
+  const confirm_activeBorderColor_input = (value: string) => {
+    data.activeBorderColor_input = value
+  }
+
+  const confirm_iconColor_input = (value: string) => {
+    data.iconColor_input = value
+  }
+
+  defineExpose({
+    data
+  })
+</script>
+
+<template>
+  <view class="main">
+    <radio :disabled="data.disabled_boolean" :checked="data.checked_boolean" :color="data.color_input"
+      :backgroundColor="data.backgroundColor_input" :borderColor="data.borderColor_input"
+      :activeBackgroundColor="data.activeBackgroundColor_input" :activeBorderColor="data.activeBorderColor_input"
+      :iconColor="data.iconColor_input" @click="radio_click" @touchstart="radio_touchstart" @touchmove="radio_touchmove"
+      @touchcancel="radio_touchcancel" @touchend="radio_touchend" @tap="radio_tap" @longpress="radio_longpress">
+      <text>uni-app-x</text>
+    </radio>
+  </view>
+
+  <scroll-view style="flex: 1">
+    <view class="content">
+      <page-head title="组件属性"></page-head>
+      <boolean-data :defaultValue="false" title="<radio/> 当前是否选中" @change="change_checked_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
+    </view>
+
+    <view>
+      <page-head title="默认及使用"></page-head>
+      <view class="uni-padding-wrap">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text"> 默认样式 </text>
+        </view>
+        <radio-group class="uni-flex uni-row radio-group" @change="testChange" style="flex-wrap: wrap">
+          <radio id="trigger-change" value="r" :checked="data.checked" :color="data.color" style="margin-right: 15px"
+            class="radio r">选中
+          </radio>
+          <radio value="r1" style="margin-right: 15px" class="radio r1">{{
+            data.text
+          }}</radio>
+          <radio value="r2" :disabled="data.disabled" class="radio r2">禁用</radio>
+          <radio value="r3" class="radio r3" style="margin-top: 10px">{{
+            data.wrapText
+          }}</radio>
+        </radio-group>
+      </view>
+
+      <view class="uni-padding-wrap">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text"> 不同颜色和尺寸的radio </text>
+        </view>
+        <radio-group class="uni-flex uni-row radio-group">
+          <!-- #ifndef VUE3-VAPOR -->
+          <radio value="r1" :checked="true" color="#FFCC33" style="transform: scale(0.7); margin-right: 15px"
+            class="radio">选中
+          </radio>
+          <radio value="r2" color="#FFCC33" style="transform: scale(0.7)" class="radio">未选中</radio>
+          <!-- #endif -->
+          <!-- #ifdef VUE3-VAPOR -->
+          <radio value="r1" :checked="true" radio-active-class="radio-active" style="transform: scale(0.7); margin-right: 15px"
+            class="radio">选中
+          </radio>
+          <radio value="r2" id="radio-vapor" radio-active-class="radio-active" style="transform: scale(0.7)" class="radio">未选中</radio>
+          <!-- #endif -->
+        </radio-group>
+      </view>
+
+
+      <view class="uni-padding-wrap">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text"> 两端对齐样式测试 </text>
+        </view>
+        <radio-group class="uni-flex uni-row radio-group">
+          <radio class="justify-test">justify-content样式测试</radio>
+        </radio-group>
+      </view>
+
+      <view class="uni-padding-wrap">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text"> 推荐展示样式 </text>
+        </view>
+      </view>
+      <view class="uni-list uni-common-pl">
+        <radio-group @change="radioChange" class="radio-group">
+          <radio class="uni-list-cell uni-list-cell-pd radio recommand" v-for="(item, index) in data.items" :key="item.value"
+            :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
+            :checked="index === data.current">
+            {{ item.name }}
+          </radio>
+        </radio-group>
+      </view>
+    </view>
+
+    <!-- #ifndef VUE3-VAPOR -->
+    <view>
+      <input-data defaultValue="#007AFF" title="radio的颜色" type="text" @confirm="confirm_color_input"></input-data>
+      <input-data defaultValue="#ffffff" title="radio默认的背景颜色" type="text"
+        @confirm="confirm_backgroundColor_input"></input-data>
+      <input-data defaultValue="#d1d1d1" title="radio默认的边框颜色" type="text"
+        @confirm="confirm_borderColor_input"></input-data>
+      <input-data defaultValue="#007AFF" title="radio选中时的背景颜色，优先级大于color属性" type="text"
+        @confirm="confirm_activeBackgroundColor_input"></input-data>
+      <input-data defaultValue="" title="radio选中时的边框颜色" type="text"
+        @confirm="confirm_activeBorderColor_input"></input-data>
+      <input-data defaultValue="#ffffff" title="radio的图标颜色" type="text" @confirm="confirm_iconColor_input"></input-data>
+    </view>
+    <!-- #endif -->
+
+    <navigator class="uni-common-mb" url="/pages/template/radio-200/radio-200">
+      <button class="uni-common-mt">组件性能测试</button>
+    </navigator>
+  </scroll-view>
+</template>
+
+<style>
+  .main {
+    max-height: 250px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .uni-list-cell {
+    justify-content: flex-start;
+  }
+
+  .justify-test {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* #ifdef VUE3-VAPOR */
+  .radio-active {
+    background-color: #FFCC33;
+    border-color: #FFCC33;
+  }
+  /* #endif */
+</style>

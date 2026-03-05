@@ -1,0 +1,37 @@
+<template>
+  <view class="selector-query-child-view">
+    <text class="selector-query-child-text">selector-query-child</text>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+  const instance = getCurrentInstance()!.proxy!
+
+  type DataType = {
+    top: number,
+  }
+
+  const data = reactive({
+    top: 0,
+  } as DataType)
+
+  onMounted(() => {
+    uni.createSelectorQuery().in(instance).select('.selector-query-child-view').boundingClientRect().exec((ret) => {
+      if (ret.length == 1) {
+        const nodeInfo = ret[0] as NodeInfo;
+        data.top = nodeInfo.top!
+      }
+    })
+  })
+
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+  .selector-query-child-view {
+    margin-top: 15px;
+  }
+</style>

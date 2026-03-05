@@ -1,0 +1,90 @@
+<template>
+  <!-- #ifdef WEB -->
+  <view>
+  <!-- #endif -->
+    <list-view class="list" @scrolltolower="onScrollTolower">
+      <list-item class="list-item" v-for="(_,index) in data.item_count" :key="index">
+        <text>第{{index + 1}}个视频</text>
+        <!-- #ifdef APP-HARMONY && VUE3-VAPOR -->
+        <video class="video" :src="data.src" :controls="true" @play="onPlay" @pause="onPause"
+        @recycle="e => _onRecycle(e, index)" @reuse="e => _onReuse(e, index)"/>
+        <!-- #endif -->
+
+        <!-- #ifndef APP-HARMONY && VUE3-VAPOR -->
+        <video class="video" :src="data.src" :controls="true" @play="onPlay" @pause="onPause"/>
+        <!-- #endif -->
+      </list-item>
+    </list-view>
+  <!-- #ifdef WEB -->
+  </view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+type DataType = {
+  item_count: number,
+  src: string,
+  isTesting: boolean,
+}
+
+// 使用reactive包装数据，便于自动化测试获取
+const data = reactive({
+  item_count: 10,
+  src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
+  isTesting: false,
+} as DataType)
+
+function onPlay(e: UniEvent) {
+  console.log(`onPlay`, JSON.stringify(e.timeStamp));
+}
+
+function onPause(e: UniEvent) {
+  console.log(`onPause`, JSON.stringify(e.timeStamp));
+}
+
+// #ifdef APP-HARMONY && VUE3-VAPOR
+function _onRecycle(e: UniVideoRecycleEvent, index: number) {
+  console.log(`onRecycle ${index}`, JSON.stringify(e.detail));
+}
+
+function _onReuse(e: UniVideoReuseEvent, index: number) {
+  console.log(`onReuse ${index}`, JSON.stringify(e.detail));
+  const element = e.target as UniVideoElement | null;
+  if (element && (element instanceof UniVideoElement)) {
+    nextTick(() => {
+      element.seek(e.detail.currentTime)
+    })
+  }
+}
+// #endif
+
+function onScrollTolower(event : ScrollToLowerEvent) {
+  setTimeout(() => {
+    if (data.isTesting && data.item_count >= 10) {
+      return
+    }
+    data.item_count += 10
+  }, 300)
+}
+
+defineExpose({
+  data
+})
+</script>
+
+<style>
+  .list {
+    flex: 1;
+  }
+
+  .list-item {
+    background-color: white;
+    margin-bottom: 30px;
+  }
+
+  .video {
+    width: 100%;
+    height: 200px;
+  }
+</style>

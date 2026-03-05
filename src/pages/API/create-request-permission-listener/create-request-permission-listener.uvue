@@ -1,0 +1,86 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head title="权限申请监听"></page-head>
+    <view class="permission-alert" id="permission-alert"
+      :style="{'transform':isPermissionAlertShow ? 'translateY(0)':'translateY(-110px)'}">
+      <text style="font-size: 20px;margin-bottom: 10px;margin-top: 5px;">访问日历权限申请说明：</text>
+      <text style="color: darkgray;">uni-app x正在申请访问日历权限用于演示，允许或拒绝均不会获取任何隐私信息。</text>
+    </view>
+    <button type="primary" style="margin: 10px;" @click="requestPermission">点击申请日历权限</button>
+
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  const isPermissionAlertShow = ref(false)
+  const permissionAlert = ref(null as UniElement | null)
+  const timeoutId = ref(-1)
+  const permissionListener = ref(null as RequestPermissionListener | null)
+
+  onUnload(() => {
+    permissionListener.value?.stop()
+    permissionListener.value = null
+    clearTimeout(timeoutId.value)
+  })
+
+  const watchPermissionRRequest = () => {
+    permissionListener.value = uni.createRequestPermissionListener()
+    permissionListener.value!.onConfirm((_) => {
+      // TODO 目前onConfirm监听实现的在时间上不够精确，暂时需要延迟弹框，后续修复
+      // TODO 这里的弹框仅为演示，实际开发中监听权限申请的代码应该在app.uvue中，弹框应全局处理，可参考https://gitcode.net/dcloud/uni-api/-/tree/master/uni_modules/uni-prompt/utssdk/app-android 代码自行封装一个uts的全局弹框
+      timeoutId.value = setTimeout(() => {
+        isPermissionAlertShow.value = true
+      }, 100)
+    })
+    permissionListener.value!.onComplete((_) => {
+      clearTimeout(timeoutId.value)
+      isPermissionAlertShow.value = false
+    })
+  }
+
+  const requestPermission = () => {
+    // #ifdef APP-ANDROID
+    if (UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, ["android.permission.READ_CALENDAR"])) {
+      uni.showToast({
+        title: "权限已经同意了，不需要再申请",
+        position: "bottom"
+      })
+      return
+    }
+    UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, ["android.permission.READ_CALENDAR"], (_ : boolean, p : string[]) => {
+      console.log(p)
+    }, (_ : boolean, p : string[]) => {
+      uni.showToast({
+        title: "权限被拒绝了",
+        position: "bottom"
+      })
+      console.log(p)
+    })
+    // #endif
+  }
+
+  onReady(() => {
+    watchPermissionRRequest()
+  })
+
+</script>
+
+<style>
+  .permission-alert {
+    width: 90%;
+    height: 100px;
+    margin: 10px 5%;
+    position: absolute;
+    top: 0px;
+    z-index: 3;
+    border-radius: 5px;
+    transition-property: transform;
+    transition-duration: 200ms;
+    background-color: white;
+    padding: 10px;
+  }
+</style>

@@ -1,0 +1,126 @@
+<template>
+  <scroll-view class="content" direction="vertical">
+    <view id="fullscreen" class="view1" @click="fullscreen" @fullscreenchange="fullscreenchange" @fullscreenerror="fullscreenerror">
+      <text style="color: white;">{{ text }}</text>
+    </view>
+    <enum-data :items="orientation_enum" title="orientation" @change="radio_change_orientation"></enum-data>
+    <enum-data :items="navigationUI_enum" title="navigationUI" @change="radio_change_ui"></enum-data>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+  
+  import { ItemType } from '@/components/enum-data/enum-data-types';
+
+  const orientation_enum = ref([{ "value": 0, "name": "auto" }, { "value": 1, "name": "landscape" }, { "value": 2, "name": "landscape-primary" }, { "value": 3, "name": "landscape-secondary" }, { "value": 4, "name": "portrait" }] as ItemType[])
+  const navigationUI_enum = ref([{ "value": 0, "name": "auto" }, { "value": 1, "name": "hide" }, { "value": 2, "name": "show" }] as ItemType[])
+  const text = ref("点击进入全屏")
+  let fullscreenElement: UniElement | null = null
+  let isFullscreen = false
+  const orientation = ref("landscape")
+  const navigationUI = ref("hide")
+
+  type DataType = {
+    fullscreenchangeCount: number,
+    requestFullscreenCallbackStatus: boolean,
+    exitFullscreenCallbackStatus: boolean,
+  }
+
+  const data = reactive({
+    fullscreenchangeCount: 0,
+    requestFullscreenCallbackStatus: false,
+    exitFullscreenCallbackStatus: false,
+  } as DataType)
+
+  function getCurrentPage() : UniPage {
+    const pages = getCurrentPages()
+    return pages[pages.length - 1]
+  }
+
+  function fullscreen() {
+    if (isFullscreen) {
+      // 重置退出全屏回调状态
+      let status1 = false
+      const page = getCurrentPage()
+      page.exitFullscreen({
+        success: () => {
+          text.value = "点击进入全屏"
+          status1 = true
+        },
+        fail: (err) => {
+          console.log('fail', err)
+          status1 = false
+        },
+        complete: () => {
+          console.log('complete')
+          data.exitFullscreenCallbackStatus = status1
+        }
+      })
+    } else {
+      // 重置进入全屏回调状态
+      let status1 = false
+      fullscreenElement?.requestFullscreen({
+        navigationUI: navigationUI.value,
+        orientation: orientation.value,
+        success: () => {
+          text.value = "点击退出全屏"
+          status1 = true
+        },
+        fail: (err) => {
+          console.log('fail', err)
+          status1 = false
+        },
+        complete: () => {
+          console.log('complete')
+          data.requestFullscreenCallbackStatus = status1
+        }
+      })
+    }
+
+    isFullscreen = !isFullscreen
+  }
+
+  function fullscreenchange(e : UniEvent) {
+    console.log(e.type)
+    data.fullscreenchangeCount++
+    console.log(data.fullscreenchangeCount)
+  }
+
+  function fullscreenerror(e : UniEvent) {
+    console.log(e.type)
+  }
+
+  function radio_change_orientation(checked : number) {
+    console.log(checked)
+    orientation.value = orientation_enum.value[checked]['name'] as string
+  }
+
+  function radio_change_ui(checked : number) {
+    console.log(checked)
+    navigationUI.value = navigationUI_enum.value[checked]['name'] as string
+  }
+
+  onReady(() => {
+    fullscreenElement = uni.getElementById('fullscreen') as UniElement
+  })
+
+  defineExpose({
+    data,
+    fullscreen
+  })
+</script>
+
+<style>
+  .content {
+    flex: 1;
+    background-color: #f0f0f0;
+  }
+
+  .view1 {
+    width: 100%;
+    height: 150px;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+  }
+</style>

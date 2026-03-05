@@ -1,0 +1,7 @@
+{
+  "name": "encryption",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

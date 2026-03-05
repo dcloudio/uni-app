@@ -1,0 +1,116 @@
+<script setup lang="uts">
+type InputValue = string | number
+const emit = defineEmits(['confirm'])
+// 样式隔离配置，app: 受全局样式影响
+defineOptions({
+  styleIsolation: 'app'
+})
+const props = defineProps({
+  title: {
+    type: String,
+    required: true
+  },
+  type: {
+    type: String,
+    required: true
+  },
+  defaultValue: {
+    type: String,
+    required: true,
+    default: ''
+  }
+})
+
+const inputClearValue = ref<InputValue>('')
+const showClearIcon = ref(false)
+const inputType = ref('text')
+
+function _getValue(value : InputValue) : InputValue {
+  switch (props.type) {
+    case 'number':
+      return parseFloat(value as string)
+  }
+  return value
+}
+
+onMounted(() => {
+  switch (props.type) {
+    case 'number':
+      inputType.value = 'number'
+      break;
+  }
+  inputClearValue.value = _getValue(props.defaultValue)
+})
+
+function input(event : InputEvent) {
+  // @ts-ignore
+  inputClearValue.value = event.detail.value
+  if ((inputClearValue.value as string).length > 0) {
+    showClearIcon.value = true
+  } else {
+    showClearIcon.value = false
+  }
+  emit('confirm', _getValue(inputClearValue.value))
+}
+
+function clearIcon() {
+  inputClearValue.value = ''
+  showClearIcon.value = false
+  emit('confirm', _getValue(inputClearValue.value))
+}
+
+function blur() {
+  showClearIcon.value = false
+}
+
+function focus() {
+  let inputValue = inputClearValue.value
+  if (typeof inputValue !== 'string') {
+    inputValue = inputValue.toString()
+  }
+  if (inputValue.length > 0) {
+    showClearIcon.value = true
+  } else {
+    showClearIcon.value = false
+  }
+}
+</script>
+
+<template>
+  <view class="uni-padding-wrap">
+    <view class="uni-title uni-common-mt">
+      <text class="uni-title-text"> {{title}} </text>
+    </view>
+  </view>
+  <view class="input-wrapper">
+    <input class="uni-input" :type="inputType" :value="inputClearValue" :placeholder="title" :maxlength="-1" @input="input" @blur="blur"
+      @focus="focus" />
+    <!-- #ifdef WEB || MP -->
+    <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon" @touchstart="clearIcon" @mousedown="clearIcon">
+    <!-- #endif -->
+    <!-- #ifndef WEB || MP -->
+    <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon" @touchstart="clearIcon">
+    <!-- #endif -->
+    </image>
+  </view>
+</template>
+
+
+<style>
+  .input-wrapper {
+    border: 1px solid rgba(0, 0, 0, .08);
+    flex-direction: row;
+    justify-content: center;
+    padding: 0;
+    margin: 0 10px;
+    flex-wrap: nowrap;
+    background-color: #ffffff;
+  }
+
+  .input-wrapper_image {
+    width: 22px;
+    height: 22px;
+    align-self: center;
+    margin-right: 5px;
+  }
+</style>

@@ -1,0 +1,12 @@
+import { OpenSchema, CanOpenURL } from '../interface.uts'
+
+export const openSchema : OpenSchema = function (url : string) : void {
+  location.href = url;
+}
+
+export const canOpenURL : CanOpenURL = function (url : string) : boolean {
+  if (url != "") {
+    return true;
+  }
+  return false;
+}

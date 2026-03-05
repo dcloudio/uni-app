@@ -1,0 +1,389 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view>
+        <text>background-color: blue</text>
+        <view class="demo-box">
+          <view class="common" style="background-color: blue"></view>
+          <view class="common" style="background-color: blue" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: #0000ff</text>
+        <view class="demo-box">
+          <view class="common" style="background-color: #0000ff"></view>
+          <view class="common" style="background-color: #0000ff" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: #00f</text>
+        <view class="demo-box">
+          <view class="common" style="background-color: #00f"></view>
+          <view class="common" style="background-color: #00f" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: #0000ff80</text>
+        <view class="demo-box">
+          <view class="common" style="background-color: #0000ff80"></view>
+          <view class="common" style="background-color: #0000ff80" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: #00f8</text>
+        <view class="demo-box">
+          <view class="common" style="background-color: #00f8"></view>
+          <view class="common" style="background-color: #00f8" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: rgb(0, 0, 255)</text>
+        <view class="demo-box">
+          <view class="common" style="background-color: rgb(0, 0, 255)"></view>
+          <view class="common" style="background-color: rgb(0, 0, 255)" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: rgba(0, 0, 255, 0.5)</text>
+        <view class="demo-box">
+          <view class="common" style="background-color: rgba(0, 0, 255, 0.5)"></view>
+          <view class="common" style="background-color: rgba(0, 0, 255, 0.5)" flatten></view>
+        </view>
+      </view>
+      <view>
+        <text>background-color: #0000ff80</text>
+        <view class="demo-box">
+          <view class="common" style="background-color: #0000ff80"></view>
+          <view class="common" style="background-color: #0000ff80" flatten></view>
+        </view>
+      </view>
+      <view style="margin-left: 30px;margin-right: 30px;">
+        <button type="default" @click="jumpToCheckBoxWithBackgroundColor">应用background-color示例</button>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">text 组件 background-color </text>
+      </view>
+
+      <view>
+        <text>background-color: blue</text>
+        <view class="demo-box">
+          <text class="common" style="background-color: blue">文字内容</text>
+          <text class="common" style="background-color: blue" flatten>文字内容</text>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: rgba(0, 0, 255, 0.5)</text>
+        <view class="demo-box">
+          <text class="common" style="background-color: rgba(0, 0, 255, 0.5)">文字内容</text>
+          <text class="common" style="background-color: rgba(0, 0, 255, 0.5)" flatten>文字内容</text>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: #00ff00</text>
+        <view class="demo-box">
+          <text class="common" style="background-color: #00ff00">文字内容</text>
+          <text class="common" style="background-color: #00ff00" flatten>文字内容</text>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: #0000ff80</text>
+        <view class="demo-box">
+          <text class="common" style="background-color: #0000ff80">文字内容</text>
+          <text class="common" style="background-color: #0000ff80" flatten>文字内容</text>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">image 组件 background-color </text>
+      </view>
+
+      <view>
+        <text>background-color: blue (无src时显示背景色)</text>
+        <view class="demo-box">
+          <image class="common-image" style="background-color: blue"></image>
+          <image class="common-image" style="background-color: blue" flatten></image>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: rgba(0, 0, 255, 0.5) (无src时显示背景色)</text>
+        <view class="demo-box">
+          <image class="common-image" style="background-color: rgba(0, 0, 255, 0.5)"></image>
+          <image class="common-image" style="background-color: rgba(0, 0, 255, 0.5)" flatten></image>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: #00ff00 (无src时显示背景色)</text>
+        <view class="demo-box">
+          <image class="common-image" style="background-color: #00ff00"></image>
+          <image class="common-image" style="background-color: #00ff00" flatten></image>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: #0000ff80 (无src时显示背景色)</text>
+        <view class="demo-box">
+          <image class="common-image" style="background-color: #0000ff80"></image>
+          <image class="common-image" style="background-color: #0000ff80" flatten></image>
+        </view>
+      </view>
+
+      <view>
+        <text>background-color: yellow (有src时，背景色在图片加载失败或透明区域显示)</text>
+        <view class="demo-box">
+          <image class="common-image" style="background-color: yellow" src="/static/test-image/logo.png"></image>
+          <image class="common-image" style="background-color: yellow" src="/static/test-image/logo.png" flatten></image>
+        </view>
+      </view>
+
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+      <view class="demo-box">
+        <scroll-view style="width: 100px; height: 100px; background-color: #0000ff80;">
+          <text class="scroll-view-label">#0000ff80</text>
+        </scroll-view>
+        <scroll-view style="width: 100px; height: 100px; background-color: green;">
+          <text class="scroll-view-label">green</text>
+        </scroll-view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 background-color </text>
+      </view>
+
+      <!-- 普通版本 -->
+      <view class="test-container">
+        <!-- view 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common-view test-view" :style="{ backgroundColor: data.backgroundColor }">
+              <text style="font-size: 12px;">view</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- text 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-text test-text" :style="{ backgroundColor: data.backgroundColor }">text</text>
+          </view>
+        </view>
+
+        <!-- image 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-image test-image" :style="{ backgroundColor: data.backgroundColor }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <!-- view 组件拍平测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ backgroundColor: data.backgroundColor }" flatten>
+              <text style="font-size: 12px;">view</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- text 组件拍平测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-text test-text-flatten" :style="{ backgroundColor: data.backgroundColor }" flatten>text</text>
+          </view>
+        </view>
+
+        <!-- image 组件拍平测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ backgroundColor: data.backgroundColor }" flatten src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 测试控制区域 -->
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :compact="true" :items="backgroundColorEnum" title="background-color 枚举值" @change="radioChangeBackgroundColor"></enum-data>
+        <input-data :defaultValue="data.backgroundColor" title="background-color 自定义值" type="text" @confirm="inputChangeBackgroundColor"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: background-color: blue 和 #0000ff80 </text>
+        <view class="demo-box">
+          <native-view class="common" style="background-color: blue"></native-view>
+          <native-view class="common" style="background-color: #0000ff80;"></native-view>
+        </view>
+      </view>
+
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup>
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    backgroundColor: 'cyan',
+    backgroundColorActual: '',
+    backgroundColorActualText: '',
+    backgroundColorActualImage: '',
+    backgroundColorActualFlat: '',
+    backgroundColorActualTextFlat: '',
+    backgroundColorActualImageFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const backgroundColorEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'green' },
+    { value: 2, name: '#88abf0' },
+    { value: 3, name: 'rgb(0, 255, 0)' },
+    { value: 4, name: 'rgba(0, 255, 0, 0.5)' },
+    { value: 5, name: '#ddd' },
+    { value: 6, name: 'transparent' }
+  ]
+
+  const getPropertyValues = () => {
+    data.backgroundColorActual = viewRef.value?.style.getPropertyValue('background-color') ?? ''
+    data.backgroundColorActualFlat = viewRefFlat.value?.style.getPropertyValue('background-color') ?? ''
+    data.backgroundColorActualText = textRef.value?.style.getPropertyValue('background-color') ?? ''
+    data.backgroundColorActualTextFlat = textRefFlat.value?.style.getPropertyValue('background-color') ?? ''
+    data.backgroundColorActualImage = imageRef.value?.style.getPropertyValue('background-color') ?? ''
+    data.backgroundColorActualImageFlat = imageRefFlat.value?.style.getPropertyValue('background-color') ?? ''
+  }
+
+  const changeBackgroundColor = (color: string) => {
+    data.backgroundColor = color
+    viewRef.value?.style.setProperty('background-color', color)
+    viewRefFlat.value?.style.setProperty('background-color', color)
+    textRef.value?.style.setProperty('background-color', color)
+    textRefFlat.value?.style.setProperty('background-color', color)
+    imageRef.value?.style.setProperty('background-color', color)
+    imageRefFlat.value?.style.setProperty('background-color', color)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeBackgroundColor = (index: number) => {
+    const selectedItem = backgroundColorEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBackgroundColor(selectedItem.name)
+    }
+  }
+
+  const inputChangeBackgroundColor = (value: string) => {
+    changeBackgroundColor(value)
+  }
+
+  const jumpToCheckBoxWithBackgroundColor = () => {
+    uni.navigateTo({
+      url:"/pages/CSS/background/background-color-check-box"
+    })
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeBackgroundColor,
+    data
+  })
+</script>
+
+<style>
+  .common {
+    width: 150px;
+    height: 50px;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  /* 多组件横向布局样式 */
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 60px;
+    background-color: gray;
+  }
+
+
+  .common-view {
+    height: 50px;
+    background-color: yellow;
+  }
+
+  .common-text {
+    height: 50px;
+    background-color: yellow;
+    font-size: 12px;
+  }
+
+  .common-image {
+    width: 50px;
+    height: 50px;
+    background-color: yellow;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    text-align: center;
+  }
+</style>

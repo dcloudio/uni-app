@@ -1,0 +1,85 @@
+import { UIDatePicker, UIControl, UIDatePickerStyle } from "UIKit"
+import { DateFormatter } from "Foundation"
+
+export class NativeTimePicker {
+
+	element : UniNativeViewElement
+	timePicker : UIDatePicker
+	h : number
+	m : number
+
+	constructor(element : UniNativeViewElement, hour : number, minute : number) {
+		this.element = element
+		this.timePicker = new UIDatePicker()
+		this.h = hour
+		this.m = minute
+		super.init()
+
+		// 在 swift target-action 对应的方法需要以OC的方式来调用，那么OC语言中用Selector来表示一个方法的名称（又称方法选择器），创建一个Selector可以使用 Selector("functionName") 的方式。
+		const method = Selector("timeChange")
+		// 监听时间变化回调
+		this.timePicker.addTarget(this, action = method, for = UIControl.Event.valueChanged)
+
+		// 设置为时间选择模式
+		this.timePicker.datePickerMode = UIDatePicker.Mode.time
+
+		// 设置外观样式为 wheels
+		if (UTSiOS.available("iOS 13.4, *")) {
+			this.timePicker.preferredDatePickerStyle = UIDatePickerStyle.wheels
+		}
+
+		this.updateTime()
+		this.bindView(hour, minute)
+	}
+
+	// element 绑定原生view
+	bindView(hour : number, minute : number) {
+		this.element.bindIOSView(this.timePicker);
+	}
+
+	// 设置时
+	setHour(hour : number) {
+		this.h = hour
+		this.updateTime()
+	}
+
+	// 设置分
+	setMinute(minute : number) {
+		this.m = minute
+		this.updateTime()
+	}
+
+  // 更新显示
+	updateTime() {
+		let formatter = DateFormatter()
+		formatter.dateFormat = "HH:mm"
+		let date = formatter.date(from = `${this.h}:${this.m}`)
+		if (date != null) {
+			this.timePicker.date = date!
+		}
+	}
+
+	/**
+	 * 按钮点击回调方法
+	 * 在 swift 中，所有target-action (例如按钮的点击事件，NotificationCenter 的通知事件等)对应的 action 函数前面都要使用 @objc 进行标记。
+	 */
+	@objc timeChange() {
+		// 发送事件
+		console.log("timeChange")
+
+		let formatter = DateFormatter()
+		formatter.dateFormat = "HH"
+		let hourString = formatter.string(from = this.timePicker.date)
+
+		formatter.dateFormat = "mm"
+		let minuteString = formatter.string(from = this.timePicker.date)
+
+		const detail = { "hour": hourString, "minute": minuteString }
+		const event = new UniNativeViewEvent("timechanged", detail)
+		this.element.dispatchEvent(event)
+	}
+
+	destroy() {
+		UTSiOS.destroyInstance(this)
+	}
+}

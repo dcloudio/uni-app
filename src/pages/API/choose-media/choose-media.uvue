@@ -1,0 +1,325 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-common-mt">
+        <view class="uni-list">
+
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left uni-label">
+              来源
+            </view>
+            <view class="uni-list-cell-right" @click="chooseMediaSource">
+              <text class="click-t">{{sourceTypes[sourceTypeIndex].title}}</text>
+            </view>
+          </view>
+
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left uni-label">
+              方式
+            </view>
+            <view class="uni-list-cell-right" @click="chooseMediaType">
+              <text class="click-t">{{(mediaTypes[mediaTypeIndex] as ChooseSource).title}}</text>
+            </view>
+          </view>
+
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left uni-label">
+              数量限制
+            </view>
+            <view class="uni-list-cell-right">
+              <input class="click-t" ref="refCountInput" :value="count" type="number" :maxlength="1" @blur="chooseMediaCount"/>
+            </view>
+          </view>
+
+          <!-- #ifdef APP-ANDROID -->
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left uni-label">
+              屏幕方向
+            </view>
+            <view class="uni-list-cell-right" @click="chooseOrientationType">
+              <text class="click-t">{{orientationTypes[orientationTypeIndex].title}}</text>
+            </view>
+          </view>
+          <!-- #endif -->
+
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left uni-label">
+              摄像头
+            </view>
+            <view class="uni-list-cell-right" @click="chooseCameraType">
+              <text class="click-t">{{cameraTypes[cameraTypeIndex].title}}</text>
+            </view>
+          </view>
+        </view>
+        <!-- #ifdef APP-IOS -->
+        <input-data title="最长拍摄时间，单位秒" defaultValue="10" type="number" @confirm="onMaxDurationConfirm"></input-data>
+        <!-- #endif -->
+        <view class="uni-list list-pd" style="padding: 15px;">
+          <view class="uni-flex" style="margin-bottom: 10px;">
+            <view class="uni-list-cell-left">点击预览</view>
+            <view style="margin-left: auto;">
+              <text class="click-t">{{mediaList.length}}/{{count}}</text>
+            </view>
+          </view>
+          <view class="uni-flex" style="flex-wrap: wrap;">
+            <view v-for="(file,index) in mediaList" :key="index" class="uni-uploader__input-box" style="border: 0;">
+              <image style="width: 104px; height: 104px;" :src="file.imagePath" @tap="previewMedia(index)">
+              </image>
+              <image src="/static/plus.png" class="image-remove" @click="removeMedia(index)"></image>
+            </view>
+            <image class="uni-uploader__input-box" @tap="chooseMedia" src="/static/plus.png"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  type FileSource = {
+    imagePath : string;
+    filePath : string;
+    fileType : string;
+  };
+  type ChooseSource = {
+    value : string[];
+    title : string;
+  };
+  const sourceTypeList : ChooseSource[] = [
+    {
+      value: ['camera'],
+      title: '拍摄',
+    },
+    {
+      value: ['album'],
+      title: '相册',
+    },
+    {
+      value: ['camera', 'album'],
+      title: '拍摄或相册',
+    }
+  ];
+
+  const mediaTypeList : ChooseSource[] = [
+    {
+      value: ['image'],
+      title: '仅图片',
+    },
+    {
+      value: ['video'],
+      title: '仅视频',
+    },
+    {
+      value: ['image', 'video'],
+      title: '不限制',
+    }
+  ];
+
+  const orientationTypeList : ChooseSource[] = [
+    {
+      value: ['portrait'],
+      title: '竖屏',
+    },
+    {
+      value: ['landscape'],
+      title: '横屏',
+    },
+    {
+      value: ['auto'],
+      title: '自动',
+    }
+  ];
+  const cameraTypeList : ChooseSource[] = [
+    {
+      value: ['front'],
+      title: '前置摄像头',
+    },
+    {
+      value: ['back'],
+      title: '后置摄像头',
+    }
+  ];
+
+  const title = ref('chooseMedia')
+  const mediaList = ref([] as Array<FileSource>)
+  const sourceTypeIndex = ref(2)
+  const mediaTypeIndex = ref(2)
+  const cameraTypeIndex = ref(1)
+  const orientationTypeIndex = ref(0)
+  const albumModeTypeIndex = ref(0)
+  const count = ref(9)
+  const maxDuration = ref(10)
+  const sourceTypes = ref(sourceTypeList as ChooseSource[])
+  const mediaTypes = ref(mediaTypeList as ChooseSource[])
+  const cameraTypes = ref(cameraTypeList as ChooseSource[])
+  const orientationTypes = ref(orientationTypeList as ChooseSource[])
+  const refCountInput = ref<UniElement | null>(null)
+
+  const chooseMediaSource = () => {
+    uni.showActionSheet({
+      itemList: ['拍摄', '相册', '拍摄或相册'],
+      success: (e) => {
+        sourceTypeIndex.value = e.tapIndex
+      }
+    })
+  }
+
+  const chooseMediaType = () => {
+    uni.showActionSheet({
+      itemList: ['仅图片', '仅视频', '不限制'],
+      success: (e) => {
+        mediaTypeIndex.value = e.tapIndex
+      }
+    })
+  }
+
+  const chooseMediaCount = (event: UniInputBlurEvent) => {
+    let countValue = parseInt(event.detail.value)
+    if (countValue < 1 || countValue > 9 || isNaN(countValue)) {
+      uni.showToast({
+        position: "bottom",
+        title: "图片数量应该不小于1不大于9"
+      })
+      return
+    }
+    count.value = countValue
+  }
+
+  const chooseOrientationType = () => {
+    uni.showActionSheet({
+      itemList: ['竖屏', '横屏', '自动'],
+      success: (e) => {
+        orientationTypeIndex.value = e.tapIndex
+      }
+    })
+  }
+
+  const chooseCameraType = () => {
+    uni.showActionSheet({
+      itemList: ['前置', '后置'],
+      success: (e) => {
+        cameraTypeIndex.value = e.tapIndex
+      }
+    })
+  }
+
+  const onMaxDurationConfirm = (value: number) => {
+    maxDuration.value = value;
+  }
+
+  const chooseMedia = () => {
+    if (mediaList.value.length >= count.value) {
+      const message = "已经有" + count.value + "个了，请删除部分后重新选择";
+      uni.showToast({
+        position: "bottom",
+        title: message
+      })
+      return
+    }
+
+    uni.chooseMedia({
+      count: count.value - mediaList.value.length,
+      sourceType: sourceTypeList[sourceTypeIndex.value].value,
+      mediaType: mediaTypeList[mediaTypeIndex.value].value,
+      camera: cameraTypeList[cameraTypeIndex.value].value[0],
+      // #ifdef APP-IOS
+      maxDuration: maxDuration.value,
+      // #endif
+      // #ifdef APP-ANDROID
+      pageOrientation: orientationTypeList[orientationTypeIndex.value].value[0],
+      // #endif
+      success: (res) => {
+        const tempFiles : ChooseMediaTempFile[] = res.tempFiles as ChooseMediaTempFile[];
+        for (let i = 0; i < tempFiles.length; i++) {
+          const tempFile : ChooseMediaTempFile = tempFiles[i]
+          const imagePath = tempFile.fileType == "image" ? tempFile.tempFilePath : tempFile.thumbTempFilePath;
+          const file : FileSource = { imagePath: imagePath!, filePath: tempFile.tempFilePath, fileType: tempFile.fileType };
+          mediaList.value.push(file);
+        }
+      },
+      fail: (err) => {
+        console.log("err: ", JSON.stringify(err));
+        uni.showToast({
+          title:"choose media error.code:" + err.errCode+";message:"+err.errMsg,
+          position:"bottom"
+        })
+      }
+    })
+  }
+
+  const previewMedia = (index: number) => {
+    const file : FileSource = mediaList.value[index];
+    if (file.fileType == "image") {
+      uni.previewImage({
+        current: 0,
+        urls: [file.filePath]
+      })
+    } else {
+      uni.$once("__ONFULLVIDEOLOAD", () => {
+        uni.$emit("__ONRECEIVEURL", {
+          "url": file.filePath,
+          "cover": file.imagePath
+        })
+      })
+      const url = "/pages/API/choose-media/fullscreen-video";
+      uni.navigateTo({
+        url: url,
+      })
+    }
+  }
+
+  const removeMedia = (index: number) => {
+    mediaList.value.splice(index, 1)
+  }
+</script>
+
+<style>
+  .cell-pd {
+    padding: 11px 15px;
+  }
+
+  .click-t {
+    color: darkgray;
+  }
+
+  .list-pd {
+    margin-top: 25px;
+  }
+
+  .uni-uploader__input-box {
+    margin: 5px;
+    width: 104px;
+    height: 104px;
+    border: 1px solid #D9D9D9;
+  }
+
+  .uni-uploader__input {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+
+  .image-remove {
+    transform: rotate(45deg);
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 13px;
+    background-color: rgba(200, 200, 200, 0.8);
+  }
+
+  .item_width {
+    width: 130px;
+  }
+</style>

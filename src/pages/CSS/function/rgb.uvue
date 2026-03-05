@@ -1,0 +1,98 @@
+<template>
+  <view class="container">
+    <text class="intro-text">RGB 是一种颜色表示方法，通过调整红(Red)、绿(Green)、蓝(Blue)三个通道的值（0-255）来产生不同的颜色。</text>
+
+    <view class="section">
+      <text class="section-title">数值表示 (0-255)</text>
+      <view class="color-grid">
+        <view class="color-item">
+          <view class="color-box" style="background-color: rgb(255, 0, 0);"></view>
+          <text class="color-name">红色</text>
+          <text class="color-value">rgb(255, 0, 0)</text>
+        </view>
+        <view class="color-item">
+          <view class="color-box" style="background-color: rgb(0, 255, 0);"></view>
+          <text class="color-name">绿色</text>
+          <text class="color-value">rgb(0, 255, 0)</text>
+        </view>
+        <view class="color-item">
+          <view class="color-box" style="background-color: rgb(0, 0, 255);"></view>
+          <text class="color-name">蓝色</text>
+          <text class="color-value">rgb(0, 0, 255)</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="color-grid">
+        <view class="color-item">
+          <view class="color-box" style="background-color: rgb(255, 255, 0);"></view>
+          <text class="color-name">黄色</text>
+          <text class="color-value">rgb(255, 255, 0)</text>
+        </view>
+        <view class="color-item">
+          <view class="color-box" style="background-color: rgb(255, 0, 255);"></view>
+          <text class="color-name">品红</text>
+          <text class="color-value">rgb(255, 0, 255)</text>
+        </view>
+        <view class="color-item">
+          <view class="color-box" style="background-color: rgb(0, 255, 255);"></view>
+          <text class="color-name">青色</text>
+          <text class="color-value">rgb(0, 255, 255)</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<style>
+.container {
+  padding: 20px;
+}
+
+.intro-text {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 30px;
+  line-height: 1.4;
+}
+
+.section {
+  margin-bottom: 30px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.color-grid {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.color-item {
+  width: 30%;
+  margin-bottom: 20px;
+}
+
+.color-box {
+  width: 100%;
+  height: 100px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.color-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.color-value {
+  font-size: 12px;
+  color: #666;
+}
+</style>

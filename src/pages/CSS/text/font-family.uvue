@@ -1,0 +1,169 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view class="uni-padding-wrap">
+      <text class="common" style="font-family: monospace">font-family: monospace</text>
+
+      <text class="common" style="font-family: cursive">font-family: cursive</text>
+
+      <text class="common" style="font-family: AlimamaDaoLiTiTTF">font-family: 阿里妈妈刀隶体-ttf（网络字体下载后生效）</text>
+
+      <text class="common" style="font-family: AlimamaDaoLiTiOTF">font-family: 阿里妈妈刀隶体-otf</text>
+
+      <text class="common" style="font-family: AlimamaDaoLiTiOTF;font-weight: bold;font-style: italic;">font-family: 阿里妈妈刀隶体-otf（粗斜体）</text>
+
+      <text style="font-family: UniFontFamily;">style 加载非 static 目录字体文件：{{uniIcon}}</text>
+
+      <!--    <text class="common" style="font-family: AlimamaDaoLiTiWOFF">font-family: 阿里妈妈刀隶体-woff</text>
+      <text class="common" style="font-family: AlimamaDaoLiTiWOFF2">font-family: 阿里妈妈刀隶体-woff2</text> -->
+
+      <text class="uni-title-text title-color">【拍平测试】</text>
+      <text class="common" style="font-family: monospace" flatten>font-family: monospace</text>
+      <text class="common" style="font-family: cursive" flatten>font-family: cursive</text>
+      <text class="common" style="font-family: AlimamaDaoLiTiTTF" flatten>font-family: 阿里妈妈刀隶体-ttf（网络字体下载后生效）</text>
+      <text class="common" style="font-family: AlimamaDaoLiTiOTF" flatten>font-family: 阿里妈妈刀隶体-otf</text>
+      <text class="common" style="font-family: AlimamaDaoLiTiOTF;font-weight: bold;font-style: italic;" flatten>font-family: 阿里妈妈刀隶体-otf（粗斜体）</text>
+      <text style="font-family: UniFontFamily;" flatten>style 加载非 static 目录字体文件：{{uniIcon}}</text>
+
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text title-color">setProperty 设置与 getPropertyValue 获取 font-family 测试</text>
+
+        <!-- 普通版本 -->
+        <text class="uni-info">设置值: {{data.fontFamily}}</text>
+        <text class="uni-info">获取值: {{data.fontFamilyActual}}</text>
+        <text ref="textRef" class="common" :style="{ fontFamily: data.fontFamily }">当前 font-family: {{data.fontFamily}}</text>
+
+        <!-- 拍平版本 -->
+        <text class="uni-info">设置值: {{data.fontFamily}}</text>
+        <text class="uni-info">获取值: {{data.fontFamilyActualFlat}}</text>
+        <text ref="textRefFlat" class="common" :style="{ fontFamily: data.fontFamily }" flatten>当前 font-family: {{data.fontFamily}}</text>
+
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+          <enum-data :items="fontFamilyEnum" title="font-family 枚举值" @change="radioChangeFontFamily" :compact="true"></enum-data>
+          <input-data :defaultValue="data.fontFamily" title="font-family 自定义值" type="text" @confirm="inputChangeFontFamily"></input-data>
+        </view>
+      </view>
+    </view>
+    <!-- #ifdef APP -->
+    <view style="margin: 24px 12px;">
+      <button type="default" @click="openUniIcon">内置字体图标uni-icon示例</button>
+    </view>
+    <!-- #endif -->
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const uniIcon = ref('\ue100')
+  const openUniIcon = () => {
+    uni.navigateTo({
+      url: '/pages/CSS/text/font-family-icon'
+    })
+  }
+
+  const fontFamilyEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'monospace' },
+    { value: 2, name: 'cursive' },
+    { value: 3, name: 'AlimamaDaoLiTiTTF' },
+    { value: 4, name: 'AlimamaDaoLiTiOTF' },
+    { value: 5, name: 'UniFontFamily' }
+  ]
+
+  const data = reactive({
+    fontFamily: 'monospace',
+    fontFamilyActual: '',
+    fontFamilyActualFlat: ''
+  })
+  const textRef = ref(null as UniTextElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+
+  const getPropertyValues = () => {
+    data.fontFamilyActual = textRef.value?.style.getPropertyValue('font-family') ?? ''
+    data.fontFamilyActualFlat = textRefFlat.value?.style.getPropertyValue('font-family') ?? ''
+  }
+
+  const changeFontFamily = (value: string) => {
+    data.fontFamily = value
+    textRef.value?.style.setProperty('font-family', value)
+    textRefFlat.value?.style.setProperty('font-family', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeFontFamily = (index: number) => {
+    const selectedItem = fontFamilyEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeFontFamily(selectedItem.name)
+    }
+  }
+
+  const inputChangeFontFamily = (value: string) => {
+    changeFontFamily(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+  .common {
+    font-size: 20px;
+    line-height: 40px;
+  }
+  .title-color{
+    color:#007aff;
+    margin-bottom: 10px;
+  }
+
+  @font-face {
+    font-family: AlimamaDaoLiTiTTF;
+    src: url('https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/font/AlimamaDaoLiTi.ttf');
+  }
+
+  @font-face {
+    font-family: AlimamaDaoLiTiOTF;
+    src: url('/static/font/AlimamaDaoLiTi.otf');
+  }
+
+  @font-face {
+    font-family: UniFontFamily;
+    src: url('./uni.ttf');
+  }
+
+  /*  @font-face {
+    font-family: AlimamaDaoLiTiWOFF;
+    src: url('/static/app-ios/AlimamaDaoLiTi.woff');
+  }
+  @font-face {
+    font-family: AlimamaDaoLiTiWOFF2;
+    src: url('/static/app-ios/AlimamaDaoLiTi.woff2');
+  } */
+
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .test-box {
+    width: 180px;
+    height: 80px;
+    background-color: gray;
+    justify-content: center;
+    align-items: center;
+  }
+
+</style>

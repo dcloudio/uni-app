@@ -1,0 +1,103 @@
+<template>
+  <view>
+    <canvas class="drawing" id="tablet" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd"></canvas>
+    <button @click="doClear()">清空</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+type Point = {
+  x : number
+  y : number
+}
+
+// Data
+let lastPointX = 0
+let lastPointY = 0
+let offsetX = 0
+let offsetY = 0
+let renderingContext: CanvasRenderingContext2D | null = null
+
+// Methods
+function getPosition(event : TouchEvent) : Point {
+  const touch = event.touches[0]
+  // #ifndef MP-WEIXIN
+  return {
+    x: touch.clientX - offsetX,
+    y: touch.clientY - offsetY
+  } as Point
+  // #endif
+
+  // #ifdef MP-WEIXIN
+  return {
+    x: touch.x,
+    y: touch.y
+  } as Point
+  // #endif
+}
+
+function touchStart(event : TouchEvent) {
+  const position = getPosition(event)
+  lastPointX = position.x
+  lastPointY = position.y
+}
+
+function touchMove(event : TouchEvent) {
+  const position = getPosition(event)
+  const x = position.x
+  const y = position.y
+
+  const ctx = renderingContext!
+  ctx.lineWidth = 5
+  ctx.lineCap = "round"
+  ctx.lineJoin = "round"
+  ctx.beginPath()
+  ctx.moveTo(lastPointX, lastPointY)
+  ctx.lineTo(x, y)
+  ctx.stroke()
+
+  lastPointX = x
+  lastPointY = y
+}
+
+function touchEnd(event : TouchEvent) {
+}
+
+function doClear() {
+  if (renderingContext != null) {
+    renderingContext!.clearRect(0, 0, renderingContext!.canvas.width, renderingContext!.canvas.height)
+  }
+}
+
+// Lifecycle
+onReady(() => {
+  uni.createCanvasContextAsync({
+    id: 'tablet',
+    success: (context : CanvasContext) => {
+      console.log('success')
+      renderingContext = context.getContext('2d')!
+      const canvas = renderingContext!.canvas
+
+      const dpr = uni.getWindowInfo().pixelRatio
+      canvas.width = canvas.offsetWidth * dpr
+      canvas.height = canvas.offsetHeight * dpr
+      renderingContext!.scale(dpr, dpr)
+
+      // #ifndef MP
+      const elRect = canvas.getBoundingClientRect()
+      offsetX = elRect.left
+      offsetY = elRect.top
+      // #endif
+    }
+  })
+})
+</script>
+
+<style>
+  .drawing {
+    width: 100%;
+    height: 500px;
+    background-color: lightgray;
+    margin-bottom: 15px;
+  }
+</style>

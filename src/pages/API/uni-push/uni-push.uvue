@@ -1,0 +1,365 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+  <view>
+    <!-- #ifdef APP-ANDROID -->
+    <button class="normal-button" type="default" @click="handleCreateChannel(true)">
+      创建通知渠道 | setPushChannel
+    </button>
+    <button class="normal-button" type="default" @click="handleGetAllChannels">
+      获取所有通知渠道信息 | getAllChannels
+    </button>
+    <textarea style="width: 100%;" :disabled="true" :value="channelInfo"></textarea>
+    <!-- #endif -->
+    <!-- #ifdef APP -->
+    <button class="normal-button" type="default" @click="handleCreateLocalNotification">
+      创建本地通知消息 | createPushMessage
+    </button>
+    <text class="instructions">
+      不同手机厂商的角标显示规则不同，有部分设备的rom版本不支持显示角标，另有部分rom需要在应用的通知管理里开启`桌面角标`配置，才可以设置角标成功。\n
+      部分rom需要在设置中同时开启`通知开关`和`桌面角标`配置，才允许设置角标，例如鸿蒙4.2。 \n
+      另外针对高版本小米设备，会借助创建通知栏消息来设置角标数，所以设置时需要注意是否有权限创建通知栏消息。
+    </text>
+    <button class="normal-button" type="default" @click="handleSetBadge">
+      设置角标为5 | setAppBadgeNumber(5)
+    </button>
+    <button class="normal-button" type="default" @click="handleCleanBadge">
+      清空角标 | setAppBadgeNumber(0)
+    </button>
+    <!-- #endif -->
+    <button class="normal-button" type="default" @click="handleSendPushMessage">
+      发送通知消息 | sendPushMessage
+    </button>
+    <button class="normal-button uni-common-mb" type="default" @click="handleGetClientId">
+      获取cid | getPushClientId
+    </button>
+    <button class="normal-button" type="default" @click="handleOnPushMessage">
+      注册回调 | onPushMessage
+    </button>
+    <button class="normal-button" type="default" @click="handleOffPushMessage">
+      注销回调 | offPushMessage
+    </button>
+  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup>
+  // 自动化测试
+  type TypeJestResult = {
+    clientId : string,
+    sendPushMessageRes : number,
+    onPushMessageType:string,
+    onPushMessageCallbackInfo:string,
+    hasGetuiAppId: boolean
+  }
+  type TypeIsRegister = {
+    state:boolean
+  }
+  const jestResult = reactive({
+    clientId:"",
+    sendPushMessageRes:-1,
+    onPushMessageType:"",
+    onPushMessageCallbackInfo:"",
+    hasGetuiAppId: true
+  } as TypeJestResult)
+
+  // #ifdef APP-HARMONY
+  jestResult.hasGetuiAppId = false;
+  // 判断鸿蒙平台是否配置了个推AppId
+  import bundleManager from '@ohos.bundle.bundleManager';
+  const bundleFlags = bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION | bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_METADATA;
+  try {
+    bundleManager.getBundleInfoForSelf(bundleFlags).then((data) => {
+      jestResult.hasGetuiAppId = data.appInfo?.metadata?.entry?.find(item=>item.name === 'GETUI_APPID') != null;
+      console.error('jestResult.hasGetuiAppId:', jestResult.hasGetuiAppId);
+    }).catch((err) => {
+      console.error('Promise 捕获错误:', err);
+    });
+  } catch (_) {}
+  // #endif
+
+  // 自动化测试
+  const autoTest = ref(false);
+  const updateAutoTest = (value : boolean) => {
+    autoTest.value = value
+  }
+
+  const channelInfo = ref("")
+  const onPushMessageCallback = (res : OnPushMessageCallbackResult) => {
+    // 自动化测试
+    jestResult.onPushMessageType = res.type
+    jestResult.onPushMessageCallbackInfo = JSON.stringify(res.data)
+    if (!autoTest.value) {
+      uni.showModal({
+        title: "onPushMessage回调信息",
+        content: `type：${res.type} \n data：${JSON.stringify(res.data)}`
+      })
+    }
+  }
+
+  // 为兼容Android测试例中能获取到，此处用reactive定义
+  const isRegister = reactive({
+    state:false
+  } as TypeIsRegister);
+
+  const handleOnPushMessage = () => {
+    if (isRegister.state) {
+      uni.showToast({
+        icon: "error",
+        title: "无需重复注册"
+      })
+      return
+    }
+    uni.onPushMessage(onPushMessageCallback)
+    isRegister.state = true
+    uni.showToast({
+      title: "成功注册"
+    })
+  }
+
+  const handleOffPushMessage = () => {
+    if (!isRegister.state) {
+      uni.showToast({
+        icon: "error",
+        title: "未注册, 无需注销"
+      })
+      return
+    }
+    uni.offPushMessage(onPushMessageCallback)
+    isRegister.state = false
+    uni.showToast({
+      title: "成功注销"
+    })
+  }
+
+  const handleCreateChannel = (showToast : boolean) => {
+    // #ifdef APP-ANDROID
+    const manager = uni.getPushChannelManager()
+    manager.setPushChannel({
+      channelId: "msg-pass",
+      channelDesc: "留言审核通过",
+      soundName: "#填写配置的声音文件名#",
+      enableLights: true,
+      enableVibration: true,
+      importance: 4,
+      lockscreenVisibility: 1
+    } as SetPushChannelOptions)
+    if (showToast) {
+      uni.showToast({
+        title: "设置渠道成功"
+      })
+    }
+    // #endif
+  }
+  const handleGetAllChannels = () => {
+    // #ifdef APP-ANDROID
+    const manager = uni.getPushChannelManager()
+    console.log("channels : " + manager.getAllChannels());
+    channelInfo.value = `渠道信息为: \n ${manager.getAllChannels()}`
+    // #endif
+  }
+  const handleCreateLocalNotification = () => {
+    if (uni.getAppAuthorizeSetting().notificationAuthorized == "authorized") {
+      handleCreateChannel(false)
+      const date = new Date();
+      const hour = date.getHours()
+      const minute = date.getMinutes()
+      const second = date.getSeconds()
+      const formateTime = (target : number) : string => {
+        return target < 10 ? `0${target}` : `${target}`
+      }
+      uni.createPushMessage({
+        title: "主标题(title)",
+        content: `内容(content)，创建时间: ${formateTime(hour)}:${formateTime(minute)}:${formateTime(second)}`,
+        cover: false,
+        channelId: "msg-pass",
+        when: Date.now() + 10000,
+        icon: "/static/test-image/logo.png",
+        sound: "system",
+        delay: 1,
+        payload: {
+          pkey: "pvalue1"
+        },
+        // #ifdef APP-HARMONY
+        category: "SOCIAL_COMMUNICATION",
+        // #endif
+        // #ifndef APP-HARMONY
+        category: "IM",
+        // #endif
+        success(res) {
+          console.log("res: " + res);
+          uni.hideToast()
+          uni.showToast({
+            title: "创建本地通知消息成功"
+          })
+        },
+        fail(e) {
+          console.log("fail :" + e);
+          uni.hideToast()
+          uni.showToast({
+            title: "创建本地通知消息失败",
+            icon: "error"
+          })
+        }
+      })
+    } else {
+      uni.showToast({
+        title: "请在设置中开启通知权限",
+        icon: "error"
+      })
+    }
+  }
+
+  async function getPushClientId(): Promise<string>{
+    let pushClientId = '';
+    let res:void = await new Promise<void>(resolve => {
+      uni.getPushClientId({
+        success: (res: GetPushClientIdSuccess) => {
+          console.log(res.cid)
+          pushClientId = res.cid
+          resolve()
+        },
+        fail: (err: GetPushClientIdFail) => {
+          resolve()
+          console.error(err);
+          if (err.message.includes('uniPush is not enabled')) {
+            uni.showModal({
+              title: '获取cid失败',
+              content: '当前项目未启用uni-push，检查manifest.json中的uni-push配置',
+              showCancel: false
+            });
+          } else if (err.message.includes('getPushClientId:fail register fail: {\"errorCode\":1,\"errorMsg\":\"\"}')) {
+            uni.showModal({
+              title: '获取cid失败',
+              content: '当前项目未开通uni-push，开通文档：https://uniapp.dcloud.net.cn/unipush-v2.html#%E7%AC%AC%E4%B8%80%E6%AD%A5-%E5%BC%80%E9%80%9A',
+              showCancel: false
+            });
+          } else {
+            uni.showToast({
+              title: `获取cid失败`,
+              icon: "error"
+            })
+          }
+        }
+      })
+    })
+    return pushClientId
+  }
+
+  const handleGetClientId = async():Promise<void> =>{
+    uni.showLoading({
+      title: "正在获取cid",
+    })
+    const cid = await getPushClientId()
+    if (cid != '') {
+      // 自动化测试
+      jestResult.clientId = cid
+      if (!autoTest.value) {
+        uni.showModal({
+          title: "获取cid",
+          content: "获取cid成功" + cid,
+          showCancel: false
+        })
+      }
+    }
+    uni.hideLoading()
+  }
+  const handleSendPushMessage = async():Promise<void>=> {
+    const pushClientId = await getPushClientId()
+    if (pushClientId == ''){
+      return
+    }
+    const uniPushCo = uniCloud.importObject("uni-push-co")
+    try {
+      const res = await uniPushCo.sendPushMessage(pushClientId)
+      // 自动化测试
+      jestResult.sendPushMessageRes = res.errCode as number
+      if (!autoTest.value) {
+        uni.showToast({
+          title: "发送通知消息成功"
+        })
+      }
+    } catch (err:any) {
+      const error = err as UniCloudError
+      console.error(error)
+      if (!autoTest.value) {
+        uni.showToast({
+          title: "发送通知消息失败",
+          icon: "error"
+        })
+      }
+    }
+  }
+  const handleSetBadge = () => {
+    if (uni.getDeviceInfo().deviceBrand?.toLowerCase() == "xiaomi") {
+      if (uni.getAppAuthorizeSetting().notificationAuthorized == "authorized") {
+        uni.setAppBadgeNumber(5, {
+          title: "AppName",
+          content: "您有5条未读消息"
+        } as BadgeOptions)
+        uni.showToast({
+          title: "设置应用角标数为5"
+        })
+      } else {
+        uni.showToast({
+          title: "请在设置中开启通知权限",
+          icon: "error"
+        })
+      }
+
+    } else {
+      uni.setAppBadgeNumber(5)
+      uni.showToast({
+        title: "设置应用角标数为5"
+      })
+    }
+  }
+  const handleCleanBadge = () => {
+    if (uni.getDeviceInfo().deviceBrand?.toLowerCase() == "xiaomi") {
+      if (uni.getAppAuthorizeSetting().notificationAuthorized == "authorized") {
+        uni.setAppBadgeNumber(0, {} as BadgeOptions)
+        uni.showToast({
+          title: "清空应用角标数"
+        })
+      } else {
+        uni.showToast({
+          title: "请在设置中开启通知权限",
+          icon: "error"
+        })
+      }
+    } else {
+      uni.setAppBadgeNumber(0)
+      uni.showToast({
+        title: "清空应用角标数"
+      })
+    }
+  }
+
+  // 自动化测试
+  defineExpose({
+    jestResult,
+    autoTest,
+    updateAutoTest,
+    isRegister,
+    handleSendPushMessage,
+    handleGetClientId,
+    handleOnPushMessage,
+    handleOffPushMessage
+  })
+</script>
+
+<style>
+  .normal-button {
+    width: 100%;
+  }
+
+  .instructions {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: #eee;
+  }
+</style>

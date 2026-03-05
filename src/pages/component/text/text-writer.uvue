@@ -1,0 +1,332 @@
+<template>
+	<view class="page-container">
+		<!-- #ifndef MP -->
+		<fps></fps>
+		<!-- #endif -->
+		<!-- 打字机效果区域 -->
+		<view class="typewriter-container">
+			<view class="typewriter-title">
+				<text class="title-text">打字机效果演示</text>
+			</view>
+			<view class="typewriter-box">
+				<text v-for="(segment, index) in displayedSegments" :key="index"
+					:class="segment.className">{{ segment.text }}</text>
+				<text :class="showCursor ? 'typewriter-cursor' : 'typewriter-cursor-hidden'">|</text>
+			</view>
+      <text class="uni-title">【拍平测试】</text>
+      <view class="typewriter-box">
+      	<text flatten v-for="(segment, index) in displayedSegments" :key="index"
+      		:class="segment.className">{{ segment.text }}</text>
+      	<text flatten :class="showCursor ? 'typewriter-cursor' : 'typewriter-cursor-hidden'">|</text>
+      </view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	// 打字机效果相关 - 富文本片段定义
+	type TextSegment = {
+		text : string
+		className : string
+	}
+
+	// 定义富文本内容，每个片段有不同的样式
+	const textSegments : TextSegment[] = [
+		{ text: '欢迎使用 ', className: 'text-normal' },
+		{ text: 'uni-app x', className: 'text-brand-large' },
+		{ text: '！', className: 'text-exclaim-large' },
+		{ text: '这是一个', className: 'text-small-gray' },
+		{ text: '炫酷', className: 'text-fancy-bold' },
+		{ text: '的', className: 'text-small-gray' },
+		{ text: '打字机效果', className: 'text-orange-italic' },
+		{ text: '演示。', className: 'text-normal-small' },
+		{ text: '文字会像 ', className: 'text-small-light' },
+		{ text: 'AI', className: 'text-ai-highlight' },
+		{ text: ' 回复一样', className: 'text-normal-small' },
+		{ text: '逐字', className: 'text-purple-bold' },
+		{ text: '显示出来～ ', className: 'text-normal-small' },
+		{ text: 'HBuilderX ', className: 'text-orange-bold-wide' },
+		{ text: '是', className: 'text-small-gray' },
+		{ text: '轻巧', className: 'text-blue-italic' },
+		{ text: '、', className: 'text-small-light' },
+		{ text: '极速', className: 'text-green-italic' },
+		{ text: '、', className: 'text-small-light' },
+		{ text: '极客', className: 'text-pink-italic' },
+		{ text: '的编辑器；', className: 'text-normal-small' },
+		{ text: 'uni-app x', className: 'text-brand-underline' },
+		{ text: ' 是', className: 'text-small-gray' },
+		{ text: '终极', className: 'text-red-bold-italic' },
+		{ text: '跨平台方案', className: 'text-purple-highlight' },
+		{ text: '！', className: 'text-exclaim-pink' },
+		{ text: 'UTS', className: 'text-green-bold-wide' },
+		{ text: ' 让你使用', className: 'text-normal-small' },
+		{ text: '大一统语言', className: 'text-orange-italic-underline' },
+		{ text: '进行开发～', className: 'text-small-gray-15' }
+	]
+
+	const showCursor = ref(true)
+	const displayedSegments = ref<TextSegment[]>([])
+	let typingTimer : number | null = null
+	let cursorTimer : number | null = null
+	let currentSegmentIndex = ref(0)
+	let currentCharIndex = ref(0)
+
+	// 开始光标闪烁
+	function startCursorBlink() {
+		cursorTimer = setInterval(() => {
+			showCursor.value = !showCursor.value
+		}, 500) // 每0.1秒切换光标显示状态
+	}
+
+	// 开始打字机效果
+	function startTyping() {
+		currentSegmentIndex.value = 0
+		currentCharIndex.value = 0
+		displayedSegments.value = []
+
+		typingTimer = setInterval(() => {
+			if (currentSegmentIndex.value < textSegments.length) {
+				const currentSegment = textSegments[currentSegmentIndex.value]
+
+				if (currentCharIndex.value < currentSegment.text.length) {
+					// 更新当前片段的显示文字
+					const displayedChar = currentSegment.text.substring(0, currentCharIndex.value + 1)
+
+					// 更新 displayedSegments
+					const newSegments : TextSegment[] = []
+					for (let i = 0; i < currentSegmentIndex.value; i++) {
+						newSegments.push(textSegments[i])
+					}
+					newSegments.push({
+						text: displayedChar,
+						className: currentSegment.className
+					})
+					displayedSegments.value = newSegments
+
+					currentCharIndex.value++
+				} else {
+					// 当前片段完成，移动到下一个片段
+					currentSegmentIndex.value++
+					currentCharIndex.value = 0
+				}
+			} else {
+				// 所有片段完成，等待2秒重新开始
+				if (typingTimer != null) {
+					clearInterval(typingTimer!)
+				}
+				setTimeout(() => {
+					startTyping()
+				}, 1500)
+			}
+		}, 50)
+	}
+
+	// 组件挂载时开始打字和光标闪烁
+	onMounted(() => {
+		startTyping()
+		startCursorBlink()
+	})
+
+	// 组件卸载时清理定时器
+	onUnmounted(() => {
+		if (typingTimer != null) {
+			clearInterval(typingTimer)
+		}
+		if (cursorTimer != null) {
+			clearInterval(cursorTimer)
+		}
+	})
+</script>
+
+<style>
+	.page-container {
+		background-color: #F8F8F8;
+		flex: 1;
+		position: relative;
+	}
+
+	.typewriter-container {
+		margin: 20px;
+		padding: 30px 20px;
+		background-color: #ffffff;
+		border-radius: 16px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	}
+
+	.typewriter-title {
+		margin-bottom: 20px;
+		padding-bottom: 15px;
+		border-bottom: 2px solid #f0f0f0;
+	}
+
+	.title-text {
+		font-size: 20px;
+		font-weight: bold;
+		color: #333333;
+	}
+
+	.typewriter-box {
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: flex-start;
+	}
+
+	.typewriter-cursor {
+		font-size: 16px;
+		line-height: 24px;
+		color: #3333ff;
+		margin-left: 2px;
+	}
+
+	.typewriter-cursor-hidden {
+		font-size: 16px;
+		line-height: 24px;
+		color: transparent;
+		margin-left: 2px;
+	}
+
+	/* 文本样式类 */
+	.text-normal {
+		font-size: 16px;
+		color: #333333;
+	}
+
+	.text-brand-large {
+		font-size: 20px;
+		color: #007aff;
+		font-weight: bold;
+		letter-spacing: 1px;
+	}
+
+	.text-exclaim-large {
+		font-size: 22px;
+		color: #ff3b30;
+	}
+
+	.text-small-gray {
+		font-size: 14px;
+		color: #666666;
+	}
+
+	.text-fancy-bold {
+		font-size: 19px;
+		color: #ff2d55;
+		font-weight: bold;
+		font-style: italic;
+		/* #ifdef WEB */
+		text-decoration: underline;
+    /* #endif */
+	}
+
+	.text-orange-italic {
+		font-size: 18px;
+		color: #ff9500;
+		font-style: italic;
+		letter-spacing: 0.5px;
+	}
+
+	.text-normal-small {
+		font-size: 15px;
+		color: #333333;
+	}
+
+	.text-small-light {
+		font-size: 14px;
+		color: #999999;
+	}
+
+	.text-ai-highlight {
+		font-size: 20px;
+		color: #34c759;
+		font-weight: bold;
+		background-color: #f0f9ff;
+		padding-left: 4px;
+		padding-right: 4px;
+	}
+
+	.text-purple-bold {
+		font-size: 17px;
+		color: #5856d6;
+		font-weight: bold;
+		/* #ifdef WEB */
+		text-decoration: underline;
+    /* #endif */
+	}
+
+	.text-orange-bold-wide {
+		font-size: 18px;
+		color: #ff9500;
+		font-weight: bold;
+		letter-spacing: 1.5px;
+	}
+
+	.text-blue-italic {
+		font-size: 16px;
+		color: #007aff;
+		font-style: italic;
+	}
+
+	.text-green-italic {
+		font-size: 16px;
+		color: #34c759;
+		font-style: italic;
+	}
+
+	.text-pink-italic {
+		font-size: 16px;
+		color: #ff2d55;
+		font-style: italic;
+	}
+
+	.text-brand-underline {
+		font-size: 19px;
+		color: #007aff;
+		font-weight: bold;
+		/* #ifdef WEB */
+		text-decoration: underline;
+    /* #endif */
+		letter-spacing: 0.8px;
+	}
+
+	.text-red-bold-italic {
+		font-size: 20px;
+		color: #ff3b30;
+		font-weight: bold;
+		font-style: italic;
+	}
+
+	.text-purple-highlight {
+		font-size: 17px;
+		color: #5856d6;
+		font-weight: bold;
+		background-color: #fff3e0;
+		padding-left: 3px;
+		padding-right: 3px;
+	}
+
+	.text-exclaim-pink {
+		font-size: 22px;
+		color: #ff2d55;
+	}
+
+	.text-green-bold-wide {
+		font-size: 18px;
+		color: #34c759;
+		font-weight: bold;
+		letter-spacing: 2px;
+	}
+
+	.text-orange-italic-underline {
+		font-size: 17px;
+		color: #ff9500;
+		font-style: italic;
+		/* #ifdef WEB */
+		text-decoration: underline;
+    /* #endif */
+	}
+
+	.text-small-gray-15 {
+		font-size: 15px;
+		color: #666666;
+	}
+</style>

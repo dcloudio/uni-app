@@ -1,0 +1,23 @@
+<template>
+  <view style="flex: 1;">
+    <text style="text-align: center;">测试页面 2</text>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+  type DataType = {
+    page : number;
+  }
+
+  const data = reactive({
+    page: 2
+  } as DataType)
+
+  defineExpose({data})
+
+</script>
+
+<style>
+
+</style>

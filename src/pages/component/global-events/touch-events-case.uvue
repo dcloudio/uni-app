@@ -1,0 +1,149 @@
+<template>
+	<view>
+		<swiper ref="header" class="h-300" indicator-dots="true" circular="true" @change="swiperChange" @touchstart="swiperTouchStart" @touchmove="swiperTouchMove" @touchend="swiperTouchEnd">
+			<swiper-item v-for="i in 3" :item-id="i" @touchstart="swiperItemTouchStart" @touchmove="swiperItemTouchMove" @touchend="swiperItemTouchEnd">
+				<view class="h-300 header-tiem" @touchstart="viewTouchStart" @touchmove="viewTouchMove" @touchend="viewTouchEnd">
+					<text>{{ i }}</text>
+				</view>
+			</swiper-item>
+		</swiper>
+    <view class="content">
+      <boolean-data :defaultValue="false" title="stopPropagation" @change="changeStopPropagation"></boolean-data>
+      <boolean-data :defaultValue="false" title="preventDefault" @change="changePreventDefault"></boolean-data>
+      <text style="padding: 10px;">{{ touchResult }}</text>
+      <view class="uni-padding-wrap uni-common-mt" style="bottom: 20px;">
+        <navigator url="/pages/component/global-events/touch-events-preventDefault" hover-class="none">
+          <button type="default" class="button">
+            测试 preventDefault
+          </button>
+        </navigator>
+      </view>
+    </view>
+	</view>
+</template>
+
+<script setup lang="uts">
+
+
+type DataType = {
+  swiperChangeEvent: boolean,
+  viewTouchEvent: boolean,
+  swiperItemTouchEvent: boolean,
+  swiperTouchEvent: boolean,
+}
+
+const stopPropagation = ref(false)
+const preventDefault = ref(false)
+const touchResult = ref("")
+const data = reactive({
+  swiperChangeEvent: false,
+  viewTouchEvent: false,
+  swiperItemTouchEvent: false,
+  swiperTouchEvent: false,
+} as DataType)
+
+function changeStopPropagation(value: boolean) {
+  stopPropagation.value = value
+}
+
+function changePreventDefault(value: boolean) {
+  preventDefault.value = value
+}
+
+function swiperChange(e: UniSwiperChangeEvent) {
+  console.log("swiperChange", e.detail.current)
+  data.swiperChangeEvent = true
+}
+
+function viewTouchStart(e: UniTouchEvent) {
+  console.log("viewTouchStart")
+  touchResult.value = "viewTouchStart"
+  data.viewTouchEvent = true
+  if (stopPropagation.value) e.stopPropagation()
+  if (preventDefault.value) e.preventDefault()
+}
+
+function viewTouchMove(e: UniTouchEvent) {
+  console.log("viewTouchMove")
+  touchResult.value = "viewTouchMove"
+  data.viewTouchEvent = true
+  if (stopPropagation.value) e.stopPropagation()
+  if (preventDefault.value) e.preventDefault()
+}
+
+function viewTouchEnd(e: UniTouchEvent) {
+  console.log("viewTouchEnd")
+  touchResult.value = "viewTouchEnd"
+  if (stopPropagation.value) e.stopPropagation()
+}
+
+function swiperItemTouchStart(e: UniTouchEvent) {
+  console.log("swiperItemTouchStart")
+  touchResult.value += " -> swiperItemTouchStart"
+  data.swiperItemTouchEvent = true
+}
+
+function swiperItemTouchMove(e: UniTouchEvent) {
+  console.log("swiperItemTouchMove")
+  touchResult.value += " -> swiperItemTouchMove"
+}
+
+function swiperItemTouchEnd(e: UniTouchEvent) {
+  console.log("swiperItemTouchEnd")
+  touchResult.value += " -> swiperItemTouchEnd"
+}
+
+function swiperTouchStart(e: UniTouchEvent) {
+  console.log("swiperTouchStart")
+  touchResult.value += " -> swiperTouchStart"
+  data.swiperTouchEvent = true
+}
+
+function swiperTouchMove(e: UniTouchEvent) {
+  console.log("swiperTouchMove")
+  touchResult.value += " -> swiperTouchMove"
+}
+
+function swiperTouchEnd(e: UniTouchEvent) {
+  console.log("swiperTouchEnd")
+  touchResult.value += " -> swiperTouchEnd"
+}
+
+function resetEvent() {
+  data.swiperChangeEvent = false
+  data.viewTouchEvent = false
+  data.swiperItemTouchEvent = false
+  data.swiperTouchEvent = false
+  stopPropagation.value = true
+  preventDefault.value = true
+}
+
+function isPassTest1() {
+  console.log("swiperChangeEvent:", data.swiperChangeEvent)
+  return data.swiperChangeEvent == false
+}
+
+function isPassTest2() {
+  console.log("viewTouchEvent:", data.viewTouchEvent)
+  console.log("swiperItemTouchEvent:", data.swiperItemTouchEvent)
+  console.log("swiperTouchEvent:", data.swiperTouchEvent)
+  return data.viewTouchEvent == true && data.swiperItemTouchEvent == true  && data.swiperTouchEvent == true
+}
+
+defineExpose({
+  data,
+  resetEvent
+})
+</script>
+
+<style>
+  .h-300{
+    height: 300px;
+  }
+  
+	.header-tiem {
+		background-color: #89ff8d;
+		align-items: center;
+		justify-content: center;
+	}
+</style>

@@ -1,0 +1,265 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view" :direction="data.scrollDirection">
+  <!-- #endif -->
+    <view>
+      <page-head title="scroll-view,区域滚动视图"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text">Vertical Scroll</text>
+          <text class="uni-subtitle-text">纵向滚动</text>
+        </view>
+        <view>
+          <scroll-view :scroll-top="data.scrollTop" direction="vertical" class="scroll-Y" scroll-with-animation="true"
+            @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll" @scrollend="end"
+            :show-scrollbar="data.showScrollbar" id="verticalScrollView">
+            <view class="scroll-view-item uni-bg-red"><text class="text">A</text></view>
+            <view class="scroll-view-item uni-bg-green"><text class="text">B</text></view>
+            <view class="scroll-view-item uni-bg-blue"><text class="text">C</text></view>
+          </scroll-view>
+        </view>
+        <view @tap="goTop" class="uni-center uni-common-mt">
+          <text class="uni-link">点击这里返回顶部</text>
+        </view>
+
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text">Horizontal Scroll</text>
+          <text class="uni-subtitle-text">横向滚动</text>
+        </view>
+        <view>
+          <scroll-view class="scroll-view_H" direction="horizontal" @scroll="scroll" @scrollend="end"
+            :scroll-left="data.scrollLeft" :show-scrollbar="data.showScrollbar">
+            <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
+            <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
+            <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
+          </scroll-view>
+        </view>
+        <boolean-data :defaultValue="false" title="是否禁用外层scroll-view滚动" @change="change_disabled_boolean"></boolean-data>
+
+        <text class="uni-title-text">scroll-view样式大合集</text>
+        <scroll-view class="scroll-view-style-demo" direction="vertical">
+          <view class="style-demo-item uni-bg-red"><text class="text">1</text></view>
+          <view class="style-demo-item uni-bg-green"><text class="text">2</text></view>
+          <view class="style-demo-item uni-bg-blue"><text class="text">3</text></view>
+        </scroll-view>
+
+        <navigator url="/pages/component/scroll-view/scroll-view-props" hover-class="none">
+          <button type="primary" class="button">
+            非下拉刷新的属性示例
+          </button>
+        </navigator>
+        <view class="uni-common-pb"></view>
+
+        <navigator url="/pages/component/scroll-view/scroll-view-refresher-props" hover-class="none">
+          <button type="primary" class="button">
+            下拉刷新的属性示例
+          </button>
+        </navigator>
+        <view class="uni-common-pb"></view>
+        <navigator url="/pages/component/scroll-view/scroll-view-refresher" hover-class="none">
+          <button type="primary" class="button"> 默认下拉刷新示例 </button>
+        </navigator>
+        <view class="uni-common-pb"></view>
+        <navigator url="/pages/component/scroll-view/scroll-view-custom-refresher-props" hover-class="none">
+          <button type="primary" class="button">
+            自定义下拉刷新示例
+          </button>
+        </navigator>
+        <view class="uni-common-pb"></view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+  type ScrollEventTest = {
+    type : string;
+    target : UniElement | null;
+    currentTarget : UniElement | null;
+    direction ?: string
+  }
+
+  type DataType = {
+    scrollTop: number;
+    oldScrollTop: number;
+    scrollLeft: number;
+    showScrollbar: boolean;
+    // 控制外层scroll-view的direction属性
+    scrollDirection: string;
+    // 自动化测试
+    isScrollTest: string;
+    isScrolltolowerTest: string;
+    isScrolltoupperTest: string;
+    scrollDetailTest: UniScrollEventDetail | null;
+    scrollEndDetailTest: UniScrollEventDetail | null;
+
+  }
+
+  const data = reactive({
+    scrollTop: 0,
+    oldScrollTop: 0,
+    scrollLeft: 120,
+    showScrollbar: true,
+    scrollDirection: "vertical",
+    // 自动化测试
+    isScrollTest: '',
+    isScrolltolowerTest: '',
+    isScrolltoupperTest: '',
+    scrollDetailTest: null as UniScrollEventDetail | null,
+    scrollEndDetailTest: null as UniScrollEventDetail | null,
+  } as DataType)
+
+  // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
+  const checkEventTest = (e : ScrollEventTest, eventName : String) => {
+    // #ifndef MP
+    const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement;
+    // #endif
+    // #ifdef MP
+    const isPass = true
+    // #endif
+    const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
+    switch (eventName) {
+      case 'scroll':
+        data.isScrollTest = result
+        break;
+      case 'scrolltolower':
+        data.isScrolltolowerTest = result + `-${e.direction}`
+        break;
+      case 'scrolltoupper':
+        data.isScrolltoupperTest = result + `-${e.direction}`
+        break;
+      default:
+        break;
+    }
+  }
+
+  const upper = (e : UniScrollToUpperEvent) => {
+    console.log('滚动到顶部/左边', e)
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget,
+      direction: e.detail.direction,
+    } as ScrollEventTest, 'scrolltoupper')
+  }
+
+  const lower = (e : UniScrollToLowerEvent) => {
+    console.log('滚动到底部/右边', e)
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget,
+      direction: e.detail.direction,
+    } as ScrollEventTest, 'scrolltolower')
+  }
+
+  const scroll = (e : UniScrollEvent) => {
+    data.scrollDetailTest = e.detail
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget
+    } as ScrollEventTest, 'scroll')
+    data.oldScrollTop = e.detail.scrollTop
+  }
+
+  const end = (e : UniScrollEvent) => {
+    console.log('滚动结束时触发', e)
+    data.scrollEndDetailTest = e.detail
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget
+    } as ScrollEventTest, 'scrollend')
+  }
+
+  const goTop = () => {
+    // 解决view层不同步的问题
+    data.scrollTop = data.oldScrollTop
+    nextTick(() => {
+      data.scrollTop = 0
+    })
+    uni.showToast({
+      icon: 'none',
+      title: '纵向滚动 scrollTop 值已被修改为 0',
+    })
+  }
+
+  // 自动化测试专用
+  const setVerticalScrollBy = (y : number) => {
+    const element = uni.getElementById("verticalScrollView")
+    if (element != null) {
+      element.scrollBy(0, y)
+    }
+  }
+
+  defineExpose({
+    data,
+    setVerticalScrollBy
+  })
+
+  const change_disabled_boolean = (disabled: boolean) => {
+    if(disabled) {
+      data.scrollDirection = "none"
+    } else {
+      data.scrollDirection = "vertical"
+    }
+  }
+</script>
+
+<style>
+  .scroll-Y {
+    height: 150px;
+  }
+
+  .scroll-view_H {
+    width: 100%;
+    flex-direction: row;
+  }
+
+  .scroll-view-item {
+    height: 150px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .scroll-view-item_H {
+    width: 100%;
+    height: 150px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .text {
+    font-size: 18px;
+    color: #ffffff;
+  }
+
+  .button {
+    margin-top: 15px;
+  }
+
+  .scroll-view-style-demo {
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: 90%;
+    height: 80px;
+    background-color: #e3f2fd;
+    background-image: linear-gradient(to right, #e3f2fd, #a9d5fa);
+    border: 1px solid #007aff;
+    border-radius: 4px;
+    margin: 10px;
+    padding: 10px;
+    display: flex;
+    opacity: 0.95;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  .style-demo-item {
+    width: 100px;
+    height: 80px;
+  }
+
+</style>

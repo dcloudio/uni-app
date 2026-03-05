@@ -1,0 +1,264 @@
+<template>
+  <view class="container">
+    <page-intro content="本页为一键登录自定义 uvue 页面：展示号码与 slogan、本机一键登录、隐私协议与其他登录方式。"></page-intro>
+    <view class="safe_content">
+      <text class="close_icon" @click="closePage">{{closeIcon}}</text>
+      <text class="title">这是一个普通uvue的dialogPage页面</text>
+      <view class="number">
+        <text id="number-text" class="number-text" ref="number-text">{{phone}}</text>
+        <text id="slogan-text" class="slogan-text">{{slogan}}</text>
+      </view>
+      <button id="login-button" class="login-button" @click="loginIn">本机号码一键登录</button>
+      <view class="privacy">
+        <checkbox id="privacy-checkbox" class="privacy-checkbox" ref="privacy-checkbox" :checked="false"></checkbox>
+        <text class="privacy-normal-text">登录即同意</text>
+        <text id="privacy-text" class="privacy-text" @click="openLink">{{privacyName}}</text>
+      </view>
+      <text class="other" @click="otherLogin">其他登录方式</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const instance = getCurrentInstance()!.proxy!
+
+  const uniVerifyManager = ref(null as UniVerifyManager | null)
+  const phone = ref('')
+  const slogan = ref('')
+  const privacyName = ref('')
+  const privacyUrl = ref('')
+  const closeIcon = ref('\uE650')
+  const isLoading = ref(false)
+
+  function closePage() {
+    uni.closeDialogPage({
+      dialogPage: instance.$page,
+      animationType: 'slide-out-bottom',
+      success(res) {
+        console.log('closeThisDialog success', res)
+      },
+      fail(err) {
+        console.log('closeThisDialog fail', err)
+      }
+    })
+  }
+
+  function openLink() {
+    let url = '/pages/API/get-uni-verify-manager/full-webview-page?url=' + privacyUrl.value + '&title=' + privacyName.value + '&animationType=slide-out-bottom';
+    uni.openDialogPage({
+      url: url,
+      animationType: 'slide-in-bottom',
+      success(res) {
+        console.log("打开隐私协议");
+      },
+      fail(err) {
+        console.log(err);
+      }
+    })
+  }
+
+  function takePhoneNumber(token : string, openId : string) {
+    uniCloud.callFunction({
+      name: 'univerify',
+      data: {
+        access_token: token,
+        openid: openId
+      }
+    }).then(res => {
+      closePage();
+      setTimeout(() => {
+        uni.showModal({
+          title: '取号成功',
+          content: res.result.getJSON("res")?.getString("phoneNumber"),
+          showCancel: false
+        });
+      }, 100);
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+      closePage();
+      setTimeout(() => {
+        uni.showModal({
+          title: '取号失败',
+          content: (err as Error).message,
+          showCancel: false
+        });
+      }, 100);
+    });
+  }
+
+  function loginIn() {
+    if (isLoading.value) {
+      uni.showToast({
+        title: "正在登录中，请稍后",
+        position: "bottom",
+        duration: 2000
+      })
+      return;
+    }else{
+      isLoading.value = true;
+    }
+    const numberTextElement = instance.$page.getElementById('number-text');
+    const sloganTextElement = instance.$page.getElementById('slogan-text');
+    const loginButtonElement = instance.$page.getElementById('login-button');
+    const privacyCheckBoxElement = instance.$page.getElementById('privacy-checkbox');
+    const privacyTextElement = instance.$page.getElementById('privacy-text');
+    if (numberTextElement != null && sloganTextElement != null && loginButtonElement != null && privacyCheckBoxElement != null && privacyTextElement != null) {
+      uniVerifyManager.value?.customLogin({
+        numberTextElement: numberTextElement,
+        sloganTextElement: sloganTextElement,
+        loginButtonElement: loginButtonElement,
+        privacyCheckBoxElement: privacyCheckBoxElement,
+        privacyTextElement: privacyTextElement,
+        success: (res) => {
+          console.log(res);
+          takePhoneNumber(res.accessToken, res.openId);
+        },
+        fail: (error) => {
+          if (error.errCode == 40001) {
+            uni.showToast({
+              title: "请同意服务条款",
+              position: "bottom",
+              duration: 2000
+            })
+          } else if (error.errCode == 40002) {
+            uni.showToast({
+              title: "授权页不符合规范",
+              position: "bottom",
+              duration: 2000
+            })
+          } else {
+            const errorMsg = JSON.parseObject(error.cause?.cause?.message ?? "")?.getString("errorDesc") ?? error.errMsg;
+            uni.showToast({
+              title: errorMsg,
+              position: "bottom",
+              duration: 2000
+            })
+          }
+        },
+        complete: () =>{
+          isLoading.value = false;
+        }
+      })
+    } else {
+      uni.showToast({
+        title: "未获取到页面元素",
+        position: "bottom",
+        duration: 2000
+      })
+      isLoading.value = false;
+    }
+  }
+
+  function otherLogin() {
+    uni.showToast({
+      title: "使用其他方式登录",
+      position: "bottom"
+    })
+  }
+
+  onLoad((options : OnLoadOptions) => {
+    uniVerifyManager.value = uni.getUniVerifyManager();
+    phone.value = options['phone'] as string;
+    slogan.value = options['slogan'] as string;
+    privacyName.value = options['name'] as string;
+    privacyUrl.value = options['link'] as string;
+  })
+</script>
+
+<style>
+  .container {
+    background-color: white;
+    flex: 1;
+    width: 100%;
+  }
+
+  .safe_content {
+    padding-top: var(--status-bar-height);
+    width: 100%;
+    height: 100%;
+  }
+
+  .close_icon {
+    left: 90%;
+    top: 15px;
+    font-family: uni-icon;
+    font-size: 24px;
+    /* font-weight: bold; */
+  }
+
+  .title {
+    align-self: center;
+    top: 20px;
+  }
+
+  .number {
+    width: 100%;
+    top: 25%;
+    position: absolute;
+    height: 120px;
+  }
+
+  .number-text {
+    width: 100%;
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    align-self: center;
+    height: 30px;
+  }
+
+  .slogan-text {
+    margin-top: 10px;
+    width: 100%;
+    font-size: 13px;
+    text-align: center;
+    align-self: center;
+    color: gray;
+    height: 20px;
+  }
+
+  .login-button {
+    width: 80%;
+    top: 40%;
+    position: absolute;
+    align-self: center;
+    background-color: orangered;
+    font-size: 16px;
+    color: white;
+  }
+
+  .privacy {
+    margin-top: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    top: 45%;
+    width: 100%;
+    justify-content: center;
+    align-self: center;
+    position: absolute;
+  }
+
+  .privacy-checkbox {
+    transform: scale(0.65);
+  }
+
+  .privacy-text {
+    margin-top: 4px;
+    color: #007aff;
+    font-size: 14px;
+  }
+
+  .privacy-normal-text {
+    margin-top: 4px;
+    color: gray;
+    font-size: 14px;
+  }
+
+  .other {
+    bottom: 7%;
+    transform: translateY(50%);
+    position: absolute;
+    align-self: center;
+    font-size: 14px;
+  }
+</style>

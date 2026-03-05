@@ -1,0 +1,149 @@
+<template>
+  <view class="page">
+    <unicloud-db ref="udbRef" class="udb" v-slot:default="{data, pagination, loading, hasMore, error}"
+      :collection="collection" :page-size="15" :getcount="true" loadtime="manual">
+      <view v-if="error!=null" class="error">{{error.errMsg}}</view>
+      <scroll-view ref="listView" class="list-view" @scrolltolower="loadMore()">
+        <view class="list-item" v-for="(item, _) in data" @click="gotoDetailPage(item['_id'] as string)">
+          <view class="list-item-fill">
+            <text class="name">{{item['username']}}</text>
+            <text class="mobile">{{item['mobile']}}</text>
+          </view>
+        </view>
+      </scroll-view>
+      <loading v-if="loading" style="color: #999;margin: 20px;align-self: center;"></loading>
+      <view v-if="data.length>0" class="pagination">
+        <text class="pagination-item">{{data.length}} / {{pagination.count}}</text>
+      </view>
+    </unicloud-db>
+    <view class="btn-plus" @click="gotoAddPage">
+      <text class="btn-plus-text">+</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+  import { COLLECTION_NAME, UNICLOUD_DB_CONTACTS_ADD, UNICLOUD_DB_CONTACTS_UPDATE, UNICLOUD_DB_CONTACTS_DELETE } from './types.uts'
+
+  const collection = ref(COLLECTION_NAME)
+  const udbRef = ref<UniCloudDBElement | null>(null)
+
+  function loadMore() {
+    if (udbRef.value != null) {
+      udbRef.value!.loadMore()
+    }
+  }
+  function onDataChange(event : string) {
+    if (udbRef.value != null) {
+      udbRef.value!.loadData({
+        clear: true
+      })
+    }
+  }
+  function gotoAddPage() {
+    // TODO 后续通过 EventChannel 实现
+    uni.$on(UNICLOUD_DB_CONTACTS_ADD, onDataChange);
+    uni.navigateTo({
+      url: './add'
+    })
+  }
+  function gotoDetailPage(id : string) {
+    // TODO 后续通过 EventChannel 实现
+    uni.$on(UNICLOUD_DB_CONTACTS_UPDATE, onDataChange);
+    uni.navigateTo({
+      url: './detail?id=' + id
+    })
+  }
+
+  onReady(() => {
+    // TODO 后续通过 EventChannel 实现
+    uni.$on(UNICLOUD_DB_CONTACTS_DELETE, onDataChange);
+    if (udbRef.value != null) {
+      udbRef.value!.loadData()
+    }
+  })
+  onUnload(() => {
+    // TODO 后续通过 EventChannel 实现
+    uni.$off(UNICLOUD_DB_CONTACTS_ADD, onDataChange);
+    uni.$off(UNICLOUD_DB_CONTACTS_UPDATE, onDataChange);
+    uni.$off(UNICLOUD_DB_CONTACTS_DELETE, onDataChange);
+  })
+  onPageShow(() => {
+    // TODO 后续通过 EventChannel 实现
+    uni.$off(UNICLOUD_DB_CONTACTS_ADD, onDataChange);
+    uni.$off(UNICLOUD_DB_CONTACTS_UPDATE, onDataChange);
+  })
+  onPullDownRefresh(() => {
+    if (udbRef.value != null) {
+      udbRef.value!.loadData({
+        clear: true,
+        success: (_ : UniCloudDBGetResult) => {
+          uni.stopPullDownRefresh()
+        }
+      })
+    }
+  })
+</script>
+
+<style>
+  .page {
+    /* #ifdef APP */
+    flex: 1;
+    /* #endif */
+    flex-direction: column;
+  }
+
+  .loading {
+    margin: 20px;
+    align-self: center;
+  }
+
+  .udb {
+    flex: 1;
+    /* TODO */
+    /* #ifdef WEB */
+    display: flex;
+    /* #endif */
+    flex-direction: column;
+  }
+
+  .list-view {
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .list-item {
+    flex-direction: row;
+    padding: 10px;
+    background-color: #fff;
+    margin-bottom: 1px;
+  }
+
+  .mobile {
+    margin-top: 5px;
+  }
+
+  .btn-plus {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    right: 20px;
+    bottom: 20px;
+    align-items: center;
+    justify-content: center;
+    background-color: #1e90ff;
+    border-radius: 64px;
+  }
+
+  .btn-plus-text {
+    font-size: 30px;
+    color: #fff;
+  }
+
+  .pagination {
+    align-items: center;
+    background-color: #f8f8f8;
+    padding: 15px;
+  }
+</style>

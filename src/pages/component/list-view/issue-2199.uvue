@@ -1,0 +1,28 @@
+<template>
+  <view>
+    <list-view>
+      <list-item>
+        <view class="title">
+          1
+        </view>
+      </list-item>
+      <Item>
+        <view class="title">
+          2
+        </view>
+      </Item>
+    </list-view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import Item from './issue-2199-item.uvue'
+</script>
+
+<style>
+  .title {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+</style>

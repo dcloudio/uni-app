@@ -1,0 +1,65 @@
+<template>
+  <view class="uni-container">
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt">
+      <text class="uni-title">截屏状态：{{ captureStatus }}</text>
+      <view style="flex-direction: row;">
+        <text class="uni-title">是否允许截屏</text>
+        <switch :checked="allowCapture" @change="(e: UniSwitchChangeEvent) => toggleCaptureScreen(e.detail.value)" />
+      </view>
+
+      <view class="uni-btn">
+        <button @click="startCaptureListener" type="primary" class="uni-common-mt">开启截屏监听</button>
+        <button @click="stopCaptureListener" class="uni-common-mt">关闭截屏监听</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+import { state, setAllowCapture } from '@/store/index.uts'
+const title = '截屏监听'
+const allowCapture = ref(state.allowCapture)
+const captureStatus = ref('未监听')
+let captureCallback: ((res: OnUserCaptureScreenCallbackResult) => void) | null = null;
+
+
+const toggleCaptureScreen = (checked: boolean) => {
+  uni.setUserCaptureScreen({
+    enable: checked,
+    success: (res: SetUserCaptureScreenSuccess) => {
+      allowCapture.value = checked
+      setAllowCapture(checked)
+      console.log('设置截屏状态成功：', res)
+    },
+    fail: (err:IUniError) => {
+      console.log('设置截屏状态失败：', err)
+    }
+  })
+}
+
+const startCaptureListener = () => {
+  captureCallback = (res: OnUserCaptureScreenCallbackResult) => {
+    captureStatus.value = '检测到截屏'
+    console.log('检测到用户截屏',res)
+  }
+  uni.onUserCaptureScreen(captureCallback)
+  captureStatus.value = '正在监听'
+  console.log('开始监听截屏')
+}
+
+const stopCaptureListener = () => {
+  if (captureCallback != null) {
+    uni.offUserCaptureScreen(captureCallback)
+    captureStatus.value = '未监听'
+    console.log('停止监听截屏')
+  }
+}
+
+// 页面卸载时清理监听
+onUnmounted(() => {
+  stopCaptureListener()
+})
+</script>
+
+

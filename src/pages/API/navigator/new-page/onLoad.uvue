@@ -1,0 +1,146 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view class="uni-padding-wrap">
+      <page-head title="onLoad 生命周期调用 uni api 测试" />
+      <text v-if="isTrueValue">v-if with true</text>
+      <text v-if="isFalseValue">v-if with false</text>
+      <text v-show="isTrueValue">v-show with true</text>
+      <text v-show="isFalseValue">v-show with false</text>
+      <text>msg: {{ msg }}</text>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+  const isTrueValue = ref(false)
+  const isFalseValue = ref(true)
+  const msg = ref('default msg')
+
+  function adjustData() {
+    isTrueValue.value = true
+    isFalseValue.value = false
+    msg.value = 'new msg'
+  }
+
+  function navigateTo() {
+    uni.navigateTo({
+      url: '/pages/API/navigator/new-page/new-page-3'
+    })
+  }
+
+  function navigateBack() {
+    uni.navigateBack()
+  }
+
+  function redirectTo() {
+    uni.redirectTo({
+      url: '/pages/API/navigator/new-page/new-page-3'
+    })
+  }
+
+  function reLaunch() {
+    uni.reLaunch({
+      url: '/pages/API/navigator/new-page/new-page-3'
+    })
+  }
+
+  function switchTab() {
+    uni.switchTab({
+      url: '/pages/tabBar/component'
+    })
+  }
+
+  function showToast() {
+    uni.showToast({
+      title: 'test title',
+      icon: 'success',
+      duration: 2000
+    })
+  }
+
+  function showLoading() {
+    uni.showLoading({
+      title: 'test title',
+    })
+    setTimeout(() => {
+      uni.hideLoading()
+    }, 2000)
+  }
+
+  function showModal() {
+    uni.showModal({
+      title: 'test title',
+      content: 'test content'
+    })
+  }
+
+  function showActionSheet() {
+    uni.showActionSheet({
+      title: 'test title',
+      itemList: ['1', '2', '3']
+    })
+  }
+
+  function hideActionSheet() {
+    uni.hideActionSheet()
+  }
+
+  onLoad((options : OnLoadOptions) => {
+    const type = options['type']
+    switch (type) {
+      case 'adjustData':
+        adjustData()
+        break;
+      case 'navigateTo':
+        navigateTo()
+        break;
+      case 'navigateBack':
+        navigateBack()
+        break;
+      case 'redirectTo':
+        redirectTo()
+        break;
+      case 'reLaunch':
+        reLaunch()
+        break;
+      case 'switchTab':
+        switchTab()
+        break;
+      case 'showToast':
+        showToast()
+        break;
+      case 'showLoading':
+        showLoading()
+        break;
+      case 'showModal':
+        showModal()
+        break;
+      case 'showActionSheet':
+        showActionSheet()
+        break;
+    }
+  })
+
+  // #ifdef WEB
+  onUnload(() => {
+    // web 端页面销毁前,关闭 modal 和 actionsheet
+    // @ts-ignore
+    const modalBtn = document.querySelector('.uni-modal__btn')
+    if (modalBtn) {
+      modalBtn.click()
+    }
+    // @ts-ignore
+    const actionSheetBtn = document.querySelector('.uni-actionsheet__action .uni-actionsheet__cell')
+    if (actionSheetBtn) {
+      actionSheetBtn.click()
+    }
+  })
+  // #endif
+
+  defineExpose({hideActionSheet})
+</script>

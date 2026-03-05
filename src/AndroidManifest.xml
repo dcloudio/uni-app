@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"  package="io.dcloud.hellouniappx">
+
+  <!-- 读取日历权限，用于演示权限申请监听API：uni.createRequestPermissionListener -->
+  <uses-permission android:name="android.permission.READ_CALENDAR"/>
+  <!-- 录音权限，用于演示获取录音权限API：uni.getAppAuthorizeSetting 返回的microphoneAuthorized属性值 -->
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+  <!-- Android8以上支持圆形应用图标icon_round -->
+  <application
+    android:roundIcon="@drawable/icon_round"
+  >
+
+    <!-- 注册 url schemes -->
+    <activity android:name="io.dcloud.uniapp.UniLaunchProxyActivity" android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="hellouniappx"></data> <!-- 注册 hellouniappx:// 链接打开应用 -->
+        <data android:scheme="uniappxhello"></data> <!-- 注册 uniappxhello:// 链接打开应用 -->
+      </intent-filter>
+    </activity>
+
+  </application>
+
+
+</manifest>

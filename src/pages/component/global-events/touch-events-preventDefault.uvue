@@ -1,0 +1,78 @@
+<template>
+  <view style="flex: 1;">
+    <page-head title="横向滑动时阻止默认事件，即阻止页面滚动"></page-head>
+    <view class="uni-padding-wrap uni-common-mt" style="height: 40px; align-items: center;">
+      <text>手势方向：{{direction}}</text>
+    </view>
+    <scroll-view style="flex: 1;" @scroll="onScroll">
+    	<view v-for="item in 120" :key="item" class="box" @touchstart="touchstart" @touchmove="touchmove" @touchend="touchend">
+    		{{item}}
+    	</view>
+    </scroll-view>
+  </view>
+</template>
+
+<script setup>
+  const scrollTop = reactive({
+    value: 0
+  })
+
+  defineExpose({
+    scrollTop
+  })
+
+	function getDirection(x : number, y : number) {
+		if (x > y && x > 10) {
+			return 'horizontal';
+		}
+		if (y > x && y > 10) {
+			return 'vertical';
+		}
+		return '';
+	}
+	const startX = ref(0)
+	const startY = ref(0)
+	const direction = ref("")
+
+	function touchstart(e : UniTouchEvent) {
+		direction.value = ""
+		startX.value = e.touches[0].clientX
+		startY.value = e.touches[0].clientY
+	}
+
+	function touchend(e : UniTouchEvent) {
+		console.log('>>>>> touchend')
+		direction.value = ""
+	}
+
+	function touchmove(e : UniTouchEvent) {
+
+		const deltaX = e.touches[0].clientX - startX.value
+		const deltaY = e.touches[0].clientY - startY.value
+		if (direction.value == "") {
+			direction.value = getDirection(Math.abs(deltaX), Math.abs(deltaY))
+		}
+
+		//只有横向滑动时才阻止默认事件，即阻止页面滚动
+		if (direction.value != 'horizontal') {
+			return
+		}
+
+
+		if (e.cancelable) {
+			e.preventDefault()
+		}
+	}
+
+	function onScroll(e: UniScrollEvent) {
+		console.log('>>>>> onScroll', e.detail.scrollTop)
+		scrollTop["value"] = e.detail.scrollTop
+	}
+</script>
+
+<style scoped>
+	.box {
+		border-bottom: 1px solid #c6d1c3;
+		padding: 16px 10px;
+	}
+</style>

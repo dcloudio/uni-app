@@ -1,0 +1,426 @@
+<script setup lang="uts">
+  type ScrollEventTest = {
+    type : string;
+    target : UniElement | null;
+    currentTarget : UniElement | null;
+    direction ?: string
+  }
+  type flowItemData = {
+    height : number,
+    text : string
+  }
+  type DataType = {
+    refresher_triggered_boolean: boolean;
+    refresher_enabled_boolean: boolean;
+    scroll_with_animation_boolean: boolean;
+    show_scrollbar_boolean: boolean;
+    bounces_boolean: boolean;
+    upper_threshold_input: number;
+    lower_threshold_input: number;
+    scroll_top_input: number;
+    scroll_left_input: number;
+    refresher_background_input: string;
+    scrollData: Array<flowItemData>;
+    size_enum: ItemType[];
+    scrollIntoView: string;
+    refresherrefresh: boolean;
+    refresher_default_style_input: string;
+    text: string[];
+    state: number;
+    reset: boolean;
+    isScrollTest: string;
+    isScrolltolowerTest: string;
+    isScrolltoupperTest: string;
+    scrollDetailTest: UniScrollEventDetail | null;
+    scrollEndDetailTest: UniScrollEventDetail | null;
+    cross_axis_count: number;
+    main_axis_gap: number;
+    cross_axis_gap: number;
+    waterflowPadding: Array<number>;
+    isLoadingMore: boolean;
+    hasMore: boolean;
+  }
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const data = reactive({
+    refresher_triggered_boolean: false,
+    refresher_enabled_boolean: false,
+    scroll_with_animation_boolean: false,
+    show_scrollbar_boolean: false,
+    bounces_boolean: true,
+    upper_threshold_input: 50,
+    lower_threshold_input: 50,
+    scroll_top_input: 0,
+    scroll_left_input: 0,
+    refresher_background_input: "#FFF",
+    scrollData: [],
+    size_enum: [{ "value": 0, "name": "item---0" }, { "value": 3, "name": "item---3" }],
+    scrollIntoView: "",
+    refresherrefresh: false,
+    refresher_default_style_input: "black",
+    text: ['继续下拉执行刷新', '释放立即刷新', '刷新中', ""],
+    state: 3,
+    reset: true,
+    // 自动化测试
+    isScrollTest: '',
+    isScrolltolowerTest: '',
+    isScrolltoupperTest: '',
+    scrollDetailTest: null,
+    scrollEndDetailTest: null,
+    cross_axis_count: 2,
+    main_axis_gap: 2,
+    cross_axis_gap: 2,
+    waterflowPadding: [10, 5, 10, 5],
+    isLoadingMore: false,
+    hasMore: true
+  } as DataType)
+
+  const waterflowRef = ref<UniWaterFlowElement | null>(null)
+
+  onLoad(() => {
+    //静态瀑布流数据
+    data.scrollData = [
+      { height: 300, text: "item---0" },
+      { height: 150, text: "item---1" },
+      { height: 120, text: "item---2" },
+      { height: 100, text: "item---3" },
+      { height: 100, text: "item---4" },
+      { height: 150, text: "item---5" },
+      { height: 140, text: "item---6" },
+      { height: 190, text: "item---7" },
+      { height: 160, text: "item---8" },
+      { height: 120, text: "item---9" },
+      { height: 109, text: "item---10" },
+      { height: 102, text: "item---11" },
+      { height: 123, text: "item---12" },
+      { height: 156, text: "item---13" },
+      { height: 177, text: "item---14" },
+      { height: 105, text: "item---15" },
+      { height: 110, text: "item---16" },
+      { height: 90, text: "item---17" },
+      { height: 130, text: "item---18" },
+      { height: 140, text: "item---19" },
+    ] as Array<flowItemData>
+  })
+
+  const waterflow_click = () => { console.log("组件被点击时触发") }
+  const waterflow_touchstart = () => { console.log("手指触摸动作开始") }
+  const waterflow_touchmove = () => { console.log("手指触摸后移动") }
+  const waterflow_touchcancel = () => { console.log("手指触摸动作被打断，如来电提醒，弹窗") }
+  const waterflow_touchend = () => { console.log("手指触摸动作结束") }
+  const waterflow_tap = () => { console.log("手指触摸后马上离开") }
+  const waterflow_longpress = () => { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") }
+  const waterflow_refresherpulling = (e : RefresherEvent) => {
+    console.log("下拉刷新控件被下拉")
+    if (data.reset) {
+      if (e.detail.dy > 45) {
+        data.state = 1
+      } else {
+        data.state = 0
+      }
+    }
+  }
+  const waterflow_refresherrefresh = () => {
+    console.log("下拉刷新被触发 ")
+    data.refresherrefresh = true
+    data.refresher_triggered_boolean = true
+    data.state = 2
+    data.reset = false;
+    setTimeout(() => {
+      data.refresher_triggered_boolean = false
+    }, 1500)
+  }
+  const waterflow_refresherrestore = () => {
+    data.refresherrefresh = false
+    data.state = 3
+    data.reset = true
+    console.log("下拉刷新被复位")
+  }
+  const waterflow_refresherabort = () => { console.log("下拉刷新被中止") }
+
+  // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
+  const checkEventTest = (e : ScrollEventTest, eventName : String) => {
+    const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement;
+    const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
+    switch (eventName) {
+      case 'scroll':
+        data.isScrollTest = result
+        break;
+      case 'scrolltolower':
+        data.isScrolltolowerTest = result + `-${e.direction}`
+        break;
+      case 'scrolltoupper':
+        data.isScrolltoupperTest = result + `-${e.direction}`
+        break;
+      default:
+        break;
+    }
+  }
+
+  const waterflow_scrolltoupper = (e : UniScrollToUpperEvent) => {
+    console.log("滚动到顶部/左边，会触发 scrolltoupper 事件  direction=" + e.detail.direction)
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget,
+      direction: e.detail.direction,
+    } as ScrollEventTest, 'scrolltoupper')
+  }
+  const waterflow_scrolltolower = (e : UniScrollToLowerEvent) => {
+    console.log("滚动到底部/右边，会触发 scrolltolower 事件  direction=" + e.detail.direction)
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget,
+      direction: e.detail.direction,
+    } as ScrollEventTest, 'scrolltolower')
+  }
+  const waterflow_scroll = (e : UniScrollEvent) => {
+    console.log("滚动时触发，event.detail = ", e.detail)
+    data.scrollDetailTest = e.detail
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget
+    } as ScrollEventTest, 'scroll')
+  }
+  const waterflow_scrollend = (e : UniScrollEvent) => {
+    console.log("滚动结束时触发", e.detail)
+    data.scrollEndDetailTest = e.detail
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget
+    } as ScrollEventTest, 'scrollend')
+  }
+  const flow_item_click = () => { console.log("flow-item组件被点击时触发") }
+  const flow_item_touchstart = () => { console.log("手指触摸flow-item组件动作开始") }
+  const flow_item_touchmove = () => { console.log("手指触摸flow-item组件后移动") }
+  const flow_item_touchcancel = () => { console.log("手指触摸flow-item组件动作被打断，如来电提醒，弹窗") }
+  const flow_item_touchend = () => { console.log("手指触摸flow-item组件动作结束") }
+  const flow_item_tap = () => { console.log("手指触摸flow-item组件后马上离开") }
+  const flow_item_longpress = () => { console.log("flow-item组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") }
+  const change_refresher_triggered_boolean = (checked : boolean) => { data.refresher_triggered_boolean = checked }
+  const change_refresher_enabled_boolean = (checked : boolean) => { data.refresher_enabled_boolean = checked }
+  const change_scroll_with_animation_boolean = (checked : boolean) => { data.scroll_with_animation_boolean = checked }
+  const change_show_scrollbar_boolean = (checked : boolean) => { data.show_scrollbar_boolean = checked }
+  const change_bounces_boolean = (checked : boolean) => { data.bounces_boolean = checked }
+  const confirm_upper_threshold_input = (value : number) => { data.upper_threshold_input = value }
+  const confirm_lower_threshold_input = (value : number) => { data.lower_threshold_input = value }
+  const confirm_scroll_top_input = (value : number) => { data.scroll_top_input = value }
+  const confirm_scroll_left_input = (value : number) => { data.scroll_left_input = value }
+  const confirm_refresher_background_input = (value : string) => { data.refresher_background_input = value }
+  const item_change_size_enum = (index : number) => { data.scrollIntoView = "item---" + index }
+
+  //自动化测试专用
+  const setScrollIntoView = (id : string) => { data.scrollIntoView = id }
+
+  //自动化测试例专用
+  const check_scroll_height = () : Boolean => {
+    if (waterflowRef.value == null) {
+      console.log("check_scroll_height--waterflowRef is null")
+      return false
+    }
+    var listElement = waterflowRef.value as UniWaterFlowElement
+    console.log("check_scroll_height--" + listElement.scrollHeight)
+    return listElement.scrollHeight > 1400
+  }
+  const getScrollTop = () : number => {
+    var ret = waterflowRef.value?.scrollTop ?? 0
+    console.log(ret)
+    return ret
+  }
+  const change_refresher_style_boolean = (checked : boolean) => {
+    if (checked) {
+      data.refresher_default_style_input = "none"
+    } else {
+      data.refresher_default_style_input = "black"
+    }
+  }
+  const change_load_more_boolean = (checked : boolean) => {
+    data.hasMore = checked
+  }
+  const handleChangeCrossAxisCount = (value : number) => {
+    if (value < 1) {
+      uni.showToast({ title: "cross-axis-count 最小值为 1 请重新设置" })
+      return
+    }
+    data.cross_axis_count = value
+  }
+  const handleChangeCrossAxisGap = (e : UniSliderChangeEvent) => {
+    data.cross_axis_gap = e.detail.value
+  }
+  const handleChangeMainAxisGap = (e : UniSliderChangeEvent) => {
+    data.main_axis_gap = e.detail.value
+  }
+  //仅自动化测试调用
+  const testModifyWaterflowProps = () => {
+    data.cross_axis_count = 4
+    data.main_axis_gap = 6
+    data.cross_axis_gap = 6
+    data.waterflowPadding = [5, 10, 5, 10]
+  }
+  //仅自动化测试调用
+  const testModifyWaterflowSingleRow = () => {
+    data.cross_axis_count = 1
+    data.main_axis_gap = 6
+    data.cross_axis_gap = 6
+  }
+
+  const PAGE_SIZE = 5;
+  const NETWORK_DELAY = 800;
+
+  const load_more_click = () => {
+    if (!data.hasMore) return; // 已无更多
+    if (data.isLoadingMore) return; // 正在加载中，忽略重复点击
+    data.isLoadingMore = true
+    console.log("加载更多：开始加载")
+    setTimeout(() => {
+
+      const start = data.scrollData.length
+      for (let i = 0; i < PAGE_SIZE; i++) {
+        data.scrollData.push({
+          height: 90 + Math.floor(Math.random() * 120),
+          text: `item---${start + i}`
+        } as flowItemData)
+      }
+      data.isLoadingMore = false
+      console.log("加载更多：完成，当前总数：" + data.scrollData.length)
+    }, NETWORK_DELAY) // 模拟网络延迟
+  }
+
+  defineExpose({
+    data,
+    confirm_scroll_top_input,
+    change_load_more_boolean,
+    check_scroll_height,
+    setScrollIntoView,
+    getScrollTop,
+    testModifyWaterflowProps,
+    testModifyWaterflowSingleRow
+  })
+</script>
+
+<template>
+  <page-intro content="本页演示 waterflow 瀑布流组件：列数、间距、下拉刷新与加载更多；下方可调节滚动与 refresher 等属性，可跳转固定高度示例。"></page-intro>
+  <view class="main">
+    <waterflow :cross-axis-count="data.cross_axis_count" :main-axis-gap="data.main_axis_gap" :cross-axis-gap="data.cross_axis_gap"
+      :bounces="data.bounces_boolean" :upper-threshold="data.upper_threshold_input" :lower-threshold="data.lower_threshold_input"
+      :scroll-top="data.scroll_top_input" :scroll-left="data.scroll_left_input" :show-scrollbar="data.show_scrollbar_boolean"
+      :scroll-into-view="data.scrollIntoView" :scroll-with-animation="data.scroll_with_animation_boolean"
+      :refresher-enabled="data.refresher_enabled_boolean" :refresher-background="data.refresher_background_input"
+      :refresher-triggered="data.refresher_triggered_boolean" :refresher-default-style="data.refresher_default_style_input"
+      @click="waterflow_click" @touchstart="waterflow_touchstart" @touchmove="waterflow_touchmove"
+      @touchcancel="waterflow_touchcancel" @touchend="waterflow_touchend" @tap="waterflow_tap"
+      @longpress="waterflow_longpress" @refresherpulling="waterflow_refresherpulling"
+      @refresherrefresh="waterflow_refresherrefresh" @refresherrestore="waterflow_refresherrestore"
+      @refresherabort="waterflow_refresherabort" @scrolltoupper="waterflow_scrolltoupper" ref="waterflowRef"
+      @scrolltolower="waterflow_scrolltolower" @scroll="waterflow_scroll" @scrollend="waterflow_scrollend"
+      style="width:100%; " id="waterflow" :padding="data.waterflowPadding">
+
+      <flow-item v-for="(item, index) in data.scrollData" :key="index" :id="item.text" @click="flow_item_click"
+        :style="{'height' : item.height}" @touchstart="flow_item_touchstart" @touchmove="flow_item_touchmove"
+        @touchcancel="flow_item_touchcancel" @touchend="flow_item_touchend" @tap="flow_item_tap"
+        @longpress="flow_item_longpress" class="flow-item" type=1>
+        <text>{{item.text}}</text>
+      </flow-item>
+
+      <flow-item slot="refresher" id="refresher" type=2 class="refresh-box">
+        <text class="tip-text">{{data.text[data.state]}}</text>
+      </flow-item>
+      <flow-item v-show="data.hasMore" slot="load-more" id="loadmore" type=6 class="load-more-box" @click="load_more_click">
+        <text>加载更多</text>
+      </flow-item>
+    </waterflow>
+  </view>
+
+  <scroll-view style="flex:1" direction="vertical">
+    <view class="content">
+      <boolean-data :defaultValue="false" title="设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发"
+        @change="change_refresher_triggered_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="开启下拉刷新" @change="change_refresher_enabled_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="开启自定义样式" @change="change_refresher_style_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画"
+        @change="change_scroll_with_animation_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="控制是否出现滚动条" @change="change_show_scrollbar_boolean"></boolean-data>
+      <boolean-data :defaultValue="true" title="控制是否回弹效果" @change="change_bounces_boolean"></boolean-data>
+      <boolean-data :defaultValue="true" title="是否显示加载更多" @change="change_load_more_boolean"></boolean-data>
+      <input-data defaultValue="2" title="设置cross-axis-count，触发 scrolltoupper 事件" type="number"
+        @confirm="handleChangeCrossAxisCount"></input-data>
+      <view class="uni-slider uni-list-cell-padding">
+        <text>拖动设置cross-axis-gap</text>
+      </view>
+      <view class="uni-slider uni-list-cell-padding">
+        <slider :max="20" :min="0" :step="1" :value="data.cross_axis_gap" :show-value="true"
+          @change="handleChangeCrossAxisGap" />
+      </view>
+      <view class="uni-slider uni-list-cell-padding">
+        <text>拖动设置main-axis-gap</text>
+      </view>
+      <view class="uni-slider uni-list-cell-padding">
+        <slider :max="20" :min="0" :step="1" :value="data.main_axis_gap" :show-value="true"
+          @change="handleChangeMainAxisGap" />
+      </view>
+      <input-data defaultValue="50" title="距顶部/左边多远时（单位px），触发 scrolltoupper 事件" type="number"
+        @confirm="confirm_upper_threshold_input"></input-data>
+      <input-data defaultValue="50" title="距底部/右边多远时（单位px），触发 scrolltolower 事件" type="number"
+        @confirm="confirm_lower_threshold_input"></input-data>
+      <input-data defaultValue="0" title="设置竖向滚动条位置" type="number" @confirm="confirm_scroll_top_input"></input-data>
+      <input-data defaultValue="#FFF" title="设置下拉刷新区域背景颜色" type="text"
+        @confirm="confirm_refresher_background_input"></input-data>
+      <!-- #ifndef VUE3-VAPOR -->
+      <enum-data :items="data.size_enum" title="通过id位置跳转" @change="item_change_size_enum"></enum-data>
+      <!-- #endif -->
+      <navigator url="/pages/component/waterflow/waterflow-fit-height">
+        <button type="primary" class="button">
+          item高度自适应
+        </button>
+      </navigator>
+    </view>
+  </scroll-view>
+</template>
+
+<style>
+  .main {
+    max-height: 250px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .06);
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .flow-item {
+    width: 100%;
+    height: 200px;
+    border: 1px solid #666;
+    background-color: #66ccff;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tip-text {
+    color: #888;
+    font-size: 12px;
+  }
+
+  .refresh-box {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 45px;
+    width: 100%;
+  }
+
+  .load-more-box {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 45px;
+    width: 100%;
+    border-style: solid;
+  }
+
+  .button {
+    margin-top: 15px;
+  }
+</style>

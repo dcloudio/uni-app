@@ -1,0 +1,9 @@
+<template>
+  <page-head :title="title"></page-head>
+</template>
+
+<script setup lang="uts">
+
+
+const title = ref('新建的页面')
+</script>

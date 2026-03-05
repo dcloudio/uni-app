@@ -1,0 +1,352 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+  <view style="flex-grow: 1;">
+    <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+    <view>
+      <text>width: 100px</text>
+      <view class="demo-box">
+        <view class="common" style="width: 100px;"></view>
+        <view class="common" style="width: 100px;" flatten></view>
+      </view>
+    </view>
+
+    <view>
+      <text>width: 200rpx</text>
+      <view class="demo-box">
+        <view class="common" style="width: 200rpx;"></view>
+        <view class="common" style="width: 200rpx;" flatten></view>
+      </view>
+    </view>
+
+    <view>
+      <text>width: 30%</text>
+      <view class="demo-box">
+        <view class="common" style="width: 30%;"></view>
+        <view class="common" style="width: 30%;" flatten></view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">scroll-view 组件</text>
+    </view>
+
+    <view class="demo-box">
+      <scroll-view style="width: 100px; height: 100px; background-color: cyan;">
+        <text class="scroll-view-label">width: 100px</text>
+      </scroll-view>
+      <scroll-view style="width: 200px; height: 100px; background-color: cyan;">
+        <text class="scroll-view-label">width: 200px</text>
+      </scroll-view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 width </text>
+    </view>
+
+    <!-- 普通版本 -->
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件</text>
+        <text class="uni-info">设置值: {{data.width}}</text>
+        <text class="uni-info">获取值: {{data.widthActual}}</text>
+        <view class="test-box">
+          <view ref="viewRef" class="common test-view" :style="{ width: data.width }">
+            <text>view</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件</text>
+        <text class="uni-info">设置值: {{data.width}}</text>
+        <text class="uni-info">获取值: {{data.widthActualText}}</text>
+        <view class="test-box">
+          <text ref="textRef" class="common test-text" :style="{ width: data.width }">text</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件</text>
+        <text class="uni-info">设置值: {{data.width}}</text>
+        <text class="uni-info">获取值: {{data.widthActualImage}}</text>
+        <view class="test-box">
+          <image ref="imageRef" class="common test-image" :style="{ width: data.width }" src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 拍平版本 -->
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件拍平</text>
+        <text class="uni-info">设置值: {{data.width}}</text>
+        <text class="uni-info">获取值: {{data.widthActualFlat}}</text>
+        <view class="test-box">
+          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ width: data.width }" flatten>
+            <text>view</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件拍平</text>
+        <text class="uni-info">设置值: {{data.width}}</text>
+        <text class="uni-info">获取值: {{data.widthActualTextFlat}}</text>
+        <view class="test-box">
+          <text ref="textRefFlat" class="common test-text-flatten" :style="{ width: data.width }" flatten>text</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件拍平</text>
+        <text class="uni-info">设置值: {{data.width}}</text>
+        <text class="uni-info">获取值: {{data.widthActualImageFlat}}</text>
+        <view class="test-box">
+          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ width: data.width }" flatten src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt uni-common-mb">
+      <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <enum-data :items="widthEnum" title="width 枚举值" @change="radioChangeWidth" :compact="true"></enum-data>
+      <input-data :defaultValue="data.width" title="width 自定义值" type="text" @confirm="inputChangeWidth"></input-data>
+    </view>
+
+    <view class="uni-common-mt uni-common-mb">
+      <text class="uni-title-text">默认宽高规则 (无宽高会不显示或使用默认值)</text>
+    </view>
+
+    <view>
+      <text>空 view - 无宽高，有背景色 (预期不显示)</text>
+      <text class="uni-info">getPropertyValue: width={{emptyElementValues.emptyViewWidth}}, height={{emptyElementValues.emptyViewHeight}}</text>
+      <view class="demo-box">
+        <view ref="emptyViewRef" style="background-color: cyan;"></view>
+        <view ref="emptyViewFlatRef" style="background-color: cyan;" flatten></view>
+      </view>
+    </view>
+
+    <view>
+      <text>空 text - 无文字、无宽高，有背景色</text>
+      <text class="uni-info">getPropertyValue: width={{emptyElementValues.emptyTextWidth}}, height={{emptyElementValues.emptyTextHeight}}</text>
+      <view class="demo-box">
+        <text ref="emptyTextRef" style="background-color: cyan;"></text>
+        <text ref="emptyTextFlatRef" style="background-color: cyan;" flatten></text>
+      </view>
+    </view>
+
+    <view>
+      <text>空 image - 无 src、无宽高，有背景色 (image 有默认宽高)</text>
+      <text class="uni-info">getPropertyValue: width={{emptyElementValues.emptyImageWidth}}, height={{emptyElementValues.emptyImageHeight}}</text>
+      <view class="demo-box">
+        <image ref="emptyImageRef" style="background-color: cyan;"></image>
+        <image ref="emptyImageFlatRef" style="background-color: cyan;" flatten></image>
+      </view>
+    </view>
+
+    <view>
+      <text>空 scroll-view - 无宽高，有背景色</text>
+      <text class="uni-info">getPropertyValue: width={{emptyElementValues.emptyScrollViewWidth}}, height={{emptyElementValues.emptyScrollViewHeight}}</text>
+      <view class="demo-box">
+        <scroll-view ref="emptyScrollViewRef" style="background-color: cyan;"></scroll-view>
+      </view>
+    </view>
+
+    <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY -->
+    <view class="uni-common-mb">
+      <text>空 native-view - 无宽高，有背景色</text>
+      <text class="uni-info">getPropertyValue: width={{emptyElementValues.emptyNativeViewWidth}}, height={{emptyElementValues.emptyNativeViewHeight}}</text>
+      <view class="demo-box">
+        <native-view ref="emptyNativeViewRef" style="background-color: cyan;"></native-view>
+      </view>
+    </view>
+    <!-- #endif -->
+
+    <view class="uni-common-mb">
+      <text>native-view组件: width: 100px 和 width: 200px</text>
+      <view class="demo-box">
+        <native-view style="width: 100px; height: 100px; background-color: cyan;"></native-view>
+        <native-view style="width: 200px; height: 100px; background-color: cyan;"></native-view>
+      </view>
+    </view>
+
+    <!-- #ifdef WEB -->
+    <view class="container">
+      <text>嵌套子元素 v-deep width: 150rpx</text>
+      <child-width-uvue></child-width-uvue>
+    </view>
+    <!-- #endif -->
+  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import childWidthUvue from "./child-width.uvue"
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const widthEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '50px' },
+    { value: 4, name: '0%' },
+    { value: 5, name: '50%' },
+    { value: 6, name: 'auto' }
+  ]
+
+  const data = reactive({
+    width: '100px',
+    widthActual: '',
+    widthActualText: '',
+    widthActualImage: '',
+    widthActualFlat: '',
+    widthActualTextFlat: '',
+    widthActualImageFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  // 空元素 ref
+  const emptyViewRef = ref(null as UniElement | null)
+  const emptyViewFlatRef = ref(null as UniElement | null)
+  const emptyTextRef = ref(null as UniTextElement | null)
+  const emptyTextFlatRef = ref(null as UniTextElement | null)
+  const emptyImageRef = ref(null as UniImageElement | null)
+  const emptyImageFlatRef = ref(null as UniImageElement | null)
+  const emptyScrollViewRef = ref(null as UniElement | null)
+  const emptyNativeViewRef = ref(null as UniElement | null)
+
+  // 空元素宽高值
+  const emptyElementValues = reactive({
+    emptyViewWidth: '',
+    emptyViewHeight: '',
+    emptyTextWidth: '',
+    emptyTextHeight: '',
+    emptyImageWidth: '',
+    emptyImageHeight: '',
+    emptyScrollViewWidth: '',
+    emptyScrollViewHeight: '',
+    emptyNativeViewWidth: '',
+    emptyNativeViewHeight: ''
+  })
+
+  const getEmptyElementValues = () => {
+    nextTick(() => {
+      if (emptyViewRef.value != null) {
+        emptyElementValues.emptyViewWidth = emptyViewRef.value.style.getPropertyValue('width') ?? ''
+        emptyElementValues.emptyViewHeight = emptyViewRef.value.style.getPropertyValue('height') ?? ''
+      }
+      if (emptyTextRef.value != null) {
+        emptyElementValues.emptyTextWidth = emptyTextRef.value.style.getPropertyValue('width') ?? ''
+        emptyElementValues.emptyTextHeight = emptyTextRef.value.style.getPropertyValue('height') ?? ''
+      }
+      if (emptyImageRef.value != null) {
+        emptyElementValues.emptyImageWidth = emptyImageRef.value.style.getPropertyValue('width') ?? ''
+        emptyElementValues.emptyImageHeight = emptyImageRef.value.style.getPropertyValue('height') ?? ''
+      }
+      if (emptyScrollViewRef.value != null) {
+        emptyElementValues.emptyScrollViewWidth = emptyScrollViewRef.value.style.getPropertyValue('width') ?? ''
+        emptyElementValues.emptyScrollViewHeight = emptyScrollViewRef.value.style.getPropertyValue('height') ?? ''
+      }
+      if (emptyNativeViewRef.value != null) {
+        emptyElementValues.emptyNativeViewWidth = emptyNativeViewRef.value.style.getPropertyValue('width') ?? ''
+        emptyElementValues.emptyNativeViewHeight = emptyNativeViewRef.value.style.getPropertyValue('height') ?? ''
+      }
+    })
+  }
+
+  const getPropertyValues = () => {
+    data.widthActual = viewRef.value?.style.getPropertyValue('width') ?? ''
+    data.widthActualFlat = viewRefFlat.value?.style.getPropertyValue('width') ?? ''
+    data.widthActualText = textRef.value?.style.getPropertyValue('width') ?? ''
+    data.widthActualTextFlat = textRefFlat.value?.style.getPropertyValue('width') ?? ''
+    data.widthActualImage = imageRef.value?.style.getPropertyValue('width') ?? ''
+    data.widthActualImageFlat = imageRefFlat.value?.style.getPropertyValue('width') ?? ''
+  }
+
+  const changeWidth = (value: string) => {
+    data.width = value
+    viewRef.value?.style.setProperty('width', value)
+    viewRefFlat.value?.style.setProperty('width', value)
+    textRef.value?.style.setProperty('width', value)
+    textRefFlat.value?.style.setProperty('width', value)
+    imageRef.value?.style.setProperty('width', value)
+    imageRefFlat.value?.style.setProperty('width', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeWidth = (index: number) => {
+    const selectedItem = widthEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeWidth(selectedItem.name)
+    }
+  }
+
+  const inputChangeWidth = (value: string) => {
+    changeWidth(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+    getEmptyElementValues()
+  })
+
+  defineExpose({
+    radioChangeWidth,
+    emptyElementValues,
+    data
+  })
+</script>
+
+<style>
+  .common {
+    height: 80px;
+    background-color: cyan;
+  }
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 80px;
+    background-color: gray;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    line-height: 100px;
+    text-align: center;
+  }
+
+  /* #ifdef WEB */
+  .container ::v-deep .box {
+    width: 150px;
+    height: 100px;
+  }
+  /* #endif */
+</style>

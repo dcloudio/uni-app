@@ -1,0 +1,30 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+  "bsonType": "object",
+  "required": [],
+  "permission": {
+    "read": true,
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "properties": {
+    "_id": {
+      "description": "ID，系统自动生成"
+    },
+    "num": {
+      "bsonType": "int"
+    },
+    "tag": {
+      "bsonType": "string",
+      "maxLength": 50,
+      "minLength": 0
+    },
+    "date": {
+      "bsonType": "date"
+    },
+    "point": {
+      "bsonType": "object"
+    }
+  }
+}

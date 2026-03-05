@@ -1,0 +1,73 @@
+<template>
+  <view style="background-color: black; flex: 1;">
+    <view
+      :style="{width: '100%', height: '60px', background: `linear-gradient(to bottom, #00000000, #FFFFFF)`, position: 'absolute', top: scanLinePosition + '%'}" />
+  </view>
+</template>
+
+<script setup lang="uts">
+  type DataType = {
+    ret1 : boolean
+  }
+
+  const data = reactive({
+    ret1: false
+  } as DataType)
+
+  const appWidth = ref(0)
+  const appHeight = ref(0)
+
+  const animationInterval = ref<number | null>(null)
+  const scanLinePosition = ref(0)
+
+
+  function startScanAnimation() {
+
+    let interval = animationInterval.value
+    if (interval != null) {
+      clearInterval(interval)
+    }
+
+
+    scanLinePosition.value = 0
+
+    animationInterval.value = setInterval(() => {
+      scanLinePosition.value += 0.1
+      if (scanLinePosition.value > 100) {
+        scanLinePosition.value = 0
+        const t = animationInterval.value
+        if (t != null) {
+          clearInterval(t)
+        }
+      }
+    }, 1000 * 0.002) as number
+  }
+
+
+  onReady(() => {
+    console.log("onReady")
+    data.ret1 = true
+  })
+
+  onMounted(() => {
+    appWidth.value = uni.getWindowInfo().screenWidth
+    appHeight.value = uni.getWindowInfo().screenHeight
+
+    startScanAnimation()
+  })
+
+  onUnmounted(() => {
+    const interval = animationInterval.value
+    if (interval != null) {
+      clearInterval(interval)
+      animationInterval.value = null
+    }
+  })
+
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+</style>

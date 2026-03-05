@@ -1,0 +1,5 @@
+<template>
+  <view class="uni-padding-wrap" style="flex: 1;">
+    <page-head title="new-page-3" />
+  </view>
+</template>

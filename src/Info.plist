@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>uni API 功能演示需读取相册</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>uni API 功能演示需读写相册</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>uni API 功能演示需访问位置信息</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>uni API 功能演示需在后台期间访问位置信息</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>uni API 功能演示需访问位置信息</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLName</key>
+        <string>scheme</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>hellouniappx</string>
+          <string>uniappxhello</string>
+        </array>
+      </dict>
+    </array>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>alipay</string>
+      <string>safepay</string>
+      <string>weixin</string>
+      <string>qqmap</string>
+      <string>iosamap</string>
+      <string>baidumap</string>
+    </array>
+  </dict>
+</plist>

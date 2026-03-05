@@ -1,0 +1,206 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1;">
+  <!-- #endif -->
+    <page-intro content="本页演示 overflow 样式：overflow:hidden 与 overflow:visible 下子元素超出时的裁剪与显示；子元素为 view（border 圆角/边框）、text、image 等，每组均提供拍平（flatten）版本对比。"></page-intro>
+    <text style="font-size: 15px;">overflow=hidden效果子元素是view border圆角</text>
+    <view class="backgroundview">
+      <view class="box-hidden-border-radius">
+        <view style="width: 50px; height: 150px; background-color: greenyellow;"></view>
+      </view>
+    </view>
+    <text>拍平</text>
+    <view class="backgroundview">
+      <view class="box-hidden-border-radius" flatten>
+        <view style="width: 50px; height: 150px; background-color: greenyellow;" flatten></view>
+      </view>
+    </view>
+
+    <text style="font-size: 15px;">overflow=hidden效果 子元素是view border边框</text>
+    <view class="backgroundview">
+      <view class="box-hidden-border-width">
+        <view style="width: 50px; height: 150px; background-color: greenyellow;"></view>
+      </view>
+    </view>
+    <text>拍平</text>
+    <view class="backgroundview">
+      <view class="box-hidden-border-width" flatten>
+        <view style="width: 50px; height: 150px; background-color: greenyellow;" flatten></view>
+      </view>
+    </view>
+
+    <text style="font-size: 15px;">overflow=visible效果 子元素是view border圆角</text>
+    <view class="backgroundview">
+      <view class="box-visible-border-radius">
+        <view style="width: 50px; height: 150px; background-color: greenyellow;"></view>
+      </view>
+    </view>
+    <text>拍平</text>
+    <view class="backgroundview">
+      <view class="box-visible-border-radius" flatten>
+        <view style="width: 50px; height: 150px; background-color: greenyellow;" flatten></view>
+      </view>
+    </view>
+
+    <text style="font-size: 15px;">overflow=visible效果 子元素是view border边框</text>
+    <view class="backgroundview">
+      <view class="box-visible-border-width">
+        <view style="width: 50px; height: 150px; background-color: greenyellow;"></view>
+      </view>
+    </view>
+    <text>拍平</text>
+    <view class="backgroundview">
+      <view class="box-visible-border-width" flatten>
+        <view style="width: 50px; height: 150px; background-color: greenyellow;" flatten></view>
+      </view>
+    </view>
+
+    <view style="flex-grow: 1">
+      <text style="font-size: 15px;">overflow=hidden效果 子元素是text</text>
+      <view class="backgroundview">
+        <view class="box-hidden-border-radius">
+          <text class="text1">ABCDEFG</text>
+        </view>
+      </view>
+      <text>拍平</text>
+      <view class="backgroundview">
+        <view class="box-hidden-border-radius" flatten>
+          <text class="text1" flatten>ABCDEFG</text>
+        </view>
+      </view>
+
+      <text style="font-size: 15px;">overflow=visible效果 子元素是text</text>
+      <view class="backgroundview">
+        <view class="box-visible-border-radius">
+          <text class="text1">ABCDEFG</text>
+        </view>
+      </view>
+      <text>拍平</text>
+      <view class="backgroundview">
+        <view class="box-visible-border-radius" flatten>
+          <text class="text1" flatten>ABCDEFG</text>
+        </view>
+      </view>
+
+      <text style="font-size: 15px;">overflow=hidden效果 子元素是image</text>
+      <view class="backgroundview">
+        <view class="box-hidden-border-radius">
+          <image style="width: 150px; height: 150px;" src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+      <text>拍平</text>
+      <view class="backgroundview">
+        <view class="box-hidden-border-radius" flatten>
+          <image style="width: 150px; height: 150px;" src="/static/test-image/logo.png" flatten></image>
+        </view>
+      </view>
+
+      <text style="font-size: 15px;">overflow=visible效果 子元素是image</text>
+      <view class="backgroundview">
+        <view class="box-visible-border-radius">
+          <image style="width: 150px; height: 150px;" src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+      <text>拍平</text>
+      <view class="backgroundview">
+        <view class="box-visible-border-radius" flatten>
+          <image style="width: 150px; height: 150px;" src="/static/test-image/logo.png" flatten></image>
+        </view>
+      </view>
+
+      <text style="font-size: 15px;">overflow=visible效果 子元素是view 父是scroll-view</text>
+      <scroll-view class="backgroundview">
+        <view class="box-visible-border-radius">
+          <view style="width: 50px; height: 150px; background-color: greenyellow;"></view>
+        </view>
+      </scroll-view>
+      <text>拍平</text>
+      <scroll-view class="backgroundview">
+        <view class="box-visible-border-radius" flatten>
+          <view style="width: 50px; height: 150px; background-color: greenyellow;" flatten></view>
+        </view>
+      </scroll-view>
+
+      <text style="font-size: 15px;">overflow=visible 设置阴影显示文字</text>
+      <view class="backgroundview">
+        <view class="" style="overflow: visible;width: 100px;height: 100px;background-color: green;box-shadow: 10px 10px #000;margin-top: 10px;">
+          <text style="width:170px; background-color: greenyellow;">文字文字文字文字文字</text>
+        </view>
+      </view>
+      <text>拍平</text>
+      <view class="backgroundview">
+        <view class="" style="overflow: visible;width: 100px;height: 100px;background-color: green;box-shadow: 10px 10px #000;margin-top: 10px;" flatten>
+          <text style="width:170px; background-color: greenyellow;" flatten>文字文字文字文字文字</text>
+        </view>
+      </view>
+
+      <text style="font-size: 15px;">overflow=visible 子view完全超出范围</text>
+      <view class="backgroundview">
+        <view class="box-visible-border-width">
+          <view style="width: 50px; height: 50px; background-color: greenyellow;right: -70px;position: absolute;"></view>
+        </view>
+      </view>
+      <text>拍平</text>
+      <view class="backgroundview">
+        <view class="box-visible-border-width" flatten>
+          <view style="width: 50px; height: 50px; background-color: greenyellow;right: -70px;position: absolute;" flatten></view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+</script>
+
+<style>
+  .backgroundview {
+    width: 300px;
+    height: 200px;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .box-hidden-border-radius {
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: green;
+  }
+
+  .box-hidden-border-width {
+    width: 100px;
+    height: 100px;
+    border-width: 2px;
+    border-style: solid;
+    background-color: green;
+  }
+
+  .box-visible-border-radius {
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    overflow: visible;
+    background-color: green;
+  }
+
+  .box-visible-border-width {
+    width: 100px;
+    height: 100px;
+    border-width: 2px;
+    border-style: solid;
+    overflow: visible;
+    background-color: green;
+  }
+
+  .text1 {
+    font-size: 50px;
+    /* #ifndef VUE3-VAPOR */
+    lines: 1;
+    /* #endif */
+  }
+</style>

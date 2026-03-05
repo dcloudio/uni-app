@@ -1,0 +1,283 @@
+<template>
+	<view style="flex: 1;">
+		<camera style="width: 100%; height: 300px;" :resolution="'medium'" :device-position="devicePosition" photo-resolution="high"
+			:flash="flash" :frame-size="frameSize" @stop="handleStop" @error="handleError" @initdone="handleInitDone">
+		</camera>
+
+		<scroll-view style="flex: 1;">
+			<view>
+        		<button type="default" @click="handleScanCode">扫码</button>
+				<button type="default" @click="switchDevicePosition">切换前后摄像头</button>
+				<button type="default" @click="switchFlash">闪光灯</button>
+
+				<button type="default" @click="setOnFrameListener">设置帧数据监听</button>
+				<button type="default" @click="startFrameListener">开始捕捉帧数据</button>
+				<button type="default" @click="stopFrameListener">停止捕捉帧数据</button>
+				<view>
+					<view class="uni-title">
+						<text class="uni-title-text">设置预览缩放</text>
+					</view>
+					<view class="uni-camera-wrapper">
+						<slider class="uni-camera-test-host" :disabled="maxZoom == 0" :show-value="true" :min="1"
+							:max="maxZoom" :value="1" @change="zoomSliderChange" />
+					</view>
+				</view>
+
+				<view>
+					<view class="uni-title">
+						<text class="uni-title-text">拍摄照片示例</text>
+						<button type="default" @click="handleTakePhoto">拍摄照片</button>
+						<radio-group style="flex-direction: row;" name="成像质量" @change="takePhotoQualityChange">
+							<radio value="normal" :checked="true">普通质量</radio>
+							<radio value="low">低质量</radio>
+							<radio value="high">高质量</radio>
+							<radio value="original">原图</radio>
+						</radio-group>
+					</view>
+					<view class="uni-camera-wrapper">
+						<image class="uni-camera-test-host-without-flex" style="width: 150px;height: 150px;"
+							v-if="imageSrc != ''" :src="imageSrc"></image>
+					</view>
+				</view>
+
+				<view>
+					<view class="uni-title">
+						<text class="uni-title-text">录制视频示例</text>
+						<view style="flex-direction: row;margin-top: 8px;">
+							<text class="uni-title-size">录制时长：</text>
+							<input class="uni-title-size"
+								style="width: 50px; margin-left: 10px;border: 0.5px solid grey;text-align: right;"
+								type="number" @input="timeoutInput" :value="timeout" />
+							<text class="uni-title-size" style="margin-left: 8px;">秒</text>
+						</view>
+						<button type="default" style="font-family: monospace;margin-top: 8px;" @click="startRecord"
+							:disabled="startRecordStatus">{{ startRecordStatus ? `${remain}秒` : "录制视频" }}</button>
+						<button type="default" @click="stopRecord">停止录制</button>
+						<radio-group style="flex-direction: row;margin-top: 8px;" name="是否压缩"
+							@change="startRecordCompressChange">
+							<radio value="0" :checked="true">未启动视频压缩</radio>
+							<radio value="1">启动视频压缩</radio>
+						</radio-group>
+					</view>
+					<view class="uni-camera-wrapper">
+						<video class="uni-camera-test-host-without-flex" style="width: 300px;height: 300px;"
+							v-if="videoSrc != ''" :src="videoSrc" :controls="true"></video>
+					</view>
+				</view>
+			</view>
+		</scroll-view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	const devicePosition = ref("back")
+	const flash = ref("off")
+	const frameSize = ref("medium")
+	let listener: CameraContextCameraFrameListener | null = null
+	const maxZoom = ref(0)
+	const imageSrc = ref("")
+	let quality = "normal"
+	const timeout = ref(30)
+	let compressed = false
+	const videoSrc = ref("")
+	const startRecordStatus = ref(false)
+	const remain = ref(0)
+	let intervalId = -1
+	let timeoutStr = '30'
+
+	const handleScanCode = () => {
+		uni.navigateTo({
+			url:"/pages/component/camera/camera-scan-code"
+		})
+	}
+
+	const switchDevicePosition = () => {
+		devicePosition.value = devicePosition.value == "back" ? "front" : "back"
+	}
+
+	const switchFlash = () => {
+		flash.value = flash.value == "torch" ? "off" : "torch"
+	}
+
+	const handleStop = (e : UniCameraStopEvent) => {
+		console.log("stop", e.detail);
+	}
+
+	const handleError = (e : UniCameraErrorEvent) => {
+		console.log("error", e.detail);
+	}
+
+	const handleInitDone = (e : UniCameraInitDoneEvent) => {
+		console.log("initdone", e.detail);
+		maxZoom.value = e.detail.maxZoom ?? 0
+	}
+
+	const zoomSliderChange = (event : UniSliderChangeEvent) => {
+		const value = event.detail.value
+		const context = uni.createCameraContext();
+		context?.setZoom({
+			zoom: value,
+			success: (e : any) => {
+				console.log(e);
+			}
+		} as CameraContextSetZoomOptions)
+	}
+
+	const handleTakePhoto = () => {
+		const context = uni.createCameraContext();
+		context?.takePhoto({
+			quality: quality,
+			selfieMirror: false,
+			success: (res : CameraContextTakePhotoResult) => {
+				console.log("res.tempImagePath", res.tempImagePath);
+				imageSrc.value = res.tempImagePath ?? ''
+			},
+			fail: (e : any) => {
+				console.log("take photo", e);
+			}
+		} as CameraContextTakePhotoOptions)
+	}
+
+	const takePhotoQualityChange = (event : UniRadioGroupChangeEvent) => {
+		quality = event.detail.value
+		console.log("quality", quality);
+	}
+
+	const setOnFrameListener = () => {
+		const context = uni.createCameraContext();
+		listener = context?.onCameraFrame((frame : CameraContextOnCameraFrame) => {
+			console.log("OnFrame :", frame);
+		})
+	}
+
+	const startFrameListener = () => {
+		listener?.start({
+			success: (res : any) => {
+				console.log("startFrameListener success", res);
+			}
+		} as CameraContextCameraFrameListenerStartOptions)
+	}
+
+	const stopFrameListener = () => {
+		listener?.stop({
+			success: (res : any) => {
+				console.log("stopFrameListener success", res);
+			}
+		} as CameraContextCameraFrameListenerStopOptions)
+	}
+
+  const getTimeout = () : number => {
+  	let value = parseInt(timeoutStr)
+  	if (Number.isNaN(value)) {
+  		return 30
+  	} else {
+  		if (value < 1) {
+  			return 1
+  		} else if (value > 60 * 5) {
+  			return 60 * 5
+  		} else {
+  			return value
+  		}
+  	}
+  }
+
+	const startRecord = () => {
+		const context = uni.createCameraContext();
+		let timeoutValue = getTimeout()
+		timeout.value = timeoutValue
+		context?.startRecord({
+			timeout: timeoutValue,
+			selfieMirror: false,
+			timeoutCallback: (res : any) => {
+				console.log("timeoutCallback", res);
+				startRecordStatus.value = false
+				if (typeof res != "string") {
+					const result = res as CameraContextStartRecordTimeoutResult
+					videoSrc.value = result.tempVideoPath ?? ''
+				}
+				clearInterval(intervalId)
+			},
+			success: (res : any) => {
+				startRecordStatus.value = true
+				console.log("start record success", res);
+				remain.value = timeoutValue
+				intervalId = setInterval(() => {
+					if (remain.value <= 0) {
+						clearInterval(intervalId)
+					} else {
+						remain.value--
+					}
+				}, 1000)
+			},
+			fail: (res : any) => {
+				console.log("start record fail", res);
+				startRecordStatus.value = false
+				remain.value = 0
+				clearInterval(intervalId)
+			}
+		} as CameraContextStartRecordOptions)
+	}
+
+	const stopRecord = () => {
+		startRecordStatus.value = false
+		const context = uni.createCameraContext();
+		context?.stopRecord({
+			compressed: compressed,
+			success: (res : CameraContextStopRecordResult) => {
+				console.log("stop record success", res);
+				videoSrc.value = res.tempVideoPath ?? ''
+			},
+			fail: (res : any) => {
+				console.log("stop record fail", res);
+			}
+		} as CameraContextStopRecordOptions)
+		clearInterval(intervalId)
+		remain.value = 0
+	}
+
+	const startRecordCompressChange = (event : UniRadioGroupChangeEvent) => {
+		compressed = parseInt(event.detail.value) == 1
+	}
+
+	const timeoutInput = (event : UniInputEvent) => {
+		timeoutStr = event.detail.value
+	}
+
+</script>
+
+<style>
+	.uni-title {
+		padding: 10px 0;
+	}
+
+	.uni-title-text {
+		font-size: 15px;
+		font-weight: bold;
+	}
+
+	.uni-camera-wrapper {
+		display: flex;
+		padding: 8px 13px;
+		margin: 5px 0;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		background-color: #ffffff;
+	}
+
+	.uni-camera-test-host {
+		height: 28px;
+		padding: 0px;
+		flex: 1;
+		background-color: #ffffff;
+	}
+
+	.uni-camera-test-host-without-flex {
+		height: 28px;
+		padding: 0px;
+		background-color: #ffffff;
+	}
+
+	.uni-title-size {
+		font-size: 22px;
+	}
+</style>

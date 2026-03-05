@@ -1,0 +1,256 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view style="padding: 4px">
+      <text class="hello-text">
+        定位功能默认调用操作系统定位API实现。也支持三方SDK定位\n
+        部分老款Android手机因gms问题可能导致无法使用系统定位。\n
+        Web、Android、iOS平台，gcj国标、逆地理信息等功能需调用腾讯定位。</text>
+    </view>
+
+    <view class="uni-padding-wrap uni-common-mt">
+      <!-- #ifdef APP-ANDROID || APP-IOS -->
+      <view class="uni-list-cell-db">定位服务商provider(如系统定位，腾讯定位等)</view>
+      <view class="uni-list" style="margin-bottom: 20px">
+        <radio-group @change="radioChangePV">
+          <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in providerList" :key="item.id"
+            :class="index < providerList.length - 1 ? 'uni-list-cell-line' : ''" :value="item.id"
+            :checked="index === currentProvider">
+            {{ item.name }}
+          </radio>
+        </radio-group>
+      </view>
+      <!-- #endif -->
+      <view class="uni-list-cell-db">定位类型</view>
+      <view class="uni-list">
+        <radio-group @change="radioChange">
+          <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
+            :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
+            :checked="index === current">
+            {{ item.name }}
+          </radio>
+        </radio-group>
+      </view>
+      <view class="uni-list-cell uni-list-cell-pd" style="margin-top: 20px">
+        <view class="uni-list-cell-db">高度信息</view>
+        <switch :checked="altitudeSelect" @change="altitudeChange" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-pd">
+        <view class="uni-list-cell-db">开启高精度定位</view>
+        <switch :checked="isHighAccuracySelect" @change="highAccuracySelectChange" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-pd">
+        <view class="uni-list-cell-db">是否解析地址信息</view>
+        <switch :checked="geocodeSelect" @change="geocodeChange" />
+      </view>
+      <view class="get-location-result">{{ exeRet }}</view>
+      <view class="uni-btn-v">
+        <button class="uni-btn" type="default" @tap="getLocationTap">
+          获取定位
+        </button>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+  type GetLocationType = 'wgs84' | 'gcj02'
+  export type LocationItem = { id : string, name : string, provider ?: UniProvider }
+  export type ItemType = { value : GetLocationType, name : GetLocationType }
+  export type JestData = {
+    jest_provider: string
+    jest_type: GetLocationType
+    jest_isAltitude: boolean
+    jest_isGeocode: boolean
+    jest_isHighAccuracy: boolean
+    jest_altitude: number
+    jest_longitude: number
+    jest_latitude: number
+    jest_address: string
+    jest_errCode: number
+    jest_complete: boolean
+  }
+
+  const title = ref<string>('get-location')
+  const altitudeSelect = ref<boolean>(false)
+  const isHighAccuracySelect = ref<boolean>(false)
+  const geocodeSelect = ref<boolean>(false)
+  const exeRet = ref<string>('')
+  const items = ref<ItemType[]>([
+    {
+      value: 'wgs84',
+      name: 'wgs84'
+    },
+    {
+      value: 'gcj02',
+      name: 'gcj02'
+    }
+  ])
+  const providerList = ref<LocationItem[]>([])
+  const current = ref<number>(0)
+  const currentProvider = ref<number>(0)
+  const jestData = reactive<JestData>({
+    jest_provider: '',
+    jest_type: 'wgs84' as GetLocationType,
+    jest_isAltitude: false,
+    jest_isGeocode: false,
+    jest_isHighAccuracy: false,
+    jest_altitude: -1000,
+    jest_longitude: 200,
+    jest_latitude: 100,
+    jest_address: '',
+    jest_errCode: 0,
+    jest_complete: false
+  })
+
+  const getProvider = () => {
+    // #ifdef APP
+
+    let provider = uni.getProviderSync({
+      service: "location",
+    } as GetProviderSyncOptions)
+    console.log(provider)
+    provider.providerObjects.forEach((value : UniProvider) => {
+      var currentProvider = value
+      // if (value.id == 'system') {
+      //   currentProvider = value as UniLocationSystemProvider
+      // } else if (value.id == 'tencent') {
+      //   currentProvider = value as UniLocationTencentProvider
+      // }
+      providerList.value.push({
+        name: currentProvider.description,
+        id: currentProvider.id,
+        provider: currentProvider
+      } as LocationItem);
+    })
+
+    providerList.value.forEach((value, index) => {
+      if (value.id == "system") {
+        currentProvider.value = index
+      }
+    })
+    // #endif
+  }
+
+  const altitudeChange = (e : UniSwitchChangeEvent) => {
+    altitudeSelect.value = e.detail.value
+  }
+
+  const geocodeChange = (e : UniSwitchChangeEvent) => {
+    geocodeSelect.value = e.detail.value
+  }
+
+  const highAccuracySelectChange = (e : UniSwitchChangeEvent) => {
+    isHighAccuracySelect.value = e.detail.value
+  }
+
+  const radioChange = (e : UniRadioGroupChangeEvent) => {
+    for (let i = 0; i < items.value.length; i++) {
+      if (items.value[i].value === e.detail.value) {
+        current.value = i;
+        break;
+      }
+    }
+  }
+
+  const radioChangePV = (e : UniRadioGroupChangeEvent) => {
+    for (let i = 0; i < providerList.value.length; i++) {
+      if (providerList.value[i].id === e.detail.value) {
+        currentProvider.value = i;
+        break;
+      }
+    }
+    if (e.detail.value == "system") {
+      current.value = 0
+    } else if (e.detail.value == "tencent") {
+      current.value = 1
+    }
+  }
+
+  const getLocationTap = () => {
+    // #ifdef APP
+    if (providerList.value.length == 0) {
+      uni.showToast({
+        title: '未获取到provider，请确定基座中包含location功能',
+        icon: "error"
+      })
+      console.log("未获取到provider，请确定基座中包含location功能")
+      return
+    }
+    // #endif
+    uni.showLoading({
+      title: '定位中'
+    })
+    uni.getLocation(({
+      // #ifdef APP
+      provider: providerList.value[currentProvider.value].id,
+      // #endif
+      type: items.value[current.value].value,
+      altitude: altitudeSelect.value,
+      isHighAccuracy: isHighAccuracySelect.value,
+      geocode: geocodeSelect.value,
+      success: (res : any) => {
+        uni.hideLoading()
+        exeRet.value = JSON.stringify(res)
+      },
+      fail: (res : any) => {
+        uni.hideLoading()
+        exeRet.value = JSON.stringify(res)
+      },
+      complete: (res : any) => {
+        uni.hideLoading()
+        exeRet.value = JSON.stringify(res)
+      }
+    }));
+  }
+
+  // 仅用于自动化测试
+  const jestGetLocation = () => {
+    jestData.jest_complete = false
+    jestData.jest_errCode = 0
+    uni.getLocation(({
+      // #ifdef APP
+      provider: jestData.jest_provider,
+      // #endif
+      type: jestData.jest_type,
+      altitude: jestData.jest_isAltitude,
+      isHighAccuracy: jestData.jest_isHighAccuracy,
+      geocode: jestData.jest_isGeocode,
+      success: (res) => {
+        if (res.address != null) {
+          jestData.jest_address = res.address!
+        }
+        jestData.jest_longitude = res.longitude
+        jestData.jest_latitude = res.latitude
+        jestData.jest_altitude = res.altitude
+        jestData.jest_complete = true
+      },
+      fail: (err) => {
+        jestData.jest_errCode = err.errCode
+        jestData.jest_complete = true
+      }
+    }));
+  }
+
+  onLoad(() => {
+    // #ifdef APP
+    getProvider()
+    // #endif
+  })
+
+  defineExpose({
+    jestData,
+    jestGetLocation
+  })
+</script>
+
+<style>
+  .get-location-result {
+    /* #ifdef WEB || MP */
+    word-break: break-all;
+    /* #endif */
+  }
+</style>

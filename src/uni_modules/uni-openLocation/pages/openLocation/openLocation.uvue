@@ -1,0 +1,567 @@
+<template>
+  <view class="uni-open-location">
+    <view class="uni-open-location-map-box">
+      <map class="uni-open-location-map" :id="mapId" :ref="mapId" :latitude="latitude" :longitude="longitude" :scale="openLocationOptions.scale" :markers="markers"
+        :layer-style="theme == 'dark' ? '2' : '1'" :show-compass="false" :enable-zoom="true" :enable-scroll="true" :enable-rotate="false" :enable-poi="true" :show-location="true">
+      </map>
+      <view class="uni-open-location-map-reset" :class="[darkClassCom]" @click="mapReset">
+        <text class="uni-open-location-icons uni-open-location-map-reset-icon" :class="[darkClassCom]">{{ icon.position }}</text>
+      </view>
+    </view>
+    <view class="uni-open-location-nav" :style="'height:' + (60 + safeArea.top) + 'px;'">
+      <view class="uni-open-location-nav-btn uni-open-location-nav-back-btn" :class="[landscapeClassCom]" :style="safeArea.top > 0 ? 'top: ' + safeArea.top + 'px;' : ''">
+        <view class="uni-open-location-nav-btn-bg"></view>
+        <text class="uni-open-location-nav-text uni-open-location-nav-back-text uni-open-location-icons" @click="back">{{ icon.back }}</text>
+      </view>
+    </view>
+    <view class="uni-open-location-footer" :class="[darkClassCom]">
+      <view class="uni-open-location-address">
+        <text class="uni-open-location-name-text" :class="[darkClassCom]">
+          {{ openLocationOptions.name }}
+        </text>
+        <text class="uni-open-location-address-text" :class="[darkClassCom]">
+          {{ openLocationOptions.address }}
+        </text>
+      </view>
+      <view class="uni-open-location-footer-icon-btns">
+        <view class="uni-open-location-footer-icon-btns-item" @click="navigation">
+          <view class="uni-open-location-footer-icon-box" :class="[darkClassCom]">
+            <text class="uni-open-location-icons uni-open-location-navigation">{{ icon.navigation }}</text>
+          </view>
+          <text class="uni-open-location-footer-btn-text" :class="[darkClassCom]">{{ languageCom['navigation'] }}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script lang="uts" setup>
+  import { openSchema } from '@/uni_modules/uts-openSchema'
+  // #ifdef APP
+  import { canOpenURL } from '@/uni_modules/uts-openSchema'
+  // #endif
+
+  import targetPath from '@/uni_modules/uni-openLocation/pages/openLocation/target.png'
+
+  type AafeArea = {
+    top : number,
+    bottom : number,
+    left : number,
+    right : number
+  }
+
+  type IconPath = {
+    target : string,
+    position : string,
+    navigation : string,
+    back : string,
+  }
+
+  const languageData = {
+    "en": {
+      "navigation": "navigation"
+    },
+    "zh-Hans": {
+      "navigation": "导航"
+    },
+    "zh-Hant": {
+      "navigation": "導航"
+    }
+  };
+
+  const currentInstance = getCurrentInstance()!.proxy!
+  const uniPage = currentInstance.$page
+
+  const id1 = `UniMap1_${(Math.random() * 10e5).toString(36)}` as string;
+
+  // 响应式数据
+  const readyEventName = ref('');
+  const optionsEventName = ref('');
+  const successEventName = ref('');
+  const failEventName = ref('');
+  const openLocationOptions = ref({
+    latitude: 0,
+    longitude: 0,
+    scale: 18,
+    name: '',
+    address: ''
+  } as OpenLocationOptions);
+  const safeArea = ref({
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0
+  } as AafeArea);
+  const icon = ref({
+    target: '\ue683',
+    position: '\ue653',
+    navigation: '\ue640',
+    back: '\ue651',
+  } as IconPath);
+  const language = ref("zh-Hans");
+  const isLandscape = ref(false);
+  const theme = ref("light");
+  const mapId = ref(id1);
+  const latitude = ref(0);
+  const longitude = ref(0);
+  const markers = ref([] as Marker[]);
+
+  // 计算属性
+  const languageCom = computed(() => {
+    const textInfo = languageData[language.value] != null ? languageData[language.value] as UTSJSONObject : languageData['zh-Hans'] as UTSJSONObject;
+    return textInfo;
+  });
+
+  const darkClassCom = computed(() : string => {
+    return theme.value == 'dark' ? 'uni-open-location-dark' : 'uni-open-location-light';
+  })
+
+  const landscapeClassCom = computed(() => {
+    return isLandscape.value ? 'uni-open-location-landscape' : '';
+  });
+
+  // 方法
+  const initPageOptions = (options : UTSJSONObject) => {
+    readyEventName.value = options['readyEventName']! as string;
+    optionsEventName.value = options['optionsEventName']! as string;
+    successEventName.value = options['successEventName']! as string;
+    failEventName.value = options['failEventName']! as string;
+    uni.$on(optionsEventName.value, (data : UTSJSONObject) => {
+      console.log('data: ', JSON.stringify(data))
+      if (data['latitude'] != null) {
+        openLocationOptions.value.latitude = data['latitude'] as number;
+        latitude.value = openLocationOptions.value.latitude;
+      }
+      if (data['longitude'] != null) {
+        openLocationOptions.value.longitude = data['longitude'] as number;
+        longitude.value = openLocationOptions.value.longitude;
+      }
+      if (data['scale'] != null) {
+        openLocationOptions.value.scale = data['scale'] as number;
+      }
+      if (data['name'] != null) {
+        openLocationOptions.value.name = data['name'] as string;
+      }
+      if (data['address'] != null) {
+        openLocationOptions.value.address = data['address'] as string;
+      }
+      setTimeout(() => {
+        markers.value = [
+          {
+            id: 1,
+            latitude: openLocationOptions.value.latitude,
+            longitude: openLocationOptions.value.longitude,
+            iconPath: targetPath,
+            width: 50,
+            height: 50
+          } as Marker
+        ] as Marker[];
+      }, 300);
+      uni.$emit(successEventName.value, {});
+    });
+    uni.$emit(readyEventName.value, {});
+  };
+
+  const getSystemInfo = () => {
+    const info = uni.getWindowInfo();
+    safeArea.value.top = info.safeAreaInsets.top;
+    safeArea.value.bottom = info.safeAreaInsets.bottom;
+    safeArea.value.left = info.safeAreaInsets.left;
+    safeArea.value.right = info.safeAreaInsets.right;
+    const systemInfo = uni.getSystemInfoSync()
+    // const osLanguage = systemInfo.osLanguage
+    const appLanguage = systemInfo.appLanguage
+    language.value = appLanguage
+    const osTheme = systemInfo.osTheme
+    const appTheme = systemInfo.appTheme
+    if (appTheme != null && appTheme != "auto") {
+      theme.value = appTheme
+    } else if (osTheme != null) {
+      theme.value = osTheme
+    }
+    isLandscape.value = systemInfo.deviceOrientation == 'landscape'
+    // #ifdef WEB
+    const hostTheme = systemInfo.hostTheme
+    if (hostTheme != null) {
+      theme.value = hostTheme
+    }
+    const locale = uni.getLocale()
+    language.value = locale
+    uni.onLocaleChange((res) => {
+      if (res.locale) {
+        language.value = res.locale
+      }
+    })
+    uni.onThemeChange((res) => {
+      theme.value = res.theme
+    });
+    // #endif
+    // #ifdef APP-ANDROID || APP-IOS
+    uni.onAppThemeChange((res : AppThemeChangeResult) => {
+      theme.value = res.appTheme
+    })
+    uni.onOsThemeChange((res : OsThemeChangeResult) => {
+      theme.value = res.osTheme
+    })
+    // #endif
+  };
+
+  const closeDialogPage = () => {
+    // #ifdef APP-ANDROID
+    uni.closeDialogPage({
+      dialogPage: uniPage
+    } as io.dcloud.uniapp.framework.extapi.CloseDialogPageOptions)
+    // #endif
+    // #ifndef APP-ANDROID
+    uni.closeDialogPage({
+      dialogPage: uniPage
+    })
+    // #endif
+  };
+
+  const back = () => {
+    closeDialogPage();
+  };
+
+  const getMapContext = () : MapContext | null => {
+    return uni.createMapContext(mapId.value, currentInstance);
+  };
+
+  const moveToLocation = () => {
+    const mapContext = getMapContext();
+    if (mapContext != null) {
+      mapContext.moveToLocation({});
+    }
+  };
+
+  const mapReset = () => {
+    moveToLocation();
+  };
+
+  const navigation = () => {
+    const appBaseInfo = uni.getAppBaseInfo();
+    // #ifdef APP-ANDROID
+    const src = appBaseInfo.packageName;
+    // #endif
+    // #ifdef APP-IOS
+    const src = appBaseInfo.bundleId;
+    // #endif
+    // #ifdef WEB
+    const src = 'webapp.baidu.openAPIdemo';
+    // #endif
+    // #ifdef APP-HARMONY
+    const src = appBaseInfo.packageName;
+    // #endif
+
+    const list = ["腾讯地图", "高德地图", "百度地图"] as Array<string>;
+    // #ifdef APP-IOS
+    list.push("苹果地图");
+    // #endif
+    // #ifdef APP-HARMONY
+    // TODO: 华为地图有问题，暂不支持
+    // list.push("华为地图");
+    // #endif
+    uni.showActionSheet({
+      itemList: list,
+      success: (res) => {
+        let index = res.tapIndex;
+        if (index >= 0) {
+          let item = list[index] as string;
+          try {
+            let url = "";
+            if (item == "腾讯地图") {
+              // #ifdef APP
+              url = `qqmap://map/routeplan?type=drive&from=我的位置&fromcoord=CurrentLocation&to=${openLocationOptions.value.name}&tocoord=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&referer=1`;
+              // #endif
+              // #ifdef WEB
+              url = `https://apis.map.qq.com/uri/v1/marker?marker=coord:${openLocationOptions.value.latitude},${openLocationOptions.value.longitude};title:${openLocationOptions.value.name};addr:${openLocationOptions.value.address}&referer=1`;
+              // #endif
+            } else if (item == "高德地图") {
+              // #ifdef APP-ANDROID
+              url = `androidamap://route/plan/?sourceApplication=${src}&slat=&slon=&sname=我的位置&dlat=${openLocationOptions.value.latitude}&dlon=${openLocationOptions.value.longitude}&dname=${openLocationOptions.value.name}&dev=0&t=0`;
+              // #endif
+              // #ifdef APP-IOS
+              url = `iosamap://path?sourceApplication=${src}&slat=&slon=&sname=我的位置&dlat=${openLocationOptions.value.latitude}&dlon=${openLocationOptions.value.longitude}&dname=${openLocationOptions.value.name}&dev=0&t=0`;
+              // #endif
+              // #ifdef WEB
+              url = `https://uri.amap.com/navigation?to=${openLocationOptions.value.longitude},${openLocationOptions.value.latitude},${openLocationOptions.value.name},${openLocationOptions.value.address}&mode=car&policy=0&src=mypage&coordinate=gaode&callnative=1`;
+              // #endif
+              // #ifdef APP-HARMONY
+              url = `amapuri://route/plan?dlat=${openLocationOptions.value.latitude}&dlon=${openLocationOptions.value.longitude}&dname=${openLocationOptions.value.name}&sname=我的位置&t=0&sourceApplication=${src}`;
+              // #endif
+            } else if (item == "百度地图") {
+              // #ifdef APP
+              url = `baidumap://map/direction?origin=我的位置&destination=latlng:${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}|name:${openLocationOptions.value.name}&coord_type=gcj02&mode=driving&src=${src}`;
+              // #endif
+              // #ifdef WEB
+              url = `https://api.map.baidu.com/marker?coord_type=gcj02&location=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&title=${openLocationOptions.value.name}&content=${openLocationOptions.value.address}&output=html&src=${src}`;
+              // #endif
+            } else if (item == "苹果地图") {
+              // #ifdef APP-IOS
+              url = `maps://?ll=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&q=${openLocationOptions.value.name}`;
+              // #endif
+            } else if (item == "华为地图") {
+              // #ifdef APP-HARMONY
+              url = `petalmaps://route?saddr=我的位置&daddr=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&type=drive&utm_source=${src}`;
+              // #endif
+            }
+            if (url != "") {
+              // #ifdef APP-HARMONY
+              try {
+                openSchema(url);
+              } catch (err) {
+                uni.showToast({
+                  title: `打开失败${err.message}`,
+                  icon: "none"
+                });
+              }
+              // #endif
+
+              // #ifdef APP-ANDROID || APP-IOS
+              let schemaPrefix = "";
+              const schemaIndex = url.indexOf('?');
+              if (schemaIndex != -1) {
+                schemaPrefix = url.substring(0, schemaIndex);
+              }
+              if (canOpenURL(schemaPrefix)) {
+                openSchema(url);
+              } else {
+                uni.showToast({
+                  title: `请先安装${item}`,
+                  icon: "none"
+                });
+              }
+              // #endif
+
+              // #ifdef WEB
+              window.open(url);
+              // #endif
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        }
+      }
+    });
+  };
+
+  // 生命周期
+  onLoad((options : UTSJSONObject) => {
+    initPageOptions(options);
+    getSystemInfo();
+  });
+
+  onUnload(() => {
+    uni.$off(optionsEventName.value, null);
+    uni.$off(readyEventName.value, null);
+    uni.$off(successEventName.value, null);
+    uni.$off(failEventName.value, null);
+    // #ifdef APP-IOS
+    __uniappx__nativeEventBus.off(optionsEventName.value, null)
+    __uniappx__nativeEventBus.off(readyEventName.value, null)
+    __uniappx__nativeEventBus.off(successEventName.value, null)
+    __uniappx__nativeEventBus.off(failEventName.value, null)
+    // #endif
+  });
+
+  onResize(() => {
+    const systemInfo = uni.getSystemInfoSync();
+    isLandscape.value = systemInfo.deviceOrientation == 'landscape';
+  });
+</script>
+
+<style>
+  @font-face {
+    font-family: UniOpenLocationFontFamily;
+    src: url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8MUlTAAABjAAAAGBjbWFwgOWDPQAAAgQAAAHIZ2x5ZhfxkmkAAAPcAAAD3GhlYWQpzkauAAAA4AAAADZoaGVhB94DhwAAALwAAAAkaG10eBgAAAAAAAHsAAAAGGxvY2EDjAKGAAADzAAAAA5tYXhwARQAfwAAARgAAAAgbmFtZYQALlwAAAe4AAADM3Bvc3Rnid8OAAAK7AAAAGgAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAYAAQAAAAEAAP9wa2RfDzz1AAsEAAAAAADjV4FYAAAAAONXgVgAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABgBzAAQAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYc5oMDgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAEAAAAAAAABQAAAAMAAAAsAAAABAAAAXwAAQAAAAAAdgADAAEAAAAsAAMACgAAAXwABABKAAAADAAIAAIABOYc5kDmUeZT5oP//wAA5hzmQOZR5lPmg///AAAAAAAAAAAAAAABAAwADAAMAAwADAAAAAEAAwACAAQABQAAAQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAATAAAAAAAAAAFAADmHAAA5hwAAAABAADmQAAA5kAAAAADAADmUQAA5lEAAAACAADmUwAA5lMAAAAEAADmgwAA5oMAAAAFAAAAAACkAOoA+gGcAe4AAAAEAAAAAAPfAvYASQBSAGkAcgAAATQmIyIHJy4BJyYrAScmJyYrASIHBg8BIyIHBg8CJiMiBhQWOwEVBhcWFxYXFjsBMjY9ARYXFj8BFRQWOwEyNjc2NzY3Nic+AQUiJjQ2MhYUBiUGJyYvASImNTc+ATMhMhYfARQGIwcGFyImNDYyFhQGA94tIRQSOwQMBAcKXQ0EEA8S1BIPEAQNXQwIBQcFOxIUIS0tIQECEQ0KBQsIEk8QEhIPw5UhEhBPEBYECA4QCAsGHCb9GiEvL0IuLgFtJ1ZPI4kRFhMGEBABwhAQBhMWECMqbyEuLkIvLwGUFR0GqAcbBQdEDgcHBwcORAoHEQyoBh0qHgMpeVkxGQgIGBEsAgEMDAMsERgXEhY+RzdHFwMcxzBEMDBEMOgGAQEEEBgRUBYRERZQERgFB+wwRDAwRDAAAgAA/6oD1gNXABQAKQAAASIHBgcGFhcWFxYyNzY3NjQnJicmBx4BDwEXFhQPAQ4BLwEuAT8BNhYXAgB/bmo+QQFAPmpu/21qP0BAP2ptAQoCCtTTCwkCCiQL6RMDEesLJQoDVkA+am7/bmo+QEA+am7/bmo+QN8LIQvAvQkhDAMLBQnPETMU0goDCwABAAAAAAN/AwAAAwAACQEFEwN+/QQBPH4DAP7ChP7EAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAQYeAj4BLgMOAQHAJTUmJjUlagYEQAQHR3UhIiknREWiRUQnKSIhdf7lAitPXFAuAS1LW00vVBIZGSMZGQFx/ogEBgYEAXgKUz9BSVFFRCcpKSdERVFJQT9TAR0uUTACLk9cTC0CK0sAAAAAAAASAN4AAQAAAAAAAAATAAAAAQAAAAAAAQAZABMAAQAAAAAAAgAHACwAAQAAAAAAAwAZADMAAQAAAAAABAAZAEwAAQAAAAAABQALAGUAAQAAAAAABgAZAHAAAQAAAAAACgArAIkAAQAAAAAACwATALQAAwABBAkAAAAmAMcAAwABBAkAAQAyAO0AAwABBAkAAgAOAR8AAwABBAkAAwAyAS0AAwABBAkABAAyAV8AAwABBAkABQAWAZEAAwABBAkABgAyAacAAwABBAkACgBWAdkAAwABBAkACwAmAi9DcmVhdGVkIGJ5IGljb25mb250VW5pT3BlbkxvY2F0aW9uRm9udEZhbWlseVJlZ3VsYXJVbmlPcGVuTG9jYXRpb25Gb250RmFtaWx5VW5pT3BlbkxvY2F0aW9uRm9udEZhbWlseVZlcnNpb24gMS4wVW5pT3BlbkxvY2F0aW9uRm9udEZhbWlseUdlbmVyYXRlZCBieSBzdmcydHRmIGZyb20gRm9udGVsbG8gcHJvamVjdC5odHRwOi8vZm9udGVsbG8uY29tAEMAcgBlAGEAdABlAGQAIABiAHkAIABpAGMAbwBuAGYAbwBuAHQAVQBuAGkATwBwAGUAbgBMAG8AYwBhAHQAaQBvAG4ARgBvAG4AdABGAGEAbQBpAGwAeQBSAGUAZwB1AGwAYQByAFUAbgBpAE8AcABlAG4ATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVQBuAGkATwBwAGUAbgBMAG8AYwBhAHQAaQBvAG4ARgBvAG4AdABGAGEAbQBpAGwAeQBWAGUAcgBzAGkAbwBuACAAMQAuADAAVQBuAGkATwBwAGUAbgBMAG8AYwBhAHQAaQBvAG4ARgBvAG4AdABGAGEAbQBpAGwAeQBHAGUAbgBlAHIAYQB0AGUAZAAgAGIAeQAgAHMAdgBnADIAdAB0AGYAIABmAHIAbwBtACAARgBvAG4AdABlAGwAbABvACAAcAByAG8AagBlAGMAdAAuAGgAdAB0AHAAOgAvAC8AZgBvAG4AdABlAGwAbABvAC4AYwBvAG0AAAIAAAAAAAAACgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgECAQMBBAEFAQYBBwAGZGFjaGUxE2FuZ2xlLWxlZnQtY2lyY2xlLXMHZGFvaGFuZwdkaW5nd2VpC2RpdHUtdHVkaW5nAAA=') format('truetype');
+  }
+
+  .uni-open-location-icons {
+    font-family: "UniOpenLocationFontFamily";
+    font-size: 16px;
+    font-style: normal;
+  }
+
+  .uni-open-location {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #f8f8f8;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .uni-open-location-map-box {
+    width: 100%;
+    flex: 1;
+  }
+
+  .uni-open-location-map {
+    width: 100%;
+    height: 100%;
+  }
+
+  .uni-open-location-map-reset {
+    position: absolute;
+    left: 20px;
+    bottom: 40px;
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 20px;
+    pointer-events: auto;
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+    z-index: 9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .uni-open-location-map-reset-icon {
+    font-size: 26px;
+    text-align: center;
+    line-height: 40px;
+  }
+
+  .uni-open-location-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, 0));
+  }
+
+  .uni-open-location-nav-btn {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .uni-open-location-nav-btn-bg {
+    width: 20px;
+    height: 20px;
+    background-color: #cbcbcb;
+    border-radius: 10px;
+    overflow: hidden;
+    position: absolute;
+  }
+
+  .uni-open-location-nav-back-text {
+    color: #fff;
+    font-size: 26px;
+  }
+
+  .uni-open-location-footer {
+    height: 150px;
+    border-radius: 10px 10px 0px 0px;
+    overflow: hidden;
+    background-color: #fff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 20px;
+  }
+
+  .uni-open-location-address {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .uni-open-location-name-text {
+    font-size: 18px;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .uni-open-location-address-text {
+    font-size: 16px;
+    margin-top: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .uni-open-location-footer-icon-btns {
+    width: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .uni-open-location-footer-icon-btns-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .uni-open-location-footer-icon-box {
+    background-color: #f8f8f8;
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .uni-open-location-navigation.uni-open-location-icons {
+    color: #007aff;
+    font-size: 24px;
+  }
+
+  .uni-open-location-footer-btn-text {
+    font-size: 12px;
+    text-align: center;
+  }
+
+  /* #ifndef VUE3_VAPOR */
+  .uni-open-location-footer-icon-btns-item:active {
+    opacity: 0.6;
+  }
+
+  /* #endif */
+
+  .uni-open-location-dark.uni-open-location-map-reset {
+    background-color: #111111;
+  }
+
+  .uni-open-location-dark.uni-open-location-map-reset-icon {
+    color: #d1d1d1;
+  }
+
+  .uni-open-location-dark.uni-open-location-footer {
+    background-color: #181818;
+  }
+
+  .uni-open-location-dark.uni-open-location-name-text {
+    color: #fafafa;
+  }
+
+  .uni-open-location-dark.uni-open-location-address-text {
+    color: #fafafa;
+  }
+
+  .uni-open-location-dark.uni-open-location-footer-icon-box {
+    background-color: #393939;
+  }
+
+  .uni-open-location-dark.uni-open-location-footer-btn-text {
+    color: #909090;
+  }
+</style>

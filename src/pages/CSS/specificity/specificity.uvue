@@ -1,0 +1,214 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view class="uni-common-mt">
+        <text>多类名优先级测试 (.s1.s2 > .s1)</text>
+        <view class="test-box s1" id="spec-multi-1">
+          <text>1 class: .s1 (blue)</text>
+        </view>
+        <view class="test-box s1 s2" id="spec-multi-2">
+          <text>2 classes: .s1.s2 (green)</text>
+        </view>
+        <view class="test-box s1 s2 s3" id="spec-multi-3">
+          <text>3 classes: .s1.s2.s3 (red)</text>
+        </view>
+      </view>
+
+      <!-- 当前已注释的代码段在app和web平台有差异 -->
+      <!-- app 如果需要后面覆盖前面，需要保证class在模版中的顺序，不是css代码的顺序 -->
+      <!-- web 模版中的css顺序不影响优先级 -->
+      <!-- <view class="uni-common-mt">
+        <text>同优先级定义顺序测试 (后定义覆盖前定义)</text>
+        <view class="test-box order-first order-second" id="spec-order-1">
+          <text>Defined Second (Purple)</text>
+        </view>
+        <view class="test-box order-second order-first" id="spec-order-2">
+          <text>Defined Second (Purple) - swap class order in HTML</text>
+        </view>
+      </view> -->
+
+      <view class="uni-common-mt">
+        <text>字母排序测试 (测试编译是否受字母顺序影响)</text>
+        <!-- .alpha 定义在前, .beta 定义在后 -->
+        <view class="test-box alpha beta" id="spec-alpha-1">
+          <text>.alpha defined before .beta (Gold)</text>
+        </view>
+
+        <!-- .z-index-a 定义在前, .a-index-z 定义在后.
+             如果按字母排序 .a-index-z 会在前? 不, 如果是标准CSS, 看定义顺序.
+             我们特意让字母顺序和定义顺序相反 -->
+        <view class="test-box z-class a-class" id="spec-alpha-2">
+          <text>.z-class defined before .a-class (Cyan)</text>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text>组合类名顺序测试 (Chained Classes Order)</text>
+        <text>1. 字母序与定义序一致 (.ab.x then .ab.y)</text>
+        <view class="test-box ab x y" id="spec-chain-1">
+           <text>Expect Green (.ab.y)</text>
+        </view>
+
+        <text>2. 字母序与定义序相反 (.ab.z then .ab.w)</text>
+        <view class="test-box ab z w" id="spec-chain-2">
+           <text>Expect Green (.ab.w)</text>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text>特定前缀测试 (.a.b vs .a.c)</text>
+        <text>1. Normal Order: .a.b then .a.c</text>
+        <view class="test-box a b c" id="spec-prefix-1">
+          <text>Expect Green (.a.c)</text>
+        </view>
+
+        <text>2. Inverse Order: .a.e then .a.d</text>
+        <!-- .a.d comes before .a.e alphabetically -->
+        <!-- If sorted by key, .a.d runs first, .a.e runs last. .a.e wins (Red) -->
+        <!-- Expected: .a.d wins (Green) -->
+        <view class="test-box a d e" id="spec-prefix-2">
+          <text>Expect Green (.a.d)</text>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text>完全无公共前缀测试 (Disjoint Classes)</text>
+        <text>Inverse Order: .year-2025.month-12 then .year-2024.month-01</text>
+        <view class="test-box year-2025 month-12 year-2024 month-01" id="spec-disjoint">
+          <text>Expect Green (2024)</text>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+</script>
+
+<style>
+  .test-box {
+    width: 300px;
+    height: 100px;
+    background-color: gray;
+    margin: 10px;
+    border: 2px solid black;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Class selector */
+  .class-style {
+    border: 5px solid blue;
+    background-color: lightblue;
+  }
+
+  /* Multi-class tests */
+  .s1 {
+    border-color: blue;
+    border-width: 5px;
+    border-style: solid;
+  }
+
+  .s1.s2 {
+    border-color: green;
+  }
+
+  .s1.s2.s3 {
+    border-color: red;
+  }
+
+  /* Order tests */
+  .order-first {
+    border-color: orange;
+    border-width: 5px;
+    border-style: solid;
+  }
+
+  .order-second {
+    border-color: purple;
+  }
+
+  /* Alphabetical vs Definition Order tests */
+  .alpha {
+    border-color: silver;
+    border-width: 5px;
+    border-style: solid;
+  }
+
+  .beta {
+    border-color: gold;
+  }
+
+  /* z-class starts with z, defined first */
+  .z-class {
+    border-color: brown;
+    border-width: 5px;
+    border-style: solid;
+  }
+
+  /* a-class starts with a, defined second. */
+  .a-class {
+    border-color: cyan;
+  }
+
+  /* Chained Class Order Tests */
+  /* 1. Alphabetical == Definition */
+  .ab.x {
+    border-color: red;
+    border-width: 5px;
+    border-style: solid;
+  }
+  .ab.y {
+    border-color: green;
+  }
+
+  /* 2. Alphabetical != Definition (Inverse) */
+  /* z comes after w alphabetically */
+  /* Defined: z then w */
+  .ab.z {
+    border-color: red;
+    border-width: 5px;
+    border-style: solid;
+  }
+  .ab.w {
+    border-color: green;
+  }
+
+  /* Specific Prefix Tests (.a.b) */
+  /* Case 1: .a.b then .a.c */
+  .a.b {
+    border-color: red;
+    border-width: 5px;
+    border-style: solid;
+  }
+  .a.c {
+    border-color: green;
+  }
+
+  /* Case 2: .a.e then .a.d */
+  /* Alphabetical: .a.d < .a.e */
+  .a.e {
+    border-color: red;
+    border-width: 5px;
+    border-style: solid;
+  }
+  .a.d {
+    border-color: green;
+  }
+
+  /* Disjoint Classes Tests */
+  /* Alphabetical: .year-2024... < .year-2025... */
+  /* Defined: 2025 then 2024 */
+  .year-2025.month-12 {
+    border-color: red;
+    border-width: 5px;
+    border-style: solid;
+  }
+  .year-2024.month-01 {
+    border-color: green;
+  }
+</style>

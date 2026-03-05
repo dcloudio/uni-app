@@ -1,0 +1,49 @@
+<template>
+  <!-- 带圆圈的返回箭头组件。旋转边框的view实现返回箭头。因需要扩大点击区域,外面多套了一层 -->
+  <view class="back-circle" @click="handleClick">
+    <view class="back-arrow" :class="props.arrowClass"></view>
+  </view>
+</template>
+
+<script lang="uts" setup>
+  defineOptions({
+    externalClasses: ['arrow-class']
+  })
+
+  type Props = {
+    arrowClass ?: string.ClassString
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    arrowClass: '',
+  })
+
+  const emit = defineEmits(['click'])
+
+  const handleClick = () => {
+    emit('click')
+    // 默认行为：返回上一页
+    uni.navigateBack({})
+  }
+</script>
+
+<style>
+  .back-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    background-color: rgba(220, 220, 220, 0.3);
+    justify-content: center;
+    align-items: center;
+    margin: 6px;
+    padding-left: 4px;
+  }
+
+  .back-arrow {
+    width: 12px;
+    height: 12px;
+    transform: rotate(45deg);
+    border-left: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+  }
+</style>

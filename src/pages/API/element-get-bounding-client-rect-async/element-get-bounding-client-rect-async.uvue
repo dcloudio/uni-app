@@ -1,0 +1,508 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view class="page" id="page">
+      <page-head :title="title"></page-head>
+      <page-intro content="本页演示元素获取布局矩形：getBoundingClientRectAsync 异步接口与 getBoundingClientRect 同步方法，返回 x、y、width、height、left、top、right、bottom；对 view、text、image、scroll-view 等组件分别测试，并含拍平（flatten）对比。"></page-intro>
+      <button class="uni-common-mt" @click="getBoundingClientRectAsync">getBoundingClientRectAsync</button>
+      <view id="rect-test" ref="rectTest" class="rect-test"></view>
+      <view class="rect-info" v-if="data.rectInfo != null">
+        <view class="node-info-item">
+          <text class="node-info-item-k">x: </text>
+          <text class="node-info-item-v">{{data.rectInfo!.x}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">y: </text>
+          <text class="node-info-item-v">{{data.rectInfo!.y}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">width: </text>
+          <text class="node-info-item-v">{{data.rectInfo!.width}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">height: </text>
+          <text class="node-info-item-v">{{data.rectInfo!.height}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">left: </text>
+          <text class="node-info-item-v">{{data.rectInfo!.left}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">top: </text>
+          <text class="node-info-item-v">{{data.rectInfo!.top}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">right: </text>
+          <text class="node-info-item-v">{{data.rectInfo!.right}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">bottom: </text>
+          <text class="node-info-item-v">{{data.rectInfo!.bottom}}</text>
+        </view>
+      </view>
+
+      <!-- 新增 getBoundingClientRect 同步方法测试 -->
+      <view class="section-divider"></view>
+      <text class="section-title">getBoundingClientRect 方法测试</text>
+
+      <!-- View 元素测试 -->
+      <view class="test-group">
+        <view class="test-buttons">
+          <button class="btn-small" type="default" @click="getViewRect">View</button>
+          <button class="btn-small" @click="getViewRectFlat">View(拍平测试)</button>
+        </view>
+        <view class="test-elements">
+          <view id="rect-test-view" class="rect-test-small"></view>
+          <view id="rect-test-view-flat" class="rect-test-small" flatten></view>
+        </view>
+      </view>
+      <view class="rect-row"  v-if="syncData.viewRectInfo != null || syncData.viewRectInfoFlat != null">
+        <view class="rect-data-col" v-if="syncData.viewRectInfo != null">
+          <text class="rect-data-item">x: {{syncData.viewRectInfo!.x}}</text>
+          <text class="rect-data-item">y: {{syncData.viewRectInfo!.y}}</text>
+          <text class="rect-data-item">width: {{syncData.viewRectInfo!.width}}</text>
+          <text class="rect-data-item">height: {{syncData.viewRectInfo!.height}}</text>
+          <text class="rect-data-item">left: {{syncData.viewRectInfo!.left}}</text>
+          <text class="rect-data-item">top: {{syncData.viewRectInfo!.top}}</text>
+          <text class="rect-data-item">right: {{syncData.viewRectInfo!.right}}</text>
+          <text class="rect-data-item">bottom: {{syncData.viewRectInfo!.bottom}}</text>
+        </view>
+        <view class="rect-data-col" v-if="syncData.viewRectInfoFlat != null">
+          <text class="rect-data-item">x: {{syncData.viewRectInfoFlat!.x}}</text>
+          <text class="rect-data-item">y: {{syncData.viewRectInfoFlat!.y}}</text>
+          <text class="rect-data-item">width: {{syncData.viewRectInfoFlat!.width}}</text>
+          <text class="rect-data-item">height: {{syncData.viewRectInfoFlat!.height}}</text>
+          <text class="rect-data-item">left: {{syncData.viewRectInfoFlat!.left}}</text>
+          <text class="rect-data-item">top: {{syncData.viewRectInfoFlat!.top}}</text>
+          <text class="rect-data-item">right: {{syncData.viewRectInfoFlat!.right}}</text>
+          <text class="rect-data-item">bottom: {{syncData.viewRectInfoFlat!.bottom}}</text>
+        </view>
+      </view>
+
+      <!-- Text 元素测试 -->
+      <view class="test-group">
+        <view class="test-buttons">
+          <button class="btn-small" @click="getTextRect">Text</button>
+          <button class="btn-small" @click="getTextRectFlat">Text(拍平测试)</button>
+        </view>
+        <view class="test-elements">
+          <text id="rect-test-text" class="rect-test-text-small">测试文本</text>
+          <text id="rect-test-text-flat" class="rect-test-text-small" flatten>测试文本拍平</text>
+        </view>
+      </view>
+      <view class="rect-row" v-if="syncData.textRectInfo != null || syncData.textRectInfoFlat != null">
+        <view class="rect-data-col" v-if="syncData.textRectInfo != null">
+          <text class="rect-data-item">x: {{syncData.textRectInfo!.x}}</text>
+          <text class="rect-data-item">y: {{syncData.textRectInfo!.y}}</text>
+          <text class="rect-data-item">width: {{syncData.textRectInfo!.width}}</text>
+          <text class="rect-data-item">height: {{syncData.textRectInfo!.height}}</text>
+          <text class="rect-data-item">left: {{syncData.textRectInfo!.left}}</text>
+          <text class="rect-data-item">top: {{syncData.textRectInfo!.top}}</text>
+          <text class="rect-data-item">right: {{syncData.textRectInfo!.right}}</text>
+          <text class="rect-data-item">bottom: {{syncData.textRectInfo!.bottom}}</text>
+        </view>
+        <view class="rect-data-col" v-if="syncData.textRectInfoFlat != null">
+          <text class="rect-data-item">x: {{syncData.textRectInfoFlat!.x}}</text>
+          <text class="rect-data-item">y: {{syncData.textRectInfoFlat!.y}}</text>
+          <text class="rect-data-item">width: {{syncData.textRectInfoFlat!.width}}</text>
+          <text class="rect-data-item">height: {{syncData.textRectInfoFlat!.height}}</text>
+          <text class="rect-data-item">left: {{syncData.textRectInfoFlat!.left}}</text>
+          <text class="rect-data-item">top: {{syncData.textRectInfoFlat!.top}}</text>
+          <text class="rect-data-item">right: {{syncData.textRectInfoFlat!.right}}</text>
+          <text class="rect-data-item">bottom: {{syncData.textRectInfoFlat!.bottom}}</text>
+        </view>
+      </view>
+
+      <!-- Image 元素测试 -->
+      <view class="test-group">
+        <view class="test-buttons">
+          <button class="btn-small" @click="getImageRect">Image</button>
+          <button class="btn-small" @click="getImageRectFlat">Image(拍平测试)</button>
+        </view>
+        <view class="test-elements">
+          <image id="rect-test-image" class="rect-test-image-small" src="/static/test-image/logo.png" mode="aspectFit"></image>
+          <image id="rect-test-image-flat" class="rect-test-image-small" src="/static/test-image/logo.png" mode="aspectFit" flatten></image>
+        </view>
+      </view>
+      <view class="rect-row" v-if="syncData.imageRectInfo != null || syncData.imageRectInfoFlat != null" >
+        <view class="rect-data-col" v-if="syncData.imageRectInfo != null">
+          <text class="rect-data-item">x: {{syncData.imageRectInfo!.x}}</text>
+          <text class="rect-data-item">y: {{syncData.imageRectInfo!.y}}</text>
+          <text class="rect-data-item">width: {{syncData.imageRectInfo!.width}}</text>
+          <text class="rect-data-item">height: {{syncData.imageRectInfo!.height}}</text>
+          <text class="rect-data-item">left: {{syncData.imageRectInfo!.left}}</text>
+          <text class="rect-data-item">top: {{syncData.imageRectInfo!.top}}</text>
+          <text class="rect-data-item">right: {{syncData.imageRectInfo!.right}}</text>
+          <text class="rect-data-item">bottom: {{syncData.imageRectInfo!.bottom}}</text>
+        </view>
+        <view class="rect-data-col" v-if="syncData.imageRectInfoFlat != null">
+          <text class="rect-data-item">x: {{syncData.imageRectInfoFlat!.x}}</text>
+          <text class="rect-data-item">y: {{syncData.imageRectInfoFlat!.y}}</text>
+          <text class="rect-data-item">width: {{syncData.imageRectInfoFlat!.width}}</text>
+          <text class="rect-data-item">height: {{syncData.imageRectInfoFlat!.height}}</text>
+          <text class="rect-data-item">left: {{syncData.imageRectInfoFlat!.left}}</text>
+          <text class="rect-data-item">top: {{syncData.imageRectInfoFlat!.top}}</text>
+          <text class="rect-data-item">right: {{syncData.imageRectInfoFlat!.right}}</text>
+          <text class="rect-data-item">bottom: {{syncData.imageRectInfoFlat!.bottom}}</text>
+        </view>
+      </view>
+
+      <!-- ScrollView 元素测试 -->
+      <button class="uni-common-mt" @click="getScrollViewRect">getBoundingClientRect - ScrollView</button>
+      <scroll-view id="rect-test-scrollview" class="rect-test-scrollview">
+        <view class="scroll-content">
+          <text class="scroll-text">滚动区域内容1</text>
+        </view>
+        <view class="scroll-content">
+          <text class="scroll-text">滚动区域内容2</text>
+        </view>
+        <view class="scroll-content">
+          <text class="scroll-text">滚动区域内容2</text>
+        </view>
+      </scroll-view>
+      <view class="rect-info" v-if="syncData.scrollViewRectInfo != null">
+        <view class="node-info-item">
+          <text class="node-info-item-k">x: </text>
+          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.x}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">y: </text>
+          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.y}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">width: </text>
+          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.width}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">height: </text>
+          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.height}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">left: </text>
+          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.left}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">top: </text>
+          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.top}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">right: </text>
+          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.right}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">bottom: </text>
+          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.bottom}}</text>
+        </view>
+      </view>
+
+      <!-- 自定义组件测试 -->
+      <button class="uni-common-mt" @click="getCustomComponentRect">getBoundingClientRect - 自定义组件</button>
+      <child id="rect-test-component" class="uni-common-mt"></child>
+      <view class="rect-info" v-if="syncData.customComponentRectInfo != null">
+        <view class="node-info-item">
+          <text class="node-info-item-k">x: </text>
+          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.x}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">y: </text>
+          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.y}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">width: </text>
+          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.width}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">height: </text>
+          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.height}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">left: </text>
+          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.left}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">top: </text>
+          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.top}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">right: </text>
+          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.right}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">bottom: </text>
+          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.bottom}}</text>
+        </view>
+      </view>
+
+   </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import Child from './child.uvue'
+
+  type DomRectType = {
+    x : number,
+    y : number,
+    left : number,
+    top : number,
+    right : number,
+    bottom : number,
+    width : number,
+    height : number,
+  }
+
+  type DataType = {
+    rectInfo: DomRectType,
+  }
+
+  type SyncDataType = {
+    viewRectInfo: DomRectType | null,
+    textRectInfo: DomRectType | null,
+    imageRectInfo: DomRectType | null,
+    viewRectInfoFlat: DomRectType | null,
+    textRectInfoFlat: DomRectType | null,
+    imageRectInfoFlat: DomRectType | null,
+    scrollViewRectInfo: DomRectType | null,
+    customComponentRectInfo: DomRectType | null,
+  }
+
+  const title = ref('getBoundingClientRectAsync')
+  const rectTest = ref<UniElement | null>(null)
+
+  const data = reactive({
+    rectInfo: {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 0,
+    },
+  } as DataType)
+
+  const syncData = reactive({
+    viewRectInfo: null,
+    textRectInfo: null,
+    imageRectInfo: null,
+    viewRectInfoFlat: null,
+    textRectInfoFlat: null,
+    imageRectInfoFlat: null,
+    scrollViewRectInfo: null,
+    customComponentRectInfo: null,
+  } as SyncDataType)
+
+  function getBoundingClientRectAsync() {
+    if (rectTest.value != null) {
+      rectTest.value!.getBoundingClientRectAsync()!.then((rect : DOMRect) => {
+        data.rectInfo = {
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height,
+          left: rect.left,
+          top: rect.top,
+          right: rect.right,
+          bottom: rect.bottom,
+        } as DomRectType
+      })
+    }
+  }
+
+  // 通用方法：获取元素的位置信息
+  function getRectInfo(elementId: string, dataKey: keyof SyncDataType) {
+    const element = uni.getElementById(elementId)!
+    const rect = element.getBoundingClientRect()
+    syncData[dataKey] = {
+      x: rect.x,
+      y: rect.y,
+      width: rect.width,
+      height: rect.height,
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+    } as DomRectType
+  }
+
+  function getViewRect() {
+    getRectInfo('rect-test-view', 'viewRectInfo')
+  }
+
+  function getTextRect() {
+    getRectInfo('rect-test-text', 'textRectInfo')
+  }
+
+  function getImageRect() {
+    getRectInfo('rect-test-image', 'imageRectInfo')
+  }
+
+  function getViewRectFlat() {
+    getRectInfo('rect-test-view-flat', 'viewRectInfoFlat')
+  }
+
+  function getTextRectFlat() {
+    getRectInfo('rect-test-text-flat', 'textRectInfoFlat')
+  }
+
+  function getImageRectFlat() {
+    getRectInfo('rect-test-image-flat', 'imageRectInfoFlat')
+  }
+
+  function getScrollViewRect() {
+    getRectInfo('rect-test-scrollview', 'scrollViewRectInfo')
+  }
+
+  function getCustomComponentRect() {
+    getRectInfo('rect-test-component', 'customComponentRectInfo')
+  }
+
+  defineExpose({
+    data,
+    syncData,
+    getBoundingClientRectAsync,
+    getViewRect,
+    getTextRect,
+    getImageRect,
+    getViewRectFlat,
+    getTextRectFlat,
+    getImageRectFlat,
+    getScrollViewRect,
+    getCustomComponentRect
+  })
+</script>
+
+<style>
+  .page {
+    padding: 15px;
+  }
+
+  .rect-test {
+    margin-top: 15px;
+    height: 100px;
+    background-color: dodgerblue;
+  }
+
+  .rect-info {
+    margin-top: 15px;
+    flex-direction: column;
+  }
+
+  .node-info-item {
+    flex-direction: row;
+  }
+
+  .node-info-item-k {
+    width: 72px;
+    line-height: 2;
+  }
+
+  .node-info-item-v {
+    font-weight: bold;
+    line-height: 2;
+  }
+
+  .section-divider {
+    margin-top: 30px;
+    height: 1px;
+    background-color: #e0e0e0;
+  }
+
+  .section-title {
+    margin-top: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .test-group {
+    margin-top: 20px;
+    flex-direction: column;
+  }
+
+  .test-buttons {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 10px;
+  }
+
+  .btn-small {
+    padding: 5px 15px;
+    font-size: 13px;
+    border-radius: 4px;
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-elements {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .rect-test-small {
+    width: 45%;
+    height: 60px;
+    background-color: dodgerblue;
+  }
+
+  .rect-test-text-small {
+    width: 45%;
+    padding: 8px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #ff6b6b;
+  }
+
+  .rect-test-image-small {
+    width: 45%;
+    height: 60px;
+    background-color: #f0f0f0;
+  }
+
+  .rect-row {
+    flex-direction: row;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e4e7ed;
+  }
+
+  .rect-data-col {
+    flex: 1;
+    flex-direction: column;
+    margin: 0 5px;
+  }
+
+  .rect-data-item {
+    font-size: 12px;
+    line-height: 1.8;
+    color: #606266;
+  }
+
+  .rect-test-scrollview {
+    margin-top: 15px;
+    height: 120px;
+    border: 1px solid #dcdfe6;
+    background-color: #f5f7fa;
+  }
+
+  .scroll-content {
+    height: 120px;
+    padding: 10px;
+    border: 1px solid #37b4ea;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .scroll-text {
+    line-height: 30px;
+    font-size: 14px;
+    color: #606266;
+  }
+
+</style>

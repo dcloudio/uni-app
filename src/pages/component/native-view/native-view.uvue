@@ -1,0 +1,95 @@
+<template>
+  <scroll-view style="flex: 1;">
+    <page-intro content="本页演示 native-view 原生视图与 UTS 插件组件：调用组件方法、native-button 与容器、native-view 样式；可跳转 native-time-picker 等原生能力。"></page-intro>
+    <view style="padding-bottom: 50px;">
+      <!-- #ifndef APP-HARMONY -->
+      <text class="tips">说明：如果本地无 uts 插件编译环境请提交打包自定义基座查看效果</text>
+      <!-- #endif -->
+      <!-- #ifdef APP-HARMONY -->
+      <text class="tips"> </text>
+      <!-- #endif -->
+      <button type="primary" @tap="testCallMethod">调用组件方法</button>
+      <!-- native-button 通过 native-view 绑定原生button 实现的UTS插件-标准模式组件 -->
+      <native-button id="helloView" class="native-button" style="width: 200px; height: 100px;" :text="buttonText" @buttonTap="ontap"
+        @load="onload"></native-button>
+      <native-button-container></native-button-container>
+      <!-- #ifndef APP-HARMONY -->
+      <button type="primary" @click="gotoTimePicker">调用native-time-picker</button>
+      <!-- #endif -->
+
+      <text class="uni-title-text">native-view样式大合集</text>
+      <native-view class="styled-native-view"></native-view>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+import { createNativeButtonContext } from "@/uni_modules/native-button";
+
+const buttonText = ref("native-button")
+let isLoad = false
+let clickCount = 0
+
+function ontap(e : UniNativeViewEvent) {
+  uni.showToast({
+    title: "按钮被点击了"
+  })
+  clickCount ++
+  buttonText.value = "native-button"+clickCount
+}
+
+function onload() {
+  //标记已初始化 用于自动化测试
+  isLoad = true
+}
+
+//用于自动化测试
+function getIsLoadTest():boolean {
+  return isLoad
+}
+
+function testCallMethod() {
+  let context = createNativeButtonContext("helloView")
+  context?.updateText("test code")
+}
+
+function gotoTimePicker() {
+  uni.openDialogPage({
+    url: "/pages/component/native-view/native-view-time-picker-dialog",
+    animationType: "fade-in"
+  })
+}
+
+defineExpose({getIsLoadTest})
+
+</script>
+
+<style>
+
+  .tips {
+    font-size: 14px;
+    color: #BEBEBE;
+    margin: 25px auto 25px auto;
+    text-align: center;
+  }
+
+  .native-button {
+    height: 100px;
+    width: 100px;
+    margin: 25px auto 25px auto;
+  }
+
+  .styled-native-view {
+    width: 80px;
+    height: 80px;
+    margin: 20px 30px;
+    padding: 5px;
+    border: 2px solid #007aff;
+    border-radius: 8px;
+    background-color: #f0f8ff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    opacity: 0.95;
+    position: relative;
+    transform: rotate(45deg);
+  }
+</style>

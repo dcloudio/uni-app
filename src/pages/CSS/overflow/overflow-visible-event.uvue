@@ -1,0 +1,243 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view id="scroll-view" style="flex: 1;">
+  <!-- #endif -->
+    <view>
+      <page-intro content="本页演示 overflow: visible 下的事件行为：子元素超出父区域时点击仍可触发 click/touch 事件；与 position:absolute 遮挡时的点击顺序、hover-class、多层级 overflow:visible、以及 overflow:visible 与 z-index 组合时的事件触发。"></page-intro>
+      <text style="font-size: 15px;">overflow=visible 父view（绿色），子view（红色），点击超出父view区域的部分也可触发事件。</text>
+      <view class="backgroundview">
+        <view id="parent" class="box-visible-border-radius">
+          <view id="child" style="width: 50px; height: 150px; background-color: red;" @click="handleClickOverflowPart"
+            @touchmove="handleTouchMoveOverflowPart" @touchstart="handleTouchStartOverflowPart"
+            @touchend="handleTouchEndOverflowPart">
+          </view>
+        </view>
+      </view>
+      <text style="font-size: 15px;">overflow=visible组件的子view （绿色）被position:
+        absolute的view（红色）遮挡时，点击事件测试。</text>
+      <view style="width: 300px;height: 300px;background-color: white;">
+        <view style="overflow:visible;height: 100px;width: 100%;">
+          <view style="background-color: green;height: 100px;width: 100%;" @click="handleClick('green')">
+          </view>
+        </view>
+        <view id="absolute-view" style="position: absolute;background-color: red;width: 100px;height: 200px;right: 0px;"
+          @click="handleClick('red')">
+        </view>
+      </view>
+      <text style="font-size: 15px;">overflow=visible组件设置hover-class的测试</text>
+      <view class="backgroundview">
+        <view class="box-visible-border-radius" hover-class="hover-class">
+          <view style="background-color: red;height: 100px;width: 100px;margin-left: 20px;margin-top: 20px;">
+          </view>
+        </view>
+      </view>
+      <text style="font-size: 15px;">overflow=visible组件多层级设置测试</text>
+      <view class="backgroundview">
+        <view id="deep-overflow" style="overflow: visible;">
+          <view style="overflow: visible;background-color: red;width: 100px;height: 100px;" @click="handleClick('red')">
+          </view>
+        </view>
+        <view style="overflow: visible;">
+          <view style="overflow: visible;background-color: green;width: 100px;height: 100px;">
+          </view>
+        </view>
+      </view>
+      <text style="font-size: 15px;">同时设置overflow=visible、z-index的事件触发示例</text>
+      <view class="backgroundview">
+        <view id="zindex-overflow" style="width: 1px;height: 1px;overflow: visible;z-index: 100;" @click="handleClick('red')">
+        	<view style="width: 100px;height: 100px;background-color: red;"></view>
+        </view>
+        <view style="width: 1px;height: 1px;overflow: visible;">
+        	<view style="width: 100px;height: 100px;background-color: green;"></view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+  type DataType = {
+    jest_result: boolean;
+    jest_click_x: number;
+    jest_click_y: number;
+    jest_parent_top: number;
+    startX: number;
+    startY: number;
+    moveX: number;
+    moveY: number;
+    oldX: number;
+    oldY: number;
+    moveEl: UniElement | null;
+  }
+
+  const data = reactive({
+    jest_result: false,
+    jest_click_x: -1,
+    jest_click_y: -1,
+    jest_parent_top: -1.0,
+    startX: 0,
+    startY: 0,
+    moveX: 0,
+    moveY: 0,
+    oldX: 0,
+    oldY: 0,
+    moveEl: null as UniElement | null
+  } as DataType)
+
+  onReady(() => {
+    data.moveEl = uni.getElementById('parent')
+  })
+
+  const handleClickOverflowPart = () => {
+    console.log("click")
+    data.jest_result = true
+    uni.showToast({ "title": "点击红色区域" })
+  }
+
+  const handleTouchStartOverflowPart = (e : UniTouchEvent) => {
+    data.startX = e.changedTouches[0].clientX
+    data.startY = e.changedTouches[0].clientY
+  }
+
+  const handleTouchMoveOverflowPart = (e : UniTouchEvent) => {
+    console.log("touchmove:" + e.touches[0].clientX + "," + e.touches[0].clientY)
+    e.preventDefault()
+    e.stopPropagation()
+    const difX = e.changedTouches[0].clientX
+    const difY = e.changedTouches[0].clientY
+    data.moveX = difX - data.startX + data.oldX
+    data.moveY = difY - data.startY + data.oldY
+    data.moveEl?.style?.setProperty('transform', `translate(${data.moveX}px,${data.moveY}px)`)
+  }
+
+  const handleTouchEndOverflowPart = (_ : UniTouchEvent) => {
+    data.oldX = data.moveX
+    data.oldY = data.moveY
+  }
+
+  const handleClick = (str : string) => {
+    console.log(`点击了 ${str} view`)
+    if (str == 'red') {
+      data.jest_result = true
+    }
+  }
+
+  const jest_getRect = async () => {
+    const rect = await uni.getElementById('child')!.getBoundingClientRectAsync()!
+    let ratio = 1
+    if (uni.getSystemInfoSync().platform == 'android'){
+      ratio = uni.getSystemInfoSync().devicePixelRatio
+    }
+    data.jest_click_x = rect.x * ratio + 30
+    data.jest_click_y = rect.bottom * ratio - 30
+  }
+
+  const jest_getParentRect = () => {
+    const transform = uni.getElementById('parent')?.style.getPropertyValue("transform")
+    if (transform != null) {
+      let value = transform as string
+      value = value.split(",")[1].slice(0, -3)
+      let ratio = 1
+      if (uni.getSystemInfoSync().platform == 'android'){
+        ratio = uni.getSystemInfoSync().devicePixelRatio
+      }
+      data.jest_parent_top = Math.round((parseFloat(value) * ratio))
+    }
+  }
+
+  const jest_getAbsoluteViewRect = async () => {
+    const rect = await uni.getElementById('absolute-view')!.getBoundingClientRectAsync()!
+    const systemInfo = uni.getSystemInfoSync()
+    const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
+    let ratio = 1
+    if (uni.getSystemInfoSync().platform == 'android'){
+      ratio = uni.getSystemInfoSync().devicePixelRatio
+    }
+    data.jest_click_x = rect.x * ratio + 30
+    data.jest_click_y = (rect.top + titleBarHeight) * ratio + 30
+  }
+
+  const jest_restScorllView = async () => {
+    const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
+    scrollView.scrollTo(0, 0)
+  }
+
+  const jest_scrollToDeepOverflow = async () => {
+    const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
+    const rect = await uni.getElementById('deep-overflow')!.getBoundingClientRectAsync()!
+    scrollView.scrollTo(0, rect.top)
+    setTimeout(() => {
+      const systemInfo = uni.getSystemInfoSync()
+      let ratio = 1
+      if (uni.getSystemInfoSync().platform == 'android'){
+        ratio = uni.getSystemInfoSync().devicePixelRatio
+      }
+      const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
+      uni.getElementById('deep-overflow')!.getBoundingClientRectAsync()!.then((afterRect: DOMRect) => {
+        data.jest_click_x = afterRect.x * ratio + 30
+        data.jest_click_y = (afterRect.top + titleBarHeight) * ratio + 30
+      })
+    }, 200)
+  }
+
+  const jest_scrollToZIndexOverflow = async () => {
+    const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
+    const rect = await uni.getElementById('zindex-overflow')!.getBoundingClientRectAsync()!
+    scrollView.scrollTo(0, rect.top)
+    setTimeout(() => {
+      const systemInfo = uni.getSystemInfoSync()
+      let ratio = 1
+      if (uni.getSystemInfoSync().platform == 'android'){
+        ratio = uni.getSystemInfoSync().devicePixelRatio
+      }
+      const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
+      uni.getElementById('zindex-overflow')!.getBoundingClientRectAsync()!.then((afterRect: DOMRect) => {
+        data.jest_click_x = afterRect.x * ratio + 30
+        data.jest_click_y = (afterRect.top + titleBarHeight) * ratio + 30
+      })
+    }, 200)
+  }
+	
+	defineExpose({
+		data,
+	  jest_getRect,
+	  jest_getParentRect,
+	  jest_getAbsoluteViewRect,
+	  jest_scrollToDeepOverflow,
+	  jest_scrollToZIndexOverflow,
+	  jest_restScorllView
+	})
+	
+</script>
+
+<style>
+  .backgroundview {
+    width: 300px;
+    height: 300px;
+    margin-bottom: 20px;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .box-visible-border-radius {
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    overflow: visible;
+    background-color: green;
+  }
+
+  .hover-class {
+    background-color: aqua;
+  }
+
+  .box {
+    width: 1px;
+    height: 1px;
+    overflow: visible;
+  }
+</style>

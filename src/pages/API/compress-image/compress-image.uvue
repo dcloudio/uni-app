@@ -1,0 +1,226 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-padding-wrap">
+        <view class="image-container">
+          <image class="image" :src="beforeCompressPath" mode="aspectFit"></image>
+          <image class="image" :src="afterCompressPath" mode="aspectFit"></image>
+        </view>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">压缩前图片信息</text>
+        </view>
+        <text>{{beforeCompressImageInfo}}</text>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">压缩后图片信息</text>
+        </view>
+        <text>{{afterCompressImageInfo}}</text>
+        <view class="uni-btn-v">
+          <button type="primary" @click="chooseImage">从相册中选取待压缩的图片</button>
+        </view>
+        <view class="uni-btn-v">
+          <button type="primary" @click="compressImage">压缩图片</button>
+        </view>
+      </view>
+      <input-data defaultValue="80" title="压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效）" type="number"
+        @confirm="onQualityConfirm"></input-data>
+      <input-data title="压缩后图片的宽度，单位px" type="string" @confirm="onCompressedWidthConfirm"></input-data>
+      <input-data title="压缩后图片的高度，单位px" type="string" @confirm="onCompressedHeightConfirm"></input-data>
+      <input-data defaultValue="0" title="旋转度数，范围0～360" type="number" @confirm="onRotateConfirm"></input-data>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  // #ifdef APP-ANDROID
+  import FileInputStream from 'java.io.FileInputStream';
+  // #endif
+
+  type DataType = {
+    imageInfoForTest: UTSJSONObject | null,
+    imageSrcForTest: string,
+    compressedWidth: number | null,
+    compressedHeight: number | null
+  }
+
+  const title = ref("compressImage")
+  const beforeCompressImageInfo = ref("")
+  const afterCompressImageInfo = ref("")
+  const beforeCompressPath = ref("")
+  const afterCompressPath = ref("")
+  const quality = ref(80)
+  const rotate = ref(0)
+  // 自动化测试
+  const data = reactive({
+    imageInfoForTest: null,
+    imageSrcForTest: '/static/test-image/logo.png',
+    compressedWidth: null,
+    compressedHeight: null
+  } as DataType)
+
+  const compressImage = () => {
+    if (beforeCompressPath.value == "") {
+      uni.showToast({
+        title: "请先选择图片",
+        icon: "error"
+      });
+      return;
+    }
+    uni.showLoading({
+      title: "图片压缩中"
+    });
+    uni.compressImage({
+      src: beforeCompressPath.value,
+      quality: quality.value,
+      compressedWidth: data.compressedWidth,
+      compressedHeight: data.compressedHeight,
+      rotate: rotate.value,
+      success: (res) => {
+        console.log("compressImage success", JSON.stringify(res));
+        afterCompressPath.value = res.tempFilePath;
+        uni.showToast({
+          title: "压缩成功",
+          icon: null
+        });
+        uni.getImageInfo({
+          src: res.tempFilePath,
+          success: (_res) => {
+            afterCompressImageInfo.value = `图片宽度: ${_res.width}\n图片高度: ${_res.height}\n`;
+            // #ifdef APP-ANDROID
+            const size = new FileInputStream(res.tempFilePath.substring("file://".length)).available() / 1024;
+            afterCompressImageInfo.value = afterCompressImageInfo.value.concat(`图片大小: ${size}KB`);
+            // #endif
+            // #ifdef APP-HARMONY
+            const fsm = uni.getFileSystemManager()
+            fsm.getFileInfo({
+              filePath: res.tempFilePath,
+              digestAlgorithm: null,
+              success: (res) => {
+                afterCompressImageInfo.value = afterCompressImageInfo.value.concat(`图片大小: ${res.size}KB`);
+              }
+            })
+            // #endif
+          }
+        });
+      },
+      fail: (err) => {
+        uni.showModal({
+          title: "压缩图片失败",
+          content: JSON.stringify(err),
+          showCancel: false
+        });
+      },
+      complete: (_) => {
+        uni.hideLoading();
+      }
+    });
+  }
+
+  const chooseImage = () => {
+    uni.chooseImage({
+      count: 1,
+      sizeType: ["original"],
+      sourceType: ["album"],
+      success: (res) => {
+        beforeCompressPath.value = res.tempFilePaths[0];
+        uni.getImageInfo({
+          src: res.tempFilePaths[0],
+          success: (_res) => {
+            beforeCompressImageInfo.value = `图片宽度: ${_res.width}\n图片高度: ${_res.height}\n`;
+            // #ifdef APP-ANDROID
+            const size = new FileInputStream(res.tempFilePaths[0].substring("file://".length)).available() / 1024;
+            beforeCompressImageInfo.value = beforeCompressImageInfo.value.concat(`图片大小: ${size}KB`);
+            // #endif
+            // #ifdef APP-HARMONY
+            const fsm = uni.getFileSystemManager()
+            fsm.getFileInfo({
+              filePath: res.tempFilePaths[0],
+              digestAlgorithm: null,
+              success: (res) => {
+                beforeCompressImageInfo.value = beforeCompressImageInfo.value.concat(`图片大小: ${res.size}KB`);
+              },
+              fail: (err) => {
+                console.log(err);
+              }
+            })
+            // #endif
+          }
+        });
+      }
+    });
+  }
+
+  const onQualityConfirm = (value: number) => {
+    quality.value = value;
+  }
+
+  const onCompressedWidthConfirm = (value: string) => {
+    data.compressedWidth = parseInt(value);
+  }
+
+  const onCompressedHeightConfirm = (value: string) => {
+    data.compressedHeight = parseInt(value);
+  }
+
+  const onRotateConfirm = (value: number) => {
+    rotate.value = value;
+  }
+
+  const testCompressImage = () => {
+    uni.compressImage({
+      src: data.imageSrcForTest,
+      quality: 50,
+      compressedWidth: 100,
+      compressedHeight: 100,
+      success: (res) => {
+        uni.getImageInfo({
+          src: res.tempFilePath,
+          success: (_res) => {
+            // #ifdef APP-HARMONY || APP-ANDROID
+            const fsm = uni.getFileSystemManager()
+            fsm.getFileInfo({
+              filePath: data.imageSrcForTest,
+              digestAlgorithm: null,
+              success: (imageInfo) => {
+                fsm.getFileInfo({
+                  filePath: res.tempFilePath,
+                  digestAlgorithm: null,
+                  success: (res) => {
+                    data.imageInfoForTest = {
+                      "width": _res.width,
+                      "height": _res.height,
+                      "isSizeReduce": res.size < imageInfo.size
+                    };
+                  }
+                })
+              }
+            })
+            // #endif
+          }
+        });
+      },
+      fail: (_) => {
+        data.imageInfoForTest = null;
+      }
+    });
+  }
+
+  defineExpose({
+    data,
+    testCompressImage
+  })
+</script>
+
+<style>
+  .image {
+    flex: 1;
+  }
+
+  .image-container {
+    flex-direction: row;
+  }
+</style>

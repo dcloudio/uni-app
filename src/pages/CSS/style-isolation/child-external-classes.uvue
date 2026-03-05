@@ -1,0 +1,51 @@
+<template>
+  <view class="single-root-box" :class="props.childClass">
+    <text class="single-root-text">{{ props.text }}</text>
+    <view class="box" :class="props.boxClass"></view>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+  // 禁用自动属性继承，手动控制属性绑定位置
+  defineOptions({
+    inheritAttrs: false,
+    externalClasses: ['child-class', 'box-class']
+  })
+
+  // 定义组件属性接口
+  type Props = {
+    text ?: string,
+    childClass ?: string.ClassString,
+    boxClass ?: string.ClassString
+  }
+
+  // 使用 withDefaults 设置默认值
+  const props = withDefaults(defineProps<Props>(), {
+    text: '单根节点组件:绿色背景红色描边',
+    childClass: '',
+    boxClass: ''
+  })
+</script>
+
+<style>
+  .single-root-box {
+    background-color: #FFF3E0;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid #FF9800;
+    margin: 5px;
+  }
+
+  .single-root-text {
+    color: #E65100;
+    font-size: 14px;
+  }
+
+  .box {
+    width: 150px;
+    height: 30px;
+    background-color:  #d9d1ff;
+    border: #9e4ef7 solid 2px;
+  }
+</style>

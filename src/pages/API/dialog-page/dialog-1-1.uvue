@@ -1,0 +1,57 @@
+<template>
+  <view id="dialog1" class="dialog-container">
+    <view class="dialog-content">
+      <text>title: {{ title }}</text>
+      <button @click="closeThisDialog">Close</button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
+  import {
+    state,
+    setLifeCycleNum
+  } from '@/store/index.uts'
+
+  const title = ref('dialog 1-1')
+
+  function closeThisDialog() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+      })
+    }
+  }
+
+  onReady(() => {
+    console.log('dialog 1-1 onReady')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 2)
+  })
+
+  onUnload(() => {
+    console.log('dialog 1-1 onUnload')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 5)
+  })
+</script>
+
+<style>
+  .dialog-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dialog-content {
+    width: 80%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 6px;
+  }
+</style>

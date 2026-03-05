@@ -1,0 +1,102 @@
+<template>
+	<view class="container">
+		<text class="intro-text">url() 函数用于加载图片、字体等资源，支持 /static 目录下的本地文件和网络链接。</text>
+		<view class="section">
+			<text class="section-title">字体示例</text>
+			<view class="font-grid">
+				<!-- #ifdef APP-IOS -->
+				<view class="font-item">
+					<text class="custom-font">阿里妈妈刀隶体</text>
+					<text class="font-value">@font-face { font-family: 'AlimamaDaoLiTi'; src: url('/static/app-ios/AlimamaDaoLiTi.woff2') }</text>
+				</view>
+				<!-- #endif -->
+				<!-- #ifndef MP-WEIXIN -->
+				<view class="font-item">
+					<text class="pacifico-font">Pacifico Font Example</text>
+					<text class="font-value">@font-face { font-family: 'Pacifico'; src: url('/static/font/Pacifico-Regular.ttf') }</text>
+				</view>
+				<!-- #endif -->
+				<view class="font-item">
+					<text class="web-font">网络字体</text>
+					<text class="font-value">@font-face { font-family: 'AlimamaDaoLiTiTTF'; src: url('https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/font/AlimamaDaoLiTi.ttf') }</text>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<style>
+	@font-face {
+		font-family: 'AlimamaDaoLiTi';
+		src: url('/static/app-ios/AlimamaDaoLiTi.woff2'),
+			 url('/static/app-ios/AlimamaDaoLiTi.woff'),
+			 url('/static/font/AlimamaDaoLiTi.otf');
+	}
+
+	@font-face {
+		font-family: 'Pacifico';
+		src: url('/static/font/Pacifico-Regular.ttf');
+	}
+
+	@font-face {
+		font-family: 'AlimamaDaoLiTiTTF';
+		src: url('https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/font/AlimamaDaoLiTi.ttf');
+	}
+
+	.container {
+		padding: 20px;
+	}
+
+	.intro-text {
+		font-size: 14px;
+		color: #333;
+		margin-bottom: 30px;
+		line-height: 1.6;
+		padding: 15px;
+		background-color: #f8f9fa;
+		border-radius: 8px;
+	}
+
+	.section {
+		margin-bottom: 30px;
+	}
+
+	.section-title {
+		font-size: 18px;
+		font-weight: bold;
+		margin-bottom: 15px;
+	}
+
+	.font-grid {
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.font-item {
+		width: 100%;
+		margin-bottom: 20px;
+	}
+
+	.custom-font {
+		font-size: 20px;
+		margin-bottom: 8px;
+		font-family: 'AlimamaDaoLiTi';
+	}
+
+	.pacifico-font {
+		font-size: 20px;
+		margin-bottom: 8px;
+		font-family: 'Pacifico';
+	}
+
+	.web-font {
+		font-size: 20px;
+		margin-bottom: 8px;
+		font-family: 'AlimamaDaoLiTiTTF';
+	}
+
+	.font-value {
+		font-size: 12px;
+		color: #999;
+	}
+</style>

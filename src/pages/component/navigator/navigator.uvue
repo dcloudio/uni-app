@@ -1,0 +1,43 @@
+<template>
+  <page-head :title="title"></page-head>
+  <view class="uni-padding-wrap uni-common-mt">
+    <navigator id="navigate" class="navigator" url="navigate?title=navigate">
+      <button type="default">跳转到新页面</button>
+    </navigator>
+    <navigator id="redirect" class="navigator" url="redirect?title=redirect" open-type="redirect">
+      <button type="default">在当前页打开redirect</button>
+    </navigator>
+    <navigator id="switchTab" class="navigator" url="/pages/tabBar/template" open-type="switchTab">
+      <button type="default">切换到模板选项卡switchTab</button>
+    </navigator>
+    <navigator id="reLaunch" class="navigator" url="/pages/tabBar/component" open-type="reLaunch">
+      <button type="default">关闭所有页面回首页reLaunch</button>
+    </navigator>
+    <navigator id="reLaunch" class="navigator" open-type="navigateBack">
+      <button type="default">返回上一页navigateBack</button>
+    </navigator>
+    <!-- <navigator id="reLaunch" class="navigator" open-type="exit">
+      <button type="default">退出应用（仅Android和小程序生效）</button>
+    </navigator> -->
+    <navigator id="navigateToErrorPage" class="navigator" url="/pages/error-page/error-page">
+      <button type="default"> 打开不存在的页面 </button>
+    </navigator>
+    <navigator id="navigateToErrorPage" class="navigator">
+      <button type="default"> 未指定URL的跳转 </button>
+    </navigator>
+    <navigator style="flex-direction: row;justify-content: space-between;">
+      <text>两端对齐样式测试</text>
+      <view style="width: 20px;height: 20px; background-color: aqua;"></view>
+    </navigator>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const title = ref('navigator')
+</script>
+
+<style>
+  .navigator {
+    margin-bottom: 15px;
+  }
+</style>

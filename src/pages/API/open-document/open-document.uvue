@@ -1,0 +1,127 @@
+<template>
+    <page-head :title="title"></page-head>
+    <!-- #ifdef APP -->
+    <scroll-view direction="vertical" style="flex:1">
+    <!-- #endif -->
+      <view class="uni-common-mt">
+        <button v-for="(item, index) in fileList" :key="index" @click="openDocument(item)" style="margin: 10px;">
+          打开 {{item.type}} 文件
+        </button>
+      </view>
+    <!-- #ifdef APP -->
+    </scroll-view>
+    <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  type FileItem = {
+    type : string,
+    url : string
+  }
+
+  const title = 'openDocument'
+  const fileList = ref<Array<FileItem>>([
+    {
+      type: 'pdf',
+      url: 'https://web-assets.dcloud.net.cn/unidoc/zh/helloworld.pdf'
+    },
+    {
+      type: 'doc',
+      url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.doc'
+    },
+    {
+      type: 'docx',
+      url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.docx'
+    },
+    {
+      type: 'ppt',
+      url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.ppt'
+    },
+    {
+      type: 'pptx',
+      url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.pptx'
+    },
+    {
+      type: 'xls',
+      url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.xls'
+    },
+    {
+      type: 'xlsx',
+      url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.xlsx'
+    },
+    {
+      type: 'zip',
+      url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/to.zip'
+    },
+    {
+      type: 'br',
+      url: '/static/filemanager/1.txt.br'
+    },
+    {
+      type: 'mp3',
+      url: '/static/test-audio/ForElise.mp3'
+    },
+    {
+      type: 'mp4',
+      url: '/static/test-video/10second-demo.mp4'
+    },
+    {
+      type: 'svg',
+      url: '/static/test-image/logo.svg'
+    }
+  ])
+
+  const openDocument = (item : FileItem) => {
+
+    if (item.url.startsWith('http')) {
+      uni.showLoading({
+        title: '下载中',
+        mask: true
+      })
+      uni.downloadFile({
+        url: item.url,
+        success: (res) => {
+          uni.openDocument({
+            filePath: res.tempFilePath,
+            success: () => {
+              uni.hideLoading()
+              console.log('打开文档成功')
+            },
+            fail: (err) => {
+              uni.hideLoading()
+              console.log('打开文档失败', err)
+              uni.showToast({
+                title: '错误码：' + err.errCode.toString(),
+                icon: "error"
+              })
+            }
+          })
+        },
+        fail: (err) => {
+          uni.hideLoading()
+          console.log('下载失败', err)
+          uni.showToast({
+            title: '下载失败：' + err.errCode.toString(),
+            icon: "error"
+          })
+        }
+      })
+    } else {
+      uni.openDocument({
+        filePath: item.url,
+        success: () => {
+          console.log('打开文档成功')
+        },
+        fail: (err) => {
+          console.log('打开文档失败', err)
+          uni.showToast({
+            title: '错误码：' + err.errCode.toString(),
+            icon: "error"
+          })
+        }
+      })
+    }
+
+
+  }
+</script>

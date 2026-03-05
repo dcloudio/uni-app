@@ -1,0 +1,367 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt">
+      <view class="uni-list">
+        <view class="uni-list-cell cell-pd">
+          <text class="uni-list-cell-left uni-label">
+            图片来源
+          </text>
+          <view class="uni-list-cell-right" @click="chooseImageSource">
+            <text class="click-t">{{sourceType[sourceTypeIndex]}}</text>
+          </view>
+        </view>
+
+        <view class="uni-list-cell cell-pd">
+          <text class="uni-list-cell-left uni-label">
+            图片质量
+          </text>
+          <view class="uni-list-cell-right" @click="chooseImageType">
+            <text class="click-t">{{sizeType[sizeTypeIndex]}}</text>
+          </view>
+        </view>
+
+        <view class="uni-list-cell cell-pd">
+          <text class="uni-list-cell-left uni-label">
+            数量限制
+          </text>
+          <view class="uni-list-cell-right">
+            <input class="click-t" :value="count" type="number" :maxlength="1" @blur="chooseImageCount" />
+          </view>
+        </view>
+        <!-- #ifdef APP-ANDROID || APP-IOS -->
+        <view class="uni-list-cell cell-pd">
+          <text class="uni-list-cell-left uni-label">
+            屏幕方向
+          </text>
+          <view class="uni-list-cell-right" @click="chooseOrientationType">
+            <text class="click-t">{{orientationType[orientationTypeIndex]}}</text>
+          </view>
+        </view>
+        <!-- #endif -->
+        <!-- #ifdef APP-ANDROID -->
+        <view class="uni-list-cell cell-pd">
+          <text class="uni-list-cell-left uni-label">
+            相册模式
+          </text>
+          <view class="uni-list-cell-right" @click="albumModeChange">
+            <text class="click-t">{{albumModeType[albumModeTypeIndex]}}</text>
+          </view>
+        </view>
+        <!-- #endif -->
+        <view class="uni-list-cell cell-pd">
+          <text class="uni-list-cell-left uni-label">
+            图像裁剪
+          </text>
+          <view class="uni-list-cell-right">
+            <switch :checked="isCrop" @change="switchCrop"></switch>
+          </view>
+        </view>
+        <view ref="cropOptionNode" class="crop-option"
+          :style="{'height':isCrop?'200px':'0px','margin-bottom':isCrop?'11px':'0px'}">
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left item_width">
+              图片质量(%)
+            </view>
+            <view class="uni-list-cell-right">
+              <input :value="cropPercent" @confirm="cropPercentConfim" type="number" maxlength="-1" />
+            </view>
+          </view>
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left item_width">
+              裁剪宽度(px)
+            </view>
+            <view class="uni-list-cell-right">
+              <input :value="cropWidth" @confirm="cropWidthConfim" type="number" maxlength="-1" />
+            </view>
+          </view>
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left item_width">
+              裁剪高度(px)
+            </view>
+            <view class="uni-list-cell-right">
+              <input :value="cropHeight" @confirm="cropHeightConfim" type="number" maxlength="-1" />
+            </view>
+          </view>
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left item_width">
+              保留原宽高
+            </view>
+            <view class="uni-list-cell-right">
+              <switch :checked="cropResize" @change="cropResizeChange"></switch>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-list list-pd" style="padding: 15px;">
+        <view class="uni-flex" style="margin-bottom: 10px;">
+          <view class="uni-list-cell-left">点击可预览选好的图片</view>
+          <view style="margin-left: auto;">
+            <text class="click-t">{{imageList.length}}/{{count}}</text>
+          </view>
+        </view>
+        <view class="uni-flex" style="flex-wrap: wrap;">
+          <view v-for="(image,index) in imageList" :key="index" class="uni-uploader__input-box" style="border: 0;">
+            <image style="width: 104px; height: 104px;" :src="image" @tap="previewImage(index)">
+            </image>
+            <image src="/static/plus.png" class="image-remove" @click="removeImage(index)"></image>
+          </view>
+          <image class="uni-uploader__input-box" @tap="chooseImage" src="/static/plus.png"></image>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+const sourceTypeArray = [
+  ['camera'],
+  ['album'],
+  ['camera', 'album']
+]
+const sizeTypeArray = [
+  ['compressed'],
+  ['original'],
+  ['compressed', 'original']
+]
+const orientationTypeArray = [
+  'portrait',
+  'landscape',
+  'auto'
+]
+const albumModeTypeArray = [
+  "custom",
+  "system"
+]
+
+// 响应式数据
+const title = ref('chooseImage')
+const imageList = ref([] as Array<string>)
+const sourceTypeIndex = ref(2)
+const sourceType = ref(['拍照', '相册', '拍照或相册'])
+const sizeTypeIndex = ref(2)
+const sizeType = ref(['压缩', '原图', '压缩或原图'])
+const orientationTypeIndex = ref(0)
+const orientationType = ref(['竖屏', '横屏', '自动'])
+const albumModeTypeIndex = ref(0)
+const albumModeType = ref(["自定义相册","系统相册"])
+const count = ref(9)
+const isCrop = ref(false)
+const cropPercent = ref(80)
+const cropWidth = ref(100)
+const cropHeight = ref(100)
+const cropResize = ref(false)
+
+// 生命周期钩子
+onPageHide(() => {
+  console.log("Page Hide");
+})
+
+onUnload(() => {
+  imageList.value = [];
+  sourceTypeIndex.value = 2
+  sourceType.value = ['拍照', '相册', '拍照或相册']
+  sizeTypeIndex.value = 2
+  sizeType.value = ['压缩', '原图', '压缩或原图']
+  orientationTypeIndex.value = 0
+  orientationType.value = ['竖屏', '横屏', '自动']
+})
+
+// 方法
+const cropHeightConfim = (e: InputConfirmEvent) => {
+  let value = parseInt(e.detail.value)
+  if (value > 0) {
+    cropHeight.value = value
+  } else {
+    uni.showToast({
+      position: "bottom",
+      title: "裁剪高度需要大于0"
+    })
+  }
+}
+
+const cropWidthConfim = (e: InputConfirmEvent) => {
+  let value = parseInt(e.detail.value)
+  if (value > 0) {
+    cropWidth.value = value
+  } else {
+    uni.showToast({
+      position: "bottom",
+      title: "裁剪宽度需要大于0"
+    })
+  }
+}
+
+const cropPercentConfim = (e: InputConfirmEvent) => {
+  let value = parseInt(e.detail.value)
+  if (value > 0 && value <= 100) {
+    cropPercent.value = value
+  } else {
+    uni.showToast({
+      position: "bottom",
+      title: "请输入0~100之间的值"
+    })
+  }
+}
+
+const albumModeChange = () => {
+  uni.showActionSheet({
+    itemList: albumModeType.value,
+    success: (e) => {
+      albumModeTypeIndex.value = e.tapIndex
+    }
+  })
+}
+
+const cropResizeChange = (e: UniSwitchChangeEvent) => {
+  cropResize.value = e.detail.value
+}
+
+const switchCrop = (e: UniSwitchChangeEvent) => {
+  isCrop.value = e.detail.value
+}
+
+const removeImage = (index: number) => {
+  imageList.value.splice(index, 1)
+}
+
+const chooseImageSource = () => {
+  uni.showActionSheet({
+    itemList: ['拍照', '相册', '拍照或相册'],
+    success: (e) => {
+      sourceTypeIndex.value = e.tapIndex
+    }
+  })
+}
+
+const chooseImageType = () => {
+  uni.showActionSheet({
+    itemList: ['压缩', '原图', '压缩或原图'],
+    success: (e) => {
+      sizeTypeIndex.value = e.tapIndex
+    }
+  })
+}
+
+const chooseOrientationType = () => {
+  uni.showActionSheet({
+    itemList: ['竖屏', '横屏', '自动'],
+    success: (e) => {
+      orientationTypeIndex.value = e.tapIndex
+    }
+  })
+}
+
+const chooseImageCount = (event: InputBlurEvent) => {
+  let countValue = parseInt(event.detail.value)
+  if (countValue < 0) {
+    uni.showToast({
+      position: "bottom",
+      title: "图片数量应该大于0"
+    })
+    return
+  }
+  count.value = countValue
+}
+
+const chooseImage = () => {
+  if (imageList.value.length >= count.value) {
+    uni.showToast({
+      position: "bottom",
+      title: `已经有 ${count.value} 张图片了，请删除部分图片之后重新选择`
+    })
+    return
+  }
+  uni.chooseImage({
+    sourceType: sourceTypeArray[sourceTypeIndex.value],
+    sizeType: sizeTypeArray[sizeTypeIndex.value],
+    crop: isCrop.value ? { "quality": cropPercent.value, "width": cropWidth.value, "height": cropHeight.value, "resize": cropResize.value } as ChooseImageCropOptions : null,
+    count: count.value - imageList.value.length,
+    // #ifdef APP
+    pageOrientation: orientationTypeArray[orientationTypeIndex.value],
+    // #endif
+    // #ifdef APP-ANDROID
+    albumMode: albumModeTypeArray[albumModeTypeIndex.value],
+    // #endif
+    success: (res) => {
+      imageList.value = imageList.value.concat(res.tempFilePaths);
+      console.log("imageList: ", imageList.value)
+    },
+    fail: (err) => {
+      console.log("err: ", JSON.stringify(err));
+      uni.showToast({
+        title:"choose image error.code:" + err.errCode+";message:"+err.errMsg,
+        position:"bottom"
+      })
+    }
+  })
+}
+
+const previewImage = (index: number) => {
+  uni.previewImage({
+    current: index,
+    urls: imageList.value
+  })
+}
+</script>
+
+<style>
+  .cell-pd {
+    padding: 11px 15px;
+  }
+
+  .click-t {
+    color: darkgray;
+  }
+
+  .list-pd {
+    margin-top: 25px;
+  }
+
+  .uni-uploader__input-box {
+    margin: 5px;
+    width: 104px;
+    height: 104px;
+    border: 1px solid #D9D9D9;
+  }
+
+  .uni-uploader__input {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+
+  .image-remove {
+    transform: rotate(45deg);
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 13px;
+    background-color: rgba(200, 200, 200, 0.8);
+  }
+
+  .item_width {
+    width: 130px;
+  }
+
+  .crop-option {
+    margin-left: 11px;
+    margin-right: 11px;
+    border-radius: 11px;
+    background-color: #eee;
+    transition-property: height, margin-bottom;
+    transition-duration: 200ms;
+  }
+</style>

@@ -1,0 +1,94 @@
+<template>
+  <page-head id="page-head" title="getElementById"></page-head>
+  <view style="margin: 0 15px;">
+    <text id="text">this is text</text>
+    <view id="view" class="uni-common-mt" style="border: 1px solid red">this is view</view>
+    <image id="image" class="uni-common-mt" src="/static/test-image/logo.png" style="width: 50px; height: 50px;"></image>
+    <scroll-view id="scroll-view" class="uni-common-mt" style="width: 100px; height: 50px; background-color: #f0f0f0; border: 1px solid #ccc;">
+      <text>this is scroll-view</text>
+    </scroll-view>
+    <button class="uni-btn" @click="changePageHeadBackgroundColor">
+      修改 page-head 背景色
+    </button>
+    <button class="uni-btn" @click="changeTextColor">
+      修改 text 字体颜色
+    </button>
+    <button class="uni-btn" @click="changeViewStyle">
+      修改 view 宽高及背景色
+    </button>
+    <button class="uni-btn" @click="changeImageStyle">
+      修改 image 宽高及边框
+    </button>
+    <button class="uni-btn" @click="changeScrollViewStyle">
+      修改 scroll-view 宽高及背景色
+    </button>
+    <button class="uni-btn" @click="goMultipleRootNode">
+      跳转多根节点示例
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const getElementByNotExistId = (): Element | null => {
+    return uni.getElementById('not-exist-id')
+  }
+
+  const changePageHeadBackgroundColor = () => {
+    const pageHead = uni.getElementById('page-head')!
+    pageHead.style.setProperty('background-color', 'red')
+  }
+
+  const changeTextColor = () => {
+    const text = uni.getElementById('text')!
+    text.style.setProperty('color', 'red')
+  }
+
+  const changeViewStyle = () => {
+    const view = uni.getElementById<UniViewElement>('view')
+    if (view !== null) {
+      view.style.setProperty('width', '90%')
+      view.style.setProperty('height', '50px')
+      view.style.setProperty('background-color', '#007AFF')
+    }
+  }
+
+  const changeImageStyle = () => {
+    const image = uni.getElementById<UniImageElement>('image')
+    if (image !== null) {
+      image.style.setProperty('width', '100px')
+      image.style.setProperty('height', '100px')
+      image.style.setProperty('border', '3px solid blue')
+      image.style.setProperty('border-radius', '10px')
+    }
+  }
+
+  const changeScrollViewStyle = () => {
+    const scrollView = uni.getElementById<UniElement>('scroll-view')
+    if (scrollView !== null) {
+      scrollView.style.setProperty('width', '200px')
+      scrollView.style.setProperty('height', '60px')
+      scrollView.style.setProperty('background-color', '#e3f2fd')
+      scrollView.style.setProperty('border', '2px solid #007AFF')
+    }
+  }
+
+  const goMultipleRootNode = () => {
+    uni.navigateTo({ url: '/pages/API/get-element-by-id/get-element-by-id-multiple-root-node' })
+  }
+
+  //自动化测试获取text元素的offsetLeft属性值
+  const getTextOffsetLeft = (): number => {
+    const text = uni.getElementById('text')!
+    return text.offsetLeft
+  }
+
+  defineExpose({
+    getElementByNotExistId,
+    changePageHeadBackgroundColor,
+    changeTextColor,
+    changeViewStyle,
+    changeImageStyle,
+    changeScrollViewStyle,
+    getTextOffsetLeft
+  })
+</script>

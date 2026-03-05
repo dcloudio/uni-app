@@ -1,0 +1,198 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view>
+      <view class="uni-padding-wrap">
+        <video class="video" :src="beforeCompressPath" :controls="true" :poster="beforeCoverImagePath"></video>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">压缩前视频信息</text>
+        </view>
+        <text>{{beforeCompressVideoInfo}}</text>
+        <video class="video" :src="afterCompressPath" :controls="true" :poster="afterCoverImagePath"></video>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">压缩后视频信息</text>
+        </view>
+        <text>{{afterCompressVideoInfo}}</text>
+        <view class="uni-btn-v">
+          <button type="primary" @click="chooseVideo">从相册中选取待压缩的视频</button>
+        </view>
+        <view class="uni-btn-v">
+          <button type="primary" @click="compressVideo">压缩视频</button>
+        </view>
+        <enum-data title="压缩质量" :items="qualityItemTypes" @change="onQualityChange"></enum-data>
+        <view class="uni-common-mt">
+          <text class="uni-title uni-title-text">相对于原视频的分辨率比例，取值范围(0, 1]</text>
+          <slider :min="0.1" :max="1" :step="0.1" :show-value="true" @change="onResolutionChange"></slider>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types';
+  type VideoInfoForTest = {
+    width: number;
+    height: number;
+    isSizeReduce: boolean;
+  }
+
+  type TestStateType = {
+    videoInfoForTest: VideoInfoForTest | null,
+    videoSrcForTestWidth: number,
+    videoSrcForTestHeight: number
+  }
+
+  const title = ref("compressVideo")
+  const beforeCompressVideoInfo = ref("")
+  const afterCompressVideoInfo = ref("")
+  const beforeCompressPath = ref("")
+  const afterCompressPath = ref("")
+  const beforeCoverImagePath = ref("")
+  const afterCoverImagePath = ref("")
+  const qualityItemTypes = ref([{ "value": 0, "name": "low(低)" }, { "value": 1, "name": "medium(中)" }, { "value": 2, "name": "high(高)" }] as ItemType[])
+  const qualityItems = ref(["low", "medium", "high"])
+  const quality = ref(null as string | null)
+  const bitrate = ref(null as number | null)
+  const fps = ref(null as number | null)
+  const resolution = ref(null as number | null)
+  const videoSrcForTest = ref('/static/test-video/10second-demo.mp4')
+  // 自动化测试
+  const testState = reactive({
+    videoInfoForTest: null as VideoInfoForTest | null,
+    videoSrcForTestWidth: 0,
+    videoSrcForTestHeight: 0
+  } as TestStateType)
+
+  const compressVideo = () => {
+    if (beforeCompressPath.value == "") {
+      uni.showToast({
+        title: "请先选择视频",
+        icon: "error"
+      });
+      return;
+    }
+    uni.showLoading({
+      title: "视频压缩中"
+    });
+    uni.compressVideo({
+      src: beforeCompressPath.value,
+      quality: quality.value,
+      resolution: resolution.value,
+      success: (res) => {
+        console.log("compressVideo success", JSON.stringify(res));
+        afterCompressPath.value = res.tempFilePath;
+        uni.showToast({
+          title: "压缩成功",
+          icon: null
+        });
+        uni.getVideoInfo({
+          src: res.tempFilePath,
+          success: (_res) => {
+            afterCompressVideoInfo.value = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${_res.size}KB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
+            // #ifdef APP-ANDROID || APP-IOS
+            afterCompressVideoInfo.value = afterCompressVideoInfo.value + `\n视频字节大小: ${_res.byteSize}B\n视频首帧图片路径: ${_res.thumbTempFilePath}`
+            if(_res.thumbTempFilePath != null) {
+            afterCoverImagePath.value = _res.thumbTempFilePath!
+            }
+            // #endif
+          }
+        });
+      },
+      fail: (err) => {
+        uni.showModal({
+          title: "压缩视频失败",
+          content: JSON.stringify(err),
+          showCancel: false
+        });
+      },
+      complete: (_) => {
+        uni.hideLoading();
+      }
+    });
+  }
+
+  const chooseVideo = () => {
+    uni.chooseVideo({
+      sourceType: ["album"],
+      compressed: false,
+      success: (res) => {
+        beforeCompressPath.value = res.tempFilePath;
+        uni.getVideoInfo({
+          src: res.tempFilePath,
+          success: (_res) => {
+            beforeCompressVideoInfo.value = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${_res.size}KB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
+            // #ifdef APP-ANDROID || APP-IOS
+            beforeCompressVideoInfo.value = beforeCompressVideoInfo.value + `\n视频字节大小: ${_res.byteSize}B\n视频首帧图片路径: ${_res.thumbTempFilePath}`
+            if(_res.thumbTempFilePath != null) {
+            beforeCoverImagePath.value = _res.thumbTempFilePath!
+            }
+            // #endif
+          }
+        });
+      }
+    });
+  }
+
+  const onQualityChange = (value: number) => {
+    quality.value = qualityItems.value[value];
+  }
+
+  const onResolutionChange = (event: UniSliderChangeEvent) => {
+    resolution.value = event.detail.value;
+  }
+
+  const testCompressVideo = () => {
+    let beforeCompressSize: number, afterComoressSize: number;
+    uni.compressVideo({
+      src: videoSrcForTest.value,
+      quality: 'medium',
+      success: (res) => {
+        uni.getVideoInfo({
+          src: videoSrcForTest.value,
+          success: (_res) => {
+            beforeCompressSize = Math.trunc(_res.size);
+            testState.videoSrcForTestWidth = _res.width
+            testState.videoSrcForTestHeight = _res.height
+            uni.getVideoInfo({
+              src: res.tempFilePath,
+              success: (__res) => {
+                afterComoressSize = Math.trunc(__res.size);
+                testState.videoInfoForTest = {
+                  "width": __res.width,
+                  "height": __res.height,
+                  "isSizeReduce": afterComoressSize < beforeCompressSize
+                } as VideoInfoForTest;
+              },
+              fail(err) {
+                console.log('>>>>>> 压缩失败', err.errMsg)
+              }
+            });
+          }
+        });
+      },
+      fail: (_) => {
+        testState.videoInfoForTest = null;
+      }
+    });
+  }
+
+  defineExpose({
+    testState,
+    testCompressVideo
+  })
+</script>
+
+<style>
+  .video {
+    align-self: center;
+  }
+
+  .image-container {
+    flex-direction: row;
+  }
+</style>

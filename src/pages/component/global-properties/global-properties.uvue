@@ -1,0 +1,132 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view>
+      <page-head title="global-properties"></page-head>
+      <page-intro content="本页演示组件通用属性：id、class、data、style 的绑定与校验，以及 ref、hover-class、hover-start-time、hover-stay-time 等点击态效果。"></page-intro>
+      <view class="uni-padding-wrap">
+        <view :id="generalId" :class="generalClass"
+          <!-- #ifdef !VUE3-VAPOR-->
+          :data-test="generalData"
+          <!-- #endif-->
+          :style="generalStyle" ref="generalTargetRef">
+          <text>id: {{ generalId }}</text>
+          <text>class: {{ generalClass }}</text>
+          <text>data-test: {{ generalData }}</text>
+          <text>style: {{ generalStyle }}</text>
+        </view>
+        <view class="btn btn-style uni-common-mt" @click="validateGeneralAttributes">
+          <text class="btn-inner">{{ validateGeneralAttrText }}</text>
+        </view>
+        <view class="btn btn-ref uni-common-mt" @click="changeHeight">
+          <text class="btn-inner">{{ changeHeightByRefText }}</text>
+        </view>
+        <view class="view-class" :hover-class="hoverClass" ref="viewTargetRef">
+          <text class="text">按下 50 ms 后背景变红</text>
+          <text class="text">抬起 400 ms 后背景恢复</text>
+        </view>
+        <view class="view-class" :hover-class="hoverClass" :hover-start-time="1000" :hover-stay-time="1000"
+          ref="viewTargetRef">
+          <text class="text">按下 1000 ms 后背景变红</text>
+          <text class="text">抬起 1000 ms 后背景恢复</text>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  const generalId = ref('general-id')
+  const generalClass = ref('general-class')
+  const generalData = ref('general-data')
+  const generalStyle = ref('background-color: aqua')
+  const validateGeneralAttrText = ref('验证基础属性')
+  const hoverClass = ref('hover-class')
+  const validateViewAttrText = ref('验证 view 属性')
+  const changeHeightByRefText = ref('通过 ref 修改高度')
+
+  const generalTargetRef = ref<UniElement | null>(null)
+  const viewTargetRef = ref<UniElement | null>(null)
+
+  const validateGeneralAttributes = () => {
+    const generalTargetElement = generalTargetRef.value as UniElement
+    const generalIdValue = generalTargetElement.getAttribute('id')
+    if (generalIdValue != generalId.value) {
+      validateGeneralAttrText.value = '基础属性 id 验证失败'
+      return
+    }
+    // #ifdef APP
+    if (!generalTargetElement.classList.includes('general-class')) {
+      validateGeneralAttrText.value = '基础属性 class 验证失败'
+      return
+    }
+    // #endif
+    // #ifdef WEB
+    if (!Array.from(generalTargetElement.classList).includes('general-class')) {
+      validateGeneralAttrText.value = '基础属性 class 验证失败'
+      return
+    }
+    // #endif
+    // #ifndef MP
+    // #ifdef !VUE3-VAPOR
+    // TODO: vapor模式暂未实现data-xxx属性获取，后续需补充并放开测试
+    const generalDataValue = generalTargetElement.getAttribute('data-test')
+    if (generalDataValue != generalData.value) {
+      validateGeneralAttrText.value = '基础属性 data-test 验证失败'
+      return
+    }
+    // #endif
+    // #endif
+    validateGeneralAttrText.value = '基础属性验证成功'
+  }
+
+  const changeHeight = () => {
+    const generalTargetElement = generalTargetRef.value as UniElement
+    changeHeightByRefText.value = '已通过 ref 修改高度'
+    generalTargetElement.style.setProperty('height', '200px')
+  }
+
+</script>
+
+<style>
+  .btn {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #409eff;
+    border-radius: 5px;
+  }
+
+  .btn-inner {
+    color: #fff;
+  }
+
+  .general-class {
+    margin-left: 40px;
+    padding: 10px;
+    width: 260px;
+    height: 160px;
+    background-color: antiquewhite;
+  }
+
+  .view-class {
+    margin: 20px 0 0 50px;
+    padding: 10px;
+    width: 240px;
+    height: 100px;
+    background-color: antiquewhite;
+  }
+
+  .text {
+    margin-top: 5px;
+    text-align: center;
+  }
+
+  .hover-class {
+    background-color: red;
+  }
+</style>

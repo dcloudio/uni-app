@@ -1,0 +1,47 @@
+<template>
+  <view :id="compId" ref="uxToastItemRef">
+    <text>hello</text>
+    <slot></slot>
+  </view>
+</template>
+
+<script setup lang="uts">
+const instance = getCurrentInstance()!.proxy!
+
+const compId = ref('comp1-id')
+const testNode1 = ref(false)
+
+defineProps({
+  id: {
+    type: String,
+    default: ''
+  }
+})
+
+const emit = defineEmits<{
+  ready: [value: boolean]
+}>()
+
+
+onMounted(()=>{
+  uni.createSelectorQuery().in(instance).select('#comp1-id').boundingClientRect().exec((ret) => {
+    console.log(ret)
+    testNode1.value = ret.length > 0
+    // #ifdef WEB || MP
+    testNode1.value = testNode1.value && ret[0] != null
+    // #endif
+    if(testNode1.value) {
+      console.log('Comp1测试符合预期')
+    } else {
+      console.error('Comp1测试不符合预期')
+    }
+    emit('ready', testNode1.value)
+  })
+})
+
+
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,77 @@
+
+import { UniStatOptions, UniStatCollectItemsOptions } from '../interface.uts'
+// 访问开始即启动小程序，访问结束结分为：进入后台超过5min、在前台无任何操作超过30min、在新的来源打开小程序；
+export const sys = uni.getSystemInfoSync()
+export const device = uni.getDeviceInfo()
+export const sysAppBase = uni.getAppBaseInfo();
+export const STAT_VERSION = sys.uniCompilerVersion
+
+export const PAGE_PVER_TIME = 1800 // 页面在前台无操作结束访问时间 单位s
+export const APP_PVER_TIME = 300 // 应用在后台结束访问时间 单位s
+export const OPERATING_TIME = 10 // 数据上报时间 单位s
+export const DIFF_TIME = 60 * 1000 * 60 * 24
+
+class ConfigData {
+	static __config_instance : ConfigData | null = null;
+
+	public static getInstance() : ConfigData {
+		if (ConfigData.__config_instance == null) {
+			ConfigData.__config_instance = new ConfigData()
+		}
+
+		return ConfigData.__config_instance as ConfigData
+	}
+	private options : UniStatOptions | null = null
+	private constructor() {
+		// 私有构造函数，防止通过 new Singleton() 创建新实例
+	}
+
+	setOptions(options : UniStatOptions | null) {
+		// 处理参数默认值
+		// 判断是否存在 options 
+		if (options == null) {
+			options = {} as UniStatOptions
+		}
+		
+		// 是否开启统计，默认true
+		if (options.enable == null) {
+			options.enable = true
+		}
+		
+		// 是否开启debug，默认false
+		if (options.debug == null) {
+			options.debug = false
+		}
+		// 上报周期，默认 10s 
+		if (options.reportInterval == null) {
+			options.reportInterval = 10
+		}
+
+		// 采集项配置
+		if (options.collectItems == null) {
+			options.collectItems = {} as UniStatCollectItemsOptions
+		}
+		let collectItems = options.collectItems as UniStatCollectItemsOptions
+		// 是否开启推送，默认为false
+		if (collectItems.uniPushClientID === null) {
+			collectItems.uniPushClientID = false
+		}
+
+		// 是否开启页面采集，默认为 true
+		if (collectItems.uniStatPageLog === null) {
+			collectItems.uniStatPageLog = true
+		}
+		options.collectItems = collectItems
+
+		this.options = options
+	}
+	getOptions() : UniStatOptions {
+		// 如果没有参数，获取参数时设置为默认值
+		if (this.options == null) {
+			this.setOptions(null)
+		}
+		return this.options as UniStatOptions
+	}
+}
+
+export const Config =  ConfigData.getInstance()

@@ -1,0 +1,241 @@
+<template>
+  <view id="dialog1" class="dialog-container">
+    <view class="dialog-content">
+      <text>title: {{ title }}</text>
+      <text class="mt-10">onBackPress return true</text>
+      <button class="mt-10" id="dialog1-go-next-page" @click="goNextPage">
+        go next page
+      </button>
+      <button class="mt-10" id="dialog1-open-dialog2" @click="openDialog2">
+        openDialog2
+      </button>
+      <button class="mt-10" id="dialog1-close-dialog" @click="closeDialog">
+        closeDialog
+      </button>
+      <button class="mt-10" id="dialog1-close-this-dialog" @click="closeThisDialog">
+        closeThisDialog
+      </button>
+      <button class="mt-10" @click="checkGetParentPage">
+        check getParentPage
+      </button>
+      <button class="mt-10" @click="checkGetElementById">
+        check getElementById
+      </button>
+      <button class="mt-10" @click="toggleBackgroundColor">
+        toggleBackgroundColor
+      </button>
+      <button class="mt-10" id="dialog1-back" @click="back">back</button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const instance = getCurrentInstance()!.proxy!
+  const currentPage = instance.$page
+
+  import {
+    state,
+    setLifeCycleNum
+  } from '@/store/index.uts'
+
+  const title = ref('dialog 1')
+  let backgroundColorContent = 'transparent'
+
+  function goNextPage() {
+    uni.navigateTo({ url: '/pages/API/dialog-page/next-page' })
+  }
+
+  function openDialog2() {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-2',
+      disableEscBack: true,
+      success(res) {
+        console.log('openDialog2 success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('openDialog2 fail', err)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('openDialog2 complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  function closeDialog() {
+    uni.closeDialogPage({
+      success(res) {
+        console.log('closeDialog success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('closeDialog fail', err)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('closeDialog complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  function closeThisDialog() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+        success(res) {
+          console.log('closeThisDialog success', res)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+        fail(err) {
+          console.log('closeThisDialog fail', err)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum - 4)
+        },
+        complete(res) {
+          console.log('closeThisDialog complete', res)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        }
+      })
+    }
+  }
+
+  function checkGetParentPage() : boolean {
+    if (currentPage == null) return false
+    const parentPage = currentPage.getParentPage()
+    console.log('checkGetParentPage', parentPage)
+    const res = parentPage != null
+    uni.showToast(res ? {
+      title: 'check success'
+    } : {
+      title: 'check fail',
+      icon: 'error'
+    })
+    return res
+  }
+
+  function checkGetElementById() : boolean {
+    if (currentPage == null) return false
+    const element = currentPage.getElementById('dialog1-go-next-page')
+    let res = element != null
+    // #ifndef APP-ANDROID
+    if (res) {
+      const elPage = element!.getPage()
+      console.log('elPage', elPage)
+      res = elPage === currentPage
+    }
+    // #endif
+    console.log('check getElementById', res)
+    uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
+    return res
+  }
+
+  function toggleBackgroundColor() {
+    backgroundColorContent = backgroundColorContent == 'transparent' ? 'rgb(0, 122, 255)' : 'transparent'
+    if (currentPage != null) {
+      currentPage.setPageStyle({
+        backgroundColorContent: backgroundColorContent
+      })
+    }
+  }
+
+  function back() {
+    uni.navigateBack()
+  }
+
+  onLoad((options : OnLoadOptions) => {
+    console.log('dialog 1 onLoad', options)
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+    if (options['name'] == 'dialog1') {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum + 1)
+    }
+  })
+
+  onPageShow(() => {
+    console.log('dialog 1 onShow')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+  })
+
+  onReady(() => {
+    console.log('dialog 1 onReady')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+    const currentPages = getCurrentPages()
+    const parentPage = currentPage.getParentPage()!
+    const grandParentPage = parentPage.getParentPage()
+    const dialogPages = parentPage.getDialogPages()
+    const dialogPage = currentPage
+    if (
+      currentPages.length == 1 &&
+      grandParentPage == null &&
+      dialogPages.indexOf(dialogPage) != -1
+    ) {
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum + 1)
+    }
+  })
+
+  onHide(() => {
+    console.log('dialog 1 onHide')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 1)
+  })
+
+  onUnload(() => {
+    console.log('dialog 1 onUnload')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 5)
+  })
+
+  onBackPress((options : OnBackPressOptions) : boolean | null => {
+    console.log('dialogPage1 onBackPress', options)
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+    return true
+  })
+
+  defineExpose({
+    openDialog2,
+    closeDialog,
+    closeThisDialog,
+    checkGetParentPage,
+    checkGetElementById,
+    toggleBackgroundColor
+  })
+
+</script>
+
+<style>
+  .dialog-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dialog-content {
+    width: 80%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 6px;
+  }
+
+  .mt-10 {
+    margin-top: 10px;
+  }
+</style>

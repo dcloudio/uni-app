@@ -1,0 +1,198 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view :class="isDarkMode ? 'theme-dark' : 'theme-light'" class="detail-container" style="flex: 1">
+  <!-- #endif -->
+    <!-- 宽屏时不使用共享元素组件 -->
+    <view v-if="isWideScreen">
+      <image class="banner-img" :src="cover"></image>
+      <text class="banner-title">{{title}}</text>
+    </view>
+    <!-- #ifndef VUE3-VAPOR -->
+    <share-element v-else :share-key="shareKey">
+      <view>
+        <image class="banner-img" :src="btCover"></image>
+        <text class="banner-title">{{title}}</text>
+      </view>
+    </share-element>
+    <!-- #endif -->
+    <!-- #ifdef VUE3-VAPOR -->
+    <view v-else>
+      <image class="banner-img" :src="btCover"></image>
+      <text class="banner-title">{{title}}</text>
+    </view>
+    <!-- #endif -->
+
+    <rich-text v-if="htmlNodes" class="rich-text" :nodes="htmlNodes" mode="native"></rich-text>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { state } from '@/store/index.uts'
+
+  // 作为页面渲染时，props会接收url中的参数
+  // 作为组件使用时，可以正常传递props
+  const props = defineProps({
+    post_id: { type: String, default: '' },
+    cover: { type: String, default: '' },
+    title: { type: String, default: '' },
+    isWideScreen: { type: Boolean, default: false },
+    shareKey: { type: String, default: '' },
+    // list-news预加载传入的详情内容，仅用于宽屏第一个新闻
+    firstDetailContent: { type: String, default: '' }
+  })
+
+  const isDarkMode = computed(() => state.isDarkMode)
+  const htmlNodes = ref("")
+  // 标记是否已经用过firstDetailContent
+  const usedContent = ref(false)
+  const btCover = ref("")
+
+  // #ifdef APP
+  function processHtmlContent(content: string, color: string): string {
+    // 先给已有 style 的 <p> 追加 color
+    content = content.replace(
+      new RegExp('(<p[^>]*style=")([^"]*)"', 'g'),
+      `$1$2;color:${color};"`
+    );
+    // 再给没有 style 的 <p> 加 style
+    content = content.replace(
+      new RegExp('<p((?!style)[^>]*)>', 'g'),
+      `<p$1 style="color:${color};">`
+    )
+    // 替换 <h2 ...> 为 <p style="color:...;"><big>
+    content = content.replace(
+      new RegExp('<h2[^>]*>', 'g'),
+      `<p style="color:${color};"><big>`
+    )
+    // 替换 </h2> 为 </big></p>
+    content = content.replace(
+      new RegExp('</h2>', 'g'),
+      '</big></p>'
+    )
+    // 替换 <h3 ...> 为 <p style="color:...;"><big>
+    content = content.replace(
+      new RegExp('<h3[^>]*>', 'g'),
+      `<p style="color:${color};"><big>`
+    )
+    // 替换 </h3> 为 </big></p>
+    content = content.replace(
+      new RegExp('</h3>', 'g'),
+      '</big></p>'
+    )
+    // 匹配以 </p>、</img> 结尾，后面紧跟裸文本的情况
+    content = content.replace(
+      new RegExp('(<\\/p>|<\\/img>)([^<\\s][^<]*)', 'g'),
+      `$1<p style="color:${color};">$2</p>`
+    )
+    // 先给已有 style 的 <span> 追加 color
+    content = content.replace(
+      new RegExp('(<span[^>]*style=")([^"]*)"', 'g'),
+      `$1$2;color:${color};"`
+    );
+    // 再给没有 style 的 <span> 加 style
+    content = content.replace(
+      new RegExp('<span((?!style)[^>]*)>', 'g'),
+      `<span$1 style="color:${color};">`
+    )
+    return content
+  }
+  // #endif
+
+  // 适配深色模式
+  function adaptContentForDarkMode(content: string): string {
+    // #ifdef APP
+    if (isDarkMode.value) {
+      return processHtmlContent(content, '#ffffff')
+    }
+    // #endif
+    return content
+  }
+
+  function getDetail(post_id: string) {
+    uni.request({
+      url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + post_id,
+      success: (data) => {
+        if (data.statusCode == 200) {
+          const result = data.data as UTSJSONObject
+          let content = result["content"] as string
+          htmlNodes.value = adaptContentForDarkMode(content)
+        }
+      },
+      fail: () => {
+        console.log('fail')
+      }
+    })
+  }
+
+  // 监听post_id变化，当id变化时加载数据
+  watch(():string => props.post_id, (newVal:string) => {
+    if (newVal != '') {
+      // 优先用传入的预载详情内容（只在第一个新闻时有值）
+      if (props.firstDetailContent !== '') {
+        let content = props.firstDetailContent
+        htmlNodes.value = adaptContentForDarkMode(content)
+        usedContent.value = true
+      } else {
+        getDetail(newVal)
+        usedContent.value = false
+      }
+    }
+  }, { immediate: true, deep: true })
+
+  // 只有没用过firstDetailContent时才赋值，防止重复
+  watch(():string => props.firstDetailContent, (newVal:string) => {
+    if (!usedContent.value && newVal !== '') {
+      let content = newVal
+      htmlNodes.value = adaptContentForDarkMode(content)
+      usedContent.value = true
+    }
+  })
+
+  onLoad(() => {
+    if (!props.isWideScreen) {
+      btCover.value = props.cover
+      // #ifdef APP-ANDROID
+      btCover.value = atob(btCover.value)
+      // #endif
+    }
+  })
+</script>
+
+<style>
+  .detail-container {
+    background-color: var(--background-color,#f8f8f8);
+  }
+  .banner {
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--background-color,#f8f8f8);
+  }
+
+  .banner-img {
+    width: 100%;
+  }
+
+  .banner-title {
+    max-height: 42px;
+    overflow: hidden;
+    position: absolute;
+    left: 15px;
+    bottom: 15px;
+    width: 90%;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    color: white;
+  }
+
+  .rich-text {
+    padding: 3px 3px 0px;
+    /* #ifdef WEB */
+    color: var(--text-color,#333333);
+    /* #endif */
+  }
+
+</style>

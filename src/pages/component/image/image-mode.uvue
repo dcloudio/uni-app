@@ -1,0 +1,139 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title">
+        <text class="uni-title-text">支持的图片缩放模式示例</text>
+      </view>
+      <view v-for="(item,index) in data" :key="index">
+        <text class="uni-subtitle-text">{{item.mode}}: {{item.description}}</text>
+        <text class="uni-subtitle-text">右边为拍平测试</text>
+        <view class="uni-center image-bg">
+          <image class="image" :mode="item.mode" src="/static/shuijiao.jpg"></image>
+          <image class="image" :mode="item.mode" src="/static/shuijiao.jpg" flatten></image>
+        </view>
+      </view>
+      <view class="uni-title">
+        <text class="uni-title-text">其他示例</text>
+      </view>
+      <view>
+        <text class="uni-subtitle-text">同时设置mode和圆角（右边为拍平测试）</text>
+        <view class="uni-center image-bg">
+          <image class="image radius" mode="heightFix" src="/static/shuijiao.jpg"></image>
+          <image class="image radius" mode="heightFix" src="/static/shuijiao.jpg" flatten></image>
+        </view>
+      </view>
+      <view>
+        <text class="uni-subtitle-text">设置图片width='100%'与mode='widthFix'（右边为拍平测试）</text>
+        <view class="uni-center image-bg">
+          <view class="uni-center" style="background-color: red; width: 150px; margin: 20px;">
+            <image style="width: 100%" mode="widthFix" src="/static/shuijiao.jpg"></image>
+          </view>
+
+          <view class="uni-center" style="background-color: red; width: 150px; margin: 20px;">
+            <image style="width: 100%" mode="widthFix" src="/static/shuijiao.jpg" flatten></image>
+          </view>
+        </view>
+      </view>
+      <view>
+        <text class="uni-subtitle-text">image默认mode（右边为拍平测试）</text>
+        <view class="uni-center image-bg">
+          <view class="uni-center" style="margin: 20px;">
+            <image style="width: 100px; height: 100px;margin-right: 20px;" src="/static/test-image/logo.png"></image>
+            <image style="width: 100px; height: 100px;" src="/static/test-image/logo.png" flatten></image>
+          </view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+
+type ImageMode = {
+  mode : string
+  description : string
+}
+
+// Data
+const title = ref('image-mode')
+const data = ref([
+  {
+    mode: 'scaleToFill',
+    description: '不保持纵横比缩放图片，使图片的宽高完全拉伸至填满 image 元素'
+  },
+  {
+    mode: 'aspectFit',
+    description: '保持纵横比缩放图片，使图片的长边能完全显示出来。也就是说，可以完整地将图片显示出来'
+  },
+  {
+    mode: 'aspectFill',
+    description: '保持纵横比缩放图片，只保证图片的短边能完全显示出来。也就是说，图片通常只在水平或垂直方向是完整的，另一个方向将会发生截取'
+  },
+  {
+    mode: 'top',
+    description: '不缩放图片，只显示图片的顶部区域'
+  },
+  {
+    mode: 'bottom',
+    description: '不缩放图片，只显示图片的底部区域'
+  },
+  {
+    mode: 'center',
+    description: '不缩放图片，只显示图片的中间区域'
+  },
+  {
+    mode: 'left',
+    description: '不缩放图片，只显示图片的左边区域'
+  },
+  {
+    mode: 'right',
+    description: '不缩放图片，只显示图片的右边区域'
+  },
+  {
+    mode: 'top left',
+    description: '不缩放图片，只显示图片的左上边区域'
+  },
+  {
+    mode: 'top right',
+    description: '不缩放图片，只显示图片的右上边区域'
+  },
+  {
+    mode: 'bottom left',
+    description: '不缩放图片，只显示图片的左下边区域'
+  },
+  {
+    mode: 'bottom right',
+    description: '不缩放图片，只显示图片的右下边区域'
+  },
+  {
+    mode: 'widthFix',
+    description: '宽度不变，高度自动变化，保持原图宽高比不变'
+  },
+  {
+    mode: 'heightFix',
+    description: '高度不变，宽度自动变化，保持原图宽高比不变'
+  }
+] as Array<ImageMode>)
+</script>
+
+<style>
+  .image {
+    margin: 20px auto;
+    width: 100px;
+    height: 100px;
+    background-color: #eeeeee;
+  }
+
+  .radius {
+    border-radius: 10px;
+  }
+  .image-bg{
+    background:#FFFFFF;
+  }
+</style>

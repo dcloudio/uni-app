@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+	package="uts.sdk.modules.utsProgressNotification">
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+	<application>
+		<activity android:name="uts.sdk.modules.utsProgressNotification.TransparentActivity"
+			android:theme="@style/DCNotificationProgressTranslucentTheme" android:hardwareAccelerated="true"
+			android:screenOrientation="user" android:exported="true">
+		</activity>
+	</application>
+</manifest>

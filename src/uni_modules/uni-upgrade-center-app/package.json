@@ -1,0 +1,122 @@
+{
+  "id": "uni-upgrade-center-app",
+  "displayName": "升级中心 uni-upgrade-center - App",
+  "version": "0.9.9",
+  "description": "uni升级中心 - 客户端检查更新",
+  "keywords": [
+    "uniCloud",
+    "update",
+    "升级",
+    "wgt"
+],
+  "repository": "https://gitee.com/dcloud/uni-upgrade-center/tree/master/uni_modules/uni-upgrade-center-app",
+  "engines": {
+    "HBuilderX": "^4.31",
+    "uni-app": "^4.35",
+    "uni-app-x": "^4.65"
+  },
+  "dcloudext": {
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "插件不采集任何数据",
+      "permissions": "无"
+    },
+    "npmurl": "",
+    "type": "unicloud-template-page",
+    "darkmode": "x",
+    "i18n": "x",
+    "widescreen": "√"
+  },
+  "uni_modules": {
+    "dependencies": [
+      "uts-progressNotification",
+      "uts-openSchema"
+    ],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "√",
+        "aliyun": "√",
+        "alipay": "√"
+      },
+      "client": {
+        "uni-app": {
+          "vue": {
+            "vue2": "√",
+            "vue3": "√"
+          },
+          "web": {
+            "safari": "-",
+            "chrome": "-"
+          },
+          "app": {
+            "vue": "√",
+            "nvue": {
+                "extVersion": "0.8.3",
+                "minVersion": ""
+            },
+            "android": {
+                "extVersion": "0.8.3",
+                "minVersion": "21"
+            },
+            "ios": {
+                "extVersion": "0.8.3",
+                "minVersion": "12"
+            },
+            "harmony": {
+                "extVersion": "0.9.1",
+                "minVersion": "12"
+            }
+          },
+          "mp": {
+            "weixin": "x",
+            "alipay": "x",
+            "toutiao": "x",
+            "baidu": "x",
+            "kuaishou": "x",
+            "jd": "x",
+            "harmony": "x",
+            "qq": "x",
+            "lark": "x",
+            "xhs": "-"
+          },
+          "quickapp": {
+            "huawei": "x",
+            "union": "x"
+          }
+        },
+        "uni-app-x": {
+          "web": {
+            "safari": "x",
+            "chrome": "x"
+          },
+          "app": {
+            "android": {
+                "extVersion": "0.9.0",
+                "minVersion": "21"
+            },
+            "ios": {
+                "extVersion": "0.9.0",
+                "minVersion": "12"
+            },
+            "harmony": "√"
+          },
+          "mp": {
+            "weixin": "x"
+          }
+        }
+      }
+    }
+  }
+}

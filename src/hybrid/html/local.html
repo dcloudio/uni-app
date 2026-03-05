@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>本地网页</title>
+    <style type="text/css">
+      .btn {
+        display: block;
+        margin: 20px auto;
+        padding: 5px;
+        background-color: #007aff;
+        border: 0;
+        color: #ffffff;
+        height: 40px;
+        width: 200px;
+      }
+
+      .btn-red {
+        background-color: #dd524d;
+      }
+
+      .desc {
+        padding: 10px;
+        color: #999999;
+      }
+    </style>
+  </head>
+
+  <body>
+    <p class="desc">web-view 组件加载本地 html 示例，仅在 App 环境下生效。点击下列按钮，跳转至其它页面。</p>
+    <div class="btn-list">
+      <button class="btn" type="button" data-action="navigateTo">navigateTo</button>
+      <button class="btn" type="button" data-action="redirectTo">redirectTo</button>
+      <button class="btn" type="button" data-action="navigateBack">navigateBack</button>
+      <button class="btn" type="button" data-action="reLaunch">reLaunch</button>
+      <button class="btn" type="button" data-action="switchTab">switchTab</button>
+      <button class="btn" type="button" data-action="getEnv">getEnv</button>
+      <!-- <button class="btn" type="button" data-action="getTheme">获取主题</button> -->
+    </div>
+    <p class="desc">网页向应用发送消息。注意：小程序端应用会在此页面后退时接收到消息。</p>
+    <div class="btn-list">
+      <button class="btn btn-red" type="button" id="postMessage">postMessage</button>
+    </div>
+    <p class="desc"></p>本地视频</p>
+    <video id="videoLocal" src="../../static/test-video/10second-demo.mp4" controls style="width: 100%;"></video>
+    <p class="desc"></p>网络视频</p>
+    <video id="videoWeb" src="https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4" controls style="width: 100%;"></video>
+    <video id="videoCamera" style="width: 100%;"></video>
+    <div class="btn-list">
+      <button class="btn" type="button" data-action="openCamera">打开摄像头</button>
+      <button class="btn" type="button" data-action="closeCamera">关闭摄像头</button>
+      <button class="btn" type="button" data-action="getLocation">获取定位</button>
+    </div>
+    <p class="desc">文件选择</p>
+    <div style="padding: 0 10px;">
+      <p style="font-size: 14px;">&lt;input type="file" /&gt;</p>
+      <input type="file" />
+      <p style="font-size: 14px;">&lt;input type="file" accept="image/*" multiple /&gt;</p>
+      <input type="file" accept="image/*" multiple />
+      <p style="font-size: 14px;">普通input</p>
+      <input placeholder="底部输入框" />
+      <p style="font-size: 14px;">普通input2</p>
+      <input placeholder="底部输入框2" />
+      <p style="font-size: 14px;">普通input3</p>
+      <input placeholder="底部输入框3" />
+      <br />
+      <p style="font-size: 14px;">普通textarea</p>
+      <textarea placeholder="底部textarea"></textarea>
+      <br />
+      <a href="https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniapp-x.apk" download>hello uni-app x
+        apk下载（自动化测试使用）</a>
+      <iframe width="100%" height="250px" srcdoc="<p>iframe中输入框示例</p>
+        <p style=&quot;font-size: 14px;&quot;>普通input</p>
+        <input placeholder=&quot;底部输入框&quot; />
+        <p style=&quot;font-size: 14px;&quot;>普通input2</p>
+        <input placeholder=&quot;底部输入框2&quot; />
+        <p style=&quot;font-size: 14px&quot;>普通input3</p>
+        <input placeholder=&quot;底部输入框3&quot; />
+        <p style=&quot;font-size: 14px;&quot;>普通textarea</p>
+        <textarea placeholder=&quot;底部textarea&quot;></textarea>">
+      </iframe>
+    </div>
+    <!-- uni 的 SDK -->
+    <script type="text/javascript" src="uni.webview.1.5.5.js"></script>
+    <script type="text/javascript">
+      function postMessage(action) {
+        uni.webView.postMessage({
+          data: {
+            action
+          }
+        });
+      }
+      const isWeb = location.href && /^https?:/.test(location.href)
+      // document.addEventListener('UniAppJSBridgeReady', function() {
+      document.querySelectorAll('.btn-list').forEach(btnList => {
+        btnList.addEventListener('click', function(evt) {
+          console.log('按钮点击事件触发');
+          if (isWeb) {
+            alert('web端暂不支持此功能')
+            return
+          }
+          console.log('evt: ',evt);
+          var target = evt.target;
+          console.log('target: ', target);
+          if (target.tagName === 'BUTTON') {
+            var action = target.getAttribute('data-action');
+            console.log(action);
+            switch (action) {
+              case 'switchTab':
+                uni.webView.switchTab({
+                  url: '/pages/tabBar/API'
+                });
+                break;
+              case 'reLaunch':
+                uni.webView.reLaunch({
+                  url: '/pages/tabBar/component'
+                });
+                break;
+              case 'navigateBack':
+                uni.webView.navigateBack({
+                  delta: 1
+                });
+                break;
+              case 'getEnv':
+                uni.webView.getEnv((res) => {
+                  postMessage(res)
+                });
+                break;
+                /* case 'getTheme':
+                  alert(getThemePreference())
+                  break; */
+              case 'getLocation':
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                      const locationData = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy
+                      };
+                      console.log('position: ',JSON.stringify(locationData));
+                      alert(JSON.stringify(locationData));
+                    },
+                    function(error) {
+                      console.error('获取位置失败:', error.message);
+                      alert('获取位置失败: ' + error.message);
+                    },
+                    {
+                      enableHighAccuracy: true,
+                      timeout: 5000,
+                      maximumAge: 0
+                    }
+                  );
+                } else {
+                  alert('您的浏览器不支持地理定位功能');
+                }
+                break;
+              case 'openCamera':
+                var constraints = {audio: true,video: {facingMode: "user"}};
+                navigator.mediaDevices
+                  .getUserMedia(constraints)
+                  .then(function(mediaStream) {
+                    var video = document.getElementById("videoCamera");
+                    video.srcObject = mediaStream;
+                    video.onloadedmetadata = function(e) {
+                      video.play();
+                    };
+                  })
+                  .catch(function(err) {
+                    console.log(err.name + ": " + err.message);
+                  }); // 总是在最后检查错误
+
+                break;
+              case 'closeCamera':
+                var video = document.getElementById("videoCamera");
+                if (video.srcObject) {
+                  video.srcObject.getTracks().forEach(function(track) {
+                    track.stop();
+                  });
+                  video.srcObject = null; // 清除视频源
+                  video.load(); // 重新加载视频元素
+                }
+                break;
+              default:
+                uni.webView[action]({
+                  url: '/pages/component/button/button'
+                });
+                break;
+            }
+          }
+        })
+      })
+      // });
+      document.querySelector("#postMessage").addEventListener('click', function() {
+        if (isWeb) {
+          alert('web端暂不支持此功能')
+          return
+        }
+        postMessage('message')
+      })
+
+      /* function getThemePreference() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+          return 'light';
+        }
+        return 'unknown';
+      } */
+    </script>
+  </body>
+
+</html>

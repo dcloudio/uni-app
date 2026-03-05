@@ -1,0 +1,114 @@
+<template>
+  <list-view :scroll-y="true" class="page" bounces="false" show-scrollbar=false :scroll-top="data.scroll_top_input"
+    :refresher-enabled="data.refresher_enabled_boolean" :refresher-triggered="data.refresher_triggered_boolean"
+    @refresherrefresh="list_view_refresherrefresh">
+    <list-item type=1>
+      <swiper indicator-dots="true" circular="true" style="height: 240px;">
+        <swiper-item v-for="i in 3" :item-id="i + ''">
+          <image src="/static/shuijiao.jpg" style="height: 240px; width: 100%;"></image>
+          <text style="position: absolute;">{{i}}</text>
+        </swiper-item>
+      </swiper>
+    </list-item>
+    <list-item class="content-item" type=2>
+      <text class="text">向上滑动页面，体验sticky-header吸顶效果。</text>
+    </list-item>
+    <sticky-section>
+      <sticky-header>
+        <scroll-view style="background-color: #f5f5f5; flex-direction: row;" direction="horizontal"
+          :show-scrollbar="false">
+          <view style="align-self: flex-start; flex-direction: row;">
+            <text ref="swipertab" class="sift-item" v-for="(name,index) in data.sift_item" @click="clickTH(index)">
+              {{name}}
+            </text>
+          </view>
+        </scroll-view>
+      </sticky-header>
+
+      <list-item v-for="(item,index) in data.list_item" :key="index" class="content-item" type=3>
+        <text class="text">{{item}}</text>
+      </list-item>
+    </sticky-section>
+  </list-view>
+</template>
+
+<script setup lang="uts">
+  type DataType = {
+    sift_item: string[];
+    list_item: string[];
+    refresher_enabled_boolean: boolean;
+    refresher_triggered_boolean: boolean;
+    scroll_top_input: number;
+  }
+
+  const data = reactive({
+    sift_item: ["排序", "筛选"],
+    list_item: [],
+    refresher_enabled_boolean: true,
+    refresher_triggered_boolean: false,
+    scroll_top_input: 0
+  } as DataType)
+
+  const loadListData = () => {
+    let lists : Array<string> = []
+    for (let i = 0; i < 40; i++) {
+      lists.push("item---" + i)
+    }
+    data.list_item = lists
+  }
+
+  onLoad(() => {
+    loadListData()
+  })
+
+  const list_view_refresherrefresh = () => {
+    console.log("下拉刷新被触发 ")
+    data.refresher_triggered_boolean = true
+    setTimeout(() => {
+      data.refresher_triggered_boolean = false
+    }, 1500)
+  }
+
+  const confirm_scroll_top_input = (value : number) => {
+    data.scroll_top_input = value
+  }
+
+  const clickTH = (index : number) => {
+    console.log("点击表头：" + index);
+  }
+
+  //自动化测试使用
+  const clearListData = () => {
+    data.list_item = []
+  }
+
+  defineExpose({
+    confirm_scroll_top_input,
+    clearListData
+  })
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    background-color: #f5f5f5;
+  }
+
+  .content-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #fff;
+  }
+
+  .text {
+    font-size: 14px;
+    color: #666;
+    line-height: 20px;
+  }
+
+  .sift-item {
+    color: #555;
+    font-size: 16px;
+    padding: 12px 15px;
+  }
+</style>

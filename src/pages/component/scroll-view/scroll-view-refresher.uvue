@@ -1,0 +1,167 @@
+<template>
+  <view class="container">
+    <page-head title="scroll-view 默认下拉刷新"></page-head>
+    <scroll-view class="scroll" refresher-enabled=true :refresher-triggered="data.refresherTriggered"
+      @refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort" @refresherrestore="onRefresherrestore"
+      @refresherpulling="onRefresherpulling" @scrolltolower="onScrolltolower" :show-scrollbar="data.showScrollbar">
+      <view v-for="key in scrollData" :key="key">
+        <view class="scroll-item">
+          <text class="scroll-item-title">{{key}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</template>
+<script setup lang="uts">
+
+  type RefresherEventTest = {
+    type : string;
+    target : UniElement | null;
+    currentTarget : UniElement | null;
+    dy : number;
+  }
+
+  type DataType = {
+    refresherTriggered: boolean,
+    refresherrefreshTimes: number,
+    showScrollbar: boolean,
+    refresherrefreshTest: string,
+    onRefresherabortTest: string,
+    onRefresherrestoreTest: string,
+    onRefresherpullingTest: string,
+  }
+
+  const scrollData = ref([] as Array<string>)
+  const refresherrefresh = ref(false)
+  const data = reactive({
+    refresherTriggered: false,
+    refresherrefreshTimes: 0,
+    showScrollbar: false,
+    refresherrefreshTest: "",
+    onRefresherabortTest: "",
+    onRefresherrestoreTest: "",
+    onRefresherpullingTest: "",
+  } as DataType)
+
+  // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
+  function checkEventTest(e : RefresherEventTest, eventName : String) {
+    // #ifndef MP
+    const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement && e.dy > 0;
+    // #endif
+    // #ifdef MP
+    const isPass = true
+    // #endif
+    const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
+    switch (eventName) {
+      case 'refresherrefresh':
+        data.refresherrefreshTest = result
+        break;
+      case 'refresherpulling':
+        data.onRefresherpullingTest = result
+        break;
+      case 'refresherrestore':
+        data.onRefresherrestoreTest = result
+        break;
+      case 'refresherabort':
+        data.onRefresherabortTest = result
+        break;
+      default:
+        break;
+    }
+  }
+
+  function onRefresherrefresh(e : UniRefresherEvent) {
+    refresherrefresh.value = true
+    console.log("onRefresherrefresh------下拉刷新触发")
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget,
+      dy: e.detail.dy,
+    } as RefresherEventTest, 'refresherrefresh')
+    data.refresherTriggered = true
+    data.refresherrefreshTimes++
+    setTimeout(() => {
+      data.refresherTriggered = false
+    }, 1500)
+  }
+  function onRefresherabort(e : UniRefresherEvent) {
+    console.log("onRefresherabort------下拉刷新被中止")
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget,
+      dy: e.detail.dy,
+    } as RefresherEventTest, 'refresherabort')
+  }
+  function onRefresherrestore(e : UniRefresherEvent) {
+    refresherrefresh.value = false
+    console.log("onRefresherrestore------下拉刷新被复位")
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget,
+      dy: e.detail.dy,
+    } as RefresherEventTest, 'refresherrestore')
+  }
+  function onRefresherpulling(e : UniRefresherEvent) {
+    console.log("onRefresherpulling------下拉刷新控件被下拉-dy=" + e.detail.dy)
+    checkEventTest({
+      type: e.type,
+      target: e.target,
+      currentTarget: e.currentTarget,
+      dy: e.detail.dy,
+    } as RefresherEventTest, 'refresherpulling')
+  }
+  function onScrolltolower(e : UniScrollToLowerEvent) {
+    console.log("onScrolltolower 滚动到底部-----" + e.detail.direction)
+  }
+  //自动化测试专用
+  function setPageStyle(pageStyle: UTSJSONObject) {
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    currentPage.setPageStyle(pageStyle);
+  }
+
+  onLoad(() => {
+    let lists : Array<string> = []
+    for (let i = 0; i < 20; i++) {
+      lists.push("item---" + i)
+    }
+    scrollData.value = lists
+  })
+
+  defineExpose({
+    data,
+    setPageStyle
+  })
+</script>
+
+<style>
+  .container {
+    flex: 1;
+  }
+
+  .scroll {
+    background-color: #eee;
+    /* position: relative; */
+    width: 100%;
+    flex: 1;
+    /* border-color: red; */
+  }
+
+  .scroll-item {
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 6px;
+    background-color: #fff;
+  }
+
+  .scroll-item-title {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    color: #555;
+  }
+</style>

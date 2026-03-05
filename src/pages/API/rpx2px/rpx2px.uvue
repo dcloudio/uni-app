@@ -1,0 +1,73 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view class="page">
+      <page-head :title="data.title"></page-head>
+      <view>
+        <view class="item">
+          <text class="item-k">输入:</text>
+          <text class="item-v">{{data.rpxValue}}rpx</text>
+        </view>
+        <view class="item">
+          <text class="item-k">返回:</text>
+          <text class="item-v">{{data.pxValue}}px</text>
+        </view>
+      </view>
+      <view>
+        <button id="convert" @click="rpx2px">转换</button>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+  type DataType = {
+    title: string;
+    rpxValue: number;
+    pxValue: number;
+    result: boolean;
+  }
+
+  const data = reactive({
+    title: 'rpx2px',
+    rpxValue: 750,
+    pxValue: 0,
+    result: false
+  } as DataType)
+
+  const rpx2px = () => {
+    data.pxValue = uni.rpx2px(data.rpxValue);
+
+    // 仅限自动化测试
+    const windowInfo = uni.getWindowInfo();
+    if (windowInfo.windowWidth == data.pxValue) {
+      data.result = true
+    }
+  }
+
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+  .page {
+    padding: 15px;
+  }
+
+  .item {
+    flex-direction: row;
+  }
+
+  .item-k {
+    width: 72px;
+    line-height: 2;
+  }
+
+  .item-v {
+    font-weight: bold;
+    line-height: 2;
+  }
+</style>

@@ -1,0 +1,91 @@
+<template>
+	<text class="uni-icons" :style="styleObj">
+		<slot>{{unicode}}</slot>
+	</text>
+</template>
+
+<script>
+	import { fontData, IconsDataItem } from './uniicons_file'
+
+	/**
+	 * Icons 图标
+	 * @description 用于展示 icon 图标
+	 * @tutorial https://ext.dcloud.net.cn/plugin?id=28
+	 * @property {Number} size 图标大小
+	 * @property {String} type 图标图案，参考示例
+	 * @property {String} color 图标颜色
+	 * @property {String} customPrefix 自定义图标
+	 * @event {Function} click 点击 Icon 触发事件
+	 */
+	export default {
+		name: "uni-icons",
+		props: {
+			type: {
+				type: String,
+				default: ''
+			},
+			color: {
+				type: String,
+				default: '#333333'
+			},
+			size: {
+				type: Number,
+				default: 16
+			},
+			fontFamily: {
+				type: String,
+				default: ''
+			}
+		},
+		data() {
+			return {};
+		},
+		computed: {
+			unicode() : string {
+				let codes = fontData.find((item : IconsDataItem) : boolean => { return item.font_class == this.type })
+				if (codes !== null) {
+					return codes.unicode
+				}
+				return ''
+			},
+			iconSize() : string {
+				const size = this.size
+				// if (typeof size == 'string') {
+				// 	const reg = /^[0-9]*$/g
+				// 	return reg.test(size as string) ? '' + size + 'px' : '' + size;
+				// 	// return '' + this.size
+				// }
+				return this.getFontSize(size as number)
+			},
+			styleObj() : UTSJSONObject {
+				if (this.fontFamily !== '') {
+					return { color: this.color, fontSize: this.iconSize, fontFamily: this.fontFamily }
+				}
+				return { color: this.color, fontSize: this.iconSize }
+			}
+		},
+		created() { },
+		methods: {
+			/**
+			 * 字体大小
+			 */
+			getFontSize(size : number) : string {
+				return size + 'px';
+			},
+		},
+	}
+</script>
+
+<style scoped>
+	@font-face {
+		font-family: UniIconsFontFamily;
+		src: url('./uniicons.ttf');
+	}
+
+	.uni-icons {
+		font-family: UniIconsFontFamily;
+		font-size: 18px;
+		font-style: normal;
+		color: #333;
+	}
+</style>

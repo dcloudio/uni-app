@@ -1,0 +1,314 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view" style="padding-bottom: var(--uni-safe-area-inset-bottom);">
+  <!-- #endif -->
+    <view>
+      <page-intro content="本页演示 uni.createResizeObserver：监听元素尺寸变化，回调中可获取 contentRect（x、y、width、height）。含 view 嵌套、text、image、scroll-view 等组件的监听示例；可点击方块改宽高、改变字体/图片/scroll-view 尺寸，支持停止/恢复监听、隐藏/显示元素。"></page-intro>
+      <text>点击蓝色或红色方块区域会修改元素宽高</text>
+      <view v-show="boxDisplay" style="align-items: center; justify-content: center; margin: 10px;">
+        <view
+          style="width: 140px; height: 140px; background-color: blue; align-items: center; justify-content: center; padding: 5px;"
+          id="outBox" @click="outBoxClick">
+          <view style="width: 80px; height: 80px; background-color: red; padding: 5px;" id="innerBox"
+            @click="innerBoxClick"></view>
+        </view>
+      </view>
+      <button @click="revertBoxSize">还原修改前元素宽高</button>
+      <button @click="toggleDisplay">{{boxDisplay? '隐藏元素': '显示元素'}}</button>
+      <button @click='cancelListen'>停止监听</button>
+      <button @click='goOnListen'>恢复监听</button>
+      <view>
+        <text class="info-text">蓝色方块元素:</text>
+        <view class="info-item">
+          <text class="info-text">{{outBoxSizeInfo}}</text>
+        </view>
+        <text class="info-text" style="margin-top: 20px;">红色方块元素:</text>
+        <view class="info-item">
+          <text class="info-text">{{innerBoxSizeInfo}}</text>
+        </view>
+      </view>
+
+      <!-- text 组件示例 -->
+      <view class="uni-common-mt" v-show="textImageScrollViewDisplay">
+        <text class="uni-title-text">Text 组件示例:</text>
+        <text id="testText" :style="{fontSize: textFontSize + 'px', color: '#333'}">这是一个可以改变字体大小的文本</text>
+        <button @click="changeTextSize">改变文本字体大小</button>
+        <view class="info-item">
+          <text class="info-text">{{data.textSizeInfo}}</text>
+        </view>
+      </view>
+
+      <!-- image 组件示例 -->
+      <view class="uni-common-mt" v-show="textImageScrollViewDisplay">
+        <text class="uni-title-text">Image 组件示例:</text>
+        <image id="testImage" :style="{width: imageWidth + 'px', height: imageHeight + 'px'}" src="/static/test-image/logo.png" mode="aspectFit"></image>
+        <button @click="changeImageSize">改变图片尺寸</button>
+        <view class="info-item">
+          <text class="info-text">{{data.imageSizeInfo}}</text>
+        </view>
+      </view>
+
+      <!-- scroll-view 组件示例 -->
+      <view class="uni-common-mt" v-show="textImageScrollViewDisplay">
+        <text class="uni-title-text">Scroll-view 组件示例:</text>
+        <scroll-view id="testScrollView" :style="{width: scrollViewWidth + 'px', height: '100px', border: '1px solid #ccc'}" >
+          <view style="padding: 10px;">
+            <text>这是 scroll-view 内的内容</text>
+            <text v-for="i in 10" :key="i">第 {{i}} 行内容</text>
+          </view>
+        </scroll-view>
+        <button @click="changeScrollViewSize">改变 scroll-view 宽度</button>
+        <view class="info-item">
+          <text class="info-text">{{data.scrollViewSizeInfo}}</text>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+const outBoxSizeInfo = ref("")
+const innerBoxSizeInfo = ref("")
+const offset = ref(2)
+const boxDisplay = ref(false)
+let outBoxElement: UniElement | null = null
+let innerBoxElement: UniElement | null = null
+let resizeObserver: UniResizeObserver | null = null
+
+// text 组件相关
+const textFontSize = ref(16)
+let textElement: UniElement | null = null
+
+// image 组件相关
+const imageWidth = ref(100)
+const imageHeight = ref(100)
+let imageElement: UniElement | null = null
+
+// scroll-view 组件相关
+const scrollViewWidth = ref(300)
+let scrollViewElement: UniElement | null = null
+
+// 控制 text、image、scroll-view 的显示
+const textImageScrollViewDisplay = ref(false)
+
+type ContentRectType = {
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+}
+
+type BoxSizeType = {
+  blockSize: number,
+  inlineSize: number,
+}
+
+type ResizeInfoType = {
+  contentRect: ContentRectType,
+  borderBoxSize: BoxSizeType,
+  contentBoxSize: BoxSizeType,
+  devicePixelContentBoxSize: BoxSizeType,
+}
+
+type DataType = {
+  outBoxElementOnResize: boolean,
+  textSizeInfo: string,
+  imageSizeInfo: string,
+  scrollViewSizeInfo: string,
+  textSizeInfoObj: ResizeInfoType | null,
+  imageSizeInfoObj: ResizeInfoType | null,
+  scrollViewSizeInfoObj: ResizeInfoType | null,
+}
+
+const data = reactive({
+  outBoxElementOnResize: false,
+  textSizeInfo: "",
+  imageSizeInfo: "",
+  scrollViewSizeInfo: "",
+  textSizeInfoObj: null,
+  imageSizeInfoObj: null,
+  scrollViewSizeInfoObj: null,
+} as DataType)
+
+function innerBoxClick() {
+  if (innerBoxElement != null) {
+    innerBoxElement!.style.setProperty("width", innerBoxElement!.offsetWidth + offset.value + 'px')
+    innerBoxElement!.style.setProperty("height", innerBoxElement!.offsetWidth + offset.value + 'px')
+  }
+}
+
+function outBoxClick() {
+  if (outBoxElement != null) {
+    outBoxElement!.style.setProperty("width", outBoxElement!.offsetWidth + offset.value + 'px')
+    outBoxElement!.style.setProperty("height", outBoxElement!.offsetWidth + offset.value + 'px')
+  }
+}
+
+function revertBoxSize() {
+  if (outBoxElement != null) {
+    outBoxElement!.style.setProperty("width", "140px")
+    outBoxElement!.style.setProperty("height", "140px")
+  }
+  if (innerBoxElement != null) {
+    innerBoxElement!.style.setProperty("width", "80px")
+    innerBoxElement!.style.setProperty("height", "80px")
+  }
+}
+
+//自动化测试专用
+function setOutBoxMarginLeft(value : string) {
+  if (outBoxElement != null) {
+    data.outBoxElementOnResize = false
+    outBoxElement!.style.setProperty("margin-left", value)
+  }
+}
+
+function toggleDisplay() {
+  boxDisplay.value = !boxDisplay.value
+}
+
+function analysisResizeObserverEntry(entry : UniResizeObserverEntry) : string {
+  const contentBoxSize = entry.contentBoxSize[0]
+  const borderBoxSize = entry.borderBoxSize[0]
+  const devicePixelContentBoxSize = entry.devicePixelContentBoxSize[0]
+  return "borderBoxSize: \n{blockSize:" + borderBoxSize.blockSize + ", inlineSize:" + borderBoxSize.inlineSize + "}\n" +
+    "contentBoxSize: \n{blockSize:" + contentBoxSize.blockSize + ", inlineSize:" + contentBoxSize.inlineSize + "}\n" +
+    "devicePixelContentBoxSize: \n{blockSize:" + devicePixelContentBoxSize.blockSize + ", inlineSize:" + devicePixelContentBoxSize.inlineSize + "}\n" +
+    "contentRect: \n{x:" + entry.contentRect.x + ", y:" + entry.contentRect.y + ", width:" + entry.contentRect.width + ", height:" + entry.contentRect.height + "}"
+}
+
+// 将 ResizeObserverEntry 转换为 ResizeInfoType 对象（用于测试）
+function convertResizeEntryToInfo(entry : UniResizeObserverEntry) : ResizeInfoType {
+  const contentBoxSize = entry.contentBoxSize[0]
+  const borderBoxSize = entry.borderBoxSize[0]
+  const devicePixelContentBoxSize = entry.devicePixelContentBoxSize[0]
+  return {
+    contentRect: {
+      x: entry.contentRect.x,
+      y: entry.contentRect.y,
+      width: entry.contentRect.width,
+      height: entry.contentRect.height,
+    } as ContentRectType,
+    borderBoxSize: {
+      blockSize: borderBoxSize.blockSize,
+      inlineSize: borderBoxSize.inlineSize,
+    } as BoxSizeType,
+    contentBoxSize: {
+      blockSize: contentBoxSize.blockSize,
+      inlineSize: contentBoxSize.inlineSize,
+    } as BoxSizeType,
+    devicePixelContentBoxSize: {
+      blockSize: devicePixelContentBoxSize.blockSize,
+      inlineSize: devicePixelContentBoxSize.inlineSize,
+    } as BoxSizeType,
+  } as ResizeInfoType
+}
+
+function cancelListen() {
+  // resizeObserver?.unobserve()
+  resizeObserver!.unobserve(outBoxElement!)
+  resizeObserver!.unobserve(innerBoxElement!)
+}
+
+function goOnListen() {
+  resizeObserver!.observe(outBoxElement!)
+  resizeObserver!.observe(innerBoxElement!)
+}
+
+// 改变 text 字体大小
+function changeTextSize() {
+  textFontSize.value = textFontSize.value + 2
+}
+
+// 改变 image 尺寸
+function changeImageSize() {
+  imageWidth.value = imageWidth.value + 10
+  imageHeight.value = imageHeight.value + 10
+}
+
+// 改变 scroll-view 宽度
+function changeScrollViewSize() {
+  scrollViewWidth.value = scrollViewWidth.value + 20
+}
+
+onBackPress(() : boolean => {
+  if (resizeObserver != null) {
+    resizeObserver!.disconnect()
+  }
+  return false
+})
+
+onReady(() => {
+  if (resizeObserver == null) {
+    resizeObserver = new UniResizeObserver((entries : Array<UniResizeObserverEntry>) => {
+
+      entries.forEach(entry => {
+        if (entry.target == outBoxElement) {
+          outBoxSizeInfo.value = analysisResizeObserverEntry(entry)
+          data.outBoxElementOnResize = true
+        } else if (entry.target == innerBoxElement) {
+          innerBoxSizeInfo.value = analysisResizeObserverEntry(entry)
+        } else if (entry.target == textElement) {
+          data.textSizeInfo = analysisResizeObserverEntry(entry)
+          data.textSizeInfoObj = convertResizeEntryToInfo(entry)
+        } else if (entry.target == imageElement) {
+          data.imageSizeInfo = analysisResizeObserverEntry(entry)
+          data.imageSizeInfoObj = convertResizeEntryToInfo(entry)
+        } else if (entry.target == scrollViewElement) {
+          data.scrollViewSizeInfo = analysisResizeObserverEntry(entry)
+          data.scrollViewSizeInfoObj = convertResizeEntryToInfo(entry)
+        }
+      })
+    })
+    outBoxElement = uni.getElementById("outBox")
+    if (outBoxElement != null) {
+      resizeObserver!.observe(outBoxElement!)
+    }
+    innerBoxElement = uni.getElementById("innerBox")
+    if (innerBoxElement != null) {
+      resizeObserver!.observe(innerBoxElement!)
+    }
+
+    //监听 text 组件
+    textElement = uni.getElementById("testText")
+    if (textElement != null) {
+      resizeObserver!.observe(textElement!)
+    }
+
+    //监听 image 组件
+    imageElement = uni.getElementById("testImage")
+    if (imageElement != null) {
+      resizeObserver!.observe(imageElement!)
+    }
+
+    //监听 scroll-view 组件
+    scrollViewElement = uni.getElementById("testScrollView")
+    if (scrollViewElement != null) {
+      resizeObserver!.observe(scrollViewElement!)
+    }
+
+    boxDisplay.value = true
+    textImageScrollViewDisplay.value = true
+  }
+})
+
+defineExpose({
+  data,
+  setOutBoxMarginLeft,
+  changeTextSize,
+  changeImageSize,
+  changeScrollViewSize
+})
+</script>
+
+<style>
+  .info-item {
+    flex-direction: row;
+  }
+
+  .info-text {
+    font-size: 14px;
+  }
+</style>

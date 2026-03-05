@@ -1,0 +1,85 @@
+<template>
+  <view class="page">
+    <page-head :title="data.title"></page-head>
+    <button @click="startRequestAnimationFrame">requestAnimationFrame</button>
+    <button @click="stopRequestAnimationFrame">cancelAnimationFrame</button>
+    <text class="frame-count">FPS: {{data.FPSString}}</text>
+    <text class="frame-count">FrameCount: {{data.testFrameCount}}</text>
+    <text class="tips">提示: 在当前测试例子中，每增加一次调用 requestAnimationFrame 帧率翻倍，cancelAnimationFrame 后恢复</text>
+  </view>
+</template>
+
+<script setup lang="uts">
+  type DataType = {
+    title: string;
+    taskId: number;
+    FPSString: string;
+    lastTime: number;
+    frameCount: number;
+    testFrameCount: number;
+  }
+
+  const data = reactive({
+    title: 'AnimationFrame',
+    taskId: 0,
+    FPSString: '- / -ms',
+    lastTime: 0,
+    frameCount: 0,
+    testFrameCount: 0
+  } as DataType)
+
+  const updateFPS = (timestamp : number) => {
+    data.frameCount++
+    if (timestamp - data.lastTime >= 1000) {
+      const timeOfFrame = (1000 / data.frameCount)
+      data.FPSString = `${data.frameCount} / ${timeOfFrame.toFixed(3)}ms`
+      data.frameCount = 0
+      data.lastTime = timestamp
+    }
+  }
+
+  type StartRequestAnimationFrameType = () => void
+  let startRequestAnimationFrame: StartRequestAnimationFrameType = () => {}
+  startRequestAnimationFrame = () => {
+    data.taskId = requestAnimationFrame((timestamp : number) => {
+      updateFPS(timestamp)
+      data.testFrameCount++
+      startRequestAnimationFrame()
+    })
+  }
+
+  const stopRequestAnimationFrame = () => {
+    cancelAnimationFrame(data.taskId)
+    data.lastTime = 0
+    data.frameCount = 0
+    data.FPSString = '- / -ms'
+  }
+
+  onUnload(() => {
+    if (data.taskId > 0) {
+      stopRequestAnimationFrame()
+    }
+  })
+
+  defineExpose({
+    data,
+    startRequestAnimationFrame,
+    stopRequestAnimationFrame
+  })
+</script>
+
+<style>
+  .page {
+    padding: 15px;
+  }
+
+  .frame-count {
+    margin-top: 15px;
+  }
+
+  .tips {
+    font-size: 12px;
+    margin-top: 30px;
+    opacity: 0.7;
+  }
+</style>

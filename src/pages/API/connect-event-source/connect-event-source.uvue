@@ -1,0 +1,103 @@
+<template>
+
+  <page-head :title="data.title"></page-head>
+	<button class="button" type="primary" @click="connect">连接</button>
+	<button class="button" type="primary" @click="close">关闭</button>
+
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1">
+	<!-- #endif -->
+		<view>
+			<text style="width: 100%; text-align: center; margin-bottom: 5px;">
+			  显示简易操作日志(可滚动查看)
+			</text>
+			<button size="mini" @click="data.logList = []">清空日志</button>
+			<view style="margin-top: 10px;">
+				<view v-for="(item, index) in data.logList" :key="index">
+					<text style="margin-left: 20px; margin-right: 20px;">
+						{{ item }}
+					</text>
+				</view>
+			</view>
+		</view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="uts">
+	type DataType = {
+		logList: string[];
+		title: string;
+		url: string;
+		eventSource: UniEventSource | null;
+		open: boolean;
+		receiveMessage: boolean;
+	}
+
+	const data = reactive({
+		logList: [] as string[],
+		title: 'sse',
+		url: 'https://request.dcloud.net.cn/api/sse/connect',
+		eventSource: null,
+		open: false,
+		receiveMessage: false
+	} as DataType)
+
+	onUnmounted(() => {
+		if (data.eventSource != null) {
+			data.eventSource?.close()
+		}
+	})
+
+	const connect = () => {
+		console.log('connect start')
+		uni.showLoading({
+			title: "",
+			mask: true
+		})
+		data.eventSource?.close()
+		let headers : UTSJSONObject = new UTSJSONObject()
+		headers.set("header1", "value1")
+		headers.set("header2", "value3")
+		data.eventSource = uni.connectEventSource({
+			url: data.url,
+			header: headers
+		})
+		data.eventSource?.onMessage((ev) => {
+			const log = 'onMessage callback:' + '\n' + 'type: ' + ev.type + '\n' + 'data: ' + ev.data + '\n\n'
+			data.logList.push(log)
+			data.receiveMessage = true
+			uni.hideLoading()
+		})
+		data.eventSource?.onOpen((ev) => {
+			const log = 'onOpen callback: ' + ev.type + '\n\n'
+			data.logList.push(log)
+			data.open = true
+		})
+		data.eventSource?.onError((err) => {
+			const log = `onError callback: ${err} \n\n`
+			data.logList.push(log)
+			uni.hideLoading()
+		})
+	}
+
+	const close = () => {
+		data.eventSource?.close()
+		const log = 'connect close' + '\n\n'
+		data.logList.push(log)
+	}
+
+	defineExpose({
+    data,
+		connect
+	})
+</script>
+
+<style>
+	.button {
+		margin-left: 30px;
+		margin-right: 30px;
+		margin-bottom: 15px;
+	}
+</style>

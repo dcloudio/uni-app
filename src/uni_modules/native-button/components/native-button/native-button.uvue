@@ -1,0 +1,50 @@
+<template>
+  <!--建议只存在一个根节点，如果native-view存在兄弟节点则需要将其包裹处理-->
+  <view>
+    <native-view style="height: 100px;" @init="onviewinit" @customClick="ontap"></native-view>
+  	<view style="width: 50%;height: 100px;">
+  		<button>测试按钮</button>
+  	</view>
+  </view>
+</template>
+<script setup lang="uts">
+	import { NativeButton } from "@/uni_modules/native-button";
+	let button : NativeButton | null = null
+
+	//声明属性
+	const props = defineProps<{ text : string }>()
+
+	//声明事件
+	const emit = defineEmits<{
+		(e : "load") : void
+		(e : "buttonTap", event : UniNativeViewEvent) : void
+	}>()
+
+	//声明方法
+	function updateText(value : string) {
+		button?.updateText(value)
+	}
+
+	//监听属性变化
+	watchEffect(() => {
+		const text = props.text
+		updateText(text)
+	})
+
+	//native-view初始化时触发此方法
+	function onviewinit(e : UniNativeViewInitEvent) {
+		//获取UniNativeViewElement 传递给NativeButton对象
+		button = new NativeButton(e.detail.element);
+		updateText(props.text)
+		emit("load")
+	}
+
+	function ontap(e : UniNativeViewEvent) {
+		emit("buttonTap", e)
+	}
+
+	function onUnmounted() {
+		// iOS平台需要主动释放 uts 实例
+		button?.destroy()
+	}
+</script>

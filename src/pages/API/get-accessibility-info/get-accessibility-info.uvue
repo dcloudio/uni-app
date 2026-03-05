@@ -1,0 +1,26 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <view>
+      <page-head :title="'getAccessibilityInfo'"></page-head>
+      <view class="uni-common-mt" >
+        <text style="margin-left: 8px;">无障碍服务信息如下：</text>
+        <text style="margin-top: 15px;padding: 8px;">{{
+		        accessibilityInfo
+		      }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup>
+  const accessibilityInfo = ref("")
+  accessibilityInfo.value = JSON.stringify(uni.getAccessibilityInfo())
+</script>
+
+<style>
+
+</style>

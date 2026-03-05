@@ -1,0 +1,31 @@
+export class SendableTransferWorker extends WorkerTaskImpl {
+  //constructor
+  constructor() {
+    super();
+    //初始化操作
+    console.log("[WorkerTask] HelloWorkerTask 构造器初始化");
+  }
+
+  //实现入口函数
+  override entry() {
+    //Worker启动时的入口函数
+    console.log("[WorkerTask] HelloWorkerTask 启动完成，等待主线程消息");
+  }
+
+  //接收主线程发送的消息
+  override onMessage(message : any) {
+    console.log('[WorkerTask] 收到主线程消息: ', JSON.stringify(message));
+    // #ifdef APP-HARMONY
+    if (typeof message === 'object' && typeof (message as ESObject).a === 'number') {
+      (message as ESObject).a = 666
+    }
+    // #endif
+    this.sendReply(message);
+  }
+
+  // 发送回复消息
+  private sendReply(message : any) {
+    console.log('[WorkerTask] 发送回复消息');
+    this.postMessage(message);
+  }
+}

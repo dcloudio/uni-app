@@ -1,0 +1,138 @@
+<template>
+  <scroll-view style="flex:1;" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+    <view class="content">
+      <image class="qrcode" src="https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png"></image>
+      <text class="tip">扫码体验 uni-app x</text>
+      <text class="desc">
+        <text class="code">uni-app x </text>
+        <text class="desc">是下一代uni-app，基于uts的、兼容vue语法的跨平台开发框架。</text>
+      </text>
+      <text class="source desc">本应用源码获取方式：</text>
+      <view class="sourcelist">
+        <text class="desc">1. </text>
+        <text class="desc">
+          <text class="desc">在 HBuilderX 中新建 uni-app 项目时选择 </text>
+          <text class="code">Hello uni-app x</text>
+          <text class="desc"> 模板</text>
+        </text>
+      </view>
+      <view class="sourcelist">
+        <text class="desc">2. </text>
+        <text class="desc link" @click="openUrl('https://gitcode.com/dcloud/hello-uni-app-x')">https://gitcode.com/dcloud/hello-uni-app-x</text>
+      </view>
+    </view>
+<!-- #ifdef APP -->
+    <view class="panel">
+      <text class="uni-panel-text title">服务协议</text>
+      <view class="item">
+        <view style="padding-left: 18px; border-top-style: none;" class="uni-navigate-item" hover-class="is--active" @click="openUrl('https://dcloud.io/license/DCloud.html')">
+          <text class="uni-navigate-text">用户协议</text>
+          <image :src="arrowRightIcon" class="uni-icon-size"></image>
+        </view>
+        <view style="padding-left: 18px;" class="uni-navigate-item" hover-class="is--active" @click="openUrl('https://dcloud.io/license/hello-uni-app-x.html')">
+          <text class="uni-navigate-text">隐私政策</text>
+          <image :src="arrowRightIcon" class="uni-icon-size"></image>
+        </view>
+      </view>
+    </view>
+<!-- #endif -->
+    <text class="version">当前版本：{{version}}</text>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+
+// #ifdef APP
+import { openSchema } from '@/uni_modules/uts-openSchema'
+// #endif
+import { state } from '@/store/index.uts'
+
+const version = ref('')
+const arrowRightIcon = '/static/icons/arrow-right.png'
+
+const isDarkMode = computed((): boolean => {
+  return state.isDarkMode
+})
+
+function openUrl(url:string) {
+  // #ifdef APP
+  openSchema(url)
+  // #endif
+  // #ifdef MP-WEIXIN
+  wx.setClipboardData({
+    data: url,
+    success: () => {
+      wx.showToast({ title: '链接已复制到剪贴板' });
+    }
+  })
+  // #endif
+}
+
+onLoad(() => {
+  version.value = uni.getAppBaseInfo().appVersion??''
+})
+</script>
+
+<style>
+.content {
+  width: 100%;
+  padding: 16px;
+  align-items: center;
+}
+.qrcode {
+  width: 160px;
+  height: 160px;
+}
+.tip {
+  margin: 12px;
+  font-size: 14px;
+  color: var(--text-color);
+}
+.desc {
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--text-color);
+  /* #ifdef MP-WEIXIN */
+  width: fit-content;
+  /* #endif */
+  /* #ifdef WEB */
+  width: fit-content;
+  /* #endif */
+}
+.code {
+  font-size: 14px;
+  color: #e96900;
+}
+.source {
+  align-self: flex-start;
+  margin-top: 18px;
+  color: var(--text-color);
+}
+.sourcelist {
+  flex-direction: row;
+  align-self: flex-start;
+  align-content: flex-start;
+}
+.link{
+  color: #007AFF;
+  text-decoration-line: underline;
+}
+.version {
+  width: 100%;
+  margin: 18px 0px;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  color: #ccc;
+}
+.panel {
+  margin: 18px;
+}
+.title {
+  margin: 8px;
+  font-size: 14px;
+}
+.item {
+  border-radius: 6px;
+}
+</style>

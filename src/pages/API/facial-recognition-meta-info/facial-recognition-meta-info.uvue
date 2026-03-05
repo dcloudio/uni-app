@@ -1,0 +1,83 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-btn-v uni-common-mt">
+          <input class="uni-input" type="text" v-model="realName" name="real-name" placeholder="姓名" maxlength="-1" />
+        </view>
+        <view class="uni-btn-v uni-common-mt">
+          <input class="uni-input" type="text" v-model="idCard" name="id-card" placeholder="身份证号" maxlength="-1" />
+        </view>
+        <view class="uni-btn-v uni-common-mt">
+          <button type="primary" @click="facialRecognition">开始人脸识别</button>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  const title = ref('实人认证')
+  const realName = ref('')
+  const idCard = ref('')
+
+  const facialRecognition = () => {
+    const realNameValue = realName.value.trim()
+    const idCardValue = idCard.value.trim()
+    if (realNameValue == '' || idCardValue == '') {
+      uni.showModal({
+        title: '错误',
+        content: '姓名和身份证号不可为空',
+        showCancel: false
+      })
+      return
+    }
+    if ('production' === process.env.NODE_ENV && '__UNI__HelloUniAppX' === uni.getAppBaseInfo().appId) {
+      uni.showModal({
+        title: '提示',
+        content: '实人认证为收费功能，当前环境暂不支持。请在HBuilderX中新建Hello uni-app x项目真机运行体验！',
+        showCancel: false
+      })
+      return
+    }
+    const testFacialCo = uniCloud.importObject('facial-recognition-co')
+    let metaInfo = uni.getFacialRecognitionMetaInfo();
+    testFacialCo.getCertifyId({
+      realName: realNameValue,
+      idCard: idCardValue,
+      metaInfo
+    })
+      .then((res : UTSJSONObject) : Promise<string> => {
+        const certifyId = res['certifyId'] as string
+        return new Promise((
+          resolve : (res : string) => void,
+          reject : (err : Error) => void
+        ) => {
+          uni.startFacialRecognitionVerify({
+            certifyId,
+            success() {
+              resolve(certifyId)
+            },
+            fail(err) {
+              reject(new Error(err.errMsg))
+            }
+          })
+        })
+      })
+      .then((certifyId : string) : Promise<UTSJSONObject> => {
+        return testFacialCo.getAuthResult(certifyId)
+      })
+      .then((res : UTSJSONObject) => {
+        console.log('res', res)
+      })
+      .catch((err : any | null) => {
+        console.error('error', err)
+      })
+  }
+
+</script>

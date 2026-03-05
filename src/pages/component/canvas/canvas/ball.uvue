@@ -1,0 +1,280 @@
+<template>
+  <view class="page-body">
+    <canvas id="canvas" class="canvas"></canvas>
+    <text class="fps">FPS: {{fpsString}}</text>
+    <view class="item">
+      <text class="item-label">Speed</text>
+      <button size="mini" @click="lessClick('speed')">-</button>
+      <text class="item-value">{{ballSpeed}}</text>
+      <button size="mini" @click="plusClick('speed')">+</button>
+    </view>
+    <view class="item">
+      <text class="item-label">Layer</text>
+      <button size="mini" @click="lessClick('layer')">-</button>
+      <text class="item-value">{{ballLayer}}</text>
+      <button size="mini" @click="plusClick('layer')">+</button>
+    </view>
+    <view class="item">
+      <text class="item-label">Inlayer</text>
+      <button size="mini" @click="lessClick('inLayer')">-</button>
+      <text class="item-value">{{ballInlayer}}</text>
+      <button size="mini" @click="plusClick('inLayer')">+</button>
+    </view>
+  </view>
+</template>
+
+<script setup>
+  let fpsString = ref("-/-ms")
+  let ballSpeed = ref(3)
+  let ballLayer = ref(3)
+  let ballInlayer = ref(20)
+
+  class Ball {
+    private width : number
+    private height : number
+    public x : number
+    public y : number
+    public vx : number
+    public vy : number
+    public radius : number = 5
+
+    constructor(w : number, h : number, x : number, y : number, vx : number, vy : number) {
+      this.width = w
+      this.height = h
+      this.x = x
+      this.y = y
+      this.vx = vx
+      this.vy = vy
+    }
+
+    move() {
+      this.x += this.vx
+      this.y += this.vy
+
+      // 边框反弹
+      if (this.x < this.radius) {
+        this.vx = Math.abs(this.vx)
+        return
+      }
+      if (this.x > this.width - this.radius) {
+        this.vx = -Math.abs(this.vx)
+      }
+      if (this.y < this.radius) {
+        this.vy = Math.abs(this.vy)
+        return
+      }
+      if (this.y > this.height - this.radius) {
+        this.vy = -Math.abs(this.vy)
+      }
+    }
+  }
+
+  class BallAnimation {
+    private ctx : CanvasRenderingContext2D
+    private canvasContext : CanvasContext
+    private ballList : Array<Ball> = []
+    private _speed = 3
+    private _layer = 3
+    private _ballInlayer = 20
+    private runningFlag : boolean = false
+
+    private _animateTaskId : number = 0
+    private frameCount = 0
+    private lastTime = 0
+
+    constructor(canvasContext : CanvasContext) {
+      this.canvasContext = canvasContext
+      this.ctx = canvasContext.getContext('2d') as CanvasRenderingContext2D
+      this.initBall()
+      this.ctx.fillStyle = '#007AFF'
+    }
+
+    private getDistance(x : number, y : number) : number {
+      return Math.pow((Math.pow(x, 2) + Math.pow(y, 2)), 0.5)
+    }
+
+    private initBall() {
+      const canvasWidth = this.ctx.canvas.offsetWidth;
+      const canvasHeight = this.ctx.canvas.offsetHeight;
+      for (let i = 0; i < this._layer; i++) {
+        let radius = this.getDistance(canvasWidth / 2, canvasHeight / 2) / this._layer * i
+        for (let j = 0; j < this._ballInlayer; j++) {
+          let deg = j * 2 * Math.PI / this._ballInlayer,
+            sin = Math.sin(deg),
+            cos = Math.cos(deg),
+            x = radius * cos + canvasWidth / 2,
+            y = radius * sin + canvasHeight / 2,
+            vx = this.speed * cos,
+            vy = this.speed * sin
+          this.ballList.push(new Ball(canvasWidth, canvasHeight, x, y, vx, vy))
+        }
+      }
+    }
+
+    private reset() {
+      this.ballList.length = 0
+      this.initBall()
+    }
+
+    public get speed() : number {
+      return this._speed
+    }
+    public set speed(value : number) {
+      this._speed = value
+      this.reset()
+    }
+
+    public get layer() : number {
+      return this._layer
+    }
+    public set layer(value : number) {
+      this._layer = value
+      this.reset()
+    }
+
+    public get inLayer() : number {
+      return this._ballInlayer
+    }
+    public set inLayer(value : number) {
+      this._ballInlayer = value
+      this.reset()
+    }
+
+    public animate() {
+      this.ctx.clearRect(0, 0, this.ctx.canvas.offsetWidth, this.ctx.canvas.offsetHeight)
+      this.ballList.forEach((item) => {
+        item.move()
+        this.ctx.beginPath()
+        this.ctx.arc(item.x, item.y, item.radius, 0, 2 * Math.PI)
+        // this.ctx.ellipse(item.x, item.y, item.radius, item.radius, 0, 0, Math.PI * 2)
+        this.ctx.fill()
+      })
+
+      if (!this.runningFlag) {
+        return
+      }
+      this._animateTaskId = this.canvasContext.requestAnimationFrame((timestamp : number) => {
+        this.animate()
+        this.updateFPS(timestamp)
+      })
+    }
+
+    updateFPS(timestamp : number) {
+      this.frameCount++
+      if (timestamp - this.lastTime >= 1000) {
+        const timeOfFrame = (1000 / this.frameCount)
+        fpsString.value = `${this.frameCount} / ${timeOfFrame.toFixed(3)}ms`
+        this.frameCount = 0
+        this.lastTime = timestamp
+      }
+    }
+
+    start() {
+      this.canvasContext.cancelAnimationFrame(this._animateTaskId)
+      this.runningFlag = true
+      this.animate()
+    }
+
+    stop() {
+      this.runningFlag = false
+      this.canvasContext.cancelAnimationFrame(this._animateTaskId)
+    }
+  }
+
+  let animation : BallAnimation | null = null
+  onReady(() => {
+    uni.createCanvasContextAsync({
+      id: 'canvas',
+      // component: this,
+      success: (context : CanvasContext) => {
+        const renderingContext = context.getContext('2d')!;
+        const canvas = renderingContext.canvas;
+
+        const dpr = uni.getWindowInfo().pixelRatio;
+        canvas.width = canvas.offsetWidth * dpr
+        canvas.height = canvas.offsetHeight * dpr
+        renderingContext.scale(dpr, dpr)
+
+        animation = new BallAnimation(context)
+        animation?.start()
+      }
+    })
+  })
+
+  let lessClick = (type : string) => {
+    if (type == 'speed') {
+      animation!.speed--;
+      ballSpeed.value = animation!.speed
+    } else if (type == 'layer') {
+      animation!.layer -= 5;
+      ballLayer.value = animation!.layer
+    } else if (type == 'inLayer') {
+      animation!.inLayer -= 5;
+      ballInlayer.value = animation!.inLayer
+    }
+  }
+
+  let plusClick = (type : string) => {
+    if (type == 'speed') {
+      animation!.speed++;
+      ballSpeed.value = animation!.speed
+    } else if (type == 'layer') {
+      animation!.layer += 5;
+      ballLayer.value = animation!.layer
+    } else if (type == 'inLayer') {
+      animation!.inLayer += 5;
+      ballInlayer.value = animation!.inLayer
+    }
+  }
+
+  onUnload(() => {
+    animation?.stop()
+    animation = null
+  })
+
+  onPageShow(() => {
+    animation?.start()
+  })
+
+  onPageHide(() => {
+    animation?.stop()
+  })
+</script>
+
+<style>
+  .page-body-wrapper {
+    text-align: center;
+  }
+
+  .page-body {
+    padding: 15px;
+  }
+
+  .canvas {
+    width: 300px;
+    height: 300px;
+    margin: auto;
+    background-color: #fff;
+  }
+
+  .fps {
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+
+  .item {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .item-label {
+    margin-right: auto;
+  }
+
+  .item-value {
+    color: cornflowerblue;
+    width: 50px;
+    text-align: center;
+  }
+</style>

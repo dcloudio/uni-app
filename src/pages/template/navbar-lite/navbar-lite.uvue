@@ -1,0 +1,178 @@
+<template>
+  <view class="content">
+    <uni-nav-bar :title="title" :is-left="isLeft" :navigationBarTextStyle="navigationBarTextColor"></uni-nav-bar>
+    <view class="content-item" @click="onClick">
+      <text>点击此处，将标题切换为{{isLeft?'居中':'左侧'}}显示</text>
+    </view>
+    <view class="content-item" @tap="setNavigationBarColor1">
+      <text>设置自定义导航栏前景色白色</text>
+    </view>
+    <view class="content-item" @tap="setNavigationBarColor2">
+      <text>设置自定义导航栏前景色黑色</text>
+    </view>
+    <view style="align-items: center;height: 60px;">
+      <text>测试输入框上推页面</text>
+      <radio-group @change="ChangeView" style="flex-direction: row;">
+        <radio value="0" :checked="true"><text>scroll-view</text></radio>
+        <radio value="1"><text>list-view</text></radio>
+        <!-- #ifndef MP -->
+        <radio value="2"><text>web-view</text></radio>
+        <!-- #endif -->
+      </radio-group>
+    </view>
+    <scroll-view v-if="data.indexView==0" class="scroll-view" :refresher-enabled="false">
+      <view class="content-item" v-for="item in 10">
+        <view class="cell-item">
+          <text class="text">内容：{{item}}</text>
+          <input class="text" style="margin-top: 8px;" placeholder="备注输入框:" :id="`input-in-scroll-view-${item}`" :focus="item === 5 ? data.scrollViewInputFocus : false" />
+        </view>
+      </view>
+    </scroll-view>
+    <list-view v-if="data.indexView==1" class="scroll-view">
+      <list-item class="content-item" v-for="item in 10" :key="item">
+        <view class="cell-item">
+          <text class="text">列表项内容：{{item}}</text>
+          <input class="text" style="margin-top: 8px;" placeholder="备注输入框:" :id="`input-in-list-view-${item}`" :focus="item === 5 ? data.listViewInputFocus : false" />
+        </view>
+      </list-item>
+    </list-view>
+    <web-view v-if="data.indexView==2" src="/hybrid/html/local.html" id="webv" class="scroll-view"></web-view>
+    <view class="bottomInput" :style="{bottom: inputBottom}">
+      <input id="input" style="background-color: white;" placeholder="滚动视图外底部输入框，焦点时手动控制显示位置" :adjust-position="false" @blur="onInputBlur" @keyboardheightchange="onInputKeyboardChange" />
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
+  import { state, setLifeCycleNum as setLifeCycleNumStore } from '@/store/index.uts'
+
+  const title = ref('Hello uni-app')
+  const isLeft = ref(false)
+  const navigationBarTextColor = ref('#000')
+  const data = reactive({
+    indexView: 0,
+    scrollViewInputFocus: false,
+    listViewInputFocus: false,
+  })
+  const inputBottom = ref('0px')
+
+  function onClick() {
+    isLeft.value = !isLeft.value
+  }
+
+  // 自动化测试
+  function setLifeCycleNum(num : number) {
+    setLifeCycleNumStore(num)
+  }
+
+  function setNavigationBarColor1() {
+    uni.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#0000',
+      success: () => {
+        navigationBarTextColor.value = '#fff'
+        console.log('setNavigationBarColor success')
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail: () => {
+        console.log('setNavigationBarColor fail')
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete: () => {
+        console.log('setNavigationBarColor complete')
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  function setNavigationBarColor2() {
+    uni.setNavigationBarColor({
+      frontColor: '#000000',
+      backgroundColor: '#0000',
+      success: () => {
+        navigationBarTextColor.value = '#000'
+        console.log('setNavigationBarColor success')
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail: () => {
+        console.log('setNavigationBarColor fail')
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete: () => {
+        console.log('setNavigationBarColor complete')
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  function ChangeView(e:UniRadioGroupChangeEvent){
+    data.indexView = parseInt(e.detail.value)
+  }
+
+  function onInputBlur(event:UniInputBlurEvent) {
+    inputBottom.value = '0px';
+  }
+
+  function onInputKeyboardChange(e:UniInputKeyboardHeightChangeEvent) {
+    let height = e.detail.height;
+    // #ifdef APP-IOS || APP-HARMONY
+    if(height>0 && currentPage != null){  //iOS与HarmonyOS平台软键盘的高度已经包含了安全区域高度，这里需要减掉
+      height -= currentPage.safeAreaInsets.bottom;
+    }
+    // #endif
+    inputBottom.value = `${height}px`;
+  }
+
+  // 自动化测试
+  function getLifeCycleNum() : number {
+    return state.lifeCycleNum
+  }
+
+  defineExpose({
+    getLifeCycleNum,
+    setLifeCycleNum,
+    setNavigationBarColor1,
+    setNavigationBarColor2,
+    data
+  })
+</script>
+
+<style>
+  .content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .scroll-view {
+    flex: 1;
+    background-color: #f5f5f5;
+    padding: 5px 0;
+  }
+
+  .content-item {
+    padding: 15px;
+    margin: 5px 10px;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+
+  .cell-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .text {
+    font-size: 14px;
+    color: #666;
+  }
+
+  .bottomInput {
+    position: relative;
+    z-index: 1000;
+    padding: 0 5px;
+    margin-bottom: var(--uni-safe-area-inset-bottom);
+  }
+</style>

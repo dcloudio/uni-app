@@ -1,0 +1,87 @@
+import { display } from '@kit.ArkUI';
+import { window } from '@kit.ArkUI';
+import { Callback, BusinessError } from '@kit.BasicServicesKit';
+
+import { getAbilityContext } from '@dcloudio/uni-runtime';
+
+import {
+  OnUserCaptureScreen, UserCaptureScreenCallback,
+  OffUserCaptureScreen,
+  SetUserCaptureScreen, SetUserCaptureScreenOptions, SetUserCaptureScreenSuccess
+} from '../interface.uts';
+
+const onUserCaptureScreenCallbacks: Function[] = []
+
+const harmonyCaptureStatusChange: Callback<boolean> = (captureStatus: boolean) => {
+  if (captureStatus) {
+    onUserCaptureScreenCallbacks.forEach(cb => {
+      typeof cb === 'function' && cb()
+    })
+  }
+}
+
+display.on('captureStatusChange', harmonyCaptureStatusChange)
+
+export const onUserCaptureScreen: OnUserCaptureScreen = function (callback: UserCaptureScreenCallback | null) {
+  if (callback) {
+    onUserCaptureScreenCallbacks.push(callback)
+  }
+}
+
+export const offUserCaptureScreen: OffUserCaptureScreen = function (callback: UserCaptureScreenCallback | null) {
+  if (callback) {
+    const index = onUserCaptureScreenCallbacks.indexOf(callback)
+    if (index > -1) {
+      onUserCaptureScreenCallbacks.splice(index, 1)
+    }
+  }
+}
+
+export const setUserCaptureScreen: SetUserCaptureScreen = function (options: SetUserCaptureScreenOptions) {
+  const errSubject = 'uni-usercapturescreen'
+  const setUserCaptureScreenSuccess: SetUserCaptureScreenSuccess = {}
+  window.getLastWindow(getAbilityContext()!, (err, window) => {
+    const errCode: number = err.code;
+    if (errCode) {
+      options.fail?.({
+        errCode: (err as BusinessError).code,
+        errSubject,
+        errMsg: `setUserCaptureScreen:fail ${(err as BusinessError).message}`
+      } as IUniError)
+      options.complete?.(setUserCaptureScreenSuccess);
+      return;
+    } else {
+      try {
+        UTSHarmony.requestSystemPermission(['ohos.permission.PRIVACY_WINDOW'], (allRight: boolean, _grantedList: string[]) => {
+          if (allRight) {
+            window.setWindowPrivacyMode(!options.enable, (err: BusinessError) => {
+              const errCode: number = err.code;
+              if (errCode) {
+                options.fail?.({
+                  errCode: err.code,
+                  errSubject,
+                  errMsg: `setUserCaptureScreen:fail ${err.message}`
+                } as IUniError)
+                options.complete?.(setUserCaptureScreenSuccess);
+                return;
+              }
+              options.success?.(setUserCaptureScreenSuccess);
+              options.complete?.(setUserCaptureScreenSuccess);
+            });
+          } else {
+            throw new Error('permission denied')
+          }
+        }, (_doNotAskAgain: boolean, _grantedList: string[]) => {
+            throw new Error('permission denied');
+        })
+      } catch (err) {
+        options.fail?.({
+          errCode: (err as BusinessError).code,
+          errSubject,
+          errMsg: `setUserCaptureScreen:fail ${(err as BusinessError).message}`
+        } as IUniError)
+        options.complete?.(setUserCaptureScreenSuccess);
+      }
+    }
+  })
+}

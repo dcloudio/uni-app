@@ -1,0 +1,76 @@
+<template>
+	<text class="time-text">{{ formattedTime }}</text>
+</template>
+
+<script setup lang="uts">
+const props = defineProps({
+  /**
+   * @description 时间戳（毫秒）
+   */
+  timestamp: {
+    type: Number,
+    required: true
+  },
+	/**
+	 * @description 格式化模式: 'date' | 'time' | 'datetime' | 'relative'
+	 */
+  format: {
+    type: String,
+    default: 'datetime'
+  }
+})
+
+function padZero(num: number): string {
+  return num < 10 ? '0' + num.toString() : num.toString()
+}
+
+function getRelativeTime(timestamp: number): string {
+  const now = Date.now()
+  const diff = now - timestamp
+  const seconds = Math.floor(diff / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (days > 0) {
+    return `${days}天前`
+  } else if (hours > 0) {
+    return `${hours}小时前`
+  } else if (minutes > 0) {
+    return `${minutes}分钟前`
+  } else {
+    return '刚刚'
+  }
+}
+
+// 格式化时间
+const formattedTime = computed((): string => {
+	const date = new Date(props.timestamp)
+	const formatType = props.format ?? 'datetime'
+
+	const year = date.getFullYear()
+	const month = padZero(date.getMonth() + 1)
+	const day = padZero(date.getDate())
+	const hours = padZero(date.getHours())
+	const minutes = padZero(date.getMinutes())
+	const seconds = padZero(date.getSeconds())
+
+	if (formatType == 'date') {
+		return `${year}-${month}-${day}`
+	} else if (formatType == 'time') {
+		return `${hours}:${minutes}:${seconds}`
+	} else if (formatType == 'relative') {
+		return getRelativeTime(props.timestamp)
+	} else {
+		return `${year}-${month}-${day} ${hours}:${minutes}`
+	}
+})
+
+</script>
+
+<style>
+.time-text {
+	font-size: 12px;
+	color: #999999;
+}
+</style>

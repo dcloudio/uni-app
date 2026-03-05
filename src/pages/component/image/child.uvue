@@ -1,0 +1,16 @@
+<template>
+  <image class="child-image" src="/static/test-image/logo.png"></image>
+</template>
+
+<script setup lang="uts">
+</script>
+
+<style>
+  .child-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    border: 2px solid #ff6b6b;
+    background-color: #ffe0e0;
+  }
+</style>

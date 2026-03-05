@@ -1,0 +1,183 @@
+<template>
+  <view style="flex: 1;">
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-common-mt" style="border-width: 2px;border-style: solid; border-radius: 4px;">
+        <textarea :value="res" class="uni-textarea" style="width: 100%"></textarea>
+      </view>
+      <view>
+        <text>地址 : {{ host + url}}</text>
+        <text>请求方式 : {{method}}</text>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @tap="checkRequestTask" id="checkRequestTask">发起流式请求（设置监听需重新点击、勿重复点击）</button>
+        <view class="uni-common-pb"></view>
+        <button type="primary" @tap="abort" id="abort">中断流式请求</button>
+      </view>
+    </view>
+    <scroll-view style="flex: 1;" show-scrollbar="true">
+      <view style="padding: 20px;">
+        <text>添加或者移除流式监听</text>
+        <view class="uni-common-pb"></view>
+        <view style="flex-direction: row;flex-wrap: wrap;">
+          <button style="padding: 5px;" type="primary" size="mini" @tap="onHeadersReceived_observe_1"
+            id="onHeadersReceived_observe_1">onHeadersReceived监听1</button>
+          <button style="padding: 5px;" type="primary" size="mini" @tap="onHeadersReceived_observe_2"
+            id="onHeadersReceived_observe_2">onHeadersReceived监听2</button>
+          <button style="padding: 5px;" type="primary" size="mini" @tap="onChunkReceived_observe_1"
+            id="onChunkReceived_observe_1">onChunkReceived监听1</button>
+          <button style="padding: 5px;" type="primary" size="mini" @tap="onChunkReceived_observe_2"
+            id="onChunkReceived_observe_2">onChunkReceived监听2</button>
+          <button style="padding: 5px;" type="primary" size="mini" @tap="offHeadersReceived_id"
+            id="offHeadersReceived_id">offHeadersReceived(id)</button>
+          <button style="padding: 5px;" type="primary" size="mini" @tap="offHeadersReceived_observe"
+            id="offHeadersReceived_observe">offHeadersReceived移除所有</button>
+          <button style="padding: 5px;" type="primary" size="mini" @tap="offChunkReceived_observe"
+            id="offChunkReceived_observe">offChunkReceived移除所有</button>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</template>
+<script setup lang="uts">
+
+  const res = ref('')
+  const task = ref<RequestTask | null>(null)
+  const host = "https://request.dcloud.net.cn"
+  const url = "/api/http/contentType/eventStream?limit=10"
+  const method: RequestMethod = "POST"
+  const onHeadersReceivedObseves = ref<number[]>([])
+  const onChunkReceivedObseves = ref<number[]>([])
+  const onHeadersReceived_returnid_1 = ref(-1)
+  const onHeadersReceived_returnid_2 = ref(-1)
+  const isAbort = ref(false)
+
+  onLoad((options : OnLoadOptions) => {
+    onHeadersReceivedObseves.value.push(1)
+    onChunkReceivedObseves.value.push(1)
+  })
+
+  onUnload(() => {
+    uni.hideLoading();
+    task.value?.abort();
+  })
+
+  function onHeadersReceived_observe_1() {
+    onHeadersReceivedObseves.value.push(1)
+  }
+
+  function onHeadersReceived_observe_2() {
+    onHeadersReceivedObseves.value.push(2)
+  }
+
+  function offHeadersReceived_observe() {
+    onHeadersReceivedObseves.value = []
+  }
+
+  function offHeadersReceived_id() {
+    onHeadersReceivedObseves.value = []
+    onHeadersReceivedObseves.value.push(1)
+  }
+
+  function onChunkReceived_observe_1() {
+    onChunkReceivedObseves.value.push(1)
+  }
+
+  function onChunkReceived_observe_2() {
+    onChunkReceivedObseves.value.push(2)
+  }
+
+  function offChunkReceived_observe() {
+    onChunkReceivedObseves.value = []
+  }
+
+  function checkRequestTask() {
+    isAbort.value = false
+    res.value = '发起post流式请求 \n\n'
+    task.value = uni.request({
+      url: "https://request.dcloud.net.cn/api/http/contentType/eventStream?limit=10",
+      timeout: 600000,
+      method: method,
+      enableChunked: true,
+      success: (response) => {
+        console.log('request success', JSON.stringify(response.data))
+        console.log('request success header is :', JSON.stringify(response.header))
+        res.value += '流式请求结束 \n\n'
+        console.log('请求结果 : ' + JSON.stringify(response))
+      },
+      fail: (err) => {
+        let content = err.errMsg
+        if (isAbort.value) {
+          content = "中断成功"
+        }
+        console.log('request fail', err);
+        uni.showModal({
+          content: content,
+          showCancel: false
+        });
+      },
+      complete: () => {
+        task.value = null
+      },
+    });
+
+    const onHeadersReceivedCallback1 = (response : RequestTaskOnHeadersReceivedListenerResult) => {
+      console.log("-------onHeadersReceived监听1------", response)
+      res.value += `onHeadersReceived监听1：\n ${JSON.stringify(response)} \n\n`
+    }
+    const onHeadersReceivedCallback2 = (response : RequestTaskOnHeadersReceivedListenerResult) => {
+      console.log("-------onHeadersReceived监听2------", response)
+      res.value += `onHeadersReceived监听2：\n ${JSON.stringify(response)}  \n\n`
+    }
+
+    if (onHeadersReceivedObseves.value.includes(1)) {
+      onHeadersReceived_returnid_1.value = task.value?.onHeadersReceived(onHeadersReceivedCallback1) ?? -1
+    }
+
+    if (onHeadersReceivedObseves.value.length == 0) {
+      task.value?.offHeadersReceived(null)
+      res.value += "点击了 offHeadersReceived \n\n"
+    } else if (onHeadersReceivedObseves.value.length == 1) {
+      task.value?.offHeadersReceived(onHeadersReceived_returnid_2.value)
+    }
+
+    const onChunkReceivedCallback1 = (response : RequestTaskOnChunkReceivedListenerResult) => {
+      const chunkText : string = new TextDecoder().decode(response.data)
+      console.log("-------onChunkReceived监听1------", chunkText)
+      res.value += `onChunkReceived监听1：\n ${chunkText}`
+    }
+    const onChunkReceivedCallback2 = (response : RequestTaskOnChunkReceivedListenerResult) => {
+      const chunkText : string = new TextDecoder().decode(response.data)
+      console.log("-------onChunkReceived监听2------", chunkText)
+      res.value += `onChunkReceived监听2：\n ${chunkText}`
+    }
+
+    if (onHeadersReceivedObseves.value.includes(2)) {
+      onHeadersReceived_returnid_2.value = task.value?.onHeadersReceived(onHeadersReceivedCallback2) ?? -1
+    }
+
+    if (onChunkReceivedObseves.value.includes(1)) {
+      task.value?.onChunkReceived(onChunkReceivedCallback1)
+    }
+
+    if (onChunkReceivedObseves.value.includes(2)) {
+      task.value?.onChunkReceived(onChunkReceivedCallback2)
+    }
+
+    if (onChunkReceivedObseves.value.length == 0) {
+      task.value?.offChunkReceived(null)
+      res.value += "点击了 offChunkReceived \n\n"
+    }
+  }
+
+  function abort() {
+    isAbort.value = true
+    task.value?.abort()
+  }
+</script>
+
+<style>
+  .uni-textarea {
+    padding: 9px;
+    font-size: 14px;
+  }
+</style>

@@ -1,0 +1,877 @@
+<template>
+  <view class="uni-flex-item">
+    <video class="video" ref="video" id="video" :header="data.header" :src="data.src" :autoplay="data.autoplay" :loop="data.loop"
+      :muted="data.muted" :initial-time="data.initialTime" :duration="data.duration" :controls="data.controls" :danmu-btn="data.danmuBtn && fullscreenShowDanmuBtn"
+      :enable-danmu="data.enableDanmu" :page-gesture="data.pageGesture" :direction="data.direction" :show-progress="data.showProgress"
+      :show-fullscreen-btn="data.showFullscreenBtn && fullscreenShowFullscreenBtn" :show-play-btn="data.showPlayBtn && fullscreenShowPlayBtn" :show-center-play-btn="data.showCenterPlayBtn"
+      :show-loading="data.showLoading" :enable-progress-gesture="data.enableProgressGesture" :object-fit="data.objectFit"
+      :poster="data.poster" :show-mute-btn="data.showMuteBtn && fullscreenShowMuteBtn" :title="data.title" :enable-play-gesture="data.enablePlayGesture"
+      :vslide-gesture="data.vslideGesture" :vslide-gesture-in-fullscreen="data.vslideGestureInFullscreen" :codec="data.codec"
+      :http-cache="data.httpCache" :play-strategy="data.playStrategy" :danmu-list="data.danmuList" @play="onPlay" @pause="onPause"
+      @ended="onEnded" @timeupdate="onTimeUpdate" @waiting="onWaiting" @error="onError" @progress="onProgress"
+      @fullscreenclick="onFullScreenClick" @controlstoggle="onControlsToggle" @fullscreenchange="onFullScreenChange">
+
+      <image v-if="data.subCompEnable && data.subCompShow" class="img-fast-backward"
+        src="../../../static/test-video/fast-backward.png" @tap.stop="fastBackward"></image>
+      <image v-if="data.subCompEnable && data.subCompShow" class="img-fast-forward"
+        src="../../../static/test-video/fast-forward.png" @tap.stop="fastForward"></image>
+      <input v-if="data.subCompEnable && data.subCompShow" id="input-send-danmu" class="input-send-danmu" placeholder="请输入弹幕内容"
+        placeholder-style="color: white;" confirm-type="send" @confirm="onSendDanmuConfirm"
+        @keyboardheightchange="onSendDanmuKeyboardHeightChange" @blur="onSendDanmuBlur"></input>
+
+      <!-- #ifdef APP-HARMONY -->
+      <template #controls>
+        <view  v-if="data.subCompControlsShow" class="video-fullscreen_controls">
+          <view class="control-btn" @click="togglePlay">
+            <text class="control-icon">{{ data.isPlaying ? ICON_PAUSH : ICON_PLAY }}</text>
+          </view>
+          <view class="control-btn" @click="toggleDanmu">
+            <text class="control-icon">{{ data.enableDanmu ? ICON_DANMU_ACTIVE : ICON_DANMU }}</text>
+          </view>
+          <view class="control-btn" @click="toggleMute">
+            <text class="control-icon">{{ data.muted ? ICON_VOLUME_MUTE : ICON_VOLUME }}</text>
+          </view>
+        </view>
+      </template>
+      <!-- #endif -->
+    </video>
+    <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
+      <view class="uni-btn-v">
+        <navigator url="/pages/component/video/video-format">
+          <button type="primary" @click="pause">视频格式示例</button>
+        </navigator>
+      </view>
+      <!-- #ifdef APP-HARMONY -->
+      <view class="uni-btn-v">
+        <navigator url="/pages/component/list-view/list-view-multiplex-video">
+          <button type="primary" @click="pause">list-view嵌套视频复用示例</button>
+        </navigator>
+      </view>
+      <!-- #endif -->
+      <!-- #ifdef APP-HARMONY -->
+      <view class="uni-btn-v">
+        <button type="primary" @click="openDialogPageVideo">dialogPage 视频格式示例</button>
+      </view>
+      <view class="uni-flex uni-btn-v" style="justify-content: space-between;align-items: center;">
+        <text class="uni-title" style="width: 80%;">全屏后自定义 controls</text>
+        <switch :checked="data.subCompControlsEnable" @change="onSubCompControlsEnable" />
+      </view>
+      <!-- #endif -->
+      <view class="uni-flex uni-btn-v" style="justify-content: space-between;align-items: center;">
+        <text class="uni-title" style="width: 80%;">子组件实现快进、快退、发送弹幕功能（全屏后显示）</text>
+        <switch :checked="data.subCompEnable" @change="onSubCompEnableChange" />
+      </view>
+      <view class="uni-title">
+        <text class="uni-title-text">API示例</text>
+      </View>
+      <view class="uni-btn-v">
+        <button type="primary" @click="play">播放</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="pause">暂停</button>
+      </view>
+      <view class="uni-btn-v">
+        <input class="input" placeholder="输入要跳转的位置,单位s" type="number" @input="onSeekInput"></input>
+        <button type="primary" @click="seek(data.pos)">跳转到指定位置</button>
+      </view>
+      <view class="uni-btn-v">
+        <enum-data title="选择进入全屏时的视频方向" :items="data.directionItemTypes"
+          @change="onRequestFullScreenDirectionChange"></enum-data>
+        <button type="primary" @click="requestFullScreen">进入全屏</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="exitFullScreen">退出全屏</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="stop">停止</button>
+      </view>
+      <view class="uni-btn-v">
+        <input class="input" placeholder="输入弹幕" value="{ 'text': '要显示的文本', 'color': '#FF0000' }" type="string"
+          @input="onSendDanmuInput"></input>
+        <button type="primary" :disabled="!data.enableDanmu" @click="sendDanmu">发送弹幕</button>
+      </view>
+      <view class="uni-btn-v">
+        <enum-data title="选择倍速" :items="data.rateItemTypes" @change="onPlaybackRateChange"></enum-data>
+        <button type="primary" @click="playbackRate">设置倍速</button>
+      </view>
+      <view class="uni-title">
+        <text class="uni-title-text">属性示例</text>
+      </view>
+      <input class="input margin-10" type="string" placeholder="设置播放资源" @confirm="onSrcComfirm"></input>
+      <input class="input margin-10" type="number" placeholder="设置初始播放位置（播放前设置有效）"
+        @confirm="onInitialTimeComfirm"></input>
+      <input class="input margin-10" type="number" placeholder="设置视频时长（播放前设置有效）" @confirm="onDurationComfirm"></input>
+      <input class="input margin-10" type="string" placeholder="设置视频封面" @confirm="onPosterComfirm"></input>
+      <input class="input margin-10" type="string" placeholder="设置视频标题（仅限非 Web 平台）" @confirm="onTitleComfirm"></input>
+      <input class="input margin-10" type="string" placeholder="设置header(json格式)" @confirm="onHeaderComfirm"></input>
+      <boolean-data title="设置是否展示弹幕（播放前设置有效）" :defaultValue="data.enableDanmu" @change="onEnableDanmuChange"></boolean-data>
+      <boolean-data title="设置是否自动播放（播放前设置有效）" :defaultValue="data.autoplay" @change="onAutoplayChange"></boolean-data>
+      <boolean-data title="设置是否循环播放（播放完成后生效）" :defaultValue="data.loop" @change="onLoopChange"></boolean-data>
+      <boolean-data title="设置是否静音播放" :defaultValue="data.muted" @change="onMutedChange"></boolean-data>
+      <boolean-data title="设置是否显示默认播放控件" :defaultValue="data.controls" @change="onControlsChange"></boolean-data>
+      <boolean-data title="设置是否显示弹幕按钮" :defaultValue="data.danmuBtn" @change="onDanmuBtnChange"></boolean-data>
+      <boolean-data title="设置是否显示进度条" :defaultValue="data.showProgress" @change="onShowProgressChange"></boolean-data>
+      <boolean-data title="设置是否显示全屏按钮" :defaultValue="data.showFullscreenBtn"
+        @change="onShowFullscreenBtnChange"></boolean-data>
+      <boolean-data title="设置是否显示视频底部控制栏的播放按钮" :defaultValue="data.showPlayBtn" @change="onShowPlayBtnChange"></boolean-data>
+      <boolean-data title="设置是否显示静音按钮（仅限非 Web 平台）" :defaultValue="data.showMuteBtn"
+        @change="onShowMuteBtnChange"></boolean-data>
+      <boolean-data title="设置是否显示视频中间的播放按钮" :defaultValue="data.showCenterPlayBtn"
+        @change="onShowCenterPlayBtnChange"></boolean-data>
+      <boolean-data title="设置是否显示loading控件" :defaultValue="data.showLoading" @change="onShowLoadingChange"></boolean-data>
+      <boolean-data title="设置是否开启控制进度的手势" :defaultValue="data.enableProgressGesture"
+        @change="onEnableProgressGestureChange"></boolean-data>
+      <boolean-data title="设置是否开启播放手势,双击播放暂停（仅限非 Web 平台）" :defaultValue="data.enablePlayGesture"
+        @change="onEnablePlayGestureChange"></boolean-data>
+      <!-- #ifndef WEB -->
+      <boolean-data title="非全屏模式下，设置是否开启亮度与音量调节手势 page-gesture" :defaultValue="data.pageGesture"
+        @change="onPageGestureChange"></boolean-data>
+      <!-- #endif -->
+      <boolean-data title="非全屏模式下，设置是否开启亮度与音量调节手势 vslide-gesture（仅限非 Web 平台）" :defaultValue="data.vslideGesture"
+        @change="onVslideGestureChange"></boolean-data>
+      <boolean-data title="全屏模式下，设置是否开启亮度与音量调节手势（仅限非 Web 平台）" :defaultValue="data.vslideGestureInFullscreen"
+        @change="onVslideGestureInFullscreenChange"></boolean-data>
+      <enum-data title="视频与video容器大小不一致时的表现" :items="data.objectFitItemTypes"
+        @change="onObjectFitChange"></enum-data>
+      <!-- #ifndef APP-HARMONY -->
+      <boolean-data title="设置是否对http、https视频源开启本地缓存（仅 Android、iOS 平台，播放前设置有效）" :defaultValue="data.httpCache"
+        @change="onHttpCacheChange"></boolean-data>
+      <enum-data title="设置解码器（仅 Android、iOS 平台，播放前设置有效）" :items="data.codecItemTypes" @change="onCodecChange"></enum-data>
+      <enum-data title="设置播放策略（仅 Android、iOS 平台，播放前设置有效）" :items="data.playStrategyItemTypes"
+        @change="onPlayStrategyChange"></enum-data>
+      <!-- #endif -->
+    </scroll-view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types';
+  // #ifdef APP-ANDROID
+  import ViewGroup from 'android.view.ViewGroup';
+  // #endif
+
+  type DataType = {
+    videoContext: VideoContext | null;
+    // 属性
+    src: string;
+    autoplay: boolean;
+    loop: boolean;
+    muted: boolean;
+    initialTime: number;
+    duration: number;
+    controls: boolean;
+    danmuList: Array<Danmu>;
+    danmuBtn: boolean;
+    enableDanmu: boolean;
+    pageGesture: boolean;
+    direction: number;
+    directionItemTypes: ItemType[];
+    directionItems: number[];
+    showProgress: boolean;
+    showFullscreenBtn: boolean;
+    showPlayBtn: boolean;
+    showCenterPlayBtn: boolean;
+    showLoading: boolean;
+    enableProgressGesture: boolean;
+    objectFit: string;
+    objectFitItemTypes: ItemType[];
+    objectFitItems: string[];
+    poster: string;
+    showMuteBtn: boolean;
+    title: string;
+    enablePlayGesture: boolean;
+    vslideGesture: boolean;
+    vslideGestureInFullscreen: boolean;
+    codec: string;
+    codecItemTypes: ItemType[];
+    codecItems: string[];
+    httpCache: boolean;
+    playStrategy: number;
+    playStrategyItemTypes: ItemType[];
+    playStrategyItems: number[];
+    header: UTSJSONObject;
+    // API
+    pos: number;
+    requestFullScreenOptions: RequestFullScreenOptions | null;
+    danmu: Danmu;
+    rate: number;
+    rateItemTypes: ItemType[];
+    rateItems: number[];
+    subCompEnable: boolean;
+    subCompControlsEnable: boolean;
+    subCompShow: boolean;
+    subCompControlsShow: boolean;
+    curPos: number;
+    endPos: number;
+    // 自动化测试
+    autoTest: boolean;
+    isPlaying: boolean;
+    isPause: boolean;
+    isError: boolean;
+    eventPlay: UTSJSONObject | null;
+    eventPause: UTSJSONObject | null;
+    eventEnded: UTSJSONObject | null;
+    eventTimeupdate: UTSJSONObject | null;
+    eventFullscreenchange: UTSJSONObject | null;
+    eventWaiting: UTSJSONObject | null;
+    eventError: UTSJSONObject | null;
+    eventProgress: UTSJSONObject | null;
+    eventFullscreenclick: UTSJSONObject | null;
+    eventControlstoggle: UTSJSONObject | null;
+    dialogPageVideo: UniPage | null;
+  }
+
+  const ICON_PLAY = '\uea24';
+  const ICON_PAUSH = '\uea25';
+  const ICON_DANMU = '\uea26';
+  const ICON_DANMU_ACTIVE = '\uea27';
+  const ICON_VOLUME = '\uea30';
+  const ICON_VOLUME_MUTE = '\uea31';
+
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    videoContext: null,
+    // 属性
+    src: "https://web-ext-storage.dcloud.net.cn/video/sample/2minute-demo.mp4",
+    autoplay: false,
+    loop: false,
+    muted: false,
+    initialTime: 0,
+    duration: 0,
+    controls: true,
+    danmuList: [{
+      text: '要显示的文本',
+      color: '#FF0000',
+      time: 3
+    }, {
+      text: '要显示的文本2',
+      color: '#31ff23',
+      time: 5
+    }, {
+      text: '要显示的文本3',
+      color: '#f13ef8',
+      time: 7
+    }, {
+      text: '要显示的文本4',
+      color: '#4972f8',
+      time: 9
+    }, {
+      text: '要显示的文本5',
+      color: '#000000',
+      time: 11
+    }],
+    danmuBtn: false,
+    enableDanmu: true,
+    pageGesture: false,
+    direction: -1,
+    directionItemTypes: [{ "value": 0, "name": "0(正常竖向)" }, { "value": 1, "name": "90(屏幕逆时针90度)" }, { "value": 2, "name": "-90(屏幕顺时针90度)" }],
+    directionItems: [0, 90, -90],
+    showProgress: true,
+    showFullscreenBtn: true,
+    showPlayBtn: true,
+    showCenterPlayBtn: true,
+    showLoading: true,
+    enableProgressGesture: true,
+    objectFit: "contain",
+    objectFitItemTypes: [{ "value": 0, "name": "contain(包含)" }, { "value": 1, "name": "fill(填充)" }, { "value": 2, "name": "cover(覆盖)" }],
+    objectFitItems: ["contain", "fill", "cover"],
+    poster: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-android.png",
+    showMuteBtn: false,
+    title: "video-component",
+    enablePlayGesture: false,
+    vslideGesture: false,
+    vslideGestureInFullscreen: true,
+    codec: "hardware",
+    codecItemTypes: [{ "value": 0, "name": "hardware(硬解码)" }, { "value": 1, "name": "software(软解码)" }],
+    codecItems: ["hardware", "software"],
+    httpCache: true,
+    playStrategy: 0,
+    playStrategyItemTypes: [{ "value": 0, "name": "0(普通模式)" }, { "value": 1, "name": "1(平滑播放模式)" }, { "value": 2, "name": "2(M3U8优化模式)" }],
+    playStrategyItems: [0, 1, 2],
+    header: {
+      'User-Agent': 'User-Agent test',
+      'header': 'header test',
+      'cookie': 'cookie test'
+    },
+    // API
+    pos: 0,
+    requestFullScreenOptions: null,
+    danmu: {
+      text: '要显示的文本',
+      color: '#FF0000'
+    },
+    rate: 1,
+    rateItemTypes: [{ "value": 0, "name": "0.5" }, { "value": 1, "name": "0.8" }, { "value": 2, "name": "1.0" }, { "value": 3, "name": "1.25" }, { "value": 4, "name": "1.5" }],
+    rateItems: [0.5, 0.8, 1.0, 1.25, 1.5],
+    subCompEnable: false,
+    subCompControlsEnable: false,
+    subCompShow: false,
+    subCompControlsShow: false,
+    curPos: 0,
+    endPos: 0,
+    // 自动化测试
+    autoTest: false,
+    isPlaying: false,
+    isPause: false,
+    isError: false,
+    eventPlay: null,
+    eventPause: null,
+    eventEnded: null,
+    eventTimeupdate: null,
+    eventFullscreenchange: null,
+    eventWaiting: null,
+    eventError: null,
+    eventProgress: null,
+    eventFullscreenclick: null,
+    eventControlstoggle: null,
+    dialogPageVideo: null
+  } as DataType)
+
+  onReady(() => {
+    data.videoContext = uni.createVideoContext('video');
+    // data.videoContext = uni.createVideoContext('video', this);
+  })
+
+  const pause = () => {
+    console.log("pause");
+    // #ifdef MP || WEB
+    data.videoContext?.pause();
+    // #endif
+    // #ifdef APP
+    (uni.getElementById("video") as UniVideoElement).pause(); //as写法测试。注意id不对时as会崩溃
+    // #endif
+  }
+
+  const openDialogPageVideo = () => {
+    pause()
+    data.dialogPageVideo = uni.openDialogPage({
+      url: '/pages/component/video/video-dialog-page'
+    })
+  }
+
+  const closeDialogPageVideo = () => {
+    uni.closeDialogPage({
+      dialogPage: data.dialogPageVideo
+    })
+  }
+
+  // API
+  const play = () => {
+    console.log("play");
+    data.videoContext?.play();
+  }
+
+  const seek = (pos : number) => {
+    console.log("seek -> " + pos);
+    data.videoContext?.seek(pos);
+  }
+
+  const onSeekInput = (event : UniInputEvent) => {
+    data.pos = parseInt(event.detail.value);
+  }
+
+  const requestFullScreen = () => {
+    console.log("requestFullScreen -> " + data.requestFullScreenOptions);
+    data.videoContext?.requestFullScreen(data.requestFullScreenOptions);
+  }
+
+  const exitFullScreen = () => {
+    console.log("exitFullScreen");
+    data.videoContext?.exitFullScreen();
+  }
+
+  const stop = () => {
+    console.log("stop");
+    // #ifdef MP
+    data.videoContext?.stop();
+    // #endif
+    // #ifndef MP
+    uni.getElementById<UniVideoElement>("video")?.stop(); //泛型写法测试
+    // #endif
+  }
+
+  const sendDanmu = () => {
+    console.log("sendDanmu -> " + data.danmu);
+    data.videoContext?.sendDanmu(data.danmu);
+  }
+
+  const onSendDanmuInput = (event : UniInputEvent) => {
+    let json = JSON.parse<Danmu>(event.detail.value)
+    if (json == null) return;
+    data.danmu = json as Danmu;
+  }
+
+  const playbackRate = () => {
+    console.log("playbackRate -> " + data.rate);
+    data.videoContext?.playbackRate(data.rate);
+  }
+
+  const onPlaybackRateChange = (value : number) => {
+    data.rate = data.rateItems[value];
+  }
+
+  const togglePlay = () => {
+    if (data.isPlaying) {
+      pause();
+    } else {
+      play();
+    }
+  }
+
+  const toggleDanmu = () => {
+    data.enableDanmu = !data.enableDanmu;
+  }
+
+  const toggleMute = () => {
+    data.muted = !data.muted;
+  }
+
+  const fastBackward = () => {
+    let posValue = data.curPos - 15;
+    if (posValue < 0) posValue = 0;
+    seek(posValue);
+  }
+
+  const fastForward = () => {
+    let posValue = data.curPos + 15;
+    if (posValue > data.endPos) posValue = data.endPos;
+    seek(posValue);
+  }
+
+  const onSendDanmuConfirm = (event : UniInputConfirmEvent) => {
+    data.videoContext?.sendDanmu({
+      text: event.detail.value,
+      color: '#ff0000'
+    } as Danmu);
+  }
+
+  const onSendDanmuKeyboardHeightChange = (event : UniInputKeyboardHeightChangeEvent) => {
+    const element = uni.getElementById('input-send-danmu') as UniElement;
+    if (event.detail.height.toInt() == 0) {
+      element.style.setProperty('bottom', '50px');
+    } else {
+      element.style.setProperty('bottom', event.detail.height + element.getBoundingClientRect().height);
+    }
+  }
+
+  const onSendDanmuBlur = (_ : UniInputBlurEvent) => {
+    (uni.getElementById('input-send-danmu') as UniElement).style.setProperty('bottom', '50px');
+  }
+
+  // 属性
+  const onSrcComfirm = (event : UniInputConfirmEvent) => {
+    let value = event.detail.value;
+    if (value == '') return;
+    data.src = value;
+    console.log("src -> " + data.src)
+  }
+
+  const onAutoplayChange = (value : boolean) => {
+    data.autoplay = value;
+    console.log("autoplay -> " + data.autoplay)
+  }
+
+  const onLoopChange = (value : boolean) => {
+    data.loop = value;
+    console.log("loop -> " + data.loop)
+  }
+
+  const onMutedChange = (value : boolean) => {
+    data.muted = value;
+    console.log("muted -> " + data.muted)
+  }
+
+  const onInitialTimeComfirm = (event : UniInputConfirmEvent) => {
+    let value = parseInt(event.detail.value)
+    if (isNaN(value)) value = 0;
+    data.initialTime = value;
+    console.log("initialTime -> " + data.initialTime)
+  }
+
+  const onDurationComfirm = (event : UniInputConfirmEvent) => {
+    let value = parseInt(event.detail.value)
+    if (isNaN(value)) value = 0;
+    data.duration = value;
+    console.log("duration -> " + data.duration)
+  }
+
+  const onControlsChange = (value : boolean) => {
+    data.controls = value;
+    console.log("controls -> " + data.controls)
+  }
+
+  const onEnableDanmuChange = (value : boolean) => {
+    data.enableDanmu = value;
+    console.log("enableDanmu -> " + data.enableDanmu)
+  }
+
+  const onDanmuBtnChange = (value : boolean) => {
+    data.danmuBtn = value;
+    console.log("danmuBtn -> " + data.danmuBtn)
+  }
+
+  const onPageGestureChange = (value : boolean) => {
+    data.pageGesture = value;
+    console.log("pageGesture -> " + data.pageGesture)
+  }
+
+  const onRequestFullScreenDirectionChange = (value : number) => {
+    let directionValue = data.directionItems[value];
+    data.requestFullScreenOptions = {
+      direction: directionValue
+    } as RequestFullScreenOptions;
+  }
+
+  const onShowProgressChange = (value : boolean) => {
+    data.showProgress = value;
+    console.log("showProgress -> " + data.showProgress)
+  }
+
+  const onShowFullscreenBtnChange = (value : boolean) => {
+    data.showFullscreenBtn = value;
+    console.log("showFullscreenBtn -> " + data.showFullscreenBtn)
+  }
+
+  const onShowPlayBtnChange = (value : boolean) => {
+    data.showPlayBtn = value;
+    console.log("showPlayBtn -> " + data.showPlayBtn)
+  }
+
+  const onShowCenterPlayBtnChange = (value : boolean) => {
+    data.showCenterPlayBtn = value;
+    console.log("showCenterPlayBtn -> " + data.showCenterPlayBtn)
+  }
+
+  const onShowLoadingChange = (value : boolean) => {
+    data.showLoading = value;
+    console.log("showLoading -> " + data.showLoading)
+  }
+
+  const onEnableProgressGestureChange = (value : boolean) => {
+    data.enableProgressGesture = value;
+    console.log("enableProgressGesture -> " + data.enableProgressGesture)
+  }
+
+  const onObjectFitChange = (value : number) => {
+    data.objectFit = data.objectFitItems[value];
+    console.log("objectFit -> " + data.objectFit)
+  }
+
+  const onPosterComfirm = (event : UniInputConfirmEvent) => {
+    let value = event.detail.value;
+    if (value == '') return;
+    data.poster = value;
+    console.log("poster -> " + data.poster)
+  }
+
+  const onShowMuteBtnChange = (value : boolean) => {
+    data.showMuteBtn = value;
+    console.log("showMuteBtn -> " + data.showMuteBtn)
+  }
+
+  const onTitleComfirm = (event : UniInputConfirmEvent) => {
+    let value = event.detail.value;
+    if (value == '') return;
+    data.title = value;
+    console.log("title -> " + data.title)
+  }
+
+  const onEnablePlayGestureChange = (value : boolean) => {
+    data.enablePlayGesture = value;
+    console.log("enablePlayGesture -> " + data.enablePlayGesture)
+  }
+
+  const onVslideGestureChange = (value : boolean) => {
+    data.vslideGesture = value;
+    console.log("vslideGesture -> " + data.vslideGesture)
+  }
+
+  const onVslideGestureInFullscreenChange = (value : boolean) => {
+    data.vslideGestureInFullscreen = value;
+    console.log("vslideGestureInFullscreen -> " + data.vslideGestureInFullscreen)
+  }
+
+  const onCodecChange = (value : number) => {
+    data.codec = data.codecItems[value];
+    console.log("codec -> " + data.codec)
+  }
+
+  const onHttpCacheChange = (value : boolean) => {
+    data.httpCache = value;
+    console.log("httpCache -> " + data.httpCache)
+  }
+
+  const onPlayStrategyChange = (value : number) => {
+    data.playStrategy = data.playStrategyItems[value];
+    console.log("playStrategy -> " + data.playStrategy)
+  }
+
+  const onHeaderComfirm = (event : UniInputConfirmEvent) => {
+    let json = JSON.parse(event.detail.value)
+    if (json == null) return;
+    data.header = json as UTSJSONObject;
+    console.log("header -> " + JSON.stringify(data.header))
+  }
+
+  const onSubCompEnableChange = (event : UniSwitchChangeEvent) => {
+    data.subCompEnable = event.detail.value;
+  }
+
+  function onSubCompControlsEnable(event: UniSwitchChangeEvent) {
+    data.subCompControlsEnable = event.detail.value;
+  }
+
+  const isHorizontalFullscreen = ref(false)
+  const fullscreenShowPlayBtn = ref(data.showPlayBtn)
+  const fullscreenShowMuteBtn = ref(data.showMuteBtn)
+  const fullscreenShowFullscreenBtn = ref(data.showFullscreenBtn)
+  const fullscreenShowDanmuBtn = ref(data.danmuBtn)
+  watchEffect(() => {
+    data.subCompControlsShow = isHorizontalFullscreen.value && data.subCompControlsEnable
+    // 当全屏显示自定义 controls 时，不显示 video 组件原本 controls 按钮
+    fullscreenShowPlayBtn.value = !data.subCompControlsShow
+    fullscreenShowMuteBtn.value = !data.subCompControlsShow
+    fullscreenShowFullscreenBtn.value = !data.subCompControlsShow // 不显示全屏按钮，返回手势或者右上角退出全屏
+    fullscreenShowDanmuBtn.value = !data.subCompControlsShow
+  })
+
+  // 事件
+  const onPlay = (res : UniEvent) => {
+    console.log(res.type);
+    data.isPlaying = true;
+    data.isPause = false;
+    if (data.autoTest) {
+      data.eventPlay = {
+        "tagName": res.target?.tagName,
+        "type": res.type
+      };
+    }
+  }
+
+  const onPause = (res : UniEvent) => {
+    console.log(res.type);
+    data.isPlaying = false;
+    data.isPause = true;
+    if (data.autoTest) {
+      data.eventPause = {
+        "tagName": res.target?.tagName,
+        "type": res.type
+      };
+    }
+  }
+
+  const onEnded = (res : UniEvent) => {
+    console.log(res.type);
+    if (data.autoTest) {
+      data.eventEnded = {
+        "tagName": res.target?.tagName,
+        "type": res.type
+      };
+    }
+  }
+
+  const onTimeUpdate = (res : UniVideoTimeUpdateEvent) => {
+    console.log(res.type + " -> " + JSON.stringify(res.detail));
+    data.curPos = res.detail.currentTime;
+    data.endPos = res.detail.duration;
+    if (data.autoTest) {
+      data.eventTimeupdate = {
+        "tagName": res.target?.tagName,
+        "type": res.type,
+        "currentTime": Math.trunc(res.detail.currentTime),
+        "duration": Math.trunc(res.detail.duration)
+      };
+    }
+  }
+
+  const onFullScreenChange = (res : UniVideoFullScreenChangeEvent) => {
+    const detail = res.detail
+    console.log(res.type + " -> " + JSON.stringify(detail));
+    data.subCompShow = detail.fullScreen;
+    isHorizontalFullscreen.value = detail.fullScreen && detail.direction === 'horizontal'
+    if (data.autoTest) {
+      data.eventFullscreenchange = {
+        "tagName": res.target?.tagName,
+        "type": res.type,
+        "fullScreen": res.detail.fullScreen,
+        "direction": res.detail.direction
+      };
+    }
+  }
+
+  const onWaiting = (res : UniEvent) => {
+    console.log(res.type);
+    if (data.autoTest) {
+      data.eventWaiting = {
+        "tagName": res.target?.tagName,
+        "type": res.type
+      };
+    }
+  }
+
+  const onError = (res : UniVideoErrorEvent) => {
+    console.log(res.type + " -> " + JSON.stringify(res.detail));
+    data.isError = true;
+    if (data.autoTest) {
+      data.eventError = {
+        "tagName": res.target?.tagName,
+        "type": res.type,
+        "errCode": res.detail.errCode
+      };
+    }
+  }
+
+  const onProgress = (res : UniVideoProgressEvent) => {
+    console.log(res.type + " -> " + JSON.stringify(res.detail));
+    if (data.autoTest) {
+      data.eventProgress = {
+        "tagName": res.target?.tagName,
+        "type": res.type,
+        "isBufferedValid": res.detail.buffered >= 0
+      };
+    }
+  }
+
+  const onFullScreenClick = (res : UniVideoFullScreenClickEvent) => {
+    console.log(res.type + " -> " + JSON.stringify(res.detail));
+    if (data.autoTest) {
+      data.eventFullscreenclick = {
+        "tagName": res.target?.tagName,
+        "type": res.type,
+        "screenX": Math.trunc(res.detail.screenX),
+        "screenY": Math.trunc(res.detail.screenY),
+        "screenWidth": Math.trunc(res.detail.screenWidth),
+        "screenHeight": Math.trunc(res.detail.screenHeight)
+      };
+    }
+  }
+
+  const onControlsToggle = (res : UniVideoControlsToggleEvent) => {
+    console.log(res.type + " -> " + JSON.stringify(res.detail));
+    if (data.autoTest) {
+      data.eventControlstoggle = {
+        "tagName": res.target?.tagName,
+        "type": res.type,
+        "show": res.detail.show
+      };
+    }
+  }
+
+  // 自动化测试
+  const downloadSource = () => {
+    uni.downloadFile({
+      url: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
+      success: (res) => {
+        data.src = res.tempFilePath;
+      },
+      fail: (_) => {
+        data.isError = true;
+      }
+    })
+  }
+
+  const getWindowInfo = () : GetWindowInfoResult => {
+    return uni.getWindowInfo();
+  }
+
+  // #ifdef APP-ANDROID
+  const hasSubComponent = () : boolean => {
+    const view = uni.getElementById('video')?.getAndroidView<ViewGroup>();
+    return view == null ? false : view.getChildAt(0) instanceof ViewGroup;
+  }
+  // #endif
+
+  const requestVerticalFullScreen = () => {
+    data.videoContext?.requestFullScreen({
+      direction: 0
+    } as RequestFullScreenOptions);
+  }
+
+  defineExpose({
+    data,
+    play,
+    pause,
+    downloadSource,
+    seek,
+    requestFullScreen,
+    exitFullScreen,
+    // #ifdef APP-ANDROID
+    hasSubComponent,
+    // #endif
+    requestVerticalFullScreen,
+    openDialogPageVideo,
+    closeDialogPageVideo,
+    getWindowInfo
+  })
+</script>
+
+<style>
+  .video {
+    width: 100%;
+    height: 200px;
+  }
+
+  .input {
+    height: 40px;
+    background: #FFF;
+    padding: 8px 13px;
+  }
+
+  .margin-10 {
+    margin: 10px;
+  }
+
+  .img-fast-backward {
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    left: 12%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+  }
+
+  .img-fast-forward {
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    right: 12%;
+    transform: translate(50%, -50%);
+    position: absolute;
+  }
+
+  .input-send-danmu {
+    height: 40px;
+    padding: 8px 13px;
+    margin: 0 var(--status-bar-height);
+    bottom: 100px;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #FFF;
+  }
+
+  .video-fullscreen_controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    height: 50px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .control-btn {
+    width: 60px;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: 0 15px;
+  }
+
+  .control-icon {
+    font-family: 'uni-video-icon';
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+  }
+</style>

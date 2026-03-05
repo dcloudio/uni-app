@@ -1,0 +1,122 @@
+<template>
+  <view class="left-window-style" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+    <view class="second-menu">
+      <keep-alive>
+        <component :is="active" :hasLeftWin="hasLeftWin" :leftWinActive="leftWinActive"></component>
+      </keep-alive>
+    </view>
+  </view>
+</template>
+
+<script lang="uts">
+  import componentPage from '@/pages/tabBar/component.uvue'
+  import API from '@/pages/tabBar/API.uvue'
+  import CSS from '@/pages/tabBar/CSS.uvue'
+  import templatePage from '@/pages/tabBar/template.uvue'
+  import { state, setMatchLeftWindow, setActive, setLeftWinActive } from '@/store/index.uts'
+  let isPcObserver
+  export default {
+    data() {
+      return {
+        nav: [
+          'component',
+          'API',
+          'CSS',
+          'template'
+        ],
+        isPC: false
+      }
+    },
+    components: {
+      componentPage,
+      API,
+      CSS,
+      templatePage
+    },
+    computed: {
+      active() : string {
+        return state.active
+      },
+      hasLeftWin() : boolean {
+        return !state.noMatchLeftWindow
+      },
+      leftWinActive() : string {
+        return state.leftWinActive.split('/')[3]
+      },
+      isDarkMode() : boolean {
+        return state.isDarkMode
+      }
+    },
+    mounted() {
+      isPcObserver = uni.createMediaQueryObserver(this)
+      isPcObserver.observe({
+        minWidth: 768
+      }, matched => {
+        this.isPC = matched
+      })
+      this.handlerRoute((this as any).$route)
+    },
+    unmounted() {
+      isPcObserver.disconnect()
+    },
+    watch: {
+      isPC: {
+        immediate: true,
+        handler(newMatches : boolean) {
+          setMatchLeftWindow(newMatches)
+        }
+      },
+      $route(newRoute) {
+        this.handlerRoute(newRoute)
+      }
+    },
+    methods: {
+      handlerRoute(newRoute) {
+        if (this.isPC) {
+          if (!newRoute.matched.length) {
+            uni.redirectTo({
+              url: '/pages/error/404'
+            })
+          } else {
+            // 检查是否为首页
+            let isHome = newRoute.path === '/' && newRoute.meta?.route === 'pages/tabBar/component'
+            if (isHome) {
+              // 自动跳转到第一个子页面
+              const defaultPage = '/pages/component/view/view'
+              setLeftWinActive(defaultPage)
+              setActive('componentPage')
+              uni.redirectTo({ url: defaultPage })
+              return
+            }
+
+            setLeftWinActive(newRoute.path)
+            let active = newRoute.path.split('/')[2]
+            if (!active && newRoute.meta?.route) {
+              active = newRoute.meta.route.split('/')[2]
+            }
+            if (this.nav.includes(active)) {
+              if (active === 'component') {
+                active = 'componentPage'
+              }
+              if (active === 'template') {
+                active = 'templatePage'
+              }
+              setActive(active)
+            }
+          }
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  .left-window-style {
+    min-height: calc(100vh - var(--top-window-height));
+    background-color: var(--background-color,#ffffff);
+  }
+  .second-menu {
+    width: 350px;
+    background-color: #F8F8F8;
+  }
+</style>

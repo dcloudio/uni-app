@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>《隐私政策》</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+    <style>
+      body {
+        margin: 0;
+      }
+
+      #markdown-body {
+        padding: 10px;
+      }
+
+      @media screen and (max-width: 750px) {
+        #mobile {
+          display: none !important;
+        }
+      }
+    </style>
+    <script type="text/javascript">
+      var QRCode;
+      ! function() {
+        function a(a) {
+          this.mode = c.MODE_8BIT_BYTE, this.data = a, this.parsedData = [];
+          for (var b = [], d = 0, e = this.data.length; e > d; d++) {
+            var f = this.data.charCodeAt(d);
+            f > 65536 ? (b[0] = 240 | (1835008 & f) >>> 18, b[1] = 128 | (258048 & f) >>> 12, b[2] = 128 | (4032 &
+                f) >>> 6, b[3] = 128 | 63 & f) : f > 2048 ? (b[0] = 224 | (61440 & f) >>> 12, b[1] = 128 | (4032 &
+                f) >>> 6, b[2] = 128 | 63 & f) : f > 128 ? (b[0] = 192 | (1984 & f) >>> 6, b[1] = 128 | 63 & f) : b[0] =
+              f, this.parsedData = this.parsedData.concat(b)
+          }
+          this.parsedData.length != this.data.length && (this.parsedData.unshift(191), this.parsedData.unshift(187),
+            this.parsedData.unshift(239))
+        }
+
+        function b(a, b) {
+          this.typeNumber = a, this.errorCorrectLevel = b, this.modules = null, this.moduleCount = 0, this.dataCache =
+            null, this.dataList = []
+        }
+
+        function i(a, b) {
+          if (void 0 == a.length) throw new Error(a.length + "/" + b);
+          for (var c = 0; c < a.length && 0 == a[c];) c++;
+          this.num = new Array(a.length - c + b);
+          for (var d = 0; d < a.length - c; d++) this.num[d] = a[d + c]
+        }
+
+        function j(a, b) {
+          this.totalCount = a, this.dataCount = b
+        }
+
+        function k() {
+          this.buffer = [], this.length = 0
+        }
+
+        function m() {
+          return "undefined" != typeof CanvasRenderingContext2D
+        }
+
+        function n() {
+          var a = !1,
+            b = navigator.userAgent;
+          return /android/i.test(b) && (a = !0, aMat = b.toString().match(/android ([0-9].[0-9])/i), aMat && aMat[1] &&
+            (a = parseFloat(aMat[1]))), a
+        }
+
+        function r(a, b) {
+          for (var c = 1, e = s(a), f = 0, g = l.length; g >= f; f++) {
+            var h = 0;
+            switch (b) {
+              case d.L:
+                h = l[f][0];
+                break;
+              case d.M:
+                h = l[f][1];
+                break;
+              case d.Q:
+                h = l[f][2];
+                break;
+              case d.H:
+                h = l[f][3]
+            }
+            if (h >= e) break;
+            c++
+          }
+          if (c > l.length) throw new Error("Too long data");
+          return c
+        }
+
+        function s(a) {
+          var b = encodeURI(a).toString().replace(/%[0-9a-fA-F]{2}/g, "a");
+          return b.length + (b.length != a ? 3 : 0)
+        }
+        a.prototype = {
+          getLength: function() {
+            return this.parsedData.length
+          },
+          write: function(a) {
+            for (var b = 0, c = this.parsedData.length; c > b; b++) a.put(this.parsedData[b], 8)
+          }
+        }, b.prototype = {
+          addData: function(b) {
+            var c = new a(b);
+            this.dataList.push(c), this.dataCache = null
+          },
+          isDark: function(a, b) {
+            if (0 > a || this.moduleCount <= a || 0 > b || this.moduleCount <= b) throw new Error(a + "," + b);
+            return this.modules[a][b]
+          },
+          getModuleCount: function() {
+            return this.moduleCount
+          },
+          make: function() {
+            this.makeImpl(!1, this.getBestMaskPattern())
+          },
+          makeImpl: function(a, c) {
+            this.moduleCount = 4 * this.typeNumber + 17, this.modules = new Array(this.moduleCount);
+            for (var d = 0; d < this.moduleCount; d++) {
+              this.modules[d] = new Array(this.moduleCount);
+              for (var e = 0; e < this.moduleCount; e++) this.modules[d][e] = null
+            }
+            this.setupPositionProbePattern(0, 0), this.setupPositionProbePattern(this.moduleCount - 7, 0), this
+              .setupPositionProbePattern(0, this.moduleCount - 7), this.setupPositionAdjustPattern(), this
+              .setupTimingPattern(), this.setupTypeInfo(a, c), this.typeNumber >= 7 && this.setupTypeNumber(a),
+              null == this.dataCache && (this.dataCache = b.createData(this.typeNumber, this.errorCorrectLevel, this
+                .dataList)), this.mapData(this.dataCache, c)
+          },
+          setupPositionProbePattern: function(a, b) {
+            for (var c = -1; 7 >= c; c++)
+              if (!(-1 >= a + c || this.moduleCount <= a + c))
+                for (var d = -1; 7 >= d; d++) - 1 >= b + d || this.moduleCount <= b + d || (this.modules[a + c][b +
+                    d
+                  ] = c >= 0 && 6 >= c && (0 == d || 6 == d) || d >= 0 && 6 >= d && (0 == c || 6 == c) || c >=
+                  2 && 4 >= c && d >= 2 && 4 >= d ? !0 : !1)
+          },
+          getBestMaskPattern: function() {
+            for (var a = 0, b = 0, c = 0; 8 > c; c++) {
+              this.makeImpl(!0, c);
+              var d = f.getLostPoint(this);
+              (0 == c || a > d) && (a = d, b = c)
+            }
+            return b
+          },
+          createMovieClip: function(a, b, c) {
+            var d = a.createEmptyMovieClip(b, c),
+              e = 1;
+            this.make();
+            for (var f = 0; f < this.modules.length; f++)
+              for (var g = f * e, h = 0; h < this.modules[f].length; h++) {
+                var i = h * e,
+                  j = this.modules[f][h];
+                j && (d.beginFill(0, 100), d.moveTo(i, g), d.lineTo(i + e, g), d.lineTo(i + e, g + e), d.lineTo(i,
+                  g + e), d.endFill())
+              }
+            return d
+          },
+          setupTimingPattern: function() {
+            for (var a = 8; a < this.moduleCount - 8; a++) null == this.modules[a][6] && (this.modules[a][6] = 0 ==
+              a % 2);
+            for (var b = 8; b < this.moduleCount - 8; b++) null == this.modules[6][b] && (this.modules[6][b] = 0 ==
+              b % 2)
+          },
+          setupPositionAdjustPattern: function() {
+            for (var a = f.getPatternPosition(this.typeNumber), b = 0; b < a.length; b++)
+              for (var c = 0; c < a.length; c++) {
+                var d = a[b],
+                  e = a[c];
+                if (null == this.modules[d][e])
+                  for (var g = -2; 2 >= g; g++)
+                    for (var h = -2; 2 >= h; h++) this.modules[d + g][e + h] = -2 == g || 2 == g || -2 == h || 2 ==
+                      h || 0 == g && 0 == h ? !0 : !1
+              }
+          },
+          setupTypeNumber: function(a) {
+            for (var b = f.getBCHTypeNumber(this.typeNumber), c = 0; 18 > c; c++) {
+              var d = !a && 1 == (1 & b >> c);
+              this.modules[Math.floor(c / 3)][c % 3 + this.moduleCount - 8 - 3] = d
+            }
+            for (var c = 0; 18 > c; c++) {
+              var d = !a && 1 == (1 & b >> c);
+              this.modules[c % 3 + this.moduleCount - 8 - 3][Math.floor(c / 3)] = d
+            }
+          },
+          setupTypeInfo: function(a, b) {
+            for (var c = this.errorCorrectLevel << 3 | b, d = f.getBCHTypeInfo(c), e = 0; 15 > e; e++) {
+              var g = !a && 1 == (1 & d >> e);
+              6 > e ? this.modules[e][8] = g : 8 > e ? this.modules[e + 1][8] = g : this.modules[this.moduleCount -
+                15 + e][8] = g
+            }
+            for (var e = 0; 15 > e; e++) {
+              var g = !a && 1 == (1 & d >> e);
+              8 > e ? this.modules[8][this.moduleCount - e - 1] = g : 9 > e ? this.modules[8][15 - e - 1 + 1] = g :
+                this.modules[8][15 - e - 1] = g
+            }
+            this.modules[this.moduleCount - 8][8] = !a
+          },
+          mapData: function(a, b) {
+            for (var c = -1, d = this.moduleCount - 1, e = 7, g = 0, h = this.moduleCount - 1; h > 0; h -= 2)
+              for (6 == h && h--;;) {
+                for (var i = 0; 2 > i; i++)
+                  if (null == this.modules[d][h - i]) {
+                    var j = !1;
+                    g < a.length && (j = 1 == (1 & a[g] >>> e));
+                    var k = f.getMask(b, d, h - i);
+                    k && (j = !j), this.modules[d][h - i] = j, e--, -1 == e && (g++, e = 7)
+                  } if (d += c, 0 > d || this.moduleCount <= d) {
+                  d -= c, c = -c;
+                  break
+                }
+              }
+          }
+        }, b.PAD0 = 236, b.PAD1 = 17, b.createData = function(a, c, d) {
+          for (var e = j.getRSBlocks(a, c), g = new k, h = 0; h < d.length; h++) {
+            var i = d[h];
+            g.put(i.mode, 4), g.put(i.getLength(), f.getLengthInBits(i.mode, a)), i.write(g)
+          }
+          for (var l = 0, h = 0; h < e.length; h++) l += e[h].dataCount;
+          if (g.getLengthInBits() > 8 * l) throw new Error("code length overflow. (" + g.getLengthInBits() + ">" + 8 *
+            l + ")");
+          for (g.getLengthInBits() + 4 <= 8 * l && g.put(0, 4); 0 != g.getLengthInBits() % 8;) g.putBit(!1);
+          for (;;) {
+            if (g.getLengthInBits() >= 8 * l) break;
+            if (g.put(b.PAD0, 8), g.getLengthInBits() >= 8 * l) break;
+            g.put(b.PAD1, 8)
+          }
+          return b.createBytes(g, e)
+        }, b.createBytes = function(a, b) {
+          for (var c = 0, d = 0, e = 0, g = new Array(b.length), h = new Array(b.length), j = 0; j < b.length; j++) {
+            var k = b[j].dataCount,
+              l = b[j].totalCount - k;
+            d = Math.max(d, k), e = Math.max(e, l), g[j] = new Array(k);
+            for (var m = 0; m < g[j].length; m++) g[j][m] = 255 & a.buffer[m + c];
+            c += k;
+            var n = f.getErrorCorrectPolynomial(l),
+              o = new i(g[j], n.getLength() - 1),
+              p = o.mod(n);
+            h[j] = new Array(n.getLength() - 1);
+            for (var m = 0; m < h[j].length; m++) {
+              var q = m + p.getLength() - h[j].length;
+              h[j][m] = q >= 0 ? p.get(q) : 0
+            }
+          }
+          for (var r = 0, m = 0; m < b.length; m++) r += b[m].totalCount;
+          for (var s = new Array(r), t = 0, m = 0; d > m; m++)
+            for (var j = 0; j < b.length; j++) m < g[j].length && (s[t++] = g[j][m]);
+          for (var m = 0; e > m; m++)
+            for (var j = 0; j < b.length; j++) m < h[j].length && (s[t++] = h[j][m]);
+          return s
+        };
+        for (var c = {
+            MODE_NUMBER: 1,
+            MODE_ALPHA_NUM: 2,
+            MODE_8BIT_BYTE: 4,
+            MODE_KANJI: 8
+          }, d = {
+            L: 1,
+            M: 0,
+            Q: 3,
+            H: 2
+          }, e = {
+            PATTERN000: 0,
+            PATTERN001: 1,
+            PATTERN010: 2,
+            PATTERN011: 3,
+            PATTERN100: 4,
+            PATTERN101: 5,
+            PATTERN110: 6,
+            PATTERN111: 7
+          }, f = {
+            PATTERN_POSITION_TABLE: [
+              [],
+              [6, 18],
+              [6, 22],
+              [6, 26],
+              [6, 30],
+              [6, 34],
+              [6, 22, 38],
+              [6, 24, 42],
+              [6, 26, 46],
+              [6, 28, 50],
+              [6, 30, 54],
+              [6, 32, 58],
+              [6, 34, 62],
+              [6, 26, 46, 66],
+              [6, 26, 48, 70],
+              [6, 26, 50, 74],
+              [6, 30, 54, 78],
+              [6, 30, 56, 82],
+              [6, 30, 58, 86],
+              [6, 34, 62, 90],
+              [6, 28, 50, 72, 94],
+              [6, 26, 50, 74, 98],
+              [6, 30, 54, 78, 102],
+              [6, 28, 54, 80, 106],
+              [6, 32, 58, 84, 110],
+              [6, 30, 58, 86, 114],
+              [6, 34, 62, 90, 118],
+              [6, 26, 50, 74, 98, 122],
+              [6, 30, 54, 78, 102, 126],
+              [6, 26, 52, 78, 104, 130],
+              [6, 30, 56, 82, 108, 134],
+              [6, 34, 60, 86, 112, 138],
+              [6, 30, 58, 86, 114, 142],
+              [6, 34, 62, 90, 118, 146],
+              [6, 30, 54, 78, 102, 126, 150],
+              [6, 24, 50, 76, 102, 128, 154],
+              [6, 28, 54, 80, 106, 132, 158],
+              [6, 32, 58, 84, 110, 136, 162],
+              [6, 26, 54, 82, 110, 138, 166],
+              [6, 30, 58, 86, 114, 142, 170]
+            ],
+            G15: 1335,
+            G18: 7973,
+            G15_MASK: 21522,
+            getBCHTypeInfo: function(a) {
+              for (var b = a << 10; f.getBCHDigit(b) - f.getBCHDigit(f.G15) >= 0;) b ^= f.G15 << f.getBCHDigit(b) -
+                f.getBCHDigit(f.G15);
+              return (a << 10 | b) ^ f.G15_MASK
+            },
+            getBCHTypeNumber: function(a) {
+              for (var b = a << 12; f.getBCHDigit(b) - f.getBCHDigit(f.G18) >= 0;) b ^= f.G18 << f.getBCHDigit(b) -
+                f.getBCHDigit(f.G18);
+              return a << 12 | b
+            },
+            getBCHDigit: function(a) {
+              for (var b = 0; 0 != a;) b++, a >>>= 1;
+              return b
+            },
+            getPatternPosition: function(a) {
+              return f.PATTERN_POSITION_TABLE[a - 1]
+            },
+            getMask: function(a, b, c) {
+              switch (a) {
+                case e.PATTERN000:
+                  return 0 == (b + c) % 2;
+                case e.PATTERN001:
+                  return 0 == b % 2;
+                case e.PATTERN010:
+                  return 0 == c % 3;
+                case e.PATTERN011:
+                  return 0 == (b + c) % 3;
+                case e.PATTERN100:
+                  return 0 == (Math.floor(b / 2) + Math.floor(c / 3)) % 2;
+                case e.PATTERN101:
+                  return 0 == b * c % 2 + b * c % 3;
+                case e.PATTERN110:
+                  return 0 == (b * c % 2 + b * c % 3) % 2;
+                case e.PATTERN111:
+                  return 0 == (b * c % 3 + (b + c) % 2) % 2;
+                default:
+                  throw new Error("bad maskPattern:" + a)
+              }
+            },
+            getErrorCorrectPolynomial: function(a) {
+              for (var b = new i([1], 0), c = 0; a > c; c++) b = b.multiply(new i([1, g.gexp(c)], 0));
+              return b
+            },
+            getLengthInBits: function(a, b) {
+              if (b >= 1 && 10 > b) switch (a) {
+                case c.MODE_NUMBER:
+                  return 10;
+                case c.MODE_ALPHA_NUM:
+                  return 9;
+                case c.MODE_8BIT_BYTE:
+                  return 8;
+                case c.MODE_KANJI:
+                  return 8;
+                default:
+                  throw new Error("mode:" + a)
+              } else if (27 > b) switch (a) {
+                case c.MODE_NUMBER:
+                  return 12;
+                case c.MODE_ALPHA_NUM:
+                  return 11;
+                case c.MODE_8BIT_BYTE:
+                  return 16;
+                case c.MODE_KANJI:
+                  return 10;
+                default:
+                  throw new Error("mode:" + a)
+              } else {
+                if (!(41 > b)) throw new Error("type:" + b);
+                switch (a) {
+                  case c.MODE_NUMBER:
+                    return 14;
+                  case c.MODE_ALPHA_NUM:
+                    return 13;
+                  case c.MODE_8BIT_BYTE:
+                    return 16;
+                  case c.MODE_KANJI:
+                    return 12;
+                  default:
+                    throw new Error("mode:" + a)
+                }
+              }
+            },
+            getLostPoint: function(a) {
+              for (var b = a.getModuleCount(), c = 0, d = 0; b > d; d++)
+                for (var e = 0; b > e; e++) {
+                  for (var f = 0, g = a.isDark(d, e), h = -1; 1 >= h; h++)
+                    if (!(0 > d + h || d + h >= b))
+                      for (var i = -1; 1 >= i; i++) 0 > e + i || e + i >= b || (0 != h || 0 != i) && g == a.isDark(
+                        d + h, e + i) && f++;
+                  f > 5 && (c += 3 + f - 5)
+                }
+              for (var d = 0; b - 1 > d; d++)
+                for (var e = 0; b - 1 > e; e++) {
+                  var j = 0;
+                  a.isDark(d, e) && j++, a.isDark(d + 1, e) && j++, a.isDark(d, e + 1) && j++, a.isDark(d + 1, e +
+                    1) && j++, (0 == j || 4 == j) && (c += 3)
+                }
+              for (var d = 0; b > d; d++)
+                for (var e = 0; b - 6 > e; e++) a.isDark(d, e) && !a.isDark(d, e + 1) && a.isDark(d, e + 2) && a
+                  .isDark(d, e + 3) && a.isDark(d, e + 4) && !a.isDark(d, e + 5) && a.isDark(d, e + 6) && (c += 40);
+              for (var e = 0; b > e; e++)
+                for (var d = 0; b - 6 > d; d++) a.isDark(d, e) && !a.isDark(d + 1, e) && a.isDark(d + 2, e) && a
+                  .isDark(d + 3, e) && a.isDark(d + 4, e) && !a.isDark(d + 5, e) && a.isDark(d + 6, e) && (c += 40);
+              for (var k = 0, e = 0; b > e; e++)
+                for (var d = 0; b > d; d++) a.isDark(d, e) && k++;
+              var l = Math.abs(100 * k / b / b - 50) / 5;
+              return c += 10 * l
+            }
+          }, g = {
+            glog: function(a) {
+              if (1 > a) throw new Error("glog(" + a + ")");
+              return g.LOG_TABLE[a]
+            },
+            gexp: function(a) {
+              for (; 0 > a;) a += 255;
+              for (; a >= 256;) a -= 255;
+              return g.EXP_TABLE[a]
+            },
+            EXP_TABLE: new Array(256),
+            LOG_TABLE: new Array(256)
+          }, h = 0; 8 > h; h++) g.EXP_TABLE[h] = 1 << h;
+        for (var h = 8; 256 > h; h++) g.EXP_TABLE[h] = g.EXP_TABLE[h - 4] ^ g.EXP_TABLE[h - 5] ^ g.EXP_TABLE[h - 6] ^ g
+          .EXP_TABLE[h - 8];
+        for (var h = 0; 255 > h; h++) g.LOG_TABLE[g.EXP_TABLE[h]] = h;
+        i.prototype = {
+          get: function(a) {
+            return this.num[a]
+          },
+          getLength: function() {
+            return this.num.length
+          },
+          multiply: function(a) {
+            for (var b = new Array(this.getLength() + a.getLength() - 1), c = 0; c < this.getLength(); c++)
+              for (var d = 0; d < a.getLength(); d++) b[c + d] ^= g.gexp(g.glog(this.get(c)) + g.glog(a.get(d)));
+            return new i(b, 0)
+          },
+          mod: function(a) {
+            if (this.getLength() - a.getLength() < 0) return this;
+            for (var b = g.glog(this.get(0)) - g.glog(a.get(0)), c = new Array(this.getLength()), d = 0; d < this
+              .getLength(); d++) c[d] = this.get(d);
+            for (var d = 0; d < a.getLength(); d++) c[d] ^= g.gexp(g.glog(a.get(d)) + b);
+            return new i(c, 0).mod(a)
+          }
+        }, j.RS_BLOCK_TABLE = [
+          [1, 26, 19],
+          [1, 26, 16],
+          [1, 26, 13],
+          [1, 26, 9],
+          [1, 44, 34],
+          [1, 44, 28],
+          [1, 44, 22],
+          [1, 44, 16],
+          [1, 70, 55],
+          [1, 70, 44],
+          [2, 35, 17],
+          [2, 35, 13],
+          [1, 100, 80],
+          [2, 50, 32],
+          [2, 50, 24],
+          [4, 25, 9],
+          [1, 134, 108],
+          [2, 67, 43],
+          [2, 33, 15, 2, 34, 16],
+          [2, 33, 11, 2, 34, 12],
+          [2, 86, 68],
+          [4, 43, 27],
+          [4, 43, 19],
+          [4, 43, 15],
+          [2, 98, 78],
+          [4, 49, 31],
+          [2, 32, 14, 4, 33, 15],
+          [4, 39, 13, 1, 40, 14],
+          [2, 121, 97],
+          [2, 60, 38, 2, 61, 39],
+          [4, 40, 18, 2, 41, 19],
+          [4, 40, 14, 2, 41, 15],
+          [2, 146, 116],
+          [3, 58, 36, 2, 59, 37],
+          [4, 36, 16, 4, 37, 17],
+          [4, 36, 12, 4, 37, 13],
+          [2, 86, 68, 2, 87, 69],
+          [4, 69, 43, 1, 70, 44],
+          [6, 43, 19, 2, 44, 20],
+          [6, 43, 15, 2, 44, 16],
+          [4, 101, 81],
+          [1, 80, 50, 4, 81, 51],
+          [4, 50, 22, 4, 51, 23],
+          [3, 36, 12, 8, 37, 13],
+          [2, 116, 92, 2, 117, 93],
+          [6, 58, 36, 2, 59, 37],
+          [4, 46, 20, 6, 47, 21],
+          [7, 42, 14, 4, 43, 15],
+          [4, 133, 107],
+          [8, 59, 37, 1, 60, 38],
+          [8, 44, 20, 4, 45, 21],
+          [12, 33, 11, 4, 34, 12],
+          [3, 145, 115, 1, 146, 116],
+          [4, 64, 40, 5, 65, 41],
+          [11, 36, 16, 5, 37, 17],
+          [11, 36, 12, 5, 37, 13],
+          [5, 109, 87, 1, 110, 88],
+          [5, 65, 41, 5, 66, 42],
+          [5, 54, 24, 7, 55, 25],
+          [11, 36, 12],
+          [5, 122, 98, 1, 123, 99],
+          [7, 73, 45, 3, 74, 46],
+          [15, 43, 19, 2, 44, 20],
+          [3, 45, 15, 13, 46, 16],
+          [1, 135, 107, 5, 136, 108],
+          [10, 74, 46, 1, 75, 47],
+          [1, 50, 22, 15, 51, 23],
+          [2, 42, 14, 17, 43, 15],
+          [5, 150, 120, 1, 151, 121],
+          [9, 69, 43, 4, 70, 44],
+          [17, 50, 22, 1, 51, 23],
+          [2, 42, 14, 19, 43, 15],
+          [3, 141, 113, 4, 142, 114],
+          [3, 70, 44, 11, 71, 45],
+          [17, 47, 21, 4, 48, 22],
+          [9, 39, 13, 16, 40, 14],
+          [3, 135, 107, 5, 136, 108],
+          [3, 67, 41, 13, 68, 42],
+          [15, 54, 24, 5, 55, 25],
+          [15, 43, 15, 10, 44, 16],
+          [4, 144, 116, 4, 145, 117],
+          [17, 68, 42],
+          [17, 50, 22, 6, 51, 23],
+          [19, 46, 16, 6, 47, 17],
+          [2, 139, 111, 7, 140, 112],
+          [17, 74, 46],
+          [7, 54, 24, 16, 55, 25],
+          [34, 37, 13],
+          [4, 151, 121, 5, 152, 122],
+          [4, 75, 47, 14, 76, 48],
+          [11, 54, 24, 14, 55, 25],
+          [16, 45, 15, 14, 46, 16],
+          [6, 147, 117, 4, 148, 118],
+          [6, 73, 45, 14, 74, 46],
+          [11, 54, 24, 16, 55, 25],
+          [30, 46, 16, 2, 47, 17],
+          [8, 132, 106, 4, 133, 107],
+          [8, 75, 47, 13, 76, 48],
+          [7, 54, 24, 22, 55, 25],
+          [22, 45, 15, 13, 46, 16],
+          [10, 142, 114, 2, 143, 115],
+          [19, 74, 46, 4, 75, 47],
+          [28, 50, 22, 6, 51, 23],
+          [33, 46, 16, 4, 47, 17],
+          [8, 152, 122, 4, 153, 123],
+          [22, 73, 45, 3, 74, 46],
+          [8, 53, 23, 26, 54, 24],
+          [12, 45, 15, 28, 46, 16],
+          [3, 147, 117, 10, 148, 118],
+          [3, 73, 45, 23, 74, 46],
+          [4, 54, 24, 31, 55, 25],
+          [11, 45, 15, 31, 46, 16],
+          [7, 146, 116, 7, 147, 117],
+          [21, 73, 45, 7, 74, 46],
+          [1, 53, 23, 37, 54, 24],
+          [19, 45, 15, 26, 46, 16],
+          [5, 145, 115, 10, 146, 116],
+          [19, 75, 47, 10, 76, 48],
+          [15, 54, 24, 25, 55, 25],
+          [23, 45, 15, 25, 46, 16],
+          [13, 145, 115, 3, 146, 116],
+          [2, 74, 46, 29, 75, 47],
+          [42, 54, 24, 1, 55, 25],
+          [23, 45, 15, 28, 46, 16],
+          [17, 145, 115],
+          [10, 74, 46, 23, 75, 47],
+          [10, 54, 24, 35, 55, 25],
+          [19, 45, 15, 35, 46, 16],
+          [17, 145, 115, 1, 146, 116],
+          [14, 74, 46, 21, 75, 47],
+          [29, 54, 24, 19, 55, 25],
+          [11, 45, 15, 46, 46, 16],
+          [13, 145, 115, 6, 146, 116],
+          [14, 74, 46, 23, 75, 47],
+          [44, 54, 24, 7, 55, 25],
+          [59, 46, 16, 1, 47, 17],
+          [12, 151, 121, 7, 152, 122],
+          [12, 75, 47, 26, 76, 48],
+          [39, 54, 24, 14, 55, 25],
+          [22, 45, 15, 41, 46, 16],
+          [6, 151, 121, 14, 152, 122],
+          [6, 75, 47, 34, 76, 48],
+          [46, 54, 24, 10, 55, 25],
+          [2, 45, 15, 64, 46, 16],
+          [17, 152, 122, 4, 153, 123],
+          [29, 74, 46, 14, 75, 47],
+          [49, 54, 24, 10, 55, 25],
+          [24, 45, 15, 46, 46, 16],
+          [4, 152, 122, 18, 153, 123],
+          [13, 74, 46, 32, 75, 47],
+          [48, 54, 24, 14, 55, 25],
+          [42, 45, 15, 32, 46, 16],
+          [20, 147, 117, 4, 148, 118],
+          [40, 75, 47, 7, 76, 48],
+          [43, 54, 24, 22, 55, 25],
+          [10, 45, 15, 67, 46, 16],
+          [19, 148, 118, 6, 149, 119],
+          [18, 75, 47, 31, 76, 48],
+          [34, 54, 24, 34, 55, 25],
+          [20, 45, 15, 61, 46, 16]
+        ], j.getRSBlocks = function(a, b) {
+          var c = j.getRsBlockTable(a, b);
+          if (void 0 == c) throw new Error("bad rs block @ typeNumber:" + a + "/errorCorrectLevel:" + b);
+          for (var d = c.length / 3, e = [], f = 0; d > f; f++)
+            for (var g = c[3 * f + 0], h = c[3 * f + 1], i = c[3 * f + 2], k = 0; g > k; k++) e.push(new j(h, i));
+          return e
+        }, j.getRsBlockTable = function(a, b) {
+          switch (b) {
+            case d.L:
+              return j.RS_BLOCK_TABLE[4 * (a - 1) + 0];
+            case d.M:
+              return j.RS_BLOCK_TABLE[4 * (a - 1) + 1];
+            case d.Q:
+              return j.RS_BLOCK_TABLE[4 * (a - 1) + 2];
+            case d.H:
+              return j.RS_BLOCK_TABLE[4 * (a - 1) + 3];
+            default:
+              return void 0
+          }
+        }, k.prototype = {
+          get: function(a) {
+            var b = Math.floor(a / 8);
+            return 1 == (1 & this.buffer[b] >>> 7 - a % 8)
+          },
+          put: function(a, b) {
+            for (var c = 0; b > c; c++) this.putBit(1 == (1 & a >>> b - c - 1))
+          },
+          getLengthInBits: function() {
+            return this.length
+          },
+          putBit: function(a) {
+            var b = Math.floor(this.length / 8);
+            this.buffer.length <= b && this.buffer.push(0), a && (this.buffer[b] |= 128 >>> this.length % 8), this
+              .length++
+          }
+        };
+        var l = [
+            [17, 14, 11, 7],
+            [32, 26, 20, 14],
+            [53, 42, 32, 24],
+            [78, 62, 46, 34],
+            [106, 84, 60, 44],
+            [134, 106, 74, 58],
+            [154, 122, 86, 64],
+            [192, 152, 108, 84],
+            [230, 180, 130, 98],
+            [271, 213, 151, 119],
+            [321, 251, 177, 137],
+            [367, 287, 203, 155],
+            [425, 331, 241, 177],
+            [458, 362, 258, 194],
+            [520, 412, 292, 220],
+            [586, 450, 322, 250],
+            [644, 504, 364, 280],
+            [718, 560, 394, 310],
+            [792, 624, 442, 338],
+            [858, 666, 482, 382],
+            [929, 711, 509, 403],
+            [1003, 779, 565, 439],
+            [1091, 857, 611, 461],
+            [1171, 911, 661, 511],
+            [1273, 997, 715, 535],
+            [1367, 1059, 751, 593],
+            [1465, 1125, 805, 625],
+            [1528, 1190, 868, 658],
+            [1628, 1264, 908, 698],
+            [1732, 1370, 982, 742],
+            [1840, 1452, 1030, 790],
+            [1952, 1538, 1112, 842],
+            [2068, 1628, 1168, 898],
+            [2188, 1722, 1228, 958],
+            [2303, 1809, 1283, 983],
+            [2431, 1911, 1351, 1051],
+            [2563, 1989, 1423, 1093],
+            [2699, 2099, 1499, 1139],
+            [2809, 2213, 1579, 1219],
+            [2953, 2331, 1663, 1273]
+          ],
+          o = function() {
+            var a = function(a, b) {
+              this._el = a, this._htOption = b
+            };
+            return a.prototype.draw = function(a) {
+              function g(a, b) {
+                var c = document.createElementNS("http://www.w3.org/2000/svg", a);
+                for (var d in b) b.hasOwnProperty(d) && c.setAttribute(d, b[d]);
+                return c
+              }
+              var b = this._htOption,
+                c = this._el,
+                d = a.getModuleCount();
+              Math.floor(b.width / d), Math.floor(b.height / d), this.clear();
+              var h = g("svg", {
+                viewBox: "0 0 " + String(d) + " " + String(d),
+                width: "100%",
+                height: "100%",
+                fill: b.colorLight
+              });
+              h.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink"), c
+                .appendChild(h), h.appendChild(g("rect", {
+                  fill: b.colorDark,
+                  width: "1",
+                  height: "1",
+                  id: "template"
+                }));
+              for (var i = 0; d > i; i++)
+                for (var j = 0; d > j; j++)
+                  if (a.isDark(i, j)) {
+                    var k = g("use", {
+                      x: String(i),
+                      y: String(j)
+                    });
+                    k.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#template"), h.appendChild(k)
+                  }
+            }, a.prototype.clear = function() {
+              for (; this._el.hasChildNodes();) this._el.removeChild(this._el.lastChild)
+            }, a
+          }(),
+          p = "svg" === document.documentElement.tagName.toLowerCase(),
+          q = p ? o : m() ? function() {
+            function a() {
+              this._elImage.src = this._elCanvas.toDataURL("image/png"), this._elImage.style.display = "block", this
+                ._elCanvas.style.display = "none"
+            }
+
+            function d(a, b) {
+              var c = this;
+              if (c._fFail = b, c._fSuccess = a, null === c._bSupportDataURI) {
+                var d = document.createElement("img"),
+                  e = function() {
+                    c._bSupportDataURI = !1, c._fFail && _fFail.call(c)
+                  },
+                  f = function() {
+                    c._bSupportDataURI = !0, c._fSuccess && c._fSuccess.call(c)
+                  };
+                return d.onabort = e, d.onerror = e, d.onload = f, d.src =
+                  "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
+                  void 0
+              }
+              c._bSupportDataURI === !0 && c._fSuccess ? c._fSuccess.call(c) : c._bSupportDataURI === !1 && c._fFail &&
+                c._fFail.call(c)
+            }
+            if (this._android && this._android <= 2.1) {
+              var b = 1 / window.devicePixelRatio,
+                c = CanvasRenderingContext2D.prototype.drawImage;
+              CanvasRenderingContext2D.prototype.drawImage = function(a, d, e, f, g, h, i, j) {
+                if ("nodeName" in a && /img/i.test(a.nodeName))
+                  for (var l = arguments.length - 1; l >= 1; l--) arguments[l] = arguments[l] * b;
+                else "undefined" == typeof j && (arguments[1] *= b, arguments[2] *= b, arguments[3] *= b, arguments[
+                  4] *= b);
+                c.apply(this, arguments)
+              }
+            }
+            var e = function(a, b) {
+              this._bIsPainted = !1, this._android = n(), this._htOption = b, this._elCanvas = document.createElement(
+                  "canvas"), this._elCanvas.width = b.width, this._elCanvas.height = b.height, a.appendChild(this
+                  ._elCanvas), this._el = a, this._oContext = this._elCanvas.getContext("2d"), this._bIsPainted = !1,
+                this._elImage = document.createElement("img"), this._elImage.style.display = "none", this._el
+                .appendChild(this._elImage), this._bSupportDataURI = null
+            };
+            return e.prototype.draw = function(a) {
+              var b = this._elImage,
+                c = this._oContext,
+                d = this._htOption,
+                e = a.getModuleCount(),
+                f = d.width / e,
+                g = d.height / e,
+                h = Math.round(f),
+                i = Math.round(g);
+              b.style.display = "none", this.clear();
+              for (var j = 0; e > j; j++)
+                for (var k = 0; e > k; k++) {
+                  var l = a.isDark(j, k),
+                    m = k * f,
+                    n = j * g;
+                  c.strokeStyle = l ? d.colorDark : d.colorLight, c.lineWidth = 1, c.fillStyle = l ? d.colorDark : d
+                    .colorLight, c.fillRect(m, n, f, g), c.strokeRect(Math.floor(m) + .5, Math.floor(n) + .5, h, i), c
+                    .strokeRect(Math.ceil(m) - .5, Math.ceil(n) - .5, h, i)
+                }
+              this._bIsPainted = !0
+            }, e.prototype.makeImage = function() {
+              this._bIsPainted && d.call(this, a)
+            }, e.prototype.isPainted = function() {
+              return this._bIsPainted
+            }, e.prototype.clear = function() {
+              this._oContext.clearRect(0, 0, this._elCanvas.width, this._elCanvas.height), this._bIsPainted = !1
+            }, e.prototype.round = function(a) {
+              return a ? Math.floor(1e3 * a) / 1e3 : a
+            }, e
+          }() : function() {
+            var a = function(a, b) {
+              this._el = a, this._htOption = b
+            };
+            return a.prototype.draw = function(a) {
+              for (var b = this._htOption, c = this._el, d = a.getModuleCount(), e = Math.floor(b.width / d), f = Math
+                  .floor(b.height / d), g = ['<table style="border:0;border-collapse:collapse;">'], h = 0; d >
+                h; h++) {
+                g.push("<tr>");
+                for (var i = 0; d > i; i++) g.push(
+                  '<td style="border:0;border-collapse:collapse;padding:0;margin:0;width:' + e + "px;height:" + f +
+                  "px;background-color:" + (a.isDark(h, i) ? b.colorDark : b.colorLight) + ';"></td>');
+                g.push("</tr>")
+              }
+              g.push("</table>"), c.innerHTML = g.join("");
+              var j = c.childNodes[0],
+                k = (b.width - j.offsetWidth) / 2,
+                l = (b.height - j.offsetHeight) / 2;
+              k > 0 && l > 0 && (j.style.margin = l + "px " + k + "px")
+            }, a.prototype.clear = function() {
+              this._el.innerHTML = ""
+            }, a
+          }();
+        QRCode = function(a, b) {
+          if (this._htOption = {
+              width: 256,
+              height: 256,
+              typeNumber: 4,
+              colorDark: "#000000",
+              colorLight: "#ffffff",
+              correctLevel: d.H
+            }, "string" == typeof b && (b = {
+              text: b
+            }), b)
+            for (var c in b) this._htOption[c] = b[c];
+          "string" == typeof a && (a = document.getElementById(a)), this._android = n(), this._el = a, this._oQRCode =
+            null, this._oDrawing = new q(this._el, this._htOption), this._htOption.text && this.makeCode(this
+              ._htOption.text)
+        }, QRCode.prototype.makeCode = function(a) {
+          this._oQRCode = new b(r(a, this._htOption.correctLevel), this._htOption.correctLevel), this._oQRCode
+            .addData(a), this._oQRCode.make(), this._el.title = a, this._oDrawing.draw(this._oQRCode), this
+            .makeImage()
+        }, QRCode.prototype.makeImage = function() {
+          "function" == typeof this._oDrawing.makeImage && (!this._android || this._android >= 3) && this._oDrawing
+            .makeImage()
+        }, QRCode.prototype.clear = function() {
+          this._oDrawing.clear()
+        }, QRCode.CorrectLevel = d
+      }();
+    </script>
+    <style>
+      #mobile {
+        display: none;
+        position: absolute;
+        right: 20px;
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+        padding: 10px;
+        text-align: center;
+        font-size: 12px;
+        line-height: 31px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mobile">
+      <div id="qrcode"></div>
+      <span>打开手机扫一扫</span>
+    </div>
+    <div class="markdown-body" id="markdown-body">
+      <p>隐私政策</p>
+      <p>最近更新日期：2025年04月09日</p>
+      <p>本政策仅适用于数字天堂（北京）网络技术有限公司的DCloud开发者中心系统应用产品或服务。</p>
+      <p>本政策将帮助您了解以下内容：</p>
+      <ol>
+        <li>我们如何收集和使用您的用户信息</li>
+        <li>我们如何使用 Cookie 和同类技术</li>
+        <li>我们如何共享、转让、公开披露您的用户信息</li>
+        <li>我们如何保护您的用户信息</li>
+        <li>您的权利</li>
+        <li>我们如何处理儿童的个人信息</li>
+        <li>您的用户信息如何储存及如何在全球范围转移</li>
+        <li>本政策如何更新</li>
+        <li>如何联系我们</li>
+      </ol>
+      <p>
+        我们深知用户信息对您的重要性，并会尽全力保护您的用户信息安全可靠。我们致力于维持您对我们的信任，恪守以下原则，保护您的用户信息：权责一致原则、目的明确原则、选择同意原则、最少够用原则、确保安全原则、主体参与原则、公开透明原则等。同时，我们承诺，我们将按业界成熟的安全标准，采取相应的安全保护措施来保护您的用户信息。
+      </p>
+      <p>请在使用我们的产品（或服务）前，仔细阅读并了解本隐私政策。</p>
+      <p>一、我们如何收集和使用您的用户信息</p>
+      <p>我们的产品基于DCloud uni-app x开发，应用运行期间需要收集您的设备唯一识别码（ODID/OAID）以提供统计分析服务，并通过应用启动数据及异常错误日志分析改进性能和用户体验，为用户提供更好的服务。详情内容请访问《DCloud用户服务条款》。</p>
+      <p>（一）<strong>我们可能会申请以下权限，仅用于演示 uni-app x 框架的功能</strong></p>
+      <ul>
+        <li><strong>网络</strong></li>
+        <li><strong>位置</strong></li>
+        <li><strong>存储</strong></li>
+        <li><strong>相册</strong></li>
+        <li><strong>摄像头</strong></li>
+        <li><strong>麦克风</strong></li>
+        <li><strong>蓝牙</strong></li>
+        <li><strong>联系人</strong></li>
+        <li><strong>日历</strong></li>
+        <li><strong>隐私窗口</strong></li>
+        <li><strong>读取剪贴板</strong></li>
+        <li><strong>生物特征识别能力</strong></li>
+      </ul>
+      <p>（二）<strong>征得授权同意的例外</strong></p>
+      <p>请您理解，根据法律法规及相关国家标准，以下情形中，我们收集和使用您的用户信息无需征得您的授权同意：</p>
+      <ol>
+        <li><strong>与国家安全、国防安全直接相关的；</strong></li>
+        <li><strong>与公共安全、公共卫生、重大公共利益直接相关的；</strong></li>
+        <li><strong>与犯罪侦查、起诉、审判和判决执行等直接相关的；</strong></li>
+        <li><strong>出于维护您或其他个人的生命、财产等重大合法权益但又很难得到本人同意的；</strong></li>
+        <li><strong>所收集的您的用户信息是您自行向社会公众公开的；</strong></li>
+        <li><strong>从合法公开披露的信息中收集的您的用户信息，如合法的新闻报道、政府信息公开等渠道；</strong></li>
+        <li><strong>根据您的要求签订或履行合同所必需的；</strong></li>
+        <li><strong>用于维护软件及相关服务的安全稳定运行所必需的，例如发现、处置软件及相关服务的故障；</strong></li>
+        <li><strong>个人信息控制者为新闻单位且其在开展合法的新闻报道所必需的；</strong></li>
+        <li><strong>学术研究机构基于公共利益开展统计或学术研究所必要，且对外提供学术研究或描述的结果时，对结果中所包含的个人信息进行去标识化处理的。</strong></li>
+        <li><strong>法律法规规定的其他情形。</strong></li>
+      </ol>
+      <p>二、我们如何使用 Cookie 和同类技术</p>
+      <p>（一）Cookie</p>
+      <p>为确保网站正常运转，我们会在您的计算机或移动设备上存储名为 Cookie 的小数据文件。Cookie 通常包含标识符、站点名称以及一些号码和字符。借助于 Cookie，网站能够存储您的访问偏好数据。</p>
+      <p>我们不会将 Cookie 用于本政策所述目的之外的任何用途。您可根据自己的偏好管理或删除 Cookie。您可以清除计算机上保存的所有 Cookie，大部分网络浏览器都设有阻止Cookie
+        的功能。但如果您这么做，则需要在每一次访问我们的网站时亲自更改用户设置。</p>
+      <p>（二）网站信标和像素标签</p>
+      <p>除 Cookie 外，我们还会在网站上使用网站信标和像素标签等其他同类技术。例如，我们向您发送的电子邮件可能含有链接至我们网站内容的点击URL。</p>
+      <p>
+        如果您点击该链接，我们则会跟踪此次点击，帮助我们了解您的产品或服务偏好并改善客户服务。网站信标通常是一种嵌入到网站或电子邮件中的透明图像。借助于电子邮件中的像素标签，我们能够获知电子邮件是否被打开。如果您不希望自己的活动以这种方式被追踪，则可以随时从我们的寄信名单中退订。
+      </p>
+      <p>（三）Do Not Track（请勿追踪）</p>
+      <p>很多网络浏览器均设有Do Not Track功能，该功能可向网站发布Do Not Track请求。目前，主要互联网标准组织尚未设立相关政策来规定网站应如何应对此类请求。但如果您的浏览器启用了 Do Not
+        Track，那么我们的所有网站都会尊重您的选择。</p>
+      <p>三、我们如何共享、转让、公开披露您的用户信息</p>
+      <p>（一）共享</p>
+      <p>我们不会与其他的任何公司、组织和个人分享您的用户信息，但以下情况除外：</p>
+      <ol>
+        <li>在获取明确同意的情况下共享：获得您的明确同意后，我们会与其他方共享您的用户信息。</li>
+        <li>我们可能会根据法律法规规定，或按政府主管部门的强制性要求，对外共享您的用户信息。</li>
+        <li>与我们的关联公司共享：您的用户信息可能会与我们的关联公司共享。我们只会共享必要的用户信息，且受本隐私政策中所声明目的的约束。关联公司如要改变用户信息的处理目的，将再次征求您的授权同意。</li>
+        <li>
+          与授权合作伙伴共享：仅为实现本政策中声明的目的，我们的某些服务将由授权合作伙伴提供。我们可能会与合作伙伴共享您的某些用户信息，以提供更好的客户服务和用户体验。我们仅会出于合法、正当、必要、特定、明确的目的共享您的用户信息，并且只会共享提供服务所必要的用户信息。为了更好运营和改善技术和服务，您同意我们和授权合作伙伴在符合相关法律法规的前提下可将收集的信息用于其他服务和用途。
+        </li>
+      </ol>
+      <p>（二）转让</p>
+      <p>我们不会将您的用户信息转让给任何公司、组织和个人，但以下情况除外：</p>
+      <ol>
+        <li>在获取明确同意的情况下转让：获得您的明确同意后，我们会向其他方转让您的用户信息；</li>
+        <li>在涉及合并、收购或破产清算时，如涉及到用户信息转让，我们会再要求新的持有您用户信息的公司、组织继续受此隐私政策的约束，否则我们将要求该公司、组织重新向您征求授权同意。</li>
+      </ol>
+      <p>（三）公开披露</p>
+      <p>我们仅会在以下情况下，公开披露您的用户信息：</p>
+      <ol>
+        <li>获得您明确同意后；</li>
+        <li>基于法律的披露：在法律、法律程序、诉讼或政府主管部门强制性要求的情况下，我们可能会公开披露您的用户信息。</li>
+      </ol>
+      <p>（四）共享、转让、公开披露信息时事先征得授权同意的例外</p>
+      <p>请您理解，根据法律法规及相关国家标准，以下情形中，我们共享、转让、公开披露您的用户信息无需征得您的授权同意：</p>
+      <ol>
+        <li>与国家安全、国防安全直接相关的；</li>
+        <li>与公共安全、公共卫生、重大公共利益直接相关的；</li>
+        <li>与犯罪侦查、起诉、审判和判决执行等直接相关的；</li>
+        <li>出于维护您或其他个人的生命、财产等重大合法权益但又很难得到本人同意的；</li>
+        <li>您自行向社会公众公开的信息；</li>
+        <li>从合法公开披露的信息中收集的，如合法的新闻报道、政府信息公开等渠道。</li>
+      </ol>
+      <p>四、我们如何保护您的用户信息</p>
+      <ol>
+        <li>我们已使用符合业界标准的安全防护措施保护您提供的用户信息，防止数据遭到未经授权的访问、公开披露、使用、修改、损坏或丢失。我们会采取一切合理可行的措施，保护您的用户信息。例如，在您的浏览器与“服务”之间交换数据时受
+          SSL
+          加密保护；我们同时对网站提供https安全浏览方式；我们会使用加密技术确保数据的保密性；我们会使用受信赖的保护机制防止数据遭到恶意攻击；我们会部署访问控制机制，确保只有授权人员才可访问用户信息；以及我们会举办安全和隐私保护培训课程，加强员工对于保护用户信息重要性的认识。
+        </li>
+        <li>目前，我们的重要信息系统已通过信息安全等级保护（三级）测评和备案。</li>
+        <li>我们已建立专门的管理系统、流程和组织，确保信息安全。例如，我们严格限制有信息访问权限的人员，要求这些人员遵循其保密义务，并对此进行审查。</li>
+        <li>我们会采取一切合理可行的措施，确保未收集无关的用户信息。我们只会在达成本政策所述目的所需的期限内保留您的用户信息，除非需要延长保留期或受到法律的允许。</li>
+        <li>互联网并非绝对安全的环境，而且电子邮件、即时通讯、及与其他用户的交流方式并未加密，我们强烈建议您不要通过此类方式发送用户信息。</li>
+        <li>我们将定期更新并公开安全风险、用户信息安全影响评估等报告的有关内容。您可通过以下方式获得：</li>
+        <li>
+          互联网环境并非百分之百安全，我们将尽力确保您发送给我们的任何信息的安全性。即使我们做出了很大努力，采取了一切合理且必要的措施，仍然有可能无法杜绝您的用户信息被非法访问、被非法盗取，被非法篡改或毁坏，导致您的合法权益受损，请您理解信息网络的上述风险并自愿承担。
+        </li>
+        <li>
+          在不幸发生用户信息安全事件后，我们将按照法律法规的要求，及时向您告知：安全事件的基本情况和可能的影响、我们已采取或将要采取的处置措施、您可自主防范和降低风险的建议、对您的补救措施等。我们将及时将事件相关情况以邮件、信函、电话、推送通知等方式告知您，难以逐一告知用户信息主体时，我们会采取合理、有效的方式发布公告。同时，我们还将按照监管部门要求，主动上报用户信息安全事件的处置情况。
+        </li>
+      </ol>
+      <p>五、您的权利</p>
+      <p>按照中国相关的法律、法规、标准，以及其他国家、地区的通行做法，我们保障您对自己的用户信息行使以下权利：</p>
+      <p>（一）访问您的用户信息</p>
+      <p>您有权访问您的用户信息，法律法规规定的例外情况除外。如果您想行使数据访问权，可以通过以下方式自行访问：<a
+          href="https://ask.dcloud.net.cn/">https://ask.dcloud.net.cn/</a></p>
+      <p>如果您无法通过上述链接访问这些用户信息，您可以随时使用我们的 Web 表单联系，或发送电子邮件至<a
+          href="mailto:service@dcloud.io">service@dcloud.io</a>。我们将在30天内回复您的访问请求。</p>
+      <p>对于您在使用我们的产品或服务过程中产生的其他用户信息，只要我们不需要过多投入，我们会向您提供。如果您想行使数据访问权，请发送电子邮件至<a
+          href="mailto:service@dcloud.io">service@dcloud.io</a>。</p>
+      <p>（二）更正您的用户信息</p>
+      <p>当您发现我们处理的关于您的用户信息有错误时，您有权要求我们作出更正。您可以通过“（一）访问您的用户信息”中罗列的方式提出更正申请。 如果您无法通过上述链接更正这些用户信息，您可以随时使用我们的 Web
+        表单联系，或发送电子邮件至<a href="mailto:service@dcloud.io">service@dcloud.io</a>。我们将在30天内回复您的更正请求。</p>
+      <p>（三）删除您的用户信息</p>
+      <p>在以下情形中，您可以向我们提出删除用户信息的请求：</p>
+      <ol>
+        <li>如果我们处理用户信息的行为违反法律法规；</li>
+        <li>如果我们收集、使用您的用户信息，却未征得您的同意；</li>
+        <li>如果我们处理用户信息的行为违反了与您的约定；</li>
+        <li>如果您不再使用我们的产品或服务，或您注销了账号；</li>
+        <li>如果我们不再为您提供产品或服务。</li>
+      </ol>
+      <p>
+        我们将会根据您的删除请求进行评估，若满足相应规定，我们将会采取相应步骤进行处理。当您向我们提出删除请求时，我们可能会要求您进行身份验证，以保障账户的安全。当您从我们的服务中删除信息后，因为适用的法律和安全技术，我们可能不会立即从备份系统中删除相应的信息，我们将安全存储您的信息直到备份可以清除或实现匿名化。
+      </p>
+      <p>（四）改变您授权同意的范围</p>
+      <p>每个业务功能需要一些基本的用户信息才能得以完成（见本政策“第一部分”）。对于用户信息的收集和使用，您可以随时给予或收回您的授权同意。您可以通过以下方式自行操作：<a
+          href="https://ask.dcloud.net.cn/">https://ask.dcloud.net.cn/</a></p>
+      <p>当您收回同意后，我们将不再处理相应的用户信息。同时也请您注意，您撤销授权同意可能会导致某些后果，例如我们可能无法继续为您提供相应的服务或特定的功能，但您收回同意的决定，不会影响此前基于您的授权而开展的用户信息处理。</p>
+      <p>（五）用户信息主体注销账户</p>
+      <p>您随时可注销此前注册的账户，您可以通过以下方式自行操作：<a href="https://ask.dcloud.net.cn/">https://ask.dcloud.net.cn/</a></p>
+      <p>在注销账户之后，我们将停止为您提供产品或服务并依据您的要求，删除或匿名化您的信息，法律法规另有规定的除外。这也将可能导致您失去对您账户中数据的访问权，请您谨慎操作。</p>
+      <p>（六）用户信息主体获取用户信息副本</p>
+      <p>您有权获取您的用户信息副本，您可以通过以下方式自行操作：<a href="https://ask.dcloud.net.cn/">https://ask.dcloud.net.cn/</a></p>
+      <p>在技术可行的前提下，例如数据接口匹配，我们还可按您的要求，直接将您的用户信息副本传输给您指定的第三方。</p>
+      <p>（七）约束信息系统自动决策</p>
+      <p>在某些业务功能中，我们可能仅依据信息系统、算法等在内的非人工自动决策机制作出决定。如果这些决定显著影响您的合法权益，您有权要求我们作出解释，我们也将提供适当的救济方式。</p>
+      <p>（八）响应您的上述请求</p>
+      <p>为保障安全，您可能需要提供书面请求，或以其他方式证明您的身份。我们可能会先要求您验证自己的身份，然后再处理您的请求。</p>
+      <p>我们将在三十天内作出答复。如您不满意，还可以通过以下途径投诉：<a href="mailto:service@dcloud.io">service@dcloud.io</a></p>
+      <p>
+        对于您合理的请求，我们原则上不收取费用，但对多次重复、超出合理限度的请求，我们将视情况收取一定成本费用。对于那些无端重复、需要过多技术手段（例如，需要开发新系统或从根本上改变现行惯例）、给他人合法权益带来风险或者非常不切实际的请求，我们可能会予以拒绝。也请您理解，出于安全保障的考虑、相关法律法规的要求或技术上的限制，对于您的某些请求我们可能无法做出响应，例如以下情形：
+      </p>
+      <ol>
+        <li>与用户信息控制者履行法律法规规定的义务相关的；</li>
+        <li>与国家安全、国防安全直接相关的；</li>
+        <li>与公共安全、公共卫生、重大公共利益直接相关的；</li>
+        <li>与犯罪侦查、起诉、审判和执行判决等直接相关的；</li>
+        <li>用户信息控制者有充分证据表明用户信息主体存在主观恶意或滥用权利的；</li>
+        <li>出于维护用户信息主体或其他个人的生命、财产等重大合法权益但又很难得到本人同意的；</li>
+        <li>响应用户信息主体的请求将导致用户信息主体或其他个人、组织的合法权益受到严重损害的；</li>
+        <li>涉及商业秘密的。</li>
+      </ol>
+      <p>六、我们如何处理儿童的个人信息</p>
+      <p>我们非常重视儿童个人信息的保护，我们的产品、网站和服务主要面向成人。如果没有父母或监护人的同意，儿童不应创建自己的用户账户。尽管当地法律和习俗对儿童的定义不同，但我们将不满 14 周岁的任何人均视为儿童。</p>
+      <p>对于经父母或监护人同意而收集儿童用户信息的情况，我们只会在受到法律允许、父母或监护人明确同意或者保护儿童所必要的情况下储存、使用或公开披露此信息，否则我们会设法尽快删除相关数据。</p>
+      <p>
+        鉴于现有技术和业务模式的限制，我们很难主动识别儿童的个人信息，如果您发现我们在不知情的情况下或在未事先获得可证实的监护人同意的情况下收集了儿童的个人信息，您可以及时联系我们，我们将在发现后设法及时删除，如果我们自己发现前述情形的，我们也会及时删除，法律要求我们保留的除外。
+      </p>
+      <p>七、您的用户信息如何储存以及如何在全球范围转移</p>
+      <p>
+        原则上，我们在中华人民共和国境内收集和产生的用户信息，将存储在中华人民共和国境内。我们只会在本政策所述目的和用途所需的期限内和法律法规规定的最短期限内保留您的用户信息，超出上述保留期间后，我们会根据适用法律法规的要求删除您的用户信息或匿名化处理。法律法规另有规定，或出于公共利益、科学历史研究等的目的，或您的另行授权同意的除外，我们可能需要较长时间保留相关数据。
+      </p>
+      <p>由于我们通过遍布全球的资源和服务器提供产品或服务，这意味着，在获得您的授权同意后，您的用户信息可能会被转移到您使用产品或服务所在国家/地区的境外管辖区，或者受到来自这些管辖区的访问。</p>
+      <p>
+        此类管辖区可能设有不同的数据保护法，甚至未设立相关法律。在此类情况下，我们会确保您的用户信息得到在中华人民共和国境内足够同等的保护。例如，我们会请求您对跨境转移用户信息的同意，或者在跨境数据转移之前实施数据去标识化等安全举措。
+      </p>
+      <p>八、本政策如何更新</p>
+      <p>我们的隐私政策可能变更。未经您明确同意，我们不会削减您按照本隐私政策所应享有的权利。我们会在本页面上发布对本政策所做的任何变更。</p>
+      <p>对于重大变更，我们还会提供更为显著的通知。本政策所指的重大变更包括但不限于：</p>
+      <ol>
+        <li>我们的服务模式发生重大变化。如处理用户信息的目的、处理的用户信息类型、用户信息的使用方式等；</li>
+        <li>我们在所有权结构、组织架构等方面发生重大变化。如业务调整、破产并购等引起的所有者变更等；</li>
+        <li>用户信息共享、转让或公开披露的主要对象发生变化；</li>
+        <li>您参与用户信息处理方面的权利及其行使方式发生重大变化；</li>
+        <li>我们负责处理用户信息安全的责任部门、联络方式及投诉渠道发生变化时；</li>
+        <li>用户信息安全影响评估报告表明存在高风险时。</li>
+      </ol>
+      <p>我们还会将本政策的旧版本存档，供您查阅。</p>
+      <p>九、如何联系我们</p>
+      <p>如果您对本隐私政策有任何疑问、意见或建议，通过以下方式与我们联系：</p>
+      <p>电子邮件：<a href="mailto:service@dcloud.io">service@dcloud.io</a></p>
+      <p>一般情况下，我们将在三十天内回复。</p>
+      <p>如果您对我们的回复不满意，特别是我们的用户信息处理行为损害了您的合法权益，您还可以通过以下外部途径寻求解决方案：<a
+          href="mailto:service@dcloud.io">service@dcloud.io</a></p>
+
+    </div>
+    <script type="text/javascript">
+      var sUserAgent = navigator.userAgent;
+      if (sUserAgent.indexOf('Android') > -1 || sUserAgent.indexOf('iPhone') > -1 || sUserAgent.indexOf('iPad') > -1 ||
+        sUserAgent.indexOf('iPod') > -1 || sUserAgent.indexOf('Symbian') > -1) {
+        //手机端不显示二维码
+      } else {
+        var qrcode = new QRCode(document.getElementById("qrcode"), {
+          text: location.href,
+          width: 160,
+          height: 160
+        });
+        document.getElementById("mobile").style.display = "block"
+      }
+    </script>
+
+  </body>
+</html>

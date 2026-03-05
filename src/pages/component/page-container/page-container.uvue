@@ -1,0 +1,316 @@
+<template>
+  <scroll-view style="flex: 1">
+    <page-intro content="本页演示 page-container 页面容器，用于在页面内创建弹出层效果，支持拦截返回操作：顶部/底部/左侧/右侧/居中弹出、圆角、遮罩与透明蒙层、下滑关闭等能力，通过按钮触发不同展示。"></page-intro>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 弹出位置 </text>
+      </view>
+      <view>
+        <button @click="showContainer('top', '顶部')">顶部弹出</button>
+        <button class="mt-5" @click="showContainer('bottom', '底部')">底部弹出</button>
+        <button id="right-button" class="mt-5" @click="showContainer('right', '右侧')">右侧弹出</button>
+        <!-- #ifndef MP -->
+        <button class="mt-5" @click="showContainer('left', '左侧')">左侧弹出</button>
+        <!-- #endif -->
+        <button class="mt-5" @click="showContainer('center', '居中')">居中弹出</button>
+      </view>
+    </view>
+
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 弹窗圆角 </text>
+      </view>
+      <view>
+        <button @click="showRound">圆角</button>
+      </view>
+    </view>
+
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 遮罩层 </text>
+      </view>
+      <view>
+        <button @click="showOverlay(false)">不显示蒙层</button>
+        <button class="mt-5" @click="showOverlay(true)">显示蒙层</button>
+        <button class="mt-5" @click="showTransparentOverlay">透明蒙层</button>
+        <button class="mt-5" @click="showGreenTransparentOverlay">绿色半透明蒙层</button>
+      </view>
+    </view>
+
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 自动隐藏 </text>
+      </view>
+      <view>
+        <button @click="autoClose">2秒后自动关闭</button>
+      </view>
+    </view>
+
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 滚动穿透 </text>
+      </view>
+      <view>
+        <button @click="showScrollThrough">打开滚动穿透测试弹层</button>
+        <text class="slider-down-info">测试弹层内滚动到顶部或底部时是否会影响主页面滚动</text>
+      </view>
+    </view>
+
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 下滑关闭 </text>
+      </view>
+      <view>
+        <button @click="showSlideDown">支持下滑关闭</button>
+        <text class="slider-down-info">提示: 当 close-on-slide-down=true 时，可下滑关闭容器</text>
+      </view>
+    </view>
+
+    <view class="uni-padding-wrap uni-common-mt" style="margin-bottom: 30px;">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 多层堆叠测试 </text>
+      </view>
+      <view>
+        <button @click="showStackedLayer1">打开第1层弹层</button>
+      </view>
+    </view>
+
+    <page-container v-if="containerShow" :show="containerShow" :position="containerPosition" :round="containerRound"
+      :overlay="containerOverlay" :overlay-style="containerOverlayStyle"
+      :close-on-slide-down="containerCloseOnSlideDown" @afterleave="onAfterLeave">
+        <view class="container">
+          <text class="container-title">{{ containerTitle }}</text>
+          <scroll-view v-if="enableScrollThrough" style="height: 200px;margin-bottom: 15px; padding: 10px;">
+             <text class="container-content">{{ containerContent }}</text>
+          </scroll-view>
+          <text v-else class="container-content">{{ containerContent }}</text>
+          <button @click="closeContainer" type="primary">关闭容器</button>
+          <button class="mt-5" @click="navigateBack">后退页面</button>
+        </view>
+    </page-container>
+
+    <!-- 多层堆叠弹层 - 第1层 -->
+    <page-container v-if="showStackedPop1" :show="showStackedPop1" position="center" @afterleave="closeStackedLayer1">
+      <view class="stacked-container" style="background-color: #fff; width: 360px;">
+        <text class="container-title">第1层弹层</text>
+        <text class="container-content">这是第1层弹层,点击下方按钮可以打开第2层</text>
+        <view style="flex-direction: row; justify-content: space-around;">
+          <button @click="showStackedLayer2" size="default" type="primary">打开第2层</button>
+          <button @click="closeStackedLayer1" size="default">关闭本层</button>
+        </view>
+      </view>
+    </page-container>
+
+    <!-- 多层堆叠弹层 - 第2层 -->
+    <page-container v-if="showStackedPop2" :show="showStackedPop2" position="center" @afterleave="closeStackedLayer2">
+      <view class="stacked-container" style="background-color: #f0f0f0; width: 340px;">
+        <text class="container-title">第2层弹层</text>
+        <text class="container-content">这是第2层弹层,点击下方按钮可以打开第3层</text>
+        <view style="flex-direction: row; justify-content: space-around;">
+          <button @click="showStackedLayer3" size="default" type="primary">打开第3层</button>
+          <button @click="closeStackedLayer2" size="default">关闭本层</button>
+        </view>
+      </view>
+    </page-container>
+
+    <!-- 多层堆叠弹层 - 第3层 -->
+    <page-container v-if="showStackedPop3" :show="showStackedPop3" position="center" @afterleave="closeStackedLayer3">
+      <view class="stacked-container" style="background-color: #e0e0e0; width: 300px;">
+        <text class="container-title">第3层弹层</text>
+        <text class="container-content">这是第3层弹层,最顶层的弹层</text>
+        <button @click="closeStackedLayer3" size="default">关闭本层</button>
+      </view>
+    </page-container>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+  const containerShow = ref<boolean>(false)
+  const containerRound = ref<boolean>(false)
+  const containerPosition = ref<string>('bottom')
+  const containerOverlay = ref<boolean>(true)
+  const containerTitle = ref<string>('Page-Container')
+  const containerOverlayStyle = ref<string>('')
+  const containerContent = ref<string>('这是一个 page-container 容器')
+  const containerCloseOnSlideDown = ref<boolean>(false)
+  const enableScrollThrough = ref<boolean>(false)
+
+  // 多层堆叠弹层状态
+  const showStackedPop1 = ref<boolean>(false)
+  const showStackedPop2 = ref<boolean>(false)
+  const showStackedPop3 = ref<boolean>(false)
+
+  type Data = {
+    onAfterLeaveCallCount: number
+  }
+
+  // 仅用于自动化测试
+  const data = reactive<Data>({
+    onAfterLeaveCallCount: 0
+  })
+
+  function resetConfig() {
+    containerRound.value = false
+    containerPosition.value = 'bottom'
+    containerOverlay.value = true
+    containerCloseOnSlideDown.value = false
+    containerOverlayStyle.value = ''
+    enableScrollThrough.value = false
+  }
+
+  function showContainer(position : string, text: string) {
+    resetConfig()
+    containerPosition.value = position
+    containerShow.value = true
+    containerTitle.value = `Position: ${position}`
+    containerContent.value = `容器从 ${text} 弹出`
+  }
+
+  function showRound() {
+    resetConfig()
+    containerRound.value = true
+    containerShow.value = true
+    containerTitle.value = 'Round: true'
+    containerContent.value = '弹窗圆角: true'
+  }
+
+  function showOverlay(overlay : boolean) {
+    resetConfig()
+    containerOverlay.value = overlay
+    containerShow.value = true
+    containerTitle.value = `Overlay: ${overlay}`
+    containerContent.value = `遮罩层: ${overlay}`
+  }
+
+  function showTransparentOverlay() {
+    resetConfig()
+    containerOverlay.value = true
+    containerOverlayStyle.value = 'background-color: rgba(0, 0, 0, 0);'
+    containerTitle.value = '透明蒙层'
+    containerContent.value = '蒙层开启但完全透明，可以点击蒙层区域关闭'
+    containerShow.value = true
+  }
+
+  function showGreenTransparentOverlay() {
+    resetConfig()
+    containerOverlay.value = true
+    containerPosition.value = 'center'
+    containerOverlayStyle.value = 'background-color: rgba(76, 175, 80, 0.3);'
+    containerTitle.value = '绿色半透明蒙层'
+    containerContent.value = '蒙层开启但为绿色半透明，可以点击蒙层区域关闭'
+    containerShow.value = true
+  }
+
+  function showSlideDown() {
+    resetConfig()
+    containerCloseOnSlideDown.value = true
+    containerShow.value = true
+    containerPosition.value = 'bottom'
+    containerTitle.value = 'Close-on-slide-down: true'
+    containerContent.value = '下滑关闭: true'
+  }
+
+  function autoClose() {
+    resetConfig()
+    containerShow.value = true
+    containerPosition.value = 'bottom'
+    containerTitle.value = 'Page-container'
+    containerContent.value = '容器会在 2s 后自动关闭'
+    setTimeout(() => {
+      containerShow.value = false
+    }, 2000)
+  }
+
+  function showScrollThrough() {
+    resetConfig()
+    enableScrollThrough.value = true
+    containerShow.value = true
+    containerPosition.value = 'bottom'
+    containerTitle.value = 'Page-container'
+    containerContent.value = `这是一个可滚动的内容区域。\n\n请向上或向下滚动此区域。\n\n当滚动到顶部或底部边界时\n\n测试主页面是否会跟随滚动(滚动穿透问题)\n\n理想情况下,当弹层内的scroll-view滚动到边界时,不应该触发主页面的滚动。\n\n已到达底部,现在可以测试向上滚动到顶部的情况。`
+  }
+
+  function onAfterLeave() {
+    containerShow.value = false
+    data.onAfterLeaveCallCount += 1
+  }
+
+  function closeContainer() {
+    containerShow.value = false
+  }
+
+  function navigateBack() {
+    uni.navigateBack()
+  }
+
+  // 多层堆叠弹层方法
+  function showStackedLayer1() {
+    showStackedPop1.value = true
+  }
+
+  function showStackedLayer2() {
+    showStackedPop2.value = true
+  }
+
+  function showStackedLayer3() {
+    showStackedPop3.value = true
+  }
+
+  function closeStackedLayer1() {
+    showStackedPop1.value = false
+  }
+
+  function closeStackedLayer2() {
+    showStackedPop2.value = false
+  }
+
+  function closeStackedLayer3() {
+    showStackedPop3.value = false
+  }
+
+  defineExpose({
+    data,
+    showContainer,
+    navigateBack,
+    closeContainer
+  })
+</script>
+
+<style scoped>
+  .container {
+    padding: 20px;
+    background-color: #ffffff;
+    min-height: 300px;
+    min-width: 300px;
+  }
+
+  .container-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .container-content {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+  }
+
+  .mt-5 {
+    margin-top: 5px;
+  }
+
+  .slider-down-info {
+    font-size: 12px;
+    color: #999;
+    margin-top: 5px;
+    margin-bottom: 20px;
+  }
+
+  .stacked-container {
+    padding: 10px;
+    border-radius: 8px;
+    min-height: 150px;
+  }
+</style>

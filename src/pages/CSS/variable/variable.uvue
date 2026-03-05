@@ -1,0 +1,126 @@
+<template>
+  <view class="page">
+    <view class="status-bar-height">
+      <text>通过var(--status-bar-height)获取状态栏高度</text>
+    </view>
+    <view class="status-bar-window" :style="{ height: statusBarHeight + 'px' }">
+      <text>通过uni.getWindowInfo获取状态栏高度</text>
+    </view>
+    <view class="status-bar-unipage" :style="{ height: statusBarHeight2 + 'px' }">
+      <text>通过this.$page.statusBarHeight获取状态栏高度</text>
+    </view>
+    <view class="window-top">
+      <text>window top</text>
+    </view>
+    <view class="window-bottom">
+      <text>window bottom</text>
+    </view>
+
+    <view class="uni-safe-area-inset-top">
+      <text>height:var(--uni-safe-area-inset-top)</text>
+    </view>
+    <view class="uni-safe-area-inset-left">
+      <text>height:var(--uni-safe-area-inset-left)</text>
+    </view>
+    <view class="uni-safe-area-inset-right">
+      <text>height:var(--uni-safe-area-inset-right)</text>
+    </view>
+    <view class="uni-safe-area-inset-bottom">
+      <text>height:var(--uni-safe-area-inset-bottom)</text>
+    </view>
+    <view class="uni-fixed-bottom">
+      <text>此区域应显示在安全区域内</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+  const statusBarHeight = ref(0)
+  const statusBarHeight2 = ref(0)
+
+  const instance = getCurrentInstance()
+
+  onReady(() => {
+    statusBarHeight.value = uni.getWindowInfo().statusBarHeight
+    // #ifndef MP-WEIXIN
+    statusBarHeight2.value = instance?.proxy?.$page?.statusBarHeight ?? 0
+    // #endif
+  })
+</script>
+
+<style>
+  .page {
+    flex: 1;
+  }
+
+  .status-bar-height {
+    height: var(--status-bar-height);
+    align-items: center;
+    justify-content: center;
+    background-color: red;
+  }
+
+  .status-bar-window {
+    background-color: yellow;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .status-bar-unipage {
+    align-items: center;
+    justify-content: center;
+    background-color: greenyellow;
+  }
+
+  .window-top {
+    height: var(--window-top);
+    align-items: center;
+    background-color: green;
+    margin: 2px 0px;
+  }
+
+  .window-bottom {
+    height: var(--window-bottom);
+    align-items: center;
+    background-color: blue;
+    margin: 2px 0px;
+  }
+
+  .uni-safe-area-inset-top {
+    height: var(--uni-safe-area-inset-top);
+    align-items: center;
+    background-color: yellow;
+    margin: 2px 0px;
+  }
+
+  .uni-safe-area-inset-left {
+    height: var(--uni-safe-area-inset-left);
+    align-items: center;
+    background-color: greenyellow;
+    margin: 2px 0px;
+  }
+
+  .uni-safe-area-inset-right {
+    height: var(--uni-safe-area-inset-right, 60px);
+    align-items: center;
+    background-color: saddlebrown;
+    margin: 2px 0px;
+  }
+
+  .uni-safe-area-inset-bottom {
+    height: var(--uni-safe-area-inset-bottom);
+    align-items: center;
+    background-color: salmon;
+    margin: 2px 0px;
+  }
+
+  .uni-fixed-bottom {
+    position: fixed;
+    left: var(--uni-safe-area-inset-left);
+    right: var(--uni-safe-area-inset-right);
+    bottom: var(--uni-safe-area-inset-bottom);
+    align-items: center;
+    background-color: blueviolet;
+  }
+</style>

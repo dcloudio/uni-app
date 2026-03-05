@@ -1,0 +1,83 @@
+{
+  "id": "uts-button",
+  "displayName": "uts-button",
+  "version": "1.0.0",
+  "description": "uts-button",
+  "keywords": [
+    "uts-button"
+],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^3.7.0"
+  },
+  "dcloudext": {
+    "type": "component-uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "",
+      "data": "",
+      "permissions": ""
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "u",
+        "aliyun": "u",
+        "alipay": "u"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "u",
+          "vue3": "u"
+        },
+        "App": {
+          "app-android": "u",
+          "app-ios": "u",
+          "app-harmony": "u"
+        },
+        "H5-mobile": {
+          "Safari": "u",
+          "Android Browser": "u",
+          "微信浏览器(Android)": "u",
+          "QQ浏览器(Android)": "u"
+        },
+        "H5-pc": {
+          "Chrome": "u",
+          "IE": "u",
+          "Edge": "u",
+          "Firefox": "u",
+          "Safari": "u"
+        },
+        "小程序": {
+          "微信": "u",
+          "阿里": "u",
+          "百度": "u",
+          "字节跳动": "u",
+          "QQ": "u",
+          "钉钉": "u",
+          "快手": "u",
+          "飞书": "u",
+          "京东": "u"
+        },
+        "快应用": {
+          "华为": "u",
+          "联盟": "u"
+        }
+      }
+    }
+  }
+}

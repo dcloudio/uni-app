@@ -1,0 +1,6 @@
+node_modules/
+.project
+unpackage/
+.DS_Store
+.hbuilderx/
+__image_snapshots__/

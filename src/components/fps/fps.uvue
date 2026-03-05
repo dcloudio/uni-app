@@ -1,0 +1,52 @@
+<template>
+  <view style="position: fixed;right: 10px;top: 10px;z-index: 999;flex-direction: column;align-items: flex-end;pointer-events: none;">
+    <text style="font-size: 24px;color: green;">FPS: {{ fps }}</text>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+  const emit = defineEmits(['updateFps'])
+  const props = defineProps({
+    interval: {
+      type: Number,
+      default: 1000
+    }
+  })
+
+  let animationId : number = -1
+  const fps = ref<number>(0)
+  let frameCount: number = 0
+  let fpsUpdateTime: number = 0
+
+  let calculateFPS = (currentTime : number) => { }
+  calculateFPS = (currentTime : number) => {
+    if (fpsUpdateTime == (0 as number)) {
+      fpsUpdateTime = currentTime
+      animationId = requestAnimationFrame(calculateFPS)
+      return
+    }
+    frameCount++
+    const delta = currentTime - fpsUpdateTime
+    if (delta >= props.interval) {
+      const value = Math.round(frameCount * 1000 / delta)
+      fps.value = value
+      emit('updateFps', value)
+      frameCount = 0
+      fpsUpdateTime = currentTime
+    }
+    animationId = requestAnimationFrame(calculateFPS)
+  }
+
+  onMounted(() => {
+    animationId = requestAnimationFrame(calculateFPS)
+  })
+
+  onBeforeUnmount(() => {
+    cancelAnimationFrame(animationId)
+  })
+</script>
+
+<style>
+
+</style>

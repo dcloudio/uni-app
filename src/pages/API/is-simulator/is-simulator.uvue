@@ -1,0 +1,26 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <view>
+      <page-head :title="'isSimulator'"></page-head>
+      <view class="uni-common-mt" style="justify-content: center;align-items: center;">
+        <text>{{
+		        isSimulator ? "当前设备是模拟器" : "当前设备不是模拟器"
+		      }}</text>
+        <text>\n注：有些模拟器会故意伪装为真机，此时识别可能会不准确</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup>
+  const isSimulator = ref(false)
+  isSimulator.value = uni.isSimulator()
+</script>
+
+<style>
+
+</style>

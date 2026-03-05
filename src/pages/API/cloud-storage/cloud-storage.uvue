@@ -1,0 +1,90 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-btn-v uni-common-mt">
+          <button type="primary" @click="uploadFile">选择文件上传</button>
+          <button type="primary" @click="chooseAndUploadFile">一个接口选择文件并上传</button>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+  
+
+  const title = ref('云存储')
+
+  onLoad(() => {
+  })
+
+  onUnload(() => {
+  })
+
+  function uploadFile() {
+    uni.chooseImage({
+      count: 1,
+      success(res) : void {
+        uni.showLoading({
+          title: '上传中...'
+        })
+        const tempFilePath = res.tempFilePaths[0]
+        uniCloud.uploadFile({
+          filePath: tempFilePath,
+          cloudPath: 'test.jpg'
+        })
+          .then(function (res) {
+            uni.hideLoading()
+            console.log(res)
+            uni.showModal({
+              content: '上传成功',
+              showCancel: false
+            });
+          })
+          .catch(function (err : any | null) {
+            uni.hideLoading()
+            const error = err as UniCloudError
+            uni.showModal({
+              content: '上传失败，' + error.errMsg,
+              showCancel: false
+            });
+          })
+        // .finally((_: number) : void => {
+        //   uni.hideLoading()
+        // })
+      },
+      fail(err) : void {
+        console.error('chooseImage fail: ', err)
+      }
+    })
+  }
+
+  function chooseAndUploadFile() {
+    uniCloud.chooseAndUploadFile({
+      type: 'image'
+    }).then(function (res) {
+      uni.hideLoading()
+      console.log(res)
+      uni.showModal({
+        content: '上传成功',
+        showCancel: false
+      });
+    })
+      .catch(function (err : any | null) {
+        uni.hideLoading()
+        const error = err as UniCloudError
+        uni.showModal({
+          content: '上传失败，' + error.errMsg,
+          showCancel: false
+        });
+      })
+  }
+</script>
+
+<style>
+</style>

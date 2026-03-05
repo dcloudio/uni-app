@@ -1,0 +1,178 @@
+<template>
+  <view style="flex: 1;">
+    <page-head :title="data.title"></page-head>
+    <scroll-view style="flex: 1">
+      <view class="uni-padding-wrap">
+        <!-- image样式大合集 -->
+        <text class="uni-title-text">image样式大合集</text>
+        <text class="uni-subtitle-text uni-common-mb">右边为拍平</text>
+        <view class="styled-image-row">
+          <image class="styled-image" mode="aspectFill" :src="data.imageSrc"></image>
+          <image class="styled-image" mode="aspectFill" :src="data.imageSrc" flatten></image>
+        </view>
+
+        <text class="uni-title-text">自定义组件：右边拍平</text>
+        <view class="styled-image-row">
+          <child></child>
+          <child flatten></child>
+        </view>
+
+        <!-- 原有的基础拍平测试 -->
+        <text class="uni-title-text uni-common-mt">基础（右边为拍平）</text>
+        <view class="uni-center image-bg">
+          <image class="image" :fade-show="true" mode="widthFix" :src="data.imageSrc" @error="error" @load="load"></image>
+          <image class="image" :fade-show="true" mode="widthFix" :src="data.imageSrc" @error="error" @load="load" flatten></image>
+        </view>
+
+        <button class="uni-btn" @tap="imageFormat">图片格式示例</button>
+        <button class="uni-btn" @tap="imageMode">图片缩放模式示例</button>
+        <button class="uni-btn" @tap="imagePath">图片路径示例</button>
+        <button class="uni-btn" @tap="imageLarge">大图示例</button>
+        <button class="uni-btn" @tap="imageLong">长图示例</button>
+        <button class="uni-btn" @tap="imageOrientation">图片方向修正示例</button>
+
+        <!-- #ifdef VUE3-VAPOR -->
+        <navigator url="/pages/template/2000-image/2000-image">
+          <button class="uni-btn">组件性能测试</button>
+        </navigator>
+        <!-- #endif -->
+      </view>
+    </scroll-view>
+
+    <view v-if="data.autoTest">
+      <image :src="data.setCookieImage"></image>
+      <image :src="data.verifyCookieImage" @error="error"></image>
+    </view>
+  </view>
+</template>
+<script setup lang="uts">
+  import Child from './child.uvue'
+  type DataType = {
+    title: string;
+    imageSrc: string.ImageURIString;
+    loadError: boolean;
+    autoTest: boolean;
+    setCookieImage: string;
+    verifyCookieImage: string;
+    eventLoad: UTSJSONObject | null;
+    eventError: UTSJSONObject | null;
+  }
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    title: 'image',
+    imageSrc: "/static/test-image/logo.png",
+    loadError: false,
+    // 自动化测试
+    autoTest: false,
+    setCookieImage: "",
+    verifyCookieImage: "",
+    eventLoad: null,
+    eventError: null
+  } as DataType)
+
+  const error = (event: ImageErrorEvent) => {
+    data.loadError = true
+    console.log(event.type, event.detail);
+    if (data.autoTest) {
+      data.eventError = {
+        "tagName": event.target?.tagName,
+        "type": event.type,
+        // "errMsg": event.detail.errMsg
+      };
+    }
+  }
+
+  const load = (event: ImageLoadEvent) => {
+    console.log(event.type, event.detail);
+    if (data.autoTest) {
+      data.eventLoad = {
+        "tagName": event.target?.tagName,
+        "type": event.type,
+        "width": event.detail.width,
+        "height": event.detail.height
+      };
+    }
+  }
+
+  const imageFormat = () => {
+    uni.navigateTo({
+      url: '/pages/component/image/image-format'
+    });
+  }
+
+  const imageMode = () => {
+    uni.navigateTo({
+      url: '/pages/component/image/image-mode'
+    });
+  }
+
+  const imagePath = () => {
+    uni.navigateTo({
+      url: '/pages/component/image/image-path'
+    });
+  }
+
+  const imageLarge = () => {
+    uni.navigateTo({
+      url: '/pages/component/image/image-large'
+    });
+  }
+
+  const imageLong = () => {
+    uni.navigateTo({
+      url: '/pages/component/image/image-long'
+    });
+  }
+
+  const imageOrientation = () => {
+    uni.navigateTo({
+      url: '/pages/component/image/image-orientation'
+    });
+  }
+
+  defineExpose({
+    data,
+    error,
+    load,
+    imageFormat,
+    imageMode,
+    imagePath,
+    imageLarge,
+    imageLong
+  })
+</script>
+<style>
+  .styled-image-row {
+    flex-direction: row;
+    background: #fff;
+    justify-content: space-around;
+    height: 120px;
+    align-items: center;
+  }
+
+  /* image样式大合集 */
+  .styled-image {
+    width: 80px;
+    height: 80px;
+    margin: 5px;
+    padding: 5px;
+    border: 2px solid #ff6b6b;
+    border-radius: 10px;
+    background-color: #ffe0e0;
+    /* === 阴影 === */
+    box-shadow: 0 3px 6px rgba(255, 107, 107, 0.3);
+    /* === 可见性 === */
+    opacity: 0.98;
+    /* === 变换 === */
+    transform: rotate(45deg);
+  }
+
+  .image {
+    margin: 20px auto;
+    width: 100px;
+  }
+
+  .image-bg {
+    background: #FFFFFF;
+  }
+</style>

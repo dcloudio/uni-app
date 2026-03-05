@@ -1,0 +1,772 @@
+<template>
+  <view style="flex: 1;">
+    <page-intro content="本页演示 uni.request：设置请求方式（GET/POST/PUT 等）、请求地址与参数，发起请求后在上方查看返回内容；可切换错误码接口、不同 header、超时等，并展示请求任务与拦截器用法。"></page-intro>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-common-mt" style="border-width: 2px;border-style: solid; border-radius: 4px;">
+        <textarea :value="data.res" class="uni-textarea" style="width: 100%"></textarea>
+      </view>
+      <view>
+        <text>地址 : {{ data.host + data.url}}</text>
+        <text>请求方式 : {{data.method}}</text>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @click="sendRequest">发起请求</button>
+      </view>
+    </view>
+    <scroll-view style="flex: 1;" show-scrollbar="true">
+      <view style="padding: 20px;">
+        <text>设置请求方式</text>
+        <view class="uni-common-pb"></view>
+        <view style="flex-direction: row;flex-wrap: wrap;">
+          <button style="padding: 5px; margin-right: 10px;" type="primary" size="mini"
+            @click="changeMethod('GET')">GET</button>
+          <button style="padding: 5px; margin-right: 10px; " type="primary" size="mini"
+            @click="changeMethod('POST')">POST</button>
+          <button style="padding: 5px; margin-right: 10px; " type="primary" size="mini"
+            @click="changeMethod('PUT')">PUT</button>
+          <button style="padding: 5px; margin-right: 10px;" type="primary" size="mini"
+            @click="changeMethod('DELETE')">DELETE</button>
+          <button style="padding: 5px; margin-right: 10px; " type="primary" size="mini"
+            @click="changeMethod('PATCH')">PATCH</button>
+          <button style="padding: 5px;margin-right: 10px;" type="primary" size="mini"
+            @click="changeMethod('OPTIONS')">OPTIONS</button>
+          <button style="padding: 5px;" type="primary" size="mini" @click="changeMethod('HEAD')">HEAD</button>
+        </view>
+      </view>
+      <view style="padding: 20px;">
+        <text>请求返回错误码的接口（默认为GET）</text>
+        <view class="uni-common-pb"></view>
+        <view style="flex-direction: row;flex-wrap: wrap;">
+          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in data.errorCodeUrls" :key="index"
+            @click="changeUrl(item)">{{item}}</button>
+        </view>
+      </view>
+      <view style="padding: 20px;">
+        <text>请求不同header的接口（默认为GET）</text>
+        <view class="uni-common-pb"></view>
+        <view style="flex-direction: row;flex-wrap: wrap;">
+          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in data.headerUrls" :key="index"
+            @click="changeUrl(item)">{{item}}</button>
+        </view>
+      </view>
+      <view style="padding: 20px;">
+        <text>请求不同content-type的接口（默认为GET）</text>
+        <view class="uni-common-pb"></view>
+        <view style="flex-direction: row;flex-wrap: wrap;">
+          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in data.contentTypeUrls" :key="index"
+            @click="changeUrl(item)">{{item}}</button>
+        </view>
+      </view>
+
+      <view style="padding: 20px;">
+        <text>POST请求(有body)</text>
+        <view class="uni-common-pb"></view>
+        <view style="flex-direction: row;flex-wrap: wrap;">
+          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in data.postUrls" :key="index"
+            @click="changeUrlFromPost(item)">{{item}}</button>
+        </view>
+      </view>
+      <!-- #ifdef APP || MP-WEIXIN || WEB -->
+      <view style="padding: 20px;">
+        <text>ArrayBuffer 测试</text>
+        <view class="uni-common-pb"></view>
+        <view style="flex-direction: row;flex-wrap: wrap;">
+          <button style="padding: 5px;" type="primary" size="mini"
+            @click="sendArrayBuffer(false)">请求body为ArrayBuffer，response也为ArrayBuffer</button>
+          <button style="padding: 5px;" type="primary" size="mini"
+            @click="sendArrayBuffer(true)">请求response为ArrayBuffer</button>
+        </view>
+      </view>
+      <!-- #endif -->
+
+      <view style="padding: 20px;">
+        <text>RequestTask 测试</text>
+        <view class="uni-common-pb"></view>
+        <button type="primary" @click="sendChunkRequest">流式请求</button>
+      </view>
+
+      <view style="padding: 20px;">
+        <text>enableQuic 测试</text>
+        <view class="uni-common-pb"></view>
+        <button type="primary" @click="sendH3Request">http3请求</button>
+      </view>
+
+      <view style="padding: 20px;">
+        <text>Accept-Encoding:'gzip'测试</text>
+        <view class="uni-common-pb"></view>
+        <button type="primary" @click="sendGzipRequest">Accept-Encoding:'gzip'请求</button>
+      </view>
+
+      <view style="padding: 20px;">
+        <text>检测query</text>
+        <view class="uni-common-pb"></view>
+        <button type="primary" @click="checkQuery">检测query</button>
+      </view>
+
+      <view class="uni-common-pb"></view>
+      <view class="uni-common-pb"></view>
+    </scroll-view>
+  </view>
+</template>
+<script setup lang="uts">
+  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+  import {
+    testInovkeRequest,
+    CommonOptions
+  } from '@/uni_modules/test-invoke-network-api'
+  // #endif
+
+  class GETDataType {
+    data : UTSJSONObject | null = null
+  }
+
+  const duration = 2000
+  const methodMap = {
+    "GET": "/api/http/method/get",
+    "POST": "/api/http/method/post",
+    "PUT": "/api/http/method/put",
+    "DELETE": "/api/http/method/delete",
+    "PATCH": "/api/http/method/patch",
+    "OPTIONS": "/api/http/method/options",
+    "HEAD": "/api/http/method/head"
+  }
+
+  const h3url = "https://request-h3.dcloud.net.cn/api/http/protocol";
+
+  type DataType = {
+    title: string;
+    res: string;
+    task: RequestTask | null;
+    host: string;
+    url: string;
+    method: RequestMethod | null;
+    data: any | null;
+    header: UTSJSONObject | null;
+    errorCodeUrls: string[];
+    headerUrls: string[];
+    contentTypeUrls: string[];
+    postUrls: string[];
+    jest_requestTask_result: boolean;
+    jest_result: boolean;
+    jest_result_data: string;
+    jest_complete: boolean;
+  }
+
+  const data = reactive({
+    title: 'request',
+    res: '',
+    task: null,
+    host: "https://request.dcloud.net.cn",
+    url: "/api/http/method/get",
+    method: "GET",
+    data: null,
+    header: null,
+    errorCodeUrls: [
+      "/api/http/statusCode/200",
+      "/api/http/statusCode/204",
+      "/api/http/statusCode/301",
+      "/api/http/statusCode/302",
+      "/api/http/statusCode/307",
+      "/api/http/statusCode/400",
+      "/api/http/statusCode/401",
+      "/api/http/statusCode/403",
+      "/api/http/statusCode/404",
+      "/api/http/statusCode/405",
+      "/api/http/statusCode/500",
+      "/api/http/statusCode/502",
+      "/api/http/statusCode/503",
+      "/api/http/statusCode/504",
+    ],
+    headerUrls: [
+      "/api/http/header/ua",
+      "/api/http/header/referer",
+      "/api/http/header/requestCookie",
+      "/api/http/header/setCookie",
+      "/api/http/header/deleteCookie"
+    ],
+    contentTypeUrls: [
+      "/api/http/contentType/text/plain",
+      "/api/http/contentType/text/html",
+      "/api/http/contentType/text/xml",
+      "/api/http/contentType/image/gif",
+      "/api/http/contentType/image/jpeg",
+      "/api/http/contentType/image/png",
+      "/api/http/contentType/application/json",
+      "/api/http/contentType/application/octetStream",
+    ],
+    postUrls: [
+      "/api/http/contentType/json",
+      "/api/http/contentType/xWwwFormUrlencoded",
+    ],
+    //自动化测试例专用
+    jest_requestTask_result: false,
+    jest_result: false,
+    jest_complete: false,
+    jest_result_data: ""
+  } as DataType)
+
+  onUnload(() => {
+    uni.hideLoading();
+    data.task?.abort();
+  })
+
+  const sendChunkRequest = () => {
+    uni.navigateTo({
+      url: "/pages/API/request/requestTask"
+    })
+  }
+
+  const sendH3Request = () => {
+    uni.showLoading({
+      title: "请求中..."
+    })
+    uni.request<string>({
+      url:h3url,
+      // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+      enableQuic:true,
+      // #endif
+      dataType: 'text',
+      success:(res) => {
+        data.res = JSON.stringify(res)
+        uni.hideLoading();
+        uni.showToast({
+          title: '请求成功',
+          icon: 'success',
+          duration: duration
+        })
+        console.log("res: ", res);
+      },
+      fail:(e) => {
+        data.res = e.errMsg
+        uni.hideLoading();
+        uni.showToast({
+          title: '请求失败',
+          icon: 'error',
+          duration: duration
+        })
+        console.log("error: ", e);
+      }
+    })
+  }
+
+  const sendGzipRequest = () => {
+    uni.request({
+      url: data.host + methodMap["POST"],
+      header: {
+        'Accept-Encoding': 'gzip'
+      },
+      method:"POST",
+      data:{
+        "hello": "world"
+      },
+      success:(res) => {
+        console.log("res: ", res);
+        data.jest_result = true;
+      },
+      fail: (e) => {
+        console.log("error: ", e);
+        data.jest_result = false;
+      }
+    })
+  }
+
+  const checkQuery = () => {
+    uni.request<string>({
+      url: "https://request.dcloud.net.cn/api/http/echo/text?Signature=whpMFJg%2B%2Fc0tqdNXxo4330muVdc%3D",
+      success:(res) => {
+        data.jest_result = res.data == "Signature=whpMFJg%2B%2Fc0tqdNXxo4330muVdc%3D\n";
+        console.log("res: ", res);
+      },
+      fail: (e) => {
+        console.log("error: ", e);
+        data.jest_result = false;
+      }
+    })
+  }
+
+  const changeMethod = (e : RequestMethod) => {
+    data.method = e;
+    data.url = methodMap[e] as string;
+    data.data = null;
+    data.header = null;
+  }
+
+  const changeUrl = (e : string) => {
+    data.method = "GET";
+    data.url = e;
+    data.data = null;
+    data.header = null;
+  }
+
+  const changeUrlFromPost = (e : string) => {
+    data.method = "POST";
+    data.url = e;
+    switch (e) {
+      case "/api/http/contentType/json":
+        data.header = {
+          "Content-Type": "application/json"
+        };
+        data.data = {
+          "hello": "world"
+        };
+        break;
+      case "/api/http/contentType/xWwwFormUrlencoded":
+        data.header = {
+          "Content-Type": "application/x-www-form-urlencoded"
+        };
+        data.data = "hello=world";
+        break;
+    }
+  }
+
+  // #ifdef APP | MP-WEIXIN | WEB
+  const sendArrayBuffer = (onlyResponse : boolean) => {
+    data.method = "POST"
+    data.url = "/api/http/contentType/arrayBuffer/post"
+
+    if (onlyResponse) {
+      data.header = {
+        "Content-Type": "application/json"
+      };
+      data.data = {
+        "hello": "world"
+      };
+      uni.showLoading({
+        title: "请求中..."
+      })
+      data.task = uni.request<ArrayBuffer>({
+        url: data.host + data.url,
+        method: data.method,
+        data: data.data,
+        header: data.header,
+        timeout: 60000,
+        sslVerify: false,
+        withCredentials: false,
+        responseType: 'arraybuffer',
+        firstIpv4: false,
+        success: (res) => {
+          if (res.data != null) {
+            let uint8 = new Uint8Array(res.data as ArrayBuffer)
+            console.log('request success', uint8.toString())
+            data.res = '请求结果 : ' + uint8.toString()
+
+            console.log('request success header is :', JSON.stringify(res.header))
+            uni.showToast({
+              title: '请求成功',
+              icon: 'success',
+              mask: true,
+              duration: duration
+            });
+          } else {
+            uni.showModal({
+              content: 'error',
+              showCancel: false
+            });
+          }
+
+        },
+        fail: (err) => {
+          console.log('request fail', err);
+          uni.showModal({
+            content: err.errMsg,
+            showCancel: false
+          });
+        },
+        complete: () => {
+          uni.hideLoading()
+          data.task = null
+        },
+      });
+
+
+    } else {
+      uni.chooseImage({
+        count: 1,
+        albumMode: "system",
+        sizeType: ["original"],
+        sourceType: ["album"],
+        success: (e) => {
+          console.log(e.tempFilePaths[0]);
+          uni.getFileSystemManager().readFile({
+            filePath: e.tempFilePaths[0],
+            success: (res) => {
+              data.data = res.data as ArrayBuffer
+              data.header = {
+                "Content-Type": "application/octet-stream"
+              };
+
+              uni.showLoading({
+                title: "请求中..."
+              })
+              data.task = uni.request<ArrayBuffer>({
+                url: data.host + data.url,
+                method: data.method,
+                data: data.data,
+                header: data.header,
+                timeout: 60000,
+                sslVerify: false,
+                withCredentials: false,
+                firstIpv4: false,
+                responseType: 'arraybuffer',
+                success: (res) => {
+                  console.log()
+                  if (res.data != null) {
+                    uni.showToast({
+                      title: '请求成功',
+                      icon: 'success',
+                      mask: true,
+                      duration: duration
+                    });
+                    data.res = '请求结果 : byteLength=' + (res.data as ArrayBuffer).byteLength
+                    console.log('request success header is :', JSON.stringify(res.header))
+                  } else {
+                    uni.showModal({
+                      content: 'error',
+                      showCancel: false
+                    });
+                  }
+
+                },
+                fail: (err) => {
+                  console.log('request fail', err);
+                  uni.showModal({
+                    content: err.errMsg,
+                    showCancel: false
+                  });
+                },
+                complete: () => {
+                  uni.hideLoading()
+                  data.task = null
+                },
+              });
+
+            }
+          })
+        }
+      });
+    }
+  }
+  // #endif
+
+  const sendRequest = () => {
+    uni.showLoading({
+      title: "请求中..."
+    })
+    data.task = uni.request({
+      url: data.host + data.url,
+      // dataType: "json",
+      // responseType: "json",
+      method: data.method,
+      data: data.data,
+      header: data.header,
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: (res) => {
+        console.log('request success', JSON.stringify(res.data))
+        console.log('request success header is :', JSON.stringify(res.header))
+        uni.showToast({
+          title: '请求成功',
+          icon: 'success',
+          mask: true,
+          duration: duration
+        });
+        data.res = '请求结果 : ' + JSON.stringify(res);
+      },
+      fail: (err) => {
+        console.log('request fail', err);
+        uni.showModal({
+          content: err.errMsg,
+          showCancel: false
+        });
+      },
+      complete: () => {
+        uni.hideLoading()
+        data.task = null
+      },
+    });
+  }
+
+  //自动化测试例专用
+  const jest_request = () => {
+    uni.request({
+      url: data.host + data.url,
+      // dataType: "json",
+      // responseType: "json",
+      method: data.method,
+      data: data.data,
+      header: data.header,
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: () => {
+        data.jest_result = true;
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+  const jest_cookie_request = (needCookie : boolean) => {
+    uni.request({
+      url: data.host + "/api/http/header/requestCookie",
+      method: "GET",
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: (res) => {
+        const requestCookie = (res.data as UTSJSONObject).getJSON("data")?.getAny("requestCookie")
+        data.jest_result_data = JSON.stringify(requestCookie)
+        if (requestCookie instanceof Array) {
+          data.jest_result = needCookie ? requestCookie.length > 0 : requestCookie.length == 0
+        } else {
+          data.jest_result = needCookie ? (requestCookie as UTSJSONObject).toMap().size > 0 : (requestCookie as UTSJSONObject).toMap().size == 0
+        }
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+  const jest_set_cookie = () => {
+    uni.request({
+      url: data.host + "/api/http/header/setCookie",
+      method: "GET",
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: () => {
+        jest_cookie_request(true)
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+  const jest_set_cookie_expires = () => {
+    uni.request({
+      url: data.host + "/api/http/header/setCookie?expires=5",
+      method: "GET",
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: () => {
+        jest_cookie_request(true)
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+  const jest_delete_cookie = () => {
+    uni.request({
+      url: data.host + "/api/http/header/deleteCookie",
+      method: "GET",
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: () => {
+        jest_cookie_request(false)
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+
+
+  const jest_timeout_null = () => {
+    uni.request({
+      url: data.host + (methodMap['GET'] as string),
+      method: "GET",
+      timeout: null,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: () => {
+        data.jest_result = true;
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+  const jest_get_with_data = () => {
+    uni.request({
+      url: "https://unidemo.dcloud.net.cn/api/banner/36kr",
+      method: "GET",
+      data: {
+        column: 'id,post_id,title,author_name,cover,published_at' //需要的字段名
+      },
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: () => {
+        data.jest_result = true;
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+  const jest_get_with_generics = () => {
+    uni.request<GETDataType>({
+      url: data.host + (methodMap['GET'] as string),
+      method: "GET",
+      timeout: null,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: (res : RequestSuccess<GETDataType>) => {
+        data.jest_result = true;
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+  const jest_get_array = () => {
+    uni.request<UTSJSONObject[]>({
+      url: 'https://unidemo.dcloud.net.cn/api/news?column=title,author_name,cover,published_at',
+      method: "GET",
+      success: (res : RequestSuccess<UTSJSONObject[]>) => {
+        if (res.statusCode == 200 && Array.isArray(res.data)) {
+          data.jest_result = true
+        } else {
+          data.jest_result = false
+        }
+      },
+      fail: () => {
+        data.jest_result = false
+      }
+    });
+  }
+
+  const jest_uts_module_invoked = () => {
+    // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+    data.jest_result = false
+    testInovkeRequest({
+      success: (res : any) => {
+        data.jest_result = true
+      },
+      fail: (err : any) => {
+        data.jest_result = false
+      }
+    } as CommonOptions)
+    // #endif
+  }
+
+  const jest_respone_json_string = () => {
+    uni.request({
+      url: "https://request.dcloud.net.cn/api/http/contentType/text/json",
+      success: (res : RequestSuccess<any>) => {
+        data.jest_result = typeof res.data == "object"
+      },
+      fail: (e : RequestFail) => {
+        data.jest_result = false
+      }
+    })
+  }
+
+  const jest_respone_with_string_generics = () => {
+    uni.request<string>({
+      url: data.host + (methodMap['GET'] as string),
+      method: "GET",
+      timeout: null,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: (res : RequestSuccess<string>) => {
+        data.jest_result = true;
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+  const jest_respone_with_404_and_string_generics = () => {
+    uni.request<string>({
+      url: data.host + "/api/http/statusCode/404",
+      method: "GET",
+      timeout: null,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: (res : RequestSuccess<string>) => {
+        data.jest_result = true;
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+  const jest_issue_19687 = () => {
+    uni.request({
+      url: data.host + "/api/http/statusCode/404",
+      method: "GET",
+      success: (res) => {
+        data.jest_result = typeof res.data === 'string';
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+  const jest_test_issue21823_crash = () => {
+    uni.request<string>({
+      url: "http://www.kld20s.cn:88/Appfile/App/Tcrysta/kld/TcnAppUpgrade.json",
+      method: "GET",
+      timeout: null,
+      complete: () => {
+        data.jest_complete = true;
+      }
+    });
+  }
+
+  defineExpose({
+    data,
+    sendArrayBuffer,
+    jest_request,
+    jest_set_cookie,
+    jest_set_cookie_expires,
+    jest_delete_cookie,
+    jest_cookie_request,
+    jest_timeout_null,
+    jest_get_with_data,
+    jest_get_with_generics,
+    jest_get_array,
+    jest_uts_module_invoked,
+    jest_respone_json_string,
+    jest_respone_with_string_generics,
+    jest_respone_with_404_and_string_generics,
+    jest_issue_19687,
+    jest_test_issue21823_crash,
+    sendGzipRequest,
+    checkQuery
+  })
+</script>
+
+<style>
+  .uni-textarea {
+    padding: 9px;
+    font-size: 14px;
+  }
+</style>

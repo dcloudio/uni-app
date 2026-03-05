@@ -1,0 +1,37 @@
+<template>
+	<view>
+		<page-head :title="title"></page-head>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-title">扫码结果：</view>
+			<view v-if="result" class="scan-result">
+				{{result}}
+			</view>
+			<view class="uni-btn-v">
+				<button type="primary" @click="scan">扫一扫</button>
+			</view>
+		</view>
+	</view>
+</template>
+<script setup lang="uts">
+	const title = ref('scanCode')
+	const result = ref('')
+	const scan = () => {
+		uni.scanCode({
+			success: (res: ScanCodeSuccess) => {
+        console.log('res: ',res);
+				result.value = res.result
+			},
+			fail: (err: ScanCodeFail) => {
+        console.log('err: ',err);
+				// 需要注意的是小程序扫码不需要申请相机权限
+			}
+		});
+	}
+</script>
+
+<style>
+	.scan-result {
+		min-height: 25px;
+		line-height: 25px;
+	}
+</style>

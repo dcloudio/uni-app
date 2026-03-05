@@ -1,0 +1,188 @@
+<template>
+  <view class="content">
+    <page-intro content="本页演示 unicloud-db 云数据库组件：集合查询、分页与 loadtime manual，列表展示与 Add/Get 操作，可跳转通讯录等 mixin-datacom 示例。"></page-intro>
+    <unicloud-db ref="udbRef" v-slot:default="{data, pagination, loading, error}" :collection="collection" :getcount="true"
+      loadtime="manual">
+      <list-view v-if="data.length>0" ref="listViewRef" class="list" :scroll-y="true" @scrolltolower="loadMore()">
+        <list-item class="list-item" v-for="(item, _) in data">
+          <view class="list-item-fill">
+            <text>{{item}}</text>
+          </view>
+          <view>
+            <text class="list-item-remove" @click="remove(item.getString('_id')!)">❌</text>
+          </view>
+        </list-item>
+      </list-view>
+      <text class="loading" v-if="loading">Loading...</text>
+      <view v-if="error!=null">{{error.errMsg}}</view>
+      <view class="pagination" v-if="data.length>0">
+        <text class="pagination-item">{{data.length}} / {{pagination.count}}</text>
+      </view>
+    </unicloud-db>
+    <view class="btn-group">
+      <button class="btn" @click="add()">Add</button>
+      <button class="btn" @click="get()">Get</button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+const db = uniCloud.databaseForJQL()
+
+// Template refs
+const udbRef = ref<UniCloudDBElement | null>(null)
+const listViewRef = ref<UniListViewElement | null>(null)
+
+// Data
+const collection = ref('unicloud-db-test')
+const collectionList = ref([
+  db.collection('book').where('name == "水浒传"').getTemp(),
+] as UTSJSONObject[])
+const isTesting = ref(false)
+const addResult = ref({})
+const updateResult = ref({})
+const removeResult = ref({})
+
+// Methods
+function loadMore() {
+  udbRef.value!.loadMore()
+}
+
+function get() {
+  udbRef.value!.loadData({
+    clear: true
+  })
+}
+
+function add() {
+  const value = {
+    title: "title-" + Date.now(),
+    comment: "comment" + Date.now()
+  }
+  udbRef.value!.add(value, {
+    showToast: false,
+    success: (res : UniCloudDBAddResult) => {
+      addResult.value = {
+        id: res.id
+      }
+      get()
+    },
+    fail: (err : any | null) => {
+      showError(err)
+    }
+  })
+}
+
+function update(id : string) {
+  const value = {
+    title: "title-" + Date.now(),
+    comment: "comment" + Date.now()
+  }
+  udbRef.value!.update(id, value, {
+    showToast: false,
+    needLoading: true,
+    needConfirm: false,
+    loadingTitle: "正在更新...",
+    success: (res : UniCloudDBUpdateResult) => {
+      updateResult.value = {
+        updated: res.updated
+      }
+    },
+    fail: (err : any | null) => {
+      showError(err)
+    }
+  })
+}
+
+function remove(id : string) {
+  udbRef.value!.remove(id, {
+    showToast: false,
+    needConfirm: false,
+    needLoading: false,
+    success: (res : UniCloudDBRemoveResult) => {
+      removeResult.value = {
+        deleted: res.deleted
+      }
+    },
+    fail: (err : any | null) => {
+      showError(err)
+    }
+  })
+}
+
+function onQueryLoad(data : Array<UTSJSONObject>, ended : boolean, pagination : UTSJSONObject) {
+  console.log(data, ended, pagination)
+}
+
+function showError(err : any | null) {
+  const error = err as UniCloudError
+  uni.showModal({
+    content: error.errMsg,
+    showCancel: false
+  })
+}
+
+// Lifecycle
+onReady(() => {
+  get()
+})
+
+onPullDownRefresh(() => {
+  udbRef.value!.loadData({
+    clear: true,
+    success: (_ : UniCloudDBGetResult) => {
+      uni.stopPullDownRefresh()
+    }
+  })
+})
+</script>
+
+<style>
+  .content {
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .list {
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .list-item {
+    flex-direction: row;
+    padding: 10px;
+  }
+
+  .list-item-fill {
+    flex: 1;
+  }
+
+  .list-item-remove {
+    padding: 10px;
+  }
+
+  .loading {
+    padding: 10px;
+    text-align: center;
+  }
+
+  .pagination {
+    flex-direction: row;
+    background-color: #f2f2f2;
+  }
+
+  .pagination-item {
+    margin: auto;
+    padding: 5px 10px;
+  }
+
+  .btn-group {
+    flex-direction: row;
+  }
+
+  .btn {
+    flex: 1;
+    margin: 10px;
+  }
+</style>

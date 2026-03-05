@@ -1,0 +1,149 @@
+<template>
+  <scroll-view class="uni-flex-item uni-padding-wrap">
+    <!-- #ifdef APP-ANDROID -->
+    <page-head :title="title"></page-head>
+    <view class="uni-title">
+      <text class="uni-subtitle-text">无约束宽高</text>
+      <text class="uni-subtitle-text">{{info}}</text>
+    </view>
+    <view>
+      <text id="text" class="text"></text>
+    </view>
+    <view class="uni-title">
+      <text class="uni-subtitle-text">约束宽高-多行</text>
+      <text class="uni-subtitle-text">{{info2}}</text>
+    </view>
+    <view class="text-box">
+      <text id="text2" class="text"></text>
+    </view>
+    <view class="uni-title">
+      <text class="uni-subtitle-text">约束宽高-单行</text>
+      <text class="uni-subtitle-text">{{info3}}</text>
+    </view>
+    <view class="text-box">
+      <text id="text3" class="text"></text>
+    </view>
+    <view class="uni-title">
+      <text class="uni-subtitle-text">嵌套</text>
+      <text class="uni-subtitle-text">{{info4}}</text>
+    </view>
+    <view class="text-box">
+      <text id="text4" class="text"></text>
+    </view>
+    <!-- #endif -->
+  </scroll-view>
+</template>
+
+<script setup>
+  const title = 'text-layout';
+  // #ifdef APP-ANDROID
+  const info = ref('');
+  const info2 = ref('');
+  const info3 = ref('');
+  const info4 = ref('');
+
+  const setTextLayout = () => {
+    const element = uni.getElementById('text') as UniTextElement;
+    const layout = new UniTextLayout();
+    layout.setText('HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言；');
+    layout.setColor('red');
+    layout.setFontFamily('AlimamaDaoLiTiTTF');
+    layout.setFontSize('30px');
+    layout.setFontStyle('italic');
+    layout.setFontWeight('bold');
+    layout.setLineHeight('3');
+    layout.setTextShadow('2px 4px rgba(202,207,17,0.5)');
+    layout.setTextDecorationLine('underline');
+    const measureSize = layout.measure({} as UniLayoutConstraintSize);
+    element.style.setProperty('width', measureSize.width);
+    element.style.setProperty('height', measureSize.height);
+    element.setTextLayout(layout);
+    const size = element.getContentSize();
+    info.value = 'width: ' + size.width + 'px height: ' + size.height + 'px';
+  };
+
+  const setTextLayout2 = () => {
+    const element = uni.getElementById('text2') as UniTextElement;
+    const layout = new UniTextLayout();
+    layout.setText('HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言；')
+    layout.setColor('red');
+    layout.setLineHeight('3');
+    layout.setTextAlign('center');
+    const measureSize = layout.measure({
+      maxWidth: 300,
+      minHeight: 100
+    } as UniLayoutConstraintSize);
+    element.style.setProperty('width', measureSize.width);
+    element.style.setProperty('height', measureSize.height);
+    element.setTextLayout(layout);
+    const size = element.getContentSize();
+    info2.value = 'width: ' + size.width + 'px height: ' + size.height + 'px';
+  };
+
+  const setTextLayout3 = () => {
+    const element = uni.getElementById('text3') as UniTextElement;
+    const layout = new UniTextLayout();
+    layout.setText('HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言；')
+    layout.setColor('red');
+    layout.setLineHeight('30px');
+    layout.setTextOverflow('ellipsis');
+    layout.setWhiteSpace("nowrap");
+    const measureSize = layout.measure({
+      maxWidth: 300
+    } as UniLayoutConstraintSize);
+    element.style.setProperty('width', measureSize.width);
+    element.style.setProperty('height', measureSize.height);
+    element.setTextLayout(layout);
+    const size = element.getContentSize();
+    info3.value = 'width: ' + size.width + 'px height: ' + size.height + 'px';
+  };
+
+  const setTextLayout4 = () => {
+    const element = uni.getElementById('text4') as UniTextElement;
+    const layout = new UniTextLayout();
+    layout.setText('HBuilderX，轻巧、极速，极客编辑器；uts，大一统语言；');
+    layout.setColor('red');
+    layout.setFontSize('25px');
+    const child = new UniTextLayout();
+    child.setText("uni-app x，终极跨平台方案；");
+    layout.append(child);
+    const child2 = new UniTextLayout();
+    child2.setText('uts，大一统语言；');
+    child2.setColor("blue");
+    child2.setFontSize("20px");
+    layout.append(child2);
+    const measureSize = layout.measure({
+      maxWidth: 300
+    } as UniLayoutConstraintSize);
+    element.style.setProperty('width', measureSize.width);
+    element.style.setProperty('height', measureSize.height);
+    element.setTextLayout(layout);
+    const size = element.getContentSize();
+    info4.value = 'width: ' + size.width + 'px height: ' + size.height + 'px';
+  };
+
+  onLoad(() => {
+    uni.loadFontFace({
+      family: 'AlimamaDaoLiTiTTF',
+      source: "url('/static/font/AlimamaDaoLiTi.otf')"
+    });
+  });
+
+  onReady(() => {
+    setTextLayout();
+    setTextLayout2();
+    setTextLayout3();
+    setTextLayout4();
+  });
+  // #endif
+</script>
+
+<style>
+  .text-box {
+    align-items: center;
+  }
+
+  .text {
+    background-color: #ffffff;
+  }
+</style>

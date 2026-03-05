@@ -1,0 +1,384 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <view class="uni-padding-wrap">
+      <page-head title="audio"></page-head>
+      <view class="uni-common-mt">
+        <slider ref="sliderRef" :value="position" :min="0" :max="data.duration" @changing="onchanging"
+          @change="onchange"></slider>
+      </view>
+      <view class="uni-title">
+        <text class="uni-title-text">属性示例</text>
+      </View>
+      <text class="uni-text-box uni-common-mt">当前音频播放位置（保留小数点后 3 位）：{{data.currentTime}} s</text>
+      <text class="uni-text-box">音频的长度（单位:s）：{{data.duration}} s</text>
+      <text class="uni-text-box">当前是否停止状态：{{data.isPaused}}</text>
+      <text class="uni-text-box">音频缓冲的时间点：{{data.buffered}} s</text>
+      <text class="uni-text-box">当前音量：{{data.volume}}</text>
+      <button plain :disabled="data.volume == 1" @click="increaseVolume">增加音量</button>
+      <button plain :disabled="data.volume == 0" @click="decreaseVolume">减少音量</button>
+
+      <text class="uni-subtitle-text uni-title">开始播放的位置（单位：s）</text>
+      <input :value="data.startTime" type="number" placeholder="开始播放的位置（单位：s）" class="uni-input"
+        @input="startTimeInput"></input>
+      <boolean-data :defaultValue="false" title="是否自动开始播放" @change="setAutoplay"></boolean-data>
+      <boolean-data :defaultValue="false" title="是否循环播放" @change="setLoop"></boolean-data>
+			<!-- #ifdef APP-IOS -->
+			<boolean-data :defaultValue="true" title="是否遵循系统静音开关" @change="setObeyMuteSwitch"></boolean-data>
+			<!-- #endif -->
+
+      <text class="uni-subtitle-text uni-title"
+        style="padding-left: 10px;padding-top: 10px;padding-right: 10px;">播放倍率(Web/HarmonyOS 不支持)</text>
+      <radio-group class="uni-flex uni-row radio-group" @change="playbackRateChange"
+        style="flex-wrap: wrap;padding: 10px;">
+        <radio value="0.5" style="margin-right: 3px">0.5
+        </radio>
+        <radio value="0.8" style="margin-right: 3px">0.8</radio>
+        <radio value="1.0" style="margin-right: 3px" :checked="data.playbackRateChecked">1.0</radio>
+        <radio value="1.25" style="margin-right: 3px">1.25</radio>
+        <radio value="1.5" style="margin-right: 3px">1.5</radio>
+        <radio value="2.0">2.0</radio>
+      </radio-group>
+
+      <view class="uni-title">
+        <text class="uni-title-text">方法示例</text>
+      </View>
+      <button :disabled="data.isPlaying" @click="play" class="uni-btn">播放</button>
+      <button :disabled="!data.isPlaying" @click="pause" class="uni-btn">暂停</button>
+      <button :disabled="!data.isPlaying" @click="stop" class="uni-btn">停止</button>
+      <button @click="onchangeValue(20)" class="uni-btn">跳转到指定位置20</button>
+      <button @click="onTimeUpdate" class="uni-btn">onTimeUpdate</button>
+      <button @click="offTimeUpdate" class="uni-btn">offTimeUpdate</button>
+      <button @click="onWaiting" class="uni-btn">onWaiting</button>
+      <button @click="offWaiting" class="uni-btn">offWaiting</button>
+
+
+      <text style="color: red;font-size: 15px;margin-top: 10px;">tip:销毁后请重新进入此界面再播放</text>
+      <button @click="destory" class="uni-btn">销毁</button>
+
+      <view class="uni-title">
+        <text class="uni-title-text">格式/路径示例</text>
+      </View>
+      <navigator url="/pages/API/create-inner-audio-context/inner-audio-format" class="uni-btn">
+        <button @click="pause">音频格式示例</button>
+      </navigator>
+      <navigator url="/pages/API/create-inner-audio-context/inner-audio-path" class="uni-btn">
+        <button @click="pause">音频路径示例</button>
+      </navigator>
+      <navigator url="/pages/API/create-inner-audio-context/inner-audio-mult" class="uni-btn">
+        <button @click="pause">多音频同时播放</button>
+      </navigator>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+  const audioUrl = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
+
+  type DataType = {
+    currentTime : number,
+    duration : number,
+    startTime : number,
+    buffered : number,
+    volume : number,
+    isCanplay : boolean,
+    isPlaying : boolean,
+    isPaused : boolean,
+    isPlayEnd : boolean,
+    _isChanging : boolean,
+    _audioContext : InnerAudioContext | null,
+    playbackRateChecked : boolean,
+    onSeekingTest : boolean,
+    onSeekedTest : boolean,
+    onWaitingTest : boolean
+  }
+
+  const title = ref("innerAudioContext")
+  const sliderRef = ref<UniSliderElement | null>(null)
+  const onTimeUpdateCb = ref((res : any) => { })
+  const onWaitingCb = ref((res : any) => { })
+
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    currentTime: 0,
+    duration: 100,
+    startTime: 0,
+    buffered: 0,
+    volume: 0.5,
+    isCanplay: false,
+    isPlaying: false,
+    isPaused: true,
+    isPlayEnd: false,
+    _isChanging: false,
+    _audioContext: null as InnerAudioContext | null,
+    playbackRateChecked: true,
+    onSeekingTest: false,
+    onSeekedTest: false,
+    onWaitingTest: false
+  } as DataType)
+
+  const position = computed(() : number => {
+    return data.isPlayEnd ? 0 : data.currentTime;
+  })
+
+  const stop = () => {
+    console.log('stop');
+    data._audioContext!.onStop(() => {
+      // 第一次点停止时，不触发
+      data.isPaused = true;
+      console.log('音频停止事件');
+    });
+    data._audioContext!.stop();
+    data.isPlaying = false;
+    console.log('stop', data.isPaused);
+  }
+
+  const onCanplay = () => {
+    data._audioContext!.onCanplay(() => {
+      console.log('音频进入可以播放状态事件');
+      data.isCanplay = true;
+      // #ifdef MP
+      // 微信小程序安卓端过早的时机获取的volume为undefine，改为在此处获取
+      data.volume = data._audioContext!.volume;
+      // #endif
+      // 当音频可以播放时，获取缓冲信息
+      data.buffered = data._audioContext!.buffered;
+      data.duration = data._audioContext!.duration
+    });
+  }
+
+  const onchanging = () => {
+    data._isChanging = true;
+  }
+
+  const setAutoplay = () => {
+    data._audioContext!.autoplay = !data._audioContext!.autoplay;
+    console.log(data._audioContext!.autoplay, 'autoplay');
+  }
+
+  const setLoop = () => {
+    data._audioContext!.loop = !data._audioContext!.loop;
+    console.log(data._audioContext!.loop, 'loop');
+  }
+
+	const setObeyMuteSwitch = () => {
+	  data._audioContext!.obeyMuteSwitch = !data._audioContext!.obeyMuteSwitch;
+	  console.log(data._audioContext!.obeyMuteSwitch, 'obeyMuteSwitch');
+	}
+
+
+  const onSeeking = () => {
+    data._audioContext!.onSeeking(() => {
+      console.log('音频进行 seek 操作事件');
+      data.onSeekingTest = true
+    });
+  }
+
+  const onSeeked = () => {
+    data._audioContext!.onSeeked(() => {
+      console.log('音频完成 seek 操作事件');
+      data.onSeekedTest = true
+    });
+  }
+
+  const onchange = (e : UniSliderChangeEvent) => {
+    let pos = e.detail.value;
+    console.log('pos', pos);
+    onSeeking()
+    onSeeked()
+    data._audioContext!.seek(pos);
+    data._isChanging = false;
+  }
+
+  const onchangeValue = (pos : number) => {
+    onSeeking()
+    onSeeked()
+    data._audioContext!.seek(pos);
+    data._isChanging = false;
+  }
+
+  const startTimeInput = (e : UniInputEvent) => {
+    let startTimeValue = parseInt(e.detail.value)
+    data._audioContext!.startTime = startTimeValue;
+    onchangeValue(startTimeValue)
+  }
+
+  const play = () => {
+    if (!data.isCanplay) {
+      uni.showToast({
+        title: '音频未进入可以播放状态，请稍后再试',
+        icon: 'error'
+      });
+      return;
+    }
+    data.isPlaying = true;
+    data._audioContext!.play();
+    data.isPlayEnd = false;
+    if (data._audioContext!.startTime > 0) {
+      onchangeValue(data._audioContext!.startTime)
+    }
+  }
+
+  const onWaiting = () => {
+    data._audioContext!.onWaiting(onWaitingCb.value);
+  }
+
+  const offWaiting = () => {
+    data._audioContext!.offWaiting(onWaitingCb.value);
+  }
+
+  const onTimeUpdate = () => {
+    data._audioContext!.onTimeUpdate(onTimeUpdateCb.value);
+  }
+
+  const offTimeUpdate = () => {
+    data._audioContext!.offTimeUpdate(onTimeUpdateCb.value);
+  }
+
+  const increaseVolume = () => {
+    data.volume = Math.min(data.volume + 0.1, 1);
+    data.volume = parseFloat(data.volume.toFixed(1));
+    data._audioContext!.volume = data.volume
+    console.log('增加音量', data.volume);
+  }
+
+  const decreaseVolume = () => {
+    data.volume = Math.max(data.volume - 0.1, 0);
+    data.volume = parseFloat(data.volume.toFixed(1));
+    console.log('减少音量', data.volume);
+    data._audioContext!.volume = data.volume
+  }
+
+  const onEnded = () => {
+    data._audioContext!.onEnded(() => {
+      console.log('播放结束');
+      data.currentTime = 0;
+      data.startTime = 0
+      data.isPlaying = false;
+      data.isPaused = true;
+      data.isPlayEnd = true;
+      sliderRef.value!.value = 0
+    });
+  }
+
+  const onError = () => {
+    data._audioContext!.onError((err) => {
+      console.log('err', err);
+      data.isPlaying = false;
+      data.isPaused = true;
+    });
+  }
+
+  const pause = () => {
+    data._audioContext!.onPause(() => {
+      console.log('音频暂停事件');
+      data.isPaused = true;
+    });
+    data._audioContext!.pause();
+    data.isPlaying = false;
+  }
+
+  const destory = () => {
+    if (data._audioContext != null) {
+      data.isPlaying = false;
+      data._audioContext!.destroy()
+    }
+  }
+
+  const playbackRateChange = (e : UniRadioGroupChangeEvent) => {
+    // if (data._audioContext != null && data.isPlaying) {
+    console.log(parseFloat(e.detail.value))
+    data._audioContext!.playbackRate = parseFloat(e.detail.value)
+    // }
+  }
+
+  //just for test
+  const setSrc = (src : string) => {
+    if (data._audioContext != null) {
+      data._audioContext!.src = src
+    }
+  }
+
+  onReady(() => {
+    data._audioContext = uni.createInnerAudioContext();
+    data._audioContext!.src = audioUrl;
+    data.volume = data._audioContext!.volume;
+    onCanplay()
+    data._audioContext!.onPlay(() => {
+      data.isPaused = false;
+      data.isPlaying = true;
+      console.log('开始播放', data.isPaused);
+    });
+
+    onTimeUpdateCb.value = (res : any) => {
+      if (data._isChanging) { return; }
+      data.currentTime = data._audioContext!.currentTime;
+      data.buffered = data._audioContext!.buffered;
+      console.log('onTimeUpdateCb', data.currentTime)
+
+      // #ifdef MP
+      // 微信小程序安卓端过早的时机获取的buffered、duration为0，改为在此处获取
+      if (data._audioContext!.duration === 0) {
+        data.buffered = data._audioContext!.buffered;
+        data.duration = data._audioContext!.duration
+      }
+      // #endif
+      if (data.currentTime > data.buffered) {
+        console.log('缓冲不足');
+      }
+    };
+
+    onWaitingCb.value = (res : any) => {
+      console.log('音频加载中事件');
+      data.onWaitingTest = true
+    }
+
+    onTimeUpdate()
+    // onWaiting()
+    onError()
+    onEnded()
+  })
+
+  onUnload(() => {
+    if (data._audioContext != null) {
+      if (data.isPlaying) {
+        stop();
+      }
+      data._audioContext!.destroy()
+    }
+  })
+
+  defineExpose({
+    data,
+    setSrc,
+    play,
+    stop,
+    pause,
+    onchangeValue
+  })
+</script>
+<style>
+  .play-time-area {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+  }
+
+  .duration {
+    margin-left: auto;
+  }
+
+  .play-button-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 50px 0;
+  }
+
+  .icon-play {
+    width: 60px;
+    height: 60px;
+  }
+</style>

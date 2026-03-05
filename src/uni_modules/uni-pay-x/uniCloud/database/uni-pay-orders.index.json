@@ -1,0 +1,110 @@
+[
+  {
+    "IndexName": "order_no",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "order_no",
+          "Direction": "1"
+        }
+      ],
+      "MgoIsUnique": false
+    }
+  },
+  {
+    "IndexName": "out_trade_no",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "out_trade_no",
+          "Direction": "1"
+        }
+      ],
+      "MgoIsUnique": true
+    }
+  },
+  {
+    "IndexName": "transaction_id",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "transaction_id",
+          "Direction": "1"
+        }
+      ],
+      "MgoIsUnique": false
+    }
+  },
+  {
+    "IndexName": "create_date",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "create_date",
+          "Direction": "1"
+        }
+      ],
+      "MgoIsUnique": false
+    }
+  },
+  {
+    "IndexName": "pay_date",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "pay_date",
+          "Direction": "1"
+        }
+      ],
+      "MgoIsUnique": false
+    }
+  },
+  {
+    "IndexName": "total_fee",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "total_fee",
+          "Direction": "1"
+        }
+      ],
+      "MgoIsUnique": false
+    }
+  },
+  {
+    "IndexName": "user_id",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "user_id",
+          "Direction": "1"
+        }
+      ],
+      "MgoIsUnique": false
+    }
+  },
+  {
+    "IndexName": "appid",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "appid",
+          "Direction": "1"
+        }
+      ],
+      "MgoIsUnique": false
+    }
+  },
+  {
+    "IndexName": "appleiap_account_token",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "appleiap_account_token",
+          "Direction": "1"
+        }
+      ],
+      "MgoIsUnique": false
+    }
+  }
+]

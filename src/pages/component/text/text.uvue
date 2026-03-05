@@ -1,0 +1,214 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <!-- 单行文本测试 -->
+      <text class="uni-title-text">单行文本</text>
+      <view class="text-box">
+        <text class="styled-text single-line">{{ singleLineText }}</text>
+      </view>
+      <text class="uni-subtitle-text">单行文本 - 拍平</text>
+      <view class="text-box" flatten>
+        <text class="styled-text single-line" flatten>{{ singleLineText }}</text>
+      </view>
+
+      <!-- 多行文本测试 -->
+      <text class="uni-title-text">多行文本</text>
+      <view class="text-box">
+        <text class="styled-text">{{ multiLineText }}</text>
+      </view>
+      <text class="uni-subtitle-text">多行文本 - 拍平</text>
+      <view class="text-box" flatten>
+        <text class="styled-text" flatten>{{ multiLineText }}</text>
+      </view>
+
+      <text class="uni-title-text">嵌套的text样式合集</text>
+      <text class="uni-common-mt uni-common-mb">
+        <text class="styled-text">text嵌套text的内容：</text>
+        <text class="styled-text">{{multiLineText}}</text>
+      </text>
+
+      <!-- 自定义组件拍平 -->
+      <text class="uni-title-text">自定义组件：右边拍平</text>
+      <view class="view-row">
+        <child></child>
+        <child flatten></child>
+      </view>
+
+      <!-- 动态文本测试 -->
+      <text class="uni-title-text">动态文本</text>
+      <view class="dynamic-text-box">
+        <text class="text">{{ text }}</text>
+      </view>
+      <text class="uni-subtitle-text">动态文本 - 拍平</text>
+      <view class="dynamic-text-box" flatten>
+        <text class="text" flatten>{{ text }}</text>
+      </view>
+      <view class="uni-btn-v">
+        <button class="uni-btn" type="primary" :disabled="!canAdd" @click="add">
+          add line
+        </button>
+        <button class="uni-btn" type="warn" :disabled="!canRemove" @click="remove">
+          remove line
+        </button>
+        <button class="uni-btn" type="primary" @click="textProps">
+          更多属性示例
+        </button>
+        <!-- #ifdef WEB || VUE3-VAPOR -->
+        <button class="uni-btn" type="primary" @click="textWriter">
+          打字机效果示例
+        </button>
+        <!-- #endif -->
+        <!-- #ifdef APP-ANDROID -->
+        <button class="uni-btn" type="primary" @click="textLayout">
+          文本测量
+        </button>
+        <!-- #endif -->
+      </view>
+      <!-- #ifdef VUE3-VAPOR -->
+      <navigator url="/pages/template/4050/4050">
+        <button class="uni-btn uni-common-mb">组件性能测试</button>
+      </navigator>
+      <!-- #endif -->
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import Child from './child.uvue'
+  const title = ref('text')
+
+  // 单行文本
+  const singleLineText = ref('单行文本：16px字体、500粗细、斜体、下划线、1px字间距、1.8行高、文本阴影、居中对齐、不换行溢出省略、带边框圆角、内外边距、背景色')
+
+  // 多行文本
+  const multiLineText = ref('多行文本：字体(16px/500粗细/斜体)、装饰(下划线/阴影)、间距(1px字间距/1.8行高)、对齐(左对齐)、盒模型(边框/圆角/内外边距/背景色)。\n 第二行：展示自动换行效果及所有CSS样式的渲染表现。')
+
+  // 动态文本测试数据
+  const texts: string[] = [
+    'HBuilderX，轻巧、极速，极客编辑器',
+    'uni-app x，终极跨平台方案',
+    'uniCloud，js serverless云服务',
+    'uts，大一统语言',
+    'uniMPSdk，让你的App具备小程序能力',
+    'uni-admin，开源、现成的全端管理后台',
+    'uni-id，开源、全端的账户中心',
+    'uni-pay，开源、云端一体、全平台的支付',
+    'uni-ai，聚合ai能力',
+    'uni-cms，开源、云端一体、全平台的内容管理平台',
+    'uni-im，开源、云端一体、全平台的im即时消息',
+    'uni统计，开源、完善、全平台的统计报表',
+    '......'
+  ]
+  const text = ref('')
+  const canAdd = ref(true)
+  const canRemove = ref(false)
+  let extraLine: string[] = []
+
+  const add = () => {
+    extraLine.push(texts[extraLine.length % 12])
+    text.value = extraLine.join('\n')
+    canAdd.value = extraLine.length < 12
+    canRemove.value = extraLine.length > 0
+  }
+
+  const remove = () => {
+    if (extraLine.length > 0) {
+      extraLine.pop()
+      text.value = extraLine.join('\n')
+      canAdd.value = extraLine.length < 12
+      canRemove.value = extraLine.length > 0
+    }
+  }
+
+  const textProps = () => {
+    uni.navigateTo({
+      url: '/pages/component/text/text-props'
+    })
+  }
+
+  const textWriter = () => {
+    uni.navigateTo({
+      url: '/pages/component/text/text-writer'
+    })
+  }
+
+  const textLayout = () => {
+    uni.navigateTo({
+      url: '/pages/component/text/text-layout'
+    })
+  }
+</script>
+
+<style>
+  .view-row {
+    flex-direction: row;
+    background: #fff;
+    justify-content: space-around;
+  }
+  .text-box {
+    margin-bottom: 15px;
+    padding: 10px;
+    display: flex;
+    min-height: 60px;
+    background-color: #ffffff;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* 包含所有文字和排版CSS的综合样式 */
+  .styled-text {
+    /* 文字专用CSS */
+    /* 字体相关 */
+    font-size: 16px;
+    font-weight: 500;
+    font-style: italic;
+    color: #1a1a1a;
+    /* 行高与字间距 */
+    line-height: 1.8;
+    letter-spacing: 1px;
+    /* 对齐 */
+    text-align: left;
+    /* 文字装饰 */
+    text-decoration-line: underline;
+    /* 文本阴影 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    /* 排版CSS */
+    width: 100%;
+    margin: 5px 0;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+  }
+
+  /* 单行文本特定样式 */
+  .single-line {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+
+  .dynamic-text-box {
+    margin-bottom: 15px;
+    padding: 10px;
+    display: flex;
+    min-height: 50px;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .text {
+    font-size: 14px;
+    color: #353535;
+    line-height: 22px;
+    text-align: center;
+  }
+</style>

@@ -1,0 +1,7 @@
+{
+  "name": "verify-client",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

@@ -1,0 +1,524 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+  <page-intro content="本页演示 dialog 弹窗与页面信息：展示 pageBody、safeAreaInsets、窗口尺寸等；通过按钮跳转下一页、打开各 dialog 示例（含错误路径、triggerParentHide、页面样式等）。"></page-intro>
+  <view class="uni-padding-wrap">
+    <view class="uni-common-mt flex-row" v-if="data.pageBody != null"><text>pageBody: {</text>
+      <text>top: </text><text id="page-body-top">{{data.pageBody!.top}}</text><text>,</text>
+      <text>right: </text><text id="page-body-right">{{data.pageBody!.right}}</text><text>,</text>
+      <text>bottom: </text><text id="page-body-bottom">{{data.pageBody!.bottom}}</text><text>,</text>
+      <text>left: </text><text id="page-body-left">{{data.pageBody!.left}}</text><text>,</text>
+      <text>width: </text><text id="page-body-width">{{data.pageBody!.width}}</text><text>,</text>
+      <text>height: </text><text id="page-body-height">{{data.pageBody!.height}}</text>
+      <text>}</text>
+    </view>
+    <view class="uni-common-mt flex-row" v-if="data.safeAreaInsets != null"><text>safeAreaInsets: {</text>
+      <text>top: </text><text id="page-safe-area-insets-top">{{data.safeAreaInsets!.top}}</text><text>,</text>
+      <text>right: </text><text id="page-safe-area-insets-right">{{data.safeAreaInsets!.right}}</text><text>,</text>
+      <text>bottom: </text><text id="page-safe-area-insets-bottom">{{data.safeAreaInsets!.bottom}}</text><text>,</text>
+      <text>left: </text><text id="page-safe-area-insets-left">{{data.safeAreaInsets!.left}}</text><text>}</text>
+    </view>
+    <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || WEB -->
+    <view class="uni-common-mt flex-row" v-if="data.width != null"><text>width: </text><text id="page-width">{{data.width!}}</text>
+    </view>
+    <view class="uni-common-mt flex-row" v-if="data.height != null"><text>height: </text><text id="page-height">{{data.height!}}</text>
+    </view>
+    <view class="uni-common-mt flex-row" v-if="data.statusBarHeight != null"><text>statusBarHeight: </text><text id="page-statusBarHeight">{{data.statusBarHeight!}}</text>
+    </view>
+    <!-- #endif -->
+    <button class="uni-common-mt" id="go-next-page" @click="goNextPage">
+      go next page
+    </button>
+    <button class="uni-common-mt" id="open-dialog1" @click="openDialog1">
+      open dialog 1
+    </button>
+    <button class="uni-common-mt" id="open-dialog11" @click="openDialog11">
+      open dialog 1-1
+    </button>
+    <button class="uni-common-mt" id="open-dialog1-wrong-path" @click="openDialog1WrongPath">
+      open dialog page 1 with wrong path
+    </button>
+    <button class="uni-common-mt" id="go-next-page-open-dialog1" @click="goNextPageOpenDialog1">
+      go next page & open dialog1
+    </button>
+    <button class="uni-common-mt" id="open-dialog3" @click="openDialog3">
+      open dialog 3 test page style
+    </button>
+    <button class="uni-common-mt" id="open-dialog4" @click="openDialogWithTriggerParentHide">
+      openDialog with triggerParentHide
+    </button>
+    <button class="uni-common-mt" id="open-dialog5" @click="openDialogCheckMoreAttribute">
+      openDialog check more attribute
+    </button>
+    <button class="uni-common-mt" id="open-dialog1-with-relative-path" @click="openDialogWithRelativePath">
+      openDialog with relative path
+    </button>
+    <button class="uni-common-mt" id="open-dialog6" @click="openDialogCheckSetNavigationBarColor">
+      openDialog check setNavigationBarColor
+    </button>
+    <button class="uni-common-mt" @click="openDialogWithTextarea">
+      openDialog with textarea
+    </button>
+    <button class="uni-common-mt" @click="openDialogWithInput">
+      openDialog with input
+    </button>
+    <text class="uni-common-mt choose-open-animation-type-title">choose open dialogPage animationType</text>
+    <radio-group class="choose-open-animation-type-radio-group" @change="handleOpenAnimationType">
+      <radio class="ml-10 uni-common-mt" v-for="item in data.openAnimationTypeList" :key="item" :value="item"
+        :checked="data.openAnimationType == item">{{ item }}
+      </radio>
+    </radio-group>
+  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import {
+    state,
+    setLifeCycleNum
+  } from '@/store/index.uts'
+
+  type OpenAnimationType =
+    'auto' |
+    'none' |
+    'slide-in-right' |
+    'slide-in-left' |
+    'slide-in-top' |
+    'slide-in-bottom' |
+    'fade-in' |
+    'zoom-out' |
+    'zoom-fade-out'
+
+  type DataType = {
+    pageBody: UniPageBody | null;
+    safeAreaInsets: UniSafeAreaInsets | null;
+    width: number | null;
+    height: number | null;
+    statusBarHeight: number | null;
+    jest_click_x: number;
+    jest_click_y: number;
+    openAnimationType: OpenAnimationType;
+    openAnimationTypeList: string[];
+  }
+
+  const data = reactive({
+    pageBody: null,
+    safeAreaInsets: null,
+    width: null,
+    height: null,
+    statusBarHeight: null,
+    jest_click_x: -1,
+    jest_click_y: -1,
+    openAnimationType: 'none',
+    openAnimationTypeList: [
+      'auto',
+      'none',
+      'slide-in-right',
+      'slide-in-left',
+      'slide-in-top',
+      'slide-in-bottom',
+      'fade-in',
+      'zoom-out',
+      'zoom-fade-out'
+    ]
+  } as DataType)
+  onLoad(() => {
+    console.log('dialogPage parent onLoad')
+  })
+
+  onPageShow(() => {
+    console.log('dialogPage parent onShow')
+    setLifeCycleNum(state.lifeCycleNum + 10)
+  })
+
+  onReady(() => {
+    console.log('dialogPage parent onReady')
+    const currentPage = getCurrentPages()[getCurrentPages().length - 1]
+    data.pageBody = currentPage.pageBody;
+    data.safeAreaInsets = currentPage.safeAreaInsets
+    // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || WEB
+    data.width = currentPage.width
+    data.height = currentPage.height
+    data.statusBarHeight = currentPage.statusBarHeight
+    // #endif
+  })
+
+  onPageHide(() => {
+    console.log('dialogPage parent onHide')
+    setLifeCycleNum(state.lifeCycleNum - 10)
+  })
+
+  onUnload(() => {
+    console.log('dialogPage parent onUnload')
+  })
+  const goNextPage = () => {
+    uni.navigateTo({
+      url: '/pages/API/dialog-page/next-page'
+    })
+  }
+  const openDialog1 = () => {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-1?name=dialog1',
+      animationType: data.openAnimationType,
+      success(res) {
+        console.log('openDialogPage1 success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('openDialogPage1 fail', err)
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('openDialogPage1 complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+  const openDialog11 = () => {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-1-1',
+      animationType: data.openAnimationType
+    })
+  }
+  const openDialog2 = () => {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-2',
+      animationType: data.openAnimationType,
+      disableEscBack: true,
+      success(res) {
+        console.log('openDialog2 success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('openDialog2 fail', err)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('openDialog2 complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+  const openDialog1WrongPath = () => {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-11?name=dialog1',
+      success(res) {
+        console.log('openDialogPage1 success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('openDialogPage1 fail', err)
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('openDialogPage1 complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+  const goNextPageOpenDialog1 = () => {
+    uni.navigateTo({
+      url: '/pages/API/dialog-page/next-page',
+      success() {
+        setTimeout(() => {
+          uni.openDialogPage({
+            url: '/pages/API/dialog-page/dialog-1?name=dialog1',
+            animationType: data.openAnimationType,
+            success(res) {
+              console.log('openDialogPage1 success', res)
+              // 自动化测试
+              setLifeCycleNum(state.lifeCycleNum + 1)
+            },
+            fail(err) {
+              console.log('openDialogPage1 fail', err)
+              // 自动化测试
+              setLifeCycleNum(state.lifeCycleNum - 4)
+            },
+            complete(res) {
+              console.log('openDialogPage1 complete', res)
+              // 自动化测试
+              setLifeCycleNum(state.lifeCycleNum + 1)
+            }
+          })
+        }, 2000)
+      }
+    })
+  }
+  const closeDialog = () => {
+    uni.closeDialogPage({
+      success(res) {
+        console.log('closeDialog success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('closeDialog fail', err)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('closeDialog complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+  const closeSpecifiedDialog = (index : number) => {
+    const dialogPages = getCurrentPages()[getCurrentPages().length - 1].getDialogPages()
+    uni.closeDialogPage({
+      dialogPage: dialogPages[index],
+      success(res) {
+        console.log('closeSomeOneDialog success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('closeSomeOneDialog fail', err)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('closeSomeOneDialog complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+  // 自动化测试
+  const openDialog4 = () => {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-4',
+    })
+  }
+  const openDialogWithTriggerParentHide = () => {
+    uni.openDialogPage({
+      url: `/pages/API/dialog-page/dialog-4?tag=${Date.now()}`,
+      triggerParentHide: true,
+      success(res) {
+        console.log('openDialogWithTriggerParentHide success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('openDialogWithTriggerParentHide fail', err)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('openDialogWithTriggerParentHide complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+  const openDialogCheckMoreAttribute = () => {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-5',
+    })
+  }
+  const openDialogCheckSetNavigationBarColor = () => {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-6',
+    })
+  }
+  const openDialogWithTextarea = () => {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-textarea'
+    })
+  }
+  const openDialogWithInput = () => {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-input'
+    })
+  }
+  const setLifeCycleNumFunc = (value : number) => {
+    setLifeCycleNum(value)
+  }
+  const getLifeCycleNum = () : number => {
+    return state.lifeCycleNum
+  }
+  const closeDialogSimple = () => {
+    uni.closeDialogPage()
+  }
+  const jest_getTapPoint = () => {
+    const systemInfo = uni.getSystemInfoSync()
+    let ratio = 1
+    if (systemInfo.platform == 'android') {
+      ratio = systemInfo.devicePixelRatio
+    }
+    data.jest_click_x = systemInfo.screenWidth / 2 * ratio
+    data.jest_click_y = systemInfo.statusBarHeight * ratio + 10
+  }
+  const openDialog2Simple = () => {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-2'
+    });
+  }
+  const setPageStyleForTest = (style : UTSJSONObject) => {
+    const pages = getCurrentPages()[getCurrentPages().length - 1].getDialogPages();
+    if (pages.length > 0) pages[pages.length - 1].setPageStyle(style);
+  }
+  const setPageStyleForTest2 = (style : UTSJSONObject) => {
+    getCurrentPages()[getCurrentPages().length - 1].setPageStyle(style);
+  }
+  const openDialog3 = () => {
+    uni.openDialogPage({ url: '/pages/API/dialog-page/dialog-3', animationType: data.openAnimationType })
+  }
+  const handleOpenAnimationType = (e : RadioGroupChangeEvent) => {
+    data.openAnimationType = e.detail.value as OpenAnimationType
+  }
+  const openDialogWithRelativePath = () => {
+    uni.openDialogPage({
+      url: './dialog-1?name=dialog1',
+      animationType: data.openAnimationType,
+      success(res) {
+        console.log('openDialogPage1 success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('openDialogPage1 fail', err)
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('openDialogPage1 complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+  // 自动化测试
+  const getDialogPage = () : UniPage | null => {
+    const dialogPages = getCurrentPages()[getCurrentPages().length - 1].getDialogPages()
+    return dialogPages.length > 0 ? dialogPages[0] : null
+  }
+  // 自动化测试
+  const getDialogPageRoute = () : string => {
+    const dialogPage = getDialogPage()
+    if(dialogPage != null){
+      return dialogPage.route
+    }
+    return ''
+  }
+  // 自动化测试
+  const dialogPageCheckGetDialogPages = () : boolean => {
+    const dialogPage = getDialogPage()!
+    const dialogPages = dialogPage.getDialogPages()
+    const res = dialogPages.length == 0
+    return res
+  }
+  // 自动化测试
+  const dialogPageGetPageStyle = () : UTSJSONObject => {
+    const dialogPage = getDialogPage()!
+    return dialogPage.getPageStyle()
+  }
+  // 自动化测试
+  const dialogPageSetPageStyle = () => {
+    const dialogPage = getDialogPage()!
+    dialogPage.setPageStyle({
+      backgroundColorContent: 'red'
+    })
+  }
+  // 自动化测试
+  const dialogPageCheckGetElementById = () : boolean => {
+    const dialogPage = getDialogPage()!
+    const element = dialogPage.getElementById('dialog1-go-next-page')
+    let res = element != null
+    // #ifndef APP-ANDROID
+    if (res) {
+      const elPage = element!.getPage()
+      console.log('elPage', elPage)
+      res = elPage === dialogPage
+    }
+    // #endif
+    return res
+  }
+  // 自动化测试
+  const dialogCheckGetAndroidView = () : boolean => {
+    const dialogPage = getDialogPage()!
+    const androidView = dialogPage.getAndroidView()
+    const res = androidView != null
+    return res
+  }
+  // 自动化测试
+  const dialogCheckGetIOSView = () : boolean => {
+    const dialogPage = getDialogPage()!
+    const IOSView = dialogPage.getIOSView()
+    const res = IOSView != null
+    return res
+  }
+  // 自动化测试
+  const dialogCheckGetHTMLElement = () : boolean => {
+    const dialogPage = getDialogPage()!
+    const HTMLView = dialogPage.getHTMLElement()
+    const res = HTMLView != null
+    return res
+  }
+
+  defineExpose({
+    data,
+    getLifeCycleNum,
+    setLifeCycleNum: setLifeCycleNumFunc,
+    openDialog1,
+    openDialog11,
+    openDialog2,
+    openDialog1WrongPath,
+    goNextPageOpenDialog1,
+    closeDialog,
+    closeSpecifiedDialog,
+    openDialog4,
+    openDialogWithTriggerParentHide,
+    openDialogCheckMoreAttribute,
+    openDialogWithInput,
+    closeDialogSimple,
+    jest_getTapPoint,
+    openDialog2Simple,
+    setPageStyleForTest,
+    setPageStyleForTest2,
+    openDialog3,
+    openDialogWithRelativePath,
+    getDialogPageRoute,
+    dialogPageCheckGetDialogPages,
+    dialogPageGetPageStyle,
+    dialogPageSetPageStyle,
+    dialogPageCheckGetElementById,
+    dialogCheckGetAndroidView,
+    dialogCheckGetIOSView,
+    dialogCheckGetHTMLElement,
+    openDialogCheckSetNavigationBarColor
+  })
+</script>
+
+<style>
+  .uni-padding-wrap{
+    padding-bottom: var(--uni-safe-area-inset-bottom);
+  }
+
+  .ml-10 {
+    margin-left: 10px;
+  }
+
+  .choose-open-animation-type-title {
+    font-weight: bold;
+  }
+
+  .choose-open-animation-type-radio-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .flex-row{
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+</style>

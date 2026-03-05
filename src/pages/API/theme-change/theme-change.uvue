@@ -1,0 +1,137 @@
+<template>
+  <view class="uni-padding-wrap">
+    <!-- #ifdef APP -->
+    <view class="uni-common-mt item-box">
+      <text>osTheme:</text>
+      <text id="theme">{{ osTheme }}</text>
+    </view>
+    <!-- #endif -->
+    <view class="uni-common-mt item-box">
+      <text>应用当前主题:</text>
+      <text id="theme">{{ appTheme }}</text>
+    </view>
+
+    <!-- #ifdef APP -->
+    <view>
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 修改appTheme主题（此处仅为演示API，本应用并未完整适配暗黑模式） </text>
+      </view>
+    </view>
+    <view class="uni-list uni-common-pl">
+      <radio-group @change="radioChange" class="radio-group">
+        <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in items" :key="item"
+          :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item" :checked="index === current">
+          {{ item }}
+        </radio>
+      </radio-group>
+    </view>
+    <!-- #endif -->
+
+  </view>
+</template>
+
+<script setup lang="uts">
+  
+
+  const osThemeChangeId = ref(0)
+  const appThemeChangeId = ref(0)
+  const osTheme = ref("light" as string)
+  const appTheme = ref("light" as string)
+  const originalTheme = ref("light" as string)
+  const current = ref(0)
+  const items = ref([
+    "light",
+    "dark",
+    "auto"
+  ] as string[])
+
+  function bindOsThemeChange() : number {
+    //注册osTheme变化监听
+    return uni.onOsThemeChange((res : OsThemeChangeResult) => {
+      osTheme.value = res.osTheme
+    })
+  }
+
+  function bindAppThemeChange() : number {
+    // #ifdef APP
+    //注册appTheme变化监听
+    return uni.onAppThemeChange((res : AppThemeChangeResult) => {
+      appTheme.value = res.appTheme
+    })
+    // #endif
+    // #ifdef WEB || MP
+    return uni.onHostThemeChange((res : OnHostThemeChangeCallbackResult) => {
+      appTheme.value = res.hostTheme
+    })
+    // #endif
+  }
+
+  function setAppTheme(value : string) {
+    uni.setAppTheme({
+      theme: value as 'light' | 'dark' | 'auto',
+      success: function () {
+        console.log("设置appTheme为", value, "成功")
+      },
+      fail: function (e : IAppThemeFail) {
+        console.log("设置appTheme为", value, "失败,原因:", e.errMsg)
+      }
+    })
+  }
+
+  function radioChange(e : UniRadioGroupChangeEvent) {
+    const theme = e.detail.value
+    setAppTheme(theme)
+    uni.showToast({
+      icon: 'none',
+      title: '当前选中:' + theme,
+    })
+  }
+
+  onReady(() => {
+    uni.getSystemInfo({
+      success: (res : GetSystemInfoResult) => {
+        // #ifdef APP
+        osTheme.value = res.osTheme!
+        originalTheme.value = res.appTheme!
+        appTheme.value = res.appTheme == "auto" ? res.osTheme! : res.appTheme!
+        current.value = items.value.indexOf(res.appTheme!)
+        // #endif
+        // #ifdef WEB || MP
+        appTheme.value = res.hostTheme!
+        // #endif
+      }
+    })
+    // #ifdef APP
+    osThemeChangeId.value = bindOsThemeChange()
+    // #endif
+    appThemeChangeId.value = bindAppThemeChange()
+  })
+
+  onUnload(() => {
+    //注销监听
+    // #ifdef APP
+    uni.offAppThemeChange(appThemeChangeId.value)
+    uni.offOsThemeChange(osThemeChangeId.value)
+    // #endif
+    // #ifdef WEB || MP
+    uni.offHostThemeChange(appThemeChangeId.value)
+    // #endif
+    //暂时屏蔽 避免5.1安卓设备自动化测试不过
+    // uni.showToast({
+    //   "position": "bottom",
+    //   "title": "已停止监听主题切换"
+    // })
+  })
+</script>
+
+<style>
+  .item-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .uni-list-cell {
+    justify-content: flex-start;
+  }
+</style>

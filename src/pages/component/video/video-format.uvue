@@ -1,0 +1,122 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <page-head title="video-format"></page-head>
+    <!-- 自动化测试图片显示是否正常 -->
+    <image v-if="autoTestData.autoTest" src="/static/logo_square.jpeg" style="width: 50px;height: 50px;"></image>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title">
+        <text class="uni-title-text">支持的视频格式示例</text>
+      </view>
+      <view v-for="(item,index) in supportFormats" :key="index">
+        <text class="uni-subtitle-text">{{item.format}}</text>
+        <video :id="'video-' + item.format" class="video" :src="item.src" :controls="true" :direction="-90"
+          @error="onError(item.format, $event as UniVideoErrorEvent)"></video>
+      </view>
+      <view class="uni-title">
+        <text class="uni-title-text">暂不支持的格式</text>
+      </view>
+      <view v-for="(item,index) in notSupportFormats" :key="index">
+        <text class="uni-subtitle-text">{{item.format}}</text>
+        <video :id="'video-' + item.format" :ref="'videoRef-' + item.format" class="video" :src="item.src"
+          :controls="true" :direction="-90"></video>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup>
+  type VideoFormat = {
+    format : string
+    src : string
+  }
+  let supportFormats = ref([
+    // TODO web本地运行时本地服务返回的content-type不对，导致本地视频无法播放。此外web端原生video不支持flv、m3u8、avi格式，但是和app端相比多了ogg格式的支持
+    {
+      format: 'mp4',
+      src: 'https://web-ext-storage.dcloud.net.cn/video/sample/2minute-demo.mp4'
+    },
+    {
+      format: 'm4v',
+      src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.m4v'
+    },
+    {
+      format: 'mov',
+      src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mov'
+    },
+    // #ifndef APP-HARMONY
+    {
+      format: 'webm（iOS、Safari、鸿蒙不支持）',
+      src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.webm'
+    },
+    // #endif
+    {
+      format: '3gp',
+      src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.3gp'
+    },
+    // #ifndef WEB || MP
+    {
+      format: 'flv',
+      src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.flv'
+    },
+    // #endif
+    // #ifndef WEB
+    {
+      format: 'm3u8',
+      src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.m3u8'
+    },
+    // #endif
+    // #ifndef WEB || MP || APP-HARMONY
+    {
+      format: '本地m3u8',
+      src: '/static/test-video/2minute-demo.m3u8'
+    },
+    // #endif
+    {
+      format: '错误路径',
+      src: 'https://www.dcloud.net.cn/errorpath.mp4'
+    },
+  ] as Array<VideoFormat>)
+
+  let notSupportFormats = ref([
+    // #ifndef WEB
+    {
+      format: 'ogg',
+      src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.ogg'
+    },
+    // #endif
+    // #ifndef MP
+    {
+      format: 'avi',
+      src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.avi'
+    }
+    // #endif
+  ] as Array<VideoFormat>)
+
+  // 自动化测试
+  const autoTestData = reactive({ autoTest: false })
+  const isError = reactive({ value: false })
+
+  const onError = (format : string, e : UniVideoErrorEvent) => {
+    console.log(format + ":" + JSON.stringify(e));
+    if (format != "错误路径") {
+      isError['value'] = true;
+    }
+  }
+
+  onReady(() => {
+    // const v = uni.createVideoContext("video-mp4",getCurrentInstance()!.proxy!)
+    // v?.play()
+  })
+
+  defineExpose({ isError, autoTestData })
+</script>
+
+<style>
+  .video {
+    height: 200px;
+  }
+</style>

@@ -1,0 +1,317 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view style="position:absolute;z-index:0;">
+        <view class="common fixed default">
+          <text>position: fixed</text>
+          <text>z-index: 10</text>
+        </view>
+        <view class="common fixed specified">
+          <text>position: fixed</text>
+          <text>z-index: 5</text>
+        </view>
+        <view class="common fixed floor">
+          <text>position: fixed</text>
+          <text>z-index: -1</text>
+        </view>
+      </view>
+      <view style="top: 170px;">
+        <view class="common" style="background-color: cyan;z-index: 10;">
+          <text>z-index: 10</text>
+        </view>
+        <view ref="view" class="common" style="background-color: green;z-index: 5;top: -100px;left: 100px;"
+          @click="changeZIndex(20)">
+          <text>z-index: {{data.zIndex}}</text>
+          <text>点击修改z-index</text>
+        </view>
+        <view class="common" style="background-color: blue;top: -120px;left: 175px;">
+          <text>z-index: 0</text>
+        </view>
+      </view>
+      <view>
+        <view>
+          <view class="common fixed popup" style="background-color: yellow;z-index: 5;">
+            <text>position: fixed</text>
+            <text>z-index: 5</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view v-if="data.autoTest">
+      <view style="z-index: 1;position: fixed;">111</view>
+      <view style="width: 750rpx;">222</view>
+    </view>
+    <view style="top: 50px;">
+      <text class="uni-title-text uni-common-mt">text 组件</text>
+      <text class="common" style="background-color: cyan;z-index: 10;text-align: right;">text组件: z-index: 10</text>
+      <text class="common" style="background-color: green;top: -37px;left: 87px;z-index: 5;text-align: right;">text组件: z-index: 5</text>
+      <text class="common" style="background-color: blue;top: -75px;left: 175px;z-index: 0;text-align: right;">text组件: z-index: 0</text>
+    </view>
+    <view style="top: 50px;">
+      <text class="uni-title-text uni-common-mt">image 组件</text>
+      <image class="common image-zindex" style="background-color: cyan;z-index: 10;" src="/static/test-image/logo.png"></image>
+      <image class="common image-zindex" style="background-color: green;top: -37px;left: 87px;z-index: 5;" src="/static/test-image/logo.png"></image>
+      <image class="common image-zindex" style="background-color: blue;top: -75px;left: 175px;z-index: 0;" src="/static/test-image/logo.png"></image>
+    </view>
+
+    <view class="uni-common-mb" style="top: 50px;">
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+      <text class="uni-subtitle-text">z-index: 10 和 z-index: 5</text>
+      <scroll-view class="common" style="z-index: 10; background-color: cyan;">
+        <text>z-index: 10</text>
+      </scroll-view>
+      <scroll-view class="common" style="top: -40px;left: 30px;z-index: 5;background-color: green;">
+        <text style="line-height: 100px;">z-index: 5</text>
+      </scroll-view>
+    </view>
+
+    <view class="uni-common-mt" style="top:100px;">
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 z-index </text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.zIndexValue}}</text>
+          <text class="uni-info">获取值: {{data.zIndexActual}}</text>
+          <view class="test-box">
+            <view class="common-bg" style="background-color: blue; z-index: 1;">
+              <text class="common-text-bg">蓝色view</text>
+            </view>
+            <view ref="viewRef" class="common-dynamic test-view" style="background-color: cyan;" :style="{ zIndex: data.zIndexValue }">
+              <text class="common-text-bg">青色view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.zIndexValue}}</text>
+          <text class="uni-info">获取值: {{data.zIndexActualText}}</text>
+          <view class="test-box">
+            <text class="common-bg common-text-bg" style="background-color: blue; z-index: 1;">蓝色text</text>
+            <text ref="textRef" class="common-dynamic common-text-bg test-text" style="background-color: cyan;" :style="{ zIndex: data.zIndexValue }">青色text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.zIndexValue}}</text>
+          <text class="uni-info">获取值: {{data.zIndexActualImage}}</text>
+          <view class="test-box">
+            <image class="common-bg common-image-bg" style="z-index: 1;" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic common-image-bg test-image" :style="{ zIndex: data.zIndexValue }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="zIndexEnum" title="z-index 枚举值" @change="radioChangeZIndex" :compact="true"></enum-data>
+        <input-data :defaultValue="data.zIndexValue.toString()" title="z-index 自定义值" type="number" @confirm="inputChangeZIndex"></input-data>
+      </view>
+
+      <view class="uni-common-mb" style="top: 50px;">
+        <text>native-view组件: z-index: 10 和 z-index: 5</text>
+        <native-view class="common" style="z-index: 10; background-color: cyan;"></native-view>
+        <native-view class="common" style="top: -40px;left: 30px;z-index: 5;background-color: green;"></native-view>
+      </view>
+    </view>
+
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  type DataType = {
+    zIndex: number
+    autoTest: boolean
+    zIndexValue: number
+    zIndexActual: string
+    zIndexActualText: string
+    zIndexActualImage: string
+  }
+
+  const data = reactive({
+    zIndex: 5,
+    autoTest: false,
+    zIndexValue: 5,
+    zIndexActual: '',
+    zIndexActualText: '',
+    zIndexActualImage: ''
+  } as DataType)
+
+  const view = ref(null as UniElement | null)
+
+  const changeZIndex = (zIndexValue: number) => {
+    data.zIndex = 20
+    view.value?.style.setProperty('z-index', zIndexValue)
+  }
+
+  const zIndexEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '-1' },
+    { value: 2, name: '0' },
+    { value: 3, name: '1' },
+    { value: 4, name: '10' },
+  ]
+
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+
+  const getPropertyValues = () => {
+    data.zIndexActual = viewRef.value?.style.getPropertyValue('z-index') ?? ''
+    data.zIndexActualText = textRef.value?.style.getPropertyValue('z-index') ?? ''
+    data.zIndexActualImage = imageRef.value?.style.getPropertyValue('z-index') ?? ''
+  }
+
+  const changeZIndexProperty = (value: number) => {
+    data.zIndexValue = value
+    viewRef.value?.style.setProperty('z-index', value)
+    textRef.value?.style.setProperty('z-index', value.toString())
+    imageRef.value?.style.setProperty('z-index', value.toString())
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeZIndex = (index: number) => {
+    const selectedItem = zIndexEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      const value = selectedItem.name === '' ? 0 : parseInt(selectedItem.name)
+      changeZIndexProperty(value)
+    }
+  }
+
+  const inputChangeZIndex = (value: string) => {
+    const numValue = parseInt(value)
+    if (!isNaN(numValue)) {
+      changeZIndexProperty(numValue)
+    }
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    data,
+    changeZIndex,
+    radioChangeZIndex
+  })
+</script>
+
+<style>
+  .common {
+    width: 125px;
+    height: 125px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .fixed {
+    position: fixed;
+  }
+
+  .default {
+    background-color: yellow;
+    z-index: 10;
+    top: var(--uni-safe-area-inset-top);
+    left: var(--uni-safe-area-inset-left);
+  }
+
+  .specified {
+    background-color: yellowgreen;
+    z-index: 5;
+    /* #ifdef APP || MP */
+    top: 87px;
+    left: 87px;
+    /* #endif */
+    /* #ifdef WEB */
+    top: calc(var(--uni-safe-area-inset-top) + 87px);
+    left: calc(var(--uni-safe-area-inset-left) + 87px);
+    /* #endif */
+  }
+
+  .floor {
+    background-color: chocolate;
+    /* #ifdef APP || MP */
+    top: 250px;
+    left: 175px;
+    /* #endif */
+    /* #ifdef WEB */
+    top: calc(var(--uni-safe-area-inset-top) + 250px);
+    left: calc(var(--uni-safe-area-inset-left) + 175px);
+    /* #endif */
+    z-index: -1;
+  }
+
+  .popup {
+    /* #ifdef APP || MP */
+    top: 320px;
+    left: 87px;
+    /* #endif */
+    /* #ifdef WEB */
+    top: calc(var(--uni-safe-area-inset-top) + 320px);
+    left: calc(var(--uni-safe-area-inset-left) + 87px);
+    /* #endif */
+    height: 40px;
+  }
+
+  .image-zindex {
+    width: 125px;
+    height: 125px;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .common-dynamic {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+
+  .common-bg {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .common-text-bg {
+    color: white;
+    font-size: 12px;
+    padding: 5px;
+  }
+
+  .common-image-bg {
+    width: 80px;
+    height: 80px;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 120px;
+    background-color: gray;
+    position: relative;
+  }
+
+</style>

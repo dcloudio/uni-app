@@ -1,0 +1,307 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view>
+      <page-head :title="data.title"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="demo">
+          <image v-if="data.imageSrc" :src="data.imageSrc" class="image" mode="widthFix"></image>
+          <text v-else class="uni-hello-addfile" @click="chooseImage">+ 选择图片</text>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+  import {
+    testInovkeUploadFile,
+    CommonOptions
+  } from '@/uni_modules/test-invoke-network-api'
+  // #endif
+
+  type DataType = {
+    title: string;
+    imageSrc: string;
+    task: UploadTask | null;
+    jest_result: boolean;
+  }
+
+  const data = reactive({
+    title: 'uploadFile',
+    imageSrc: '',
+    task: null,
+    //自动化测试例专用
+    jest_result: false,
+  } as DataType)
+
+  onUnload(() => {
+    data.imageSrc = '';
+    uni.hideLoading();
+    data.task?.abort();
+  })
+
+  const chooseImage = () => {
+    uni.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album'],
+      success: (res) => {
+        console.log('chooseImage success, temp path is', res.tempFilePaths[0])
+        var imageSrc = res.tempFilePaths[0]
+        uni.showLoading({
+          title: '上传中'
+        })
+        data.task = uni.uploadFile({
+          url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
+          filePath: imageSrc,
+          name: 'file',
+          formData: {
+            'user': 'test'
+          },
+          success: (res) => {
+            console.log('uploadImage success, res is:', res)
+            uni.showToast({
+              title: '上传成功',
+              icon: 'success',
+              duration: 1000
+            })
+            data.imageSrc = imageSrc
+          },
+          fail: (err) => {
+            console.log('uploadImage fail', err);
+            uni.showModal({
+              content: err.errMsg,
+              showCancel: false
+            });
+          },
+          complete: (res) => {
+            uni.hideLoading();
+            data.task = null
+          }
+        });
+      },
+      fail: (err) => {
+        console.log('chooseImage fail', err)
+      }
+    })
+  }
+
+  //自动化测试例专用
+  const jest_uploadFile = () => {
+    const imageSrc = "/static/test-image/logo.png";
+    uni.uploadFile({
+      url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
+      filePath: imageSrc,
+      name: 'file',
+      formData: {
+        'user': 'test'
+      },
+      success: () => {
+        data.jest_result = true;
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    })
+  }
+
+  const jest_uploadFile_with_uni_env = () => {
+    /**
+     * 微信小程序只支持USER_DATA_PATH，且子目录未创建的情况下不能直接下载到子目录内
+     */
+    const filePath = `${uni.env.USER_DATA_PATH}/uni-app.png`
+    uni.downloadFile({
+      url: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
+      filePath: filePath,
+      success: () => {
+        uni.uploadFile({
+          url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
+          filePath: filePath,
+          name: 'file',
+          success: () => {
+            data.jest_result = true;
+          },
+          fail: () => {
+            data.jest_result = false;
+          },
+        })
+      },
+      fail: () => {
+        data.jest_result = false
+      }
+    });
+  }
+
+  const jest_cookie_upload = (needCookie : boolean) => {
+    const imageSrc = "/static/test-image/logo.png";
+    uni.uploadFile({
+      url: 'https://request.dcloud.net.cn/api/http/header/upload',
+      filePath: imageSrc,
+      name: 'file',
+      success: (res : UploadFileSuccess) => {
+        const responseData = JSON.parseObject(res.data)
+        const errCode = responseData?.getNumber("errCode")
+        if (errCode != null && errCode == 1000) {
+          data.jest_result = needCookie ? false : true;
+        } else {
+          data.jest_result = needCookie ? true : false;
+        }
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    })
+  }
+
+  const jest_set_cookie = () => {
+    uni.request({
+      url: "https://request.dcloud.net.cn/api/http/header/setCookie",
+      method: "GET",
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: () => {
+        jest_cookie_upload(true)
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+  const jest_delete_cookie = () => {
+    uni.request({
+      url: "https://request.dcloud.net.cn/api/http/header/deleteCookie",
+      method: "GET",
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: () => {
+        jest_cookie_upload(false)
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    });
+  }
+
+  const jest_files_upload = () => {
+    const imageSrc = "/static/test-image/logo.png";
+    uni.uploadFile({
+      url: 'https://unidemo.dcloud.net.cn/upload',
+      files: [
+        {
+          name: "file1",
+          uri: imageSrc
+        } as UploadFileOptionFiles,
+        {
+          name: "file2",
+          uri: imageSrc
+        } as UploadFileOptionFiles
+      ],
+      success: (res : UploadFileSuccess) => {
+        if (res.statusCode == 200) {
+          data.jest_result = true;
+        }
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    })
+  }
+
+  const jest_uts_module_invoked = () => {
+    // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+    testInovkeUploadFile({
+      success: (res : any) => {
+        data.jest_result = true
+      },
+      fail: (err : any) => {
+        data.jest_result = false
+      }
+    } as CommonOptions)
+    // #endif
+  }
+
+  const jest_uploadFileWithoutFile = () => {
+    const imageSrc = "/static/test-image/logo.png";
+    uni.uploadFile({
+      url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
+      formData: {
+        'user': 'test'
+      },
+      success: (res) => {
+        console.log("success: ",res);
+        data.jest_result = true;
+      },
+      fail: (err) => {
+        console.log("fail: ", err);
+        data.jest_result = false;
+      },
+    })
+  }
+
+  const jest_uploadFileVerifyUA = () => {
+    uni.uploadFile({
+      url: 'https://request.dcloud.net.cn/api/http/header/upload',
+      header:{
+        "User-Agent":"custom"
+      },
+      formData: {
+        'user': 'test'
+      },
+      success: (res : UploadFileSuccess) => {
+        const responseData = JSON.parseObject(res.data)
+        const innerData = responseData?.getJSON("data")
+        const header = innerData?.getJSON("requestHeaders")
+        const uas = header?.getArray("user-agent")
+        if(uas != null) {
+          data.jest_result = (uas.length == 1)
+        }
+      },
+      fail: () => {
+        data.jest_result = false;
+      },
+    })
+  }
+
+  defineExpose({
+    data,
+    jest_uploadFile,
+    jest_uploadFile_with_uni_env,
+    jest_set_cookie,
+    jest_delete_cookie,
+    jest_files_upload,
+    jest_uts_module_invoked,
+    jest_uploadFileWithoutFile,
+    jest_uploadFileVerifyUA
+  })
+</script>
+
+<style>
+  .image {
+    width: 100%;
+  }
+
+  .demo {
+    background: #fff;
+    padding: 25px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .uni-hello-addfile {
+    text-align: center;
+    background: #fff;
+    padding: 25px;
+    margin-top: 10px;
+    font-size: 19px;
+    color: #808080;
+  }
+</style>

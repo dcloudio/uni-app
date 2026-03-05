@@ -1,0 +1,1 @@
+文档已移至 [uni-upgrade-center](https://uniapp.dcloud.net.cn/uniCloud/upgrade-center.html)

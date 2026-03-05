@@ -1,0 +1,43 @@
+<template>
+  <view style="flex:1">
+    <uni-back-arrow-circle class="back" arrow-class="arrow"></uni-back-arrow-circle>
+    <video ref="video" class="video-box" :src="url" controls="false" autoplay="true" show-progress="false"
+      show-fullscreen-btn="false" show-play-btn="false" show-center-play-btn="false"></video>
+  </view>
+</template>
+
+<script setup lang="uts">
+const url = ref("")
+const coverPath = ref("")
+
+onLoad((options : OnLoadOptions) => {
+  uni.$once("__ONRECEIVEURL",(value:UTSJSONObject)=>{
+    url.value = value["url"] as string;
+    coverPath.value = value["cover"] as string;
+  })
+  uni.$emit("__ONFULLVIDEOLOAD",null)
+})
+</script>
+
+<style>
+  .video-box {
+    width: 100%;
+    flex: 1;
+    height: 100%;
+  }
+  .back{
+    position: absolute;
+    /* #ifdef APP || MP */
+    top: var(--status-bar-height);
+    /* #endif */
+    /* #ifdef WEB */
+    top: 10px;
+    /* #endif */
+    z-index: 10;
+  }
+  /* uni-back-arrow-circle组件 自定义样式 */
+  .arrow {
+    border-left-color: #FFFFFF !important;
+    border-bottom-color: #FFFFFF !important;
+  }
+</style>

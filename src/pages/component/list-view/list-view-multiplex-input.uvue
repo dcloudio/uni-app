@@ -1,0 +1,69 @@
+<template>
+<!-- #ifdef WEB -->
+  <view>
+  <!-- #endif -->
+    <list-view id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
+      <list-item v-for="index in data.item_count" :key="index" class="item" @click="itemClick(index)">
+        <text>item---<text @click.stop="childTextClick(index)">----{{index}}</text></text>
+        <input style="border-width: 1px; border-style: solid;" :placeholder="index + ''"
+          :value="index ==1 ? `第一个` :index " />
+      </list-item>
+    </list-view>
+  <!-- #ifdef WEB -->
+  </view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+type DataType = {
+  item_count: number,
+  isTesting: boolean,
+}
+
+// 使用reactive包装数据，便于自动化测试获取
+const data = reactive({
+  item_count: 20,
+  isTesting: false,
+} as DataType)
+
+const listViewElement = ref(null as UniListViewElement | null)
+
+function onScrollTolower(event : ScrollToLowerEvent) {
+  setTimeout(() => {
+    if (data.isTesting && data.item_count > 20) {
+      return
+    }
+    data.item_count += 20
+  }, 300)
+}
+
+function itemClick(index : number) {
+  console.log("itemTextClick---" + index)
+}
+
+function childTextClick(index : number) {
+  console.log("childTextClick---" + index)
+}
+
+onReady(() => {
+  listViewElement.value = uni.getElementById<UniListViewElement>('listview')
+})
+
+defineExpose({
+  data
+})
+</script>
+
+<style>
+  .item {
+    padding: 15px;
+    margin: 0 0 5px 0;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+
+  .button_item {
+    width: 200px;
+  }
+</style>

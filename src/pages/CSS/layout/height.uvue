@@ -1,0 +1,236 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view>
+        <text>height: 100px</text>
+        <view class="demo-box">
+          <view class="common" style="height: 100px;"></view>
+          <view class="common" style="height: 100px;" flatten></view>
+        </view>
+      </view>
+
+      <view >
+        <text>height: 50%</text>
+        <view class="demo-box" style="height: 100px;">
+          <view class="common" style="height: 50%;"></view>
+          <view class="common" style="height: 50%;" flatten></view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
+      </view>
+
+      <view class="demo-box">
+        <scroll-view style="width: 100px; height: 80px; background-color: cyan;">
+          <text class="scroll-view-label">height: 80px</text>
+        </scroll-view>
+        <scroll-view style="width: 100px; height: 120px; background-color: cyan;">
+          <text class="scroll-view-label">height: 120px</text>
+        </scroll-view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 height </text>
+      </view>
+
+      <!-- 普通版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.height}}</text>
+          <text class="uni-info">获取值: {{data.heightActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ height: data.height }">
+              <text>view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.height}}</text>
+          <text class="uni-info">获取值: {{data.heightActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-dynamic test-text" :style="{ height: data.height }">text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.height}}</text>
+          <text class="uni-info">获取值: {{data.heightActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ height: data.height }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.height}}</text>
+          <text class="uni-info">获取值: {{data.heightActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ height: data.height }" flatten>
+              <text>view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.height}}</text>
+          <text class="uni-info">获取值: {{data.heightActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ height: data.height }" flatten>text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.height}}</text>
+          <text class="uni-info">获取值: {{data.heightActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ height: data.height }" flatten src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="heightEnum" title="height 枚举值" @change="radioChangeHeight" :compact="true"></enum-data>
+        <input-data :defaultValue="data.height" title="height 自定义值" type="text" @confirm="inputChangeHeight"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: height: 80px 和 height: 120px</text>
+        <view class="demo-box">
+          <native-view style="width: 100px; height: 80px; background-color: cyan;"></native-view>
+          <native-view style="width: 100px; height: 120px; background-color: cyan;"></native-view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const heightEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '50px' },
+    { value: 4, name: '150px' },
+    { value: 5, name: '0%' },
+    { value: 6, name: '50%' },
+    { value: 7, name: 'auto' }
+  ]
+
+  const data = reactive({
+    height: '100px',
+    heightActual: '',
+    heightActualText: '',
+    heightActualImage: '',
+    heightActualFlat: '',
+    heightActualTextFlat: '',
+    heightActualImageFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const getPropertyValues = () => {
+    data.heightActual = viewRef.value?.style.getPropertyValue('height') ?? ''
+    data.heightActualFlat = viewRefFlat.value?.style.getPropertyValue('height') ?? ''
+    data.heightActualText = textRef.value?.style.getPropertyValue('height') ?? ''
+    data.heightActualTextFlat = textRefFlat.value?.style.getPropertyValue('height') ?? ''
+    data.heightActualImage = imageRef.value?.style.getPropertyValue('height') ?? ''
+    data.heightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('height') ?? ''
+  }
+
+  const changeHeight = (value: string) => {
+    data.height = value
+    viewRef.value?.style.setProperty('height', value)
+    viewRefFlat.value?.style.setProperty('height', value)
+    textRef.value?.style.setProperty('height', value)
+    textRefFlat.value?.style.setProperty('height', value)
+    imageRef.value?.style.setProperty('height', value)
+    imageRefFlat.value?.style.setProperty('height', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeHeight = (index: number) => {
+    const selectedItem = heightEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeHeight(selectedItem.name)
+    }
+  }
+
+  const inputChangeHeight = (value: string) => {
+    changeHeight(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeHeight,
+    data
+  })
+</script>
+
+<style>
+  .common {
+    flex: 1;
+    margin:0 10px;
+    background-color: cyan;
+  }
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .common-dynamic {
+    width: 100px;
+    background-color: cyan;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 150px;
+    background-color: gray;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    text-align: center;
+  }
+
+</style>

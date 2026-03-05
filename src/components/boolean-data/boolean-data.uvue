@@ -1,0 +1,54 @@
+<script setup lang="uts">
+import { state } from '@/store/index.uts'
+// 样式隔离配置: 受全局样式影响
+defineOptions({
+  styleIsolation: 'app'
+})
+const emit = defineEmits(['change'])
+const props = defineProps({
+  title: {
+    type: String,
+    default: ''
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  defaultValue: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const isDarkMode = computed(() => state.isDarkMode)
+const _checked = ref(false)
+
+onMounted(() => {
+  _checked.value = props.defaultValue
+})
+
+// @ts-ignore
+function _change(e : UniSwitchChangeEvent) {
+  _checked.value = e.detail.value;
+  emit('change', _checked.value)
+}
+</script>
+
+<template>
+  <view class="button-data-main uni-flex" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+    <text class="uni-title" style="width:80%">{{ title }}</text>
+    <switch :checked="_checked" :disabled="disabled" :color="isDarkMode ? '#a8a8b7' : '#007AFF'" @change="_change" />
+  </view>
+</template>
+
+<style>
+.button-data-main {
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, .06));
+  align-items: center;
+}
+.uni-title {
+  color: var(--text-color, #333333);
+}
+</style>

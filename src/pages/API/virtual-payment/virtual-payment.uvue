@@ -1,0 +1,242 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <page-head title="虚拟支付"></page-head>
+    <view style="padding-left: 20px; padding-right: 20px;">
+      <text>
+        requestVirtualPayment api 适用于消耗性类型、非消耗性类型、自动续期订阅类型、非自动续期订阅类型产品的购买。\n\n
+        1. 消耗性类型：该类型的产品可以设置购买数量，默认是1，最大值是10； \n
+        2. 非消耗性类型、自动续期订阅类型、非自动续期订阅类型: 这些类型的产品购买数量设置无效，数量只能是1; \n
+        3. 非消耗性类型：该类型产品一个appleId只能购买一次，可以在任何登陆该appleId账号的设备上restore获取。
+      </text>
+      <button style="margin-top: 20px;" type="primary" v-for="(item,index) in productList" :key="index"
+        @click="requestVirtualPayment(item)">{{item.name}}</button>
+
+      <text>
+        \nrestoreTransactions api 适用于非消耗性类型、自动续期订阅类型、非自动续期订阅类型产品的购买。\n\n
+        1. 非消耗性类型: 返回每个已购买的非消耗性类型产品的购买记录；\n
+        2. 自动续期订阅类型: 返回每个已购买的自动续期订阅类型产品的最新购买记录，沙盒账号最多可自动续订 12 次；\n
+        3. 非自动续期订阅类型: 返回每个已购买的非自动续期订阅类型产品的最新购买记录, 该类型订阅可以连续多次购买，开发者需要自己的后台计算产品过期的时间。\n
+        Note: 不能用来恢复消耗性类型的购买记录。
+      </text>
+      <button style="margin-top: 20px;" type="primary" @click="restoreTransactions">恢复购买订单列表</button>
+
+      <text>
+        \ngetUnfinishedTransactions api 适用于获取未完成的各种类型产品的购买记录（用来防止丢单）。\n\n
+        1. 比如用户点击购买已经付款成功，但因网络、手机没电关机等特殊情况，Apple IAP
+        没有返回客户端对应的购买凭证，从而导致无法finish该交易导致的丢单，可以在需要的地方调用该api获得此类未finished的交易记录; \n
+        2. 针对消耗性类型产品交易，只能通过该api获取未finished的交易，防止丢单；\n
+        3. 对于其他类型产品未finished交易, 不仅可以通过该api获取，也可以通过restoreTransactions api (也可获取已经finished的交易)获取；
+      </text>
+      <button style="margin-top: 20px; margin-bottom: 50px;" type="primary"
+        @click="getUnfinishedTransactions">获取未结束的订单列表</button>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+
+<script setup lang="uts">
+  export type PayItem = { id : string, name : string, quantity ?: number }
+
+  const productList = ref<PayItem[]>([])
+  const virtualPaymentManager = ref<Object>(Object)
+
+  const getPackageName = (): string => {
+    const res = uni.getAppBaseInfo();
+    let packageName : string = ""
+
+    // #ifdef APP-ANDROID
+    packageName = res.packageName
+    // #endif
+
+    // #ifdef APP-IOS
+    packageName = res.bundleId
+    // #endif
+
+    return packageName
+  }
+
+  const isDebug = (): boolean => {
+    if (getPackageName() == 'io.dcloud.uniappx') {
+      return true
+    }
+    return false
+  }
+
+  const isProd = (): boolean => {
+    if (getPackageName() == 'io.dcloud.hellouniappx') {
+      return true
+    }
+    return false
+  }
+
+  const isCustom = (): boolean => {
+    if (isDebug() == false && isProd() == false) {
+      return true
+    }
+    return false
+  }
+
+  const initProductList = () => {
+    productList.value.push({
+      name: '消耗性产品：个人赞助1元',
+      id: isDebug() ? "uniappx.consumable.sponsor_1" : "uniappx.consumable.sponsor1",
+      quantity: 1
+    } as PayItem);
+
+    productList.value.push({
+      name: '消耗性产品：金牌赞助5元, 数量=2',
+      id: isDebug() ? "uniappx.consumable.sponsor_50" : "uniappx.consumable.sponsor50",
+      quantity: 2
+    } as PayItem);
+
+    productList.value.push({
+      name: '非消耗性产品: 赞助特效1元',
+      id: isDebug() ? "uniappx.nonconsumable.sponsorskin_1" : "uniappx.nonconsumable.sponsorskin1"
+    } as PayItem);
+
+    // productList.value.push({
+    //   name: '自动续期订阅产品：每月定期赞助1元',
+    //   id: isDebug() ? "uniappx.autorenewable.monthly_1" : "uniappx.autorenewable.monthly1"
+    // } as PayItem);
+
+    productList.value.push({
+      name: '非自动续期订阅产品：月赞助1元',
+      id: isDebug() ? "uniappx.nonrenewable.monthly_1" : "uniappx.nonrenewable.monthly1"
+    } as PayItem);
+
+    // productList.value.push({
+    //   name: '测试不存在的产品',
+    //   id: "uniappx.nonrenewable.none"
+    // } as PayItem);
+  }
+
+  onLoad(() => {
+    virtualPaymentManager.value = uni.getVirtualPaymentManager()
+    initProductList()
+  })
+
+  const requestVirtualPayment = (e: PayItem) => {
+    uni.showLoading({
+      title: "",
+      mask: true
+    });
+
+    uni.requestVirtualPayment({
+      //需要将orderId转换为如下符合UUID规则的字符串，然后赋值给参数appAccountToken, 传入不符合UUID规则的字符串无效
+      apple: {
+        productId: e.id,
+        appAccountToken: "123eaaaa-e89b-12d3-a456-42661417400b",
+        quantity: e.quantity ?? 1,
+      },
+      success: (res) => {
+        uni.hideLoading()
+        console.log("购买成功：该productId= " + res.apple?.productId)
+        //TODO: 开发者server验证逻辑
+
+        //经过开发者server验证成功后请结束该交易
+        uni.showToast({
+          title: "购买成功：" + res.apple?.productId,
+          icon: 'success'
+        })
+
+        virtualPaymentManager.value.finishTransaction({
+          transaction: res.apple,
+          success: (r) => {
+            console.log("关单成功, 该productId= " + res.apple?.productId)
+          },
+          fail: (e) => {
+            console.log("关单失败, 该productId= " + res.apple?.productId)
+          }
+        })
+      },
+      fail: (e) => {
+        uni.hideLoading()
+        console.log("购买失败：errSubject= " + e.errSubject + ", errCode= " + e.errCode + ", errMsg= " + e.errMsg)
+        uni.showToast({
+          title: "购买失败错误码：" + e.errCode,
+          icon: 'error'
+        })
+      }
+    })
+  }
+
+  const restoreTransactions = () => {
+    uni.showLoading({
+      title: "",
+      mask: true
+    });
+
+    virtualPaymentManager.value.restoreTransactions({
+      success: (res) => {
+        uni.hideLoading()
+        console.log("restore成功的交易个数：" + res.transactions.length)
+        res.transactions.forEach(transaction => {
+
+          //TODO: 开发者server验证逻辑
+
+          console.log("restore成功的交易productId= " + transaction.productId)
+        })
+        uni.showToast({
+          title: "restore成功的交易个数：" + res.transactions.length,
+          icon: 'success'
+        })
+      },
+      fail: (e) => {
+        uni.hideLoading()
+        console.log("restore失败：errSubject= " + e.errSubject + ", errCode= " + e.errCode + ", errMsg= " + e.errMsg)
+        uni.showToast({
+          title: "restore失败错误码：" + e.errCode,
+          icon: 'error'
+        })
+      }
+    })
+  }
+
+  const getUnfinishedTransactions = () => {
+    uni.showLoading({
+      title: "",
+      mask: true
+    });
+
+    virtualPaymentManager.value.getUnfinishedTransactions({
+      success: (res) => {
+        uni.hideLoading()
+        console.log("获取未结束的订单列表个数：" + res.transactions.length)
+        uni.showToast({
+          title: "获取未结束的订单列表个数：" + res.transactions.length,
+          icon: 'success'
+        })
+
+        res.transactions.forEach(transaction => {
+
+          console.log("getUnfinishedTransactions成功的交易productId= " + transaction.productId)
+          //TODO: 开发者server验证逻辑
+
+          //经过开发者server验证成功后请结束该交易
+          virtualPaymentManager.value.finishTransaction({
+            transaction: transaction,
+            success: (r) => {
+              console.log("关单成功, 该productId= " + transaction.productId)
+            },
+            fail: (e) => {
+              console.log("关单失败, 该productId= " + transaction.productId)
+            }
+          })
+        })
+      },
+      fail: (e) => {
+        uni.hideLoading()
+        console.log("获取未结束的订单列表失败：errSubject= " + e.errSubject + ", errCode= " + e.errCode + ", errMsg= " + e.errMsg)
+        uni.showToast({
+          title: "获取未结束的订单列表失败错误码" + e.errCode,
+          icon: 'error'
+        })
+      }
+    })
+  }
+
+</script>

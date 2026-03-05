@@ -1,0 +1,82 @@
+<template>
+	<view>
+		<page-head :title="data.title"></page-head>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-title uni-common-mt">
+				{{data.appear ? '小球出现' : '小球消失'}}
+			</view>
+			<scroll-view class="scroll-view" :scrollTop="data.scrollTop">
+				<view class="scroll-area">
+					<text class="notice">向下滚动让小球出现</text>
+					<view class="ball"></view>
+				</view>
+			</scroll-view>
+		</view>
+	</view>
+</template>
+<script setup lang="uts">
+  let observer: IntersectionObserver | null = null;
+
+  type DataType = {
+    appear: boolean;
+    title: string;
+    testRes: ObserveResult | null;
+    scrollTop: number;
+  }
+
+  const data = reactive({
+    appear: false,
+    title: 'intersectionObserver',
+    testRes: null,
+    scrollTop: 0
+  } as DataType)
+
+  onReady(() => {
+    observer = uni.createIntersectionObserver(getCurrentInstance()!.proxy!, {});
+    observer.relativeTo('.scroll-view').observe('.ball', (res: ObserveResult) => {
+      data.testRes = res;
+      if (res.intersectionRatio > 0 && !data.appear) {
+        data.appear = true;
+      } else if (res.intersectionRatio <= 0 && data.appear) {
+        data.appear = false;
+      }
+    })
+  })
+
+  onUnload(() => {
+    if (observer) {
+      observer.disconnect()
+    }
+  })
+
+  defineExpose({
+    data
+  })
+</script>
+<style>
+	.scroll-view {
+		height: 200px;
+		background: #fff;
+		border: 1px solid #ccc;
+		box-sizing: border-box;
+	}
+
+	.scroll-area {
+		height: 650px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.notice {
+		margin-top: 75px;
+		margin:75px 0 200px 0;
+	}
+
+	.ball {
+		width: 100px;
+		height: 100px;
+		background: #4cd964;
+		border-radius: 100px;
+	}
+</style>

@@ -1,0 +1,13 @@
+<template>
+  <view :id="compId" ref="uxToastItemRef">
+    <text>hello</text>
+    <slot></slot>
+  </view>
+</template>
+
+<script setup lang="uts">
+const compId = ref('comp2-id')
+</script>
+
+<style>
+</style>

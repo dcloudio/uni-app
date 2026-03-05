@@ -1,0 +1,108 @@
+<template>
+  <view class="background">
+    <view class="container">
+      <view class="nav">
+        <view class="left_content">
+          <text class="left_icon" @click="onBack()">{{backIcon}}</text>
+        </view>
+
+        <view class="title_content">
+          <text class="title">{{title}}</text>
+        </view>
+
+      </view>
+      <web-view class="web_container" :src="url"></web-view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const instance = getCurrentInstance()!.proxy!
+
+  const url = ref('')
+  const title = ref('')
+  const animationType = ref('slide-out-bottom')
+  const backIcon = ref('\ue601')
+
+  function onBack() {
+    uni.closeDialogPage({
+      dialogPage: instance.$page,
+      animationType: animationType.value,
+      success(res) {
+        console.log('closeThisDialog success', res)
+      },
+      fail(err) {
+        console.log('closeThisDialog fail', err)
+      }
+    })
+  }
+
+  onLoad((options : OnLoadOptions) => {
+    url.value = options["url"] as string;
+    title.value = options["title"] as string;
+    animationType.value = options["animationType"] as string;
+  })
+</script>
+
+<style>
+  .background {
+    background-color: #007aff;
+    width: 100%;
+    height: 100%;
+  }
+
+  .nav {
+    height: 45px;
+    width: 100%;
+    position: relative;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 45px;
+  }
+
+  .left_content {
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 100%;
+  }
+
+  .left_icon {
+    color: white;
+    top: 5px;
+    height: 100%;
+    font-family: uni-icon;
+    font-size: 26px;
+  }
+
+  .title_content {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    left: 45px;
+    right: 45px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .title {
+    color: white;
+    font-size: 17px;
+  }
+
+  .container {
+    padding-top: var(--status-bar-height);
+    width: 100%;
+    position: absolute;
+    height: 100%;
+  }
+
+  .web_container {
+    background-color: #f1f1f1;
+    padding-top: 10px;
+    flex: 1;
+    width: 100%;
+  }
+</style>

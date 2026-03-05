@@ -1,0 +1,271 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+  <view style="flex-grow: 1;">
+    <view class="uni-common-mb">
+      <text class="uni-title-text">bottom: 20px (距离底部 20px) - 右侧：拍平</text>
+      <view class="test-container">
+        <view class="example-box">
+          <view class="common" style="bottom: 20px;"></view>
+        </view>
+        <view class="example-box">
+          <view class="common" style="bottom: 20px;" flatten></view>
+        </view>
+      </view>
+    </view>
+    <view class="uni-common-mb">
+      <text class="uni-title-text">bottom: 20rpx (距离底部 20rpx) - 右侧：拍平</text>
+      <view class="test-container">
+        <view class="example-box">
+          <view class="common" style="bottom: 20rpx;"></view>
+        </view>
+        <view class="example-box">
+          <view class="common" style="bottom: 20rpx;" flatten></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mb">
+      <text class="uni-title-text">bottom: 20% (距离底部 20%) - 右侧：拍平</text>
+      <view class="test-container">
+        <view class="example-box">
+          <view class="common" style="bottom: 20%;"></view>
+        </view>
+        <view class="example-box">
+          <view class="common" style="bottom: 20%;" flatten></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mb">
+      <text class="uni-title-text">bottom: auto (自动，默认顶部对齐) - 右侧：拍平</text>
+      <view class="test-container">
+        <view class="example-box">
+          <view class="common" style="bottom: auto;"></view>
+        </view>
+        <view class="example-box">
+          <view class="common" style="bottom: auto;" flatten></view>
+        </view>
+      </view>
+    </view>
+
+    <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+
+    <view class="uni-common-mb">
+      <text class="uni-subtitle-text">bottom: 10% 和 bottom: 30px</text>
+      <view class="test-container">
+        <view class="example-box">
+          <scroll-view class="common" style="bottom: 10%;"></scroll-view>
+        </view>
+        <view class="example-box">
+          <scroll-view class="common" style="bottom: 30px;"></scroll-view>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 bottom </text>
+    </view>
+
+    <!-- 普通版本 -->
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件</text>
+        <text class="uni-info">设置值: {{data.bottom}}</text>
+        <text class="uni-info">获取值: {{data.bottomActual}}</text>
+        <view class="test-box">
+          <view ref="viewRef" class="common test-view" :style="{ bottom: data.bottom }">
+            <text class="common-text">view</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件</text>
+        <text class="uni-info">设置值: {{data.bottom}}</text>
+        <text class="uni-info">获取值: {{data.bottomActualText}}</text>
+        <view class="test-box">
+          <text ref="textRef" class="common common-text test-text" :style="{ bottom: data.bottom }">text</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件</text>
+        <text class="uni-info">设置值: {{data.bottom}}</text>
+        <text class="uni-info">获取值: {{data.bottomActualImage}}</text>
+        <view class="test-box">
+          <image ref="imageRef" class="common test-image" :style="{ bottom: data.bottom }" src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 拍平版本 -->
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件拍平</text>
+        <text class="uni-info">设置值: {{data.bottom}}</text>
+        <text class="uni-info">获取值: {{data.bottomActualFlat}}</text>
+        <view class="test-box">
+          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ bottom: data.bottom }" flatten>
+            <text class="common-text">view</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件拍平</text>
+        <text class="uni-info">设置值: {{data.bottom}}</text>
+        <text class="uni-info">获取值: {{data.bottomActualTextFlat}}</text>
+        <view class="test-box">
+          <text ref="textRefFlat" class="common common-text test-text-flatten" :style="{ bottom: data.bottom }" flatten>text</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件拍平</text>
+        <text class="uni-info">设置值: {{data.bottom}}</text>
+        <text class="uni-info">获取值: {{data.bottomActualImageFlat}}</text>
+        <view class="test-box">
+          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ bottom: data.bottom }" flatten src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt uni-common-mb">
+      <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <enum-data :items="bottomEnum" title="bottom 枚举值" @change="radioChangeBottom" :compact="true"></enum-data>
+      <input-data :defaultValue="data.bottom" title="bottom 自定义值" type="text" @confirm="inputChangeBottom"></input-data>
+    </view>
+
+    <view class="uni-common-mb">
+      <text>native-view组件: bottom: 10% 和 bottom: 30px</text>
+      <view class="test-container">
+        <view class="example-box">
+          <native-view class="common" style="bottom: 10%;"></native-view>
+        </view>
+        <view class="example-box">
+          <native-view class="common" style="bottom: 30px;"></native-view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const bottomEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '10px' },
+    { value: 4, name: '20rpx' },
+    { value: 5, name: '0%' },
+    { value: 6, name: '20%' },
+    { value: 7, name: 'auto' }
+  ]
+
+  const data = reactive({
+    bottom: '10px',
+    bottomActual: '',
+    bottomActualText: '',
+    bottomActualImage: '',
+    bottomActualFlat: '',
+    bottomActualTextFlat: '',
+    bottomActualImageFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const getPropertyValues = () => {
+    data.bottomActual = viewRef.value?.style.getPropertyValue('bottom') ?? ''
+    data.bottomActualFlat = viewRefFlat.value?.style.getPropertyValue('bottom') ?? ''
+    data.bottomActualText = textRef.value?.style.getPropertyValue('bottom') ?? ''
+    data.bottomActualTextFlat = textRefFlat.value?.style.getPropertyValue('bottom') ?? ''
+    data.bottomActualImage = imageRef.value?.style.getPropertyValue('bottom') ?? ''
+    data.bottomActualImageFlat = imageRefFlat.value?.style.getPropertyValue('bottom') ?? ''
+  }
+
+  const changeBottom = (value: string) => {
+    data.bottom = value
+    viewRef.value?.style.setProperty('bottom', value)
+    viewRefFlat.value?.style.setProperty('bottom', value)
+    textRef.value?.style.setProperty('bottom', value)
+    textRefFlat.value?.style.setProperty('bottom', value)
+    imageRef.value?.style.setProperty('bottom', value)
+    imageRefFlat.value?.style.setProperty('bottom', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeBottom = (index: number) => {
+    const selectedItem = bottomEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBottom(selectedItem.name)
+    }
+  }
+
+  const inputChangeBottom = (value: string) => {
+    changeBottom(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeBottom,
+    data
+  })
+</script>
+
+<style>
+  .example-box {
+    position: relative;
+    flex: 1;
+    height: 100px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    margin: 0 5px;
+  }
+
+  .common {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: cyan;
+  }
+
+  .common-text{
+    width:50px;
+    font-size: 12px;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    background-color: #e0e0e0;
+  }
+</style>

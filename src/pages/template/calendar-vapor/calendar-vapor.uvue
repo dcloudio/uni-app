@@ -1,0 +1,554 @@
+<template>
+	<view class="calendar-container">
+		<!-- 顶部选中日期展示 -->
+		<view class="header-selected">
+			<text class="header-year">{{ selectedYear }}年</text>
+			<view class="header-date-row">
+				<text class="header-date">{{ selectedMonth }}月{{ selectedDay }}日{{ selectedWeekday }}</text>
+			</view>
+		</view>
+
+		<!-- 年月选择器和左右箭头 -->
+		<view class="month-selector">
+			<text class="arrow-btn" @click="prevMonth">‹</text>
+			<picker mode="date" :value="pickerValue" fields="month" @change="onPickerChange">
+				<text class="month-text">{{ currentYear }}年{{ currentMonth }}月</text>
+			</picker>
+			<text class="arrow-btn" @click="nextMonth">›</text>
+		</view>
+
+		<!-- 星期标题 -->
+		<view class="weekdays">
+			<text v-for="(day, index) in weekdays" :key="index"
+				class="weekday-text" flatten>{{ day }}</text>
+		</view>
+
+		<!-- 日历主体 - Swiper -->
+		<swiper
+			class="calendar-swiper"
+			:circular="true"
+			:current="swiperCurrent"
+			@change="onSwiperChange"
+		>
+			<swiper-item v-for="(item, index) in swiperItems" :key="`${item.year}-${item.month}`">
+				<view class="calendar-grid" @click="onCalendarClick">
+					<text flatten
+						v-for="(day, dayIndex) in item.days"
+						:key="dayIndex"
+						:class="[
+							'day-text',
+							day.day === 0 ? 'empty' : '',
+							day.isToday ? 'today' : '',
+							day.isSelected ? 'selected' : '',
+							day.isWeekend || day.isHoliday ? 'holiday' : ''
+						]"
+					>{{ day.day > 0 ? day.day : '' }}</text>
+				</view>
+			</swiper-item>
+		</swiper>
+	</view>
+</template>
+
+<script setup lang="uts">
+	/* var startTime = Date.now(); */
+	// #ifdef APP && VUE3-VAPOR
+	/* const insPage = getCurrentInstance().proxy.$page;
+	const renderChangeId = insPage.onRenderChange(({ duration }) => {
+		const endtime = Date.now();
+		uni.showToast({
+			title: `${endtime - startTime}ms`,
+		})
+		insPage.offRenderChange(renderChangeId)
+	}); */
+	// #endif
+	type DayInfo = {
+		day: number
+		date: string
+		isToday: boolean
+		isSelected: boolean
+		isWeekend: boolean
+		isHoliday: boolean
+		weekday: number
+	}
+
+	type SwiperItem = {
+		year: number
+		month: number
+		days: DayInfo[]
+	}
+
+	const weekdays = ['一', '二', '三', '四', '五', '六', '日']
+
+	// 中国法定节假日（2025年示例。实际使用需自行装载节假日数据）
+	const holidays = [
+		'2025-01-01',
+		'2025-01-28', '2025-01-29', '2025-01-30', '2025-01-31',
+		'2025-02-01', '2025-02-02', '2025-02-03', '2025-02-04',
+		'2025-04-04', '2025-04-05', '2025-04-06',
+		'2025-05-01', '2025-05-02', '2025-05-03',
+		'2025-05-31', '2025-06-01', '2025-06-02',
+		'2025-10-01', '2025-10-02', '2025-10-03',
+		'2025-10-04', '2025-10-05', '2025-10-06', '2025-10-07',
+	]
+
+	const today = new Date()
+	const currentYear = ref(today.getFullYear())
+	const currentMonth = ref(today.getMonth() + 1)
+	const selectedDate = ref(null as string | null)
+
+	const swiperCurrent = ref(1)
+	const swiperItems = ref([] as SwiperItem[])
+
+	let lastItemIndex = 1;  // 初始显示的是 index 1
+
+	// Picker的值
+	const pickerValue = computed(() : string => {
+		const year = currentYear.value
+		const month = currentMonth.value.toString().padStart(2, '0')
+		return `${year}-${month}`
+	})
+
+	// 顶部显示的选中日期信息
+	const selectedYear = computed(() : number => {
+		if (selectedDate.value === null) return today.getFullYear()
+		const date = new Date(selectedDate.value)
+		return date.getFullYear()
+	})
+
+	const selectedMonth = computed(() : number => {
+		if (selectedDate.value === null) return today.getMonth() + 1
+		const date = new Date(selectedDate.value)
+		return date.getMonth() + 1
+	})
+
+	const selectedDay = computed(() : number => {
+		if (selectedDate.value === null) return today.getDate()
+		const date = new Date(selectedDate.value)
+		return date.getDate()
+	})
+
+	const selectedWeekday = computed(() : string => {
+		if (selectedDate.value === null) {
+			return '周' + weekdays[today.getDay() === 0 ? 6 : today.getDay() - 1]
+		}
+		const date = new Date(selectedDate.value)
+		const day = date.getDay()
+		return '周' + weekdays[day === 0 ? 6 : day - 1]
+	})
+
+	// 判断是否为今天
+	function isToday(year : number, month : number, day : number) : boolean {
+		return year === today.getFullYear() &&
+			   month === today.getMonth() + 1 &&
+			   day === today.getDate()
+	}
+
+	// 判断是否为选中日期
+	function isSelectedDate(year : number, month : number, day : number) : boolean {
+		if (selectedDate.value === null) {
+			return isToday(year, month, day)
+		}
+		const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+		return dateStr === selectedDate.value
+	}
+
+	// 生成月份的日历数据
+	function generateMonthDays(year : number, month : number) : DayInfo[] {
+		const days : DayInfo[] = []
+		const firstDay = new Date(year, month - 1, 1)
+		const lastDay = new Date(year, month, 0)
+		const daysInMonth = lastDay.getDate()
+		const startWeekday = firstDay.getDay()
+
+		// 填充前面的空白（周一开始，0是周日要调整为6）
+		const adjustedStart = startWeekday === 0 ? 6 : startWeekday - 1
+		for (let i = 0; i < adjustedStart; i++) {
+			days.push({
+				day: 0,
+				date: '',
+				isToday: false,
+				isSelected: false,
+				isWeekend: false,
+				isHoliday: false,
+				weekday: 0
+			})
+		}
+
+		// 填充实际日期
+		for (let day = 1; day <= daysInMonth; day++) {
+			const date = new Date(year, month - 1, day)
+			const weekday = date.getDay()
+			const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+
+			days.push({
+				day: day,
+				date: dateStr,
+				isToday: isToday(year, month, day),
+				isSelected: isSelectedDate(year, month, day),
+				isWeekend: weekday === 0 || weekday === 6,
+				isHoliday: holidays.includes(dateStr),
+				weekday: weekday
+			})
+		}
+
+		// 填充后面的空白，确保总是6行（42个格子）
+		const remainingCells = 42 - days.length
+		for (let i = 0; i < remainingCells; i++) {
+			days.push({
+				day: 0,
+				date: '',
+				isToday: false,
+				isSelected: false,
+				isWeekend: false,
+				isHoliday: false,
+				weekday: 0
+			})
+		}
+
+		return days
+	}
+
+	// 初始化Swiper项
+	function initSwiperItems() {
+		const items : SwiperItem[] = []
+
+		// 上一个月
+		let prevYear = currentYear.value
+		let prevMonth = currentMonth.value - 1
+		if (prevMonth < 1) {
+			prevMonth = 12
+			prevYear--
+		}
+		items.push({
+			year: prevYear,
+			month: prevMonth,
+			days: generateMonthDays(prevYear, prevMonth)
+		})
+
+		// 当前月
+		items.push({
+			year: currentYear.value,
+			month: currentMonth.value,
+			days: generateMonthDays(currentYear.value, currentMonth.value)
+		})
+
+		// 下一个月
+		let nextYear = currentYear.value
+		let nextMonth = currentMonth.value + 1
+		if (nextMonth > 12) {
+			nextMonth = 1
+			nextYear++
+		}
+		items.push({
+			year: nextYear,
+			month: nextMonth,
+			days: generateMonthDays(nextYear, nextMonth)
+		})
+
+		swiperItems.value = items
+	}
+
+	// 切换到指定月份，并更新 swiper 数据
+	function switchToMonth(targetYear : number, targetMonth : number, targetIndex : number) {
+		// 更新当前年月
+		currentYear.value = targetYear
+		currentMonth.value = targetMonth
+
+		// 更新目标位置的数据
+		swiperItems.value[targetIndex] = {
+			year: targetYear,
+			month: targetMonth,
+			days: generateMonthDays(targetYear, targetMonth)
+		}
+
+		// 更新目标位置的前后两个位置
+		const prevIndex = (targetIndex - 1 + 3) % 3
+		const nextIndex = (targetIndex + 1) % 3
+
+		// 计算上个月
+		let prevYear = targetYear
+		let prevMonth = targetMonth - 1
+		if (prevMonth < 1) {
+			prevMonth = 12
+			prevYear--
+		}
+
+		// 计算下个月
+		let nextYear = targetYear
+		let nextMonth = targetMonth + 1
+		if (nextMonth > 12) {
+			nextMonth = 1
+			nextYear++
+		}
+
+		swiperItems.value[prevIndex] = {
+			year: prevYear,
+			month: prevMonth,
+			days: generateMonthDays(prevYear, prevMonth)
+		}
+
+		swiperItems.value[nextIndex] = {
+			year: nextYear,
+			month: nextMonth,
+			days: generateMonthDays(nextYear, nextMonth)
+		}
+
+		lastItemIndex = targetIndex
+	}
+
+	// Swiper切换事件
+	function onSwiperChange(e : UniSwiperChangeEvent) {
+		const current = e.detail.current
+
+		// 避免重复触发
+		if (current === lastItemIndex) {
+			return
+		}
+
+		const currentItem = swiperItems.value[current]
+		const targetYear = currentItem.year
+		const targetMonth = currentItem.month
+
+		switchToMonth(targetYear, targetMonth, current)
+	}
+
+	// 优化的更新选中状态（只更新变化的日期）
+	function updateSelectedStateOptimized(oldDate : string | null, newDate : string) {
+		for (let i = 0; i < swiperItems.value.length; i++) {
+			const item = swiperItems.value[i]
+			for (let j = 0; j < item.days.length; j++) {
+				const day = item.days[j]
+				if (day.day > 0) {
+					// 只更新旧日期和新日期
+					if (day.date === oldDate) {
+						day.isSelected = false
+					} else if (day.date === newDate) {
+						day.isSelected = true
+					}
+				}
+			}
+		}
+	}
+
+	// 日历点击事件（完全基于坐标计算，无需 data 属性）
+	function onCalendarClick(e : UniPointerEvent) {
+		const target = e.currentTarget as UniElement
+		// 获取容器宽度
+    const rect = target.getBoundingClientRect() // 由于点击事件绑定在 calendar-grid 上，e.currentTarget 就是该容器
+    // console.log(rect); //TODO 鸿蒙上连续滑动超过初始化的3个item后，这个事件不再触发@徐同印
+
+    // const screenWidth = uni.getWindowInfo().screenWidth
+    // const cellWidth = screenWidth / 7
+		const cellWidth = rect.width / 7
+    // console.log(cellWidth2);
+    // console.log(cellWidth);
+		const cellHeight = 60 //高度60在css中有重复定义，如需修改请同步修改。在不需要显示农历、假日名称等更多信息时，可以减少高度
+
+		// 计算点击的列（0-6）
+    const col = Math.floor((e.clientX - rect.left) / cellWidth)
+    // console.log(col2);
+    // console.log(col);
+
+		// 获取日历容器（calendar-grid）的顶部位置
+		// 计算点击相对于容器顶部的位置
+		const clickY = e.clientY - rect.top
+    // console.log('clickY: ',clickY);
+		// 计算点击的行（0-5）
+		const row = Math.floor(clickY / cellHeight)
+    // console.log('row: ',row);
+
+		// 计算在 42 个格子中的索引
+		const index = row * 7 + col
+    // console.log('index: ',index);
+
+		// 检查索引是否有效
+		if (index >= 0 && index < 42) {
+			// 当前显示的是中间的 swiper-item（index 1）
+			const currentItem = swiperItems.value[lastItemIndex]
+			const dayInfo = currentItem.days[index]
+
+			// 只有非空日期才可点击
+			if (dayInfo.day > 0) {
+				const oldDate = selectedDate.value
+				selectedDate.value = dayInfo.date
+
+				// 只更新变化的日期
+				updateSelectedStateOptimized(oldDate, dayInfo.date)
+			}
+		}
+	}
+
+	// Picker选择事件
+	function onPickerChange(e : UniPickerChangeEvent) {
+		const value = e.detail.value
+		if (typeof value !== 'string') {
+			return
+		}
+		const valueAsString = value as string
+		if (valueAsString.length > 2) {
+			const parts = valueAsString.split('-')
+			if (parts.length >= 2) {
+				// 先归位，后更新数据，因为需要保持当前月在中间
+				swiperCurrent.value = 1
+				nextTick(() => {
+					switchToMonth(parseInt(parts[0]), parseInt(parts[1]), 1)
+				})
+			}
+		}
+	}
+
+	// 上一个月
+	function prevMonth() {
+		// 计算上个月的年月
+		let targetYear = currentYear.value
+		let targetMonth = currentMonth.value - 1
+		if (targetMonth < 1) {
+			targetMonth = 12
+			targetYear--
+		}
+
+		// 计算切换到哪个 index
+		const targetIndex = (swiperCurrent.value - 1 + 3) % 3
+
+		// 调用公共方法更新数据
+		switchToMonth(targetYear, targetMonth, targetIndex)
+
+		// 触发 swiper 切换
+		swiperCurrent.value = targetIndex
+	}
+
+	// 下一个月
+	function nextMonth() {
+		// 计算下个月的年月
+		let targetYear = currentYear.value
+		let targetMonth = currentMonth.value + 1
+		if (targetMonth > 12) {
+			targetMonth = 1
+			targetYear++
+		}
+
+		// 计算切换到哪个 index
+		const targetIndex = (swiperCurrent.value + 1) % 3
+
+		// 调用公共方法更新数据
+		switchToMonth(targetYear, targetMonth, targetIndex)
+
+		// 触发 swiper 切换
+		swiperCurrent.value = targetIndex
+	}
+
+	// 初始化
+	selectedDate.value = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`
+	initSwiperItems()
+</script>
+
+<style>
+	.calendar-container {
+		flex: 1;
+		background-color: #f5f5f5;
+	}
+
+	.header-selected {
+		background-color: #1976D2;
+		padding: 30px 20px;
+	}
+
+	.header-year {
+		font-size: 16px;
+		color: rgba(255, 255, 255, 0.8);
+		margin-bottom: 5px;
+	}
+
+	.header-date-row {
+		flex-direction: row;
+		/* align-items: baseline; */
+	}
+
+	.header-date {
+		font-size: 40px;
+		color: #ffffff;
+		/* font-weight: bold; */
+		line-height: 50px;
+	}
+
+	.month-selector {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 20px 30px;
+		background-color: #ffffff;
+	}
+
+	.arrow-btn {
+		font-size: 32px;
+		color: #333333;
+		width: 40px;
+		height: 40px;
+		text-align: center;
+		line-height: 40px;
+	}
+
+	.month-text {
+		font-size: 18px;
+		color: #333333;
+		font-weight: 500;
+	}
+
+	.weekdays {
+		flex-direction: row;
+		background-color: #ffffff;
+		padding: 15px 0;
+		justify-content: center;
+	}
+
+	.weekday-text {
+		width: 14.28%;
+		text-align: center;
+		font-size: 14px;
+		color: #666666;
+	}
+
+	.calendar-swiper {
+		height: 420px;
+		background-color: #ffffff;
+	}
+
+	.calendar-grid {
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.day-text {
+		width: 14.28%;
+		height: 60px;
+		text-align: center;
+		line-height: 60px;
+		font-size: 16px;
+		color: #333333;
+	}
+
+	.day-text.empty {
+		color: transparent;
+	}
+
+	.day-text.today {
+		color: #1976D2;
+	}
+
+	.day-text.selected {
+		background-color: #1976D2;
+		color: #ffffff;
+		border-radius: 30px;
+		margin: 10px 0;
+		line-height: 40px;
+		height: 40px;
+	}
+
+	.day-text.holiday {
+		color: #ff5500;
+	}
+
+	.day-text.selected.holiday {
+		color: #ffffff;
+	}
+</style>

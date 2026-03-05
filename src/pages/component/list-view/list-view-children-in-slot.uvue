@@ -1,0 +1,50 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1;padding-bottom: 20px;">
+  <!-- #endif -->
+    <view>
+      <page-head title="getApp"></page-head>
+      <view class="uni-padding-wrap">
+        <list-view-wrapper>
+          <template #default>
+            <list-item v-for="item in list" :key="item">
+              <text class="text-in-list-item">{{item}}</text>
+            </list-item>
+          </template>
+          <template #second>
+            <list-item v-for="item in list" :key="item">
+              <text class="text-in-list-item">{{item}}</text>
+            </list-item>
+          </template>
+        </list-view-wrapper>
+        <button id="add-btn" class="uni-common-mt" @click="addItem">add item</button>
+        <button id="empty-btn" class="uni-common-mt" @click="emptyList">empty list</button>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+import ListViewWrapper from './ListViewWrapper.uvue'
+
+// Data
+const list = ref([0, 1, 2])
+
+// Methods
+function addItem() {
+  // #ifdef APP-ANDROID
+  let listNum = list.value.length as Int; // Android 端要求Int类型
+  // #endif
+  // #ifndef APP-ANDROID
+  let listNum = list.value.length;
+  // #endif
+  list.value.push(listNum)
+}
+
+function emptyList() {
+  list.value = []
+}
+</script>

@@ -1,0 +1,77 @@
+<template>
+  <scroll-view ref="listView" class="list" :bounces="false" :scroll-with-animation="true" :scroll-top="newScrollTop" @scrolltolower="loadData()"
+    @scroll="onScroll">
+    <view class="list-item" v-for="(item, index) in dataList" :key="index">
+      <!-- <text class="title">{{item.title}}</text> -->
+      <view class="cell-item">
+        <text class="title">内容：{{item.title}}</text>
+        <input class="title" style="margin-top: 8px;" placeholder="备注:"/>
+      </view>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+  type ListItem = {
+    title : string
+  }
+
+  const dataList = ref([] as ListItem[])
+  const oldScrollTop = ref(0)
+  const newScrollTop = ref(0)
+
+  function loadData() {
+    let index = dataList.value.length
+    for (let i = 0; i < 20; i++) {
+      dataList.value.push({
+        title: index.toString(),
+      } as ListItem)
+      index++
+    }
+  }
+  function onScroll(e : ScrollEvent) {
+    uni.$emit('tabchange', e.detail.scrollTop)
+    oldScrollTop.value = e.detail.scrollTop
+  }
+  function scrollTop(top : number) {
+    // (getCurrentInstance()!.proxy!.$refs["listView"] as UniElement).scrollTop = top
+    // console.log("tab1 to top");
+    newScrollTop.value = oldScrollTop.value
+    nextTick(() => {
+      newScrollTop.value = top
+    })
+  }
+
+  onMounted(() => {
+    loadData()
+    // console.log("tab1 created");
+  })
+
+  // Expose methods to parent component
+  defineExpose({
+    scrollTop
+  })
+</script>
+
+<style>
+  .list {
+    flex: 1;
+    background-color: #ffffff;
+  }
+
+  .list-item {
+    flex-direction: row;
+    padding: 30px;
+    border-bottom: 1px solid #dbdbdb;
+  }
+
+  .title {
+    font-size: 16px;
+    text-align: left;
+  }
+
+  .cell-item {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

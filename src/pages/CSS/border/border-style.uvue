@@ -1,0 +1,300 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view>
+        <text>border-style: dashed</text>
+        <view class="demo-box">
+          <view class="common" style="border-width: 5px; border-style: dashed"></view>
+          <view class="common" style="border-width: 5px; border-style: dashed" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-left-style: dashed</text>
+        <view class="demo-box">
+          <view class="common" style="border-left-width: 5px; border-left-style: dashed"></view>
+          <view class="common" style="border-left-width: 5px; border-left-style: dashed" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-top-style: dashed</text>
+        <view class="demo-box">
+          <view class="common" style="border-top-width: 5px; border-top-style: dashed"></view>
+          <view class="common" style="border-top-width: 5px; border-top-style: dashed" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-right-style: dotted</text>
+        <view class="demo-box">
+          <view class="common" style="border-right-width: 5px; border-right-style: dotted"></view>
+          <view class="common" style="border-right-width: 5px; border-right-style: dotted" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-bottom-style: dotted</text>
+        <view class="demo-box">
+          <view class="common" style="border-bottom-width: 5px; border-bottom-style: dotted"></view>
+          <view class="common" style="border-bottom-width: 5px; border-bottom-style: dotted" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-style: solid (缺省 border-width)</text>
+        <view class="demo-box">
+          <view class="common" style="border-style: solid;"></view>
+          <view class="common" style="border-style: solid;" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-style: none</text>
+        <view class="demo-box">
+          <view class="common" style="border-style: none; border-width: 5px;"></view>
+          <view class="common" style="border-style: none; border-width: 5px;" flatten></view>
+        </view>
+      </view>
+
+      <view @click="changeBorderStyle">
+        <text>border-style: 点击切换</text>
+        <view class="demo-box">
+          <view class="common" :style="borderStyle"></view>
+          <view class="common" :style="borderStyle" flatten></view>
+        </view>
+      </view>
+
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+
+      <view class="demo-box">
+        <scroll-view class="common scroll-view-border" style="border-style: dashed;">
+          <text class="common-text">border-style: dashed</text>
+        </scroll-view>
+        <scroll-view class="common scroll-view-border" style="border-style: dotted;">
+          <text class="common-text">border-style: dotted</text>
+        </scroll-view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-style </text>
+      </view>
+
+      <!-- 普通版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.borderStyleValue}}</text>
+          <text class="uni-info">获取值: {{data.borderStyleActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderWidth: '5px', borderStyle: data.borderStyleValue }">
+              <text>view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.borderStyleValue}}</text>
+          <text class="uni-info">获取值: {{data.borderStyleActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-dynamic test-text" :style="{ borderWidth: '5px', borderStyle: data.borderStyleValue }">text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.borderStyleValue}}</text>
+          <text class="uni-info">获取值: {{data.borderStyleActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-image test-image" :style="{ borderWidth: '5px', borderStyle: data.borderStyleValue }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.borderStyleValue}}</text>
+          <text class="uni-info">获取值: {{data.borderStyleActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderWidth: '5px', borderStyle: data.borderStyleValue }" flatten>
+              <text>view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.borderStyleValue}}</text>
+          <text class="uni-info">获取值: {{data.borderStyleActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderWidth: '5px', borderStyle: data.borderStyleValue }" flatten>text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.borderStyleValue}}</text>
+          <text class="uni-info">获取值: {{data.borderStyleActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderWidth: '5px', borderStyle: data.borderStyleValue }" flatten src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="borderStyleEnum" title="border-style 枚举值" @change="radioChangeBorderStyle" :compact="true"></enum-data>
+        <input-data :defaultValue="data.borderStyleValue" title="border-style 自定义值" type="text" @confirm="inputChangeBorderStyle"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: border-style: dashed 和 dotted</text>
+        <view class="demo-box">
+          <native-view class="common" style="border-width: 5px; border-style: dashed;"></native-view>
+          <native-view class="common" style="border-width: 5px; border-style: dotted;"></native-view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  let isSolid = false
+  const data = reactive({
+    borderStyleValue: 'solid',
+    borderStyleActual: '',
+    borderStyleActualText: '',
+    borderStyleActualImage: '',
+    borderStyleActualFlat: '',
+    borderStyleActualTextFlat: '',
+    borderStyleActualImageFlat: ''
+  })
+
+  const borderStyle = ref("border-style: none; border-width: 5px;")
+
+  const changeBorderStyle = () => {
+    isSolid = !isSolid
+    const solid = "border-style: solid; border-width: 5px;"
+    const none = ""
+    borderStyle.value = isSolid ? solid : none
+  }
+
+  const borderStyleEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'none' },
+    { value: 2, name: 'solid' },
+    { value: 3, name: 'dashed' },
+    { value: 4, name: 'dotted' }
+  ]
+
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const getPropertyValues = () => {
+    data.borderStyleActual = viewRef.value?.style.getPropertyValue('border-style') ?? ''
+    data.borderStyleActualFlat = viewRefFlat.value?.style.getPropertyValue('border-style') ?? ''
+    data.borderStyleActualText = textRef.value?.style.getPropertyValue('border-style') ?? ''
+    data.borderStyleActualTextFlat = textRefFlat.value?.style.getPropertyValue('border-style') ?? ''
+    data.borderStyleActualImage = imageRef.value?.style.getPropertyValue('border-style') ?? ''
+    data.borderStyleActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-style') ?? ''
+  }
+
+  const changeBorderStyleValue = (value: string) => {
+    data.borderStyleValue = value
+    viewRef.value?.style.setProperty('border-style', value)
+    viewRefFlat.value?.style.setProperty('border-style', value)
+    textRef.value?.style.setProperty('border-style', value)
+    textRefFlat.value?.style.setProperty('border-style', value)
+    imageRef.value?.style.setProperty('border-style', value)
+    imageRefFlat.value?.style.setProperty('border-style', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeBorderStyle = (index: number) => {
+    const selectedItem = borderStyleEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBorderStyleValue(selectedItem.name)
+    }
+  }
+
+  const inputChangeBorderStyle = (value: string) => {
+    changeBorderStyleValue(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeBorderStyle,
+    data
+  })
+</script>
+
+<style>
+  .common {
+    width: 150px;
+    height: 50px;
+    background-color: gray;
+  }
+  .demo-box{
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .common-dynamic {
+    height: 50px;
+    background-color: gray;
+  }
+
+  .common-image {
+    width: 50px;
+    height: 50px;
+    background-color: gray;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 60px;
+    background-color: lightgray;
+  }
+
+  .scroll-view-border {
+    border-width: 5px;
+    border-color: blue;
+  }
+
+  .common-text {
+    font-size: 12px;
+  }
+
+</style>

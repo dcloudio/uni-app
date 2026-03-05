@@ -1,0 +1,6 @@
+export type ItemChildType = {
+  openCollapse ?: (show : boolean) => void
+  openOrClose: (show : boolean) => void
+  is_open : Ref<boolean>,
+  elId : string
+}

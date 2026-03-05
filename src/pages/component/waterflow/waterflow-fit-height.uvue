@@ -1,0 +1,117 @@
+<template>
+  <view style="flex: 1;">
+    <waterflow v-if="isShow" style="flex: 1;" cross-axis-gap="5" main-axis-gap="5">
+      <flow-item v-for="(item, index) in list" :key="index" @click="itemClick(item['author_name'] as string | null)">
+        <view class="item">
+          <image class="img" :fade-show="true" :src="item['cover']" mode="widthFix"></image>
+          <text class="name">{{ item['author_name'] }}</text>
+          <text class="title">{{ item['title'] }}</text>
+          <text class="time">{{ item['published_at'] }}</text>
+        </view>
+      </flow-item>
+      <!-- 测试验证issues 20342 问题 开始 -->
+      <flow-item slot="refresher" id="refresher" type=2>
+      	<text>自定义加载</text>
+      </flow-item>
+      <flow-item slot="load-more" id="loadmore" type=6 class="load-more-box">
+        <text>加载更多</text>
+      </flow-item>
+      <!-- 测试验证issues 20342 问题 结束-->
+    </waterflow>
+  </view>
+</template>
+
+<script setup>
+  const list = ref<UTSJSONObject[]>([] as UTSJSONObject[])
+  const isShow = ref<boolean>(true)
+
+  const itemClick = (title : string | null) => {
+    if (title != null) {
+      uni.showToast({
+        title: title,
+        icon: 'none'
+      })
+    }
+  }
+
+  function getList() {
+    uni.showLoading({
+      title: 'loading...'
+    })
+
+    uni.request<UTSJSONObject[]>({
+      url: 'https://unidemo.dcloud.net.cn/api/news?column=title,author_name,cover,published_at',
+      method: "GET",
+      success: (res : RequestSuccess<UTSJSONObject[]>) => {
+        if (res.statusCode == 200) {
+          const result = res.data
+
+          if (result != null) {
+            list.value.push(...result)
+          }
+        }
+      },
+      complete: () => {
+        uni.hideLoading()
+      }
+    });
+  }
+
+  function changeShow() {
+    isShow.value = false
+  }
+
+  function verify() {
+    return true
+  }
+
+  onLoad((_: OnLoadOptions) => {
+    getList()
+  })
+
+  defineExpose({
+    changeShow,
+    verify
+  })
+
+</script>
+
+<style lang="scss">
+  .item {
+    width: 100%;
+    border-radius: 8px;
+    background-color: white;
+  }
+
+  .img {
+    width: 100%;
+    border-radius: 5px;
+  }
+
+  .name {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px;
+  }
+
+  .title {
+    font-size: 14px;
+    margin: 0 10px;
+    color: gray;
+  }
+
+  .time {
+    font-size: 14px;
+    color: gray;
+    margin: 10px;
+  }
+
+  .load-more-box {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 45px;
+    width: 100%;
+    border-style: solid;
+  }
+</style>

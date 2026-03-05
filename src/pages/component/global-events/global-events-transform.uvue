@@ -1,0 +1,46 @@
+<template>
+  <view>
+    <view @click="onclick"
+      style="transform: rotate(180deg); background-color: brown;width: 100px; height: 100px; margin: 8px auto;"
+      @longpress="onLongPress" id="event-transform">
+      <text style="text-align: center;line-height: 100px;">旋转180°后</text>
+    </view>
+  </view>
+  <text style="margin:0px auto;">点击上面view触发点击事件</text>
+</template>
+
+<script setup lang="uts">
+
+type DataType = {
+  clickTriger: boolean,
+  longClickTriger: boolean,
+}
+
+// 使用reactive包装数据，便于自动化测试获取
+const data = reactive({
+  clickTriger: false,
+  longClickTriger: false,
+} as DataType)
+
+function onclick(event : UniPointerEvent) {
+  data.clickTriger = true
+  uni.showToast({
+    title: "触发了点击事件"
+  })
+}
+
+function onLongPress(event : UniTouchEvent) {
+  data.longClickTriger = true
+  uni.showToast({
+    title: "触发了长按事件"
+  })
+}
+
+defineExpose({
+  data
+})
+</script>
+
+<style>
+
+</style>

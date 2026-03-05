@@ -1,0 +1,43 @@
+<template>
+  <view class="app">
+    <view>
+      <text>你自己的业务系统订单详情页面</text>
+    </view>
+    <view style="margin-top: 10px;">
+      <text>order_no：{{ myOptions.order_no }}</text>
+    </view>
+    <view style="margin-top: 10px;">
+      <text>out_trade_no：{{ myOptions.out_trade_no }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+  type DataType = {
+    order_no: string
+    out_trade_no: string
+  }
+
+  const myOptions = reactive({
+    order_no: '',
+    out_trade_no: ''
+  } as DataType)
+
+  onLoad((options: OnLoadOptions) => {
+    console.log('options: ', options)
+    if (options['order_no'] != null) {
+      myOptions.order_no = options['order_no'] as string
+    }
+    if (options['out_trade_no'] != null) {
+      myOptions.out_trade_no = options['out_trade_no'] as string
+    }
+  })
+
+</script>
+
+<style lang="scss" scoped>
+  .app {
+    padding: 15px;
+  }
+</style>

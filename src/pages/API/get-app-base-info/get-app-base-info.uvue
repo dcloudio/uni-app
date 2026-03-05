@@ -1,0 +1,65 @@
+<template>
+  <page-head :title="title"></page-head>
+  <view class="uni-common-mt">
+    <view class="uni-list">
+      <view class="uni-list-cell" v-for="(item, index) in data.items" :key="index" style="align-items: center;">
+        <view class="uni-pd">
+          <view class="uni-label" style="width:180px;">{{item.label}}</view>
+        </view>
+        <view class="uni-list-cell-db">
+          <text class="uni-list-cell-db-text">{{ item.value == '' ? '未获取' : item.value }}</text>
+        </view>
+      </view>
+    </view>
+    <view class="uni-padding-wrap">
+      <view class="uni-btn-v">
+        <button type="primary" @tap="getAppBaseInfo">获取App基础信息</button>
+      </view>
+    </view>
+  </view>
+</template>
+<script setup lang="uts">
+  type Item = {
+    label : string,
+    value : string,
+  }
+
+  type DataType = {
+    items: Item[];
+  }
+
+  const title = ref('getAppBaseInfo')
+  const data = reactive({
+    items: [] as Item[],
+  } as DataType)
+
+  const getAppBaseInfo = () => {
+    const res = uni.getAppBaseInfo();
+    const res_str = JSON.stringify(res);
+    const res_obj = JSON.parseObject(res_str);
+    const res_map = res_obj!.toMap();
+    let keys = [] as string[]
+    res_map.forEach((_, key) => {
+      keys.push(key);
+    });
+
+    data.items = [] as Item[];
+    keys.sort().forEach(key => {
+      const value = res[key];
+      if (value != null) {
+        const item = {
+          label: key,
+          value: "" + ((typeof value == "object") ? JSON.stringify(value) : value)
+        } as Item;
+        data.items.push(item);
+      }
+    });
+  }
+
+</script>
+
+<style>
+  .uni-pd {
+    padding-left: 15px;
+  }
+</style>

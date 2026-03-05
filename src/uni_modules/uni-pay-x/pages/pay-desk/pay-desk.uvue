@@ -1,0 +1,255 @@
+<template>
+	<!-- 自定义收银台页面模式 -->
+	<view class="uni-pay">
+		<view class="mobile-pay-popup">
+			<view class="mobile-pay-popup-amount-box">
+				<view><text class="mobile-pay-popup-amount-box-text">待支付金额：</text></view>
+				<view class="mobile-pay-popup-amount"><text class="mobile-pay-popup-amount-text">{{ amountFormat(myOptions.getNumber('total_fee')) }}</text></view>
+			</view>
+			<view class="mobile-pay-popup-provider-list">
+				<view class="uni-list">
+					<!-- #ifdef MP-WEIXIN || H5 || APP -->
+					<view class="uni-list-item" v-if="checkProvider('wxpay')" @click="createOrderByProvider('wxpay')">
+						<view class="uni-list-item__container uni-list-item__container--right">
+							<view class="uni-list-item__header">
+								<image :src="insideData.getJSON('images')!['wxpay']" class="uni-list-item__header-image"></image>
+							</view>
+							<view class="uni-list-item__content uni-list-item__content--center">
+								<text class="uni-list-item__content-text">微信支付</text>
+							</view>
+						</view>
+						<view class="uni-list-item-arrowright"></view>
+					</view>
+					<!-- #endif -->
+					<!-- #ifdef MP-ALIPAY || H5 || APP -->
+					<view class="uni-list-item" v-if="checkProvider('alipay')" @click="createOrderByProvider('alipay')">
+						<view class="uni-list-item__container uni-list-item__container--right">
+							<view class="uni-list-item__header">
+								<image :src="insideData.getJSON('images')!['alipay']" class="uni-list-item__header-image"></image>
+							</view>
+							<view class="uni-list-item__content uni-list-item__content--center">
+								<text class="uni-list-item__content-text">支付宝</text>
+							</view>
+						</view>
+						<view class="uni-list-item-arrowright"></view>
+					</view>
+					<!-- #endif -->
+				</view>
+			</view>
+		</view>
+		<!-- 挂载支付组件 -->
+		<uni-pay ref="payRef" height="450px" :to-success-page="false" @mounted="onMounted" @success="onSuccess" @fail="onFail" @cancel="onCancel"></uni-pay>
+	</view>
+</template>
+
+<script setup lang="uts">
+  import { objectAssign } from "../../js_sdk/js_sdk"
+
+  const myOptions = ref({
+    total_fee: "",
+  } as UTSJSONObject)
+  const insideData = ref({
+    currentProviders: [] as Array<string>,
+    images: {
+      alipay: "",
+      wxpay: ""
+    } as UTSJSONObject
+  } as UTSJSONObject) // uni-pay组件mounted事件获得的数据
+  const adpid = ref("") // 广告id
+  const return_url = ref("") // 支付成功后点击查看订单跳转的订单详情页面地址
+  const main_color = ref("") // 支付成功页面的主色调
+  const payRef = ref<UniPayComponentPublicInstance | null>(null)
+
+  // 监听 - 支付组件加载完毕事件
+  function onMounted(insideData_ : UTSJSONObject) {
+    insideData.value['currentProviders'] = insideData_.getArray('currentProviders') as Array<string>;
+    insideData.value['images'] = insideData_.getJSON('images') as UTSJSONObject;
+  }
+  // 发起支付
+  function createOrder(data : UTSJSONObject) {
+    myOptions.value = objectAssign(myOptions.value, data);
+    if (payRef.value != null) {
+      payRef.value!.createOrder(myOptions.value);
+    }
+  }
+  // 根据provider发起支付
+  function createOrderByProvider(provider : string) {
+    createOrder({
+      provider
+    })
+  }
+  // 监听事件 - 支付成功
+  function onSuccess(res : UTSJSONObject) {
+    let out_trade_no = res['out_trade_no'] as string;
+    let pay_order = res.getJSON('pay_order') as UTSJSONObject;
+    let order_no = pay_order['order_no'] as string;
+    //let pay_date = pay_order['pay_date'] as string;
+    let total_fee = pay_order.getNumber('total_fee');
+    if (total_fee == null) {
+      total_fee = 0;
+    }
+    let return_url_ = return_url.value as string;
+    let adpid_ = adpid.value as string;
+    let main_color_ = main_color.value as string;
+
+    console.log('success: ', res);
+    let user_order_success = res.getBoolean('user_order_success');
+    if (user_order_success != null && user_order_success != true) {
+      // 代表用户已付款，且你自己写的回调成功并正确执行了
+      uni.redirectTo({
+        url: `/uni_modules/uni-pay-x/pages/success/success?out_trade_no=${out_trade_no}&order_no=${order_no}&total_fee=${total_fee}&adpid=${adpid_}&return_url=${return_url_}&main_color=${main_color_}`
+      });
+    } else {
+      // 代表用户已付款，但你自己写的回调执行失败（通常是因为你的回调代码有问题）
+
+    }
+  }
+  // 监听事件 - 支付失败
+  function onFail(err : RequestPaymentFail) {
+    console.log('fail: ', err)
+
+  }
+  // 监听事件 - 取消支付
+  function onCancel(err : RequestPaymentFail) {
+    console.log('cancel: ', err)
+
+  }
+  function amountFormat(totalFee : number | null) : string {
+    if (totalFee == null) {
+      return "0";
+    } else {
+      return (totalFee / 100).toFixed(2)
+    }
+  }
+  // 检测provider
+  function checkProvider(provider : string) : boolean {
+    let currentProviders = insideData.value.getArray<string>('currentProviders');
+    return currentProviders != null && currentProviders.indexOf(provider) > -1 ? true : false;
+  }
+
+  // 监听 - 页面每次【加载时】执行(如：前进)
+  onLoad((options) => {
+    let optionsStr = options['options'] as string | null;
+    if (optionsStr != null && optionsStr != "") {
+      let newOptions = JSON.parse(decodeURI(optionsStr)!) as UTSJSONObject;
+      myOptions.value = newOptions as UTSJSONObject;
+    }
+    console.log('myOptions: ', myOptions.value)
+  })
+</script>
+<style lang="scss" scoped>
+  .uni-pay {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #f3f3f3;
+  }
+
+  .mobile-pay-popup {
+    flex: 1;
+  }
+
+  .mobile-pay-popup-amount-box {
+    background-color: #ffffff;
+    padding: 15px;
+  }
+
+  .mobile-pay-popup-amount-box-text {
+    color: #333333;
+    font-size: 14px;
+  }
+
+  .mobile-pay-popup-amount {
+    margin-top: 10px;
+  }
+
+  .mobile-pay-popup-amount-text {
+    color: #e43d33;
+    font-size: 30px;
+  }
+
+  .mobile-pay-popup-provider-list {
+    background-color: #ffffff;
+    margin-top: 10px;
+  }
+
+  .uni-list {
+    display: flex;
+    background-color: #fff;
+    position: relative;
+    flex-direction: column;
+  }
+
+  .uni-list-item {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    flex-direction: row;
+    border-bottom: 1px solid #f8f8f8;
+    /* #ifdef H5 */
+    cursor: pointer;
+    /* #endif */
+  }
+
+  /* #ifndef VUE3-VAPOR */
+  .uni-list-item:hover {
+    background-color: #f1f1f1;
+  }
+
+  /* #endif */
+
+  .uni-list-item__container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    padding: 12px 15px;
+    padding-left: 15px;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .uni-list-item__container--right {
+    padding-right: 0;
+  }
+
+  .uni-list-item__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .uni-list-item__header-image {
+    width: 26px;
+    height: 26px;
+    margin-right: 9px;
+  }
+
+  .uni-list-item__content {
+    display: flex;
+    padding-right: 8px;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  .uni-list-item__content-text {
+    color: #3b4144;
+    font-size: 14px;
+  }
+
+  .uni-list-item__content--center {
+    justify-content: center;
+  }
+
+  .uni-list-item-arrowright {
+    border-top: 1px solid #bbbbbb;
+    border-right: 1px solid #bbbbbb;
+    width: 8px;
+    height: 8px;
+    margin-right: 15px;
+    transform: rotate(45deg);
+  }
+</style>

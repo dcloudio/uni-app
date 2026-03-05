@@ -1,0 +1,242 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <view style="padding: 15px;">
+      <text class="page-title">样式隔离</text>
+      <view class="section">
+        <text class="section-title">1. 全局样式 </text>
+        <text class="section-desc">App.uvue中定义的全局样式是否会影响页面元素</text>
+        <view class="test-item">
+          <text class="label">使用全局class "global-text"：</text>
+          <text class="global-text">这段文字应用了全局样式，文字应为：蓝色</text>
+        </view>
+        <view class="test-item">
+          <text class="label">使用全局class "global-box"：</text>
+          <view class="global-box">
+            <text>这是应用了全局box样式的容器，背景色应为：蓝色</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">2. 单根节点组件 </text>
+        <text class="section-desc">组件为单根节点时，外部使用的class和style会覆盖在组件的根节点上</text>
+        <view class="test-item">
+          <text class="label">默认样式的组件：</text>
+          <child text="默认样式"></child>
+          <text class="section-desc">预期：组件内部有内联style的元素（黄色背景，3px边框），外部class无法覆盖内联style</text>
+        </view>
+        <view class="test-item">
+          <text class="label">外部添加class覆盖（绿色）：</text>
+          <child text="外部class覆盖" class="custom-style-green"></child>
+        </view>
+        <view class="test-item">
+          <text class="label">外部添加style覆盖（绿色）：</text>
+          <child text="外部style覆盖" style="background-color: #E8F5E9; border-color: #4CAF50;"></child>
+        </view>
+        <view class="test-item">
+          <text class="label">外部class和style同时覆盖（绿色+border-width为5px）：</text>
+          <child text="class+style覆盖" class="custom-style-green" style="border-width: 5px;"></child>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">3. externalClasses配置 </text>
+        <text class="section-desc">通过externalClasses暴露特定class（类似微信小程序），允许外部精确控制组件内部样式</text>
+        <view class="test-item">
+          <text class="label">默认样式（橙色）：</text>
+          <child-external text="默认样式：紫色背景和描边"></child-external>
+        </view>
+        <view class="test-item">
+          <text class="label">通过child-class自定义样式（蓝色）：</text>
+          <child-external text="蓝色样式：黄色背景蓝色描边" child-class="external-class" box-class="external-custom-box"></child-external>
+        </view>
+        <view class="test-item">
+          <text class="label">全局样式使用!important覆盖组件样式：</text>
+          <child-external text="全局蓝色样式：黄色背景描边" child-class="global-important-class" box-class="global-important-box"></child-external>
+          <text class="section-desc">预期：全局样式中的!important可以覆盖组件内部样式</text>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">3.5. external-style配置 </text>
+        <text class="section-desc">通过external-style暴露style属性，允许外部通过style字符串控制组件内部样式（不受样式隔离策略影响）</text>
+        <view class="test-item">
+          <text class="label">默认样式（橙色）：</text>
+          <child-external-style text="默认样式：紫色背景和描边"></child-external-style>
+        </view>
+        <view class="test-item">
+          <text class="label">通过box-style自定义外层样式（蓝色）：</text>
+          <child-external-style text="组件根节点：蓝色背景样式" box-style="background-color: #8fd3ff; border-color: #00aaff;"></child-external-style>
+        </view>
+        <view class="test-item">
+          <text class="label">通过inner-box-style自定义内层样式（绿色）：</text>
+          <child-external-style text="组件内层：绿色背景样式" inner-box-style="background-color: #E8F5E9; border-color: #4CAF50;"></child-external-style>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">4. 多根节点组件 </text>
+        <text class="section-desc">多根节点继承 $attrs.style 和 $attrs.class，允许外部精确控制组件内部样式</text>
+        <view class="test-item">
+          <text class="label">默认样式：</text>
+          <child-multi-tag text="默认样式"></child-multi-tag>
+        </view>
+        <view class="test-item">
+          <text class="label">通过$attrs.class自定义组件内部样式（紫色）：</text>
+          <child-multi-tag class="child-multi-class" text="class样式"></child-multi-tag>
+        </view>
+        <view class="test-item">
+          <text class="label">通过$attrs.style自定义组件内部样式（蓝色）：</text>
+          <child-multi-tag text="蓝色样式" style="background-color: #8fd3ff;border-color: #00aaff;"></child-multi-tag>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">5. 组件的根节点为二级组件时 样式传递</text>
+        <text class="section-desc">页面使用组件level，组件level使用二级组件level-child</text>
+        <view class="test-item">
+          <text class="label">默认样式：</text>
+          <level></level>
+        </view>
+        <view class="test-item">
+          <text class="label">外部添加class覆盖（蓝色）：</text>
+          <level class="level-child-class"></level>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">5.5. 父组件不影响子组件 </text>
+        <text class="section-desc">默认策略下，父组件的样式不会影响子组件（子组件样式隔离）</text>
+        <view class="test-item">
+          <text class="label">父组件包含子组件：</text>
+          <parent></parent>
+          <text class="section-desc">预期：父组件有橙色背景，子组件有蓝色背景。父组件中定义的.child-box样式（黄色）不会影响子组件，子组件保持自己的蓝色背景</text>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">6. styleIsolation配置</text>
+        <text class="section-desc">isolated、app、app-and-page三种样式隔离模式的优先级关系</text>
+
+        <view class="test-item">
+          <text class="label">6.1 isolated模式 - 全隔离</text>
+          <text class="section-desc">只受组件自身样式影响（除externalClasses、组件根节点、v-deep以外），不受全局样式和页面样式影响</text>
+          <comp-isolated class="global-box comp-isolated"></comp-isolated>
+          <text class="section-desc">预期：.global-box不会应用全局样式（蓝色），.page-box不会应用页面样式（绿色），只显示组件自身样式（紫色）</text>
+        </view>
+
+        <view class="test-item">
+          <text class="label">6.2 app模式 - 受全局样式影响</text>
+          <text class="section-desc">优先级：全局样式 < 自身样式</text>
+          <comp-app class="comp-app"></comp-app>
+          <text class="section-desc">预期：.global-box会应用全局样式（蓝色），.page-box不会应用页面样式（绿色），组件自身样式优先级最高（紫色）</text>
+        </view>
+
+        <view class="test-item">
+          <text class="label">6.3 app-and-page模式 - 受全局和页面样式影响</text>
+          <text class="section-desc">优先级：全局样式 &lt; 组件自身样式 &lt; 页面样式</text>
+          <comp-app-and-page class="comp-app-and-page" text="应该显示页面样式（背景绿色）"></comp-app-and-page>
+          <text class="section-desc">预期：.global-box会应用全局样式（蓝色），.page-box会应用页面样式（绿色）优先级最高，组件自身样式（紫色）</text>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import child from './child.uvue'
+  import childExternal from './child-external-classes.uvue'
+  import childExternalStyle from './child-external-style.uvue'
+  import childMultiTag from './child-multi-tag.uvue'
+  import level from './level.uvue'
+  import parent from './parent.uvue'
+  import compIsolated from './comp-isolated.uvue'
+  import compApp from './comp-app.uvue'
+  import compAppAndPage from './comp-app-and-page.uvue'
+</script>
+
+<style>
+  .page-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .section {
+    margin-bottom: 30px;
+    border-radius: 8px;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .section-desc {
+    font-size: 13px;
+    color: #999;
+    margin: 10px;
+  }
+
+  .test-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #FFFFFF;
+    border-radius: 6px;
+  }
+
+  .label {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+
+  /* 外部覆盖样式 - 用于测试单根节点组件 */
+  .custom-style-green {
+    background-color: #cbf1db !important;
+    border-color: #8bc399 !important;
+  }
+
+  /* externalClasses自定义样式 */
+  .external-class {
+    background-color: #9ad6fa !important;
+    border-color: #00aaff !important;
+  }
+
+  .external-custom-box {
+    background-color: yellow !important;
+    border: blue solid 2px !important;
+  }
+
+  /* 多根节点组件外部class样式 */
+  .child-multi-class {
+    background-color: #d9daff !important;
+    border-color: #aaaaff !important;
+  }
+
+  .level-child-class {
+    background-color: #00aaff !important;
+  }
+
+  /* 页面样式 - 用于测试app-and-page样式隔离优先级 */
+  .page-box {
+    background-color: #e8f5e9;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 8px;
+    border: 2px solid #4caf50;
+  }
+  .page-text{
+    color:red;
+    font-size: 14px;
+  }
+
+</style>

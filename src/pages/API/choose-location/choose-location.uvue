@@ -1,0 +1,200 @@
+<template>
+  <view>
+    <page-head :title="data.title"></page-head>
+    <view class="uni-padding-wrap">
+      <view class="uni-column uni-container align-center">
+        <text class="uni-hello-text">位置信息</text>
+        <text v-if="!data.hasLocation" class="uni-title-text uni-common-mt">未选择位置</text>
+        <view v-if="data.hasLocation" class="align-center">
+          <text class="uni-common-mt">{{data.locationName}}</text>
+          <text class="uni-common-mt">{{data.locationAddress}}</text>
+          <view class="uni-common-mt" v-if="data.location.latitude.length>1">
+            <text>E: {{data.location.longitude[0]}}°{{data.location.longitude[1]}}′</text>
+            <text>\nN: {{data.location.latitude[0]}}°{{data.location.latitude[1]}}′</text>
+          </view>
+        </view>
+      </view>
+      <view class="uni-btn-v">
+        <text class="tips">注意：\n1. Web和App需要正确配置地图服务商的Key并且保证Key的权限和余额足够，才能正常选择位置\n2. 若没有关联uniCloud空间，则只能全屏地图选点，不能根据POI选择位置\n3. payload参数会原样透传给uni-map-co，可用于用户鉴权</text>
+        <boolean-data :defaultValue="false" title="是否指定位置为天安门" @change="changeLocationBoolean"></boolean-data>
+        <boolean-data :defaultValue="false" title="是否携带keyword参数" @change="changeKeywordBoolean"></boolean-data>
+        <!-- #ifndef MP -->
+        <boolean-data :defaultValue="false" title="是否携带payload参数" @change="changePayloadBoolean"></boolean-data>
+        <!-- #endif -->
+        <button class="uni-btn" type="primary" @tap="chooseLocation">选择位置</button>
+        <button class="uni-btn" @tap="clear">清空</button>
+        <!-- #ifdef APP-IOS -->
+        <button class="uni-btn" type="primary" @tap="chooseLocationByPlugin">通过 uts 插件调用 chooseLocation</button>
+        <!-- #endif -->
+      </view>
+    </view>
+  </view>
+</template>
+<script setup lang="uts">
+  import {
+    state,
+    setLifeCycleNum
+  } from '@/store/index.uts'
+
+  type Location = {
+    latitude: string[]
+    longitude: string[]
+  }
+
+  type DataType = {
+    title: string
+    hasLocation: boolean
+    location: Location
+    locationName: string
+    locationAddress: string
+    dialogPagesNum: number
+    hoverLocation: boolean
+    hoverKeyword: boolean
+    hoverPayload: boolean
+  }
+
+  const data = reactive({
+    title: 'chooseLocation',
+    hasLocation: false,
+    location: {
+      latitude: [],
+      longitude: []
+    } as Location,
+    locationName: '',
+    locationAddress: '',
+    dialogPagesNum: -1,
+    hoverLocation: false,
+    hoverKeyword: false,
+    hoverPayload: false
+  } as DataType)
+
+  const formatLocation = (longitude: number, latitude: number): Location => {
+    const longitudeArr = longitude.toString().split('.')
+    const latitudeArr = latitude.toString().split('.')
+    if(longitudeArr.length > 1){
+      longitudeArr[1] = longitudeArr[1].substring(0,2)
+    }
+    if(latitudeArr.length > 1){
+      latitudeArr[1] = latitudeArr[1].substring(0,2)
+    }
+    return {
+      longitude: longitudeArr,
+      latitude: latitudeArr
+    }
+  }
+
+  const clear = () => {
+    data.hasLocation = false
+  }
+
+  const changeLocationBoolean = (checked: boolean) => {
+    data.hoverLocation = checked
+  }
+
+  const changeKeywordBoolean = (checked: boolean) => {
+    data.hoverKeyword = checked
+  }
+
+  const changePayloadBoolean = (checked: boolean) => {
+    data.hoverPayload = checked
+  }
+
+  // #ifdef APP-IOS
+  const chooseLocationByPlugin = () => {
+    uni.chooseLocationPlugin()
+  }
+  // #endif
+
+  // 自动化测试
+  const test = () => {
+    const pages = getCurrentPages()
+    const page = pages[pages.length - 1]
+    // #ifdef APP || WEB
+    const dialogPages = page.getDialogPages()
+    data.dialogPagesNum = dialogPages.length
+    // #endif
+  }
+
+  // 自动化测试
+  const setLifeCycleNumFunc = (value: number) => {
+    setLifeCycleNum(value)
+  }
+
+  // 自动化测试
+  const getLifeCycleNum = (): number => {
+    return state.lifeCycleNum
+  }
+
+  const chooseLocation = () => {
+    let chooseLocationOptions = {
+      success: (res) => {
+        console.log('chooseLocation success', res)
+        data.hasLocation = true
+        data.location = formatLocation(res.longitude, res.latitude)
+        data.locationName = res.name
+        data.locationAddress = res.address
+      }
+    } as ChooseLocationOptions
+    if (data.hoverLocation) {
+      chooseLocationOptions.latitude = 39.908823
+      chooseLocationOptions.longitude = 116.39747
+    }
+    if (data.hoverKeyword) {
+      chooseLocationOptions.keyword = '公园'
+    }
+    // #ifndef MP
+    if (data.hoverPayload) {
+      chooseLocationOptions.payload = {
+        token: 'xxx'
+      }
+    }
+    // #endif
+    uni.chooseLocation(chooseLocationOptions)
+    // 自动化测试
+    setTimeout(() => {
+      test()
+    }, 500)
+  }
+
+  onPageShow(() => {
+    console.log("Page Show");
+    // 自动化测试
+    setLifeCycleNumFunc(state.lifeCycleNum + 1)
+  })
+
+  onPageHide(() => {
+    console.log("Page Hide");
+    // 自动化测试
+    setLifeCycleNumFunc(state.lifeCycleNum - 1)
+  })
+
+  defineExpose({
+    data,
+    setLifeCycleNumFunc,
+    getLifeCycleNum,
+    chooseLocation,
+    // #ifdef APP-IOS
+    chooseLocationByPlugin,
+    // #endif
+    clear,
+    changeLocationBoolean,
+    changeKeywordBoolean,
+    changePayloadBoolean,
+    test
+  })
+</script>
+
+<style>
+  .page-body-info {
+    padding-bottom: 0;
+    height: 220px;
+  }
+  .align-center{
+    align-items: center;
+  }
+  .tips {
+    font-size: 12px;
+    margin: 15px 0;
+    opacity: .8;
+  }
+</style>

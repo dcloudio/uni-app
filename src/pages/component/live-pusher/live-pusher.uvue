@@ -1,0 +1,407 @@
+<template>
+  <view class="uni-flex-item">
+    <live-pusher v-if="isPermissionGranted && isUrlSet" id="live-pusher" class="live-pusher" :url="url" :beauty="beauty"
+      :whiteness="whiteness" :remote-mirror="remoteMirror" :local-mirror="localMirror" :device-position="devicePosition"
+      :mode="mode" :auto-focus="autoFocus" :muted="muted" :orientation="orientation" :enable-camera="enableCamera"
+      :enable-mic="enableMic" :audio-quality="audioQuality" :min-bitrate="minBitrate" :max-bitrate="maxBitrate"
+      :audio-volume-type="audioVolumeType" :aspect="aspect" :background-mute="backgroundMute"
+      :waiting-image="waitingImage" :zoom="zoom" @statechange="statechange" @netstatus="netstatus" @error="error">
+    </live-pusher>
+    <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
+      <view class="uni-title">
+        <text class="uni-title-text">API示例</text>
+      </View>
+      <view class="uni-btn-v">
+        <button type="primary" @click="start" :disabled="connectedState || !previewState">开始推流</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="pause" :disabled="!connectedState || !previewState">暂停推流</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="resume"
+          :disabled="initState || connectedState || stopState || !previewState">恢复推流</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="stop" :disabled="!connectedState || !previewState">停止推流</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="switchCamera" :disabled="stopState || !previewState">切换前后摄像头</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="snapshot" :disabled="stopState || !previewState">快照</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="startPreview" :disabled="stopState || previewState">开启摄像头预览</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="stopPreview" :disabled="stopState || !previewState">关闭摄像头预览</button>
+      </view>
+      <view class="uni-title">
+        <text class="uni-title-text">属性示例</text>
+      </view>
+      <input class="input margin-10" type="string" placeholder="设置推流地址" @confirm="onUrlComfirm"></input>
+      <input class="input margin-10" type="string" placeholder="设置最小码率" @confirm="onMinBitrateComfirm"></input>
+      <input class="input margin-10" type="string" placeholder="设置最大码率" @confirm="onMaxBitrateComfirm"></input>
+      <input class="input margin-10" type="string" placeholder="设置进入后台时推流的等待画面"
+        @confirm="onWaitingImageComfirm"></input>
+      <input class="input margin-10" type="string" placeholder="设置焦距" @confirm="onZoomComfirm"></input>
+      <view class="margin-10">
+        <text>美颜, 取值范围0-9(iOS取值范围为1), 0表示关闭</text>
+        <slider :min="0" :max="9" @change="onBeautyChange" />
+      </view>
+      <view class="margin-10">
+        <text>美白, 取值范围0-9(iOS取值范围为1), 0表示关闭</text>
+        <slider :min="0" :max="9" @change="onWhitenessChange" />
+      </view>
+      <boolean-data title="设置是否静音" :defaultValue="muted" @change="onMutedChange"></boolean-data>
+      <!-- <boolean-data title="设置是否开启摄像头" :defaultValue="enableCamera" @change="onEnableCameraChange"></boolean-data> -->
+      <!-- <boolean-data title="设置是否开启麦克风" :defaultValue="enableMic" @change="onEnableMicChange"></boolean-data> -->
+      <boolean-data title="设置是否自动聚焦" :defaultValue="autoFocus" @change="onAutoFocusChange"></boolean-data>
+      <boolean-data title="设置进入后台时是否静音" :defaultValue="backgroundMute" @change="onBackgroundMuteChange"></boolean-data>
+      <boolean-data title="设置推流画面是否镜像" :defaultValue="remoteMirror" @change="onRemoteMirrorChange"></boolean-data>
+      <enum-data title="设置本地预览画面是否镜像" :items="localMirrorItemTypes" @change="onLocalMirrorChange"></enum-data>
+      <enum-data title="设置使用前置或后置摄像头" :items="devicePositionItemTypes" @change="onDevicePositionChange"></enum-data>
+      <enum-data title="设置推流视频模式" :items="modeItemTypes" @change="onModeChange"></enum-data>
+      <enum-data title="设置视频宽高比例" :items="aspectItemTypes" @change="onAspectChange"></enum-data>
+      <enum-data title="设置画面方向" :items="orientationItemTypes" @change="onOrientationChange"></enum-data>
+      <enum-data title="设置音质" :items="audioQualityItemTypes" @change="onAudioQualityChange"></enum-data>
+    </scroll-view>
+  </view>
+</template>
+
+<script setup>
+  import { ItemType } from '@/components/enum-data/enum-data-types';
+
+  const context = ref(null as LivePusherContext | null);
+  const instance = ref(null as ComponentPublicInstance | null);
+  const url = ref("rtmp://test");
+  const beauty = ref(0);
+  const whiteness = ref(0);
+  const remoteMirror = ref(false);
+  const localMirror = ref("auto");
+  const devicePosition = ref("front");
+  const mode = ref("SD");
+  const autoFocus = ref(true);
+  const muted = ref(false);
+  const orientation = ref("orientation");
+  const enableCamera = ref(true);
+  const enableMic = ref(true);
+  const audioQuality = ref("high");
+  const minBitrate = ref(200);
+  const maxBitrate = ref(1000);
+  const audioVolumeType = ref("media");
+  const aspect = ref("3:4");
+  const backgroundMute = ref(false);
+  const waitingImage = ref("");
+  const zoom = ref(1);
+  const videoWidth = ref(0);
+  const videoHeight = ref(0);
+  const fps = ref(0);
+  const isPermissionGranted = ref(false);
+  const isUrlSet = ref(true);
+  const initState = ref(true);
+  const connectedState = ref(false);
+  const stopState = ref(false);
+  const previewState = ref(true);
+
+  onReady(() => {
+    instance.value = getCurrentInstance()?.proxy;
+    // #ifdef APP-ANDROID
+    const permissions = ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"];
+    UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissions, (allRight : boolean, grantedList : string[]) => {
+      if (allRight) {
+        isPermissionGranted.value = true;
+      }
+    }, (doNotAskAgain : boolean, grantedList : string[]) => { });
+    // #endif
+    // #ifndef APP-ANDROID
+    isPermissionGranted.value = true;
+    // #endif
+  });
+
+  const statechange = (e : UniLivePusherStatechangeEvent) => {
+    console.log("statechange", e);
+    switch (e.detail.code) {
+      case 1002:
+        initState.value = false;
+        connectedState.value = true;
+        stopState.value = false;
+        break;
+      case 3004:
+        connectedState.value = false;
+        break;
+    }
+  };
+  const netstatus = (e : UniLivePusherNetstatusEvent) => {
+    console.log("netstatus", e);
+  };
+  const error = (e : UniLivePusherErrorEvent) => {
+    console.log("error", e);
+  };
+  const isUrlValid = () : boolean => {
+    const valid = url.value != "rtmp://test";
+    if (!valid) {
+      uni.showToast({
+        title: "请输入推流地址",
+        icon: "none"
+      });
+    }
+    return valid;
+  };
+  const start = () => {
+    if (!isUrlValid()) return;
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
+    context.value?.start({
+      success: (res) => {
+        console.log("start", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("start", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("start", JSON.stringify(res));
+      }
+    });
+  };
+  const pause = () => {
+    if (!isUrlValid()) return;
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
+    context.value?.pause({
+      success: (res) => {
+        console.log("pause", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("pause", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("pause", JSON.stringify(res));
+      }
+    });
+  };
+  const resume = () => {
+    if (!isUrlValid()) return;
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
+    context.value?.resume({
+      success: (res) => {
+        console.log("resume", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("resume", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("resume", JSON.stringify(res));
+      }
+    });
+  };
+  const stop = () => {
+    if (!isUrlValid()) return;
+    stopState.value = true;
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
+    context.value?.stop({
+      success: (res) => {
+        console.log("stop", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("stop", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("stop", JSON.stringify(res));
+      }
+    });
+  };
+  const switchCamera = () => {
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
+    context.value?.switchCamera({
+      success: (res) => {
+        console.log("switchCamera", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("switchCamera", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("switchCamera", JSON.stringify(res));
+      }
+    });
+  };
+  const snapshot = () => {
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
+    context.value?.snapshot({
+      success: (res) => {
+        console.log("snapshot", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("snapshot", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("snapshot", JSON.stringify(res));
+      }
+    });
+  };
+  const startPreview = () => {
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
+    previewState.value = true;
+    context.value?.startPreview({
+      success: (res) => {
+        console.log("startPreview", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("startPreview", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("startPreview", JSON.stringify(res));
+      }
+    });
+  };
+  const stopPreview = () => {
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
+    previewState.value = false;
+    context.value?.stopPreview({
+      success: (res) => {
+        console.log("stopPreview", JSON.stringify(res));
+      },
+      fail: (err) => {
+        console.log("stopPreview", JSON.stringify(err));
+      },
+      complete: (res) => {
+        console.log("stopPreview", JSON.stringify(res));
+      }
+    });
+  };
+
+  const localMirrorItemTypes = [{ "value": 0, "name": "auto(前置摄像头镜像，后置摄像头不镜像)" }, { "value": 1, "name": "enable(前后置摄像头均镜像)" }, { "value": 2, "name": "disable(前后置摄像头均不镜像)" }] as ItemType[];
+  const localMirrorItems = ["auto", "enable", "disable"];
+  const modeItemTypes = [{ "value": 0, "name": "SD(标清)" }, { "value": 1, "name": "HD(高清)" }, { "value": 2, "name": "FHD(超清)" }] as ItemType[];
+  const modeItems = ["SD", "HD", "FHD"];
+  const orientationItemTypes = [{ "value": 0, "name": "vertical" }, { "value": 1, "name": "horizontal" }] as ItemType[];
+  const orientationItems = ["vertical", "horizontal"];
+  const aspectItemTypes = [{ "value": 0, "name": "3:4" }, { "value": 1, "name": "9:16" }] as ItemType[];
+  const aspectItems = ["3:4", "9:16"];
+  const audioQualityItemTypes = [{ "value": 0, "name": "high(高音质(48KHz))" }, { "value": 1, "name": "low(低音质(16KHz))" }] as ItemType[];
+  const audioQualityItems = ["high", "low"];
+  const devicePositionItemTypes = [{ "value": 0, "name": "front" }, { "value": 1, "name": "back" }] as ItemType[];
+  const devicePositionItems = ["front", "back"];
+  const onUrlComfirm = (event : UniInputConfirmEvent) => {
+    let value = event.detail.value;
+    if (value == '') return;
+    context.value = null;
+    isUrlSet.value = false;
+    setTimeout(() => {
+      url.value = value;
+      isUrlSet.value = true;
+    }, 200);
+    console.log("url ->", value);
+  };
+  const onMinBitrateComfirm = (event : UniInputConfirmEvent) => {
+    let value = event.detail.value;
+    if (value == '') return;
+    minBitrate.value = parseInt(value);
+    console.log("min-bitrate ->", value);
+  };
+  const onMaxBitrateComfirm = (event : UniInputConfirmEvent) => {
+    let value = event.detail.value;
+    if (value == '') return;
+    maxBitrate.value = parseInt(value);
+    console.log("max-bitrate ->", value);
+  };
+  const onWaitingImageComfirm = (event : UniInputConfirmEvent) => {
+    let value = event.detail.value;
+    if (value == '') return;
+    waitingImage.value = value;
+    console.log("waiting-image ->", value);
+  };
+  const onZoomComfirm = (event : UniInputConfirmEvent) => {
+    let value = event.detail.value;
+    if (value == '') return;
+    zoom.value = parseInt(value);
+    console.log("zoom ->", value);
+  };
+  const onBeautyChange = (event : UniSliderChangeEvent) => {
+    beauty.value = event.detail.value;
+    console.log("beauty ->", beauty.value);
+  };
+  const onWhitenessChange = (event : UniSliderChangeEvent) => {
+    whiteness.value = event.detail.value;
+    console.log("whiteness ->", whiteness.value);
+  };
+  const onEnableCameraChange = (value : boolean) => {
+    enableCamera.value = value;
+    console.log("enable-camera ->", enableCamera.value);
+  };
+  const onEnableMicChange = (value : boolean) => {
+    enableMic.value = value;
+    console.log("enable-mic ->", enableMic.value);
+  };
+  const onMutedChange = (value : boolean) => {
+    muted.value = value;
+    console.log("muted ->", muted.value);
+  };
+  const onBackgroundMuteChange = (value : boolean) => {
+    backgroundMute.value = value;
+    console.log("background-mute ->", backgroundMute.value);
+  };
+  const onAutoFocusChange = (value : boolean) => {
+    autoFocus.value = value;
+    console.log("auto-focus ->", backgroundMute.value);
+  };
+  const onRemoteMirrorChange = (value : boolean) => {
+    remoteMirror.value = value;
+    console.log("remote-mirror ->", remoteMirror.value);
+  };
+  const onLocalMirrorChange = (value : number) => {
+    localMirror.value = localMirrorItems[value];
+    console.log("local-mirror ->", localMirrorItems[value]);
+  };
+  const onDevicePositionChange = (value : number) => {
+    devicePosition.value = devicePositionItems[value];
+    console.log("device-position ->", devicePosition.value);
+  };
+  const onModeChange = (value : number) => {
+    mode.value = modeItems[value];
+    console.log("mode ->", modeItems[value]);
+  };
+  const onAspectChange = (value : number) => {
+    aspect.value = aspectItems[value];
+    console.log("aspect ->", aspectItems[value]);
+  };
+  const onOrientationChange = (value : number) => {
+    orientation.value = orientationItems[value];
+    console.log("orientation ->", orientation.value);
+  };
+  const onAudioQualityChange = (value : number) => {
+    audioQuality.value = audioQualityItems[value];
+    console.log("audio-quality ->", audioQuality.value);
+  };
+</script>
+
+<style>
+  .live-pusher {
+    width: 100%;
+    height: 50%;
+  }
+
+  .input {
+    height: 40px;
+    background: #FFF;
+    padding: 8px 13px;
+  }
+
+  .margin-10 {
+    margin: 10px;
+  }
+</style>

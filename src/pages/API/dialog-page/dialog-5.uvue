@@ -1,0 +1,106 @@
+<template>
+  <view class="dialog-container">
+    <view class="dialog-content">
+      <text>title: {{ title }}</text>
+      <view class="uni-common-mt flex-row" v-if="pageBody != null">pageBody: {
+        top: <text id="page-body-top">{{pageBody!.top}}</text>,
+        right: <text id="page-body-right">{{pageBody!.right}}</text>,
+        bottom: <text id="page-body-bottom">{{pageBody!.bottom}}</text>,
+        left: <text id="page-body-left">{{pageBody!.left}}</text>,
+        width: <text id="page-body-width">{{pageBody!.width}}</text>,
+        height: <text id="page-body-height">{{pageBody!.height}}</text>
+        }
+      </view>
+      <view class="uni-common-mt flex-row" v-if="safeAreaInsets != null">safeAreaInsets: {
+        top: <text id="page-safe-area-insets-top">{{safeAreaInsets!.top}}</text>,
+        right: <text id="page-safe-area-insets-right">{{safeAreaInsets!.right}}</text>,
+        bottom: <text id="page-safe-area-insets-bottom">{{safeAreaInsets!.bottom}}</text>,
+        left: <text id="page-safe-area-insets-left">{{safeAreaInsets!.left}}</text>}
+      </view>
+      <!-- #ifdef APP-ANDROID || APP-IOS || WEB -->
+      <view class="uni-common-mt flex-row" v-if="width != null">width: <text>{{width!}}</text>
+      </view>
+      <view class="uni-common-mt flex-row" v-if="height != null">height: <text>{{height!}}</text>
+      </view>
+      <view class="uni-common-mt flex-row" v-if="statusBarHeight != null">statusBarHeight: <text>{{statusBarHeight!}}</text>
+      </view>
+      <!-- #endif -->
+      <button class="mt-10" @click="closeThisDialog">
+        closeThisDialog
+      </button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const instance = getCurrentInstance()!.proxy!
+  const currentPage = instance.$page
+
+  const title = ref('dialog 5')
+  const pageBody = ref(null as UniPageBody | null)
+  const safeAreaInsets = ref(null as UniSafeAreaInsets | null)
+  const width = ref(null as number | null)
+  const height = ref(null as number | null)
+  const statusBarHeight = ref(null as number | null)
+
+  onPageShow(() => {
+    console.log('dialog 5 onShow')
+  })
+
+  onReady(() => {
+    pageBody.value = currentPage.pageBody;
+    safeAreaInsets.value = currentPage.safeAreaInsets
+    // #ifdef APP-ANDROID || APP-IOS || WEB
+    width.value = currentPage.width
+    height.value = currentPage.height
+    statusBarHeight.value = currentPage.statusBarHeight
+    // #endif
+  })
+
+  onUnload(() => {
+    console.log('dialog 5 onUnload')
+  })
+
+  function closeThisDialog() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+        success(res) {
+          console.log('closeThisDialog success', res)
+        },
+        fail(err) {
+          console.log('closeThisDialog fail', err)
+        },
+        complete(res) {
+          console.log('closeThisDialog complete', res)
+        }
+      })
+    }
+  }
+</script>
+
+<style>
+  .dialog-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dialog-content {
+    width: 80%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 6px;
+  }
+
+  .mt-10 {
+    margin-top: 10px;
+  }
+  .flex-row{
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+</style>

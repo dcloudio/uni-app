@@ -1,0 +1,14 @@
+<template>
+  <view>
+    <slot></slot>
+    <view style="flex-direction: row;">
+      <slot name="bottom"></slot>
+    </view>
+  </view>
+</template>
+
+<script setup>
+</script>
+
+<style>
+</style>

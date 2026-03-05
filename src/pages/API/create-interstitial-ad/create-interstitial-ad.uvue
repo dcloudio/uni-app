@@ -1,0 +1,70 @@
+<template>
+  <page-head title="插屏广告"></page-head>
+  <button :type="btnType" style="margin: 10px;" :disabled="btnDisable" @click="showAd()">{{btnText}}</button>
+  <view v-for="(item,index) in errorDetails">{{item}}</view>
+</template>
+
+<script setup lang="uts">
+  const errorDetails = ref([] as string[])
+  const btnText = ref("")
+  const btnType = ref("primary")
+  const btnDisable = ref(false)
+  const interstitialAd = ref(null as InterstitialAd | null)
+  const isAdLoadSuccess = ref(false)
+
+  type LoadAdType = ()=>void
+  let loadAd:LoadAdType = ()=>{}
+  loadAd = () => {
+    if (btnDisable.value)
+      return
+    btnDisable.value = true
+    btnText.value = "正在加载广告"
+    btnType.value = "primary"
+    if (interstitialAd.value == null) {
+      interstitialAd.value = uni.createInterstitialAd({
+        adpid: "1111111113" //此处为测试广告位，实际开发中请在uni-ad后台申请自己的广告位后替换
+      })
+      interstitialAd.value!.onError((res) => {
+        errorDetails.value.length = 0;
+        btnType.value = "warn"
+        btnDisable.value = false
+        btnText.value = res.errMsg;
+        const errors = (res.cause as UniAggregateError | null)?.errors;
+        if(errors != null && errors.length > 0) {
+          for(var a = 0;a<errors.length;a++) {
+            var msg = JSON.stringify(errors[a]);
+            errorDetails.value.push(msg);
+          }
+        }
+      })
+      interstitialAd.value!.onLoad((_) => {
+        errorDetails.value.length = 0;
+        btnType.value = "primary"
+        btnText.value = "广告加载成功，点击观看"
+        btnDisable.value = false
+        isAdLoadSuccess.value = true
+      })
+      interstitialAd.value!.onClose((_) => {
+        isAdLoadSuccess.value = false
+        loadAd()
+      })
+    }
+    interstitialAd.value!.load().catch(() => { })
+  }
+
+  const showAd = () => {
+    if (isAdLoadSuccess.value) {
+      interstitialAd.value!.show().catch(() => { })
+    } else {
+      loadAd()
+    }
+  }
+
+  onReady(() => {
+    loadAd()
+  })
+</script>
+
+<style>
+
+</style>

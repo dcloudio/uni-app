@@ -1,0 +1,73 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page">
+  <!-- #endif -->
+    <!-- #ifndef MP -->
+    <fps />
+    <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="grid-view">
+      <slider ref="sliderRef" class="slider" v-for="(_, index) in 100" :key="index" @changing="sliderChanging"
+        @change="sliderChange" :value="sliderValue" :block-size="20"  thumb-class="thumbclass"/>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+const title = ref('sliderx100通信性能测试(小程序卡为正常)')
+const sliderValue = ref(50)
+const sliderRef = ref<UniSliderElement[]>([])
+
+
+function updateSliderValue(value: number) {
+  // #ifndef MP
+  // TODO 跳过vue框架，直接修改原生组件
+  sliderRef.value.forEach((item) => {
+    item.value = value
+  })
+  // #endif
+
+  // #ifdef MP
+  sliderValue.value = value
+  // #endif
+}
+
+function sliderChange(e: UniSliderChangeEvent) {
+  updateSliderValue(e.detail.value)
+}
+
+function sliderChanging(e: UniSliderChangeEvent) {
+  updateSliderValue(e.detail.value)
+}
+
+// 自动化测试
+const updateSliderValueTest = (value : number) => {
+  sliderValue.value = value
+}
+defineExpose({updateSliderValueTest})
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    margin-bottom: var(--uni-safe-area-inset-bottom);
+  }
+
+  .grid-view {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .slider {
+    width: 25%;
+    margin: 1px 0px;
+  }
+
+  .thumbclass {
+  	width: 16px;
+  	height: 16px;
+  	border-radius: 8px;
+  }
+</style>

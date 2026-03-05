@@ -1,0 +1,35 @@
+<template>
+	<button id="openContainer" @click="showDialogDemo" size="mini">打开对话框</button>
+	<button id="openContainerSmall" @click="showComprehensiveDemo" size="mini">打开综合演示</button>
+
+	<view :style="{display: containerShow ? 'flex' : 'none'}">
+		<view :style="contentStyle">
+			<button @click="closeContainer" size="mini" id="closeContainer">关闭容器</button>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	const containerShow = ref<boolean>(false)
+	const contentStyle = ref<string>("")
+
+	// 对话框模式演示
+	const showDialogDemo = () => {
+		contentStyle.value = "width: 600rpx;"
+		containerShow.value = true
+	}
+
+	// 综合演示
+	const showComprehensiveDemo = () => {
+		contentStyle.value = "width: 300rpx;"
+		containerShow.value = true
+	}
+
+	// 关闭容器
+	const closeContainer = () => {
+		containerShow.value = false
+	}
+</script>
+
+<style>
+</style>

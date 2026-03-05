@@ -1,0 +1,7 @@
+{
+  "name": "encryption-object",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

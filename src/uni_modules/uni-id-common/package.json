@@ -1,0 +1,84 @@
+{
+	"id": "uni-id-common",
+	"displayName": "uni-id-common",
+	"version": "1.0.16",
+	"description": "包含uni-id token生成、校验、刷新功能的云函数公共模块",
+	"keywords": [
+        "uni-id-common",
+        "uniCloud",
+        "token",
+        "权限"
+    ],
+	"repository": "https://gitcode.net/dcloud/uni-id-common",
+	"engines": {
+		"HBuilderX": "^3.1.0"
+	},
+    "dcloudext": {
+        "sale": {
+			"regular": {
+				"price": "0.00"
+			},
+			"sourcecode": {
+				"price": "0.00"
+			}
+		},
+		"contact": {
+			"qq": ""
+		},
+		"declaration": {
+			"ads": "无",
+			"data": "无",
+			"permissions": "无"
+		},
+        "npmurl": "",
+        "type": "unicloud-template-function"
+	},
+	"uni_modules": {
+		"dependencies": ["uni-config-center"],
+		"encrypt": [],
+		"platforms": {
+			"cloud": {
+				"tcb": "y",
+				"aliyun": "y"
+			},
+			"client": {
+				"Vue": {
+					"vue2": "u",
+					"vue3": "u"
+				},
+				"App": {
+					"app-vue": "u",
+					"app-nvue": "u"
+				},
+				"H5-mobile": {
+					"Safari": "u",
+					"Android Browser": "u",
+					"微信浏览器(Android)": "u",
+					"QQ浏览器(Android)": "u"
+				},
+				"H5-pc": {
+					"Chrome": "u",
+					"IE": "u",
+					"Edge": "u",
+					"Firefox": "u",
+					"Safari": "u"
+				},
+				"小程序": {
+					"微信": "u",
+					"阿里": "u",
+					"百度": "u",
+					"字节跳动": "u",
+					"QQ": "u",
+					"钉钉": "u",
+					"快手": "u",
+					"飞书": "u",
+                    "京东": "u"
+				},
+				"快应用": {
+					"华为": "u",
+					"联盟": "u"
+				}
+			}
+		}
+	}
+}

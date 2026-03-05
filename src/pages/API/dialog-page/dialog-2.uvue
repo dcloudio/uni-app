@@ -1,0 +1,148 @@
+<template>
+  <view id="dialog2" class="dialog-container">
+    <view class="dialog-content">
+      <text>title: {{title}}</text>
+      <text class="mt-10">onBackPress return false</text>
+      <button class="mt-10" @click="goNextPage">go next page</button>
+      <button class="mt-10" @click="openDialog1">openDialog1</button>
+      <button class="mt-10" @click="closeDialog">closeDialog</button>
+      <button class="mt-10" @click="closeThisDialog">closeThisDialog</button>
+      <button class="mt-10" @click="back">back</button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
+  import {
+    state,
+    setLifeCycleNum
+  } from '@/store/index.uts'
+
+  const title = ref('dialog 2')
+
+  onLoad((options : OnLoadOptions) => {
+    console.log('dialog 2 onLoad', options)
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+  })
+
+  onPageShow(() => {
+    console.log('dialog 2 onShow')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+  })
+
+  onReady(() => {
+    console.log('dialog 2 onReady')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+  })
+
+  onHide(() => {
+    console.log('dialog 2 onHide')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 1)
+  })
+
+  onUnload(() => {
+    console.log('dialog 2 onUnload')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 5)
+  })
+
+  onBackPress((options : OnBackPressOptions) : boolean | null => {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+    return false
+  })
+
+  function goNextPage() {
+    uni.navigateTo({ url: '/pages/API/dialog-page/next-page' })
+  }
+
+  function openDialog1() {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-1?name=dialog1',
+      success(res) {
+        console.log('openDialog1 success', res)
+      },
+      fail(err) {
+        console.log('openDialog1 fail', err)
+      },
+      complete(res) {
+        console.log('openDialog1 complete', res)
+      }
+    })
+  }
+
+  function closeDialog() {
+    uni.closeDialogPage({
+      success(res) {
+        console.log('closeDialog success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('closeDialog fail', err)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('closeDialog complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  function closeThisDialog() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+        success(res) {
+          console.log('closeThisDialog success', res)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+        fail(err) {
+          console.log('closeThisDialog fail', err)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum - 4)
+        },
+        complete(res) {
+          console.log('closeThisDialog complete', res)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        }
+      })
+    }
+  }
+
+  function back() {
+    uni.navigateBack()
+  }
+</script>
+
+<style>
+  .dialog-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dialog-content {
+    width: 80%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 6px;
+  }
+
+  .mt-10 {
+    margin-top: 10px;
+  }
+</style>

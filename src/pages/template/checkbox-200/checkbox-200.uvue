@@ -1,0 +1,26 @@
+<template>
+  <view style="flex-direction: column;background-color: #f5f5f5;position: relative;">
+    <!-- #ifndef MP -->
+    <fps />
+    <!-- #endif -->
+    <view style="flex-direction: row;align-items: center;padding: 2px;background-color: #ffffff;">
+      <button @click="toggleAll" size="mini" style="margin: 2px;">{{ sharedChecked ? '取消' : '全选' }}</button>
+    </view>
+		<checkbox-group style="margin: 2px;padding: 2px;flex-direction: row;flex-wrap: wrap;">
+			<checkbox v-for="index in 200" :key="index" :checked="sharedChecked" />
+		</checkbox-group>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const sharedChecked = ref(false)
+
+  function toggleAll() {
+    sharedChecked.value = !sharedChecked.value
+    console.log('切换全选状态:', sharedChecked.value)
+  }
+
+</script>
+
+<style>
+</style>

@@ -1,0 +1,65 @@
+/**
+ * 引用 iOS 系统库，示例如下：
+ * import { UIDevice } from "UIKit";
+ * [可选实现，按需引入]
+ */
+
+// import {OpenDialogPageOptions,openDialogPage} from "DCloudUTSExtAPI";
+
+/* 引入 interface.uts 文件中定义的变量 */
+import { TestOpenDialogPage, TestCloseDialogPage } from '../interface.uts';
+
+var curDialogPage : UniPage | null = null
+export const testOpenDialogPage : TestOpenDialogPage = function (url:string) {
+
+	// let utsJsonObj : DCloudUTSExtAPI.OpenDialogPageOptions = {
+	// 	url:"zhangsan"
+	// }
+	 console.log("testOpenDialogPage")
+
+	// let option = new OpenDialogPageOptions({
+	// 	url:url
+	// })
+	let option = new OpenDialogPageOptions()
+	option.url = url
+  console.log(url)
+
+	option.animationType ="slide-in-left"
+	// option.parentPage = getCurrentPages()[0]
+
+	option.success = (arg : OpenDialogPageSuccess )=>{
+		console.log("success")
+	}
+	option.complete = (arg : OpenDialogPageComplete )=>{
+		console.log(arg)
+	}
+
+	option.fail = (arg : OpenDialogPageFail )=>{
+		console.log("fail")
+	}
+	curDialogPage = uni.openDialogPage(option)
+}
+
+export const testCloseDialogPage : TestCloseDialogPage = function () {
+	console.log("testCloseDialogPage")
+  if ( curDialogPage != null ){
+	let option = new CloseDialogPageOptions()
+	option.dialogPage = curDialogPage
+
+	option.success = (arg : CloseDialogPageSuccess )=>{
+		console.log("success")
+	}
+	option.complete = (arg : CloseDialogPageComplete )=>{
+		console.log(arg)
+	}
+
+	option.fail = (arg : CloseDialogPageFail )=>{
+		console.log("fail")
+	}
+  	uni.closeDialogPage(option)
+  }
+}
+
+/**
+ * 更多插件开发的信息详见：https://uniapp.dcloud.net.cn/plugin/uts-plugin.html
+ */

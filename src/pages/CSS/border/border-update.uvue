@@ -1,0 +1,36 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1">
+	<!-- #endif -->
+		<view>
+			<button @click="handleUpdate">点击更新border样式</button>
+			<view class="border-view" :style="borderStyle"></view>
+      <text>拍平版本</text>
+      <view class="border-view" :style="borderStyle" flatten></view>
+		</view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup>
+	let borderStyle = ref("border:3px solid green;")
+	const handleUpdate = () => {
+		borderStyle.value = "border:7px solid blue;"
+	}
+
+  const jest_border_update = ()=>{
+    handleUpdate()
+  }
+
+  defineExpose({
+    jest_border_update
+  })
+</script>
+
+<style>
+	.border-view {
+		width: 150px;
+		height: 100px;
+	}
+</style>

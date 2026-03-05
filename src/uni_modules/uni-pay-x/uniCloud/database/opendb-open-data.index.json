@@ -1,0 +1,14 @@
+[
+  {
+    "IndexName": "expired",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "expired",
+          "Direction": "1"
+        }
+      ],
+      "MgoIsUnique": false
+    }
+  }
+]

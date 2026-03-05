@@ -1,0 +1,46 @@
+{
+  "light": {
+    "navigationBarTextStyle": "white",
+    "navigationBarBackgroundColor": "#007AFF",
+    "backgroundColorContent": "#efeff4",
+    "tabBarPagebackgroundColorContent": "#efeff4",
+    "backgroundColor": "#efeff4",
+    "backgroundTextStyle": "dark",
+
+    "tabBarColor": "#7A7E83",
+    "tabBarSelectedColor": "#007AFF",
+    "tabBarBorderStyle": "black",
+    "tabBarBackgroundColor": "#F8F8F8",
+
+    "tabBarComponentIconPath": "static/component.png",
+    "tabBarComponentSelectedIconPath": "static/componentHL.png",
+    "tabBarAPIIconPath": "static/api.png",
+    "tabBarAPISelectedIconPath": "static/apiHL.png",
+    "tabBarCSSIconPath": "static/css.png",
+    "tabBarCSSSelectedIconPath": "static/cssHL.png",
+    "tabBarTemplateIconPath": "static/template.png",
+    "tabBarTemplateSelectedIconPath": "static/templateHL.png"
+  },
+  "dark": {
+    "navigationBarTextStyle": "white",
+    "navigationBarBackgroundColor": "#1F1F1F",
+    "backgroundColor": "#1F1F1F",
+    "backgroundColorContent": "#646464",
+    "tabBarPagebackgroundColorContent": "#1F1F1F",
+    "backgroundTextStyle": "light",
+
+    "tabBarColor": "#cacaca",
+    "tabBarSelectedColor": "#007AFF",
+    "tabBarBorderStyle": "white",
+    "tabBarBackgroundColor": "#1F1F1F",
+
+    "tabBarComponentIconPath": "static/component.png",
+    "tabBarComponentSelectedIconPath": "static/componentHL.png",
+    "tabBarAPIIconPath": "static/api.png",
+    "tabBarAPISelectedIconPath": "static/apiHL.png",
+    "tabBarCSSIconPath": "static/css.png",
+    "tabBarCSSSelectedIconPath": "static/cssHL.png",
+    "tabBarTemplateIconPath": "static/template.png",
+    "tabBarTemplateSelectedIconPath": "static/templateHL.png"
+  }
+}

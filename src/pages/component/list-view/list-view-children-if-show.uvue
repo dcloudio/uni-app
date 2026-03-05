@@ -1,0 +1,84 @@
+<template>
+  <view class="p-10">
+    <button id="init-btn" class="uni-btn" @click="init">init</button>
+    <button id="clear-btn" class="uni-btn" @click="clear">clear</button>
+    <view
+      class="uni-common-mt list-view-container"
+      :class="{ ' p-10': list.length > 0 }"
+    >
+      <list-view>
+        <template v-for="(item, index) in list" :key="item.id">
+          <list-item
+						id="toggle-children-show-btn"
+            :class="{ 'uni-common-mt': index > 0 }"
+            @click="toggleChildrenShow(item.id)"
+          >
+            <text>toggle children isShow</text>
+          </list-item>
+          <template v-if="expandIds.includes(item.id)">
+            <template v-for="child in item.children" :key="child.id">
+              <list-item id="list-item-child" class="mt-5">
+                <text>{{ child.id }}</text>
+              </list-item>
+            </template>
+          </template>
+        </template>
+      </list-view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+
+type Child = {
+	id: string
+}
+type List = {
+	id: string
+	children: Child[]
+}
+
+const list = ref<List[]>([])
+const expandIds = ref<string[]>([])
+
+function init(){
+	list.value = [
+		{id:'1', children: [{ id: '1-1'},{ id: '1-2'},{ id: '1-3'}]},
+		{id:'2', children: [{ id: '2-1'},{ id: '2-2'},{ id: '2-3'}]},
+		{id:'3', children: [{ id: '3-1'},{ id: '3-2'},{ id: '3-3'}]},
+	] as List[]
+
+	expandIds.value = [list.value[0].id]
+}
+
+function clear(){
+	list.value = [] as List[]
+	expandIds.value = [] as string[]
+}
+
+function toggleChildrenShow(id: string){
+	const index = expandIds.value.findIndex((item) => item == id)
+	if(index == -1) {
+		expandIds.value.push(id)
+	} else {
+		expandIds.value.splice(index, 1)
+	}
+}
+
+onLoad(() => {
+	init()
+})
+</script>
+
+<style>
+.p-10 {
+  padding: 10px;
+}
+.list-view-container {
+  background-color: #fff;
+}
+.mt-5 {
+  margin-top: 5px;
+}
+</style>

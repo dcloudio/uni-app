@@ -1,0 +1,60 @@
+<template>
+  <view class="dialog-container">
+    <video id="myVideo" src="https://web-ext-storage.dcloud.net.cn/video/sample/2minute-demo.mp4"
+      title="这里是 dialogPage 中的 video"></video>
+    <view class="dialog-content">
+      <button class="mt-10" @click="requestFullScreen">
+        requestFullScreen
+      </button>
+      <button class="mt-10" @click="exitFullScreen">
+        exitFullScreen
+      </button>
+      <button class="mt-10" @click="closeThisPage">
+        closeThisPage
+      </button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
+  function requestFullScreen() {
+    uni.createVideoContext('myVideo')?.requestFullScreen(null)
+  }
+
+  function exitFullScreen() {
+    uni.createVideoContext('myVideo')?.exitFullScreen()
+  }
+
+  function closeThisPage() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage
+      })
+    }
+  }
+
+  onBackPress(() => {
+    exitFullScreen()
+    return true
+  })
+</script>
+
+<style>
+  .dialog-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dialog-content {
+    width: 80%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 6px;
+  }
+</style>

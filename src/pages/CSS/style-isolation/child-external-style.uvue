@@ -1,0 +1,44 @@
+<template>
+  <view class="external-style-box" :style="props.boxStyle">
+    <text class="external-style-text">{{ props.text }}</text>
+    <view class="box" :style="props.innerBoxStyle"></view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  // 定义组件属性接口
+  type Props = {
+    text ?: string,
+    boxStyle ?: string,
+    innerBoxStyle ?: string
+  }
+
+  // 使用 withDefaults 设置默认值
+  const props = withDefaults(defineProps<Props>(), {
+    text: 'external-style测试：默认样式（橙色背景）',
+    boxStyle: '',
+    innerBoxStyle: ''
+  })
+</script>
+
+<style>
+  .external-style-box {
+    background-color: #FFF3E0;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid #FF9800;
+    margin: 5px;
+  }
+
+  .external-style-text {
+    color: #E65100;
+    font-size: 14px;
+  }
+
+  .box {
+    width: 150px;
+    height: 30px;
+    background-color:  #d9d1ff;
+    border: #9e4ef7 solid 2px;
+  }
+</style>

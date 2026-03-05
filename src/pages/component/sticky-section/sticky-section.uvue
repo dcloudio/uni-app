@@ -1,0 +1,169 @@
+<template>
+  <page-head title="sticky-section"></page-head>
+  <list-view id="list-view" ref="listViewRef" show-scrollbar=false class="page" :scroll-into-view="pageData.scrollIntoView"
+    @scroll="onScroll" @scrollend="onScrollEnd" bounces="false" refresher-enabled="true" :refresher-triggered="pageData.refresherTriggered" @refresherrefresh="onRefresherrefresh">
+    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
+      <button @click="gotoStickyHeader('C')" size="mini">跳转到id为C的sticky-header位置上</button>
+    </list-item>
+    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
+      <button @click="appendSectionItem(0)" size="mini">第一组 section 新增5条内容</button>
+    </list-item>
+    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
+      <button @click="deleteSection()" size="mini">删除第一组 section</button>
+    </list-item>
+    <sticky-section v-for="(section) in pageData.sectionArray" :key="section.name" :padding="pageData.sectionPadding"
+      :push-pinned-header="true">
+      <sticky-header :id="section.name">
+        <text class="sticky-header-text">{{section.name}}</text>
+      </sticky-header>
+      <list-item v-for="(list) in section.list" :key="list.text" :name="list.text" class="content-item" :type=10>
+        <text class="text">{{list.text}}</text>
+      </list-item>
+    </sticky-section>
+    <list-item v-if="pageData.sectionArray.length > 0" style="padding: 10px; margin: 5px 0;align-items: center;" :type=30>
+      <!-- <text style="color: #aaa">到底了</text> -->
+      <button @click="toTop" size="mini">回到顶部</button>
+    </list-item>
+  </list-view>
+</template>
+
+<script setup lang="uts">
+  export type sectionData = {
+    name : string,
+    list : sectionListItem[]
+  }
+  export type sectionListItem = {
+    text : string
+  }
+  type DataType = {
+    data: string[];
+    sectionPadding: number[];
+    scrollIntoView: string;
+    scrolling: boolean;
+    sectionArray: sectionData[];
+    appendId: number;
+    refresherTriggered: boolean;
+    isReady: boolean;
+  }
+
+  const pageData = reactive({
+    data: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'],
+    sectionPadding: [0, 10, 0, 10],
+    scrollIntoView: "",
+    scrolling: false,
+    sectionArray: [],
+    appendId: 0,
+    refresherTriggered: false,
+    isReady: false//自动化测试使用
+  } as DataType)
+
+  const listViewRef = ref<UniElement | null>(null)
+
+  const initSectionArray = () => {
+    pageData.sectionArray = []
+    console.log("initSectionArray start", pageData.sectionArray.length)
+    pageData.data.forEach(key => {
+      const list = [] as sectionListItem[]
+      for (let i = 1; i < 11; i++) {
+        const item = { text: key + "--item--content----" + i } as sectionListItem
+        list.push(item)
+      }
+      const sectionDataItem = { name: key, list: list } as sectionData
+      pageData.sectionArray.push(sectionDataItem)
+    }
+    )
+    console.log("initSectionArray end", pageData.sectionArray[0].name)
+  }
+
+  onReady(() => {
+    //延迟onReady再加载数据 校验issues:14705 bug
+    initSectionArray()
+    pageData.isReady = true
+  })
+
+  const toTop = () => {
+    pageData.scrollIntoView = ""
+    uni.getElementById("list-view")!.scrollTop = 0
+  }
+
+  //用于自动化测试
+  const listViewScrollByY = (y : number) => {
+    const listview = listViewRef.value as UniElement
+    // listview.scrollBy(0, y)
+    listview.scrollTop = y
+  }
+
+  const gotoStickyHeader = (id : string) => {
+    // #ifdef APP
+    pageData.scrollIntoView = id
+    // #endif
+    // #ifdef WEB
+    console.log("web端不支持该功能")
+    // #endif
+  }
+
+  const onScroll = () => {
+    pageData.scrolling = true
+  }
+
+  const onScrollEnd = () => {
+    pageData.scrolling = false
+    //滚动后重置scrollIntoView = ""
+    if (pageData.scrollIntoView != "") {
+      pageData.scrollIntoView = ""
+    }
+  }
+
+  const appendSectionItem = (index : number) => {
+    const sectionDataItem = pageData.sectionArray[index]
+    pageData.appendId++
+    const list = [
+      { text: sectionDataItem.name + "--item--content----new1--" + pageData.appendId } as sectionListItem,
+      { text: sectionDataItem.name + "--item--content----new2--" + pageData.appendId } as sectionListItem,
+      { text: sectionDataItem.name + "--item--content----new3--" + pageData.appendId } as sectionListItem,
+      { text: sectionDataItem.name + "--item--content----new4--" + pageData.appendId } as sectionListItem,
+      { text: sectionDataItem.name + "--item--content----new5--" + pageData.appendId } as sectionListItem
+    ] as sectionListItem[]
+    sectionDataItem.list.unshift(...list)
+  }
+
+  const deleteSection = () => {
+    pageData.sectionArray.shift()
+  }
+
+  const onRefresherrefresh = (_ : UniRefresherEvent) => {
+    pageData.refresherTriggered = true;
+    setTimeout(() => {
+      initSectionArray()
+      pageData.refresherTriggered = false;
+    }, 1000)
+  }
+
+  defineExpose({
+    pageData,
+    deleteSection,
+    listViewScrollByY,
+    toTop,
+    gotoStickyHeader
+  })
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    background-color: #f5f5f5;
+  }
+
+  .sticky-header-text {
+    font-size: 16px;
+    padding: 8px;
+    color: #959595;
+    background-color: #f5f5f5;
+  }
+
+  .content-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #fff;
+  }
+</style>

@@ -1,0 +1,84 @@
+<template>
+  <view style="flex: 1;">
+    <view class="content-item">
+      <text class="text">左右滑动页面，体验swiper嵌套list-view效果。</text>
+    </view>
+    <swiper style="flex: 1;" :current="data.currentVal" @change="swiperChange">
+      <swiper-item v-for="index in 3">
+        <list-view :id="'list'+index" style="flex: 1;  border: 3px solid lime;" refresher-enabled="true" @refresherrefresh="onRefresherrefresh"
+          :refresher-triggered="data.refresherTriggeredArray[index-1]" :scroll-top="data.scrollTop">
+          <!-- #ifndef VUE3-VAPOR -->
+          <sticky-header>
+            <text class="header">上下滑动体验吸顶效果 swiper-item{{index}}</text>
+          </sticky-header>
+          <!-- #endif -->
+          <list-item v-for="itemIndex in 40" :key="itemIndex" class="item">
+            <text>item----------{{itemIndex}}</text>
+          </list-item>
+        </list-view>
+      </swiper-item>
+    </swiper>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+type DataType = {
+  swiperCurrentIndex: number,
+  currentVal: number,
+  scrollTop: number,
+  refresherTriggeredArray: boolean[],
+}
+
+// 使用reactive包装数据，便于自动化测试获取
+const data = reactive({
+  swiperCurrentIndex: 0,
+  currentVal: 0,
+  scrollTop: 0,
+  refresherTriggeredArray: [false, false, false] as boolean[],
+} as DataType)
+
+// Methods
+function swiperChange(e : SwiperChangeEvent) {
+  data.swiperCurrentIndex = e.detail.current
+}
+
+function onRefresherrefresh() {
+  data.refresherTriggeredArray[data.swiperCurrentIndex] = true
+  setTimeout(() => {
+    data.refresherTriggeredArray[data.swiperCurrentIndex] = false
+  }, 100)
+}
+
+defineExpose({
+  data
+})
+</script>
+
+<style>
+  .item {
+    padding: 15px;
+    margin: 0 0 5px 0;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+
+  .text {
+    font-size: 14px;
+    color: #666;
+    line-height: 20px;
+  }
+
+  .content-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #fff;
+  }
+
+  .header {
+    background-color: #ffaa00;
+    padding: 15px;
+    text-align: center;
+    color: #fff;
+  }
+</style>

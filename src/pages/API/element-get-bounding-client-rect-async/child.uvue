@@ -1,0 +1,21 @@
+<template>
+  <view class="child">
+    <text class="child-text">自定义组件内容</text>
+  </view>
+</template>
+
+<script setup lang="uts">
+</script>
+
+<style>
+  .child {
+    padding: 20px;
+    background-color: #1e90ff;
+    border-radius: 8px;
+  }
+
+  .child-text {
+    font-size: 14px;
+    color: #fff;
+  }
+</style>

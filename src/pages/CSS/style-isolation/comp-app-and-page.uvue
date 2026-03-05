@@ -1,0 +1,51 @@
+<template>
+	<view class="component-container">
+    <!-- TODO 目前 app 端相同权重的 class 是根据class值域的书写顺序决定的，标准web是根据定义的顺序决定，先调整书写顺序，后续统一拉齐 -->
+    <!-- 原来书写顺序：global-box page-box com-box -->
+    <!-- 临时调整书写顺序：global-box com-box page-box -->
+		<view class="global-box com-box page-box">
+			<text class="com-text">多样式 - {{text}}</text>
+		</view>
+		<view class="global-box">
+      <!-- 原来书写顺序：com-text global-text -->
+      <!-- 临时调整书写顺序：global-text com-text -->
+			<text class="global-text com-text">全局样式(预期字体大小18px，背景蓝色)</text>
+		</view>
+		<view class="page-box">
+			<text class="com-text page-text">页面样式(预期字体大小14px，背景绿色，文字红色)</text>
+		</view>
+		<view class="com-box">
+			<text class="com-text">组件样式</text>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	defineOptions({
+		styleIsolation: 'app-and-page'
+	})
+    defineProps({
+        text: {
+            type: String,
+            default: 'app-and-page'
+        }
+    })
+</script>
+
+<style>
+	.com-box {
+		background-color: #d9d1ff;
+		padding: 10px;
+		margin: 10px;
+		border-radius: 8px;
+		border: 2px solid #9e4ef7;
+	}
+
+	.com-text {
+		color: #9e4ef7;
+	}
+
+	.component-container {
+		margin: 10px;
+	}
+</style>

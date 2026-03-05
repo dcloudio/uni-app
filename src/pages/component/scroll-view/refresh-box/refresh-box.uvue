@@ -1,0 +1,44 @@
+<template>
+    <view slot="refresher" class="refresh-box">
+      <image v-if="state == 2" class="refresh-icon" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/refresh-box-run.gif" mode="widthFix"></image>
+      <text class="tip-text">{{text[state]}}</text>
+    </view>
+</template>
+
+<script setup lang="uts">
+
+
+// Props
+defineProps({
+  state: {
+    type: Number,
+    default: 0
+  }
+})
+
+// Data
+const text = ref(['继续下拉执行刷新', '释放立即刷新', '刷新中', ""])
+</script>
+
+<style>
+  .refresh-box {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    height: 30px;
+  }
+
+  .refresh-icon {
+    width: 14px;
+    height: 14px;
+		border-color: #888;
+    /* margin: 5px; */
+  }
+
+  .tip-text {
+    color: #888;
+    font-size: 14px;
+		margin-left: 4px;
+  }
+</style>

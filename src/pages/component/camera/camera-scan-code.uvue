@@ -1,0 +1,81 @@
+<template>
+  <view style="flex:1">
+    <camera style="width: 100%; height: 300px;" :resolution="'high'" :mode="'scanCode'" @scancode="handleScanCode">
+    </camera>
+    <view class="camera-scan-code-back-wrap">
+      <button type="default" @click="navigateBack">返回正常模式</button>
+    </view>
+    <view class="camera-scan-code-table">
+      <view class="camera-scan-code-table-pair">
+        <view class="camera-scan-code-table-pair-label">
+          <text>类型</text>
+        </view>
+        <view class="camera-scan-code-table-pair-value">
+          <text>{{ result?.type ?? ''}}</text>
+        </view>
+      </view>
+
+      <view class="camera-scan-code-table-pair camera-scan-code-table-top-line">
+        <view class="camera-scan-code-table-pair-label">
+          <text>结果</text>
+        </view>
+        <view class="camera-scan-code-table-pair-value">
+          <text>{{ result?.result ?? ''}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+
+type CameraScanCodeResult = {
+  type : string | null;
+  result : string | null;
+}
+
+const result = ref(null as CameraScanCodeResult | null)
+
+function navigateBack() {
+  uni.navigateBack()
+}
+
+function handleScanCode(ev : UniCameraScanCodeEvent) {
+  const deatil = ev.detail;
+  result.value = {
+    type: deatil.type,
+    result: deatil.result
+  } as CameraScanCodeResult
+}
+</script>
+
+<style>
+  .camera-scan-code-back-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .camera-scan-code-table {
+    background-color: white;
+    margin-top: 20px;
+  }
+  .camera-scan-code-table-pair {
+    height: 50px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .camera-scan-code-table-pair-label {
+    flex-grow: 1;
+    margin-left: 15px;
+
+  }
+  .camera-scan-code-table-pair-value{
+    flex-grow: 2;
+
+  }
+  .camera-scan-code-table-top-line {
+    border-top: 1px solid #eee;
+  }
+</style>

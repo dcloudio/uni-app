@@ -1,0 +1,193 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+		<view class="uni-padding-wrap uni-common-mt">
+      <navigator url="/pages/component/rich-text/rich-text-tags" class="uni-btn-v">
+        <button>rich-text渲染单个HTML标签示例</button>
+      </navigator>
+      <navigator url="/pages/component/rich-text/rich-text-complex" class="uni-btn-v">
+        <button>rich-text渲染复杂HTML示例</button>
+      </navigator>
+      <navigator url="/pages/template/long-rich-text/long-rich-text" class="uni-btn-v">
+        <button class="uni-btn">组件性能测试</button>
+      </navigator>
+			<view class="uni-title">
+				<button type="default" @click="changeText">修改文本内容</button>
+			</view>
+			<view class="uni-title">
+				<button type="default" @click="changeFontSize">切换 font-size ({{ data.currentFontSize }})</button>
+			</view>
+			<view class="uni-title">
+				<button type="default" @click="changeLineHeight">切换 line-height ({{ data.currentLineHeight }})</button>
+			</view>
+			<view class="uni-title">
+				<button type="default" @click="changeFontFamily">切换 font-family ({{ data.currentFontFamily }})</button>
+			</view>
+			<view class="text-box" id="rich-text-parent" @click="richTextParentClick">
+				<rich-text id='rich-text' :style="data.richTextStyle" :nodes="data.text" mode="native">
+				</rich-text>
+				<view>
+					<text>rich-text-parent</text>
+					<text id='rich-text-str'>{{ data.richTextStr }}</text>
+				</view>
+			</view>
+			<view class="uni-title">
+				<text class="uni-subtitle-text">selectable</text>
+			</view>
+			<view class="text-box2">
+				<rich-text style="height: 80px;" :selectable="true" :nodes="data.text"></rich-text>
+			</view>
+		</view>
+  <!-- #ifdef APP -->
+  </scroll-view style="flex: 1;">
+  <!-- #endif -->
+	<rich-text v-if="data.autoTest" id="test-rich-text" :nodes="data.testNodes" :selectable="true"
+		@itemclick="itemClickForTest" style="position: fixed;width: 100px;height: 100px;"></rich-text>
+</template>
+
+<script setup lang="uts">
+	type DataType = {
+		text : string;
+		richTextHeight : number;
+		richTextElement : UniElement | null;
+		autoTest : boolean;
+		testNodes : string;
+		isItemClickTrigger : boolean;
+		richTextStr : boolean;
+		richTextStyle : string;
+		currentFontSize : string;
+		currentLineHeight : string;
+		currentFontFamily : string;
+		fontSizeIndex : number;
+		lineHeightIndex : number;
+		fontFamilyIndex : number;
+	}
+	// 定义各属性的可选值
+	const fontSizeList : string[] = ["默认", "12px", "16px", "20px", "24px", "32px"]
+	const lineHeightList : string[] = ["默认", "1", "1.5", "2", "2.5", "3"]
+	const fontFamilyList : string[] = ["默认", "serif", "sans-serif", "monospace", "cursive"]
+
+	// 使用reactive避免ref数据在自动化测试中无法访问
+	const data = reactive({
+		text: "<span>hello uni-app x!</span><br/><span>uni-app x，终极跨平台方案</span>",
+		richTextHeight: 0,
+		richTextElement: null,
+		// 自动化测试
+		autoTest: false,
+		testNodes: '<img src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png"></img>',
+		isItemClickTrigger: false,
+		richTextStr: false,
+		richTextStyle: "border: 1px; border-style: solid; border-color: red;",
+		currentFontSize: "默认",
+		currentLineHeight: "默认",
+		currentFontFamily: "默认",
+		fontSizeIndex: 0,
+		lineHeightIndex: 0,
+		fontFamilyIndex: 0
+	} as DataType)
+
+	const updateRichTextHeight = () => {
+		if (data.richTextElement != null) {
+			data.richTextElement!.getBoundingClientRectAsync()!.then((elRect : DOMRect) => {
+				data.richTextHeight = elRect.height
+				console.log('richTextHeight:', data.richTextHeight)
+			})
+		}
+	}
+
+	onReady(() => {
+
+		data.richTextElement = uni.getElementById('rich-text') as UniElement
+		console.log("onReady  加载完成，richTextElement= ", data.richTextElement?.tagName)
+		setTimeout(() => {
+			updateRichTextHeight()
+		}, 2500)
+	})
+
+	const changeText = () => {
+		if (data.text === "<span>hello uni-app x!</span><br/><span>uni-app x，终极跨平台方案</span>") {
+			data.text = "<h1>hello uni-app x!</h1><br/><h2>uni-app x，终极跨平台方案</h2>"
+		} else {
+			data.text = "<span>hello uni-app x!</span><br/><span>uni-app x，终极跨平台方案</span>"
+		}
+    nextTick(() => {
+      setTimeout(() => {
+      	console.log("修改文本内容: ", data.text)
+
+      	updateRichTextHeight()
+      }, 1000)
+    })
+	}
+
+	// 更新组合样式
+	const updateRichTextStyle = () => {
+		let style = "border: 1px; border-style: solid; border-color: red;"
+		if (data.currentFontSize != "默认") {
+			style += " font-size: " + data.currentFontSize + ";"
+		}
+		if (data.currentLineHeight != "默认") {
+			style += " line-height: " + data.currentLineHeight + ";"
+		}
+		if (data.currentFontFamily != "默认") {
+			style += " font-family: " + data.currentFontFamily + ";"
+		}
+		data.richTextStyle = style
+		console.log("更新样式:", data.richTextStyle)
+	}
+
+	const changeFontSize = () => {
+		data.fontSizeIndex = (data.fontSizeIndex + 1) % fontSizeList.length
+		data.currentFontSize = fontSizeList[data.fontSizeIndex]
+		console.log("切换 font-size:", data.currentFontSize)
+		updateRichTextStyle()
+	}
+
+	const changeLineHeight = () => {
+		data.lineHeightIndex = (data.lineHeightIndex + 1) % lineHeightList.length
+		data.currentLineHeight = lineHeightList[data.lineHeightIndex]
+		console.log("切换 line-height:", data.currentLineHeight)
+		updateRichTextStyle()
+	}
+
+	const changeFontFamily = () => {
+		data.fontFamilyIndex = (data.fontFamilyIndex + 1) % fontFamilyList.length
+		data.currentFontFamily = fontFamilyList[data.fontFamilyIndex]
+		console.log("切换 font-family:", data.currentFontFamily)
+		updateRichTextStyle()
+	}
+
+	// 自动化测试
+	const itemClickForTest = (_ : UniRichTextItemClickEvent) => {
+		data.isItemClickTrigger = true;
+	}
+
+	const getBoundingClientRectForTest = () : DOMRect => {
+		return uni.getElementById('test-rich-text')?.getBoundingClientRect()!;
+	}
+
+	const richTextParentClick = () => {
+		data.richTextStr = true;
+	}
+
+	defineExpose({
+		data,
+		changeText,
+		changeFontSize,
+		changeLineHeight,
+		changeFontFamily,
+		getBoundingClientRectForTest
+	})
+</script>
+
+<style>
+	.text-box {
+		padding: 20px 0;
+		background-color: white;
+	}
+
+	.text-box2 {
+		top: 20px;
+		background-color: white;
+	}
+</style>

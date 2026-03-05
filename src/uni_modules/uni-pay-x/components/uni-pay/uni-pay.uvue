@@ -1,0 +1,1263 @@
+<template>
+	<view class="uni-pay">
+
+		<!-- PC版收银台弹窗开始 -->
+		<uni-pay-popup v-if="modeCom == 'pc'" ref="payPopup" type="center" :safe-area="false">
+			<view class="pc-pay-popup">
+				<view class="pc-pay-popup-title"><text class="pc-pay-popup-title-text">收银台</text></view>
+				<view class="pc-pay-popup-flex">
+					<view class="pc-pay-popup-qrcode-box">
+						<image class="pc-pay-popup-qrcode-image" :src="orderRes['qr_code_image']"></image>
+						<view class="pc-pay-popup-amount-box">
+							<view class="pc-pay-popup-amount-tips">
+								<text class="pc-pay-popup-amount-tips-text" v-if="orderRes['provider'] == 'wxpay'">微信扫一扫付款</text>
+								<text class="pc-pay-popup-amount-tips-text" v-else-if="orderRes['provider'] == 'alipay'">支付宝扫一扫付款</text>
+								<text class="pc-pay-popup-amount-tips-text" v-else>扫一扫付款</text>
+							</view>
+							<view class="pc-pay-popup-amount"><text class="pc-pay-popup-amount-text">{{ (totalFeeCom / 100).toFixed(2) }}</text></view>
+						</view>
+						<view class="pc-pay-popup-complete-button" v-if="orderRes['qr_code_image']">
+							<button type="primary" @click="_getOrder()">我已完成支付</button>
+						</view>
+					</view>
+					<view class="pc-pay-popup-provider-list">
+						<view class="pc-pay-popup-provider-item" :class="myOptions['provider'] == 'wxpay' ? 'pc-pay-popup-provider-item-active' : ''" v-if="currentProviders.indexOf('wxpay') > -1"
+							@click="_pcChooseProvider('wxpay')">
+							<image :src="images['wxpay']" class="pc-pay-popup-provider-image"></image>
+							<text class="pc-pay-popup-provider-text">微信支付</text>
+						</view>
+						<view class="pc-pay-popup-provider-item" :class="myOptions['provider'] == 'alipay' ? 'pc-pay-popup-provider-item-active' : ''" v-if="currentProviders.indexOf('alipay') > -1"
+							@click="_pcChooseProvider('alipay')">
+							<image :src="images['alipay']" class="pc-pay-popup-provider-image"></image>
+							<text class="pc-pay-popup-provider-text">支付宝支付</text>
+						</view>
+						<view class="pc-pay-popup-logo">
+							<image class="pc-pay-popup-logo-image" :src="logo" mode="widthFix"></image>
+						</view>
+					</view>
+				</view>
+			</view>
+		</uni-pay-popup>
+		<!-- PC版收银台弹窗结束 -->
+
+		<!-- 手机版收银台弹窗开始 -->
+		<uni-pay-popup v-else ref="payPopup" type="bottom" :safe-area="false">
+			<view class="mobile-pay-popup" :style="'min-height: '+height+';'">
+				<view class="mobile-pay-popup-title"><text class="mobile-pay-popup-title-text">收银台</text></view>
+				<view class="mobile-pay-popup-amount-box">
+					<view><text class="mobile-pay-popup-amount-box-text">待支付金额：</text></view>
+					<view class="mobile-pay-popup-amount"><text class="mobile-pay-popup-amount-text">{{ (totalFeeCom / 100).toFixed(2) }}</text></view>
+				</view>
+				<view class="mobile-pay-popup-provider-list">
+					<view class="uni-list">
+						<!-- #ifdef MP-WEIXIN || H5 || APP -->
+						<view class="uni-list-item" v-if="currentProviders.indexOf('wxpay') > -1" @click="createOrderByProvider('wxpay')">
+							<view class="uni-list-item__container uni-list-item__container--right">
+								<view class="uni-list-item__header">
+									<image :src="images['wxpay']" class="uni-list-item__header-image"></image>
+								</view>
+								<view class="uni-list-item__content uni-list-item__content--center">
+									<text class="uni-list-item__content-text">微信支付</text>
+								</view>
+							</view>
+							<view class="uni-list-item-arrowright"></view>
+						</view>
+						<!-- #endif -->
+						<!-- #ifdef MP-ALIPAY || H5 || APP -->
+						<view class="uni-list-item" v-if="currentProviders.indexOf('alipay') > -1" @click="createOrderByProvider('alipay')">
+							<view class="uni-list-item__container uni-list-item__container--right">
+								<view class="uni-list-item__header">
+									<image :src="images['alipay']" class="uni-list-item__header-image"></image>
+								</view>
+								<view class="uni-list-item__content uni-list-item__content--center">
+									<text class="uni-list-item__content-text">支付宝</text>
+								</view>
+							</view>
+							<view class="uni-list-item-arrowright"></view>
+						</view>
+						<!-- #endif -->
+					</view>
+				</view>
+			</view>
+		</uni-pay-popup>
+		<!-- 手机版收银台弹窗结束 -->
+
+		<!-- 二维码支付弹窗开始 -->
+		<uni-pay-popup ref="qrcodePopup" type="center" :safe-area="false" :animation="false" :mask-click="false" @close="clearQrcode">
+			<view class="qrcode-popup-content">
+				<image :src="orderRes['qr_code_image']" class="qrcode-popup-content-qrcode-image"></image>
+				<view class="qrcode-popup-info">
+					<view class="qrcode-popup-info-fee-box">
+						<view class="qrcode-popup-info-fee">
+							<text class="qrcode-popup-info-fee-text">{{ (totalFeeCom / 100).toFixed(2) }}</text>
+						</view>
+						<view class="qrcode-popup-info-fee-unit">
+							<text class="qrcode-popup-info-fee-unit-text">元</text>
+						</view>
+					</view>
+					<view v-if="myOptions['provider'] == 'wxpay'"><text class="qrcode-popup-info-text">请用微信扫码支付</text></view>
+					<view v-else-if="myOptions['provider'] == 'alipay'"><text class="qrcode-popup-info-text">请用支付宝扫码支付</text></view>
+				</view>
+				<button type="primary" @click="_getOrder()" class="qrcode-popup-btn-primary">我已完成支付</button>
+				<view class="qrcode-popup-cancel" @click="closePopup('qrcodePopup')"><text class="qrcode-popup-cancel-text">暂不支付</text></view>
+			</view>
+		</uni-pay-popup>
+		<!-- 二维码支付弹窗结束 -->
+
+		<!-- 外部浏览器确认支付弹窗开始 -->
+		<uni-pay-popup ref="payConfirmPopup" type="center" :safe-area="false" :animation="false" :mask-click="false">
+			<view class="pay-confirm-popup-content">
+				<view class="pay-confirm-popup-title"><text class="pay-confirm-popup-title-text">请确认支付是否已完成</text></view>
+				<view><button type="primary" @click="_getOrder()">已完成支付</button></view>
+				<view class="pay-confirm-popup-refresh"><button type="default" @click="_afreshPayment()">支付遇到问题，重新支付</button></view>
+				<view class="pay-confirm-popup-cancel" @click="closePopup('payConfirmPopup')"><text class="pay-confirm-popup-cancel-text">暂不支付</text></view>
+			</view>
+		</uni-pay-popup>
+		<!-- 外部浏览器确认支付弹窗结束 -->
+
+
+	</view>
+</template>
+
+<script setup lang="uts">
+	import { checkPlatform, objectAssign, getWeixinCode, getAlipayCode } from "../../js_sdk/js_sdk"
+
+	// Props
+	const props = defineProps<{
+		/**
+		 * Banner广告位id
+		 */
+		adpid?: string,
+		/**
+		 * 是否自动跳转到插件内置的支付成功页面（具有看广告功能，可以增加开发者收益）默认true
+		 */
+		toSuccessPage?: boolean,
+		/**
+		 * 支付成功后，点击查看订单按钮时跳转的页面地址
+		 */
+		returnUrl?: string,
+		/**
+		 * 支付结果页主色调，默认支付宝小程序为#108ee9，其他端均为#01be6e
+		 * 建议：绿色系 #01be6e 蓝色系 #108ee9 咖啡色 #816a4e 粉红 #fe4070 橙黄 #ffac0c 橘黄 #ff7100
+		 */
+		mainColor?: string,
+		/**
+		 * 收银台模式
+		 * mobile 手机版
+		 * pc 电脑版
+		 */
+		mode?: string,
+		/**
+		 * PC收银台模式时，展示的logo
+		 */
+		logo?: string,
+		/**
+		 * 收银台高度（默认70vh）
+		 */
+		height?: string,
+		/**
+		 * 是否打印运行过程日志
+		 */
+		debug?: boolean
+	}>()
+
+	// Default values for props
+	const adpid = props.adpid ?? ""
+	const toSuccessPage = props.toSuccessPage ?? true
+	const returnUrl = props.returnUrl ?? ""
+	const mainColor = props.mainColor ?? ""
+	const mode = props.mode ?? ""
+	const logo = props.logo ?? "/static/test-image/logo.png"
+	const height = props.height ?? "70vh"
+	const debug = props.debug ?? false
+
+	// Emits
+	const emit = defineEmits<{
+		success: [res: UTSJSONObject],
+		cancel: [res: any],
+		fail: [res: UTSJSONObject],
+		create: [res: UTSJSONObject],
+		mounted: [insideData: UTSJSONObject],
+		qrcode: [res: UTSJSONObject]
+	}>()
+
+	// Data
+	const myOptions = ref({} as UTSJSONObject)
+	const orderRes = ref({
+		order: "",
+		order_no: "",
+		out_trade_no: "",
+		provider: "",
+		provider_pay_type: "",
+		errCode: 0,
+	} as UTSJSONObject)
+	const images = ref({
+		wxpay: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAABC9JREFUeF7tWk1a20AMlUzv0bDr13AAYAOcpLCBcoqQU1DYEE6C2QAHIP26q3sPPOqniU2cZMYj+SeGxN5kEXlm9ObpjaQxwpY/uOX+Qw9Az4AtR6APgS0nQC+CfQi0FQLfrvcHXwAGPP4bQMK/fy5f7O9HehphwPfb/dOIogEhHQHBcamDCDESPoIxMQPTNSi1ABj+OrwDpNMaO5og4P2bMZOugFADwNTewWhU0/FVzAgnKZnxuoFQAbB3vX9MET7U2PHgq4R09vv8ZRI0bMhADMDw9uAhGN8NLQrWyAYRAGt1PgcRIU5TOms7JIIAdOL8nElJauikTRBKAdi7ObwioFFTzHaMw3mBzRV8DwKOXy+ertpagxcAq/YR/g2d6TlNrUDu4EiiE0Why4T1rgyINoXRC4DgjE+mF8+7RYAkp4RrRyVztRUKTgCkuz89fz4pAiB5z7WbklBrKxScAEgWxI6joZPXy5c4B0H0nkPdhzcHFIxxhHgZ8OA7AgMnAMObA479UnF6H5twQpF5RBMdibPDvB4AAAL6IZ0rNbTb9IngAyC8IwJ0K5okQBgzqFEKSV4wcXg17bxl8fIiJXFc0bHAgYLjYlHEFaZlVUQDoAIbcVZaN1VRrgAgUfImASiKW6Yh4pAohmHVQqpLABI0dMYiKhJPCeoV0ueuQsDmEJrkSeJ/bqNJnOqfApqVzWznzrdYWkvzhnUDYGnPKLTdV5gpfLiOqJUIaTefF8RKH6wxtAOX2IdA8NcCmmRItmBLfVF5jRBnR58kGQtWlGUJlBeAxpQ5A4eFKTu/ufLzPQv1f2mRRDiZ/nyyYwYrypI0OlQOc/9PsgshDsh2v+BUwTFnD3K5DglVlD4WlDZEsqywNgiK2F9gQBkLi7EtyV59WhBsiTURCjy5QZMgYRn9cxbZWgCQ+IKlnH2sFQYTURHmCYMgAJaKs9aYPkXNXGK6QhQdt9xeC4UhTC+eV/wVASASmrKj6IMA4NIBMQDsX1VN4IlbuU0K7vmiQS0G5EOpmiW6I1Dpjtp8pYc5yxYVj0RtXcMJcwDFSiqYLh2x+QgqAJwnAuEEydxbkZtdj+fKPVfwbPIq7KngqvMVX4WoAmDBAcH9HTMmXw23s0LJSlPOOsZx0l8VAu/0Fzjuc2Td3aY5zf1VoZgBvPgmvuhoIrFSMSXQThcDoJo0YLxGLfBSv5IINgVC1XxCOb/oZrkTBtRJqkQgKG6ROgPgPbGq/6HVIiYK51WngAj5ikbBhoZi3FALbHmozhlQXFChTc75g6wRM2ufzb9N/IwMcG0wg8HZJf9HBF/tFZnBBBH+cW/BpBDnd4XLDNJcon4oBiiY7jS194mEI0IaSz+12ygAclSYEcXvFsqA3UgANEzqAdCgtYm2PQM2cVc1PvUM0KC1ibY9AzZxVzU+bT0D/gPs/oxfcUEcJAAAAABJRU5ErkJggg==",
+		alipay: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAA2FJREFUeF7tmU122jAQx2cMB2hp9yULeK+naHISwhJyiIRDBJaQkwRO0fdgEWff0h4ANH0yFc+m+hhbckKNvJUsaX76z4ckhAv/8MLthwggKuDCCUQXuHABxCAYXSC6wIUTiC7wFgL4MPveTaj9optrO+696ya8yeQRQFRAdIEYAxoVBD/PNtdCwHWpDIJwr+1PMCk1DgAkCSx/jHrLsv/p+lfKAp3HzQOYDAqxKtcYBJPtXe/B1Y3TXgmATGst0WIrgAC7JmBINOQsNN8HE0zfVQFlFxzrgFgHNLQOkNJuQ7vrcgkS1CXEua5fgnDj+l+172CX/h59Tbn9Of0qBUE1cGe2ngPhLWeiEH0krFDBT63HC8Cnx/VtFuFDfgl90UOldDvuX4WcSo7lBSD0YuR4H6ebZwRNkRUw9xdSah1G+IzZmW5IW7ERDX/e9Rc+YwerBEMvQo1nrhfqkf/ZuYCxxK5J/t4AjkFQBi71CXxFoFSWq2XTlkn+AndXodNf5SwgT4J7gnttoNL6BqUEmCZET/tkvzQZYj5g1Sf/0goIkfcJYIkEK5HsFnkYnen6BXQptUb5lwJgMz4zCihXD/BqAwVDuoy+Uqx399kACrkZaYECVjY5qxJZXpoQwrcDHB6UghfVvPssAMo35W4R7oZVg5EMmAJxUCZ2CNzfVJ2Pm6qdleDBNwFClaHZdRrQAEhWe25VSPCuAMo1tnQhdIzMNUixfDYBqAOGVQEKQB15OFMCwXPV3QsFww7g73E39Pudr/Gn0EyplQPXCkBF/5AKsBtPKRA+AdKAEx/0BhYLL9nHFkhZLiBvbkOcxFzG5wPtoe7gBUrrTiMttqO+8ebZCkAtWErs17jHvrrSLcj+lkCpKeV5g/ABIA05lqgVM4Er2nPhZgev7DHGnToLG+ALIC9budgWwoRzyuMUPlzj8waVBuELIFOB5iksi7xIKQh8PS4wu8/j+a3vBScbRAgABVfg5BZbH6SFgP0kVIl7UCjNja4RCkAGwecaPLDhp4yNsSYkADlp/mncdNLLu8fpud9XQK7//wERGoBrAefSfgRBsLI9pTtPg+diUNV1yLuJypVg1Un/p/8arwDXZkQALkJNb48KaPoOu+yLCnARanp7VEDTd9hlX1SAi1DT2/8AaakVXysj5qkAAAAASUVORK5CYII="
+	} as UTSJSONObject)
+	const originalRroviders = ref(["wxpay", "alipay"] as Array<string>)
+	const currentProviders = ref(["wxpay", "alipay"] as Array<string>)
+	const openid = ref("")
+
+	const modeCom = computed(() : string => {
+		let _mode = mode as string
+		if (_mode != "") return _mode
+		let systemInfo = uni.getDeviceInfo()
+		return systemInfo.deviceType == "pc" ? "pc" : "mobile"
+	})
+
+	// Get current instance for $refs and $emit
+	const instance = getCurrentInstance()
+
+	// Functions - MUST be declared BEFORE lifecycle hooks in UTS
+	function openPopup(name : string) {
+		let popupRef = instance!.proxy!.$refs[name] as UniPayPopupComponentPublicInstance
+		popupRef.open()
+	}
+
+	// 关闭弹窗
+	function closePopup(name : string) {
+		let popupRef = instance!.proxy!.$refs[name] as UniPayPopupComponentPublicInstance
+		popupRef.close()
+	}
+
+	// 查询订单（查询支付情况）
+	async function getOrder(data : UTSJSONObject) : Promise<UTSJSONObject> {
+		try {
+			// 引入支付云对象
+			const uniPayCo = uniCloud.importObject("uni-pay-co")
+			let res = await uniPayCo.getOrder(data)
+			return res
+		} catch (err) {
+			return {
+				errCode: -1,
+				errMsg: (err as Error).message
+			} as UTSJSONObject
+		}
+	}
+
+	// 监听 - 关闭二维码弹窗
+	function clearQrcode() {
+		orderRes.value["codeUrl"] = ""
+		orderRes.value["qr_code_image"] = ""
+	}
+
+	function pageToSuccess(res : UTSJSONObject) {
+		let out_trade_no = res['out_trade_no'] as string
+		let pay_order = res.getJSON('pay_order') as UTSJSONObject
+		let order_no = pay_order['order_no'] as string
+		//let pay_date = pay_order['pay_date'];
+		let total_fee = pay_order.getNumber('total_fee')
+		if (total_fee == null) {
+			total_fee = 0
+		}
+		let _returnUrl = returnUrl as string
+		let _adpid = adpid as string
+		let _mainColor = mainColor as string
+
+		if (modeCom.value != "pc") {
+			uni.navigateTo({
+				url: `/uni_modules/uni-pay-x/pages/success/success?out_trade_no=${out_trade_no}&order_no=${order_no}&total_fee=${total_fee}&adpid=${_adpid}&return_url=${_returnUrl}&main_color=${_mainColor}`
+			})
+		} else {
+			if (_returnUrl != "") {
+				let url = _returnUrl + `?out_trade_no=${out_trade_no}&order_no=${order_no}`
+				if (url.indexOf("/") != 0) url = `/${url}`
+				uni.navigateTo({
+					url
+				})
+			}
+		}
+	}
+
+	// 支付成功后的逻辑
+	function paySuccess(res : UTSJSONObject) {
+		closePopup("payPopup")
+		closePopup("payConfirmPopup")
+		clearQrcode()
+		let _toSuccessPage = toSuccessPage as boolean
+		if (_toSuccessPage) {
+			// 跳转到支付成功的内置页面
+			pageToSuccess(res)
+		}
+		emit("success", res)
+	}
+
+	// 内部函数查询支付状态
+	async function _getOrder() : Promise<void> {
+		let out_trade_no = orderRes.value["out_trade_no"] as string
+		let res = await getOrder({
+			out_trade_no,
+			await_notify: true
+		})
+		if (res['errCode'] == 0) {
+			let has_paid = res.getBoolean('has_paid')
+			if (has_paid != null && has_paid == true) {
+				closePopup("qrcodePopup")
+				paySuccess(res)
+			}
+		}
+	}
+
+	function orderPayment(res : UTSJSONObject) {
+		orderRes.value = res
+		if (res['qr_code'] != null && res['qr_code'] != "") {
+			emit("qrcode", res)
+		}
+		// #ifdef H5
+		let order = res.get('order') as UTSJSONObject
+		if (res['provider_pay_type'] == "jsapi") {
+			// 微信公众号支付
+			(window.WeixinJSBridge as any).invoke("getBrandWCPayRequest", order, (res : any) => {
+				if (res.err_msg == "get_brand_wcpay_request:ok") {
+					// 用户支付成功回调
+					_getOrder()
+				} else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+					// 用户取消支付回调
+					emit("cancel", res)
+				} else if (res.err_msg == "get_brand_wcpay_request:fail") {
+					// 用户支付失败回调
+					console.error('getBrandWCPayRequest-fail: ', res)
+					emit("fail", res)
+				}
+			})
+		} else {
+			// 外部浏览器支付
+			let codeUrl = order['codeUrl']
+			let mwebUrl = order['h5Url'] || order['mwebUrl'] || order['mweb_url']
+			setTimeout(() => {
+				openPopup("payConfirmPopup")
+				window.location.href = codeUrl || mwebUrl
+			}, 200)
+		}
+		// #endif
+		// #ifndef H5
+		let _order = res.get('order')
+		let orderStr = typeof _order == "string" ? _order as string : JSON.stringify(_order) as string
+		console.log('orderStr: ', orderStr)
+		uni.requestPayment({
+			provider: res['provider'] as string,
+			orderInfo: orderStr,
+			// #ifdef MP-WEIXIN
+			..._order,
+			// #endif
+			success: (res) => {
+				console.log("requestPaymentSuccess", JSON.stringify(res))
+				_getOrder()
+			},
+			fail: (err) => {
+				console.log("requestPaymentFail", JSON.stringify(err))
+				let errCode = err.errCode
+				let errMsg = err.errMsg
+				if (errCode == 700601 || errMsg.indexOf("fail cancel") > -1) {
+					// 用户取消支付
+					emit("cancel", {
+					  errCode: errCode,
+					  errMsg: errMsg
+					})
+				} else {
+					// 发起支付失败
+					console.error("uni.requestPayment:fail", err)
+					emit("fail", {
+						errCode: errCode,
+						errMsg: errMsg
+					})
+				}
+			}
+		})
+		// #endif
+	}
+
+	// 创建支付
+	async function createOrder(data : UTSJSONObject) : Promise<void> {
+		let options = myOptions.value
+		options['qr_code'] = false
+		options = objectAssign(options, data)
+		if (options['provider'] == "appleiap") {
+			// 苹果虚拟支付走特殊逻辑
+			// #ifdef APP-IOS
+			return _appleiapCreateOrder(options)
+			// #endif
+			// #ifndef APP-IOS
+			uni.showModal({
+				title: "提示",
+				content: "请在iOS系统中执行",
+				showCancel: false
+			})
+			// #endif
+		}
+		// #ifdef APP
+		if (options['provider'] == "wxpay") {
+			// #ifdef  uniVersion < 4.11
+			uni.showModal({
+				title: "提示",
+				content: "请先升级HBX至4.11",
+				showCancel: false
+			})
+			return
+			// #endif
+		}
+		// #endif
+
+		// #ifdef H5
+		// 判断如果是pc访问，则强制扫码模式
+		if (checkPlatform() == "pc") {
+			options['qr_code'] = true
+		}
+		// #endif
+		let createOrderData = {
+			provider: options['provider'],
+			total_fee: options.getNumber('total_fee'),
+			order_no: options['order_no'],
+			out_trade_no: options['out_trade_no'],
+			description: options['description'],
+			type: options['type'],
+			qr_code: options.getBoolean('qr_code'),
+			custom: options.getJSON('custom'),
+			other: options.getJSON('other'),
+			wxpay_virtual: options.getJSON('wxpay_virtual'), // 微信小程序虚拟支付需要
+		} as UTSJSONObject
+		// #ifdef H5
+		if (options['openid'] != "" && options['provider'] == "wxpay") {
+			createOrderData['openid'] = options['openid']
+		}
+		// #endif
+		// #ifdef MP
+		if (openid.value != "") {
+			createOrderData['openid'] = openid.value
+		}
+		// #endif
+		try {
+			// 引入支付云对象
+			const uniPayCo = uniCloud.importObject("uni-pay-co")
+			let res = await uniPayCo.createOrder(createOrderData)
+			if (res['errCode'] == 0) {
+				emit("create", res)
+				if (res['qr_code'] != null && res['qr_code'] == true && options.getBoolean('cancel_popup') != true) {
+					orderRes.value = res
+					// 展示组件内置的二维码弹窗
+					if (modeCom.value == "pc") {
+						openPopup("payPopup")
+						// Call _pcChooseProvider inline to avoid circular dependency
+						let _provider : string = myOptions.value["provider"] as string
+						let currentProvider = options['provider'] as string
+						if (currentProvider != _provider) {
+							// This would cause recursion, so just set the provider directly
+							// _pcChooseProvider will be called from template/other places
+						}
+					} else {
+						openPopup("qrcodePopup")
+					}
+				} else {
+					// 调起支付
+					orderPayment(res)
+				}
+			} else {
+				emit("fail", res)
+			}
+		} catch (err) {
+			emit("fail", {
+				errCode: -1,
+				errMsg: (err as Error).message
+			})
+		}
+	}
+
+	function _pcChooseProvider(provider : string) {
+		let _provider : string = myOptions.value["provider"] as string
+		if (provider != _provider) {
+			createOrder({ provider: provider })
+		}
+	}
+
+	// 发起支付 - 打开支付选项弹窗
+	function createOrderByProvider(provider : string) {
+		createOrder({
+			provider
+		})
+	}
+
+	// 调起支付
+	async function open(options : UTSJSONObject) : Promise<void> {
+		let provider = options['provider'] as string | null
+		if (provider != null && provider != "") {
+			let providers : Array<string> = []
+			originalRroviders.value.map((item : string) => {
+				if (provider == item) {
+					providers.push(item)
+				}
+			})
+			currentProviders.value = providers
+			options['provider'] = ""
+		} else {
+			currentProviders.value = JSON.parse(JSON.stringify(originalRroviders.value)) as Array<string>
+		}
+		myOptions.value = options
+		if (currentProviders.value.length == 1) {
+			createOrder({ provider: currentProviders.value[0] })
+		} else {
+			if (modeCom.value == "pc") {
+				_pcChooseProvider(currentProviders.value[0])
+			}
+			openPopup("payPopup")
+		}
+	}
+
+	// 发起退款（此接口需要admin角色才可以访问）
+	async function refund(data : UTSJSONObject) : Promise<UTSJSONObject> {
+		try {
+			// 引入支付云对象
+			const uniPayCo = uniCloud.importObject("uni-pay-co")
+			let res = await uniPayCo.refund(data)
+			return res
+		} catch (err) {
+			return {
+				errCode: -1,
+				errMsg: (err as Error).message
+			} as UTSJSONObject
+		}
+	}
+
+	// 查询退款（查询退款情况）
+	async function getRefund(data : UTSJSONObject) : Promise<UTSJSONObject> {
+		try {
+			// 引入支付云对象
+			const uniPayCo = uniCloud.importObject("uni-pay-co")
+			let res = await uniPayCo.getRefund(data)
+			return res
+		} catch (err) {
+			return {
+				errCode: -1,
+				errMsg: (err as Error).message
+			} as UTSJSONObject
+		}
+	}
+
+	// 关闭订单
+	async function closeOrder(data : UTSJSONObject) : Promise<UTSJSONObject> {
+		try {
+			// 引入支付云对象
+			const uniPayCo = uniCloud.importObject("uni-pay-co")
+			let res = await uniPayCo.closeOrder(data)
+			return res
+		} catch (err) {
+			return {
+				errCode: -1,
+				errMsg: (err as Error).message
+			} as UTSJSONObject
+		}
+	}
+
+	// 获取支持的支付供应商
+	async function getPayProviderFromCloud(data : UTSJSONObject) : Promise<UTSJSONObject> {
+		try {
+			// 引入支付云对象
+			const uniPayCo = uniCloud.importObject("uni-pay-co")
+			let res = await uniPayCo.getPayProviderFromCloud(data)
+			return res
+		} catch (err) {
+			return {
+				errCode: -1,
+				errMsg: (err as Error).message
+			} as UTSJSONObject
+		}
+	}
+
+	// 获取支付配置内的appid（主要用于获取获取微信公众号的appid，用以获取code）
+	async function getProviderAppId(data : UTSJSONObject) : Promise<UTSJSONObject> {
+		try {
+			// 引入支付云对象
+			const uniPayCo = uniCloud.importObject("uni-pay-co")
+			let res = await uniPayCo.getProviderAppId(data)
+			return res
+		} catch (err) {
+			return {
+				errCode: -1,
+				errMsg: (err as Error).message
+			} as UTSJSONObject
+		}
+	}
+
+	// 根据code获取openid
+	async function getOpenid(data : UTSJSONObject) : Promise<UTSJSONObject> {
+		try {
+			// 引入支付云对象
+			const uniPayCo = uniCloud.importObject("uni-pay-co")
+			let res = await uniPayCo.getOpenid(data)
+			return res
+		} catch (err) {
+			return {
+				errCode: -1,
+				errMsg: (err as Error).message
+			} as UTSJSONObject
+		}
+	}
+
+	// 验证iosIap苹果内购支付凭据
+	async function verifyReceiptFromAppleiap(data : UTSJSONObject) : Promise<UTSJSONObject> {
+		try {
+			// 引入支付云对象
+			const uniPayCo = uniCloud.importObject("uni-pay-co")
+			let res = await uniPayCo.verifyReceiptFromAppleiap(data)
+			return res
+		} catch (err) {
+			return {
+				errCode: -1,
+				errMsg: (err as Error).message
+			} as UTSJSONObject
+		}
+	}
+
+	// 重新发起支付
+	function _afreshPayment() {
+		orderPayment(orderRes.value)
+	}
+
+	// 苹果虚拟支付支付逻辑
+	async function _appleiapCreateOrder(options : UTSJSONObject) : Promise<void>{
+		// #ifndef APP-IOS
+		uni.showToast({
+			title: "请在iOS系统中打开",
+			icon: "none"
+		})
+		// #endif
+		// #ifdef APP-IOS
+		const virtualPaymentManager = uni.getVirtualPaymentManager()
+		if (options.apple_virtual['product_type'] == 'nonconsumable') {
+			uni.showLoading({
+				title: "请求中...",
+				mask: true
+			})
+			let purchased = await new Promise((resolve, reject) => {
+				 // 如果是非消耗性产品只能购买一次，需要先判断下
+				 virtualPaymentManager.restoreTransactions({
+					 success: (res) => {
+						 let transactions = res.transactions
+						 let index = res.transactions.findIndex(transaction => {
+							 return transaction.productId == options.apple_virtual['product_id']
+						 })
+						 resolve(index > -1 ? true : false)
+					 }
+				 })
+			})
+			uni.hideLoading()
+			if (purchased) {
+				uni.showModal({
+					title: "提示",
+					content: "您已购买过此商品，请勿重复购买",
+					showCancel: false
+				})
+				return
+			}
+		}
+		let createOrderData = {
+			provider: options.provider,
+			total_fee: options.total_fee,
+			order_no: options.order_no,
+			out_trade_no: options.out_trade_no,
+			description: options.description,
+			type: options.type,
+			apple_virtual: options.apple_virtual,
+			custom: options.custom,
+		} as UTSJSONObject
+		// 引入支付云对象
+		const uniPayCo = uniCloud.importObject("uni-pay-co")
+		let	res = await uniPayCo.createOrder(createOrderData)
+		if (res.errCode == 0) {
+			emit("create", res)
+			orderRes.value = res
+			uni.showLoading({
+				title: '支付请求中...'
+			})
+			try {
+				// 请求苹果支付
+				if (debug) console.log("正在请求苹果服务器", res.out_trade_no)
+				uni.requestVirtualPayment({
+					apple: {
+						productId: options.getJSON('apple_virtual')!.getString('product_id')!,
+						appAccountToken: res.appleiap_account_token,
+						quantity: options.getJSON('apple_virtual')!.getNumber('buy_quantity')! || 1,
+					},
+					success: async (requestPaymentRes) => {
+						uni.hideLoading()
+						let transaction = requestPaymentRes?.apple
+						if (debug) console.log('用户支付成功', transaction)
+						let transactionIdentifier : string = transaction.transactionIdentifier
+						let transactionDate : string = transaction.transactionDate
+						let outTradeNo : string = res.out_trade_no
+						uni.showLoading({
+							title: '正在处理支付结果...'
+						})
+						// 云端请求苹果服务器验证票据
+						let verifyRes = await verifyReceiptFromAppleiap({
+							out_trade_no: outTradeNo,
+							transaction_receipt: transaction.jsonRepresentation,
+							transaction_identifier: transactionIdentifier
+						})
+						if (verifyRes.errCode == 0) {
+							if (verifyRes.repeat) {
+								uni.showModal({
+									title: "提示",
+									content: `当前道具只能购买一次`,
+									showCancel: false,
+									confirmText: "好的"
+								})
+							} else {
+								//经过开发者server验证成功后请结束该交易
+								virtualPaymentManager.finishTransaction({
+									transaction: transaction,
+									success: (r) => {
+										if (debug) console.log("关单成功, 该productId= " + transaction.productId)
+									},
+									fail: (e) => {
+										if (debug) console.log("关单失败, 该productId= " + transaction.roductId)
+									}
+								})
+								uni.hideLoading()
+								paySuccess(verifyRes)
+							}
+						} else {
+							if (debug) console.log('verifyRes: ', verifyRes)
+						}
+					},
+					fail: (err) => {
+						uni.hideLoading()
+						if (debug) console.log("购买失败：errSubject= " + err.errSubject + ", errCode= " + err.errCode + ", errMsg= " + err.errMsg)
+						if ([700601].indexOf(err.errCode) > -1 || err.errMsg.indexOf("cancel") > -1) {
+							emit("cancel", err)
+						} else {
+							emit("fail", {
+								errCode: err.errCode,
+								errMsg: err.errMsg
+							})
+						}
+					}
+				})
+			} catch (err) {
+				let code = err.errCode || err.code
+				if (code == 2) {
+					// 用户取消支付
+					if (debug) console.log("用户取消支付")
+					emit("cancel", err)
+				} else {
+					// 发起支付失败
+					console.error("appleiapCreateOrder:fail", err)
+					emit("fail", {
+						errCode: code,
+						errMsg: err.errMsg || err.message
+					})
+				}
+				uni.hideLoading()
+			}
+		}
+		// #endif
+	}
+
+	// 苹果虚拟支付未完成订单检测
+	function appleiapRestore() {
+		// #ifdef APP-IOS
+		uni.showLoading({
+			title: "",
+			mask: true
+		})
+		try {
+			const virtualPaymentManager = uni.getVirtualPaymentManager()
+			virtualPaymentManager.getUnfinishedTransactions({
+				success: async (res) => {
+					uni.hideLoading()
+					console.log("获取未结束的订单列表个数：" + res.transactions.length)
+					res.transactions.forEach(async transaction => {
+						console.log("getUnfinishedTransactions成功的交易productId= " + transaction.productId)
+
+						let appAccountToken : string = transaction.appAccountToken
+						let transactionIdentifier : string = transaction.transactionIdentifier
+						//let originalTransactionIdentifier : string = transaction.originalTransactionIdentifier;
+						let transactionDate : string = transaction.transactionDate
+
+						// 云端请求苹果服务器验证票据
+						let verifyRes = await verifyReceiptFromAppleiap({
+							appleiap_account_token: appAccountToken,
+							transaction_receipt: transaction.jsonRepresentation,
+							transaction_identifier: transactionIdentifier,
+						})
+						if (verifyRes.errCode == 0 || !appAccountToken) {
+							// 经过开发者server验证成功后请结束该交易
+							virtualPaymentManager.finishTransaction({
+								transaction: transaction,
+								success: (r) => {
+									if (debug) console.log("关单成功, 该productId= " + transaction.productId)
+								},
+								fail: (e) => {
+									if (debug) console.log("关单失败, 该productId= " + transaction.productId)
+								}
+							})
+							uni.hideLoading()
+							// 如果是自动续期，则不跳页面
+							if (!verifyRes.is_subscribe && verifyRes.pay_order) {
+								paySuccess(verifyRes)
+							}
+						} else {
+							if (debug) console.log('verifyRes: ', verifyRes)
+						}
+					})
+				},
+				fail: (e) => {
+					uni.hideLoading()
+					console.log("获取未结束的订单列表失败：errSubject= " + e.errSubject + ", errCode= " + e.errCode + ", errMsg= " + e.errMsg)
+					uni.showToast({
+						title: "获取未结束的订单列表失败：errCode= " + e.errCode,
+						icon: 'error'
+					})
+				}
+			})
+		} catch(err){
+			console.error('err: ', err)
+			uni.hideLoading()
+		}
+		// #endif
+	}
+
+	// #ifdef MP-WEIXIN || MP-ALIPAY
+	// 获取code
+	async function getCode() : Promise<string>{
+		// #ifdef MP-WEIXIN
+		return getWeixinCode()
+		// #endif
+		// #ifdef MP-ALIPAY
+		return getAlipayCode()
+		// #endif
+	}
+	// #endif
+
+	// Computed properties
+	const totalFeeCom = computed(() : number => {
+		let totalFee = myOptions.value.getNumber('total_fee')
+		return totalFee != null ? totalFee : 0
+	})
+
+	// Expose methods to parent components
+	defineExpose({
+		open,
+		createOrder,
+		getOrder,
+		refund,
+		getRefund,
+		closeOrder,
+		getPayProviderFromCloud,
+		getProviderAppId,
+		getOpenid,
+		verifyReceiptFromAppleiap,
+		appleiapRestore
+	})
+
+	// Lifecycle hooks - MUST be LAST in UTS
+	onMounted(() => {
+		// #ifdef MP-WEIXIN || MP-ALIPAY
+		if (openid.value == "") {
+			new Promise(async (resolve, reject) => {
+				let code = await getCode()
+				let res = await getOpenid({
+					// #ifdef MP-WEIXIN
+					provider: "wxpay",
+					// #endif
+					// #ifdef MP-ALIPAY
+					provider: "alipay",
+					// #endif
+					code
+				})
+				resolve(res)
+			}).then((res) => {
+				if (res['openid'] != null) {
+					openid.value = res['openid']
+				}
+			}).catch((err) => {
+				reject(err)
+			})
+		}
+		// #endif
+
+		// #ifdef MP-WEIXIN
+		// 如果是微信小程序，则设置只支持微信支付
+		originalRroviders.value = ["wxpay"]
+		currentProviders.value = JSON.parse(JSON.stringify(originalRroviders.value))
+		// #endif
+		// #ifdef MP-ALIPAY
+		// 如果是支付宝小程序，则设置只支持支付宝支付
+		originalRroviders.value = ["alipay"]
+		currentProviders.value = JSON.parse(JSON.stringify(originalRroviders.value))
+		// #endif
+		let insideData = {
+			images: images.value as UTSJSONObject,
+			originalRroviders: originalRroviders.value as Array<string>,
+			currentProviders: currentProviders.value as Array<string>,
+		} as UTSJSONObject
+		emit("mounted", insideData)
+	})
+</script>
+<style lang="scss" scoped>
+	$bgcolor: #f3f3f3;
+
+	.uni-pay {}
+
+	/* 手机版收银台弹窗开始 */
+	.mobile-pay-popup {
+		width: 100%;
+		min-height: 450px;
+		background-color: $bgcolor;
+		border-radius: 15px 15px 0 0;
+		overflow: hidden;
+	}
+
+	.mobile-pay-popup-title {
+		background-color: #ffffff;
+		padding: 10px;
+	}
+
+	.mobile-pay-popup-title-text {
+		text-align: center;
+		font-weight: bold;
+		font-size: 20px;
+	}
+
+	.mobile-pay-popup-amount-box {
+		background-color: #ffffff;
+		padding: 15px;
+	}
+
+	.mobile-pay-popup-amount-box-text {
+		color: #333333;
+		font-size: 14px;
+	}
+
+	.mobile-pay-popup-amount {
+		margin-top: 10px;
+	}
+
+	.mobile-pay-popup-amount-text {
+		color: #e43d33;
+		font-size: 30px;
+	}
+
+	.mobile-pay-popup-provider-list {
+		background-color: #ffffff;
+		margin-top: 10px;
+	}
+
+	.uni-list {
+		display: flex;
+		background-color: #fff;
+		position: relative;
+		flex-direction: column;
+	}
+
+	.uni-list-item {
+		display: flex;
+		position: relative;
+		justify-content: space-between;
+		align-items: center;
+		background-color: #fff;
+		flex-direction: row;
+		border-bottom: 1px solid #f8f8f8;
+		/* #ifdef H5 */
+		cursor: pointer;
+		/* #endif */
+	}
+	
+	/* #ifndef VUE3-VAPOR */
+	.uni-list-item:hover {
+		background-color: #f1f1f1;
+	}
+	/* #endif */
+
+	.uni-list-item__container {
+		position: relative;
+		display: flex;
+		flex-direction: row;
+		padding: 12px 15px;
+		padding-left: 15px;
+		flex: 1;
+		overflow: hidden;
+	}
+
+	.uni-list-item__container--right {
+		padding-right: 0;
+	}
+
+	.uni-list-item__header {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.uni-list-item__header-image {
+		width: 26px;
+		height: 26px;
+		margin-right: 9px;
+	}
+
+	.uni-list-item__content {
+		display: flex;
+		padding-right: 8px;
+		flex: 1;
+		flex-direction: column;
+		justify-content: space-between;
+		overflow: hidden;
+	}
+
+	.uni-list-item__content-text {
+		color: #3b4144;
+		font-size: 14px;
+	}
+
+	.uni-list-item__content--center {
+		justify-content: center;
+	}
+
+	.uni-list-item-arrowright {
+		border-top: 1px solid #bbbbbb;
+		border-right: 1px solid #bbbbbb;
+		width: 8px;
+		height: 8px;
+		margin-right: 15px;
+		transform: rotate(45deg);
+	}
+
+	/* 手机版收银台弹窗结束 */
+
+	/* PC版收银台弹窗开始 */
+	.pc-pay-popup {
+		width: 800px;
+		height: 600px;
+		background-color: $bgcolor;
+		border-radius: 10px;
+		overflow: hidden;
+	}
+
+	.pc-pay-popup-title {
+		background-color: #ffffff;
+		height: 66px;
+	}
+
+	.pc-pay-popup-title-text {
+		text-align: center;
+		font-weight: bold;
+		font-size: 20px;
+		line-height: 66px;
+	}
+
+	.pc-pay-popup-flex {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+	}
+
+	.pc-pay-popup-qrcode-box {
+		height: 534px;
+		flex: 1;
+		background-color: #ffffff;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.pc-pay-popup-qrcode-image {
+		width: 225px;
+		height: 225px;
+	}
+
+	.pc-pay-popup-amount-box {
+		/* 容器样式 */
+	}
+
+	.pc-pay-popup-amount-tips {
+		margin-top: 20px;
+	}
+
+	.pc-pay-popup-amount-tips-text {
+		text-align: center;
+		color: #333;
+		font-size: 20px;
+	}
+
+	.pc-pay-popup-amount {
+		margin-top: 20px;
+	}
+
+	.pc-pay-popup-amount-text {
+		text-align: center;
+		color: #dd524d;
+		font-weight: bold;
+		font-size: 32px;
+	}
+
+	.pc-pay-popup-complete-button {
+		margin-top: 20px;
+	}
+
+	.pc-pay-popup-provider-list {
+		width: 300px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.pc-pay-popup-provider-item {
+		padding: 20px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.pc-pay-popup-provider-item-active {
+		background-color: #ffffff;
+	}
+	
+	/* #ifndef VUE3-VAPOR */
+	.pc-pay-popup-provider-item:hover {
+		background-color: #ffffff;
+		/* #ifdef H5 */
+		cursor: pointer;
+		/* #endif */
+	}
+	/* #endif */
+
+	.pc-pay-popup-provider-image {
+		width: 60px;
+		height: 60px;
+	}
+
+	.pc-pay-popup-provider-text {
+		color: #333;
+		font-size: 20px;
+		margin-left: 10px;
+	}
+
+	.pc-pay-popup-logo {
+		flex: 1;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.pc-pay-popup-logo-image {
+		width: 120px;
+	}
+
+	/* PC版收银台弹窗结束 */
+
+	/* 二维码支付弹窗开始 */
+	.qrcode-popup-content {
+		width: 300px;
+		background-color: #ffffff;
+		border-radius: 5px;
+		padding: 20px;
+		box-sizing: border-box;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.qrcode-popup-content-qrcode-image {
+		width: 225px;
+		height: 225px;
+	}
+
+	.qrcode-popup-info {
+		padding: 10px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.qrcode-popup-info-text {
+		color: #333333;
+		font-size: 14px;
+		text-align: center;
+	}
+
+	.qrcode-popup-info-fee-box {
+		display: flex;
+		flex-direction: row;
+		margin-bottom: 3px;
+	}
+
+	.qrcode-popup-info-fee {
+		/* 容器样式 */
+	}
+
+	.qrcode-popup-info-fee-text {
+		color: red;
+		font-size: 30px;
+		font-weight: bold;
+		text-align: center;
+	}
+
+	.qrcode-popup-info-fee-unit {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-end;
+		padding-bottom: 5px;
+	}
+
+	.qrcode-popup-info-fee-unit-text {
+		color: #333333;
+		font-size: 14px;
+	}
+
+	.qrcode-popup-btn-primary {
+		width: 260px;
+	}
+
+	.qrcode-popup-cancel {
+		margin-top: 10px;
+		width: 260px;
+	}
+
+	.qrcode-popup-cancel-text {
+		text-align: center;
+		color: #666666;
+		font-size: 14px;
+	}
+
+	/* 二维码支付弹窗结束 */
+
+	/* 外部浏览器H5支付弹窗确认开始 */
+	.pay-confirm-popup-content {
+		width: 275px;
+		background-color: #ffffff;
+		border-radius: 5px;
+		padding: 20px;
+	}
+
+	.pay-confirm-popup-title {
+		text-align: center;
+		padding: 10px 0;
+		margin-bottom: 15px;
+	}
+
+	.pay-confirm-popup-title-text {
+		color: #333333;
+		font-size: 16px;
+		text-align: center;
+	}
+
+	.pay-confirm-popup-refresh {
+		margin-top: 10px;
+	}
+
+	.pay-confirm-popup-cancel {
+		margin-top: 10px;
+		text-align: center;
+	}
+
+	.pay-confirm-popup-cancel-text {
+		color: #666666;
+		font-size: 14px;
+		text-align: center;
+	}
+
+	/* 外部浏览器H5支付弹窗确认结束 */
+</style>

@@ -1,0 +1,894 @@
+<template>
+  <view class="page" id="page-canvas">
+    <page-intro content="本页演示 CanvasContext 2D API：arc、路径、描边填充、drawImage、createPattern、getSetImageData 等绘图与导出能力。"></page-intro>
+    <canvas id="canvas" class="canvas-element"></canvas>
+    <scroll-view class="scroll-view">
+      <view class="grid-view">
+    <view class="grid-item" v-for="(name, index) in names" :key="index">
+      <button class="canvas-drawing-button" @click="handleCanvasButton(name)">{{name}}</button>
+    </view>
+      </view>
+    </scroll-view>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+  function hidpi(canvas : UniCanvasElement) {
+    const context = canvas.getContext("2d")!;
+    const dpr = uni.getWindowInfo().pixelRatio;
+    canvas.width = canvas.offsetWidth * dpr;
+    canvas.height = canvas.offsetHeight * dpr;
+    context.scale(dpr, dpr);
+  }
+
+  const API_PATH = ["arc", "arcTo", "bezierCurveTo", "quadraticCurve", "moveTo", "lineTo", "rect", "clip", "createPattern", "getSetImageData"]
+  const API_DRAW = ["stroke", "strokeRect", "strokeText", "fill", "fillRect", "fillText", "drawImage", "drawImageLocal", "clearRect"]
+  const API_STATE = ["beginPath", "closePath", "reset", "transform", "rotate", "resetTransform", "save", "restore", "scale", "translate", "fontTTF"]
+  const API_PROPERTIES = ["lineCap", "lineJoin", "lineWidth", "miterLimit", "fillStyle", "strokeStyle", "globalAlpha", "font", "setLineDash", "createLinearGradient", "createRadialGradient", "textAlign"]
+
+  let title = 'createCanvasContextAsync'
+  let canvas: UniCanvasElement | null = null
+  let canvasContext: CanvasContext | null = null
+  let renderingContext: CanvasRenderingContext2D | null = null
+  let canvasWidth = 0
+  let canvasHeight = 0
+  let fontLoaded = false
+  const names = ref([...API_PATH, ...API_DRAW, ...API_STATE, ...API_PROPERTIES, "measureText", "path2D"].sort() as string[])
+  const instance = getCurrentInstance()!.proxy!
+
+  onReady(() => {
+    // HBuilderX 4.25+
+    // 异步调用方式, 跨平台写法
+    uni.createCanvasContextAsync({
+      id: 'canvas',
+      component: instance,
+      success: (context : CanvasContext) => {
+    canvasContext = context;
+    renderingContext = context.getContext('2d')!;
+    canvas = renderingContext!.canvas;
+
+    hidpi(canvas!);
+    canvasWidth = canvas!.width;
+    canvasHeight = canvas!.height;
+      }
+    })
+
+    // 同步调用方式，仅支持 app/web
+    // let canvas = uni.getElementById("canvas") as UniCanvasElement
+    // renderingContext = canvas.getContext("2d")
+    // hidpi(canvas);
+    // canvas = canvas;
+    // canvasWidth = canvas.width;
+    // canvasHeight = canvas.height;
+  })
+
+  function arc() {
+    const context = renderingContext!
+
+    context.beginPath()
+    context.lineWidth = 2
+    context.arc(75, 75, 50, 0, Math.PI * 2, true)
+    context.moveTo(110, 75)
+    context.arc(75, 75, 35, 0, Math.PI, false)
+    context.moveTo(65, 65)
+    context.arc(60, 65, 5, 0, Math.PI * 2, true)
+    context.moveTo(95, 65)
+    context.arc(90, 65, 5, 0, Math.PI * 2, true)
+    context.stroke()
+  }
+
+  function arcTo() {
+    const context = renderingContext!
+
+    context.beginPath()
+    context.moveTo(150, 20)
+    context.arcTo(150, 100, 50, 20, 30)
+    context.stroke()
+
+    context.fillStyle = "blue"
+    // base point
+    context.fillRect(150, 20, 10, 10)
+
+    context.fillStyle = "red"
+    // control point one
+    context.fillRect(150, 100, 10, 10)
+    // control point two
+    context.fillRect(50, 20, 10, 10)
+    //
+    context.setLineDash([5, 5])
+    context.moveTo(150, 20)
+    context.lineTo(150, 100)
+    context.lineTo(50, 20)
+    context.stroke()
+    context.beginPath()
+    context.arc(120, 38, 30, 0, 2 * Math.PI, true)
+    context.stroke()
+  }
+
+  function beginPath() {
+    const context = renderingContext!
+
+    // First path
+    context.beginPath()
+    context.strokeStyle = "blue"
+    context.moveTo(20, 20)
+    context.lineTo(200, 20)
+    context.stroke()
+
+    // Second path
+    context.beginPath()
+    context.strokeStyle = "green"
+    context.moveTo(20, 20)
+    context.lineTo(120, 120)
+    context.stroke()
+  }
+  function textAlign() {
+    const context = renderingContext!
+
+    context.beginPath()
+    context.moveTo(150, 0)
+    context.lineTo(150, 150)
+    context.stroke()
+
+    context.font = "30px serif"
+
+    context.textAlign = "left"
+    context.fillText("left-aligned", 150, 40)
+
+    context.textAlign = "center"
+    context.fillText("center-aligned", 150, 85)
+
+    context.textAlign = "right"
+    context.fillText("right-aligned", 150, 130)
+  }
+  function getSetImageData() {
+    const context = renderingContext!
+    // Create path
+    context.moveTo(0, 70);
+    context.lineTo(80, 0);
+    context.lineTo(210, 110);
+    context.lineTo(30, 110);
+    context.lineTo(160, 0);
+    context.lineTo(240, 70);
+    context.closePath();
+
+    // Fill path
+    context.fillStyle = "green";
+    context.fill();
+
+    let imageData = context.getImageData(0, 0, context.canvas.width / 2, context.canvas.height / 2)
+    context.putImageData(imageData, context.canvas.width / 2, context.canvas.height / 2)
+  }
+  function bezierCurveTo() {
+    const context = renderingContext!
+
+    context.beginPath()
+    context.moveTo(50, 20)
+    context.bezierCurveTo(230, 30, 150, 60, 50, 100)
+    context.stroke()
+
+    context.fillStyle = "blue"
+    // start point
+    context.fillRect(50, 20, 10, 10)
+    // end point
+    context.fillRect(50, 100, 10, 10)
+
+    context.fillStyle = "red"
+    // control point one
+    context.fillRect(230, 30, 10, 10)
+    // control point two
+    context.fillRect(150, 70, 10, 10)
+  }
+  function clearRect() {
+    const context = renderingContext!
+
+    // 绘制黄色背景
+    context.beginPath()
+    context.fillStyle = "#ff6"
+    context.fillRect(0, 0, 300, 150)
+
+    // 绘制蓝色三角形
+    context.beginPath()
+    context.fillStyle = "blue"
+    context.moveTo(20, 20)
+    context.lineTo(180, 20)
+    context.lineTo(130, 130)
+    context.closePath()
+    context.fill()
+
+    // 清除一部分画布
+    context.clearRect(10, 10, 120, 100)
+  }
+  function clip() {
+    const context = renderingContext!
+
+    // Create circular clipping region
+    context.beginPath();
+    context.arc(100, 75, 50, 0, Math.PI * 2, true)
+    context.clip()
+
+    // Draw stuff that gets clipped
+    context.fillStyle = "blue"
+    context.fillRect(0, 0, 300, 150)
+    context.fillStyle = "orange"
+    context.fillRect(0, 0, 100, 100)
+  }
+  function closePath() {
+    const context = renderingContext!
+
+    context.beginPath()
+    context.lineWidth = 10
+    context.moveTo(20, 20)
+    context.lineTo(20, 100)
+    context.lineTo(70, 100)
+    context.closePath()
+    context.stroke()
+  }
+
+  function clearCanvasRect() {
+    renderingContext!.clearRect(0, 0, canvasWidth, canvasHeight)
+  }
+
+  function pattern() {
+    const context = renderingContext!
+
+    const image = canvasContext!.createImage()
+    image.src = '/static/api.png';
+    image.onload = () => {
+      context.save()
+      clearCanvasRect()
+      const pattern = context.createPattern(image, "repeat")
+      if (pattern!=null) {
+        context.fillStyle = pattern
+      }
+      context.fillRect(0, 0, 400, 400)
+      context.restore()
+    };
+  }
+  function createLinearGradient() {
+    const context = renderingContext!
+
+    // Create a linear gradient
+    // The start gradient point is at x=20, y=0
+    // The end gradient point is at x=220, y=0
+    const gradient = context.createLinearGradient(20, 0, 220, 0)
+
+    // Add three color stops
+    gradient.addColorStop(0, "green")
+    gradient.addColorStop(0.5, "cyan")
+    gradient.addColorStop(1, "green")
+
+    // Set the fill style and draw a rectangle
+    context.fillStyle = gradient
+    context.fillRect(20, 20, 200, 100)
+  }
+  function createRadialGradient() {
+    const context = renderingContext!
+
+    // Create a radial gradient
+    // The inner circle is at x=110, y=90, with radius=30
+    // The outer circle is at x=100, y=100, with radius=70
+    const gradient = context.createRadialGradient(110, 90, 30, 100, 100, 70)
+
+    // Add three color stops
+    gradient.addColorStop(0, "pink")
+    gradient.addColorStop(0.9, "white")
+    gradient.addColorStop(1, "green")
+
+    // Set the fill style and draw a rectangle
+    context.fillStyle = gradient
+    context.fillRect(20, 20, 160, 160)
+  }
+  function fill() {
+    const context = renderingContext!
+
+    context.beginPath()
+    context.rect(20, 20, 150, 100)
+    context.strokeStyle = '#00ff00'
+    context.fill()
+  }
+  function fillRect() {
+    const context = renderingContext!
+
+    context.fillStyle = "green"
+    context.fillRect(20, 10, 150, 100)
+  }
+  function fillText() {
+    const context = renderingContext!
+
+    context.strokeStyle = '#ff0000'
+
+    context.beginPath()
+    context.moveTo(0, 10)
+    context.lineTo(300, 10)
+    context.stroke()
+    // context.save()
+    // context.scale(1.5, 1.5)
+    // context.translate(20, 20)
+    // context.setFontSize(10)
+    context.fillText('Hello World', 0, 30, 300)
+    // context.setFontSize(20)
+    context.fillText('Hello World', 100, 30, 300)
+
+    // context.restore()
+
+    context.beginPath()
+    context.moveTo(0, 30)
+    context.lineTo(300, 30)
+    context.stroke()
+  }
+  function moveTo() {
+    const context = renderingContext!
+
+    context.beginPath()
+    context.moveTo(0, 0)
+    context.lineTo(300, 150)
+    context.stroke()
+  }
+  function lineTo() {
+    const context = renderingContext!
+
+    context.beginPath()
+    context.moveTo(20, 20)
+    context.lineTo(20, 100)
+    context.lineTo(70, 100)
+    context.stroke()
+  }
+  function stroke() {
+    const context = renderingContext!
+
+    context.beginPath()
+    context.moveTo(20, 20)
+    context.lineTo(20, 100)
+    context.lineTo(70, 100)
+    context.strokeStyle = '#00ff00'
+    context.stroke()
+  }
+  function strokeRect() {
+    const context = renderingContext!
+
+    context.strokeStyle = "green"
+    context.strokeRect(20, 10, 160, 100)
+  }
+  function strokeText() {
+    const context = renderingContext!
+
+    context.font = "10px serif"
+    context.strokeText("Hello world", 50, 90)
+
+    context.font = "30px serif"
+    context.strokeStyle = "blue"
+    context.strokeText("Hello world", 50, 100)
+  }
+  function rotate() {
+    const context = renderingContext!
+
+    // Point of transform origin
+    context.arc(0, 0, 5, 0, 2 * Math.PI, true)
+    context.fillStyle = "blue"
+    context.fill()
+
+    // Non-rotated rectangle
+    context.fillStyle = "gray"
+    context.fillRect(100, 0, 80, 20)
+    // Rotated rectangle
+    context.rotate((45 * Math.PI) / 180)
+    context.fillStyle = "red"
+    context.fillRect(100, 0, 80, 20)
+
+    // Reset transformation matrix to the identity matrix
+    context.setTransform(1, 0, 0, 1, 0, 0)
+  }
+  function scale() {
+    const context = renderingContext!
+
+    // Scaled rectangle
+    context.scale(9, 3)
+    context.fillStyle = "red"
+    context.fillRect(10, 10, 8, 20)
+
+    // Reset current transformation matrix to the identity matrix
+    context.setTransform(1, 0, 0, 1, 0, 0)
+
+    // Non-scaled rectangle
+    context.fillStyle = "gray"
+    context.fillRect(10, 10, 8, 20)
+  }
+  function reset() {
+    const context = renderingContext!
+
+    // Set line width
+    context.lineWidth = 10
+    context.strokeStyle = '#00ff00'
+    // Stroke rect outline
+    context.strokeRect(50, 50, 150, 100)
+
+    // Create filled text
+    context.font = "50px serif";
+    context.fillText("Rect!", 70, 110)
+
+    context.lineWidth = 5
+
+    // Stroke out circle
+    context.beginPath();
+    context.arc(300, 100, 50, 0, 2 * Math.PI)
+    context.stroke();
+
+    // Create filled text
+    context.font = "25px sans-serif"
+    context.fillText("Circle!", 265, 100)
+    // context.reset()
+
+    hidpi(canvas!)
+  }
+  function translate() {
+    const context = renderingContext!
+
+    // Moved square
+    context.translate(110, 30)
+    context.fillStyle = "red"
+    context.fillRect(0, 0, 80, 80)
+
+    // Reset current transformation matrix to the identity matrix
+    context.setTransform(1, 0, 0, 1, 0, 0)
+
+    // Unmoved square
+    context.fillStyle = "gray"
+    context.fillRect(0, 0, 80, 80)
+  }
+  function save() {
+    const context = renderingContext!
+
+    context.beginPath()
+    context.strokeStyle = '#00ff00'
+    context.scale(2, 2)
+    context.strokeStyle = '#ff0000'
+    context.rect(0, 0, 100, 100)
+    context.stroke()
+    context.restore()
+
+    context.save()
+    context.rect(0, 0, 50, 50)
+    context.stroke()
+  }
+  function restore() {
+    const context = renderingContext!;
+
+    [3, 2, 1].forEach((item) => {
+      context.save()
+      context.beginPath()
+      context.scale(item, item)
+      context.rect(10, 10, 100, 100)
+      context.stroke()
+      context.restore()
+    })
+  }
+  function drawImageLocal() {
+    const context = renderingContext!
+    const image = canvasContext!.createImage();
+    image.src = '/static/test-image/logo.png'
+    image.onload = () => {
+      context.drawImage(image, 0, 0, 100, 100)
+    }
+  }
+  function drawImage() {
+    const context = renderingContext!
+    const image = canvasContext!.createImage();
+    image.src = 'https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png'
+    image.onload = () => {
+      context.drawImage(image, 0, 0, 100, 100)
+    }
+  }
+  function rect() {
+    const context = renderingContext!
+
+    context.beginPath()
+    context.rect(20, 20, 150, 100)
+    context.stroke()
+  }
+  function quadraticCurveTo() {
+    const context = renderingContext!
+
+    // Quadratic Bézier curve
+    context.beginPath()
+    context.moveTo(50, 20)
+    context.quadraticCurveTo(230, 30, 50, 100)
+    context.stroke()
+
+    // Start and end points
+    context.fillStyle = "blue"
+    context.beginPath()
+    context.arc(50, 20, 5, 0, 2 * Math.PI, true) // Start point
+    context.arc(50, 100, 5, 0, 2 * Math.PI, true) // End point
+    context.fill();
+
+    // Control point
+    context.fillStyle = "red"
+    context.beginPath()
+    context.arc(230, 30, 5, 0, 2 * Math.PI, true)
+    context.fill()
+  }
+  function resetTransform() {
+    const context = renderingContext!
+
+    // Draw a rotated rectangle
+    context.rotate((45 * Math.PI) / 180)
+    context.fillRect(60, 0, 100, 30)
+
+    // Reset transformation matrix to the identity matrix
+    context.resetTransform()
+    context.fillStyle = "red"
+    context.fillRect(60, 0, 100, 30)
+  }
+  function transform() {
+    const context = renderingContext!
+
+    context.transform(1, 0.2, 0.8, 1, 0, 0)
+    context.fillRect(0, 0, 100, 100)
+  }
+  function setFillStyle() {
+    const context = renderingContext!;
+    ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach((item : string, index : number) => {
+      context.fillStyle = item
+      context.beginPath()
+      context.rect(0 + 75 * index, 0, 50, 50)
+      context.fill()
+    })
+  }
+  function setStrokeStyle() {
+    const context = renderingContext!;
+
+    ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach((item : string, index : number) => {
+      context.strokeStyle = item
+      context.beginPath()
+      context.rect(0 + 75 * index, 0, 50, 50)
+      context.stroke()
+    })
+  }
+  function setGlobalAlpha() {
+    const context = renderingContext!
+
+    context.fillStyle = '#000000';
+    [1, 0.5, 0.1].forEach((item : number, index : number) => {
+      context.globalAlpha = item
+      context.beginPath()
+      context.rect(0 + 75 * index, 0, 50, 50)
+      context.fill()
+    })
+    context.globalAlpha = 1
+  }
+  function setFontSize() {
+    const context = renderingContext!;
+
+    [10, 20, 30, 40].forEach((item : number, index : number) => {
+      context.font = item + 'px serif'
+      context.fillText('Hello, world', 20, 20 + 40 * index)
+    })
+  }
+  function setLineCap() {
+    const context = renderingContext!
+
+    context.lineWidth = 10;
+    ['butt', 'round', 'square'].forEach((item : string, index : number) => {
+      context.beginPath()
+      context.lineCap = item as 'butt' | 'round' | 'square'
+      context.moveTo(20, 20 + 20 * index)
+      context.lineTo(100, 20 + 20 * index)
+      context.stroke()
+    })
+  }
+  function setLineJoin() {
+    const context = renderingContext!
+
+    context.lineWidth = 10;
+    ['bevel', 'round', 'miter'].forEach((item : string, index : number) => {
+      context.beginPath()
+      context.lineJoin = item as 'bevel' | 'round' | 'miter'
+      context.moveTo(20 + 80 * index, 20)
+      context.lineTo(100 + 80 * index, 50)
+      context.lineTo(20 + 80 * index, 100)
+      context.stroke()
+    })
+  }
+  function setLineWidth() {
+    const context = renderingContext!;
+
+    [2, 4, 6, 8, 10].forEach((item : number, index : number) => {
+      context.beginPath()
+      context.lineWidth = item
+      context.moveTo(20, 20 + 20 * index)
+      context.lineTo(100, 20 + 20 * index)
+      context.stroke()
+    })
+  }
+  function lineDash() {
+    const context = renderingContext!
+
+    context.setLineDash([4, 16])
+
+    // Dashed line with no offset
+    context.beginPath()
+    context.moveTo(0, 50)
+    context.lineTo(300, 50)
+    context.stroke()
+
+    // Dashed line with offset of 4
+    context.beginPath()
+    context.strokeStyle = "red"
+    context.lineDashOffset = 4
+    context.moveTo(0, 100)
+    context.lineTo(300, 100)
+    context.stroke()
+  }
+  function setMiterLimit() {
+    const context = renderingContext!
+
+    context.lineWidth = 4;
+    [2, 4, 6, 8, 10].forEach((item : number, index : number) => {
+      context.beginPath()
+      context.miterLimit = item
+      context.moveTo(20 + 80 * index, 20)
+      context.lineTo(100 + 80 * index, 50)
+      context.lineTo(20 + 80 * index, 100)
+      context.stroke()
+    })
+  }
+  function measureText() {
+    const context = renderingContext!
+
+    const text = "uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎"
+
+    context.font = "20px 宋体"
+
+    context.fillStyle = "red"
+    context.fillText(text, 0, 60)
+    const textMetrics = context.measureText(text)
+    context.strokeText(text, 40, 100)
+    context.fillText("measure text width:" + textMetrics.width, 40, 80)
+
+    const text2 = "Hello word Hello word!!!!!"
+    context.font = "22px 宋体"
+    context.fillStyle = "#00bc79"
+    context.fillText(text2, 0, 130)
+    const textMetrics2 = context.measureText(text2)
+    context.fillRect(0, 140, textMetrics2.width, 14)
+  }
+
+  function path2DMethods() {
+    const context = renderingContext!
+    context.beginPath()
+    const path2D = canvasContext!.createPath2D();
+    const amplitude = 64;
+    const wavelength = 64;
+    for (let i = 0; i < 5; i++) {
+      const x1 = 0 + (i * wavelength);
+      const y1 = 128;
+      const x2 = x1 + wavelength / 4;
+      const y2 = y1 - amplitude;
+      const x3 = x1 + 3 * wavelength / 4;
+      const y3 = y1 + amplitude;
+      const x4 = x1 + wavelength;
+      const y4 = y1;
+      context.moveTo(x1, y1);
+      path2D.bezierCurveTo(x2, y2, x3, y3, x4, y4);
+    }
+    context.stroke(path2D);
+
+    const path2DRect = canvasContext!.createPath2D();
+    path2DRect.rect(10, 10, 100, 20);
+    context.fill(path2DRect);
+  }
+  function fontTTF() {
+    const context = renderingContext!
+    const fontMap = new Map<string, UTSJSONObject>([
+      ["AlimamaDaoLiTiOTF", { path: "/static/font/AlimamaDaoLiTi.otf", text: "阿里妈妈刀隶体字体otf加载成功" } as UTSJSONObject],
+      // #ifdef APP-IOS
+      ["AlimamaDaoLiTiWOFF", { path: "/static/app-ios/AlimamaDaoLiTi.woff", text: "阿里妈妈刀隶体字体Woff加载成功" } as UTSJSONObject],
+      // #endif
+      ["person-filled", { path: "/static/font/uni.ttf", text: "\ue69d" } as UTSJSONObject],
+    ]);
+    var yOffset = 0
+
+    var drawFont = (key : string, value : UTSJSONObject) => {
+      console.log(`${key}字体加载成功`)
+      context.save()
+      const text = value["text"] as string
+      context.font = `20px ${key}`
+      context.fillStyle = "red"
+      yOffset += 25
+      context.fillText(text, 0, yOffset)
+      yOffset += 25
+      context.strokeText(text, 0, yOffset)
+      context.restore()
+    }
+    fontMap.forEach((value : UTSJSONObject, key : string) => {
+      console.log(`key:${key} value:${value["path"]}`)
+      if (fontLoaded) {
+        drawFont(key, value)
+      } else {
+        uni.loadFontFace({
+          family: key,
+          source: `url('${value["path"]}')`,
+          success: () => {
+            drawFont(key, value)
+          }
+        })
+      }
+    })
+    fontLoaded = true
+  }
+
+  function handleCanvasButton(name : string) {
+    renderingContext!.clearRect(0, 0, canvasWidth, canvasHeight)
+    renderingContext!.save()
+    switch (name) {
+      case "arc":
+    arc();
+    break;
+      case "arcTo":
+    arcTo();
+    break;
+      case "beginPath":
+    beginPath();
+    break;
+      case "bezierCurveTo":
+    bezierCurveTo();
+    break;
+      case "clearRect":
+    clearRect();
+    break;
+      case "clip":
+    clip();
+    break;
+      case "closePath":
+    closePath();
+    break;
+      case "getSetImageData":
+    getSetImageData();
+    break;
+      case "createPattern":
+    pattern()
+    break;
+      case "createLinearGradient":
+    createLinearGradient();
+    break;
+      case "createRadialGradient":
+    createRadialGradient();
+    break;
+      case "fill":
+    fill();
+    break;
+      case "fillRect":
+    fillRect();
+    break;
+      case "fillText":
+    fillText();
+    break;
+      case "lineTo":
+    lineTo();
+    break;
+      case "moveTo":
+    moveTo();
+    break;
+      case "quadraticCurve":
+    quadraticCurveTo();
+    break;
+      case "rect":
+    rect();
+    break;
+      case "reset":
+    reset();
+    break;
+      case "resetTransform":
+    resetTransform();
+    break;
+      case "restore":
+    restore();
+    break;
+      case "rotate":
+    rotate();
+    break;
+      case "save":
+    save();
+    break;
+      case "scale":
+    scale();
+    break;
+      case "stroke":
+    stroke();
+    break;
+      case "strokeRect":
+    strokeRect();
+    break;
+      case "strokeText":
+    strokeText();
+    break;
+      case "transform":
+    transform();
+    break;
+      case "translate":
+    translate();
+    break;
+      case "drawImageLocal":
+    drawImageLocal()
+    break;
+      case "drawImage":
+    drawImage();
+    break;
+      case "measureText":
+    measureText();
+    break;
+      case "fillStyle":
+    setFillStyle();
+    break;
+      case "strokeStyle":
+    setStrokeStyle();
+    break;
+      case "globalAlpha":
+    setGlobalAlpha();
+    break;
+      case "font":
+    setFontSize();
+    break;
+      case "lineCap":
+    setLineCap();
+    break;
+      case "lineJoin":
+    setLineJoin();
+    break;
+      case "setLineDash":
+    lineDash();
+    break;
+      case "lineWidth":
+    setLineWidth();
+    break;
+      case "miterLimit":
+    setMiterLimit();
+    break;
+      case "textAlign":
+    textAlign();
+    break;
+      case "path2D":
+    path2DMethods();
+    break;
+      case "fontTTF":
+    fontTTF();
+    break;
+      default:
+    break;
+    }
+    renderingContext!.restore()
+  }
+
+  defineExpose({
+    measureText
+  })
+</script>
+
+<style>
+  .page {
+    flex: 1;
+  }
+
+  .scroll-view {
+    flex: 1;
+  }
+
+  .canvas-element {
+    width: 100%;
+    height: 250px;
+    background-color: #ffffff;
+  }
+
+  .grid-view {
+    padding: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .grid-item {
+    width: 50%;
+    padding: 5px;
+  }
+</style>

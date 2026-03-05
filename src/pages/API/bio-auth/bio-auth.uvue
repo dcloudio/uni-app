@@ -1,0 +1,67 @@
+<template>
+  <view class="uni-container">
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt">
+      <text class="uni-title-text">设备支持情况：</text>
+      <text class="uni-subtitle-text">{{ supportStatus }}</text>
+    </view>
+    <view class="uni-common-mt">
+      <text class="uni-title-text">认证结果：</text>
+      <text class="uni-subtitle-text">{{ authResult }}</text>
+    </view>
+    <button @click="checkSupport" class="uni-common-mt">检查支持的认证方式</button>
+    <button @click="checkAuth('fingerPrint')" class="uni-common-mt">检查指纹</button>
+    <button @click="checkAuth('facial')" class="uni-common-mt">检查FaceID</button>
+    <button @click="startAuth('fingerPrint')"  type="primary" class="uni-common-mt">指纹认证</button>
+    <button @click="startAuth('facial')"  type="primary" class="uni-common-mt">FaceID认证</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const title = '生物认证'
+const supportStatus = ref('未检查')
+const authResult = ref('等待认证')
+
+const checkSupport = () => {
+  uni.checkIsSupportSoterAuthentication({
+    success: (res) => {
+      supportStatus.value = res.supportMode.length > 0 ?
+        `支持: ${res.supportMode.join(', ')}` :
+        '不支持任何生物认证'
+    },
+    fail: () => {
+      supportStatus.value = '检查失败'
+    }
+  })
+}
+
+const checkAuth = (mode: string) => {
+  uni.checkIsSoterEnrolledInDevice({
+    checkAuthMode: mode,
+    success: (res) => {
+      console.log('res: ',res);
+      authResult.value = `${mode === 'fingerPrint' ? '指纹' : 'FaceID'}${res.isEnrolled ? '已录入' : '未录入'}`
+    },
+    fail: (err) => {
+      console.log('err: ',err);
+      authResult.value = `${mode === 'fingerPrint' ? '指纹' : 'FaceID'}检查失败，${err}`
+    }
+  })
+}
+
+const startAuth = (mode: string) => {
+  uni.startSoterAuthentication({
+    requestAuthModes: [mode],
+    challenge: '123456',
+    authContent: `请用${mode === 'fingerPrint' ? '指纹' : 'FaceID'}解锁`,
+    success: (res) => {
+      console.log('res: ',res);
+      authResult.value = `${res.authMode === 'fingerPrint' ? '指纹' : 'FaceID'}认证成功`
+    },
+    fail: (err) => {
+      console.log('err: ',err);
+      authResult.value = `${mode === 'fingerPrint' ? '指纹' : 'FaceID'}认证失败，${err}`
+    }
+  })
+}
+</script>

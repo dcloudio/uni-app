@@ -1,0 +1,72 @@
+<template>
+  <view class="container">
+    <view id="node1" class="node node1">
+      这里是 transfrom 之后的节点
+    </view>
+
+    <view id="node2" class="node node2">
+      这里是没有 transfrom 的节点
+    </view>
+
+    <button @click="getNode1Info">
+      getNode1Info
+    </button>
+
+    <button @click="getNode2Info">
+      getNode2Info
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  function getNode1Info() : DOMRect {
+    const info = uni.getElementById('node1')?.getBoundingClientRect()
+    if (info != null) {
+      // console.log('info: ', info.toJSON());
+      return info
+    }
+    return {
+      x: 0,
+      y: 0,
+      height: 0,
+      width: 0
+    } as DOMRect
+  }
+  function getNode2Info() : DOMRect {
+
+    const info = uni.getElementById('node2')?.getBoundingClientRect()
+    if (info != null) {
+      // console.log('info: ', info.toJSON());
+      return info
+    }
+    return {
+      x: 0,
+      y: 0,
+      height: 0,
+      width: 0
+    } as DOMRect
+  }
+
+  defineExpose({
+    getNode1Info,
+    getNode2Info
+  })
+</script>
+
+<style>
+  .container {
+    flex: 1;
+    background-color: #f8f8f8;
+  }
+
+  .node {
+    margin: 20rpx;
+    background-color: white;
+    padding: 40rpx;
+    border-radius: 10rpx;
+  }
+
+  .node1 {
+    transform: translateY(500px) scale(1.5);
+  }
+</style>

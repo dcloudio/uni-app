@@ -1,0 +1,171 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view>
+      <page-intro content="本页演示 pointer-events：通过开关控制父 view、遮罩层、text、image 的 pointer-events（auto/none），观察点击是否穿透或响应；点击可修改 view/text/image 宽度，用于验证事件是否命中目标。"></page-intro>
+      <view class="container1">
+        <text>控制父视图pointer-events打开时可以点击</text>
+        <switch :checked="true" @change="onChange1" />
+      </view>
+      <view class="container" :style="{ 'pointer-events': pointerEvents1 }">
+        <text class="text">点击修改宽度</text>
+        <view class="base-style transition-width" id="widthOrHeight" @click="changeWidthOrHeight"></view>
+      </view>
+      <view class="container1">
+        <text>控制遮罩层pointer-events关闭时可以点击</text>
+        <switch :checked="true" @change="onChange2" />
+      </view>
+      <view class="container">
+        <text class="text">点击修改宽度(递增)</text>
+        <view class="width-progress transition-width" id="widthProgress" @click="changeWidthProgress"></view>
+        <view class="mask" :style="{ 'pointer-events': pointerEvents2 }"></view>
+      </view>
+      <view class="container1">
+        <text>控制text组件pointer-events打开时可以点击</text>
+        <switch :checked="true" @change="onChange3" />
+      </view>
+      <view class="container" :style="{ 'pointer-events': pointerEvents3 }">
+        <text class="text">点击修改宽度</text>
+        <text class="text-pointer transition-width" id="textPointer" @click="changeTextWidth">测试文本</text>
+      </view>
+      <view class="container1">
+        <text>控制image组件pointer-events打开时可以点击</text>
+        <switch :checked="true" @change="onChange4" />
+      </view>
+      <view class="container" :style="{ 'pointer-events': pointerEvents4 }">
+        <text class="text">点击修改宽度</text>
+        <image class="image-pointer transition-width" id="imagePointer" @click="changeImageWidth" src="/static/test-image/logo.png"></image>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+  let isTranstionWidthOrHeight = false
+  let widthOrHeight: UniElement | null = null
+  let widthProgress: UniElement | null = null
+  let textPointer: UniElement | null = null
+  let imagePointer: UniElement | null = null
+  let progressWidth = 200
+  let textWidth = 200
+  let imageWidth = 200
+  let isTextWidth = false
+  let isImageWidth = false
+  const pointerEvents1 = ref('auto')
+  const pointerEvents2 = ref('auto')
+  const pointerEvents3 = ref('auto')
+  const pointerEvents4 = ref('auto')
+
+  onReady(() => {
+    widthOrHeight = uni.getElementById("widthOrHeight")
+    widthProgress = uni.getElementById("widthProgress")
+    textPointer = uni.getElementById("textPointer")
+    imagePointer = uni.getElementById("imagePointer")
+  })
+
+  const changeWidthOrHeight = () => {
+    widthOrHeight?.style?.setProperty("width", isTranstionWidthOrHeight
+      ? '200px'
+      : '300px')
+    isTranstionWidthOrHeight = !isTranstionWidthOrHeight
+  }
+
+  const changeWidthProgress = () => {
+    progressWidth += 20
+    widthProgress?.style?.setProperty("width", progressWidth + 'px')
+  }
+
+  const onChange1 = (e : UniSwitchChangeEvent) => {
+    pointerEvents1.value = e.detail.value ? 'auto' : 'none'
+  }
+
+  const onChange2 = (e : UniSwitchChangeEvent) => {
+    pointerEvents2.value = e.detail.value ? 'auto' : 'none'
+  }
+
+  const changeTextWidth = () => {
+    textPointer?.style?.setProperty("width", isTextWidth
+      ? '200px'
+      : '300px')
+    isTextWidth = !isTextWidth
+  }
+
+  const changeImageWidth = () => {
+    imagePointer?.style?.setProperty("width", isImageWidth
+      ? '200px'
+      : '300px')
+    isImageWidth = !isImageWidth
+  }
+
+  const onChange3 = (e : UniSwitchChangeEvent) => {
+    pointerEvents3.value = e.detail.value ? 'auto' : 'none'
+  }
+
+  const onChange4 = (e : UniSwitchChangeEvent) => {
+    pointerEvents4.value = e.detail.value ? 'auto' : 'none'
+  }
+</script>
+
+<style>
+  .container1 {
+    margin: 7px 0px 7px 7px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .container {
+    margin: 7px;
+    background-color: white;
+  }
+
+  .text {
+    margin-top: 10px;
+    margin-bottom: 16px;
+  }
+
+  .base-style {
+    width: 200px;
+    height: 200px;
+    background-color: brown;
+  }
+
+  .width-progress {
+    width: 200px;
+    height: 200px;
+    background-color: brown;
+  }
+
+  .transition-width {
+    transition-property: width;
+    transition-duration: 1s;
+  }
+
+  .mask {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .text-pointer {
+    width: 200px;
+    height: 200px;
+    background-color: brown;
+    font-size: 16px;
+    color: white;
+  }
+
+  .image-pointer {
+    width: 200px;
+    height: 200px;
+    background-color: brown;
+  }
+</style>

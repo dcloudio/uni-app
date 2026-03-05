@@ -1,0 +1,142 @@
+<template>
+  <view id="var_1" style="flex:1;--var_margin: 2px;" class="var_1" :class="var_bind">
+    <view>
+      <view class="var_1_1_1">
+        <text class="firstParagraph">此段落应有蓝色背景和绿色文本。</text>
+      </view>
+      <text class="secondParagraph">此段落应有黑色半透明背景和黄色文本。</text>
+    </view>
+    <text style="width: var(--var_width_invalid, 375rpx);background-color:yellowgreen;">无效值width应为375rpx</text>
+    <view id="chanageVarBox" :class="text_style_var_def">
+      <text class="text_style"
+        v-if="text_style_var_1_on">font-size:26px;style:normal;color:#ccc;background-color:#488cff</text>
+      <text class="text_style" v-else>font-size:16px;style:italic;color:#803390;background-color:#48ff32</text>
+    </view>
+
+    <view class="view_layout_style_container" id="view_container">
+      <view class="view_layout_style"></view>
+      <view class="view_layout_style" style="background-color: blue;--var_align_self: flex-start;"></view>
+    </view>
+
+    <button id="changeVarButton" @tap="do_change_var()">修改自定义变量</button>
+    <view class="test-v-if">
+      <view v-if="var_v_if" style="height:var(--var_height);background-color: var(--var_backgroundColor);">
+      </view>
+    </view>
+    <button class="test-v-if-button" @tap="do_vif()">v-if测试</button>
+  </view>
+</template>
+<script setup lang="uts">
+
+  const var_bind = ref("var_1_bind_1")
+  const var_v_if = ref(false)
+  const text_style_var_def = ref("text_style_var_1")
+  const text_style_var_1_on = ref(true)
+
+  const do_change_var = () => {
+    const view_container = uni.getElementById("view_container")
+    if (text_style_var_1_on.value) {
+      text_style_var_def.value = "text_style_var_2"
+      text_style_var_1_on.value = false
+      view_container?.style?.setProperty("--var_flex_direction", "row")
+      view_container?.style?.setProperty("--var_justify_content", "flex-end")
+      view_container?.style?.setProperty("--var_margin", "")
+      // 与 style 中的写法表现不一致，且可能与非简写属性存在冲突
+      // view_container?.style?.setProperty("border", "var(--var_border)")
+      view_container?.style?.setProperty("background-color", "var(--background-color)")
+    } else {
+      text_style_var_def.value = "text_style_var_1"
+      text_style_var_1_on.value = true
+      view_container?.style?.setProperty("--var_margin", "10px")
+      view_container?.style?.setProperty("--var_flex_direction", "column")
+      view_container?.style?.setProperty("--var_justify_content", "center")
+      view_container?.style?.setProperty("background-color", "#FFF")
+    }
+    var_bind.value = (var_bind.value == "var_1_bind_2") ? "var_1_bind_1" : "var_1_bind_2"
+  }
+
+  const do_vif = () => {
+    var_v_if.value = !var_v_if.value
+  }
+</script>
+
+<style>
+  .var_1 {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    --font-color: #00ff00;
+    --var_width: 375rpx;
+    --var_backgroundColor: rgba(0, 0, 0, .5);
+  }
+
+  .var_1_bind_1 {
+    --var_height: 30px;
+  }
+
+  .var_1_bind_2 {
+    --var_height: 60px;
+  }
+
+  .var_1_1_1 {
+    --var_backgroundColor: #0000ff;
+  }
+
+  .content {
+    flex: 1;
+  }
+
+  .firstParagraph {
+    background-color: var(--var_backgroundColor);
+    color: var(--font-color);
+  }
+
+  .secondParagraph {
+    --font-color: yellow;
+    background-color: var(--var_backgroundColor);
+    color: var(--font-color);
+  }
+
+  .text_style_var_1 {
+    --text-font-size: 26px;
+    --text-font-style: normal;
+    --text-color: #ccc;
+    --text-background-color: #488cff;
+  }
+
+  .text_style_var_2 {
+    --text-font-size: 16px;
+    --text-font-style: italic;
+    --text-color: #803390;
+    --text-background-color: #48ff32;
+  }
+
+  .text_style {
+    font-family: var(--swiper-item-font-family);
+    font-size: var(--text-font-size);
+    font-style: var(--text-font-style);
+    color: var(--text-color);
+    background-color: var(--text-background-color);
+  }
+
+  .view_layout_style_container {
+    --var_flex_direction: column;
+    --var_align_self: center;
+    --var_justify_content: center;
+    --var_border: 2px red solid;
+    --var_border2: 2px green solid;
+    --background-color: #CCC;
+    --var_height: 110px;
+    --var_margin: 10px;
+    height: var(--var_height);
+    flex-direction: var(--var_flex_direction);
+    justify-content: var(--var_justify_content);
+    margin: var(--var_margin);
+  }
+
+  .view_layout_style {
+    width: 50px;
+    height: 50px;
+    background-color: brown;
+    align-self: var(--var_align_self);
+  }
+</style>

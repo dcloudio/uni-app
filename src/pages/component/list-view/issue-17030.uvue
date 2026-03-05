@@ -1,0 +1,38 @@
+<template>
+	<view style=" flex: 1;">
+		<list-view id="listView" style="width: 100%; background-color: red;">
+			<list-item v-for="(item,index) in arr" :key="index">
+				<text class="title">{{item}}</text>
+			</list-item>
+		</list-view>
+	</view>
+</template>
+
+<script setup>
+	const arr = ref<number[]>([1, 2, 3, 4, 5])
+	const addData = () => {
+		arr.value.push(arr.value.length + 1)
+	}
+
+	const getScrollHeight = () => {
+		const listViewElement = uni.getElementById("listView") as UniElement
+		const scrollHeight = listViewElement.scrollHeight
+		console.log(scrollHeight)
+    return scrollHeight
+	}
+
+  defineExpose({
+    addData,
+    getScrollHeight
+  })
+
+</script>
+
+<style>
+	.title {
+		height: 30px;
+		font-size: 18px;
+		color: #000000;
+		text-align: center;
+	}
+</style>

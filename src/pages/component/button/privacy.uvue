@@ -1,0 +1,132 @@
+<template>
+  <view class="dialog-container">
+    <view class="dialog-content">
+      <view style="width: 100%;justify-content: center;align-items: center;background-color: #fff;">
+        <image src="../image/logo.png" style="margin-top: 25px;width: 60px;height: 60px;"></image>
+      </view>
+      <text
+        style="text-align: center;padding-top: 20px;font-size: 20px;color: black;background-color: #fff;">个人信息保护指引</text>
+      <scroll-view
+        style="flex: 1;align-content: center;padding-top: 10px;padding-left: 25px;padding-right: 25px;background-color: #fff;"
+        show-scrollbar="false">
+        <text>
+          <!-- #ifdef APP-HARMONY -->
+          <text class="privacy-text">欢迎使用DCloud开发者中心系统，我们将通过</text>
+          <!-- #endif -->
+          <!-- #ifndef APP-HARMONY -->
+          <text class="privacy-text">欢迎使用 Hello uni-app x 应用，我们将通过</text>
+          <!-- #endif -->
+          <text class="privacy-href" @click="hrefClick(hrefLicense)">《用户服务协议》</text>
+          <text  class="privacy-text">及</text>
+          <text
+            class="privacy-text">相关个人信息处理规则帮助你了解我们如何收集、处理个人信息。根据《常见类型移动互联网应用程序必要个人信息范围规定》，应用在演示 uni-app x 能力时仅收集、处理相关必要个人信息及数据。我们通过</text>
+          <text class="privacy-href" @click="hrefClick(hrefPrivacy)">《隐私政策》</text>
+          <text class="privacy-text">帮助你全面了解我们的服务及收集、处理个人信息的详细情况。</text>
+        </text>
+        <text  class="privacy-text">如你同意请点击“同意”按钮接受我们的服务。</text>
+      </scroll-view>
+      <button class="button" @click="reject">不同意</button>
+      <button class="button" type="primary" open-type="agreePrivacyAuthorization" @click="agree">同意</button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+  import { openSchema } from '@/uni_modules/uts-openSchema'
+  // #endif
+
+  // Get page instance at component initialization
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
+  let number = 0
+  const hrefLicense = 'https://dcloud.io/license/DCloud.html'
+  const hrefPrivacy = 'https://dcloud.io/license/hello-uni-app-x.html'
+
+  function agree() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage
+      })
+    }
+  }
+
+  function reject() {
+    uni.resetPrivacyAuthorization()
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage
+      })
+    }
+  }
+
+  function hrefClick(href : string) {
+    // #ifdef APP-HARMONY
+    uni.navigateTo({
+      url: '/pages/component/button/privacy-web-view?url=/hybrid/html/privacy.html&title=隐私政策'
+    })
+    // #endif
+    // #ifdef APP-ANDROID || APP-IOS
+    openSchema(href)
+    // #endif
+  }
+
+  onLoad((_) => {
+    number = uni.onPrivacyAuthorizationChange((callback) => {
+      uni.showToast({
+        title: 'isPrivacyAgree:' + !callback.needAuthorization
+      })
+    })
+  })
+
+  onUnmounted(() => {
+    uni.offPrivacyAuthorizationChange(number)
+  })
+</script>
+
+<style>
+  .dialog-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dialog-content {
+    height: 60%;
+    width: 80%;
+    /* background-color: #fff; */
+    border-radius: 12px;
+  }
+
+  .button {
+    border-radius: 0px;
+    border: 0px none;
+    font-size: 15px;
+    color: lightgrey;
+    text-align: center;
+    line-height: 40px;
+  }
+
+  .button-hover1 {
+    color: black;
+    background-color: #fff;
+  }
+
+  .button-hover2 {
+    color: black;
+    background-color: royalblue;
+  }
+
+  .privacy-text {
+    color: grey;
+  }
+
+  .privacy-href {
+    color: cadetblue;
+    font-weight: bold;
+    text-decoration-line: underline;
+  }
+</style>

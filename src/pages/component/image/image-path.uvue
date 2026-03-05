@@ -1,0 +1,213 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-title">
+          <text class="uni-title-text">图片路径示例</text>
+        </view>
+        <test-image-path />
+        <view>
+          <text class="uni-subtitle-text">非static目录的src静态路径：./logo.png</text>
+          <view class="uni-center" style="background:#FFFFFF;">
+            <image class="image" mode="widthFix" src="./logo.png"></image>
+            <image class="image" mode="widthFix" src="./logo.png" flatten></image>
+          </view>
+        </view>
+        <view v-for="(item,index) in data" :key="index">
+          <text class="uni-subtitle-text">{{item.description}}（右边为拍平测试）</text>
+          <view class="uni-center" style="background:#FFFFFF;">
+            <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
+              @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
+
+            <image class="image" mode="widthFix" :src="item.errorImageFlatten == null ? item.src : item.errorImageFlatten"
+              @error="imageFlattenErrorEvent(index, $event as ImageErrorEvent)" flatten></image>
+          </view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+
+  import logo from './logo.png';
+
+  const appid = uni.getAppBaseInfo().appId;
+
+  const title = ref('image-path')
+  const outsideStaticPath = ref('./logo.png' as string.ImageURIString)
+  const outsideStaticErrorPath = ref(null as string | null)
+  const data = ref([
+          {
+            src: '/static/test-image/logo.png',
+            description: '本地路径：/static方式'
+          },
+          {
+            src: '../../../static/test-image/logo.png',
+            description: '本地路径：../static/'
+          },
+          {
+            src: '../../../static/Test-Image/Logo.png',
+            description: '本地相对路径忽略大小写（需注意iOS、HarmonyOS平台不支持，Android平台云端打包后无效）'
+          },
+          {
+            src: logo,
+            description: 'import方式'
+          },
+          {
+            src: `file:///android_asset/apps/${appid}/www/static/test-image/logo.png`,
+            description: '本地绝对路径file://方式（仅限Android平台，云端打包后生效）'
+          },
+          {
+            src: 'testerror.jpg',
+            description: '错误的本地路径'
+          },
+          {
+            src: 'data:image/*;base64,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',
+            description: 'Base64'
+          },
+          {
+            src: 'https://request.dcloud.net.cn/api/http/contentType/image/png',
+            description: '正确网络路径'
+          },
+          {
+            src: 'https://request.dcloud.net.cn/api/http/contentType/wrongImage/gif',
+            description: '错误网络格式，假gif实为jpeg'
+          },
+          {
+            src: 'https://request.dcloud.net.cn/api/http/contentType/wrongImage/jpeg',
+            description: '错误网络格式，假jpg实为png'
+          },
+          {
+            src: 'https://request.dcloud.net.cn/api/http/contentType/wrongImage/png',
+            description: '错误网络格式，假png实为gif'
+          },
+          {
+            src: 'https://request.dcloud.net.cn/api/http/contentType/404',
+            description: '错误网络地址404接口'
+          },
+          {
+            src: 'https://request.dcloud.net.cn/api/http/contentType/404.png',
+            description: '错误网络地址，不存在的图片'
+          },
+          {
+            src: './logo.png',
+            description: '非static目录的动态路径（不显示是对的）'
+          },
+          {
+            src: 'data:image/*;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI0LjEuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IuWbvuWxgl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiCiAgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTk2IDE5NiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTk2IDE5NjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgogIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CiAgICAuc3QwIHsKICAgICAgZmlsbDogIzI0OTgzQTsKICAgIH0KCiAgICAuc3QxIHsKICAgICAgZmlsbDogI0ZGRkZGRjsKICAgIH0KICA8L3N0eWxlPgogIDxlbGxpcHNlIGNsYXNzPSJzdDAiIGN4PSI5Ny45IiBjeT0iOTguMSIgcng9Ijk2LjgiIHJ5PSI5Ni44IiAvPgogIDxwb2x5Z29uIGNsYXNzPSJzdDEiIHBvaW50cz0iMTQyLjgsMTQ5LjggMTI1LjgsMTQ5LjggMTI1LjYsMTQ5LjggNzAuMiwxNDkuOCA3MC4yLDE0OS44IDUzLjEsMTQ5LjggNTMuMSw1Ni43IDcwLjMsNTYuNwoJNzAuMywxMzIuNiAxMjUuNiwxMzIuNiAxMjUuNiw1Ni43IDE0Mi44LDU2LjcgIiAvPgo8L3N2Zz4K',
+            description: "base64-svg",
+          },
+          {
+            src: 'https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/w3c.svg',
+            description: '正确的svg网络路径'
+          },
+          // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || MP-WEIXIN
+          {
+            src: uni.env.USER_DATA_PATH + '/uni.png',
+            description: 'uni.env.USER_DATA_PATH 路径'
+          },
+          // #endif
+          // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+          {
+            src: uni.env.CACHE_PATH + '/uni.png',
+            description: 'uni.env.CACHE_PATH 路径'
+          },
+          {
+            src: uni.env.SANDBOX_PATH + '/uni.png',
+            description: 'uni.env.SANDBOX_PATH 路径'
+          },
+          // #endif
+          // #ifdef APP-HARMONY
+          {
+            src: `${uni.env.TEMP_PATH}/uni.png`,
+            description: 'uni.env.TEMP_PATH 路径'
+          },
+          // #endif
+          // #ifdef APP-ANDROID
+          {
+            src: uni.env.ANDROID_INTERNAL_SANDBOX_PATH + '/uni.png',
+            description: 'uni.env.ANDROID_INTERNAL_SANDBOX_PATH 路径'
+          },
+          // #endif
+  ] as Array<ImagePath>)
+
+  onLoad(() => {
+      // #ifndef WEB
+      let fileManager = uni.getFileSystemManager()
+      // #endif
+      // #ifdef APP-ANDROID || APP-HARMONY || MP-WEIXIN
+      try {
+        fileManager.accessSync(`${uni.env.USER_DATA_PATH}/uni.png`)
+      } catch (e) {
+        fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.USER_DATA_PATH}/uni.png`)
+      }
+      // #endif
+
+      // #ifdef APP-IOS
+      fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.USER_DATA_PATH}/uni.png`)
+      // #endif
+
+      // #ifdef APP-ANDROID || APP-HARMONY
+      try {
+        fileManager.accessSync(`${uni.env.CACHE_PATH}/uni.png`)
+        fileManager.accessSync(`${uni.env.SANDBOX_PATH}/uni.png`)
+      } catch (e) {
+        console.log("CACHE_PATH  error")
+        fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.CACHE_PATH}/uni.png`)
+        fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.SANDBOX_PATH}/uni.png`)
+      }
+      // #endif
+
+      // #ifdef APP-IOS
+      fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.CACHE_PATH}/uni.png`)
+      fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.SANDBOX_PATH}/uni.png`)
+      // #endif
+
+      // #ifdef APP-HARMONY
+      try {
+        fileManager.accessSync(`${uni.env.TEMP_PATH}/uni.png`)
+      } catch (e) {
+        fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.TEMP_PATH}/uni.png`)
+      }
+      // #endif
+      // #ifdef APP-ANDROID
+      try {
+        fileManager.accessSync(`${uni.env.ANDROID_INTERNAL_SANDBOX_PATH}/uni.png`)
+      } catch (e) {
+        fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.ANDROID_INTERNAL_SANDBOX_PATH}/uni.png`)
+      }
+      // #endif
+  })
+
+  function imageErrorEvent(index : number, e : ImageErrorEvent) {
+    console.log("图片加载错误", e.detail.errMsg);
+    // 图片加载失败，加载本地占位图
+    data.value[index].errorImage = '/static/dislike.png'
+  }
+
+  function imageFlattenErrorEvent(index : number, e : ImageErrorEvent) {
+    console.log("拍平图片加载错误", e.detail.errMsg);
+    // 图片加载失败，加载本地占位图
+    data.value[index].errorImageFlatten = '/static/dislike.png'
+  }
+
+  type ImagePath = {
+    src : string.ImageURIString
+    errorImage ?: string.ImageURIString | null
+    errorImageFlatten ?: string.ImageURIString | null
+    description : string
+  }
+</script>
+
+<style>
+  .image {
+    margin: 20px auto;
+    width: 100px;
+  }
+</style>

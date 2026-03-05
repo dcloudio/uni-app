@@ -1,0 +1,302 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view>
+        <text>margin-left: 25px</text>
+        <view class="demo-box">
+          <view class="demo-container">
+            <view class="common red"></view>
+            <view class="common" style="margin-left: 25px;"></view>
+            <view class="common blue"></view>
+          </view>
+          <view class="demo-container">
+            <view class="common red"></view>
+            <view class="common" style="margin-left: 25px;" flatten></view>
+            <view class="common blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text>margin-left: 10%</text>
+        <view class="demo-box">
+          <view class="demo-container">
+            <view class="common red"></view>
+            <view class="common" style="margin-left: 10%;"></view>
+            <view class="common blue"></view>
+          </view>
+          <view class="demo-container">
+            <view class="common red"></view>
+            <view class="common" style="margin-left: 10%;" flatten></view>
+            <view class="common blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
+      </view>
+      <view>
+        <text class="uni-subtitle-text">margin-left: 10% 和 margin-left: 30px</text>
+        <view class="demo-box">
+          <view class="demo-container">
+            <view class="common red"></view>
+            <scroll-view class="common" style="margin-left: 10%;"></scroll-view>
+            <view class="common blue"></view>
+          </view>
+          <view class="demo-container">
+            <view class="common red"></view>
+            <scroll-view class="common" style="margin-left: 30px;"></scroll-view>
+            <view class="common blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 margin-left </text>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.marginLeft}}</text>
+          <text class="uni-info">获取值: {{data.marginLeftActual}}</text>
+          <view class="test-box">
+            <view class="common-view" style="background-color: red;"></view>
+            <view ref="viewRef" class="common-view test-view" :style="{ marginLeft: data.marginLeft }">
+              <text class="common-text">view</text>
+            </view>
+            <view class="common-view" style="background-color: blue;"></view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.marginLeft}}</text>
+          <text class="uni-info">获取值: {{data.marginLeftActualText}}</text>
+          <view class="test-box">
+            <text class="common-view common-text" style="background-color: red;">红色</text>
+            <text ref="textRef" class="common-view common-text test-text" :style="{ marginLeft: data.marginLeft }">text</text>
+            <text class="common-view common-text" style="background-color: blue;">蓝色</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.marginLeft}}</text>
+          <text class="uni-info">获取值: {{data.marginLeftActualImage}}</text>
+          <view class="test-box">
+            <image class="common-image" style="background-color: red;" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ marginLeft: data.marginLeft }" src="/static/test-image/logo.png"></image>
+            <image class="common-image" style="background-color: blue;" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.marginLeft}}</text>
+          <text class="uni-info">获取值: {{data.marginLeftActualFlat}}</text>
+          <view class="test-box">
+            <view class="common-view" style="background-color: red;"></view>
+            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ marginLeft: data.marginLeft }" flatten>
+              <text class="common-text">view</text>
+            </view>
+            <view class="common-view" style="background-color: blue;"></view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.marginLeft}}</text>
+          <text class="uni-info">获取值: {{data.marginLeftActualTextFlat}}</text>
+          <view class="test-box">
+            <text class="common-view common-text" style="background-color: red;">红色</text>
+            <text ref="textRefFlat" class="common-view common-text test-text-flatten" :style="{ marginLeft: data.marginLeft }" flatten>text</text>
+            <text class="common-view common-text" style="background-color: blue;">蓝色</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.marginLeft}}</text>
+          <text class="uni-info">获取值: {{data.marginLeftActualImageFlat}}</text>
+          <view class="test-box">
+            <image class="common-image" style="background-color: red;" src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ marginLeft: data.marginLeft }" flatten src="/static/test-image/logo.png"></image>
+            <image class="common-image" style="background-color: blue;" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="marginLeftEnum" title="margin-left 枚举值" @change="radioChangeMarginLeft" :compact="true"></enum-data>
+        <input-data :defaultValue="data.marginLeft" title="margin-left 自定义值" type="text" @confirm="inputChangeMarginLeft"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: margin-left: 25px 和 10%</text>
+        <view class="demo-box">
+          <view class="demo-container">
+            <view class="common red"></view>
+            <native-view class="common" style="margin-left: 25px;"></native-view>
+            <view class="common blue"></view>
+          </view>
+          <view class="demo-container">
+            <view class="common red"></view>
+            <native-view class="common" style="margin-left: 10%;"></native-view>
+            <view class="common blue"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const data = reactive({
+    marginLeft: '25px',
+    marginLeftActual: '',
+    marginLeftActualText: '',
+    marginLeftActualImage: '',
+    marginLeftActualFlat: '',
+    marginLeftActualTextFlat: '',
+    marginLeftActualImageFlat: ''
+  })
+
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const marginLeftEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '20px' },
+    { value: 4, name: '0%' },
+    { value: 5, name: '10%' },
+    { value: 6, name: 'auto' }
+  ]
+
+  const getPropertyValues = () => {
+    data.marginLeftActual = viewRef.value?.style.getPropertyValue('margin-left') ?? ''
+    data.marginLeftActualFlat = viewRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
+    data.marginLeftActualText = textRef.value?.style.getPropertyValue('margin-left') ?? ''
+    data.marginLeftActualTextFlat = textRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
+    data.marginLeftActualImage = imageRef.value?.style.getPropertyValue('margin-left') ?? ''
+    data.marginLeftActualImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
+  }
+
+  const changeMarginLeft = (value: string) => {
+    data.marginLeft = value
+    viewRef.value?.style.setProperty('margin-left', value)
+    viewRefFlat.value?.style.setProperty('margin-left', value)
+    textRef.value?.style.setProperty('margin-left', value)
+    textRefFlat.value?.style.setProperty('margin-left', value)
+    imageRef.value?.style.setProperty('margin-left', value)
+    imageRefFlat.value?.style.setProperty('margin-left', value)
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeMarginLeft = (index: number) => {
+    const selectedItem = marginLeftEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeMarginLeft(selectedItem.name)
+    }
+  }
+
+  const inputChangeMarginLeft = (value: string) => {
+    changeMarginLeft(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeMarginLeft,
+    data
+  })
+</script>
+
+<style>
+  .demo-container {
+    flex: 1;
+    margin:0 10px;
+    height: 180px;
+    background-color: gray;
+  }
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+  .common {
+    height: 50px;
+    background-color: green;
+  }
+
+  .red {
+    background-color: red;
+  }
+
+  .blue {
+    background-color: blue;
+  }
+
+  .green {
+    background-color: green;
+  }
+
+  .scroll-view-test {
+    height: 50px;
+  }
+
+  .common-view {
+    height: 30px;
+    background-color: green;
+  }
+
+  .common-text {
+    font-size: 12px;
+    color: white;
+  }
+
+  .common-image {
+    width: 30px;
+    height: 30px;
+    background-color: green;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 100px;
+    background-color: gray;
+  }
+
+</style>

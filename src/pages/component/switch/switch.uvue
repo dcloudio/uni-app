@@ -1,0 +1,152 @@
+<template>
+  <view>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title">默认样式</view>
+      <view class="flex-row">
+        <switch class="switch-checked" :checked="data.checked" @change="switch1Change" />
+        <switch @change="switch2Change" />
+      </view>
+      <view class="uni-title">暗黑样式</view>
+      <view class="flex-row">
+        <!-- #ifndef VUE3-VAPOR -->
+        <switch id="darkChecked" background-color="#1f1f1f" activeBackgroundColor="#007aff" foreColor="#f0f0f0"
+          activeForeColor="#ffffff" :checked="data.checked" />
+        <switch id="dark" background-color="#1f1f1f" activeBackgroundColor="#007aff" foreColor="#f0f0f0"
+          activeForeColor="#ffffff" />
+        <!-- #endif -->
+        <!-- #ifdef VUE3-VAPOR -->
+        <switch id="darkChecked" :class="{ 'dark-class': !data.darkChecked1 }" switch-active-class="custom-switch-active" thumb-active-class="custom-thumb-active1" thumb-class="custom-thumb1" :checked="data.checked" @change="switch3Change" />
+        <switch id="dark" :class="{ 'dark-class': !data.darkChecked2 }" switch-active-class="custom-switch-active" thumb-active-class="custom-thumb-active1" thumb-class="custom-thumb1" @change="switch4Change" />
+        <!-- #endif -->
+      </view>
+      <view class="uni-title">禁用样式</view>
+      <view class="flex-row">
+        <switch class="switch-checked" :checked="data.checked" :disabled="true" />
+        <switch :disabled="true" />
+      </view>
+      <view class="uni-title">不同颜色和尺寸的switch</view>
+      <view class="flex-row">
+        <!-- #ifndef VUE3-VAPOR -->
+        <switch class="switch-color-checked" :color="data.color" style="transform:scale(0.7)" :checked="true" />
+        <switch class="switch-color" :color="data.color" style="transform:scale(0.7)" />
+        <!-- #endif -->
+        <!-- #ifdef VUE3-VAPOR -->
+        <switch switch-active-class="custom-switch-active-color" style="transform:scale(0.7)" :checked="true" />
+        <switch switch-active-class="custom-switch-active-color" style="transform:scale(0.7)" />
+        <!-- #endif -->
+      </view>
+      <view class="uni-title">推荐展示样式</view>
+    </view>
+    <view class="uni-list">
+      <view class="uni-list-cell uni-list-cell-padding">
+        <view class="uni-list-cell-db">开启中</view>
+        <switch :checked="true" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-padding">
+        <view class="uni-list-cell-db">关闭</view>
+        <switch />
+      </view>
+
+      <!-- #ifdef VUE3-VAPOR -->
+      <view class="uni-list-cell uni-list-cell-padding">
+        <view class="uni-list-cell-db">自定义 thumb 样式</view>
+        <switch thumb-class="custom-thumb" thumb-active-class="custom-thumb-active"  />
+      </view>
+      <!-- #endif -->
+    </view>
+
+    <navigator class="uni-common-mb" url="/pages/template/switch-100/switch-100">
+      <button>组件性能测试</button>
+    </navigator>
+  </view>
+</template>
+
+<script setup lang="uts">
+  type DataType = {
+    title: string;
+    checked: boolean;
+    // #ifdef VUE3-VAPOR
+    darkChecked1: boolean;
+    darkChecked2: boolean;
+    // #endif
+    color: string;
+    clickCheckedValue: boolean;
+    testVerifyEvent: boolean;
+  }
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    title: 'switch 开关',
+    checked: true,
+    // #ifdef VUE3-VAPOR
+    darkChecked1: true,
+    darkChecked2: false,
+    // #endif
+    color: '#FFCC33',
+    clickCheckedValue: true,
+    testVerifyEvent: false
+  } as DataType)
+
+  const switch1Change = (e: UniSwitchChangeEvent) => {
+    data.clickCheckedValue = e.detail.value
+    console.log('switch1 发生 change 事件，携带值为', e.detail.value)
+    // 仅测试
+    data.testVerifyEvent = (e.type == 'change' && (e.target?.tagName ?? '') == "SWITCH")
+  }
+
+  const switch2Change = (e: UniSwitchChangeEvent) => {
+    console.log('switch2 发生 change 事件，携带值为', e.detail.value)
+  }
+
+  // #ifdef VUE3-VAPOR
+  const switch3Change = (e: UniSwitchChangeEvent) => {
+    data.darkChecked1 = e.detail.value
+  }
+
+  const switch4Change = (e: UniSwitchChangeEvent) => {
+    data.darkChecked2 = e.detail.value
+  }
+  // #endif
+
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+  .flex-row {
+    flex-direction: row;
+  }
+
+  /* #ifdef VUE3-VAPOR */
+  .dark-class {
+    background-color: #1f1f1f;
+    border-color: #1f1f1f;
+  }
+
+  .custom-switch-active {
+    background-color: #007aff;
+    border-color: #007aff;
+  }
+
+  .custom-switch-active-color {
+    background-color: #FFCC33;
+    border-color: #FFCC33;
+  }
+
+  .custom-thumb-active1 {
+    background-color: #ffffff;
+  }
+
+  .custom-thumb {
+    background-color: #f0f0f0;
+  }
+
+  .custom-thumb {
+    background-color: #007aff;
+  }
+
+  .custom-thumb-active {
+    background-color: #e64340;
+  }
+  /* #endif */
+</style>

@@ -1,0 +1,48 @@
+<template>
+  <list-view @scrolltolower="onScrollToLower" style="flex: 1;">
+    <list-item
+      v-for="item in list"
+      :key="item.id"
+      :type="item.type"
+    >
+      <view style="padding: 10px; border-bottom: 1px solid #eee;">
+        <text style="font-weight: bold;">name: {{ item.name }} type: {{ item.type }}</text>
+        <view v-if="item.type == 0" style="flex-direction: row;">
+          <text v-for="star in item.stars" :key="star">★</text>
+        </view>
+        <text v-else-if="item.type == 1">Stars: {{ item.stars }}</text>
+      </view>
+    </list-item>
+  </list-view>
+</template>
+
+<script setup>
+  type Item = {
+    id: number
+    name: string
+    type: number
+    stars: number
+  }
+  const list = ref<Item[]>([])
+  function generateList() {
+    const types = [1, 2, 3]
+    const startIndex = list.value.length + 1
+    for (let i = 0; i < 50; i++) {
+      const id = startIndex + i
+      list.value.push({
+        id,
+        name: `Item ${id}`,
+        stars: (id - 1) % 5 + 1,
+        type: id % 2,
+      })
+    }
+  }
+  generateList()
+  function onScrollToLower() {
+    generateList()
+  }
+</script>
+
+<style>
+
+</style>

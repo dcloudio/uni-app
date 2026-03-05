@@ -1,0 +1,181 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view>
+      <button @click="JsOnUts">1. js监听uts消息</button>
+      <button @click="emitFromUts">2. uts中触发监听</button>
+      <button @click="emitUtsMessageUTSObject">2.1 uts中触发监听(UTSJSONObject)</button>
+      <button @click="emitUtsMessages">2.2 uts中触发监听(多个参数)</button>
+      <button @click="emitUtsMessageNoArgument">2.3 uts中触发监听(无参数)</button>
+      <button @click="offUts">取消uts消息监听</button>
+
+      <button @click="UtsOnJS">1. uts监听js消息</button>
+      <button @click="emitFormJS">2 .js中触发监听</button>
+      <button @click="emitFormJSObject">2.1 js中触发监听(UTSJSONObject)</button>
+      <button @click="offJs">取消js消息监听</button>
+      <button @click="clear">清空消息</button>
+
+      <view class="box">
+        <view>收到的消息：</view>
+        <view>
+          <view v-for="(item, index) in data.log" :key="index">{{ item }}</view>
+        </view>
+      </view>
+    </view>
+    <button @click="testAll">test all</button>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  
+  import {
+    onJsMessage,
+    offJsMessage,
+    emitUtsMessage,
+    emitUtsMessageUTSObject,
+    emitUtsMessageNoArgument,
+    emitUtsMessages,
+    getMessageChannel,
+    getRevJsMessage,
+    clearJsMessage,
+    onJsMessageOnce,
+  } from "@/uni_modules/uts-eventbus"
+
+  type DataType = {
+    log: string[],
+  }
+
+  const data = reactive({
+    log: [] as string[],
+  } as DataType)
+
+  function fn(res : any, res2 : any) {
+    if (res != null){
+      console.log("on rev: " + JSON.stringify(res))
+      data.log.push(res)
+    }
+    if (res2 != null) {
+      console.log("on rev: " + JSON.stringify(res2))
+      data.log.push(res2)
+    }
+  }
+
+  function fn2(res : string) {
+    data.log.push(res)
+  }
+
+  function JsOnUts() {
+    uni.$off(getMessageChannel(), fn)
+    uni.$on(getMessageChannel(), fn)
+  }
+
+  function offUts() {
+    uni.$off(getMessageChannel(), fn)
+  }
+
+  function emitFromUts() {
+    emitUtsMessage("emit form uts")
+  }
+
+  function emitUtsMessageUTSObject() {
+    emitUtsMessageUTSObject({
+        latitude: 39.951028,
+        longitude: 116.354662,
+        name: '金运大厦',
+        address: '西直门北大街xx号'
+      })
+  }
+
+  function emitUtsMessages() {
+    emitUtsMessages({
+        latitude: 39.951028,
+        longitude: 116.354662,
+        name: '金运大厦',
+        address: '西直门北大街xx号'
+      }, "emit form uts")
+  }
+
+  function emitUtsMessageNoArgument() {
+    emitUtsMessageNoArgument()
+  }
+
+  function JsOnUtsOnce() {
+    uni.$once(getMessageChannel(), fn2)
+  }
+
+  function UtsOnJS() {
+    onJsMessage("JsMessage")
+  }
+
+  function UtsOnJSOnce() {
+    onJsMessageOnce("JsMessage")
+  }
+
+  function offJs() {
+    offJsMessage("JsMessage")
+  }
+
+  function emitFormJS() {
+    clearJsMessage()
+    uni.$emit("JsMessage", "emit form js")
+    let msg = getRevJsMessage()
+    console.log("message:"+msg)
+    if (msg && msg.length){
+      data.log.push(msg)
+    }
+  }
+
+  function emitFormJSObject() {
+    clearJsMessage()
+    uni.$emit("JsMessage", {
+        latitude: 39.951028,
+        longitude: 116.354662,
+        name: '金运大厦form js',
+        address: '西直门北大街xx号 from js'
+      })
+    let msg = getRevJsMessage()
+    console.log("message:"+msg)
+    if (msg && msg.length){
+      data.log.push(msg)
+    }
+  }
+
+  function clear() {
+    clearJsMessage()
+    data.log.length = 0
+  }
+
+  function testAll() {
+  	JsOnUts();
+  	emitFromUts();
+  	UtsOnJS();
+  	emitFormJS();
+  }
+
+  defineExpose({
+    data,
+    clear,
+    JsOnUts,
+    emitFromUts,
+    emitUtsMessageUTSObject,
+    emitUtsMessages,
+    emitUtsMessageNoArgument,
+    offUts,
+    JsOnUtsOnce,
+    UtsOnJS,
+    UtsOnJSOnce,
+    offJs,
+    emitFormJS,
+    emitFormJSObject,
+    testAll
+  })
+</script>
+
+<style>
+  .box {
+    padding: 10px;
+  }
+</style>

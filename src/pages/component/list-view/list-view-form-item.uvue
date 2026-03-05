@@ -1,0 +1,79 @@
+<template>
+  <view style="flex: 1;">
+    <list-view style="flex: 1;" @scrolltolower="loadmore" :refresher-enabled="true" @refresherrefresh="refresh">
+      <list-item v-for="(item, index) in items" :key="item.id" style="padding: 10px; border-bottom: 1px solid #eee;">
+        <view>
+          <text>{{ item.name }}</text>
+        </view>
+        <view style="margin-top: 10px;">
+          <checkbox-group @change="checkboxChange(index)">
+            <checkbox :checked="item.checkboxChecked" />
+          </checkbox-group>
+        </view>
+        <view style="margin-top: 10px;">
+          <switch :checked="item.switchChecked" @change="switchChange(index)" />
+        </view>
+        <view style="margin-top: 10px;">
+          <input v-model="item.inputValue" placeholder="Input something..." style="border: 1px solid #ccc;" />
+        </view>
+      </list-item>
+    </list-view>
+  </view>
+</template>
+
+<script setup>
+  type Item = {
+    id : number,
+    name : string,
+    checkboxChecked : boolean,
+    switchChecked : boolean,
+    inputValue : string
+  }
+  const items = ref<Item[]>([])
+  const page = ref(1)
+  const pageSize = 20
+  const total = 100
+  async function loadData (isRefresh: boolean = false) {
+    if (isRefresh) {
+      page.value = 1
+      items.value = []
+    }
+    const newItems : Item[] = []
+    for (let i = 0; i < pageSize; i++) {
+      const id = (page.value - 1) * pageSize + i + 1
+      newItems.push({
+        id,
+        name: `Item ${id}`,
+        checkboxChecked: false,
+        switchChecked: false,
+        inputValue: `Item ${id}`
+      })
+    }
+    items.value = [...items.value, ...newItems]
+    page.value++
+  }
+  async function loadmore() {
+    if (items.value.length < total) {
+      await loadData(false)
+    }
+  }
+  async function refresh() {
+    await loadData(true)
+  }
+
+  function checkboxChange(index : number) {
+    items.value[index].checkboxChecked = !items.value[index].checkboxChecked
+  }
+
+  function switchChange(index : number) {
+    items.value[index].switchChecked = !items.value[index].switchChecked
+  }
+
+  onMounted(() => {
+    loadData(false)
+  })
+</script>
+
+<style>
+
+</style>

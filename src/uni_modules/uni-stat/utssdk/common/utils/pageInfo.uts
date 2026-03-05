@@ -1,0 +1,553 @@
+import { OnLaunchOptionsWithCst, RouteParams, StatDefault, ReportErrorCode } from '../../interface.uts'
+import { STAT_VERSION, sys, device, sysAppBase, Config } from '../config.uts'
+// import Config from '../config.uts'
+import { get_time } from './pageTime.uts'
+import { dbGet, dbSet } from './db.uts'
+import { Serialize, IsNumber } from './index.uts'
+
+const APPID = sys.appId
+const RUNTIME_VERSION = sys.appVersion
+
+/**
+ * 获取uuid
+ */
+export const get_uuid = () : string => {
+	// 有可能不存在 deviceId（一般不存在就是出bug了），就自己生成一个
+	// 目前 deviceId 肯定存在所以不用生成
+	// const uuid : string = sys.deviceId ?? getUuid()
+	return sys.deviceId
+}
+
+/**
+ * 获取老版的 deviceid ,兼容以前的错误 deviceid
+ */
+export const get_odid = () : string => {
+	// let odid : string
+	// if (get_platform_name() === 'n') {
+	// 	try {
+	// 		odid = plus.device.uuid
+	// 	} catch (e) {
+	// 		odid = ''
+	// 	}
+	// 	return odid
+	// }
+	// odid = sys.deviceId ?? getUuid()
+	// TODO 需要获取老版本的uuid ，目前无法获取，只返回 deviceId
+	return sys.deviceId
+}
+
+
+
+/**
+ * 获取当前平台
+ * 移动端  : 'n',
+ * h5	  : 'h5',
+ * 微信	  : 'wx',
+ * 阿里	  : 'ali',
+ * 百度	  : 'bd',
+ * 头条	  : 'tt',
+ * qq	  : 'qq',
+ * 快应用  : 'qn',
+ * 快手	  : 'ks',
+ * 飞书	  : 'lark',
+ * 快应用  : 'qw',
+ * 钉钉	  : 'dt'
+ */
+export const get_platform_name = () : string => {
+
+	let platformList = {
+		'app': 'n',
+		'app-plus': 'n',
+		'h5': 'h5',
+		'web': 'web',
+		'mp-weixin': 'wx',
+		'mp-baidu': 'bd',
+		'mp-toutiao': 'tt',
+		'mp-qq': 'qq',
+		'quickapp-native': 'qn',
+		'mp-kuaishou': 'ks',
+		'mp-lark': 'lark',
+		'quickapp-webview': 'qw',
+	}
+
+	// 苹果审核代码中禁止出现 alipay 字样 ，需要特殊处理一下
+	const aliArr = ['y', 'a', 'p', 'mp-ali']
+	const aliKey = aliArr.reverse().join('')
+	platformList[aliKey] = 'ali'
+
+	const platform = sys.uniPlatform
+	// TODO 兼容子平台
+	// if (platformList[process.env.VUE_APP_PLATFORM] === 'ali') {
+	// 	if (my && my.env) {
+	// 		const clientName = my.env.clientName
+	// 		if (clientName === 'ap') return 'ali'
+	// 		if (clientName === 'dingtalk') return 'dt'
+	// 		// TODO 缺少 ali 下的其他平台
+	// 	}
+	// }
+	return platformList[platform] as string
+}
+
+/**
+ * 获取原生包名，或小程序 appid
+ */
+export const get_pack_name = () : string => {
+	let packName = ''
+	if (get_platform_name() === 'n') {
+		if (sys.osName == 'android') {
+			packName = sysAppBase.packageName ?? ''
+		}
+		if (sys.osName == 'ios') {
+			packName = sysAppBase.bundleId ?? ''
+		}
+	}
+	return packName
+}
+
+/**
+ * 应用版本
+ */
+export const get_version = () : string => {
+	return RUNTIME_VERSION
+}
+
+/**
+ * 获取渠道
+ */
+export const get_channel = () : string => {
+	const platformName = get_platform_name()
+	let channel : string = ''
+	if (platformName === 'n') {
+		channel = sysAppBase.channel ?? ''
+	}
+	// if (platformName === 'wx') {
+	//   // TODO 需要调研小程序二维码渠道如何获取;
+	// }
+	return channel
+}
+
+/**
+ * 获取小程序场景值
+ */
+export const get_scene = (options : OnLaunchOptionsWithCst) : number => {
+	// const platformName = get_platform_name()
+	let scene = 1001
+	if (options.scene != null) {
+		return options.scene ?? 1001
+	}
+	// if (platformName == 'wx') {
+	// 	// @ts-ignore
+	// 	scene = uni.getLaunchOptionsSync()?.scene ?? 1001
+	// }
+	return scene
+}
+
+/**
+ * 是否获取 page 页面
+ * @param {VueComponent} appInstance 页面实例
+ */
+// @ts-ignore
+export const is_page = (appInstance : ComponentPublicInstance) : Boolean => {
+	// #ifdef WEB || APP-IOS || MP-WEIXIN
+	const type = appInstance?.$mpType ?? 'page'
+	return type == 'page' ? true : false
+	// #endif
+	// #ifndef WEB || APP-IOS || MP-WEIXIN
+	// 其他平台没有 $mpType ，只有页面触发
+	return true
+	// #endif
+}
+
+
+/**
+ * 获取页面标题
+ * @param {String} routepath 页面路由
+ */
+export const get_page_name = (routepath : string) : string => {
+	let page = get_page_vm()
+	if (page == null) return ''
+	let route : string
+	// #ifdef MP-WEIXIN
+	route = (page.$scope && page.$scope.route) ?? ""
+	// #endif
+	// #ifndef MP-WEIXIN
+	route = page.route
+	// #endif
+
+	if (route != routepath) {
+		const pages = getCurrentPages()
+		// 如果传入路由与当前页面不同，则从页面栈找一个，如果找不到返回空
+		let page_now = pages.find((p) : boolean => p.route == routepath)
+		if (page_now == null) {
+			return ''
+		}
+		// @ts-ignore
+		page = page_now.vm!
+	}
+	let titleText : string
+	// #ifdef MP-WEIXIN
+	// @ts-ignore
+	const title_json = process.env.UNI_STAT_TITLE_JSON
+	titleText = title_json[route] ?? ''
+	// #endif
+	// #ifndef MP-WEIXIN
+	// @ts-ignore
+	const pageStyle = (page.$page as UniPage).getPageStyle()
+	titleText = (pageStyle['navigationBarTitleText'] as string)
+	// #endif
+	return titleText as string
+
+}
+
+/**
+ * 获取页面实例
+ */
+export const get_page_vm = () : Page | null => {
+	let pages = getCurrentPages()
+	if (pages.length == 0) {
+		return null
+	}
+	let page = pages[pages.length - 1]
+	// TODO 正常来说，调用当前方法的地方只在 生命周期内，数组内最少会有一个页面，所以理论上是不存在获取不到的情况的
+	// @ts-ignore
+	return page.vm
+}
+
+
+/**
+ * 获取页面url，不包含参数
+ * @param {ComponentPublicInstance} page 页面实例
+ */
+export function get_route(page : Page | null = null) : RouteParams {
+	let _self = page ?? get_page_vm()
+
+	if (_self == null) {
+		const data : RouteParams = {
+			path: '',
+			fullpath: ''
+		}
+		return data
+	}
+	let url_params : string
+	let options : any
+	// #ifdef MP-WEIXIN
+	options = _self.$scope.options
+	// #endif
+	// #ifndef MP-WEIXIN
+	options = _self.options
+	// #endif
+	// TODO 条件编译处理参数问题，安卓上 options返回的是map，需要处理成 utsobject
+	// #ifdef APP-ANDROID
+	const opts = new UTSJSONObject(options)
+	// TODO 上报页面参数需要处理
+	url_params = Serialize(opts)
+	// #endif
+	// #ifndef APP-ANDROID
+	// @ts-ignore
+	url_params = Serialize(options)
+	// #endif
+	let params = ''
+	// 如果参数只有 ？则说明没有参数
+	if (url_params != '?') {
+		params = url_params
+	}
+
+	// 兼容不同小程序下的不同取值
+	let route : string
+
+	// #ifdef MP-WEIXIN
+	route = (_self.$scope && _self.$scope.route) ?? ""
+	// #endif
+	// #ifndef MP-WEIXIN
+	route = _self.route
+	// #endif
+
+	const data : RouteParams = {
+		path: route,
+		fullpath: route + params
+	}
+	return data
+}
+
+
+/**
+ * 获取页面url, 包含参数 ,暂时不用，合并到 get_route
+ * @param {ComponentPublicInstance} page 页面实例
+ */
+export function get_page_route(page : Page | null = null) : string {
+	let _self = page ?? get_page_vm()
+	let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE')
+	if (_self == null) {
+		return lastPageRoute ?? ''
+	}
+	// 如果找不到 fullPath 就取 route 的值
+	// TODO 取完整路径，目前最新为 optiosn 为携带参数，需要手动序列化
+	// return page.fullPath === '/' ? page.route : page.fullPath || page.route
+	return _self.route
+}
+
+/**
+ * 是否上报页面数据
+ * @returns
+ */
+export const is_page_report = () : boolean => {
+	const uniStatConfig = Config.getOptions();
+	const collectItems = uniStatConfig.collectItems;
+	if (collectItems != null) {
+		const statPageLog = collectItems.uniStatPageLog
+		if (statPageLog == null) return true
+		return typeof statPageLog == 'boolean' ? statPageLog : true
+	}
+	return true
+}
+
+
+/**
+ * 是否已处理设备 DeviceId
+ * 如果值为 1 则表示已处理
+ */
+const IS_HANDLE_DEVECE_ID = 'is_handle_device_id'
+export const is_handle_device = () : boolean => {
+	let isHandleDevice = dbGet(IS_HANDLE_DEVECE_ID) ?? ''
+	dbSet(IS_HANDLE_DEVECE_ID, '1')
+	return isHandleDevice === '1'
+}
+
+/**
+ * 获取网络状态
+ */
+export const get_net = () : Promise<string> => {
+	return new Promise((resolve, reject) => {
+		uni.getNetworkType({
+			success(e : GetNetworkTypeSuccess) {
+				const net = e.networkType
+				resolve(net)
+			}, fail() {
+				reject('')
+			}
+		})
+	})
+}
+
+
+/**
+ * 获取上报数据默认值
+ */
+export const get_default_data = () : StatDefault => {
+	let isRoot : number
+	if (device.isRoot == true) {
+		isRoot = 1
+	} else {
+		isRoot = 0
+	}
+
+	let statData : StatDefault = {
+		uuid: get_uuid(),
+		ak: APPID,
+		p: sys.osName == 'android' ? 'a' : 'i',
+		ut: get_platform_name(),
+		mpn: get_pack_name(),
+		usv: STAT_VERSION,
+		v: RUNTIME_VERSION,
+		ch: get_channel(),
+		cn: '',
+		pn: get_pack_name(),
+		ct: '',
+		t: get_time(),
+		tt: '',
+		brand: sys.deviceBrand,
+		md: sys.deviceModel,
+		sv: sys.osVersion.replace(/(Android|iOS)\s/, ''),
+		mpsdk: sys.SDKVersion,
+		mpv: sys.uniCompilerVersionCode.toString(),
+		// mpv: '',
+		lang: sys.osLanguage,
+		pr: sys.devicePixelRatio,
+		ww: sys.windowWidth,
+		wh: sys.windowHeight,
+		sw: sys.screenWidth,
+		sh: sys.screenHeight,
+		lat: '',
+		lng: '',
+		net: '',
+		odid: '',
+		pv: sysAppBase.appVersion,
+		root: isRoot
+	}
+	return statData
+}
+
+/**
+ * 获取上报时间间隔
+ * @param {*} defaultTime 默认上报间隔时间 单位s
+ */
+export const get_report_Interval = (defaultTime : number) : number => {
+	const uniStatConfig = Config.getOptions()
+	let time = uniStatConfig.reportInterval
+	// let reg = /(^[1-9]\d*$)/
+	// 如果不是整数，则默认为上报间隔时间
+	// if (!reg.test(time)) return defaultTime
+	if (!IsNumber(time)) return defaultTime
+
+	// 如果上报时间配置为0 相当于立即上报
+	if (time == 0) return 0
+	// time = time ?? defaultTime
+	return time as number
+}
+
+/**
+ * 获取uniCloud服务空间配置
+ * @returns {Object}
+ */
+export const uni_cloud_config = () : UniCloudInitOptions | null => {
+	// TODO 当前版本暂时不使用
+	// return process.env.UNI_STAT_UNI_CLOUD || {}
+	return null
+}
+
+/**
+ * 获取服务空间
+ * @param {*} config
+ * @returns
+ */
+export const get_space = (config : UniCloudInitOptions) : UniCloudInitOptions | null => {
+	const uniCloudConfig = uni_cloud_config()
+	if (uniCloudConfig == null) {
+		// #ifdef APP-ANDROID
+		if (config.spaceId != '') {
+			return config
+		}
+		// #endif
+		// #ifndef APP-ANDROID
+		if (config?.spaceId != '') {
+			return config
+		}
+		// #endif
+
+		return null
+	}
+
+	let spaceId = uniCloudConfig.spaceId
+	let provider = uniCloudConfig.provider
+	let clientSecret = uniCloudConfig.clientSecret
+	let secretKey = uniCloudConfig.secretKey
+	let accessKey = uniCloudConfig.accessKey
+
+	const space_type = ['tcb', 'tencent', 'aliyun', 'alipay']
+	// @ts-ignore
+	const is_space_id = spaceId != ''
+	const is_provider = space_type.indexOf(provider) != -1
+	const is_aliyun = provider == 'aliyun' && is_space_id && clientSecret != null
+	const is_tcb = (provider == 'tcb' || provider === 'tencent') && is_space_id
+	const is_alipay = provider == 'alipay' && is_space_id && secretKey != null && accessKey != null
+
+	if (is_provider && (is_aliyun || is_tcb || is_alipay)) {
+		return uniCloudConfig
+	}
+
+	return null
+}
+
+/**
+ * 获取隐私协议配置
+ */
+export const is_push_clientid = () : boolean => {
+	const uniStatConfig = Config.getOptions()
+	const collectItems = uniStatConfig.collectItems
+	if (collectItems != null) {
+		const ClientID = collectItems.uniPushClientID ?? false
+		return typeof ClientID == 'boolean' ? ClientID : false
+	}
+	return false
+}
+
+/**
+ * 获取崩溃日志文件地址
+ */
+export const get_crash_logs = (fn : (value : string[]) => void) => {
+	const crash_data = uni.__getAppCrashInfo()
+	if (crash_data != null && crash_data.length > 0) {
+		const sysManager = uni.getFileSystemManager();
+		const reportLogs : Promise<string>[] = []
+		for (let i = 0; i < crash_data.length; i++) {
+			const item = crash_data[i];
+			let file_text : string;
+			// #ifdef APP-ANDROID
+			file_text = item.get('file') as string
+			// #endif
+			// #ifdef APP-IOS
+			file_text = item.file as string
+			// #endif
+
+			const logPromise = new Promise<string>((resolve, reject) => {
+				sysManager.readFile({
+					filePath: file_text,
+					encoding: 'utf-8',
+					success: (res) => {
+						const crash_text = res.data as string
+						resolve(crash_text); // 成功上报后 resolve
+					},
+					fail: (err : any) => {
+						reject(err); // 读取文件失败时 reject
+					}
+				});
+			});
+
+			reportLogs.push(logPromise);
+		}
+
+		Promise.all(reportLogs)
+			.then((res) => {
+				fn(res)
+			})
+			.catch((err) => {
+				console.log('Errorlogs:', err);
+			});
+	}
+}
+
+
+/**
+ * 自定义事件参数校验
+ */
+export const calibration = (eventName : string, options : any | null) : ReportErrorCode | null => {
+	// login 、 share 、pay_success 、pay_fail 、register 、title
+	if (eventName == '') {
+		// console.error(`uni.report Missing [eventName] parameter`)
+		return 61003
+	}
+	if (typeof eventName != 'string') {
+		// console.error(
+		// 	`uni.report [eventName] Parameter type error, it can only be of type String`
+		// )
+		return 61004
+	}
+	if (eventName.length > 255) {
+		// console.error(
+		// 	`uni.report [eventName] Parameter length cannot be greater than 255`
+		// )
+		return 61005
+	}
+
+	if (typeof options != 'string' && typeof options != 'object') {
+		// console.error(
+		// 	'uni.report [options] Parameter type error, Only supports String or Object type'
+		// )
+		return 61006
+	}
+
+	if (typeof options == 'string' && (options as string).length > 255) {
+		// console.error(
+		// 	`uni.report [options] Parameter length cannot be greater than 255`
+		// )
+		return 61007
+	}
+
+	if (eventName == 'title' && typeof options != 'string') {
+		// console.error(
+		// 	`uni.report [eventName] When the parameter is title, the [options] parameter can only be of type String`
+		// )
+		return 61008
+	}
+	return null
+}

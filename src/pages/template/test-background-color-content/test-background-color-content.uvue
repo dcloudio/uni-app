@@ -1,0 +1,16 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <view style="height: 3000px; border: dashed 10px #000000;"></view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+</script>
+
+<style>
+
+</style>

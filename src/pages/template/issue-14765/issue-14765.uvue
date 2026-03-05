@@ -1,0 +1,55 @@
+<template>
+  <view>
+    <page-intro content="本页为 issue-14765 示例：Comp1、Comp2 子组件与 getElementById 等测试。"></page-intro>
+    <Comp1 :id="id1" @ready="onComp1Ready"></Comp1>
+    <Comp2 :id="id2"></Comp2>
+  </view>
+</template>
+
+<script setup lang="uts">
+
+import Comp1 from './Comp1.uvue'
+import Comp2 from './Comp2.uvue'
+
+const instance = getCurrentInstance()!.proxy!
+
+const id1 = ref('page-id-1')
+const id2 = ref('page-id-2')
+
+type DataType = {
+  testNode1: boolean,
+  testNode2: boolean,
+}
+
+const data = reactive({
+  testNode1: false,
+  testNode2: false,
+} as DataType)
+
+function onComp1Ready(testNode1Val: boolean) {
+  data.testNode1 = testNode1Val
+}
+
+onReady(() => {
+  uni.createSelectorQuery().in(instance).select('#page-id-2').boundingClientRect().exec((ret) => {
+    console.log(ret)
+    data.testNode2 = ret.length > 0
+    // #ifdef WEB || MP
+    data.testNode2 = data.testNode2 && ret[0] != null
+    // #endif
+    if(data.testNode2) {
+      console.log('Comp2测试符合预期')
+    } else {
+      console.error('Comp2测试不符合预期')
+    }
+  })
+})
+
+defineExpose({
+  data
+})
+</script>
+
+<style>
+
+</style>
