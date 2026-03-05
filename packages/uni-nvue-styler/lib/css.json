@@ -4234,6 +4234,7 @@
         "color",
         "gradient"
       ],
+      "description": "background 是一种 CSS 简写属性，用于一次性集中定义各种背景属性，包括 color, image, origin, size, repeat 等。",
       "syntax": "[ <bg-layer> , ]* <final-bg-layer>",
       "values": [
         {
@@ -4402,6 +4403,7 @@
     },
     {
       "name": "background-color",
+      "description": "background-color 属性用于设置元素的背景色，属性的值为颜色值或关键字\"transparent\"。",
       "restrictions": [
         "color"
       ],
@@ -4443,10 +4445,12 @@
       "restrictions": [
         "gradient"
       ],
+      "description": "background-image 属性用于为一个元素设置一个或者多个背景图像。",
       "syntax": "none | <bg-image>#",
       "values": [
         {
           "name": "linear-gradient",
+          "description": "使用由两种或多种颜色沿一条直线进行线性过渡的背景图像",
           "uniPlatform": {
             "app": {
               "android": {
@@ -4480,6 +4484,7 @@
         },
         {
           "name": "none",
+          "description": "表示无背景图",
           "uniPlatform": {
             "app": {
               "android": {
@@ -4548,10 +4553,12 @@
       "restrictions": [
         "enum"
       ],
+      "description": "background-clip 属性用于设置元素的背景（背景图片或颜色）是否延伸到边框区域、内边距区域、内容区域下面。",
       "syntax": "<box>#",
       "values": [
         {
           "name": "border-box",
+          "description": "背景延伸到边框区域，被边框覆盖",
           "uniPlatform": {
             "app": {
               "android": {
@@ -4585,6 +4592,7 @@
         },
         {
           "name": "padding-box",
+          "description": "背景延伸到内边距（padding）区域，不会绘制到边框区域",
           "uniPlatform": {
             "app": {
               "android": {
@@ -4618,6 +4626,7 @@
         },
         {
           "name": "content-box",
+          "description": "背景仅绘制到内容区（content box）区域",
           "uniPlatform": {
             "app": {
               "android": {
