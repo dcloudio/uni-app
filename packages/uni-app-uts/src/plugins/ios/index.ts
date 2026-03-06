@@ -27,6 +27,7 @@ import { uniAppPagesPlugin } from '../js/pagesJson'
 import { replaceExtApiPagePaths } from '../js/extApiPages'
 import { uniAppCssPrePlugin } from '../dom2/css'
 import { SHARED_DATA_LIB_NAME } from '../utils'
+import { uniAppXIOSEnginePlugin } from './plugin'
 
 export function init() {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
@@ -75,7 +76,7 @@ export function init() {
         },
       },
     }),
-    ...(isDom2 ? [uniSharedDataPlugin()] : []),
+    ...(isDom2 ? [uniSharedDataPlugin(), uniAppXIOSEnginePlugin()] : []),
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
       ? [replaceExtApiPagePaths()]
       : []),

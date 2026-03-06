@@ -54,18 +54,13 @@ export function initModuleAlias() {
   }
 
   if (process.env.UNI_APP_X_DOM2 === 'true') {
-    if (
-      // 该代码执行较早，不能使用UNI_UTS_PLATFORM
-      process.env.UNI_PLATFORM === 'app-harmony' ||
-      process.env.UNI_APP_PLATFORM
-    ) {
-      if (process.env.UNI_OUTPUT_DIR) {
-        if (!process.env.UNI_APP_X_DOM2_CPP_DIR) {
-          process.env.UNI_APP_X_DOM2_CPP_DIR = path.resolve(
-            process.env.UNI_OUTPUT_DIR,
-            'cpp'
-          )
-        }
+    if (process.env.UNI_APP_PLATFORM && process.env.UNI_OUTPUT_DIR) {
+      if (!process.env.UNI_APP_X_DOM2_CPP_DIR) {
+        const baseDir =
+          process.env.UNI_PLATFORM === 'app-harmony'
+            ? process.env.UNI_OUTPUT_DIR
+            : process.env.UNI_APP_X_CACHE_DIR || process.env.UNI_OUTPUT_DIR
+        process.env.UNI_APP_X_DOM2_CPP_DIR = path.resolve(baseDir, 'cpp')
       }
     }
   }
