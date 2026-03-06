@@ -652,7 +652,7 @@ function invokeHook(vm, name, args) {
   }
   const hooks = vm.$[name];
   if (name === uniShared.ON_BACK_PRESS) {
-    return hooks && uniShared.invokeArrayFnsUntilTrue(hooks, args);
+    return hooks && uniShared.invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true);
   }
   return hooks && uniShared.invokeArrayFns(hooks, args);
 }

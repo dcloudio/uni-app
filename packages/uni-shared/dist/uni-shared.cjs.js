@@ -1343,15 +1343,8 @@ const invokeArrayFns = (fns, arg) => {
     }
     return ret;
 };
-/** 任一回调函数返回 true 则返回 true，否则返回 false */
-const invokeArrayFnsUntilTrue = (fns, arg) => {
-    for (let i = 0; i < fns.length; i++) {
-        const ret = fns[i](arg);
-        if (ret === true) {
-            return true;
-        }
-    }
-    return false;
+const invokeArrayFnsWithResults = (fns, arg) => {
+    return fns.map((fn) => fn(arg));
 };
 function updateElementStyle(element, styles) {
     for (const attrName in styles) {
@@ -2781,7 +2774,7 @@ exports.getPartClass = getPartClass;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
-exports.invokeArrayFnsUntilTrue = invokeArrayFnsUntilTrue;
+exports.invokeArrayFnsWithResults = invokeArrayFnsWithResults;
 exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
 exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
 exports.isAppHarmonyUVueNativeTag = isAppHarmonyUVueNativeTag;
