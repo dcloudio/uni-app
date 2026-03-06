@@ -206,7 +206,7 @@ arkUI版本，需要自行编译原始工程。
 - slide组件：拖动100个slider，流畅丝滑
 - <!-- 占位video-->
 - loading组件：屏幕上同时旋转100个loading不掉帧（录屏后从120掉帧到60）
-- <!-- 占位video-->
+- [](https://youtube.com/shorts/OKjrnNoJoJo?feature=share)
 - canvas组件：屏幕上同时移动数百个小球不掉帧
 - <!-- 占位video-->
 - 众多表单组件均有100或200个创建速度测试监控。hello uni-app x 模板中还提供了日历、竖滑视频、侧滑删除长列表、ai chat的流式打字机等性能考验示例
@@ -270,5 +270,6 @@ arkUI版本，需要自行编译原始工程。
 |原生compose	ui			|673.2											|
 |原生compose ui aot	|544.2											|
 |uni-app x 蒸汽模式	|224												|
+
 
 也就是`uni-app x蒸汽模式`，作为跨平台开发框架，实现了业内期盼已久的梦想：**即跨平台，又比原生性能更高**。
