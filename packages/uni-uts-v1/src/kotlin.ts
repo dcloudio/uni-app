@@ -12,7 +12,6 @@ import type {
 import { get } from 'android-versions'
 import { normalizePath, parseJson, resolveSourceMapPath } from './shared'
 import {
-  type CompilerServer,
   type RunDevOptions,
   type RunOptions,
   type RunProdOptions,
@@ -21,7 +20,7 @@ import {
   copyPlatformNativeLanguageFiles,
   genComponentsCode,
   genUTSPlatformResource,
-  getCompilerServer,
+  getKotlinCompilerServer,
   getUTSCompiler,
   isColorSupported,
   isEnableGenericsParameterDefaults,
@@ -52,7 +51,7 @@ import {
 import { uvueOutDir } from './uvue'
 import { storeIndexKt } from './manifest/dex'
 
-export interface KotlinCompilerServer extends CompilerServer {
+export interface KotlinCompilerServer {
   getKotlincHome(): string
   getDefaultJar(arg?: any): string[]
   getCompilerJar?: (userJars: string[], version?: number) => string[]
@@ -278,9 +277,7 @@ export async function runKotlinDev(
   })
   // 开发模式下，需要生成 dex
   if (fs.existsSync(kotlinFile)) {
-    const compilerServer = getCompilerServer<KotlinCompilerServer>(
-      'uniapp-runextension'
-    )
+    const compilerServer = getKotlinCompilerServer()
     if (!compilerServer) {
       throw new Error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
     }

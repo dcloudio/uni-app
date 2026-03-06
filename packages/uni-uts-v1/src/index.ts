@@ -62,7 +62,12 @@ import type { UniXCompilerOptions } from '../lib/uni-x/dist/compiler'
 export { syncUTSFiles } from './uni_modules'
 export * from './tsc'
 
-export { getPluginInjectApis, getPluginInjectComponents } from './utils'
+export {
+  getKotlinCompilerServer,
+  getSwiftCompilerServer,
+  getPluginInjectApis,
+  getPluginInjectComponents,
+} from './utils'
 
 export { parseExportIdentifiers, parseInterfaceTypes } from './code'
 

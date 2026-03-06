@@ -10,7 +10,6 @@ import type {
 
 import {
   D8_DEFAULT_ARGS,
-  type KotlinCompilerServer,
   type RunKotlinBuildResult,
   type RunKotlinDevResult,
   createStderrListener,
@@ -25,7 +24,7 @@ import {
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
   addPluginInjectComponents,
-  getCompilerServer,
+  getKotlinCompilerServer,
   getPluginInjectApis,
   getPluginInjectComponents,
   getUTSCompiler,
@@ -325,9 +324,7 @@ async function runKotlinDev(
         )
       }
     } else {
-      const compilerServer = getCompilerServer<KotlinCompilerServer>(
-        'uniapp-runextension'
-      )
+      const compilerServer = getKotlinCompilerServer()
       if (!compilerServer) {
         throw new Error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
       }
