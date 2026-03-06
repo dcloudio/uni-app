@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-i18n",
-  "version": "2.0.2-alpha-5000220260306002",
+  "version": "2.0.2-alpha-5000220260306003",
   "description": "@dcloudio/uni-i18n",
   "main": "./dist/uni-i18n.cjs.js",
   "module": "./dist/uni-i18n.es.js",
@@ -18,5 +18,5 @@
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
-  "gitHead": "dd2ad3f94cff4cdbdcbdc3d269a9d5a07143d322"
+  "gitHead": "01e12109fdaba1902b0de22ba419109c6c1ffb51"
 }
