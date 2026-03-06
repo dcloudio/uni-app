@@ -271,6 +271,7 @@
       }
     }
   },
+  "uni-editor": {},
   "uni-event": {
     "uni": {
       "$on": {
