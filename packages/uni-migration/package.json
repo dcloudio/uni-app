@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-migration",
-  "version": "2.0.2-alpha-5000220260306001",
+  "version": "2.0.2-alpha-5000220260306002",
   "description": "uni-app migration",
   "main": "lib/index.js",
   "repository": {
@@ -20,7 +20,7 @@
   },
   "author": "fxy060608",
   "license": "Apache-2.0",
-  "gitHead": "b5b875981f458a3e5a849df5e2ac9fadf82f5253",
+  "gitHead": "dd2ad3f94cff4cdbdcbdc3d269a9d5a07143d322",
   "dependencies": {
     "commander": "^4.0.1",
     "fs-extra": "^8.1.0",
