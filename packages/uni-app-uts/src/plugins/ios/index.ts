@@ -76,9 +76,10 @@ export function init() {
         },
       },
     }),
-    ...(isDom2 ? [uniSharedDataPlugin(), uniAppXIOSEnginePlugin()] : []),
+    ...(isDom2 ? [uniSharedDataPlugin()] : []),
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
       ? [replaceExtApiPagePaths()]
       : []),
+    ...(isDom2 && isNormalCompileTarget() ? [uniAppXIOSEnginePlugin()] : []),
   ]
 }
