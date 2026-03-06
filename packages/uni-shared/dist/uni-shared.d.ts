@@ -277,6 +277,8 @@ Partial<UniNodeJSON | UniNodeJSONMinify>?
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
+export declare const invokeArrayFnsWithResults: (fns: Function[], arg?: any) => any[];
+
 export declare const invokeCreateErrorHandler: (app: App_2, createErrorHandler: (app: App_2) => App_2['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | null, info: string) => void) | undefined;
 
 export declare function invokeCreateVueAppHook(app: App_2): void;

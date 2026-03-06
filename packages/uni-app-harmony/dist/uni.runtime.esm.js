@@ -1,4 +1,4 @@
-import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseNVueDataset, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, normalizeTabBarStyles, ON_KEYBOARD_HEIGHT_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, debounce, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_BACK_PRESS, OFF_THEME_CHANGE, onCreateVueApp, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE, ON_LAUNCH, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared';
+import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseNVueDataset, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, normalizeTabBarStyles, ON_KEYBOARD_HEIGHT_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, debounce, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM_DISTANCE, parseUrl, OFF_THEME_CHANGE, onCreateVueApp, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE, ON_LAUNCH, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared';
 export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared';
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 export { extend, hasOwn, isArray, isFunction, isPlainObject, isString } from '@vue/shared';
@@ -8099,6 +8099,11 @@ function invokeHook(vm, name, args) {
         }
     }
     const hooks = vm.$[name];
+    // 存在多个 onBackPress 生命周期时，任一个返回 true 则返回 true，否则返回 false
+    if (name === ON_BACK_PRESS) {
+        return (hooks &&
+            invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true));
+    }
     return hooks && invokeArrayFns(hooks, args);
 }
 

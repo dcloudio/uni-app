@@ -1343,6 +1343,9 @@ const invokeArrayFns = (fns, arg) => {
     }
     return ret;
 };
+const invokeArrayFnsWithResults = (fns, arg) => {
+    return fns.map((fn) => fn(arg));
+};
 function updateElementStyle(element, styles) {
     for (const attrName in styles) {
         element.style[attrName] = styles[attrName];
@@ -2771,6 +2774,7 @@ exports.getPartClass = getPartClass;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
+exports.invokeArrayFnsWithResults = invokeArrayFnsWithResults;
 exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
 exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
 exports.isAppHarmonyUVueNativeTag = isAppHarmonyUVueNativeTag;

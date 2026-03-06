@@ -458,6 +458,9 @@ function invokeHook(vm, name, args) {
     return;
   }
   const hooks = vm.$[name];
+  if (name === uniShared.ON_BACK_PRESS) {
+    return hooks && uniShared.invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true);
+  }
   return hooks && uniShared.invokeArrayFns(hooks, args);
 }
 function getRealRoute(fromRoute, toRoute) {
