@@ -3,7 +3,7 @@ import { isArray, isString, remove } from '@vue/shared'
 import {
   ON_BACK_PRESS,
   invokeArrayFns,
-  invokeArrayFnsUntilTrue,
+  invokeArrayFnsWithResults,
 } from '@dcloudio/uni-shared'
 import { getCurrentPageVm } from './page'
 import { get$pageByPage } from './util'
@@ -62,8 +62,12 @@ export function invokeHook(
   const hooks = (vm.$ as unknown as { [name: string]: Function[] })[
     name as string
   ]
+  // 存在多个 onBackPress 生命周期时，任一个返回 true 则返回 true，否则返回 false
   if (name === ON_BACK_PRESS) {
-    return hooks && invokeArrayFnsUntilTrue(hooks, args)
+    return (
+      hooks &&
+      invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true)
+    )
   }
   return hooks && invokeArrayFns(hooks, args)
 }

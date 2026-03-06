@@ -36,15 +36,8 @@ export const invokeArrayFns = (fns: Function[], arg?: any) => {
   return ret
 }
 
-/** 任一回调函数返回 true 则返回 true，否则返回 false */
-export const invokeArrayFnsUntilTrue = (fns: Function[], arg?: any) => {
-  for (let i = 0; i < fns.length; i++) {
-    const ret = fns[i](arg)
-    if (ret === true) {
-      return true
-    }
-  }
-  return false
+export const invokeArrayFnsWithResults = (fns: Function[], arg?: any) => {
+  return fns.map((fn) => fn(arg))
 }
 
 export function updateElementStyle(
