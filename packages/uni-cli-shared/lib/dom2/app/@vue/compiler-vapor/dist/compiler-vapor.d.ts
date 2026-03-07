@@ -22313,6 +22313,7 @@ export interface IRProp extends Omit<DirectiveTransformResult, "value"> {
   */
   sharedData?: {
     ident?: string;
+    classRef?: string;
   };
 }
 export declare enum IRDynamicPropsKind {

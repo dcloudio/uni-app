@@ -1,9 +1,10 @@
 import { AppContext, ComponentInternalOptions, ComponentPropsOptions, ComponentPublicInstance, CreateAppFunction, EffectScope, EmitFn, EmitsOptions, GenericAppContext, GenericComponentInstance, LifecycleHook, NormalizedPropsOptions, ObjectEmitsOptions, SuspenseBoundary, defineComponent, defineComponent as defineVaporSharedDataComponent, ref, shallowRef } from "@vue/runtime-core";
 import { hyphenate } from "@vue/shared";
 import { EffectScope as EffectScope$1, Reactive, Ref, ShallowRef } from "@vue/reactivity";
+import "@vue/compiler-core";
+import "@vue/compiler-sfc";
 import "@vue/compiler-dom";
 import "@vue/compiler-vapor";
-import "@vue/compiler-sfc";
 import { Element as Element$1 } from "@dcloudio/uni-app-x/types/native";
 export * from "@vue/runtime-x";
 
@@ -519,15 +520,15 @@ export declare function createUserClass<T>(): T;
 export declare function findVueInstanceByUid(uid: number): VaporSharedDataComponentInstance | null;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/dynamic/bridge/adapterContracts.d.ts
-export interface DynamicSharedScopeRef {
-  parent?: DynamicSharedScopeRef | null;
+export interface DynamicSharedDataInstanceRef {
+  parent?: DynamicSharedDataInstanceRef | null;
   values: unknown[];
   flags: Uint32Array;
 }
 export interface DynamicRuntimeAdapter<NodeRef = unknown> {
-  getField(scope: DynamicSharedScopeRef, fieldId: number): unknown;
-  setField(scope: DynamicSharedScopeRef, fieldId: number, value: unknown): void;
-  resetFlags(scope: DynamicSharedScopeRef): void;
+  getField(instance: DynamicSharedDataInstanceRef, fieldId: number): unknown;
+  setField(instance: DynamicSharedDataInstanceRef, fieldId: number, value: unknown): void;
+  resetFlags(instance: DynamicSharedDataInstanceRef): void;
   instantiateTemplate(templateId: number): NodeRef;
   child(node: NodeRef): NodeRef;
   next(node: NodeRef): NodeRef;
@@ -552,6 +553,27 @@ export interface DynamicVmInstruction {
   b: number;
   c: number;
 }
+export interface DynamicVmSharedField {
+  fieldId: number;
+  sharedDataClassId: number;
+  valueTag: number;
+  nullable: boolean;
+  flagGroup: number;
+  flagBit: number;
+}
+export interface DynamicVmSharedDataClassMeta {
+  sharedDataClassId: number;
+  classKind: number;
+  firstFieldId: number;
+  fieldCount: number;
+}
+export interface DynamicVmSharedSchema {
+  classCount: number;
+  fieldCount: number;
+  flagGroupCount: number;
+  classes: DynamicVmSharedDataClassMeta[];
+  fields: DynamicVmSharedField[];
+}
 export interface DynamicVmProgram {
   id: string;
   engine: number;
@@ -562,24 +584,25 @@ export interface DynamicVmProgram {
   effectInstructions: DynamicVmInstruction[];
 }
 export interface DynamicVmBundle {
+  sharedSchema?: DynamicVmSharedSchema;
   programs: DynamicVmProgram[];
 }
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/dynamic/protocol/binary.d.ts
 export declare function parseDynamicVmBundle(bytes: Uint8Array): DynamicVmBundle;
 //#endregion
-//#region temp/packages/runtime-vapor-dom2/src/dynamic/sharedData/dynamicScope.d.ts
-export declare class DynamicSharedDataScope implements DynamicSharedScopeRef {
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/sharedData/dynamicInstance.d.ts
+export declare class DynamicSharedDataInstance implements DynamicSharedDataInstanceRef {
   readonly fieldCount: number;
   readonly flagGroupCount: number;
-  readonly parent: DynamicSharedDataScope | null;
+  readonly parent: DynamicSharedDataInstance | null;
   values: unknown[];
   flags: Uint32Array;
-  constructor(fieldCount: number, flagGroupCount: number, parent?: DynamicSharedDataScope | null);
+  constructor(fieldCount: number, flagGroupCount: number, parent?: DynamicSharedDataInstance | null);
   getById(fieldId: number): unknown;
   setById(fieldId: number, value: unknown, flagGroup: number, flagBit: number): void;
   resetFlags(): void;
-  createChildScope(): DynamicSharedDataScope;
+  createChildInstance(): DynamicSharedDataInstance;
 }
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/dynamic/protocol/generated.d.ts
@@ -659,13 +682,14 @@ export declare const DYNAMIC_RENDER_OPCODE: {
   readonly NOT: 96;
   readonly TERNARY: 97;
   readonly CONCAT_N: 98;
+  readonly MOVE: 99;
 };
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/dynamic/vm/interpreter.d.ts
 export interface DynamicVmExecuteOptions {
   constResolver?: (constIndex: number) => unknown;
   sharedDataResolver?: (fieldId: number) => unknown;
-  sharedScope?: DynamicSharedScopeRef;
+  sharedDataInstance?: DynamicSharedDataInstanceRef;
   onUnsupportedOpcode?: (instruction: DynamicVmInstruction) => void;
 }
 export interface DynamicVmExecuteResult {
@@ -673,6 +697,7 @@ export interface DynamicVmExecuteResult {
   registers: unknown[];
 }
 export declare function executeDynamicVmProgram(program: DynamicVmProgram, options?: DynamicVmExecuteOptions): DynamicVmExecuteResult;
+export declare function executeDynamicVmEffectProgram(program: DynamicVmProgram, options?: DynamicVmExecuteOptions): DynamicVmExecuteResult;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/index.d.ts
 export declare const ssrRef: typeof ref;

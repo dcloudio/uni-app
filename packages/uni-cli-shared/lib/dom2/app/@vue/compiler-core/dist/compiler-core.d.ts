@@ -348,6 +348,7 @@ export interface SimpleExpressionNode extends Node {
   */
   sharedData?: {
     ident?: string;
+    classRef?: string;
     vModel?: {
       eventIdent: string;
     };
