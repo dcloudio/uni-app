@@ -600,6 +600,7 @@ export declare const BaseTransition: {
   };
 };
 export interface TransitionHooksContext {
+  isLeaving: () => boolean;
   setLeavingNodeCache: (node: any) => void;
   unsetLeavingNodeCache: (node: any) => void;
   earlyRemove: () => void;

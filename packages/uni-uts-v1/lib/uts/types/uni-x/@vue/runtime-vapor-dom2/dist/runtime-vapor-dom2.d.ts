@@ -14,6 +14,7 @@ declare class VaporFragment {
   parentComponent?: VaporSharedDataComponentInstance | null;
   insert?: (parent: ParentNode, anchor: Node | null) => void;
   remove?: (parent?: ParentNode) => void;
+  onUpdated?: ((nodes?: Block) => void)[];
   constructor(nodes: Block);
 }
 declare class DynamicFragment extends VaporFragment {
@@ -53,8 +54,8 @@ export type DynamicSlotSource = StaticSlots | DynamicSlotFn;
 * Wrap a slot function to track the slot owner.
 *
 * This ensures:
-* 1. createSlot gets rawSlots from the correct component (slot owner)
-* 2. Elements inherit the slot owner's scopeId
+* 1. createSlot gets rawSlots from the correct instance (slot owner)
+* 2. elements inherit the slot owner's scopeId
 */
 export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any, type?: "string"): BlockFn;
 export declare function createSharedDataSlot(name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot, noSlotted?: boolean, once?: boolean): void;
@@ -260,12 +261,25 @@ export declare const onReuse: typeof onReused;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiTemplateRef.d.ts
 type NodeRef = string | Ref | ((ref: Element) => void);
-type RefEl = UniElement | VaporSharedDataComponentInstance;
+type RefEl = UniElement | VaporSharedDataComponentInstance | DynamicFragment | VaporFragment;
 type setRefFn = (el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
 export declare function createSharedDataTemplateRefSetter(): setRefFn;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateDynamicComponent.d.ts
 export declare function createSharedDataDynamicComponent(getter: () => any, setter: (ins: VaporSharedDataComponentInstance | null) => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean, once?: boolean): VaporSharedDataComponentInstance | null;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/apiCreateFragment.d.ts
+/**
+* Create a dynamic fragment keyed by a reactive value for Vapor transitions.
+* The fragment is re-rendered when the key changes to trigger enter/leave
+* animations.
+*
+* Example:
+* <VaporTransition>
+*   <h1 :key="count">{{ count }}</h1>
+* </VaporTransition>
+*/
+export declare function createSharedDataKeyedFragment(key: () => any, render: BlockFn): Block;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiUseComputedStyle.d.ts
 type UseComputedStyleOptions = {
@@ -446,6 +460,7 @@ export declare function onElement(node: UniElement, event: string, fn: (event: U
 }): void;
 export declare function onElementRef(node: UniElement, fn: Function): void;
 export declare function createElementDynamicSlotVector(slots: any | null): any | null;
+export declare function createElementKeyedFragment(page: UniPage, key: () => string, render: BlockFn): Block;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/nativeView.d.ts
 export declare function getCurrentNativeViewVaporComponentInstance(): VaporSharedDataComponentInstance | null;
@@ -486,6 +501,7 @@ export declare function createNativeViewSlot(page: UniPage, name: string | (() =
 export declare function createNativeViewForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (shareDataVForItem: Source, key: KeyOf<Source>, index?: number) => DynamicSlot): DynamicSlot[];
 export declare function createNativeViewDynamicSlot(name: string, fn: VaporSlot): DynamicSlot;
 export declare function createNativeViewDynamicSlotVector(slots: any | null): any | null;
+export declare function createNativeViewKeyedFragment(page: UniPage, key: () => string, render: BlockFn): Block;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/index.d.ts
 export declare function runOnMainQueue(fn: () => void): void;
@@ -501,6 +517,162 @@ export declare function createUserClass<T>(): T;
 * @returns
 */
 export declare function findVueInstanceByUid(uid: number): VaporSharedDataComponentInstance | null;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/bridge/adapterContracts.d.ts
+export interface DynamicSharedScopeRef {
+  parent?: DynamicSharedScopeRef | null;
+  values: unknown[];
+  flags: Uint32Array;
+}
+export interface DynamicRuntimeAdapter<NodeRef = unknown> {
+  getField(scope: DynamicSharedScopeRef, fieldId: number): unknown;
+  setField(scope: DynamicSharedScopeRef, fieldId: number, value: unknown): void;
+  resetFlags(scope: DynamicSharedScopeRef): void;
+  instantiateTemplate(templateId: number): NodeRef;
+  child(node: NodeRef): NodeRef;
+  next(node: NodeRef): NodeRef;
+  nthChild(node: NodeRef, index: number): NodeRef;
+}
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/bridge/programLoader.d.ts
+export type DynamicProgramKey = `${number}:${number}`;
+export interface DynamicProgramMeta {
+  engine: number;
+  renderer: number;
+  offset: number;
+  length: number;
+}
+export declare function createDynamicProgramKey(engine: number, renderer: number): DynamicProgramKey;
+export declare function indexDynamicPrograms(programs: DynamicProgramMeta[]): Record<DynamicProgramKey, DynamicProgramMeta>;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/vm/types.d.ts
+export interface DynamicVmInstruction {
+  op: number;
+  a: number;
+  b: number;
+  c: number;
+}
+export interface DynamicVmProgram {
+  id: string;
+  engine: number;
+  renderer: number;
+  regCount: number;
+  constPool: unknown[];
+  instructions: DynamicVmInstruction[];
+  effectInstructions: DynamicVmInstruction[];
+}
+export interface DynamicVmBundle {
+  programs: DynamicVmProgram[];
+}
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/protocol/binary.d.ts
+export declare function parseDynamicVmBundle(bytes: Uint8Array): DynamicVmBundle;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/sharedData/dynamicScope.d.ts
+export declare class DynamicSharedDataScope implements DynamicSharedScopeRef {
+  readonly fieldCount: number;
+  readonly flagGroupCount: number;
+  readonly parent: DynamicSharedDataScope | null;
+  values: unknown[];
+  flags: Uint32Array;
+  constructor(fieldCount: number, flagGroupCount: number, parent?: DynamicSharedDataScope | null);
+  getById(fieldId: number): unknown;
+  setById(fieldId: number, value: unknown, flagGroup: number, flagBit: number): void;
+  resetFlags(): void;
+  createChildScope(): DynamicSharedDataScope;
+}
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/protocol/generated.d.ts
+export declare const DYNAMIC_RENDER_SCHEMA_VERSION = 1;
+export declare const DYNAMIC_RENDER_MAGIC = 844513874;
+export declare const DYNAMIC_RENDER_ENGINE: {
+  readonly CPP: 0;
+  readonly KT: 1;
+};
+export declare const DYNAMIC_RENDER_RENDERER: {
+  readonly ELEMENT: 0;
+  readonly KOTLIN_ELEMENT: 1;
+  readonly NATIVE_VIEW: 2;
+};
+export declare const DYNAMIC_RENDER_SECTION_KIND: {
+  readonly STRING_POOL: 1;
+  readonly CONST_POOL: 2;
+  readonly SHARED_SCHEMA: 3;
+  readonly TEMPLATE: 4;
+  readonly EXPR: 5;
+  readonly BLOCK_META: 6;
+  readonly CODE: 7;
+  readonly EFFECT_META: 8;
+  readonly EFFECT_CODE: 9;
+  readonly TOUCH_LIST: 10;
+  readonly DEBUG_PC_MAP: 100;
+  readonly DEBUG_NAME_MAP: 101;
+};
+export declare const DYNAMIC_RENDER_OPCODE: {
+  readonly INST_TEMPLATE: 1;
+  readonly GET_ARRAY_ITEM: 2;
+  readonly CHILD: 3;
+  readonly NEXT: 4;
+  readonly NTH_CHILD: 5;
+  readonly SET_INSERTION_STATE: 6;
+  readonly GET_INSERTION_PARENT: 7;
+  readonly APPEND_NATIVE_CHILD: 8;
+  readonly CREATE_IF: 20;
+  readonly CREATE_FOR: 21;
+  readonly CREATE_RECYCLE_FOR: 22;
+  readonly CALL_BLOCK: 23;
+  readonly RETURN: 24;
+  readonly RETURN_VOID: 25;
+  readonly CREATE_COMPONENT: 40;
+  readonly CREATE_COMPONENT_FALLBACK: 41;
+  readonly CREATE_DYNAMIC_COMPONENT: 42;
+  readonly CREATE_SLOT: 43;
+  readonly CREATE_DYNAMIC_SLOT: 44;
+  readonly CREATE_FOR_SLOTS: 45;
+  readonly CREATE_DYNAMIC_SLOT_VECTOR: 46;
+  readonly WITH_VAPOR_CTX: 47;
+  readonly SET_PROP: 60;
+  readonly SET_DYNAMIC_PROPS: 61;
+  readonly SET_TEXT: 62;
+  readonly SET_HTML: 63;
+  readonly SET_EVENT: 64;
+  readonly SET_DYNAMIC_EVENTS: 65;
+  readonly SET_TEMPLATE_REF: 66;
+  readonly APPLY_V_MODEL: 67;
+  readonly APPLY_V_SHOW: 68;
+  readonly LOAD_CONST: 80;
+  readonly LOAD_SD: 81;
+  readonly TO_DISPLAY_STRING: 82;
+  readonly ADD: 83;
+  readonly SUB: 84;
+  readonly MUL: 85;
+  readonly DIV: 86;
+  readonly MOD: 87;
+  readonly EQ: 88;
+  readonly NE: 89;
+  readonly GT: 90;
+  readonly GE: 91;
+  readonly LT: 92;
+  readonly LE: 93;
+  readonly LOGIC_AND: 94;
+  readonly LOGIC_OR: 95;
+  readonly NOT: 96;
+  readonly TERNARY: 97;
+  readonly CONCAT_N: 98;
+};
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/vm/interpreter.d.ts
+export interface DynamicVmExecuteOptions {
+  constResolver?: (constIndex: number) => unknown;
+  sharedDataResolver?: (fieldId: number) => unknown;
+  sharedScope?: DynamicSharedScopeRef;
+  onUnsupportedOpcode?: (instruction: DynamicVmInstruction) => void;
+}
+export interface DynamicVmExecuteResult {
+  returnValue: unknown;
+  registers: unknown[];
+}
+export declare function executeDynamicVmProgram(program: DynamicVmProgram, options?: DynamicVmExecuteOptions): DynamicVmExecuteResult;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/index.d.ts
 export declare const ssrRef: typeof ref;

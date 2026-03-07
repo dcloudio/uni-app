@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-beta.5
+  * @vue/compiler-sfc v3.6.0-beta.7
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -12025,7 +12025,7 @@ function resolveParserPlugins(lang, userPlugins, dts = false) {
 	if (!userPlugins || !userPlugins.some((p) => p === "importAssertions" || p === "importAttributes" || (0, _vue_shared.isArray)(p) && p[0] === "importAttributes")) plugins.push("importAttributes");
 	if (lang === "jsx" || lang === "tsx" || lang === "mtsx") plugins.push("jsx");
 	else if (userPlugins) userPlugins = userPlugins.filter((p) => p !== "jsx");
-	if (lang === "uts" || lang === "ts" || lang === "mts" || lang === "tsx" || lang === "mtsx") {
+	if (lang === "uts" || lang === "ts" || lang === "mts" || lang === "tsx" || lang === "cts" || lang === "mtsx") {
 		plugins.push(["typescript", { dts }], "explicitResourceManagement");
 		if (!userPlugins || !userPlugins.includes("decorators")) plugins.push("decorators-legacy");
 	}
@@ -12332,7 +12332,7 @@ function expand_(str, max, isTop) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.1.3/node_modules/minimatch/dist/esm/assert-valid-pattern.js
+//#region node_modules/.pnpm/minimatch@10.2.4/node_modules/minimatch/dist/esm/assert-valid-pattern.js
 const MAX_PATTERN_LENGTH = 1024 * 64;
 const assertValidPattern = (pattern) => {
 	if (typeof pattern !== "string") throw new TypeError("invalid pattern");
@@ -12340,7 +12340,7 @@ const assertValidPattern = (pattern) => {
 };
 
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.1.3/node_modules/minimatch/dist/esm/brace-expressions.js
+//#region node_modules/.pnpm/minimatch@10.2.4/node_modules/minimatch/dist/esm/brace-expressions.js
 const posixClasses = {
 	"[:alnum:]": ["\\p{L}\\p{Nl}\\p{Nd}", true],
 	"[:alpha:]": ["\\p{L}\\p{Nl}", true],
@@ -12462,7 +12462,7 @@ const parseClass = (glob, position) => {
 };
 
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.1.3/node_modules/minimatch/dist/esm/unescape.js
+//#region node_modules/.pnpm/minimatch@10.2.4/node_modules/minimatch/dist/esm/unescape.js
 /**
 * Un-escape a string that has been escaped with {@link escape}.
 *
@@ -12488,8 +12488,10 @@ const unescape = (s, { windowsPathsNoEscape = false, magicalBraces = true } = {}
 };
 
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.1.3/node_modules/minimatch/dist/esm/ast.js
+//#region node_modules/.pnpm/minimatch@10.2.4/node_modules/minimatch/dist/esm/ast.js
 var _AST;
+let _Symbol$for;
+var _a;
 const types = new Set([
 	"!",
 	"?",
@@ -12498,6 +12500,53 @@ const types = new Set([
 	"@"
 ]);
 const isExtglobType = (c) => types.has(c);
+const isExtglobAST = (c) => isExtglobType(c.type);
+const adoptionMap = new Map([
+	["!", ["@"]],
+	["?", ["?", "@"]],
+	["@", ["@"]],
+	["*", [
+		"*",
+		"+",
+		"?",
+		"@"
+	]],
+	["+", ["+", "@"]]
+]);
+const adoptionWithSpaceMap = new Map([
+	["!", ["?"]],
+	["@", ["?"]],
+	["+", ["?", "*"]]
+]);
+const adoptionAnyMap = new Map([
+	["!", ["?", "@"]],
+	["?", ["?", "@"]],
+	["@", ["?", "@"]],
+	["*", [
+		"*",
+		"+",
+		"?",
+		"@"
+	]],
+	["+", [
+		"+",
+		"@",
+		"?",
+		"*"
+	]]
+]);
+const usurpMap = new Map([
+	["!", new Map([["!", "@"]])],
+	["?", new Map([["*", "*"], ["+", "*"]])],
+	["@", new Map([
+		["!", "!"],
+		["?", "?"],
+		["@", "@"],
+		["*", "*"],
+		["+", "+"]
+	])],
+	["+", new Map([["?", "*"], ["*", "*"]])]
+]);
 const startNoTraversal = "(?!(?:^|/)\\.\\.?(?:$|/))";
 const startNoDot = "(?!\\.)";
 const addPatternStart = new Set(["[", "."]);
@@ -12507,6 +12556,7 @@ const regExpEscape$1 = (s) => s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 const qmark = "[^/]";
 const star$1 = qmark + "*?";
 const starNoEmpty = qmark + "+?";
+let ID = 0;
 var _root = /* @__PURE__ */ new WeakMap();
 var _hasMagic2 = /* @__PURE__ */ new WeakMap();
 var _uflag = /* @__PURE__ */ new WeakMap();
@@ -12519,7 +12569,25 @@ var _options = /* @__PURE__ */ new WeakMap();
 var _toString = /* @__PURE__ */ new WeakMap();
 var _emptyExt = /* @__PURE__ */ new WeakMap();
 var _AST_brand = /* @__PURE__ */ new WeakSet();
+_Symbol$for = Symbol.for("nodejs.util.inspect.custom");
 var AST = class AST {
+	get depth() {
+		var _this$parent$depth, _classPrivateFieldGet2$1;
+		return ((_this$parent$depth = (_classPrivateFieldGet2$1 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet2$1 === void 0 ? void 0 : _classPrivateFieldGet2$1.depth) !== null && _this$parent$depth !== void 0 ? _this$parent$depth : -1) + 1;
+	}
+	[_Symbol$for]() {
+		var _classPrivateFieldGet3;
+		return {
+			"@@type": "AST",
+			id: this.id,
+			type: this.type,
+			root: _classPrivateFieldGet2(_root, this).id,
+			parent: (_classPrivateFieldGet3 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet3 === void 0 ? void 0 : _classPrivateFieldGet3.id,
+			depth: this.depth,
+			partsLength: _classPrivateFieldGet2(_parts, this).length,
+			parts: _classPrivateFieldGet2(_parts, this)
+		};
+	}
 	constructor(type, parent, options = {}) {
 		_classPrivateMethodInitSpec(this, _AST_brand);
 		_classPrivateFieldInitSpec(this, _root, void 0);
@@ -12533,6 +12601,7 @@ var AST = class AST {
 		_classPrivateFieldInitSpec(this, _options, void 0);
 		_classPrivateFieldInitSpec(this, _toString, void 0);
 		_classPrivateFieldInitSpec(this, _emptyExt, false);
+		this.id = ++ID;
 		this.type = type;
 		if (type) _classPrivateFieldSet2(_hasMagic2, this, true);
 		_classPrivateFieldSet2(_parent, this, parent);
@@ -12561,36 +12630,36 @@ var AST = class AST {
 		for (const p of parts) {
 			if (p === "") continue;
 			/* c8 ignore start */
-			if (typeof p !== "string" && !(p instanceof AST && _classPrivateFieldGet2(_parent, p) === this)) throw new Error("invalid part: " + p);
+			if (typeof p !== "string" && !(p instanceof _a && _classPrivateFieldGet2(_parent, p) === this)) throw new Error("invalid part: " + p);
 			/* c8 ignore stop */
 			_classPrivateFieldGet2(_parts, this).push(p);
 		}
 	}
 	toJSON() {
-		var _classPrivateFieldGet2$1;
+		var _classPrivateFieldGet4;
 		const ret = this.type === null ? _classPrivateFieldGet2(_parts, this).slice().map((p) => typeof p === "string" ? p : p.toJSON()) : [this.type, ..._classPrivateFieldGet2(_parts, this).map((p) => p.toJSON())];
 		if (this.isStart() && !this.type) ret.unshift([]);
-		if (this.isEnd() && (this === _classPrivateFieldGet2(_root, this) || _classPrivateFieldGet2(_filledNegs, _classPrivateFieldGet2(_root, this)) && ((_classPrivateFieldGet2$1 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet2$1 === void 0 ? void 0 : _classPrivateFieldGet2$1.type) === "!")) ret.push({});
+		if (this.isEnd() && (this === _classPrivateFieldGet2(_root, this) || _classPrivateFieldGet2(_filledNegs, _classPrivateFieldGet2(_root, this)) && ((_classPrivateFieldGet4 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet4 === void 0 ? void 0 : _classPrivateFieldGet4.type) === "!")) ret.push({});
 		return ret;
 	}
 	isStart() {
-		var _classPrivateFieldGet3;
+		var _classPrivateFieldGet5;
 		if (_classPrivateFieldGet2(_root, this) === this) return true;
-		if (!((_classPrivateFieldGet3 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet3 === void 0 ? void 0 : _classPrivateFieldGet3.isStart())) return false;
+		if (!((_classPrivateFieldGet5 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet5 === void 0 ? void 0 : _classPrivateFieldGet5.isStart())) return false;
 		if (_classPrivateFieldGet2(_parentIndex, this) === 0) return true;
 		const p = _classPrivateFieldGet2(_parent, this);
 		for (let i = 0; i < _classPrivateFieldGet2(_parentIndex, this); i++) {
 			const pp = _classPrivateFieldGet2(_parts, p)[i];
-			if (!(pp instanceof AST && pp.type === "!")) return false;
+			if (!(pp instanceof _a && pp.type === "!")) return false;
 		}
 		return true;
 	}
 	isEnd() {
-		var _classPrivateFieldGet4, _classPrivateFieldGet5, _classPrivateFieldGet6;
+		var _classPrivateFieldGet6, _classPrivateFieldGet7, _classPrivateFieldGet8;
 		if (_classPrivateFieldGet2(_root, this) === this) return true;
-		if (((_classPrivateFieldGet4 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet4 === void 0 ? void 0 : _classPrivateFieldGet4.type) === "!") return true;
-		if (!((_classPrivateFieldGet5 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet5 === void 0 ? void 0 : _classPrivateFieldGet5.isEnd())) return false;
-		if (!this.type) return (_classPrivateFieldGet6 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet6 === void 0 ? void 0 : _classPrivateFieldGet6.isEnd();
+		if (((_classPrivateFieldGet6 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet6 === void 0 ? void 0 : _classPrivateFieldGet6.type) === "!") return true;
+		if (!((_classPrivateFieldGet7 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet7 === void 0 ? void 0 : _classPrivateFieldGet7.isEnd())) return false;
+		if (!this.type) return (_classPrivateFieldGet8 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet8 === void 0 ? void 0 : _classPrivateFieldGet8.isEnd();
 		/* c8 ignore start */
 		const pl = _classPrivateFieldGet2(_parent, this) ? _classPrivateFieldGet2(_parts, _classPrivateFieldGet2(_parent, this)).length : 0;
 		/* c8 ignore stop */
@@ -12601,13 +12670,13 @@ var AST = class AST {
 		else this.push(part.clone(this));
 	}
 	clone(parent) {
-		const c = new AST(this.type, parent);
+		const c = new _a(this.type, parent);
 		for (const p of _classPrivateFieldGet2(_parts, this)) c.copyIn(p);
 		return c;
 	}
 	static fromGlob(pattern, options = {}) {
-		const ast = new AST(null, void 0, options);
-		_parseAST.call(AST, pattern, ast, 0, options);
+		const ast = new _a(null, void 0, options);
+		_assertClassBrand(AST, _a, _parseAST).call(_a, pattern, ast, 0, options, 0);
 		return ast;
 	}
 	toMMPattern() {
@@ -12628,12 +12697,15 @@ var AST = class AST {
 	}
 	toRegExpSource(allowDot) {
 		const dot = allowDot !== null && allowDot !== void 0 ? allowDot : !!_classPrivateFieldGet2(_options, this).dot;
-		if (_classPrivateFieldGet2(_root, this) === this) _assertClassBrand(_AST_brand, this, _fillNegs).call(this);
-		if (!this.type) {
-			var _classPrivateFieldGet7;
+		if (_classPrivateFieldGet2(_root, this) === this) {
+			_assertClassBrand(_AST_brand, this, _flatten).call(this);
+			_assertClassBrand(_AST_brand, this, _fillNegs).call(this);
+		}
+		if (!isExtglobAST(this)) {
+			var _classPrivateFieldGet9;
 			const noEmpty = this.isStart() && this.isEnd() && !_classPrivateFieldGet2(_parts, this).some((s) => typeof s !== "string");
 			const src = _classPrivateFieldGet2(_parts, this).map((p) => {
-				const [re, _, hasMagic, uflag] = typeof p === "string" ? _parseGlob.call(AST, p, _classPrivateFieldGet2(_hasMagic2, this), noEmpty) : p.toRegExpSource(allowDot);
+				const [re, _, hasMagic, uflag] = typeof p === "string" ? _assertClassBrand(AST, _a, _parseGlob).call(_a, p, _classPrivateFieldGet2(_hasMagic2, this), noEmpty) : p.toRegExpSource(allowDot);
 				_classPrivateFieldSet2(_hasMagic2, this, _classPrivateFieldGet2(_hasMagic2, this) || hasMagic);
 				_classPrivateFieldSet2(_uflag, this, _classPrivateFieldGet2(_uflag, this) || uflag);
 				return re;
@@ -12650,7 +12722,7 @@ var AST = class AST {
 				}
 			}
 			let end = "";
-			if (this.isEnd() && _classPrivateFieldGet2(_filledNegs, _classPrivateFieldGet2(_root, this)) && ((_classPrivateFieldGet7 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet7 === void 0 ? void 0 : _classPrivateFieldGet7.type) === "!") end = "(?:$|\\/)";
+			if (this.isEnd() && _classPrivateFieldGet2(_filledNegs, _classPrivateFieldGet2(_root, this)) && ((_classPrivateFieldGet9 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet9 === void 0 ? void 0 : _classPrivateFieldGet9.type) === "!") end = "(?:$|\\/)";
 			return [
 				start + src + end,
 				unescape(src),
@@ -12663,9 +12735,10 @@ var AST = class AST {
 		let body = _assertClassBrand(_AST_brand, this, _partsToRegExp).call(this, dot);
 		if (this.isStart() && this.isEnd() && !body && this.type !== "!") {
 			const s = this.toString();
-			_classPrivateFieldSet2(_parts, this, [s]);
-			this.type = null;
-			_classPrivateFieldSet2(_hasMagic2, this, void 0);
+			const me = this;
+			_classPrivateFieldSet2(_parts, me, [s]);
+			me.type = null;
+			_classPrivateFieldSet2(_hasMagic2, me, void 0);
 			return [
 				s,
 				unescape(this.toString()),
@@ -12716,7 +12789,9 @@ function _fillNegs() {
 	}
 	return this;
 }
-function _parseAST(str, ast, pos, opt) {
+function _parseAST(str, ast, pos, opt, extDepth) {
+	var _opt$maxExtglobRecurs;
+	const maxDepth = (_opt$maxExtglobRecurs = opt.maxExtglobRecursion) !== null && _opt$maxExtglobRecurs !== void 0 ? _opt$maxExtglobRecurs : 2;
 	let escaping = false;
 	let inBrace = false;
 	let braceStart = -1;
@@ -12744,11 +12819,11 @@ function _parseAST(str, ast, pos, opt) {
 				acc += c;
 				continue;
 			}
-			if (!opt.noext && isExtglobType(c) && str.charAt(i) === "(") {
+			if (!opt.noext && isExtglobType(c) && str.charAt(i) === "(" && extDepth <= maxDepth) {
 				ast.push(acc);
 				acc = "";
-				const ext = new _AST(c, ast);
-				i = _parseAST.call(_AST, str, ext, i, opt);
+				const ext = new _a(c, ast);
+				i = _assertClassBrand(_AST, _a, _parseAST).call(_a, str, ext, i, opt, extDepth + 1);
 				ast.push(ext);
 				continue;
 			}
@@ -12758,7 +12833,7 @@ function _parseAST(str, ast, pos, opt) {
 		return i;
 	}
 	let i = pos + 1;
-	let part = new _AST(null, ast);
+	let part = new _a(null, ast);
 	const parts = [];
 	let acc = "";
 	while (i < str.length) {
@@ -12781,19 +12856,21 @@ function _parseAST(str, ast, pos, opt) {
 			acc += c;
 			continue;
 		}
-		if (isExtglobType(c) && str.charAt(i) === "(") {
+		/* c8 ignore stop */
+		if (!opt.noext && isExtglobType(c) && str.charAt(i) === "(" && (extDepth <= maxDepth || ast && _assertClassBrand(_AST_brand, ast, _canAdoptType).call(ast, c))) {
+			const depthAdd = ast && _assertClassBrand(_AST_brand, ast, _canAdoptType).call(ast, c) ? 0 : 1;
 			part.push(acc);
 			acc = "";
-			const ext = new _AST(c, part);
+			const ext = new _a(c, part);
 			part.push(ext);
-			i = _parseAST.call(_AST, str, ext, i, opt);
+			i = _assertClassBrand(_AST, _a, _parseAST).call(_a, str, ext, i, opt, extDepth + depthAdd);
 			continue;
 		}
 		if (c === "|") {
 			part.push(acc);
 			acc = "";
 			parts.push(part);
-			part = new _AST(null, ast);
+			part = new _a(null, ast);
 			continue;
 		}
 		if (c === ")") {
@@ -12810,6 +12887,83 @@ function _parseAST(str, ast, pos, opt) {
 	_classPrivateFieldSet2(_parts, ast, [str.substring(pos - 1)]);
 	return i;
 }
+function _canAdoptWithSpace(child) {
+	return _assertClassBrand(_AST_brand, this, _canAdopt).call(this, child, adoptionWithSpaceMap);
+}
+function _canAdopt(child, map = adoptionMap) {
+	if (!child || typeof child !== "object" || child.type !== null || _classPrivateFieldGet2(_parts, child).length !== 1 || this.type === null) return false;
+	const gc = _classPrivateFieldGet2(_parts, child)[0];
+	if (!gc || typeof gc !== "object" || gc.type === null) return false;
+	return _assertClassBrand(_AST_brand, this, _canAdoptType).call(this, gc.type, map);
+}
+function _canAdoptType(c, map = adoptionAnyMap) {
+	var _map$get;
+	return !!((_map$get = map.get(this.type)) === null || _map$get === void 0 ? void 0 : _map$get.includes(c));
+}
+function _adoptWithSpace(child, index) {
+	const gc = _classPrivateFieldGet2(_parts, child)[0];
+	const blank = new _a(null, gc, this.options);
+	_classPrivateFieldGet2(_parts, blank).push("");
+	gc.push(blank);
+	_assertClassBrand(_AST_brand, this, _adopt).call(this, child, index);
+}
+function _adopt(child, index) {
+	const gc = _classPrivateFieldGet2(_parts, child)[0];
+	_classPrivateFieldGet2(_parts, this).splice(index, 1, ..._classPrivateFieldGet2(_parts, gc));
+	for (const p of _classPrivateFieldGet2(_parts, gc)) if (typeof p === "object") _classPrivateFieldSet2(_parent, p, this);
+	_classPrivateFieldSet2(_toString, this, void 0);
+}
+function _canUsurpType(c) {
+	const m = usurpMap.get(this.type);
+	return !!(m === null || m === void 0 ? void 0 : m.has(c));
+}
+function _canUsurp(child) {
+	if (!child || typeof child !== "object" || child.type !== null || _classPrivateFieldGet2(_parts, child).length !== 1 || this.type === null || _classPrivateFieldGet2(_parts, this).length !== 1) return false;
+	const gc = _classPrivateFieldGet2(_parts, child)[0];
+	if (!gc || typeof gc !== "object" || gc.type === null) return false;
+	return _assertClassBrand(_AST_brand, this, _canUsurpType).call(this, gc.type);
+}
+function _usurp(child) {
+	const m = usurpMap.get(this.type);
+	const gc = _classPrivateFieldGet2(_parts, child)[0];
+	const nt = m === null || m === void 0 ? void 0 : m.get(gc.type);
+	/* c8 ignore start - impossible */
+	if (!nt) return false;
+	/* c8 ignore stop */
+	_classPrivateFieldSet2(_parts, this, _classPrivateFieldGet2(_parts, gc));
+	for (const p of _classPrivateFieldGet2(_parts, this)) if (typeof p === "object") _classPrivateFieldSet2(_parent, p, this);
+	this.type = nt;
+	_classPrivateFieldSet2(_toString, this, void 0);
+	_classPrivateFieldSet2(_emptyExt, this, false);
+}
+function _flatten() {
+	if (!isExtglobAST(this)) {
+		for (const p of _classPrivateFieldGet2(_parts, this)) if (typeof p === "object") _assertClassBrand(_AST_brand, p, _flatten).call(p);
+	} else {
+		let iterations = 0;
+		let done = false;
+		do {
+			done = true;
+			for (let i = 0; i < _classPrivateFieldGet2(_parts, this).length; i++) {
+				const c = _classPrivateFieldGet2(_parts, this)[i];
+				if (typeof c === "object") {
+					_assertClassBrand(_AST_brand, c, _flatten).call(c);
+					if (_assertClassBrand(_AST_brand, this, _canAdopt).call(this, c)) {
+						done = false;
+						_assertClassBrand(_AST_brand, this, _adopt).call(this, c, i);
+					} else if (_assertClassBrand(_AST_brand, this, _canAdoptWithSpace).call(this, c)) {
+						done = false;
+						_assertClassBrand(_AST_brand, this, _adoptWithSpace).call(this, c, i);
+					} else if (_assertClassBrand(_AST_brand, this, _canUsurp).call(this, c)) {
+						done = false;
+						_assertClassBrand(_AST_brand, this, _usurp).call(this, c);
+					}
+				}
+			}
+		} while (!done && ++iterations < 10);
+	}
+	_classPrivateFieldSet2(_toString, this, void 0);
+}
 function _partsToRegExp(dot) {
 	return _classPrivateFieldGet2(_parts, this).map((p) => {
 		/* c8 ignore start */
@@ -12824,6 +12978,7 @@ function _parseGlob(glob, hasMagic, noEmpty = false) {
 	let escaping = false;
 	let re = "";
 	let uflag = false;
+	let inStar = false;
 	for (let i = 0; i < glob.length; i++) {
 		const c = glob.charAt(i);
 		if (escaping) {
@@ -12831,6 +12986,13 @@ function _parseGlob(glob, hasMagic, noEmpty = false) {
 			re += (reSpecials.has(c) ? "\\" : "") + c;
 			continue;
 		}
+		if (c === "*") {
+			if (inStar) continue;
+			inStar = true;
+			re += noEmpty && /^[*]+$/.test(glob) ? starNoEmpty : star$1;
+			hasMagic = true;
+			continue;
+		} else inStar = false;
 		if (c === "\\") {
 			if (i === glob.length - 1) re += "\\\\";
 			else escaping = true;
@@ -12846,11 +13008,6 @@ function _parseGlob(glob, hasMagic, noEmpty = false) {
 				continue;
 			}
 		}
-		if (c === "*") {
-			re += noEmpty && glob === "*" ? starNoEmpty : star$1;
-			hasMagic = true;
-			continue;
-		}
 		if (c === "?") {
 			re += qmark;
 			hasMagic = true;
@@ -12865,9 +13022,10 @@ function _parseGlob(glob, hasMagic, noEmpty = false) {
 		uflag
 	];
 }
+_a = AST;
 
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.1.3/node_modules/minimatch/dist/esm/escape.js
+//#region node_modules/.pnpm/minimatch@10.2.4/node_modules/minimatch/dist/esm/escape.js
 /**
 * Escape all magic characters in a glob pattern.
 *
@@ -12886,7 +13044,7 @@ const escape = (s, { windowsPathsNoEscape = false, magicalBraces = false } = {})
 };
 
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.1.3/node_modules/minimatch/dist/esm/index.js
+//#region node_modules/.pnpm/minimatch@10.2.4/node_modules/minimatch/dist/esm/index.js
 const minimatch = (p, pattern, options = {}) => {
 	assertValidPattern(pattern);
 	if (!options.nocomment && pattern.charAt(0) === "#") return false;
@@ -12995,7 +13153,7 @@ minimatch.defaults = defaults;
 const braceExpand = (pattern, options = {}) => {
 	assertValidPattern(pattern);
 	if (options.nobrace || !/\{(?:(?!\{).)*\}/.test(pattern)) return [pattern];
-	return expand(pattern);
+	return expand(pattern, { max: options.braceExpandMax });
 };
 minimatch.braceExpand = braceExpand;
 const makeRe = (pattern, options = {}) => new Minimatch(pattern, options).makeRe();
@@ -13009,15 +13167,19 @@ const match = (list, pattern, options = {}) => {
 minimatch.match = match;
 const globMagic = /[?*]|[+@!]\(.*?\)|\[|\]/;
 const regExpEscape = (s) => s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+var _Minimatch_brand = /* @__PURE__ */ new WeakSet();
 var Minimatch = class {
 	constructor(pattern, options = {}) {
+		var _options$maxGlobstarR;
+		_classPrivateMethodInitSpec(this, _Minimatch_brand);
 		assertValidPattern(pattern);
 		options = options || {};
 		this.options = options;
+		this.maxGlobstarRecursion = (_options$maxGlobstarR = options.maxGlobstarRecursion) !== null && _options$maxGlobstarR !== void 0 ? _options$maxGlobstarR : 200;
 		this.pattern = pattern;
 		this.platform = options.platform || defaultPlatform;
 		this.isWindows = this.platform === "win32";
-		this.windowsPathsNoEscape = !!options.windowsPathsNoEscape || options.allowWindowsEscape === false;
+		this.windowsPathsNoEscape = !!options.windowsPathsNoEscape || options["allowWindowsEscape"] === false;
 		if (this.windowsPathsNoEscape) this.pattern = this.pattern.replace(/\\/g, "/");
 		this.preserveMultipleSlashes = !!options.preserveMultipleSlashes;
 		this.regexp = null;
@@ -13252,7 +13414,8 @@ var Minimatch = class {
 		this.negate = negate;
 	}
 	matchOne(file, pattern, partial = false) {
-		const options = this.options;
+		let fileStartIndex = 0;
+		let patternStartIndex = 0;
 		if (this.isWindows) {
 			const fileDrive = typeof file[0] === "string" && /^[a-z]:$/i.test(file[0]);
 			const fileUNC = !fileDrive && file[0] === "" && file[1] === "" && file[2] === "?" && /^[a-z]:$/i.test(file[3]);
@@ -13264,77 +13427,15 @@ var Minimatch = class {
 				const [fd, pd] = [file[fdi], pattern[pdi]];
 				if (fd.toLowerCase() === pd.toLowerCase()) {
 					pattern[pdi] = fd;
-					if (pdi > fdi) pattern = pattern.slice(pdi);
-					else if (fdi > pdi) file = file.slice(fdi);
+					patternStartIndex = pdi;
+					fileStartIndex = fdi;
 				}
 			}
 		}
 		const { optimizationLevel = 1 } = this.options;
 		if (optimizationLevel >= 2) file = this.levelTwoFileOptimize(file);
-		this.debug("matchOne", this, {
-			file,
-			pattern
-		});
-		this.debug("matchOne", file.length, pattern.length);
-		for (var fi = 0, pi = 0, fl = file.length, pl = pattern.length; fi < fl && pi < pl; fi++, pi++) {
-			this.debug("matchOne loop");
-			var p = pattern[pi];
-			var f = file[fi];
-			this.debug(pattern, p, f);
-			/* c8 ignore start */
-			if (p === false) return false;
-			/* c8 ignore stop */
-			if (p === GLOBSTAR) {
-				this.debug("GLOBSTAR", [
-					pattern,
-					p,
-					f
-				]);
-				var fr = fi;
-				var pr = pi + 1;
-				if (pr === pl) {
-					this.debug("** at the end");
-					for (; fi < fl; fi++) if (file[fi] === "." || file[fi] === ".." || !options.dot && file[fi].charAt(0) === ".") return false;
-					return true;
-				}
-				while (fr < fl) {
-					var swallowee = file[fr];
-					this.debug("\nglobstar while", file, fr, pattern, pr, swallowee);
-					if (this.matchOne(file.slice(fr), pattern.slice(pr), partial)) {
-						this.debug("globstar found match!", fr, fl, swallowee);
-						return true;
-					} else {
-						if (swallowee === "." || swallowee === ".." || !options.dot && swallowee.charAt(0) === ".") {
-							this.debug("dot detected!", file, fr, pattern, pr);
-							break;
-						}
-						this.debug("globstar swallow a segment, and continue");
-						fr++;
-					}
-				}
-				/* c8 ignore start */
-				if (partial) {
-					this.debug("\n>>> no match, partial?", file, fr, pattern, pr);
-					if (fr === fl) return true;
-				}
-				/* c8 ignore stop */
-				return false;
-			}
-			let hit;
-			if (typeof p === "string") {
-				hit = f === p;
-				this.debug("string match", p, f, hit);
-			} else {
-				hit = p.test(f);
-				this.debug("pattern match", p, f, hit);
-			}
-			if (!hit) return false;
-		}
-		if (fi === fl && pi === pl) return true;
-		else if (fi === fl) return partial;
-		else if (pi === pl) return fi === fl - 1 && file[fi] === "";
-		else throw new Error("wtf?");
-		/* c8 ignore stop */
+		if (pattern.includes(GLOBSTAR)) return _assertClassBrand(_Minimatch_brand, this, _matchGlobstar).call(this, file, pattern, partial, fileStartIndex, patternStartIndex);
+		return _assertClassBrand(_Minimatch_brand, this, _matchOne).call(this, file, pattern, partial, fileStartIndex, patternStartIndex);
 	}
 	braceExpand() {
 		return braceExpand(this.pattern, this.options);
@@ -13436,6 +13537,113 @@ var Minimatch = class {
 		return minimatch.defaults(def).Minimatch;
 	}
 };
+function _matchGlobstar(file, pattern, partial, fileIndex, patternIndex) {
+	const firstgs = pattern.indexOf(GLOBSTAR, patternIndex);
+	const lastgs = pattern.lastIndexOf(GLOBSTAR);
+	const [head, body, tail] = partial ? [
+		pattern.slice(patternIndex, firstgs),
+		pattern.slice(firstgs + 1),
+		[]
+	] : [
+		pattern.slice(patternIndex, firstgs),
+		pattern.slice(firstgs + 1, lastgs),
+		pattern.slice(lastgs + 1)
+	];
+	if (head.length) {
+		const fileHead = file.slice(fileIndex, fileIndex + head.length);
+		if (!_assertClassBrand(_Minimatch_brand, this, _matchOne).call(this, fileHead, head, partial, 0, 0)) return false;
+		fileIndex += head.length;
+		patternIndex += head.length;
+	}
+	let fileTailMatch = 0;
+	if (tail.length) {
+		if (tail.length + fileIndex > file.length) return false;
+		let tailStart = file.length - tail.length;
+		if (_assertClassBrand(_Minimatch_brand, this, _matchOne).call(this, file, tail, partial, tailStart, 0)) fileTailMatch = tail.length;
+		else {
+			if (file[file.length - 1] !== "" || fileIndex + tail.length === file.length) return false;
+			tailStart--;
+			if (!_assertClassBrand(_Minimatch_brand, this, _matchOne).call(this, file, tail, partial, tailStart, 0)) return false;
+			fileTailMatch = tail.length + 1;
+		}
+	}
+	if (!body.length) {
+		let sawSome = !!fileTailMatch;
+		for (let i = fileIndex; i < file.length - fileTailMatch; i++) {
+			const f = String(file[i]);
+			sawSome = true;
+			if (f === "." || f === ".." || !this.options.dot && f.startsWith(".")) return false;
+		}
+		return partial || sawSome;
+	}
+	const bodySegments = [[[], 0]];
+	let currentBody = bodySegments[0];
+	let nonGsParts = 0;
+	const nonGsPartsSums = [0];
+	for (const b of body) if (b === GLOBSTAR) {
+		nonGsPartsSums.push(nonGsParts);
+		currentBody = [[], 0];
+		bodySegments.push(currentBody);
+	} else {
+		currentBody[0].push(b);
+		nonGsParts++;
+	}
+	let i = bodySegments.length - 1;
+	const fileLength = file.length - fileTailMatch;
+	for (const b of bodySegments) b[1] = fileLength - (nonGsPartsSums[i--] + b[0].length);
+	return !!_assertClassBrand(_Minimatch_brand, this, _matchGlobStarBodySections).call(this, file, bodySegments, fileIndex, 0, partial, 0, !!fileTailMatch);
+}
+function _matchGlobStarBodySections(file, bodySegments, fileIndex, bodyIndex, partial, globStarDepth, sawTail) {
+	const bs = bodySegments[bodyIndex];
+	if (!bs) {
+		for (let i = fileIndex; i < file.length; i++) {
+			sawTail = true;
+			const f = file[i];
+			if (f === "." || f === ".." || !this.options.dot && f.startsWith(".")) return false;
+		}
+		return sawTail;
+	}
+	const [body, after] = bs;
+	while (fileIndex <= after) {
+		if (_assertClassBrand(_Minimatch_brand, this, _matchOne).call(this, file.slice(0, fileIndex + body.length), body, partial, fileIndex, 0) && globStarDepth < this.maxGlobstarRecursion) {
+			const sub = _assertClassBrand(_Minimatch_brand, this, _matchGlobStarBodySections).call(this, file, bodySegments, fileIndex + body.length, bodyIndex + 1, partial, globStarDepth + 1, sawTail);
+			if (sub !== false) return sub;
+		}
+		const f = file[fileIndex];
+		if (f === "." || f === ".." || !this.options.dot && f.startsWith(".")) return false;
+		fileIndex++;
+	}
+	return partial || null;
+}
+function _matchOne(file, pattern, partial, fileIndex, patternIndex) {
+	let fi;
+	let pi;
+	let pl;
+	let fl;
+	for (fi = fileIndex, pi = patternIndex, fl = file.length, pl = pattern.length; fi < fl && pi < pl; fi++, pi++) {
+		this.debug("matchOne loop");
+		let p = pattern[pi];
+		let f = file[fi];
+		this.debug(pattern, p, f);
+		/* c8 ignore start */
+		if (p === false || p === GLOBSTAR) return false;
+		/* c8 ignore stop */
+		let hit;
+		if (typeof p === "string") {
+			hit = f === p;
+			this.debug("string match", p, f, hit);
+		} else {
+			hit = p.test(f);
+			this.debug("pattern match", p, f, hit);
+		}
+		if (!hit) return false;
+	}
+	if (fi === fl && pi === pl) return true;
+	else if (fi === fl) return partial;
+	else if (pi === pl) return fi === fl - 1 && file[fi] === "";
+	else throw new Error("wtf?");
+	/* c8 ignore stop */
+}
 /* c8 ignore stop */
 minimatch.AST = AST;
 minimatch.Minimatch = Minimatch;
@@ -13844,11 +14052,17 @@ function importSourceToScope(ctx, node, scope, source) {
 	} else return ctx.error(`Failed to resolve import source ${JSON.stringify(source)}.`, node, scope);
 }
 function resolveExt(filename, fs) {
-	filename = filename.replace(/\.js$/, "");
+	let moduleType = "u";
+	if (filename.endsWith(".mjs")) moduleType = "m";
+	else if (filename.endsWith(".cjs")) moduleType = "c";
+	filename = filename.replace(/\.[cm]?jsx?$/, "");
 	const tryResolve = (filename) => {
 		if (fs.fileExists(filename)) return filename;
 	};
-	return tryResolve(filename) || tryResolve(filename + `.ts`) || tryResolve(filename + `.tsx`) || tryResolve(filename + `.d.ts`) || tryResolve(joinPaths(filename, `index.ts`)) || tryResolve(joinPaths(filename, `index.tsx`)) || tryResolve(joinPaths(filename, `index.d.ts`));
+	const resolveTs = () => tryResolve(filename + `.uts`) || tryResolve(filename + `.ts`) || tryResolve(filename + `.tsx`) || tryResolve(filename + `.d.ts`);
+	const resolveMts = () => tryResolve(filename + `.mts`) || tryResolve(filename + `.d.mts`);
+	const resolveCts = () => tryResolve(filename + `.cts`) || tryResolve(filename + `.d.cts`);
+	return tryResolve(filename) || (moduleType === "m" ? resolveMts() || resolveTs() : moduleType === "c" ? resolveCts() || resolveTs() : resolveTs() || resolveMts() || resolveCts()) || tryResolve(joinPaths(filename, `index.uts`)) || tryResolve(joinPaths(filename, `index.ts`)) || tryResolve(joinPaths(filename, `index.tsx`)) || tryResolve(joinPaths(filename, `index.d.ts`));
 }
 const tsConfigCache = createCache();
 const tsConfigRefMap = /* @__PURE__ */ new Map();
@@ -13932,8 +14146,8 @@ function fileToScope(ctx, filename, asGlobal = false) {
 }
 function parseFile(filename, content, fs, parserPlugins) {
 	const ext = (0, path.extname)(filename);
-	if (ext === ".uts" || ext === ".ts" || ext === ".mts" || ext === ".tsx" || ext === ".mtsx") return (0, _babel_parser.parse)(content, {
-		plugins: resolveParserPlugins(ext.slice(1), parserPlugins, /\.d\.m?ts$/.test(filename)),
+	if (ext === ".uts" || ext === ".ts" || ext === ".mts" || ext === ".tsx" || ext === ".cts" || ext === ".mtsx") return (0, _babel_parser.parse)(content, {
+		plugins: resolveParserPlugins(ext.slice(1), parserPlugins, /\.d\.[cm]?ts$/.test(filename)),
 		sourceType: "module"
 	}).program.body;
 	const isUnknownTypeSource = !/\.[cm]?[tj]sx?$/.test(filename);
@@ -14563,7 +14777,18 @@ function genRuntimePropFromType(ctx, { key, required, type, skipCheck }, hasStat
 			return resolveObjectKey(node.key, node.computed) === key;
 		});
 		if (prop) if (prop.type === "ObjectProperty") defaultString = `default: ${ctx.getString(prop.value)}`;
-		else defaultString = `${prop.async ? "async " : ""}${prop.kind !== "method" ? `${prop.kind} ` : ""}default() ${ctx.getString(prop.body)}`;
+		else {
+			let paramsString = "";
+			if (prop.params.length) {
+				const start = prop.params[0].start;
+				const end = prop.params[prop.params.length - 1].end;
+				paramsString = ctx.getString({
+					start,
+					end
+				});
+			}
+			defaultString = `${prop.async ? "async " : ""}${prop.kind !== "method" ? `${prop.kind} ` : ""}default(${paramsString}) ${ctx.getString(prop.body)}`;
+		}
 	}
 	const finalKey = getEscapedPropName(key);
 	if (!ctx.options.isProd) return `${finalKey}: { ${concatStrings([
@@ -15486,7 +15711,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-beta.5";
+const version = "3.6.0-beta.7";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,
