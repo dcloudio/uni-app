@@ -30078,6 +30078,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                         "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => content.value = $event),
                         class: normalizeClass(["uni-modal_dialog__content__textarea", { "uni-modal_dark__mode": theme.value == "dark" }]),
                         "placeholder-class": "modalContent_content_edit_placeholder",
+                        focus: true,
                         "adjust-position": false,
                         onBlur: onInputBlur,
                         onKeyboardheightchange: onInputKeyboardChange,

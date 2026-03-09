@@ -16,6 +16,7 @@
 						class="uni-modal_dialog__content__textarea"
 						placeholder-class="modalContent_content_edit_placeholder"
 						:class="{ 'uni-modal_dark__mode': theme == 'dark'}"
+						:focus="true"
 						:adjust-position="false"
 						@blur="onInputBlur" @keyboardheightchange="onInputKeyboardChange"
 						:auto-height="isAutoHeight"
