@@ -9,6 +9,7 @@ import type {
 } from '@dcloudio/uni-app-x/types/uni'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import type { ComponentPublicInstance, VNode } from 'vue'
+import { isFunction } from '@vue/shared'
 
 type NodeInfo = Partial<
   _NodeInfo & {
@@ -26,8 +27,6 @@ export function isVueComponent(comp: any) {
 
   return has$instance && has$el
 }
-
-const isFunction = (val: any): val is Function => typeof val === 'function'
 
 class NodesRefImpl implements NodesRef {
   private _selectorQuery: SelectorQueryImpl
@@ -378,11 +377,15 @@ class QuerySelectorHelper {
         nodeInfo.width = rect.width
         nodeInfo.height = rect.height
       }
+
+      if (this._fields.context == true) {
+        nodeInfo.context = element
+      }
       return nodeInfo
     }
 
     const rect = element.getBoundingClientRect()
-    const nodeInfo = {
+    const nodeInfo: NodeInfo = {
       id: element.getAttribute('id')?.toString(),
       dataset: null,
       left: rect.left,
@@ -391,6 +394,10 @@ class QuerySelectorHelper {
       bottom: rect.bottom,
       width: rect.width,
       height: rect.height,
+    }
+
+    if (this._fields.context == true) {
+      nodeInfo.context = element
     }
     return nodeInfo
   }
