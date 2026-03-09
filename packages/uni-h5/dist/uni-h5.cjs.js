@@ -8119,7 +8119,7 @@ function initHooks(options, instance, publicThis) {
       const $basePage = false ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
-          invokeHook(publicThis, uniShared.ON_SHOW);
+          return invokeHook(publicThis, uniShared.ON_SHOW);
         }
       }
     } catch (e2) {
