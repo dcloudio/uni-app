@@ -204,11 +204,14 @@ arkUI版本，需要自行编译原始工程。
 - picker组件：加载省市区4000条数据。无等待弹出组件
 - <!-- 占位video-->
 - slide组件：拖动100个slider，流畅丝滑
-- <!-- 占位video-->
+
+https://github.com/user-attachments/assets/2d3cbbe5-b5f6-4774-800e-c1260a0d2777
+
 - loading组件：屏幕上同时旋转100个loading不掉帧（录屏后从120掉帧到60）
  <a href="https://youtube.com/shorts/OKjrnNoJoJo?si=9-IS36VEohlebqvG">
     <img width="410" height="606" alt="image" src="https://github.com/user-attachments/assets/567c9450-be30-4fd6-9fe5-a4dc7b93caff" />
   </a>
+  
 - canvas组件：屏幕上同时移动数百个小球不掉帧
   <details>
   <summary>点击展开查看视频演示</summary>
@@ -280,6 +283,7 @@ arkUI版本，需要自行编译原始工程。
 
 
 也就是`uni-app x蒸汽模式`，作为跨平台开发框架，实现了业内期盼已久的梦想：**即跨平台，又比原生性能更高**。
+
 
 
 
