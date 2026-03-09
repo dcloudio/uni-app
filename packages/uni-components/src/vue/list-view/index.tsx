@@ -115,11 +115,10 @@ const props = {
     type: [Number, String],
     default: 0,
   },
-  // 暂不支持
-  // scrollIntoView: {
-  //   type: String,
-  //   default: '',
-  // },
+  scrollIntoView: {
+    type: String,
+    default: '',
+  },
   scrollWithAnimation: {
     type: [Boolean, String],
     default: false,
@@ -148,7 +147,7 @@ const props = {
 
 type Props = ExtractPropTypes<typeof props>
 
-export class UniListViewElement extends UniElement {}
+export class UniListViewElement extends UniElement { }
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ListView',
   props,
@@ -287,6 +286,35 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         containerRef.value.scrollLeft = val
       }
     })
+    watch(() => props.scrollIntoView, (val) => {
+      _scrollIntoViewChanged(val)
+    })
+
+    function _scrollIntoViewChanged(val: string) {
+      if (val) {
+        if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
+          console.error(`id error: scroll-into-view=${val}`)
+          return
+        }
+        let element = containerRef.value!.querySelector('#' + val)
+        if (element) {
+          let mainRect = containerRef.value!.getBoundingClientRect()
+          let elRect = element.getBoundingClientRect()
+          if (!isVertical.value) {
+            let left = elRect.left - mainRect.left
+            let scrollLeft = containerRef.value!.scrollLeft
+            let x = scrollLeft + left
+            containerRef.value!.scrollLeft = x
+          }
+          if (isVertical.value) {
+            let top = elRect.top - mainRect.top
+            let scrollTop = containerRef.value!.scrollTop
+            let y = scrollTop + top
+            containerRef.value!.scrollTop = y
+          }
+        }
+      }
+    }
 
     let lastScrollLeft = 0
     let lastScrollTop = 0
@@ -404,25 +432,22 @@ export default /*#__PURE__*/ defineBuiltInComponent({
      * scroll-behavior: smooth; 自chrome61版本起支持，safari自15.4版本起支持。除safari外无兼容问题
      */
     const containerStyle = computed(() => {
-      return `${
-        props.direction === 'none'
-          ? 'overflow: hidden;'
-          : props.direction === 'all'
+      return `${props.direction === 'none'
+        ? 'overflow: hidden;'
+        : props.direction === 'all'
           ? 'overflow: auto;'
           : isVertical.value
-          ? 'overflow: hidden auto;'
-          : 'overflow: auto hidden;'
-      }scroll-behavior: ${props.scrollWithAnimation ? 'smooth' : 'auto'};`
+            ? 'overflow: hidden auto;'
+            : 'overflow: auto hidden;'
+        }scroll-behavior: ${props.scrollWithAnimation ? 'smooth' : 'auto'};`
     })
     const contentStyle = computed(() => {
-      return `position: relative; ${isVertical.value ? 'height' : 'width'}: ${
-        state.totalSize
-      }px;`
+      return `position: relative; ${isVertical.value ? 'height' : 'width'}: ${state.totalSize
+        }px;`
     })
     const visibleStyle = computed(() => {
-      return `position: absolute; ${
-        isVertical.value ? 'width' : 'height'
-      }: 100%; ${isVertical.value ? 'top' : 'left'}: ${state.placehoderSize}px;`
+      return `position: absolute; ${isVertical.value ? 'width' : 'height'
+        }: 100%; ${isVertical.value ? 'top' : 'left'}: ${state.placehoderSize}px;`
     })
 
     let visibleVNode = null as VNode | null
@@ -449,11 +474,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-list-view ref={rootRef} class="uni-list-view">
           <div
             ref={containerRef}
-            class={`uni-list-view-container ${
-              props.showScrollbar === false
-                ? 'uni-list-view-scrollbar-hidden'
-                : ''
-            }`}
+            class={`uni-list-view-container ${props.showScrollbar === false
+              ? 'uni-list-view-scrollbar-hidden'
+              : ''
+              }`}
             style={containerStyle.value}
           >
             {refresherEnabled ? (
@@ -493,6 +517,8 @@ interface State {
   loadScreenThreshold: number
   refresherHeight: number
   refreshState: RefreshState
+  lastRenderOffsetMin: number
+  lastRenderOffsetMax: number
 }
 
 function useListViewState(props: Props) {
@@ -512,6 +538,8 @@ function useListViewState(props: Props) {
     loadScreenThreshold: 8,
     refresherHeight: 0,
     refreshState: '',
+    lastRenderOffsetMin: 0,
+    lastRenderOffsetMax: 0,
   })
   return {
     state,
@@ -530,14 +558,10 @@ function shouldRearrange(
     : containerRef.value!.scrollLeft
   const loadScreenThresholdSize =
     state.containerSize * state.loadScreenThreshold
-  const rearrangeOffsetMin = state.placehoderSize + loadScreenThresholdSize
+  const rearrangeOffsetMin = state.lastRenderOffsetMin + loadScreenThresholdSize
   const rearrangeOffsetMax =
-    state.placehoderSize + state.visibleSize - loadScreenThresholdSize
-  return (
-    (offset < rearrangeOffsetMin && state.placehoderSize > 0) ||
-    (offset > rearrangeOffsetMax &&
-      state.placehoderSize + state.visibleSize < state.totalSize)
-  )
+    state.lastRenderOffsetMax - loadScreenThresholdSize
+  return offset < rearrangeOffsetMin || offset > rearrangeOffsetMax
 }
 
 function rearrange(
@@ -564,6 +588,8 @@ function rearrange(
     offset + state.containerSize * (state.cacheScreenCount + 1),
     offsetMin + 1
   )
+  state.lastRenderOffsetMin = offsetMin
+  state.lastRenderOffsetMax = offsetMax
   let tempTotalSize = 0
   let tempVisibleSize = 0
   let tempPlaceholderSize = 0
@@ -573,10 +599,55 @@ function rearrange(
     const childType = child.component?.type.name
     const status = child.component?.exposed?.__listViewChildStatus
     if (childType === 'StickySection') {
-      const { headSize, tailSize } = status as StickySectionStatus
+      const { headSize, tailSize, placeholderSize } = status as StickySectionStatus
       tempTotalSize += headSize.value
-      traverseStickySection(child, callback)
+      let tempPlaceholderSizeOfSection = 0;
+      traverseStickySection(child, (child: VNode) => {
+        const childType = child.component?.type.name
+        const status = child.component?.exposed?.__listViewChildStatus
+        if (childType === 'StickyHeader') {
+          const { cachedSize, cachedSizeUpdated } = status as StickyHeaderStatus
+          if (
+            cachedSizeUpdated &&
+            cachedSize > 0 &&
+            !state.defaultHeaderSizeUpdated
+          ) {
+            state.defaultHeaderSize = cachedSize
+            state.defaultHeaderSizeUpdated = true
+          }
+          tempTotalSize += cachedSize || state.defaultHeaderSize
+          tempVisibleSize += cachedSize
+        } else if (childType === 'ListItem') {
+          const { cachedSize, cachedSizeUpdated } = status as ListItemStatus
+          if (
+            cachedSizeUpdated &&
+            cachedSize > 0 &&
+            !state.defaultItemSizeUpdated
+          ) {
+            state.defaultItemSize = cachedSize
+            state.defaultItemSizeUpdated = true
+          }
+          const itemSize = cachedSize || state.defaultItemSize
+          tempTotalSize += itemSize
+          if (!start && tempTotalSize > offsetMin) {
+            start = true
+          }
+
+          if (start && !end) {
+            tempVisibleSize += itemSize
+            status.visible.value = true
+          } else {
+            status.visible.value = false
+            tempPlaceholderSizeOfSection += itemSize
+          }
+          if (!end && tempTotalSize >= offsetMax) {
+            end = true
+          }
+        }
+      })
+      tempVisibleSize += tempPlaceholderSizeOfSection
       tempTotalSize += tailSize.value
+      placeholderSize.value = tempPlaceholderSizeOfSection
     } else if (childType === 'ListItem') {
       const { cachedSize, cachedSizeUpdated } = status as ListItemStatus
       if (
@@ -725,7 +796,7 @@ function handleTouchEvent(
         event.preventDefault()
     } else if (
       containerEl.scrollHeight ===
-        containerEl.offsetHeight + containerEl.scrollTop &&
+      containerEl.offsetHeight + containerEl.scrollTop &&
       y < touchStart.y
     ) {
       needStop = false
