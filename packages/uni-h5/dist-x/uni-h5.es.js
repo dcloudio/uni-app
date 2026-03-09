@@ -18236,11 +18236,10 @@ const props$e = {
     type: [Number, String],
     default: 0
   },
-  // 暂不支持
-  // scrollIntoView: {
-  //   type: String,
-  //   default: '',
-  // },
+  scrollIntoView: {
+    type: String,
+    default: ""
+  },
   scrollWithAnimation: {
     type: [Boolean, String],
     default: false
@@ -18376,6 +18375,34 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         containerRef.value.scrollLeft = val;
       }
     });
+    watch(() => props2.scrollIntoView, (val) => {
+      _scrollIntoViewChanged(val);
+    });
+    function _scrollIntoViewChanged(val) {
+      if (val) {
+        if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
+          console.error(`id error: scroll-into-view=${val}`);
+          return;
+        }
+        let element = containerRef.value.querySelector("#" + val);
+        if (element) {
+          let mainRect = containerRef.value.getBoundingClientRect();
+          let elRect = element.getBoundingClientRect();
+          if (!isVertical.value) {
+            let left = elRect.left - mainRect.left;
+            let scrollLeft = containerRef.value.scrollLeft;
+            let x = scrollLeft + left;
+            containerRef.value.scrollLeft = x;
+          }
+          if (isVertical.value) {
+            let top = elRect.top - mainRect.top;
+            let scrollTop = containerRef.value.scrollTop;
+            let y = scrollTop + top;
+            containerRef.value.scrollTop = y;
+          }
+        }
+      }
+    }
     let lastScrollLeft = 0;
     let lastScrollTop = 0;
     onActivated(() => {
@@ -18537,7 +18564,9 @@ function useListViewState(props2) {
     cacheScreenCount: 10,
     loadScreenThreshold: 8,
     refresherHeight: 0,
-    refreshState: ""
+    refreshState: "",
+    lastRenderOffsetMin: 0,
+    lastRenderOffsetMax: 0
   });
   return {
     state: state2,
@@ -18547,9 +18576,9 @@ function useListViewState(props2) {
 function shouldRearrange(containerRef, isVertical, state2) {
   const offset = isVertical.value ? containerRef.value.scrollTop : containerRef.value.scrollLeft;
   const loadScreenThresholdSize = state2.containerSize * state2.loadScreenThreshold;
-  const rearrangeOffsetMin = state2.placehoderSize + loadScreenThresholdSize;
-  const rearrangeOffsetMax = state2.placehoderSize + state2.visibleSize - loadScreenThresholdSize;
-  return offset < rearrangeOffsetMin && state2.placehoderSize > 0 || offset > rearrangeOffsetMax && state2.placehoderSize + state2.visibleSize < state2.totalSize;
+  const rearrangeOffsetMin = state2.lastRenderOffsetMin + loadScreenThresholdSize;
+  const rearrangeOffsetMax = state2.lastRenderOffsetMax - loadScreenThresholdSize;
+  return offset < rearrangeOffsetMin || offset > rearrangeOffsetMax;
 }
 function rearrange(visibleVNode, containerRef, isVertical, state2) {
   if (!visibleVNode) {
@@ -18562,6 +18591,8 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
   const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
   const offsetMin = Math.max(offset - state2.containerSize * state2.cacheScreenCount, 0);
   const offsetMax = Math.max(offset + state2.containerSize * (state2.cacheScreenCount + 1), offsetMin + 1);
+  state2.lastRenderOffsetMin = offsetMin;
+  state2.lastRenderOffsetMax = offsetMax;
   let tempTotalSize = 0;
   let tempVisibleSize = 0;
   let tempPlaceholderSize = 0;
@@ -18573,11 +18604,55 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
     if (childType === "StickySection") {
       const {
         headSize,
-        tailSize
+        tailSize,
+        placeholderSize
       } = status;
       tempTotalSize += headSize.value;
-      traverseStickySection(child, callback);
+      let tempPlaceholderSizeOfSection = 0;
+      traverseStickySection(child, (child2) => {
+        var _a2, _b2, _c2;
+        const childType2 = (_a2 = child2.component) == null ? void 0 : _a2.type.name;
+        const status2 = (_c2 = (_b2 = child2.component) == null ? void 0 : _b2.exposed) == null ? void 0 : _c2.__listViewChildStatus;
+        if (childType2 === "StickyHeader") {
+          const {
+            cachedSize,
+            cachedSizeUpdated
+          } = status2;
+          if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultHeaderSizeUpdated) {
+            state2.defaultHeaderSize = cachedSize;
+            state2.defaultHeaderSizeUpdated = true;
+          }
+          tempTotalSize += cachedSize || state2.defaultHeaderSize;
+          tempVisibleSize += cachedSize;
+        } else if (childType2 === "ListItem") {
+          const {
+            cachedSize,
+            cachedSizeUpdated
+          } = status2;
+          if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultItemSizeUpdated) {
+            state2.defaultItemSize = cachedSize;
+            state2.defaultItemSizeUpdated = true;
+          }
+          const itemSize = cachedSize || state2.defaultItemSize;
+          tempTotalSize += itemSize;
+          if (!start && tempTotalSize > offsetMin) {
+            start = true;
+          }
+          if (start && !end) {
+            tempVisibleSize += itemSize;
+            status2.visible.value = true;
+          } else {
+            status2.visible.value = false;
+            tempPlaceholderSizeOfSection += itemSize;
+          }
+          if (!end && tempTotalSize >= offsetMax) {
+            end = true;
+          }
+        }
+      });
+      tempVisibleSize += tempPlaceholderSizeOfSection;
       tempTotalSize += tailSize.value;
+      placeholderSize.value = tempPlaceholderSizeOfSection;
     } else if (childType === "ListItem") {
       const {
         cachedSize,
@@ -18863,12 +18938,18 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = ref(null);
     const isVertical = inject("__listViewIsVertical");
+    const placeholderSize = ref(0);
     const style = computed(() => {
+      const padding = props2.padding;
+      const paddingTop = padding[0];
+      const paddingRight = padding[1];
+      const paddingBottom = padding[2];
+      const paddingLeft = padding[3];
       return {
-        paddingTop: props2.padding[0] + "px",
-        paddingRight: props2.padding[1] + "px",
-        paddingBottom: props2.padding[2] + "px",
-        paddingLeft: props2.padding[3] + "px"
+        paddingTop: paddingTop + "px",
+        paddingRight: paddingRight + "px",
+        paddingBottom: (isVertical.value ? paddingBottom + placeholderSize.value : paddingBottom) + "px",
+        paddingLeft: (isVertical.value ? paddingLeft : paddingLeft + placeholderSize.value) + "px"
       };
     });
     const headSize = computed(() => {
@@ -18880,7 +18961,8 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     const status = {
       type: "StickySection",
       headSize,
-      tailSize
+      tailSize,
+      placeholderSize
     };
     expose({
       __listViewChildStatus: status

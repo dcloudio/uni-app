@@ -1,5 +1,5 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
-import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
+import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, onMounted, onBeforeUnmount, getCurrentGenericInstance, injectHook, defineComponent, getCurrentInstance, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
@@ -326,7 +326,7 @@ function getApiCallbacks(args) {
   var apiCallbacks = {};
   for (var name in args) {
     var fn = args[name];
-    if (isFunction$1(fn)) {
+    if (isFunction(fn)) {
       apiCallbacks[name] = tryCatch(fn);
       delete args[name];
     }
@@ -353,16 +353,16 @@ function createAsyncApiCallback(name) {
     fail,
     complete
   } = getApiCallbacks(args);
-  var hasSuccess = isFunction$1(success);
-  var hasFail = isFunction$1(fail);
-  var hasComplete = isFunction$1(complete);
+  var hasSuccess = isFunction(success);
+  var hasFail = isFunction(fail);
+  var hasComplete = isFunction(complete);
   var callbackId2 = invokeCallbackId++;
   addInvokeCallback(callbackId2, name, (res) => {
     res = res || {};
     res.errMsg = normalizeErrMsg(res.errMsg, name);
-    isFunction$1(beforeAll) && beforeAll(res);
+    isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
-      isFunction$1(beforeSuccess) && beforeSuccess(res, args);
+      isFunction(beforeSuccess) && beforeSuccess(res, args);
       hasSuccess && success(res);
     } else {
       hasFail && fail(res);
@@ -420,7 +420,7 @@ function wrapperOptions(interceptors) {
     var oldCallback = options[name];
     options[name] = function callbackInterceptor(res) {
       queue(hooks, res, options).then((res2) => {
-        return isFunction$1(oldCallback) && oldCallback(res2) || res2;
+        return isFunction(oldCallback) && oldCallback(res2) || res2;
       });
     };
   });
@@ -472,7 +472,7 @@ function invokeApi(method, api, options, params) {
   return api(options, ...params);
 }
 function hasCallback(args) {
-  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction$1(args[cb]))) {
+  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
     return true;
   }
   return false;
@@ -507,7 +507,7 @@ function formatApiArgs(args, options) {
   for (var i = 0; i < keys.length; i++) {
     var name = keys[i];
     var formatterOrDefaultValue = formatArgs[name];
-    if (isFunction$1(formatterOrDefaultValue)) {
+    if (isFunction(formatterOrDefaultValue)) {
       var errMsg = formatterOrDefaultValue(args[0][name], params);
       if (isString(errMsg)) {
         return errMsg;
@@ -562,7 +562,7 @@ function beforeInvokeApi(name, args, protocol, options) {
   }
 }
 function checkCallback(callback) {
-  if (!isFunction$1(callback)) {
+  if (!isFunction(callback)) {
     throw new Error('Invalid args: type check failed for args "callback". Expected Function');
   }
 }
@@ -1012,7 +1012,7 @@ function addCurrentPageWithInitScope(pageId, pageVm, pageInstance) {
   addCurrentPage(initScope(pageId, pageVm, pageInstance));
 }
 function isVuePageAsyncComponent(component) {
-  return isFunction$1(component);
+  return isFunction(component);
 }
 var pagesMap = /* @__PURE__ */ new Map();
 function definePage(pagePath, asyncComponent) {
@@ -1099,7 +1099,7 @@ var API_ADD_INTERCEPTOR = "addInterceptor";
 var API_REMOVE_INTERCEPTOR = "removeInterceptor";
 function mergeInterceptorHook(interceptors2, interceptor) {
   Object.keys(interceptor).forEach((hook) => {
-    if (isFunction$1(interceptor[hook])) {
+    if (isFunction(interceptor[hook])) {
       interceptors2[hook] = mergeHook(interceptors2[hook], interceptor[hook]);
     }
   });
@@ -1111,7 +1111,7 @@ function removeInterceptorHook(interceptors2, interceptor) {
   Object.keys(interceptor).forEach((name) => {
     var hooks = interceptors2[name];
     var hook = interceptor[name];
-    if (isArray(hooks) && isFunction$1(hook)) {
+    if (isArray(hooks) && isFunction(hook)) {
       remove(hooks, hook);
     }
   });
@@ -3364,7 +3364,6 @@ function isVueComponent(comp) {
   var has$el = typeof comp.$el === "object";
   return has$instance && has$el;
 }
-var isFunction = (val) => typeof val === "function";
 class NodesRefImpl {
   constructor(selectorQuery, component, selector, single) {
     this._selectorQuery = selectorQuery;
@@ -3581,6 +3580,9 @@ class QuerySelectorHelper {
         nodeInfo2.width = rect2.width;
         nodeInfo2.height = rect2.height;
       }
+      if (this._fields.context == true) {
+        nodeInfo2.context = element;
+      }
       return nodeInfo2;
     }
     var rect = element.getBoundingClientRect();
@@ -3594,6 +3596,9 @@ class QuerySelectorHelper {
       width: rect.width,
       height: rect.height
     };
+    if (this._fields.context == true) {
+      nodeInfo.context = element;
+    }
     return nodeInfo;
   }
 }
