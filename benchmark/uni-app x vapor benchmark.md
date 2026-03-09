@@ -208,7 +208,12 @@ arkUI版本，需要自行编译原始工程。
 - loading组件：屏幕上同时旋转100个loading不掉帧（录屏后从120掉帧到60）
 - [youtube观看视频](https://youtube.com/shorts/OKjrnNoJoJo?feature=share)
 - canvas组件：屏幕上同时移动数百个小球不掉帧
-- <!-- 占位video-->
+  <details>
+  <summary>点击展开查看视频演示</summary>
+  <a href="https://youtube.com/shorts/KT8D_rPhEG0?si=Aaaq6Jlar5KNVlMQ">
+    <img width="410" height="644" alt="image" src="https://github.com/user-attachments/assets/a26b6b15-b44b-4f14-b1d9-24a07fbe6d68" />
+  </a>
+</details>
 - 众多表单组件均有100或200个创建速度测试监控。hello uni-app x 模板中还提供了日历、竖滑视频、侧滑删除长列表、ai chat的流式打字机等性能考验示例
 <!-- 占位video-->
 <!-- 占位video-->
@@ -273,4 +278,5 @@ arkUI版本，需要自行编译原始工程。
 
 
 也就是`uni-app x蒸汽模式`，作为跨平台开发框架，实现了业内期盼已久的梦想：**即跨平台，又比原生性能更高**。
+
 
