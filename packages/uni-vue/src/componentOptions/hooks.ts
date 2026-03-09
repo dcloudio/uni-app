@@ -99,9 +99,8 @@ export function initHooks(
           } else {
             invokeHook(publicThis, ON_SHOW)
           }
-          return
           //#endif
-          invokeHook(publicThis, ON_SHOW)
+          return invokeHook(publicThis, ON_SHOW)
         }
       }
     } catch (e: any) {
