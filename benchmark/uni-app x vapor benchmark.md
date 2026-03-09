@@ -206,7 +206,9 @@ arkUI版本，需要自行编译原始工程。
 - slide组件：拖动100个slider，流畅丝滑
 - <!-- 占位video-->
 - loading组件：屏幕上同时旋转100个loading不掉帧（录屏后从120掉帧到60）
-- [youtube观看视频](https://youtube.com/shorts/OKjrnNoJoJo?feature=share)
+ <a href="https://youtube.com/shorts/OKjrnNoJoJo?si=9-IS36VEohlebqvG">
+    <img width="410" height="606" alt="image" src="https://github.com/user-attachments/assets/567c9450-be30-4fd6-9fe5-a4dc7b93caff" />
+  </a>
 - canvas组件：屏幕上同时移动数百个小球不掉帧
   <details>
   <summary>点击展开查看视频演示</summary>
@@ -278,5 +280,6 @@ arkUI版本，需要自行编译原始工程。
 
 
 也就是`uni-app x蒸汽模式`，作为跨平台开发框架，实现了业内期盼已久的梦想：**即跨平台，又比原生性能更高**。
+
 
 
