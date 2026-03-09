@@ -654,6 +654,8 @@ export declare const DYNAMIC_RENDER_OPCODE: {
   readonly CREATE_FOR_SLOTS: 45;
   readonly CREATE_DYNAMIC_SLOT_VECTOR: 46;
   readonly WITH_VAPOR_CTX: 47;
+  readonly CREATE_KEYED_FRAGMENT: 48;
+  readonly CREATE_BLOCK_VECTOR: 49;
   readonly SET_PROP: 60;
   readonly SET_DYNAMIC_PROPS: 61;
   readonly SET_TEXT: 62;
