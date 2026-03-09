@@ -4,7 +4,7 @@ import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import type { StickySectionStatus } from '../list-view/types'
 
-export class UniStickySectionElement extends UniElement {}
+export class UniStickySectionElement extends UniElement { }
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'StickySection',
   props: {
@@ -22,12 +22,18 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   setup(props, { slots, expose }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const isVertical = inject('__listViewIsVertical') as ComputedRef<boolean>
+    const placeholderSize = ref(0)
     const style = computed(() => {
+      const padding = props.padding
+      const paddingTop = padding[0]
+      const paddingRight = padding[1]
+      const paddingBottom = padding[2]
+      const paddingLeft = padding[3]
       return {
-        paddingTop: props.padding[0] + 'px',
-        paddingRight: props.padding[1] + 'px',
-        paddingBottom: props.padding[2] + 'px',
-        paddingLeft: props.padding[3] + 'px',
+        paddingTop: paddingTop + 'px',
+        paddingRight: paddingRight + 'px',
+        paddingBottom: (isVertical.value ? paddingBottom + placeholderSize.value : paddingBottom) + 'px',
+        paddingLeft: (isVertical.value ? paddingLeft : paddingLeft + placeholderSize.value) + 'px',
       }
     })
 
@@ -41,6 +47,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       type: 'StickySection',
       headSize,
       tailSize,
+      placeholderSize
     }
     expose({
       __listViewChildStatus: status,
