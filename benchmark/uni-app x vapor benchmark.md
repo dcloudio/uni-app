@@ -199,30 +199,34 @@ arkUI版本，需要自行编译原始工程。
 开发者可以在 `hello uni-app x` 中体验各种组件的性能测试，几乎每个组件的示例中，都单独提供了 组件性能测试。
 
 - rich-text组件：App平台的rich-text过去一直没有太好的解决方案。鸿蒙自身的richText组件也是基于webview渲染的，存在加载慢、内存占用高、快滑白屏等问题。uni-app x 蒸汽模式 提供更快的rich-text组件。以下测试，加载5万字长文、59张插图。可以看到无等待进入页面。上下快滑不掉帧、除了联网图片加载外滑不出白屏。
-- <!-- 占位video-->
+
+https://github.com/user-attachments/assets/9d6e7e3e-b23c-4264-bd2d-006a291a1e74
+
 **注：录屏时帧率只能为60Hz，实际使用时是完整的120Hz。下同**
+
 - swiper组件：加载100个item。无等待进入页面。在上述5万字长文中点击图片，可以看到swiper中无等待呈现59张图片，左右切换图片无延迟
+
 - picker组件：加载省市区4000条数据。无等待弹出组件
-- <!-- 占位video-->
+
+https://github.com/user-attachments/assets/ad96de37-3665-41b6-b005-bd271e6fe3c1
+
 - slide组件：拖动100个slider，流畅丝滑
 
 https://github.com/user-attachments/assets/2d3cbbe5-b5f6-4774-800e-c1260a0d2777
 
 - loading组件：屏幕上同时旋转100个loading不掉帧（录屏后从120掉帧到60）
- <a href="https://youtube.com/shorts/OKjrnNoJoJo?si=9-IS36VEohlebqvG">
-    <img width="410" height="606" alt="image" src="https://github.com/user-attachments/assets/567c9450-be30-4fd6-9fe5-a4dc7b93caff" />
-  </a>
-  
+
+https://github.com/user-attachments/assets/262f9113-8616-455b-a863-d78c7006c74a
+
 - canvas组件：屏幕上同时移动数百个小球不掉帧
-  <details>
-  <summary>点击展开查看视频演示</summary>
-  <a href="https://youtube.com/shorts/KT8D_rPhEG0?si=Aaaq6Jlar5KNVlMQ">
-    <img width="410" height="644" alt="image" src="https://github.com/user-attachments/assets/a26b6b15-b44b-4f14-b1d9-24a07fbe6d68" />
-  </a>
-</details>
+
+https://github.com/user-attachments/assets/d9944f9a-07f3-4466-9098-5e7e191430bc
+
 - 众多表单组件均有100或200个创建速度测试监控。hello uni-app x 模板中还提供了日历、竖滑视频、侧滑删除长列表、ai chat的流式打字机等性能考验示例
-<!-- 占位video-->
-<!-- 占位video-->
+
+https://github.com/user-attachments/assets/b324a313-d6d0-46ad-8bff-54bd144b5677
+
+https://github.com/user-attachments/assets/a8c5ca1c-0734-47b2-9901-e2a0f31ebbca
 
 在ai时代，很多App都需要内嵌一个开源的AI对话聊天库，能流式解析markdown，解析过程不掉帧。为此DCloud推出开源的uni-ai x，详见[https://ext.dcloud.net.cn/plugin?id=23902](https://ext.dcloud.net.cn/plugin?id=23902)
 
@@ -284,6 +288,7 @@ https://github.com/user-attachments/assets/2d3cbbe5-b5f6-4774-800e-c1260a0d2777
 
 
 也就是`uni-app x蒸汽模式`，作为跨平台开发框架，实现了业内期盼已久的梦想：**即跨平台，又比原生性能更高**。
+
 
 
 
