@@ -2,7 +2,6 @@
 	<view class="uni-modal_dialog__mask" :class="{ 'uni-modal_dialog__mask__show': showAnim,'uni-modal_dialog__mask__hide': !showAnim }" >
 
 		<view class="uni-modal_dialog__container"
-			id="modal_content"
 			:style="{bottom:inputBottom}"
 			:class="{'uni-modal_dialog__show': showAnim,  'uni-modal_dark__mode': theme == 'dark'}">
 			<!--ios need -->
@@ -13,15 +12,12 @@
 				</text>
 
 				<view class="uni-modal_dialog__content">
-
 					<textarea v-if="editable" v-model="content"
 						class="uni-modal_dialog__content__textarea"
 						placeholder-class="modalContent_content_edit_placeholder"
 						:class="{ 'uni-modal_dark__mode': theme == 'dark'}"
 						:adjust-position="false"
 						@blur="onInputBlur" @keyboardheightchange="onInputKeyboardChange"
-						id="textarea_content_input"
-						ref="ref_textarea_content_input"
 						:auto-height="isAutoHeight"
 						:placeholder="placeholderText" />
 
@@ -34,7 +30,6 @@
 							{{ content }}
 						</text>
 					</scroll-view>
-
 				</view>
 
 				<view class="uni-modal_dialog__content__topline" :class="{ 'uni-modal_dark__mode': theme == 'dark'}"></view>
@@ -571,4 +566,61 @@ onBackPress((_): boolean | null => {
 	.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {
 		background-color: #303030;
 	}
+	/* #ifdef WEB */
+	.uni-textarea-wrapper{
+		min-height: 18px!important;
+	  display: block;
+	  position: relative;
+	  width: 100%;
+	  height: 100%;
+	  min-height: inherit;
+	  overflow-y: hidden;
+	}
+	.uni-textarea-textarea {
+	  outline: none;
+	  border: none;
+	  padding: 0;
+	  margin: 0;
+	  text-decoration: inherit;
+	}
+	.uni-textarea-placeholder,
+	.uni-textarea-line,
+	.uni-textarea-compute,
+	.uni-textarea-textarea {
+	  position: absolute;
+	  width: 100%;
+	  height: 100%;
+	  left: 0;
+	  top: 0;
+	  white-space: inherit;
+	  word-break: inherit;
+	}
+	.uni-textarea-line,
+	.uni-textarea-compute {
+	  visibility: hidden;
+	  height: auto;
+	}
+	.uni-textarea-line {
+	  width: 1em;
+	}
+	
+	.uni-textarea-textarea {
+		box-sizing: border-box;
+	  resize: none;
+	  background: none;
+	  color: inherit;
+	  opacity: 1;
+	  font: inherit;
+	  line-height: inherit;
+	  letter-spacing: inherit;
+	  text-align: inherit;
+	  text-indent: inherit;
+	  text-transform: inherit;
+	  text-shadow: inherit;
+	}
+	.uni-textarea-placeholder {
+		color: grey;
+		overflow: hidden;
+	}
+	/* #endif */
 </style>
