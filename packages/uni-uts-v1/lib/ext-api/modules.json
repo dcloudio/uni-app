@@ -271,7 +271,11 @@
       }
     }
   },
-  "uni-editor": {},
+  "uni-editor": {
+    "easycom": [
+      "editor"
+    ]
+  },
   "uni-event": {
     "uni": {
       "$on": {
