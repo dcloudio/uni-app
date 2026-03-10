@@ -533,6 +533,12 @@ export interface DynamicRuntimeAdapter<NodeRef = unknown> {
   child(node: NodeRef): NodeRef;
   next(node: NodeRef): NodeRef;
   nthChild(node: NodeRef, index: number): NodeRef;
+  setInsertionState?(node: NodeRef, anchor: NodeRef | null, last: boolean): void;
+  setText?(node: NodeRef, value: unknown): void;
+  setEvent?(node: NodeRef, eventName: unknown, handler: unknown, options: unknown): void;
+  setDynamicEvents?(node: NodeRef, value: unknown): void;
+  setTemplateRef?(node: NodeRef, value: unknown): void;
+  applyVShow?(node: NodeRef, value: unknown): void;
 }
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/dynamic/bridge/programLoader.d.ts
@@ -688,10 +694,12 @@ export declare const DYNAMIC_RENDER_OPCODE: {
 };
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/dynamic/vm/interpreter.d.ts
+type DynamicNodeRef = unknown;
 export interface DynamicVmExecuteOptions {
   constResolver?: (constIndex: number) => unknown;
   sharedDataResolver?: (fieldId: number) => unknown;
   sharedDataInstance?: DynamicSharedDataInstanceRef;
+  runtimeAdapter?: DynamicRuntimeAdapter<DynamicNodeRef>;
   onUnsupportedOpcode?: (instruction: DynamicVmInstruction) => void;
 }
 export interface DynamicVmExecuteResult {

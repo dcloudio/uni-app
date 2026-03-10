@@ -355,9 +355,9 @@ const UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY = [
     'map',
     'loading',
     'rich-text',
+    'editor',
 ];
 function isAppHarmonyUVueNativeTag(tag) {
-    // video 目前是easycom实现的
     if (UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY.includes(tag)) {
         return false;
     }
