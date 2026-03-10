@@ -390,10 +390,10 @@ const UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY = [
   'map',
   'loading',
   'rich-text',
+  'editor',
 ]
 
 export function isAppHarmonyUVueNativeTag(tag: string) {
-  // video 目前是easycom实现的
   if (UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY.includes(tag)) {
     return false
   }
