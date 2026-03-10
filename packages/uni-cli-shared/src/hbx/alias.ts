@@ -54,7 +54,12 @@ export function initModuleAlias() {
   }
 
   if (process.env.UNI_APP_X_DOM2 === 'true') {
-    if (process.env.UNI_APP_PLATFORM && process.env.UNI_OUTPUT_DIR) {
+    if (
+      process.env.UNI_OUTPUT_DIR &&
+      (process.env.UNI_PLATFORM === 'app' ||
+        process.env.UNI_PLATFORM === 'app-plus' ||
+        process.env.UNI_PLATFORM === 'app-harmony')
+    ) {
       if (!process.env.UNI_APP_X_DOM2_CPP_DIR) {
         const baseDir =
           process.env.UNI_PLATFORM === 'app-harmony'
