@@ -534,6 +534,8 @@ export interface DynamicRuntimeAdapter<NodeRef = unknown> {
   next(node: NodeRef): NodeRef;
   nthChild(node: NodeRef, index: number): NodeRef;
   setInsertionState?(node: NodeRef, anchor: NodeRef | null, last: boolean): void;
+  createComponentFallback?(source: unknown): NodeRef;
+  createSlot?(node: NodeRef, slotName: unknown, blockValue: unknown): void;
   setText?(node: NodeRef, value: unknown): void;
   setEvent?(node: NodeRef, eventName: unknown, handler: unknown, options: unknown): void;
   setDynamicEvents?(node: NodeRef, value: unknown): void;
@@ -699,6 +701,7 @@ export interface DynamicVmExecuteOptions {
   constResolver?: (constIndex: number) => unknown;
   sharedDataResolver?: (fieldId: number) => unknown;
   sharedDataInstance?: DynamicSharedDataInstanceRef;
+  initialRegisters?: unknown[];
   runtimeAdapter?: DynamicRuntimeAdapter<DynamicNodeRef>;
   onUnsupportedOpcode?: (instruction: DynamicVmInstruction) => void;
 }
