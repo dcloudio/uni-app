@@ -50,6 +50,51 @@ describe('uni_modules:cloud', () => {
       parseUniModulesWithComponents(inputDir, 'mp-weixin')
     ).toMatchSnapshot()
   })
+
+  test('parseUniModulesWithComponents(app-android vapor)', () => {
+    const dom2 = process.env.UNI_APP_X_DOM2
+    process.env.UNI_APP_X_DOM2 = 'true'
+    try {
+      expect(
+        parseUniModulesWithComponents(inputDir, 'app-android')
+      ).toMatchSnapshot()
+    } finally {
+      if (dom2 === undefined) {
+        delete process.env.UNI_APP_X_DOM2
+      } else {
+        process.env.UNI_APP_X_DOM2 = dom2
+      }
+    }
+  })
+})
+
+describe('uni_modules:uni-ext-api vapor', () => {
+  const inputDir = path.resolve(__dirname, '../../playground/uni_modules/src')
+  test('findUploadEncryptUniModulesFiles(app-android vapor)', () => {
+    const dom2 = process.env.UNI_APP_X_DOM2
+    process.env.UNI_APP_X_DOM2 = 'true'
+    try {
+      const modules = findUploadEncryptUniModulesFiles(
+        findCloudEncryptUniModules('app-android', inputDir),
+        'app-android',
+        inputDir
+      )
+      expect(
+        Object.keys(modules).reduce((res: string[], id: string) => {
+          res.push(
+            ...modules[id].map((item) => normalizePath(item).split('/src/')[1])
+          )
+          return res
+        }, [])
+      ).toMatchSnapshot()
+    } finally {
+      if (dom2 === undefined) {
+        delete process.env.UNI_APP_X_DOM2
+      } else {
+        process.env.UNI_APP_X_DOM2 = dom2
+      }
+    }
+  })
 })
 describe('uni_modules:nonTreeShaking', () => {
   test('should return true when treeShaking is false', () => {
