@@ -588,8 +588,10 @@ export async function checkEncryptUniModules(
       process.exit(0)
     }
   } else {
-    // android 平台需要在这里初始化
-    if (params.platform === 'app-android') {
+    const isLegacyAppAndroidX =
+      params.platform === 'app-android' && process.env.UNI_APP_X_DOM2 !== 'true'
+    // 仅旧版 Android x 需要在缓存命中时额外初始化
+    if (isLegacyAppAndroidX) {
       const { R } = requireUniHelpers()
       R({
         dir: process.env.UNI_INPUT_DIR,
