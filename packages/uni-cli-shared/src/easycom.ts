@@ -152,7 +152,7 @@ export function initEasycoms(
         clearUTSComponents()
         clearUTSCustomElements()
         initEasycom(easyComOptions)
-        if (isX) {
+        if (supportCustomElements) {
           initUTSEasycomCustomElements()
         }
         initUTSEasycom()
