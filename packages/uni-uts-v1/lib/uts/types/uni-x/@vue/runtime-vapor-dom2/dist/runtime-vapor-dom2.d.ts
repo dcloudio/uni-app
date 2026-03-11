@@ -552,6 +552,7 @@ export interface DynamicRuntimeAdapter<NodeRef = unknown> {
   createDynamicSlotVector?(node: NodeRef): void;
   createKeyedFragment?(key: unknown, blockValue: unknown): NodeRef;
   setProp?(node: NodeRef, propName: unknown, args: unknown[]): void;
+  setDynamicProps?(node: NodeRef, value: unknown): void;
   setText?(node: NodeRef, value: unknown): void;
   setEvent?(node: NodeRef, eventName: unknown, handler: unknown, options: unknown): void;
   setDynamicEvents?(node: NodeRef, value: unknown): void;
