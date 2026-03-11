@@ -322,8 +322,12 @@ export function initAutoImportOptions(
 ): AutoImportOptions {
   rewriteAutoImportOnce()
   const autoImport = [vuePreset]
-  // 只有app-ios和app-harmony平台特殊处理
-  if (platform === 'app-ios' || platform === 'app-harmony') {
+  // JS 引擎的 App 平台统一走 vue 生命周期导入
+  if (
+    platform === 'app-ios' ||
+    platform === 'app-harmony' ||
+    (platform === 'app-android' && process.env.UNI_APP_X_DOM2 === 'true')
+  ) {
     autoImport.push(uniAppLifeCyclePreset)
   } else if (platform === 'web') {
     autoImport.push(uniWebLifeCyclePreset)
