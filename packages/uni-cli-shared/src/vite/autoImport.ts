@@ -357,8 +357,10 @@ export function initAutoImportOptions(
     include: [/\.[u]?ts$/, /\.[u]?vue/],
     exclude,
     imports: (imports as any[]).concat(
-      // app-android 平台暂不注入其他
-      platform === 'app-android' ? [] : autoImport
+      // 旧版 Android x 仍由专有编译流程处理，Android 蒸汽模式对齐 iOS 走通用自动导入
+      platform === 'app-android' && process.env.UNI_APP_X_DOM2 !== 'true'
+        ? []
+        : autoImport
     ),
     dts: false,
   }
