@@ -3,7 +3,7 @@ import type { RPT2Options } from 'rollup-plugin-typescript2'
 import { createBasicUtsOptions } from '../utils/options'
 interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   dom2?: boolean
-  platform: 'app-ios' | 'app-harmony' | 'mp-weixin' | 'web'
+  platform: 'app-android' | 'app-ios' | 'app-harmony' | 'mp-weixin' | 'web'
   inputDir: string
   version: string
   modules: Record<string, any>

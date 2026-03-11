@@ -26,7 +26,7 @@ export function getOutputManifestJson() {
 }
 
 export function uniAppManifestPlugin(
-  platform: 'app-ios' | 'app-harmony'
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
 ): Plugin {
   const manifestJsonPath = path.resolve(
     process.env.UNI_INPUT_DIR,

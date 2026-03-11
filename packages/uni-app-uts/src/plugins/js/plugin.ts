@@ -41,7 +41,7 @@ export function initUniAppJsEngineDom1CssPlugin(config: ResolvedConfig) {
 }
 
 export function createUniAppJsEnginePlugin(
-  platform: 'app-ios' | 'app-harmony'
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
 ) {
   return function uniAppJsEnginePlugin(): UniVitePlugin {
     const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
@@ -91,11 +91,14 @@ export function createUniAppJsEnginePlugin(
       : {}
 
     const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+    const isAndroid = platform === 'app-android'
+    const isIOS = platform === 'app-ios'
+    const isHarmony = platform === 'app-harmony'
     const globals = {
       vue: 'Vue',
       '@vue/shared': 'uni.VueShared',
     }
-    if (isDom2 && process.env.UNI_UTS_PLATFORM === 'app-ios') {
+    if (isDom2 && (isAndroid || isIOS)) {
       globals[SHARED_DATA_LIB_NAME] = '__uniSharedDataLib'
     }
     return {
@@ -110,19 +113,18 @@ export function createUniAppJsEnginePlugin(
             sourcemap,
             emptyOutDir: false,
             assetsInlineLimit: 0,
-            target:
-              process.env.UNI_UTS_PLATFORM === 'app-ios'
-                ? [
-                    'ios12',
-                    'es2020',
-                    'edge88',
-                    'firefox78',
-                    'chrome87',
-                    'safari14',
-                  ]
-                : process.env.UNI_UTS_PLATFORM === 'app-harmony'
-                ? ['es2022']
-                : undefined,
+            target: isIOS
+              ? [
+                  'ios12',
+                  'es2020',
+                  'edge88',
+                  'firefox78',
+                  'chrome87',
+                  'safari14',
+                ]
+              : isHarmony
+              ? ['es2022']
+              : undefined,
             rollupOptions: {
               input: resolveMainPathOnce(inputDir),
               // import "libentry.so"
