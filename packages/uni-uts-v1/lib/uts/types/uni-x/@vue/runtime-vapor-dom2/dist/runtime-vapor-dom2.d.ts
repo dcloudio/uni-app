@@ -525,6 +525,13 @@ export interface DynamicSharedDataInstanceRef {
   values: unknown[];
   flags: Uint32Array;
 }
+export interface DynamicVmBlockInvokeOptions {
+  args?: unknown[];
+  sharedDataInstance?: DynamicSharedDataInstanceRef | null;
+}
+export interface DynamicVmBlockHandle {
+  invoke(options?: DynamicVmBlockInvokeOptions): unknown;
+}
 export interface DynamicRuntimeAdapter<NodeRef = unknown> {
   getField(instance: DynamicSharedDataInstanceRef, fieldId: number): unknown;
   setField(instance: DynamicSharedDataInstanceRef, fieldId: number, value: unknown): void;
@@ -534,8 +541,14 @@ export interface DynamicRuntimeAdapter<NodeRef = unknown> {
   next(node: NodeRef): NodeRef;
   nthChild(node: NodeRef, index: number): NodeRef;
   setInsertionState?(node: NodeRef, anchor: NodeRef | null, last: boolean): void;
+  createFor?(source: unknown, renderBlock: DynamicVmBlockHandle, keyBlock?: DynamicVmBlockHandle | null): NodeRef;
+  createRecycleFor?(source: unknown, renderBlock: DynamicVmBlockHandle, keyBlock?: DynamicVmBlockHandle | null, typeBlock?: DynamicVmBlockHandle | null): NodeRef;
   createComponentFallback?(source: unknown): NodeRef;
   createSlot?(node: NodeRef, slotName: unknown, blockValue: unknown): void;
+  createDynamicSlot?(node: NodeRef, slotName: unknown, blockValue: unknown): void;
+  createForSlots?(node: NodeRef, source: unknown, renderBlock: DynamicVmBlockHandle): void;
+  createDynamicSlotVector?(node: NodeRef): void;
+  createKeyedFragment?(key: unknown, blockValue: unknown): NodeRef;
   setText?(node: NodeRef, value: unknown): void;
   setEvent?(node: NodeRef, eventName: unknown, handler: unknown, options: unknown): void;
   setDynamicEvents?(node: NodeRef, value: unknown): void;
@@ -560,6 +573,10 @@ export interface DynamicVmInstruction {
   a: number;
   b: number;
   c: number;
+}
+export interface DynamicVmBlockEffect {
+  blockId: number;
+  instructions: DynamicVmInstruction[];
 }
 export interface DynamicVmSharedField {
   fieldId: number;
@@ -590,6 +607,7 @@ export interface DynamicVmProgram {
   constPool: unknown[];
   instructions: DynamicVmInstruction[];
   effectInstructions: DynamicVmInstruction[];
+  blockEffects?: DynamicVmBlockEffect[];
 }
 export interface DynamicVmBundle {
   sharedSchema?: DynamicVmSharedSchema;
@@ -702,12 +720,19 @@ export interface DynamicVmExecuteOptions {
   sharedDataResolver?: (fieldId: number) => unknown;
   sharedDataInstance?: DynamicSharedDataInstanceRef;
   initialRegisters?: unknown[];
+  initialEffectFrames?: DynamicVmEffectFrame[];
   runtimeAdapter?: DynamicRuntimeAdapter<DynamicNodeRef>;
   onUnsupportedOpcode?: (instruction: DynamicVmInstruction) => void;
+}
+export interface DynamicVmEffectFrame {
+  instructions: DynamicVmInstruction[];
+  registers: unknown[];
+  sharedDataInstance?: DynamicSharedDataInstanceRef;
 }
 export interface DynamicVmExecuteResult {
   returnValue: unknown;
   registers: unknown[];
+  effectFrames: DynamicVmEffectFrame[];
 }
 export declare function executeDynamicVmProgram(program: DynamicVmProgram, options?: DynamicVmExecuteOptions): DynamicVmExecuteResult;
 export declare function executeDynamicVmEffectProgram(program: DynamicVmProgram, options?: DynamicVmExecuteOptions): DynamicVmExecuteResult;
