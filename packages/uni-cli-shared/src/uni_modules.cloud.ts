@@ -480,12 +480,16 @@ export function resolveEncryptUniModule(
           }
         }
       }
-      // 原生平台走旧的uts-proxy
+      // 仅旧版 Android x 原生引擎走 uts-proxy，JS 引擎与其他平台统一走 uni_helpers
       return normalizePath(
         path.join(
           process.env.UNI_INPUT_DIR,
           `uni_modules/${uniModuleId}?${
-            isX && platform === 'app-android' ? 'uts-proxy' : 'uni_helpers'
+            isX &&
+            platform === 'app-android' &&
+            process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE !== 'js'
+              ? 'uts-proxy'
+              : 'uni_helpers'
           }`
         )
       )

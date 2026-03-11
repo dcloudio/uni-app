@@ -348,9 +348,9 @@ function initAutoScanEasycom(
                 path.join(
                   rootDir,
                   `uni_modules/${uni_modules_plugin_id}?${
-                    // android 走 proxy
                     process.env.UNI_APP_X === 'true' &&
-                    process.env.UNI_UTS_PLATFORM === 'app-android'
+                    process.env.UNI_UTS_PLATFORM === 'app-android' &&
+                    process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE !== 'js'
                       ? 'uts-proxy'
                       : 'uni_helpers'
                   }`
