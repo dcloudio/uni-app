@@ -543,12 +543,15 @@ export interface DynamicRuntimeAdapter<NodeRef = unknown> {
   setInsertionState?(node: NodeRef, anchor: NodeRef | null, last: boolean): void;
   createFor?(source: unknown, renderBlock: DynamicVmBlockHandle, keyBlock?: DynamicVmBlockHandle | null): NodeRef;
   createRecycleFor?(source: unknown, renderBlock: DynamicVmBlockHandle, keyBlock?: DynamicVmBlockHandle | null, typeBlock?: DynamicVmBlockHandle | null): NodeRef;
+  createComponent?(source: unknown): NodeRef;
   createComponentFallback?(source: unknown): NodeRef;
+  createDynamicComponent?(source: unknown): NodeRef;
   createSlot?(node: NodeRef, slotName: unknown, blockValue: unknown): void;
   createDynamicSlot?(node: NodeRef, slotName: unknown, blockValue: unknown): void;
   createForSlots?(node: NodeRef, source: unknown, renderBlock: DynamicVmBlockHandle): void;
   createDynamicSlotVector?(node: NodeRef): void;
   createKeyedFragment?(key: unknown, blockValue: unknown): NodeRef;
+  setProp?(node: NodeRef, propName: unknown, args: unknown[]): void;
   setText?(node: NodeRef, value: unknown): void;
   setEvent?(node: NodeRef, eventName: unknown, handler: unknown, options: unknown): void;
   setDynamicEvents?(node: NodeRef, value: unknown): void;

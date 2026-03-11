@@ -7,6 +7,17 @@ import { ImportItem } from "@vue/compiler-core";
 
 //#region \0rolldown/runtime.js
 //#endregion
+//#region packages/runtime-dom/src/directives/vShow.d.ts
+declare const vShowOriginalDisplay: unique symbol;
+declare const vShowHidden: unique symbol;
+interface VShowElement extends HTMLElement {
+  [vShowOriginalDisplay]?: string;
+  [vShowHidden]?: boolean;
+}
+declare const vShow: ObjectDirective<VShowElement> & {
+  name: "show";
+};
+//#endregion
 //#region node_modules/.pnpm/@types+trusted-types@2.0.7/node_modules/@types/trusted-types/lib/index.d.ts
 declare class TrustedHTML {
   private constructor(); // To prevent instantiting with 'new'.
@@ -76,17 +87,6 @@ declare function callPendingCbs(el: any): void;
 declare function baseApplyTranslation(oldPos: Position$1, newPos: Position$1, el: ElementWithTransition): boolean;
 declare function hasCSSTransform(el: ElementWithTransition, root: Node, moveClass: string): boolean;
 declare const handleMovedChildren: (el: ElementWithTransition, moveClass: string) => void;
-//#endregion
-//#region packages/runtime-dom/src/directives/vShow.d.ts
-declare const vShowOriginalDisplay: unique symbol;
-declare const vShowHidden: unique symbol;
-interface VShowElement extends HTMLElement {
-  [vShowOriginalDisplay]?: string;
-  [vShowHidden]?: boolean;
-}
-declare const vShow: ObjectDirective<VShowElement> & {
-  name: "show";
-};
 //#endregion
 //#region packages/runtime-dom/src/directives/vOn.d.ts
 declare const systemModifiers: readonly ["ctrl", "shift", "alt", "meta"];
