@@ -912,7 +912,10 @@ __ins.emit(event, ...do_not_transform_spread)
 
   let templateHash = ''
   let scriptMap: RawSourceMap | undefined
-  // 9. generate return statement
+  let templateCode = ''
+  let templatePreamble = ''
+  let templateMap: RawSourceMap | undefined
+  // 9. generate template render function and preamble code
   // 剩余由 rust 编译器处理
   if (options.componentType !== 'app') {
     const { code, ast, preamble, map } = processTemplate(sfc, {
@@ -922,44 +925,13 @@ __ins.emit(event, ...do_not_transform_spread)
       className: options.className,
       sourceMap: options.sourceMap,
     })
-    if (preamble) {
-      ctx.s.prepend(preamble)
-    }
+    templateCode = code
+    templatePreamble = preamble || ''
+    templateMap = map
     // fixed by uts 开发模式会返回 hash
     if (ast && (ast as any).hash) {
       templateHash = (ast as any).hash
     }
-    // 放到最后，以免查找 offset 有问题
-    let offset = map ? ctx.s.toString().match(/\r?\n/g)?.length ?? 0 : 0
-    if (process.env.UNI_APP_X_DOM2 === 'true') {
-      ctx.s.appendRight(endOffset, `\n${code}\n}\n\n})`)
-    } else {
-      ctx.s.appendRight(endOffset, `\nreturn ${code}\n}\n\n})`)
-    }
-
-    scriptMap =
-      options.sourceMap !== false
-        ? (ctx.s.generateMap({
-            source: relativeFilename,
-            hires: true,
-            includeContent: true,
-          }) as unknown as RawSourceMap)
-        : undefined
-    if (map && scriptMap) {
-      scriptMap = generateScriptMap(offset, map, scriptMap)
-    }
-  } else {
-    ctx.s.appendRight(endOffset, 'return (): any | null => { return null } }\n')
-    ctx.s.appendRight(endOffset, `})`)
-    ctx.s.trim()
-    scriptMap =
-      options.sourceMap !== false
-        ? (ctx.s.generateMap({
-            source: relativeFilename,
-            hires: true,
-            includeContent: true,
-          }) as unknown as RawSourceMap)
-        : undefined
   }
 
   // 10. finalize default export
@@ -1080,6 +1052,47 @@ __ins.emit(event, ...do_not_transform_spread)
 ${setupPreambleLines.length ? `${setupPreambleLines.join('\n')}` : ''}
 ${exposeCall}`
   )
+
+  // 11. generate return statement
+  // 剩余由 rust 编译器处理
+  if (options.componentType !== 'app') {
+    if (templatePreamble) {
+      ctx.s.prepend(templatePreamble)
+    }
+    // 放到最后，以免查找 offset 有问题
+    const offset = templateMap
+      ? ctx.s.toString().match(/\r?\n/g)?.length ?? 0
+      : 0
+    if (process.env.UNI_APP_X_DOM2 === 'true') {
+      ctx.s.appendRight(endOffset, `\n${templateCode}\n}\n\n})`)
+    } else {
+      ctx.s.appendRight(endOffset, `\nreturn ${templateCode}\n}\n\n})`)
+    }
+
+    scriptMap =
+      options.sourceMap !== false
+        ? (ctx.s.generateMap({
+            source: relativeFilename,
+            hires: true,
+            includeContent: true,
+          }) as unknown as RawSourceMap)
+        : undefined
+    if (templateMap && scriptMap) {
+      scriptMap = generateScriptMap(offset, templateMap, scriptMap)
+    }
+  } else {
+    ctx.s.appendRight(endOffset, 'return (): any | null => { return null } }\n')
+    ctx.s.appendRight(endOffset, `})`)
+    ctx.s.trim()
+    scriptMap =
+      options.sourceMap !== false
+        ? (ctx.s.generateMap({
+            source: relativeFilename,
+            hires: true,
+            includeContent: true,
+          }) as unknown as RawSourceMap)
+        : undefined
+  }
 
   // 12. finalize Vue helper imports
   // if (ctx.helperImports.size > 0) {

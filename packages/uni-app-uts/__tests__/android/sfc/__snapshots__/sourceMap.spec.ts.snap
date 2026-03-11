@@ -101,7 +101,7 @@ export default __sfc__
 //# sourceMappingURL=setup-style-template.vue.map"
 `;
 
-exports[`SFC sourceMap setup-style-template order: setup-style-template.vue.map 1`] = `"{"version":3,"sources":["pages/setup-style-template.vue"],"names":[],"mappings":"AAAwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;SAUhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<script setup lang=\\"ts\\">\\nconst msg = 'Setup-Style-Template'\\n</script>\\n\\n<style>\\n.page {\\n  color: purple;\\n}\\n</style>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template> "]}"`;
+exports[`SFC sourceMap setup-style-template order: setup-style-template.vue.map 1`] = `"{"version":3,"sources":["pages/setup-style-template.vue"],"names":[],"mappings":";;;;;;;AAAwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SAUhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<script setup lang=\\"ts\\">\\nconst msg = 'Setup-Style-Template'\\n</script>\\n\\n<style>\\n.page {\\n  color: purple;\\n}\\n</style>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template> "]}"`;
 
 exports[`SFC sourceMap setup-template order: setup-template.vue 1`] = `
 "
@@ -129,7 +129,7 @@ export default __sfc__
 //# sourceMappingURL=setup-template.vue.map"
 `;
 
-exports[`SFC sourceMap setup-template order: setup-template.vue.map 1`] = `"{"version":3,"sources":["pages/setup-template.vue"],"names":[],"mappings":"AAAwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;SAI1B,IAEO;IADL,IAAsB,kBAAb,GAAG","sourcesContent":["<script setup lang=\\"ts\\">\\nconst msg = 'Setup-Template'\\n</script>\\n\\n<template>\\n  <view>\\n    <text>{{ msg }}</text>\\n  </view>\\n</template> "]}"`;
+exports[`SFC sourceMap setup-template order: setup-template.vue.map 1`] = `"{"version":3,"sources":["pages/setup-template.vue"],"names":[],"mappings":";;;;;;;AAAwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SAI1B,IAEO;IADL,IAAsB,kBAAb,GAAG","sourcesContent":["<script setup lang=\\"ts\\">\\nconst msg = 'Setup-Template'\\n</script>\\n\\n<template>\\n  <view>\\n    <text>{{ msg }}</text>\\n  </view>\\n</template> "]}"`;
 
 exports[`SFC sourceMap setup-template-style order: setup-template-style.vue 1`] = `
 "
@@ -157,7 +157,7 @@ export default __sfc__
 //# sourceMappingURL=setup-template-style.vue.map"
 `;
 
-exports[`SFC sourceMap setup-template-style order: setup-template-style.vue.map 1`] = `"{"version":3,"sources":["pages/setup-template-style.vue"],"names":[],"mappings":"AAAwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;SAIhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<script setup lang=\\"ts\\">\\nconst msg = 'Setup-Template-Style'\\n</script>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<style>\\n.page {\\n  color: orange;\\n}\\n</style> "]}"`;
+exports[`SFC sourceMap setup-template-style order: setup-template-style.vue.map 1`] = `"{"version":3,"sources":["pages/setup-template-style.vue"],"names":[],"mappings":";;;;;;;AAAwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SAIhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<script setup lang=\\"ts\\">\\nconst msg = 'Setup-Template-Style'\\n</script>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<style>\\n.page {\\n  color: orange;\\n}\\n</style> "]}"`;
 
 exports[`SFC sourceMap style-script-template order: style-script-template.vue 1`] = `
 "
@@ -210,7 +210,7 @@ export default __sfc__
 //# sourceMappingURL=style-setup-template.vue.map"
 `;
 
-exports[`SFC sourceMap style-setup-template order: style-setup-template.vue.map 1`] = `"{"version":3,"sources":["pages/style-setup-template.vue"],"names":[],"mappings":"AAMwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;SAIhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<style>\\n.page {\\n  color: red;\\n}\\n</style>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Style-Setup-Template'\\n</script>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template> "]}"`;
+exports[`SFC sourceMap style-setup-template order: style-setup-template.vue.map 1`] = `"{"version":3,"sources":["pages/style-setup-template.vue"],"names":[],"mappings":";;;;;;;AAMwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SAIhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<style>\\n.page {\\n  color: red;\\n}\\n</style>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Style-Setup-Template'\\n</script>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template> "]}"`;
 
 exports[`SFC sourceMap style-template order: style-template.vue 1`] = `
 "const __sfc__ = defineComponent({})
@@ -280,7 +280,7 @@ export default __sfc__
 //# sourceMappingURL=style-template-setup.vue.map"
 `;
 
-exports[`SFC sourceMap style-template-setup order: style-template-setup.vue.map 1`] = `"{"version":3,"sources":["pages/style-template-setup.vue"],"names":[],"mappings":"AAYwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;SANhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<style>\\n.page {\\n  color: cyan;\\n}\\n</style>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Style-Template-Setup'\\n</script> "]}"`;
+exports[`SFC sourceMap style-template-setup order: style-template-setup.vue.map 1`] = `"{"version":3,"sources":["pages/style-template-setup.vue"],"names":[],"mappings":";;;;;;;AAYwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SANhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<style>\\n.page {\\n  color: cyan;\\n}\\n</style>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Style-Template-Setup'\\n</script> "]}"`;
 
 exports[`SFC sourceMap template only: template.vue 1`] = `
 "const __sfc__ = defineComponent({})
@@ -325,7 +325,7 @@ export default __sfc__
 //# sourceMappingURL=template-setup.vue.map"
 `;
 
-exports[`SFC sourceMap template with script setup: template-setup.vue.map 1`] = `"{"version":3,"sources":["pages/template-setup.vue"],"names":[],"mappings":"AAMwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;SAN1B,IAEO;IADL,IAAsB,kBAAb,GAAG","sourcesContent":["<template>\\n  <view>\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Template-Setup'\\n</script>"]}"`;
+exports[`SFC sourceMap template with script setup: template-setup.vue.map 1`] = `"{"version":3,"sources":["pages/template-setup.vue"],"names":[],"mappings":";;;;;;;AAMwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SAN1B,IAEO;IADL,IAAsB,kBAAb,GAAG","sourcesContent":["<template>\\n  <view>\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Template-Setup'\\n</script>"]}"`;
 
 exports[`SFC sourceMap template with script: template-script.vue 1`] = `
 "
@@ -420,7 +420,7 @@ export default __sfc__
 //# sourceMappingURL=template-setup-style.vue.map"
 `;
 
-exports[`SFC sourceMap template-setup-style order: template-setup-style.vue.map 1`] = `"{"version":3,"sources":["pages/template-setup-style.vue"],"names":[],"mappings":"AAMwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;SANhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Template-Setup-Style'\\n</script>\\n\\n<style>\\n.page {\\n  color: green;\\n}\\n</style> "]}"`;
+exports[`SFC sourceMap template-setup-style order: template-setup-style.vue.map 1`] = `"{"version":3,"sources":["pages/template-setup-style.vue"],"names":[],"mappings":";;;;;;;AAMwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SANhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Template-Setup-Style'\\n</script>\\n\\n<style>\\n.page {\\n  color: green;\\n}\\n</style> "]}"`;
 
 exports[`SFC sourceMap template-style-script order: template-style-script.vue 1`] = `
 "
@@ -473,4 +473,4 @@ export default __sfc__
 //# sourceMappingURL=template-style-setup.vue.map"
 `;
 
-exports[`SFC sourceMap template-style-setup order: template-style-setup.vue.map 1`] = `"{"version":3,"sources":["pages/template-style-setup.vue"],"names":[],"mappings":"AAYwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;SAZhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<style>\\n.page {\\n  color: blue;\\n}\\n</style>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Template-Style-Setup'\\n</script> "]}"`;
+exports[`SFC sourceMap template-style-setup order: template-style-setup.vue.map 1`] = `"{"version":3,"sources":["pages/template-style-setup.vue"],"names":[],"mappings":";;;;;;;AAYwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SAZhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<style>\\n.page {\\n  color: blue;\\n}\\n</style>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Template-Style-Setup'\\n</script> "]}"`;
