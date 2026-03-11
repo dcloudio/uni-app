@@ -41,7 +41,7 @@ import {
   initPluginVueJsxOptions,
   initPluginVueOptions,
 } from './vue'
-import { initEnv } from './cli/utils'
+import { initEnv, isLegacyAppAndroidX } from './cli/utils'
 import { uniUVuePlugin } from './uvue/plugins'
 import path from 'path'
 
@@ -97,17 +97,12 @@ export default function uniPlugin(
   options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
   options.inputDir = process.env.UNI_INPUT_DIR
 
-  const plugins =
-    process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM === 'app-android'
-      ? createUVueAndroidPlugins(options)
-      : createPlugins(options)
+  const plugins = isLegacyAppAndroidX()
+    ? createUVueAndroidPlugins(options)
+    : createPlugins(options)
 
   // x 提供 auto import（非android、android自行处理）
-  if (
-    process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM !== 'app-android'
-  ) {
+  if (process.env.UNI_APP_X === 'true' && !isLegacyAppAndroidX()) {
     plugins.unshift(
       AutoImport(
         initAutoImportOptions(
@@ -132,7 +127,9 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
       // iOS 暂不使用该机制
       process.env.UNI_UTS_PLATFORM !== 'app-ios' &&
       // harmony 同 iOS
-      process.env.UNI_UTS_PLATFORM !== 'app-harmony'
+      process.env.UNI_UTS_PLATFORM !== 'app-harmony' &&
+      // dom2 Android 暂不使用该机制(只有dom2会进入该方法，不需要额外判断)
+      process.env.UNI_UTS_PLATFORM !== 'app-android'
     ) {
       plugins.push(uniUTSExtApiReplace())
     } else {
