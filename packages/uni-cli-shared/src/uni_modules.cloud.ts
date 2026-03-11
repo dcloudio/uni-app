@@ -406,14 +406,16 @@ function findUniModuleFiles(
   id: string,
   inputDir: string
 ) {
+  const isLegacyAppAndroidX =
+    platform === 'app-android' && process.env.UNI_APP_X_DOM2 !== 'true'
   return sync(`uni_modules/${id}/**/*`, {
     cwd: inputDir,
     absolute: true,
     ignore: [
       '**/*.md',
-      ...(platform !== 'app-android' // 非 android 平台不需要扫描 assets
-        ? [`**/*.{${KNOWN_ASSET_TYPES.join(',')}}`]
-        : []),
+      ...(isLegacyAppAndroidX // 仅旧版 Android x 需要扫描 assets
+        ? []
+        : [`**/*.{${KNOWN_ASSET_TYPES.join(',')}}`]),
     ],
   })
 }
