@@ -28,9 +28,9 @@ export async function transformExtApiVueFile(
   )
   const code = readFileSync(vueFileName, 'utf8')
 
-  if (platform === 'app-android') {
+  if (platform === 'app-android' && process.env.UNI_APP_X_DOM2 !== 'true') {
     return transformAppAndroidExtApiComponent(vueFileName, code)
-  } else if (platform === 'app-ios') {
+  } else if (platform === 'app-ios' || platform === 'app-android') {
     return transformAppIosExtApiComponent(vueFileName, code)
   }
 }
