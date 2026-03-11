@@ -38,7 +38,11 @@ export function initUVueEnv() {
   if (process.env.UNI_PLATFORM === 'app') {
     process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'native'
     // 如果是app-ios，目前强制使用js引擎
-    if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+    if (
+      process.env.UNI_UTS_PLATFORM === 'app-ios' ||
+      (process.env.UNI_UTS_PLATFORM === 'app-android' &&
+        process.env.UNI_APP_X_DOM2 === 'true')
+    ) {
       process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'js'
     }
   }

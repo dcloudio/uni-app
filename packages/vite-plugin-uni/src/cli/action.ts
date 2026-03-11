@@ -17,6 +17,7 @@ import { createSSRServer, createServer } from './server'
 import {
   type PLATFORM,
   initEnv,
+  isLegacyAppAndroidX,
   printStartupDuration,
   showRunPrompt,
 } from './utils'
@@ -33,10 +34,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
     ;(options as BuildOptions).minify = true
   }
   initEnv('dev', options)
-  if (
-    process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM === 'app-android'
-  ) {
+  if (isLegacyAppAndroidX()) {
     return runUVueAndroidDev(options)
   }
   const createLogger = await import('vite').then(
@@ -184,10 +182,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
 
 export async function runBuild(options: CliOptions & BuildOptions) {
   initEnv('build', options)
-  if (
-    process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM === 'app-android'
-  ) {
+  if (isLegacyAppAndroidX()) {
     return runUVueAndroidBuild(options)
   }
   try {
