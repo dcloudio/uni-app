@@ -67,7 +67,9 @@ export function createUniOptions(
       }
     },
     compilerOptions:
-      platform === 'app-ios' || platform === 'app-harmony'
+      platform === 'app-ios' ||
+      platform === 'app-harmony' ||
+      (platform === 'app-android' && isDom2)
         ? {
             isNativeTag(tag) {
               if (isDom2) {
@@ -94,7 +96,12 @@ export function createUniOptions(
                     (node.tagType === ElementTypes.COMPONENT &&
                       isAppUVueBuiltInEasyComponent(node.tag)))
                 ) {
-                  if (!parseUTSComponent(node.tag, 'swift')) {
+                  if (
+                    !parseUTSComponent(
+                      node.tag,
+                      platform === 'app-android' ? 'kotlin' : 'swift'
+                    )
+                  ) {
                     addExtApiComponents([node.tag])
                   }
                 }

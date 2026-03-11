@@ -1,6 +1,12 @@
-import { initAndroid, initIOS } from './plugins'
+import { initAndroid, initAndroidDom2, initIOS } from './plugins'
 
 export default () => {
+  if (
+    process.env.UNI_UTS_PLATFORM === 'app-android' &&
+    process.env.UNI_APP_X_DOM2 === 'true'
+  ) {
+    return initAndroidDom2()
+  }
   return process.env.UNI_UTS_PLATFORM === 'app-android'
     ? initAndroid()
     : process.env.UNI_UTS_PLATFORM === 'app-ios'
