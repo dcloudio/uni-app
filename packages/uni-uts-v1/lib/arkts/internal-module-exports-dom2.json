@@ -787,6 +787,9 @@
       "GetScreenBrightnessSuccessCallback"
     ],
     [
+      "GetSelectionTextOptionsRes"
+    ],
+    [
       "GetStorage"
     ],
     [
@@ -1052,6 +1055,9 @@
     ],
     [
       "IShareWithSystemFail"
+    ],
+    [
+      "IUniEditorElement"
     ],
     [
       "Icon"
@@ -2231,6 +2237,21 @@
     ],
     [
       "UniEditorElement"
+    ],
+    [
+      "UniEditorElementGetSelectionTextOptions"
+    ],
+    [
+      "UniEditorElementInsertImageOptions"
+    ],
+    [
+      "UniEditorElementInsertTextOptions"
+    ],
+    [
+      "UniEditorElementOptions"
+    ],
+    [
+      "UniEditorElementSetContentsOptions"
     ],
     [
       "UniHideModalFail"
