@@ -8309,6 +8309,7 @@ function triggerComputedStyleUpdate(instance, styles) {
       });
     }
   }
+  return styles;
 }
 var PartElementContextMap = /* @__PURE__ */new WeakMap();
 function setPartElementContext(el, context) {
@@ -8828,7 +8829,7 @@ function patchStyle(el, prev, next) {
     setRootElementInstance(el, instance);
     var computedStyleInterceptors = instance == null ? void 0 : instance.computedStyleInterceptors;
     if (computedStyleInterceptors) {
-      triggerComputedStyleUpdate(instance, batchedStyles);
+      batchedStyles = triggerComputedStyleUpdate(instance, new Map(batchedStyles));
     }
   }
   if (batchedStyles.size == 0) {

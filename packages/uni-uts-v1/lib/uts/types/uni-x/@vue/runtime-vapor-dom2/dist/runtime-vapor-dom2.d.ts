@@ -536,10 +536,10 @@ export interface DynamicRuntimeAdapter<NodeRef = unknown> {
   getField(instance: DynamicSharedDataInstanceRef, fieldId: number): unknown;
   setField(instance: DynamicSharedDataInstanceRef, fieldId: number, value: unknown): void;
   resetFlags(instance: DynamicSharedDataInstanceRef): void;
-  instantiateTemplate(templateId: number): NodeRef;
-  child(node: NodeRef): NodeRef;
-  next(node: NodeRef): NodeRef;
-  nthChild(node: NodeRef, index: number): NodeRef;
+  instantiateTemplate?(templateId: number): NodeRef;
+  child?(node: NodeRef): NodeRef;
+  next?(node: NodeRef): NodeRef;
+  nthChild?(node: NodeRef, index: number): NodeRef;
   setInsertionState?(node: NodeRef, anchor: NodeRef | null, last: boolean): void;
   createFor?(source: unknown, renderBlock: DynamicVmBlockHandle, keyBlock?: DynamicVmBlockHandle | null): NodeRef;
   createRecycleFor?(source: unknown, renderBlock: DynamicVmBlockHandle, keyBlock?: DynamicVmBlockHandle | null, typeBlock?: DynamicVmBlockHandle | null): NodeRef;
@@ -578,6 +578,77 @@ export interface DynamicVmInstruction {
   b: number;
   c: number;
 }
+export type DynamicVmTemplateCreateKind = "viewElement" | "textElement" | "imageElement" | "scrollViewElement" | "nativeView" | "nativeTextView" | "nativeImageView" | "nativeScrollView" | "nativeCustomView" | "textNode" | "commentNode" | "anchorNode";
+export type DynamicVmTemplateFlattenMode = "staticFalse" | "staticTrue" | "mainSharedDataFlatten";
+export interface DynamicVmTemplateCreateNodeOp {
+  kind: "createNode";
+  nodeId: string;
+  create: DynamicVmTemplateCreateKind;
+  flatten: DynamicVmTemplateFlattenMode;
+}
+export interface DynamicVmTemplateAppendChildOp {
+  kind: "appendChild";
+  parentNodeId: string;
+  childNodeId: string;
+}
+export interface DynamicVmTemplateSetTextLiteralOp {
+  kind: "setTextLiteral";
+  nodeId: string;
+  value: string;
+}
+export interface DynamicVmTemplateSetVueComponentIdOp {
+  kind: "setVueComponentId";
+  nodeId: string;
+}
+export interface DynamicVmTemplateEnumRefValue {
+  kind: "enumRef";
+  owner: string;
+  member: string;
+}
+export interface DynamicVmTemplateStaticArrayValue {
+  kind: "array";
+  items: DynamicVmTemplateStaticValue[];
+}
+export interface DynamicVmTemplateStaticObjectEntry {
+  key: DynamicVmTemplateStaticValue;
+  value: DynamicVmTemplateStaticValue;
+}
+export interface DynamicVmTemplateStaticObjectValue {
+  kind: "object";
+  entries: DynamicVmTemplateStaticObjectEntry[];
+}
+export type DynamicVmTemplateStaticCallable = string | DynamicVmTemplateEnumRefValue;
+export interface DynamicVmTemplateStaticCallValue {
+  kind: "call";
+  callee: DynamicVmTemplateStaticCallable;
+  args: DynamicVmTemplateStaticValue[];
+}
+export interface DynamicVmTemplateStaticNewValue {
+  kind: "new";
+  callee: string;
+  args: DynamicVmTemplateStaticValue[];
+}
+export type DynamicVmTemplateStaticValue = string | number | boolean | null | undefined | DynamicVmTemplateEnumRefValue | DynamicVmTemplateStaticArrayValue | DynamicVmTemplateStaticObjectValue | DynamicVmTemplateStaticCallValue | DynamicVmTemplateStaticNewValue;
+export interface DynamicVmTemplateSetStaticPropOp {
+  kind: "setStaticProp";
+  nodeId: string;
+  method: string;
+  args: DynamicVmTemplateStaticValue[];
+}
+export interface DynamicVmTemplateIncreaseNativeViewCounterOp {
+  kind: "increaseNativeViewCounter";
+  count: number;
+}
+export type DynamicVmTemplateFactoryOp = DynamicVmTemplateCreateNodeOp | DynamicVmTemplateAppendChildOp | DynamicVmTemplateSetTextLiteralOp | DynamicVmTemplateSetVueComponentIdOp | DynamicVmTemplateSetStaticPropOp | DynamicVmTemplateIncreaseNativeViewCounterOp;
+export interface DynamicVmTemplateFactory {
+  templateId: number;
+  renderer: string;
+  factoryName: string;
+  rootNodeIds: string[];
+  supported: boolean;
+  unsupportedReason?: string;
+  ops: DynamicVmTemplateFactoryOp[];
+}
 export interface DynamicVmBlockEffect {
   blockId: number;
   instructions: DynamicVmInstruction[];
@@ -615,6 +686,7 @@ export interface DynamicVmProgram {
 }
 export interface DynamicVmBundle {
   sharedSchema?: DynamicVmSharedSchema;
+  templates?: DynamicVmTemplateFactory[];
   programs: DynamicVmProgram[];
 }
 //#endregion
@@ -723,6 +795,7 @@ export interface DynamicVmExecuteOptions {
   constResolver?: (constIndex: number) => unknown;
   sharedDataResolver?: (fieldId: number) => unknown;
   sharedDataInstance?: DynamicSharedDataInstanceRef;
+  templateFactories?: DynamicVmTemplateFactory[];
   initialRegisters?: unknown[];
   initialEffectFrames?: DynamicVmEffectFrame[];
   runtimeAdapter?: DynamicRuntimeAdapter<DynamicNodeRef>;
