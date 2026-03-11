@@ -152,7 +152,10 @@ const REMOVED_PLUGINS = [
   'vite:reporter',
 ]
 
-if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+if (
+  process.env.UNI_UTS_PLATFORM === 'app-android' &&
+  process.env.UNI_APP_X_DOM2 !== 'true'
+) {
   REMOVED_PLUGINS.push('vite:esbuild-transpile')
   REMOVED_PLUGINS.push('vite:json')
 }
