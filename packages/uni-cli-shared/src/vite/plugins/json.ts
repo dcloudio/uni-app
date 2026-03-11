@@ -7,15 +7,16 @@ import { parseVueRequest } from '../utils'
 export function uniJsonPlugin(): Plugin {
   const UTS_CAST_ARRAY_MARKER = '/*__UTS_CAST_UTSJSON_ARRAY__*/'
   const UTS_CAST_OBJECT_MARKER = '/*__UTS_CAST_UTSJSON_OBJECT__*/'
-  const IS_UNI_X_ANDROID =
+  const IS_LEGACY_UNI_X_ANDROID =
     process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM === 'app-android'
+    process.env.UNI_UTS_PLATFORM === 'app-android' &&
+    process.env.UNI_APP_X_DOM2 !== 'true'
   return {
     name: 'uni:json',
     enforce: 'pre',
 
     generateBundle(options, bundle) {
-      if (IS_UNI_X_ANDROID) {
+      if (IS_LEGACY_UNI_X_ANDROID) {
         for (const [fileName, file] of Object.entries(bundle)) {
           if (fileName.endsWith('.json.ts')) {
             if (file.type === 'asset' && file.source) {
@@ -64,7 +65,7 @@ export function uniJsonPlugin(): Plugin {
 
       let codeObj = parseJson(preJson(code, id), false, id)
       let codeJson = ''
-      if (IS_UNI_X_ANDROID) {
+      if (IS_LEGACY_UNI_X_ANDROID) {
         if (Array.isArray(codeObj)) {
           codeJson +=
             'export default JSON.parseArray(`' +
