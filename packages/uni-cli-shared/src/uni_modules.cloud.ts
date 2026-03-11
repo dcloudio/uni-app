@@ -534,7 +534,7 @@ export async function checkEncryptUniModules(
   const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!
   const { zipFile, modules } = packUploadEncryptUniModules(
     curEncryptUniModules,
-    process.env.UNI_UTS_PLATFORM,
+    params.platform,
     inputDir,
     cacheDir
   )
