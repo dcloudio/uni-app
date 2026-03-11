@@ -22,7 +22,7 @@ function genEncryptEasyComModuleIndex(
       ids.push(id)
     }
     let instance = ''
-    if (platform === 'app-android') {
+    if (platform === 'app-android' && process.env.UNI_APP_X_DOM2 !== 'true') {
       instance = genUTSComponentPublicInstanceIdent(component)
       // 类型
       ids.push(instance)
