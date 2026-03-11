@@ -8926,6 +8926,7 @@ function triggerComputedStyleUpdate(instance, styles) {
       });
     }
   }
+  return styles;
 }
 
 const PartElementContextMap = /* @__PURE__ */ new WeakMap();
@@ -9421,7 +9422,7 @@ function patchStyle(el, prev, next, instance = null) {
   if (isString(next)) {
     next = parseStringStyle(next);
   }
-  const batchedStyles = /* @__PURE__ */ new Map();
+  let batchedStyles = /* @__PURE__ */ new Map();
   const isPrevObj = prev && !isString(prev);
   if (isPrevObj) {
     const classStyle = getExtraClassStyle(el);
@@ -9462,7 +9463,10 @@ function patchStyle(el, prev, next, instance = null) {
     setRootElementInstance(el, instance);
     const computedStyleInterceptors = instance == null ? void 0 : instance.computedStyleInterceptors;
     if (computedStyleInterceptors) {
-      triggerComputedStyleUpdate(instance, batchedStyles);
+      batchedStyles = triggerComputedStyleUpdate(
+        instance,
+        new Map(batchedStyles)
+      );
     }
   }
   if (batchedStyles.size == 0) {
