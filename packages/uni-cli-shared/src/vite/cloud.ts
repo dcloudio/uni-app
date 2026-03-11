@@ -80,6 +80,9 @@ export function uniEncryptUniModulesAssetsPlugin(): Plugin {
 export function uniEncryptUniModulesPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
   const isMp = process.env.UNI_UTS_PLATFORM.startsWith('mp-')
+  const isLegacyAppAndroidX =
+    process.env.UNI_UTS_PLATFORM === 'app-android' &&
+    process.env.UNI_APP_X_DOM2 !== 'true'
   const encryptModuleOutputFiles: string[] = []
   return {
     name: 'uni:encrypt-uni-modules',
@@ -111,7 +114,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       resolvedConfig = config
     },
     resolveId(id, importer) {
-      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+      if (!isLegacyAppAndroidX) {
         if (resolvedConfig.assetsInclude(cleanUrl(id))) {
           id = normalizePath(id)
           if (importer && (id.startsWith('./') || id.startsWith('../'))) {
@@ -125,7 +128,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       }
     },
     load(id) {
-      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+      if (!isLegacyAppAndroidX) {
         if (resolvedConfig.assetsInclude(cleanUrl(id))) {
           return {
             code: `export default ${JSON.stringify(id.replace(/\0/g, ''))}`,
@@ -138,8 +141,8 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       Object.keys(bundle).forEach((fileName) => {
         if (fileName.endsWith('.module.js')) {
           const uniModuleId = path.basename(fileName).replace('.module.js', '')
-          // app-android 不需要 js
-          if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+          // 仅旧版 Android x 不需要 js
+          if (!isLegacyAppAndroidX) {
             const newFileName =
               'uni_modules/' +
               fileName.replace('.module.js', '/index.module.js')
@@ -203,7 +206,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       }
     },
     async writeBundle() {
-      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+      if (!isLegacyAppAndroidX) {
         return
       }
       const uniXKotlinCompiler =
