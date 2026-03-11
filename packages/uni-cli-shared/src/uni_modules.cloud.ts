@@ -543,10 +543,10 @@ export async function checkEncryptUniModules(
     const { C, D, R, U } = requireUniHelpers()
     try {
       const isLogin = await C()
-      const tips =
-        process.env.UNI_UTS_PLATFORM !== 'app-android'
-          ? '（此过程耗时较长）'
-          : ''
+      const isLegacyAppAndroidX =
+        params.platform === 'app-android' &&
+        process.env.UNI_APP_X_DOM2 !== 'true'
+      const tips = !isLegacyAppAndroidX ? '（此过程耗时较长）' : ''
       console.log(
         `正在云编译插件${isLogin ? '' : '（请先登录）'}${tips}：${modules.join(
           ','
