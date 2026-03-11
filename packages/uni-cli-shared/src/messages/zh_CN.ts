@@ -66,5 +66,5 @@ export default {
     '页面"{pagePath}"不存在，请确保填写的页面路径不包含文件后缀，且必须与真实的文件路径大小写保持一致。',
   'pages.json.page.slash': '路径 "{pagePath}" 不能以 "/" 开头',
   'pages.json.tabbar.page.notfound':
-    'tabBar 中配置的页面 "{pagePath}" 未在 pages 中注册。',
+    'tabBar 中配置的页面 "{pagePath}" 未在 pages.json 中注册。',
 } as const

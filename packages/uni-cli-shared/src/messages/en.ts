@@ -63,5 +63,5 @@ export default {
   'pages.json.page.notfound': 'The page "{pagePath}" does not exist.',
   'pages.json.page.slash': 'The Path "{pagePath}" cannot start with "/"',
   'pages.json.tabbar.page.notfound':
-    'The tabBar page "{pagePath}" is not declared in "pages".',
+    'The tabBar page "{pagePath}" is not declared in "pages.json".',
 } as const
