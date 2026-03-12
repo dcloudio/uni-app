@@ -12,6 +12,7 @@ import {
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
   uniSharedDataPlugin,
+  uniStatsPlugin,
   uniUTSAppUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniUniModulesExtApiPlugin,
@@ -78,5 +79,6 @@ export function init() {
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
       ? [replaceExtApiPagePaths()]
       : []),
+    ...(isNormalCompileTarget() ? [uniStatsPlugin()] : []),
   ]
 }
