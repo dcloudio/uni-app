@@ -560,17 +560,6 @@ export interface DynamicRuntimeAdapter<NodeRef = unknown> {
   applyVShow?(node: NodeRef, value: unknown): void;
 }
 //#endregion
-//#region temp/packages/runtime-vapor-dom2/src/dynamic/bridge/programLoader.d.ts
-export type DynamicProgramKey = `${number}:${number}`;
-export interface DynamicProgramMeta {
-  engine: number;
-  renderer: number;
-  offset: number;
-  length: number;
-}
-export declare function createDynamicProgramKey(engine: number, renderer: number): DynamicProgramKey;
-export declare function indexDynamicPrograms(programs: DynamicProgramMeta[]): Record<DynamicProgramKey, DynamicProgramMeta>;
-//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/dynamic/vm/types.d.ts
 export interface DynamicVmInstruction {
   op: number;
@@ -689,6 +678,441 @@ export interface DynamicVmBundle {
   templates?: DynamicVmTemplateFactory[];
   programs: DynamicVmProgram[];
 }
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/vm/interpreter.d.ts
+type DynamicNodeRef = unknown;
+export interface DynamicVmExecuteOptions {
+  constResolver?: (constIndex: number) => unknown;
+  sharedDataResolver?: (fieldId: number) => unknown;
+  sharedDataInstance?: DynamicSharedDataInstanceRef;
+  templateFactories?: DynamicVmTemplateFactory[];
+  initialRegisters?: unknown[];
+  initialEffectFrames?: DynamicVmEffectFrame[];
+  runtimeAdapter?: DynamicRuntimeAdapter<DynamicNodeRef>;
+  onUnsupportedOpcode?: (instruction: DynamicVmInstruction) => void;
+}
+export interface DynamicVmEffectFrame {
+  instructions: DynamicVmInstruction[];
+  registers: unknown[];
+  sharedDataInstance?: DynamicSharedDataInstanceRef;
+}
+export interface DynamicVmExecuteResult {
+  returnValue: unknown;
+  registers: unknown[];
+  effectFrames: DynamicVmEffectFrame[];
+}
+export declare function executeDynamicVmProgram(program: DynamicVmProgram, options?: DynamicVmExecuteOptions): DynamicVmExecuteResult;
+export declare function executeDynamicVmEffectProgram(program: DynamicVmProgram, options?: DynamicVmExecuteOptions): DynamicVmExecuteResult;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/contracts/templateBridge.d.ts
+export type CppTemplateOpKind = "CREATE_NODE" | "APPEND_CHILD" | "SET_TEXT_LITERAL" | "SET_VUE_COMPONENT_ID" | "SET_STATIC_PROP" | "INCREASE_NATIVE_VIEW_COUNTER";
+export interface CppTemplateStaticPropContract {
+  method: string;
+  args: CppTemplateStaticValue[];
+}
+export interface CppTemplateNodeContract {
+  templateId: number;
+  nodeId: string;
+  create: string;
+  flatten: string;
+  text?: string;
+  vueComponentIdFromSharedData?: boolean;
+  staticProps: CppTemplateStaticPropContract[];
+  children: CppTemplateNodeContract[];
+}
+export interface CppTemplateOpContract {
+  kind: CppTemplateOpKind;
+  nodeId?: string;
+  parentNodeId?: string;
+  childNodeId?: string;
+  create?: string;
+  flatten?: string;
+  method?: string;
+  args?: CppTemplateStaticValue[];
+  textValue?: string;
+  count?: number;
+}
+export interface CppTemplateFactoryContract {
+  templateId: number;
+  renderer: string;
+  factoryName: string;
+  rootNodeIds: string[];
+  supported: boolean;
+  unsupportedReason?: string;
+  ops: CppTemplateOpContract[];
+}
+export type CppTemplateStaticValue = string | number | boolean | null | undefined | {
+  kind: "enumRef";
+  owner: string;
+  member: string;
+} | {
+  kind: "array";
+  items: CppTemplateStaticValue[];
+} | {
+  kind: "object";
+  entries: Array<{
+    key: CppTemplateStaticValue;
+    value: CppTemplateStaticValue;
+  }>;
+} | {
+  kind: "call";
+  callee: string | {
+    kind: "enumRef";
+    owner: string;
+    member: string;
+  };
+  args: CppTemplateStaticValue[];
+} | {
+  kind: "new";
+  callee: string;
+  args: CppTemplateStaticValue[];
+};
+export declare function bridgeCppTemplateFactories(templates: DynamicVmTemplateFactory[] | undefined): CppTemplateFactoryContract[];
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/contracts/bundleBridge.d.ts
+export interface CppVmInstructionContract {
+  op: number;
+  a: number;
+  b: number;
+  c: number;
+}
+export interface CppVmBlockEffectContract {
+  blockId: number;
+  instructions: CppVmInstructionContract[];
+}
+export interface CppVmProgramContract {
+  id: string;
+  engine: number;
+  renderer: number;
+  regCount: number;
+  constPool: unknown[];
+  instructions: CppVmInstructionContract[];
+  effectInstructions: CppVmInstructionContract[];
+  blockEffects: CppVmBlockEffectContract[];
+}
+export interface CppVmSharedDataClassContract {
+  sharedDataClassId: number;
+  classKind: number;
+  firstFieldId: number;
+  fieldCount: number;
+}
+export interface CppVmSharedFieldContract {
+  fieldId: number;
+  sharedDataClassId: number;
+  valueTag: number;
+  nullable: boolean;
+  flagGroup: number;
+  flagBit: number;
+}
+export interface CppVmSharedSchemaContract {
+  classCount: number;
+  fieldCount: number;
+  flagGroupCount: number;
+  classes: CppVmSharedDataClassContract[];
+  fields: CppVmSharedFieldContract[];
+}
+export interface CppVmBundleContract {
+  sharedSchema?: CppVmSharedSchemaContract;
+  templates: CppTemplateFactoryContract[];
+  programs: CppVmProgramContract[];
+}
+export declare function bridgeCppVmBundle(bundle: DynamicVmBundle): CppVmBundleContract;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/contracts/executionBridge.d.ts
+export interface CppVmExecutionContract {
+  renderer: number;
+  program: CppVmProgramContract;
+  templateFactories: CppTemplateFactoryContract[];
+  sharedSchema?: CppVmSharedSchemaContract;
+}
+export interface CppVmSharedDataInstanceContract {
+  parent?: CppVmSharedDataInstanceContract;
+  values: unknown[];
+  flags: Uint32Array;
+}
+export interface CppVmExecuteOptionsContract {
+  templateFactories: DynamicVmTemplateFactory[];
+  sharedDataInstance?: CppVmSharedDataInstanceContract;
+  initialRegisters: unknown[];
+  initialEffectFrames: CppVmEffectFrameContract[];
+}
+export interface CppVmExecutionRequestContract {
+  renderer: number;
+  program: CppVmProgramContract;
+  executeOptions: CppVmExecuteOptionsContract;
+}
+export interface CppVmNativeExecuteOptionsContract {
+  templateFactories: CppTemplateFactoryContract[];
+  sharedDataInstance?: CppVmSharedDataInstanceContract;
+  initialRegisters: unknown[];
+  initialEffectFrames: CppVmEffectFrameContract[];
+}
+export interface CppVmNativeExecutionRequestContract {
+  renderer: number;
+  program: CppVmProgramContract;
+  executeOptions: CppVmNativeExecuteOptionsContract;
+}
+export interface CppVmHostSharedDataInstanceContract {
+  parent?: CppVmHostSharedDataInstanceContract;
+  values: unknown[];
+}
+export interface CppVmHostEffectFrameContract {
+  instructions: CppVmProgramContract["effectInstructions"];
+  registers: unknown[];
+  shared_data_instance?: CppVmHostSharedDataInstanceContract;
+}
+export interface CppVmHostExecuteOptionsContract {
+  template_factories: CppTemplateFactoryContract[];
+  shared_data_instance?: CppVmHostSharedDataInstanceContract;
+  initial_registers: unknown[];
+  initial_effect_frames: CppVmHostEffectFrameContract[];
+}
+export interface CppVmHostExecutionRequestContract {
+  renderer: number;
+  program: CppVmProgramContract;
+  execute_options: CppVmHostExecuteOptionsContract;
+}
+export interface CppVmEffectFrameContract {
+  instructions: CppVmProgramContract["effectInstructions"];
+  registers: unknown[];
+  sharedDataInstance?: CppVmSharedDataInstanceContract;
+}
+export interface CreateCppVmSharedDataInstanceOptions {
+  parent?: CppVmSharedDataInstanceContract;
+  values?: Array<{
+    fieldId: number;
+    value: unknown;
+  }>;
+}
+export interface CreateCppVmExecutionRequestOptions {
+  sharedDataInstance?: CppVmSharedDataInstanceContract;
+  initialRegisters?: unknown[];
+  initialEffectFrames?: CppVmEffectFrameContract[];
+}
+export declare function createCppVmExecutionContract(bundle: DynamicVmBundle, renderer: number): CppVmExecutionContract;
+export declare function createCppVmExecutionRequest(bundle: DynamicVmBundle, renderer: number, options?: CreateCppVmExecutionRequestOptions): CppVmExecutionRequestContract;
+export declare function createCppVmNativeExecutionRequest(bundle: DynamicVmBundle, renderer: number, options?: CreateCppVmExecutionRequestOptions): CppVmNativeExecutionRequestContract;
+export declare function createCppVmHostExecutionRequest(bundle: DynamicVmBundle, renderer: number, options?: CreateCppVmExecutionRequestOptions): CppVmHostExecutionRequestContract;
+export declare function createCppVmSharedDataInstance(bundle: DynamicVmBundle, options?: CreateCppVmSharedDataInstanceOptions): CppVmSharedDataInstanceContract;
+export declare function resolveCppVmRuntimeTemplateFactories(bundle: DynamicVmBundle, renderer: number): DynamicVmTemplateFactory[];
+export declare function bridgeCppVmHostExecutionRequest(request: CppVmNativeExecutionRequestContract): CppVmHostExecutionRequestContract;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/nativeAdapter.d.ts
+export interface CppVmNativeAdapter<Result = unknown> {
+  invoke(payload: CppVmHostInvokePayloadContract): Result;
+}
+export interface CppVmNativeInvokeErrorContract {
+  code: string;
+  message: string;
+  details?: unknown;
+}
+export interface CppVmNativeInvokeSuccess<Result = unknown> {
+  ok: true;
+  value: Result;
+}
+export interface CppVmNativeInvokeFailure {
+  ok: false;
+  error: CppVmNativeInvokeErrorContract;
+}
+export type CppVmNativeInvokeResult<Result = unknown> = CppVmNativeInvokeSuccess<Result> | CppVmNativeInvokeFailure;
+export interface CppVmNativeResultAdapter<Result = unknown> {
+  invoke(payload: CppVmHostInvokePayloadContract): CppVmNativeInvokeResult<Result>;
+}
+export declare class CppVmNativeInvokeError extends Error {
+  readonly code: string;
+  readonly details?: unknown;
+  constructor(code: string, message: string, details?: unknown);
+}
+export declare function createCppVmNativeInvokeSuccess<Result>(value: Result): CppVmNativeInvokeSuccess<Result>;
+export declare function createCppVmNativeInvokeFailure(code: string, message: string, details?: unknown): CppVmNativeInvokeFailure;
+export declare function unwrapCppVmNativeInvokeResult<Result>(result: CppVmNativeInvokeResult<Result>): Result;
+export declare function createCppVmHostInvokerFromNativeAdapter<Result>(adapter: CppVmNativeAdapter<Result>): CppVmHostInvoker<Result>;
+export declare function createCppVmHostInvokerFromNativeResultAdapter<Result>(adapter: CppVmNativeResultAdapter<Result>): CppVmHostInvoker<Result>;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/contracts/hostPayloadBridge.d.ts
+export type CppVmHostInvokeEntryContract = "MAIN" | "EFFECT";
+interface CppVmHostSharedDataInstanceContract$1 {
+  parent?: CppVmHostSharedDataInstanceContract$1;
+  values: unknown[];
+}
+interface CppVmHostEffectFrameContract$1 {
+  instructions: CppVmProgramContract["effectInstructions"];
+  registers: unknown[];
+  sharedDataInstance?: CppVmHostSharedDataInstanceContract$1;
+}
+interface CppVmHostExecuteOptionsContract$1 {
+  templateFactories: CppTemplateFactoryContract[];
+  sharedDataInstance?: CppVmHostSharedDataInstanceContract$1;
+  initialRegisters: unknown[];
+  initialEffectFrames: CppVmHostEffectFrameContract$1[];
+}
+export interface CppVmHostInvokePayloadBridgeContract {
+  entry: CppVmHostInvokeEntryContract;
+  renderer: number;
+  program: CppVmProgramContract;
+  executeOptions: CppVmHostExecuteOptionsContract$1;
+}
+export interface CppVmNativeInvokeErrorBridgeContract {
+  code: string;
+  message: string;
+  details: unknown;
+  hasDetails: boolean;
+}
+export interface CppVmNativeInvokeSuccessBridgeContract<Result = unknown> {
+  ok: true;
+  value: Result;
+}
+export interface CppVmNativeInvokeFailureBridgeContract {
+  ok: false;
+  error: CppVmNativeInvokeErrorBridgeContract;
+}
+export type CppVmNativeInvokeResultBridgeContract<Result = unknown> = CppVmNativeInvokeSuccessBridgeContract<Result> | CppVmNativeInvokeFailureBridgeContract;
+export declare function bridgeCppVmHostInvokePayload(payload: CppVmHostInvokePayloadContract): CppVmHostInvokePayloadBridgeContract;
+export declare function createCppVmHostContractPayload(request: CppVmHostExecutionRequestContract, entry?: CppVmHostInvokePayloadContract["entry"]): CppVmHostInvokePayloadBridgeContract;
+export declare function createCppVmHostMainContractPayload(loader: CppVmProgramLoader, options?: CreateCppVmExecutionRequestOptions): CppVmHostInvokePayloadBridgeContract;
+export declare function createCppVmHostEffectContractPayload(loader: CppVmProgramLoader, previousResult: DynamicVmExecuteResult, options?: Omit<CreateCppVmExecutionRequestOptions, "initialRegisters" | "initialEffectFrames">): CppVmHostInvokePayloadBridgeContract;
+export declare function bridgeCppVmNativeInvokeError(error: CppVmNativeInvokeErrorContract): CppVmNativeInvokeErrorBridgeContract;
+export declare function bridgeCppVmNativeInvokeResult<Result>(result: CppVmNativeInvokeResult<Result>): CppVmNativeInvokeResultBridgeContract<Result>;
+export declare function normalizeCppVmNativeInvokeResultBridge<Result>(result: CppVmNativeInvokeResultBridgeContract<Result>): CppVmNativeInvokeResult<Result>;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/loader.d.ts
+export interface CppVmProgramLoader {
+  renderer: number;
+  program: CppVmProgramContract;
+  templateFactories: DynamicVmTemplateFactory[];
+  nativeTemplateFactories: CppTemplateFactoryContract[];
+  sharedSchema?: CppVmSharedSchemaContract;
+  createSharedDataInstance(options?: CreateCppVmSharedDataInstanceOptions): CppVmSharedDataInstanceContract;
+  createExecutionRequest(options?: CreateCppVmExecutionRequestOptions): CppVmExecutionRequestContract;
+  createNativeExecutionRequest(options?: CreateCppVmExecutionRequestOptions): CppVmNativeExecutionRequestContract;
+  createHostExecutionRequest(options?: CreateCppVmExecutionRequestOptions): CppVmHostExecutionRequestContract;
+  createHostContractPayload(options?: CreateCppVmExecutionRequestOptions): CppVmHostInvokePayloadBridgeContract;
+  createHostMainContractPayload(options?: CreateCppVmExecutionRequestOptions): CppVmHostInvokePayloadBridgeContract;
+  createHostEffectExecutionRequest(previousResult: DynamicVmExecuteResult, options?: Omit<CreateCppVmExecutionRequestOptions, "initialRegisters" | "initialEffectFrames">): CppVmHostExecutionRequestContract;
+  createHostEffectContractPayload(previousResult: DynamicVmExecuteResult, options?: Omit<CreateCppVmExecutionRequestOptions, "initialRegisters" | "initialEffectFrames">): CppVmHostInvokePayloadBridgeContract;
+  createEffectExecutionRequest(previousResult: DynamicVmExecuteResult, options?: Omit<CreateCppVmExecutionRequestOptions, "initialRegisters" | "initialEffectFrames">): CppVmExecutionRequestContract;
+}
+export declare function createCppVmProgramLoader(bundle: DynamicVmBundle, renderer: number): CppVmProgramLoader;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/invokePayload.d.ts
+export type CppVmHostInvokeEntry = "main" | "effect";
+export interface CppVmHostInvokePayloadContract {
+  entry: CppVmHostInvokeEntry;
+  renderer: number;
+  program: CppVmHostExecutionRequestContract["program"];
+  execute_options: CppVmHostExecutionRequestContract["execute_options"];
+}
+export declare function createCppVmHostInvokePayload(request: CppVmHostExecutionRequestContract, entry?: CppVmHostInvokeEntry): CppVmHostInvokePayloadContract;
+export declare function createCppVmHostMainInvokePayload(loader: CppVmProgramLoader, options?: CreateCppVmExecutionRequestOptions): CppVmHostInvokePayloadContract;
+export declare function createCppVmHostEffectInvokePayload(loader: CppVmProgramLoader, previousResult: DynamicVmExecuteResult, options?: Omit<CreateCppVmExecutionRequestOptions, "initialRegisters" | "initialEffectFrames">): CppVmHostInvokePayloadContract;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/hostInvoker.d.ts
+export interface CppVmHostInvoker<Result = unknown> {
+  executeMain(program: CppVmHostInvokePayloadContract["program"], executeOptions: CppVmHostInvokePayloadContract["execute_options"]): Result;
+  executeEffect(program: CppVmHostInvokePayloadContract["program"], executeOptions: CppVmHostInvokePayloadContract["execute_options"]): Result;
+}
+export declare function dispatchCppVmHostInvokePayload<Result>(payload: CppVmHostInvokePayloadContract, invoker: CppVmHostInvoker<Result>): Result;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/contractAdapter.d.ts
+export interface CppVmNativeContractAdapter<Result = unknown> {
+  invoke(payload: CppVmHostInvokePayloadBridgeContract): CppVmNativeInvokeResultBridgeContract<Result>;
+}
+export declare function createCppVmHostInvokerFromNativeContractAdapter<Result>(adapter: CppVmNativeContractAdapter<Result>): CppVmHostInvoker<Result>;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/hostBridge.d.ts
+export interface CppVmHostBridge<Result = unknown> {
+  invokeMain(options?: CreateCppVmExecutionRequestOptions): Result;
+  invokeEffect(previousResult: DynamicVmExecuteResult, options?: Omit<CreateCppVmExecutionRequestOptions, "initialRegisters" | "initialEffectFrames">): Result;
+}
+export declare function createCppVmHostBridge<Result>(loader: CppVmProgramLoader, invoker: CppVmHostInvoker<Result>): CppVmHostBridge<Result>;
+export declare function createCppVmHostBridgeFromBundle<Result>(bundle: DynamicVmBundle, renderer: number, invoker: CppVmHostInvoker<Result>): CppVmHostBridge<Result>;
+export declare function createCppVmHostBridgeFromBinary<Result>(binary: Uint8Array, renderer: number, invoker: CppVmHostInvoker<Result>): CppVmHostBridge<Result>;
+export declare function createCppVmHostBridgeFromLoaderAdapter<Result>(loader: CppVmProgramLoader, adapter: CppVmNativeAdapter<Result>): CppVmHostBridge<Result>;
+export declare function createCppVmHostBridgeFromBundleAdapter<Result>(bundle: DynamicVmBundle, renderer: number, adapter: CppVmNativeAdapter<Result>): CppVmHostBridge<Result>;
+export declare function createCppVmHostBridgeFromBinaryAdapter<Result>(binary: Uint8Array, renderer: number, adapter: CppVmNativeAdapter<Result>): CppVmHostBridge<Result>;
+export declare function createCppVmHostBridgeFromLoaderResultAdapter<Result>(loader: CppVmProgramLoader, adapter: CppVmNativeResultAdapter<Result>): CppVmHostBridge<Result>;
+export declare function createCppVmHostBridgeFromBundleResultAdapter<Result>(bundle: DynamicVmBundle, renderer: number, adapter: CppVmNativeResultAdapter<Result>): CppVmHostBridge<Result>;
+export declare function createCppVmHostBridgeFromBinaryResultAdapter<Result>(binary: Uint8Array, renderer: number, adapter: CppVmNativeResultAdapter<Result>): CppVmHostBridge<Result>;
+export declare function createCppVmHostBridgeFromLoaderContractAdapter<Result>(loader: CppVmProgramLoader, adapter: CppVmNativeContractAdapter<Result>): CppVmHostBridge<Result>;
+export declare function createCppVmHostBridgeFromBundleContractAdapter<Result>(bundle: DynamicVmBundle, renderer: number, adapter: CppVmNativeContractAdapter<Result>): CppVmHostBridge<Result>;
+export declare function createCppVmHostBridgeFromBinaryContractAdapter<Result>(binary: Uint8Array, renderer: number, adapter: CppVmNativeContractAdapter<Result>): CppVmHostBridge<Result>;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/entry.d.ts
+export interface CppVmHostEntry<Result = unknown> {
+  renderer: number;
+  bridge: CppVmHostBridge<Result>;
+  invokeMain(options?: CreateCppVmExecutionRequestOptions): Result;
+  invokeEffect(previousResult: DynamicVmExecuteResult, options?: Omit<CreateCppVmExecutionRequestOptions, "initialRegisters" | "initialEffectFrames">): Result;
+}
+export declare function createCppVmHostEntry<Result>(loader: CppVmProgramLoader, invoker: CppVmHostInvoker<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromBundle<Result>(bundle: DynamicVmBundle, renderer: number, invoker: CppVmHostInvoker<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromBinary<Result>(binary: Uint8Array, renderer: number, invoker: CppVmHostInvoker<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromLoaderAdapter<Result>(loader: CppVmProgramLoader, adapter: CppVmNativeAdapter<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromBundleAdapter<Result>(bundle: DynamicVmBundle, renderer: number, adapter: CppVmNativeAdapter<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromBinaryAdapter<Result>(binary: Uint8Array, renderer: number, adapter: CppVmNativeAdapter<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromLoaderResultAdapter<Result>(loader: CppVmProgramLoader, adapter: CppVmNativeResultAdapter<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromBundleResultAdapter<Result>(bundle: DynamicVmBundle, renderer: number, adapter: CppVmNativeResultAdapter<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromBinaryResultAdapter<Result>(binary: Uint8Array, renderer: number, adapter: CppVmNativeResultAdapter<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromLoaderContractAdapter<Result>(loader: CppVmProgramLoader, adapter: CppVmNativeContractAdapter<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromBundleContractAdapter<Result>(bundle: DynamicVmBundle, renderer: number, adapter: CppVmNativeContractAdapter<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromBinaryContractAdapter<Result>(binary: Uint8Array, renderer: number, adapter: CppVmNativeContractAdapter<Result>): CppVmHostEntry<Result>;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/contractRuntime.d.ts
+export interface CreateCppVmContractRuntimeOptions {
+  runtimeAdapter?: Partial<DynamicRuntimeAdapter>;
+  flagGroupCount?: number;
+  onUnsupportedOpcode?: DynamicVmExecuteOptions["onUnsupportedOpcode"];
+}
+export declare function executeCppVmHostContractPayload(payload: CppVmHostInvokePayloadBridgeContract, options?: CreateCppVmContractRuntimeOptions): DynamicVmExecuteResult;
+export declare function createCppVmNativeContractReplayAdapter(options?: CreateCppVmContractRuntimeOptions): CppVmNativeContractAdapter<DynamicVmExecuteResult>;
+export declare function createCppVmContractReplayBridgeFromLoader(loader: CppVmProgramLoader, options?: CreateCppVmContractRuntimeOptions): CppVmHostBridge<DynamicVmExecuteResult>;
+export declare function createCppVmContractReplayBridgeFromBundle(bundle: DynamicVmBundle, renderer: number, options?: CreateCppVmContractRuntimeOptions): CppVmHostBridge<DynamicVmExecuteResult>;
+export declare function createCppVmContractReplayBridgeFromBinary(binary: Uint8Array, renderer: number, options?: CreateCppVmContractRuntimeOptions): CppVmHostBridge<DynamicVmExecuteResult>;
+export declare function createCppVmContractReplayEntryFromLoader(loader: CppVmProgramLoader, options?: CreateCppVmContractRuntimeOptions): CppVmHostEntry<DynamicVmExecuteResult>;
+export declare function createCppVmContractReplayEntryFromBundle(bundle: DynamicVmBundle, renderer: number, options?: CreateCppVmContractRuntimeOptions): CppVmHostEntry<DynamicVmExecuteResult>;
+export declare function createCppVmContractReplayEntryFromBinary(binary: Uint8Array, renderer: number, options?: CreateCppVmContractRuntimeOptions): CppVmHostEntry<DynamicVmExecuteResult>;
+export declare function bridgeCppVmHostExecuteOptionsToRuntime(executeOptions: CppVmHostExecuteOptionsContract$1, options?: CreateCppVmContractRuntimeOptions): DynamicVmExecuteOptions;
+export declare function bridgeCppVmProgramToRuntime(program: CppVmHostInvokePayloadBridgeContract["program"]): DynamicVmProgram;
+export declare function bridgeCppTemplateFactoryToRuntime(factory: CppTemplateFactoryContract): DynamicVmTemplateFactory;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/interpreters/cpp/mockNativeAdapter.d.ts
+export interface CppVmMockNativeInvocationRecord {
+  entry: "main" | "effect";
+  renderer: number;
+  program: CppVmHostInvokePayloadContract["program"];
+  execute_options: CppVmHostInvokePayloadContract["execute_options"];
+}
+export interface CreateCppVmMockNativeInvokerOptions<Result = unknown> {
+  onInvoke?: (record: CppVmMockNativeInvocationRecord) => Result;
+  onMain?: (record: CppVmMockNativeInvocationRecord) => Result;
+  onEffect?: (record: CppVmMockNativeInvocationRecord) => Result;
+}
+export interface CppVmMockNativeInvoker<Result = unknown> {
+  invoker: CppVmHostInvoker<Result>;
+  calls: CppVmMockNativeInvocationRecord[];
+}
+export interface CreateCppVmMockNativeResultAdapterOptions<Result = unknown> {
+  onInvoke?: (record: CppVmMockNativeInvocationRecord) => CppVmNativeInvokeResult<Result>;
+  onMain?: (record: CppVmMockNativeInvocationRecord) => CppVmNativeInvokeResult<Result>;
+  onEffect?: (record: CppVmMockNativeInvocationRecord) => CppVmNativeInvokeResult<Result>;
+}
+export interface CppVmMockNativeResultAdapterHandle<Result = unknown> {
+  adapter: CppVmNativeResultAdapter<Result>;
+  calls: CppVmMockNativeInvocationRecord[];
+}
+export declare function createCppVmMockNativeInvoker<Result = unknown>(options?: CreateCppVmMockNativeInvokerOptions<Result>): CppVmMockNativeInvoker<Result>;
+export declare function createCppVmMockNativeResultAdapter<Result = unknown>(options?: CreateCppVmMockNativeResultAdapterOptions<Result>): CppVmMockNativeResultAdapterHandle<Result>;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/bridge/programLoader.d.ts
+export type DynamicProgramKey = `${number}:${number}`;
+export interface DynamicProgramMeta {
+  engine: number;
+  renderer: number;
+  offset: number;
+  length: number;
+}
+export declare function createDynamicProgramKey(engine: number, renderer: number): DynamicProgramKey;
+export declare function indexDynamicPrograms(programs: DynamicProgramMeta[]): Record<DynamicProgramKey, DynamicProgramMeta>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/dynamic/protocol/binary.d.ts
 export declare function parseDynamicVmBundle(bytes: Uint8Array): DynamicVmBundle;
@@ -812,31 +1236,6 @@ export declare function instantiateDynamicTemplateTree(factory: DynamicVmTemplat
 export declare function resolveDynamicTemplateChild(node: unknown): unknown;
 export declare function resolveDynamicTemplateNext(node: unknown): unknown;
 export declare function resolveDynamicTemplateNthChild(node: unknown, index: number): unknown;
-//#endregion
-//#region temp/packages/runtime-vapor-dom2/src/dynamic/vm/interpreter.d.ts
-type DynamicNodeRef = unknown;
-export interface DynamicVmExecuteOptions {
-  constResolver?: (constIndex: number) => unknown;
-  sharedDataResolver?: (fieldId: number) => unknown;
-  sharedDataInstance?: DynamicSharedDataInstanceRef;
-  templateFactories?: DynamicVmTemplateFactory[];
-  initialRegisters?: unknown[];
-  initialEffectFrames?: DynamicVmEffectFrame[];
-  runtimeAdapter?: DynamicRuntimeAdapter<DynamicNodeRef>;
-  onUnsupportedOpcode?: (instruction: DynamicVmInstruction) => void;
-}
-export interface DynamicVmEffectFrame {
-  instructions: DynamicVmInstruction[];
-  registers: unknown[];
-  sharedDataInstance?: DynamicSharedDataInstanceRef;
-}
-export interface DynamicVmExecuteResult {
-  returnValue: unknown;
-  registers: unknown[];
-  effectFrames: DynamicVmEffectFrame[];
-}
-export declare function executeDynamicVmProgram(program: DynamicVmProgram, options?: DynamicVmExecuteOptions): DynamicVmExecuteResult;
-export declare function executeDynamicVmEffectProgram(program: DynamicVmProgram, options?: DynamicVmExecuteOptions): DynamicVmExecuteResult;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/index.d.ts
 export declare const ssrRef: typeof ref;
