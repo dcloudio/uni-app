@@ -16,6 +16,7 @@ export default () => {
 
 export { genUTSClassName as genClassName } from '@dcloudio/uni-cli-shared'
 
+// transformVue 被内部仓库 vuejs-core 使用，编译android框架内置组件了
 export { transformMain as transformVue } from './plugins/android/uvue/sfc/main'
 
 export { transformExtApiVueFile } from './extApiComponents'
