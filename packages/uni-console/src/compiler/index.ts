@@ -3,6 +3,7 @@ import path from 'path'
 import {
   defineUniMainJsPlugin,
   isEnableConsole,
+  isUniAppXAndroidNative,
   normalizePath,
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
@@ -46,10 +47,7 @@ export default () => {
     defineUniMainJsPlugin((opts) => {
       let hasRuntimeSocket = isEnableConsole()
       const isX = process.env.UNI_APP_X === 'true'
-      const isLegacyAppAndroidX =
-        isX &&
-        process.env.UNI_UTS_PLATFORM === 'app-android' &&
-        process.env.UNI_APP_X_DOM2 !== 'true'
+      const useUniAppXAndroidNative = isUniAppXAndroidNative()
       // 基座类型为custom时，不启用运行时socket
       // 需要判断自定义基座是否包含socket模块，有的话才可以启用
       if (isX && process.env.UNI_PLATFORM === 'app') {
@@ -66,7 +64,7 @@ export default () => {
         )
       )
       if (isX) {
-        if (isLegacyAppAndroidX) {
+        if (useUniAppXAndroidNative) {
           uniConsolePath = resolveBuiltIn(
             path.join('@dcloudio/uni-console', 'src/runtime/app/index.ts')
           )
@@ -89,7 +87,7 @@ export default () => {
         name: 'uni:console-main-js',
         enforce:
           // 仅旧版 Android x 需要提前，不然拿到的code是解析后的仅保留import语句的
-          isLegacyAppAndroidX ? 'pre' : 'post',
+          useUniAppXAndroidNative ? 'pre' : 'post',
         transform(code: string, id: string) {
           if (!hasRuntimeSocket) {
             return

@@ -515,22 +515,6 @@ export function showRunPrompt(platform: PLATFORM) {
   }
 }
 
-export function isAppAndroidDom2() {
-  return (
-    process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM === 'app-android' &&
-    process.env.UNI_APP_X_DOM2 === 'true'
-  )
-}
-
-export function isLegacyAppAndroidX() {
-  return (
-    process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM === 'app-android' &&
-    process.env.UNI_APP_X_DOM2 !== 'true'
-  )
-}
-
 function getOriginalPlatform(platform: PLATFORM) {
   if (platform.startsWith('quickapp-webview') && process.env.UNI_SUB_PLATFORM) {
     return process.env.UNI_SUB_PLATFORM

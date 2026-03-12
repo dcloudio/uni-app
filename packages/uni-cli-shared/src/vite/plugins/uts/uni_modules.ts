@@ -33,6 +33,7 @@ import {
   checkEncryptUniModules,
   resolveEncryptUniModule,
 } from '../../../uni_modules.cloud'
+import { isUniAppXJsEngine } from '../../../x'
 import {
   camelize,
   capitalize,
@@ -631,7 +632,7 @@ export function uniUTSAppUniModulesPlugin(
     for (const plugin of plugins) {
       const pluginDir = path.resolve(inputDir, 'uni_modules', plugin.plugin)
       // 如果是 app-js 环境
-      if (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js') {
+      if (isUniAppXJsEngine()) {
         if (
           fs.existsSync(
             path.resolve(pluginDir, 'utssdk', 'app-js', 'index.uts')

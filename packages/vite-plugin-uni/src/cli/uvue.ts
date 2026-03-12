@@ -4,6 +4,8 @@ import {
   M,
   initEasycomsOnce,
   isInHBuilderX,
+  isUniAppXAndroidVapor,
+  isUniAppXIOS,
   output,
   parseManifestJsonOnce,
   resetOutput,
@@ -37,12 +39,8 @@ export function initUVueEnv() {
 
   if (process.env.UNI_PLATFORM === 'app') {
     process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'native'
-    // 如果是app-ios，目前强制使用js引擎
-    if (
-      process.env.UNI_UTS_PLATFORM === 'app-ios' ||
-      (process.env.UNI_UTS_PLATFORM === 'app-android' &&
-        process.env.UNI_APP_X_DOM2 === 'true')
-    ) {
+    // App X iOS 与 Android Vapor 统一使用 JS 引擎
+    if (isUniAppXIOS() || isUniAppXAndroidVapor()) {
       process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'js'
     }
   }

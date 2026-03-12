@@ -3,6 +3,7 @@ import { readFileSync } from 'fs-extra'
 import {
   genUTSClassName,
   initPreContext,
+  isUniAppXAndroidNative,
   normalizePath,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
@@ -28,7 +29,7 @@ export async function transformExtApiVueFile(
   )
   const code = readFileSync(vueFileName, 'utf8')
 
-  if (platform === 'app-android' && process.env.UNI_APP_X_DOM2 !== 'true') {
+  if (isUniAppXAndroidNative(platform)) {
     return transformAppAndroidExtApiComponent(vueFileName, code)
   } else if (platform === 'app-ios' || platform === 'app-android') {
     return transformAppIosExtApiComponent(vueFileName, code)
