@@ -427,6 +427,9 @@
       "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
+      "CreateEditorContext"
+    ],
+    [
       "CreateInnerAudioContext"
     ],
     [
@@ -482,6 +485,9 @@
     ],
     [
       "DownloadTask"
+    ],
+    [
+      "EditorContext"
     ],
     [
       "EntriesResult"
@@ -785,9 +791,6 @@
     ],
     [
       "GetScreenBrightnessSuccessCallback"
-    ],
-    [
-      "GetSelectionTextOptionsRes"
     ],
     [
       "GetStorage"
@@ -2239,7 +2242,16 @@
       "UniEditorElement"
     ],
     [
+      "UniEditorElementGetContentsOptions"
+    ],
+    [
+      "UniEditorElementGetContentsOptionsRes"
+    ],
+    [
       "UniEditorElementGetSelectionTextOptions"
+    ],
+    [
+      "UniEditorElementGetSelectionTextOptionsRes"
     ],
     [
       "UniEditorElementInsertImageOptions"
@@ -2249,6 +2261,15 @@
     ],
     [
       "UniEditorElementOptions"
+    ],
+    [
+      "UniEditorElementOptionsCompleteRes"
+    ],
+    [
+      "UniEditorElementOptionsFailRes"
+    ],
+    [
+      "UniEditorElementOptionsSuccessRes"
     ],
     [
       "UniEditorElementSetContentsOptions"
