@@ -25,6 +25,7 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
 
 jest.mock('../../src/plugins/dom2/css', () => ({
   uniAppCssPrePlugin: () => ({ name: 'css-pre' }),
+  uniAppCssPlugin: () => ({ name: 'css' }),
 }))
 
 jest.mock('../../src/plugins/js/extApiPages', () => ({
@@ -93,6 +94,14 @@ describe('android-dom2 plugin init', () => {
 
     expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
       'stats'
+    )
+  })
+
+  test('dom2 includes css plugin', () => {
+    const plugins = initPlugins()
+
+    expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
+      'css'
     )
   })
 
