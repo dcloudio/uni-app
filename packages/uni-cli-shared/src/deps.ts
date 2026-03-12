@@ -26,6 +26,7 @@ export const API_DEPS_CSS = (isX: boolean) => {
       `${BASE_COMPONENTS_STYLE_PATH}/input.css`,
       `${H5_COMPONENTS_STYLE_PATH}/map.css`,
       `${BASE_COMPONENTS_STYLE_PATH}/scroll-view.css`,
+      `${BASE_COMPONENTS_STYLE_PATH}/image.css`,
     ]
     deps_css.showLoading = [`${X_BASE_COMPONENTS_STYLE_PATH}loading.css`]
   } else {
