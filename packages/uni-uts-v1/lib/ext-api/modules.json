@@ -272,6 +272,17 @@
     }
   },
   "uni-editor": {
+    "uni": {
+      "createEditorContext": {
+        "name": "createEditorContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    },
     "easycom": [
       "editor"
     ]
