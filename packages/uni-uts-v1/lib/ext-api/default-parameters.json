@@ -160,6 +160,12 @@
       "null"
     ]
   },
+  "uni-editor": {
+    "createEditorContext": [
+      null,
+      "null"
+    ]
+  },
   "uni-video": {
     "createVideoContext": [
       null,
