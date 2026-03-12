@@ -17,6 +17,19 @@ const platforms = [
   'app-harmony',
   'mp-weixin',
 ] as const
+const originalAppX = process.env.UNI_APP_X
+beforeAll(() => {
+  process.env.UNI_APP_X = 'true'
+})
+
+afterAll(() => {
+  if (originalAppX === undefined) {
+    Reflect.deleteProperty(process.env, 'UNI_APP_X')
+  } else {
+    process.env.UNI_APP_X = originalAppX
+  }
+})
+
 describe('uni_modules:uni-ext-api', () => {
   const inputDir = path.resolve(__dirname, '../../playground/uni_modules/src')
 

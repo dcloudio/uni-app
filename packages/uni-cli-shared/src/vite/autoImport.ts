@@ -11,6 +11,7 @@ import type { Unimport, UnimportOptions } from 'unimport'
 import { getUTSCustomElementsExports } from '../uts'
 import { resolveWorkersDir } from '../workers'
 import { normalizePath } from '../utils'
+import { isUniAppXAndroidJsEngine, isUniAppXAndroidNative } from '../x'
 
 export type AutoImportOptions = Options
 
@@ -326,7 +327,7 @@ export function initAutoImportOptions(
   if (
     platform === 'app-ios' ||
     platform === 'app-harmony' ||
-    (platform === 'app-android' && process.env.UNI_APP_X_DOM2 === 'true')
+    isUniAppXAndroidJsEngine(platform)
   ) {
     autoImport.push(uniAppLifeCyclePreset)
   } else if (platform === 'web') {
@@ -361,10 +362,8 @@ export function initAutoImportOptions(
     include: [/\.[u]?ts$/, /\.[u]?vue/],
     exclude,
     imports: (imports as any[]).concat(
-      // 旧版 Android x 仍由专有编译流程处理，Android 蒸汽模式对齐 iOS 走通用自动导入
-      platform === 'app-android' && process.env.UNI_APP_X_DOM2 !== 'true'
-        ? []
-        : autoImport
+      // 旧版 Android x 仍由专有编译流程处理，Android Vapor 对齐 iOS 走通用自动导入
+      isUniAppXAndroidNative(platform) ? [] : autoImport
     ),
     dts: false,
   }

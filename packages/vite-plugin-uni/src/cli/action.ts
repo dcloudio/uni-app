@@ -8,6 +8,7 @@ import {
   APP_SERVICE_FILENAME,
   M,
   isInHBuilderX,
+  isUniAppXAndroidNative,
   output,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
@@ -17,7 +18,6 @@ import { createSSRServer, createServer } from './server'
 import {
   type PLATFORM,
   initEnv,
-  isLegacyAppAndroidX,
   printStartupDuration,
   showRunPrompt,
 } from './utils'
@@ -34,7 +34,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
     ;(options as BuildOptions).minify = true
   }
   initEnv('dev', options)
-  if (isLegacyAppAndroidX()) {
+  if (isUniAppXAndroidNative()) {
     return runUVueAndroidDev(options)
   }
   const createLogger = await import('vite').then(
@@ -182,7 +182,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
 
 export async function runBuild(options: CliOptions & BuildOptions) {
   initEnv('build', options)
-  if (isLegacyAppAndroidX()) {
+  if (isUniAppXAndroidNative()) {
     return runUVueAndroidBuild(options)
   }
   try {

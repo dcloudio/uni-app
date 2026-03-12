@@ -6,6 +6,7 @@ import { camelize, capitalize, extend } from '@vue/shared'
 import { createFilter } from '@rollup/pluginutils'
 
 import { isBuiltInComponent, once } from '@dcloudio/uni-shared'
+import { isUniAppXAndroidNative } from './x'
 import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 import { M } from './messages'
@@ -348,11 +349,7 @@ function initAutoScanEasycom(
                 path.join(
                   rootDir,
                   `uni_modules/${uni_modules_plugin_id}?${
-                    process.env.UNI_APP_X === 'true' &&
-                    process.env.UNI_UTS_PLATFORM === 'app-android' &&
-                    process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE !== 'js'
-                      ? 'uts-proxy'
-                      : 'uni_helpers'
+                    isUniAppXAndroidNative() ? 'uts-proxy' : 'uni_helpers'
                   }`
                 )
               )

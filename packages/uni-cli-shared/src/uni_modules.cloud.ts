@@ -6,6 +6,7 @@ import { genUTSComponentPublicInstanceIdent } from './easycom'
 import { M } from './messages'
 import { EXTNAME_VUE_RE } from './constants'
 import { encodeBase64Url } from './url'
+import { isUniAppXAndroidNative } from './x'
 
 function genEncryptEasyComModuleIndex(
   pluginId: string,
@@ -22,7 +23,7 @@ function genEncryptEasyComModuleIndex(
       ids.push(id)
     }
     let instance = ''
-    if (platform === 'app-android' && process.env.UNI_APP_X_DOM2 !== 'true') {
+    if (isUniAppXAndroidNative(platform)) {
       instance = genUTSComponentPublicInstanceIdent(component)
       // 类型
       ids.push(instance)
@@ -406,14 +407,13 @@ function findUniModuleFiles(
   id: string,
   inputDir: string
 ) {
-  const isLegacyAppAndroidX =
-    platform === 'app-android' && process.env.UNI_APP_X_DOM2 !== 'true'
+  const useUniAppXAndroidNative = isUniAppXAndroidNative(platform)
   return sync(`uni_modules/${id}/**/*`, {
     cwd: inputDir,
     absolute: true,
     ignore: [
       '**/*.md',
-      ...(isLegacyAppAndroidX // 仅旧版 Android x 需要扫描 assets
+      ...(useUniAppXAndroidNative // 仅旧版 Android x 需要扫描 assets
         ? []
         : [`**/*.{${KNOWN_ASSET_TYPES.join(',')}}`]),
     ],
@@ -487,9 +487,7 @@ export function resolveEncryptUniModule(
         path.join(
           process.env.UNI_INPUT_DIR,
           `uni_modules/${uniModuleId}?${
-            isX &&
-            platform === 'app-android' &&
-            process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE !== 'js'
+            isX && isUniAppXAndroidNative(platform)
               ? 'uts-proxy'
               : 'uni_helpers'
           }`
@@ -543,10 +541,8 @@ export async function checkEncryptUniModules(
     const { C, D, R, U } = requireUniHelpers()
     try {
       const isLogin = await C()
-      const isLegacyAppAndroidX =
-        params.platform === 'app-android' &&
-        process.env.UNI_APP_X_DOM2 !== 'true'
-      const tips = !isLegacyAppAndroidX ? '（此过程耗时较长）' : ''
+      const useUniAppXAndroidNative = isUniAppXAndroidNative(params.platform)
+      const tips = !useUniAppXAndroidNative ? '（此过程耗时较长）' : ''
       console.log(
         `正在云编译插件${isLogin ? '' : '（请先登录）'}${tips}：${modules.join(
           ','
@@ -588,10 +584,9 @@ export async function checkEncryptUniModules(
       process.exit(0)
     }
   } else {
-    const isLegacyAppAndroidX =
-      params.platform === 'app-android' && process.env.UNI_APP_X_DOM2 !== 'true'
+    const useUniAppXAndroidNative = isUniAppXAndroidNative(params.platform)
     // 仅旧版 Android x 需要在缓存命中时额外初始化
-    if (isLegacyAppAndroidX) {
+    if (useUniAppXAndroidNative) {
       const { R } = requireUniHelpers()
       R({
         dir: process.env.UNI_INPUT_DIR,

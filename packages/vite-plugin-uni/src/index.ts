@@ -16,6 +16,9 @@ import {
   initAutoImportOptions,
   isInHBuilderX,
   isNormalCompileTarget,
+  isUniAppXAndroidJsEngine,
+  isUniAppXAndroidNative,
+  isUniAppXIOS,
   parseUniExtApisOnce,
   resolveSourceMapPath,
   rewriteExistsSyncHasRootFile,
@@ -41,7 +44,7 @@ import {
   initPluginVueJsxOptions,
   initPluginVueOptions,
 } from './vue'
-import { initEnv, isLegacyAppAndroidX } from './cli/utils'
+import { initEnv } from './cli/utils'
 import { uniUVuePlugin } from './uvue/plugins'
 import path from 'path'
 
@@ -97,12 +100,12 @@ export default function uniPlugin(
   options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
   options.inputDir = process.env.UNI_INPUT_DIR
 
-  const plugins = isLegacyAppAndroidX()
+  const plugins = isUniAppXAndroidNative()
     ? createUVueAndroidPlugins(options)
     : createPlugins(options)
 
   // x 提供 auto import（非android、android自行处理）
-  if (process.env.UNI_APP_X === 'true' && !isLegacyAppAndroidX()) {
+  if (process.env.UNI_APP_X === 'true' && !isUniAppXAndroidNative()) {
     plugins.unshift(
       AutoImport(
         initAutoImportOptions(
@@ -128,7 +131,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
       process.env.UNI_UTS_PLATFORM !== 'app-ios' &&
       // harmony 同 iOS
       process.env.UNI_UTS_PLATFORM !== 'app-harmony' &&
-      // dom2 Android 暂不使用该机制(只有dom2会进入该方法，不需要额外判断)
+      // Android Vapor 暂不使用该机制(只有 Android Native 会进入该方法，不需要额外判断)
       process.env.UNI_UTS_PLATFORM !== 'app-android'
     ) {
       plugins.push(uniUTSExtApiReplace())
@@ -325,8 +328,6 @@ export function shouldMoveSourceMapFromCache() {
     process.env.UNI_APP_X === 'true' &&
     process.env.UNI_APP_X_CACHE_DIR &&
     process.env.NODE_ENV !== 'development' &&
-    (process.env.UNI_UTS_PLATFORM === 'app-ios' ||
-      (process.env.UNI_UTS_PLATFORM === 'app-android' &&
-        process.env.UNI_APP_X_DOM2 === 'true'))
+    (isUniAppXIOS() || isUniAppXAndroidJsEngine())
   )
 }
