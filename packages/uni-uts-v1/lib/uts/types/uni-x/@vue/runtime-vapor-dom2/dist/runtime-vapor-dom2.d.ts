@@ -789,6 +789,30 @@ export declare const DYNAMIC_RENDER_OPCODE: {
   readonly MOVE: 99;
 };
 //#endregion
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/template/tree.d.ts
+export interface DynamicTemplateTreeStaticProp {
+  method: string;
+  args: unknown[];
+}
+export interface DynamicTemplateTreeNode {
+  __dynamicTemplateNode: true;
+  templateId: number;
+  nodeId: string;
+  create: string;
+  flatten: string;
+  text?: string;
+  vueComponentIdFromSharedData?: boolean;
+  staticProps?: DynamicTemplateTreeStaticProp[];
+  parent?: DynamicTemplateTreeNode;
+  children: DynamicTemplateTreeNode[];
+}
+export type DynamicTemplateTreeInstance = DynamicTemplateTreeNode | DynamicTemplateTreeNode[] | null;
+export declare function isDynamicTemplateTreeNode(value: unknown): value is DynamicTemplateTreeNode;
+export declare function instantiateDynamicTemplateTree(factory: DynamicVmTemplateFactory): DynamicTemplateTreeInstance;
+export declare function resolveDynamicTemplateChild(node: unknown): unknown;
+export declare function resolveDynamicTemplateNext(node: unknown): unknown;
+export declare function resolveDynamicTemplateNthChild(node: unknown, index: number): unknown;
+//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/dynamic/vm/interpreter.d.ts
 type DynamicNodeRef = unknown;
 export interface DynamicVmExecuteOptions {
