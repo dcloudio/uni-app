@@ -242,12 +242,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
       if (fs.existsSync(sourceMapPath)) {
         emptyDir(sourceMapPath)
       }
-      if (
-        process.env.UNI_APP_X === 'true' &&
-        process.env.UNI_UTS_PLATFORM === 'app-ios' &&
-        process.env.UNI_APP_X_CACHE_DIR &&
-        process.env.NODE_ENV !== 'development'
-      ) {
+      if (shouldMoveSourceMapFromCache()) {
         plugins.push(
           uniMovePlugin({
             apply: 'build',
@@ -323,4 +318,15 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
 
 function resolveSourceMapDirByCacheDir() {
   return path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'sourcemap')
+}
+
+export function shouldMoveSourceMapFromCache() {
+  return (
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_APP_X_CACHE_DIR &&
+    process.env.NODE_ENV !== 'development' &&
+    (process.env.UNI_UTS_PLATFORM === 'app-ios' ||
+      (process.env.UNI_UTS_PLATFORM === 'app-android' &&
+        process.env.UNI_APP_X_DOM2 === 'true'))
+  )
 }
