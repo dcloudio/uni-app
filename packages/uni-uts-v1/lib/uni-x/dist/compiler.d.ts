@@ -26,6 +26,7 @@ declare function initTargetHacker(_targetLanguage: TargetLanguage): {
 };
 interface CreateTransformerOptions {
     dom2?: boolean;
+    isUniAppX?: boolean;
     enableUTSNumber?: boolean;
     enableNarrowType?: boolean;
     enableGenericsParameterDefaults?: boolean;
