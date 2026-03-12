@@ -567,61 +567,10 @@ onBackPress((_): boolean | null => {
 	.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {
 		background-color: #303030;
 	}
+
 	/* #ifdef WEB */
 	.uni-textarea-wrapper{
 		min-height: 18px!important;
-	  display: block;
-	  position: relative;
-	  width: 100%;
-	  height: 100%;
-	  min-height: inherit;
-	  overflow-y: hidden;
-	}
-	.uni-textarea-textarea {
-	  outline: none;
-	  border: none;
-	  padding: 0;
-	  margin: 0;
-	  text-decoration: inherit;
-	}
-	.uni-textarea-placeholder,
-	.uni-textarea-line,
-	.uni-textarea-compute,
-	.uni-textarea-textarea {
-	  position: absolute;
-	  width: 100%;
-	  height: 100%;
-	  left: 0;
-	  top: 0;
-	  white-space: inherit;
-	  word-break: inherit;
-	}
-	.uni-textarea-line,
-	.uni-textarea-compute {
-	  visibility: hidden;
-	  height: auto;
-	}
-	.uni-textarea-line {
-	  width: 1em;
-	}
-	
-	.uni-textarea-textarea {
-		box-sizing: border-box;
-	  resize: none;
-	  background: none;
-	  color: inherit;
-	  opacity: 1;
-	  font: inherit;
-	  line-height: inherit;
-	  letter-spacing: inherit;
-	  text-align: inherit;
-	  text-indent: inherit;
-	  text-transform: inherit;
-	  text-shadow: inherit;
-	}
-	.uni-textarea-placeholder {
-		color: grey;
-		overflow: hidden;
 	}
 	/* #endif */
 </style>
