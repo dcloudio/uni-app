@@ -21,7 +21,7 @@ import {
 
 import * as vueCompilerDom from '@vue/compiler-dom'
 import * as uniCliShared from '@dcloudio/uni-cli-shared'
-import { uniAppCssPrePlugin } from '../dom2/css'
+import { uniAppCssPlugin, uniAppCssPrePlugin } from '../dom2/css'
 import { replaceExtApiPagePaths } from '../js/extApiPages'
 import { uniAppJsEngineMainPlugin } from '../js/mainUTS'
 import { uniAppManifestPlugin } from '../js/manifestJson'
@@ -79,6 +79,7 @@ export function init() {
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
       ? [replaceExtApiPagePaths()]
       : []),
+    ...(isDom2 ? [uniAppCssPlugin()] : []),
     ...(isNormalCompileTarget() ? [uniStatsPlugin()] : []),
   ]
 }
