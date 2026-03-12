@@ -10,32 +10,43 @@ const REFRESHER_CSS = BASE_COMPONENTS_STYLE_PATH + 'refresher.css'
 
 export const API_DEPS_CSS = (isX: boolean) => {
   const deps_css = {
-    showModal: [`${H5_API_STYLE_PATH}modal.css`],
-    showToast: [`${H5_API_STYLE_PATH}toast.css`],
-    showActionSheet: [`${H5_API_STYLE_PATH}action-sheet.css`],
-    previewImage: [
+    showModal: [] as string[],
+    showToast: [] as string[],
+    showActionSheet: [] as string[],
+    previewImage: [] as string[],
+    openLocation: [] as string[],
+    chooseLocation: [] as string[],
+    showLoading: [] as string[],
+  }
+  if (isX) {
+    deps_css.showModal = [`${X_BASE_COMPONENTS_STYLE_PATH}textarea.css`]
+    deps_css.chooseLocation = [
+      `${BASE_COMPONENTS_STYLE_PATH}/view.css`,
+      `${BASE_COMPONENTS_STYLE_PATH}/text.css`,
+      `${BASE_COMPONENTS_STYLE_PATH}/input.css`,
+      `${H5_COMPONENTS_STYLE_PATH}/map.css`,
+      `${BASE_COMPONENTS_STYLE_PATH}/scroll-view.css`,
+    ]
+    deps_css.showLoading = [`${X_BASE_COMPONENTS_STYLE_PATH}loading.css`]
+  } else {
+    deps_css.showModal = [`${H5_API_STYLE_PATH}modal.css`]
+    deps_css.showToast = [`${H5_API_STYLE_PATH}toast.css`]
+    deps_css.showActionSheet = [`${H5_API_STYLE_PATH}action-sheet.css`]
+    deps_css.previewImage = [`${H5_API_STYLE_PATH}preview-image.css`]
+    deps_css.previewImage = [
       RESIZE_SENSOR_CSS,
       `${BASE_COMPONENTS_STYLE_PATH}swiper.css`,
       `${BASE_COMPONENTS_STYLE_PATH}swiper-item.css`,
       `${BASE_COMPONENTS_STYLE_PATH}movable-area.css`,
       `${BASE_COMPONENTS_STYLE_PATH}movable-view.css`,
-    ],
-    openLocation: [`${H5_API_STYLE_PATH}location-view.css`],
-    chooseLocation: [
-      ...(isX
-        ? [
-            `${BASE_COMPONENTS_STYLE_PATH}/view.css`,
-            `${BASE_COMPONENTS_STYLE_PATH}/text.css`,
-          ]
-        : [`${H5_API_STYLE_PATH}/location-picker.css`]),
+    ]
+    deps_css.openLocation = [`${H5_API_STYLE_PATH}location-view.css`]
+    deps_css.chooseLocation = [
+      `${H5_API_STYLE_PATH}/location-picker.css`,
       `${BASE_COMPONENTS_STYLE_PATH}/input.css`,
       `${H5_COMPONENTS_STYLE_PATH}/map.css`,
       `${BASE_COMPONENTS_STYLE_PATH}/scroll-view.css`,
-    ],
-  }
-  if (isX) {
-    // @ts-expect-error
-    deps_css.showLoading = [`${X_BASE_COMPONENTS_STYLE_PATH}loading.css`]
+    ]
   }
   return deps_css
 }
