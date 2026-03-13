@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, createElementVNode, normalizeStyle } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, createRouter, createWebHistory, createWebHashHistory, useRouter, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -564,6 +564,9 @@ function initTabBarI18n(tabBar2) {
       defineI18nProperty(item, ["text"]);
     });
   }
+  if (isEnableLocale() && tabBar2.midButton) {
+    defineI18nProperty(tabBar2.midButton, ["text"]);
+  }
   return tabBar2;
 }
 function initBridge(subscribeNamespace) {
@@ -706,15 +709,16 @@ function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
   return isNaN(newValue) ? defaultValue : newValue;
 }
+const isApple = () => /^Apple/.test(navigator.vendor);
 function getWindowWidth$1() {
-  const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+  const screenFix = isApple() && typeof window.orientation === "number";
   const landscape = screenFix && Math.abs(window.orientation) === 90;
   var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-  var windowWidth = Math.min(
+  var windowWidth = screenFix ? Math.min(
     window.innerWidth,
     document.documentElement.clientWidth,
     screenWidth
-  ) || screenWidth;
+  ) || screenWidth : Math.min(window.innerWidth, document.documentElement.clientWidth);
   return windowWidth;
 }
 function useRem() {
@@ -730,6 +734,12 @@ function useRem() {
   document.addEventListener("DOMContentLoaded", updateRem);
   window.addEventListener("load", updateRem);
   window.addEventListener("resize", updateRem);
+  if (isApple()) {
+    window.addEventListener("orientationchange", () => {
+      updateRem();
+      setTimeout(updateRem, 50);
+    });
+  }
 }
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
@@ -1189,6 +1199,9 @@ function invokeHook(vm, name, args) {
     return;
   }
   const hooks = vm.$[name];
+  if (name === ON_BACK_PRESS) {
+    return hooks && invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true);
+  }
   return hooks && invokeArrayFns(hooks, args);
 }
 function disableScrollListener(evt) {
@@ -1782,7 +1795,9 @@ function initAppVm(appVm2) {
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
   pageVm.$vm = pageVm;
-  pageVm.$page = page;
+  {
+    pageVm.$page = page;
+  }
   pageVm.$mpType = "page";
   pageVm.$fontFamilySet = /* @__PURE__ */ new Set();
   if (page.meta.isTabBar) {
@@ -7432,6 +7447,7 @@ const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
 const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
 const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
 const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+const isHarmony = /OpenHarmony/i.test(ua);
 function getScreenFix() {
   return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
 }
@@ -7444,18 +7460,21 @@ function getScreenWidth(screenFix, landscape) {
 function getScreenHeight(screenFix, landscape) {
   return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
 }
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
+function getWindowWidth() {
+  const screenFix = getScreenFix();
+  if (screenFix) {
+    const screenWidth = getScreenWidth(screenFix, isLandscape(screenFix));
+    return Math.min(
+      window.innerWidth,
+      document.documentElement.clientWidth,
+      screenWidth
+    ) || screenWidth;
+  } else {
+    return Math.min(window.innerWidth, document.documentElement.clientWidth);
+  }
 }
 function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  );
+  const windowWidth = getWindowWidth();
   return {
     platform: isIOS ? "ios" : "other",
     pixelRatio: window.devicePixelRatio,
@@ -8793,7 +8812,7 @@ const props$u = {
 const emit$1 = ["keyboardheightchange"];
 function useKeyboard$1(props2, elRef, trigger) {
   function initKeyboard(el) {
-    const isApple = computed(
+    const isApple2 = computed(
       () => String(navigator.vendor).indexOf("Apple") === 0
     );
     el.addEventListener("focus", () => {
@@ -8802,7 +8821,7 @@ function useKeyboard$1(props2, elRef, trigger) {
     });
     const onKeyboardHide = () => {
       document.removeEventListener("click", iosHideKeyboard, false);
-      if (isApple.value) {
+      if (isApple2.value) {
         document.documentElement.scrollTo(
           document.documentElement.scrollLeft,
           document.documentElement.scrollTop
@@ -8810,7 +8829,7 @@ function useKeyboard$1(props2, elRef, trigger) {
       }
     };
     el.addEventListener("blur", () => {
-      if (isApple.value) {
+      if (isApple2.value) {
         el.blur();
       }
       onKeyboardHide();
@@ -9445,6 +9464,9 @@ function useQuill(props2, rootRef, trigger) {
             {
               let { name = "", value = false } = options;
               range = quill.getSelection(true);
+              if (!name) {
+                break;
+              }
               let format = quill.getFormat(range)[name] || false;
               if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
                 value = !format;
@@ -10270,12 +10292,18 @@ function useBase(props2, rootRef, emit2) {
     trigger
   };
 }
-function useValueSync(props2, state2, emit2, trigger) {
+function useValueSync(props2, state2, emit2, trigger, fieldRef) {
+  let lastUserInputValue = null;
   let valueChangeFn = null;
   {
     valueChangeFn = debounce(
       (val) => {
-        state2.value = getValueString(val, props2.type);
+        const fieldElement = fieldRef.value;
+        const newValue = getValueString(val, props2.type);
+        if (fieldElement && document.activeElement === fieldElement && newValue === lastUserInputValue) {
+          return;
+        }
+        state2.value = newValue;
       },
       100,
       { setTimeout, clearTimeout }
@@ -10291,6 +10319,7 @@ function useValueSync(props2, state2, emit2, trigger) {
   }, 100);
   const triggerInput = (event, detail, force) => {
     valueChangeFn.cancel();
+    lastUserInputValue = detail.value;
     triggerInputFn(event, detail);
     if (force) {
       triggerInputFn.flush();
@@ -10437,7 +10466,7 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
 function useField(props2, rootRef, emit2, beforeInput) {
   UniViewJSBridgeSubscribe();
   const { fieldRef, state: state2, trigger } = useBase(props2, rootRef, emit2);
-  const { triggerInput } = useValueSync(props2, state2, emit2, trigger);
+  const { triggerInput } = useValueSync(props2, state2, emit2, trigger, fieldRef);
   useAutoFocus(props2, fieldRef);
   useKeyboard$1(props2, fieldRef);
   const { state: scopedAttrsState } = useScopedAttrs();
@@ -10452,16 +10481,6 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$q = /* @__PURE__ */ extend({}, props$r, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  },
-  textContentType: {
-    type: String,
-    default: ""
-  }
-});
 const resolveDigitDecimalPointDeleteContentBackward = once(() => {
   {
     const ua2 = navigator.userAgent;
@@ -10485,7 +10504,7 @@ function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
         state2.value = input.value = cache.value = cache.value.slice(0, -1);
         return false;
       }
-      if (cache.value && !cache.value.includes(".")) {
+      if (cache.value && !cache.value.includes(".") && cache.value === input.value) {
         cache.value += ".";
         if (resetCache) {
           resetCache.fn = () => {
@@ -10506,6 +10525,16 @@ function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
     }
   }
 }
+const props$q = /* @__PURE__ */ extend({}, props$r, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  textContentType: {
+    type: String,
+    default: ""
+  }
+});
 function isPaste(event) {
   return event.inputType === "insertFromPaste";
 }
@@ -10549,6 +10578,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         case "digit":
           type2 = "number";
           break;
+        case "none":
+          type2 = "text";
+          break;
         default:
           type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
@@ -10562,9 +10594,18 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       return AUTOCOMPLETES[index2];
     });
     const inputmode = computed(() => {
-      if (props2.inputmode) {
+      if (props2.inputmode !== void 0) {
         return props2.inputmode;
       }
+      if (INPUT_MODES.includes(props2.type)) {
+        return props2.type;
+      }
+      const inputmodeMap = {
+        number: "numeric",
+        digit: "decimal",
+        idcard: "text"
+      };
+      return inputmodeMap[props2.type];
     });
     let cache = useCache(props2, type);
     let resetCache = {
@@ -10655,12 +10696,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "style": props2.cursorColor ? {
           caretColor: props2.cursorColor
         } : {},
+        "inputmode": inputmode.value,
         "onFocus": (event) => event.target.blur()
-      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "value": state2.value,
-        "onInput": (event) => {
+        "onInput": withModifiers((event) => {
           const value = event.target.value.toString();
           if (type.value === "number" && state2.maxlength > 0 && value.length > state2.maxlength) {
             if (isPaste(event)) {
@@ -10668,8 +10710,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
             }
             return;
           }
+          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+            return;
+          }
           state2.value = value;
-        },
+        }, ["stop"]),
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state2.maxlength,
@@ -14681,6 +14726,12 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
     const sliderValueRef = ref(null);
     const sliderHandleRef = ref(null);
     const sliderValue = ref(Number(props2.value));
+    if (sliderValue.value < Number(props2.min)) {
+      sliderValue.value = Number(props2.min);
+    }
+    if (sliderValue.value > Number(props2.max)) {
+      sliderValue.value = Number(props2.max);
+    }
     watch(() => props2.value, (val) => {
       sliderValue.value = Number(val);
     });
@@ -14765,6 +14816,13 @@ function useSliderState(props2, sliderValue) {
   return state2;
 }
 function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
+  const truthStep = computed(() => {
+    const step = Number(props2.step);
+    if (isNaN(step)) {
+      return 1;
+    }
+    return step;
+  });
   const _onClick = ($event) => {
     if (props2.disabled) {
       return;
@@ -14774,11 +14832,8 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
       value: sliderValue.value
     });
   };
-  const _filterValue = (e2) => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    const step = Number(props2.step);
-    return e2 < min ? min : e2 > max ? max : computeController.mul.call(Math.round((e2 - min) / step), step) + min;
+  const _filterValue = (min, step, value) => {
+    return Math.round((value - min) / step) * step + min;
   };
   const _onUserChangedValue = (e2) => {
     const max = Number(props2.max);
@@ -14790,8 +14845,9 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     const slider = sliderRef.value;
     const offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
     const boxLeft = slider.getBoundingClientRect().left;
-    const value = (e2.x - boxLeft) * (max - min) / offsetWidth + min;
-    sliderValue.value = _filterValue(value);
+    const proportion = (e2.x - boxLeft) / offsetWidth;
+    const stepDecimal = (truthStep.value + "").split(".")[1];
+    sliderValue.value = parseFloat(_filterValue(min, truthStep.value, lerp(min, max, proportion)).toFixed(stepDecimal ? stepDecimal.length : 0));
   };
   const _onTrack = (e2) => {
     if (!props2.disabled) {
@@ -14827,22 +14883,10 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     _onTrack
   };
 }
-var computeController = {
-  mul: function(arg) {
-    let m = 0;
-    let s1 = this.toString();
-    let s2 = arg.toString();
-    try {
-      m += s1.split(".")[1].length;
-    } catch (e2) {
-    }
-    try {
-      m += s2.split(".")[1].length;
-    } catch (e2) {
-    }
-    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-  }
-};
+function lerp(min, max, t2) {
+  t2 = Math.min(1, Math.max(0, t2));
+  return min * (1 - t2) + max * t2;
+}
 const props$k = {
   indicatorDots: {
     type: [Boolean, String],
@@ -15281,7 +15325,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
       }
       const current = normalizeCurrentValue(viewportPosition + n);
       if (isCancel) {
-        updateViewport(contentTrackViewport);
+        animateViewport(state2.current, "", 0);
       } else {
         currentChangeSource = "touch";
         state2.current = current;
@@ -15327,7 +15371,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
           return false;
         }
       }
-    });
+    }, true);
   });
   onUnmounted(() => {
     cancelSchedule();
@@ -15798,7 +15842,8 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       if (slots.default) {
         slots.default().forEach((vnode) => {
           if (vnode.shapeFlag & 8 && vnode.type !== Comment) {
-            const lines = parseText(vnode.children, {
+            let lines = [];
+            lines = parseText(vnode.children, {
               space: props2.space,
               decode: props2.decode
             });
@@ -16431,7 +16476,7 @@ function initApp(vm) {
   initService();
   initView();
 }
-function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
+function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
   if (clone) {
     comp = extend({}, comp);
   }
@@ -16455,6 +16500,7 @@ function setupComponent(comp, options) {
 }
 function setupWindow(comp, id2) {
   return setupComponent(comp, {
+    type: "window",
     init: (vm) => {
       {
         vm.$page = {
@@ -16467,11 +16513,12 @@ function setupWindow(comp, id2) {
     }
   });
 }
-function setupPage(comp) {
+function setupPage(comp, path) {
   if (process.env.NODE_ENV !== "production") {
     comp.__mpType = "page";
   }
   return setupComponent(comp, {
+    type: "page",
     clone: true,
     // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
@@ -16558,7 +16605,7 @@ function setupApp(comp) {
               notFound: true,
               openType: "appLaunch",
               path: route.path,
-              query: {},
+              query: decodedQuery(route.query),
               scene: 1001
             };
             handleBeforeEntryPageRoutes();
@@ -16670,7 +16717,7 @@ function formatTime(val) {
   }
   return str;
 }
-function useGesture(props2, videoRef, fullscreenState) {
+function useGesture(props2, videoState, videoRef, fullscreenState) {
   const state2 = reactive({
     seeking: false,
     gestureType: "none",
@@ -16773,8 +16820,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     state2.gestureType = "none";
   }
   function changeProgress(x) {
-    const video = videoRef.value;
-    const duration = video.duration;
+    const duration = videoState.currentDuration;
     let currentTimeNew = x / 600 * duration + state2.currentTimeOld;
     if (currentTimeNew < 0) {
       currentTimeNew = 0;
@@ -16887,6 +16933,7 @@ function useVideo(props2, attrs2, trigger) {
     playing: false,
     currentTime: 0,
     duration: 0,
+    currentDuration: 0,
     progress: 0,
     buffered: 0,
     muted,
@@ -16904,6 +16951,11 @@ function useVideo(props2, attrs2, trigger) {
   watch(() => muted.value, (muted2) => {
     const video = videoRef.value;
     video.muted = muted2;
+  });
+  watch([() => state2.duration, () => props2.duration], () => {
+    let _duration = Number(props2.duration);
+    isNaN(_duration) && (_duration = 0);
+    state2.currentDuration = _duration > 0 ? _duration : state2.duration;
   });
   function onDurationChange({
     target
@@ -17039,7 +17091,7 @@ function useControls(props2, videoState, seek, seeking) {
     let progress = 0;
     if (x >= 0 && x <= w) {
       progress = x / w;
-      seek(videoState.duration * progress);
+      seek(videoState.currentDuration * progress);
     }
   }
   function toggleControls() {
@@ -17094,7 +17146,7 @@ function useControls(props2, videoState, seek, seeking) {
         progress = 100;
       }
       videoState.progress = progress;
-      seeking == null ? void 0 : seeking(videoState.duration * progress / 100);
+      seeking == null ? void 0 : seeking(videoState.currentDuration * progress / 100);
       state2.seeking = true;
       event.preventDefault();
       event.stopPropagation();
@@ -17106,7 +17158,7 @@ function useControls(props2, videoState, seek, seeking) {
         if (!moveOnce) {
           event.preventDefault();
           event.stopPropagation();
-          seek(videoState.duration * videoState.progress / 100);
+          seek(videoState.currentDuration * videoState.progress / 100);
         }
         state2.touching = false;
       }
@@ -17252,10 +17304,15 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
       controlsState.controlsVisible = val;
     }
   });
-  watch([() => videoState.currentTime, () => {
-    props$g.duration;
-  }], () => {
-    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  watch([() => videoState.currentTime, () => videoState.currentDuration], () => {
+    if (videoState.currentDuration > 0) {
+      videoState.progress = videoState.currentTime / videoState.currentDuration * 100;
+    } else {
+      videoState.progress = 0;
+    }
+    videoState.progress > 100 && (videoState.progress = 100);
+  }, {
+    immediate: true
   });
   watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
     videoState.currentTime = currentTimeNew;
@@ -17370,7 +17427,6 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    useI18n();
     initI18nVideoMsgsOnce();
     const {
       videoRef,
@@ -17411,7 +17467,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
       onTouchstart,
       onTouchend,
       onTouchmove
-    } = useGesture(props2, videoRef, fullscreenState);
+    } = useGesture(props2, videoState, videoRef, fullscreenState);
     const {
       state: controlsState,
       progressRef,
@@ -17449,7 +17505,10 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "poster": props2.poster,
         "autoplay": !!props2.autoplay
       }, videoAttrs.value, {
-        "class": "uni-video-video",
+        "class": {
+          "uni-video-video": true,
+          "uni-video-video-fullscreen": fullscreenState.fullscreen
+        },
         "webkit-playsinline": true,
         "playsinline": true,
         "onDurationchange": onDurationChange,
@@ -17517,7 +17576,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-inner"
       }, null)], 6)], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
+      }, [formatTime(videoState.currentDuration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
         "class": {
           "uni-video-icon": true,
           "uni-video-danmu-button": true,
@@ -17570,7 +17629,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title"
       }, [createVNode("span", {
         "class": "uni-video-toast-title-current-time"
-      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), createVNode("div", {
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -19082,6 +19141,13 @@ function getBrowserInfo() {
     if (osversionFind) {
       osversion = osversionFind[1].replace(/_/g, ".");
     }
+    const iosVersion = osversion.split(".")[0];
+    if (Number(iosVersion) >= 18) {
+      const versionMatch = ua.match(/Version\/([\d\.]+)/);
+      if (versionMatch) {
+        osversion = versionMatch[1];
+      }
+    }
     const modelFind = ua.match(/\(([a-zA-Z]+);/);
     if (modelFind) {
       model = modelFind[1];
@@ -19186,6 +19252,14 @@ function getBrowserInfo() {
         }
       }
     }
+  } else if (isHarmony) {
+    osname = "Harmony";
+    deviceType = "phone";
+    const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/);
+    if (osversionFind) {
+      osversion = osversionFind[1];
+    }
+    model = "";
   } else {
     osname = "Other";
     osversion = "0";
@@ -19238,7 +19312,7 @@ const getWindowInfo = /* @__PURE__ */ defineSyncApi(
     const landscape = isLandscape(screenFix);
     const screenWidth = getScreenWidth(screenFix, landscape);
     const screenHeight = getScreenHeight(screenFix, landscape);
-    const windowWidth = getWindowWidth(screenWidth);
+    const windowWidth = getWindowWidth();
     let windowHeight = window.innerHeight;
     const statusBarHeight = safeAreaInsets$1.top;
     const safeArea = {
@@ -19304,10 +19378,10 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       deviceOrientation,
       deviceType,
       model,
-      platform,
-      system,
       osName: osname ? osname.toLowerCase() : void 0,
-      osVersion: osversion
+      osVersion: osversion,
+      platform,
+      system
     });
   }
 );
@@ -19331,15 +19405,15 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         hostVersion: browserVersion,
         hostTheme: theme,
         hostLanguage: language,
+        isUniAppX: false,
         language,
         SDKVersion: "",
         theme,
-        version: "",
         uniPlatform: "web",
-        isUniAppX: false,
         uniCompileVersion: __uniConfig.compilerVersion,
         uniCompilerVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion
+        uniRuntimeVersion: __uniConfig.compilerVersion,
+        version: ""
       },
       {}
     );
@@ -19361,24 +19435,24 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
       deviceInfo,
       appBaseInfo,
       {
-        ua: ua2,
         browserName,
         browserVersion,
-        uniPlatform: "web",
-        uniCompileVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion,
         fontSizeSetting: void 0,
         osName: osname.toLowerCase(),
         osVersion: osversion,
         osLanguage: void 0,
-        osTheme: void 0
+        osTheme: void 0,
+        ua: ua2,
+        uniPlatform: "web",
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion
       }
     );
     delete systemInfo.screenTop;
     delete systemInfo.enableDebug;
     if (!__uniConfig.darkmode)
       delete systemInfo.theme;
-    return sortObject(systemInfo);
+    return systemInfo;
   }
 );
 const getSystemInfo = /* @__PURE__ */ defineAsyncApi(
@@ -19388,12 +19462,13 @@ const getSystemInfo = /* @__PURE__ */ defineAsyncApi(
   }
 );
 const API_ON_NETWORK_STATUS_CHANGE = "onNetworkStatusChange";
+const NONE = "none";
 function networkListener() {
   getNetworkType().then(({ networkType }) => {
     UniServiceJSBridge.invokeOnCallback(
       API_ON_NETWORK_STATUS_CHANGE,
       {
-        isConnected: networkType !== "none",
+        isConnected: networkType !== NONE,
         networkType
       }
     );
@@ -19429,16 +19504,17 @@ const getNetworkType = /* @__PURE__ */ defineAsyncApi(
     const connection = getConnection();
     let networkType = "unknown";
     if (connection) {
+      const effectiveType = connection.effectiveType;
       networkType = connection.type;
-      if (networkType === "cellular" && connection.effectiveType) {
-        networkType = connection.effectiveType.replace("slow-", "");
-      } else if (!networkType && connection.effectiveType) {
-        networkType = connection.effectiveType;
-      } else if (!["none", "wifi"].includes(networkType)) {
+      if (networkType === "cellular" && effectiveType) {
+        networkType = effectiveType.replace("slow-", "");
+      } else if ((!networkType || networkType === NONE) && effectiveType) {
+        networkType = effectiveType;
+      } else if (![NONE, "wifi"].includes(networkType)) {
         networkType = "unknown";
       }
     } else if (navigator.onLine === false) {
-      networkType = "none";
+      networkType = NONE;
     }
     return resolve({ networkType });
   }
@@ -19562,7 +19638,7 @@ const vibrateShort = /* @__PURE__ */ defineAsyncApi(
     if (_isSupport && window.navigator.vibrate(15)) {
       resolve();
     } else {
-      reject("vibrateLong:fail");
+      reject("vibrateShort:fail");
     }
   }
 );
@@ -20771,6 +20847,9 @@ function normalizeContentType(header) {
     return;
   }
   const contentType = header[name];
+  if (!contentType) {
+    return "string";
+  }
   if (contentType.indexOf("application/json") === 0) {
     return "json";
   } else if (contentType.indexOf("application/x-www-form-urlencoded") === 0) {
@@ -21077,9 +21156,18 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
       xhr.onload = function() {
         clearTimeout(timer);
         const statusCode = xhr.status;
+        const responseHeaders = xhr.getAllResponseHeaders();
+        const header2 = responseHeaders ? responseHeaders.trim().split(/[\r\n]+/).reduce((acc, line) => {
+          const parts = line.split(": ");
+          const header3 = parts.shift();
+          const value = parts.join(": ");
+          acc[header3] = value;
+          return acc;
+        }, {}) : {};
         resolve({
           statusCode,
-          data: xhr.responseText || xhr.response
+          data: xhr.responseText || xhr.response,
+          header: header2
         });
       };
       if (!uploadTask._isAbort) {
@@ -22059,7 +22147,7 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(
     const path = url.split("?")[0];
     const route = getRouteOptions(path);
     if (!route) {
-      reject(`${url}}`);
+      reject(`${url}`);
       return;
     }
     route.loader && route.loader().then(() => {
@@ -22890,7 +22978,7 @@ const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   LoadFontFaceProtocol
 );
 function updateDocumentTitle(title) {
-  {
+  if (title && title !== document.title) {
     document.title = title;
   }
   UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
@@ -24004,13 +24092,6 @@ const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle",
     state2.rightWindowStyle = style;
   }
 });
-const getElementById = /* @__PURE__ */ defineSyncApi(
-  "getElementById",
-  (id2) => {
-    const uniPageBody = document.querySelector("uni-page-body");
-    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
-  }
-);
 const getFacialRecognitionMetaInfo = /* @__PURE__ */ defineSyncApi(
   "getFacialRecognitionMetaInfo",
   () => {
@@ -24187,7 +24268,6 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getAppBaseInfo,
   getClipboardData,
   getDeviceInfo,
-  getElementById,
   getEnterOptionsSync,
   getFacialRecognitionMetaInfo,
   getFileInfo,
@@ -26732,7 +26812,6 @@ export {
   getClipboardData,
   getCurrentPages$1 as getCurrentPages,
   getDeviceInfo,
-  getElementById,
   getEnterOptionsSync,
   getFacialRecognitionMetaInfo,
   getFileInfo,

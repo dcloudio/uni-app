@@ -559,7 +559,6 @@ export async function compile(
     outputDir,
     sourceMap,
     components,
-    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -701,7 +700,12 @@ export function resolveKotlincArgs(
   ]
 }
 
-export const D8_DEFAULT_ARGS = ['--min-api', '19']
+export const D8_DEFAULT_ARGS = [
+  '--min-api',
+  '21',
+  '--thread-count',
+  os.cpus().length + '',
+]
 
 export function resolveD8Args(filename: string, jars: string[]) {
   return [

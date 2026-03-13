@@ -1,17 +1,20 @@
 <template>
-  <view @click="onclick">
+  <view :class="[customFullscreen?'uni-ad-custom':'',customFullscreen]" :style="style" @click="onclick">
     <uniad-plugin
       class="uniad-plugin"
       :adpid="adpid"
+      :isUni="true"
       :unit-id="unitId"
+      :adIntervals="adIntervals"
       @load="_onmpload"
       @close="_onmpclose"
       @error="_onmperror"
       @nextChannel="_onnextchannel"
+      @customFullscreen="_customFullscreen"
     />
     <!-- #ifdef MP-WEIXIN -->
-    <ad-custom v-if="userwx" :unit-id="userUnitId" class="uni-ad-custom" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
-    <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" :class="[customFullscreen]" @load="_onmpload" @error="_onwxchannelerror"></uniad-plugin-wx>
+    <ad-custom v-if="userwx" :unit-id="userUnitId" :adIntervals="adIntervals" class="uni-ad-custom" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
+    <!-- <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" :class="[customFullscreen]" @load="_onmpload" @error="_onwxchannelerror"></uniad-plugin-wx> -->
     <!-- #endif -->
   </view>
 </template>
@@ -34,5 +37,14 @@ export default {
 .uni-ad-custom-fullscreen {
   display: flex;
   height: 100vh;
+}
+.uni-ad-custom {
+  display: flex;
+  flex: 1;
+  width: 100%;
+}
+.uniad-plugin {
+  display: flex;
+  flex: 1;
 }
 </style>

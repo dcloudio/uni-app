@@ -339,7 +339,7 @@ function getNodesInfo(
       selector,
       fields,
       !single,
-      component?.$.subTree
+      (component || pageVm).$.subTree
     )
   //#endif
 

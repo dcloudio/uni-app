@@ -8,6 +8,7 @@ import {
   type UniVitePlugin,
   buildNonTreeShakingUniModules,
   buildUniExtApis,
+  createErrorWithBlockFlag,
   emptyDir,
   enableSourceMap,
   getCssDepMap,
@@ -375,7 +376,7 @@ export function uniAppPlugin(): UniVitePlugin {
           if (res.changed) {
             // 触发了kotlinc编译，且没有编译成功
             if (!res.changed.length && res.kotlinc) {
-              throw new Error('编译失败')
+              throw createErrorWithBlockFlag('编译失败')
             }
             files.push(...res.changed)
           }
@@ -445,9 +446,13 @@ function normalizeCode(code: string, isMain = false) {
     process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true'
       ? 'initAutomator();\n'
       : ''
+  const styleIsolationCode =
+    process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
+      ? 'enableStyleIsolation();\n    '
+      : ''
   return `${code}
 export function main(app: IApp) {
-    definePageRoutes();
+    ${styleIsolationCode}definePageRoutes();
     defineAppConfig();
     ${automatorCode}(createApp()['app'] as VueApp).mount(app, ${UVUE_CLASS_NAME_PREFIX}UniApp());
 }

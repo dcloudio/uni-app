@@ -1,0 +1,169 @@
+import { ShowLoading, ShowLoadingOptions,LoadingPage,ShowLoadingSuccess,ShowLoadingFailImpl } from "../interface.uts";
+import { HideLoading, HideLoadingOptions,HideLoadingSuccess,HideLoadingFailImpl} from "../interface.uts";
+
+export const showLoading: ShowLoading = function (
+  options?: ShowLoadingOptions|null
+):LoadingPage | null {
+
+	const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
+	const baseEventName = `uni_loading_${uuid}`
+	const readyEventName = `${baseEventName}_ready`
+	const optionsEventName = `${baseEventName}_options`
+	const successEventName = `${baseEventName}_success`
+	const failEventName = `${baseEventName}_fail`
+
+	let nextOptions:any|null = {}
+	if(options != null){
+		nextOptions = JSON.parse(JSON.stringify(options))
+	}
+	
+	uni.$on(readyEventName, () => {
+	  uni.$emit(optionsEventName, nextOptions)
+	})
+	uni.$on(successEventName, (inputParamStr: string) => {
+
+		let res = {
+		} as ShowLoadingSuccess
+
+		options?.success?.(res)
+		options?.complete?.(res)
+	})
+	uni.$on(failEventName, () => {
+
+	  const res = new ShowLoadingFailImpl()
+	  options?.fail?.(res)
+	  options?.complete?.(res)
+
+	})
+
+	let openRet:UniPage | null = uni.openDialogPage({
+	  url: `/uni_modules/uni-showLoading/pages/showLoading/showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+	  fail(err) {
+	    const res = new ShowLoadingFailImpl(`showLoading failed, ${err}`)
+	    options?.fail?.(res)
+	    options?.complete?.(res)
+	    uni.$off(readyEventName, null)
+	    uni.$off(successEventName, null)
+	    uni.$off(failEventName, null)
+	  }
+	})
+
+	if(openRet != null){
+		return openRet as LoadingPage
+	}else{
+		/**
+		 * 返回null 或者 类型不匹配等不应该存在的情况，返回未知错误码
+		 */
+		const res = new ShowLoadingFailImpl()
+		options?.fail?.(res)
+		options?.complete?.(res)
+		return null
+	}
+
+
+}
+
+
+
+export const hideLoading: HideLoading = function (
+  options?: HideLoadingOptions|null
+) {
+
+
+	const pages:Array<UniPage> = getCurrentPages()
+	if (pages.length < 1){
+		const res = new HideLoadingFailImpl()
+		options?.fail?.(res)
+		options?.complete?.(res)
+		return
+	}
+
+	const currentPage:UniPage = pages[pages.length - 1]
+	if(currentPage == null) {
+		const res = new HideLoadingFailImpl()
+		options?.fail?.(res)
+		options?.complete?.(res)
+		return
+	}
+	if((currentPage as ESObject).$systemDialogPages == null) {
+		const res = new HideLoadingFailImpl()
+		options?.fail?.(res)
+		options?.complete?.(res)
+		return
+	}
+
+	const dialogPages:Array<UniPage> = (currentPage as ESObject).$systemDialogPages
+	/**
+	 * 查找需要关闭的dialog实例
+	 */
+	let shallClosePages:Array<UniPage> = []
+
+	for(let perPage of dialogPages){
+
+		if (isSystemShowLoadingDialogPage(perPage)) {
+			if(options?.loadingPage == null){
+				// 如果是无差别关闭，则直接关闭所有loading 页面
+				shallClosePages.push(perPage)
+			}else{
+				// 需要对比当前的page
+				if(perPage.options!["optionsEventName"] === options!.loadingPage!.options["optionsEventName"]){
+					shallClosePages.push(perPage)
+					break
+				}
+			}
+		}
+	}
+	/**
+	 * 集中处理待关闭的page
+	 */
+	for(let perPage of shallClosePages){
+
+		let ret = {
+		}
+
+		if(perPage.options!["successEventName"] != null){
+			uni.closeDialogPage({
+				dialogPage:perPage
+			})
+		}
+
+	}
+
+	/**
+	 * 给调用者成功/完成回调
+	 */
+	let res = {
+	} as HideLoadingSuccess
+	options?.success?.(res)
+	options?.complete?.(res)
+
+}
+
+/**
+ * 根据路径判断page是否是loading类型
+ */
+function isSystemShowLoadingDialogPage(page: UniPage):boolean {
+	return page.route.startsWith("uni:showLoading")
+}
+
+export {
+	ShowLoadingFail,
+	HideLoadingFail,
+	ShowLoadingFailImpl,
+	ShowLoadingOptions,
+	HideLoadingSuccess,
+	HideLoadingFailImpl,
+	HideLoadingOptions,
+	ShowLoading,
+	HideLoading,
+	ShowLoadingFailErrorCode,
+	LoadingPage,
+	HideLoadingFailErrorCode,
+	HideLoadingCompleteCallback,
+	HideLoadingFailCallback,
+	HideLoadingSuccessCallback,
+	ShowLoadingCompleteCallback,
+	ShowLoadingFailCallback,
+	ShowLoadingSuccess,
+	ShowLoadingSuccessCallback
+} from '../interface.uts'

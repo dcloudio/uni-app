@@ -3,7 +3,7 @@ import { createTransformTag } from './transformTag'
 import { createTransformEvent } from './transformEvent'
 import { createTransformComponentLink } from './transformComponent'
 import { COMPONENT_BIND_LINK } from '../../mp/constants'
-
+export * from './transformLineBreak'
 export * from './transformRef'
 export * from './transformPageHead'
 export * from './transformComponent'

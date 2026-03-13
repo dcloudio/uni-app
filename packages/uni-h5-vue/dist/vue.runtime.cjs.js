@@ -5414,7 +5414,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
         if (options) {
           if (shared.hasOwn(attrs, key)) {
             if (value !== attrs[key]) {
-              attrs[key] = value;
+              attrs[key] = normalizeInheritAttrsValue(instance, key, value);
               hasAttrsChanged = true;
             }
           } else {
@@ -5430,7 +5430,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
           }
         } else {
           if (value !== attrs[key]) {
-            attrs[key] = value;
+            attrs[key] = normalizeInheritAttrsValue(instance, key, value);
             hasAttrsChanged = true;
           }
         }
@@ -5493,13 +5493,15 @@ function setFullProps(instance, rawProps, props, attrs) {
       let camelKey;
       if (options && shared.hasOwn(options, camelKey = shared.camelize(key))) {
         if (!needCastKeys || !needCastKeys.includes(camelKey)) {
-          props[camelKey] = value;
+          {
+            props[camelKey] = value;
+          }
         } else {
           (rawCastValues || (rawCastValues = {}))[camelKey] = value;
         }
       } else if (!isEmitListener(instance.emitsOptions, key)) {
         if (!(key in attrs) || value !== attrs[key]) {
-          attrs[key] = value;
+          attrs[key] = normalizeInheritAttrsValue(instance, key, value);
           hasAttrsChanged = true;
         }
       }
@@ -5522,7 +5524,21 @@ function setFullProps(instance, rawProps, props, attrs) {
   }
   return hasAttrsChanged;
 }
+function normalizeInheritAttrsValue(instance, key, value) {
+  return value;
+}
 function resolvePropValue(options, props, key, value, instance, isAbsent) {
+  const result = _resolvePropValue(
+    options,
+    props,
+    key,
+    value,
+    instance,
+    isAbsent
+  );
+  return result;
+}
+function _resolvePropValue(options, props, key, value, instance, isAbsent) {
   const opt = options[key];
   if (opt != null) {
     const hasDefault = shared.hasOwn(opt, "default");
@@ -9831,7 +9847,9 @@ function patchClass(el, value, isSVG) {
   } else if (isSVG) {
     el.setAttribute("class", value);
   } else {
-    el.className = value;
+    {
+      el.className = value;
+    }
   }
 }
 
@@ -11167,6 +11185,7 @@ exports.effect = effect;
 exports.effectScope = effectScope;
 exports.getCurrentInstance = getCurrentInstance;
 exports.getCurrentScope = getCurrentScope;
+exports.getExposeProxy = getExposeProxy;
 exports.getTransitionRawChildren = getTransitionRawChildren;
 exports.guardReactiveProps = guardReactiveProps;
 exports.h = h;

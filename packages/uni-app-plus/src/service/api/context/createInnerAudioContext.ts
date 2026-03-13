@@ -208,16 +208,25 @@ const onAudioStateChange = ({
   if (audio) {
     emit(audio, state, errMsg, errCode)
     if (state === 'play') {
-      const oldCurrentTime = audio.currentTime
-      emit(audio, 'timeUpdate' as any)
-      audio.__timing = setInterval(() => {
-        const currentTime = audio.currentTime
-        if (currentTime !== oldCurrentTime) {
-          emit(audio, 'timeUpdate' as any)
-        }
-      }, TIME_UPDATE)
-    } else if (state === 'pause' || state === 'stop' || state === 'error') {
-      clearInterval(audio.__timing!)
+      if (!audio.__timing) {
+        emit(audio, 'timeUpdate' as any)
+        let lastCurrentTime = audio.currentTime
+        audio.__timing = setInterval(() => {
+          const currentTime = audio.currentTime
+          if (currentTime !== lastCurrentTime) {
+            lastCurrentTime = currentTime
+            emit(audio, 'timeUpdate' as any)
+          }
+        }, TIME_UPDATE)
+      }
+    } else if (
+      state === 'pause' ||
+      state === 'stop' ||
+      state === 'ended' ||
+      state === 'error'
+    ) {
+      clearInterval(audio.__timing)
+      audio.__timing = undefined
     }
   }
 }
@@ -399,6 +408,7 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
 
   destroy() {
     clearInterval(this.__timing!)
+    this.__timing = undefined
     if (audios[this.id]) {
       audios[this.id].close()
       delete audios[this.id]

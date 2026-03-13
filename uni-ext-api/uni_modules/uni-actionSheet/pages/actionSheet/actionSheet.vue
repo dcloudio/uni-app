@@ -339,7 +339,7 @@
     const systemInfo = uni.getSystemInfoSync()
     isLandscape.value = systemInfo.deviceOrientation == 'landscape'
   })
-  onUnload(() => {
+  onBeforeUnmount(() => {
     if (!menuItemClicked.value && !cancelButtonClicked.value) {
       // 非用户交互导致关闭 actionSheet, 触发 fail 回调
       uni.$emit(failEventName.value, {})

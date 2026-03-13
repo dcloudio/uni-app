@@ -157,21 +157,36 @@ function isMPTapEvent(event: MPEvent): event is MPTapEvent {
   return event.type === 'tap'
 }
 
+function normalizeAlipayTapEventPosition(event: MPTapEvent) {
+  // 支付宝小程序点击事件没有 touches
+  event.x = event.detail.clientX
+  event.y = event.detail.clientY
+  event.clientX = event.detail.clientX
+  event.clientY = event.detail.clientY
+  event.pageX = event.detail.pageX
+  event.pageY = event.detail.pageY
+}
+
 function normalizeXEvent(
   event: MPEvent,
   instance?: ComponentInternalInstance | null
 ) {
   if (isMPTapEvent(event)) {
-    event.x = event.detail.x
-    event.y = event.detail.y
-    event.clientX = event.detail.x
-    event.clientY = event.detail.y
-    const touch0 = event.touches && event.touches[0]
-    if (touch0) {
-      event.pageX = touch0.pageX
-      event.pageY = touch0.pageY
-      event.screenX = touch0.screenX
-      event.screenY = touch0.screenY
+    const ctx = (instance as any)?.ctx
+    if (ctx?.$mpPlatform === 'mp-alipay') {
+      normalizeAlipayTapEventPosition(event)
+    } else {
+      event.x = event.detail.x
+      event.y = event.detail.y
+      event.clientX = event.detail.x
+      event.clientY = event.detail.y
+      const touch0 = event.touches && event.touches[0]
+      if (touch0) {
+        event.pageX = touch0.pageX
+        event.pageY = touch0.pageY
+        event.screenX = touch0.screenX
+        event.screenY = touch0.screenY
+      }
     }
   }
   if (event.target) {

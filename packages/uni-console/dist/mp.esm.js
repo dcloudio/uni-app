@@ -1,3 +1,30 @@
+function currentPageCaptureScreenshot(fullPage, callback) {
+    var _a;
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    (_a = currentPage.vm) === null || _a === void 0 ? void 0 : _a.$viewToTempFilePath({
+        wholeContent: fullPage,
+        overwrite: true,
+        success: (res) => {
+            const fileManager = uni.getFileSystemManager();
+            // @ts-expect-error
+            fileManager.readFile({
+                encoding: 'base64',
+                filePath: res.tempFilePath,
+                success(readFileRes) {
+                    callback(readFileRes.data, '');
+                },
+                fail(err) {
+                    callback('', `captureScreenshot fail: ${JSON.stringify(err)}`);
+                },
+            });
+        },
+        fail: (err) => {
+            callback('', `captureScreenshot fail: ${JSON.stringify(err)}`);
+        },
+    });
+}
+
 /// <reference types="@dcloudio/uni-app-x/types/uni/global" />
 function initRuntimeSocket(hosts, port, id) {
     if (hosts == '' || port == '' || id == '')
@@ -40,6 +67,23 @@ function tryConnectSocket(host, port, id) {
         });
         socket.onError((e) => {
             clearTimeout(timer);
+            resolve(null);
+        });
+        // 接收 hx 消息，处理截屏请求
+        socket.onMessage((result) => {
+            const message = JSON.parse(result.data);
+            if (message['type'] == 'screencap') {
+                const id = message['id'];
+                currentPageCaptureScreenshot(message.fullPage, (base64, error) => {
+                    socket.send({
+                        data: JSON.stringify({
+                            id,
+                            base64,
+                            error,
+                        }),
+                    });
+                });
+            }
             resolve(null);
         });
     });

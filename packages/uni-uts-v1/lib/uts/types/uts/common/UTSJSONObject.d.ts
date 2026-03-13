@@ -5,7 +5,7 @@ interface UTSJSONObject {
   /**
      获取一个 属性，返回类型是any 或者 null
      @return 如果属性存在返回结果，不存在返回null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#get
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#get
      @uniPlatform {
         "app": {
             "android": {
@@ -39,7 +39,7 @@ interface UTSJSONObject {
   get(key: string): any | null;
   /**
      添加或更新一个指定的属性
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#set
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#set
      @uniPlatform {
         "app": {
             "android": {
@@ -74,7 +74,7 @@ interface UTSJSONObject {
   /**
      获取一个 属性，返回类型是any 或者 null
      @return 如果属性存在返回结果，不存在返回null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getAny
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getany
      @uniPlatform {
         "app": {
             "android": {
@@ -111,7 +111,7 @@ interface UTSJSONObject {
      @param key 属性值, 可以是keyPath
      @param def 指定的默认值
      @return 如果属性存在返回结果，不存在返回指定的默认值
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getAny
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getany
      @uniPlatform {
         "app": {
             "android": {
@@ -146,7 +146,7 @@ interface UTSJSONObject {
   /**
      获取一个Boolean属性，返回类型是Boolean 或者 null
      @return 如果属性名存在，且类型为Boolean返回对应的结果，不存在返回null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getBoolean
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getboolean
      @uniPlatform {
         "app": {
             "android": {
@@ -183,7 +183,7 @@ interface UTSJSONObject {
      @param key 属性值, 可以是keyPath
      @param def 指定的默认值
      @return 如果属性名存在，且类型为Boolean返回对应的结果，不存在返回指定的默认值
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getBoolean
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getboolean
      @uniPlatform {
         "app": {
             "android": {
@@ -218,7 +218,7 @@ interface UTSJSONObject {
   /**
      获取一个number属性，返回类型是number 或者 null
      @return 如果属性名存在，且类型为number返回对应的结果，不存在返回null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getNumber
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getnumber
      @uniPlatform {
         "app": {
             "android": {
@@ -255,7 +255,7 @@ interface UTSJSONObject {
      @param key 属性值, 可以是keyPath
      @param def 指定的默认值
      @return 如果属性名存在，且类型为number返回对应的结果，不存在返回指定的默认值
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getNumber
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getnumber
      @uniPlatform {
         "app": {
             "android": {
@@ -290,7 +290,7 @@ interface UTSJSONObject {
   /**
      获取一个string属性，返回类型是string 或者 null
      @return 如果属性名存在，且类型为string返回对应的结果，不存在返回null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getString
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getstring
      @uniPlatform {
         "app": {
             "android": {
@@ -327,7 +327,7 @@ interface UTSJSONObject {
      @param key 属性值, 可以是keyPath
      @param def 指定的默认值
      @return 如果属性名存在，且类型为string返回对应的结果，不存在返回指定的默认值
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getString
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getstring
      @uniPlatform {
         "app": {
             "android": {
@@ -362,7 +362,7 @@ interface UTSJSONObject {
   /**
      获取一个UTSJSONObject属性，返回类型是UTSJSONObject 或者 null
      @return 如果属性名存在，且类型为UTSJSONObject返回对应的结果，不存在返回null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getJSON
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getjson
      @uniPlatform {
         "app": {
             "android": {
@@ -399,7 +399,7 @@ interface UTSJSONObject {
      @param key 属性值, 可以是keyPath
      @param def 指定的默认值
      @return 如果属性名存在，且类型为UTSJSONObject返回对应的结果，不存在返回指定的默认值
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getJSON
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getjson
      @uniPlatform {
         "app": {
             "android": {
@@ -434,7 +434,7 @@ interface UTSJSONObject {
   /**
      获取一个Array属性，返回类型是Array 或者 null, 数组元素类型由泛型T决定
      @return 如果属性名存在，且类型为Array返回对应的结果，不存在返回null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getArray<T>
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getarray<T>
      @inline
      @reified
      @uniPlatform {
@@ -473,7 +473,7 @@ interface UTSJSONObject {
      @param key 属性值, 可以是keyPath
      @param def 指定的默认值
      @return 如果属性名存在，且类型为Array返回对应的结果，不存在返回指定的默认值
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getArray<T>
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getarray<T>
      @inline
      @reified
      @uniPlatform {
@@ -510,7 +510,7 @@ interface UTSJSONObject {
   /**
      获取一个Array属性，返回类型是Array 或者 null
      @return 如果属性名存在，且类型为Array返回对应的结果，不存在返回null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getArray
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getarray
      @uniPlatform {
         "app": {
             "android": {
@@ -547,7 +547,7 @@ interface UTSJSONObject {
      @param key 属性值, 可以是keyPath
      @param def 指定的默认值
      @return 如果属性名存在，且类型为Array返回对应的结果，不存在返回指定的默认值
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getArray
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#getarray
      @uniPlatform {
         "app": {
             "android": {
@@ -582,7 +582,7 @@ interface UTSJSONObject {
   /**
      将当前 UTSJSONObject 实例转换为 Map 实例。
      @return 返回 Map<string, any> 类型的 map
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#toMap
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#tomap
      @uniPlatform {
         "app": {
             "android": {
@@ -619,7 +619,7 @@ interface UTSJSONObject {
   /**
      将当前的UTSJSONObject对象转换为某一个具体的类型 T
      @return 具体的类型T，如果失败返回null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#parse
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#parse
      @inline
      @reified
      @uniPlatform {
@@ -669,7 +669,7 @@ interface UTSJSONObjectConstructor {
      以数组的形式返回指定UTSJSONObjetc 对象内可枚举属性的名称列表
      @param item 需要检索的UTSJSONObject 实例对象
      @return 返回 Array<string> 类型的可枚举属性的名称列表
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#keys
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#keys
      @uniPlatform {
         "app": {
             "android": {
@@ -713,7 +713,7 @@ interface UTSJSONObjectConstructor {
      该方法允许输入一个或者多个UTSJSONObject对象，合并后返回一个新的UTSJSONObject，其中包含全部输入对象的属性字段，如果存在同名的属性会以后传入的属性为准
      @param items 需要被合并的UTSJSONObject 实例对象
      @return 合并后的UTSJSONObject
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#assign
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#assign
      @uniPlatform {
         "app": {
             "android": {
@@ -757,7 +757,7 @@ interface UTSJSONObjectConstructor {
      该方法允许输入一个或者多个UTSJSONObject对象，合并后返回一个新的泛型对象T，其中包含全部输入对象的属性字段，如果存在同名的属性会以后传入的属性为准
      @param items 需要被合并的实例对象
      @return 合并后的泛型对象
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#assign
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#assign
      @inline
      @reified
      @uniPlatform {

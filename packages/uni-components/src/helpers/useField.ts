@@ -286,8 +286,10 @@ function useValueSync(
   props: Props,
   state: { value: string; maxlength: number },
   emit: SetupContext['emit'],
-  trigger: CustomEventTrigger
+  trigger: CustomEventTrigger,
+  fieldRef: Ref<HTMLFieldElement | null>
 ) {
+  let lastUserInputValue: string | null = null
   let valueChangeFn:
     | ReturnType<typeof throttle>
     | ReturnType<typeof debounce>
@@ -299,7 +301,18 @@ function useValueSync(
   } else {
     valueChangeFn = debounce(
       (val: any) => {
-        state.value = getValueString(val, props.type)
+        const fieldElement = fieldRef.value
+        const newValue = getValueString(val, props.type)
+
+        if (
+          fieldElement &&
+          document.activeElement === fieldElement &&
+          newValue === lastUserInputValue
+        ) {
+          return
+        }
+
+        state.value = newValue
       },
       100,
       { setTimeout, clearTimeout }
@@ -319,6 +332,7 @@ function useValueSync(
     force: boolean
   ) => {
     valueChangeFn!.cancel()
+    lastUserInputValue = detail.value
     triggerInputFn(event, detail)
     if (force) {
       triggerInputFn.flush()
@@ -525,7 +539,7 @@ export function useField(
 ) {
   UniViewJSBridgeSubscribe()
   const { fieldRef, state, trigger } = useBase(props, rootRef, emit)
-  const { triggerInput } = useValueSync(props, state, emit, trigger)
+  const { triggerInput } = useValueSync(props, state, emit, trigger, fieldRef)
   useAutoFocus(props, fieldRef)
   useKeyboard(props, fieldRef, trigger)
   const { state: scopedAttrsState } = useScopedAttrs()

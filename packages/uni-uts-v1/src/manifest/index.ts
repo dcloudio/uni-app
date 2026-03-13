@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'fs-extra'
+import { emptyDirSync, existsSync, readFileSync } from 'fs-extra'
 import { join } from 'path'
 import { parseJson } from '../shared'
 import {
@@ -173,4 +173,15 @@ function hasCustomConfigJson(
     } catch (e) {}
   }
   return false
+}
+
+export function clearManifestFiles(
+  platform: APP_PLATFORM,
+  pluginRelativeDir: string,
+  cacheDir: string
+) {
+  const pluginDir = join(cacheDir, platform, 'uts', pluginRelativeDir)
+  if (existsSync(pluginDir)) {
+    emptyDirSync(pluginDir)
+  }
 }

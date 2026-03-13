@@ -1,5 +1,6 @@
 import '@dcloudio/uni-app-plus/style/framework/base.css'
 import '@dcloudio/uni-components/style/resize-sensor.css'
+import '../../style/framework/shadow.css'
 import { initView } from '@dcloudio/uni-core'
 import { formatAppLog } from '@dcloudio/uni-app'
 import { ON_WEBVIEW_READY } from '@dcloudio/uni-app-plus/constants'

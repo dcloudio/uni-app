@@ -41,10 +41,13 @@ export function parseTheme<T extends Object>(pageStyle: T): T {
     let parsedStyle = {} as T
     let theme = plus.navigator.getUIStyle()
 
-    const systemInfo = weexGetSystemInfoSync()
-    // 小程序 SDK
-    if (systemInfo && systemInfo.hostTheme) {
-      theme = systemInfo.hostTheme
+    // @ts-expect-error 鸿蒙端编译时写入 plus.os.name 鸿蒙暂不支持 hostTheme
+    if (plus.os.name !== 'HarmonyOS') {
+      const systemInfo = weexGetSystemInfoSync()
+      // 小程序 SDK
+      if (systemInfo && systemInfo.hostTheme) {
+        theme = systemInfo.hostTheme
+      }
     }
 
     parsedStyle = normalizeStyles(

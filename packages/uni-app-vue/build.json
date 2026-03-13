@@ -96,6 +96,7 @@
     },
     "replacements": {
       "__X__": "true",
+      "__PLATFORM__": "\"app-ios\"",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
@@ -125,6 +126,7 @@
     },
     "replacements": {
       "__X__": "true",
+      "__PLATFORM__": "\"app-ios\"",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
@@ -158,6 +160,7 @@
     },
     "replacements": {
       "__X__": "true",
+      "__PLATFORM__": "\"app-ios\"",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
@@ -197,6 +200,7 @@
     },
     "replacements": {
       "__X__": "true",
+      "__PLATFORM__": "\"app-ios\"",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
@@ -232,6 +236,7 @@
     },
     "replacements": {
       "__X__": "true",
+      "__PLATFORM__": "\"app-harmony\"",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
@@ -293,6 +298,7 @@
     },
     "replacements": {
       "__X__": "true",
+      "__PLATFORM__": "\"app-harmony\"",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
@@ -355,6 +361,7 @@
     },
     "replacements": {
       "__X__": "true",
+      "__PLATFORM__": "\"app-harmony\"",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
@@ -426,6 +433,7 @@
     },
     "replacements": {
       "__X__": "true",
+      "__PLATFORM__": "\"app-harmony\"",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",

@@ -115,6 +115,14 @@
       "null"
     ]
   },
+  "uni-showLoading": {
+    "showLoading": [
+      "null"
+    ],
+    "hideLoading": [
+      "null"
+    ]
+  },
   "uni-storage": {
     "clearStorage": [
       "null"
@@ -154,6 +162,12 @@
   },
   "uni-video": {
     "createVideoContext": [
+      null,
+      "null"
+    ]
+  },
+  "uni-web-view": {
+    "createWebViewContext": [
       null,
       "null"
     ]

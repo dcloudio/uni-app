@@ -9,6 +9,7 @@ import {
 import { LINEFEED } from '@dcloudio/uni-shared'
 import type { RequestFail } from '@dcloudio/uni-app-x/types/uni'
 import { Emitter } from '@dcloudio/uni-shared'
+import type { UTSJSONObject } from '@dcloudio/uni-shared'
 
 export const request = defineTaskApi<API_TYPE_REQUEST>(
   API_REQUEST,
@@ -250,6 +251,9 @@ function normalizeContentType(header: Record<string, string>) {
     delete header[name]
   }
   //#endif
+  if (!contentType) {
+    return 'string'
+  }
   if (contentType.indexOf('application/json') === 0) {
     return 'json'
   } else if (contentType.indexOf('application/x-www-form-urlencoded') === 0) {

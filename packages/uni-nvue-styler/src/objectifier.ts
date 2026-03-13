@@ -1,25 +1,63 @@
-import type { Container, Document, Root } from 'postcss'
+import {
+  type Container,
+  type Declaration,
+  type Document,
+  type Message,
+  type Node,
+  type Root,
+  type Rule,
+  Warning,
+} from 'postcss'
 import { extend, hasOwn } from '@vue/shared'
-import { COMBINATORS_RE } from './utils'
+import { COMBINATORS_RE, SIMPLE_SELECTOR_RE } from './utils'
 
-interface ObjectifierContext {
+interface ObjectifierOptions {
+  trim: boolean
+  simpleSelectorOnly?: boolean
+  parseMessages: Message[]
+  visitor?: (
+    node: Declaration,
+    context: ObjectifierContext
+  ) => { name: string; value: string } | false
+}
+export interface ObjectifierContext {
   'FONT-FACE': Record<string, unknown>[]
   TRANSITION: Record<string, Record<string, unknown>>
+  messages: Message[]
+  warn: (node: Node, message: string) => void
 }
 
 export function objectifier(
   node: Root | Document | Container | null,
-  { trim }: { trim: boolean } = { trim: false }
+  options: ObjectifierOptions
+) {
+  return objectifierWithMessages(node, options).obj
+}
+
+export function objectifierWithMessages(
+  node: Root | Document | Container | null,
+  options: ObjectifierOptions
 ) {
   if (!node) {
-    return {}
+    return { obj: {}, messages: [] }
+  }
+  const parseMessages = options.parseMessages || []
+  function isInParseMessages(node: Node) {
+    return parseMessages.some((message) => message.node.source === node.source)
   }
   const context: ObjectifierContext = {
     'FONT-FACE': [],
     TRANSITION: {},
+    messages: [],
+    warn(node, message) {
+      // 如果parse阶段已经有该节点的错误，则不再添加
+      if (!isInParseMessages(node)) {
+        context.messages.push(new Warning(message, { node }))
+      }
+    },
   }
-  const result = transform(node, context)
-  if (trim) {
+  const result = transform(node, context, options)
+  if (options.trim) {
     trimObj(result)
   }
   if (context['FONT-FACE'].length) {
@@ -28,7 +66,7 @@ export function objectifier(
   if (Object.keys(context.TRANSITION).length) {
     result['@TRANSITION'] = context.TRANSITION
   }
-  return result
+  return { obj: result, messages: context.messages }
 }
 
 function trimObj(obj: Record<string, any>) {
@@ -42,12 +80,13 @@ function trimObj(obj: Record<string, any>) {
 
 function transform(
   node: Root | Document | Container,
-  context: ObjectifierContext
+  context: ObjectifierContext,
+  options: ObjectifierOptions
 ) {
   const result: Record<string, Record<string, unknown> | unknown> = {}
   node.each((child) => {
     if (child.type === 'atrule') {
-      const body = transform(child, context)
+      const body = transform(child, context, options)
       if (child.name === 'font-face') {
         const fontFamily = body.fontFamily as string
         if (fontFamily && '"\''.indexOf(fontFamily[0]) > -1) {
@@ -56,18 +95,28 @@ function transform(
         context['FONT-FACE'].push(body)
       }
     } else if (child.type === 'rule') {
-      const body = transform(child, context)
+      const body = transform(child, context, options)
       child.selectors.forEach((selector) => {
-        transformSelector(selector, body, result, context)
+        transformSelector(child, selector, body, result, context, options)
       })
     } else if (child.type === 'decl') {
+      let name = child.prop
+      let value = child.value
+      if (options.visitor) {
+        const result = options.visitor(child, context)
+        if (!result) {
+          return
+        }
+        name = result.name
+        value = result.value
+      }
       if (child.important) {
-        result['!' + child.prop] = child.value
+        result['!' + name] = value
         // !important的值域优先级高，故删除非!important的值域
-        delete result[child.prop]
+        delete result[name]
       } else {
-        if (!hasOwn(result, '!' + child.prop)) {
-          result[child.prop] = child.value
+        if (!hasOwn(result, '!' + name)) {
+          result[name] = value
         }
       }
     }
@@ -76,11 +125,19 @@ function transform(
 }
 
 function transformSelector(
+  node: Rule,
   selector: string,
   body: Record<string, unknown>,
   result: Record<string, unknown | Record<string, unknown>>,
-  context: ObjectifierContext
+  context: ObjectifierContext,
+  options: ObjectifierOptions
 ) {
+  if (options.simpleSelectorOnly) {
+    if (!SIMPLE_SELECTOR_RE.test(selector)) {
+      context.warn(node, `Invalid selector "${selector}".`)
+      return
+    }
+  }
   const res = selector.match(COMBINATORS_RE)
   if (!res) {
     return

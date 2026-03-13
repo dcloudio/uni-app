@@ -38,24 +38,7 @@
     /**
      * copy from @uts/shared
      */
-    var IDENTIFIER;
-    (function (IDENTIFIER) {
-        IDENTIFIER["UTSJSONObject"] = "UTSJSONObject";
-        IDENTIFIER["JSON"] = "JSON";
-        IDENTIFIER["UTS"] = "UTS";
-        IDENTIFIER["VUE"] = "vue";
-        IDENTIFIER["GLOBAL_THIS"] = "globalThis";
-        IDENTIFIER["UTS_TYPE"] = "UTSType";
-        IDENTIFIER["UTS_METADATA"] = "$UTSMetadata$";
-        IDENTIFIER["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
-        IDENTIFIER["JSON_FIELD"] = "JSON_FIELD";
-    })(IDENTIFIER || (IDENTIFIER = {}));
-    var UTS_CLASS_METADATA_KIND;
-    (function (UTS_CLASS_METADATA_KIND) {
-        UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["CLASS"] = 0] = "CLASS";
-        UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["INTERFACE"] = 1] = "INTERFACE";
-        UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["TYPE"] = 2] = "TYPE";
-    })(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
+    const UTS_CLASS_METADATA_KIND_LIST = [0, 1, 2];
 
     function getType(val) {
         return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
@@ -77,13 +60,13 @@
 
     function isUTSMetadata(metadata) {
         return !!(metadata &&
-            metadata.kind in UTS_CLASS_METADATA_KIND &&
+            UTS_CLASS_METADATA_KIND_LIST.includes(metadata.kind) &&
             metadata.interfaces);
     }
     function isNativeType(proto) {
         return !proto || proto === Object.prototype;
     }
-    const utsMetadataKey = IDENTIFIER.UTS_METADATA;
+    const utsMetadataKey = "$UTSMetadata$" /* IDENTIFIER.UTS_METADATA */;
     /**
      * 处理复杂的继承关系。
      * 例如：
@@ -159,7 +142,7 @@
         static get$UTSMetadata$(...args) {
             return {
                 name: '',
-                kind: UTS_CLASS_METADATA_KIND.TYPE,
+                kind: 2 /* UTS_CLASS_METADATA_KIND.TYPE */,
                 interfaces: [],
                 fields: {},
             };
@@ -191,7 +174,7 @@
                             throw new UTSError(`Failed to contruct type, ${options} is not an array`);
                         }
                         super();
-                        // @ts-ignore
+                        // @ts-expect-error
                         return options.map((item) => {
                             return normalizeGenericValue(item, generics[0], isJSONParse);
                         });
@@ -219,7 +202,7 @@
                         return parent.get$UTSMetadata$(...generics);
                     }
                     constructor(options, metadata = VirtualClassWithGenerics.get$UTSMetadata$(), isJSONParse = false) {
-                        // @ts-ignore
+                        // @ts-expect-error
                         super(options, metadata, isJSONParse);
                     }
                 };
@@ -230,6 +213,10 @@
         }
         constructor() { }
         static initProps(options, metadata, isJSONParse = false) {
+            // 为了性能，非JSON.parse场景直接返回
+            if (!isJSONParse) {
+                return options;
+            }
             const obj = {};
             if (!metadata.fields) {
                 return obj;
@@ -249,7 +236,7 @@
                 if (isUTSType(type)) {
                     // 带有泛型的数组会走此分支
                     obj[key] = isJSONParse
-                        ? // @ts-ignore
+                        ? // @ts-expect-error
                             new type(options[realKey], undefined, isJSONParse)
                         : options[realKey];
                 }
@@ -297,7 +284,7 @@
     function getRealDefaultValue(defaultValue) {
         return defaultValue === void 0 ? null : defaultValue;
     }
-    let UTSJSONObject$1 = class UTSJSONObject {
+    class UTSJSONObject {
         static keys(obj) {
             return Object.keys(obj);
         }
@@ -485,7 +472,7 @@
                 callback(this[key], key);
             }
         }
-    };
+    }
 
     const OriginalJSON = JSON;
     function createUTSJSONObjectOrArray(obj) {
@@ -495,7 +482,7 @@
             });
         }
         else if (isPlainObject(obj)) {
-            const result = new UTSJSONObject$1({});
+            const result = new UTSJSONObject({});
             for (const key in obj) {
                 const value = obj[key];
                 result[key] = createUTSJSONObjectOrArray(value);
@@ -509,7 +496,7 @@
         if (object === null || (objectType !== 'object' && objectType !== 'array')) {
             return object;
         }
-        if (utsType && utsType !== UTSJSONObject$1) {
+        if (utsType && utsType !== UTSJSONObject) {
             try {
                 return new utsType(object, undefined, true);
             }
@@ -525,8 +512,8 @@
     }
     const UTSJSON = {
         parse: (text, reviver, utsType) => {
-            // @ts-ignore
-            if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject$1)) {
+            // @ts-expect-error
+            if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject)) {
                 utsType = reviver;
                 reviver = undefined;
             }
@@ -686,11 +673,9 @@
         }
     }
 
-    let UTSValueIterable$1 = class UTSValueIterable {
-    };
-
-    // @ts-nocheck
-    function getGlobal() {
+    class UTSValueIterable {
+    }
+    function getGlobalOnce() {
         if (typeof globalThis !== 'undefined') {
             return globalThis;
         }
@@ -703,9 +688,9 @@
             return window;
         }
         // nodejs
-        if (typeof global !== 'undefined') {
-            return global;
-        }
+        // if (typeof global !== 'undefined') {
+        //   return global
+        // }
         function g() {
             return this;
         }
@@ -716,13 +701,20 @@
             return new Function('return this')();
         })();
     }
-    const realGlobal = getGlobal();
-    realGlobal.UTSJSONObject = UTSJSONObject$1;
-    realGlobal.UniError = UniError;
-    realGlobal.UTS = UTS;
-    realGlobal.UTSValueIterable = UTSValueIterable$1;
+    let g = undefined;
+    function getGlobal() {
+        if (g) {
+            return g;
+        }
+        g = getGlobalOnce();
+        return g;
+    }
 
-    // @ts-expect-error
+    const realGlobal = getGlobal();
+    realGlobal.UTS = UTS;
+    realGlobal.UTSJSONObject = UTSJSONObject;
+    realGlobal.UTSValueIterable = UTSValueIterable;
+    realGlobal.UniError = UniError;
     class WorkerTaskImpl {
         constructor() {
             {
@@ -748,7 +740,9 @@
     // @ts-expect-error
     globalThis.WorkerTaskImpl = WorkerTaskImpl;
 
-    exports.UTSJSONObject = UTSJSONObject$1;
+    exports.UTS = UTS;
+    exports.UTSJSONObject = UTSJSONObject;
+    exports.UTSValueIterable = UTSValueIterable;
     exports.UniError = UniError;
     exports.WorkerTaskImpl = WorkerTaskImpl;
 

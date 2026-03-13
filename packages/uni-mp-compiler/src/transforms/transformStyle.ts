@@ -38,9 +38,9 @@ import {
   isFilterExpr,
   isStaticLiteral,
   parseExprWithRewrite,
-  rewirteWithHelper,
   rewriteExpression,
   rewriteSpreadElement,
+  rewriteWithHelper,
 } from './utils'
 
 export function isStyleBinding({ arg, exp }: DirectiveNode) {
@@ -201,7 +201,7 @@ function rewriteStyleObjectExpression(
       if (!isPrivateName(key)) {
         if (computed) {
           // {[handle(computedKey)]:1} => {[a]:1}
-          const newExpr = rewirteWithHelper(HYPHENATE, key, loc, context)
+          const newExpr = rewriteWithHelper(HYPHENATE, key, loc, context)
           if (newExpr) {
             prop.key = newExpr
           }

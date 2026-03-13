@@ -4,7 +4,7 @@
     <view :style="{ height: `${safeAreaTop}px` }"></view>
     <!-- #endif -->
     <web-view
-      ref="webview"
+      ref="webviewElement"
       id="webview"
       style="flex: 1;"
       :webview-styles="webviewStyles"
@@ -18,98 +18,111 @@
   </view>
 </template>
 
-<script lang='uts'>
-export default {
-  data() {
-    return {
-      src: process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC,
-      webviewElement: null as UniWebViewElement | null,
-      webviewContext: null as WebviewContext | null,
-      webviewStyles: {
-        progress: false
-      },
-      safeAreaTop: 0
-    }
-  },
-  onReady() {
+<script setup lang='uts'>
+  const instance = getCurrentInstance()!.proxy!
+
+  const src = ref(process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC)
+  const webviewElement = ref<UniWebViewElement | null>(null)
+  const webviewContext = ref<WebviewContext | null>(null)
+  const webviewStyles = ref({
+    progress: false
+  })
+  const safeAreaTop = ref(0)
+
+  // #ifdef APP-ANDROID
+  onPageShow(() => {
+    webviewElement.value!.enableWholeDraw()
+  })
+  // #endif
+  onReady(() => {
     const windowInfo = uni.getWindowInfo()
-    this.safeAreaTop = windowInfo.safeAreaInsets.top
-    this.webviewElement = this.$refs['webview'] as UniWebViewElement
-    this.webviewContext = uni.createWebviewContext('webview', this)
-  },
-  methods: {
-    initAutomator() {
-      const options = {
-        wsEndpoint: process.env.UNI_AUTOMATOR_WS_ENDPOINT
-      }
-      this.webviewContext!.evalJS(`initRuntimeAutomator(${JSON.stringify(options)})`)
-      console.log('initRuntimeAutomator...')
-    },
-    message(msg: UniWebViewMessageEvent) {
-      // #ifdef APP
-      const data = msg.detail.data[0];
-      const id = data["id"] as number
-      const type = data["type"] as string
-      const dataObj = data["data"] as UTSJSONObject
-      const action = dataObj["action"]!
-      const args = dataObj["args"]
-      // #endif
-      // #ifdef WEB || MP
-      const data = msg.detail.data.length ? msg.detail.data[0].data : msg.detail.data
-      const id = data["id"] as number
-      const type = data["type"] as string
-      const dataObj = data["data"]
-      const action = dataObj["action"]!
-      const args = dataObj["args"]
-      // #endif
-      if (type != 'automator') {
-        return;
-      }
-      if (action == 'ready') {
-        this.initAutomator()
-      } else {
-        console.log(id, action, args)
-        if (action == 'captureScreenshot') {
-          // 调用截图
-          this.$viewToTempFilePath({
-            id: 'webview',
-            // #ifdef APP-ANDROID
-            offsetY: `44`,
-            // #endif
-            // #ifndef APP-ANDROID
-            offsetY: `${this.safeAreaTop + 44}`,
-            // #endif
-            overwrite: true,
-            wholeContent: true,
-            success: (res) => {
-              const fileManager = uni.getFileSystemManager()
-              fileManager.readFile({
-                encoding: 'base64',
-                filePath: res.tempFilePath,
-                success: (readFileRes) => {
-                  this.callback(id, { data: readFileRes.data }, '')
-                },
-                fail: (error) => {
-                  this.callback(id, '', error.errMsg)
-                },
-              } as ReadFileOptions)
+    safeAreaTop.value = windowInfo.safeAreaInsets.top
+    webviewContext.value = uni.createWebviewContext('webview', instance)
+  })
+  
+  const initAutomator = () => {
+    const options = {
+      wsEndpoint: process.env.UNI_AUTOMATOR_WS_ENDPOINT
+    }
+    webviewContext.value!.evalJS(`initRuntimeAutomator(${JSON.stringify(options)})`)
+    // #ifdef APP-ANDROID
+    webviewContext.value!.evalJS(`
+      const style = document.createElement('style');
+      style.textContent = '@font-face { font-family: "system"; src: local("Roboto"); ascent-override: 92%; descent-override: 8%; } body { font-family: "system"; line-height: 1.35; }';
+      document.head.appendChild(style);
+      
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.textContent = 'const observer = new MutationObserver((_) => { const elements = document.querySelectorAll("span"); elements.forEach(element => { const range = document.createRange(); range.selectNodeContents(element); const rects = range.getClientRects(); if (rects.length > 1 && element.parentElement.style.getPropertyValue("line-height") == "") {element.parentElement.style.setProperty("line-height", 1.215); }; }); });observer.observe(document.body, { childList: true, subtree: true, attributes: true });';
+      document.head.appendChild(script);
+    `)
+    // #endif
+    console.log('initRuntimeAutomator...')
+  }
+	
+	const callback = (id : number, res : any | null, error : string) => {
+	  webviewContext.value!.evalJS(`onPostMessageFromUniXWebView(${id},${JSON.stringify(res)},${JSON.stringify(error)})`)
+	}
 
-            },
-            fail: (res) => {
-              this.callback(id, '', res.errMsg)
-            }
-          })
+  const message = (msg: UniWebViewMessageEvent) => {
+    // #ifdef APP
+    const data = msg.detail.data[0];
+    const id = data["id"] as number
+    const type = data["type"] as string
+    const dataObj = data["data"] as UTSJSONObject
+    const action = dataObj["action"]!
+    const args = dataObj["args"]
+    // #endif
+    // #ifdef WEB || MP
+    const data = msg.detail.data.length ? msg.detail.data[0].data : msg.detail.data
+    const id = data["id"] as number
+    const type = data["type"] as string
+    const dataObj = data["data"]
+    const action = dataObj["action"]!
+    const args = dataObj["args"]
+    // #endif
+    if (type != 'automator') {
+      return;
+    }
+    if (action == 'ready') {
+      initAutomator()
+    } else {
+      console.log(id, action, args)
+      if (action == 'captureScreenshot') {
+        // 调用截图
+        (instance as Page).$viewToTempFilePath({
+          id: 'webview',
+          // #ifdef APP-ANDROID
+          offsetY: `44`,
+          // #endif
+          // #ifndef APP-ANDROID
+          offsetY: `${safeAreaTop.value + 44}`,
+          // #endif
+          overwrite: true,
+          wholeContent: true,
+          success: (res) => {
+            const fileManager = uni.getFileSystemManager()
+            fileManager.readFile({
+              encoding: 'base64',
+              filePath: res.tempFilePath,
+              success: (readFileRes) => {
+                callback(id, { data: readFileRes.data }, '')
+              },
+              fail: (error) => {
+                callback(id, '', error.errMsg)
+              },
+            } as ReadFileOptions)
 
-        }
-
+          },
+          fail: (res) => {
+            callback(id, '', res.errMsg)
+          }
+        })
       }
-    },
-    error(event : WebViewErrorEvent) {
-      console.log('webview load error', JSON.stringify(event.detail));
-    },
-    callback(id : number, res : any | null, error : string) {
-      this.webviewContext!.evalJS(`onPostMessageFromUniXWebView(${id},${JSON.stringify(res)},${JSON.stringify(error)})`)
     }
   }
-}
+
+  const error = (event : WebViewErrorEvent) => {
+    console.log('webview load error', JSON.stringify(event.detail));
+  }
 </script>

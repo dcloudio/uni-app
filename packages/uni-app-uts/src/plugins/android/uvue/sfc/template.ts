@@ -6,12 +6,12 @@ import type {
   SFCTemplateCompileOptions,
 } from 'vue/compiler-sfc'
 import path from 'path'
+import { isBuiltInComponent } from '@dcloudio/uni-shared'
 import {
-  SPECIAL_CHARS,
   createRollupError,
-  generateCodeFrameColumns,
   matchEasycom,
   normalizePath,
+  onVueTemplateCompileLog,
   parseUTSComponent,
   parseUTSCustomElement,
 } from '@dcloudio/uni-cli-shared'
@@ -47,7 +47,6 @@ export function resolveGenTemplateCodeOptions(
     }
   }
   const inputRoot = normalizePath(options.rootDir)
-  const templateStartLine = descriptor.template?.loc.start.line ?? 0
   let preprocessOptions = block.lang && options.preprocessOptions
   if (block.lang === 'pug') {
     preprocessOptions = {
@@ -84,13 +83,7 @@ export function resolveGenTemplateCodeOptions(
           )
         )
       } else {
-        onTemplateLog(
-          'warn',
-          warning,
-          code,
-          relativeFileName,
-          templateStartLine
-        )
+        onVueTemplateCompileLog('warn', warning, code, relativeFileName)
       }
     },
     onError(error: CompilerError & { errorType?: 'css' }) {
@@ -104,35 +97,14 @@ export function resolveGenTemplateCodeOptions(
           )
         )
       } else {
-        onTemplateLog('error', error, code, relativeFileName, templateStartLine)
+        onVueTemplateCompileLog('error', error, code, relativeFileName)
       }
     },
     parseUTSComponent,
     parseUTSCustomElement,
-  }
-}
-
-function onTemplateLog(
-  type: 'warn' | 'error',
-  error: CompilerError,
-  code: string,
-  relativeFileName: string,
-  templateStartLine: number
-) {
-  const char =
-    type === 'warn' ? SPECIAL_CHARS.WARN_BLOCK : SPECIAL_CHARS.ERROR_BLOCK
-  console[type](char + type + ': ' + error.message + (error.loc ? '' : char))
-  if (error.loc) {
-    const start = error.loc.start
-    console.log(
-      'at ' +
-        relativeFileName +
-        ':' +
-        (start.line + templateStartLine - 1) +
-        ':' +
-        (start.column - 1)
-    )
-    console.log(generateCodeFrameColumns(code, error.loc) + char)
+    isEasyComponent(tag) {
+      return isBuiltInComponent(tag) || !!matchEasycom(tag)
+    },
   }
 }
 

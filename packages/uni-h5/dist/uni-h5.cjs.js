@@ -228,6 +228,9 @@ function initTabBarI18n(tabBar2) {
       defineI18nProperty(item, ["text"]);
     });
   }
+  if (isEnableLocale() && tabBar2.midButton) {
+    defineI18nProperty(tabBar2.midButton, ["text"]);
+  }
   return tabBar2;
 }
 function initBridge(subscribeNamespace) {
@@ -455,6 +458,9 @@ function invokeHook(vm, name, args) {
     return;
   }
   const hooks = vm.$[name];
+  if (name === uniShared.ON_BACK_PRESS) {
+    return hooks && uniShared.invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true);
+  }
   return hooks && uniShared.invokeArrayFns(hooks, args);
 }
 function getRealRoute(fromRoute, toRoute) {
@@ -580,7 +586,9 @@ function initAppVm(appVm2) {
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
   pageVm.$vm = pageVm;
-  pageVm.$page = page;
+  {
+    pageVm.$page = page;
+  }
   pageVm.$mpType = "page";
   pageVm.$fontFamilySet = /* @__PURE__ */ new Set();
   if (page.meta.isTabBar) {
@@ -3741,12 +3749,18 @@ function useBase(props2, rootRef, emit2) {
     trigger
   };
 }
-function useValueSync(props2, state, emit2, trigger) {
+function useValueSync(props2, state, emit2, trigger, fieldRef) {
+  let lastUserInputValue = null;
   let valueChangeFn = null;
   {
     valueChangeFn = uniShared.debounce(
       (val) => {
-        state.value = getValueString(val, props2.type);
+        const fieldElement = fieldRef.value;
+        const newValue = getValueString(val, props2.type);
+        if (fieldElement && document.activeElement === fieldElement && newValue === lastUserInputValue) {
+          return;
+        }
+        state.value = newValue;
       },
       100,
       { setTimeout, clearTimeout }
@@ -3762,6 +3776,7 @@ function useValueSync(props2, state, emit2, trigger) {
   }, 100);
   const triggerInput = (event, detail, force) => {
     valueChangeFn.cancel();
+    lastUserInputValue = detail.value;
     triggerInputFn(event, detail);
     if (force) {
       triggerInputFn.flush();
@@ -3899,7 +3914,7 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
 function useField(props2, rootRef, emit2, beforeInput) {
   UniViewJSBridgeSubscribe();
   const { fieldRef, state, trigger } = useBase(props2, rootRef, emit2);
-  const { triggerInput } = useValueSync(props2, state, emit2, trigger);
+  const { triggerInput } = useValueSync(props2, state, emit2, trigger, fieldRef);
   useAutoFocus(props2, fieldRef);
   useKeyboard$1(props2, fieldRef);
   const { state: scopedAttrsState } = useScopedAttrs();
@@ -3914,16 +3929,6 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  },
-  textContentType: {
-    type: String,
-    default: ""
-  }
-});
 const resolveDigitDecimalPointDeleteContentBackward = uniShared.once(() => {
 });
 function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
@@ -3933,7 +3938,7 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
         state.value = input.value = cache.value = cache.value.slice(0, -1);
         return false;
       }
-      if (cache.value && !cache.value.includes(".")) {
+      if (cache.value && !cache.value.includes(".") && cache.value === input.value) {
         cache.value += ".";
         if (resetCache) {
           resetCache.fn = () => {
@@ -3954,6 +3959,16 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
     }
   }
 }
+const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  textContentType: {
+    type: String,
+    default: ""
+  }
+});
 function isPaste(event) {
   return event.inputType === "insertFromPaste";
 }
@@ -3997,6 +4012,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         case "digit":
           type2 = "number";
           break;
+        case "none":
+          type2 = "text";
+          break;
         default:
           type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
@@ -4010,9 +4028,18 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       return AUTOCOMPLETES[index2];
     });
     const inputmode = vue.computed(() => {
-      if (props2.inputmode) {
+      if (props2.inputmode !== void 0) {
         return props2.inputmode;
       }
+      if (INPUT_MODES.includes(props2.type)) {
+        return props2.type;
+      }
+      const inputmodeMap = {
+        number: "numeric",
+        digit: "decimal",
+        idcard: "text"
+      };
+      return inputmodeMap[props2.type];
     });
     let cache = useCache(props2, type);
     let resetCache = {
@@ -4103,12 +4130,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "style": props2.cursorColor ? {
           caretColor: props2.cursorColor
         } : {},
+        "inputmode": inputmode.value,
         "onFocus": (event) => event.target.blur()
-      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : vue.createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "value": state.value,
-        "onInput": (event) => {
+        "onInput": vue.withModifiers((event) => {
           const value = event.target.value.toString();
           if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
             if (isPaste(event)) {
@@ -4116,8 +4144,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
             }
             return;
           }
+          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+            return;
+          }
           state.value = value;
-        },
+        }, ["stop"]),
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state.maxlength,
@@ -6851,6 +6882,12 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     const sliderValueRef = vue.ref(null);
     const sliderHandleRef = vue.ref(null);
     const sliderValue = vue.ref(Number(props2.value));
+    if (sliderValue.value < Number(props2.min)) {
+      sliderValue.value = Number(props2.min);
+    }
+    if (sliderValue.value > Number(props2.max)) {
+      sliderValue.value = Number(props2.max);
+    }
     vue.watch(() => props2.value, (val) => {
       sliderValue.value = Number(val);
     });
@@ -6932,6 +6969,13 @@ function useSliderState(props2, sliderValue) {
   return state;
 }
 function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
+  const truthStep = vue.computed(() => {
+    const step = Number(props2.step);
+    if (isNaN(step)) {
+      return 1;
+    }
+    return step;
+  });
   const _onClick = ($event) => {
     if (props2.disabled) {
       return;
@@ -6941,11 +6985,8 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
       value: sliderValue.value
     });
   };
-  const _filterValue = (e2) => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    const step = Number(props2.step);
-    return e2 < min ? min : e2 > max ? max : computeController.mul.call(Math.round((e2 - min) / step), step) + min;
+  const _filterValue = (min, step, value) => {
+    return Math.round((value - min) / step) * step + min;
   };
   const _onUserChangedValue = (e2) => {
     const max = Number(props2.max);
@@ -6957,8 +6998,9 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     const slider = sliderRef.value;
     const offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
     const boxLeft = slider.getBoundingClientRect().left;
-    const value = (e2.x - boxLeft) * (max - min) / offsetWidth + min;
-    sliderValue.value = _filterValue(value);
+    const proportion = (e2.x - boxLeft) / offsetWidth;
+    const stepDecimal = (truthStep.value + "").split(".")[1];
+    sliderValue.value = parseFloat(_filterValue(min, truthStep.value, lerp(min, max, proportion)).toFixed(stepDecimal ? stepDecimal.length : 0));
   };
   const _onTrack = (e2) => {
     if (!props2.disabled) {
@@ -6991,22 +7033,10 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     _onTrack
   };
 }
-var computeController = {
-  mul: function(arg) {
-    let m = 0;
-    let s1 = this.toString();
-    let s2 = arg.toString();
-    try {
-      m += s1.split(".")[1].length;
-    } catch (e2) {
-    }
-    try {
-      m += s2.split(".")[1].length;
-    } catch (e2) {
-    }
-    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-  }
-};
+function lerp(min, max, t2) {
+  t2 = Math.min(1, Math.max(0, t2));
+  return min * (1 - t2) + max * t2;
+}
 const props$d = {
   indicatorDots: {
     type: [Boolean, String],
@@ -7814,7 +7844,8 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       if (slots.default) {
         slots.default().forEach((vnode) => {
           if (vnode.shapeFlag & 8 && vnode.type !== vue.Comment) {
-            const lines = parseText(vnode.children, {
+            let lines = [];
+            lines = parseText(vnode.children, {
               space: props2.space,
               decode: props2.decode
             });
@@ -8366,7 +8397,7 @@ function initApp(vm) {
   initAppVm(appVm);
   defineGlobalData(appVm);
 }
-function wrapperComponentSetup(comp, { clone, init, setup, before }) {
+function wrapperComponentSetup(comp, { type, clone, init, setup, before, options }) {
   if (clone) {
     comp = shared.extend({}, comp);
   }
@@ -8390,6 +8421,7 @@ function setupComponent(comp, options) {
 }
 function setupWindow(comp, id2) {
   return setupComponent(comp, {
+    type: "window",
     init: (vm) => {
       {
         vm.$page = {
@@ -8402,11 +8434,12 @@ function setupWindow(comp, id2) {
     }
   });
 }
-function setupPage(comp) {
+function setupPage(comp, path) {
   if (process.env.NODE_ENV !== "production") {
     comp.__mpType = "page";
   }
   return setupComponent(comp, {
+    type: "page",
     clone: true,
     // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
@@ -8463,7 +8496,7 @@ function formatTime(val) {
   }
   return str;
 }
-function useGesture(props2, videoRef, fullscreenState) {
+function useGesture(props2, videoState, videoRef, fullscreenState) {
   const state = vue.reactive({
     seeking: false,
     gestureType: "none",
@@ -8566,8 +8599,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     state.gestureType = "none";
   }
   function changeProgress(x) {
-    const video = videoRef.value;
-    const duration = video.duration;
+    const duration = videoState.currentDuration;
     let currentTimeNew = x / 600 * duration + state.currentTimeOld;
     if (currentTimeNew < 0) {
       currentTimeNew = 0;
@@ -8679,6 +8711,7 @@ function useVideo(props2, attrs, trigger) {
     playing: false,
     currentTime: 0,
     duration: 0,
+    currentDuration: 0,
     progress: 0,
     buffered: 0,
     muted,
@@ -8696,6 +8729,11 @@ function useVideo(props2, attrs, trigger) {
   vue.watch(() => muted.value, (muted2) => {
     const video = videoRef.value;
     video.muted = muted2;
+  });
+  vue.watch([() => state.duration, () => props2.duration], () => {
+    let _duration = Number(props2.duration);
+    isNaN(_duration) && (_duration = 0);
+    state.currentDuration = _duration > 0 ? _duration : state.duration;
   });
   function onDurationChange({
     target
@@ -8831,7 +8869,7 @@ function useControls(props2, videoState, seek, seeking) {
     let progress = 0;
     if (x >= 0 && x <= w) {
       progress = x / w;
-      seek(videoState.duration * progress);
+      seek(videoState.currentDuration * progress);
     }
   }
   function toggleControls() {
@@ -8958,10 +8996,15 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
       controlsState.controlsVisible = val;
     }
   });
-  vue.watch([() => videoState.currentTime, () => {
-    props$9.duration;
-  }], () => {
-    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  vue.watch([() => videoState.currentTime, () => videoState.currentDuration], () => {
+    if (videoState.currentDuration > 0) {
+      videoState.progress = videoState.currentTime / videoState.currentDuration * 100;
+    } else {
+      videoState.progress = 0;
+    }
+    videoState.progress > 100 && (videoState.progress = 100);
+  }, {
+    immediate: true
   });
   vue.watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
     videoState.currentTime = currentTimeNew;
@@ -9076,7 +9119,6 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    useI18n();
     initI18nVideoMsgsOnce();
     const {
       videoRef,
@@ -9117,7 +9159,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
       onTouchstart,
       onTouchend,
       onTouchmove
-    } = useGesture(props2, videoRef, fullscreenState);
+    } = useGesture(props2, videoState, videoRef, fullscreenState);
     const {
       state: controlsState,
       progressRef,
@@ -9153,7 +9195,10 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "poster": props2.poster,
         "autoplay": !!props2.autoplay
       }, videoAttrs.value, {
-        "class": "uni-video-video",
+        "class": {
+          "uni-video-video": true,
+          "uni-video-video-fullscreen": fullscreenState.fullscreen
+        },
         "webkit-playsinline": true,
         "playsinline": true,
         "onDurationchange": onDurationChange,
@@ -9221,7 +9266,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-inner"
       }, null)], 6)], 2)], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
+      }, [formatTime(videoState.currentDuration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
         "class": {
           "uni-video-icon": true,
           "uni-video-danmu-button": true,
@@ -9274,7 +9319,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title"
       }, [vue.createVNode("span", {
         "class": "uni-video-toast-title-current-time"
-      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), vue.createVNode("div", {
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), vue.createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -11724,6 +11769,9 @@ function normalizeContentType(header) {
     header["Content-Type"] = header[name];
     delete header[name];
   }
+  if (!contentType) {
+    return "string";
+  }
   if (contentType.indexOf("application/json") === 0) {
     return "json";
   } else if (contentType.indexOf("application/x-www-form-urlencoded") === 0) {
@@ -12014,10 +12062,10 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       deviceOrientation,
       deviceType,
       model,
-      platform,
-      system,
       osName: osname ? osname.toLowerCase() : void 0,
-      osVersion: osversion
+      osVersion: osversion,
+      platform,
+      system
     });
   }
 );
@@ -12041,15 +12089,15 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         hostVersion: browserVersion,
         hostTheme: theme,
         hostLanguage: language,
+        isUniAppX: false,
         language,
         SDKVersion: "",
         theme,
-        version: "",
         uniPlatform: "web",
-        isUniAppX: false,
         uniCompileVersion: __uniConfig.compilerVersion,
         uniCompilerVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion
+        uniRuntimeVersion: __uniConfig.compilerVersion,
+        version: ""
       },
       {}
     );

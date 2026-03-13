@@ -52,3 +52,7 @@ function normalizeText(text: string, { space, decode }: DecodeOptions) {
 export function parseText(text: string, options: DecodeOptions) {
   return normalizeText(text, options).split(LINEFEED)
 }
+
+export function parseTextIgnoreLinefeed(text: string, options: DecodeOptions) {
+  return normalizeText(text, options)
+}

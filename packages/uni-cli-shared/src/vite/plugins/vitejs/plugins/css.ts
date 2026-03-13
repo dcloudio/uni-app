@@ -43,7 +43,11 @@ import { preCss, preNVueCss } from '../../../../preprocess'
 import { filterPrefersColorScheme } from '../../../../postcss/plugins/uniapp'
 import { emptyCssComments } from '../cleanString'
 
-import { PAGES_JSON_JS, PAGES_JSON_UTS } from '../../../../constants'
+import {
+  JS_STYLE_PLACEHOLDER_STR,
+  PAGES_JSON_JS,
+  PAGES_JSON_UTS,
+} from '../../../../constants'
 import { createRollupError } from '../../../utils/utils'
 import { createCompilerError } from '@vue/compiler-core'
 import { createResolveErrorMsg } from '../../../../utils'
@@ -268,6 +272,7 @@ export function cssPlugin(
 
       const {
         code: css,
+        map,
         modules,
         deps,
       } = await compileCSS(
@@ -299,8 +304,13 @@ export function cssPlugin(
 
       return {
         code: css,
-        // TODO CSS source map
-        map: { mappings: '' },
+        map: null,
+        meta: {
+          uni: {
+            // 向后传递用于合并
+            cssPreprocessorSourceMap: map,
+          },
+        },
       }
     },
   }
@@ -359,6 +369,7 @@ export function cssPostPlugin(
     chunkCssFilename,
     chunkCssCode,
     includeComponentCss,
+    emitFile,
   }: {
     platform: UniApp.PLATFORM
     isJsCode?: boolean
@@ -369,11 +380,14 @@ export function cssPostPlugin(
       cssCode: string
     ) => Promise<string> | string
     includeComponentCss?: boolean
+    emitFile?: (filename: string, cssCode: string) => void
   }
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
   const styles: Map<string, string> = new Map<string, string>()
   let cssChunks: Map<string, string[]>
+  const isDom2Harmony =
+    process.env.UNI_APP_X_DOM2 === 'true' && platform === 'app-harmony'
   return {
     name: 'vite:css-post',
     buildStart() {
@@ -390,7 +404,13 @@ export function cssPostPlugin(
       // build CSS handling ----------------------------------------------------
       styles.set(id, css)
       return {
-        code: modulesCode || '',
+        code:
+          modulesCode ||
+          (isJsCode
+            ? isDom2Harmony
+              ? `export default ${JS_STYLE_PLACEHOLDER_STR}`
+              : 'export default {}'
+            : ''),
         map: { mappings: '' },
         // avoid the css module from being tree-shaken so that we can retrieve
         // it in renderChunk()
@@ -398,6 +418,10 @@ export function cssPostPlugin(
       }
     },
     async renderChunk(_code, chunk, _opts) {
+      if (isDom2Harmony) {
+        // 通过 generateBundle 实现
+        return null
+      }
       const id = chunk.facadeModuleId
       if (id) {
         // 云编译小程序时，只会生成一个chunk（index.module.js），不会动态import，给每个组件产生一个chunk，所以这里需要自行处理组件wxss
@@ -540,11 +564,13 @@ export function cssPostPlugin(
           minify: true,
         })
         if (source.trim()) {
-          this.emitFile({
-            fileName: filename,
-            type: 'asset',
-            source,
-          })
+          emitFile
+            ? emitFile(filename, source)
+            : this.emitFile({
+                fileName: filename,
+                type: 'asset',
+                source,
+              })
         }
       }
     },

@@ -1,41 +1,20 @@
-import type { Declaration } from 'postcss'
 import { capitalize, hyphenate } from '@vue/shared'
-import { createDecl } from '../utils'
+import { type Declaration, createDecl, splitValues } from '../utils'
 
-function borderTop(): string {
-  if (__NODE_JS__) {
-    return 'border-top-'
-  }
-  return 'borderTop'
-}
-
-function borderRight(): string {
-  if (__NODE_JS__) {
-    return 'border-right-'
-  }
-  return 'borderRight'
-}
-function borderBottom(): string {
-  if (__NODE_JS__) {
-    return 'border-bottom-'
-  }
-  return 'borderBottom'
-}
-function borderLeft(): string {
-  if (__NODE_JS__) {
-    return 'border-left-'
-  }
-  return 'borderLeft'
-}
+const borderTop = __HYPHENATE__ ? 'border-top-' : 'borderTop'
+const borderRight = __HYPHENATE__ ? 'border-right-' : 'borderRight'
+const borderBottom = __HYPHENATE__ ? 'border-bottom-' : 'borderBottom'
+const borderLeft = __HYPHENATE__ ? 'border-left-' : 'borderLeft'
 
 export const transformBorderColor = (decl: Declaration): Declaration[] => {
-  const { prop, value, important, raws, source } = decl
+  let { prop, value, important, raws, source } = decl
+  value = value.trim()
   const _property_split = hyphenate(prop).split('-')
   let property = _property_split[_property_split.length - 1]
-  if (!__NODE_JS__) {
+  if (!__HYPHENATE__) {
     property = capitalize(property)
   }
-  const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/) // 1pt
+  const splitResult = splitValues(value) // 1pt
   switch (splitResult.length) {
     case 1:
       if (_property_split.length === 3) {
@@ -55,35 +34,24 @@ export const transformBorderColor = (decl: Declaration): Declaration[] => {
   }
 
   return [
-    createDecl(borderTop() + property, splitResult[0], important, raws, source),
+    createDecl(borderTop + property, splitResult[0], important, raws, source),
+    createDecl(borderRight + property, splitResult[1], important, raws, source),
     createDecl(
-      borderRight() + property,
-      splitResult[1],
-      important,
-      raws,
-      source
-    ),
-    createDecl(
-      borderBottom() + property,
+      borderBottom + property,
       splitResult[2],
       important,
       raws,
       source
     ),
-    createDecl(
-      borderLeft() + property,
-      splitResult[3],
-      important,
-      raws,
-      source
-    ),
+    createDecl(borderLeft + property, splitResult[3], important, raws, source),
   ]
 }
 
 export const transformBorderColorNvue = (decl: Declaration): Declaration[] => {
-  const { prop, value, important, raws, source } = decl
+  let { prop, value, important, raws, source } = decl
+  value = value.trim()
   let property = hyphenate(prop).split('-')[1]
-  if (!__NODE_JS__) {
+  if (!__HYPHENATE__) {
     property = capitalize(property)
   }
   const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)

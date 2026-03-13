@@ -31,16 +31,49 @@ function createTsConfigPaths(
       ]
     })
   }
-  return {
-    '@dcloudio/uni-app': [
-      path.resolve(__dirname, '../../../lib/tsconfig/types/dcloudio__uni-app'),
-    ],
-    '@vue/runtime-core': [
-      path.resolve(cliVitePath, 'node_modules/@vue/runtime-core'),
-    ],
-    vue: [path.resolve(cliVitePath, 'node_modules/@vue/runtime-core')],
-    vuex: [path.resolve(cliVitePath, 'node_modules/vuex')],
-    ...virtualPaths,
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    const uniXTypesDir = path.resolve(__dirname, '../../../lib/uts/types/uni-x')
+    return {
+      '@dcloudio/uni-app': [
+        path.resolve(
+          __dirname,
+          '../../../lib/tsconfig/types/dcloudio__uni-app'
+        ),
+      ],
+      '@vue/shared': [
+        path.resolve(uniXTypesDir, '@vue/shared/dist/shared.d.ts'),
+      ],
+      '@vue/reactivity': [
+        path.resolve(uniXTypesDir, '@vue/reactivity/dist/reactivity.d.ts'),
+      ],
+      '@vue/runtime-core': [
+        path.resolve(uniXTypesDir, '@vue/runtime-core/dist/runtime-core.d.ts'),
+      ],
+      '@vue/runtime-vapor-dom2': [
+        path.resolve(
+          uniXTypesDir,
+          '@vue/runtime-vapor-dom2/dist/runtime-vapor-dom2.d.ts'
+        ),
+      ],
+      vue: [path.resolve(uniXTypesDir, '@vue/vue/dist/vue.d.ts')],
+      vuex: [path.resolve(cliVitePath, 'node_modules/vuex')],
+      ...virtualPaths,
+    }
+  } else {
+    return {
+      '@dcloudio/uni-app': [
+        path.resolve(
+          __dirname,
+          '../../../lib/tsconfig/types/dcloudio__uni-app'
+        ),
+      ],
+      '@vue/runtime-core': [
+        path.resolve(cliVitePath, 'node_modules/@vue/runtime-core'),
+      ],
+      vue: [path.resolve(cliVitePath, 'node_modules/@vue/runtime-core')],
+      vuex: [path.resolve(cliVitePath, 'node_modules/vuex')],
+      ...virtualPaths,
+    }
   }
 }
 
@@ -57,6 +90,9 @@ export function createBasicUtsOptions(
   const options: UTS2JavaScriptBaseOptions = {
     cwd: inputDir,
     check: isWeb,
+    // ||
+    // (process.env.UNI_APP_X_DOM2 === 'true' &&
+    //   process.env.UNI_UTS_PLATFORM === 'app-harmony'),
     noCache:
       // modules 模式不使用缓存
       process.env.UNI_COMPILE_TARGET === 'uni_modules' ||
@@ -74,7 +110,9 @@ export function createBasicUtsOptions(
       },
     },
   } as UTS2JavaScriptBaseOptions
-
+  if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+    options.tsconfigOverride.compilerOptions.target = 'ESNext'
+  }
   if (!options.tsconfig) {
     if (isInHBuilderXBool || isUTSCloudCompilerBool || isBuildExtApi) {
       options.tsconfig = path.resolve(
@@ -106,6 +144,8 @@ export function createBasicUtsOptions(
         'syntaxdoc/specialString/specialString.d.ts',
       'hbuilderx-language-services/builtin-dts/uniappx/node_modules/@dcloudio/uni-app-x/types/index.d.ts':
         'syntaxdoc/uni-app-x/types/index.d.ts',
+      'hbuilderx-language-services/builtin-dts/uniappx/node_modules/@dcloudio/uni-app-x/types/dom2-internal/global.d.ts':
+        'syntaxdoc/uni-app-x/types/dom2-internal/global.d.ts',
     }
     extend(options.tsconfigOverride.compilerOptions, {
       paths: createTsConfigPaths(pluginPath, cliVitePath, virtualModules),
@@ -121,6 +161,7 @@ export function createBasicUtsOptions(
       'hbuilderx-language-services/builtin-dts/uts-types/common/index.d.ts',
       'hbuilderx-language-services/builtin-dts/common/HBuilderX.d.ts',
       'hbuilderx-language-services/builtin-dts/uniappx/node_modules/@dcloudio/uni-app-x/types/index.d.ts',
+      'hbuilderx-language-services/builtin-dts/uniappx/node_modules/@dcloudio/uni-app-x/types/dom2-internal/global.d.ts',
     ]
     extend(options.tsconfigOverride.compilerOptions, {
       paths: createTsConfigPaths(pluginPath, cliVitePath, virtualModules),

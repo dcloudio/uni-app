@@ -6,16 +6,24 @@ import {
   COMPONENT_ON_LINK,
   type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
+  createCopyComponentDirs,
+  createCopyPluginTarget,
   createTransformComponentLink,
   getNativeTags,
-  transformMatchMedia,
+  transformDirection,
+  // transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
-import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import {
+  type UniMiniProgramPluginOptions,
+  resolveMiniProgramRuntime,
+} from '@dcloudio/uni-mp-vite'
 import source from './mini.project.json'
 import { transformRef } from './transforms/transformRef'
 import { event } from './event'
 import { transformOpenType } from './transforms/transformOpenType'
 import { isArray } from '@vue/shared'
+import { transformMPBuiltInTag } from './transforms/transformMPBuiltInTag'
+import { transformLoading } from '../x/compiler/transforms/transformLoading'
 
 const projectConfigFilename = 'mini.project.json'
 const COMPONENTS_DIR = 'mycomponents'
@@ -45,6 +53,8 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   directive: 'a:',
   component: {
+    // 只有组件支持 :host 选择器，还需开启 virtualHost: false (https://opendocs.alipay.com/mini/framework/component-template#%3Ahost%20%E9%80%89%E6%8B%A9%E5%99%A8)
+    ':host': true,
     dir: COMPONENTS_DIR,
     getPropertySync: true,
   },
@@ -56,9 +66,16 @@ export const miniProgram: MiniProgramCompilerOptions = {
 const nodeTransforms = [
   transformRef,
   transformOpenType,
-  transformMatchMedia,
+  // transformMatchMedia,
   createTransformComponentLink(COMPONENT_ON_LINK, NodeTypes.ATTRIBUTE),
 ]
+if (process.env.UNI_APP_X === 'true') {
+  nodeTransforms.push(
+    transformMPBuiltInTag,
+    transformDirection,
+    transformLoading
+  )
+}
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,
 }
@@ -83,6 +100,8 @@ export const customElements = [
   'join-group-chat',
   'subscribe-message',
   'mpaas-component',
+  'match-media',
+  'ad-feeds',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
@@ -90,26 +109,22 @@ export const options: UniMiniProgramPluginOptions = {
   cdn: 2,
   vite: {
     inject: {
-      uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],
+      uni: [resolveMiniProgramRuntime(__dirname, 'uni.api.esm.js'), 'default'],
     },
     alias: {
-      'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
+      'uni-mp-runtime': resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: [COMPONENTS_DIR],
+      assets: createCopyComponentDirs(COMPONENTS_DIR),
       targets: [
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
-          src: [
-            'customize-tab-bar',
-            'ext.json',
-            'preload.json',
-            'sitemap.json',
-          ],
+          src: ['customize-tab-bar', 'preload.json', 'sitemap.json'],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },
         },
+        createCopyPluginTarget(['ext.json']),
       ],
     },
   },
@@ -128,6 +143,7 @@ export const options: UniMiniProgramPluginOptions = {
       titleImage: 'titleImage',
       transparentTitle: 'transparentTitle',
       titlePenetrate: 'titlePenetrate',
+      onReachBottomDistance: 'onReachBottomDistance',
     },
     tabBarOptionsMap: {
       customize: 'customize',
@@ -148,7 +164,7 @@ export const options: UniMiniProgramPluginOptions = {
     darkmode: false,
     subpackages: true,
     plugins: true,
-    usingComponents: false,
+    usingComponents: true,
     normalize(appJson) {
       // 支付宝小程序默认主包，分包 js 模块不共享，会导致 getCurrentInstance，setCurrentInstance 不一致
       appJson.subPackageBuildType = 'shared'
@@ -191,6 +207,7 @@ export const options: UniMiniProgramPluginOptions = {
     ...miniProgram,
     customElements,
     filter: {
+      ...miniProgram.filter,
       extname: '.sjs',
       lang: 'sjs',
       generate(filter, filename) {

@@ -3,23 +3,34 @@
     "input": {
       "src/esm.ts": ["dist/uni-nvue-styler.es.js"]
     },
+    "replacements": {
+      "__HYPHENATE__": "false",
+      "__RUN_TIME__": "true"
+    },
     "external": ["@vue/shared"]
   },
   {
     "input": {
       "src/index.ts": ["dist/uni-nvue-styler.cjs.js"]
     },
-    "external": ["postcss", "parse-css-font"],
-    "alias": {
-      "entries": [
-        {
-          "find": "shared",
-          "replacement": "@vue/shared"
-        }
-      ]
+    "replacements": {
+      "__HYPHENATE__": "true",
+      "__RUN_TIME__": "false"
     },
+    "external": ["@vue/shared", "postcss", "parse-css-font"],
     "compilerOptions": {
       "declaration": true
     }
+  },
+  {
+    "input": {
+      "src/dom2/esm.ts": ["dist-dom2/uni-uvue-styler.es.js"]
+    },
+    "replacements": {
+      "__HYPHENATE__": "true",
+      "__RUN_TIME__": "true",
+      "options.type === 'uvue'": "true"
+    },
+    "external": ["@vue/shared"]
   }
 ]

@@ -14,6 +14,6 @@ export { transformMain as transformVue } from './plugins/android/uvue/sfc/main'
 
 export { transformExtApiVueFile } from './extApiComponents'
 
-export { initUniAppJsEngineCssPlugin } from './plugins/js/plugin'
+export { initUniAppJsEngineDom1CssPlugin } from './plugins/js/plugin'
 
 export { init as initUniAppXHarmonyPlugin } from './plugins/harmony'

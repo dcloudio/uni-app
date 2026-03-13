@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, onMounted, onBeforeUnmount, getCurrentGenericInstance, injectHook, defineComponent, getCurrentInstance, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
@@ -83,6 +83,9 @@ function invokeHook(vm, name, args) {
     }
   }
   var hooks = vm.$[name];
+  if (name === ON_BACK_PRESS) {
+    return hooks && invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true);
+  }
   return hooks && invokeArrayFns(hooks, args);
 }
 function normalizeRoute(toRoute) {
@@ -211,7 +214,9 @@ function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
   pageVm.$vm = pageVm;
-  pageVm.$page = page;
+  {
+    pageVm.$basePage = page;
+  }
   pageVm.$mpType = "page";
   pageVm.$fontFamilySet = /* @__PURE__ */ new Set();
   if (page.meta.isTabBar) {
@@ -707,8 +712,11 @@ function removePage(curPage) {
   }
   pages.splice(index2, 1);
   {
-    curPage.$page.vm = null;
-    curPage.$page = null;
+    var ins = curPage;
+    if (ins.$.page) {
+      ins.$.page.vm = null;
+      ins.$.page = null;
+    }
   }
 }
 function backbuttonListener() {
@@ -781,8 +789,7 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   } else {
     uniPage = new UniNormalPageImpl();
   }
-  pageVm.$basePage = pageVm.$page;
-  pageVm.$page = uniPage;
+  pageVm.$.page = uniPage;
   uniPage.route = pageVm.$basePage.route;
   uniPage.optionsByJS = pageVm.$basePage.options;
   Object.defineProperty(uniPage, "options", {
@@ -790,32 +797,150 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
       return new UTSJSONObject(pageVm.$basePage.options);
     }
   });
-  uniPage.getElementById = (id2) => {
-    var _pageVm$$el;
-    var containerNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentElement;
-    if (containerNode == null) {
-      console.warn("bodyNode is null");
-      return null;
-    }
-    return containerNode.querySelector("#".concat(id2));
-  };
   uniPage.vm = pageVm;
   uniPage.$vm = pageVm;
   if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
     addCurrentPageWithInitScope(pageId, pageVm, pageInstance);
   }
-  onMounted(() => {
-    var _pageVm$$el2;
-    var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentElement;
-    if (rootElement) {
-      rootElement._page = pageVm.$page;
+  {
+    onMounted(() => {
+      var _pageVm$$el;
+      var rootElement = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentElement;
+      if (rootElement) {
+        rootElement._page = pageVm.$page;
+      }
+    });
+    onBeforeUnmount(() => {
+      var _pageVm$$el2;
+      var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentElement;
+      if (rootElement) {
+        rootElement._page = null;
+      }
+    });
+  }
+}
+var nativeApp;
+function getNativeApp() {
+  return nativeApp;
+}
+function setNativeApp(app) {
+  nativeApp = app;
+}
+function getPageManager() {
+  return nativeApp.pageManager;
+}
+function removeUrlWrap(source) {
+  if (source.startsWith("url(")) {
+    if (source.split("format(").length > 1) {
+      source = source.split("format(")[0].trim();
+    }
+    source = source.substring(4, source.length - 1);
+  }
+  if (source.startsWith('"') || source.startsWith("'")) {
+    source = source.substring(1, source.length - 1);
+  }
+  return source;
+}
+function getLoadFontFaceOptions(options, res) {
+  return {
+    family: options.family,
+    source: options.source,
+    success: (_) => {
+      res.resolve(null);
+    },
+    fail: (error) => {
+      res.reject(
+        // new LoadFontFaceErrorImpl(
+        error.errMsg,
+        error.errCode
+        // )
+      );
+    }
+  };
+}
+var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
+  options.source = removeUrlWrap(options.source);
+  if (options.global === true) {
+    var app = getNativeApp();
+    var fontInfo = getLoadFontFaceOptions(options, res);
+    app.loadFontFace(fontInfo);
+  } else {
+    var page = getCurrentPage().vm;
+    if (!page) {
+      res.reject("page is not ready", 99);
+      return;
+    }
+    if (page.$fontFamilySet.has(options.family)) {
+      return;
+    }
+    page.$fontFamilySet.add(options.family);
+    var _fontInfo = getLoadFontFaceOptions(options, res);
+    page.$nativePage.loadFontFace(_fontInfo);
+  }
+});
+function loadFontFaceByStyles(styles, global) {
+  styles = Array.isArray(styles) ? styles : [styles];
+  var fontFaceStyle = [];
+  styles.forEach((style) => {
+    if (style["@FONT-FACE"]) {
+      fontFaceStyle.push(...style["@FONT-FACE"]);
     }
   });
-  onBeforeUnmount(() => {
-    var _pageVm$$el3;
-    var rootElement = (_pageVm$$el3 = pageVm.$el) === null || _pageVm$$el3 === void 0 ? void 0 : _pageVm$$el3.parentElement;
-    if (rootElement) {
-      rootElement._page = null;
+  if (fontFaceStyle.length === 0)
+    return;
+  fontFaceStyle.forEach((style) => {
+    var fontFamily = style["fontFamily"];
+    var fontWeight = style["fontWeight"];
+    var fontStyle = style["fontStyle"];
+    var fontVariant = style["fontVariant"];
+    var src = style["src"];
+    if (fontFamily != null && src != null) {
+      loadFontFace({
+        global,
+        family: fontFamily,
+        source: src,
+        desc: {
+          style: fontStyle,
+          weight: fontWeight,
+          variant: fontVariant
+        }
+      });
+    } else {
+      console.warn("loadFontFace: fail, font-family or src is null");
+    }
+  });
+}
+function initNativePage(vm) {
+  var instance = vm.$;
+  if (instance.type.mpType === "app") {
+    return;
+  }
+  var pageId = instance.root.attrs.__pageId;
+  vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
+  if (vm.$page) {
+    vm.$page.__nativePageId = vm.$nativePage.pageId;
+  }
+}
+function initFontFace(vm) {
+  var _vm$$options$styles;
+  var instance = vm.$;
+  if (instance.type.mpType === "app") {
+    return;
+  }
+  loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
+}
+function initComponentInstance(app) {
+  app.config.uniX = {
+    beforeSetupPage,
+    initNativePage,
+    initFontFace
+  };
+  !app.vapor && app.mixin({
+    beforeCreate() {
+      initNativePage(this);
+    },
+    beforeMount() {
+      initFontFace(this);
     }
   });
 }
@@ -833,6 +958,7 @@ var beforeSetupPage = (props, ctx) => {
   initPageVm(pageVm, __pageInstance);
   {
     setupXPage(instance, __pageInstance, pageVm, __pageId, __pagePath);
+    initNativePage(pageVm);
   }
 };
 function setupPage(component) {
@@ -1383,16 +1509,6 @@ function closeWebview(nPage, animationType, animationDuration, callback) {
   }
   nPage.close(options, callback);
 }
-var nativeApp;
-function getNativeApp() {
-  return nativeApp;
-}
-function setNativeApp(app) {
-  nativeApp = app;
-}
-function getPageManager() {
-  return nativeApp.pageManager;
-}
 var beforeRouteHooks = [];
 var afterRouteHooks = [];
 var pageReadyHooks = [];
@@ -1432,6 +1548,27 @@ function fixBorderStyle(tabBarConfig) {
   }
   tabBarConfig.set("borderStyle", borderStyle);
   tabBarConfig.delete("borderColor");
+}
+function parseRedirectInfo(app) {
+  var _redirectInfo$get, _redirectInfo$get2, _redirectInfo$get3, _redirectInfo$get4, _redirectInfo$get5;
+  var redirectInfo = app.getRedirectInfo();
+  var path = (_redirectInfo$get = redirectInfo.get("path")) !== null && _redirectInfo$get !== void 0 ? _redirectInfo$get : "";
+  var query = (_redirectInfo$get2 = redirectInfo.get("query")) !== null && _redirectInfo$get2 !== void 0 ? _redirectInfo$get2 : "";
+  var userAction = (_redirectInfo$get3 = redirectInfo.get("userAction")) !== null && _redirectInfo$get3 !== void 0 ? _redirectInfo$get3 : false;
+  var appScheme = (_redirectInfo$get4 = redirectInfo.get("appScheme")) !== null && _redirectInfo$get4 !== void 0 ? _redirectInfo$get4 : "";
+  var appLink = (_redirectInfo$get5 = redirectInfo.get("appLink")) !== null && _redirectInfo$get5 !== void 0 ? _redirectInfo$get5 : "";
+  var referrerInfo = {
+    appId: app.appid,
+    extraData: {}
+  };
+  return {
+    path: path || "",
+    query: query ? "?" + query : "",
+    referrerInfo,
+    userAction,
+    appScheme,
+    appLink
+  };
 }
 var onTabBarMidButtonTapCallback = [];
 var tabBar0 = null;
@@ -2110,6 +2247,43 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
     }
   };
 }
+var isInitEntryPage = false;
+function initEntry(app) {
+  if (isInitEntryPage) {
+    return;
+  }
+  isInitEntryPage = true;
+  var entryPagePath;
+  var entryPageQuery;
+  var redirectInfo = app.getRedirectInfo();
+  if (redirectInfo.size > 0) {
+    var {
+      path,
+      query
+      /* referrerInfo, appScheme, appLink */
+    } = parseRedirectInfo(app);
+    if (path) {
+      entryPagePath = path;
+      entryPageQuery = query;
+    }
+  }
+  if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+    if (entryPageQuery) {
+      __uniConfig.entryPageQuery = entryPageQuery;
+    }
+    return;
+  }
+  var entryRoute = addLeadingSlash(entryPagePath);
+  var routeOptions = getRouteOptions(entryRoute);
+  if (!routeOptions) {
+    return;
+  }
+  if (!routeOptions.meta.isTabBar) {
+    __uniConfig.realEntryPagePath = __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+  }
+  __uniConfig.entryPagePath = entryPagePath;
+  __uniConfig.entryPageQuery = entryPageQuery;
+}
 function initGlobalEvent(app) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
     var currentPage = getCurrentPage();
@@ -2143,87 +2317,6 @@ function handleDialogPageBack(dialogPage) {
       animationType: "auto"
     });
   }
-}
-function removeUrlWrap(source) {
-  if (source.startsWith("url(")) {
-    if (source.split("format(").length > 1) {
-      source = source.split("format(")[0].trim();
-    }
-    source = source.substring(4, source.length - 1);
-  }
-  if (source.startsWith('"') || source.startsWith("'")) {
-    source = source.substring(1, source.length - 1);
-  }
-  return source;
-}
-function getLoadFontFaceOptions(options, res) {
-  return {
-    family: options.family,
-    source: options.source,
-    success: (_) => {
-      res.resolve(null);
-    },
-    fail: (error) => {
-      res.reject(
-        // new LoadFontFaceErrorImpl(
-        error.errMsg,
-        error.errCode
-        // )
-      );
-    }
-  };
-}
-var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
-  options.source = removeUrlWrap(options.source);
-  if (options.global === true) {
-    var app = getNativeApp();
-    var fontInfo = getLoadFontFaceOptions(options, res);
-    app.loadFontFace(fontInfo);
-  } else {
-    var page = getCurrentPage().vm;
-    if (!page) {
-      res.reject("page is not ready", 99);
-      return;
-    }
-    if (page.$fontFamilySet.has(options.family)) {
-      return;
-    }
-    page.$fontFamilySet.add(options.family);
-    var _fontInfo = getLoadFontFaceOptions(options, res);
-    page.$nativePage.loadFontFace(_fontInfo);
-  }
-});
-function loadFontFaceByStyles(styles, global) {
-  styles = Array.isArray(styles) ? styles : [styles];
-  var fontFaceStyle = [];
-  styles.forEach((style) => {
-    if (style["@FONT-FACE"]) {
-      fontFaceStyle.push(...style["@FONT-FACE"]);
-    }
-  });
-  if (fontFaceStyle.length === 0)
-    return;
-  fontFaceStyle.forEach((style) => {
-    var fontFamily = style["fontFamily"];
-    var fontWeight = style["fontWeight"];
-    var fontStyle = style["fontStyle"];
-    var fontVariant = style["fontVariant"];
-    var src = style["src"];
-    if (fontFamily != null && src != null) {
-      loadFontFace({
-        global,
-        family: fontFamily,
-        source: src,
-        desc: {
-          style: fontStyle,
-          weight: fontWeight,
-          variant: fontVariant
-        }
-      });
-    } else {
-      console.warn("loadFontFace: fail, font-family or src is null");
-    }
-  });
 }
 var API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
 var launchOptions = {
@@ -2422,7 +2515,9 @@ function _reLaunch(_ref3) {
 }
 var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 function closePage(page, animationType, animationDuration) {
-  clearDialogPages(page.$page);
+  if (page.$page) {
+    clearDialogPages(page.$page);
+  }
   var nativePage = page.$nativePage;
   nativePage && closeWebview(nativePage, animationType, animationDuration);
   removePage(page);
@@ -2687,40 +2782,6 @@ function initOn(app, unregisterApp2) {
 function initService(app, unregisterApp2) {
   initOn(app, unregisterApp2);
 }
-function initNativePage(vm) {
-  var instance = vm.$;
-  if (instance.type.mpType === "app") {
-    return;
-  }
-  var pageId = instance.root.attrs.__pageId;
-  vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
-  if (vm.$page) {
-    vm.$page.__nativePageId = vm.$nativePage.pageId;
-  }
-}
-function initFontFace(vm) {
-  var _vm$$options$styles;
-  var instance = vm.$;
-  if (instance.type.mpType === "app") {
-    return;
-  }
-  loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
-}
-function initComponentInstance(app) {
-  app.config.uniX = {
-    beforeSetupPage,
-    initNativePage,
-    initFontFace
-  };
-  app.mixin({
-    beforeCreate() {
-      initNativePage(this);
-    },
-    beforeMount() {
-      initFontFace(this);
-    }
-  });
-}
 var appCtx;
 var entryPageState = {
   isReady: false,
@@ -2744,7 +2805,6 @@ function initUniApp(uniApp) {
   });
 }
 function registerApp(appVm, nativeApp2, uniApp) {
-  initEntryPagePath(nativeApp2);
   setNativeApp(nativeApp2);
   initVueApp(appVm);
   appCtx = appVm;
@@ -2756,6 +2816,8 @@ function registerApp(appVm, nativeApp2, uniApp) {
   extend(appCtx, defaultApp);
   defineGlobalData(appCtx, defaultApp.globalData);
   initService(nativeApp2, unregisterApp);
+  initEntry(nativeApp2);
+  initEntryPagePath(nativeApp2);
   initGlobalEvent(nativeApp2);
   initAppLaunch(appVm);
   initAppError(appVm, nativeApp2);
@@ -3005,7 +3067,7 @@ var openDialogPage = (options) => {
   } = parseUrl(url);
   path = normalizeRoute(path);
   var normalizeUrl = createNormalizeUrl("navigateTo");
-  var errMsg = normalizeUrl(path, {});
+  var errMsg = normalizeUrl(url, {});
   if (errMsg) {
     triggerFailCallback(options, errMsg);
     return null;
@@ -3289,17 +3351,11 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
   resolve();
 });
 var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
-  var _page$$el;
-  var page = getCurrentPage().vm;
+  var page = getCurrentPage();
   if (page == null) {
     return null;
   }
-  var bodyNode = (_page$$el = page.$el) === null || _page$$el === void 0 ? void 0 : _page$$el.parentNode;
-  if (bodyNode == null) {
-    console.warn("bodyNode is null");
-    return null;
-  }
-  return bodyNode.querySelector("#".concat(id2));
+  return page.getElementById(id2);
 });
 function isVueComponent(comp) {
   var has$instance = typeof comp.$ === "object";
@@ -3364,26 +3420,30 @@ class SelectorQueryImpl {
     this._queueCb = [];
   }
   exec(callback) {
-    var _this$_component;
-    (_this$_component = this._component) === null || _this$_component === void 0 || (_this$_component = _this$_component.$) === null || _this$_component === void 0 || _this$_component.$waitNativeRender(() => {
-      requestComponentInfo(this._component, this._queue, (res) => {
-        var queueCbs = this._queueCb;
-        res.forEach((info, _index) => {
-          var queueCb = queueCbs[_index];
-          if (isFunction(queueCb)) {
-            queueCb(info);
+    {
+      var _this$_component2;
+      (_this$_component2 = this._component) === null || _this$_component2 === void 0 || (_this$_component2 = _this$_component2.$) === null || _this$_component2 === void 0 || _this$_component2.$waitNativeRender(() => {
+        requestComponentInfo(this._component, this._queue, (res) => {
+          var queueCbs = this._queueCb;
+          res.forEach((info, _index) => {
+            var queueCb = queueCbs[_index];
+            if (isFunction(queueCb)) {
+              queueCb(info);
+            }
+          });
+          if (callback && isFunction(callback)) {
+            callback(res);
           }
         });
-        if (callback && isFunction(callback)) {
-          callback(res);
-        }
       });
-    });
+    }
     return this._nodesRef;
   }
   in(component) {
-    if (component && isVueComponent(component)) {
-      this._component = component;
+    {
+      if (component && isVueComponent(component)) {
+        this._component = component;
+      }
     }
     return this;
   }
@@ -3642,7 +3702,9 @@ var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_RE
   }
   page.$nativePage.startPullDownRefresh({
     success: res.resolve,
-    fail: res.reject
+    fail: (err) => {
+      res.reject(err.errMsg, err);
+    }
   });
 });
 var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, res) => {

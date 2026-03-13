@@ -32,12 +32,14 @@ export function initComponentInstance(app: App) {
     initNativePage,
     initFontFace,
   }
-  app.mixin({
-    beforeCreate(this: ComponentPublicInstance) {
-      initNativePage(this)
-    },
-    beforeMount(this: ComponentPublicInstance) {
-      initFontFace(this)
-    },
-  })
+  // vapor 模式不需要
+  !(app as any).vapor &&
+    app.mixin({
+      beforeCreate(this: ComponentPublicInstance) {
+        initNativePage(this)
+      },
+      beforeMount(this: ComponentPublicInstance) {
+        initFontFace(this)
+      },
+    })
 }

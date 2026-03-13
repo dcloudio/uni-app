@@ -80,7 +80,7 @@ export const showToast = defineAsyncApi<API_TYPE_SHOW_TOAST>(
   ShowToastProtocol,
   ShowToastOptions
 )
-
+//#if !_X_
 // 此项为抹平与showToast参数差距
 const showLoadingDefaultState = {
   icon: 'loading',
@@ -98,6 +98,7 @@ export const showLoading = defineAsyncApi<API_TYPE_SHOW_LOADING>(
   ShowLoadingProtocol,
   ShowLoadingOptions
 )
+//#endif
 
 export const hideToast = defineAsyncApi<API_TYPE_HIDE_TOAST>(
   API_HIDE_TOAST,
@@ -107,6 +108,7 @@ export const hideToast = defineAsyncApi<API_TYPE_HIDE_TOAST>(
   }
 )
 
+//#if !_X_
 export const hideLoading = defineAsyncApi<API_TYPE_HIDE_LOADING>(
   API_HIDE_LOADING,
   (args, { resolve, reject }) => {
@@ -114,6 +116,7 @@ export const hideLoading = defineAsyncApi<API_TYPE_HIDE_LOADING>(
     resolve()
   }
 )
+//#endif
 
 function hidePopup(type: 'onHideToast' | 'onHideLoading' | 'onHidePopup') {
   const { t } = useI18n()

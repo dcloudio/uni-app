@@ -82,6 +82,7 @@ function preprocess(src, context, typeOrOptions) {
     options.fileNotFoundSilentFail = typeOrOptions.fileNotFoundSilentFail || options.fileNotFoundSilentFail;
     options.srcEol = typeOrOptions.srcEol || options.srcEol;
     options.type = delim[typeOrOptions.type] || options.type;
+    options.unbalanced = typeOrOptions.unbalanced || 'error';
   }
 
   context = copy(context);
@@ -192,7 +193,7 @@ function preprocessor(src, context, opts, noRestoreEol) {
         default:
           throw new Error('Unknown if variant ' + variant + '.');
       }
-    });
+    }, opts.unbalanced);
   }
 
   // rv = replace(rv, opts.type.echo, function (match, variable) {
@@ -298,7 +299,7 @@ function replace(rv, rule, processor) {
   }, rv);
 }
 
-function replaceRecursive(rv, rule, processor) {
+function replaceRecursive(rv, rule, processor, unbalanced) {
   if(!rule.start || !rule.end) {
     throw new Error('Recursive rule must have start and end.');
   }
@@ -308,8 +309,13 @@ function replaceRecursive(rv, rule, processor) {
 
   function matchReplacePass(content) {
     var matches = XRegExp.matchRecursive(content, rule.start, rule.end, 'gmi', {
-      valueNames: ['between', 'left', 'match', 'right']
+      valueNames: ['between', 'left', 'match', 'right'],
+      unbalanced,
     });
+    // fixed by xxxxxx XRegExp 5.1.0后，matchRecursive在没有匹配时返回空数组
+    if (matches.length === 0) {
+      return content;
+    }
 
     var matchGroup = {
       left: null,

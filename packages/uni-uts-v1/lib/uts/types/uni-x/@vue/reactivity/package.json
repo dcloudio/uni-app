@@ -1,9 +1,9 @@
 {
   "name": "@vue/reactivity",
-  "version": "3.4.21",
+  "version": "3.6.0-alpha.2",
   "description": "@vue/reactivity",
   "types": "dist/reactivity.d.ts",
   "dependencies": {
-    "@vue/shared": "3.4.21"
+    "@vue/shared": "3.6.0-alpha.2"
   }
 }

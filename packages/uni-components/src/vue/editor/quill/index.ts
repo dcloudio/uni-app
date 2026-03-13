@@ -257,6 +257,10 @@ export function useQuill(
             {
               let { name = '', value = false } = options
               range = quill.getSelection(true)
+              // 用户传递 name='' 无需执行 format ask214259
+              if (!name) {
+                break
+              }
               let format = quill.getFormat(range)[name] || false
               if (
                 ['bold', 'italic', 'underline', 'strike', 'ins'].includes(name)

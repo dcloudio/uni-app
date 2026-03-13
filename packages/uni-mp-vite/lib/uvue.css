@@ -12,7 +12,6 @@ ad-rewarded-video,
 ad,
 animation-view,
 audio,
-block,
 button,
 camera,
 canvas,
@@ -82,7 +81,6 @@ ad-rewarded-video[hidden],
 ad[hidden],
 animation-view[hidden],
 audio[hidden],
-block[hidden],
 button[hidden],
 camera[hidden],
 canvas[hidden],
@@ -168,14 +166,9 @@ text {
   display: inline;
 }
 
-text[hidden] {
-  display: none !important;
-}
-
 text,
 textarea,
 label {
-  line-height: 1.2;
   overflow: hidden;
   flex-basis: auto;
   letter-spacing: 0;
@@ -196,14 +189,21 @@ checkbox {
   align-items: center;
 }
 
+/* #ifdef MP-WEIXIN */
 /* 
- * 目前仅适配微信小程序，其他小程序平台需要额外适配
+ * radio目前仅适配微信小程序，其他小程序平台需要额外适配
  */
-radio .wx-radio-wrapper{
+.uni__inherit_flex_box_style,
+radio .wx-radio-wrapper {
   display: flex;
   flex-direction: inherit;
   align-content: inherit;
   justify-content: inherit;
   align-items: inherit;
+}
+
+radio .wx-radio-wrapper {
   flex: 1;
 }
+
+/* #endif */

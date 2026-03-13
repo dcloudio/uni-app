@@ -1,5 +1,5 @@
-import { isRootHook, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, normalizeStyle as normalizeStyle$1, dynamicSlotName, normalizeClass as normalizeClass$1 } from '@dcloudio/uni-shared';
-import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, isString, normalizeClass, normalizeStyle, isOn, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, looseToNumber, NO, EMPTY_ARR, isModelListener, toNumber, toDisplayString } from '@vue/shared';
+import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, UNI_STATUS_BAR_HEIGHT, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass } from '@dcloudio/uni-shared';
+import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, isString, normalizeClass as normalizeClass$1, normalizeStyle, isOn, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, looseToNumber, NO, EMPTY_ARR, isModelListener, toNumber, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
 /**
@@ -2607,6 +2607,8 @@ const PublicInstanceProxyHandlers = {
     } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
       accessCache[key] = 4 /* CONTEXT */;
       return ctx[key];
+    } else if (instance.exposed && hasOwn(instance.exposed, key)) {
+      return instance.exposed[key];
     } else if (
       // global properties
       globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)
@@ -3348,7 +3350,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
         if (options) {
           if (hasOwn(attrs, key)) {
             if (value !== attrs[key]) {
-              attrs[key] = value;
+              attrs[key] = normalizeInheritAttrsValue(instance, key, value);
               hasAttrsChanged = true;
             }
           } else {
@@ -3364,7 +3366,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
           }
         } else {
           if (value !== attrs[key]) {
-            attrs[key] = value;
+            attrs[key] = normalizeInheritAttrsValue(instance, key, value);
             hasAttrsChanged = true;
           }
         }
@@ -3427,13 +3429,22 @@ function setFullProps(instance, rawProps, props, attrs) {
       let camelKey;
       if (options && hasOwn(options, camelKey = camelize(key))) {
         if (!needCastKeys || !needCastKeys.includes(camelKey)) {
-          props[camelKey] = value;
+          if (__X_STYLE_ISOLATION__) {
+            props[camelKey] = resolveExternalClassesPropValue(
+              camelKey,
+              value,
+              options,
+              false
+            );
+          } else {
+            props[camelKey] = value;
+          }
         } else {
           (rawCastValues || (rawCastValues = {}))[camelKey] = value;
         }
       } else if (!isEmitListener(instance.emitsOptions, key)) {
         if (!(key in attrs) || value !== attrs[key]) {
-          attrs[key] = value;
+          attrs[key] = normalizeInheritAttrsValue(instance, key, value);
           hasAttrsChanged = true;
         }
       }
@@ -3456,7 +3467,54 @@ function setFullProps(instance, rawProps, props, attrs) {
   }
   return hasAttrsChanged;
 }
+function toExternalClasses(classes) {
+  const trimmed = classes.trim();
+  return trimmed ? trimmed.split(/\s+/).map((item) => "^" + item) : [];
+}
+function normalizeExternalClasses(classes) {
+  return toExternalClasses(normalizeClass(classes));
+}
+function normalizeInheritAttrsValue(instance, key, value) {
+  if (__X_STYLE_ISOLATION__ && __X_STYLE_ISOLATION_UP_ARROW__ && !instance.type.__reserved) {
+    if (key === "class") {
+      return toExternalClasses(normalizeClass(value)).join(" ");
+    }
+  }
+  return value;
+}
+function resolveExternalClassesPropValue(key, value, options, isAbsent) {
+  if (
+    // 只有外部传入的 externalClasses 才走这里，没有传入，但有默认值的不应该处理，比如button组件内部hover-class有默认值button-hover
+    !isAbsent
+  ) {
+    const opt = options[key];
+    if (opt && opt[
+      2
+      /* BooleanFlags.externalClasses */
+    ]) {
+      if (__X_STYLE_ISOLATION_UP_ARROW__) {
+        return normalizeExternalClasses(value);
+      }
+      return hyphenate(key);
+    }
+  }
+  return value;
+}
 function resolvePropValue(options, props, key, value, instance, isAbsent) {
+  const result = _resolvePropValue(
+    options,
+    props,
+    key,
+    value,
+    instance,
+    isAbsent
+  );
+  if (__X_STYLE_ISOLATION__) {
+    return resolveExternalClassesPropValue(key, result, options, isAbsent);
+  }
+  return result;
+}
+function _resolvePropValue(options, props, key, value, instance, isAbsent) {
   const opt = options[key];
   if (opt != null) {
     const hasDefault = hasOwn(opt, "default");
@@ -3487,6 +3545,16 @@ function resolvePropValue(options, props, key, value, instance, isAbsent) {
     }
   }
   return value;
+}
+function initExternalClassesOptions(comp) {
+  if (isArray(comp.externalClasses)) {
+    const cached = comp.__externalClassesOptions;
+    if (!cached) {
+      comp.__externalClassesOptions = comp.externalClasses.map(
+        (className) => camelize(className)
+      );
+    }
+  }
 }
 function normalizePropsOptions(comp, appContext, asMixin = false) {
   const cache = appContext.propsCache;
@@ -3546,6 +3614,10 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
           const stringIndex = getTypeIndex(String, prop.type);
           prop[0 /* shouldCast */] = booleanIndex > -1;
           prop[1 /* shouldCastTrue */] = stringIndex < 0 || booleanIndex < stringIndex;
+          if (__X_STYLE_ISOLATION__ && comp.__externalClassesOptions && comp.__externalClassesOptions.includes(key)) {
+            prop[2 /* externalClasses */] = true;
+            prop.skipCheck = true;
+          }
           if (booleanIndex > -1 || hasOwn(prop, "default")) {
             needCastKeys.push(normalizedKey);
           }
@@ -3852,7 +3924,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
     props = guardReactiveProps(props);
     let { class: klass, style } = props;
     if (klass && !isString(klass)) {
-      props.class = normalizeClass(klass);
+      props.class = normalizeClass$1(klass);
     }
     if (isObject(style)) {
       if (isProxy(style) && !isArray(style)) {
@@ -3996,7 +4068,7 @@ function mergeProps(...args) {
     for (const key in toMerge) {
       if (key === "class") {
         if (ret.class !== toMerge.class) {
-          ret.class = normalizeClass([ret.class, toMerge.class]);
+          ret.class = normalizeClass$1([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
         ret.style = normalizeStyle([ret.style, toMerge.style]);
@@ -4018,6 +4090,9 @@ const emptyAppContext = createAppContext();
 let uid = 0;
 function createComponentInstance(vnode, parent, suspense) {
   const type = vnode.type;
+  if (__X_STYLE_ISOLATION__) {
+    initExternalClassesOptions(type);
+  }
   const appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
   const instance = {
     uid: uid++,
@@ -4759,16 +4834,15 @@ function setRef$1(instance, isUnmount = false) {
     $templateUniElementRefs,
     ctx: { $scope, $mpPlatform }
   } = instance;
-  if ($mpPlatform === "mp-alipay") {
-    return;
-  }
   if (!$scope || !$templateRefs && !$templateUniElementRefs) {
     return;
   }
   if (isUnmount) {
-    $templateRefs && $templateRefs.forEach(
-      (templateRef) => setTemplateRef(templateRef, null, setupState)
-    );
+    if ($mpPlatform !== "mp-alipay") {
+      $templateRefs && $templateRefs.forEach(
+        (templateRef) => setTemplateRef(templateRef, null, setupState)
+      );
+    }
     $templateUniElementRefs && $templateUniElementRefs.forEach(
       (templateRef) => setTemplateRef(templateRef, null, setupState)
     );
@@ -4805,6 +4879,13 @@ function setRef$1(instance, isUnmount = false) {
       }
     }
   };
+  if ($mpPlatform !== "mp-alipay") {
+    if ($scope._$setRef) {
+      $scope._$setRef(doSet);
+    } else {
+      nextTick(instance, doSet);
+    }
+  }
   if ($templateUniElementRefs && $templateUniElementRefs.length) {
     nextTick(instance, () => {
       $templateUniElementRefs.forEach((templateRef) => {
@@ -4817,11 +4898,6 @@ function setRef$1(instance, isUnmount = false) {
         }
       });
     });
-  }
-  if ($scope._$setRef) {
-    $scope._$setRef(doSet);
-  } else {
-    nextTick(instance, doSet);
   }
 }
 function toSkip(value) {
@@ -4931,6 +5007,18 @@ const getFunctionalFallthrough = (attrs) => {
   }
   return res;
 };
+function clearTemplateRefs(templateRefs) {
+  if (!templateRefs) {
+    return [];
+  }
+  return templateRefs.filter((templateRef) => {
+    const v = templateRef.v;
+    if (v && typeof v === "object" && ["UNI-LOADING-ELEMENT", "UNI-CLOUD-DB-ELEMENT"].includes(v.nodeName)) {
+      return true;
+    }
+    return false;
+  });
+}
 function renderComponentRoot(instance) {
   const {
     type: Component,
@@ -4958,8 +5046,12 @@ function renderComponentRoot(instance) {
     inheritAttrs
   } = instance;
   instance.$uniElementIds = /* @__PURE__ */ new Map();
-  instance.$templateRefs = [];
-  instance.$templateUniElementRefs = [];
+  instance.$templateRefs = clearTemplateRefs(
+    instance.$templateRefs || []
+  );
+  instance.$templateUniElementRefs = clearTemplateRefs(
+    instance.$templateUniElementRefs || []
+  );
   instance.$templateUniElementStyles = {};
   instance.$ei = 0;
   pruneComponentPropsCache(uid);
@@ -5473,11 +5565,23 @@ function findComponentPropsData(up) {
     return propsCaches[uid][parseInt(propsId)];
 }
 
+function getStatusBarHeight() {
+    if (typeof wx !== 'undefined') {
+        return wx.getWindowInfo().statusBarHeight;
+        // @ts-expect-error
+    }
+    else if (typeof my !== 'undefined') {
+        // @ts-expect-error
+        return my.getWindowInfo().statusBarHeight;
+    }
+}
 var plugin = {
     install(app) {
         initApp(app);
         app.config.globalProperties.pruneComponentPropsCache =
             pruneComponentPropsCache;
+        // TODO 此处不支持 __GLOBAL__，并且有些小程序(如抖音小程序)没有 getWindowInfo 方法
+        app.config.globalProperties[UNI_STATUS_BAR_HEIGHT] = getStatusBarHeight();
         const oldMount = app.mount;
         app.mount = function mount(rootContainer) {
             const instance = oldMount.call(app, rootContainer);
@@ -5762,6 +5866,11 @@ class UniElement {
         this.nodeName = this.tagName;
     }
     scrollTo(options) {
+        if (this.$vm
+            .$mpPlatform !== 'mp-weixin') {
+            console.warn('scrollTo is only supported on weixin miniProgram');
+            return;
+        }
         if (!this.id) {
             console.warn(`scrollTo is only supported on elements with id`);
             return;
@@ -5816,12 +5925,15 @@ class UniElement {
             console.warn(`getBoundingClientRectAsync is not supported on elements without id`);
             return Promise.reject();
         }
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this._getBoundingClientRectAsync(resolve);
         });
     }
     _getBoundingClientRectAsync(callback) {
-        const query = uni.createSelectorQuery().in(this.$vm);
+        const query = this.$vm
+            .$mpPlatform === 'mp-alipay'
+            ? uni.createSelectorQuery()
+            : uni.createSelectorQuery().in(this.$vm);
         query.select('#' + this.id).boundingClientRect();
         query.exec((res) => {
             this._fixDomRectXY(res[0]);
@@ -5947,7 +6059,11 @@ function createUniElement(id, tagName, ins) {
     }
     const uniElement = new (customElements.get(tagName) || UniElement)(id, tagName);
     uniElement.$vm = ins.proxy;
-    initMiniProgramNode(uniElement, ins);
+    // 目前只有微信小程序支持获取 ScrollViewContext
+    if (ins.proxy
+        .$mpPlatform === 'mp-weixin') {
+        initMiniProgramNode(uniElement, ins);
+    }
     uniElement.$onStyleChange((styles) => {
         var _a;
         let cssText = '';
@@ -6039,7 +6155,6 @@ function createEventTarget(target, ins) {
     return element;
 }
 function initMiniProgramNode(uniElement, ins) {
-    // 可能需要条件编译，部分小程序不支持
     if (uniElement.tagName === 'SCROLL-VIEW') {
         uniElement.$node = new Promise((resolve) => {
             setTimeout(() => {
@@ -6146,18 +6261,33 @@ const bubbles = [
 function isMPTapEvent(event) {
     return event.type === 'tap';
 }
+function normalizeAlipayTapEventPosition(event) {
+    // 支付宝小程序点击事件没有 touches
+    event.x = event.detail.clientX;
+    event.y = event.detail.clientY;
+    event.clientX = event.detail.clientX;
+    event.clientY = event.detail.clientY;
+    event.pageX = event.detail.pageX;
+    event.pageY = event.detail.pageY;
+}
 function normalizeXEvent(event, instance) {
     if (isMPTapEvent(event)) {
-        event.x = event.detail.x;
-        event.y = event.detail.y;
-        event.clientX = event.detail.x;
-        event.clientY = event.detail.y;
-        const touch0 = event.touches && event.touches[0];
-        if (touch0) {
-            event.pageX = touch0.pageX;
-            event.pageY = touch0.pageY;
-            event.screenX = touch0.screenX;
-            event.screenY = touch0.screenY;
+        const ctx = instance === null || instance === void 0 ? void 0 : instance.ctx;
+        if ((ctx === null || ctx === void 0 ? void 0 : ctx.$mpPlatform) === 'mp-alipay') {
+            normalizeAlipayTapEventPosition(event);
+        }
+        else {
+            event.x = event.detail.x;
+            event.y = event.detail.y;
+            event.clientX = event.detail.x;
+            event.clientY = event.detail.y;
+            const touch0 = event.touches && event.touches[0];
+            if (touch0) {
+                event.pageX = touch0.pageX;
+                event.pageY = touch0.pageY;
+                event.screenX = touch0.screenX;
+                event.screenY = touch0.screenY;
+            }
         }
     }
     if (event.target) {
@@ -6503,6 +6633,35 @@ function setUniElementRef(ins, ref, id, opts, tagType) {
     }
 }
 
+function getPartClassList(partName) {
+    return partName
+        .split(/\s+/)
+        .map((name) => '^' + getPartClass(name))
+        .join(' ');
+}
+function mergePartClass(partName, existingClass) {
+    let existingClassStr = '';
+    if (Array.isArray(existingClass)) {
+        existingClassStr = existingClass.join(' ');
+    }
+    else if (typeof existingClass === 'object') {
+        existingClassStr = Object.keys(existingClass)
+            .filter((key) => !!existingClass[key])
+            .join(' ');
+    }
+    else {
+        existingClassStr = existingClass || '';
+    }
+    if (typeof partName !== 'string') {
+        return existingClassStr;
+    }
+    const partClass = getPartClassList(partName);
+    if (existingClassStr) {
+        return `${existingClassStr} ${partClass}`;
+    }
+    return partClass;
+}
+
 function hasIdProp(_ctx) {
     return (_ctx.$.propsOptions &&
         _ctx.$.propsOptions[0] &&
@@ -6524,6 +6683,33 @@ function genUniElementId(_ctx, idBinding, genId) {
     return genIdWithVirtualHost(_ctx, idBinding) || genId || '';
 }
 
+function patchClassList(classList) {
+    const patchedClassList = [];
+    classList.forEach((className) => {
+        className = className.trim();
+        if (!className) {
+            return;
+        }
+        if (__X_STYLE_ISOLATION__) {
+            // 需要兼容原始类名，因为该class可能是全局样式定义的，当组件配置为app时，目前的方案
+            // 是底层配置isolated+@import app.wxss来实现的，需要兼容这种情况
+            const originalClassName = className.replace(/^\^/g, '');
+            if (!patchedClassList.includes(originalClassName)) {
+                patchedClassList.push(originalClassName);
+            }
+        }
+        const patchedClassName = '^' + className;
+        if (!patchedClassList.includes(patchedClassName)) {
+            patchedClassList.push(patchedClassName);
+        }
+    });
+    return patchedClassList;
+}
+function parseVirtualHostClass(className) {
+    className = normalizeClass(className);
+    return patchClassList(className.split(/\s+/)).join(' ');
+}
+
 function setupDevtoolsPlugin() {
     // noop
 }
@@ -6537,7 +6723,7 @@ const s = (value) => stringifyStyle(value);
 const c = (str) => camelize(str);
 const e = (target, ...sources) => extend(target, ...sources);
 const h = (str) => hyphenate(str);
-const n = (value) => normalizeClass$1(value) ;
+const n = (value) => normalizeClass(value) ;
 const t = (val) => toDisplayString(val);
 const p = (props) => renderProps(props);
 const sr = (ref, id, opts) => setRef(ref, id, opts);
@@ -6545,7 +6731,9 @@ const m = (fn, modifiers, isComponent = false) => withModelModifiers(fn, modifie
 const j = (obj) => JSON.stringify(obj);
 const sei = setUniElementId;
 const ses = setUniElementStyle;
+const mpc = mergePartClass;
 const gei = genUniElementId;
+const pvhc = parseVirtualHostClass;
 
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
@@ -6553,4 +6741,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, UniElement as UniElementImpl, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, queuePostFlushCb, r, reactive, readonly, ref, registerCustomElement, resolveComponent, resolveDirective, resolveFilter, s, sei, ses, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, UniElement as UniElementImpl, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, mpc, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, pvhc, queuePostFlushCb, r, reactive, readonly, ref, registerCustomElement, resolveComponent, resolveDirective, resolveFilter, s, sei, ses, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

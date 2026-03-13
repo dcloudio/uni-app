@@ -1,7 +1,7 @@
 interface IJSONStringify {
   /**
    * 支持开发者自定义class序列化结果，此函数的返回值就是实现了此接口的class的序列化返回值
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parse
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/json.html#parse
      @uniPlatform {
         "app": {
             "android": {
@@ -90,7 +90,7 @@ interface JSON {
        }
      }
      @return 返回一个any 或者 null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parse
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/json.html#parse
      @uniPlatform {
         "app": {
             "android": {
@@ -164,7 +164,7 @@ interface JSON {
        }
      }
      @return 返回一个T类型的值或者对象 或者 null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parse<T>
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/json.html#parse<T>
      @inline
      @reified
      @uniPlatform {
@@ -212,7 +212,7 @@ interface JSON {
      如果输入的是一个合法的json对象，返回一个对应的UTSJSONObject，如果是json array 或者其他格式的字符串返回null
      @param text 要被解析成 JavaScript 值的字符串
      @return 返回一个UTSJSONObjet 或者 null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parseObject
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/json.html#parseobject
      @inline
      @reified
      @uniPlatform {
@@ -255,7 +255,7 @@ interface JSON {
      如果输入的是一个合法的json对象，返回一个对应的T对象，如果是json array 或者其他格式的字符串返回null
      @param text 要被解析成 JavaScript 值的字符串
      @return 返回一个T类型对象 或者 null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parseObject<T>
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/json.html#parseobject<T>
      @inline
      @reified
      @uniPlatform {
@@ -296,7 +296,7 @@ interface JSON {
      如果输入的是一个合法的json数组，返回一个对应的Array，如果是json object 或者其他格式的字符串返回null
      @param text 要被解析成 JavaScript 值的字符串
      @return 返回一个Array 或者 null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parseArray
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/json.html#parsearray
      @uniPlatform {
         "app": {
             "android": {
@@ -334,7 +334,7 @@ interface JSON {
      如果输入的是一个合法的json数组，返回一个对应的Array，如果是json object 或者其他格式的字符串返回null
      @param text 要被解析成 JavaScript 值的字符串
      @return 返回一个Array 或者 null
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parseArray<T>
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/json.html#parsearray<T>
      @inline
      @reified
      @uniPlatform {
@@ -447,7 +447,7 @@ interface JSON {
         "unixVer": "4.25"
       }
      }
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#stringify
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/json.html#stringify
      @uniPlatform {
         "app": {
             "android": {

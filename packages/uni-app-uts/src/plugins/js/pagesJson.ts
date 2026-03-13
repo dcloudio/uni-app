@@ -4,7 +4,6 @@ import {
   APP_CONFIG,
   PAGES_JSON_UTS,
   checkPagesJson,
-  createRollupError,
   normalizeAppPagesJson,
   normalizePath,
   normalizeUniAppXAppConfig,
@@ -18,7 +17,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
 import { isPages, setGlobalPageOrientation } from '../utils'
-import { isVue } from '../android/utils'
+import { isVue } from '../utils'
 
 export function uniAppPagesPlugin(): Plugin {
   const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
@@ -27,8 +26,13 @@ export function uniAppPagesPlugin(): Plugin {
     PAGES_JSON_UTS
   )
 
+  const isDom2Harmony =
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-harmony'
+
   let allPagePaths: string[] = []
   let isFirst = true
+  let hasTabBar = false
   return {
     name: 'uni:app-pages-json',
     apply: 'build',
@@ -65,34 +69,26 @@ export function uniAppPagesPlugin(): Plugin {
         }
       }
       if (isPages(id)) {
-        // 调整换行符，确保 parseTree 的loc正确
-        const jsonCode = code.replace(/\r\n/g, '\n')
-        try {
-          checkPagesJson(
-            preUVueJson(jsonCode, 'pages.json'),
-            process.env.UNI_INPUT_DIR
-          )
-        } catch (err: any) {
-          if (err.loc) {
-            const error = createRollupError(
-              'uni:app-pages',
-              pagesJsonPath,
-              err,
-              jsonCode
-            )
-            this.error(error)
-          } else {
-            throw err
-          }
-        }
-
         this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
         // dark mode
         this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))
+        // 调整换行符，确保 parseTree 的loc正确
+        const jsonCode = code.replace(/\r\n/g, '\n')
+        checkPagesJson(
+          preUVueJson(jsonCode, 'pages.json'),
+          process.env.UNI_INPUT_DIR
+        )
 
         // pages.json
         const pagesJson = normalizeUniAppXAppPagesJson(code)
 
+        // vapor 暂不支持 tabBar
+        if (isDom2Harmony) {
+          if (pagesJson.tabBar) {
+            hasTabBar = true
+            delete pagesJson.tabBar
+          }
+        }
         // add themeConfig - can move to uni-x/index.ts
         pagesJson.themeConfig = readThemeJSONFile()
 
@@ -131,6 +127,9 @@ export function uniAppPagesPlugin(): Plugin {
       }
     },
     buildEnd() {
+      if (isFirst && hasTabBar) {
+        console.warn(`蒸汽模式下 pages.json 暂不支持 tabBar 配置，已忽略。`)
+      }
       isFirst = false
     },
   }

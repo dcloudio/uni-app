@@ -1,4 +1,4 @@
-type Experssion = {
+type Expression = {
     feature : string
     modifier : string
     value : string
@@ -25,22 +25,31 @@ export class UniMatchMediaElement extends UniViewElementImpl implements UniCusto
         ]
     }
 
-    private _experssions : Array<Experssion> = []
+    private _expressions : Array<Expression> = []
 
     constructor() {
         super()
     }
 
     override connectedCallback() {
-        this._experssions = this.getExpressions();
+        this._expressions = this.getExpressions();
 
         this.uniPage.vm!.$.$waitNativeRender(() => {
+            // #ifdef APP-HARMONY
+            this.toggleElement(this.isValid({
+                width: this.uniPage.pageBody.width,
+                height: this.uniPage.pageBody.height,
+                orientation: globalThis.uni.getDeviceInfo().deviceOrientation as string
+            }))
+            // #endif
+            // #ifndef APP-HARMONY
             this.toggleElement(this.isValid({
                 width: this.uniPage.pageBody.width,
                 height: this.uniPage.pageBody.height,
                 orientation: uni.getDeviceInfo().deviceOrientation
             }))
-		})
+            // #endif
+        })
 
         onResize((res : OnResizeOptions) => {
             this.toggleElement(this.isValid({
@@ -48,11 +57,11 @@ export class UniMatchMediaElement extends UniViewElementImpl implements UniCusto
                 width: res.size.windowWidth,
                 height: res.size.windowHeight
             }))
-		}, this.uniPage.vm!.$)
+        }, this.uniPage.vm!.$)
     }
 
     override attributeChangedCallback(name : string, oldValue : any | null, newValue : any | null) {
-        if (this._experssions.length == 0 || newValue == null) {
+        if (this._expressions.length == 0 || newValue == null) {
             return
         }
 
@@ -62,7 +71,7 @@ export class UniMatchMediaElement extends UniViewElementImpl implements UniCusto
         }
         const modifier = matches[1] != null ? matches[1]! : ''
         const feature = matches[2] != null ? matches[2]!.toLowerCase() : ''
-        const expression = this._experssions.find((expr) => expr.feature == feature && expr.modifier == modifier)
+        const expression = this._expressions.find((expr) => expr.feature == feature && expr.modifier == modifier)
         if (expression == null) {
             return
         }
@@ -76,7 +85,7 @@ export class UniMatchMediaElement extends UniViewElementImpl implements UniCusto
     }
 
     private getExpressions() {
-        const expressions : Array<Experssion> = [];
+        const expressions : Array<Expression> = [];
         UniMatchMediaElement.observedAttributes.forEach((key) => {
             const value = this.getAttribute(key);
             const feature = key.match(RE_MQ_FEATURE);
@@ -97,7 +106,7 @@ export class UniMatchMediaElement extends UniViewElementImpl implements UniCusto
     }
 
     private isValid(values : Values) {
-        return this._experssions.every((expression) => {
+        return this._expressions.every((expression) => {
             switch (expression.feature) {
                 case 'orientation':
                     return values[expression.feature] === this.getAttribute(expression.feature)

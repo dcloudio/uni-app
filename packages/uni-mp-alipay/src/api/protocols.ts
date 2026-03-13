@@ -1,4 +1,4 @@
-import { extend, hasOwn, isArray, isObject } from '@vue/shared'
+import { hasOwn, isArray, isObject } from '@vue/shared'
 
 import {
   navigateTo as _navigateTo,
@@ -10,7 +10,13 @@ import {
 
 import { getStorageSync } from './shims'
 
+// 这个 api 只有钉钉有效，通过 my 通用 api 发起
+// const isDingdingMp = () => {
+//   return my.canIUse('createDing')
+// }
+
 export {
+  getWindowInfo,
   redirectTo,
   onError,
   offError,
@@ -22,13 +28,13 @@ function handleNetworkInfo(
   fromRes: my.IGetNetworkTypeSuccessResult,
   toRes: UniApp.GetNetworkTypeSuccess
 ) {
-  const nextworkType = fromRes.networkType
-  switch (nextworkType) {
+  const networkType = fromRes.networkType
+  switch (networkType) {
     case 'NOTREACHABLE':
       toRes.networkType = 'none'
       break
     case 'WWAN':
-      // TODO ?
+      // TODO 无线广域网，微信没有对应的值，使用 3g 代替 https://opendocs.alipay.com/mini/api/network-status#success%20%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0
       toRes.networkType = '3g'
       break
     default:
@@ -175,22 +181,16 @@ export function setNavigationBarTitle() {
 
 /**
  * Note:
- * showModal 在钉钉上没有，所以使用 my.confirm/alert 模拟
+ * 钉钉已支持 showModal https://open.dingtalk.com/document/development/jsapi-show-modal
+ * 但效果和支付宝明显不同，还是使用 confrim 做兼容抹平
  */
 export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
-  if (my.canIUse('showModal')) {
-    return {
-      name: 'showModal',
-    }
-  }
   if (showCancel) {
     return {
       name: 'confirm',
-      args: {
-        confirmColor: false,
-        cancelColor: false,
-        cancelText: 'cancelButtonText',
-        confirmText: 'confirmButtonText',
+      args(fromArgs: UniApp.ShowModalOptions, toArgs: my.IConfirmOptions) {
+        toArgs.cancelButtonText = fromArgs.cancelText || '取消'
+        toArgs.confirmButtonText = fromArgs.confirmText || '确定'
       },
       returnValue(
         fromRes: my.IConfirmSuccessResult,
@@ -203,9 +203,8 @@ export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
   }
   return {
     name: 'alert',
-    args: {
-      confirmColor: false,
-      confirmText: 'buttonText',
+    args(fromArgs: UniApp.ShowModalOptions, toArgs: my.IAlertOptions) {
+      ;(toArgs as any).confirmButtonText = fromArgs.confirmText || '确定'
     },
     returnValue(fromRes: unknown, toRes: UniApp.ShowModalRes) {
       toRes.confirm = true
@@ -214,18 +213,20 @@ export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
   }
 }
 export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
-  const args = {
-    title: 'content',
-  }
   if (icon === 'loading') {
     return {
       name: 'showLoading',
-      args,
+      args: {
+        title: 'content',
+      },
     }
   }
   return {
     name: 'showToast',
-    args: extend({ icon: 'type' }, args),
+    args(fromArgs: UniApp.ShowToastOptions, toArgs: my.IShowToastOptions) {
+      toArgs.content = fromArgs.title
+      toArgs.type = (fromArgs.icon ?? icon) as my.IShowToastOptions['type']
+    },
   }
 }
 export const showActionSheet = {
@@ -240,12 +241,14 @@ export const showActionSheet = {
 export const showLoading = {
   args(
     fromArgs: UniApp.ShowLoadingOptions,
-    toArgs: my.IShowLoadingOptions & { mask: boolean } // mini-types feedback.d.ts 未包含 mask
+    toArgs: my.IShowLoadingOptions & { mask?: boolean } // mini-types feedback.d.ts 未包含 mask
   ) {
     if (!fromArgs.mask) {
       toArgs.mask = false
     }
-    toArgs.content = fromArgs.title
+    if (fromArgs.title) {
+      toArgs.content = fromArgs.title
+    }
   },
 }
 export const uploadFile = {
@@ -296,7 +299,6 @@ export const chooseVideo = {
 export const connectSocket = {
   args: {
     method: false,
-    protocols: false,
   },
   // TODO 有没有返回值还需要测试下
 }

@@ -3,6 +3,8 @@ import {
   type ComponentNode,
   type DirectiveNode,
   type ElementNode,
+  NORMALIZE_CLASS,
+  NORMALIZE_STYLE,
   NodeTypes,
   createSimpleExpression,
   isSimpleIdentifier,
@@ -31,14 +33,17 @@ import {
   ATTR_VUE_REF_IN_FOR,
   ATTR_VUE_SLOTS,
   filterObserverName,
-  rewirteWithHelper,
+  rewriteWithHelper,
 } from './utils'
 import { genBabelExpr, genExpr } from '../codegen'
 import {
   type Expression,
   type ObjectProperty,
   type SpreadElement,
+  arrayExpression,
+  callExpression,
   identifier,
+  isStringLiteral,
   logicalExpression,
   objectExpression,
   objectProperty,
@@ -163,14 +168,17 @@ function isComponentProp(name: string) {
   }
   return true
 }
+
 /**
  * 重写组件 props 绑定
  * @param node
  * @param context
+ * @param externalClasses 组件的 externalClasses 数组
  */
 export function rewriteBinding(
   { tag, props }: ComponentNode,
-  context: TransformContext
+  context: TransformContext,
+  externalClasses?: string[]
 ) {
   const isMiniProgramComponent = context.isMiniProgramComponent(tag)
   if (
@@ -196,13 +204,27 @@ export function rewriteBinding(
         )
       }
   const properties: (ObjectProperty | SpreadElement)[] = []
+  const classExprArr: Expression[] = []
+  const styleExprArr: Expression[] = []
   for (let i = 0; i < props.length; i++) {
     const prop = props[i]
-    let isIdProp = false
+    let isReservedProp = false
     if (isAttributeNode(prop)) {
       const { name } = prop
-      isIdProp = name === 'id'
-      if (!isComponentProp(name)) {
+      if (externalClasses?.includes(name)) {
+        continue
+      }
+      if (context.isX) {
+        if (name === 'class') {
+          classExprArr.push(stringLiteral(prop.value?.content || ''))
+          continue
+        } else if (name === 'style') {
+          styleExprArr.push(stringLiteral(prop.value?.content || ''))
+          continue
+        }
+      }
+      isReservedProp = name === 'id'
+      if (!isReservedProp && !isComponentProp(name)) {
         continue
       }
       properties.push(
@@ -222,8 +244,24 @@ export function rewriteBinding(
           properties.push(spreadElement)
         }
       } else if (isStaticExp(arg)) {
-        isIdProp = arg.content === 'id'
-        if (!isComponentProp(arg.content)) {
+        const name = arg.content
+        if (context.isX) {
+          if (name === 'class') {
+            const valueExpr = parseExpr(genExpr(exp), context, exp)
+            if (valueExpr) {
+              classExprArr.push(valueExpr)
+            }
+            continue
+          } else if (name === 'style') {
+            const valueExpr = parseExpr(genExpr(exp), context, exp)
+            if (valueExpr) {
+              styleExprArr.push(valueExpr)
+            }
+            continue
+          }
+        }
+        isReservedProp = name === 'id'
+        if (!isReservedProp && !isComponentProp(name)) {
           continue
         }
         // :name="name"
@@ -231,7 +269,7 @@ export function rewriteBinding(
         if (!valueExpr) {
           continue
         }
-        properties.push(createObjectProperty(arg.content, valueExpr))
+        properties.push(createObjectProperty(name, valueExpr))
       } else {
         // :[dynamic]="dynamic"
         const leftExpr = parseExpr(genExpr(arg), context, exp)
@@ -251,11 +289,41 @@ export function rewriteBinding(
         )
       }
     }
-    // 即保留 id 属性，又补充到 props 中
-    if (!isIdProp) {
+    // 即保留属性，又补充到 props 中
+    if (!isReservedProp) {
       props.splice(i, 1)
       i--
     }
+  }
+
+  if (classExprArr.length) {
+    const classValue =
+      classExprArr.length === 1
+        ? classExprArr[0]
+        : arrayExpression(classExprArr)
+    properties.push(
+      createObjectProperty(
+        'class',
+        isStringLiteral(classValue)
+          ? classValue
+          : createNormalizeExpr(NORMALIZE_CLASS, classValue, context)
+      )
+    )
+  }
+
+  if (styleExprArr.length) {
+    const styleValue =
+      styleExprArr.length === 1
+        ? styleExprArr[0]
+        : arrayExpression(styleExprArr)
+    properties.push(
+      createObjectProperty(
+        'style',
+        isStringLiteral(styleValue)
+          ? styleValue
+          : createNormalizeExpr(NORMALIZE_STYLE, styleValue, context)
+      )
+    )
   }
 
   if (properties.length) {
@@ -266,6 +334,14 @@ export function rewriteBinding(
       )
     )
   }
+}
+
+function createNormalizeExpr(
+  name: symbol,
+  args: Expression,
+  context: TransformContext
+) {
+  return callExpression(identifier(context.helperString(name)), [args])
 }
 
 function createVBindSpreadElement(
@@ -300,7 +376,7 @@ export function rewritePropsBinding(
 ) {
   dir.exp = createSimpleExpression(
     genBabelExpr(
-      rewirteWithHelper(
+      rewriteWithHelper(
         RENDER_PROPS,
         parseExpr(dir.exp!, context)!,
         dir.loc,

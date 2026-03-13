@@ -241,6 +241,8 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['onShow'],
       ['onHide'],
       // App
+      ['onAppShow'],
+      ['onAppHide'],
       ['onLaunch'],
       ['onError'],
       ['onThemeChange'],
@@ -279,10 +281,15 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['onServerPrefetch'],
       ['onUnmounted'],
       ['onUpdated'],
+      // uni-app specific lifecycle
+      ['onReuse'],
+      ['onRecycle'],
 
       // setup helpers
       ['useAttrs'],
       ['useSlots'],
+      ['useComputedStyle'],
+      ['useRecycleState'],
 
       // reactivity,
       ['computed'],
@@ -343,26 +350,29 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
     )
   }
 
-  const uniApiExportsPath = isX
-    ? '../../lib/arkts/uni-api-exports-x.json'
-    : '../../lib/arkts/uni-api-exports.json'
-  const externalModuleExportsPath = isX
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
+  if (isDom2) {
+    // dom2 特有
+    runtimeExports.push(['UniVueElement'])
+  }
+
+  const externalModuleExportsPath = isDom2
+    ? '../../lib/arkts/external-module-exports-dom2.json'
+    : isX
     ? '../../lib/arkts/external-module-exports-x.json'
     : '../../lib/arkts/external-module-exports.json'
-  const internalModuleExportsPath = isX
+  const internalModuleExportsPath = isDom2
+    ? '../../lib/arkts/internal-module-exports-dom2.json'
+    : isX
     ? '../../lib/arkts/internal-module-exports-x.json'
     : '../../lib/arkts/internal-module-exports.json'
   /**
-   * uni.api.ets
-   */
-  const uniApiExports = tryRequire(uniApiExportsPath)
-  /**
    * uni-video、uni-canvas、uni-chooseLocation等内置component、api。uni_module目录下包含
    */
-  const internalModuleExports: AutoImportOptions =
-    process.env.UNI_COMPILE_TARGET === 'ext-api' || !isX
-      ? {}
-      : tryRequire(internalModuleExportsPath)
+  const internalModuleExports: AutoImportOptions = tryRequire(
+    internalModuleExportsPath
+  )
   /**
    * uni-push等外部api
    */
@@ -375,7 +385,6 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
     {
       [runtimePackageName]: runtimeExports,
     },
-    uniApiExports,
     internalModuleExports,
     externalModuleExports
   )

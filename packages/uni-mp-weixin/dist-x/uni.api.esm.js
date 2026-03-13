@@ -1,6 +1,6 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
+import { Emitter, UTS, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
-import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { findUniElement, injectHook } from 'vue';
 
 function getLocaleLanguage() {
@@ -513,10 +513,9 @@ const createCanvasContextAsync = defineAsyncApi(API_CREATE_CANVAS_CONTEXT_ASYNC,
         reject('current page invalid.');
     }
     else {
-        const query = options.component
-            ? wx.createSelectorQuery().in(options.component)
-            : wx.createSelectorQuery();
-        query
+        const query = wx.createSelectorQuery();
+        const baseQuery = options.component ? query.in(options.component) : query;
+        baseQuery
             .select('#' + options.id)
             .fields({ node: true, size: true }, () => { })
             .exec((res) => {
@@ -903,7 +902,7 @@ function createUTSJSONObjectIfNeed(obj) {
         return obj;
     }
     // TODO globalThis部分平台表现怪异
-    return globalThis.UTS.JSON.parse(JSON.stringify(obj));
+    return UTS.JSON.parse(JSON.stringify(obj));
 }
 
 const request = {
@@ -1317,13 +1316,13 @@ const getDeviceInfo = {
         let deviceBrand = getDeviceBrand(brand);
         useDeviceId()(fromRes, toRes);
         const { osName, osVersion } = getOSInfo(system, platform);
-        toRes = sortObject(extend(toRes, {
+        toRes = extend(toRes, {
             deviceType,
             deviceBrand,
             deviceModel: model,
             osName,
             osVersion,
-        }));
+        });
     },
 };
 
@@ -1333,16 +1332,16 @@ const getAppBaseInfo = {
         let _hostName = getHostName(fromRes);
         let hostLanguage = (language || '').replace(/_/g, '-');
         const parameters = {
-            hostVersion: version,
-            hostLanguage,
-            hostName: _hostName,
-            hostSDKVersion: SDKVersion,
-            hostTheme: theme,
             appId: process.env.UNI_APP_ID,
             appName: process.env.UNI_APP_NAME,
             appVersion: process.env.UNI_APP_VERSION_NAME,
             appVersionCode: process.env.UNI_APP_VERSION_CODE,
             appLanguage: getAppLanguage(hostLanguage),
+            hostVersion: version,
+            hostLanguage,
+            hostName: _hostName,
+            hostSDKVersion: SDKVersion,
+            hostTheme: theme,
             isUniAppX: true,
             uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
             uniCompileVersion: process.env.UNI_COMPILER_VERSION,
@@ -1363,10 +1362,10 @@ const getAppBaseInfo = {
 const getWindowInfo = {
     returnValue: (fromRes, toRes) => {
         addSafeAreaInsets(fromRes, toRes);
-        toRes = sortObject(extend(toRes, {
+        toRes = extend(toRes, {
             windowTop: 0,
             windowBottom: 0,
-        }));
+        });
     },
 };
 
@@ -1572,13 +1571,13 @@ function createSelectorQuery() {
     return query;
 }
 const wx$2 = initWx();
-if (!wx$2.canIUse('getAppBaseInfo')) {
+if (!wx$2.getAppBaseInfo || !wx$2.getAppBaseInfo()) {
     wx$2.getAppBaseInfo = wx$2.getSystemInfoSync;
 }
-if (!wx$2.canIUse('getWindowInfo')) {
+if (!wx$2.getWindowInfo || !wx$2.getWindowInfo()) {
     wx$2.getWindowInfo = wx$2.getSystemInfoSync;
 }
-if (!wx$2.canIUse('getDeviceInfo')) {
+if (!wx$2.getDeviceInfo || !wx$2.getDeviceInfo()) {
     wx$2.getDeviceInfo = wx$2.getSystemInfoSync;
 }
 let baseInfo = wx$2.getAppBaseInfo && wx$2.getAppBaseInfo();
@@ -1589,22 +1588,37 @@ const host = baseInfo ? baseInfo.host : null;
 const shareVideoMessage = host && host.env === 'SAAASDK'
     ? wx$2.miniapp.shareVideoMessage
     : wx$2.shareVideoMessage;
-const THEME_CALLBACK = [];
+const THEME_CALLBACK_MAP = new Map();
+let CALLBACK_ID = 0;
 const onHostThemeChange = (callback) => {
     const onHostThemeChangeCallback = (res) => {
         callback({ hostTheme: res.theme });
     };
-    const index = THEME_CALLBACK.push([callback, onHostThemeChangeCallback]) - 1;
-    wx$2.onThemeChange && wx$2.onThemeChange(onHostThemeChangeCallback);
-    return index;
+    const id = ++CALLBACK_ID;
+    THEME_CALLBACK_MAP.set(id, [callback, onHostThemeChangeCallback]);
+    if (wx$2.onThemeChange) {
+        wx$2.onThemeChange(onHostThemeChangeCallback);
+    }
+    return id;
 };
 const offHostThemeChange = (callbackId) => {
+    let id;
     if (isFunction(callbackId)) {
-        callbackId = THEME_CALLBACK.findIndex(([callback]) => callback === callbackId);
+        THEME_CALLBACK_MAP.forEach(([cb], key) => {
+            if (cb === callbackId && id === undefined) {
+                id = key;
+            }
+        });
     }
-    if (callbackId > -1) {
-        const arr = THEME_CALLBACK.splice(callbackId, 1)[0];
-        isArray(arr) && wx$2.offThemeChange && wx$2.offThemeChange(arr[1]);
+    else {
+        id = callbackId;
+    }
+    if (id !== undefined && THEME_CALLBACK_MAP.has(id)) {
+        const [, onHostThemeChangeCallback] = THEME_CALLBACK_MAP.get(id);
+        THEME_CALLBACK_MAP.delete(id);
+        if (wx$2.offThemeChange) {
+            wx$2.offThemeChange(onHostThemeChangeCallback);
+        }
     }
 };
 

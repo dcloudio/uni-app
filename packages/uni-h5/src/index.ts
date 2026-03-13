@@ -1,5 +1,11 @@
 //#if _X_
-import '@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts.js'
+import './x/polyfill/polyfill'
+export {
+  UTS,
+  UTSJSONObject,
+  UTSValueIterable,
+  UniError,
+} from '@dcloudio/uni-shared'
 //#endif
 
 export {
@@ -32,6 +38,8 @@ export {
   Textarea,
   View,
   //#if _X_
+  PageContainer,
+  Loading,
   ListView,
   ListItem,
   StickySection,
@@ -102,6 +110,8 @@ export {
   UniStickySectionElement as UniStickySectionElementImpl,
   UniStickyHeaderElement,
   UniStickyHeaderElement as UniStickyHeaderElementImpl,
+  UniPageContainerElement,
+  UniPageContainerElement as UniPageContainerElementImpl,
   //#endif
 } from '@dcloudio/uni-components'
 

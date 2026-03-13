@@ -10,11 +10,22 @@ export const defineComponent = (options: any) => {
   const rootElement: ComponentCustomOptions['rootElement'] | undefined =
     options.rootElement
   if (rootElement && typeof customElements !== 'undefined') {
-    customElements.define(
-      rootElement.name,
-      rootElement.class,
-      rootElement.options
-    )
+    let shouldDefine = true
+    if (__PLATFORM__ === 'app-ios') {
+      // 这个判断主要是解决iOS平台使用 utssdk 定义 Element 时的兼容性问题
+      // iOS 平台下通过 utssdk 定义的 Element 已经被框架UniExtElement注册过了，不需要重复注册
+      // 且 utssdk 导出的这个 Element 类本身也不能被初始化为自定义元素，否则会报错
+      shouldDefine = !String(rootElement.class).includes(
+        'function ProxyObject()'
+      )
+    }
+    if (shouldDefine) {
+      customElements.define(
+        rootElement.name,
+        rootElement.class,
+        rootElement.options
+      )
+    }
   }
   return origDefineComponent(options)
 }
@@ -29,16 +40,19 @@ export {
   // shallowSsrRef,
   // uni-app lifecycle
   // App and Page
+
   onShow,
   onHide,
   // App
+  onAppShow,
+  onAppHide,
   onLaunch,
   onError,
   onThemeChange,
   // onKeyboardHeightChange,
   onPageNotFound,
   onUnhandledRejection,
-  // onLastPageBackPress,
+  onLastPageBackPress,
   onExit,
   // Page
   onPageShow,

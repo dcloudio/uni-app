@@ -777,37 +777,6 @@
   function includeBooleanAttr(value) {
     return !!value || value === "";
   }
-  var _strictMethod;
-  var hasRequired_strictMethod;
-  function require_strictMethod() {
-    if (hasRequired_strictMethod)
-      return _strictMethod;
-    hasRequired_strictMethod = 1;
-    var fails2 = _fails;
-    _strictMethod = function(method, arg) {
-      return !!method && fails2(function() {
-        arg ? method.call(null, function() {
-        }, 1) : method.call(null);
-      });
-    };
-    return _strictMethod;
-  }
-  var $export$2 = _export;
-  var aFunction$2 = _aFunction;
-  var toObject = _toObject;
-  var fails = _fails;
-  var $sort = [].sort;
-  var test = [1, 2, 3];
-  $export$2($export$2.P + $export$2.F * (fails(function() {
-    test.sort(void 0);
-  }) || !fails(function() {
-    test.sort(null);
-  }) || !require_strictMethod()($sort)), "Array", {
-    // 22.1.3.25 Array.prototype.sort(comparefn)
-    sort: function sort(comparefn) {
-      return comparefn === void 0 ? $sort.call(toObject(this)) : $sort.call(toObject(this), aFunction$2(comparefn));
-    }
-  });
   var LINEFEED = "\n";
   var PRIMARY_COLOR = "#007aff";
   var SCHEME_RE = /^([a-z-]+:)?\/\//i;
@@ -819,6 +788,16 @@
   var ON_PAGE_SCROLL = "onPageScroll";
   var ON_REACH_BOTTOM = "onReachBottom";
   var ON_WXS_INVOKE_CALL_METHOD = "onWxsInvokeCallMethod";
+  var lastLogTime = 0;
+  function formatLog(module) {
+    var now = Date.now();
+    var diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
+      args[_key2 - 1] = arguments[_key2];
+    }
+    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]：").concat(args.map((arg) => JSON.stringify(arg)).join(" "));
+  }
   function cache(fn) {
     var cache2 = /* @__PURE__ */ Object.create(null);
     return (str) => {
@@ -840,8 +819,8 @@
     var res;
     return function() {
       if (fn) {
-        for (var _len = arguments.length, args = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
-          args[_key2] = arguments[_key2];
+        for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
+          args[_key3] = arguments[_key3];
         }
         res = fn.apply(ctx2, args);
         fn = null;
@@ -864,16 +843,6 @@
     }
     return getValueByDataPath(obj[key2], parts.slice(1).join("."));
   }
-  var lastLogTime = 0;
-  function formatLog(module) {
-    var now = Date.now();
-    var diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
-      args[_key3 - 1] = arguments[_key3];
-    }
-    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]：").concat(args.map((arg) => JSON.stringify(arg)).join(" "));
-  }
   function formatKey(key2) {
     return camelize(key2.substring(5));
   }
@@ -886,7 +855,9 @@
         var dataset = this.__uniDataset || (this.__uniDataset = {});
         dataset[formatKey(key2)] = value;
       }
-      setAttribute.call(this, key2, value);
+      if (!/^\d/.test(key2)) {
+        setAttribute.call(this, key2, value);
+      }
     };
     var removeAttribute = prototype.removeAttribute;
     prototype.removeAttribute = function(key2) {
@@ -1653,11 +1624,12 @@
     var newValue = Number(value);
     return isNaN(newValue) ? defaultValue : newValue;
   }
+  var isApple = () => /^Apple/.test(navigator.vendor);
   function getWindowWidth() {
-    var screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+    var screenFix = isApple() && typeof window.orientation === "number";
     var landscape = screenFix && Math.abs(window.orientation) === 90;
     var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-    var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+    var windowWidth = screenFix ? Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth : Math.min(window.innerWidth, document.documentElement.clientWidth);
     return windowWidth;
   }
   function useRem() {
@@ -1673,7 +1645,44 @@
     document.addEventListener("DOMContentLoaded", updateRem);
     window.addEventListener("load", updateRem);
     window.addEventListener("resize", updateRem);
+    if (isApple()) {
+      window.addEventListener("orientationchange", () => {
+        updateRem();
+        setTimeout(updateRem, 50);
+      });
+    }
   }
+  var _strictMethod;
+  var hasRequired_strictMethod;
+  function require_strictMethod() {
+    if (hasRequired_strictMethod)
+      return _strictMethod;
+    hasRequired_strictMethod = 1;
+    var fails2 = _fails;
+    _strictMethod = function(method, arg) {
+      return !!method && fails2(function() {
+        arg ? method.call(null, function() {
+        }, 1) : method.call(null);
+      });
+    };
+    return _strictMethod;
+  }
+  var $export$2 = _export;
+  var aFunction$2 = _aFunction;
+  var toObject = _toObject;
+  var fails = _fails;
+  var $sort = [].sort;
+  var test = [1, 2, 3];
+  $export$2($export$2.P + $export$2.F * (fails(function() {
+    test.sort(void 0);
+  }) || !fails(function() {
+    test.sort(null);
+  }) || !require_strictMethod()($sort)), "Array", {
+    // 22.1.3.25 Array.prototype.sort(comparefn)
+    sort: function sort(comparefn) {
+      return comparefn === void 0 ? $sort.call(toObject(this)) : $sort.call(toObject(this), aFunction$2(comparefn));
+    }
+  });
   var activeEffectScope;
   class EffectScope {
     constructor() {
@@ -14647,7 +14656,7 @@
     var state = {};
     function initKeyboard(el) {
       var focus;
-      var isApple = computed(() => String(navigator.vendor).indexOf("Apple") === 0);
+      var isApple2 = computed(() => String(navigator.vendor).indexOf("Apple") === 0);
       var keyboardChange = () => {
         trigger2("keyboardheightchange", {}, {
           height: keyboardHeight,
@@ -14717,12 +14726,12 @@
             }, 300);
           }
         }
-        if (isApple.value) {
+        if (isApple2.value) {
           document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
         }
       };
       el.addEventListener("blur", () => {
-        if (isApple.value) {
+        if (isApple2.value) {
           el.blur();
         }
         focus = false;
@@ -15301,6 +15310,9 @@
                 value = false
               } = options;
               range = quill.getSelection(true);
+              if (!name) {
+                break;
+              }
               var format = quill.getFormat(range)[name] || false;
               if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
                 value = !format;
@@ -16091,11 +16103,17 @@
       trigger: trigger2
     };
   }
-  function useValueSync(props2, state, emit2, trigger2) {
+  function useValueSync(props2, state, emit2, trigger2, fieldRef) {
+    var lastUserInputValue = null;
     var valueChangeFn = null;
     {
       valueChangeFn = debounce((val) => {
-        state.value = getValueString(val, props2.type);
+        var fieldElement = fieldRef.value;
+        var newValue = getValueString(val, props2.type);
+        if (fieldElement && document.activeElement === fieldElement && newValue === lastUserInputValue) {
+          return;
+        }
+        state.value = newValue;
       }, 100, {
         setTimeout,
         clearTimeout
@@ -16111,6 +16129,7 @@
     }, 100);
     var triggerInput = (event, detail, force) => {
       valueChangeFn.cancel();
+      lastUserInputValue = detail.value;
       triggerInputFn(event, detail);
       if (force) {
         triggerInputFn.flush();
@@ -16274,7 +16293,7 @@
     } = useBase(props2, rootRef, emit2);
     var {
       triggerInput
-    } = useValueSync(props2, state, emit2, trigger2);
+    } = useValueSync(props2, state, emit2, trigger2, fieldRef);
     useAutoFocus(props2, fieldRef);
     useKeyboard(props2, fieldRef, trigger2);
     var {
@@ -16291,16 +16310,6 @@
       trigger: trigger2
     };
   }
-  var props$n = /* @__PURE__ */ extend({}, props$o, {
-    placeholderClass: {
-      type: String,
-      default: "input-placeholder"
-    },
-    textContentType: {
-      type: String,
-      default: ""
-    }
-  });
   var resolveDigitDecimalPointDeleteContentBackward = once(() => {
     {
       return false;
@@ -16313,7 +16322,7 @@
           state.value = input.value = cache2.value = cache2.value.slice(0, -1);
           return false;
         }
-        if (cache2.value && !cache2.value.includes(".")) {
+        if (cache2.value && !cache2.value.includes(".") && cache2.value === input.value) {
           cache2.value += ".";
           if (resetCache) {
             resetCache.fn = () => {
@@ -16334,6 +16343,16 @@
       }
     }
   }
+  var props$n = /* @__PURE__ */ extend({}, props$o, {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    textContentType: {
+      type: String,
+      default: ""
+    }
+  });
   function isPaste(event) {
     return event.inputType === "insertFromPaste";
   }
@@ -16378,6 +16397,9 @@
           case "digit":
             type2 = "number";
             break;
+          case "none":
+            type2 = "text";
+            break;
           default:
             type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
             break;
@@ -16391,9 +16413,18 @@
         return AUTOCOMPLETES[index2];
       });
       var inputmode = computed(() => {
-        if (props2.inputmode) {
+        if (props2.inputmode !== void 0) {
           return props2.inputmode;
         }
+        if (INPUT_MODES.includes(props2.type)) {
+          return props2.type;
+        }
+        var inputmodeMap = {
+          number: "numeric",
+          digit: "decimal",
+          idcard: "text"
+        };
+        return inputmodeMap[props2.type];
       });
       var cache2 = useCache(props2, type);
       var resetCache = {
@@ -16484,12 +16515,13 @@
           "style": props2.cursorColor ? {
             caretColor: props2.cursorColor
           } : {},
+          "inputmode": inputmode.value,
           "onFocus": (event) => event.target.blur()
-        }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
+        }, null, 44, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : createVNode("input", {
           "key": "input",
           "ref": fieldRef,
           "value": state.value,
-          "onInput": (event) => {
+          "onInput": withModifiers((event) => {
             var value = event.target.value.toString();
             if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
               if (isPaste(event)) {
@@ -16497,8 +16529,11 @@
               }
               return;
             }
+            if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+              return;
+            }
             state.value = value;
-          },
+          }, ["stop"]),
           "disabled": !!props2.disabled,
           "type": type.value,
           "maxlength": state.maxlength,
@@ -20510,6 +20545,12 @@
       var sliderValueRef = ref(null);
       var sliderHandleRef = ref(null);
       var sliderValue = ref(Number(props2.value));
+      if (sliderValue.value < Number(props2.min)) {
+        sliderValue.value = Number(props2.min);
+      }
+      if (sliderValue.value > Number(props2.max)) {
+        sliderValue.value = Number(props2.max);
+      }
       watch(() => props2.value, (val) => {
         sliderValue.value = Number(val);
       });
@@ -20594,6 +20635,13 @@
     return state;
   }
   function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger2) {
+    var truthStep = computed(() => {
+      var step2 = Number(props2.step);
+      if (isNaN(step2)) {
+        return 1;
+      }
+      return step2;
+    });
     var _onClick = ($event) => {
       if (props2.disabled) {
         return;
@@ -20603,11 +20651,8 @@
         value: sliderValue.value
       });
     };
-    var _filterValue = (e2) => {
-      var max2 = Number(props2.max);
-      var min2 = Number(props2.min);
-      var step2 = Number(props2.step);
-      return e2 < min2 ? min2 : e2 > max2 ? max2 : computeController.mul.call(Math.round((e2 - min2) / step2), step2) + min2;
+    var _filterValue = (min2, step2, value) => {
+      return Math.round((value - min2) / step2) * step2 + min2;
     };
     var _onUserChangedValue = (e2) => {
       var max2 = Number(props2.max);
@@ -20619,8 +20664,9 @@
       var slider = sliderRef.value;
       var offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
       var boxLeft = slider.getBoundingClientRect().left;
-      var value = (e2.x - boxLeft) * (max2 - min2) / offsetWidth + min2;
-      sliderValue.value = _filterValue(value);
+      var proportion = (e2.x - boxLeft) / offsetWidth;
+      var stepDecimal = (truthStep.value + "").split(".")[1];
+      sliderValue.value = parseFloat(_filterValue(min2, truthStep.value, lerp(min2, max2, proportion)).toFixed(stepDecimal ? stepDecimal.length : 0));
     };
     var _onTrack = (e2) => {
       if (!props2.disabled) {
@@ -20656,22 +20702,10 @@
       _onTrack
     };
   }
-  var computeController = {
-    mul: function(arg) {
-      var m = 0;
-      var s1 = this.toString();
-      var s2 = arg.toString();
-      try {
-        m += s1.split(".")[1].length;
-      } catch (e2) {
-      }
-      try {
-        m += s2.split(".")[1].length;
-      } catch (e2) {
-      }
-      return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-    }
-  };
+  function lerp(min2, max2, t2) {
+    t2 = Math.min(1, Math.max(0, t2));
+    return min2 * (1 - t2) + max2 * t2;
+  }
   var props$h = {
     indicatorDots: {
       type: [Boolean, String],
@@ -20770,6 +20804,7 @@
     return state;
   }
   function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger2) {
+    var _ws$getStyle;
     function cancelSchedule() {
       if (timer) {
         clearTimeout(timer);
@@ -21057,12 +21092,17 @@
     }
     watch(() => props2.autoplay && !state.userTracking, inintAutoplay);
     inintAutoplay(props2.autoplay && !state.userTracking);
+    var debouncedTrackEndFallback = null;
+    var ws = plus.webview.currentWebview();
+    ws && ((_ws$getStyle = ws.getStyle()) === null || _ws$getStyle === void 0 || (_ws$getStyle = _ws$getStyle.pullToRefresh) === null || _ws$getStyle === void 0 ? void 0 : _ws$getStyle.style);
     onMounted(() => {
       var userDirectionChecked = false;
       var contentTrackSpeed = 0;
       var contentTrackT = 0;
       function handleTrackStart() {
+        var _debouncedTrackEndFal;
         cancelSchedule();
+        (_debouncedTrackEndFal = debouncedTrackEndFallback) === null || _debouncedTrackEndFal === void 0 || _debouncedTrackEndFal.cancel();
         contentTrackViewport = viewportPosition;
         contentTrackSpeed = 0;
         contentTrackT = Date.now();
@@ -21102,6 +21142,8 @@
         }
       }
       function handleTrackEnd(isCancel) {
+        var _debouncedTrackEndFal2;
+        (_debouncedTrackEndFal2 = debouncedTrackEndFallback) === null || _debouncedTrackEndFal2 === void 0 || _debouncedTrackEndFal2.cancel();
         state.userTracking = false;
         var t2 = contentTrackSpeed / Math.abs(contentTrackSpeed);
         var n = 0;
@@ -21110,7 +21152,7 @@
         }
         var current = normalizeCurrentValue(viewportPosition + n);
         if (isCancel) {
-          updateViewport(contentTrackViewport);
+          animateViewport(state.current, "", 0);
         } else {
           currentChangeSource = "touch";
           state.current = current;
@@ -21156,7 +21198,7 @@
             return false;
           }
         }
-      });
+      }, true);
     });
     onUnmounted(() => {
       cancelSchedule();
@@ -21748,7 +21790,7 @@
     if (!name) {
       return;
     }
-    registerViewMethod(getCurrentPageId(), name, (_ref, resolve) => {
+    registerViewMethod(pageId || getCurrentPageId(), name, (_ref, resolve) => {
       var {
         type,
         data
@@ -21760,22 +21802,23 @@
     if (!name) {
       return;
     }
-    unregisterViewMethod(getCurrentPageId(), name);
+    unregisterViewMethod(pageId || getCurrentPageId(), name);
   }
   function useSubscribe(callback, name, multiple, pageId) {
     var instance = getCurrentInstance();
     var vm = instance.proxy;
+    pageId = pageId == null ? useCurrentPageId() : pageId;
     onMounted(() => {
-      addSubscribe(name || normalizeEvent(vm), callback);
+      addSubscribe(name || normalizeEvent(vm), callback, pageId);
       {
         watch(() => vm.id, (value, oldValue) => {
-          addSubscribe(normalizeEvent(vm, value), callback);
+          addSubscribe(normalizeEvent(vm, value), callback, pageId);
           removeSubscribe(oldValue && normalizeEvent(vm, oldValue));
         });
       }
     });
     onBeforeUnmount(() => {
-      removeSubscribe(name || normalizeEvent(vm));
+      removeSubscribe(name || normalizeEvent(vm), pageId);
     });
   }
   var index$2 = 0;
@@ -22346,6 +22389,9 @@
           },
           setPullToRefresh(options) {
             invokeHarmonyChannel("setPullToRefresh", [options]);
+          },
+          setStyle(options) {
+            invokeHarmonyChannel("setStyle", [options]);
           }
         }, invokeHarmonyChannel("currentWebview"));
       },
@@ -22468,9 +22514,15 @@
           case "loadUrl":
             resolve(embed[HarmonyNativeMethodMap[methodName]](data.url, data.headers));
             break;
-          case "loadData":
-            resolve(embed[HarmonyNativeMethodMap[methodName]](data.data, data.mimeType, data.encoding, data.baseUrl));
+          case "loadData": {
+            var _data$encoding;
+            var _data = data.data;
+            if (((_data$encoding = data.encoding) === null || _data$encoding === void 0 ? void 0 : _data$encoding.toLowerCase()) !== "base64") {
+              _data = _data.replace(/#/g, "%23");
+            }
+            resolve(embed[HarmonyNativeMethodMap[methodName]](_data, data.mimeType, data.encoding, data.baseUrl));
             break;
+          }
           case "clear":
             resolve(embed[HarmonyNativeMethodMap[methodName]](data.clearRom));
             break;
@@ -22573,7 +22625,7 @@
     }
     return str;
   }
-  function useGesture(props2, videoRef, fullscreenState) {
+  function useGesture(props2, videoState, videoRef, fullscreenState) {
     var state = reactive({
       seeking: false,
       gestureType: "none",
@@ -22676,8 +22728,7 @@
       state.gestureType = "none";
     }
     function changeProgress(x) {
-      var video = videoRef.value;
-      var duration = video.duration;
+      var duration = videoState.currentDuration;
       var currentTimeNew = x / 600 * duration + state.currentTimeOld;
       if (currentTimeNew < 0) {
         currentTimeNew = 0;
@@ -22790,6 +22841,7 @@
       playing: false,
       currentTime: 0,
       duration: 0,
+      currentDuration: 0,
       progress: 0,
       buffered: 0,
       muted,
@@ -22807,6 +22859,11 @@
     watch(() => muted.value, (muted2) => {
       var video = videoRef.value;
       video.muted = muted2;
+    });
+    watch([() => state.duration, () => props2.duration], () => {
+      var _duration = Number(props2.duration);
+      isNaN(_duration) && (_duration = 0);
+      state.currentDuration = _duration > 0 ? _duration : state.duration;
     });
     function onDurationChange(_ref) {
       var {
@@ -22943,7 +23000,7 @@
       var progress = 0;
       if (x >= 0 && x <= w) {
         progress = x / w;
-        seek(videoState.duration * progress);
+        seek(videoState.currentDuration * progress);
       }
     }
     function toggleControls() {
@@ -22998,7 +23055,7 @@
           progress = 100;
         }
         videoState.progress = progress;
-        seeking === null || seeking === void 0 || seeking(videoState.duration * progress / 100);
+        seeking === null || seeking === void 0 || seeking(videoState.currentDuration * progress / 100);
         state.seeking = true;
         event.preventDefault();
         event.stopPropagation();
@@ -23010,7 +23067,7 @@
           if (!moveOnce) {
             event.preventDefault();
             event.stopPropagation();
-            seek(videoState.duration * videoState.progress / 100);
+            seek(videoState.currentDuration * videoState.progress / 100);
           }
           state.touching = false;
         }
@@ -23156,10 +23213,15 @@
         controlsState.controlsVisible = val;
       }
     });
-    watch([() => videoState.currentTime, () => {
-      props$b.duration;
-    }], () => {
-      videoState.progress = videoState.currentTime / videoState.duration * 100;
+    watch([() => videoState.currentTime, () => videoState.currentDuration], () => {
+      if (videoState.currentDuration > 0) {
+        videoState.progress = videoState.currentTime / videoState.currentDuration * 100;
+      } else {
+        videoState.progress = 0;
+      }
+      videoState.progress > 100 && (videoState.progress = 100);
+    }, {
+      immediate: true
     });
     watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
       videoState.currentTime = currentTimeNew;
@@ -23275,7 +23337,6 @@
       } = useAttrs({
         excludeListeners: true
       });
-      useI18n();
       initI18nVideoMsgsOnce();
       var {
         videoRef,
@@ -23316,7 +23377,7 @@
         onTouchstart,
         onTouchend,
         onTouchmove
-      } = useGesture(props2, videoRef, fullscreenState);
+      } = useGesture(props2, videoState, videoRef, fullscreenState);
       var {
         state: controlsState,
         progressRef,
@@ -23354,7 +23415,10 @@
           "poster": props2.poster,
           "autoplay": !!props2.autoplay
         }, videoAttrs.value, {
-          "class": "uni-video-video",
+          "class": {
+            "uni-video-video": true,
+            "uni-video-video-fullscreen": fullscreenState.fullscreen
+          },
           "webkit-playsinline": true,
           "playsinline": true,
           "onDurationchange": onDurationChange,
@@ -23422,7 +23486,7 @@
           "class": "uni-video-inner"
         }, null)], 6)], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
           "class": "uni-video-duration"
-        }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
+        }, [formatTime(videoState.currentDuration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
           "class": {
             "uni-video-icon": true,
             "uni-video-danmu-button": true,
@@ -23475,7 +23539,7 @@
           "class": "uni-video-toast-title"
         }, [createVNode("span", {
           "class": "uni-video-toast-title-current-time"
-        }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), createVNode("div", {
+        }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), createVNode("div", {
           "class": "uni-video-slots"
         }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
       };

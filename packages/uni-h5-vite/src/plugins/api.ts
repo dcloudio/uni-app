@@ -53,7 +53,12 @@ export function uniApiPlugin(): Plugin {
         const filesNames = Object.keys(bundle)
         for (const fileName of filesNames) {
           const chunk = bundle[fileName] as OutputChunk
-          if (chunk && chunk.type === 'chunk' && chunk.code) {
+          if (
+            chunk &&
+            chunk.type === 'chunk' &&
+            chunk.code &&
+            !isEnableFacialRecognition()
+          ) {
             setEnableFacialRecognition(
               checkFacialRecognition(chunk.code) || checkGetMetaInfo(chunk.code)
             )

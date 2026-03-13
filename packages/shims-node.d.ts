@@ -43,6 +43,8 @@ declare namespace NodeJS {
     __VUE_DEVTOOLS_PORT__: string
 
     UNI_APP_X?: 'true' | 'false'
+    UNI_APP_X_VAPOR?: 'true' | 'false'
+    UNI_APP_STYLE_ISOLATION_VERSION?: '2'
 
     HX_Version: string
 
@@ -60,6 +62,7 @@ declare namespace NodeJS {
     UNI_MODULES_ENCRYPT_CACHE_DIR?: string
 
     UNI_APP_HARMONY_PROJECT_PATH?: string
+    UNI_APP_HARMONY_RUN_MODE?: 'debug' | 'release'
 
     UNI_COMPILE_EXT_API_INPUT?: string
     UNI_APP_NEXT_WORKSPACE?: string
@@ -79,6 +82,7 @@ declare namespace NodeJS {
     UNI_APP_PLATFORM?: 'android' | 'ios' | 'harmony' // 运行时，可能传入了 UNI_APP_PLATFORM = 'android'|'ios'|'harmony'
     UNI_APP_PRODUCTION_TYPE?: 'WGT' // 发行类型
     UNI_APP_X_CACHE_DIR: string // 当前运行/发行平台的缓存目录，如：unpackage/cache/.app-android
+    UNI_APP_X_DOM2?: 'true' // 是否 dom2 模式
     UNI_CLI_LAUNCH_PAGE_PATH?: string // 开发阶段，传入指定入口页面
     UNI_CLI_LAUNCH_PAGE_QUERY?: string // 开发阶段，传入指定入口页面参数
     UNI_SCRIPT?: string // 指定自定义平台，package.json->uni-app->scripts
@@ -115,7 +119,6 @@ declare namespace NodeJS {
 
     UNI_CONSOLE_KEEP_ORIGINAL: string
     UNI_CONSOLE_WEBVIEW: string
-    UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE: string
   }
 }
 

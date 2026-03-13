@@ -182,6 +182,41 @@ c
 }
 `;
 
+exports[`preprocess js #ifdef match with \\n 1`] = `
+{
+  "code": "a
+
+
+b
+
+
+c
+",
+  "isInPreprocessor": [Function],
+  "map": SourceMap {
+    "file": "test",
+    "mappings": "AAAA,CAAC;AAED;AACA;AACA,CAAC;AACD;AACA;AAEA,CAAC;",
+    "names": [],
+    "sources": [
+      "test",
+    ],
+    "sourcesContent": [
+      "a
+// #ifdef B
+
+
+b
+
+
+// #endif
+c
+",
+    ],
+    "version": 3,
+  },
+}
+`;
+
 exports[`preprocess js #ifdef nesting match 1`] = `
 {
   "code": "a

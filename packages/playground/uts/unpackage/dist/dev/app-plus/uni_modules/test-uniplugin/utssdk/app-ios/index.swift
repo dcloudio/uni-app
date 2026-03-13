@@ -86,7 +86,7 @@ public class Test : NSObject, IUTSSourceMap {
     public func __$getOriginalPosition() -> UTSSourceMapPosition? {
         return UTSSourceMapPosition("Test", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 60, 14)
     }
-    override public init(){
+    public override init(){
         Test1()
     }
     public func test() -> String? {

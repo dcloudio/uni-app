@@ -18,6 +18,7 @@ import {
   isMemberExpression,
 } from '@vue/compiler-core'
 import { camelize, toHandlerKey } from '@vue/shared'
+import crypto from 'crypto'
 import { genExpr } from '..'
 import { V_ON } from '../runtimeHelpers'
 import type { TransformContext } from '../transform'
@@ -217,20 +218,27 @@ export function wrapperVOn(
       }
     }
   }
+  // 给事件添加一标识，避免小程序事件覆盖问题 (question/198957)
+  const eventHashId = crypto
+    .createHash('sha256')
+    .update(JSON.stringify(value), 'utf8')
+    .digest('hex')
+    .slice(0, 2)
+  if (keys.length === 0) {
+    keys.push(`, "${eventHashId}"`)
+  }
   const newExpr = createCompoundExpression([
     `${context.helperString(V_ON)}(`,
     value,
     ...keys,
     `)`,
   ])
-  // 严格限制生效范围，仅当有keys时，才保存原始事件表达式
-  if (keys.length) {
-    // @ts-expect-error 内部 parseVOn 时使用
-    newExpr.__withoutKeysVOnExpr = createCompoundExpression([
-      `${context.helperString(V_ON)}(`,
-      value,
-      `)`,
-    ])
-  }
+  // 保存原始事件表达式
+  // @ts-expect-error 内部 parseVOn 时使用
+  newExpr.__withoutKeysVOnExpr = createCompoundExpression([
+    `${context.helperString(V_ON)}(`,
+    value,
+    `)`,
+  ])
   return newExpr
 }

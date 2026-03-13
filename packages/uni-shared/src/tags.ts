@@ -125,7 +125,10 @@ export const UVUE_BUILT_IN_TAGS = [
   'list-item',
   'swiper',
   'swiper-item',
-  'rich-text',
+  // 已经交由 vue 实现
+  // 'rich-text',
+  // android 平台 type=native 时原生实现
+  'rich-text-native',
   'sticky-view',
   'sticky-header',
   'sticky-section',
@@ -156,11 +159,23 @@ export const UVUE_BUILT_IN_TAGS = [
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
+  'page-container',
   'list-view',
   'list-item',
   'sticky-section',
   'sticky-header',
   'cloud-db-element',
+  'loading-element',
+  'loading',
+].map((tag) => 'uni-' + tag)
+
+export const UVUE_MP_BUILT_IN_TAGS = [
+  'list-view',
+  'list-item',
+  'sticky-section',
+  'sticky-header',
+  'cloud-db-element',
+  'loading-element',
 ].map((tag) => 'uni-' + tag)
 
 export const UVUE_IOS_BUILT_IN_TAGS = [
@@ -207,6 +222,32 @@ export function isBuiltInComponent(tag: string) {
   )
 }
 
+export function isWebBuiltInComponent(tag: string) {
+  if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
+    return false
+  }
+  // h5 平台会被转换为 v-uni-
+  const realTag = 'uni-' + tag.replace('v-uni-', '')
+  // TODO 区分x和非x
+  return (
+    BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
+    UVUE_WEB_BUILT_IN_TAGS.indexOf(realTag) !== -1
+  )
+}
+
+export function isMPBuiltInComponent(tag: string) {
+  if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
+    return false
+  }
+  // h5 平台会被转换为 v-uni-
+  const realTag = 'uni-' + tag.replace('v-uni-', '')
+  // TODO 区分x和非x
+  return (
+    BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
+    UVUE_MP_BUILT_IN_TAGS.indexOf(realTag) !== -1
+  )
+}
+
 export function isH5CustomElement(tag: string, isX = false) {
   if (isX && UVUE_WEB_BUILT_IN_TAGS.indexOf(tag) !== -1) {
     return true
@@ -222,7 +263,7 @@ export function isH5NativeTag(tag: string) {
   return (
     tag !== 'head' &&
     (isHTMLTag(tag) || isSVGTag(tag)) &&
-    !isBuiltInComponent(tag)
+    !isWebBuiltInComponent(tag)
   )
 }
 
@@ -263,6 +304,10 @@ const UVUE_BUILT_IN_EASY_COMPONENTS = [
   'camera',
   'live-player',
   'live-pusher',
+  'loading',
+  'web-view',
+  'rich-text',
+  'page-container',
 ]
 
 export function isAppUVueBuiltInEasyComponent(tag: string) {
@@ -295,10 +340,19 @@ export function isAppUVueNativeTag(tag: string) {
   return false
 }
 
+// dom1 ios端 vue 实现的组件
+const IOS_DOM1_VUE_COMPONENTS = ['match-media']
+
 export function isAppIOSUVueNativeTag(tag: string) {
   // 前端实现的内置组件都会注册一个根组件
   if (tag.startsWith('uni-') && tag.endsWith('-element')) {
     return true
+  }
+  if (IOS_DOM1_VUE_COMPONENTS.includes(tag)) {
+    return false
+  }
+  if (UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag)) {
+    return false
   }
   if (NVUE_BUILT_IN_TAGS.includes(tag)) {
     return true
@@ -331,9 +385,16 @@ export function isAppIOSUVueNativeTag(tag: string) {
   return false
 }
 
+const UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY = [
+  'video',
+  'map',
+  'loading',
+  'rich-text',
+]
+
 export function isAppHarmonyUVueNativeTag(tag: string) {
   // video 目前是easycom实现的
-  if (tag === 'video' || tag === 'map') {
+  if (UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY.includes(tag)) {
     return false
   }
   // 前端实现的内置组件都会注册一个根组件
@@ -378,7 +439,7 @@ export function isMiniProgramUVueNativeTag(tag: string) {
   if (tag.startsWith('uni-') && tag.endsWith('-element')) {
     return true
   }
-  return isBuiltInComponent(tag)
+  return isMPBuiltInComponent(tag)
 }
 
 export function createIsCustomElement(tags: string[] = []) {

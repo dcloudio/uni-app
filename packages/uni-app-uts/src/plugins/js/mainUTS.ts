@@ -14,19 +14,24 @@ export function uniAppJsEngineMainPlugin(): Plugin {
     apply: 'build',
     async transform(code, id) {
       if (normalizePath(id) === mainUTS) {
+        const styleIsolationCode =
+          process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+          process.env.UNI_APP_X_DOM2 !== 'true'
+            ? 'enableStyleIsolation();\n'
+            : ''
         return {
           code: `
-          import './${MANIFEST_JSON_UTS}'
-          import './${PAGES_JSON_UTS}'
-          const __global__ = typeof globalThis === 'undefined' ? Function('return this')() : globalThis
-          __global__.__uniX = true
-          ${code}
-          ${
-            process.env.UNI_UTS_PLATFORM === 'app-harmony'
-              ? '__global__.__mount__ = () => {createApp().app.mount("#app");}'
-              : 'createApp().app.mount("#app");'
-          }
-          `,
+import './${MANIFEST_JSON_UTS}'
+import './${PAGES_JSON_UTS}'
+${styleIsolationCode}const __global__ = typeof globalThis === 'undefined' ? Function('return this')() : globalThis
+__global__.__uniX = true
+${code}
+${
+  process.env.UNI_UTS_PLATFORM === 'app-harmony'
+    ? '__global__.__mount__ = () => {createApp().app.mount("#app");}'
+    : 'createApp().app.mount("#app");'
+}
+`,
           map: {
             mappings: '',
           },

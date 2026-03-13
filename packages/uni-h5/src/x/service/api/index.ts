@@ -72,7 +72,7 @@ export * from '../../../service/api/ui/startPullDownRefresh'
 export * from '../../../service/api/ui/stopPullDownRefresh'
 export * from '../../../service/api/ui/tabBar'
 export * from '../../../service/api/ui/window'
-export * from '../../../service/api/ui/getElementById'
+export * from './element/getElementById'
 
 export * from '../../../service/api/plugin/facialVerify'
 

@@ -1,6 +1,7 @@
 import { isFunction, isString } from '@vue/shared'
 import {
   isAndroid,
+  isHarmony,
   isIOS,
   isIPadOS,
   isLinux,
@@ -60,6 +61,14 @@ export function getBrowserInfo() {
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/)
     if (osversionFind) {
       osversion = osversionFind[1].replace(/_/g, '.')
+    }
+    // iOS 18+ 需要从 Version/ 中读取真实版本号
+    const iosVersion = osversion.split('.')[0]
+    if (Number(iosVersion) >= 18) {
+      const versionMatch = ua.match(/Version\/([\d\.]+)/)
+      if (versionMatch) {
+        osversion = versionMatch[1]
+      }
     }
     const modelFind = ua.match(/\(([a-zA-Z]+);/)
     if (modelFind) {
@@ -176,6 +185,14 @@ export function getBrowserInfo() {
         }
       }
     }
+  } else if (isHarmony) {
+    osname = 'Harmony'
+    deviceType = 'phone'
+    const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/)
+    if (osversionFind) {
+      osversion = osversionFind[1]
+    }
+    model = ''
   } else {
     osname = 'Other'
     osversion = '0'

@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "3.0.0-4080720251210001",
+  "version": "3.0.0-alpha-5000320260310001",
   "workspaces": [
     "packages/*"
   ],
@@ -107,7 +107,7 @@
     "simple-git-hooks": "^2.8.0",
     "terser": "^5.4.0",
     "ts-jest": "^29.1.0",
-    "typescript": "5.3.2",
+    "typescript": "5.4.2",
     "vite": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:",

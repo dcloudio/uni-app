@@ -4,7 +4,7 @@ import {
 } from '@dcloudio/uni-mp-core'
 import { mocks } from '../runtime/parseOptions'
 import { initWx } from './wx'
-import { isArray, isFunction } from '@vue/shared'
+import { isFunction } from '@vue/shared'
 
 export const getProvider = initGetProvider({
   oauth: ['weixin'],
@@ -48,16 +48,16 @@ export function createSelectorQuery() {
 
 const wx = initWx()
 
-if (!__GLOBAL__.canIUse('getAppBaseInfo')) {
-  __GLOBAL__.getAppBaseInfo = __GLOBAL__.getSystemInfoSync
+if (!wx.getAppBaseInfo || !wx.getAppBaseInfo()) {
+  wx.getAppBaseInfo = wx.getSystemInfoSync
 }
 
-if (!__GLOBAL__.canIUse('getWindowInfo')) {
-  __GLOBAL__.getWindowInfo = __GLOBAL__.getSystemInfoSync
+if (!wx.getWindowInfo || !wx.getWindowInfo()) {
+  wx.getWindowInfo = wx.getSystemInfoSync
 }
 
-if (!__GLOBAL__.canIUse('getDeviceInfo')) {
-  __GLOBAL__.getDeviceInfo = __GLOBAL__.getSystemInfoSync
+if (!wx.getDeviceInfo || !wx.getDeviceInfo()) {
+  wx.getDeviceInfo = wx.getSystemInfoSync
 }
 
 let baseInfo = wx.getAppBaseInfo && wx.getAppBaseInfo()
@@ -71,30 +71,51 @@ export const shareVideoMessage =
     : wx.shareVideoMessage
 
 //#if _X_
-const THEME_CALLBACK: Array<
-  [HostThemeChangeCallback, UniApp.OnThemeChangeCallback]
-> = []
-
 type HostThemeChangeCallback = (res: { hostTheme: string }) => void
+
+const THEME_CALLBACK_MAP = new Map<
+  number,
+  [HostThemeChangeCallback, UniApp.OnThemeChangeCallback]
+>()
+let CALLBACK_ID = 0
+
 export const onHostThemeChange = (callback: HostThemeChangeCallback) => {
   const onHostThemeChangeCallback: UniApp.OnThemeChangeCallback = (res) => {
     callback({ hostTheme: res.theme })
   }
-  const index = THEME_CALLBACK.push([callback, onHostThemeChangeCallback]) - 1
-  wx.onThemeChange && wx.onThemeChange(onHostThemeChangeCallback)
-  return index
+
+  const id = ++CALLBACK_ID
+  THEME_CALLBACK_MAP.set(id, [callback, onHostThemeChangeCallback])
+
+  if (wx.onThemeChange) {
+    wx.onThemeChange(onHostThemeChangeCallback)
+  }
+
+  return id
 }
+
 export const offHostThemeChange = (
   callbackId: number | HostThemeChangeCallback
 ) => {
+  let id: number | undefined
+
   if (isFunction(callbackId)) {
-    callbackId = THEME_CALLBACK.findIndex(
-      ([callback]) => callback === callbackId
-    )
+    THEME_CALLBACK_MAP.forEach(([cb], key) => {
+      if (cb === callbackId && id === undefined) {
+        id = key
+      }
+    })
+  } else {
+    id = callbackId
   }
-  if (callbackId > -1) {
-    const arr = THEME_CALLBACK.splice(callbackId, 1)[0]
-    isArray(arr) && wx.offThemeChange && wx.offThemeChange(arr[1])
+
+  if (id !== undefined && THEME_CALLBACK_MAP.has(id)) {
+    const [, onHostThemeChangeCallback] = THEME_CALLBACK_MAP.get(id)!
+    THEME_CALLBACK_MAP.delete(id)
+    if (wx.offThemeChange) {
+      wx.offThemeChange(onHostThemeChangeCallback)
+    }
   }
 }
+
 //#endif

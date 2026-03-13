@@ -1,35 +1,27 @@
-import type { Declaration } from 'postcss'
-import { type NormalizeOptions, type TransformDecl, createDecl } from '../utils'
+import {
+  type Declaration,
+  type NormalizeOptions,
+  type TransformDecl,
+  createDecl,
+  splitValues,
+} from '../utils'
 import { transformBorderColor } from './borderColor'
 import { transformBorderStyle } from './borderStyle'
 import { transformBorderWidth } from './borderWidth'
+
+const borderWidth = __HYPHENATE__ ? '-width' : 'Width'
+const borderStyle = __HYPHENATE__ ? '-style' : 'Style'
+const borderColor = __HYPHENATE__ ? '-color' : 'Color'
 
 export function createTransformBorder(
   options: NormalizeOptions
 ): TransformDecl {
   return (decl: Declaration): Declaration[] => {
-    const borderWidth = (): string => {
-      if (__NODE_JS__) {
-        return '-width'
-      }
-      return 'Width'
-    }
-    const borderStyle = (): string => {
-      if (__NODE_JS__) {
-        return '-style'
-      }
-      return 'Style'
-    }
-    const borderColor = (): string => {
-      if (__NODE_JS__) {
-        return '-color'
-      }
-      return 'Color'
-    }
     const { prop, value, important, raws, source } = decl
-
-    let splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
-    const havVar = splitResult.some((str) => str.startsWith('var('))
+    let splitResult: Array<string> = splitValues(value)
+    const havVar = splitResult.some((str: string): boolean =>
+      str.startsWith('var(')
+    )
     let result: Array<string | null> = []
     // 包含 var ，直接视为 width/style/color 都使用默认值
     if (havVar) {
@@ -74,7 +66,7 @@ export function createTransformBorder(
     return [
       ...transformBorderWidth(
         createDecl(
-          prop + borderWidth(),
+          prop + borderWidth,
           defaultWidth(result[0]),
           important,
           raws,
@@ -83,7 +75,7 @@ export function createTransformBorder(
       ),
       ...transformBorderStyle(
         createDecl(
-          prop + borderStyle(),
+          prop + borderStyle,
           defaultStyle(result[1]),
           important,
           raws,
@@ -92,7 +84,7 @@ export function createTransformBorder(
       ),
       ...transformBorderColor(
         createDecl(
-          prop + borderColor(),
+          prop + borderColor,
           defaultColor(result[2]),
           important,
           raws,
@@ -103,15 +95,15 @@ export function createTransformBorder(
   }
 }
 
+/**
+ * nvue 逻辑不变
+ */
 export function createTransformBorderNvue(
   options: NormalizeOptions
 ): TransformDecl {
   return (decl) => {
-    const borderWidth = __NODE_JS__ ? '-width' : 'Width'
-    const borderStyle = __NODE_JS__ ? '-style' : 'Style'
-    const borderColor = __NODE_JS__ ? '-color' : 'Color'
-
-    const { prop, value, important, raws, source } = decl
+    let { prop, value, important, raws, source } = decl
+    value = value.trim()
     const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
     const result = [
       /^[\d\.]+\S*|^(thin|medium|thick)$/,

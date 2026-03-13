@@ -3,7 +3,7 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { isString, NOOP, isObject, NO, extend, isSymbol, isArray, capitalize, camelize, EMPTY_OBJ, PatchFlagNames, slotFlagsText, isOn, isBuiltInDirective, isReservedProp, toHandlerKey } from '@vue/shared';
+import { isString, NOOP, isObject, extend, NO, capitalize, camelize, isSymbol, isArray, EMPTY_OBJ, PatchFlagNames, slotFlagsText, isOn, isBuiltInDirective, isReservedProp, toHandlerKey } from '@vue/shared';
 export { generateCodeFrame } from '@vue/shared';
 import { parseExpression } from '@babel/parser';
 
@@ -368,6 +368,12 @@ function convertToBlock(node, { helper, removeHelper, inSSR }) {
   }
 }
 
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 const defaultDelimitersOpen = new Uint8Array([123, 123]);
 const defaultDelimitersClose = new Uint8Array([125, 125]);
 function isTagStartChar(c) {
@@ -418,31 +424,32 @@ class Tokenizer {
     this.stack = stack;
     this.cbs = cbs;
     /** The current state the tokenizer is in. */
-    this.state = 1;
+    __publicField(this, "state", 1);
     /** The read buffer. */
-    this.buffer = "";
+    __publicField(this, "buffer", "");
     /** The beginning of the section that is currently being read. */
-    this.sectionStart = 0;
+    __publicField(this, "sectionStart", 0);
     /** The index within the buffer that we are currently looking at. */
-    this.index = 0;
+    __publicField(this, "index", 0);
     /** The start of the last entity. */
-    this.entityStart = 0;
+    __publicField(this, "entityStart", 0);
     /** Some behavior, eg. when decoding entities, is done while we are in another state. This keeps track of the other state type. */
-    this.baseState = 1;
+    __publicField(this, "baseState", 1);
     /** For special parsing behavior inside of script and style tags. */
-    this.inRCDATA = false;
+    __publicField(this, "inRCDATA", false);
     /** For disabling RCDATA tags handling */
-    this.inXML = false;
+    __publicField(this, "inXML", false);
     /** For disabling interpolation parsing in v-pre */
-    this.inVPre = false;
+    __publicField(this, "inVPre", false);
     /** Record newline positions for fast line / column calculation */
-    this.newlines = [];
-    this.mode = 0;
-    this.delimiterOpen = defaultDelimitersOpen;
-    this.delimiterClose = defaultDelimitersClose;
-    this.delimiterIndex = -1;
-    this.currentSequence = void 0;
-    this.sequenceIndex = 0;
+    __publicField(this, "newlines", []);
+    __publicField(this, "entityDecoder");
+    __publicField(this, "mode", 0);
+    __publicField(this, "delimiterOpen", defaultDelimitersOpen);
+    __publicField(this, "delimiterClose", defaultDelimitersClose);
+    __publicField(this, "delimiterIndex", -1);
+    __publicField(this, "currentSequence");
+    __publicField(this, "sequenceIndex", 0);
   }
   get inSFCRoot() {
     return this.mode === 2 && this.stack.length === 0;
@@ -2296,6 +2303,7 @@ function onText(content, start, end) {
   }
 }
 function onCloseTag(el, end, isImplied = false) {
+  var _a;
   if (isImplied) {
     setLocEnd(el.loc, backTrack(end, 60));
   } else {
@@ -2320,6 +2328,13 @@ function onCloseTag(el, end, isImplied = false) {
       el.tagType = 3;
     } else if (isComponent(el)) {
       el.tagType = 1;
+      const importSources = (_a = currentOptions.bindingMetadata) == null ? void 0 : _a.__importSources;
+      if (importSources) {
+        const source = importSources[tag] || importSources[capitalize(camelize(tag))] || importSources[camelize(tag)] || importSources[capitalize(tag)];
+        if (source) {
+          el.importSource = source;
+        }
+      }
     }
   }
   if (!tokenizer.inRCDATA) {
@@ -2865,6 +2880,8 @@ function createTransformContext(root, {
   transformHoist = null,
   isBuiltInComponent = NOOP,
   isCustomElement = NOOP,
+  // fixed by xxxxxx
+  isEasyComponent = NOOP,
   expressionPlugins = [],
   scopeId = null,
   slotted = true,
@@ -2892,6 +2909,8 @@ function createTransformContext(root, {
     transformHoist,
     isBuiltInComponent,
     isCustomElement,
+    // fixed by xxxxxx
+    isEasyComponent,
     expressionPlugins,
     scopeId,
     slotted,
@@ -4628,6 +4647,8 @@ function resolveComponentType(node, context, ssr = false) {
       context.helper(builtIn);
     return builtIn;
   }
+  const isEasyComponent = context.isEasyComponent;
+  isEasyComponent && isEasyComponent(tag);
   context.helper(RESOLVE_COMPONENT);
   context.components.add(tag);
   return toValidAssetId(tag, `component`);
@@ -5387,8 +5408,7 @@ const transformModel = (dir, node, context) => {
     context.onError(createCompilerError(44, exp.loc));
     return createTransformProps();
   }
-  const maybeRef = false;
-  if (!expString.trim() || !isMemberExpression(expString) && !maybeRef) {
+  if (!expString.trim() || !isMemberExpression(expString) && true) {
     context.onError(
       createCompilerError(42, exp.loc)
     );

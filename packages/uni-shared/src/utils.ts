@@ -1,4 +1,4 @@
-import { isFunction, isPlainObject, isString } from '@vue/shared'
+import { isFunction, isString } from '@vue/shared'
 
 export function cache<T>(fn: (str: string) => T) {
   const cache: Record<string, T> = Object.create(null)
@@ -34,6 +34,10 @@ export const invokeArrayFns = (fns: Function[], arg?: any) => {
     ret = fns[i](arg)
   }
   return ret
+}
+
+export const invokeArrayFnsWithResults = (fns: Function[], arg?: any) => {
+  return fns.map((fn) => fn(arg))
 }
 
 export function updateElementStyle(
@@ -130,17 +134,11 @@ export function getValueByDataPath(obj: any, path: string): unknown {
   return getValueByDataPath(obj[key], parts.slice(1).join('.'))
 }
 
+/**
+ * @deprecated
+ */
 export function sortObject<T extends Object>(obj: T) {
-  let sortObj: T = {} as T
-  if (isPlainObject(obj)) {
-    Object.keys(obj)
-      .sort()
-      .forEach((key) => {
-        const _key = key as keyof T
-        sortObj[_key] = obj[_key]
-      })
-  }
-  return !Object.keys(sortObj) ? obj : sortObj
+  return obj
 }
 
 function getGlobalOnce() {

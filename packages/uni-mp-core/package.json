@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcloudio/uni-mp-core",
-  "version": "3.0.0-4080720251210001",
+  "version": "3.0.0-alpha-5000320260310001",
   "description": "@dcloudio/uni-mp-core",
   "sideEffects": false,
   "repository": {
@@ -16,5 +16,9 @@
   "dependencies": {
     "@vue/shared": "catalog:",
     "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "catalog:",
+    "mini-types": "^0.1.7"
   }
 }

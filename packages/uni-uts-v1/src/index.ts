@@ -31,6 +31,7 @@ import {
 } from './legacy'
 import {
   checkCompile,
+  clearManifestFiles,
   genManifestFile,
   initCheckOptionsEnv,
   restoreDex,
@@ -73,6 +74,8 @@ export {
   resolveAppHarmonyUniModulesEntryDir,
 } from './arkts'
 
+export { toCppCode } from '@dcloudio/uts'
+
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,
@@ -111,6 +114,7 @@ function warn(msg: string) {
 }
 
 export interface CompileResult {
+  errMsg: string
   code: string
   deps: string[]
   encrypt: boolean
@@ -133,6 +137,7 @@ function createResult(
 ): CompileResult {
   return {
     dir,
+    errMsg,
     code: parseErrMsg(code, errMsg),
     deps,
     encrypt: false,
@@ -242,6 +247,7 @@ export async function compile(
   } catch (e) {}
   const proxyCodeOptions: GenProxyCodeOptions = extend(
     {
+      platform: utsPlatform as 'app-android' | 'app-ios',
       androidComponents,
       iosComponents,
       customElements,
@@ -377,7 +383,7 @@ export async function compile(
         resolveRootIndex(pluginDir, pkg)
       if (
         !filename &&
-        (Object.keys(androidComponents).length ||
+        (Object.keys(iosComponents).length ||
           Object.keys(customElements).length)
       ) {
         filename = resolvePlatformIndexFilename('app-ios', pluginDir, pkg)
@@ -655,6 +661,11 @@ export async function compile(
             }
             if (versionTips) {
               warn(versionTips)
+            }
+          } else {
+            // 如果编译失败，应该清空已有缓存
+            if (cacheDir) {
+              clearManifestFiles(utsPlatform, pluginRelativeDir, cacheDir)
             }
           }
           const files: string[] = []

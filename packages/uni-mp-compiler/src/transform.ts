@@ -36,7 +36,13 @@ import {
   helperNameMap,
   locStub,
 } from '@vue/compiler-core'
-import { findMiniProgramUsingComponents } from '@dcloudio/uni-cli-shared'
+import {
+  findMiniProgramUsingComponents,
+  isCompoundExpressionNode,
+  isDirectiveNode,
+  isElementNode,
+  isSimpleExpressionNode,
+} from '@dcloudio/uni-cli-shared'
 import type {
   MiniProgramComponentsType,
   MiniProgramFilterOptions,
@@ -90,7 +96,7 @@ export const enum BindingComponentTypes {
   UNKNOWN = 'unknown',
 }
 export interface TransformContext
-  extends Required<Omit<TransformOptions, 'filename' | 'root'>> {
+  extends Required<Omit<TransformOptions, 'root'>> {
   selfName: string | null
   currentNode: RootNode | TemplateChildNode | null
   parent: ParentNode | null
@@ -149,12 +155,12 @@ export function isVForScope(scope: CodegenScope): scope is CodegenVForScope {
 }
 
 export function isScopedSlotVFor({ source }: CodegenVForScope) {
-  if (source.type !== NodeTypes.COMPOUND_EXPRESSION) {
+  if (!isCompoundExpressionNode(source)) {
     return false
   }
   const first = source.children[0] as ExpressionNode
   return (
-    first.type === NodeTypes.SIMPLE_EXPRESSION &&
+    isSimpleExpressionNode(first) &&
     first.content.includes(SCOPED_SLOT_IDENTIFIER)
   )
 }
@@ -174,7 +180,7 @@ export function transform(root: CodegenRootNode, options: TransformOptions) {
 
 function findRootNode(root: RootNode, context: TransformContext) {
   const children = root.children.filter(
-    (node) => node.type === NodeTypes.ELEMENT && node.tag !== 'template'
+    (node) => isElementNode(node) && node.tag !== 'template'
   )
   if (children.length === 1) {
     context.rootNode = children[0]
@@ -248,6 +254,7 @@ export function traverseChildren(
     const child = parent.children[i]
     if (isString(child)) continue
     context.parent = parent
+    ;(child as any).parent = parent
     context.childIndex = i
     context.onNodeRemoved = nodeRemoved
     traverseNode(child, context)
@@ -345,6 +352,7 @@ export function createTransformContext(
     // options
     // 暂不提供根据文件名生成递归组件
     isX,
+    filename,
     selfName: '', //nameMatch && capitalize(camelize(nameMatch[1])),
     miniProgram,
     isTS,
@@ -477,7 +485,7 @@ export function createTransformContext(
         addId(exp)
       } else if (exp.identifiers) {
         exp.identifiers.forEach(addId)
-      } else if (exp.type === NodeTypes.SIMPLE_EXPRESSION) {
+      } else if (isSimpleExpressionNode(exp)) {
         addId(exp.content)
       }
     },
@@ -486,7 +494,7 @@ export function createTransformContext(
         removeId(exp)
       } else if (exp.identifiers) {
         exp.identifiers.forEach(removeId)
-      } else if (exp.type === NodeTypes.SIMPLE_EXPRESSION) {
+      } else if (isSimpleExpressionNode(exp)) {
         removeId(exp.content)
       }
     },
@@ -544,7 +552,7 @@ export function createStructuralDirectiveTransform(
     : (n: string) => name.test(n)
 
   return (node, context) => {
-    if (node.type === NodeTypes.ELEMENT) {
+    if (isElementNode(node)) {
       const { props } = node
       // structural directive transforms are not concerned with slots
       // as they are handled separately in vSlot.ts
@@ -554,7 +562,7 @@ export function createStructuralDirectiveTransform(
       const exitFns: Array<() => void> = []
       for (let i = 0; i < props.length; i++) {
         const prop = props[i]
-        if (prop.type === NodeTypes.DIRECTIVE && matches(prop.name)) {
+        if (isDirectiveNode(prop) && matches(prop.name)) {
           // structural directives are removed to avoid infinite recursion
           // also we remove them *before* applying so that it can further
           // traverse itself in case it moves the node around

@@ -34,5 +34,8 @@ export function initTabBarI18n(tabBar: UniApp.TabBarOptions) {
       defineI18nProperty(item, ['text'])
     })
   }
+  if (isEnableLocale() && tabBar.midButton) {
+    defineI18nProperty(tabBar.midButton, ['text'])
+  }
   return tabBar
 }

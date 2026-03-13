@@ -1,649 +1,15 @@
 "use strict";
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+const uniShared = require("@dcloudio/uni-shared");
 const vue = require("vue");
 const shared = require("@vue/shared");
-const uniShared = require("@dcloudio/uni-shared");
 const vueRouter = require("vue-router");
 const uniI18n = require("@dcloudio/uni-i18n");
-function arrayPop(array) {
-  if (array.length === 0) {
-    return null;
-  }
-  return array.pop();
-}
-function arrayShift(array) {
-  if (array.length === 0) {
-    return null;
-  }
-  return array.shift();
-}
-function arrayFind(array, predicate) {
-  const index2 = array.findIndex(predicate);
-  if (index2 < 0) {
-    return null;
-  }
-  return array[index2];
-}
-function arrayFindLast(array, predicate) {
-  const index2 = array.findLastIndex(predicate);
-  if (index2 < 0) {
-    return null;
-  }
-  return array[index2];
-}
-function arrayAt(array, index2) {
-  if (index2 < -array.length || index2 >= array.length) {
-    return null;
-  }
-  return array.at(index2);
-}
-var IDENTIFIER;
-(function(IDENTIFIER2) {
-  IDENTIFIER2["UTSJSONObject"] = "UTSJSONObject";
-  IDENTIFIER2["JSON"] = "JSON";
-  IDENTIFIER2["UTS"] = "UTS";
-  IDENTIFIER2["VUE"] = "vue";
-  IDENTIFIER2["GLOBAL_THIS"] = "globalThis";
-  IDENTIFIER2["UTS_TYPE"] = "UTSType";
-  IDENTIFIER2["UTS_METADATA"] = "$UTSMetadata$";
-  IDENTIFIER2["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
-  IDENTIFIER2["JSON_FIELD"] = "JSON_FIELD";
-})(IDENTIFIER || (IDENTIFIER = {}));
-var UTS_CLASS_METADATA_KIND;
-(function(UTS_CLASS_METADATA_KIND2) {
-  UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["CLASS"] = 0] = "CLASS";
-  UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["INTERFACE"] = 1] = "INTERFACE";
-  UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["TYPE"] = 2] = "TYPE";
-})(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
-function getType$1(val) {
-  return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
-}
-function isPlainObject(val) {
-  if (val == null || typeof val !== "object") {
-    return false;
-  }
-  const proto = Object.getPrototypeOf(val);
-  return proto === Object.prototype || proto === null;
-}
-class UTSError extends Error {
-  constructor(message) {
-    super(message);
-  }
-}
-function isUTSMetadata(metadata) {
-  return !!(metadata && metadata.kind in UTS_CLASS_METADATA_KIND && metadata.interfaces);
-}
-function isNativeType(proto) {
-  return !proto || proto === Object.prototype;
-}
-const utsMetadataKey = IDENTIFIER.UTS_METADATA;
-function getParentTypeList(type) {
-  const metadata = utsMetadataKey in type ? type[utsMetadataKey] : {};
-  let interfaces = [];
-  if (!isUTSMetadata(metadata)) {
-    interfaces = [];
-  } else {
-    interfaces = metadata.interfaces || [];
-  }
-  const proto = Object.getPrototypeOf(type);
-  if (!isNativeType(proto)) {
-    interfaces.push(proto.constructor);
-  }
-  return interfaces;
-}
-function isImplementationOf(leftType, rightType, visited = []) {
-  if (isNativeType(leftType)) {
-    return false;
-  }
-  if (leftType === rightType) {
-    return true;
-  }
-  visited.push(leftType);
-  const parentTypeList = getParentTypeList(leftType);
-  return parentTypeList.some((parentType) => {
-    if (visited.includes(parentType)) {
-      return false;
-    }
-    return isImplementationOf(parentType, rightType, visited);
-  });
-}
-function isInstanceOf(value, type) {
-  if (type === UTSValueIterable) {
-    return value && value[Symbol.iterator];
-  }
-  const isNativeInstanceofType = value instanceof type;
-  if (isNativeInstanceofType || typeof value !== "object" || value === null) {
-    return isNativeInstanceofType;
-  }
-  const proto = Object.getPrototypeOf(value).constructor;
-  return isImplementationOf(proto, type);
-}
-function isBaseType(type) {
-  return type === Number || type === String || type === Boolean;
-}
-function isUnknownType(type) {
-  return type === "Unknown";
-}
-function isAnyType(type) {
-  return type === "Any";
-}
-function isUTSType(type) {
-  return type && type.prototype && type.prototype instanceof UTSType;
-}
-function normalizeGenericValue(value, genericType, isJSONParse = false) {
-  return value == null ? null : isBaseType(genericType) || isUnknownType(genericType) || isAnyType(genericType) ? value : genericType === Array ? new Array(...value) : new genericType(value, void 0, isJSONParse);
-}
-class UTSType {
-  static get$UTSMetadata$(...args) {
-    return {
-      name: "",
-      kind: UTS_CLASS_METADATA_KIND.TYPE,
-      interfaces: [],
-      fields: {}
-    };
-  }
-  get $UTSMetadata$() {
-    return UTSType.get$UTSMetadata$();
-  }
-  // TODO 缓存withGenerics结果
-  static withGenerics(parent, generics, isJSONParse = false) {
-    if (isJSONParse) {
-      const illegalGeneric = generics.find((item) => !(item === Array || isBaseType(item) || isUnknownType(item) || isAnyType(item) || item === UTSJSONObject || item.prototype && item.prototype instanceof UTSType));
-      if (illegalGeneric) {
-        throw new Error("Generic is not UTSType or Array or UTSJSONObject or base type, generic: " + illegalGeneric);
-      }
-    }
-    if (parent === Array) {
-      return class UTSArray extends UTSType {
-        constructor(options, isJSONParse2 = false) {
-          if (!Array.isArray(options)) {
-            throw new UTSError(`Failed to contruct type, ${options} is not an array`);
-          }
-          super();
-          return options.map((item) => {
-            return normalizeGenericValue(item, generics[0], isJSONParse2);
-          });
-        }
-      };
-    } else if (parent === Map || parent === WeakMap) {
-      return class UTSMap extends UTSType {
-        constructor(options, isJSONParse2 = false) {
-          if (options == null || typeof options !== "object") {
-            throw new UTSError(`Failed to contruct type, ${options} is not an object`);
-          }
-          super();
-          const obj = new parent();
-          for (const key in options) {
-            obj.set(normalizeGenericValue(key, generics[0], isJSONParse2), normalizeGenericValue(options[key], generics[1], isJSONParse2));
-          }
-          return obj;
-        }
-      };
-    } else if (isUTSType(parent)) {
-      return class VirtualClassWithGenerics extends parent {
-        static get$UTSMetadata$() {
-          return parent.get$UTSMetadata$(...generics);
-        }
-        constructor(options, metadata = VirtualClassWithGenerics.get$UTSMetadata$(), isJSONParse2 = false) {
-          super(options, metadata, isJSONParse2);
-        }
-      };
-    } else {
-      return parent;
-    }
-  }
-  constructor() {
-  }
-  static initProps(options, metadata, isJSONParse = false) {
-    const obj = {};
-    if (!metadata.fields) {
-      return obj;
-    }
-    for (const key in metadata.fields) {
-      const { type, optional, jsonField } = metadata.fields[key];
-      const realKey = isJSONParse ? jsonField || key : key;
-      if (options[realKey] == null) {
-        if (optional) {
-          obj[key] = null;
-          continue;
-        } else {
-          throw new UTSError(`Failed to contruct type, missing required property: ${key}`);
-        }
-      }
-      if (isUTSType(type)) {
-        obj[key] = isJSONParse ? (
-          // @ts-ignore
-          new type(options[realKey], void 0, isJSONParse)
-        ) : options[realKey];
-      } else if (type === Array) {
-        if (!Array.isArray(options[realKey])) {
-          throw new UTSError(`Failed to contruct type, property ${key} is not an array`);
-        }
-        obj[key] = options[realKey];
-      } else {
-        obj[key] = options[realKey];
-      }
-    }
-    return obj;
-  }
-}
-function initUTSJSONObjectProperties(obj) {
-  const propertyList = [
-    "_resolveKeyPath",
-    "_getValue",
-    "toJSON",
-    "get",
-    "set",
-    "getAny",
-    "getString",
-    "getNumber",
-    "getBoolean",
-    "getJSON",
-    "getArray",
-    "toMap",
-    "forEach"
-  ];
-  const propertyDescriptorMap = {};
-  for (let i = 0; i < propertyList.length; i++) {
-    const property = propertyList[i];
-    propertyDescriptorMap[property] = {
-      enumerable: false,
-      value: obj[property]
-    };
-  }
-  Object.defineProperties(obj, propertyDescriptorMap);
-}
-function getRealDefaultValue(defaultValue) {
-  return defaultValue === void 0 ? null : defaultValue;
-}
-let UTSJSONObject$1 = class UTSJSONObject2 {
-  static keys(obj) {
-    return Object.keys(obj);
-  }
-  static assign(target, ...sources) {
-    for (let i = 0; i < sources.length; i++) {
-      const source = sources[i];
-      for (let key in source) {
-        target[key] = source[key];
-      }
-    }
-    return target;
-  }
-  constructor(content = {}) {
-    if (content instanceof Map) {
-      content.forEach((value, key) => {
-        this[key] = value;
-      });
-    } else {
-      for (const key in content) {
-        if (Object.prototype.hasOwnProperty.call(content, key)) {
-          this[key] = content[key];
-        }
-      }
-    }
-    initUTSJSONObjectProperties(this);
-  }
-  _resolveKeyPath(keyPath) {
-    let token = "";
-    const keyPathArr = [];
-    let inOpenParentheses = false;
-    for (let i = 0; i < keyPath.length; i++) {
-      const word = keyPath[i];
-      switch (word) {
-        case ".":
-          if (token.length > 0) {
-            keyPathArr.push(token);
-            token = "";
-          }
-          break;
-        case "[": {
-          inOpenParentheses = true;
-          if (token.length > 0) {
-            keyPathArr.push(token);
-            token = "";
-          }
-          break;
-        }
-        case "]":
-          if (inOpenParentheses) {
-            if (token.length > 0) {
-              const tokenFirstChar = token[0];
-              const tokenLastChar = token[token.length - 1];
-              if (tokenFirstChar === '"' && tokenLastChar === '"' || tokenFirstChar === "'" && tokenLastChar === "'" || tokenFirstChar === "`" && tokenLastChar === "`") {
-                if (token.length > 2) {
-                  token = token.slice(1, -1);
-                } else {
-                  return [];
-                }
-              } else if (!/^\d+$/.test(token)) {
-                return [];
-              }
-              keyPathArr.push(token);
-              token = "";
-            } else {
-              return [];
-            }
-            inOpenParentheses = false;
-          } else {
-            return [];
-          }
-          break;
-        default:
-          token += word;
-          break;
-      }
-      if (i === keyPath.length - 1) {
-        if (token.length > 0) {
-          keyPathArr.push(token);
-          token = "";
-        }
-      }
-    }
-    return keyPathArr;
-  }
-  _getValue(keyPath, defaultValue) {
-    const keyPathArr = this._resolveKeyPath(keyPath);
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    if (keyPathArr.length === 0) {
-      return realDefaultValue;
-    }
-    let value = this;
-    for (let i = 0; i < keyPathArr.length; i++) {
-      const key = keyPathArr[i];
-      if (value instanceof Object) {
-        if (key in value) {
-          value = value[key];
-        } else {
-          return realDefaultValue;
-        }
-      } else {
-        return realDefaultValue;
-      }
-    }
-    return value;
-  }
-  get(key) {
-    return this._getValue(key);
-  }
-  set(key, value) {
-    this[key] = value;
-  }
-  getAny(key, defaultValue) {
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    return this._getValue(key, realDefaultValue);
-  }
-  getString(key, defaultValue) {
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    const value = this._getValue(key, realDefaultValue);
-    if (typeof value === "string") {
-      return value;
-    } else {
-      return realDefaultValue;
-    }
-  }
-  getNumber(key, defaultValue) {
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    const value = this._getValue(key, realDefaultValue);
-    if (typeof value === "number") {
-      return value;
-    } else {
-      return realDefaultValue;
-    }
-  }
-  getBoolean(key, defaultValue) {
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    const boolean = this._getValue(key, realDefaultValue);
-    if (typeof boolean === "boolean") {
-      return boolean;
-    } else {
-      return realDefaultValue;
-    }
-  }
-  getJSON(key, defaultValue) {
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    let value = this._getValue(key, realDefaultValue);
-    if (value instanceof Object) {
-      return value;
-    } else {
-      return realDefaultValue;
-    }
-  }
-  getArray(key, defaultValue) {
-    const realDefaultValue = getRealDefaultValue(defaultValue);
-    let value = this._getValue(key, realDefaultValue);
-    if (value instanceof Array) {
-      return value;
-    } else {
-      return realDefaultValue;
-    }
-  }
-  toMap() {
-    let map = /* @__PURE__ */ new Map();
-    for (let key in this) {
-      map.set(key, this[key]);
-    }
-    return map;
-  }
-  forEach(callback) {
-    for (let key in this) {
-      callback(this[key], key);
-    }
-  }
-};
-const OriginalJSON = JSON;
-function createUTSJSONObjectOrArray(obj) {
-  if (Array.isArray(obj)) {
-    return obj.map((item) => {
-      return createUTSJSONObjectOrArray(item);
-    });
-  } else if (isPlainObject(obj)) {
-    const result = new UTSJSONObject$1({});
-    for (const key in obj) {
-      const value = obj[key];
-      result[key] = createUTSJSONObjectOrArray(value);
-    }
-    return result;
-  }
-  return obj;
-}
-function parseObjectOrArray(object, utsType) {
-  const objectType = getType$1(object);
-  if (object === null || objectType !== "object" && objectType !== "array") {
-    return object;
-  }
-  if (utsType && utsType !== UTSJSONObject$1) {
-    try {
-      return new utsType(object, void 0, true);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  }
-  if (objectType === "array" || objectType === "object") {
-    return createUTSJSONObjectOrArray(object);
-  }
-  return object;
-}
-const UTSJSON = {
-  parse: (text, reviver, utsType) => {
-    if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject$1)) {
-      utsType = reviver;
-      reviver = void 0;
-    }
-    try {
-      const parseResult = OriginalJSON.parse(text, reviver);
-      return parseObjectOrArray(parseResult, utsType);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  parseArray(text, utsType) {
-    try {
-      const parseResult = OriginalJSON.parse(text);
-      if (Array.isArray(parseResult)) {
-        return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : void 0);
-      }
-      return null;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  parseObject(text, utsType) {
-    try {
-      const parseResult = OriginalJSON.parse(text);
-      if (Array.isArray(parseResult)) {
-        return null;
-      }
-      return parseObjectOrArray(parseResult, utsType);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  stringify: (value, replacer, space) => {
-    try {
-      if (!replacer) {
-        const visited = /* @__PURE__ */ new Set();
-        replacer = function(_, v2) {
-          if (typeof v2 === "object") {
-            if (visited.has(v2)) {
-              return null;
-            }
-            visited.add(v2);
-          }
-          return v2;
-        };
-      }
-      return OriginalJSON.stringify(value, replacer, space);
-    } catch (error) {
-      console.error(error);
-      return "";
-    }
-  }
-};
-function mapGet(map, key) {
-  if (!map.has(key)) {
-    return null;
-  }
-  return map.get(key);
-}
-function stringCodePointAt(str, pos) {
-  if (pos < 0 || pos >= str.length) {
-    return null;
-  }
-  return str.codePointAt(pos);
-}
-function stringAt(str, pos) {
-  if (pos < -str.length || pos >= str.length) {
-    return null;
-  }
-  return str.at(pos);
-}
-function weakMapGet(map, key) {
-  if (!map.has(key)) {
-    return null;
-  }
-  return map.get(key);
-}
-const UTS$1 = {
-  arrayAt,
-  arrayFind,
-  arrayFindLast,
-  arrayPop,
-  arrayShift,
-  isInstanceOf,
-  UTSType,
-  mapGet,
-  stringAt,
-  stringCodePointAt,
-  weakMapGet,
-  JSON: UTSJSON
-};
-let UniError$1 = class UniError2 extends Error {
-  constructor(errSubject, errCode, errMsg) {
-    let options = {};
-    const argsLength = Array.from(arguments).length;
-    switch (argsLength) {
-      case 0:
-        errSubject = "";
-        errMsg = "";
-        errCode = 0;
-        break;
-      case 1:
-        errMsg = errSubject;
-        errSubject = "";
-        errCode = 0;
-        break;
-      case 2:
-        errMsg = errSubject;
-        options = errCode;
-        errCode = options.errCode || 0;
-        errSubject = options.errSubject || "";
-        break;
-    }
-    super(errMsg);
-    this.name = "UniError";
-    this.errSubject = errSubject;
-    this.errCode = errCode;
-    this.errMsg = errMsg;
-    if (options.data) {
-      this.data = options.data;
-    }
-    if (options.cause) {
-      this.cause = options.cause;
-    }
-  }
-  set errMsg(msg) {
-    this.message = msg;
-  }
-  get errMsg() {
-    return this.message;
-  }
-  toString() {
-    return this.errMsg;
-  }
-  toJSON() {
-    return {
-      errSubject: this.errSubject,
-      errCode: this.errCode,
-      errMsg: this.errMsg,
-      data: this.data,
-      cause: this.cause && typeof this.cause.toJSON === "function" ? this.cause.toJSON() : this.cause
-    };
-  }
-};
-let UTSValueIterable$1 = class UTSValueIterable2 {
-};
-function getGlobal() {
-  if (typeof globalThis !== "undefined") {
-    return globalThis;
-  }
-  if (typeof self !== "undefined") {
-    return self;
-  }
-  if (typeof window !== "undefined") {
-    return window;
-  }
-  if (typeof global !== "undefined") {
-    return global;
-  }
-  function g2() {
-    return this;
-  }
-  if (typeof g2() !== "undefined") {
-    return g2();
-  }
-  return function() {
-    return new Function("return this")();
-  }();
-}
-const realGlobal = getGlobal();
-realGlobal.UTSJSONObject = UTSJSONObject$1;
-realGlobal.UniError = UniError$1;
-realGlobal.UTS = UTS$1;
-realGlobal.UTSValueIterable = UTSValueIterable$1;
+const realGlobal = uniShared.getGlobal();
+realGlobal.UTS = uniShared.UTS;
+realGlobal.UTSJSONObject = uniShared.UTSJSONObject;
+realGlobal.UTSValueIterable = uniShared.UTSValueIterable;
+realGlobal.UniError = uniShared.UniError;
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -866,6 +232,9 @@ function initTabBarI18n(tabBar2) {
     tabBar2.list.forEach((item) => {
       defineI18nProperty(item, ["text"]);
     });
+  }
+  if (isEnableLocale() && tabBar2.midButton) {
+    defineI18nProperty(tabBar2.midButton, ["text"]);
   }
   return tabBar2;
 }
@@ -1282,6 +651,9 @@ function invokeHook(vm, name, args) {
     return;
   }
   const hooks = vm.$[name];
+  if (name === uniShared.ON_BACK_PRESS) {
+    return hooks && uniShared.invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true);
+  }
   return hooks && uniShared.invokeArrayFns(hooks, args);
 }
 function getRealRoute(fromRoute, toRoute) {
@@ -1358,7 +730,9 @@ function initAppVm(appVm2) {
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
   pageVm.$vm = pageVm;
-  pageVm.$page = page;
+  {
+    pageVm.$basePage = page;
+  }
   pageVm.$mpType = "page";
   pageVm.$fontFamilySet = /* @__PURE__ */ new Set();
   if (page.meta.isTabBar) {
@@ -1642,13 +1016,93 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
-uniShared.createRpx2Unit(
+const rpx2Unit = uniShared.createRpx2Unit(
   uniShared.defaultRpx2Unit.unit,
   uniShared.defaultRpx2Unit.unitRatio,
   uniShared.defaultRpx2Unit.unitPrecision
 );
+function transformRpx(value) {
+  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
+    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
+      return rpx2Unit(num + "rpx");
+    });
+  }
+  return value;
+}
+class UniElement extends Object {
+  constructor() {
+    super();
+    this._props = {};
+    this._page = null;
+    this.__isUniElement = true;
+  }
+  attachVmProps(props2) {
+    this._props = props2;
+  }
+  getAttribute(qualifiedName) {
+    const name = shared.camelize(qualifiedName);
+    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
+    return attr2 === void 0 ? null : attr2;
+  }
+  getPage() {
+    if (this._page) {
+      return this._page;
+    }
+    let parent = this.parentNode;
+    while (parent && !parent._page) {
+      parent = parent.parentNode;
+    }
+    return (parent == null ? void 0 : parent._page) || null;
+  }
+  get uniPage() {
+    return this.getPage();
+  }
+  getBoundingClientRectAsync(callback) {
+    var _a, _b;
+    if (callback) {
+      const domRect = this.getBoundingClientRect();
+      try {
+        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      try {
+        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      return;
+    }
+    return new Promise((resolve, reject) => {
+      const domRect = this.getBoundingClientRect();
+      resolve(domRect);
+    });
+  }
+  get style() {
+    const originalStyle = super.style;
+    if (originalStyle.__patchRpx__) {
+      return originalStyle;
+    }
+    originalStyle.__patchRpx__ = true;
+    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
+    super.style.setProperty = function(property, value, priority) {
+      return originalSetProperty(
+        property,
+        value ? transformRpx(value + "") : value,
+        priority || void 0
+      );
+    };
+    return super.style;
+  }
+  get tagName() {
+    return super.tagName.replace(/^UNI-/, "");
+  }
+  get nodeName() {
+    return super.nodeName.replace(/^UNI-/, "");
+  }
+}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -1708,7 +1162,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1784,7 +1238,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1868,7 +1322,7 @@ const props$q = {
     default: ""
   }
 };
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$q,
   emits: ["change"],
@@ -1969,7 +1423,7 @@ const props$p = {
     default: ""
   }
 };
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$p,
   setup(props2, {
@@ -3033,9 +2487,9 @@ class UniPageImpl {
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
-    var _a;
-    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
-    return pageMeta ? new UTSJSONObject({
+    var _a, _b;
+    const pageMeta = ((_a = this.vm) == null ? void 0 : _a.$basePage.meta) ? uniShared.normalizeStyles((_b = this.vm) == null ? void 0 : _b.$basePage.meta, __uniConfig.themeConfig) : void 0;
+    return pageMeta ? new uniShared.UTSJSONObject({
       navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
       navigationBarTextStyle: pageMeta.navigationBar.titleColor,
       navigationBarTitleText: pageMeta.navigationBar.titleText,
@@ -3045,7 +2499,7 @@ class UniPageImpl {
       enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
       onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
       backgroundColorContent: pageMeta.backgroundColorContent
-    }) : new UTSJSONObject({});
+    }) : new uniShared.UTSJSONObject({});
   }
   $getPageStyle() {
     return this.getPageStyle();
@@ -3092,6 +2546,17 @@ class UniPageImpl {
       return null;
     }
   }
+  querySelector(selector) {
+    {
+      return null;
+    }
+  }
+  querySelectorAll(selector) {
+    const res = [];
+    {
+      return res;
+    }
+  }
   getAndroidView() {
     return null;
   }
@@ -3119,12 +2584,7 @@ class UniPageImpl {
   exitFullscreen() {
   }
   createElement() {
-    return new UniElementImpl({
-      id: "",
-      name: "",
-      attrs: /* @__PURE__ */ new Map(),
-      style: /* @__PURE__ */ new Map()
-    });
+    return null;
   }
 }
 class UniNormalPageImpl extends UniPageImpl {
@@ -3155,7 +2615,6 @@ function initXPage(vm, route, page) {
       }
     });
   }
-  vm.$basePage = vm.$page;
   vm.$.$waitNativeRender = (callback) => {
     vm.$nextTick(() => {
       callback && callback();
@@ -3165,10 +2624,10 @@ function initXPage(vm, route, page) {
   if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
       route: (route == null ? void 0 : route.path) ? uniShared.removeLeadingSlash(route == null ? void 0 : route.path) : "",
-      options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
+      options: new uniShared.UTSJSONObject((route == null ? void 0 : route.query) || {}),
       vm
     });
-    vm.$page = uniPage;
+    vm.$.page = uniPage;
     vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
     if (currentPagesMap.size === 1) {
@@ -3191,7 +2650,7 @@ function initXPage(vm, route, page) {
       }
     }
   } else {
-    vm.$page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
+    vm.$.page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
     pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
@@ -3467,7 +2926,7 @@ function initApp$1(vm) {
   initAppVm(appVm);
   defineGlobalData(appVm);
 }
-function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
+function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
   if (clone) {
     comp = shared.extend({}, comp);
   }
@@ -3481,6 +2940,12 @@ function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
       return oldSetup(props2, ctx);
     }
   };
+  if (type === "page" || type === "window") {
+    const styleIsolation = comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename];
+    if (styleIsolation !== "isolated") {
+      comp.styleIsolation = "app";
+    }
+  }
   return comp;
 }
 function setupComponent(comp, options) {
@@ -3491,6 +2956,7 @@ function setupComponent(comp, options) {
 }
 function setupWindow(comp, id2) {
   return setupComponent(comp, {
+    type: "window",
     init: (vm) => {
       {
         vm.$basePage = {
@@ -3503,11 +2969,15 @@ function setupWindow(comp, id2) {
     }
   });
 }
-function setupPage(comp) {
+function setupPage(comp, path) {
   if (process.env.NODE_ENV !== "production") {
     comp.__mpType = "page";
   }
+  if (path) {
+    comp.__filename = path;
+  }
   return setupComponent(comp, {
+    type: "page",
     clone: true,
     // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
@@ -4028,7 +3498,7 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main = {
+const _sfc_main$2 = {
   name: "PageRefresh",
   setup() {
     const { pullToRefresh } = usePageMeta();
@@ -4093,7 +3563,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render]]);
 const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
@@ -4159,6 +3629,9 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         }
         if (!(routePageMeta == null ? void 0 : routePageMeta.navigationBar.style)) {
           pageMeta.navigationBar.style = "custom";
+        }
+        if (ctx.attrs["data-type"] === SYSTEM_DIALOG_TAG) {
+          pageMeta.navigationBar.titleText = "";
         }
         const parentInstance = vue.inject(
           "parentInstance"
@@ -4453,7 +3926,7 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
     default: false
   }
 });
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$n,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -4514,7 +3987,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -4633,7 +4106,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$m,
   setup(props2, {
@@ -5074,7 +4547,7 @@ function useBase(props2, rootRef, emit2) {
     trigger
   };
 }
-function useValueSync(props2, state, emit2, trigger) {
+function useValueSync(props2, state, emit2, trigger, fieldRef) {
   let valueChangeFn = null;
   {
     valueChangeFn = throttle((val) => {
@@ -5091,6 +4564,7 @@ function useValueSync(props2, state, emit2, trigger) {
   }, 100);
   const triggerInput = (event, detail, force) => {
     valueChangeFn.cancel();
+    detail.value;
     triggerInputFn(event, detail);
     if (force) {
       triggerInputFn.flush();
@@ -5243,6 +4717,8 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
+uniShared.once(() => {
+});
 const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
   placeholderClass: {
     type: String,
@@ -5252,8 +4728,6 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
     type: String,
     default: ""
   }
-});
-uniShared.once(() => {
 });
 function isPaste(event) {
   return event.inputType === "insertFromPaste";
@@ -5298,6 +4772,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         case "digit":
           type2 = "number";
           break;
+        case "none":
+          type2 = "text";
+          break;
         default:
           type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
@@ -5311,16 +4788,18 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       return AUTOCOMPLETES[index2];
     });
     const inputmode = vue.computed(() => {
-      if (props2.inputmode) {
+      if (props2.inputmode !== void 0) {
         return props2.inputmode;
       }
-      {
-        const inputmodeMap = {
-          number: "numeric",
-          digit: "decimal"
-        };
-        return Object.values(INPUT_MODES).includes(props2.type) ? props2.type : inputmodeMap[props2.type];
+      if (INPUT_MODES.includes(props2.type)) {
+        return props2.type;
       }
+      const inputmodeMap = {
+        number: "numeric",
+        digit: "decimal",
+        idcard: "text"
+      };
+      return inputmodeMap[props2.type];
     });
     let cache = useCache(props2, type);
     const rootRef = vue.ref(null);
@@ -5379,12 +4858,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "style": props2.cursorColor ? {
           caretColor: props2.cursorColor
         } : {},
+        "inputmode": inputmode.value,
         "onFocus": (event) => event.target.blur()
-      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : vue.createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "value": state.value,
-        "onInput": (event) => {
+        "onInput": vue.withModifiers((event) => {
           const value = event.target.value.toString();
           if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
             if (isPaste(event)) {
@@ -5392,8 +4872,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
             }
             return;
           }
+          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+            return;
+          }
           state.value = value;
-        },
+        }, ["stop"]),
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state.maxlength,
@@ -5486,7 +4969,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -6034,7 +5517,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -6681,7 +6164,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -7003,7 +6486,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -7093,7 +6576,7 @@ const props$j = {
     default: ""
   }
 };
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$j,
   // emits: ['change'],
@@ -7575,7 +7058,7 @@ const props$h = {
     }
   }
 };
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -7779,7 +7262,7 @@ const props$g = {
     default: false
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -8678,7 +8161,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$e,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -8909,7 +8392,7 @@ const props$d = {
     default: ""
   }
 };
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$d,
   setup(props2, {
@@ -9099,10 +8582,10 @@ function normalizeText(text, { space, decode }) {
   }
   return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-function parseText(text, options) {
-  return normalizeText(text, options).split(uniShared.LINEFEED);
+function parseTextIgnoreLinefeed(text, options) {
+  return normalizeText(text, options);
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -9127,10 +8610,11 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
       if (slots.default) {
         slots.default().forEach((vnode) => {
           if (vnode.shapeFlag & 8 && vnode.type !== vue.Comment) {
-            const lines = parseText(vnode.children, {
+            let lines = [];
+            lines = [parseTextIgnoreLinefeed(vnode.children, {
               space: props2.space,
               decode: props2.decode
-            });
+            })];
             const len = lines.length - 1;
             lines.forEach((line, index2) => {
               if (index2 === 0 && !line)
@@ -9176,7 +8660,7 @@ const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$b,
   emits: ["confirm", "change", "linechange", ...emit],
@@ -9336,7 +8820,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ shared.extend({}, hoverProps),
   setup(props2, {
@@ -9912,6 +9396,378 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = vue.getCurrentInstance()) => {
+  !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
+};
+const onBackPress = /* @__PURE__ */ createLifeCycleHook(
+  uniShared.ON_BACK_PRESS,
+  2
+  /* HookFlags.PAGE */
+);
+class UniPageContainerElement extends UniElement {
+}
+var __defProp$1 = Object.defineProperty;
+var __defProps$1 = Object.defineProperties;
+var __getOwnPropDescs$1 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$1 = Object.getOwnPropertySymbols;
+var __hasOwnProp$1 = Object.prototype.hasOwnProperty;
+var __propIsEnum$1 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$1 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$1.call(b, prop))
+      __defNormalProp$1(a, prop, b[prop]);
+  if (__getOwnPropSymbols$1)
+    for (var prop of __getOwnPropSymbols$1(b)) {
+      if (__propIsEnum$1.call(b, prop))
+        __defNormalProp$1(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$1 = (a, b) => __defProps$1(a, __getOwnPropDescs$1(b));
+const MAX_SLIDER_DISTANCE = 100;
+const MIN_SLIDER_VELOCITY = 0.3;
+const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent(__spreadProps$1(__spreadValues$1({}, {
+  name: "page-container",
+  rootElement: {
+    name: "uni-page-container",
+    class: UniPageContainerElement
+  }
+}), {
+  __name: "index",
+  props: {
+    show: { type: Boolean, default: false },
+    duration: { default: 300, type: Number },
+    zIndex: { default: 100, type: Number },
+    overlay: { type: Boolean, default: true },
+    round: { type: Boolean, default: false },
+    position: { default: "bottom", type: String },
+    customStyle: { default: "", type: String },
+    overlayStyle: { default: "", type: String },
+    closeOnSlideDown: { type: Boolean, default: false }
+  },
+  emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    const emits = __emit;
+    const showPageContainer = vue.ref(false);
+    const isAnimating = vue.ref(false);
+    const transitionTimer = vue.ref(null);
+    const isEntered = vue.ref(false);
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isDragging = false;
+    const translateValue = vue.ref(0);
+    const overlayStyleMap = vue.computed(() => {
+      const styleObj = {
+        "z-index": props2.zIndex,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (isEntered.value) {
+        styleObj["opacity"] = "1";
+        styleObj["pointer-events"] = "auto";
+      }
+      return styleObj;
+    });
+    const innerStyleMap = vue.computed(() => {
+      const styleObj = {
+        "z-index": props2.zIndex + 1,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (translateValue.value != 0 && isDragging) {
+        let transformValue = "";
+        switch (props2.position) {
+          case "bottom":
+          case "top":
+            transformValue = `translateY(${translateValue.value}px)`;
+            break;
+          case "left":
+          case "right":
+            transformValue = `translateX(${translateValue.value}px)`;
+            break;
+        }
+        if (transformValue != "") {
+          styleObj["transform"] = transformValue;
+          styleObj["transition"] = "none";
+        }
+      } else if (translateValue.value != 0 && !isDragging) {
+        styleObj["transition"] = `transform ${props2.duration}ms ease`;
+      }
+      return styleObj;
+    });
+    const popupClasses = vue.computed(() => {
+      const classes = [];
+      if (props2.position != null) {
+        classes.push(`uni-page-container-popup-${props2.position}`);
+      }
+      if (props2.round) {
+        classes.push("uni-page-container-popup-round");
+      }
+      if (isEntered.value) {
+        classes.push("uni-page-container-popup-enter");
+      }
+      return classes;
+    });
+    function clearTransitionTimer() {
+      if (transitionTimer.value != null) {
+        clearTimeout(transitionTimer.value);
+        transitionTimer.value = null;
+      }
+    }
+    function onAnimationEnd(type) {
+      isAnimating.value = false;
+      clearTransitionTimer();
+      if (type == "enter") {
+        emits("afterenter");
+      } else if (type == "leave") {
+        showPageContainer.value = false;
+        emits("afterleave");
+      }
+    }
+    function listenTransitionEnd(type) {
+      clearTransitionTimer();
+      transitionTimer.value = setTimeout(() => {
+        onAnimationEnd(type);
+      }, props2.duration);
+    }
+    function resetDragState() {
+      isDragging = false;
+      translateValue.value = 0;
+    }
+    function openContainer() {
+      emits("beforeenter");
+      showPageContainer.value = true;
+      isEntered.value = false;
+      resetDragState();
+      vue.nextTick(() => {
+        emits("enter");
+        isAnimating.value = true;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            isEntered.value = true;
+            listenTransitionEnd("enter");
+          });
+        });
+      });
+    }
+    function closeContainer() {
+      if (isAnimating.value) {
+        return;
+      }
+      emits("beforeleave");
+      isAnimating.value = true;
+      vue.nextTick(() => {
+        isEntered.value = false;
+        emits("leave");
+        listenTransitionEnd("leave");
+      });
+    }
+    vue.watch(
+      () => props2.show,
+      (newVal) => {
+        if (newVal && !showPageContainer.value) {
+          openContainer();
+        } else if (!newVal && showPageContainer.value) {
+          closeContainer();
+        }
+      }
+    );
+    function onClickOverlay(event) {
+      if (isAnimating.value) {
+        return;
+      }
+      emits("clickoverlay", event);
+      vue.nextTick(() => {
+        closeContainer();
+      });
+    }
+    function onTouchStart(e2) {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        touchStartX = clientX;
+        touchStartY = clientY;
+        touchStartTime = Date.now();
+        isDragging = false;
+      }
+    }
+    function onTouchMove(e2) {
+      if (!props2.closeOnSlideDown) {
+        e2.preventDefault();
+        e2.stopPropagation();
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        const deltaX = clientX - touchStartX;
+        const deltaY = clientY - touchStartY;
+        let shouldDrag = false;
+        let dragValue = 0;
+        switch (props2.position) {
+          case "bottom":
+            if (deltaY > 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "top":
+            if (deltaY < 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "left":
+            if (deltaX < 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+          case "right":
+            if (deltaX > 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+        }
+        if (shouldDrag) {
+          isDragging = true;
+          translateValue.value = dragValue;
+          e2.preventDefault();
+          e2.stopPropagation();
+        }
+      }
+    }
+    function onTouchEnd() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        const deltaTime = Date.now() - touchStartTime;
+        const velocity = Math.abs(translateValue.value) / deltaTime;
+        if (Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY) {
+          resetDragState();
+          closeContainer();
+        } else {
+          resetDragState();
+        }
+      }
+    }
+    function onTouchCancel() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        resetDragState();
+      }
+    }
+    onBackPress(() => {
+      if (showPageContainer.value) {
+        closeContainer();
+        return true;
+      }
+      return false;
+    });
+    return (_ctx, _cache) => {
+      const _component_view = __syscom_0;
+      return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
+        _ctx.overlay && showPageContainer.value ? (vue.openBlock(), vue.createBlock(_component_view, {
+          key: 0,
+          class: "uni-page-container-overlay",
+          style: vue.normalizeStyle([overlayStyleMap.value, _ctx.overlayStyle]),
+          onClick: onClickOverlay,
+          onTouchmove: _cache[0] || (_cache[0] = vue.withModifiers(() => {
+          }, ["prevent", "stop"]))
+        }, null, 8, ["style"])) : vue.createCommentVNode("", true),
+        showPageContainer.value ? (vue.openBlock(), vue.createBlock(_component_view, {
+          key: 1,
+          class: vue.normalizeClass(["uni-page-container-popup", popupClasses.value]),
+          style: vue.normalizeStyle([innerStyleMap.value, _ctx.customStyle]),
+          onTouchstart: onTouchStart,
+          onTouchmove: onTouchMove,
+          onTouchend: onTouchEnd,
+          onTouchcancel: onTouchCancel
+        }, {
+          default: vue.withCtx(() => [
+            vue.renderSlot(_ctx.$slots, "default")
+          ]),
+          _: 3
+        }, 8, ["class", "style"])) : vue.createCommentVNode("", true)
+      ], 64);
+    };
+  }
+}));
+class UniVueElement extends Object {
+}
+class UniLoadingElement extends UniVueElement {
+}
+function useLoadingStyle(targetElement, bold) {
+  const loadingSize = vue.ref("16px");
+  const loadingBorderWidth = vue.ref("1px");
+  const loadingBorderRadius = vue.ref("8px");
+  return {
+    size: loadingSize,
+    borderWidth: loadingBorderWidth,
+    borderRadius: loadingBorderRadius
+  };
+}
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValues({}, {
+  name: "loading",
+  // @ts-ignore
+  rootElement: {
+    name: "uni-loading-element",
+    class: UniLoadingElement
+  }
+}), {
+  __name: "index-x",
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = vue.ref(null);
+    const loadingStyle = vue.reactive(useLoadingStyle(LoadingRef, vue.computed(() => props2.bold)));
+    return (_ctx, _cache) => {
+      const _component_view = __syscom_0;
+      return vue.openBlock(), vue.createBlock(_component_view, {
+        class: "__uni_loading_container__",
+        ref_key: "LoadingRef",
+        ref: LoadingRef,
+        style: { "display": "flex" }
+      }, {
+        default: vue.withCtx(() => [
+          vue.createVNode(_component_view, {
+            class: vue.normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
+            style: vue.normalizeStyle([{ "box-sizing": "border-box" }, { width: loadingStyle.size, height: loadingStyle.size, borderWidth: loadingStyle.borderWidth }])
+          }, null, 8, ["class", "style"])
+        ]),
+        _: 1
+      }, 512);
+    };
+  }
+}));
 function useSubscribe(callback, name, multiple, pageId) {
   const instance = vue.getCurrentInstance();
   instance.proxy;
@@ -9954,7 +9810,7 @@ function initHooks(options, instance, publicThis) {
     try {
       let query = instance.attrs.__pageQuery;
       if (true) {
-        query = new UTSJSONObject(uniShared.decodedQuery(query));
+        query = new uniShared.UTSJSONObject(uniShared.decodedQuery(query));
       }
       if (false)
         ;
@@ -10204,7 +10060,7 @@ function formatTime(val) {
   }
   return str;
 }
-function useGesture(props2, videoRef, fullscreenState) {
+function useGesture(props2, videoState, videoRef, fullscreenState) {
   const state = vue.reactive({
     seeking: false,
     gestureType: "none",
@@ -10307,8 +10163,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     state.gestureType = "none";
   }
   function changeProgress(x) {
-    const video = videoRef.value;
-    const duration = video.duration;
+    const duration = videoState.currentDuration;
     let currentTimeNew = x / 600 * duration + state.currentTimeOld;
     if (currentTimeNew < 0) {
       currentTimeNew = 0;
@@ -10420,6 +10275,7 @@ function useVideo(props2, attrs2, trigger) {
     playing: false,
     currentTime: 0,
     duration: 0,
+    currentDuration: 0,
     progress: 0,
     buffered: 0,
     muted,
@@ -10437,6 +10293,11 @@ function useVideo(props2, attrs2, trigger) {
   vue.watch(() => muted.value, (muted2) => {
     const video = videoRef.value;
     video.muted = muted2;
+  });
+  vue.watch([() => state.duration, () => props2.duration], () => {
+    let _duration = Number(props2.duration);
+    isNaN(_duration) && (_duration = 0);
+    state.currentDuration = _duration > 0 ? _duration : state.duration;
   });
   function onDurationChange({
     target
@@ -10572,7 +10433,7 @@ function useControls(props2, videoState, seek, seeking) {
     let progress = 0;
     if (x >= 0 && x <= w) {
       progress = x / w;
-      seek(videoState.duration * progress);
+      seek(videoState.currentDuration * progress);
     }
   }
   function toggleControls() {
@@ -10699,10 +10560,15 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
       controlsState.controlsVisible = val;
     }
   });
-  vue.watch([() => videoState.currentTime, () => {
-    props$9.duration;
-  }], () => {
-    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  vue.watch([() => videoState.currentTime, () => videoState.currentDuration], () => {
+    if (videoState.currentDuration > 0) {
+      videoState.progress = videoState.currentTime / videoState.currentDuration * 100;
+    } else {
+      videoState.progress = 0;
+    }
+    videoState.progress > 100 && (videoState.progress = 100);
+  }, {
+    immediate: true
   });
   vue.watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
     videoState.currentTime = currentTimeNew;
@@ -10817,7 +10683,6 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    useI18n();
     initI18nVideoMsgsOnce();
     const {
       videoRef,
@@ -10858,7 +10723,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       onTouchstart,
       onTouchend,
       onTouchmove
-    } = useGesture(props2, videoRef, fullscreenState);
+    } = useGesture(props2, videoState, videoRef, fullscreenState);
     const {
       state: controlsState,
       progressRef,
@@ -10894,7 +10759,10 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "poster": props2.poster,
         "autoplay": !!props2.autoplay
       }, videoAttrs.value, {
-        "class": "uni-video-video",
+        "class": {
+          "uni-video-video": true,
+          "uni-video-video-fullscreen": fullscreenState.fullscreen
+        },
         "webkit-playsinline": true,
         "playsinline": true,
         "onDurationchange": onDurationChange,
@@ -10962,7 +10830,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-inner"
       }, null)], 6)], 2)], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
+      }, [formatTime(videoState.currentDuration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
         "class": {
           "uni-video-icon": true,
           "uni-video-danmu-button": true,
@@ -11015,7 +10883,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title"
       }, [vue.createVNode("span", {
         "class": "uni-video-toast-title-current-time"
-      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), vue.createVNode("div", {
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), vue.createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -13427,6 +13295,9 @@ function normalizeContentType(header) {
     header["Content-Type"] = header[name];
     delete header[name];
   }
+  if (!contentType) {
+    return "string";
+  }
   if (contentType.indexOf("application/json") === 0) {
     return "json";
   } else if (contentType.indexOf("application/x-www-form-urlencoded") === 0) {
@@ -13711,10 +13582,10 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       deviceOrientation,
       deviceType,
       model,
-      platform,
-      system,
       osName: osname ? osname.toLowerCase() : void 0,
-      osVersion: osversion
+      osVersion: osversion,
+      platform,
+      system
     });
   }
 );
@@ -13738,15 +13609,15 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         hostVersion: browserVersion,
         hostTheme: theme,
         hostLanguage: language,
+        isUniAppX: true,
         language,
         SDKVersion: "",
         theme,
-        version: "",
         uniPlatform: "web",
-        isUniAppX: true,
         uniCompileVersion: __uniConfig.compilerVersion,
         uniCompilerVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion
+        uniRuntimeVersion: __uniConfig.compilerVersion,
+        version: ""
       },
       {
         uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
@@ -14525,55 +14396,73 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
     }, windowState), null, 16)])], 12, ["data-show"]), [[vue.vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
   }
 }
+Object.defineProperty(exports, "UTS", {
+  enumerable: true,
+  get: () => uniShared.UTS
+});
+Object.defineProperty(exports, "UTSJSONObject", {
+  enumerable: true,
+  get: () => uniShared.UTSJSONObject
+});
+Object.defineProperty(exports, "UTSValueIterable", {
+  enumerable: true,
+  get: () => uniShared.UTSValueIterable
+});
+Object.defineProperty(exports, "UniError", {
+  enumerable: true,
+  get: () => uniShared.UniError
+});
 exports.Ad = index$5;
 exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$y;
+exports.Button = index$x;
 exports.Camera = index$2;
 exports.Canvas = indexX$4;
-exports.Checkbox = index$w;
-exports.CheckboxGroup = index$x;
+exports.Checkbox = index$v;
+exports.CheckboxGroup = index$w;
 exports.CoverImage = index$7;
 exports.CoverView = index$8;
-exports.Editor = index$v;
-exports.Form = index$A;
-exports.Icon = index$u;
-exports.Image = index$t;
+exports.Editor = index$u;
+exports.Form = index$z;
+exports.Icon = index$t;
+exports.Image = index$s;
 exports.Input = Input;
-exports.Label = index$z;
+exports.Label = index$y;
 exports.LayoutComponent = LayoutComponent;
 exports.ListItem = index$f;
 exports.ListView = index$g;
 exports.LivePlayer = index$1;
 exports.LivePusher = index;
+exports.Loading = _sfc_main;
 exports.Map = index$9;
-exports.MovableArea = index$s;
-exports.MovableView = index$r;
-exports.Navigator = index$q;
+exports.MovableArea = index$r;
+exports.MovableView = index$q;
+exports.Navigator = index$p;
 exports.PageComponent = PageComponent;
+exports.PageContainer = _sfc_main$1;
 exports.Picker = index$6;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$p;
+exports.Progress = index$o;
 exports.Radio = indexX$3;
-exports.RadioGroup = index$o;
+exports.RadioGroup = index$n;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$n;
-exports.ScrollView = index$m;
+exports.RichText = index$m;
+exports.ScrollView = index$l;
 exports.Slider = indexX$2;
 exports.StickyHeader = index$d;
 exports.StickySection = index$e;
-exports.Swiper = index$l;
-exports.SwiperItem = index$k;
+exports.Swiper = index$k;
+exports.SwiperItem = index$j;
 exports.Switch = indexX$1;
-exports.Text = index$j;
-exports.Textarea = index$i;
+exports.Text = index$i;
+exports.Textarea = index$h;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
 exports.Video = index$a;
-exports.View = index$h;
+exports.View = __syscom_0;
 exports.WebView = indexX;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;

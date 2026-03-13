@@ -3,9 +3,10 @@ import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN,
   type MiniProgramCompilerOptions,
+  createCopyComponentDirs,
   getNativeTags,
   transformComponentLink,
-  transformMatchMedia,
+  // transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
@@ -14,7 +15,7 @@ import source from './project.config.json'
 
 const nodeTransforms = [
   transformRef,
-  transformMatchMedia,
+  // transformMatchMedia,
   transformComponentLink,
 ]
 
@@ -83,7 +84,7 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: [COMPONENTS_DIR],
+      assets: createCopyComponentDirs(COMPONENTS_DIR),
       targets: [
         {
           src: ['custom-tab-bar', 'project.config.json'],

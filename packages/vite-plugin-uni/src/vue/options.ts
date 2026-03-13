@@ -1,12 +1,21 @@
+import path from 'path'
 import fsExtra from 'fs-extra'
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type { Plugin } from 'vite'
+import type { ElementNode } from '@vue/compiler-core'
 import type {
   AssetURLOptions,
+  CompilerError,
+  SFCDescriptor,
   SFCStyleCompileOptions,
   TemplateCompiler,
 } from '@vue/compiler-sfc'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
+import {
+  isBuiltInComponent,
+  isDom2AppUserVueComponentTag,
+  isDom2VueComponentTag,
+} from '@dcloudio/uni-shared'
 import {
   EXTNAME_VUE_RE,
   type UniVitePlugin,
@@ -14,12 +23,17 @@ import {
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
   isExternalUrl,
+  isUniPageFile,
+  matchEasycom,
   normalizePath,
+  onVueTemplateCompileLog,
   preJs,
+  requireUniHelpers,
+  resolveAppVue,
   resolveUniTypeScript,
+  uniPostcssExternalPlugin,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
-import { parseInlineStyleSync } from '@dcloudio/uni-nvue-styler'
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
 
@@ -69,32 +83,28 @@ export function initPluginVueOptions(
   }
   // 解析 scoped 中 deep 等特殊语法
   styleOptions.postcssPlugins.push(uniPostcssScopedPlugin())
+  // 解析 :external() 语法，dom2 + 小程序平台下提升外部类选择器权重
+  if (
+    process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+    process.env.UNI_APP_X === 'true'
+  ) {
+    styleOptions.postcssPlugins.push(uniPostcssExternalPlugin())
+  }
 
   const templateOptions = vueOptions.template || (vueOptions.template = {})
 
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
+  const isDom2Harmony =
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_PLATFORM === 'app-harmony'
+
   ;(compilerOptions as any).isX = process.env.UNI_APP_X === 'true'
+  ;(compilerOptions as any).dom2 = isDom2Harmony
 
   // 默认就移除comments节点
   compilerOptions.comments = false
-
-  if (process.env.UNI_PLATFORM !== 'web') {
-    // 非 web 平台，使用 factory 模式
-    ;(compilerOptions as any).templateMode = 'factory'
-    // 目前禁用事件委托
-    ;(compilerOptions as any).disableEventDelegation = true
-    // 禁用 class 绑定，全部编译为 setClass 模式
-    ;(compilerOptions as any).disableClassBinding = true
-    // 解析静态样式
-    ;(compilerOptions as any).parseStaticStyle = (style: string) => {
-      return parseInlineStyleSync(style, {
-        type: 'uvue',
-        platform: process.env.UNI_UTS_PLATFORM,
-      })
-    }
-  }
 
   const {
     compiler,
@@ -121,9 +131,19 @@ export function initPluginVueOptions(
     ;(compilerOptions as any).miniProgram = miniProgram
   }
 
+  const isDevX =
+    process.env.UNI_HX_VERSION_DEV === 'true' &&
+    process.env.UNI_APP_X === 'true'
   if (isNativeTag) {
     const userIsNativeTag = compilerOptions.isNativeTag
     compilerOptions.isNativeTag = (tag) => {
+      if (isDevX) {
+        const source = matchEasycom(tag)
+        // 不能是uts插件的easycom组件
+        if (source && !source.includes('?uts-proxy')) {
+          return false
+        }
+      }
       if (isNativeTag(tag)) {
         return true
       }
@@ -188,7 +208,7 @@ export function initPluginVueOptions(
   if (
     typeof userOptionsTransformAssetUrls !== 'boolean' &&
     !!userOptionsTransformAssetUrls?.tags &&
-    !Array.isArray(userOptionsTransformAssetUrls.tags)
+    !isArray(userOptionsTransformAssetUrls.tags)
   ) {
     templateOptions.transformAssetUrls = {
       ...builtInTransformAssetUrls,
@@ -199,13 +219,12 @@ export function initPluginVueOptions(
       },
     }
   }
+
   if (options.platform !== 'h5' && options.platform !== 'web') {
     compilerOptions.nodeTransforms.push(
       ...getBaseNodeTransforms(
         options.base,
-        process.env.UNI_VUE_VAPOR === 'true'
-          ? createResolveStaticAsset(options.inputDir)
-          : undefined
+        isDom2Harmony ? createResolveStaticAsset(options.inputDir) : undefined
       )
     )
   }
@@ -288,6 +307,74 @@ export function initPluginVueOptions(
     // decorators or decorators-legacy
     if (!vueOptions.script.babelParserPlugins.includes('decorators')) {
       vueOptions.script.babelParserPlugins.push('decorators')
+    }
+    if (isDom2Harmony) {
+      const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
+      function isAppVue(id: string) {
+        return normalizePath(id) === appVue
+      }
+      ;(compilerOptions as any).isEasyComponent = (tag: string) => {
+        return isDom2VueComponentTag(tag) || !!matchEasycom(tag)
+      }
+      ;(compilerOptions as any).isUserComponent = (element: ElementNode) => {
+        return isDom2AppUserVueComponentTag(element.tag)
+      }
+      ;(vueOptions.script as any).extraOptions = (
+        descriptor: SFCDescriptor
+      ) => {
+        return {
+          isWatch: process.env.NODE_ENV === 'development',
+          helper: requireUniHelpers(),
+          componentType: isUniPageFile(descriptor.filename)
+            ? 'page'
+            : isAppVue(descriptor.filename)
+            ? 'app'
+            : 'component',
+        }
+      }
+
+      let disableStaticStyle = false
+      if (isDevX && process.env.NODE_ENV === 'development') {
+        if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+          // 开发版本、开发模式下，非鸿蒙release模式打包
+          disableStaticStyle =
+            process.env.UNI_APP_HARMONY_RUN_MODE !== 'release'
+        }
+      }
+      ;(vueOptions.template.compilerOptions as any).extraOptions = (
+        descriptor: SFCDescriptor
+      ) => {
+        const filename = normalizePath(descriptor.filename.split('?')[0])
+        const relativeFilename = normalizePath(
+          path.relative(process.env.UNI_INPUT_DIR, filename)
+        )
+        return {
+          root: normalizePath(process.env.UNI_INPUT_DIR),
+          platform: process.env.UNI_UTS_PLATFORM,
+          componentType: isUniPageFile(filename) ? 'page' : 'component',
+          relativeFilename,
+          helper: requireUniHelpers(),
+          scriptCppBlocks: (descriptor as any).scriptCppBlocks,
+          genVueId: !!process.env.UNI_AUTOMATOR_WS_ENDPOINT,
+          disableStaticStyle,
+          onVueTemplateCompileLog(
+            type: 'warn' | 'error',
+            error: CompilerError
+          ) {
+            return onVueTemplateCompileLog(
+              type,
+              error,
+              descriptor.source,
+              relativeFilename
+            )
+          },
+        }
+      }
+    } else {
+      // 如果是 easyComponent 组件，则不需要从setup中导入组件且不支持 self 引用
+      ;(compilerOptions as any).isEasyComponent = (tag: string) => {
+        return isBuiltInComponent(tag) || !!matchEasycom(tag)
+      }
     }
   }
 

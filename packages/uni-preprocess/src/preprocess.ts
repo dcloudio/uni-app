@@ -97,12 +97,12 @@ type Processor = (
 ) => void
 
 const startPattern =
-  '[ \t]*(?://|/\\*)[ \t]*#(ifndef|ifdef)[ \t]+([^\n*]*)(?:\\*(?:\\*|/))?(?:[ \t]*\n+)?'
+  '[ \t]*(?://|/\\*)[ \t]*#(ifndef|ifdef)[ \t]+([^\n*]*)(?:\\*(?:\\*|/))?(?:[ \t]*\n)?'
 const endPattern =
   '[ \t]*(?://|/\\*)[ \t]*#endif[ \t]*(?:\\*(?:\\*|/))?(?:[ \t]*\n)?'
 
 const startPatternHTML =
-  '[ \t]*<!--[ \t]*#(ifndef|ifdef|if)[ \t]+(.*?)[ \t]*(?:-->|!>)(?:[ \t]*\n+)?'
+  '[ \t]*<!--[ \t]*#(ifndef|ifdef|if)[ \t]+(.*?)[ \t]*(?:-->|!>)(?:[ \t]*\n)?'
 const endPatternHTML =
   '[ \t]*<!(?:--)?[ \t]*#endif[ \t]*(?:-->|!>)(?:[ \t]*\n)?'
 

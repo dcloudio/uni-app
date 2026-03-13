@@ -33,6 +33,13 @@ export class UniElement {
   }
 
   scrollTo(options: unknown) {
+    if (
+      (this.$vm as ComponentPublicInstance & { $mpPlatform: string })
+        .$mpPlatform !== 'mp-weixin'
+    ) {
+      console.warn('scrollTo is only supported on weixin miniProgram')
+      return
+    }
     if (!this.id) {
       console.warn(`scrollTo is only supported on elements with id`)
       return
@@ -85,13 +92,17 @@ export class UniElement {
       )
       return Promise.reject()
     }
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this._getBoundingClientRectAsync(resolve)
     })
   }
 
   _getBoundingClientRectAsync(callback) {
-    const query = uni.createSelectorQuery().in(this.$vm)
+    const query =
+      (this.$vm as ComponentPublicInstance & { $mpPlatform: string })
+        .$mpPlatform === 'mp-alipay'
+        ? uni.createSelectorQuery()
+        : uni.createSelectorQuery().in(this.$vm)
     query.select('#' + this.id).boundingClientRect()
     query.exec((res) => {
       this._fixDomRectXY(res[0])

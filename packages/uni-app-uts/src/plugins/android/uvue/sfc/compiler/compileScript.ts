@@ -1027,6 +1027,7 @@ ${exposeCall}`
       scriptMap = generateScriptMap(offset, map, scriptMap)
     }
   } else {
+    ctx.s.appendRight(endOffset, 'return (): any | null => { return null } }\n')
     ctx.s.appendRight(endOffset, `})`)
     ctx.s.trim()
     scriptMap =

@@ -68,6 +68,7 @@ import {
   isDestructuringSlotProps,
 } from './transforms/transformSlotPropsDestructuring'
 import type { ImportItem } from './transform'
+import { isAppUVueBuiltInEasyComponent } from '@dcloudio/uni-shared'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
@@ -347,7 +348,7 @@ function genAssets(
   for (let i = 0; i < assets.length; i++) {
     let id = assets[i]
     // potential component implicit self-reference inferred from SFC filename
-    const maybeSelfReference = id.endsWith('__self')
+    let maybeSelfReference = id.endsWith('__self')
     if (maybeSelfReference) {
       id = id.slice(0, -6)
     }
@@ -378,6 +379,11 @@ function genAssets(
           id,
           source
         )
+      } else {
+        if (isAppUVueBuiltInEasyComponent(id)) {
+          // 内置easycom组件不传入self参数
+          maybeSelfReference = false
+        }
       }
     }
     if (!assetCode) {

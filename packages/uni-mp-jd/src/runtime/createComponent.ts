@@ -87,7 +87,14 @@ export function parseComponent(
   const options: Component.ComponentOptions = {
     multipleSlots: true,
     addGlobalClass: true,
-    pureDataPattern: /^uP$/,
+    // TODO
+    /**
+     * 配置 pureDataPattern 字段后，ComponentOptions.properties.propertyName.observer 就不会触发，而除鸿蒙外的平台会触发
+     * 在京东小程序官网没有找到相关说明
+     * 而根据微信小程序文档：https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/pure-data.html 监听纯数组字段的话，又在鸿蒙之外的平台不会触发 observer
+     * 故删除该配置以保证各平台行为一致
+     */
+    // pureDataPattern: /^uP$/,
   }
 
   if (vueOptions.options) {

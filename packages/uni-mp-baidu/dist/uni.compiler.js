@@ -91,7 +91,11 @@ const customElements = [
     'talos-svg',
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
-const nodeTransforms = [uniCliShared.transformRef, transformFor, uniCliShared.transformMatchMedia];
+const nodeTransforms = [
+    uniCliShared.transformRef,
+    transformFor,
+    // transformMatchMedia
+];
 const directiveTransforms = {
     on: transformOn,
     model: transformModel,
@@ -135,15 +139,8 @@ const options = {
             'uni-mp-runtime': path__default.default.resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
-            assets: [COMPONENTS_DIR],
-            targets: [
-                {
-                    src: ['ext.json'],
-                    get dest() {
-                        return process.env.UNI_OUTPUT_DIR;
-                    },
-                },
-            ],
+            assets: uniCliShared.createCopyComponentDirs(COMPONENTS_DIR),
+            targets: [uniCliShared.createCopyPluginTarget(['ext.json'])],
         },
     },
     global: 'swan',

@@ -29,6 +29,8 @@ import {
   FILTER_MODULE_NAME,
   FILTER_SET_ELEMENT_ANIMATION,
   FILTER_SET_ELEMENT_STYLE,
+  builtInComponents,
+  builtInCustomElements,
   filterName,
   filterObserverName,
 } from './utils'
@@ -46,9 +48,6 @@ import {
 } from '@babel/types'
 import { parseExpr } from '../ast'
 import { genBabelExpr } from '../codegen'
-
-const builtInCustomElements = ['uni-cloud-db-element']
-const builtInComponents = ['unicloud-db']
 
 export function rewriteId(node: ElementNode, context: TransformContext) {
   const isUniElement = !isUserComponent(node, context)

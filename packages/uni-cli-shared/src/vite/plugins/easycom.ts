@@ -10,6 +10,7 @@ import {
   matchEasycom,
 } from '../../easycom'
 import { getUTSCustomElement } from '../../uts'
+import { isAppUVueBuiltInEasyComponent } from '@dcloudio/uni-shared'
 
 interface UniEasycomPluginOptions {
   include?: FilterPattern
@@ -65,6 +66,12 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
                   ''
                 )
                 return `'${name}'`
+              }
+            }
+            if (process.env.UNI_APP_X === 'true') {
+              if (isAppUVueBuiltInEasyComponent(name)) {
+                // 内置easycom组件不传入self参数
+                return str.replace(', true)', ')')
               }
             }
           }

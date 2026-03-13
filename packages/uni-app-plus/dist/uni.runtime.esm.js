@@ -1,5 +1,5 @@
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
-import { once, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, formatLog, parseNVueDataset, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, OFF_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, EventChannel, ON_READY, ON_UNLOAD, normalizeTabBarStyles, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, ON_REACH_BOTTOM_DISTANCE, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { once, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, resolveComponentInstance, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, formatLog, parseNVueDataset, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, OFF_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, EventChannel, ON_READY, ON_UNLOAD, normalizeTabBarStyles, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, ON_REACH_BOTTOM_DISTANCE, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
 import { ref, createMountPage, unmountPage, injectHook, queuePostFlushCb, getCurrentGenericInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
 
 /*
@@ -1574,6 +1574,11 @@ function invokeHook(vm, name, args) {
         }
     }
     const hooks = vm.$[name];
+    // 存在多个 onBackPress 生命周期时，任一个返回 true 则返回 true，否则返回 false
+    if (name === ON_BACK_PRESS) {
+        return (hooks &&
+            invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true));
+    }
     return hooks && invokeArrayFns(hooks, args);
 }
 
@@ -1870,7 +1875,9 @@ function initAppVm(appVm) {
 function initPageVm(pageVm, page) {
     pageVm.route = page.route;
     pageVm.$vm = pageVm;
-    pageVm.$page = page;
+    {
+        pageVm.$page = page;
+    }
     pageVm.$mpType = 'page';
     pageVm.$fontFamilySet = new Set();
     if (page.meta.isTabBar) {
@@ -13401,10 +13408,13 @@ function parseTheme(pageStyle) {
     if (__uniConfig.darkmode) {
         let parsedStyle = {};
         let theme = plus.navigator.getUIStyle();
-        const systemInfo = weexGetSystemInfoSync();
-        // 小程序 SDK
-        if (systemInfo && systemInfo.hostTheme) {
-            theme = systemInfo.hostTheme;
+        // @ts-expect-error 鸿蒙端编译时写入 plus.os.name 鸿蒙暂不支持 hostTheme
+        if (plus.os.name !== 'HarmonyOS') {
+            const systemInfo = weexGetSystemInfoSync();
+            // 小程序 SDK
+            if (systemInfo && systemInfo.hostTheme) {
+                theme = systemInfo.hostTheme;
+            }
         }
         parsedStyle = normalizeStyles(pageStyle, __uniConfig.themeConfig, theme);
         return parsedStyle;
@@ -13672,7 +13682,9 @@ var tabBarInstance = {
     },
     removeEventListener(_name, callback) {
         const callbackIndex = maskClickCallback.indexOf(callback);
-        maskClickCallback.splice(callbackIndex, 1);
+        if (callbackIndex > -1) {
+            maskClickCallback.splice(callbackIndex, 1);
+        }
     },
 };
 
@@ -13816,7 +13828,10 @@ function weexGetSystemInfoSync() {
     if (!_initSystemInfo)
         return;
     const { getSystemInfoSync } = weex.requireModule('plus');
-    systemInfo = getSystemInfoSync();
+    try {
+        systemInfo = getSystemInfoSync();
+    }
+    catch (error) { }
     if (isString(systemInfo)) {
         try {
             systemInfo = JSON.parse(systemInfo);
@@ -13839,14 +13854,14 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
         deviceOrientation,
         deviceType,
         model: deviceModel,
-        platform: _osName,
-        system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
         osName,
         osVersion,
         osLanguage,
         osTheme,
+        platform: _osName,
         romName,
         romVersion,
+        system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
     };
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
@@ -13867,15 +13882,15 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         hostTheme,
         hostFontSizeSetting: undefined,
         hostSDKVersion: undefined,
+        isUniAppX: false,
         language: osLanguage,
         SDKVersion: '',
         theme: getTheme(),
-        version: plus.runtime.innerVersion,
-        isUniAppX: false,
         uniPlatform,
         uniRuntimeVersion,
         uniCompileVersion,
         uniCompilerVersion: uniCompileVersion,
+        version: plus.runtime.innerVersion,
     };
 });
 const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
@@ -13898,7 +13913,7 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
     delete _systemInfo.enableDebug;
     if (!__uniConfig.darkmode)
         delete _systemInfo.theme;
-    return sortObject(_systemInfo);
+    return _systemInfo;
 });
 const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {
     return resolve(getSystemInfoSync());
@@ -15043,7 +15058,8 @@ class DownloadTask {
 const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, ({ url, header, timeout }, { resolve, reject }) => {
     timeout =
         (timeout ||
-            (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) ||
+            (__uniConfig.networkTimeout &&
+                __uniConfig.networkTimeout.downloadFile) ||
             60 * 1000) / 1000;
     const downloader = plus.downloader.createDownload(url, {
         timeout,
@@ -15053,8 +15069,13 @@ const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, ({ url, header, timeout },
         retryInterval: 0,
     }, (download, statusCode) => {
         if (statusCode) {
+            let tempFilePath = download.filename;
+            try {
+                tempFilePath = decodeURIComponent(tempFilePath);
+            }
+            catch (e) { }
             resolve({
-                tempFilePath: download.filename,
+                tempFilePath,
                 statusCode,
             });
         }
@@ -15695,17 +15716,24 @@ const onAudioStateChange = ({ state, audioId, errMsg, errCode, }) => {
     if (audio) {
         emit(audio, state, errMsg, errCode);
         if (state === 'play') {
-            const oldCurrentTime = audio.currentTime;
-            emit(audio, 'timeUpdate');
-            audio.__timing = setInterval(() => {
-                const currentTime = audio.currentTime;
-                if (currentTime !== oldCurrentTime) {
-                    emit(audio, 'timeUpdate');
-                }
-            }, TIME_UPDATE$1);
+            if (!audio.__timing) {
+                emit(audio, 'timeUpdate');
+                let lastCurrentTime = audio.currentTime;
+                audio.__timing = setInterval(() => {
+                    const currentTime = audio.currentTime;
+                    if (currentTime !== lastCurrentTime) {
+                        lastCurrentTime = currentTime;
+                        emit(audio, 'timeUpdate');
+                    }
+                }, TIME_UPDATE$1);
+            }
         }
-        else if (state === 'pause' || state === 'stop' || state === 'error') {
+        else if (state === 'pause' ||
+            state === 'stop' ||
+            state === 'ended' ||
+            state === 'error') {
             clearInterval(audio.__timing);
+            audio.__timing = undefined;
         }
     }
 };
@@ -15815,6 +15843,7 @@ class InnerAudioContext {
     }
     destroy() {
         clearInterval(this.__timing);
+        this.__timing = undefined;
         if (audios[this.id]) {
             audios[this.id].close();
             delete audios[this.id];

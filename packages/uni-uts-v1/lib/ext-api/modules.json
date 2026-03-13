@@ -102,6 +102,20 @@
       }
     }
   },
+  "uni-canvas-dom2": {
+    "uni": {
+      "createCanvasContextAsync": {
+        "name": "createCanvasContextAsync",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-chooseLocation": {
     "uni": {
       "chooseLocation": {
@@ -157,7 +171,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "__offAppCrash": {
@@ -165,7 +180,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "__getAppCrashInfo": {
@@ -173,7 +189,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "__deleteAppCrashInfo": {
@@ -181,7 +198,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "__createAppCrash": {
@@ -189,7 +207,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -211,7 +230,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       }
     }
@@ -224,18 +243,6 @@
           "js": true,
           "kotlin": true,
           "swift": false
-        }
-      }
-    }
-  },
-  "uni-createWebviewContext": {
-    "uni": {
-      "createWebviewContext": {
-        "name": "createWebviewContext",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
         }
       }
     }
@@ -340,6 +347,7 @@
       }
     }
   },
+  "uni-form": {},
   "uni-getAccessibilityInfo": {
     "uni": {
       "getAccessibilityInfo": {
@@ -520,6 +528,7 @@
       }
     }
   },
+  "uni-input": {},
   "uni-installApk": {
     "uni": {
       "installApk": {
@@ -563,6 +572,7 @@
       }
     }
   },
+  "uni-list-view": {},
   "uni-live-player": {
     "uni": {
       "createLivePlayerContext": {
@@ -593,6 +603,11 @@
     },
     "easycom": [
       "live-pusher"
+    ]
+  },
+  "uni-loading": {
+    "easycom": [
+      "loading"
     ]
   },
   "uni-location": {
@@ -715,6 +730,11 @@
     },
     "easycom": [
       "map"
+    ]
+  },
+  "uni-match-media": {
+    "easycom": [
+      "match-media"
     ]
   },
   "uni-media": {
@@ -844,6 +864,7 @@
       }
     }
   },
+  "uni-navigator": {},
   "uni-network": {
     "uni": {
       "request": {
@@ -920,6 +941,11 @@
         }
       }
     }
+  },
+  "uni-page-container": {
+    "easycom": [
+      "page-container"
+    ]
   },
   "uni-payment": {
     "provider": {
@@ -1009,6 +1035,7 @@
       }
     }
   },
+  "uni-progress": {},
   "uni-prompt": {
     "uni": {
       "showToast": {
@@ -1033,7 +1060,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "x-arkts": false
         }
       },
       "hideLoading": {
@@ -1041,7 +1069,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "x-arkts": false
         }
       },
       "showModal": {
@@ -1157,6 +1186,12 @@
       }
     }
   },
+  "uni-rich-text": {
+    "uni": {},
+    "easycom": [
+      "rich-text"
+    ]
+  },
   "uni-rpx2px": {
     "uni": {
       "rpx2px": {
@@ -1212,6 +1247,28 @@
     "uni": {
       "shareWithSystem": {
         "name": "shareWithSystem",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-showLoading": {
+    "uni": {
+      "showLoading": {
+        "name": "showLoading",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "hideLoading": {
+        "name": "hideLoading",
         "app": {
           "js": false,
           "kotlin": true,
@@ -1328,6 +1385,8 @@
       }
     }
   },
+  "uni-swiper": {},
+  "uni-textarea": {},
   "uni-theme": {
     "uni": {
       "onOsThemeChange": {
@@ -1480,6 +1539,32 @@
         }
       }
     }
+  },
+  "uni-waterflow": {},
+  "uni-web-view": {
+    "uni": {
+      "createWebViewContext": {
+        "name": "createWebViewContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": "dom2"
+        }
+      },
+      "createWebviewContext": {
+        "name": "createWebviewContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": "dom2"
+        }
+      }
+    },
+    "easycom": [
+      "web-view"
+    ]
   },
   "uni-websocket": {
     "uni": {

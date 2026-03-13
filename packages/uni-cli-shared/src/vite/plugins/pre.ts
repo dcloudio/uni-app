@@ -44,12 +44,14 @@ export function uniPrePlugin(
       if (!hasEndif) {
         return
       }
+      // 因为完整的 vue 会先条件编译，而 vue&type=template 等会再次条件编译，如果走error模式会报两次错误，且第二次错误没有正确的位置映射
+      const unbalanced = query.vue ? 'skip' : 'error'
       if (isHtml) {
-        code = preHtmlFile(code, id)
+        code = preHtmlFile(code, id, { unbalanced })
         debugPreHtml(id)
       }
       if (isJs) {
-        code = preJsFile(code, id)
+        code = preJsFile(code, id, { unbalanced })
         debugPreJs(id)
       }
       return {

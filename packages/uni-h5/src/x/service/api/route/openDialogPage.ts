@@ -17,6 +17,7 @@ import {
   normalizeRoute,
 } from '@dcloudio/uni-core'
 import { closePreSystemDialogPage } from './utils'
+import { UTSJSONObject } from '@dcloudio/uni-shared'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -29,7 +30,7 @@ export const openDialogPage = (
   let { path, query } = parseUrl(options.url)
   path = normalizeRoute(path)
   const normalizeUrl = createNormalizeUrl('navigateTo')
-  const errMsg = normalizeUrl(path, {})
+  const errMsg = normalizeUrl(options.url, {})
   if (errMsg) {
     triggerFailCallback(options, errMsg)
     return null

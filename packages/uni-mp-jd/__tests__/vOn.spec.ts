@@ -7,7 +7,7 @@ describe('mp-jd: transform v-on', () => {
         `<input @input="input"/>`,
         `<input bindinput=\"__e\" data-e-o=\"{{a}}\"/>`,
         `(_ctx, _cache) => {
-  return { a: { 'input': _o(_ctx.input) } }
+  return { a: { 'input': _o(_ctx.input, "8c") } }
 }`
       )
     })
@@ -16,7 +16,7 @@ describe('mp-jd: transform v-on', () => {
         `<textarea @input="input"/>`,
         `<textarea bindinput=\"__e\" data-e-o=\"{{a}}\"/>`,
         `(_ctx, _cache) => {
-  return { a: { 'input': _o(_ctx.input) } }
+  return { a: { 'input': _o(_ctx.input, "6e") } }
 }`
       )
     })
@@ -28,7 +28,7 @@ describe('mp-jd: transform v-on', () => {
         `<input @click="click"/>`,
         `<input bindtap=\"{{a}}\"/>`,
         `(_ctx, _cache) => {
-  return { a: _o(_ctx.click) }
+  return { a: _o(_ctx.click, "49") }
 }`
       )
     })
@@ -37,7 +37,7 @@ describe('mp-jd: transform v-on', () => {
         `<textarea @click="click"/>`,
         `<textarea bindtap=\"{{a}}\"/>`,
         `(_ctx, _cache) => {
-  return { a: _o(_ctx.click) }
+  return { a: _o(_ctx.click, "62") }
 }`
       )
     })
@@ -49,7 +49,7 @@ describe('mp-jd: transform v-on', () => {
         `<input @click="click" @input="input"/>`,
         `<input bindtap=\"{{a}}\" bindinput=\"__e\" data-e-o=\"{{b}}\"/>`,
         `(_ctx, _cache) => {
-  return { a: _o(_ctx.click), b: { 'input': _o(_ctx.input) } }
+  return { a: _o(_ctx.click, "49"), b: { 'input': _o(_ctx.input, "72") } }
 }`
       )
     })
@@ -58,7 +58,7 @@ describe('mp-jd: transform v-on', () => {
         `<textarea @click="click" @input="input"/>`,
         `<textarea bindtap=\"{{a}}\" bindinput=\"__e\" data-e-o=\"{{b}}\"/>`,
         `(_ctx, _cache) => {
-  return { a: _o(_ctx.click), b: { 'input': _o(_ctx.input) } }
+  return { a: _o(_ctx.click, "62"), b: { 'input': _o(_ctx.input, "75") } }
 }`
       )
     })

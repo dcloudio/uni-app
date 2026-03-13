@@ -141,26 +141,60 @@ class SelectorQueryImpl implements SelectorQuery {
   }
 
   exec(callback?: (result: Array<any>) => void | null): NodesRef | null {
-    this._component?.$?.$waitNativeRender(() => {
-      requestComponentInfo(this._component, this._queue, (res: Array<any>) => {
-        const queueCbs = this._queueCb
-        res.forEach((info: any, _index) => {
-          const queueCb = queueCbs[_index]
-          if (isFunction(queueCb)) {
-            queueCb!(info)
+    if (__VAPOR__) {
+      // @ts-expect-error
+      this._component?.$nativePage?.waitNativeRender(() => {
+        requestComponentInfo(
+          this._component,
+          this._queue,
+          (res: Array<any>) => {
+            const queueCbs = this._queueCb
+            res.forEach((info: any, _index) => {
+              const queueCb = queueCbs[_index]
+              if (isFunction(queueCb)) {
+                queueCb!(info)
+              }
+            })
+            if (callback && isFunction(callback)) {
+              callback(res)
+            }
           }
-        })
-        if (callback && isFunction(callback)) {
-          callback(res)
-        }
+        )
       })
-    })
+    }
+    if (!__VAPOR__) {
+      this._component?.$?.$waitNativeRender(() => {
+        requestComponentInfo(
+          this._component,
+          this._queue,
+          (res: Array<any>) => {
+            const queueCbs = this._queueCb
+            res.forEach((info: any, _index) => {
+              const queueCb = queueCbs[_index]
+              if (isFunction(queueCb)) {
+                queueCb!(info)
+              }
+            })
+            if (callback && isFunction(callback)) {
+              callback(res)
+            }
+          }
+        )
+      })
+    }
     return this._nodesRef
   }
 
   in(component: any | null): SelectorQuery {
-    if (component && isVueComponent(component)) {
-      this._component = component as ComponentPublicInstance
+    if (__VAPOR__) {
+      if (component) {
+        this._component = component as ComponentPublicInstance
+      }
+    }
+    if (!__VAPOR__) {
+      if (component && isVueComponent(component)) {
+        this._component = component as ComponentPublicInstance
+      }
     }
     return this
   }

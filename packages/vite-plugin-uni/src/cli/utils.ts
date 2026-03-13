@@ -248,6 +248,9 @@ export function initEnv(
     ) {
       process.env.UNI_APP_X_TSC = 'false'
     }
+    if (manifestJson['uni-app-x']?.['styleIsolationVersion'] === '2') {
+      process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
+    }
   } catch (e) {}
 
   if (!process.env.UNI_APP_X_TSC_DIR) {
@@ -312,7 +315,10 @@ export function initEnv(
   process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
     ? 'a'
     : 'r'
-
+  process.env.UNI_HX_VERSION_DEV =
+    process.env.HX_Version && process.env.HX_Version.includes('-dev')
+      ? 'true'
+      : 'false'
   initPreContext(
     process.env.UNI_PLATFORM,
     process.env.UNI_CUSTOM_CONTEXT,
@@ -330,7 +336,8 @@ export function initEnv(
       M['app.compiler.version'].replace(
         '{version}',
         process.env.UNI_COMPILER_VERSION +
-          `（${process.env.UNI_APP_X === 'true' ? 'uni-app x' : 'vue3'}）`
+          `（${process.env.UNI_APP_X === 'true' ? 'uni-app x' : 'vue3'}）` +
+          (process.env.UNI_APP_X_DOM2 === 'true' ? '蒸汽模式' : '')
       )
     )
   }

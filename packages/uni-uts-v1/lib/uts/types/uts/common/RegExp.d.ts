@@ -11,7 +11,7 @@ interface RegExp {
         - "y" for sticky
 
      如果没有设置标志，则该值为空字符串。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#flags
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#flags
      @uniPlatform {
         "app": {
             "android": {
@@ -53,7 +53,7 @@ interface RegExp {
 
   /**
      表明是否在正则表达式中一起使用"s"修饰符（引入/s 修饰符，使得。可以匹配任意单个字符）。dotAll 是一个只读的属性，属于单个正则表达式实例。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#dotAll
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#dotall
      @uniPlatform {
         "app": {
             "android": {
@@ -93,7 +93,7 @@ interface RegExp {
 
   /**
      指示 d 标志是否与正则表达式一起使用。只读的。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#hasIndices
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#hasindices
      @uniPlatform {
         "app": {
             "android": {
@@ -133,7 +133,7 @@ interface RegExp {
 
   /**
      搜索是否具有粘性（仅从正则表达式的 lastIndex 属性表示的索引处搜索）。sticky 是正则表达式对象的只读属性。默认为false。只读的。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#sticky
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#sticky
      @uniPlatform {
         "app": {
             "android": {
@@ -173,7 +173,7 @@ interface RegExp {
 
   /**
      表明正则表达式带有"u" 标志。 unicode 是正则表达式独立实例的只读属性。unicode 的值是 Boolean，并且如果使用了 "u" 标志则为 true；否则为 false。"u" 标志开启了多种 Unicode 相关的特性。使用 "u" 标志，任何 Unicode 代码点的转义都会被解释。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#unicode
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#unicode
      @uniPlatform {
         "app": {
             "android": {
@@ -215,7 +215,7 @@ interface RegExp {
      在一个指定字符串中执行一个搜索匹配。返回一个结果数组或 null。
      @param string 要匹配正则表达式的字符串。
      @return 如果匹配失败，exec() 方法返回 null，并将正则表达式的 lastIndex 重置为 0。如果匹配成功，exec() 方法返回一个数组，并更新正则表达式对象的 lastIndex 属性。完全匹配成功的文本将作为返回数组的第一项，从第二项起，后续每项都对应一个匹配的捕获组。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#exec
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#exec
      @uniPlatform {
         "app": {
             "android": {
@@ -259,7 +259,7 @@ interface RegExp {
      执行一个检索，用来查看正则表达式与指定的字符串是否匹配。返回 true 或 false。
      @param string 用来与正则表达式匹配的字符串。
      @return 如果正则表达式与指定的字符串匹配，返回true；否则false。如果正则表达式设置了全局标志，test() 的执行会改变正则表达式 lastIndex属性。连续的执行test()方法，后续的执行将会从 lastIndex 处开始匹配字符串。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#test
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#test
      @uniPlatform {
         "app": {
             "android": {
@@ -301,7 +301,7 @@ interface RegExp {
 
   /**
      返回一个值为当前正则表达式对象的模式文本的字符串，该字符串不会包含正则字面量两边的斜杠以及任何的标志字符。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#source
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#source
      @uniPlatform {
         "app": {
             "android": {
@@ -343,7 +343,7 @@ interface RegExp {
 
   /**
      表明正则表达式是否使用了 "g" 标志。global 是一个正则表达式实例的只读属性。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#global
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#global
      @uniPlatform {
         "app": {
             "android": {
@@ -385,7 +385,7 @@ interface RegExp {
 
   /**
      表明正则表达式是否使用了 "i" 标志。ignoreCase 是正则表达式实例的只读属性。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#ignoreCase
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#ignorecase
      @uniPlatform {
         "app": {
             "android": {
@@ -427,7 +427,7 @@ interface RegExp {
 
   /**
      表明正则表达式是否使用了 "m" 标志。multiline 是正则表达式实例的一个只读属性。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#multiline
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#multiline
      @uniPlatform {
         "app": {
             "android": {
@@ -468,7 +468,7 @@ interface RegExp {
   readonly multiline: boolean;
   /**
      正则表达式的一个可读可写的整型属性，用来指定下一次匹配的起始索引。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#lastIndex
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#lastindex
      @uniPlatform {
         "app": {
             "android": {
@@ -514,7 +514,7 @@ interface RegExpConstructor {
   /**
      用于创建正则表达式对象，该对象用于将文本与一个模式匹配。
      @param pattern 正则表达式的文本，也可以是另一个 RegExp 对象或文字。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#constructor
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#constructor
      @uniPlatform {
         "app": {
             "android": {
@@ -557,7 +557,7 @@ interface RegExpConstructor {
      用于创建正则表达式对象，该对象用于将文本与一个模式匹配。
      @param pattern 正则表达式的文本，也可以是另一个 RegExp 对象或文字。
      @param flags 如果指定，flags 是包含要添加的标志的字符串。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#constructor
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/regexp.html#constructor
      @uniPlatform {
         "app": {
             "android": {

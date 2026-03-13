@@ -1,6 +1,14 @@
 import { extend } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
-import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import {
+  createDefaultSFCStyleBlock,
+  findMiniProgramComponentStyleIsolation,
+  isAppVue,
+  isMiniProgramPageFile,
+  parseStyleIsolation,
+  resolveBuiltIn,
+  updateMiniProgramComponentStyleIsolation,
+} from '@dcloudio/uni-cli-shared'
 import type {
   SFCAsyncStyleCompileOptions,
   SFCDescriptor,
@@ -30,6 +38,26 @@ function rewriteCompileScript() {
   compiler.compileStyleAsync = (
     options: SFCAsyncStyleCompileOptions
   ): Promise<SFCStyleCompileResults> => {
+    if (
+      process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+      process.env.UNI_APP_X === 'true'
+    ) {
+      if (isAppVue(options.filename)) {
+        options.source = `@import "/uvue.wxss";\n` + options.source
+      } else {
+        const { styleIsolation, isPage } =
+          findMiniProgramComponentStyleIsolation(options.filename) || {}
+        if (!isPage) {
+          if (styleIsolation === 'app') {
+            options.source = `@import "/app.wxss";\n` + options.source
+          } else if (styleIsolation === 'isolated') {
+            options.source = `@import "/uvue.wxss";\n` + options.source
+          } else if (styleIsolation === undefined) {
+            options.source = `@import "/uvue.wxss";\n` + options.source
+          }
+        }
+      }
+    }
     // https://github.com/dcloudio/uni-app/issues/4076
     options.isProd = true
     return compileStyleAsync(options)
@@ -47,7 +75,28 @@ function rewriteCompileScript() {
     // https://github.com/dcloudio/uni-app/issues/4076
     // dev模式下，会生成：{ "83a5a03c-style.color": style.color}
     options.isProd = true
-    return compileScript(sfc, options)
+    let res = compileScript(sfc, options)
+    if (
+      process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+      process.env.UNI_APP_X === 'true' &&
+      process.env.UNI_PLATFORM?.startsWith('mp-')
+    ) {
+      // @ts-expect-error
+      options.__isPage = isMiniProgramPageFile(
+        sfc.filename,
+        process.env.UNI_INPUT_DIR
+      )
+      const styleIsolation = parseStyleIsolation(res)
+      if (styleIsolation) {
+        updateMiniProgramComponentStyleIsolation(
+          sfc.filename,
+          styleIsolation,
+          // @ts-expect-error
+          options.__isPage
+        )
+      }
+    }
+    return res
   }
   // script + v-bind
   compiler.compileTemplate = (options: SFCTemplateCompileOptions) => {
@@ -77,6 +126,13 @@ function rewriteCompilerSfcParse() {
     // https://github.com/vitejs/vite/blob/v2.9.13/packages/plugin-vue/src/script.ts#L44
     // https://github.com/dcloudio/uni-app/issues/3685
     res.descriptor = extend({}, res.descriptor)
+    if (
+      process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+      process.env.UNI_APP_X === 'true' &&
+      res.descriptor.styles.length === 0
+    ) {
+      res.descriptor.styles = [createDefaultSFCStyleBlock(source)]
+    }
     return res
   }
 }

@@ -48,6 +48,17 @@ body:
         - HBuilderX
         - CLI命令行
 
+  - type: dropdown
+    id: vue-version
+    attributes:
+      label: Vue 版本
+      description: 你的项目使用的 Vue 版本？
+      options:
+        - vue2
+        - vue3
+    validations:
+      required: true
+
   - type: textarea
     id: dependencies
     attributes:

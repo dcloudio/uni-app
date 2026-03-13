@@ -27,6 +27,8 @@ export const defineBuiltInComponent = ((options: any) => {
     const rootElement: ComponentCustomOptions['rootElement'] | undefined =
       options.rootElement
     if (rootElement) {
+      // TODO iOS 平台不能注册 utssdk 导出的 Element 类，否则会报错
+      // 仍旧判断 'function ProxyObject()' ？？
       customElements.define(
         rootElement.name,
         rootElement.class,

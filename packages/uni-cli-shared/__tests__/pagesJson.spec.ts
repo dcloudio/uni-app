@@ -1,6 +1,6 @@
 import path from 'path'
 import { checkPagesJson } from '../src/json/utils'
-import { generateCodeFrame } from '../src/vite/plugins/vitejs/utils'
+import { generateCodeFrameColumns } from '../src/vite/utils'
 import { options as alipayOptions } from '../../uni-mp-alipay/src/compiler/options'
 import { options as weixinOptions } from '../../uni-mp-weixin/src/compiler/options'
 import { parseTabBar, parseWindowOptions } from '../src/json/mp/utils'
@@ -39,11 +39,7 @@ describe('pages.json', () => {
     } catch (error: any) {
       expect(error).toMatchSnapshot()
       expect(
-        generateCodeFrame(
-          source,
-          error.offsetStart as number,
-          error.offsetEnd as number
-        ).replace(/\t/g, ' ')
+        generateCodeFrameColumns(source, error.loc).replace(/\t/g, ' ')
       ).toMatchSnapshot()
     }
   })
@@ -69,11 +65,7 @@ describe('pages.json', () => {
     } catch (error: any) {
       expect(error).toMatchSnapshot()
       expect(
-        generateCodeFrame(
-          source,
-          error.offsetStart as number,
-          error.offsetEnd as number
-        ).replace(/\t/g, ' ')
+        generateCodeFrameColumns(source, error.loc).replace(/\t/g, ' ')
       ).toMatchSnapshot()
     }
   })
@@ -95,11 +87,7 @@ describe('pages.json', () => {
     } catch (error: any) {
       expect(error).toMatchSnapshot()
       expect(
-        generateCodeFrame(
-          source,
-          error.offsetStart as number,
-          error.offsetEnd as number
-        ).replace(/\t/g, ' ')
+        generateCodeFrameColumns(source, error.loc).replace(/\t/g, ' ')
       ).toMatchSnapshot()
     }
   })
@@ -130,6 +118,7 @@ describe('pages.json', () => {
       titleImage: 'https://example.com/title.png',
       transparentTitle: 'always',
       titlePenetrate: true,
+      onReachBottomDistance: 34,
       'mp-alipay': {
         responsive: true,
         showTitleLoading: 'YES',
@@ -169,6 +158,7 @@ describe('pages.json', () => {
       titleImage: 'https://example.com/title.png',
       transparentTitle: 'always',
       titlePenetrate: true,
+      onReachBottomDistance: 34,
       responsive: true,
       showTitleLoading: 'YES',
     })

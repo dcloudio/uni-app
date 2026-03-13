@@ -1,6 +1,15 @@
+import path from 'path'
 import { isAppVue, normalizeIdentifier } from '../src/utils'
 
 describe('test: packages/uni-cli-shared/src/utils.ts', () => {
+  const oldInputDir = process.env.UNI_INPUT_DIR
+  const oldAppX = process.env.UNI_APP_X
+
+  afterAll(() => {
+    // restore
+    process.env.UNI_INPUT_DIR = oldInputDir
+    process.env.UNI_APP_X = oldAppX
+  })
   test('test:normalizeIdentifier', () => {
     // 根据 path 返回合法 js 变量
     expect(normalizeIdentifier('pages/index/index')).toBe('PagesIndexIndex')
@@ -30,14 +39,16 @@ describe('test: packages/uni-cli-shared/src/utils.ts', () => {
   })
 
   test('test: isAppVue', () => {
-    expect(isAppVue('/xx/xx/app.vue')).toBe(true)
-    expect(isAppVue('/xx/xx/app.uvue')).toBe(true)
-    expect(isAppVue('/xx/xx/App.uvue')).toBe(true)
-    expect(isAppVue('/xx/xx/App.vue')).toBe(true)
-    expect(isAppVue('/xx/xx/App.vue')).toBe(true)
-    expect(isAppVue('./xx/xx/App.vue')).toBe(true)
-    expect(isAppVue('./xx/xx/App.vue')).toBe(true)
-    const filePath = 'D:\\user\\file\\app.vue'
-    expect(isAppVue(filePath)).toBe(true)
+    // app
+    process.env.UNI_APP_X = 'false'
+    process.env.UNI_INPUT_DIR = '/xx/xx'
+    expect(isAppVue(path.resolve('/xx/xx/App.vue'))).toBe(true)
+
+    // app_x
+    process.env.UNI_APP_X = 'true'
+    const fs = require('fs')
+    const mockExistsSync = jest.spyOn(fs, 'existsSync').mockReturnValue(true)
+    expect(isAppVue(path.resolve('/xx/xx/App.uvue'))).toBe(true)
+    mockExistsSync.mockRestore()
   })
 })

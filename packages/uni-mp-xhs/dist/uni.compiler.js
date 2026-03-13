@@ -69,13 +69,18 @@ const directiveTransforms = {
     model: transformModel,
 };
 const compilerOptions = {
-    nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink, uniCliShared.transformMatchMedia],
+    nodeTransforms: [
+        uniCliShared.transformRef,
+        uniCliShared.transformComponentLink,
+        // transformMatchMedia
+    ],
     directiveTransforms,
 };
 const COMPONENTS_DIR = 'xhscomponents';
 const customElements = [
     'post-note-button',
     'group-chat-card',
+    'video-player',
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const miniProgram = {
@@ -129,20 +134,20 @@ const options = {
             'uni-mp-runtime': path__default.default.resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
-            assets: [COMPONENTS_DIR],
+            assets: uniCliShared.createCopyComponentDirs(COMPONENTS_DIR),
             targets: [
                 // ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
                 {
                     src: [
                         'sitemap.json',
                         'project.private.config.json',
-                        'ext.json',
                         projectConfigFilename,
                     ],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
                     },
                 },
+                uniCliShared.createCopyPluginTarget(['ext.json']),
                 // ...copyMiniProgramThemeJson(),
             ],
         },

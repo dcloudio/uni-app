@@ -26,7 +26,9 @@ export function closePage(
   animationType: string,
   animationDuration?: number
 ) {
-  clearDialogPages(page.$page as UniPage)
+  if (page.$page) {
+    clearDialogPages(page.$page as UniPage)
+  }
 
   const nativePage = page.$nativePage
   nativePage && closeWebview(nativePage, animationType, animationDuration)

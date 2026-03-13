@@ -35,7 +35,7 @@ import { VIRTUAL_HOST_CLASS } from '@dcloudio/uni-shared'
 import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
 import { isTrueExpr, isUndefined, parseExpr, parseStringLiteral } from '../ast'
 import { genBabelExpr } from '../codegen'
-import { NORMALIZE_CLASS } from '../runtimeHelpers'
+import { NORMALIZE_CLASS, PARSE_VIRTUAL_HOST_CLASS } from '../runtimeHelpers'
 import type { TransformContext } from '../transform'
 import {
   isFilterExpr,
@@ -108,7 +108,31 @@ export function rewriteClass(
     if (!isArrayExpression(classBindingExpr)) {
       classBindingExpr = arrayExpression([classBindingExpr])
     }
-    classBindingExpr.elements.push(identifier(VIRTUAL_HOST_CLASS))
+    if (process.env.UNI_PLATFORM === 'mp-weixin') {
+      classBindingExpr.elements.push(
+        identifier(
+          rewriteExpression(
+            createCompoundExpression([
+              `${context.helperString(PARSE_VIRTUAL_HOST_CLASS)}(`,
+              '_ctx.$scope.data.' + VIRTUAL_HOST_CLASS,
+              `)`,
+            ]),
+            context
+          ).content
+        )
+      )
+    } else {
+      // TODO 其他小程序平台是否支持“^”
+      // class 不支持数组的小程序，比如支付宝小程序，通过字符串拼接，会出现 class="class1 undefined"
+      const virtualHostClass = context.miniProgram.class.array
+        ? identifier(VIRTUAL_HOST_CLASS)
+        : logicalExpression(
+            '||',
+            identifier(VIRTUAL_HOST_CLASS),
+            stringLiteral('')
+          )
+      classBindingExpr.elements.push(virtualHostClass)
+    }
   }
   if (!context.miniProgram.class.array) {
     classBindingExpr = parseClassBindingArrayExpr(classBindingExpr)

@@ -19,7 +19,7 @@ export const requestPayment = defineAsyncApi<API_TYPE_REQUEST_PAYMENT>(
       } else {
         plus.payment.request(
           service,
-          params.orderInfo,
+          params.orderInfo!,
           (res) => {
             resolve(res)
           },

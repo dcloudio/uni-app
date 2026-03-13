@@ -8,6 +8,7 @@ import {
 } from '@vue/compiler-core'
 import MagicString from 'magic-string'
 import { isElementNode, parseVue } from '../vite/utils/ast'
+import { onCompileLog } from '../logs'
 
 const BLOCK_RE = /<\/block>/
 const WXS_LANG_RE = /lang=["|'](renderjs|wxs|sjs)["|']/
@@ -153,3 +154,5 @@ function parseWxsNode(code: string, nodes: ElementNode[]) {
   })
   return magicString.toString()
 }
+
+export const onVueTemplateCompileLog = onCompileLog

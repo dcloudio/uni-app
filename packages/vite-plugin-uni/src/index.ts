@@ -223,7 +223,8 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
       addCopyPlugin = true
     }
   }
-  if (!isNormalCompileTarget()) {
+  // 之前限制的是只有标准编译目标才 copy，现在 ext-api 也需要 copy 资源，暂时只排除 uni_modules
+  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
     addCopyPlugin = false
   }
   if (addCopyPlugin) {

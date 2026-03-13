@@ -1,6 +1,6 @@
 import Context from 'android.content.Context'
-
-/**
+import Activity from 'android.app.Activity';
+/**ss
  * 任务分发器
  */
 declare class UTSTaskDispatcher {
@@ -23,13 +23,17 @@ declare class PrivacyOption {
   isAgree : boolean;
 }
 
-
+/**
+ * since 4.81 update kotlin 2.2.0
+ */
 interface UTSAndroid {
+
+  Suppress(...args:string[]):void;
 
   /**
      监听 App配置发生变化, 对应 android原生 onAppConfigChange
      @param 用于监听的响应函数
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#onAppConfigChange
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#onappconfigchange
      @uniPlatform {
         "app": {
             "android": {
@@ -52,7 +56,7 @@ interface UTSAndroid {
   /**
      onAppConfigChange 对应的反注册函数
      @param 准备取消监听的函数,如果传入的函数为null,则移除全部
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#offAppConfigChange
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#offappconfigchange
      @uniPlatform {
         "app": {
             "android": {
@@ -76,7 +80,7 @@ interface UTSAndroid {
   /**
      注册监听 App 内存不足时的系统回调函数 对应原生的API: onTrimMemory
      @param 用于监听的响应函数
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#onAppTrimMemory
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#onapptrimmemory
      @uniPlatform {
         "app": {
             "android": {
@@ -99,7 +103,7 @@ interface UTSAndroid {
   /**
      onAppTrimMemory 对应的反注册函数。
      @param 准备取消监听的函数,如果传入的函数为null,则移除全部
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#offAppTrimMemory
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#offapptrimmemory
      @uniPlatform {
         "app": {
             "android": {
@@ -123,7 +127,7 @@ interface UTSAndroid {
   /**
      注册监听 activity onPause事件
      @param 用于监听的响应函数
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#onAppActivityPause
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#onappactivitypause
      @uniPlatform {
         "app": {
             "android": {
@@ -146,7 +150,7 @@ interface UTSAndroid {
   /**
      onAppActivityPause 对应的反注册函数
      @param 准备取消监听的函数,如果传入的函数为null,则移除全部
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#offAppActivityPause
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#offappactivitypause
      @uniPlatform {
         "app": {
             "android": {
@@ -170,7 +174,7 @@ interface UTSAndroid {
   /**
      注册监听 activity onResume事件
      @param 用于监听的响应函数
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#onAppActivityResume
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#onappactivityresume
      @uniPlatform {
         "app": {
             "android": {
@@ -194,7 +198,7 @@ interface UTSAndroid {
   /**
      onAppActivityResume 对应的反注册函数
      @param 准备取消监听的函数,如果传入的函数为null,则移除全部
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#offAppActivityResume
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#offappactivityresume
      @uniPlatform {
         "app": {
             "android": {
@@ -241,7 +245,7 @@ interface UTSAndroid {
   /**
      onAppActivityDestroy 对应的反注册函数。
      @param 准备取消监听的函数,如果传入的函数为null,则移除全部
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#offAppActivityDestroy
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#offappactivitydestroy
      @uniPlatform {
         "app": {
             "android": {
@@ -264,7 +268,7 @@ interface UTSAndroid {
   /**
      注册监听 activity onAppActivityResult 函数
      @param callback 用于监听的响应函数
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#onAppActivityResult
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#onappactivityresult
      @uniPlatform {
         "app": {
             "android": {
@@ -287,7 +291,7 @@ interface UTSAndroid {
   /**
      onAppActivityResult 对应的反注册函数。
      @param 准备取消监听的函数,如果传入的函数为null,则移除全部
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#offAppActivityResult
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#offappactivityresult
      @uniPlatform {
         "app": {
             "android": {
@@ -311,7 +315,7 @@ interface UTSAndroid {
   /**
      注册监听 activity onAppActivityBack 函数
      @param callback 用于监听的响应函数
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#onAppActivityBack
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#onappactivityback
      @uniPlatform {
         "app": {
             "android": {
@@ -334,7 +338,7 @@ interface UTSAndroid {
   /**
      取消注册监听 activity onAppActivityBack 函数
      @param 准备取消监听的函数,如果传入的函数为null,则移除全部
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#offAppActivityBack
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#offappactivityback
      @uniPlatform {
         "app": {
             "android": {
@@ -358,7 +362,7 @@ interface UTSAndroid {
   /**
      获取当前应用Application上下文，对应android平台 Context.getApplicationContext 函数实现
      @return 当前应用程序 上下文实例对象
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getAppContext
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getappcontext
      @uniPlatform {
         "app": {
             "android": {
@@ -382,7 +386,7 @@ interface UTSAndroid {
   /**
      获取当前应用 栈顶的 Activity实例，对应android平台 getActivity 函数实现
      @return 当前应用栈顶的 Activity实例
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getUniActivity
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getuniactivity
      @uniPlatform {
         "app": {
             "android": {
@@ -405,7 +409,7 @@ interface UTSAndroid {
   /**
      获取与当前页面绑定的activity对象，需要注意的是:当页面对象未与activity建立绑定关系时，可能为null
      @return 当前页面绑定的activity示例
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getTopPageActivity
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#gettoppageactivity
      @uniPlatform {
         "app": {
             "android": {
@@ -430,7 +434,7 @@ interface UTSAndroid {
      获取资源文件的原生平台路径。
      @param resourceName 资源文件相对于项目的绝对路径, 如：“/static/logo.png”
      @return 该资源在原生平台的路径
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getResourcePath
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getresourcepath
      @uniPlatform {
         "app": {
             "android": {
@@ -455,7 +459,7 @@ interface UTSAndroid {
      获取对象的jvm class实例
      @param input 任意不为空对象，如果传入一个Class类型，则返回该Class对应的jvm class实例
      @return 传入对象所对应的class实例
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getJavaClass
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getjavaclass
      @uniPlatform {
         "app": {
             "android": {
@@ -479,7 +483,7 @@ interface UTSAndroid {
      获取对象的 KClass 实例
      @param input 任意不为空对象，如果传入一个Class类型，则返回该Class对应的 KClasss实例
      @return 传入对象所对应的KClass实例
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getKotlinClass
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getkotlinclass
      @uniPlatform {
         "app": {
             "android": {
@@ -503,7 +507,7 @@ interface UTSAndroid {
   /**
      获取app 临时目录。
      @return 返回app临时目录路径。存放在该文件可能会在应用退出后被清理
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getAppCachePath
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getappcachepath
      @uniPlatform {
         "app": {
             "android": {
@@ -526,7 +530,7 @@ interface UTSAndroid {
 
   /**
      退出当前应用
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#exit
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#exit
      @uniPlatform {
         "app": {
             "android": {
@@ -556,7 +560,7 @@ interface UTSAndroid {
      匿名线程 null 或者 '': 来源线程，如果来源线程不支持任务分发，则会在当前线程执行执行. 这个场景下要求第一个参数必须是线程环境
 
      @return 一个任务分发器，可以用于分发协程任务
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getDispatcher
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getdispatcher
      @uniPlatform {
         "app": {
             "android": {
@@ -573,6 +577,7 @@ interface UTSAndroid {
             }
         }
      }
+     @deprecated 已废弃,请使用 uni.createWorker 替代
    */
   getDispatcher(threadName ?: string | null) : UTSTaskDispatcher;
 
@@ -580,7 +585,7 @@ interface UTSAndroid {
   /**
      获取当前运行的app的AppId。
      @return 当前运行的app的AppId。
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getAppId
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getappid
      @uniPlatform {
         "app": {
             "android": {
@@ -604,7 +609,7 @@ interface UTSAndroid {
   /**
      获取当前系统主题样式
      @return 系统主题样式 "dark":暗色模式  "light":亮色模式
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getOsTheme
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getostheme
      @uniPlatform {
         "app": {
             "android": {
@@ -627,7 +632,7 @@ interface UTSAndroid {
   /**
      获取当前运行环境是否是unimp。
      @return 是否是unimp。
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#isUniMp
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#isunimp
      @uniPlatform {
         "app": {
             "android": {
@@ -650,7 +655,7 @@ interface UTSAndroid {
   /**
      获取manifest.json 中配置的应用名称
      @return 应用名称。
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getAppName
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getappname
      @uniPlatform {
         "app": {
             "android": {
@@ -671,9 +676,32 @@ interface UTSAndroid {
   getAppName() : string;
 
   /**
+     获取当前应用是否在暗黑模式
+     @return 当前应用是否在暗黑模式
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getappdarkmode
+     @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "5",
+               "uniVer": "x",
+               "unixVer": "3.90",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "3.90"
+            },
+            "ios": {
+               "osVer": "x",
+               "uniVer": "x",
+                 "unixVer": "x"
+            }
+        }
+     }
+   */
+  getAppDarkMode() : boolean;
+
+  /**
      获取manifest.json 中配置的应用版本信息
      @return 应用版本信息
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getAppVersion
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getappversion
      @uniPlatform {
         "app": {
             "android": {
@@ -697,7 +725,7 @@ interface UTSAndroid {
   /**
      获取引擎版本号。
      @return 引擎版本号。
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getInnerVersion
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getinnerversion
      @uniPlatform {
         "app": {
             "android": {
@@ -721,7 +749,7 @@ interface UTSAndroid {
   /**
      获取当前是否是uniapp x 环境
      @return uniapp x 环境 true, uniapp 环境： false。
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#isUniAppX
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#isuniappx
      @uniPlatform {
         "app": {
             "android": {
@@ -746,7 +774,7 @@ interface UTSAndroid {
 
      rpx单位 转换为 逻辑像素px单位
      @return 返回对应的逻辑像素值
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#rpx2px
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#rpx2px
      @uniPlatform {
         "app": {
             "android": {
@@ -772,7 +800,7 @@ interface UTSAndroid {
      @return true 用户已同意 false 用户未同意
      @deprecated 注意：已废弃，请使用 `uni.getPrivacySetting` 替代
      @internal
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#isPrivacyAgree
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#isprivacyagree
      @uniPlatform {
         "app": {
             "android": {
@@ -798,7 +826,7 @@ interface UTSAndroid {
      @param state true 用户已同意 false 用户未同意
      @deprecated 注意：已废弃，请使用 `button` 组件设置 open-type 为 agreePrivacyAuthorization 替代
      @internal
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#setPrivacyAgree
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#setprivacyagree
      @uniPlatform {
         "app": {
             "android": {
@@ -823,7 +851,7 @@ interface UTSAndroid {
      重置当前应用至用户未同意隐私协议
      @deprecated 注意：已废弃，请使用 `uni.resetPrivacyAuthorization` 替代
      @internal
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#resetPrivacyAgree
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#resetprivacyagree
      @uniPlatform {
         "app": {
             "android": {
@@ -846,7 +874,7 @@ interface UTSAndroid {
 
   /**
      请求系统权限
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#requestSystemPermission
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#requestsystempermission
      @param requestPermission 期望请求的权限
      @param {boolean} [shallUnCheck=false] 是否忽略权限检查，需要HBuilder X 4.25 之后版本
      @uniPlatform {
@@ -877,7 +905,7 @@ interface UTSAndroid {
 
   /**
      检查当前应用是否已经具备指定权限
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#checkSystemPermissionGranted
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#checksystempermissiongranted
      @param requestPermission 期望具备的权限
      @return 请求的权限列表中是否已经具备
      @uniPlatform {
@@ -904,7 +932,7 @@ interface UTSAndroid {
 
   /**
      跳转至系统权限手动设备列表
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#gotoSystemPermissionActivity
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#gotosystempermissionactivity
      @param requestPermission 期望请求的权限
      @uniPlatform {
         "app": {
@@ -931,7 +959,7 @@ interface UTSAndroid {
 
   /**
      获取当前应用不具备的权限列表
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getSystemPermissionDenied
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getsystempermissiondenied
      @param requestPermission 期望请求的权限
      @return 请求的权限列表中已经被禁用的部分
      @uniPlatform {
@@ -960,7 +988,7 @@ interface UTSAndroid {
 
   /**
      页面的rpx像素转换为页面的px像素
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#rpx2px
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#rpx2px
      @param rpx 待转换的rpx
      @return 转换后的px
      @uniPlatform {
@@ -987,7 +1015,7 @@ interface UTSAndroid {
 
   /**
      物理像素转换为页面的px像素
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#devicePX2px
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#devicepx2px
      @param devicePX 待转换的物理像素
      @return 转换后的页面px
      @uniPlatform {
@@ -1017,7 +1045,7 @@ interface UTSAndroid {
      eg.
         'static/logo.png' -> '/storage/sdcard/0/apps/com.xxxx/files/logo.png'
 
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#convert2AbsFullPath
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#convert2absfullpath
      @param inputPath 待转换的文件相对路径
      @return 转换后文件绝对路径
      @uniPlatform {
@@ -1045,7 +1073,7 @@ interface UTSAndroid {
   /**
      将应用的私有文件 通过内置的FileProvider转换为外部应用可以访问的Uri
 
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getFileProviderUri
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getfileprovideruri
      @param file 待转换的私有文件
      @return 转换后的Uri
      @uniPlatform {
@@ -1073,7 +1101,7 @@ interface UTSAndroid {
   /**
      获取指定service的指定provider实现
 
-     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getExtApiProvider
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#getextapiprovider
      @param service 指定的服务名称
      @param providerName 指定provider名称
      @return 指定 provider 实例
@@ -1416,4 +1444,3 @@ interface UTSAndroid {
 declare global {
   var UTSAndroid : UTSAndroid;
 }
-

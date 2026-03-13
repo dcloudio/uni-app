@@ -3,6 +3,7 @@ import { type ComponentPublicInstance, markRaw, watchEffect } from 'vue'
 import { getCurrentPage, initPageVm } from '@dcloudio/uni-core'
 import {
   ON_REACH_BOTTOM_DISTANCE,
+  UTSJSONObject,
   normalizeTitleColor,
   removeLeadingSlash,
 } from '@dcloudio/uni-shared'
@@ -27,7 +28,7 @@ import {
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import { isDialogPageInstance } from '../helpers/utils'
 import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
-import type { UniPageBody } from '@dcloudio/uni-app-x/types/native/UniPage'
+import { normalizeStyles } from '@dcloudio/uni-shared'
 
 let escBackPageNum = 0
 type PageStyle = {
@@ -90,7 +91,7 @@ class UniPageImpl implements UniPage {
     return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0)
   }
 
-  get pageBody(): UniPageBody {
+  get pageBody() {
     const pageEle = getPageElement(this)
     const pageBody = pageEle.querySelector('uni-page-wrapper') as HTMLElement
     const pageWrapperInfo = getPageWrapperInfo(pageBody)
@@ -110,6 +111,8 @@ class UniPageImpl implements UniPage {
   }
   getPageStyle(): UTSJSONObject {
     const pageMeta = this.vm?.$basePage.meta
+      ? normalizeStyles(this.vm?.$basePage.meta, __uniConfig.themeConfig)
+      : undefined
     return pageMeta
       ? new UTSJSONObject({
           navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
@@ -181,6 +184,38 @@ class UniPageImpl implements UniPage {
       ? (uniPageBody.querySelector(`#${id}`) as unknown as UniElement)
       : null
   }
+  querySelector(selector: string): UniElement | null {
+    if (__NODE_JS__) {
+      return null
+    }
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this) {
+      return null
+    }
+    const uniPageBody = document.querySelector('uni-page-body')
+    return uniPageBody
+      ? (uniPageBody.querySelector(selector) as unknown as UniElement)
+      : null
+  }
+  querySelectorAll(selector: string): UniElement[] {
+    const res: UniElement[] = []
+    if (__NODE_JS__) {
+      return res
+    }
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this) {
+      return res
+    }
+    const uniPageBody = document.querySelector('uni-page-body')
+    if (!uniPageBody) {
+      return res
+    }
+    const nodeList = uniPageBody.querySelectorAll(selector)
+    nodeList.forEach((node) => {
+      res.push(node as unknown as UniElement)
+    })
+    return res
+  }
   getAndroidView() {
     return null
   }
@@ -212,12 +247,7 @@ class UniPageImpl implements UniPage {
   }
   exitFullscreen() {}
   createElement() {
-    return new UniElementImpl({
-      id: '',
-      name: '',
-      attrs: new Map(),
-      style: new Map(),
-    })
+    return null as any
   }
   constructor({
     route,
@@ -325,7 +355,6 @@ export function initXPage(
       },
     })
   }
-  vm.$basePage = vm.$page as Page.PageInstance['$page']
 
   // 暂时只在page上加 $waitNativeRender 方法
   vm.$.$waitNativeRender = (callback: () => void) => {
@@ -340,7 +369,7 @@ export function initXPage(
       options: new UTSJSONObject(route?.query || {}),
       vm,
     })
-    vm.$page = uniPage
+    vm.$.page = uniPage
     vm.$dialogPage = vm.$pageLayoutInstance?.$dialogPage
 
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
@@ -365,12 +394,12 @@ export function initXPage(
       }
     }
   } else {
-    vm.$page = vm.$pageLayoutInstance?.$dialogPage!
+    vm.$.page = vm.$pageLayoutInstance?.$dialogPage!
     pageInstance.$dialogPage!.vm = vm
     pageInstance.$dialogPage!.$vm = vm
     // fix dialogPage $basePage.fullPath & $basePage.id
     vm.$basePage.fullPath = vm.$basePage.path
-    const parentPage = vm.$page.getParentPage()
+    const parentPage = (vm.$page as UniPage).getParentPage()
     if (parentPage) {
       if (!parentPage.vm.$dialogPagesNum) {
         parentPage.vm.$dialogPagesNum = 0

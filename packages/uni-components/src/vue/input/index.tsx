@@ -1,5 +1,4 @@
 import { extend, hyphenate } from '@vue/shared'
-import { once } from '@dcloudio/uni-shared'
 import {
   type ComputedRef,
   type ExtractPropTypes,
@@ -8,17 +7,18 @@ import {
   onMounted,
   ref,
   watch,
+  withModifiers,
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import {
   type INPUT_MODE,
   INPUT_MODES,
-  type State,
   emit as fieldEmit,
   props as fieldProps,
   useField,
 } from '../../helpers/useField'
+import { resolveDigitDecimalPoint } from './utils'
 
 const props = /*#__PURE__*/ extend({}, fieldProps, {
   placeholderClass: {
@@ -30,75 +30,6 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
     default: '',
   },
 })
-
-const resolveDigitDecimalPointDeleteContentBackward = once(() => {
-  //#if !_NODE_JS_
-  if (__PLATFORM__ === 'app') {
-    const osVersion = plus.os.version
-    return (
-      plus.os.name === 'iOS' &&
-      !!osVersion &&
-      parseInt(osVersion) >= 16 &&
-      parseFloat(osVersion) < 17.2
-    )
-  }
-
-  if (__PLATFORM__ === 'h5') {
-    const ua = navigator.userAgent
-    let osVersion = ''
-    const osVersionFind = ua.match(/OS\s([\w_]+)\slike/)
-    if (osVersionFind) {
-      osVersion = osVersionFind[1].replace(/_/g, '.')
-    } else if (/Macintosh|Mac/i.test(ua) && navigator.maxTouchPoints > 0) {
-      const versionMatched = ua.match(/Version\/(\S*)\b/)
-      if (versionMatched) {
-        osVersion = versionMatched[1]
-      }
-    }
-    return (
-      !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2
-    )
-  }
-  //#endif
-})
-
-function resolveDigitDecimalPoint(
-  event: InputEvent,
-  cache: Ref<string>,
-  state: State,
-  input: HTMLInputElement,
-  resetCache?: ResetCache
-) {
-  if (cache.value) {
-    // TODO 苹果智能标点：safari（webview） 上连续输入两次 . 后，在第三次输入 . 时，会触发两次 deleteContentBackward（删除） 的输入外加一次 insertText 为 …（三个点） 的输入
-    if ((event as InputEvent).data === '.') {
-      // 解决可重复输入小数点的问题
-      if (cache.value.slice(-1) === '.') {
-        state.value = input.value = cache.value = cache.value.slice(0, -1)
-        return false
-      }
-      if (cache.value && !cache.value.includes('.')) {
-        cache.value += '.'
-        if (resetCache) {
-          resetCache.fn = () => {
-            state.value = input.value = cache.value = cache.value.slice(0, -1)
-            input.removeEventListener('blur', resetCache.fn!)
-          }
-          input.addEventListener('blur', resetCache.fn)
-        }
-        return false
-      }
-    } else if ((event as InputEvent).inputType === 'deleteContentBackward') {
-      // ios 无法删除小数
-      if (resolveDigitDecimalPointDeleteContentBackward()) {
-        if (cache.value.slice(-2, -1) === '.') {
-          cache.value = state.value = input.value = cache.value.slice(0, -2)
-          return true
-        }
-      }
-    }
-  }
-}
 
 function isPaste(event: InputEvent) {
   return event.inputType === 'insertFromPaste'
@@ -174,6 +105,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         case 'digit':
           type = 'number'
           break
+        case 'none':
+          type = 'text'
+          break
         default:
           type = INPUT_TYPES.includes(props.type) ? props.type : 'text'
           break
@@ -194,18 +128,19 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return AUTOCOMPLETES[index]
     })
     const inputmode = computed(() => {
-      if (props.inputmode) {
+      // 如果同时配置 type、 inputmode，则以 inputmode 为准。防止与用户之前逻辑冲突
+      if (props.inputmode !== undefined) {
         return props.inputmode
       }
-      if (__X__) {
-        const inputmodeMap = {
-          number: 'numeric',
-          digit: 'decimal',
-        }
-        return Object.values(INPUT_MODES).includes(props.type as INPUT_MODE)
-          ? props.type
-          : inputmodeMap[props.type]
+      if (INPUT_MODES.includes(props.type as INPUT_MODE)) {
+        return props.type
       }
+      const inputmodeMap = {
+        number: 'numeric',
+        digit: 'decimal',
+        idcard: 'text',
+      }
+      return inputmodeMap[props.type]
     })
     let cache = useCache(props, type)
     let resetCache: ResetCache = { fn: null }
@@ -347,6 +282,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             step={step.value}
             class="uni-input-input"
             style={props.cursorColor ? { caretColor: props.cursorColor } : {}}
+            inputmode={inputmode.value}
             // fix: 禁止 readonly 状态获取焦点
             onFocus={(event: Event) =>
               (event.target as HTMLInputElement).blur()
@@ -358,20 +294,33 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             ref={fieldRef}
             // v-model 会导致 type 为 number 或 digit 时赋值为 number 类型
             value={state.value}
-            onInput={(event: Event) => {
-              const value = (event.target as HTMLInputElement).value.toString()
-              if (
-                type.value === 'number' &&
-                state.maxlength > 0 &&
-                value.length > state.maxlength
-              ) {
-                if (isPaste(event as InputEvent)) {
-                  state.value = value.slice(0, state.maxlength)
+            onInput={withModifiers(
+              (event: Event) => {
+                const value = (
+                  event.target as HTMLInputElement
+                ).value.toString()
+                if (
+                  type.value === 'number' &&
+                  state.maxlength > 0 &&
+                  value.length > state.maxlength
+                ) {
+                  if (isPaste(event as InputEvent)) {
+                    state.value = value.slice(0, state.maxlength)
+                  }
+                  return
                 }
-                return
-              }
-              state.value = value
-            }}
+                // fix: 已有小数点，再输入小数点时 value 为空，不可赋值 state.value
+                if (
+                  value.length === 0 &&
+                  (event as InputEvent).inputType === 'insertText' &&
+                  (event as InputEvent).data === '.'
+                ) {
+                  return
+                }
+                state.value = value
+              },
+              ['stop']
+            )}
             disabled={!!props.disabled}
             type={type.value}
             maxlength={state.maxlength}

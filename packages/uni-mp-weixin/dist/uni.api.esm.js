@@ -1,7 +1,7 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
-import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { injectHook } from 'vue';
+import { Emitter, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 function getLocaleLanguage() {
     var _a;
@@ -1171,13 +1171,13 @@ const getDeviceInfo = {
         let deviceBrand = getDeviceBrand(brand);
         useDeviceId()(fromRes, toRes);
         const { osName, osVersion } = getOSInfo(system, platform);
-        toRes = sortObject(extend(toRes, {
+        toRes = extend(toRes, {
             deviceType,
             deviceBrand,
             deviceModel: model,
             osName,
             osVersion,
-        }));
+        });
     },
 };
 
@@ -1187,16 +1187,16 @@ const getAppBaseInfo = {
         let _hostName = getHostName(fromRes);
         let hostLanguage = (language || '').replace(/_/g, '-');
         const parameters = {
-            hostVersion: version,
-            hostLanguage,
-            hostName: _hostName,
-            hostSDKVersion: SDKVersion,
-            hostTheme: theme,
             appId: process.env.UNI_APP_ID,
             appName: process.env.UNI_APP_NAME,
             appVersion: process.env.UNI_APP_VERSION_NAME,
             appVersionCode: process.env.UNI_APP_VERSION_CODE,
             appLanguage: getAppLanguage(hostLanguage),
+            hostVersion: version,
+            hostLanguage,
+            hostName: _hostName,
+            hostSDKVersion: SDKVersion,
+            hostTheme: theme,
             isUniAppX: false,
             uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
             uniCompileVersion: process.env.UNI_COMPILER_VERSION,
@@ -1210,10 +1210,10 @@ const getAppBaseInfo = {
 const getWindowInfo = {
     returnValue: (fromRes, toRes) => {
         addSafeAreaInsets(fromRes, toRes);
-        toRes = sortObject(extend(toRes, {
+        toRes = extend(toRes, {
             windowTop: 0,
             windowBottom: 0,
-        }));
+        });
     },
 };
 
@@ -1416,13 +1416,13 @@ function createSelectorQuery() {
     return query;
 }
 const wx$2 = initWx();
-if (!wx$2.canIUse('getAppBaseInfo')) {
+if (!wx$2.getAppBaseInfo || !wx$2.getAppBaseInfo()) {
     wx$2.getAppBaseInfo = wx$2.getSystemInfoSync;
 }
-if (!wx$2.canIUse('getWindowInfo')) {
+if (!wx$2.getWindowInfo || !wx$2.getWindowInfo()) {
     wx$2.getWindowInfo = wx$2.getSystemInfoSync;
 }
-if (!wx$2.canIUse('getDeviceInfo')) {
+if (!wx$2.getDeviceInfo || !wx$2.getDeviceInfo()) {
     wx$2.getDeviceInfo = wx$2.getSystemInfoSync;
 }
 let baseInfo = wx$2.getAppBaseInfo && wx$2.getAppBaseInfo();

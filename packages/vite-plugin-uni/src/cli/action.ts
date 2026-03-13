@@ -69,6 +69,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
               options.platform === 'mp-harmony'
             ) {
               process.env.UNI_APP_CHANGED_FILES = ''
+              process.env.UNI_APP_UTS_CHANGED = ''
             }
             if (options.platform === 'app') {
               process.env.UNI_APP_CHANGED_PAGES = ''
@@ -89,6 +90,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
             )
             return
           }
+          const utsChanged = process.env.UNI_APP_UTS_CHANGED === 'true'
+          process.env.UNI_APP_UTS_CHANGED = ''
           if (options.platform === 'app') {
             const files = process.env.UNI_APP_CHANGED_FILES
             const pages = process.env.UNI_APP_CHANGED_PAGES
@@ -125,13 +128,31 @@ export async function runDev(options: CliOptions & ServerOptions) {
             options.platform === 'app-harmony' ||
             options.platform === 'mp-harmony'
           ) {
-            const files = process.env.UNI_APP_CHANGED_FILES
-            if (files) {
-              return output(
-                'log',
-                M['dev.watching.end.files'].replace('{files}', files)
-              )
+            // 鸿蒙平台cpp/uts插件变更需要整体编译
+            if (
+              process.env.UNI_APP_X_DOM2_CPP_CHANGED !== 'true' &&
+              !utsChanged
+            ) {
+              const files = process.env.UNI_APP_CHANGED_FILES
+              if (files) {
+                return output(
+                  'log',
+                  M['dev.watching.end.files'].replace('{files}', files)
+                )
+              }
             }
+          }
+          // dom2 下仅 cpp/uts插件 变更需要整体编译
+          // 如果有changedFiles就增量输出，否则就不要输出，而是打印无变更，静态资源走额外的全量同步
+          // 之前之所以没有增量就全量同步，是为了兼容性，怕出意外。
+          if (process.env.UNI_APP_X_DOM2 === 'true') {
+            if (
+              process.env.UNI_APP_X_DOM2_CPP_CHANGED === 'true' ||
+              utsChanged
+            ) {
+              return output('log', M['dev.watching.end'])
+            }
+            return output('log', M['uvue.dev.watching.end.empty'])
           }
           return output('log', M['dev.watching.end'])
         } else if (event.code === 'END') {

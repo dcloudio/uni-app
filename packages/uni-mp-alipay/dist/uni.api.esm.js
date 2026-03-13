@@ -1144,6 +1144,16 @@ const navigateTo$1 = () => {
     };
 };
 
+const getWindowInfo = {
+    returnValue: (fromRes, toRes) => {
+        addSafeAreaInsets(fromRes, toRes);
+        toRes = extend(toRes, {
+            windowTop: 0,
+            windowBottom: 0,
+        });
+    },
+};
+
 const onError = {
     args(fromArgs) {
         const app = getApp({ allowDefault: true }) || {};
@@ -1392,13 +1402,13 @@ var shims = /*#__PURE__*/Object.freeze({
 });
 
 function handleNetworkInfo(fromRes, toRes) {
-    const nextworkType = fromRes.networkType;
-    switch (nextworkType) {
+    const networkType = fromRes.networkType;
+    switch (networkType) {
         case 'NOTREACHABLE':
             toRes.networkType = 'none';
             break;
         case 'WWAN':
-            // TODO ?
+            // TODO 无线广域网，微信没有对应的值，使用 3g 代替 https://opendocs.alipay.com/mini/api/network-status#success%20%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0
             toRes.networkType = '3g';
             break;
         default:
@@ -1530,22 +1540,16 @@ function setNavigationBarTitle() {
 }
 /**
  * Note:
- * showModal 在钉钉上没有，所以使用 my.confirm/alert 模拟
+ * 钉钉已支持 showModal https://open.dingtalk.com/document/development/jsapi-show-modal
+ * 但效果和支付宝明显不同，还是使用 confrim 做兼容抹平
  */
 function showModal({ showCancel = true } = {}) {
-    if (my.canIUse('showModal')) {
-        return {
-            name: 'showModal',
-        };
-    }
     if (showCancel) {
         return {
             name: 'confirm',
-            args: {
-                confirmColor: false,
-                cancelColor: false,
-                cancelText: 'cancelButtonText',
-                confirmText: 'confirmButtonText',
+            args(fromArgs, toArgs) {
+                toArgs.cancelButtonText = fromArgs.cancelText || '取消';
+                toArgs.confirmButtonText = fromArgs.confirmText || '确定';
             },
             returnValue(fromRes, toRes) {
                 toRes.confirm = fromRes.confirm;
@@ -1555,9 +1559,8 @@ function showModal({ showCancel = true } = {}) {
     }
     return {
         name: 'alert',
-        args: {
-            confirmColor: false,
-            confirmText: 'buttonText',
+        args(fromArgs, toArgs) {
+            toArgs.confirmButtonText = fromArgs.confirmText || '确定';
         },
         returnValue(fromRes, toRes) {
             toRes.confirm = true;
@@ -1566,18 +1569,21 @@ function showModal({ showCancel = true } = {}) {
     };
 }
 function showToast({ icon = 'success' } = {}) {
-    const args = {
-        title: 'content',
-    };
     if (icon === 'loading') {
         return {
             name: 'showLoading',
-            args,
+            args: {
+                title: 'content',
+            },
         };
     }
     return {
         name: 'showToast',
-        args: extend({ icon: 'type' }, args),
+        args(fromArgs, toArgs) {
+            var _a;
+            toArgs.content = fromArgs.title;
+            toArgs.type = ((_a = fromArgs.icon) !== null && _a !== void 0 ? _a : icon);
+        },
     };
 }
 const showActionSheet = {
@@ -1595,7 +1601,9 @@ const showLoading = {
         if (!fromArgs.mask) {
             toArgs.mask = false;
         }
-        toArgs.content = fromArgs.title;
+        if (fromArgs.title) {
+            toArgs.content = fromArgs.title;
+        }
     },
 };
 const uploadFile = {
@@ -1640,7 +1648,6 @@ const chooseVideo = {
 const connectSocket = {
     args: {
         method: false,
-        protocols: false,
     },
     // TODO 有没有返回值还需要测试下
 };
@@ -1916,6 +1923,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getUserInfo: getUserInfo,
+  getWindowInfo: getWindowInfo,
   hideHomeButton: hideHomeButton,
   login: login,
   makePhoneCall: makePhoneCall,

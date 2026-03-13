@@ -42,8 +42,13 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         return
       }
     } else {
+      // fix issues214110
       const parentSystemDialogPages =
-        parentPage!.vm.$pageLayoutInstance!.$systemDialogPages.value
+        parentPage!.vm?.$pageLayoutInstance?.$systemDialogPages?.value
+      if (!parentSystemDialogPages) {
+        triggerFailCallback(options, 'dialogPage is not a valid page')
+        return
+      }
       const index = parentSystemDialogPages.indexOf(dialogPage)
       if (index > -1) {
         invokeHook(parentSystemDialogPages[index].vm!, ON_UNLOAD)

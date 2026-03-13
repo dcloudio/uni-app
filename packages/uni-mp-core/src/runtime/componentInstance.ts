@@ -83,6 +83,16 @@ export function initBaseInstance(
   ctx.$mpPlatform = __PLATFORM__
   ctx.$scope = options.mpInstance
 
+  if (__X__) {
+    Object.defineProperties(ctx, {
+      $page: {
+        get() {
+          return instance.root.proxy?.$scope
+        },
+      },
+    })
+  }
+
   if (
     __PLATFORM__ === 'mp-weixin' ||
     __PLATFORM__ === 'mp-alipay' ||
@@ -127,10 +137,12 @@ export function initBaseInstance(
     if (__PLATFORM__ === 'mp-weixin') {
       return options.mpInstance.getOpenerEventChannel()
     }
-    if (__PLATFORM__ === 'mp-alipay') {
+    if (
+      __PLATFORM__ === 'mp-alipay' &&
+      my.canIUse('page.getOpenerEventChannel')
+    ) {
       // getOpenerEventChannel 是页面实例方法 https://opendocs.alipay.com/mini/framework/page-detail#getOpenerEventChannel
-      if (my.canIUse('page.getOpenerEventChannel'))
-        return options.mpInstance.getOpenerEventChannel()
+      return options.mpInstance.getOpenerEventChannel()
     }
     if (!this.__eventChannel__) {
       this.__eventChannel__ = new EventChannel()

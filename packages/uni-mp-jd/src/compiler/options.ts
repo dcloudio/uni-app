@@ -3,6 +3,8 @@ import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN_BIND,
   type MiniProgramCompilerOptions,
+  copyMiniProgramThemeJson,
+  createCopyComponentDirs,
   getNativeTags,
   transformComponentLink,
   transformRef,
@@ -13,7 +15,6 @@ import { transformOn } from './transforms/vOn'
 import { transformModel } from './transforms/vModel'
 
 import source from './project.config.json'
-// import { transformSwiper } from './transforms/transformSwiper'
 
 const projectConfigFilename = 'project.config.json'
 
@@ -30,6 +31,7 @@ const directiveTransforms = {
 export const customElements = [
   'root-portal',
   'page-container',
+  'match-media',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
@@ -80,7 +82,7 @@ export const options: UniMiniProgramPluginOptions = {
       /**
        * 静态资源，配置的目录，在 uni_modules 中同样支持
        */
-      assets: [COMPONENTS_DIR],
+      assets: createCopyComponentDirs(COMPONENTS_DIR),
       targets: [
         {
           // FileWatcher这个类监听的文件，文件改动触发整体编译？编译什么？
@@ -90,6 +92,7 @@ export const options: UniMiniProgramPluginOptions = {
             return process.env.UNI_OUTPUT_DIR
           },
         },
+        ...copyMiniProgramThemeJson(),
       ],
     },
   },

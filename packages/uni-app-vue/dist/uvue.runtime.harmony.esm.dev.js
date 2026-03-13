@@ -1,6 +1,6 @@
 import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, hasOwn, isMap, makeMap, capitalize, hyphenate, isPromise, getGlobalThis, isString, camelize, EMPTY_OBJ, remove, toHandlerKey, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isBuiltInDirective, isReservedProp, parseStringStyle, normalizeStyle as normalizeStyle$1, looseToNumber, isGloballyAllowed, NO, normalizeClass as normalizeClass$1, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isIntegerKey, isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
+import { isIntegerKey, isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle, forcePatchProp, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_LAST_PAGE_BACK_PRESS, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 function warn$2(msg) {
   for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
@@ -1476,6 +1476,48 @@ function createDecl(prop, value, important, raws, source) {
   return decl;
 }
 var isNumber = val => typeof val === 'number';
+/**
+ * css value 分割多值，兼容包含括号的 css 方法，比如 var/env/calc() 等
+ */
+function splitValues(value) {
+  var trimmedValue = value.trim();
+  if (!trimmedValue.includes('(')) {
+    return trimmedValue.split(/\s+/);
+  }
+  var parts = [];
+  var current = '';
+  var depth = 0;
+  for (var i = 0; i < trimmedValue.length; i++) {
+    var char = trimmedValue[i];
+    if (char === '(') {
+      depth++;
+      current += char;
+    } else if (char === ')') {
+      if (depth > 0) {
+        depth--;
+      }
+      current += char;
+    } else if (/\s/.test(char)) {
+      if (depth === 0) {
+        if (current) {
+          parts.push(current);
+          current = '';
+        }
+      } else {
+        // 多个空格处理一个
+        if (current.length > 0 && !/\s$/.test(current)) {
+          current += ' ';
+        }
+      }
+    } else {
+      current += char;
+    }
+  }
+  if (current) {
+    parts.push(current);
+  }
+  return parts;
+}
 var backgroundColor = 'backgroundColor';
 var backgroundImage = 'backgroundImage';
 var handleTransformBackground = decl => {
@@ -1485,6 +1527,10 @@ var handleTransformBackground = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
+  if (value === 'none') {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  }
   if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
     return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
   } else if (/^linear-gradient(.+)$/.test(value)) {
@@ -1521,18 +1567,10 @@ function createTransformBackground(options) {
     }
   };
 }
-function borderTop() {
-  return 'borderTop';
-}
-function borderRight() {
-  return 'borderRight';
-}
-function borderBottom() {
-  return 'borderBottom';
-}
-function borderLeft() {
-  return 'borderLeft';
-}
+var borderTop = 'borderTop';
+var borderRight = 'borderRight';
+var borderBottom = 'borderBottom';
+var borderLeft = 'borderLeft';
 var transformBorderColor = decl => {
   var {
     prop,
@@ -1541,12 +1579,13 @@ var transformBorderColor = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var _property_split = hyphenate(prop).split('-');
   var property = _property_split[_property_split.length - 1];
   {
     property = capitalize(property);
   }
-  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/); // 1pt
+  var splitResult = splitValues(value); // 1pt
   switch (splitResult.length) {
     case 1:
       if (_property_split.length === 3) {
@@ -1563,7 +1602,7 @@ var transformBorderColor = decl => {
       splitResult.push(splitResult[1]);
       break;
   }
-  return [createDecl(borderTop() + property, splitResult[0], important, raws, source), createDecl(borderRight() + property, splitResult[1], important, raws, source), createDecl(borderBottom() + property, splitResult[2], important, raws, source), createDecl(borderLeft() + property, splitResult[3], important, raws, source)];
+  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
 };
 var transformBorderColorNvue = decl => {
   var {
@@ -1573,6 +1612,7 @@ var transformBorderColorNvue = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var property = hyphenate(prop).split('-')[1];
   {
     property = capitalize(property);
@@ -1594,17 +1634,11 @@ var transformBorderStyle = transformBorderColor;
 var transformBorderStyleNvue = transformBorderColorNvue;
 var transformBorderWidth = transformBorderColor;
 var transformBorderWidthNvue = transformBorderColorNvue;
+var borderWidth = 'Width';
+var borderStyle = 'Style';
+var borderColor = 'Color';
 function createTransformBorder(options) {
   return decl => {
-    var borderWidth = () => {
-      return 'Width';
-    };
-    var borderStyle = () => {
-      return 'Style';
-    };
-    var borderColor = () => {
-      return 'Color';
-    };
     var {
       prop,
       value,
@@ -1612,7 +1646,7 @@ function createTransformBorder(options) {
       raws,
       source
     } = decl;
-    var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+    var splitResult = splitValues(value);
     var havVar = splitResult.some(str => str.startsWith('var('));
     var result = [];
     // 包含 var ，直接视为 width/style/color 都使用默认值
@@ -1646,14 +1680,14 @@ function createTransformBorder(options) {
       }
       return '#000000';
     };
-    return [...transformBorderWidth(createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source))];
+    return [...transformBorderWidth(createDecl(prop + borderWidth, defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle, defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor, defaultColor(result[2]), important, raws, source))];
   };
 }
+/**
+ * nvue 逻辑不变
+ */
 function createTransformBorderNvue(options) {
   return decl => {
-    var borderWidth = 'Width';
-    var borderStyle = 'Style';
-    var borderColor = 'Color';
     var {
       prop,
       value,
@@ -1661,6 +1695,7 @@ function createTransformBorderNvue(options) {
       raws,
       source
     } = decl;
+    value = value.trim();
     var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
     var result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
       var index = splitResult.findIndex(str => item.test(str));
@@ -1683,7 +1718,8 @@ var transformBorderRadius = decl => {
     raws,
     source
   } = decl;
-  var splitResult = value.split(/\s+/);
+  value = value.trim();
+  var splitResult = splitValues(value);
   if (value.includes('/')) {
     return [decl];
   }
@@ -1707,11 +1743,12 @@ var transformBorderRadiusNvue = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var splitResult = value.split(/\s+/);
   if (value.includes('/')) {
     return [decl];
   }
-  // const isUvuePlatform = options.type == 'uvue'
+  // const isUvuePlatform = options.type === 'uvue'
   switch (splitResult.length) {
     case 1:
       return [decl];
@@ -1733,7 +1770,8 @@ var transformFlexFlow = decl => {
     raws,
     source
   } = decl;
-  var splitResult = value.split(/\s+/);
+  value = value.trim();
+  var splitResult = splitValues(value);
   var result = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/].map(item => {
     var index = splitResult.findIndex(str => item.test(str));
     return index < 0 ? null : splitResult.splice(index, 1)[0];
@@ -1755,7 +1793,7 @@ var createTransformBox = type => {
       raws,
       source
     } = decl;
-    var splitResult = value.split(/\s+/);
+    var splitResult = splitValues(value);
     switch (splitResult.length) {
       case 1:
         splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
@@ -1783,11 +1821,12 @@ var transformTransition = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var result = [];
   var match;
   // 针对 cubic-bezier 特殊处理
   // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
-  if (decl.value.includes('cubic-bezier')) {
+  if (value.includes('cubic-bezier')) {
     var CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/;
     match = value.match(CHUNK_REGEXP);
   } else {
@@ -1813,8 +1852,9 @@ var transformFlex = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var result = [];
-  var splitResult = value.trim().split(/\s+/);
+  var splitResult = splitValues(value);
   // 是否 flex-grow 的有效值 <number [0,∞]>
   var isFlexGrowValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v));
   var isFlexShrinkValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
@@ -1876,24 +1916,24 @@ var transformFlex = decl => {
   return [decl];
 };
 function getDeclTransforms(options) {
-  var transformBorder = options.type == 'uvue' ? createTransformBorder() : createTransformBorderNvue();
+  var transformBorder = options.type === 'uvue' ? createTransformBorder() : createTransformBorderNvue();
   var styleMap = {
     transition: transformTransition,
     border: transformBorder,
     background: createTransformBackground(options),
-    borderTop: transformBorder,
-    borderRight: transformBorder,
-    borderBottom: transformBorder,
-    borderLeft: transformBorder,
-    borderStyle: options.type == 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
-    borderWidth: options.type == 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
-    borderColor: options.type == 'uvue' ? transformBorderColor : transformBorderColorNvue,
-    borderRadius: options.type == 'uvue' ? transformBorderRadius : transformBorderRadiusNvue,
+    ['borderTop']: transformBorder,
+    ['borderRight']: transformBorder,
+    ['borderBottom']: transformBorder,
+    ['borderLeft']: transformBorder,
+    ['borderStyle']: options.type === 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
+    ['borderWidth']: options.type === 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
+    ['borderColor']: options.type === 'uvue' ? transformBorderColor : transformBorderColorNvue,
+    ['borderRadius']: options.type === 'uvue' ? transformBorderRadius : transformBorderRadiusNvue,
     // uvue已经支持这些简写属性，不需要展开
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
     padding: transformPadding,
-    flexFlow: transformFlexFlow
+    ['flexFlow']: transformFlexFlow
   };
   if (options.type === 'uvue') {
     styleMap.flex = transformFlex;
@@ -4665,6 +4705,8 @@ extend(/* @__PURE__ */Object.create(null), {
   $refs: i => shallowReadonly(i.refs),
   $parent: i => getPublicInstance(i.parent),
   $root: i => getPublicInstance(i.root),
+  // fixed by xxxxxx
+  $page: i => i.page,
   $emit: i => i.emit,
   $options: i => resolveMergedOptions(i),
   $forceUpdate: i => i.f || (i.f = () => {
@@ -5644,6 +5686,18 @@ function inject(key, defaultValue) {
 function hasInjectionContext() {
   return !!(currentInstance || currentRenderingInstance || currentApp);
 }
+var __X_STYLE_ISOLATION__ = false;
+function enableStyleIsolation() {
+  __X_STYLE_ISOLATION__ = true;
+}
+var UniSharedDataComponentStyleIsolation = {
+  "Isolated": 0,
+  "0": "Isolated",
+  "App": 1,
+  "1": "App",
+  "AppAndPage": 2,
+  "2": "AppAndPage"
+};
 function initProps(instance, rawProps, isStateful) {
   var isSSR = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
   var props = {};
@@ -5703,7 +5757,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
         if (options) {
           if (hasOwn(attrs, key)) {
             if (value !== attrs[key]) {
-              attrs[key] = value;
+              attrs[key] = normalizeInheritAttrsValue(instance, key, value);
               hasAttrsChanged = true;
             }
           } else {
@@ -5712,7 +5766,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
           }
         } else {
           if (value !== attrs[key]) {
-            attrs[key] = value;
+            attrs[key] = normalizeInheritAttrsValue(instance, key, value);
             hasAttrsChanged = true;
           }
         }
@@ -5772,13 +5826,17 @@ function setFullProps(instance, rawProps, props, attrs) {
       var camelKey = void 0;
       if (options && hasOwn(options, camelKey = camelize(key))) {
         if (!needCastKeys || !needCastKeys.includes(camelKey)) {
-          props[camelKey] = value;
+          if (__X_STYLE_ISOLATION__) {
+            props[camelKey] = resolveExternalClassesPropValue(camelKey, value, options, false);
+          } else {
+            props[camelKey] = value;
+          }
         } else {
           (rawCastValues || (rawCastValues = {}))[camelKey] = value;
         }
       } else if (!isEmitListener(instance.emitsOptions, key)) {
         if (!(key in attrs) || value !== attrs[key]) {
-          attrs[key] = value;
+          attrs[key] = normalizeInheritAttrsValue(instance, key, value);
           hasAttrsChanged = true;
         }
       }
@@ -5794,7 +5852,41 @@ function setFullProps(instance, rawProps, props, attrs) {
   }
   return hasAttrsChanged;
 }
+function toExternalClasses(classes) {
+  var trimmed = classes.trim();
+  return trimmed ? trimmed.split(/\s+/).map(item => "^" + item) : [];
+}
+function normalizeExternalClasses(classes) {
+  return toExternalClasses(normalizeClass(classes));
+}
+function normalizeInheritAttrsValue(instance, key, value) {
+  if (__X_STYLE_ISOLATION__) {
+    if (key == "class" || key == "hover-class" || key == "placeholder-class") {
+      return toExternalClasses(value).join(" ");
+    }
+  }
+  return value;
+}
+function resolveExternalClassesPropValue(key, value, options, isAbsent) {
+  if (
+  // 只有外部传入的 externalClasses 才走这里，没有传入，但有默认值的不应该处理，比如button组件内部hover-class有默认值button-hover
+  !isAbsent) {
+    var opt = options[key];
+    if (opt && opt[2
+    /* BooleanFlags.externalClasses */]) {
+      return normalizeExternalClasses(value);
+    }
+  }
+  return value;
+}
 function resolvePropValue(options, props, key, value, instance, isAbsent) {
+  var result = _resolvePropValue(options, props, key, value, instance, isAbsent);
+  if (__X_STYLE_ISOLATION__) {
+    return resolveExternalClassesPropValue(key, result, options, isAbsent);
+  }
+  return result;
+}
+function _resolvePropValue(options, props, key, value, instance, isAbsent) {
   var opt = options[key];
   if (opt != null) {
     var hasDefault = hasOwn(opt, "default");
@@ -5824,6 +5916,14 @@ function resolvePropValue(options, props, key, value, instance, isAbsent) {
     }
   }
   return value;
+}
+function initExternalClassesOptions(comp) {
+  if (isArray$1(comp.externalClasses)) {
+    var cached = comp.__externalClassesOptions;
+    if (!cached) {
+      comp.__externalClassesOptions = comp.externalClasses.map(className => camelize(className));
+    }
+  }
 }
 function normalizePropsOptions(comp, appContext) {
   var asMixin = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -5885,6 +5985,10 @@ function normalizePropsOptions(comp, appContext) {
           var stringIndex = getTypeIndex(String, prop.type);
           prop[0 /* shouldCast */] = booleanIndex > -1;
           prop[1 /* shouldCastTrue */] = stringIndex < 0 || booleanIndex < stringIndex;
+          if (__X_STYLE_ISOLATION__ && comp.__externalClassesOptions && comp.__externalClassesOptions.includes(key)) {
+            prop[2 /* externalClasses */] = true;
+            prop.skipCheck = true;
+          }
           if (booleanIndex > -1 || hasOwn(prop, "default")) {
             needCastKeys.push(_normalizedKey);
           }
@@ -8526,6 +8630,9 @@ var emptyAppContext = createAppContext();
 var uid = 0;
 function createComponentInstance(vnode, parent, suspense) {
   var type = vnode.type;
+  if (__X_STYLE_ISOLATION__) {
+    initExternalClassesOptions(type);
+  }
   var appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
   var instance = {
     uid: uid++,
@@ -8622,6 +8729,12 @@ function createComponentInstance(vnode, parent, suspense) {
   }
   instance.root = parent ? parent.root : instance;
   instance.emit = emit.bind(null, instance);
+  if (__X_STYLE_ISOLATION__) {
+    instance.hostInstance = vnode.hostInstance;
+  }
+  if (parent) {
+    instance.page = parent.root.page;
+  }
   if (vnode.ce) {
     vnode.ce(instance);
   }
@@ -9209,6 +9322,8 @@ var ssrUtils = _ssrUtils;
 var resolveFilter = null;
 var compatUtils = null;
 var DeprecationTypes = null;
+var NODE_EXT_CLASS_LIST = "classList";
+var NODE_EXT_INSTANCE = "instance";
 var NODE_EXT_STYLES = "styles";
 var NODE_EXT_PARENT_STYLES = "parentStyles";
 var NODE_EXT_CLASS_STYLE = "classStyle";
@@ -9217,11 +9332,37 @@ var NODE_EXT_IS_TEXT_NODE = "isTextNode";
 var NODE_EXT_CHILD_NODE = "childNode";
 var NODE_EXT_PARENT_NODE = "parentNode";
 var NODE_EXT_CHILD_NODES = "childNodes";
+var RootElementInstanceMap = /* @__PURE__ */new WeakMap();
+var PartElementInstanceMap = /* @__PURE__ */new WeakMap();
 function setNodeExtraData(el, name, value) {
   el.ext.set(name, value);
 }
+function setRootElementInstance(el, instance) {
+  RootElementInstanceMap.set(el, instance);
+}
+function getRootElementInstance(el) {
+  return RootElementInstanceMap.get(el) || null;
+}
+function getPartElementInstance(el) {
+  return PartElementInstanceMap.get(el) || null;
+}
+function setPartElementInstance(el, instance) {
+  PartElementInstanceMap.set(el, instance);
+}
 function getNodeExtraData(el, name) {
   return el.ext.get(name);
+}
+function getExtraClassList(el) {
+  return getNodeExtraData(el, NODE_EXT_CLASS_LIST);
+}
+function setExtraClassList(el, classList) {
+  setNodeExtraData(el, NODE_EXT_CLASS_LIST, classList);
+}
+function getExtraInstance(el) {
+  return getNodeExtraData(el, NODE_EXT_INSTANCE);
+}
+function setExtraInstance(el, ins) {
+  setNodeExtraData(el, NODE_EXT_INSTANCE, ins);
 }
 function getExtraStyles(el) {
   return getNodeExtraData(el, NODE_EXT_STYLES);
@@ -9307,9 +9448,42 @@ function useCssStyles(componentStyles) {
   });
   return normalized;
 }
-function hasClass(calssName, el) {
-  var classList = el && el.classList;
-  return classList && classList.includes(calssName);
+function hasClass(className, el) {
+  if (!el) {
+    return [false, null];
+  }
+  if (!className.endsWith(")")) {
+    var classList = el && el.classList;
+    return [!!classList && classList.includes(className), el];
+  }
+  var partStart = className.lastIndexOf("::part(");
+  var partName = className.slice(partStart + 7, className.length - 1);
+  var part = el.getAnyAttribute("part");
+  if (part == null || !part.split(" ").includes(partName)) {
+    return [false, null];
+  }
+  var baseClassName = className.slice(0, partStart);
+  var partInstance = getPartElementInstance(el);
+  var hostEl = partInstance == null ? void 0 : partInstance.subTree.el;
+  if (hostEl == null) {
+    return [false, null];
+  }
+  if (isCommentNode(hostEl)) {
+    var instanceClass = partInstance == null ? void 0 : partInstance.attrs.class;
+    if (!instanceClass || typeof instanceClass !== "string") {
+      return [false, null];
+    }
+    var _classList = instanceClass.split(" ");
+    if (!_classList.includes(baseClassName)) {
+      return [false, null];
+    }
+    return [true, hostEl];
+  }
+  var [matched, curEl] = hasClass(baseClassName, hostEl);
+  if (!matched) {
+    return [false, null];
+  }
+  return [true, curEl];
 }
 var TYPE_RE = /[+~> ]$/;
 var PROPERTY_PARENT_NODE = "parentNode";
@@ -9324,7 +9498,9 @@ function isMatchParentSelector(parentSelector, el) {
       var property = type === "~" ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
       while (el) {
         el = el[property];
-        if (hasClass(className, el)) {
+        var [matched, curEl] = hasClass(className, el);
+        if (matched) {
+          el = curEl;
           break;
         }
       }
@@ -9337,9 +9513,11 @@ function isMatchParentSelector(parentSelector, el) {
       } else if (type === "+") {
         el = el && el[PROPERTY_PREVIOUS_SIBLING];
       }
-      if (!hasClass(className, el)) {
+      var [_matched, _curEl] = hasClass(className, el);
+      if (!_matched) {
         return false;
       }
+      el = _curEl;
     }
   }
   return true;
@@ -9364,8 +9542,8 @@ function parseClassName(_ref22, parentStyles, el) {
       if (isImportant) {
         name = name.slice(1);
       }
-      var oldWeight = weights[name] || 0;
       var weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
+      var oldWeight = weights[name] || 0;
       if (weight >= oldWeight) {
         weights[name] = weight;
         styles.set(name, value);
@@ -9383,23 +9561,26 @@ function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet) {
   var el = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
   var context = new ParseStyleContext();
   classList.forEach(className => {
-    var parentStyles = stylesheet && stylesheet[className];
-    if (parentStyles) {
-      parseClassName(context, parentStyles, el);
+    var style = stylesheet && stylesheet[className];
+    if (style) {
+      parseClassName(context, style, el);
+    }
+    if (parentStylesheet != null) {
+      parentStylesheet.forEach(style2 => {
+        var parentStyle = style2[className];
+        if (parentStyle != null) {
+          parseClassName(context, parentStyle, el);
+        }
+      });
     }
   });
-  if (parentStylesheet != null) {
-    classList.forEach(className => {
-      var _a;
-      var parentStyles = (_a = (parentStylesheet != null ? parentStylesheet : []).find(style => style[className] !== null)) == null ? void 0 : _a[className];
-      if (parentStyles != null) {
-        parseClassName(context, parentStyles, el);
-      }
-    });
-  }
   return context;
 }
 function parseClassStyles(el) {
+  var _a;
+  if (__X_STYLE_ISOLATION__) {
+    return parseClassListWithCtx((_a = getExtraClassList(el)) != null ? _a : el.classList, getExtraInstance(el), el);
+  }
   var styles = getExtraStyles(el);
   var parentStyles = getExtraParentStyles(el);
   if (styles == null && parentStyles == null || el.classList.length == 0) {
@@ -9409,6 +9590,9 @@ function parseClassStyles(el) {
 }
 function parseClassList(classList, instance) {
   var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  if (__X_STYLE_ISOLATION__ && el) {
+    return parseClassListWithCtx(classList, instance, el).styles;
+  }
   return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), null, el).styles;
 }
 function parseStyleSheet(_ref23) {
@@ -9424,21 +9608,62 @@ function parseStyleSheet(_ref23) {
   }
   var cache = pageInstance.componentStylesCache.get(component);
   if (!cache) {
+    var addAppStyles2 = function () {
+        if (appContext && __globalStyles) {
+          var globalStyles = isArray$1(__globalStyles) ? __globalStyles : [__globalStyles];
+          styles.push(...globalStyles);
+        }
+      },
+      addPageStyles2 = function () {
+        if (!isPage && isArray$1(page.styles)) {
+          styles.push(...page.styles);
+        }
+      };
     var __globalStyles = appContext.provides.__globalStyles;
     if (appContext && isArray$1(__globalStyles)) {
       appContext.provides.__globalStyles = useCssStyles(__globalStyles);
     }
-    var styles = [];
-    if (appContext && __globalStyles) {
-      var globalStyles = isArray$1(__globalStyles) ? __globalStyles : [__globalStyles];
-      styles.push(...globalStyles);
-    }
     var page = root.type;
-    if (component !== page && isArray$1(page.styles)) {
-      styles.push(...page.styles);
-    }
-    if (isArray$1(component.styles)) {
-      styles.push(...component.styles);
+    var isPage = component === page;
+    var styles = [];
+    if (__X_STYLE_ISOLATION__) {
+      var styleIsolation = isPage ? 1 : 0;
+      var styleIsolationStr = component.styleIsolation;
+      if (styleIsolationStr) {
+        if (styleIsolationStr === "isolated") {
+          styleIsolation = 0;
+        } else if (styleIsolationStr === "app" || styleIsolationStr === "app-shared") {
+          styleIsolation = 1;
+        } else if (styleIsolationStr === "app-and-page") {
+          styleIsolation = isPage ? 1 : 2;
+        }
+      }
+      switch (styleIsolation) {
+        case 0:
+          if (isArray$1(component.styles)) {
+            styles.push(...component.styles);
+          }
+          break;
+        case 1:
+          addAppStyles2();
+          if (isArray$1(component.styles)) {
+            styles.push(...component.styles);
+          }
+          break;
+        case 2:
+          addAppStyles2();
+          if (isArray$1(component.styles)) {
+            styles.push(...component.styles);
+          }
+          addPageStyles2();
+          break;
+      }
+    } else {
+      addAppStyles2();
+      addPageStyles2();
+      if (isArray$1(component.styles)) {
+        styles.push(...component.styles);
+      }
     }
     cache = useCssStyles(styles);
     pageInstance.componentStylesCache.set(component, cache);
@@ -9452,8 +9677,11 @@ function extendMap(a, b) {
   return a;
 }
 function toStyle(el, classStyle, classStyleWeights) {
-  var res = extendMap(/* @__PURE__ */new Map(), classStyle);
   var style = getExtraStyle(el);
+  return mergeClassStyles(classStyle, classStyleWeights, style);
+}
+function mergeClassStyles(classStyle, classStyleWeights, style) {
+  var res = extendMap(/* @__PURE__ */new Map(), classStyle);
   if (style != null) {
     style.forEach((value, key) => {
       var weight = classStyleWeights[key];
@@ -9464,20 +9692,256 @@ function toStyle(el, classStyle, classStyleWeights) {
   }
   return res;
 }
+function parseClassListWithCtx(classList, ctx, el) {
+  var context = new ParseStyleContext();
+  if (classList.length == 0) {
+    return context;
+  }
+  if (ctx == null) {
+    console.warn("parseClass context is null");
+    return context;
+  }
+  classList.forEach(className => {
+    if (className.length == 0) {
+      return;
+    }
+    var currentCtx = null;
+    if (className.charAt(0) != "^") {
+      currentCtx = ctx;
+    } else {
+      currentCtx = ctx.hostInstance;
+      if (currentCtx != null) {
+        var parentLevel = 0;
+        while (className.charAt(parentLevel) == "^") {
+          parentLevel++;
+        }
+        if (parentLevel > 0) {
+          className = className.slice(parentLevel);
+          if (className.length == 0) {
+            {
+              console.warn("Invalid class name: only contains '^' characters");
+            }
+            return;
+          }
+          for (var i = 1; i < parentLevel; i++) {
+            if (currentCtx == null) {
+              break;
+            }
+            currentCtx = currentCtx.hostInstance;
+          }
+        }
+      }
+    }
+    if (currentCtx != null) {
+      var parentStyles = parseStyleSheet(currentCtx)[className];
+      if (parentStyles != null) {
+        parseClassName(context, parentStyles, el);
+      }
+    }
+  });
+  return context;
+}
+function useComputedStyle() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var _a;
+  var i = getCurrentInstance();
+  var r = reactive(/* @__PURE__ */new Map());
+  if (i) {
+    var propsDef = i.propsOptions === EMPTY_ARR ? {} : i.propsOptions[0];
+    var {
+      classAttr,
+      styleAttr,
+      properties
+    } = options;
+    var filterProperties = (_a = options.filterProperties) != null ? _a : true;
+    if (classAttr || styleAttr) {
+      if (classAttr && classAttr in propsDef) {
+        classAttr = void 0;
+      }
+      if (styleAttr && styleAttr in propsDef) {
+        styleAttr = void 0;
+      }
+    } else if (!("class" in propsDef) && !("style" in propsDef)) {
+      classAttr = "class";
+      styleAttr = "style";
+    }
+    var computedStyleInterceptor = {
+      classAttr,
+      styleAttr,
+      properties,
+      reactiveComputedStyle: r,
+      filterProperties
+    };
+    i.computedStyleInterceptors = i.computedStyleInterceptors || [];
+    i.computedStyleInterceptors.push(computedStyleInterceptor);
+  } else {
+    warn("useComputedStyle() is called when there is no active component instance to be associated with.");
+  }
+  return r;
+}
+function triggerComputedStyleUpdate(instance, styles) {
+  if (instance.computedStyleInterceptors) {
+    var keysToDelete = /* @__PURE__ */new Set();
+    var clearStyles = false;
+    instance.computedStyleInterceptors.forEach(interceptor => {
+      var r = interceptor.reactiveComputedStyle;
+      var properties = interceptor.properties;
+      if (properties) {
+        styles.forEach((value, key) => {
+          var isCSSVar = key.startsWith("--");
+          var hyphenatedKey = isCSSVar ? key : hyphenate(key);
+          if (properties.includes(hyphenatedKey)) {
+            if (value === "" || value == null) {
+              r.delete(hyphenatedKey);
+            } else {
+              r.set(hyphenatedKey, value);
+            }
+            if (interceptor.filterProperties) {
+              keysToDelete.add(key);
+            }
+          }
+        });
+      } else {
+        styles.forEach((value, key) => {
+          var isCSSVar = key.startsWith("--");
+          var hyphenatedKey = isCSSVar ? key : hyphenate(key);
+          if (value === "" || value == null) {
+            r.delete(hyphenatedKey);
+          } else {
+            r.set(hyphenatedKey, value);
+          }
+        });
+        clearStyles = true;
+      }
+    });
+    if (clearStyles) {
+      styles.clear();
+    } else if (keysToDelete.size > 0) {
+      keysToDelete.forEach(key => {
+        styles.delete(key);
+      });
+    }
+  }
+}
+var PartElementContextMap = /* @__PURE__ */new WeakMap();
+function setPartElementContext(el, context) {
+  PartElementContextMap.set(el, context);
+}
+function getPartElementContext(el) {
+  return PartElementContextMap.get(el) || null;
+}
+function patchPart(el, part) {
+  var instance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  el.setAnyAttribute("part", part);
+  if (instance == null) {
+    return;
+  }
+  setPartElementInstance(el, instance);
+  updatePartStyles(el);
+}
+function updatePartStyles(el) {
+  var instance = getPartElementInstance(el);
+  if (instance == null) {
+    return;
+  }
+  var part = el.getAttribute("part");
+  if (!isString(part) || !part) {
+    setPartElementContext(el, new ParseStyleContext());
+    mergeAndUpdateClassStyles(el);
+    return;
+  }
+  var hostEl = instance.subTree.el;
+  if (hostEl == null || hostEl.tagName == null) {
+    return;
+  }
+  var ownerInstance = instance.vnode.hostInstance;
+  if (ownerInstance == null) {
+    return;
+  }
+  var parentStylesheet = ownerInstance.type.styles;
+  if (parentStylesheet == null || parentStylesheet.length === 0) {
+    return;
+  }
+  var partList = part.split(" ");
+  var context = new ParseStyleContext();
+  var stylesUpdated = false;
+  var partSelectors = partList.map(partName => "::part(".concat(partName, ")"));
+  var parentStyles = (parentStylesheet != null ? parentStylesheet : []).filter(style => partSelectors.some(partSelector => style[partSelector] != null));
+  if (isCommentNode(hostEl)) {
+    var instanceClass = instance.attrs.class;
+    if (typeof instanceClass === "string") {
+      hostEl.classList = instanceClass.split(" ");
+    }
+  }
+  for (var i = 0; i < parentStyles.length; i++) {
+    var style = parentStyles[i];
+    for (var j = 0; j < partSelectors.length; j++) {
+      var partSelector = partSelectors[j];
+      if (style[partSelector] != null) {
+        var parentPartStyles = style[partSelector];
+        for (var parentSelector in parentPartStyles) {
+          if (!isMatchParentSelector(parentSelector, hostEl)) {
+            continue;
+          }
+          var style2 = parentPartStyles[parentSelector];
+          var weight = parentSelector.split(".").length + 1;
+          for (var key in style2) {
+            var existing = context.weights[key];
+            if (existing == null || weight >= existing) {
+              context.styles.set(key, style2[key]);
+              context.weights[key] = weight;
+              stylesUpdated = true;
+            }
+          }
+        }
+      }
+    }
+  }
+  if (!stylesUpdated) {
+    return;
+  }
+  setPartElementContext(el, context);
+  mergeAndUpdateClassStyles(el);
+}
+var ElementClassContextMap = /* @__PURE__ */new WeakMap();
+function setElementClassContext(el, context) {
+  ElementClassContextMap.set(el, context);
+}
+function getElementClassContext(el) {
+  return ElementClassContextMap.get(el) || null;
+}
 function patchClass(el, pre, next) {
   var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
   if (!instance) {
     return;
   }
   var classList = next ? next.split(" ") : [];
-  el.classList = classList;
-  setExtraStyles(el, parseStyleSheet(instance));
+  if (__X_STYLE_ISOLATION__) {
+    setExtraClassList(el, classList);
+    var hasCaretPrefix = classList.some(c => c.charCodeAt(0) == 94);
+    el.classList = hasCaretPrefix ? normalizeClassList(classList) : classList;
+  } else {
+    el.classList = classList;
+  }
+  if (__X_STYLE_ISOLATION__) {
+    setExtraInstance(el, instance);
+  } else {
+    setExtraStyles(el, parseStyleSheet(instance));
+  }
   if (instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
-    setExtraParentStyles(el, instance.parent.type.styles);
+    if (!__X_STYLE_ISOLATION__) {
+      setExtraParentStyles(el, instance.parent.type.styles);
+    }
+    setRootElementInstance(el, instance);
   }
   updateClassStyles(el);
 }
 function updateClassStyles(el) {
+  var parseClassStylesResult = parseClassStyles(el);
+  setElementClassContext(el, parseClassStylesResult);
+  mergeAndUpdateClassStyles(el);
+}
+function mergeAndUpdateClassStyles(el) {
   if (el.parentNode == null || isCommentNode(el)) {
     return;
   }
@@ -9488,11 +9952,40 @@ function updateClassStyles(el) {
   oldClassStyle.forEach((_value, key) => {
     oldClassStyle.set(key, "");
   });
-  var parseClassStylesResult = parseClassStyles(el);
-  parseClassStylesResult.styles.forEach((value, key) => {
+  var elementClassContext = getElementClassContext(el);
+  var partStyleContext = getPartElementContext(el);
+  var mergedStyleContext = null;
+  if (elementClassContext && partStyleContext) {
+    mergedStyleContext = new ParseStyleContext();
+    elementClassContext.styles.forEach((value, key) => {
+      mergedStyleContext.styles.set(key, value);
+      mergedStyleContext.weights[key] = elementClassContext.weights[key];
+    });
+    partStyleContext.styles.forEach((value, key) => {
+      var _a;
+      var weight = partStyleContext.weights[key];
+      var oldWeight = (_a = mergedStyleContext.weights[key]) != null ? _a : 0;
+      if (weight > oldWeight) {
+        mergedStyleContext.weights[key] = weight;
+        mergedStyleContext.styles.set(key, partStyleContext.styles.get(key));
+      }
+    });
+  } else if (elementClassContext) {
+    mergedStyleContext = elementClassContext;
+  } else if (partStyleContext) {
+    mergedStyleContext = partStyleContext;
+  }
+  if (mergedStyleContext == null) {
+    return;
+  }
+  mergedStyleContext.styles.forEach((value, key) => {
     oldClassStyle.set(key, value);
   });
-  var styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
+  var styles = toStyle(el, oldClassStyle, mergedStyleContext.weights);
+  var instance = getRootElementInstance(el);
+  if (instance && instance.computedStyleInterceptors) {
+    triggerComputedStyleUpdate(instance, styles);
+  }
   if (styles.size == 0) {
     return;
   }
@@ -9500,6 +9993,31 @@ function updateClassStyles(el) {
     styles.set("display", "none");
   }
   el.updateStyle(styles);
+}
+function normalizeClassList(classList) {
+  var len = classList.length;
+  if (len == 1) {
+    var className = classList[0];
+    var start = 1;
+    while (start < className.length && className.charCodeAt(start) == 94) {
+      start++;
+    }
+    return [className.slice(start)];
+  }
+  var seen = /* @__PURE__ */new Set();
+  for (var i = 0; i < len; i++) {
+    var _className = classList[i];
+    if (_className.charCodeAt(0) == 94) {
+      var _start = 1;
+      while (_start < _className.length && _className.charCodeAt(_start) == 94) {
+        _start++;
+      }
+      seen.add(_className.slice(_start));
+    } else {
+      seen.add(_className);
+    }
+  }
+  return Array.from(seen);
 }
 var rootDocument;
 function getDocument() {
@@ -9536,6 +10054,7 @@ var nodeOps = {
       parent.insertBefore(el, anchor);
     }
     if (parent.isConnected) {
+      updatePartStyles(el);
       updateClassStyles(el);
       updateChildrenClassStyle(el);
     }
@@ -9614,6 +10133,7 @@ var nodeOps = {
 function updateChildrenClassStyle(el) {
   if (el !== null) {
     el.childNodes.forEach(child => {
+      updatePartStyles(child);
       updateClassStyles(child);
       updateChildrenClassStyle(child);
     });
@@ -9667,7 +10187,7 @@ function transformAttr(el, key, value, instance) {
   if (opts) {
     var camelized = camelize(key);
     if (opts["class"].indexOf(camelized) > -1) {
-      var classStyle = parseClassList([value], instance, el);
+      var classStyle = parseClassList(Array.isArray(value) ? value : [value], instance, el);
       if (el.tagName === "BUTTON") {
         if (value === "none" || value == "button-hover" && classStyle.size == 0) {
           return [camelized, value];
@@ -9774,6 +10294,7 @@ function isSame(a, b) {
   return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
 }
 function patchStyle(el, prev, next) {
+  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
   if (!next) {
     return;
   }
@@ -9788,20 +10309,20 @@ function patchStyle(el, prev, next) {
       var style = getExtraStyle(el);
       for (var key in prev) {
         if (next[key] == null) {
-          var _key = key.startsWith("--") ? key : camelize(key);
-          var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
-          parseStyleDecl(_key, value).forEach(item => {
-            batchedStyles.set(item.prop, item.value);
-            style == null ? void 0 : style.delete(item.prop);
+          parseStyleDecl(key.startsWith("--") ? key : camelize(key), prev[key]).forEach(item => {
+            var key2 = item.prop;
+            var value = (classStyle == null ? void 0 : classStyle.has(key2)) == true ? classStyle.get(key2) : "";
+            batchedStyles.set(key2, value);
+            style == null ? void 0 : style.delete(key2);
           });
         }
       }
       for (var _key22 in next) {
-        var _value2 = next[_key22];
+        var value = next[_key22];
         var prevValue = prev[_key22];
-        if (!isSame(prevValue, _value2)) {
-          var _key23 = _key22.startsWith("--") ? _key22 : camelize(_key22);
-          parseStyleDecl(_key23, _value2).forEach(item => {
+        if (!isSame(prevValue, value)) {
+          var _key = _key22.startsWith("--") ? _key22 : camelize(_key22);
+          parseStyleDecl(_key, value).forEach(item => {
             batchedStyles.set(item.prop, item.value);
             style == null ? void 0 : style.set(item.prop, item.value);
           });
@@ -9815,6 +10336,13 @@ function patchStyle(el, prev, next) {
       setBatchedStyles(batchedStyles, _key, value);
     }
     setExtraStyle(el, batchedStyles);
+  }
+  if (instance && instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
+    setRootElementInstance(el, instance);
+    var computedStyleInterceptors = instance == null ? void 0 : instance.computedStyleInterceptors;
+    if (computedStyleInterceptors) {
+      triggerComputedStyleUpdate(instance, batchedStyles);
+    }
   }
   if (batchedStyles.size == 0) {
     return;
@@ -9834,7 +10362,9 @@ var patchProp = (el, key, prevValue, nextValue, namespace, prevChildren, parentC
   if (key === "class") {
     patchClass(el, prevValue, nextValue, hostInstance || parentComponent);
   } else if (key === "style") {
-    patchStyle(el, prevValue, nextValue);
+    patchStyle(el, prevValue, nextValue, hostInstance || parentComponent);
+  } else if (key === "part") {
+    patchPart(el, nextValue, parentComponent);
   } else if (isOn(key)) {
     if (!isModelListener(key)) {
       patchEvent(el, key, prevValue, nextValue, parentComponent);
@@ -9843,7 +10373,7 @@ var patchProp = (el, key, prevValue, nextValue, namespace, prevChildren, parentC
     el.setAnyAttribute("modelValue", nextValue);
     el.setAnyAttribute("value", nextValue);
   } else {
-    patchAttr(el, key, nextValue, parentComponent);
+    patchAttr(el, key, nextValue, hostInstance !== null ? hostInstance : parentComponent);
   }
 };
 function useCssModule() {
@@ -9942,8 +10472,8 @@ var withModifiers = (fn, modifiers) => {
       var guard = modifierGuards[modifiers[i]];
       if (guard && guard(event, modifiers)) return;
     }
-    for (var _len13 = arguments.length, args = new Array(_len13 > 1 ? _len13 - 1 : 0), _key24 = 1; _key24 < _len13; _key24++) {
-      args[_key24 - 1] = arguments[_key24];
+    for (var _len13 = arguments.length, args = new Array(_len13 > 1 ? _len13 - 1 : 0), _key23 = 1; _key23 < _len13; _key23++) {
+      args[_key23 - 1] = arguments[_key23];
     }
     return fn(event, ...args);
   };
@@ -10020,7 +10550,8 @@ function setDisplay(el, value) {
   el._vsh = !value;
 }
 var rendererOptions = extend({
-  patchProp
+  patchProp,
+  forcePatchProp
 }, nodeOps);
 var renderer;
 function ensureRenderer() {
@@ -10102,6 +10633,7 @@ var onError = /*#__PURE__*/createLifeCycleHook(ON_ERROR, 1 /* HookFlags.APP */);
 var onThemeChange = /*#__PURE__*/createLifeCycleHook(ON_THEME_CHANGE, 1 /* HookFlags.APP */);
 var onPageNotFound = /*#__PURE__*/createLifeCycleHook(ON_PAGE_NOT_FOUND, 1 /* HookFlags.APP */);
 var onUnhandledRejection = /*#__PURE__*/createLifeCycleHook(ON_UNHANDLE_REJECTION, 1 /* HookFlags.APP */);
+var onLastPageBackPress = /*#__PURE__*/createLifeCycleHook(ON_LAST_PAGE_BACK_PRESS, 1 /* HookFlags.APP */);
 var onExit = /*#__PURE__*/createLifeCycleHook(ON_EXIT, 1 /* HookFlags.APP */);
 // 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧
 var onLoad = /*#__PURE__*/createLifeCycleHook(ON_LOAD, 2 /* HookFlags.PAGE */);
@@ -10115,9 +10647,10 @@ var onReachBottom = /*#__PURE__*/createLifeCycleHook(ON_REACH_BOTTOM, 2 /* HookF
 var onPullDownRefresh = /*#__PURE__*/createLifeCycleHook(ON_PULL_DOWN_REFRESH, 2 /* HookFlags.PAGE */);
 var onShareTimeline = /*#__PURE__*/createLifeCycleHook(ON_SHARE_TIMELINE, 2 /* HookFlags.PAGE */);
 var onShareAppMessage = /*#__PURE__*/createLifeCycleHook(ON_SHARE_APP_MESSAGE, 2 /* HookFlags.PAGE */);
-// for uni-app-x web
 var onPageHide = onHide;
 var onPageShow = onShow;
+var onAppHide = onHide;
+var onAppShow = onShow;
 function renderComponentSlot(slots, name) {
   var props = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   if (slots[name]) {
@@ -10129,10 +10662,12 @@ var getCurrentGenericInstance = getCurrentInstance;
 var defineComponent = options => {
   var rootElement = options.rootElement;
   if (rootElement && typeof customElements !== 'undefined') {
-    customElements.define(rootElement.name, rootElement.class, rootElement.options);
+    {
+      customElements.define(rootElement.name, rootElement.class, rootElement.options);
+    }
   }
   return defineComponent$1(options);
 };
 var ssrRef = ref;
 var shallowSsrRef = shallowRef;
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderComponentSlot, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, ssrContextKey, ssrRef, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountPage, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, UniSharedDataComponentStyleIsolation, __X_STYLE_ISOLATION__, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, enableStyleIsolation, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onAppHide, onAppShow, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLastPageBackPress, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderComponentSlot, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, ssrContextKey, ssrRef, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountPage, unref, useAttrs, useComputedStyle, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

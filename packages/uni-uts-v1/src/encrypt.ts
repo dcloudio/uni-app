@@ -90,6 +90,7 @@ export async function compileEncrypt(
     }
     return {
       dir: outputPluginDir,
+      errMsg: '',
       code,
       deps: [] as string[],
       encrypt: true,
@@ -124,6 +125,7 @@ export async function compileEncrypt(
   }
   return {
     dir: outputPluginDir,
+    errMsg: '',
     code,
     deps: [] as string[],
     encrypt: true,
@@ -169,6 +171,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
     }
     return {
       dir: outputPluginDir,
+      errMsg: '',
       code: 'export default {}',
       deps: [] as string[],
       encrypt: true,
@@ -212,6 +215,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
     addPluginInjectCustomElements(custom_elements)
     return {
       dir: outputPluginDir,
+      errMsg: '',
       code: 'export default {}',
       deps: [] as string[],
       encrypt: true,
@@ -312,6 +316,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
 
   return {
     dir: outputPluginDir,
+    errMsg: '',
     code: 'export default {}',
     deps: [] as string[],
     encrypt: true,

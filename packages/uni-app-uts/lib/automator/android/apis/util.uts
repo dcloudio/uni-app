@@ -220,8 +220,7 @@ export function getValidComponentsOrNodes(
       })
     } else {
       list.push({
-        // @ts-expect-error
-        elementId: (vnode.el as UniElementImpl).__id,
+        elementId: (vnode.el as UniElementImpl).getNodeId(),
         tagName: vnode.el!.tagName,
       })
     }
@@ -255,7 +254,7 @@ function isValidComponentOrNode(vnode: VNode, selector: string): boolean {
   if (vnode.el != null) {
     const node = vnode.el!
     if (selector.startsWith('.')) {
-      return node.classList.includes(selector.substring(1))
+      return isHasTargetClass(node, selector.substring(1))
     } else if (selector.startsWith('#')) {
       return node.getAttribute('id') == selector.substring(1)
     }
@@ -287,9 +286,13 @@ export function getValidNodes(
     getValidNodes(child, selector, list, getAll)
   })
 }
+function isHasTargetClass(node: UniElement, className: string): boolean {
+  const targetClass = node.classList.find((classItem: string): boolean => classItem.replaceAll('^', '') == className)
+  return !(targetClass == null)
+}
 function isValidNode(node: UniElement, selector: string): boolean {
   if (selector.startsWith('.')) {
-    return node.classList.includes(selector.substring(1))
+    return isHasTargetClass(node, selector.substring(1))
   } else if (selector.startsWith('#')) {
     return node.getAttribute('id') == selector.substring(1)
   }
@@ -323,7 +326,7 @@ export function getChildrenText(node: UniElement): string {
   node.childNodes.forEach((child: UniElement) => {
     // @ts-expect-error
     if (isTextElement(child)) {
-      result += child.getAttribute('value')
+      result += (child as UniTextElement).value
     } else {
       result += getChildrenText(child)
     }

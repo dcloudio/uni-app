@@ -6,6 +6,7 @@ import {
   createEncryptCssUrlReplacer,
   createShadowImageUrl,
   cssPostPlugin,
+  findMiniProgramComponentStyleIsolation,
   getUniModulesEncryptType,
   injectAssetPlugin,
   injectCssPlugin,
@@ -19,6 +20,7 @@ import {
   relativeFile,
   removeExt,
   resolveMainPathOnce,
+  transformPartSelector,
   transformScopedCss,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '.'
@@ -29,10 +31,11 @@ import {
   parseVirtualComponentPath,
   parseVirtualPagePath,
 } from '../plugins/entry'
+import path from 'path'
 
 const debugNVueCss = debug('uni:nvue-css')
 const cssVars = `page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}`
-const uvueCssVars = `page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px;--uni-safe-area-inset-top:0px;--uni-safe-area-inset-left:0px;--uni-safe-area-inset-right:0px;--uni-safe-area-inset-bottom:0px;}`
+const uvueCssVars = `page{--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px;--uni-safe-area-inset-top:0px;--uni-safe-area-inset-left:0px;--uni-safe-area-inset-right:0px;--uni-safe-area-inset-bottom:0px;}`
 
 const genShadowCss = (cdn: number) => {
   const url = createShadowImageUrl(cdn, 'grey')
@@ -114,6 +117,15 @@ export function createConfigResolved({
 
           const isX = process.env.UNI_APP_X === 'true'
           cssCode = transformScopedCss(cssCode)
+          if (isX) {
+            /**
+             * .xxx::part(yyy)替换为.xxx .-_part__yyy_-
+             * 小程序本身不支持::part选择器，直接替换即可
+             * 运行时绑定在内置组件上的part属性生成对应的class合并到class属性内，例如：`^-_part__yyy_-`
+             * ^的作用参考：[引用页面或父组件的样式](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#%E5%BC%95%E7%94%A8%E9%A1%B5%E9%9D%A2%E6%88%96%E7%88%B6%E7%BB%84%E4%BB%B6%E7%9A%84%E6%A0%B7%E5%BC%8F)
+             */
+            cssCode = transformPartSelector(cssCode)
+          }
           if (filename === 'app' + cssExtname) {
             const componentCustomHiddenCss =
               (component &&
@@ -140,7 +152,12 @@ export function createConfigResolved({
               const flexDirection = parseUniXFlexDirection(
                 parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
               )
-              cssCode = `:host{display:flex;flex-direction:${flexDirection}}\n${cssCode}`
+              // 微信小程序使用 page 标签选择器会产生警告，支付宝小程序主动添加 page，解决 :host 选择器在页面中不生效的问题 https://opendocs.alipay.com/mini/framework/component-template#%3Ahost%20%E9%80%89%E6%8B%A9%E5%99%A8
+              const selector =
+                process.env.UNI_PLATFORM === 'mp-alipay'
+                  ? ':host,page'
+                  : ':host'
+              cssCode = `${selector}{display:flex;flex-direction:${flexDirection}}\n${cssCode}`
             }
 
             if (!isMiniProgramPageFile(filename)) {
@@ -175,11 +192,35 @@ export function createConfigResolved({
                 (page.style as any).renderer === 'skyline')
 
             if (!shouldNotResetStyle) {
-              /**
-               * 兼容发布为小程序分包模式
-               */
-              const uvueCssPath = relativeFile(filename, `uvue${extname}`)
-              cssCode = `@import "${uvueCssPath}";\n` + cssCode
+              let addUvueCss = false
+              if (
+                process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+                process.env.UNI_APP_X === 'true'
+              ) {
+                const basePath = path.join(
+                  process.env.UNI_INPUT_DIR!,
+                  removeExt(filename)
+                )
+                const styleIsolation =
+                  findMiniProgramComponentStyleIsolation(basePath + '.uvue') ||
+                  findMiniProgramComponentStyleIsolation(basePath + '.vue')
+                if (
+                  styleIsolation &&
+                  styleIsolation.isPage &&
+                  styleIsolation.styleIsolation === 'isolated'
+                ) {
+                  addUvueCss = true
+                }
+              } else {
+                addUvueCss = true
+              }
+              if (addUvueCss) {
+                /**
+                 * 兼容发布为小程序分包模式
+                 */
+                const uvueCssPath = relativeFile(filename, `uvue${extname}`)
+                cssCode = `@import "${uvueCssPath}";\n` + cssCode
+              }
             }
             return cssCode
           }
@@ -214,21 +255,24 @@ export function createConfigResolved({
 function adjustCssExtname(extname: string): Plugin {
   return {
     name: 'uni:adjust-css-extname',
-    generateBundle(_, bundle) {
-      const files = Object.keys(bundle)
-      files.forEach((name) => {
-        if (name.endsWith('.css')) {
-          const asset = bundle[name] as EmittedAsset
-          isString(asset.source) &&
-            (asset.source = asset.source.replace(/\*\,/g, 'page,'))
-          this.emitFile({
-            fileName: name.replace('.css', extname),
-            type: 'asset',
-            source: asset.source,
-          })
-          delete bundle[name]
-        }
-      })
+    generateBundle: {
+      order: 'post',
+      handler(_, bundle) {
+        const files = Object.keys(bundle)
+        files.forEach((name) => {
+          if (name.endsWith('.css')) {
+            const asset = bundle[name] as EmittedAsset
+            isString(asset.source) &&
+              (asset.source = asset.source.replace(/\*\,/g, 'page,'))
+            this.emitFile({
+              fileName: name.replace('.css', extname),
+              type: 'asset',
+              source: asset.source,
+            })
+            delete bundle[name]
+          }
+        })
+      },
     },
   }
 }

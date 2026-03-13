@@ -40,7 +40,7 @@ export function uniConsolePlugin(options: ConsoleOptions): Plugin {
       if (isRenderjs(id) || isWxs(id)) {
         return {
           code: restoreConsoleExpr(code),
-          map: { mappings: '' },
+          map: null,
         }
       }
       if (!filter(id)) return null

@@ -121,9 +121,17 @@ function initUniCloudEnv() {
             }
             switch (space.provider) {
                 case 'aliyun':
-                case 'dcloud':
                     return {
                         provider: space.provider || 'aliyun',
+                        spaceName: space.name,
+                        spaceId: space.id,
+                        clientSecret: space.clientSecret,
+                        endpoint: space.apiEndpoint,
+                        failoverEndpoint: space.failoverEndpoint,
+                    };
+                case 'dcloud':
+                    return {
+                        provider: space.provider || 'dcloud',
                         spaceName: space.name,
                         spaceId: space.id,
                         clientSecret: space.clientSecret,
@@ -137,6 +145,8 @@ function initUniCloudEnv() {
                         spaceAppId: space.spaceAppId,
                         accessKey: space.accessKey,
                         secretKey: space.secretKey,
+                        endpoint: space.apiEndpoint,
+                        failoverEndpoint: space.failoverEndpoint,
                     };
                 }
                 case 'tencent':
@@ -145,6 +155,7 @@ function initUniCloudEnv() {
                         provider: space.provider,
                         spaceName: space.name,
                         spaceId: space.id,
+                        failoverEndpoint: space.failoverEndpoint,
                     };
                 }
             }

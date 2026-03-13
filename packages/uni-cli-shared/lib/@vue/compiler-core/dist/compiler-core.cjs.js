@@ -8,7 +8,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var shared = require('@vue/shared');
-var decode_js = require('entities/lib/decode.js');
+var decode_js = require('entities/decode');
 var parser = require('@babel/parser');
 var estreeWalker = require('estree-walker');
 var sourceMapJs = require('source-map-js');
@@ -374,6 +374,12 @@ function convertToBlock(node, { helper, removeHelper, inSSR }) {
   }
 }
 
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 const defaultDelimitersOpen = new Uint8Array([123, 123]);
 const defaultDelimitersClose = new Uint8Array([125, 125]);
 function isTagStartChar(c) {
@@ -424,31 +430,32 @@ class Tokenizer {
     this.stack = stack;
     this.cbs = cbs;
     /** The current state the tokenizer is in. */
-    this.state = 1;
+    __publicField(this, "state", 1);
     /** The read buffer. */
-    this.buffer = "";
+    __publicField(this, "buffer", "");
     /** The beginning of the section that is currently being read. */
-    this.sectionStart = 0;
+    __publicField(this, "sectionStart", 0);
     /** The index within the buffer that we are currently looking at. */
-    this.index = 0;
+    __publicField(this, "index", 0);
     /** The start of the last entity. */
-    this.entityStart = 0;
+    __publicField(this, "entityStart", 0);
     /** Some behavior, eg. when decoding entities, is done while we are in another state. This keeps track of the other state type. */
-    this.baseState = 1;
+    __publicField(this, "baseState", 1);
     /** For special parsing behavior inside of script and style tags. */
-    this.inRCDATA = false;
+    __publicField(this, "inRCDATA", false);
     /** For disabling RCDATA tags handling */
-    this.inXML = false;
+    __publicField(this, "inXML", false);
     /** For disabling interpolation parsing in v-pre */
-    this.inVPre = false;
+    __publicField(this, "inVPre", false);
     /** Record newline positions for fast line / column calculation */
-    this.newlines = [];
-    this.mode = 0;
-    this.delimiterOpen = defaultDelimitersOpen;
-    this.delimiterClose = defaultDelimitersClose;
-    this.delimiterIndex = -1;
-    this.currentSequence = void 0;
-    this.sequenceIndex = 0;
+    __publicField(this, "newlines", []);
+    __publicField(this, "entityDecoder");
+    __publicField(this, "mode", 0);
+    __publicField(this, "delimiterOpen", defaultDelimitersOpen);
+    __publicField(this, "delimiterClose", defaultDelimitersClose);
+    __publicField(this, "delimiterIndex", -1);
+    __publicField(this, "currentSequence");
+    __publicField(this, "sequenceIndex", 0);
     {
       this.entityDecoder = new decode_js.EntityDecoder(
         decode_js.htmlDecodeTree,
@@ -1715,7 +1722,7 @@ function isReferenced(node, parent, grandparent) {
       if (parent.key === node) {
         return !!parent.computed;
       }
-      return !grandparent || grandparent.type !== "ObjectPattern";
+      return true;
     case "ClassProperty":
       if (parent.key === node) {
         return !!parent.computed;
@@ -1746,9 +1753,6 @@ function isReferenced(node, parent, grandparent) {
     case "ExportDefaultSpecifier":
       return false;
     case "ExportSpecifier":
-      if (grandparent == null ? void 0 : grandparent.source) {
-        return false;
-      }
       return parent.local === node;
     case "ImportDefaultSpecifier":
     case "ImportNamespaceSpecifier":
@@ -2530,6 +2534,7 @@ function onText(content, start, end) {
   }
 }
 function onCloseTag(el, end, isImplied = false) {
+  var _a;
   if (isImplied) {
     setLocEnd(el.loc, backTrack(end, 60));
   } else {
@@ -2554,6 +2559,13 @@ function onCloseTag(el, end, isImplied = false) {
       el.tagType = 3;
     } else if (isComponent(el)) {
       el.tagType = 1;
+      const importSources = (_a = currentOptions.bindingMetadata) == null ? void 0 : _a.__importSources;
+      if (importSources) {
+        const source = importSources[tag] || importSources[shared.capitalize(shared.camelize(tag))] || importSources[shared.camelize(tag)] || importSources[shared.capitalize(tag)];
+        if (source) {
+          el.importSource = source;
+        }
+      }
     }
   }
   if (!tokenizer.inRCDATA) {
@@ -3120,6 +3132,8 @@ function createTransformContext(root, {
   transformHoist = null,
   isBuiltInComponent = shared.NOOP,
   isCustomElement = shared.NOOP,
+  // fixed by xxxxxx
+  isEasyComponent = shared.NOOP,
   expressionPlugins = [],
   scopeId = null,
   slotted = true,
@@ -3147,6 +3161,8 @@ function createTransformContext(root, {
     transformHoist,
     isBuiltInComponent,
     isCustomElement,
+    // fixed by xxxxxx
+    isEasyComponent,
     expressionPlugins,
     scopeId,
     slotted,
@@ -5312,7 +5328,9 @@ function resolveComponentType(node, context, ssr = false) {
       context.helper(builtIn);
     return builtIn;
   }
-  {
+  const isEasyComponent = context.isEasyComponent;
+  const isEasyCom = isEasyComponent && isEasyComponent(tag);
+  if (!isEasyCom) {
     const fromSetup = resolveSetupReference(tag, context);
     if (fromSetup) {
       return fromSetup;
@@ -5325,7 +5343,8 @@ function resolveComponentType(node, context, ssr = false) {
       }
     }
   }
-  if (context.selfName && shared.capitalize(shared.camelize(tag)) === context.selfName) {
+  if (// fixed by xxxxxx
+  !isEasyCom && context.selfName && shared.capitalize(shared.camelize(tag)) === context.selfName) {
     context.helper(RESOLVE_COMPONENT);
     context.components.add(tag + `__self`);
     return toValidAssetId(tag, `component`);

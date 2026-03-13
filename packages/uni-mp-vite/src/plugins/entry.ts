@@ -11,6 +11,7 @@ import {
   normalizeMiniProgramFilename,
   normalizePath,
   parseManifestJsonOnce,
+  parseMiniProgramPagesJson,
   removeExt,
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
@@ -56,6 +57,36 @@ export function parseComponentStyleIsolation(content: string) {
   }
 }
 
+let hasOptimizationSubPackages = false // 是否开启分包优化配置
+let subPackages: string[] = []
+function initSubPackages() {
+  const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+  const pagesJsonFile = path.resolve(inputDir, 'pages.json')
+  if (!fs.existsSync(pagesJsonFile)) {
+    hasOptimizationSubPackages = false
+    subPackages = []
+    return
+  }
+  const platform = process.env.UNI_PLATFORM
+  const manifestJson = parseManifestJsonOnce(inputDir)
+  hasOptimizationSubPackages =
+    platform && manifestJson[platform]?.optimization?.subPackages
+  const { appJson } = parseMiniProgramPagesJson(
+    fs.readFileSync(pagesJsonFile, 'utf8'),
+    platform,
+    { subpackages: true }
+  )
+  subPackages = Object.values(appJson.subPackages || appJson.subpackages || {})
+    .filter(Boolean)
+    .map(({ root }) => `${root.replace(/\/$/, '')}/`)
+}
+export function getSubPackages() {
+  return {
+    hasOptimizationSubPackages,
+    subPackages,
+  }
+}
+
 export function uniEntryPlugin({
   global,
   template,
@@ -75,6 +106,7 @@ export function uniEntryPlugin({
     },
     buildStart() {
       easycomEncryptComponentPaths.clear()
+      initSubPackages()
     },
     load(id) {
       if (isUniPageUrl(id)) {
@@ -137,7 +169,7 @@ ${global}.createPage(MiniProgramPage)`,
         if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
           // 云编译时，组件的代码会直接内联到入口文件中，以方法对外导出，不能立刻执行createComponent
           return {
-            code: `import Component from '${filepath}
+            code: `import Component from '${filepath}'
 export default Component`,
           }
         }

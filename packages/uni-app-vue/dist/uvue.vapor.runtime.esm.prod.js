@@ -2054,6 +2054,48 @@ function createDecl(prop, value, important, raws, source) {
   return decl;
 }
 var isNumber = val => typeof val === 'number';
+/**
+ * css value 分割多值，兼容包含括号的 css 方法，比如 var/env/calc() 等
+ */
+function splitValues(value) {
+  var trimmedValue = value.trim();
+  if (!trimmedValue.includes('(')) {
+    return trimmedValue.split(/\s+/);
+  }
+  var parts = [];
+  var current = '';
+  var depth = 0;
+  for (var i = 0; i < trimmedValue.length; i++) {
+    var char = trimmedValue[i];
+    if (char === '(') {
+      depth++;
+      current += char;
+    } else if (char === ')') {
+      if (depth > 0) {
+        depth--;
+      }
+      current += char;
+    } else if (/\s/.test(char)) {
+      if (depth === 0) {
+        if (current) {
+          parts.push(current);
+          current = '';
+        }
+      } else {
+        // 多个空格处理一个
+        if (current.length > 0 && !/\s$/.test(current)) {
+          current += ' ';
+        }
+      }
+    } else {
+      current += char;
+    }
+  }
+  if (current) {
+    parts.push(current);
+  }
+  return parts;
+}
 var backgroundColor = 'backgroundColor';
 var backgroundImage = 'backgroundImage';
 var handleTransformBackground = decl => {
@@ -2063,6 +2105,10 @@ var handleTransformBackground = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
+  if (value === 'none') {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  }
   if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
     return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
   } else if (/^linear-gradient(.+)$/.test(value)) {
@@ -2099,18 +2145,10 @@ function createTransformBackground(options) {
     }
   };
 }
-function borderTop() {
-  return 'borderTop';
-}
-function borderRight() {
-  return 'borderRight';
-}
-function borderBottom() {
-  return 'borderBottom';
-}
-function borderLeft() {
-  return 'borderLeft';
-}
+var borderTop = 'borderTop';
+var borderRight = 'borderRight';
+var borderBottom = 'borderBottom';
+var borderLeft = 'borderLeft';
 var transformBorderColor = decl => {
   var {
     prop,
@@ -2119,12 +2157,13 @@ var transformBorderColor = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var _property_split = hyphenate(prop).split('-');
   var property = _property_split[_property_split.length - 1];
   {
     property = capitalize(property);
   }
-  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/); // 1pt
+  var splitResult = splitValues(value); // 1pt
   switch (splitResult.length) {
     case 1:
       if (_property_split.length === 3) {
@@ -2141,7 +2180,7 @@ var transformBorderColor = decl => {
       splitResult.push(splitResult[1]);
       break;
   }
-  return [createDecl(borderTop() + property, splitResult[0], important, raws, source), createDecl(borderRight() + property, splitResult[1], important, raws, source), createDecl(borderBottom() + property, splitResult[2], important, raws, source), createDecl(borderLeft() + property, splitResult[3], important, raws, source)];
+  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
 };
 var transformBorderColorNvue = decl => {
   var {
@@ -2151,6 +2190,7 @@ var transformBorderColorNvue = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var property = hyphenate(prop).split('-')[1];
   {
     property = capitalize(property);
@@ -2172,17 +2212,11 @@ var transformBorderStyle = transformBorderColor;
 var transformBorderStyleNvue = transformBorderColorNvue;
 var transformBorderWidth = transformBorderColor;
 var transformBorderWidthNvue = transformBorderColorNvue;
+var borderWidth = 'Width';
+var borderStyle = 'Style';
+var borderColor = 'Color';
 function createTransformBorder(options) {
   return decl => {
-    var borderWidth = () => {
-      return 'Width';
-    };
-    var borderStyle = () => {
-      return 'Style';
-    };
-    var borderColor = () => {
-      return 'Color';
-    };
     var {
       prop,
       value,
@@ -2190,7 +2224,7 @@ function createTransformBorder(options) {
       raws,
       source
     } = decl;
-    var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+    var splitResult = splitValues(value);
     var havVar = splitResult.some(str => str.startsWith('var('));
     var result = [];
     // 包含 var ，直接视为 width/style/color 都使用默认值
@@ -2224,14 +2258,14 @@ function createTransformBorder(options) {
       }
       return '#000000';
     };
-    return [...transformBorderWidth(createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source))];
+    return [...transformBorderWidth(createDecl(prop + borderWidth, defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle, defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor, defaultColor(result[2]), important, raws, source))];
   };
 }
+/**
+ * nvue 逻辑不变
+ */
 function createTransformBorderNvue(options) {
   return decl => {
-    var borderWidth = 'Width';
-    var borderStyle = 'Style';
-    var borderColor = 'Color';
     var {
       prop,
       value,
@@ -2239,6 +2273,7 @@ function createTransformBorderNvue(options) {
       raws,
       source
     } = decl;
+    value = value.trim();
     var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
     var result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
       var index = splitResult.findIndex(str => item.test(str));
@@ -2261,7 +2296,8 @@ var transformBorderRadius = decl => {
     raws,
     source
   } = decl;
-  var splitResult = value.split(/\s+/);
+  value = value.trim();
+  var splitResult = splitValues(value);
   if (value.includes('/')) {
     return [decl];
   }
@@ -2285,11 +2321,12 @@ var transformBorderRadiusNvue = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var splitResult = value.split(/\s+/);
   if (value.includes('/')) {
     return [decl];
   }
-  // const isUvuePlatform = options.type == 'uvue'
+  // const isUvuePlatform = options.type === 'uvue'
   switch (splitResult.length) {
     case 1:
       return [decl];
@@ -2311,7 +2348,8 @@ var transformFlexFlow = decl => {
     raws,
     source
   } = decl;
-  var splitResult = value.split(/\s+/);
+  value = value.trim();
+  var splitResult = splitValues(value);
   var result = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/].map(item => {
     var index = splitResult.findIndex(str => item.test(str));
     return index < 0 ? null : splitResult.splice(index, 1)[0];
@@ -2333,7 +2371,7 @@ var createTransformBox = type => {
       raws,
       source
     } = decl;
-    var splitResult = value.split(/\s+/);
+    var splitResult = splitValues(value);
     switch (splitResult.length) {
       case 1:
         splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
@@ -2361,11 +2399,12 @@ var transformTransition = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var result = [];
   var match;
   // 针对 cubic-bezier 特殊处理
   // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
-  if (decl.value.includes('cubic-bezier')) {
+  if (value.includes('cubic-bezier')) {
     var CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/;
     match = value.match(CHUNK_REGEXP);
   } else {
@@ -2391,8 +2430,9 @@ var transformFlex = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var result = [];
-  var splitResult = value.trim().split(/\s+/);
+  var splitResult = splitValues(value);
   // 是否 flex-grow 的有效值 <number [0,∞]>
   var isFlexGrowValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v));
   var isFlexShrinkValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
@@ -2454,24 +2494,24 @@ var transformFlex = decl => {
   return [decl];
 };
 function getDeclTransforms(options) {
-  var transformBorder = options.type == 'uvue' ? createTransformBorder() : createTransformBorderNvue();
+  var transformBorder = options.type === 'uvue' ? createTransformBorder() : createTransformBorderNvue();
   var styleMap = {
     transition: transformTransition,
     border: transformBorder,
     background: createTransformBackground(options),
-    borderTop: transformBorder,
-    borderRight: transformBorder,
-    borderBottom: transformBorder,
-    borderLeft: transformBorder,
-    borderStyle: options.type == 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
-    borderWidth: options.type == 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
-    borderColor: options.type == 'uvue' ? transformBorderColor : transformBorderColorNvue,
-    borderRadius: options.type == 'uvue' ? transformBorderRadius : transformBorderRadiusNvue,
+    ['borderTop']: transformBorder,
+    ['borderRight']: transformBorder,
+    ['borderBottom']: transformBorder,
+    ['borderLeft']: transformBorder,
+    ['borderStyle']: options.type === 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
+    ['borderWidth']: options.type === 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
+    ['borderColor']: options.type === 'uvue' ? transformBorderColor : transformBorderColorNvue,
+    ['borderRadius']: options.type === 'uvue' ? transformBorderRadius : transformBorderRadiusNvue,
     // uvue已经支持这些简写属性，不需要展开
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
     padding: transformPadding,
-    flexFlow: transformFlexFlow
+    ['flexFlow']: transformFlexFlow
   };
   if (options.type === 'uvue') {
     styleMap.flex = transformFlex;
@@ -11833,7 +11873,6 @@ var onReachBottom = /*#__PURE__*/createLifeCycleHook(ON_REACH_BOTTOM, 2 /* HookF
 var onPullDownRefresh = /*#__PURE__*/createLifeCycleHook(ON_PULL_DOWN_REFRESH, 2 /* HookFlags.PAGE */);
 var onShareTimeline = /*#__PURE__*/createLifeCycleHook(ON_SHARE_TIMELINE, 2 /* HookFlags.PAGE */);
 var onShareAppMessage = /*#__PURE__*/createLifeCycleHook(ON_SHARE_APP_MESSAGE, 2 /* HookFlags.PAGE */);
-// for uni-app-x web
 var onPageHide = onHide;
 var onPageShow = onShow;
 function renderComponentSlot(slots, name) {

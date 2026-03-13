@@ -14,7 +14,7 @@ describe('mp-jd: transform component', () => {
       `<switch @change="change"/>`,
       `<switch bindchange="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.change) }
+  return { a: _o(_ctx.change, "3f") }
 }`
     )
   })

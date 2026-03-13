@@ -1,15 +1,21 @@
 import path from 'path'
+import { readFileSync } from 'fs-extra'
 import { extend } from '@vue/shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
+import type { Plugin } from 'vite'
 import {
+  EXTNAME_VUE,
   enableSourceMap,
   getWorkers,
   isEnableConsole,
   isNormalCompileTarget,
   normalizePath,
+  parseJson,
+  requireUniHelpers,
   resolveSourceMapPath,
   resolveUTSCompiler,
   resolveWorkersRootDir,
+  runByHBuilderX,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
@@ -56,7 +62,13 @@ export default (options: UniMiniProgramPluginOptions) => {
     process.env.UNI_PLATFORM
   )
 
+  const plugins: Plugin[] = []
+  if (runByHBuilderX() && process.env.UNI_PLATFORM === 'mp-weixin') {
+    const { UUVP } = requireUniHelpers()
+    plugins.push(UUVP(getFilterPaths))
+  }
   return [
+    ...plugins,
     ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniJavaScriptWorkersPlugin()]
       : []),
@@ -142,4 +154,52 @@ export function resolveMiniProgramRuntime(dirname: string, fileName: string) {
     return path.resolve(dirname, `../dist-x/${fileName}`)
   }
   return path.resolve(dirname, `${fileName}`)
+}
+
+function getFilterPaths() {
+  const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+  const pagesJsonPath = path.join(inputDir, 'pages.json')
+  const pagesJson = parseJson(
+    readFileSync(pagesJsonPath, 'utf8'),
+    true,
+    pagesJsonPath
+  ) as UniApp.PagesJson
+  const allPagesJson = parseJson(
+    readFileSync(pagesJsonPath, 'utf8'),
+    false,
+    pagesJsonPath
+  ) as UniApp.PagesJson
+
+  const pages = pagesJson.pages.map((page) =>
+    normalizePath(path.join(inputDir, page.path))
+  )
+  const allPages = allPagesJson.pages.map((page) =>
+    normalizePath(path.join(inputDir, page.path))
+  )
+
+  const subPackages = (pagesJson.subPackages || pagesJson.subpackages || [])
+    .map((subPackage) =>
+      subPackage.pages.map((page) =>
+        normalizePath(path.join(inputDir, subPackage.root, page.path))
+      )
+    )
+    .flat()
+  const allSubPackages = (
+    allPagesJson.subPackages ||
+    allPagesJson.subpackages ||
+    []
+  )
+    .map((subPackage) =>
+      subPackage.pages.map((page) =>
+        normalizePath(path.join(inputDir, subPackage.root, page.path))
+      )
+    )
+    .flat()
+  const filterFiles = [
+    ...allPages.filter((page) => !pages.includes(page)),
+    ...allSubPackages.filter((page) => !subPackages.includes(page)),
+  ]
+    .map((file) => EXTNAME_VUE.map((ext) => file + ext))
+    .flat()
+  return filterFiles
 }

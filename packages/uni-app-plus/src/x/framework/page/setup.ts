@@ -16,6 +16,7 @@ import {
   setCurrentSystemDialogPage,
 } from './dialogPage'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/native/UniPage'
+import { UTSJSONObject } from '@dcloudio/uni-shared'
 
 export function setupXPage(
   instance: ComponentInternalInstance,
@@ -37,10 +38,9 @@ export function setupXPage(
       setCurrentNormalDialogPage(null)
     }
   } else {
-    uniPage = new UniNormalPageImpl()
+    uniPage = new UniNormalPageImpl() as unknown as UniPage
   }
-  pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
-  pageVm.$page = uniPage
+  pageVm.$.page = uniPage
   uniPage.route = pageVm.$basePage.route
   // @ts-expect-error
   uniPage.optionsByJS = pageVm.$basePage.options
@@ -49,16 +49,7 @@ export function setupXPage(
       return new UTSJSONObject(pageVm.$basePage.options)
     },
   })
-  uniPage.getElementById = (
-    id: string.IDString | string
-  ): UniElement | null => {
-    const containerNode = pageVm.$el?.parentElement
-    if (containerNode == null) {
-      console.warn('bodyNode is null')
-      return null
-    }
-    return containerNode.querySelector(`#${id}`)
-  }
+
   uniPage.vm = pageVm
   uniPage.$vm = pageVm
 
@@ -70,16 +61,18 @@ export function setupXPage(
     )
   }
 
-  onMounted(() => {
-    const rootElement = pageVm.$el?.parentElement
-    if (rootElement) {
-      rootElement._page = pageVm.$page
-    }
-  })
-  onBeforeUnmount(() => {
-    const rootElement = pageVm.$el?.parentElement
-    if (rootElement) {
-      rootElement._page = null
-    }
-  })
+  if (!__VAPOR__) {
+    onMounted(() => {
+      const rootElement = pageVm.$el?.parentElement
+      if (rootElement) {
+        rootElement._page = pageVm.$page
+      }
+    })
+    onBeforeUnmount(() => {
+      const rootElement = pageVm.$el?.parentElement
+      if (rootElement) {
+        rootElement._page = null
+      }
+    })
+  }
 }

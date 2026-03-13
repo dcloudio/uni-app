@@ -1,5 +1,4 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-import path from 'path'
 import {
   API_DEPS_CSS,
   BASE_COMPONENTS_STYLE_PATH,
@@ -7,7 +6,6 @@ import {
   H5_FRAMEWORK_STYLE_PATH,
   MANIFEST_JSON_JS,
   checkPagesJson,
-  createRollupError,
   defineUniPagesJsonPlugin,
   getWorkers,
   isEnableTreeShaking,
@@ -32,24 +30,10 @@ export function uniPagesJsonPlugin(): Plugin {
           if (process.env.UNI_APP_X === 'true') {
             // 调整换行符，确保 parseTree 的loc正确
             const jsonCode = code.replace(/\r\n/g, '\n')
-            try {
-              checkPagesJson(
-                preUVueJson(jsonCode, 'pages.json'),
-                process.env.UNI_INPUT_DIR
-              )
-            } catch (err: any) {
-              if (err.loc) {
-                const error = createRollupError(
-                  'uni:h5-pages-json',
-                  path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
-                  err,
-                  jsonCode
-                )
-                this.error(error)
-              } else {
-                throw err
-              }
-            }
+            checkPagesJson(
+              preUVueJson(jsonCode, 'pages.json'),
+              process.env.UNI_INPUT_DIR
+            )
           }
           return {
             code:
@@ -229,7 +213,7 @@ function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
     pagePathWithExtname = pageOptions.path + '.vue'
   }
   const pageIdent = normalizeIdentifier(pageOptions.path)
-  return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}').then(com => setupPage(com.default || com))
+  return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}').then(com => setupPage(com.default || com, '${pagePathWithExtname}'))
 const ${pageIdent} = defineAsyncComponent(extend({loader:${pageIdent}Loader},AsyncComponentOptions))`
 }
 
@@ -316,11 +300,12 @@ function generateConfig(
   pagesJson: Record<string, any>,
   config: ResolvedConfig
 ) {
+  const isX = process.env.UNI_APP_X === 'true'
   delete pagesJson.pages
   delete pagesJson.subPackages
   delete pagesJson.subpackages
   pagesJson.compilerVersion = process.env.UNI_COMPILER_VERSION
-  const isX = process.env.UNI_APP_X === 'true'
+
   const vueType = isX ? 'uvue' : 'nvue'
   let tabBarCode = ''
   if (isX) {

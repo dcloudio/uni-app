@@ -1,0 +1,15 @@
+{
+    "mp-weixin": {
+        "appid": "test-weixin",
+        "nativeTags": [
+            "voip-room",
+            "root-portal"
+        ]
+    },
+    "mp-alipay": {
+        "component2": true
+    },
+    "mp-baidu": {
+        "nativeTags": []
+    }
+}

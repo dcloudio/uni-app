@@ -30,7 +30,11 @@ export function initPageVm(
 ) {
   pageVm.route = page.route
   pageVm.$vm = pageVm
-  pageVm.$page = page
+  if (__X__) {
+    pageVm.$basePage = page
+  } else {
+    pageVm.$page = page
+  }
   pageVm.$mpType = 'page'
   pageVm.$fontFamilySet = new Set()
 

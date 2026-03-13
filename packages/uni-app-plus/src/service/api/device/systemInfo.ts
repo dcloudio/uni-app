@@ -2,7 +2,6 @@ import { defineAsyncApi, defineSyncApi, getLocale } from '@dcloudio/uni-api'
 import { extend, isString } from '@vue/shared'
 import { getWindowInfo } from './getWindowInfo'
 import { getTheme } from '../../theme'
-import { sortObject } from '@dcloudio/uni-shared'
 
 let systemInfo: any
 let _initSystemInfo = true
@@ -10,7 +9,9 @@ let _initSystemInfo = true
 export function weexGetSystemInfoSync() {
   if (!_initSystemInfo) return
   const { getSystemInfoSync } = weex.requireModule('plus')
-  systemInfo = getSystemInfoSync()
+  try {
+    systemInfo = getSystemInfoSync()
+  } catch (error) {}
   if (isString(systemInfo)) {
     try {
       systemInfo = JSON.parse(systemInfo)
@@ -49,14 +50,14 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
       deviceOrientation,
       deviceType,
       model: deviceModel,
-      platform: _osName,
-      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
       osName,
       osVersion,
       osLanguage,
       osTheme,
+      platform: _osName,
       romName,
       romVersion,
+      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
     }
   }
 )
@@ -97,15 +98,15 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       hostTheme,
       hostFontSizeSetting: undefined,
       hostSDKVersion: undefined,
+      isUniAppX: __X__,
       language: osLanguage,
       SDKVersion: '',
       theme: getTheme(),
-      version: plus.runtime.innerVersion!,
-      isUniAppX: __X__,
       uniPlatform,
       uniRuntimeVersion,
       uniCompileVersion,
       uniCompilerVersion: uniCompileVersion,
+      version: plus.runtime.innerVersion!,
     }
   }
 )
@@ -142,7 +143,7 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
     delete (_systemInfo as any).enableDebug
     if (!__uniConfig.darkmode) delete (_systemInfo as any).theme
 
-    return sortObject(_systemInfo)
+    return _systemInfo
   }
 )
 

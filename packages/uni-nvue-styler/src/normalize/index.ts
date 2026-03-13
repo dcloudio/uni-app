@@ -5,8 +5,8 @@ import {
   LENGTH_REGEXP,
   type NormalizeOptions,
   SUPPORT_CSS_UNIT,
-  hyphenateStyleProperty,
   isNumber,
+  supportedPropertyReason,
 } from '../utils'
 import { getNormalizeMap } from './map'
 
@@ -81,13 +81,15 @@ function createDeclarationProcessor(options: NormalizeOptions) {
     if (decl.prop.startsWith('--')) {
       return
     } else {
+      // @ts-expect-error
+      decl.__originalProp = decl.prop
       decl.prop = camelize(decl.prop)
     }
     const { value, log } = normalizeDecl(decl, options)
     if (isString(value) || isNumber(value)) {
       decl.value = value
     }
-    if (log && log.reason && helper) {
+    if (log && log.reason && helper && decl.warn) {
       const { reason } = log
       let needLog = false
       if (options.logLevel === 'NOTE') {
@@ -117,7 +119,7 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
   if (options.type === 'uvue' && !value.includes('calc')) {
     if (hasCssVar(value)) {
       return {
-        value: normalizeCssVar(value),
+        value: normalizeCssVar(value, options.keepVar),
         log,
       }
     }
@@ -144,10 +146,7 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
     }
     result = { value: value }
     log = {
-      reason:
-        'WARNING: `' +
-        hyphenateStyleProperty(name) +
-        '` is not a standard property name (may not be supported)',
+      reason: supportedPropertyReason(name),
     }
   }
   return {
@@ -159,7 +158,10 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
 function hasCssVar(value: string) {
   return value.includes('var(')
 }
-export function normalizeCssVar(value: string) {
+export function normalizeCssVar(value: string, keepVar: boolean = false) {
+  if (keepVar) {
+    return value
+  }
   // 目前框架在运行时 initVar 会处理特征值替换为常量
   return value
     .replaceAll(`var(--window-top)`, `CSS_VAR_WINDOW_TOP`)

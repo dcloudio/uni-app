@@ -1,4 +1,8 @@
+import fs from 'fs'
 import path from 'path'
+import { normalizePath } from '../vite/plugins/vitejs/utils'
+import { parseMiniProgramPagesJson } from '../json'
+
 const EXTNAMES = [
   '.png',
   '.jpg',
@@ -23,4 +27,36 @@ export function isMiniProgramAssetFile(filename: string) {
     return false
   }
   return EXTNAMES.includes(path.extname(filename))
+}
+
+export function createCopyComponentDirs(dir: string) {
+  const dirs = [dir]
+  const uniModulesDir = 'uni_modules/*/' + dir + '/**/*'
+  dirs.push(uniModulesDir)
+  const inputDir = process.env.UNI_INPUT_DIR
+  const platform = process.env.UNI_PLATFORM
+  if (!inputDir || !platform) {
+    return dirs
+  }
+  const pagesJsonFile = path.resolve(normalizePath(inputDir), 'pages.json')
+  if (!fs.existsSync(pagesJsonFile)) {
+    return dirs
+  }
+  const { appJson } = parseMiniProgramPagesJson(
+    fs.readFileSync(pagesJsonFile, 'utf8'),
+    platform,
+    { subpackages: true }
+  )
+  const roots: string[] = Object.values(
+    appJson.subPackages || appJson.subpackages || {}
+  )
+    .map(({ root }) => root)
+    .filter(Boolean)
+  roots.forEach((root) => {
+    dirs.push(
+      normalizePath(path.join(root, dir)),
+      normalizePath(path.join(root, uniModulesDir))
+    )
+  })
+  return dirs
 }

@@ -13,6 +13,7 @@ import type { OutputChunk } from 'rollup'
 
 import {
   UNI_EASYCOM_EXCLUDE,
+  initAutoImportOptions,
   initPreContext,
   normalizePath,
   stripOptions,
@@ -36,11 +37,10 @@ function resolve(file: string) {
 const FORMAT = process.env.FORMAT as 'es' | 'cjs'
 
 const isX = process.env.UNI_APP_X === 'true'
-// 直接启用
-const isNewX = isX //  && !!process.env.UNI_APP_EXT_API_DIR
+const isX_VAPOR = process.env.UNI_APP_X_VAPOR === 'true'
 
 let systemPagePaths: Record<string, string> = {}
-if (isNewX) {
+if (isX) {
   initPreContext('web', {}, 'web', true)
 
   const apiDirs: string[] = []
@@ -75,6 +75,7 @@ const rollupPlugins = [
       // 该插件限制了不能以__开头
       _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
       _X_: isX ? 1 : 0,
+      _X_VAPOR_: isX_VAPOR ? 1 : 0,
     },
     exclude: [normalizePath(path.resolve(__dirname, '../../uni-ext-api/**/*'))],
   }),
@@ -104,11 +105,16 @@ function realIsH5CustomElement(tag: string) {
 }
 
 let prePlugin: any
-if (isNewX) {
+if (isX) {
   // 仅给vue,uts.ts增加条件编译
   prePlugin = uniPrePlugin({} as any, { include: ['**/*.vue', '**/*.uts.ts'] })
   prePlugin.enforce = 'pre'
 }
+const autoImportOptions = initAutoImportOptions('web', {})
+autoImportOptions.imports = autoImportOptions.imports!.filter(
+  (item: any) => item.from !== '@dcloudio/uni-cloud'
+)
+autoImportOptions.include = ['**/uni-ext-api/uni_modules/**']
 
 export default defineConfig({
   root: __dirname,
@@ -119,6 +125,8 @@ export default defineConfig({
     __APP_VIEW__: false,
     __NODE_JS__: FORMAT === 'cjs' ? true : false,
     __X__: isX,
+    __X_VAPOR__: isX_VAPOR,
+    HTMLElement: FORMAT === 'cjs' ? 'Object' : 'HTMLElement',
   },
   resolve: {
     alias: [
@@ -149,10 +157,11 @@ export default defineConfig({
     ],
   },
   plugins: [
-    ...(isNewX
+    ...(isX
       ? [
           uniUVueTypeScriptPlugin(),
           prePlugin,
+          AutoImport(autoImportOptions),
           uniExtApi(),
           uts2ts({ target: 'uni-h5', platform: 'web' }),
         ]
@@ -188,7 +197,7 @@ export default defineConfig({
     assetsDir: '.',
     rollupOptions: {
       output: {
-        dir: isX ? 'dist-x' : 'dist',
+        dir: isX_VAPOR ? 'dist-x-vapor' : isX ? 'dist-x' : 'dist',
         freeze: false, // uni 对象需要可被修改
         entryFileNames: 'uni-h5.' + FORMAT + '.js',
       },

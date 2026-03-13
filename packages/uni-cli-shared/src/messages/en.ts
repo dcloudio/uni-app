@@ -3,8 +3,6 @@ export default {
   compiling: 'Compiling...',
   'dev.performance':
     'Please note that in running mode, due to log output, sourcemap, and uncompressed source code, the performance and package size are not as good as release mode.',
-  'dev.exclusion':
-    'Please configure the antivirus software to set up an exclusion list for scanning, reducing system resource consumption. [详情](https://uniapp.dcloud.net.cn/uni-app-x/compiler/#tips)',
   'dev.performance.nvue':
     'Especially the sourcemap of app-nvue has a greater impact',
   'dev.performance.mp':
@@ -12,10 +10,12 @@ export default {
   'dev.performance.web':
     '\nVite is compiled on demand, and clicking on an uncompiled page at runtime will compile first and then load, resulting in a slower display, and there is no such problem after release.',
   'build.done': 'DONE  Build complete.',
-  'dev.watching.start': 'Compiling...',
+  'dev.watching.start': 'Incremental Compiling...',
   'dev.watching.end': 'DONE  Build complete. Watching for changes...',
   'dev.watching.end.pages': 'DONE  Build complete. PAGES:{pages}',
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
+  'dev.watching.restart.vapor':
+    'DONE  Restart required. Switching vapor mode requires restarting to take effect.',
   'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': 'Build failed with errors.',
   'stat.warn.appid':
@@ -41,9 +41,11 @@ export default {
     'When the standard playground runs to an IOS phone, the uts plugin is temporarily not supported. If you need to call the uts plugin, please use a custom playground',
   'prompt.run.message': 'Run method: open {devtools}, import {outputDir} run.',
   'prompt.run.devtools.app': 'HBuilderX',
+  'prompt.run.devtools.app-harmony': 'HBuilderX',
+  'prompt.run.devtools.mp-harmony': 'HBuilderX',
   'prompt.run.devtools.mp-alipay': 'Alipay Mini Program Devtools',
   'prompt.run.devtools.mp-baidu': 'Baidu Mini Program Devtools',
-  'prompt.run.devtools.mp--kuaishou': 'Kuaishou Mini Program Devtools',
+  'prompt.run.devtools.mp-kuaishou': 'Kuaishou Mini Program Devtools',
   'prompt.run.devtools.mp-lark': 'Lark Mini Program Devtools',
   'prompt.run.devtools.mp-qq': 'QQ Mini Program Devtools',
   'prompt.run.devtools.mp-toutiao': 'Douyin Mini Program Devtools',
@@ -59,4 +61,5 @@ export default {
     'The compilation outcome remains unchanged; there is no need to synchronize.',
   'uni_modules.import': 'Plug-in [{0}] only supports @/uni_modules/{1}.',
   'pages.json.page.notfound': 'The page "{pagePath}" does not exist.',
+  'pages.json.page.slash': 'The Path "{pagePath}" cannot start with "/"',
 } as const

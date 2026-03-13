@@ -1,17 +1,19 @@
 {
   "name": "@dcloudio/uni-h5",
-  "version": "3.0.0-4080720251210001",
+  "version": "3.0.0-alpha-5000320260310001",
   "description": "@dcloudio/uni-h5",
   "main": "./dist/uni-h5.cjs.js",
   "module": "./dist/uni-h5.es.js",
   "files": [
     "dist",
     "dist-x",
+    "dist-x-vapor",
     "lib",
     "style"
   ],
   "sideEffects": [
-    "lib/automator.js"
+    "lib/automator.js",
+    "src/x/polyfill/polyfill.ts"
   ],
   "repository": {
     "type": "git",

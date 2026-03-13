@@ -1,4 +1,7 @@
 /// <reference types="@dcloudio/uni-app-x/types/uni/global" />
+
+import { currentPageCaptureScreenshot } from '../utils'
+
 // 之所以又写了一份，是因为外层的socket，connectSocket的时候必须传入multiple:true
 // 但是android又不能传入，目前代码里又不能写条件编译之类的。
 export function initRuntimeSocket(
@@ -55,6 +58,30 @@ function tryConnectSocket(
     })
     socket.onError((e) => {
       clearTimeout(timer)
+      resolve(null)
+    })
+    // 接收 hx 消息，处理截屏请求
+    socket.onMessage((result) => {
+      if (typeof result['data'] == 'string') {
+        // @ts-expect-error
+        const message = JSON.parse<UTSJSONObject>(result['data'] as string)!
+        if ((message['type'] as string) == 'screencap') {
+          const id = message['id'] as string
+          currentPageCaptureScreenshot(
+            message['fullPage'] as boolean,
+            (base64: string, error: string) => {
+              // @ts-expect-error
+              socket.send({
+                data: JSON.stringify({
+                  id,
+                  base64,
+                  error,
+                }),
+              } as SendSocketMessageOptions)
+            }
+          )
+        }
+      }
       resolve(null)
     })
   })

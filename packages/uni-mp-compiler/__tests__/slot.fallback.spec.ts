@@ -59,4 +59,22 @@ describe('compiler: transform slot', () => {
       options
     )
   })
+  test('slot with fallback content and v-if', () => {
+    assert(
+      `<view><text v-if="ok">123</text><slot v-else :item="item"></slot></view>`,
+      `<view><text wx:if="{{a}}">123</text><block wx:else><slot name="d"></slot><slot></slot></block></view>`,
+      `(_ctx, _cache) => {
+  return _e({ a: _ctx.ok }, _ctx.ok ? {} : { b: _r("d", { item: _ctx.item }) })
+}`,
+      options
+    )
+    assert(
+      `<view><text v-if="ok">123</text><slot v-else name="test" :item="item"></slot></view>`,
+      `<view><text wx:if="{{a}}">123</text><slot wx:else name="test"></slot></view>`,
+      `(_ctx, _cache) => {
+  return _e({ a: _ctx.ok }, _ctx.ok ? {} : { b: _r("test", { item: _ctx.item }) })
+}`,
+      options
+    )
+  })
 })

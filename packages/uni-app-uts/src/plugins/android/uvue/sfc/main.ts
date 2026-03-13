@@ -197,7 +197,8 @@ export async function transformMain(
         pluginContext.resolve,
         templatePreambleMap as RawSourceMap,
         // 仅需要再解析script中的import，template上边已经加入了
-        (source) => source.includes('/.uvue/') || source.includes('/.tsc/')
+        (source) => source.includes('/.uvue/') || source.includes('/.tsc/'),
+        false // template中的资源路径解析，不支持external
       )
     )
   }
@@ -399,14 +400,17 @@ function createTryResolve(
   importer: string,
   resolve: PluginContext['resolve'],
   resolvedMap: RawSourceMap,
-  ignore?: (source: string) => boolean
+  ignore?: (source: string) => boolean,
+  external: boolean = true
 ) {
   return async (source: string, code: string, { ss, se }: ImportSpecifier) => {
     if (ignore && ignore(source)) {
       return false
     }
     const resolved = await wrapResolve(resolve)(source, importer)
-    if (!resolved) {
+    // external 的判断主要是解决 template 中的静态资源路径解析报错，比如<image src="logo.png" />会被解析为external
+    // 模板中仅支持使用相对路径或绝对路径如："./logo.png" 或 "/static/logo.png" 或 "@/static/logo.png"
+    if (!resolved || (!external && resolved.external)) {
       const { start, end } = offsetToStartAndEnd(code, ss, se)
       const consumer = new SourceMapConsumer(resolvedMap)
       const startPos = consumer.originalPositionFor({

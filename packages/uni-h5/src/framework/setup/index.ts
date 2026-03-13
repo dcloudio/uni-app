@@ -62,15 +62,19 @@ import { useBackgroundColorContent } from '../../x/framework/setup/page'
 import { getPageProxyId } from '@dcloudio/uni-core'
 
 interface SetupComponentOptions {
+  type?: 'app' | 'page' | 'window'
   clone?: boolean
   init: (vm: ComponentPublicInstance) => void
   setup: (instance: ComponentInternalInstance) => Record<string, any> | void
   before?: (comp: DefineComponent) => void
+  options?: {
+    styleIsolation?: 'isolated' | 'app' | 'app-and-page'
+  }
 }
 
 function wrapperComponentSetup(
   comp: DefineComponent,
-  { clone, init, setup, before }: SetupComponentOptions
+  { type, clone, init, setup, before, options }: SetupComponentOptions
 ) {
   if (clone) {
     comp = extend({}, comp)
@@ -85,6 +89,14 @@ function wrapperComponentSetup(
       return oldSetup(props, ctx)
     }
   }
+  if (__X__ && (type === 'page' || type === 'window')) {
+    // 只要不是手动设置隔离样式的组件，全部设置为 app-shared
+    const styleIsolation =
+      comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename]
+    if (styleIsolation !== 'isolated') {
+      comp.styleIsolation = 'app'
+    }
+  }
   return comp
 }
 
@@ -97,6 +109,7 @@ function setupComponent(comp: any, options: SetupComponentOptions) {
 
 export function setupWindow(comp: any, id: number) {
   return setupComponent(comp, {
+    type: 'window',
     init: (vm) => {
       if (__X__) {
         vm.$basePage = {
@@ -114,11 +127,15 @@ export function setupWindow(comp: any, id: number) {
   })
 }
 
-export function setupPage(comp: any) {
+export function setupPage(comp: any, path: string) {
   if (__DEV__) {
     comp.__mpType = 'page'
   }
+  if (__X__ && path) {
+    comp.__filename = path
+  }
   return setupComponent(comp, {
+    type: 'page',
     clone: true, // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
     setup(instance) {
@@ -250,7 +267,7 @@ export function setupApp(comp: any) {
               notFound: true,
               openType: 'appLaunch',
               path: route.path,
-              query: {},
+              query: decodedQuery(route.query),
               scene: 1001,
             }
             handleBeforeEntryPageRoutes()

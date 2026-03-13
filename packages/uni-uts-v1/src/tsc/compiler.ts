@@ -108,6 +108,7 @@ export function createUniXCompiler(
             : undefined,
       },
     },
+    // dom2: process.env.UNI_APP_X_DOM2 === 'true',
     ...options,
   }
   const { UniXCompiler } = require('../../lib/uni-x/dist/compiler')
@@ -225,9 +226,18 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     _type: 'syntactic' | 'semantic',
     diagnostic: tsTypes.Diagnostic
   ) {
-    const errorCode = UNI_APP_X_TYPE_VALIDATION
-      ? [2300, 2451, 110111119, 2564, 1023]
-      : []
+    const stableCode = [
+      2300, 2451, 110111119, 2564, 1023, 120000003, 120000004, 110111165, 1005,
+    ]
+    const internalUseCode = [
+      2355, 4117, 2348, 2310, 18047, 120000000, 120000001,
+    ]
+    const code = [...stableCode]
+    if (hxDev) {
+      // 只有内部版本才开启
+      code.push(...internalUseCode)
+    }
+    const errorCode = UNI_APP_X_TYPE_VALIDATION ? code : []
     const throwError =
       diagnostic.__throwError ||
       [
@@ -311,7 +321,7 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     host: tsTypes.FormatDiagnosticsHost
   ): DiagnosticError {
     const ts = compiler.getTypeScript()
-    const errorMessage = `${diagnosticCategoryName(diagnostic)}${
+    const errorMessage = `${diagnosticCategoryName(diagnostic)}:${
       diagnostic.code ? ' UTS' + diagnostic.code : ''
     }: ${ts.flattenDiagnosticMessageText(
       diagnostic.messageText,

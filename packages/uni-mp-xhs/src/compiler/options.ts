@@ -2,9 +2,11 @@ import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
 import {
   type MiniProgramCompilerOptions,
+  createCopyComponentDirs,
+  createCopyPluginTarget,
   getNativeTags,
   transformComponentLink,
-  transformMatchMedia,
+  // transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
@@ -19,7 +21,11 @@ const directiveTransforms = {
 }
 
 export const compilerOptions: CompilerOptions = {
-  nodeTransforms: [transformRef, transformComponentLink, transformMatchMedia],
+  nodeTransforms: [
+    transformRef,
+    transformComponentLink,
+    // transformMatchMedia
+  ],
   directiveTransforms,
 }
 
@@ -28,6 +34,7 @@ const COMPONENTS_DIR = 'xhscomponents'
 export const customElements = [
   'post-note-button',
   'group-chat-card',
+  'video-player',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
@@ -83,20 +90,20 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: [COMPONENTS_DIR],
+      assets: createCopyComponentDirs(COMPONENTS_DIR),
       targets: [
         // ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
           src: [
             'sitemap.json',
             'project.private.config.json',
-            'ext.json',
             projectConfigFilename,
           ],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },
         },
+        createCopyPluginTarget(['ext.json']),
         // ...copyMiniProgramThemeJson(),
       ],
     },

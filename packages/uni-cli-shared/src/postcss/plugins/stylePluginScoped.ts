@@ -1,5 +1,6 @@
 import type { AtRule, Plugin, PluginCreator, Rule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
+import { getPartClass } from '@dcloudio/uni-shared'
 
 const scopedPlugin: PluginCreator<string> = () => {
   return {
@@ -29,13 +30,56 @@ function processRule(rule: Rule, hasVueSfcScoped: boolean) {
     return
   }
   processedRules.add(rule)
+  const isXWeb =
+    process.env.UNI_APP_X === 'true' && process.env.UNI_UTS_PLATFORM === 'web'
   rule.selector = selectorParser((selectorRoot) => {
     selectorRoot.each((selector) => {
       hasVueSfcScoped
         ? rewriteDeprecatedSelector(selector)
         : rewriteSelector(selector, selectorRoot)
+      if (isXWeb) {
+        rewritePartSelector(selector, selectorRoot)
+      }
     })
   }).processSync(rule.selector)
+}
+
+function rewritePartSelector(
+  selector: selectorParser.Selector,
+  selectorRoot: selectorParser.Root
+) {
+  if (
+    selector.some((n) => {
+      return n.type === 'pseudo' && n.value === '::part'
+    })
+  ) {
+    const uniPartSelector = selector.clone()
+    _rewritePartSelector(uniPartSelector, selectorRoot)
+    selectorRoot.insertAfter(selector, uniPartSelector)
+  }
+}
+
+function _rewritePartSelector(
+  selector: selectorParser.Selector,
+  selectorRoot: selectorParser.Root
+) {
+  selector.each((n) => {
+    if (n.type === 'pseudo' && n.value === '::part') {
+      const partClass = getPartClass(n.nodes[0].toString())
+      selector.insertAfter(
+        n,
+        selectorParser.pseudo({
+          value: ':deep',
+          nodes: [
+            selectorParser.className({
+              value: partClass,
+            }),
+          ],
+        })
+      )
+      selector.removeChild(n)
+    }
+  })
 }
 
 /**
