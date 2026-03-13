@@ -275,7 +275,7 @@ describe('mp:compiler-mp-alipay', () => {
   it('generate attrs with mergeVirtualHostAttributes', () => {
     assertCodegen(
       '<custom-view>hello world</custom-view>',
-      '<custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{virtualHostStyle}}" virtualHostClass="{{(virtualHostClass)}}" vue-slots="{{[\'default\']}}">hello world</custom-view>',
+      "<custom-view vue-id=\"551070e6-1\" onVueInit=\"__l\" virtualHostStyle=\"{{virtualHostStyle}}\" virtualHostClass=\"{{(virtualHostClass||'')}}\" vue-slots=\"{{['default']}}\">hello world</custom-view>",
       'with(this){}',
       {
         mergeVirtualHostAttributes: true
@@ -283,7 +283,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<custom-view :class="class1" :style="style">hello world</custom-view>',
-      '<custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{(style)+virtualHostStyle}}" virtualHostClass="{{((class1)+\' \'+virtualHostClass)}}" vue-slots="{{[\'default\']}}">hello world</custom-view>',
+      "<custom-view vue-id=\"551070e6-1\" onVueInit=\"__l\" virtualHostStyle=\"{{(style)+virtualHostStyle}}\" virtualHostClass=\"{{((class1)+' '+(virtualHostClass||''))}}\" vue-slots=\"{{['default']}}\">hello world</custom-view>",
       'with(this){}',
       {
         mergeVirtualHostAttributes: true
@@ -291,7 +291,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<view><custom-view>hello world</custom-view></view>',
-      '<view class="{{(virtualHostClass)}}" style="{{virtualHostStyle}}"><custom-view vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}">hello world</custom-view></view>',
+      "<view class=\"{{(virtualHostClass||'')}}\" style=\"{{virtualHostStyle}}\"><custom-view vue-id=\"551070e6-1\" onVueInit=\"__l\" vue-slots=\"{{['default']}}\">hello world</custom-view></view>",
       'with(this){}',
       {
         mergeVirtualHostAttributes: true
@@ -299,7 +299,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<view><custom-view :class="class1" :style="style">hello world</custom-view></view>',
-      '<view class="{{(virtualHostClass)}}" style="{{virtualHostStyle}}"><custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{(style)}}" virtualHostClass="{{(class1)}}" vue-slots="{{[\'default\']}}">hello world</custom-view></view>',
+      "<view class=\"{{(virtualHostClass||'')}}\" style=\"{{virtualHostStyle}}\"><custom-view vue-id=\"551070e6-1\" onVueInit=\"__l\" virtualHostStyle=\"{{(style)}}\" virtualHostClass=\"{{(class1)}}\" vue-slots=\"{{['default']}}\">hello world</custom-view></view>",
       'with(this){}',
       {
         mergeVirtualHostAttributes: true
@@ -380,6 +380,13 @@ describe('mp:compiler-mp-alipay', () => {
     assertCodegen(
       '<subscribe-message template-id=\'xxxxx\' @complete="completeHandler" />',
       "<subscribe-message template-id=\"xxxxx\" data-event-opts=\"{{[['complete',[['completeHandler',['$event']]]]]}}\" onComplete=\"__e\"></subscribe-message>"
+    )
+  })
+  // ad-feeds
+  it('component: ad-feeds', () => {
+    assertCodegen(
+      '<ad-feeds space-code="ad_tiny_123" />',
+      '<ad-feeds space-code="ad_tiny_123"></ad-feeds>'
     )
   })
 })

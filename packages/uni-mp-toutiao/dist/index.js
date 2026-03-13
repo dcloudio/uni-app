@@ -1138,6 +1138,20 @@ const protocols = {
     args: {
       orderInfo: tt.pay ? 'orderInfo' : 'data'
     }
+  },
+  showTabBar: {
+    args (fromArgs, toArgs) {
+      if (fromArgs.animation === undefined) {
+        toArgs.animation = false;
+      }
+    }
+  },
+  hideTabBar: {
+    args (fromArgs, toArgs) {
+      if (fromArgs.animation === undefined) {
+        toArgs.animation = false;
+      }
+    }
   }
 };
 

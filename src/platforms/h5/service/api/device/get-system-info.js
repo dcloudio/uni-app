@@ -1,7 +1,6 @@
 import { getWindowInfo } from './get-window-info'
 import deviceId from 'uni-platform/helpers/uuid'
 import { getBrowserInfo } from '../base/get-browser-info'
-import { sortObject } from 'uni-shared'
 
 let browserInfo = {}
 let _initBrowserInfo = true
@@ -35,10 +34,10 @@ export function getDeviceInfo () {
     deviceOrientation,
     deviceType,
     model,
-    platform,
-    system,
     osName: osname ? osname.toLocaleLowerCase() : undefined,
-    osVersion: osversion
+    osVersion: osversion,
+    platform,
+    system
   }
 }
 
@@ -58,7 +57,9 @@ export function getAppBaseInfo () {
     appVersion: __uniConfig.appVersion,
     appVersionCode: __uniConfig.appVersionCode,
     appLanguage,
+
     enableDebug: false,
+
     hostSDKVersion: undefined,
     hostPackageName: undefined,
     hostFontSizeSetting: undefined,
@@ -66,15 +67,19 @@ export function getAppBaseInfo () {
     hostVersion: browserVersion,
     hostTheme: theme,
     hostLanguage: language,
+
+    isUniAppX: false,
+
     language,
     SDKVersion: '',
     theme,
-    version: '',
+
     uniPlatform: 'web',
-    isUniAppX: false,
     uniCompileVersion: __uniConfig.compilerVersion,
     uniCompilerVersion: __uniConfig.compilerVersion,
-    uniRuntimeVersion: __uniConfig.compilerVersion
+    uniRuntimeVersion: __uniConfig.compilerVersion,
+
+    version: ''
   }
 }
 
@@ -116,7 +121,7 @@ export function getSystemInfoSync () {
   delete systemInfo.enableDebug
   if (!__uniConfig.darkmode) delete systemInfo.theme
 
-  return sortObject(systemInfo)
+  return systemInfo
 }
 /**
  * 获取系统信息-异步

@@ -3,6 +3,10 @@
   Author Tobias Koppers @sokra
   Modified by Evan You @yyx990803
 */
+const {
+	createRpx2Unit,
+	getRpx2Unit
+} = require('@dcloudio/uni-cli-shared/lib/style')
 
 import listToStyles from './listToStyles'
 
@@ -239,6 +243,9 @@ var VAR_WINDOW_BOTTOM = /var\(--window-bottom\)/gi
 var VAR_WINDOW_LEFT = /var\(--window-left\)/gi
 var VAR_WINDOW_RIGHT = /var\(--window-right\)/gi
 
+var rpx2unit = createRpx2Unit(getRpx2Unit().unit, getRpx2Unit().unitRatio, getRpx2Unit().unitPrecision)
+var dynamicRpx = null
+
 function processCss(css) {
 	var page = getPage()
 	if (typeof uni !== 'undefined' && !uni.canIUse('css.var')) { //不支持 css 变量
@@ -258,7 +265,10 @@ function processCss(css) {
         return css
       }
 			return css.replace(UPX_RE, function (a, b) {
-				return uni.upx2px(b) + 'px'
+				if (dynamicRpx === null) {
+					dynamicRpx = __uniConfig && (__uniConfig.globalStyle || __uniConfig.window || {}).dynamicRpx === true
+				}
+      	return dynamicRpx ? rpx2unit(b) : uni.upx2px(b) + 'px'
 			})
 		})
 }

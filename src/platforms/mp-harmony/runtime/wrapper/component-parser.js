@@ -68,17 +68,27 @@ export default function parseComponent (vueComponentOptions, needVueOptions) {
 
     initVueIds(resolvePropValue(properties.vueId), this)
 
+    // 处理父子关系
+    initRelation.call(this, {
+      options,
+      mpInstance: this
+    })
+
     // 初始化 vue 实例
     this.$vm = new VueComponent(options)
 
+    // mp-harmony 平台兼容 observer 触发时 this.$vm 不稳定的情况
+    if (__PLATFORM__ === 'mp-harmony') {
+      if (this._pendingProps) {
+        Object.keys(this._pendingProps).forEach(name => {
+          this.$vm[name] = this._pendingProps[name]
+        })
+        delete this._pendingProps
+      }
+    }
+
     // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
     initSlots(this.$vm, resolvePropValue(properties.vueSlots))
-
-    // 处理父子关系
-    initRelation.call(this, {
-      vuePid: this._$vuePid,
-      mpInstance: this
-    })
 
     // 触发首次 setData
     this.$vm.$mount()

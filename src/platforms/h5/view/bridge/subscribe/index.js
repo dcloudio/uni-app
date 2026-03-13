@@ -16,6 +16,7 @@ import {
   disableScroll,
   createScrollListener
 } from 'uni-core/view/bridge/subscribe/scroll'
+import { useRem } from 'uni-core/view/plugins/rem'
 
 const passiveOptions = supportsPassive ? {
   passive: false
@@ -47,6 +48,9 @@ export default function initSubscribe (subscribe) {
 
   subscribe('onPageLoad', vm => { // 用户 onLoad 之前 update
     updateCssVar(vm)
+    if ((__uniConfig.globalStyle || __uniConfig.window || {}).dynamicRpx === true) {
+      useRem()
+    }
   })
 
   subscribe('onPageShow', vm => {

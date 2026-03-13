@@ -11,6 +11,8 @@ const {
   isVForElement
 } = require('../../../util')
 
+const transPlatform = ['mp-toutiao', 'mp-alipay', 'mp-lark']
+
 function processClassArrayExpressionElements (classArrayExpression) {
   let binaryExpression
 
@@ -45,7 +47,6 @@ function processStaticClass (classArrayExpression, staticClassPath, state) {
     staticClassPath.remove()
   }
 
-  const transPlatform = ['mp-toutiao', 'mp-alipay', 'mp-lark']
   if (transPlatform.includes(state.options.platform.name)) {
     // classArrayExpression => binaryExpression
     return processClassArrayExpressionElements(classArrayExpression)
@@ -126,7 +127,7 @@ module.exports = function processClass (paths, path, state) {
     }
   }
   if (mergeVirtualHostAttributes && isRootElement(path.parentPath) && !isVForElement(path.parentPath)) {
-    const virtualHostClass = t.identifier(VIRTUAL_HOST_CLASS)
+    const virtualHostClass = transPlatform.includes(state.options.platform.name) ? t.logicalExpression('||', t.identifier(VIRTUAL_HOST_CLASS), t.stringLiteral('')) : t.identifier(VIRTUAL_HOST_CLASS)
     if (classArrayExpression) {
       classArrayExpression.elements.push(virtualHostClass)
     } else {

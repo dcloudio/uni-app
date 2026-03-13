@@ -141,9 +141,17 @@ if (!process.env.UNI_CLOUD_PROVIDER && process.env.UNI_CLOUD_SPACES) {
         }
         switch (space.provider) {
           case 'aliyun':
-          case 'dcloud':
             return {
               provider: space.provider || 'aliyun',
+              spaceName: space.name,
+              spaceId: space.id,
+              clientSecret: space.clientSecret,
+              endpoint: space.apiEndpoint,
+              failoverEndpoint: space.failoverEndpoint
+            }
+          case 'dcloud':
+            return {
+              provider: space.provider || 'dcloud',
               spaceName: space.name,
               spaceId: space.id,
               clientSecret: space.clientSecret,
@@ -156,7 +164,9 @@ if (!process.env.UNI_CLOUD_PROVIDER && process.env.UNI_CLOUD_SPACES) {
               spaceId: space.id,
               spaceAppId: space.spaceAppId,
               accessKey: space.accessKey,
-              secretKey: space.secretKey
+              secretKey: space.secretKey,
+              endpoint: space.apiEndpoint,
+              failoverEndpoint: space.failoverEndpoint
             }
           }
           case 'tencent':
@@ -164,7 +174,8 @@ if (!process.env.UNI_CLOUD_PROVIDER && process.env.UNI_CLOUD_SPACES) {
             return {
               provider: space.provider,
               spaceName: space.name,
-              spaceId: space.id
+              spaceId: space.id,
+              failoverEndpoint: space.failoverEndpoint
             }
           }
         }

@@ -164,6 +164,15 @@ function createObserver (name) {
   return function observer (newVal, oldVal) {
     if (this.$vm) {
       this.$vm[name] = newVal // 为了触发其他非 render watcher
+    } else {
+      // mp-harmony 平台兼容 observer 触发时 this.$vm 不稳定的情况
+      if (__PLATFORM__ === 'mp-harmony') {
+        // 缓存在 attached 之前触发的 observer 更新
+        if (!this._pendingProps) {
+          this._pendingProps = {}
+        }
+        this._pendingProps[name] = newVal
+      }
     }
   }
 }

@@ -1,32 +1,15 @@
-const isQuickapp = window.qa &&
-  /quickapp/i.test(navigator.userAgent)
+const isMPHarmony =
+  window.ascfwebProxy &&
+  window.ascfwebProxy.invokeJsApi &&
+  /ASCF/i.test(navigator.userAgent);
 
-export function initWebviewApi (readyCallback) {
-  if (!isQuickapp) {
-    return
+export function initWebviewApi(readyCallback) {
+  if (!isMPHarmony) {
+    return;
   }
-  if (window.QaJSBridge && window.QaJSBridge.invoke) {
-    setTimeout(readyCallback, 0)
-  } else {
-    document.addEventListener('QaJSBridgeReady', readyCallback)
-  }
-  const {
-    navigateTo,
-    navigateBack,
-    switchTab,
-    reLaunch,
-    redirectTo,
-    postMessage,
-    getEnv
-  } = window.qa
 
-  return {
-    navigateTo,
-    navigateBack,
-    switchTab,
-    reLaunch,
-    redirectTo,
-    postMessage,
-    getEnv
-  }
+  document.addEventListener("DOMContentLoaded", readyCallback);
+  // docs https://developer.huawei.com/consumer/cn/doc/atomic-ascf/components-web-view#section530274216282
+  // 需要提取路由导航
+  return Object.assign({}, window.has, window.has.ascfweb);
 }

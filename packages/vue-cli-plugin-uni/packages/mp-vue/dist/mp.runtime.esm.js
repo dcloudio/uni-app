@@ -1,6 +1,6 @@
 /*!
  * Vue.js v2.6.11
- * (c) 2014-2024 Evan You
+ * (c) 2014-2025 Evan You
  * Released under the MIT License.
  */
 /*  */
@@ -513,7 +513,7 @@ var hasProto = '__proto__' in {};
 var inBrowser = typeof window !== 'undefined';
 var inWeex = typeof WXEnvironment !== 'undefined' && !!WXEnvironment.platform;
 var weexPlatform = inWeex && WXEnvironment.platform.toLowerCase();
-var UA = inBrowser && window.navigator && window.navigator.userAgent.toLowerCase();
+var UA = inBrowser && window.navigator && window.navigator.userAgent && window.navigator.userAgent.toLowerCase();
 var isIE = UA && /msie|trident/.test(UA);
 var isIE9 = UA && UA.indexOf('msie 9.0') > 0;
 var isEdge = UA && UA.indexOf('edge/') > 0;
@@ -2677,7 +2677,8 @@ function renderSlot (
   name,
   fallback,
   props,
-  bindObject
+  bindObject,
+  slotVm
 ) {
   var scopedSlotFn = this.$scopedSlots[name];
   var nodes;
@@ -2693,7 +2694,7 @@ function renderSlot (
       props = extend(extend({}, bindObject), props);
     }
     // fixed by xxxxxx app-plus scopedSlot
-    nodes = scopedSlotFn(props, this, props._i) || fallback;
+    nodes = scopedSlotFn(props, slotVm || this, props._i) || fallback;
   } else {
     nodes = this.$slots[name] || fallback;
   }
@@ -5535,6 +5536,218 @@ function type(obj) {
     return Object.prototype.toString.call(obj)
 }
 
+/**
+ * rfdc v1.4.1
+ * David Mark Clements <david.clements@nearform.com>
+ * Really Fast Deep Clone
+ * [npm](https://www.npmjs.com/package/rfdc) [homePage](https://github.com/davidmarkclements/rfdc.git)
+ */
+
+/**
+ * @typedef {{proto?: boolean; circles?: boolean; reviver: (key: string, value: any) => any; constructorHandlers?: any[];}} Options
+ */
+
+function copyBuffer(cur) {
+  if (cur instanceof Buffer) {
+    return Buffer.from(cur)
+  }
+
+  return new cur.constructor(cur.buffer.slice(), cur.byteOffset, cur.length)
+}
+
+/**
+ *
+ * @param {Options} opts
+ * @returns {(o: any) => any}
+ */
+function rfdc(opts) {
+  opts = opts || {};
+  if (opts.circles) { return rfdcCircles(opts) }
+
+  var constructorHandlers = new Map();
+  constructorHandlers.set(Date, function (o) { return new Date(o); });
+  constructorHandlers.set(Map, function (o, fn) { return new Map(cloneArray(Array.from(o), fn)); });
+  constructorHandlers.set(Set, function (o, fn) { return new Set(cloneArray(Array.from(o), fn)); });
+  if (opts.constructorHandlers) {
+    opts.constructorHandlers.forEach(function (handler) {
+      constructorHandlers.set(handler[0], handler[1]);
+    });
+  }
+
+  var handler = null;
+
+  return opts.proto ? cloneProto : clone
+
+  function cloneArray(a, fn) {
+    var keys = Object.keys(a);
+    var a2 = new Array(keys.length);
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i];
+      var cur = a[k];
+      if (typeof cur !== 'object' || cur === null) {
+        a2[k] = cur;
+      } else if (cur.constructor !== Object && (handler = constructorHandlers.get(cur.constructor))) {
+        a2[k] = handler(cur, fn);
+      } else if (ArrayBuffer.isView(cur)) {
+        a2[k] = copyBuffer(cur);
+      } else {
+        a2[k] = fn(cur);
+      }
+    }
+    return a2
+  }
+
+  function clone(o) {
+    if (typeof o !== 'object' || o === null) { return o }
+    if (Array.isArray(o)) { return cloneArray(o, clone) }
+    if (o.constructor !== Object && (handler = constructorHandlers.get(o.constructor))) {
+      return handler(o, clone)
+    }
+    var o2 = {};
+    for (var k in o) {
+      if (Object.hasOwnProperty.call(o, k) === false) { continue }
+      var cur = o[k];
+      if (typeof cur !== 'object' || cur === null) {
+        o2[k] = cur;
+      } else if (cur.constructor !== Object && (handler = constructorHandlers.get(cur.constructor))) {
+        o2[k] = handler(cur, clone);
+      } else if (ArrayBuffer.isView(cur)) {
+        o2[k] = copyBuffer(cur);
+      } else {
+        o2[k] = clone(opts.reviver ? opts.reviver(k, cur) : cur);
+      }
+    }
+    return o2
+  }
+
+  function cloneProto(o) {
+    if (typeof o !== 'object' || o === null) { return o }
+    if (Array.isArray(o)) { return cloneArray(o, cloneProto) }
+    if (o.constructor !== Object && (handler = constructorHandlers.get(o.constructor))) {
+      return handler(o, cloneProto)
+    }
+    var o2 = {};
+    for (var k in o) {
+      var cur = o[k];
+      if (typeof cur !== 'object' || cur === null) {
+        o2[k] = cur;
+      } else if (cur.constructor !== Object && (handler = constructorHandlers.get(cur.constructor))) {
+        o2[k] = handler(cur, cloneProto);
+      } else if (ArrayBuffer.isView(cur)) {
+        o2[k] = copyBuffer(cur);
+      } else {
+        o2[k] = cloneProto(opts.reviver ? opts.reviver(k, cur) : cur);
+      }
+    }
+    return o2
+  }
+}
+
+function rfdcCircles(opts) {
+  var refs = [];
+  var refsNew = [];
+
+  var constructorHandlers = new Map();
+  constructorHandlers.set(Date, function (o) { return new Date(o); });
+  constructorHandlers.set(Map, function (o, fn) { return new Map(cloneArray(Array.from(o), fn)); });
+  constructorHandlers.set(Set, function (o, fn) { return new Set(cloneArray(Array.from(o), fn)); });
+  if (opts.constructorHandlers) {
+    opts.constructorHandlers.forEach(function (handler) {
+      constructorHandlers.set(handler[0], handler[1]);
+    });
+  }
+
+  var handler = null;
+  return opts.proto ? cloneProto : clone
+
+  function cloneArray(a, fn) {
+    var keys = Object.keys(a);
+    var a2 = new Array(keys.length);
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i];
+      var cur = a[k];
+      if (typeof cur !== 'object' || cur === null) {
+        a2[k] = cur;
+      } else if (cur.constructor !== Object && (handler = constructorHandlers.get(cur.constructor))) {
+        a2[k] = handler(cur, fn);
+      } else if (ArrayBuffer.isView(cur)) {
+        a2[k] = copyBuffer(cur);
+      } else {
+        var index = refs.indexOf(cur);
+        if (index !== -1) {
+          a2[k] = refsNew[index];
+        } else {
+          a2[k] = fn(cur);
+        }
+      }
+    }
+    return a2
+  }
+
+  function clone(o) {
+    if (typeof o !== 'object' || o === null) { return o }
+    if (Array.isArray(o)) { return cloneArray(o, clone) }
+    if (o.constructor !== Object && (handler = constructorHandlers.get(o.constructor))) {
+      return handler(o, clone)
+    }
+    var o2 = {};
+    refs.push(o);
+    refsNew.push(o2);
+    for (var k in o) {
+      if (Object.hasOwnProperty.call(o, k) === false) { continue }
+      var cur = o[k];
+      if (typeof cur !== 'object' || cur === null) {
+        o2[k] = cur;
+      } else if (cur.constructor !== Object && (handler = constructorHandlers.get(cur.constructor))) {
+        o2[k] = handler(cur, clone);
+      } else if (ArrayBuffer.isView(cur)) {
+        o2[k] = copyBuffer(cur);
+      } else {
+        var i = refs.indexOf(cur);
+        if (i !== -1) {
+          o2[k] = refsNew[i];
+        } else {
+          o2[k] = clone(opts.reviver ? opts.reviver(k, cur) : cur);
+        }
+      }
+    }
+    refs.pop();
+    refsNew.pop();
+    return o2
+  }
+
+  function cloneProto(o) {
+    if (typeof o !== 'object' || o === null) { return o }
+    if (Array.isArray(o)) { return cloneArray(o, cloneProto) }
+    if (o.constructor !== Object && (handler = constructorHandlers.get(o.constructor))) {
+      return handler(o, cloneProto)
+    }
+    var o2 = {};
+    refs.push(o);
+    refsNew.push(o2);
+    for (var k in o) {
+      var cur = o[k];
+      if (typeof cur !== 'object' || cur === null) {
+        o2[k] = cur;
+      } else if (cur.constructor !== Object && (handler = constructorHandlers.get(cur.constructor))) {
+        o2[k] = handler(cur, cloneProto);
+      } else if (ArrayBuffer.isView(cur)) {
+        o2[k] = copyBuffer(cur);
+      } else {
+        var i = refs.indexOf(cur);
+        if (i !== -1) {
+          o2[k] = refsNew[i];
+        } else {
+          o2[k] = cloneProto(opts.reviver ? opts.reviver(k, cur) : cur);
+        }
+      }
+    }
+    refs.pop();
+    refsNew.pop();
+    return o2
+  }
+}
+
 /*  */
 
 function flushCallbacks$1(vm) {
@@ -5608,6 +5821,8 @@ function clearInstance(key, value) {
   return value
 }
 
+var cloneDeepCircles = rfdc({ circles: true, reviver: clearInstance });
+
 function cloneWithData(vm) {
   // 确保当前 vm 所有数据被同步
   var ret = Object.create(null);
@@ -5639,7 +5854,7 @@ function cloneWithData(vm) {
     ret['value'] = vm.value;
   }
 
-  return JSON.parse(JSON.stringify(ret, clearInstance))
+  return cloneDeepCircles(ret)
 }
 
 var patch = function(oldVnode, vnode) {

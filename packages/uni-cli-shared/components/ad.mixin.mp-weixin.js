@@ -19,8 +19,22 @@ const ProviderType = {
   ShanHu: 10020
 }
 
+const ActionType = {
+  ServerRequest: '-3',
+  AdRequest: '-1',
+  Show: '40',
+  Click: '41'
+}
+
 export default {
+  options: {
+    virtualHost: true
+  },
   props: {
+    style: {
+      type: String,
+      default: ''
+    },
     options: {
       type: [Object, Array],
       default () {
@@ -42,6 +56,10 @@ export default {
     loadnext: {
       type: [Boolean, String],
       default: false
+    },
+    adIntervals: {
+      type: [Number, String],
+      default: ''
     },
     urlCallback: {
       type: Object,
@@ -127,6 +145,7 @@ export default {
     _onmpload (e) {
       this.loading = false
       this._dispatchEvent(EventType.Load, {})
+      this._report(ActionType.AdRequest)
       if (this._userInvokeShowFlag) {
         this._userInvokeShowFlag = false
         setTimeout(() => {
@@ -169,6 +188,7 @@ export default {
       this.loading = false
       this.errorMessage = JSON.stringify(e.detail)
       this._dispatchEvent(EventType.Error, e.detail)
+      this._report(ActionType.AdRequest, e.detail)
     },
 
     _onnextchannel (e) {
@@ -208,7 +228,9 @@ export default {
         }
       })
     },
-
+    _customFullscreen () {
+      this.customFullscreen = 'uni-ad-custom-fullscreen'
+    },
     _onwxchannelerror (e) {
       this._dispatchEvent(EventType.Error, e.detail || e)
     },
@@ -286,8 +308,11 @@ export default {
             return
           }
           // eslint-disable-next-line handle-callback-err
-          this._wxRewardedAd.show().catch((err) => {
+          this._wxRewardedAd.show().then(() => {
+            this._report(ActionType.Show)
+          }).catch((err) => {
             this._dispatchEvent(EventType.Error, err)
+            this._report(ActionType.Show, err)
           })
           break
         case AdType.Interstitial:
@@ -295,8 +320,11 @@ export default {
             return
           }
           // eslint-disable-next-line handle-callback-err
-          this._wxInterstitialAd.show().catch((err) => {
+          this._wxInterstitialAd.show().then(() => {
+            this._report(ActionType.Show)
+          }).catch((err) => {
             this._dispatchEvent(EventType.Error, err)
+            this._report(ActionType.Show, err)
           })
           break
       }
@@ -313,6 +341,7 @@ export default {
       this._wxRewardedAd.onLoad(() => {
         this.loading = false
         this._dispatchEvent(EventType.Load, {})
+        this._report(ActionType.AdRequest)
         if (this._userInvokeShowFlag) {
           this._userInvokeShowFlag = false
           this._wxRewardedAd.show()
@@ -350,6 +379,7 @@ export default {
       this._wxInterstitialAd.onLoad(() => {
         this.loading = false
         this._dispatchEvent(EventType.Load, {})
+        this._report(ActionType.AdRequest)
         if (this._userInvokeShowFlag) {
           this._userInvokeShowFlag = false
           this._wxInterstitialAd.show().catch((err) => {
@@ -362,6 +392,7 @@ export default {
         this.loading = false
         this.errorMessage = JSON.stringify(err)
         this._dispatchEvent(EventType.Error, err)
+        this._report(ActionType.AdRequest, err)
       })
 
       this._wxInterstitialAd.onClose(res => {
@@ -370,6 +401,7 @@ export default {
 
       this._wxInterstitialAd.load().catch((err) => {
         this._dispatchEvent(EventType.Error, err)
+        this._report(ActionType.AdRequest, err)
       })
 
       this.loading = true
@@ -400,6 +432,18 @@ export default {
 
     toJSON () {
       return ''
+    },
+
+    _report (type, detail) {
+      const adComponent = this.selectComponent('.uniad-plugin')
+      if (adComponent && adComponent._unireport) {
+        adComponent._unireport({
+          isUni: true,
+          adpid: this.adpid,
+          type,
+          detail: detail || ''
+        })
+      }
     }
   }
 }

@@ -212,12 +212,9 @@ export function deepClone (vnodes, createElement) {
 
 export * from './uni-id-mixin'
 
+/**
+ * @deprecated
+ */
 export function sortObject (obj) {
-  const sortObj = {}
-  if (isPlainObject(obj)) {
-    Object.keys(obj).sort().forEach(key => {
-      sortObj[key] = obj[key]
-    })
-  }
-  return !Object.keys(sortObj) ? obj : sortObj
+  return obj
 }

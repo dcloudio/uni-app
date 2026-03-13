@@ -12,7 +12,8 @@ const {
   getPlatformUniCloud,
   createSource,
   deleteAsset,
-  getDevUniConsoleCode
+  getDevUniConsoleCode,
+  runByHBuilderX
 } = require('@dcloudio/uni-cli-shared')
 
 const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
@@ -22,6 +23,7 @@ const modifyVueLoader = require('../vue-loader')
 const {
   createTemplateCacheLoader
 } = require('../cache-loader')
+const { getFilterPaths } = require('./utils')
 
 function createUniMPPlugin () {
   const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
@@ -195,6 +197,16 @@ module.exports = {
       new webpack.ProvidePlugin(getProvides()),
       ...createWxMpIndependentPlugins()
     ]
+
+    try {
+      if (runByHBuilderX) {
+        require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers/lib/bytenode'))
+        const {
+          UUWP
+        } = require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+        plugins.push(new UUWP(getFilterPaths))
+      }
+    } catch (e) {}
 
     if ((process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) && process.env.UNI_SUBPACKGE !== 'main') {
       plugins.push(new PreprocessAssetsPlugin())
