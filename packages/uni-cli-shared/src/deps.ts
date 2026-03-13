@@ -11,10 +11,16 @@ const REFRESHER_CSS = BASE_COMPONENTS_STYLE_PATH + 'refresher.css'
 export const API_DEPS_CSS = (isX: boolean) => {
   const deps_css = {
     showModal: [] as string[],
-    showToast: [] as string[],
+    showToast: [`${H5_API_STYLE_PATH}toast.css`],
     showActionSheet: [] as string[],
-    previewImage: [] as string[],
-    openLocation: [] as string[],
+    previewImage: [
+      RESIZE_SENSOR_CSS,
+      `${BASE_COMPONENTS_STYLE_PATH}swiper.css`,
+      `${BASE_COMPONENTS_STYLE_PATH}swiper-item.css`,
+      `${BASE_COMPONENTS_STYLE_PATH}movable-area.css`,
+      `${BASE_COMPONENTS_STYLE_PATH}movable-view.css`,
+    ],
+    openLocation: [`${H5_API_STYLE_PATH}location-view.css`],
     chooseLocation: [] as string[],
     showLoading: [] as string[],
   }
@@ -31,17 +37,7 @@ export const API_DEPS_CSS = (isX: boolean) => {
     deps_css.showLoading = [`${X_BASE_COMPONENTS_STYLE_PATH}loading.css`]
   } else {
     deps_css.showModal = [`${H5_API_STYLE_PATH}modal.css`]
-    deps_css.showToast = [`${H5_API_STYLE_PATH}toast.css`]
     deps_css.showActionSheet = [`${H5_API_STYLE_PATH}action-sheet.css`]
-    deps_css.previewImage = [`${H5_API_STYLE_PATH}preview-image.css`]
-    deps_css.previewImage = [
-      RESIZE_SENSOR_CSS,
-      `${BASE_COMPONENTS_STYLE_PATH}swiper.css`,
-      `${BASE_COMPONENTS_STYLE_PATH}swiper-item.css`,
-      `${BASE_COMPONENTS_STYLE_PATH}movable-area.css`,
-      `${BASE_COMPONENTS_STYLE_PATH}movable-view.css`,
-    ]
-    deps_css.openLocation = [`${H5_API_STYLE_PATH}location-view.css`]
     deps_css.chooseLocation = [
       `${H5_API_STYLE_PATH}/location-picker.css`,
       `${BASE_COMPONENTS_STYLE_PATH}/input.css`,
