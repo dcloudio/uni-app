@@ -37,6 +37,7 @@ var index = () => {
         uniCliShared.defineUniMainJsPlugin((opts) => {
             let hasRuntimeSocket = uniCliShared.isEnableConsole();
             const isX = process.env.UNI_APP_X === 'true';
+            const useUniAppXAndroidNative = uniCliShared.isUniAppXAndroidNative();
             // 基座类型为custom时，不启用运行时socket
             // 需要判断自定义基座是否包含socket模块，有的话才可以启用
             if (isX && process.env.UNI_PLATFORM === 'app') {
@@ -46,10 +47,11 @@ var index = () => {
             }
             let uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', `dist/${(process.env.UNI_PLATFORM || '').startsWith('mp-') ? 'mp' : 'index'}.esm.js`));
             if (isX) {
-                if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+                if (useUniAppXAndroidNative) {
                     uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'src/runtime/app/index.ts'));
                 }
-                else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+                else if (process.env.UNI_UTS_PLATFORM === 'app-ios' ||
+                    process.env.UNI_UTS_PLATFORM === 'app-android') {
                     uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'dist/app.esm.js'));
                 }
             }
@@ -61,8 +63,8 @@ var index = () => {
             return {
                 name: 'uni:console-main-js',
                 enforce: 
-                // android需要提前，不然拿到的code是解析后的仅保留import语句的
-                process.env.UNI_UTS_PLATFORM === 'app-android' ? 'pre' : 'post',
+                // 仅旧版 Android x 需要提前，不然拿到的code是解析后的仅保留import语句的
+                useUniAppXAndroidNative ? 'pre' : 'post',
                 transform(code, id) {
                     if (!hasRuntimeSocket) {
                         return;
