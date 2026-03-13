@@ -1168,4 +1168,38 @@
   }
   /* 暗黑模式样式结束 */
 
+  /* #ifdef WEB */
+  uni-image {
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+  }
+
+  uni-image[hidden] {
+    display: none;
+  }
+
+  uni-image > div {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+  }
+
+  uni-image > img {
+    -webkit-touch-callout: none;
+    user-select: none;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+
+  uni-image > .uni-image-will-change {
+    will-change: transform;
+  }
+
+  /* #endif */
 </style>
