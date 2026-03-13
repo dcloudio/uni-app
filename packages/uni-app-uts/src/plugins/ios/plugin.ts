@@ -21,12 +21,14 @@ export function uniAppXIOSEnginePlugin(): UniVitePlugin {
       if (!compilerServer) {
         return
       }
-      const res = await compilerServer.compileCpp({
-        projectPath: process.env.UNI_INPUT_DIR,
-        cppPath: process.env.UNI_APP_X_DOM2_CPP_DIR!,
-      })
-      if (res.code) {
-        console.error(res.msg)
+      if (process.env.UNI_APP_X_DOM2_CPP_CHANGED === 'true') {
+        const res = await compilerServer.compileCpp({
+          projectPath: process.env.UNI_INPUT_DIR,
+          cppPath: process.env.UNI_APP_X_DOM2_CPP_DIR!,
+        })
+        if (res.code) {
+          console.error(res.msg)
+        }
       }
     },
   }
