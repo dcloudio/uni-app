@@ -1542,9 +1542,6 @@
         }
       }
     },
-    "components": [
-      "video"
-    ],
     "easycom": [
       "video"
     ]
