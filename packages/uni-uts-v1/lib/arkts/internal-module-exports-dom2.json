@@ -2431,43 +2431,10 @@
       "VideoContext"
     ],
     [
-      "VideoControlsToggleEvent"
-    ],
-    [
-      "VideoControlsToggleEventDetail"
-    ],
-    [
       "VideoError"
     ],
     [
       "VideoErrorCode"
-    ],
-    [
-      "VideoErrorEvent"
-    ],
-    [
-      "VideoFullScreenChangeEvent"
-    ],
-    [
-      "VideoFullScreenChangeEventDetail"
-    ],
-    [
-      "VideoFullScreenClickEvent"
-    ],
-    [
-      "VideoFullScreenClickEventDetail"
-    ],
-    [
-      "VideoProgressEvent"
-    ],
-    [
-      "VideoProgressEventDetail"
-    ],
-    [
-      "VideoTimeUpdateEvent"
-    ],
-    [
-      "VideoTimeUpdateEventDetail"
     ],
     [
       "WebViewContext"
