@@ -19,7 +19,7 @@ export const API_DEPS_CSS = (isX: boolean) => {
     showLoading: [] as string[],
   }
   if (isX) {
-    deps_css.showModal = [`${X_BASE_COMPONENTS_STYLE_PATH}textarea.css`]
+    deps_css.showModal = [`${BASE_COMPONENTS_STYLE_PATH}textarea.css`]
     deps_css.chooseLocation = [
       `${BASE_COMPONENTS_STYLE_PATH}/view.css`,
       `${BASE_COMPONENTS_STYLE_PATH}/text.css`,
