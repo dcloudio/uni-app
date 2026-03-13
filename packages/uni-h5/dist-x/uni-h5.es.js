@@ -29713,34 +29713,6 @@ const _style_0$2 = `
     border-color: #d1d1d1;
 }
   /* 暗黑模式样式结束 */
-uni-image {
-    display: inline-block;
-    overflow: hidden;
-    position: relative;
-}
-uni-image[hidden] {
-    display: none;
-}
-uni-image > div {
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-}
-uni-image > img {
-    -webkit-touch-callout: none;
-    user-select: none;
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-}
-uni-image > .uni-image-will-change {
-    will-change: transform;
-}
-
 
 `;
 const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$2]]]);
