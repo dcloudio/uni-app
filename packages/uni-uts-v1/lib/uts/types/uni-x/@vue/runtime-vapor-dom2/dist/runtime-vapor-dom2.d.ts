@@ -567,8 +567,8 @@ export interface DynamicVmInstruction {
   b: number;
   c: number;
 }
-export type DynamicVmTemplateCreateKind = "viewElement" | "textElement" | "imageElement" | "scrollViewElement" | "nativeView" | "nativeTextView" | "nativeImageView" | "nativeScrollView" | "nativeCustomView" | "textNode" | "commentNode" | "anchorNode";
-export type DynamicVmTemplateFlattenMode = "staticFalse" | "staticTrue" | "mainSharedDataFlatten";
+export type DynamicVmTemplateCreateKind = "viewElement" | "textElement" | "imageElement" | "scrollViewElement" | "nativeViewElement" | "nestedScrollHeaderElement" | "nestedScrollBodyElement" | "richTextNativeElement" | "nativeView" | "nativeTextView" | "nativeImageView" | "nativeScrollView" | "nativeCustomView" | "nativeNestedScrollHeaderView" | "nativeNestedScrollBodyView" | "nativeRichTextNativeView" | "textNode" | "commentNode" | "anchorNode";
+export type DynamicVmTemplateFlattenMode = "staticFalse" | "staticTrue" | "mainSharedDataFlatten" | "mainSharedDataFlattenDefaultTrue";
 export interface DynamicVmTemplateCreateNodeOp {
   kind: "createNode";
   nodeId: string;
