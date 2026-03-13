@@ -90,11 +90,12 @@ export async function runDev(options: CliOptions & ServerOptions) {
           }
           const utsChanged = process.env.UNI_APP_UTS_CHANGED === 'true'
           process.env.UNI_APP_UTS_CHANGED = ''
+          let changedFiles = ''
           if (options.platform === 'app') {
             const files = process.env.UNI_APP_CHANGED_FILES
             const pages = process.env.UNI_APP_CHANGED_PAGES
             const dex = process.env.UNI_APP_UTS_CHANGED_FILES
-            const changedFiles = pages || files
+            changedFiles = pages || files
             process.env.UNI_APP_CHANGED_PAGES = ''
             process.env.UNI_APP_CHANGED_FILES = ''
             process.env.UNI_APP_UTS_CHANGED_FILES = ''
@@ -150,7 +151,10 @@ export async function runDev(options: CliOptions & ServerOptions) {
             ) {
               return output('log', M['dev.watching.end'])
             }
-            return output('log', M['uvue.dev.watching.end.empty'])
+            // 没有cpp/uts插件变更，且没有增量js文件变更，就输出无变更
+            if (!changedFiles) {
+              return output('log', M['uvue.dev.watching.end.empty'])
+            }
           }
           return output('log', M['dev.watching.end'])
         } else if (event.code === 'END') {
