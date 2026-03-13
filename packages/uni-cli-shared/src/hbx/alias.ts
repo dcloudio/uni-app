@@ -67,6 +67,20 @@ export function initModuleAlias() {
             : process.env.UNI_APP_X_CACHE_DIR || process.env.UNI_OUTPUT_DIR
         process.env.UNI_APP_X_DOM2_CPP_DIR = path.resolve(baseDir, 'cpp')
       }
+      if (!process.env.UNI_APP_X_DOM2_KT_DIR) {
+        if (process.env.NODE_ENV !== 'development') {
+          process.env.UNI_APP_X_DOM2_KT_DIR = path.resolve(
+            process.env.UNI_OUTPUT_DIR,
+            'src/.uniappx/android/'
+          )
+        } else {
+          process.env.UNI_APP_X_DOM2_KT_DIR = path.resolve(
+            process.env.UNI_APP_X_CACHE_DIR ||
+              path.resolve(process.env.UNI_OUTPUT_DIR, '../.cache'),
+            'src'
+          )
+        }
+      }
     }
   }
   if (process.env.UNI_APP_X_DOM2 === 'true') {

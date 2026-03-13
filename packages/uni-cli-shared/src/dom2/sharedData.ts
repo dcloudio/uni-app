@@ -3,6 +3,7 @@ import { resolveUTSCompiler } from '../uts'
 import { isUniPageFile } from '../json/pages'
 import { requireUniHelpers } from '../utils'
 import { getAssetFilenameById } from '../vite/plugins/vitejs/plugins/asset'
+import { isUniAppXAndroidNative } from '../x'
 
 function initSharedDataOptions() {
   const compiler = require('@dcloudio/compiler-vapor-dom2')
@@ -13,6 +14,7 @@ function initSharedDataOptions() {
     isUniPageFile,
     getSharedDataResult: compiler.getSharedDataResult,
     getAssetFilenameById,
+    uvueScriptEngine: isUniAppXAndroidNative() ? 'native' : 'js',
   }
 }
 export function uniSharedDataPlugin(): Plugin {
@@ -22,7 +24,7 @@ export function uniSharedDataPlugin(): Plugin {
 export function initSourceFileCallback():
   | ((sourceFile: import('typescript').SourceFile) => void)
   | undefined {
-  if (process.env.UNI_APP_X_DOM2 === 'true') {
+  if (process.env.UNI_APP_X_DOM2 === 'true' && isUniAppXAndroidNative()) {
     const { TSDBSF } = requireUniHelpers()
     const options = initSharedDataOptions()
     return (sourceFile) => {
