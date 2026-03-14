@@ -23,6 +23,9 @@ export function uniAppXAndroidEnginePlugin(): UniVitePlugin {
         process.env.UNI_APP_X_DOM2_KT_CHANGED === 'true'
       ) {
         await compileVaporApp({
+          filename: 'index.kt',
+          changed: [],
+          chunks: [],
           inputDir: uvueOutputDir,
           outputDir: outputDir,
         })

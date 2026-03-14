@@ -210,11 +210,16 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
 export type CompileVaporAppOptions = Omit<
   RunUVueKotlinDevOptions,
   'pageCount' | 'uni_modules'
->
+> &
+  Pick<Required<UTSResult>, 'filename' | 'changed' | 'chunks'>
 
 export async function compileVaporApp(options: CompileVaporAppOptions) {
   let hasCache = false
-  const result: UTSResult = {}
+  const result: UTSResult = {
+    filename: options.filename,
+    changed: options.changed,
+    chunks: options.chunks,
+  }
   const isProd = process.env.NODE_ENV !== 'development'
   if (isProd) {
     return runUVueKotlinBuild(
