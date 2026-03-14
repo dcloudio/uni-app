@@ -193,7 +193,7 @@ export interface Uni {
 	        "osVer": "3.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixvVer": "5.0"
+	        "unixVaporVer": "5.0"
 	      }
 	    },
 	    "mp": {

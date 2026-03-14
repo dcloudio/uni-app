@@ -22583,6 +22583,7 @@ export interface SlotOutletIRNode extends BaseIRNode {
   logicalIndex?: number;
   append?: boolean;
   last?: boolean;
+  sharedData?: SimpleExpressionNode["sharedData"];
 }
 export interface GetTextChildIRNode extends BaseIRNode {
   type: IRNodeTypes.GET_TEXT_CHILD;
