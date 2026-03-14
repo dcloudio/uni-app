@@ -25,9 +25,6 @@ export function uniAppXAndroidEnginePlugin(): UniVitePlugin {
         await compileVaporApp({
           inputDir: uvueOutputDir,
           outputDir: outputDir,
-          uni_modules: [],
-          pageCount: 0,
-          extApiComponents: [],
         })
       }
     },

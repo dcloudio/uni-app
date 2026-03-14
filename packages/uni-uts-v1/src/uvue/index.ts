@@ -20,7 +20,6 @@ import {
 } from '../utils'
 
 import {
-  type RunUVueKotlinBuildOptions,
   type RunUVueKotlinDevOptions,
   kotlinSrcDir,
   readKotlinManifestJson,
@@ -208,17 +207,32 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   return runUVueKotlinDev(options, result as RunKotlinDevResult, hasCache)
 }
 
-export type CompileVaporAppOptions = RunUVueKotlinDevOptions &
-  RunUVueKotlinBuildOptions
+export type CompileVaporAppOptions = Omit<
+  RunUVueKotlinDevOptions,
+  'pageCount' | 'uni_modules'
+>
 
 export async function compileVaporApp(options: CompileVaporAppOptions) {
   let hasCache = false
   const result: UTSResult = {}
   const isProd = process.env.NODE_ENV !== 'development'
   if (isProd) {
-    return runUVueKotlinBuild(options, result)
+    return runUVueKotlinBuild(
+      {
+        extApiComponents: [],
+      },
+      result
+    )
   }
-  return runUVueKotlinDev(options, result as RunKotlinDevResult, hasCache)
+  return runUVueKotlinDev(
+    {
+      pageCount: 0,
+      uni_modules: [],
+      ...options,
+    },
+    result as RunKotlinDevResult,
+    hasCache
+  )
 }
 
 export function uvueOutDir(
