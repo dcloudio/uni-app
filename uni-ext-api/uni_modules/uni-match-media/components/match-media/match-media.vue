@@ -29,7 +29,7 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixVaporVer": "5.0"
+          "unixvVer": "5.0"
         }
       }
     }
@@ -40,7 +40,7 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixVaporVer": "5.0"
+          "unixvVer": "5.0"
         }
       }
     }
@@ -51,7 +51,7 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixVaporVer": "5.0"
+          "unixvVer": "5.0"
         }
       }
     }
@@ -62,7 +62,7 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixVaporVer": "5.0"
+          "unixvVer": "5.0"
         }
       }
     }
@@ -73,7 +73,7 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixVaporVer": "5.0"
+          "unixvVer": "5.0"
         }
       }
     }
@@ -84,7 +84,7 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixVaporVer": "5.0"
+          "unixvVer": "5.0"
         }
       }
     }
@@ -95,7 +95,7 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixVaporVer": "5.0"
+          "unixvVer": "5.0"
         }
       }
     }

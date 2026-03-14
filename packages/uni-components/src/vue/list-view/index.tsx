@@ -147,7 +147,7 @@ const props = {
 
 type Props = ExtractPropTypes<typeof props>
 
-export class UniListViewElement extends UniElement { }
+export class UniListViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ListView',
   props,
@@ -286,9 +286,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         containerRef.value.scrollLeft = val
       }
     })
-    watch(() => props.scrollIntoView, (val) => {
-      _scrollIntoViewChanged(val)
-    })
+    watch(
+      () => props.scrollIntoView,
+      (val) => {
+        _scrollIntoViewChanged(val)
+      }
+    )
 
     function _scrollIntoViewChanged(val: string) {
       if (val) {
@@ -432,22 +435,25 @@ export default /*#__PURE__*/ defineBuiltInComponent({
      * scroll-behavior: smooth; 自chrome61版本起支持，safari自15.4版本起支持。除safari外无兼容问题
      */
     const containerStyle = computed(() => {
-      return `${props.direction === 'none'
-        ? 'overflow: hidden;'
-        : props.direction === 'all'
+      return `${
+        props.direction === 'none'
+          ? 'overflow: hidden;'
+          : props.direction === 'all'
           ? 'overflow: auto;'
           : isVertical.value
-            ? 'overflow: hidden auto;'
-            : 'overflow: auto hidden;'
-        }scroll-behavior: ${props.scrollWithAnimation ? 'smooth' : 'auto'};`
+          ? 'overflow: hidden auto;'
+          : 'overflow: auto hidden;'
+      }scroll-behavior: ${props.scrollWithAnimation ? 'smooth' : 'auto'};`
     })
     const contentStyle = computed(() => {
-      return `position: relative; ${isVertical.value ? 'height' : 'width'}: ${state.totalSize
-        }px;`
+      return `position: relative; ${isVertical.value ? 'height' : 'width'}: ${
+        state.totalSize
+      }px;`
     })
     const visibleStyle = computed(() => {
-      return `position: absolute; ${isVertical.value ? 'width' : 'height'
-        }: 100%; ${isVertical.value ? 'top' : 'left'}: ${state.placehoderSize}px;`
+      return `position: absolute; ${
+        isVertical.value ? 'width' : 'height'
+      }: 100%; ${isVertical.value ? 'top' : 'left'}: ${state.placehoderSize}px;`
     })
 
     let visibleVNode = null as VNode | null
@@ -474,10 +480,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-list-view ref={rootRef} class="uni-list-view">
           <div
             ref={containerRef}
-            class={`uni-list-view-container ${props.showScrollbar === false
-              ? 'uni-list-view-scrollbar-hidden'
-              : ''
-              }`}
+            class={`uni-list-view-container ${
+              props.showScrollbar === false
+                ? 'uni-list-view-scrollbar-hidden'
+                : ''
+            }`}
             style={containerStyle.value}
           >
             {refresherEnabled ? (
@@ -559,8 +566,7 @@ function shouldRearrange(
   const loadScreenThresholdSize =
     state.containerSize * state.loadScreenThreshold
   const rearrangeOffsetMin = state.lastRenderOffsetMin + loadScreenThresholdSize
-  const rearrangeOffsetMax =
-    state.lastRenderOffsetMax - loadScreenThresholdSize
+  const rearrangeOffsetMax = state.lastRenderOffsetMax - loadScreenThresholdSize
   return offset < rearrangeOffsetMin || offset > rearrangeOffsetMax
 }
 
@@ -599,9 +605,10 @@ function rearrange(
     const childType = child.component?.type.name
     const status = child.component?.exposed?.__listViewChildStatus
     if (childType === 'StickySection') {
-      const { headSize, tailSize, placeholderSize } = status as StickySectionStatus
+      const { headSize, tailSize, placeholderSize } =
+        status as StickySectionStatus
       tempTotalSize += headSize.value
-      let tempPlaceholderSizeOfSection = 0;
+      let tempPlaceholderSizeOfSection = 0
       traverseStickySection(child, (child: VNode) => {
         const childType = child.component?.type.name
         const status = child.component?.exposed?.__listViewChildStatus
@@ -796,7 +803,7 @@ function handleTouchEvent(
         event.preventDefault()
     } else if (
       containerEl.scrollHeight ===
-      containerEl.offsetHeight + containerEl.scrollTop &&
+        containerEl.offsetHeight + containerEl.scrollTop &&
       y < touchStart.y
     ) {
       needStop = false
