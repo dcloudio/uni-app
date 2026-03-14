@@ -44,7 +44,12 @@ type RawSlots = Record<string, VaporSlot> & {
   $?: DynamicSlotSource[];
 };
 type StaticSlots = Record<string, VaporSlot>;
-type VaporSlot = BlockFn;
+type VaporSlot<T extends UniSharedData = any> = BlockFn & {
+  sharedDataVFor?: UniSharedDataVFor<T>;
+};
+type VaporScopedSlot<T extends UniSharedData = any> = ((slotProps: any, sharedData: T) => void) & {
+  sharedDataVFor?: UniSharedDataVFor<T>;
+};
 type DynamicSlot = {
   name: string;
   fn: VaporSlot;
@@ -59,7 +64,8 @@ export type DynamicSlotSource = StaticSlots | DynamicSlotFn;
 * 2. elements inherit the slot owner's scopeId
 */
 export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any, type?: "string"): BlockFn;
-export declare function createSharedDataSlot(name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot, noSlotted?: boolean, once?: boolean): void;
+export declare function createSharedDataSlot(name: string | (() => string), rawProps?: LooseRawProps | null, setSharedDataSlotProps?: ((data: UniSharedData) => void) | null, fallback?: VaporSlot, noSlotted?: boolean, once?: boolean): void;
+export declare function createSharedDataScopedSlot<S extends UniSharedData>(sharedDataVFor: UniSharedDataVFor<S>, fn: VaporScopedSlot<S>): VaporScopedSlot<S>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/component.d.ts
 export type VaporSharedDataComponent = ObjectVaporSharedDataComponent & {
@@ -318,6 +324,7 @@ export declare function toSharedDataNumber(value: any | null): number;
 export declare function toSharedDataString(value: any | null): string;
 export declare function toSharedDataColor(value: any | null): number;
 export declare function createSharedDataVFor<T extends UniSharedData>(scope: UniSharedDataPage, create: () => T): UniSharedDataVFor<T>;
+export declare const createSharedDataVSlot: typeof createSharedDataVFor;
 interface WithSharedDataComponentOptions {
   scriptCpp?: boolean;
 }
@@ -419,7 +426,7 @@ export declare function createElementComponent<S extends UniSharedDataComponent>
 export declare function createElementComponentWithFallback<S extends UniSharedDataComponent>(page: UniPage, sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean): VaporSharedDataComponentInstance;
 export declare function createElementDynamicComponent(page: UniPage, getter: () => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean): VaporFragment;
 export declare function withElementVaporCtx(fn: Function): BlockFn;
-export declare function createElementSlot(page: UniPage, name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot): Block;
+export declare function createElementSlot(page: UniPage, name: string | (() => string), getSlotProps?: () => UniSharedData, fallback?: VaporSlot): Block;
 export declare function createElementFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source> | string | number, renderItem: (shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index: number | undefined) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
   createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void): VaporFragment;
@@ -462,6 +469,7 @@ export declare function onElement(node: UniElement, event: string, fn: (event: U
 export declare function onElementRef(node: UniElement, fn: Function): void;
 export declare function createElementDynamicSlotVector(slots: any | null): any | null;
 export declare function createElementKeyedFragment(page: UniPage, key: () => string, render: BlockFn): Block;
+export declare function createElementScopedSlot<S extends UniSharedData>(sharedDataVFor: UniSharedDataVFor<S>, fn: VaporSlot): VaporSlot;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/nativeView.d.ts
 export declare function getCurrentNativeViewVaporComponentInstance(): VaporSharedDataComponentInstance | null;
@@ -498,11 +506,12 @@ export declare function createNativeViewComponentWithFallback<S extends UniShare
 export declare function createNativeViewDynamicComponent(page: UniPage, getter: () => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean): VaporFragment;
 export declare function setNativeViewDynamicProps(component: UniSharedDataComponent, view: UniNativeBaseView, args: UniSharedDataJSONObject): void;
 export declare function withNativeViewVaporCtx(fn: Function): BlockFn;
-export declare function createNativeViewSlot(page: UniPage, name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot): Block;
+export declare function createNativeViewSlot(page: UniPage, name: string | (() => string), getSlotProps?: () => UniSharedData, fallback?: VaporSlot): Block;
 export declare function createNativeViewForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (shareDataVForItem: Source, key: KeyOf<Source>, index?: number) => DynamicSlot): DynamicSlot[];
 export declare function createNativeViewDynamicSlot(name: string, fn: VaporSlot): DynamicSlot;
 export declare function createNativeViewDynamicSlotVector(slots: any | null): any | null;
 export declare function createNativeViewKeyedFragment(page: UniPage, key: () => string, render: BlockFn): Block;
+export declare function createNativeViewScopedSlot<S extends UniSharedData>(sharedDataVForGetter: () => UniSharedDataVFor<S>, fn: VaporSlot): VaporSlot;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/index.d.ts
 export declare function runOnMainQueue(fn: () => void): void;
@@ -679,6 +688,9 @@ export interface DynamicVmBundle {
   programs: DynamicVmProgram[];
 }
 //#endregion
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/vm/templateFactoryResolver.d.ts
+type DynamicVmTemplateFactoryResolver = (templateId: number, renderer: number) => DynamicVmTemplateFactory | undefined;
+//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/dynamic/vm/interpreter.d.ts
 type DynamicNodeRef = unknown;
 export interface DynamicVmExecuteOptions {
@@ -686,6 +698,7 @@ export interface DynamicVmExecuteOptions {
   sharedDataResolver?: (fieldId: number) => unknown;
   sharedDataInstance?: DynamicSharedDataInstanceRef;
   templateFactories?: DynamicVmTemplateFactory[];
+  templateFactoryResolver?: DynamicVmTemplateFactoryResolver;
   initialRegisters?: unknown[];
   initialEffectFrames?: DynamicVmEffectFrame[];
   runtimeAdapter?: DynamicRuntimeAdapter<DynamicNodeRef>;
@@ -768,6 +781,7 @@ export type CppTemplateStaticValue = string | number | boolean | null | undefine
   args: CppTemplateStaticValue[];
 };
 export declare function bridgeCppTemplateFactories(templates: DynamicVmTemplateFactory[] | undefined): CppTemplateFactoryContract[];
+export declare function bridgeCppTemplateFactory(template: DynamicVmTemplateFactory): CppTemplateFactoryContract;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/interpreters/cpp/contracts/bundleBridge.d.ts
 export interface CppVmInstructionContract {
@@ -817,6 +831,8 @@ export interface CppVmBundleContract {
   programs: CppVmProgramContract[];
 }
 export declare function bridgeCppVmBundle(bundle: DynamicVmBundle): CppVmBundleContract;
+export declare function bridgeCppVmProgram(program: DynamicVmProgram): CppVmProgramContract;
+export declare function bridgeCppVmSharedSchema(schema: DynamicVmSharedSchema): CppVmSharedSchemaContract;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/interpreters/cpp/contracts/executionBridge.d.ts
 export interface CppVmExecutionContract {
@@ -832,6 +848,7 @@ export interface CppVmSharedDataInstanceContract {
 }
 export interface CppVmExecuteOptionsContract {
   templateFactories: DynamicVmTemplateFactory[];
+  templateFactoryResolver?: DynamicVmExecuteOptions["templateFactoryResolver"];
   sharedDataInstance?: CppVmSharedDataInstanceContract;
   initialRegisters: unknown[];
   initialEffectFrames: CppVmEffectFrameContract[];
@@ -892,6 +909,9 @@ export interface CreateCppVmExecutionRequestOptions {
 export declare function createCppVmExecutionContract(bundle: DynamicVmBundle, renderer: number): CppVmExecutionContract;
 export declare function createCppVmExecutionRequest(bundle: DynamicVmBundle, renderer: number, options?: CreateCppVmExecutionRequestOptions): CppVmExecutionRequestContract;
 export declare function createCppVmNativeExecutionRequest(bundle: DynamicVmBundle, renderer: number, options?: CreateCppVmExecutionRequestOptions): CppVmNativeExecutionRequestContract;
+export declare function createCppVmNativeExecutionRequestFromExecution(execution: Pick<CppVmExecutionContract, "renderer" | "program" | "templateFactories">, options?: CreateCppVmExecutionRequestOptions): CppVmNativeExecutionRequestContract;
+export declare function createCppVmHostExecutionRequestFromExecution(execution: Pick<CppVmExecutionContract, "renderer" | "program" | "templateFactories">, options?: CreateCppVmExecutionRequestOptions): CppVmHostExecutionRequestContract;
+export declare function createCppVmExecutionRequestFromProgram(renderer: number, program: CppVmProgramContract, templateFactories: DynamicVmTemplateFactory[], options?: CreateCppVmExecutionRequestOptions): CppVmExecutionRequestContract;
 export declare function createCppVmHostExecutionRequest(bundle: DynamicVmBundle, renderer: number, options?: CreateCppVmExecutionRequestOptions): CppVmHostExecutionRequestContract;
 export declare function createCppVmSharedDataInstance(bundle: DynamicVmBundle, options?: CreateCppVmSharedDataInstanceOptions): CppVmSharedDataInstanceContract;
 export declare function resolveCppVmRuntimeTemplateFactories(bundle: DynamicVmBundle, renderer: number): DynamicVmTemplateFactory[];
