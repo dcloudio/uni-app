@@ -28,6 +28,7 @@ import { uniAppManifestPlugin } from '../js/manifestJson'
 import { uniAppPagesPlugin } from '../js/pagesJson'
 import { createUniAppJsEnginePlugin } from '../js/plugin'
 import { SHARED_DATA_LIB_NAME } from '../utils'
+import { uniAppXAndroidEnginePlugin } from './plugin'
 
 export function init() {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
@@ -80,6 +81,8 @@ export function init() {
       ? [replaceExtApiPagePaths()]
       : []),
     ...(isDom2 ? [uniAppCssPlugin()] : []),
-    ...(isNormalCompileTarget() ? [uniStatsPlugin()] : []),
+    ...(isNormalCompileTarget()
+      ? [uniStatsPlugin(), uniAppXAndroidEnginePlugin()]
+      : []),
   ]
 }

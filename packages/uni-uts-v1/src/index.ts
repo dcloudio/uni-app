@@ -87,7 +87,12 @@ export const sourcemap = {
   generateCodeFrameWithSwiftStacktrace,
 }
 
-export { compileApp, CompileAppOptions } from './uvue/index'
+export {
+  compileApp,
+  CompileAppOptions,
+  compileVaporApp,
+  CompileVaporAppOptions,
+} from './uvue/index'
 
 export { parseInjectModules, parseExtApiProviders } from './utils'
 

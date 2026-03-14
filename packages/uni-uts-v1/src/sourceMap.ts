@@ -18,7 +18,7 @@ import {
   parseKotlinPackageWithPluginId,
   resolveUniAppXSourceMapPath,
 } from './utils'
-import { kotlinSrcDir } from './uvue'
+import { kotlinSrcDir } from './uvue/kotlin'
 import { once, resolveSourceMapPath } from './shared'
 import {
   parseFilenameByClassName,
