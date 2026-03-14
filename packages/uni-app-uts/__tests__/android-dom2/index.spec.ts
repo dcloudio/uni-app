@@ -48,6 +48,10 @@ jest.mock('../../src/plugins/js/plugin', () => ({
   createUniAppJsEnginePlugin: () => () => ({ name: 'js-engine' }),
 }))
 
+jest.mock('../../src/plugins/android-dom2/plugin', () => ({
+  uniAppXAndroidEnginePlugin: () => ({ name: 'android-engine' }),
+}))
+
 jest.mock('../../src/plugins/utils', () => ({
   SHARED_DATA_LIB_NAME: 'libentry.so',
 }))
