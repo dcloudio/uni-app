@@ -1,5 +1,6 @@
 import {
   type UniVitePlugin,
+  requireUniHelpers,
   resolveUTSCompiler,
   uvueOutDir,
 } from '@dcloudio/uni-cli-shared'
@@ -12,6 +13,7 @@ export function uniAppXAndroidEnginePlugin(): UniVitePlugin {
   }
   const outputDir = process.env.UNI_OUTPUT_DIR
   const uvueOutputDir = uvueOutDir('app-android')
+  const { UKF } = requireUniHelpers()
   return {
     name: 'uni:app-x-android',
     async writeBundle() {
@@ -22,10 +24,11 @@ export function uniAppXAndroidEnginePlugin(): UniVitePlugin {
         process.env.UNI_APP_X_DOM2_CPP_CHANGED === 'true' ||
         process.env.UNI_APP_X_DOM2_KT_CHANGED === 'true'
       ) {
+        const { changed, files } = UKF()
         await compileVaporApp({
           filename: 'index.kt',
-          changed: [],
-          chunks: [],
+          changed: changed,
+          chunks: files,
           inputDir: uvueOutputDir,
           outputDir: outputDir,
         })

@@ -15,6 +15,7 @@ function initSharedDataOptions() {
     getSharedDataResult: compiler.getSharedDataResult,
     getAssetFilenameById,
     uvueScriptEngine: isUniAppXAndroidNative() ? 'native' : 'js',
+    compilerVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
   }
 }
 export function uniSharedDataPlugin(): Plugin {
