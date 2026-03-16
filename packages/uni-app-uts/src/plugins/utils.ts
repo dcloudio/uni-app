@@ -152,7 +152,6 @@ const REMOVED_PLUGINS = [
 
 if (process.env.UNI_UTS_PLATFORM === 'app-android') {
   REMOVED_PLUGINS.push('vite:esbuild-transpile')
-  REMOVED_PLUGINS.push('vite:json')
 }
 
 export function configResolved(config: ResolvedConfig, isAndroidX = false) {
