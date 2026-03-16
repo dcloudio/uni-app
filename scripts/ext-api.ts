@@ -18,7 +18,7 @@ interface Options {
 }
 
 if (!process.env.UNI_APP_EXT_API_DIR) {
-  const extApiDir = path.resolve(__dirname, '..', '..', 'uni-app', 'api')
+  const extApiDir = path.resolve(__dirname, '..', '..', 'uni-app', 'src', 'uni_modules')
   if (fs.existsSync(extApiDir)) {
     process.env.UNI_APP_EXT_API_DIR = extApiDir
     console.log('UNI_APP_EXT_API_DIR', extApiDir)
