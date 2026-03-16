@@ -35,7 +35,6 @@ import {
   uvueOutDir,
 } from '@dcloudio/uni-cli-shared'
 import {
-  DEFAULT_APPID,
   UVUE_CLASS_NAME_PREFIX,
   createTryResolve,
   getUniCloudObjectInfo,
@@ -349,9 +348,7 @@ export function uniAppPlugin(): UniVitePlugin {
         disableSplitManifest: process.env.NODE_ENV !== 'development',
         inputDir: uvueOutputDir,
         outputDir: outputDir,
-        package: parseUniXAppAndroidPackage(
-          manifestJson.appid || DEFAULT_APPID
-        ),
+        package: parseUniXAppAndroidPackage(manifestJson.appid),
         sourceMap: enableSourceMap(),
         uni_modules: [...getCurrentCompiledUTSPlugins()],
         pages: getUniXPagePaths(),

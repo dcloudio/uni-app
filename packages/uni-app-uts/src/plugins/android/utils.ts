@@ -20,8 +20,6 @@ import { createCompilerError } from './uvue/compiler/errors'
 
 export const UVUE_CLASS_NAME_PREFIX = 'Gen'
 
-export const DEFAULT_APPID = '__UNI__uniappx'
-
 export const ENTRY_FILENAME = () =>
   process.env.UNI_APP_X_TSC === 'true' ? 'main.uts.ts' : 'main.uts'
 

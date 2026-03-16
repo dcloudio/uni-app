@@ -3,10 +3,13 @@ import { resolveUTSCompiler } from '../uts'
 import { isUniPageFile } from '../json/pages'
 import { requireUniHelpers } from '../utils'
 import { getAssetFilenameById } from '../vite/plugins/vitejs/plugins/asset'
-import { isUniAppXAndroidNative } from '../x'
+import { isUniAppXAndroidJsEngine, isUniAppXAndroidNative } from '../x'
+import { parseUniXAppAndroidPackage } from '../json/uni-x/manifest'
+import { parseManifestJsonOnce } from '../json/manifest'
 
 function initSharedDataOptions() {
   const compiler = require('@dcloudio/compiler-vapor-dom2')
+  const manifest = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
   return {
     platform: process.env.UNI_UTS_PLATFORM!,
     compilerVaporDom2: compiler,
@@ -16,6 +19,11 @@ function initSharedDataOptions() {
     getAssetFilenameById,
     uvueScriptEngine: isUniAppXAndroidNative() ? 'native' : 'js',
     compilerVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
+    androidOptions: isUniAppXAndroidJsEngine()
+      ? {
+          package: parseUniXAppAndroidPackage(manifest.appId),
+        }
+      : undefined,
   }
 }
 export function uniSharedDataPlugin(): Plugin {

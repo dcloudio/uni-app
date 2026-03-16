@@ -6,12 +6,11 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { isPlainObject } from '@vue/shared'
 import path from 'path'
-import { DEFAULT_APPID } from '../android/utils'
 
 export function genUniAppXJsEngineIndexKotlinCode(
   manifestJson: Record<string, any>
 ) {
-  const pkg = parseUniXAppAndroidPackage(manifestJson.appid || DEFAULT_APPID)
+  const pkg = parseUniXAppAndroidPackage(manifestJson.appid)
   const configCode = genUniAppConfigKotlinCode(manifestJson)
   return `package ${pkg}
 
