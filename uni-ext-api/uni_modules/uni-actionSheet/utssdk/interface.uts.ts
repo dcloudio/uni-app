@@ -37,7 +37,76 @@ export type ShowActionSheetComplete = any
 type ShowActionSheetCompleteCallback = (result: ShowActionSheetComplete) => void
 
 /**
- * uni.showActionSheet函数参数定义
+ * 参数说明
+ * @uniPlatform {
+ *  "app": {
+ *    "android": {
+ *      "osVer": "5.0",
+ *      "uniVer": "√",
+ *      "uniUtsPlugin": "x",
+ *      "unixVer": "3.91"
+ *    },
+ *    "ios": {
+ *      "osVer": "12.0",
+ *      "uniVer": "√",
+ *      "uniUtsPlugin": "x",
+ *      "unixVer": "4.11",
+ *      "unixUtsPlugin": "4.11"
+ *    },
+ *    "harmony": {
+ *      "osVer": "3.0",
+ *      "uniVer": "4.23",
+ *      "unixVer": "4.61",
+ *      "unixVaporVer": "5.0"
+ *    }
+ *  },
+ *  "mp": {
+ *    "weixin": {
+ *      "hostVer": "√",
+ *      "uniVer": "√",
+ *      "unixVer": "4.41"
+ *    },
+ *    "alipay": {
+ *      "hostVer": "√",
+ *      "uniVer": "√",
+ *      "unixVer": "x"
+ *    },
+ *    "baidu": {
+ *      "hostVer": "√",
+ *      "uniVer": "√",
+ *      "unixVer": "x"
+ *    },
+ *    "toutiao": {
+ *      "hostVer": "√",
+ *      "uniVer": "√",
+ *      "unixVer": "x"
+ *    },
+ *    "lark": {
+ *      "hostVer": "√",
+ *      "uniVer": "√",
+ *      "unixVer": "x"
+ *    },
+ *    "qq": {
+ *      "hostVer": "√",
+ *      "uniVer": "√",
+ *      "unixVer": "x"
+ *    },
+ *    "kuaishou": {
+ *      "hostVer": "√",
+ *      "uniVer": "√",
+ *      "unixVer": "x"
+ *    },
+ *    "jd": {
+ *      "hostVer": "√",
+ *      "uniVer": "√",
+ *      "unixVer": "x"
+ *    }
+ *  },
+ *  "web": {
+ *    "uniVer": "√",
+ *    "unixVer": "4.0"
+ *  }
+ * }
  */
 export type ShowActionSheetOptions = {
   /**
