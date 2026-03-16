@@ -1083,6 +1083,15 @@ export interface CreateCppVmContractRuntimeOptions {
   flagGroupCount?: number;
   onUnsupportedOpcode?: DynamicVmExecuteOptions["onUnsupportedOpcode"];
 }
+export interface CppVmContractReplaySession {
+  renderer: number;
+  entry: CppVmHostEntry<DynamicVmExecuteResult>;
+  hasPreviousResult(): boolean;
+  reset(): void;
+  previousResult(): DynamicVmExecuteResult | undefined;
+  invokeMain(options?: Parameters<CppVmHostEntry<DynamicVmExecuteResult>["invokeMain"]>[0]): DynamicVmExecuteResult;
+  invokeEffect(options?: Parameters<CppVmHostEntry<DynamicVmExecuteResult>["invokeEffect"]>[1]): DynamicVmExecuteResult;
+}
 export declare function executeCppVmHostContractPayload(payload: CppVmHostInvokePayloadBridgeContract, options?: CreateCppVmContractRuntimeOptions): DynamicVmExecuteResult;
 export declare function executeCppVmContractMainFromLoader(loader: CppVmProgramLoader, executionOptions?: Parameters<CppVmProgramLoader["createHostMainContractPayload"]>[0], runtimeOptions?: CreateCppVmContractRuntimeOptions): DynamicVmExecuteResult;
 export declare function executeCppVmContractMainFromBundle(bundle: DynamicVmBundle, renderer: number, executionOptions?: Parameters<CppVmProgramLoader["createHostMainContractPayload"]>[0], runtimeOptions?: CreateCppVmContractRuntimeOptions): DynamicVmExecuteResult;
@@ -1097,6 +1106,9 @@ export declare function createCppVmContractReplayBridgeFromBinary(binary: Uint8A
 export declare function createCppVmContractReplayEntryFromLoader(loader: CppVmProgramLoader, options?: CreateCppVmContractRuntimeOptions): CppVmHostEntry<DynamicVmExecuteResult>;
 export declare function createCppVmContractReplayEntryFromBundle(bundle: DynamicVmBundle, renderer: number, options?: CreateCppVmContractRuntimeOptions): CppVmHostEntry<DynamicVmExecuteResult>;
 export declare function createCppVmContractReplayEntryFromBinary(binary: Uint8Array, renderer: number, options?: CreateCppVmContractRuntimeOptions): CppVmHostEntry<DynamicVmExecuteResult>;
+export declare function createCppVmContractReplaySessionFromLoader(loader: CppVmProgramLoader, options?: CreateCppVmContractRuntimeOptions): CppVmContractReplaySession;
+export declare function createCppVmContractReplaySessionFromBundle(bundle: DynamicVmBundle, renderer: number, options?: CreateCppVmContractRuntimeOptions): CppVmContractReplaySession;
+export declare function createCppVmContractReplaySessionFromBinary(binary: Uint8Array, renderer: number, options?: CreateCppVmContractRuntimeOptions): CppVmContractReplaySession;
 export declare function bridgeCppVmHostExecuteOptionsToRuntime(executeOptions: CppVmHostExecuteOptionsContract$1, options?: CreateCppVmContractRuntimeOptions): DynamicVmExecuteOptions;
 export declare function bridgeCppVmProgramToRuntime(program: CppVmHostInvokePayloadBridgeContract["program"]): DynamicVmProgram;
 export declare function bridgeCppTemplateFactoryToRuntime(factory: CppTemplateFactoryContract): DynamicVmTemplateFactory;
