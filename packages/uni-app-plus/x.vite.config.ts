@@ -13,8 +13,8 @@ import {
   uniUVueTypeScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
 import {
-  isAppIOSUVueNativeTag,
   isAppHarmonyUVueNativeTag,
+  isAppIOSUVueNativeTag,
 } from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
 import { uts2ts } from '../../scripts/ext-api'
@@ -40,9 +40,9 @@ const apiDirs: string[] = []
 if (process.env.UNI_APP_EXT_API_DIR) {
   apiDirs.push(process.env.UNI_APP_EXT_API_DIR)
 }
-if (process.env.UNI_APP_EXT_COMPONENT_DIR) {
-  apiDirs.push(process.env.UNI_APP_EXT_COMPONENT_DIR)
-}
+// if (process.env.UNI_APP_EXT_COMPONENT_DIR) {
+//   apiDirs.push(process.env.UNI_APP_EXT_COMPONENT_DIR)
+// }
 if (process.env.UNI_APP_EXT_API_DCLOUD_DIR) {
   apiDirs.push(process.env.UNI_APP_EXT_API_DCLOUD_DIR)
 }
