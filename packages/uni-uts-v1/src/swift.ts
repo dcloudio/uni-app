@@ -382,6 +382,7 @@ export interface SwiftCompilerServer {
     swiftPath: string
   }): Promise<{ code: number; msg: string }>
   compileCpp(options: {
+    appId: string
     projectPath: string
     cppPath: string
   }): Promise<{ code: number; msg: string }>

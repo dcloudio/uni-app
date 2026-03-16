@@ -1,5 +1,7 @@
 import {
+  DEFAULT_APPID,
   type UniVitePlugin,
+  parseManifestJsonOnce,
   resolveUTSCompiler,
 } from '@dcloudio/uni-cli-shared'
 
@@ -15,6 +17,8 @@ export function uniAppXIOSEnginePlugin(): UniVitePlugin {
       console.error(msg)
     }
   }
+  const appId =
+    parseManifestJsonOnce(process.env.UNI_INPUT_DIR).appid || DEFAULT_APPID
   return {
     name: 'uni:app-x-ios',
     async writeBundle() {
@@ -23,6 +27,7 @@ export function uniAppXIOSEnginePlugin(): UniVitePlugin {
       }
       if (process.env.UNI_APP_X_DOM2_CPP_CHANGED === 'true') {
         const res = await compilerServer.compileCpp({
+          appId,
           projectPath: process.env.UNI_INPUT_DIR,
           cppPath: process.env.UNI_APP_X_DOM2_CPP_DIR!,
         })
