@@ -108,7 +108,7 @@ export function rewriteClass(
     if (!isArrayExpression(classBindingExpr)) {
       classBindingExpr = arrayExpression([classBindingExpr])
     }
-    if (process.env.UNI_PLATFORM === 'mp-weixin') {
+    if (process.env.UNI_PLATFORM === 'mp-weixin' && process.env.UNI_APP_X !== 'true') {
       classBindingExpr.elements.push(
         identifier(
           rewriteExpression(
@@ -127,10 +127,10 @@ export function rewriteClass(
       const virtualHostClass = context.miniProgram.class.array
         ? identifier(VIRTUAL_HOST_CLASS)
         : logicalExpression(
-            '||',
-            identifier(VIRTUAL_HOST_CLASS),
-            stringLiteral('')
-          )
+          '||',
+          identifier(VIRTUAL_HOST_CLASS),
+          stringLiteral('')
+        )
       classBindingExpr.elements.push(virtualHostClass)
     }
   }
