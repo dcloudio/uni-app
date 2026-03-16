@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-preprocess",
-  "version": "3.0.0-alpha-5000320260310001",
+  "version": "3.0.0-5000320260312001",
   "description": "@dcloudio/uni-preprocess",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
