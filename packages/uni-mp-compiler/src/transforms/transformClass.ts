@@ -108,7 +108,7 @@ export function rewriteClass(
     if (!isArrayExpression(classBindingExpr)) {
       classBindingExpr = arrayExpression([classBindingExpr])
     }
-    if (process.env.UNI_PLATFORM === 'mp-weixin' && process.env.UNI_APP_X !== 'true') {
+    if (process.env.UNI_PLATFORM === 'mp-weixin' && process.env.UNI_APP_X === 'true') {
       classBindingExpr.elements.push(
         identifier(
           rewriteExpression(
