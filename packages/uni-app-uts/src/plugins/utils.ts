@@ -157,7 +157,6 @@ if (
   process.env.UNI_APP_X_DOM2 !== 'true'
 ) {
   REMOVED_PLUGINS.push('vite:esbuild-transpile')
-  REMOVED_PLUGINS.push('vite:json')
 }
 
 export function configResolved(config: ResolvedConfig, isAndroidX = false) {
