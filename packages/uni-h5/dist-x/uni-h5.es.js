@@ -1315,14 +1315,18 @@ function invokeLastDialogPageHookByUniPage(parentPage, hook) {
   }
 }
 function invokeNewDialogPageHook(page, hook) {
-  let shouldInvoke = false;
   const currentPage = getCurrentPage();
-  if (isSystemDialogPage(page)) {
-    const systemDialogPages = getSystemDialogPages(currentPage);
-    shouldInvoke = systemDialogPages.includes(page);
+  let shouldInvoke = false;
+  if (!currentPage) {
+    shouldInvoke = true;
   } else {
-    const dialogPages = currentPage.getDialogPages();
-    shouldInvoke = dialogPages.includes(page);
+    if (isSystemDialogPage(page)) {
+      const systemDialogPages = getSystemDialogPages(currentPage);
+      shouldInvoke = systemDialogPages.includes(page);
+    } else {
+      const dialogPages = currentPage.getDialogPages();
+      shouldInvoke = dialogPages.includes(page);
+    }
   }
   shouldInvoke && invokeHook(page.vm, hook);
 }
