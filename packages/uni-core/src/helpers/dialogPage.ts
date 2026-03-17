@@ -120,17 +120,19 @@ export function invokeLastDialogPageHookByUniPage(
 }
 
 export function invokeNewDialogPageHook(page: UniDialogPage, hook: string) {
-  // app launch 时 openDialogPage，可能存在没有 currentPage 的情况，此时不触发父页面生命周期
   const currentPage = getCurrentPage() as unknown as UniPage
-  if (!currentPage) return
-
   let shouldInvoke = false
-  if (isSystemDialogPage(page)) {
-    const systemDialogPages = getSystemDialogPages(currentPage)
-    shouldInvoke = systemDialogPages.includes(page as UniDialogPage)
+  if (!currentPage) {
+    // app launch 时 openDialogPage 此时 currentPage 未生成
+    shouldInvoke = true
   } else {
-    const dialogPages = currentPage.getDialogPages()
-    shouldInvoke = dialogPages.includes(page as UniDialogPage)
+    if (isSystemDialogPage(page)) {
+      const systemDialogPages = getSystemDialogPages(currentPage)
+      shouldInvoke = systemDialogPages.includes(page as UniDialogPage)
+    } else {
+      const dialogPages = currentPage.getDialogPages()
+      shouldInvoke = dialogPages.includes(page as UniDialogPage)
+    }
   }
   shouldInvoke && invokeHook(page.vm, hook)
 }
