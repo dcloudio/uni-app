@@ -309,6 +309,7 @@ const UVUE_BUILT_IN_EASY_COMPONENTS = [
   'rich-text',
   'page-container',
   'editor',
+  'video',
 ]
 
 export function isAppUVueBuiltInEasyComponent(tag: string) {
