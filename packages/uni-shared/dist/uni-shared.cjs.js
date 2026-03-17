@@ -282,6 +282,7 @@ const UVUE_BUILT_IN_EASY_COMPONENTS = [
     'rich-text',
     'page-container',
     'editor',
+    'video',
 ];
 function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
