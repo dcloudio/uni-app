@@ -100,7 +100,9 @@ export function initHooks(
             invokeHook(publicThis, ON_SHOW)
           }
           //#endif
-          return invokeHook(publicThis, ON_SHOW)
+          //#if !_X_
+          invokeHook(publicThis, ON_SHOW)
+          //#endif
         }
       }
     } catch (e: any) {
