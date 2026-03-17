@@ -21,7 +21,7 @@ function initSharedDataOptions() {
     compilerVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     androidOptions: isUniAppXAndroidJsEngine()
       ? {
-          package: parseUniXAppAndroidPackage(manifest.appId),
+          package: parseUniXAppAndroidPackage(manifest.appid),
         }
       : undefined,
   }
