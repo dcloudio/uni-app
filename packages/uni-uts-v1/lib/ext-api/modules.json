@@ -991,6 +991,12 @@
       "name": "wxpay"
     }
   },
+  "uni-picker": {
+    "uni": {},
+    "easycom": [
+      "picker"
+    ]
+  },
   "uni-previewImage": {
     "uni": {
       "previewImage": {
@@ -1009,7 +1015,10 @@
           "swift": true
         }
       }
-    }
+    },
+    "easycom": [
+      "uni-previewImageItem"
+    ]
   },
   "uni-privacy": {
     "uni": {
