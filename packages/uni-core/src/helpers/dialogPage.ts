@@ -120,8 +120,11 @@ export function invokeLastDialogPageHookByUniPage(
 }
 
 export function invokeNewDialogPageHook(page: UniDialogPage, hook: string) {
-  let shouldInvoke = false
+  // app launch 时 openDialogPage，可能存在没有 currentPage 的情况，此时不触发父页面生命周期
   const currentPage = getCurrentPage() as unknown as UniPage
+  if (!currentPage) return
+
+  let shouldInvoke = false
   if (isSystemDialogPage(page)) {
     const systemDialogPages = getSystemDialogPages(currentPage)
     shouldInvoke = systemDialogPages.includes(page as UniDialogPage)
