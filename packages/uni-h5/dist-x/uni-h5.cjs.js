@@ -9956,7 +9956,6 @@ function initHooks(options, instance, publicThis) {
           } else {
             invokeHook(publicThis, uniShared.ON_SHOW);
           }
-          return invokeHook(publicThis, uniShared.ON_SHOW);
         }
       }
     } catch (e2) {

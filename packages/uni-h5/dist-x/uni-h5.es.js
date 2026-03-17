@@ -19587,7 +19587,6 @@ function initHooks(options, instance2, publicThis) {
           } else {
             invokeHook(publicThis, ON_SHOW);
           }
-          return invokeHook(publicThis, ON_SHOW);
         }
       }
     } catch (e2) {

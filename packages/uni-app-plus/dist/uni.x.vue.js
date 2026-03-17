@@ -159,7 +159,6 @@ function initHooks(options, instance, publicThis) {
                     else {
                         invokeHook(publicThis, ON_SHOW);
                     }
-                    return invokeHook(publicThis, ON_SHOW);
                 }
             }
         }
