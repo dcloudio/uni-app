@@ -688,6 +688,49 @@ export interface DynamicVmBundle {
   programs: DynamicVmProgram[];
 }
 //#endregion
+//#region temp/packages/runtime-vapor-dom2/src/dynamic/artifacts/index.d.ts
+export type DynamicRuntimeArtifactBundleKind = "cpp" | "kt";
+export type DynamicRuntimeArtifactFileKind = "bin" | "decoded" | "manifest";
+export interface DynamicRuntimeArtifactManifestBundle {
+  kind: DynamicRuntimeArtifactBundleKind;
+  file: string;
+  decodedFile?: string;
+  programCount: number;
+  renderers: number[];
+  engines: number[];
+}
+export interface DynamicRuntimeArtifactManifest {
+  version: 1;
+  schemaVersion: number;
+  bundles: DynamicRuntimeArtifactManifestBundle[];
+}
+export interface DynamicRuntimeArtifactFile {
+  bundleKind?: DynamicRuntimeArtifactBundleKind;
+  fileKind: DynamicRuntimeArtifactFileKind;
+  fileName: string;
+  content: Uint8Array | string;
+}
+export interface DynamicRuntimeArtifactResolvedBundle {
+  manifest: DynamicRuntimeArtifactManifestBundle;
+  bytes: Uint8Array;
+  decodedJson?: string;
+  parsed: DynamicVmBundle;
+}
+export interface DynamicRuntimeArtifactBundleLoader {
+  manifest: DynamicRuntimeArtifactManifest;
+  files: ReadonlyMap<string, Uint8Array | string>;
+  bundles: DynamicRuntimeArtifactResolvedBundle[];
+  listBundles(): DynamicRuntimeArtifactResolvedBundle[];
+  hasBundle(kind: DynamicRuntimeArtifactBundleKind): boolean;
+  bundle(kind: DynamicRuntimeArtifactBundleKind): DynamicRuntimeArtifactResolvedBundle | undefined;
+  requireBundle(kind: DynamicRuntimeArtifactBundleKind): DynamicRuntimeArtifactResolvedBundle;
+  hasRenderer(renderer: number): boolean;
+  bundleForRenderer(renderer: number): DynamicRuntimeArtifactResolvedBundle | undefined;
+  requireBundleForRenderer(renderer: number): DynamicRuntimeArtifactResolvedBundle;
+}
+export declare function createDynamicRuntimeArtifactFileMap(files: readonly DynamicRuntimeArtifactFile[]): ReadonlyMap<string, Uint8Array | string>;
+export declare function createDynamicRuntimeArtifactBundleLoader(manifest: DynamicRuntimeArtifactManifest, files: readonly DynamicRuntimeArtifactFile[] | ReadonlyMap<string, Uint8Array | string>): DynamicRuntimeArtifactBundleLoader;
+//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/dynamic/vm/templateFactoryResolver.d.ts
 type DynamicVmTemplateFactoryResolver = (templateId: number, renderer: number) => DynamicVmTemplateFactory | undefined;
 //#endregion
@@ -1013,6 +1056,7 @@ export interface CppVmProgramLoader {
   createEffectExecutionRequest(previousResult: DynamicVmExecuteResult, options?: Omit<CreateCppVmExecutionRequestOptions, "initialRegisters" | "initialEffectFrames">): CppVmExecutionRequestContract;
 }
 export declare function createCppVmProgramLoader(bundle: DynamicVmBundle, renderer: number): CppVmProgramLoader;
+export declare function createCppVmProgramLoaderFromArtifactLoader(artifactLoader: DynamicRuntimeArtifactBundleLoader, renderer: number): CppVmProgramLoader;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/interpreters/cpp/invokePayload.d.ts
 export type CppVmHostInvokeEntry = "main" | "effect";
@@ -1067,9 +1111,13 @@ export interface CppVmHostEntry<Result = unknown> {
 export declare function createCppVmHostEntry<Result>(loader: CppVmProgramLoader, invoker: CppVmHostInvoker<Result>): CppVmHostEntry<Result>;
 export declare function createCppVmHostEntryFromBundle<Result>(bundle: DynamicVmBundle, renderer: number, invoker: CppVmHostInvoker<Result>): CppVmHostEntry<Result>;
 export declare function createCppVmHostEntryFromBinary<Result>(binary: Uint8Array, renderer: number, invoker: CppVmHostInvoker<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromArtifactLoader<Result>(artifactLoader: DynamicRuntimeArtifactBundleLoader, renderer: number, invoker: CppVmHostInvoker<Result>): CppVmHostEntry<Result>;
 export declare function createCppVmHostEntryFromLoaderAdapter<Result>(loader: CppVmProgramLoader, adapter: CppVmNativeAdapter<Result>): CppVmHostEntry<Result>;
 export declare function createCppVmHostEntryFromBundleAdapter<Result>(bundle: DynamicVmBundle, renderer: number, adapter: CppVmNativeAdapter<Result>): CppVmHostEntry<Result>;
 export declare function createCppVmHostEntryFromBinaryAdapter<Result>(binary: Uint8Array, renderer: number, adapter: CppVmNativeAdapter<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromArtifactLoaderAdapter<Result>(artifactLoader: DynamicRuntimeArtifactBundleLoader, renderer: number, adapter: CppVmNativeAdapter<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromArtifactLoaderResultAdapter<Result>(artifactLoader: DynamicRuntimeArtifactBundleLoader, renderer: number, adapter: CppVmNativeResultAdapter<Result>): CppVmHostEntry<Result>;
+export declare function createCppVmHostEntryFromArtifactLoaderContractAdapter<Result>(artifactLoader: DynamicRuntimeArtifactBundleLoader, renderer: number, adapter: CppVmNativeContractAdapter<Result>): CppVmHostEntry<Result>;
 export declare function createCppVmHostEntryFromLoaderResultAdapter<Result>(loader: CppVmProgramLoader, adapter: CppVmNativeResultAdapter<Result>): CppVmHostEntry<Result>;
 export declare function createCppVmHostEntryFromBundleResultAdapter<Result>(bundle: DynamicVmBundle, renderer: number, adapter: CppVmNativeResultAdapter<Result>): CppVmHostEntry<Result>;
 export declare function createCppVmHostEntryFromBinaryResultAdapter<Result>(binary: Uint8Array, renderer: number, adapter: CppVmNativeResultAdapter<Result>): CppVmHostEntry<Result>;
