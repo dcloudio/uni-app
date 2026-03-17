@@ -246,7 +246,8 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
         hasOptimizationSubPackages &&
         subPackages.length &&
         filename.startsWith(inputDir) &&
-        filename.includes('node_modules')
+        filename.includes('node_modules') &&
+        !filename.startsWith(inputDir + '/node_modules')
       ) {
         const moduleInfo = getModuleInfo(id)
         if (!moduleInfo || !moduleInfo.importers.length) {
