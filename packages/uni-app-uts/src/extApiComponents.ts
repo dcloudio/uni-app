@@ -63,7 +63,7 @@ async function transformAppAndroidExtApiComponent(
   )
 
   return uts.replace(
-    `/*${genUTSClassName(componentName, 'Uni')}Styles*/`,
+    `/*${genUTSClassName(componentName, 'Uni')}ComponentStyles*/`,
     styleCode
   )
 }
@@ -81,7 +81,7 @@ async function parseAppAndroidVueStyle(
   cssCode: string
 ) {
   if (!cssCode) {
-    return `const ${genUTSClassName(name, 'Uni')}Styles = []`
+    return `const ${genUTSClassName(name, 'Uni')}ComponentStyles = []`
   }
   const { code, messages } = await parse(cssCode, {
     filename: vueFileName,
@@ -96,5 +96,5 @@ async function parseAppAndroidVueStyle(
       console.error(m)
     })
   }
-  return `const ${genUTSClassName(name, 'Uni')}Styles = [${code}]`
+  return `const ${genUTSClassName(name, 'Uni')}ComponentStyles = [${code}]`
 }

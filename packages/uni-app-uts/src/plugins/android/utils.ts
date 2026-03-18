@@ -4,7 +4,9 @@ import { type ImportSpecifier, init, parse } from 'es-module-lexer'
 import {
   createResolveErrorMsg,
   createRollupError,
+  genUTSClassName,
   getUTSEasyComAutoImports,
+  isUniPageFile,
   normalizeNodeModules,
   offsetToStartAndEnd,
   parseUniExtApiNamespacesJsOnce,
@@ -477,4 +479,12 @@ function initAutoImport(): {
   return {
     detectImports,
   }
+}
+
+export function genUVueClassName(fileName: string, classNamePrefix?: string) {
+  return process.env.UNI_COMPILE_TARGET === 'ext-api'
+    ? // components/map/map.vue => UniMap
+      genUTSClassName(path.basename(fileName), classNamePrefix) +
+        (isUniPageFile(fileName) ? 'Page' : 'Component')
+    : genUTSClassName(fileName, classNamePrefix)
 }

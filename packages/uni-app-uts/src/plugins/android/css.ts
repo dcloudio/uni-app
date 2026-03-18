@@ -6,7 +6,6 @@ import {
   cssLangRE,
   cssPlugin,
   cssPostPlugin,
-  genUTSClassName,
   insertBeforePlugin,
   normalizeNodeModules,
   onCompileLog,
@@ -24,6 +23,7 @@ import {
   getResolvedOptions,
 } from './uvue/descriptorCache'
 import { isVue } from '../utils'
+import { genUVueClassName } from './utils'
 
 export function uniAppCssPrePlugin(): Plugin {
   const name = 'uni:app-uvue-css-pre'
@@ -86,14 +86,10 @@ export function uniAppCssPrePlugin(): Plugin {
             }
           })
           const fileName = filename.replace('.style.uts', '')
-          const className =
-            process.env.UNI_COMPILE_TARGET === 'ext-api'
-              ? // components/map/map.vue => UniMap
-                genUTSClassName(
-                  path.basename(fileName),
-                  descriptorOptions.classNamePrefix
-                )
-              : genUTSClassName(fileName, descriptorOptions.classNamePrefix)
+          const className = genUVueClassName(
+            fileName,
+            descriptorOptions.classNamePrefix
+          )
 
           return `export const ${className}Styles = ${code}`
         },
