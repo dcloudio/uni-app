@@ -7,20 +7,20 @@ export type Popover = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "3.91"
+   *      "unixVer": "x"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.11"
+   *      "unixVer": "x",
+   *      "unixUtsPlugin": "x"
    *    },
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.0"
+   *      "unixVer": "x",
+   *      "unixVaporVer": "x"
    *    }
    *  },
    *  "mp": {
@@ -80,20 +80,20 @@ export type Popover = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "3.91"
+   *      "unixVer": "x"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.11"
+   *      "unixVer": "x",
+   *      "unixUtsPlugin": "x"
    *    },
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.0"
+   *      "unixVer": "x",
+   *      "unixVaporVer": "x"
    *    }
    *  },
    *  "mp": {
@@ -153,20 +153,20 @@ export type Popover = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "3.91"
+   *      "unixVer": "x"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.11"
+   *      "unixVer": "x",
+   *      "unixUtsPlugin": "x"
    *    },
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.0"
+   *      "unixVer": "x",
+   *      "unixVaporVer": "x"
    *    }
    *  },
    *  "mp": {
@@ -226,20 +226,20 @@ export type Popover = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "3.91"
+   *      "unixVer": "x"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.11"
+   *      "unixVer": "x",
+   *      "unixUtsPlugin": "x"
    *    },
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.0"
+   *      "unixVer": "x",
+   *      "unixVaporVer": "x"
    *    }
    *  },
    *  "mp": {
@@ -901,20 +901,20 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "3.91"
+   *      "unixVer": "x"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.11"
+   *      "unixVer": "x",
+   *      "unixUtsPlugin": "x"
    *    },
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.0"
+   *      "unixVer": "x",
+   *      "unixVaporVer": "x"
    *    }
    *  },
    *  "mp": {
