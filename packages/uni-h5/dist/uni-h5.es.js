@@ -4663,6 +4663,82 @@ const innerAudioContextOffEventNames = [
   "offSeeking",
   "offSeeked"
 ];
+let index$w = 0;
+let optionsCache = {};
+function operateEditor(componentId, pageId, type, options) {
+  const data = { options };
+  const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
+  if (needCallOptions) {
+    const callbackId = String(index$w++);
+    data.callbackId = callbackId;
+    optionsCache[callbackId] = options;
+  }
+  UniServiceJSBridge.invokeViewMethod(
+    `editor.${componentId}`,
+    {
+      type,
+      data
+    },
+    pageId,
+    ({ callbackId, data: data2 }) => {
+      if (needCallOptions) {
+        callOptions(optionsCache[callbackId], data2);
+        delete optionsCache[callbackId];
+      }
+    }
+  );
+}
+class EditorContext {
+  constructor(id2, pageId) {
+    this.id = id2;
+    this.pageId = pageId;
+  }
+  format(name, value) {
+    this._exec("format", {
+      name,
+      value
+    });
+  }
+  insertDivider() {
+    this._exec("insertDivider");
+  }
+  insertImage(options) {
+    this._exec("insertImage", options);
+  }
+  insertText(options) {
+    this._exec("insertText", options);
+  }
+  setContents(options) {
+    this._exec("setContents", options);
+  }
+  getContents(options) {
+    this._exec("getContents", options);
+  }
+  clear(options) {
+    this._exec("clear", options);
+  }
+  removeFormat(options) {
+    this._exec("removeFormat", options);
+  }
+  undo(options) {
+    this._exec("undo", options);
+  }
+  redo(options) {
+    this._exec("redo", options);
+  }
+  blur(options) {
+    this._exec("blur", options);
+  }
+  getSelectionText(options) {
+    this._exec("getSelectionText", options);
+  }
+  scrollIntoView(options) {
+    this._exec("scrollIntoView", options);
+  }
+  _exec(method, options) {
+    operateEditor(this.id, this.pageId, method, options);
+  }
+}
 const defaultOptions = {
   thresholds: [0],
   initialRatio: 0,
@@ -4766,82 +4842,6 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$w = 0;
-let optionsCache = {};
-function operateEditor(componentId, pageId, type, options) {
-  const data = { options };
-  const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
-  if (needCallOptions) {
-    const callbackId = String(index$w++);
-    data.callbackId = callbackId;
-    optionsCache[callbackId] = options;
-  }
-  UniServiceJSBridge.invokeViewMethod(
-    `editor.${componentId}`,
-    {
-      type,
-      data
-    },
-    pageId,
-    ({ callbackId, data: data2 }) => {
-      if (needCallOptions) {
-        callOptions(optionsCache[callbackId], data2);
-        delete optionsCache[callbackId];
-      }
-    }
-  );
-}
-class EditorContext {
-  constructor(id2, pageId) {
-    this.id = id2;
-    this.pageId = pageId;
-  }
-  format(name, value) {
-    this._exec("format", {
-      name,
-      value
-    });
-  }
-  insertDivider() {
-    this._exec("insertDivider");
-  }
-  insertImage(options) {
-    this._exec("insertImage", options);
-  }
-  insertText(options) {
-    this._exec("insertText", options);
-  }
-  setContents(options) {
-    this._exec("setContents", options);
-  }
-  getContents(options) {
-    this._exec("getContents", options);
-  }
-  clear(options) {
-    this._exec("clear", options);
-  }
-  removeFormat(options) {
-    this._exec("removeFormat", options);
-  }
-  undo(options) {
-    this._exec("undo", options);
-  }
-  redo(options) {
-    this._exec("redo", options);
-  }
-  blur(options) {
-    this._exec("blur", options);
-  }
-  getSelectionText(options) {
-    this._exec("getSelectionText", options);
-  }
-  scrollIntoView(options) {
-    this._exec("scrollIntoView", options);
-  }
-  _exec(method, options) {
-    operateEditor(this.id, this.pageId, method, options);
-  }
-}
 const ContextClasss = {
   canvas: CanvasContext,
   map: MapContext,
