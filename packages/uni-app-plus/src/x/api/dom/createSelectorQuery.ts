@@ -9,14 +9,11 @@ import type {
 } from '@dcloudio/uni-app-x/types/uni'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import type { ComponentPublicInstance, VNode } from 'vue'
-import { isArray, isFunction } from '@vue/shared'
+import { isFunction } from '@vue/shared'
 
 type NodeInfo = Partial<
   _NodeInfo & {
     node: UniElement
-    contextInfo: {
-      tagName: string
-    }
   }
 >
 
@@ -29,29 +26,6 @@ export function isVueComponent(comp: any) {
   const has$el = typeof comp.$el === 'object'
 
   return has$instance && has$el
-}
-
-const ContextClasss = {
-  EDITOR: (id?: string) => {
-    if (!id) return null
-    // @ts-expect-error
-    if (typeof uni.createEditorContext === 'function') {
-      // @ts-expect-error
-      return uni.createEditorContext(id)
-    }
-    return null
-  },
-}
-
-function convertContext(nodeInfo: NodeInfo) {
-  if (nodeInfo.contextInfo) {
-    const { tagName } = nodeInfo.contextInfo
-    const ContextClass = ContextClasss[tagName]
-    if (ContextClass) {
-      nodeInfo.context = ContextClass(nodeInfo.id)
-    }
-    delete nodeInfo.contextInfo
-  }
 }
 
 class NodesRefImpl implements NodesRef {
@@ -175,11 +149,6 @@ class SelectorQueryImpl implements SelectorQuery {
           (res: Array<any>) => {
             const queueCbs = this._queueCb
             res.forEach((info: NodeInfo, _index) => {
-              if (isArray(info)) {
-                info.forEach(convertContext)
-              } else {
-                convertContext(info)
-              }
               const queueCb = queueCbs[_index]
               if (isFunction(queueCb)) {
                 queueCb!(info)
@@ -200,11 +169,6 @@ class SelectorQueryImpl implements SelectorQuery {
           (res: Array<any>) => {
             const queueCbs = this._queueCb
             res.forEach((info: NodeInfo, _index) => {
-              if (isArray(info)) {
-                info.forEach(convertContext)
-              } else {
-                convertContext(info)
-              }
               const queueCb = queueCbs[_index]
               if (isFunction(queueCb)) {
                 queueCb!(info)
@@ -427,12 +391,6 @@ class QuerySelectorHelper {
       bottom: rect.bottom,
       width: rect.width,
       height: rect.height,
-    }
-
-    if (this._fields.context == true) {
-      nodeInfo.contextInfo = {
-        tagName: element.tagName,
-      }
     }
     return nodeInfo
   }
