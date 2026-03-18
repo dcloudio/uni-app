@@ -81,10 +81,10 @@ export class EditorContext implements UniApp.EditorContext {
   blur(options: UniApp.CommonOptions) {
     this._exec('blur', options)
   }
-  getSelectionText(options: UniApp.CommonOptions) {
+  getSelectionText(options: UniApp.EditorContextGetSelectionTextOptions) {
     this._exec('getSelectionText', options)
   }
-  scrollIntoView(options: UniApp.EditorContextGetSelectionTextOptions) {
+  scrollIntoView(options: UniApp.CommonOptions) {
     this._exec('scrollIntoView', options)
   }
   private _exec(method: string, options?: any) {
