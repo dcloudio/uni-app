@@ -273,8 +273,8 @@
   },
   "uni-editor": {
     "uni": {
-      "createEditorContext": {
-        "name": "createEditorContext",
+      "createEditorContextAsync": {
+        "name": "createEditorContextAsync",
         "app": {
           "js": false,
           "kotlin": true,
