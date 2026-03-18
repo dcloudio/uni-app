@@ -534,6 +534,37 @@ const createCanvasContextAsync = defineAsyncApi(API_CREATE_CANVAS_CONTEXT_ASYNC,
     }
 });
 
+const API_CREATE_EDITOR_CONTEXT_ASYNC = 'createEditorContextAsync';
+const createEditorContextAsync = defineAsyncApi(API_CREATE_EDITOR_CONTEXT_ASYNC, (options, { resolve, reject }) => {
+    const { id, component } = options;
+    const pages = getCurrentPages();
+    const page = pages[pages.length - 1];
+    if (!page || !page.$vm) {
+        reject('current page invalid.');
+    }
+    else {
+        const query = my.createSelectorQuery();
+        if (component) {
+            // 支付宝小程序 in 只支持在 Component 中使用，Page 中使用返回值为 null https://opendocs.alipay.com/mini/0cs688?pathHash=aba8a9f8#%E7%AE%80%E4%BB%8B
+            query.in = function () {
+                return this;
+            };
+        }
+        const baseQuery = component ? query.in(component) : query;
+        baseQuery
+            .select('#' + id)
+            .context((res) => {
+            if (res && res.context) {
+                resolve(res.context);
+            }
+            else {
+                reject('editor id or component invalid.');
+            }
+        })
+            .exec();
+    }
+});
+
 function getBaseSystemInfo() {
     return my.getSystemInfoSync();
 }
@@ -1340,6 +1371,7 @@ const baseApis = {
     __f__,
     getElementById,
     createCanvasContextAsync,
+    createEditorContextAsync,
 };
 function initUni(api, protocols, platform = my) {
     const wrapper = initWrapper(protocols);
@@ -1362,7 +1394,6 @@ function initUni(api, protocols, platform = my) {
     // 处理 api mp 打包后为不同js，emitter 无法共享问题
     {
         platform.$emit = $emit;
-        // @ts-expect-error
         if (!my.canIUse('page.getOpenerEventChannel'))
             platform.getEventChannel = getEventChannel;
     }

@@ -3359,28 +3359,6 @@ var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
   }
   return page.getElementById(id2);
 });
-var ContextClasss = {
-  EDITOR: (id2) => {
-    if (!id2)
-      return null;
-    if (typeof uni.createEditorContext === "function") {
-      return uni.createEditorContext(id2);
-    }
-    return null;
-  }
-};
-function convertContext(nodeInfo) {
-  if (nodeInfo.contextInfo) {
-    var {
-      tagName
-    } = nodeInfo.contextInfo;
-    var ContextClass = ContextClasss[tagName];
-    if (ContextClass) {
-      nodeInfo.context = ContextClass(nodeInfo.id);
-    }
-    delete nodeInfo.contextInfo;
-  }
-}
 class NodesRefImpl {
   constructor(selectorQuery, component, selector, single) {
     this._selectorQuery = selectorQuery;
@@ -3444,11 +3422,6 @@ class SelectorQueryImpl {
         requestComponentInfo(this._component, this._queue, (res) => {
           var queueCbs = this._queueCb;
           res.forEach((info, _index) => {
-            if (isArray(info)) {
-              info.forEach(convertContext);
-            } else {
-              convertContext(info);
-            }
             var queueCb = queueCbs[_index];
             if (isFunction(queueCb)) {
               queueCb(info);
@@ -3615,11 +3588,6 @@ class QuerySelectorHelper {
       width: rect.width,
       height: rect.height
     };
-    if (this._fields.context == true) {
-      nodeInfo.contextInfo = {
-        tagName: element.tagName
-      };
-    }
     return nodeInfo;
   }
 }
