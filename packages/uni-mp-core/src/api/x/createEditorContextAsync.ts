@@ -25,13 +25,13 @@ export const createEditorContextAsync = defineAsyncApi<
     const baseQuery = component ? query.in(component) : query
     baseQuery
       .select('#' + id)
-      .fields({ context: true }, () => {})
-      .exec((res) => {
+      .context((res) => {
         if (res && res.context) {
           resolve(res.context)
         } else {
           reject('editor id or component invalid.')
         }
       })
+      .exec()
   }
 })
