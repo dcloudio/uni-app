@@ -133,4 +133,5 @@ export {
 
 //#if !_NODE_JS_ && _X_
 export * from './context/createCanvasContextAsync'
+export * from './context/createEditorContextAsync'
 //#endif
