@@ -1,4 +1,4 @@
-import { defineAsyncApi } from '@dcloudio/uni-api'
+import { defineAsyncApi } from '@dcloudio/uni-api/src/helpers/api'
 export const API_CREATE_EDITOR_CONTEXT_ASYNC = 'createEditorContextAsync'
 
 interface CreateEditorContextAsyncOptions {
