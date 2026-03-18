@@ -427,7 +427,10 @@
       "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
-      "CreateEditorContext"
+      "CreateEditorContextAsync"
+    ],
+    [
+      "CreateEditorContextAsyncOptions"
     ],
     [
       "CreateInnerAudioContext"
