@@ -16,12 +16,6 @@
       "null"
     ]
   },
-  "uni-editor": {
-    "createEditorContext": [
-      null,
-      "null"
-    ]
-  },
   "uni-base": {
     "$off": [
       null,
