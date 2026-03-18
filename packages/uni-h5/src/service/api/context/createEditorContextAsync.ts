@@ -8,6 +8,8 @@ import { getCurrentBasePages } from '../../../framework/setup/page'
 import { requestComponentInfo } from '../ui/requestComponentInfo'
 import { type ComponentPublicInstance, nextTick } from 'vue'
 
+const ERR_SUBJECT = 'uni-createEditorContextAsync'
+
 export const createEditorContextAsync = function (
   options: CreateEditorContextAsyncOptions
 ) {
@@ -21,6 +23,7 @@ export const createEditorContextAsync = function (
         {
           component: currentPage,
           selector: '#' + options.id,
+          single: true,
           fields: {
             context: true,
           },
@@ -33,10 +36,17 @@ export const createEditorContextAsync = function (
           const page = contextInfo?.page
           if (id != null && page != null) {
             options.success?.(new EditorContext(id, page))
+          } else {
+            const uniError = new UniError(
+              ERR_SUBJECT,
+              -2,
+              'Editor context information not found.'
+            )
+            options.fail?.(uniError)
           }
         } else {
           const uniError = new UniError(
-            'uni-createEditorContextAsync',
+            ERR_SUBJECT,
             -1,
             'Editor id or component invalid.'
           )
