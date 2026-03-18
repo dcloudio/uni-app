@@ -26356,6 +26356,7 @@ const createCanvasContextAsync = function(options) {
     );
   });
 };
+const ERR_SUBJECT = "uni-createEditorContextAsync";
 const createEditorContextAsync = function(options) {
   nextTick(() => {
     var _a;
@@ -26367,29 +26368,37 @@ const createEditorContextAsync = function(options) {
         {
           component: currentPage,
           selector: "#" + options.id,
+          single: true,
           fields: {
             context: true
           }
         }
       ],
       (result) => {
-        var _a2, _b, _c;
+        var _a2, _b, _c, _d;
         if (result.length > 0) {
           const contextInfo = result[0].contextInfo;
           const id2 = contextInfo == null ? void 0 : contextInfo.id;
           const page = contextInfo == null ? void 0 : contextInfo.page;
           if (id2 != null && page != null) {
             (_a2 = options.success) == null ? void 0 : _a2.call(options, new EditorContext(id2, page));
+          } else {
+            const uniError = new UniError(
+              ERR_SUBJECT,
+              -2,
+              "Editor context information not found."
+            );
+            (_b = options.fail) == null ? void 0 : _b.call(options, uniError);
           }
         } else {
           const uniError = new UniError(
-            "uni-createEditorContextAsync",
+            ERR_SUBJECT,
             -1,
             "Editor id or component invalid."
           );
-          (_b = options.fail) == null ? void 0 : _b.call(options, uniError);
+          (_c = options.fail) == null ? void 0 : _c.call(options, uniError);
         }
-        (_c = options.complete) == null ? void 0 : _c.call(options);
+        (_d = options.complete) == null ? void 0 : _d.call(options);
       }
     );
   });
