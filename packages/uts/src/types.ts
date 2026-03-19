@@ -67,6 +67,7 @@ export type UTSOutputOptions = {
   split?: boolean
   splitClass?: boolean
   disableSplitManifest?: boolean
+  disableOpenByDefault?: boolean
   removeImports?: boolean
   dropImports?: string[]
   returnExportIdent?: boolean
