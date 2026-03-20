@@ -762,7 +762,6 @@ type DynamicVmTemplateFactoryResolver = (templateId: number, renderer: number) =
 type DynamicNodeRef = unknown;
 export interface DynamicVmExecuteOptions {
   constResolver?: (constIndex: number) => unknown;
-  sharedDataResolver?: (fieldId: number) => unknown;
   sharedDataInstance?: DynamicSharedDataInstanceRef;
   templateFactories?: DynamicVmTemplateFactory[];
   templateFactoryResolver?: DynamicVmTemplateFactoryResolver;
