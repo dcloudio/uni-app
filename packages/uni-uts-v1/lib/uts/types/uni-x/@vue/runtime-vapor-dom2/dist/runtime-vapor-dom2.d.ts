@@ -557,13 +557,13 @@ export declare function createUserClass<T>(): T;
 export declare function findVueInstanceByUid(uid: number): VaporSharedDataComponentInstance | null;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/dynamic/bridge/adapterContracts.d.ts
-export interface DynamicSharedDataInstanceRef {
+export interface DynamicSharedDataReader {
   getField(fieldId: number): unknown;
   getFlag(flagGroupId: number): number;
 }
 export interface DynamicVmBlockInvokeOptions {
   args?: unknown[];
-  sharedDataInstance?: DynamicSharedDataInstanceRef | null;
+  sharedDataInstance?: DynamicSharedDataReader | null;
 }
 export interface DynamicVmBlockHandle {
   invoke(options?: DynamicVmBlockInvokeOptions): unknown;
@@ -762,7 +762,7 @@ type DynamicVmTemplateFactoryResolver = (templateId: number, renderer: number) =
 type DynamicNodeRef = unknown;
 export interface DynamicVmExecuteOptions {
   constResolver?: (constIndex: number) => unknown;
-  sharedDataInstance?: DynamicSharedDataInstanceRef;
+  sharedDataInstance?: DynamicSharedDataReader;
   templateFactories?: DynamicVmTemplateFactory[];
   templateFactoryResolver?: DynamicVmTemplateFactoryResolver;
   initialRegisters?: unknown[];
@@ -773,7 +773,7 @@ export interface DynamicVmExecuteOptions {
 export interface DynamicVmEffectFrame {
   instructions: DynamicVmInstruction[];
   registers: unknown[];
-  sharedDataInstance?: DynamicSharedDataInstanceRef;
+  sharedDataInstance?: DynamicSharedDataReader;
 }
 export interface DynamicVmExecuteResult {
   returnValue: unknown;
