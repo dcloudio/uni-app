@@ -16698,7 +16698,9 @@
       }
       {
         useRebuild(() => {
-          movableViewItems = rootRef.value.children;
+          if (rootRef.value) {
+            movableViewItems = rootRef.value.children;
+          }
           updateMovableViewContexts();
         });
       }
