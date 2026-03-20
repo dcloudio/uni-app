@@ -438,7 +438,12 @@ export function genResolveEasycomCode(
   code: string,
   name: string
 ) {
-  if (process.env.UNI_APP_X_DOM2 === 'true') {
+  if (
+    process.env.UNI_APP_X_DOM2 === 'true' ||
+    // 内部 dev 版本，需要本地开发内置组件，比如web-view，此时需要直接返回本地easycom，不然会找到基座内置的
+    (process.env.UNI_HX_VERSION_DEV === 'true' &&
+      process.env.UNI_APP_X === 'true')
+  ) {
     // dom2 模式下，为了性能，不再考虑优先级问题，如果开发者需要区别，可以手动导入为其他名称
     return name
   }
