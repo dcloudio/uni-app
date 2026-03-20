@@ -227,8 +227,15 @@ const transformBorderRadius = (decl) => {
 
 const flexDirection = 'flex-direction' ;
 const flexWrap = 'flex-wrap' ;
-const transformFlexFlow = (decl) => {
-    let { value, important, raws, source } = decl;
+function createFlexFlowDecls(decl, values) {
+    const { important, raws, source } = decl;
+    return [
+        createDecl(flexDirection, values[0] || 'column', important, raws, source),
+        createDecl(flexWrap, values[1] || 'nowrap', important, raws, source),
+    ];
+}
+function transformFlexFlowImpl(decl, allowSingleUnknownValue = false) {
+    let { value } = decl;
     value = value.trim();
     const splitResult = splitValues(value);
     const result = [
@@ -239,13 +246,18 @@ const transformFlexFlow = (decl) => {
         return index < 0 ? null : splitResult.splice(index, 1)[0];
     });
     if (splitResult.length) {
-        return [decl];
+        if (allowSingleUnknownValue &&
+            splitResult.length === 1 &&
+            result.some((item) => item === null)) {
+            result[result.findIndex((item) => item === null)] = splitResult[0];
+        }
+        else {
+            return [decl];
+        }
     }
-    return [
-        createDecl(flexDirection, result[0] || 'column', important, raws, source),
-        createDecl(flexWrap, result[1] || 'nowrap', important, raws, source),
-    ];
-};
+    return createFlexFlowDecls(decl, result);
+}
+const transformFlexFlowUvue = (decl) => transformFlexFlowImpl(decl, true);
 
 const top = '-top' ;
 const right = '-right' ;
@@ -410,7 +422,7 @@ function getDeclTransforms(options) {
         // margin,padding继续展开，确保样式的优先级
         margin: transformMargin,
         padding: transformPadding,
-        ['flex-flow' ]: transformFlexFlow,
+        ['flex-flow' ]: transformFlexFlowUvue ,
     };
     {
         styleMap.flex = transformFlex;
