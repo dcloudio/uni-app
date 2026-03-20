@@ -211,6 +211,10 @@ export function createUniAppJsEnginePlugin(
               file
             )
             fs.outputFileSync(newSourceMapFileName, JSON.stringify(source))
+            // 非鸿蒙平台不需要保留 sourceMap 文件
+            if (process.env.UNI_PLATFORM !== 'app-harmony') {
+              delete bundle[file]
+            }
           }
         })
       },
