@@ -97,7 +97,9 @@ module.exports = function processClass (paths, path, state) {
       classValuePath.isMemberExpression() || // 需要优化到下一个条件，:class="item.classObject"
       classValuePath.isConditionalExpression() ||
       classValuePath.isLogicalExpression() ||
-      classValuePath.isBinaryExpression()
+      classValuePath.isBinaryExpression() ||
+      classValuePath.isCallExpression() || // 支持函数调用，如 tools.cls(...)
+      classValuePath.isTemplateLiteral() // 支持模板字符串
     ) {
       // 理论上 ConditionalExpression,LogicalExpression 可能存在 classObject，应该__get_class，还是先不考虑这种情况吧
       // ConditionalExpression :class="index === currentIndex ? activeStyle : itemStyle"
