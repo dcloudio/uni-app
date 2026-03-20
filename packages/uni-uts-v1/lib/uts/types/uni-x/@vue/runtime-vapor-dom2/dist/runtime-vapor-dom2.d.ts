@@ -908,7 +908,6 @@ export interface CppVmExecutionContract {
   sharedSchema?: CppVmSharedSchemaContract;
 }
 export interface CppVmSharedDataInstanceContract {
-  parent?: CppVmSharedDataInstanceContract;
   values: unknown[];
   flags: Uint32Array;
   getField(fieldId: number): unknown;
@@ -938,7 +937,6 @@ export interface CppVmNativeExecutionRequestContract {
   executeOptions: CppVmNativeExecuteOptionsContract;
 }
 export interface CppVmHostSharedDataInstanceContract {
-  parent?: CppVmHostSharedDataInstanceContract;
   values: unknown[];
 }
 export interface CppVmHostEffectFrameContract {
@@ -963,7 +961,6 @@ export interface CppVmEffectFrameContract {
   sharedDataInstance?: CppVmSharedDataInstanceContract;
 }
 export interface CreateCppVmSharedDataInstanceOptions {
-  parent?: CppVmSharedDataInstanceContract;
   values?: Array<{
     fieldId: number;
     value: unknown;
@@ -1020,7 +1017,6 @@ export declare function createCppVmHostInvokerFromNativeResultAdapter<Result>(ad
 //#region temp/packages/runtime-vapor-dom2/interpreters/cpp/contracts/hostPayloadBridge.d.ts
 export type CppVmHostInvokeEntryContract = "MAIN" | "EFFECT";
 interface CppVmHostSharedDataInstanceContract$1 {
-  parent?: CppVmHostSharedDataInstanceContract$1;
   values: unknown[];
 }
 interface CppVmHostEffectFrameContract$1 {
