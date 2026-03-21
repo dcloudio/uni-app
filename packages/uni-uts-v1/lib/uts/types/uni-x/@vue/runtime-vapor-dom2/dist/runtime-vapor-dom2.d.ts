@@ -561,7 +561,11 @@ export interface IUniDynamicSharedData {
   getField(fieldId: number): unknown;
   getFlag(flagGroupId: number): number;
 }
-export interface IUniDynamicSharedDataComponent extends IUniDynamicSharedData {}
+export interface IUniDynamicSharedDataComponent extends IUniDynamicSharedData {
+  getVueId?(): number;
+  getFlatten?(): unknown;
+  getRenderer?(): unknown;
+}
 export interface IUniDynamicSharedDataPage extends IUniDynamicSharedDataComponent {}
 export interface DynamicVmBlockInvokeOptions {
   args?: unknown[];
@@ -909,7 +913,7 @@ export interface CppVmExecutionContract {
   templateFactories: CppTemplateFactoryContract[];
   sharedSchema?: CppVmSharedSchemaContract;
 }
-export interface CppVmSharedDataInstanceContract {
+export interface UniDynamicSharedDataMockContract {
   values: unknown[];
   flags: Uint32Array;
   getField(fieldId: number): unknown;
@@ -918,7 +922,7 @@ export interface CppVmSharedDataInstanceContract {
 export interface CppVmExecuteOptionsContract {
   templateFactories: DynamicVmTemplateFactory[];
   templateFactoryResolver?: DynamicVmExecuteOptions["templateFactoryResolver"];
-  sharedDataInstance?: CppVmSharedDataInstanceContract;
+  sharedDataInstance?: UniDynamicSharedDataMockContract;
   initialRegisters: unknown[];
   initialEffectFrames: CppVmEffectFrameContract[];
 }
@@ -929,7 +933,7 @@ export interface CppVmExecutionRequestContract {
 }
 export interface CppVmNativeExecuteOptionsContract {
   templateFactories: CppTemplateFactoryContract[];
-  sharedDataInstance?: CppVmSharedDataInstanceContract;
+  sharedDataInstance?: UniDynamicSharedDataMockContract;
   initialRegisters: unknown[];
   initialEffectFrames: CppVmEffectFrameContract[];
 }
@@ -960,16 +964,16 @@ export interface CppVmHostExecutionRequestContract {
 export interface CppVmEffectFrameContract {
   instructions: CppVmProgramContract["effectInstructions"];
   registers: unknown[];
-  sharedDataInstance?: CppVmSharedDataInstanceContract;
+  sharedDataInstance?: UniDynamicSharedDataMockContract;
 }
-export interface CreateCppVmSharedDataInstanceOptions {
+export interface CreateCppVmUniDynamicSharedDataMockOptions {
   values?: Array<{
     fieldId: number;
     value: unknown;
   }>;
 }
 export interface CreateCppVmExecutionRequestOptions {
-  sharedDataInstance?: CppVmSharedDataInstanceContract;
+  sharedDataInstance?: UniDynamicSharedDataMockContract;
   initialRegisters?: unknown[];
   initialEffectFrames?: CppVmEffectFrameContract[];
 }
@@ -980,7 +984,7 @@ export declare function createCppVmNativeExecutionRequestFromExecution(execution
 export declare function createCppVmHostExecutionRequestFromExecution(execution: Pick<CppVmExecutionContract, "renderer" | "program" | "templateFactories">, options?: CreateCppVmExecutionRequestOptions): CppVmHostExecutionRequestContract;
 export declare function createCppVmExecutionRequestFromProgram(renderer: number, program: CppVmProgramContract, templateFactories: DynamicVmTemplateFactory[], options?: CreateCppVmExecutionRequestOptions): CppVmExecutionRequestContract;
 export declare function createCppVmHostExecutionRequest(bundle: DynamicVmBundle, renderer: number, options?: CreateCppVmExecutionRequestOptions): CppVmHostExecutionRequestContract;
-export declare function createCppVmSharedDataInstance(bundle: DynamicVmBundle, options?: CreateCppVmSharedDataInstanceOptions): CppVmSharedDataInstanceContract;
+export declare function createCppVmUniDynamicSharedDataMock(bundle: DynamicVmBundle, options?: CreateCppVmUniDynamicSharedDataMockOptions): UniDynamicSharedDataMockContract;
 export declare function resolveCppVmRuntimeTemplateFactories(bundle: DynamicVmBundle, renderer: number): DynamicVmTemplateFactory[];
 export declare function bridgeCppVmHostExecutionRequest(request: CppVmNativeExecutionRequestContract): CppVmHostExecutionRequestContract;
 //#endregion
@@ -1062,13 +1066,17 @@ export declare function bridgeCppVmNativeInvokeResult<Result>(result: CppVmNativ
 export declare function normalizeCppVmNativeInvokeResultBridge<Result>(result: CppVmNativeInvokeResultBridgeContract<Result>): CppVmNativeInvokeResult<Result>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/interpreters/cpp/loader.d.ts
+export interface UniDynamicSharedDataMock {
+  values: unknown[];
+  flags?: Uint32Array;
+}
 export interface CppVmProgramLoader {
   renderer: number;
   program: CppVmProgramContract;
   templateFactories: DynamicVmTemplateFactory[];
   nativeTemplateFactories: CppTemplateFactoryContract[];
   sharedSchema?: CppVmSharedSchemaContract;
-  createSharedDataInstance(options?: CreateCppVmSharedDataInstanceOptions): CppVmSharedDataInstanceContract;
+  createSharedDataMock(options?: CreateCppVmUniDynamicSharedDataMockOptions): UniDynamicSharedDataMockContract;
   createExecutionRequest(options?: CreateCppVmExecutionRequestOptions): CppVmExecutionRequestContract;
   createNativeExecutionRequest(options?: CreateCppVmExecutionRequestOptions): CppVmNativeExecutionRequestContract;
   createHostExecutionRequest(options?: CreateCppVmExecutionRequestOptions): CppVmHostExecutionRequestContract;
@@ -1146,7 +1154,6 @@ export declare function createCppVmHostEntryFromBinaryContractAdapter<Result>(bi
 //#region temp/packages/runtime-vapor-dom2/interpreters/cpp/contractRuntime.d.ts
 export interface CreateCppVmContractRuntimeOptions {
   runtimeAdapter?: Partial<DynamicRuntimeAdapter>;
-  flagGroupCount?: number;
   onUnsupportedOpcode?: DynamicVmExecuteOptions["onUnsupportedOpcode"];
 }
 export interface CppVmContractReplaySession {
