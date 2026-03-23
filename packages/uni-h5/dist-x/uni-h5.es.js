@@ -5173,6 +5173,9 @@ class EditorContext {
   insertDivider() {
     this._exec("insertDivider");
   }
+  insertMention(options) {
+    this._exec("insertMention", options);
+  }
   insertImage(options) {
     this._exec("insertImage", options);
   }
