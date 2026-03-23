@@ -1676,12 +1676,18 @@ var transformBorderRadiusNvue = decl => {
 };
 var flexDirection = 'flexDirection';
 var flexWrap = 'flexWrap';
-var transformFlexFlow = decl => {
+function createFlexFlowDecls(decl, values) {
   var {
-    value,
     important,
     raws,
     source
+  } = decl;
+  return [createDecl(flexDirection, values[0] || 'column', important, raws, source), createDecl(flexWrap, values[1] || 'nowrap', important, raws, source)];
+}
+function transformFlexFlowImpl(decl) {
+  var allowSingleUnknownValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var {
+    value
   } = decl;
   value = value.trim();
   var splitResult = splitValues(value);
@@ -1690,10 +1696,16 @@ var transformFlexFlow = decl => {
     return index < 0 ? null : splitResult.splice(index, 1)[0];
   });
   if (splitResult.length) {
-    return [decl];
+    if (allowSingleUnknownValue && splitResult.length === 1 && result.some(item => item === null)) {
+      result[result.findIndex(item => item === null)] = splitResult[0];
+    } else {
+      return [decl];
+    }
   }
-  return [createDecl(flexDirection, result[0] || 'column', important, raws, source), createDecl(flexWrap, result[1] || 'nowrap', important, raws, source)];
-};
+  return createFlexFlowDecls(decl, result);
+}
+var transformFlexFlow = decl => transformFlexFlowImpl(decl);
+var transformFlexFlowUvue = decl => transformFlexFlowImpl(decl, true);
 var top = 'Top';
 var right = 'Right';
 var bottom = 'Bottom';
@@ -1846,7 +1858,7 @@ function getDeclTransforms(options) {
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
     padding: transformPadding,
-    ['flexFlow']: transformFlexFlow
+    ['flexFlow']: options.type === 'uvue' ? transformFlexFlowUvue : transformFlexFlow
   };
   if (options.type === 'uvue') {
     styleMap.flex = transformFlex;
@@ -8289,6 +8301,7 @@ function triggerComputedStyleUpdate(instance, styles) {
       });
     }
   }
+  return styles;
 }
 var PartElementContextMap = /* @__PURE__ */new WeakMap();
 function setPartElementContext(el, context) {
@@ -8808,7 +8821,7 @@ function patchStyle(el, prev, next) {
     setRootElementInstance(el, instance);
     var computedStyleInterceptors = instance == null ? void 0 : instance.computedStyleInterceptors;
     if (computedStyleInterceptors) {
-      triggerComputedStyleUpdate(instance, batchedStyles);
+      batchedStyles = triggerComputedStyleUpdate(instance, new Map(batchedStyles));
     }
   }
   if (batchedStyles.size == 0) {

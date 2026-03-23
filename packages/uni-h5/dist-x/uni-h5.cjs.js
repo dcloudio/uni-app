@@ -8910,11 +8910,10 @@ const props$a = {
     type: [Number, String],
     default: 0
   },
-  // 暂不支持
-  // scrollIntoView: {
-  //   type: String,
-  //   default: '',
-  // },
+  scrollIntoView: {
+    type: String,
+    default: ""
+  },
   scrollWithAnimation: {
     type: [Boolean, String],
     default: false
@@ -9041,6 +9040,34 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         containerRef.value.scrollLeft = val;
       }
     });
+    vue.watch(() => props2.scrollIntoView, (val) => {
+      _scrollIntoViewChanged(val);
+    });
+    function _scrollIntoViewChanged(val) {
+      if (val) {
+        if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
+          console.error(`id error: scroll-into-view=${val}`);
+          return;
+        }
+        let element = containerRef.value.querySelector("#" + val);
+        if (element) {
+          let mainRect = containerRef.value.getBoundingClientRect();
+          let elRect = element.getBoundingClientRect();
+          if (!isVertical.value) {
+            let left = elRect.left - mainRect.left;
+            let scrollLeft = containerRef.value.scrollLeft;
+            let x = scrollLeft + left;
+            containerRef.value.scrollLeft = x;
+          }
+          if (isVertical.value) {
+            let top = elRect.top - mainRect.top;
+            let scrollTop = containerRef.value.scrollTop;
+            let y = scrollTop + top;
+            containerRef.value.scrollTop = y;
+          }
+        }
+      }
+    }
     function onResize() {
       childStatus.forEach((status) => {
         status.cachedSizeUpdated = false;
@@ -9117,7 +9144,9 @@ function useListViewState(props2) {
     cacheScreenCount: 10,
     loadScreenThreshold: 8,
     refresherHeight: 0,
-    refreshState: ""
+    refreshState: "",
+    lastRenderOffsetMin: 0,
+    lastRenderOffsetMax: 0
   });
   return {
     state,
@@ -9135,6 +9164,8 @@ function rearrange(visibleVNode, containerRef, isVertical, state) {
   const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
   const offsetMin = Math.max(offset - state.containerSize * state.cacheScreenCount, 0);
   const offsetMax = Math.max(offset + state.containerSize * (state.cacheScreenCount + 1), offsetMin + 1);
+  state.lastRenderOffsetMin = offsetMin;
+  state.lastRenderOffsetMax = offsetMax;
   let tempTotalSize = 0;
   let tempVisibleSize = 0;
   let tempPlaceholderSize = 0;
@@ -9146,11 +9177,55 @@ function rearrange(visibleVNode, containerRef, isVertical, state) {
     if (childType === "StickySection") {
       const {
         headSize,
-        tailSize
+        tailSize,
+        placeholderSize
       } = status;
       tempTotalSize += headSize.value;
-      traverseStickySection(child, callback);
+      let tempPlaceholderSizeOfSection = 0;
+      traverseStickySection(child, (child2) => {
+        var _a2, _b2, _c2;
+        const childType2 = (_a2 = child2.component) == null ? void 0 : _a2.type.name;
+        const status2 = (_c2 = (_b2 = child2.component) == null ? void 0 : _b2.exposed) == null ? void 0 : _c2.__listViewChildStatus;
+        if (childType2 === "StickyHeader") {
+          const {
+            cachedSize,
+            cachedSizeUpdated
+          } = status2;
+          if (cachedSizeUpdated && cachedSize > 0 && !state.defaultHeaderSizeUpdated) {
+            state.defaultHeaderSize = cachedSize;
+            state.defaultHeaderSizeUpdated = true;
+          }
+          tempTotalSize += cachedSize || state.defaultHeaderSize;
+          tempVisibleSize += cachedSize;
+        } else if (childType2 === "ListItem") {
+          const {
+            cachedSize,
+            cachedSizeUpdated
+          } = status2;
+          if (cachedSizeUpdated && cachedSize > 0 && !state.defaultItemSizeUpdated) {
+            state.defaultItemSize = cachedSize;
+            state.defaultItemSizeUpdated = true;
+          }
+          const itemSize = cachedSize || state.defaultItemSize;
+          tempTotalSize += itemSize;
+          if (!start && tempTotalSize > offsetMin) {
+            start = true;
+          }
+          if (start && !end) {
+            tempVisibleSize += itemSize;
+            status2.visible.value = true;
+          } else {
+            status2.visible.value = false;
+            tempPlaceholderSizeOfSection += itemSize;
+          }
+          if (!end && tempTotalSize >= offsetMax) {
+            end = true;
+          }
+        }
+      });
+      tempVisibleSize += tempPlaceholderSizeOfSection;
       tempTotalSize += tailSize.value;
+      placeholderSize.value = tempPlaceholderSizeOfSection;
     } else if (childType === "ListItem") {
       const {
         cachedSize,
@@ -9325,12 +9400,18 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = vue.ref(null);
     const isVertical = vue.inject("__listViewIsVertical");
+    const placeholderSize = vue.ref(0);
     const style = vue.computed(() => {
+      const padding = props2.padding;
+      const paddingTop = padding[0];
+      const paddingRight = padding[1];
+      const paddingBottom = padding[2];
+      const paddingLeft = padding[3];
       return {
-        paddingTop: props2.padding[0] + "px",
-        paddingRight: props2.padding[1] + "px",
-        paddingBottom: props2.padding[2] + "px",
-        paddingLeft: props2.padding[3] + "px"
+        paddingTop: paddingTop + "px",
+        paddingRight: paddingRight + "px",
+        paddingBottom: (isVertical.value ? paddingBottom + placeholderSize.value : paddingBottom) + "px",
+        paddingLeft: (isVertical.value ? paddingLeft : paddingLeft + placeholderSize.value) + "px"
       };
     });
     const headSize = vue.computed(() => {
@@ -9342,7 +9423,8 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     const status = {
       type: "StickySection",
       headSize,
-      tailSize
+      tailSize,
+      placeholderSize
     };
     expose({
       __listViewChildStatus: status

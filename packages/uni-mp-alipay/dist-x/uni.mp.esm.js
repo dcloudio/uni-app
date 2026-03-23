@@ -315,6 +315,10 @@ function parseApp(instance, parseAppOptions) {
     const vueOptions = instance.$.type;
     initHooks(appOptions, HOOKS);
     initUnknownHooks(appOptions, vueOptions);
+    // 支付宝小程序支持在 App 中注册 onShareAppMessage
+    {
+        initRuntimeHooks(appOptions, vueOptions.__runtimeHooks);
+    }
     if (__VUE_OPTIONS_API__) {
         const methods = vueOptions.methods;
         methods && extend(appOptions, methods);
