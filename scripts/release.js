@@ -19,6 +19,7 @@ const packages = fs
   )
 
 const skippedPackages = []
+const alreadyPublishedPackages = []
 
 const bin = (name) => path.resolve(__dirname, '../node_modules/.bin/' + name)
 const run = (bin, args, opts = {}) =>
@@ -28,6 +29,8 @@ const dryRun = (bin, args, opts = {}) =>
 const runIfNotDry = isDryRun ? dryRun : run
 const getPkgRoot = (pkg) => path.resolve(__dirname, '../packages/' + pkg)
 const step = (msg) => console.log(colors.cyan(msg))
+const getErrorOutput = (error) =>
+  [error.shortMessage, error.stdout, error.stderr].filter(Boolean).join('\n')
 
 async function main() {
   const targetVersion = (
@@ -95,6 +98,9 @@ async function main() {
     console.log('No changes to commit.')
   }
 
+  step('\nChecking remote history...')
+  await ensureGitBranchIsPublishable()
+
   // publish packages
   step('\nPublishing packages...')
   for (const pkg of packages) {
@@ -103,9 +109,9 @@ async function main() {
 
   // push to GitHub
   step('\nPushing to GitHub...')
+  await runIfNotDry('git', ['push'])
   await runIfNotDry('git', ['tag', `v${targetVersion}`])
   await runIfNotDry('git', ['push', 'origin', `refs/tags/v${targetVersion}`])
-  await runIfNotDry('git', ['push'])
 
   if (isDryRun) {
     console.log(`\nDry run finished - run git diff to see package changes.`)
@@ -115,6 +121,15 @@ async function main() {
     console.log(
       colors.yellow(
         `The following packages are skipped and NOT published:\n- ${skippedPackages.join(
+          '\n- '
+        )}`
+      )
+    )
+  }
+  if (alreadyPublishedPackages.length) {
+    console.log(
+      colors.yellow(
+        `The following packages are already published for this version and were skipped:\n- ${alreadyPublishedPackages.join(
           '\n- '
         )}`
       )
@@ -180,6 +195,13 @@ async function publishPackage(pkgName, version, runIfNotDry) {
   }
 
   const releaseTag = 'vue3'
+  const pkgId = `${pkg.name}@${version}`
+
+  if (await isVersionPublished(pkg.name, version)) {
+    alreadyPublishedPackages.push(pkgId)
+    console.log(colors.yellow(`Skipping already published: ${pkgId}`))
+    return
+  }
 
   step(`Publishing ${pkgName}...`)
   try {
@@ -200,11 +222,74 @@ async function publishPackage(pkgName, version, runIfNotDry) {
     )
     console.log(colors.green(`Successfully published ${pkgName}@${version}`))
   } catch (e) {
-    if (e.stderr.match(/previously published/)) {
+    const output = getErrorOutput(e)
+    if (/previously published/i.test(output)) {
       console.log(colors.red(`Skipping already published: ${pkgName}`))
     } else {
-      console.error(e)
+      throw new Error(
+        [
+          `Failed to publish ${pkgName}.`,
+          output,
+        ].filter(Boolean).join('\n')
+      )
     }
+  }
+}
+
+async function isVersionPublished(pkgName, version) {
+  try {
+    const { stdout } = await run(
+      'npm',
+      ['view', `${pkgName}@${version}`, 'version', '--json'],
+      { stdio: 'pipe' }
+    )
+    return stdout.trim().length > 0
+  } catch (e) {
+    const output = getErrorOutput(e)
+    if (
+      /E404|404|No match found for version|is not in this registry/i.test(output)
+    ) {
+      return false
+    }
+    throw new Error(
+      [
+        `Failed to check publish status for ${pkgName}@${version}.`,
+        output,
+      ].filter(Boolean).join('\n')
+    )
+  }
+}
+
+async function ensureGitBranchIsPublishable() {
+  let upstream
+  try {
+    const result = await run('git', [
+      'rev-parse',
+      '--abbrev-ref',
+      '--symbolic-full-name',
+      '@{upstream}',
+    ], { stdio: 'pipe' })
+    upstream = result.stdout.trim()
+  } catch (e) {
+    console.log(colors.yellow('No upstream branch configured. Skipping git remote check.'))
+    return
+  }
+
+  await run('git', ['fetch', '--quiet'])
+  const { stdout } = await run(
+    'git',
+    ['rev-list', '--left-right', '--count', `HEAD...${upstream}`],
+    { stdio: 'pipe' }
+  )
+  const [ahead, behind] = stdout.trim().split(/\s+/).map(Number)
+
+  if (behind > 0) {
+    const message = [`Current branch is behind ${upstream} by ${behind} commit(s).`]
+    if (ahead > 0) {
+      message.push(`Local branch is also ahead by ${ahead} commit(s).`)
+    }
+    message.push('Please pull/rebase before publishing.')
+    throw new Error(message.join(' '))
   }
 }
 
