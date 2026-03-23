@@ -1003,9 +1003,15 @@ export declare function defineComponent<TypeProps, RuntimePropsOptions extends C
   */
   __typeEl?: TypeEl;
   /**
-  * Component class name for type inference
+  * fixed by uts
+  * @private for type inference
   */
   __className?: ClassName;
+  /**
+  * fixed by uts
+  * @private for internal use only, not a user facing option
+  */
+  __dynamicSharedData?: boolean;
 } & ComponentOptionsBase<ToResolvedProps<InferredProps, ResolvedEmits>, SetupBindings, Data, Computed, Methods, Mixin, Extends, RuntimeEmitsOptions, RuntimeEmitsKeys, {}, InjectOptions, InjectKeys, Slots, LocalComponents, Directives, Exposed, Provide> & ThisType<CreateComponentPublicInstanceWithMixins<ToResolvedProps<InferredProps, ResolvedEmits>, SetupBindings, Data, Computed, Methods, Mixin, Extends, ResolvedEmits, {}, {}, false, InjectOptions, Slots, LocalComponents, Directives, string>>): DefineComponent<InferredProps, SetupBindings, Data, Computed, Methods, Mixin, Extends, ResolvedEmits, RuntimeEmitsKeys, PublicProps, ToResolvedProps<InferredProps, ResolvedEmits>, ExtractDefaultPropTypes<RuntimePropsOptions>, Slots, LocalComponents, Directives, Exposed, Provide, unknown extends TypeProps ? true : false, TypeRefs, TypeEl, ClassName, InjectOptions>;
 //#endregion
 //#region temp/packages/runtime-core/src/apiCreateApp.d.ts
