@@ -110,8 +110,7 @@ async function main() {
   // push to GitHub
   step('\nPushing to GitHub...')
   await runIfNotDry('git', ['push'])
-  await runIfNotDry('git', ['tag', `v${targetVersion}`])
-  await runIfNotDry('git', ['push', 'origin', `refs/tags/v${targetVersion}`])
+  await syncReleaseTag(targetVersion, runIfNotDry)
 
   if (isDryRun) {
     console.log(`\nDry run finished - run git diff to see package changes.`)
@@ -291,6 +290,65 @@ async function ensureGitBranchIsPublishable() {
     message.push('Please pull/rebase before publishing.')
     throw new Error(message.join(' '))
   }
+}
+
+async function syncReleaseTag(version, runIfNotDry) {
+  const tagName = `v${version}`
+  const headSha = await getGitRefSha('HEAD')
+  const localTagSha = await getGitRefSha(`refs/tags/${tagName}`)
+  const remoteTagSha = await getRemoteTagSha(tagName)
+
+  if (localTagSha && remoteTagSha && localTagSha !== remoteTagSha) {
+    throw new Error(
+      `Tag ${tagName} exists locally (${localTagSha}) and remotely (${remoteTagSha}) but points to different commits.`
+    )
+  }
+
+  const existingTagSha = remoteTagSha || localTagSha
+  if (existingTagSha) {
+    if (existingTagSha === headSha) {
+      console.log(colors.yellow(`Tag ${tagName} already exists at HEAD. Skipping tag creation.`))
+    } else {
+      console.log(
+        colors.yellow(
+          `Tag ${tagName} already exists at ${existingTagSha} instead of HEAD ${headSha}. Skipping tag update.`
+        )
+      )
+    }
+    if (!remoteTagSha && localTagSha) {
+      await runIfNotDry('git', ['push', 'origin', `refs/tags/${tagName}`])
+    }
+    return
+  }
+
+  await runIfNotDry('git', ['tag', tagName])
+  await runIfNotDry('git', ['push', 'origin', `refs/tags/${tagName}`])
+}
+
+async function getGitRefSha(ref) {
+  try {
+    const { stdout } = await run('git', ['rev-parse', ref], { stdio: 'pipe' })
+    return stdout.trim()
+  } catch (e) {
+    const output = getErrorOutput(e)
+    if (/unknown revision|Needed a single revision|ambiguous argument|not a valid ref/i.test(output)) {
+      return null
+    }
+    throw e
+  }
+}
+
+async function getRemoteTagSha(tagName) {
+  const { stdout } = await run(
+    'git',
+    ['ls-remote', '--tags', 'origin', `refs/tags/${tagName}`],
+    { stdio: 'pipe' }
+  )
+  const line = stdout.trim()
+  if (!line) {
+    return null
+  }
+  return line.split(/\s+/)[0]
 }
 
 main().catch((err) => {
