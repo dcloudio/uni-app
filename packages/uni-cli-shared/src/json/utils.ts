@@ -29,8 +29,6 @@ export function checkPagesJson(jsonStr: string, inputDir: string) {
   }
   const errors: ParseError[] = []
   const root = parseTree(jsonStr, errors)
-  let allPages: string[] = [] // 收集全部页面,包含分包页面
-  let tabBarPages: string[] = [] // 收集 tabBar 页面
   if (!root) {
     if (errors.length) {
       for (const error of errors) {
