@@ -205,7 +205,9 @@ function isBuiltInComponent(tag) {
     }
     // h5 平台会被转换为 v-uni-
     const realTag = 'uni-' + tag.replace('v-uni-', '');
-    // TODO 区分x和非x
+    if (process.env.UNI_APP_X !== 'true') {
+        return BUILT_IN_TAGS.indexOf(realTag) !== -1;
+    }
     return (BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
         UVUE_WEB_BUILT_IN_TAGS.indexOf(realTag) !== -1);
 }
@@ -215,7 +217,9 @@ function isWebBuiltInComponent(tag) {
     }
     // h5 平台会被转换为 v-uni-
     const realTag = 'uni-' + tag.replace('v-uni-', '');
-    // TODO 区分x和非x
+    if (process.env.UNI_APP_X !== 'true') {
+        return BUILT_IN_TAGS.indexOf(realTag) !== -1;
+    }
     return (BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
         UVUE_WEB_BUILT_IN_TAGS.indexOf(realTag) !== -1);
 }
@@ -225,7 +229,9 @@ function isMPBuiltInComponent(tag) {
     }
     // h5 平台会被转换为 v-uni-
     const realTag = 'uni-' + tag.replace('v-uni-', '');
-    // TODO 区分x和非x
+    if (process.env.UNI_APP_X !== 'true') {
+        return BUILT_IN_TAGS.indexOf(realTag) !== -1;
+    }
     return (BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
         UVUE_MP_BUILT_IN_TAGS.indexOf(realTag) !== -1);
 }
