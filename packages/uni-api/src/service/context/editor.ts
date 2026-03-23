@@ -54,6 +54,9 @@ export class EditorContext implements UniApp.EditorContext {
   insertDivider() {
     this._exec('insertDivider')
   }
+  insertMention(options: UniApp.EditorContextInsertMentionOptions) {
+    this._exec('insertMention', options)
+  }
   insertImage(options: UniApp.EditorContextInsertImageOptions) {
     this._exec('insertImage', options)
   }
