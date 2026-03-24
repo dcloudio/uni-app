@@ -84,7 +84,10 @@ export function initModuleAlias() {
       }
     }
 
-    if (process.env.UNI_APP_PLATFORM) {
+    if (
+      process.env.UNI_APP_PLATFORM ||
+      process.env.UNI_PLATFORM === 'app-harmony'
+    ) {
       const dynamicFilename = path.resolve(
         process.env.UNI_INPUT_DIR,
         '.dynamic'
