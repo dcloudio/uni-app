@@ -9,6 +9,7 @@ import font from './font'
 import text from './text'
 import image from './image'
 import link from './link'
+import mention from './mention'
 
 export function register (Quill) {
   const formats = {
@@ -22,7 +23,8 @@ export function register (Quill) {
     font,
     text,
     image,
-    link
+    link,
+    mention
   }
   const options = {}
   Object.values(formats).forEach(value => Object.assign(options, value(Quill)))
