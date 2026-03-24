@@ -1,8 +1,7 @@
-import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, isIntegerKey, hasOwn, isMap, makeMap, isPromise, isString, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, getGlobalThis, isOn, hyphenate, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, parseStringStyle, normalizeStyle as normalizeStyle$1, looseToNumber, isGloballyAllowed, NO } from '@vue/shared';
+import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, isIntegerKey, hasOwn, isMap, makeMap, hyphenate, capitalize, isPromise, isString, camelize, EMPTY_OBJ, remove, toHandlerKey, getGlobalThis, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, parseStringStyle, normalizeStyle as normalizeStyle$1, looseToNumber, isGloballyAllowed, NO } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle, forcePatchProp, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_LAST_PAGE_BACK_PRESS, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
-import { expand } from '@dcloudio/uni-nvue-styler/dist/uni-nvue-styler.es';
 
 /**
 * @vue/reactivity v3.4.21
@@ -1383,6 +1382,525 @@ Promise$1._unhandledRejectionFn = function _unhandledRejectionFn(err) {
 };
 var lib = Promise$1;
 var PromisePolyfill = /*@__PURE__*/getDefaultExportFromCjs(lib);
+function createDecl(prop, value, important, raws, source) {
+  var decl = {
+    type: 'decl',
+    prop,
+    value: value.toString(),
+    raws,
+    source
+  };
+  if (important) {
+    decl.important = true;
+  }
+  return decl;
+}
+var isNumber = val => typeof val === 'number';
+/**
+ * css value 分割多值，兼容包含括号的 css 方法，比如 var/env/calc() 等
+ */
+function splitValues(value) {
+  var trimmedValue = value.trim();
+  if (!trimmedValue.includes('(')) {
+    return trimmedValue.split(/\s+/);
+  }
+  var parts = [];
+  var current = '';
+  var depth = 0;
+  for (var i = 0; i < trimmedValue.length; i++) {
+    var char = trimmedValue[i];
+    if (char === '(') {
+      depth++;
+      current += char;
+    } else if (char === ')') {
+      if (depth > 0) {
+        depth--;
+      }
+      current += char;
+    } else if (/\s/.test(char)) {
+      if (depth === 0) {
+        if (current) {
+          parts.push(current);
+          current = '';
+        }
+      } else {
+        // 多个空格处理一个
+        if (current.length > 0 && !/\s$/.test(current)) {
+          current += ' ';
+        }
+      }
+    } else {
+      current += char;
+    }
+  }
+  if (current) {
+    parts.push(current);
+  }
+  return parts;
+}
+var backgroundColor = 'backgroundColor';
+var backgroundImage = 'backgroundImage';
+var handleTransformBackground = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  if (value === 'none') {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  }
+  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
+  } else if (/^linear-gradient(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, value, important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  } else if (value == '') {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  }
+  return [decl];
+};
+var handleTransformBackgroundNvue = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+    return [createDecl(backgroundColor, value, important, raws, source)];
+  } else if (/^linear-gradient(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, value, important, raws, source)];
+  } else if (value == '') {
+    return [decl];
+  }
+  return [decl];
+};
+function createTransformBackground(options) {
+  return decl => {
+    // nvue 平台维持原有逻辑不变
+    var isUvuePlatform = options.type === 'uvue';
+    if (isUvuePlatform) {
+      return handleTransformBackground(decl);
+    } else {
+      return handleTransformBackgroundNvue(decl);
+    }
+  };
+}
+var borderTop = 'borderTop';
+var borderRight = 'borderRight';
+var borderBottom = 'borderBottom';
+var borderLeft = 'borderLeft';
+var transformBorderColor = decl => {
+  var {
+    prop,
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var _property_split = hyphenate(prop).split('-');
+  var property = _property_split[_property_split.length - 1];
+  {
+    property = capitalize(property);
+  }
+  var splitResult = splitValues(value); // 1pt
+  switch (splitResult.length) {
+    case 1:
+      if (_property_split.length === 3) {
+        // border-top-width
+        return [decl];
+      }
+      // border-width
+      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+      break;
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
+};
+var transformBorderColorNvue = decl => {
+  var {
+    prop,
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var property = hyphenate(prop).split('-')[1];
+  {
+    property = capitalize(property);
+  }
+  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+  switch (splitResult.length) {
+    case 1:
+      return [decl];
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
+};
+var transformBorderStyle = transformBorderColor;
+var transformBorderStyleNvue = transformBorderColorNvue;
+var transformBorderWidth = transformBorderColor;
+var transformBorderWidthNvue = transformBorderColorNvue;
+var borderWidth = 'Width';
+var borderStyle = 'Style';
+var borderColor = 'Color';
+function createTransformBorder(options) {
+  return decl => {
+    var {
+      prop,
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    var splitResult = splitValues(value);
+    var havVar = splitResult.some(str => str.startsWith('var('));
+    var result = [];
+    // 包含 var ，直接视为 width/style/color 都使用默认值
+    if (havVar) {
+      result = splitResult;
+      splitResult = [];
+    } else {
+      result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+        var index = splitResult.findIndex(str => item.test(str));
+        return index < 0 ? null : splitResult.splice(index, 1)[0];
+      });
+    }
+    if (splitResult.length > 0 && value != '') {
+      return [decl];
+    }
+    var defaultWidth = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      return 'medium';
+    };
+    var defaultStyle = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      return 'none';
+    };
+    var defaultColor = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      return '#000000';
+    };
+    return [...transformBorderWidth(createDecl(prop + borderWidth, defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle, defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor, defaultColor(result[2]), important, raws, source))];
+  };
+}
+/**
+ * nvue 逻辑不变
+ */
+function createTransformBorderNvue(options) {
+  return decl => {
+    var {
+      prop,
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    value = value.trim();
+    var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+    var result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+      var index = splitResult.findIndex(str => item.test(str));
+      return index < 0 ? null : splitResult.splice(index, 1)[0];
+    });
+    if (splitResult.length) {
+      return [decl];
+    }
+    return [createDecl(prop + borderWidth, (result[0] || '0').trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || 'solid').trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
+  };
+}
+var borderTopLeftRadius = 'borderTopLeftRadius';
+var borderTopRightRadius = 'borderTopRightRadius';
+var borderBottomRightRadius = 'borderBottomRightRadius';
+var borderBottomLeftRadius = 'borderBottomLeftRadius';
+var transformBorderRadius = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var splitResult = splitValues(value);
+  if (value.includes('/')) {
+    return [decl];
+  }
+  switch (splitResult.length) {
+    case 1:
+      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+      break;
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTopLeftRadius, splitResult[0], important, raws, source), createDecl(borderTopRightRadius, splitResult[1], important, raws, source), createDecl(borderBottomRightRadius, splitResult[2], important, raws, source), createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source)];
+};
+var transformBorderRadiusNvue = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var splitResult = value.split(/\s+/);
+  if (value.includes('/')) {
+    return [decl];
+  }
+  // const isUvuePlatform = options.type === 'uvue'
+  switch (splitResult.length) {
+    case 1:
+      return [decl];
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTopLeftRadius, splitResult[0], important, raws, source), createDecl(borderTopRightRadius, splitResult[1], important, raws, source), createDecl(borderBottomRightRadius, splitResult[2], important, raws, source), createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source)];
+};
+var flexDirection = 'flexDirection';
+var flexWrap = 'flexWrap';
+function createFlexFlowDecls(decl, values) {
+  var {
+    important,
+    raws,
+    source
+  } = decl;
+  return [createDecl(flexDirection, values[0] || 'column', important, raws, source), createDecl(flexWrap, values[1] || 'nowrap', important, raws, source)];
+}
+function transformFlexFlowImpl(decl) {
+  var allowSingleUnknownValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var {
+    value
+  } = decl;
+  value = value.trim();
+  var splitResult = splitValues(value);
+  var result = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/].map(item => {
+    var index = splitResult.findIndex(str => item.test(str));
+    return index < 0 ? null : splitResult.splice(index, 1)[0];
+  });
+  if (splitResult.length) {
+    if (allowSingleUnknownValue && splitResult.length === 1 && result.some(item => item === null)) {
+      result[result.findIndex(item => item === null)] = splitResult[0];
+    } else {
+      return [decl];
+    }
+  }
+  return createFlexFlowDecls(decl, result);
+}
+var transformFlexFlow = decl => transformFlexFlowImpl(decl);
+var transformFlexFlowUvue = decl => transformFlexFlowImpl(decl, true);
+var top = 'Top';
+var right = 'Right';
+var bottom = 'Bottom';
+var left = 'Left';
+var createTransformBox = type => {
+  return decl => {
+    var {
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    var splitResult = splitValues(value);
+    switch (splitResult.length) {
+      case 1:
+        splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+        break;
+      case 2:
+        splitResult.push(splitResult[0], splitResult[1]);
+        break;
+      case 3:
+        splitResult.push(splitResult[1]);
+        break;
+    }
+    return [createDecl(type + top, splitResult[0], important, raws, source), createDecl(type + right, splitResult[1], important, raws, source), createDecl(type + bottom, splitResult[2], important, raws, source), createDecl(type + left, splitResult[3], important, raws, source)];
+  };
+};
+var transformMargin = createTransformBox('margin');
+var transformPadding = createTransformBox('padding');
+var transitionProperty = 'transitionProperty';
+var transitionDuration = 'transitionDuration';
+var transitionTimingFunction = 'transitionTimingFunction';
+var transitionDelay = 'transitionDelay';
+var transformTransition = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var result = [];
+  var match;
+  // 针对 cubic-bezier 特殊处理
+  // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
+  if (value.includes('cubic-bezier')) {
+    var CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/;
+    match = value.match(CHUNK_REGEXP);
+  } else {
+    var _CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/;
+    match = value.match(_CHUNK_REGEXP);
+  }
+  if (!match) {
+    return result;
+  }
+  match[1] && result.push(createDecl(transitionProperty, match[1], important, raws, source));
+  match[2] && result.push(createDecl(transitionDuration, match[2], important, raws, source));
+  match[3] && result.push(createDecl(transitionTimingFunction, match[3], important, raws, source));
+  match[4] && result.push(createDecl(transitionDelay, match[4], important, raws, source));
+  return result;
+};
+var flexGrow = 'flexGrow';
+var flexShrink = 'flexShrink';
+var flexBasis = 'flexBasis';
+var transformFlex = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var result = [];
+  var splitResult = splitValues(value);
+  // 是否 flex-grow 的有效值 <number [0,∞]>
+  var isFlexGrowValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v));
+  var isFlexShrinkValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
+  var isFlexBasisValid = v => typeof v === 'string' && v.trim() !== '';
+  if (splitResult.length === 1) {
+    // 关键字处理
+    if (value === 'none') {
+      result.push(createDecl(flexGrow, '0', important, raws, source), createDecl(flexShrink, '0', important, raws, source), createDecl(flexBasis, 'auto', important, raws, source));
+      return result;
+    }
+    if (value === 'auto') {
+      result.push(createDecl(flexGrow, '1', important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, 'auto', important, raws, source));
+      return result;
+    }
+    if (value === 'initial') {
+      result.push(createDecl(flexGrow, '0', important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, 'auto', important, raws, source));
+      return result;
+    }
+    var v = splitResult[0];
+    // number 视为 flex-grow
+    if (isFlexGrowValid(v)) {
+      if (Number(v) < 0) {
+        return [];
+      }
+      result.push(createDecl(flexGrow, v, important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, '0%', important, raws, source));
+      return result;
+    } else if (isFlexBasisValid(v)) {
+      result.push(createDecl(flexGrow, '1', important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, v, important, raws, source));
+      return result;
+    } else {
+      return [decl];
+    }
+  } else if (splitResult.length === 2) {
+    var [v1, v2] = splitResult;
+    if (isFlexGrowValid(v1)) {
+      if (isFlexShrinkValid(v2)) {
+        // flex: 1 2 => 1 2 0%
+        result.push(createDecl(flexGrow, v1, important, raws, source), createDecl(flexShrink, v2, important, raws, source), createDecl(flexBasis, '0%', important, raws, source));
+        return result;
+      } else {
+        // flex: 1 100px => 1 1 100px
+        result.push(createDecl(flexGrow, v1, important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, v2, important, raws, source));
+        return result;
+      }
+    } else {
+      return [decl];
+    }
+  } else if (splitResult.length === 3) {
+    var [_v, _v2, v3] = splitResult;
+    if (isFlexGrowValid(_v) && isFlexShrinkValid(_v2)) {
+      result.push(createDecl(flexGrow, _v, important, raws, source), createDecl(flexShrink, _v2, important, raws, source), createDecl(flexBasis, v3, important, raws, source));
+      return result;
+    } else {
+      // fallback
+      return [decl];
+    }
+  }
+  // 其它情况，原样返回
+  return [decl];
+};
+function getDeclTransforms(options) {
+  var transformBorder = options.type === 'uvue' ? createTransformBorder() : createTransformBorderNvue();
+  var styleMap = {
+    transition: transformTransition,
+    border: transformBorder,
+    background: createTransformBackground(options),
+    ['borderTop']: transformBorder,
+    ['borderRight']: transformBorder,
+    ['borderBottom']: transformBorder,
+    ['borderLeft']: transformBorder,
+    ['borderStyle']: options.type === 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
+    ['borderWidth']: options.type === 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
+    ['borderColor']: options.type === 'uvue' ? transformBorderColor : transformBorderColorNvue,
+    ['borderRadius']: options.type === 'uvue' ? transformBorderRadius : transformBorderRadiusNvue,
+    // uvue已经支持这些简写属性，不需要展开
+    // margin,padding继续展开，确保样式的优先级
+    margin: transformMargin,
+    padding: transformPadding,
+    ['flexFlow']: options.type === 'uvue' ? transformFlexFlowUvue : transformFlexFlow
+  };
+  if (options.type === 'uvue') {
+    styleMap.flex = transformFlex;
+  }
+  var result = {};
+  {
+    result = styleMap;
+  }
+  return result;
+}
+var DeclTransforms;
+var expanded = Symbol('expanded');
+function expand(options) {
+  var plugin = {
+    postcssPlugin: "".concat(options.type || 'nvue', ":expand"),
+    Declaration(decl) {
+      if (decl[expanded]) {
+        return;
+      }
+      if (!DeclTransforms) {
+        DeclTransforms = getDeclTransforms(options);
+      }
+      var transform = DeclTransforms[decl.prop];
+      if (transform) {
+        var res = transform(decl);
+        var _isSame = res.length === 1 && res[0] === decl;
+        if (!_isSame) {
+          decl.replaceWith(res);
+        }
+      }
+      decl[expanded] = true;
+    }
+  };
+  return plugin;
+}
 
 /**
 * @dcloudio/uni-app-nvue v3.4.21
