@@ -15128,6 +15128,47 @@
       return Link.PROTOCOL_WHITELIST.concat("file").indexOf(protocol) > -1 ? url : Link.SANITIZED_URL;
     };
   }
+  var SupportStyleList = ["color", "background", "padding", "radius"];
+  function mention(Quill) {
+    var Embed2 = Quill.import("blots/embed");
+    class MentionBlot extends Embed2 {
+      static create(data) {
+        var node = super.create();
+        var id2 = data.id == null ? "" : data.id;
+        var name = data.name == null ? "" : data.name;
+        node.setAttribute("contenteditable", "false");
+        node.setAttribute("data-id", id2);
+        node.setAttribute("data-name", name);
+        var style = "";
+        SupportStyleList.forEach((item) => {
+          var styleName = item;
+          if (styleName === "radius") {
+            styleName = "border-radius";
+          }
+          if (data[item]) {
+            style += "".concat(styleName, ": ").concat(data[item], ";");
+          }
+        });
+        if (style) {
+          node.setAttribute("style", style);
+        }
+        node.innerText = "@".concat(name);
+        return node;
+      }
+      static value(node) {
+        return {
+          id: node.dataset.id == null ? "" : node.dataset.id,
+          name: node.dataset.name == null ? "" : node.dataset.name
+        };
+      }
+    }
+    MentionBlot.blotName = "mention";
+    MentionBlot.tagName = "span";
+    MentionBlot.className = "mention";
+    return {
+      "formats/mention": MentionBlot
+    };
+  }
   function register(Quill) {
     var formats = {
       divider,
@@ -15140,7 +15181,8 @@
       font,
       text,
       image,
-      link
+      link,
+      mention
     };
     var options = {};
     Object.values(formats).forEach((value) => extend(options, value(Quill)));
@@ -15161,6 +15203,11 @@
     watch(() => props2.placeholder, (value) => {
       if (quillReady) {
         setPlaceHolder(value);
+      }
+    });
+    watch(() => props2.type, (value) => {
+      if (quillReady) {
+        setInputMode(value);
       }
     });
     function html2delta(html) {
@@ -15215,6 +15262,14 @@
       var QuillRoot = quill.root;
       QuillRoot.getAttribute(placeHolderAttrName) !== placeholder && QuillRoot.setAttribute(placeHolderAttrName, placeholder);
     }
+    function setInputMode(type) {
+      var QuillRoot = quill.root;
+      if (type === "none") {
+        QuillRoot.setAttribute("inputmode", "none");
+      } else {
+        QuillRoot.removeAttribute("inputmode");
+      }
+    }
     var oldStatus = {};
     function updateStatus(range) {
       var status = range ? quill.getFormat(range) : {};
@@ -15224,7 +15279,18 @@
         trigger2("statuschange", {}, status);
       }
     }
+    function fixCursor() {
+      var _a;
+      var range = quill.getSelection();
+      if (!range)
+        return;
+      var [leaf] = quill.getLeaf(range.index - 1);
+      if (((_a = leaf == null ? void 0 : leaf.statics) == null ? void 0 : _a.blotName) === "mention") {
+        quill.setSelection(range.index, 0, "silent");
+      }
+    }
     function textChangeHandler() {
+      fixCursor();
       trigger2("input", {}, getContents());
     }
     function initQuill(imageResizeModules) {
@@ -15245,6 +15311,7 @@
       }
       var rootEl = rootRef.value;
       quill = new Quill(rootEl, options);
+      setInputMode(props2.type);
       var $el = quill.root;
       var events = ["focus", "blur", "input"];
       events.forEach((name) => {
@@ -15347,6 +15414,17 @@
             quill.insertText(range.index, LINEFEED, "user");
             quill.insertEmbed(range.index + 1, "divider", true, "user");
             quill.setSelection(range.index + 2, 0, "silent");
+            break;
+          case "insertMention":
+            {
+              range = quill.getSelection(true);
+              var mentionData = extend({
+                id: "",
+                name: ""
+              }, options);
+              quill.insertEmbed(range.index, "mention", mentionData, "user");
+              quill.setSelection(range.index + 1, 0);
+            }
             break;
           case "insertImage":
             {
@@ -15488,6 +15566,10 @@
     readOnly: {
       type: [Boolean, String],
       default: false
+    },
+    type: {
+      type: String,
+      default: ""
     },
     placeholder: {
       type: String,

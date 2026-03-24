@@ -9482,6 +9482,8 @@ function useBackgroundColorContent(pageMeta) {
       updateBackgroundColorContent(
         parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
       );
+    } else {
+      updateBackgroundColorContent("transparent");
     }
   }
   onThemeChange$1(update);
@@ -11235,10 +11237,7 @@ function useQuill(props2, rootRef, trigger) {
           case "insertMention":
             {
               range = quill.getSelection(true);
-              const mentionData = extend(
-                { id: "", name: "" },
-                options
-              );
+              const mentionData = extend({ id: "", name: "" }, options);
               quill.insertEmbed(range.index, "mention", mentionData, "user");
               quill.setSelection(range.index + 1, 0);
             }
