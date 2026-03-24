@@ -1996,7 +1996,7 @@ const chooseAddress = {
     returnValue(fromRes, toRes) {
         const info = fromRes.result || {};
         toRes.userName = info.fullname;
-        toRes.countyName = info.country;
+        toRes.countyName = info.area;
         toRes.provinceName = info.prov;
         toRes.cityName = info.city;
         toRes.detailInfo = info.address;
