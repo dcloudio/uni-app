@@ -1,4 +1,20 @@
+import { kebabCase } from 'uni-shared'
+
 const SupportStyleList = ['color', 'background', 'padding', 'radius']
+const MentionStyleMap = {
+  color: 'color',
+  background: 'background',
+  padding: 'padding',
+  radius: 'border-radius'
+}
+
+function getMentionStyleValue (node, styleKey) {
+  const cssName = MentionStyleMap[styleKey]
+  if (!cssName) {
+    return ''
+  }
+  return node.style.getPropertyValue(cssName).trim()
+}
 
 export default function (Quill) {
   const Embed = Quill.import('blots/embed')
@@ -14,13 +30,11 @@ export default function (Quill) {
       node.setAttribute('data-name', name)
 
       let style = ''
+
       SupportStyleList.forEach(item => {
-        let styleName = item
-        if (styleName === 'radius') {
-          styleName = 'border-radius'
-        }
+        const styleName = MentionStyleMap[item] || item
         if (data[item]) {
-          style += `${styleName}: ${data[item]};`
+          style += `${kebabCase(styleName)}: ${data[item]};`
         }
       })
 
@@ -33,14 +47,19 @@ export default function (Quill) {
     }
 
     static value (node) {
-      return {
+      const value = {
         id: node.dataset.id == null ? '' : node.dataset.id,
-        name: node.dataset.name == null ? '' : node.dataset.name,
-        color: node.style.color || '',
-        background: node.style.background || '',
-        padding: node.style.padding || '',
-        radius: node.style.borderRadius || ''
+        name: node.dataset.name == null ? '' : node.dataset.name
       }
+
+      SupportStyleList.forEach(item => {
+        const styleValue = getMentionStyleValue(node, item)
+        if (styleValue) {
+          value[item] = styleValue
+        }
+      })
+
+      return value
     }
   }
 
