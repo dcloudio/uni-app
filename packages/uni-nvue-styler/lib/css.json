@@ -8984,7 +8984,8 @@
       "name": "font-weight",
       "description": "font-weight 属性用于设置字体的粗细程度。",
       "restrictions": [
-        "enum"
+        "enum",
+        "number"
       ],
       "syntax": "<font-weight-absolute>{1,2}",
       "values": [
