@@ -41,3 +41,12 @@ export function initSourceFileCallback():
     }
   }
 }
+
+export function initUts2jsSharedDataOptions() {
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    return {
+      resolveFieldMeta: require('@dcloudio/compiler-vapor-dom2')
+        .resolveSharedDataMeta,
+    }
+  }
+}

@@ -14,6 +14,10 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
     extname?: string
     rewriteRootDir?: string
   }
+  disableUTSBooleanConversion?: boolean
+  sharedData?: {
+    resolveFieldMeta(name: string): { fieldId: string }
+  }
 }
 type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
 

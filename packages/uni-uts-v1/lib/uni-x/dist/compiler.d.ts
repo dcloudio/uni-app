@@ -37,6 +37,11 @@ interface CreateTransformerOptions {
         rewriteRootDir?: string;
     };
     disableUTSBooleanConversion?: boolean;
+    sharedData?: {
+        resolveFieldMeta(name: string): {
+            fieldId: string;
+        };
+    };
 }
 declare function initTargetTransformers(targetLanguage: TargetLanguage, options?: CreateTransformerOptions): _uts_transforms_base.UTSTransformerFactoryCreator[];
 

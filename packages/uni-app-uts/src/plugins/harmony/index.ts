@@ -3,6 +3,7 @@ import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
   getWorkers,
+  initUts2jsSharedDataOptions,
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
@@ -66,6 +67,7 @@ export function init() {
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
       sourceMap: enableSourceMap(),
       sharedDataLibName: isDom2 ? SHARED_DATA_LIB_NAME : undefined,
+      sharedData: initUts2jsSharedDataOptions(),
       modules: {
         vueCompilerDom,
         uniCliShared,
