@@ -38,6 +38,10 @@ export default function (Quill: typeof QuillClass) {
       return {
         id: node.dataset.id == null ? '' : node.dataset.id,
         name: node.dataset.name == null ? '' : node.dataset.name,
+        color: node.style.color || '',
+        background: node.style.background || '',
+        padding: node.style.padding || '',
+        radius: node.style.borderRadius || '',
       }
     }
   }
