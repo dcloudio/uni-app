@@ -3159,6 +3159,11 @@ function useQuill(props2, rootRef, trigger) {
     (value) => {
     }
   );
+  vue.watch(
+    () => props2.type,
+    (value) => {
+    }
+  );
   useContextInfo();
   useSubscribe();
 }
@@ -3170,6 +3175,10 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
   readOnly: {
     type: [Boolean, String],
     default: false
+  },
+  type: {
+    type: String,
+    default: ""
   },
   placeholder: {
     type: String,

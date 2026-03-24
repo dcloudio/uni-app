@@ -9270,6 +9270,47 @@ function link(Quill) {
     return Link.PROTOCOL_WHITELIST.concat("file").indexOf(protocol) > -1 ? url : Link.SANITIZED_URL;
   };
 }
+const SupportStyleList = ["color", "background", "padding", "radius"];
+function mention(Quill) {
+  const Embed = Quill.import("blots/embed");
+  class MentionBlot extends Embed {
+    static create(data) {
+      const node = super.create();
+      const id2 = data.id == null ? "" : data.id;
+      const name = data.name == null ? "" : data.name;
+      node.setAttribute("contenteditable", "false");
+      node.setAttribute("data-id", id2);
+      node.setAttribute("data-name", name);
+      let style = "";
+      SupportStyleList.forEach((item) => {
+        let styleName = item;
+        if (styleName === "radius") {
+          styleName = "border-radius";
+        }
+        if (data[item]) {
+          style += `${styleName}: ${data[item]};`;
+        }
+      });
+      if (style) {
+        node.setAttribute("style", style);
+      }
+      node.innerText = `@${name}`;
+      return node;
+    }
+    static value(node) {
+      return {
+        id: node.dataset.id == null ? "" : node.dataset.id,
+        name: node.dataset.name == null ? "" : node.dataset.name
+      };
+    }
+  }
+  MentionBlot.blotName = "mention";
+  MentionBlot.tagName = "span";
+  MentionBlot.className = "mention";
+  return {
+    "formats/mention": MentionBlot
+  };
+}
 function register(Quill) {
   const formats = {
     divider,
@@ -9282,7 +9323,8 @@ function register(Quill) {
     font,
     text,
     image,
-    link
+    link,
+    mention
   };
   const options = {};
   Object.values(formats).forEach((value) => extend(options, value(Quill)));
@@ -9308,6 +9350,14 @@ function useQuill(props2, rootRef, trigger) {
     (value) => {
       if (quillReady) {
         setPlaceHolder(value);
+      }
+    }
+  );
+  watch(
+    () => props2.type,
+    (value) => {
+      if (quillReady) {
+        setInputMode(value);
       }
     }
   );
@@ -9384,6 +9434,14 @@ function useQuill(props2, rootRef, trigger) {
     const QuillRoot = quill.root;
     QuillRoot.getAttribute(placeHolderAttrName) !== placeholder && QuillRoot.setAttribute(placeHolderAttrName, placeholder);
   }
+  function setInputMode(type) {
+    const QuillRoot = quill.root;
+    if (type === "none") {
+      QuillRoot.setAttribute("inputmode", "none");
+    } else {
+      QuillRoot.removeAttribute("inputmode");
+    }
+  }
   let oldStatus = {};
   function updateStatus(range) {
     const status = range ? quill.getFormat(range) : {};
@@ -9393,7 +9451,18 @@ function useQuill(props2, rootRef, trigger) {
       trigger("statuschange", {}, status);
     }
   }
+  function fixCursor() {
+    var _a;
+    const range = quill.getSelection();
+    if (!range)
+      return;
+    const [leaf] = quill.getLeaf(range.index - 1);
+    if (((_a = leaf == null ? void 0 : leaf.statics) == null ? void 0 : _a.blotName) === "mention") {
+      quill.setSelection(range.index, 0, "silent");
+    }
+  }
   function textChangeHandler() {
+    fixCursor();
     trigger("input", {}, getContents());
   }
   function initQuill(imageResizeModules) {
@@ -9417,6 +9486,7 @@ function useQuill(props2, rootRef, trigger) {
     }
     const rootEl = rootRef.value;
     quill = new Quill(rootEl, options);
+    setInputMode(props2.type);
     const $el = quill.root;
     const events = ["focus", "blur", "input"];
     events.forEach((name) => {
@@ -9504,6 +9574,17 @@ function useQuill(props2, rootRef, trigger) {
             quill.insertText(range.index, LINEFEED, "user");
             quill.insertEmbed(range.index + 1, "divider", true, "user");
             quill.setSelection(range.index + 2, 0, "silent");
+            break;
+          case "insertMention":
+            {
+              range = quill.getSelection(true);
+              const mentionData = extend(
+                { id: "", name: "" },
+                options
+              );
+              quill.insertEmbed(range.index, "mention", mentionData, "user");
+              quill.setSelection(range.index + 1, 0);
+            }
             break;
           case "insertImage":
             {
@@ -9647,6 +9728,10 @@ const props$t = /* @__PURE__ */ extend({}, props$u, {
   readOnly: {
     type: [Boolean, String],
     default: false
+  },
+  type: {
+    type: String,
+    default: ""
   },
   placeholder: {
     type: String,
