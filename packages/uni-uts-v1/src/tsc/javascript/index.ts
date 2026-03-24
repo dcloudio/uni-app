@@ -16,7 +16,7 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   }
   disableUTSBooleanConversion?: boolean
   sharedData?: {
-    resolveFieldMeta(name: string): { fieldId: string }
+    resolveFieldMeta(name: string): { fieldId: number }
   }
 }
 type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
