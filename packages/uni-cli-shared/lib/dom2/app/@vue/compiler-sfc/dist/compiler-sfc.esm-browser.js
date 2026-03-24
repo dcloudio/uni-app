@@ -41379,6 +41379,7 @@ function compileScript(sfc, options) {
 				setupPreambleLines.unshift(`const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope, _useSharedDataComponentOptions())${optionsCode})`);
 				setupPreambleLines.unshift(`const __sharedDataScope =  _useSharedDataScope()`);
 			}
+			if (options.dynamicSharedData) runtimeOptions += `\n  __dynamicSharedData: true,`;
 			if (options.isWatch && templateHash) runtimeOptions += `\n  __hash: "${templateHash}",`;
 			runtimeOptions += `\n  __className,`;
 			runtimeOptions += `\n  __filename: '${((_options$templateOpti3 = options.templateOptions) === null || _options$templateOpti3 === void 0 ? void 0 : _options$templateOpti3.compilerOptions).relativeFilename || ""}',`;
