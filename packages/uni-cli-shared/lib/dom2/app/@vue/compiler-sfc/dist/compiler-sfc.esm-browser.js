@@ -41372,11 +41372,13 @@ function compileScript(sfc, options) {
 			const optionsProps = [];
 			if (hasScriptCpp) optionsProps.push("scriptCpp: true");
 			const optionsCode = optionsProps.length ? `, { ${optionsProps.join(", ")} }` : "";
+			const dynamicSharedDataOptionsCode = options.dynamicSharedData ? `_useSharedDataPageOptions({ bundleKey: __className, sharedDataClassId: 0 })` : `_useSharedDataPageOptions()`;
+			const dynamicSharedDataComponentOptionsCode = options.dynamicSharedData ? `_useSharedDataComponentOptions({ bundleKey: __className, sharedDataClassId: 0 })` : `_useSharedDataComponentOptions()`;
 			if (componentType === "page") {
 				setupPreambleLines.unshift(`const __sharedDataScope =  _useSharedDataScope(__sharedData)`);
-				setupPreambleLines.unshift(`const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataRenderer() == 'component' ? _useSharedDataScope() : _useSharedDataPageId(), _useSharedDataPageOptions())${optionsCode})`);
+				setupPreambleLines.unshift(`const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataRenderer() == 'component' ? _useSharedDataScope() : _useSharedDataPageId(), ${dynamicSharedDataOptionsCode})${optionsCode})`);
 			} else if (componentType === "component") {
-				setupPreambleLines.unshift(`const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope, _useSharedDataComponentOptions())${optionsCode})`);
+				setupPreambleLines.unshift(`const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope, ${dynamicSharedDataComponentOptionsCode})${optionsCode})`);
 				setupPreambleLines.unshift(`const __sharedDataScope =  _useSharedDataScope()`);
 			}
 			if (options.dynamicSharedData) runtimeOptions += `\n  __dynamicSharedData: true,`;

@@ -15129,6 +15129,19 @@
     };
   }
   var SupportStyleList = ["color", "background", "padding", "radius"];
+  var MentionStyleMap = {
+    color: "color",
+    background: "background",
+    padding: "padding",
+    radius: "border-radius"
+  };
+  function getMentionStyleValue(node, styleKey) {
+    var cssName = MentionStyleMap[styleKey];
+    if (!cssName) {
+      return "";
+    }
+    return node.style.getPropertyValue(cssName).trim();
+  }
   function mention(Quill) {
     var Embed2 = Quill.import("blots/embed");
     class MentionBlot extends Embed2 {
@@ -15141,12 +15154,9 @@
         node.setAttribute("data-name", name);
         var style = "";
         SupportStyleList.forEach((item) => {
-          var styleName = item;
-          if (styleName === "radius") {
-            styleName = "border-radius";
-          }
+          var styleName = MentionStyleMap[item] || item;
           if (data[item]) {
-            style += "".concat(styleName, ": ").concat(data[item], ";");
+            style += "".concat(hyphenate(styleName), ": ").concat(data[item], ";");
           }
         });
         if (style) {
@@ -15156,10 +15166,17 @@
         return node;
       }
       static value(node) {
-        return {
+        var value = {
           id: node.dataset.id == null ? "" : node.dataset.id,
           name: node.dataset.name == null ? "" : node.dataset.name
         };
+        SupportStyleList.forEach((item) => {
+          var styleValue = getMentionStyleValue(node, item);
+          if (styleValue) {
+            value[item] = styleValue;
+          }
+        });
+        return value;
       }
     }
     MentionBlot.blotName = "mention";

@@ -381,8 +381,29 @@ interface UniSharedDataComponentOptions {
   renderer: UniSharedDataComponentRenderer;
   flatten: UniSharedDataComponentFlatten;
 }
-export declare function useSharedDataPageOptions(): UniSharedDataComponentOptions;
-export declare function useSharedDataComponentOptions(): UniSharedDataComponentOptions;
+interface UniDynamicSharedDataComponentOptions extends UniSharedDataComponentOptions, UniDynamicSharedDataInitOptions {}
+/**
+* 动态 sharedData 的初始化参数。
+*
+* 这是 renderSharedData 直接使用的构造参数。
+*/
+interface UniDynamicSharedDataInitOptions {
+  /**
+  * 当前动态 bundle 的稳定标识。
+  */
+  readonly bundleKey: string;
+  /**
+  * 当前实例对应的 sharedData class 编号。
+  *
+  * 约束：
+  * - root page：0
+  * - root component：0
+  * - scoped sharedData：编译器分配的实际 classId
+  */
+  readonly sharedDataClassId: number;
+}
+export declare function useSharedDataPageOptions(options?: UniDynamicSharedDataInitOptions): UniSharedDataComponentOptions | UniDynamicSharedDataComponentOptions;
+export declare function useSharedDataComponentOptions(options?: UniDynamicSharedDataInitOptions): UniSharedDataComponentOptions | UniDynamicSharedDataComponentOptions;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/sharedData/enum/global.d.ts
 /**

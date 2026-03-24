@@ -9271,6 +9271,19 @@ function link(Quill) {
   };
 }
 const SupportStyleList = ["color", "background", "padding", "radius"];
+const MentionStyleMap = {
+  color: "color",
+  background: "background",
+  padding: "padding",
+  radius: "border-radius"
+};
+function getMentionStyleValue(node, styleKey) {
+  const cssName = MentionStyleMap[styleKey];
+  if (!cssName) {
+    return "";
+  }
+  return node.style.getPropertyValue(cssName).trim();
+}
 function mention(Quill) {
   const Embed = Quill.import("blots/embed");
   class MentionBlot extends Embed {
@@ -9283,12 +9296,9 @@ function mention(Quill) {
       node.setAttribute("data-name", name);
       let style = "";
       SupportStyleList.forEach((item) => {
-        let styleName = item;
-        if (styleName === "radius") {
-          styleName = "border-radius";
-        }
+        const styleName = MentionStyleMap[item] || item;
         if (data[item]) {
-          style += `${styleName}: ${data[item]};`;
+          style += `${hyphenate(styleName)}: ${data[item]};`;
         }
       });
       if (style) {
@@ -9298,10 +9308,17 @@ function mention(Quill) {
       return node;
     }
     static value(node) {
-      return {
+      const value = {
         id: node.dataset.id == null ? "" : node.dataset.id,
         name: node.dataset.name == null ? "" : node.dataset.name
       };
+      SupportStyleList.forEach((item) => {
+        const styleValue2 = getMentionStyleValue(node, item);
+        if (styleValue2) {
+          value[item] = styleValue2;
+        }
+      });
+      return value;
     }
   }
   MentionBlot.blotName = "mention";
