@@ -35,7 +35,11 @@ export default function (Quill) {
     static value (node) {
       return {
         id: node.dataset.id == null ? '' : node.dataset.id,
-        name: node.dataset.name == null ? '' : node.dataset.name
+        name: node.dataset.name == null ? '' : node.dataset.name,
+        color: node.style.color || '',
+        background: node.style.background || '',
+        padding: node.style.padding || '',
+        radius: node.style.borderRadius || ''
       }
     }
   }
