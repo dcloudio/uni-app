@@ -83,6 +83,16 @@ export function initModuleAlias() {
         }
       }
     }
+
+    if (process.env.UNI_APP_PLATFORM) {
+      const dynamicFilename = path.resolve(
+        process.env.UNI_INPUT_DIR,
+        '.dynamic'
+      )
+      if (fs.existsSync(dynamicFilename)) {
+        process.env.UNI_APP_X_DOM2_DYNAMIC = 'true'
+      }
+    }
   }
   if (process.env.UNI_APP_X_DOM2 === 'true') {
     const vuePkgs = [

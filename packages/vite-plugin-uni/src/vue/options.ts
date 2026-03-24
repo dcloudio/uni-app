@@ -320,6 +320,8 @@ export function initPluginVueOptions(
       ) => {
         return {
           isWatch: process.env.NODE_ENV === 'development',
+          // TODO 目前使用全局开关，后续可能是页面级别的开关？
+          dynamicSharedData: process.env.UNI_APP_X_DOM2_DYNAMIC === 'true',
           helper: requireUniHelpers(),
           componentType: isUniPageFile(descriptor.filename)
             ? 'page'
