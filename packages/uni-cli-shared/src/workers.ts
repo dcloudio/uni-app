@@ -16,6 +16,7 @@ import {
   createAppIosUniModulesSyncFilePreprocessorOnce,
 } from './vite/plugins/uts/uni_modules'
 import { resolveBuiltIn } from './resolve'
+import { initSourceFileCallback } from './dom2'
 
 const debugWorkers = debug('uni:workers')
 
@@ -84,6 +85,7 @@ export function uniWorkersPlugin(): Plugin {
     platform === 'app-android'
       ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
           resolveWorkers,
+          sourceFileCallback: initSourceFileCallback(),
         })
       : null
 

@@ -4,6 +4,7 @@ import {
   type TransformDecl,
   createDecl,
   splitValues,
+  supportedValueWithTipsReason,
 } from '../utils'
 import { transformBorderColor } from './borderColor'
 import { transformBorderStyle } from './borderStyle'
@@ -12,6 +13,38 @@ import { transformBorderWidth } from './borderWidth'
 const borderWidth = __HYPHENATE__ ? '-width' : 'Width'
 const borderStyle = __HYPHENATE__ ? '-style' : 'Style'
 const borderColor = __HYPHENATE__ ? '-color' : 'Color'
+const BORDER_WIDTH_REGEXP = /^(?:[\d.]+\S*|thin|medium|thick)$/
+const BORDER_STYLE_REGEXP = /^(?:solid|dashed|dotted|none)$/
+
+export const BORDER_SHORTHAND_VAR_ORDER_WARNING =
+  '__borderShorthandVarOrderWarning'
+
+function createBorderVarOrderWarning(prop: string, value: string) {
+  return supportedValueWithTipsReason(
+    prop,
+    value,
+    '(border shorthand with CSS variables must follow `width style color`, for example: `1px solid var(--color, #999999)`)'
+  )
+}
+
+function isCssVarValue(value: string) {
+  return value.startsWith('var(')
+}
+
+function isBorderWidthValue(value: string) {
+  return isCssVarValue(value) || BORDER_WIDTH_REGEXP.test(value)
+}
+
+function isBorderStyleValue(value: string) {
+  return isCssVarValue(value) || BORDER_STYLE_REGEXP.test(value)
+}
+
+function isBorderColorValue(value: string) {
+  return (
+    isCssVarValue(value) ||
+    (!BORDER_WIDTH_REGEXP.test(value) && !BORDER_STYLE_REGEXP.test(value))
+  )
+}
 
 export function createTransformBorder(
   options: NormalizeOptions
@@ -23,8 +56,19 @@ export function createTransformBorder(
       str.startsWith('var(')
     )
     let result: Array<string | null> = []
-    // 包含 var ，直接视为 width/style/color 都使用默认值
+    // 包含 var 时按位置解析，避免把 style 误判成 color
     if (havVar) {
+      if (
+        splitResult.length > 3 ||
+        (splitResult.length === 3 &&
+          (!isBorderWidthValue(splitResult[0]) ||
+            !isBorderStyleValue(splitResult[1]) ||
+            !isBorderColorValue(splitResult[2])))
+      ) {
+        ;(decl as any)[BORDER_SHORTHAND_VAR_ORDER_WARNING] =
+          createBorderVarOrderWarning(prop, value)
+        return []
+      }
       result = splitResult
       splitResult = []
     } else {

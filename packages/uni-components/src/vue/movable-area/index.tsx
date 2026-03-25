@@ -82,7 +82,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
     if (__PLATFORM__ === 'app') {
       useRebuild(() => {
-        movableViewItems = (rootRef.value as HTMLElement).children
+        if (rootRef.value) {
+          movableViewItems = (rootRef.value as HTMLElement).children
+        }
         updateMovableViewContexts()
       })
     }

@@ -1,5 +1,5 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
-import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
+import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, onMounted, onBeforeUnmount, getCurrentGenericInstance, injectHook, defineComponent, getCurrentInstance, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
@@ -168,9 +168,9 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle) {
     }
   }
   if (triggerParentHideDialogPageNum <= 1) {
-    var systemDialogPage = getSystemDialogPages(parentPage);
-    for (var _i = 0; _i < systemDialogPage.length; _i++) {
-      if (!!systemDialogPage[_i].$triggerParentHide) {
+    var systemDialogPages = getSystemDialogPages(parentPage);
+    for (var _i = 0; _i < systemDialogPages.length; _i++) {
+      if (!!systemDialogPages[_i].$triggerParentHide) {
         triggerParentHideDialogPageNum++;
         if (triggerParentHideDialogPageNum > 1) {
           return;
@@ -194,22 +194,30 @@ function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
   var currentPage = pages2[pages2.length - 1];
   if (!currentPage || parentPage !== currentPage)
     return;
-  var dialogPages = currentPage.getDialogPages();
-  var systemDialogPage = getSystemDialogPages(parentPage);
-  var lastSystemDialogPage = systemDialogPage[systemDialogPage.length - 1];
-  var lastDialogPage = dialogPages[dialogPages.length - 1];
-  var prevDialogPage;
-  if (!lastDialogPage) {
-    prevDialogPage = lastSystemDialogPage;
-  } else if (!lastSystemDialogPage) {
-    prevDialogPage = lastDialogPage;
-  } else {
-    var _lastSystemDialogPage, _lastDialogPage$vm;
-    var lastSystemDialogPageId = ((_lastSystemDialogPage = lastSystemDialogPage.vm) === null || _lastSystemDialogPage === void 0 || (_lastSystemDialogPage = _lastSystemDialogPage.$basePage) === null || _lastSystemDialogPage === void 0 ? void 0 : _lastSystemDialogPage.id) || Number.MAX_SAFE_INTEGER;
-    var lastDialogPageId = ((_lastDialogPage$vm = lastDialogPage.vm) === null || _lastDialogPage$vm === void 0 || (_lastDialogPage$vm = _lastDialogPage$vm.$basePage) === null || _lastDialogPage$vm === void 0 ? void 0 : _lastDialogPage$vm.id) || Number.MAX_SAFE_INTEGER;
-    prevDialogPage = lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
-  }
+  var prevDialogPage = getLastDialogPage(currentPage);
   prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle);
+}
+function getLastDialogPage(parentPage) {
+  var _lastSystemDialogPage, _lastDialogPage$vm;
+  if (!parentPage)
+    return null;
+  var dialogPages = parentPage.getDialogPages();
+  var systemDialogPages = getSystemDialogPages(parentPage);
+  var lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
+  var lastDialogPage = dialogPages[dialogPages.length - 1];
+  if (!lastDialogPage)
+    return lastSystemDialogPage;
+  if (!lastSystemDialogPage)
+    return lastDialogPage;
+  var lastSystemDialogPageId = ((_lastSystemDialogPage = lastSystemDialogPage.vm) === null || _lastSystemDialogPage === void 0 || (_lastSystemDialogPage = _lastSystemDialogPage.$basePage) === null || _lastSystemDialogPage === void 0 ? void 0 : _lastSystemDialogPage.id) || Number.MAX_SAFE_INTEGER;
+  var lastDialogPageId = ((_lastDialogPage$vm = lastDialogPage.vm) === null || _lastDialogPage$vm === void 0 || (_lastDialogPage$vm = _lastDialogPage$vm.$basePage) === null || _lastDialogPage$vm === void 0 ? void 0 : _lastDialogPage$vm.id) || Number.MAX_SAFE_INTEGER;
+  return lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
+}
+function invokeLastDialogPageHookByUniPage(parentPage, hook) {
+  var lastDialogPage = getLastDialogPage(parentPage);
+  if (lastDialogPage) {
+    invokeHook(lastDialogPage.vm, hook);
+  }
 }
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
@@ -318,7 +326,7 @@ function getApiCallbacks(args) {
   var apiCallbacks = {};
   for (var name in args) {
     var fn = args[name];
-    if (isFunction$1(fn)) {
+    if (isFunction(fn)) {
       apiCallbacks[name] = tryCatch(fn);
       delete args[name];
     }
@@ -345,16 +353,16 @@ function createAsyncApiCallback(name) {
     fail,
     complete
   } = getApiCallbacks(args);
-  var hasSuccess = isFunction$1(success);
-  var hasFail = isFunction$1(fail);
-  var hasComplete = isFunction$1(complete);
+  var hasSuccess = isFunction(success);
+  var hasFail = isFunction(fail);
+  var hasComplete = isFunction(complete);
   var callbackId2 = invokeCallbackId++;
   addInvokeCallback(callbackId2, name, (res) => {
     res = res || {};
     res.errMsg = normalizeErrMsg(res.errMsg, name);
-    isFunction$1(beforeAll) && beforeAll(res);
+    isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
-      isFunction$1(beforeSuccess) && beforeSuccess(res, args);
+      isFunction(beforeSuccess) && beforeSuccess(res, args);
       hasSuccess && success(res);
     } else {
       hasFail && fail(res);
@@ -412,7 +420,7 @@ function wrapperOptions(interceptors) {
     var oldCallback = options[name];
     options[name] = function callbackInterceptor(res) {
       queue(hooks, res, options).then((res2) => {
-        return isFunction$1(oldCallback) && oldCallback(res2) || res2;
+        return isFunction(oldCallback) && oldCallback(res2) || res2;
       });
     };
   });
@@ -464,7 +472,7 @@ function invokeApi(method, api, options, params) {
   return api(options, ...params);
 }
 function hasCallback(args) {
-  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction$1(args[cb]))) {
+  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
     return true;
   }
   return false;
@@ -499,7 +507,7 @@ function formatApiArgs(args, options) {
   for (var i = 0; i < keys.length; i++) {
     var name = keys[i];
     var formatterOrDefaultValue = formatArgs[name];
-    if (isFunction$1(formatterOrDefaultValue)) {
+    if (isFunction(formatterOrDefaultValue)) {
       var errMsg = formatterOrDefaultValue(args[0][name], params);
       if (isString(errMsg)) {
         return errMsg;
@@ -554,7 +562,7 @@ function beforeInvokeApi(name, args, protocol, options) {
   }
 }
 function checkCallback(callback) {
-  if (!isFunction$1(callback)) {
+  if (!isFunction(callback)) {
     throw new Error('Invalid args: type check failed for args "callback". Expected Function');
   }
 }
@@ -1004,7 +1012,7 @@ function addCurrentPageWithInitScope(pageId, pageVm, pageInstance) {
   addCurrentPage(initScope(pageId, pageVm, pageInstance));
 }
 function isVuePageAsyncComponent(component) {
-  return isFunction$1(component);
+  return isFunction(component);
 }
 var pagesMap = /* @__PURE__ */ new Map();
 function definePage(pagePath, asyncComponent) {
@@ -1091,7 +1099,7 @@ var API_ADD_INTERCEPTOR = "addInterceptor";
 var API_REMOVE_INTERCEPTOR = "removeInterceptor";
 function mergeInterceptorHook(interceptors2, interceptor) {
   Object.keys(interceptor).forEach((hook) => {
-    if (isFunction$1(interceptor[hook])) {
+    if (isFunction(interceptor[hook])) {
       interceptors2[hook] = mergeHook(interceptors2[hook], interceptor[hook]);
     }
   });
@@ -1103,7 +1111,7 @@ function removeInterceptorHook(interceptors2, interceptor) {
   Object.keys(interceptor).forEach((name) => {
     var hooks = interceptors2[name];
     var hook = interceptor[name];
-    if (isArray(hooks) && isFunction$1(hook)) {
+    if (isArray(hooks) && isFunction(hook)) {
       remove(hooks, hook);
     }
   });
@@ -2156,7 +2164,8 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     pageStyle.set("disableSwipeBack", true);
   }
   var parentPage = dialogPage.getParentPage();
-  var createDialogPage = getPageManager().createDialogPage;
+  var pageManager = getPageManager();
+  var createDialogPage = pageManager.createDialogPage.bind(pageManager);
   var isHarmony = createDialogPage.length === 6;
   var nativePage = isHarmony ? createDialogPage(url, id2.toString(), pageStyle, parentPage === null || parentPage === void 0 ? void 0 : parentPage.getNativePage()) : createDialogPage(
     // @ts-expect-error
@@ -2288,18 +2297,9 @@ function initGlobalEvent(app) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
     var currentPage = getCurrentPage();
     if (currentPage) {
-      var systemDialogPages = getSystemDialogPages(currentPage);
-      var dialogPages = currentPage.getDialogPages();
-      if (systemDialogPages.length > 0 || dialogPages.length > 0) {
-        var lastSystemDialog = systemDialogPages[systemDialogPages.length - 1];
-        var lastDialog = dialogPages[dialogPages.length - 1];
-        if (!systemDialogPages.length) {
-          handleDialogPageBack(lastDialog);
-        } else if (!dialogPages.length) {
-          handleDialogPageBack(lastSystemDialog);
-        } else {
-          handleDialogPageBack(parseInt(lastDialog.vm.$nativePage.pageId) > parseInt(lastSystemDialog.vm.$nativePage.pageId) ? lastDialog : lastSystemDialog);
-        }
+      var lastDialogPage = getLastDialogPage(currentPage);
+      if (lastDialogPage) {
+        handleDialogPageBack(lastDialogPage);
         return true;
       }
     }
@@ -2910,6 +2910,7 @@ function _navigateTo(_ref2) {
   var currentRouteType = currentPage == null ? "appLaunch" : API_NAVIGATE_TO;
   invokeBeforeRouteHooks(currentRouteType);
   invokeHook(ON_HIDE);
+  currentPage && invokeLastDialogPageHookByUniPage(currentPage.$page, ON_HIDE);
   var eventChannel = new EventChannel(getWebviewId() + 1, events);
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -3043,6 +3044,7 @@ function back(delta, animationType, animationDuration) {
     closeWebview(webview2, animationType, animationDuration, () => {
       pages2.slice(len - delta, len).forEach((page) => removePage(page));
       invokeHook(ON_SHOW);
+      invokeLastDialogPageHookByUniPage(getCurrentPage(), ON_SHOW);
       setStatusBarStyle();
     });
   };
@@ -3362,7 +3364,6 @@ function isVueComponent(comp) {
   var has$el = typeof comp.$el === "object";
   return has$instance && has$el;
 }
-var isFunction = (val) => typeof val === "function";
 class NodesRefImpl {
   constructor(selectorQuery, component, selector, single) {
     this._selectorQuery = selectorQuery;
@@ -4829,34 +4830,42 @@ const navigator = /* @__PURE__ */ defineBuiltInComponent({
       var url = props.url;
       emit("click", $event);
       var animationDuration = props.animationDuration;
+      var onFail = (res) => {
+        console.error(res.errMsg);
+      };
       switch (props.openType) {
         case "navigate":
           uni.navigateTo({
             url,
             animationType: props.animationType.length > 0 ? props.animationType : "pop-in",
-            animationDuration
+            animationDuration,
+            fail: onFail
           });
           break;
         case "redirect":
           uni.redirectTo({
-            url
+            url,
+            fail: onFail
           });
           break;
         case "switchTab":
           uni.switchTab({
-            url
+            url,
+            fail: onFail
           });
           break;
         case "reLaunch":
           uni.reLaunch({
-            url
+            url,
+            fail: onFail
           });
           break;
         case "navigateBack":
           uni.navigateBack({
             delta: props.delta,
             animationType: props.animationType.length > 0 ? props.animationType : "pop-out",
-            animationDuration
+            animationDuration,
+            fail: onFail
           });
           break;
         default:

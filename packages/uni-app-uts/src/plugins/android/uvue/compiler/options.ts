@@ -1,6 +1,7 @@
 import type {
   BindingMetadata,
   CompilerError,
+  ParserOptions,
   RootNode,
 } from '@vue/compiler-core'
 import type { TransformPluginContext } from 'rollup'
@@ -166,7 +167,8 @@ export type TemplateCompilerOptions = {
   preprocessLang?: string
   preprocessOptions?: any
   pluginContext?: TransformPluginContext
-} & TransformOptions &
+} & ParserOptions &
+  TransformOptions &
   CodegenOptions
 
 export interface CodegenResult {

@@ -2,6 +2,7 @@ import type { BuildOptions, Plugin } from 'vite'
 import { isUTSProxy } from '../uts'
 import { resolveMainPathOnce } from '../resolve'
 import type { RollupOptions } from 'rollup'
+import { isUniAppXAndroidJsEngine } from '../x'
 
 export function uniUniModulesExtApiPlugin(): Plugin {
   return {
@@ -23,7 +24,11 @@ export function uniUniModulesExtApiPlugin(): Plugin {
         },
       }
       const build: BuildOptions = {}
-      if (['app-ios', 'app-harmony'].includes(process.env.UNI_UTS_PLATFORM)) {
+      if (
+        process.env.UNI_UTS_PLATFORM === 'app-ios' ||
+        process.env.UNI_UTS_PLATFORM === 'app-harmony' ||
+        isUniAppXAndroidJsEngine()
+      ) {
         build.rollupOptions = rollupOptions
       }
       return {

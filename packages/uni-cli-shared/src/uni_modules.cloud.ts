@@ -6,6 +6,7 @@ import { genUTSComponentPublicInstanceIdent } from './easycom'
 import { M } from './messages'
 import { EXTNAME_VUE_RE } from './constants'
 import { encodeBase64Url } from './url'
+import { isUniAppXAndroidNative } from './x'
 
 function genEncryptEasyComModuleIndex(
   pluginId: string,
@@ -22,7 +23,7 @@ function genEncryptEasyComModuleIndex(
       ids.push(id)
     }
     let instance = ''
-    if (platform === 'app-android') {
+    if (isUniAppXAndroidNative(platform)) {
       instance = genUTSComponentPublicInstanceIdent(component)
       // 类型
       ids.push(instance)
@@ -406,14 +407,15 @@ function findUniModuleFiles(
   id: string,
   inputDir: string
 ) {
+  const useUniAppXAndroidNative = isUniAppXAndroidNative(platform)
   return sync(`uni_modules/${id}/**/*`, {
     cwd: inputDir,
     absolute: true,
     ignore: [
       '**/*.md',
-      ...(platform !== 'app-android' // 非 android 平台不需要扫描 assets
-        ? [`**/*.{${KNOWN_ASSET_TYPES.join(',')}}`]
-        : []),
+      ...(useUniAppXAndroidNative // 仅旧版 Android x 需要扫描 assets
+        ? []
+        : [`**/*.{${KNOWN_ASSET_TYPES.join(',')}}`]),
     ],
   })
 }
@@ -480,12 +482,14 @@ export function resolveEncryptUniModule(
           }
         }
       }
-      // 原生平台走旧的uts-proxy
+      // 仅旧版 Android x 原生引擎走 uts-proxy，JS 引擎与其他平台统一走 uni_helpers
       return normalizePath(
         path.join(
           process.env.UNI_INPUT_DIR,
           `uni_modules/${uniModuleId}?${
-            isX && platform === 'app-android' ? 'uts-proxy' : 'uni_helpers'
+            isX && isUniAppXAndroidNative(platform)
+              ? 'uts-proxy'
+              : 'uni_helpers'
           }`
         )
       )
@@ -528,7 +532,7 @@ export async function checkEncryptUniModules(
   const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!
   const { zipFile, modules } = packUploadEncryptUniModules(
     curEncryptUniModules,
-    process.env.UNI_UTS_PLATFORM,
+    params.platform,
     inputDir,
     cacheDir
   )
@@ -537,10 +541,8 @@ export async function checkEncryptUniModules(
     const { C, D, R, U } = requireUniHelpers()
     try {
       const isLogin = await C()
-      const tips =
-        process.env.UNI_UTS_PLATFORM !== 'app-android'
-          ? '（此过程耗时较长）'
-          : ''
+      const useUniAppXAndroidNative = isUniAppXAndroidNative(params.platform)
+      const tips = !useUniAppXAndroidNative ? '（此过程耗时较长）' : ''
       console.log(
         `正在云编译插件${isLogin ? '' : '（请先登录）'}${tips}：${modules.join(
           ','
@@ -582,8 +584,9 @@ export async function checkEncryptUniModules(
       process.exit(0)
     }
   } else {
-    // android 平台需要在这里初始化
-    if (params.platform === 'app-android') {
+    const useUniAppXAndroidNative = isUniAppXAndroidNative(params.platform)
+    // 仅旧版 Android x 需要在缓存命中时额外初始化
+    if (useUniAppXAndroidNative) {
       const { R } = requireUniHelpers()
       R({
         dir: process.env.UNI_INPUT_DIR,

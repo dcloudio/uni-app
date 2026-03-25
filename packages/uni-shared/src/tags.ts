@@ -166,7 +166,7 @@ export const UVUE_WEB_BUILT_IN_TAGS = [
   'sticky-header',
   'cloud-db-element',
   'loading-element',
-  'loading'
+  'loading',
 ].map((tag) => 'uni-' + tag)
 
 export const UVUE_MP_BUILT_IN_TAGS = [
@@ -312,6 +312,8 @@ const UVUE_BUILT_IN_EASY_COMPONENTS = [
   'web-view',
   'rich-text',
   'page-container',
+  'editor',
+  'video',
 ]
 
 export function isAppUVueBuiltInEasyComponent(tag: string) {
@@ -394,10 +396,10 @@ const UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY = [
   'map',
   'loading',
   'rich-text',
+  'editor',
 ]
 
 export function isAppHarmonyUVueNativeTag(tag: string) {
-  // video 目前是easycom实现的
   if (UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY.includes(tag)) {
     return false
   }

@@ -112,6 +112,14 @@ describe('mp-alipay: transform component', () => {
     )
   })
 
+  test('alipay open component - open-avatar', () => {
+    assert(
+      `<open-avatar userId="12345" size="normal"></open-avatar>`,
+      `<open-avatar userId="12345" size="normal"></open-avatar>`,
+      blankScript
+    )
+  })
+
   test(`button chooseAvatar`, () => {
     assert(
       `<button open-type="chooseAvatar" @chooseavatar="onChooseAvatar" />`,
@@ -130,6 +138,32 @@ describe('mp-alipay: transform component x', () => {
       `<canvas style="{{'--status-bar-height:' + a}}" type="2d"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<canvas id="myCanvas"/>`,
+      `<canvas id="myCanvas" style="{{'--status-bar-height:' + b}}" type="2d" change:eS="{{uV.sS}}" eS=\"{{$eS[a]}}\" change:eA="{{uV.sA}}" eA=\"{{$eA[a]}}\"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _sei('myCanvas', 'canvas'), b: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<canvas canvas-id="myCanvas"/>`,
+      `<canvas id="myCanvas" style="{{'--status-bar-height:' + b}}" type="2d" change:eS="{{uV.sS}}" eS=\"{{$eS[a]}}\" change:eA="{{uV.sA}}" eA=\"{{$eA[a]}}\"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _sei('myCanvas', 'canvas'), b: \`\${_ctx.u_s_b_h}px\` }
   return __returned__
 }`,
       {
@@ -253,6 +287,34 @@ describe('mp-alipay: transform component x', () => {
     assert(
       `<slider active-background-color="#FF0000" fore-color="#FF0000"/>`,
       `<slider active-color="#FF0000" handle-color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<slider block-color="#00FF00" block-size="20"/>`,
+      `<slider handle-color="#00FF00" handle-size="20" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test(`scroll-view`, () => {
+    assert(
+      `<list-view/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
   return __returned__

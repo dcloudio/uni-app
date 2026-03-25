@@ -10,9 +10,9 @@ const REFRESHER_CSS = BASE_COMPONENTS_STYLE_PATH + 'refresher.css'
 
 export const API_DEPS_CSS = (isX: boolean) => {
   const deps_css = {
-    showModal: [`${H5_API_STYLE_PATH}modal.css`],
+    showModal: [] as string[],
     showToast: [`${H5_API_STYLE_PATH}toast.css`],
-    showActionSheet: [`${H5_API_STYLE_PATH}action-sheet.css`],
+    showActionSheet: [] as string[],
     previewImage: [
       RESIZE_SENSOR_CSS,
       `${BASE_COMPONENTS_STYLE_PATH}swiper.css`,
@@ -21,21 +21,29 @@ export const API_DEPS_CSS = (isX: boolean) => {
       `${BASE_COMPONENTS_STYLE_PATH}movable-view.css`,
     ],
     openLocation: [`${H5_API_STYLE_PATH}location-view.css`],
-    chooseLocation: [
-      ...(isX
-        ? [
-            `${BASE_COMPONENTS_STYLE_PATH}/view.css`,
-            `${BASE_COMPONENTS_STYLE_PATH}/text.css`,
-          ]
-        : [`${H5_API_STYLE_PATH}/location-picker.css`]),
+    chooseLocation: [] as string[],
+    showLoading: [] as string[],
+  }
+  if (isX) {
+    deps_css.showModal = [`${BASE_COMPONENTS_STYLE_PATH}textarea.css`]
+    deps_css.chooseLocation = [
+      `${BASE_COMPONENTS_STYLE_PATH}/view.css`,
+      `${BASE_COMPONENTS_STYLE_PATH}/text.css`,
       `${BASE_COMPONENTS_STYLE_PATH}/input.css`,
       `${H5_COMPONENTS_STYLE_PATH}/map.css`,
       `${BASE_COMPONENTS_STYLE_PATH}/scroll-view.css`,
-    ],
-  }
-  if (isX) {
-    // @ts-expect-error
+      `${BASE_COMPONENTS_STYLE_PATH}/image.css`,
+    ]
     deps_css.showLoading = [`${X_BASE_COMPONENTS_STYLE_PATH}loading.css`]
+  } else {
+    deps_css.showModal = [`${H5_API_STYLE_PATH}modal.css`]
+    deps_css.showActionSheet = [`${H5_API_STYLE_PATH}action-sheet.css`]
+    deps_css.chooseLocation = [
+      `${H5_API_STYLE_PATH}/location-picker.css`,
+      `${BASE_COMPONENTS_STYLE_PATH}/input.css`,
+      `${H5_COMPONENTS_STYLE_PATH}/map.css`,
+      `${BASE_COMPONENTS_STYLE_PATH}/scroll-view.css`,
+    ]
   }
   return deps_css
 }

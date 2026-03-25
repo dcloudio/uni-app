@@ -24,24 +24,4 @@ describe('compiler: transform text', () => {
 ])`
     )
   })
-  test('\n', () => {
-    assert(
-      `<view>
-  <text>\\\\\n 换行</text>
-  <text>\\\\n 换行</text>
-  <text>\\\n 换行</text>
-  <text>\\n 换行</text>
-  <text>\n 换行</text>
-  <text>\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
-</view>`,
-      `_cE(\"view\", null, [
-  _cE(\"text\", null, \"\\\\\\\\ 换行\"),
-  _cE(\"text\", null, \"\\n 换行\"),
-  _cE(\"text\", null, \"\\\\ 换行\"),
-  _cE(\"text\", null, \"\\n 换行\"),
-  _cE(\"text\", null, \" 换行\"),
-  _cE(\"text\", null, \" 换行 \\n 换行 \\\\ 换行 \\\\\\n 换行 \\\\\\\\ 换行\")
-])`
-    )
-  })
 })

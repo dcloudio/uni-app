@@ -1,6 +1,8 @@
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import { ON_HIDE, ON_SHOW } from '@dcloudio/uni-shared'
 import { invokeHook } from './hook'
+import { getCurrentPage } from '@dcloudio/uni-core'
+import type { ComponentInternalInstance } from 'vue'
 
 export const SYSTEM_DIALOG_PAGE_PATH_STARTER = 'uni:'
 export const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = 'uni:actionSheet'
@@ -49,9 +51,9 @@ function dialogPageTriggerParentLifeCycle(
     }
   }
   if (triggerParentHideDialogPageNum <= 1) {
-    const systemDialogPage = getSystemDialogPages(parentPage)
-    for (let i = 0; i < systemDialogPage.length; i++) {
-      if (!!systemDialogPage[i].$triggerParentHide) {
+    const systemDialogPages = getSystemDialogPages(parentPage)
+    for (let i = 0; i < systemDialogPages.length; i++) {
+      if (!!systemDialogPages[i].$triggerParentHide) {
         triggerParentHideDialogPageNum++
         if (triggerParentHideDialogPageNum > 1) {
           return
@@ -83,24 +85,85 @@ export function dialogPageTriggerPrevDialogPageLifeCycle(
   const pages = getCurrentPages()
   const currentPage = pages[pages.length - 1] as unknown as UniPage
   if (!currentPage || parentPage !== currentPage) return
-  const dialogPages = currentPage.getDialogPages() as UniDialogPage[]
-  const systemDialogPage = getSystemDialogPages(parentPage)
-  const lastSystemDialogPage = systemDialogPage[systemDialogPage.length - 1]
-  const lastDialogPage = dialogPages[dialogPages.length - 1]
-  let prevDialogPage
-  if (!lastDialogPage) {
-    prevDialogPage = lastSystemDialogPage
-  } else if (!lastSystemDialogPage) {
-    prevDialogPage = lastDialogPage
-  } else {
-    const lastSystemDialogPageId =
-      lastSystemDialogPage.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER
-    const lastDialogPageId =
-      lastDialogPage.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER
-    prevDialogPage =
-      lastSystemDialogPageId > lastDialogPageId
-        ? lastSystemDialogPage
-        : lastDialogPage
-  }
+
+  let prevDialogPage: UniDialogPage | null = getLastDialogPage(currentPage)
   prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle)
+}
+
+export function getLastDialogPage(
+  parentPage: UniPage | null | undefined
+): UniDialogPage | null {
+  if (!parentPage) return null
+  const dialogPages = parentPage.getDialogPages() as UniDialogPage[]
+  const systemDialogPages = getSystemDialogPages(parentPage)
+  const lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1]
+  const lastDialogPage = dialogPages[dialogPages.length - 1]
+  if (!lastDialogPage) return lastSystemDialogPage
+  if (!lastSystemDialogPage) return lastDialogPage
+  const lastSystemDialogPageId =
+    lastSystemDialogPage.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER
+  const lastDialogPageId =
+    lastDialogPage.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER
+  return lastSystemDialogPageId > lastDialogPageId
+    ? lastSystemDialogPage
+    : lastDialogPage
+}
+
+export function invokeLastDialogPageHookByUniPage(
+  parentPage: UniPage | null | undefined,
+  hook: string
+) {
+  const lastDialogPage = getLastDialogPage(parentPage)
+  if (lastDialogPage) {
+    invokeHook(lastDialogPage.vm, hook)
+  }
+}
+
+export function invokeNewDialogPageHook(page: UniDialogPage, hook: string) {
+  const currentPage = getCurrentPage() as unknown as UniPage
+  let shouldInvoke = false
+  if (!currentPage) {
+    // app launch 时 openDialogPage 此时 currentPage 未生成
+    shouldInvoke = true
+  } else {
+    if (isSystemDialogPage(page)) {
+      const systemDialogPages = getSystemDialogPages(currentPage)
+      shouldInvoke = systemDialogPages.includes(page as UniDialogPage)
+    } else {
+      const dialogPages = currentPage.getDialogPages()
+      shouldInvoke = dialogPages.includes(page as UniDialogPage)
+    }
+  }
+  shouldInvoke && invokeHook(page.vm, hook)
+}
+
+export function getPageInstanceByChild(child: ComponentInternalInstance) {
+  if (__PLATFORM__ === 'app') {
+    // @ts-expect-error
+    return child.ctx.$basePage
+  }
+  let pageInstance: ComponentInternalInstance | null = child
+  while (pageInstance && pageInstance.type?.name !== 'Page') {
+    pageInstance = pageInstance.parent
+  }
+  return pageInstance
+}
+
+export const DIALOG_TAG = 'dialog'
+export const SYSTEM_DIALOG_TAG = 'systemDialog'
+
+export function isDialogPageInstance(vm: ComponentInternalInstance | null) {
+  if (!vm) return false
+  if (__PLATFORM__ === 'app') {
+    // @ts-expect-error
+    return vm.openType === 'openDialogPage'
+  }
+
+  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm)
+}
+export function isNormalDialogPageInstance(vm: ComponentInternalInstance) {
+  return vm.attrs['data-type'] === DIALOG_TAG
+}
+export function isSystemDialogPageInstance(vm: ComponentInternalInstance) {
+  return vm.attrs['data-type'] === SYSTEM_DIALOG_TAG
 }

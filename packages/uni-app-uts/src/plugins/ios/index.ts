@@ -3,6 +3,7 @@ import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
   getWorkers,
+  initUts2jsSharedDataOptions,
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
@@ -11,6 +12,8 @@ import {
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniSharedDataPlugin,
+  uniStatsPlugin,
   uniUTSAppUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniUniModulesExtApiPlugin,
@@ -24,9 +27,14 @@ import { uniAppJsEngineMainPlugin } from '../js/mainUTS'
 import { uniAppManifestPlugin } from '../js/manifestJson'
 import { uniAppPagesPlugin } from '../js/pagesJson'
 import { replaceExtApiPagePaths } from '../js/extApiPages'
+import { uniAppCssPlugin, uniAppCssPrePlugin } from '../dom2/css'
+import { SHARED_DATA_LIB_NAME } from '../utils'
+import { uniAppXIOSEnginePlugin } from './plugin'
 
 export function init() {
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return [
+    ...(isDom2 ? [uniAppCssPrePlugin()] : []),
     ...(isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniDecryptUniModulesPlugin()]
       : []),
@@ -53,11 +61,14 @@ export function init() {
         ]),
     uniUTSUVueJavaScriptPlugin(),
     resolveUTSCompiler().uts2js({
+      dom2: isDom2,
       platform: 'app-ios',
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
       sourceMap: enableSourceMap(),
+      sharedDataLibName: isDom2 ? SHARED_DATA_LIB_NAME : undefined,
+      sharedData: initUts2jsSharedDataOptions(),
       modules: {
         vueCompilerDom,
         uniCliShared,
@@ -68,8 +79,12 @@ export function init() {
         },
       },
     }),
+    ...(isDom2 ? [uniSharedDataPlugin()] : []),
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
       ? [replaceExtApiPagePaths()]
       : []),
+    ...(isDom2 ? [uniAppCssPlugin()] : []),
+    ...(isNormalCompileTarget() ? [uniStatsPlugin()] : []),
+    ...(isDom2 && isNormalCompileTarget() ? [uniAppXIOSEnginePlugin()] : []),
   ]
 }

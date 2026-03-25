@@ -16,6 +16,8 @@ import {
 
 import { type Injects, parseUniExtApis } from './uni_modules'
 import type { EasycomMatcher } from './easycom'
+import { preUVueJs } from './preprocess'
+import { isUniAppXJsEngine } from './x'
 
 function once<T extends (...args: any[]) => any>(
   fn: T,
@@ -52,7 +54,7 @@ export function resolveUTSAppModule(
       (includeUTSSDK && parentDir === 'utssdk')
     ) {
       const basedir = parentDir === 'uni_modules' ? 'utssdk' : ''
-      if (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js') {
+      if (isUniAppXJsEngine()) {
         // js engine
         if (parentDir === 'uni_modules') {
           const appJsIndex = path.resolve(id, basedir, 'app-js', 'index.uts')
@@ -651,7 +653,7 @@ async function parseUniExtApiAutoImports(
           filename
         )
         if (fs.existsSync(interfaceFileName)) {
-          const ids = await parseExportIdentifiers(interfaceFileName)
+          const ids = await parseExportIdentifiers(interfaceFileName, preUVueJs)
           ids
             // 过滤掉 Uni
             .filter((id) => id !== 'Uni')

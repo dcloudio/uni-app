@@ -427,6 +427,12 @@
       "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
+      "CreateEditorContextAsync"
+    ],
+    [
+      "CreateEditorContextAsyncOptions"
+    ],
+    [
       "CreateInnerAudioContext"
     ],
     [
@@ -482,6 +488,9 @@
     ],
     [
       "DownloadTask"
+    ],
+    [
+      "EditorContext"
     ],
     [
       "EntriesResult"
@@ -1052,6 +1061,9 @@
     ],
     [
       "IShareWithSystemFail"
+    ],
+    [
+      "IUniEditorElement"
     ],
     [
       "Icon"
@@ -2230,6 +2242,45 @@
       "UniCanvasElement"
     ],
     [
+      "UniEditorElement"
+    ],
+    [
+      "UniEditorElementGetContentsOptions"
+    ],
+    [
+      "UniEditorElementGetContentsOptionsRes"
+    ],
+    [
+      "UniEditorElementGetSelectionTextOptions"
+    ],
+    [
+      "UniEditorElementGetSelectionTextOptionsRes"
+    ],
+    [
+      "UniEditorElementInsertImageOptions"
+    ],
+    [
+      "UniEditorElementInsertMentionOptions"
+    ],
+    [
+      "UniEditorElementInsertTextOptions"
+    ],
+    [
+      "UniEditorElementOptions"
+    ],
+    [
+      "UniEditorElementOptionsCompleteRes"
+    ],
+    [
+      "UniEditorElementOptionsFailRes"
+    ],
+    [
+      "UniEditorElementOptionsSuccessRes"
+    ],
+    [
+      "UniEditorElementSetContentsOptions"
+    ],
+    [
       "UniHideModalFail"
     ],
     [
@@ -2386,43 +2437,10 @@
       "VideoContext"
     ],
     [
-      "VideoControlsToggleEvent"
-    ],
-    [
-      "VideoControlsToggleEventDetail"
-    ],
-    [
       "VideoError"
     ],
     [
       "VideoErrorCode"
-    ],
-    [
-      "VideoErrorEvent"
-    ],
-    [
-      "VideoFullScreenChangeEvent"
-    ],
-    [
-      "VideoFullScreenChangeEventDetail"
-    ],
-    [
-      "VideoFullScreenClickEvent"
-    ],
-    [
-      "VideoFullScreenClickEventDetail"
-    ],
-    [
-      "VideoProgressEvent"
-    ],
-    [
-      "VideoProgressEventDetail"
-    ],
-    [
-      "VideoTimeUpdateEvent"
-    ],
-    [
-      "VideoTimeUpdateEventDetail"
     ],
     [
       "WebViewContext"

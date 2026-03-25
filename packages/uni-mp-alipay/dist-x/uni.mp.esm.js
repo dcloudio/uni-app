@@ -1036,6 +1036,7 @@ function initVm(mpInstance, createComponent) {
 }
 function initCreateComponent() {
     return function createComponent(vueOptions) {
+        var _a, _b, _c;
         vueOptions = vueOptions.default || vueOptions;
         const mpComponentOptions = {
             props: initComponentProps(vueOptions.props),
@@ -1072,6 +1073,14 @@ function initCreateComponent() {
         // vueOptions.options
         if (vueOptions.options) {
             mpComponentOptions.options = vueOptions.options;
+        }
+        if (__X_STYLE_ISOLATION__) {
+            mpComponentOptions.options = (_a = mpComponentOptions.options) !== null && _a !== void 0 ? _a : {};
+            mpComponentOptions.options.externalClasses =
+                (_c = (_b = vueOptions.options) === null || _b === void 0 ? void 0 : _b.externalClasses) !== null && _c !== void 0 ? _c : true;
+            if (vueOptions.externalClasses) {
+                mpComponentOptions.externalClasses = vueOptions.externalClasses;
+            }
         }
         if (__VUE_OPTIONS_API__) {
             mpComponentOptions.data = initData();

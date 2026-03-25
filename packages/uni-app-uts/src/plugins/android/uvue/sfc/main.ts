@@ -19,7 +19,6 @@ import {
 import {
   createResolveErrorMsg,
   createRollupError,
-  genUTSClassName,
   getUTSEasyComAutoImports,
   normalizeEmitAssetFileName,
   normalizePath,
@@ -35,6 +34,7 @@ import {
   createResolveError,
   detectAutoImports,
   genAutoImportsCode,
+  genUVueClassName,
   parseImports,
   wrapResolve,
 } from '../../utils'
@@ -73,11 +73,7 @@ export async function transformMain(
     return null
   }
 
-  const className =
-    process.env.UNI_COMPILE_TARGET === 'ext-api'
-      ? // components/map/map.vue => UniMapRender
-        genUTSClassName(path.basename(filename), options.classNamePrefix)
-      : genUTSClassName(relativeFilename, options.classNamePrefix)
+  const className = genUVueClassName(relativeFilename, options.classNamePrefix)
 
   // script
   const scriptOptions = {

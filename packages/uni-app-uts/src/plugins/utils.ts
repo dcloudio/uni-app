@@ -28,19 +28,14 @@ import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { ResolvedConfig } from 'vite'
 import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 
-const isXHarmony =
-  process.env.UNI_APP_X === 'true' &&
-  process.env.UNI_UTS_PLATFORM === 'app-harmony'
+export const SHARED_DATA_LIB_NAME = 'libentry.so'
 
 export function createUniOptions(
   platform: 'app-android' | 'app-ios' | 'app-harmony'
 ): UniVitePlugin['uni'] {
-  const isDom2Harmony =
-    process.env.UNI_APP_X_DOM2 === 'true' && platform === 'app-harmony'
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return {
-    compiler: isDom2Harmony
-      ? require('@dcloudio/compiler-vapor-dom2')
-      : undefined,
+    compiler: isDom2 ? require('@dcloudio/compiler-vapor-dom2') : undefined,
     copyOptions() {
       const inputDir = process.env.UNI_INPUT_DIR
       const outputDir = process.env.UNI_OUTPUT_DIR
@@ -72,10 +67,12 @@ export function createUniOptions(
       }
     },
     compilerOptions:
-      platform === 'app-ios' || platform === 'app-harmony'
+      platform === 'app-ios' ||
+      platform === 'app-harmony' ||
+      (platform === 'app-android' && isDom2)
         ? {
             isNativeTag(tag) {
-              if (isDom2Harmony) {
+              if (isDom2) {
                 return isDom2AppNativeTag(tag)
               }
               return (
@@ -99,7 +96,12 @@ export function createUniOptions(
                     (node.tagType === ElementTypes.COMPONENT &&
                       isAppUVueBuiltInEasyComponent(node.tag)))
                 ) {
-                  if (!parseUTSComponent(node.tag, 'swift')) {
+                  if (
+                    !parseUTSComponent(
+                      node.tag,
+                      platform === 'app-android' ? 'kotlin' : 'swift'
+                    )
+                  ) {
                     addExtApiComponents([node.tag])
                   }
                 }
@@ -150,7 +152,10 @@ const REMOVED_PLUGINS = [
   'vite:reporter',
 ]
 
-if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+if (
+  process.env.UNI_UTS_PLATFORM === 'app-android' &&
+  process.env.UNI_APP_X_DOM2 !== 'true'
+) {
   REMOVED_PLUGINS.push('vite:esbuild-transpile')
 }
 
@@ -175,6 +180,10 @@ export function normalizeManifestJson(
   platform: 'app-android' | 'app-ios' | 'app-harmony',
   userManifestJson: Record<string, any>
 ) {
+  const isXHarmony =
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-harmony'
+
   const app = userManifestJson[platform] || userManifestJson.app || {}
   const x = userManifestJson['uni-app-x'] || {}
   x.compilerVersion = process.env.UNI_COMPILER_VERSION || ''

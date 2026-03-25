@@ -4663,6 +4663,85 @@ const innerAudioContextOffEventNames = [
   "offSeeking",
   "offSeeked"
 ];
+let index$w = 0;
+let optionsCache = {};
+function operateEditor(componentId, pageId, type, options) {
+  const data = { options };
+  const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
+  if (needCallOptions) {
+    const callbackId = String(index$w++);
+    data.callbackId = callbackId;
+    optionsCache[callbackId] = options;
+  }
+  UniServiceJSBridge.invokeViewMethod(
+    `editor.${componentId}`,
+    {
+      type,
+      data
+    },
+    pageId,
+    ({ callbackId, data: data2 }) => {
+      if (needCallOptions) {
+        callOptions(optionsCache[callbackId], data2);
+        delete optionsCache[callbackId];
+      }
+    }
+  );
+}
+class EditorContext {
+  constructor(id2, pageId) {
+    this.id = id2;
+    this.pageId = pageId;
+  }
+  format(name, value) {
+    this._exec("format", {
+      name,
+      value
+    });
+  }
+  insertDivider() {
+    this._exec("insertDivider");
+  }
+  insertMention(options) {
+    this._exec("insertMention", options);
+  }
+  insertImage(options) {
+    this._exec("insertImage", options);
+  }
+  insertText(options) {
+    this._exec("insertText", options);
+  }
+  setContents(options) {
+    this._exec("setContents", options);
+  }
+  getContents(options) {
+    this._exec("getContents", options);
+  }
+  clear(options) {
+    this._exec("clear", options);
+  }
+  removeFormat(options) {
+    this._exec("removeFormat", options);
+  }
+  undo(options) {
+    this._exec("undo", options);
+  }
+  redo(options) {
+    this._exec("redo", options);
+  }
+  blur(options) {
+    this._exec("blur", options);
+  }
+  getSelectionText(options) {
+    this._exec("getSelectionText", options);
+  }
+  scrollIntoView(options) {
+    this._exec("scrollIntoView", options);
+  }
+  _exec(method, options) {
+    operateEditor(this.id, this.pageId, method, options);
+  }
+}
 const defaultOptions = {
   thresholds: [0],
   initialRatio: 0,
@@ -4766,82 +4845,6 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$w = 0;
-let optionsCache = {};
-function operateEditor(componentId, pageId, type, options) {
-  const data = { options };
-  const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
-  if (needCallOptions) {
-    const callbackId = String(index$w++);
-    data.callbackId = callbackId;
-    optionsCache[callbackId] = options;
-  }
-  UniServiceJSBridge.invokeViewMethod(
-    `editor.${componentId}`,
-    {
-      type,
-      data
-    },
-    pageId,
-    ({ callbackId, data: data2 }) => {
-      if (needCallOptions) {
-        callOptions(optionsCache[callbackId], data2);
-        delete optionsCache[callbackId];
-      }
-    }
-  );
-}
-class EditorContext {
-  constructor(id2, pageId) {
-    this.id = id2;
-    this.pageId = pageId;
-  }
-  format(name, value) {
-    this._exec("format", {
-      name,
-      value
-    });
-  }
-  insertDivider() {
-    this._exec("insertDivider");
-  }
-  insertImage(options) {
-    this._exec("insertImage", options);
-  }
-  insertText(options) {
-    this._exec("insertText", options);
-  }
-  setContents(options) {
-    this._exec("setContents", options);
-  }
-  getContents(options) {
-    this._exec("getContents", options);
-  }
-  clear(options) {
-    this._exec("clear", options);
-  }
-  removeFormat(options) {
-    this._exec("removeFormat", options);
-  }
-  undo(options) {
-    this._exec("undo", options);
-  }
-  redo(options) {
-    this._exec("redo", options);
-  }
-  blur(options) {
-    this._exec("blur", options);
-  }
-  getSelectionText(options) {
-    this._exec("getSelectionText", options);
-  }
-  scrollIntoView(options) {
-    this._exec("scrollIntoView", options);
-  }
-  _exec(method, options) {
-    operateEditor(this.id, this.pageId, method, options);
-  }
-}
 const ContextClasss = {
   canvas: CanvasContext,
   map: MapContext,
@@ -7870,8 +7873,9 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
     const rootEl = rootRef.value;
     if (!rootEl)
       return;
-    size.width = rootEl.offsetWidth;
-    size.height = rootEl.offsetHeight;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
     reset();
   };
 }
@@ -9266,6 +9270,64 @@ function link(Quill) {
     return Link.PROTOCOL_WHITELIST.concat("file").indexOf(protocol) > -1 ? url : Link.SANITIZED_URL;
   };
 }
+const SupportStyleList = ["color", "background", "padding", "radius"];
+const MentionStyleMap = {
+  color: "color",
+  background: "background",
+  padding: "padding",
+  radius: "border-radius"
+};
+function getMentionStyleValue(node, styleKey) {
+  const cssName = MentionStyleMap[styleKey];
+  if (!cssName) {
+    return "";
+  }
+  return node.style.getPropertyValue(cssName).trim();
+}
+function mention(Quill) {
+  const Embed = Quill.import("blots/embed");
+  class MentionBlot extends Embed {
+    static create(data) {
+      const node = super.create();
+      const id2 = data.id == null ? "" : data.id;
+      const name = data.name == null ? "" : data.name;
+      node.setAttribute("contenteditable", "false");
+      node.setAttribute("data-id", id2);
+      node.setAttribute("data-name", name);
+      let style = "";
+      SupportStyleList.forEach((item) => {
+        const styleName = MentionStyleMap[item] || item;
+        if (data[item]) {
+          style += `${hyphenate(styleName)}: ${data[item]};`;
+        }
+      });
+      if (style) {
+        node.setAttribute("style", style);
+      }
+      node.innerText = `@${name}`;
+      return node;
+    }
+    static value(node) {
+      const value = {
+        id: node.dataset.id == null ? "" : node.dataset.id,
+        name: node.dataset.name == null ? "" : node.dataset.name
+      };
+      SupportStyleList.forEach((item) => {
+        const styleValue2 = getMentionStyleValue(node, item);
+        if (styleValue2) {
+          value[item] = styleValue2;
+        }
+      });
+      return value;
+    }
+  }
+  MentionBlot.blotName = "mention";
+  MentionBlot.tagName = "span";
+  MentionBlot.className = "mention";
+  return {
+    "formats/mention": MentionBlot
+  };
+}
 function register(Quill) {
   const formats = {
     divider,
@@ -9278,7 +9340,8 @@ function register(Quill) {
     font,
     text,
     image,
-    link
+    link,
+    mention
   };
   const options = {};
   Object.values(formats).forEach((value) => extend(options, value(Quill)));
@@ -9293,7 +9356,7 @@ function useQuill(props2, rootRef, trigger) {
     (value) => {
       if (quillReady) {
         quill.enable(!value);
-        if (!value) {
+        if (value) {
           quill.blur();
         }
       }
@@ -9304,6 +9367,14 @@ function useQuill(props2, rootRef, trigger) {
     (value) => {
       if (quillReady) {
         setPlaceHolder(value);
+      }
+    }
+  );
+  watch(
+    () => props2.type,
+    (value) => {
+      if (quillReady) {
+        setInputMode(value);
       }
     }
   );
@@ -9380,6 +9451,14 @@ function useQuill(props2, rootRef, trigger) {
     const QuillRoot = quill.root;
     QuillRoot.getAttribute(placeHolderAttrName) !== placeholder && QuillRoot.setAttribute(placeHolderAttrName, placeholder);
   }
+  function setInputMode(type) {
+    const QuillRoot = quill.root;
+    if (type === "none") {
+      QuillRoot.setAttribute("inputmode", "none");
+    } else {
+      QuillRoot.removeAttribute("inputmode");
+    }
+  }
   let oldStatus = {};
   function updateStatus(range) {
     const status = range ? quill.getFormat(range) : {};
@@ -9389,7 +9468,18 @@ function useQuill(props2, rootRef, trigger) {
       trigger("statuschange", {}, status);
     }
   }
+  function fixCursor() {
+    var _a;
+    const range = quill.getSelection();
+    if (!range)
+      return;
+    const [leaf] = quill.getLeaf(range.index - 1);
+    if (((_a = leaf == null ? void 0 : leaf.statics) == null ? void 0 : _a.blotName) === "mention") {
+      quill.setSelection(range.index, 0, "silent");
+    }
+  }
   function textChangeHandler() {
+    fixCursor();
     trigger("input", {}, getContents());
   }
   function initQuill(imageResizeModules) {
@@ -9413,6 +9503,7 @@ function useQuill(props2, rootRef, trigger) {
     }
     const rootEl = rootRef.value;
     quill = new Quill(rootEl, options);
+    setInputMode(props2.type);
     const $el = quill.root;
     const events = ["focus", "blur", "input"];
     events.forEach((name) => {
@@ -9500,6 +9591,14 @@ function useQuill(props2, rootRef, trigger) {
             quill.insertText(range.index, LINEFEED, "user");
             quill.insertEmbed(range.index + 1, "divider", true, "user");
             quill.setSelection(range.index + 2, 0, "silent");
+            break;
+          case "insertMention":
+            {
+              range = quill.getSelection(true);
+              const mentionData = extend({ id: "", name: "" }, options);
+              quill.insertEmbed(range.index, "mention", mentionData, "user");
+              quill.setSelection(range.index + 1, 0);
+            }
             break;
           case "insertImage":
             {
@@ -9643,6 +9742,10 @@ const props$t = /* @__PURE__ */ extend({}, props$u, {
   readOnly: {
     type: [Boolean, String],
     default: false
+  },
+  type: {
+    type: String,
+    default: ""
   },
   placeholder: {
     type: String,
@@ -12806,6 +12909,9 @@ class Scroll {
     return e2;
   }
 }
+function calculateSnapIndex(position, itemSize) {
+  return Math.round(Math.abs(position) / itemSize);
+}
 function createAnimation(scroll, onScroll, onEnd) {
   const state2 = {
     id: 0,
@@ -12924,7 +13030,7 @@ class Scroller {
     this._lastDelay = 0;
     this._scrolling = true;
     this._lastChangePos = this._position;
-    this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
+    this._lastIdx = calculateSnapIndex(this._position, this._itemSize);
     this._animation = createAnimation(
       this._scroll,
       () => {
@@ -12948,7 +13054,7 @@ class Scroller {
           }
           if (isFunction(this._options.onSnap)) {
             this._options.onSnap(
-              Math.floor(Math.abs(this._position) / this._itemSize)
+              calculateSnapIndex(this._position, this._itemSize)
             );
           }
         }
@@ -12977,7 +13083,7 @@ class Scroller {
       this.scrollTo(-i);
       if (isFunction(this._options.onSnap)) {
         this._options.onSnap(
-          Math.floor(Math.abs(this._position) / this._itemSize)
+          Math.round(Math.abs(this._position) / this._itemSize)
         );
       }
     }
@@ -13045,7 +13151,7 @@ class Scroller {
       this.dispatchScroll();
       if (isFunction(this._options.onSnap)) {
         this._options.onSnap(
-          Math.floor(Math.abs(this._position) / this._itemSize)
+          Math.round(Math.abs(this._position) / this._itemSize)
         );
       }
     }
@@ -13218,7 +13324,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const resizeSensorRef = ref(null);
     const initIndicatorHeight = () => {
       const resizeSensor = resizeSensorRef.value;
-      indicatorHeight.value = resizeSensor.$el.offsetHeight;
+      indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height;
     };
     {
       onMounted(initIndicatorHeight);
@@ -16556,8 +16662,10 @@ function setupPage(comp, path) {
         if (!instance2.__isVisible) {
           onPageShow(instance2, pageMeta);
           instance2.__isVisible = true;
-          const { onShow } = instance2;
-          onShow && invokeArrayFns$1(onShow);
+          {
+            const { onShow } = instance2;
+            onShow && invokeArrayFns$1(onShow);
+          }
           nextTick(() => {
             invokeOnTabItemTap(route);
           });

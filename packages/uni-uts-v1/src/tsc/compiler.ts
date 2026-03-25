@@ -35,6 +35,7 @@ export function createUniXCompiler(
     normalizeFileName: (str: string) => string
     isPureSwift?: boolean
     resolveWorkers: () => Record<string, string>
+    sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
   }
 ) {
   const inputDir = normalizePath(options.inputDir)

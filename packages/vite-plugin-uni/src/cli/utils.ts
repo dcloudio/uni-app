@@ -12,6 +12,8 @@ import {
   initPreContext,
   isInHBuilderX,
   isNormalCompileTarget,
+  isUniAppX,
+  isUniAppXVapor,
   output,
   parseManifestJsonOnce,
   parseScripts,
@@ -248,7 +250,7 @@ export function initEnv(
     ) {
       process.env.UNI_APP_X_TSC = 'false'
     }
-    if (manifestJson['uni-app-x']?.['styleIsolationVersion'] === '2') {
+    if (manifestJson['uni-app-x']?.['styleIsolationVersion'] == 2) {
       process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
     }
   } catch (e) {}
@@ -325,19 +327,20 @@ export function initEnv(
     process.env.UNI_UTS_PLATFORM,
     process.env.UNI_APP_X === 'true'
   )
-  // 应该全平台都显示吧，当初为啥只在部分平台显示？
-  if (
-    process.env.UNI_PLATFORM === 'app' ||
-    process.env.UNI_PLATFORM === 'web' ||
-    process.env.UNI_PLATFORM === 'h5' ||
-    process.env.UNI_PLATFORM === 'app-harmony'
-  ) {
+  const isX = isUniAppX()
+  console.log(
+    M['app.compiler.version'].replace(
+      '{version}',
+      process.env.UNI_COMPILER_VERSION +
+        `（${isX ? 'uni-app x' : 'vue3'}）` +
+        (process.env.UNI_APP_X_DOM2 === 'true' ? '蒸汽模式' : '')
+    )
+  )
+  if (isX && !isUniAppXVapor()) {
     console.log(
-      M['app.compiler.version'].replace(
+      M['style.isolation.version'].replace(
         '{version}',
-        process.env.UNI_COMPILER_VERSION +
-          `（${process.env.UNI_APP_X === 'true' ? 'uni-app x' : 'vue3'}）` +
-          (process.env.UNI_APP_X_DOM2 === 'true' ? '蒸汽模式' : '')
+        (process.env.UNI_APP_STYLE_ISOLATION_VERSION || '1') + '.0'
       )
     )
   }

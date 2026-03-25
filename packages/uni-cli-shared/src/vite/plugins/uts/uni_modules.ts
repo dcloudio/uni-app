@@ -33,6 +33,7 @@ import {
   checkEncryptUniModules,
   resolveEncryptUniModule,
 } from '../../../uni_modules.cloud'
+import { isUniAppXJsEngine } from '../../../x'
 import {
   camelize,
   capitalize,
@@ -47,6 +48,7 @@ import { initScopedPreContext } from '../../../preprocess/context'
 import { isInHBuilderX } from '../../../hbx'
 import { appendConsoleExpr, rewriteConsoleExpr } from '../../../logs/console'
 import { getWorkers } from '../../../workers'
+import { initSourceFileCallback } from '../../../dom2'
 
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../../../lib/preprocess')
@@ -371,7 +373,10 @@ export function uniUTSAppUniModulesPlugin(
     process.env.UNI_APP_X_TSC === 'true' &&
     (process.env.UNI_UTS_PLATFORM === 'app-android' ||
       process.env.UNI_UTS_PLATFORM === 'app')
-      ? createUniXKotlinCompilerOnce({ resolveWorkers })
+      ? createUniXKotlinCompilerOnce({
+          resolveWorkers,
+          sourceFileCallback: initSourceFileCallback(),
+        })
       : null
   const uniXSwiftCompiler =
     process.env.UNI_APP_X_TSC === 'true' &&
@@ -627,7 +632,7 @@ export function uniUTSAppUniModulesPlugin(
     for (const plugin of plugins) {
       const pluginDir = path.resolve(inputDir, 'uni_modules', plugin.plugin)
       // 如果是 app-js 环境
-      if (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js') {
+      if (isUniAppXJsEngine()) {
         if (
           fs.existsSync(
             path.resolve(pluginDir, 'utssdk', 'app-js', 'index.uts')

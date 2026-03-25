@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import type { Plugin } from 'vite'
 import {
   MANIFEST_JSON_UTS,
+  isUniAppXAndroidJsEngine,
   parseJson,
   resolveUTSCompiler,
   validateThemeValue,
@@ -14,6 +15,10 @@ import {
   updateHarmonyManifestModules,
   updateManifestModules,
 } from '../utils'
+import {
+  genUniAppXJsEngineIndexKotlinCode,
+  resolveUniAppXJsEngineIndexKotlinPath,
+} from '../android-dom2/utils'
 
 let outputManifestJson: Record<string, any> | undefined = undefined
 
@@ -26,7 +31,7 @@ export function getOutputManifestJson() {
 }
 
 export function uniAppManifestPlugin(
-  platform: 'app-ios' | 'app-harmony'
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
 ): Plugin {
   const manifestJsonPath = path.resolve(
     process.env.UNI_INPUT_DIR,
@@ -37,6 +42,7 @@ export function uniAppManifestPlugin(
     MANIFEST_JSON_UTS
   )
   let manifestJson: Record<string, any> = {}
+  let kotlinCode = ''
   return {
     name: 'uni:app-manifest',
     apply: 'build',
@@ -61,6 +67,19 @@ export function uniAppManifestPlugin(
           map: {
             mappings: '',
           },
+        }
+      }
+    },
+    writeBundle() {
+      if (isUniAppXAndroidJsEngine() && process.env.UNI_APP_X_DOM2_KT_DIR) {
+        const newKotlinCode = genUniAppXJsEngineIndexKotlinCode(manifestJson)
+        if (kotlinCode !== newKotlinCode) {
+          fs.outputFileSync(
+            resolveUniAppXJsEngineIndexKotlinPath(),
+            newKotlinCode
+          )
+          kotlinCode = newKotlinCode
+          process.env.UNI_APP_X_DOM2_KT_CHANGED = 'true'
         }
       }
     },

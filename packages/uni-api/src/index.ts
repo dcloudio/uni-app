@@ -8,6 +8,7 @@ export * from './service/context/createVideoContext'
 export * from './service/context/createMapContext'
 export * from './service/context/canvas'
 export * from './service/context/innerAudio'
+export * from './service/context/editor'
 
 export * from './service/ui/createIntersectionObserver'
 export * from './service/ui/createMediaQueryObserver'

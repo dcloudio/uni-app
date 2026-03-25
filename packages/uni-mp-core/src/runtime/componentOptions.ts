@@ -37,6 +37,12 @@ export function initPropsObserver(componentOptions: MPComponentOptions) {
     } else if (resolvePropValue(this.properties.uT) === 'm') {
       // 小程序组件
       updateMiniProgramComponentProperties(resolvePropValue(up), this)
+    } else {
+      // mp-harmony  this.$vm 和 observe.uP 表现不稳定
+      if (__PLATFORM__ === 'mp-harmony') {
+        // 临时变量 在 attached this.$vm 时处理
+        this._pendingUP = up
+      }
     }
   }
   if (

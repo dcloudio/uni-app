@@ -6,7 +6,11 @@ import {
   NavigateBackProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
-import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
+import {
+  getCurrentPage,
+  invokeHook,
+  invokeLastDialogPageHookByUniPage,
+} from '@dcloudio/uni-core'
 import {
   ON_BACK_PRESS,
   ON_LAST_PAGE_BACK_PRESS,
@@ -128,6 +132,10 @@ function back(
         .forEach((page) => removePage(page as ComponentPublicInstance))
       // 前一个页面触发 onShow
       invokeHook(ON_SHOW)
+      invokeLastDialogPageHookByUniPage(
+        getCurrentPage() as unknown as UniPage,
+        ON_SHOW
+      )
       setStatusBarStyle()
     })
   }

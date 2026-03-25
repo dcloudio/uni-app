@@ -102,6 +102,7 @@ export const customElements = [
   'mpaas-component',
   'match-media',
   'ad-feeds',
+  'open-avatar',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 

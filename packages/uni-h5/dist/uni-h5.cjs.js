@@ -2207,8 +2207,9 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
     const rootEl = rootRef.value;
     if (!rootEl)
       return;
-    size.width = rootEl.offsetWidth;
-    size.height = rootEl.offsetHeight;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
     reset();
   };
 }
@@ -3158,6 +3159,11 @@ function useQuill(props2, rootRef, trigger) {
     (value) => {
     }
   );
+  vue.watch(
+    () => props2.type,
+    (value) => {
+    }
+  );
   useContextInfo();
   useSubscribe();
 }
@@ -3169,6 +3175,10 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
   readOnly: {
     type: [Boolean, String],
     default: false
+  },
+  type: {
+    type: String,
+    default: ""
   },
   placeholder: {
     type: String,

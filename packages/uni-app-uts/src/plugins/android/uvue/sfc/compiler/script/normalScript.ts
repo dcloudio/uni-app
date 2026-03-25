@@ -131,6 +131,7 @@ export function processTemplate(
   )
   const {
     code,
+    ast,
     preamble,
     elements,
     map,
@@ -157,5 +158,5 @@ export function processTemplate(
       addExtApiComponents(components)
     }
   }
-  return { code, map, preamble, preambleMap }
+  return { code, ast, map, preamble, preambleMap }
 }

@@ -53,7 +53,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       }
@@ -66,7 +66,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       }
@@ -270,6 +270,22 @@
         }
       }
     }
+  },
+  "uni-editor": {
+    "uni": {
+      "createEditorContextAsync": {
+        "name": "createEditorContextAsync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    },
+    "easycom": [
+      "editor"
+    ]
   },
   "uni-event": {
     "uni": {
@@ -911,8 +927,8 @@
       "name": "weixin",
       "app": {
         "js": false,
-        "kotlin": false,
-        "swift": false,
+        "kotlin": true,
+        "swift": true,
         "arkts": true
       }
     }
@@ -974,6 +990,12 @@
       "service": "payment",
       "name": "wxpay"
     }
+  },
+  "uni-picker": {
+    "uni": {},
+    "easycom": [
+      "picker"
+    ]
   },
   "uni-previewImage": {
     "uni": {
@@ -1231,13 +1253,26 @@
       }
     }
   },
+  "uni-share": {
+    "uni": {
+      "share": {
+        "name": "share",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-share-weixin": {
     "provider": {
       "service": "share",
       "name": "weixin",
       "app": {
         "js": false,
-        "kotlin": false,
+        "kotlin": true,
         "swift": false,
         "arkts": true
       }
@@ -1513,9 +1548,6 @@
         }
       }
     },
-    "components": [
-      "video"
-    ],
     "easycom": [
       "video"
     ]

@@ -13632,8 +13632,9 @@
       var rootEl = rootRef.value;
       if (!rootEl)
         return;
-      size2.width = rootEl.offsetWidth;
-      size2.height = rootEl.offsetHeight;
+      var rect = rootEl.getBoundingClientRect();
+      size2.width = rect.width;
+      size2.height = rect.height;
       reset();
     };
   }
@@ -15127,6 +15128,64 @@
       return Link.PROTOCOL_WHITELIST.concat("file").indexOf(protocol) > -1 ? url : Link.SANITIZED_URL;
     };
   }
+  var SupportStyleList = ["color", "background", "padding", "radius"];
+  var MentionStyleMap = {
+    color: "color",
+    background: "background",
+    padding: "padding",
+    radius: "border-radius"
+  };
+  function getMentionStyleValue(node, styleKey) {
+    var cssName = MentionStyleMap[styleKey];
+    if (!cssName) {
+      return "";
+    }
+    return node.style.getPropertyValue(cssName).trim();
+  }
+  function mention(Quill) {
+    var Embed2 = Quill.import("blots/embed");
+    class MentionBlot extends Embed2 {
+      static create(data) {
+        var node = super.create();
+        var id2 = data.id == null ? "" : data.id;
+        var name = data.name == null ? "" : data.name;
+        node.setAttribute("contenteditable", "false");
+        node.setAttribute("data-id", id2);
+        node.setAttribute("data-name", name);
+        var style = "";
+        SupportStyleList.forEach((item) => {
+          var styleName = MentionStyleMap[item] || item;
+          if (data[item]) {
+            style += "".concat(hyphenate(styleName), ": ").concat(data[item], ";");
+          }
+        });
+        if (style) {
+          node.setAttribute("style", style);
+        }
+        node.innerText = "@".concat(name);
+        return node;
+      }
+      static value(node) {
+        var value = {
+          id: node.dataset.id == null ? "" : node.dataset.id,
+          name: node.dataset.name == null ? "" : node.dataset.name
+        };
+        SupportStyleList.forEach((item) => {
+          var styleValue = getMentionStyleValue(node, item);
+          if (styleValue) {
+            value[item] = styleValue;
+          }
+        });
+        return value;
+      }
+    }
+    MentionBlot.blotName = "mention";
+    MentionBlot.tagName = "span";
+    MentionBlot.className = "mention";
+    return {
+      "formats/mention": MentionBlot
+    };
+  }
   function register(Quill) {
     var formats = {
       divider,
@@ -15139,7 +15198,8 @@
       font,
       text,
       image,
-      link
+      link,
+      mention
     };
     var options = {};
     Object.values(formats).forEach((value) => extend(options, value(Quill)));
@@ -15152,7 +15212,7 @@
     watch(() => props2.readOnly, (value) => {
       if (quillReady) {
         quill.enable(!value);
-        if (!value) {
+        if (value) {
           quill.blur();
         }
       }
@@ -15160,6 +15220,11 @@
     watch(() => props2.placeholder, (value) => {
       if (quillReady) {
         setPlaceHolder(value);
+      }
+    });
+    watch(() => props2.type, (value) => {
+      if (quillReady) {
+        setInputMode(value);
       }
     });
     function html2delta(html) {
@@ -15214,6 +15279,14 @@
       var QuillRoot = quill.root;
       QuillRoot.getAttribute(placeHolderAttrName) !== placeholder && QuillRoot.setAttribute(placeHolderAttrName, placeholder);
     }
+    function setInputMode(type) {
+      var QuillRoot = quill.root;
+      if (type === "none") {
+        QuillRoot.setAttribute("inputmode", "none");
+      } else {
+        QuillRoot.removeAttribute("inputmode");
+      }
+    }
     var oldStatus = {};
     function updateStatus(range) {
       var status = range ? quill.getFormat(range) : {};
@@ -15223,7 +15296,18 @@
         trigger2("statuschange", {}, status);
       }
     }
+    function fixCursor() {
+      var _a;
+      var range = quill.getSelection();
+      if (!range)
+        return;
+      var [leaf] = quill.getLeaf(range.index - 1);
+      if (((_a = leaf == null ? void 0 : leaf.statics) == null ? void 0 : _a.blotName) === "mention") {
+        quill.setSelection(range.index, 0, "silent");
+      }
+    }
     function textChangeHandler() {
+      fixCursor();
       trigger2("input", {}, getContents());
     }
     function initQuill(imageResizeModules) {
@@ -15244,6 +15328,7 @@
       }
       var rootEl = rootRef.value;
       quill = new Quill(rootEl, options);
+      setInputMode(props2.type);
       var $el = quill.root;
       var events = ["focus", "blur", "input"];
       events.forEach((name) => {
@@ -15346,6 +15431,17 @@
             quill.insertText(range.index, LINEFEED, "user");
             quill.insertEmbed(range.index + 1, "divider", true, "user");
             quill.setSelection(range.index + 2, 0, "silent");
+            break;
+          case "insertMention":
+            {
+              range = quill.getSelection(true);
+              var mentionData = extend({
+                id: "",
+                name: ""
+              }, options);
+              quill.insertEmbed(range.index, "mention", mentionData, "user");
+              quill.setSelection(range.index + 1, 0);
+            }
             break;
           case "insertImage":
             {
@@ -15487,6 +15583,10 @@
     readOnly: {
       type: [Boolean, String],
       default: false
+    },
+    type: {
+      type: String,
+      default: ""
     },
     placeholder: {
       type: String,
@@ -16697,7 +16797,9 @@
       }
       {
         useRebuild(() => {
-          movableViewItems = rootRef.value.children;
+          if (rootRef.value) {
+            movableViewItems = rootRef.value.children;
+          }
           updateMovableViewContexts();
         });
       }
@@ -18618,6 +18720,9 @@
       return e2;
     }
   }
+  function calculateSnapIndex(position, itemSize) {
+    return Math.round(Math.abs(position) / itemSize);
+  }
   function createAnimation(scroll, onScroll, onEnd) {
     var state = {
       id: 0,
@@ -18734,7 +18839,7 @@
       this._lastDelay = 0;
       this._scrolling = true;
       this._lastChangePos = this._position;
-      this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
+      this._lastIdx = calculateSnapIndex(this._position, this._itemSize);
       this._animation = createAnimation(this._scroll, () => {
         var e2 = Date.now();
         var i2 = (e2 - this._scroll._startTime) / 1e3;
@@ -18754,7 +18859,7 @@
             this.updatePosition();
           }
           if (isFunction(this._options.onSnap)) {
-            this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+            this._options.onSnap(calculateSnapIndex(this._position, this._itemSize));
           }
         }
         if (this._shouldDispatchScrollEvent) {
@@ -18780,7 +18885,7 @@
         this._snapping = true;
         this.scrollTo(-i2);
         if (isFunction(this._options.onSnap)) {
-          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+          this._options.onSnap(Math.round(Math.abs(this._position) / this._itemSize));
         }
       }
     }
@@ -18846,7 +18951,7 @@
       if (position !== this._position) {
         this.dispatchScroll();
         if (isFunction(this._options.onSnap)) {
-          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+          this._options.onSnap(Math.round(Math.abs(this._position) / this._itemSize));
         }
       }
       this._extent = extent;
@@ -19015,7 +19120,7 @@
       var resizeSensorRef = ref(null);
       var initIndicatorHeight = () => {
         var resizeSensor = resizeSensorRef.value;
-        indicatorHeight.value = resizeSensor.$el.offsetHeight;
+        indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height;
       };
       var maskSize = computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
       var {

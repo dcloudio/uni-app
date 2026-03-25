@@ -588,6 +588,13 @@ function initPropsObserver(componentOptions) {
             // 小程序组件
             updateMiniProgramComponentProperties(resolvePropValue(up), this);
         }
+        else {
+            // mp-harmony  this.$vm 和 observe.uP 表现不稳定
+            {
+                // 临时变量 在 attached this.$vm 时处理
+                this._pendingUP = up;
+            }
+        }
     };
     {
         if (!componentOptions.observers) {
@@ -871,6 +878,13 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
                 initComponentInstance(instance, options);
             },
         });
+        // mp-harmony 目前发现 observe.uP 和 this.$vm 出发表现不稳定
+        {
+            // 处理延迟的 uP 更新
+            if (this._pendingUP) {
+                updateComponentProps(resolvePropValue(this._pendingUP), this.$vm.$);
+            }
+        }
         if (process.env.UNI_DEBUG) {
             console.log('uni-app:[' +
                 Date.now() +

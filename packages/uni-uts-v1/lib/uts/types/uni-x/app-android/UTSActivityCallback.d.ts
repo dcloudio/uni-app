@@ -46,7 +46,7 @@ declare class UniActivityParams {
    */
   pageRoute : string;
   /**
-     如果对应的方法有返回值，会将返回值赋给result，默认null
+     如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null
      @uniPlatform {
         "app": {
             "android": {
@@ -65,6 +65,26 @@ declare class UniActivityParams {
      }
    */
   result : any | null;
+  /**
+       如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递）
+       @uniPlatform {
+          "app": {
+              "android": {
+                 "osVer": "5.0",
+                 "uniVer": "x",
+                 "unixVer": "5.01",
+                 "uniUtsPlugin": "x",
+                 "unixUtsPlugin": "4.18"
+              },
+              "ios": {
+                 "osVer": "x",
+                 "uniVer": "x",
+                   "unixVer": "x"
+              }
+          }
+       }
+     */
+    returnResult : any | null;
 }
 interface IUniActivityCallback { }
 /**

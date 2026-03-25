@@ -27,6 +27,8 @@ import {
 } from './shared'
 import type { ClassMeta } from './code'
 import { uvueOutDir } from './uvue'
+import type { KotlinCompilerServer } from './kotlin'
+import type { SwiftCompilerServer } from './swift'
 
 type UTSPluginPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 interface ToOptions {
@@ -444,10 +446,19 @@ export function createResolveTypeReferenceName(
   }
 }
 
-export type CompilerServer = {}
-export function getCompilerServer<T extends CompilerServer>(
+export function getKotlinCompilerServer(): KotlinCompilerServer | undefined {
+  return getCompilerServer('uniapp-runextension') as
+    | KotlinCompilerServer
+    | undefined
+}
+export function getSwiftCompilerServer(): SwiftCompilerServer | undefined {
+  return getCompilerServer('uts-development-ios') as
+    | SwiftCompilerServer
+    | undefined
+}
+function getCompilerServer(
   pluginName: 'uts-development-ios' | 'uniapp-runextension'
-): T | undefined {
+): KotlinCompilerServer | SwiftCompilerServer | undefined {
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
     console.error(`该项目必须在 HBuilderX 中运行`)
     return

@@ -32,7 +32,7 @@ import {
   builtInComponents,
   builtInCustomElements,
   filterName,
-  filterObserverName
+  filterObserverName,
 } from './utils'
 import { parseVForKeyAlias } from './transformSlot'
 import { parseRefCode } from './transformRef'
@@ -48,7 +48,6 @@ import {
 } from '@babel/types'
 import { parseExpr } from '../ast'
 import { genBabelExpr } from '../codegen'
-
 
 export function rewriteId(node: ElementNode, context: TransformContext) {
   const isUniElement = !isUserComponent(node, context)
@@ -143,9 +142,9 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
   }
   let idOptions:
     | {
-      name: string
-      type?: SetUniElementIdTagType
-    }
+        name: string
+        type?: SetUniElementIdTagType
+      }
     | string = origTagName
   if (isBuiltInComponent || isBuiltInCustomElement) {
     idOptions = {

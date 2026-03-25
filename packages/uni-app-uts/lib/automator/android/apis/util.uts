@@ -1,52 +1,45 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
-/// <reference types="@dcloudio/uni-app-x/types/page" />
 // @ts-expect-error
 import type { IUniNativeDocument } from 'io.dcloud.uniapp.dom'
 
 
-function getPageId(page: Page): string {
-  return page.$nativePage!.pageId
+function getPageId(page: UniPage): string {
+  return page.vm?.$nativePage!.pageId
 }
-function getPagePath(page: Page): string {
+function getPagePath(page: UniPage): string {
   return page.route
 }
 // @ts-expect-error
-function getPageQuery(page: Page): UTSJSONObject {
+function getPageQuery(page: UniPage): UTSJSONObject {
   return page.options
 }
-function getPageById(id: string): Page | null {
+export function getPageById(id: string): UniPage | null {
   const pages = getCurrentPages() as UniPage[]
-  let result: Page | null = null
+  let result: UniPage | null = null
   pages.forEach((page: UniPage) => {
-    if (getPageId(page.vm!) == id) {
-      result = page.vm!
+    if (getPageId(page) == id) {
+      result = page
     }
   })
   return result
 }
-export function getPageVm(id: string): Page | null {
-  return getPageById(id)
-}
 
 export function pageGetData(
-  vm: Page
+  page: UniPage
   // @ts-expect-error
 ): UTSJSONObject {
   // TODO: path 目前无法处理类型问题，暂由服务端处理
-  // @ts-expect-error
-  if (vm.$.exposed.size > 0) {
+  if (page.vm!.$.exposed.size > 0) {
     // @ts-expect-error
-    return new UTSJSONObject(vm.$.exposed)
+    return new UTSJSONObject(page.vm!.$.exposed)
   }
   // @ts-expect-error
-  return new UTSJSONObject(vm.$data)
+  return new UTSJSONObject(page.vm!.$data)
 }
-export function pageSetData(vm: Page, data: Map<string, any | null>): void {
+export function pageSetData(page: UniPage, data: Map<string, any | null>): void {
   data.forEach((value: any | null, key: string) => {
-    // @ts-expect-error
-    if (vm.$.exposed.size > 0) {
-      // @ts-expect-error
-      const vmData = vm.$.exposed;
+    if (page.vm!.$.exposed.size > 0) {
+      const vmData = page.vm!.$.exposed;
       // @ts-expect-error
       if (value instanceof UTSJSONObject) {
         value.toMap().forEach((childValue: any | null, childKey: string) => {
@@ -67,13 +60,12 @@ export function pageSetData(vm: Page, data: Map<string, any | null>): void {
         vmData[key] = data[key];
       }
     } else {
-    // @ts-expect-error
-      vm.$data.set(key, value)
+      page.vm!.$data.set(key, value)
     }
   })
 }
 // @ts-expect-error
-export function parsePage(page: Page): UTSJSONObject {
+export function parsePage(page: UniPage): UTSJSONObject {
   return {
     id: getPageId(page),
     path: getPagePath(page),
@@ -87,13 +79,12 @@ export function getComponentVmBySelector(
   callback: (result: any | null, error: any | null) => void
   // @ts-expect-error
 ): ComponentPublicInstance | null {
-  const page = getPageVm(pageId)
+  const page = getPageById(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
-  // @ts-expect-error
-  const component = page.$children.find(
+  const component = page.vm!.$children.find(
     // @ts-expect-error
     (child: ComponentPublicInstance): boolean => child.$options.name == selector
   )
@@ -109,7 +100,7 @@ export function getComponentVmByNodeId(
   callback: (result: any | null, error: any | null) => void
   // @ts-expect-error
 ): ComponentPublicInstance | null {
-  const page = getPageVm(pageId)
+  const page = getPageById(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
@@ -128,7 +119,7 @@ export function getComponentVmByNodeId(
       getComponentChild(child)
     })
   }
-  getComponentChild(page)
+  getComponentChild(page.vm!)
   if (component == null) {
     callback(null, { errMsg: `component[${nodeId}] not exists` })
     return null
@@ -165,7 +156,7 @@ export function getElementByNodeIdOrElementId(
   elementId: string | null,
   callback: (result: any | null, error: any | null) => void
 ): UniElement | null {
-  const page = getPageVm(pageId)
+  const page = getPageById(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
@@ -182,12 +173,12 @@ export function getElementById(
   elementId: string,
   callback: (result: any | null, error: any | null) => void
 ): UniElement | null {
-  const page = getPageVm(pageId)
+  const page = getPageById(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
-  const document = page.$nativePage!.document
+  const document = page.vm!.$nativePage!.document
   const element = (document as IUniNativeDocument).getNativeElementById(
     elementId
   )

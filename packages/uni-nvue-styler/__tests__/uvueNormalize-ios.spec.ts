@@ -671,6 +671,27 @@ border-color: var(--default-border);
     })
   })
 
+  test('border shorthand with css var must use width style color order', async () => {
+    const { json, messages } = await objectifierRule(`
+.test {
+  --arrow-color: #999999;
+  border-right: 1px var(--arrow-color, #999999) solid;
+}
+    `)
+
+    expect(json).toEqual({
+      test: {
+        '': {
+          '--arrow-color': '#999999',
+        },
+      },
+    })
+    expect(messages).toHaveLength(1)
+    expect(messages[0].text).toBe(
+      'ERROR: property value `1px var(--arrow-color, #999999) solid` is not supported for `border-right` (border shorthand with CSS variables must follow `width style color`, for example: `1px solid var(--color, #999999)`)'
+    )
+  })
+
   test('多次出现 border 不同形式，保证最后一个生效', async () => {
     const { json } = await objectifierRule(`
 .test {

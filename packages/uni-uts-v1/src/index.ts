@@ -57,11 +57,17 @@ import {
 import { existsSync, readdirSync, rmSync } from 'fs-extra'
 import { restoreDebuggerFiles } from './manifest/dex'
 import { compileArkTS } from './arkts'
+import type { UniXCompilerOptions } from '../lib/uni-x/dist/compiler'
 
 export { syncUTSFiles } from './uni_modules'
 export * from './tsc'
 
-export { getPluginInjectApis, getPluginInjectComponents } from './utils'
+export {
+  getKotlinCompilerServer,
+  getSwiftCompilerServer,
+  getPluginInjectApis,
+  getPluginInjectComponents,
+} from './utils'
 
 export { parseExportIdentifiers, parseInterfaceTypes } from './code'
 
@@ -74,14 +80,19 @@ export {
   resolveAppHarmonyUniModulesEntryDir,
 } from './arkts'
 
-export { toCppCode } from '@dcloudio/uts'
+export { toCppCode, toKotlinCode, toSwiftCode } from '@dcloudio/uts'
 
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,
 }
 
-export { compileApp, CompileAppOptions } from './uvue/index'
+export {
+  compileApp,
+  CompileAppOptions,
+  compileVaporApp,
+  CompileVaporAppOptions,
+} from './uvue/index'
 
 export { parseInjectModules, parseExtApiProviders } from './utils'
 
@@ -785,6 +796,7 @@ export async function buildUniModules(
       fileName: string
     ) => Promise<string>
     rootFiles?: string[]
+    sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
   },
   compilerOptions: UTSPluginCompilerOptions
 ) {
@@ -805,6 +817,7 @@ export async function buildUniModules(
       pluginDir,
       createUniXKotlinCompiler({
         resolveWorkers: () => ({}),
+        sourceFileCallback: options.sourceFileCallback,
       }),
       {
         rootFiles: options.rootFiles,

@@ -157,6 +157,15 @@ describe('compiler: root', () => {
   })
   test('template', () => {
     assert(
+      `<view><template v-if="show"><text>show</text></template><template v-else><text>hidden</text></template><text>test</text></view>`,
+      `<view style="{{'--status-bar-height:' + b}}"><block wx:if="{{a}}"><text>show</text></block><block wx:else><text>hidden</text></block><text>test</text></view>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = _e({ a: _ctx.show }, _ctx.show ? {} : {}, { b: \`\${_ctx.u_s_b_h}px\` })
+  return __returned__
+}`,
+      { isX: true }
+    )
+    assert(
       `<template v-if="show"><view/></template><template v-else><view/><text>123</text></template>`,
       `<block wx:if="{{a}}"><view style="{{'--status-bar-height:' + b}}"/></block><block wx:else><view style="{{'--status-bar-height:' + c}}"/><text style="{{'--status-bar-height:' + d}}">123</text></block>`,
       `(_ctx, _cache) => { "raw js"
@@ -165,12 +174,20 @@ describe('compiler: root', () => {
 }`,
       { isX: true }
     )
-
     assert(
       `<template v-if="show"><template v-if="show2"><view/></template><text>123</text></template>`,
       `<block wx:if="{{a}}"><block wx:if="{{b}}"><view style="{{'--status-bar-height:' + c}}"/></block><text style="{{'--status-bar-height:' + d}}">123</text></block>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = _e({ a: _ctx.show }, _ctx.show ? _e({ b: _ctx.show2 }, _ctx.show2 ? { c: \`\${_ctx.u_s_b_h}px\` } : {}, { d: \`\${_ctx.u_s_b_h}px\` }) : {})
+  return __returned__
+}`,
+      { isX: true }
+    )
+    assert(
+      `<template v-if="show"><template v-if="show2"><view><slot/></view><template v-if="show3">test text <view><slot>slot text</slot></view></template></template><text>123</text></template>`,
+      `<block wx:if="{{a}}"><block wx:if="{{b}}"><view style="{{'--status-bar-height:' + c}}"><slot/></view><block wx:if="{{d}}">test text <view style="{{'--status-bar-height:' + e}}"><block wx:if="{{$slots.d}}"><slot></slot></block><block wx:else>slot text</block></view></block></block><text style="{{'--status-bar-height:' + f}}">123</text></block>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = _e({ a: _ctx.show }, _ctx.show ? _e({ b: _ctx.show2 }, _ctx.show2 ? _e({ c: \`\${_ctx.u_s_b_h}px\`, d: _ctx.show3 }, _ctx.show3 ? { e: \`\${_ctx.u_s_b_h}px\` } : {}) : {}, { f: \`\${_ctx.u_s_b_h}px\` }) : {})
   return __returned__
 }`,
       { isX: true }
@@ -233,6 +250,15 @@ describe('compiler: root', () => {
     )
   })
   test('v-for', () => {
+    assert(
+      `<view><text v-for="item in list" :key="item.id">item -- {{ item.text }}</text></view>`,
+      `<view style="{{'--status-bar-height:' + b}}"><text wx:for="{{a}}" wx:for-item="item" wx:key="b">item -- {{item.a}}</text></view>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _f(_ctx.list, (item, k0, i0) => { return { a: _t(item.text), b: item.id }; }), b: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      { isX: true }
+    )
     assert(
       `<template v-for="item in list"><view><text>item -- {{ item }}</text></view></template>`,
       `<block wx:for="{{a}}" wx:for-item="item"><view style="{{'--status-bar-height:' + b}}"><text>item -- {{item.a}}</text></view></block>`,

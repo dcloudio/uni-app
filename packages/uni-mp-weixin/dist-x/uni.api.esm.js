@@ -530,6 +530,31 @@ const createCanvasContextAsync = defineAsyncApi(API_CREATE_CANVAS_CONTEXT_ASYNC,
     }
 });
 
+const API_CREATE_EDITOR_CONTEXT_ASYNC = 'createEditorContextAsync';
+const createEditorContextAsync = defineAsyncApi(API_CREATE_EDITOR_CONTEXT_ASYNC, (options, { resolve, reject }) => {
+    const { id, component } = options;
+    const pages = getCurrentPages();
+    const page = pages[pages.length - 1];
+    if (!page || !page.$vm) {
+        reject('current page invalid.');
+    }
+    else {
+        const query = wx.createSelectorQuery();
+        const baseQuery = component ? query.in(component) : query;
+        baseQuery
+            .select('#' + id)
+            .context((res) => {
+            if (res && res.context) {
+                resolve(res.context);
+            }
+            else {
+                reject('editor id or component invalid.');
+            }
+        })
+            .exec();
+    }
+});
+
 const API_UPX2PX = 'upx2px';
 const Upx2pxProtocol = [
     {
@@ -1455,6 +1480,7 @@ const baseApis = {
     __f__,
     getElementById,
     createCanvasContextAsync,
+    createEditorContextAsync,
 };
 function initUni(api, protocols, platform = wx) {
     const wrapper = initWrapper(protocols);

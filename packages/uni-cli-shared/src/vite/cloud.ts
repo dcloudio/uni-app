@@ -25,6 +25,8 @@ import {
 import { removePlugins } from './utils'
 import { findChangedJsonFiles } from '../json'
 import { getWorkers } from '../workers'
+import { initSourceFileCallback } from '../dom2'
+import { isUniAppXAndroidNative } from '../x'
 
 export function createEncryptCssUrlReplacer(
   resolve: ResolveFn
@@ -79,6 +81,7 @@ export function uniEncryptUniModulesAssetsPlugin(): Plugin {
 export function uniEncryptUniModulesPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
   const isMp = process.env.UNI_UTS_PLATFORM.startsWith('mp-')
+  const useUniAppXAndroidNative = isUniAppXAndroidNative()
   const encryptModuleOutputFiles: string[] = []
   return {
     name: 'uni:encrypt-uni-modules',
@@ -110,7 +113,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       resolvedConfig = config
     },
     resolveId(id, importer) {
-      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+      if (!useUniAppXAndroidNative) {
         if (resolvedConfig.assetsInclude(cleanUrl(id))) {
           id = normalizePath(id)
           if (importer && (id.startsWith('./') || id.startsWith('../'))) {
@@ -124,7 +127,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       }
     },
     load(id) {
-      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+      if (!useUniAppXAndroidNative) {
         if (resolvedConfig.assetsInclude(cleanUrl(id))) {
           return {
             code: `export default ${JSON.stringify(id.replace(/\0/g, ''))}`,
@@ -137,8 +140,8 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       Object.keys(bundle).forEach((fileName) => {
         if (fileName.endsWith('.module.js')) {
           const uniModuleId = path.basename(fileName).replace('.module.js', '')
-          // app-android 不需要 js
-          if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+          // 仅旧版 Android x 不需要 js
+          if (!useUniAppXAndroidNative) {
             const newFileName =
               'uni_modules/' +
               fileName.replace('.module.js', '/index.module.js')
@@ -202,13 +205,14 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       }
     },
     async writeBundle() {
-      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+      if (!useUniAppXAndroidNative) {
         return
       }
       const uniXKotlinCompiler =
         process.env.UNI_APP_X_TSC === 'true'
           ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
               resolveWorkers: () => getWorkers(),
+              sourceFileCallback: initSourceFileCallback(),
             })
           : null
       if (uniXKotlinCompiler) {
@@ -493,7 +497,10 @@ export function compileCloudUniModuleWithTsc(
     platform,
     pluginDir,
     platform === 'app-android'
-      ? createUniXKotlinCompilerOnce({ resolveWorkers })
+      ? createUniXKotlinCompilerOnce({
+          resolveWorkers,
+          sourceFileCallback: initSourceFileCallback(),
+        })
       : platform === 'app-harmony'
       ? createUniXArkTSCompilerOnce({ resolveWorkers })
       : createUniXSwiftCompilerOnce({ resolveWorkers }),

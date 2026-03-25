@@ -1,4 +1,11 @@
 import { invokeHook } from '@dcloudio/uni-core'
+//#if _X_
+import {
+  getPageInstanceByChild,
+  invokeNewDialogPageHook,
+  isDialogPageInstance,
+} from '@dcloudio/uni-core'
+//#endif
 import {
   LINEFEED,
   ON_LOAD,
@@ -7,8 +14,7 @@ import {
   decodedQuery,
   isUniLifecycleHook,
 } from '@dcloudio/uni-shared'
-import { isArray, isFunction } from '@vue/shared'
-import { hasOwn } from '@vue/shared'
+import { hasOwn, isArray, isFunction } from '@vue/shared'
 
 import type {
   ComponentInternalInstance,
@@ -87,7 +93,16 @@ export function initHooks(
         : (publicThis.$page as Page.PageInstance['$page'])
       if (!(__PLATFORM__ === 'app' && __X__ && $basePage?.meta.isTabBar)) {
         if ($basePage?.openType !== 'preloadPage') {
+          //#if _X_
+          if (isDialogPageInstance(getPageInstanceByChild(instance))) {
+            invokeNewDialogPageHook(publicThis.$page as UniDialogPage, ON_SHOW)
+          } else {
+            invokeHook(publicThis, ON_SHOW)
+          }
+          //#endif
+          //#if !_X_
           invokeHook(publicThis, ON_SHOW)
+          //#endif
         }
       }
     } catch (e: any) {

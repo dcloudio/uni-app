@@ -58,6 +58,7 @@ interface WindowExt extends Window {
 export function useQuill(
   props: {
     readOnly?: any
+    type?: any
     placeholder?: any
     showImgSize?: any
     showImgToolbar?: any
@@ -75,7 +76,7 @@ export function useQuill(
     (value) => {
       if (quillReady) {
         quill.enable(!value)
-        if (!value) {
+        if (value) {
           quill.blur()
         }
       }
@@ -86,6 +87,14 @@ export function useQuill(
     (value) => {
       if (quillReady) {
         setPlaceHolder(value)
+      }
+    }
+  )
+  watch(
+    () => props.type,
+    (value) => {
+      if (quillReady) {
+        setInputMode(value)
       }
     }
   )
@@ -165,6 +174,14 @@ export function useQuill(
     QuillRoot.getAttribute(placeHolderAttrName) !== placeholder &&
       QuillRoot.setAttribute(placeHolderAttrName, placeholder)
   }
+  function setInputMode(type: string) {
+    const QuillRoot = quill.root
+    if (type === 'none') {
+      QuillRoot.setAttribute('inputmode', 'none')
+    } else {
+      QuillRoot.removeAttribute('inputmode')
+    }
+  }
   let oldStatus: StringMap = {}
   function updateStatus(range?: RangeStatic) {
     const status = range ? quill.getFormat(range) : {}
@@ -177,7 +194,16 @@ export function useQuill(
       trigger('statuschange', {} as Event, status)
     }
   }
+  function fixCursor() {
+    const range = quill.getSelection()
+    if (!range) return
+    const [leaf] = quill.getLeaf(range.index - 1)
+    if (leaf?.statics?.blotName === 'mention') {
+      quill.setSelection(range.index, 0, 'silent')
+    }
+  }
   function textChangeHandler() {
+    fixCursor()
     trigger('input', {} as Event, getContents())
   }
   function initQuill(imageResizeModules: ResizeModuleName[]) {
@@ -201,6 +227,7 @@ export function useQuill(
     }
     const rootEl = rootRef.value as HTMLElement
     quill = new Quill(rootEl, options) as QuillExt
+    setInputMode(props.type as string)
     const $el = quill.root
     const events = ['focus', 'blur', 'input']
     events.forEach((name) => {
@@ -299,6 +326,14 @@ export function useQuill(
             quill.insertText(range.index, LINEFEED, 'user')
             quill.insertEmbed(range.index + 1, 'divider', true, 'user')
             quill.setSelection(range.index + 2, 0, 'silent')
+            break
+          case 'insertMention':
+            {
+              range = quill.getSelection(true)
+              const mentionData = extend({ id: '', name: '' }, options)
+              quill.insertEmbed(range.index, 'mention', mentionData, 'user')
+              quill.setSelection(range.index + 1, 0)
+            }
             break
           case 'insertImage':
             {

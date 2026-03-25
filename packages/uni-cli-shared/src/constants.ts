@@ -7,7 +7,7 @@ export const EXTNAME_VUE_TEMPLATE = ['.vue', '.nvue', '.uvue', '.jsx', '.tsx']
 export const EXTNAME_VUE_RE = /\.(vue|nvue|uvue)$/
 export const EXTNAME_JS_RE = /\.(js|jsx|ts|uts|tsx|mjs)$/
 export const EXTNAME_TS_RE = /\.tsx?$/
-
+export const DEFAULT_APPID = '__UNI__uniappx'
 export const SPECIAL_CHARS = {
   WARN_BLOCK: '\uFEFF', // 警告块前后标识
   ERROR_BLOCK: '\u2060', // 错误块前后标识
@@ -103,10 +103,3 @@ export const DEFAULT_ASSETS_RE = new RegExp(
 )
 
 export const TEXT_STYLE = ['black', 'white']
-
-export const JS_STYLE_PLACEHOLDER_MARKER = '__js_style_placeholder__'
-export const JS_STYLE_PLACEHOLDER_STR = JSON.stringify({
-  [JS_STYLE_PLACEHOLDER_MARKER]: 0,
-})
-export const JS_STYLE_PLACEHOLDER_RE =
-  /\{\s*"__js_style_placeholder__"\s*:\s*0\s*}/g

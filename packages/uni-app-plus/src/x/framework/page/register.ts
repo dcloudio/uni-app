@@ -293,7 +293,8 @@ export function registerDialogPage(
     pageStyle.set('disableSwipeBack', true)
   }
   const parentPage = dialogPage.getParentPage()
-  const createDialogPage = (getPageManager() as any).createDialogPage
+  const pageManager = getPageManager() as any
+  const createDialogPage = pageManager.createDialogPage.bind(pageManager)
   // 鸿蒙的API与Android保持一致，参数均为6个
   const isHarmony = createDialogPage.length === 6
   const nativePage = isHarmony

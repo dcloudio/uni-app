@@ -4,7 +4,7 @@ import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import type { StickySectionStatus } from '../list-view/types'
 
-export class UniStickySectionElement extends UniElement { }
+export class UniStickySectionElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'StickySection',
   props: {
@@ -32,8 +32,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return {
         paddingTop: paddingTop + 'px',
         paddingRight: paddingRight + 'px',
-        paddingBottom: (isVertical.value ? paddingBottom + placeholderSize.value : paddingBottom) + 'px',
-        paddingLeft: (isVertical.value ? paddingLeft : paddingLeft + placeholderSize.value) + 'px',
+        paddingBottom:
+          (isVertical.value
+            ? paddingBottom + placeholderSize.value
+            : paddingBottom) + 'px',
+        paddingLeft:
+          (isVertical.value
+            ? paddingLeft
+            : paddingLeft + placeholderSize.value) + 'px',
       }
     })
 
@@ -47,7 +53,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       type: 'StickySection',
       headSize,
       tailSize,
-      placeholderSize
+      placeholderSize,
     }
     expose({
       __listViewChildStatus: status,

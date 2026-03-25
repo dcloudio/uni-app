@@ -163,7 +163,7 @@ const UVUE_WEB_BUILT_IN_TAGS = [
     'sticky-header',
     'cloud-db-element',
     'loading-element',
-    'loading'
+    'loading',
 ].map((tag) => 'uni-' + tag);
 const UVUE_MP_BUILT_IN_TAGS = [
     'list-view',
@@ -285,6 +285,8 @@ const UVUE_BUILT_IN_EASY_COMPONENTS = [
     'web-view',
     'rich-text',
     'page-container',
+    'editor',
+    'video',
 ];
 function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
@@ -359,9 +361,9 @@ const UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY = [
     'map',
     'loading',
     'rich-text',
+    'editor',
 ];
 function isAppHarmonyUVueNativeTag(tag) {
-    // video 目前是easycom实现的
     if (UVUE_BUILT_IN_EASY_COMPONENTS_HARMONY.includes(tag)) {
         return false;
     }

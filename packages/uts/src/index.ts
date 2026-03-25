@@ -60,10 +60,13 @@ export interface ToOptions {
 export {
   parse,
   toArkTS,
+  toArkTSCode,
   toCpp,
   toCppCode,
   toKotlin,
+  toKotlinCode,
   toSwift,
+  toSwiftCode,
   bundleArkTS,
   bundleKotlin,
   bundleSwift,

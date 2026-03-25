@@ -1641,14 +1641,21 @@ function createFunctionDeclaration(
   }
 }
 
-export async function parseExportIdentifiers(fileName: string) {
+export async function parseExportIdentifiers(
+  fileName: string,
+  preprocessor?: SyncUniModulesFilePreprocessor
+) {
   const ids: string[] = []
   if (!fs.existsSync(fileName)) {
     return ids
   }
   let ast: Module | null = null
   try {
-    ast = await parseUtsCode(fs.readFileSync(fileName, 'utf8'), {
+    let code = fs.readFileSync(fileName, 'utf8')
+    if (preprocessor) {
+      code = await preprocessor(code, fileName)
+    }
+    ast = await parseUtsCode(code, {
       filename: fileName,
       noColor: true,
     })

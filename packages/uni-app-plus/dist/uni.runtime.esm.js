@@ -10730,6 +10730,83 @@ const innerAudioContextOffEventNames = [
     'offSeeked',
 ];
 
+// let eventReady = false
+let index$2 = 0;
+let optionsCache = {};
+function operateEditor(componentId, pageId, type, options) {
+    const data = { options };
+    const needCallOptions = options &&
+        ('success' in options || 'fail' in options || 'complete' in options);
+    if (needCallOptions) {
+        const callbackId = String(index$2++);
+        data.callbackId = callbackId;
+        optionsCache[callbackId] = options;
+    }
+    UniServiceJSBridge.invokeViewMethod(`editor.${componentId}`, {
+        type,
+        data,
+    }, pageId, ({ callbackId, data }) => {
+        if (needCallOptions) {
+            callOptions(optionsCache[callbackId], data);
+            delete optionsCache[callbackId];
+        }
+    });
+}
+class EditorContext {
+    constructor(id, pageId) {
+        this.id = id;
+        this.pageId = pageId;
+    }
+    format(name, value) {
+        this._exec('format', {
+            name,
+            value,
+        });
+    }
+    insertDivider() {
+        this._exec('insertDivider');
+    }
+    insertMention(options) {
+        this._exec('insertMention', options);
+    }
+    insertImage(options) {
+        this._exec('insertImage', options);
+    }
+    insertText(options) {
+        this._exec('insertText', options);
+    }
+    setContents(options) {
+        this._exec('setContents', options);
+    }
+    getContents(options) {
+        this._exec('getContents', options);
+    }
+    clear(options) {
+        this._exec('clear', options);
+    }
+    removeFormat(options) {
+        this._exec('removeFormat', options);
+    }
+    undo(options) {
+        this._exec('undo', options);
+    }
+    redo(options) {
+        this._exec('redo', options);
+    }
+    blur(options) {
+        this._exec('blur', options);
+    }
+    getSelectionText(options) {
+        this._exec('getSelectionText', options);
+    }
+    scrollIntoView(options) {
+        this._exec('scrollIntoView', options);
+    }
+    _exec(method, options) {
+        operateEditor(this.id, this.pageId, method, options);
+    }
+}
+
 const defaultOptions = {
     thresholds: [0],
     initialRatio: 0,
@@ -10824,80 +10901,6 @@ const createMediaQueryObserver = defineSyncApi('createMediaQueryObserver', (cont
     }
     return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-
-// let eventReady = false
-let index$2 = 0;
-let optionsCache = {};
-function operateEditor(componentId, pageId, type, options) {
-    const data = { options };
-    const needCallOptions = options &&
-        ('success' in options || 'fail' in options || 'complete' in options);
-    if (needCallOptions) {
-        const callbackId = String(index$2++);
-        data.callbackId = callbackId;
-        optionsCache[callbackId] = options;
-    }
-    UniServiceJSBridge.invokeViewMethod(`editor.${componentId}`, {
-        type,
-        data,
-    }, pageId, ({ callbackId, data }) => {
-        if (needCallOptions) {
-            callOptions(optionsCache[callbackId], data);
-            delete optionsCache[callbackId];
-        }
-    });
-}
-class EditorContext {
-    constructor(id, pageId) {
-        this.id = id;
-        this.pageId = pageId;
-    }
-    format(name, value) {
-        this._exec('format', {
-            name,
-            value,
-        });
-    }
-    insertDivider() {
-        this._exec('insertDivider');
-    }
-    insertImage(options) {
-        this._exec('insertImage', options);
-    }
-    insertText(options) {
-        this._exec('insertText', options);
-    }
-    setContents(options) {
-        this._exec('setContents', options);
-    }
-    getContents(options) {
-        this._exec('getContents', options);
-    }
-    clear(options) {
-        this._exec('clear', options);
-    }
-    removeFormat(options) {
-        this._exec('removeFormat', options);
-    }
-    undo(options) {
-        this._exec('undo', options);
-    }
-    redo(options) {
-        this._exec('redo', options);
-    }
-    blur(options) {
-        this._exec('blur', options);
-    }
-    getSelectionText(options) {
-        this._exec('getSelectionText', options);
-    }
-    scrollIntoView(options) {
-        this._exec('scrollIntoView', options);
-    }
-    _exec(method, options) {
-        operateEditor(this.id, this.pageId, method, options);
-    }
-}
 
 const ContextClasss = {
     canvas: CanvasContext,
@@ -15913,16 +15916,16 @@ const eventNames = [
     'waiting',
 ];
 const callbacks = {
-    canplay: [],
-    play: [],
-    pause: [],
-    stop: [],
-    ended: [],
-    timeUpdate: [],
-    prev: [],
-    next: [],
-    error: [],
-    waiting: [],
+    canplay: null,
+    play: null,
+    pause: null,
+    stop: null,
+    ended: null,
+    timeUpdate: null,
+    prev: null,
+    next: null,
+    error: null,
+    waiting: null,
 };
 let audio;
 let timeUpdateTimer = null;
@@ -15962,7 +15965,9 @@ function initMusic() {
             // 添加 isStopped 属性是为了解决 安卓设备停止播放后获取播放进度不正确的问题
             if (event === 'play') {
                 audio.isStopped = false;
-                startTimeUpdateTimer();
+                if (callbacks.timeUpdate) {
+                    startTimeUpdateTimer();
+                }
             }
             else if (event === 'stop') {
                 audio.isStopped = true;
@@ -16101,22 +16106,42 @@ function operateBackgroundAudio({ operationType, src, startTime, currentTime, })
     });
 }
 function onBackgroundAudioStateChange({ state, errMsg, errCode, dataUrl, }) {
-    callbacks[state].forEach((callback) => {
-        if (isFunction(callback)) {
-            callback(state === 'error'
-                ? {
-                    errMsg,
-                    errCode,
-                }
-                : {});
-        }
-    });
+    const callback = callbacks[state];
+    if (isFunction(callback)) {
+        callback(state === 'error'
+            ? {
+                errMsg,
+                errCode,
+            }
+            : {});
+    }
 }
 const onInitBackgroundAudioManager = /*#__PURE__*/ once(() => {
     eventNames.forEach((item) => {
         BackgroundAudioManager.prototype[`on${capitalize(item)}`] =
             function (callback) {
-                callbacks[item].push(callback);
+                // Align with other platforms: keep only the latest listener
+                callbacks[item] = callback;
+                if (item === 'timeUpdate' &&
+                    audio &&
+                    !audio.isPaused() &&
+                    !audio.isStopped) {
+                    if (timeUpdateTimer !== null) {
+                        clearInterval(timeUpdateTimer);
+                    }
+                    timeUpdateTimer = setInterval(() => {
+                        onBackgroundAudioStateChange({ state: 'timeUpdate' });
+                    }, TIME_UPDATE);
+                }
+            };
+        BackgroundAudioManager.prototype[`off${capitalize(item)}`] =
+            function (callback) {
+                if (!callback || callbacks[item] === callback) {
+                    callbacks[item] = null;
+                    if (item === 'timeUpdate') {
+                        stopTimeUpdateTimer();
+                    }
+                }
             };
     });
 });

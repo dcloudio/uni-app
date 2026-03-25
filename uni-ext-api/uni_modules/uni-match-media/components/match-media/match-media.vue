@@ -29,7 +29,7 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -40,7 +40,7 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -51,7 +51,7 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -62,7 +62,18 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
+        }
+      }
+    }
+    */
+    maxWidth?: string | number;
+    /**
+     * 页面高度（px 为单位）
+     * @uniPlatform {
+       "app": {
+        "harmony": {
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -84,7 +95,7 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -95,7 +106,7 @@
      * @uniPlatform {
        "app": {
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }

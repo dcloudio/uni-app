@@ -19,7 +19,11 @@ import {
   uvueOutDir,
   withSourcemap,
 } from '@dcloudio/uni-cli-shared'
-import { configResolved, createUniOptions } from '../utils'
+import {
+  SHARED_DATA_LIB_NAME,
+  configResolved,
+  createUniOptions,
+} from '../utils'
 import { uniAppCssPlugin } from './css'
 import { uniAppJsPlugin } from './js'
 import { rewriteImportVuePlugin } from './rewriteImportVue'
@@ -37,7 +41,7 @@ export function initUniAppJsEngineDom1CssPlugin(config: ResolvedConfig) {
 }
 
 export function createUniAppJsEnginePlugin(
-  platform: 'app-ios' | 'app-harmony'
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
 ) {
   return function uniAppJsEnginePlugin(): UniVitePlugin {
     const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
@@ -86,9 +90,17 @@ export function createUniAppJsEnginePlugin(
         }
       : {}
 
-    const isDom2Harmony =
-      process.env.UNI_APP_X_DOM2 === 'true' &&
-      process.env.UNI_UTS_PLATFORM === 'app-harmony'
+    const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+    const isAndroid = platform === 'app-android'
+    const isIOS = platform === 'app-ios'
+    const isHarmony = platform === 'app-harmony'
+    const globals = {
+      vue: 'Vue',
+      '@vue/shared': 'uni.VueShared',
+    }
+    if (isDom2 && (isAndroid || isIOS)) {
+      globals[SHARED_DATA_LIB_NAME] = '__uniSharedDataLib'
+    }
     return {
       name: 'uni:app-uts',
       apply: 'build',
@@ -101,31 +113,28 @@ export function createUniAppJsEnginePlugin(
             sourcemap,
             emptyOutDir: false,
             assetsInlineLimit: 0,
-            target:
-              process.env.UNI_UTS_PLATFORM === 'app-ios'
-                ? [
-                    'ios12',
-                    'es2020',
-                    'edge88',
-                    'firefox78',
-                    'chrome87',
-                    'safari14',
-                  ]
-                : process.env.UNI_UTS_PLATFORM === 'app-harmony'
-                ? ['es2022']
-                : undefined,
+            target: isIOS
+              ? [
+                  'ios12',
+                  'es2020',
+                  'edge88',
+                  'firefox78',
+                  'chrome87',
+                  'safari14',
+                ]
+              : isHarmony
+              ? ['es2022']
+              : undefined,
             rollupOptions: {
               input: resolveMainPathOnce(inputDir),
-              external: ['vue', '@vue/shared'],
+              // import "libentry.so"
+              external: ['vue', '@vue/shared', /.*\.so$/],
               output: {
                 name: 'AppService',
                 banner: ``,
                 format: isESM ? 'esm' : 'iife',
                 entryFileNames: APP_SERVICE_FILENAME,
-                globals: {
-                  vue: 'Vue',
-                  '@vue/shared': 'uni.VueShared',
-                },
+                globals,
                 paths,
                 plugins: isESM ? [rewriteImportVuePlugin()] : [],
                 manualChunks(id) {
@@ -172,13 +181,13 @@ export function createUniAppJsEnginePlugin(
       },
       configResolved(config) {
         configResolved(config)
-        if (!isDom2Harmony) {
+        if (!isDom2) {
           initUniAppJsEngineDom1CssPlugin(config)
         }
         insertBeforePlugin(uniAppJsPlugin(config), 'uni:app-main', config)
         // 如果开启了 vapor 模式，则禁用 vue 的 devtools，让 @vitejs/plugin-vue 不管是开发还是发行，均生成发行代码
         // 理论上非 vapor 也应该禁用，但为了不引发其他问题，暂时只禁用 vapor 模式
-        if (isDom2Harmony) {
+        if (isDom2) {
           const plugin = config.plugins.find((p) => p.name === 'vite:vue')
           if (plugin?.api?.options) {
             plugin.api.options.devToolsEnabled = false
@@ -202,6 +211,10 @@ export function createUniAppJsEnginePlugin(
               file
             )
             fs.outputFileSync(newSourceMapFileName, JSON.stringify(source))
+            // 非鸿蒙平台不需要保留 sourceMap 文件
+            if (process.env.UNI_PLATFORM !== 'app-harmony') {
+              delete bundle[file]
+            }
           }
         })
       },

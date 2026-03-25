@@ -1,5 +1,6 @@
 export default {
   'app.compiler.version': 'Compiler version: {version}',
+  'style.isolation.version': 'Style isolation version: {version}',
   compiling: 'Compiling...',
   'dev.performance':
     'Please note that in running mode, due to log output, sourcemap, and uncompressed source code, the performance and package size are not as good as release mode.',

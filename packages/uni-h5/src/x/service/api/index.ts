@@ -132,6 +132,7 @@ export {
 
 //#if !_NODE_JS_
 export * from '../../../service/api/context/createCanvasContextAsync'
+export * from '../../../service/api/context/createEditorContextAsync'
 export * from './route/openDialogPage'
 export * from './route/closeDialogPage'
 export * from './pages'

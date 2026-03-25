@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`android-dom2 kotlin utils should escape kotlin string templates and fallback to default appid 1`] = `
+"package uni.UNIuniappx
+
+import io.dcloud.uniappxv.runtime.AppConfig
+import io.dcloud.uts.*
+import io.dcloud.uts.Map
+
+class UniAppConfig : AppConfig() {
+    override var name: String = "Price\\$Tag";
+    override var appid: String = "";
+    override var versionName: String = "";
+    override var versionCode: String = "";
+    override var uniCompilerVersion: String = "";
+    override var splashScreen: Map<String, Any>? = utsMapOf("image" to "launch\\$screen");
+}
+"
+`;
+
+exports[`android-dom2 kotlin utils should generate dom2 kotlin config for theme splash and flex options 1`] = `
+"package uni.UNITEST123
+
+import io.dcloud.uniappxv.runtime.AppConfig
+import io.dcloud.uts.*
+import io.dcloud.uts.Map
+
+class UniAppConfig : AppConfig() {
+    override var name: String = "";
+    override var appid: String = "__UNI__TEST123";
+    override var versionName: String = "";
+    override var versionCode: String = "";
+    override var uniCompilerVersion: String = "";
+    override var flexDirection: String = "row";
+    override var splashScreen: Map<String, Any>? = utsMapOf("autoclose" to false, "delay" to 0, "style" to utsMapOf("background" to "#fff"), "channels" to utsArrayOf("a", "b"));
+    override var defaultAppTheme: String = "dark";
+}
+"
+`;
+
+exports[`android-dom2 kotlin utils should generate kotlin index code with package and base app config 1`] = `
+"package uni.UNITEST123
+
+import io.dcloud.uniappxv.runtime.AppConfig
+import io.dcloud.uts.*
+import io.dcloud.uts.Map
+
+class UniAppConfig : AppConfig() {
+    override var name: String = "TestApp";
+    override var appid: String = "__UNI__TEST123";
+    override var versionName: String = "1.0.0";
+    override var versionCode: String = "100";
+    override var uniCompilerVersion: String = "4.0.0";
+    
+}
+"
+`;

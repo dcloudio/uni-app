@@ -8,7 +8,7 @@ import {
   copyPlatformNativeLanguageFiles,
   genComponentsCode,
   genUTSPlatformResource,
-  getCompilerServer,
+  getSwiftCompilerServer,
   getUTSCompiler,
   isColorSupported,
   isEnableSwiftUtsArray,
@@ -169,9 +169,7 @@ export async function runSwiftDev(
     console.error(`已跳过uts插件[${resolvePackage(filename)?.id}]的编译`)
     return
   }
-  const compilerServer = getCompilerServer<SwiftCompilerServer>(
-    'uts-development-ios'
-  )
+  const compilerServer = getSwiftCompilerServer()
   if (!compilerServer) {
     throw new Error(`项目使用了uts插件，正在安装 uts iOS 运行扩展...`)
   }
@@ -374,7 +372,7 @@ export function resolveIOSDepFiles(filename: string) {
   return deps.map((dep) => path.resolve(dir, dep))
 }
 
-interface SwiftCompilerServer {
+export interface SwiftCompilerServer {
   compile(options: {
     projectPath: string
     isCli: boolean
@@ -382,6 +380,11 @@ interface SwiftCompilerServer {
     pluginName: string
     utsPath: string
     swiftPath: string
+  }): Promise<{ code: number; msg: string }>
+  compileCpp(options: {
+    appId: string
+    projectPath: string
+    cppPath: string
   }): Promise<{ code: number; msg: string }>
   checkEnv?: () => { code: number; msg: string }
 }

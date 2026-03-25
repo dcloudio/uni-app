@@ -2,13 +2,6 @@ import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import type { PluginContext, TransformPluginContext } from 'rollup'
 import { type ResolvedOptions, setSrcDescriptor } from '../descriptorCache'
 
-export function genStyle(
-  _: SFCDescriptor,
-  { className }: { className: string }
-) {
-  return `/*${className}Styles*/`
-}
-
 export async function genJsStylesCode(
   descriptor: SFCDescriptor,
   pluginContext: PluginContext

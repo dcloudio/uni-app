@@ -1489,6 +1489,18 @@ uni-textarea[auto-height="true"] {
   position: absolute;
   top: 50%;
 }
+
+.ql-editor .mention {
+  display: inline-block;
+  background: #e6f3ff;
+  color: #1677ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  user-select: all;
+  -webkit-user-select: all;
+  cursor: pointer;
+}
 uni-picker-view {
   display: block;
 }

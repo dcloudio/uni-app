@@ -25,11 +25,11 @@ catalogs:
       specifier: 7.25.6
       version: 7.25.6
     '@dcloudio/types':
-      specifier: 3.4.28
-      version: 3.4.28
+      specifier: 3.4.30
+      version: 3.4.30
     '@dcloudio/uni-app-x':
-      specifier: 0.7.88
-      version: 0.7.88
+      specifier: 0.7.114
+      version: 0.7.114
     '@rollup/pluginutils':
       specifier: 5.1.0
       version: 5.1.0
@@ -250,7 +250,7 @@ importers:
         version: 7.25.4(@babel/core@7.25.2)
       '@dcloudio/types':
         specifier: 'catalog:'
-        version: 3.4.28
+        version: 3.4.30
       '@dcloudio/uni-api':
         specifier: workspace:*
         version: link:packages/uni-api
@@ -259,7 +259,7 @@ importers:
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
         specifier: 'catalog:'
-        version: 0.7.88
+        version: 0.7.114
       '@dcloudio/uni-nvue-styler':
         specifier: workspace:*
         version: link:packages/uni-nvue-styler
@@ -1012,7 +1012,7 @@ importers:
     dependencies:
       '@dcloudio/types':
         specifier: 'catalog:'
-        version: 3.4.28
+        version: 3.4.30
       '@dcloudio/uni-cloud':
         specifier: workspace:*
         version: link:../uni-cloud
@@ -1949,7 +1949,7 @@ importers:
     devDependencies:
       '@dcloudio/types':
         specifier: 'catalog:'
-        version: 3.4.28
+        version: 3.4.30
       mini-types:
         specifier: ^0.1.7
         version: 0.1.7
@@ -2320,7 +2320,7 @@ importers:
     devDependencies:
       '@dcloudio/types':
         specifier: 'catalog:'
-        version: 3.4.28
+        version: 3.4.30
 
   packages/uni-stat:
     dependencies:
@@ -2345,7 +2345,7 @@ importers:
         version: 7.24.7
       '@dcloudio/uni-app-x':
         specifier: 'catalog:'
-        version: 0.7.88
+        version: 0.7.114
       '@dcloudio/uts':
         specifier: workspace:*
         version: link:../uts
@@ -3209,11 +3209,11 @@ packages:
   '@cypress/xvfb@1.2.4':
     resolution: {integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q==}
 
-  '@dcloudio/types@3.4.28':
-    resolution: {integrity: sha512-uVIRp1VLBkrL0LaGLgIS/sT3bl1zzVTKZQbfqJEQcSAvBffRdirbSh5OvOHfA1WV5lmCAGfjhKsUQouNEVUQHg==}
+  '@dcloudio/types@3.4.30':
+    resolution: {integrity: sha512-qUSRM4x8ekdtZHpYaz0gUd2+wDBeCo3jWmhc+hqX8hUx0KoModW8dI7FJQYMfMGRF2F/gbvy9LWUyV50M7VF6g==}
 
-  '@dcloudio/uni-app-x@0.7.88':
-    resolution: {integrity: sha512-O+7puNyN8BpovM0RljyvhqpEjon4E53tC/DEBExmObbRBaAcCPtuMm4mdeBK7f9hTQ9KIzxQXohFuX0urVObvw==}
+  '@dcloudio/uni-app-x@0.7.114':
+    resolution: {integrity: sha512-Kh6RVYmzx1mW9PSXXZmYJt2kanG7mRwKy6dQ0wH/D0EjHgWHsNbXuRQ6++xwc7KOChkoqnRWr68AiQTP1CcT0Q==}
 
   '@dcloudio/uni-ui@1.5.6':
     resolution: {integrity: sha512-jmb98PasFvZkrIDXGh94GbdWg2/jyhgs1HUG+bU8eyL7Ltias/5XBz4q8w9RXyWUfqepJRqapPA2IIQpLCuTIg==}
@@ -8806,9 +8806,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@dcloudio/types@3.4.28': {}
+  '@dcloudio/types@3.4.30': {}
 
-  '@dcloudio/uni-app-x@0.7.88': {}
+  '@dcloudio/uni-app-x@0.7.114': {}
 
   '@dcloudio/uni-ui@1.5.6': {}
 

@@ -35,6 +35,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       emit('click', $event)
 
       const animationDuration = props.animationDuration
+      const onFail = (res: { errMsg: string }) => {
+        console.error(res.errMsg)
+      }
       switch (props.openType) {
         case 'navigate':
           uni.navigateTo({
@@ -43,21 +46,25 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               ? props.animationType
               : 'pop-in') as 'pop-in',
             animationDuration,
+            fail: onFail,
           })
           break
         case 'redirect':
           uni.redirectTo({
             url,
+            fail: onFail,
           })
           break
         case 'switchTab':
           uni.switchTab({
             url,
+            fail: onFail,
           })
           break
         case 'reLaunch':
           uni.reLaunch({
             url,
+            fail: onFail,
           })
           break
         case 'navigateBack':
@@ -67,6 +74,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               ? props.animationType
               : 'pop-out') as 'pop-out',
             animationDuration,
+            fail: onFail,
           })
           break
         default:

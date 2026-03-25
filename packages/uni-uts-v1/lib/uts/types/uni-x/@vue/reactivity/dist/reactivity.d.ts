@@ -123,7 +123,8 @@ export declare enum EffectFlags {
   */
   ALLOW_RECURSE = 128,
   PAUSED = 256,
-  STOP = 1024
+  STOP = 1024,
+  RECYCLED = 2048
 }
 export declare class ReactiveEffect<T = any> implements ReactiveEffectOptions, ReactiveNode {
   deps: Link | undefined;

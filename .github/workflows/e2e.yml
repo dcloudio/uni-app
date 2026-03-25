@@ -2,10 +2,10 @@ name: 'e2e'
 on:
   push:
     branches:
-      - next
+      - uni-app-vue3-dev
   pull_request:
     branches:
-      - next
+      - uni-app-vue3-dev
 jobs:
   e2e:
     runs-on: ${{ matrix.os }}

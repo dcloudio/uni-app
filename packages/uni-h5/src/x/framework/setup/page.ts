@@ -26,7 +26,7 @@ import {
   normalizeRouteKey,
 } from '../../../framework/setup/page'
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
-import { isDialogPageInstance } from '../helpers/utils'
+import { isDialogPageInstance } from '@dcloudio/uni-core'
 import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
 import { normalizeStyles } from '@dcloudio/uni-shared'
 
@@ -249,6 +249,23 @@ class UniPageImpl implements UniPage {
   createElement() {
     return null as any
   }
+  onLayoutChange() {
+    return -1
+  }
+  offLayoutChange() {}
+  onRenderChange() {
+    return -1
+  }
+  offRenderChange() {}
+  onTouchStart() {
+    return -1
+  }
+  offTouchStart() {}
+  onTouchEnd() {
+    return -1
+  }
+  offTouchEnd() {}
+  takeSnapshot() {}
   constructor({
     route,
     options,
