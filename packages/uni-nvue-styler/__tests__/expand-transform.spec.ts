@@ -1148,6 +1148,66 @@ describe('nvue-styler: expand', () => {
     expect(topColor?.value).toBe('var(--color, red)')
   })
 
+  test('transform border-right with var color keeps shorthand order-insensitive', () => {
+    const transform = createTransformBorder({ type: 'uvue' })
+    const decl = parseDecl(
+      `.test { border-right: 1px var(--arrow-color, #999999) solid }`
+    )
+    expect(transform(decl)).toEqual([
+      {
+        type: 'decl',
+        prop: 'border-right-width',
+        value: '1px',
+        raws: decl.raws,
+        source: decl.source,
+      },
+      {
+        type: 'decl',
+        prop: 'border-right-style',
+        value: 'solid',
+        raws: decl.raws,
+        source: decl.source,
+      },
+      {
+        type: 'decl',
+        prop: 'border-right-color',
+        value: 'var(--arrow-color, #999999)',
+        raws: decl.raws,
+        source: decl.source,
+      },
+    ])
+  })
+
+  test('transform border-right with var color recognizes extended border styles', () => {
+    const transform = createTransformBorder({ type: 'uvue' })
+    const decl = parseDecl(
+      `.test { border-right: inset var(--arrow-color, #999999) 1px }`
+    )
+    expect(transform(decl)).toEqual([
+      {
+        type: 'decl',
+        prop: 'border-right-width',
+        value: '1px',
+        raws: decl.raws,
+        source: decl.source,
+      },
+      {
+        type: 'decl',
+        prop: 'border-right-style',
+        value: 'inset',
+        raws: decl.raws,
+        source: decl.source,
+      },
+      {
+        type: 'decl',
+        prop: 'border-right-color',
+        value: 'var(--arrow-color, #999999)',
+        raws: decl.raws,
+        source: decl.source,
+      },
+    ])
+  })
+
   test('transform margin with calc', () => {
     const transform = createTransformBox('margin')
     const decl = parseDecl(`.test { margin: calc(10px + 2px) 5px }`)
