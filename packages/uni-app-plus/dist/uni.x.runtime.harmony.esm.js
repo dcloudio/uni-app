@@ -4830,34 +4830,42 @@ const navigator = /* @__PURE__ */ defineBuiltInComponent({
       var url = props.url;
       emit("click", $event);
       var animationDuration = props.animationDuration;
+      var onFail = (res) => {
+        console.error(res.errMsg);
+      };
       switch (props.openType) {
         case "navigate":
           uni.navigateTo({
             url,
             animationType: props.animationType.length > 0 ? props.animationType : "pop-in",
-            animationDuration
+            animationDuration,
+            fail: onFail
           });
           break;
         case "redirect":
           uni.redirectTo({
-            url
+            url,
+            fail: onFail
           });
           break;
         case "switchTab":
           uni.switchTab({
-            url
+            url,
+            fail: onFail
           });
           break;
         case "reLaunch":
           uni.reLaunch({
-            url
+            url,
+            fail: onFail
           });
           break;
         case "navigateBack":
           uni.navigateBack({
             delta: props.delta,
             animationType: props.animationType.length > 0 ? props.animationType : "pop-out",
-            animationDuration
+            animationDuration,
+            fail: onFail
           });
           break;
         default:
