@@ -12,18 +12,6 @@ import { transformBorderWidth } from './borderWidth'
 const borderWidth = __HYPHENATE__ ? '-width' : 'Width'
 const borderStyle = __HYPHENATE__ ? '-style' : 'Style'
 const borderColor = __HYPHENATE__ ? '-color' : 'Color'
-const borderWidthRE = /^[\d\.]+\S*|^(thin|medium|thick)$/
-const borderStyleRE =
-  /^(none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/
-const borderColorRE = /^(#|rgba?\(|[a-zA-Z-]+$)/
-
-function takeFirstMatched(
-  values: string[],
-  matcher: (value: string) => boolean
-): string | null {
-  const index = values.findIndex(matcher)
-  return index < 0 ? null : values.splice(index, 1)[0]
-}
 
 export function createTransformBorder(
   options: NormalizeOptions
@@ -35,39 +23,21 @@ export function createTransformBorder(
       str.startsWith('var(')
     )
     let result: Array<string | null> = []
-    // 包含 var 时，优先识别显式的 width/style/color，再按顺序补齐剩余值
+    // 包含 var ，直接视为 width/style/color 都使用默认值
     if (havVar) {
-      const width = takeFirstMatched(splitResult, (str) =>
-        borderWidthRE.test(str)
-      )
-      const style = takeFirstMatched(splitResult, (str) =>
-        borderStyleRE.test(str)
-      )
-      const color = takeFirstMatched(
-        splitResult,
-        (str) => !str.startsWith('var(') && borderColorRE.test(str)
-      )
-
-      if (width == null && style == null && color == null) {
-        result = splitResult
-        splitResult = []
-      } else {
-        result = [width, style, color]
-        for (let i = 0; i < result.length && splitResult.length > 0; i++) {
-          if (result[i] == null) {
-            result[i] = splitResult.shift() || null
-          }
-        }
-      }
+      result = splitResult
+      splitResult = []
     } else {
-      result = [borderWidthRE, borderStyleRE, /\S+/].map(
-        (item): string | null => {
-          const index = splitResult.findIndex((str: string): boolean =>
-            item.test(str)
-          )
-          return index < 0 ? null : splitResult.splice(index, 1)[0]
-        }
-      )
+      result = [
+        /^[\d\.]+\S*|^(thin|medium|thick)$/,
+        /^(solid|dashed|dotted|none)$/,
+        /\S+/,
+      ].map((item): string | null => {
+        const index = splitResult.findIndex((str: string): boolean =>
+          item.test(str)
+        )
+        return index < 0 ? null : splitResult.splice(index, 1)[0]
+      })
     }
 
     if (splitResult.length > 0 && value != '') {

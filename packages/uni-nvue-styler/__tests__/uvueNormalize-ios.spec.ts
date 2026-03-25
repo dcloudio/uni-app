@@ -671,44 +671,6 @@ border-color: var(--default-border);
     })
   })
 
-  test('border-right shorthand with var color should not misclassify solid as color', async () => {
-    const { json, messages } = await objectifierRule(`
-.foo {
-  border-right: 1px var(--arrow-color, #999999) solid;
-}
-    `)
-    expect(json).toEqual({
-      foo: {
-        '': {
-          borderRightColor: 'var(--arrow-color, #999999)',
-          borderRightStyle: 'solid',
-          borderRightWidth: 1,
-        },
-      },
-    })
-    expect(messages).toHaveLength(0)
-  })
-
-  test('border-right shorthand with var color should classify extended style before normalize', async () => {
-    const { json, messages } = await objectifierRule(`
-.foo {
-  border-right: 1px var(--arrow-color, #999999) double;
-}
-    `)
-    expect(json).toEqual({
-      foo: {
-        '': {
-          borderRightColor: 'var(--arrow-color, #999999)',
-          borderRightWidth: 1,
-        },
-      },
-    })
-    expect(messages).toHaveLength(1)
-    expect(messages[0].text).toBe(
-      'ERROR: property value `double` is not supported for `border-right-style` (supported values are: `none`|`solid`|`dashed`|`dotted`)'
-    )
-  })
-
   test('多次出现 border 不同形式，保证最后一个生效', async () => {
     const { json } = await objectifierRule(`
 .test {

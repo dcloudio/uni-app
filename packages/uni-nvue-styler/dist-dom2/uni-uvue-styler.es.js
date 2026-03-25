@@ -141,41 +141,21 @@ const transformBorderWidth = transformBorderColor;
 const borderWidth = '-width' ;
 const borderStyle = '-style' ;
 const borderColor = '-color' ;
-const borderWidthRE = /^[\d\.]+\S*|^(thin|medium|thick)$/;
-const borderStyleRE = /^(none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/;
-const borderColorRE = /^(#|rgba?\(|[a-zA-Z-]+$)/;
-function takeFirstMatched(values, matcher) {
-    const index = values.findIndex(matcher);
-    return index < 0 ? null : values.splice(index, 1)[0];
-}
 function createTransformBorder(options) {
     return (decl) => {
         const { prop, value, important, raws, source } = decl;
         let splitResult = splitValues(value);
         const havVar = splitResult.some((str) => str.startsWith('var('));
         let result = [];
-        // 包含 var 时，优先识别显式的 width/style/color，再按顺序补齐剩余值
+        // 包含 var ，直接视为 width/style/color 都使用默认值
         if (havVar) {
-            const width = takeFirstMatched(splitResult, (str) => borderWidthRE.test(str));
-            const style = takeFirstMatched(splitResult, (str) => borderStyleRE.test(str));
-            const color = takeFirstMatched(splitResult, (str) => !str.startsWith('var(') && borderColorRE.test(str));
-            if (width == null && style == null && color == null) {
-                result = splitResult;
-                splitResult = [];
-            }
-            else {
-                result = [width, style, color];
-                for (let i = 0; i < result.length && splitResult.length > 0; i++) {
-                    if (result[i] == null) {
-                        result[i] = splitResult.shift() || null;
-                    }
-                }
-            }
+            result = splitResult;
+            splitResult = [];
         }
         else {
             result = [
-                borderWidthRE,
-                borderStyleRE,
+                /^[\d\.]+\S*|^(thin|medium|thick)$/,
+                /^(solid|dashed|dotted|none)$/,
                 /\S+/,
             ].map((item) => {
                 const index = splitResult.findIndex((str) => item.test(str));
