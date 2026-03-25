@@ -634,6 +634,8 @@ export async function compile(
       isX,
       isSingleThread,
       isPlugin,
+      // TODO 目前安卓dom2仅有js驱动，后续如果增加原生驱动需要由调用者传入参数控制
+      isJsDriven: isX && process.env.UNI_APP_X_DOM2 === 'true',
       isModule,
       isExtApi,
       outDir: outputDir,

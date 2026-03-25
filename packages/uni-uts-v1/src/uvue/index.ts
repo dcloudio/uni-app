@@ -129,6 +129,8 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       isSingleThread: true,
       isApp: true,
       isPlugin: false,
+      // TODO 目前安卓dom2仅有js驱动，后续如果增加原生驱动需要由调用者传入参数控制
+      isJsDriven: process.env.UNI_APP_X_DOM2 === 'true',
       outDir: isProd
         ? kotlinSrcDir(path.resolve(outputDir, '.uniappx/android/'))
         : kotlinSrcDir(kotlinDir(outputDir)),
