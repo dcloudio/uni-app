@@ -4,6 +4,7 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     UNI_EASYCOM_EXCLUDE: [],
     enableSourceMap: () => false,
     getWorkers: () => ({}),
+    initUts2jsSharedDataOptions: () => undefined,
     isNormalCompileTarget: () => process.env.UNI_COMPILE_TARGET !== 'ext-api',
     parseUniExtApiNamespacesOnce: () => ({}),
     resolveUTSCompiler: () => ({
