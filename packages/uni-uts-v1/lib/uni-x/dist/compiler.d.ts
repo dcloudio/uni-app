@@ -39,7 +39,7 @@ interface CreateTransformerOptions {
     disableUTSBooleanConversion?: boolean;
     sharedData?: {
         resolveFieldMeta(name: string): {
-            fieldId: string;
+            fieldId: number;
         };
     };
 }
