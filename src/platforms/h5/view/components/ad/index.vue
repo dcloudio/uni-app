@@ -91,7 +91,6 @@ class AdConfig {
       return
     }
     this._isLoading = true
-
     uni.request({
       url: this.URL,
       method: 'GET',
@@ -272,8 +271,17 @@ class AdScript {
 
   loadScript (provider, script) {
     this._cache[provider] = 0
+
+    const domid = 'uniad_provider' + provider
+    // 判断是否已经加载平台sdk
+    const adScriptDom = document.getElementById(domid)
+    const src = adScriptDom && adScriptDom.getAttribute('src')
+    if (src) {
+      this._cache[provider] = 1
+      return
+    }
     var ads = document.createElement('script')
-    ads.setAttribute('id', 'uniad_provider' + provider)
+    ads.setAttribute('id', domid)
     for (const var1 in script) {
       ads.setAttribute(var1, script[var1])
     }
@@ -381,34 +389,50 @@ export default {
       }
 
       const data = this._pl[this._pi]
-      const providerConfig = this._ab[data.a1][data.t]
+      const providerConfig = this._ab && this._ab[data.a1]
+      if (!providerConfig) {
+        console.error('Provider config not found for provider:', data.a1)
+        this._renderNext()
+        return
+      }
       const script = providerConfig.script
       this._currentChannel = data.a1
 
       var id = this._randomId()
-      var view = this._createView(id)
+      // var view = this._createView(id)
+      this._createView(id)
 
-      if (data.a1 === '10023') {
-        AdScript.instance.load(data.t, script, () => {
-          this._renderShanhu(id, data)
-        }, (err) => {
-          this.$trigger('error', {}, err)
-        })
-      } else if (data.a1 === '10010') {
-        AdScript.instance.load(data.t, script, () => {
-          this._renderBaidu(id, data.a2)
-        }, (err) => {
-          this.$trigger('error', {}, err)
-        })
-      } else if (data.a1 === '10012') {
-        this._renderScript(view, script)
-      } else {
-        AdScript.instance.load(data.t, script, () => {
-          this._renderAdView(id, script.s, data)
+      if (data.a1 === '2') {
+        // 优量汇信息流广告标准接入
+        window.TencentGDT = window.TencentGDT || []
+        AdScript.instance.load(data.a1, script, () => {
+          this._renderGdt(id, data)
         }, (err) => {
           this.$trigger('error', {}, err)
         })
       }
+    },
+    _renderGdt (id, data) {
+      window.TencentGDT.push({
+        placement_id: data.a3, // 广告位ID
+        appid: data.a2, // APP ID
+        type: 'native', // 原生模板广告
+        count: 1, // 拉取广告数量
+        onComplete: (res) => {
+          // 原生模板广告返回数组
+          if (res && res.constructor === Array && res.length > 0) {
+            // 直接调用 renderAd 渲染模板广告
+            window.TencentGDT.NATIVE.renderAd(res[0], id)
+            this.$trigger('load', {}, {})
+          } else {
+            console.error('GDT no ad or failed:', res)
+            this.$trigger('error', {}, res || { errMsg: 'No advertisement' })
+            this._renderNext()
+          }
+        }
+      })
+
+      this._startCheckTimer()
     },
     _createView (id) {
       var adView = document.createElement('div')
@@ -418,50 +442,50 @@ export default {
       this.$refs.container.append(adView)
       return adView
     },
-    _renderScript (view, script) {
-      var adScript = document.createElement('script')
-      for (const var1 in script) {
-        adScript.setAttribute(var1, script[var1])
-      }
-      view.appendChild(adScript)
-      this._startCheckTimer()
-    },
-    _renderBaidu (id, adid) {
-      (window.slotbydup = window.slotbydup || []).push({
-        id: adid,
-        container: id,
-        async: true
-      })
-      this._startCheckTimer()
-    },
-    _renderAdView (id, script, data) {
-      let bindThis = window
-      script.split('.').reduce((total, currentValue) => {
-        bindThis = total
-        return total[currentValue]
-      }, window).bind(bindThis)(data.a2, id, 2)
-      this._startCheckTimer()
-    },
-    _renderShanhu (id, data) {
-      const coral = new window.CoralAdv({
-        app_id: data.a2,
-        placement_id: data.a3,
-        type: data.a4,
-        display_type: data.a5,
-        container_id: id,
-        count: data.a6 || 1
-      })
-      coral.ready().then(async (res) => {
-        if (res.ret === 0) {
-          this.$trigger('load', {}, {})
-        } else {
-          this.$trigger('error', {}, res)
-        }
-      }).catch((err) => {
-        this.$trigger('error', {}, err)
-      })
-      this._startCheckTimer()
-    },
+    // _renderScript (view, script) {
+    //   var adScript = document.createElement('script')
+    //   for (const var1 in script) {
+    //     adScript.setAttribute(var1, script[var1])
+    //   }
+    //   view.appendChild(adScript)
+    //   this._startCheckTimer()
+    // },
+    // _renderBaidu (id, adid) {
+    //   (window.slotbydup = window.slotbydup || []).push({
+    //     id: adid,
+    //     container: id,
+    //     async: true
+    //   })
+    //   this._startCheckTimer()
+    // },
+    // _renderAdView (id, script, data) {
+    //   let bindThis = window
+    //   script.split('.').reduce((total, currentValue) => {
+    //     bindThis = total
+    //     return total[currentValue]
+    //   }, window).bind(bindThis)(data.a2, id, 2)
+    //   this._startCheckTimer()
+    // },
+    // _renderShanhu (id, data) {
+    //   const coral = new window.CoralAdv({
+    //     app_id: data.a2,
+    //     placement_id: data.a3,
+    //     type: data.a4,
+    //     display_type: data.a5,
+    //     container_id: id,
+    //     count: data.a6 || 1
+    //   })
+    //   coral.ready().then(async (res) => {
+    //     if (res.ret === 0) {
+    //       this.$trigger('load', {}, {})
+    //     } else {
+    //       this.$trigger('error', {}, res)
+    //     }
+    //   }).catch((err) => {
+    //     this.$trigger('error', {}, err)
+    //   })
+    //   this._startCheckTimer()
+    // },
     _renderNext () {
       if (this._pi >= this._pl.length - 1) {
         return

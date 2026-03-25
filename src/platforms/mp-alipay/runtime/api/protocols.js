@@ -189,7 +189,7 @@ const protocols = { // 需要做转换的 API 列表
     }
     return {
       name: 'showToast',
-      args(fromArgs, toArgs) {
+      args (fromArgs, toArgs) {
         toArgs.content = fromArgs.title
         toArgs.type = fromArgs.icon == null ? icon : fromArgs.icon
       }

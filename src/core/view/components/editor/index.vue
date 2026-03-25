@@ -41,6 +41,10 @@ export default {
       type: [Boolean, String],
       default: false
     },
+    type: {
+      type: String,
+      default: ''
+    },
     placeholder: {
       type: String,
       default: ''
@@ -70,7 +74,7 @@ export default {
       if (this.quillReady) {
         const quill = this.quill
         quill.enable(!value)
-        if (!value) {
+        if (value) {
           quill.blur()
         }
       }
@@ -78,6 +82,11 @@ export default {
     placeholder (value) {
       if (this.quillReady) {
         this.setPlaceHolder(value)
+      }
+    },
+    type (value) {
+      if (this.quillReady) {
+        this.setInputMode(value)
       }
     }
   },
@@ -106,7 +115,16 @@ export default {
   },
   methods: {
     _textChangeHandler () {
+      this.fixCursor()
       this.$trigger('input', {}, this.getContents())
+    },
+    fixCursor () {
+      const range = this.quill.getSelection()
+      if (!range) return
+      const [leaf] = this.quill.getLeaf(range.index - 1)
+      if (leaf?.statics?.blotName === 'mention') {
+        this.quill.setSelection(range.index, 0, 'silent')
+      }
     },
     _handleSubscribe ({
       type,
@@ -160,6 +178,15 @@ export default {
             quill.insertText(range.index, '\n', Quill.sources.USER)
             quill.insertEmbed(range.index + 1, 'divider', true, Quill.sources.USER)
             quill.setSelection(range.index + 2, Quill.sources.SILENT)
+            break
+          case 'insertMention':
+            {
+              range = quill.getSelection(true)
+              const { id = '', name = '' } = options
+              const mentionData = Object.assign({ id, name }, options)
+              quill.insertEmbed(range.index, 'mention', mentionData, Quill.sources.USER)
+              quill.setSelection(range.index + 1, 0, Quill.sources.SILENT)
+            }
             break
           case 'insertImage':
             {
@@ -262,6 +289,14 @@ export default {
       const QuillRoot = this.quill.root
       QuillRoot.getAttribute(placeHolderAttrName) !== value && QuillRoot.setAttribute(placeHolderAttrName, value)
     },
+    setInputMode (type) {
+      const QuillRoot = this.quill.root
+      if (type === 'none') {
+        QuillRoot.setAttribute('inputmode', 'none')
+      } else {
+        QuillRoot.removeAttribute('inputmode')
+      }
+    },
     initQuill (imageResizeModules) {
       const Quill = window.Quill
       formats.register(Quill)
@@ -278,6 +313,7 @@ export default {
         }
       }
       const quill = this.quill = new Quill(this.$el, options)
+      this.setInputMode(this.type)
       const $el = quill.root
       const events = ['focus', 'blur', 'input']
       events.forEach(name => {

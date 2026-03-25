@@ -521,6 +521,16 @@ describe('mp:compiler-extra', () => {
       '<view class=" \n\t a \t\n b \n c  ">11</view>',
       '<view class="a b c">11</view>'
     )
+    assertCodegen(
+      /* eslint-disable no-template-curly-in-string */
+      '<view :class="`abc-${temp}`">12</view>',
+      '<view class="{{[\'abc-\'+temp]}}">12</view>'
+    )
+    assertCodegen(
+      '<view :class="tools.cls()">13</view>',
+      '<view class="{{[$root.g0]}}">13</view>',
+      'with(this){var g0=tools.cls();$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
   })
 
   it('generate style binding', () => {
@@ -577,6 +587,16 @@ describe('mp:compiler-extra', () => {
     assertCodegen(
       '<p :style="styleStr1 || styleStr2" style="background:red">10</p>',
       '<view style="{{\'background:red;\'+(styleStr1||styleStr2)}}" class="_p">10</view>'
+    )
+    assertCodegen(
+      /* eslint-disable no-template-curly-in-string */
+      '<view :style="`color:${c}`">11</view>',
+      '<view style="{{(\'color:\'+c)}}">11</view>'
+    )
+    assertCodegen(
+      '<view :style="tools.getStyle()">12</view>',
+      '<view style="{{($root.g0)}}">12</view>',
+      'with(this){var g0=tools.getStyle();$mp.data=Object.assign({},{$root:{g0:g0}})}'
     )
   })
 
