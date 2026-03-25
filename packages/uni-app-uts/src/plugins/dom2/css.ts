@@ -1,9 +1,10 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 
 import {
+  ANY_JS_STYLE_PLACEHOLDER_RE,
   JS_STYLE_PLACEHOLDER_MARKER,
-  JS_STYLE_PLACEHOLDER_RE,
   commonjsProxyRE,
+  createJsStylePlaceholderRegExp,
   cssLangRE,
   cssPlugin,
   cssPostPlugin,
@@ -127,18 +128,20 @@ export function uniAppCssPrePlugin(): Plugin {
                 for (let i = 0; i < asset.moduleIds.length; i++) {
                   const moduleId = asset.moduleIds[i]
                   if (DOM2_CSS_CACHE_MAP.has(moduleId)) {
-                    fontFaces = DOM2_CSS_CACHE_MAP.get(moduleId)
+                    fontFaces = DOM2_CSS_CACHE_MAP.get(moduleId)!
+                    asset.code = asset.code.replace(
+                      createJsStylePlaceholderRegExp(moduleId),
+                      fontFaces
+                    )
                     DOM2_CSS_CACHE_MAP.delete(moduleId)
-                    break
                   }
                 }
-                if (fontFaces) {
+                // 清理无用占位符
+                if (asset.code.includes(JS_STYLE_PLACEHOLDER_MARKER)) {
                   asset.code = asset.code.replace(
-                    JS_STYLE_PLACEHOLDER_RE,
-                    fontFaces
+                    ANY_JS_STYLE_PLACEHOLDER_RE,
+                    '{}'
                   )
-                } else if (asset.code.includes(JS_STYLE_PLACEHOLDER_MARKER)) {
-                  asset.code = asset.code.replace(JS_STYLE_PLACEHOLDER_RE, '{}')
                 }
               }
             })
