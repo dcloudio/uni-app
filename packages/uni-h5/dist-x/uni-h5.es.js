@@ -9414,6 +9414,8 @@ function useBackgroundColorContent(pageMeta) {
       updateBackgroundColorContent(
         parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
       );
+    } else {
+      updateBackgroundColorContent("transparent");
     }
   }
   onThemeChange$1(update);
