@@ -34,7 +34,7 @@ const props = withDefaults(defineProps<{
    * @uniPlatform {
      "app": {
        "harmony": {
-         "unixvVer": "5.0"
+         "unixVaporVer": "5.0"
        }
      }
    }
@@ -45,7 +45,7 @@ const props = withDefaults(defineProps<{
    * @uniPlatform {
      "app": {
        "harmony": {
-         "unixvVer": "5.0"
+         "unixVaporVer": "5.0"
        }
      }
    }
@@ -56,7 +56,7 @@ const props = withDefaults(defineProps<{
 	  * @uniPlatform {
 	    "app": {
 	      "ios": {
-	        "unixvVer": "5.0"
+	        "unixVaporVer": "5.0"
 	      }
 	    }
 	  }
