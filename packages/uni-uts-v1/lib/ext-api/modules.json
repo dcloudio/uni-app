@@ -544,7 +544,6 @@
       }
     }
   },
-  "uni-input": {},
   "uni-installApk": {
     "uni": {
       "installApk": {
@@ -1421,7 +1420,6 @@
     }
   },
   "uni-swiper": {},
-  "uni-textarea": {},
   "uni-theme": {
     "uni": {
       "onOsThemeChange": {
