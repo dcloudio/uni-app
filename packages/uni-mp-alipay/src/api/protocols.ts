@@ -10,11 +10,6 @@ import {
 
 import { getStorageSync } from './shims'
 
-// 这个 api 只有钉钉有效，通过 my 通用 api 发起
-// const isDingdingMp = () => {
-//   return my.canIUse('createDing')
-// }
-
 export {
   getWindowInfo,
   redirectTo,
@@ -181,16 +176,22 @@ export function setNavigationBarTitle() {
 
 /**
  * Note:
- * 钉钉已支持 showModal https://open.dingtalk.com/document/development/jsapi-show-modal
- * 但效果和支付宝明显不同，还是使用 confrim 做兼容抹平
+ * showModal 在钉钉上没有，所以使用 my.confirm/alert 模拟
  */
 export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
+  if (my.canIUse('showModal')) {
+    return {
+      name: 'showModal',
+    }
+  }
   if (showCancel) {
     return {
       name: 'confirm',
-      args(fromArgs: UniApp.ShowModalOptions, toArgs: my.IConfirmOptions) {
-        toArgs.cancelButtonText = fromArgs.cancelText || '取消'
-        toArgs.confirmButtonText = fromArgs.confirmText || '确定'
+      args: {
+        confirmColor: false,
+        cancelColor: false,
+        cancelText: 'cancelButtonText',
+        confirmText: 'confirmButtonText',
       },
       returnValue(
         fromRes: my.IConfirmSuccessResult,
@@ -203,8 +204,9 @@ export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
   }
   return {
     name: 'alert',
-    args(fromArgs: UniApp.ShowModalOptions, toArgs: my.IAlertOptions) {
-      ;(toArgs as any).confirmButtonText = fromArgs.confirmText || '确定'
+    args: {
+      confirmColor: false,
+      confirmText: 'buttonText',
     },
     returnValue(fromRes: unknown, toRes: UniApp.ShowModalRes) {
       toRes.confirm = true
