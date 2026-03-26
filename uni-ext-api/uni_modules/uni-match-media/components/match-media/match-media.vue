@@ -78,17 +78,6 @@
       }
     }
     */
-    maxWidth?: string | number;
-    /**
-     * 页面高度（px 为单位）
-     * @uniPlatform {
-       "app": {
-        "harmony": {
-          "unixvVer": "5.0"
-        }
-      }
-    }
-    */
     height?: string | number;
     /**
      * 页面最小高度（px 为单位）
