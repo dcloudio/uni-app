@@ -852,6 +852,16 @@ export function initUTSProxyClass(
 
 function isUTSAndroid() {
   if (__X__) {
+    if (
+      // @ts-expect-error
+      typeof nativeChannel === 'object' &&
+      nativeChannel &&
+      // @ts-expect-error
+      nativeChannel.os === 'android'
+    ) {
+      // 仅dom2 Android js驱动会进入此分支。kotlin驱动（dom1或dom2原生）不会使用这份代码
+      return true
+    }
     return false
   }
   return typeof plus !== 'undefined' && plus.os.name === 'Android'
