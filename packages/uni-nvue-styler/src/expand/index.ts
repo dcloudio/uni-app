@@ -17,7 +17,7 @@ import {
 } from './borderRadius'
 import { transformBorderStyle, transformBorderStyleNvue } from './borderStyle'
 import { transformBorderWidth, transformBorderWidthNvue } from './borderWidth'
-import { transformFlexFlow, transformFlexFlowUvue } from './flexFlow'
+import { transformFlexFlow } from './flexFlow'
 import { transformFont } from './font'
 import { transformMargin } from './margin'
 import { transformPadding } from './padding'
@@ -58,7 +58,7 @@ function getDeclTransforms(
     margin: transformMargin,
     padding: transformPadding,
     [__RUN_TIME__ && __HYPHENATE__ ? 'flex-flow' : 'flexFlow']:
-      options.type === 'uvue' ? transformFlexFlowUvue : transformFlexFlow,
+      transformFlexFlow,
   }
 
   if (options.type === 'uvue') {

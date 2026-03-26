@@ -339,35 +339,6 @@ describe('uvue-style', () => {
       },
     })
   })
-
-  test('flex-flow with var', async () => {
-    const { code, messages } = await parse(
-      `
-        .content {
-            flex-flow: var(--composite-flow);
-        }
-        .content2 {
-            flex-flow: var(--direction, row) wrap;
-        }
-        `,
-      { type: 'uvue', platform: 'app-android' }
-    )
-    expect(messages).toHaveLength(0)
-    expect(JSON.parse(code)).toEqual({
-      content: {
-        '': {
-          flexDirection: 'var(--composite-flow)',
-          flexWrap: 'nowrap',
-        },
-      },
-      content2: {
-        '': {
-          flexDirection: 'var(--direction, row)',
-          flexWrap: 'wrap',
-        },
-      },
-    })
-  })
 })
 
 // link: parse-nvue.spec.ts
