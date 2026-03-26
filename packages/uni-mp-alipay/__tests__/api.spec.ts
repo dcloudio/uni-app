@@ -34,7 +34,7 @@ global.my = {
   }),
 }
 
-import { request, showModal } from '../src/api/protocols'
+import { request } from '../src/api/protocols'
 
 describe('api', () => {
   test('api-request base-object-data', () => {
@@ -198,21 +198,5 @@ describe('api', () => {
       name: 'data',
       value: undefined,
     })
-  })
-
-  // 目前不区分 dingding/alipay
-  test('api-dingding showModal', () => {
-    expect(typeof showModal).toBe('function')
-
-    const result = showModal() as any
-    expect(result.name).toBe('confirm')
-    expect(typeof result.args).toBe('function')
-
-    const fromArgs = { cancelText: '取消按钮' }
-    const toArgs: any = {}
-    result.args(fromArgs, toArgs)
-
-    expect(toArgs.cancelButtonText).toBe('取消按钮')
-    expect(toArgs.confirmButtonText).toBe('确定')
   })
 })

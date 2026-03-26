@@ -179,6 +179,7 @@ export function setNavigationBarTitle() {
  * showModal 钉钉已经支持，但是参数和支付宝差异很大，故仍使用 confrim 做兼容抹平
  */
 export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
+  // @ts-expect-error
   if (typeof dd === 'undefined' && my.canIUse('showModal')) {
     return {
       name: 'showModal',
