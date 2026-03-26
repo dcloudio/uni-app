@@ -855,6 +855,7 @@ function isUTSAndroid() {
     if (
       // @ts-expect-error
       typeof nativeChannel === 'object' &&
+      // @ts-expect-error
       nativeChannel &&
       // @ts-expect-error
       nativeChannel.os === 'android'
