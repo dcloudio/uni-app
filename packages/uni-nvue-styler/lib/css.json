@@ -9059,6 +9059,111 @@
             }
           }
         },
+        { 
+          "name": "100",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "5.07",
+                "unixVaporVer": "5.1"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.1"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61",
+                "unixVaporVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        { 
+          "name": "200",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "5.07",
+                "unixVaporVer": "5.1"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.1"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61",
+                "unixVaporVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        { 
+          "name": "300",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "5.07",
+                "unixVaporVer": "5.1"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.1"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61",
+                "unixVaporVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
         {
           "name": "400",
           "uniPlatform": {
@@ -9099,9 +9204,9 @@
           "uniPlatform": {
             "app": {
               "android": {
-                "osVer": "5.0",
+                "osVer": "9.0",
                 "uniVer": "√",
-                "unixVer": "3.9+",
+                "unixVer": "5.07",
                 "unixVaporVer": "5.1"
               },
               "ios": {
@@ -9134,9 +9239,9 @@
           "uniPlatform": {
             "app": {
               "android": {
-                "osVer": "5.0",
+                "osVer": "9.0",
                 "uniVer": "√",
-                "unixVer": "3.9+",
+                "unixVer": "5.07",
                 "unixVaporVer": "5.1"
               },
               "ios": {
@@ -9178,6 +9283,76 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11",
+                "unixVaporVer": "5.1"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61",
+                "unixVaporVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        { 
+          "name": "800",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "5.07",
+                "unixVaporVer": "5.1"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.1"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61",
+                "unixVaporVer": "5.0"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        { 
+          "name": "900",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "5.07",
+                "unixVaporVer": "5.1"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
                 "unixVaporVer": "5.1"
               },
               "harmony": {
@@ -11547,7 +11722,7 @@
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
-                "unixVaporVer": "x"
+                "unixVaporVer": "5.07"
               }
             },
             "mp": {
@@ -11582,7 +11757,7 @@
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
-                "unixVaporVer": "x"
+                "unixVaporVer": "5.07"
               }
             },
             "mp": {
@@ -11617,7 +11792,7 @@
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
-                "unixVaporVer": "x"
+                "unixVaporVer": "5.07"
               }
             },
             "mp": {
@@ -11652,7 +11827,7 @@
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
-                "unixVaporVer": "x"
+                "unixVaporVer": "5.07"
               }
             },
             "mp": {
@@ -11687,7 +11862,7 @@
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
-                "unixVaporVer": "x"
+                "unixVaporVer": "5.07"
               }
             },
             "mp": {
@@ -11862,7 +12037,7 @@
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
-                "unixVaporVer": "x"
+                "unixVaporVer": "5.07"
               }
             },
             "mp": {
@@ -11897,7 +12072,7 @@
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
-                "unixVaporVer": "x"
+                "unixVaporVer": "5.07"
               }
             },
             "mp": {
@@ -11932,7 +12107,7 @@
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
-                "unixVaporVer": "x"
+                "unixVaporVer": "5.07"
               }
             },
             "mp": {
@@ -11967,7 +12142,7 @@
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
-                "unixVaporVer": "x"
+                "unixVaporVer": "5.07"
               }
             },
             "mp": {
@@ -12002,7 +12177,7 @@
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
-                "unixVaporVer": "x"
+                "unixVaporVer": "5.07"
               }
             },
             "mp": {
