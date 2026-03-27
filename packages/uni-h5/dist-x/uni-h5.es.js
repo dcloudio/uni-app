@@ -14123,35 +14123,43 @@ function createNavigatorOnClick(props2) {
       return;
     }
     const animationDuration = parseInt(props2.animationDuration);
+    const onFail = (error) => {
+      console.error(error.errMsg);
+    };
     switch (props2.openType) {
       case "navigate":
         uni.navigateTo({
           url: props2.url,
           animationType: props2.animationType || "pop-in",
-          animationDuration
+          animationDuration,
+          fail: onFail
         });
         break;
       case "redirect":
         uni.redirectTo({
           url: props2.url,
-          exists: props2.exists
+          exists: props2.exists,
+          fail: onFail
         });
         break;
       case "switchTab":
         uni.switchTab({
-          url: props2.url
+          url: props2.url,
+          fail: onFail
         });
         break;
       case "reLaunch":
         uni.reLaunch({
-          url: props2.url
+          url: props2.url,
+          fail: onFail
         });
         break;
       case "navigateBack":
         uni.navigateBack({
           delta: props2.delta,
           animationType: props2.animationType || "pop-out",
-          animationDuration
+          animationDuration,
+          fail: onFail
         });
         break;
     }

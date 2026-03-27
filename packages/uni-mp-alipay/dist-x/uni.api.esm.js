@@ -1686,16 +1686,23 @@ function setNavigationBarTitle() {
 }
 /**
  * Note:
- * 钉钉已支持 showModal https://open.dingtalk.com/document/development/jsapi-show-modal
- * 但效果和支付宝明显不同，还是使用 confrim 做兼容抹平
+ * showModal 钉钉已经支持，但是参数和支付宝差异很大，故仍使用 confrim 做兼容抹平
  */
 function showModal({ showCancel = true } = {}) {
+    // @ts-expect-error
+    if (typeof dd === 'undefined' && my.canIUse('showModal')) {
+        return {
+            name: 'showModal',
+        };
+    }
     if (showCancel) {
         return {
             name: 'confirm',
-            args(fromArgs, toArgs) {
-                toArgs.cancelButtonText = fromArgs.cancelText || '取消';
-                toArgs.confirmButtonText = fromArgs.confirmText || '确定';
+            args: {
+                confirmColor: false,
+                cancelColor: false,
+                cancelText: 'cancelButtonText',
+                confirmText: 'confirmButtonText',
             },
             returnValue(fromRes, toRes) {
                 toRes.confirm = fromRes.confirm;
@@ -1705,8 +1712,9 @@ function showModal({ showCancel = true } = {}) {
     }
     return {
         name: 'alert',
-        args(fromArgs, toArgs) {
-            toArgs.confirmButtonText = fromArgs.confirmText || '确定';
+        args: {
+            confirmColor: false,
+            confirmText: 'buttonText',
         },
         returnValue(fromRes, toRes) {
             toRes.confirm = true;
