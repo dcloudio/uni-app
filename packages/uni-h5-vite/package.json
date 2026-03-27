@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5-vite",
-  "version": "3.0.0-alpha-5000520260323001",
+  "version": "3.0.0-alpha-5000720260327001",
   "description": "uni-h5-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

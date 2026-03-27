@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-push",
-  "version": "3.0.0-alpha-5000520260323001",
+  "version": "3.0.0-alpha-5000720260327001",
   "description": "@dcloudio/uni-push",
   "main": "lib/uni-push.js",
   "module": "lib/uni-push.js",
