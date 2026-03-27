@@ -2281,13 +2281,13 @@
       "UniEditorElementSetContentsOptions"
     ],
     [
-      "UniFormElement"
-    ],
-    [
       "UniHideModalFail"
     ],
     [
       "UniHideModalResult"
+    ],
+    [
+      "UniInputElement"
     ],
     [
       "UniLoadingElement"
@@ -2309,6 +2309,9 @@
     ],
     [
       "UniShowModalResult"
+    ],
+    [
+      "UniTextareaElement"
     ],
     [
       "UniVerifyButtonListItem"
