@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcloudio/size-check",
-  "version": "3.0.0-5000520260324001",
+  "version": "3.0.0-5000520260324002",
   "dependencies": {
     "@dcloudio/uni-app": "workspace:*",
     "@dcloudio/uni-h5": "workspace:*",
