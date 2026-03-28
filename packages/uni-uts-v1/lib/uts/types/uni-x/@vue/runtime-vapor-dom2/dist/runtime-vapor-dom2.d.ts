@@ -5,6 +5,7 @@ import "@vue/compiler-dom";
 import "@vue/compiler-vapor";
 import "@vue/compiler-sfc";
 import "@dcloudio/uni-app-x/types/dom2-internal/UniCSSTransform";
+import "@dcloudio/uni-app-x/types/dom2-internal/UniCSSProperty";
 import { Element as Element$1 } from "@dcloudio/uni-app-x/types/native";
 export * from "@vue/runtime-x";
 
