@@ -116,6 +116,11 @@
   "resolutions": {
     "@babel/plugin-transform-block-scoping": "7.19.4"
   },
+  "pnpm": {
+    "overrides": {
+      "postcss": "8.5.6"
+    }
+  },
   "packageManager": "pnpm@9.5.0",
   "name": "uni-app-next"
 }
