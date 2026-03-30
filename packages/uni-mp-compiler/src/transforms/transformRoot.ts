@@ -10,7 +10,10 @@ import {
   isSimpleExpressionNode,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
-import { UNI_STATUS_BAR_HEIGHT } from '@dcloudio/uni-shared'
+import {
+  UNI_SAFE_AREA_INSET_BOTTOM,
+  UNI_STATUS_BAR_HEIGHT,
+} from '@dcloudio/uni-shared'
 import type { NodeTransform, TransformContext } from '../transform'
 import { parseExpr } from '../ast'
 import {
@@ -28,7 +31,8 @@ import { genBabelExpr } from '../codegen'
 
 const CSS_VARS = '__cssVars()'
 const STATUS_BAR_HEIGHT_VAR = '--status-bar-height'
-const STATUS_BAR_HEIGHT_UNIT = 'px'
+const UNI_SAFE_AREA_INSET_BOTTOM_VAR = '--uni-safe-area-inset-bottom'
+const UNIT = 'px'
 
 export const transformRoot: NodeTransform = (node, context) => {
   if (node.type !== NodeTypes.ROOT) {
@@ -68,12 +72,19 @@ function addStatusBarStyle(node: ElementNode, context: TransformContext) {
       templateLiteral(
         [
           templateElement({ raw: '', cooked: '' }, false),
-          templateElement(
-            { raw: STATUS_BAR_HEIGHT_UNIT, cooked: STATUS_BAR_HEIGHT_UNIT },
-            true
-          ),
+          templateElement({ raw: UNIT, cooked: UNIT }, true),
         ],
         [identifier(UNI_STATUS_BAR_HEIGHT)]
+      )
+    ),
+    objectProperty(
+      stringLiteral(UNI_SAFE_AREA_INSET_BOTTOM_VAR),
+      templateLiteral(
+        [
+          templateElement({ raw: '', cooked: '' }, false),
+          templateElement({ raw: UNIT, cooked: UNIT }, true),
+        ],
+        [identifier(UNI_SAFE_AREA_INSET_BOTTOM)]
       )
     ),
   ])

@@ -2,7 +2,10 @@ import type { App } from 'vue'
 
 import { initApp } from '@dcloudio/uni-vue'
 // #if _X_
-import { UNI_STATUS_BAR_HEIGHT } from '@dcloudio/uni-shared'
+import {
+  UNI_SAFE_AREA_INSET_BOTTOM,
+  UNI_STATUS_BAR_HEIGHT,
+} from '@dcloudio/uni-shared'
 // #endif
 import { pruneComponentPropsCache } from './helpers/renderProps'
 
@@ -16,6 +19,16 @@ function getStatusBarHeight() {
     return my.getWindowInfo().statusBarHeight
   }
 }
+
+function getSafeAreaInset() {
+  if (typeof wx !== 'undefined') {
+    return wx.getWindowInfo().safeArea
+    // @ts-expect-error
+  } else if (typeof my !== 'undefined') {
+    // @ts-expect-error
+    return my.getWindowInfo().safeArea
+  }
+}
 // #endif
 
 export default {
@@ -27,6 +40,8 @@ export default {
     // #if _X_
     // TODO 此处不支持 __GLOBAL__，并且有些小程序(如抖音小程序)没有 getWindowInfo 方法
     app.config.globalProperties[UNI_STATUS_BAR_HEIGHT] = getStatusBarHeight()
+    app.config.globalProperties[UNI_SAFE_AREA_INSET_BOTTOM] =
+      getSafeAreaInset().bottom
     // #endif
     const oldMount = app.mount
     app.mount = function mount(rootContainer: any) {
