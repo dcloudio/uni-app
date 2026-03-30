@@ -4,6 +4,7 @@ import { EffectScope as EffectScope$1, Reactive, Ref, ShallowRef } from "@vue/re
 import "@vue/compiler-dom";
 import "@vue/compiler-vapor";
 import "@vue/compiler-sfc";
+import "@dcloudio/uni-app-x/types/dom2-internal/UniNativeDefines";
 import "@dcloudio/uni-app-x/types/dom2-internal/UniCSSTransform";
 import "@dcloudio/uni-app-x/types/dom2-internal/UniCSSProperty";
 import { Element as Element$1 } from "@dcloudio/uni-app-x/types/native";
