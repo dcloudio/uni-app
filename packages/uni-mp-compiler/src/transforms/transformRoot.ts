@@ -74,7 +74,7 @@ function addStatusBarStyle(node: ElementNode, context: TransformContext) {
           templateElement({ raw: '', cooked: '' }, false),
           templateElement({ raw: UNIT, cooked: UNIT }, true),
         ],
-        [identifier(UNI_STATUS_BAR_HEIGHT)]
+        [identifier(`$scope.data.u_w_i.statusBarHeight`)]
       )
     ),
     objectProperty(
