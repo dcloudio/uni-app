@@ -11,6 +11,9 @@ import {
   initFormField,
   initPageInstance,
 } from '@dcloudio/uni-mp-core'
+// #if _X_
+import { updateStatusBarHeight } from '@dcloudio/uni-mp-core'
+// #endif
 
 import {
   $createComponent,
@@ -48,6 +51,9 @@ export function initLifetimes({
       // 初始化 vue 实例
       const mpInstance = this
       const isMiniProgramPage = isPage(mpInstance)
+      if (__X__ && isMiniProgramPage) {
+        updateStatusBarHeight()
+      }
       let propsData: Record<string, any> = properties
       if (isMiniProgramPage) {
         if (__PLATFORM__ === 'mp-baidu') {
