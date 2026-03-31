@@ -338,6 +338,7 @@ export async function compile(
         'DCloudUTSFoundation',
         ...(isX ? ['DCloudUniappRuntime'] : []),
       ],
+      isDom2: process.env.UNI_APP_X_DOM2 === 'true',
       logFilename: true,
       noColor: !isColorSupported(),
       transform: {

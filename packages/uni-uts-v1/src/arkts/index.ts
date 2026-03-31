@@ -128,6 +128,7 @@ export async function compileArkTSExtApi(
       sourceMap: sourceMap
         ? path.resolve(resolveUTSSourceMapPath(), 'uni_modules', pluginId)
         : false,
+      isDom2: process.env.UNI_APP_X_DOM2 === 'true',
       extname: '.ets',
       logFilename: false,
       isPlugin: true,
