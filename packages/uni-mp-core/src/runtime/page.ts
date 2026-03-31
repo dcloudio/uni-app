@@ -8,6 +8,9 @@ import {
   addLeadingSlash,
   stringifyQuery,
 } from '@dcloudio/uni-shared'
+// #if _X_
+import { UNI_STATUS_BAR_HEIGHT } from '@dcloudio/uni-shared'
+// #endif
 
 import {
   type CustomComponentInstanceProperty,
@@ -15,6 +18,9 @@ import {
   type ParseComponentOptions,
   parseComponent,
 } from './component'
+// #if _X_
+import { getAppVm } from './component'
+// #endif
 import {
   PAGE_INIT_HOOKS,
   initHooks,
@@ -134,3 +140,20 @@ export function initPageInstance(mpPageInstance: MPComponentInstance) {
     })
   }
 }
+
+// #if _X_
+export function updateStatusBarHeight() {
+  const globalProperties = getAppVm()?.$?.appContext?.config.globalProperties
+  if (!globalProperties) {
+    return
+  }
+  const statusBarHeight =
+    __PLATFORM__ === 'mp-toutiao'
+      ? __GLOBAL__.getSystemInfoSync().statusBarHeight
+      : __GLOBAL__.getWindowInfo().statusBarHeight
+  if (typeof statusBarHeight !== 'number') {
+    return
+  }
+  globalProperties[UNI_STATUS_BAR_HEIGHT] = statusBarHeight
+}
+// #endif
