@@ -149,12 +149,6 @@ export function parseComponent(
     applyOptions(mpComponentOptions, vueOptions)
   }
 
-  if (__X__ && isPageInProject) {
-    mpComponentOptions.data = extend(mpComponentOptions.data || {}, {
-      u_w_i: __GLOBAL__.getWindowInfo(),
-    })
-  }
-
   initProps(mpComponentOptions)
 
   initPropsObserver(mpComponentOptions)
