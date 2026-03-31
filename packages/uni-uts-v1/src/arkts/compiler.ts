@@ -55,6 +55,7 @@ export async function bundleArkTS({
       footer,
       imports: [],
       sourceMap: sourceMap ? path.resolve(resolveUTSSourceMapPath()) : false,
+      isDom2: process.env.UNI_APP_X_DOM2 === 'true',
       extname: '.ets',
       logFilename: false,
       isPlugin: true,
