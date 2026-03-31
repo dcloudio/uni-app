@@ -12,7 +12,7 @@ import {
   initPageInstance,
 } from '@dcloudio/uni-mp-core'
 // #if _X_
-import { updateStatusBarHeight } from '@dcloudio/uni-mp-core'
+import { updateCssVariables } from '@dcloudio/uni-mp-core'
 // #endif
 
 import {
@@ -52,7 +52,7 @@ export function initLifetimes({
       const mpInstance = this
       const isMiniProgramPage = isPage(mpInstance)
       if (__X__ && isMiniProgramPage) {
-        updateStatusBarHeight()
+        updateCssVariables()
       }
       let propsData: Record<string, any> = properties
       if (isMiniProgramPage) {

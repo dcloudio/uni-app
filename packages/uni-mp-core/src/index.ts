@@ -11,7 +11,7 @@ export { isSyncApi } from './api/promise'
 
 // #if _X_
 export { parseXReturnValue } from './api/protocols/x'
-export { updateStatusBarHeight } from './runtime/page'
+export { updateCssVariables } from './runtime/page'
 // #endif
 
 // mp-alipay
