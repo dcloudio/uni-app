@@ -250,7 +250,7 @@ interface InitialVNode {
   props: Record<string, any>
 }
 
-function getAppVm() {
+export function getAppVm() {
   if (process.env.UNI_MP_PLUGIN) {
     return __GLOBAL__.$vm
   }
