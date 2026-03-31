@@ -9,7 +9,10 @@ import {
   stringifyQuery,
 } from '@dcloudio/uni-shared'
 // #if _X_
-import { UNI_STATUS_BAR_HEIGHT } from '@dcloudio/uni-shared'
+import {
+  UNI_SAFE_AREA_INSET_BOTTOM,
+  UNI_STATUS_BAR_HEIGHT,
+} from '@dcloudio/uni-shared'
 // #endif
 
 import {
@@ -142,18 +145,21 @@ export function initPageInstance(mpPageInstance: MPComponentInstance) {
 }
 
 // #if _X_
-export function updateStatusBarHeight() {
+export function updateCssVariables() {
   const globalProperties = getAppVm()?.$?.appContext?.config.globalProperties
   if (!globalProperties) {
     return
   }
-  const statusBarHeight =
-    __PLATFORM__ === 'mp-toutiao'
-      ? __GLOBAL__.getSystemInfoSync().statusBarHeight
-      : __GLOBAL__.getWindowInfo().statusBarHeight
-  if (typeof statusBarHeight !== 'number') {
-    return
-  }
-  globalProperties[UNI_STATUS_BAR_HEIGHT] = statusBarHeight
+
+  const windowInfo = __GLOBAL__.getWindowInfo()
+  const screenBottom =
+    windowInfo.screenHeight - windowInfo.screenTop - windowInfo.windowHeight
+  const safeAreaBottom = windowInfo.screenHeight - windowInfo.safeArea.bottom
+
+  globalProperties[UNI_STATUS_BAR_HEIGHT] = windowInfo.statusBarHeight
+  globalProperties[UNI_SAFE_AREA_INSET_BOTTOM] = Math.max(
+    0,
+    safeAreaBottom - screenBottom
+  )
 }
 // #endif
