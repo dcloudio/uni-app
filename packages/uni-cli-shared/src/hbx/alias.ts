@@ -71,7 +71,7 @@ export function initModuleAlias() {
         if (process.env.NODE_ENV !== 'development') {
           process.env.UNI_APP_X_DOM2_KT_DIR = path.resolve(
             process.env.UNI_OUTPUT_DIR,
-            'src/.uniappx/android',
+            '.uniappx/android',
             'src'
           )
         } else {
