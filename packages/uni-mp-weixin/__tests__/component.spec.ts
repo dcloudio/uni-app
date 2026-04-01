@@ -353,9 +353,9 @@ describe('mp-weixin: transform component x', () => {
   test(`rich-text`, () => {
     assert(
       `<rich-text selectable/>`,
-      `<rich-text user-select style="{{'--status-bar-height:' + a}}"/>`,
+      `<rich-text user-select style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -366,9 +366,9 @@ describe('mp-weixin: transform component x', () => {
 
     assert(
       `<rich-text :selectable="false"/>`,
-      `<rich-text user-select="{{false}}" style="{{'--status-bar-height:' + a}}"/>`,
+      `<rich-text user-select="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -381,9 +381,9 @@ describe('mp-weixin: transform component x', () => {
   test(`canvas`, () => {
     assert(
       `<canvas/>`,
-      `<canvas style="{{'--status-bar-height:' + a}}" type="2d"/>`,
+      `<canvas style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" type="2d"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -394,9 +394,9 @@ describe('mp-weixin: transform component x', () => {
 
     assert(
       `<canvas type="2d"/>`,
-      `<canvas type="2d" style="{{'--status-bar-height:' + a}}"/>`,
+      `<canvas type="2d" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -407,9 +407,9 @@ describe('mp-weixin: transform component x', () => {
 
     assert(
       `<canvas type="webgl"/>`,
-      `<canvas type="webgl" style="{{'--status-bar-height:' + a}}"/>`,
+      `<canvas type="webgl" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -422,9 +422,9 @@ describe('mp-weixin: transform component x', () => {
   test(`checkbox`, () => {
     assert(
       `<checkbox fore-color="#FF0000"/>`,
-      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -435,9 +435,9 @@ describe('mp-weixin: transform component x', () => {
 
     assert(
       `<checkbox fore-color="#FF0000"/>`,
-      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -450,9 +450,9 @@ describe('mp-weixin: transform component x', () => {
   test(`radio`, () => {
     assert(
       `<radio active-background-color="#FF0000"/>`,
-      `<radio color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<radio color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -463,9 +463,9 @@ describe('mp-weixin: transform component x', () => {
 
     assert(
       `<radio color="#FF0000"/>`,
-      `<radio color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<radio color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -478,9 +478,9 @@ describe('mp-weixin: transform component x', () => {
   test(`switch`, () => {
     assert(
       `<switch active-background-color="#FF0000"/>`,
-      `<switch color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<switch color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -491,9 +491,9 @@ describe('mp-weixin: transform component x', () => {
 
     assert(
       `<switch color="#FF0000"/>`,
-      `<switch color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<switch color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -506,9 +506,9 @@ describe('mp-weixin: transform component x', () => {
   test(`slider`, () => {
     assert(
       `<slider background-color="#FF0000" active-background-color="#FF0000" fore-color="#FF0000"/>`,
-      `<slider backgroundColor="#FF0000" activeColor="#FF0000" block-color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<slider backgroundColor="#FF0000" activeColor="#FF0000" block-color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -521,9 +521,9 @@ describe('mp-weixin: transform component x', () => {
   test('list-view', () => {
     assert(
       `<list-view/>`,
-      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-y="true"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" enable-flex="true" enhanced="true" scroll-y="true"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -536,9 +536,9 @@ describe('mp-weixin: transform component x', () => {
   test('list-view direction horizontal', () => {
     assert(
       `<list-view direction="horizontal"/>`,
-      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-x="true"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" enable-flex="true" enhanced="true" scroll-x="true"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -551,9 +551,9 @@ describe('mp-weixin: transform component x', () => {
   test('list-view direction vertical', () => {
     assert(
       `<list-view direction="vertical"/>`,
-      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-y="true"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" enable-flex="true" enhanced="true" scroll-y="true"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -566,9 +566,9 @@ describe('mp-weixin: transform component x', () => {
   test('list-view direction all', () => {
     assert(
       `<list-view direction="all"/>`,
-      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-x="true" scroll-y="true"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" enable-flex="true" enhanced="true" scroll-x="true" scroll-y="true"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -581,9 +581,9 @@ describe('mp-weixin: transform component x', () => {
   test('list-view dynamic direction', () => {
     assert(
       `<list-view :direction="dir"/>`,
-      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-x="{{b}}" scroll-y="{{c}}"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" enable-flex="true" enhanced="true" scroll-x="{{c}}" scroll-y="{{d}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: _ctx.dir === 'horizontal' || _ctx.dir === 'all', c: !_ctx.dir || _ctx.dir === 'vertical' || _ctx.dir === 'all' }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\`, c: _ctx.dir === 'horizontal' || _ctx.dir === 'all', d: !_ctx.dir || _ctx.dir === 'vertical' || _ctx.dir === 'all' }
   return __returned__
 }`,
       {
@@ -596,9 +596,9 @@ describe('mp-weixin: transform component x', () => {
   test('scroll-view', () => {
     assert(
       `<scroll-view/>`,
-      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-y="true"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" enable-flex="true" enhanced="true" scroll-y="true"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -611,9 +611,9 @@ describe('mp-weixin: transform component x', () => {
   test('scroll-view direction horizontal', () => {
     assert(
       `<scroll-view direction="horizontal"/>`,
-      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-x="true"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" enable-flex="true" enhanced="true" scroll-x="true"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -626,9 +626,9 @@ describe('mp-weixin: transform component x', () => {
   test('scroll-view direction vertical', () => {
     assert(
       `<scroll-view direction="vertical"/>`,
-      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-y="true"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" enable-flex="true" enhanced="true" scroll-y="true"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -641,9 +641,9 @@ describe('mp-weixin: transform component x', () => {
   test('scroll-view direction all', () => {
     assert(
       `<scroll-view direction="all"/>`,
-      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-x="true" scroll-y="true"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" enable-flex="true" enhanced="true" scroll-x="true" scroll-y="true"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -656,9 +656,9 @@ describe('mp-weixin: transform component x', () => {
   test('scroll-view dynamic direction', () => {
     assert(
       `<scroll-view :direction="dir"/>`,
-      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-x="{{b}}" scroll-y="{{c}}"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" enable-flex="true" enhanced="true" scroll-x="{{c}}" scroll-y="{{d}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: _ctx.dir === 'horizontal' || _ctx.dir === 'all', c: !_ctx.dir || _ctx.dir === 'vertical' || _ctx.dir === 'all' }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\`, c: _ctx.dir === 'horizontal' || _ctx.dir === 'all', d: !_ctx.dir || _ctx.dir === 'vertical' || _ctx.dir === 'all' }
   return __returned__
 }`,
       {
@@ -671,9 +671,9 @@ describe('mp-weixin: transform component x', () => {
   test('scroll-view with existing scroll-x should not transform direction', () => {
     assert(
       `<scroll-view scroll-x="true" direction="horizontal"/>`,
-      `<scroll-view scroll-x="true" direction="horizontal" style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true"/>`,
+      `<scroll-view scroll-x="true" direction="horizontal" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" enable-flex="true" enhanced="true"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -686,9 +686,9 @@ describe('mp-weixin: transform component x', () => {
   test('scroll-view with existing scroll-y should not transform direction', () => {
     assert(
       `<scroll-view scroll-y="true" direction="vertical"/>`,
-      `<scroll-view scroll-y="true" direction="vertical" style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true"/>`,
+      `<scroll-view scroll-y="true" direction="vertical" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" enable-flex="true" enhanced="true"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
