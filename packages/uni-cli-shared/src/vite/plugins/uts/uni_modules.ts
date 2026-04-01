@@ -620,6 +620,13 @@ export function uniUTSAppUniModulesPlugin(
           )
         })
       },
+      iosPreprocessor: createAppIosUniModulesSyncFilePreprocessorOnce(
+        !!options.x
+      ),
+      androidPreprocessor: createAppAndroidUniModulesSyncFilePreprocessorOnce(
+        !!options.x
+      ),
+      // harmonyPreprocessor: createAppHarmonyUniModulesSyncFilePreprocessorOnce(!!options.x),
     })
   }
 
