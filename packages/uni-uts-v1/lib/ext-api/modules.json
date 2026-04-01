@@ -1254,13 +1254,22 @@
     }
   },
   "uni-share": {
+    "provider": {
+      "service": "share",
+      "app": {
+        "js": false,
+        "kotlin": true,
+        "swift": true,
+        "arkts": true
+      }
+    },
     "uni": {
       "share": {
         "name": "share",
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       }
@@ -1273,7 +1282,7 @@
       "app": {
         "js": false,
         "kotlin": true,
-        "swift": false,
+        "swift": true,
         "arkts": true
       }
     }
