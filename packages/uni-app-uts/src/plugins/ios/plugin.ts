@@ -32,7 +32,7 @@ export function uniAppXIOSEnginePlugin(): UniVitePlugin {
           cppPath: process.env.UNI_APP_X_DOM2_CPP_DIR!,
         })
         if (res.code) {
-          console.error(res.msg)
+          throw new Error(res.msg)
         }
       }
     },
