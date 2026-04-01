@@ -67,9 +67,11 @@ export function uniAppCssPrePlugin(): Plugin {
         async chunkCssCode(filename, cssCode) {
           // filename
           cssCode = parseAssets(config, cssCode)
-          const { code, messages, fontFaces } = await parseCss(cssCode, {
+          const { code, bytes, messages, fontFaces } = await parseCss(cssCode, {
             platform: process.env.UNI_UTS_PLATFORM,
             helper: requireUniHelpers(),
+            output:
+              process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' ? 'bin' : 'code',
           })
           if (isDom2 && fontFaces) {
             const id = CSS_FILE_ID_MAP.get(filename)
@@ -109,7 +111,7 @@ export function uniAppCssPrePlugin(): Plugin {
               )
             }
           })
-          return code
+          return code || bytes
         },
         emitFile(filename, cssCode) {
           const { ASDSF } = requireUniHelpers()
@@ -186,6 +188,7 @@ export function uniAppCssPlugin(): Plugin {
       const { messages } = await parseCss(source, {
         platform: process.env.UNI_UTS_PLATFORM,
         helper: requireUniHelpers(),
+        output: process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' ? 'bin' : 'code',
       })
       let cssSourceMap: SourceMapInput | undefined
       if (messages.find((m) => m.type === 'warning')) {

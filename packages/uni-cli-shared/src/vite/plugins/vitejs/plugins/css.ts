@@ -375,9 +375,9 @@ export function cssPostPlugin(
     chunkCssCode: (
       filename: string,
       cssCode: string
-    ) => Promise<string> | string
+    ) => Promise<string | Uint8Array>
     includeComponentCss?: boolean
-    emitFile?: (filename: string, cssCode: string) => void
+    emitFile?: (filename: string, cssCode: string | Uint8Array) => void
   }
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
@@ -560,7 +560,10 @@ export function cssPostPlugin(
           inlined: false,
           minify: true,
         })
-        if (source.trim()) {
+        if (typeof source === 'string') {
+          source = source.trim()
+        }
+        if (source) {
           emitFile
             ? emitFile(filename, source)
             : this.emitFile({
