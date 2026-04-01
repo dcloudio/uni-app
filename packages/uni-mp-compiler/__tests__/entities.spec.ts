@@ -4,9 +4,9 @@ describe('compiler: transform entities', () => {
   test('keep entites', () => {
     assert(
       `<text>&lt;&gt;&thinsp;&nbsp;&ensp;&emsp;</text>`,
-      `<text style="{{'--status-bar-height:' + a}}">&lt;&gt;&thinsp;&nbsp;&ensp;&emsp;</text>`,
+      `<text style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}">&lt;&gt;&thinsp;&nbsp;&ensp;&emsp;</text>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
