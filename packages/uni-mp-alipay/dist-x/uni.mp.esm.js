@@ -1,4 +1,4 @@
-import { getGlobal, UTS, UTSJSONObject, UTSValueIterable, UniError, VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
+import { getGlobal, UTS, UTSJSONObject, UTSValueIterable, UniError, VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, UNI_STATUS_BAR_HEIGHT, UNI_SAFE_AREA_INSET_BOTTOM, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
 export { UTS, UTSJSONObject, UTSValueIterable, UniError } from '@dcloudio/uni-shared';
 import { isArray, isFunction, capitalize, hasOwn, extend, isPlainObject, isString } from '@vue/shared';
 import { onUpdated, pruneUniElements, onUnmounted, destroyUniElements, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
@@ -648,6 +648,18 @@ function initPageInstance(mpPageInstance) {
         });
     }
 }
+function updateCssVariables() {
+    var _a, _b, _c;
+    const globalProperties = (_c = (_b = (_a = getAppVm()) === null || _a === void 0 ? void 0 : _a.$) === null || _b === void 0 ? void 0 : _b.appContext) === null || _c === void 0 ? void 0 : _c.config.globalProperties;
+    if (!globalProperties) {
+        return;
+    }
+    const windowInfo = my.getWindowInfo();
+    const screenBottom = windowInfo.screenHeight - windowInfo.screenTop - windowInfo.windowHeight;
+    const safeAreaBottom = windowInfo.screenHeight - windowInfo.safeArea.bottom;
+    globalProperties[UNI_STATUS_BAR_HEIGHT] = windowInfo.statusBarHeight;
+    globalProperties[UNI_SAFE_AREA_INSET_BOTTOM] = Math.max(0, safeAreaBottom - screenBottom);
+}
 
 function initCreatePluginApp(parseAppOptions) {
     return function createApp(vm) {
@@ -928,6 +940,9 @@ function initCreatePage() {
                 this.$page = {
                     fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
                 };
+                {
+                    updateCssVariables();
+                }
                 // 初始化 vue 实例
                 this.props = query;
                 this.$vm = createVueComponent('page', this, vueOptions);
