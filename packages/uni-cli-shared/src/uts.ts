@@ -154,6 +154,41 @@ export function resolveUTSModule(
   }
 }
 
+export function hasUTSModulePlatformFile(
+  pluginDir: string,
+  platform: typeof process.env.UNI_UTS_PLATFORM
+) {
+  const utssdkDir = path.resolve(pluginDir, 'utssdk')
+  if (!fs.existsSync(utssdkDir)) {
+    return false
+  }
+  // 根目录 index.uts 视为当前平台可复用，和现有 uts 解析逻辑保持一致
+  if (fs.existsSync(path.resolve(utssdkDir, 'index.uts'))) {
+    return true
+  }
+  if (platform === 'app-harmony') {
+    if (
+      fs.existsSync(path.resolve(utssdkDir, 'app-js', 'index.uts')) ||
+      resolveUTSFile(path.resolve(utssdkDir, platform), [
+        '.uts',
+        '.vue',
+        '.uvue',
+      ])
+    ) {
+      return true
+    }
+    return false
+  }
+  if (platform === 'app-android' || platform === 'app-ios') {
+    return !!resolveUTSFile(path.resolve(utssdkDir, platform), [
+      '.uts',
+      '.vue',
+      '.uvue',
+    ])
+  }
+  return !!resolveUTSFile(path.resolve(utssdkDir, platform))
+}
+
 function resolveUTSEncryptFile(pluginId: string, index: string) {
   if (!pluginId) {
     return
