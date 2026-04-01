@@ -506,8 +506,9 @@ const VIRTUAL_HOST_STYLE = 'virtualHostStyle';
 const VIRTUAL_HOST_CLASS = 'virtualHostClass';
 const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden';
 const VIRTUAL_HOST_ID = 'virtualHostId';
-// statusBarHeight
+// mini program css variables
 const UNI_STATUS_BAR_HEIGHT = 'u_s_b_h';
+const UNI_SAFE_AREA_INSET_BOTTOM = 'u_s_a_i_b';
 
 function arrayPop(array) {
     if (array.length === 0) {
@@ -2717,6 +2718,7 @@ exports.SLOT_DEFAULT_NAME = SLOT_DEFAULT_NAME;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
 exports.UNI_AD_PLUGINS = UNI_AD_PLUGINS;
+exports.UNI_SAFE_AREA_INSET_BOTTOM = UNI_SAFE_AREA_INSET_BOTTOM;
 exports.UNI_SSR = UNI_SSR;
 exports.UNI_SSR_DATA = UNI_SSR_DATA;
 exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
