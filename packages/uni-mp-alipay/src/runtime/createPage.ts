@@ -13,6 +13,9 @@ import {
   initUnknownHooks,
   initWxsCallMethods,
 } from '@dcloudio/uni-mp-core'
+// #if _X_
+import { updateCssVariables } from '@dcloudio/uni-mp-core'
+// #endif
 
 import {
   ON_BACK_PRESS,
@@ -50,6 +53,9 @@ export function initCreatePage() {
         }
         this.$page = {
           fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
+        }
+        if (__X__) {
+          updateCssVariables()
         }
         // 初始化 vue 实例
         this.props = query
