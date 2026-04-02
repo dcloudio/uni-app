@@ -375,7 +375,7 @@ export function cssPostPlugin(
     chunkCssCode: (
       filename: string,
       cssCode: string
-    ) => Promise<string | Uint8Array>
+    ) => Promise<string | Uint8Array> | string
     includeComponentCss?: boolean
     emitFile?: (filename: string, cssCode: string | Uint8Array) => void
   }
