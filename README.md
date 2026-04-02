@@ -1,7 +1,7 @@
 # uni-app
 
 <p>
-  简体中文 | <a href="https://github.com/dcloudio/uni-app/blob/dev/README_en-US.md">English</a>
+  简体中文 | <a href="https://github.com/dcloudio/uni-app/blob/uni-app-vue3-dev/README_en-US.md">English</a>
 </p>
 
 `uni-app` 是一个使用 `Vue.js` 开发小程序、 Web、App的统一前端框架。官网地址：[https://uniapp.dcloud.io](https://uniapp.dcloud.io)
