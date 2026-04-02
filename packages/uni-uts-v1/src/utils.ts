@@ -709,25 +709,17 @@ function copyConfigJson(
   const configJson: Record<string, any> = fs.existsSync(configJsonFilename)
     ? parseJson(fs.readFileSync(configJsonFilename, 'utf8'))
     : {}
-  const componentDelegateClassOptions = resolveComponentDelegateClassOptions(
+  let delegateClassTxt = resolveComponentDelegateClassOptions(
     platform,
-    inputDir,
-    componentsObj,
-    configJson
+    inputDir
   )
-  const hasComponentDelegateClass =
-    !!componentDelegateClassOptions.length &&
-    (hasComponents ||
-      hasMissingComponentDelegateClass(
-        configJson.components,
-        componentDelegateClassOptions
-      ))
+
   if (
     hasComponents ||
     hasCustomElements ||
     hasHookClass ||
     hasProvider ||
-    hasComponentDelegateClass
+    delegateClassTxt
   ) {
     //存在组件
     if (hasComponents) {
@@ -766,19 +758,25 @@ function copyConfigJson(
       }
       addCustomElements(platform === 'app-android' ? 'easycom' : 'components')
     }
-    if (hasComponentDelegateClass) {
-      // iOS 组件插件存在 UniXxxViewElement 时，给缺失的组件补充 delegateClass
-      addComponentDelegateClass(
-        configJson.components,
-        componentDelegateClassOptions
-      )
-    }
+
     if (hasHookClass) {
       configJson.hooksClass = hookClass
     }
     if (hasProvider) {
       configJson.provider = provider
     }
+
+    if (delegateClassTxt) {
+      if (!configJson.components) {
+        configJson.components = [{ delegateClass: delegateClassTxt }]
+      } else if (Array.isArray(configJson.components)) {
+        const item = configJson.components[0]
+        if (!item.delegateClass) {
+          item.delegateClass = delegateClassTxt
+        }
+      }
+    }
+
     fs.outputFileSync(
       outputConfigJsonFilename,
       JSON.stringify(configJson, null, 2)
@@ -790,18 +788,11 @@ function copyConfigJson(
   }
 }
 
-interface ComponentDelegateClassOption {
-  delegateClass: string
-  name?: string
-}
-
 function resolveComponentDelegateClassOptions(
   platform: typeof process.env.UNI_UTS_PLATFORM,
-  inputDir: string,
-  components: Record<string, string>,
-  configJson: Record<string, any>
+  inputDir: string
 ) {
-  if (process.env.UNI_APP_X_DOM2 !== 'true') {
+  if (process.env.UNI_APP_X !== 'true') {
     return []
   }
   if (platform !== 'app-ios') {
@@ -821,58 +812,7 @@ function resolveComponentDelegateClassOptions(
   }
   // 通过 app-ios/index.uts 中的导出接口判断是否真的是原生 View 组件插件
   const content = fs.readFileSync(indexFile, 'utf8')
-  const options: ComponentDelegateClassOption[] = []
-  const componentNames = resolveComponentDelegateClassNames(
-    components,
-    configJson.components
-  )
-  componentNames.forEach((name) => {
-    const delegateClass = resolveDelegateClassByName(content, name)
-    if (delegateClass) {
-      options.push({
-        name,
-        delegateClass,
-      })
-    }
-  })
-  if (options.length) {
-    return options
-  }
-
-  const delegateClass = resolveDelegateClassByName(content, pluginId)
-  if (delegateClass) {
-    options.push({
-      delegateClass,
-    })
-  }
-  return options
-}
-
-function resolveComponentDelegateClassNames(
-  components: Record<string, string>,
-  configComponents: unknown
-) {
-  const names = new Set<string>()
-  // 优先复用已解析出的组件名，再兼容读取开发者已有 config.json 中的 components
-  Object.keys(components).forEach((name) => {
-    if (name.startsWith('uni-')) {
-      names.add(name)
-    }
-  })
-  if (isArray(configComponents)) {
-    configComponents.forEach((component) => {
-      if (isPlainObject(component)) {
-        const componentOption = component as Record<string, any>
-        if (
-          isString(componentOption.name) &&
-          componentOption.name.startsWith('uni-')
-        ) {
-          names.add(componentOption.name)
-        }
-      }
-    })
-  }
-  return [...names]
+  return resolveDelegateClassByName(content, pluginId)
 }
 
 function resolveDelegateClassByName(content: string, name: string) {
@@ -882,10 +822,15 @@ function resolveDelegateClassByName(content: string, name: string) {
   const normalized = capitalize(camelize(name))
   // UniWebViewElement 中的 UniWeb 来自插件名/组件名的规范化结果
   const interfaceRE = new RegExp(
-    `export\\s+interface\\s+${normalized}Element\\s+extends\\b`
+    `interface\\s+${normalized}Element\\s+extends\\b`
   )
   if (interfaceRE.test(content)) {
-    return normalized + 'ComponentRegister'
+    const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+    if (isDom2) {
+      return normalized + 'ElementRegister'
+    } else {
+      return normalized + 'ComponentRegister'
+    }
   }
 }
 
@@ -895,54 +840,6 @@ function resolveUniModulesPluginId(inputDir: string) {
   if (index > -1) {
     return parts[index + 1]
   }
-}
-
-function hasMissingComponentDelegateClass(
-  configComponents: unknown,
-  options: ComponentDelegateClassOption[]
-) {
-  if (!isArray(configComponents)) {
-    return false
-  }
-  return options.some((option) => {
-    return configComponents.some((component) => {
-      if (!isPlainObject(component)) {
-        return false
-      }
-      const componentOption = component as Record<string, any>
-      if (!isString(componentOption.name)) {
-        return false
-      }
-      if (option.name && componentOption.name !== option.name) {
-        return false
-      }
-      return !componentOption.delegateClass
-    })
-  })
-}
-
-function addComponentDelegateClass(
-  configComponents: unknown,
-  options: ComponentDelegateClassOption[]
-) {
-  if (!isArray(configComponents)) {
-    return
-  }
-  options.forEach((option) => {
-    configComponents.forEach((component) => {
-      if (!isPlainObject(component)) {
-        return
-      }
-      const componentOption = component as Record<string, any>
-      if (componentOption.delegateClass) {
-        return
-      }
-      if (option.name && componentOption.name !== option.name) {
-        return
-      }
-      componentOption.delegateClass = option.delegateClass
-    })
-  })
 }
 
 function genComponentsConfigJson(
