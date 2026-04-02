@@ -217,7 +217,7 @@ export function processProps(
               createMPCompilerError(MPErrorCodes.X_V_ON_NO_ARGUMENT, loc)
             )
           }
-          if (!context.isX && isVBind && (!isComponent || isPluginComponent)) {
+          if (isVBind && (!isComponent || isPluginComponent)) {
             context.onError(
               createMPCompilerError(MPErrorCodes.X_V_BIND_NO_ARGUMENT, loc)
             )
