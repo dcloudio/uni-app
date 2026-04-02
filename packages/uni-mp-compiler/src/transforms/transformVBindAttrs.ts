@@ -8,7 +8,7 @@ import { isElementNode } from '@dcloudio/uni-cli-shared'
 import type { NodeTransform } from '../transform'
 
 export const transformVBindAttrs: NodeTransform = (node, context) => {
-  if (!isElementNode(node)) {
+  if (!context.isX || !isElementNode(node)) {
     return
   }
   const props = node.props
