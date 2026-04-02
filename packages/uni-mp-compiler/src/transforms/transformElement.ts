@@ -222,16 +222,6 @@ export function processProps(
               createMPCompilerError(MPErrorCodes.X_V_BIND_NO_ARGUMENT, loc)
             )
           }
-          if (context.isX && isVBind) {
-            const isVBindAttrs =
-              prop.exp?.type === NodeTypes.SIMPLE_EXPRESSION &&
-              prop.exp.content === '$attrs'
-            if (!isVBindAttrs) {
-              context.onError(
-                createMPCompilerError(MPErrorCodes.X_V_BIND_NO_ARGUMENT, loc)
-              )
-            }
-          }
           continue
         }
         // v-on:[a]=""
