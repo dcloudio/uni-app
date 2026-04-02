@@ -1,7 +1,7 @@
 # uni-app
 
 <p>
-  <a href="https://github.com/dcloudio/uni-app/blob/dev/README.md">简体中文</a> | English
+  <a href="https://github.com/dcloudio/uni-app/blob/uni-app-vue3-dev/README.md">简体中文</a> | English
 </p>
 
 `uni-app` is a unified front-end framework that uses `Vue.js` to develop applet, Web, and App. Official website address: [https://uniapp.dcloud.io](https://uniapp.dcloud.io)
