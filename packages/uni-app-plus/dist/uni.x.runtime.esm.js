@@ -2084,7 +2084,7 @@ function registerPage(_ref, onCreated) {
         }
         if (homeSystemDialogPages.length) {
           sourceDialogPages = homeSystemDialogPages;
-          targetDialogPages = homePage.__$$getSystemDialogPages();
+          targetDialogPages = typeof homePage.__$$getSystemDialogPages === "undefined" ? homePage.$getSystemDialogPages() : homePage.__$$getSystemDialogPages();
         }
         handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages);
       }
