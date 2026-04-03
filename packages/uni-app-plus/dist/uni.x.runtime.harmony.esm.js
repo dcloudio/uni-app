@@ -2084,7 +2084,7 @@ function registerPage(_ref, onCreated) {
         }
         if (homeSystemDialogPages.length) {
           sourceDialogPages = homeSystemDialogPages;
-          targetDialogPages = homePage.__$$getSystemDialogPages();
+          targetDialogPages = getSystemDialogPages(homePage);
         }
         handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages);
       }
