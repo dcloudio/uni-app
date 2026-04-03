@@ -37,9 +37,11 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uniapp.framework.*',
   'io.dcloud.uniapp.vue.*',
   'io.dcloud.uniapp.vue.shared.*',
-  'io.dcloud.uniapp.runtime.*',
   'io.dcloud.uniapp.extapi.*',
 ]
+
+const DEFAULT_IMPORTS_X = ['io.dcloud.uniapp.runtime.*']
+const DEFAULT_IMPORTS_X_DOM2 = ['io.dcloud.uniappxv.runtime.*']
 
 type UniCloudObjectInfo = {
   name: string
@@ -78,6 +80,11 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   const split = !!options.split
   const { bundle, UTSTarget } = getUTSCompiler()
   const imports = [...DEFAULT_IMPORTS]
+  if (process.env.UNI_APP_X_DOM2) {
+    imports.push(...DEFAULT_IMPORTS_X_DOM2)
+  } else {
+    imports.push(...DEFAULT_IMPORTS_X)
+  }
   const isProd = process.env.NODE_ENV !== 'development'
   const {
     package: pkg,

@@ -548,6 +548,7 @@ const DEFAULT_IMPORTS_VUE_X = [
 ]
 
 const DEFAULT_IMPORTS_X = ['io.dcloud.uniapp.runtime.*']
+const DEFAULT_IMPORTS_X_DOM2 = ['io.dcloud.uniappxv.runtime.*']
 
 export async function compile(
   filename: string,
@@ -567,11 +568,16 @@ export async function compile(
     outFilename,
   }: ToKotlinOptions
 ) {
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
   const imports = [...DEFAULT_IMPORTS]
   if (isX) {
-    imports.push(...DEFAULT_IMPORTS_X)
+    if (isDom2) {
+      imports.push(...DEFAULT_IMPORTS_X_DOM2)
+    } else {
+      imports.push(...DEFAULT_IMPORTS_X)
+    }
     if (!process.env.UNI_UTS_DISABLE_X_IMPORT) {
       imports.push(...DEFAULT_IMPORTS_VUE_X)
     }
@@ -636,7 +642,7 @@ export async function compile(
       isPlugin,
       // TODO 目前安卓dom2仅有js驱动，后续如果增加原生驱动需要由调用者传入参数控制
       isJsDriven: process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js',
-      isDom2: process.env.UNI_APP_X_DOM2 === 'true',
+      isDom2,
       isModule,
       isExtApi,
       outDir: outputDir,
