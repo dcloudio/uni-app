@@ -14,6 +14,7 @@ import {
 import {
   SYSTEM_DIALOG_PAGE_PATH_STARTER,
   dialogPageTriggerParentShow,
+  getSystemDialogPages,
   initPageInternalInstance,
   invokeHook,
   isSystemDialogPage,
@@ -201,11 +202,7 @@ export function registerPage(
           }
           if (homeSystemDialogPages.length) {
             sourceDialogPages = homeSystemDialogPages
-            // $getSystemDialogPages harmony __$$getSystemDialogPages ios
-            targetDialogPages =
-              typeof homePage.__$$getSystemDialogPages === 'undefined'
-                ? (homePage.$getSystemDialogPages() as UniDialogPage[])
-                : (homePage.__$$getSystemDialogPages() as UniDialogPage[])
+            targetDialogPages = getSystemDialogPages(homePage)
           }
           handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages)
         }
