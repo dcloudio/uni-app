@@ -437,7 +437,7 @@ export declare function toSharedDataScrollViewType(value: string): UniNativeScro
 export declare function toSharedDataScrollViewAssociativeContainer(value: string): UniNativeScrollViewAssociativeContainerType;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/common.d.ts
-export declare function toVueForItemKey(key: any): any;
+export declare function toVueForItemKey(key: any): string | number;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/element.d.ts
 export declare function getCurrentElementVaporComponentInstance(): VaporSharedDataComponentInstance | null;
