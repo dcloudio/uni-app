@@ -22,7 +22,6 @@
     "@dcloudio/uni-cli-shared": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
     "@rollup/pluginutils": "catalog:",
-    "@vitejs/plugin-basic-ssl": "catalog:",
     "@vue/compiler-dom": "catalog:",
     "@vue/compiler-sfc": "catalog:",
     "@vue/server-renderer": "catalog:",

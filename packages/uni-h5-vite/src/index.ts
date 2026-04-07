@@ -1,5 +1,4 @@
 import path from 'path'
-import basicSsl from '@vitejs/plugin-basic-ssl'
 import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
@@ -21,7 +20,6 @@ import {
 import * as vueCompilerDom from '@vue/compiler-dom'
 import * as uniCliShared from '@dcloudio/uni-cli-shared'
 import { uniH5Plugin } from './plugin'
-import { resolveManifestServerOptions } from './plugin/config'
 import { uniCssPlugin } from './plugins/css'
 import { uniEasycomPlugin } from './plugins/easycom'
 import { uniInjectPlugin } from './plugins/inject'
@@ -48,8 +46,6 @@ if (
 export default () => {
   const isNewStyleIsolation =
     process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
-  // 从 manifest.json 的 h5.devServer 中解析 HTTPS 扩展配置，按需注入 basic-ssl 插件。
-  const h5BasicSslPlugin = resolveH5BasicSslPlugin()
   return [
     ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniJavaScriptWorkersPlugin()]
@@ -100,7 +96,6 @@ export default () => {
     uniSSRPlugin(),
     uniSetupPlugin(),
     uniRenderjsPlugin(),
-    ...(h5BasicSslPlugin ? [h5BasicSslPlugin] : []),
     uniH5Plugin(),
     ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
       ? [uniEncryptUniModulesAssetsPlugin(), uniEncryptUniModulesPlugin()]
@@ -110,21 +105,4 @@ export default () => {
     uniCustomElementPlugin(),
     uniApiPlugin(),
   ]
-}
-
-function resolveH5BasicSslPlugin() {
-  const inputDir = process.env.UNI_INPUT_DIR
-  if (!inputDir) {
-    return
-  }
-  // 这里只关心是否启用自动证书，以及透传给 basic-ssl 的那部分参数。
-  const { enableBasicSsl, basicSslOptions } =
-    resolveManifestServerOptions(inputDir)
-  if (!enableBasicSsl) {
-    return
-  }
-  // 需要在真正的 Vite 插件数组中注册，才能参与 configResolved 并注入证书。
-  return Object.assign(basicSsl(basicSslOptions), {
-    apply: 'serve' as const,
-  })
 }
