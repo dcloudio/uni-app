@@ -68,6 +68,10 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
         if (context.depth > 0) {
             context.nested = true;
         }
+        // android dom2 js引擎支持直接传递 ArrayBuffer
+        if (__VAPOR__ && isUTSAndroid()) {
+            return arg;
+        }
         return serializeArrayBuffer(arg);
     }
     else if (isPlainObject(arg) || isUniElement(arg)) {

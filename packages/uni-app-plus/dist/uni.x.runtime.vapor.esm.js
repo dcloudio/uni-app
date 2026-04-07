@@ -4125,6 +4125,9 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
     if (context.depth > 0) {
       context.nested = true;
     }
+    if (isUTSAndroid()) {
+      return arg;
+    }
     return serializeArrayBuffer(arg);
   } else if (isPlainObject(arg) || isUniElement(arg)) {
     var uniElement = parseElement(arg);
