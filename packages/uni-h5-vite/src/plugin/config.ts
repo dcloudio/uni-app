@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import type { SourcemapPathTransformOption } from 'rollup'
 import type { Plugin, ResolvedConfig, ServerOptions } from 'vite'
-import { extend, hasOwn } from '@vue/shared'
+import { extend, hasOwn, isPlainObject } from '@vue/shared'
 import {
   getDevServerOptions,
   getWorkersRootDirs,
@@ -21,6 +21,21 @@ import { createDefine } from '../utils'
 import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
 import { external } from './configureServer/ssr'
 
+export interface ManifestBasicSslOptions {
+  // 对应 @vitejs/plugin-basic-ssl 的证书名称配置
+  name?: string
+  // 对应 @vitejs/plugin-basic-ssl 的自定义域名列表配置
+  domains?: string[]
+  // 对应 @vitejs/plugin-basic-ssl 的证书缓存目录配置
+  certDir?: string
+}
+
+type ManifestServerOptions = ServerOptions & {
+  https?: ServerOptions['https'] | true
+  // manifest.json 中允许额外声明 basic-ssl 的简化配置。
+  basicSsl?: ManifestBasicSslOptions
+}
+
 export function createConfig(options: {
   resolvedConfig: ResolvedConfig | null
 }): Plugin['config'] {
@@ -33,6 +48,8 @@ export function createConfig(options: {
       }
     }
 
+    // 先对 manifest 中的 devServer 做一次清洗，避免把自定义字段直接透传给 Vite。
+    const { server: manifestServer } = resolveManifestServerOptions(inputDir)
     const server: ServerOptions = {
       hmr: process.env.UNI_AUTOMATOR_WS_ENDPOINT
         ? false
@@ -56,7 +73,7 @@ export function createConfig(options: {
           normalizePath(path.join(inputDir, 'dist/**')),
         ],
       },
-      ...getDevServerOptions(parseManifestJsonOnce(inputDir)),
+      ...(manifestServer as ServerOptions),
     }
 
     if (runByHBuilderX()) {
@@ -164,6 +181,51 @@ export function createConfig(options: {
       },
     }
   }
+}
+
+export function resolveManifestServerOptions(inputDir: string) {
+  const server = getDevServerOptions(
+    parseManifestJsonOnce(inputDir)
+  ) as ManifestServerOptions
+
+  // 约定 https: true 时启用 basic-ssl，由插件补齐实际证书内容。
+  const enableBasicSsl = server.https === true
+  const basicSslOptions = enableBasicSsl
+    ? normalizeManifestBasicSslOptions(server.basicSsl)
+    : undefined
+
+  // basicSsl 仅作为内置插件的扩展配置使用，不能直接透传给 Vite 的 server 配置。
+  if (enableBasicSsl && hasOwn(server, 'basicSsl')) {
+    delete server.basicSsl
+  }
+
+  return {
+    server,
+    basicSslOptions,
+    enableBasicSsl,
+  }
+}
+
+function normalizeManifestBasicSslOptions(
+  basicSsl?: ManifestBasicSslOptions
+): ManifestBasicSslOptions | undefined {
+  if (!isPlainObject(basicSsl)) {
+    return
+  }
+  // 仅保留 basic-ssl 已支持的字段，避免把无效配置带入插件。
+  const options: ManifestBasicSslOptions = {}
+  if (typeof basicSsl.name === 'string') {
+    options.name = basicSsl.name
+  }
+  if (Array.isArray(basicSsl.domains)) {
+    options.domains = basicSsl.domains.filter(
+      (domain): domain is string => typeof domain === 'string'
+    )
+  }
+  if (typeof basicSsl.certDir === 'string') {
+    options.certDir = basicSsl.certDir
+  }
+  return Object.keys(options).length ? options : undefined
 }
 
 function transformSourcemapPath(
