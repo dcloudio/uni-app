@@ -27,9 +27,9 @@ class AdConfig {
   private _configLast: number = 0
 
   // 生产环境地址
-  // private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
+  private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
   // 测试环境地址
-  private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
+  // private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
   private static readonly KEY: string = 'uni_app_ad_config'
   private static readonly CACHE_TIME: number = 1000 * 60 * 10
   private static readonly ERROR_INVALID_ADPID: any = {
