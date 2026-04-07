@@ -24,8 +24,12 @@ class AdConfig {
   private _adConfig: any | null = null
   private _isLoading: Boolean = false
   private _callbacks: any[] = []
+  private _configLast: number = 0
 
-  private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
+  // 生产环境地址
+  // private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
+  // 测试环境地址
+  private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
   private static readonly KEY: string = 'uni_app_ad_config'
   private static readonly CACHE_TIME: number = 1000 * 60 * 10
   private static readonly ERROR_INVALID_ADPID: any = {
@@ -42,7 +46,10 @@ class AdConfig {
     if (this._adConfig == null) {
       return true
     }
-    return Math.abs(Date.now() - this._adConfig.last) > AdConfig.CACHE_TIME
+    if (!this._configLast) {
+      return true
+    }
+    return Math.abs(Date.now() - this._configLast) > AdConfig.CACHE_TIME
   }
 
   _init() {
@@ -51,8 +58,9 @@ class AdConfig {
       return
     }
 
-    if (!this.isExpired) {
+    if (Math.abs(Date.now() - config.last) <= AdConfig.CACHE_TIME) {
       this._adConfig = config.data
+      this._configLast = config.last
     }
   }
 
@@ -78,8 +86,9 @@ class AdConfig {
   _doCallback(adpid: string, success: Function, fail: Function) {
     AdConfig.IS++
     var { a, b } = this._adConfig
-    if (a[adpid]) {
-      success(b, a[adpid])
+    const adData = a[adpid]
+    if (adData) {
+      success(b, Array.isArray(adData) ? adData : [adData])
     } else {
       fail(AdConfig.ERROR_INVALID_ADPID)
     }
@@ -91,6 +100,9 @@ class AdConfig {
     }
     this._isLoading = true
 
+    const appid =
+      typeof __uniConfig !== 'undefined' ? (__uniConfig as any).appId ?? '' : ''
+
     uni.request({
       url: AdConfig.URL,
       method: 'GET',
@@ -98,6 +110,7 @@ class AdConfig {
       data: {
         d: location.hostname,
         a: adpid,
+        appid,
       },
       dataType: 'json',
       success: (res: any) => {
@@ -106,6 +119,7 @@ class AdConfig {
           const data = rd.data
 
           this._adConfig = data
+          this._configLast = Date.now()
           this._setConfig(data)
 
           this._callbacks.forEach(({ adpid, success, fail }) => {
@@ -321,11 +335,18 @@ class AdRender {
   private _currentChannel: string | null = null
 
   private _rootRef: any
+  private _tuiaData: any | null = null
+  private _hasCustomTuiaMaterial: () => boolean
+  private _setCustomTuiaVisible: (visible: boolean) => void
 
   constructor(
     props: { adpid: string; adpidWidescreen: string; widescreenWidth: number },
     trigger: CustomEventTrigger,
-    rootRef: Ref<HTMLElement | null>
+    rootRef: Ref<HTMLElement | null>,
+    options: {
+      hasCustomTuiaMaterial: () => boolean
+      setCustomTuiaVisible: (visible: boolean) => void
+    }
   ) {
     this._checkTimer = null
     this._adpid = props.adpid
@@ -334,6 +355,15 @@ class AdRender {
     this._trigger = trigger
     this._rootRef = rootRef
     this._currentAdpid = this._adpid
+    this._hasCustomTuiaMaterial = options.hasCustomTuiaMaterial
+    this._setCustomTuiaVisible = options.setCustomTuiaVisible
+  }
+
+  renderTuiaFromCustomMaterial() {
+    if (!this._tuiaData) {
+      return
+    }
+    this._renderTuia(this._tuiaData)
   }
 
   get isWidescreen(): boolean {
@@ -364,7 +394,9 @@ class AdRender {
 
   dispose() {
     this._clearCheckTimer()
-    this._rootRef.value.innerHTML = ''
+    if (this._rootRef.value) {
+      this._rootRef.value.innerHTML = ''
+    }
   }
 
   _renderAd() {
@@ -373,7 +405,11 @@ class AdRender {
     }
 
     const data = this._pl[this._pi]
-    const providerId = data.a1
+    if (!data) {
+      this._renderNext()
+      return
+    }
+    const providerId = String(data.a1)
     const providerConfig = this._b[providerId]
     if (!providerConfig) {
       this._renderNext()
@@ -396,10 +432,28 @@ class AdRender {
         },
         (err: any) => {
           this._trigger('error', {} as Event, err)
+          this._renderNext()
         }
       )
       return
     }
+
+    // 推啊 H5
+    if (providerId === '4') {
+      AdScript.instance.load(
+        { provider: providerId, script },
+        () => {
+          this._renderTuiaMaterial(id, data)
+        },
+        (err: any) => {
+          this._trigger('error', {} as Event, err)
+          this._renderNext()
+        }
+      )
+      return
+    }
+
+    this._renderNext()
 
     // // generic provider path (call provider sdk method)
     // this._b[providerId].provider = providerId
@@ -415,6 +469,9 @@ class AdRender {
   }
 
   _createView(id: string) {
+    if (!this._rootRef.value) {
+      return null
+    }
     var adView = document.createElement('div')
     adView.setAttribute('id', id)
     adView.setAttribute('class', id)
@@ -424,7 +481,6 @@ class AdRender {
   }
 
   _renderGdt(id: string, data: any) {
-    console.log('必要参数：', data)
     ;(window as any).TencentGDT.push({
       placement_id: data.a3,
       app_id: data.a2,
@@ -446,6 +502,101 @@ class AdRender {
     })
 
     this._startCheckTimer()
+  }
+
+  _renderTuiaMaterial(id: string, data: any) {
+    const adView = document.getElementById(id)
+    if (!adView) {
+      this._trigger('error', {} as Event, { errMsg: 'Invalid ad container' })
+      this._renderNext()
+      return
+    }
+
+    this._tuiaData = data
+
+    if (this._hasCustomTuiaMaterial()) {
+      adView.innerHTML = ''
+      this._setCustomTuiaVisible(true)
+      this.report(40, this._currentChannel || undefined)
+      this._trigger('load', {} as Event, {})
+      return
+    }
+    this._setCustomTuiaVisible(false)
+
+    const materialSrc = this._getRandomTuiaMaterial(data?.imgs, data?.img)
+    if (!materialSrc) {
+      this._trigger('error', {} as Event, {
+        errMsg: 'Invalid tuia material imgs/img',
+      })
+      this._renderNext()
+      return
+    }
+
+    const img = document.createElement('img')
+    img.src = materialSrc
+    img.onerror = () => {
+      this._trigger('error', {} as Event, { errMsg: 'Tuia material load fail' })
+      this._renderNext()
+    }
+    img.alt = 'ad'
+    img.setAttribute('draggable', 'false')
+    img.style.width = '100%'
+    img.style.height = 'auto'
+    img.style.display = 'block'
+    img.style.cursor = 'pointer'
+    img.onclick = () => {
+      this._renderTuia(data)
+    }
+
+    adView.innerHTML = ''
+    adView.append(img)
+    this.report(40, this._currentChannel || undefined)
+    this._trigger('load', {} as Event, {})
+  }
+
+  _getRandomTuiaMaterial(imgs: any, img: any): string {
+    if (Array.isArray(imgs)) {
+      const list = imgs.filter((item) => typeof item === 'string' && item)
+      if (list.length) {
+        const index = Math.floor(Math.random() * list.length)
+        return list[index]
+      }
+    }
+
+    if (typeof img === 'string') {
+      return img
+    }
+
+    return ''
+  }
+
+  _renderTuia(data: any) {
+    this._setCustomTuiaVisible(false)
+    const tuia = (window as any).TuiaSDKLite
+    if (!tuia || typeof tuia.execute !== 'function') {
+      this._trigger('error', {} as Event, { errMsg: 'Invalid TuiaSDKLite' })
+      this._renderNext()
+      return
+    }
+
+    tuia.execute({
+      data: {
+        pid: data.a3,
+        fail_message: 'ad load fail',
+        product_name: document.title || location.hostname,
+      },
+      success: (res: any) => {
+        this._trigger('load', {} as Event, res || {})
+      },
+      fail: (err: any) => {
+        this._trigger(
+          'error',
+          {} as Event,
+          err || { errMsg: 'TuiaSDKLite execute fail' }
+        )
+        this._renderNext()
+      },
+    })
   }
 
   _renderAdView(provider: any, data: any) {
@@ -489,6 +640,9 @@ class AdRender {
   }
 
   _checkRender(): boolean {
+    if (!this._rootRef.value) {
+      return false
+    }
     var hasContent =
       this._rootRef.value.children.length > 0 &&
       this._rootRef.value.clientHeight > 40
@@ -523,8 +677,12 @@ class AdRender {
   }
 
   report(type: number, currentChannel?: string) {
+    const compilerVersion =
+      typeof __uniConfig !== 'undefined'
+        ? (__uniConfig as any).compilerVersion ?? ''
+        : ''
     const reportData: any = {
-      h: (__uniConfig as any).compilerVersion, // TODO
+      h: compilerVersion,
       a: this._currentAdpid,
       at: type,
     }
@@ -546,8 +704,12 @@ class AdRender {
     this._b = {}
     this._pl = []
     this._pi = 0
+    this._tuiaData = null
+    this._setCustomTuiaVisible(false)
     this._clearCheckTimer()
-    this._rootRef.value.innerHTML = ''
+    if (this._rootRef.value) {
+      this._rootRef.value.innerHTML = ''
+    }
   }
 }
 //#endregion
@@ -571,14 +733,21 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       default: DEFAULT_WIDESCREEN_WIDTH,
     },
   },
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     const rootRef = ref(null)
+    const customTuiaVisible = ref(false)
     const { $excludeAttrs, $listeners } = useAttrs({
       excludeListeners: true,
     })
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
-    const ad = new AdRender(props, trigger, rootRef)
+    const ad = new AdRender(props, trigger, rootRef, {
+      hasCustomTuiaMaterial: () =>
+        Boolean(slots.default && slots.default().length),
+      setCustomTuiaVisible: (visible) => {
+        customTuiaVisible.value = visible
+      },
+    })
 
     watch(
       () => props.adpid,
@@ -594,9 +763,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
 
     onMounted(() => {
+      const compilerVersion =
+        typeof __uniConfig !== 'undefined'
+          ? (__uniConfig as any).compilerVersion ?? ''
+          : ''
       ad.load(null)
       AdReport.instance.get({
-        h: (__uniConfig as any).compilerVersion,
+        h: compilerVersion,
         a: props.adpid,
         at: -3,
         ic: AdConfig.IC,
@@ -624,6 +797,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               class="uni-ad-container"
               onClick={() => ad.report(41)}
             />
+            {customTuiaVisible.value && slots.default ? (
+              <div
+                class="uni-ad-custom-material"
+                onClick={() => ad.renderTuiaFromCustomMaterial()}
+              >
+                {slots.default()}
+              </div>
+            ) : null}
           </uni-ad>
         </>
       )
