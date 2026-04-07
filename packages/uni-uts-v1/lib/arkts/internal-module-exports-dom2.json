@@ -2287,9 +2287,6 @@
       "UniHideModalResult"
     ],
     [
-      "UniInputElement"
-    ],
-    [
       "UniLoadingElement"
     ],
     [
@@ -2309,9 +2306,6 @@
     ],
     [
       "UniShowModalResult"
-    ],
-    [
-      "UniTextareaElement"
     ],
     [
       "UniVerifyButtonListItem"
