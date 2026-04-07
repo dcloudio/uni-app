@@ -1,4 +1,4 @@
-import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, UNI_STATUS_BAR_HEIGHT, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass } from '@dcloudio/uni-shared';
+import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass } from '@dcloudio/uni-shared';
 import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, isString, normalizeClass as normalizeClass$1, normalizeStyle, isOn, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, looseToNumber, NO, EMPTY_ARR, isModelListener, toNumber, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
@@ -5565,23 +5565,11 @@ function findComponentPropsData(up) {
     return propsCaches[uid][parseInt(propsId)];
 }
 
-function getStatusBarHeight() {
-    if (typeof wx !== 'undefined') {
-        return wx.getWindowInfo().statusBarHeight;
-        // @ts-expect-error
-    }
-    else if (typeof my !== 'undefined') {
-        // @ts-expect-error
-        return my.getWindowInfo().statusBarHeight;
-    }
-}
 var plugin = {
     install(app) {
         initApp(app);
         app.config.globalProperties.pruneComponentPropsCache =
             pruneComponentPropsCache;
-        // TODO 此处不支持 __GLOBAL__，并且有些小程序(如抖音小程序)没有 getWindowInfo 方法
-        app.config.globalProperties[UNI_STATUS_BAR_HEIGHT] = getStatusBarHeight();
         const oldMount = app.mount;
         app.mount = function mount(rootContainer) {
             const instance = oldMount.call(app, rootContainer);
