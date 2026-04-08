@@ -547,6 +547,8 @@ const DEFAULT_IMPORTS_VUE_X = [
   'io.dcloud.uniapp.vue.shared.*',
 ]
 
+const DEFAULT_IMPORTS_VUE_X_DOM2 = []
+
 const DEFAULT_IMPORTS_X = ['io.dcloud.uniapp.runtime.*']
 const DEFAULT_IMPORTS_X_DOM2 = ['io.dcloud.uniappxv.runtime.*']
 
@@ -579,7 +581,9 @@ export async function compile(
       imports.push(...DEFAULT_IMPORTS_X)
     }
     if (!process.env.UNI_UTS_DISABLE_X_IMPORT) {
-      imports.push(...DEFAULT_IMPORTS_VUE_X)
+      imports.push(
+        ...(isDom2 ? DEFAULT_IMPORTS_VUE_X_DOM2 : DEFAULT_IMPORTS_VUE_X)
+      )
     }
   }
   const rClass = resolveAndroidResourceClass(filename)
