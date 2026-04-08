@@ -226,11 +226,24 @@ export declare const createVaporApp: CreateAppFunction<ParentNode, VaporSharedDa
 export declare const createVaporSSRApp: CreateAppFunction<ParentNode, VaporSharedDataComponent>;
 export declare const createApp: CreateAppFunction<ParentNode, VaporSharedDataComponent>;
 //#endregion
+//#region temp/packages/compiler-vapor-dom2/src/utils/options.d.ts
+declare enum DOM2_APP_TARGET {
+  C = "c",
+  DOM_C = "dom-c",
+  DOM_KT = "dom-kt",
+  NV_KT = "nv-kt",
+  TXT_KT = "txt-kt",
+  DOM_OC = "dom-oc",
+  NV_C = "nv-c",
+  TXT_C = "txt-c",
+  DOM_TS = "dom-ts"
+}
+//#endregion
 //#region temp/packages/compiler-vapor-dom2/src/style/processors/color.d.ts
-export declare function toUniNativeColor(value: string | number, defaultValue?: number): number | undefined;
+export declare function toUniNativeColor(target: DOM2_APP_TARGET, value: string | number, defaultValue?: number): number | undefined;
 //#endregion
 //#region temp/packages/compiler-vapor-dom2/src/style/processors/runtime/index.d.ts
-export declare function toSharedDataStyle(style: Map<string, unknown>, result?: Record<number, unknown>, options?: {
+export declare function toSharedDataStyle(target: DOM2_APP_TARGET, style: Map<string, unknown>, result?: Record<number, unknown>, options?: {
   filename?: string | null;
 }): Record<number, unknown>;
 //#endregion
