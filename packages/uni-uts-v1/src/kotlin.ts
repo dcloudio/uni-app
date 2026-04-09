@@ -64,6 +64,12 @@ export interface KotlinCompilerServer {
     },
     projectPath: string
   ): Promise<{ code: number; msg: string; data?: { dexList: string[] } }>
+  compileCpp(options: {
+    appId: string
+    projectPath: string
+    cppPath: string
+    outDir: string
+  }): Promise<{ code: number; msg: string; data?: { soList: string[] } }>
   checkDependencies?: (
     configJsonPath: string,
     options?: { type: 1 /*插件*/ | 2 /*项目*/; valid: boolean }
@@ -425,10 +431,12 @@ function getKotlinCompileJars(
   depJars: string[],
   { getDefaultJar, getCompilerJar }: KotlinCompilerServer
 ) {
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const jarVersion = isDom2 ? 3 : isX ? 2 : undefined
   if (getCompilerJar) {
-    return getCompilerJar(depJars, isX ? 2 : undefined)
+    return getCompilerJar(depJars, jarVersion)
   }
-  return getDefaultJar(isX ? 2 : undefined).concat(depJars)
+  return getDefaultJar(jarVersion).concat(depJars)
 }
 
 function checkDeps(

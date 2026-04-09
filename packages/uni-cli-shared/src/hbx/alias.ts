@@ -66,6 +66,7 @@ export function initModuleAlias() {
             ? process.env.UNI_OUTPUT_DIR
             : process.env.UNI_APP_X_CACHE_DIR || process.env.UNI_OUTPUT_DIR
         process.env.UNI_APP_X_DOM2_CPP_DIR = path.resolve(baseDir, 'cpp')
+        process.env.UNI_APP_X_DOM2_SO_DIR = path.resolve(baseDir, 'so')
       }
       if (!process.env.UNI_APP_X_DOM2_KT_DIR) {
         if (process.env.NODE_ENV !== 'development') {

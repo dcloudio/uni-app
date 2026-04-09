@@ -43,6 +43,7 @@ export async function runUVueKotlinDev(
   result: RunKotlinDevResult,
   hasCache: boolean
 ) {
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   result.type = 'kotlin'
   const { inputDir, outputDir, pageCount, uni_modules } = options
   const kotlinRootOutDir = kotlinDir(outputDir)
@@ -108,7 +109,7 @@ export async function runUVueKotlinDev(
       const kotlinClassOutDir = kotlinClassDir(kotlinRootOutDir)
       const waiting = { done: undefined }
 
-      const jars = getDefaultJar(2)
+      const jars = getDefaultJar(isDom2 ? 3 : 2)
         // 加密插件已经迁移到普通插件目录了，理论上不需要了
         .concat(getUniModulesEncryptCacheJars(cacheDir)) // 加密插件jar
         .concat(getUniModulesCacheJars(cacheDir)) // 普通插件jar
