@@ -76,7 +76,7 @@ export const hideLoading: HideLoading = (options?: HideLoadingOptions | null) =>
 			uni.closeDialogPage({
 				dialogPage: page,
 			})
-		} else if(options?.loadingPage == page) {
+		} else if(options?.loadingPage === page) {
 			uni.closeDialogPage({
 				dialogPage: page
 			})

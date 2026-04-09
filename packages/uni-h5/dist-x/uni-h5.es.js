@@ -31266,7 +31266,7 @@ const hideLoading$1 = (options) => {
       uni.closeDialogPage({
         dialogPage: page
       });
-    } else if ((options == null ? void 0 : options.loadingPage) == page) {
+    } else if ((options == null ? void 0 : options.loadingPage) === page) {
       uni.closeDialogPage({
         dialogPage: page
       });
