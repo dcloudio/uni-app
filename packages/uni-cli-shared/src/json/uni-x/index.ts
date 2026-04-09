@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import { extend, isArray } from '@vue/shared'
 
@@ -9,12 +10,20 @@ import {
   removePlatformStyle,
   validatePages,
 } from '../pages'
-import { normalizePath } from '../../utils'
+import { normalizePath, removeExt } from '../../utils'
 import { normalizeAppUniRoutes } from '../app/pages/uniRoutes'
 import { normalizeAppXUniConfig } from './uniConfig'
 import { preUVueJson } from '../../preprocess'
 import { checkPagesJson } from '../utils'
 export * from './manifest'
+
+export interface UniXPageOptions {
+  disableScroll?: boolean
+  enablePullDownRefresh?: boolean
+  scrollIndicator?: 'none'
+}
+
+const uniXPageOptionsCache = new Map<string, Map<string, UniXPageOptions>>()
 
 export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   // 先条件编译
@@ -66,8 +75,68 @@ export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   // 缓存页面列表
   pagesCacheSet.clear()
   pagesJson.pages.forEach((page) => pagesCacheSet.add(page.path))
+  updateUniXPageOptions(pagesJson)
 
   return pagesJson
+}
+
+function updateUniXPageOptions(pagesJson: UniApp.PagesJson) {
+  const inputDir = getUniXInputDir()
+  if (!inputDir) {
+    return
+  }
+  const pageOptions = new Map<string, UniXPageOptions>()
+  pagesJson.pages.forEach((page) => {
+    pageOptions.set(page.path, normalizeRootPageOptions(page.style))
+  })
+  uniXPageOptionsCache.set(inputDir, pageOptions)
+}
+
+function normalizeRootPageOptions(
+  pageStyle: UniApp.PagesJsonPageStyle | undefined
+): UniXPageOptions {
+  if (!pageStyle) {
+    return {}
+  }
+  return {
+    disableScroll: pageStyle.disableScroll === true || undefined,
+    enablePullDownRefresh: isEnablePullDownRefresh(pageStyle) || undefined,
+    scrollIndicator: pageStyle.scrollIndicator,
+  }
+}
+
+function initUniXPageOptions() {
+  const inputDir = getUniXInputDir()
+  if (!inputDir || uniXPageOptionsCache.has(inputDir)) {
+    return
+  }
+  const filename = path.resolve(inputDir, 'pages.json')
+  if (!fs.existsSync(filename)) {
+    return
+  }
+  normalizeUniAppXAppPagesJson(fs.readFileSync(filename, 'utf8'))
+}
+
+function isEnablePullDownRefresh(pageStyle: Record<string, any>) {
+  return pageStyle.enablePullDownRefresh || pageStyle.pullToRefresh?.support
+}
+
+export function parseUniXPageOptions(filename: string) {
+  initUniXPageOptions()
+  const inputDir = getUniXInputDir()
+  if (!inputDir) {
+    return
+  }
+  const pagePath = removeExt(
+    normalizePath(path.relative(inputDir, filename.split('?')[0]))
+  )
+  return uniXPageOptionsCache.get(inputDir)?.get(pagePath)
+}
+
+function getUniXInputDir() {
+  return process.env.UNI_INPUT_DIR
+    ? normalizePath(process.env.UNI_INPUT_DIR)
+    : undefined
 }
 
 function normalizeSubPackages(

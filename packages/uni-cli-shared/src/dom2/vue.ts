@@ -1,7 +1,7 @@
 import path from 'path'
 import type { CompilerError, SFCDescriptor } from '@vue/compiler-sfc'
 import { normalizePath, requireUniHelpers } from '../utils'
-import { isUniPageFile } from '../json'
+import { isUniPageFile, parseUniXPageOptions } from '../json'
 import { onVueTemplateCompileLog } from '../vue'
 
 export function initVueTemplateCompilerExtraOptions(descriptor: SFCDescriptor) {
@@ -9,6 +9,9 @@ export function initVueTemplateCompilerExtraOptions(descriptor: SFCDescriptor) {
   const relativeFilename = normalizePath(
     path.relative(process.env.UNI_INPUT_DIR, filename)
   )
+  const rootScrollView = parseUniXPageOptions(filename)
+  const componentType =
+    rootScrollView || isUniPageFile(filename) ? 'page' : 'component'
   const isDevX =
     process.env.UNI_HX_VERSION_DEV === 'true' &&
     process.env.UNI_APP_X === 'true'
@@ -23,10 +26,13 @@ export function initVueTemplateCompilerExtraOptions(descriptor: SFCDescriptor) {
   return {
     root: normalizePath(process.env.UNI_INPUT_DIR),
     platform: process.env.UNI_UTS_PLATFORM,
-    componentType: isUniPageFile(filename) ? 'page' : 'component',
+    componentType,
     filename: filename,
     relativeFilename,
     helper,
+    enableRootScrollViewTransform: true,
+    // 仅页面透传 rootScrollView，避免非页面组件误触发 ROOT 自动包裹逻辑。
+    rootScrollView: componentType === 'page' ? rootScrollView : undefined,
     scriptCppBlocks: (descriptor as any).scriptCppBlocks,
     disableStaticStyle,
     onVueTemplateCompileLog(type: 'warn' | 'error', error: CompilerError) {

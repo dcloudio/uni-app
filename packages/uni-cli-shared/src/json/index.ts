@@ -7,6 +7,7 @@ export * from './theme'
 export {
   normalizeUniAppXAppPagesJson,
   normalizeUniAppXAppConfig,
+  parseUniXPageOptions,
   parseUniXFlexDirection,
   parseUniXSplashScreen,
   isUniXPageFile,
