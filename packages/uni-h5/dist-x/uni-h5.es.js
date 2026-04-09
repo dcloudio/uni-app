@@ -31135,10 +31135,10 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       successEventName.value = options["successEventName"];
       failEventName.value = options["failEventName"];
       uni.$on(optionsEventName.value, (data) => {
-        if (data["title"] != null) {
+        if ((data == null ? void 0 : data["title"]) != null) {
           title.value = data["title"];
         }
-        if (data["iosSpinner"] != null) {
+        if ((data == null ? void 0 : data["iosSpinner"]) != null) {
           iosSpinner.value = data["iosSpinner"];
         }
       });
@@ -31211,27 +31211,27 @@ const showLoading$1 = (options) => {
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
   uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options);
+    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
   });
-  uni.$on(successEventName, (inputParamStr) => {
+  uni.$on(successEventName, (_) => {
     var _a2, _b2;
-    let res = {};
-    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
+    const res2 = {};
+    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res2);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
   uni.$on(failEventName, () => {
     var _a2, _b2;
-    const res = new ShowLoadingFailImpl();
-    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
+    const res2 = new ShowLoadingFailImpl();
+    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
-  let openRet = uni.openDialogPage({
+  const openRet = uni.openDialogPage({
     url: `uni:showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a2, _b2;
-      const res = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);
-      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res);
-      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
+      const res2 = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);
+      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
+      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
       uni.$off(readyEventName);
       uni.$off(successEventName);
       uni.$off(failEventName);
@@ -31239,50 +31239,44 @@ const showLoading$1 = (options) => {
   });
   if (openRet != null) {
     return openRet;
-  } else {
-    const res = new ShowLoadingFailImpl();
-    (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
-    (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
-    return null;
   }
+  const res = new ShowLoadingFailImpl();
+  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
+  return null;
 };
-const hideLoading$1 = function(options) {
-  var _a, _b, _c, _d, _e;
+const SYSTEM_DIALOG_LOADING_PAGE_PATH = "uni:showLoading";
+const hideLoading$1 = (options) => {
+  var _a, _b, _c, _d;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
-  if (!currentPage) {
+  if (currentPage == null) {
     const res2 = new HideLoadingFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;
   }
-  const systemDialogPages = (_c = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _c.$systemDialogPages.value;
-  let shallClosePages = [];
-  for (let perPage of systemDialogPages) {
-    if (isSystemShowLoadingDialogPage(perPage)) {
-      if ((options == null ? void 0 : options.loadingPage) == null) {
-        shallClosePages.push(perPage);
-      } else {
-        if (perPage.options["optionsEventName"] === options.loadingPage.options["optionsEventName"]) {
-          shallClosePages.push(perPage);
-          break;
-        }
-      }
+  const systemDialogPages = currentPage.$getSystemDialogPages();
+  for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+    const page = systemDialogPages[i];
+    if (!page.route.startsWith(SYSTEM_DIALOG_LOADING_PAGE_PATH)) {
+      continue;
+    }
+    if ((options == null ? void 0 : options.loadingPage) == null) {
+      uni.closeDialogPage({
+        dialogPage: page
+      });
+    } else if ((options == null ? void 0 : options.loadingPage) == page) {
+      uni.closeDialogPage({
+        dialogPage: page
+      });
+      break;
     }
   }
-  shallClosePages.forEach((item) => {
-    const index2 = systemDialogPages.indexOf(item);
-    if (index2 > -1) {
-      systemDialogPages.splice(index2, 1);
-    }
-  });
-  let res = {};
-  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, res);
-  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, res);
+  const res = {};
+  (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, res);
+  (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, res);
 };
-function isSystemShowLoadingDialogPage(page) {
-  return page.route.startsWith("uni:showLoading");
-}
 const API_HIDE_LOADING = "hideLoading";
 const registerLoadingOnce = /* @__PURE__ */ once(() => {
   registerSystemRoute("uni:showLoading", UniLoadingPage);

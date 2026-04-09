@@ -33,10 +33,10 @@
 		failEventName.value = options['failEventName'] !
 
 		uni.$on(optionsEventName.value, (data: UTSJSONObject) => {
-			if (data['title'] != null) {
+			if (data?.['title'] != null) {
 				title.value = data['title'] as string
 			}
-			if (data['iosSpinner'] != null) {
+			if (data?.['iosSpinner'] != null) {
 				iosSpinner.value = data['iosSpinner'] as boolean
 			}
 		})
