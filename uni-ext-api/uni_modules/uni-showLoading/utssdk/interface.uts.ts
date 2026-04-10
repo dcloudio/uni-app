@@ -267,7 +267,7 @@ export type HideLoading = (options?: HideLoadingOptions|null) => void
 
 export type LoadingPage = UniPage;
 
-export interface Uni {
+interface Uni {
 
 	/**
 	 * @description 显示 loading 提示框, 需主动调用 uni.hideLoading 才能关闭提示框。
