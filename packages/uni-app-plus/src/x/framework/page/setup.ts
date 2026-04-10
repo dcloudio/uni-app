@@ -60,19 +60,4 @@ export function setupXPage(
       pageInstance as Page.PageInstance['$page']
     )
   }
-
-  if (!__VAPOR__) {
-    onMounted(() => {
-      const rootElement = pageVm.$el?.parentElement
-      if (rootElement) {
-        rootElement._page = pageVm.$page
-      }
-    })
-    onBeforeUnmount(() => {
-      const rootElement = pageVm.$el?.parentElement
-      if (rootElement) {
-        rootElement._page = null
-      }
-    })
-  }
 }
