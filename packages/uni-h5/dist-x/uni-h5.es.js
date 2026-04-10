@@ -31135,10 +31135,10 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       successEventName.value = options["successEventName"];
       failEventName.value = options["failEventName"];
       uni.$on(optionsEventName.value, (data) => {
-        if ((data == null ? void 0 : data["title"]) != null) {
+        if (data["title"] != null) {
           title.value = data["title"];
         }
-        if ((data == null ? void 0 : data["iosSpinner"]) != null) {
+        if (data["iosSpinner"] != null) {
           iosSpinner.value = data["iosSpinner"];
         }
       });
@@ -31211,7 +31211,7 @@ const showLoading$1 = (options) => {
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
   uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
+    uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)) : {});
   });
   uni.$on(successEventName, (_) => {
     var _a2, _b2;
