@@ -18,7 +18,7 @@ export const showLoading: ShowLoading = (options?: ShowLoadingOptions | null) =>
 	const successEventName = `${baseEventName}_success`
 	const failEventName = `${baseEventName}_fail`
 	uni.$on(readyEventName, () => {
-		uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)!) : {})
+		uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)!))
 	})
 	uni.$on(successEventName, (_: string) => {
 		const res = {} as ShowLoadingSuccess
@@ -76,7 +76,7 @@ export const hideLoading: HideLoading = (options?: HideLoadingOptions | null) =>
 			uni.closeDialogPage({
 				dialogPage: page,
 			})
-		} else if(options?.loadingPage === page) {
+		} else if(options?.loadingPage == page) {
 			uni.closeDialogPage({
 				dialogPage: page
 			})

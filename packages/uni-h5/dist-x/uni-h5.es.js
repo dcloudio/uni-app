@@ -31120,10 +31120,10 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       successEventName.value = options["successEventName"];
       failEventName.value = options["failEventName"];
       uni.$on(optionsEventName.value, (data) => {
-        if (data["title"] != null) {
+        if ((data == null ? void 0 : data["title"]) != null) {
           title.value = data["title"];
         }
-        if (data["iosSpinner"] != null) {
+        if ((data == null ? void 0 : data["iosSpinner"]) != null) {
           iosSpinner.value = data["iosSpinner"];
         }
       });
@@ -31196,7 +31196,7 @@ const showLoading$1 = (options) => {
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
   uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)) : {});
+    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
   });
   uni.$on(successEventName, (_) => {
     var _a2, _b2;
@@ -31251,7 +31251,7 @@ const hideLoading$1 = (options) => {
       uni.closeDialogPage({
         dialogPage: page
       });
-    } else if ((options == null ? void 0 : options.loadingPage) === page) {
+    } else if ((options == null ? void 0 : options.loadingPage) == page) {
       uni.closeDialogPage({
         dialogPage: page
       });
