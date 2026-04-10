@@ -791,33 +791,33 @@ function copyConfigJson(
 function resolveComponentDelegateClassOptions(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   inputDir: string
-) {
+): string {
   if (process.env.UNI_APP_X !== 'true') {
-    return []
+    return ''
   }
   if (platform !== 'app-ios') {
-    return []
+    return ''
   }
   // 兼容通过插件 id 标识组件插件，但 config.json 中组件名不是 uni- 开头的场景
   const pluginId = resolveUniModulesPluginId(inputDir)
   if (!pluginId) {
-    return []
+    return ''
   }
   if (!pluginId.startsWith('uni-')) {
-    return []
+    return ''
   }
   const indexFile = resolve(inputDir, 'index.uts')
   if (!fs.existsSync(indexFile)) {
-    return []
+    return ''
   }
   // 通过 app-ios/index.uts 中的导出接口判断是否真的是原生 View 组件插件
   const content = fs.readFileSync(indexFile, 'utf8')
   return resolveDelegateClassByName(content, pluginId)
 }
 
-function resolveDelegateClassByName(content: string, name: string) {
+function resolveDelegateClassByName(content: string, name: string): string {
   if (!name.startsWith('uni-')) {
-    return
+    return ''
   }
   const normalized = capitalize(camelize(name))
   // UniWebViewElement 中的 UniWeb 来自插件名/组件名的规范化结果
@@ -832,6 +832,7 @@ function resolveDelegateClassByName(content: string, name: string) {
       return normalized + 'ComponentRegister'
     }
   }
+  return ''
 }
 
 function resolveUniModulesPluginId(inputDir: string) {
