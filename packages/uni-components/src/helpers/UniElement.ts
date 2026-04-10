@@ -1,6 +1,5 @@
 import { camelize } from '@vue/shared'
 import { createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared'
-import { getCurrentPage } from '@dcloudio/uni-core'
 
 const rpx2Unit = createRpx2Unit(
   defaultRpx2Unit.unit,
