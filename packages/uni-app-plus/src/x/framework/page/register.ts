@@ -253,6 +253,10 @@ export function registerPage(
           }
           invokeHook(pageComponentPublicInstance, ON_RESIZE, args)
         })
+        if (__VAPOR__) {
+          // 蒸汽模式目前通过监听页面根 scroll-view 的 scroll 事件来触发页面 onPageScroll 和 onReachBottom
+          initVaporPageLifeCycle(pageComponentPublicInstance, nativePage)
+        }
         nativePage.startRender()
         onRegistered?.(nativePage)
       }
@@ -264,6 +268,56 @@ export function registerPage(
     fn()
   }
   return nativePage
+}
+
+function initVaporPageLifeCycle(
+  pageComponentPublicInstance: ComponentPublicInstance,
+  nativePage: UniNativePage
+) {
+  if (
+    // @ts-expect-error
+    pageComponentPublicInstance._.onReachBottom ||
+    // @ts-expect-error
+    pageComponentPublicInstance._.onPageScroll
+  ) {
+    const pageRootEl = pageComponentPublicInstance.$el
+    if (pageRootEl.tagName === 'SCROLL-VIEW') {
+      let triggeredReachBottom = false
+      const scrollEventId = pageRootEl.addEventListener(
+        'scroll',
+        (e: Event) => {
+          const scrollTop = (e.target as Element).scrollTop
+          // @ts-expect-error
+          if (pageComponentPublicInstance._.onPageScroll) {
+            invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, {
+              scrollTop,
+            })
+          }
+          // @ts-expect-error
+          if (pageComponentPublicInstance._.onReachBottom) {
+            const scrollHeight = (e.target as Element).scrollHeight
+            const pageRootElHeight = pageRootEl.getBoundingClientRect().height
+            if (
+              scrollTop + pageRootElHeight >=
+              scrollHeight -
+                (pageComponentPublicInstance.$basePage.meta
+                  .onReachBottomDistance || 50)
+            ) {
+              !triggeredReachBottom &&
+                invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM)
+              triggeredReachBottom = true
+            } else {
+              triggeredReachBottom = false
+            }
+          }
+        }
+      )
+
+      nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+        pageRootEl.removeEventListener('scroll', scrollEventId)
+      })
+    }
+  }
 }
 
 export function registerDialogPage(
