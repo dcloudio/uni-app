@@ -8,7 +8,8 @@
       "@vue/shared": "uni-shared"
     },
     "replacements": {
-      "__X__": "false"
+      "__X__": "false",
+      "__VAPOR__": "false"
     }
   },
   {
