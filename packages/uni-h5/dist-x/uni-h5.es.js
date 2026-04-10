@@ -2156,7 +2156,6 @@ class UniElement extends HTMLElement {
   constructor() {
     super();
     this._props = {};
-    this._page = null;
     this.__isUniElement = true;
   }
   attachVmProps(props2) {
@@ -2168,14 +2167,8 @@ class UniElement extends HTMLElement {
     return attr2 === void 0 ? null : attr2;
   }
   getPage() {
-    if (this._page) {
-      return this._page;
-    }
-    let parent = this.parentNode;
-    while (parent && !parent._page) {
-      parent = parent.parentNode;
-    }
-    return (parent == null ? void 0 : parent._page) || null;
+    var _a, _b;
+    return ((_b = (_a = this.__vnode) == null ? void 0 : _a.ctx) == null ? void 0 : _b.page) || null;
   }
   get uniPage() {
     return this.getPage();
@@ -9024,16 +9017,13 @@ function setupPage(comp, path) {
         onPageShow(instance2, pageMeta);
       });
       onMounted(() => {
-        var _a, _b;
+        var _a;
         {
-          if (instance2.subTree.el) {
-            instance2.subTree.el._page = (_a = instance2.proxy) == null ? void 0 : _a.$page;
-          }
           const pageInstance = getPageInstanceByChild(instance2);
           if (isDialogPageInstance(pageInstance)) {
             useBackgroundColorContent$1(instance2.proxy);
           }
-          dialogPageTriggerParentHide((_b = instance2.proxy) == null ? void 0 : _b.$page);
+          dialogPageTriggerParentHide((_a = instance2.proxy) == null ? void 0 : _a.$page);
         }
         onPageReady(instance2);
         const { onReady: onReady2 } = instance2;
@@ -9082,11 +9072,6 @@ function setupPage(comp, path) {
       subscribeViewMethod(pageId);
       onBeforeUnmount(() => {
         unsubscribeViewMethod(pageId);
-        {
-          if (instance2.subTree.el) {
-            instance2.subTree.el._page = null;
-          }
-        }
       });
       return query;
     }

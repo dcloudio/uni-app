@@ -1085,7 +1085,6 @@ class UniElement extends Object {
   constructor() {
     super();
     this._props = {};
-    this._page = null;
     this.__isUniElement = true;
   }
   attachVmProps(props2) {
@@ -1097,14 +1096,8 @@ class UniElement extends Object {
     return attr2 === void 0 ? null : attr2;
   }
   getPage() {
-    if (this._page) {
-      return this._page;
-    }
-    let parent = this.parentNode;
-    while (parent && !parent._page) {
-      parent = parent.parentNode;
-    }
-    return (parent == null ? void 0 : parent._page) || null;
+    var _a, _b;
+    return ((_b = (_a = this.__vnode) == null ? void 0 : _a.ctx) == null ? void 0 : _b.page) || null;
   }
   get uniPage() {
     return this.getPage();
