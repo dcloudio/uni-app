@@ -87,5 +87,3 @@ export const hideLoading: HideLoading = (options?: HideLoadingOptions | null) =>
 	options?.success?.(res)
 	options?.complete?.(res)
 }
-
-export * from './interface.uts'
