@@ -115,6 +115,14 @@
       "null"
     ]
   },
+  "uni-showLoading": {
+    "showLoading": [
+      "null"
+    ],
+    "hideLoading": [
+      "null"
+    ]
+  },
   "uni-storage": {
     "clearStorage": [
       "null"
