@@ -88,4 +88,24 @@ export const hideLoading: HideLoading = (options?: HideLoadingOptions | null) =>
 	options?.complete?.(res)
 }
 
-export * from './interface.uts'
+export {
+	ShowLoadingSuccess,
+  ShowLoadingFailErrorCode,
+  ShowLoadingFail,
+  ShowLoadingFailImpl,
+  ShowLoadingSuccessCallback,
+  ShowLoadingFailCallback,
+  ShowLoadingCompleteCallback,
+  ShowLoadingOptions,
+  ShowLoading,
+  HideLoadingSuccess,
+  HideLoadingFailErrorCode,
+  HideLoadingFail,
+  HideLoadingFailImpl,
+  HideLoadingSuccessCallback,
+  HideLoadingFailCallback,
+  HideLoadingCompleteCallback,
+  HideLoadingOptions,
+  HideLoading,
+  LoadingPage,
+} from './interface.uts'
