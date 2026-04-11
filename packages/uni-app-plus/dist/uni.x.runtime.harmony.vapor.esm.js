@@ -2461,6 +2461,18 @@ function _redirectTo(_ref3) {
   return new Promise((resolve) => {
     setTimeout(() => {
       var lastPage = getCurrentPage().vm;
+      var isRegistered = false;
+      var isShown = false;
+      function callback() {
+        if (!(isRegistered && isShown)) {
+          return;
+        }
+        if (lastPage) {
+          removePages(lastPage);
+        }
+        resolve(void 0);
+        setStatusBarStyle();
+      }
       invokeAfterRouteHooks(API_REDIRECT_TO);
       showWebview(registerPage({
         url,
@@ -2468,13 +2480,13 @@ function _redirectTo(_ref3) {
         query,
         openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo",
         onRegistered() {
-          if (lastPage) {
-            removePages(lastPage);
-          }
-          resolve(void 0);
-          setStatusBarStyle();
+          isRegistered = true;
+          callback();
         }
-      }), "none", 0);
+      }), "none", 0, () => {
+        isShown = true;
+        callback();
+      });
       invokeBeforeRouteHooks(API_REDIRECT_TO);
     }, 0);
   });
@@ -2529,7 +2541,12 @@ function _reLaunch(_ref3) {
     setTimeout(() => {
       var pages2 = getAllPages().slice(0);
       var selected = getTabIndex(path);
+      var isRegistered = false;
+      var isShown = false;
       function callback() {
+        if (!isRegistered || !isShown) {
+          return;
+        }
         pages2.forEach((page) => closePage(page, "none"));
         pages2.length = 0;
         resolve(void 0);
@@ -2541,9 +2558,17 @@ function _reLaunch(_ref3) {
           path,
           query,
           openType: "reLaunch",
-          onRegistered: callback
-        }), "none", 0);
+          onRegistered() {
+            isRegistered = true;
+            callback();
+          }
+        }), "none", 0, () => {
+          isShown = true;
+          callback();
+        });
       } else {
+        isRegistered = true;
+        isShown = true;
         switchSelect(selected, path, query, true, callback);
       }
     }, 0);

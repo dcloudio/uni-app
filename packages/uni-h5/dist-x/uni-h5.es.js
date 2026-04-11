@@ -31241,48 +31241,27 @@ const hideLoading$1 = (options) => {
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;
   }
-  const loadingPage = options == null ? void 0 : options.loadingPage;
   const systemDialogPages = currentPage.$getSystemDialogPages();
-  if (loadingPage == null) {
-    closeAllLoadingPages(systemDialogPages);
-  } else {
-    const nativePageId = getNativePageId(loadingPage);
-    console.log("debug: options?.loadingPage.id", nativePageId);
-    closeTargetLoadingPage(systemDialogPages, nativePageId);
-  }
-  const res = {};
-  (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, res);
-  (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, res);
-};
-function closeAllLoadingPages(systemDialogPages) {
   for (let i = systemDialogPages.length - 1; i >= 0; i--) {
     const page = systemDialogPages[i];
     if (!page.route.startsWith(SYSTEM_DIALOG_LOADING_PAGE_PATH)) {
       continue;
     }
-    uni.closeDialogPage({
-      dialogPage: page
-    });
-  }
-}
-function closeTargetLoadingPage(systemDialogPages, nativePageId) {
-  for (let i = systemDialogPages.length - 1; i >= 0; i--) {
-    const page = systemDialogPages[i];
-    if (!page.route.startsWith(SYSTEM_DIALOG_LOADING_PAGE_PATH)) {
-      continue;
-    }
-    if (nativePageId == getNativePageId(page)) {
-      console.log("debug: systemDialogPage.id", getNativePageId(page));
+    if ((options == null ? void 0 : options.loadingPage) == null) {
+      uni.closeDialogPage({
+        dialogPage: page
+      });
+    } else if ((options == null ? void 0 : options.loadingPage) === page) {
       uni.closeDialogPage({
         dialogPage: page
       });
       break;
     }
   }
-}
-function getNativePageId(page) {
-  return page.__nativePageId;
-}
+  const res = {};
+  (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, res);
+  (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, res);
+};
 const API_HIDE_LOADING = "hideLoading";
 const registerLoadingOnce = /* @__PURE__ */ once(() => {
   registerSystemRoute("uni:showLoading", UniLoadingPage);
