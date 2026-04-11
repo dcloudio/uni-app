@@ -9,6 +9,7 @@ import {
 	ShowLoadingOptions,
 	ShowLoadingSuccess,
 } from './interface.uts'
+import { UTSiOS } from "DCloudUTSFoundation";
 
 export const showLoading: ShowLoading = (options?: ShowLoadingOptions | null) => {
 	const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
@@ -66,26 +67,65 @@ export const hideLoading: HideLoading = (options?: HideLoadingOptions | null) =>
 		options?.complete?.(res)
 		return
 	}
+
+	const loadingPage = options?.loadingPage
 	const systemDialogPages = currentPage.$getSystemDialogPages()
-	for(let i = systemDialogPages.length - 1; i >= 0; i--) {
-		const page = systemDialogPages[i]
-		if (!page.route.startsWith(SYSTEM_DIALOG_LOADING_PAGE_PATH)) {
-			continue
-		}
-		if(options?.loadingPage == null){
-			uni.closeDialogPage({
-				dialogPage: page,
-			})
-		} else if(options?.loadingPage === page) {
-			uni.closeDialogPage({
-				dialogPage: page
-			})
-			break
-		}
+	if (loadingPage == null) {
+		closeAllLoadingPages(systemDialogPages)
+	} else {
+		const nativePageId = getNativePageId(loadingPage!)
+    console.log("debug: options?.loadingPage.id",nativePageId)
+		closeTargetLoadingPage(systemDialogPages, nativePageId)
 	}
 	const res = {} as HideLoadingSuccess
 	options?.success?.(res)
 	options?.complete?.(res)
+}
+
+function closeAllLoadingPages(systemDialogPages: UniPage[]): void {
+	for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+		const page = systemDialogPages[i]
+		if (!page.route.startsWith(SYSTEM_DIALOG_LOADING_PAGE_PATH)) {
+			continue
+		}
+		uni.closeDialogPage({
+			dialogPage: page,
+		})
+	}
+}
+
+function closeTargetLoadingPage(systemDialogPages: UniPage[], nativePageId: string): void {
+	for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+		const page = systemDialogPages[i]
+		if (!page.route.startsWith(SYSTEM_DIALOG_LOADING_PAGE_PATH)) {
+			continue
+		}
+		if (nativePageId == getNativePageId(page)) {
+      console.log("debug: systemDialogPage.id",getNativePageId(page))
+			uni.closeDialogPage({
+				dialogPage: page,
+			})
+			break
+		}
+	}
+}
+
+function getNativePageId(page: UniPage): string {
+
+  // #ifndef VUE3-VAPOR
+  return page.__nativePageId
+  // #endif
+
+  // #ifdef VUE3-VAPOR
+	if(UTSiOS.instanceof(page, Map<string, any>.self)) {
+		const pageMap = page as Map<string, any>
+		const rawId = pageMap.get("__nativePageId")
+		if (rawId != null && UTSiOS.instanceof(rawId!, String.self)) {
+			return rawId as string
+		}
+	}
+  return "none"
+  // #endif
 }
 
 export {
