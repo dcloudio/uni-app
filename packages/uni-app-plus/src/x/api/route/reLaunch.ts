@@ -47,7 +47,12 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
     setTimeout(() => {
       const pages = getAllPages().slice(0)
       let selected: number = getTabIndex(path)
+      let isRegistered = false
+      let isShown = false
       function callback() {
+        if (!isRegistered || !isShown) {
+          return
+        }
         pages.forEach((page) => closePage(page, 'none'))
         pages.length = 0
         resolve(undefined)
@@ -60,12 +65,21 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
             path,
             query,
             openType: 'reLaunch',
-            onRegistered: callback,
+            onRegistered() {
+              isRegistered = true
+              callback()
+            },
           }),
           'none',
-          0
+          0,
+          () => {
+            isShown = true
+            callback()
+          }
         )
       } else {
+        isRegistered = true
+        isShown = true
         switchSelect(selected, path, query, true, callback)
       }
     }, 0)
