@@ -943,6 +943,9 @@
       "HideLoading"
     ],
     [
+      "HideLoadingComplete"
+    ],
+    [
       "HideLoadingCompleteCallback"
     ],
     [
@@ -967,6 +970,9 @@
       "HideLoadingSuccessCallback"
     ],
     [
+      "HideLoadingSuccessImpl"
+    ],
+    [
       "HideModal"
     ],
     [
@@ -982,7 +988,10 @@
       "HideModalOptions"
     ],
     [
-      "HideModalResult"
+      "HideModalSuccess"
+    ],
+    [
+      "HideModalSuccessImpl"
     ],
     [
       "HideNavigationBarLoading"
@@ -2071,6 +2080,9 @@
       "ShowLoading"
     ],
     [
+      "ShowLoadingComplete"
+    ],
+    [
       "ShowLoadingCompleteCallback"
     ],
     [
@@ -2095,6 +2107,9 @@
       "ShowLoadingSuccessCallback"
     ],
     [
+      "ShowLoadingSuccessImpl"
+    ],
+    [
       "ShowModal"
     ],
     [
@@ -2110,7 +2125,10 @@
       "ShowModalOptions"
     ],
     [
-      "ShowModalResult"
+      "ShowModalSuccess"
+    ],
+    [
+      "ShowModalSuccessImpl"
     ],
     [
       "ShowNavigationBarLoading"
@@ -2281,12 +2299,6 @@
       "UniEditorElementSetContentsOptions"
     ],
     [
-      "UniHideModalFail"
-    ],
-    [
-      "UniHideModalResult"
-    ],
-    [
       "UniLoadingElement"
     ],
     [
@@ -2300,12 +2312,6 @@
     ],
     [
       "UniShareProvider"
-    ],
-    [
-      "UniShowModalFail"
-    ],
-    [
-      "UniShowModalResult"
     ],
     [
       "UniVerifyButtonListItem"

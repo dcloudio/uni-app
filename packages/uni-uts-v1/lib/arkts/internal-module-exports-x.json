@@ -940,6 +940,9 @@
       "HideLoading"
     ],
     [
+      "HideLoadingComplete"
+    ],
+    [
       "HideLoadingCompleteCallback"
     ],
     [
@@ -964,6 +967,9 @@
       "HideLoadingSuccessCallback"
     ],
     [
+      "HideLoadingSuccessImpl"
+    ],
+    [
       "HideModal"
     ],
     [
@@ -979,7 +985,10 @@
       "HideModalOptions"
     ],
     [
-      "HideModalResult"
+      "HideModalSuccess"
+    ],
+    [
+      "HideModalSuccessImpl"
     ],
     [
       "HideNavigationBarLoading"
@@ -2068,6 +2077,9 @@
       "ShowLoading"
     ],
     [
+      "ShowLoadingComplete"
+    ],
+    [
       "ShowLoadingCompleteCallback"
     ],
     [
@@ -2092,6 +2104,9 @@
       "ShowLoadingSuccessCallback"
     ],
     [
+      "ShowLoadingSuccessImpl"
+    ],
+    [
       "ShowModal"
     ],
     [
@@ -2107,7 +2122,10 @@
       "ShowModalOptions"
     ],
     [
-      "ShowModalResult"
+      "ShowModalSuccess"
+    ],
+    [
+      "ShowModalSuccessImpl"
     ],
     [
       "ShowNavigationBarLoading"
@@ -2302,12 +2320,6 @@
       "UniFormSubmitEvent"
     ],
     [
-      "UniHideModalFail"
-    ],
-    [
-      "UniHideModalResult"
-    ],
-    [
       "UniLabelElement"
     ],
     [
@@ -2366,12 +2378,6 @@
     ],
     [
       "UniShareProvider"
-    ],
-    [
-      "UniShowModalFail"
-    ],
-    [
-      "UniShowModalResult"
     ],
     [
       "UniSliderChangeEvent"
