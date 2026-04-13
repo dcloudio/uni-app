@@ -1189,6 +1189,70 @@ describe('nvue-styler: expand', () => {
     expect(result[0]).toBe(decl)
   })
 
+  test('transform flex-flow with single var in dom2', () => {
+    const prevRunTime = (globalThis as any).__RUN_TIME__
+    const prevHyphenate = (globalThis as any).__HYPHENATE__
+
+    ;(globalThis as any).__RUN_TIME__ = true
+    ;(globalThis as any).__HYPHENATE__ = true
+
+    try {
+      const decl = parseDecl(`.test { flex-flow: var(--composite-flow) }`)
+      expect(transformFlexFlow(decl)).toEqual([
+        {
+          type: 'decl',
+          prop: 'flex-direction',
+          value: 'var(--composite-flow)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'flex-wrap',
+          value: 'var(--composite-flow)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+      ])
+    } finally {
+      ;(globalThis as any).__RUN_TIME__ = prevRunTime
+      ;(globalThis as any).__HYPHENATE__ = prevHyphenate
+    }
+  })
+
+  test('transform flex-flow with single var fallback in dom2', () => {
+    const prevRunTime = (globalThis as any).__RUN_TIME__
+    const prevHyphenate = (globalThis as any).__HYPHENATE__
+
+    ;(globalThis as any).__RUN_TIME__ = true
+    ;(globalThis as any).__HYPHENATE__ = true
+
+    try {
+      const decl = parseDecl(
+        `.test { flex-flow: var(--composite-flow, row wrap) }`
+      )
+      expect(transformFlexFlow(decl)).toEqual([
+        {
+          type: 'decl',
+          prop: 'flex-direction',
+          value: 'var(--composite-flow, row wrap)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'flex-wrap',
+          value: 'var(--composite-flow, row wrap)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+      ])
+    } finally {
+      ;(globalThis as any).__RUN_TIME__ = prevRunTime
+      ;(globalThis as any).__HYPHENATE__ = prevHyphenate
+    }
+  })
+
   test('transform border-color with rgba and spaces', () => {
     const decl = parseDecl(
       `.test { border-color: rgba(0, 0, 0, 0.5) rgba(255, 255, 255, 1) }`
