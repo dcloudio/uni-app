@@ -87,6 +87,14 @@
       "null"
     ]
   },
+  "uni-modal": {
+    "showModal": [
+      "null"
+    ],
+    "hideModal": [
+      "null"
+    ]
+  },
   "uni-navigationBar": {
     "showNavigationBarLoading": [
       "null"
