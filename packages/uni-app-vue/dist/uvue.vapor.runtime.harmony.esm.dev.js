@@ -2378,6 +2378,12 @@ var transformBorderStyle = transformBorderColor;
 var transformBorderStyleNvue = transformBorderColorNvue;
 var transformBorderWidth = transformBorderColor;
 var transformBorderWidthNvue = transformBorderColorNvue;
+function tryExpandSingleValueVarShorthand(decl, props, value) {
+  // 只在 dom2 运行时兜底展开，避免影响其它平台现有行为。
+  {
+    return null;
+  }
+}
 var borderWidth = 'Width';
 var borderStyle = 'Style';
 var borderColor = 'Color';
@@ -2408,6 +2414,11 @@ function createTransformBorder(options) {
       raws,
       source
     } = decl;
+    var singleVarResult = tryExpandSingleValueVarShorthand();
+    // 单个 var() 无法提前判断是 width/style/color，dom2 下先平铺后继续展开。
+    if (singleVarResult) {
+      return [...transformBorderWidth(singleVarResult[0]), ...transformBorderStyle(singleVarResult[1]), ...transformBorderColor(singleVarResult[2])];
+    }
     var splitResult = splitValues(value);
     var havVar = splitResult.some(str => str.startsWith('var('));
     var result = [];
@@ -2527,12 +2538,6 @@ var transformBorderRadiusNvue = decl => {
   }
   return [createDecl(borderTopLeftRadius, splitResult[0], important, raws, source), createDecl(borderTopRightRadius, splitResult[1], important, raws, source), createDecl(borderBottomRightRadius, splitResult[2], important, raws, source), createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source)];
 };
-function tryExpandSingleValueVarShorthand(decl, props, value) {
-  // 只在 dom2 运行时兜底展开，避免影响其它平台现有行为。
-  {
-    return null;
-  }
-}
 var flexDirection = 'flexDirection';
 var flexWrap = 'flexWrap';
 var transformFlexFlow = decl => {
