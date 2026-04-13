@@ -277,6 +277,39 @@ const transformBorderRadius = (decl) => {
     ];
 };
 
+function isSingleCssVarValue(value) {
+    const trimmedValue = value.trim();
+    if (splitValues(trimmedValue).length !== 1 || !/^var\(/i.test(trimmedValue)) {
+        return false;
+    }
+    let depth = 0;
+    for (let i = 0; i < trimmedValue.length; i++) {
+        const char = trimmedValue[i];
+        if (char === '(') {
+            depth++;
+        }
+        else if (char === ')') {
+            if (depth === 0) {
+                return false;
+            }
+            depth--;
+            if (depth === 0 && trimmedValue.slice(i + 1).trim()) {
+                return false;
+            }
+        }
+    }
+    return depth === 0;
+}
+function tryExpandSingleValueVarShorthand(decl, props, value) {
+    // 当整个简写值只有一个 var() 时，无法静态判断它属于哪个子属性，
+    // 这里直接复制到每个长属性，交给运行时再解析。
+    if (!isSingleCssVarValue(value)) {
+        return null;
+    }
+    const { important, raws, source } = decl;
+    return props.map((prop) => createDecl(prop, value, important, raws, source));
+}
+
 const flexDirection = 'flex-direction' ;
 const flexWrap = 'flex-wrap' ;
 function createFlexFlowDecls(decl, values) {
@@ -290,6 +323,11 @@ function transformFlexFlowImpl(decl, allowSingleUnknownValue = false) {
     let { value } = decl;
     value = value.trim();
     const splitResult = splitValues(value);
+    const singleVarResult = tryExpandSingleValueVarShorthand(decl, [flexDirection, flexWrap], value);
+    // 单个 var() 无法提前判断是 direction 还是 wrap，dom2 下直接平铺。
+    if (singleVarResult) {
+        return singleVarResult;
+    }
     const result = [
         /^(column|column-reverse|row|row-reverse)$/,
         /^(nowrap|wrap|wrap-reverse)$/,
