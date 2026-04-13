@@ -9,6 +9,7 @@ import {
 import { transformBorderColor } from './borderColor'
 import { transformBorderStyle } from './borderStyle'
 import { transformBorderWidth } from './borderWidth'
+import { tryExpandSingleValueVarShorthand } from './shorthand'
 
 const borderWidth = __HYPHENATE__ ? '-width' : 'Width'
 const borderStyle = __HYPHENATE__ ? '-style' : 'Style'
@@ -51,6 +52,20 @@ export function createTransformBorder(
 ): TransformDecl {
   return (decl: Declaration): Declaration[] => {
     const { prop, value, important, raws, source } = decl
+    const singleVarResult = tryExpandSingleValueVarShorthand(
+      decl,
+      [prop + borderWidth, prop + borderStyle, prop + borderColor],
+      value
+    )
+    // 单个 var() 无法提前判断是 width/style/color，dom2 下先平铺后继续展开。
+    if (singleVarResult) {
+      return [
+        ...transformBorderWidth(singleVarResult[0]),
+        ...transformBorderStyle(singleVarResult[1]),
+        ...transformBorderColor(singleVarResult[2]),
+      ]
+    }
+
     let splitResult: Array<string> = splitValues(value)
     const havVar = splitResult.some((str: string): boolean =>
       str.startsWith('var(')
