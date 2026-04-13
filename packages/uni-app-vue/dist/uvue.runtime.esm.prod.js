@@ -1720,6 +1720,12 @@ var transformBorderRadiusNvue = decl => {
   }
   return [createDecl(borderTopLeftRadius, splitResult[0], important, raws, source), createDecl(borderTopRightRadius, splitResult[1], important, raws, source), createDecl(borderBottomRightRadius, splitResult[2], important, raws, source), createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source)];
 };
+function tryExpandSingleValueVarShorthand(decl, props, value) {
+  // 只在 dom2 运行时兜底展开，避免影响其它平台现有行为。
+  {
+    return null;
+  }
+}
 var flexDirection = 'flexDirection';
 var flexWrap = 'flexWrap';
 var transformFlexFlow = decl => {
@@ -1731,6 +1737,11 @@ var transformFlexFlow = decl => {
   } = decl;
   value = value.trim();
   var splitResult = splitValues(value);
+  var singleVarResult = tryExpandSingleValueVarShorthand();
+  // 单个 var() 无法提前判断是 direction 还是 wrap，dom2 下直接平铺。
+  if (singleVarResult) {
+    return singleVarResult;
+  }
   var result = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/].map(item => {
     var index = splitResult.findIndex(str => item.test(str));
     return index < 0 ? null : splitResult.splice(index, 1)[0];
