@@ -28838,14 +28838,14 @@ const openDialogPage = (options) => {
   const targetRoute = __uniRoutes.find((route) => {
     return route.path === path || `/${route.meta.route}` === path;
   });
-  const dialogPage = new UniDialogPageImpl({
+  const dialogPage = markRaw(new UniDialogPageImpl({
     route: removeLeadingSlash(path),
     options: new UTSJSONObject(query),
     $component: targetRoute.component,
     getParentPage: () => null,
     $disableEscBack: options.disableEscBack,
     $triggerParentHide: !!options.triggerParentHide
-  });
+  }));
   let parentPage = options.parentPage;
   const currentPages = getCurrentPages();
   if (parentPage) {
