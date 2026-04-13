@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-vite",
-  "version": "3.0.0-5000720260408001",
+  "version": "3.0.0-5000720260410001",
   "description": "uni-mp-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
