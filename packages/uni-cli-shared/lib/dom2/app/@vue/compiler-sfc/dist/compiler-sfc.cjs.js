@@ -15499,6 +15499,7 @@ function compileScript(sfc, options) {
 			ssrCssVars: sfc.cssVars,
 			vapor,
 			compilerOptions: {
+				dynamicSharedData: options.dynamicSharedData,
 				...options.templateOptions && options.templateOptions.compilerOptions,
 				inline: true,
 				isTS: ctx.isTS,

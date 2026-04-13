@@ -41337,7 +41337,7 @@ function compileScript(sfc, options) {
 			isProd: options.isProd,
 			ssrCssVars: sfc.cssVars,
 			vapor,
-			compilerOptions: _objectSpread2(_objectSpread2({}, options.templateOptions && options.templateOptions.compilerOptions), {}, {
+			compilerOptions: _objectSpread2(_objectSpread2({ dynamicSharedData: options.dynamicSharedData }, options.templateOptions && options.templateOptions.compilerOptions), {}, {
 				inline: true,
 				isTS: ctx.isTS,
 				bindingMetadata: ctx.bindingMetadata,
