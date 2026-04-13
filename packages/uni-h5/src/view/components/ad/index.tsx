@@ -27,9 +27,12 @@ class AdConfig {
   private _configLast: number = 0
 
   // 生产环境地址
-  private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
+  // private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
+  // 生产环境地址v2
+  private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5v2'
   // 测试环境地址
   // private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
+  // private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5v2'
   private static readonly KEY: string = 'uni_app_ad_config'
   private static readonly CACHE_TIME: number = 1000 * 60 * 10
   private static readonly ERROR_INVALID_ADPID: any = {
@@ -319,6 +322,11 @@ class AdScript {
 const CHECK_RENDER_DELAY = 1000
 const CHECK_RENDER_RETRY = 5
 
+const AD_PROVIDER = {
+  GDT: '2',
+  TUIA: '10035',
+} as const
+
 class AdRender {
   private _checkTimer: ReturnType<typeof setTimeout> | null
   private _pi: number = 0
@@ -423,7 +431,7 @@ class AdRender {
     this._createView(id)
 
     // 优量汇 / 广点通 h5
-    if (providerId === '2') {
+    if (providerId === AD_PROVIDER.GDT) {
       ;(window as any).TencentGDT = (window as any).TencentGDT || []
       AdScript.instance.load(
         { provider: providerId, script },
@@ -439,7 +447,7 @@ class AdRender {
     }
 
     // 推啊 H5
-    if (providerId === '4') {
+    if (providerId === AD_PROVIDER.TUIA) {
       AdScript.instance.load(
         { provider: providerId, script },
         () => {
