@@ -31090,7 +31090,7 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_MODAL,
   (args, { resolve, reject }) => {
     registerModalOnce();
-    showModal$1(
+    return showModal$1(
       extend(
         {
           success: (res) => {
