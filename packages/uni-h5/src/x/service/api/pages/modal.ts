@@ -45,7 +45,7 @@ export const showModal = defineAsyncApi<API_TYPE_SHOW_MODAL>(
   API_SHOW_MODAL,
   (args, { resolve, reject }) => {
     registerModalOnce()
-    showModalApi(
+    return showModalApi(
       extend(
         {
           success: (res) => {
