@@ -28174,9 +28174,12 @@ const _AdConfig = class _AdConfig {
 __publicField(_AdConfig, "IC", 0);
 __publicField(_AdConfig, "IS", 0);
 // 生产环境地址
-__publicField(_AdConfig, "URL", "https://hac1.dcloud.net.cn/ah5");
+// private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
+// 生产环境地址v2
+__publicField(_AdConfig, "URL", "https://hac1.dcloud.net.cn/ah5v2");
 // 测试环境地址
 // private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
+// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5v2'
 __publicField(_AdConfig, "KEY", "uni_app_ad_config");
 __publicField(_AdConfig, "CACHE_TIME", 1e3 * 60 * 10);
 __publicField(_AdConfig, "ERROR_INVALID_ADPID", {
@@ -28314,6 +28317,10 @@ class AdScript {
 }
 const CHECK_RENDER_DELAY = 1e3;
 const CHECK_RENDER_RETRY = 5;
+const AD_PROVIDER = {
+  GDT: "2",
+  TUIA: "10035"
+};
 class AdRender {
   constructor(props2, trigger, rootRef, options) {
     __publicField(this, "_pi", 0);
@@ -28377,7 +28384,7 @@ class AdRender {
     this._currentChannel = providerId;
     const id2 = this._randomId();
     this._createView(id2);
-    if (providerId === "2") {
+    if (providerId === AD_PROVIDER.GDT) {
       window.TencentGDT = window.TencentGDT || [];
       AdScript.instance.load({
         provider: providerId,
@@ -28390,7 +28397,7 @@ class AdRender {
       });
       return;
     }
-    if (providerId === "4") {
+    if (providerId === AD_PROVIDER.TUIA) {
       AdScript.instance.load({
         provider: providerId,
         script
@@ -30949,11 +30956,24 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
 });
 const _style_0$1 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-property: opacity;\n}\n.uni-modal_dialog__mask__hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		line-height: 1.5;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-textarea-wrapper{\n		min-height: 18px!important;\n}\n\n";
 const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
+class ShowModalSuccessImpl {
+  constructor(cancel, confirm, content = null, errMsg = "showModal:ok") {
+    this.errMsg = errMsg;
+    this.content = content;
+    this.cancel = cancel;
+    this.confirm = confirm;
+  }
+}
 class ShowModalFailImpl extends UniError {
   constructor(errMsg = "showModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;
+  }
+}
+class HideModalSuccessImpl {
+  constructor(errMsg = "hideModal:ok") {
+    this.errMsg = errMsg;
   }
 }
 class HideModalFailImpl extends UniError {
@@ -30972,32 +30992,32 @@ const showModal$1 = (options) => {
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
   uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options);
+    uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)) : {});
   });
   uni.$on(successEventName, (inputParamStr) => {
     var _a2, _b2;
-    let inputParam = JSON.parse(inputParamStr);
-    let res = {
-      cancel: inputParam["cancel"],
-      confirm: inputParam["confirm"],
-      content: inputParam["content"]
-    };
-    (_a2 = options.success) == null ? void 0 : _a2.call(options, res);
-    (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
+    const inputParam = JSON.parse(inputParamStr);
+    const res2 = new ShowModalSuccessImpl(
+      inputParam["cancel"],
+      inputParam["confirm"],
+      inputParam["content"]
+    );
+    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res2);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
   uni.$on(failEventName, () => {
     var _a2, _b2;
-    const res = new ShowModalFailImpl();
-    (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
-    (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
+    const res2 = new ShowModalFailImpl();
+    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
-  let openRet = uni.openDialogPage({
+  const openRet = uni.openDialogPage({
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a2, _b2;
-      const res = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
-      (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
-      (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
+      const res2 = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
+      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
+      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
       uni.$off(readyEventName);
       uni.$off(successEventName);
       uni.$off(failEventName);
@@ -31005,60 +31025,44 @@ const showModal$1 = (options) => {
   });
   if (openRet != null) {
     return openRet;
-  } else {
-    const res = new ShowModalFailImpl();
-    (_a = options.fail) == null ? void 0 : _a.call(options, res);
-    (_b = options.complete) == null ? void 0 : _b.call(options, res);
-    return null;
   }
+  const res = new ShowModalFailImpl();
+  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
+  return null;
 };
-const hideModal$1 = function(options) {
-  var _a, _b, _c, _d, _e;
+const SYSTEM_DIALOG_MODAL_PAGE_PATH = "uni:uniModal";
+const hideModal$1 = (options) => {
+  var _a, _b, _c, _d;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
-  if (!currentPage) {
+  if (currentPage == null) {
     const res2 = new HideModalFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;
   }
-  const systemDialogPages = (_c = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _c.$systemDialogPages.value;
-  let shallClosePages = [];
-  for (let perPage of systemDialogPages) {
-    if (isSystemModalDialogPage(perPage)) {
-      if ((options == null ? void 0 : options.modalPage) == null) {
-        shallClosePages.push(perPage);
-      } else {
-        if (perPage.options["optionsEventName"] === options.modalPage.options["optionsEventName"]) {
-          shallClosePages.push(perPage);
-          break;
-        }
-      }
+  const systemDialogPages = currentPage.$getSystemDialogPages();
+  for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+    const page = systemDialogPages[i];
+    if (!page.route.startsWith(SYSTEM_DIALOG_MODAL_PAGE_PATH)) {
+      continue;
+    }
+    if ((options == null ? void 0 : options.modalPage) == null) {
+      uni.closeDialogPage({
+        dialogPage: page
+      });
+    } else if ((options == null ? void 0 : options.modalPage) === page) {
+      uni.closeDialogPage({
+        dialogPage: page
+      });
+      break;
     }
   }
-  shallClosePages.forEach((item) => {
-    const index2 = systemDialogPages.indexOf(item);
-    if (index2 > -1) {
-      notifyClosedDialog(systemDialogPages[index2]);
-      systemDialogPages.splice(index2, 1);
-    }
-  });
-  let res = {};
-  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, res);
-  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, res);
+  const res = new HideModalSuccessImpl();
+  (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, res);
+  (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, res);
 };
-function notifyClosedDialog(perPage) {
-  let ret = {
-    cancel: false,
-    confirm: false
-  };
-  if (perPage.options["successEventName"] != null) {
-    uni.$emit(perPage.options["successEventName"], JSON.stringify(ret));
-  }
-}
-function isSystemModalDialogPage(page) {
-  return page.route.startsWith("uni:uniModal");
-}
 const API_HIDE_MODAL = "hideModal";
 const registerModalOnce = /* @__PURE__ */ once(() => {
   registerSystemRoute("uni:uniModal", UniModalPage);
@@ -31175,11 +31179,21 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
 });
 const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n\n	\n";
 const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["styles", [_style_0]]]);
+class ShowLoadingSuccessImpl {
+  constructor(errMsg = "showLoading:ok") {
+    this.errMsg = errMsg;
+  }
+}
 class ShowLoadingFailImpl extends UniError {
   constructor(errMsg = "showLoading:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;
+  }
+}
+class HideLoadingSuccessImpl {
+  constructor(errMsg = "hideLoading:ok") {
+    this.errMsg = errMsg;
   }
 }
 class HideLoadingFailImpl extends UniError {
@@ -31202,7 +31216,7 @@ const showLoading$1 = (options) => {
   });
   uni.$on(successEventName, (_) => {
     var _a2, _b2;
-    const res2 = {};
+    const res2 = new ShowLoadingSuccessImpl();
     (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res2);
     (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
@@ -31260,7 +31274,7 @@ const hideLoading$1 = (options) => {
       break;
     }
   }
-  const res = {};
+  const res = new HideLoadingSuccessImpl();
   (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, res);
   (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, res);
 };

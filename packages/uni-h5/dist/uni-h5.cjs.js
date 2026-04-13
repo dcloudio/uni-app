@@ -11710,9 +11710,12 @@ const _AdConfig = class _AdConfig {
 __publicField(_AdConfig, "IC", 0);
 __publicField(_AdConfig, "IS", 0);
 // 生产环境地址
-__publicField(_AdConfig, "URL", "https://hac1.dcloud.net.cn/ah5");
+// private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
+// 生产环境地址v2
+__publicField(_AdConfig, "URL", "https://hac1.dcloud.net.cn/ah5v2");
 // 测试环境地址
 // private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
+// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5v2'
 __publicField(_AdConfig, "KEY", "uni_app_ad_config");
 __publicField(_AdConfig, "CACHE_TIME", 1e3 * 60 * 10);
 __publicField(_AdConfig, "ERROR_INVALID_ADPID", {
@@ -11850,6 +11853,10 @@ class AdScript {
 }
 const CHECK_RENDER_DELAY = 1e3;
 const CHECK_RENDER_RETRY = 5;
+const AD_PROVIDER = {
+  GDT: "2",
+  TUIA: "10035"
+};
 class AdRender {
   constructor(props2, trigger, rootRef, options) {
     __publicField(this, "_pi", 0);
@@ -11913,7 +11920,7 @@ class AdRender {
     this._currentChannel = providerId;
     const id2 = this._randomId();
     this._createView(id2);
-    if (providerId === "2") {
+    if (providerId === AD_PROVIDER.GDT) {
       window.TencentGDT = window.TencentGDT || [];
       AdScript.instance.load({
         provider: providerId,
@@ -11926,7 +11933,7 @@ class AdRender {
       });
       return;
     }
-    if (providerId === "4") {
+    if (providerId === AD_PROVIDER.TUIA) {
       AdScript.instance.load({
         provider: providerId,
         script

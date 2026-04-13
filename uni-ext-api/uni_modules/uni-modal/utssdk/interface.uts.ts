@@ -1,159 +1,172 @@
-
-export type UniShowModalResult =  {
+export interface ShowModalSuccess {
+	/**
+	 * 错误信息
+	 */
+	errMsg: string
 	/**
 	 * editable 为 true 时，用户输入的文本
 	 */
-	content?: string|null
+	content?: string | null
 	/**
-	* 为 true 时，表示用户点击了取消（用于 Android 系统区分点击蒙层关闭还是点击取消按钮关闭）
-	*/
+	 * 为 true 时，表示用户点击了取消（用于 Android 系统区分点击蒙层关闭还是点击取消按钮关闭）
+	 */
 	cancel: boolean
 	/**
-	* 为 true 时，表示用户点击了确定按钮
-	*/
+	 * 为 true 时，表示用户点击了确定按钮
+	 */
 	confirm: boolean
 }
 
-export type ShowModalResult = UniShowModalResult
-
 export type ShowModalErrorCode = 4
 
-export interface UniShowModalFail extends IUniError {
-  errCode: ShowModalErrorCode
+export interface ShowModalFail extends IUniError {
+	errCode: ShowModalErrorCode
 }
 
-export type ShowModalFail = UniShowModalFail
+export class ShowModalSuccessImpl implements ShowModalSuccess {
+	errMsg: string
+	content?: string | null
+	cancel: boolean
+	confirm: boolean
+	constructor(cancel: boolean, confirm: boolean, content: string | null = null, errMsg: string = 'showModal:ok') {
+		this.errMsg = errMsg
+		this.content = content
+		this.cancel = cancel
+		this.confirm = confirm
+	}
+}
 
 export class ShowModalFailImpl extends UniError implements ShowModalFail {
-  override errCode: ShowModalErrorCode
-  constructor(errMsg: string = 'showModal:fail cancel', errCode: ShowModalErrorCode = 4) {
-    super()
-    this.errMsg = errMsg
-    this.errCode = errCode
-  }
+	override errCode: ShowModalErrorCode
+	constructor(errMsg: string = 'showModal:fail cancel', errCode: ShowModalErrorCode = 4) {
+		super()
+		this.errMsg = errMsg
+		this.errCode = errCode
+	}
 }
 
-type UniShowModalFailCallback = (result: ShowModalFail) => void
+type ShowModalFailCallback = (result: ShowModalFail) => void
 
-type UniShowModalSuccessCallback = (result: ShowModalResult) => void
+type ShowModalSuccessCallback = (result: ShowModalSuccess) => void
 
-type UniShowModalCompleteCallback = (result: any) => void
+type ShowModalComplete = any
 
+type UniShowModalCompleteCallback = (result: ShowModalComplete) => void
 
 export type ShowModalOptions = {
-  /**
-   * 提示的标题
-   */
-  title?: string | null,
-  /**
-   * 提示的内容
-   */
-  content?: string | null,
-  /**
-   * @defaultValue true
-   * @default true
-   * 是否显示取消按钮，默认为 true
-   */
-  showCancel?: boolean | null,
-  /**
-   * 取消按钮的文字，默认为"取消"
-   */
-  cancelText?: string | null,
-  /**
-   * 取消按钮的文字颜色，默认为"#000000"
-   */
-  cancelColor?: string.ColorString | null,
-  /**
-   * 确定按钮的文字，默认为"确定"
-   */
-  confirmText?: string | null,
-  /**
-   * 确定按钮的文字颜色
-   */
-  confirmColor?: string.ColorString | null,
-  /**
-   * 是否显示输入框
-   * @defaultValue false
-   */
-  editable?: boolean | null,
-  /**
-   * 显示输入框时的提示文本
-   */
-  placeholderText?: string | null,
-  /**
-   * 接口调用成功的回调函数
-   */
-  success?: UniShowModalSuccessCallback | null,
-  /**
-   * 接口调用失败的回调函数
-   */
-  fail?: UniShowModalFailCallback | null,
-  /**
-   * 接口调用结束的回调函数（调用成功、失败都会执行）
-   */
-  complete?: UniShowModalCompleteCallback | null
-}
-export type ShowModal = (options: ShowModalOptions) => ModalPage | null;
-
-export type ModalPage = UniPage;
-
-/**
- * HideModal 数据结构定义
- */
-export type UniHideModalResult =  {
-
+	/**
+	 * 提示的标题
+	 */
+	title?: string | null,
+	/**
+	 * 提示的内容
+	 */
+	content?: string | null,
+	/**
+	 * @defaultValue true
+	 * @default true
+	 * 是否显示取消按钮，默认为 true
+	 */
+	showCancel?: boolean | null,
+	/**
+	 * 取消按钮的文字，默认为"取消"
+	 */
+	cancelText?: string | null,
+	/**
+	 * 取消按钮的文字颜色，默认为"#000000"
+	 */
+	cancelColor?: string.ColorString | null,
+	/**
+	 * 确定按钮的文字，默认为"确定"
+	 */
+	confirmText?: string | null,
+	/**
+	 * 确定按钮的文字颜色
+	 */
+	confirmColor?: string.ColorString | null,
+	/**
+	 * 是否显示输入框
+	 * @defaultValue false
+	 */
+	editable?: boolean | null,
+	/**
+	 * 显示输入框时的提示文本
+	 */
+	placeholderText?: string | null,
+	/**
+	 * 接口调用成功的回调函数
+	 */
+	success?: ShowModalSuccessCallback | null,
+	/**
+	 * 接口调用失败的回调函数
+	 */
+	fail?: ShowModalFailCallback | null,
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 */
+	complete?: UniShowModalCompleteCallback | null
 }
 
-export type HideModalResult = UniHideModalResult
+export type ShowModal = (options?: ShowModalOptions | null) => ModalPage | null
+
+export type ModalPage = UniPage
+
+export interface HideModalSuccess {
+	errMsg: string
+}
 
 export type HideModalErrorCode = 4
 
-export interface UniHideModalFail extends IUniError {
-  errCode: HideModalErrorCode
+export interface HideModalFail extends IUniError {
+	errCode: HideModalErrorCode
 }
 
-export type HideModalFail = UniHideModalFail
+export class HideModalSuccessImpl implements HideModalSuccess {
+	errMsg: string
+	constructor(errMsg: string = 'hideModal:ok') {
+		this.errMsg = errMsg
+	}
+}
 
 export class HideModalFailImpl extends UniError implements HideModalFail {
-  override errCode: HideModalErrorCode
-  constructor(errMsg: string = 'hideModal:fail cancel', errCode: HideModalErrorCode = 4) {
-    super()
-    this.errMsg = errMsg
-    this.errCode = errCode
-  }
+	override errCode: HideModalErrorCode
+	constructor(errMsg: string = 'hideModal:fail cancel', errCode: HideModalErrorCode = 4) {
+		super()
+		this.errMsg = errMsg
+		this.errCode = errCode
+	}
 }
 
 type UniHideModalFailCallback = (result: HideModalFail) => void
 
-type UniHideModalSuccessCallback = (result: HideModalResult) => void
+type UniHideModalSuccessCallback = (result: HideModalSuccess) => void
 
-type UniHideModalCompleteCallback = (result: any) => void
+type HideModalComplete = any
 
+type UniHideModalCompleteCallback = (result: HideModalComplete) => void
 
 export type HideModalOptions = {
-  /**
-   * 期望隐藏的目标modal 如果为null 会关闭当前栈顶全部modal
-   */
-  modalPage?: ModalPage | null,
-  /**
-   * 接口调用成功的回调函数
-   */
-  success?: UniHideModalSuccessCallback | null,
-  /**
-   * 接口调用失败的回调函数
-   */
-  fail?: UniHideModalFailCallback | null,
-  /**
-   * 接口调用结束的回调函数（调用成功、失败都会执行）
-   */
-  complete?: UniHideModalCompleteCallback | null
+	/**
+	 * 期望隐藏的目标 modal，如果为 null 会关闭当前栈顶全部 modal
+	 */
+	modalPage?: ModalPage | null,
+	/**
+	 * 接口调用成功的回调函数
+	 */
+	success?: UniHideModalSuccessCallback | null,
+	/**
+	 * 接口调用失败的回调函数
+	 */
+	fail?: UniHideModalFailCallback | null,
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 */
+	complete?: UniHideModalCompleteCallback | null
 }
 
-export type HideModal = (options: HideModalOptions | null) => void;
-
+export type HideModal = (options?: HideModalOptions | null) => void
 
 export interface Uni {
-
 	/**
 	 * @description 显示模态弹窗，可以只有一个确定按钮，也可以同时有确定和取消按钮。类似于一个API整合了 html 中：alert、confirm。
 	 * @example
@@ -244,14 +257,14 @@ export interface Uni {
 	    }
 	  }
 	 */
-	showModal(options: ShowModalOptions): ModalPage | null,
+	showModal(options?: ShowModalOptions | null): ModalPage | null,
 
 	/**
 	 * @description 隐藏已弹出的对话框实例，如果 `modalPage` 参数为空，则隐藏当前栈顶全部对话框
 	 * @example
 	  ```typescript
 		uni.hideModal({
-			modalPage:null,
+			modalPage: null,
 			success: function (res) {
 			}
 		});
@@ -287,5 +300,5 @@ export interface Uni {
 	    }
 	  }
 	 */
-	hideModal(options: HideModalOptions | null):void
+	hideModal(options?: HideModalOptions | null): void
 }

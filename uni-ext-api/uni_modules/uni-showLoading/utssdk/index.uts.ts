@@ -1,13 +1,13 @@
 import {
-	HideLoading,
-	HideLoadingFailImpl,
-	HideLoadingOptions,
-	HideLoadingSuccess,
-	LoadingPage,
 	ShowLoading,
-	ShowLoadingFailImpl,
 	ShowLoadingOptions,
-	ShowLoadingSuccess,
+	ShowLoadingSuccessImpl,
+	ShowLoadingFailImpl,
+	LoadingPage,
+	HideLoading,
+	HideLoadingOptions,
+	HideLoadingSuccessImpl,
+	HideLoadingFailImpl,
 } from './interface.uts'
 
 export const showLoading: ShowLoading = (options?: ShowLoadingOptions | null) => {
@@ -21,7 +21,7 @@ export const showLoading: ShowLoading = (options?: ShowLoadingOptions | null) =>
 		uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)!) : {})
 	})
 	uni.$on(successEventName, (_: string) => {
-		const res = {} as ShowLoadingSuccess
+		const res = new ShowLoadingSuccessImpl()
 		options?.success?.(res)
 		options?.complete?.(res)
 	})
@@ -83,29 +83,33 @@ export const hideLoading: HideLoading = (options?: HideLoadingOptions | null) =>
 			break
 		}
 	}
-	const res = {} as HideLoadingSuccess
+	const res = new HideLoadingSuccessImpl()
 	options?.success?.(res)
 	options?.complete?.(res)
 }
 
 export {
+	ShowLoading,
+	ShowLoadingOptions,
 	ShowLoadingSuccess,
-  ShowLoadingFailErrorCode,
-  ShowLoadingFail,
-  ShowLoadingFailImpl,
-  ShowLoadingSuccessCallback,
-  ShowLoadingFailCallback,
-  ShowLoadingCompleteCallback,
-  ShowLoadingOptions,
-  ShowLoading,
-  HideLoadingSuccess,
-  HideLoadingFailErrorCode,
-  HideLoadingFail,
-  HideLoadingFailImpl,
-  HideLoadingSuccessCallback,
-  HideLoadingFailCallback,
-  HideLoadingCompleteCallback,
-  HideLoadingOptions,
-  HideLoading,
-  LoadingPage,
+	ShowLoadingSuccessImpl,
+	ShowLoadingSuccessCallback,
+	ShowLoadingFail,
+	ShowLoadingFailImpl,
+	ShowLoadingFailErrorCode,
+	ShowLoadingFailCallback,
+	ShowLoadingComplete,
+	ShowLoadingCompleteCallback,
+	LoadingPage,
+	HideLoading,
+	HideLoadingOptions,
+	HideLoadingSuccess,
+	HideLoadingSuccessImpl,
+	HideLoadingSuccessCallback,
+	HideLoadingFail,
+	HideLoadingFailImpl,
+	HideLoadingFailCallback,
+	HideLoadingFailErrorCode,
+	HideLoadingComplete,
+	HideLoadingCompleteCallback,
 } from './interface.uts'

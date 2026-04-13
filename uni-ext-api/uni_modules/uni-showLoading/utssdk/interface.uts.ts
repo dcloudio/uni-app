@@ -2,7 +2,8 @@
 /**
  * uni.showLoading成功回调参数
  */
-export type ShowLoadingSuccess = {
+export interface ShowLoadingSuccess {
+  errMsg: string
 }
 
 /**
@@ -13,6 +14,13 @@ export interface ShowLoadingFail extends IUniError {
   errCode: ShowLoadingFailErrorCode
 }
 
+export class ShowLoadingSuccessImpl implements ShowLoadingSuccess {
+  errMsg: string
+  constructor(errMsg: string = 'showLoading:ok') {
+    this.errMsg = errMsg
+  }
+}
+
 export class ShowLoadingFailImpl extends UniError implements ShowLoadingFail {
   override errCode: ShowLoadingFailErrorCode
   constructor(errMsg: string = 'showLoading:fail cancel', errCode: ShowLoadingFailErrorCode = 4) {
@@ -21,6 +29,8 @@ export class ShowLoadingFailImpl extends UniError implements ShowLoadingFail {
     this.errCode = errCode
   }
 }
+
+export type ShowLoadingComplete = any
 
 /**
  * uni.showLoading成功回调函数定义
@@ -33,7 +43,7 @@ export type ShowLoadingFailCallback = (res: ShowLoadingFail) => void
 /**
  * uni.showLoading完成回调函数定义
  */
-export type ShowLoadingCompleteCallback = (res: any) => void
+export type ShowLoadingCompleteCallback = (res: ShowLoadingComplete) => void
 
 /**
  * uni.showLoading参数定义
@@ -202,20 +212,28 @@ export type ShowLoading = (options?: ShowLoadingOptions|null) => LoadingPage | n
 
 
 /**
- * uni.showLoading成功回调参数
+ * uni.hideLoading成功回调参数
  */
-export type HideLoadingSuccess = {
+export interface HideLoadingSuccess {
+  errMsg: string
 }
 
 /**
- * uni.showLoading失败回调参数
+ * uni.hideLoading失败回调参数
  */
 export type HideLoadingFailErrorCode = 4
 /**
- * uni.showLoading失败回调参数
+ * uni.hideLoading失败回调参数
  */
 export interface HideLoadingFail extends IUniError {
   errCode: HideLoadingFailErrorCode
+}
+
+export class HideLoadingSuccessImpl implements HideLoadingSuccess {
+  errMsg: string
+  constructor(errMsg: string = 'hideLoading:ok') {
+    this.errMsg = errMsg
+  }
 }
 
 export class HideLoadingFailImpl extends UniError implements HideLoadingFail {
@@ -226,6 +244,8 @@ export class HideLoadingFailImpl extends UniError implements HideLoadingFail {
     this.errCode = errCode
   }
 }
+
+export type HideLoadingComplete = any
 
 
 /**
@@ -239,7 +259,7 @@ export type HideLoadingFailCallback = (res: HideLoadingFail) => void
 /**
  * uni.hideLoading完成回调函数定义
  */
-export type HideLoadingCompleteCallback = (res: any) => void
+export type HideLoadingCompleteCallback = (res: HideLoadingComplete) => void
 
 /**
  * uni.showLoading参数定义
@@ -354,7 +374,7 @@ export interface Uni {
 	    }
 	  }
 	 */
-	showLoading(options?: ShowLoadingOptions|null): void,
+	showLoading(options?: ShowLoadingOptions|null): LoadingPage | null,
 
 	/**
 	 * @description 隐藏 loading 提示框。
