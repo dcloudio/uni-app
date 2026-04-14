@@ -237,11 +237,13 @@ type DynamicSlot = {
 //#region packages/runtime-vapor-dom2/src/types/element.d.ts
 declare global {
   type UniElementDynamicSlot = DynamicSlot;
+  type UniElementForSlots = Array<UniElementDynamicSlot>;
 }
 //#endregion
 //#region packages/runtime-vapor-dom2/src/types/nativeView.d.ts
 declare global {
   type UniNativeViewDynamicSlot = DynamicSlot;
+  type UniNativeViewForSlots = Array<UniNativeViewDynamicSlot>;
 }
 //#endregion
 //#region temp/packages/compiler-vapor-dom2/src/style/processors/color.d.ts
@@ -480,8 +482,10 @@ export declare function createElementRecycleContext(): ElementRecycleContext;
 export declare function createElementForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (shareDataVForItem: Source, key: KeyOf<Source>, index?: number) => DynamicSlot$1): DynamicSlot$1[];
 declare global {
   type UniElementDynamicSlot = DynamicSlot$1;
+  type UniElementForSlots = Array<UniElementDynamicSlot>;
 }
 export declare function createElementDynamicSlot(name: string, fn: VaporSlot$1): DynamicSlot$1;
+export declare function createElementForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (item: ItemOf<Source>, key: KeyOf<Source>, index: number) => UniElementDynamicSlot): UniElementForSlots;
 export declare function createElementIf(page: UniPage, condition: () => any, b1: BlockFn$1, b2?: BlockFn$1 | null, once?: boolean): Block;
 export declare function setElementText(el: UniElement | UniText | null, value: string): void;
 export declare function setElementHtml(el: UniElement, value: string): void;
@@ -555,8 +559,10 @@ export declare function createNativeViewSlot(page: UniPage, name: string | (() =
 export declare function createNativeViewForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (shareDataVForItem: Source, key: KeyOf<Source>, index?: number) => DynamicSlot$1): DynamicSlot$1[];
 declare global {
   type UniNativeViewDynamicSlot = DynamicSlot$1;
+  type UniNativeViewForSlots = Array<UniNativeViewDynamicSlot>;
 }
 export declare function createNativeViewDynamicSlot(name: string, fn: VaporSlot$1): DynamicSlot$1;
+export declare function createNativeViewForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (item: ItemOf<Source>, key: KeyOf<Source>, index: number) => UniNativeViewDynamicSlot): UniNativeViewForSlots;
 export declare function createNativeViewDynamicSlotVector(slots: any | null): any | null;
 export declare function createNativeViewKeyedFragment(page: UniPage, key: () => string, render: BlockFn$1): Block;
 export declare function createNativeViewScopedSlot<S extends UniSharedData>(sharedDataVForGetter: () => UniSharedDataVFor<S>, fn: VaporSlot$1): VaporSlot$1;
