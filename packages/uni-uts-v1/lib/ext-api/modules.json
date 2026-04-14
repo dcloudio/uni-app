@@ -294,7 +294,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -304,7 +304,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -314,7 +314,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -324,7 +324,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
