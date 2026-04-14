@@ -16,7 +16,12 @@ export function initVueTemplateCompilerExtraOptions(descriptor: SFCDescriptor) {
     process.env.UNI_HX_VERSION_DEV === 'true' &&
     process.env.UNI_APP_X === 'true'
   let disableStaticStyle = false
-  if (isDevX && process.env.NODE_ENV === 'development') {
+  if (
+    isDevX &&
+    // 动态渲染时，仍旧使用静态样式，避免性能问题。
+    process.env.UNI_APP_X_DOM2_DYNAMIC !== 'true' &&
+    process.env.NODE_ENV === 'development'
+  ) {
     if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
       // 开发版本、开发模式下，非鸿蒙release模式打包
       disableStaticStyle = process.env.UNI_APP_HARMONY_RUN_MODE !== 'release'
