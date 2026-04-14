@@ -107,9 +107,9 @@ export const hideLoading: HideLoading = (options?: HideLoadingOptions | null) =>
 
 // #ifdef APP-IOS
 function getNativePageId(page: UniPage): string {
-	// TODO：条件编译原因：
-	// iOS dom1 UniPage 是直接通过JSExport通道js调用，所以getSystemDialogPages 捕获到的就是同一个UniPage对象
-	// dom2 中的 UniPage 对象是c++层实现的，getSystemDialogPages 捕获到的是一个Map，和原生层的UniPage不是同一个对象
+	// TODO：条件编译原因:
+	// iOS dom1 UniPage 是直接通过JSExport通道供js调用，所以js.getSystemDialogPages 捕获到的和options.loadingPage是同一个UniPage对象
+	// dom2 中的 UniPage 对象是c++层实现的，js.getSystemDialogPages捕获到的是通过js框架返回的信息构造的OC的UniPageImpl，但是options.loadingPage捕获到的是一个Map，只能通过__nativePageId 判断是否相同
 
 	// #ifndef VUE3-VAPOR
 	return page.__nativePageId
@@ -122,6 +122,8 @@ function getNativePageId(page: UniPage): string {
 		if (rawId != null && UTSiOS.instanceof(rawId!, String.self)) {
 			return rawId as string
 		}
+	} else if (UTSiOS.instanceof(page, UniPageImpl.self)) {
+		return page.__nativePageId
 	}
 	return "none"
 	// #endif

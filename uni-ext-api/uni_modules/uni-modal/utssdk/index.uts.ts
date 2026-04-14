@@ -8,7 +8,7 @@ import {
 	HideModalOptions,
 	HideModalSuccessImpl,
 	HideModalFailImpl,
-	
+
 } from './interface.uts'
 
 export const showModal: ShowModal = (options?: ShowModalOptions | null) => {
@@ -72,27 +72,70 @@ export const hideModal: HideModal = (options?: HideModalOptions | null) => {
 		options?.complete?.(res)
 		return
 	}
+
 	const systemDialogPages = currentPage.$getSystemDialogPages()
+	const modalPage = options?.modalPage
 	for (let i = systemDialogPages.length - 1; i >= 0; i--) {
 		const page = systemDialogPages[i]
 		if (!page.route.startsWith(SYSTEM_DIALOG_MODAL_PAGE_PATH)) {
 			continue
 		}
-		if(options?.modalPage == null){
+		if(modalPage == null){
 			uni.closeDialogPage({
 				dialogPage: page,
 			})
-		} else if(options?.modalPage === page) {
-			uni.closeDialogPage({
-				dialogPage: page
-			})
-			break
+		} else {
+			// #ifdef APP-IOS && VUE3-VAPOR
+			const nativePageId = getModalPageId(modalPage!)
+			console.log("debug: options?.modalPage.id",nativePageId)
+			if (nativePageId == getModalPageId(page)) {
+				console.log("debug: systemDialogPage.id",getModalPageId(page))
+				uni.closeDialogPage({
+					dialogPage: page
+				})
+				break
+			}
+			// #endif
+
+			// #ifndef (APP-IOS && VUE3-VAPOR)
+			if (modalPage === page) {
+				uni.closeDialogPage({
+					dialogPage: page
+				})
+				break
+			}
+			// #endif
 		}
 	}
 	const res = new HideModalSuccessImpl()
 	options?.success?.(res)
 	options?.complete?.(res)
 }
+
+// #ifdef APP-IOS
+function getModalPageId(page: UniPage): string {
+	// TODO：条件编译原因:
+	// iOS dom1 UniPage 是直接通过JSExport通道供js调用，所以js.getSystemDialogPages 捕获到的和options.modalPage是同一个UniPage对象
+	// dom2 中的 UniPage 对象是c++层实现的，js.getSystemDialogPages捕获到的是通过js框架返回的信息构造的OC的UniPageImpl，但是options.modalPage捕获到的是一个Map，只能通过__nativePageId 判断是否相同
+
+	// #ifndef VUE3-VAPOR
+	return page.__nativePageId
+	// #endif
+
+	// #ifdef VUE3-VAPOR
+	if(UTSiOS.instanceof(page, Map<string, any>.self)) {
+		const pageMap = page as Map<string, any>
+		const rawId = pageMap.get("__nativePageId")
+		if (rawId != null && UTSiOS.instanceof(rawId!, String.self)) {
+			return rawId as string
+		}
+	} else if (UTSiOS.instanceof(page, UniPageImpl.self)) {
+		return page.__nativePageId
+	}
+	return "none"
+	// #endif
+}
+// #endif
 
 export {
 	ShowModal,

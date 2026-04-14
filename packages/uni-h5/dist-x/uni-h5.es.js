@@ -31043,20 +31043,23 @@ const hideModal$1 = (options) => {
     return;
   }
   const systemDialogPages = currentPage.$getSystemDialogPages();
+  const modalPage = options == null ? void 0 : options.modalPage;
   for (let i = systemDialogPages.length - 1; i >= 0; i--) {
     const page = systemDialogPages[i];
     if (!page.route.startsWith(SYSTEM_DIALOG_MODAL_PAGE_PATH)) {
       continue;
     }
-    if ((options == null ? void 0 : options.modalPage) == null) {
+    if (modalPage == null) {
       uni.closeDialogPage({
         dialogPage: page
       });
-    } else if ((options == null ? void 0 : options.modalPage) === page) {
-      uni.closeDialogPage({
-        dialogPage: page
-      });
-      break;
+    } else {
+      if (modalPage === page) {
+        uni.closeDialogPage({
+          dialogPage: page
+        });
+        break;
+      }
     }
   }
   const res = new HideModalSuccessImpl();
