@@ -511,7 +511,7 @@ export declare function onElement(node: UniElement, event: string, fn: (event: U
   effect?: boolean;
   stop?: boolean;
 }): void;
-export declare function onElementRef(node: UniElement, fn: Function): void;
+export declare function onElementRef(node: UniElement | VaporSharedDataComponentInstance<any>, fn: Function): void;
 export declare function createElementDynamicSlotVector(slots: any | null): any | null;
 export declare function createElementKeyedFragment(page: UniPage, key: () => string, render: BlockFn): Block;
 export declare function createElementScopedSlot<S extends UniSharedData>(sharedDataVFor: UniSharedDataVFor<S>, fn: VaporSlot): VaporSlot;
