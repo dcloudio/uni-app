@@ -66,27 +66,67 @@ export const hideLoading: HideLoading = (options?: HideLoadingOptions | null) =>
 		options?.complete?.(res)
 		return
 	}
+	const loadingPage = options?.loadingPage
 	const systemDialogPages = currentPage.$getSystemDialogPages()
 	for(let i = systemDialogPages.length - 1; i >= 0; i--) {
 		const page = systemDialogPages[i]
 		if (!page.route.startsWith(SYSTEM_DIALOG_LOADING_PAGE_PATH)) {
 			continue
 		}
-		if(options?.loadingPage == null){
+		if(loadingPage == null){
 			uni.closeDialogPage({
 				dialogPage: page,
 			})
-		} else if(options?.loadingPage === page) {
-			uni.closeDialogPage({
-				dialogPage: page
-			})
-			break
+		} else {
+			// #ifdef APP-IOS && VUE3-VAPOR
+			const nativePageId = getNativePageId(loadingPage!)
+			console.log("debug: options?.loadingPage.id",nativePageId)
+			if (nativePageId == getNativePageId(page)) {
+				console.log("debug: systemDialogPage.id",getNativePageId(page))
+				uni.closeDialogPage({
+					dialogPage: page
+				})
+				break
+			}
+			// #endif
+
+			// #ifndef (APP-IOS && VUE3-VAPOR)
+			if (loadingPage === page) {
+				uni.closeDialogPage({
+					dialogPage: page
+				})
+				break
+			}
+			// #endif
 		}
 	}
 	const res = new HideLoadingSuccessImpl()
 	options?.success?.(res)
 	options?.complete?.(res)
 }
+
+// #ifdef APP-IOS
+function getNativePageId(page: UniPage): string {
+	// TODO：条件编译原因：
+	// iOS dom1 UniPage 是直接通过JSExport通道js调用，所以getSystemDialogPages 捕获到的就是同一个UniPage对象
+	// dom2 中的 UniPage 对象是c++层实现的，getSystemDialogPages 捕获到的是一个Map，和原生层的UniPage不是同一个对象
+
+	// #ifndef VUE3-VAPOR
+	return page.__nativePageId
+	// #endif
+
+	// #ifdef VUE3-VAPOR
+	if(UTSiOS.instanceof(page, Map<string, any>.self)) {
+		const pageMap = page as Map<string, any>
+		const rawId = pageMap.get("__nativePageId")
+		if (rawId != null && UTSiOS.instanceof(rawId!, String.self)) {
+			return rawId as string
+		}
+	}
+	return "none"
+	// #endif
+}
+// #endif
 
 export {
 	ShowLoading,

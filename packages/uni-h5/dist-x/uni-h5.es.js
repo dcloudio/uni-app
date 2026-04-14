@@ -31257,21 +31257,24 @@ const hideLoading$1 = (options) => {
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;
   }
+  const loadingPage = options == null ? void 0 : options.loadingPage;
   const systemDialogPages = currentPage.$getSystemDialogPages();
   for (let i = systemDialogPages.length - 1; i >= 0; i--) {
     const page = systemDialogPages[i];
     if (!page.route.startsWith(SYSTEM_DIALOG_LOADING_PAGE_PATH)) {
       continue;
     }
-    if ((options == null ? void 0 : options.loadingPage) == null) {
+    if (loadingPage == null) {
       uni.closeDialogPage({
         dialogPage: page
       });
-    } else if ((options == null ? void 0 : options.loadingPage) === page) {
-      uni.closeDialogPage({
-        dialogPage: page
-      });
-      break;
+    } else {
+      if (loadingPage === page) {
+        uni.closeDialogPage({
+          dialogPage: page
+        });
+        break;
+      }
     }
   }
   const res = new HideLoadingSuccessImpl();
