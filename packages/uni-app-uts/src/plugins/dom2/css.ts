@@ -115,7 +115,7 @@ export function uniAppCssPrePlugin(): Plugin {
         },
         emitFile(filename, cssCode) {
           const { ASDSF } = requireUniHelpers()
-          ASDSF(normalizePath(filename), cssCode)
+          ASDSF(normalizePath(filename), cssCode, process.env.UNI_UTS_PLATFORM)
         },
       })
       const uvueCssInlinePostPlugin: Plugin = {
