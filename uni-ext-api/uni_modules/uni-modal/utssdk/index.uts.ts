@@ -87,9 +87,7 @@ export const hideModal: HideModal = (options?: HideModalOptions | null) => {
 		} else {
 			// #ifdef APP-IOS && VUE3-VAPOR
 			const nativePageId = getModalPageId(modalPage!)
-			console.log("debug: options?.modalPage.id",nativePageId)
 			if (nativePageId == getModalPageId(page)) {
-				console.log("debug: systemDialogPage.id",getModalPageId(page))
 				uni.closeDialogPage({
 					dialogPage: page
 				})

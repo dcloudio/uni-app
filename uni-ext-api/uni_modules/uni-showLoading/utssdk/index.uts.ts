@@ -80,9 +80,7 @@ export const hideLoading: HideLoading = (options?: HideLoadingOptions | null) =>
 		} else {
 			// #ifdef APP-IOS && VUE3-VAPOR
 			const nativePageId = getNativePageId(loadingPage!)
-			console.log("debug: options?.loadingPage.id",nativePageId)
 			if (nativePageId == getNativePageId(page)) {
-				console.log("debug: systemDialogPage.id",getNativePageId(page))
 				uni.closeDialogPage({
 					dialogPage: page
 				})
