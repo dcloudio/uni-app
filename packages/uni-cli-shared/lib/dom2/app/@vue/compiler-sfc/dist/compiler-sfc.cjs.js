@@ -15539,10 +15539,7 @@ function compileScript(sfc, options) {
 			const dynamicSharedDataComponentOptionsCode = options.dynamicSharedData ? `_useSharedDataComponentOptions({ bundleKey: __className, sharedDataClassId: 0 })` : `_useSharedDataComponentOptions()`;
 			if (componentType === "page") {
 				setupPreambleLines.unshift(`const __sharedDataScope =  _useSharedDataScope(__sharedData)`);
-				if (options.dynamicSharedData) {
-					setupPreambleLines.unshift(`const __sharedData = __sharedDataRenderer == 'component' ? _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataScope(), ${dynamicSharedDataComponentOptionsCode})${optionsCode}) : _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataPageId(), ${dynamicSharedDataOptionsCode})${optionsCode})`);
-					setupPreambleLines.unshift(`const __sharedDataRenderer = _useSharedDataRenderer()`);
-				} else setupPreambleLines.unshift(`const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataRenderer() == 'component' ? _useSharedDataScope() : _useSharedDataPageId(), ${dynamicSharedDataOptionsCode})${optionsCode})`);
+				setupPreambleLines.unshift(`const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataRenderer() == 'component' ? _useSharedDataScope() : _useSharedDataPageId(), ${dynamicSharedDataOptionsCode})${optionsCode})`);
 			} else if (componentType === "component") {
 				setupPreambleLines.unshift(`const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope, ${dynamicSharedDataComponentOptionsCode})${optionsCode})`);
 				setupPreambleLines.unshift(`const __sharedDataScope =  _useSharedDataScope()`);
