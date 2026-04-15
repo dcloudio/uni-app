@@ -676,11 +676,7 @@ function genDirectiveNode(
     const exp = (prop.exp as SimpleExpressionNode).content
     checkVirtualHostProps(arg, virtualHost).forEach((arg) => {
       // 组件作为根节点，virtualHostStyle="{{virtualHostStyle}}" 会产生警告 Setting data field "virtualHostStyle" to undefined is invalid.
-      if (
-        context.isX &&
-        arg === VIRTUAL_HOST_STYLE &&
-        exp === VIRTUAL_HOST_STYLE
-      ) {
+      if (arg === VIRTUAL_HOST_STYLE && exp === VIRTUAL_HOST_STYLE) {
         push(` ${arg}="{{${exp} || ''}}"`)
       } else {
         push(` ${arg}="{{${exp}}}"`)
