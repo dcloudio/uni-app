@@ -441,6 +441,18 @@ function findLastIndex<T>(
 
 let encryptUniModules: ReturnType<typeof findCloudEncryptUniModules> = {}
 
+function refreshEncryptUniModules(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  inputDir: string
+) {
+  encryptUniModules = findCloudEncryptUniModules(
+    platform,
+    inputDir,
+    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
+    'all'
+  )
+}
+
 export function resolveEncryptUniModule(
   id: string,
   platform: typeof process.env.UNI_UTS_PLATFORM,
@@ -515,6 +527,8 @@ export async function checkEncryptUniModules(
   params: CloudCompileParams,
   sdkType: CloudCompileSdkType = 'all'
 ) {
+  const isHarmonySplitCompile =
+    params.platform === 'app-harmony' && sdkType !== 'all'
   // 初始化指定 sdk 类型的加密插件
   const curEncryptUniModules = findCloudEncryptUniModules(
     params.platform,
@@ -523,9 +537,16 @@ export async function checkEncryptUniModules(
     sdkType
   )
   if (!Object.keys(curEncryptUniModules).length) {
+    // 鸿蒙会按 utssdk/easycom 分两次扫描，这里回填一次全量状态，避免子集扫描把插件类型覆盖掉
+    if (isHarmonySplitCompile) {
+      refreshEncryptUniModules(params.platform, inputDir)
+    }
     return {}
   }
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
+    if (isHarmonySplitCompile) {
+      refreshEncryptUniModules(params.platform, inputDir)
+    }
     return {}
   }
 
@@ -595,12 +616,7 @@ export async function checkEncryptUniModules(
     }
   }
   // 初始化所有
-  encryptUniModules = findCloudEncryptUniModules(
-    params.platform,
-    inputDir,
-    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
-    'all'
-  )
+  refreshEncryptUniModules(params.platform, inputDir)
 }
 
 export function getUniModulesEncryptType(pluginId: string) {

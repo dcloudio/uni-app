@@ -5,7 +5,9 @@ import {
   checkEncryptUniModules,
   findCloudEncryptUniModules,
   findUploadEncryptUniModulesFiles,
+  getUniModulesEncryptType,
   parseUniModulesWithComponents,
+  resolveEncryptUniModule,
 } from '../src/uni_modules.cloud'
 import { normalizePath } from '../src/utils'
 import { isNonTreeShakingPlugin } from '../src/uni_modules'
@@ -409,5 +411,141 @@ module.exports = {
 
   test('app-ios skips cache init on cache hit', async () => {
     await expect(runCheck('app-ios', false)).resolves.toHaveLength(0)
+  })
+})
+
+describe('uni_modules:cloud harmony split state', () => {
+  const compilerVersion = '4.17-test'
+
+  test('keeps utssdk type after easycom scan returns empty', async () => {
+    const tempDir = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'uni-modules-harmony-')
+    )
+    const inputDir = path.join(tempDir, 'input')
+    const cacheDir = path.join(tempDir, 'cache')
+    const pluginId = 'test-harmony-mixed'
+    const componentName = 'test-lottie'
+    const componentFile = normalizePath(
+      path.join(
+        inputDir,
+        'uni_modules',
+        pluginId,
+        'components',
+        componentName,
+        `${componentName}.uvue`
+      )
+    )
+
+    fs.ensureDirSync(path.join(inputDir, 'uni_modules', pluginId, 'encrypt'))
+    fs.outputJsonSync(
+      path.join(inputDir, 'uni_modules', pluginId, 'package.json'),
+      {
+        name: pluginId,
+        version: '1.0.0',
+      }
+    )
+    fs.outputFileSync(
+      path.join(
+        inputDir,
+        'uni_modules',
+        pluginId,
+        'utssdk',
+        'app-harmony',
+        'index.uts'
+      ),
+      'export {}'
+    )
+    fs.outputFileSync(componentFile, '<template />')
+    fs.outputJsonSync(
+      path.join(cacheDir, 'uni_modules', pluginId, 'package.json'),
+      {
+        id: pluginId,
+        version: '1.0.0',
+        uni_modules: {
+          dependencies: [],
+          artifacts: {
+            env: {
+              compilerVersion,
+            },
+            apis: [],
+            components: [],
+            scopedSlots: [],
+            customElements: [],
+            declaration: '',
+          },
+        },
+      }
+    )
+
+    const oldCacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+    const oldCompilerVersion = process.env.UNI_COMPILER_VERSION
+    const oldHbxPlugins = process.env.UNI_HBUILDERX_PLUGINS
+    const oldInputDir = process.env.UNI_INPUT_DIR
+
+    try {
+      process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = cacheDir
+      process.env.UNI_COMPILER_VERSION = compilerVersion
+      process.env.UNI_HBUILDERX_PLUGINS = tempDir
+      process.env.UNI_INPUT_DIR = inputDir
+
+      const baseParams = {
+        mode: 'development' as const,
+        packType: 'debug' as const,
+        compilerVersion,
+        appid: '__UNI__TEST',
+        appname: 'test',
+        platform: 'app-harmony' as const,
+        'uni-app-x': true,
+        env: {},
+      }
+
+      await checkEncryptUniModules(
+        inputDir,
+        {
+          ...baseParams,
+          env: {
+            UNI_HARMONY_SDK_TYPE: 'utssdk',
+          },
+        },
+        'utssdk'
+      )
+      await checkEncryptUniModules(
+        inputDir,
+        {
+          ...baseParams,
+          env: {
+            UNI_HARMONY_SDK_TYPE: 'easycom',
+          },
+        },
+        'easycom'
+      )
+
+      expect(getUniModulesEncryptType(pluginId)).toBe('utssdk')
+      expect(resolveEncryptUniModule(componentFile, 'app-harmony')).toBe(
+        undefined
+      )
+    } finally {
+      if (oldCacheDir === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_MODULES_ENCRYPT_CACHE_DIR')
+      } else {
+        process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = oldCacheDir
+      }
+      if (oldCompilerVersion === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_COMPILER_VERSION')
+      } else {
+        process.env.UNI_COMPILER_VERSION = oldCompilerVersion
+      }
+      if (oldHbxPlugins === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_HBUILDERX_PLUGINS')
+      } else {
+        process.env.UNI_HBUILDERX_PLUGINS = oldHbxPlugins
+      }
+      if (oldInputDir === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_INPUT_DIR')
+      } else {
+        process.env.UNI_INPUT_DIR = oldInputDir
+      }
+      fs.removeSync(tempDir)
+    }
   })
 })
