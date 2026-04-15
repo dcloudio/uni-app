@@ -1004,6 +1004,16 @@ function parseAst(
             decls.push(varDecl)
           }
           break
+        case 'TsInterfaceDeclaration':
+          // 直接继承自JSExport的interface，作为class处理
+          decls.push(
+            genClassDeclarationFromInterface(
+              types,
+              decl,
+              resolveTypeReferenceName
+            )
+          )
+          break
       }
     } else if (item.type === 'ExportDefaultDeclaration') {
       const decl = item.decl
@@ -1513,6 +1523,85 @@ function genClassDeclaration(
     false,
     isHook,
     interfaces
+  )
+}
+
+/**
+ * 不考虑接口继承类的情况，直接把接口当成类来处理，接口中的方法都当成实例方法，属性当成实例属性
+ */
+function genClassDeclarationFromInterface(
+  types: Types,
+  decl: TsInterfaceDeclaration,
+  resolveTypeReferenceName: ResolveTypeReferenceName
+): ProxyClass {
+  const cls = decl.id.value
+  const methods: ProxyClass['options']['methods'] = {}
+  const props: string[] = []
+  const setters: Record<string, Parameter> = {}
+  const elements = parseInterfaceBody(types, decl)
+
+  elements.forEach((item) => {
+    if (item.type === 'TsMethodSignature') {
+      if (item.key.type === 'Identifier') {
+        let returnOptions: ProxyFunctionReturnOptions | undefined
+        if (item.typeAnn) {
+          let returnInterface = parseReturnInterface(
+            types,
+            item.typeAnn.typeAnnotation
+          )
+          if (returnInterface) {
+            returnOptions = {
+              type: 'interface',
+              options: returnInterface,
+            }
+          }
+        }
+
+        const name = item.key.value
+        methods[name + 'ByJs'] = {
+          async: isReturnPromise(item.typeAnn),
+          keepAlive: false,
+          params: resolveFunctionParams(
+            types,
+            tsParamsToParams(item.params),
+            resolveTypeReferenceName
+          ),
+          return: returnOptions,
+        }
+      }
+    } else if (item.type === 'TsPropertySignature') {
+      if (item.key.type === 'Identifier') {
+        props.push(item.key.value)
+        if (item.typeAnnotation) {
+          const params = resolveFunctionParams(
+            types,
+            tsParamsToParams([
+              createBindingIdentifier(item.key.value, item.typeAnnotation),
+            ]),
+            resolveTypeReferenceName
+          )
+          if (params.length) {
+            setters[item.key.value] = params[0]
+          }
+        }
+      }
+    }
+  })
+  return genProxyClass(
+    cls,
+    {
+      constructor: { params: [] },
+      methods,
+      staticMethods: {},
+      props,
+      staticProps: [],
+      setters,
+      staticSetters: {},
+    },
+    false,
+    false,
+    false,
+    []
   )
 }
 
