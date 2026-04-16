@@ -16,6 +16,9 @@
       "AccessOptions"
     ],
     [
+      "AddPhoneCalendarOptions"
+    ],
+    [
       "AddPhoneContact"
     ],
     [
@@ -38,6 +41,9 @@
     ],
     [
       "AddPhoneContactSuccessCallback"
+    ],
+    [
+      "AddPhoneRepeatCalendarOptions"
     ],
     [
       "AppCrashInfo"
@@ -65,6 +71,30 @@
     ],
     [
       "Base64ToArrayBuffer"
+    ],
+    [
+      "CalendarComplete"
+    ],
+    [
+      "CalendarCompleteCallback"
+    ],
+    [
+      "CalendarErrorCode"
+    ],
+    [
+      "CalendarFail"
+    ],
+    [
+      "CalendarFailCallback"
+    ],
+    [
+      "CalendarRepeatInterval"
+    ],
+    [
+      "CalendarSuccess"
+    ],
+    [
+      "CalendarSuccessCallback"
     ],
     [
       "CanvasContext"
@@ -1013,6 +1043,9 @@
     ],
     [
       "IAppThemeFail"
+    ],
+    [
+      "ICalendarError"
     ],
     [
       "IChooseMediaError"
@@ -2501,6 +2534,33 @@
     ],
     [
       "UserInfo"
+    ],
+    [
+      "VibrateErrorCode"
+    ],
+    [
+      "VibrateFail"
+    ],
+    [
+      "VibrateLong"
+    ],
+    [
+      "VibrateLongOptions"
+    ],
+    [
+      "VibrateLongSuccess"
+    ],
+    [
+      "VibrateShort"
+    ],
+    [
+      "VibrateShortOptions"
+    ],
+    [
+      "VibrateShortSuccess"
+    ],
+    [
+      "VibrateShortType"
     ],
     [
       "VideoContext"
