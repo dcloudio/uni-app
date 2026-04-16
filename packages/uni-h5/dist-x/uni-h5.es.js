@@ -31146,20 +31146,20 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       const _component_text = __syscom_1$1;
       const _component_view = __syscom_2;
       return openBlock(), createBlock(_component_view, {
-        class: normalizeClass(["uni-loading_dialog__mask", { "uni-loading_dialog__mask__show": showAnim.value }])
+        class: normalizeClass(["uni-loading-mask", { "uni-loading-mask--show": showAnim.value }])
       }, {
         default: withCtx(() => [
           createVNode(_component_view, {
-            class: normalizeClass(["uni-loading_dialog__container", { "uni-loading_dialog__show": showAnim.value }])
+            class: normalizeClass(["uni-loading-dialog", { "uni-loading-dialog--show": showAnim.value }])
           }, {
             default: withCtx(() => [
               createVNode(_component_loading, {
-                class: "uni-loading_dialog__container__loading",
+                class: "uni-loading-dialog__spinner",
                 "ios-spinner": iosSpinner.value
               }, null, 8, ["ios-spinner"]),
               title.value ? (openBlock(), createBlock(_component_text, {
                 key: 0,
-                class: "uni-loading_dialog__container__title",
+                class: "uni-loading-dialog__title",
                 "max-lines": "1"
               }, {
                 default: withCtx(() => [
@@ -31176,7 +31176,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n\n	\n";
+const _style_0 = "\n	/**\n	 * 透明背景\n	 */\n.uni-loading-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading-mask--show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading-dialog {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-loading-dialog.uni-loading-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading-dialog__spinner {\n		width: 36px;\n		height: 36px;\n		border-color: white;\n}\n.uni-loading-dialog__title {\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines: 1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n";
 const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["styles", [_style_0]]]);
 class ShowLoadingSuccessImpl {
   constructor(errMsg = "showLoading:ok") {
