@@ -1,4 +1,4 @@
-import { getGlobal, UTS, UTSJSONObject, UTSValueIterable, UniError, invokeArrayFns, VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, EventChannel, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, UNI_STATUS_BAR_HEIGHT, UNI_SAFE_AREA_INSET_BOTTOM, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
+import { getGlobal, UTS, UTSJSONObject, UTSValueIterable, UniError, VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, UNI_STATUS_BAR_HEIGHT, UNI_SAFE_AREA_INSET_BOTTOM, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
 export { UTS, UTSJSONObject, UTSValueIterable, UniError } from '@dcloudio/uni-shared';
 import { isArray, isFunction, capitalize, hasOwn, extend, isPlainObject, isString } from '@vue/shared';
 import { onUpdated, pruneUniElements, onUnmounted, destroyUniElements, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
@@ -343,8 +343,6 @@ function initCreateSubpackageApp(parseAppOptions) {
         if (!app)
             return;
         vm.$.ctx.$scope = app;
-        vm.$.ctx.$hasHook = hasHook;
-        vm.$.ctx.$callHook = callHook;
         const globalData = app.globalData;
         if (globalData) {
             Object.keys(appOptions.globalData).forEach((name) => {
