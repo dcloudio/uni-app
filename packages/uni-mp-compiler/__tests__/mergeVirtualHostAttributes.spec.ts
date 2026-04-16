@@ -224,7 +224,7 @@ describe('compiler: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<custom-view v-show="show"><image /></custom-view>`,
-      `<custom-view u-s=\"{{['d']}}\" u-i=\"2a9ec0b0-0\" class=\"{{[virtualHostClass]}}\" virtualHostClass=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" virtualHostStyle=\"{{virtualHostStyle}}\" hidden=\"{{(virtualHostHidden === undefined ? !a : virtualHostHidden) || false}}\" virtualHostHidden=\"{{(virtualHostHidden === undefined ? !a : virtualHostHidden) || false}}\" id=\"{{b}}\" virtualHostId=\"{{b}}\"><image/></custom-view>`,
+      `<custom-view u-s=\"{{['d']}}\" u-i=\"2a9ec0b0-0\" class=\"{{[virtualHostClass]}}\" virtualHostClass=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" virtualHostStyle=\"{{virtualHostStyle || ''}}\" hidden=\"{{(virtualHostHidden === undefined ? !a : virtualHostHidden) || false}}\" virtualHostHidden=\"{{(virtualHostHidden === undefined ? !a : virtualHostHidden) || false}}\" id=\"{{b}}\" virtualHostId=\"{{b}}\"><image/></custom-view>`,
       `(_ctx, _cache) => {
   return { a: _ctx.show, b: _gei(_ctx, '') }
 }`,
@@ -240,7 +240,7 @@ describe('compiler: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<custom-view><custom-image/></custom-view>`,
-      `<custom-view u-s=\"{{['d']}}\" u-i=\"2a9ec0b0-0\" class=\"{{[virtualHostClass]}}\" virtualHostClass=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" virtualHostStyle=\"{{virtualHostStyle}}\" hidden=\"{{virtualHostHidden || false}}\" virtualHostHidden=\"{{virtualHostHidden || false}}\" id=\"{{a}}\" virtualHostId=\"{{a}}\"><custom-image u-i=\"2a9ec0b0-1,2a9ec0b0-0\"/></custom-view>`,
+      `<custom-view u-s=\"{{['d']}}\" u-i=\"2a9ec0b0-0\" class=\"{{[virtualHostClass]}}\" virtualHostClass=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" virtualHostStyle=\"{{virtualHostStyle || ''}}\" hidden=\"{{virtualHostHidden || false}}\" virtualHostHidden=\"{{virtualHostHidden || false}}\" id=\"{{a}}\" virtualHostId=\"{{a}}\"><custom-image u-i=\"2a9ec0b0-1,2a9ec0b0-0\"/></custom-view>`,
       `(_ctx, _cache) => {
   return { a: _gei(_ctx, '') }
 }`,
