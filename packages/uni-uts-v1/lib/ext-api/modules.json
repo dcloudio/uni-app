@@ -1530,8 +1530,7 @@
           "x-js": true,
           "kotlin": false,
           "swift": false,
-          "arkts": false,
-          "mp-weixin": true
+          "arkts": false
         }
       },
       "offThemeChange": {
@@ -1541,8 +1540,7 @@
           "x-js": true,
           "kotlin": false,
           "swift": false,
-          "arkts": false,
-          "mp-weixin": true
+          "arkts": false
         }
       },
       "onHostThemeChange": {
@@ -1552,8 +1550,7 @@
           "x-js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": true,
-          "mp-weixin": true
+          "arkts": true
         }
       },
       "offHostThemeChange": {
@@ -1563,8 +1560,7 @@
           "x-js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": true,
-          "mp-weixin": true
+          "arkts": true
         }
       }
     }
