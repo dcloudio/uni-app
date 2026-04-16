@@ -819,20 +819,42 @@ function resolveDelegateClassByName(content: string, name: string): string {
   if (!name.startsWith('uni-')) {
     return ''
   }
-  const normalized = capitalize(camelize(name))
-  // UniWebViewElement 中的 UniWeb 来自插件名/组件名的规范化结果
-  const interfaceRE = new RegExp(
-    `interface\\s+${normalized}Element\\s+extends\\b`
+  const interfaceName = resolveElementInterfaceName(
+    content,
+    capitalize(camelize(name)) + 'Element'
   )
-  if (interfaceRE.test(content)) {
-    const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
-    if (isDom2) {
-      return normalized + 'ElementRegister'
-    } else {
-      return normalized + 'ComponentRegister'
+  if (!interfaceName) {
+    return ''
+  }
+  // 注册类名要跟随实际的 Element 接口名，不能再强依赖插件 id。
+  const className = interfaceName.replace(/Element$/, '')
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  if (isDom2) {
+    return className + 'ElementRegister'
+  }
+  return className + 'ComponentRegister'
+}
+
+function resolveElementInterfaceName(
+  content: string,
+  preferredInterfaceName: string
+) {
+  const interfaceRE = /interface\s+(Uni[A-Za-z0-9_$]*Element)\s+extends\b/g
+  let fallbackInterfaceName = ''
+  let match: RegExpExecArray | null
+  while ((match = interfaceRE.exec(content))) {
+    const interfaceName = match[1]
+    // 先兼容历史上和插件 id 对齐的命名，避免同文件多个接口时误判。
+    if (interfaceName === preferredInterfaceName) {
+      return interfaceName
+    }
+    // 找不到精确匹配时，再兜底到第一个 Uni*Element 接口，
+    // 兼容 uni-map-tencent -> UniMapElement 这类命名不完全一致的场景。
+    if (!fallbackInterfaceName) {
+      fallbackInterfaceName = interfaceName
     }
   }
-  return ''
+  return fallbackInterfaceName
 }
 
 function resolveUniModulesPluginId(inputDir: string) {
