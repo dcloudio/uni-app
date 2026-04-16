@@ -127,12 +127,40 @@ export async function runDev(options: CliOptions & ServerOptions) {
             options.platform === 'app-harmony' ||
             options.platform === 'mp-harmony'
           ) {
+            // 动态化且没有uts插件变更时，输出变更文件列表
+            if (process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' && !utsChanged) {
+              const changed: string[] = []
+              const files = process.env.UNI_APP_CHANGED_FILES
+              process.env.UNI_APP_CHANGED_PAGES = ''
+              if (files) {
+                try {
+                  changed.push(...JSON.parse(files))
+                } catch {}
+              }
+              const binFiles = process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
+              process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES = ''
+              if (binFiles) {
+                try {
+                  changed.push(...JSON.parse(binFiles))
+                } catch {}
+              }
+              if (changed.length) {
+                return output(
+                  'log',
+                  M['dev.watching.end.files'].replace(
+                    '{files}',
+                    JSON.stringify(changed)
+                  )
+                )
+              }
+            }
             // 鸿蒙平台cpp/uts插件变更需要整体编译
             if (
               process.env.UNI_APP_X_DOM2_CPP_CHANGED !== 'true' &&
               !utsChanged
             ) {
               const files = process.env.UNI_APP_CHANGED_FILES
+              process.env.UNI_APP_CHANGED_FILES = ''
               if (files) {
                 return output(
                   'log',

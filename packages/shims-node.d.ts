@@ -35,6 +35,7 @@ declare namespace NodeJS {
     UNI_RENDERER_NATIVE: 'appService' | 'pages'
     UNI_NVUE_APP_STYLES: string
     UNI_APP_CHANGED_FILES: string
+    UNI_APP_X_DOM2_BIN_CHANGED_FILES: string // 动态渲染变更文件列表
     UNI_APP_CHANGED_PAGES: string
     VUE_APP_DARK_MODE: 'true' | 'false'
 
