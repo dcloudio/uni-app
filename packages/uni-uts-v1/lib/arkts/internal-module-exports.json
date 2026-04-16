@@ -16,9 +16,6 @@
       "AccessOptions"
     ],
     [
-      "AddPhoneCalendarOptions"
-    ],
-    [
       "AddPhoneContact"
     ],
     [
@@ -43,9 +40,6 @@
       "AddPhoneContactSuccessCallback"
     ],
     [
-      "AddPhoneRepeatCalendarOptions"
-    ],
-    [
       "AppCrashInfo"
     ],
     [
@@ -65,30 +59,6 @@
     ],
     [
       "BackgroundAudioManager"
-    ],
-    [
-      "CalendarComplete"
-    ],
-    [
-      "CalendarCompleteCallback"
-    ],
-    [
-      "CalendarErrorCode"
-    ],
-    [
-      "CalendarFail"
-    ],
-    [
-      "CalendarFailCallback"
-    ],
-    [
-      "CalendarRepeatInterval"
-    ],
-    [
-      "CalendarSuccess"
-    ],
-    [
-      "CalendarSuccessCallback"
     ],
     [
       "Certificate"
@@ -881,9 +851,6 @@
     ],
     [
       "IAppThemeFail"
-    ],
-    [
-      "ICalendarError"
     ],
     [
       "IChooseMediaError"
@@ -2078,33 +2045,6 @@
     ],
     [
       "UserInfo"
-    ],
-    [
-      "VibrateErrorCode"
-    ],
-    [
-      "VibrateFail"
-    ],
-    [
-      "VibrateLong"
-    ],
-    [
-      "VibrateLongOptions"
-    ],
-    [
-      "VibrateLongSuccess"
-    ],
-    [
-      "VibrateShort"
-    ],
-    [
-      "VibrateShortOptions"
-    ],
-    [
-      "VibrateShortSuccess"
-    ],
-    [
-      "VibrateShortType"
     ],
     [
       "Worker"
