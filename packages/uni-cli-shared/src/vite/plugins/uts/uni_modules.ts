@@ -26,6 +26,7 @@ import { parseVueRequest } from '../../utils'
 import {
   getNonTreeShakingPlugins,
   getUniExtApiPlugins,
+  getUniExtApiProviders,
   parseUTSModuleDeps,
 } from '../../../uni_modules'
 import {
@@ -261,7 +262,7 @@ export function getCurrentCompiledUTSProviders() {
   return utsProviders
 }
 
-let uniExtApiCompiler = async () => {}
+let uniExtApiCompiler = async (providerOnly: boolean = false) => {}
 let nonTreeShakingUniModulesCompiler = async () => {}
 
 function emptyCacheDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
@@ -630,12 +631,13 @@ export function uniUTSAppUniModulesPlugin(
     })
   }
 
-  uniExtApiCompiler = async () => {
+  uniExtApiCompiler = async (providerOnly: boolean = false) => {
     // 此方法为兜底方法，确保uni_modules中的所有插件都会编译，目前仅用于编译provider
     // 获取 provider 扩展(编译所有uni)
     const plugins = getUniExtApiPlugins().filter(
       (provider) => !utsPlugins.has(provider.plugin)
     )
+    const providers = getUniExtApiProviders()
     for (const plugin of plugins) {
       const pluginDir = path.resolve(inputDir, 'uni_modules', plugin.plugin)
       // 如果是 app-js 环境
@@ -662,14 +664,18 @@ export function uniUTSAppUniModulesPlugin(
           continue
         }
       }
+      const isProvider = providers.some((p) => p.plugin === plugin.plugin)
       utsProviders.add(plugin.plugin)
-      const result = await compilePlugin(pluginDir)
-      if (result) {
-        // 时机不对，不能addWatch
-        // result.deps.forEach((dep) => {
-        //   this.addWatchFile(dep)
-        // })
+      if ((providerOnly && isProvider) || !providerOnly) {
+        await compilePlugin(pluginDir)
       }
+      // const result = await compilePlugin(pluginDir)
+      // if (result) {
+      //   // 时机不对，不能addWatch
+      //   // result.deps.forEach((dep) => {
+      //   //   this.addWatchFile(dep)
+      //   // })
+      // }
     }
   }
 
@@ -800,8 +806,8 @@ export function uniUTSAppUniModulesPlugin(
   }
 }
 
-export async function buildUniExtApis() {
-  await uniExtApiCompiler()
+export async function buildUniExtApis(providerOnly: boolean = false) {
+  await uniExtApiCompiler(providerOnly)
 }
 
 export async function buildNonTreeShakingUniModules() {
