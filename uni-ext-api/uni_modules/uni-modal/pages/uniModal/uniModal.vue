@@ -1,46 +1,41 @@
 <template>
-	<view class="uni-modal_dialog__mask"
-		:class="{ 'uni-modal_dialog__mask__show': showAnim,'uni-modal_dialog__mask__hide': !showAnim }">
-
-		<view class="uni-modal_dialog__container" :style="{bottom:inputBottom}"
-			:class="{'uni-modal_dialog__show': showAnim,  'uni-modal_dark__mode': theme == 'dark'}">
-			<!--ios need -->
-			<view class="uni-modal_dialog__container__wrapper" :class="{'uni-modal_dark__mode': theme == 'dark'}">
-
-				<text class="uni-modal_dialog__title__text" max-lines="2" :class="{'uni-modal_dark__mode': theme == 'dark'}"
-					v-if="title">
+	<view class="uni-modal-mask" :class="{ 'uni-modal-mask--show': showAnim, 'uni-modal-mask--hide': !showAnim }">
+		<view class="uni-modal-dialog" :style="{ bottom: inputBottom }"
+			:class="{ 'uni-modal-dialog--show': showAnim, 'uni-modal--dark': isDark }">
+			<!-- ios need -->
+			<view class="uni-modal-dialog__inner" :class="{ 'uni-modal--dark': isDark }">
+				<text v-if="title" class="uni-modal-dialog__title" max-lines="2" :class="{ 'uni-modal--dark': isDark }">
 					{{ title }}
 				</text>
 
-				<view class="uni-modal_dialog__content">
-					<textarea v-if="editable" v-model="content" class="uni-modal_dialog__content__textarea"
-						placeholder-class="modalContent_content_edit_placeholder"
-						:class="{ 'uni-modal_dark__mode': theme == 'dark'}" :focus="true" :adjust-position="false"
-						@blur="onInputBlur" @keyboardheightchange="onInputKeyboardChange" :auto-height="isAutoHeight"
+				<view class="uni-modal-dialog__body">
+					<textarea v-if="editable" v-model="content" class="uni-modal-dialog__textarea"
+						placeholder-class="uni-modal-dialog__textarea-placeholder" :class="{ 'uni-modal--dark': isDark }"
+						:focus="true" :adjust-position="false" @blur="onInputBlur"
+						@keyboardheightchange="onInputKeyboardChange" :auto-height="isAutoHeight"
 						:placeholder="placeholderText" />
 
-					<scroll-view v-if="!editable && content.length > 0" class="uni-modal_dialog__content__scrollview"
-						show-scrollbar="true" :style="{maxHeight:maxScrollHeight}">
-						<text class="uni-modal_dialog__content__scrollview__text">
+					<scroll-view v-else-if="content.length > 0" class="uni-modal-dialog__scroll" show-scrollbar="true"
+						:style="{ maxHeight: maxScrollHeight }">
+						<text class="uni-modal-dialog__message">
 							{{ content }}
 						</text>
 					</scroll-view>
 				</view>
 
-				<view class="uni-modal_dialog__content__topline" :class="{ 'uni-modal_dark__mode': theme == 'dark'}"></view>
-				<view class="uni-modal_dialog__content__bottom">
-					<view v-if="showCancel"
-						class="uni-modal_dialog__content__bottom__button uni-modal_dialog__content__bottom__button__cancel"
-						:class="{ 'uni-modal_dark__mode': theme == 'dark'}" :hover-class="hoverClassName" @click="handleCancel">
-						<text :style="{ color: cancelColor }" max-lines="1"
-							class="uni-modal_dialog__content__bottom__button__text">{{cancelText}}</text>
+				<view class="uni-modal-dialog__divider" :class="{ 'uni-modal--dark': isDark }"></view>
+				<view class="uni-modal-dialog__actions">
+					<view v-if="showCancel" class="uni-modal-dialog__action uni-modal-dialog__action--cancel"
+						:hover-class="hoverClassName" @click="handleCancel">
+						<text :style="{ color: cancelColor }" max-lines="1" class="uni-modal-dialog__action-text">
+							{{ cancelText }}
+						</text>
 					</view>
-					<view v-if="showCancel" class="uni-modal_dialog__content__bottom__splitline":class="{ 'uni-modal_dark__mode': theme == 'dark'}"></view>
-					<view class="uni-modal_dialog__content__bottom__button" :class="{ 'uni-modal_dark__mode': theme == 'dark'}"
-						:hover-class="hoverClassName" @click="handleSure">
+					<view v-if="showCancel" class="uni-modal-dialog__split" :class="{ 'uni-modal--dark': isDark }"></view>
+					<view class="uni-modal-dialog__action" :hover-class="hoverClassName" @click="handleSure">
 						<text :style="{ color: confirmColor }" max-lines="1"
-							class="uni-modal_dialog__content__bottom__button__text__sure">
-							{{confirmText}}
+							class="uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm">
+							{{ confirmText }}
 						</text>
 					</view>
 				</view>
@@ -56,6 +51,7 @@
 	} from 'vue'
 
 	const theme = ref('light')
+	const isDark = computed((): boolean => theme.value == 'dark')
 	const language = ref('zh-Hans')
 	const i18nCancelText = {
 		en: 'Cancel',
@@ -79,16 +75,16 @@
 	const content = ref('')
 	const showCancel = ref(true)
 	const editable = ref(false)
-	const placeholderText = ref < string | null > (null)
-	const inputConfirmText = ref < string | null > (null)
-	const inputCancelText = ref < string | null > (null)
+	const placeholderText = ref<string | null>(null)
+	const inputConfirmText = ref<string | null>(null)
+	const inputCancelText = ref<string | null>(null)
 	const cancelColor = ref('#000000')
 	const confirmColor = ref('#4A5E86')
 	const inputBottom = ref('0px')
 	const maxScrollHeight = ref('192px')
-	const inputCancelColor = ref < string | null > (null)
-	const inputConfirmColor = ref < string | null > (null)
-	const hoverClassName = ref("uni-modal_dialog__content__bottom__button__hover")
+	const inputCancelColor = ref<string | null>(null)
+	const inputConfirmColor = ref<string | null>(null)
+	const hoverClassName = ref('uni-modal-dialog__action--hover')
 	const showAnim = ref(false)
 	const isAutoHeight = ref(true)
 	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
@@ -99,8 +95,7 @@
 
 	const cancelText = computed((): string => {
 		if (inputCancelText.value != null) {
-			const res = inputCancelText.value!
-				return res
+			return inputCancelText.value!
 		}
 		if (language.value.startsWith('en')) {
 			return i18nCancelText['en'] as string
@@ -122,8 +117,7 @@
 
 	const confirmText = computed((): string => {
 		if (inputConfirmText.value != null) {
-			const res = inputConfirmText.value!
-				return res
+			return inputConfirmText.value!
 		}
 		if (language.value.startsWith('en')) {
 			return i18nConfirmText['en'] as string
@@ -152,10 +146,8 @@
 
 	const onInputKeyboardChange = (e: UniInputKeyboardHeightChangeEvent) => {
 		// 进入编辑状态，设置content 向上偏移键盘高度的 1/2
-		let keyBoardHeight = e.detail.height
-		if (keyBoardHeight > 0) {
-			let calcBottom = keyBoardHeight / 2
-			inputBottom.value = `${calcBottom}px`
+		if (e.detail.height > 0) {
+			inputBottom.value = `${keyBoardHeight / 2}px`
 		}
 	}
 
@@ -181,7 +173,7 @@
 			/**
 			 * init text color with theme
 			 */
-			if (theme.value == "dark") {
+			if (theme.value == 'dark') {
 				confirmColor.value = '#7388a2'
 			} else {
 				confirmColor.value = '#4A5E86'
@@ -190,17 +182,17 @@
 		if (isValidColor(inputCancelColor.value)) {
 			cancelColor.value = inputCancelColor.value!
 		} else {
-			if (theme.value == "dark") {
+			if (theme.value == 'dark') {
 				cancelColor.value = '#a5a5a5'
 			} else {
 				cancelColor.value = '#000000'
 			}
 		}
 
-		if (theme.value == "dark") {
-			hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode"
+		if (theme.value == 'dark') {
+			hoverClassName.value = 'uni-modal-dialog__action--hover-dark'
 		} else {
-			hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover"
+			hoverClassName.value = 'uni-modal-dialog__action--hover'
 		}
 	}
 
@@ -215,7 +207,7 @@
 
 	const handleCancel = () => {
 		closeModal()
-		let ret = {
+		const ret = {
 			cancel: true,
 			confirm: false,
 		}
@@ -224,7 +216,7 @@
 
 	const handleSure = () => {
 		closeModal()
-		let ret = {
+		const ret = {
 			cancel: false,
 			confirm: true,
 			content: editable.value ? content.value : null
@@ -248,7 +240,7 @@
 		const osLanguage = systemInfo.osLanguage
 		// ios need
 		const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55)
-		maxScrollHeight.value = scrollHeight + "px"
+		maxScrollHeight.value = scrollHeight + 'px'
 		/**
 		 * add since 2025-04-03 目前暂不支持设置app language
 		 */
@@ -289,44 +281,44 @@
 		})
 		// #endif
 
-		readyEventName.value = options['readyEventName'] !
-			optionsEventName.value = options['optionsEventName'] !
-			successEventName.value = options['successEventName'] !
-			failEventName.value = options['failEventName'] !
+		readyEventName.value = options['readyEventName']!
+		optionsEventName.value = options['optionsEventName']!
+		successEventName.value = options['successEventName']!
+		failEventName.value = options['failEventName']!
 
-			uni.$on(optionsEventName.value, (data: UTSJSONObject) => {
-				if (data['title'] != null) {
-					title.value = data['title'] as string
-				}
-				if (data['content'] != null) {
-					content.value = data['content'] as string
-				}
-				if (data['showCancel'] != null) {
-					showCancel.value = data['showCancel'] as boolean
-				}
-				if (data['editable'] != null) {
-					editable.value = data['editable'] as boolean
-				}
-				if (data['placeholderText'] != null) {
-					placeholderText.value = data['placeholderText'] as string
-				}
+		uni.$on(optionsEventName.value, (data: UTSJSONObject) => {
+			if (data['title'] != null) {
+				title.value = data['title'] as string
+			}
+			if (data['content'] != null) {
+				content.value = data['content'] as string
+			}
+			if (data['showCancel'] != null) {
+				showCancel.value = data['showCancel'] as boolean
+			}
+			if (data['editable'] != null) {
+				editable.value = data['editable'] as boolean
+			}
+			if (data['placeholderText'] != null) {
+				placeholderText.value = data['placeholderText'] as string
+			}
 
-				if (data['confirmText'] != null) {
-					inputConfirmText.value = data['confirmText'] as string
-				}
-				if (data['cancelText'] != null) {
-					inputCancelText.value = data['cancelText'] as string
-				}
+			if (data['confirmText'] != null) {
+				inputConfirmText.value = data['confirmText'] as string
+			}
+			if (data['cancelText'] != null) {
+				inputCancelText.value = data['cancelText'] as string
+			}
 
-				if (data['confirmColor'] != null) {
-					inputConfirmColor.value = data['confirmColor'] as string
-				}
-				if (data['cancelColor'] != null) {
-					inputCancelColor.value = data['cancelColor'] as string
-				}
+			if (data['confirmColor'] != null) {
+				inputConfirmColor.value = data['confirmColor'] as string
+			}
+			if (data['cancelColor'] != null) {
+				inputCancelColor.value = data['cancelColor'] as string
+			}
 
-				updateUI()
-			})
+			updateUI()
+		})
 
 		uni.$emit(readyEventName.value, {})
 	})
@@ -344,7 +336,7 @@
 
 	// onBackPress 生命周期
 	onBackPress((_): boolean | null => {
-		let ret = {
+		const ret = {
 			cancel: false,
 			confirm: false,
 		}
@@ -356,24 +348,22 @@
 	/**
 	 * 透明背景
 	 */
-	.uni-modal_dialog__mask {
+	.uni-modal-mask {
 		display: flex;
 		height: 100%;
 		width: 100%;
 		justify-content: center;
-		/* 水平居中 */
 		align-items: center;
-		/* 垂直居中 */
 		background-color: rgba(0, 0, 0, 0.55);
 		transition-property: opacity;
 	}
 
-	.uni-modal_dialog__mask__hide {
+	.uni-modal-mask--hide {
 		transition-duration: 0s;
 		opacity: 0;
 	}
 
-	.uni-modal_dialog__mask__show {
+	.uni-modal-mask--show {
 		transition-duration: 0.1s;
 		opacity: 1;
 	}
@@ -381,43 +371,40 @@
 	/**
 	 * 居中的内容展示区域
 	 */
-	.uni-modal_dialog__container {
+	.uni-modal-dialog {
 		width: 80%;
 		max-width: 90%;
 		max-height: 90%;
-		background-color: white;
+		background-color: #ffffff;
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 		border-radius: 8px;
-		/**
-		 * anim
-		 */
 		opacity: 0;
 		transform: scale(0.9);
 		transition-duration: 0.1s;
 		transition-property: opacity, transform;
 	}
 
-	.uni-modal_dialog__container.uni-modal_dialog__show {
+	.uni-modal-dialog.uni-modal-dialog--show {
 		opacity: 1;
 		transform: scale(1);
 	}
 
-	.uni-modal_dialog__container.uni-modal_dark__mode {
+	.uni-modal-dialog.uni-modal--dark {
 		background-color: #272727;
 	}
 
-	.uni-modal_dialog__container__wrapper {
+	.uni-modal-dialog__inner {
 		width: 100%;
 		height: 100%;
-		background-color: white;
+		background-color: #ffffff;
 		border-radius: 8px;
 	}
 
-	.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {
+	.uni-modal-dialog__inner.uni-modal--dark {
 		background-color: #272727;
 	}
 
-	.uni-modal_dialog__title__text {
+	.uni-modal-dialog__title {
 		font-size: 17px;
 		font-weight: 600;
 		text-align: center;
@@ -428,43 +415,41 @@
 		/* #ifdef WEB */
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
-		/* 限制显示两行 */
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 		/* #endif */
 	}
 
-	.uni-modal_dialog__title__text.uni-modal_dark__mode {
-		color: #CFCFCF;
+	.uni-modal-dialog__title.uni-modal--dark {
+		color: #cfcfcf;
 	}
 
-	.uni-modal_dialog__content {
+	.uni-modal-dialog__body {
 		justify-content: center;
 		align-items: center;
 		padding: 0 24px;
 		margin-bottom: 13px;
 	}
 
-	.uni-modal_dialog__content__scrollview {
+	.uni-modal-dialog__scroll {
 		max-height: 192px;
 		margin: 2px;
 		width: 100%;
 	}
 
-
-	.uni-modal_dialog__content__scrollview__text {
+	.uni-modal-dialog__message {
 		font-size: 17px;
 		font-weight: normal;
 		text-align: center;
-		color: #7F7F7F;
+		color: #7f7f7f;
 		line-height: 1.5;
 		width: 100%;
 		padding-bottom: 10px;
 	}
 
-	.uni-modal_dialog__content__textarea {
+	.uni-modal-dialog__textarea {
 		font-size: 17px;
-		background-color: #F6F6F6;
+		background-color: #f6f6f6;
 		color: #000000;
 		width: 96%;
 		padding: 5px;
@@ -476,31 +461,27 @@
 		/* #endif */
 	}
 
-	.uni-modal_dialog__content__textarea.uni-modal_dark__mode {
+	.uni-modal-dialog__textarea.uni-modal--dark {
 		background-color: #3d3d3d;
-		color: #CFCFCF;
+		color: #cfcfcf;
 	}
 
-	.uni-modal_dialog__content__textarea__placeholder {
+	.uni-modal-dialog__textarea-placeholder {
 		color: #808080;
 	}
 
-	.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {
-		color: #CFCFCF;
-	}
-
-	.uni-modal_dialog__content__topline {
+	.uni-modal-dialog__divider {
 		width: 100%;
 		height: 1px;
 		transform: scaleY(0.5);
 		background-color: #e3e3e3;
 	}
 
-	.uni-modal_dialog__content__topline.uni-modal_dark__mode {
+	.uni-modal-dialog__divider.uni-modal--dark {
 		background-color: #303030;
 	}
 
-	.uni-modal_dialog__content__bottom {
+	.uni-modal-dialog__actions {
 		display: flex;
 		width: 100%;
 		height: 56px;
@@ -508,7 +489,7 @@
 		overflow: hidden;
 	}
 
-	.uni-modal_dialog__content__bottom__button {
+	.uni-modal-dialog__action {
 		width: 50%;
 		height: 100%;
 		display: flex;
@@ -517,7 +498,7 @@
 		flex-grow: 1;
 	}
 
-	.uni-modal_dialog__content__bottom__button__hover {
+	.uni-modal-dialog__action--hover {
 		width: 50%;
 		height: 100%;
 		display: flex;
@@ -526,16 +507,16 @@
 		background-color: #efefef;
 	}
 
-	.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {
+	.uni-modal-dialog__action--hover-dark {
 		width: 50%;
 		height: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background-color: #1C1C1C;
+		background-color: #1c1c1c;
 	}
 
-	.uni-modal_dialog__content__bottom__button__text {
+	.uni-modal-dialog__action-text {
 		letter-spacing: 1px;
 		font-size: 17px;
 		text-align: center;
@@ -544,29 +525,18 @@
 		font-weight: 600;
 	}
 
-	.uni-modal_dialog__content__bottom__button__text__sure {
-		letter-spacing: 1px;
-		font-size: 17px;
-		font-weight: 600;
-		lines: 1;
-		white-space: nowrap;
-		text-align: center;
+	.uni-modal-dialog__action-text--confirm {
 		color: #4A5E86;
 	}
 
-
-	.uni-modal_dialog__content__bottom__button__cancel.uni-modal_dark__mode {
-		border-right-color: #303030;
-	}
-
-		.uni-modal_dialog__content__bottom__splitline {
+	.uni-modal-dialog__split {
 		width: 1px;
 		height: 100%;
 		transform: scaleX(0.5);
 		background-color: #e3e3e3;
 	}
 
-	.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {
+	.uni-modal-dialog__split.uni-modal--dark {
 		background-color: #303030;
 	}
 
@@ -574,6 +544,5 @@
 	.uni-textarea-wrapper {
 		min-height: 18px !important;
 	}
-
 	/* #endif */
 </style>
