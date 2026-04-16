@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-console",
-  "version": "3.0.0-5000720260410001",
+  "version": "3.0.0-alpha-5000720260416001",
   "description": "uni-app console",
   "module": "dist/index.esm.js",
   "files": [
