@@ -717,10 +717,10 @@ function checkValue$1(value, defaultValue) {
 }
 const isApple = () => /^Apple/.test(navigator.vendor);
 function getWindowWidth$1() {
-  const screenFix = isApple() && typeof window.orientation === "number";
-  const landscape = screenFix && Math.abs(window.orientation) === 90;
-  var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-  var windowWidth = screenFix ? Math.min(
+  const isApple2 = /^Apple/.test(navigator.vendor);
+  const screenFix = isApple2 && window.matchMedia("(orientation:landscape)").matches;
+  var screenWidth = screenFix ? Math.max(screen.width, screen.height) : screen.width;
+  var windowWidth = isApple2 ? Math.min(
     window.innerWidth,
     document.documentElement.clientWidth,
     screenWidth

@@ -15053,7 +15053,16 @@ function processDefineSlots(ctx, node, declId) {
 //#region packages/compiler-sfc/src/script/defineOptions.ts
 const DEFINE_OPTIONS = "defineOptions";
 function isUniModuleImportSource(source) {
-	return /^@uni_modules?\//.test(source);
+	return /^@\/uni_modules?\//.test(source);
+}
+function resolveRootElementClassBindingName(node) {
+	const value = (0, _vue_compiler_dom.unwrapTSNode)(node);
+	if (value.type === "Identifier") return value.name;
+	if (value.type !== "ObjectExpression") return;
+	for (const prop of value.properties) if (prop.type === "ObjectProperty" && prop.key.type === "Identifier" && prop.key.name === "class") {
+		const classValue = (0, _vue_compiler_dom.unwrapTSNode)(prop.value);
+		if (classValue.type === "Identifier") return classValue.name;
+	}
 }
 function processDefineOptions(ctx, node) {
 	if (!isCallOf(node, DEFINE_OPTIONS)) return false;
@@ -15089,9 +15098,9 @@ function processDefineOptions(ctx, node) {
 			case "rootElement":
 				hasRootElementOption = true;
 				if (prop.type === "ObjectProperty") {
-					const value = (0, _vue_compiler_dom.unwrapTSNode)(prop.value);
-					if (value.type === "Identifier") {
-						const binding = ctx.userImports[value.name];
+					const bindingName = resolveRootElementClassBindingName(prop.value);
+					if (bindingName) {
+						const binding = ctx.userImports[bindingName];
 						if (binding && !binding.isType && isUniModuleImportSource(binding.source)) ctx.rootElementFromUniModule = true;
 					}
 				}
