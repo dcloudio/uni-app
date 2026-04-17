@@ -2434,6 +2434,33 @@
       "UserInfo"
     ],
     [
+      "VibrateErrorCode"
+    ],
+    [
+      "VibrateFail"
+    ],
+    [
+      "VibrateLong"
+    ],
+    [
+      "VibrateLongOptions"
+    ],
+    [
+      "VibrateLongSuccess"
+    ],
+    [
+      "VibrateShort"
+    ],
+    [
+      "VibrateShortOptions"
+    ],
+    [
+      "VibrateShortSuccess"
+    ],
+    [
+      "VibrateShortType"
+    ],
+    [
       "VideoContext"
     ],
     [
