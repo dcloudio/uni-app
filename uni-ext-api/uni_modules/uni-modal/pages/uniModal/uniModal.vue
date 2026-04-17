@@ -145,8 +145,9 @@
 	}
 
 	const onInputKeyboardChange = (e: UniInputKeyboardHeightChangeEvent) => {
+		const keyBoardHeight = e.detail.height
 		// 进入编辑状态，设置content 向上偏移键盘高度的 1/2
-		if (e.detail.height > 0) {
+		if (keyBoardHeight > 0) {
 			inputBottom.value = `${keyBoardHeight / 2}px`
 		}
 	}

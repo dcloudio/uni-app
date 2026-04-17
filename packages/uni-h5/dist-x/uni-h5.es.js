@@ -30682,7 +30682,8 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       }, 220);
     };
     const onInputKeyboardChange = (e2) => {
-      if (e2.detail.height > 0) {
+      const keyBoardHeight = e2.detail.height;
+      if (keyBoardHeight > 0) {
         inputBottom.value = `${keyBoardHeight / 2}px`;
       }
     };
