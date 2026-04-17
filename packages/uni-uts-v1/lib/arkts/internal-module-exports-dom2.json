@@ -16,6 +16,9 @@
       "AccessOptions"
     ],
     [
+      "AddPhoneCalendarOptions"
+    ],
+    [
       "AddPhoneContact"
     ],
     [
@@ -38,6 +41,9 @@
     ],
     [
       "AddPhoneContactSuccessCallback"
+    ],
+    [
+      "AddPhoneRepeatCalendarOptions"
     ],
     [
       "AppCrashInfo"
@@ -65,6 +71,30 @@
     ],
     [
       "Base64ToArrayBuffer"
+    ],
+    [
+      "CalendarComplete"
+    ],
+    [
+      "CalendarCompleteCallback"
+    ],
+    [
+      "CalendarErrorCode"
+    ],
+    [
+      "CalendarFail"
+    ],
+    [
+      "CalendarFailCallback"
+    ],
+    [
+      "CalendarRepeatInterval"
+    ],
+    [
+      "CalendarSuccess"
+    ],
+    [
+      "CalendarSuccessCallback"
     ],
     [
       "CanvasContext"
@@ -1016,6 +1046,9 @@
     ],
     [
       "IAppThemeFail"
+    ],
+    [
+      "ICalendarError"
     ],
     [
       "IChooseMediaError"
