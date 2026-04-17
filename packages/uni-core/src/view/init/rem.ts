@@ -20,7 +20,7 @@ function getWindowWidth() {
   // 目前仅在 iOS 直接使用平台 API，其他仍使用历史遗留的兼容方案
   var windowWidth = isApple
     ? __PLATFORM__ === 'app'
-      ? plus.webview.currentWebview().getStyle().width
+      ? (plus.webview.currentWebview().getStyle().width as unknown as number)
       : Math.min(
           window.innerWidth,
           document.documentElement.clientWidth,
