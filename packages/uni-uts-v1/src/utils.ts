@@ -819,6 +819,9 @@ function resolveComponentDelegateClassOptions(
   // 通过 app-ios/index.uts 中的导出接口判断是否真的是原生 View 组件插件
   const content = fs.readFileSync(indexFile, 'utf8')
   const className = resolveDelegateClassByName(platform, content, pluginId)
+  if (!className) {
+    return ''
+  }
   return isAndroid ? `${namespace}${className}` : className
 }
 
