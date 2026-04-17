@@ -8,7 +8,7 @@
     "dist",
     "lib"
   ],
-  "sideEffects": false,
+  "sideEffects": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
