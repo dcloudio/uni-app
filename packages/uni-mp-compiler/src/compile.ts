@@ -24,6 +24,7 @@ import { transformTag } from './transforms/transformTag'
 import { transformHtml } from './transforms/vHtml'
 import { transformText } from './transforms/vText'
 import { transformAttr } from './transforms/transformAttr'
+import { transformVBindAttrs } from './transforms/transformVBindAttrs'
 import { FILTER_MODULE_NAME } from './transforms/utils'
 
 export type TransformPreset = [
@@ -41,6 +42,7 @@ export function getBaseTransformPreset({
   // order is important
   const nodeTransforms = [
     transformRoot,
+    transformVBindAttrs,
     transformAttr,
     transformTag,
     transformHtml,
