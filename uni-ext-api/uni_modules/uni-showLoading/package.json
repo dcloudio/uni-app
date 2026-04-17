@@ -32,12 +32,12 @@
   },
   "uni_modules": {
     "dependencies": [
-    	"uni-framework",
-    	"uni-theme",
-    	"uni-getSystemInfo",
-		"uni-loading",
-    	"app-ios:uni-dialogPage",
-    	"app-ios:uni-event"
+      "uni-framework",
+      "uni-theme",
+      "uni-getSystemInfo",
+      "uni-loading",
+      "uni-dialogPage",
+      "uni-event"
     ],
     "uni-ext-api": {
     	"uni": {

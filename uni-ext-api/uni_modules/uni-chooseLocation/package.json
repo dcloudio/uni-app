@@ -38,8 +38,8 @@
       "uni-location",
       "uni-cloud-client",
       "uni-map-tencent",
-      "app-ios:uni-dialogPage",
-      "app-ios:uni-event"
+      "uni-dialogPage",
+      "uni-event"
     ],
     "uni-ext-api": {
       "uni": {
