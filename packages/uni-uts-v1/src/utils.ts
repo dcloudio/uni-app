@@ -711,6 +711,7 @@ function copyConfigJson(
     : {}
   let delegateClassTxt = resolveComponentDelegateClassOptions(
     platform,
+    namespace,
     inputDir
   )
 
@@ -790,12 +791,17 @@ function copyConfigJson(
 
 function resolveComponentDelegateClassOptions(
   platform: typeof process.env.UNI_UTS_PLATFORM,
+  namespace: string,
   inputDir: string
 ): string {
-  if (process.env.UNI_APP_X !== 'true') {
+  const isX = process.env.UNI_APP_X === 'true'
+  if (!isX) {
     return ''
   }
-  if (platform !== 'app-ios') {
+  const isIOS = platform === 'app-ios'
+  const isAndroid = platform === 'app-android'
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  if (!isIOS && (!isAndroid || !isDom2)) {
     return ''
   }
   // 兼容通过插件 id 标识组件插件，但 config.json 中组件名不是 uni- 开头的场景
@@ -812,14 +818,20 @@ function resolveComponentDelegateClassOptions(
   }
   // 通过 app-ios/index.uts 中的导出接口判断是否真的是原生 View 组件插件
   const content = fs.readFileSync(indexFile, 'utf8')
-  return resolveDelegateClassByName(content, pluginId)
+  const className = resolveDelegateClassByName(platform, content, pluginId)
+  return isAndroid ? `${namespace}${className}` : className
 }
 
-function resolveDelegateClassByName(content: string, name: string): string {
+function resolveDelegateClassByName(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  content: string,
+  name: string
+): string {
   if (!name.startsWith('uni-')) {
     return ''
   }
-  const interfaceName = resolveElementInterfaceName(
+  const interfaceName = resolveElementDeclName(
+    platform,
     content,
     capitalize(camelize(name)) + 'Element'
   )
@@ -835,14 +847,18 @@ function resolveDelegateClassByName(content: string, name: string): string {
   return className + 'ComponentRegister'
 }
 
-function resolveElementInterfaceName(
+function resolveElementDeclName(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
   content: string,
   preferredInterfaceName: string
 ) {
-  const interfaceRE = /interface\s+(Uni[A-Za-z0-9_$]*Element)\s+extends\b/g
+  const isAndroid = platform === 'app-android'
+  const elementDeclRE = isAndroid
+    ? /class\s+(Uni[A-Za-z0-9_$]*Element)/g
+    : /interface\s+(Uni[A-Za-z0-9_$]*Element)\s+extends\b/g
   let fallbackInterfaceName = ''
   let match: RegExpExecArray | null
-  while ((match = interfaceRE.exec(content))) {
+  while ((match = elementDeclRE.exec(content))) {
     const interfaceName = match[1]
     // 先兼容历史上和插件 id 对齐的命名，避免同文件多个接口时误判。
     if (interfaceName === preferredInterfaceName) {
