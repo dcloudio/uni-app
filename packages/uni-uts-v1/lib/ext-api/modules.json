@@ -1587,6 +1587,28 @@
       }
     }
   },
+  "uni-vibrate": {
+    "uni": {
+      "vibrateShort": {
+        "name": "vibrateShort",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "vibrateLong": {
+        "name": "vibrateLong",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-video": {
     "uni": {
       "createVideoContext": {
