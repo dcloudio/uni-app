@@ -2477,7 +2477,10 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
 		if (singleRoot) {
 			template += ` gen-flag-flatten=""`;
 			const rootElementTagName = context.options.rootElementTagName;
-			if (rootElementTagName) template += ` custom-tag-name="${rootElementTagName}"`;
+			if (rootElementTagName) {
+				template += ` custom-tag-name="${rootElementTagName}"`;
+				if (context.options.rootElementFromUniModule) template += ` gen-root-custom-native="${rootElementTagName}"`;
+			}
 		}
 	}
 	const dynamicProps = [];

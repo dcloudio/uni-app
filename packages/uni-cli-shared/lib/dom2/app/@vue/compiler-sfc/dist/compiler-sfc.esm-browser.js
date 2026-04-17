@@ -27341,7 +27341,10 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
 		if (singleRoot) {
 			template += ` gen-flag-flatten=""`;
 			const rootElementTagName = context.options.rootElementTagName;
-			if (rootElementTagName) template += ` custom-tag-name="${rootElementTagName}"`;
+			if (rootElementTagName) {
+				template += ` custom-tag-name="${rootElementTagName}"`;
+				if (context.options.rootElementFromUniModule) template += ` gen-root-custom-native="${rootElementTagName}"`;
+			}
 		}
 	}
 	const dynamicProps = [];
@@ -40893,6 +40896,9 @@ function processDefineSlots(ctx, node, declId) {
 //#endregion
 //#region packages/compiler-sfc/src/script/defineOptions.ts
 const DEFINE_OPTIONS = "defineOptions";
+function isUniModuleImportSource(source) {
+	return /^@uni_modules?\//.test(source);
+}
 function processDefineOptions(ctx, node) {
 	if (!isCallOf(node, DEFINE_OPTIONS)) return false;
 	if (ctx.hasDefineOptionsCall) ctx.error(`duplicate ${DEFINE_OPTIONS}() call`, node);
@@ -40926,6 +40932,13 @@ function processDefineOptions(ctx, node) {
 				break;
 			case "rootElement":
 				hasRootElementOption = true;
+				if (prop.type === "ObjectProperty") {
+					const value = unwrapTSNode(prop.value);
+					if (value.type === "Identifier") {
+						const binding = ctx.userImports[value.name];
+						if (binding && !binding.isType && isUniModuleImportSource(binding.source)) ctx.rootElementFromUniModule = true;
+					}
+				}
 				break;
 		}
 	}
@@ -41326,6 +41339,8 @@ function compileScript(sfc, options) {
 		}
 		if (ctx.rootElementTagName) compilerOptions.rootElementTagName = ctx.rootElementTagName;
 		else delete compilerOptions.rootElementTagName;
+		if (ctx.rootElementFromUniModule) compilerOptions.rootElementFromUniModule = true;
+		else delete compilerOptions.rootElementFromUniModule;
 		const { code, ast, preamble, tips, errors, helpers, map } = compileTemplate(_objectSpread2(_objectSpread2({
 			filename,
 			ast: sfc.template.ast,
