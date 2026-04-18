@@ -16,6 +16,9 @@
       "AccessOptions"
     ],
     [
+      "AddPhoneCalendar"
+    ],
+    [
       "AddPhoneCalendarOptions"
     ],
     [
@@ -41,6 +44,9 @@
     ],
     [
       "AddPhoneContactSuccessCallback"
+    ],
+    [
+      "AddPhoneRepeatCalendar"
     ],
     [
       "AddPhoneRepeatCalendarOptions"
