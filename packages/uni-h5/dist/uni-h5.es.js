@@ -19400,8 +19400,20 @@ function getBrowserInfo() {
     }
   }
   let deviceOrientation = "portrait";
-  const orientation = typeof window.screen.orientation === "undefined" ? window.orientation : window.screen.orientation.angle;
-  deviceOrientation = Math.abs(orientation) === 90 ? "landscape" : "portrait";
+  if (window.matchMedia) {
+    try {
+      if (window.matchMedia("(orientation:landscape)").matches) {
+        deviceOrientation = "landscape";
+      }
+    } catch (e2) {
+    }
+  }
+  if (deviceOrientation === "portrait" && window.screen.orientation !== void 0) {
+    deviceOrientation = [90, 270].includes(window.screen.orientation.angle) ? "landscape" : "portrait";
+  }
+  if (deviceOrientation === "portrait" && window.orientation != null) {
+    deviceOrientation = Math.abs(window.orientation) === 90 ? "landscape" : "portrait";
+  }
   return {
     deviceBrand: void 0,
     brand: void 0,
@@ -19410,7 +19422,7 @@ function getBrowserInfo() {
     model,
     system,
     platform,
-    browserName: browserName.toLowerCase(),
+    browserName: browserName.toLocaleLowerCase(),
     browserVersion,
     language,
     deviceType,
