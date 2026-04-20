@@ -1312,18 +1312,6 @@
       "MediaOrientation"
     ],
     [
-      "MemoryWarningCallback"
-    ],
-    [
-      "MemoryWarningCallbackResult"
-    ],
-    [
-      "MemoryWarningErrorCode"
-    ],
-    [
-      "MemoryWarningFail"
-    ],
-    [
       "MkDirOptions"
     ],
     [
@@ -1352,9 +1340,6 @@
     ],
     [
       "OffLocationChangeError"
-    ],
-    [
-      "OffMemoryWarning"
     ],
     [
       "OffNetworkStatusChange"
@@ -1409,9 +1394,6 @@
     ],
     [
       "OnLocationChangeResult"
-    ],
-    [
-      "OnMemoryWarning"
     ],
     [
       "OnNetworkStatusChange"
