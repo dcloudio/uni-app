@@ -402,6 +402,18 @@
     }
   },
   "uni-form": {},
+  "uni-getAccessibilityData": {
+    "uni": {
+      "getAccessibilityData": {
+        "name": "getAccessibilityData",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
   "uni-getAccessibilityInfo": {
     "uni": {
       "getAccessibilityInfo": {
