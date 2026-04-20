@@ -1626,10 +1626,9 @@
   }
   var isApple = () => /^Apple/.test(navigator.vendor);
   function getWindowWidth() {
-    var screenFix = isApple() && typeof window.orientation === "number";
-    var landscape = screenFix && Math.abs(window.orientation) === 90;
-    var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-    var windowWidth = screenFix ? Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth : Math.min(window.innerWidth, document.documentElement.clientWidth);
+    var isApple2 = /^Apple/.test(navigator.vendor);
+    isApple2 && window.matchMedia("(orientation:landscape)").matches;
+    var windowWidth = isApple2 ? plus.webview.currentWebview().getStyle().width : Math.min(window.innerWidth, document.documentElement.clientWidth);
     return windowWidth;
   }
   function useRem() {
