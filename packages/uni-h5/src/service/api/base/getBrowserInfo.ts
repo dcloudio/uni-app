@@ -221,12 +221,26 @@ export function getBrowserInfo() {
 
   // deviceOrientation
   let deviceOrientation: 'portrait' | 'landscape' = 'portrait'
-  const orientation =
-    typeof window.screen.orientation === 'undefined'
-      ? window.orientation
-      : window.screen.orientation.angle
-  deviceOrientation = Math.abs(orientation) === 90 ? 'landscape' : 'portrait'
-  //TODO deviceBrand brand 要是 undeinfed
+  if (window.matchMedia) {
+    try {
+      if (window.matchMedia('(orientation:landscape)').matches) {
+        deviceOrientation = 'landscape'
+      }
+    } catch {}
+  }
+  if (
+    deviceOrientation === 'portrait' &&
+    window.screen.orientation !== undefined
+  ) {
+    deviceOrientation = [90, 270].includes(window.screen.orientation.angle)
+      ? 'landscape'
+      : 'portrait'
+  }
+  if (deviceOrientation === 'portrait' && window.orientation != null) {
+    deviceOrientation =
+      Math.abs(window.orientation) === 90 ? 'landscape' : 'portrait'
+  }
+  //TODO deviceBrand brand 要是 undefined
   return {
     deviceBrand: undefined,
     brand: undefined,
@@ -235,7 +249,7 @@ export function getBrowserInfo() {
     model,
     system,
     platform,
-    browserName: browserName.toLowerCase(),
+    browserName: browserName.toLocaleLowerCase(),
     browserVersion,
     language,
     deviceType,
