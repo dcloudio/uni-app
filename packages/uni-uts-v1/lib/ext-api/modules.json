@@ -402,18 +402,6 @@
     }
   },
   "uni-form": {},
-  "uni-getAccessibilityData": {
-    "uni": {
-      "getAccessibilityData": {
-        "name": "getAccessibilityData",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false
-        }
-      }
-    }
-  },
   "uni-getAccessibilityInfo": {
     "uni": {
       "getAccessibilityInfo": {
@@ -1097,6 +1085,15 @@
       },
       "resetPrivacyAuthorization": {
         "name": "resetPrivacyAuthorization",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "agreePrivacyAuthorization": {
+        "name": "agreePrivacyAuthorization",
         "app": {
           "js": true,
           "kotlin": true,
