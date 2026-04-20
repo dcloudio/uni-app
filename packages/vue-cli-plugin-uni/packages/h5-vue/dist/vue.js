@@ -1,6 +1,6 @@
 /*!
  * Vue.js v2.6.11
- * (c) 2014-2022 Evan You
+ * (c) 2014-2026 Evan You
  * Released under the MIT License.
  */
 (function (global, factory) {
@@ -530,7 +530,7 @@
   var inBrowser = typeof window !== 'undefined';
   var inWeex = typeof WXEnvironment !== 'undefined' && !!WXEnvironment.platform;
   var weexPlatform = inWeex && WXEnvironment.platform.toLowerCase();
-  var UA = inBrowser && window.navigator.userAgent.toLowerCase();
+  var UA = inBrowser && window.navigator && window.navigator.userAgent && window.navigator.userAgent.toLowerCase();
   var isIE = UA && /msie|trident/.test(UA);
   var isIE9 = UA && UA.indexOf('msie 9.0') > 0;
   var isEdge = UA && UA.indexOf('edge/') > 0;
@@ -1008,7 +1008,8 @@
       !isServerRendering() &&
       (Array.isArray(value) || isPlainObject(value)) &&
       Object.isExtensible(value) &&
-      !value._isVue
+      !value._isVue &&
+      !value.__v_isMPComponent
     ) {
       ob = new Observer(value);
     }
@@ -2722,7 +2723,8 @@
     name,
     fallback,
     props,
-    bindObject
+    bindObject,
+    slotVm
   ) {
     var scopedSlotFn = this.$scopedSlots[name];
     var nodes;
@@ -2738,7 +2740,7 @@
         props = extend(extend({}, bindObject), props);
       }
       // fixed by xxxxxx app-plus scopedSlot
-      nodes = scopedSlotFn(props, this, props._i) || fallback;
+      nodes = scopedSlotFn(props, slotVm || this, props._i) || fallback;
     } else {
       nodes = this.$slots[name] || fallback;
     }
@@ -7941,11 +7943,67 @@
   var cssVarRE = /^--/;
   var importantRE = /\s*!important$/;
 
+  // rpx2rem
+  var defaultRpx2Unit = {
+    unit: 'rem',
+    unitRatio: 10 / 320,
+    unitPrecision: 5
+  };
+
+  var Rpx2Unit = Object.assign({}, defaultRpx2Unit);
+
+  function getRpx2Unit () {
+    return Rpx2Unit
+  }
+
+  function toFixed (number, precision) {
+    var multiplier = Math.pow(10, precision + 1);
+    var wholeNumber = Math.floor(number * multiplier);
+    return (Math.round(wholeNumber / 10) * 10) / multiplier
+  }
+
+  function _rpx2Unit (rpx, unit, unitRatio, unitPrecision) {
+    if (unitRatio === 1) {
+      return ("" + rpx + unit)
+    }
+    var value = toFixed(rpx * unitRatio, unitPrecision);
+    return value === 0 ? '0' : ("" + value + unit)
+  }
+
+  function createRpx2Unit (unit, unitRatio, unitPrecision) {
+    // ignore: rpxCalcIncludeWidth
+    /**
+     * @param {string | number} val
+     * @returns {string}
+     */
+    return function (val) {
+      if (typeof val === 'string') {
+        return val.replace(unitRE, function (m, $1) {
+          if (!$1) {
+            return m
+          }
+
+          return _rpx2Unit(parseFloat($1), unit, unitRatio, unitPrecision)
+        })
+      } else if (typeof val === 'number') {
+        return _rpx2Unit(val, unit, unitRatio, unitPrecision)
+      }
+    }
+  }
+
+  var rpx2unit = createRpx2Unit(getRpx2Unit().unit, getRpx2Unit().unitRatio, getRpx2Unit().unitPrecision);
+
   // upx,rpx 正则匹配
   var unitRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g;
 
   var transformUnit = function (val) {
     if (typeof val === 'string') {
+      try {
+        var config = __uniConfig.globalStyle || __uniConfig.window || {};
+        if (config.dynamicRpx === true) {
+          return rpx2unit(val)
+        }
+      } catch (error) {}
       return val.replace(unitRE, function (a, b) {
         /* eslint-disable no-undef */
         return uni.upx2px(b) + 'px'
@@ -11556,12 +11614,17 @@
     el,
     state
   ) {
+    state.isInScopeSlot = true;
     var isLegacySyntax = el.attrsMap['slot-scope'];
     if (el.if && !el.ifProcessed && !isLegacySyntax) {
-      return genIf(el, state, genScopedSlot, "null")
+      var res$1 = genIf(el, state, genScopedSlot, "null");
+      state.isInScopeSlot = false;
+      return res$1
     }
     if (el.for && !el.forProcessed) {
-      return genFor(el, state, genScopedSlot)
+      var res$2 = genFor(el, state, genScopedSlot);
+      state.isInScopeSlot = false;
+      return res$2
     }
     var slotScope = el.slotScope === emptySlotScopeToken
       ? ""
@@ -11574,7 +11637,9 @@
         : genElement(el, state)) + "}";
     // reverse proxy v-slot without scope on this.$slots
     var reverseProxy = slotScope ? "" : ",proxy:true";
-    return ("{key:" + (el.slotTarget || "\"default\"") + ",fn:" + fn + reverseProxy + "}")
+    var res = "{key:" + (el.slotTarget || "\"default\"") + ",fn:" + fn + reverseProxy + "}";
+    state.isInScopeSlot = false;
+    return res
   }
 
   function genChildren (
@@ -11660,7 +11725,6 @@
   function genSlot (el, state) {
     var slotName = el.slotName || '"default"';
     var children = genChildren(el, state);
-    var res = "_t(" + slotName + (children ? ("," + children) : '');
     var attrs = el.attrs || el.dynamicAttrs
       ? genProps((el.attrs || []).concat(el.dynamicAttrs || []).map(function (attr) { return ({
           // slot props are camelized
@@ -11670,16 +11734,16 @@
         }); }))
       : null;
     var bind$$1 = el.attrsMap['v-bind'];
-    if ((attrs || bind$$1) && !children) {
-      res += ",null";
+   
+    var args = [];
+    args.push(slotName);
+    args.push(children || 'null');
+    args.push(attrs || 'null');
+    args.push(bind$$1 || 'null');
+    if (state.isInScopeSlot) {
+      args.push('_svm');
     }
-    if (attrs) {
-      res += "," + attrs;
-    }
-    if (bind$$1) {
-      res += (attrs ? '' : ',null') + "," + bind$$1;
-    }
-    return res + ')'
+    return ("_t(" + (args.join(',')) + ")")
   }
 
   // componentName is el.component, take it as argument to shun flow's pessimistic refinement
