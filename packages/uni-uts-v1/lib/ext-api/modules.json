@@ -1240,6 +1240,37 @@
       }
     }
   },
+  "uni-screenBrightness": {
+    "uni": {
+      "setScreenBrightness": {
+        "name": "setScreenBrightness",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getScreenBrightness": {
+        "name": "getScreenBrightness",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "setKeepScreenOn": {
+        "name": "setKeepScreenOn",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-secure-network": {
     "uni": {
       "__getSecureNetworkManager": {
