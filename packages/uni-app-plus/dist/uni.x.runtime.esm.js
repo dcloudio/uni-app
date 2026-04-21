@@ -3234,8 +3234,24 @@ var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, 
     reject("tabBar is not exist");
     return;
   }
-  var item = /* @__PURE__ */ new Map([["index", index2], ["text", text], ["iconPath", iconPath], ["selectedIconPath", selectedIconPath], ["pagePath", pagePath], ["visible", visible]]);
-  if (!!iconfont) {
+  var item = /* @__PURE__ */ new Map();
+  item.set("index", index2);
+  if (typeof text === "string") {
+    item.set("text", text);
+  }
+  if (typeof iconPath === "string") {
+    item.set("iconPath", iconPath);
+  }
+  if (typeof selectedIconPath === "string") {
+    item.set("selectedIconPath", selectedIconPath);
+  }
+  if (typeof pagePath === "string") {
+    item.set("pagePath", pagePath);
+  }
+  if (typeof visible === "boolean") {
+    item.set("visible", visible);
+  }
+  if (iconfont != null) {
     var iconfontOptions = iconfont;
     var _iconfont = /* @__PURE__ */ new Map([["text", iconfontOptions.text], ["selectedText", iconfontOptions.selectedText], ["fontSize", iconfontOptions.fontSize], ["color", iconfontOptions.color], ["selectedColor", iconfontOptions.selectedColor]]);
     item.set("iconfont", _iconfont);
