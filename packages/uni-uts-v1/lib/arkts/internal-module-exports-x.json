@@ -106,6 +106,9 @@
       "CalendarSuccessCallback"
     ],
     [
+      "CanOpenURL"
+    ],
+    [
       "CanvasContext"
     ],
     [
@@ -1526,6 +1529,30 @@
     ],
     [
       "OpenFileSyncOptions"
+    ],
+    [
+      "OpenLocation"
+    ],
+    [
+      "OpenLocationComplete"
+    ],
+    [
+      "OpenLocationErrorCode"
+    ],
+    [
+      "OpenLocationFail"
+    ],
+    [
+      "OpenLocationOptions"
+    ],
+    [
+      "OpenLocationSuccess"
+    ],
+    [
+      "OpenLocationSuccessImpl"
+    ],
+    [
+      "OpenSchema"
     ],
     [
       "OsThemeChangeResult"
