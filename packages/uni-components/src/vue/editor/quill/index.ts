@@ -126,6 +126,9 @@ export function useQuill(
       'ul',
       'li',
       'br',
+      'blockquote',
+      'pre',
+      'code',
     ]
     let content = ''
     let disable: boolean
@@ -220,6 +223,7 @@ export function useQuill(
         (window as WindowExt).ImageResize.default
       )
       options.modules = {
+        syntax: true,
         ImageResize: {
           modules: imageResizeModules,
         },
@@ -378,6 +382,20 @@ export function useQuill(
               quill.setSelection(range.index + text.length, 0, 'silent')
             }
             break
+          case 'insertLink':
+            {
+              range = quill.getSelection(true)
+              const { text = '', href = '' } = options
+              if (!href) break
+              if (range.length > 0) {
+                quill.format('link', href, 'user')
+              } else {
+                const linkText = text || href
+                quill.insertText(range.index, linkText, 'link', href, 'user')
+                quill.setSelection(range.index + linkText.length, 0, 'silent')
+              }
+            }
+            break
           case 'setContents':
             {
               const { delta, html } = options
@@ -464,18 +482,24 @@ export function useQuill(
       __PLATFORM__ === 'app'
         ? './__uniappquill.js'
         : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
-    loadScript((window as WindowExt).Quill, quillSrc, () => {
-      if (imageResizeModules.length) {
-        const imageResizeSrc =
-          __PLATFORM__ === 'app'
-            ? './__uniappquillimageresize.js'
-            : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
-        loadScript((window as WindowExt).ImageResize, imageResizeSrc, () => {
+    const quillHighlightSrc =
+      __PLATFORM__ === 'app'
+        ? './__uniappquillhighlight.js'
+        : 'https://unpkg.com/@highlightjs/cdn-assets@11.11.1/highlight.min.js'
+    loadScript('hljs', quillHighlightSrc, () => {
+      loadScript((window as WindowExt).Quill, quillSrc, () => {
+        if (imageResizeModules.length) {
+          const imageResizeSrc =
+            __PLATFORM__ === 'app'
+              ? './__uniappquillimageresize.js'
+              : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
+          loadScript((window as WindowExt).ImageResize, imageResizeSrc, () => {
+            initQuill(imageResizeModules)
+          })
+        } else {
           initQuill(imageResizeModules)
-        })
-      } else {
-        initQuill(imageResizeModules)
-      }
+        }
+      })
     })
   })
 }

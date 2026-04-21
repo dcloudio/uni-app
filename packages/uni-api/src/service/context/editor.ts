@@ -57,6 +57,9 @@ export class EditorContext implements UniApp.EditorContext {
   insertMention(options: UniApp.EditorContextInsertMentionOptions) {
     this._exec('insertMention', options)
   }
+  insertLink(options: UniApp.EditorContextInsertLinkOptions) {
+    this._exec('insertLink', options)
+  }
   insertImage(options: UniApp.EditorContextInsertImageOptions) {
     this._exec('insertImage', options)
   }
