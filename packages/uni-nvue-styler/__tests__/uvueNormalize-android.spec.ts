@@ -145,6 +145,27 @@ borderRightStyle: abc;
     )
   })
 
+  test('border shorthand invalid style', async () => {
+    const { json, messages } = await objectifierRule(`.foo{
+border-bottom: 14px double #8e44ad;
+}`)
+    expect(json).toEqual({
+      foo: {
+        '': {
+          borderBottomColor: '#8e44ad',
+          borderBottomWidth: 14,
+        },
+      },
+    })
+    expect(messages).toHaveLength(1)
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+        text: 'ERROR: property value `double` is not supported for `border-bottom-style` (supported values are: `none`|`solid`|`dashed`|`dotted`)',
+      })
+    )
+  })
+
   test('combined: length percentage enum', async () => {
     const { json, messages } = await objectifierRule(`.foo{
 width: 200px;

@@ -15,7 +15,9 @@ const borderWidth = __HYPHENATE__ ? '-width' : 'Width'
 const borderStyle = __HYPHENATE__ ? '-style' : 'Style'
 const borderColor = __HYPHENATE__ ? '-color' : 'Color'
 const BORDER_WIDTH_REGEXP = /^(?:[\d.]+\S*|thin|medium|thick)$/
-const BORDER_STYLE_REGEXP = /^(?:solid|dashed|dotted|none)$/
+// 这里按完整 CSS line-style 识别，后续再交给 border-*-style 的既有校验逻辑报精确错误。
+const BORDER_STYLE_REGEXP =
+  /^(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/
 
 export const BORDER_SHORTHAND_VAR_ORDER_WARNING =
   '__borderShorthandVarOrderWarning'
@@ -87,16 +89,14 @@ export function createTransformBorder(
       result = splitResult
       splitResult = []
     } else {
-      result = [
-        /^[\d\.]+\S*|^(thin|medium|thick)$/,
-        /^(solid|dashed|dotted|none)$/,
-        /\S+/,
-      ].map((item): string | null => {
-        const index = splitResult.findIndex((str: string): boolean =>
-          item.test(str)
-        )
-        return index < 0 ? null : splitResult.splice(index, 1)[0]
-      })
+      result = [BORDER_WIDTH_REGEXP, BORDER_STYLE_REGEXP, /\S+/].map(
+        (item): string | null => {
+          const index = splitResult.findIndex((str: string): boolean =>
+            item.test(str)
+          )
+          return index < 0 ? null : splitResult.splice(index, 1)[0]
+        }
+      )
     }
 
     if (splitResult.length > 0 && value != '') {
