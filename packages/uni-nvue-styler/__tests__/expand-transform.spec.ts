@@ -418,6 +418,23 @@ describe('nvue-styler: expand', () => {
             value: '#ffffff',
           },
         ],
+        '14px double #8e44ad': [
+          {
+            type: 'decl',
+            prop: `${border}-width`,
+            value: '14px',
+          },
+          {
+            type: 'decl',
+            prop: `${border}-style`,
+            value: 'double',
+          },
+          {
+            type: 'decl',
+            prop: `${border}-color`,
+            value: '#8e44ad',
+          },
+        ],
       }
     }
     postionTypes.forEach((type) => {
