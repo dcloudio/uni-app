@@ -4705,6 +4705,9 @@ class EditorContext {
   insertMention(options) {
     this._exec("insertMention", options);
   }
+  insertLink(options) {
+    this._exec("insertLink", options);
+  }
   insertImage(options) {
     this._exec("insertImage", options);
   }
@@ -9405,7 +9408,10 @@ function useQuill(props2, rootRef, trigger) {
       "ol",
       "ul",
       "li",
-      "br"
+      "br",
+      "blockquote",
+      "pre",
+      "code"
     ];
     let content = "";
     let disable;
@@ -9496,6 +9502,7 @@ function useQuill(props2, rootRef, trigger) {
         window.ImageResize.default
       );
       options.modules = {
+        syntax: true,
         ImageResize: {
           modules: imageResizeModules
         }
@@ -9641,6 +9648,21 @@ function useQuill(props2, rootRef, trigger) {
               quill.setSelection(range.index + text2.length, 0, "silent");
             }
             break;
+          case "insertLink":
+            {
+              range = quill.getSelection(true);
+              const { text: text2 = "", href = "" } = options;
+              if (!href)
+                break;
+              if (range.length > 0) {
+                quill.format("link", href, "user");
+              } else {
+                const linkText = text2 || href;
+                quill.insertText(range.index, linkText, "link", href, "user");
+                quill.setSelection(range.index + linkText.length, 0, "silent");
+              }
+            }
+            break;
           case "setContents":
             {
               const { delta, html } = options;
@@ -9722,15 +9744,18 @@ function useQuill(props2, rootRef, trigger) {
       imageResizeModules.push("Resize");
     }
     const quillSrc = "https://unpkg.com/quill@1.3.7/dist/quill.min.js";
-    loadScript(window.Quill, quillSrc, () => {
-      if (imageResizeModules.length) {
-        const imageResizeSrc = "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
-        loadScript(window.ImageResize, imageResizeSrc, () => {
+    const quillHighlightSrc = "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/highlight.min.js";
+    loadScript("hljs", quillHighlightSrc, () => {
+      loadScript(window.Quill, quillSrc, () => {
+        if (imageResizeModules.length) {
+          const imageResizeSrc = "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
+          loadScript(window.ImageResize, imageResizeSrc, () => {
+            initQuill(imageResizeModules);
+          });
+        } else {
           initQuill(imageResizeModules);
-        });
-      } else {
-        initQuill(imageResizeModules);
-      }
+        }
+      });
     });
   });
 }

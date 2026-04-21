@@ -15227,7 +15227,7 @@
       }
     });
     function html2delta(html) {
-      var tags = ["span", "strong", "b", "ins", "em", "i", "u", "a", "del", "s", "sub", "sup", "img", "div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "ol", "ul", "li", "br"];
+      var tags = ["span", "strong", "b", "ins", "em", "i", "u", "a", "del", "s", "sub", "sup", "img", "div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "ol", "ul", "li", "br", "blockquote", "pre", "code"];
       var content = "";
       var disable;
       HTMLParser(html, {
@@ -15320,6 +15320,7 @@
       if (imageResizeModules.length) {
         Quill.register("modules/ImageResize", window.ImageResize.default);
         options.modules = {
+          syntax: true,
           ImageResize: {
             modules: imageResizeModules
           }
@@ -15479,6 +15480,24 @@
               quill.setSelection(range.index + text2.length, 0, "silent");
             }
             break;
+          case "insertLink":
+            {
+              range = quill.getSelection(true);
+              var {
+                text: _text = "",
+                href = ""
+              } = options;
+              if (!href)
+                break;
+              if (range.length > 0) {
+                quill.format("link", href, "user");
+              } else {
+                var linkText = _text || href;
+                quill.insertText(range.index, linkText, "link", href, "user");
+                quill.setSelection(range.index + linkText.length, 0, "silent");
+              }
+            }
+            break;
           case "setContents":
             {
               var {
@@ -15562,15 +15581,18 @@
         imageResizeModules.push("Resize");
       }
       var quillSrc = "./__uniappquill.js";
-      loadScript(window.Quill, quillSrc, () => {
-        if (imageResizeModules.length) {
-          var imageResizeSrc = "./__uniappquillimageresize.js";
-          loadScript(window.ImageResize, imageResizeSrc, () => {
+      var quillHighlightSrc = "./__uniappquillhighlight.js";
+      loadScript("hljs", quillHighlightSrc, () => {
+        loadScript(window.Quill, quillSrc, () => {
+          if (imageResizeModules.length) {
+            var imageResizeSrc = "./__uniappquillimageresize.js";
+            loadScript(window.ImageResize, imageResizeSrc, () => {
+              initQuill(imageResizeModules);
+            });
+          } else {
             initQuill(imageResizeModules);
-          });
-        } else {
-          initQuill(imageResizeModules);
-        }
+          }
+        });
       });
     });
   }
