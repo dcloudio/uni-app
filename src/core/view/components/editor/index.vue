@@ -102,15 +102,18 @@ export default {
       imageResizeModules.push('Resize')
     }
     const quillSrc = __PLATFORM__ === 'app-plus' ? './__uniappquill.js' : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
-    loadScript(window.Quill, quillSrc, () => {
-      if (imageResizeModules.length) {
-        const imageResizeSrc = __PLATFORM__ === 'app-plus' ? './__uniappquillimageresize.js' : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
-        loadScript(window.ImageResize, imageResizeSrc, () => {
+    const quillHighlightSrc = __PLATFORM__ === 'app-plus' ? './__uniappquillhighlight.js' : 'https://unpkg.com/@highlightjs/cdn-assets@11.11.1/highlight.min.js'
+    loadScript('hljs', quillHighlightSrc, () => {
+      loadScript(window.Quill, quillSrc, () => {
+        if (imageResizeModules.length) {
+          const imageResizeSrc = __PLATFORM__ === 'app-plus' ? './__uniappquillimageresize.js' : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
+          loadScript(window.ImageResize, imageResizeSrc, () => {
+            this.initQuill(imageResizeModules)
+          })
+        } else {
           this.initQuill(imageResizeModules)
-        })
-      } else {
-        this.initQuill(imageResizeModules)
-      }
+        }
+      })
     })
   },
   methods: {
@@ -216,6 +219,20 @@ export default {
               quill.setSelection(range.index + text.length, 0, Quill.sources.SILENT)
             }
             break
+          case 'insertLink':
+            {
+              range = quill.getSelection(true)
+              const { text = '', href = '' } = options
+              if (!href) break
+              if (range.length > 0) {
+                quill.format('link', href, Quill.sources.USER)
+              } else {
+                const linkText = text || href
+                quill.insertText(range.index, linkText, 'link', href, Quill.sources.USER)
+                quill.setSelection(range.index + linkText.length, 0, Quill.sources.SILENT)
+              }
+            }
+            break
           case 'setContents':
             {
               const { delta, html } = options
@@ -304,7 +321,9 @@ export default {
         toolbar: false,
         readOnly: this.readOnly,
         placeholder: this.placeholder,
-        modules: {}
+        modules: {
+          syntax: true
+        }
       }
       if (imageResizeModules.length) {
         Quill.register('modules/ImageResize', window.ImageResize.default)
@@ -360,7 +379,7 @@ export default {
       }
     },
     html2delta (html) {
-      const tags = ['span', 'strong', 'b', 'ins', 'em', 'i', 'u', 'a', 'del', 's', 'sub', 'sup', 'img', 'div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'ol', 'ul', 'li', 'br']
+      const tags = ['span', 'strong', 'b', 'ins', 'em', 'i', 'u', 'a', 'del', 's', 'sub', 'sup', 'img', 'div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'ol', 'ul', 'li', 'br', 'blockquote', 'pre', 'code']
       let content = ''
       let disable
       HTMLParser(html, {
