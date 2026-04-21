@@ -1007,6 +1007,19 @@
       }
     }
   },
+  "uni-openLocation": {
+    "uni": {
+      "openLocation": {
+        "name": "openLocation",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-page-container": {
     "easycom": [
       "page-container"
