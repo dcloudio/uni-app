@@ -2388,7 +2388,8 @@ var borderWidth = 'Width';
 var borderStyle = 'Style';
 var borderColor = 'Color';
 var BORDER_WIDTH_REGEXP = /^(?:[\d.]+\S*|thin|medium|thick)$/;
-var BORDER_STYLE_REGEXP = /^(?:solid|dashed|dotted|none)$/;
+// 这里按完整 CSS line-style 识别，后续再交给 border-*-style 的既有校验逻辑报精确错误。
+var BORDER_STYLE_REGEXP = /^(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/;
 var BORDER_SHORTHAND_VAR_ORDER_WARNING = '__borderShorthandVarOrderWarning';
 function createBorderVarOrderWarning(prop, value) {
   return supportedValueWithTipsReason(prop, value, '(border shorthand with CSS variables must follow `width style color`, for example: `1px solid var(--color, #999999)`)');
@@ -2431,7 +2432,7 @@ function createTransformBorder(options) {
       result = splitResult;
       splitResult = [];
     } else {
-      result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+      result = [BORDER_WIDTH_REGEXP, BORDER_STYLE_REGEXP, /\S+/].map(item => {
         var index = splitResult.findIndex(str => item.test(str));
         return index < 0 ? null : splitResult.splice(index, 1)[0];
       });
