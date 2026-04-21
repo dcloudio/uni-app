@@ -13,6 +13,7 @@ import {
   isArray,
   normalizePath,
 } from './utils'
+import { M } from './messages'
 
 import { type Injects, parseUniExtApis } from './uni_modules'
 import type { EasycomMatcher } from './easycom'
@@ -97,19 +98,90 @@ export function resolveUTSAppModule(
       }
       const extname = ['.uts', '.vue', '.uvue']
       if (platform === 'app-harmony') {
-        if (resolveUTSFile(resolvePlatformDir(platform), extname)) {
+        const indexFile = resolveUTSFile(resolvePlatformDir(platform), extname)
+        // dom2 下，如果平台入口直接是 utssdk/平台/index.vue，
+        // 说明该插件仍然使用旧版 uni-app 兼容模式组件实现，需要提前给出明确提示。
+        if (isDom2CompatibleVueComponent(indexFile)) {
+          throw createDom2CompatibleComponentError(
+            path.basename(id),
+            indexFile!
+          )
+        }
+        if (indexFile) {
           return id
         }
         return
       }
-      if (resolveUTSFile(resolvePlatformDir('app-android'), extname)) {
+      const appAndroidIndexFile = resolveUTSFile(
+        resolvePlatformDir('app-android'),
+        extname
+      )
+      // Android / iOS 保持与现有解析顺序一致，只在命中旧版兼容模式入口时中断。
+      if (isDom2CompatibleVueComponent(appAndroidIndexFile)) {
+        throw createDom2CompatibleComponentError(
+          path.basename(id),
+          appAndroidIndexFile!
+        )
+      }
+      if (appAndroidIndexFile) {
         return id
       }
-      if (resolveUTSFile(resolvePlatformDir('app-ios'), extname)) {
+      const appIOSIndexFile = resolveUTSFile(
+        resolvePlatformDir('app-ios'),
+        extname
+      )
+      if (isDom2CompatibleVueComponent(appIOSIndexFile)) {
+        throw createDom2CompatibleComponentError(
+          path.basename(id),
+          appIOSIndexFile!
+        )
+      }
+      if (appIOSIndexFile) {
         return id
       }
     }
   }
+}
+
+function isDom2CompatibleVueComponent(file?: string) {
+  if (!file || process.env.UNI_APP_X_DOM2 !== 'true') {
+    return false
+  }
+  // 这里按目录层级做结构化判断：
+  // uni_modules/插件名/utssdk/平台/index.vue
+  const normalizedFile = normalizePath(file)
+  const relativeFile = normalizePath(
+    path.relative(process.env.UNI_INPUT_DIR || process.cwd(), normalizedFile)
+  )
+  const segments = relativeFile.split('/')
+  const uniModulesIndex = segments.lastIndexOf('uni_modules')
+  if (uniModulesIndex < 0) {
+    return false
+  }
+  const pluginName = segments[uniModulesIndex + 1]
+  const utssdkDir = segments[uniModulesIndex + 2]
+  const platformDir = segments[uniModulesIndex + 3]
+  const entryFile = segments[uniModulesIndex + 4]
+  return (
+    !!pluginName &&
+    utssdkDir === 'utssdk' &&
+    !!platformDir &&
+    entryFile === 'index.vue' &&
+    uniModulesIndex + 5 === segments.length
+  )
+}
+
+function createDom2CompatibleComponentError(name: string, file: string) {
+  return new Error(
+    M['dom2.compatible.component']
+      .replace('{name}', `[${name}]`)
+      .replace(
+        '{file}',
+        normalizePath(
+          path.relative(process.env.UNI_INPUT_DIR || process.cwd(), file)
+        )
+      )
+  )
 }
 
 // 仅限 root/uni_modules/test-plugin | root/utssdk/test-plugin 格式
@@ -418,6 +490,8 @@ export function initUTSComponents(
       swiftModule: string
       kotlinNamespace: string
       swiftNamespace: string
+      // 给 easycom 额外挂一份兼容性元信息，后续匹配阶段可直接复用，避免重复扫盘。
+      dom2IncompatibleFile?: string
     }
   > = {}
   const dirs = resolveUTSComponentDirs(inputDir)
@@ -473,12 +547,18 @@ export function initUTSComponents(
               pluginId,
               is_uni_modules_utssdk
             )
+            // App 平台依旧沿用 uts-proxy 机制，这里只补充兼容性标记，不改变现有导入方式。
             easycomsObj[`^${name}$`] = {
               source: isApp ? `${source}?uts-proxy` : source,
               kotlinPackage: kotlinPackage,
               swiftModule: swiftModule,
               kotlinNamespace: kotlinPackage,
               swiftNamespace: swiftNamespace,
+              // 仅记录命中的旧版兼容模式文件，真正报错放到 easycom / resolve 阶段，
+              // 这样既能复用已有扫描结果，也不会影响非 dom2 场景。
+              dom2IncompatibleFile: isDom2CompatibleVueComponent(file)
+                ? normalizePath(path.relative(inputDir, file))
+                : undefined,
             }
           }
         })
@@ -491,6 +571,8 @@ export function initUTSComponents(
       name: componentName,
       pattern: new RegExp(name),
       replacement: obj.source,
+      // 透传给 easycom 匹配逻辑，便于在模板中引用组件时直接给出更准确的错误信息。
+      dom2IncompatibleFile: obj.dom2IncompatibleFile,
     })
     utsComponents.set(componentName, {
       source: obj.source,

@@ -29,6 +29,8 @@ export default {
   'i18n.fallbackLocale.missing':
     '当前应用配置的 fallbackLocale 或 locale 为：{locale}，但 locale 目录缺少该语言文件',
   'easycom.conflict': 'easycom组件冲突：',
+  'dom2.compatible.component':
+    'dom2 模式不支持 uni-app 兼容模式组件 {name}，检测到其实现文件为 {file}。请改用支持 dom2 的 uni-app x 组件实现。',
   'mp.component.args[0]': '{0}的第一个参数必须为静态字符串',
   'mp.component.args[1]': '{0}需要两个参数',
   'mp.360.unsupported': 'vue3暂不支持360小程序',

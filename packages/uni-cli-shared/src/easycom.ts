@@ -31,6 +31,8 @@ export interface EasycomMatcher {
   name: string
   pattern: RegExp
   replacement: string
+  // 仅在 dom2 模式下使用：命中该字段时，说明 easycom 实际解析到了旧版 uni-app 兼容模式组件
+  dom2IncompatibleFile?: string
 }
 interface EasycomCustom {
   [key: string]: string
@@ -101,6 +103,9 @@ export function initEasycoms(
     if (isX && (globalThis as any).uts2jsSourceCodeMap) {
       ;(globalThis as any).uts2jsSourceCodeMap.initUts2jsEasycom(easycoms)
     }
+    // UTS / customElements 组件是在 initEasycom 之后补充进去的，
+    // 这里补一次状态，避免项目里只有这类组件时被误判为没有 easycom。
+    hasEasycom = !!easycoms.length
   }
 
   const initUTSEasycomCustomElements = () => {
@@ -259,6 +264,15 @@ export function matchEasycom(tag: string) {
   if (!matcher) {
     easycomsInvalidCache.add(tag)
     return false
+  }
+  // dom2 不支持旧版 uni-app 兼容模式组件，这里在 easycom 真正命中时再报错，
+  // 避免扫描阶段就对未使用的插件组件产生误报。
+  if (process.env.UNI_APP_X_DOM2 === 'true' && matcher.dom2IncompatibleFile) {
+    throw new Error(
+      M['dom2.compatible.component']
+        .replace('{name}', `<${tag}>`)
+        .replace('{file}', matcher.dom2IncompatibleFile)
+    )
   }
   source = tag.replace(matcher.pattern, matcher.replacement)
   easycomsCache.set(tag, source)
