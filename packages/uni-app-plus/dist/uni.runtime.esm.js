@@ -10769,6 +10769,9 @@ class EditorContext {
     insertMention(options) {
         this._exec('insertMention', options);
     }
+    insertLink(options) {
+        this._exec('insertLink', options);
+    }
     insertImage(options) {
         this._exec('insertImage', options);
     }
