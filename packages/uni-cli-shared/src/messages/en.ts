@@ -28,6 +28,8 @@ export default {
     'fallbackLocale is missing in manifest.json, use: {locale}',
   'i18n.fallbackLocale.missing': './local/{locale}.json is missing',
   'easycom.conflict': 'easycom component conflict: ',
+  'dom2.compatible.component':
+    'DOM2 mode does not support the uni-app compatibility component {name}. The implementation file {file} was detected. Please switch to a uni-app x component implementation that supports DOM2.',
   'mp.component.args[0]': 'The first parameter of {0} must be a static string',
   'mp.component.args[1]': '{0} requires two parameters',
   'mp.360.unsupported': '360 is unsupported',
