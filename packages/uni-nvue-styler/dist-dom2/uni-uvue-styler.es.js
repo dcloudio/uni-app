@@ -248,11 +248,7 @@ function createTransformBorder(options) {
             splitResult = [];
         }
         else {
-            result = [
-                BORDER_WIDTH_REGEXP,
-                BORDER_STYLE_REGEXP,
-                /\S+/,
-            ].map((item) => {
+            result = [BORDER_WIDTH_REGEXP, BORDER_STYLE_REGEXP, /\S+/].map((item) => {
                 const index = splitResult.findIndex((str) => item.test(str));
                 return index < 0 ? null : splitResult.splice(index, 1)[0];
             });
