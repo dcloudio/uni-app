@@ -27341,7 +27341,10 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
 		if (singleRoot) {
 			template += ` gen-flag-flatten=""`;
 			const rootElementTagName = context.options.rootElementTagName;
-			if (rootElementTagName) template += ` custom-tag-name="${rootElementTagName}"`;
+			if (rootElementTagName) {
+				template += ` custom-tag-name="${rootElementTagName}"`;
+				if (context.options.rootElementFromUniModule) template += ` gen-root-custom-native="${rootElementTagName}"`;
+			}
 		}
 	}
 	const dynamicProps = [];
@@ -40893,6 +40896,18 @@ function processDefineSlots(ctx, node, declId) {
 //#endregion
 //#region packages/compiler-sfc/src/script/defineOptions.ts
 const DEFINE_OPTIONS = "defineOptions";
+function isUniModuleImportSource(source) {
+	return /^@\/uni_modules?\//.test(source);
+}
+function resolveRootElementClassBindingName(node) {
+	const value = unwrapTSNode(node);
+	if (value.type === "Identifier") return value.name;
+	if (value.type !== "ObjectExpression") return;
+	for (const prop of value.properties) if (prop.type === "ObjectProperty" && prop.key.type === "Identifier" && prop.key.name === "class") {
+		const classValue = unwrapTSNode(prop.value);
+		if (classValue.type === "Identifier") return classValue.name;
+	}
+}
 function processDefineOptions(ctx, node) {
 	if (!isCallOf(node, DEFINE_OPTIONS)) return false;
 	if (ctx.hasDefineOptionsCall) ctx.error(`duplicate ${DEFINE_OPTIONS}() call`, node);
@@ -40926,6 +40941,13 @@ function processDefineOptions(ctx, node) {
 				break;
 			case "rootElement":
 				hasRootElementOption = true;
+				if (prop.type === "ObjectProperty") {
+					const bindingName = resolveRootElementClassBindingName(prop.value);
+					if (bindingName) {
+						const binding = ctx.userImports[bindingName];
+						if (binding && !binding.isType && isUniModuleImportSource(binding.source)) ctx.rootElementFromUniModule = true;
+					}
+				}
 				break;
 		}
 	}
@@ -41326,6 +41348,8 @@ function compileScript(sfc, options) {
 		}
 		if (ctx.rootElementTagName) compilerOptions.rootElementTagName = ctx.rootElementTagName;
 		else delete compilerOptions.rootElementTagName;
+		if (ctx.rootElementFromUniModule) compilerOptions.rootElementFromUniModule = true;
+		else delete compilerOptions.rootElementFromUniModule;
 		const { code, ast, preamble, tips, errors, helpers, map } = compileTemplate(_objectSpread2(_objectSpread2({
 			filename,
 			ast: sfc.template.ast,
@@ -41337,7 +41361,7 @@ function compileScript(sfc, options) {
 			isProd: options.isProd,
 			ssrCssVars: sfc.cssVars,
 			vapor,
-			compilerOptions: _objectSpread2(_objectSpread2({}, options.templateOptions && options.templateOptions.compilerOptions), {}, {
+			compilerOptions: _objectSpread2(_objectSpread2({ dynamicSharedData: options.dynamicSharedData }, options.templateOptions && options.templateOptions.compilerOptions), {}, {
 				inline: true,
 				isTS: ctx.isTS,
 				bindingMetadata: ctx.bindingMetadata,
@@ -41376,7 +41400,10 @@ function compileScript(sfc, options) {
 			const dynamicSharedDataComponentOptionsCode = options.dynamicSharedData ? `_useSharedDataComponentOptions({ bundleKey: __className, sharedDataClassId: 0 })` : `_useSharedDataComponentOptions()`;
 			if (componentType === "page") {
 				setupPreambleLines.unshift(`const __sharedDataScope =  _useSharedDataScope(__sharedData)`);
-				setupPreambleLines.unshift(`const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataRenderer() == 'component' ? _useSharedDataScope() : _useSharedDataPageId(), ${dynamicSharedDataOptionsCode})${optionsCode})`);
+				if (options.dynamicSharedData) {
+					setupPreambleLines.unshift(`const __sharedData = __sharedDataRenderer == 'component' ? _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataScope(), ${dynamicSharedDataComponentOptionsCode})${optionsCode}) : _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataPageId(), ${dynamicSharedDataOptionsCode})${optionsCode})`);
+					setupPreambleLines.unshift(`const __sharedDataRenderer = _useSharedDataRenderer()`);
+				} else setupPreambleLines.unshift(`const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataRenderer() == 'component' ? _useSharedDataScope() : _useSharedDataPageId(), ${dynamicSharedDataOptionsCode})${optionsCode})`);
 			} else if (componentType === "component") {
 				setupPreambleLines.unshift(`const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope, ${dynamicSharedDataComponentOptionsCode})${optionsCode})`);
 				setupPreambleLines.unshift(`const __sharedDataScope =  _useSharedDataScope()`);
