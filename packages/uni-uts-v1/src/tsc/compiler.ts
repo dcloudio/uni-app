@@ -234,7 +234,7 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
       2300, 2451, 110111119, 2564, 1023, 120000003, 120000004, 110111165, 1005,
     ]
     const internalUseCode = [
-      2355, 4117, 2348, 2310, 18047, 120000000, 120000001,
+      2355, 4117, 2348, 2310, 18047, 120000000, 120000001, 100008,
     ]
     const code = [...stableCode]
     if (hxDev) {
@@ -261,7 +261,12 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
       ].includes(diagnostic.code)
     const isDebug = debugCompile.enabled
 
-    const isWarning = !hxDev && errorCode.includes(diagnostic.code)
+    // 即使内部开发模式开启了额外校验码，只要诊断本身被标记为 Warning，
+    // 这里仍按警告处理，避免被升级为阻塞编译的错误。
+    const isWarning =
+      diagnostic.category ===
+        compiler.getTypeScript().DiagnosticCategory.Warning ||
+      (!hxDev && errorCode.includes(diagnostic.code))
     const color = isWarning ? COLORS.warn : COLORS.error
     const block = isWarning
       ? SPECIAL_CHARS.WARN_BLOCK
