@@ -61,10 +61,21 @@ export function initModuleAlias() {
         process.env.UNI_PLATFORM === 'app-harmony')
     ) {
       if (!process.env.UNI_APP_X_DOM2_CPP_DIR) {
-        const baseDir =
-          process.env.UNI_PLATFORM === 'app-harmony'
-            ? process.env.UNI_OUTPUT_DIR
-            : process.env.UNI_APP_X_CACHE_DIR || process.env.UNI_OUTPUT_DIR
+        let baseDir = ''
+        const isAndroid = process.env.UNI_UTS_PLATFORM === 'app-android'
+        const isIOS = process.env.UNI_UTS_PLATFORM === 'app-ios'
+        if (process.env.NODE_ENV !== 'development' && (isAndroid || isIOS)) {
+          baseDir = path.resolve(
+            process.env.UNI_OUTPUT_DIR,
+            '.uniappx',
+            isAndroid ? 'android' : 'ios'
+          )
+        } else {
+          baseDir =
+            process.env.UNI_PLATFORM === 'app-harmony'
+              ? process.env.UNI_OUTPUT_DIR
+              : process.env.UNI_APP_X_CACHE_DIR || process.env.UNI_OUTPUT_DIR
+        }
         process.env.UNI_APP_X_DOM2_CPP_DIR = path.resolve(baseDir, 'cpp')
         process.env.UNI_APP_X_DOM2_SO_DIR = path.resolve(baseDir, 'so')
       }
