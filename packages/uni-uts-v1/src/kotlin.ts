@@ -699,7 +699,7 @@ export function resolveKotlincArgs(
   kotlinc: string,
   jars: string[]
 ) {
-  return [
+  const args = [
     ...files,
     '-cp',
     resolveClassPath(jars),
@@ -716,6 +716,9 @@ export function resolveKotlincArgs(
     '-P',
     'plugin:io.dcloud.uts.kotlin:console=true',
   ]
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    args.push('-jvm-target', '17')
+  }
 }
 
 export const D8_DEFAULT_ARGS = [
