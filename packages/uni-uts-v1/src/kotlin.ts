@@ -719,6 +719,7 @@ export function resolveKotlincArgs(
   if (process.env.UNI_APP_X_DOM2 === 'true') {
     args.push('-jvm-target', '17')
   }
+  return args
 }
 
 export const D8_DEFAULT_ARGS = [
