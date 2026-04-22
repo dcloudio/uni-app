@@ -23,7 +23,7 @@ export function uniAppXAndroidEnginePlugin(): UniVitePlugin {
   return {
     name: 'uni:app-x-android',
     async writeBundle() {
-      if (!compilerServer) {
+      if (!compilerServer || process.env.NODE_ENV !== 'development') {
         return
       }
       if (

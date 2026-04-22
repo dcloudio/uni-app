@@ -22,7 +22,7 @@ export function uniAppXIOSEnginePlugin(): UniVitePlugin {
   return {
     name: 'uni:app-x-ios',
     async writeBundle() {
-      if (!compilerServer) {
+      if (!compilerServer || process.env.NODE_ENV !== 'development') {
         return
       }
       if (process.env.UNI_APP_X_DOM2_CPP_CHANGED === 'true') {
