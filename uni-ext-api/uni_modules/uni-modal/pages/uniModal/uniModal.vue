@@ -4,11 +4,13 @@
 			:class="{ 'uni-modal-dialog--show': showAnim, 'uni-modal--dark': isDark }">
 			<!-- ios need -->
 			<view class="uni-modal-dialog__inner" :class="{ 'uni-modal--dark': isDark }">
-				<text v-if="title" class="uni-modal-dialog__title" max-lines="2" :class="{ 'uni-modal--dark': isDark }">
-					{{ title }}
-				</text>
+				<view class="uni-modal-dialog__title__container">
+					<text v-if="title" max-lines="2" class="uni-modal-dialog__title" :class="{ 'uni-modal--dark': isDark }">
+						{{ title }}
+					</text>
+				</view>
 
-				<view class="uni-modal-dialog__body">
+				<view class="uni-modal-dialog__body" :class="{'no-title' : !title}">
 					<textarea v-if="editable" v-model="content" class="uni-modal-dialog__textarea"
 						placeholder-class="uni-modal-dialog__textarea-placeholder" :class="{ 'uni-modal--dark': isDark }"
 						:focus="true" :adjust-position="false" @blur="onInputBlur"
@@ -378,7 +380,7 @@
 		max-height: 90%;
 		background-color: #ffffff;
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-		border-radius: 8px;
+		border-radius: 16px;
 		opacity: 0;
 		transform: scale(0.9);
 		transition-duration: 0.1s;
@@ -405,12 +407,14 @@
 		background-color: #272727;
 	}
 
+	.uni-modal-dialog__title__container {
+		padding: 33px 24px 18px;
+	}
 	.uni-modal-dialog__title {
 		font-size: 17px;
 		font-weight: 600;
 		text-align: center;
 		text-overflow: ellipsis;
-		padding: 33px 24px 18px;
 		line-height: 1;
 		lines: 2;
 		/* #ifdef WEB */
@@ -430,6 +434,10 @@
 		align-items: center;
 		padding: 0 24px;
 		margin-bottom: 13px;
+	}
+	.uni-modal-dialog__body.no-title {
+		margin-top: -10px;
+		margin-bottom: 20px;
 	}
 
 	.uni-modal-dialog__scroll {

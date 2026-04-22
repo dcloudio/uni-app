@@ -9740,7 +9740,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": placeholderClass
   }, [createVNode("div", {
     "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3$1, {
     "disabled": true,
     "style": {
       color
@@ -9749,7 +9749,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": "uni-page-head-search-input",
     "confirm-type": "search",
     "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3, {
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3$1, {
     "focus": autoFocus,
     "style": {
       color
@@ -12421,7 +12421,7 @@ class UniInputElement extends UniElement {
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$o,
   emits: ["confirm", ...emit],
@@ -16236,7 +16236,7 @@ const props$k = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -18002,7 +18002,7 @@ function parseTextIgnoreLinefeed(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const __syscom_1$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -18095,7 +18095,7 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$f,
   emits: ["confirm", "change", "linechange", ...emit],
@@ -29188,7 +29188,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     });
     return (_ctx, _cache) => {
       const _component_view = __syscom_2;
-      const _component_text = __syscom_1$1;
+      const _component_text = __syscom_1;
       return openBlock(), createBlock(_component_view, null, {
         default: withCtx(() => [
           createVNode(_component_view, {
@@ -29977,11 +29977,11 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     });
     return (_ctx, _cache) => {
       const _component_map = __syscom_0;
-      const _component_text = __syscom_1$1;
+      const _component_text = __syscom_1;
       const _component_view = __syscom_2;
-      const _component_input = __syscom_3;
+      const _component_input = __syscom_3$1;
       const _component_loading = _sfc_main$4;
-      const _component_scroll_view = __syscom_2$1;
+      const _component_scroll_view = __syscom_3;
       return openBlock(), createBlock(_component_view, {
         class: normalizeClass(["uni-choose-location", darkClassCom.value])
       }, {
@@ -30865,10 +30865,10 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       return false;
     });
     return (_ctx, _cache) => {
-      const _component_text = __syscom_1$1;
-      const _component_textarea = __syscom_1;
-      const _component_scroll_view = __syscom_2$1;
+      const _component_text = __syscom_1;
       const _component_view = __syscom_2;
+      const _component_textarea = __syscom_2$1;
+      const _component_scroll_view = __syscom_3;
       return openBlock(), createBlock(_component_view, {
         class: normalizeClass(["uni-modal-mask", { "uni-modal-mask--show": showAnim.value, "uni-modal-mask--hide": !showAnim.value }])
       }, {
@@ -30882,17 +30882,24 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                 class: normalizeClass(["uni-modal-dialog__inner", { "uni-modal--dark": isDark.value }])
               }, {
                 default: withCtx(() => [
-                  title.value ? (openBlock(), createBlock(_component_text, {
-                    key: 0,
-                    class: normalizeClass(["uni-modal-dialog__title", { "uni-modal--dark": isDark.value }]),
-                    "max-lines": "2"
-                  }, {
+                  createVNode(_component_view, { class: "uni-modal-dialog__title__container" }, {
                     default: withCtx(() => [
-                      createTextVNode(toDisplayString(title.value), 1)
+                      title.value ? (openBlock(), createBlock(_component_text, {
+                        key: 0,
+                        "max-lines": "2",
+                        class: normalizeClass(["uni-modal-dialog__title", { "uni-modal--dark": isDark.value }])
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode(toDisplayString(title.value), 1)
+                        ]),
+                        _: 1
+                      }, 8, ["class"])) : createCommentVNode("", true)
                     ]),
                     _: 1
-                  }, 8, ["class"])) : createCommentVNode("", true),
-                  createVNode(_component_view, { class: "uni-modal-dialog__body" }, {
+                  }),
+                  createVNode(_component_view, {
+                    class: normalizeClass(["uni-modal-dialog__body", { "no-title": !title.value }])
+                  }, {
                     default: withCtx(() => [
                       editable.value ? (openBlock(), createBlock(_component_textarea, {
                         key: 0,
@@ -30924,7 +30931,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                       }, 8, ["style"])) : createCommentVNode("", true)
                     ]),
                     _: 1
-                  }),
+                  }, 8, ["class"]),
                   createVNode(_component_view, {
                     class: normalizeClass(["uni-modal-dialog__divider", { "uni-modal--dark": isDark.value }])
                   }, null, 8, ["class"]),
@@ -30988,7 +30995,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0$1 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n		padding: 33px 24px 18px;\n		line-height: 1;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 24px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1c1c1c;\n}\n.uni-modal-dialog__action-text {\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n		lines: 1;\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n";
+const _style_0$1 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n		line-height: 1;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 24px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1c1c1c;\n}\n.uni-modal-dialog__action-text {\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n		lines: 1;\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n";
 const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
 class ShowModalSuccessImpl {
   constructor(cancel, confirm, content = null, errMsg = "showModal:ok") {
@@ -31181,7 +31188,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     });
     return (_ctx, _cache) => {
       const _component_loading = _sfc_main$4;
-      const _component_text = __syscom_1$1;
+      const _component_text = __syscom_1;
       const _component_view = __syscom_2;
       return openBlock(), createBlock(_component_view, {
         class: normalizeClass(["uni-loading-mask", { "uni-loading-mask--show": showAnim.value }])
@@ -31636,7 +31643,7 @@ export {
   index$u as Form,
   index$n as Icon,
   index$m as Image,
-  __syscom_3 as Input,
+  __syscom_3$1 as Input,
   index$t as Label,
   LayoutComponent,
   index$g as ListItem,
@@ -31659,15 +31666,15 @@ export {
   index$j as RadioGroup,
   ResizeSensor,
   index$i as RichText,
-  __syscom_2$1 as ScrollView,
+  __syscom_3 as ScrollView,
   indexX$2 as Slider,
   index$e as StickyHeader,
   index$f as StickySection,
   Swiper,
   SwiperItem,
   indexX$1 as Switch,
-  __syscom_1$1 as Text,
-  __syscom_1 as Textarea,
+  __syscom_1 as Text,
+  __syscom_2$1 as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
   UTSValueIterable2 as UTSValueIterable,
