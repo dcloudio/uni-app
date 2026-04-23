@@ -62,8 +62,8 @@ export function initModuleAlias() {
     ) {
       if (!process.env.UNI_APP_X_DOM2_CPP_DIR) {
         let baseDir = ''
-        const isAndroid = process.env.UNI_UTS_PLATFORM === 'app-android'
-        const isIOS = process.env.UNI_UTS_PLATFORM === 'app-ios'
+        const isAndroid = process.env.UNI_APP_PLATFORM === 'android'
+        const isIOS = process.env.UNI_APP_PLATFORM === 'ios'
         if (process.env.NODE_ENV !== 'development' && (isAndroid || isIOS)) {
           baseDir = path.resolve(
             process.env.UNI_OUTPUT_DIR,
