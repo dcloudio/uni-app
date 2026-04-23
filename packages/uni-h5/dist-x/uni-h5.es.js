@@ -30670,6 +30670,9 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     const hoverClassName = ref("uni-modal-dialog__action--hover");
     const showAnim = ref(false);
     const isAutoHeight = ref(true);
+    const hasTitle = computed(() => {
+      return title.value != "";
+    });
     const instance2 = getCurrentInstance();
     const cancelText = computed(() => {
       if (inputCancelText.value != null) {
@@ -30884,7 +30887,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                 default: withCtx(() => [
                   createVNode(_component_view, { class: "uni-modal-dialog__title__container" }, {
                     default: withCtx(() => [
-                      title.value ? (openBlock(), createBlock(_component_text, {
+                      hasTitle.value ? (openBlock(), createBlock(_component_text, {
                         key: 0,
                         "max-lines": "2",
                         class: normalizeClass(["uni-modal-dialog__title", { "uni-modal--dark": isDark.value }])
@@ -30898,7 +30901,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                     _: 1
                   }),
                   createVNode(_component_view, {
-                    class: normalizeClass(["uni-modal-dialog__body", { "no-title": !title.value }])
+                    class: normalizeClass(["uni-modal-dialog__body", { "no-title": !hasTitle.value }])
                   }, {
                     default: withCtx(() => [
                       editable.value ? (openBlock(), createBlock(_component_textarea, {

@@ -5,12 +5,12 @@
 			<!-- ios need -->
 			<view class="uni-modal-dialog__inner" :class="{ 'uni-modal--dark': isDark }">
 				<view class="uni-modal-dialog__title__container">
-					<text v-if="title" max-lines="2" class="uni-modal-dialog__title" :class="{ 'uni-modal--dark': isDark }">
+					<text v-if="hasTitle" max-lines="2" class="uni-modal-dialog__title" :class="{ 'uni-modal--dark': isDark }">
 						{{ title }}
 					</text>
 				</view>
 
-				<view class="uni-modal-dialog__body" :class="{'no-title' : !title}">
+				<view class="uni-modal-dialog__body" :class="{'no-title' : !hasTitle}">
 					<textarea v-if="editable" v-model="content" class="uni-modal-dialog__textarea"
 						placeholder-class="uni-modal-dialog__textarea-placeholder" :class="{ 'uni-modal--dark': isDark }"
 						:focus="true" :adjust-position="false" @blur="onInputBlur"
@@ -92,6 +92,10 @@
 	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 	const appThemeChangeCallbackId = ref(-1)
 	// #endif
+
+	const hasTitle = computed((): boolean => {
+		return title.value != ''
+	})
 
 	const instance = getCurrentInstance()
 
