@@ -45,6 +45,7 @@ function toRaw(observed) {
 }
 function normalizeArg(arg, callbacks, keepAlive, context) {
     arg = toRaw(arg);
+    const isVaporAndroid = false;
     if (typeof arg === 'function') {
         let id;
         if (keepAlive) {
@@ -77,7 +78,7 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
             : undefined;
         const el = uniElement || componentPublicInstanceUniElement;
         if (el) {
-            if (context.depth > 0) {
+            if (context.depth > 0 || isVaporAndroid) {
                 context.nested = true;
             }
             return serializeUniElement(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');

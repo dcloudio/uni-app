@@ -4184,6 +4184,7 @@ function toRaw(observed) {
 }
 function normalizeArg(arg, callbacks, keepAlive, context) {
   arg = toRaw(arg);
+  var isVaporAndroid = isUTSAndroid();
   if (typeof arg === "function") {
     var id2;
     if (keepAlive) {
@@ -4199,11 +4200,12 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
     context.depth++;
     return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context));
   } else if (arg instanceof ArrayBuffer) {
+    if (isVaporAndroid) {
+      context.nested = true;
+      return arg;
+    }
     if (context.depth > 0) {
       context.nested = true;
-    }
-    if (isUTSAndroid()) {
-      return arg;
     }
     return serializeArrayBuffer(arg);
   } else if (isPlainObject(arg) || isUniElement(arg)) {
@@ -4211,7 +4213,7 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
     var componentPublicInstanceUniElement = !uniElement ? parseComponentPublicInstance(arg) : void 0;
     var el = uniElement || componentPublicInstanceUniElement;
     if (el) {
-      if (context.depth > 0) {
+      if (context.depth > 0 || isVaporAndroid) {
         context.nested = true;
       }
       return serializeUniElement(el, uniElement ? "UniElement" : "ComponentPublicInstance");

@@ -18437,6 +18437,7 @@ function toRaw(observed) {
 }
 function normalizeArg(arg, callbacks, keepAlive, context) {
     arg = toRaw(arg);
+    const isVaporAndroid = __VAPOR__ && isUTSAndroid();
     if (typeof arg === 'function') {
         let id;
         if (keepAlive) {
@@ -18457,12 +18458,14 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
         // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
     }
     else if (arg instanceof ArrayBuffer) {
+        // android dom2 js引擎支持直接传递 ArrayBuffer
+        // nested在dom2安卓表示当前调用参数包含ArrayBuffer等不可序列化对象，不管是不是顶层参数
+        if (isVaporAndroid) {
+            context.nested = true;
+            return arg;
+        }
         if (context.depth > 0) {
             context.nested = true;
-        }
-        // android dom2 js引擎支持直接传递 ArrayBuffer
-        if (__VAPOR__ && isUTSAndroid()) {
-            return arg;
         }
         return serializeArrayBuffer(arg);
     }
@@ -18473,7 +18476,7 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
             : undefined;
         const el = uniElement || componentPublicInstanceUniElement;
         if (el) {
-            if (context.depth > 0) {
+            if (context.depth > 0 || isVaporAndroid) {
                 context.nested = true;
             }
             return serializeUniElement(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
