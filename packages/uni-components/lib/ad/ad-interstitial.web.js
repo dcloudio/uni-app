@@ -282,7 +282,8 @@ class AdConfig {
   }
 }
 Object.assign(AdConfig.prototype, {
-  URL: 'https://hac1.dcloud.net.cn/ah5',
+  // URL: 'https://hac1.dcloud.net.cn/ah5', 废弃结果，数据迁移到 v2
+  URL: 'https://hac1.dcloud.net.cn/ah5v2',
   KEY: 'uni_app_ad_config',
   CACHE_TIME: 1000 * 60 * 10,
   ERROR_INVALID_ADPID: {
