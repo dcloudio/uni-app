@@ -59,7 +59,7 @@
 <script lang="ts" setup>
   import { ref, reactive, computed, watch } from 'vue'
 
-  // #ifdef APP-ANDROID
+  // #ifdef APP-ANDROID && !VUE3-VAPOR
   import "io.dcloud.unicloud.*"
   // #endif
 
@@ -138,7 +138,7 @@
     }
   };
 
-  // #ifdef APP-ANDROID
+  // #ifdef APP-ANDROID && !VUE3-VAPOR
   // @ts-ignore
   class CloudObjectUniMapCo extends InternalUniCloudCloudObjectCaller {
     // @ts-ignore
@@ -247,7 +247,7 @@
         return;
       }
       errMsg.value = "";
-      // #ifdef APP-ANDROID
+      // #ifdef APP-ANDROID && !VUE3-VAPOR
       // @ts-ignore
       const uniCloudInstance = uniCloud as UniCloud;
       // @ts-ignore
@@ -256,7 +256,7 @@
         // @ts-ignore
       } as UniCloudImportObjectOptions, UTSAndroid.getJavaClass(CloudObjectUniMapCo))
       // #endif
-      // #ifndef APP-ANDROID
+      // #ifndef APP-ANDROID && !VUE3-VAPOR
       // @ts-ignore
       const uniMapCo = uniCloud.importObject("uni-map-co", {
         customUI: true,
@@ -649,14 +649,14 @@
   }
 
   const closeDialogPage = () => {
-    // #ifdef APP-ANDROID
+    // #ifdef APP-ANDROID && !VUE3-VAPOR
     uni.closeDialogPage({
       dialogPage: uniPage,
       animationType: 'zoom-fade-out',
       // @ts-ignore
     } as io.dcloud.uniapp.framework.extapi.CloseDialogPageOptions)
     // #endif
-    // #ifndef APP-ANDROID
+    // #ifndef APP-ANDROID && !VUE3-VAPOR
     uni.closeDialogPage({
       dialogPage: uniPage,
       // #ifdef APP-IOS
@@ -918,7 +918,7 @@
     border-radius: 5px;
   }
 
-  /* #ifndef VUE3_VAPOR */
+  /* #ifndef VUE3-VAPOR */
   .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {
     opacity: 0.7;
   }
