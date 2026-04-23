@@ -74,7 +74,7 @@ function genUniAppConfigKotlinCode(manifestJson: Record<string, any>) {
       manifestJson.versionName || ''
     )};
     override var versionCode: String = ${stringifyKotlinString(
-      manifestJson.versionCode || ''
+      '' + manifestJson.versionCode || ''
     )};
     override var uniCompilerVersion: String = ${stringifyKotlinString(
       process.env.UNI_COMPILER_VERSION || ''
