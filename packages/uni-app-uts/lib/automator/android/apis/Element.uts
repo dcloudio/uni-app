@@ -147,7 +147,7 @@ export const getProperties = (
       return component.$props[toCamelCase(name)]
     }
     if (dom != null) {
-      return dom.getAttribute(name)
+      return dom.getAnyAttribute(name)
     }
     return null
   })
