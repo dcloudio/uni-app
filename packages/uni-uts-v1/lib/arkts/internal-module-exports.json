@@ -13,6 +13,30 @@
       "$Once"
     ],
     [
+      "AccelerometerComplete"
+    ],
+    [
+      "AccelerometerCompleteCallback"
+    ],
+    [
+      "AccelerometerErrorCode"
+    ],
+    [
+      "AccelerometerFail"
+    ],
+    [
+      "AccelerometerFailCallback"
+    ],
+    [
+      "AccelerometerInterval"
+    ],
+    [
+      "AccelerometerSuccess"
+    ],
+    [
+      "AccelerometerSuccessCallback"
+    ],
+    [
       "AccessOptions"
     ],
     [
@@ -25,10 +49,25 @@
       "AddPhoneContact"
     ],
     [
+      "AddPhoneContact"
+    ],
+    [
+      "AddPhoneContactComplete"
+    ],
+    [
       "AddPhoneContactComplete"
     ],
     [
       "AddPhoneContactCompleteCallback"
+    ],
+    [
+      "AddPhoneContactCompleteCallback"
+    ],
+    [
+      "AddPhoneContactErrorCode"
+    ],
+    [
+      "AddPhoneContactFail"
     ],
     [
       "AddPhoneContactFail"
@@ -37,10 +76,22 @@
       "AddPhoneContactFailCallback"
     ],
     [
+      "AddPhoneContactFailCallback"
+    ],
+    [
+      "AddPhoneContactOptions"
+    ],
+    [
       "AddPhoneContactOptions"
     ],
     [
       "AddPhoneContactSuccess"
+    ],
+    [
+      "AddPhoneContactSuccess"
+    ],
+    [
+      "AddPhoneContactSuccessCallback"
     ],
     [
       "AddPhoneContactSuccessCallback"
@@ -146,6 +197,33 @@
     ],
     [
       "CheckIsSupportSoterAuthenticationSuccessCallback"
+    ],
+    [
+      "ChooseContact"
+    ],
+    [
+      "ChooseContactComplete"
+    ],
+    [
+      "ChooseContactCompleteCallback"
+    ],
+    [
+      "ChooseContactErrorCode"
+    ],
+    [
+      "ChooseContactFail"
+    ],
+    [
+      "ChooseContactFailCallback"
+    ],
+    [
+      "ChooseContactOptions"
+    ],
+    [
+      "ChooseContactSuccess"
+    ],
+    [
+      "ChooseContactSuccessCallback"
     ],
     [
       "ChooseFile"
@@ -323,6 +401,30 @@
     ],
     [
       "CloseSyncOptions"
+    ],
+    [
+      "CompassAccuracy"
+    ],
+    [
+      "CompassComplete"
+    ],
+    [
+      "CompassCompleteCallback"
+    ],
+    [
+      "CompassErrorCode"
+    ],
+    [
+      "CompassFail"
+    ],
+    [
+      "CompassFailCallback"
+    ],
+    [
+      "CompassSuccess"
+    ],
+    [
+      "CompassSuccessCallback"
     ],
     [
       "CompressImage"
@@ -859,6 +961,30 @@
       "GetWindowInfoResult"
     ],
     [
+      "GyroscopeComplete"
+    ],
+    [
+      "GyroscopeCompleteCallback"
+    ],
+    [
+      "GyroscopeErrorCode"
+    ],
+    [
+      "GyroscopeFail"
+    ],
+    [
+      "GyroscopeFailCallback"
+    ],
+    [
+      "GyroscopeInterval"
+    ],
+    [
+      "GyroscopeSuccess"
+    ],
+    [
+      "GyroscopeSuccessCallback"
+    ],
+    [
       "HideKeyboard"
     ],
     [
@@ -886,16 +1012,28 @@
       "HideToast"
     ],
     [
+      "IAccelerometerError"
+    ],
+    [
+      "IAddPhoneContactFail"
+    ],
+    [
       "IAppThemeFail"
     ],
     [
       "ICalendarError"
     ],
     [
+      "IChooseContactFail"
+    ],
+    [
       "IChooseMediaError"
     ],
     [
       "IClipBoardError"
+    ],
+    [
+      "ICompassError"
     ],
     [
       "ICreateBackgroundAudioFail"
@@ -914,6 +1052,9 @@
     ],
     [
       "IGetProviderFail"
+    ],
+    [
+      "IGyroscopeError"
     ],
     [
       "IMakePhoneCallError"
@@ -1144,6 +1285,12 @@
       "OffOsThemeChange"
     ],
     [
+      "OnAccelerometerChangeCallback"
+    ],
+    [
+      "OnAccelerometerChangeCallbackResult"
+    ],
+    [
       "OnAppCrash"
     ],
     [
@@ -1154,6 +1301,18 @@
     ],
     [
       "OnAppThemeChangeCallback"
+    ],
+    [
+      "OnCompassChange"
+    ],
+    [
+      "OnCompassChangeSuccess"
+    ],
+    [
+      "OnGyroscopeChangeCallback"
+    ],
+    [
+      "OnGyroscopeChangeCallbackResult"
     ],
     [
       "OnHostThemeChange"
@@ -1903,6 +2062,15 @@
       "SoterAuthMode"
     ],
     [
+      "StartAccelerometerOptions"
+    ],
+    [
+      "StartCompassOptions"
+    ],
+    [
+      "StartGyroscopeOptions"
+    ],
+    [
       "StartLocationUpdate"
     ],
     [
@@ -1985,6 +2153,15 @@
     ],
     [
       "Stats"
+    ],
+    [
+      "StopAccelerometerOptions"
+    ],
+    [
+      "StopCompassOptions"
+    ],
+    [
+      "StopGyroscopeOptions"
     ],
     [
       "StopLocationUpdate"
