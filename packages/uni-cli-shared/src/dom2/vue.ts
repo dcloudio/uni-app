@@ -15,11 +15,12 @@ export function initVueTemplateCompilerExtraOptions(descriptor: SFCDescriptor) {
   const isDevX =
     process.env.UNI_HX_VERSION_DEV === 'true' &&
     process.env.UNI_APP_X === 'true'
+  const isDynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
   let disableStaticStyle = false
   if (
     isDevX &&
     // 动态渲染时，仍旧使用静态样式，避免性能问题。
-    process.env.UNI_APP_X_DOM2_DYNAMIC !== 'true' &&
+    !isDynamic &&
     process.env.NODE_ENV === 'development'
   ) {
     if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
@@ -50,6 +51,6 @@ export function initVueTemplateCompilerExtraOptions(descriptor: SFCDescriptor) {
     },
     r: helper.K,
     className: helper.GCN(descriptor.filename, process.env.UNI_INPUT_DIR),
-    inlineRender: process.env.UNI_UTS_PLATFORM === 'app-android',
+    inlineRender: !isDynamic && process.env.UNI_UTS_PLATFORM === 'app-android',
   }
 }
