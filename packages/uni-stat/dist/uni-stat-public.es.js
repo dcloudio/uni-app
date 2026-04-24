@@ -1,0 +1,3497 @@
+/**
+ * 事件类型与会话创建类型常量。
+ *
+ * 与私有版的兼容关系：
+ *   - 私有版 `lt` 字段是 string；公有版保持 string，避免上行协议变更。
+ *   - 公有版**新增** `lt='0'`（客户端会话创建）；老接收端忽略未知字段。
+ *   - `cst` 与 `sct` 数值一致：cst 用于"本次启动事件"瞬时标识；
+ *     sct 写入 storage 与 session 一同常驻，用于会话维度归因。
+ */
+/**
+ * Log Type（事件类型）。统一在此声明，禁止其他模块裸写字符串。
+ */
+const LT = {
+    /** 客户端会话创建（公有版新增）。与 `Launch` 配对发送，先发 Session 再发 Launch。 */
+    Session: '0',
+    Launch: '1',
+    Hide: '3',
+    Page: '11',
+    Event: '21',
+    Error: '31',
+    Push: '101',
+};
+/**
+ * Create Session Type / Session Create Type（同义）。
+ *
+ * - `1` 冷启动：进程刚起，第一次创建会话。
+ * - `2` 后台超时：从后台返回前台，距离 `bgTs` 超过 `backgroundTimeoutSec`。
+ * - `3` 前台无操作超时：在前台一段时间无任何 page/event 触达。
+ *
+ * 公有版预留 `0` 给"未触发新会话"的零值；不要用 0 覆写 storage，仅作为内部哨兵。
+ */
+const CST = {
+    ColdLaunch: 1,
+    BackgroundTimeout: 2,
+    PageInactiveTimeout: 3,
+};
+/**
+ * 入口页标记。
+ *
+ * `iey` / `ppiey` 上行字段以 `0/1` 形式表达布尔，与私有版数字风格保持一致。
+ */
+const IEY = {
+    No: 0,
+    Yes: 1,
+};
+/**
+ * 把任意输入归一化为 `IEYValue`。
+ *
+ * 用于 `domain/entry` 在拼装字段时统一布尔→0/1。`true / 1 / '1'` 均视为 Yes。
+ */
+function toIey(input) {
+    if (input === true || input === 1 || input === '1')
+        return IEY.Yes;
+    return IEY.No;
+}
+
+/**
+ * 公有版统一日志出口。
+ *
+ * 修复的私有版缺陷：
+ *   - #19 `!!process.env.UNI_STAT_DEBUG` 在构建时若被替换为字符串 `"false"` 仍是 truthy。
+ *     公有版严格使用 `=== 'true'` 判定，并允许在运行时通过 `setDebug()` 临时打开
+ *     （供调试 / 灰度小流量验证）。
+ *
+ * 行为约定：
+ *   - `debug` 受调试开关控制；其他 level 始终输出到对应的 `console.*`。
+ *   - 不强制对对象 `JSON.stringify`（避免吞掉运行时类型信息，方便控制台展开）。
+ */
+const TAG = '[uni-stat/public]';
+let runtimeDebug;
+/**
+ * 当前是否启用 debug 输出。优先级：
+ *   1. `setDebug(value)` 显式设置过 → 直接返回。
+ *   2. `process.env.UNI_STAT_DEBUG === 'true'`（构建时常量替换路径）。
+ */
+function isDebug() {
+    if (runtimeDebug !== undefined)
+        return runtimeDebug;
+    return process.env.UNI_STAT_DEBUG === 'true';
+}
+/**
+ * 运行时切换 debug 开关；传 `undefined` 恢复为「按 process.env 判断」。
+ */
+function setDebug(value) {
+    runtimeDebug = value;
+}
+const logger = {
+    debug(...args) {
+        if (!isDebug())
+            return;
+        // eslint-disable-next-line no-console
+        console.log(TAG, ...args);
+    },
+    info(...args) {
+        // eslint-disable-next-line no-console
+        console.info(TAG, ...args);
+    },
+    warn(...args) {
+        // eslint-disable-next-line no-console
+        console.warn(TAG, ...args);
+    },
+    error(...args) {
+        // eslint-disable-next-line no-console
+        console.error(TAG, ...args);
+    },
+    setDebug,
+    isDebug,
+};
+
+/**
+ * 公有版本地存储抽象（重写自私有版 `utils/db.js`）。
+ *
+ * 修复的私有版缺陷：
+ *   - #14 `dbRemove` 第二段 `data = uni.getStorageSync(...)` 无 `|| {}` 兜底导致 NPE。
+ *   - #18 每次 get/set/remove 都做 2~3 次 storage IO（read-modify-write），
+ *         公有版改为「按 key 独立存储 + 内存缓存」，每次操作只 1 次同步 IO。
+ *
+ * 关键能力（供 Phase 4 缺陷 #5 修复使用）：
+ *   - `safeRead`：读取失败时返回 `{ ok: false }` 而不是 `undefined`，调用方据此区分
+ *     "key 不存在 / storage 异常"，避免老用户被 lvts=0 误判为新用户。
+ *
+ * 命名空间：所有 key 自动加前缀 `UNI_STAT_DATA:<appid>:`；`<appid>` 取
+ * `process.env.UNI_APP_ID`，缺失时退化为 `default`。
+ *
+ * 注意：本模块依赖 `globalThis.uni.{getStorageSync,setStorageSync,removeStorageSync}`，
+ * 测试中通过 `helpers/mockUni` 注入。
+ */
+/**
+ * 公有版命名空间前缀，遵循公司内部统一规范 `UNI_STAT_DATA:<appid>:<key>`。
+ *
+ * 私有版（旧）使用 `$$STAT__DBDATA:<appid>` 作为单一聚合 key；这里**不再**使用旧前缀，
+ * 仅在 Phase 4 `domain/migration` 中通过显式只读 API 读取一次老聚合数据并拆解到新前缀，
+ * 保证平滑迁移；除迁移路径外，新代码全部写入 `UNI_STAT_DATA:` 命名空间。
+ */
+const NAMESPACE_ROOT = 'UNI_STAT_DATA';
+/** 仅供迁移层读取老数据用：私有版聚合 key 的前缀。 */
+const LEGACY_NAMESPACE_ROOT = '$$STAT__DBDATA';
+/**
+ * 内存缓存。值语义：
+ *   - 命中且非 undefined → cache 中的真实值
+ *   - 命中且 undefined   → 已经主动 `remove` 或确认 storage 中不存在
+ *   - 未命中              → 还没读过 storage
+ */
+const cache = new Map();
+/** 已知存在过的全部完整 key（用于 `clearNamespace`）。 */
+const knownKeys = new Set();
+/**
+ * 拼装命名空间下的完整 key。
+ */
+function fullKey(key) {
+    const appid = process.env.UNI_APP_ID || 'default';
+    return `${NAMESPACE_ROOT}:${appid}:${key}`;
+}
+/**
+ * 取真实 uni 对象。剥离到函数里，便于测试用 mockUni 替换后立即生效。
+ */
+function getUni$7() {
+    const u = globalThis.uni;
+    if (!u)
+        throw new Error('[uni-stat/public] uni storage API is not available');
+    return u;
+}
+/**
+ * 获取一个 key 的值。
+ *
+ * @returns 命中返回值；未命中或 storage 异常返回 `undefined`（无法区分两种情况，
+ *          需要区分时请使用 `safeRead`）。
+ */
+function get(key) {
+    const fk = fullKey(key);
+    if (cache.has(fk))
+        return cache.get(fk);
+    try {
+        const raw = getUni$7().getStorageSync(fk);
+        // uni 规范：未命中返回空字符串
+        if (raw === '' || raw === null || raw === undefined) {
+            cache.set(fk, undefined);
+            return undefined;
+        }
+        cache.set(fk, raw);
+        knownKeys.add(fk);
+        return raw;
+    }
+    catch (_a) {
+        return undefined;
+    }
+}
+/**
+ * 安全读取：明确区分「未命中 / 读异常」。
+ *
+ * @returns
+ *   - `{ ok: true, value }`：成功读取（value 可能为 undefined 表示 key 不存在）。
+ *   - `{ ok: false, value: undefined }`：storage 抛错；调用方应使用上次内存值兜底，
+ *     **绝不**直接退化为 0 / null（否则会复现缺陷 #5：老用户被误判为新用户）。
+ */
+function safeRead(key) {
+    const fk = fullKey(key);
+    if (cache.has(fk))
+        return { ok: true, value: cache.get(fk) };
+    try {
+        const raw = getUni$7().getStorageSync(fk);
+        if (raw === '' || raw === null || raw === undefined) {
+            cache.set(fk, undefined);
+            return { ok: true, value: undefined };
+        }
+        cache.set(fk, raw);
+        knownKeys.add(fk);
+        return { ok: true, value: raw };
+    }
+    catch (_a) {
+        return { ok: false, value: undefined };
+    }
+}
+/**
+ * 写入一个 key。`undefined` 视为删除（与私有版语义对齐）。
+ *
+ * 失败策略：先更新缓存，再写 storage；storage 抛错时不回滚缓存，
+ * 由调用方决定是否补偿（视调用方场景而定，热路径不应阻塞）。
+ */
+function set(key, value) {
+    const fk = fullKey(key);
+    if (value === undefined) {
+        remove(key);
+        return;
+    }
+    cache.set(fk, value);
+    knownKeys.add(fk);
+    try {
+        getUni$7().setStorageSync(fk, value);
+    }
+    catch (_a) {
+        // 缓存已更新，吞掉异常；调用方如需感知请使用 try/catch 显式包裹。
+    }
+}
+/**
+ * 删除一个 key。
+ */
+function remove(key) {
+    const fk = fullKey(key);
+    cache.set(fk, undefined);
+    try {
+        getUni$7().removeStorageSync(fk);
+    }
+    catch (_a) {
+        // 同 set：忽略 storage 异常，缓存已置空。
+    }
+}
+/**
+ * 批量读：返回 `Record<key, value>`，未命中 / 异常的 key 取值为 `undefined`。
+ */
+function batchGet(keys) {
+    const out = {};
+    for (const k of keys)
+        out[k] = get(k);
+    return out;
+}
+/**
+ * 批量写：逐个 `set`，等价于循环调用，便于调用侧聚合。
+ */
+function batchSet(entries) {
+    for (const k of Object.keys(entries))
+        set(k, entries[k]);
+}
+/**
+ * 清除当前 appid 命名空间下、自模块加载以来访问过的所有 key。
+ *
+ * 注意：受限于 uni storage 不一定支持 `getStorageInfoSync`，本函数只清理
+ * 「本模块写入或读取过的 key」；未触达过的历史脏数据需要调用方显式处理。
+ */
+function clearNamespace() {
+    let uni;
+    try {
+        uni = getUni$7();
+    }
+    catch (_a) {
+        // uni 不可用：仅清缓存，无法清持久化
+    }
+    for (const fk of Array.from(knownKeys)) {
+        try {
+            uni === null || uni === void 0 ? void 0 : uni.removeStorageSync(fk);
+        }
+        catch (_b) {
+            // 单 key 失败不影响其他 key 的清理
+        }
+        cache.set(fk, undefined);
+    }
+    knownKeys.clear();
+}
+/**
+ * 仅供单测使用：清空内部缓存与 knownKeys 索引，让模块"像刚加载"一样。
+ *
+ * 单测必须在每个用例之间调用，否则会跨用例泄漏缓存状态。
+ */
+function __resetCache() {
+    cache.clear();
+    knownKeys.clear();
+}
+const storage = {
+    get,
+    set,
+    remove,
+    safeRead,
+    batchGet,
+    batchSet,
+    clearNamespace,
+    __resetCache,
+};
+
+/**
+ * 访问字段 `fvts / lvts / tvc` 状态机。**专项修复缺陷 #5：lvts=0 老用户被误判为新用户。**
+ *
+ * 私有版（`utils/pageTime.js`）的副作用链：
+ *   1. `get_first_visit_time` 在写 fvts 时主动 `dbRemove(LAST_VISIT_TIME_KEY)`
+ *      → 第 1 次启动结束 storage 中 lvts 为空。
+ *   2. `get_last_visit_time` 在读时立即 `dbSet(LAST_VISIT_TIME_KEY, get_time())`
+ *      → 把 "上一次" 当成 "本次"，下次启动读出来已是当前时间。
+ *   3. 写入早于上报，上报失败时无法回滚，下次启动状态错乱。
+ *
+ * 公有版严格契约：
+ *   1. 三段拆分：`loadVisitSnapshot()` 纯读、`buildVisitFields()` 仅生成本次待写、
+ *      `commitVisitOnAck()` 在上报 ack 后才落 storage。
+ *   2. **禁止**任何函数同时写 fvts 与 lvts；fvts 仅在 `commitVisitOnAck` 中且只在
+ *      "首次启动" 路径写一次，永不主动清 lvts。
+ *   3. `loadVisitSnapshot` 区分 "key 不存在" 与 "storage 异常"：
+ *      - 不存在 → `lvts=0`，按新用户路径走（Yes new user）。
+ *      - 异常   → 内存有上次 snapshot 时复用之；首次启动且异常 → fallback `lvts=0`，
+ *        但**记录** `degraded=true`，上层可决定是否仍上报（Phase 5 collector 用）。
+ *   4. 同一进程内只允许一次 `buildVisitFields`；后续 cst=2/3 触发的事件**不调用**本函数，
+ *      由 collector 直接复用 `getCommitted()` 的内存 snapshot 继续推进 tvc/lvts。
+ *
+ * 与 `pipeline/collector.ts` 的契约见 `05-公有版重构开发计划.md` §4.1.5。
+ */
+const KEY_FVTS = 'visit:fvts';
+const KEY_LVTS = 'visit:lvts';
+const KEY_TVC = 'visit:tvc';
+const EMPTY_SNAPSHOT = {
+    fvts: 0,
+    lvts: 0,
+    tvc: 0,
+    isNewUser: true,
+    degraded: false,
+};
+/** 启动后通过 `loadVisitSnapshot` 写入；后续 build/commit 均基于此推进。 */
+let loaded = null;
+/** `buildVisitFields` 生成；`commitVisitOnAck` 落库后清空。 */
+let pending = null;
+/** `commitVisitOnAck` 落库后写入；同进程内 cst=2/3 后续事件复用此 snapshot。 */
+let committed = null;
+/**
+ * 本进程内最近一次 `buildVisitFields` 的产出。即使 pending 已被 commit / rollback 清空，
+ * 仍保留这份，用于：
+ *   - cst=2/3 复用同一份字段（参见 T5/T6）。
+ *   - 拦截同进程二次 `buildVisitFields` 误调（warn 后返回此值，不再生成新值）。
+ */
+let lastBuilt = null;
+/** 同进程内 `buildVisitFields` 只允许调用一次（缺陷 #5 修复点之一）。 */
+let buildCalledInProcess = false;
+/**
+ * 转 number（兼容历史 storage 中 string 形式的时间戳）。
+ *
+ * 异常 / NaN / 负数一律视为 0；
+ * 这里保守不抛错，因为读流程要保证不让"脏数据"中断采集链路。
+ */
+function toNum(v) {
+    if (typeof v === 'number' && Number.isFinite(v) && v >= 0)
+        return v;
+    if (typeof v === 'string' && v.length > 0) {
+        const n = Number(v);
+        if (Number.isFinite(n) && n >= 0)
+            return n;
+    }
+    return 0;
+}
+/**
+ * 从 storage 读取 snapshot。**纯读，无副作用**（spy `storage.set` 必须 not.toHaveBeenCalled）。
+ *
+ * 异常处理：
+ *   - 三个 key 任意一个 `safeRead.ok=false` → degraded=true。
+ *   - 后续读到值仍写 snapshot；调用方应根据 `degraded` 决策是否上报。
+ */
+function loadVisitSnapshot() {
+    const fvtsR = storage.safeRead(KEY_FVTS);
+    const lvtsR = storage.safeRead(KEY_LVTS);
+    const tvcR = storage.safeRead(KEY_TVC);
+    const degraded = !fvtsR.ok || !lvtsR.ok || !tvcR.ok;
+    const fvts = toNum(fvtsR.value);
+    const lvts = toNum(lvtsR.value);
+    const tvc = toNum(tvcR.value);
+    const snapshot = {
+        fvts,
+        lvts,
+        tvc,
+        isNewUser: fvts === 0 || lvts === 0,
+        degraded,
+    };
+    if (degraded) {
+        logger.warn('[uni-stat] visit snapshot degraded; some storage keys read failed');
+    }
+    loaded = snapshot;
+    return snapshot;
+}
+/**
+ * 取已加载的 snapshot；未调用过 `loadVisitSnapshot` 时返回 EMPTY。
+ *
+ * 这里不主动调 `loadVisitSnapshot`，避免在错误时机产生隐式 IO；
+ * collector 必须在启动时显式 load 一次。
+ */
+function ensureLoaded() {
+    if (!loaded)
+        loaded = EMPTY_SNAPSHOT;
+    return loaded;
+}
+/**
+ * 生成本次启动要上报的 fvts/lvts/tvc 三元组（**不写 storage**）。
+ *
+ * 推进规则：
+ *   - 新用户（loaded.isNewUser）：本次 fvts=now, lvts=0（仍上报 0 表示新用户），tvc=1。
+ *   - 老用户：fvts 维持 loaded.fvts；lvts 上报 loaded.lvts（"上一次"，不是 now）；tvc=loaded.tvc+1。
+ *
+ * 注意：同一进程内只允许调用一次（参考 `domain/session` 设计），后续 cst=2/3 事件
+ * 不携带 fvts/lvts/tvc。这里通过 `buildCalledInProcess` 哨兵防止误用，二次调用返回
+ * 与首次相同的结果但发出 warn，便于排查上层 collector bug。
+ */
+function buildVisitFields(now) {
+    const snap = ensureLoaded();
+    if (buildCalledInProcess && lastBuilt) {
+        logger.warn('[uni-stat] buildVisitFields() called twice in same process; returning cached fields');
+        return Object.assign({}, lastBuilt);
+    }
+    buildCalledInProcess = true;
+    if (snap.isNewUser) {
+        pending = { fvts: now, lvts: 0, tvc: 1, now };
+    }
+    else {
+        pending = {
+            fvts: snap.fvts,
+            lvts: snap.lvts,
+            tvc: snap.tvc + 1,
+            now,
+        };
+    }
+    lastBuilt = { fvts: pending.fvts, lvts: pending.lvts, tvc: pending.tvc };
+    return Object.assign({}, lastBuilt);
+}
+/**
+ * 上报 ack 成功后落库。
+ *
+ * 实际写入：
+ *   - 新用户：`fvts=now, lvts=now, tvc=1`（本次启动既是首装也是上一次）。
+ *   - 老用户：`fvts` 不变，`lvts=now`（注意：不是 pending.lvts，是 commit 时的 now），`tvc=pending.tvc`。
+ *
+ * pending 为空 / commit 重复调用一律 noop（保持幂等，便于 collector 重试逻辑）。
+ */
+function commitVisitOnAck(now) {
+    if (!pending)
+        return;
+    const snap = ensureLoaded();
+    const newFvts = snap.fvts === 0 ? now : snap.fvts;
+    const newLvts = now;
+    const newTvc = pending.tvc;
+    storage.set(KEY_FVTS, newFvts);
+    storage.set(KEY_LVTS, newLvts);
+    storage.set(KEY_TVC, newTvc);
+    committed = {
+        fvts: newFvts,
+        lvts: newLvts,
+        tvc: newTvc,
+        isNewUser: false,
+        degraded: false,
+    };
+    loaded = committed;
+    pending = null;
+}
+/**
+ * 上报失败回滚：清掉 pending，下次再 build 仍基于 loaded snapshot 推进。
+ *
+ * **不**重置 `buildCalledInProcess`：同一进程内即使首批失败，也不允许"重新"再造一份
+ * fvts/lvts 上报，避免污染。失败的批次应由 `pipeline/retry` 负责持久化重试。
+ */
+function rollbackPendingVisit() {
+    pending = null;
+}
+
+/**
+ * 入口页（entry page）记忆与 `iey / ppiey` 计算。
+ *
+ * 设计文档：`03-公有版架构设计.md` §4 与 `04-字段字典与平台获取矩阵.md`。
+ *
+ * 字段含义：
+ *   - `iey` (is entry yes)：当前页是否为本会话**入口页**。`1` = 是，`0` = 否。
+ *   - `ppiey` (previous page is entry yes)：**上一页**是否为入口页。
+ *
+ * 写入时机：
+ *   - 新会话第一次 `pageShow` 时调用 `markEntryPage(currentRoute)`，把当前路径登记为
+ *     entry，并写入 `__stat:session:entryRoute`。
+ *   - 同一会话内后续 page 切换不再标记 entry。
+ *   - session 切换（cst=1/2/3）时由 collector 调 `clearEntry()`，等待新会话 first pageShow。
+ *
+ * 模块**不持有** lastRoute；ppiey 由调用方传入"上一页"，避免和 `adapter/route` 的
+ * 当前路由职责耦合。
+ */
+const KEY_ENTRY = 'session:entryRoute';
+let cached$2;
+/**
+ * 标记当前页为入口页。
+ *
+ * 行为：
+ *   - 已存在 entry 时直接 noop（保证一会话一 entry）。
+ *   - route 为空字符串 / undefined 时 noop（不污染 storage）。
+ */
+function markEntryPage(route) {
+    if (!route)
+        return;
+    const existing = getEntryRoute();
+    if (existing)
+        return;
+    storage.set(KEY_ENTRY, route);
+    cached$2 = route;
+}
+/**
+ * 当前会话的入口路径；从内存优先取，未命中读 storage。
+ */
+function getEntryRoute() {
+    if (cached$2 !== undefined)
+        return cached$2 || undefined;
+    const r = storage.safeRead(KEY_ENTRY);
+    if (!r.ok)
+        return undefined;
+    if (typeof r.value === 'string' && r.value.length > 0) {
+        cached$2 = r.value;
+        return r.value;
+    }
+    // 标注已查过，避免下次再 IO
+    cached$2 = '';
+    return undefined;
+}
+/**
+ * 当前路径是否为入口页。
+ *
+ * route 为空时返回 false；尚未 mark 时返回 false（不会把"未知"误判为入口）。
+ */
+function isEntry(route) {
+    if (!route)
+        return false;
+    const entry = getEntryRoute();
+    return entry === route;
+}
+/**
+ * session 切换时调用：清掉 entry，等待新会话第一次 pageShow 重新登记。
+ */
+function clearEntry() {
+    cached$2 = '';
+    storage.remove(KEY_ENTRY);
+}
+
+/**
+ * 导航栏标题内存状态。
+ *
+ * 私有版 `Stat._navigationBarTitle = { page, config, report }` 三段被分散维护：
+ *   - `page` 由 `addInterceptor('setNavigationBarTitle')` 写入；
+ *   - `config` 由 `get_page_name(routepath)` 在 `request()` 中写入；
+ *   - `report` 由 `sendEvent('title', value)` 写入。
+ *
+ * 公有版集中到 `domain/title.ts`，对外仅暴露 setter / getter / clearForRoute；
+ * statData 拼装时通过 `getCurrentTitle()` 一次性读出，**不再**和拦截器/路由耦合。
+ */
+const state$2 = { page: '', config: '', report: '' };
+/**
+ * 由拦截器在 `setNavigationBarTitle.invoke` 时调用。
+ *
+ * @param title 用户设置的标题；非字符串视为空串，避免污染上行 ttn。
+ */
+function setPageTitle(title) {
+    state$2.page = typeof title === 'string' ? title : '';
+}
+/**
+ * 由 collector / runtime 在 onPageShow 时写入 pages.json 配置标题。
+ */
+function setConfigTitle(title) {
+    state$2.config = '';
+}
+/**
+ * 业务通过 `uni.report('title', value)` 写入；与私有版 `sendEvent('title')` 行为一致。
+ */
+function setReportTitle(title) {
+    state$2.report = typeof title === 'string' ? title : '';
+}
+/**
+ * 切换页面时清掉 page 维度的 title（config / report 由各自 setter 控制）。
+ */
+function clearPageTitle() {
+    state$2.page = '';
+}
+
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
+
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
+
+/**
+ * 安全工具集：序列化、try 包裹、指数退避重试。
+ *
+ * 修复缺陷：
+ *   - #1 `_retry` 未初始化导致重试链路 NaN（公有版直接以参数显式传 `times`）。
+ *   - #7 取值反向（私有版 `if (data.length > MAX_LENGTH)` 误判）。
+ *   - #8 循环引用导致 `JSON.stringify` 抛错（用 WeakSet replacer 兜底）。
+ */
+/**
+ * 包裹同步函数，捕获任何抛出，返回 fallback。
+ *
+ * 不打印 console（由调用方按需 `logger.warn`）；保持纯函数风格便于热路径使用。
+ */
+function tryRun(fn, fallback) {
+    try {
+        return fn();
+    }
+    catch (_a) {
+        return fallback;
+    }
+}
+/**
+ * 指数退避重试：失败时按 `baseDelayMs * 2^(n-1)` 等待后重试，全部失败抛出最后一个错误。
+ *
+ * @example
+ *   await withRetry(() => fetch(url), { times: 3, baseDelayMs: 200 })
+ *   // 第 1 次失败 → wait 200ms；第 2 次失败 → wait 400ms；第 3 次失败 → throw
+ */
+function withRetry(fn, opts) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        const total = Math.max(1, Math.floor(opts.times));
+        const sleep = (_a = opts.sleep) !== null && _a !== void 0 ? _a : defaultSleep;
+        let lastErr;
+        for (let attempt = 1; attempt <= total; attempt++) {
+            try {
+                return yield fn();
+            }
+            catch (e) {
+                lastErr = e;
+                if (attempt >= total)
+                    break;
+                yield sleep(opts.baseDelayMs * Math.pow(2, (attempt - 1)));
+            }
+        }
+        throw lastErr;
+    });
+}
+function defaultSleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * 时间相关基础设施。
+ *
+ * 设计要点：
+ *   1. 单元统一：`Sec` 后缀代表秒级；`Ms` 后缀代表毫秒级。任何函数签名都禁止"参数与
+ *      返回值单元不一致"，避免私有版长期存在的"秒/毫秒混用"问题。
+ *   2. 全部走 `Date.now()`，不走 `new Date().getTime()`，便于 jest fake timers / mock。
+ */
+/**
+ * 当前毫秒级时间戳。用于上报 jitter / 节流定时器等内部计算。
+ */
+function nowMs() {
+    return Date.now();
+}
+/**
+ * 当前秒级时间戳。用于 statData 上行字段（`t / fvts / lvts / sst` 等）。
+ */
+function nowSec() {
+    return Math.floor(Date.now() / 1000);
+}
+
+/**
+ * 平台标识适配。
+ *
+ * 私有版 `pageInfo.js#get_platform_name` 的能力等价物，但做了三点改进：
+ *   1. 类型化：返回受控 `Platform` 联合，禁止把陌生平台直接透传出去。
+ *   2. 拆出 `getRawPlatform()`：返回 `process.env.UNI_PLATFORM` 原值，便于 adapter 内部
+ *      做"小程序基础库分支"判断，而无需重复读 env。
+ *   3. `isApp / isMp / isH5 / isNvue` 一次实现，调用方不再四处 `if (platform === 'n')`。
+ *
+ * 上行字段约定：
+ *   - `p` = `getPlatform()`（与私有版兼容；新平台扩充直接加 case 即可）。
+ *   - 客户端 OS（用于风控）= `getClientOs()`：'a' / 'i' / 'h' / 'unknown'。
+ *
+ * 注意：本模块严禁缓存平台判定结果到模块级常量。`process.env.UNI_PLATFORM` 在 SSR 与
+ * 单测中可能被运行时切换；缓存会让多端测试串味。
+ */
+/** 私有版兼容映射：UNI_PLATFORM → 短码。 */
+const PLATFORM_MAP = {
+    app: 'n',
+    'app-plus': 'n',
+    'app-harmony': 'n',
+    'mp-harmony': 'mhm',
+    h5: 'h5',
+    'mp-weixin': 'wx',
+    'mp-alipay': 'ali',
+    'mp-baidu': 'bd',
+    'mp-toutiao': 'tt',
+    'mp-qq': 'qq',
+    'mp-kuaishou': 'ks',
+    'mp-lark': 'lark',
+    'mp-xhs': 'xhs',
+    'mp-jd': 'jd',
+    'quickapp-native': 'qn',
+    'quickapp-webview': 'qw',
+};
+/**
+ * 取 `process.env.UNI_PLATFORM` 原值，未设置返回空字符串。
+ *
+ * 单独抽出是为了：
+ *   - 单测可以专门校验"未注入 UNI_PLATFORM"路径，不被 PLATFORM_MAP 遮蔽。
+ *   - 调用方做小程序差异判断（如阿里系再细分 ali/dt）时无需再 `process.env.*`。
+ */
+function getRawPlatform() {
+    var _a;
+    return (_a = process.env.UNI_PLATFORM) !== null && _a !== void 0 ? _a : '';
+}
+/**
+ * 取标准化后的平台短码。
+ *
+ * 阿里系细分逻辑：
+ *   - 命中 `mp-alipay` 时若 `globalThis.my.env.clientName === 'dingtalk'` → `dt`。
+ *   - 其他阿里系（小程序、H5 中嵌入支付宝端等）继续返回 `'ali'`。
+ *
+ * 未识别平台返回 `'unknown'`，禁止把陌生 raw 值直接当作 Platform 透传，
+ * 避免上行字段污染（私有版的 `return … || process.env.VUE_APP_PLATFORM` 是潜在风险点）。
+ */
+function getPlatform() {
+    var _a;
+    const raw = getRawPlatform();
+    const mapped = PLATFORM_MAP[raw];
+    if (!mapped)
+        return 'unknown';
+    if (mapped === 'ali') {
+        const my = globalThis.my;
+        if (((_a = my === null || my === void 0 ? void 0 : my.env) === null || _a === void 0 ? void 0 : _a.clientName) === 'dingtalk')
+            return 'dt';
+        return 'ali';
+    }
+    return mapped;
+}
+/**
+ * 取客户端操作系统粗分类。仅在 App 与 HarmonyOS App 上有意义：
+ *   - 'a' = Android
+ *   - 'i' = iOS
+ *   - 'h' = HarmonyOS（plus 不可用、UNI_PLATFORM=app-harmony）
+ *   - 'unknown' = 其他端
+ *
+ * 优先读 `globalThis.plus.os.name`；无 plus 时按 UNI_PLATFORM 退化判断。
+ */
+function getClientOs() {
+    var _a, _b;
+    const raw = getRawPlatform();
+    const plus = globalThis.plus;
+    const name = (_b = (_a = plus === null || plus === void 0 ? void 0 : plus.os) === null || _a === void 0 ? void 0 : _a.name) === null || _b === void 0 ? void 0 : _b.toLowerCase();
+    if (name) {
+        if (name.includes('android'))
+            return 'a';
+        if (name === 'ios' || name === 'iphone os')
+            return 'i';
+        if (name.includes('harmony'))
+            return 'h';
+    }
+    if (raw === 'app-harmony' || raw === 'mp-harmony')
+        return 'h';
+    return 'unknown';
+}
+/** 当前是否运行在 App / nvue / HarmonyOS App 端。 */
+function isApp() {
+    const raw = getRawPlatform();
+    return raw === 'app' || raw === 'app-plus' || raw === 'app-harmony';
+}
+/** 当前是否运行在小程序端（含各平台）。 */
+function isMp() {
+    return getRawPlatform().startsWith('mp-');
+}
+/** 当前是否运行在 H5 端。 */
+function isH5() {
+    return getRawPlatform() === 'h5';
+}
+
+/**
+ * 设备 ID 适配。
+ *
+ * 私有版痛点（参考 `pageInfo.js#getUuid` / `get_uuid` / `get_odid`）：
+ *   - `get_uuid` 优先用 `sys.deviceId`，但 `sys` 是模块加载期 `uni.getSystemInfoSync()`
+ *     的快照，SSR/早期阶段可能不存在 `deviceId` 字段，导致退化路径被频繁走到。
+ *   - 退化路径里 `uni.setStorageSync(UUID_KEY, UUID_VALUE)` —— 这里 `UUID_VALUE` 是
+ *     字面量字符串 `'__DC_UUID_VALUE'`，会让所有"写入失败"的设备共享同一个 uuid，
+ *     直接污染统计漏斗（缺陷 #28）。
+ *   - `get_odid` 调用了 `getUuid()`（递归同样缺陷），但 odid 的语义本应是"老 deviceid"，
+ *     新生成的 fallback 不该走 odid 路径。
+ *
+ * 公有版职责：
+ *   1. `getUuid()`：稳定 + 持久化。优先 `plus.runtime.getDCloudId()`（App 端）；
+ *      其次 `system.deviceId`（小程序基础库）；都没有则生成 `anon-...` 并落 storage。
+ *   2. `getOdid()`：仅 App 端有意义（`plus.device.uuid`），其他端固定空串，**不递归**。
+ *   3. 任何 storage / plus 调用全部走 `tryRun` 兜底，绝不抛出。
+ *   4. 内存级缓存：避免每次构建 statData 都触发一次同步 storage IO。
+ *   5. `__resetCache()` 仅供测试。
+ *
+ * 与私有版上行字段兼容：仍然落到 `ud / odid` 字段（在 `domain/statData.ts` 拼装）。
+ */
+const STORAGE_KEY_UUID = 'device:uuid';
+let cachedUuid = null;
+let cachedOdid = null;
+/** 取 plus 全局，剥离到函数里便于 mock。 */
+function getPlus$1() {
+    return globalThis.plus;
+}
+/**
+ * 读取 `uni.getSystemInfoSync().deviceId`；任何异常 / 缺失返回空串。
+ *
+ * 不复用 `adapter/system.getSystemInfo`：deviceId 在 uni-app 字段表里属于"敏感字段"，
+ * 公有版默认不暴露在 `SystemInfoStatic` 中，仅在本 adapter 内部使用。
+ */
+function readSysDeviceId() {
+    const u = globalThis.uni;
+    if (!u || typeof u.getSystemInfoSync !== 'function')
+        return '';
+    return tryRun(() => { var _a; return (_a = u.getSystemInfoSync().deviceId) !== null && _a !== void 0 ? _a : ''; }, '');
+}
+/**
+ * 生成 anon-${base36(now)}-${rand} 形式的兜底 uuid。
+ *
+ * 与 `infra/sid.genSid` 区别：sid 每次会话都重新生成，uuid 是设备级单例，
+ * 因此格式上加 `device-anon-` 前缀以便日志中分辨来源。
+ */
+function generateAnonUuid() {
+    const r = Math.random().toString(36).slice(2, 12).padEnd(10, '0');
+    return `device-anon-${nowMs().toString(36)}-${r}`;
+}
+/**
+ * 取设备 uuid。优先级：内存缓存 → plus.runtime.getDCloudId（App）→ system.deviceId
+ * → storage 历史值 → 新生成 anon 并落库。
+ *
+ * 任何环节失败都不抛错，最差情况返回新生成的 anon uuid（仅当次进程内有效），
+ * 调用方据此能保证字段非空（避免私有版 `''` 上报后被丢弃）。
+ */
+function getUuid() {
+    if (cachedUuid)
+        return cachedUuid;
+    if (isApp()) {
+        const plus = getPlus$1();
+        const dcloudId = tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _a === void 0 ? void 0 : _a.getDCloudId) === null || _b === void 0 ? void 0 : _b.call(_a)) !== null && _c !== void 0 ? _c : ''; }, '');
+        if (dcloudId) {
+            cachedUuid = dcloudId;
+            return cachedUuid;
+        }
+    }
+    const sysDeviceId = readSysDeviceId();
+    if (sysDeviceId) {
+        cachedUuid = sysDeviceId;
+        return cachedUuid;
+    }
+    const stored = storage.get(STORAGE_KEY_UUID);
+    if (typeof stored === 'string' && stored.length > 0) {
+        cachedUuid = stored;
+        return cachedUuid;
+    }
+    const generated = generateAnonUuid();
+    tryRun(() => storage.set(STORAGE_KEY_UUID, generated), undefined);
+    cachedUuid = generated;
+    return cachedUuid;
+}
+/**
+ * 取老版 device id（odid）。仅 App 端有真值（`plus.device.uuid`），其他端固定空串。
+ *
+ * 对比私有版：
+ *   - 不再"找不到就调 getUuid()" —— 那会让 odid 与 uuid 在小程序端一致，
+ *     破坏服务端"通过 odid 识别 v1 老设备"的语义。
+ *   - 任何异常返回 ''，由 `domain/statData.ts` 自行决定是否丢字段。
+ */
+function getOdid() {
+    if (cachedOdid !== null)
+        return cachedOdid;
+    if (!isApp()) {
+        cachedOdid = '';
+        return cachedOdid;
+    }
+    const plus = getPlus$1();
+    cachedOdid = tryRun(() => { var _a, _b; return (_b = (_a = plus === null || plus === void 0 ? void 0 : plus.device) === null || _a === void 0 ? void 0 : _a.uuid) !== null && _b !== void 0 ? _b : ''; }, '');
+    return cachedOdid;
+}
+
+/**
+ * 会话 ID 生成器。
+ *
+ * 形如：
+ *   - 有 uuid：`${uuid}-${base36(now)}-${4字符 random}`
+ *   - 无 uuid：`anon-${base36(now)}-${8字符 random}`
+ *
+ * 设计要点：
+ *   1. 长度可控（典型 < 64 字符），避免上报字段超限。
+ *   2. 仅依赖 `Math.random` 与 `Date.now`，不引入 crypto；同一毫秒并发碰撞概率
+ *      ≈ 1/(36^4) ≈ 6e-7，对统计采集足够。
+ */
+const RANDOM_LEN_WITH_UUID = 4;
+const RANDOM_LEN_WITHOUT_UUID = 8;
+/**
+ * 生成会话 ID。`uuid` 为空字符串 / undefined 时退化为 anon 模式。
+ */
+function genSid(uuid) {
+    const ts = nowMs().toString(36);
+    if (uuid && uuid.length > 0) {
+        return `${uuid}-${ts}-${randomPart(RANDOM_LEN_WITH_UUID)}`;
+    }
+    return `anon-${ts}-${randomPart(RANDOM_LEN_WITHOUT_UUID)}`;
+}
+/**
+ * 生成 base36 随机串。
+ *
+ * @param len 期望长度；不足时用 '0' 左填充以保证视觉与碰撞概率稳定。
+ */
+function randomPart(len) {
+    const r = Math.random().toString(36).slice(2, 2 + len);
+    return r.length >= len ? r : r.padEnd(len, '0');
+}
+
+/**
+ * 客户端会话状态机（公有版核心新增）。
+ *
+ * 设计文档：`03-公有版架构设计.md` §3。
+ *
+ * 状态：
+ *   - `None`：未生成过 session（首次启动 / clearStorage 后）。
+ *   - `Active`：前台有有效 session，可继续 touch 推进 lastActive。
+ *   - `Background`：应用进入后台，等待返回前台时判定是否超时。
+ *
+ * 触发器 → cst 映射：
+ *   - `cold_launch`：进程冷启动 → cst=1。
+ *   - `app_show` (从后台返回)：
+ *       - now - bgTs > backgroundTimeoutSec → 新 session, cst=2。
+ *       - 否则复用旧 session, cst=0。
+ *   - `wx_scene_changed`：scene 与上次不同 → 新 session, cst=2。
+ *   - `page_show` (前台已有 session)：
+ *       - now - lastActive > pageInactiveTimeoutSec → 新 session, cst=3。
+ *       - 否则 touch & 复用, cst=0。
+ *
+ * 关键设计：所有 storage 操作都带 try / safeRead 兜底；任何路径都不抛异常，
+ * 失败 → 退化生成新 session，避免阻塞采集链路。
+ */
+const KEY_SID = 'session:id';
+const KEY_SST = 'session:start';
+const KEY_SCT = 'session:sct';
+const KEY_SEQ = 'session:seq';
+const KEY_LAST_ACTIVE = 'session:lastActive';
+const KEY_BG_TS = 'session:bgTs';
+const KEY_LAST_SCENE = 'session:lastScene';
+const KEY_PREV_ID = 'session:prevId';
+const DEFAULT_CONFIG = {
+    backgroundTimeoutSec: 300,
+    pageInactiveTimeoutSec: 1800,
+};
+let config$1 = Object.assign({}, DEFAULT_CONFIG);
+let cached$1 = null;
+/**
+ * 上一会话 sid。新 session 创建时写入；上报后通过 `consumePrevId` 取走，
+ * 取后清空 storage，避免重复携带（与设计文档 §3.4 `__stat:session:prevId` 保持一致）。
+ */
+let prevIdInited = false;
+/** 配置注入（runtime/install.ts 在启动时调一次）。 */
+function configure$1(c) {
+    config$1 = Object.assign({}, DEFAULT_CONFIG, c);
+}
+/**
+ * 工具：把 storage 读取到的值转 number；非法值返回 0。
+ */
+function readNum(key) {
+    const r = storage.safeRead(key);
+    if (!r.ok)
+        return 0;
+    const v = r.value;
+    if (typeof v === 'number' && Number.isFinite(v) && v >= 0)
+        return v;
+    if (typeof v === 'string' && v.length > 0) {
+        const n = Number(v);
+        if (Number.isFinite(n) && n >= 0)
+            return n;
+    }
+    return 0;
+}
+function readStr(key) {
+    const r = storage.safeRead(key);
+    if (!r.ok)
+        return '';
+    return typeof r.value === 'string' ? r.value : '';
+}
+/**
+ * 从 storage 重建 snapshot；任意字段缺失返回 null。
+ */
+function loadFromStorage() {
+    const sid = readStr(KEY_SID);
+    if (!sid)
+        return null;
+    return {
+        sid,
+        sst: readNum(KEY_SST),
+        sct: (readNum(KEY_SCT) || CST.ColdLaunch),
+        seq: readNum(KEY_SEQ),
+        lastActive: readNum(KEY_LAST_ACTIVE),
+        bgTs: readNum(KEY_BG_TS),
+        lastScene: readStr(KEY_LAST_SCENE),
+    };
+}
+function ensureCache() {
+    if (cached$1 !== null)
+        return cached$1;
+    cached$1 = loadFromStorage();
+    return cached$1;
+}
+/**
+ * 创建一个新 session，写入 storage 并返回新的 snapshot。
+ *
+ * 内部职责：
+ *   - 把旧 sid（如有）写入 prevId（消费一次）。
+ *   - 重置 seq=0、lastActive=now、bgTs=0。
+ */
+function createNew(now, sct, scene) {
+    const oldSid = cached$1 === null || cached$1 === void 0 ? void 0 : cached$1.sid;
+    if (oldSid) {
+        storage.set(KEY_PREV_ID, oldSid);
+        prevIdInited = true;
+    }
+    const sid = genSid(getUuid());
+    const next = {
+        sid,
+        sst: now,
+        sct,
+        seq: 0,
+        lastActive: now,
+        bgTs: 0,
+        lastScene: scene,
+    };
+    storage.set(KEY_SID, sid);
+    storage.set(KEY_SST, now);
+    storage.set(KEY_SCT, sct);
+    storage.set(KEY_SEQ, 0);
+    storage.set(KEY_LAST_ACTIVE, now);
+    storage.set(KEY_BG_TS, 0);
+    storage.set(KEY_LAST_SCENE, scene);
+    cached$1 = next;
+    return next;
+}
+/**
+ * 主入口：根据 trigger 与上下文，确保 session 处于正确状态。
+ *
+ * 结果包含 isNew / cst，供 collector 决定是否发 `lt=0` 与是否携带 fvts/lvts/tvc。
+ */
+function ensureSession(t, ctx) {
+    const { now, scene = '' } = ctx;
+    const snap = ensureCache();
+    if (t === 'cold_launch') {
+        const created = createNew(now, CST.ColdLaunch, scene);
+        return { snapshot: created, isNew: true, cst: CST.ColdLaunch };
+    }
+    if (!snap) {
+        // 没有现存 session（罕见：app_show 但 storage 被清）→ 视为冷启动
+        const created = createNew(now, CST.ColdLaunch, scene);
+        return { snapshot: created, isNew: true, cst: CST.ColdLaunch };
+    }
+    if (t === 'app_show') {
+        const elapsed = now - (snap.bgTs || snap.lastActive);
+        const sceneChanged = !!scene && !!snap.lastScene && scene !== snap.lastScene;
+        if (sceneChanged || (snap.bgTs > 0 && elapsed > config$1.backgroundTimeoutSec)) {
+            const created = createNew(now, CST.BackgroundTimeout, scene);
+            return { snapshot: created, isNew: true, cst: CST.BackgroundTimeout };
+        }
+        // 未超时：清 bgTs，更新 lastActive
+        touch(now);
+        storage.set(KEY_BG_TS, 0);
+        if (cached$1)
+            cached$1.bgTs = 0;
+        return { snapshot: cached$1, isNew: false, cst: 0 };
+    }
+    if (t === 'wx_scene_changed') {
+        if (scene && scene !== snap.lastScene) {
+            const created = createNew(now, CST.BackgroundTimeout, scene);
+            return { snapshot: created, isNew: true, cst: CST.BackgroundTimeout };
+        }
+        return { snapshot: snap, isNew: false, cst: 0 };
+    }
+    // page_show：判定前台无操作超时
+    const elapsed = now - snap.lastActive;
+    if (elapsed > config$1.pageInactiveTimeoutSec) {
+        const created = createNew(now, CST.PageInactiveTimeout, scene || snap.lastScene);
+        return { snapshot: created, isNew: true, cst: CST.PageInactiveTimeout };
+    }
+    touch(now);
+    return { snapshot: cached$1, isNew: false, cst: 0 };
+}
+/**
+ * 标记应用进入后台。写入 bgTs，供下次 app_show 判定超时。
+ */
+function markBackground(now) {
+    if (!cached$1)
+        cached$1 = loadFromStorage();
+    if (!cached$1)
+        return;
+    storage.set(KEY_BG_TS, now);
+    cached$1.bgTs = now;
+}
+/**
+ * 更新 lastActive；page_show / 用户操作时调用。
+ */
+function touch(now) {
+    if (!cached$1)
+        cached$1 = loadFromStorage();
+    if (!cached$1)
+        return;
+    storage.set(KEY_LAST_ACTIVE, now);
+    cached$1.lastActive = now;
+}
+/**
+ * 取下一个 seq；先递增 storage 中的 seq，再返回新值。
+ *
+ * 失败兜底：若 storage 异常，仍以内存 cached.seq 自增；保证序号单调，但跨进程可能跳号。
+ */
+function nextSeq() {
+    if (!cached$1)
+        cached$1 = loadFromStorage();
+    if (!cached$1)
+        return 0;
+    const next = cached$1.seq + 1;
+    cached$1.seq = next;
+    storage.set(KEY_SEQ, next);
+    return next;
+}
+/** 取当前 snapshot；未初始化时尝试从 storage 加载，仍为空返回 null。 */
+function getSnapshot() {
+    return ensureCache();
+}
+/**
+ * 消费 prevId：取出后清掉。仅新 session 第一次上报会用，参考设计文档 §3.3。
+ *
+ * 如果未发生 session 切换，返回 undefined。
+ */
+function consumePrevId() {
+    // 强制初始化一次，避免冷启动后未读 storage 时直接 consume 漏掉真实 prevId
+    if (!prevIdInited) {
+        const r = storage.safeRead(KEY_PREV_ID);
+        if (r.ok && typeof r.value === 'string' && r.value.length > 0) {
+            storage.remove(KEY_PREV_ID);
+            prevIdInited = true;
+            return r.value;
+        }
+        prevIdInited = true;
+        return undefined;
+    }
+    const r = storage.safeRead(KEY_PREV_ID);
+    if (!r.ok || typeof r.value !== 'string' || r.value.length === 0)
+        return undefined;
+    storage.remove(KEY_PREV_ID);
+    return r.value;
+}
+
+/**
+ * 页面路由适配。
+ *
+ * 私有版痛点（参考 `pageInfo.js#get_route / get_page_route / get_page_vm`）：
+ *   - `get_page_route` 失败兜底用 `uni.getStorageSync('_STAT_LAST_PAGE_ROUTE')`，
+ *     但这个 key 写入位置散落在 `report.js` 多处，时序复杂、容易脏。
+ *   - 百度小程序 `_self.$mp.page.is` 取页面路由，逻辑硬编码在 `get_route` 里，
+ *     新平台进来必须改这一处主流程。
+ *   - `get_page_vm` 直接调 `getCurrentPages()`：在 `onHide` 之后窗口栈可能为空。
+ *
+ * 公有版职责：
+ *   1. `getCurrentRoute()`：稳定获取当前页 path，支持显式传入 pageVm 与多端兜底。
+ *   2. `getCurrentRouteWithQuery()`：取带 query 的完整 fullPath。
+ *   3. `parseQuery()`：解析 query string 为对象（不依赖 url-search-params，nvue 兼容）。
+ *   4. 全部 try/catch，永远返回 `string` / `object`，不返回 undefined。
+ *
+ * 与私有版兼容：上行字段 `url`（不含 query）/ `urlref`（前页 url）等仍由
+ * `domain/statData` 拼装，本层只提供原料。
+ */
+/**
+ * 取栈顶页面实例（vm）。
+ *
+ * 优先 `getCurrentPages()`；若不可用或栈为空返回 `undefined`。
+ */
+function getTopPageVm() {
+    var _a;
+    const fn = globalThis.getCurrentPages;
+    if (typeof fn !== 'function')
+        return undefined;
+    const pages = tryRun(() => fn(), []) || [];
+    if (!Array.isArray(pages) || pages.length === 0)
+        return undefined;
+    const top = pages[pages.length - 1];
+    return (_a = top === null || top === void 0 ? void 0 : top.$vm) !== null && _a !== void 0 ? _a : top;
+}
+/**
+ * 取当前页面路径（不含 query）。
+ *
+ * 取值顺序：
+ *   1. 显式 pageVm 优先（mixin 收到的 self/this）。
+ *   2. 百度小程序：`vm.$mp.page.is` / `vm.$scope.is`。
+ *   3. 通用：`vm.route` → `vm.$scope.route` → `vm.$mp.page.route`。
+ *   4. 取栈顶 page 兜底。
+ *   5. 全失败返回 ''。
+ */
+function getCurrentRoute(pageVm) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    const vm = pageVm !== null && pageVm !== void 0 ? pageVm : getTopPageVm();
+    if (!vm)
+        return '';
+    if (getPlatform() === 'bd') {
+        const r = (_e = (_c = (_b = (_a = vm.$mp) === null || _a === void 0 ? void 0 : _a.page) === null || _b === void 0 ? void 0 : _b.is) !== null && _c !== void 0 ? _c : (_d = vm.$scope) === null || _d === void 0 ? void 0 : _d.is) !== null && _e !== void 0 ? _e : '';
+        if (r)
+            return r;
+    }
+    return ((_l = (_h = (_f = vm.route) !== null && _f !== void 0 ? _f : (_g = vm.$scope) === null || _g === void 0 ? void 0 : _g.route) !== null && _h !== void 0 ? _h : (_k = (_j = vm.$mp) === null || _j === void 0 ? void 0 : _j.page) === null || _k === void 0 ? void 0 : _k.route) !== null && _l !== void 0 ? _l : '');
+}
+/**
+ * 取当前页 fullPath（含 query）；无 query 返回与 `getCurrentRoute` 一致。
+ *
+ * 取值顺序：vm.$page.fullPath → vm.$scope.$page.fullPath → 退化 route。
+ * 与私有版一致：fullPath === '/' 时退到 route，避免根路径 query 丢失。
+ */
+function getCurrentRouteWithQuery(pageVm) {
+    var _a, _b;
+    const vm = pageVm !== null && pageVm !== void 0 ? pageVm : getTopPageVm();
+    if (!vm)
+        return '';
+    const page = (_a = vm.$page) !== null && _a !== void 0 ? _a : (_b = vm.$scope) === null || _b === void 0 ? void 0 : _b.$page;
+    if (page) {
+        if (page.fullPath && page.fullPath !== '/')
+            return page.fullPath;
+        if (page.route)
+            return page.route;
+    }
+    return getCurrentRoute(vm);
+}
+
+/**
+ * 应用生命周期 + 场景值适配。
+ *
+ * 公有版职责：
+ *   1. 把 `uni.onAppShow / onAppHide / onLaunch` 这一组事件抽象成"订阅 + 解绑"形式，
+ *      供 `domain/session` 与 `pipeline/collector` 复用，避免业务层直接吃 uni API。
+ *   2. 兜底所有调用：uni 缺失时 unsubscribe 为 noop，订阅失败不抛。
+ *   3. `getLaunchScene()`：私有版 `get_scene` 仅限 wx，公有版补全 mp-qq / mp-toutiao /
+ *      mp-baidu / mp-alipay / mp-lark / mp-kuaishou，并允许覆写（页面自带 scene）。
+ *
+ * 注意：本模块不维护订阅注册表（去重逻辑由 `infra/interceptor` 与 `runtime/install`
+ * 处理），保持单一职责。
+ */
+function getUni$6() {
+    return globalThis.uni;
+}
+/**
+ * 启动时取场景值。优先级：
+ *   1. 调用方显式传入 `override`（如页面 onLoad 收到的 options.scene）。
+ *   2. `uni.getLaunchOptionsSync().scene`（多端通用）。
+ *   3. 不识别的平台返回空字符串。
+ *
+ * 公有版扩展：除 wx 外，mp-qq / mp-toutiao / mp-baidu / mp-alipay / mp-lark /
+ * mp-kuaishou 都已支持 `getLaunchOptionsSync`，统一走该入口。
+ */
+function getLaunchScene(override) {
+    if (override !== undefined && override !== null && override !== '') {
+        return String(override);
+    }
+    const u = getUni$6();
+    if (typeof (u === null || u === void 0 ? void 0 : u.getLaunchOptionsSync) !== 'function')
+        return '';
+    const platform = getPlatform();
+    if (platform !== 'wx' &&
+        platform !== 'qq' &&
+        platform !== 'tt' &&
+        platform !== 'bd' &&
+        platform !== 'ali' &&
+        platform !== 'lark' &&
+        platform !== 'ks') {
+        return '';
+    }
+    return tryRun(() => {
+        const opts = u.getLaunchOptionsSync();
+        const scene = opts === null || opts === void 0 ? void 0 : opts.scene;
+        return scene === undefined || scene === null ? '' : String(scene);
+    }, '');
+}
+
+/**
+ * uniPush ClientID 适配。
+ *
+ * 私有版（`core/stat.js#pushEvent`）逻辑：
+ *   - 调 `uni.getPushClientId({ success(res){ cid = res.cid } })`，无 cid 直接丢弃。
+ *   - 没有超时；某些机型 push 服务异常时，回调永远不来，导致这次 launch 的 push 上报丢失。
+ *   - 返回值包在 success 回调里，无法 await，不便 pipeline 串接。
+ *
+ * 公有版职责：
+ *   1. `getPushClientId({ enabled, timeoutMs })` 返回 `Promise<PushClientResult>`，
+ *      永不 reject；超时 / 失败 / 关闭统一返回 `{ ok: false, cid: '' }`。
+ *   2. `enabled` 默认 false（合规要求显式开启）；调用方应从 `config.uniPushClientID`
+ *      透传。
+ *   3. 不缓存：业务方需要会话维度复用时在 `domain/push.ts` 中缓存（待 Phase 5 接入）。
+ */
+function getUni$5() {
+    return globalThis.uni;
+}
+/**
+ * 异步取 push clientId。
+ *
+ * 任意异常路径都 resolve（永不 reject），调用方只需根据 `ok` 字段判断是否上报。
+ */
+function getPushClientId(opts = {}) {
+    const { enabled = false, timeoutMs = 3000 } = opts;
+    return new Promise((resolve) => {
+        if (!enabled) {
+            resolve({ ok: false, cid: '', reason: 'disabled' });
+            return;
+        }
+        const u = getUni$5();
+        if (!u || typeof u.getPushClientId !== 'function') {
+            resolve({ ok: false, cid: '', reason: 'unsupported' });
+            return;
+        }
+        let settled = false;
+        const finish = (r) => {
+            if (settled)
+                return;
+            settled = true;
+            resolve(r);
+        };
+        const timer = setTimeout(() => finish({ ok: false, cid: '', reason: 'timeout' }), timeoutMs);
+        tryRun(() => u.getPushClientId({
+            success: (res) => {
+                clearTimeout(timer);
+                const cid = typeof (res === null || res === void 0 ? void 0 : res.cid) === 'string' ? res.cid : '';
+                if (!cid) {
+                    finish({ ok: false, cid: '', reason: 'fail' });
+                    return;
+                }
+                finish({ ok: true, cid });
+            },
+            fail: () => {
+                clearTimeout(timer);
+                finish({ ok: false, cid: '', reason: 'fail' });
+            },
+        }), undefined);
+    });
+}
+
+/**
+ * 生命周期 → collector 调度桥。
+ *
+ * 把 vue mixin / `uni.onAppShow|onAppHide` / push clientId 这些"运行时事件源"
+ * 翻译成 collector 的 `report({lt, ...})` 调用，统一处理：
+ *   - 会话状态机（ensureSession / markBackground）。
+ *   - 入口页登记（entryPage）。
+ *   - lastRoute / urlref / urlref_ts 维护。
+ *   - 新会话首报先发 `lt=0`（Session）再发 `lt=1`（Launch），与设计文档 §3.5 对齐。
+ *   - push CID 异步抓取后再发 `lt=101`，超时 / 失败静默丢弃。
+ *
+ * 暴露：
+ *   - `bindLifecycle(app, opts?)`：返回 mixin / onAppShow / onAppHide 句柄与
+ *     unbind 函数，runtime/install.ts 据此装到 vue & uni 上。
+ *   - 内部句柄（`onLaunch / onAppShow / onAppHide / onPageShow / onPageHide / onError`）
+ *     单独导出便于单测精准触发。
+ *
+ * 注意：本模块**不直接**依赖任何 adapter（除 `getCurrentRoute*` 与 `getLaunchScene`），
+ * adapter 调用全部走 `tryRun` 兜底，单端缺失不影响调度。
+ */
+/** 模块级状态。`bindLifecycle` 返回的 unbind 仅断订阅，不重置 state。 */
+const state$1 = {
+    lastRoute: '',
+    lastRouteEnterTime: 0,
+    lastIey: false,
+    isHide: false,
+};
+/**
+ * 取 collector；未 install 时返回 undefined（调用方需负责 noop）。
+ */
+function safeCollector(app) {
+    return app.getCollector();
+}
+/**
+ * 新会话首报：先 `lt=0`（Session），再 `lt=1`（Launch），均带 cst。
+ *
+ * 重要约束（修复 lvts=0 缺陷）：
+ *   - `fvts/lvts/tvc` **只在进程首报**（cold_launch 触发的首次 ensureSession）携带；
+ *     cst=2（后台超时）/ cst=3（前台无操作超时）创建的新 session **不**带。
+ *   - 通过 `firstVisitEmittedInProcess` 哨兵保证全进程只调用一次 `buildVisitFields`。
+ *   - 若上层禁用 lt=0（emitSessionEvent=false），则只发 lt=1。
+ */
+function reportNewSession(c, cst, scene, emitSessionEvent, now, attachVisit) {
+    let visit;
+    if (attachVisit && !firstVisitEmittedInProcess) {
+        firstVisitEmittedInProcess = true;
+        visit = tryRun(() => buildVisitFields(now), undefined);
+    }
+    if (emitSessionEvent) {
+        c.report({ lt: LT.Session, t: now, sc: scene, visit });
+    }
+    c.report({ lt: LT.Launch, t: now, sc: scene, visit });
+}
+/** 进程内是否已发过首批访问字段（fvts/lvts/tvc）。 */
+let firstVisitEmittedInProcess = false;
+/**
+ * App.onLaunch：冷启动入口。
+ *
+ * 流程：
+ *   1. ensureSession('cold_launch') → cst=1，必产新 session。
+ *   2. 发 lt=0（可选） + lt=1。
+ *   3. 异步抓 push CID，成功后发 lt=101。
+ *   4. 兜底 onLaunch options 可能携带 scene / path（小程序）。
+ */
+function handleLaunch(app, options = {}, opts = {}) {
+    const c = safeCollector(app);
+    if (!c)
+        return;
+    const now = nowSec();
+    const scene = tryRun(() => getLaunchScene(options.scene), '');
+    const result = tryRun(() => ensureSession('cold_launch', { now, scene }), null);
+    if (!result)
+        return;
+    reportNewSession(c, result.cst || CST.ColdLaunch, scene, opts.emitSessionEvent !== false, now, true);
+    if (opts.enablePush) {
+        void getPushClientId({ enabled: true, timeoutMs: opts.pushTimeoutMs })
+            .then((r) => {
+            if (!r.ok || !r.cid)
+                return;
+            const c2 = safeCollector(app);
+            if (!c2)
+                return;
+            c2.report({ lt: LT.Push, cid: r.cid, t: nowSec() });
+        })
+            .catch((e) => logger.warn('[uni-stat] push cid fetch failed', e));
+    }
+}
+/**
+ * 应用从后台进入前台。
+ *
+ * 流程：
+ *   1. ensureSession('app_show') → 命中 backgroundTimeout 时新 session（cst=2）。
+ *   2. isNew=true 时发 lt=0 + lt=1；否则 noop（私有版同 oldcst=2 后续 page show 也不重发）。
+ */
+function handleAppShow(app, options = {}, opts = {}) {
+    const c = safeCollector(app);
+    if (!c)
+        return;
+    const now = nowSec();
+    const scene = tryRun(() => getLaunchScene(options.scene), '');
+    const result = tryRun(() => ensureSession('app_show', { now, scene }), null);
+    if (!result || !result.isNew)
+        return;
+    // cst=2：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
+    reportNewSession(c, result.cst || CST.BackgroundTimeout, scene, opts.emitSessionEvent !== false, now, false);
+}
+/**
+ * 应用进入后台。
+ *
+ * 流程：
+ *   1. markBackground(now)：写 bgTs，让下次 app_show 能算超时。
+ *   2. 发 lt=3：`urlref` = 当前页（用户最后看到的页面），`urlref_ts` = 该页停留秒数。
+ *   3. 进入后台后强制 flush（force=true），尽量在被 kill 前送出。
+ */
+function handleAppHide(app) {
+    const c = safeCollector(app);
+    if (!c)
+        return;
+    const now = nowSec();
+    tryRun(() => markBackground(now), undefined);
+    const stayed = state$1.lastRouteEnterTime > 0 ? Math.max(0, now - state$1.lastRouteEnterTime) : 0;
+    c.report({
+        lt: LT.Hide,
+        t: now,
+        urlref: state$1.lastRoute,
+        urlref_ts: stayed,
+        iey: state$1.lastIey,
+        ppiey: state$1.lastIey,
+    });
+    void c.flush(true).catch((e) => logger.warn('[uni-stat] flush on hide failed', e));
+}
+/**
+ * Page.onShow：页面前台展示。
+ *
+ * 流程：
+ *   1. ensureSession('page_show')；命中 pageInactiveTimeout 时新 session（cst=3）。
+ *   2. isNew=true 时发 lt=0 + lt=1。
+ *   3. 取当前 route：
+ *      - 新会话首页 / 当前未登记 entry → markEntryPage(route)。
+ *      - 更新 lastRoute / lastRouteEnterTime 为下次 onPageHide 用。
+ *   4. setConfigTitle(pages.json 标题)：runtime 暂时不读 manifest，
+ *      由调用方在 install 时透传，否则保持空串。
+ */
+function handlePageShow(app, vm, opts = {}) {
+    const c = safeCollector(app);
+    if (!c)
+        return;
+    const now = nowSec();
+    const result = tryRun(() => ensureSession('page_show', { now }), null);
+    if (!result)
+        return;
+    if (result.isNew) {
+        // 新会话：清掉旧 entry，等待 markEntryPage 重新登记
+        tryRun(() => clearEntry(), undefined);
+        // cst=3：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
+        reportNewSession(c, result.cst || CST.PageInactiveTimeout, '', opts.emitSessionEvent !== false, now, false);
+    }
+    const route = tryRun(() => getCurrentRoute(vm), '');
+    if (route) {
+        tryRun(() => markEntryPage(route), undefined);
+    }
+    state$1.lastRoute = route;
+    state$1.lastRouteEnterTime = now;
+    state$1.lastIey = !!route && tryRun(() => isEntry(route), false);
+    state$1.isHide = false;
+}
+/**
+ * Page.onHide / Page.onUnload：页面隐藏 / 卸载。
+ *
+ * 私有版用 `isHide` 区分 onUnload 是隐藏还是真离开；本模块同样兼容。
+ *
+ * 流程：发 lt=11，url=当前页 fullPath, urlref=上一页 path, urlref_ts=本页停留秒数。
+ */
+function handlePageHide(app, vm) {
+    const c = safeCollector(app);
+    if (!c)
+        return;
+    const now = nowSec();
+    const url = tryRun(() => getCurrentRouteWithQuery(vm), '');
+    const route = tryRun(() => getCurrentRoute(vm), '');
+    const stayed = state$1.lastRouteEnterTime > 0 ? Math.max(0, now - state$1.lastRouteEnterTime) : 0;
+    c.report({
+        lt: LT.Page,
+        t: now,
+        url,
+        urlref: state$1.lastRoute && state$1.lastRoute !== route ? state$1.lastRoute : route,
+        urlref_ts: stayed,
+        iey: route ? tryRun(() => isEntry(route), false) : false,
+        ppiey: state$1.lastIey,
+    });
+    state$1.lastRoute = route;
+    state$1.lastIey = route ? tryRun(() => isEntry(route), false) : false;
+    state$1.lastRouteEnterTime = 0;
+    state$1.isHide = true;
+    tryRun(() => clearPageTitle(), undefined);
+    // setConfigTitle 由 install 在新页 onShow 时回灌；onHide 不动它，避免 lt=11 上行字段空
+    setConfigTitle();
+}
+/**
+ * onError：把错误转给 StatApp.reportError。
+ *
+ * 与私有版一致，外层 try/catch 防止统计自身抛错引发死循环。
+ */
+function handleError(app, e) {
+    try {
+        app.reportError(e);
+    }
+    catch (err) {
+        logger.warn('[uni-stat] handleError failed', err);
+    }
+}
+function getUni$4() {
+    return globalThis.uni;
+}
+/**
+ * 装配 vue mixin + uni 全局生命周期。
+ *
+ * 与私有版 `src/index.js` 行为差异：
+ *   - 拆 onLaunch / onAppShow / onAppHide / onPageShow / onPageHide 五个独立调度，
+ *     避免 mixin 内夹带"如何判定 page/app"的脏逻辑。
+ *   - vue mixin 仍维持 `onLaunch/onLoad/onShow/onHide/onUnload/onError` 五段，与 vue
+ *     生命周期 1:1，便于上层调试。
+ */
+function bindLifecycle(app, opts = {}) {
+    let bound = true;
+    const mixin = {
+        onLaunch(options = {}) {
+            handleLaunch(app, options, opts);
+        },
+        onLoad() {
+            // 保留钩子位，用于未来扩展（query 收集等）；当前 noop。
+        },
+        onShow() {
+            handlePageShow(app, this, opts);
+        },
+        onHide() {
+            handlePageHide(app, this);
+        },
+        onUnload() {
+            if (state$1.isHide) {
+                state$1.isHide = false;
+                return;
+            }
+            handlePageHide(app, this);
+        },
+        onError(e) {
+            handleError(app, e);
+        },
+    };
+    const u = getUni$4();
+    let appShowCb;
+    let appHideCb;
+    if (u && typeof u.onAppShow === 'function') {
+        appShowCb = (e) => handleAppShow(app, e !== null && e !== void 0 ? e : {}, opts);
+        tryRun(() => u.onAppShow(appShowCb), undefined);
+    }
+    if (u && typeof u.onAppHide === 'function') {
+        appHideCb = () => handleAppHide(app);
+        tryRun(() => u.onAppHide(appHideCb), undefined);
+    }
+    return {
+        mixin,
+        unbind() {
+            if (!bound)
+                return;
+            bound = false;
+            const cur = getUni$4();
+            if (appShowCb && cur && typeof cur.offAppShow === 'function') {
+                tryRun(() => cur.offAppShow(appShowCb), undefined);
+            }
+            if (appHideCb && cur && typeof cur.offAppHide === 'function') {
+                tryRun(() => cur.offAppHide(appHideCb), undefined);
+            }
+        },
+    };
+}
+
+/**
+ * 公有版常量与可配置项的集中定义（版本号、URL、超时阈值等）。
+ *
+ * 该模块只导出**编译期常量**与**默认值**；运行时可变配置走 `runtime/StatApp` 注入。
+ */
+const STAT_VERSION_PUBLIC = '3';
+/** 1.0 通道（HTTP）默认上报地址。 */
+const STAT_URL = 'https://tongji.dcloud.io/uni/stat';
+/** H5 image 兜底通道（绕过跨域）。 */
+const STAT_H5_URL = 'https://tongji.dcloud.io/uni/stat.gif';
+/** 默认上报间隔（秒）。queue 节流阈值。 */
+const REPORT_INTERVAL_SEC = 10;
+/** HTTP 协议层最大重试次数（含首次）。 */
+const HTTP_MAX_RETRIES = 3;
+/** Cloud 协议层最大重试次数（含首次）。 */
+const CLOUD_MAX_RETRIES = 2;
+/** 重试基础延迟（指数退避）。 */
+const RETRY_BASE_DELAY_MS = 1000;
+/**
+ * uni-app appid。优先取构建期 `process.env.UNI_APP_ID`；未注入时返回 `''`，
+ * 由调用方决定是否上报为 `'default'`。
+ */
+function getAppId$1() {
+    var _a;
+    return (_a = process.env.UNI_APP_ID) !== null && _a !== void 0 ? _a : '';
+}
+
+/**
+ * 2.0 通道：uniCloud importObject 上报。
+ *
+ * 与私有版协议 1:1：
+ *   `uni.__stat_uniCloud_space.importObject('uni-stat-receiver', { customUI: true }).report(payload)`
+ *
+ * 与私有版差异（修复点）：
+ *   - 私有版 `sendRequest` 仅在 1.0 通道有 `_retry` 重试，2.0 通道**完全没有重试**，
+ *     云函数偶发抖动会直接丢数据。本实现统一接入 `withRetry`（指数退避）。
+ *   - 私有版直接读全局 `uni.__stat_uniCloud_space`，无法测试。本实现支持依赖注入
+ *     `uniCloudSpace`（测试） / `getUniCloudSpace()`（运行时）。
+ *   - `available()` 在 `space.importObject` 不可用时返回 false，调用方据此决定是否
+ *     回退到 1.0 通道（由 selector 决策，本通道自身不做回退）。
+ */
+/**
+ * 解析当前可用的 uniCloud space。
+ *
+ * 优先级：opts.uniCloudSpace > globalThis.uni.__stat_uniCloud_space。
+ * 都不可用返回 undefined，由 `available()` / `send()` 自行处理。
+ */
+function resolveSpace(injected) {
+    if (injected)
+        return injected;
+    const u = globalThis.uni;
+    return u === null || u === void 0 ? void 0 : u.__stat_uniCloud_space;
+}
+function createCloudChannel(opts = {}) {
+    var _a, _b;
+    const receiverName = (_a = opts.receiverName) !== null && _a !== void 0 ? _a : 'uni-stat-receiver';
+    const maxRetries = (_b = opts.maxRetries) !== null && _b !== void 0 ? _b : CLOUD_MAX_RETRIES;
+    function getReceiver() {
+        const space = resolveSpace(opts.uniCloudSpace);
+        if (!space || typeof space.importObject !== 'function')
+            return undefined;
+        try {
+            return space.importObject(receiverName, { customUI: true });
+        }
+        catch (e) {
+            logger.warn('[uni-stat] cloud importObject threw', e);
+            return undefined;
+        }
+    }
+    function once(payload) {
+        const receiver = getReceiver();
+        if (!receiver || typeof receiver.report !== 'function') {
+            return Promise.reject(new Error('uniCloud space unavailable'));
+        }
+        return Promise.resolve(receiver.report(payload)).then(() => undefined);
+    }
+    return {
+        name: '2.0',
+        available() {
+            const space = resolveSpace(opts.uniCloudSpace);
+            return !!(space && typeof space.importObject === 'function');
+        },
+        send(payload) {
+            return __awaiter(this, void 0, void 0, function* () {
+                try {
+                    yield withRetry(() => once(payload), {
+                        times: maxRetries,
+                        baseDelayMs: RETRY_BASE_DELAY_MS,
+                        sleep: opts.sleep,
+                    });
+                }
+                catch (e) {
+                    logger.warn('[uni-stat] cloud channel send failed after retries', e);
+                    throw e;
+                }
+            });
+        },
+    };
+}
+
+/**
+ * Collector：domain 与 pipeline 的编排层。
+ *
+ * 职责（与 runtime/lifecycleHooks 配合）：
+ *   1. `report(input)`：把外部输入（lt + 事件上下文）转成 statData 并入队；
+ *      自动填充 session 快照、seq、pid（首次新会话事件携带）。
+ *   2. `flush(force?)`：从 queue 取快照 → serializer → 选 channel → 发送；
+ *      成功调用 `visit.commit(now)`；失败 `queue.rollback` + `retry.persist`。
+ *   3. `recoverRetry()`：冷启动时由 runtime 触发，把上次未送达的 payload 重试。
+ *
+ * 设计原则：
+ *   - 依赖全部注入；本模块不直接 import 任何 adapter，便于测试与多端切换。
+ *   - 不持有业务字段；所有 statData 字段由 `domain/statData.builder` 拼装。
+ *   - 错误吞掉 + 日志：collector 层异常**不应**抛回到生命周期回调，避免污染业务页面。
+ */
+/**
+ * 默认 payload id 生成；与 retry.ts 的 genId 风格一致但前缀不同，便于日志区分。
+ */
+function defaultGenPayloadId(nowMs) {
+    return 'p-' + nowMs.toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+}
+/**
+ * 构建 collector。返回 API 对象，所有方法绑定 deps 闭包。
+ */
+function createCollector(deps) {
+    /**
+     * 构造 EventContext 并入队。
+     *
+     * pid 仅在 `consumePrevId` 命中时附加（即新会话第一条事件）；其它事件 pid 留空。
+     */
+    function report(input) {
+        tryRun(() => {
+            const t = typeof input.t === 'number' ? input.t : deps.nowSec();
+            const snap = deps.session.getSnapshot();
+            let sessionForCtx;
+            if (snap) {
+                const seq = deps.session.nextSeq();
+                sessionForCtx = Object.assign({}, snap, { seq });
+            }
+            const pid = deps.session.consumePrevId();
+            const ctx = Object.assign({}, input, {
+                t,
+                session: sessionForCtx,
+                pid,
+            });
+            const data = deps.builder.build(ctx);
+            deps.queue.enqueue(data);
+            if (deps.queue.shouldFlush()) {
+                flush(false).catch((e) => logger.warn('[uni-stat] auto-flush failed', e));
+            }
+        }, undefined);
+    }
+    /**
+     * 真正发送：取快照、序列化、挑通道、发送、根据结果 commit/rollback/persist。
+     *
+     * @param force 强制 flush（忽略节流阈值）。
+     */
+    function flush() {
+        return __awaiter(this, arguments, void 0, function* (force = false) {
+            var _a;
+            if (!deps.queue.shouldFlush(force))
+                return;
+            const snapshot = deps.queue.flush();
+            if (!snapshot)
+                return;
+            const channel = deps.selectChannel();
+            if (!channel) {
+                logger.warn('[uni-stat] no channel available, rollback batch');
+                deps.queue.rollback(snapshot);
+                return;
+            }
+            const requests = deps.serializer.handleData(snapshot);
+            const payload = {
+                usv: deps.config.usv,
+                t: deps.nowSec(),
+                requests,
+                _id: ((_a = deps.genPayloadId) !== null && _a !== void 0 ? _a : (() => defaultGenPayloadId(deps.nowMs())))(),
+            };
+            try {
+                yield channel.send(payload);
+                tryRun(() => deps.visit.commitVisitOnAck(deps.nowSec()), undefined);
+            }
+            catch (e) {
+                logger.warn('[uni-stat] channel send failed; persist for retry', e);
+                tryRun(() => deps.visit.rollbackPendingVisit(), undefined);
+                const id = deps.retry.persist(payload);
+                if (!id) {
+                    logger.warn('[uni-stat] retry.persist returned no id, drop batch');
+                }
+            }
+        });
+    }
+    /**
+     * 把上次进程留在 storage 中的 retry 队列依次重放。
+     *
+     * 串行执行，失败的条目保留在队列里（不动 _id），调用方会在下次冷启再次重放。
+     */
+    function recoverRetry() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const items = deps.retry.loadAll();
+            if (items.length === 0)
+                return;
+            const channel = deps.selectChannel();
+            if (!channel) {
+                logger.warn('[uni-stat] recoverRetry: no channel available');
+                return;
+            }
+            for (const payload of items) {
+                try {
+                    yield channel.send(payload);
+                    if (payload._id)
+                        deps.retry.ack(payload._id);
+                }
+                catch (e) {
+                    if (payload._id && deps.retry.markAttempt) {
+                        deps.retry.markAttempt(payload._id);
+                    }
+                    logger.warn('[uni-stat] recoverRetry item failed, will retry next launch', e);
+                }
+            }
+        });
+    }
+    return { report, flush, recoverRetry };
+}
+
+/**
+ * 1.0 通道：HTTP POST 上报。
+ *
+ * 兼容私有版同协议（`uni.request(POST STAT_URL)`），并修复其历史缺陷：
+ *   - #1 `_retry` 未初始化导致 NaN：本实现以 `withRetry({times})` 显式控制。
+ *   - #16 H5 fallback `new Image()` 在 nvue/微信小程序运行时会抛 `Image is not defined`：
+ *     本实现仅在确认 `typeof Image !== 'undefined'` 时使用 image 通道，否则退回 `uni.request`。
+ *
+ * 接口契约：
+ *   - `available()`：在任何 uni 平台都返回 true（HTTP 是兜底通道）。
+ *   - `send(payload)`：成功 resolve；3 次重试全失败抛错（供 retry.persist 落盘）。
+ *   - 不缓存任何状态；每次 `send` 是无状态的。
+ */
+function getUni$3() {
+    return globalThis.uni;
+}
+/**
+ * 把 payload 拼成 query string，供 H5 image fallback 使用。
+ *
+ * 私有版用 `get_sgin(get_encodeURIComponent_options(data))` 还会算签名；公有版去掉签名
+ * （服务端历史阶段仅 1.0 走签名，2.0 已弃用），保持 query 简单可读：
+ *   `?usv=3&t=...&requests=URL_ENCODED_JSON`
+ */
+function toQuery(payload) {
+    const out = [];
+    out.push('usv=' + encodeURIComponent(String(payload.usv)));
+    out.push('t=' + encodeURIComponent(String(payload.t)));
+    out.push('requests=' + encodeURIComponent(payload.requests));
+    return out.join('&');
+}
+/**
+ * H5 image 通道。仅在 `Image` 全局存在时调用；否则返回 false 让外层退回 `uni.request`。
+ *
+ * 不等待 onload/onerror（image 兜底语义即"发出去就算"），同步 resolve。
+ * 若 `new Image()` 本身抛错也吞掉，转给 fallback。
+ */
+function tryImageRequest(payload, h5Url = STAT_H5_URL) {
+    const ImageCtor = globalThis.Image;
+    if (typeof ImageCtor !== 'function')
+        return false;
+    return tryRun(() => {
+        const img = new ImageCtor();
+        img.src = h5Url + '?' + toQuery(payload);
+        return true;
+    }, false);
+}
+function createHttpChannel(opts = {}) {
+    var _a, _b, _c, _d, _e;
+    const url = (_a = opts.url) !== null && _a !== void 0 ? _a : STAT_URL;
+    const h5Url = (_b = opts.h5Url) !== null && _b !== void 0 ? _b : STAT_H5_URL;
+    const ut = (_c = opts.ut) !== null && _c !== void 0 ? _c : '';
+    const timeoutMs = (_d = opts.timeoutMs) !== null && _d !== void 0 ? _d : 10000;
+    const maxRetries = (_e = opts.maxRetries) !== null && _e !== void 0 ? _e : HTTP_MAX_RETRIES;
+    function once(payload) {
+        if (ut === 'h5' && opts.preferImageOnH5 !== false) {
+            if (tryImageRequest(payload, h5Url))
+                return Promise.resolve();
+        }
+        const u = getUni$3();
+        if (!u || typeof u.request !== 'function') {
+            return Promise.reject(new Error('uni.request unavailable'));
+        }
+        return new Promise((resolve, reject) => {
+            let settled = false;
+            const timer = setTimeout(() => {
+                if (settled)
+                    return;
+                settled = true;
+                reject(new Error('http timeout'));
+            }, timeoutMs);
+            u.request({
+                url,
+                method: 'POST',
+                data: payload,
+                timeout: timeoutMs,
+                success: (res) => {
+                    var _a;
+                    if (settled)
+                        return;
+                    settled = true;
+                    clearTimeout(timer);
+                    const code = (_a = res === null || res === void 0 ? void 0 : res.statusCode) !== null && _a !== void 0 ? _a : 0;
+                    if (code >= 200 && code < 300)
+                        resolve();
+                    else
+                        reject(new Error('http status ' + code));
+                },
+                fail: (e) => {
+                    if (settled)
+                        return;
+                    settled = true;
+                    clearTimeout(timer);
+                    reject(e instanceof Error ? e : new Error(String(e)));
+                },
+            });
+        });
+    }
+    return {
+        name: '1.0',
+        available() {
+            const u = getUni$3();
+            return !!(u && typeof u.request === 'function');
+        },
+        send(payload) {
+            return __awaiter(this, void 0, void 0, function* () {
+                try {
+                    yield withRetry(() => once(payload), {
+                        times: maxRetries,
+                        baseDelayMs: RETRY_BASE_DELAY_MS,
+                        sleep: opts.sleep,
+                    });
+                }
+                catch (e) {
+                    logger.warn('[uni-stat] http channel send failed after retries', e);
+                    throw e;
+                }
+            });
+        },
+    };
+}
+
+/**
+ * 上行字段集中拼装。
+ *
+ * 私有版痛点：`sendXxxRequest` 系列函数中各自 `Object.assign(getStatData(), ...)`，
+ * 字段散落、重复、字段名硬编码、新增字段需改多处。公有版集中到本模块，按事件类型
+ * 决定字段子集。
+ *
+ * 设计要点：
+ *   - 通过依赖注入（`createStatDataBuilder(deps)`）解耦 adapter / domain，便于单测。
+ *   - 字段全部经过 `s/n` 兜底转换，禁止 undefined 出现在最终上行体（统一用空串 / 0）。
+ *   - 事件类型驱动：lt=0/1 才带 fvts/lvts/tvc 等规则在此实现，调用方不再判断。
+ *   - 仅做拼装，不做副作用：不写 storage、不调 ensureSession（这些由 collector 编排）。
+ *   - 严守 ES2015 baseline：禁用 `ObjectExpression > SpreadElement`，统一用 `Object.assign`。
+ */
+/** 字段值兜底：把 undefined / null / NaN 转为类型默认值，避免污染上行 JSON。 */
+function s(v, def = '') {
+    if (typeof v === 'string')
+        return v;
+    if (typeof v === 'number' && Number.isFinite(v))
+        return String(v);
+    return def;
+}
+function n(v, def = 0) {
+    if (typeof v === 'number' && Number.isFinite(v))
+        return v;
+    if (typeof v === 'string' && v.length > 0) {
+        const x = Number(v);
+        if (Number.isFinite(x))
+            return x;
+    }
+    return def;
+}
+/**
+ * 创建 statData 构建器。
+ *
+ * 调用方典型用法：
+ * ```ts
+ * const builder = createStatDataBuilder(deps)
+ * const data = builder.build({ lt: LT.Page, t: nowSec(), route: '...' })
+ * ```
+ */
+function createStatDataBuilder(deps) {
+    /**
+     * 复用频率高的"基础字段"——每条事件都带。
+     *
+     * 字段映射（与私有版 1:1）：
+     *   - `mpsdk` ← `system.sdkVersion`
+     *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
+     *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
+     */
+    function baseFields() {
+        var _a;
+        const { config, platform, system, locale, device, net, location, pkg, legacy } = deps;
+        return {
+            ak: s(config.ak),
+            usv: s(config.usv),
+            v: s((_a = config.v) !== null && _a !== void 0 ? _a : system.appVersion),
+            ch: s(config.ch),
+            ut: s(platform.ut),
+            p: s(platform.p),
+            uuid: s(device.uuid),
+            odid: s(device.odid),
+            brand: s(system.brand),
+            md: s(system.md),
+            sv: s(system.sv),
+            mpsdk: s(system.sdkVersion),
+            mpv: s(system.appWgtVersion),
+            pr: n(locale.pr, 1),
+            ww: n(locale.ww),
+            wh: n(locale.wh),
+            sw: n(locale.sw),
+            sh: n(locale.sh),
+            lang: s(locale.lang),
+            net: s(net.net, 'unknown'),
+            lat: s(location.lat),
+            lng: s(location.lng),
+            mpn: s(legacy === null || legacy === void 0 ? void 0 : legacy.mpn),
+            tdaid: s(pkg.tdaid),
+            pkn: s(pkg.pkn),
+            an: s(pkg.an),
+        };
+    }
+    /** 会话字段：所有 lt 都要带。 */
+    function sessionFields(ctx) {
+        if (!ctx.session)
+            return {};
+        const out = {
+            sid: ctx.session.sid,
+            sst: ctx.session.sst,
+            sct: ctx.session.sct,
+            seq: ctx.session.seq,
+        };
+        if (ctx.pid)
+            out.pid = ctx.pid;
+        return out;
+    }
+    /** 页面字段：lt=11/3 / 普通页面事件携带。 */
+    function pageFields(ctx) {
+        const out = {};
+        if (ctx.url !== undefined)
+            out.url = s(ctx.url);
+        if (ctx.urlref !== undefined)
+            out.urlref = s(ctx.urlref);
+        if (ctx.urlref_ts !== undefined)
+            out.urlref_ts = n(ctx.urlref_ts);
+        if (ctx.ttn !== undefined)
+            out.ttn = s(ctx.ttn);
+        if (ctx.ttpj !== undefined)
+            out.ttpj = s(ctx.ttpj);
+        if (ctx.ttc !== undefined)
+            out.ttc = s(ctx.ttc);
+        return out;
+    }
+    /** 入口标记：lt=11/3 携带 iey/ppiey；其他事件不携带。 */
+    function entryFields(ctx) {
+        if (ctx.lt !== '11' && ctx.lt !== '3')
+            return {};
+        const out = {};
+        if (ctx.iey !== undefined)
+            out.iey = toIey(ctx.iey);
+        if (ctx.ppiey !== undefined)
+            out.ppiey = toIey(ctx.ppiey);
+        return out;
+    }
+    /** 访问字段：仅 lt=0/1 且 collector 显式传入 visit 时携带。 */
+    function visitFields(ctx) {
+        if (ctx.lt !== '0' && ctx.lt !== '1')
+            return {};
+        if (!ctx.visit)
+            return {};
+        return {
+            fvts: ctx.visit.fvts,
+            lvts: ctx.visit.lvts,
+            tvc: ctx.visit.tvc,
+        };
+    }
+    /** 启动场景：lt=0/1 携带。 */
+    function launchFields(ctx) {
+        if (ctx.lt !== '0' && ctx.lt !== '1')
+            return {};
+        if (ctx.sc === undefined)
+            return {};
+        return { sc: s(ctx.sc) };
+    }
+    /** 错误事件特化字段。 */
+    function errorFields(ctx) {
+        if (ctx.lt !== '31' || !ctx.errMsg)
+            return {};
+        return { em: s(ctx.errMsg) };
+    }
+    /** Push 事件特化字段。 */
+    function pushFields(ctx) {
+        if (ctx.lt !== '101' || !ctx.cid)
+            return {};
+        return { cid: s(ctx.cid) };
+    }
+    /**
+     * 拼装最终上行体。
+     *
+     * 合并顺序（**后者覆盖前者**）：
+     *   base → session → page → entry → visit → launch → error → push → custom
+     * custom 放最后，业务可控扩展，但**不允许**覆盖 lt/t/sid 等关键字段（在此过滤）。
+     */
+    function build(ctx) {
+        const safeCustom = {};
+        if (ctx.custom) {
+            const reserved = new Set([
+                'lt',
+                't',
+                'sid',
+                'sst',
+                'sct',
+                'seq',
+                'pid',
+                'fvts',
+                'lvts',
+                'tvc',
+                'sc',
+            ]);
+            for (const k of Object.keys(ctx.custom)) {
+                if (!reserved.has(k))
+                    safeCustom[k] = ctx.custom[k];
+            }
+        }
+        const out = { lt: ctx.lt, t: n(ctx.t) };
+        Object.assign(out, baseFields(), sessionFields(ctx), pageFields(ctx), entryFields(ctx), visitFields(ctx), launchFields(ctx), errorFields(ctx), pushFields(ctx), safeCustom);
+        return out;
+    }
+    return { build };
+}
+
+/**
+ * 系统信息适配。
+ *
+ * 私有版的痛点（参考缺陷清单 #14、#18）：
+ *   - `utils/util.js` 顶层 `export const sys = uni.getSystemInfoSync()`：模块加载即执行
+ *     `uni.getSystemInfoSync`，SSR / 单测 / nvue 早期阶段会直接抛错。
+ *   - `lang / ww / wh` 等"可变"字段被一同缓存，用户切换系统语言或旋转屏幕后字段失真。
+ *
+ * 公有版职责：
+ *   1. `getSystemInfo()` 懒加载 + 缓存（不可变字段：brand/md/sv/v/ut/sw/sh/pr/svv …）。
+ *   2. `getLocaleAndScreen()` 实时取（lang + ww/wh + sw/sh + pr）—— 修复缺陷 #18。
+ *   3. SSR/单测：当 `uni.getSystemInfoSync` 不存在或抛错时，返回安全空对象，绝不抛。
+ *   4. `__resetCache()`：仅供测试，重置缓存。
+ *
+ * 设计取舍：
+ *   - 虽然 uni-app 4.x 已拆出 `getDeviceInfo / getAppBaseInfo / getWindowInfo` 等细粒度
+ *     API，但公有版要兼容老基础库（私有版同款覆盖范围），统一基于 `getSystemInfoSync`
+ *     做 superset 解析。后续如需细分，再扩展独立函数。
+ */
+let cachedStatic = null;
+/**
+ * 通过 `tryRun` 安全调用 `uni.getSystemInfoSync`；失败/缺失返回 `null`。
+ *
+ * 不直接 `try/catch`：保持与 `infra/safe` 风格一致，错误一律走 `tryRun` 内的
+ * 静默 logger，避免污染上层链路。
+ */
+function safeGetSystemInfo() {
+    var _a;
+    const u = globalThis.uni;
+    if (!u || typeof u.getSystemInfoSync !== 'function')
+        return null;
+    return (_a = tryRun(() => u.getSystemInfoSync(), null)) !== null && _a !== void 0 ? _a : null;
+}
+/**
+ * 取静态系统信息（懒加载 + 缓存）。
+ *
+ * 字段映射策略：
+ *   - `brand / md / sv / v / ut`：优先取 uni-app 4.x 拆分字段（osName/deviceModel 等），
+ *     退化到 system/model 兼容老基础库。
+ *   - 任何字段缺失统一空字符串/0，而非 undefined，避免上行 JSON 序列化时丢字段。
+ */
+function getSystemInfo() {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
+    if (cachedStatic)
+        return cachedStatic;
+    const sys = (_a = safeGetSystemInfo()) !== null && _a !== void 0 ? _a : {};
+    const plus = globalThis.plus;
+    cachedStatic = {
+        brand: (_b = sys.brand) !== null && _b !== void 0 ? _b : '',
+        md: (_d = (_c = sys.deviceModel) !== null && _c !== void 0 ? _c : sys.model) !== null && _d !== void 0 ? _d : '',
+        sv: (_f = (_e = sys.osVersion) !== null && _e !== void 0 ? _e : sys.system) !== null && _f !== void 0 ? _f : '',
+        v: (_g = sys.version) !== null && _g !== void 0 ? _g : '',
+        ut: ((_h = sys.deviceType) !== null && _h !== void 0 ? _h : 'unknown'),
+        appVersion: (_l = (_k = (_j = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _j === void 0 ? void 0 : _j.version) !== null && _k !== void 0 ? _k : sys.appVersion) !== null && _l !== void 0 ? _l : '',
+        appWgtVersion: (_r = (_q = (_o = (_m = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _m === void 0 ? void 0 : _m.appWgtVersion) !== null && _o !== void 0 ? _o : (_p = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _p === void 0 ? void 0 : _p.appWgtRevision) !== null && _q !== void 0 ? _q : sys.appWgtVersion) !== null && _r !== void 0 ? _r : '',
+        sdkVersion: (_s = sys.SDKVersion) !== null && _s !== void 0 ? _s : '',
+        statusBarHeight: typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
+    };
+    return cachedStatic;
+}
+/**
+ * 取实时字段（lang / 窗口尺寸 / 屏幕尺寸 / dpr）。
+ *
+ * 修复缺陷 #18：每次调用都重新读取 `uni.getSystemInfoSync()`，不复用任何缓存。
+ * 如调用方需要"启动时一次"的语义，应在调用层显式缓存，而非依赖本模块。
+ */
+function getLocaleAndScreen() {
+    var _a, _b;
+    const sys = (_a = safeGetSystemInfo()) !== null && _a !== void 0 ? _a : {};
+    return {
+        lang: (_b = sys.language) !== null && _b !== void 0 ? _b : '',
+        ww: typeof sys.windowWidth === 'number' ? sys.windowWidth : 0,
+        wh: typeof sys.windowHeight === 'number' ? sys.windowHeight : 0,
+        sw: typeof sys.screenWidth === 'number' ? sys.screenWidth : 0,
+        sh: typeof sys.screenHeight === 'number' ? sys.screenHeight : 0,
+        pr: typeof sys.pixelRatio === 'number' ? sys.pixelRatio : 1,
+    };
+}
+
+/**
+ * 包信息适配（公有版新增字段 `tdaid / pkn / an`）。
+ *
+ * 详细矩阵参考 `04-字段字典与平台获取矩阵.md` §3。本模块职责：
+ *   - 启动时调用一次 `getPackageInfo()`，结果常驻内存；不入 storage。
+ *   - 每端分支独立函数，便于单测精准 mock。
+ *   - 任意端、任意 API 抛错 → 一律降级为 `''`，**绝不**抛出。
+ *
+ * 字段语义提示：
+ *   - `tdaid`：第三方平台 appid（小程序 = 平台分配的 appid；App = manifest appid）。
+ *   - `pkn`：包名（App = packageName / bundleId；小程序回填 tdaid，避免空字段）。
+ *   - `an`：应用名（App = plus.runtime.appname；其他端 = `process.env.UNI_APP_NAME`）。
+ */
+let cached = null;
+function getUni$2() {
+    return globalThis.uni;
+}
+function getPlus() {
+    return globalThis.plus;
+}
+/**
+ * 取小程序系列的 tdaid。各端 API 不同：
+ *   - 微信/QQ：`uni.getAccountInfoSync().miniProgram.appId`（基础库 ≥ 1.10.0）。
+ *   - 支付宝：`my.getAppIdSync()`（部分版本可用）。
+ *   - 头条/飞书：`tt.getEnvInfoSync().microapp.appId`。
+ *   - 百度：`swan.getEnvInfoSync().common.appKey` 兜底。
+ *   - 其他端：暂时返回 ''；后续真机探测后再补。
+ *
+ * 任何分支抛错都返回 ''。
+ */
+function getMpTdaid(platform) {
+    var _a;
+    const u = getUni$2();
+    switch (platform) {
+        case 'wx':
+        case 'qq':
+            if (((_a = u === null || u === void 0 ? void 0 : u.canIUse) === null || _a === void 0 ? void 0 : _a.call(u, 'getAccountInfoSync')) && u.getAccountInfoSync) {
+                return tryRun(() => { var _a, _b; return (_b = (_a = u.getAccountInfoSync().miniProgram) === null || _a === void 0 ? void 0 : _a.appId) !== null && _b !== void 0 ? _b : ''; }, '');
+            }
+            return '';
+        case 'ali':
+        case 'dt': {
+            const my = globalThis.my;
+            if (!my)
+                return '';
+            const v1 = tryRun(() => { var _a, _b; return (_b = (_a = my.getAppIdSync) === null || _a === void 0 ? void 0 : _a.call(my)) !== null && _b !== void 0 ? _b : ''; }, '');
+            if (v1)
+                return v1;
+            return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = my.getAccountInfoSync) === null || _a === void 0 ? void 0 : _a.call(my).miniProgram) === null || _b === void 0 ? void 0 : _b.appId) !== null && _c !== void 0 ? _c : ''; }, '');
+        }
+        case 'tt':
+        case 'lark': {
+            const tt = globalThis.tt;
+            return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = tt === null || tt === void 0 ? void 0 : tt.getEnvInfoSync) === null || _a === void 0 ? void 0 : _a.call(tt).microapp) === null || _b === void 0 ? void 0 : _b.appId) !== null && _c !== void 0 ? _c : ''; }, '');
+        }
+        case 'bd': {
+            const swan = globalThis.swan;
+            return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = swan === null || swan === void 0 ? void 0 : swan.getEnvInfoSync) === null || _a === void 0 ? void 0 : _a.call(swan).common) === null || _b === void 0 ? void 0 : _b.appKey) !== null && _c !== void 0 ? _c : ''; }, '');
+        }
+        default:
+            return '';
+    }
+}
+/**
+ * App 端 packageName / bundleId。
+ *
+ * Android 走 `plus.android.runtimeMainActivity().getPackageName()`；
+ * iOS 走 `plus.ios.bundleId`，缺失时退化 `plus.runtime.appid`；
+ * HarmonyOS 暂时取 `plus.runtime.appid` 兜底（待 OS API 稳定后扩展）。
+ */
+function getAppPkn() {
+    var _a, _b, _c;
+    const plus = getPlus();
+    if (!plus)
+        return '';
+    const osName = (_c = (_b = (_a = plus.os) === null || _a === void 0 ? void 0 : _a.name) === null || _b === void 0 ? void 0 : _b.toLowerCase()) !== null && _c !== void 0 ? _c : '';
+    if (osName.includes('android')) {
+        return tryRun(() => { var _a, _b, _c, _d, _e; return (_e = (_d = (_c = (_b = (_a = plus.android) === null || _a === void 0 ? void 0 : _a.runtimeMainActivity) === null || _b === void 0 ? void 0 : _b.call(_a)) === null || _c === void 0 ? void 0 : _c.getPackageName) === null || _d === void 0 ? void 0 : _d.call(_c)) !== null && _e !== void 0 ? _e : ''; }, '');
+    }
+    if (osName === 'ios' || osName === 'iphone os') {
+        const v = tryRun(() => { var _a, _b; return (_b = (_a = plus.ios) === null || _a === void 0 ? void 0 : _a.bundleId) !== null && _b !== void 0 ? _b : ''; }, '');
+        return v || tryRun(() => { var _a, _b; return (_b = (_a = plus.runtime) === null || _a === void 0 ? void 0 : _a.appid) !== null && _b !== void 0 ? _b : ''; }, '');
+    }
+    return tryRun(() => { var _a, _b; return (_b = (_a = plus.runtime) === null || _a === void 0 ? void 0 : _a.appid) !== null && _b !== void 0 ? _b : ''; }, '');
+}
+/**
+ * 取 plus.runtime.appname / plus.runtime.name。
+ *
+ * 旧版本 plus 上字段名不一致，两个都试一次。
+ */
+function getAppName() {
+    const plus = getPlus();
+    if (!plus)
+        return '';
+    return (tryRun(() => { var _a, _b; return (_b = (_a = plus.runtime) === null || _a === void 0 ? void 0 : _a.appname) !== null && _b !== void 0 ? _b : ''; }, '') ||
+        tryRun(() => { var _a, _b; return (_b = (_a = plus.runtime) === null || _a === void 0 ? void 0 : _a.name) !== null && _b !== void 0 ? _b : ''; }, ''));
+}
+/**
+ * 取编译期注入的 UNI_APP_NAME。
+ *
+ * `plugin/index.ts` 后续会读取 `manifest.json#name` 注入此字段；当前若未注入返回 ''。
+ */
+function getEnvAppName() {
+    var _a;
+    return ((_a = process.env.UNI_APP_NAME) !== null && _a !== void 0 ? _a : '');
+}
+/**
+ * 取 H5 端应用名：优先编译期注入，回退 `document.title`。
+ */
+function getH5AppName() {
+    const env = getEnvAppName();
+    if (env)
+        return env;
+    return tryRun(() => { var _a, _b; return (_b = (_a = globalThis.document) === null || _a === void 0 ? void 0 : _a.title) !== null && _b !== void 0 ? _b : ''; }, '');
+}
+/**
+ * 启动时获取一次包信息；结果缓存于内存。
+ *
+ * 所有字段保证返回 `string`；缺失统一为 `''`，符合 `domain/statData.ts` 的字段处理约定。
+ */
+function getPackageInfo() {
+    if (cached)
+        return cached;
+    const platform = getPlatform();
+    getRawPlatform();
+    let tdaid = '';
+    let pkn = '';
+    let an = '';
+    if (isApp()) {
+        tdaid = tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = getPlus()) === null || _a === void 0 ? void 0 : _a.runtime) === null || _b === void 0 ? void 0 : _b.appid) !== null && _c !== void 0 ? _c : ''; }, '');
+        pkn = getAppPkn() || tdaid;
+        an = getAppName() || getEnvAppName();
+    }
+    else if (isMp()) {
+        tdaid = getMpTdaid(platform);
+        // 小程序无包名概念，约定 pkn = tdaid，避免空字段
+        pkn = tdaid;
+        an = getEnvAppName();
+    }
+    else if (isH5()) {
+        tdaid = '';
+        pkn = '';
+        an = getH5AppName();
+    }
+    else {
+        // unknown / 快应用等：尝试 env 注入即可
+        tdaid = '';
+        pkn = '';
+        an = getEnvAppName();
+    }
+    cached = { tdaid, pkn, an };
+    return cached;
+}
+
+/**
+ * 上报体序列化（重写私有版 `utils/pageInfo.js#handle_data`）。
+ *
+ * 修复缺陷 #4：私有版用 `for...in` 拿到的 key 永远是字符串，写成 `i === 0` 与 `i === 3`
+ * 导致两条边界分支从未命中：
+ *   - `lt=0`（会话创建）应排最前——闲置预留；
+ *   - `lt=3`（应用进入后台）应排最后用于服务端 session 闭合——被混入中间。
+ *
+ * 公有版严格契约：
+ *   1. 输出顺序固定：`0 → 1 → 11 → 21 → 31 → 101 → 3`（可在 `LT_ORDER` 中扩展）。
+ *   2. 同一 lt 内事件按 push 顺序保留（稳定排序）。
+ *   3. 纯函数：不读 storage、不调 console、不依赖 `'3'`。
+ *   4. 输入桶为空 → 返回 `'[]'`，调用方应在外层判空。
+ *
+ * 数据形状（公有版只支持 v2 协议，元素为 JSON 对象；不再走 v1 的 `key=val&...` 字符串）：
+ *   `JSON.stringify([{...stat1}, {...stat2}])`
+ */
+/**
+ * 上报顺序权重表。值越小越靠前；未知 lt 落到最末（靠近 lt=3 之前），同时打 warn。
+ *
+ * 顺序设计依据：
+ *   - lt=0：会话创建必须先于 launch；
+ *   - lt=1：紧跟 session；
+ *   - lt=11/21/31/101：按事件类型轻重排开；
+ *   - lt=3：应用进入后台，永远最后，用于服务端归一会话停留时长。
+ */
+const LT_ORDER = {
+    '0': 0,
+    '1': 1,
+    '11': 2,
+    '21': 3,
+    '31': 4,
+    '101': 5,
+    '3': 100,
+};
+const UNKNOWN_LT_WEIGHT = 50;
+/**
+ * 拉平 + 排序 + 序列化。
+ *
+ * @param buckets 按 lt 分组的事件桶。
+ * @returns 上行 `requests` 字段的 JSON 字符串（`'[{...}]'`）。
+ */
+function handleData(buckets) {
+    return JSON.stringify(flatten(buckets));
+}
+/**
+ * 仅做拉平 + 排序，便于 collector 在不需要 stringify 的场景下做断言或二次处理（如分片）。
+ *
+ * 排序规则：
+ *   - 主键：`LT_ORDER[lt] ?? UNKNOWN_LT_WEIGHT`。
+ *   - 次键：原始 push 顺序（依靠 Array.prototype.sort 在 Node 11+ 已稳定）。
+ *
+ * 修复缺陷 #4 关键断言：`lt='3'` 必落最后；`lt='0'` 必落最前。
+ */
+function flatten(buckets) {
+    const ltKeys = Object.keys(buckets);
+    ltKeys.sort((a, b) => weightOf(a) - weightOf(b));
+    const out = [];
+    for (let i = 0; i < ltKeys.length; i++) {
+        const lt = ltKeys[i];
+        const list = buckets[lt];
+        if (!list || list.length === 0)
+            continue;
+        for (let j = 0; j < list.length; j++)
+            out.push(list[j]);
+    }
+    return out;
+}
+function weightOf(lt) {
+    const w = LT_ORDER[lt];
+    return typeof w === 'number' ? w : UNKNOWN_LT_WEIGHT;
+}
+
+/**
+ * uni.addInterceptor 的去重 / 解绑封装。
+ *
+ * 修复的私有版缺陷：
+ *   - #26 `uni.addInterceptor(api, opts)` 多次 add 会覆盖前一次的回调；私有版若反复
+ *     注册（例如 hot reload / 多入口）会丢失早期 hook。公有版用 `Map<api, Set<cb>>`
+ *     去重 + 重新装配，保证多次 add 都生效，解绑时只摘除当前调用方的回调。
+ */
+const registry = new Map();
+/**
+ * 注册一个拦截器。同一 api 重复注册会去重，并自动按当前注册集合重装到 uni。
+ *
+ * @returns 解绑函数。调用后从集合中移除本次的 handlers，并按剩余集合重新装配。
+ */
+function add(api, handlers) {
+    var _a;
+    const set = (_a = registry.get(api)) !== null && _a !== void 0 ? _a : new Set();
+    set.add(handlers);
+    registry.set(api, set);
+    reinstall(api);
+    return () => {
+        const cur = registry.get(api);
+        if (!cur)
+            return;
+        cur.delete(handlers);
+        if (cur.size === 0) {
+            registry.delete(api);
+            try {
+                getUni$1().removeInterceptor(api);
+            }
+            catch (_a) {
+                // 即使解绑失败也应保证下次重装时不带本次 handlers
+            }
+        }
+        else {
+            reinstall(api);
+        }
+    };
+}
+/**
+ * 把 registry 中某个 api 的全部 handlers 合并成一个 fanout 拦截器，重新挂到 uni。
+ */
+function reinstall(api) {
+    const set = registry.get(api);
+    if (!set || set.size === 0)
+        return;
+    const fanout = {
+        invoke(args) {
+            let blocked = false;
+            for (const h of set) {
+                if (!h.invoke)
+                    continue;
+                const r = h.invoke(args);
+                if (r === false)
+                    blocked = true;
+            }
+            return blocked ? false : undefined;
+        },
+        success(res) {
+            var _a;
+            for (const h of set)
+                (_a = h.success) === null || _a === void 0 ? void 0 : _a.call(h, res);
+        },
+        fail(err) {
+            var _a;
+            for (const h of set)
+                (_a = h.fail) === null || _a === void 0 ? void 0 : _a.call(h, err);
+        },
+        complete(res) {
+            var _a;
+            for (const h of set)
+                (_a = h.complete) === null || _a === void 0 ? void 0 : _a.call(h, res);
+        },
+        returnValue(res) {
+            let v = res;
+            for (const h of set) {
+                if (!h.returnValue)
+                    continue;
+                v = h.returnValue(v);
+            }
+            return v;
+        },
+    };
+    try {
+        const uni = getUni$1();
+        // 先 remove 再 add，避免不同 uni 实现对"重复 add"行为不一致
+        try {
+            uni.removeInterceptor(api);
+        }
+        catch ( /* ignore */_a) { /* ignore */ }
+        uni.addInterceptor(api, fanout);
+    }
+    catch (_b) {
+        // uni 不可用（例如 nvue 早期阶段）：保留 registry，等下次 reinstall 时再尝试
+    }
+}
+function getUni$1() {
+    const u = globalThis.uni;
+    if (!u)
+        throw new Error('[uni-stat/public] uni interceptor API is not available');
+    return u;
+}
+/**
+ * 仅供单测使用：清空 registry，让本模块「像刚加载」一样。
+ */
+function __reset() {
+    registry.clear();
+}
+const interceptor = { add, __reset };
+
+/**
+ * 拦截 `uni.login` 调用，complete 时上报一条 `lt=21, e_n=login` 自定义事件。
+ *
+ * 与私有版差异：
+ *   - 走 `infra/interceptor.add`，多次 register 不会覆盖回调（修复缺陷 #26）。
+ *   - 通过 `reporter` 注入，便于单测断言。
+ */
+/**
+ * 注册 login 拦截器。
+ *
+ * @returns 解绑函数。同一 reporter 多次 register 视为多次回调（fanout）；卸载时只摘当次。
+ */
+function registerLoginInterceptor(reporter) {
+    return interceptor.add('login', {
+        complete() {
+            reporter.report({ lt: LT.Event, custom: { e_n: 'login' } });
+        },
+    });
+}
+
+/**
+ * 拦截 `uni.setNavigationBarTitle`，把用户设置的标题写入 `domain/title` 内存。
+ *
+ * **不**直接 reporter.report；title 是字段维度的状态，由 statData.builder 在拼装
+ * 页面事件时一次性读出。这样保证 ttn 与 lt=11 / lt=3 事件强相关，避免私有版"标题在
+ * 全局对象、上报时机散落"的问题。
+ */
+/**
+ * 注册 setNavigationBarTitle 拦截器；不依赖 reporter。
+ *
+ * @returns 解绑函数。
+ */
+function registerNavigationBarInterceptor() {
+    return interceptor.add('setNavigationBarTitle', {
+        invoke(args) {
+            const a = args;
+            if (a && 'title' in a)
+                setPageTitle(a.title);
+        },
+    });
+}
+
+/**
+ * 拦截 `uni.requestPayment`：
+ *   - success → `lt=21, e_n=pay_success`
+ *   - fail    → `lt=21, e_n=pay_fail`
+ *
+ * 与私有版差异：经由 `infra/interceptor.add` 去重；多 reporter 注册都会触发（fanout）。
+ */
+function registerPaymentInterceptor(reporter) {
+    return interceptor.add('requestPayment', {
+        success() {
+            reporter.report({ lt: LT.Event, custom: { e_n: 'pay_success' } });
+        },
+        fail() {
+            reporter.report({ lt: LT.Event, custom: { e_n: 'pay_fail' } });
+        },
+    });
+}
+
+/**
+ * 拦截 `uni.share` 调用，success / fail 都上报一条 `lt=21, e_n=share` 自定义事件。
+ *
+ * 与私有版差异（修复缺陷 #26）：
+ *   - 私有版 `interceptShare(true)` 在 `onLoad` 内重复 wrap `onShareAppMessage`，
+ *     连续打开同一页面会导致 share 事件被多次上报。
+ *   - 公有版通过 `infra/interceptor` 单次 fanout 注册；onLoad 不再重复包装。
+ */
+function registerShareInterceptor(reporter) {
+    const fire = () => reporter.report({ lt: LT.Event, custom: { e_n: 'share' } });
+    return interceptor.add('share', {
+        success() {
+            fire();
+        },
+        fail() {
+            fire();
+        },
+    });
+}
+
+/**
+ * 拦截器统一装配入口。
+ *
+ * 使用：
+ *   ```ts
+ *   import { installAllInterceptors } from './interceptors'
+ *   const uninstall = installAllInterceptors(collector)  // collector 实现 InterceptorReporter
+ *   // 卸载（hot reload / unit test）：
+ *   uninstall()
+ *   ```
+ *
+ * 重复 install 安全：每次 install 都会返回独立的 unbinder；多次 install 触发的 fanout
+ * 由 `infra/interceptor` 统一去重 + 解绑。
+ */
+/**
+ * 一次性装配全部拦截器。
+ *
+ * @returns 解绑函数（顺序解绑全部已注册的拦截器）。
+ */
+function installAllInterceptors(reporter) {
+    const unbinders = [
+        registerLoginInterceptor(reporter),
+        registerShareInterceptor(reporter),
+        registerPaymentInterceptor(reporter),
+        registerNavigationBarInterceptor(),
+    ];
+    return () => {
+        for (const u of unbinders) {
+            try {
+                u();
+            }
+            catch (_a) {
+                // 单个解绑失败不影响其余
+            }
+        }
+    };
+}
+
+/**
+ * 老版本（私有版 1.0/2.0）→ 公有版数据迁移。
+ *
+ * 老版本通过 `utils/db.js` 把所有字段写到一个聚合 key：
+ *   `$$STAT__DBDATA:<appid>` → `{ '__first__visit__time': T, '__last__visit__time': T, ... }`
+ *
+ * 公有版改为按字段拆 key（`UNI_STAT_DATA:<appid>:<key>`）。
+ *
+ * 本模块职责（只读老数据，不删）：
+ *   1. **一次性**把已知字段从老聚合 key 拆解写入新命名空间。
+ *   2. 保留老 key（不 remove），让私有版同库共存场景仍能正常运行。
+ *   3. 通过新命名空间下的 `migration:done` 哨兵避免重复执行。
+ *   4. 任何步骤异常 → 静默吞掉，不影响采集主链路。
+ *
+ * 不做的事：
+ *   - 不在迁移中写"今天本次启动"的 fvts/lvts；那是 `domain/visit/firstVisit` 的职责。
+ *   - 不抛错；调用方无需 try/catch。
+ *
+ * 调用时机：
+ *   - 由 `runtime/install.ts` 在公有版启动早期调用一次（在 `loadVisitSnapshot` 之前），
+ *     保证 firstVisit 读到的是已迁移的新前缀数据。
+ */
+/** 已迁移哨兵 key（写到新命名空间）。值固定为 1。 */
+const KEY_DONE = 'migration:done';
+/**
+ * 老聚合 key 内字段 → 新拆分 key 的映射表。
+ *
+ * 仅迁移**对公有版有用**的字段；其它（如 `__page__residence__time`）保留老 key，
+ * 由 Phase 5 的对应 domain 模块按需读取。
+ */
+const KEY_MAP = [
+    ['__first__visit__time', 'visit:fvts'],
+    ['__last__visit__time', 'visit:lvts'],
+    ['__total__visit__count', 'visit:tvc'],
+];
+/** 取 UNI_APP_ID（与 storage 内部保持一致的回退）。 */
+function getAppId() {
+    const id = process.env.UNI_APP_ID;
+    if (typeof id === 'string' && id.length > 0)
+        return id;
+    return 'default';
+}
+/**
+ * 从底层 uni 读取老聚合 key（不走 `infra/storage`，避免命名空间被改写）。
+ *
+ * 任何异常一律返回 `null`，由调用方决定 noop。
+ */
+function readLegacyAggregate() {
+    const u = globalThis.uni;
+    if (!u || typeof u.getStorageSync !== 'function')
+        return null;
+    const key = `${LEGACY_NAMESPACE_ROOT}:${getAppId()}`;
+    const raw = tryRun(() => u.getStorageSync(key), null);
+    if (raw && typeof raw === 'object')
+        return raw;
+    return null;
+}
+/** 哨兵：本进程内不重复 run。 */
+let ran = false;
+/**
+ * 执行迁移；幂等：
+ *   - 进程内已 run → 直接 return false。
+ *   - 新命名空间已有 `migration:done` → 直接 return false。
+ *   - 老聚合 key 不存在 / 为空 → 写 `migration:done`，return false。
+ *   - 真正发生迁移 → return true。
+ */
+function migrateLegacyData() {
+    if (ran)
+        return false;
+    ran = true;
+    const doneR = storage.safeRead(KEY_DONE);
+    if (doneR.ok && doneR.value)
+        return false;
+    const legacy = readLegacyAggregate();
+    if (!legacy) {
+        storage.set(KEY_DONE, 1);
+        return false;
+    }
+    let migrated = 0;
+    for (let i = 0; i < KEY_MAP.length; i++) {
+        const [oldKey, newKey] = KEY_MAP[i];
+        if (!(oldKey in legacy))
+            continue;
+        const value = legacy[oldKey];
+        // 已经存在新值就不覆盖（避免覆盖公有版自身已写入的更新值）
+        const existing = storage.safeRead(newKey);
+        if (existing.ok && existing.value !== undefined)
+            continue;
+        storage.set(newKey, value);
+        migrated++;
+    }
+    storage.set(KEY_DONE, 1);
+    if (migrated > 0) {
+        logger.info('[uni-stat] migrated legacy keys', migrated);
+    }
+    return migrated > 0;
+}
+
+/**
+ * 通道选择器：根据**统计版本**与**运行环境**返回最合适的 Channel。
+ *
+ * 选择规则（与私有版 `'3'` 行为对齐）：
+ *   - `version === '2'`：优先 cloud；cloud 不可用时**降级**到 http（私有版无降级，
+ *     直接 console.error 后丢数据；本实现选择降级以提高可用性，仍保留警告日志）。
+ *   - `version === '1'`：始终 http。
+ *
+ * 选择是**幂等无副作用**的：调用方每次发送前调用 `selectChannel()` 即可，
+ * channel 自身不缓存可用性，便于运行时（例如 uniCloud 初始化后）即时生效。
+ */
+/**
+ * 根据策略挑选当前应使用的 channel。
+ *
+ * @returns 选中的 channel；若没有可用通道返回 `undefined`。
+ */
+function selectChannel(opts) {
+    var _a;
+    const version = (_a = opts.version) !== null && _a !== void 0 ? _a : '2';
+    const fallback = opts.fallbackToHttp !== false;
+    if (version === '1') {
+        return opts.http.available() ? opts.http : undefined;
+    }
+    if (opts.cloud && opts.cloud.available())
+        return opts.cloud;
+    if (!fallback) {
+        logger.warn('[uni-stat] cloud channel unavailable and fallback disabled, drop batch');
+        return undefined;
+    }
+    if (opts.http.available()) {
+        logger.warn('[uni-stat] cloud channel unavailable, fallback to http channel');
+        return opts.http;
+    }
+    logger.warn('[uni-stat] no channel available');
+    return undefined;
+}
+
+/**
+ * 事件入队 + 批量 flush，修复私有版缺陷 #3。
+ *
+ * 私有版 `report.js#request` 的入队逻辑：
+ *   ```
+ *   uniStatData = dbGet(KEY) || {}
+ *   uniStatData[lt].push(data)
+ *   dbSet(KEY, uniStatData)         // <-- 写
+ *   ...
+ *   const stat_data = handle_data(uniStatData)
+ *   dbRemove(KEY)                   // <-- 删，但不是原子的
+ *   sendRequest(...)
+ *   ```
+ *
+ * 缺陷 #3：在 `dbSet` 与 `dbRemove` 之间，若有并发的 `request()` 调用执行
+ * `dbGet → push → dbSet`，最后的 `dbRemove` 会**误删**这一批新数据。
+ *
+ * 公有版修复策略：
+ *   - 入队全部走"内存桶 + 持久化镜像"双写；持久化只为冷启续传准备。
+ *   - flush() 走一次"原子 swap"：把当前桶交换给空对象，立刻清持久化镜像；
+ *     在 swap 之后插入的新事件落到新桶，绝不被 flush 误删。
+ *   - flush() 仅返回快照，**不直接发送**：发送由 collector 负责，便于解耦
+ *     单测与运行时（collector 不需要 mock 通道）。
+ *
+ * 数据形态：
+ *   - bucket: `Record<lt, StatData[]>`，与私有版 `uniStatData` 兼容。
+ *   - 持久化 key：`UNI_STAT_DATA:<appid>:queue`。
+ */
+const STORAGE_KEY$1 = 'queue';
+const state = {
+    bucket: {},
+    lastFlushAt: 0,
+};
+let intervalSec = REPORT_INTERVAL_SEC;
+let restored = false;
+/**
+ * 配置上报间隔；运行时可在 runtime/StatApp 初始化时注入。
+ */
+function configure(opts) {
+    if (typeof opts.intervalSec === 'number' && opts.intervalSec >= 0) {
+        intervalSec = Math.floor(opts.intervalSec);
+    }
+}
+/**
+ * 持久化当前内存桶。失败仅打日志，不影响主流程。
+ */
+function persistBucket() {
+    if (Object.keys(state.bucket).length === 0) {
+        storage.remove(STORAGE_KEY$1);
+        return;
+    }
+    try {
+        storage.set(STORAGE_KEY$1, state.bucket);
+    }
+    catch (e) {
+        logger.warn('[uni-stat] queue persist failed', e);
+    }
+}
+/**
+ * 冷启时尝试从 storage 恢复上一次进程未上报的桶；只在第一次入队前执行一次。
+ *
+ * 若 storage 中存在合法的桶数据，与当前内存桶**合并**而不是覆盖（合并语义防止极端
+ * 边界场景下丢失冷启已入队的事件）。
+ */
+function restoreOnce() {
+    if (restored)
+        return;
+    restored = true;
+    const raw = storage.safeRead(STORAGE_KEY$1);
+    if (!raw.ok || !raw.value || typeof raw.value !== 'object')
+        return;
+    const persisted = raw.value;
+    for (const lt of Object.keys(persisted)) {
+        const arr = persisted[lt];
+        if (!Array.isArray(arr) || arr.length === 0)
+            continue;
+        if (!state.bucket[lt])
+            state.bucket[lt] = [];
+        state.bucket[lt].push(...arr);
+    }
+}
+/**
+ * 把一条事件入队到对应 lt 的桶。
+ *
+ * 不抛错；data.lt 必填，缺失/类型异常时打日志丢弃。
+ */
+function enqueue(data) {
+    var _a;
+    if (!data || typeof data !== 'object')
+        return;
+    const lt = String((_a = data.lt) !== null && _a !== void 0 ? _a : '');
+    if (!lt) {
+        logger.warn('[uni-stat] enqueue dropped: missing lt', data);
+        return;
+    }
+    restoreOnce();
+    if (!state.bucket[lt])
+        state.bucket[lt] = [];
+    state.bucket[lt].push(data);
+    persistBucket();
+}
+/**
+ * 是否到达 flush 阈值。
+ *
+ * @param force 如为 true 直接返回 true（用于 onAppHide / 错误兜底等场景）。
+ */
+function shouldFlush(force = false) {
+    if (force)
+        return true;
+    if (intervalSec <= 0)
+        return true;
+    const elapsedSec = (nowMs() - state.lastFlushAt) / 1000;
+    return elapsedSec >= intervalSec;
+}
+/**
+ * 原子取出当前桶并清空（修复缺陷 #3）。
+ *
+ * 调用时机：由 collector 决定（间隔触发 / app hide / 强制刷新）。
+ *
+ * @returns 取出的桶；若空桶返回 undefined（调用方据此跳过本次发送）。
+ */
+function flush() {
+    restoreOnce();
+    const lts = Object.keys(state.bucket);
+    if (lts.length === 0)
+        return undefined;
+    const snapshot = state.bucket;
+    state.bucket = {};
+    state.lastFlushAt = nowMs();
+    storage.remove(STORAGE_KEY$1);
+    return snapshot;
+}
+/**
+ * 发送失败回滚：把 flush 取出的快照重新合并回当前桶，等待下一次 flush。
+ *
+ * 注意：合并时插入到桶的"前面"，保留 FIFO 语义。
+ */
+function rollback(snapshot) {
+    if (!snapshot)
+        return;
+    for (const lt of Object.keys(snapshot)) {
+        const arr = snapshot[lt];
+        if (!Array.isArray(arr) || arr.length === 0)
+            continue;
+        if (!state.bucket[lt])
+            state.bucket[lt] = [];
+        state.bucket[lt] = arr.concat(state.bucket[lt]);
+    }
+    persistBucket();
+}
+
+/**
+ * 失败重试落盘队列。
+ *
+ * 设计动机：
+ *   - 私有版仅在 1.0 通道内做了 3 次内存级重试；进程被杀（应用退出 / kill）后所有
+ *     未上报数据**直接丢失**，且 2.0 通道根本没有重试。
+ *   - 公有版引入"内存重试 + 失败落盘 + 下次冷启重放"双层兜底：
+ *       通道层：`channel.send` 内部已用 `withRetry` 做协议层重试。
+ *       本模块：协议层最终失败后调用 `persist(payload)` 写入 storage；
+ *               冷启时调 `loadAll()` 取出，逐条尝试重放，成功后 `ack(_id)` 删除。
+ *
+ * 数据结构：
+ *   `UNI_STAT_DATA:<appid>:retry:queue`：`Array<RetryItem>`，最多 `maxItems` 条；
+ *   超容时按 FIFO 丢弃最旧条目。每条带创建时间戳，超过 `maxAgeMs` 的过期清理。
+ *
+ * 与 retry 队列只存"已序列化的 ReportPayload"——不再依赖 collector / domain，
+ * 由调用方负责重组业务字段（如重试时不需要再次重算 visit/session）。
+ */
+const STORAGE_KEY = 'retry:queue';
+const DEFAULT_MAX_ITEMS = 50;
+const DEFAULT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const config = {
+    maxItems: DEFAULT_MAX_ITEMS,
+    maxAgeMs: DEFAULT_MAX_AGE_MS,
+};
+/**
+ * 读取队列。出现异常或非数组时返回空数组（不影响主流程）。
+ */
+function readQueue() {
+    const raw = storage.safeRead(STORAGE_KEY);
+    if (!raw.ok || !Array.isArray(raw.value))
+        return [];
+    return raw.value.filter((it) => it && typeof it.id === 'string' && it.payload && typeof it.payload === 'object');
+}
+/**
+ * 写回队列。空数组时直接 remove，避免存储垃圾。
+ */
+function writeQueue(items) {
+    if (items.length === 0) {
+        storage.remove(STORAGE_KEY);
+        return;
+    }
+    storage.set(STORAGE_KEY, items);
+}
+/**
+ * 生成 retry item id。优先复用 payload._id（来自 queue 出栈时分配的批次 id）。
+ */
+function genId(payload) {
+    if (payload._id)
+        return payload._id;
+    return 'r-' + nowMs().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+}
+/**
+ * 持久化一条失败 payload。
+ *
+ * @param payload 协议层最终失败的 payload。
+ * @returns 实际写入的 retry id；若被丢弃返回 undefined。
+ */
+function persist(payload) {
+    if (!payload)
+        return undefined;
+    const id = genId(payload);
+    const items = readQueue();
+    if (items.some((it) => it.id === id)) {
+        return id;
+    }
+    const item = {
+        id,
+        payload: Object.assign({}, payload, { _id: id }),
+        createdAt: nowMs(),
+        attempts: 0,
+    };
+    items.push(item);
+    while (items.length > config.maxItems) {
+        const dropped = items.shift();
+        logger.warn('[uni-stat] retry queue overflow, drop oldest', dropped === null || dropped === void 0 ? void 0 : dropped.id);
+    }
+    writeQueue(items);
+    return id;
+}
+/**
+ * 取出全部待重试条目（同时清理过期项），按入队顺序返回。
+ *
+ * 调用方应自行决定是否串行重放；本模块**不**自动触发任何网络。
+ */
+function loadAll() {
+    const items = readQueue();
+    if (items.length === 0)
+        return [];
+    const cutoff = nowMs() - config.maxAgeMs;
+    const alive = [];
+    for (const it of items) {
+        if (it.createdAt < cutoff) {
+            logger.warn('[uni-stat] retry item expired, drop', it.id);
+            continue;
+        }
+        alive.push(it);
+    }
+    if (alive.length !== items.length)
+        writeQueue(alive);
+    return alive.map((it) => it.payload);
+}
+/**
+ * 重放成功后删除指定 id；id 不存在视为 no-op。
+ */
+function ack(id) {
+    if (!id)
+        return;
+    const items = readQueue();
+    const next = items.filter((it) => it.id !== id);
+    if (next.length === items.length)
+        return;
+    writeQueue(next);
+}
+/**
+ * 标记一次重放失败（仅记录次数，留给上层观察重试漂移）。
+ *
+ * 不在此触发新的重试 / drop——drop 时机交给 `loadAll` 的过期清理与 `persist` 的容量裁剪。
+ */
+function markAttempt(id) {
+    if (!id)
+        return;
+    const items = readQueue();
+    let touched = false;
+    for (const it of items) {
+        if (it.id === id) {
+            it.attempts++;
+            touched = true;
+            break;
+        }
+    }
+    if (touched)
+        writeQueue(items);
+}
+
+/**
+ * 公有版统计运行时门面（单例）。
+ *
+ * 职责：
+ *   1. `install(config?, overrides?)`：一次性装配 collector / channel / 拦截器；
+ *      启动时 `migrateLegacyData` → `loadVisitSnapshot` → `recoverRetry`。
+ *      重复 install 幂等。
+ *   2. `report(type, value)`：业务侧 `uni.report(type, value)` 的承接入口。
+ *   3. `reportError(e)`：错误兜底事件（lt=31）。
+ *   4. `getCollector()` / `getDeps()`：测试与 lifecycleHooks 复用。
+ *
+ * 设计原则：
+ *   - 所有 adapter 调用都包了 `tryRun`，单端缺失 API 不影响 install。
+ *   - 所有依赖通过 `defaults + overrides` 构造；测试可注入替换。
+ *   - install 不抛错；任何子步骤失败都吞掉并 logger.warn。
+ *   - 单例：`StatApp.getInstance()` 全局唯一；`__resetStatApp()` 仅供测试。
+ */
+let instance = null;
+class StatApp {
+    constructor() {
+        /** install 幂等哨兵。 */
+        this.installed = false;
+        /** 已生效的协议版本（'1' / '2'）。 */
+        this.statVersion = '2';
+    }
+    static getInstance() {
+        if (!instance)
+            instance = new StatApp();
+        return instance;
+    }
+    /**
+     * 一次性装配。重复调用直接返回。
+     *
+     * @param config 业务配置；缺省值兼容私有版默认行为。
+     * @param overrides 测试钩子。
+     */
+    install(config = {}, overrides = {}) {
+        var _a, _b, _c, _d;
+        if (this.installed)
+            return;
+        this.installed = true;
+        const cfg = this.normalizeConfig(config);
+        this.config = cfg;
+        this.statVersion = cfg.version;
+        tryRun(() => configure$1({
+            backgroundTimeoutSec: cfg.backgroundTimeoutSec,
+            pageInactiveTimeoutSec: cfg.pageInactiveTimeoutSec,
+        }), undefined);
+        tryRun(() => configure({ intervalSec: cfg.reportIntervalSec }), undefined);
+        if (!overrides.skipMigration) {
+            tryRun(() => migrateLegacyData(), false);
+        }
+        tryRun(() => loadVisitSnapshot(), undefined);
+        this.httpChannel =
+            (_b = (_a = overrides.channels) === null || _a === void 0 ? void 0 : _a.http) !== null && _b !== void 0 ? _b : createHttpChannel({ ut: getPlatform(), maxRetries: HTTP_MAX_RETRIES });
+        if (overrides.channels && 'cloud' in overrides.channels) {
+            this.cloudChannel = (_c = overrides.channels.cloud) !== null && _c !== void 0 ? _c : undefined;
+        }
+        else if (this.statVersion === '2') {
+            this.cloudChannel = createCloudChannel({ maxRetries: CLOUD_MAX_RETRIES });
+        }
+        else {
+            this.cloudChannel = undefined;
+        }
+        this.collectorDeps = this.buildCollectorDeps(cfg, (_d = overrides.collectorDepsPatch) !== null && _d !== void 0 ? _d : {});
+        this.collector = createCollector(this.collectorDeps);
+        if (!overrides.skipInterceptors) {
+            const c = this.collector;
+            this.uninstallInterceptors = tryRun(() => installAllInterceptors({ report: (i) => c.report(i) }), undefined);
+        }
+        if (!overrides.skipRecoverRetry) {
+            void this.collector
+                .recoverRetry()
+                .catch((e) => logger.warn('[uni-stat] recoverRetry failed', e));
+        }
+    }
+    /**
+     * 业务侧 `uni.report(type, value)` 入口。
+     *
+     * 兼容私有版语义：
+     *   - `type === 'title'` → 写 reportTitle，不发事件；下次 lt=11 / lt=3 携带 `ttc`。
+     *   - 其他 type → 自定义事件 lt=21，custom `{ e_n: type, e_v: value }`。
+     */
+    report(type, value) {
+        if (!this.installed || !this.collector)
+            return;
+        if (type === 'title') {
+            setReportTitle(value);
+            return;
+        }
+        const ev = typeof value === 'object' && value !== null
+            ? tryRun(() => JSON.stringify(value), '')
+            : value === undefined
+                ? ''
+                : String(value);
+        this.collector.report({
+            lt: LT.Event,
+            custom: { e_n: type, e_v: ev },
+        });
+    }
+    /** 上报 onError 捕获的错误。 */
+    reportError(err) {
+        var _a;
+        if (!this.installed || !this.collector)
+            return;
+        const errMsg = err instanceof Error
+            ? `${err.name}: ${err.message}\n${(_a = err.stack) !== null && _a !== void 0 ? _a : ''}`
+            : typeof err === 'string'
+                ? err
+                : tryRun(() => JSON.stringify(err), '');
+        this.collector.report({ lt: LT.Error, errMsg });
+    }
+    /** 取 collector，供 lifecycleHooks 调度生命周期事件。 */
+    getCollector() {
+        return this.collector;
+    }
+    /** 取 deps（测试用）。 */
+    getDeps() {
+        return this.collectorDeps;
+    }
+    /** 是否已 install。 */
+    isInstalled() {
+        return this.installed;
+    }
+    /** 当前协议版本。 */
+    getStatVersion() {
+        return this.statVersion;
+    }
+    /** 当前生效配置（含默认值合并），测试用。 */
+    getConfig() {
+        return this.config;
+    }
+    /**
+     * 卸载（测试 / hot reload）。
+     *
+     * 解绑全部拦截器、清空内部句柄。**不**清外部模块（queue/visit/session）状态，
+     * 那些由各自的 `__reset*` 在测试 setup 中处理。
+     */
+    uninstall() {
+        if (this.uninstallInterceptors) {
+            tryRun(() => this.uninstallInterceptors(), undefined);
+        }
+        this.uninstallInterceptors = undefined;
+        this.collector = undefined;
+        this.collectorDeps = undefined;
+        this.httpChannel = undefined;
+        this.cloudChannel = undefined;
+        this.config = undefined;
+        this.installed = false;
+    }
+    normalizeConfig(c) {
+        var _a, _b, _c, _d, _e;
+        return {
+            ak: (_a = c.ak) !== null && _a !== void 0 ? _a : getAppId$1(),
+            v: c.v,
+            ch: (_b = c.ch) !== null && _b !== void 0 ? _b : '',
+            version: (_c = c.version) !== null && _c !== void 0 ? _c : '2',
+            backgroundTimeoutSec: (_d = c.backgroundTimeoutSec) !== null && _d !== void 0 ? _d : 300,
+            pageInactiveTimeoutSec: (_e = c.pageInactiveTimeoutSec) !== null && _e !== void 0 ? _e : 1800,
+            reportIntervalSec: typeof c.reportIntervalSec === 'number' ? c.reportIntervalSec : REPORT_INTERVAL_SEC,
+        };
+    }
+    /**
+     * 构建 collector 依赖。所有 adapter 调用都包了 `tryRun`，避免单端缺失 API 导致
+     * install 失败。
+     */
+    buildCollectorDeps(cfg, patch) {
+        const platformShort = getPlatform();
+        const clientOs = getClientOs();
+        const builder = createStatDataBuilder({
+            config: { ak: cfg.ak, usv: STAT_VERSION_PUBLIC, v: cfg.v, ch: cfg.ch },
+            platform: {
+                ut: platformShort,
+                p: clientOs === 'unknown' ? '' : clientOs,
+            },
+            system: tryRun(() => getSystemInfo(), {
+                brand: '',
+                md: '',
+                sv: '',
+                v: '',
+                ut: 'unknown',
+                appVersion: '',
+                appWgtVersion: '',
+                sdkVersion: '',
+                statusBarHeight: 0,
+            }),
+            locale: tryRun(() => getLocaleAndScreen(), {
+                lang: '',
+                ww: 0,
+                wh: 0,
+                sw: 0,
+                sh: 0,
+                pr: 1,
+            }),
+            device: {
+                uuid: tryRun(() => getUuid(), ''),
+                odid: tryRun(() => getOdid(), ''),
+            },
+            net: { net: 'unknown', raw: '' },
+            location: { lat: '', lng: '', ok: false },
+            pkg: tryRun(() => getPackageInfo(), { tdaid: '', pkn: '', an: '' }),
+        });
+        const base = {
+            builder,
+            queue: {
+                enqueue: enqueue,
+                flush: flush,
+                rollback: rollback,
+                shouldFlush: shouldFlush,
+            },
+            serializer: { handleData },
+            selectChannel: () => selectChannel({
+                version: this.statVersion,
+                http: this.httpChannel,
+                cloud: this.cloudChannel,
+            }),
+            retry: {
+                persist: persist,
+                loadAll: loadAll,
+                ack: ack,
+                markAttempt: markAttempt,
+            },
+            visit: {
+                commitVisitOnAck: commitVisitOnAck,
+                rollbackPendingVisit: rollbackPendingVisit,
+            },
+            session: {
+                getSnapshot: getSnapshot,
+                nextSeq: nextSeq,
+                consumePrevId: consumePrevId,
+            },
+            config: { usv: STAT_VERSION_PUBLIC },
+            nowMs,
+            nowSec,
+        };
+        return Object.assign(base, patch);
+    }
+}
+/**
+ * 便捷 API：获取或创建当前应用 collector，供拦截器 / lifecycleHooks 使用。
+ *
+ * 上层若希望直接拿 lt 入参，可先 `getStatApp().install(cfg)`，再
+ * `getStatApp().getCollector()?.report({ lt, ... })`。
+ */
+function getStatApp() {
+    return StatApp.getInstance();
+}
+/** 仅供测试：销毁全局单例与 install 状态（不会重置 queue/visit/session）。 */
+function __resetStatApp() {
+    if (instance) {
+        instance.uninstall();
+        instance = null;
+    }
+}
+
+/**
+ * 公有版统计运行时安装入口。
+ *
+ * 与私有版 `src/index.js#load_stat` 等价：
+ *   - VUE3 走 `uni.onCreateVueApp(app => app.mixin(lifecycle))`。
+ *   - VUE2 走 `Vue.mixin(lifecycle)`（require('vue')）。
+ *   - 同时把 `uni.report = (type, value) => StatApp.report(type, value)` 暴露给业务。
+ *
+ * 与私有版差异：
+ *   - 模块加载即调 `installPublicStat()`，但内部用 install 哨兵保证幂等；
+ *     测试可调 `__resetStatApp()` 重置。
+ *   - `is_debug / NODE_ENV === 'development'` 的开关由调用方在 build 阶段做（
+ *     `plugin/index.ts` 已注入），运行时不再分支。
+ *
+ * 暴露：
+ *   - `installPublicStat(config?, opts?)`：手动触发；幂等。
+ *   - `getMixin()`：返回 vue mixin 对象，供宿主自行 `app.mixin(...)`。
+ */
+function getUni() {
+    return globalThis.uni;
+}
+/** install 是否已经触发过（不论成功失败）。 */
+let bootstrapped = false;
+/** 已注册到全局的 unbind，便于 __reset。 */
+let lastUnbind;
+/**
+ * 入口装配。重复调用时立即返回。
+ *
+ * 失败任意子步骤都吞掉日志，不抛回。
+ */
+function installPublicStat(opts = {}) {
+    if (bootstrapped)
+        return;
+    bootstrapped = true;
+    const app = getStatApp();
+    tryRun(() => app.install(opts.config, opts.overrides), undefined);
+    const { mixin, unbind } = bindLifecycle(app, opts.lifecycle);
+    lastUnbind = unbind;
+    if (!opts.skipVueMixin) {
+        tryRun(() => mountVueMixin(mixin), undefined);
+    }
+    if (!opts.skipUniReport) {
+        tryRun(() => mountUniReport(app), undefined);
+    }
+}
+/**
+ * 把 mixin 装到 vue 实例上。优先走 `uni.onCreateVueApp`（VUE3）；缺失时回退
+ * `require('vue').mixin`（VUE2 / 兼容层）。两者都没有则记录 warn，不抛。
+ */
+function mountVueMixin(mixin) {
+    var _a;
+    const u = getUni();
+    if (u && typeof u.onCreateVueApp === 'function') {
+        u.onCreateVueApp((app) => {
+            tryRun(() => app.mixin(mixin), undefined);
+        });
+        return;
+    }
+    // VUE2 兼容；用 eval('require') 防止打包工具静态解析失败。
+    const req = globalThis.require;
+    if (typeof req === 'function') {
+        const Vue = tryRun(() => req('vue'), {});
+        const target = (_a = Vue === null || Vue === void 0 ? void 0 : Vue.default) !== null && _a !== void 0 ? _a : Vue;
+        if (target && typeof target.mixin === 'function') {
+            tryRun(() => target.mixin(mixin), undefined);
+            return;
+        }
+    }
+    logger.warn('[uni-stat] no vue mixin entry available; lifecycle not bound to vue');
+}
+/**
+ * 把 `uni.report` 桥到 StatApp.report。
+ */
+function mountUniReport(app) {
+    const u = getUni();
+    if (!u)
+        return;
+    u.report = (type, value) => {
+        app.report(type, value);
+    };
+}
+/** 仅供测试：重置 install 哨兵；调用方应同时调 `__resetStatApp()`。 */
+function __resetInstall() {
+    if (lastUnbind)
+        tryRun(() => lastUnbind(), undefined);
+    lastUnbind = undefined;
+    bootstrapped = false;
+}
+
+/**
+ * 公有版统计入口。
+ *
+ * 与私有版 `src/index.js#main()` 等价：模块加载即触发安装。宿主无需手动调用，
+ * 只需 `import '@dcloudio/uni-stat-public'`（或对应 dist 路径）即可。
+ *
+ * 也对外导出 `installPublicStat / getStatApp` 以便调试或自定义场景手动重装。
+ */
+// 自动安装：与私有版行为一致，加载即触发。
+installPublicStat();
+
+export { __resetInstall, __resetStatApp, getStatApp, installPublicStat };

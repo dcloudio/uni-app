@@ -25,17 +25,19 @@ const uniStatLog = once((text) => {
 });
 var index = () => [
     uniCliShared.defineUniMainJsPlugin((opts) => {
+        // 公有版（version === '3'）走 uni-stat-public，与 1/2 私有版并存。
         let statVersion = '1';
         let isEnable = false;
         const stats = {
             '@dcloudio/uni-stat': uniCliShared.resolveBuiltIn('@dcloudio/uni-stat/dist/uni-stat.es.js'),
             '@dcloudio/uni-cloud-stat': uniCliShared.resolveBuiltIn('@dcloudio/uni-stat/dist/uni-cloud-stat.es.js'),
+            '@dcloudio/uni-stat-public': uniCliShared.resolveBuiltIn('@dcloudio/uni-stat/dist/uni-stat-public.es.js'),
         };
         return {
             name: 'uni:stat',
             enforce: 'pre',
             config(config, env) {
-                var _a;
+                var _a, _b;
                 if (!uniCliShared.isNormalCompileTarget()) {
                     // 不需要统计
                     return;
@@ -76,9 +78,24 @@ var index = () => [
                         const uniCloudConfig = statConfig.uniCloud || {};
                         // 获取manifest.json 统计配置，插入环境变量中
                         process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig);
-                        statVersion = Number(statConfig.version) === 2 ? '2' : '1';
+                        // version=3 走公有版；2 走 uniCloud 私有版；其它统一回退到 1.0。
+                        const versionNum = Number(statConfig.version);
+                        statVersion =
+                            versionNum === 3 ? '3' : versionNum === 2 ? '2' : '1';
                         process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig);
                         process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
+                        // 公有版字段 `an` 兜底：注入 manifest.json#name 到 process.env.UNI_APP_NAME，
+                        // 由 `public/adapter/package.ts#getEnvAppName` 读取。任意阶段读 manifest 失败
+                        // 都走 try/catch，不阻断构建。
+                        try {
+                            const manifestForName = uniCliShared.parseManifestJsonOnce(inputDir);
+                            if (manifestForName && typeof manifestForName.name === 'string') {
+                                process.env.UNI_APP_NAME = manifestForName.name;
+                            }
+                        }
+                        catch (e) {
+                            debug__default.default('uni:stat')('parse manifest for UNI_APP_NAME failed', e);
+                        }
                         if (process.env.NODE_ENV === 'production') {
                             const manifestJson = uniCliShared.parseManifestJsonOnce(inputDir);
                             if (!manifestJson.appid) {
@@ -90,7 +107,7 @@ var index = () => [
                                     uniStatLog(uniCliShared.M['stat.warn.version']);
                                 }
                                 else {
-                                    uniStatLog(`已开启 uni统计${statVersion}.0 版本`);
+                                    uniStatLog(`已开启 uni统计${statVersion === '3' ? '公有版(3)' : `${statVersion}.0`} 版本`);
                                 }
                             }
                         }
@@ -99,11 +116,11 @@ var index = () => [
                                 uniStatLog(uniCliShared.M['stat.warn.version']);
                             }
                             else {
-                                uniStatLog(uniCliShared.M['stat.warn.tip'].replace('{version}', `${statVersion}.0`));
+                                uniStatLog(uniCliShared.M['stat.warn.tip'].replace('{version}', statVersion === '3' ? '公有版(3)' : `${statVersion}.0`));
                             }
                         }
                     }
-                    debug__default.default('uni:stat')('isEnable', isEnable);
+                    debug__default.default('uni:stat')('isEnable', isEnable, 'version', statVersion);
                 }
                 process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson);
                 return {
@@ -112,6 +129,7 @@ var index = () => [
                         'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD,
                         'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG,
                         'process.env.UNI_STATISTICS_CONFIG': process.env.UNI_STATISTICS_CONFIG,
+                        'process.env.UNI_APP_NAME': JSON.stringify((_b = process.env.UNI_APP_NAME) !== null && _b !== void 0 ? _b : ''),
                     },
                 };
             },
@@ -120,9 +138,17 @@ var index = () => [
             },
             transform(code, id) {
                 if (isEnable && opts.filter(id)) {
+                    // 三种版本对应不同的运行时入口：
+                    //   '1' → @dcloudio/uni-stat（HTTP 1.0）
+                    //   '2' → @dcloudio/uni-cloud-stat（uniCloud 2.0，私有版默认）
+                    //   '3' → @dcloudio/uni-stat-public（公有版，本次 Phase 11 新增）
+                    const importPath = statVersion === '3'
+                        ? '@dcloudio/uni-stat-public'
+                        : statVersion === '2'
+                            ? '@dcloudio/uni-cloud-stat'
+                            : '@dcloudio/uni-stat';
                     return {
-                        code: code +
-                            `;import '@dcloudio/uni${statVersion === '2' ? '-cloud' : ''}-stat';`,
+                        code: code + `;import '${importPath}';`,
                         map: null,
                     };
                 }
