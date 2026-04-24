@@ -106,9 +106,6 @@
       "CalendarSuccessCallback"
     ],
     [
-      "CanOpenURL"
-    ],
-    [
       "CanvasContext"
     ],
     [
@@ -1553,9 +1550,6 @@
     ],
     [
       "OpenLocationSuccessImpl"
-    ],
-    [
-      "OpenSchema"
     ],
     [
       "OsThemeChangeResult"
