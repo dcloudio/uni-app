@@ -95,15 +95,23 @@ export async function runDev(options: CliOptions & ServerOptions) {
             const files = process.env.UNI_APP_CHANGED_FILES
             const pages = process.env.UNI_APP_CHANGED_PAGES
             const dex = process.env.UNI_APP_UTS_CHANGED_FILES
+            const binFiles =
+              process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
+                ? process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
+                : ''
             changedFiles = pages || files
             process.env.UNI_APP_CHANGED_PAGES = ''
             process.env.UNI_APP_CHANGED_FILES = ''
             process.env.UNI_APP_UTS_CHANGED_FILES = ''
+            if (process.env.UNI_APP_X_DOM2_DYNAMIC === 'true') {
+              process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES = ''
+            }
             if (
               (changedFiles &&
                 !changedFiles.includes(APP_CONFIG_SERVICE) &&
                 !changedFiles.includes(APP_SERVICE_FILENAME)) ||
-              dex
+              dex ||
+              binFiles
             ) {
               if (pages) {
                 return output(
@@ -117,7 +125,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
                   '{files}',
                   JSON.stringify(
                     JSON.parse(changedFiles || JSON.stringify([])).concat(
-                      JSON.parse(dex || JSON.stringify([]))
+                      JSON.parse(dex || JSON.stringify([])),
+                      JSON.parse(binFiles || JSON.stringify([]))
                     )
                   )
                 )
@@ -137,13 +146,14 @@ export async function runDev(options: CliOptions & ServerOptions) {
                   changed.push(...JSON.parse(files))
                 } catch {}
               }
-              const binFiles = process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
+              // 鸿蒙平台暂不启用 bin 文件热更新，先不合并到 changes 中。
+              // const binFiles = process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
               process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES = ''
-              if (binFiles) {
-                try {
-                  changed.push(...JSON.parse(binFiles))
-                } catch {}
-              }
+              // if (binFiles) {
+              //   try {
+              //     changed.push(...JSON.parse(binFiles))
+              //   } catch {}
+              // }
               if (changed.length) {
                 return output(
                   'log',
