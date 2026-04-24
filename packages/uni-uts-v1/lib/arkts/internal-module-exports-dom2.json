@@ -439,7 +439,16 @@
       "CompassAccuracy"
     ],
     [
+      "CompassAccuracy"
+    ],
+    [
       "CompassComplete"
+    ],
+    [
+      "CompassComplete"
+    ],
+    [
+      "CompassCompleteCallback"
     ],
     [
       "CompassCompleteCallback"
@@ -448,13 +457,28 @@
       "CompassErrorCode"
     ],
     [
+      "CompassErrorCode"
+    ],
+    [
+      "CompassFail"
+    ],
+    [
       "CompassFail"
     ],
     [
       "CompassFailCallback"
     ],
     [
+      "CompassFailCallback"
+    ],
+    [
       "CompassSuccess"
+    ],
+    [
+      "CompassSuccess"
+    ],
+    [
+      "CompassSuccessCallback"
     ],
     [
       "CompassSuccessCallback"
@@ -1192,6 +1216,9 @@
       "ICompassError"
     ],
     [
+      "ICompassError"
+    ],
+    [
       "ICreateBackgroundAudioFail"
     ],
     [
@@ -1447,6 +1474,18 @@
       "MediaOrientation"
     ],
     [
+      "MemoryWarningCallback"
+    ],
+    [
+      "MemoryWarningCallbackResult"
+    ],
+    [
+      "MemoryWarningErrorCode"
+    ],
+    [
+      "MemoryWarningFail"
+    ],
+    [
       "MkDirOptions"
     ],
     [
@@ -1477,6 +1516,9 @@
       "OffLocationChangeError"
     ],
     [
+      "OffMemoryWarning"
+    ],
+    [
       "OffNetworkStatusChange"
     ],
     [
@@ -1505,6 +1547,12 @@
     ],
     [
       "OnCompassChange"
+    ],
+    [
+      "OnCompassChange"
+    ],
+    [
+      "OnCompassChangeSuccess"
     ],
     [
       "OnCompassChangeSuccess"
@@ -1547,6 +1595,9 @@
     ],
     [
       "OnLocationChangeResult"
+    ],
+    [
+      "OnMemoryWarning"
     ],
     [
       "OnNetworkStatusChange"
@@ -2365,6 +2416,9 @@
       "StartCompassOptions"
     ],
     [
+      "StartCompassOptions"
+    ],
+    [
       "StartGyroscopeOptions"
     ],
     [
@@ -2434,6 +2488,9 @@
       "StopCompassOptions"
     ],
     [
+      "StopCompassOptions"
+    ],
+    [
       "StopGyroscopeOptions"
     ],
     [
@@ -2453,6 +2510,9 @@
     ],
     [
       "UnLinkSuccessCallback"
+    ],
+    [
+      "UniAnimationViewElement"
     ],
     [
       "UniCanvasElement"
