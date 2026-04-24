@@ -1,4 +1,20 @@
 {
+  "uni-accelerometer": {
+    "startAccelerometer": [
+      "null"
+    ],
+    "stopAccelerometer": [
+      "null"
+    ]
+  },
+  "uni-compass": {
+    "startCompass": [
+      "null"
+    ],
+    "stopCompass": [
+      "null"
+    ]
+  },
   "uni-createIntersectionObserver": {
     "createIntersectionObserver": [
       null,
@@ -71,6 +87,17 @@
   },
   "uni-getNetworkType": {
     "offNetworkStatusChange": [
+      "null"
+    ]
+  },
+  "uni-gyroscope": {
+    "startGyroscope": [
+      "null"
+    ],
+    "stopGyroscope": [
+      "null"
+    ],
+    "offGyroscopeChange": [
       "null"
     ]
   },
@@ -177,14 +204,6 @@
   "uni-push": {
     "setAppBadgeNumber": [
       null,
-      "null"
-    ]
-  },
-  "uni-compass": {
-    "startCompass": [
-      "null"
-    ],
-    "stopCompass": [
       "null"
     ]
   },
