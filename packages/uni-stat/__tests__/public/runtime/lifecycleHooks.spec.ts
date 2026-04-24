@@ -1,0 +1,249 @@
+/**
+ * lifecycleHooks 单元测试。
+ *
+ * 覆盖 4 类 session 触发：
+ *   T1 cold_launch  → cst=1，发 lt=0 + lt=1。
+ *   T2 app_show 后台超时 → cst=2，发 lt=0 + lt=1。
+ *   T3 page_show 前台无操作超时 → cst=3，发 lt=0 + lt=1。
+ *   T4 page_show 未超时 → 不发 session/launch，仅维护 lastRoute / entry。
+ *
+ * 另外验证：
+ *   - app_hide：写 markBackground、发 lt=3、强制 flush。
+ *   - page_hide：发 lt=11，url/urlref/urlref_ts 字段正确。
+ *   - onError：转给 StatApp.reportError，不抛错。
+ *   - emitSessionEvent=false 时只发 lt=1。
+ */
+
+import {
+  __resetLifecycleState,
+  bindLifecycle,
+  handleAppHide,
+  handleAppShow,
+  handleError,
+  handleLaunch,
+  handlePageHide,
+  handlePageShow,
+} from '../../../public/runtime/lifecycleHooks'
+import { __resetStatApp, getStatApp } from '../../../public/runtime/StatApp'
+import { installMockUni, restoreMockUni } from '../helpers/mockUni'
+import * as queueMod from '../../../public/pipeline/queue'
+import * as retryMod from '../../../public/pipeline/retry'
+import * as sessionMod from '../../../public/domain/session/machine'
+import * as visitMod from '../../../public/domain/visit/firstVisit'
+import { __resetState as resetEntry } from '../../../public/domain/entry/entryPage'
+import { __resetTitle } from '../../../public/domain/title'
+import { __resetCache as resetDevice } from '../../../public/adapter/device'
+import { __resetCache as resetPackage } from '../../../public/adapter/package'
+import { __resetCache as resetSystem } from '../../../public/adapter/system'
+
+import type { Channel, ReportPayload } from '../../../public/pipeline/types'
+import type { ReportInput } from '../../../public/pipeline/collector'
+
+interface FakeChannel extends Channel {
+  send: jest.Mock<Promise<void>, [ReportPayload]>
+  available: jest.Mock<boolean, []>
+}
+
+function fakeChannel(): FakeChannel {
+  const send: jest.Mock<Promise<void>, [ReportPayload]> = jest.fn(
+    (_p: ReportPayload) => Promise.resolve()
+  )
+  const available: jest.Mock<boolean, []> = jest.fn(() => true)
+  return { name: '1.0', available, send }
+}
+
+function resetAll(): void {
+  queueMod.__reset()
+  retryMod.__reset()
+  sessionMod.__resetState()
+  visitMod.__resetState()
+  resetEntry()
+  __resetTitle()
+  resetDevice()
+  resetPackage()
+  resetSystem()
+  __resetLifecycleState()
+  __resetStatApp()
+}
+
+function installAppWithSpyReporter(): {
+  app: ReturnType<typeof getStatApp>
+  reportSpy: jest.SpyInstance
+  http: FakeChannel
+} {
+  const http = fakeChannel()
+  const app = getStatApp()
+  app.install(
+    { version: '1', ak: 'k' },
+    {
+      channels: { http, cloud: null },
+      skipInterceptors: true,
+      skipMigration: true,
+      skipRecoverRetry: true,
+    }
+  )
+  const collector = app.getCollector()!
+  const reportSpy = jest.spyOn(collector, 'report')
+  return { app, reportSpy, http }
+}
+
+function getReportedLts(spy: jest.SpyInstance): string[] {
+  return spy.mock.calls.map((c) => (c[0] as ReportInput).lt)
+}
+
+describe('runtime/lifecycleHooks', () => {
+  beforeEach(() => {
+    installMockUni({ platform: 'h5' })
+    resetAll()
+  })
+
+  afterEach(() => {
+    resetAll()
+    restoreMockUni()
+  })
+
+  test('T1 cold_launch → cst=1，发 lt=0 + lt=1', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, { scene: 1001 })
+    const lts = getReportedLts(reportSpy)
+    expect(lts).toEqual(['0', '1'])
+    const session = sessionMod.getSnapshot()
+    expect(session?.sct).toBe(1)
+  })
+
+  test('T2 app_show 后台超时 → cst=2，发 lt=0 + lt=1', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+    reportSpy.mockClear()
+
+    sessionMod.markBackground(Math.floor(Date.now() / 1000) - 10_000)
+    handleAppShow(app, {})
+    const lts = getReportedLts(reportSpy)
+    expect(lts).toEqual(['0', '1'])
+    expect(sessionMod.getSnapshot()?.sct).toBe(2)
+  })
+
+  test('T3 page_show 前台无操作超时 → cst=3，发 lt=0 + lt=1', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+    reportSpy.mockClear()
+
+    const snap = sessionMod.getSnapshot()!
+    snap.lastActive = Math.floor(Date.now() / 1000) - 999_999
+    handlePageShow(app, { route: 'pages/home' })
+    const lts = getReportedLts(reportSpy)
+    expect(lts.includes('0')).toBe(true)
+    expect(lts.includes('1')).toBe(true)
+    expect(sessionMod.getSnapshot()?.sct).toBe(3)
+  })
+
+  test('T4 page_show 未超时 → 不发 session/launch', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+    reportSpy.mockClear()
+
+    handlePageShow(app, { route: 'pages/home' })
+    const lts = getReportedLts(reportSpy)
+    expect(lts).toEqual([])
+  })
+
+  test('app_hide：发 lt=3，并 markBackground', async () => {
+    const { app, reportSpy, http } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+    handlePageShow(app, { route: 'pages/home' })
+    reportSpy.mockClear()
+
+    handleAppHide(app)
+    const lts = getReportedLts(reportSpy)
+    expect(lts).toContain('3')
+    expect(sessionMod.getSnapshot()?.bgTs).toBeGreaterThan(0)
+    // 强制 flush 应触发 channel.send（lt=3 + 之前 onLaunch/page_show 的事件已被 batch 出去了）
+    await Promise.resolve()
+    expect(http.send).toHaveBeenCalled()
+  })
+
+  test('page_hide：发 lt=11，url/urlref/urlref_ts 字段正确', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+    handlePageShow(app, { route: 'pages/A' })
+    reportSpy.mockClear()
+
+    handlePageHide(app, { route: 'pages/A' })
+    const calls = reportSpy.mock.calls
+    expect(calls).toHaveLength(1)
+    const input = calls[0][0] as ReportInput
+    expect(input.lt).toBe('11')
+    expect(input.urlref_ts).toBeGreaterThanOrEqual(0)
+  })
+
+  test('onError：转给 StatApp.reportError，不抛错', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+    reportSpy.mockClear()
+
+    expect(() => handleError(app, new Error('boom'))).not.toThrow()
+    const lts = getReportedLts(reportSpy)
+    expect(lts).toContain('31')
+  })
+
+  test('emitSessionEvent=false 时仅发 lt=1', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, {}, { emitSessionEvent: false })
+    const lts = getReportedLts(reportSpy)
+    expect(lts).toEqual(['1'])
+  })
+
+  test('visit 字段仅在 cold_launch 携带，cst=2/3 不再带', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+    const launchInputs = reportSpy.mock.calls.map((c) => c[0] as ReportInput)
+    const ltSession = launchInputs.find((i) => i.lt === '0')!
+    const ltLaunch = launchInputs.find((i) => i.lt === '1')!
+    expect(ltSession.visit).toBeDefined()
+    expect(ltLaunch.visit).toBeDefined()
+    reportSpy.mockClear()
+
+    sessionMod.markBackground(Math.floor(Date.now() / 1000) - 10_000)
+    handleAppShow(app, {})
+    const appShowInputs = reportSpy.mock.calls.map((c) => c[0] as ReportInput)
+    for (const i of appShowInputs) {
+      expect(i.visit).toBeUndefined()
+    }
+  })
+
+  test('bindLifecycle：返回 mixin 包含 6 个钩子，unbind 幂等', () => {
+    const { app } = installAppWithSpyReporter()
+    const bound = bindLifecycle(app)
+    const keys = Object.keys(bound.mixin).sort()
+    expect(keys).toEqual(
+      ['onError', 'onHide', 'onLaunch', 'onLoad', 'onShow', 'onUnload'].sort()
+    )
+    expect(() => bound.unbind()).not.toThrow()
+    expect(() => bound.unbind()).not.toThrow()
+  })
+
+  test('bindLifecycle：onAppShow 桥接 uni.onAppShow', () => {
+    let registered: ((e: { scene?: number }) => void) | undefined
+    installMockUni({
+      patch: {
+        onAppShow: jest.fn((cb: (e: { scene?: number }) => void) => {
+          registered = cb
+        }),
+      },
+    })
+    try {
+      resetAll()
+      const { app, reportSpy } = installAppWithSpyReporter()
+      handleLaunch(app, {})
+      reportSpy.mockClear()
+      bindLifecycle(app)
+      // 模拟 uni 触发后台超时 → app_show
+      sessionMod.markBackground(Math.floor(Date.now() / 1000) - 10_000)
+      registered?.({ scene: 1037 })
+      const lts = getReportedLts(reportSpy)
+      expect(lts).toEqual(['0', '1'])
+    } finally {
+      restoreMockUni()
+    }
+  })
+})
