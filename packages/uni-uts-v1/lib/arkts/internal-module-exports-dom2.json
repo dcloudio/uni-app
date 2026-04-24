@@ -2278,19 +2278,7 @@
       "UnLinkSuccessCallback"
     ],
     [
-      "UniButtonElement"
-    ],
-    [
       "UniCanvasElement"
-    ],
-    [
-      "UniCheckboxElement"
-    ],
-    [
-      "UniCheckboxGroupChangeEvent"
-    ],
-    [
-      "UniCheckboxGroupElement"
     ],
     [
       "UniEditorElement"
@@ -2338,19 +2326,10 @@
       "UniFormElement"
     ],
     [
-      "UniFormResetEvent"
-    ],
-    [
-      "UniFormSubmitEvent"
-    ],
-    [
       "UniHideModalFail"
     ],
     [
       "UniHideModalResult"
-    ],
-    [
-      "UniLabelElement"
     ],
     [
       "UniLoadingElement"
@@ -2365,24 +2344,6 @@
       "UniPaymentProvider"
     ],
     [
-      "UniPickerViewChangeEvent"
-    ],
-    [
-      "UniPickerViewColumnElement"
-    ],
-    [
-      "UniPickerViewElement"
-    ],
-    [
-      "UniRadioElement"
-    ],
-    [
-      "UniRadioGroupChangeEvent"
-    ],
-    [
-      "UniRadioGroupElement"
-    ],
-    [
       "UniShareProvider"
     ],
     [
@@ -2390,18 +2351,6 @@
     ],
     [
       "UniShowModalResult"
-    ],
-    [
-      "UniSliderChangeEvent"
-    ],
-    [
-      "UniSliderElement"
-    ],
-    [
-      "UniSwitchChangeEvent"
-    ],
-    [
-      "UniSwitchElement"
     ],
     [
       "UniVerifyButtonListItem"
