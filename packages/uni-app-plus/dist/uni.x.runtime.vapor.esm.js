@@ -2125,6 +2125,9 @@ function registerPage(_ref, onCreated) {
         };
         invokeHook(pageComponentPublicInstance, ON_RESIZE, args);
       });
+      {
+        initVaporPageLifeCycle(pageComponentPublicInstance, nativePage);
+      }
       nativePage.startRender();
       onRegistered === null || onRegistered === void 0 || onRegistered(nativePage);
     });
@@ -2135,6 +2138,39 @@ function registerPage(_ref, onCreated) {
     fn();
   }
   return nativePage;
+}
+function initVaporPageLifeCycle(pageComponentPublicInstance, nativePage) {
+  if (
+    // @ts-expect-error
+    pageComponentPublicInstance._.onReachBottom || // @ts-expect-error
+    pageComponentPublicInstance._.onPageScroll
+  ) {
+    var pageRootEl = pageComponentPublicInstance.$el;
+    if (pageRootEl.tagName === "SCROLL-VIEW") {
+      var triggeredReachBottom = false;
+      var scrollEventId = pageRootEl.addEventListener("scroll", (e) => {
+        var scrollTop = e.target.scrollTop;
+        if (pageComponentPublicInstance._.onPageScroll) {
+          invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, {
+            scrollTop
+          });
+        }
+        if (pageComponentPublicInstance._.onReachBottom) {
+          var scrollHeight = e.target.scrollHeight;
+          var pageRootElHeight = pageRootEl.getBoundingClientRect().height;
+          if (scrollTop + pageRootElHeight >= scrollHeight - (pageComponentPublicInstance.$basePage.meta.onReachBottomDistance || 50)) {
+            !triggeredReachBottom && invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM);
+            triggeredReachBottom = true;
+          } else {
+            triggeredReachBottom = false;
+          }
+        }
+      });
+      nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+        pageRootEl.removeEventListener("scroll", scrollEventId);
+      });
+    }
+  }
 }
 function registerDialogPage(_ref2, dialogPage, onCreated) {
   var _uniRoutes$find;
