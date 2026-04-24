@@ -15,6 +15,81 @@
       "null"
     ]
   },
+  "uni-createIntersectionObserver": {
+    "createIntersectionObserver": [
+      null,
+      "null"
+    ]
+  },
+  "uni-createWebviewContext": {
+    "createWebviewContext": [
+      null,
+      "null"
+    ]
+  },
+  "uni-dialogPage": {
+    "closeDialogPage": [
+      "null"
+    ]
+  },
+  "uni-base": {
+    "$off": [
+      null,
+      "null"
+    ],
+    "$emit": [
+      null,
+      "null"
+    ],
+    "removeInterceptor": [
+      null,
+      "null"
+    ],
+    "offKeyboardHeightChange": [
+      "null"
+    ],
+    "__f__": [
+      null,
+      "null"
+    ]
+  },
+  "uni-exit": {
+    "exit": [
+      "null"
+    ]
+  },
+  "uni-file": {
+    "saveFile": [
+      "null"
+    ],
+    "getSavedFileList": [
+      "null"
+    ],
+    "getSavedFileInfo": [
+      "null"
+    ],
+    "removeSavedFile": [
+      "null"
+    ],
+    "getFileInfo": [
+      "null"
+    ]
+  },
+  "uni-getAppBaseInfo": {
+    "getAppBaseInfo": [
+      "null"
+    ]
+  },
+  "uni-getDeviceInfo": {
+    "getDeviceInfo": [
+      "null"
+    ]
+  },
+  "uni-getNetworkType": {
+    "offNetworkStatusChange": [
+      "null"
+    ]
+  },
   "uni-gyroscope": {
     "startGyroscope": [
       "null"
@@ -23,6 +98,104 @@
       "null"
     ],
     "offGyroscopeChange": [
+      "null"
+    ]
+  },
+  "uni-keyboard": {
+    "hideKeyboard": [
+      "null"
+    ]
+  },
+  "uni-location": {
+    "offLocationChange": [
+      "null"
+    ],
+    "offLocationChangeError": [
+      "null"
+    ]
+  },
+  "uni-navigationBar": {
+    "showNavigationBarLoading": [
+      "null"
+    ],
+    "hideNavigationBarLoading": [
+      "null"
+    ]
+  },
+  "uni-openDocument": {
+    "openDocument": [
+      "null"
+    ]
+  },
+  "uni-pullDownRefresh": {
+    "startPullDownRefresh": [
+      "null"
+    ]
+  },
+  "uni-route": {
+    "navigateBack": [
+      "null"
+    ]
+  },
+  "uni-scanCode": {
+    "scanCode": [
+      "null"
+    ]
+  },
+  "uni-showLoading": {
+    "showLoading": [
+      "null"
+    ],
+    "hideLoading": [
+      "null"
+    ]
+  },
+  "uni-storage": {
+    "clearStorage": [
+      "null"
+    ]
+  },
+  "uni-tabBar": {
+    "hideTabBar": [
+      "null"
+    ],
+    "showTabBar": [
+      "null"
+    ]
+  },
+  "uni-video": {
+    "createVideoContext": [
+      null,
+      "null"
+    ]
+  },
+  "uni-web-view": {
+    "createWebViewContext": [
+      null,
+      "null"
+    ]
+  },
+  "uni-live-player": {
+    "createLivePlayerContext": [
+      null,
+      "null"
+    ]
+  },
+  "uni-live-pusher": {
+    "createLivePusherContext": [
+      null,
+      "null"
+    ]
+  },
+  "uni-map-tencent": {
+    "createMapContext": [
+      null,
+      "null"
+    ]
+  },
+  "uni-push": {
+    "setAppBadgeNumber": [
+      null,
       "null"
     ]
   },
@@ -38,12 +211,6 @@
   },
   "uni-createMediaQueryObserver": {
     "createMediaQueryObserver": [
-      "null"
-    ]
-  },
-  "uni-base": {
-    "__f__": [
-      null,
       "null"
     ]
   }
