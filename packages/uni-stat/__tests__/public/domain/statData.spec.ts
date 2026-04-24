@@ -1,0 +1,326 @@
+import { LT } from '../../../public/domain/eventTypes'
+import {
+  type StatDataDeps,
+  createStatDataBuilder,
+} from '../../../public/domain/statData'
+
+import type {
+  LocaleAndScreen,
+  SystemInfoStatic,
+} from '../../../public/adapter/system'
+import type { LocationResult } from '../../../public/adapter/location'
+import type { NetResult } from '../../../public/adapter/network'
+import type { PackageInfo } from '../../../public/adapter/package'
+import type { SessionSnapshot } from '../../../public/domain/session/machine'
+
+function makeDeps(overrides: Partial<StatDataDeps> = {}): StatDataDeps {
+  const system: SystemInfoStatic = {
+    brand: 'Apple',
+    md: 'iPhone 15',
+    sv: '17.4',
+    v: '1.0.0',
+    ut: 'phone',
+    appVersion: '1.0.0',
+    appWgtVersion: '1.0.1',
+    sdkVersion: '3.5.0',
+    statusBarHeight: 44,
+  }
+  const locale: LocaleAndScreen = {
+    lang: 'zh-CN',
+    ww: 390,
+    wh: 844,
+    sw: 390,
+    sh: 844,
+    pr: 3,
+  }
+  const net: NetResult = { net: 'wifi', raw: 'wifi' }
+  const location: LocationResult = { lat: '', lng: '', ok: false }
+  const pkg: PackageInfo = { tdaid: 'wxabc', pkn: 'com.x.y', an: 'AppName' }
+  return Object.assign(
+    {
+      config: { ak: 'AK001', usv: '3.0.0' },
+      platform: { ut: 'h5', p: 'h' as const },
+      system,
+      locale,
+      device: { uuid: 'uuid-1', odid: 'odid-1' },
+      net,
+      location,
+      pkg,
+    } as StatDataDeps,
+    overrides
+  )
+}
+
+const baseSession: SessionSnapshot = {
+  sid: 'sid-1',
+  sst: 1700000000,
+  sct: 1,
+  seq: 0,
+  lastActive: 1700000000,
+  bgTs: 0,
+  lastScene: '1001',
+}
+
+describe('domain/statData', () => {
+  describe('基础字段', () => {
+    test('每条事件都带 ak/usv/uuid/ut/p/brand 等基础字段', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({ lt: LT.Page, t: 1700000000 })
+      expect(data).toMatchObject({
+        lt: '11',
+        t: 1700000000,
+        ak: 'AK001',
+        usv: '3.0.0',
+        uuid: 'uuid-1',
+        odid: 'odid-1',
+        brand: 'Apple',
+        md: 'iPhone 15',
+        sv: '17.4',
+        mpsdk: '3.5.0',
+        mpv: '1.0.1',
+        ut: 'h5',
+        p: 'h',
+        ww: 390,
+        wh: 844,
+        sw: 390,
+        sh: 844,
+        pr: 3,
+        lang: 'zh-CN',
+        net: 'wifi',
+        tdaid: 'wxabc',
+        pkn: 'com.x.y',
+        an: 'AppName',
+      })
+    })
+
+    test('config.v 缺失时回退到 system.appVersion', () => {
+      const builder = createStatDataBuilder(
+        makeDeps({ config: { ak: 'A', usv: '1' } })
+      )
+      const data = builder.build({ lt: LT.Launch, t: 1 })
+      expect(data.v).toBe('1.0.0') // system.appVersion
+    })
+
+    test('net 默认为 unknown（兜底）', () => {
+      const builder = createStatDataBuilder(
+        makeDeps({ net: { net: 'unknown', raw: '' } as NetResult })
+      )
+      const data = builder.build({ lt: LT.Page, t: 1 })
+      expect(data.net).toBe('unknown')
+    })
+  })
+
+  describe('session 字段', () => {
+    test('传入 session → 携带 sid/sst/sct/seq', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({ lt: LT.Page, t: 1, session: baseSession })
+      expect(data).toMatchObject({
+        sid: 'sid-1',
+        sst: 1700000000,
+        sct: 1,
+        seq: 0,
+      })
+    })
+
+    test('未传 session → 不携带任何 session 字段', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({ lt: LT.Page, t: 1 })
+      expect(data.sid).toBeUndefined()
+      expect(data.sst).toBeUndefined()
+    })
+
+    test('pid 仅在显式传入时携带', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const dataNoPid = builder.build({
+        lt: LT.Session,
+        t: 1,
+        session: baseSession,
+      })
+      expect(dataNoPid.pid).toBeUndefined()
+      const dataWithPid = builder.build({
+        lt: LT.Session,
+        t: 1,
+        session: baseSession,
+        pid: 'old-sid',
+      })
+      expect(dataWithPid.pid).toBe('old-sid')
+    })
+  })
+
+  describe('页面字段（lt=11/3）', () => {
+    test('完整 page 字段', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({
+        lt: LT.Page,
+        t: 1,
+        url: 'pages/A?id=1',
+        urlref: 'pages/B',
+        urlref_ts: 12,
+        ttn: '当前',
+        ttpj: '原标题',
+        ttc: '业务标题',
+      })
+      expect(data).toMatchObject({
+        url: 'pages/A?id=1',
+        urlref: 'pages/B',
+        urlref_ts: 12,
+        ttn: '当前',
+        ttpj: '原标题',
+        ttc: '业务标题',
+      })
+    })
+  })
+
+  describe('入口字段（仅 lt=11/3）', () => {
+    test('lt=11 时 iey/ppiey 转 0/1 上行', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({ lt: LT.Page, t: 1, iey: true, ppiey: false })
+      expect(data.iey).toBe(1)
+      expect(data.ppiey).toBe(0)
+    })
+
+    test('lt=21（自定义事件）时不携带 iey/ppiey', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({ lt: LT.Event, t: 1, iey: true, ppiey: true })
+      expect(data.iey).toBeUndefined()
+      expect(data.ppiey).toBeUndefined()
+    })
+  })
+
+  describe('访问字段（仅 lt=0/1）', () => {
+    test('lt=1 + visit → 携带 fvts/lvts/tvc', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({
+        lt: LT.Launch,
+        t: 1,
+        visit: { fvts: 100, lvts: 200, tvc: 3 },
+      })
+      expect(data).toMatchObject({ fvts: 100, lvts: 200, tvc: 3 })
+    })
+
+    test('lt=11 + visit → 不携带 visit 字段', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({
+        lt: LT.Page,
+        t: 1,
+        visit: { fvts: 100, lvts: 200, tvc: 3 },
+      })
+      expect(data.fvts).toBeUndefined()
+      expect(data.lvts).toBeUndefined()
+    })
+
+    test('lt=0 + visit lvts=0 → 显式上报 0（区分新用户）', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({
+        lt: LT.Session,
+        t: 1,
+        visit: { fvts: 999, lvts: 0, tvc: 1 },
+      })
+      expect(data.lvts).toBe(0)
+    })
+  })
+
+  describe('错误字段（lt=31）', () => {
+    test('lt=31 + errMsg → em 字段', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({ lt: LT.Error, t: 1, errMsg: 'boom' })
+      expect(data.em).toBe('boom')
+    })
+
+    test('lt=21 + errMsg → 不带 em', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({ lt: LT.Event, t: 1, errMsg: 'boom' })
+      expect(data.em).toBeUndefined()
+    })
+  })
+
+  describe('Push 字段（lt=101）', () => {
+    test('lt=101 + cid → cid 字段', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({ lt: LT.Push, t: 1, cid: 'CID' })
+      expect(data.cid).toBe('CID')
+    })
+  })
+
+  describe('custom 字段', () => {
+    test('普通 key 透传', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({
+        lt: LT.Event,
+        t: 1,
+        custom: { ev: 'click', id: 'btn1' },
+      })
+      expect(data.ev).toBe('click')
+      expect(data.id).toBe('btn1')
+    })
+
+    test('custom 不能覆盖关键字段（lt/t/sid/sst/sct/seq/pid/fvts/lvts/tvc/sc）', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({
+        lt: LT.Event,
+        t: 1700000000,
+        session: baseSession,
+        custom: {
+          lt: '999',
+          t: 0,
+          sid: 'evil',
+          sst: 0,
+          sct: 9 as unknown as number,
+          seq: 999,
+          pid: 'evil',
+          fvts: 1,
+          lvts: 1,
+          tvc: 999,
+          sc: 'evil',
+          legitField: 'ok',
+        },
+      })
+      expect(data.lt).toBe('21')
+      expect(data.t).toBe(1700000000)
+      expect(data.sid).toBe('sid-1')
+      expect(data.legitField).toBe('ok')
+    })
+  })
+
+  describe('字段值兜底（修复缺陷 #14：undefined 不上行）', () => {
+    test('config.v 与 system.appVersion 都为空 → v 为空字符串', () => {
+      const builder = createStatDataBuilder(
+        makeDeps({
+          config: { ak: 'A', usv: '1' },
+          system: {
+            brand: '',
+            md: '',
+            sv: '',
+            v: '',
+            ut: '',
+            appVersion: '',
+            appWgtVersion: '',
+            sdkVersion: '',
+            statusBarHeight: 0,
+          },
+        })
+      )
+      const data = builder.build({ lt: LT.Page, t: 1 })
+      expect(data.v).toBe('')
+      expect(data.brand).toBe('')
+      expect(data.md).toBe('')
+    })
+
+    test('locale.pr 默认为 1（避免 0 / undefined）', () => {
+      const builder = createStatDataBuilder(
+        makeDeps({
+          locale: {
+            lang: '',
+            ww: 0,
+            wh: 0,
+            sw: 0,
+            sh: 0,
+            pr: NaN as unknown as number,
+          },
+        })
+      )
+      const data = builder.build({ lt: LT.Page, t: 1 })
+      expect(data.pr).toBe(1)
+    })
+  })
+})

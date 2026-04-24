@@ -1,2 +1,4 @@
-// 上报通道 barrel：http / image-beacon / uniCloud-callFunction 三种实现。
-export {}
+export { createHttpChannel } from './http'
+export { createCloudChannel } from './cloud'
+export { selectChannel } from './selector'
+export type { SelectChannelOptions, StatVersion } from './selector'
