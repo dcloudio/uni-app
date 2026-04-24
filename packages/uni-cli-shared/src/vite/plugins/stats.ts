@@ -37,6 +37,8 @@ export function uniStatsPlugin(): Plugin {
           if (uniAppX.vapor !== isVapor) {
             isVapor = uniAppX.vapor === true
             console.warn(M['dev.watching.restart.vapor'])
+            // 主动退出，避免后续会打印正在编译中等日志
+            process.exit(0)
           }
         } catch (e) {}
       }
