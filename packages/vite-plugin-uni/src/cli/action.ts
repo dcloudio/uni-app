@@ -99,6 +99,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
               process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
                 ? process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
                 : ''
+            const hasBinFiles = binFiles && binFiles !== '[]'
             changedFiles = pages || files
             process.env.UNI_APP_CHANGED_PAGES = ''
             process.env.UNI_APP_CHANGED_FILES = ''
@@ -107,11 +108,12 @@ export async function runDev(options: CliOptions & ServerOptions) {
               process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES = ''
             }
             if (
-              (changedFiles &&
+              // 目前动态渲染下，只要bin有变更，就需要全量同步，后续可以优化成bin变更时输出bin变更文件列表
+              (!hasBinFiles &&
+                changedFiles &&
                 !changedFiles.includes(APP_CONFIG_SERVICE) &&
                 !changedFiles.includes(APP_SERVICE_FILENAME)) ||
-              dex ||
-              binFiles
+              dex
             ) {
               if (pages) {
                 return output(
@@ -125,8 +127,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
                   '{files}',
                   JSON.stringify(
                     JSON.parse(changedFiles || JSON.stringify([])).concat(
-                      JSON.parse(dex || JSON.stringify([])),
-                      JSON.parse(binFiles || JSON.stringify([]))
+                      JSON.parse(dex || JSON.stringify([]))
                     )
                   )
                 )
