@@ -15075,13 +15075,8 @@ const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, ({ url, header, timeout },
         retryInterval: 0,
     }, (download, statusCode) => {
         if (statusCode) {
-            let tempFilePath = download.filename;
-            try {
-                tempFilePath = decodeURIComponent(tempFilePath);
-            }
-            catch (e) { }
             resolve({
-                tempFilePath,
+                tempFilePath: download.filename,
                 statusCode,
             });
         }
