@@ -9059,7 +9059,7 @@
             }
           }
         },
-        { 
+        {
           "name": "100",
           "uniPlatform": {
             "app": {
@@ -9094,7 +9094,7 @@
             }
           }
         },
-        { 
+        {
           "name": "200",
           "uniPlatform": {
             "app": {
@@ -9129,7 +9129,7 @@
             }
           }
         },
-        { 
+        {
           "name": "300",
           "uniPlatform": {
             "app": {
@@ -9304,7 +9304,7 @@
             }
           }
         },
-        { 
+        {
           "name": "800",
           "uniPlatform": {
             "app": {
@@ -9339,7 +9339,7 @@
             }
           }
         },
-        { 
+        {
           "name": "900",
           "uniPlatform": {
             "app": {
@@ -9720,13 +9720,13 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x",
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.1"
           },
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
             "unixVer": "x",
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -9746,10 +9746,10 @@
             "unixVaporVer": "x"
           },
           "ios": {
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.1"
           },
           "harmony": {
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.0"
           }
         }
       },
