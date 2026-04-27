@@ -46,6 +46,31 @@
       "ad"
     ]
   },
+  "uni-ad-dom2": {
+    "uni": {
+      "createRewardedVideoAd": {
+        "name": "createRewardedVideoAd",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "createInterstitialAd": {
+        "name": "createInterstitialAd",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    },
+    "easycom": [
+      "ad"
+    ]
+  },
   "uni-arrayBufferToBase64": {
     "uni": {
       "arrayBufferToBase64": {
