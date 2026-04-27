@@ -8,18 +8,17 @@ const make = (lt: string, tag: string) => ({ lt, t: 1, tag })
 
 describe('pipeline/serializer（修复缺陷 #4）', () => {
   describe('flatten 排序', () => {
-    test('lt=0 必落最前；lt=3 必落最末', () => {
+    test('lt=1 必落最前；lt=3 必落最末', () => {
       const buckets: Buckets = {
         '11': [make('11', 'a')],
         '3': [make('3', 'hide')],
-        '0': [make('0', 'session')],
         '1': [make('1', 'launch')],
       }
       const out = flatten(buckets)
-      expect(out.map((d) => d.lt)).toEqual(['0', '1', '11', '3'])
+      expect(out.map((d) => d.lt)).toEqual(['1', '11', '3'])
     })
 
-    test('完整 7 类 lt 顺序：0 → 1 → 11 → 21 → 31 → 101 → 3', () => {
+    test('完整 6 类 lt 顺序：1 → 11 → 21 → 31 → 101 → 3', () => {
       const buckets: Buckets = {
         '101': [make('101', 'p')],
         '21': [make('21', 'e')],
@@ -27,10 +26,8 @@ describe('pipeline/serializer（修复缺陷 #4）', () => {
         '11': [make('11', 'page')],
         '3': [make('3', 'hide')],
         '1': [make('1', 'launch')],
-        '0': [make('0', 'session')],
       }
       expect(flatten(buckets).map((d) => d.lt)).toEqual([
-        '0',
         '1',
         '11',
         '21',
@@ -59,14 +56,14 @@ describe('pipeline/serializer（修复缺陷 #4）', () => {
       const buckets: Buckets = {
         '3': [make('3', 'hide')],
         '999': [make('999', 'mystery')],
-        '0': [make('0', 's')],
+        '1': [make('1', 's')],
       }
-      expect(flatten(buckets).map((d) => d.lt)).toEqual(['0', '999', '3'])
+      expect(flatten(buckets).map((d) => d.lt)).toEqual(['1', '999', '3'])
     })
 
     test('空桶被跳过', () => {
       const buckets: Buckets = {
-        '0': [],
+        '1': [],
         '11': [make('11', 'p')],
         '3': [],
       }
@@ -81,14 +78,14 @@ describe('pipeline/serializer（修复缺陷 #4）', () => {
   describe('handleData', () => {
     test('返回合法 JSON 字符串', () => {
       const buckets: Buckets = {
-        '0': [{ lt: '0', t: 100 }],
-        '1': [{ lt: '1', t: 101 }],
+        '1': [{ lt: '1', t: 100 }],
+        '11': [{ lt: '11', t: 101 }],
       }
       const json = handleData(buckets)
       expect(typeof json).toBe('string')
       expect(JSON.parse(json)).toEqual([
-        { lt: '0', t: 100 },
-        { lt: '1', t: 101 },
+        { lt: '1', t: 100 },
+        { lt: '11', t: 101 },
       ])
     })
 

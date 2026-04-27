@@ -2,12 +2,11 @@
  * 上报体序列化（重写私有版 `utils/pageInfo.js#handle_data`）。
  *
  * 修复缺陷 #4：私有版用 `for...in` 拿到的 key 永远是字符串，写成 `i === 0` 与 `i === 3`
- * 导致两条边界分支从未命中：
- *   - `lt=0`（会话创建）应排最前——闲置预留；
- *   - `lt=3`（应用进入后台）应排最后用于服务端 session 闭合——被混入中间。
+ * 导致两条边界分支从未命中：`lt=3`（应用进入后台）应排最后用于服务端 session 闭合——被混入中间。
  *
  * 公有版严格契约：
- *   1. 输出顺序固定：`0 → 1 → 11 → 21 → 31 → 101 → 3`（可在 `LT_ORDER` 中扩展）。
+ *   1. 输出顺序固定：`1 → 11 → 21 → 31 → 101 → 3`（可在 `LT_ORDER` 中扩展）。
+ *      `lt=0` 已废弃（参考 `domain/eventTypes.ts` 头注释），不再参与排序。
  *   2. 同一 lt 内事件按 push 顺序保留（稳定排序）。
  *   3. 纯函数：不读 storage、不调 console、不依赖 `__STAT_VERSION__`。
  *   4. 输入桶为空 → 返回 `'[]'`，调用方应在外层判空。
@@ -22,13 +21,11 @@ import type { StatData } from '../domain/statData'
  * 上报顺序权重表。值越小越靠前；未知 lt 落到最末（靠近 lt=3 之前），同时打 warn。
  *
  * 顺序设计依据：
- *   - lt=0：会话创建必须先于 launch；
- *   - lt=1：紧跟 session；
+ *   - lt=1：会话日志（含 sid/cst/fvts/lvts/tvc），最先；
  *   - lt=11/21/31/101：按事件类型轻重排开；
  *   - lt=3：应用进入后台，永远最后，用于服务端归一会话停留时长。
  */
 const LT_ORDER: Record<string, number> = {
-  '0': 0,
   '1': 1,
   '11': 2,
   '21': 3,
@@ -61,7 +58,7 @@ export function handleData(buckets: Buckets): string {
  *   - 主键：`LT_ORDER[lt] ?? UNKNOWN_LT_WEIGHT`。
  *   - 次键：原始 push 顺序（依靠 Array.prototype.sort 在 Node 11+ 已稳定）。
  *
- * 修复缺陷 #4 关键断言：`lt='3'` 必落最后；`lt='0'` 必落最前。
+ * 修复缺陷 #4 关键断言：`lt='3'` 必落最后；`lt='1'` 必落最前。
  */
 export function flatten(buckets: Buckets): StatData[] {
   const ltKeys = Object.keys(buckets)

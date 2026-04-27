@@ -63,7 +63,7 @@ const baseSession: SessionSnapshot = {
 
 describe('domain/statData', () => {
   describe('基础字段', () => {
-    test('每条事件都带 ak/usv/uuid/ut/p/brand 等基础字段', () => {
+    test('每条事件都带 ak/usv/did/ut/p/brand 等基础字段（参数文档对齐：device.uuid → did）', () => {
       const builder = createStatDataBuilder(makeDeps())
       const data = builder.build({ lt: LT.Page, t: 1700000000 })
       expect(data).toMatchObject({
@@ -71,8 +71,7 @@ describe('domain/statData', () => {
         t: 1700000000,
         ak: 'AK001',
         usv: '3.0.0',
-        uuid: 'uuid-1',
-        odid: 'odid-1',
+        did: 'uuid-1',
         brand: 'Apple',
         md: 'iPhone 15',
         sv: '17.4',
@@ -91,6 +90,9 @@ describe('domain/statData', () => {
         pkn: 'com.x.y',
         an: 'AppName',
       })
+      // 旧字段不再出现在上行体（uuid/odid 已剔除）
+      expect((data as Record<string, unknown>).uuid).toBeUndefined()
+      expect((data as Record<string, unknown>).odid).toBeUndefined()
     })
 
     test('config.v 缺失时回退到 system.appVersion', () => {
@@ -111,39 +113,24 @@ describe('domain/statData', () => {
   })
 
   describe('session 字段', () => {
-    test('传入 session → 携带 sid/sst/sct/seq', () => {
+    test('传入 session → 仅携带 sid/cst（与文档对齐；sst/seq/pid 不上行）', () => {
       const builder = createStatDataBuilder(makeDeps())
       const data = builder.build({ lt: LT.Page, t: 1, session: baseSession })
       expect(data).toMatchObject({
         sid: 'sid-1',
-        sst: 1700000000,
-        sct: 1,
-        seq: 0,
+        cst: 1,
       })
+      expect((data as Record<string, unknown>).sst).toBeUndefined()
+      expect((data as Record<string, unknown>).seq).toBeUndefined()
+      expect((data as Record<string, unknown>).sct).toBeUndefined()
+      expect((data as Record<string, unknown>).pid).toBeUndefined()
     })
 
     test('未传 session → 不携带任何 session 字段', () => {
       const builder = createStatDataBuilder(makeDeps())
       const data = builder.build({ lt: LT.Page, t: 1 })
       expect(data.sid).toBeUndefined()
-      expect(data.sst).toBeUndefined()
-    })
-
-    test('pid 仅在显式传入时携带', () => {
-      const builder = createStatDataBuilder(makeDeps())
-      const dataNoPid = builder.build({
-        lt: LT.Session,
-        t: 1,
-        session: baseSession,
-      })
-      expect(dataNoPid.pid).toBeUndefined()
-      const dataWithPid = builder.build({
-        lt: LT.Session,
-        t: 1,
-        session: baseSession,
-        pid: 'old-sid',
-      })
-      expect(dataWithPid.pid).toBe('old-sid')
+      expect((data as Record<string, unknown>).cst).toBeUndefined()
     })
   })
 
@@ -187,7 +174,7 @@ describe('domain/statData', () => {
     })
   })
 
-  describe('访问字段（仅 lt=0/1）', () => {
+  describe('访问字段（仅 lt=1）', () => {
     test('lt=1 + visit → 携带 fvts/lvts/tvc', () => {
       const builder = createStatDataBuilder(makeDeps())
       const data = builder.build({
@@ -209,10 +196,10 @@ describe('domain/statData', () => {
       expect(data.lvts).toBeUndefined()
     })
 
-    test('lt=0 + visit lvts=0 → 显式上报 0（区分新用户）', () => {
+    test('lt=1 + visit lvts=0 → 显式上报 0（区分新用户）', () => {
       const builder = createStatDataBuilder(makeDeps())
       const data = builder.build({
-        lt: LT.Session,
+        lt: LT.Launch,
         t: 1,
         visit: { fvts: 999, lvts: 0, tvc: 1 },
       })
@@ -254,7 +241,7 @@ describe('domain/statData', () => {
       expect(data.id).toBe('btn1')
     })
 
-    test('custom 不能覆盖关键字段（lt/t/sid/sst/sct/seq/pid/fvts/lvts/tvc/sc）', () => {
+    test('custom 不能覆盖关键字段（lt/t/sid/cst/did/fvts/lvts/tvc/sc）', () => {
       const builder = createStatDataBuilder(makeDeps())
       const data = builder.build({
         lt: LT.Event,
@@ -264,10 +251,8 @@ describe('domain/statData', () => {
           lt: '999',
           t: 0,
           sid: 'evil',
-          sst: 0,
-          sct: 9 as unknown as number,
-          seq: 999,
-          pid: 'evil',
+          cst: 9 as unknown as number,
+          did: 'evil-did',
           fvts: 1,
           lvts: 1,
           tvc: 999,
@@ -278,6 +263,7 @@ describe('domain/statData', () => {
       expect(data.lt).toBe('21')
       expect(data.t).toBe(1700000000)
       expect(data.sid).toBe('sid-1')
+      expect(data.did).toBe('uuid-1')
       expect(data.legitField).toBe('ok')
     })
   })

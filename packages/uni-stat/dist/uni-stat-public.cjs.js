@@ -3,18 +3,19 @@
 /**
  * 事件类型与会话创建类型常量。
  *
- * 与私有版的兼容关系：
- *   - 私有版 `lt` 字段是 string；公有版保持 string，避免上行协议变更。
- *   - 公有版**新增** `lt='0'`（客户端会话创建）；老接收端忽略未知字段。
- *   - `cst` 与 `sct` 数值一致：cst 用于"本次启动事件"瞬时标识；
- *     sct 写入 storage 与 session 一同常驻，用于会话维度归因。
+ * 与私有版 / 文档 `uni统计上报参数.md` 的兼容关系：
+ *   - 上行参数文档明确：`lt` 仅取 `1 / 3 / 11 / 21 / 31 / 41`，**没有** `lt=0`。
+ *   - 历史架构文档（03-公有版架构设计.md §3.2）曾设计 `lt=0` 作为"客户端 session 边界"事件，
+ *     但与服务端入库口径不一致（会话日志 = lt=1），已**整体移除**：
+ *     新会话直接发一条 lt=1，会话字段（`sid / cst / fvts / lvts / tvc`）随 lt=1 上行。
+ *   - 因此 `LT` 不再包含 `Session`；删除 lt=0 不影响老接收端。
  */
 /**
  * Log Type（事件类型）。统一在此声明，禁止其他模块裸写字符串。
+ *
+ * 注：`lt=41`（uni-app x 原生崩溃日志）暂未在公有版实现，详见 `docs/暂未实现字段说明.md`。
  */
 const LT = {
-    /** 客户端会话创建（公有版新增）。与 `Launch` 配对发送，先发 Session 再发 Launch。 */
-    Session: '0',
     Launch: '1',
     Hide: '3',
     Page: '11',
@@ -660,25 +661,27 @@ function safeStringify(value, max = DEFAULT_MAX_LENGTH) {
     else {
         const seen = new WeakSet();
         try {
-            raw = (_a = JSON.stringify(value, (_key, val) => {
-                if (typeof val === 'object' && val !== null) {
-                    if (seen.has(val))
-                        return '[Circular]';
-                    seen.add(val);
-                }
-                if (typeof val === 'bigint')
-                    return val.toString();
-                if (typeof val === 'function')
-                    return `[Function ${val.name || 'anonymous'}]`;
-                return val;
-            })) !== null && _a !== void 0 ? _a : '';
+            raw =
+                (_a = JSON.stringify(value, (_key, val) => {
+                    if (typeof val === 'object' && val !== null) {
+                        if (seen.has(val))
+                            return '[Circular]';
+                        seen.add(val);
+                    }
+                    if (typeof val === 'bigint')
+                        return val.toString();
+                    if (typeof val === 'function')
+                        return `[Function ${val.name || 'anonymous'}]`;
+                    return val;
+                })) !== null && _a !== void 0 ? _a : '';
         }
         catch (e) {
             raw = `[Unserializable: ${e.message}]`;
         }
     }
     if (raw.length > max) {
-        return raw.slice(0, Math.max(0, max - TRUNCATED_SUFFIX.length)) + TRUNCATED_SUFFIX;
+        return (raw.slice(0, Math.max(0, max - TRUNCATED_SUFFIX.length)) +
+            TRUNCATED_SUFFIX);
     }
     return raw;
 }
@@ -991,7 +994,9 @@ function genSid(uuid) {
  * @param len 期望长度；不足时用 '0' 左填充以保证视觉与碰撞概率稳定。
  */
 function randomPart(len) {
-    const r = Math.random().toString(36).slice(2, 2 + len);
+    const r = Math.random()
+        .toString(36)
+        .slice(2, 2 + len);
     return r.length >= len ? r : r.padEnd(len, '0');
 }
 
@@ -1025,18 +1030,12 @@ const KEY_SEQ = 'session:seq';
 const KEY_LAST_ACTIVE = 'session:lastActive';
 const KEY_BG_TS = 'session:bgTs';
 const KEY_LAST_SCENE = 'session:lastScene';
-const KEY_PREV_ID = 'session:prevId';
 const DEFAULT_CONFIG = {
     backgroundTimeoutSec: 300,
     pageInactiveTimeoutSec: 1800,
 };
 let config$1 = Object.assign({}, DEFAULT_CONFIG);
 let cached$1 = null;
-/**
- * 上一会话 sid。新 session 创建时写入；上报后通过 `consumePrevId` 取走，
- * 取后清空 storage，避免重复携带（与设计文档 §3.4 `__stat:session:prevId` 保持一致）。
- */
-let prevIdInited = false;
 /** 配置注入（runtime/install.ts 在启动时调一次）。 */
 function configure$1(c) {
     config$1 = Object.assign({}, DEFAULT_CONFIG, c);
@@ -1091,15 +1090,12 @@ function ensureCache() {
  * 创建一个新 session，写入 storage 并返回新的 snapshot。
  *
  * 内部职责：
- *   - 把旧 sid（如有）写入 prevId（消费一次）。
  *   - 重置 seq=0、lastActive=now、bgTs=0。
+ *
+ * 注：原"上一会话 sid（pid）"机制已移除——参数文档无 pid 字段，后端无入库口径，
+ *     新会话的字段仅随当次 lt=1 携带。
  */
 function createNew(now, sct, scene) {
-    const oldSid = cached$1 === null || cached$1 === void 0 ? void 0 : cached$1.sid;
-    if (oldSid) {
-        storage.set(KEY_PREV_ID, oldSid);
-        prevIdInited = true;
-    }
     const sid = genSid(getUuid());
     const next = {
         sid,
@@ -1123,7 +1119,7 @@ function createNew(now, sct, scene) {
 /**
  * 主入口：根据 trigger 与上下文，确保 session 处于正确状态。
  *
- * 结果包含 isNew / cst，供 collector 决定是否发 `lt=0` 与是否携带 fvts/lvts/tvc。
+ * 结果包含 isNew / cst，供 lifecycleHooks 决定本次 lt=1 是否携带 fvts/lvts/tvc。
  */
 function ensureSession(t, ctx) {
     const { now, scene = '' } = ctx;
@@ -1140,7 +1136,8 @@ function ensureSession(t, ctx) {
     if (t === 'app_show') {
         const elapsed = now - (snap.bgTs || snap.lastActive);
         const sceneChanged = !!scene && !!snap.lastScene && scene !== snap.lastScene;
-        if (sceneChanged || (snap.bgTs > 0 && elapsed > config$1.backgroundTimeoutSec)) {
+        if (sceneChanged ||
+            (snap.bgTs > 0 && elapsed > config$1.backgroundTimeoutSec)) {
             const created = createNew(now, CST.BackgroundTimeout, scene);
             return { snapshot: created, isNew: true, cst: CST.BackgroundTimeout };
         }
@@ -1208,29 +1205,6 @@ function nextSeq() {
 function getSnapshot() {
     return ensureCache();
 }
-/**
- * 消费 prevId：取出后清掉。仅新 session 第一次上报会用，参考设计文档 §3.3。
- *
- * 如果未发生 session 切换，返回 undefined。
- */
-function consumePrevId() {
-    // 强制初始化一次，避免冷启动后未读 storage 时直接 consume 漏掉真实 prevId
-    if (!prevIdInited) {
-        const r = storage.safeRead(KEY_PREV_ID);
-        if (r.ok && typeof r.value === 'string' && r.value.length > 0) {
-            storage.remove(KEY_PREV_ID);
-            prevIdInited = true;
-            return r.value;
-        }
-        prevIdInited = true;
-        return undefined;
-    }
-    const r = storage.safeRead(KEY_PREV_ID);
-    if (!r.ok || typeof r.value !== 'string' || r.value.length === 0)
-        return undefined;
-    storage.remove(KEY_PREV_ID);
-    return r.value;
-}
 
 /**
  * 页面路由适配。
@@ -1258,7 +1232,8 @@ function consumePrevId() {
  */
 function getTopPageVm() {
     var _a;
-    const fn = globalThis.getCurrentPages;
+    const fn = globalThis
+        .getCurrentPages;
     if (typeof fn !== 'function')
         return undefined;
     const pages = tryRun(() => fn(), []) || [];
@@ -1287,7 +1262,7 @@ function getCurrentRoute(pageVm) {
         if (r)
             return r;
     }
-    return ((_l = (_h = (_f = vm.route) !== null && _f !== void 0 ? _f : (_g = vm.$scope) === null || _g === void 0 ? void 0 : _g.route) !== null && _h !== void 0 ? _h : (_k = (_j = vm.$mp) === null || _j === void 0 ? void 0 : _j.page) === null || _k === void 0 ? void 0 : _k.route) !== null && _l !== void 0 ? _l : '');
+    return (_l = (_h = (_f = vm.route) !== null && _f !== void 0 ? _f : (_g = vm.$scope) === null || _g === void 0 ? void 0 : _g.route) !== null && _h !== void 0 ? _h : (_k = (_j = vm.$mp) === null || _j === void 0 ? void 0 : _j.page) === null || _k === void 0 ? void 0 : _k.route) !== null && _l !== void 0 ? _l : '';
 }
 /**
  * 取当前页 fullPath（含 query）；无 query 返回与 `getCurrentRoute` 一致。
@@ -1428,7 +1403,8 @@ function getPushClientId(opts = {}) {
  *   - 会话状态机（ensureSession / markBackground）。
  *   - 入口页登记（entryPage）。
  *   - lastRoute / urlref / urlref_ts 维护。
- *   - 新会话首报先发 `lt=0`（Session）再发 `lt=1`（Launch），与设计文档 §3.5 对齐。
+ *   - 新会话首报：仅发一条 `lt=1`（Launch），新会话字段（sid/cst/fvts/lvts/tvc）随之上行；
+ *     与 `docs/uni统计上报参数.md` 口径对齐（不再发已废弃的 `lt=0`）。
  *   - push CID 异步抓取后再发 `lt=101`，超时 / 失败静默丢弃。
  *
  * 暴露：
@@ -1455,22 +1431,20 @@ function safeCollector(app) {
     return app.getCollector();
 }
 /**
- * 新会话首报：先 `lt=0`（Session），再 `lt=1`（Launch），均带 cst。
+ * 新会话首报：仅发一条 `lt=1`（Launch），新会话字段随之上行。
  *
  * 重要约束（修复 lvts=0 缺陷）：
  *   - `fvts/lvts/tvc` **只在进程首报**（cold_launch 触发的首次 ensureSession）携带；
  *     cst=2（后台超时）/ cst=3（前台无操作超时）创建的新 session **不**带。
  *   - 通过 `firstVisitEmittedInProcess` 哨兵保证全进程只调用一次 `buildVisitFields`。
- *   - 若上层禁用 lt=0（emitSessionEvent=false），则只发 lt=1。
+ *   - `cst` 入参仅用于将来可能的本地侧打印 / 监控；上行字段已由 statData 从 session
+ *     snapshot 中读取（出口字段名为 `cst`）。
  */
-function reportNewSession(c, cst, scene, emitSessionEvent, now, attachVisit) {
+function reportNewSession(c, _cst, scene, now, attachVisit) {
     let visit;
     if (attachVisit && !firstVisitEmittedInProcess) {
         firstVisitEmittedInProcess = true;
         visit = tryRun(() => buildVisitFields(now), undefined);
-    }
-    if (emitSessionEvent) {
-        c.report({ lt: LT.Session, t: now, sc: scene, visit });
     }
     c.report({ lt: LT.Launch, t: now, sc: scene, visit });
 }
@@ -1481,7 +1455,7 @@ let firstVisitEmittedInProcess = false;
  *
  * 流程：
  *   1. ensureSession('cold_launch') → cst=1，必产新 session。
- *   2. 发 lt=0（可选） + lt=1。
+ *   2. 发一条 lt=1（携带 sid/cst/fvts/lvts/tvc/sc）。
  *   3. 异步抓 push CID，成功后发 lt=101。
  *   4. 兜底 onLaunch options 可能携带 scene / path（小程序）。
  */
@@ -1494,7 +1468,7 @@ function handleLaunch(app, options = {}, opts = {}) {
     const result = tryRun(() => ensureSession('cold_launch', { now, scene }), null);
     if (!result)
         return;
-    reportNewSession(c, result.cst || CST.ColdLaunch, scene, opts.emitSessionEvent !== false, now, true);
+    reportNewSession(c, result.cst || CST.ColdLaunch, scene, now, true);
     if (opts.enablePush) {
         void getPushClientId({ enabled: true, timeoutMs: opts.pushTimeoutMs })
             .then((r) => {
@@ -1513,9 +1487,9 @@ function handleLaunch(app, options = {}, opts = {}) {
  *
  * 流程：
  *   1. ensureSession('app_show') → 命中 backgroundTimeout 时新 session（cst=2）。
- *   2. isNew=true 时发 lt=0 + lt=1；否则 noop（私有版同 oldcst=2 后续 page show 也不重发）。
+ *   2. isNew=true 时发一条 lt=1；否则 noop。
  */
-function handleAppShow(app, options = {}, opts = {}) {
+function handleAppShow(app, options = {}, _opts = {}) {
     const c = safeCollector(app);
     if (!c)
         return;
@@ -1525,7 +1499,7 @@ function handleAppShow(app, options = {}, opts = {}) {
     if (!result || !result.isNew)
         return;
     // cst=2：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
-    reportNewSession(c, result.cst || CST.BackgroundTimeout, scene, opts.emitSessionEvent !== false, now, false);
+    reportNewSession(c, result.cst || CST.BackgroundTimeout, scene, now, false);
 }
 /**
  * 应用进入后台。
@@ -1541,7 +1515,9 @@ function handleAppHide(app) {
         return;
     const now = nowSec();
     tryRun(() => markBackground(now), undefined);
-    const stayed = state$1.lastRouteEnterTime > 0 ? Math.max(0, now - state$1.lastRouteEnterTime) : 0;
+    const stayed = state$1.lastRouteEnterTime > 0
+        ? Math.max(0, now - state$1.lastRouteEnterTime)
+        : 0;
     c.report({
         lt: LT.Hide,
         t: now,
@@ -1551,21 +1527,23 @@ function handleAppHide(app) {
         // 与 lt=11 字段语义一致：ppiey 表示"切到当前页之前的那一页是否入口页"。
         ppiey: state$1.prevIey,
     });
-    void c.flush(true).catch((e) => logger.warn('[uni-stat] flush on hide failed', e));
+    void c
+        .flush(true)
+        .catch((e) => logger.warn('[uni-stat] flush on hide failed', e));
 }
 /**
  * Page.onShow：页面前台展示。
  *
  * 流程：
  *   1. ensureSession('page_show')；命中 pageInactiveTimeout 时新 session（cst=3）。
- *   2. isNew=true 时发 lt=0 + lt=1。
+ *   2. isNew=true 时发一条 lt=1。
  *   3. 取当前 route：
  *      - 新会话首页 / 当前未登记 entry → markEntryPage(route)。
  *      - 更新 lastRoute / lastRouteEnterTime 为下次 onPageHide 用。
  *   4. setConfigTitle(pages.json 标题)：runtime 暂时不读 manifest，
  *      由调用方在 install 时透传，否则保持空串。
  */
-function handlePageShow(app, vm, opts = {}) {
+function handlePageShow(app, vm, _opts = {}) {
     const c = safeCollector(app);
     if (!c)
         return;
@@ -1577,7 +1555,7 @@ function handlePageShow(app, vm, opts = {}) {
         // 新会话：清掉旧 entry，等待 markEntryPage 重新登记
         tryRun(() => clearEntry(), undefined);
         // cst=3：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
-        reportNewSession(c, result.cst || CST.PageInactiveTimeout, '', opts.emitSessionEvent !== false, now, false);
+        reportNewSession(c, result.cst || CST.PageInactiveTimeout, '', now, false);
     }
     const route = tryRun(() => getCurrentRoute(vm), '');
     if (route) {
@@ -1605,7 +1583,9 @@ function handlePageHide(app, vm) {
     const now = nowSec();
     const url = tryRun(() => getCurrentRouteWithQuery(vm), '');
     const route = tryRun(() => getCurrentRoute(vm), '');
-    const stayed = state$1.lastRouteEnterTime > 0 ? Math.max(0, now - state$1.lastRouteEnterTime) : 0;
+    const stayed = state$1.lastRouteEnterTime > 0
+        ? Math.max(0, now - state$1.lastRouteEnterTime)
+        : 0;
     c.report({
         lt: LT.Page,
         t: now,
@@ -1831,14 +1811,13 @@ function createCloudChannel(opts = {}) {
 /**
  * `lt` → 用户友好的中文动作名映射。
  *
- * 与私有版 `pageInfo.js#log` 的 msg_type 对齐，并新增 lt=0（公有版独有的会话创建）。
+ * 与私有版 `pageInfo.js#log` 的 msg_type 对齐。
+ * 注：`lt=0` 已废弃（详见 `domain/eventTypes.ts` 头注释），新会话信息直接随 lt=1 上行。
  *
  * 未知 lt 走默认 "未知事件 (lt=X)"，便于排查异常上行。
  */
 function getActionLabel(lt) {
     switch (lt) {
-        case LT.Session:
-            return '会话创建';
         case LT.Launch:
             return '应用启动';
         case LT.Hide:
@@ -2005,7 +1984,7 @@ function describeError(e) {
  *
  * 职责（与 runtime/lifecycleHooks 配合）：
  *   1. `report(input)`：把外部输入（lt + 事件上下文）转成 statData 并入队；
- *      自动填充 session 快照、seq、pid（首次新会话事件携带）。
+ *      自动填充 session 快照、seq（仅本地状态使用，不再上行）。
  *   2. `flush(force?)`：从 queue 取快照 → serializer → 选 channel → 发送；
  *      成功调用 `visit.commit(now)`；失败 `queue.rollback` + `retry.persist`。
  *   3. `recoverRetry()`：冷启动时由 runtime 触发，把上次未送达的 payload 重试。
@@ -2019,7 +1998,7 @@ function describeError(e) {
  * 默认 payload id 生成；与 retry.ts 的 genId 风格一致但前缀不同，便于日志区分。
  */
 function defaultGenPayloadId(nowMs) {
-    return 'p-' + nowMs.toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+    return ('p-' + nowMs.toString(36) + '-' + Math.random().toString(36).slice(2, 6));
 }
 /**
  * 构建 collector。返回 API 对象，所有方法绑定 deps 闭包。
@@ -2028,7 +2007,8 @@ function createCollector(deps) {
     /**
      * 构造 EventContext 并入队。
      *
-     * pid 仅在 `consumePrevId` 命中时附加（即新会话第一条事件）；其它事件 pid 留空。
+     * 不再附加 pid（上一会话 sid）：参数文档无该字段，新会话信息由 lt=1 自身的
+     * `sid / cst / fvts / lvts / tvc` 表达。
      */
     function report(input) {
         tryRun(() => {
@@ -2039,11 +2019,9 @@ function createCollector(deps) {
                 const seq = deps.session.nextSeq();
                 sessionForCtx = Object.assign({}, snap, { seq });
             }
-            const pid = deps.session.consumePrevId();
             const ctx = Object.assign({}, input, {
                 t,
                 session: sessionForCtx,
-                pid,
             });
             const data = deps.builder.build(ctx);
             deps.queue.enqueue(data);
@@ -2373,7 +2351,12 @@ function createImageChannel(opts = {}) {
         if (!configured()) {
             return Promise.reject(new Error('image channel not configured'));
         }
-        const url = buildImageReportUrl(payload, { host, projectId, topicId, nowMs });
+        const url = buildImageReportUrl(payload, {
+            host,
+            projectId,
+            topicId,
+            nowMs,
+        });
         if (url.length > maxUrlLength) {
             return Promise.reject(new Error('image url too long: ' + url.length + ' > ' + maxUrlLength));
         }
@@ -2452,9 +2435,18 @@ function createImageChannel(opts = {}) {
  * 设计要点：
  *   - 通过依赖注入（`createStatDataBuilder(deps)`）解耦 adapter / domain，便于单测。
  *   - 字段全部经过 `s/n` 兜底转换，禁止 undefined 出现在最终上行体（统一用空串 / 0）。
- *   - 事件类型驱动：lt=0/1 才带 fvts/lvts/tvc 等规则在此实现，调用方不再判断。
+ *   - 事件类型驱动：仅 lt=1 携带 fvts/lvts/tvc / sc 等启动字段；其他事件不携带。
  *   - 仅做拼装，不做副作用：不写 storage、不调 ensureSession（这些由 collector 编排）。
  *   - 严守 ES2015 baseline：禁用 `ObjectExpression > SpreadElement`，统一用 `Object.assign`。
+ *
+ * 与 `docs/uni统计上报参数.md` 对齐说明：
+ *   - 设备 ID 使用文档字段名 `did`（内部 SessionSnapshot/Adapter 仍以 uuid 命名，仅出口处映射）。
+ *   - 会话创建类型使用文档字段名 `cst`（内部 storage 仍以 sct 命名，仅出口处映射）。
+ *   - 不再上行 `sst / seq / pid / odid`：
+ *       * sst/seq 仅本地用于会话状态机，不参与服务端入库；
+ *       * pid（上一会话 sid）当前后端无入库口径；
+ *       * odid 由文档明确剔除。
+ *     这些字段在 SessionSnapshot 里仍保留，确保会话过期判断、调试日志可继续使用。
  */
 /** 字段值兜底：把 undefined / null / NaN 转为类型默认值，避免污染上行 JSON。 */
 function s(v, def = '') {
@@ -2487,10 +2479,13 @@ function createStatDataBuilder(deps) {
     /**
      * 复用频率高的"基础字段"——每条事件都带。
      *
-     * 字段映射（与私有版 1:1）：
+     * 字段映射（参考 `docs/uni统计上报参数.md`）：
+     *   - `did` ← 内部 `device.uuid`（出口字段重命名为文档口径）
      *   - `mpsdk` ← `system.sdkVersion`
      *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
      *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
+     *
+     * 不再上行 `odid`：文档无此字段；保留 `device.odid` 仅供调试与未来兼容场景。
      */
     function baseFields() {
         var _a;
@@ -2502,8 +2497,7 @@ function createStatDataBuilder(deps) {
             ch: s(config.ch),
             ut: s(platform.ut),
             p: s(platform.p),
-            uuid: s(device.uuid),
-            odid: s(device.odid),
+            did: s(device.uuid),
             brand: s(system.brand),
             md: s(system.md),
             sv: s(system.sv),
@@ -2524,19 +2518,19 @@ function createStatDataBuilder(deps) {
             an: s(pkg.an),
         };
     }
-    /** 会话字段：所有 lt 都要带。 */
+    /**
+     * 会话字段：所有 lt 都要带。
+     *
+     * 与文档对齐：仅上行 `sid` 与 `cst`；
+     * 内部状态字段 `sst / seq` 不再随上行体发出，仅保留在 SessionSnapshot 中。
+     */
     function sessionFields(ctx) {
         if (!ctx.session)
             return {};
-        const out = {
+        return {
             sid: ctx.session.sid,
-            sst: ctx.session.sst,
-            sct: ctx.session.sct,
-            seq: ctx.session.seq,
+            cst: ctx.session.sct,
         };
-        if (ctx.pid)
-            out.pid = ctx.pid;
-        return out;
     }
     /** 页面字段：lt=11/3 / 普通页面事件携带。 */
     function pageFields(ctx) {
@@ -2566,9 +2560,9 @@ function createStatDataBuilder(deps) {
             out.ppiey = toIey(ctx.ppiey);
         return out;
     }
-    /** 访问字段：仅 lt=0/1 且 collector 显式传入 visit 时携带。 */
+    /** 访问字段：仅 lt=1（应用启动 / 新会话）且 collector 显式传入 visit 时携带。 */
     function visitFields(ctx) {
-        if (ctx.lt !== '0' && ctx.lt !== '1')
+        if (ctx.lt !== '1')
             return {};
         if (!ctx.visit)
             return {};
@@ -2578,9 +2572,9 @@ function createStatDataBuilder(deps) {
             tvc: ctx.visit.tvc,
         };
     }
-    /** 启动场景：lt=0/1 携带。 */
+    /** 启动场景：仅 lt=1 携带。 */
     function launchFields(ctx) {
-        if (ctx.lt !== '0' && ctx.lt !== '1')
+        if (ctx.lt !== '1')
             return {};
         if (ctx.sc === undefined)
             return {};
@@ -2612,10 +2606,8 @@ function createStatDataBuilder(deps) {
                 'lt',
                 't',
                 'sid',
-                'sst',
-                'sct',
-                'seq',
-                'pid',
+                'cst',
+                'did',
                 'fvts',
                 'lvts',
                 'tvc',
@@ -2816,7 +2808,7 @@ function getAppName() {
  */
 function getEnvAppName() {
     var _a;
-    return ((_a = process.env.UNI_APP_NAME) !== null && _a !== void 0 ? _a : '');
+    return (_a = process.env.UNI_APP_NAME) !== null && _a !== void 0 ? _a : '';
 }
 /**
  * 取 H5 端应用名：优先编译期注入，回退 `document.title`。
@@ -2870,12 +2862,11 @@ function getPackageInfo() {
  * 上报体序列化（重写私有版 `utils/pageInfo.js#handle_data`）。
  *
  * 修复缺陷 #4：私有版用 `for...in` 拿到的 key 永远是字符串，写成 `i === 0` 与 `i === 3`
- * 导致两条边界分支从未命中：
- *   - `lt=0`（会话创建）应排最前——闲置预留；
- *   - `lt=3`（应用进入后台）应排最后用于服务端 session 闭合——被混入中间。
+ * 导致两条边界分支从未命中：`lt=3`（应用进入后台）应排最后用于服务端 session 闭合——被混入中间。
  *
  * 公有版严格契约：
- *   1. 输出顺序固定：`0 → 1 → 11 → 21 → 31 → 101 → 3`（可在 `LT_ORDER` 中扩展）。
+ *   1. 输出顺序固定：`1 → 11 → 21 → 31 → 101 → 3`（可在 `LT_ORDER` 中扩展）。
+ *      `lt=0` 已废弃（参考 `domain/eventTypes.ts` 头注释），不再参与排序。
  *   2. 同一 lt 内事件按 push 顺序保留（稳定排序）。
  *   3. 纯函数：不读 storage、不调 console、不依赖 `'3'`。
  *   4. 输入桶为空 → 返回 `'[]'`，调用方应在外层判空。
@@ -2887,13 +2878,11 @@ function getPackageInfo() {
  * 上报顺序权重表。值越小越靠前；未知 lt 落到最末（靠近 lt=3 之前），同时打 warn。
  *
  * 顺序设计依据：
- *   - lt=0：会话创建必须先于 launch；
- *   - lt=1：紧跟 session；
+ *   - lt=1：会话日志（含 sid/cst/fvts/lvts/tvc），最先；
  *   - lt=11/21/31/101：按事件类型轻重排开；
  *   - lt=3：应用进入后台，永远最后，用于服务端归一会话停留时长。
  */
 const LT_ORDER = {
-    '0': 0,
     '1': 1,
     '11': 2,
     '21': 3,
@@ -2918,7 +2907,7 @@ function handleData(buckets) {
  *   - 主键：`LT_ORDER[lt] ?? UNKNOWN_LT_WEIGHT`。
  *   - 次键：原始 push 顺序（依靠 Array.prototype.sort 在 Node 11+ 已稳定）。
  *
- * 修复缺陷 #4 关键断言：`lt='3'` 必落最后；`lt='0'` 必落最前。
+ * 修复缺陷 #4 关键断言：`lt='3'` 必落最后；`lt='1'` 必落最前。
  */
 function flatten(buckets) {
     const ltKeys = Object.keys(buckets);
@@ -3028,7 +3017,9 @@ function reinstall(api) {
         try {
             uni.removeInterceptor(api);
         }
-        catch ( /* ignore */_a) { /* ignore */ }
+        catch (_a) {
+            /* ignore */
+        }
         uni.addInterceptor(api, fanout);
     }
     catch (_b) {
@@ -3512,7 +3503,10 @@ function readQueue() {
     const raw = storage.safeRead(STORAGE_KEY);
     if (!raw.ok || !Array.isArray(raw.value))
         return [];
-    return raw.value.filter((it) => it && typeof it.id === 'string' && it.payload && typeof it.payload === 'object');
+    return raw.value.filter((it) => it &&
+        typeof it.id === 'string' &&
+        it.payload &&
+        typeof it.payload === 'object');
 }
 /**
  * 写回队列。空数组时直接 remove，避免存储垃圾。
@@ -3530,7 +3524,7 @@ function writeQueue(items) {
 function genId(payload) {
     if (payload._id)
         return payload._id;
-    return 'r-' + nowMs().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+    return ('r-' + nowMs().toString(36) + '-' + Math.random().toString(36).slice(2, 6));
 }
 /**
  * 持久化一条失败 payload。
@@ -3794,7 +3788,9 @@ class StatApp {
             version: (_c = c.version) !== null && _c !== void 0 ? _c : 'image',
             backgroundTimeoutSec: (_d = c.backgroundTimeoutSec) !== null && _d !== void 0 ? _d : 300,
             pageInactiveTimeoutSec: (_e = c.pageInactiveTimeoutSec) !== null && _e !== void 0 ? _e : 1800,
-            reportIntervalSec: typeof c.reportIntervalSec === 'number' ? c.reportIntervalSec : REPORT_INTERVAL_SEC,
+            reportIntervalSec: typeof c.reportIntervalSec === 'number'
+                ? c.reportIntervalSec
+                : REPORT_INTERVAL_SEC,
         };
     }
     /**
@@ -3865,7 +3861,6 @@ class StatApp {
             session: {
                 getSnapshot: getSnapshot,
                 nextSeq: nextSeq,
-                consumePrevId: consumePrevId,
             },
             config: { usv: STAT_VERSION_PUBLIC },
             nowMs,
@@ -3928,7 +3923,8 @@ function __resetStatApp() {
  */
 function readManifestStatConfig() {
     try {
-        const env = (typeof process !== 'undefined' && process.env) || {};
+        const env = (typeof process !== 'undefined' && process.env) ||
+            {};
         const raw = env.UNI_STATISTICS_CONFIG;
         if (!raw || typeof raw !== 'string')
             return undefined;
@@ -3941,13 +3937,16 @@ function readManifestStatConfig() {
             if (v === '1' || v === '2' || v === 'image')
                 cfg.version = v;
         }
-        if (typeof obj.backgroundTimeoutSec === 'number' && obj.backgroundTimeoutSec >= 0) {
+        if (typeof obj.backgroundTimeoutSec === 'number' &&
+            obj.backgroundTimeoutSec >= 0) {
             cfg.backgroundTimeoutSec = obj.backgroundTimeoutSec;
         }
-        if (typeof obj.pageInactiveTimeoutSec === 'number' && obj.pageInactiveTimeoutSec >= 0) {
+        if (typeof obj.pageInactiveTimeoutSec === 'number' &&
+            obj.pageInactiveTimeoutSec >= 0) {
             cfg.pageInactiveTimeoutSec = obj.pageInactiveTimeoutSec;
         }
-        if (typeof obj.reportIntervalSec === 'number' && obj.reportIntervalSec >= 0) {
+        if (typeof obj.reportIntervalSec === 'number' &&
+            obj.reportIntervalSec >= 0) {
             cfg.reportIntervalSec = obj.reportIntervalSec;
         }
         if (typeof obj.ak === 'string' && obj.ak)
@@ -4009,7 +4008,8 @@ function installPublicStat(opts = {}) {
             reportIntervalSec: (_b = cfg === null || cfg === void 0 ? void 0 : cfg.reportIntervalSec) !== null && _b !== void 0 ? _b : 0,
             ak: (_c = cfg === null || cfg === void 0 ? void 0 : cfg.ak) !== null && _c !== void 0 ? _c : '',
             appName,
-            debugFromManifest: env.UNI_STAT_DEBUG === 'true' || env.UNI_STAT_DEBUG === true,
+            debugFromManifest: env.UNI_STAT_DEBUG === 'true' ||
+                env.UNI_STAT_DEBUG === true,
         });
     }, undefined);
 }
@@ -4027,7 +4027,8 @@ function mountVueMixin(mixin) {
         return;
     }
     // VUE2 兼容；用 eval('require') 防止打包工具静态解析失败。
-    const req = globalThis.require;
+    const req = globalThis
+        .require;
     if (typeof req === 'function') {
         const Vue = tryRun(() => req('vue'), {});
         const target = (_a = Vue === null || Vue === void 0 ? void 0 : Vue.default) !== null && _a !== void 0 ? _a : Vue;

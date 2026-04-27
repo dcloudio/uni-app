@@ -177,14 +177,14 @@ describe('infra/debugLog', () => {
     expect(logsContaining('ak: <未注入>')).toBe(true)
   })
 
-  test('D6 getActionLabel 覆盖所有已知 lt', () => {
-    expect(getActionLabel(LT.Session)).toBe('会话创建')
+  test('D6 getActionLabel 覆盖所有已知 lt（lt=0 已废弃，落到未知分支）', () => {
     expect(getActionLabel(LT.Launch)).toBe('应用启动')
     expect(getActionLabel(LT.Hide)).toBe('应用进入后台')
     expect(getActionLabel(LT.Page)).toBe('页面切换')
     expect(getActionLabel(LT.Event)).toBe('事件触发')
     expect(getActionLabel(LT.Error)).toBe('应用错误')
     expect(getActionLabel(LT.Push)).toBe('PUSH 设备标识')
+    expect(getActionLabel('0')).toContain('未知事件 (lt=0)')
     expect(getActionLabel('999' as unknown as never)).toContain(
       '未知事件 (lt=999)'
     )

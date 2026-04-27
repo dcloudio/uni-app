@@ -3,7 +3,7 @@
  *
  * 职责（与 runtime/lifecycleHooks 配合）：
  *   1. `report(input)`：把外部输入（lt + 事件上下文）转成 statData 并入队；
- *      自动填充 session 快照、seq、pid（首次新会话事件携带）。
+ *      自动填充 session 快照、seq（仅本地状态使用，不再上行）。
  *   2. `flush(force?)`：从 queue 取快照 → serializer → 选 channel → 发送；
  *      成功调用 `visit.commit(now)`；失败 `queue.rollback` + `retry.persist`。
  *   3. `recoverRetry()`：冷启动时由 runtime 触发，把上次未送达的 payload 重试。
@@ -32,9 +32,8 @@ import type { EventContext, StatData } from '../domain/statData'
 import type { LTValue } from '../domain/eventTypes'
 import type { SessionSnapshot } from '../domain/session/machine'
 
-/** 外部传入的事件输入；与 EventContext 同构，但 lt 必填、t/session/seq/pid 由 collector 填。 */
-export interface ReportInput
-  extends Omit<EventContext, 't' | 'session' | 'pid'> {
+/** 外部传入的事件输入；与 EventContext 同构，但 lt 必填、t/session 由 collector 填。 */
+export interface ReportInput extends Omit<EventContext, 't' | 'session'> {
   lt: LTValue
   /** 可选覆盖：不传则用 deps.nowSec()。 */
   t?: number
@@ -70,7 +69,6 @@ export interface CollectorDeps {
   session: {
     getSnapshot: () => SessionSnapshot | null
     nextSeq: () => number
-    consumePrevId: () => string | undefined
   }
   /** 报文版本。 */
   config: { usv: string }
@@ -107,7 +105,8 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
   /**
    * 构造 EventContext 并入队。
    *
-   * pid 仅在 `consumePrevId` 命中时附加（即新会话第一条事件）；其它事件 pid 留空。
+   * 不再附加 pid（上一会话 sid）：参数文档无该字段，新会话信息由 lt=1 自身的
+   * `sid / cst / fvts / lvts / tvc` 表达。
    */
   function report(input: ReportInput): void {
     tryRun(() => {
@@ -118,11 +117,9 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         const seq = deps.session.nextSeq()
         sessionForCtx = Object.assign({}, snap, { seq })
       }
-      const pid = deps.session.consumePrevId()
       const ctx: EventContext = Object.assign({}, input, {
         t,
         session: sessionForCtx,
-        pid,
       }) as EventContext
       const data = deps.builder.build(ctx)
       deps.queue.enqueue(data)

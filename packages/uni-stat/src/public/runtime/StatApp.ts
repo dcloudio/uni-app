@@ -370,7 +370,6 @@ export class StatApp {
       session: {
         getSnapshot: session.getSnapshot,
         nextSeq: session.nextSeq,
-        consumePrevId: session.consumePrevId,
       },
       config: { usv: STAT_VERSION_PUBLIC },
       nowMs,

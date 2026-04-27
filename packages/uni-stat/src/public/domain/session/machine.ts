@@ -34,7 +34,6 @@ const KEY_SEQ = 'session:seq'
 const KEY_LAST_ACTIVE = 'session:lastActive'
 const KEY_BG_TS = 'session:bgTs'
 const KEY_LAST_SCENE = 'session:lastScene'
-const KEY_PREV_ID = 'session:prevId'
 
 export interface SessionConfig {
   /** 后台超时（秒）。默认 300 = 5min。 */
@@ -74,7 +73,7 @@ export interface EnsureContext {
 
 export interface EnsureResult {
   snapshot: SessionSnapshot
-  /** 是否生成了新 session（true 时上层应发 lt=0）。 */
+  /** 是否生成了新 session（true 时上层应额外发一条 lt=1 携带新会话字段）。 */
   isNew: boolean
   /** 本次创建的 cst；isNew=false 时为 0。 */
   cst: CSTValue | 0
@@ -87,11 +86,6 @@ const DEFAULT_CONFIG: SessionConfig = {
 
 let config: SessionConfig = Object.assign({}, DEFAULT_CONFIG)
 let cached: SessionSnapshot | null = null
-/**
- * 上一会话 sid。新 session 创建时写入；上报后通过 `consumePrevId` 取走，
- * 取后清空 storage，避免重复携带（与设计文档 §3.4 `__stat:session:prevId` 保持一致）。
- */
-let prevIdInited = false
 
 /** 配置注入（runtime/install.ts 在启动时调一次）。 */
 export function configure(c: Partial<SessionConfig>): void {
@@ -146,15 +140,12 @@ function ensureCache(): SessionSnapshot | null {
  * 创建一个新 session，写入 storage 并返回新的 snapshot。
  *
  * 内部职责：
- *   - 把旧 sid（如有）写入 prevId（消费一次）。
  *   - 重置 seq=0、lastActive=now、bgTs=0。
+ *
+ * 注：原"上一会话 sid（pid）"机制已移除——参数文档无 pid 字段，后端无入库口径，
+ *     新会话的字段仅随当次 lt=1 携带。
  */
 function createNew(now: number, sct: CSTValue, scene: string): SessionSnapshot {
-  const oldSid = cached?.sid
-  if (oldSid) {
-    storage.set(KEY_PREV_ID, oldSid)
-    prevIdInited = true
-  }
   const sid = genSid(getUuid())
   const next: SessionSnapshot = {
     sid,
@@ -179,7 +170,7 @@ function createNew(now: number, sct: CSTValue, scene: string): SessionSnapshot {
 /**
  * 主入口：根据 trigger 与上下文，确保 session 处于正确状态。
  *
- * 结果包含 isNew / cst，供 collector 决定是否发 `lt=0` 与是否携带 fvts/lvts/tvc。
+ * 结果包含 isNew / cst，供 lifecycleHooks 决定本次 lt=1 是否携带 fvts/lvts/tvc。
  */
 export function ensureSession(t: Trigger, ctx: EnsureContext): EnsureResult {
   const { now, scene = '' } = ctx
@@ -274,33 +265,8 @@ export function getSnapshot(): SessionSnapshot | null {
   return ensureCache()
 }
 
-/**
- * 消费 prevId：取出后清掉。仅新 session 第一次上报会用，参考设计文档 §3.3。
- *
- * 如果未发生 session 切换，返回 undefined。
- */
-export function consumePrevId(): string | undefined {
-  // 强制初始化一次，避免冷启动后未读 storage 时直接 consume 漏掉真实 prevId
-  if (!prevIdInited) {
-    const r = storage.safeRead<string>(KEY_PREV_ID)
-    if (r.ok && typeof r.value === 'string' && r.value.length > 0) {
-      storage.remove(KEY_PREV_ID)
-      prevIdInited = true
-      return r.value
-    }
-    prevIdInited = true
-    return undefined
-  }
-  const r = storage.safeRead<string>(KEY_PREV_ID)
-  if (!r.ok || typeof r.value !== 'string' || r.value.length === 0)
-    return undefined
-  storage.remove(KEY_PREV_ID)
-  return r.value
-}
-
 /** 仅供测试：清空内部缓存与配置。 */
 export function __resetState(): void {
   cached = null
   config = Object.assign({}, DEFAULT_CONFIG)
-  prevIdInited = false
 }

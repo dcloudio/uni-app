@@ -29,7 +29,6 @@ interface MockedDeps extends CollectorDeps {
   session: {
     getSnapshot: jest.Mock
     nextSeq: jest.Mock
-    consumePrevId: jest.Mock
   }
   nowMs: jest.Mock
   nowSec: jest.Mock
@@ -75,7 +74,6 @@ function makeDeps(overrides: Partial<MockedDeps> = {}): MockedDeps {
       session: {
         getSnapshot: jest.fn(() => session),
         nextSeq: jest.fn(() => 1),
-        consumePrevId: jest.fn(() => undefined),
       },
       config: { usv: '3' },
       nowMs: jest.fn(() => 1700000000_000),
@@ -88,7 +86,7 @@ function makeDeps(overrides: Partial<MockedDeps> = {}): MockedDeps {
 
 describe('pipeline/collector', () => {
   describe('report()', () => {
-    test('入队 + ctx 自动填充 t/session.seq/pid', () => {
+    test('入队 + ctx 自动填充 t/session.seq（不再附加 pid）', () => {
       const deps = makeDeps({
         session: {
           getSnapshot: jest.fn(() => ({
@@ -101,7 +99,6 @@ describe('pipeline/collector', () => {
             lastScene: '',
           })),
           nextSeq: jest.fn(() => 7),
-          consumePrevId: jest.fn(() => 'prev-sid'),
         } as MockedDeps['session'],
       })
       const c = createCollector(deps)
@@ -111,7 +108,7 @@ describe('pipeline/collector', () => {
       expect(builtCtx.t).toBe(1700000000)
       expect(builtCtx.session?.seq).toBe(7)
       expect(builtCtx.session?.sid).toBe('sid-x')
-      expect(builtCtx.pid).toBe('prev-sid')
+      expect(builtCtx.pid).toBeUndefined()
       expect(deps.queue.enqueue).toHaveBeenCalledTimes(1)
     })
 
@@ -154,7 +151,6 @@ describe('pipeline/collector', () => {
         session: {
           getSnapshot: jest.fn(() => null),
           nextSeq: jest.fn(),
-          consumePrevId: jest.fn(() => undefined),
         } as unknown as MockedDeps['session'],
       })
       const c = createCollector(deps)

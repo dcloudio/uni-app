@@ -6,7 +6,8 @@
  *   - 会话状态机（ensureSession / markBackground）。
  *   - 入口页登记（entryPage）。
  *   - lastRoute / urlref / urlref_ts 维护。
- *   - 新会话首报先发 `lt=0`（Session）再发 `lt=1`（Launch），与设计文档 §3.5 对齐。
+ *   - 新会话首报：仅发一条 `lt=1`（Launch），新会话字段（sid/cst/fvts/lvts/tvc）随之上行；
+ *     与 `docs/uni统计上报参数.md` 口径对齐（不再发已废弃的 `lt=0`）。
  *   - push CID 异步抓取后再发 `lt=101`，超时 / 失败静默丢弃。
  *
  * 暴露：
@@ -47,8 +48,6 @@ export interface LifecycleOptions {
   enablePush?: boolean
   /** push CID 超时（ms）。 */
   pushTimeoutMs?: number
-  /** 是否在新会话首报时发 lt=0（默认 true）。 */
-  emitSessionEvent?: boolean
 }
 
 interface LifecycleState {
@@ -91,19 +90,19 @@ function safeCollector(app: StatApp): CollectorAPI | undefined {
 }
 
 /**
- * 新会话首报：先 `lt=0`（Session），再 `lt=1`（Launch），均带 cst。
+ * 新会话首报：仅发一条 `lt=1`（Launch），新会话字段随之上行。
  *
  * 重要约束（修复 lvts=0 缺陷）：
  *   - `fvts/lvts/tvc` **只在进程首报**（cold_launch 触发的首次 ensureSession）携带；
  *     cst=2（后台超时）/ cst=3（前台无操作超时）创建的新 session **不**带。
  *   - 通过 `firstVisitEmittedInProcess` 哨兵保证全进程只调用一次 `buildVisitFields`。
- *   - 若上层禁用 lt=0（emitSessionEvent=false），则只发 lt=1。
+ *   - `cst` 入参仅用于将来可能的本地侧打印 / 监控；上行字段已由 statData 从 session
+ *     snapshot 中读取（出口字段名为 `cst`）。
  */
 function reportNewSession(
   c: CollectorAPI,
-  cst: number,
+  _cst: number,
   scene: string,
-  emitSessionEvent: boolean,
   now: number,
   attachVisit: boolean
 ): void {
@@ -119,9 +118,6 @@ function reportNewSession(
       }
     )
   }
-  if (emitSessionEvent) {
-    c.report({ lt: LT.Session, t: now, sc: scene, visit })
-  }
   c.report({ lt: LT.Launch, t: now, sc: scene, visit })
 }
 
@@ -133,7 +129,7 @@ let firstVisitEmittedInProcess = false
  *
  * 流程：
  *   1. ensureSession('cold_launch') → cst=1，必产新 session。
- *   2. 发 lt=0（可选） + lt=1。
+ *   2. 发一条 lt=1（携带 sid/cst/fvts/lvts/tvc/sc）。
  *   3. 异步抓 push CID，成功后发 lt=101。
  *   4. 兜底 onLaunch options 可能携带 scene / path（小程序）。
  */
@@ -155,14 +151,7 @@ export function handleLaunch(
     null
   )
   if (!result) return
-  reportNewSession(
-    c,
-    result.cst || CST.ColdLaunch,
-    scene,
-    opts.emitSessionEvent !== false,
-    now,
-    true
-  )
+  reportNewSession(c, result.cst || CST.ColdLaunch, scene, now, true)
 
   if (opts.enablePush) {
     void getPushClientId({ enabled: true, timeoutMs: opts.pushTimeoutMs })
@@ -181,12 +170,12 @@ export function handleLaunch(
  *
  * 流程：
  *   1. ensureSession('app_show') → 命中 backgroundTimeout 时新 session（cst=2）。
- *   2. isNew=true 时发 lt=0 + lt=1；否则 noop（私有版同 oldcst=2 后续 page show 也不重发）。
+ *   2. isNew=true 时发一条 lt=1；否则 noop。
  */
 export function handleAppShow(
   app: StatApp,
   options: { scene?: string | number; path?: string } = {},
-  opts: LifecycleOptions = {}
+  _opts: LifecycleOptions = {}
 ): void {
   const c = safeCollector(app)
   if (!c) return
@@ -195,14 +184,7 @@ export function handleAppShow(
   const result = tryRun(() => ensureSession('app_show', { now, scene }), null)
   if (!result || !result.isNew) return
   // cst=2：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
-  reportNewSession(
-    c,
-    result.cst || CST.BackgroundTimeout,
-    scene,
-    opts.emitSessionEvent !== false,
-    now,
-    false
-  )
+  reportNewSession(c, result.cst || CST.BackgroundTimeout, scene, now, false)
 }
 
 /**
@@ -241,7 +223,7 @@ export function handleAppHide(app: StatApp): void {
  *
  * 流程：
  *   1. ensureSession('page_show')；命中 pageInactiveTimeout 时新 session（cst=3）。
- *   2. isNew=true 时发 lt=0 + lt=1。
+ *   2. isNew=true 时发一条 lt=1。
  *   3. 取当前 route：
  *      - 新会话首页 / 当前未登记 entry → markEntryPage(route)。
  *      - 更新 lastRoute / lastRouteEnterTime 为下次 onPageHide 用。
@@ -251,7 +233,7 @@ export function handleAppHide(app: StatApp): void {
 export function handlePageShow(
   app: StatApp,
   vm: PageVm | undefined,
-  opts: LifecycleOptions = {}
+  _opts: LifecycleOptions = {}
 ): void {
   const c = safeCollector(app)
   if (!c) return
@@ -262,14 +244,7 @@ export function handlePageShow(
     // 新会话：清掉旧 entry，等待 markEntryPage 重新登记
     tryRun(() => clearEntry(), undefined)
     // cst=3：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
-    reportNewSession(
-      c,
-      result.cst || CST.PageInactiveTimeout,
-      '',
-      opts.emitSessionEvent !== false,
-      now,
-      false
-    )
+    reportNewSession(c, result.cst || CST.PageInactiveTimeout, '', now, false)
   }
   const route = tryRun(() => getCurrentRoute(vm), '')
   if (route) {

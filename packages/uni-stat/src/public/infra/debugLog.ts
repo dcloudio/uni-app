@@ -26,14 +26,13 @@ import type { StatData } from '../domain/statData'
 /**
  * `lt` → 用户友好的中文动作名映射。
  *
- * 与私有版 `pageInfo.js#log` 的 msg_type 对齐，并新增 lt=0（公有版独有的会话创建）。
+ * 与私有版 `pageInfo.js#log` 的 msg_type 对齐。
+ * 注：`lt=0` 已废弃（详见 `domain/eventTypes.ts` 头注释），新会话信息直接随 lt=1 上行。
  *
  * 未知 lt 走默认 "未知事件 (lt=X)"，便于排查异常上行。
  */
 export function getActionLabel(lt: LTValue | string | undefined): string {
   switch (lt) {
-    case LT.Session:
-      return '会话创建'
     case LT.Launch:
       return '应用启动'
     case LT.Hide:

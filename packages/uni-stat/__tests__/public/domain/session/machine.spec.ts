@@ -2,7 +2,6 @@ import { __resetCache as resetDevice } from '../../../../src/public/adapter/devi
 import {
   __resetState,
   configure,
-  consumePrevId,
   ensureSession,
   getSnapshot,
   markBackground,
@@ -24,7 +23,6 @@ const KSEQ = 'UNI_STAT_DATA:session-test:session:seq'
 const KLA = 'UNI_STAT_DATA:session-test:session:lastActive'
 const KBG = 'UNI_STAT_DATA:session-test:session:bgTs'
 const KSCN = 'UNI_STAT_DATA:session-test:session:lastScene'
-const KPID = 'UNI_STAT_DATA:session-test:session:prevId'
 
 const T0 = 1_700_000_000
 
@@ -68,14 +66,11 @@ describe('domain/session/machine', () => {
       expect(snap[KSEQ]).toBe(0)
     })
 
-    test('再次 cold_launch → 旧 sid 进 prevId', () => {
+    test('再次 cold_launch → 生成新 sid（不再写 prevId 机制）', () => {
       const r1 = ensureSession('cold_launch', { now: T0 })
       const r2 = ensureSession('cold_launch', { now: T0 + 10 })
       expect(r2.isNew).toBe(true)
       expect(r2.snapshot.sid).not.toBe(r1.snapshot.sid)
-      expect(consumePrevId()).toBe(r1.snapshot.sid)
-      // consume 后清掉
-      expect(consumePrevId()).toBeUndefined()
     })
   })
 
@@ -223,18 +218,6 @@ describe('domain/session/machine', () => {
       handle.storage.__failNext({ get: new Error('quota') })
       const r = ensureSession('cold_launch', { now: T0 })
       expect(r.isNew).toBe(true)
-    })
-  })
-
-  describe('consumePrevId', () => {
-    test('storage 中已有 prevId（跨进程）→ 取走并清空', () => {
-      handle.storage.setStorageSync(KPID, 'persisted-prev-sid')
-      expect(consumePrevId()).toBe('persisted-prev-sid')
-      expect(handle.storage.__inspect()[KPID]).toBeUndefined()
-    })
-
-    test('无 prevId → undefined', () => {
-      expect(consumePrevId()).toBeUndefined()
     })
   })
 })

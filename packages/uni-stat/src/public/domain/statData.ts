@@ -8,9 +8,18 @@
  * 设计要点：
  *   - 通过依赖注入（`createStatDataBuilder(deps)`）解耦 adapter / domain，便于单测。
  *   - 字段全部经过 `s/n` 兜底转换，禁止 undefined 出现在最终上行体（统一用空串 / 0）。
- *   - 事件类型驱动：lt=0/1 才带 fvts/lvts/tvc 等规则在此实现，调用方不再判断。
+ *   - 事件类型驱动：仅 lt=1 携带 fvts/lvts/tvc / sc 等启动字段；其他事件不携带。
  *   - 仅做拼装，不做副作用：不写 storage、不调 ensureSession（这些由 collector 编排）。
  *   - 严守 ES2015 baseline：禁用 `ObjectExpression > SpreadElement`，统一用 `Object.assign`。
+ *
+ * 与 `docs/uni统计上报参数.md` 对齐说明：
+ *   - 设备 ID 使用文档字段名 `did`（内部 SessionSnapshot/Adapter 仍以 uuid 命名，仅出口处映射）。
+ *   - 会话创建类型使用文档字段名 `cst`（内部 storage 仍以 sct 命名，仅出口处映射）。
+ *   - 不再上行 `sst / seq / pid / odid`：
+ *       * sst/seq 仅本地用于会话状态机，不参与服务端入库；
+ *       * pid（上一会话 sid）当前后端无入库口径；
+ *       * odid 由文档明确剔除。
+ *     这些字段在 SessionSnapshot 里仍保留，确保会话过期判断、调试日志可继续使用。
  */
 
 import { type IEYValue, type LTValue, toIey } from './eventTypes'
@@ -46,13 +55,11 @@ export interface EventContext {
   sc?: string
   /** session snapshot；由 collector 在 ensureSession 后传入。 */
   session?: SessionSnapshot
-  /** 上一会话 sid；仅新 session 第一条事件携带，由 collector 通过 consumePrevId 取。 */
-  pid?: string
   /** 是否为入口页（任意输入，统一转 0/1）。 */
   iey?: unknown
   /** 上一页是否为入口页。 */
   ppiey?: unknown
-  /** 访问字段（仅 lt=0/1 且首次构建时携带）。 */
+  /** 访问字段（仅 lt=1 且首次构建时携带）。 */
   visit?: { fvts: number; lvts: number; tvc: number }
   /** 自定义事件 payload，会原样合并到 statData（key 不冲突）。 */
   custom?: Record<string, unknown>
@@ -122,10 +129,13 @@ export function createStatDataBuilder(deps: StatDataDeps) {
   /**
    * 复用频率高的"基础字段"——每条事件都带。
    *
-   * 字段映射（与私有版 1:1）：
+   * 字段映射（参考 `docs/uni统计上报参数.md`）：
+   *   - `did` ← 内部 `device.uuid`（出口字段重命名为文档口径）
    *   - `mpsdk` ← `system.sdkVersion`
    *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
    *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
+   *
+   * 不再上行 `odid`：文档无此字段；保留 `device.odid` 仅供调试与未来兼容场景。
    */
   function baseFields(): StatData {
     const {
@@ -146,8 +156,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
       ch: s(config.ch),
       ut: s(platform.ut),
       p: s(platform.p),
-      uuid: s(device.uuid),
-      odid: s(device.odid),
+      did: s(device.uuid),
       brand: s(system.brand),
       md: s(system.md),
       sv: s(system.sv),
@@ -169,17 +178,18 @@ export function createStatDataBuilder(deps: StatDataDeps) {
     }
   }
 
-  /** 会话字段：所有 lt 都要带。 */
+  /**
+   * 会话字段：所有 lt 都要带。
+   *
+   * 与文档对齐：仅上行 `sid` 与 `cst`；
+   * 内部状态字段 `sst / seq` 不再随上行体发出，仅保留在 SessionSnapshot 中。
+   */
   function sessionFields(ctx: EventContext): StatData {
     if (!ctx.session) return {}
-    const out: StatData = {
+    return {
       sid: ctx.session.sid,
-      sst: ctx.session.sst,
-      sct: ctx.session.sct,
-      seq: ctx.session.seq,
+      cst: ctx.session.sct,
     }
-    if (ctx.pid) out.pid = ctx.pid
-    return out
   }
 
   /** 页面字段：lt=11/3 / 普通页面事件携带。 */
@@ -203,9 +213,9 @@ export function createStatDataBuilder(deps: StatDataDeps) {
     return out
   }
 
-  /** 访问字段：仅 lt=0/1 且 collector 显式传入 visit 时携带。 */
+  /** 访问字段：仅 lt=1（应用启动 / 新会话）且 collector 显式传入 visit 时携带。 */
   function visitFields(ctx: EventContext): StatData {
-    if (ctx.lt !== '0' && ctx.lt !== '1') return {}
+    if (ctx.lt !== '1') return {}
     if (!ctx.visit) return {}
     return {
       fvts: ctx.visit.fvts,
@@ -214,9 +224,9 @@ export function createStatDataBuilder(deps: StatDataDeps) {
     }
   }
 
-  /** 启动场景：lt=0/1 携带。 */
+  /** 启动场景：仅 lt=1 携带。 */
   function launchFields(ctx: EventContext): StatData {
-    if (ctx.lt !== '0' && ctx.lt !== '1') return {}
+    if (ctx.lt !== '1') return {}
     if (ctx.sc === undefined) return {}
     return { sc: s(ctx.sc) }
   }
@@ -247,10 +257,8 @@ export function createStatDataBuilder(deps: StatDataDeps) {
         'lt',
         't',
         'sid',
-        'sst',
-        'sct',
-        'seq',
-        'pid',
+        'cst',
+        'did',
         'fvts',
         'lvts',
         'tvc',

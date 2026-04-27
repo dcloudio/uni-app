@@ -1,14 +1,15 @@
 import { CST, IEY, LT, toIey } from '../../../src/public/domain/eventTypes'
 
 describe('domain/eventTypes', () => {
-  test('LT 与私有版字符串保持一致', () => {
-    expect(LT.Session).toBe('0')
+  test('LT 与文档参数保持一致（无 lt=0）', () => {
     expect(LT.Launch).toBe('1')
     expect(LT.Hide).toBe('3')
     expect(LT.Page).toBe('11')
     expect(LT.Event).toBe('21')
     expect(LT.Error).toBe('31')
     expect(LT.Push).toBe('101')
+    // lt=0 已废弃：参数文档无该 lt，新会话信息随 lt=1 上行。
+    expect((LT as Record<string, string>).Session).toBeUndefined()
   })
 
   test('CST 数值与文档对齐', () => {

@@ -9,7 +9,6 @@ export type {
 export {
   __resetState,
   configure,
-  consumePrevId,
   ensureSession,
   getSnapshot,
   markBackground,

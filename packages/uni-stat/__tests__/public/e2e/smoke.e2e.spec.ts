@@ -6,16 +6,16 @@
  * 用以替代/前置 Phase 12.B 的 5 端真机抓包。
  *
  * 覆盖矩阵（与 `docs/05-公有版重构开发计划.md` Phase 12 §测试矩阵 1:1）：
- *   S1 冷启动                 → lt=0 + lt=1 各 1 条；sid 新生成
- *   S2 热启动短（不超时）     → 不上报 lt=0；sid 不变
- *   S3 热启动长（后台超时）   → lt=0 + lt=1，cst=2；带 pid
- *   S4 长时无操作（前台超时） → lt=0 + lt=1，cst=3
- *   S5 wx scene 切换          → lt=0 + lt=1，cst=2
+ *   S1 冷启动                 → 仅发 lt=1；sid 新生成；lt=1 携带 sid/cst/fvts/lvts/tvc
+ *   S2 热启动短（不超时）     → 不发新会话事件；sid 不变
+ *   S3 热启动长（后台超时）   → 仅发 lt=1，cst=2；不带 fvts/lvts/tvc
+ *   S4 长时无操作（前台超时） → 仅发 lt=1，cst=3
+ *   S5 wx scene 切换          → 仅发 lt=1，cst=2
  *   S6 入口页 iey/ppiey 序列  → 首页 → A → B → 首页 → 序列符合 §4.2
- *   S7 自定义事件 uni.report  → lt=21，e_n/e_v/sid/seq 正确
+ *   S7 自定义事件 uni.report  → lt=21，e_n/e_v/sid 正确（seq 不再上行）
  *   S8 错误 throw new Error   → lt=31，em 含 message
  *   S9 弱网 100 条 + 恢复     → 服务端收到 100 条，无重复
- *   S10 老服务端 1.0 通道     → 上行体含 sid/iey 等新字段且不报错
+ *   S10 老服务端 1.0 通道     → 上行体含 sid/iey 等字段且不报错
  *
  * 注意：本套件**不直接走真实 http/Cloud channel**；http channel 注入 mock，
  * 用以模拟"成功 / 失败 / 失败后切换"等行为，验证 collector 的 ack / rollback / persist 链路。
@@ -207,29 +207,37 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     restoreMockUni()
   })
 
-  /** S1 冷启动：lt=0 + lt=1 各 1 条；sid 新生成；首批携带 fvts/lvts/tvc 的 visit 字段。 */
-  test('S1 冷启动 → lt=0 + lt=1 各 1 条；新 sid；首批带访问字段', async () => {
+  /** S1 冷启动：仅发 lt=1（参数文档对齐）；sid 新生成；首批携带 fvts/lvts/tvc 的 visit 字段。 */
+  test('S1 冷启动 → 仅发 lt=1；新 sid；首批带访问字段', async () => {
     const { app, http } = installApp()
     handleLaunch(app, { scene: 1001 })
     await drain(app)
 
     const events = flatEvents(dumpSent(http))
-    expect(flatLts(dumpSent(http))).toEqual(['0', '1'])
+    expect(flatLts(dumpSent(http))).toEqual(['1'])
 
     const session = sessionMod.getSnapshot()!
     expect(session.sid).toBeTruthy()
     expect(session.sct).toBe(1)
 
-    // 首批 lt=0/lt=1 都应同 sid，且 lt=0 携带 fvts/lvts/tvc
+    // lt=1 携带 sid/cst/fvts/lvts/tvc
     expect(events[0].sid).toBe(session.sid)
-    expect(events[1].sid).toBe(session.sid)
+    expect(events[0].cst).toBe(1)
     expect(events[0].fvts).toBeDefined()
     expect(events[0].lvts).toBeDefined()
     expect(events[0].tvc).toBeDefined()
+    // 旧字段（已剔除）
+    expect(events[0].sst).toBeUndefined()
+    expect(events[0].seq).toBeUndefined()
+    expect(events[0].sct).toBeUndefined()
+    expect(events[0].pid).toBeUndefined()
+    expect(events[0].uuid).toBeUndefined()
+    expect(events[0].odid).toBeUndefined()
+    expect(events[0].did).toBeDefined()
   })
 
-  /** S2 热启动短（不超时）：app_show 不超时 → 不发 lt=0；sid 不变。 */
-  test('S2 热启动短（< backgroundTimeoutSec） → 不发 lt=0；sid 不变', async () => {
+  /** S2 热启动短（不超时）：app_show 不超时 → 不发新会话事件；sid 不变。 */
+  test('S2 热启动短（< backgroundTimeoutSec） → 不发新会话事件；sid 不变', async () => {
     const { app, http } = installApp({ backgroundTimeoutSec: 300 })
     handleLaunch(app, {})
     await drain(app)
@@ -245,8 +253,8 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     expect(sessionMod.getSnapshot()!.sid).toBe(sid1)
   })
 
-  /** S3 热启动长（后台超时）：cst=2，发 lt=0 + lt=1；首报 lt=0 携带 pid（旧 sid）。 */
-  test('S3 热启动长（> backgroundTimeoutSec） → cst=2 + 携带 pid', async () => {
+  /** S3 热启动长（后台超时）：cst=2，仅发 lt=1。 */
+  test('S3 热启动长（> backgroundTimeoutSec） → cst=2，仅发 lt=1', async () => {
     const { app, http } = installApp({ backgroundTimeoutSec: 60 })
     handleLaunch(app, {})
     await drain(app)
@@ -258,13 +266,13 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     await drain(app)
 
     const events = flatEvents(dumpSent(http))
-    expect(flatLts(dumpSent(http))).toEqual(['0', '1'])
+    expect(flatLts(dumpSent(http))).toEqual(['1'])
     const sid2 = sessionMod.getSnapshot()!.sid
     expect(sid2).not.toBe(sid1)
-    // statData 透传 sct = ctx.session.sct（CSTValue: number）
-    expect(events[0].sct).toBe(2)
-    // 新 session 第一条事件携带 pid = 旧 sid
-    expect(events[0].pid).toBe(sid1)
+    // 上行字段名 cst（与 docs/uni统计上报参数.md 对齐）
+    expect(events[0].cst).toBe(2)
+    // pid 已废弃：参数文档无该字段
+    expect(events[0].pid).toBeUndefined()
     // cst=2 不再携带 fvts/lvts/tvc（修复 lvts=0 缺陷的关键约束）
     expect(events[0].fvts).toBeUndefined()
   })
@@ -283,12 +291,11 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
 
     const events = flatEvents(dumpSent(http))
     const lts = flatLts(dumpSent(http))
-    expect(lts).toContain('0')
-    expect(lts).toContain('1')
+    expect(lts).toEqual(['1'])
     expect(sessionMod.getSnapshot()!.sct).toBe(3)
-    const ltZero = events.find((e) => e.lt === '0')!
-    expect(ltZero.sct).toBe(3)
-    expect(ltZero.fvts).toBeUndefined()
+    const ltLaunch = events.find((e) => e.lt === '1')!
+    expect(ltLaunch.cst).toBe(3)
+    expect(ltLaunch.fvts).toBeUndefined()
   })
 
   /** S5 wx scene 切换：app_show 时 scene 与上次不同 → cst=2 新 session。 */
@@ -303,7 +310,7 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     await drain(app)
 
     const lts = flatLts(dumpSent(http))
-    expect(lts).toEqual(['0', '1'])
+    expect(lts).toEqual(['1'])
     expect(sessionMod.getSnapshot()!.sct).toBe(2)
     expect(sessionMod.getSnapshot()!.sid).not.toBe(sid1)
   })
@@ -397,9 +404,10 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     expect(customs[1].e_n).toBe('share')
     expect(customs[1].e_v).toBe('wx')
 
-    // sid 都属于同一会话；seq 单调（>=0），且第二条比第一条大
+    // sid 都属于同一会话；seq 已不上行，仅本地状态（参数文档对齐）
     expect(customs[0].sid).toBe(customs[1].sid)
-    expect(Number(customs[1].seq)).toBeGreaterThan(Number(customs[0].seq))
+    expect(customs[0].seq).toBeUndefined()
+    expect(customs[1].seq).toBeUndefined()
   })
 
   /** S8 错误：业务 throw new Error → lt=31，em 含 message。 */
@@ -424,7 +432,7 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     const { app, http } = installApp({ reportIntervalSec: 10 }) // 关掉 auto-flush，攒批
     handleLaunch(app, {})
     await drain(app)
-    // 清掉冷启的 lt=0/1 痕迹，本用例只关心后续 100 条
+    // 清掉冷启的 lt=1 痕迹，本用例只关心后续 100 条
     http.send.mockClear()
     retryMod.__reset()
 
