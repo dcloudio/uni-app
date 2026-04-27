@@ -65,7 +65,7 @@ function getUni(): {
       }
     }
   ).uni
-  if (!u) throw new Error('[uni-stat/public] uni storage API is not available')
+  if (!u) throw new Error('[uni统计公有版] uni storage API is not available')
   return u
 }
 

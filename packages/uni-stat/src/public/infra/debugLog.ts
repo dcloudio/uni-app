@@ -83,9 +83,9 @@ function bucketSummary(bucket: Record<string, StatData[]>): string {
  *
  * 文案示意：
  *   ```text
- *   [uni-stat/public] === 统计数据采集：应用启动 (lt=1) ===
- *   [uni-stat/public] {lt: '1', t: 1714123456, ut: 'h5', ...}
- *   [uni-stat/public] === 采集结束 ===
+ *   [uni统计公有版] === 统计数据采集：应用启动 (lt=1) ===
+ *   [uni统计公有版] {lt: '1', t: 1714123456, ut: 'h5', ...}
+ *   [uni统计公有版] === 采集结束 ===
  *   ```
  */
 export function logCollect(data: StatData): void {
@@ -108,11 +108,12 @@ export function logBoot(info: {
   debugFromManifest?: boolean
 }): void {
   if (!logger.isDebug()) return
-  logger.debug('=== uni 统计公有版（version=3）已启用 ===')
+  logger.debug('=== uni 统计公有版已启用 ===')
+  // 通道: ${info.channel} |
   logger.debug(
-    `通道: ${info.channel} | 上报间隔: ${info.reportIntervalSec}s | ak: ${
+    `上报间隔: ${info.reportIntervalSec}s | 应用APPID: ${
       info.ak || '<未注入>'
-    }${info.appName ? ` | appName: ${info.appName}` : ''}`
+    }${info.appName ? ` | 应用名: ${info.appName}` : ''}`
   )
   if (info.debugFromManifest) {
     logger.debug('调试模式：已从 manifest.uniStatistics.debug 自动开启')
@@ -125,7 +126,8 @@ export function logBoot(info: {
  *
  * 文案示意：
  *   ```text
- *   [uni-stat/public] === 准备上报：通道=image, 共 4 条事件 (lt=1×1, lt=11×2, lt=21×1) [_id=p-xxxx] ===
+ *   // 通道=${info.channel}
+ *   [uni统计公有版] === 准备上报： 共 4 条事件 (lt=1×1, lt=11×2, lt=21×1) [_id=p-xxxx] ===
  *   ```
  */
 export function logReportStart(info: {
@@ -137,9 +139,8 @@ export function logReportStart(info: {
   const total = bucketSize(info.bucket)
   const summary = bucketSummary(info.bucket)
   const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : ''
-  logger.debug(
-    `=== 准备上报：通道=${info.channel}, 共 ${total} 条事件 (${summary})${idTag} ===`
-  )
+  // 通道=${info.channel}
+  logger.debug(`=== 准备上报：共 ${total} 条事件 (${summary}) ===`)
 }
 
 /**
@@ -154,7 +155,7 @@ export function logReportSuccess(info: {
   if (!logger.isDebug()) return
   const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : ''
   logger.debug(
-    `=== 上报成功：通道=${info.channel}, ${info.count} 条事件已送达, 用时 ${info.elapsedMs}ms${idTag} ===`
+    `=== 上报成功： ${info.count} 条事件已送达, 用时 ${info.elapsedMs}ms ===`
   )
 }
 
@@ -172,8 +173,9 @@ export function logReportFailure(info: {
   if (!logger.isDebug()) return
   const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : ''
   const errMsg = describeError(info.error)
+  // 通道=${info.channel}
   logger.debug(
-    `=== 上报失败：通道=${info.channel}, ${info.count} 条事件未送达, 用时 ${info.elapsedMs}ms${idTag} ===`
+    `=== 上报失败： ${info.count} 条事件未送达, 用时 ${info.elapsedMs}ms ===`
   )
   logger.debug(`原因: ${errMsg}`)
   if (info.persistedId) {
@@ -218,14 +220,12 @@ export function logRecoverItem(info: {
   error?: unknown
 }): void {
   if (!logger.isDebug()) return
-  const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : ''
+  // const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : ''
   if (info.ok) {
-    logger.debug(`续传成功 (${info.index}/${info.total})${idTag}`)
+    logger.debug(`续传成功 (${info.index}/${info.total})`)
   } else {
     logger.debug(
-      `续传失败 (${info.index}/${info.total})${idTag}：${describeError(
-        info.error
-      )}`
+      `续传失败 (${info.index}/${info.total})：${describeError(info.error)}`
     )
   }
 }

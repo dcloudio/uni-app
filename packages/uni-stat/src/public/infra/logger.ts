@@ -16,7 +16,7 @@
  *     `isDebug()` 同时接受字符串 `'true'` 与布尔 `true`，避免历史构建产物完全失效。
  */
 
-const TAG = '[uni-stat/public]'
+const TAG = '[uni统计公有版]'
 
 let runtimeDebug: boolean | undefined
 

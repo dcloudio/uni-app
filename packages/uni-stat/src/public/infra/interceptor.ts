@@ -103,7 +103,7 @@ function reinstall(api: string): void {
 function getUni(): UniInterceptorAPI {
   const u = (globalThis as unknown as { uni?: UniInterceptorAPI }).uni
   if (!u)
-    throw new Error('[uni-stat/public] uni interceptor API is not available')
+    throw new Error('[uni统计公有版] uni interceptor API is not available')
   return u
 }
 

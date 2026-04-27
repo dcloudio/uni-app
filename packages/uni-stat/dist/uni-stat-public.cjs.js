@@ -74,7 +74,7 @@ function toIey(input) {
  *     （未 `JSON.stringify`），导致 dist 运行时该值为 `true`/`false` 而非 `'true'`/`'false'`。
  *     `isDebug()` 同时接受字符串 `'true'` 与布尔 `true`，避免历史构建产物完全失效。
  */
-const TAG = '[uni-stat/public]';
+const TAG = '[uni统计公有版]';
 let runtimeDebug;
 /**
  * 当前是否启用 debug 输出。优先级：
@@ -167,7 +167,7 @@ function fullKey(key) {
 function getUni$8() {
     const u = globalThis.uni;
     if (!u)
-        throw new Error('[uni-stat/public] uni storage API is not available');
+        throw new Error('[uni统计公有版] uni storage API is not available');
     return u;
 }
 /**
@@ -1940,9 +1940,9 @@ function bucketSummary(bucket) {
  *
  * 文案示意：
  *   ```text
- *   [uni-stat/public] === 统计数据采集：应用启动 (lt=1) ===
- *   [uni-stat/public] {lt: '1', t: 1714123456, ut: 'h5', ...}
- *   [uni-stat/public] === 采集结束 ===
+ *   [uni统计公有版] === 统计数据采集：应用启动 (lt=1) ===
+ *   [uni统计公有版] {lt: '1', t: 1714123456, ut: 'h5', ...}
+ *   [uni统计公有版] === 采集结束 ===
  *   ```
  */
 function logCollect(data) {
@@ -1960,8 +1960,9 @@ function logCollect(data) {
 function logBoot(info) {
     if (!logger.isDebug())
         return;
-    logger.debug('=== uni 统计公有版（version=3）已启用 ===');
-    logger.debug(`通道: ${info.channel} | 上报间隔: ${info.reportIntervalSec}s | ak: ${info.ak || '<未注入>'}${info.appName ? ` | appName: ${info.appName}` : ''}`);
+    logger.debug('=== uni 统计公有版已启用 ===');
+    // 通道: ${info.channel} | 
+    logger.debug(`上报间隔: ${info.reportIntervalSec}s | 应用APPID: ${info.ak || '<未注入>'}${info.appName ? ` | 应用名: ${info.appName}` : ''}`);
     if (info.debugFromManifest) {
         logger.debug('调试模式：已从 manifest.uniStatistics.debug 自动开启');
     }
@@ -1972,7 +1973,8 @@ function logBoot(info) {
  *
  * 文案示意：
  *   ```text
- *   [uni-stat/public] === 准备上报：通道=image, 共 4 条事件 (lt=1×1, lt=11×2, lt=21×1) [_id=p-xxxx] ===
+ *   // 通道=${info.channel}
+ *   [uni统计公有版] === 准备上报： 共 4 条事件 (lt=1×1, lt=11×2, lt=21×1) [_id=p-xxxx] ===
  *   ```
  */
 function logReportStart(info) {
@@ -1980,8 +1982,8 @@ function logReportStart(info) {
         return;
     const total = bucketSize(info.bucket);
     const summary = bucketSummary(info.bucket);
-    const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : '';
-    logger.debug(`=== 准备上报：通道=${info.channel}, 共 ${total} 条事件 (${summary})${idTag} ===`);
+    // 通道=${info.channel}
+    logger.debug(`=== 准备上报：共 ${total} 条事件 (${summary}) ===`);
 }
 /**
  * 上报成功。`elapsedMs` 是从 logReportStart 到 ack 的毫秒数。
@@ -1989,8 +1991,7 @@ function logReportStart(info) {
 function logReportSuccess(info) {
     if (!logger.isDebug())
         return;
-    const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : '';
-    logger.debug(`=== 上报成功：通道=${info.channel}, ${info.count} 条事件已送达, 用时 ${info.elapsedMs}ms${idTag} ===`);
+    logger.debug(`=== 上报成功： ${info.count} 条事件已送达, 用时 ${info.elapsedMs}ms ===`);
 }
 /**
  * 上报失败。`persistedId` 不为空表示已落盘 retry，下次冷启会续传。
@@ -1998,9 +1999,10 @@ function logReportSuccess(info) {
 function logReportFailure(info) {
     if (!logger.isDebug())
         return;
-    const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : '';
+    info.payloadId ? ` [_id=${info.payloadId}]` : '';
     const errMsg = describeError(info.error);
-    logger.debug(`=== 上报失败：通道=${info.channel}, ${info.count} 条事件未送达, 用时 ${info.elapsedMs}ms${idTag} ===`);
+    // 通道=${info.channel}
+    logger.debug(`=== 上报失败： ${info.count} 条事件未送达, 用时 ${info.elapsedMs}ms ===`);
     logger.debug(`原因: ${errMsg}`);
     if (info.persistedId) {
         logger.debug(`已暂存重试队列 [retryId=${info.persistedId}]，下次启动自动续传`);
@@ -2031,12 +2033,12 @@ function logRecoverStart(count) {
 function logRecoverItem(info) {
     if (!logger.isDebug())
         return;
-    const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : '';
+    // const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : ''
     if (info.ok) {
-        logger.debug(`续传成功 (${info.index}/${info.total})${idTag}`);
+        logger.debug(`续传成功 (${info.index}/${info.total})`);
     }
     else {
-        logger.debug(`续传失败 (${info.index}/${info.total})${idTag}：${describeError(info.error)}`);
+        logger.debug(`续传失败 (${info.index}/${info.total})：${describeError(info.error)}`);
     }
 }
 /**
@@ -2350,9 +2352,7 @@ function createCollector(deps) {
             logReportStart({
                 channel: channel.name,
                 bucket: snapshot,
-                payloadId: chunks.length === 1
-                    ? undefined
-                    : '<chunked x' + chunks.length + '>',
+                payloadId: chunks.length === 1 ? undefined : '<chunked x' + chunks.length + '>',
             });
             let allOk = true;
             for (let i = 0; i < chunks.length; i++) {
@@ -3380,7 +3380,7 @@ function reinstall(api) {
 function getUni$1() {
     const u = globalThis.uni;
     if (!u)
-        throw new Error('[uni-stat/public] uni interceptor API is not available');
+        throw new Error('[uni统计公有版] uni interceptor API is not available');
     return u;
 }
 /**
