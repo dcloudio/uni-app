@@ -33,6 +33,7 @@ async function testKotlin() {
   const start = Date.now()
   await bundle(UTSTarget.KOTLIN, {
     mode: 'production',
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input: {
       root: projectDir,
       filename: path.resolve(
@@ -69,6 +70,7 @@ async function testKotlin() {
     // )
   })
   await bundle(UTSTarget.KOTLIN, {
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input: {
       root: projectDir,
       filename: path.resolve(
@@ -92,6 +94,7 @@ async function testKotlin() {
 async function testKotlinComponent() {
   const start = Date.now()
   await bundle(UTSTarget.KOTLIN, {
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input: {
       root: projectDir,
       pluginId: 'animation-view',
@@ -128,6 +131,7 @@ async function testKotlinComponent() {
 async function testSwift() {
   const start = Date.now()
   await bundle(UTSTarget.SWIFT, {
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input: {
       root: projectDir,
       filename: path.resolve(
@@ -161,6 +165,7 @@ async function testSwift() {
     // )
   })
   await bundle(UTSTarget.SWIFT, {
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input: {
       root: projectDir,
       filename: path.resolve(
@@ -183,6 +188,7 @@ async function testSwift() {
 async function testSwiftComponent() {
   const start = Date.now()
   await bundle(UTSTarget.SWIFT, {
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input: {
       root: projectDir,
       pluginId: 'animation-view',
@@ -219,6 +225,7 @@ async function testSwiftComponent() {
 async function testArkTS() {
   const start = Date.now()
   await bundle(UTSTarget.ARKTS, {
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input: {
       root: projectDir,
       filename: path.resolve(

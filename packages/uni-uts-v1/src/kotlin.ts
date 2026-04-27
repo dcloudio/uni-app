@@ -645,6 +645,7 @@ export async function compile(
   const options: UTSBundleOptions = {
     mode: process.env.NODE_ENV,
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input,
     output: {
       errorFormat: 'json',

@@ -129,6 +129,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   const bundleOptions: UTSBundleOptions = {
     mode: process.env.NODE_ENV,
     hbxVersion,
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input,
     output: {
       errorFormat: 'json',
