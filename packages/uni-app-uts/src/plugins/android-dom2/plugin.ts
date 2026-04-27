@@ -13,7 +13,8 @@ export function uniAppXAndroidEnginePlugin(): UniVitePlugin {
   const { compileVaporApp, getKotlinCompilerServer } = resolveUTSCompiler()
   const compilerServer = getKotlinCompilerServer()
   if (!compilerServer) {
-    throw new Error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
+    console.error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
+    process.exit(0)
   }
   const outputDir = process.env.UNI_OUTPUT_DIR
   const uvueOutputDir = uvueOutDir('app-android')

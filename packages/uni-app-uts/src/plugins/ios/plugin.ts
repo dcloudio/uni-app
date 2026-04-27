@@ -9,7 +9,8 @@ export function uniAppXIOSEnginePlugin(): UniVitePlugin {
   const { getSwiftCompilerServer } = resolveUTSCompiler()
   const compilerServer = getSwiftCompilerServer()
   if (!compilerServer) {
-    throw new Error(`项目使用了uts插件，正在安装 uts iOS 运行扩展...`)
+    console.error(`项目使用了uts插件，正在安装 uts iOS 运行扩展...`)
+    process.exit(0)
   }
   if (compilerServer.checkEnv) {
     const { code, msg } = compilerServer.checkEnv()

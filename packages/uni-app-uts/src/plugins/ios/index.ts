@@ -87,6 +87,8 @@ export function init() {
       : []),
     ...(isDom2 ? [uniAppCssPlugin()] : []),
     ...(isNormalCompileTarget() ? [uniStatsPlugin()] : []),
-    ...(isDom2 && isNormalCompileTarget() ? [uniAppXIOSEnginePlugin()] : []),
+    ...(isDom2 && !isDom2Dynamic && isNormalCompileTarget()
+      ? [uniAppXIOSEnginePlugin()]
+      : []),
   ]
 }

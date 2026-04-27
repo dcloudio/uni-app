@@ -86,7 +86,10 @@ export function init() {
       : []),
     ...(isDom2 ? [uniAppCssPlugin()] : []),
     ...(isNormalCompileTarget()
-      ? [uniStatsPlugin(), uniAppXAndroidEnginePlugin()]
+      ? [
+          uniStatsPlugin(),
+          ...(isDom2Dynamic ? [] : [uniAppXAndroidEnginePlugin()]),
+        ]
       : []),
   ]
 }
