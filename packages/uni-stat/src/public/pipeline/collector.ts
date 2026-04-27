@@ -14,6 +14,7 @@
  *   - 错误吞掉 + 日志：collector 层异常**不应**抛回到生命周期回调，避免污染业务页面。
  */
 
+import { BATCH_MAX_EVENTS, BATCH_REQUESTS_MAX_BYTES } from '../config'
 import {
   logCollect,
   logNoChannel,
@@ -25,6 +26,9 @@ import {
 } from '../infra/debugLog'
 import { logger } from '../infra/logger'
 import { tryRun } from '../infra/safe'
+
+import { handleDataChunked } from './serializer'
+import { isPermanentChannelError } from './types'
 
 import type { Bucket } from './queue'
 import type { Channel, ReportPayload } from './types'
@@ -51,6 +55,8 @@ export interface CollectorDeps {
   }
   /** 序列化器。 */
   serializer: { handleData: (bucket: Bucket) => string }
+  /** 切片阈值；缺省走 config 默认值。 */
+  batchLimits?: { maxEvents?: number; maxBytes?: number }
   /** 通道选择（每次发送前重新选，避免缓存可用性）。 */
   selectChannel: () => Channel | undefined
   /** 重试落盘。 */
@@ -133,7 +139,16 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
   }
 
   /**
-   * 真正发送：取快照、序列化、挑通道、发送、根据结果 commit/rollback/persist。
+   * 真正发送：取快照、序列化、挑通道、按双阈值切片、串行发送，根据结果 commit/persist。
+   *
+   * 切片策略（修复 image url too long 死循环）：
+   *   - 用 `handleDataChunked(snapshot, { maxEvents, maxBytes })` 把整桶切成 N 份；
+   *   - 单片失败：永久错（`PermanentChannelError`）→ 直接丢弃，不 persist、不影响其他片；
+   *     非永久错 → 调用 `retry.persist`，下次冷启 `recoverRetry` 重放该片。
+   *   - **任意片失败** → 不 commit visit；**全部片成功** → commit 一次。
+   *     切片场景下 `lt=1` 必定落在第一片（serializer 已按 `LT_ORDER` 排序），
+   *     若需要更精细的"首批成功就 commit"，下一步迭代再做。
+   *   - 通道不可用：依旧整桶 rollback 回 queue（与切片前行为一致）。
    *
    * @param force 强制 flush（忽略节流阈值）。
    */
@@ -150,54 +165,106 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
       return
     }
 
-    const requests = deps.serializer.handleData(snapshot)
-    const payload: ReportPayload = {
-      usv: deps.config.usv,
-      t: deps.nowSec(),
-      requests,
-      _id: (deps.genPayloadId ?? (() => defaultGenPayloadId(deps.nowMs())))(),
+    const limits = {
+      maxEvents: deps.batchLimits?.maxEvents ?? BATCH_MAX_EVENTS,
+      maxBytes: deps.batchLimits?.maxBytes ?? BATCH_REQUESTS_MAX_BYTES,
     }
+    const chunks = handleDataChunked(snapshot, limits)
+    if (chunks.length === 0) return
 
-    // 统计本批事件数与计时基准；用于 success / failure 日志的"用时 / 条数"展示。
-    let count = 0
+    const startMs = deps.nowMs()
+    let totalCount = 0
     for (const lt of Object.keys(snapshot)) {
       const arr = snapshot[lt]
-      if (Array.isArray(arr)) count += arr.length
+      if (Array.isArray(arr)) totalCount += arr.length
     }
-    const startMs = deps.nowMs()
     logReportStart({
       channel: channel.name,
       bucket: snapshot,
-      payloadId: payload._id,
+      payloadId:
+        chunks.length === 1 ? undefined : '<chunked x' + chunks.length + '>',
     })
 
-    try {
-      await channel.send(payload)
+    let allOk = true
+    for (let i = 0; i < chunks.length; i++) {
+      const requests = chunks[i]
+      const payload: ReportPayload = {
+        usv: deps.config.usv,
+        t: deps.nowSec(),
+        requests,
+        _id: (deps.genPayloadId ?? (() => defaultGenPayloadId(deps.nowMs())))(),
+      }
+      const sliceStartMs = deps.nowMs()
+      try {
+        await channel.send(payload)
+        logReportSuccess({
+          channel: channel.name,
+          count: countEvents(requests),
+          elapsedMs: deps.nowMs() - sliceStartMs,
+          payloadId: payload._id,
+        })
+      } catch (e) {
+        allOk = false
+        if (isPermanentChannelError(e)) {
+          // 永久错：丢弃本片，不 persist、不污染下次冷启
+          logger.warn(
+            '[uni-stat] channel send permanent error, drop slice',
+            e,
+            'sliceBytes=' + requests.length
+          )
+          logReportFailure({
+            channel: channel.name,
+            count: countEvents(requests),
+            elapsedMs: deps.nowMs() - sliceStartMs,
+            error: e,
+            payloadId: payload._id,
+            persistedId: undefined,
+          })
+          continue
+        }
+        logger.warn('[uni-stat] channel send failed; persist for retry', e)
+        const id = deps.retry.persist(payload)
+        if (!id) {
+          logger.warn('[uni-stat] retry.persist returned no id, drop slice')
+        }
+        logReportFailure({
+          channel: channel.name,
+          count: countEvents(requests),
+          elapsedMs: deps.nowMs() - sliceStartMs,
+          error: e,
+          payloadId: payload._id,
+          persistedId: id,
+        })
+      }
+    }
+
+    if (allOk) {
       tryRun(
         () => deps.visit.commitVisitOnAck(deps.nowSec()),
         undefined as void
       )
-      logReportSuccess({
-        channel: channel.name,
-        count,
-        elapsedMs: deps.nowMs() - startMs,
-        payloadId: payload._id,
-      })
-    } catch (e) {
-      logger.warn('[uni-stat] channel send failed; persist for retry', e)
+    } else {
       tryRun(() => deps.visit.rollbackPendingVisit(), undefined as void)
-      const id = deps.retry.persist(payload)
-      if (!id) {
-        logger.warn('[uni-stat] retry.persist returned no id, drop batch')
-      }
-      logReportFailure({
-        channel: channel.name,
-        count,
-        elapsedMs: deps.nowMs() - startMs,
-        error: e,
-        payloadId: payload._id,
-        persistedId: id,
-      })
+    }
+    // 仅多片场景额外打一行汇总，方便排查"切片是不是分均匀"
+    if (chunks.length > 1) {
+      logger.warn(
+        '[uni-stat] flush chunked',
+        'chunks=' + chunks.length,
+        'totalEvents=' + totalCount,
+        'totalElapsedMs=' + (deps.nowMs() - startMs),
+        'allOk=' + allOk
+      )
+    }
+  }
+
+  /** 估算一片的事件数（容错：解析失败按 0 计）。仅供日志展示。 */
+  function countEvents(requests: string): number {
+    try {
+      const arr = JSON.parse(requests)
+      return Array.isArray(arr) ? arr.length : 0
+    } catch {
+      return 0
     }
   }
 
@@ -228,7 +295,25 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
           ok: true,
         })
       } catch (e) {
+        // 永久错：直接 ack 删除死信，避免下次冷启再次重放再次失败
+        if (isPermanentChannelError(e)) {
+          if (payload._id) deps.retry.ack(payload._id)
+          logger.warn(
+            '[uni-stat] recoverRetry permanent error, ack & drop',
+            e,
+            'id=' + payload._id
+          )
+          logRecoverItem({
+            index: i,
+            total: items.length,
+            payloadId: payload._id,
+            ok: false,
+            error: e,
+          })
+          continue
+        }
         if (payload._id && deps.retry.markAttempt) {
+          // markAttempt 内部超过 maxAttempts 会自动 ack 兜底（参见 retry.ts）
           deps.retry.markAttempt(payload._id)
         }
         logger.warn(

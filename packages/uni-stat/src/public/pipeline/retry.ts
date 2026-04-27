@@ -17,6 +17,7 @@
  * 由调用方负责重组业务字段（如重试时不需要再次重算 visit/session）。
  */
 
+import { RETRY_MAX_ATTEMPTS } from '../config'
 import { storage } from '../infra/storage'
 import { logger } from '../infra/logger'
 import { nowMs } from '../infra/time'
@@ -26,6 +27,7 @@ import type { ReportPayload } from './types'
 const STORAGE_KEY = 'retry:queue'
 const DEFAULT_MAX_ITEMS = 50
 const DEFAULT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000
+const DEFAULT_MAX_ATTEMPTS = RETRY_MAX_ATTEMPTS
 
 interface RetryItem {
   id: string
@@ -37,11 +39,14 @@ interface RetryItem {
 interface RetryConfig {
   maxItems: number
   maxAgeMs: number
+  /** 单条 payload 允许的最大重放次数；超过自动死信清理（在 markAttempt 内 ack）。 */
+  maxAttempts: number
 }
 
 const config: RetryConfig = {
   maxItems: DEFAULT_MAX_ITEMS,
   maxAgeMs: DEFAULT_MAX_AGE_MS,
+  maxAttempts: DEFAULT_MAX_ATTEMPTS,
 }
 
 /**
@@ -53,6 +58,9 @@ export function configure(opts: Partial<RetryConfig>): void {
   }
   if (typeof opts.maxAgeMs === 'number' && opts.maxAgeMs > 0) {
     config.maxAgeMs = Math.floor(opts.maxAgeMs)
+  }
+  if (typeof opts.maxAttempts === 'number' && opts.maxAttempts > 0) {
+    config.maxAttempts = Math.floor(opts.maxAttempts)
   }
 }
 
@@ -153,22 +161,41 @@ export function ack(id: string): void {
 }
 
 /**
- * 标记一次重放失败（仅记录次数，留给上层观察重试漂移）。
+ * 标记一次重放失败：累加 `attempts`，超过 `config.maxAttempts` 自动死信清理。
  *
- * 不在此触发新的重试 / drop——drop 时机交给 `loadAll` 的过期清理与 `persist` 的容量裁剪。
+ * 死信清理动机：`recoverRetry` 串行重放，永久错误（脏 payload / 历史协议数据）若不
+ * 主动丢弃，会反复占据队列前部，把后续健康 payload 也拖到失败 —— 这是 image url too
+ * long 看似"重试无穷大"的次因。本兜底与"过期清理（maxAgeMs）+ 容量裁剪（maxItems）"
+ * 形成三道防线。
  */
 export function markAttempt(id: string): void {
   if (!id) return
   const items = readQueue()
-  let touched = false
-  for (const it of items) {
-    if (it.id === id) {
-      it.attempts++
-      touched = true
-      break
+  let nextItems: RetryItem[] | null = null
+  for (let i = 0; i < items.length; i++) {
+    const it = items[i]
+    if (it.id !== id) continue
+    it.attempts++
+    if (it.attempts >= config.maxAttempts) {
+      logger.warn(
+        '[uni-stat] retry item exceeded maxAttempts, drop as dead letter',
+        id,
+        'attempts=' + it.attempts
+      )
+      nextItems = items.slice(0, i).concat(items.slice(i + 1))
+    } else {
+      nextItems = items
     }
+    break
   }
-  if (touched) writeQueue(items)
+  if (nextItems) writeQueue(nextItems)
+}
+
+/**
+ * 仅供单测：读取当前 maxAttempts 配置。
+ */
+export function __getMaxAttempts(): number {
+  return config.maxAttempts
 }
 
 /**
@@ -185,4 +212,5 @@ export function __reset(): void {
   storage.remove(STORAGE_KEY)
   config.maxItems = DEFAULT_MAX_ITEMS
   config.maxAgeMs = DEFAULT_MAX_AGE_MS
+  config.maxAttempts = DEFAULT_MAX_ATTEMPTS
 }

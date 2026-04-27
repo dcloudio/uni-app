@@ -166,10 +166,10 @@ describe('perf/stability：性能与稳定性预算', () => {
    * P2 flush 节流：reportIntervalSec=60 内连续 200 次 report 不触发 channel.send。
    * 只在显式 force flush 时才送一次（序列化为单 batch）。
    */
-  test('P2 flush 节流：60s 间隔内 200 次 report → 0 次 send；force flush 后仅 1 次', async () => {
+  test('P2 flush 节流：60s 间隔内 200 次 report → 0 次 send；force flush 后切片发送', async () => {
     const { app, http } = installApp({ reportIntervalSec: 60 })
     handleLaunch(app, {})
-    await app.getCollector()!.flush(true) // 把 cold launch 的 lt=0/1 送掉
+    await app.getCollector()!.flush(true) // 把 cold launch 的 lt=1 送掉
     http.send.mockClear()
 
     for (let i = 0; i < 200; i++) {
@@ -179,15 +179,20 @@ describe('perf/stability：性能与稳定性预算', () => {
     expect(http.send).not.toHaveBeenCalled()
     expect(queueMod.size()).toBe(200)
 
-    // force flush：刚好 1 次 channel.send，发出包含全部 200 条的 batch
+    // force flush：collector 默认按 BATCH_MAX_EVENTS=30 / BATCH_REQUESTS_MAX_BYTES=4KB 双阈值切片，
+    // 200 条 → 至少 7 片（200 / 30 = 6.67），逐片发送，全部 200 条仍然落地、不重复。
     await app.getCollector()!.flush(true)
-    expect(http.send).toHaveBeenCalledTimes(1)
+    expect(http.send.mock.calls.length).toBeGreaterThanOrEqual(7)
     expect(queueMod.size()).toBe(0)
-    const sent = JSON.parse(http.send.mock.calls[0][0].requests) as Array<{
-      lt: string
-      e_n?: string
-    }>
-    expect(sent.filter((e) => e.lt === '21')).toHaveLength(200)
+    const events: Array<{ lt: string; e_n?: string }> = []
+    for (const call of http.send.mock.calls) {
+      const arr = JSON.parse(call[0].requests) as Array<{
+        lt: string
+        e_n?: string
+      }>
+      events.push(...arr)
+    }
+    expect(events.filter((e) => e.lt === '21')).toHaveLength(200)
   })
 
   /**

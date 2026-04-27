@@ -19,7 +19,11 @@ import {
   restoreMockUni,
 } from '../../helpers/mockUni'
 
-import type { ReportPayload } from '../../../../src/public/pipeline/types'
+import {
+  PermanentChannelError,
+  type ReportPayload,
+  isPermanentChannelError,
+} from '../../../../src/public/pipeline/types'
 
 const PAYLOAD: ReportPayload = {
   usv: '3',
@@ -165,7 +169,7 @@ describe('pipeline/channel/image', () => {
     expect(requestSpy).toHaveBeenCalledTimes(3)
   })
 
-  test('IM6 URL 长度超过上限 → 直接 reject，不发请求', async () => {
+  test('IM6 URL 长度超过上限 → 抛 PermanentChannelError，不进 withRetry', async () => {
     const requestSpy = jest.fn()
     handle.uni.request = requestSpy
 
@@ -173,6 +177,8 @@ describe('pipeline/channel/image', () => {
       ...PAYLOAD,
       requests: '[' + '"a",'.repeat(2048) + '"end"]',
     }
+    // maxRetries=5 是为了证明：永久错走 preflight，根本不进 withRetry，
+    // 即便重试次数设得很大，uni.request 也只应该被调 0 次。
     const ch = createImageChannel({
       host: HOST,
       projectId: PID,
@@ -180,10 +186,64 @@ describe('pipeline/channel/image', () => {
       preferImageBeacon: false,
       sleep: noSleep,
       maxUrlLength: 1024,
-      maxRetries: 1,
+      maxRetries: 5,
     })
-    await expect(ch.send(big)).rejects.toThrow(/image url too long/)
+    let caught: unknown
+    try {
+      await ch.send(big)
+    } catch (e) {
+      caught = e
+    }
+    expect(caught).toBeInstanceOf(PermanentChannelError)
+    expect(isPermanentChannelError(caught)).toBe(true)
+    expect((caught as Error).message).toMatch(/image url too long/)
     expect(requestSpy).not.toHaveBeenCalled()
+  })
+
+  test('IM6.b 通道未配置 → 抛 PermanentChannelError，不进 withRetry', async () => {
+    const requestSpy = jest.fn(({ fail }: { fail: (e: unknown) => void }) => {
+      fail(new Error('net'))
+    })
+    handle.uni.request = requestSpy
+
+    const ch = createImageChannel({
+      host: '',
+      projectId: PID,
+      topicId: TID,
+      preferImageBeacon: false,
+      sleep: noSleep,
+      maxRetries: 5,
+    })
+    let caught: unknown
+    try {
+      await ch.send(PAYLOAD)
+    } catch (e) {
+      caught = e
+    }
+    expect(isPermanentChannelError(caught)).toBe(true)
+    expect((caught as Error).message).toMatch(/not configured/)
+    expect(requestSpy).not.toHaveBeenCalled()
+  })
+
+  test('IM6.c 无 Image 且 uni.request 不可用 → 抛 PermanentChannelError', async () => {
+    handle.uni.request = undefined as unknown as typeof handle.uni.request
+
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      preferImageBeacon: false,
+      sleep: noSleep,
+      maxRetries: 3,
+    })
+    let caught: unknown
+    try {
+      await ch.send(PAYLOAD)
+    } catch (e) {
+      caught = e
+    }
+    expect(isPermanentChannelError(caught)).toBe(true)
+    expect((caught as Error).message).toMatch(/uni.request unavailable/)
   })
 
   test('IM7 host 末尾斜杠会被裁剪', () => {

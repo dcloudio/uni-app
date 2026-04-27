@@ -121,7 +121,8 @@ describe('pipeline/retry', () => {
   })
 
   describe('markAttempt', () => {
-    test('累加 attempts 计数（仅记录，不丢弃）', () => {
+    test('累加 attempts 计数（未到 maxAttempts 不丢弃）', () => {
+      configure({ maxAttempts: 5 })
       persist(makePayload('a1'))
       markAttempt('a1')
       markAttempt('a1')
@@ -131,6 +132,26 @@ describe('pipeline/retry', () => {
 
     test('id 不存在 → no-op', () => {
       expect(() => markAttempt('x')).not.toThrow()
+    })
+
+    test('到达 maxAttempts → 自动 ack 死信清理', () => {
+      configure({ maxAttempts: 3 })
+      persist(makePayload('dead'))
+      persist(makePayload('alive'))
+      markAttempt('dead')
+      markAttempt('dead')
+      // 第 3 次 markAttempt → attempts==3，命中阈值，自动从队列删除
+      markAttempt('dead')
+      const ids = loadAll().map((it) => it._id)
+      expect(ids).toEqual(['alive'])
+      expect(size()).toBe(1)
+    })
+
+    test('maxAttempts=1 → 一次失败即丢弃（极端配置）', () => {
+      configure({ maxAttempts: 1 })
+      persist(makePayload('once'))
+      markAttempt('once')
+      expect(size()).toBe(0)
     })
   })
 

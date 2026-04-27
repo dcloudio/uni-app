@@ -27,7 +27,7 @@
  *   - 持久化 key：`UNI_STAT_DATA:<appid>:queue`。
  */
 
-import { REPORT_INTERVAL_SEC } from '../config'
+import { REPORT_INTERVAL_SEC, SINGLE_EVENT_MAX_BYTES } from '../config'
 import { logger } from '../infra/logger'
 import { nowMs } from '../infra/time'
 import { storage } from '../infra/storage'
@@ -35,6 +35,7 @@ import { storage } from '../infra/storage'
 import type { StatData } from '../domain/statData'
 
 const STORAGE_KEY = 'queue'
+const DEFAULT_SINGLE_EVENT_MAX_BYTES = SINGLE_EVENT_MAX_BYTES
 
 /** 入队桶：与私有版 uniStatData 同形。 */
 export type Bucket = Record<string, StatData[]>
@@ -51,14 +52,24 @@ const state: QueueState = {
 }
 
 let intervalSec = REPORT_INTERVAL_SEC
+let singleEventMaxBytes = DEFAULT_SINGLE_EVENT_MAX_BYTES
 let restored = false
 
 /**
  * 配置上报间隔；运行时可在 runtime/StatApp 初始化时注入。
  */
-export function configure(opts: { intervalSec?: number }): void {
+export function configure(opts: {
+  intervalSec?: number
+  singleEventMaxBytes?: number
+}): void {
   if (typeof opts.intervalSec === 'number' && opts.intervalSec >= 0) {
     intervalSec = Math.floor(opts.intervalSec)
+  }
+  if (
+    typeof opts.singleEventMaxBytes === 'number' &&
+    opts.singleEventMaxBytes > 0
+  ) {
+    singleEventMaxBytes = Math.floor(opts.singleEventMaxBytes)
   }
 }
 
@@ -101,12 +112,32 @@ function restoreOnce(): void {
  * 把一条事件入队到对应 lt 的桶。
  *
  * 不抛错；data.lt 必填，缺失/类型异常时打日志丢弃。
+ *
+ * 单条体积保护：序列化后超过 `singleEventMaxBytes`（默认 2KB）的事件直接丢弃 ——
+ * 进了桶最终一定打不出去（无论怎么切片都会顶满 GET URL），还会污染 retry 队列。
+ * 典型源头：业务方在 `key/value` 里塞了 base64 图片 / 大段 JSON / 长 stack 等。
  */
 export function enqueue(data: StatData): void {
   if (!data || typeof data !== 'object') return
   const lt = String(data.lt ?? '')
   if (!lt) {
     logger.warn('[uni-stat] enqueue dropped: missing lt', data)
+    return
+  }
+  let serialized = ''
+  try {
+    serialized = JSON.stringify(data)
+  } catch (e) {
+    logger.warn('[uni-stat] enqueue dropped: stringify failed', e)
+    return
+  }
+  if (serialized.length > singleEventMaxBytes) {
+    logger.warn(
+      '[uni-stat] enqueue dropped: single event too large',
+      'lt=' + lt,
+      'bytes=' + serialized.length,
+      'limit=' + singleEventMaxBytes
+    )
     return
   }
   restoreOnce()
@@ -179,6 +210,7 @@ export function __reset(): void {
   state.bucket = {}
   state.lastFlushAt = 0
   intervalSec = REPORT_INTERVAL_SEC
+  singleEventMaxBytes = DEFAULT_SINGLE_EVENT_MAX_BYTES
   restored = false
   storage.remove(STORAGE_KEY)
 }

@@ -98,13 +98,16 @@ function safeCollector(app: StatApp): CollectorAPI | undefined {
  *   - 通过 `firstVisitEmittedInProcess` 哨兵保证全进程只调用一次 `buildVisitFields`。
  *   - `cst` 入参仅用于将来可能的本地侧打印 / 监控；上行字段已由 statData 从 session
  *     snapshot 中读取（出口字段名为 `cst`）。
+ *   - `url` 参数：参数文档要求 `lt=1` 携带当前启动页的完整 url；冷启动 / app_show
+ *     可从 launch options.path 兜底；page_show 触发的 cst=3 由调用方直接传当前页路径。
  */
 function reportNewSession(
   c: CollectorAPI,
   _cst: number,
   scene: string,
   now: number,
-  attachVisit: boolean
+  attachVisit: boolean,
+  url: string = ''
 ): void {
   let visit: { fvts: number; lvts: number; tvc: number } | undefined
   if (attachVisit && !firstVisitEmittedInProcess) {
@@ -118,7 +121,15 @@ function reportNewSession(
       }
     )
   }
-  c.report({ lt: LT.Launch, t: now, sc: scene, visit })
+  const payload: Parameters<CollectorAPI['report']>[0] = {
+    lt: LT.Launch,
+    t: now,
+    sc: scene,
+    visit,
+  }
+  // url 仅当非空时携带；避免 lt=1 上行体出现 url=""（参数文档要求 url 至多 255 字符，但允许缺省）。
+  if (url) payload.url = url
+  c.report(payload)
 }
 
 /** 进程内是否已发过首批访问字段（fvts/lvts/tvc）。 */
@@ -129,9 +140,9 @@ let firstVisitEmittedInProcess = false
  *
  * 流程：
  *   1. ensureSession('cold_launch') → cst=1，必产新 session。
- *   2. 发一条 lt=1（携带 sid/cst/fvts/lvts/tvc/sc）。
+ *   2. 发一条 lt=1（携带 sid/cst/fvts/lvts/tvc/sc/url）。
  *   3. 异步抓 push CID，成功后发 lt=101。
- *   4. 兜底 onLaunch options 可能携带 scene / path（小程序）。
+ *   4. 兜底 onLaunch options 可能携带 scene / path（小程序）；path 透传成 lt=1 的 url。
  */
 export function handleLaunch(
   app: StatApp,
@@ -151,7 +162,8 @@ export function handleLaunch(
     null
   )
   if (!result) return
-  reportNewSession(c, result.cst || CST.ColdLaunch, scene, now, true)
+  const url = options.path || ''
+  reportNewSession(c, result.cst || CST.ColdLaunch, scene, now, true, url)
 
   if (opts.enablePush) {
     void getPushClientId({ enabled: true, timeoutMs: opts.pushTimeoutMs })
@@ -184,7 +196,16 @@ export function handleAppShow(
   const result = tryRun(() => ensureSession('app_show', { now, scene }), null)
   if (!result || !result.isNew) return
   // cst=2：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
-  reportNewSession(c, result.cst || CST.BackgroundTimeout, scene, now, false)
+  // url 优先取 options.path；拿不到就用上次记录的 lastRoute（用户回到的页面通常即此）。
+  const url = options.path || state.lastRoute || ''
+  reportNewSession(
+    c,
+    result.cst || CST.BackgroundTimeout,
+    scene,
+    now,
+    false,
+    url
+  )
 }
 
 /**
@@ -221,13 +242,20 @@ export function handleAppHide(app: StatApp): void {
 /**
  * Page.onShow：页面前台展示。
  *
+ * 与权威参数文档 `docs/uni统计上报参数.md` 对齐：`lt=11`（页面日志）对应 `onShow` 事件。
+ *
  * 流程：
  *   1. ensureSession('page_show')；命中 pageInactiveTimeout 时新 session（cst=3）。
- *   2. isNew=true 时发一条 lt=1。
- *   3. 取当前 route：
- *      - 新会话首页 / 当前未登记 entry → markEntryPage(route)。
- *      - 更新 lastRoute / lastRouteEnterTime 为下次 onPageHide 用。
- *   4. setConfigTitle(pages.json 标题)：runtime 暂时不读 manifest，
+ *   2. isNew=true 时发一条 lt=1（url=当前页 fullPath）。
+ *   3. 上报 `lt=11`（仅当存在上一页）：
+ *        - `url`     = 当前页 fullPath
+ *        - `urlref`  = 上一页 path（state.lastRoute）
+ *        - `urlref_ts` = 上一页停留秒数（now - state.lastRouteEnterTime）
+ *        - `iey`     = 当前页是否入口页
+ *        - `ppiey`   = 上一页是否入口页（state.lastIey）
+ *      首次 onShow（无 state.lastRoute）跳过 `lt=11`，避免空 urlref。
+ *   4. 更新状态：lastRoute / lastRouteEnterTime / lastIey / prevIey。
+ *   5. setConfigTitle(pages.json 标题)：runtime 暂时不读 manifest，
  *      由调用方在 install 时透传，否则保持空串。
  */
 export function handlePageShow(
@@ -240,22 +268,47 @@ export function handlePageShow(
   const now = nowSec()
   const result = tryRun(() => ensureSession('page_show', { now }), null)
   if (!result) return
+  const route = tryRun(() => getCurrentRoute(vm), '')
+  const url = tryRun(() => getCurrentRouteWithQuery(vm), '') || route
   if (result.isNew) {
     // 新会话：清掉旧 entry，等待 markEntryPage 重新登记
     tryRun(() => clearEntry(), undefined)
     // cst=3：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
-    reportNewSession(c, result.cst || CST.PageInactiveTimeout, '', now, false)
+    reportNewSession(
+      c,
+      result.cst || CST.PageInactiveTimeout,
+      '',
+      now,
+      false,
+      url
+    )
   }
-  const route = tryRun(() => getCurrentRoute(vm), '')
   if (route) {
     tryRun(() => markEntryPage(route), undefined)
   }
-  // 关键（修复 #PPIEY）：先把"当前 lastIey"备份到 prevIey，再覆写 lastIey。
-  // 这样下一个页面（onPageHide / 下一次 onPageShow）能正确读出"上一页是否入口页"。
+  // 上一页存在 → 发 lt=11（url=新页, urlref=上一页, urlref_ts=上一页停留时间）。
+  // 首次 onShow（state.lastRoute 为空）不发，避免 urlref 空字符串污染数据。
+  if (state.lastRoute) {
+    const stayed =
+      state.lastRouteEnterTime > 0
+        ? Math.max(0, now - state.lastRouteEnterTime)
+        : 0
+    c.report({
+      lt: LT.Page,
+      t: now,
+      url,
+      urlref: state.lastRoute,
+      urlref_ts: stayed,
+      iey: !!route && tryRun(() => isEntry(route), false),
+      // ppiey："上一页是否入口页" → 直接读上一次 onShow 末尾写入的 lastIey。
+      ppiey: state.lastIey,
+    })
+  }
+  // 状态切换：备份"上一页 iey"到 prevIey，再写入新页 iey；更新 lastRoute / 时间戳。
   state.prevIey = state.lastIey
+  state.lastIey = !!route && tryRun(() => isEntry(route), false)
   state.lastRoute = route
   state.lastRouteEnterTime = now
-  state.lastIey = !!route && tryRun(() => isEntry(route), false)
   state.isHide = false
 }
 
@@ -264,35 +317,18 @@ export function handlePageShow(
  *
  * 私有版用 `isHide` 区分 onUnload 是隐藏还是真离开；本模块同样兼容。
  *
- * 流程：发 lt=11，url=当前页 fullPath, urlref=上一页 path, urlref_ts=本页停留秒数。
+ * 公有版调整（与 `docs/uni统计上报参数.md` 对齐）：
+ *   - `lt=11` 不再在 onHide 上报，统一在下一次 `handlePageShow` 上报，确保
+ *     `url`（新页）与 `urlref`（旧页）字段不会落到同一个值。
+ *   - onHide 仅做收尾：标记 isHide、清掉自定义 title，避免下次新页空标题。
+ *   - lastRoute / lastRouteEnterTime / lastIey 保持不变，由 `handlePageShow` 统一切换。
  */
-export function handlePageHide(app: StatApp, vm: PageVm | undefined): void {
+export function handlePageHide(app: StatApp, _vm: PageVm | undefined): void {
   const c = safeCollector(app)
   if (!c) return
-  const now = nowSec()
-  const url = tryRun(() => getCurrentRouteWithQuery(vm), '')
-  const route = tryRun(() => getCurrentRoute(vm), '')
-  const stayed =
-    state.lastRouteEnterTime > 0
-      ? Math.max(0, now - state.lastRouteEnterTime)
-      : 0
-  c.report({
-    lt: LT.Page,
-    t: now,
-    url,
-    urlref:
-      state.lastRoute && state.lastRoute !== route ? state.lastRoute : route,
-    urlref_ts: stayed,
-    iey: route ? tryRun(() => isEntry(route), false) : false,
-    // ppiey 必须读 prevIey（"上一页是否入口页"）；不能复用 lastIey，否则与 iey 同义。
-    ppiey: state.prevIey,
-  })
-  state.lastRoute = route
-  state.lastIey = route ? tryRun(() => isEntry(route), false) : false
-  state.lastRouteEnterTime = 0
   state.isHide = true
   tryRun(() => clearPageTitle(), undefined)
-  // setConfigTitle 由 install 在新页 onShow 时回灌；onHide 不动它，避免 lt=11 上行字段空
+  // setConfigTitle 由 install 在新页 onShow 时回灌；onHide 不动它，避免下次新页空标题
   setConfigTitle(undefined)
 }
 

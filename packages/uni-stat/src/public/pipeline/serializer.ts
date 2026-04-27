@@ -80,3 +80,80 @@ function weightOf(lt: string): number {
 
 /** 仅供调试/测试，导出权重表本身（避免外部硬编码 magic number）。 */
 export const __LT_ORDER__ = LT_ORDER
+
+/** chunkEvents 的双阈值。 */
+export interface ChunkOptions {
+  /** 单批最多事件数；<=0 时按字节数切。 */
+  maxEvents?: number
+  /** 单批 `JSON.stringify(events)` 最长字节；<=0 时按事件数切。 */
+  maxBytes?: number
+}
+
+/**
+ * 把已 flatten 的事件数组按"事件数 + 字节数"双阈值贪婪切片。
+ *
+ * 用于 collector flush 阶段：把一次 flush 出来的整桶切成多个 ReportPayload，
+ * 避免单批拼成 GET URL 后超过网关 / CDN / 浏览器 URL 上限（典型 8KB）。
+ *
+ * 行为：
+ *   - **不丢任何事件**：单条事件即便已超 maxBytes 也独占一片（由 queue.enqueue 的
+ *     `SINGLE_EVENT_MAX_BYTES` 兜底，正常路径走不到这里）。
+ *   - **保持顺序**：贪婪累加，不打乱 flatten 排序结果，保证 lt=1 在最前 / lt=3 在最后的契约。
+ *   - **空数组返回 []**：调用方据此跳过本次发送。
+ */
+export function chunkEvents(
+  events: StatData[],
+  opts: ChunkOptions = {}
+): StatData[][] {
+  const maxEvents = opts.maxEvents ?? Infinity
+  const maxBytes = opts.maxBytes ?? Infinity
+  const out: StatData[][] = []
+  if (!Array.isArray(events) || events.length === 0) return out
+  const safeMaxEvents = maxEvents > 0 ? maxEvents : Infinity
+  const safeMaxBytes = maxBytes > 0 ? maxBytes : Infinity
+  let cur: StatData[] = []
+  let curBytes = 2 // 头尾 '[]'
+  for (let i = 0; i < events.length; i++) {
+    const e = events[i]
+    let s = ''
+    try {
+      s = JSON.stringify(e)
+    } catch {
+      // 单条不可序列化交给 collector 丢弃（serializer 不打 console，由外层日志代理）
+      continue
+    }
+    // 加入后会占用：当前是空片 → s.length；否则 +1（逗号分隔）
+    const inc = cur.length === 0 ? s.length : s.length + 1
+    const wouldExceed =
+      cur.length >= safeMaxEvents ||
+      (cur.length > 0 && curBytes + inc > safeMaxBytes)
+    if (wouldExceed) {
+      out.push(cur)
+      cur = []
+      curBytes = 2
+    }
+    cur.push(e)
+    curBytes += cur.length === 1 ? s.length : s.length + 1
+  }
+  if (cur.length > 0) out.push(cur)
+  return out
+}
+
+/**
+ * 切片版 handleData：返回多个 `requests` 字符串，对应多个 ReportPayload。
+ *
+ * `chunkEvents` 已保证排序与边界，本函数只做 stringify。
+ */
+export function handleDataChunked(
+  buckets: Buckets,
+  opts: ChunkOptions = {}
+): string[] {
+  const events = flatten(buckets)
+  if (events.length === 0) return []
+  const chunks = chunkEvents(events, opts)
+  const out: string[] = []
+  for (let i = 0; i < chunks.length; i++) {
+    out.push(JSON.stringify(chunks[i]))
+  }
+  return out
+}

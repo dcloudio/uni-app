@@ -69,6 +69,19 @@ describe('pipeline/queue', () => {
       enqueue(undefined as unknown as StatData)
       expect(size()).toBe(0)
     })
+
+    test('单条事件序列化超阈值 → 丢弃（防 image url too long 死信源头）', () => {
+      configure({ singleEventMaxBytes: 200 })
+      // 200 字节阈值，造一条 ~1000 字节的事件
+      const big = makeEvt('21', {
+        payload: 'a'.repeat(1000),
+      } as Partial<StatData>)
+      enqueue(big)
+      expect(size()).toBe(0)
+      // 正常小事件不受影响
+      enqueue(makeEvt('1'))
+      expect(size()).toBe(1)
+    })
   })
 
   describe('修复缺陷 #3：flush 期间并发入队不应被误删', () => {

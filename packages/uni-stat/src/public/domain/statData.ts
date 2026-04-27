@@ -231,10 +231,24 @@ export function createStatDataBuilder(deps: StatDataDeps) {
     return { sc: s(ctx.sc) }
   }
 
-  /** 错误事件特化字段。 */
+  /**
+   * 错误事件特化字段：lt=31 时把 `errMsg`（含 stack）截断后写入 `em`。
+   *
+   * 截断动机：长 Error stack（尤其是 jest / Node 调用栈）轻易超过 3KB，会让单条事件
+   * 触发 `SINGLE_EVENT_MAX_BYTES` 被 enqueue 丢弃；这里在 builder 阶段先做一次软截断，
+   * 既能保留头部关键定位信息（错误类型、消息、第一层 stack），又能保证事件可达。
+   *
+   * 阈值：3KB（保留 1KB buffer 给其他字段，整体仍在 SINGLE_EVENT_MAX_BYTES = 4KB 内）。
+   */
   function errorFields(ctx: EventContext): StatData {
     if (ctx.lt !== '31' || !ctx.errMsg) return {}
-    return { em: s(ctx.errMsg) }
+    const ERR_MSG_MAX = 3 * 1024
+    const TRUNC_SUFFIX = '…[truncated]'
+    let em = s(ctx.errMsg)
+    if (em.length > ERR_MSG_MAX) {
+      em = em.slice(0, ERR_MSG_MAX - TRUNC_SUFFIX.length) + TRUNC_SUFFIX
+    }
+    return { em }
   }
 
   /** Push 事件特化字段。 */

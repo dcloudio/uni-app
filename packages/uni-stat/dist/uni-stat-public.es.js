@@ -1437,14 +1437,25 @@ function safeCollector(app) {
  *   - 通过 `firstVisitEmittedInProcess` 哨兵保证全进程只调用一次 `buildVisitFields`。
  *   - `cst` 入参仅用于将来可能的本地侧打印 / 监控；上行字段已由 statData 从 session
  *     snapshot 中读取（出口字段名为 `cst`）。
+ *   - `url` 参数：参数文档要求 `lt=1` 携带当前启动页的完整 url；冷启动 / app_show
+ *     可从 launch options.path 兜底；page_show 触发的 cst=3 由调用方直接传当前页路径。
  */
-function reportNewSession(c, _cst, scene, now, attachVisit) {
+function reportNewSession(c, _cst, scene, now, attachVisit, url = '') {
     let visit;
     if (attachVisit && !firstVisitEmittedInProcess) {
         firstVisitEmittedInProcess = true;
         visit = tryRun(() => buildVisitFields(now), undefined);
     }
-    c.report({ lt: LT.Launch, t: now, sc: scene, visit });
+    const payload = {
+        lt: LT.Launch,
+        t: now,
+        sc: scene,
+        visit,
+    };
+    // url 仅当非空时携带；避免 lt=1 上行体出现 url=""（参数文档要求 url 至多 255 字符，但允许缺省）。
+    if (url)
+        payload.url = url;
+    c.report(payload);
 }
 /** 进程内是否已发过首批访问字段（fvts/lvts/tvc）。 */
 let firstVisitEmittedInProcess = false;
@@ -1453,9 +1464,9 @@ let firstVisitEmittedInProcess = false;
  *
  * 流程：
  *   1. ensureSession('cold_launch') → cst=1，必产新 session。
- *   2. 发一条 lt=1（携带 sid/cst/fvts/lvts/tvc/sc）。
+ *   2. 发一条 lt=1（携带 sid/cst/fvts/lvts/tvc/sc/url）。
  *   3. 异步抓 push CID，成功后发 lt=101。
- *   4. 兜底 onLaunch options 可能携带 scene / path（小程序）。
+ *   4. 兜底 onLaunch options 可能携带 scene / path（小程序）；path 透传成 lt=1 的 url。
  */
 function handleLaunch(app, options = {}, opts = {}) {
     const c = safeCollector(app);
@@ -1466,7 +1477,8 @@ function handleLaunch(app, options = {}, opts = {}) {
     const result = tryRun(() => ensureSession('cold_launch', { now, scene }), null);
     if (!result)
         return;
-    reportNewSession(c, result.cst || CST.ColdLaunch, scene, now, true);
+    const url = options.path || '';
+    reportNewSession(c, result.cst || CST.ColdLaunch, scene, now, true, url);
     if (opts.enablePush) {
         void getPushClientId({ enabled: true, timeoutMs: opts.pushTimeoutMs })
             .then((r) => {
@@ -1497,7 +1509,9 @@ function handleAppShow(app, options = {}, _opts = {}) {
     if (!result || !result.isNew)
         return;
     // cst=2：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
-    reportNewSession(c, result.cst || CST.BackgroundTimeout, scene, now, false);
+    // url 优先取 options.path；拿不到就用上次记录的 lastRoute（用户回到的页面通常即此）。
+    const url = options.path || state$1.lastRoute || '';
+    reportNewSession(c, result.cst || CST.BackgroundTimeout, scene, now, false, url);
 }
 /**
  * 应用进入后台。
@@ -1532,13 +1546,20 @@ function handleAppHide(app) {
 /**
  * Page.onShow：页面前台展示。
  *
+ * 与权威参数文档 `docs/uni统计上报参数.md` 对齐：`lt=11`（页面日志）对应 `onShow` 事件。
+ *
  * 流程：
  *   1. ensureSession('page_show')；命中 pageInactiveTimeout 时新 session（cst=3）。
- *   2. isNew=true 时发一条 lt=1。
- *   3. 取当前 route：
- *      - 新会话首页 / 当前未登记 entry → markEntryPage(route)。
- *      - 更新 lastRoute / lastRouteEnterTime 为下次 onPageHide 用。
- *   4. setConfigTitle(pages.json 标题)：runtime 暂时不读 manifest，
+ *   2. isNew=true 时发一条 lt=1（url=当前页 fullPath）。
+ *   3. 上报 `lt=11`（仅当存在上一页）：
+ *        - `url`     = 当前页 fullPath
+ *        - `urlref`  = 上一页 path（state.lastRoute）
+ *        - `urlref_ts` = 上一页停留秒数（now - state.lastRouteEnterTime）
+ *        - `iey`     = 当前页是否入口页
+ *        - `ppiey`   = 上一页是否入口页（state.lastIey）
+ *      首次 onShow（无 state.lastRoute）跳过 `lt=11`，避免空 urlref。
+ *   4. 更新状态：lastRoute / lastRouteEnterTime / lastIey / prevIey。
+ *   5. setConfigTitle(pages.json 标题)：runtime 暂时不读 manifest，
  *      由调用方在 install 时透传，否则保持空串。
  */
 function handlePageShow(app, vm, _opts = {}) {
@@ -1549,22 +1570,39 @@ function handlePageShow(app, vm, _opts = {}) {
     const result = tryRun(() => ensureSession('page_show', { now }), null);
     if (!result)
         return;
+    const route = tryRun(() => getCurrentRoute(vm), '');
+    const url = tryRun(() => getCurrentRouteWithQuery(vm), '') || route;
     if (result.isNew) {
         // 新会话：清掉旧 entry，等待 markEntryPage 重新登记
         tryRun(() => clearEntry(), undefined);
         // cst=3：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
-        reportNewSession(c, result.cst || CST.PageInactiveTimeout, '', now, false);
+        reportNewSession(c, result.cst || CST.PageInactiveTimeout, '', now, false, url);
     }
-    const route = tryRun(() => getCurrentRoute(vm), '');
     if (route) {
         tryRun(() => markEntryPage(route), undefined);
     }
-    // 关键（修复 #PPIEY）：先把"当前 lastIey"备份到 prevIey，再覆写 lastIey。
-    // 这样下一个页面（onPageHide / 下一次 onPageShow）能正确读出"上一页是否入口页"。
+    // 上一页存在 → 发 lt=11（url=新页, urlref=上一页, urlref_ts=上一页停留时间）。
+    // 首次 onShow（state.lastRoute 为空）不发，避免 urlref 空字符串污染数据。
+    if (state$1.lastRoute) {
+        const stayed = state$1.lastRouteEnterTime > 0
+            ? Math.max(0, now - state$1.lastRouteEnterTime)
+            : 0;
+        c.report({
+            lt: LT.Page,
+            t: now,
+            url,
+            urlref: state$1.lastRoute,
+            urlref_ts: stayed,
+            iey: !!route && tryRun(() => isEntry(route), false),
+            // ppiey："上一页是否入口页" → 直接读上一次 onShow 末尾写入的 lastIey。
+            ppiey: state$1.lastIey,
+        });
+    }
+    // 状态切换：备份"上一页 iey"到 prevIey，再写入新页 iey；更新 lastRoute / 时间戳。
     state$1.prevIey = state$1.lastIey;
+    state$1.lastIey = !!route && tryRun(() => isEntry(route), false);
     state$1.lastRoute = route;
     state$1.lastRouteEnterTime = now;
-    state$1.lastIey = !!route && tryRun(() => isEntry(route), false);
     state$1.isHide = false;
 }
 /**
@@ -1572,34 +1610,19 @@ function handlePageShow(app, vm, _opts = {}) {
  *
  * 私有版用 `isHide` 区分 onUnload 是隐藏还是真离开；本模块同样兼容。
  *
- * 流程：发 lt=11，url=当前页 fullPath, urlref=上一页 path, urlref_ts=本页停留秒数。
+ * 公有版调整（与 `docs/uni统计上报参数.md` 对齐）：
+ *   - `lt=11` 不再在 onHide 上报，统一在下一次 `handlePageShow` 上报，确保
+ *     `url`（新页）与 `urlref`（旧页）字段不会落到同一个值。
+ *   - onHide 仅做收尾：标记 isHide、清掉自定义 title，避免下次新页空标题。
+ *   - lastRoute / lastRouteEnterTime / lastIey 保持不变，由 `handlePageShow` 统一切换。
  */
-function handlePageHide(app, vm) {
+function handlePageHide(app, _vm) {
     const c = safeCollector(app);
     if (!c)
         return;
-    const now = nowSec();
-    const url = tryRun(() => getCurrentRouteWithQuery(vm), '');
-    const route = tryRun(() => getCurrentRoute(vm), '');
-    const stayed = state$1.lastRouteEnterTime > 0
-        ? Math.max(0, now - state$1.lastRouteEnterTime)
-        : 0;
-    c.report({
-        lt: LT.Page,
-        t: now,
-        url,
-        urlref: state$1.lastRoute && state$1.lastRoute !== route ? state$1.lastRoute : route,
-        urlref_ts: stayed,
-        iey: route ? tryRun(() => isEntry(route), false) : false,
-        // ppiey 必须读 prevIey（"上一页是否入口页"）；不能复用 lastIey，否则与 iey 同义。
-        ppiey: state$1.prevIey,
-    });
-    state$1.lastRoute = route;
-    state$1.lastIey = route ? tryRun(() => isEntry(route), false) : false;
-    state$1.lastRouteEnterTime = 0;
     state$1.isHide = true;
     tryRun(() => clearPageTitle(), undefined);
-    // setConfigTitle 由 install 在新页 onShow 时回灌；onHide 不动它，避免 lt=11 上行字段空
+    // setConfigTitle 由 install 在新页 onShow 时回灌；onHide 不动它，避免下次新页空标题
     setConfigTitle();
 }
 /**
@@ -1640,14 +1663,14 @@ function bindLifecycle(app, opts = {}) {
             handlePageShow(app, this, opts);
         },
         onHide() {
-            handlePageHide(app, this);
+            handlePageHide(app);
         },
         onUnload() {
             if (state$1.isHide) {
                 state$1.isHide = false;
                 return;
             }
-            handlePageHide(app, this);
+            handlePageHide(app);
         },
         onError(e) {
             handleError(app, e);
@@ -1686,7 +1709,19 @@ function bindLifecycle(app, opts = {}) {
  *
  * 该模块只导出**编译期常量**与**默认值**；运行时可变配置走 `runtime/StatApp` 注入。
  */
-const STAT_VERSION_PUBLIC = '3';
+/**
+ * 上行字段 `usv` 取值：**uni-app 编译器版本号**（与权威参数文档
+ * `docs/uni统计上报参数.md` 中 `usv: "4.24"` 示例对齐）。
+ *
+ * 与私有版 `src/config.ts` 保持同源做法：直接读 `process.env.UNI_COMPILER_VERSION`，
+ * 由 uni-cli 在用户应用打包阶段通过 vite `define` 替换成字面量字符串；
+ * 运行时取不到时回退为空串，避免拼到 URL 时变成 `undefined`。
+ *
+ * 注意：这里**不再**硬编码 `'3'`。`'3'` 是统计 SDK 协议版本（用于私有版 1/2/3
+ * 三套实现的入口分发），由 `src/plugin/index.ts` 的 `statVersion` 控制；
+ * 与 `usv` 字段无关。
+ */
+const STAT_VERSION_PUBLIC = process.env.UNI_COMPILER_VERSION || '';
 /** 1.0 通道（HTTP）默认上报地址。 */
 const STAT_URL = 'https://tongji.dcloud.io/uni/stat';
 /** H5 image 兜底通道（绕过跨域）。 */
@@ -1701,6 +1736,45 @@ const CLOUD_MAX_RETRIES = 2;
 const IMAGE_MAX_RETRIES = 2;
 /** 重试基础延迟（指数退避）。 */
 const RETRY_BASE_DELAY_MS = 1000;
+/**
+ * 单条事件序列化后允许的最大字节数。
+ *
+ * 阈值取舍：
+ *   - 6KB 是 image GET URL 上限（火山 TLS WebTrack）；扣掉 host / ProjectId / TopicId /
+ *     Source / Time 等固定 query 约 200B，留给 `Logs=encodeURIComponent(payload.requests)`
+ *     大约 5800B。
+ *   - `encodeURIComponent` 对纯 ASCII 膨胀 ~1.05x，对中英混排 ~1.5–2x，对纯中文最坏 3x。
+ *   - 取 **4KB 作为单条事件上限**：保证 ASCII 场景（含大段 Error stack）能放进单批；
+ *     纯中文极端场景下，由 `chunkEvents` 单条独占一片 + image preflight 在 URL 编码后
+ *     再做一次 6144 字节硬截断兜底。
+ *   - 业务错误 stack 通常 ~1–3KB，4KB 足够；超 4KB 的单条多半是 base64 图片 / 大段 JSON
+ *     这类**应该被业务自身收敛**的场景，直接丢弃并 warn 比静默卡死管道更安全。
+ *
+ * 超过本阈值的单条事件直接在 `queue.enqueue()` 内丢弃并 warn —— 不入桶、不持久化、
+ * 不进入重试队列，避免 81KB 这种"任何 batch 切多细都过不了"的死信卡死管道。
+ *
+ * 参考排错文档：`docs/image-url-too-long-修复说明.md`。
+ */
+const SINGLE_EVENT_MAX_BYTES = 4 * 1024;
+/**
+ * 单批 `requests`（已 `JSON.stringify(events)`）允许的最大字节数。
+ *
+ * 与 `IMAGE_REPORT_DEFAULTS` 的 6KB URL 上限对应：`encodeURIComponent` 保守按 3x
+ * 膨胀比估，4KB 原文恰好对应 ~12KB encoded —— 但中文场景多见 ASCII，实际膨胀 ~1.2x，
+ * 留 25% buffer 后取 4KB 作为切片阈值。超阈值时 collector flush 会按事件数 + 字节数
+ * 双阈值切多个 ReportPayload，逐个发送。
+ */
+const BATCH_REQUESTS_MAX_BYTES = 4 * 1024;
+/** 单批最多容纳的事件数；与字节阈值取 min 作为切片边界。 */
+const BATCH_MAX_EVENTS = 30;
+/**
+ * 单条 retry 队列条目允许的最大重放次数。
+ *
+ * 设置原因：`recoverRetry` 每次冷启串行重放历史 payload，对永久错误（例如曾经误塞入
+ * 队列的超长 payload、协议早期版本的脏数据）只会反复 fail，永远卡在队列前部把后续
+ * 健康 payload 也拖死。超过本阈值后由 `markAttempt` 自动 ack 删除（死信清理）。
+ */
+const RETRY_MAX_ATTEMPTS = 5;
 const IMAGE_REPORT_DEFAULTS = {
     host: 'https://tls-cn-beijing.volces.com',
     projectId: '9fad19a2-b7f1-47f5-87ff-8621f545ab61',
@@ -1978,6 +2052,196 @@ function describeError(e) {
 }
 
 /**
+ * 上报体序列化（重写私有版 `utils/pageInfo.js#handle_data`）。
+ *
+ * 修复缺陷 #4：私有版用 `for...in` 拿到的 key 永远是字符串，写成 `i === 0` 与 `i === 3`
+ * 导致两条边界分支从未命中：`lt=3`（应用进入后台）应排最后用于服务端 session 闭合——被混入中间。
+ *
+ * 公有版严格契约：
+ *   1. 输出顺序固定：`1 → 11 → 21 → 31 → 101 → 3`（可在 `LT_ORDER` 中扩展）。
+ *      `lt=0` 已废弃（参考 `domain/eventTypes.ts` 头注释），不再参与排序。
+ *   2. 同一 lt 内事件按 push 顺序保留（稳定排序）。
+ *   3. 纯函数：不读 storage、不调 console、不依赖 `'3'`。
+ *   4. 输入桶为空 → 返回 `'[]'`，调用方应在外层判空。
+ *
+ * 数据形状（公有版只支持 v2 协议，元素为 JSON 对象；不再走 v1 的 `key=val&...` 字符串）：
+ *   `JSON.stringify([{...stat1}, {...stat2}])`
+ */
+/**
+ * 上报顺序权重表。值越小越靠前；未知 lt 落到最末（靠近 lt=3 之前），同时打 warn。
+ *
+ * 顺序设计依据：
+ *   - lt=1：会话日志（含 sid/cst/fvts/lvts/tvc），最先；
+ *   - lt=11/21/31/101：按事件类型轻重排开；
+ *   - lt=3：应用进入后台，永远最后，用于服务端归一会话停留时长。
+ */
+const LT_ORDER = {
+    '1': 1,
+    '11': 2,
+    '21': 3,
+    '31': 4,
+    '101': 5,
+    '3': 100,
+};
+const UNKNOWN_LT_WEIGHT = 50;
+/**
+ * 拉平 + 排序 + 序列化。
+ *
+ * @param buckets 按 lt 分组的事件桶。
+ * @returns 上行 `requests` 字段的 JSON 字符串（`'[{...}]'`）。
+ */
+function handleData(buckets) {
+    return JSON.stringify(flatten(buckets));
+}
+/**
+ * 仅做拉平 + 排序，便于 collector 在不需要 stringify 的场景下做断言或二次处理（如分片）。
+ *
+ * 排序规则：
+ *   - 主键：`LT_ORDER[lt] ?? UNKNOWN_LT_WEIGHT`。
+ *   - 次键：原始 push 顺序（依靠 Array.prototype.sort 在 Node 11+ 已稳定）。
+ *
+ * 修复缺陷 #4 关键断言：`lt='3'` 必落最后；`lt='1'` 必落最前。
+ */
+function flatten(buckets) {
+    const ltKeys = Object.keys(buckets);
+    ltKeys.sort((a, b) => weightOf(a) - weightOf(b));
+    const out = [];
+    for (let i = 0; i < ltKeys.length; i++) {
+        const lt = ltKeys[i];
+        const list = buckets[lt];
+        if (!list || list.length === 0)
+            continue;
+        for (let j = 0; j < list.length; j++)
+            out.push(list[j]);
+    }
+    return out;
+}
+function weightOf(lt) {
+    const w = LT_ORDER[lt];
+    return typeof w === 'number' ? w : UNKNOWN_LT_WEIGHT;
+}
+/**
+ * 把已 flatten 的事件数组按"事件数 + 字节数"双阈值贪婪切片。
+ *
+ * 用于 collector flush 阶段：把一次 flush 出来的整桶切成多个 ReportPayload，
+ * 避免单批拼成 GET URL 后超过网关 / CDN / 浏览器 URL 上限（典型 8KB）。
+ *
+ * 行为：
+ *   - **不丢任何事件**：单条事件即便已超 maxBytes 也独占一片（由 queue.enqueue 的
+ *     `SINGLE_EVENT_MAX_BYTES` 兜底，正常路径走不到这里）。
+ *   - **保持顺序**：贪婪累加，不打乱 flatten 排序结果，保证 lt=1 在最前 / lt=3 在最后的契约。
+ *   - **空数组返回 []**：调用方据此跳过本次发送。
+ */
+function chunkEvents(events, opts = {}) {
+    var _a, _b;
+    const maxEvents = (_a = opts.maxEvents) !== null && _a !== void 0 ? _a : Infinity;
+    const maxBytes = (_b = opts.maxBytes) !== null && _b !== void 0 ? _b : Infinity;
+    const out = [];
+    if (!Array.isArray(events) || events.length === 0)
+        return out;
+    const safeMaxEvents = maxEvents > 0 ? maxEvents : Infinity;
+    const safeMaxBytes = maxBytes > 0 ? maxBytes : Infinity;
+    let cur = [];
+    let curBytes = 2; // 头尾 '[]'
+    for (let i = 0; i < events.length; i++) {
+        const e = events[i];
+        let s = '';
+        try {
+            s = JSON.stringify(e);
+        }
+        catch (_c) {
+            // 单条不可序列化交给 collector 丢弃（serializer 不打 console，由外层日志代理）
+            continue;
+        }
+        // 加入后会占用：当前是空片 → s.length；否则 +1（逗号分隔）
+        const inc = cur.length === 0 ? s.length : s.length + 1;
+        const wouldExceed = cur.length >= safeMaxEvents ||
+            (cur.length > 0 && curBytes + inc > safeMaxBytes);
+        if (wouldExceed) {
+            out.push(cur);
+            cur = [];
+            curBytes = 2;
+        }
+        cur.push(e);
+        curBytes += cur.length === 1 ? s.length : s.length + 1;
+    }
+    if (cur.length > 0)
+        out.push(cur);
+    return out;
+}
+/**
+ * 切片版 handleData：返回多个 `requests` 字符串，对应多个 ReportPayload。
+ *
+ * `chunkEvents` 已保证排序与边界，本函数只做 stringify。
+ */
+function handleDataChunked(buckets, opts = {}) {
+    const events = flatten(buckets);
+    if (events.length === 0)
+        return [];
+    const chunks = chunkEvents(events, opts);
+    const out = [];
+    for (let i = 0; i < chunks.length; i++) {
+        out.push(JSON.stringify(chunks[i]));
+    }
+    return out;
+}
+
+/**
+ * Pipeline 层共享类型。
+ *
+ * 单独抽出避免 channel / queue / retry 之间循环 import。
+ */
+/**
+ * 永久性通道错误：本次 payload 自身有问题（与网络无关），重试同一份 payload 永远不会过。
+ *
+ * 典型场景：
+ *   - image 通道 GET URL 超过 `maxUrlLength`（例如 81718 > 6144），重发同一份必定再次超长；
+ *   - 通道未配置（`image channel not configured`、`http endpoint missing`），换网络也救不了；
+ *   - 浏览器内既无 `Image` 全局也没有 `uni.request`：环境本身缺失，重试无意义。
+ *
+ * 设计意图：
+ *   - **不进 channel 内部 `withRetry`**：永久错误一抛立刻冒泡到 collector，避免协议层空转 N 次。
+ *   - **不进 retry 队列**：collector 的 `report()` 捕获到 permanent 时跳过 `retry.persist`，
+ *     避免下次冷启 `recoverRetry` 反复读出 → 反复失败 → 反复落盘的死循环
+ *     （这是 `image url too long` 卡死队列的根因）。
+ *   - **死信清理**：`recoverRetry` 重放历史 payload 时若再次拿到 permanent 错误，
+ *     直接 `retry.ack(_id)` 删除，不再写回。
+ *
+ * 错误识别：用 `instanceof PermanentChannelError`。为兼容跨 bundle / 跨上下文（少见但
+ * 防御性写法），同时设置 `permanent = true` 标志位，`isPermanentChannelError` 双重判定。
+ */
+class PermanentChannelError extends Error {
+    constructor(message) {
+        super(message);
+        /** 兼容跨 bundle 的标志位；与 `instanceof` 任一为真即视为永久错误。 */
+        this.permanent = true;
+        this.name = 'PermanentChannelError';
+        // 修复 ts/babel 转译后 prototype 链丢失，导致 instanceof 失效
+        Object.setPrototypeOf(this, PermanentChannelError.prototype);
+    }
+}
+/**
+ * 类型守卫：判定一个 unknown 错误是否为永久性通道错误。
+ *
+ * 兼容三种来源：
+ *   1. `instanceof PermanentChannelError`（同一 bundle）；
+ *   2. `err.name === 'PermanentChannelError'`（跨 bundle 但同名）；
+ *   3. `err.permanent === true`（任意错误显式标记）。
+ */
+function isPermanentChannelError(err) {
+    if (!err || typeof err !== 'object')
+        return false;
+    if (err instanceof PermanentChannelError)
+        return true;
+    const e = err;
+    if (e.name === 'PermanentChannelError')
+        return true;
+    if (e.permanent === true)
+        return true;
+    return false;
+}
+
+/**
  * Collector：domain 与 pipeline 的编排层。
  *
  * 职责（与 runtime/lifecycleHooks 配合）：
@@ -2030,13 +2294,22 @@ function createCollector(deps) {
         }, undefined);
     }
     /**
-     * 真正发送：取快照、序列化、挑通道、发送、根据结果 commit/rollback/persist。
+     * 真正发送：取快照、序列化、挑通道、按双阈值切片、串行发送，根据结果 commit/persist。
+     *
+     * 切片策略（修复 image url too long 死循环）：
+     *   - 用 `handleDataChunked(snapshot, { maxEvents, maxBytes })` 把整桶切成 N 份；
+     *   - 单片失败：永久错（`PermanentChannelError`）→ 直接丢弃，不 persist、不影响其他片；
+     *     非永久错 → 调用 `retry.persist`，下次冷启 `recoverRetry` 重放该片。
+     *   - **任意片失败** → 不 commit visit；**全部片成功** → commit 一次。
+     *     切片场景下 `lt=1` 必定落在第一片（serializer 已按 `LT_ORDER` 排序），
+     *     若需要更精细的"首批成功就 commit"，下一步迭代再做。
+     *   - 通道不可用：依旧整桶 rollback 回 queue（与切片前行为一致）。
      *
      * @param force 强制 flush（忽略节流阈值）。
      */
     function flush() {
         return __awaiter(this, arguments, void 0, function* (force = false) {
-            var _a;
+            var _a, _b, _c, _d, _e;
             if (!deps.queue.shouldFlush(force))
                 return;
             const snapshot = deps.queue.flush();
@@ -2049,53 +2322,97 @@ function createCollector(deps) {
                 deps.queue.rollback(snapshot);
                 return;
             }
-            const requests = deps.serializer.handleData(snapshot);
-            const payload = {
-                usv: deps.config.usv,
-                t: deps.nowSec(),
-                requests,
-                _id: ((_a = deps.genPayloadId) !== null && _a !== void 0 ? _a : (() => defaultGenPayloadId(deps.nowMs())))(),
+            const limits = {
+                maxEvents: (_b = (_a = deps.batchLimits) === null || _a === void 0 ? void 0 : _a.maxEvents) !== null && _b !== void 0 ? _b : BATCH_MAX_EVENTS,
+                maxBytes: (_d = (_c = deps.batchLimits) === null || _c === void 0 ? void 0 : _c.maxBytes) !== null && _d !== void 0 ? _d : BATCH_REQUESTS_MAX_BYTES,
             };
-            // 统计本批事件数与计时基准；用于 success / failure 日志的"用时 / 条数"展示。
-            let count = 0;
+            const chunks = handleDataChunked(snapshot, limits);
+            if (chunks.length === 0)
+                return;
+            const startMs = deps.nowMs();
+            let totalCount = 0;
             for (const lt of Object.keys(snapshot)) {
                 const arr = snapshot[lt];
                 if (Array.isArray(arr))
-                    count += arr.length;
+                    totalCount += arr.length;
             }
-            const startMs = deps.nowMs();
             logReportStart({
                 channel: channel.name,
                 bucket: snapshot,
-                payloadId: payload._id,
+                payloadId: chunks.length === 1
+                    ? undefined
+                    : '<chunked x' + chunks.length + '>',
             });
-            try {
-                yield channel.send(payload);
-                tryRun(() => deps.visit.commitVisitOnAck(deps.nowSec()), undefined);
-                logReportSuccess({
-                    channel: channel.name,
-                    count,
-                    elapsedMs: deps.nowMs() - startMs,
-                    payloadId: payload._id,
-                });
-            }
-            catch (e) {
-                logger.warn('[uni-stat] channel send failed; persist for retry', e);
-                tryRun(() => deps.visit.rollbackPendingVisit(), undefined);
-                const id = deps.retry.persist(payload);
-                if (!id) {
-                    logger.warn('[uni-stat] retry.persist returned no id, drop batch');
+            let allOk = true;
+            for (let i = 0; i < chunks.length; i++) {
+                const requests = chunks[i];
+                const payload = {
+                    usv: deps.config.usv,
+                    t: deps.nowSec(),
+                    requests,
+                    _id: ((_e = deps.genPayloadId) !== null && _e !== void 0 ? _e : (() => defaultGenPayloadId(deps.nowMs())))(),
+                };
+                const sliceStartMs = deps.nowMs();
+                try {
+                    yield channel.send(payload);
+                    logReportSuccess({
+                        channel: channel.name,
+                        count: countEvents(requests),
+                        elapsedMs: deps.nowMs() - sliceStartMs,
+                        payloadId: payload._id,
+                    });
                 }
-                logReportFailure({
-                    channel: channel.name,
-                    count,
-                    elapsedMs: deps.nowMs() - startMs,
-                    error: e,
-                    payloadId: payload._id,
-                    persistedId: id,
-                });
+                catch (e) {
+                    allOk = false;
+                    if (isPermanentChannelError(e)) {
+                        // 永久错：丢弃本片，不 persist、不污染下次冷启
+                        logger.warn('[uni-stat] channel send permanent error, drop slice', e, 'sliceBytes=' + requests.length);
+                        logReportFailure({
+                            channel: channel.name,
+                            count: countEvents(requests),
+                            elapsedMs: deps.nowMs() - sliceStartMs,
+                            error: e,
+                            payloadId: payload._id,
+                            persistedId: undefined,
+                        });
+                        continue;
+                    }
+                    logger.warn('[uni-stat] channel send failed; persist for retry', e);
+                    const id = deps.retry.persist(payload);
+                    if (!id) {
+                        logger.warn('[uni-stat] retry.persist returned no id, drop slice');
+                    }
+                    logReportFailure({
+                        channel: channel.name,
+                        count: countEvents(requests),
+                        elapsedMs: deps.nowMs() - sliceStartMs,
+                        error: e,
+                        payloadId: payload._id,
+                        persistedId: id,
+                    });
+                }
+            }
+            if (allOk) {
+                tryRun(() => deps.visit.commitVisitOnAck(deps.nowSec()), undefined);
+            }
+            else {
+                tryRun(() => deps.visit.rollbackPendingVisit(), undefined);
+            }
+            // 仅多片场景额外打一行汇总，方便排查"切片是不是分均匀"
+            if (chunks.length > 1) {
+                logger.warn('[uni-stat] flush chunked', 'chunks=' + chunks.length, 'totalEvents=' + totalCount, 'totalElapsedMs=' + (deps.nowMs() - startMs), 'allOk=' + allOk);
             }
         });
+    }
+    /** 估算一片的事件数（容错：解析失败按 0 计）。仅供日志展示。 */
+    function countEvents(requests) {
+        try {
+            const arr = JSON.parse(requests);
+            return Array.isArray(arr) ? arr.length : 0;
+        }
+        catch (_a) {
+            return 0;
+        }
     }
     /**
      * 把上次进程留在 storage 中的 retry 队列依次重放。
@@ -2128,7 +2445,22 @@ function createCollector(deps) {
                     });
                 }
                 catch (e) {
+                    // 永久错：直接 ack 删除死信，避免下次冷启再次重放再次失败
+                    if (isPermanentChannelError(e)) {
+                        if (payload._id)
+                            deps.retry.ack(payload._id);
+                        logger.warn('[uni-stat] recoverRetry permanent error, ack & drop', e, 'id=' + payload._id);
+                        logRecoverItem({
+                            index: i,
+                            total: items.length,
+                            payloadId: payload._id,
+                            ok: false,
+                            error: e,
+                        });
+                        continue;
+                    }
                     if (payload._id && deps.retry.markAttempt) {
+                        // markAttempt 内部超过 maxAttempts 会自动 ack 兜底（参见 retry.ts）
                         deps.retry.markAttempt(payload._id);
                     }
                     logger.warn('[uni-stat] recoverRetry item failed, will retry next launch', e);
@@ -2278,8 +2610,10 @@ function createHttpChannel(opts = {}) {
  *   - 浏览器以外环境（App / 部分小程序无 Image 全局）：退回 `uni.request({ method: 'GET' })`，
  *     成功状态码 `2xx` 视为送达。
  *   - 上行体积保护：`payload.requests` 已是 `JSON.stringify(events)`，再 `encodeURIComponent` 后塞入 URL；
- *     单条 batch 超过 `maxUrlLength`（默认 6KB）时直接 reject 让 retry 持久化下次再发，
- *     避免被 CDN/网关静默截断。
+ *     单条 batch 超过 `maxUrlLength`（默认 6KB）时抛出 `PermanentChannelError`，
+ *     **不进入 `withRetry`**——同一份 payload 重发同一份必然再次超长，避免空转 N 次；
+ *     上层 collector 捕获到 `PermanentChannelError` 后会跳过 `retry.persist`，避免反复落盘。
+ *   - 配置缺失（host/projectId/topicId 任一为空）：同样抛 `PermanentChannelError`，避免脏数据持久化死循环。
  *   - 不做"重试 = 业务错"的兜底：网络抖动一律由 `withRetry` 处理；最终失败由 collector → retry.persist 接管。
  *
  * 与 cloud / http 通道一致：
@@ -2345,9 +2679,14 @@ function createImageChannel(opts = {}) {
     function configured() {
         return !!(host && projectId && topicId);
     }
-    function once(payload) {
+    /**
+     * 入口预检：识别永久性错误（不可通过重试自愈），直接抛 PermanentChannelError 让上层立即丢弃。
+     *
+     * 在 send() 内做一次，比放在 once() 里更稳：永久错绝不进入 withRetry 的重试循环。
+     */
+    function preflight(payload) {
         if (!configured()) {
-            return Promise.reject(new Error('image channel not configured'));
+            throw new PermanentChannelError('image channel not configured');
         }
         const url = buildImageReportUrl(payload, {
             host,
@@ -2356,14 +2695,21 @@ function createImageChannel(opts = {}) {
             nowMs,
         });
         if (url.length > maxUrlLength) {
-            return Promise.reject(new Error('image url too long: ' + url.length + ' > ' + maxUrlLength));
+            throw new PermanentChannelError('image url too long: ' + url.length + ' > ' + maxUrlLength);
         }
+        return url;
+    }
+    /**
+     * 单次发送（已构好 URL）。**只处理网络层错误**，不再判断超长 / 配置缺失（已在 preflight）。
+     */
+    function once(url) {
         if (preferBeacon && tryImageBeacon(url)) {
             return Promise.resolve();
         }
         const u = getUni$3();
         if (!u || typeof u.request !== 'function') {
-            return Promise.reject(new Error('no Image and uni.request unavailable'));
+            // 环境本身既无 Image 也无 uni.request，重试不会自愈 → 永久错
+            return Promise.reject(new PermanentChannelError('no Image and uni.request unavailable'));
         }
         return new Promise((resolve, reject) => {
             let settled = false;
@@ -2407,15 +2753,33 @@ function createImageChannel(opts = {}) {
         },
         send(payload) {
             return __awaiter(this, void 0, void 0, function* () {
+                // 1) 入口预检：永久错直接抛，**不进 withRetry**，避免协议层空转
+                let url;
                 try {
-                    yield withRetry(() => once(payload), {
+                    url = preflight(payload);
+                }
+                catch (e) {
+                    if (isPermanentChannelError(e)) {
+                        logger.warn('[uni-stat] image channel permanent error, skip retry', e);
+                    }
+                    throw e;
+                }
+                // 2) 网络层重试
+                try {
+                    yield withRetry(() => once(url), {
                         times: maxRetries,
                         baseDelayMs: RETRY_BASE_DELAY_MS,
                         sleep: opts.sleep,
                     });
                 }
                 catch (e) {
-                    logger.warn('[uni-stat] image channel send failed after retries', e);
+                    // 重试过程中若拿到 permanent（理论上极少：环境 API 在重试间消失），同样冒泡
+                    if (isPermanentChannelError(e)) {
+                        logger.warn('[uni-stat] image channel permanent error during retry', e);
+                    }
+                    else {
+                        logger.warn('[uni-stat] image channel send failed after retries', e);
+                    }
                     throw e;
                 }
             });
@@ -2487,7 +2851,7 @@ function createStatDataBuilder(deps) {
      */
     function baseFields() {
         var _a;
-        const { config, platform, system, locale, device, net, location, pkg, legacy } = deps;
+        const { config, platform, system, locale, device, net, location, pkg, legacy, } = deps;
         return {
             ak: s(config.ak),
             usv: s(config.usv),
@@ -2578,11 +2942,25 @@ function createStatDataBuilder(deps) {
             return {};
         return { sc: s(ctx.sc) };
     }
-    /** 错误事件特化字段。 */
+    /**
+     * 错误事件特化字段：lt=31 时把 `errMsg`（含 stack）截断后写入 `em`。
+     *
+     * 截断动机：长 Error stack（尤其是 jest / Node 调用栈）轻易超过 3KB，会让单条事件
+     * 触发 `SINGLE_EVENT_MAX_BYTES` 被 enqueue 丢弃；这里在 builder 阶段先做一次软截断，
+     * 既能保留头部关键定位信息（错误类型、消息、第一层 stack），又能保证事件可达。
+     *
+     * 阈值：3KB（保留 1KB buffer 给其他字段，整体仍在 SINGLE_EVENT_MAX_BYTES = 4KB 内）。
+     */
     function errorFields(ctx) {
         if (ctx.lt !== '31' || !ctx.errMsg)
             return {};
-        return { em: s(ctx.errMsg) };
+        const ERR_MSG_MAX = 3 * 1024;
+        const TRUNC_SUFFIX = '…[truncated]';
+        let em = s(ctx.errMsg);
+        if (em.length > ERR_MSG_MAX) {
+            em = em.slice(0, ERR_MSG_MAX - TRUNC_SUFFIX.length) + TRUNC_SUFFIX;
+        }
+        return { em };
     }
     /** Push 事件特化字段。 */
     function pushFields(ctx) {
@@ -2854,76 +3232,6 @@ function getPackageInfo() {
     }
     cached = { tdaid, pkn, an };
     return cached;
-}
-
-/**
- * 上报体序列化（重写私有版 `utils/pageInfo.js#handle_data`）。
- *
- * 修复缺陷 #4：私有版用 `for...in` 拿到的 key 永远是字符串，写成 `i === 0` 与 `i === 3`
- * 导致两条边界分支从未命中：`lt=3`（应用进入后台）应排最后用于服务端 session 闭合——被混入中间。
- *
- * 公有版严格契约：
- *   1. 输出顺序固定：`1 → 11 → 21 → 31 → 101 → 3`（可在 `LT_ORDER` 中扩展）。
- *      `lt=0` 已废弃（参考 `domain/eventTypes.ts` 头注释），不再参与排序。
- *   2. 同一 lt 内事件按 push 顺序保留（稳定排序）。
- *   3. 纯函数：不读 storage、不调 console、不依赖 `'3'`。
- *   4. 输入桶为空 → 返回 `'[]'`，调用方应在外层判空。
- *
- * 数据形状（公有版只支持 v2 协议，元素为 JSON 对象；不再走 v1 的 `key=val&...` 字符串）：
- *   `JSON.stringify([{...stat1}, {...stat2}])`
- */
-/**
- * 上报顺序权重表。值越小越靠前；未知 lt 落到最末（靠近 lt=3 之前），同时打 warn。
- *
- * 顺序设计依据：
- *   - lt=1：会话日志（含 sid/cst/fvts/lvts/tvc），最先；
- *   - lt=11/21/31/101：按事件类型轻重排开；
- *   - lt=3：应用进入后台，永远最后，用于服务端归一会话停留时长。
- */
-const LT_ORDER = {
-    '1': 1,
-    '11': 2,
-    '21': 3,
-    '31': 4,
-    '101': 5,
-    '3': 100,
-};
-const UNKNOWN_LT_WEIGHT = 50;
-/**
- * 拉平 + 排序 + 序列化。
- *
- * @param buckets 按 lt 分组的事件桶。
- * @returns 上行 `requests` 字段的 JSON 字符串（`'[{...}]'`）。
- */
-function handleData(buckets) {
-    return JSON.stringify(flatten(buckets));
-}
-/**
- * 仅做拉平 + 排序，便于 collector 在不需要 stringify 的场景下做断言或二次处理（如分片）。
- *
- * 排序规则：
- *   - 主键：`LT_ORDER[lt] ?? UNKNOWN_LT_WEIGHT`。
- *   - 次键：原始 push 顺序（依靠 Array.prototype.sort 在 Node 11+ 已稳定）。
- *
- * 修复缺陷 #4 关键断言：`lt='3'` 必落最后；`lt='1'` 必落最前。
- */
-function flatten(buckets) {
-    const ltKeys = Object.keys(buckets);
-    ltKeys.sort((a, b) => weightOf(a) - weightOf(b));
-    const out = [];
-    for (let i = 0; i < ltKeys.length; i++) {
-        const lt = ltKeys[i];
-        const list = buckets[lt];
-        if (!list || list.length === 0)
-            continue;
-        for (let j = 0; j < list.length; j++)
-            out.push(list[j]);
-    }
-    return out;
-}
-function weightOf(lt) {
-    const w = LT_ORDER[lt];
-    return typeof w === 'number' ? w : UNKNOWN_LT_WEIGHT;
 }
 
 /**
@@ -3347,11 +3655,13 @@ function selectChannel(opts) {
  *   - 持久化 key：`UNI_STAT_DATA:<appid>:queue`。
  */
 const STORAGE_KEY$1 = 'queue';
+const DEFAULT_SINGLE_EVENT_MAX_BYTES = SINGLE_EVENT_MAX_BYTES;
 const state = {
     bucket: {},
     lastFlushAt: 0,
 };
 let intervalSec = REPORT_INTERVAL_SEC;
+let singleEventMaxBytes = DEFAULT_SINGLE_EVENT_MAX_BYTES;
 let restored = false;
 /**
  * 配置上报间隔；运行时可在 runtime/StatApp 初始化时注入。
@@ -3359,6 +3669,10 @@ let restored = false;
 function configure(opts) {
     if (typeof opts.intervalSec === 'number' && opts.intervalSec >= 0) {
         intervalSec = Math.floor(opts.intervalSec);
+    }
+    if (typeof opts.singleEventMaxBytes === 'number' &&
+        opts.singleEventMaxBytes > 0) {
+        singleEventMaxBytes = Math.floor(opts.singleEventMaxBytes);
     }
 }
 /**
@@ -3403,6 +3717,10 @@ function restoreOnce() {
  * 把一条事件入队到对应 lt 的桶。
  *
  * 不抛错；data.lt 必填，缺失/类型异常时打日志丢弃。
+ *
+ * 单条体积保护：序列化后超过 `singleEventMaxBytes`（默认 2KB）的事件直接丢弃 ——
+ * 进了桶最终一定打不出去（无论怎么切片都会顶满 GET URL），还会污染 retry 队列。
+ * 典型源头：业务方在 `key/value` 里塞了 base64 图片 / 大段 JSON / 长 stack 等。
  */
 function enqueue(data) {
     var _a;
@@ -3411,6 +3729,18 @@ function enqueue(data) {
     const lt = String((_a = data.lt) !== null && _a !== void 0 ? _a : '');
     if (!lt) {
         logger.warn('[uni-stat] enqueue dropped: missing lt', data);
+        return;
+    }
+    let serialized = '';
+    try {
+        serialized = JSON.stringify(data);
+    }
+    catch (e) {
+        logger.warn('[uni-stat] enqueue dropped: stringify failed', e);
+        return;
+    }
+    if (serialized.length > singleEventMaxBytes) {
+        logger.warn('[uni-stat] enqueue dropped: single event too large', 'lt=' + lt, 'bytes=' + serialized.length, 'limit=' + singleEventMaxBytes);
         return;
     }
     restoreOnce();
@@ -3490,9 +3820,11 @@ function rollback(snapshot) {
 const STORAGE_KEY = 'retry:queue';
 const DEFAULT_MAX_ITEMS = 50;
 const DEFAULT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const DEFAULT_MAX_ATTEMPTS = RETRY_MAX_ATTEMPTS;
 const config = {
     maxItems: DEFAULT_MAX_ITEMS,
     maxAgeMs: DEFAULT_MAX_AGE_MS,
+    maxAttempts: DEFAULT_MAX_ATTEMPTS,
 };
 /**
  * 读取队列。出现异常或非数组时返回空数组（不影响主流程）。
@@ -3587,24 +3919,34 @@ function ack(id) {
     writeQueue(next);
 }
 /**
- * 标记一次重放失败（仅记录次数，留给上层观察重试漂移）。
+ * 标记一次重放失败：累加 `attempts`，超过 `config.maxAttempts` 自动死信清理。
  *
- * 不在此触发新的重试 / drop——drop 时机交给 `loadAll` 的过期清理与 `persist` 的容量裁剪。
+ * 死信清理动机：`recoverRetry` 串行重放，永久错误（脏 payload / 历史协议数据）若不
+ * 主动丢弃，会反复占据队列前部，把后续健康 payload 也拖到失败 —— 这是 image url too
+ * long 看似"重试无穷大"的次因。本兜底与"过期清理（maxAgeMs）+ 容量裁剪（maxItems）"
+ * 形成三道防线。
  */
 function markAttempt(id) {
     if (!id)
         return;
     const items = readQueue();
-    let touched = false;
-    for (const it of items) {
-        if (it.id === id) {
-            it.attempts++;
-            touched = true;
-            break;
+    let nextItems = null;
+    for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        if (it.id !== id)
+            continue;
+        it.attempts++;
+        if (it.attempts >= config.maxAttempts) {
+            logger.warn('[uni-stat] retry item exceeded maxAttempts, drop as dead letter', id, 'attempts=' + it.attempts);
+            nextItems = items.slice(0, i).concat(items.slice(i + 1));
         }
+        else {
+            nextItems = items;
+        }
+        break;
     }
-    if (touched)
-        writeQueue(items);
+    if (nextItems)
+        writeQueue(nextItems);
 }
 
 /**

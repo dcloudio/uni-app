@@ -337,21 +337,25 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     await drain(app)
 
     const ltPages = flatEvents(dumpSent(http)).filter((e) => e.lt === '11')
-    expect(ltPages).toHaveLength(4)
-    // 修复 #PPIEY 后，ppiey 由独立 prevIey 维护，与 iey 解耦。
-    // 序列断言（`docs/04-字段字典与平台获取矩阵.md` §4.2 标准实现）：
-    //   home onHide → iey=1, ppiey=0（首次进入，无前页）
-    //   A    onHide → iey=0, ppiey=1（前一页 home 是入口）
-    //   B    onHide → iey=0, ppiey=0（前一页 A 不是入口）
-    //   home onHide → iey=1, ppiey=0（前一页 B 不是入口）
-    expect(ltPages[0].iey).toBe(1)
-    expect(ltPages[0].ppiey).toBe(0)
+    // lt=11 上报点位与参数文档对齐：在下一页 onShow 时上报，首次 onShow 无前页不发。
+    // 4 次 show/hide 共发出 3 条 lt=11（home 首次跳过）。
+    expect(ltPages).toHaveLength(3)
+    // 序列断言（`docs/uni统计上报参数.md` lt=11 / `docs/04` §4.2 标准实现）：
+    //   A    onShow → url=A,    urlref=home, iey=0, ppiey=1（前一页 home 是入口）
+    //   B    onShow → url=B,    urlref=A,    iey=0, ppiey=0（前一页 A 非入口）
+    //   home onShow → url=home, urlref=B,    iey=1, ppiey=0（前一页 B 非入口）
+    expect(ltPages[0].url).toBe('pages/A/A')
+    expect(ltPages[0].urlref).toBe('pages/home/home')
+    expect(ltPages[0].iey).toBe(0)
+    expect(ltPages[0].ppiey).toBe(1)
+    expect(ltPages[1].url).toBe('pages/B/B')
+    expect(ltPages[1].urlref).toBe('pages/A/A')
     expect(ltPages[1].iey).toBe(0)
-    expect(ltPages[1].ppiey).toBe(1)
-    expect(ltPages[2].iey).toBe(0)
+    expect(ltPages[1].ppiey).toBe(0)
+    expect(ltPages[2].url).toBe('pages/home/home')
+    expect(ltPages[2].urlref).toBe('pages/B/B')
+    expect(ltPages[2].iey).toBe(1)
     expect(ltPages[2].ppiey).toBe(0)
-    expect(ltPages[3].iey).toBe(1)
-    expect(ltPages[3].ppiey).toBe(0)
   })
 
   /** S6.b 入口页：home → A → home（来回切）。验证 ppiey 不会随 iey 漂移。 */
@@ -370,14 +374,18 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     await drain(app)
 
     const ltPages = flatEvents(dumpSent(http)).filter((e) => e.lt === '11')
-    expect(ltPages).toHaveLength(3)
-    // home → ppiey=0；A → ppiey=1（前页 home 是入口）；home → ppiey=0（前页 A 非入口）
-    expect(ltPages[0].iey).toBe(1)
-    expect(ltPages[0].ppiey).toBe(0)
-    expect(ltPages[1].iey).toBe(0)
-    expect(ltPages[1].ppiey).toBe(1)
-    expect(ltPages[2].iey).toBe(1)
-    expect(ltPages[2].ppiey).toBe(0)
+    // 在下一页 onShow 上报：3 次 show/hide 仅产生 2 条 lt=11（home 首次跳过）。
+    expect(ltPages).toHaveLength(2)
+    // A    onShow → url=A,    urlref=home, iey=0, ppiey=1（前页 home 是入口）
+    // home onShow → url=home, urlref=A,    iey=1, ppiey=0（前页 A 非入口）
+    expect(ltPages[0].url).toBe('pages/A/A')
+    expect(ltPages[0].urlref).toBe('pages/home/home')
+    expect(ltPages[0].iey).toBe(0)
+    expect(ltPages[0].ppiey).toBe(1)
+    expect(ltPages[1].url).toBe('pages/home/home')
+    expect(ltPages[1].urlref).toBe('pages/A/A')
+    expect(ltPages[1].iey).toBe(1)
+    expect(ltPages[1].ppiey).toBe(0)
   })
 
   /** S7 自定义事件 uni.report('foo', {x:1})：lt=21；e_n/e_v 正确；sid/seq 单调。 */
@@ -446,10 +454,14 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     await Promise.resolve()
 
     // 关键断言：失败时 batch 写入 retry 队列；queue 已被 flush 清空。
+    // 公有版默认开启 collector flush 切片（修复 image url too long 死循环），
+    // 100 条事件可能被切成多片（每片 ≤ BATCH_MAX_EVENTS=30 / BATCH_REQUESTS_MAX_BYTES=4KB），
+    // 因此 retry 队列长度 = 切片数（>=1），channel.send 调用次数也 = 切片数。
     expect(queueMod.size()).toBe(0)
-    expect(retryMod.size()).toBe(1)
+    const sliceCount = retryMod.size()
+    expect(sliceCount).toBeGreaterThanOrEqual(1)
     const failedSendCount = http.send.mock.calls.length
-    expect(failedSendCount).toBeGreaterThanOrEqual(1)
+    expect(failedSendCount).toBe(sliceCount)
 
     // 阶段 2：网络恢复，调 recoverRetry 重放
     http.failNext(0)
@@ -457,8 +469,8 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     await app.getCollector()!.recoverRetry()
     await Promise.resolve()
 
-    // 重放成功一次；retry 队列被 ack 清空
-    expect(http.send).toHaveBeenCalledTimes(1)
+    // 每片 send 一次；retry 队列被 ack 清空
+    expect(http.send).toHaveBeenCalledTimes(sliceCount)
     expect(retryMod.size()).toBe(0)
 
     // 服务端实际收到 100 条事件，无重复
@@ -476,8 +488,11 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     await drain(app)
     http.send.mockClear()
 
+    // home 首次 onShow 不发 lt=11；切到 about 时下一页 onShow 才上报。
     handlePageShow(app, { route: 'pages/home/home' })
     handlePageHide(app, { route: 'pages/home/home' })
+    handlePageShow(app, { route: 'pages/about/about' })
+    handlePageHide(app, { route: 'pages/about/about' })
     app.report('legacy_test', 'v')
     await drain(app)
 
@@ -492,10 +507,11 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     expect(ltPage).toBeDefined()
     expect(ltPage!.iey).toBeDefined()
 
-    // payload 元数据：usv 必须是公有版协议号（'3' 来自 STAT_VERSION_PUBLIC）
+    // payload 元数据：usv = uni-app 编译器版本（process.env.UNI_COMPILER_VERSION）；
+    // jest 默认环境下取不到 → 与 STAT_VERSION_PUBLIC 一样回退空串，二者同源即通过。
     const sent = dumpSent(http)
     expect(sent.length).toBeGreaterThan(0)
-    expect(sent[0].payload.usv).toBe('3')
+    expect(sent[0].payload.usv).toBe(process.env.UNI_COMPILER_VERSION || '')
   })
 
   /** S11 onAppHide：发 lt=3 + 强制 flush，确保后台前最后一次送出。 */

@@ -9,7 +9,8 @@
  *
  * 另外验证：
  *   - app_hide：写 markBackground、发 lt=3、强制 flush。
- *   - page_hide：发 lt=11，url/urlref/urlref_ts 字段正确。
+ *   - page_show：发 lt=11（与参数文档对齐：lt=11 对应 onShow），
+ *     url=新页 / urlref=上一页 / urlref_ts=上一页停留秒数；首次 onShow 不发。
  *   - onError：转给 StatApp.reportError，不抛错。
  */
 
@@ -110,6 +111,15 @@ describe('runtime/lifecycleHooks', () => {
     expect(session?.sct).toBe(1)
   })
 
+  test('T1.b cold_launch options.path 透传成 lt=1 的 url', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, { scene: 1001, path: 'pages/index/index' })
+    const launch = reportSpy.mock.calls
+      .map((c) => c[0] as ReportInput)
+      .find((i) => i.lt === '1')!
+    expect(launch.url).toBe('pages/index/index')
+  })
+
   test('T2 app_show 后台超时 → cst=2，仅发 lt=1', () => {
     const { app, reportSpy } = installAppWithSpyReporter()
     handleLaunch(app, {})
@@ -160,43 +170,53 @@ describe('runtime/lifecycleHooks', () => {
     expect(http.send).toHaveBeenCalled()
   })
 
-  test('page_hide：发 lt=11，url/urlref/urlref_ts 字段正确', () => {
+  test('page_show：lt=11 由下一页 onShow 触发，url ≠ urlref', () => {
     const { app, reportSpy } = installAppWithSpyReporter()
     handleLaunch(app, {})
+    // 首次 onShow：无上一页，不发 lt=11；只登记 lastRoute。
     handlePageShow(app, { route: 'pages/A' })
+    expect(getReportedLts(reportSpy).filter((l) => l === '11')).toEqual([])
+    handlePageHide(app, { route: 'pages/A' })
     reportSpy.mockClear()
 
-    handlePageHide(app, { route: 'pages/A' })
-    const calls = reportSpy.mock.calls
+    // 进入下一页 B → 发 lt=11，url=B, urlref=A。
+    handlePageShow(app, { route: 'pages/B' })
+    const calls = reportSpy.mock.calls.filter(
+      (c) => (c[0] as ReportInput).lt === '11'
+    )
     expect(calls).toHaveLength(1)
     const input = calls[0][0] as ReportInput
-    expect(input.lt).toBe('11')
+    expect(input.url).toBe('pages/B')
+    expect(input.urlref).toBe('pages/A')
+    expect(input.urlref).not.toBe(input.url)
     expect(input.urlref_ts).toBeGreaterThanOrEqual(0)
   })
 
-  test('page_hide：iey/ppiey 解耦（修复 #PPIEY）', () => {
+  test('page_show：iey/ppiey 解耦（修复 #PPIEY）', () => {
     const { app, reportSpy } = installAppWithSpyReporter()
     handleLaunch(app, {})
 
-    handlePageShow(app, { route: 'pages/home' }) // 入口页
+    handlePageShow(app, { route: 'pages/home' }) // 入口页（首次，无 lt=11）
     handlePageHide(app, { route: 'pages/home' })
-    handlePageShow(app, { route: 'pages/A' })
+    handlePageShow(app, { route: 'pages/A' }) // 发 lt=11(url=A, urlref=home)
     handlePageHide(app, { route: 'pages/A' })
-    handlePageShow(app, { route: 'pages/home' })
+    handlePageShow(app, { route: 'pages/home' }) // 发 lt=11(url=home, urlref=A)
     handlePageHide(app, { route: 'pages/home' })
 
     const ltPages = reportSpy.mock.calls
       .map((c) => c[0] as ReportInput)
       .filter((i) => i.lt === '11')
-    expect(ltPages).toHaveLength(3)
-    // iey: home=true, A=false, home=true
-    // ppiey: 0(首次无前页), 1(前页是 home/入口), 0(前页是 A/非入口)
-    expect(ltPages[0].iey).toBe(true)
-    expect(ltPages[0].ppiey).toBe(false)
-    expect(ltPages[1].iey).toBe(false)
-    expect(ltPages[1].ppiey).toBe(true)
-    expect(ltPages[2].iey).toBe(true)
-    expect(ltPages[2].ppiey).toBe(false)
+    expect(ltPages).toHaveLength(2)
+    // 第 1 条：A 非入口 (iey=false)，前页 home 是入口 (ppiey=true)
+    expect(ltPages[0].url).toBe('pages/A')
+    expect(ltPages[0].urlref).toBe('pages/home')
+    expect(ltPages[0].iey).toBe(false)
+    expect(ltPages[0].ppiey).toBe(true)
+    // 第 2 条：home 是入口 (iey=true)，前页 A 非入口 (ppiey=false)
+    expect(ltPages[1].url).toBe('pages/home')
+    expect(ltPages[1].urlref).toBe('pages/A')
+    expect(ltPages[1].iey).toBe(true)
+    expect(ltPages[1].ppiey).toBe(false)
   })
 
   test('app_hide：iey/ppiey 取自最近一次 prev 状态（修复 #PPIEY）', () => {

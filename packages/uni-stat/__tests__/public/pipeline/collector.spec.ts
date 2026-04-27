@@ -1,7 +1,12 @@
 import { createCollector } from '../../../src/public/pipeline/collector'
 
+import {
+  type Channel,
+  PermanentChannelError,
+  type ReportPayload,
+} from '../../../src/public/pipeline/types'
+
 import type { CollectorDeps } from '../../../src/public/pipeline/collector'
-import type { Channel, ReportPayload } from '../../../src/public/pipeline/types'
 import type { Bucket } from '../../../src/public/pipeline/queue'
 import type { StatData } from '../../../src/public/domain/statData'
 import type { SessionSnapshot } from '../../../src/public/domain/session/machine'
@@ -178,7 +183,7 @@ describe('pipeline/collector', () => {
       expect(deps.serializer.handleData).not.toHaveBeenCalled()
     })
 
-    test('成功 → channel.send 被调，commitVisitOnAck 被调', async () => {
+    test('成功 → channel.send 被调一次（小批量未触发切片），commitVisitOnAck 被调', async () => {
       const deps = makeDeps()
       deps.queue.shouldFlush.mockReturnValue(true)
       const bucket: Bucket = { '1': [{ lt: '1' } as StatData] }
@@ -186,11 +191,12 @@ describe('pipeline/collector', () => {
       const channel = deps.selectChannel()!
       const c = createCollector(deps)
       await c.flush(true)
-      expect(deps.serializer.handleData).toHaveBeenCalledWith(bucket)
       expect(channel.send as jest.Mock).toHaveBeenCalledTimes(1)
       const sent = (channel.send as jest.Mock).mock.calls[0][0] as ReportPayload
       expect(sent.usv).toBe('3')
       expect(sent._id).toBe('p-fixed')
+      // requests 现在由 collector 直接通过 handleDataChunked 计算（lt=1 落第一片）
+      expect(JSON.parse(sent.requests)).toEqual([{ lt: '1' }])
       expect(deps.visit.commitVisitOnAck).toHaveBeenCalledWith(1700000000)
       expect(deps.retry.persist).not.toHaveBeenCalled()
     })
@@ -206,7 +212,7 @@ describe('pipeline/collector', () => {
       expect(deps.queue.rollback).toHaveBeenCalledWith(bucket)
     })
 
-    test('send 失败 → retry.persist + visit.rollbackPendingVisit', async () => {
+    test('send 失败（非永久错）→ retry.persist + visit.rollbackPendingVisit', async () => {
       const failing: Channel = {
         name: '2.0',
         available: () => true,
@@ -222,6 +228,79 @@ describe('pipeline/collector', () => {
       expect(deps.retry.persist).toHaveBeenCalledTimes(1)
       expect(deps.visit.rollbackPendingVisit).toHaveBeenCalledTimes(1)
       expect(deps.visit.commitVisitOnAck).not.toHaveBeenCalled()
+    })
+
+    test('send 永久错 → 不 persist，且不 commit visit（修复 image url too long 死循环）', async () => {
+      const failing: Channel = {
+        name: 'image',
+        available: () => true,
+        send: jest.fn(() =>
+          Promise.reject(
+            new PermanentChannelError('image url too long: 81718 > 6144')
+          )
+        ),
+      }
+      const deps = makeDeps({
+        selectChannel: jest.fn(() => failing) as MockedDeps['selectChannel'],
+      })
+      deps.queue.shouldFlush.mockReturnValue(true)
+      deps.queue.flush.mockReturnValue({ '1': [{ lt: '1' } as StatData] })
+      const c = createCollector(deps)
+      await c.flush(true)
+      expect(deps.retry.persist).not.toHaveBeenCalled()
+      expect(deps.visit.commitVisitOnAck).not.toHaveBeenCalled()
+      expect(deps.visit.rollbackPendingVisit).toHaveBeenCalledTimes(1)
+    })
+
+    test('多事件 → 触发切片，channel.send 被多次调用', async () => {
+      const deps = makeDeps()
+      deps.queue.shouldFlush.mockReturnValue(true)
+      // 50 条事件 + maxEvents=10 → 至少切 5 片
+      const arr: StatData[] = []
+      for (let i = 0; i < 50; i++)
+        arr.push({ lt: '21', a: 'x' + i } as StatData)
+      deps.queue.flush.mockReturnValue({ '21': arr })
+      deps.batchLimits = { maxEvents: 10, maxBytes: 1024 * 1024 }
+      const channel = deps.selectChannel()!
+      const c = createCollector(deps)
+      await c.flush(true)
+      expect(channel.send as jest.Mock).toHaveBeenCalledTimes(5)
+      // 全部成功才 commit
+      expect(deps.visit.commitVisitOnAck).toHaveBeenCalledTimes(1)
+    })
+
+    test('切片场景：某片永久错 → 该片丢弃不 persist，其他片照发；任一失败不 commit visit', async () => {
+      // 第 2 片返回 permanent，其他成功
+      let call = 0
+      const failing: Channel = {
+        name: 'image',
+        available: () => true,
+        send: jest.fn(() => {
+          call++
+          if (call === 2)
+            return Promise.reject(
+              new PermanentChannelError('image url too long')
+            )
+          return Promise.resolve()
+        }),
+      }
+      const deps = makeDeps({
+        selectChannel: jest.fn(() => failing) as MockedDeps['selectChannel'],
+      })
+      deps.queue.shouldFlush.mockReturnValue(true)
+      const arr: StatData[] = []
+      for (let i = 0; i < 20; i++) arr.push({ lt: '21', a: i } as StatData)
+      deps.queue.flush.mockReturnValue({ '21': arr })
+      deps.batchLimits = { maxEvents: 5, maxBytes: 1024 * 1024 }
+      const c = createCollector(deps)
+      await c.flush(true)
+      // 永久错那一片：不 persist
+      expect(deps.retry.persist).not.toHaveBeenCalled()
+      // 任一片失败：不 commit
+      expect(deps.visit.commitVisitOnAck).not.toHaveBeenCalled()
+      expect(deps.visit.rollbackPendingVisit).toHaveBeenCalledTimes(1)
+      // 4 片都被尝试发送
+      expect((failing.send as jest.Mock).mock.calls.length).toBe(4)
     })
 
     test('force=true 即使 shouldFlush=false 仍 flush', async () => {
@@ -255,7 +334,7 @@ describe('pipeline/collector', () => {
       expect(deps.retry.ack).toHaveBeenCalledWith('b')
     })
 
-    test('部分失败 → 失败项 markAttempt，成功项 ack', async () => {
+    test('部分失败（非永久错）→ 失败项 markAttempt，成功项 ack', async () => {
       const items: ReportPayload[] = [
         { usv: '3', t: 1, requests: '[]', _id: 'a' },
         { usv: '3', t: 2, requests: '[]', _id: 'b' },
@@ -276,6 +355,29 @@ describe('pipeline/collector', () => {
       expect(deps.retry.ack).toHaveBeenCalledWith('a')
       expect(deps.retry.ack).not.toHaveBeenCalledWith('b')
       expect(deps.retry.markAttempt).toHaveBeenCalledWith('b')
+    })
+
+    test('永久错 → ack 死信，不 markAttempt（修复 retry 死循环）', async () => {
+      const items: ReportPayload[] = [
+        { usv: '3', t: 1, requests: '[]', _id: 'dead' },
+      ]
+      const channel: Channel = {
+        name: 'image',
+        available: () => true,
+        send: jest.fn(() =>
+          Promise.reject(
+            new PermanentChannelError('image url too long: 81718 > 6144')
+          )
+        ),
+      }
+      const deps = makeDeps({
+        selectChannel: jest.fn(() => channel) as MockedDeps['selectChannel'],
+      })
+      deps.retry.loadAll.mockReturnValue(items)
+      const c = createCollector(deps)
+      await c.recoverRetry()
+      expect(deps.retry.ack).toHaveBeenCalledWith('dead')
+      expect(deps.retry.markAttempt).not.toHaveBeenCalled()
     })
 
     test('channel 不可用 → 不动队列', async () => {
