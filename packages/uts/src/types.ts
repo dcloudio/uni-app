@@ -124,6 +124,7 @@ export type UTSOutputOptions = {
 export interface UTSOptions {
   mode?: string
   hbxVersion: string
+  vapor?: boolean
   input: UTSInputOptions
   output: UTSOutputOptions
 }
