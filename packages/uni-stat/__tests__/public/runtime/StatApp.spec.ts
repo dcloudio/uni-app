@@ -14,18 +14,18 @@ import {
   StatApp,
   __resetStatApp,
   getStatApp,
-} from '../../../public/runtime/StatApp'
+} from '../../../src/public/runtime/StatApp'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
-import * as queueMod from '../../../public/pipeline/queue'
-import * as retryMod from '../../../public/pipeline/retry'
-import * as sessionMod from '../../../public/domain/session/machine'
-import * as visitMod from '../../../public/domain/visit/firstVisit'
-import { __resetTitle, getCurrentTitle } from '../../../public/domain/title'
-import { __resetCache as resetDevice } from '../../../public/adapter/device'
-import { __resetCache as resetPackage } from '../../../public/adapter/package'
-import { __resetCache as resetSystem } from '../../../public/adapter/system'
+import * as queueMod from '../../../src/public/pipeline/queue'
+import * as retryMod from '../../../src/public/pipeline/retry'
+import * as sessionMod from '../../../src/public/domain/session/machine'
+import * as visitMod from '../../../src/public/domain/visit/firstVisit'
+import { __resetTitle, getCurrentTitle } from '../../../src/public/domain/title'
+import { __resetCache as resetDevice } from '../../../src/public/adapter/device'
+import { __resetCache as resetPackage } from '../../../src/public/adapter/package'
+import { __resetCache as resetSystem } from '../../../src/public/adapter/system'
 
-import type { Channel, ReportPayload } from '../../../public/pipeline/types'
+import type { Channel, ReportPayload } from '../../../src/public/pipeline/types'
 
 interface FakeChannel extends Channel {
   send: jest.Mock<Promise<void>, [ReportPayload]>
@@ -91,7 +91,7 @@ describe('runtime/StatApp', () => {
     expect(app.getCollector()).toBe(collector1)
   })
 
-  test('install 默认值合并：未传 reportIntervalSec 走 config 默认', () => {
+  test('install 默认值合并：未传 reportIntervalSec 走 config 默认（默认通道 image）', () => {
     const app = getStatApp()
     app.install(
       {},
@@ -101,7 +101,7 @@ describe('runtime/StatApp', () => {
     expect(cfg?.reportIntervalSec).toBeGreaterThan(0)
     expect(cfg?.backgroundTimeoutSec).toBe(300)
     expect(cfg?.pageInactiveTimeoutSec).toBe(1800)
-    expect(cfg?.version).toBe('2')
+    expect(cfg?.version).toBe('image')
   })
 
   test('overrides.skipMigration=true → 不调 migrateLegacyData', () => {

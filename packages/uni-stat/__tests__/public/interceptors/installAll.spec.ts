@@ -1,9 +1,9 @@
-import { __resetTitle, getCurrentTitle } from '../../../public/domain/title'
-import { interceptor } from '../../../public/infra/interceptor'
-import { installAllInterceptors } from '../../../public/interceptors'
+import { __resetTitle, getCurrentTitle } from '../../../src/public/domain/title'
+import { interceptor } from '../../../src/public/infra/interceptor'
+import { installAllInterceptors } from '../../../src/public/interceptors'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
-import type { InterceptorReporter } from '../../../public/interceptors/types'
+import type { InterceptorReporter } from '../../../src/public/interceptors/types'
 
 interface AllUniMock {
   addInterceptor: jest.Mock

@@ -1,8 +1,8 @@
-import { interceptor } from '../../../public/infra/interceptor'
-import { registerShareInterceptor } from '../../../public/interceptors/share'
+import { interceptor } from '../../../src/public/infra/interceptor'
+import { registerShareInterceptor } from '../../../src/public/interceptors/share'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
-import type { InterceptorReporter } from '../../../public/interceptors/types'
+import type { InterceptorReporter } from '../../../src/public/interceptors/types'
 
 interface ShareUniMock {
   addInterceptor: jest.Mock

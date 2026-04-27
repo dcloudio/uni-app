@@ -3,7 +3,7 @@ import {
   onAppHide,
   onAppLaunch,
   onAppShow,
-} from '../../../public/adapter/lifecycle'
+} from '../../../src/public/adapter/lifecycle'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
 describe('adapter/lifecycle', () => {

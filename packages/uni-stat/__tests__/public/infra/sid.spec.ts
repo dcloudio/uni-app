@@ -1,4 +1,4 @@
-import { genSid } from '../../../public/infra/sid'
+import { genSid } from '../../../src/public/infra/sid'
 
 describe('infra/sid.genSid', () => {
   test('有 uuid：形如 ${uuid}-${ts36}-${4}', () => {

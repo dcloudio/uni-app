@@ -23,21 +23,21 @@ import {
   handleLaunch,
   handlePageHide,
   handlePageShow,
-} from '../../../public/runtime/lifecycleHooks'
-import { __resetStatApp, getStatApp } from '../../../public/runtime/StatApp'
+} from '../../../src/public/runtime/lifecycleHooks'
+import { __resetStatApp, getStatApp } from '../../../src/public/runtime/StatApp'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
-import * as queueMod from '../../../public/pipeline/queue'
-import * as retryMod from '../../../public/pipeline/retry'
-import * as sessionMod from '../../../public/domain/session/machine'
-import * as visitMod from '../../../public/domain/visit/firstVisit'
-import { __resetState as resetEntry } from '../../../public/domain/entry/entryPage'
-import { __resetTitle } from '../../../public/domain/title'
-import { __resetCache as resetDevice } from '../../../public/adapter/device'
-import { __resetCache as resetPackage } from '../../../public/adapter/package'
-import { __resetCache as resetSystem } from '../../../public/adapter/system'
+import * as queueMod from '../../../src/public/pipeline/queue'
+import * as retryMod from '../../../src/public/pipeline/retry'
+import * as sessionMod from '../../../src/public/domain/session/machine'
+import * as visitMod from '../../../src/public/domain/visit/firstVisit'
+import { __resetState as resetEntry } from '../../../src/public/domain/entry/entryPage'
+import { __resetTitle } from '../../../src/public/domain/title'
+import { __resetCache as resetDevice } from '../../../src/public/adapter/device'
+import { __resetCache as resetPackage } from '../../../src/public/adapter/package'
+import { __resetCache as resetSystem } from '../../../src/public/adapter/system'
 
-import type { Channel, ReportPayload } from '../../../public/pipeline/types'
-import type { ReportInput } from '../../../public/pipeline/collector'
+import type { Channel, ReportPayload } from '../../../src/public/pipeline/types'
+import type { ReportInput } from '../../../src/public/pipeline/collector'
 
 interface FakeChannel extends Channel {
   send: jest.Mock<Promise<void>, [ReportPayload]>
@@ -174,6 +174,47 @@ describe('runtime/lifecycleHooks', () => {
     const input = calls[0][0] as ReportInput
     expect(input.lt).toBe('11')
     expect(input.urlref_ts).toBeGreaterThanOrEqual(0)
+  })
+
+  test('page_hide：iey/ppiey 解耦（修复 #PPIEY）', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+
+    handlePageShow(app, { route: 'pages/home' }) // 入口页
+    handlePageHide(app, { route: 'pages/home' })
+    handlePageShow(app, { route: 'pages/A' })
+    handlePageHide(app, { route: 'pages/A' })
+    handlePageShow(app, { route: 'pages/home' })
+    handlePageHide(app, { route: 'pages/home' })
+
+    const ltPages = reportSpy.mock.calls
+      .map((c) => c[0] as ReportInput)
+      .filter((i) => i.lt === '11')
+    expect(ltPages).toHaveLength(3)
+    // iey: home=true, A=false, home=true
+    // ppiey: 0(首次无前页), 1(前页是 home/入口), 0(前页是 A/非入口)
+    expect(ltPages[0].iey).toBe(true)
+    expect(ltPages[0].ppiey).toBe(false)
+    expect(ltPages[1].iey).toBe(false)
+    expect(ltPages[1].ppiey).toBe(true)
+    expect(ltPages[2].iey).toBe(true)
+    expect(ltPages[2].ppiey).toBe(false)
+  })
+
+  test('app_hide：iey/ppiey 取自最近一次 prev 状态（修复 #PPIEY）', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+    handlePageShow(app, { route: 'pages/home' }) // home 标为入口
+    handlePageHide(app, { route: 'pages/home' })
+    handlePageShow(app, { route: 'pages/A' }) // A 非入口；prevIey=true
+    reportSpy.mockClear()
+
+    handleAppHide(app)
+    const hideEvent = reportSpy.mock.calls
+      .map((c) => c[0] as ReportInput)
+      .find((i) => i.lt === '3')!
+    expect(hideEvent.iey).toBe(false) // 当前页 A 非入口
+    expect(hideEvent.ppiey).toBe(true) // 上一页 home 是入口
   })
 
   test('onError：转给 StatApp.reportError，不抛错', () => {

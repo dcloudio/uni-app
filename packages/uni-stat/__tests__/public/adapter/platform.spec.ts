@@ -6,7 +6,7 @@ import {
   isH5,
   isMp,
   isNvue,
-} from '../../../public/adapter/platform'
+} from '../../../src/public/adapter/platform'
 
 type EnvBag = Record<string, string | undefined>
 const env = process.env as EnvBag

@@ -5,7 +5,7 @@ import {
   setConfigTitle,
   setPageTitle,
   setReportTitle,
-} from '../../../public/domain/title'
+} from '../../../src/public/domain/title'
 
 describe('domain/title', () => {
   beforeEach(() => {

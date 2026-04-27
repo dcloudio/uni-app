@@ -1,4 +1,4 @@
-import { storage } from '../../../public/infra/storage'
+import { storage } from '../../../src/public/infra/storage'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 import type { MockStorageController } from '../helpers/mockStorage'
 

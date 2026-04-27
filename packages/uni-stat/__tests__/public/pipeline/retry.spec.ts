@@ -1,4 +1,4 @@
-import { storage } from '../../../public/infra/storage'
+import { storage } from '../../../src/public/infra/storage'
 import {
   __reset,
   ack,
@@ -7,14 +7,14 @@ import {
   markAttempt,
   persist,
   size,
-} from '../../../public/pipeline/retry'
+} from '../../../src/public/pipeline/retry'
 import {
   type MockUniHandle,
   installMockUni,
   restoreMockUni,
 } from '../helpers/mockUni'
 
-import type { ReportPayload } from '../../../public/pipeline/types'
+import type { ReportPayload } from '../../../src/public/pipeline/types'
 
 function makePayload(id: string, t = 1700000000): ReportPayload {
   return {

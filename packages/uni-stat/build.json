@@ -25,7 +25,7 @@
 	},
 	{
 		"input": {
-			"public/index.ts": ["dist/uni-stat-public.es.js", "dist/uni-stat-public.cjs.js"]
+			"src/public/index.ts": ["dist/uni-stat-public.es.js", "dist/uni-stat-public.cjs.js"]
 		},
 		"replacements": {
 			"__STAT_VERSION__": "'3'"

@@ -1,6 +1,6 @@
-import { __resetTitle, getCurrentTitle } from '../../../public/domain/title'
-import { interceptor } from '../../../public/infra/interceptor'
-import { registerNavigationBarInterceptor } from '../../../public/interceptors/navigationBar'
+import { __resetTitle, getCurrentTitle } from '../../../src/public/domain/title'
+import { interceptor } from '../../../src/public/infra/interceptor'
+import { registerNavigationBarInterceptor } from '../../../src/public/interceptors/navigationBar'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
 interface NavUniMock {

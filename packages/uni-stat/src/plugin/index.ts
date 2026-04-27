@@ -133,7 +133,12 @@ export default () => [
           define: {
             'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
             'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD,
-            'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG,
+            // 注意：define 的 value 是「替换后的源码字面量」，必须 JSON.stringify 一次，
+            // 否则 'true' / 'false' 字符串会被当成布尔字面量替换进源码，导致
+            // dist 中 `process.env.UNI_STAT_DEBUG === 'true'` 永远等于 false（公有版调试日志失效根因）。
+            'process.env.UNI_STAT_DEBUG': JSON.stringify(
+              process.env.UNI_STAT_DEBUG ?? 'false'
+            ),
             'process.env.UNI_STATISTICS_CONFIG':
               process.env.UNI_STATISTICS_CONFIG,
             'process.env.UNI_APP_NAME': JSON.stringify(

@@ -1,4 +1,4 @@
-import { CST, IEY, LT, toIey } from '../../../public/domain/eventTypes'
+import { CST, IEY, LT, toIey } from '../../../src/public/domain/eventTypes'
 
 describe('domain/eventTypes', () => {
   test('LT 与私有版字符串保持一致', () => {

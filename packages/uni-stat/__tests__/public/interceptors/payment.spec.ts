@@ -1,8 +1,8 @@
-import { interceptor } from '../../../public/infra/interceptor'
-import { registerPaymentInterceptor } from '../../../public/interceptors/payment'
+import { interceptor } from '../../../src/public/infra/interceptor'
+import { registerPaymentInterceptor } from '../../../src/public/interceptors/payment'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
-import type { InterceptorReporter } from '../../../public/interceptors/types'
+import type { InterceptorReporter } from '../../../src/public/interceptors/types'
 
 interface PayUniMock {
   addInterceptor: jest.Mock

@@ -2,8 +2,8 @@ import {
   getOdid,
   getUuid,
   __resetCache as resetDeviceCache,
-} from '../../../public/adapter/device'
-import { storage } from '../../../public/infra/storage'
+} from '../../../src/public/adapter/device'
+import { storage } from '../../../src/public/infra/storage'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
 function setPlus(plus: unknown): void {

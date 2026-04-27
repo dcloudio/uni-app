@@ -1,4 +1,4 @@
-import { logger } from '../../../public/infra/logger'
+import { logger } from '../../../src/public/infra/logger'
 
 describe('infra/logger', () => {
   let logSpy: jest.SpyInstance
@@ -51,6 +51,20 @@ describe('infra/logger', () => {
 
   test('UNI_STAT_DEBUG === "1" 等其他值不开启', () => {
     ;(process.env as Record<string, string | undefined>).UNI_STAT_DEBUG = '1'
+    logger.debug('hidden')
+    expect(logSpy).not.toHaveBeenCalled()
+  })
+
+  test('UNI_STAT_DEBUG 为布尔 true 时也开启（兼容历史插件 define 误替换）', () => {
+    // 模拟历史插件 define 把 process.env.UNI_STAT_DEBUG 替换成布尔字面量 true 的情况：
+    // 此时运行时拿到的不是字符串 "true" 而是布尔 true，logger 必须兼容才能让 debug 生效。
+    ;(process.env as unknown as Record<string, unknown>).UNI_STAT_DEBUG = true
+    logger.debug('visible')
+    expect(logSpy).toHaveBeenCalledWith('[uni-stat/public]', 'visible')
+  })
+
+  test('UNI_STAT_DEBUG 为布尔 false 时不开启', () => {
+    ;(process.env as unknown as Record<string, unknown>).UNI_STAT_DEBUG = false
     logger.debug('hidden')
     expect(logSpy).not.toHaveBeenCalled()
   })

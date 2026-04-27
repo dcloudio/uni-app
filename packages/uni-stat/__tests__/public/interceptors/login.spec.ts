@@ -1,8 +1,8 @@
-import { interceptor } from '../../../public/infra/interceptor'
-import { registerLoginInterceptor } from '../../../public/interceptors/login'
+import { interceptor } from '../../../src/public/infra/interceptor'
+import { registerLoginInterceptor } from '../../../src/public/interceptors/login'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
-import type { InterceptorReporter } from '../../../public/interceptors/types'
+import type { InterceptorReporter } from '../../../src/public/interceptors/types'
 
 interface UniWithInterceptor {
   addInterceptor: jest.Mock

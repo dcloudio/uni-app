@@ -1,7 +1,7 @@
 import {
   type InterceptorHandlers,
   interceptor,
-} from '../../../public/infra/interceptor'
+} from '../../../src/public/infra/interceptor'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
 interface RecordedAdd {

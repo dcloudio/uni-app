@@ -1,11 +1,11 @@
-import { createCloudChannel } from '../../../../public/pipeline/channel/cloud'
+import { createCloudChannel } from '../../../../src/public/pipeline/channel/cloud'
 import {
   type MockUniHandle,
   installMockUni,
   restoreMockUni,
 } from '../../helpers/mockUni'
 
-import type { ReportPayload } from '../../../../public/pipeline/types'
+import type { ReportPayload } from '../../../../src/public/pipeline/types'
 
 const PAYLOAD: ReportPayload = {
   usv: '3',

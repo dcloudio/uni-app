@@ -1,4 +1,4 @@
-import { getPushClientId } from '../../../public/adapter/push'
+import { getPushClientId } from '../../../src/public/adapter/push'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
 describe('adapter/push', () => {

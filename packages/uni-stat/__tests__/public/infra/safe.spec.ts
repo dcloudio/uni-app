@@ -1,4 +1,8 @@
-import { safeStringify, tryRun, withRetry } from '../../../public/infra/safe'
+import {
+  safeStringify,
+  tryRun,
+  withRetry,
+} from '../../../src/public/infra/safe'
 
 describe('infra/safe.safeStringify', () => {
   test('undefined → 空字符串', () => {

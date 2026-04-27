@@ -1,10 +1,10 @@
-import { createCollector } from '../../../public/pipeline/collector'
+import { createCollector } from '../../../src/public/pipeline/collector'
 
-import type { CollectorDeps } from '../../../public/pipeline/collector'
-import type { Channel, ReportPayload } from '../../../public/pipeline/types'
-import type { Bucket } from '../../../public/pipeline/queue'
-import type { StatData } from '../../../public/domain/statData'
-import type { SessionSnapshot } from '../../../public/domain/session/machine'
+import type { CollectorDeps } from '../../../src/public/pipeline/collector'
+import type { Channel, ReportPayload } from '../../../src/public/pipeline/types'
+import type { Bucket } from '../../../src/public/pipeline/queue'
+import type { StatData } from '../../../src/public/domain/statData'
+import type { SessionSnapshot } from '../../../src/public/domain/session/machine'
 
 interface MockedDeps extends CollectorDeps {
   builder: { build: jest.Mock }

@@ -21,10 +21,10 @@
  * 用以模拟"成功 / 失败 / 失败后切换"等行为，验证 collector 的 ack / rollback / persist 链路。
  */
 
-import * as queueMod from '../../../public/pipeline/queue'
-import * as retryMod from '../../../public/pipeline/retry'
-import * as sessionMod from '../../../public/domain/session/machine'
-import * as visitMod from '../../../public/domain/visit/firstVisit'
+import * as queueMod from '../../../src/public/pipeline/queue'
+import * as retryMod from '../../../src/public/pipeline/retry'
+import * as sessionMod from '../../../src/public/domain/session/machine'
+import * as visitMod from '../../../src/public/domain/visit/firstVisit'
 import {
   __resetLifecycleState,
   handleAppHide,
@@ -33,17 +33,17 @@ import {
   handleLaunch,
   handlePageHide,
   handlePageShow,
-} from '../../../public/runtime/lifecycleHooks'
-import { __resetCache as resetDevice } from '../../../public/adapter/device'
-import { __resetCache as resetPackage } from '../../../public/adapter/package'
-import { __resetState as resetEntry } from '../../../public/domain/entry/entryPage'
-import { __resetCache as resetSystem } from '../../../public/adapter/system'
-import { __resetTitle } from '../../../public/domain/title'
-import { __resetStatApp, getStatApp } from '../../../public/runtime/StatApp'
+} from '../../../src/public/runtime/lifecycleHooks'
+import { __resetCache as resetDevice } from '../../../src/public/adapter/device'
+import { __resetCache as resetPackage } from '../../../src/public/adapter/package'
+import { __resetState as resetEntry } from '../../../src/public/domain/entry/entryPage'
+import { __resetCache as resetSystem } from '../../../src/public/adapter/system'
+import { __resetTitle } from '../../../src/public/domain/title'
+import { __resetStatApp, getStatApp } from '../../../src/public/runtime/StatApp'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
-import { storage } from '../../../public/infra/storage'
+import { storage } from '../../../src/public/infra/storage'
 
-import type { Channel, ReportPayload } from '../../../public/pipeline/types'
+import type { Channel, ReportPayload } from '../../../src/public/pipeline/types'
 
 // ---------- 工具：可控 fakeChannel ----------
 
@@ -331,18 +331,46 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
 
     const ltPages = flatEvents(dumpSent(http)).filter((e) => e.lt === '11')
     expect(ltPages).toHaveLength(4)
-    // statData/entryFields 把 iey/ppiey 转成数字 0/1。
-    // iey 语义清晰：当前页是否为入口；ppiey 当前实现取 state.lastIey，会在 handlePageShow
-    // 中被覆写为当前页 iey，导致 ppiey 实际等价于 iey。该语义偏差记入 Phase 13 缺陷跟踪
-    // （`docs/02-代码缺陷清单.md` 待补充 #PPIEY），本用例仅做结构与 iey 主语义校验。
-    expect(ltPages[0].iey).toBe(1) // home onHide：当前页是入口
-    expect(ltPages[1].iey).toBe(0) // A onHide：A 非入口
-    expect(ltPages[2].iey).toBe(0) // B 非入口
-    expect(ltPages[3].iey).toBe(1) // 回 home：首页仍是入口
-    // ppiey 字段必须存在且为 0/1（结构稳定）；具体值因实现耦合不做强约束。
-    for (const p of ltPages) {
-      expect([0, 1]).toContain(p.ppiey)
-    }
+    // 修复 #PPIEY 后，ppiey 由独立 prevIey 维护，与 iey 解耦。
+    // 序列断言（`docs/04-字段字典与平台获取矩阵.md` §4.2 标准实现）：
+    //   home onHide → iey=1, ppiey=0（首次进入，无前页）
+    //   A    onHide → iey=0, ppiey=1（前一页 home 是入口）
+    //   B    onHide → iey=0, ppiey=0（前一页 A 不是入口）
+    //   home onHide → iey=1, ppiey=0（前一页 B 不是入口）
+    expect(ltPages[0].iey).toBe(1)
+    expect(ltPages[0].ppiey).toBe(0)
+    expect(ltPages[1].iey).toBe(0)
+    expect(ltPages[1].ppiey).toBe(1)
+    expect(ltPages[2].iey).toBe(0)
+    expect(ltPages[2].ppiey).toBe(0)
+    expect(ltPages[3].iey).toBe(1)
+    expect(ltPages[3].ppiey).toBe(0)
+  })
+
+  /** S6.b 入口页：home → A → home（来回切）。验证 ppiey 不会随 iey 漂移。 */
+  test('S6.b 入口页 ppiey 独立性：home → A → home，ppiey 不与 iey 同步', async () => {
+    const { app, http } = installApp()
+    handleLaunch(app, {})
+    await drain(app)
+    http.send.mockClear()
+
+    handlePageShow(app, { route: 'pages/home/home' })
+    handlePageHide(app, { route: 'pages/home/home' })
+    handlePageShow(app, { route: 'pages/A/A' })
+    handlePageHide(app, { route: 'pages/A/A' })
+    handlePageShow(app, { route: 'pages/home/home' })
+    handlePageHide(app, { route: 'pages/home/home' })
+    await drain(app)
+
+    const ltPages = flatEvents(dumpSent(http)).filter((e) => e.lt === '11')
+    expect(ltPages).toHaveLength(3)
+    // home → ppiey=0；A → ppiey=1（前页 home 是入口）；home → ppiey=0（前页 A 非入口）
+    expect(ltPages[0].iey).toBe(1)
+    expect(ltPages[0].ppiey).toBe(0)
+    expect(ltPages[1].iey).toBe(0)
+    expect(ltPages[1].ppiey).toBe(1)
+    expect(ltPages[2].iey).toBe(1)
+    expect(ltPages[2].ppiey).toBe(0)
   })
 
   /** S7 自定义事件 uni.report('foo', {x:1})：lt=21；e_n/e_v 正确；sid/seq 单调。 */

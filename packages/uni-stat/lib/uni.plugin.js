@@ -37,7 +37,7 @@ var index = () => [
             name: 'uni:stat',
             enforce: 'pre',
             config(config, env) {
-                var _a, _b;
+                var _a, _b, _c;
                 if (!uniCliShared.isNormalCompileTarget()) {
                     // 不需要统计
                     return;
@@ -80,8 +80,7 @@ var index = () => [
                         process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig);
                         // version=3 走公有版；2 走 uniCloud 私有版；其它统一回退到 1.0。
                         const versionNum = Number(statConfig.version);
-                        statVersion =
-                            versionNum === 3 ? '3' : versionNum === 2 ? '2' : '1';
+                        statVersion = versionNum === 3 ? '3' : versionNum === 2 ? '2' : '1';
                         process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig);
                         process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
                         // 公有版字段 `an` 兜底：注入 manifest.json#name 到 process.env.UNI_APP_NAME，
@@ -127,9 +126,12 @@ var index = () => [
                     define: {
                         'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
                         'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD,
-                        'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG,
+                        // 注意：define 的 value 是「替换后的源码字面量」，必须 JSON.stringify 一次，
+                        // 否则 'true' / 'false' 字符串会被当成布尔字面量替换进源码，导致
+                        // dist 中 `process.env.UNI_STAT_DEBUG === 'true'` 永远等于 false（公有版调试日志失效根因）。
+                        'process.env.UNI_STAT_DEBUG': JSON.stringify((_b = process.env.UNI_STAT_DEBUG) !== null && _b !== void 0 ? _b : 'false'),
                         'process.env.UNI_STATISTICS_CONFIG': process.env.UNI_STATISTICS_CONFIG,
-                        'process.env.UNI_APP_NAME': JSON.stringify((_b = process.env.UNI_APP_NAME) !== null && _b !== void 0 ? _b : ''),
+                        'process.env.UNI_APP_NAME': JSON.stringify((_c = process.env.UNI_APP_NAME) !== null && _c !== void 0 ? _c : ''),
                     },
                 };
             },

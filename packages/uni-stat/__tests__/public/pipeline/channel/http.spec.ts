@@ -1,11 +1,11 @@
-import { createHttpChannel } from '../../../../public/pipeline/channel/http'
+import { createHttpChannel } from '../../../../src/public/pipeline/channel/http'
 import {
   type MockUniHandle,
   installMockUni,
   restoreMockUni,
 } from '../../helpers/mockUni'
 
-import type { ReportPayload } from '../../../../public/pipeline/types'
+import type { ReportPayload } from '../../../../src/public/pipeline/types'
 
 const PAYLOAD: ReportPayload = {
   usv: '3',

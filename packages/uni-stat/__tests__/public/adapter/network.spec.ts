@@ -1,4 +1,8 @@
-import { getNet, normalizeNet, onChange } from '../../../public/adapter/network'
+import {
+  getNet,
+  normalizeNet,
+  onChange,
+} from '../../../src/public/adapter/network'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
 describe('adapter/network', () => {

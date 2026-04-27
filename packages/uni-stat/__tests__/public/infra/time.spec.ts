@@ -1,4 +1,4 @@
-import { elapsedSec, nowMs, nowSec } from '../../../public/infra/time'
+import { elapsedSec, nowMs, nowSec } from '../../../src/public/infra/time'
 
 describe('infra/time', () => {
   let dateNowSpy: jest.SpyInstance

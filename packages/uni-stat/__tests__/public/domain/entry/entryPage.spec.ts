@@ -4,8 +4,8 @@ import {
   getEntryRoute,
   isEntry,
   markEntryPage,
-} from '../../../../public/domain/entry/entryPage'
-import { storage } from '../../../../public/infra/storage'
+} from '../../../../src/public/domain/entry/entryPage'
+import { storage } from '../../../../src/public/infra/storage'
 import {
   type MockUniHandle,
   installMockUni,

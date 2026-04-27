@@ -1,4 +1,4 @@
-import { getLocation } from '../../../public/adapter/location'
+import { getLocation } from '../../../src/public/adapter/location'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
 describe('adapter/location', () => {

@@ -1,4 +1,4 @@
-import { __resetCache as resetDevice } from '../../../../public/adapter/device'
+import { __resetCache as resetDevice } from '../../../../src/public/adapter/device'
 import {
   __resetState,
   configure,
@@ -8,9 +8,9 @@ import {
   markBackground,
   nextSeq,
   touch,
-} from '../../../../public/domain/session/machine'
-import { CST } from '../../../../public/domain/eventTypes'
-import { storage } from '../../../../public/infra/storage'
+} from '../../../../src/public/domain/session/machine'
+import { CST } from '../../../../src/public/domain/eventTypes'
+import { storage } from '../../../../src/public/infra/storage'
 import {
   type MockUniHandle,
   installMockUni,

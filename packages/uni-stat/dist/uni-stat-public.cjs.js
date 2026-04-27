@@ -67,18 +67,25 @@ function toIey(input) {
  * 行为约定：
  *   - `debug` 受调试开关控制；其他 level 始终输出到对应的 `console.*`。
  *   - 不强制对对象 `JSON.stringify`（避免吞掉运行时类型信息，方便控制台展开）。
+ *
+ * 兼容性：
+ *   - 历史版本插件 define 误把 `process.env.UNI_STAT_DEBUG` 替换成布尔字面量
+ *     （未 `JSON.stringify`），导致 dist 运行时该值为 `true`/`false` 而非 `'true'`/`'false'`。
+ *     `isDebug()` 同时接受字符串 `'true'` 与布尔 `true`，避免历史构建产物完全失效。
  */
 const TAG = '[uni-stat/public]';
 let runtimeDebug;
 /**
  * 当前是否启用 debug 输出。优先级：
  *   1. `setDebug(value)` 显式设置过 → 直接返回。
- *   2. `process.env.UNI_STAT_DEBUG === 'true'`（构建时常量替换路径）。
+ *   2. `process.env.UNI_STAT_DEBUG === 'true'` 或被构建期替换为布尔字面量 `true`
+ *      （历史插件兼容路径）。
  */
 function isDebug() {
     if (runtimeDebug !== undefined)
         return runtimeDebug;
-    return process.env.UNI_STAT_DEBUG === 'true';
+    const v = process.env.UNI_STAT_DEBUG;
+    return v === 'true' || v === true;
 }
 /**
  * 运行时切换 debug 开关；传 `undefined` 恢复为「按 process.env 判断」。
@@ -156,7 +163,7 @@ function fullKey(key) {
 /**
  * 取真实 uni 对象。剥离到函数里，便于测试用 mockUni 替换后立即生效。
  */
-function getUni$7() {
+function getUni$8() {
     const u = globalThis.uni;
     if (!u)
         throw new Error('[uni-stat/public] uni storage API is not available');
@@ -173,7 +180,7 @@ function get(key) {
     if (cache.has(fk))
         return cache.get(fk);
     try {
-        const raw = getUni$7().getStorageSync(fk);
+        const raw = getUni$8().getStorageSync(fk);
         // uni 规范：未命中返回空字符串
         if (raw === '' || raw === null || raw === undefined) {
             cache.set(fk, undefined);
@@ -200,7 +207,7 @@ function safeRead(key) {
     if (cache.has(fk))
         return { ok: true, value: cache.get(fk) };
     try {
-        const raw = getUni$7().getStorageSync(fk);
+        const raw = getUni$8().getStorageSync(fk);
         if (raw === '' || raw === null || raw === undefined) {
             cache.set(fk, undefined);
             return { ok: true, value: undefined };
@@ -228,7 +235,7 @@ function set(key, value) {
     cache.set(fk, value);
     knownKeys.add(fk);
     try {
-        getUni$7().setStorageSync(fk, value);
+        getUni$8().setStorageSync(fk, value);
     }
     catch (_a) {
         // 缓存已更新，吞掉异常；调用方如需感知请使用 try/catch 显式包裹。
@@ -241,7 +248,7 @@ function remove(key) {
     const fk = fullKey(key);
     cache.set(fk, undefined);
     try {
-        getUni$7().removeStorageSync(fk);
+        getUni$8().removeStorageSync(fk);
     }
     catch (_a) {
         // 同 set：忽略 storage 异常，缓存已置空。
@@ -272,7 +279,7 @@ function batchSet(entries) {
 function clearNamespace() {
     let uni;
     try {
-        uni = getUni$7();
+        uni = getUni$8();
     }
     catch (_a) {
         // uni 不可用：仅清缓存，无法清持久化
@@ -634,6 +641,47 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
  *   - #7 取值反向（私有版 `if (data.length > MAX_LENGTH)` 误判）。
  *   - #8 循环引用导致 `JSON.stringify` 抛错（用 WeakSet replacer 兜底）。
  */
+const DEFAULT_MAX_LENGTH = 4096;
+const TRUNCATED_SUFFIX = '…[truncated]';
+/**
+ * 序列化任意值为字符串：支持循环引用与最大长度截断。
+ *
+ * @param value 待序列化的值。`undefined` 返回 ''；string 直接返回（仍参与截断）。
+ * @param max   字符串最大长度，默认 4096；超长会截断并附 `…[truncated]`。
+ */
+function safeStringify(value, max = DEFAULT_MAX_LENGTH) {
+    var _a;
+    if (value === undefined)
+        return '';
+    let raw;
+    if (typeof value === 'string') {
+        raw = value;
+    }
+    else {
+        const seen = new WeakSet();
+        try {
+            raw = (_a = JSON.stringify(value, (_key, val) => {
+                if (typeof val === 'object' && val !== null) {
+                    if (seen.has(val))
+                        return '[Circular]';
+                    seen.add(val);
+                }
+                if (typeof val === 'bigint')
+                    return val.toString();
+                if (typeof val === 'function')
+                    return `[Function ${val.name || 'anonymous'}]`;
+                return val;
+            })) !== null && _a !== void 0 ? _a : '';
+        }
+        catch (e) {
+            raw = `[Unserializable: ${e.message}]`;
+        }
+    }
+    if (raw.length > max) {
+        return raw.slice(0, Math.max(0, max - TRUNCATED_SUFFIX.length)) + TRUNCATED_SUFFIX;
+    }
+    return raw;
+}
 /**
  * 包裹同步函数，捕获任何抛出，返回 fallback。
  *
@@ -1275,7 +1323,7 @@ function getCurrentRouteWithQuery(pageVm) {
  * 注意：本模块不维护订阅注册表（去重逻辑由 `infra/interceptor` 与 `runtime/install`
  * 处理），保持单一职责。
  */
-function getUni$6() {
+function getUni$7() {
     return globalThis.uni;
 }
 /**
@@ -1291,7 +1339,7 @@ function getLaunchScene(override) {
     if (override !== undefined && override !== null && override !== '') {
         return String(override);
     }
-    const u = getUni$6();
+    const u = getUni$7();
     if (typeof (u === null || u === void 0 ? void 0 : u.getLaunchOptionsSync) !== 'function')
         return '';
     const platform = getPlatform();
@@ -1326,7 +1374,7 @@ function getLaunchScene(override) {
  *      透传。
  *   3. 不缓存：业务方需要会话维度复用时在 `domain/push.ts` 中缓存（待 Phase 5 接入）。
  */
-function getUni$5() {
+function getUni$6() {
     return globalThis.uni;
 }
 /**
@@ -1341,7 +1389,7 @@ function getPushClientId(opts = {}) {
             resolve({ ok: false, cid: '', reason: 'disabled' });
             return;
         }
-        const u = getUni$5();
+        const u = getUni$6();
         if (!u || typeof u.getPushClientId !== 'function') {
             resolve({ ok: false, cid: '', reason: 'unsupported' });
             return;
@@ -1397,6 +1445,7 @@ const state$1 = {
     lastRoute: '',
     lastRouteEnterTime: 0,
     lastIey: false,
+    prevIey: false,
     isHide: false,
 };
 /**
@@ -1499,7 +1548,8 @@ function handleAppHide(app) {
         urlref: state$1.lastRoute,
         urlref_ts: stayed,
         iey: state$1.lastIey,
-        ppiey: state$1.lastIey,
+        // 与 lt=11 字段语义一致：ppiey 表示"切到当前页之前的那一页是否入口页"。
+        ppiey: state$1.prevIey,
     });
     void c.flush(true).catch((e) => logger.warn('[uni-stat] flush on hide failed', e));
 }
@@ -1533,6 +1583,9 @@ function handlePageShow(app, vm, opts = {}) {
     if (route) {
         tryRun(() => markEntryPage(route), undefined);
     }
+    // 关键（修复 #PPIEY）：先把"当前 lastIey"备份到 prevIey，再覆写 lastIey。
+    // 这样下一个页面（onPageHide / 下一次 onPageShow）能正确读出"上一页是否入口页"。
+    state$1.prevIey = state$1.lastIey;
     state$1.lastRoute = route;
     state$1.lastRouteEnterTime = now;
     state$1.lastIey = !!route && tryRun(() => isEntry(route), false);
@@ -1560,7 +1613,8 @@ function handlePageHide(app, vm) {
         urlref: state$1.lastRoute && state$1.lastRoute !== route ? state$1.lastRoute : route,
         urlref_ts: stayed,
         iey: route ? tryRun(() => isEntry(route), false) : false,
-        ppiey: state$1.lastIey,
+        // ppiey 必须读 prevIey（"上一页是否入口页"）；不能复用 lastIey，否则与 iey 同义。
+        ppiey: state$1.prevIey,
     });
     state$1.lastRoute = route;
     state$1.lastIey = route ? tryRun(() => isEntry(route), false) : false;
@@ -1583,7 +1637,7 @@ function handleError(app, e) {
         logger.warn('[uni-stat] handleError failed', err);
     }
 }
-function getUni$4() {
+function getUni$5() {
     return globalThis.uni;
 }
 /**
@@ -1621,7 +1675,7 @@ function bindLifecycle(app, opts = {}) {
             handleError(app, e);
         },
     };
-    const u = getUni$4();
+    const u = getUni$5();
     let appShowCb;
     let appHideCb;
     if (u && typeof u.onAppShow === 'function') {
@@ -1638,7 +1692,7 @@ function bindLifecycle(app, opts = {}) {
             if (!bound)
                 return;
             bound = false;
-            const cur = getUni$4();
+            const cur = getUni$5();
             if (appShowCb && cur && typeof cur.offAppShow === 'function') {
                 tryRun(() => cur.offAppShow(appShowCb), undefined);
             }
@@ -1665,8 +1719,15 @@ const REPORT_INTERVAL_SEC = 10;
 const HTTP_MAX_RETRIES = 3;
 /** Cloud 协议层最大重试次数（含首次）。 */
 const CLOUD_MAX_RETRIES = 2;
+/** Image 协议层最大重试次数（含首次）。 */
+const IMAGE_MAX_RETRIES = 2;
 /** 重试基础延迟（指数退避）。 */
 const RETRY_BASE_DELAY_MS = 1000;
+const IMAGE_REPORT_DEFAULTS = {
+    host: 'https://tls-cn-beijing.volces.com',
+    projectId: '9fad19a2-b7f1-47f5-87ff-8621f545ab61',
+    topicId: '99b55c91-ed80-406e-b205-e9d18aca744d',
+};
 /**
  * uni-app appid。优先取构建期 `process.env.UNI_APP_ID`；未注入时返回 `''`，
  * 由调用方决定是否上报为 `'default'`。
@@ -1750,6 +1811,196 @@ function createCloudChannel(opts = {}) {
 }
 
 /**
+ * 公有版调试日志：面向业务方的"采集 / 上报"过程日志封装。
+ *
+ * 与 `logger.debug` 的差异：
+ *   - `logger.debug` 是底层 console.log + 闸门；调用点散落，文案随意。
+ *   - 本模块提供**统一文案 / 统一格式**的高层包装，覆盖：
+ *       1. 采集动作：每个 lt 都有中文动作名 +「采集 → 数据」标记。
+ *       2. 上报生命周期：开始 / 成功 / 失败 / 冷启续传。
+ *       3. 启动摘要：通道版本、上报间隔、ak 是否就位等。
+ *   - 所有 helper 都内嵌 `logger.isDebug()` 判断；非 debug 模式下零开销，
+ *     调用方无需再写 `if (logger.isDebug()) ...`。
+ *
+ * 文案风格参考私有版 `utils/pageInfo.js#log`：直接面向业务调试，**中文**为主，
+ * 关键字段（lt / 通道 / 用时 / 错误原因）一目了然。
+ *
+ * 注意：不在此处吞错；任意 console.log 异常仍会冒泡。运行时调用方需要 `tryRun` 兜底
+ * 时自行处理（一般 console.log 不会抛错，故未做包装）。
+ */
+/**
+ * `lt` → 用户友好的中文动作名映射。
+ *
+ * 与私有版 `pageInfo.js#log` 的 msg_type 对齐，并新增 lt=0（公有版独有的会话创建）。
+ *
+ * 未知 lt 走默认 "未知事件 (lt=X)"，便于排查异常上行。
+ */
+function getActionLabel(lt) {
+    switch (lt) {
+        case LT.Session:
+            return '会话创建';
+        case LT.Launch:
+            return '应用启动';
+        case LT.Hide:
+            return '应用进入后台';
+        case LT.Page:
+            return '页面切换';
+        case LT.Event:
+            return '事件触发';
+        case LT.Error:
+            return '应用错误';
+        case LT.Push:
+            return 'PUSH 设备标识';
+        default:
+            return `未知事件 (lt=${String(lt !== null && lt !== void 0 ? lt : '?')})`;
+    }
+}
+/**
+ * 计算 bucket（`Record<lt, StatData[]>`）内的事件总数。
+ *
+ * 仅在 debug 路径需要，单独抽出避免与 queue.size() 模块循环依赖。
+ */
+function bucketSize(bucket) {
+    let n = 0;
+    for (const lt of Object.keys(bucket)) {
+        const arr = bucket[lt];
+        if (Array.isArray(arr))
+            n += arr.length;
+    }
+    return n;
+}
+/**
+ * 把 bucket 摘要成 "lt=1×1, lt=11×3, lt=21×2" 形式，方便控制台扫读。
+ */
+function bucketSummary(bucket) {
+    const parts = [];
+    for (const lt of Object.keys(bucket)) {
+        const arr = bucket[lt];
+        if (Array.isArray(arr) && arr.length > 0) {
+            parts.push(`lt=${lt}×${arr.length}`);
+        }
+    }
+    return parts.join(', ') || '<空>';
+}
+/**
+ * 单次事件采集日志。
+ *
+ * 文案示意：
+ *   ```text
+ *   [uni-stat/public] === 统计数据采集：应用启动 (lt=1) ===
+ *   [uni-stat/public] {lt: '1', t: 1714123456, ut: 'h5', ...}
+ *   [uni-stat/public] === 采集结束 ===
+ *   ```
+ */
+function logCollect(data) {
+    if (!logger.isDebug())
+        return;
+    const lt = data.lt;
+    const label = getActionLabel(lt);
+    logger.debug(`=== 统计数据采集：${label} (lt=${String(lt !== null && lt !== void 0 ? lt : '?')}) ===`);
+    logger.debug(data);
+    logger.debug('=== 采集结束 ===');
+}
+/**
+ * 启动 / 配置摘要。`installPublicStat` 装配完毕后调用一次，方便业务方一眼确认接入状态。
+ */
+function logBoot(info) {
+    if (!logger.isDebug())
+        return;
+    logger.debug('=== uni 统计公有版（version=3）已启用 ===');
+    logger.debug(`通道: ${info.channel} | 上报间隔: ${info.reportIntervalSec}s | ak: ${info.ak || '<未注入>'}${info.appName ? ` | appName: ${info.appName}` : ''}`);
+    if (info.debugFromManifest) {
+        logger.debug('调试模式：已从 manifest.uniStatistics.debug 自动开启');
+    }
+    logger.debug('=== 后续将在每次采集 / 上报时输出过程日志 ===');
+}
+/**
+ * 即将上报：取出 batch、选定 channel 后调用。
+ *
+ * 文案示意：
+ *   ```text
+ *   [uni-stat/public] === 准备上报：通道=image, 共 4 条事件 (lt=1×1, lt=11×2, lt=21×1) [_id=p-xxxx] ===
+ *   ```
+ */
+function logReportStart(info) {
+    if (!logger.isDebug())
+        return;
+    const total = bucketSize(info.bucket);
+    const summary = bucketSummary(info.bucket);
+    const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : '';
+    logger.debug(`=== 准备上报：通道=${info.channel}, 共 ${total} 条事件 (${summary})${idTag} ===`);
+}
+/**
+ * 上报成功。`elapsedMs` 是从 logReportStart 到 ack 的毫秒数。
+ */
+function logReportSuccess(info) {
+    if (!logger.isDebug())
+        return;
+    const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : '';
+    logger.debug(`=== 上报成功：通道=${info.channel}, ${info.count} 条事件已送达, 用时 ${info.elapsedMs}ms${idTag} ===`);
+}
+/**
+ * 上报失败。`persistedId` 不为空表示已落盘 retry，下次冷启会续传。
+ */
+function logReportFailure(info) {
+    if (!logger.isDebug())
+        return;
+    const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : '';
+    const errMsg = describeError(info.error);
+    logger.debug(`=== 上报失败：通道=${info.channel}, ${info.count} 条事件未送达, 用时 ${info.elapsedMs}ms${idTag} ===`);
+    logger.debug(`原因: ${errMsg}`);
+    if (info.persistedId) {
+        logger.debug(`已暂存重试队列 [retryId=${info.persistedId}]，下次启动自动续传`);
+    }
+    else {
+        logger.debug('未能写入重试队列：本批数据已丢弃');
+    }
+}
+/**
+ * 无可用通道：通常是 channelVersion=2 但 uniCloud space 未关联，或 image 配置缺失。
+ */
+function logNoChannel(info) {
+    if (!logger.isDebug())
+        return;
+    logger.debug(`=== 上报跳过：当前无可用通道，已回滚 ${bucketSize(info.bucket)} 条事件入队 ===`);
+}
+/**
+ * 冷启续传：进入 recoverRetry 时调用。
+ */
+function logRecoverStart(count) {
+    if (!logger.isDebug())
+        return;
+    logger.debug(`=== 冷启续传：发现 ${count} 条历史 payload，开始逐条重发 ===`);
+}
+/**
+ * 冷启续传 - 单条结果。
+ */
+function logRecoverItem(info) {
+    if (!logger.isDebug())
+        return;
+    const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : '';
+    if (info.ok) {
+        logger.debug(`续传成功 (${info.index}/${info.total})${idTag}`);
+    }
+    else {
+        logger.debug(`续传失败 (${info.index}/${info.total})${idTag}：${describeError(info.error)}`);
+    }
+}
+/**
+ * 把 unknown 错误压成可读字符串；保留 message + name，避免业务方在控制台只看到 `[object Object]`。
+ */
+function describeError(e) {
+    if (!e)
+        return '<无错误对象>';
+    if (e instanceof Error) {
+        return `${e.name}: ${e.message}`;
+    }
+    if (typeof e === 'string')
+        return e;
+    return safeStringify(e) || String(e);
+}
+
+/**
  * Collector：domain 与 pipeline 的编排层。
  *
  * 职责（与 runtime/lifecycleHooks 配合）：
@@ -1796,6 +2047,7 @@ function createCollector(deps) {
             });
             const data = deps.builder.build(ctx);
             deps.queue.enqueue(data);
+            logCollect(data);
             if (deps.queue.shouldFlush()) {
                 flush(false).catch((e) => logger.warn('[uni-stat] auto-flush failed', e));
             }
@@ -1817,6 +2069,7 @@ function createCollector(deps) {
             const channel = deps.selectChannel();
             if (!channel) {
                 logger.warn('[uni-stat] no channel available, rollback batch');
+                logNoChannel({ bucket: snapshot });
                 deps.queue.rollback(snapshot);
                 return;
             }
@@ -1827,9 +2080,28 @@ function createCollector(deps) {
                 requests,
                 _id: ((_a = deps.genPayloadId) !== null && _a !== void 0 ? _a : (() => defaultGenPayloadId(deps.nowMs())))(),
             };
+            // 统计本批事件数与计时基准；用于 success / failure 日志的"用时 / 条数"展示。
+            let count = 0;
+            for (const lt of Object.keys(snapshot)) {
+                const arr = snapshot[lt];
+                if (Array.isArray(arr))
+                    count += arr.length;
+            }
+            const startMs = deps.nowMs();
+            logReportStart({
+                channel: channel.name,
+                bucket: snapshot,
+                payloadId: payload._id,
+            });
             try {
                 yield channel.send(payload);
                 tryRun(() => deps.visit.commitVisitOnAck(deps.nowSec()), undefined);
+                logReportSuccess({
+                    channel: channel.name,
+                    count,
+                    elapsedMs: deps.nowMs() - startMs,
+                    payloadId: payload._id,
+                });
             }
             catch (e) {
                 logger.warn('[uni-stat] channel send failed; persist for retry', e);
@@ -1838,6 +2110,14 @@ function createCollector(deps) {
                 if (!id) {
                     logger.warn('[uni-stat] retry.persist returned no id, drop batch');
                 }
+                logReportFailure({
+                    channel: channel.name,
+                    count,
+                    elapsedMs: deps.nowMs() - startMs,
+                    error: e,
+                    payloadId: payload._id,
+                    persistedId: id,
+                });
             }
         });
     }
@@ -1856,17 +2136,33 @@ function createCollector(deps) {
                 logger.warn('[uni-stat] recoverRetry: no channel available');
                 return;
             }
+            logRecoverStart(items.length);
+            let i = 0;
             for (const payload of items) {
+                i++;
                 try {
                     yield channel.send(payload);
                     if (payload._id)
                         deps.retry.ack(payload._id);
+                    logRecoverItem({
+                        index: i,
+                        total: items.length,
+                        payloadId: payload._id,
+                        ok: true,
+                    });
                 }
                 catch (e) {
                     if (payload._id && deps.retry.markAttempt) {
                         deps.retry.markAttempt(payload._id);
                     }
                     logger.warn('[uni-stat] recoverRetry item failed, will retry next launch', e);
+                    logRecoverItem({
+                        index: i,
+                        total: items.length,
+                        payloadId: payload._id,
+                        ok: false,
+                        error: e,
+                    });
                 }
             }
         });
@@ -1887,7 +2183,7 @@ function createCollector(deps) {
  *   - `send(payload)`：成功 resolve；3 次重试全失败抛错（供 retry.persist 落盘）。
  *   - 不缓存任何状态；每次 `send` 是无状态的。
  */
-function getUni$3() {
+function getUni$4() {
     return globalThis.uni;
 }
 /**
@@ -1932,7 +2228,7 @@ function createHttpChannel(opts = {}) {
             if (tryImageRequest(payload, h5Url))
                 return Promise.resolve();
         }
-        const u = getUni$3();
+        const u = getUni$4();
         if (!u || typeof u.request !== 'function') {
             return Promise.reject(new Error('uni.request unavailable'));
         }
@@ -1974,7 +2270,7 @@ function createHttpChannel(opts = {}) {
     return {
         name: '1.0',
         available() {
-            const u = getUni$3();
+            const u = getUni$4();
             return !!(u && typeof u.request === 'function');
         },
         send(payload) {
@@ -1988,6 +2284,157 @@ function createHttpChannel(opts = {}) {
                 }
                 catch (e) {
                     logger.warn('[uni-stat] http channel send failed after retries', e);
+                    throw e;
+                }
+            });
+        },
+    };
+}
+
+/**
+ * 公有版默认通道：火山 TLS WebTrack.gif 图片像素上报。
+ *
+ * 上行格式：
+ *   `${host}/WebTrack.gif?ProjectId=${pid}&TopicId=${tid}&Logs=${URI(JSON.stringify(logs))}&Source=webImg&Time=${Date.now()}`
+ *
+ * 设计要点：
+ *   - 首选 `new Image().src=...`：浏览器/H5/部分小程序均可用，**不受 CORS 限制**，命中即认为送达。
+ *   - 浏览器以外环境（App / 部分小程序无 Image 全局）：退回 `uni.request({ method: 'GET' })`，
+ *     成功状态码 `2xx` 视为送达。
+ *   - 上行体积保护：`payload.requests` 已是 `JSON.stringify(events)`，再 `encodeURIComponent` 后塞入 URL；
+ *     单条 batch 超过 `maxUrlLength`（默认 6KB）时直接 reject 让 retry 持久化下次再发，
+ *     避免被 CDN/网关静默截断。
+ *   - 不做"重试 = 业务错"的兜底：网络抖动一律由 `withRetry` 处理；最终失败由 collector → retry.persist 接管。
+ *
+ * 与 cloud / http 通道一致：
+ *   - `available()`：host/projectId/topicId 均非空即可（不要求 Image 一定存在，因为有 uni.request 兜底）。
+ *   - `send(payload)`：成功 resolve、失败 reject。
+ *   - 不缓存任何状态。
+ */
+function getUni$3() {
+    return globalThis.uni;
+}
+/**
+ * 拼装最终请求 URL。导出供测试/调试用。
+ *
+ * @param payload  上报 payload；其中 `requests` 已是 `JSON.stringify(events)`。
+ * @param opts     host/projectId/topicId 与 nowMs。
+ */
+function buildImageReportUrl(payload, opts) {
+    var _a;
+    const t = ((_a = opts.nowMs) !== null && _a !== void 0 ? _a : (() => Date.now()))();
+    // payload.requests 已经是 JSON 字符串（事件数组），无需再次 stringify
+    const logs = encodeURIComponent(payload.requests);
+    const host = opts.host.replace(/\/+$/, '');
+    return (host +
+        '/WebTrack.gif' +
+        '?ProjectId=' +
+        encodeURIComponent(opts.projectId) +
+        '&TopicId=' +
+        encodeURIComponent(opts.topicId) +
+        '&Logs=' +
+        logs +
+        '&Source=webImg' +
+        '&Time=' +
+        t);
+}
+/**
+ * 优先使用浏览器/H5 的 `new Image()`：仅触发 GET，不读响应；图片 onload/onerror 都视为已送达
+ * （图片像素 1x1，服务端只关心 query 落库）。
+ *
+ * 返回 `true`：当前环境支持 Image，已发出请求。
+ * 返回 `false`：缺少 Image 全局或构造抛错，调用方应退回 `uni.request`。
+ */
+function tryImageBeacon(url) {
+    const ImageCtor = globalThis.Image;
+    if (typeof ImageCtor !== 'function')
+        return false;
+    return tryRun(() => {
+        const img = new ImageCtor();
+        img.src = url;
+        return true;
+    }, false);
+}
+function createImageChannel(opts = {}) {
+    var _a, _b, _c, _d, _e, _f;
+    const host = (_a = opts.host) !== null && _a !== void 0 ? _a : IMAGE_REPORT_DEFAULTS.host;
+    const projectId = (_b = opts.projectId) !== null && _b !== void 0 ? _b : IMAGE_REPORT_DEFAULTS.projectId;
+    const topicId = (_c = opts.topicId) !== null && _c !== void 0 ? _c : IMAGE_REPORT_DEFAULTS.topicId;
+    const timeoutMs = (_d = opts.timeoutMs) !== null && _d !== void 0 ? _d : 10000;
+    const maxRetries = (_e = opts.maxRetries) !== null && _e !== void 0 ? _e : IMAGE_MAX_RETRIES;
+    const maxUrlLength = (_f = opts.maxUrlLength) !== null && _f !== void 0 ? _f : 6 * 1024;
+    const preferBeacon = opts.preferImageBeacon !== false;
+    const nowMs = opts.nowMs;
+    /** 是否填齐了发包必备参数。 */
+    function configured() {
+        return !!(host && projectId && topicId);
+    }
+    function once(payload) {
+        if (!configured()) {
+            return Promise.reject(new Error('image channel not configured'));
+        }
+        const url = buildImageReportUrl(payload, { host, projectId, topicId, nowMs });
+        if (url.length > maxUrlLength) {
+            return Promise.reject(new Error('image url too long: ' + url.length + ' > ' + maxUrlLength));
+        }
+        if (preferBeacon && tryImageBeacon(url)) {
+            return Promise.resolve();
+        }
+        const u = getUni$3();
+        if (!u || typeof u.request !== 'function') {
+            return Promise.reject(new Error('no Image and uni.request unavailable'));
+        }
+        return new Promise((resolve, reject) => {
+            let settled = false;
+            const timer = setTimeout(() => {
+                if (settled)
+                    return;
+                settled = true;
+                reject(new Error('image timeout'));
+            }, timeoutMs);
+            u.request({
+                url,
+                method: 'GET',
+                timeout: timeoutMs,
+                success: (res) => {
+                    var _a;
+                    if (settled)
+                        return;
+                    settled = true;
+                    clearTimeout(timer);
+                    const code = (_a = res === null || res === void 0 ? void 0 : res.statusCode) !== null && _a !== void 0 ? _a : 0;
+                    if (code >= 200 && code < 400)
+                        resolve();
+                    else
+                        reject(new Error('image status ' + code));
+                },
+                fail: (e) => {
+                    if (settled)
+                        return;
+                    settled = true;
+                    clearTimeout(timer);
+                    reject(e instanceof Error ? e : new Error(String(e)));
+                },
+            });
+        });
+    }
+    return {
+        name: 'image',
+        available() {
+            // 配置齐全即可：浏览器无 Image 时仍能走 uni.request 兜底
+            return configured();
+        },
+        send(payload) {
+            return __awaiter(this, void 0, void 0, function* () {
+                try {
+                    yield withRetry(() => once(payload), {
+                        times: maxRetries,
+                        baseDelayMs: RETRY_BASE_DELAY_MS,
+                        sleep: opts.sleep,
+                    });
+                }
+                catch (e) {
+                    logger.warn('[uni-stat] image channel send failed after retries', e);
                     throw e;
                 }
             });
@@ -2821,13 +3268,17 @@ function migrateLegacyData() {
 /**
  * 通道选择器：根据**统计版本**与**运行环境**返回最合适的 Channel。
  *
- * 选择规则（与私有版 `'3'` 行为对齐）：
- *   - `version === '2'`：优先 cloud；cloud 不可用时**降级**到 http（私有版无降级，
- *     直接 console.error 后丢数据；本实现选择降级以提高可用性，仍保留警告日志）。
+ * 选择规则（公有版默认 image）：
+ *   - `version === 'image'`（默认）：优先 image；image 不可用时按 fallback 决策走 http；
+ *     image 通道未注入 → 静默走 http（公有版默认场景）。
+ *   - `version === '2'`：优先 cloud；cloud 不可用时按 fallback 决策走 http（私有版兼容）。
  *   - `version === '1'`：始终 http。
  *
- * 选择是**幂等无副作用**的：调用方每次发送前调用 `selectChannel()` 即可，
- * channel 自身不缓存可用性，便于运行时（例如 uniCloud 初始化后）即时生效。
+ * 注意：
+ *   - 公有版**不会**主动构造 cloud channel（StatApp 仅在 version='2' 才创建），
+ *     因此默认运行路径不会再触发"cloud channel unavailable"警告。
+ *   - 选择是**幂等无副作用**的：调用方每次发送前调用 `selectChannel()` 即可，
+ *     channel 自身不缓存可用性。
  */
 /**
  * 根据策略挑选当前应使用的 channel。
@@ -2836,19 +3287,42 @@ function migrateLegacyData() {
  */
 function selectChannel(opts) {
     var _a;
-    const version = (_a = opts.version) !== null && _a !== void 0 ? _a : '2';
+    const version = (_a = opts.version) !== null && _a !== void 0 ? _a : 'image';
     const fallback = opts.fallbackToHttp !== false;
     if (version === '1') {
-        return opts.http.available() ? opts.http : undefined;
-    }
-    if (opts.cloud && opts.cloud.available())
-        return opts.cloud;
-    if (!fallback) {
-        logger.warn('[uni-stat] cloud channel unavailable and fallback disabled, drop batch');
+        if (opts.http && opts.http.available())
+            return opts.http;
         return undefined;
     }
-    if (opts.http.available()) {
-        logger.warn('[uni-stat] cloud channel unavailable, fallback to http channel');
+    if (version === '2') {
+        if (opts.cloud && opts.cloud.available())
+            return opts.cloud;
+        if (!fallback) {
+            logger.warn('[uni-stat] cloud channel unavailable and fallback disabled, drop batch');
+            return undefined;
+        }
+        if (opts.http && opts.http.available()) {
+            logger.warn('[uni-stat] cloud channel unavailable, fallback to http channel');
+            return opts.http;
+        }
+        logger.warn('[uni-stat] no channel available');
+        return undefined;
+    }
+    // image（默认）：image > http
+    if (opts.image && opts.image.available())
+        return opts.image;
+    if (!fallback) {
+        if (opts.image) {
+            // 仅在 image 已构造但失效时给出警告，便于排查；未构造视为正常的"未启用"
+            logger.warn('[uni-stat] image channel unavailable and fallback disabled, drop batch');
+        }
+        return undefined;
+    }
+    if (opts.http && opts.http.available()) {
+        if (opts.image) {
+            // 同上，仅在 image 已构造但失效时打印降级日志
+            logger.warn('[uni-stat] image channel unavailable, fallback to http channel');
+        }
         return opts.http;
     }
     logger.warn('[uni-stat] no channel available');
@@ -3163,8 +3637,8 @@ class StatApp {
     constructor() {
         /** install 幂等哨兵。 */
         this.installed = false;
-        /** 已生效的协议版本（'1' / '2'）。 */
-        this.statVersion = '2';
+        /** 已生效的协议版本（'1' / '2' / 'image'）。 */
+        this.statVersion = 'image';
     }
     static getInstance() {
         if (!instance)
@@ -3178,7 +3652,7 @@ class StatApp {
      * @param overrides 测试钩子。
      */
     install(config = {}, overrides = {}) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         if (this.installed)
             return;
         this.installed = true;
@@ -3196,6 +3670,8 @@ class StatApp {
         tryRun(() => loadVisitSnapshot(), undefined);
         this.httpChannel =
             (_b = (_a = overrides.channels) === null || _a === void 0 ? void 0 : _a.http) !== null && _b !== void 0 ? _b : createHttpChannel({ ut: getPlatform(), maxRetries: HTTP_MAX_RETRIES });
+        // cloud：仅在用户明确选择 channelVersion=2 或测试 override 时构造，
+        // 公有版默认路径不会创建 cloud，避免触发"cloud channel unavailable"误降级警告。
         if (overrides.channels && 'cloud' in overrides.channels) {
             this.cloudChannel = (_c = overrides.channels.cloud) !== null && _c !== void 0 ? _c : undefined;
         }
@@ -3205,7 +3681,24 @@ class StatApp {
         else {
             this.cloudChannel = undefined;
         }
-        this.collectorDeps = this.buildCollectorDeps(cfg, (_d = overrides.collectorDepsPatch) !== null && _d !== void 0 ? _d : {});
+        // image：公有版默认通道。host/projectId/topicId 来自 config.IMAGE_REPORT_DEFAULTS，
+        // 由 SDK 维护者直接在源码中调整，**不暴露**到 manifest / runtime API；
+        // 测试场景仍可通过 overrides.channels.image 注入伪通道做断言。
+        if (overrides.channels && 'image' in overrides.channels) {
+            this.imageChannel = (_d = overrides.channels.image) !== null && _d !== void 0 ? _d : undefined;
+        }
+        else if (this.statVersion === 'image') {
+            this.imageChannel = createImageChannel({
+                host: IMAGE_REPORT_DEFAULTS.host,
+                projectId: IMAGE_REPORT_DEFAULTS.projectId,
+                topicId: IMAGE_REPORT_DEFAULTS.topicId,
+                maxRetries: IMAGE_MAX_RETRIES,
+            });
+        }
+        else {
+            this.imageChannel = undefined;
+        }
+        this.collectorDeps = this.buildCollectorDeps(cfg, (_e = overrides.collectorDepsPatch) !== null && _e !== void 0 ? _e : {});
         this.collector = createCollector(this.collectorDeps);
         if (!overrides.skipInterceptors) {
             const c = this.collector;
@@ -3288,6 +3781,7 @@ class StatApp {
         this.collectorDeps = undefined;
         this.httpChannel = undefined;
         this.cloudChannel = undefined;
+        this.imageChannel = undefined;
         this.config = undefined;
         this.installed = false;
     }
@@ -3297,7 +3791,7 @@ class StatApp {
             ak: (_a = c.ak) !== null && _a !== void 0 ? _a : getAppId$1(),
             v: c.v,
             ch: (_b = c.ch) !== null && _b !== void 0 ? _b : '',
-            version: (_c = c.version) !== null && _c !== void 0 ? _c : '2',
+            version: (_c = c.version) !== null && _c !== void 0 ? _c : 'image',
             backgroundTimeoutSec: (_d = c.backgroundTimeoutSec) !== null && _d !== void 0 ? _d : 300,
             pageInactiveTimeoutSec: (_e = c.pageInactiveTimeoutSec) !== null && _e !== void 0 ? _e : 1800,
             reportIntervalSec: typeof c.reportIntervalSec === 'number' ? c.reportIntervalSec : REPORT_INTERVAL_SEC,
@@ -3356,6 +3850,7 @@ class StatApp {
                 version: this.statVersion,
                 http: this.httpChannel,
                 cloud: this.cloudChannel,
+                image: this.imageChannel,
             }),
             retry: {
                 persist: persist,
@@ -3414,6 +3909,62 @@ function __resetStatApp() {
  *   - `installPublicStat(config?, opts?)`：手动触发；幂等。
  *   - `getMixin()`：返回 vue mixin 对象，供宿主自行 `app.mixin(...)`。
  */
+/**
+ * 从 `process.env.UNI_STATISTICS_CONFIG`（plugin 注入的 manifest.uniStatistics 序列化串）
+ * 读取业务配置，把已知字段映射为 StatApp.install 的 partial config。
+ *
+ * 与 plugin（packages/uni-stat/src/plugin/index.ts）约定字段：
+ *   - `version`：**模块版本**（1=私有 1.0 / 2=私有 2.0 / 3=公有版），由 plugin 决定加载哪个
+ *     dist。本函数运行在公有版内部，已是 version=3 的语境，**不再**透传该字段。
+ *   - `channelVersion`：可选；公有版**通道版本**（`'1'` = HTTP 1.0、`'2'` = uniCloud 2.0、
+ *     `'image'` = 火山 TLS WebTrack.gif，公有版默认）。manifest 里没写则走默认 'image'。
+ *   - `backgroundTimeoutSec / pageInactiveTimeoutSec / reportIntervalSec`：直传 number。
+ *   - `ak / v / ch`：可选；测试 / 灰度需要时可手工指定。
+ *
+ * 注意：image 通道的 `host / projectId / topicId` 是 **SDK 内部接入参数**，由维护者直接
+ * 在 `public/config.ts#IMAGE_REPORT_DEFAULTS` 中维护，**不**通过 manifest 暴露给业务方。
+ *
+ * 任意 JSON 解析 / 字段类型异常都吞掉，回到默认值；此处**不能**抛错，否则会阻塞自动 install。
+ */
+function readManifestStatConfig() {
+    try {
+        const env = (typeof process !== 'undefined' && process.env) || {};
+        const raw = env.UNI_STATISTICS_CONFIG;
+        if (!raw || typeof raw !== 'string')
+            return undefined;
+        const obj = JSON.parse(raw);
+        if (!obj || typeof obj !== 'object')
+            return undefined;
+        const cfg = {};
+        if (obj.channelVersion != null) {
+            const v = String(obj.channelVersion);
+            if (v === '1' || v === '2' || v === 'image')
+                cfg.version = v;
+        }
+        if (typeof obj.backgroundTimeoutSec === 'number' && obj.backgroundTimeoutSec >= 0) {
+            cfg.backgroundTimeoutSec = obj.backgroundTimeoutSec;
+        }
+        if (typeof obj.pageInactiveTimeoutSec === 'number' && obj.pageInactiveTimeoutSec >= 0) {
+            cfg.pageInactiveTimeoutSec = obj.pageInactiveTimeoutSec;
+        }
+        if (typeof obj.reportIntervalSec === 'number' && obj.reportIntervalSec >= 0) {
+            cfg.reportIntervalSec = obj.reportIntervalSec;
+        }
+        if (typeof obj.ak === 'string' && obj.ak)
+            cfg.ak = obj.ak;
+        if (typeof obj.v === 'string')
+            cfg.v = obj.v;
+        if (typeof obj.ch === 'string')
+            cfg.ch = obj.ch;
+        // imageReport.host/projectId/topicId 是内部接入参数，由 SDK 维护者直接维护，
+        // 此处**不解析** manifest 中的同名字段，避免业务方误以为可以自定义后端。
+        return Object.keys(cfg).length > 0 ? cfg : undefined;
+    }
+    catch (e) {
+        logger.warn('[uni-stat] readManifestStatConfig failed', e);
+        return undefined;
+    }
+}
 function getUni() {
     return globalThis.uni;
 }
@@ -3430,8 +3981,13 @@ function installPublicStat(opts = {}) {
     if (bootstrapped)
         return;
     bootstrapped = true;
+    // 优先级：opts.config（手动覆盖） > manifest.uniStatistics（plugin 注入） > 默认值。
+    // 这样业务/灰度同学既能在 manifest 里改超时阈值（生产路径），
+    // 也能用 installPublicStat({ config: {...} }) 在测试环境强行覆盖（接入调试）。
+    const fromManifest = readManifestStatConfig();
+    const finalConfig = Object.assign({}, fromManifest, opts.config);
     const app = getStatApp();
-    tryRun(() => app.install(opts.config, opts.overrides), undefined);
+    tryRun(() => app.install(finalConfig, opts.overrides), undefined);
     const { mixin, unbind } = bindLifecycle(app, opts.lifecycle);
     lastUnbind = unbind;
     if (!opts.skipVueMixin) {
@@ -3440,6 +3996,22 @@ function installPublicStat(opts = {}) {
     if (!opts.skipUniReport) {
         tryRun(() => mountUniReport(app), undefined);
     }
+    // 启动摘要：debug 模式下输出一次配置概览，方便业务方确认接入状态。
+    // 非 debug 模式 logBoot 自身判断后立即返回，无副作用。
+    tryRun(() => {
+        var _a, _b, _c;
+        const cfg = app.getConfig();
+        const env = (typeof process !== 'undefined' && process.env) ||
+            {};
+        const appName = env.UNI_APP_NAME || '';
+        logBoot({
+            channel: (_a = cfg === null || cfg === void 0 ? void 0 : cfg.version) !== null && _a !== void 0 ? _a : 'image',
+            reportIntervalSec: (_b = cfg === null || cfg === void 0 ? void 0 : cfg.reportIntervalSec) !== null && _b !== void 0 ? _b : 0,
+            ak: (_c = cfg === null || cfg === void 0 ? void 0 : cfg.ak) !== null && _c !== void 0 ? _c : '',
+            appName,
+            debugFromManifest: env.UNI_STAT_DEBUG === 'true' || env.UNI_STAT_DEBUG === true,
+        });
+    }, undefined);
 }
 /**
  * 把 mixin 装到 vue 实例上。优先走 `uni.onCreateVueApp`（VUE3）；缺失时回退

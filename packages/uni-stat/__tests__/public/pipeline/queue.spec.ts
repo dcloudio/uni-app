@@ -1,4 +1,4 @@
-import { storage } from '../../../public/infra/storage'
+import { storage } from '../../../src/public/infra/storage'
 import {
   __reset,
   configure,
@@ -7,14 +7,14 @@ import {
   rollback,
   shouldFlush,
   size,
-} from '../../../public/pipeline/queue'
+} from '../../../src/public/pipeline/queue'
 import {
   type MockUniHandle,
   installMockUni,
   restoreMockUni,
 } from '../helpers/mockUni'
 
-import type { StatData } from '../../../public/domain/statData'
+import type { StatData } from '../../../src/public/domain/statData'
 
 function makeEvt(lt: string, extra: Partial<StatData> = {}): StatData {
   return Object.assign({ lt, t: 1700000000 } as StatData, extra)

@@ -2,7 +2,7 @@ import {
   __resetCache,
   getLocaleAndScreen,
   getSystemInfo,
-} from '../../../public/adapter/system'
+} from '../../../src/public/adapter/system'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
 type SysInfoFn = () => unknown

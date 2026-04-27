@@ -1,4 +1,7 @@
-import { __resetCache, getPackageInfo } from '../../../public/adapter/package'
+import {
+  __resetCache,
+  getPackageInfo,
+} from '../../../src/public/adapter/package'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
 type AnyObj = Record<string, unknown>

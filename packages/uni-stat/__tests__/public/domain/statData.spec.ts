@@ -1,17 +1,17 @@
-import { LT } from '../../../public/domain/eventTypes'
+import { LT } from '../../../src/public/domain/eventTypes'
 import {
   type StatDataDeps,
   createStatDataBuilder,
-} from '../../../public/domain/statData'
+} from '../../../src/public/domain/statData'
 
 import type {
   LocaleAndScreen,
   SystemInfoStatic,
-} from '../../../public/adapter/system'
-import type { LocationResult } from '../../../public/adapter/location'
-import type { NetResult } from '../../../public/adapter/network'
-import type { PackageInfo } from '../../../public/adapter/package'
-import type { SessionSnapshot } from '../../../public/domain/session/machine'
+} from '../../../src/public/adapter/system'
+import type { LocationResult } from '../../../src/public/adapter/location'
+import type { NetResult } from '../../../src/public/adapter/network'
+import type { PackageInfo } from '../../../src/public/adapter/package'
+import type { SessionSnapshot } from '../../../src/public/domain/session/machine'
 
 function makeDeps(overrides: Partial<StatDataDeps> = {}): StatDataDeps {
   const system: SystemInfoStatic = {

@@ -1,0 +1,157 @@
+/**
+ * runtime/install 单元测试。
+ *
+ * 重点覆盖：
+ *   I1 模块加载即触发安装；幂等性。
+ *   I2 `process.env.UNI_STATISTICS_CONFIG` 被正确解析为 StatApp.install 的 config。
+ *   I3 `opts.config` 优先级高于 manifest 配置。
+ *   I4 字段类型异常 / JSON 损坏时不抛、走默认值。
+ *
+ * 注：本测试不验证 vue.mixin 装载，因为 jest 环境没有 vue runtime；通过 `skipVueMixin` 跳过。
+ */
+
+import * as queueMod from '../../../src/public/pipeline/queue'
+import * as retryMod from '../../../src/public/pipeline/retry'
+import * as sessionMod from '../../../src/public/domain/session/machine'
+import * as visitMod from '../../../src/public/domain/visit/firstVisit'
+import { __resetCache as resetDevice } from '../../../src/public/adapter/device'
+import { __resetState as resetEntry } from '../../../src/public/domain/entry/entryPage'
+import { __resetCache as resetPackage } from '../../../src/public/adapter/package'
+import { __resetCache as resetSystem } from '../../../src/public/adapter/system'
+import { __resetTitle } from '../../../src/public/domain/title'
+import { __resetStatApp, getStatApp } from '../../../src/public/runtime/StatApp'
+import {
+  __resetInstall,
+  installPublicStat,
+} from '../../../src/public/runtime/install'
+import { __resetLifecycleState } from '../../../src/public/runtime/lifecycleHooks'
+import { installMockUni, restoreMockUni } from '../helpers/mockUni'
+import { storage } from '../../../src/public/infra/storage'
+
+function resetAll(): void {
+  __resetInstall()
+  queueMod.__reset()
+  retryMod.__reset()
+  sessionMod.__resetState()
+  visitMod.__resetState()
+  resetEntry()
+  __resetTitle()
+  resetDevice()
+  resetPackage()
+  resetSystem()
+  __resetLifecycleState()
+  __resetStatApp()
+  storage.__resetCache()
+}
+
+describe('runtime/install', () => {
+  beforeEach(() => {
+    installMockUni({ platform: 'h5' })
+    resetAll()
+    delete (process.env as Record<string, string | undefined>)
+      .UNI_STATISTICS_CONFIG
+  })
+
+  afterEach(() => {
+    delete (process.env as Record<string, string | undefined>)
+      .UNI_STATISTICS_CONFIG
+    resetAll()
+    restoreMockUni()
+  })
+
+  test('I1 install 幂等：重复调用不再重新装配', () => {
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const first = getStatApp().getCollector()
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const second = getStatApp().getCollector()
+    expect(first).toBe(second) // 同一引用 → 第二次 noop
+  })
+
+  test('I2 manifest.uniStatistics → StatApp.install config 透传（超时/间隔/通道）', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        enable: true,
+        version: 3, // 模块版本，公有版语境下被忽略
+        channelVersion: 1, // 强制走 HTTP 1.0 通道
+        backgroundTimeoutSec: 30,
+        pageInactiveTimeoutSec: 45,
+        reportIntervalSec: 5,
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const cfg = getStatApp().getConfig()!
+    expect(cfg.version).toBe('1') // channelVersion 映射到通道版本
+    expect(cfg.backgroundTimeoutSec).toBe(30)
+    expect(cfg.pageInactiveTimeoutSec).toBe(45)
+    expect(cfg.reportIntervalSec).toBe(5)
+  })
+
+  test('I3 opts.config 优先级高于 manifest', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        channelVersion: 1,
+        backgroundTimeoutSec: 30,
+      })
+
+    installPublicStat({
+      config: { backgroundTimeoutSec: 999 },
+      skipVueMixin: true,
+      skipUniReport: true,
+    })
+    const cfg = getStatApp().getConfig()!
+    expect(cfg.backgroundTimeoutSec).toBe(999) // opts 覆盖
+    expect(cfg.version).toBe('1') // manifest 通道版本仍生效
+  })
+
+  test('I4 JSON 损坏时不抛错，走默认值', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      '{not_json'
+    expect(() =>
+      installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    ).not.toThrow()
+    const cfg = getStatApp().getConfig()!
+    expect(cfg.backgroundTimeoutSec).toBe(300) // 默认值
+    expect(cfg.pageInactiveTimeoutSec).toBe(1800)
+  })
+
+  test('I5 manifest 字段类型异常时仅忽略该字段，其他字段仍生效', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        channelVersion: 1,
+        backgroundTimeoutSec: 'oops', // 非法
+        pageInactiveTimeoutSec: 60, // 合法
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const cfg = getStatApp().getConfig()!
+    expect(cfg.version).toBe('1') // channelVersion 合法
+    expect(cfg.backgroundTimeoutSec).toBe(300) // 非法 → 走默认
+    expect(cfg.pageInactiveTimeoutSec).toBe(60) // 合法值生效
+  })
+
+  test('I6 未设置 UNI_STATISTICS_CONFIG 时 install 仍能完成（默认 version=image）', () => {
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const cfg = getStatApp().getConfig()!
+    expect(cfg.version).toBe('image') // StatApp.normalizeConfig 默认
+    expect(cfg.backgroundTimeoutSec).toBe(300)
+  })
+
+  test('I7 manifest.imageReport 字段被忽略：host/projectId/topicId 属于 SDK 内部参数', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        channelVersion: 'image',
+        // 这些字段不应被解析进 cfg，业务方设了也不生效
+        imageReport: {
+          host: 'https://my-tls.example.com',
+          projectId: 'my-pid',
+          topicId: 'my-tid',
+        },
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const cfg = getStatApp().getConfig()! as unknown as Record<string, unknown>
+    expect(cfg.version).toBe('image')
+    // image 字段不存在于 StatAppConfig，imageReport 整个被忽略
+    expect(cfg.image).toBeUndefined()
+  })
+})

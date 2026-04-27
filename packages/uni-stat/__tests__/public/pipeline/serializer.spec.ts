@@ -2,7 +2,7 @@ import {
   type Buckets,
   flatten,
   handleData,
-} from '../../../public/pipeline/serializer'
+} from '../../../src/public/pipeline/serializer'
 
 const make = (lt: string, tag: string) => ({ lt, t: 1, tag })
 

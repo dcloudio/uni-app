@@ -5,8 +5,8 @@ import {
   getCommitted,
   loadVisitSnapshot,
   rollbackPendingVisit,
-} from '../../../../public/domain/visit/firstVisit'
-import { storage } from '../../../../public/infra/storage'
+} from '../../../../src/public/domain/visit/firstVisit'
+import { storage } from '../../../../src/public/infra/storage'
 import {
   type MockUniHandle,
   installMockUni,

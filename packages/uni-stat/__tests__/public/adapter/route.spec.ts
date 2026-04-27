@@ -4,7 +4,7 @@ import {
   getCurrentRouteWithQuery,
   getTopPageVm,
   parseQuery,
-} from '../../../public/adapter/route'
+} from '../../../src/public/adapter/route'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
 type PageVm = Record<string, unknown>
