@@ -2322,9 +2322,18 @@ function createCollector(deps) {
                 deps.queue.rollback(snapshot);
                 return;
             }
+            // 切片阈值 = min(全局配置, 通道物理上限)
+            //   - 全局：BATCH_REQUESTS_MAX_BYTES（业务可调）
+            //   - 通道：image GET URL 经 encodeURIComponent 膨胀，原文不能按 URL 上限直接用
+            //     → 由 image channel 自身反推（见 image.ts maxRequestBytes）
+            // 这样 100 条事件在 image 通道下不会再切出"原文 4KB / encoded 7.5KB"超长片。
+            const globalMaxBytes = (_b = (_a = deps.batchLimits) === null || _a === void 0 ? void 0 : _a.maxBytes) !== null && _b !== void 0 ? _b : BATCH_REQUESTS_MAX_BYTES;
+            const channelMaxBytes = typeof channel.maxRequestBytes === 'function'
+                ? channel.maxRequestBytes()
+                : Number.POSITIVE_INFINITY;
             const limits = {
-                maxEvents: (_b = (_a = deps.batchLimits) === null || _a === void 0 ? void 0 : _a.maxEvents) !== null && _b !== void 0 ? _b : BATCH_MAX_EVENTS,
-                maxBytes: (_d = (_c = deps.batchLimits) === null || _c === void 0 ? void 0 : _c.maxBytes) !== null && _d !== void 0 ? _d : BATCH_REQUESTS_MAX_BYTES,
+                maxEvents: (_d = (_c = deps.batchLimits) === null || _c === void 0 ? void 0 : _c.maxEvents) !== null && _d !== void 0 ? _d : BATCH_MAX_EVENTS,
+                maxBytes: Math.min(globalMaxBytes, channelMaxBytes),
             };
             const chunks = handleDataChunked(snapshot, limits);
             if (chunks.length === 0)
@@ -2625,6 +2634,25 @@ function getUni$3() {
     return globalThis.uni;
 }
 /**
+ * 估算 image GET URL 中"非 Logs"部分的固定字节预算：
+ *   `https://tls-cn-beijing.volces.com/WebTrack.gif?ProjectId=<uuid>&TopicId=<uuid>&Logs=&Source=webImg&Time=<13>`
+ * 约 240B；保守取 256B，让 chunkEvents 留一点 headroom。
+ */
+const IMAGE_URL_BASE_OVERHEAD = 256;
+/**
+ * `encodeURIComponent` 字节膨胀比的上界估算（取最坏值，避免任意业务下切片仍超长）：
+ *   - 纯 ASCII JSON `{"a":1}` → `%7B%22a%22%3A1%7D` ≈ 2.0–2.3x
+ *   - 中英混排实测 ≈ 1.8x
+ *   - **纯中文 3.0x**（每个汉字 UTF-8 占 3B，`%E4%B8%AD` 占 9 字符 → 3x）
+ *
+ * 取 **3.0** 作为安全上界：覆盖任意 unicode 业务事件名 / 错误堆栈。
+ *
+ * 取 3.0 的代价：默认 `maxUrlLength=6144` 时单片原文上限 ≈ (6144-256)/3 ≈ 1962B。
+ * 100 条 ~440B 中英混排事件会切成约 23 片，比理论最少（13 片）多 ~10 片，
+ * 但能保证**任意业务（包括纯中文）下 URL 都不超 6KB**，无需依赖 preflight 兜底。
+ */
+const IMAGE_ENCODE_RATIO = 3.0;
+/**
  * 拼装最终请求 URL。导出供测试/调试用。
  *
  * @param payload  上报 payload；其中 `requests` 已是 `JSON.stringify(events)`。
@@ -2750,6 +2778,21 @@ function createImageChannel(opts = {}) {
         available() {
             // 配置齐全即可：浏览器无 Image 时仍能走 uni.request 兜底
             return configured();
+        },
+        /**
+         * 反推单批 `requests` 原文字节上限：
+         *   原文 ≤ (maxUrlLength - IMAGE_URL_BASE_OVERHEAD) / IMAGE_ENCODE_RATIO
+         *
+         * 例：默认 `maxUrlLength = 6144`，IMAGE_URL_BASE_OVERHEAD = 256，IMAGE_ENCODE_RATIO = 2.5
+         *   → 原文上限 = (6144 - 256) / 2.5 ≈ 2355 字节
+         * collector 取该值与全局 `BATCH_REQUESTS_MAX_BYTES` 的 min 作为切片阈值；
+         * 实测可让"100 条 ~440B 事件"切成 ~20 片，每片 encode 后稳定 < 6KB。
+         *
+         * 下限保护：512B（避免 `maxUrlLength` 配置过小导致单条事件都放不下）。
+         */
+        maxRequestBytes() {
+            const raw = (maxUrlLength - IMAGE_URL_BASE_OVERHEAD) / IMAGE_ENCODE_RATIO;
+            return Math.max(512, Math.floor(raw));
         },
         send(payload) {
             return __awaiter(this, void 0, void 0, function* () {

@@ -58,14 +58,18 @@ function getUni(): UniRequestApi | undefined {
 const IMAGE_URL_BASE_OVERHEAD = 256
 
 /**
- * `encodeURIComponent` 平均膨胀比的上界估算：
- *   - ASCII JSON（`{"a":1}` → `%7B%22a%22%3A1%7D`）≈ 2.0–2.3x
+ * `encodeURIComponent` 字节膨胀比的上界估算（取最坏值，避免任意业务下切片仍超长）：
+ *   - 纯 ASCII JSON `{"a":1}` → `%7B%22a%22%3A1%7D` ≈ 2.0–2.3x
  *   - 中英混排实测 ≈ 1.8x
- *   - 纯中文最坏 3.0x
- * 取 **2.5** 作为中等保守值：覆盖大多数业务（含中文事件名 / 错误堆栈），
- * 极端纯中文场景由 `preflight` 抛 `PermanentChannelError` 兜底丢弃单片。
+ *   - **纯中文 3.0x**（每个汉字 UTF-8 占 3B，`%E4%B8%AD` 占 9 字符 → 3x）
+ *
+ * 取 **3.0** 作为安全上界：覆盖任意 unicode 业务事件名 / 错误堆栈。
+ *
+ * 取 3.0 的代价：默认 `maxUrlLength=6144` 时单片原文上限 ≈ (6144-256)/3 ≈ 1962B。
+ * 100 条 ~440B 中英混排事件会切成约 23 片，比理论最少（13 片）多 ~10 片，
+ * 但能保证**任意业务（包括纯中文）下 URL 都不超 6KB**，无需依赖 preflight 兜底。
  */
-const IMAGE_ENCODE_RATIO = 2.5
+const IMAGE_ENCODE_RATIO = 3.0
 
 /**
  * 拼装最终请求 URL。导出供测试/调试用。

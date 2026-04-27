@@ -165,9 +165,20 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
       return
     }
 
+    // 切片阈值 = min(全局配置, 通道物理上限)
+    //   - 全局：BATCH_REQUESTS_MAX_BYTES（业务可调）
+    //   - 通道：image GET URL 经 encodeURIComponent 膨胀，原文不能按 URL 上限直接用
+    //     → 由 image channel 自身反推（见 image.ts maxRequestBytes）
+    // 这样 100 条事件在 image 通道下不会再切出"原文 4KB / encoded 7.5KB"超长片。
+    const globalMaxBytes =
+      deps.batchLimits?.maxBytes ?? BATCH_REQUESTS_MAX_BYTES
+    const channelMaxBytes =
+      typeof channel.maxRequestBytes === 'function'
+        ? channel.maxRequestBytes()
+        : Number.POSITIVE_INFINITY
     const limits = {
       maxEvents: deps.batchLimits?.maxEvents ?? BATCH_MAX_EVENTS,
-      maxBytes: deps.batchLimits?.maxBytes ?? BATCH_REQUESTS_MAX_BYTES,
+      maxBytes: Math.min(globalMaxBytes, channelMaxBytes),
     }
     const chunks = handleDataChunked(snapshot, limits)
     if (chunks.length === 0) return

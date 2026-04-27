@@ -246,6 +246,62 @@ describe('pipeline/channel/image', () => {
     expect((caught as Error).message).toMatch(/uni.request unavailable/)
   })
 
+  test('IM8 maxRequestBytes 按 maxUrlLength 反推原文上限', () => {
+    // 默认 maxUrlLength = 6 * 1024 = 6144
+    // (6144 - 256) / 3 = 1962.67 → floor → 1962
+    const ch = createImageChannel({ host: HOST, projectId: PID, topicId: TID })
+    expect(typeof ch.maxRequestBytes).toBe('function')
+    expect(ch.maxRequestBytes!()).toBe(1962)
+
+    // 自定义 maxUrlLength，反推应同步缩放
+    const ch2 = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      maxUrlLength: 4 * 1024, // 4096
+    })
+    // (4096 - 256) / 3 = 1280 → floor → 1280
+    expect(ch2.maxRequestBytes!()).toBe(1280)
+
+    // 极小 maxUrlLength 时被 512 下限保护
+    const ch3 = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      maxUrlLength: 100,
+    })
+    expect(ch3.maxRequestBytes!()).toBe(512)
+  })
+
+  test('IM9 切片阈值 1962B 时，事件经 encodeURIComponent 后 URL 不超 6KB（含中文）', () => {
+    // 模拟 collector 切片后形成的 ~1900B 原文 requests，验证拼出的 URL ≤ 6144
+    const events: Array<Record<string, unknown>> = []
+    let json = ''
+    while (json.length < 1900) {
+      events.push({
+        lt: '11',
+        t: 1700000000,
+        sk: 's1',
+        url: '/pages/中文页面/index',
+        evt: 'click_中文按钮',
+      })
+      json = JSON.stringify(events)
+    }
+    const payload: ReportPayload = {
+      usv: '3',
+      t: 1700000000,
+      requests: json,
+      _id: 'p1',
+    }
+    const url = buildImageReportUrl(payload, {
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      nowMs: () => 1700000000000,
+    })
+    expect(url.length).toBeLessThanOrEqual(6 * 1024)
+  })
+
   test('IM7 host 末尾斜杠会被裁剪', () => {
     const url = buildImageReportUrl(PAYLOAD, {
       host: HOST + '///',
