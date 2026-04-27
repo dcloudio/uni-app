@@ -39,7 +39,7 @@ describe('infra/logger', () => {
   test('UNI_STAT_DEBUG === "true" 时 debug 输出', () => {
     ;(process.env as Record<string, string | undefined>).UNI_STAT_DEBUG = 'true'
     logger.debug('visible')
-    expect(logSpy).toHaveBeenCalledWith('[uni-stat/public]', 'visible')
+    expect(logSpy).toHaveBeenCalledWith('[uni统计公有版]', 'visible')
   })
 
   test('UNI_STAT_DEBUG === "false" 字符串时 debug 不输出（修复缺陷 #19）', () => {
@@ -60,7 +60,7 @@ describe('infra/logger', () => {
     // 此时运行时拿到的不是字符串 "true" 而是布尔 true，logger 必须兼容才能让 debug 生效。
     ;(process.env as unknown as Record<string, unknown>).UNI_STAT_DEBUG = true
     logger.debug('visible')
-    expect(logSpy).toHaveBeenCalledWith('[uni-stat/public]', 'visible')
+    expect(logSpy).toHaveBeenCalledWith('[uni统计公有版]', 'visible')
   })
 
   test('UNI_STAT_DEBUG 为布尔 false 时不开启', () => {
@@ -83,12 +83,12 @@ describe('infra/logger', () => {
     expect(logSpy).not.toHaveBeenCalled()
   })
 
-  test('info / warn / error 始终输出，且带 [uni-stat/public] 前缀', () => {
+  test('info / warn / error 始终输出，且带 [uni统计公有版] 前缀', () => {
     logger.info('i')
     logger.warn('w')
     logger.error('e')
-    expect(infoSpy).toHaveBeenCalledWith('[uni-stat/public]', 'i')
-    expect(warnSpy).toHaveBeenCalledWith('[uni-stat/public]', 'w')
-    expect(errSpy).toHaveBeenCalledWith('[uni-stat/public]', 'e')
+    expect(infoSpy).toHaveBeenCalledWith('[uni统计公有版]', 'i')
+    expect(warnSpy).toHaveBeenCalledWith('[uni统计公有版]', 'w')
+    expect(errSpy).toHaveBeenCalledWith('[uni统计公有版]', 'e')
   })
 })

@@ -20,9 +20,9 @@ import {
   logNoChannel,
   logRecoverItem,
   logRecoverStart,
-  logReportFailure,
+  logReportFailureReason,
   logReportStart,
-  logReportSuccess,
+  logReportSummary,
 } from '../infra/debugLog'
 import { logger } from '../infra/logger'
 import { tryRun } from '../infra/safe'
@@ -189,13 +189,13 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
       const arr = snapshot[lt]
       if (Array.isArray(arr)) totalCount += arr.length
     }
-    logReportStart({
-      channel: channel.name,
-      bucket: snapshot,
-      payloadId:
-        chunks.length === 1 ? undefined : '<chunked x' + chunks.length + '>',
-    })
+    logReportStart({ channel: channel.name, bucket: snapshot })
 
+    // 切片是适配 image URL 长度限制 / 全局 batch 字节阈值的内部分批策略，业务方
+    // 不应感知。统计维度统一为**事件数**：成功片累计 okEvents、失败片累计 failedEvents
+    // + per-slice logReportFailure（保留原因）；末尾由 logReportSummary 输出统一汇总。
+    let okEvents = 0
+    let failedEvents = 0
     let allOk = true
     for (let i = 0; i < chunks.length; i++) {
       const requests = chunks[i]
@@ -205,17 +205,13 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         requests,
         _id: (deps.genPayloadId ?? (() => defaultGenPayloadId(deps.nowMs())))(),
       }
-      const sliceStartMs = deps.nowMs()
+      const sliceEvents = countEvents(requests)
       try {
         await channel.send(payload)
-        logReportSuccess({
-          channel: channel.name,
-          count: countEvents(requests),
-          elapsedMs: deps.nowMs() - sliceStartMs,
-          payloadId: payload._id,
-        })
+        okEvents += sliceEvents
       } catch (e) {
         allOk = false
+        failedEvents += sliceEvents
         if (isPermanentChannelError(e)) {
           // 永久错：丢弃本片，不 persist、不污染下次冷启
           logger.warn(
@@ -223,14 +219,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
             e,
             'sliceBytes=' + requests.length
           )
-          logReportFailure({
-            channel: channel.name,
-            count: countEvents(requests),
-            elapsedMs: deps.nowMs() - sliceStartMs,
-            error: e,
-            payloadId: payload._id,
-            persistedId: undefined,
-          })
+          logReportFailureReason({ error: e, persistedId: undefined })
           continue
         }
         logger.warn('[uni-stat] channel send failed; persist for retry', e)
@@ -238,14 +227,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         if (!id) {
           logger.warn('[uni-stat] retry.persist returned no id, drop slice')
         }
-        logReportFailure({
-          channel: channel.name,
-          count: countEvents(requests),
-          elapsedMs: deps.nowMs() - sliceStartMs,
-          error: e,
-          payloadId: payload._id,
-          persistedId: id,
-        })
+        logReportFailureReason({ error: e, persistedId: id })
       }
     }
 
@@ -257,16 +239,14 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
     } else {
       tryRun(() => deps.visit.rollbackPendingVisit(), undefined as void)
     }
-    // 仅多片场景额外打一行汇总，方便排查"切片是不是分均匀"
-    if (chunks.length > 1) {
-      logger.warn(
-        '[uni-stat] flush chunked',
-        'chunks=' + chunks.length,
-        'totalEvents=' + totalCount,
-        'totalElapsedMs=' + (deps.nowMs() - startMs),
-        'allOk=' + allOk
-      )
-    }
+    // 单批最终汇总：业务方视角只看到"成功/失败/部分失败"，不暴露切片实现。
+    // 文案见 debugLog.ts#logReportSummary。
+    logReportSummary({
+      channel: channel.name,
+      okCount: okEvents,
+      failedCount: failedEvents,
+      elapsedMs: deps.nowMs() - startMs,
+    })
   }
 
   /** 估算一片的事件数（容错：解析失败按 0 计）。仅供日志展示。 */

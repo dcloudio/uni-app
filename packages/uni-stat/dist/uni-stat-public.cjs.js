@@ -1961,7 +1961,7 @@ function logBoot(info) {
     if (!logger.isDebug())
         return;
     logger.debug('=== uni 统计公有版已启用 ===');
-    // 通道: ${info.channel} | 
+    // 通道: ${info.channel} |
     logger.debug(`上报间隔: ${info.reportIntervalSec}s | 应用APPID: ${info.ak || '<未注入>'}${info.appName ? ` | 应用名: ${info.appName}` : ''}`);
     if (info.debugFromManifest) {
         logger.debug('调试模式：已从 manifest.uniStatistics.debug 自动开启');
@@ -1982,33 +1982,55 @@ function logReportStart(info) {
         return;
     const total = bucketSize(info.bucket);
     const summary = bucketSummary(info.bucket);
-    // 通道=${info.channel}
     logger.debug(`=== 准备上报：共 ${total} 条事件 (${summary}) ===`);
 }
 /**
- * 上报成功。`elapsedMs` 是从 logReportStart 到 ack 的毫秒数。
+ * 仅输出失败的"原因 / 重试落盘"细节，不输出 `=== 上报失败 ===` headline。
+ *
+ * 用于 collector 在切片化发送时**每次失败 send 后立即给出可观察性**：业务方能看到
+ * 是哪一批因什么失败、是否进入了重试队列；而最终的"上报失败 / 上报完成（部分失败）"
+ * 总览由 `logReportSummary` 统一输出，避免一次失败被打两次 headline。
  */
-function logReportSuccess(info) {
+function logReportFailureReason(info) {
     if (!logger.isDebug())
         return;
-    logger.debug(`=== 上报成功： ${info.count} 条事件已送达, 用时 ${info.elapsedMs}ms ===`);
-}
-/**
- * 上报失败。`persistedId` 不为空表示已落盘 retry，下次冷启会续传。
- */
-function logReportFailure(info) {
-    if (!logger.isDebug())
-        return;
-    info.payloadId ? ` [_id=${info.payloadId}]` : '';
-    const errMsg = describeError(info.error);
-    // 通道=${info.channel}
-    logger.debug(`=== 上报失败： ${info.count} 条事件未送达, 用时 ${info.elapsedMs}ms ===`);
-    logger.debug(`原因: ${errMsg}`);
+    logger.debug(`原因: ${describeError(info.error)}`);
     if (info.persistedId) {
         logger.debug(`已暂存重试队列 [retryId=${info.persistedId}]，下次启动自动续传`);
     }
     else {
         logger.debug('未能写入重试队列：本批数据已丢弃');
+    }
+}
+/**
+ * 单批次上报的最终汇总。
+ *
+ * 设计原则：**对外只暴露"成功 / 失败"两种结果，不暴露"切片"等内部实现细节**。
+ *
+ * 切片是 collector 为了适配 image 通道 URL 长度上限 / 全局 batch 字节阈值而做的
+ * 内部分批发送策略；业务方关心的只是"这一批数据有没有送达、送达多少、丢失多少"。
+ * 因此本汇总以**事件数**（而非片数）为统计维度，文案与单批 `logReportSuccess` /
+ * `logReportFailure` 完全对齐——业务方感知不到内部走了几次 send。
+ *
+ * 三种状态文案：
+ *   - 全成功：`=== 上报成功： N 条事件已送达, 用时 Tms ===`（与 logReportSuccess 同）
+ *   - 全失败：`=== 上报失败： N 条事件未送达, 用时 Tms ===`（与 logReportFailure 同）
+ *   - 部分失败：`=== 上报完成：成功 X 条，失败 Y 条，用时 Tms ===`
+ *
+ * 失败原因 / 重试落盘 id 等细节由 collector 在每次失败 send 后通过 logReportFailure
+ * 输出，本汇总不再重复，避免噪音。
+ */
+function logReportSummary(info) {
+    if (!logger.isDebug())
+        return;
+    if (info.failedCount === 0) {
+        logger.debug(`=== 上报成功： ${info.okCount} 条事件已送达, 用时 ${info.elapsedMs}ms ===`);
+    }
+    else if (info.okCount === 0) {
+        logger.debug(`=== 上报失败： ${info.failedCount} 条事件未送达, 用时 ${info.elapsedMs}ms ===`);
+    }
+    else {
+        logger.debug(`=== 上报完成：成功 ${info.okCount} 条，失败 ${info.failedCount} 条，用时 ${info.elapsedMs}ms ===`);
     }
 }
 /**
@@ -2349,11 +2371,12 @@ function createCollector(deps) {
                 if (Array.isArray(arr))
                     totalCount += arr.length;
             }
-            logReportStart({
-                channel: channel.name,
-                bucket: snapshot,
-                payloadId: chunks.length === 1 ? undefined : '<chunked x' + chunks.length + '>',
-            });
+            logReportStart({ channel: channel.name, bucket: snapshot });
+            // 切片是适配 image URL 长度限制 / 全局 batch 字节阈值的内部分批策略，业务方
+            // 不应感知。统计维度统一为**事件数**：成功片累计 okEvents、失败片累计 failedEvents
+            // + per-slice logReportFailure（保留原因）；末尾由 logReportSummary 输出统一汇总。
+            let okEvents = 0;
+            let failedEvents = 0;
             let allOk = true;
             for (let i = 0; i < chunks.length; i++) {
                 const requests = chunks[i];
@@ -2363,29 +2386,18 @@ function createCollector(deps) {
                     requests,
                     _id: ((_e = deps.genPayloadId) !== null && _e !== void 0 ? _e : (() => defaultGenPayloadId(deps.nowMs())))(),
                 };
-                const sliceStartMs = deps.nowMs();
+                const sliceEvents = countEvents(requests);
                 try {
                     yield channel.send(payload);
-                    logReportSuccess({
-                        channel: channel.name,
-                        count: countEvents(requests),
-                        elapsedMs: deps.nowMs() - sliceStartMs,
-                        payloadId: payload._id,
-                    });
+                    okEvents += sliceEvents;
                 }
                 catch (e) {
                     allOk = false;
+                    failedEvents += sliceEvents;
                     if (isPermanentChannelError(e)) {
                         // 永久错：丢弃本片，不 persist、不污染下次冷启
                         logger.warn('[uni-stat] channel send permanent error, drop slice', e, 'sliceBytes=' + requests.length);
-                        logReportFailure({
-                            channel: channel.name,
-                            count: countEvents(requests),
-                            elapsedMs: deps.nowMs() - sliceStartMs,
-                            error: e,
-                            payloadId: payload._id,
-                            persistedId: undefined,
-                        });
+                        logReportFailureReason({ error: e, persistedId: undefined });
                         continue;
                     }
                     logger.warn('[uni-stat] channel send failed; persist for retry', e);
@@ -2393,14 +2405,7 @@ function createCollector(deps) {
                     if (!id) {
                         logger.warn('[uni-stat] retry.persist returned no id, drop slice');
                     }
-                    logReportFailure({
-                        channel: channel.name,
-                        count: countEvents(requests),
-                        elapsedMs: deps.nowMs() - sliceStartMs,
-                        error: e,
-                        payloadId: payload._id,
-                        persistedId: id,
-                    });
+                    logReportFailureReason({ error: e, persistedId: id });
                 }
             }
             if (allOk) {
@@ -2409,10 +2414,14 @@ function createCollector(deps) {
             else {
                 tryRun(() => deps.visit.rollbackPendingVisit(), undefined);
             }
-            // 仅多片场景额外打一行汇总，方便排查"切片是不是分均匀"
-            if (chunks.length > 1) {
-                logger.warn('[uni-stat] flush chunked', 'chunks=' + chunks.length, 'totalEvents=' + totalCount, 'totalElapsedMs=' + (deps.nowMs() - startMs), 'allOk=' + allOk);
-            }
+            // 单批最终汇总：业务方视角只看到"成功/失败/部分失败"，不暴露切片实现。
+            // 文案见 debugLog.ts#logReportSummary。
+            logReportSummary({
+                channel: channel.name,
+                okCount: okEvents,
+                failedCount: failedEvents,
+                elapsedMs: deps.nowMs() - startMs,
+            });
         });
     }
     /** 估算一片的事件数（容错：解析失败按 0 计）。仅供日志展示。 */

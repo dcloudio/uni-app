@@ -13,6 +13,8 @@ export {
   logRecoverItem,
   logRecoverStart,
   logReportFailure,
+  logReportFailureReason,
+  logReportSummary,
   logReportStart,
   logReportSuccess,
 } from './debugLog'

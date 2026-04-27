@@ -89,10 +89,8 @@ describe('infra/debugLog', () => {
       payloadId: 'p-abc',
     })
     expect(logsContaining('准备上报')).toBe(true)
-    expect(logsContaining('通道=image')).toBe(true)
     expect(logsContaining('共 3 条事件')).toBe(true)
     expect(logsContaining('lt=1×1, lt=11×2')).toBe(true)
-    expect(logsContaining('[_id=p-abc]')).toBe(true)
 
     logSpy.mockClear()
     logReportSuccess({
@@ -138,7 +136,7 @@ describe('infra/debugLog', () => {
 
     logSpy.mockClear()
     logRecoverItem({ index: 2, total: 3, ok: true, payloadId: 'p-2' })
-    expect(logsContaining('续传成功 (2/3) [_id=p-2]')).toBe(true)
+    expect(logsContaining('续传成功 (2/3)')).toBe(true)
 
     logSpy.mockClear()
     logRecoverItem({
@@ -148,9 +146,7 @@ describe('infra/debugLog', () => {
       payloadId: 'p-3',
       error: new Error('timeout'),
     })
-    expect(logsContaining('续传失败 (3/3) [_id=p-3]：Error: timeout')).toBe(
-      true
-    )
+    expect(logsContaining('续传失败 (3/3)：Error: timeout')).toBe(true)
   })
 
   test('D5 logBoot 摘要包含通道 / 间隔 / ak', () => {
@@ -162,9 +158,9 @@ describe('infra/debugLog', () => {
       appName: 'demo',
       debugFromManifest: true,
     })
-    expect(logsContaining('uni 统计公有版（version=3）已启用')).toBe(true)
+    expect(logsContaining('uni 统计公有版已启用')).toBe(true)
     expect(
-      logsContaining('通道: image | 上报间隔: 10s | ak: MY_AK | appName: demo')
+      logsContaining('上报间隔: 10s | 应用APPID: MY_AK | 应用名: demo')
     ).toBe(true)
     expect(
       logsContaining('调试模式：已从 manifest.uniStatistics.debug 自动开启')
@@ -174,7 +170,7 @@ describe('infra/debugLog', () => {
   test('D5.b logBoot ak 缺失时显示 <未注入>', () => {
     logger.setDebug(true)
     logBoot({ channel: '1', reportIntervalSec: 10, ak: '' })
-    expect(logsContaining('ak: <未注入>')).toBe(true)
+    expect(logsContaining('应用APPID: <未注入>')).toBe(true)
   })
 
   test('D6 getActionLabel 覆盖所有已知 lt（lt=0 已废弃，落到未知分支）', () => {

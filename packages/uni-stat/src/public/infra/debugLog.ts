@@ -138,8 +138,6 @@ export function logReportStart(info: {
   if (!logger.isDebug()) return
   const total = bucketSize(info.bucket)
   const summary = bucketSummary(info.bucket)
-  const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : ''
-  // 通道=${info.channel}
   logger.debug(`=== 准备上报：共 ${total} 条事件 (${summary}) ===`)
 }
 
@@ -153,7 +151,6 @@ export function logReportSuccess(info: {
   payloadId?: string
 }): void {
   if (!logger.isDebug()) return
-  const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : ''
   logger.debug(
     `=== 上报成功： ${info.count} 条事件已送达, 用时 ${info.elapsedMs}ms ===`
   )
@@ -161,6 +158,9 @@ export function logReportSuccess(info: {
 
 /**
  * 上报失败。`persistedId` 不为空表示已落盘 retry，下次冷启会续传。
+ *
+ * 现状：collector 主路径已改用 `logReportFailureReason` + `logReportSummary` 组合
+ * 输出（避免汇总行重复 headline），这里保留完整版以兼容外部直接调用与历史测试。
  */
 export function logReportFailure(info: {
   channel: string
@@ -171,19 +171,71 @@ export function logReportFailure(info: {
   persistedId?: string
 }): void {
   if (!logger.isDebug()) return
-  const idTag = info.payloadId ? ` [_id=${info.payloadId}]` : ''
-  const errMsg = describeError(info.error)
-  // 通道=${info.channel}
   logger.debug(
     `=== 上报失败： ${info.count} 条事件未送达, 用时 ${info.elapsedMs}ms ===`
   )
-  logger.debug(`原因: ${errMsg}`)
+  logReportFailureReason({ error: info.error, persistedId: info.persistedId })
+}
+
+/**
+ * 仅输出失败的"原因 / 重试落盘"细节，不输出 `=== 上报失败 ===` headline。
+ *
+ * 用于 collector 在切片化发送时**每次失败 send 后立即给出可观察性**：业务方能看到
+ * 是哪一批因什么失败、是否进入了重试队列；而最终的"上报失败 / 上报完成（部分失败）"
+ * 总览由 `logReportSummary` 统一输出，避免一次失败被打两次 headline。
+ */
+export function logReportFailureReason(info: {
+  error: unknown
+  persistedId?: string
+}): void {
+  if (!logger.isDebug()) return
+  logger.debug(`原因: ${describeError(info.error)}`)
   if (info.persistedId) {
     logger.debug(
       `已暂存重试队列 [retryId=${info.persistedId}]，下次启动自动续传`
     )
   } else {
     logger.debug('未能写入重试队列：本批数据已丢弃')
+  }
+}
+
+/**
+ * 单批次上报的最终汇总。
+ *
+ * 设计原则：**对外只暴露"成功 / 失败"两种结果，不暴露"切片"等内部实现细节**。
+ *
+ * 切片是 collector 为了适配 image 通道 URL 长度上限 / 全局 batch 字节阈值而做的
+ * 内部分批发送策略；业务方关心的只是"这一批数据有没有送达、送达多少、丢失多少"。
+ * 因此本汇总以**事件数**（而非片数）为统计维度，文案与单批 `logReportSuccess` /
+ * `logReportFailure` 完全对齐——业务方感知不到内部走了几次 send。
+ *
+ * 三种状态文案：
+ *   - 全成功：`=== 上报成功： N 条事件已送达, 用时 Tms ===`（与 logReportSuccess 同）
+ *   - 全失败：`=== 上报失败： N 条事件未送达, 用时 Tms ===`（与 logReportFailure 同）
+ *   - 部分失败：`=== 上报完成：成功 X 条，失败 Y 条，用时 Tms ===`
+ *
+ * 失败原因 / 重试落盘 id 等细节由 collector 在每次失败 send 后通过 logReportFailure
+ * 输出，本汇总不再重复，避免噪音。
+ */
+export function logReportSummary(info: {
+  channel: string
+  okCount: number
+  failedCount: number
+  elapsedMs: number
+}): void {
+  if (!logger.isDebug()) return
+  if (info.failedCount === 0) {
+    logger.debug(
+      `=== 上报成功： ${info.okCount} 条事件已送达, 用时 ${info.elapsedMs}ms ===`
+    )
+  } else if (info.okCount === 0) {
+    logger.debug(
+      `=== 上报失败： ${info.failedCount} 条事件未送达, 用时 ${info.elapsedMs}ms ===`
+    )
+  } else {
+    logger.debug(
+      `=== 上报完成：成功 ${info.okCount} 条，失败 ${info.failedCount} 条，用时 ${info.elapsedMs}ms ===`
+    )
   }
 }
 

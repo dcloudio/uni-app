@@ -298,66 +298,66 @@ describe('pipeline/collector', () => {
       expect(deps.retry.persist).not.toHaveBeenCalled()
       // 任一片失败：不 commit
       expect(deps.visit.commitVisitOnAck).not.toHaveBeenCalled()
-      test('channel.maxRequestBytes 比全局阈值更紧 → 用通道阈值切片', async () => {
-        // 模拟 image 通道反馈"原文上限 200B"；20 条事件 ≈ 800B 原文 → 至少切 4 片
-        const channel: Channel = {
-          name: 'image',
-          available: () => true,
-          send: jest.fn(() => Promise.resolve()),
-          maxRequestBytes: () => 200,
-        }
-        const deps = makeDeps({
-          selectChannel: jest.fn(() => channel) as MockedDeps['selectChannel'],
-        })
-        deps.queue.shouldFlush.mockReturnValue(true)
-        const arr: StatData[] = []
-        for (let i = 0; i < 20; i++)
-          arr.push({ lt: '21', a: 'value' + i } as StatData)
-        deps.queue.flush.mockReturnValue({ '21': arr })
-        // 全局给一个很大的值，确保是通道阈值生效
-        deps.batchLimits = { maxEvents: 10000, maxBytes: 1024 * 1024 }
-        const c = createCollector(deps)
-        await c.flush(true)
-        const sendMock = channel.send as jest.Mock
-        // 20 条 ~24B 事件按 200B 阈值切片，至少 3 片
-        expect(sendMock.mock.calls.length).toBeGreaterThanOrEqual(3)
-        // 每片原文不超过 200B
-        for (const call of sendMock.mock.calls) {
-          const payload = call[0] as ReportPayload
-          expect(payload.requests.length).toBeLessThanOrEqual(200)
-        }
-        // 全部成功 → commit
-        expect(deps.visit.commitVisitOnAck).toHaveBeenCalledTimes(1)
-      })
-
-      test('channel.maxRequestBytes 比全局阈值更宽 → 仍受全局限制', async () => {
-        const channel: Channel = {
-          name: '2.0',
-          available: () => true,
-          send: jest.fn(() => Promise.resolve()),
-          maxRequestBytes: () => 1024 * 1024, // 1MB
-        }
-        const deps = makeDeps({
-          selectChannel: jest.fn(() => channel) as MockedDeps['selectChannel'],
-        })
-        deps.queue.shouldFlush.mockReturnValue(true)
-        const arr: StatData[] = []
-        for (let i = 0; i < 30; i++)
-          arr.push({ lt: '21', a: 'value' + i } as StatData)
-        deps.queue.flush.mockReturnValue({ '21': arr })
-        deps.batchLimits = { maxEvents: 10000, maxBytes: 200 } // 全局更紧
-        const c = createCollector(deps)
-        await c.flush(true)
-        const sendMock = channel.send as jest.Mock
-        for (const call of sendMock.mock.calls) {
-          const payload = call[0] as ReportPayload
-          expect(payload.requests.length).toBeLessThanOrEqual(200)
-        }
-      })
-
       expect(deps.visit.rollbackPendingVisit).toHaveBeenCalledTimes(1)
       // 4 片都被尝试发送
       expect((failing.send as jest.Mock).mock.calls.length).toBe(4)
+    })
+
+    test('channel.maxRequestBytes 比全局阈值更紧 → 用通道阈值切片', async () => {
+      // 模拟 image 通道反馈"原文上限 200B"；20 条事件 ≈ 800B 原文 → 至少切 4 片
+      const channel: Channel = {
+        name: 'image',
+        available: () => true,
+        send: jest.fn(() => Promise.resolve()),
+        maxRequestBytes: () => 200,
+      }
+      const deps = makeDeps({
+        selectChannel: jest.fn(() => channel) as MockedDeps['selectChannel'],
+      })
+      deps.queue.shouldFlush.mockReturnValue(true)
+      const arr: StatData[] = []
+      for (let i = 0; i < 20; i++)
+        arr.push({ lt: '21', a: 'value' + i } as StatData)
+      deps.queue.flush.mockReturnValue({ '21': arr })
+      // 全局给一个很大的值，确保是通道阈值生效
+      deps.batchLimits = { maxEvents: 10000, maxBytes: 1024 * 1024 }
+      const c = createCollector(deps)
+      await c.flush(true)
+      const sendMock = channel.send as jest.Mock
+      // 20 条 ~24B 事件按 200B 阈值切片，至少 3 片
+      expect(sendMock.mock.calls.length).toBeGreaterThanOrEqual(3)
+      // 每片原文不超过 200B
+      for (const call of sendMock.mock.calls) {
+        const payload = call[0] as ReportPayload
+        expect(payload.requests.length).toBeLessThanOrEqual(200)
+      }
+      // 全部成功 → commit
+      expect(deps.visit.commitVisitOnAck).toHaveBeenCalledTimes(1)
+    })
+
+    test('channel.maxRequestBytes 比全局阈值更宽 → 仍受全局限制', async () => {
+      const channel: Channel = {
+        name: '2.0',
+        available: () => true,
+        send: jest.fn(() => Promise.resolve()),
+        maxRequestBytes: () => 1024 * 1024, // 1MB
+      }
+      const deps = makeDeps({
+        selectChannel: jest.fn(() => channel) as MockedDeps['selectChannel'],
+      })
+      deps.queue.shouldFlush.mockReturnValue(true)
+      const arr: StatData[] = []
+      for (let i = 0; i < 30; i++)
+        arr.push({ lt: '21', a: 'value' + i } as StatData)
+      deps.queue.flush.mockReturnValue({ '21': arr })
+      deps.batchLimits = { maxEvents: 10000, maxBytes: 200 } // 全局更紧
+      const c = createCollector(deps)
+      await c.flush(true)
+      const sendMock = channel.send as jest.Mock
+      for (const call of sendMock.mock.calls) {
+        const payload = call[0] as ReportPayload
+        expect(payload.requests.length).toBeLessThanOrEqual(200)
+      }
     })
 
     test('force=true 即使 shouldFlush=false 仍 flush', async () => {
