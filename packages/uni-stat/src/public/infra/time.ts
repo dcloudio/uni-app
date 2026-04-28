@@ -31,3 +31,14 @@ export function elapsedSec(fromSec: number): number {
   const diff = nowSec() - fromSec
   return diff > 0 ? diff : 0
 }
+
+/**
+ * 将「离开页 / 后台前当前页」停留时长（秒）钳到与私有版 `get_residence_time` 一致：
+ * 差值小于 1 秒时按 1 秒上报（`residenceTime &lt; 1 ? 1 : residenceTime`）。
+ *
+ * @param deltaSec 非负停留秒数优先；传入负数时视为 0 再钳制。
+ */
+export function clampUrlrefStaySec(deltaSec: number): number {
+  const d = deltaSec > 0 ? deltaSec : 0
+  return d < 1 ? 1 : d
+}

@@ -36,7 +36,7 @@ import { getCurrentRoute, getCurrentRouteWithQuery } from '../adapter/route'
 import { getLaunchScene } from '../adapter/lifecycle'
 import { getPushClientId } from '../adapter/push'
 import { logger } from '../infra/logger'
-import { nowSec } from '../infra/time'
+import { clampUrlrefStaySec, nowSec } from '../infra/time'
 import { tryRun } from '../infra/safe'
 
 import type { CollectorAPI } from '../pipeline/collector'
@@ -279,7 +279,7 @@ export function handleAppShow(
  *
  * 流程：
  *   1. markBackground(now)：写 bgTs，让下次 app_show 能算超时。
- *   2. 发 lt=3：`urlref` = 当前页（用户最后看到的页面），`urlref_ts` = 该页停留秒数。
+ *   2. 发 lt=3：`urlref` = 当前页（用户最后看到的页面），`urlref_ts` = 该页停留秒数（与私有版一致，不足 1 秒按 1 秒）。
  *   3. 进入后台后强制 flush（force=true），尽量在被 kill 前送出。
  */
 export function handleAppHide(app: StatApp): void {
@@ -287,10 +287,9 @@ export function handleAppHide(app: StatApp): void {
   if (!c) return
   const now = nowSec()
   tryRun(() => markBackground(now), undefined)
-  const stayed =
-    state.lastRouteEnterTime > 0
-      ? Math.max(0, now - state.lastRouteEnterTime)
-      : 0
+  const deltaStay =
+    state.lastRouteEnterTime > 0 ? now - state.lastRouteEnterTime : 0
+  const stayed = clampUrlrefStaySec(deltaStay)
   c.report({
     lt: LT.Hide,
     t: now,
@@ -314,7 +313,7 @@ export function handleAppHide(app: StatApp): void {
  *   - `url`：离开页的完整路径（含 query），来自上一次 onShow 结束时登记的 `lastRouteFull`。
  *   - `urlref`：再上一层的来源页（「上上个页面」），来自 `beforeLastRouteFull`；
  *     首次从启动页外跳（只有一层来源）时不带 `urlref`。
- *   - `urlref_ts`：离开页停留秒数，`now - lastRouteEnterTime`。
+ *   - `urlref_ts`：离开页停留秒数（`now - lastRouteEnterTime`，不足 1 秒按 1 秒，对齐私有版）。
  *   - `iey` / `ppiey`：分别对应**离开页**是否入口、`urlref` 指向页是否入口（与字段字典「上级页面」口径一致）。
  *   - `ttn` / `ttpj` / `ttc`：三维独立内存（API 导航栏 / pages.json / uni.report('title')），
  *     **同一事件可同时非空**。离开页快照优先在 **`onHide` 且 `clearPageTitle` 之前**落盘；
@@ -362,10 +361,9 @@ export function handlePageShow(
   }
   // 存在上一页 → 发 lt=11：描述「离开的上一页」，而非当前 vm 所在页。
   if (state.lastRoute && opts.enablePageLog !== false) {
-    const stayed =
-      state.lastRouteEnterTime > 0
-        ? Math.max(0, now - state.lastRouteEnterTime)
-        : 0
+    const deltaStay =
+      state.lastRouteEnterTime > 0 ? now - state.lastRouteEnterTime : 0
+    const stayed = clampUrlrefStaySec(deltaStay)
     const exitedUrl = state.lastRouteFull || state.lastRoute
     const ref = state.beforeLastRouteFull || state.beforeLastRoute || ''
     const snap = state.lastPageTitleSnap

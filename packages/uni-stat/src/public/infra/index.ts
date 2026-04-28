@@ -1,5 +1,5 @@
 // 基础设施层 barrel：time/sid/safe/storage/logger/interceptor。
-export { nowMs, nowSec, elapsedSec } from './time'
+export { nowMs, nowSec, elapsedSec, clampUrlrefStaySec } from './time'
 export { safeStringify, tryRun, withRetry } from './safe'
 export type { RetryOptions } from './safe'
 export { genSid } from './sid'

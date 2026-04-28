@@ -43,7 +43,7 @@ export interface EventContext {
   url?: string
   /** 上一页路径，上行字段 urlref；lt=11/3 必填，其它事件可空。 */
   urlref?: string
-  /** 上一页停留秒数，lt=11/3 必填。 */
+  /** 上一页停留秒数（整数秒；与私有版一致，&lt;1 秒按 1 秒），lt=11/3 必填。 */
   urlref_ts?: number
   /** 当前页 title（setNavigationBarTitle 截获）。 */
   ttn?: string

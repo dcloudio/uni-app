@@ -10,7 +10,7 @@
  * 另外验证：
  *   - app_hide：写 markBackground、发 lt=3、强制 flush。
  *   - page_show：发 lt=11（进入新页 onShow 时上报**离开页**），
- *     url=离开页 / urlref=再上一层来源（首跳可无）/ urlref_ts=离开页停留秒数；首次 onShow 不发。
+ *     url=离开页 / urlref=再上一层来源（首跳可无）/ urlref_ts=离开页停留秒数（≥1，与私有版一致）；首次 onShow 不发。
  *   - onError：转给 StatApp.reportError，不抛错。
  */
 
@@ -190,7 +190,7 @@ describe('runtime/lifecycleHooks', () => {
     const input = calls[0][0] as ReportInput
     expect(input.url).toBe('pages/A')
     expect(input.urlref).toBeUndefined()
-    expect(input.urlref_ts).toBeGreaterThanOrEqual(0)
+    expect(input.urlref_ts).toBeGreaterThanOrEqual(1)
   })
 
   test('page_show：iey/ppiey 解耦（修复 #PPIEY）', () => {
