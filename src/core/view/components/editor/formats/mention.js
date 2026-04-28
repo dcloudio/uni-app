@@ -16,6 +16,8 @@ function getMentionStyleValue (node, styleKey) {
   return node.style.getPropertyValue(cssName).trim()
 }
 
+const isApple = /^Apple/.test(navigator.vendor)
+
 export default function (Quill) {
   const Embed = Quill.import('blots/embed')
   class MentionBlot extends Embed {
@@ -25,11 +27,17 @@ export default function (Quill) {
       const id = data.id == null ? '' : data.id
       const name = data.name == null ? '' : data.name
 
-      node.setAttribute('contenteditable', 'false')
+      if (!isApple) {
+        node.setAttribute('contenteditable', 'false')
+      }
       node.setAttribute('data-id', id)
       node.setAttribute('data-name', name)
 
       let style = ''
+
+      if (isApple) {
+        style += '-webkit-user-select: none;'
+      }
 
       SupportStyleList.forEach(item => {
         const styleName = MentionStyleMap[item] || item
