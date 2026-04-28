@@ -28,6 +28,7 @@ export function initModuleAlias() {
       process.env.UNI_APP_HARMONY_DOM2_CPP_DIR
   }
 
+  // TODO 等待正式对外推出后，删除这个兼容逻辑
   if (
     process.env.UNI_APP_PLATFORM === 'ios' ||
     process.env.UNI_APP_PLATFORM === 'android'
