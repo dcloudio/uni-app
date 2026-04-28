@@ -315,6 +315,26 @@ describe('runtime/lifecycleHooks', () => {
     }
   })
 
+  test('onError：小程序端不重抛，仅上报 lt=31（避免二次 onError / 多条 31）', () => {
+    const prev = process.env.UNI_PLATFORM
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    jest.useFakeTimers()
+    try {
+      const { app, reportSpy } = installAppWithSpyReporter()
+      handleLaunch(app, {})
+      reportSpy.mockClear()
+
+      expect(() => handleError(app, new Error('mp-boom'))).not.toThrow()
+      expect(getReportedLts(reportSpy)).toContain('31')
+      expect(jest.getTimerCount()).toBe(0)
+      expect(() => jest.runAllTimers()).not.toThrow()
+    } finally {
+      process.env.UNI_PLATFORM = prev
+      jest.clearAllTimers()
+      jest.useRealTimers()
+    }
+  })
+
   test('onError：同一 Error 实例第二次进入时不再重抛（防重入死循环）', () => {
     jest.useFakeTimers()
     try {

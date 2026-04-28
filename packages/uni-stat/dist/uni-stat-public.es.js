@@ -1879,26 +1879,24 @@ const rethrownErrors = typeof WeakSet === 'function'
  *    显示在控制台日志右侧的"来源"列。业务方误以为统计 SDK 出现在他们的错误栈里，
  *    与"旁路监听"承诺相悖。
  *
- * ### 当前方案：`setTimeout(() => { throw e }, 0)` 异步重抛
+ * ### 当前方案：`setTimeout(() => { throw e }, 0)` 异步重抛（**仅非小程序**）
  *
- * - 错误进入浏览器 / 端原生的 "Uncaught Exception" 通路（同 `window.onerror`），
- *   与**完全没接入统计**时的默认行为像素级一致：
- *     - devtools 红色标记 `Uncaught Error: xxx`
- *     - stack 完全是用户代码 stack（`e.stack` 在 throw 当下已 capture，重抛不变）
- *     - 日志"来源"列指向浏览器 task / 用户代码，**没有任何 SDK 文件路径痕迹**
+ * - **H5 / App 等**：错误进入浏览器 / 原生 "Uncaught Exception" 通路（同 `window.onerror`），
+ *   与**完全没接入统计**时的默认行为一致，且控制台「来源」指向用户任务而非 SDK。
  *
- * ### 防重入
+ * - **各小程序（`mp-*`）**：**不重抛**。运行时已在首次异常路径打印 `MiniProgramError` 等；
+ *   若再 `setTimeout(throw)`，会二次进入全局 `onError`，且微信往往传入**新的包装对象**，
+ *   `WeakSet` 无法按引用去重 → 多条 `lt=31`、控制台刷屏。统计在此只做旁路上报。
  *
- * 重抛后错误会被全局 `window.onerror` 捕获；小程序端会被 `App.onError` 捕获并
- * 二次冒泡到 vue mixin 的 `onError`，造成 `handleError → setTimeout throw →
- * onError → handleError` 死循环。用 `rethrownErrors`(WeakSet) 标记已处理的
- * error 实例，重入时直接返回即可。
+ * ### 防重入（主要针对仍走重抛的环境）
+ *
+ * 重抛后可能被二次回调；用 `rethrownErrors`(WeakSet) 标记已处理的 error 实例。
  *
  * ### 顺序
  *
  * 1. **先标记重入防护** —— 防止极端竞态下 setTimeout 在同步上报完成前已 fire。
  * 2. **再上报** —— 同步执行，确保 lt=31 一定入队。
- * 3. **最后异步重抛** —— `setTimeout 0` 排到下一个 task，不阻塞业务事件循环。
+ * 3. **非小程序**：**最后**异步重抛 —— `setTimeout 0` 排到下一 task；小程序端跳过此步。
  *
  * 外层 `try/catch` 仅兜底 `reportError` 自身抛错（与私有版一致）；`tryRun` 兜底
  * `setTimeout` 在极端环境（如 SSR / 被 mock 的 timer）下不可用的情况。
@@ -1914,6 +1912,9 @@ function handleError(app, e) {
     }
     catch (err) {
         logger.warn('[uni-stat] handleError failed', err);
+    }
+    if (isMp()) {
+        return;
     }
     tryRun(() => {
         setTimeout(() => {
