@@ -1630,11 +1630,35 @@ function handlePageHide(app, _vm) {
 /**
  * 已经被本模块"异步重抛"过的错误实例，用于阻断 `onError → 重抛 → onError` 死循环。
  *
- * WeakSet 不会阻止 GC，业务方在外部 catch 这些 error 不会内存泄漏。
- * 仅 object 类型的 error 能进 WeakSet；非 object 错误（极少见的 throw 字符串等）
- * 重入概率极低，且重抛 string 在浏览器里也不会触发 onError，无需特殊处理。
+ * ## 选 WeakSet 的原因
+ *   - 弱引用语义：业务方在外部 catch 这些 error 后，error 仍可被 GC，不内存泄漏。
+ *   - uni-app 全端原生支持（H5 / 微信/支付宝/百度/字节 等小程序 / App-iOS/Android /
+ *     nvue / uvue / 鸿蒙）—— vue runtime 自身大量使用 WeakSet/WeakMap 做响应式，
+ *     任何不支持 WeakSet 的环境，vue 本身就起不来。
+ *
+ * ## 为什么仍然加 typeof 守卫
+ *   作为 SDK 必须 defensive。万一极端环境（自定义沙箱阉割、业务代码 `delete
+ *   globalThis.WeakSet`、SSR mock 等）导致 `new WeakSet()` 抛错，会让整个统计模块
+ *   在初始化期 `ReferenceError` 加载失败 —— 过激的失败模式。
+ *
+ *   降级策略：退化为 has=false / add=noop 的 stub。后果是失去防重入保护，但 SDK
+ *   仍可正常工作；最坏情况（小程序端 setTimeout 重抛被 mixin 二次接住）会触发
+ *   一次额外的 setTimeout（仍是异步、不会同步阻塞），第二次 setTimeout 抛出后会
+ *   到达全局 onError，仍然不会无限循环 —— 影响完全可控。
+ *
+ * ## 仅处理 object 类型
+ *   非 object 错误（极少见的 `throw 'string'` / `throw 42` 等）无法进 WeakSet；
+ *   且重抛非 object 在多数端的全局 onError 不会再次触发 vue mixin 的 onError，
+ *   无重入风险，无需特殊处理。
  */
-const rethrownErrors = new WeakSet();
+const rethrownErrors = typeof WeakSet === 'function'
+    ? new WeakSet()
+    : // 极端环境降级：has=false 永不命中，add=noop；本模块只用 has/add 两个方法，
+        // 其它方法（delete / [Symbol.toStringTag]）调用方不依赖，类型断言即可。
+        {
+            has: () => false,
+            add: () => rethrownErrors,
+        };
 /**
  * onError：上报错误（lt=31）+ 异步重抛，让错误回归原生 "Uncaught Error" 通路。
  *
