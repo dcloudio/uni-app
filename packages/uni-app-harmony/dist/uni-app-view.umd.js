@@ -19793,13 +19793,13 @@
         return String.fromCharCode(stage.slice(1));
       }
       if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-        return String.fromCharCode(0 + stage.slice(1));
+        return String.fromCharCode(Number("0" + stage.slice(1)));
       }
       return match;
     });
   }
   function processClickEvent(node, triggerItemClick) {
-    if (["a", "img"].includes(node.name) && triggerItemClick) {
+    if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
       return {
         onClickCapture: (e2) => {
           triggerItemClick(e2, {
@@ -19812,35 +19812,42 @@
       };
     }
   }
+  function normalizeValue(tagName, name, value) {
+    if (tagName === "img" && name === "src" && isString(value)) {
+      return getRealPath(value);
+    }
+    return value;
+  }
   function normalizeAttrs(tagName, attrs2) {
     if (!isPlainObject(attrs2))
       return;
-    for (var key2 in attrs2) {
-      if (hasOwn$1(attrs2, key2)) {
-        var value = attrs2[key2];
-        if (tagName === "img" && key2 === "src")
-          attrs2[key2] = getRealPath(value);
+    var tagAttrs = TAGS[tagName] || [];
+    var normalizedAttrs = {};
+    Object.keys(attrs2).forEach((name) => {
+      if (name === "class" || name === "style" || tagAttrs.includes(name)) {
+        normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
       }
-    }
+    });
+    return normalizedAttrs;
   }
   var nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-    if (!nodeList || isArray(nodeList) && !nodeList.length)
+    if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
       return [];
     return nodeList.map((node) => {
-      var _a;
       if (!isPlainObject(node)) {
         return;
       }
       if (!hasOwn$1(node, "type") || node.type === "node") {
-        var nodeProps = {
-          [scopeId]: ""
-        };
-        var tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
+        if (!isString(node.name) || !node.name) {
+          return;
+        }
+        var tagName = node.name.toLowerCase();
         if (!hasOwn$1(TAGS, tagName)) {
           return;
         }
-        normalizeAttrs(tagName, node.attrs);
-        nodeProps = extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
+        var nodeProps = extend({
+          [scopeId]: ""
+        }, processClickEvent(node, triggerItemClick), normalizeAttrs(tagName, node.attrs));
         return h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
       }
       if (node.type === "text" && isString(node.text) && node.text !== "")
@@ -19961,7 +19968,7 @@
       var vm = getCurrentInstance();
       var scopeId = vm && vm.vnode.scopeId || "";
       var rootRef = ref(null);
-      var _vnode = ref([]);
+      var _vnode = shallowRef([]);
       var trigger2 = useCustomEvent(rootRef, emit2);
       function triggerItemClick(e2) {
         var detail = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
