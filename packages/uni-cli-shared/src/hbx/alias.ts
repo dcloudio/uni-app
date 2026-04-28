@@ -97,7 +97,7 @@ export function initModuleAlias() {
     }
 
     if (
-      process.env.UNI_APP_PLATFORM === 'ios' ||
+      process.env.UNI_APP_PLATFORM ||
       process.env.UNI_PLATFORM === 'app-harmony'
     ) {
       const dynamicFilename = path.resolve(
