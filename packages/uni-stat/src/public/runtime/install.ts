@@ -240,6 +240,8 @@ export function installPublicStat(opts: InstallOptions = {}): void {
       debugFromManifest:
         env.UNI_STAT_DEBUG === 'true' ||
         (env.UNI_STAT_DEBUG as unknown) === true,
+      backgroundTimeoutSec: cfg?.backgroundTimeoutSec,
+      pageInactiveTimeoutSec: cfg?.pageInactiveTimeoutSec,
     })
   }, undefined)
 }

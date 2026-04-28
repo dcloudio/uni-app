@@ -106,6 +106,10 @@ export function logBoot(info: {
   ak: string
   appName?: string
   debugFromManifest?: boolean
+  /** manifest `backgroundTimeout` 映射后的会话阈值（秒）；用于核对是否仍为默认 300。 */
+  backgroundTimeoutSec?: number
+  /** manifest `pageInactiveTimeout` 映射后的阈值（秒）。 */
+  pageInactiveTimeoutSec?: number
 }): void {
   if (!logger.isDebug()) return
   logger.debug('=== uni 统计公有版已启用 ===')
@@ -115,6 +119,18 @@ export function logBoot(info: {
       info.ak || '<未注入>'
     }${info.appName ? ` | 应用名: ${info.appName}` : ''}`
   )
+  if (
+    typeof info.backgroundTimeoutSec === 'number' ||
+    typeof info.pageInactiveTimeoutSec === 'number'
+  ) {
+    logger.debug(
+      `会话阈值: 后台超时 backgroundTimeoutSec=${
+        info.backgroundTimeoutSec ?? '?'
+      }s | 前台无操作 pageInactiveTimeoutSec=${
+        info.pageInactiveTimeoutSec ?? '?'
+      }s（若为 300/1800 多为 manifest 未注入 build，仍走默认值）`
+    )
+  }
   if (info.debugFromManifest) {
     logger.debug('调试模式：已从 manifest.uniStatistics.debug 自动开启')
   }

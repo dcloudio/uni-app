@@ -29,7 +29,7 @@ export type LTValue = (typeof LT)[keyof typeof LT]
  * Create Session Type / Session Create Type（同义）。
  *
  * - `1` 冷启动：进程刚起，第一次创建会话。
- * - `2` 后台超时：从后台返回前台，距离 `bgTs` 超过 `backgroundTimeoutSec`。
+ * - `2` 后台超时：从后台返回前台，间隔 >= `backgroundTimeoutSec`（秒）。
  * - `3` 前台无操作超时：在前台一段时间无任何 page/event 触达。
  *
  * 公有版预留 `0` 给"未触发新会话"的零值；不要用 0 覆写 storage，仅作为内部哨兵。

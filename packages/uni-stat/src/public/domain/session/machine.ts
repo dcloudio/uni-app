@@ -11,11 +11,12 @@
  * 触发器 → cst 映射：
  *   - `cold_launch`：进程冷启动 → cst=1。
  *   - `app_show` (从后台返回)：
- *       - now - bgTs > backgroundTimeoutSec → 新 session, cst=2。
+ *       - now - bgTs >= backgroundTimeoutSec → 新 session, cst=2（与私有版 pageTime
+ *         可读性对齐：配置为 10 秒时，隐藏端与显示端秒戳相差 10 即视为超时）。
  *       - 否则复用旧 session, cst=0。
  *   - `wx_scene_changed`：scene 与上次不同 → 新 session, cst=2。
  *   - `page_show` (前台已有 session)：
- *       - now - lastActive > pageInactiveTimeoutSec → 新 session, cst=3。
+ *       - now - lastActive >= pageInactiveTimeoutSec → 新 session, cst=3。
  *       - 否则 touch & 复用, cst=0。
  *
  * 关键设计：所有 storage 操作都带 try / safeRead 兜底；任何路径都不抛异常，
@@ -192,7 +193,7 @@ export function ensureSession(t: Trigger, ctx: EnsureContext): EnsureResult {
     const sceneChanged = !!scene && !!snap.lastScene && scene !== snap.lastScene
     if (
       sceneChanged ||
-      (snap.bgTs > 0 && elapsed > config.backgroundTimeoutSec)
+      (snap.bgTs > 0 && elapsed >= config.backgroundTimeoutSec)
     ) {
       const created = createNew(now, CST.BackgroundTimeout, scene)
       return { snapshot: created, isNew: true, cst: CST.BackgroundTimeout }
@@ -214,7 +215,7 @@ export function ensureSession(t: Trigger, ctx: EnsureContext): EnsureResult {
 
   // page_show：判定前台无操作超时
   const elapsed = now - snap.lastActive
-  if (elapsed > config.pageInactiveTimeoutSec) {
+  if (elapsed >= config.pageInactiveTimeoutSec) {
     const created = createNew(
       now,
       CST.PageInactiveTimeout,

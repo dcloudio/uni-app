@@ -91,10 +91,10 @@ describe('domain/session/machine', () => {
       expect(handle.storage.__inspect()[KBG]).toBe(0)
     })
 
-    test('app_show 后台超时（>300s）→ 新 session, cst=2', () => {
+    test('app_show 后台超时（>=300s 差值）→ 新 session, cst=2', () => {
       ensureSession('cold_launch', { now: T0 })
       markBackground(T0 + 10)
-      const r = ensureSession('app_show', { now: T0 + 10 + 301 })
+      const r = ensureSession('app_show', { now: T0 + 10 + 300 })
       expect(r.isNew).toBe(true)
       expect(r.cst).toBe(CST.BackgroundTimeout)
     })
@@ -139,20 +139,20 @@ describe('domain/session/machine', () => {
       expect(r.snapshot.lastActive).toBe(T0 + 1000)
     })
 
-    test('超过 1800s → 新 session, cst=3', () => {
+    test('达到 1800s → 新 session, cst=3（>= 阈值）', () => {
       ensureSession('cold_launch', { now: T0 })
-      const r = ensureSession('page_show', { now: T0 + 1801 })
+      const r = ensureSession('page_show', { now: T0 + 1800 })
       expect(r.isNew).toBe(true)
       expect(r.cst).toBe(CST.PageInactiveTimeout)
     })
   })
 
   describe('configure', () => {
-    test('自定义 backgroundTimeoutSec=60 → 60s 后即超时', () => {
+    test('自定义 backgroundTimeoutSec=60 → 间隔满 60s 即超时（>=）', () => {
       configure({ backgroundTimeoutSec: 60 })
       ensureSession('cold_launch', { now: T0 })
       markBackground(T0)
-      const r = ensureSession('app_show', { now: T0 + 61 })
+      const r = ensureSession('app_show', { now: T0 + 60 })
       expect(r.isNew).toBe(true)
       expect(r.cst).toBe(CST.BackgroundTimeout)
     })
@@ -160,7 +160,7 @@ describe('domain/session/machine', () => {
     test('部分覆盖默认值', () => {
       configure({ pageInactiveTimeoutSec: 5 })
       ensureSession('cold_launch', { now: T0 })
-      const r = ensureSession('page_show', { now: T0 + 6 })
+      const r = ensureSession('page_show', { now: T0 + 5 })
       expect(r.isNew).toBe(true)
       expect(r.cst).toBe(CST.PageInactiveTimeout)
     })

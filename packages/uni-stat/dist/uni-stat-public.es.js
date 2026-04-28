@@ -25,7 +25,7 @@ const LT = {
  * Create Session Type / Session Create Type（同义）。
  *
  * - `1` 冷启动：进程刚起，第一次创建会话。
- * - `2` 后台超时：从后台返回前台，距离 `bgTs` 超过 `backgroundTimeoutSec`。
+ * - `2` 后台超时：从后台返回前台，间隔 >= `backgroundTimeoutSec`（秒）。
  * - `3` 前台无操作超时：在前台一段时间无任何 page/event 触达。
  *
  * 公有版预留 `0` 给"未触发新会话"的零值；不要用 0 覆写 storage，仅作为内部哨兵。
@@ -819,6 +819,16 @@ function nowMs() {
 function nowSec() {
     return Math.floor(Date.now() / 1000);
 }
+/**
+ * 将「离开页 / 后台前当前页」停留时长（秒）钳到与私有版 `get_residence_time` 一致：
+ * 差值小于 1 秒时按 1 秒上报（`residenceTime &lt; 1 ? 1 : residenceTime`）。
+ *
+ * @param deltaSec 非负停留秒数优先；传入负数时视为 0 再钳制。
+ */
+function clampUrlrefStaySec(deltaSec) {
+    const d = deltaSec > 0 ? deltaSec : 0;
+    return d < 1 ? 1 : d;
+}
 
 /**
  * 平台标识适配。
@@ -1083,11 +1093,12 @@ function randomPart(len) {
  * 触发器 → cst 映射：
  *   - `cold_launch`：进程冷启动 → cst=1。
  *   - `app_show` (从后台返回)：
- *       - now - bgTs > backgroundTimeoutSec → 新 session, cst=2。
+ *       - now - bgTs >= backgroundTimeoutSec → 新 session, cst=2（与私有版 pageTime
+ *         可读性对齐：配置为 10 秒时，隐藏端与显示端秒戳相差 10 即视为超时）。
  *       - 否则复用旧 session, cst=0。
  *   - `wx_scene_changed`：scene 与上次不同 → 新 session, cst=2。
  *   - `page_show` (前台已有 session)：
- *       - now - lastActive > pageInactiveTimeoutSec → 新 session, cst=3。
+ *       - now - lastActive >= pageInactiveTimeoutSec → 新 session, cst=3。
  *       - 否则 touch & 复用, cst=0。
  *
  * 关键设计：所有 storage 操作都带 try / safeRead 兜底；任何路径都不抛异常，
@@ -1207,7 +1218,7 @@ function ensureSession(t, ctx) {
         const elapsed = now - (snap.bgTs || snap.lastActive);
         const sceneChanged = !!scene && !!snap.lastScene && scene !== snap.lastScene;
         if (sceneChanged ||
-            (snap.bgTs > 0 && elapsed > config$1.backgroundTimeoutSec)) {
+            (snap.bgTs > 0 && elapsed >= config$1.backgroundTimeoutSec)) {
             const created = createNew(now, CST.BackgroundTimeout, scene);
             return { snapshot: created, isNew: true, cst: CST.BackgroundTimeout };
         }
@@ -1227,7 +1238,7 @@ function ensureSession(t, ctx) {
     }
     // page_show：判定前台无操作超时
     const elapsed = now - snap.lastActive;
-    if (elapsed > config$1.pageInactiveTimeoutSec) {
+    if (elapsed >= config$1.pageInactiveTimeoutSec) {
         const created = createNew(now, CST.PageInactiveTimeout, scene || snap.lastScene);
         return { snapshot: created, isNew: true, cst: CST.PageInactiveTimeout };
     }
@@ -1616,7 +1627,7 @@ function handleAppShow(app, options = {}, _opts = {}) {
  *
  * 流程：
  *   1. markBackground(now)：写 bgTs，让下次 app_show 能算超时。
- *   2. 发 lt=3：`urlref` = 当前页（用户最后看到的页面），`urlref_ts` = 该页停留秒数。
+ *   2. 发 lt=3：`urlref` = 当前页（用户最后看到的页面），`urlref_ts` = 该页停留秒数（与私有版一致，不足 1 秒按 1 秒）。
  *   3. 进入后台后强制 flush（force=true），尽量在被 kill 前送出。
  */
 function handleAppHide(app) {
@@ -1625,9 +1636,8 @@ function handleAppHide(app) {
         return;
     const now = nowSec();
     tryRun(() => markBackground(now), undefined);
-    const stayed = state$1.lastRouteEnterTime > 0
-        ? Math.max(0, now - state$1.lastRouteEnterTime)
-        : 0;
+    const deltaStay = state$1.lastRouteEnterTime > 0 ? now - state$1.lastRouteEnterTime : 0;
+    const stayed = clampUrlrefStaySec(deltaStay);
     c.report({
         lt: LT.Hide,
         t: now,
@@ -1650,7 +1660,7 @@ function handleAppHide(app) {
  *   - `url`：离开页的完整路径（含 query），来自上一次 onShow 结束时登记的 `lastRouteFull`。
  *   - `urlref`：再上一层的来源页（「上上个页面」），来自 `beforeLastRouteFull`；
  *     首次从启动页外跳（只有一层来源）时不带 `urlref`。
- *   - `urlref_ts`：离开页停留秒数，`now - lastRouteEnterTime`。
+ *   - `urlref_ts`：离开页停留秒数（`now - lastRouteEnterTime`，不足 1 秒按 1 秒，对齐私有版）。
  *   - `iey` / `ppiey`：分别对应**离开页**是否入口、`urlref` 指向页是否入口（与字段字典「上级页面」口径一致）。
  *   - `ttn` / `ttpj` / `ttc`：三维独立内存（API 导航栏 / pages.json / uni.report('title')），
  *     **同一事件可同时非空**。离开页快照优先在 **`onHide` 且 `clearPageTitle` 之前**落盘；
@@ -1688,9 +1698,8 @@ function handlePageShow(app, vm, opts = {}) {
     }
     // 存在上一页 → 发 lt=11：描述「离开的上一页」，而非当前 vm 所在页。
     if (state$1.lastRoute && opts.enablePageLog !== false) {
-        const stayed = state$1.lastRouteEnterTime > 0
-            ? Math.max(0, now - state$1.lastRouteEnterTime)
-            : 0;
+        const deltaStay = state$1.lastRouteEnterTime > 0 ? now - state$1.lastRouteEnterTime : 0;
+        const stayed = clampUrlrefStaySec(deltaStay);
         const exitedUrl = state$1.lastRouteFull || state$1.lastRoute;
         const ref = state$1.beforeLastRouteFull || state$1.beforeLastRoute || '';
         const snap = state$1.lastPageTitleSnap;
@@ -2152,11 +2161,16 @@ function logCollect(data) {
  * 启动 / 配置摘要。`installPublicStat` 装配完毕后调用一次，方便业务方一眼确认接入状态。
  */
 function logBoot(info) {
+    var _a, _b;
     if (!logger.isDebug())
         return;
     logger.debug('=== uni 统计公有版已启用 ===');
     // 通道: ${info.channel} |
     logger.debug(`上报间隔: ${info.reportIntervalSec}s | 应用APPID: ${info.ak || '<未注入>'}${info.appName ? ` | 应用名: ${info.appName}` : ''}`);
+    if (typeof info.backgroundTimeoutSec === 'number' ||
+        typeof info.pageInactiveTimeoutSec === 'number') {
+        logger.debug(`会话阈值: 后台超时 backgroundTimeoutSec=${(_a = info.backgroundTimeoutSec) !== null && _a !== void 0 ? _a : '?'}s | 前台无操作 pageInactiveTimeoutSec=${(_b = info.pageInactiveTimeoutSec) !== null && _b !== void 0 ? _b : '?'}s（若为 300/1800 多为 manifest 未注入 build，仍走默认值）`);
+    }
     if (info.debugFromManifest) {
         logger.debug('调试模式：已从 manifest.uniStatistics.debug 自动开启');
     }
@@ -4692,6 +4706,8 @@ function installPublicStat(opts = {}) {
             appName,
             debugFromManifest: env.UNI_STAT_DEBUG === 'true' ||
                 env.UNI_STAT_DEBUG === true,
+            backgroundTimeoutSec: cfg === null || cfg === void 0 ? void 0 : cfg.backgroundTimeoutSec,
+            pageInactiveTimeoutSec: cfg === null || cfg === void 0 ? void 0 : cfg.pageInactiveTimeoutSec,
         });
     }, undefined);
 }

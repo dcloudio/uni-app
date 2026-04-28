@@ -173,6 +173,20 @@ describe('infra/debugLog', () => {
     expect(logsContaining('应用APPID: <未注入>')).toBe(true)
   })
 
+  test('D5.c logBoot 传入会话阈值时输出 backgroundTimeout / pageInactive', () => {
+    logger.setDebug(true)
+    logBoot({
+      channel: 'image',
+      reportIntervalSec: 10,
+      ak: 'AK',
+      backgroundTimeoutSec: 10,
+      pageInactiveTimeoutSec: 60,
+    })
+    expect(logsContaining('会话阈值:')).toBe(true)
+    expect(logsContaining('backgroundTimeoutSec=10')).toBe(true)
+    expect(logsContaining('pageInactiveTimeoutSec=60')).toBe(true)
+  })
+
   test('D6 getActionLabel 覆盖所有已知 lt（lt=0 已废弃，落到未知分支）', () => {
     expect(getActionLabel(LT.Launch)).toBe('应用启动')
     expect(getActionLabel(LT.Hide)).toBe('应用进入后台')
